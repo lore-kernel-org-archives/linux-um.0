@@ -1,77 +1,120 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]
- helo=mx0a-001b2d01.pphosted.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1flgEL-0006an-0C
- for linux-um@lists.infradead.org; Fri, 03 Aug 2018 19:59:22 +0000
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.16.0.22/8.16.0.22) with SMTP id
- w73Jx5AV026215
- for <linux-um@lists.infradead.org>; Fri, 3 Aug 2018 15:59:07 -0400
-Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
- by mx0a-001b2d01.pphosted.com with ESMTP id 2kmuj3mmbt-1
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
- for <linux-um@lists.infradead.org>; Fri, 03 Aug 2018 15:59:07 -0400
-Received: from localhost
- by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
- Violators will be prosecuted
- for <linux-um@lists.infradead.org> from <rppt@linux.vnet.ibm.com>;
- Fri, 3 Aug 2018 20:58:59 +0100
-From: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: [PATCH RESEND 0/7] switch several architectures NO_BOOTMEM
-Date: Fri,  3 Aug 2018 22:58:43 +0300
-Message-Id: <1533326330-31677-1-git-send-email-rppt@linux.vnet.ibm.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Return-Path: <linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org>
+Date: Wed, 22 Aug 2018 10:51:17 -0700 (PDT)
+Subject: Re: [PATCH v2] kbuild: rename LDFLAGS to KBUILD_LDFLAGS
+In-Reply-To: <1534945405-16396-1-git-send-email-yamada.masahiro@socionext.com>
+From: Palmer Dabbelt <palmer@sifive.com>
+Message-ID: <mhng-5d4b0f73-4c16-4111-a203-dc8076a2f3bc@palmer-si-x1c4>
+Mime-Version: 1.0 (MHng)
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>, linux-hexagon@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org, nios2-dev@lists.rocketboards.org, Richard Weinberger <richard@nod.at>, Ley Foon Tan <lftan@altera.com>, Richard Kuo <rkuo@codeaurora.org>, Guan Xuetao <gxt@pku.edu.cn>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org
+To: yamada.masahiro@socionext.com
+Cc: linux-kbuild@vger.kernel.org, richard@nod.at, jdike@addtoit.com, x86@kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, rmk+kernel@armlinux.org.uk, openrisc@lists.librecores.org, linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+List-ID: <linux-um.lists.infradead.org>
 
+On Wed, 22 Aug 2018 06:43:25 PDT (-0700), yamada.masahiro@socionext.com wrote:
+> Commit a0f97e06a43c ("kbuild: enable 'make CFLAGS=...' to add
+> additional options to CC") renamed CFLAGS to KBUILD_CFLAGS.
+>
+> Commit 222d394d30e7 ("kbuild: enable 'make AFLAGS=...' to add
+> additional options to AS") renamed AFLAGS to KBUILD_AFLAGS.
+>
+> Commit 06c5040cdb13 ("kbuild: enable 'make CPPFLAGS=...' to add
+> additional options to CPP") renamed CPPFLAGS to KBUILD_CPPFLAGS.
+>
+> For some reason, LDFLAGS was not renamed.
+>
+> Using a well-known variable like LDFLAGS may result in accidental
+> override of the variable.
+>
+> Kbuild generally uses KBUILD_ prefixed variables for the internally
+> appended options, so here is one more conversion to sanitize the
+> naming convention.
+>
+> I did not touch Makefiles under tools/ since the tools build system
+> is a different world.
+>
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> ---
+>
+> Changes in v2:
+>   - Rebased on Linus's tree
+>
+>  Makefile                           | 6 +++---
+>  arch/arc/Makefile                  | 2 +-
+>  arch/arm/Makefile                  | 4 ++--
+>  arch/arm64/Makefile                | 4 ++--
+>  arch/c6x/Makefile                  | 3 +--
+>  arch/h8300/Makefile                | 2 +-
+>  arch/hexagon/Makefile              | 4 +---
+>  arch/m68k/Makefile                 | 2 +-
+>  arch/microblaze/Makefile           | 4 ++--
+>  arch/mips/Makefile                 | 2 +-
+>  arch/mips/boot/compressed/Makefile | 2 +-
+>  arch/mips/lasat/image/Makefile     | 2 +-
+>  arch/nds32/Makefile                | 4 ++--
+>  arch/powerpc/Makefile              | 6 +++---
+>  arch/riscv/Makefile                | 4 ++--
+>  arch/s390/Makefile                 | 2 +-
+>  arch/sh/Makefile                   | 4 ++--
+>  arch/sparc/Makefile                | 4 ++--
+>  arch/um/Makefile                   | 2 +-
+>  arch/x86/Makefile                  | 4 ++--
+>  arch/x86/Makefile.um               | 4 ++--
+>  arch/x86/boot/compressed/Makefile  | 6 +++---
+>  arch/xtensa/Makefile               | 2 +-
+>  arch/xtensa/boot/boot-elf/Makefile | 2 +-
+>  scripts/Kbuild.include             | 4 ++--
+>  scripts/Makefile.build             | 4 ++--
+>  scripts/Makefile.lib               | 2 +-
+>  scripts/Makefile.modpost           | 2 +-
+>  28 files changed, 45 insertions(+), 48 deletions(-)
 
-Hi,
+[...]
 
-These patches perform conversion to NO_BOOTMEM of hexagon, nios2, uml and
-unicore32. The architecture maintainers have acked the patches, but, since
-I've got no confirmation the patches are going through the arch tree I'd
-appreciate if the set would be applied to the -mm tree.
+> diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+> index 9ddd88b..61ec424 100644
+> --- a/arch/riscv/Makefile
+> +++ b/arch/riscv/Makefile
+> @@ -29,7 +29,7 @@ ifeq ($(CONFIG_ARCH_RV64I),y)
+>  	KBUILD_CFLAGS	+= $(call cc-ifversion, -ge, 0500, -DCONFIG_ARCH_SUPPORTS_INT128)
+>
+>  	KBUILD_MARCH = rv64im
+> -	LDFLAGS += -melf64lriscv
+> +	KBUILD_LDFLAGS += -melf64lriscv
+>  else
+>  	BITS := 32
+>  	UTS_MACHINE := riscv32
+> @@ -37,7 +37,7 @@ else
+>  	KBUILD_CFLAGS += -mabi=ilp32
+>  	KBUILD_AFLAGS += -mabi=ilp32
+>  	KBUILD_MARCH = rv32im
+> -	LDFLAGS += -melf32lriscv
+> +	KBUILD_LDFLAGS += -melf32lriscv
+>  endif
+>
+>  KBUILD_CFLAGS += -Wall
 
-Mike Rapoport (7):
-  hexagon: switch to NO_BOOTMEM
-  of: ignore sub-page memory regions
-  nios2: use generic early_init_dt_add_memory_arch
-  nios2: switch to NO_BOOTMEM
-  um: setup_physmem: stop using global variables
-  um: switch to NO_BOOTMEM
-  unicore32: switch to NO_BOOTMEM
+Ah, thanks -- I'd noticed this when we were messing around in here recently and 
+assumed there was some reason for the non-orthogonality.  As far as the RISC-V 
+stuff goes, feel free to add a 
 
- arch/hexagon/Kconfig      |  3 +++
- arch/hexagon/mm/init.c    | 20 +++++++-----------
- arch/nios2/Kconfig        |  3 +++
- arch/nios2/kernel/prom.c  | 17 ---------------
- arch/nios2/kernel/setup.c | 39 ++++++----------------------------
- arch/um/Kconfig.common    |  2 ++
- arch/um/kernel/physmem.c  | 22 +++++++++----------
- arch/unicore32/Kconfig    |  1 +
- arch/unicore32/mm/init.c  | 54 +----------------------------------------------
- drivers/of/fdt.c          | 11 +++++-----
- 10 files changed, 41 insertions(+), 131 deletions(-)
+Reviewed-by: Palmer Dabbelt <palmer@sifive.com>
 
--- 
-2.7.4
-
+I can deal with the inevitable merge conflicts on our end, as they'll be 
+trivial :).
 
 _______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
