@@ -1,81 +1,78 @@
-Return-Path: <ndesaulniers@google.com>
-MIME-Version: 1.0
-References: <CAKwvOdkWL_2yTnJqM6n6R9UCPwY4iz-9BQYGN2MDAk9EzumUvA@mail.gmail.com>
- <20180821202900.208417-1-ndesaulniers@google.com> <207784db-4fcc-85e7-a0b2-fec26b7dab81@gmx.de>
- <c62e4e00-fb8f-19a6-f3eb-bde60118cb1a@zytor.com> <81141365-8168-799b-f34f-da5f92efaaf9@zytor.com>
- <7f49eeab-a5cc-867f-58fb-abd266f9c2c9@zytor.com> <6ca8a1d3-ff95-e9f4-f003-0a5af85bcb6f@zytor.com>
- <CA+55aFzuSCKfmgT9efHuwtan+m3+bPh4BpwbZwn5gGX_H=Thuw@mail.gmail.com>
-In-Reply-To: <CA+55aFzuSCKfmgT9efHuwtan+m3+bPh4BpwbZwn5gGX_H=Thuw@mail.gmail.com>
-From: Nick Desaulniers <ndesaulniers@google.com>
-Date: Sun, 26 Aug 2018 19:52:59 -0700
-Message-ID: <CAKwvOd=wAaPBkFHAcWxgMW91a--9gbvu7xrt3j-q8c+-mT=7Lw@mail.gmail.com>
+Return-Path: <hpa@zytor.com>
 Subject: Re: [PATCH] treewide: remove current_text_addr
-Content-Type: text/plain; charset="UTF-8"
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: hpa@zytor.com, Peter Zijlstra <peterz@infradead.org>, deller@gmx.de, Andrew Morton <akpm@linux-foundation.org>, "Eric W . Biederman" <ebiederm@xmission.com>, Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com, Simon Horman <horms@verge.net.au>, Nathan Chancellor <natechancellor@gmail.com>, Philippe Ombredanne <pombredanne@nexb.com>, Kate Stewart <kstewart@linuxfoundation.org>, Greg KH <gregkh@linuxfoundation.org>, rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@synopsys.com, linux@armlinux.org.uk, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, msalter@redhat.com, jacquiot.aurelien@gmail.com, Yoshinori Sato <ysato@users.sourceforge.jp>, rkuo@codeaurora.org, tony.luck@intel.com, fenghua.yu@intel.com, Geert Uytterhoeven <geert@linux-m68k.org>, monstr@monstr.eu, ralf@linux-mips.org, paul.burton@mips.com, jhogan@kernel.org, green.hu@gmail.com, deanbo422@gmail.com, lftan@altera.com, jonas@southpole.se, stefan.kristiansson@saunalahti.fi, Stafford Horne <shorne@gmail.com>, jejb@parisc-linux.org, benh@kernel.crashing.org, paulus@samba.org, mpe@ellerman.id.au, palmer@sifive.com, aou@eecs.berkeley.edu, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com, dalias@libc.org, "David S. Miller" <davem@davemloft.net>, gxt@pku.edu.cn, x86@kernel.org, jdike@addtoit.com, richard@nod.at, chris@zankel.net, jcmvbkbc@gmail.com, Tobias Klauser <tklauser@distanz.ch>, noamc@ezchip.com, mickael.guene@st.com, nicolas.pitre@linaro.org, Kees Cook <keescook@chromium.org>, Dave Martin <Dave.Martin@arm.com>, Marc Zyngier <marc.zyngier@arm.com>, alex.bennee@linaro.org, Laura Abbott <labbott@redhat.com>, Yury Norov <ynorov@caviumnetworks.com>, Mark Rutland <mark.rutland@arm.com>, chenhc@lemote.com, macro@mips.com, Arnd Bergmann <arnd@arndb.de>, dhowells@redhat.com, sukadev@linux.vnet.ibm.com, Nicholas Piggin <npiggin@gmail.com>, aneesh.kumar@linux.vnet.ibm.com, felix@linux.vnet.ibm.com, linuxram@us.ibm.com, christophe.leroy@c-s.fr, cohuck@redhat.com, gor@linux.vnet.ibm.com, nick.alcock@oracle.com, shannon.nelson@oracle.com, nagarathnam.muthusamy@oracle.com, luto@kernel.org, bp@suse.de, dave.hansen@linux.intel.com, vkuznets@redhat.com, jkosina@suse.cz, linux-alpha@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, linux-snps-arc@lists.infradead.org, Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-c6x-dev@linux-c6x.org, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@vger.kernel.org, linux-mips@linux-mips.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org
+From: "H. Peter Anvin" <hpa@zytor.com>
+References: <CAKwvOdkWL_2yTnJqM6n6R9UCPwY4iz-9BQYGN2MDAk9EzumUvA@mail.gmail.com>
+ <20180821202900.208417-1-ndesaulniers@google.com>
+ <207784db-4fcc-85e7-a0b2-fec26b7dab81@gmx.de>
+ <c62e4e00-fb8f-19a6-f3eb-bde60118cb1a@zytor.com>
+ <81141365-8168-799b-f34f-da5f92efaaf9@zytor.com>
+ <7f49eeab-a5cc-867f-58fb-abd266f9c2c9@zytor.com>
+ <6ca8a1d3-ff95-e9f4-f003-0a5af85bcb6f@zytor.com>
+Message-ID: <e425d208-214b-06a2-a032-7442a10388fc@zytor.com>
+Date: Sun, 26 Aug 2018 16:20:19 -0700
+MIME-Version: 1.0
+In-Reply-To: <6ca8a1d3-ff95-e9f4-f003-0a5af85bcb6f@zytor.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+To: Helge Deller <deller@gmx.de>, Nick Desaulniers <ndesaulniers@google.com>, torvalds@linux-foundation.org, akpm@linux-foundation.org
+Cc: ebiederm@xmission.com, tglx@linutronix.de, mingo@redhat.com, horms@verge.net.au, natechancellor@gmail.com, pombredanne@nexb.com, kstewart@linuxfoundation.org, gregkh@linuxfoundation.org, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Mark Salter <msalter@redhat.com>, Aurelien Jacquiot <jacquiot.aurelien@gmail.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, James Hogan <jhogan@kernel.org>, Greentime Hu <green.hu@gmail.com>, Vincent Chen <deanbo422@gmail.com>, Ley Foon Tan <lftan@altera.com>, Jonas Bonn <jonas@southpole.se>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Palmer Dabbelt <palmer@sifive.com>, Albert Ou <aou@eecs.berkeley.edu>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Rich Felker <dalias@libc.org>, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@pku.edu.cn>, x86@kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Tobias Klauser <tklauser@distanz.ch>, Noam Camus <noamc@ezchip.com>, Mickael GUENE <mickael.guene@st.com>, Nicolas Pitre <nicolas.pitre@linaro.org>, Kees Cook <keescook@chromium.org>, Dave Martin <Dave.Martin@arm.com>, Marc Zyngier <marc.zyngier@arm.com>, =?UTF-8?Q?Alex_Benn=c3=a9e?= <alex.bennee@linaro.org>, Laura Abbott <labbott@redhat.com>, Yury Norov <ynorov@caviumnetworks.com>, Mark Rutland <mark.rutland@arm.com>, Huacai Chen <chenhc@lemote.com>, "Maciej W. Rozycki" <macro@mips.com>, Arnd Bergmann <arnd@arndb.de>, David Howells <dhowells@redhat.com>, Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>, Nicholas Piggin <npiggin@gmail.com>, "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>, Philippe Bergheaud <felix@linux.vnet.ibm.com>, Ram Pai <linuxram@us.ibm.com>, Christophe Leroy <christophe.leroy@c-s.fr>, Cornelia Huck <cohuck@redhat.com>, Vasily Gorbik <gor@linux.vnet.ibm.com>, Nick Alcock <nick.alcock@oracle.com>, Shannon Nelson <shannon.nelson@oracle.com>, Nagarathnam Muthusamy <nagarathnam.muthusamy@oracle.com>, Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@suse.de>, Dave Hansen <dave.hansen@linux.intel.com>, Vitaly Kuznetsov <vkuznets@redhat.com>, Jiri Kosina <jkosina@suse.cz>, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@vger.kernel.org, linux-mips@linux-mips.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org
 List-ID: <linux-um.lists.infradead.org>
 
-On Sun, Aug 26, 2018 at 1:25 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
-> Honestly, I'd suggest:
->
->  - just do the current_text_addr() to _THIS_IP_ conversion
->
->  - keep _THIS_IP_ and make it be the generic one, and screw the whole
-> "some architectures might implement is better" issue. Nobody cares.
+On 08/26/18 12:30, H. Peter Anvin wrote:
+> Here is a full-blown (user space) test program demonstrating the whole
+> technique and how to use it.
+> 
+> 	-hpa
 
-And mention it to the compiler vendors as this seems like a case where
-code gen can be improved.
+Incidentally, it looks like _RET_IP_ really should be defined as:
 
->
->  - try to convince people to move away from the "we want the kernel
-> instruction pointer for the call" model entirely, and consider this a
-> "legacy" issue.
->
-> The whole instruction pointer is a nasty thing. We should discourage
-> it and not make complex infrastructure for it.
 
-Yes, please.  I think we should strive for simplicity here.
+/*
+ * Is there any reason whatsoever to have _RET_IP_ an unsigned int
+ * rather than a pointer throughout?
+ */
 
->
-> Instead, maybe we could encourage something like
->
->   struct kernel_loc { const char *file; const char *fn; int line; };
->
->   #define __GEN_LOC__(n) \
->         ({ static const struct kernel_loc n = { \
->                 __FILE__, __FUNCTION__, __LINE__  \
->            }; &n; })
->
->   #define _THIS_LOC_ __GEN_LOC__(__UNIQUE_ID(loc))
->
-> which is a hell of a lot nicer to use, and actually allows gcc to
-> optimize things (try it: if you pass a _THIS_LOC_ off to an inline
-> function, and that inline function uses the name and line number, gcc
-> will pick them up directly, without the extra structure dereference.
->
-> Wouldn't it be much nicer to pass these kinds of "location pointer"
-> around, rather than the nasty _THIS_IP_ thing?
->
-> Certainly lockdep looks like it could easily take that "const struct
-> kernel_loc *" instead of "unsigned long ip". Makes it easy to print
-> out the lockdep info.
->
-> Ok, I didn't try to convert anybody, so maybe people who currently use
-> _THIS_IP_ or current_text_addr() have some fundamental reason why they
-> want just that, but let's not male _THIS_IP_ more complex than it
-> needs to be.
->
-> Hmm?
->
->              Linus
+#define _RET_IP_PTR_ \
+	__builtin_extract_return_addr(__builtin_return_addr(0))
+#define _RET_IP_ ((unsigned long)_RET_IP_PTR_)
 
-This is extremely reasonable.  I can follow up with the lockdep folks
-to see if they really need _THIS_IP_ to solve their problem, or if
-there's a simpler solution that can solve their needs.  Sometimes
-taking a step back and asking for clarity around the big picture
-allows simpler solutions to shake out.
--- 
-Thanks,
-~Nick Desaulniers
+On some architectures __builtin_extract_return_addr() is apparently
+necessary; its a nop on x86.  Why that isn't part of
+__builtin_return_addr() one can really wonder.
+
+So, checking into all of this, the generic _THIS_IP_ DOES NOT WORK on
+x86.  I have tried a tons of variants, including adding various asm
+volatile(...) instructions, and no matter what I do, it will always
+return the address of the surrounding function rather than any kind of
+local IP.  The only way to get a localized address seems to be in
+assembly, but even so, there is absolutely no guarantee that the value
+of _THIS_IP_ has anything to do with where the code is otherwise
+localized in the function.
+
+From examining the output of gcc, the fundamental problem seems to be
+that *no matter what* one do with the label, unless gcc actually
+produces a computed goto somewhere in the code, that it can't remove
+with dead-code elimination or constant propagation, it will arbitrarily
+hoist the labels all the way to the beginning of the function. Given
+that, I suspect that other versions of gcc might have similar problems.
+
+This is the closest thing to arch-neutral I have been able to find that
+also works on x86, while not at the same time horribly polluting the
+namespace:
+
+#define __here(n) ___here_ ## n
+#define __hereasm(n) ".L___here_" #n
+#define _THIS_IP_CTR_(n)					\
+	({							\
+		extern const char __here(n) asm(__hereasm(n));	\
+		asm volatile(__hereasm(n) ": /* _THIS_IP_ */"); \
+		(unsigned long)&__here(n);			\
+	})
+#define _THIS_IP_ _THIS_IP_CTR_(__COUNTER__)
+
+The use of asm volatile() to define a label means that the position in
+the instruction stream is at least reasonably well-defined.
+
+	-hpa
 
