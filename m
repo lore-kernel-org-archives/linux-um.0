@@ -1,108 +1,56 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from szxga04-in.huawei.com ([45.249.212.190] helo=huawei.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1flTkx-0000cT-Ld
- for linux-um@lists.infradead.org; Fri, 03 Aug 2018 06:40:13 +0000
-From: YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH] um: NULL check before kfree is not needed
-Date: Fri, 3 Aug 2018 14:39:11 +0800
-Message-ID: <20180803063911.23384-1-yuehaibing@huawei.com>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Wed, 29 Aug 2018 10:20:19 +0300
+From: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Subject: Re: [PATCH RESEND 0/7] switch several architectures NO_BOOTMEM
+References: <1533326330-31677-1-git-send-email-rppt@linux.vnet.ibm.com>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, christophe.jaillet@wanadoo.fr, keescook@chromium.org
-Cc: YueHaibing <yuehaibing@huawei.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1533326330-31677-1-git-send-email-rppt@linux.vnet.ibm.com>
+Message-Id: <20180829072019.GA13173@rapoport-lnx>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Richard Kuo <rkuo@codeaurora.org>, Ley Foon Tan <lftan@altera.com>, Richard Weinberger <richard@nod.at>, Guan Xuetao <gxt@pku.edu.cn>, Michal Hocko <mhocko@kernel.org>, linux-hexagon@vger.kernel.org, nios2-dev@lists.rocketboards.org, linux-um@lists.infradead.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-kfree(NULL) is safe,so this removes NULL check before freeing the mem
+Any updates on this?
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- arch/um/drivers/vector_kern.c | 15 +++++----------
- arch/um/drivers/vector_user.c |  6 ++----
- arch/um/kernel/irq.c          |  3 +--
- 3 files changed, 8 insertions(+), 16 deletions(-)
+On Fri, Aug 03, 2018 at 10:58:43PM +0300, Mike Rapoport wrote:
+> 
+> Hi,
+> 
+> These patches perform conversion to NO_BOOTMEM of hexagon, nios2, uml and
+> unicore32. The architecture maintainers have acked the patches, but, since
+> I've got no confirmation the patches are going through the arch tree I'd
+> appreciate if the set would be applied to the -mm tree.
+> 
+> Mike Rapoport (7):
+>   hexagon: switch to NO_BOOTMEM
+>   of: ignore sub-page memory regions
+>   nios2: use generic early_init_dt_add_memory_arch
+>   nios2: switch to NO_BOOTMEM
+>   um: setup_physmem: stop using global variables
+>   um: switch to NO_BOOTMEM
+>   unicore32: switch to NO_BOOTMEM
+> 
+>  arch/hexagon/Kconfig      |  3 +++
+>  arch/hexagon/mm/init.c    | 20 +++++++-----------
+>  arch/nios2/Kconfig        |  3 +++
+>  arch/nios2/kernel/prom.c  | 17 ---------------
+>  arch/nios2/kernel/setup.c | 39 ++++++----------------------------
+>  arch/um/Kconfig.common    |  2 ++
+>  arch/um/kernel/physmem.c  | 22 +++++++++----------
+>  arch/unicore32/Kconfig    |  1 +
+>  arch/unicore32/mm/init.c  | 54 +----------------------------------------------
+>  drivers/of/fdt.c          | 11 +++++-----
+>  10 files changed, 41 insertions(+), 131 deletions(-)
+> 
+> -- 
+> 2.7.4
+> 
 
-diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-index 50ee3bb..c84133c 100644
---- a/arch/um/drivers/vector_kern.c
-+++ b/arch/um/drivers/vector_kern.c
-@@ -1118,16 +1118,11 @@ static int vector_net_close(struct net_device *dev)
- 		os_close_file(vp->fds->tx_fd);
- 		vp->fds->tx_fd = -1;
- 	}
--	if (vp->bpf != NULL)
--		kfree(vp->bpf);
--	if (vp->fds->remote_addr != NULL)
--		kfree(vp->fds->remote_addr);
--	if (vp->transport_data != NULL)
--		kfree(vp->transport_data);
--	if (vp->header_rxbuffer != NULL)
--		kfree(vp->header_rxbuffer);
--	if (vp->header_txbuffer != NULL)
--		kfree(vp->header_txbuffer);
-+	kfree(vp->bpf);
-+	kfree(vp->fds->remote_addr);
-+	kfree(vp->transport_data);
-+	kfree(vp->header_rxbuffer);
-+	kfree(vp->header_txbuffer);
- 	if (vp->rx_queue != NULL)
- 		destroy_queue(vp->rx_queue);
- 	if (vp->tx_queue != NULL)
-diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
-index 4d6a78e..3d8cdbd 100644
---- a/arch/um/drivers/vector_user.c
-+++ b/arch/um/drivers/vector_user.c
-@@ -267,8 +267,7 @@ static struct vector_fds *user_init_raw_fds(struct arglist *ifspec)
- 		os_close_file(rxfd);
- 	if (txfd >= 0)
- 		os_close_file(txfd);
--	if (result != NULL)
--		kfree(result);
-+	kfree(result);
- 	return NULL;
- }
- 
-@@ -434,8 +433,7 @@ static struct vector_fds *user_init_socket_fds(struct arglist *ifspec, int id)
- 	if (fd >= 0)
- 		os_close_file(fd);
- 	if (result != NULL) {
--		if (result->remote_addr != NULL)
--			kfree(result->remote_addr);
-+		kfree(result->remote_addr);
- 		kfree(result);
- 	}
- 	return NULL;
-diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-index 6b7f382..8360fa3 100644
---- a/arch/um/kernel/irq.c
-+++ b/arch/um/kernel/irq.c
-@@ -244,8 +244,7 @@ static void garbage_collect_irq_entries(void)
- 			to_free = NULL;
- 		}
- 		walk = walk->next;
--		if (to_free != NULL)
--			kfree(to_free);
-+		kfree(to_free);
- 	}
- }
- 
 -- 
-2.7.0
+Sincerely yours,
+Mike.
 
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
