@@ -1,69 +1,129 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x443.google.com ([2607:f8b0:4864:20::443])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fx1Mh-0005ki-QP
- for linux-um@lists.infradead.org; Tue, 04 Sep 2018 02:46:53 +0000
-Received: by mail-pf1-x443.google.com with SMTP id d4-v6so925208pfn.0
- for <linux-um@lists.infradead.org>; Mon, 03 Sep 2018 19:46:46 -0700 (PDT)
-From: Jaejoong Kim <climbbb.kim@gmail.com>
-Subject: [PATCH 23/25] tty: vcc: Change return type to void
-Date: Tue,  4 Sep 2018 11:44:49 +0900
-Message-Id: <1536029091-4426-24-git-send-email-climbbb.kim@gmail.com>
-In-Reply-To: <1536029091-4426-1-git-send-email-climbbb.kim@gmail.com>
-References: <1536029091-4426-1-git-send-email-climbbb.kim@gmail.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Return-Path: <linux-sh-owner@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org, netdev@vger.kernel.org, linux-mmc@vger.kernel.org, linux-s390@vger.kernel.org, devel@driverdev.osuosl.org, greybus-dev@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-serial@vger.kernel.org, sparclinux@vger.kernel.org, linux-usb@vger.kernel.org, linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jslaby@suse.com>
+In-Reply-To: <s5h6004hokn.wl-tiwai@suse.de>
+References: <20180627143705.5a1fed1c@kitsune.suse.cz> <CAK7LNARVPNx_uC5xTrS_p9T4nMRTC79BO51T4Lytv2eU1c-ynw@mail.gmail.com>
+ <20180628111623.3807fe9b@naga.suse.cz> <CAK7LNARRKU7Mfa8ZBu1qPFYFRr-5k69sjVyERM2bYcnWoBDN8g@mail.gmail.com>
+ <20180806200725.4efa5d35@kitsune.suse.cz> <CAK7LNATCktToMui4NYxoUXV8ZbuDK8F0JCp_CysEWaSBPUP7NQ@mail.gmail.com>
+ <s5h6004hokn.wl-tiwai@suse.de>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Mon, 3 Sep 2018 19:23:05 +0900
+Message-ID: <CAK7LNATwJsYAm_VLZKJryD2zB5OHr9qVBg2mD4hyu+ieNd+r0A@mail.gmail.com>
+Subject: Re: due to kconfig changes kernel config file is no longer sufficient
+ for configuring the kernel
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Sender: linux-sh-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Andreas Schwab <schwab@suse.de>, Michal Kubecek <mkubecek@suse.cz>, Michal Marek <michal.lkml@markovi.net>, Jonathan Corbet <corbet@lwn.net>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, "David S. Miller" <davem@davemloft.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>, Philippe Ombredanne <pombredanne@nexb.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Ulf Magnusson <ulfalizer@gmail.com>, Jeff Mahoney <jeffm@suse.com>, "Peter Zijlstra," <peterz@infradead.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Frederic Weisbecker <frederic@kernel.org>, Randy Dunlap <rdunlap@infradead.org>, Dominik Brodowski <linux@dominikbrodowski.net>, Nicholas Piggin <npiggin@gmail.com>, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>, linux-um@lists.infradead.org
+List-ID: <linux-um.lists.infradead.org>
 
-Since tty_standard_install() always returns 0, the return type has changed
-to void. Now apply this and remove the obsolete error check.
-
-Signed-off-by: Jaejoong Kim <climbbb.kim@gmail.com>
----
- drivers/tty/vcc.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/drivers/tty/vcc.c b/drivers/tty/vcc.c
-index 58b454c..ce32631 100644
---- a/drivers/tty/vcc.c
-+++ b/drivers/tty/vcc.c
-@@ -987,7 +987,6 @@ static int vcc_install(struct tty_driver *driver, struct tty_struct *tty)
- {
- 	struct vcc_port *port_vcc;
- 	struct tty_port *port_tty;
--	int ret;
- 
- 	if (unlikely(!tty)) {
- 		pr_err("VCC: install: Invalid TTY handle\n");
-@@ -997,9 +996,7 @@ static int vcc_install(struct tty_driver *driver, struct tty_struct *tty)
- 	if (tty->index >= VCC_MAX_PORTS)
- 		return -EINVAL;
- 
--	ret = tty_standard_install(driver, tty);
--	if (ret)
--		return ret;
-+	tty_standard_install(driver, tty);
- 
- 	port_tty = kzalloc(sizeof(struct tty_port), GFP_KERNEL);
- 	if (!port_tty)
--- 
-2.7.4
+Hi.
 
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+2018-08-21 3:37 GMT+09:00 Takashi Iwai <tiwai@suse.de>:
+> On Mon, 20 Aug 2018 20:15:12 +0200,
+> Masahiro Yamada wrote:
+>>
+>> 2018-08-07 3:07 GMT+09:00 Michal Such=C3=A1nek <msuchanek@suse.de>:
+>> > On Mon, 30 Jul 2018 17:02:42 +0900
+>> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+>> >
+>> >> 2018-06-28 18:16 GMT+09:00 Michal Such=C3=A1nek <msuchanek@suse.de>:
+>> >> > On Wed, 27 Jun 2018 23:07:21 +0900
+>> >> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+>> >> >
+>> >> >> Hi.
+>> >> >>
+>> >> >>
+>> >> >> 2018-06-27 21:37 GMT+09:00 Michal Such=C3=A1nek <msuchanek@suse.de=
+>:
+>> >> >> > Hello,
+>> >> >> >
+>> >> >> > in the x86 Kconfig we have this:
+>> >> >> >
+>> >> >> > # Select 32 or 64 bit
+>> >> >> > config 64BIT
+>> >> >> >         bool "64-bit kernel" if "$(ARCH)" =3D "x86"
+>> >> >> >         default "$(ARCH)" !=3D "i386"
+>> >> >> >         ---help---
+>> >> >> >           Say yes to build a 64-bit kernel - formerly known as
+>> >> >> > x86_64 Say no to build a 32-bit kernel - formerly known as i386
+>> >> >> >
+>> >> >> > Since commit 104daea149c4 ("kconfig: reference environment
+>> >> >> > variables directly and remove 'option env=3D'") the value of ARC=
+H
+>> >> >> > is not saved in the kernel config.
+>> >> >>
+>> >> >> I think this commit is unrelated.  It was just a syntax change.
+>> >> >
+>> >> > This does not look like syntax only change to me:
+>> >> >
+>> >> > diff --git a/init/Kconfig b/init/Kconfig
+>> >> > index 15aae32e0719..1217fc62ca61 100644
+>> >> > --- a/init/Kconfig
+>> >> > +++ b/init/Kconfig
+>> >> > @@ -1,20 +1,12 @@
+>> >> > -config ARCH
+>> >> > -       string
+>> >> > -       option env=3D"ARCH"
+>> >> > -
+>> >> > -config KERNELVERSION
+>> >> > -       string
+>> >> > -       option env=3D"KERNELVERSION"
+>> >> > -
+>> >>
+>> >> This is just syntax change.
+>> >>
+>> >> 'option env=3D' was used to reference an environment variable.
+>> >>
+>> >> Now, $(ARCH), $(KERNELVERSION) are simpler forms.
+>> >>
+>> >>
+>> >> >>
+>> >> >> Unless I am missing something,
+>> >> >> we have never saved ARCH in the .config in the past.
+>> >> >
+>> >> > There was a config symbol defined for it before the commit removed
+>> >> > it.
+>> >>
+>> >> No.
+>> >>
+>> >> CONFIG symbols with'option env=3D'
+>> >> are not written out to the .config file.
+>> >>
+>> >> We have never had CONFIG_ARCH or CONFIG_KERNELVERSION.
+>
+> Maybe it sounds like a stupid question, but...
+> if passing ARCH=3D is almost mandatory for distinguishing the bi-arch or
+> cross-compile cases, why don't we save it in .config?
+
+
+The .config may not exist, may not be loaded.
+
+For "make help", "make headers_install" etc.
+ARCH needs be given from the command line anyway.
+
+I do not want to obscure "when to pass ARCH".
+
+
+> The whole "regression" we've seen can be worked around by passing
+> ARCH at each time.  So, by having it in .config, everything would work
+> more easily, no?
+
+
+Recording ARCH in .config does not solve the problem
+because the .config contents depend on the compiler.
+
+
+>
+>
+> thanks,
+>
+> Takashi
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
