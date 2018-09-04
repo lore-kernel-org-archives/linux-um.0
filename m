@@ -1,52 +1,62 @@
-Return-Path: <rppt@linux.vnet.ibm.com>
-From: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: [PATCH 15/30] memblock: replace alloc_bootmem_pages_node with memblock_alloc_node
-Date: Fri, 14 Sep 2018 15:10:30 +0300
-In-Reply-To: <1536927045-23536-1-git-send-email-rppt@linux.vnet.ibm.com>
-References: <1536927045-23536-1-git-send-email-rppt@linux.vnet.ibm.com>
-Message-Id: <1536927045-23536-16-git-send-email-rppt@linux.vnet.ibm.com>
-To: linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guan Xuetao <gxt@pku.edu.cn>, Ingo Molnar <mingo@redhat.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Jonas Bonn <jonas@southpole.se>, Jonathan Corbet <corbet@lwn.net>, Ley Foon Tan <lftan@altera.com>, Mark Salter <msalter@redhat.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Matt Turner <mattst88@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@suse.com>, Michal Simek <monstr@monstr.eu>, Palmer Dabbelt <palmer@sifive.com>, Paul Burton <paul.burton@mips.com>, Richard Kuo <rkuo@codeaurora.org>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, Serge Semin <fancer.lancer@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, Mike Rapoport <rppt@linux.vnet.ibm.com>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pf1-x443.google.com ([2607:f8b0:4864:20::443])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fx1Lx-0005Rv-8j
+ for linux-um@lists.infradead.org; Tue, 04 Sep 2018 02:46:06 +0000
+Received: by mail-pf1-x443.google.com with SMTP id k21-v6so895605pff.11
+ for <linux-um@lists.infradead.org>; Mon, 03 Sep 2018 19:45:55 -0700 (PDT)
+From: Jaejoong Kim <climbbb.kim@gmail.com>
+Subject: [PATCH 12/25] tty: vt: Change return type to void
+Date: Tue,  4 Sep 2018 11:44:38 +0900
+Message-Id: <1536029091-4426-13-git-send-email-climbbb.kim@gmail.com>
+In-Reply-To: <1536029091-4426-1-git-send-email-climbbb.kim@gmail.com>
+References: <1536029091-4426-1-git-send-email-climbbb.kim@gmail.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org, netdev@vger.kernel.org, linux-mmc@vger.kernel.org, linux-s390@vger.kernel.org, devel@driverdev.osuosl.org, greybus-dev@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-serial@vger.kernel.org, sparclinux@vger.kernel.org, linux-usb@vger.kernel.org, linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jslaby@suse.com>
 
-The functions are equivalent, just the later does not require nobootmem
-translation layer.
+Since tty_port_install() always returns 0, the return type has changed
+to void. Now apply this and remove the obsolete error check.
 
-Signed-off-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
+Signed-off-by: Jaejoong Kim <climbbb.kim@gmail.com>
 ---
- arch/ia64/mm/init.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/tty/vt/vt.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/arch/ia64/mm/init.c b/arch/ia64/mm/init.c
-index 3b85c3e..2169ca5 100644
---- a/arch/ia64/mm/init.c
-+++ b/arch/ia64/mm/init.c
-@@ -447,19 +447,19 @@ int __init create_mem_map_page_table(u64 start, u64 end, void *arg)
- 	for (address = start_page; address < end_page; address += PAGE_SIZE) {
- 		pgd = pgd_offset_k(address);
- 		if (pgd_none(*pgd))
--			pgd_populate(&init_mm, pgd, alloc_bootmem_pages_node(NODE_DATA(node), PAGE_SIZE));
-+			pgd_populate(&init_mm, pgd, memblock_alloc_node(PAGE_SIZE, PAGE_SIZE, node));
- 		pud = pud_offset(pgd, address);
- 
- 		if (pud_none(*pud))
--			pud_populate(&init_mm, pud, alloc_bootmem_pages_node(NODE_DATA(node), PAGE_SIZE));
-+			pud_populate(&init_mm, pud, memblock_alloc_node(PAGE_SIZE, PAGE_SIZE, node));
- 		pmd = pmd_offset(pud, address);
- 
- 		if (pmd_none(*pmd))
--			pmd_populate_kernel(&init_mm, pmd, alloc_bootmem_pages_node(NODE_DATA(node), PAGE_SIZE));
-+			pmd_populate_kernel(&init_mm, pmd, memblock_alloc_node(PAGE_SIZE, PAGE_SIZE, node));
- 		pte = pte_offset_kernel(pmd, address);
- 
- 		if (pte_none(*pte))
--			set_pte(pte, pfn_pte(__pa(alloc_bootmem_pages_node(NODE_DATA(node), PAGE_SIZE)) >> PAGE_SHIFT,
-+			set_pte(pte, pfn_pte(__pa(memblock_alloc_node(PAGE_SIZE, PAGE_SIZE, node)) >> PAGE_SHIFT,
- 					     PAGE_KERNEL));
+diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
+index 5f1183b..cc72254 100644
+--- a/drivers/tty/vt/vt.c
++++ b/drivers/tty/vt/vt.c
+@@ -3222,10 +3222,7 @@ static int con_install(struct tty_driver *driver, struct tty_struct *tty)
+ 		goto unlock;
  	}
- 	return 0;
+ 
+-	ret = tty_port_install(&vc->port, driver, tty);
+-	if (ret)
+-		goto unlock;
+-
++	tty_port_install(&vc->port, driver, tty);
+ 	tty->driver_data = vc;
+ 	vc->port.tty = tty;
+ 
 -- 
 2.7.4
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
