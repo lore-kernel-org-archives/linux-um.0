@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x541.google.com ([2607:f8b0:4864:20::541])
+Received: from mail-pf1-x442.google.com ([2607:f8b0:4864:20::442])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fx1Ls-0005Ts-Gj
- for linux-um@lists.infradead.org; Tue, 04 Sep 2018 02:46:02 +0000
-Received: by mail-pg1-x541.google.com with SMTP id x26-v6so872682pge.12
- for <linux-um@lists.infradead.org>; Mon, 03 Sep 2018 19:46:00 -0700 (PDT)
+ id 1fx1MY-0005fz-Dx
+ for linux-um@lists.infradead.org; Tue, 04 Sep 2018 02:46:43 +0000
+Received: by mail-pf1-x442.google.com with SMTP id b11-v6so916750pfo.3
+ for <linux-um@lists.infradead.org>; Mon, 03 Sep 2018 19:46:32 -0700 (PDT)
 From: Jaejoong Kim <climbbb.kim@gmail.com>
-Subject: [PATCH 13/25] usb: xhci: dbc: Change return type to void
-Date: Tue,  4 Sep 2018 11:44:39 +0900
-Message-Id: <1536029091-4426-14-git-send-email-climbbb.kim@gmail.com>
+Subject: [PATCH 20/25] staging: gdm724x: gdm_tty: Change return type to void
+Date: Tue,  4 Sep 2018 11:44:46 +0900
+Message-Id: <1536029091-4426-21-git-send-email-climbbb.kim@gmail.com>
 In-Reply-To: <1536029091-4426-1-git-send-email-climbbb.kim@gmail.com>
 References: <1536029091-4426-1-git-send-email-climbbb.kim@gmail.com>
 List-Id: <linux-um.lists.infradead.org>
@@ -27,29 +27,44 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org, netdev@vger.kernel.org, linux-mmc@vger.kernel.org, linux-s390@vger.kernel.org, devel@driverdev.osuosl.org, greybus-dev@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-serial@vger.kernel.org, sparclinux@vger.kernel.org, linux-usb@vger.kernel.org, linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jslaby@suse.com>
 
-Since tty_port_install() always returns 0, the return type has changed
+Since tty_standard_install() always returns 0, the return type has changed
 to void. Now apply this and remove the obsolete error check.
 
 Signed-off-by: Jaejoong Kim <climbbb.kim@gmail.com>
 ---
- drivers/usb/host/xhci-dbgtty.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/staging/gdm724x/gdm_tty.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/usb/host/xhci-dbgtty.c b/drivers/usb/host/xhci-dbgtty.c
-index aff79ff..18d661c 100644
---- a/drivers/usb/host/xhci-dbgtty.c
-+++ b/drivers/usb/host/xhci-dbgtty.c
-@@ -174,8 +174,9 @@ static int dbc_tty_install(struct tty_driver *driver, struct tty_struct *tty)
- 	struct dbc_port		*port = driver->driver_state;
+diff --git a/drivers/staging/gdm724x/gdm_tty.c b/drivers/staging/gdm724x/gdm_tty.c
+index 6e81369..d6348df 100644
+--- a/drivers/staging/gdm724x/gdm_tty.c
++++ b/drivers/staging/gdm724x/gdm_tty.c
+@@ -62,6 +62,7 @@ static int gdm_tty_install(struct tty_driver *driver, struct tty_struct *tty)
+ 		return -ENODEV;
  
- 	tty->driver_data = port;
-+	tty_port_install(&port->port, driver, tty);
+ 	mutex_lock(&gdm_table_lock);
++
+ 	gdm = gdm_table[ret][tty->index];
+ 	if (!gdm) {
+ 		mutex_unlock(&gdm_table_lock);
+@@ -69,15 +70,9 @@ static int gdm_tty_install(struct tty_driver *driver, struct tty_struct *tty)
+ 	}
  
--	return tty_port_install(&port->port, driver, tty);
-+	return 0;
- }
+ 	tty_port_get(&gdm->port);
+-
+-	ret = tty_standard_install(driver, tty);
+-	if (ret) {
+-		tty_port_put(&gdm->port);
+-		mutex_unlock(&gdm_table_lock);
+-		return ret;
+-	}
+-
++	tty_standard_install(driver, tty);
+ 	tty->driver_data = gdm;
++
+ 	mutex_unlock(&gdm_table_lock);
  
- static int dbc_tty_open(struct tty_struct *tty, struct file *file)
+ 	return 0;
 -- 
 2.7.4
 
