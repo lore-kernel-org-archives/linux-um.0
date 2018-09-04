@@ -1,364 +1,74 @@
-Return-Path: <rppt@linux.vnet.ibm.com>
-From: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: [PATCH 01/30] mips: switch to NO_BOOTMEM
-Date: Fri, 14 Sep 2018 15:10:16 +0300
-In-Reply-To: <1536927045-23536-1-git-send-email-rppt@linux.vnet.ibm.com>
-References: <1536927045-23536-1-git-send-email-rppt@linux.vnet.ibm.com>
-Message-Id: <1536927045-23536-2-git-send-email-rppt@linux.vnet.ibm.com>
-To: linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guan Xuetao <gxt@pku.edu.cn>, Ingo Molnar <mingo@redhat.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Jonas Bonn <jonas@southpole.se>, Jonathan Corbet <corbet@lwn.net>, Ley Foon Tan <lftan@altera.com>, Mark Salter <msalter@redhat.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Matt Turner <mattst88@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@suse.com>, Michal Simek <monstr@monstr.eu>, Palmer Dabbelt <palmer@sifive.com>, Paul Burton <paul.burton@mips.com>, Richard Kuo <rkuo@codeaurora.org>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, Serge Semin <fancer.lancer@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, Mike Rapoport <rppt@linux.vnet.ibm.com>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pl1-x641.google.com ([2607:f8b0:4864:20::641])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fx1Lf-0005LF-2c
+ for linux-um@lists.infradead.org; Tue, 04 Sep 2018 02:45:48 +0000
+Received: by mail-pl1-x641.google.com with SMTP id d9-v6so899383plr.2
+ for <linux-um@lists.infradead.org>; Mon, 03 Sep 2018 19:45:36 -0700 (PDT)
+From: Jaejoong Kim <climbbb.kim@gmail.com>
+Subject: [PATCH 08/25] tty: n_gsm: Change return type to void
+Date: Tue,  4 Sep 2018 11:44:34 +0900
+Message-Id: <1536029091-4426-9-git-send-email-climbbb.kim@gmail.com>
+In-Reply-To: <1536029091-4426-1-git-send-email-climbbb.kim@gmail.com>
+References: <1536029091-4426-1-git-send-email-climbbb.kim@gmail.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org, netdev@vger.kernel.org, linux-mmc@vger.kernel.org, linux-s390@vger.kernel.org, devel@driverdev.osuosl.org, greybus-dev@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-serial@vger.kernel.org, sparclinux@vger.kernel.org, linux-usb@vger.kernel.org, linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jslaby@suse.com>
 
-MIPS already has memblock support and all the memory is already registered
-with it.
+Since tty_port_install() always returns 0, the return type has changed
+to void. Now apply this and remove the obsolete error check.
 
-This patch replaces bootmem memory reservations with memblock ones and
-removes the bootmem initialization.
-
-Since memblock allocates memory in top-down mode, we ensure that memblock
-limit is max_low_pfn to prevent allocations from the high memory.
-
-To have the exceptions base in the lower 512M of the physical memory, its
-allocation in arch/mips/kernel/traps.c::traps_init() is using bottom-up
-mode.
-
-Signed-off-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Signed-off-by: Jaejoong Kim <climbbb.kim@gmail.com>
 ---
- arch/mips/Kconfig                      |  1 +
- arch/mips/kernel/setup.c               | 99 ++++++++--------------------------
- arch/mips/kernel/traps.c               |  3 ++
- arch/mips/loongson64/loongson-3/numa.c | 34 ++++++------
- arch/mips/sgi-ip27/ip27-memory.c       | 11 ++--
- 5 files changed, 46 insertions(+), 102 deletions(-)
+ drivers/tty/n_gsm.c | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 54532f2..1b5fa1a 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -78,6 +78,7 @@ config MIPS
- 	select RTC_LIB
- 	select SYSCTL_EXCEPTION_TRACE
- 	select VIRT_TO_BUS
-+	select NO_BOOTMEM
+diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
+index 86b7e20..c52fa2d 100644
+--- a/drivers/tty/n_gsm.c
++++ b/drivers/tty/n_gsm.c
+@@ -2917,7 +2917,6 @@ static int gsmtty_install(struct tty_driver *driver, struct tty_struct *tty)
+ 	unsigned int line = tty->index;
+ 	unsigned int mux = line >> 6;
+ 	bool alloc = false;
+-	int ret;
  
- menu "Machine selection"
+ 	line = line & 0x3F;
  
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index 32fc11d..2fde53e 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -333,7 +333,7 @@ static void __init finalize_initrd(void)
- 
- 	maybe_bswap_initrd();
- 
--	reserve_bootmem(__pa(initrd_start), size, BOOTMEM_DEFAULT);
-+	memblock_reserve(__pa(initrd_start), size);
- 	initrd_below_start_ok = 1;
- 
- 	pr_info("Initial ramdisk at: 0x%lx (%lu bytes)\n",
-@@ -370,20 +370,10 @@ static void __init bootmem_init(void)
- 
- #else  /* !CONFIG_SGI_IP27 */
- 
--static unsigned long __init bootmap_bytes(unsigned long pages)
--{
--	unsigned long bytes = DIV_ROUND_UP(pages, 8);
--
--	return ALIGN(bytes, sizeof(long));
--}
--
- static void __init bootmem_init(void)
- {
- 	unsigned long reserved_end;
--	unsigned long mapstart = ~0UL;
--	unsigned long bootmap_size;
- 	phys_addr_t ramstart = PHYS_ADDR_MAX;
--	bool bootmap_valid = false;
- 	int i;
- 
- 	/*
-@@ -395,6 +385,8 @@ static void __init bootmem_init(void)
- 	init_initrd();
- 	reserved_end = (unsigned long) PFN_UP(__pa_symbol(&_end));
- 
-+	memblock_reserve(PHYS_OFFSET, reserved_end << PAGE_SHIFT);
-+
- 	/*
- 	 * max_low_pfn is not a number of pages. The number of pages
- 	 * of the system is given by 'max_low_pfn - min_low_pfn'.
-@@ -442,9 +434,6 @@ static void __init bootmem_init(void)
- 		if (initrd_end && end <= (unsigned long)PFN_UP(__pa(initrd_end)))
- 			continue;
- #endif
--		if (start >= mapstart)
--			continue;
--		mapstart = max(reserved_end, start);
+@@ -2949,14 +2948,8 @@ static int gsmtty_install(struct tty_driver *driver, struct tty_struct *tty)
+ 		mutex_unlock(&gsm->mutex);
+ 		return -ENOMEM;
  	}
- 
- 	if (min_low_pfn >= max_low_pfn)
-@@ -456,9 +445,11 @@ static void __init bootmem_init(void)
- 	/*
- 	 * Reserve any memory between the start of RAM and PHYS_OFFSET
- 	 */
--	if (ramstart > PHYS_OFFSET)
-+	if (ramstart > PHYS_OFFSET) {
- 		add_memory_region(PHYS_OFFSET, ramstart - PHYS_OFFSET,
- 				  BOOT_MEM_RESERVED);
-+		memblock_reserve(PHYS_OFFSET, ramstart - PHYS_OFFSET);
-+	}
- 
- 	if (min_low_pfn > ARCH_PFN_OFFSET) {
- 		pr_info("Wasting %lu bytes for tracking %lu unused pages\n",
-@@ -483,52 +474,6 @@ static void __init bootmem_init(void)
- 		max_low_pfn = PFN_DOWN(HIGHMEM_START);
- 	}
- 
--#ifdef CONFIG_BLK_DEV_INITRD
--	/*
--	 * mapstart should be after initrd_end
--	 */
--	if (initrd_end)
--		mapstart = max(mapstart, (unsigned long)PFN_UP(__pa(initrd_end)));
--#endif
--
--	/*
--	 * check that mapstart doesn't overlap with any of
--	 * memory regions that have been reserved through eg. DTB
--	 */
--	bootmap_size = bootmap_bytes(max_low_pfn - min_low_pfn);
--
--	bootmap_valid = memory_region_available(PFN_PHYS(mapstart),
--						bootmap_size);
--	for (i = 0; i < boot_mem_map.nr_map && !bootmap_valid; i++) {
--		unsigned long mapstart_addr;
--
--		switch (boot_mem_map.map[i].type) {
--		case BOOT_MEM_RESERVED:
--			mapstart_addr = PFN_ALIGN(boot_mem_map.map[i].addr +
--						boot_mem_map.map[i].size);
--			if (PHYS_PFN(mapstart_addr) < mapstart)
--				break;
--
--			bootmap_valid = memory_region_available(mapstart_addr,
--								bootmap_size);
--			if (bootmap_valid)
--				mapstart = PHYS_PFN(mapstart_addr);
--			break;
--		default:
--			break;
--		}
+-	ret = tty_port_install(&dlci->port, driver, tty);
+-	if (ret) {
+-		if (alloc)
+-			dlci_put(dlci);
+-		mutex_unlock(&gsm->mutex);
+-		return ret;
 -	}
--
--	if (!bootmap_valid)
--		panic("No memory area to place a bootmap bitmap");
--
--	/*
--	 * Initialize the boot-time allocator with low memory only.
--	 */
--	if (bootmap_size != init_bootmem_node(NODE_DATA(0), mapstart,
--					 min_low_pfn, max_low_pfn))
--		panic("Unexpected memory size required for bootmap");
--
- 	for (i = 0; i < boot_mem_map.nr_map; i++) {
- 		unsigned long start, end;
  
-@@ -577,9 +522,9 @@ static void __init bootmem_init(void)
- 		default:
- 			/* Not usable memory */
- 			if (start > min_low_pfn && end < max_low_pfn)
--				reserve_bootmem(boot_mem_map.map[i].addr,
--						boot_mem_map.map[i].size,
--						BOOTMEM_DEFAULT);
-+				memblock_reserve(boot_mem_map.map[i].addr,
-+						boot_mem_map.map[i].size);
-+
- 			continue;
- 		}
- 
-@@ -602,15 +547,9 @@ static void __init bootmem_init(void)
- 		size = end - start;
- 
- 		/* Register lowmem ranges */
--		free_bootmem(PFN_PHYS(start), size << PAGE_SHIFT);
- 		memory_present(0, start, end);
- 	}
- 
--	/*
--	 * Reserve the bootmap memory.
--	 */
--	reserve_bootmem(PFN_PHYS(mapstart), bootmap_size, BOOTMEM_DEFAULT);
--
- #ifdef CONFIG_RELOCATABLE
- 	/*
- 	 * The kernel reserves all memory below its _end symbol as bootmem,
-@@ -907,21 +846,29 @@ static void __init arch_mem_init(char **cmdline_p)
- 	early_init_fdt_scan_reserved_mem();
- 
- 	bootmem_init();
-+
-+	/*
-+	 * Prevent memblock from allocating high memory.
-+	 * This cannot be done before max_low_pfn is detected, so up
-+	 * to this point is possible to only reserve physical memory
-+	 * with memblock_reserve; memblock_virt_alloc* can be used
-+	 * only after this point
-+	 */
-+	memblock_set_current_limit(PFN_PHYS(max_low_pfn));
-+
- #ifdef CONFIG_PROC_VMCORE
- 	if (setup_elfcorehdr && setup_elfcorehdr_size) {
- 		printk(KERN_INFO "kdump reserved memory at %lx-%lx\n",
- 		       setup_elfcorehdr, setup_elfcorehdr_size);
--		reserve_bootmem(setup_elfcorehdr, setup_elfcorehdr_size,
--				BOOTMEM_DEFAULT);
-+		memblock_reserve(setup_elfcorehdr, setup_elfcorehdr_size);
- 	}
- #endif
- 
- 	mips_parse_crashkernel();
- #ifdef CONFIG_KEXEC
- 	if (crashk_res.start != crashk_res.end)
--		reserve_bootmem(crashk_res.start,
--				crashk_res.end - crashk_res.start + 1,
--				BOOTMEM_DEFAULT);
-+		memblock_reserve(crashk_res.start,
-+				 crashk_res.end - crashk_res.start + 1);
- #endif
- 	device_tree_init();
- 	sparse_init();
-@@ -931,7 +878,7 @@ static void __init arch_mem_init(char **cmdline_p)
- 	/* Tell bootmem about cma reserved memblock section */
- 	for_each_memblock(reserved, reg)
- 		if (reg->size != 0)
--			reserve_bootmem(reg->base, reg->size, BOOTMEM_DEFAULT);
-+			memblock_reserve(reg->base, reg->size);
- 
- 	reserve_bootmem_region(__pa_symbol(&__nosave_begin),
- 			__pa_symbol(&__nosave_end)); /* Reserve for hibernation */
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 576aeef..5feef28 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -29,6 +29,7 @@
- #include <linux/spinlock.h>
- #include <linux/kallsyms.h>
- #include <linux/bootmem.h>
-+#include <linux/memblock.h>
- #include <linux/interrupt.h>
- #include <linux/ptrace.h>
- #include <linux/kgdb.h>
-@@ -2260,8 +2261,10 @@ void __init trap_init(void)
- 		unsigned long size = 0x200 + VECTORSPACING*64;
- 		phys_addr_t ebase_pa;
- 
-+		memblock_set_bottom_up(true);
- 		ebase = (unsigned long)
- 			__alloc_bootmem(size, 1 << fls(size), 0);
-+		memblock_set_bottom_up(false);
- 
- 		/*
- 		 * Try to ensure ebase resides in KSeg0 if possible.
-diff --git a/arch/mips/loongson64/loongson-3/numa.c b/arch/mips/loongson64/loongson-3/numa.c
-index 9717106..c1e6ec5 100644
---- a/arch/mips/loongson64/loongson-3/numa.c
-+++ b/arch/mips/loongson64/loongson-3/numa.c
-@@ -180,43 +180,39 @@ static void __init szmem(unsigned int node)
- 
- static void __init node_mem_init(unsigned int node)
- {
--	unsigned long bootmap_size;
- 	unsigned long node_addrspace_offset;
--	unsigned long start_pfn, end_pfn, freepfn;
-+	unsigned long start_pfn, end_pfn;
- 
- 	node_addrspace_offset = nid_to_addroffset(node);
- 	pr_info("Node%d's addrspace_offset is 0x%lx\n",
- 			node, node_addrspace_offset);
- 
- 	get_pfn_range_for_nid(node, &start_pfn, &end_pfn);
--	freepfn = start_pfn;
--	if (node == 0)
--		freepfn = PFN_UP(__pa_symbol(&_end)); /* kernel end address */
--	pr_info("Node%d: start_pfn=0x%lx, end_pfn=0x%lx, freepfn=0x%lx\n",
--		node, start_pfn, end_pfn, freepfn);
-+	pr_info("Node%d: start_pfn=0x%lx, end_pfn=0x%lx\n",
-+		node, start_pfn, end_pfn);
- 
- 	__node_data[node] = prealloc__node_data + node;
- 
--	NODE_DATA(node)->bdata = &bootmem_node_data[node];
- 	NODE_DATA(node)->node_start_pfn = start_pfn;
- 	NODE_DATA(node)->node_spanned_pages = end_pfn - start_pfn;
- 
--	bootmap_size = init_bootmem_node(NODE_DATA(node), freepfn,
--					start_pfn, end_pfn);
- 	free_bootmem_with_active_regions(node, end_pfn);
--	if (node == 0) /* used by finalize_initrd() */
-+
-+	if (node == 0) {
-+		/* kernel end address */
-+		unsigned long kernel_end_pfn = PFN_UP(__pa_symbol(&_end));
-+
-+		/* used by finalize_initrd() */
- 		max_low_pfn = end_pfn;
- 
--	/* This is reserved for the kernel and bdata->node_bootmem_map */
--	reserve_bootmem_node(NODE_DATA(node), start_pfn << PAGE_SHIFT,
--		((freepfn - start_pfn) << PAGE_SHIFT) + bootmap_size,
--		BOOTMEM_DEFAULT);
-+		/* Reserve the kernel text/data/bss */
-+		memblock_reserve(start_pfn << PAGE_SHIFT,
-+				 ((kernel_end_pfn - start_pfn) << PAGE_SHIFT));
- 
--	if (node == 0 && node_end_pfn(0) >= (0xffffffff >> PAGE_SHIFT)) {
- 		/* Reserve 0xfe000000~0xffffffff for RS780E integrated GPU */
--		reserve_bootmem_node(NODE_DATA(node),
--				(node_addrspace_offset | 0xfe000000),
--				32 << 20, BOOTMEM_DEFAULT);
-+		if (node_end_pfn(0) >= (0xffffffff >> PAGE_SHIFT))
-+			memblock_reserve((node_addrspace_offset | 0xfe000000),
-+					 32 << 20);
- 	}
- 
- 	sparse_memory_present_with_active_regions(node);
-diff --git a/arch/mips/sgi-ip27/ip27-memory.c b/arch/mips/sgi-ip27/ip27-memory.c
-index 59133d0a..6f7bef0 100644
---- a/arch/mips/sgi-ip27/ip27-memory.c
-+++ b/arch/mips/sgi-ip27/ip27-memory.c
-@@ -389,7 +389,6 @@ static void __init node_mem_init(cnodeid_t node)
- {
- 	unsigned long slot_firstpfn = slot_getbasepfn(node, 0);
- 	unsigned long slot_freepfn = node_getfirstfree(node);
--	unsigned long bootmap_size;
- 	unsigned long start_pfn, end_pfn;
- 
- 	get_pfn_range_for_nid(node, &start_pfn, &end_pfn);
-@@ -400,7 +399,6 @@ static void __init node_mem_init(cnodeid_t node)
- 	__node_data[node] = __va(slot_freepfn << PAGE_SHIFT);
- 	memset(__node_data[node], 0, PAGE_SIZE);
- 
--	NODE_DATA(node)->bdata = &bootmem_node_data[node];
- 	NODE_DATA(node)->node_start_pfn = start_pfn;
- 	NODE_DATA(node)->node_spanned_pages = end_pfn - start_pfn;
- 
-@@ -409,12 +407,11 @@ static void __init node_mem_init(cnodeid_t node)
- 	slot_freepfn += PFN_UP(sizeof(struct pglist_data) +
- 			       sizeof(struct hub_data));
- 
--	bootmap_size = init_bootmem_node(NODE_DATA(node), slot_freepfn,
--					start_pfn, end_pfn);
- 	free_bootmem_with_active_regions(node, end_pfn);
--	reserve_bootmem_node(NODE_DATA(node), slot_firstpfn << PAGE_SHIFT,
--		((slot_freepfn - slot_firstpfn) << PAGE_SHIFT) + bootmap_size,
--		BOOTMEM_DEFAULT);
-+
-+	memblock_reserve(slot_firstpfn << PAGE_SHIFT,
-+			 ((slot_freepfn - slot_firstpfn) << PAGE_SHIFT));
-+
- 	sparse_memory_present_with_active_regions(node);
- }
- 
++	tty_port_install(&dlci->port, driver, tty);
+ 	dlci_get(dlci);
+ 	dlci_get(gsm->dlci[0]);
+ 	mux_get(gsm);
 -- 
 2.7.4
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
