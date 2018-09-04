@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
+Received: from mail-pl1-x644.google.com ([2607:f8b0:4864:20::644])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fx1M6-0005Vh-AN
- for linux-um@lists.infradead.org; Tue, 04 Sep 2018 02:46:15 +0000
-Received: by mail-pf1-x444.google.com with SMTP id k21-v6so895751pff.11
- for <linux-um@lists.infradead.org>; Mon, 03 Sep 2018 19:46:04 -0700 (PDT)
+ id 1fx1Md-0005i7-8Z
+ for linux-um@lists.infradead.org; Tue, 04 Sep 2018 02:46:48 +0000
+Received: by mail-pl1-x644.google.com with SMTP id g23-v6so879438plq.9
+ for <linux-um@lists.infradead.org>; Mon, 03 Sep 2018 19:46:37 -0700 (PDT)
 From: Jaejoong Kim <climbbb.kim@gmail.com>
-Subject: [PATCH 14/25] Bluetooth: Change return type to void
-Date: Tue,  4 Sep 2018 11:44:40 +0900
-Message-Id: <1536029091-4426-15-git-send-email-climbbb.kim@gmail.com>
+Subject: [PATCH 21/25] staging: greybus: uart: Change return type to void
+Date: Tue,  4 Sep 2018 11:44:47 +0900
+Message-Id: <1536029091-4426-22-git-send-email-climbbb.kim@gmail.com>
 In-Reply-To: <1536029091-4426-1-git-send-email-climbbb.kim@gmail.com>
 References: <1536029091-4426-1-git-send-email-climbbb.kim@gmail.com>
 List-Id: <linux-um.lists.infradead.org>
@@ -27,39 +27,42 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org, netdev@vger.kernel.org, linux-mmc@vger.kernel.org, linux-s390@vger.kernel.org, devel@driverdev.osuosl.org, greybus-dev@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-serial@vger.kernel.org, sparclinux@vger.kernel.org, linux-usb@vger.kernel.org, linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jslaby@suse.com>
 
-Since tty_port_install() always returns 0, the return type has changed
+Since tty_standard_install() always returns 0, the return type has changed
 to void. Now apply this and remove the obsolete error check.
 
 Signed-off-by: Jaejoong Kim <climbbb.kim@gmail.com>
 ---
- net/bluetooth/rfcomm/tty.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/staging/greybus/uart.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
-diff --git a/net/bluetooth/rfcomm/tty.c b/net/bluetooth/rfcomm/tty.c
-index 5e44d84..b654420 100644
---- a/net/bluetooth/rfcomm/tty.c
-+++ b/net/bluetooth/rfcomm/tty.c
-@@ -710,7 +710,6 @@ static int rfcomm_tty_install(struct tty_driver *driver, struct tty_struct *tty)
+diff --git a/drivers/staging/greybus/uart.c b/drivers/staging/greybus/uart.c
+index 8a00632..182155b 100644
+--- a/drivers/staging/greybus/uart.c
++++ b/drivers/staging/greybus/uart.c
+@@ -393,21 +393,15 @@ static void release_minor(struct gb_tty *gb_tty)
+ static int gb_tty_install(struct tty_driver *driver, struct tty_struct *tty)
  {
- 	struct rfcomm_dev *dev;
- 	struct rfcomm_dlc *dlc;
--	int err;
+ 	struct gb_tty *gb_tty;
+-	int retval;
  
- 	dev = rfcomm_dev_get(tty->index);
- 	if (!dev)
-@@ -725,11 +724,7 @@ static int rfcomm_tty_install(struct tty_driver *driver, struct tty_struct *tty)
- 	set_bit(RFCOMM_TTY_ATTACHED, &dev->flags);
+ 	gb_tty = get_gb_by_minor(tty->index);
+ 	if (!gb_tty)
+ 		return -ENODEV;
  
- 	/* install the tty_port */
--	err = tty_port_install(&dev->port, driver, tty);
--	if (err) {
--		rfcomm_tty_cleanup(tty);
--		return err;
--	}
-+	tty_port_install(&dev->port, driver, tty);
+-	retval = tty_standard_install(driver, tty);
+-	if (retval)
+-		goto error;
+-
++	tty_standard_install(driver, tty);
+ 	tty->driver_data = gb_tty;
++
+ 	return 0;
+-error:
+-	tty_port_put(&gb_tty->port);
+-	return retval;
+ }
  
- 	/* take over the tty_port reference if the port was created with the
- 	 * flag RFCOMM_RELEASE_ONHUP. This will force the release of the port
+ static int gb_tty_open(struct tty_struct *tty, struct file *file)
 -- 
 2.7.4
 
