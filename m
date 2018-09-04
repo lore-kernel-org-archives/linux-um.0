@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x644.google.com ([2607:f8b0:4864:20::644])
+Received: from mail-pg1-x543.google.com ([2607:f8b0:4864:20::543])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fx1Md-0005i7-8Z
- for linux-um@lists.infradead.org; Tue, 04 Sep 2018 02:46:48 +0000
-Received: by mail-pl1-x644.google.com with SMTP id g23-v6so879438plq.9
- for <linux-um@lists.infradead.org>; Mon, 03 Sep 2018 19:46:37 -0700 (PDT)
+ id 1fx1MK-0005aT-8V
+ for linux-um@lists.infradead.org; Tue, 04 Sep 2018 02:46:29 +0000
+Received: by mail-pg1-x543.google.com with SMTP id 7-v6so898655pgf.2
+ for <linux-um@lists.infradead.org>; Mon, 03 Sep 2018 19:46:18 -0700 (PDT)
 From: Jaejoong Kim <climbbb.kim@gmail.com>
-Subject: [PATCH 21/25] staging: greybus: uart: Change return type to void
-Date: Tue,  4 Sep 2018 11:44:47 +0900
-Message-Id: <1536029091-4426-22-git-send-email-climbbb.kim@gmail.com>
+Subject: [PATCH 17/25] misc: pti: Change return type to void
+Date: Tue,  4 Sep 2018 11:44:43 +0900
+Message-Id: <1536029091-4426-18-git-send-email-climbbb.kim@gmail.com>
 In-Reply-To: <1536029091-4426-1-git-send-email-climbbb.kim@gmail.com>
 References: <1536029091-4426-1-git-send-email-climbbb.kim@gmail.com>
 List-Id: <linux-um.lists.infradead.org>
@@ -32,37 +32,53 @@ to void. Now apply this and remove the obsolete error check.
 
 Signed-off-by: Jaejoong Kim <climbbb.kim@gmail.com>
 ---
- drivers/staging/greybus/uart.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ drivers/misc/pti.c | 28 +++++++++++++---------------
+ 1 file changed, 13 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/staging/greybus/uart.c b/drivers/staging/greybus/uart.c
-index 8a00632..182155b 100644
---- a/drivers/staging/greybus/uart.c
-+++ b/drivers/staging/greybus/uart.c
-@@ -393,21 +393,15 @@ static void release_minor(struct gb_tty *gb_tty)
- static int gb_tty_install(struct tty_driver *driver, struct tty_struct *tty)
+diff --git a/drivers/misc/pti.c b/drivers/misc/pti.c
+index 41f2a9f..5c885a1 100644
+--- a/drivers/misc/pti.c
++++ b/drivers/misc/pti.c
+@@ -462,26 +462,24 @@ static int pti_tty_install(struct tty_driver *driver, struct tty_struct *tty)
  {
- 	struct gb_tty *gb_tty;
--	int retval;
+ 	int idx = tty->index;
+ 	struct pti_tty *pti_tty_data;
+-	int ret = tty_standard_install(driver, tty);
  
- 	gb_tty = get_gb_by_minor(tty->index);
- 	if (!gb_tty)
- 		return -ENODEV;
- 
--	retval = tty_standard_install(driver, tty);
--	if (retval)
--		goto error;
--
+-	if (ret == 0) {
+-		pti_tty_data = kmalloc(sizeof(struct pti_tty), GFP_KERNEL);
+-		if (pti_tty_data == NULL)
+-			return -ENOMEM;
 +	tty_standard_install(driver, tty);
- 	tty->driver_data = gb_tty;
-+
- 	return 0;
--error:
--	tty_port_put(&gb_tty->port);
--	return retval;
++	pti_tty_data = kmalloc(sizeof(struct pti_tty), GFP_KERNEL);
++	if (pti_tty_data == NULL)
++		return -ENOMEM;
+ 
+-		if (idx == PTITTY_MINOR_START)
+-			pti_tty_data->mc = pti_request_masterchannel(0, NULL);
+-		else
+-			pti_tty_data->mc = pti_request_masterchannel(2, NULL);
++	if (idx == PTITTY_MINOR_START)
++		pti_tty_data->mc = pti_request_masterchannel(0, NULL);
++	else
++		pti_tty_data->mc = pti_request_masterchannel(2, NULL);
+ 
+-		if (pti_tty_data->mc == NULL) {
+-			kfree(pti_tty_data);
+-			return -ENXIO;
+-		}
+-		tty->driver_data = pti_tty_data;
++	if (pti_tty_data->mc == NULL) {
++		kfree(pti_tty_data);
++		return -ENXIO;
+ 	}
++	tty->driver_data = pti_tty_data;
+ 
+-	return ret;
++	return 0;
  }
  
- static int gb_tty_open(struct tty_struct *tty, struct file *file)
+ /**
 -- 
 2.7.4
 
