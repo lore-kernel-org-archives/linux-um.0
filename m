@@ -1,13 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from smtprelay0239.hostedemail.com ([216.40.44.239]
- helo=smtprelay.hostedemail.com)
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g60t3-0001Vg-DC
- for linux-um@lists.infradead.org; Fri, 28 Sep 2018 22:05:27 +0000
-From: Joe Perches <joe@perches.com>
-Subject: Bad MAINTAINERS pattern in section 'USER-MODE LINUX (UML)'
-Date: Fri, 28 Sep 2018 15:05:07 -0700
-Message-Id: <20180928220507.31886-1-joe@perches.com>
+Received: from mail-pg1-x541.google.com ([2607:f8b0:4864:20::541])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fx1Ls-0005Py-H7
+ for linux-um@lists.infradead.org; Tue, 04 Sep 2018 02:46:02 +0000
+Received: by mail-pg1-x541.google.com with SMTP id 2-v6so893260pgo.4
+ for <linux-um@lists.infradead.org>; Mon, 03 Sep 2018 19:45:50 -0700 (PDT)
+From: Jaejoong Kim <climbbb.kim@gmail.com>
+Subject: [PATCH 11/25] tty: synclinkmp: Change return type to void
+Date: Tue,  4 Sep 2018 11:44:37 +0900
+Message-Id: <1536029091-4426-12-git-send-email-climbbb.kim@gmail.com>
+In-Reply-To: <1536029091-4426-1-git-send-email-climbbb.kim@gmail.com>
+References: <1536029091-4426-1-git-send-email-climbbb.kim@gmail.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -21,64 +24,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org
+To: linux-um@lists.infradead.org, netdev@vger.kernel.org, linux-mmc@vger.kernel.org, linux-s390@vger.kernel.org, devel@driverdev.osuosl.org, greybus-dev@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-serial@vger.kernel.org, sparclinux@vger.kernel.org, linux-usb@vger.kernel.org, linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jslaby@suse.com>
 
-Please fix this defect appropriately.
+Since tty_port_install() always returns 0, the return type has changed
+to void. Now apply this and remove the obsolete error check.
 
-linux-next MAINTAINERS section:
+Signed-off-by: Jaejoong Kim <climbbb.kim@gmail.com>
+---
+ drivers/tty/synclinkmp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-	15491	USER-MODE LINUX (UML)
-	15492	M:	Jeff Dike <jdike@addtoit.com>
-	15493	M:	Richard Weinberger <richard@nod.at>
-	15494	L:	linux-um@lists.infradead.org
-	15495	W:	http://user-mode-linux.sourceforge.net
-	15496	T:	git git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git
-	15497	S:	Maintained
-	15498	F:	Documentation/virtual/uml/
-	15499	F:	arch/um/
-	15500	F:	arch/x86/um/
-	15501	F:	fs/hostfs/
--->	15502	F:	fs/hppfs/
-
-Commit that introduced this:
-
-commit 679655daffdd2725b66ba2c5a759bbcb316fca5a
- Author: Joe Perches <joe@perches.com>
- Date:   Tue Apr 7 20:44:32 2009 -0700
+diff --git a/drivers/tty/synclinkmp.c b/drivers/tty/synclinkmp.c
+index 1e4d5b9..2d99a5b 100644
+--- a/drivers/tty/synclinkmp.c
++++ b/drivers/tty/synclinkmp.c
+@@ -734,8 +734,9 @@ static int install(struct tty_driver *driver, struct tty_struct *tty)
+ 	}
  
-     MAINTAINERS - Add file patterns
-     
-     Better description of file pattern tag "F:"
-     Add file exclusion tag "X:"
-     Add patterns to sections
-     
-     Signed-off-by: Joe Perches <joe@perches.com>
+ 	tty->driver_data = info;
++	tty_port_install(&info->port, driver, tty);
  
-  MAINTAINERS | 1194 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
-  1 file changed, 1193 insertions(+), 1 deletion(-)
+-	return tty_port_install(&info->port, driver, tty);
++	return 0;
+ }
+ 
+ /* Called when a port is opened.  Init and enable port.
+-- 
+2.7.4
 
-Last commit with fs/hppfs/
-
-commit f74a14e870c80d6261afed66d4bad779c1213e03
-Author: Richard Weinberger <richard@nod.at>
-Date:   Tue Apr 21 20:52:26 2015 +0200
-
-    um: Remove hppfs
-    
-    hppfs (honeypot procfs) was an attempt to use UML as honeypot.
-    It was never stable nor in heavy use.
-    
-    As Al Viro and Christoph Hellwig pointed some major issues out
-    it is better to let it die.
-    
-    Signed-off-by: Richard Weinberger <richard@nod.at>
-
- arch/um/Kconfig.um |  15 --
- fs/Makefile        |   1 -
- fs/hppfs/Makefile  |   6 -
- fs/hppfs/hppfs.c   | 766 -----------------------------------------------------
- 4 files changed, 788 deletions(-)
 
 _______________________________________________
 linux-um mailing list
