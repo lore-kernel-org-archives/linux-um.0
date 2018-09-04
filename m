@@ -1,33 +1,61 @@
-Return-Path: <keescook@chromium.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fx1LJ-0004jJ-CC
+ for linux-um@lists.infradead.org; Tue, 04 Sep 2018 02:45:26 +0000
+Received: by mail-pf1-x444.google.com with SMTP id k21-v6so894917pff.11
+ for <linux-um@lists.infradead.org>; Mon, 03 Sep 2018 19:45:14 -0700 (PDT)
+From: Jaejoong Kim <climbbb.kim@gmail.com>
+Subject: [PATCH 03/25] s390: char: con3215: Change return type to void
+Date: Tue,  4 Sep 2018 11:44:29 +0900
+Message-Id: <1536029091-4426-4-git-send-email-climbbb.kim@gmail.com>
+In-Reply-To: <1536029091-4426-1-git-send-email-climbbb.kim@gmail.com>
+References: <1536029091-4426-1-git-send-email-climbbb.kim@gmail.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 MIME-Version: 1.0
-In-Reply-To: <1533358023-5801-2-git-send-email-yamada.masahiro@socionext.com>
-References: <1533358023-5801-1-git-send-email-yamada.masahiro@socionext.com> <1533358023-5801-2-git-send-email-yamada.masahiro@socionext.com>
-From: Kees Cook <keescook@chromium.org>
-Date: Sat, 15 Sep 2018 11:47:07 -0700
-Message-ID: <CAGXu5jK4aNuZ+RR4eC80yUQ2zxSoU9=ioaJBtt=VaX=_oZC=ew@mail.gmail.com>
-Subject: Re: [PATCH 1/3] um: fix parallel building with O= option
-Content-Type: text/plain; charset="UTF-8"
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org, Randy Dunlap <rdunlap@infradead.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Michal Marek <michal.lkml@markovi.net>, Sam Ravnborg <sam@ravnborg.org>, LKML <linux-kernel@vger.kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org, netdev@vger.kernel.org, linux-mmc@vger.kernel.org, linux-s390@vger.kernel.org, devel@driverdev.osuosl.org, greybus-dev@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-serial@vger.kernel.org, sparclinux@vger.kernel.org, linux-usb@vger.kernel.org, linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jslaby@suse.com>
 
-On Fri, Aug 3, 2018 at 9:47 PM, Masahiro Yamada
-<yamada.masahiro@socionext.com> wrote:
-> Randy Dunlap reports UML occasionally fails to build with -j<N> and
-> O=<builddir> options.
+Since tty_port_install() always returns 0, the return type has changed
+to void. Now apply this and remove the obsolete error check.
 
-With v4.19-rc2 I'm still seeing a failure (for any parallelism) under ARCH=um
+Signed-off-by: Jaejoong Kim <climbbb.kim@gmail.com>
+---
+ drivers/s390/char/con3215.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-$ make -j8 ARCH=um O=/tmp/foo
-...
-/home/kees/src/linux-build/um/Makefile:1185: *** Headers not
-exportable for the um architecture.  Stop.
-
-Am I missing something?
-
--Kees
-
+diff --git a/drivers/s390/char/con3215.c b/drivers/s390/char/con3215.c
+index 8c9d412..6a9f6d9 100644
+--- a/drivers/s390/char/con3215.c
++++ b/drivers/s390/char/con3215.c
+@@ -965,8 +965,9 @@ static int tty3215_install(struct tty_driver *driver, struct tty_struct *tty)
+ 		return -ENODEV;
+ 
+ 	tty->driver_data = raw;
++	tty_port_install(&raw->port, driver, tty);
+ 
+-	return tty_port_install(&raw->port, driver, tty);
++	return 0;
+ }
+ 
+ /*
 -- 
-Kees Cook
-Pixel Security
+2.7.4
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
