@@ -1,64 +1,171 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab5.miniserver.com ([78.31.111.25]
- helo=www.kot-begemot.co.uk)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g5rhj-0001Fl-Ja
- for linux-um@lists.infradead.org; Fri, 28 Sep 2018 12:17:09 +0000
-Subject: Re: Question about process.c
-References: <e58ff1a0-df76-7213-08d5-1f796a6a3956@cambridgegreys.com>
- <1708862.d7yAjbcJLQ@blindfold>
- <40d875d4-8071-85e1-bad9-83995c9ebf8b@cambridgegreys.com>
- <4362422.B3hMBL5bEi@blindfold>
- <d5c5b0e3-2794-6599-744a-7ca9e87df56e@kot-begemot.co.uk>
- <CAFLxGvwGOv7gBTK35o6=2yjo1Ao5U0e0KSuqfONJ0YqubnugnQ@mail.gmail.com>
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Message-ID: <186bd74d-7dc2-117a-6a6e-4886b9589e50@kot-begemot.co.uk>
-Date: Fri, 28 Sep 2018 13:16:52 +0100
-MIME-Version: 1.0
-In-Reply-To: <CAFLxGvwGOv7gBTK35o6=2yjo1Ao5U0e0KSuqfONJ0YqubnugnQ@mail.gmail.com>
-Content-Language: en-US
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Cc: linux-um@lists.infradead.org
+Return-Path: <rppt@linux.vnet.ibm.com>
+From: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Subject: [PATCH 18/30] memblock: replace alloc_bootmem_low_pages with memblock_alloc_low
+Date: Fri, 14 Sep 2018 15:10:33 +0300
+In-Reply-To: <1536927045-23536-1-git-send-email-rppt@linux.vnet.ibm.com>
+References: <1536927045-23536-1-git-send-email-rppt@linux.vnet.ibm.com>
+Message-Id: <1536927045-23536-19-git-send-email-rppt@linux.vnet.ibm.com>
+To: linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guan Xuetao <gxt@pku.edu.cn>, Ingo Molnar <mingo@redhat.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Jonas Bonn <jonas@southpole.se>, Jonathan Corbet <corbet@lwn.net>, Ley Foon Tan <lftan@altera.com>, Mark Salter <msalter@redhat.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Matt Turner <mattst88@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@suse.com>, Michal Simek <monstr@monstr.eu>, Palmer Dabbelt <palmer@sifive.com>, Paul Burton <paul.burton@mips.com>, Richard Kuo <rkuo@codeaurora.org>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, Serge Semin <fancer.lancer@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, Mike Rapoport <rppt@linux.vnet.ibm.com>
+List-ID: <linux-um.lists.infradead.org>
 
-Ck9uIDUvMS8xOCAxMDozMyBQTSwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgo+IEFudG9uLAo+
-Cj4gT24gVHVlLCBNYXkgMSwgMjAxOCBhdCA0OjQzIFBNLCBBbnRvbiBJdmFub3YKPiA8YW50b24u
-aXZhbm92QGtvdC1iZWdlbW90LmNvLnVrPiB3cm90ZToKPj4gT0suCj4+Cj4+IEkgd2lsbCBwYXJr
-IGl0IHVudGlsIEkgaGF2ZSBhIGxhcmdlIHRpbWVzbG90IHRvIHBsYXkgd2l0aCBpdCBhbmQgYW5h
-bHl6ZQo+PiBpdCBwcm9wZXJseS4KPiBDYW4geW91IHBsZWFzZSB1c2UgcmVwbHktYWxsIGFuZCBu
-b3QgdG9wLXBvc3Q/Cj4KPiBJIGRpZCBzb21lIHJlc2VhcmNoLgo+IFRoZSBmb3JjZSBmbHVzaCBo
-YXMgaXRzIHJvb3RzIGluIHVtbC1wYXRjaC0yLjQuOS00LCBpbiBmb3JtIG9mCj4gZmx1c2hfdGxi
-X2tlcm5lbF92bSgpLgo+IFdlIGhhdmUga2luZCBvZiBhIGNoYW5nZWxvZzoKPiBodHRwOi8vdXNl
-ci1tb2RlLWxpbnV4LnNvdXJjZWZvcmdlLm5ldC9vbGQvY2hhbmdlbG9nLXVtbC1wYXRjaC0yLjQu
-OS00LmJ6Mi5odG1sCj4gIkZpeGVkIHRoZSBwcm9jZXNzIHNlZ2ZhdWx0cyB0aGF0IGhhcHBlbmVk
-IHdoZW4gdGhlIHN5c3RlbSB3YXMgc3dhcHBpbmciCj4KPiBJbiB1bWwtcGF0Y2gtMi40LjktOCBp
-dCBnYWluZWQgZnVydGhlciBjaGFuZ2VzLgo+ICJGaXhlZCBhbmQgY2xlYW5lZCB1cCB0aGUgdGxi
-IGZsdXNoIGNvZGUiLgo+Cj4gSSB0aGluayBpdCBpcyBoaWdoIG5vb24gdG8gcmV2aWV3L3JldGhp
-bmsgdGhhdCBjb2RlLi4uCj4KSSBoYXZlIHJldmlld2VkIGFuZCByZXRlc3RlZCBpdC4gVW5mb3J0
-dW5hdGVseSwgdGhlIG9yaWdpbmFsIGlzc3VlIGlzIApzdGlsbCB0aGVyZSBzbyB0aGUgdGxiIGhh
-cyB0byBoYXZlIGEgZm9yY2UgZmx1c2ggaWYgc3dhcCBpcyBwcmVzZW50LgoKVGhhdCwgaG93ZXZl
-ciwgbWVhbnMgdGhhdCB3ZSBjYW4gc3RpY2sgYW4KCiNpZmRlZiBDT05GSUdfU1dBUAojZGVmaW5l
-IEZPUktfTU1fRk9SQ0UgMQojZWxpZgojZGVmaW5lIEZPUktfTU1fRk9SQ0UgMAojZW5kaWYKCklu
-IHRoZSBiZWdpbm5pbmcgb2YgdGxiLmMuSWYgd2UgdGhlbiBtYWtlIHRoZSBmb3JjZV9mbHVzaCBj
-b25kaXRpb25hbCBvbiAKU1dBUAoKdm9pZCBmb3JjZV9mbHVzaF9hbGwodm9pZCkKewogwqDCoMKg
-IHN0cnVjdCBtbV9zdHJ1Y3QgKm1tID0gY3VycmVudC0+bW07CiDCoMKgwqAgc3RydWN0IHZtX2Fy
-ZWFfc3RydWN0ICp2bWEgPSBtbS0+bW1hcDsKCiDCoMKgwqAgd2hpbGUgKHZtYSAhPSBOVUxMKSB7
-CiDCoMKgwqAgwqDCoMKgIGZpeF9yYW5nZShtbSwgdm1hLT52bV9zdGFydCwgdm1hLT52bV9lbmQs
-IEZPUktfTU1fRk9SQ0UpOwogwqDCoMKgIMKgwqDCoCB2bWEgPSB2bWEtPnZtX25leHQ7CiDCoMKg
-wqAgfQp9CgpXZSBnaXZlIDEwJSsgcGVyZm9ybWFuY2UgYm9vc3QgdG8gdGhvc2Ugd2hvIHdvdWxk
-IHdhbnQgdG8gZm9yZ28gc3dhcC4KCkEuCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmlu
-ZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
-aW51eC11bQo=
+The alloc_bootmem_low_pages() function allocates PAGE_SIZE aligned regions
+from low memory. memblock_alloc_low() with alignment set to PAGE_SIZE does
+exactly the same thing.
+
+The conversion is done using the following semantic patch:
+
+@@
+expression e;
+@@
+- alloc_bootmem_low_pages(e)
++ memblock_alloc_low(e, PAGE_SIZE)
+
+Signed-off-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+---
+ arch/arc/mm/highmem.c                |  2 +-
+ arch/m68k/atari/stram.c              |  3 ++-
+ arch/m68k/mm/motorola.c              |  5 +++--
+ arch/mips/cavium-octeon/dma-octeon.c |  2 +-
+ arch/mips/mm/init.c                  |  3 ++-
+ arch/um/kernel/mem.c                 | 10 ++++++----
+ arch/xtensa/mm/mmu.c                 |  2 +-
+ 7 files changed, 16 insertions(+), 11 deletions(-)
+
+diff --git a/arch/arc/mm/highmem.c b/arch/arc/mm/highmem.c
+index 77ff64a..f582dc8 100644
+--- a/arch/arc/mm/highmem.c
++++ b/arch/arc/mm/highmem.c
+@@ -123,7 +123,7 @@ static noinline pte_t * __init alloc_kmap_pgtable(unsigned long kvaddr)
+ 	pud_k = pud_offset(pgd_k, kvaddr);
+ 	pmd_k = pmd_offset(pud_k, kvaddr);
+ 
+-	pte_k = (pte_t *)alloc_bootmem_low_pages(PAGE_SIZE);
++	pte_k = (pte_t *)memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
+ 	pmd_populate_kernel(&init_mm, pmd_k, pte_k);
+ 	return pte_k;
+ }
+diff --git a/arch/m68k/atari/stram.c b/arch/m68k/atari/stram.c
+index c83d664..1089d67 100644
+--- a/arch/m68k/atari/stram.c
++++ b/arch/m68k/atari/stram.c
+@@ -95,7 +95,8 @@ void __init atari_stram_reserve_pages(void *start_mem)
+ {
+ 	if (kernel_in_stram) {
+ 		pr_debug("atari_stram pool: kernel in ST-RAM, using alloc_bootmem!\n");
+-		stram_pool.start = (resource_size_t)alloc_bootmem_low_pages(pool_size);
++		stram_pool.start = (resource_size_t)memblock_alloc_low(pool_size,
++								       PAGE_SIZE);
+ 		stram_pool.end = stram_pool.start + pool_size - 1;
+ 		request_resource(&iomem_resource, &stram_pool);
+ 		stram_virt_offset = 0;
+diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
+index 4e17ecb..8bcf57e 100644
+--- a/arch/m68k/mm/motorola.c
++++ b/arch/m68k/mm/motorola.c
+@@ -55,7 +55,7 @@ static pte_t * __init kernel_page_table(void)
+ {
+ 	pte_t *ptablep;
+ 
+-	ptablep = (pte_t *)alloc_bootmem_low_pages(PAGE_SIZE);
++	ptablep = (pte_t *)memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
+ 
+ 	clear_page(ptablep);
+ 	__flush_page_to_ram(ptablep);
+@@ -95,7 +95,8 @@ static pmd_t * __init kernel_ptr_table(void)
+ 
+ 	last_pgtable += PTRS_PER_PMD;
+ 	if (((unsigned long)last_pgtable & ~PAGE_MASK) == 0) {
+-		last_pgtable = (pmd_t *)alloc_bootmem_low_pages(PAGE_SIZE);
++		last_pgtable = (pmd_t *)memblock_alloc_low(PAGE_SIZE,
++							   PAGE_SIZE);
+ 
+ 		clear_page(last_pgtable);
+ 		__flush_page_to_ram(last_pgtable);
+diff --git a/arch/mips/cavium-octeon/dma-octeon.c b/arch/mips/cavium-octeon/dma-octeon.c
+index 236833b..c44c1a6 100644
+--- a/arch/mips/cavium-octeon/dma-octeon.c
++++ b/arch/mips/cavium-octeon/dma-octeon.c
+@@ -244,7 +244,7 @@ void __init plat_swiotlb_setup(void)
+ 	swiotlb_nslabs = ALIGN(swiotlb_nslabs, IO_TLB_SEGSIZE);
+ 	swiotlbsize = swiotlb_nslabs << IO_TLB_SHIFT;
+ 
+-	octeon_swiotlb = alloc_bootmem_low_pages(swiotlbsize);
++	octeon_swiotlb = memblock_alloc_low(swiotlbsize, PAGE_SIZE);
+ 
+ 	if (swiotlb_init_with_tbl(octeon_swiotlb, swiotlb_nslabs, 1) == -ENOMEM)
+ 		panic("Cannot allocate SWIOTLB buffer");
+diff --git a/arch/mips/mm/init.c b/arch/mips/mm/init.c
+index 400676c..a010fba7 100644
+--- a/arch/mips/mm/init.c
++++ b/arch/mips/mm/init.c
+@@ -244,7 +244,8 @@ void __init fixrange_init(unsigned long start, unsigned long end,
+ 			pmd = (pmd_t *)pud;
+ 			for (; (k < PTRS_PER_PMD) && (vaddr < end); pmd++, k++) {
+ 				if (pmd_none(*pmd)) {
+-					pte = (pte_t *) alloc_bootmem_low_pages(PAGE_SIZE);
++					pte = (pte_t *) memblock_alloc_low(PAGE_SIZE,
++									   PAGE_SIZE);
+ 					set_pmd(pmd, __pmd((unsigned long)pte));
+ 					BUG_ON(pte != pte_offset_kernel(pmd, 0));
+ 				}
+diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
+index 3c0e470..185f6bb 100644
+--- a/arch/um/kernel/mem.c
++++ b/arch/um/kernel/mem.c
+@@ -64,7 +64,8 @@ void __init mem_init(void)
+ static void __init one_page_table_init(pmd_t *pmd)
+ {
+ 	if (pmd_none(*pmd)) {
+-		pte_t *pte = (pte_t *) alloc_bootmem_low_pages(PAGE_SIZE);
++		pte_t *pte = (pte_t *) memblock_alloc_low(PAGE_SIZE,
++							  PAGE_SIZE);
+ 		set_pmd(pmd, __pmd(_KERNPG_TABLE +
+ 					   (unsigned long) __pa(pte)));
+ 		if (pte != pte_offset_kernel(pmd, 0))
+@@ -75,7 +76,7 @@ static void __init one_page_table_init(pmd_t *pmd)
+ static void __init one_md_table_init(pud_t *pud)
+ {
+ #ifdef CONFIG_3_LEVEL_PGTABLES
+-	pmd_t *pmd_table = (pmd_t *) alloc_bootmem_low_pages(PAGE_SIZE);
++	pmd_t *pmd_table = (pmd_t *) memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
+ 	set_pud(pud, __pud(_KERNPG_TABLE + (unsigned long) __pa(pmd_table)));
+ 	if (pmd_table != pmd_offset(pud, 0))
+ 		BUG();
+@@ -124,7 +125,7 @@ static void __init fixaddr_user_init( void)
+ 		return;
+ 
+ 	fixrange_init( FIXADDR_USER_START, FIXADDR_USER_END, swapper_pg_dir);
+-	v = (unsigned long) alloc_bootmem_low_pages(size);
++	v = (unsigned long) memblock_alloc_low(size, PAGE_SIZE);
+ 	memcpy((void *) v , (void *) FIXADDR_USER_START, size);
+ 	p = __pa(v);
+ 	for ( ; size > 0; size -= PAGE_SIZE, vaddr += PAGE_SIZE,
+@@ -143,7 +144,8 @@ void __init paging_init(void)
+ 	unsigned long zones_size[MAX_NR_ZONES], vaddr;
+ 	int i;
+ 
+-	empty_zero_page = (unsigned long *) alloc_bootmem_low_pages(PAGE_SIZE);
++	empty_zero_page = (unsigned long *) memblock_alloc_low(PAGE_SIZE,
++							       PAGE_SIZE);
+ 	for (i = 0; i < ARRAY_SIZE(zones_size); i++)
+ 		zones_size[i] = 0;
+ 
+diff --git a/arch/xtensa/mm/mmu.c b/arch/xtensa/mm/mmu.c
+index 9d1ecfc..f33a1ff 100644
+--- a/arch/xtensa/mm/mmu.c
++++ b/arch/xtensa/mm/mmu.c
+@@ -31,7 +31,7 @@ static void * __init init_pmd(unsigned long vaddr, unsigned long n_pages)
+ 	pr_debug("%s: vaddr: 0x%08lx, n_pages: %ld\n",
+ 		 __func__, vaddr, n_pages);
+ 
+-	pte = alloc_bootmem_low_pages(n_pages * sizeof(pte_t));
++	pte = memblock_alloc_low(n_pages * sizeof(pte_t), PAGE_SIZE);
+ 
+ 	for (i = 0; i < n_pages; ++i)
+ 		pte_clear(NULL, 0, pte + i);
+-- 
+2.7.4
+
 
