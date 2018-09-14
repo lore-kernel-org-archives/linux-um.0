@@ -1,291 +1,363 @@
 Return-Path: <rppt@linux.vnet.ibm.com>
 From: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: [PATCH 20/30] memblock: replace __alloc_bootmem with memblock_alloc_from
-Date: Fri, 14 Sep 2018 15:10:35 +0300
+Subject: [PATCH 01/30] mips: switch to NO_BOOTMEM
+Date: Fri, 14 Sep 2018 15:10:16 +0300
 In-Reply-To: <1536927045-23536-1-git-send-email-rppt@linux.vnet.ibm.com>
 References: <1536927045-23536-1-git-send-email-rppt@linux.vnet.ibm.com>
-Message-Id: <1536927045-23536-21-git-send-email-rppt@linux.vnet.ibm.com>
+Message-Id: <1536927045-23536-2-git-send-email-rppt@linux.vnet.ibm.com>
 To: linux-mm@kvack.org
 Cc: Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guan Xuetao <gxt@pku.edu.cn>, Ingo Molnar <mingo@redhat.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Jonas Bonn <jonas@southpole.se>, Jonathan Corbet <corbet@lwn.net>, Ley Foon Tan <lftan@altera.com>, Mark Salter <msalter@redhat.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Matt Turner <mattst88@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@suse.com>, Michal Simek <monstr@monstr.eu>, Palmer Dabbelt <palmer@sifive.com>, Paul Burton <paul.burton@mips.com>, Richard Kuo <rkuo@codeaurora.org>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, Serge Semin <fancer.lancer@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, Mike Rapoport <rppt@linux.vnet.ibm.com>
 List-ID: <linux-um.lists.infradead.org>
 
-The functions are equivalent, just the later does not require nobootmem
-translation layer.
+MIPS already has memblock support and all the memory is already registered
+with it.
 
-The conversion is done using the following semantic patch:
+This patch replaces bootmem memory reservations with memblock ones and
+removes the bootmem initialization.
 
-@@
-expression size, align, goal;
-@@
-- __alloc_bootmem(size, align, goal)
-+ memblock_alloc_from(size, align, goal)
+Since memblock allocates memory in top-down mode, we ensure that memblock
+limit is max_low_pfn to prevent allocations from the high memory.
+
+To have the exceptions base in the lower 512M of the physical memory, its
+allocation in arch/mips/kernel/traps.c::traps_init() is using bottom-up
+mode.
 
 Signed-off-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
 ---
- arch/alpha/kernel/core_cia.c  |  2 +-
- arch/alpha/kernel/pci_iommu.c |  4 ++--
- arch/alpha/kernel/setup.c     |  2 +-
- arch/ia64/kernel/mca.c        |  4 ++--
- arch/ia64/mm/contig.c         |  5 +++--
- arch/mips/kernel/traps.c      |  2 +-
- arch/sparc/kernel/prom_32.c   |  2 +-
- arch/sparc/kernel/smp_64.c    | 10 +++++-----
- arch/sparc/mm/init_32.c       |  2 +-
- arch/sparc/mm/init_64.c       |  9 ++++++---
- arch/sparc/mm/srmmu.c         | 10 +++++-----
- include/linux/bootmem.h       |  8 ++++++++
- 12 files changed, 36 insertions(+), 24 deletions(-)
+ arch/mips/Kconfig                      |  1 +
+ arch/mips/kernel/setup.c               | 99 ++++++++--------------------------
+ arch/mips/kernel/traps.c               |  3 ++
+ arch/mips/loongson64/loongson-3/numa.c | 34 ++++++------
+ arch/mips/sgi-ip27/ip27-memory.c       | 11 ++--
+ 5 files changed, 46 insertions(+), 102 deletions(-)
 
-diff --git a/arch/alpha/kernel/core_cia.c b/arch/alpha/kernel/core_cia.c
-index 4b38386..026ee95 100644
---- a/arch/alpha/kernel/core_cia.c
-+++ b/arch/alpha/kernel/core_cia.c
-@@ -331,7 +331,7 @@ cia_prepare_tbia_workaround(int window)
- 	long i;
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 54532f2..1b5fa1a 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -78,6 +78,7 @@ config MIPS
+ 	select RTC_LIB
+ 	select SYSCTL_EXCEPTION_TRACE
+ 	select VIRT_TO_BUS
++	select NO_BOOTMEM
  
- 	/* Use minimal 1K map. */
--	ppte = __alloc_bootmem(CIA_BROKEN_TBIA_SIZE, 32768, 0);
-+	ppte = memblock_alloc_from(CIA_BROKEN_TBIA_SIZE, 32768, 0);
- 	pte = (virt_to_phys(ppte) >> (PAGE_SHIFT - 1)) | 1;
+ menu "Machine selection"
  
- 	for (i = 0; i < CIA_BROKEN_TBIA_SIZE / sizeof(unsigned long); ++i)
-diff --git a/arch/alpha/kernel/pci_iommu.c b/arch/alpha/kernel/pci_iommu.c
-index b52d76f..0c05493 100644
---- a/arch/alpha/kernel/pci_iommu.c
-+++ b/arch/alpha/kernel/pci_iommu.c
-@@ -87,13 +87,13 @@ iommu_arena_new_node(int nid, struct pci_controller *hose, dma_addr_t base,
- 		printk("%s: couldn't allocate arena ptes from node %d\n"
- 		       "    falling back to system-wide allocation\n",
- 		       __func__, nid);
--		arena->ptes = __alloc_bootmem(mem_size, align, 0);
-+		arena->ptes = memblock_alloc_from(mem_size, align, 0);
+diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+index 32fc11d..2fde53e 100644
+--- a/arch/mips/kernel/setup.c
++++ b/arch/mips/kernel/setup.c
+@@ -333,7 +333,7 @@ static void __init finalize_initrd(void)
+ 
+ 	maybe_bswap_initrd();
+ 
+-	reserve_bootmem(__pa(initrd_start), size, BOOTMEM_DEFAULT);
++	memblock_reserve(__pa(initrd_start), size);
+ 	initrd_below_start_ok = 1;
+ 
+ 	pr_info("Initial ramdisk at: 0x%lx (%lu bytes)\n",
+@@ -370,20 +370,10 @@ static void __init bootmem_init(void)
+ 
+ #else  /* !CONFIG_SGI_IP27 */
+ 
+-static unsigned long __init bootmap_bytes(unsigned long pages)
+-{
+-	unsigned long bytes = DIV_ROUND_UP(pages, 8);
+-
+-	return ALIGN(bytes, sizeof(long));
+-}
+-
+ static void __init bootmem_init(void)
+ {
+ 	unsigned long reserved_end;
+-	unsigned long mapstart = ~0UL;
+-	unsigned long bootmap_size;
+ 	phys_addr_t ramstart = PHYS_ADDR_MAX;
+-	bool bootmap_valid = false;
+ 	int i;
+ 
+ 	/*
+@@ -395,6 +385,8 @@ static void __init bootmem_init(void)
+ 	init_initrd();
+ 	reserved_end = (unsigned long) PFN_UP(__pa_symbol(&_end));
+ 
++	memblock_reserve(PHYS_OFFSET, reserved_end << PAGE_SHIFT);
++
+ 	/*
+ 	 * max_low_pfn is not a number of pages. The number of pages
+ 	 * of the system is given by 'max_low_pfn - min_low_pfn'.
+@@ -442,9 +434,6 @@ static void __init bootmem_init(void)
+ 		if (initrd_end && end <= (unsigned long)PFN_UP(__pa(initrd_end)))
+ 			continue;
+ #endif
+-		if (start >= mapstart)
+-			continue;
+-		mapstart = max(reserved_end, start);
  	}
  
- #else /* CONFIG_DISCONTIGMEM */
+ 	if (min_low_pfn >= max_low_pfn)
+@@ -456,9 +445,11 @@ static void __init bootmem_init(void)
+ 	/*
+ 	 * Reserve any memory between the start of RAM and PHYS_OFFSET
+ 	 */
+-	if (ramstart > PHYS_OFFSET)
++	if (ramstart > PHYS_OFFSET) {
+ 		add_memory_region(PHYS_OFFSET, ramstart - PHYS_OFFSET,
+ 				  BOOT_MEM_RESERVED);
++		memblock_reserve(PHYS_OFFSET, ramstart - PHYS_OFFSET);
++	}
  
- 	arena = alloc_bootmem(sizeof(*arena));
--	arena->ptes = __alloc_bootmem(mem_size, align, 0);
-+	arena->ptes = memblock_alloc_from(mem_size, align, 0);
+ 	if (min_low_pfn > ARCH_PFN_OFFSET) {
+ 		pr_info("Wasting %lu bytes for tracking %lu unused pages\n",
+@@ -483,52 +474,6 @@ static void __init bootmem_init(void)
+ 		max_low_pfn = PFN_DOWN(HIGHMEM_START);
+ 	}
  
- #endif /* CONFIG_DISCONTIGMEM */
+-#ifdef CONFIG_BLK_DEV_INITRD
+-	/*
+-	 * mapstart should be after initrd_end
+-	 */
+-	if (initrd_end)
+-		mapstart = max(mapstart, (unsigned long)PFN_UP(__pa(initrd_end)));
+-#endif
+-
+-	/*
+-	 * check that mapstart doesn't overlap with any of
+-	 * memory regions that have been reserved through eg. DTB
+-	 */
+-	bootmap_size = bootmap_bytes(max_low_pfn - min_low_pfn);
+-
+-	bootmap_valid = memory_region_available(PFN_PHYS(mapstart),
+-						bootmap_size);
+-	for (i = 0; i < boot_mem_map.nr_map && !bootmap_valid; i++) {
+-		unsigned long mapstart_addr;
+-
+-		switch (boot_mem_map.map[i].type) {
+-		case BOOT_MEM_RESERVED:
+-			mapstart_addr = PFN_ALIGN(boot_mem_map.map[i].addr +
+-						boot_mem_map.map[i].size);
+-			if (PHYS_PFN(mapstart_addr) < mapstart)
+-				break;
+-
+-			bootmap_valid = memory_region_available(mapstart_addr,
+-								bootmap_size);
+-			if (bootmap_valid)
+-				mapstart = PHYS_PFN(mapstart_addr);
+-			break;
+-		default:
+-			break;
+-		}
+-	}
+-
+-	if (!bootmap_valid)
+-		panic("No memory area to place a bootmap bitmap");
+-
+-	/*
+-	 * Initialize the boot-time allocator with low memory only.
+-	 */
+-	if (bootmap_size != init_bootmem_node(NODE_DATA(0), mapstart,
+-					 min_low_pfn, max_low_pfn))
+-		panic("Unexpected memory size required for bootmap");
+-
+ 	for (i = 0; i < boot_mem_map.nr_map; i++) {
+ 		unsigned long start, end;
  
-diff --git a/arch/alpha/kernel/setup.c b/arch/alpha/kernel/setup.c
-index 4f0d944..64c06a0 100644
---- a/arch/alpha/kernel/setup.c
-+++ b/arch/alpha/kernel/setup.c
-@@ -294,7 +294,7 @@ move_initrd(unsigned long mem_limit)
- 	unsigned long size;
+@@ -577,9 +522,9 @@ static void __init bootmem_init(void)
+ 		default:
+ 			/* Not usable memory */
+ 			if (start > min_low_pfn && end < max_low_pfn)
+-				reserve_bootmem(boot_mem_map.map[i].addr,
+-						boot_mem_map.map[i].size,
+-						BOOTMEM_DEFAULT);
++				memblock_reserve(boot_mem_map.map[i].addr,
++						boot_mem_map.map[i].size);
++
+ 			continue;
+ 		}
  
- 	size = initrd_end - initrd_start;
--	start = __alloc_bootmem(PAGE_ALIGN(size), PAGE_SIZE, 0);
-+	start = memblock_alloc_from(PAGE_ALIGN(size), PAGE_SIZE, 0);
- 	if (!start || __pa(start) + size > mem_limit) {
- 		initrd_start = initrd_end = 0;
- 		return NULL;
-diff --git a/arch/ia64/kernel/mca.c b/arch/ia64/kernel/mca.c
-index 6115464..5586926 100644
---- a/arch/ia64/kernel/mca.c
-+++ b/arch/ia64/kernel/mca.c
-@@ -1835,8 +1835,8 @@ format_mca_init_stack(void *mca_data, unsigned long offset,
- /* Caller prevents this from being called after init */
- static void * __ref mca_bootmem(void)
- {
--	return __alloc_bootmem(sizeof(struct ia64_mca_cpu),
--	                    KERNEL_STACK_SIZE, 0);
-+	return memblock_alloc_from(sizeof(struct ia64_mca_cpu),
-+				   KERNEL_STACK_SIZE, 0);
- }
+@@ -602,15 +547,9 @@ static void __init bootmem_init(void)
+ 		size = end - start;
  
- /* Do per-CPU MCA-related initialization.  */
-diff --git a/arch/ia64/mm/contig.c b/arch/ia64/mm/contig.c
-index e2e40bb..9e5c23a 100644
---- a/arch/ia64/mm/contig.c
-+++ b/arch/ia64/mm/contig.c
-@@ -85,8 +85,9 @@ void *per_cpu_init(void)
- static inline void
- alloc_per_cpu_data(void)
- {
--	cpu_data = __alloc_bootmem(PERCPU_PAGE_SIZE * num_possible_cpus(),
--				   PERCPU_PAGE_SIZE, __pa(MAX_DMA_ADDRESS));
-+	cpu_data = memblock_alloc_from(PERCPU_PAGE_SIZE * num_possible_cpus(),
-+				       PERCPU_PAGE_SIZE,
-+				       __pa(MAX_DMA_ADDRESS));
- }
+ 		/* Register lowmem ranges */
+-		free_bootmem(PFN_PHYS(start), size << PAGE_SHIFT);
+ 		memory_present(0, start, end);
+ 	}
  
- /**
+-	/*
+-	 * Reserve the bootmap memory.
+-	 */
+-	reserve_bootmem(PFN_PHYS(mapstart), bootmap_size, BOOTMEM_DEFAULT);
+-
+ #ifdef CONFIG_RELOCATABLE
+ 	/*
+ 	 * The kernel reserves all memory below its _end symbol as bootmem,
+@@ -907,21 +846,29 @@ static void __init arch_mem_init(char **cmdline_p)
+ 	early_init_fdt_scan_reserved_mem();
+ 
+ 	bootmem_init();
++
++	/*
++	 * Prevent memblock from allocating high memory.
++	 * This cannot be done before max_low_pfn is detected, so up
++	 * to this point is possible to only reserve physical memory
++	 * with memblock_reserve; memblock_virt_alloc* can be used
++	 * only after this point
++	 */
++	memblock_set_current_limit(PFN_PHYS(max_low_pfn));
++
+ #ifdef CONFIG_PROC_VMCORE
+ 	if (setup_elfcorehdr && setup_elfcorehdr_size) {
+ 		printk(KERN_INFO "kdump reserved memory at %lx-%lx\n",
+ 		       setup_elfcorehdr, setup_elfcorehdr_size);
+-		reserve_bootmem(setup_elfcorehdr, setup_elfcorehdr_size,
+-				BOOTMEM_DEFAULT);
++		memblock_reserve(setup_elfcorehdr, setup_elfcorehdr_size);
+ 	}
+ #endif
+ 
+ 	mips_parse_crashkernel();
+ #ifdef CONFIG_KEXEC
+ 	if (crashk_res.start != crashk_res.end)
+-		reserve_bootmem(crashk_res.start,
+-				crashk_res.end - crashk_res.start + 1,
+-				BOOTMEM_DEFAULT);
++		memblock_reserve(crashk_res.start,
++				 crashk_res.end - crashk_res.start + 1);
+ #endif
+ 	device_tree_init();
+ 	sparse_init();
+@@ -931,7 +878,7 @@ static void __init arch_mem_init(char **cmdline_p)
+ 	/* Tell bootmem about cma reserved memblock section */
+ 	for_each_memblock(reserved, reg)
+ 		if (reg->size != 0)
+-			reserve_bootmem(reg->base, reg->size, BOOTMEM_DEFAULT);
++			memblock_reserve(reg->base, reg->size);
+ 
+ 	reserve_bootmem_region(__pa_symbol(&__nosave_begin),
+ 			__pa_symbol(&__nosave_end)); /* Reserve for hibernation */
 diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 5feef28..623dc18 100644
+index 576aeef..5feef28 100644
 --- a/arch/mips/kernel/traps.c
 +++ b/arch/mips/kernel/traps.c
-@@ -2263,7 +2263,7 @@ void __init trap_init(void)
+@@ -29,6 +29,7 @@
+ #include <linux/spinlock.h>
+ #include <linux/kallsyms.h>
+ #include <linux/bootmem.h>
++#include <linux/memblock.h>
+ #include <linux/interrupt.h>
+ #include <linux/ptrace.h>
+ #include <linux/kgdb.h>
+@@ -2260,8 +2261,10 @@ void __init trap_init(void)
+ 		unsigned long size = 0x200 + VECTORSPACING*64;
+ 		phys_addr_t ebase_pa;
  
- 		memblock_set_bottom_up(true);
++		memblock_set_bottom_up(true);
  		ebase = (unsigned long)
--			__alloc_bootmem(size, 1 << fls(size), 0);
-+			memblock_alloc_from(size, 1 << fls(size), 0);
- 		memblock_set_bottom_up(false);
+ 			__alloc_bootmem(size, 1 << fls(size), 0);
++		memblock_set_bottom_up(false);
  
  		/*
-diff --git a/arch/sparc/kernel/prom_32.c b/arch/sparc/kernel/prom_32.c
-index b51cbb9..4389944 100644
---- a/arch/sparc/kernel/prom_32.c
-+++ b/arch/sparc/kernel/prom_32.c
-@@ -32,7 +32,7 @@ void * __init prom_early_alloc(unsigned long size)
+ 		 * Try to ensure ebase resides in KSeg0 if possible.
+diff --git a/arch/mips/loongson64/loongson-3/numa.c b/arch/mips/loongson64/loongson-3/numa.c
+index 9717106..c1e6ec5 100644
+--- a/arch/mips/loongson64/loongson-3/numa.c
++++ b/arch/mips/loongson64/loongson-3/numa.c
+@@ -180,43 +180,39 @@ static void __init szmem(unsigned int node)
+ 
+ static void __init node_mem_init(unsigned int node)
  {
- 	void *ret;
+-	unsigned long bootmap_size;
+ 	unsigned long node_addrspace_offset;
+-	unsigned long start_pfn, end_pfn, freepfn;
++	unsigned long start_pfn, end_pfn;
  
--	ret = __alloc_bootmem(size, SMP_CACHE_BYTES, 0UL);
-+	ret = memblock_alloc_from(size, SMP_CACHE_BYTES, 0UL);
- 	if (ret != NULL)
- 		memset(ret, 0, size);
+ 	node_addrspace_offset = nid_to_addroffset(node);
+ 	pr_info("Node%d's addrspace_offset is 0x%lx\n",
+ 			node, node_addrspace_offset);
  
-diff --git a/arch/sparc/kernel/smp_64.c b/arch/sparc/kernel/smp_64.c
-index 83ff88d..337febd 100644
---- a/arch/sparc/kernel/smp_64.c
-+++ b/arch/sparc/kernel/smp_64.c
-@@ -1588,7 +1588,7 @@ static void * __init pcpu_alloc_bootmem(unsigned int cpu, size_t size,
- 	void *ptr;
+ 	get_pfn_range_for_nid(node, &start_pfn, &end_pfn);
+-	freepfn = start_pfn;
+-	if (node == 0)
+-		freepfn = PFN_UP(__pa_symbol(&_end)); /* kernel end address */
+-	pr_info("Node%d: start_pfn=0x%lx, end_pfn=0x%lx, freepfn=0x%lx\n",
+-		node, start_pfn, end_pfn, freepfn);
++	pr_info("Node%d: start_pfn=0x%lx, end_pfn=0x%lx\n",
++		node, start_pfn, end_pfn);
  
- 	if (!node_online(node) || !NODE_DATA(node)) {
--		ptr = __alloc_bootmem(size, align, goal);
-+		ptr = memblock_alloc_from(size, align, goal);
- 		pr_info("cpu %d has no node %d or node-local memory\n",
- 			cpu, node);
- 		pr_debug("per cpu data for cpu%d %lu bytes at %016lx\n",
-@@ -1601,7 +1601,7 @@ static void * __init pcpu_alloc_bootmem(unsigned int cpu, size_t size,
- 	}
- 	return ptr;
- #else
--	return __alloc_bootmem(size, align, goal);
-+	return memblock_alloc_from(size, align, goal);
- #endif
- }
+ 	__node_data[node] = prealloc__node_data + node;
  
-@@ -1627,7 +1627,7 @@ static void __init pcpu_populate_pte(unsigned long addr)
- 	if (pgd_none(*pgd)) {
- 		pud_t *new;
+-	NODE_DATA(node)->bdata = &bootmem_node_data[node];
+ 	NODE_DATA(node)->node_start_pfn = start_pfn;
+ 	NODE_DATA(node)->node_spanned_pages = end_pfn - start_pfn;
  
--		new = __alloc_bootmem(PAGE_SIZE, PAGE_SIZE, PAGE_SIZE);
-+		new = memblock_alloc_from(PAGE_SIZE, PAGE_SIZE, PAGE_SIZE);
- 		pgd_populate(&init_mm, pgd, new);
- 	}
- 
-@@ -1635,7 +1635,7 @@ static void __init pcpu_populate_pte(unsigned long addr)
- 	if (pud_none(*pud)) {
- 		pmd_t *new;
- 
--		new = __alloc_bootmem(PAGE_SIZE, PAGE_SIZE, PAGE_SIZE);
-+		new = memblock_alloc_from(PAGE_SIZE, PAGE_SIZE, PAGE_SIZE);
- 		pud_populate(&init_mm, pud, new);
- 	}
- 
-@@ -1643,7 +1643,7 @@ static void __init pcpu_populate_pte(unsigned long addr)
- 	if (!pmd_present(*pmd)) {
- 		pte_t *new;
- 
--		new = __alloc_bootmem(PAGE_SIZE, PAGE_SIZE, PAGE_SIZE);
-+		new = memblock_alloc_from(PAGE_SIZE, PAGE_SIZE, PAGE_SIZE);
- 		pmd_populate_kernel(&init_mm, pmd, new);
- 	}
- }
-diff --git a/arch/sparc/mm/init_32.c b/arch/sparc/mm/init_32.c
-index 92634d4..885dd38 100644
---- a/arch/sparc/mm/init_32.c
-+++ b/arch/sparc/mm/init_32.c
-@@ -265,7 +265,7 @@ void __init mem_init(void)
- 	i = last_valid_pfn >> ((20 - PAGE_SHIFT) + 5);
- 	i += 1;
- 	sparc_valid_addr_bitmap = (unsigned long *)
--		__alloc_bootmem(i << 2, SMP_CACHE_BYTES, 0UL);
-+		memblock_alloc_from(i << 2, SMP_CACHE_BYTES, 0UL);
- 
- 	if (sparc_valid_addr_bitmap == NULL) {
- 		prom_printf("mem_init: Cannot alloc valid_addr_bitmap.\n");
-diff --git a/arch/sparc/mm/init_64.c b/arch/sparc/mm/init_64.c
-index 578ec3d..51cd583 100644
---- a/arch/sparc/mm/init_64.c
-+++ b/arch/sparc/mm/init_64.c
-@@ -1810,7 +1810,8 @@ static unsigned long __ref kernel_map_range(unsigned long pstart,
- 		if (pgd_none(*pgd)) {
- 			pud_t *new;
- 
--			new = __alloc_bootmem(PAGE_SIZE, PAGE_SIZE, PAGE_SIZE);
-+			new = memblock_alloc_from(PAGE_SIZE, PAGE_SIZE,
-+						  PAGE_SIZE);
- 			alloc_bytes += PAGE_SIZE;
- 			pgd_populate(&init_mm, pgd, new);
- 		}
-@@ -1822,7 +1823,8 @@ static unsigned long __ref kernel_map_range(unsigned long pstart,
- 				vstart = kernel_map_hugepud(vstart, vend, pud);
- 				continue;
- 			}
--			new = __alloc_bootmem(PAGE_SIZE, PAGE_SIZE, PAGE_SIZE);
-+			new = memblock_alloc_from(PAGE_SIZE, PAGE_SIZE,
-+						  PAGE_SIZE);
- 			alloc_bytes += PAGE_SIZE;
- 			pud_populate(&init_mm, pud, new);
- 		}
-@@ -1835,7 +1837,8 @@ static unsigned long __ref kernel_map_range(unsigned long pstart,
- 				vstart = kernel_map_hugepmd(vstart, vend, pmd);
- 				continue;
- 			}
--			new = __alloc_bootmem(PAGE_SIZE, PAGE_SIZE, PAGE_SIZE);
-+			new = memblock_alloc_from(PAGE_SIZE, PAGE_SIZE,
-+						  PAGE_SIZE);
- 			alloc_bytes += PAGE_SIZE;
- 			pmd_populate_kernel(&init_mm, pmd, new);
- 		}
-diff --git a/arch/sparc/mm/srmmu.c b/arch/sparc/mm/srmmu.c
-index be9cb00..b48fea5 100644
---- a/arch/sparc/mm/srmmu.c
-+++ b/arch/sparc/mm/srmmu.c
-@@ -303,13 +303,13 @@ static void __init srmmu_nocache_init(void)
- 
- 	bitmap_bits = srmmu_nocache_size >> SRMMU_NOCACHE_BITMAP_SHIFT;
- 
--	srmmu_nocache_pool = __alloc_bootmem(srmmu_nocache_size,
--		SRMMU_NOCACHE_ALIGN_MAX, 0UL);
-+	srmmu_nocache_pool = memblock_alloc_from(srmmu_nocache_size,
-+						 SRMMU_NOCACHE_ALIGN_MAX, 0UL);
- 	memset(srmmu_nocache_pool, 0, srmmu_nocache_size);
- 
- 	srmmu_nocache_bitmap =
--		__alloc_bootmem(BITS_TO_LONGS(bitmap_bits) * sizeof(long),
--				SMP_CACHE_BYTES, 0UL);
-+		memblock_alloc_from(BITS_TO_LONGS(bitmap_bits) * sizeof(long),
-+				    SMP_CACHE_BYTES, 0UL);
- 	bit_map_init(&srmmu_nocache_map, srmmu_nocache_bitmap, bitmap_bits);
- 
- 	srmmu_swapper_pg_dir = __srmmu_get_nocache(SRMMU_PGD_TABLE_SIZE, SRMMU_PGD_TABLE_SIZE);
-@@ -467,7 +467,7 @@ static void __init sparc_context_init(int numctx)
- 	unsigned long size;
- 
- 	size = numctx * sizeof(struct ctx_list);
--	ctx_list_pool = __alloc_bootmem(size, SMP_CACHE_BYTES, 0UL);
-+	ctx_list_pool = memblock_alloc_from(size, SMP_CACHE_BYTES, 0UL);
- 
- 	for (ctx = 0; ctx < numctx; ctx++) {
- 		struct ctx_list *clist;
-diff --git a/include/linux/bootmem.h b/include/linux/bootmem.h
-index 3896af2..c97c105 100644
---- a/include/linux/bootmem.h
-+++ b/include/linux/bootmem.h
-@@ -122,6 +122,14 @@ static inline void * __init memblock_alloc_raw(
- 					    NUMA_NO_NODE);
- }
- 
-+static inline void * __init memblock_alloc_from(
-+		phys_addr_t size, phys_addr_t align, phys_addr_t min_addr)
-+{
-+	return memblock_alloc_try_nid(size, align, min_addr,
-+				      BOOTMEM_ALLOC_ACCESSIBLE,
-+				      NUMA_NO_NODE);
-+}
+-	bootmap_size = init_bootmem_node(NODE_DATA(node), freepfn,
+-					start_pfn, end_pfn);
+ 	free_bootmem_with_active_regions(node, end_pfn);
+-	if (node == 0) /* used by finalize_initrd() */
 +
- static inline void * __init memblock_alloc_nopanic(
- 					phys_addr_t size, phys_addr_t align)
++	if (node == 0) {
++		/* kernel end address */
++		unsigned long kernel_end_pfn = PFN_UP(__pa_symbol(&_end));
++
++		/* used by finalize_initrd() */
+ 		max_low_pfn = end_pfn;
+ 
+-	/* This is reserved for the kernel and bdata->node_bootmem_map */
+-	reserve_bootmem_node(NODE_DATA(node), start_pfn << PAGE_SHIFT,
+-		((freepfn - start_pfn) << PAGE_SHIFT) + bootmap_size,
+-		BOOTMEM_DEFAULT);
++		/* Reserve the kernel text/data/bss */
++		memblock_reserve(start_pfn << PAGE_SHIFT,
++				 ((kernel_end_pfn - start_pfn) << PAGE_SHIFT));
+ 
+-	if (node == 0 && node_end_pfn(0) >= (0xffffffff >> PAGE_SHIFT)) {
+ 		/* Reserve 0xfe000000~0xffffffff for RS780E integrated GPU */
+-		reserve_bootmem_node(NODE_DATA(node),
+-				(node_addrspace_offset | 0xfe000000),
+-				32 << 20, BOOTMEM_DEFAULT);
++		if (node_end_pfn(0) >= (0xffffffff >> PAGE_SHIFT))
++			memblock_reserve((node_addrspace_offset | 0xfe000000),
++					 32 << 20);
+ 	}
+ 
+ 	sparse_memory_present_with_active_regions(node);
+diff --git a/arch/mips/sgi-ip27/ip27-memory.c b/arch/mips/sgi-ip27/ip27-memory.c
+index 59133d0a..6f7bef0 100644
+--- a/arch/mips/sgi-ip27/ip27-memory.c
++++ b/arch/mips/sgi-ip27/ip27-memory.c
+@@ -389,7 +389,6 @@ static void __init node_mem_init(cnodeid_t node)
  {
+ 	unsigned long slot_firstpfn = slot_getbasepfn(node, 0);
+ 	unsigned long slot_freepfn = node_getfirstfree(node);
+-	unsigned long bootmap_size;
+ 	unsigned long start_pfn, end_pfn;
+ 
+ 	get_pfn_range_for_nid(node, &start_pfn, &end_pfn);
+@@ -400,7 +399,6 @@ static void __init node_mem_init(cnodeid_t node)
+ 	__node_data[node] = __va(slot_freepfn << PAGE_SHIFT);
+ 	memset(__node_data[node], 0, PAGE_SIZE);
+ 
+-	NODE_DATA(node)->bdata = &bootmem_node_data[node];
+ 	NODE_DATA(node)->node_start_pfn = start_pfn;
+ 	NODE_DATA(node)->node_spanned_pages = end_pfn - start_pfn;
+ 
+@@ -409,12 +407,11 @@ static void __init node_mem_init(cnodeid_t node)
+ 	slot_freepfn += PFN_UP(sizeof(struct pglist_data) +
+ 			       sizeof(struct hub_data));
+ 
+-	bootmap_size = init_bootmem_node(NODE_DATA(node), slot_freepfn,
+-					start_pfn, end_pfn);
+ 	free_bootmem_with_active_regions(node, end_pfn);
+-	reserve_bootmem_node(NODE_DATA(node), slot_firstpfn << PAGE_SHIFT,
+-		((slot_freepfn - slot_firstpfn) << PAGE_SHIFT) + bootmap_size,
+-		BOOTMEM_DEFAULT);
++
++	memblock_reserve(slot_firstpfn << PAGE_SHIFT,
++			 ((slot_freepfn - slot_firstpfn) << PAGE_SHIFT));
++
+ 	sparse_memory_present_with_active_regions(node);
+ }
+ 
 -- 
 2.7.4
 
