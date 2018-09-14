@@ -1,142 +1,121 @@
-Return-Path: <linux-sh-owner@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <20180820233331.08dd2bfb@naga.suse.cz>
-References: <20180627143705.5a1fed1c@kitsune.suse.cz> <CAK7LNARVPNx_uC5xTrS_p9T4nMRTC79BO51T4Lytv2eU1c-ynw@mail.gmail.com>
- <20180628111623.3807fe9b@naga.suse.cz> <CAK7LNARRKU7Mfa8ZBu1qPFYFRr-5k69sjVyERM2bYcnWoBDN8g@mail.gmail.com>
- <20180806200725.4efa5d35@kitsune.suse.cz> <CAK7LNATCktToMui4NYxoUXV8ZbuDK8F0JCp_CysEWaSBPUP7NQ@mail.gmail.com>
- <20180820233331.08dd2bfb@naga.suse.cz>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Mon, 3 Sep 2018 19:06:00 +0900
-Message-ID: <CAK7LNAQ5Q-DPL006UJzs-dAhMo5Cdaa9P+UAD+XL67QvPw353g@mail.gmail.com>
-Subject: Re: due to kconfig changes kernel config file is no longer sufficient
- for configuring the kernel
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Sender: linux-sh-owner@vger.kernel.org
-To: =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, Andreas Schwab <schwab@suse.de>, Michal Kubecek <mkubecek@suse.cz>, Michal Marek <michal.lkml@markovi.net>, Jonathan Corbet <corbet@lwn.net>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, "David S. Miller" <davem@davemloft.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>, Philippe Ombredanne <pombredanne@nexb.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Ulf Magnusson <ulfalizer@gmail.com>, Jeff Mahoney <jeffm@suse.com>, "Peter Zijlstra," <peterz@infradead.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Frederic Weisbecker <frederic@kernel.org>, Randy Dunlap <rdunlap@infradead.org>, Dominik Brodowski <linux@dominikbrodowski.net>, Nicholas Piggin <npiggin@gmail.com>, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>, linux-um@lists.infradead.org
+Return-Path: <rppt@linux.vnet.ibm.com>
+From: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Subject: [PATCH 30/30] docs/boot-time-mm: remove bootmem documentation
+Date: Fri, 14 Sep 2018 15:10:45 +0300
+In-Reply-To: <1536927045-23536-1-git-send-email-rppt@linux.vnet.ibm.com>
+References: <1536927045-23536-1-git-send-email-rppt@linux.vnet.ibm.com>
+Message-Id: <1536927045-23536-31-git-send-email-rppt@linux.vnet.ibm.com>
+To: linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guan Xuetao <gxt@pku.edu.cn>, Ingo Molnar <mingo@redhat.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Jonas Bonn <jonas@southpole.se>, Jonathan Corbet <corbet@lwn.net>, Ley Foon Tan <lftan@altera.com>, Mark Salter <msalter@redhat.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Matt Turner <mattst88@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@suse.com>, Michal Simek <monstr@monstr.eu>, Palmer Dabbelt <palmer@sifive.com>, Paul Burton <paul.burton@mips.com>, Richard Kuo <rkuo@codeaurora.org>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, Serge Semin <fancer.lancer@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, Mike Rapoport <rppt@linux.vnet.ibm.com>
 List-ID: <linux-um.lists.infradead.org>
 
-Hi,
+Signed-off-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
+---
+ Documentation/core-api/boot-time-mm.rst | 71 +++++----------------------------
+ 1 file changed, 10 insertions(+), 61 deletions(-)
 
+diff --git a/Documentation/core-api/boot-time-mm.rst b/Documentation/core-api/boot-time-mm.rst
+index 03cb164..e5ec9f1 100644
+--- a/Documentation/core-api/boot-time-mm.rst
++++ b/Documentation/core-api/boot-time-mm.rst
+@@ -5,54 +5,23 @@ Boot time memory management
+ Early system initialization cannot use "normal" memory management
+ simply because it is not set up yet. But there is still need to
+ allocate memory for various data structures, for instance for the
+-physical page allocator. To address this, a specialized allocator
+-called the :ref:`Boot Memory Allocator <bootmem>`, or bootmem, was
+-introduced. Several years later PowerPC developers added a "Logical
+-Memory Blocks" allocator, which was later adopted by other
+-architectures and renamed to :ref:`memblock <memblock>`. There is also
+-a compatibility layer called `nobootmem` that translates bootmem
+-allocation interfaces to memblock calls.
++physical page allocator.
+ 
+-The selection of the early allocator is done using
+-``CONFIG_NO_BOOTMEM`` and ``CONFIG_HAVE_MEMBLOCK`` kernel
+-configuration options. These options are enabled or disabled
+-statically by the architectures' Kconfig files.
+-
+-* Architectures that rely only on bootmem select
+-  ``CONFIG_NO_BOOTMEM=n && CONFIG_HAVE_MEMBLOCK=n``.
+-* The users of memblock with the nobootmem compatibility layer set
+-  ``CONFIG_NO_BOOTMEM=y && CONFIG_HAVE_MEMBLOCK=y``.
+-* And for those that use both memblock and bootmem the configuration
+-  includes ``CONFIG_NO_BOOTMEM=n && CONFIG_HAVE_MEMBLOCK=y``.
+-
+-Whichever allocator is used, it is the responsibility of the
+-architecture specific initialization to set it up in
+-:c:func:`setup_arch` and tear it down in :c:func:`mem_init` functions.
++A specialized allocator called ``memblock`` performs the
++boot time memory management. The architecture specific initialization
++must set it up in :c:func:`setup_arch` and tear it down in
++:c:func:`mem_init` functions.
+ 
+ Once the early memory management is available it offers a variety of
+ functions and macros for memory allocations. The allocation request
+ may be directed to the first (and probably the only) node or to a
+ particular node in a NUMA system. There are API variants that panic
+-when an allocation fails and those that don't. And more recent and
+-advanced memblock even allows controlling its own behaviour.
+-
+-.. _bootmem:
+-
+-Bootmem
+-=======
+-
+-(mostly stolen from Mel Gorman's "Understanding the Linux Virtual
+-Memory Manager" `book`_)
+-
+-.. _book: https://www.kernel.org/doc/gorman/
+-
+-.. kernel-doc:: mm/bootmem.c
+-   :doc: bootmem overview
++when an allocation fails and those that don't.
+ 
+-.. _memblock:
++Memblock also offers a variety of APIs that control its own behaviour.
+ 
+-Memblock
+-========
++Memblock Overview
++=================
+ 
+ .. kernel-doc:: mm/memblock.c
+    :doc: memblock overview
+@@ -61,26 +30,6 @@ Memblock
+ Functions and structures
+ ========================
+ 
+-Common API
+-----------
+-
+-The functions that are described in this section are available
+-regardless of what early memory manager is enabled.
+-
+-.. kernel-doc:: mm/nobootmem.c
+-
+-Bootmem specific API
+---------------------
+-
+-These interfaces available only with bootmem, i.e when ``CONFIG_NO_BOOTMEM=n``
+-
+-.. kernel-doc:: include/linux/bootmem.h
+-.. kernel-doc:: mm/bootmem.c
+-   :nodocs:
+-
+-Memblock specific API
+----------------------
+-
+ Here is the description of memblock data structures, functions and
+ macros. Some of them are actually internal, but since they are
+ documented it would be silly to omit them. Besides, reading the
+@@ -89,4 +38,4 @@ really happens under the hood.
+ 
+ .. kernel-doc:: include/linux/memblock.h
+ .. kernel-doc:: mm/memblock.c
+-   :nodocs:
++   :functions:
+-- 
+2.7.4
 
-2018-08-21 6:33 GMT+09:00 Michal Such=C3=A1nek <msuchanek@suse.de>:
-> Hello,
->
-> On Tue, 21 Aug 2018 03:15:12 +0900
-> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
->
->> 2018-08-07 3:07 GMT+09:00 Michal Such=C3=A1nek <msuchanek@suse.de>:
->> > On Mon, 30 Jul 2018 17:02:42 +0900
->> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
->> >
->> >> 2018-06-28 18:16 GMT+09:00 Michal Such=C3=A1nek <msuchanek@suse.de>:
->> >> > On Wed, 27 Jun 2018 23:07:21 +0900
->> >> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
->> >> >
->
->> >>
->> >>
->> >>
->> >> >>
->> >> >> out-of-tree modules are built with exactly the same
->> >> >> configuration as used for the kernel.
->> >> >
->> >> > It is not true. And that is the problem. You need the config file
->> >> > and dump of the environment passed to the make command at
->> >> > configuration time to get the exact same configuration. The
->> >> > environment is not saved anywhere, though.
->> >>
->> >>
->> >> Why dump of the environment?
->> >>
->> >>
->> >> If you are building external modules natively
->> >> your distribution provides /lib/modules/$(uname -r)/build,
->> >> which contains files enough for building external modules.
->> >>
->> >> You can pass the directory path to M=3D... parameter.  That's it.
->> >
->> > No, that's not it. Since passing ARCH=3Di386 is the de-facto standard
->> > to configure a 32bit kernel and the result of passing that was not
->> > saved you need to pass it to make as well.
->>
->>
->> If you pass ARCH=3D for the configuration phase,
->> you need to pass the same ARCH=3D in the build phase.
->>
->>
->>
->>
->> What I can suggest for you is:
->>
->>
->> $ make ARCH=3Di386 defconfig
->> $ make ARCH=3Di386
->>
->>    OR
->>
->> $ make i386_defconfig
->> $ make
->
-> Maybe you missed that but I do not want to build the defconfig. I want
-> to build a *particular* config which has been saved in a file
-> beforehand.
->>
->> > And you need to patch a number of
->> > 3rd party build scripts that build a kernel module as part of a
->> > bigger project.
->>
->>
->> You do not need to patch a number of scripts.
->>
->> Just one liner fix.
->> Add 'export ARCH=3Di386' in the top level script.
->
-> And that does not work because there is no toplevel script. rpm has
-> three toplevel scripts - prep, build and install.
-
-
-OK, I understood real problem cases.
-
-I wrote patches to support non-interactive .config updates.
-
-For package building like rpm, deb, etc.
-the target ARCH is determined when creating a source package.
-If so, it would not hurt to hard-code to record ARCH in the spec file.
-
-
-> Building out-of-tree module is another toplevel script.
-
-
-As I said before, the .config is not reconfigured
-when building out-of-tree modules.
-
-Out-of-tree modules are built with the .config
-that has been used to build vmlinux
-regardless of whether you pass ARCH=3Di386, ARCH=3Dx86_64, or nothing.
-
-If rpmbuild is given target option like 'rpmbuild --target i386 ...",
-it think it makes sense to propagate it to ARCH=3D.
-
-
-> And it does not suffice to 'export ARCH=3Di386'. What if it was a 64bit
-> config? How do I tell?
->
-> With more and more options left out of the config that depend on
-> compiler features, environment variables, phase of the moon or whatnot
-> you can't even tell what kind of kernel the user is running by looking
-> at the config.
-
-
-I added non-interactive .config update.
-
-Please try it.
-
-
-
-
---=20
-Best Regards
-Masahiro Yamada
 
