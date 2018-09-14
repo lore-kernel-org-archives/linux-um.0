@@ -1,131 +1,51 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
-From: Paul Burton <paul.burton@mips.com>
-Subject: [PATCH v5 4/4] MIPS: Workaround GCC __builtin_unreachable reordering bug
-Date: Wed,  8 Aug 2018 15:52:25 -0700
-Message-Id: <20180808225225.24450-5-paul.burton@mips.com>
-In-Reply-To: <20180808225225.24450-1-paul.burton@mips.com>
-References: <20180808225225.24450-1-paul.burton@mips.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Sender: linux-arch-owner@vger.kernel.org
-To: linux-mips@linux-mips.org
-Cc: Arnd Bergmann <arnd@arndb.de>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, linux-alpha@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-arch@vger.kernel.org, Paul Burton <paul.burton@mips.com>, Matthew Fortune <matthew.fortune@mips.com>, Robert Suchanek <robert.suchanek@mips.com>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <rppt@linux.vnet.ibm.com>
+From: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Subject: [PATCH 12/30] memblock: replace alloc_bootmem_low with memblock_alloc_low
+Date: Fri, 14 Sep 2018 15:10:27 +0300
+In-Reply-To: <1536927045-23536-1-git-send-email-rppt@linux.vnet.ibm.com>
+References: <1536927045-23536-1-git-send-email-rppt@linux.vnet.ibm.com>
+Message-Id: <1536927045-23536-13-git-send-email-rppt@linux.vnet.ibm.com>
+To: linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guan Xuetao <gxt@pku.edu.cn>, Ingo Molnar <mingo@redhat.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Jonas Bonn <jonas@southpole.se>, Jonathan Corbet <corbet@lwn.net>, Ley Foon Tan <lftan@altera.com>, Mark Salter <msalter@redhat.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Matt Turner <mattst88@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@suse.com>, Michal Simek <monstr@monstr.eu>, Palmer Dabbelt <palmer@sifive.com>, Paul Burton <paul.burton@mips.com>, Richard Kuo <rkuo@codeaurora.org>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, Serge Semin <fancer.lancer@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, Mike Rapoport <rppt@linux.vnet.ibm.com>
+List-ID: <linux-um.lists.infradead.org>
 
-Older versions of GCC for the MIPS architecture suffer from a bug which
-can lead to instructions from beyond an unreachable statement being
-incorrectly reordered into earlier branch delay slots if the unreachable
-statement is the only content of a case in a switch statement. This can
-lead to seemingly random behaviour, such as invalid memory accesses from
-incorrectly reordered loads or stores, and link failures on microMIPS
-builds.
+The alloc_bootmem_low(size) allocates low memory with default alignement
+and can be replcaed by memblock_alloc_low(size, 0)
 
-See this potential GCC fix for details:
-
-    https://gcc.gnu.org/ml/gcc-patches/2015-09/msg00360.html
-
-This bug can be worked around by placing a volatile asm statement, which
-GCC is prevented from reordering past, prior to the
-__builtin_unreachable call.
-
-This was actually done already for other reasons by commit 173a3efd3edb
-("bug.h: work around GCC PR82365 in BUG()"), but without the MIPS
-specific .insn, which broke microMIPS builds on newer GCC 7.2 toolchains
-with errors like the following:
-
-    arch/mips/mm/dma-default.s:3265: Error: branch to a symbol in another ISA mode
-    arch/mips/mm/dma-default.s:5027: Error: branch to a symbol in another ISA mode
-
-Add a MIPS-specific definition of barrier_before_unreachable() which
-includes the .insn directive in order to satisfy the assembler that
-branch targets are in fact code.
-
-The original bug affects at least a maltasmvp_defconfig kernel built
-from the v4.4 tag using GCC 4.9.2 (from a Codescape SDK 2015.06-05
-toolchain), with the result being an address exception taken after log
-messages about the L1 caches (during probe of the L2 cache):
-
-    Initmem setup node 0 [mem 0x0000000080000000-0x000000009fffffff]
-    VPE topology {2,2} total 4
-    Primary instruction cache 64kB, VIPT, 4-way, linesize 32 bytes.
-    Primary data cache 64kB, 4-way, PIPT, no aliases, linesize 32 bytes
-    <AdEL exception here>
-
-This is early enough that the kernel exception vectors are not in use,
-so any further output depends upon the bootloader. This is reproducible
-in QEMU where no further output occurs - ie. the system hangs here.
-Given the nature of the bug it may potentially be hit with differing
-symptoms.
-
-Fixes: 173a3efd3edb ("bug.h: work around GCC PR82365 in BUG()")
-Signed-off-by: Paul Burton <paul.burton@mips.com>
-[jhogan@kernel.org: Forward port and use asm/compiler.h instead of
- asm/compiler-gcc.h]
-Signed-off-by: James Hogan <jhogan@kernel.org>
-Cc: Matthew Fortune <matthew.fortune@mips.com>
-Cc: Robert Suchanek <robert.suchanek@mips.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-mips@linux-mips.org
-
+Signed-off-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
 ---
+ arch/arm64/kernel/setup.c     | 2 +-
+ arch/unicore32/kernel/setup.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Changes in v5:
-- Comment & commit message tweaks.
-
-Changes in v4: None
-Changes in v3:
-- Forward port to v4.17-rc and update commit message.
-- Drop stable tag for now.
-
-Changes in v2:
-- Remove generic-y entry.
-
- arch/mips/include/asm/compiler.h | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
-
-diff --git a/arch/mips/include/asm/compiler.h b/arch/mips/include/asm/compiler.h
-index e081a265f422..1e9548faf9c7 100644
---- a/arch/mips/include/asm/compiler.h
-+++ b/arch/mips/include/asm/compiler.h
-@@ -8,6 +8,36 @@
- #ifndef _ASM_COMPILER_H
- #define _ASM_COMPILER_H
+diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
+index 5b4fac4..cf7a7b7 100644
+--- a/arch/arm64/kernel/setup.c
++++ b/arch/arm64/kernel/setup.c
+@@ -213,7 +213,7 @@ static void __init request_standard_resources(void)
+ 	kernel_data.end     = __pa_symbol(_end - 1);
  
-+/*
-+ * With GCC v4.5 onwards can use __builtin_unreachable to indicate to the
-+ * compiler that a particular code path will never be hit. This allows it to be
-+ * optimised out of the generated binary.
-+ *
-+ * Unfortunately GCC from at least v4.9.2 to current head of tree as of May
-+ * 2016 suffer from a bug that can lead to instructions from beyond an
-+ * unreachable statement being incorrectly reordered into earlier delay slots
-+ * if the unreachable statement is the only content of a case in a switch
-+ * statement. This can lead to seemingly random behaviour, such as invalid
-+ * memory accesses from incorrectly reordered loads or stores. See this
-+ * potential GCC fix for details:
-+ *
-+ *   https://gcc.gnu.org/ml/gcc-patches/2015-09/msg00360.html
-+ *
-+ * GCC also handles stack allocation suboptimally when calling noreturn
-+ * functions or calling __builtin_unreachable():
-+ *
-+ *   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=82365
-+ *
-+ * We work around both of these issues by placing a volatile asm statement,
-+ * which GCC is prevented from reordering past, prior to __builtin_unreachable
-+ * calls.
-+ *
-+ * The .insn statement is required to ensure that any branches to the
-+ * statement, which sadly must be kept due to the asm statement, are known to
-+ * be branches to code and satisfy linker requirements for microMIPS kernels.
-+ */
-+#define barrier_before_unreachable() asm volatile(".insn")
-+
- #if __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 4)
- #define GCC_IMM_ASM() "n"
- #define GCC_REG_ACCUM "$0"
+ 	for_each_memblock(memory, region) {
+-		res = alloc_bootmem_low(sizeof(*res));
++		res = memblock_alloc_low(sizeof(*res), 0);
+ 		if (memblock_is_nomap(region)) {
+ 			res->name  = "reserved";
+ 			res->flags = IORESOURCE_MEM;
+diff --git a/arch/unicore32/kernel/setup.c b/arch/unicore32/kernel/setup.c
+index c2bffa5..9f163f9 100644
+--- a/arch/unicore32/kernel/setup.c
++++ b/arch/unicore32/kernel/setup.c
+@@ -207,7 +207,7 @@ request_standard_resources(struct meminfo *mi)
+ 		if (mi->bank[i].size == 0)
+ 			continue;
+ 
+-		res = alloc_bootmem_low(sizeof(*res));
++		res = memblock_alloc_low(sizeof(*res), 0);
+ 		res->name  = "System RAM";
+ 		res->start = mi->bank[i].start;
+ 		res->end   = mi->bank[i].start + mi->bank[i].size - 1;
 -- 
-2.18.0
+2.7.4
 
 
