@@ -1,68 +1,37 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x641.google.com ([2607:f8b0:4864:20::641])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fx1MF-0005Z5-Cf
- for linux-um@lists.infradead.org; Tue, 04 Sep 2018 02:46:24 +0000
-Received: by mail-pl1-x641.google.com with SMTP id s17-v6so885868plp.7
- for <linux-um@lists.infradead.org>; Mon, 03 Sep 2018 19:46:13 -0700 (PDT)
-From: Jaejoong Kim <climbbb.kim@gmail.com>
-Subject: [PATCH 16/25] isdn: capi: Change return type to void
-Date: Tue,  4 Sep 2018 11:44:42 +0900
-Message-Id: <1536029091-4426-17-git-send-email-climbbb.kim@gmail.com>
-In-Reply-To: <1536029091-4426-1-git-send-email-climbbb.kim@gmail.com>
-References: <1536029091-4426-1-git-send-email-climbbb.kim@gmail.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org, netdev@vger.kernel.org, linux-mmc@vger.kernel.org, linux-s390@vger.kernel.org, devel@driverdev.osuosl.org, greybus-dev@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-serial@vger.kernel.org, sparclinux@vger.kernel.org, linux-usb@vger.kernel.org, linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jslaby@suse.com>
+Return-Path: <rppt@linux.vnet.ibm.com>
+From: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Subject: [PATCH 08/30] memblock: replace alloc_bootmem_align with memblock_alloc
+Date: Fri, 14 Sep 2018 15:10:23 +0300
+In-Reply-To: <1536927045-23536-1-git-send-email-rppt@linux.vnet.ibm.com>
+References: <1536927045-23536-1-git-send-email-rppt@linux.vnet.ibm.com>
+Message-Id: <1536927045-23536-9-git-send-email-rppt@linux.vnet.ibm.com>
+To: linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guan Xuetao <gxt@pku.edu.cn>, Ingo Molnar <mingo@redhat.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Jonas Bonn <jonas@southpole.se>, Jonathan Corbet <corbet@lwn.net>, Ley Foon Tan <lftan@altera.com>, Mark Salter <msalter@redhat.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Matt Turner <mattst88@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@suse.com>, Michal Simek <monstr@monstr.eu>, Palmer Dabbelt <palmer@sifive.com>, Paul Burton <paul.burton@mips.com>, Richard Kuo <rkuo@codeaurora.org>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, Serge Semin <fancer.lancer@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, Mike Rapoport <rppt@linux.vnet.ibm.com>
+List-ID: <linux-um.lists.infradead.org>
 
-Since tty_standard_install() always returns 0, the return type has changed
-to void. Now apply this and remove the obsolete error check.
+The functions are equivalent, just the later does not require nobootmem
+translation layer.
 
-Signed-off-by: Jaejoong Kim <climbbb.kim@gmail.com>
+Signed-off-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
 ---
- drivers/isdn/capi/capi.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ arch/x86/xen/p2m.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/isdn/capi/capi.c b/drivers/isdn/capi/capi.c
-index ef5560b..08daf3a 100644
---- a/drivers/isdn/capi/capi.c
-+++ b/drivers/isdn/capi/capi.c
-@@ -999,13 +999,11 @@ static int
- capinc_tty_install(struct tty_driver *driver, struct tty_struct *tty)
+diff --git a/arch/x86/xen/p2m.c b/arch/x86/xen/p2m.c
+index d6d74ef..5de761b 100644
+--- a/arch/x86/xen/p2m.c
++++ b/arch/x86/xen/p2m.c
+@@ -182,7 +182,7 @@ static void p2m_init_identity(unsigned long *p2m, unsigned long pfn)
+ static void * __ref alloc_p2m_page(void)
  {
- 	struct capiminor *mp = capiminor_get(tty->index);
--	int ret = tty_standard_install(driver, tty);
+ 	if (unlikely(!slab_is_available()))
+-		return alloc_bootmem_align(PAGE_SIZE, PAGE_SIZE);
++		return memblock_alloc(PAGE_SIZE, PAGE_SIZE);
  
--	if (ret == 0)
--		tty->driver_data = mp;
--	else
--		capiminor_put(mp);
--	return ret;
-+	tty_standard_install(driver, tty);
-+	tty->driver_data = mp;
-+
-+	return 0;
+ 	return (void *)__get_free_page(GFP_KERNEL);
  }
- 
- static void capinc_tty_cleanup(struct tty_struct *tty)
 -- 
 2.7.4
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
