@@ -1,711 +1,354 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x542.google.com ([2607:f8b0:4864:20::542])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fxNuo-0004s4-Bw
- for linux-um@lists.infradead.org; Wed, 05 Sep 2018 02:51:37 +0000
-Received: by mail-pg1-x542.google.com with SMTP id b129-v6so2616782pga.13
- for <linux-um@lists.infradead.org>; Tue, 04 Sep 2018 19:51:23 -0700 (PDT)
-From: Jaejoong Kim <climbbb.kim@gmail.com>
-Subject: [PATCH v2] tty: Change tty_{port|standard}_install() return type to
- void
-Date: Wed,  5 Sep 2018 11:50:31 +0900
-Message-Id: <1536115855-25744-1-git-send-email-climbbb.kim@gmail.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Return-Path: <mhocko@kernel.org>
+Date: Wed, 26 Sep 2018 11:38:20 +0200
+From: Michal Hocko <mhocko@kernel.org>
+Subject: Re: [PATCH 21/30] memblock: replace alloc_bootmem with memblock_alloc
+Message-ID: <20180926093820.GR6278@dhcp22.suse.cz>
+References: <1536927045-23536-1-git-send-email-rppt@linux.vnet.ibm.com>
+ <1536927045-23536-22-git-send-email-rppt@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jslaby@suse.com>
-Cc: Yisheng Xie <xieyisheng1@huawei.com>, Nicolas Pitre <nicolas.pitre@linaro.org>, Ulf Hansson <ulf.hansson@linaro.org>, Randy Dunlap <rdunlap@infradead.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Alexander Potapenko <glider@google.com>, Michael Ellerman <mpe@ellerman.id.au>, "open list:SPARC SERIAL DRIVERS" <sparclinux@vger.kernel.org>, Thomas Meyer <thomas@m3y3r.de>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>, "open list:S390" <linux-s390@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, Richard Weinberger <richard@nod.at>, David Lin <dtwlin@gmail.com>, "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>, Marcel Holtmann <marcel@holtmann.org>, Guenter Roeck <linux@roeck-us.net>, Adam Borowski <kilobyte@angband.pl>, Kees Cook <keescook@chromium.org>, Mathias Nyman <mathias.nyman@intel.com>, Jeff Dike <jdike@addtoit.com>, "open list:USER-MODE LINUX UML" <linux-um@lists.infradead.org>, Johan Hovold <johan@kernel.org>, Nicholas Piggin <npiggin@gmail.com>, Joe Perches <joe@perches.com>, Al Viro <viro@zeniv.linux.org.uk>, Thomas Gleixner <tglx@linutronix.de>, Quytelda Kahja <quytelda@tamalin.org>, Karsten Keil <isdn@linux-pingi.de>, Alex Elder <elder@kernel.org>, "moderated list:GREYBUS SUBSYSTEM" <greybus-dev@lists.linaro.org>, "open list:ISDN SUBSYSTEM" <netdev@vger.kernel.org>, Oliver Neukum <oneukum@suse.com>, "open list:MULTIMEDIA CARD MMC, SECURE DIGITAL SD AND...  <linux-mmc@vger.kernel.org>, open list" <linux-kernel@vger.kernel.org>, "open list:BLUETOOTH SUBSYSTEM" <linux-bluetooth@vger.kernel.org>, "open list:USB ACM DRIVER" <linux-usb@vger.kernel.org>, Meng Xu <mengxu.gatech@gmail.com>, Philippe Ombredanne <pombredanne@nexb.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Johan Hedberg <johan.hedberg@gmail.com>, "open list:HYPERVISOR VIRTUAL CONSOLE DRIVER" <linuxppc-dev@lists.ozlabs.org>, "David S. Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1536927045-23536-22-git-send-email-rppt@linux.vnet.ibm.com>
+To: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guan Xuetao <gxt@pku.edu.cn>, Ingo Molnar <mingo@redhat.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Jonas Bonn <jonas@southpole.se>, Jonathan Corbet <corbet@lwn.net>, Ley Foon Tan <lftan@altera.com>, Mark Salter <msalter@redhat.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Matt Turner <mattst88@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, Palmer Dabbelt <palmer@sifive.com>, Paul Burton <paul.burton@mips.com>, Richard Kuo <rkuo@codeaurora.org>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, Serge Semin <fancer.lancer@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp
+List-ID: <linux-um.lists.infradead.org>
 
-Many drivers with tty use the tty_stand_install(). But, there is no
-need to handle the error, since it always returns 0. So, change the
-return type of tty_standard_install() and tty_port_install() to void
-type and remove unnecessary exception handling where we use these
-functions.
+On Fri 14-09-18 15:10:36, Mike Rapoport wrote:
+> The alloc_bootmem(size) is a shortcut for allocation of SMP_CACHE_BYTES
+> aligned memory. When the align parameter of memblock_alloc() is 0, the
+> alignment is implicitly set to SMP_CACHE_BYTES and thus alloc_bootmem(size)
+> and memblock_alloc(size, 0) are equivalent.
+> 
+> The conversion is done using the following semantic patch:
+> 
+> @@
+> expression size;
+> @@
+> - alloc_bootmem(size)
+> + memblock_alloc(size, 0)
 
-Signed-off-by: Jaejoong Kim <climbbb.kim@gmail.com>
----
-Changes in v2:
-- Update commit title
-- Squash other patches into one
-  https://lkml.org/lkml/2018/9/4/70
+As mentioned in other email, please make it explicit SMP_CACHE_BYTES.
 
- arch/um/drivers/line.c              |  7 +------
- drivers/isdn/capi/capi.c            | 10 ++++------
- drivers/isdn/i4l/isdn_tty.c         |  3 ++-
- drivers/misc/pti.c                  | 28 +++++++++++++---------------
- drivers/mmc/core/sdio_uart.c        | 11 ++++-------
- drivers/s390/char/con3215.c         |  3 ++-
- drivers/s390/char/tty3270.c         |  7 +------
- drivers/staging/fwserial/fwserial.c | 22 ++++++++--------------
- drivers/staging/gdm724x/gdm_tty.c   | 11 +++--------
- drivers/staging/greybus/uart.c      | 10 ++--------
- drivers/tty/hvc/hvc_console.c       |  7 ++-----
- drivers/tty/hvc/hvcs.c              | 10 ++--------
- drivers/tty/mips_ejtag_fdc.c        |  4 +++-
- drivers/tty/n_gsm.c                 |  9 +--------
- drivers/tty/nozomi.c                |  8 +++-----
- drivers/tty/serial/kgdb_nmi.c       | 11 +----------
- drivers/tty/synclink.c              |  3 ++-
- drivers/tty/synclinkmp.c            |  3 ++-
- drivers/tty/tty_io.c                | 10 ++++++----
- drivers/tty/tty_port.c              |  4 ++--
- drivers/tty/vcc.c                   |  5 +----
- drivers/tty/vt/vt.c                 |  5 +----
- drivers/usb/class/cdc-acm.c         | 10 +---------
- drivers/usb/host/xhci-dbgtty.c      |  3 ++-
- drivers/usb/serial/usb-serial.c     |  6 +-----
- include/linux/tty.h                 |  4 ++--
- net/bluetooth/rfcomm/tty.c          |  7 +------
- 27 files changed, 73 insertions(+), 148 deletions(-)
+> Signed-off-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
+> ---
+>  arch/alpha/kernel/core_marvel.c     | 4 ++--
+>  arch/alpha/kernel/pci-noop.c        | 4 ++--
+>  arch/alpha/kernel/pci.c             | 4 ++--
+>  arch/alpha/kernel/pci_iommu.c       | 4 ++--
+>  arch/ia64/kernel/mca.c              | 4 ++--
+>  arch/ia64/mm/tlb.c                  | 4 ++--
+>  arch/m68k/sun3/sun3dvma.c           | 3 ++-
+>  arch/microblaze/mm/init.c           | 2 +-
+>  arch/mips/kernel/setup.c            | 2 +-
+>  arch/um/drivers/net_kern.c          | 2 +-
+>  arch/um/drivers/vector_kern.c       | 2 +-
+>  arch/um/kernel/initrd.c             | 2 +-
+>  arch/x86/kernel/acpi/boot.c         | 3 ++-
+>  arch/x86/kernel/apic/io_apic.c      | 2 +-
+>  arch/x86/kernel/e820.c              | 2 +-
+>  arch/x86/platform/olpc/olpc_dt.c    | 2 +-
+>  arch/xtensa/platforms/iss/network.c | 2 +-
+>  drivers/macintosh/smu.c             | 2 +-
+>  init/main.c                         | 4 ++--
+>  19 files changed, 28 insertions(+), 26 deletions(-)
+> 
+> diff --git a/arch/alpha/kernel/core_marvel.c b/arch/alpha/kernel/core_marvel.c
+> index bdebb8c2..1f00c94 100644
+> --- a/arch/alpha/kernel/core_marvel.c
+> +++ b/arch/alpha/kernel/core_marvel.c
+> @@ -82,7 +82,7 @@ mk_resource_name(int pe, int port, char *str)
+>  	char *name;
+>  	
+>  	sprintf(tmp, "PCI %s PE %d PORT %d", str, pe, port);
+> -	name = alloc_bootmem(strlen(tmp) + 1);
+> +	name = memblock_alloc(strlen(tmp) + 1, 0);
+>  	strcpy(name, tmp);
+>  
+>  	return name;
+> @@ -117,7 +117,7 @@ alloc_io7(unsigned int pe)
+>  		return NULL;
+>  	}
+>  
+> -	io7 = alloc_bootmem(sizeof(*io7));
+> +	io7 = memblock_alloc(sizeof(*io7), 0);
+>  	io7->pe = pe;
+>  	raw_spin_lock_init(&io7->irq_lock);
+>  
+> diff --git a/arch/alpha/kernel/pci-noop.c b/arch/alpha/kernel/pci-noop.c
+> index c7c5879..59cbfc2 100644
+> --- a/arch/alpha/kernel/pci-noop.c
+> +++ b/arch/alpha/kernel/pci-noop.c
+> @@ -33,7 +33,7 @@ alloc_pci_controller(void)
+>  {
+>  	struct pci_controller *hose;
+>  
+> -	hose = alloc_bootmem(sizeof(*hose));
+> +	hose = memblock_alloc(sizeof(*hose), 0);
+>  
+>  	*hose_tail = hose;
+>  	hose_tail = &hose->next;
+> @@ -44,7 +44,7 @@ alloc_pci_controller(void)
+>  struct resource * __init
+>  alloc_resource(void)
+>  {
+> -	return alloc_bootmem(sizeof(struct resource));
+> +	return memblock_alloc(sizeof(struct resource), 0);
+>  }
+>  
+>  SYSCALL_DEFINE3(pciconfig_iobase, long, which, unsigned long, bus,
+> diff --git a/arch/alpha/kernel/pci.c b/arch/alpha/kernel/pci.c
+> index c668c3b..4cc3eb9 100644
+> --- a/arch/alpha/kernel/pci.c
+> +++ b/arch/alpha/kernel/pci.c
+> @@ -392,7 +392,7 @@ alloc_pci_controller(void)
+>  {
+>  	struct pci_controller *hose;
+>  
+> -	hose = alloc_bootmem(sizeof(*hose));
+> +	hose = memblock_alloc(sizeof(*hose), 0);
+>  
+>  	*hose_tail = hose;
+>  	hose_tail = &hose->next;
+> @@ -403,7 +403,7 @@ alloc_pci_controller(void)
+>  struct resource * __init
+>  alloc_resource(void)
+>  {
+> -	return alloc_bootmem(sizeof(struct resource));
+> +	return memblock_alloc(sizeof(struct resource), 0);
+>  }
+>  
+>  
+> diff --git a/arch/alpha/kernel/pci_iommu.c b/arch/alpha/kernel/pci_iommu.c
+> index 0c05493..5d178c7 100644
+> --- a/arch/alpha/kernel/pci_iommu.c
+> +++ b/arch/alpha/kernel/pci_iommu.c
+> @@ -79,7 +79,7 @@ iommu_arena_new_node(int nid, struct pci_controller *hose, dma_addr_t base,
+>  		printk("%s: couldn't allocate arena from node %d\n"
+>  		       "    falling back to system-wide allocation\n",
+>  		       __func__, nid);
+> -		arena = alloc_bootmem(sizeof(*arena));
+> +		arena = memblock_alloc(sizeof(*arena), 0);
+>  	}
+>  
+>  	arena->ptes = memblock_alloc_node(sizeof(*arena), align, nid);
+> @@ -92,7 +92,7 @@ iommu_arena_new_node(int nid, struct pci_controller *hose, dma_addr_t base,
+>  
+>  #else /* CONFIG_DISCONTIGMEM */
+>  
+> -	arena = alloc_bootmem(sizeof(*arena));
+> +	arena = memblock_alloc(sizeof(*arena), 0);
+>  	arena->ptes = memblock_alloc_from(mem_size, align, 0);
+>  
+>  #endif /* CONFIG_DISCONTIGMEM */
+> diff --git a/arch/ia64/kernel/mca.c b/arch/ia64/kernel/mca.c
+> index 5586926..7120976 100644
+> --- a/arch/ia64/kernel/mca.c
+> +++ b/arch/ia64/kernel/mca.c
+> @@ -361,9 +361,9 @@ static ia64_state_log_t ia64_state_log[IA64_MAX_LOG_TYPES];
+>  
+>  #define IA64_LOG_ALLOCATE(it, size) \
+>  	{ia64_state_log[it].isl_log[IA64_LOG_CURR_INDEX(it)] = \
+> -		(ia64_err_rec_t *)alloc_bootmem(size); \
+> +		(ia64_err_rec_t *)memblock_alloc(size, 0); \
+>  	ia64_state_log[it].isl_log[IA64_LOG_NEXT_INDEX(it)] = \
+> -		(ia64_err_rec_t *)alloc_bootmem(size);}
+> +		(ia64_err_rec_t *)memblock_alloc(size, 0);}
+>  #define IA64_LOG_LOCK_INIT(it) spin_lock_init(&ia64_state_log[it].isl_lock)
+>  #define IA64_LOG_LOCK(it)      spin_lock_irqsave(&ia64_state_log[it].isl_lock, s)
+>  #define IA64_LOG_UNLOCK(it)    spin_unlock_irqrestore(&ia64_state_log[it].isl_lock,s)
+> diff --git a/arch/ia64/mm/tlb.c b/arch/ia64/mm/tlb.c
+> index acf10eb..5554863 100644
+> --- a/arch/ia64/mm/tlb.c
+> +++ b/arch/ia64/mm/tlb.c
+> @@ -59,8 +59,8 @@ struct ia64_tr_entry *ia64_idtrs[NR_CPUS];
+>  void __init
+>  mmu_context_init (void)
+>  {
+> -	ia64_ctx.bitmap = alloc_bootmem((ia64_ctx.max_ctx+1)>>3);
+> -	ia64_ctx.flushmap = alloc_bootmem((ia64_ctx.max_ctx+1)>>3);
+> +	ia64_ctx.bitmap = memblock_alloc((ia64_ctx.max_ctx + 1) >> 3, 0);
+> +	ia64_ctx.flushmap = memblock_alloc((ia64_ctx.max_ctx + 1) >> 3, 0);
+>  }
+>  
+>  /*
+> diff --git a/arch/m68k/sun3/sun3dvma.c b/arch/m68k/sun3/sun3dvma.c
+> index 8546922..72d9458 100644
+> --- a/arch/m68k/sun3/sun3dvma.c
+> +++ b/arch/m68k/sun3/sun3dvma.c
+> @@ -267,7 +267,8 @@ void __init dvma_init(void)
+>  
+>  	list_add(&(hole->list), &hole_list);
+>  
+> -	iommu_use = alloc_bootmem(IOMMU_TOTAL_ENTRIES * sizeof(unsigned long));
+> +	iommu_use = memblock_alloc(IOMMU_TOTAL_ENTRIES * sizeof(unsigned long),
+> +				   0);
+>  
+>  	dvma_unmap_iommu(DVMA_START, DVMA_SIZE);
+>  
+> diff --git a/arch/microblaze/mm/init.c b/arch/microblaze/mm/init.c
+> index df6de7c..8c7f074 100644
+> --- a/arch/microblaze/mm/init.c
+> +++ b/arch/microblaze/mm/init.c
+> @@ -377,7 +377,7 @@ void * __ref zalloc_maybe_bootmem(size_t size, gfp_t mask)
+>  	if (mem_init_done)
+>  		p = kzalloc(size, mask);
+>  	else {
+> -		p = alloc_bootmem(size);
+> +		p = memblock_alloc(size, 0);
+>  		if (p)
+>  			memset(p, 0, size);
+>  	}
+> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+> index a717c90..a6bc2f6 100644
+> --- a/arch/mips/kernel/setup.c
+> +++ b/arch/mips/kernel/setup.c
+> @@ -909,7 +909,7 @@ static void __init resource_init(void)
+>  		if (end >= HIGHMEM_START)
+>  			end = HIGHMEM_START - 1;
+>  
+> -		res = alloc_bootmem(sizeof(struct resource));
+> +		res = memblock_alloc(sizeof(struct resource), 0);
+>  
+>  		res->start = start;
+>  		res->end = end;
+> diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
+> index 3ef1b48..ef19a39 100644
+> --- a/arch/um/drivers/net_kern.c
+> +++ b/arch/um/drivers/net_kern.c
+> @@ -650,7 +650,7 @@ static int __init eth_setup(char *str)
+>  		return 1;
+>  	}
+>  
+> -	new = alloc_bootmem(sizeof(*new));
+> +	new = memblock_alloc(sizeof(*new), 0);
+>  
+>  	INIT_LIST_HEAD(&new->list);
+>  	new->index = n;
+> diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
+> index c84133c..9d77579 100644
+> --- a/arch/um/drivers/vector_kern.c
+> +++ b/arch/um/drivers/vector_kern.c
+> @@ -1575,7 +1575,7 @@ static int __init vector_setup(char *str)
+>  				 str, error);
+>  		return 1;
+>  	}
+> -	new = alloc_bootmem(sizeof(*new));
+> +	new = memblock_alloc(sizeof(*new), 0);
+>  	INIT_LIST_HEAD(&new->list);
+>  	new->unit = n;
+>  	new->arguments = str;
+> diff --git a/arch/um/kernel/initrd.c b/arch/um/kernel/initrd.c
+> index 6f6e789..844056c 100644
+> --- a/arch/um/kernel/initrd.c
+> +++ b/arch/um/kernel/initrd.c
+> @@ -36,7 +36,7 @@ int __init read_initrd(void)
+>  		return 0;
+>  	}
+>  
+> -	area = alloc_bootmem(size);
+> +	area = memblock_alloc(size, 0);
+>  
+>  	if (load_initrd(initrd, area, size) == -1)
+>  		return 0;
+> diff --git a/arch/x86/kernel/acpi/boot.c b/arch/x86/kernel/acpi/boot.c
+> index 3b20607..fd887c1 100644
+> --- a/arch/x86/kernel/acpi/boot.c
+> +++ b/arch/x86/kernel/acpi/boot.c
+> @@ -932,7 +932,8 @@ static int __init acpi_parse_hpet(struct acpi_table_header *table)
+>  	 * the resource tree during the lateinit timeframe.
+>  	 */
+>  #define HPET_RESOURCE_NAME_SIZE 9
+> -	hpet_res = alloc_bootmem(sizeof(*hpet_res) + HPET_RESOURCE_NAME_SIZE);
+> +	hpet_res = memblock_alloc(sizeof(*hpet_res) + HPET_RESOURCE_NAME_SIZE,
+> +				  0);
+>  
+>  	hpet_res->name = (void *)&hpet_res[1];
+>  	hpet_res->flags = IORESOURCE_MEM;
+> diff --git a/arch/x86/kernel/apic/io_apic.c b/arch/x86/kernel/apic/io_apic.c
+> index e25118f..8c74509 100644
+> --- a/arch/x86/kernel/apic/io_apic.c
+> +++ b/arch/x86/kernel/apic/io_apic.c
+> @@ -2578,7 +2578,7 @@ static struct resource * __init ioapic_setup_resources(void)
+>  	n = IOAPIC_RESOURCE_NAME_SIZE + sizeof(struct resource);
+>  	n *= nr_ioapics;
+>  
+> -	mem = alloc_bootmem(n);
+> +	mem = memblock_alloc(n, 0);
+>  	res = (void *)mem;
+>  
+>  	mem += sizeof(struct resource) * nr_ioapics;
+> diff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
+> index c88c23c..7ea8748 100644
+> --- a/arch/x86/kernel/e820.c
+> +++ b/arch/x86/kernel/e820.c
+> @@ -1094,7 +1094,7 @@ void __init e820__reserve_resources(void)
+>  	struct resource *res;
+>  	u64 end;
+>  
+> -	res = alloc_bootmem(sizeof(*res) * e820_table->nr_entries);
+> +	res = memblock_alloc(sizeof(*res) * e820_table->nr_entries, 0);
+>  	e820_res = res;
+>  
+>  	for (i = 0; i < e820_table->nr_entries; i++) {
+> diff --git a/arch/x86/platform/olpc/olpc_dt.c b/arch/x86/platform/olpc/olpc_dt.c
+> index d6ee929..140cd76 100644
+> --- a/arch/x86/platform/olpc/olpc_dt.c
+> +++ b/arch/x86/platform/olpc/olpc_dt.c
+> @@ -141,7 +141,7 @@ void * __init prom_early_alloc(unsigned long size)
+>  		 * fast enough on the platforms we care about while minimizing
+>  		 * wasted bootmem) and hand off chunks of it to callers.
+>  		 */
+> -		res = alloc_bootmem(chunk_size);
+> +		res = memblock_alloc(chunk_size, 0);
+>  		BUG_ON(!res);
+>  		prom_early_allocated += chunk_size;
+>  		memset(res, 0, chunk_size);
+> diff --git a/arch/xtensa/platforms/iss/network.c b/arch/xtensa/platforms/iss/network.c
+> index d027ddd..206b9d4 100644
+> --- a/arch/xtensa/platforms/iss/network.c
+> +++ b/arch/xtensa/platforms/iss/network.c
+> @@ -646,7 +646,7 @@ static int __init iss_net_setup(char *str)
+>  		return 1;
+>  	}
+>  
+> -	new = alloc_bootmem(sizeof(*new));
+> +	new = memblock_alloc(sizeof(*new), 0);
+>  	if (new == NULL) {
+>  		pr_err("Alloc_bootmem failed\n");
+>  		return 1;
+> diff --git a/drivers/macintosh/smu.c b/drivers/macintosh/smu.c
+> index e8ae2e5..332fcca 100644
+> --- a/drivers/macintosh/smu.c
+> +++ b/drivers/macintosh/smu.c
+> @@ -493,7 +493,7 @@ int __init smu_init (void)
+>  		goto fail_np;
+>  	}
+>  
+> -	smu = alloc_bootmem(sizeof(struct smu_device));
+> +	smu = memblock_alloc(sizeof(struct smu_device), 0);
+>  
+>  	spin_lock_init(&smu->lock);
+>  	INIT_LIST_HEAD(&smu->cmd_list);
+> diff --git a/init/main.c b/init/main.c
+> index d0b92bd..99a9e99 100644
+> --- a/init/main.c
+> +++ b/init/main.c
+> @@ -768,8 +768,8 @@ static int __init initcall_blacklist(char *str)
+>  		str_entry = strsep(&str, ",");
+>  		if (str_entry) {
+>  			pr_debug("blacklisting initcall %s\n", str_entry);
+> -			entry = alloc_bootmem(sizeof(*entry));
+> -			entry->buf = alloc_bootmem(strlen(str_entry) + 1);
+> +			entry = memblock_alloc(sizeof(*entry), 0);
+> +			entry->buf = memblock_alloc(strlen(str_entry) + 1, 0);
+>  			strcpy(entry->buf, str_entry);
+>  			list_add(&entry->next, &blacklisted_initcalls);
+>  		}
+> -- 
+> 2.7.4
+> 
 
-diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
-index 8d80b27..47058cf 100644
---- a/arch/um/drivers/line.c
-+++ b/arch/um/drivers/line.c
-@@ -338,12 +338,7 @@ int line_open(struct tty_struct *tty, struct file *filp)
- int line_install(struct tty_driver *driver, struct tty_struct *tty,
- 		 struct line *line)
- {
--	int ret;
--
--	ret = tty_standard_install(driver, tty);
--	if (ret)
--		return ret;
--
-+	tty_standard_install(driver, tty);
- 	tty->driver_data = line;
- 
- 	return 0;
-diff --git a/drivers/isdn/capi/capi.c b/drivers/isdn/capi/capi.c
-index ef5560b..08daf3a 100644
---- a/drivers/isdn/capi/capi.c
-+++ b/drivers/isdn/capi/capi.c
-@@ -999,13 +999,11 @@ static int
- capinc_tty_install(struct tty_driver *driver, struct tty_struct *tty)
- {
- 	struct capiminor *mp = capiminor_get(tty->index);
--	int ret = tty_standard_install(driver, tty);
- 
--	if (ret == 0)
--		tty->driver_data = mp;
--	else
--		capiminor_put(mp);
--	return ret;
-+	tty_standard_install(driver, tty);
-+	tty->driver_data = mp;
-+
-+	return 0;
- }
- 
- static void capinc_tty_cleanup(struct tty_struct *tty)
-diff --git a/drivers/isdn/i4l/isdn_tty.c b/drivers/isdn/i4l/isdn_tty.c
-index b730037..3d6b24e 100644
---- a/drivers/isdn/i4l/isdn_tty.c
-+++ b/drivers/isdn/i4l/isdn_tty.c
-@@ -1481,8 +1481,9 @@ static int isdn_tty_install(struct tty_driver *driver, struct tty_struct *tty)
- 		return -ENODEV;
- 
- 	tty->driver_data = info;
-+	tty_port_install(&info->port, driver, tty);
- 
--	return tty_port_install(&info->port, driver, tty);
-+	return 0;
- }
- 
- /*
-diff --git a/drivers/misc/pti.c b/drivers/misc/pti.c
-index 41f2a9f..5c885a1 100644
---- a/drivers/misc/pti.c
-+++ b/drivers/misc/pti.c
-@@ -462,26 +462,24 @@ static int pti_tty_install(struct tty_driver *driver, struct tty_struct *tty)
- {
- 	int idx = tty->index;
- 	struct pti_tty *pti_tty_data;
--	int ret = tty_standard_install(driver, tty);
- 
--	if (ret == 0) {
--		pti_tty_data = kmalloc(sizeof(struct pti_tty), GFP_KERNEL);
--		if (pti_tty_data == NULL)
--			return -ENOMEM;
-+	tty_standard_install(driver, tty);
-+	pti_tty_data = kmalloc(sizeof(struct pti_tty), GFP_KERNEL);
-+	if (pti_tty_data == NULL)
-+		return -ENOMEM;
- 
--		if (idx == PTITTY_MINOR_START)
--			pti_tty_data->mc = pti_request_masterchannel(0, NULL);
--		else
--			pti_tty_data->mc = pti_request_masterchannel(2, NULL);
-+	if (idx == PTITTY_MINOR_START)
-+		pti_tty_data->mc = pti_request_masterchannel(0, NULL);
-+	else
-+		pti_tty_data->mc = pti_request_masterchannel(2, NULL);
- 
--		if (pti_tty_data->mc == NULL) {
--			kfree(pti_tty_data);
--			return -ENXIO;
--		}
--		tty->driver_data = pti_tty_data;
-+	if (pti_tty_data->mc == NULL) {
-+		kfree(pti_tty_data);
-+		return -ENXIO;
- 	}
-+	tty->driver_data = pti_tty_data;
- 
--	return ret;
-+	return 0;
- }
- 
- /**
-diff --git a/drivers/mmc/core/sdio_uart.c b/drivers/mmc/core/sdio_uart.c
-index 25e1130..b727186 100644
---- a/drivers/mmc/core/sdio_uart.c
-+++ b/drivers/mmc/core/sdio_uart.c
-@@ -731,14 +731,11 @@ static int sdio_uart_install(struct tty_driver *driver, struct tty_struct *tty)
- {
- 	int idx = tty->index;
- 	struct sdio_uart_port *port = sdio_uart_port_get(idx);
--	int ret = tty_standard_install(driver, tty);
- 
--	if (ret == 0)
--		/* This is the ref sdio_uart_port get provided */
--		tty->driver_data = port;
--	else
--		sdio_uart_port_put(port);
--	return ret;
-+	tty_standard_install(driver, tty);
-+	tty->driver_data = port;
-+
-+	return 0;
- }
- 
- /**
-diff --git a/drivers/s390/char/con3215.c b/drivers/s390/char/con3215.c
-index 8c9d412..6a9f6d9 100644
---- a/drivers/s390/char/con3215.c
-+++ b/drivers/s390/char/con3215.c
-@@ -965,8 +965,9 @@ static int tty3215_install(struct tty_driver *driver, struct tty_struct *tty)
- 		return -ENODEV;
- 
- 	tty->driver_data = raw;
-+	tty_port_install(&raw->port, driver, tty);
- 
--	return tty_port_install(&raw->port, driver, tty);
-+	return 0;
- }
- 
- /*
-diff --git a/drivers/s390/char/tty3270.c b/drivers/s390/char/tty3270.c
-index 5b8af27..2915f95 100644
---- a/drivers/s390/char/tty3270.c
-+++ b/drivers/s390/char/tty3270.c
-@@ -1017,12 +1017,7 @@ static int tty3270_install(struct tty_driver *driver, struct tty_struct *tty)
- 	raw3270_activate_view(&tp->view);
- 
- port_install:
--	rc = tty_port_install(&tp->port, driver, tty);
--	if (rc) {
--		raw3270_put_view(&tp->view);
--		return rc;
--	}
--
-+	tty_port_install(&tp->port, driver, tty);
- 	tty->driver_data = tp;
- 
- 	return 0;
-diff --git a/drivers/staging/fwserial/fwserial.c b/drivers/staging/fwserial/fwserial.c
-index fa0dd42..5134019 100644
---- a/drivers/staging/fwserial/fwserial.c
-+++ b/drivers/staging/fwserial/fwserial.c
-@@ -1064,27 +1064,21 @@ static void fwtty_cleanup(struct tty_struct *tty)
- static int fwtty_install(struct tty_driver *driver, struct tty_struct *tty)
- {
- 	struct fwtty_port *port = fwtty_port_get(tty->index);
--	int err;
- 
--	err = tty_standard_install(driver, tty);
--	if (!err)
--		tty->driver_data = port;
--	else
--		fwtty_port_put(port);
--	return err;
-+	tty_standard_install(driver, tty);
-+	tty->driver_data = port;
-+
-+	return 0;
- }
- 
- static int fwloop_install(struct tty_driver *driver, struct tty_struct *tty)
- {
- 	struct fwtty_port *port = fwtty_port_get(table_idx(tty->index));
--	int err;
- 
--	err = tty_standard_install(driver, tty);
--	if (!err)
--		tty->driver_data = port;
--	else
--		fwtty_port_put(port);
--	return err;
-+	tty_standard_install(driver, tty);
-+	tty->driver_data = port;
-+
-+	return 0;
- }
- 
- static int fwtty_write(struct tty_struct *tty, const unsigned char *buf, int c)
-diff --git a/drivers/staging/gdm724x/gdm_tty.c b/drivers/staging/gdm724x/gdm_tty.c
-index 6e81369..d6348df 100644
---- a/drivers/staging/gdm724x/gdm_tty.c
-+++ b/drivers/staging/gdm724x/gdm_tty.c
-@@ -62,6 +62,7 @@ static int gdm_tty_install(struct tty_driver *driver, struct tty_struct *tty)
- 		return -ENODEV;
- 
- 	mutex_lock(&gdm_table_lock);
-+
- 	gdm = gdm_table[ret][tty->index];
- 	if (!gdm) {
- 		mutex_unlock(&gdm_table_lock);
-@@ -69,15 +70,9 @@ static int gdm_tty_install(struct tty_driver *driver, struct tty_struct *tty)
- 	}
- 
- 	tty_port_get(&gdm->port);
--
--	ret = tty_standard_install(driver, tty);
--	if (ret) {
--		tty_port_put(&gdm->port);
--		mutex_unlock(&gdm_table_lock);
--		return ret;
--	}
--
-+	tty_standard_install(driver, tty);
- 	tty->driver_data = gdm;
-+
- 	mutex_unlock(&gdm_table_lock);
- 
- 	return 0;
-diff --git a/drivers/staging/greybus/uart.c b/drivers/staging/greybus/uart.c
-index 8a00632..182155b 100644
---- a/drivers/staging/greybus/uart.c
-+++ b/drivers/staging/greybus/uart.c
-@@ -393,21 +393,15 @@ static void release_minor(struct gb_tty *gb_tty)
- static int gb_tty_install(struct tty_driver *driver, struct tty_struct *tty)
- {
- 	struct gb_tty *gb_tty;
--	int retval;
- 
- 	gb_tty = get_gb_by_minor(tty->index);
- 	if (!gb_tty)
- 		return -ENODEV;
- 
--	retval = tty_standard_install(driver, tty);
--	if (retval)
--		goto error;
--
-+	tty_standard_install(driver, tty);
- 	tty->driver_data = gb_tty;
-+
- 	return 0;
--error:
--	tty_port_put(&gb_tty->port);
--	return retval;
- }
- 
- static int gb_tty_open(struct tty_struct *tty, struct file *file)
-diff --git a/drivers/tty/hvc/hvc_console.c b/drivers/tty/hvc/hvc_console.c
-index 5414c4a..13fad62 100644
---- a/drivers/tty/hvc/hvc_console.c
-+++ b/drivers/tty/hvc/hvc_console.c
-@@ -329,7 +329,6 @@ static void hvc_unthrottle(struct tty_struct *tty)
- static int hvc_install(struct tty_driver *driver, struct tty_struct *tty)
- {
- 	struct hvc_struct *hp;
--	int rc;
- 
- 	/* Auto increments kref reference if found. */
- 	hp = hvc_get_by_index(tty->index);
-@@ -337,11 +336,9 @@ static int hvc_install(struct tty_driver *driver, struct tty_struct *tty)
- 		return -ENODEV;
- 
- 	tty->driver_data = hp;
-+	tty_port_install(&hp->port, driver, tty);
- 
--	rc = tty_port_install(&hp->port, driver, tty);
--	if (rc)
--		tty_port_put(&hp->port);
--	return rc;
-+	return 0;
- }
- 
- /*
-diff --git a/drivers/tty/hvc/hvcs.c b/drivers/tty/hvc/hvcs.c
-index cb4db1b..4dfa70c 100644
---- a/drivers/tty/hvc/hvcs.c
-+++ b/drivers/tty/hvc/hvcs.c
-@@ -1140,16 +1140,10 @@ static int hvcs_install(struct tty_driver *driver, struct tty_struct *tty)
- 		goto err_put;
- 	}
- 
--	retval = tty_port_install(&hvcsd->port, driver, tty);
--	if (retval)
--		goto err_irq;
-+	tty_port_install(&hvcsd->port, driver, tty);
- 
- 	return 0;
--err_irq:
--	spin_lock_irqsave(&hvcsd->lock, flags);
--	vio_disable_interrupts(hvcsd->vdev);
--	spin_unlock_irqrestore(&hvcsd->lock, flags);
--	free_irq(irq, hvcsd);
-+
- err_put:
- 	tty_port_put(&hvcsd->port);
- 
-diff --git a/drivers/tty/mips_ejtag_fdc.c b/drivers/tty/mips_ejtag_fdc.c
-index 4c1cd49..33e06b4 100644
---- a/drivers/tty/mips_ejtag_fdc.c
-+++ b/drivers/tty/mips_ejtag_fdc.c
-@@ -763,7 +763,9 @@ static int mips_ejtag_fdc_tty_install(struct tty_driver *driver,
- 	struct mips_ejtag_fdc_tty *priv = driver->driver_state;
- 
- 	tty->driver_data = &priv->ports[tty->index];
--	return tty_port_install(&priv->ports[tty->index].port, driver, tty);
-+	tty_port_install(&priv->ports[tty->index].port, driver, tty);
-+
-+	return 0;
- }
- 
- static int mips_ejtag_fdc_tty_open(struct tty_struct *tty, struct file *filp)
-diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
-index 86b7e20..c52fa2d 100644
---- a/drivers/tty/n_gsm.c
-+++ b/drivers/tty/n_gsm.c
-@@ -2917,7 +2917,6 @@ static int gsmtty_install(struct tty_driver *driver, struct tty_struct *tty)
- 	unsigned int line = tty->index;
- 	unsigned int mux = line >> 6;
- 	bool alloc = false;
--	int ret;
- 
- 	line = line & 0x3F;
- 
-@@ -2949,14 +2948,8 @@ static int gsmtty_install(struct tty_driver *driver, struct tty_struct *tty)
- 		mutex_unlock(&gsm->mutex);
- 		return -ENOMEM;
- 	}
--	ret = tty_port_install(&dlci->port, driver, tty);
--	if (ret) {
--		if (alloc)
--			dlci_put(dlci);
--		mutex_unlock(&gsm->mutex);
--		return ret;
--	}
- 
-+	tty_port_install(&dlci->port, driver, tty);
- 	dlci_get(dlci);
- 	dlci_get(gsm->dlci[0]);
- 	mux_get(gsm);
-diff --git a/drivers/tty/nozomi.c b/drivers/tty/nozomi.c
-index fed820e..479583d 100644
---- a/drivers/tty/nozomi.c
-+++ b/drivers/tty/nozomi.c
-@@ -1555,13 +1555,11 @@ static int ntty_install(struct tty_driver *driver, struct tty_struct *tty)
- {
- 	struct port *port = get_port_by_tty(tty);
- 	struct nozomi *dc = get_dc_by_tty(tty);
--	int ret;
- 	if (!port || !dc || dc->state != NOZOMI_STATE_READY)
- 		return -ENODEV;
--	ret = tty_standard_install(driver, tty);
--	if (ret == 0)
--		tty->driver_data = port;
--	return ret;
-+	tty_standard_install(driver, tty);
-+	tty->driver_data = port;
-+	return 0;
- }
- 
- static void ntty_cleanup(struct tty_struct *tty)
-diff --git a/drivers/tty/serial/kgdb_nmi.c b/drivers/tty/serial/kgdb_nmi.c
-index 4029272..ed8f806 100644
---- a/drivers/tty/serial/kgdb_nmi.c
-+++ b/drivers/tty/serial/kgdb_nmi.c
-@@ -234,7 +234,6 @@ static const struct tty_port_operations kgdb_nmi_tty_port_ops = {
- static int kgdb_nmi_tty_install(struct tty_driver *drv, struct tty_struct *tty)
- {
- 	struct kgdb_nmi_tty_priv *priv;
--	int ret;
- 
- 	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
-@@ -245,17 +244,9 @@ static int kgdb_nmi_tty_install(struct tty_driver *drv, struct tty_struct *tty)
- 	tty_port_init(&priv->port);
- 	priv->port.ops = &kgdb_nmi_tty_port_ops;
- 	tty->driver_data = priv;
-+	tty_port_install(&priv->port, drv, tty);
- 
--	ret = tty_port_install(&priv->port, drv, tty);
--	if (ret) {
--		pr_err("%s: can't install tty port: %d\n", __func__, ret);
--		goto err;
--	}
- 	return 0;
--err:
--	tty_port_destroy(&priv->port);
--	kfree(priv);
--	return ret;
- }
- 
- static void kgdb_nmi_tty_cleanup(struct tty_struct *tty)
-diff --git a/drivers/tty/synclink.c b/drivers/tty/synclink.c
-index fbdf4d0..6e7e4d6 100644
---- a/drivers/tty/synclink.c
-+++ b/drivers/tty/synclink.c
-@@ -3355,8 +3355,9 @@ static int mgsl_install(struct tty_driver *driver, struct tty_struct *tty)
- 	if (mgsl_paranoia_check(info, tty->name, "mgsl_open"))
- 		return -ENODEV;
- 	tty->driver_data = info;
-+	tty_port_install(&info->port, driver, tty);
- 
--	return tty_port_install(&info->port, driver, tty);
-+	return 0;
- }
- 
- /* mgsl_open()
-diff --git a/drivers/tty/synclinkmp.c b/drivers/tty/synclinkmp.c
-index 1e4d5b9..2d99a5b 100644
---- a/drivers/tty/synclinkmp.c
-+++ b/drivers/tty/synclinkmp.c
-@@ -734,8 +734,9 @@ static int install(struct tty_driver *driver, struct tty_struct *tty)
- 	}
- 
- 	tty->driver_data = info;
-+	tty_port_install(&info->port, driver, tty);
- 
--	return tty_port_install(&info->port, driver, tty);
-+	return 0;
- }
- 
- /* Called when a port is opened.  Init and enable port.
-diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
-index 32bc3e3..b01cec8 100644
---- a/drivers/tty/tty_io.c
-+++ b/drivers/tty/tty_io.c
-@@ -1196,13 +1196,12 @@ void tty_init_termios(struct tty_struct *tty)
- }
- EXPORT_SYMBOL_GPL(tty_init_termios);
- 
--int tty_standard_install(struct tty_driver *driver, struct tty_struct *tty)
-+void tty_standard_install(struct tty_driver *driver, struct tty_struct *tty)
- {
- 	tty_init_termios(tty);
- 	tty_driver_kref_get(driver);
- 	tty->count++;
- 	driver->ttys[tty->index] = tty;
--	return 0;
- }
- EXPORT_SYMBOL_GPL(tty_standard_install);
- 
-@@ -1221,8 +1220,11 @@ EXPORT_SYMBOL_GPL(tty_standard_install);
- static int tty_driver_install_tty(struct tty_driver *driver,
- 						struct tty_struct *tty)
- {
--	return driver->ops->install ? driver->ops->install(driver, tty) :
--		tty_standard_install(driver, tty);
-+	if (driver->ops->install)
-+		return driver->ops->install(driver, tty);
-+
-+	tty_standard_install(driver, tty);
-+	return 0;
- }
- 
- /**
-diff --git a/drivers/tty/tty_port.c b/drivers/tty/tty_port.c
-index 25d7368..fd8d40d 100644
---- a/drivers/tty/tty_port.c
-+++ b/drivers/tty/tty_port.c
-@@ -656,11 +656,11 @@ EXPORT_SYMBOL(tty_port_close);
-  * to a concrete tty specified by @tty. Use this or tty_port_register_device
-  * (or both). Call tty_port_link_device as a last resort.
-  */
--int tty_port_install(struct tty_port *port, struct tty_driver *driver,
-+void tty_port_install(struct tty_port *port, struct tty_driver *driver,
- 		struct tty_struct *tty)
- {
- 	tty->port = port;
--	return tty_standard_install(driver, tty);
-+	tty_standard_install(driver, tty);
- }
- EXPORT_SYMBOL_GPL(tty_port_install);
- 
-diff --git a/drivers/tty/vcc.c b/drivers/tty/vcc.c
-index 58b454c..ce32631 100644
---- a/drivers/tty/vcc.c
-+++ b/drivers/tty/vcc.c
-@@ -987,7 +987,6 @@ static int vcc_install(struct tty_driver *driver, struct tty_struct *tty)
- {
- 	struct vcc_port *port_vcc;
- 	struct tty_port *port_tty;
--	int ret;
- 
- 	if (unlikely(!tty)) {
- 		pr_err("VCC: install: Invalid TTY handle\n");
-@@ -997,9 +996,7 @@ static int vcc_install(struct tty_driver *driver, struct tty_struct *tty)
- 	if (tty->index >= VCC_MAX_PORTS)
- 		return -EINVAL;
- 
--	ret = tty_standard_install(driver, tty);
--	if (ret)
--		return ret;
-+	tty_standard_install(driver, tty);
- 
- 	port_tty = kzalloc(sizeof(struct tty_port), GFP_KERNEL);
- 	if (!port_tty)
-diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index 5f1183b..cc72254 100644
---- a/drivers/tty/vt/vt.c
-+++ b/drivers/tty/vt/vt.c
-@@ -3222,10 +3222,7 @@ static int con_install(struct tty_driver *driver, struct tty_struct *tty)
- 		goto unlock;
- 	}
- 
--	ret = tty_port_install(&vc->port, driver, tty);
--	if (ret)
--		goto unlock;
--
-+	tty_port_install(&vc->port, driver, tty);
- 	tty->driver_data = vc;
- 	vc->port.tty = tty;
- 
-diff --git a/drivers/usb/class/cdc-acm.c b/drivers/usb/class/cdc-acm.c
-index 27346d6..de6a27e 100644
---- a/drivers/usb/class/cdc-acm.c
-+++ b/drivers/usb/class/cdc-acm.c
-@@ -572,23 +572,15 @@ static void acm_softint(struct work_struct *work)
- static int acm_tty_install(struct tty_driver *driver, struct tty_struct *tty)
- {
- 	struct acm *acm;
--	int retval;
- 
- 	acm = acm_get_by_minor(tty->index);
- 	if (!acm)
- 		return -ENODEV;
- 
--	retval = tty_standard_install(driver, tty);
--	if (retval)
--		goto error_init_termios;
--
-+	tty_standard_install(driver, tty);
- 	tty->driver_data = acm;
- 
- 	return 0;
--
--error_init_termios:
--	tty_port_put(&acm->port);
--	return retval;
- }
- 
- static int acm_tty_open(struct tty_struct *tty, struct file *filp)
-diff --git a/drivers/usb/host/xhci-dbgtty.c b/drivers/usb/host/xhci-dbgtty.c
-index aff79ff..18d661c 100644
---- a/drivers/usb/host/xhci-dbgtty.c
-+++ b/drivers/usb/host/xhci-dbgtty.c
-@@ -174,8 +174,9 @@ static int dbc_tty_install(struct tty_driver *driver, struct tty_struct *tty)
- 	struct dbc_port		*port = driver->driver_state;
- 
- 	tty->driver_data = port;
-+	tty_port_install(&port->port, driver, tty);
- 
--	return tty_port_install(&port->port, driver, tty);
-+	return 0;
- }
- 
- static int dbc_tty_open(struct tty_struct *tty, struct file *file)
-diff --git a/drivers/usb/serial/usb-serial.c b/drivers/usb/serial/usb-serial.c
-index f7aaa7f..5cfc2ca 100644
---- a/drivers/usb/serial/usb-serial.c
-+++ b/drivers/usb/serial/usb-serial.c
-@@ -192,9 +192,7 @@ static int serial_install(struct tty_driver *driver, struct tty_struct *tty)
- 	if (retval)
- 		goto error_get_interface;
- 
--	retval = tty_standard_install(driver, tty);
--	if (retval)
--		goto error_init_termios;
-+	tty_standard_install(driver, tty);
- 
- 	mutex_unlock(&serial->disc_mutex);
- 
-@@ -206,8 +204,6 @@ static int serial_install(struct tty_driver *driver, struct tty_struct *tty)
- 
- 	return retval;
- 
-- error_init_termios:
--	usb_autopm_put_interface(serial->interface);
-  error_get_interface:
- 	module_put(serial->type->driver.owner);
-  error_module_get:
-diff --git a/include/linux/tty.h b/include/linux/tty.h
-index c56e397..63cdac1 100644
---- a/include/linux/tty.h
-+++ b/include/linux/tty.h
-@@ -556,7 +556,7 @@ extern struct tty_struct *tty_init_dev(struct tty_driver *driver, int idx);
- extern void tty_release_struct(struct tty_struct *tty, int idx);
- extern int tty_release(struct inode *inode, struct file *filp);
- extern void tty_init_termios(struct tty_struct *tty);
--extern int tty_standard_install(struct tty_driver *driver,
-+extern void tty_standard_install(struct tty_driver *driver,
- 		struct tty_struct *tty);
- 
- extern struct mutex tty_mutex;
-@@ -688,7 +688,7 @@ extern int tty_port_close_start(struct tty_port *port,
- extern void tty_port_close_end(struct tty_port *port, struct tty_struct *tty);
- extern void tty_port_close(struct tty_port *port,
- 				struct tty_struct *tty, struct file *filp);
--extern int tty_port_install(struct tty_port *port, struct tty_driver *driver,
-+extern void tty_port_install(struct tty_port *port, struct tty_driver *driver,
- 				struct tty_struct *tty);
- extern int tty_port_open(struct tty_port *port,
- 				struct tty_struct *tty, struct file *filp);
-diff --git a/net/bluetooth/rfcomm/tty.c b/net/bluetooth/rfcomm/tty.c
-index 5e44d84..b654420 100644
---- a/net/bluetooth/rfcomm/tty.c
-+++ b/net/bluetooth/rfcomm/tty.c
-@@ -710,7 +710,6 @@ static int rfcomm_tty_install(struct tty_driver *driver, struct tty_struct *tty)
- {
- 	struct rfcomm_dev *dev;
- 	struct rfcomm_dlc *dlc;
--	int err;
- 
- 	dev = rfcomm_dev_get(tty->index);
- 	if (!dev)
-@@ -725,11 +724,7 @@ static int rfcomm_tty_install(struct tty_driver *driver, struct tty_struct *tty)
- 	set_bit(RFCOMM_TTY_ATTACHED, &dev->flags);
- 
- 	/* install the tty_port */
--	err = tty_port_install(&dev->port, driver, tty);
--	if (err) {
--		rfcomm_tty_cleanup(tty);
--		return err;
--	}
-+	tty_port_install(&dev->port, driver, tty);
- 
- 	/* take over the tty_port reference if the port was created with the
- 	 * flag RFCOMM_RELEASE_ONHUP. This will force the release of the port
 -- 
-2.7.4
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+Michal Hocko
+SUSE Labs
 
