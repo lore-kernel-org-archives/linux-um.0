@@ -1,37 +1,73 @@
 Return-Path: <rppt@linux.vnet.ibm.com>
+Date: Thu, 27 Sep 2018 07:50:20 +0300
 From: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: [PATCH 09/30] memblock: replace alloc_bootmem_low with memblock_alloc_low
-Date: Fri, 14 Sep 2018 15:10:24 +0300
-In-Reply-To: <1536927045-23536-1-git-send-email-rppt@linux.vnet.ibm.com>
+Subject: Re: [PATCH 03/30] mm: remove CONFIG_HAVE_MEMBLOCK
 References: <1536927045-23536-1-git-send-email-rppt@linux.vnet.ibm.com>
-Message-Id: <1536927045-23536-10-git-send-email-rppt@linux.vnet.ibm.com>
-To: linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guan Xuetao <gxt@pku.edu.cn>, Ingo Molnar <mingo@redhat.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Jonas Bonn <jonas@southpole.se>, Jonathan Corbet <corbet@lwn.net>, Ley Foon Tan <lftan@altera.com>, Mark Salter <msalter@redhat.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Matt Turner <mattst88@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@suse.com>, Michal Simek <monstr@monstr.eu>, Palmer Dabbelt <palmer@sifive.com>, Paul Burton <paul.burton@mips.com>, Richard Kuo <rkuo@codeaurora.org>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, Serge Semin <fancer.lancer@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, Mike Rapoport <rppt@linux.vnet.ibm.com>
+ <1536927045-23536-4-git-send-email-rppt@linux.vnet.ibm.com>
+ <CAKgT0UdP=78RsWHMxFu4PD8a3AhA3eNcG68Z_9aGY0vhOKf7xA@mail.gmail.com>
+ <20180926183152.GA4597@rapoport-lnx>
+ <CAKgT0UcC-GTtyPK9ynvj6r3YFqy8kE40iMJxzPowbNoXGf9iWg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKgT0UcC-GTtyPK9ynvj6r3YFqy8kE40iMJxzPowbNoXGf9iWg@mail.gmail.com>
+Message-Id: <20180927045019.GA16740@rapoport-lnx>
+To: Alexander Duyck <alexander.duyck@gmail.com>
+Cc: linux-mm <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, chris@zankel.net, David Miller <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, green.hu@gmail.com, Greg KH <gregkh@linuxfoundation.org>, gxt@pku.edu.cn, Ingo Molnar <mingo@redhat.com>, jejb@parisc-linux.org, jonas@southpole.se, Jonathan Corbet <corbet@lwn.net>, lftan@altera.com, msalter@redhat.com, Martin Schwidefsky <schwidefsky@de.ibm.com>, mattst88@gmail.com, mpe@ellerman.id.au, Michal Hocko <mhocko@suse.com>, monstr@monstr.eu, palmer@sifive.com, paul.burton@mips.com, rkuo@codeaurora.org, richard@nod.at, dalias@libc.org, Russell King - ARM Linux <linux@armlinux.org.uk>, fancer.lancer@gmail.com, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, vgupta@synopsys.com, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" <linuxppc-dev@lists.ozlabs.org>, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp
 List-ID: <linux-um.lists.infradead.org>
 
-The functions are equivalent, just the later does not require nobootmem
-translation layer.
+On Wed, Sep 26, 2018 at 05:34:32PM -0700, Alexander Duyck wrote:
+> On Wed, Sep 26, 2018 at 11:32 AM Mike Rapoport <rppt@linux.vnet.ibm.com> wrote:
+> >
+> > On Wed, Sep 26, 2018 at 09:58:41AM -0700, Alexander Duyck wrote:
+> > > On Fri, Sep 14, 2018 at 5:11 AM Mike Rapoport <rppt@linux.vnet.ibm.com> wrote:
+> > > >
+> > > > All architecures use memblock for early memory management. There is no need
+> > > > for the CONFIG_HAVE_MEMBLOCK configuration option.
+> > > >
+> > > > Signed-off-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
+> > >
+> > > <snip>
+> > >
+> > > > diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+> > > > index 5169205..4ae91fc 100644
+> > > > --- a/include/linux/memblock.h
+> > > > +++ b/include/linux/memblock.h
+> > > > @@ -2,7 +2,6 @@
+> > > >  #define _LINUX_MEMBLOCK_H
+> > > >  #ifdef __KERNEL__
+> > > >
+> > > > -#ifdef CONFIG_HAVE_MEMBLOCK
+> > > >  /*
+> > > >   * Logical memory blocks.
+> > > >   *
+> > > > @@ -460,7 +459,6 @@ static inline phys_addr_t memblock_alloc(phys_addr_t size, phys_addr_t align)
+> > > >  {
+> > > >         return 0;
+> > > >  }
+> > > > -#endif /* CONFIG_HAVE_MEMBLOCK */
+> > > >
+> > > >  #endif /* __KERNEL__ */
+> > >
+> > > There was an #else above this section and I believe it and the code
+> > > after it needs to be stripped as well.
+> >
+> > Right, I've already sent the fix [1] and it's in mmots.
+> >
+> > [1] https://lkml.org/lkml/2018/9/19/416
+> >
+> 
+> Are you sure? The patch you reference appears to be for
+> drivers/of/fdt.c, and the bit I pointed out here is in
+> include/linux/memblock.h.
 
-Signed-off-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
----
- arch/x86/kernel/tce_64.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Ah, sorry. You are right, will fix. Thanks for spotting it!
+ 
+> - Alex
+> 
 
-diff --git a/arch/x86/kernel/tce_64.c b/arch/x86/kernel/tce_64.c
-index f386bad..54c9b5a 100644
---- a/arch/x86/kernel/tce_64.c
-+++ b/arch/x86/kernel/tce_64.c
-@@ -173,7 +173,7 @@ void * __init alloc_tce_table(void)
- 	size = table_size_to_number_of_entries(specified_table_size);
- 	size *= TCE_ENTRY_SIZE;
- 
--	return __alloc_bootmem_low(size, size, 0);
-+	return memblock_alloc_low(size, size);
- }
- 
- void __init free_tce_table(void *tbl)
 -- 
-2.7.4
+Sincerely yours,
+Mike.
 
 
