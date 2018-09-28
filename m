@@ -1,43 +1,87 @@
-Return-Path: <rppt@linux.vnet.ibm.com>
-From: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: [PATCH 11/30] memblock: replace alloc_bootmem_pages_nopanic with memblock_alloc_nopanic
-Date: Fri, 14 Sep 2018 15:10:26 +0300
-In-Reply-To: <1536927045-23536-1-git-send-email-rppt@linux.vnet.ibm.com>
-References: <1536927045-23536-1-git-send-email-rppt@linux.vnet.ibm.com>
-Message-Id: <1536927045-23536-12-git-send-email-rppt@linux.vnet.ibm.com>
-To: linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guan Xuetao <gxt@pku.edu.cn>, Ingo Molnar <mingo@redhat.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Jonas Bonn <jonas@southpole.se>, Jonathan Corbet <corbet@lwn.net>, Ley Foon Tan <lftan@altera.com>, Mark Salter <msalter@redhat.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Matt Turner <mattst88@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@suse.com>, Michal Simek <monstr@monstr.eu>, Palmer Dabbelt <palmer@sifive.com>, Paul Burton <paul.burton@mips.com>, Richard Kuo <rkuo@codeaurora.org>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, Serge Semin <fancer.lancer@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, Mike Rapoport <rppt@linux.vnet.ibm.com>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from smtprelay0239.hostedemail.com ([216.40.44.239]
+ helo=smtprelay.hostedemail.com)
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g60t3-0001Vg-DC
+ for linux-um@lists.infradead.org; Fri, 28 Sep 2018 22:05:27 +0000
+From: Joe Perches <joe@perches.com>
+Subject: Bad MAINTAINERS pattern in section 'USER-MODE LINUX (UML)'
+Date: Fri, 28 Sep 2018 15:05:07 -0700
+Message-Id: <20180928220507.31886-1-joe@perches.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-kernel@vger.kernel.org
+Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org
 
-The alloc_bootmem_pages_nopanic(size) is a shortcut for
-__alloc_bootmem_nopanic(size, PAGE_SIZE, BOOTMEM_LOW_LIMIT) which allocates
-PAGE_SIZE aligned memory. Since BOOTMEM_LOW_LIMIT is hardwired to 0 there
-is no restrictions on where the allocated memory should reside.
+Please fix this defect appropriately.
 
-The memblock_alloc_nopanic(size, PAGE_SIZE) also allocates PAGE_SIZE
-aligned memory without any restrictions and thus can be used as a
-replacement for alloc_bootmem_pages_nopanic()
+linux-next MAINTAINERS section:
 
-Signed-off-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
----
- drivers/usb/early/xhci-dbc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+	15491	USER-MODE LINUX (UML)
+	15492	M:	Jeff Dike <jdike@addtoit.com>
+	15493	M:	Richard Weinberger <richard@nod.at>
+	15494	L:	linux-um@lists.infradead.org
+	15495	W:	http://user-mode-linux.sourceforge.net
+	15496	T:	git git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git
+	15497	S:	Maintained
+	15498	F:	Documentation/virtual/uml/
+	15499	F:	arch/um/
+	15500	F:	arch/x86/um/
+	15501	F:	fs/hostfs/
+-->	15502	F:	fs/hppfs/
 
-diff --git a/drivers/usb/early/xhci-dbc.c b/drivers/usb/early/xhci-dbc.c
-index e15e896..16df968 100644
---- a/drivers/usb/early/xhci-dbc.c
-+++ b/drivers/usb/early/xhci-dbc.c
-@@ -94,7 +94,7 @@ static void * __init xdbc_get_page(dma_addr_t *dma_addr)
- {
- 	void *virt;
+Commit that introduced this:
+
+commit 679655daffdd2725b66ba2c5a759bbcb316fca5a
+ Author: Joe Perches <joe@perches.com>
+ Date:   Tue Apr 7 20:44:32 2009 -0700
  
--	virt = alloc_bootmem_pages_nopanic(PAGE_SIZE);
-+	virt = memblock_alloc_nopanic(PAGE_SIZE, PAGE_SIZE);
- 	if (!virt)
- 		return NULL;
+     MAINTAINERS - Add file patterns
+     
+     Better description of file pattern tag "F:"
+     Add file exclusion tag "X:"
+     Add patterns to sections
+     
+     Signed-off-by: Joe Perches <joe@perches.com>
  
--- 
-2.7.4
+  MAINTAINERS | 1194 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+  1 file changed, 1193 insertions(+), 1 deletion(-)
 
+Last commit with fs/hppfs/
+
+commit f74a14e870c80d6261afed66d4bad779c1213e03
+Author: Richard Weinberger <richard@nod.at>
+Date:   Tue Apr 21 20:52:26 2015 +0200
+
+    um: Remove hppfs
+    
+    hppfs (honeypot procfs) was an attempt to use UML as honeypot.
+    It was never stable nor in heavy use.
+    
+    As Al Viro and Christoph Hellwig pointed some major issues out
+    it is better to let it die.
+    
+    Signed-off-by: Richard Weinberger <richard@nod.at>
+
+ arch/um/Kconfig.um |  15 --
+ fs/Makefile        |   1 -
+ fs/hppfs/Makefile  |   6 -
+ fs/hppfs/hppfs.c   | 766 -----------------------------------------------------
+ 4 files changed, 788 deletions(-)
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
