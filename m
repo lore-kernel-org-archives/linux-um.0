@@ -1,17 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-qk1-x74a.google.com ([2607:f8b0:4864:20::74a])
+Received: from ivanoab5.miniserver.com ([78.31.111.25]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gF6ag-0004Ey-DP
- for linux-um@lists.infradead.org; Wed, 24 Oct 2018 00:00:22 +0000
-Received: by mail-qk1-x74a.google.com with SMTP id r125-v6so3591642qke.8
- for <linux-um@lists.infradead.org>; Tue, 23 Oct 2018 17:00:01 -0700 (PDT)
-Date: Tue, 23 Oct 2018 16:57:45 -0700
-In-Reply-To: <20181023235750.103146-1-brendanhiggins@google.com>
-Message-Id: <20181023235750.103146-10-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20181023235750.103146-1-brendanhiggins@google.com>
-Subject: [RFC v2 09/14] kunit: test: add the concept of assertions
-From: Brendan Higgins <brendanhiggins@google.com>
+ id 1g9TtC-0004NE-H0
+ for linux-um@lists.infradead.org; Mon, 08 Oct 2018 11:39:56 +0000
+Subject: Re: [PATCH] Optimise TLB flush for kernel mm in UML
+References: <20181008113110.3413-1-anton.ivanov@cambridgegreys.com>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <b6c77f10-8a87-ab80-a607-6740761c41a6@cambridgegreys.com>
+Date: Mon, 8 Oct 2018 12:39:42 +0100
+MIME-Version: 1.0
+In-Reply-To: <20181008113110.3413-1-anton.ivanov@cambridgegreys.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,588 +20,480 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
-Cc: brakmo@fb.com, robh@kernel.org, richard@nod.at, dri-devel@lists.freedesktop.org, linux-nvdimm@lists.01.org, mpe@ellerman.id.au, Tim.Bird@sony.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, kieran.bingham@ideasonboard.com, julia.lawall@lip6.fr, joel@jms.id.au, linux-kselftest@vger.kernel.org, khilman@baylibre.com, joe@perches.com, daniel@ffwll.ch, dan.j.williams@intel.com, jdike@addtoit.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
+To: linux-um@lists.infradead.org
+Cc: richard.weinberger@gmail.com
 
-Add support for assertions which are like expectations except the test
-terminates if the assertion is not satisfied.
+This "softens" the dependency on swap to be a runtime check
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
----
- include/kunit/test.h       | 272 ++++++++++++++++++++++++++++++++++++-
- kunit/Makefile             |   2 +-
- kunit/string-stream-test.c |  12 +-
- kunit/test-test.c          |  37 +++++
- kunit/test.c               | 131 ++++++++++++++++--
- 5 files changed, 436 insertions(+), 18 deletions(-)
- create mode 100644 kunit/test-test.c
+The result on my favorite benchmark, namely time find /usr -type f -exec 
+cat {} > /dev/null \;
 
-diff --git a/include/kunit/test.h b/include/kunit/test.h
-index d652825d7296f..49a9d6e43992c 100644
---- a/include/kunit/test.h
-+++ b/include/kunit/test.h
-@@ -84,9 +84,10 @@ struct test;
-  * @name: the name of the test case.
-  *
-  * A test case is a function with the signature, ``void (*)(struct test *)``
-- * that makes expectations (see TEST_EXPECT_TRUE()) about code under test. Each
-- * test case is associated with a &struct test_module and will be run after the
-- * module's init function and followed by the module's exit function.
-+ * that makes expectations and assertions (see TEST_EXPECT_TRUE() and
-+ * TEST_ASSERT_TRUE()) about code under test. Each test case is associated with
-+ * a &struct test_module and will be run after the module's init function and
-+ * followed by the module's exit function.
-  *
-  * A test case should be static and should only be created with the TEST_CASE()
-  * macro; additionally, every array of test cases should be terminated with an
-@@ -168,11 +169,14 @@ struct test {
- 	const char *name; /* Read only after initialization! */
- 	spinlock_t lock; /* Gaurds all mutable test state. */
- 	bool success; /* Protected by lock. */
-+	bool death_test; /* Protected by lock. */
- 	struct list_head resources; /* Protected by lock. */
-+	void (*set_death_test)(struct test *test, bool death_test);
- 	void (*vprintk)(const struct test *test,
- 			const char *level,
- 			struct va_format *vaf);
- 	void (*fail)(struct test *test, struct test_stream *stream);
-+	void (*abort)(struct test *test);
- };
- 
- int test_init_test(struct test *test, const char *name);
-@@ -532,4 +536,266 @@ static inline void test_expect_binary(struct test *test,
- 	TEST_EXPECT_END(test, !IS_ERR_OR_NULL(__ptr), __stream);	       \
- } while (0)
- 
-+static inline struct test_stream *test_assert_start(struct test *test,
-+						    const char *file,
-+						    const char *line)
-+{
-+	struct test_stream *stream = test_new_stream(test);
-+
-+	stream->add(stream, "ASSERTION FAILED at %s:%s\n\t", file, line);
-+
-+	return stream;
-+}
-+
-+static inline void test_assert_end(struct test *test,
-+				   bool success,
-+				   struct test_stream *stream)
-+{
-+	if (!success) {
-+		test->fail(test, stream);
-+		test->abort(test);
-+	} else {
-+		stream->clear(stream);
-+	}
-+}
-+
-+#define TEST_ASSERT_START(test) \
-+		test_assert_start(test, __FILE__, __stringify(__LINE__))
-+
-+#define TEST_ASSERT_END(test, success, stream) \
-+		test_assert_end(test, success, stream)
-+
-+#define TEST_ASSERT(test, success, message) do {			       \
-+	struct test_stream *__stream = TEST_ASSERT_START(test);		       \
-+									       \
-+	__stream->add(__stream, message);				       \
-+	TEST_ASSERT_END(test, success, __stream);			       \
-+} while (0)
-+
-+#define TEST_ASSERT_FAILURE(test, message) TEST_ASSERT(test, false, message)
-+
-+/**
-+ * TEST_ASSERT_TRUE() - Causes an assertion failure when expression is not true.
-+ * @test: The test context object.
-+ * @condition: an arbitrary boolean expression. The test fails and aborts when
-+ * this does not evaluate to true.
-+ *
-+ * This and assertions of the form `TEST_ASSERT_*` will cause the test case to
-+ * fail *and immediately abort* when the specified condition is not met. Unlike
-+ * an expectation failure, it will prevent the test case from continuing to run;
-+ * this is otherwise known as an *assertion failure*.
-+ */
-+#define TEST_ASSERT_TRUE(test, condition)				       \
-+		TEST_ASSERT(test, (condition),				       \
-+		       "Asserted " #condition " is true, but is false.")
-+
-+/**
-+ * TEST_ASSERT_FALSE() - Sets an assertion that @condition is false.
-+ * @test: The test context object.
-+ * @condition: an arbitrary boolean expression.
-+ *
-+ * Sets an assertion that the value that @condition evaluates to is false.  This
-+ * is the same as TEST_EXPECT_FALSE(), except it causes an assertion failure
-+ * (see TEST_ASSERT_TRUE()) when the assertion is not met.
-+ */
-+#define TEST_ASSERT_FALSE(test, condition)				       \
-+		TEST_ASSERT(test, !(condition),				       \
-+		       "Asserted " #condition " is false, but is true.")
-+
-+static inline void test_assert_binary(struct test *test,
-+				      long long left, const char *left_name,
-+				      long long right, const char *right_name,
-+				      bool compare_result,
-+				      const char *compare_name,
-+				      const char *file,
-+				      const char *line)
-+{
-+	struct test_stream *stream = test_assert_start(test, file, line);
-+
-+	stream->add(stream,
-+		    "Asserted %s %s %s, but\n",
-+		    left_name, compare_name, right_name);
-+	stream->add(stream, "\t\t%s == %lld\n", left_name, left);
-+	stream->add(stream, "\t\t%s == %lld", right_name, right);
-+
-+	test_assert_end(test, compare_result, stream);
-+}
-+
-+/*
-+ * A factory macro for defining the expectations for the basic comparisons
-+ * defined for the built in types.
-+ *
-+ * Unfortunately, there is no common type that all types can be promoted to for
-+ * which all the binary operators behave the same way as for the actual types
-+ * (for example, there is no type that long long and unsigned long long can
-+ * both be cast to where the comparison result is preserved for all values). So
-+ * the best we can do is do the comparison in the original types and then coerce
-+ * everything to long long for printing; this way, the comparison behaves
-+ * correctly and the printed out value usually makes sense without
-+ * interpretation, but can always be interpretted to figure out the actual
-+ * value.
-+ */
-+#define TEST_ASSERT_BINARY(test, left, condition, right) do {		       \
-+	typeof(left) __left = (left);					       \
-+	typeof(right) __right = (right);				       \
-+	test_assert_binary(test,					       \
-+			   (long long) __left, #left,			       \
-+			   (long long) __right, #right,			       \
-+			   __left condition __right, #condition,	       \
-+			   __FILE__, __stringify(__LINE__));		       \
-+} while (0)
-+
-+/**
-+ * TEST_ASSERT_EQ() - Sets an assertion that @left and @right are equal.
-+ * @test: The test context object.
-+ * @left: an arbitrary expression that evaluates to a primitive C type.
-+ * @right: an arbitrary expression that evaluates to a primitive C type.
-+ *
-+ * Sets an assertion that the values that @left and @right evaluate to are
-+ * equal. This is the same as TEST_EXPECT_EQ(), except it causes an assertion
-+ * failure (see TEST_ASSERT_TRUE()) when the assertion is not met.
-+ */
-+#define TEST_ASSERT_EQ(test, left, right) \
-+		TEST_ASSERT_BINARY(test, left, ==, right)
-+
-+/**
-+ * TEST_ASSERT_NE() - An assertion that @left and @right are not equal.
-+ * @test: The test context object.
-+ * @left: an arbitrary expression that evaluates to a primitive C type.
-+ * @right: an arbitrary expression that evaluates to a primitive C type.
-+ *
-+ * Sets an assertion that the values that @left and @right evaluate to are not
-+ * equal. This is the same as TEST_EXPECT_NE(), except it causes an assertion
-+ * failure (see TEST_ASSERT_TRUE()) when the assertion is not met.
-+ */
-+#define TEST_ASSERT_NE(test, left, right) \
-+		TEST_ASSERT_BINARY(test, left, !=, right)
-+
-+/**
-+ * TEST_ASSERT_LT() - An assertion that @left is less than @right.
-+ * @test: The test context object.
-+ * @left: an arbitrary expression that evaluates to a primitive C type.
-+ * @right: an arbitrary expression that evaluates to a primitive C type.
-+ *
-+ * Sets an assertion that the value that @left evaluates to is less than the
-+ * value that @right evaluates to.  This is the same as TEST_EXPECT_LT(), except
-+ * it causes an assertion failure (see TEST_ASSERT_TRUE()) when the assertion is
-+ * not met.
-+ */
-+#define TEST_ASSERT_LT(test, left, right) \
-+		TEST_ASSERT_BINARY(test, left, <, right)
-+
-+/**
-+ * TEST_ASSERT_LE() - An assertion that @left is less than or equal to @right.
-+ * @test: The test context object.
-+ * @left: an arbitrary expression that evaluates to a primitive C type.
-+ * @right: an arbitrary expression that evaluates to a primitive C type.
-+ *
-+ * Sets an assertion that the value that @left evaluates to is less than or
-+ * equal to the value that @right evaluates to.  This is the same as
-+ * TEST_EXPECT_LE(), except it causes an assertion failure (see
-+ * TEST_ASSERT_TRUE()) when the assertion is not met.
-+ */
-+#define TEST_ASSERT_LE(test, left, right) \
-+		TEST_ASSERT_BINARY(test, left, <=, right)
-+
-+/**
-+ * TEST_ASSERT_GT() - An assertion that @left is greater than @right.
-+ * @test: The test context object.
-+ * @left: an arbitrary expression that evaluates to a primitive C type.
-+ * @right: an arbitrary expression that evaluates to a primitive C type.
-+ *
-+ * Sets an assertion that the value that @left evaluates to is greater than the
-+ * value that @right evaluates to.  This is the same as TEST_EXPECT_GT(), except
-+ * it causes an assertion failure (see TEST_ASSERT_TRUE()) when the assertion is
-+ * not met.
-+ */
-+#define TEST_ASSERT_GT(test, left, right) \
-+		TEST_ASSERT_BINARY(test, left, >, right)
-+
-+/**
-+ * TEST_ASSERT_GE() - Assertion that @left is greater than or equal to @right.
-+ * @test: The test context object.
-+ * @left: an arbitrary expression that evaluates to a primitive C type.
-+ * @right: an arbitrary expression that evaluates to a primitive C type.
-+ *
-+ * Sets an assertion that the value that @left evaluates to is greater than the
-+ * value that @right evaluates to.  This is the same as TEST_EXPECT_GE(), except
-+ * it causes an assertion failure (see TEST_ASSERT_TRUE()) when the assertion is
-+ * not met.
-+ */
-+#define TEST_ASSERT_GE(test, left, right) \
-+		TEST_ASSERT_BINARY(test, left, >=, right)
-+
-+/**
-+ * TEST_ASSERT_STREQ() - An assertion that strings @left and @right are equal.
-+ * @test: The test context object.
-+ * @left: an arbitrary expression that evaluates to a null terminated string.
-+ * @right: an arbitrary expression that evaluates to a null terminated string.
-+ *
-+ * Sets an assertion that the values that @left and @right evaluate to are
-+ * equal.  This is the same as TEST_EXPECT_STREQ(), except it causes an
-+ * assertion failure (see TEST_ASSERT_TRUE()) when the assertion is not met.
-+ */
-+#define TEST_ASSERT_STREQ(test, left, right) do {			       \
-+	struct test_stream *__stream = TEST_ASSERT_START(test);		       \
-+	typeof(left) __left = (left);					       \
-+	typeof(right) __right = (right);				       \
-+									       \
-+	__stream->add(__stream, "Asserted " #left " == " #right ", but\n");    \
-+	__stream->add(__stream, "\t\t%s == %s\n", #left, __left);	       \
-+	__stream->add(__stream, "\t\t%s == %s\n", #right, __right);	       \
-+									       \
-+	TEST_ASSERT_END(test, !strcmp(left, right), __stream);		       \
-+} while (0)
-+
-+/**
-+ * TEST_ASSERT_NOT_ERR_OR_NULL() - Assertion that @ptr is not null and not err.
-+ * @test: The test context object.
-+ * @ptr: an arbitrary pointer.
-+ *
-+ * Sets an assertion that the value that @ptr evaluates to is not null and not
-+ * an errno stored in a pointer.  This is the same as
-+ * TEST_EXPECT_NOT_ERR_OR_NULL(), except it causes an assertion failure (see
-+ * TEST_ASSERT_TRUE()) when the assertion is not met.
-+ */
-+#define TEST_ASSERT_NOT_ERR_OR_NULL(test, ptr) do {			       \
-+	struct test_stream *__stream = TEST_ASSERT_START(test);		       \
-+	typeof(ptr) __ptr = (ptr);					       \
-+									       \
-+	if (!__ptr)							       \
-+		__stream->add(__stream,					       \
-+			      "Asserted " #ptr " is not null, but is.");       \
-+	if (IS_ERR(__ptr))						       \
-+		__stream->add(__stream,					       \
-+			      "Asserted " #ptr " is not error, but is: %ld",   \
-+			      PTR_ERR(__ptr));				       \
-+									       \
-+	TEST_ASSERT_END(test, !IS_ERR_OR_NULL(__ptr), __stream);	       \
-+} while (0)
-+
-+/**
-+ * TEST_ASSERT_SIGSEGV() - An assertion that @expr will cause a segfault.
-+ * @test: The test context object.
-+ * @expr: an arbitrary block of code.
-+ *
-+ * Sets an assertion that @expr, when evaluated, will cause a segfault.
-+ * Currently this assertion is only really useful for testing the KUnit
-+ * framework, as a segmentation fault in normal kernel code is always incorrect.
-+ * However, the plan is to replace this assertion with an arbitrary death
-+ * assertion similar to
-+ * https://github.com/google/googletest/blob/master/googletest/docs/advanced.md#death-tests
-+ * which will probably be massaged to make sense in the context of the kernel
-+ * (maybe assert that a panic occurred, or that BUG() was called).
-+ *
-+ * NOTE: no code after this assertion will ever be executed.
-+ */
-+#define TEST_ASSERT_SIGSEGV(test, expr) do {				       \
-+	test->set_death_test(test, true);				       \
-+	expr;								       \
-+	test->set_death_test(test, false);				       \
-+	TEST_ASSERT_FAILURE(test,					       \
-+			    "Asserted that " #expr " would cause death, but did not.");\
-+} while (0)
-+
- #endif /* _KUNIT_TEST_H */
-diff --git a/kunit/Makefile b/kunit/Makefile
-index b437bd546ab70..919fa6faf9940 100644
---- a/kunit/Makefile
-+++ b/kunit/Makefile
-@@ -1,3 +1,3 @@
- obj-$(CONFIG_KUNIT)			+= test.o string-stream.o test-stream.o
--obj-$(CONFIG_KUNIT_TEST)		+= string-stream-test.o
-+obj-$(CONFIG_KUNIT_TEST)		+= test-test.o string-stream-test.o
- obj-$(CONFIG_KUNIT_EXAMPLE_TEST)	+= example-test.o
-diff --git a/kunit/string-stream-test.c b/kunit/string-stream-test.c
-index 07c626cbfffbf..5947fada67d96 100644
---- a/kunit/string-stream-test.c
-+++ b/kunit/string-stream-test.c
-@@ -19,7 +19,7 @@ static void string_stream_test_get_string(struct test *test)
- 	stream->add(stream, " %s", "bar");
- 
- 	output = stream->get_string(stream);
--	TEST_EXPECT_STREQ(test, output, "Foo bar");
-+	TEST_ASSERT_STREQ(test, output, "Foo bar");
- 	kfree(output);
- 	destroy_string_stream(stream);
- }
-@@ -34,16 +34,16 @@ static void string_stream_test_add_and_clear(struct test *test)
- 		stream->add(stream, "A");
- 
- 	output = stream->get_string(stream);
--	TEST_EXPECT_STREQ(test, output, "AAAAAAAAAA");
--	TEST_EXPECT_EQ(test, stream->length, 10);
--	TEST_EXPECT_FALSE(test, stream->is_empty(stream));
-+	TEST_ASSERT_STREQ(test, output, "AAAAAAAAAA");
-+	TEST_ASSERT_EQ(test, stream->length, 10);
-+	TEST_ASSERT_FALSE(test, stream->is_empty(stream));
- 	kfree(output);
- 
- 	stream->clear(stream);
- 
- 	output = stream->get_string(stream);
--	TEST_EXPECT_STREQ(test, output, "");
--	TEST_EXPECT_TRUE(test, stream->is_empty(stream));
-+	TEST_ASSERT_STREQ(test, output, "");
-+	TEST_ASSERT_TRUE(test, stream->is_empty(stream));
- 	destroy_string_stream(stream);
- }
- 
-diff --git a/kunit/test-test.c b/kunit/test-test.c
-new file mode 100644
-index 0000000000000..fd4b90208f0c3
---- /dev/null
-+++ b/kunit/test-test.c
-@@ -0,0 +1,37 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * KUnit test for core test infrastructure.
-+ *
-+ * Copyright (C) 2018, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
-+#include <kunit/test.h>
-+
-+static void test_test_catches_segfault(struct test *test)
-+{
-+	void (*invalid_func)(void) = (void (*)(void)) SIZE_MAX;
-+
-+	TEST_ASSERT_SIGSEGV(test, invalid_func());
-+}
-+
-+static int test_test_init(struct test *test)
-+{
-+	return 0;
-+}
-+
-+static void test_test_exit(struct test *test)
-+{
-+}
-+
-+static struct test_case test_test_cases[] = {
-+	TEST_CASE(test_test_catches_segfault),
-+	{},
-+};
-+
-+static struct test_module test_test_module = {
-+	.name = "test-test",
-+	.init = test_test_init,
-+	.exit = test_test_exit,
-+	.test_cases = test_test_cases,
-+};
-+module_test(test_test_module);
-diff --git a/kunit/test.c b/kunit/test.c
-index f798183533c8d..f89cfaaf5eb79 100644
---- a/kunit/test.c
-+++ b/kunit/test.c
-@@ -32,6 +32,27 @@ static void test_set_success(struct test *test, bool success)
- 	spin_unlock_irqrestore(&test->lock, flags);
- }
- 
-+static bool test_get_death_test(struct test *test)
-+{
-+	unsigned long flags;
-+	bool death_test;
-+
-+	spin_lock_irqsave(&test->lock, flags);
-+	death_test = test->death_test;
-+	spin_unlock_irqrestore(&test->lock, flags);
-+
-+	return death_test;
-+}
-+
-+static void test_set_death_test(struct test *test, bool death_test)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&test->lock, flags);
-+	test->death_test = death_test;
-+	spin_unlock_irqrestore(&test->lock, flags);
-+}
-+
- static int test_vprintk_emit(const struct test *test,
- 			     int level,
- 			     const char *fmt,
-@@ -70,13 +91,34 @@ static void test_fail(struct test *test, struct test_stream *stream)
- 	stream->commit(stream);
- }
- 
-+static void __noreturn test_abort(struct test *test)
-+{
-+	test_set_death_test(test, true);
-+	if (current->thread.fault_catcher && current->thread.is_running_test)
-+		UML_LONGJMP(current->thread.fault_catcher, 1);
-+
-+	/*
-+	 * Attempted to abort from a not properly initialized test context.
-+	 */
-+	test_err(test,
-+		 "Attempted to abort from a not properly initialized test context!");
-+	if (!current->thread.fault_catcher)
-+		test_err(test, "No fault_catcher present!");
-+	if (!current->thread.is_running_test)
-+		test_err(test, "is_running_test not set!");
-+	show_stack(NULL, NULL);
-+	BUG();
-+}
-+
- int test_init_test(struct test *test, const char *name)
- {
- 	spin_lock_init(&test->lock);
- 	INIT_LIST_HEAD(&test->resources);
- 	test->name = name;
-+	test->set_death_test = test_set_death_test;
- 	test->vprintk = test_vprintk;
- 	test->fail = test_fail;
-+	test->abort = test_abort;
- 
- 	return 0;
- }
-@@ -122,16 +164,89 @@ static void test_run_case_cleanup(struct test *test,
- }
- 
- /*
-- * Performs all logic to run a test case.
-+ * Handles an unexpected crash in a test case.
-  */
--static bool test_run_case(struct test *test,
--			  struct test_module *module,
--			  struct test_case *test_case)
-+static void test_handle_test_crash(struct test *test,
-+				   struct test_module *module,
-+				   struct test_case *test_case)
- {
--	test_set_success(test, true);
-+	test_err(test, "%s crashed", test_case->name);
-+	/*
-+	 * TODO(brendanhiggins@google.com): This prints the stack trace up
-+	 * through this frame, not up to the frame that caused the crash.
-+	 */
-+	show_stack(NULL, NULL);
-+
-+	test_case_internal_cleanup(test);
-+}
- 
--	test_run_case_internal(test, module, test_case);
--	test_run_case_cleanup(test, module, test_case);
-+/*
-+ * Performs all logic to run a test case. It also catches most errors that
-+ * occurs in a test case and reports them as failures.
-+ *
-+ * XXX: THIS DOES NOT FOLLOW NORMAL CONTROL FLOW. READ CAREFULLY!!!
-+ */
-+static bool test_run_case_catch_errors(struct test *test,
-+				       struct test_module *module,
-+				       struct test_case *test_case)
-+{
-+	jmp_buf fault_catcher;
-+	int faulted;
-+
-+	test_set_success(test, true);
-+	test_set_death_test(test, false);
-+
-+	/*
-+	 * Tell the trap subsystem that we want to catch any segfaults that
-+	 * occur.
-+	 */
-+	current->thread.is_running_test = true;
-+	current->thread.fault_catcher = &fault_catcher;
-+
-+	/*
-+	 * ENTER HANDLER: If a failure occurs, we enter here.
-+	 */
-+	faulted = UML_SETJMP(&fault_catcher);
-+	if (faulted == 0) {
-+		/*
-+		 * NORMAL CASE: we have not run test_run_case_internal yet.
-+		 *
-+		 * test_run_case_internal may encounter a fatal error; if it
-+		 * does, we will jump to ENTER_HANDLER above instead of
-+		 * continuing normal control flow.
-+		 */
-+		test_run_case_internal(test, module, test_case);
-+		/*
-+		 * This line may never be reached.
-+		 */
-+		test_run_case_cleanup(test, module, test_case);
-+	} else if (test_get_death_test(test)) {
-+		/*
-+		 * EXPECTED DEATH: test_run_case_internal encountered
-+		 * anticipated fatal error. Everything should be in a safe
-+		 * state.
-+		 */
-+		test_run_case_cleanup(test, module, test_case);
-+	} else {
-+		/*
-+		 * UNEXPECTED DEATH: test_run_case_internal encountered an
-+		 * unanticipated fatal error. We have no idea what the state of
-+		 * the test case is in.
-+		 */
-+		test_handle_test_crash(test, module, test_case);
-+		test_set_success(test, false);
-+	}
-+	/*
-+	 * EXIT HANDLER: test case has been run and all possible errors have
-+	 * been handled.
-+	 */
-+
-+	/*
-+	 * Tell the trap subsystem that we no longer want to catch any
-+	 * segfaults.
-+	 */
-+	current->thread.fault_catcher = NULL;
-+	current->thread.is_running_test = false;
- 
- 	return test_get_success(test);
- }
-@@ -148,7 +263,7 @@ int test_run_tests(struct test_module *module)
- 		return ret;
- 
- 	for (test_case = module->test_cases; test_case->run_case; test_case++) {
--		success = test_run_case(&test, module, test_case);
-+		success = test_run_case_catch_errors(&test, module, test_case);
- 		if (!success)
- 			all_passed = false;
- 
+is a 6.5% improvement averaged over multiple runs. It is also stable 
+with swap on/off and under memory pressure conditions. Other benchmarks 
+like forwarding, dd of large files, etc improve as well a few percent in 
+the single digits up to 10% range.
+
+I am looking at why the original code was ignoring mmap return values 
+and how to re-introduce them. This will probably come in a later revision.
+
+I think that with the current memory mapping mechanics this is as fast 
+as it can possibly get. Any further improvement can happen only if 
+something changes in the underlying mmap, namely some of transparent 
+hugepage, ksm, etc restrictions being removed.
+
+A.
+
+On 10/8/18 12:31 PM, anton.ivanov@cambridgegreys.com wrote:
+> From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+>
+> This patch introduces bulking up memory ranges to be passed to
+> mmap/munmap/mprotect instead of doing everything one page at a time.
+>
+> This is already being done for the userspace UML portion, this
+> adds a simplified version of it for the kernel mm.
+>
+> This results in speed up of up to 10%+ in some areas (sequential
+> disk read measured with dd, etc).
+>
+> Add further speed-up by removing a mandatory tlb force flush
+> if swap is not in use.
+>
+> Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> ---
+>   arch/um/kernel/tlb.c | 196 +++++++++++++++++++++++++++++++++++++--------------
+>   1 file changed, 143 insertions(+), 53 deletions(-)
+>
+> diff --git a/arch/um/kernel/tlb.c b/arch/um/kernel/tlb.c
+> index 37508b190106..763d35bdda01 100644
+> --- a/arch/um/kernel/tlb.c
+> +++ b/arch/um/kernel/tlb.c
+> @@ -6,6 +6,7 @@
+>   #include <linux/mm.h>
+>   #include <linux/module.h>
+>   #include <linux/sched/signal.h>
+> +#include <linux/swap.h>
+>   
+>   #include <asm/pgtable.h>
+>   #include <asm/tlbflush.h>
+> @@ -17,7 +18,7 @@
+>   
+>   struct host_vm_change {
+>   	struct host_vm_op {
+> -		enum { NONE, MMAP, MUNMAP, MPROTECT } type;
+> +		enum { HOST_NONE, HOST_MMAP, HOST_MUNMAP, HOST_MPROTECT } type;
+>   		union {
+>   			struct {
+>   				unsigned long addr;
+> @@ -43,14 +44,34 @@ struct host_vm_change {
+>   	int force;
+>   };
+>   
+> +struct kernel_vm_change {
+> +	struct {
+> +		unsigned long phys;
+> +		unsigned long virt;
+> +		unsigned long len;
+> +		unsigned int active;
+> +	} mmap;
+> +	struct {
+> +		unsigned long addr;
+> +		unsigned long len;
+> +		unsigned int active;
+> +	} munmap;
+> +	struct {
+> +		unsigned long addr;
+> +		unsigned long len;
+> +		unsigned int active;
+> +	} mprotect;
+> +};
+> +
+>   #define INIT_HVC(mm, force) \
+>   	((struct host_vm_change) \
+> -	 { .ops		= { { .type = NONE } },	\
+> +	 { .ops		= { { .type = HOST_NONE } },	\
+>   	   .id		= &mm->context.id, \
+>          	   .data	= NULL, \
+>   	   .index	= 0, \
+>   	   .force	= force })
+>   
+> +
+>   static void report_enomem(void)
+>   {
+>   	printk(KERN_ERR "UML ran out of memory on the host side! "
+> @@ -58,7 +79,7 @@ static void report_enomem(void)
+>   			"vm.max_map_count has been reached.\n");
+>   }
+>   
+> -static int do_ops(struct host_vm_change *hvc, int end,
+> +static int do_host_ops(struct host_vm_change *hvc, int end,
+>   		  int finished)
+>   {
+>   	struct host_vm_op *op;
+> @@ -67,22 +88,22 @@ static int do_ops(struct host_vm_change *hvc, int end,
+>   	for (i = 0; i < end && !ret; i++) {
+>   		op = &hvc->ops[i];
+>   		switch (op->type) {
+> -		case MMAP:
+> +		case HOST_MMAP:
+>   			ret = map(hvc->id, op->u.mmap.addr, op->u.mmap.len,
+>   				  op->u.mmap.prot, op->u.mmap.fd,
+>   				  op->u.mmap.offset, finished, &hvc->data);
+>   			break;
+> -		case MUNMAP:
+> +		case HOST_MUNMAP:
+>   			ret = unmap(hvc->id, op->u.munmap.addr,
+>   				    op->u.munmap.len, finished, &hvc->data);
+>   			break;
+> -		case MPROTECT:
+> +		case HOST_MPROTECT:
+>   			ret = protect(hvc->id, op->u.mprotect.addr,
+>   				      op->u.mprotect.len, op->u.mprotect.prot,
+>   				      finished, &hvc->data);
+>   			break;
+>   		default:
+> -			printk(KERN_ERR "Unknown op type %d in do_ops\n",
+> +			printk(KERN_ERR "Unknown op type %d in do_host_ops\n",
+>   			       op->type);
+>   			BUG();
+>   			break;
+> @@ -95,8 +116,32 @@ static int do_ops(struct host_vm_change *hvc, int end,
+>   	return ret;
+>   }
+>   
+> -static int add_mmap(unsigned long virt, unsigned long phys, unsigned long len,
+> -		    unsigned int prot, struct host_vm_change *hvc)
+> +static void do_kern_ops(struct kernel_vm_change *kvc)
+> +{
+> +	int err = 0;
+> +
+> +	if (kvc->munmap.active) {
+> +		err = os_unmap_memory((void *) kvc->munmap.addr,
+> +			kvc->munmap.len);
+> +		kvc->munmap.active = 0;
+> +		if (err < 0)
+> +			panic("munmap failed, errno = %d\n", -err);
+> +	}
+> +	if (kvc->mmap.active) {
+> +		map_memory(kvc->mmap.virt,
+> +			kvc->mmap.phys, kvc->mmap.len, 1, 1, 1);
+> +		kvc->mmap.active = 0;
+> +	}
+> +	if (kvc->mprotect.active) {
+> +		os_protect_memory((void *) kvc->mprotect.addr,
+> +			kvc->mprotect.len, 1, 1, 1);
+> +		kvc->mprotect.active = 0;
+> +	}
+> +}
+> +
+> +
+> +static int add_host_mmap(unsigned long virt, unsigned long phys,
+> +	unsigned long len, unsigned int prot, struct host_vm_change *hvc)
+>   {
+>   	__u64 offset;
+>   	struct host_vm_op *last;
+> @@ -105,7 +150,7 @@ static int add_mmap(unsigned long virt, unsigned long phys, unsigned long len,
+>   	fd = phys_mapping(phys, &offset);
+>   	if (hvc->index != 0) {
+>   		last = &hvc->ops[hvc->index - 1];
+> -		if ((last->type == MMAP) &&
+> +		if ((last->type == HOST_MMAP) &&
+>   		   (last->u.mmap.addr + last->u.mmap.len == virt) &&
+>   		   (last->u.mmap.prot == prot) && (last->u.mmap.fd == fd) &&
+>   		   (last->u.mmap.offset + last->u.mmap.len == offset)) {
+> @@ -115,12 +160,12 @@ static int add_mmap(unsigned long virt, unsigned long phys, unsigned long len,
+>   	}
+>   
+>   	if (hvc->index == ARRAY_SIZE(hvc->ops)) {
+> -		ret = do_ops(hvc, ARRAY_SIZE(hvc->ops), 0);
+> +		ret = do_host_ops(hvc, ARRAY_SIZE(hvc->ops), 0);
+>   		hvc->index = 0;
+>   	}
+>   
+>   	hvc->ops[hvc->index++] = ((struct host_vm_op)
+> -				  { .type	= MMAP,
+> +				  { .type	= HOST_MMAP,
+>   				    .u = { .mmap = { .addr	= virt,
+>   						     .len	= len,
+>   						     .prot	= prot,
+> @@ -130,7 +175,7 @@ static int add_mmap(unsigned long virt, unsigned long phys, unsigned long len,
+>   	return ret;
+>   }
+>   
+> -static int add_munmap(unsigned long addr, unsigned long len,
+> +static int add_host_munmap(unsigned long addr, unsigned long len,
+>   		      struct host_vm_change *hvc)
+>   {
+>   	struct host_vm_op *last;
+> @@ -141,7 +186,7 @@ static int add_munmap(unsigned long addr, unsigned long len,
+>   
+>   	if (hvc->index != 0) {
+>   		last = &hvc->ops[hvc->index - 1];
+> -		if ((last->type == MUNMAP) &&
+> +		if ((last->type == HOST_MUNMAP) &&
+>   		   (last->u.munmap.addr + last->u.mmap.len == addr)) {
+>   			last->u.munmap.len += len;
+>   			return 0;
+> @@ -149,18 +194,18 @@ static int add_munmap(unsigned long addr, unsigned long len,
+>   	}
+>   
+>   	if (hvc->index == ARRAY_SIZE(hvc->ops)) {
+> -		ret = do_ops(hvc, ARRAY_SIZE(hvc->ops), 0);
+> +		ret = do_host_ops(hvc, ARRAY_SIZE(hvc->ops), 0);
+>   		hvc->index = 0;
+>   	}
+>   
+>   	hvc->ops[hvc->index++] = ((struct host_vm_op)
+> -				  { .type	= MUNMAP,
+> +				  { .type	= HOST_MUNMAP,
+>   			     	    .u = { .munmap = { .addr	= addr,
+>   						       .len	= len } } });
+>   	return ret;
+>   }
+>   
+> -static int add_mprotect(unsigned long addr, unsigned long len,
+> +static int add_host_mprotect(unsigned long addr, unsigned long len,
+>   			unsigned int prot, struct host_vm_change *hvc)
+>   {
+>   	struct host_vm_op *last;
+> @@ -168,7 +213,7 @@ static int add_mprotect(unsigned long addr, unsigned long len,
+>   
+>   	if (hvc->index != 0) {
+>   		last = &hvc->ops[hvc->index - 1];
+> -		if ((last->type == MPROTECT) &&
+> +		if ((last->type == HOST_MPROTECT) &&
+>   		   (last->u.mprotect.addr + last->u.mprotect.len == addr) &&
+>   		   (last->u.mprotect.prot == prot)) {
+>   			last->u.mprotect.len += len;
+> @@ -177,12 +222,12 @@ static int add_mprotect(unsigned long addr, unsigned long len,
+>   	}
+>   
+>   	if (hvc->index == ARRAY_SIZE(hvc->ops)) {
+> -		ret = do_ops(hvc, ARRAY_SIZE(hvc->ops), 0);
+> +		ret = do_host_ops(hvc, ARRAY_SIZE(hvc->ops), 0);
+>   		hvc->index = 0;
+>   	}
+>   
+>   	hvc->ops[hvc->index++] = ((struct host_vm_op)
+> -				  { .type	= MPROTECT,
+> +				  { .type	= HOST_MPROTECT,
+>   			     	    .u = { .mprotect = { .addr	= addr,
+>   							 .len	= len,
+>   							 .prot	= prot } } });
+> @@ -191,6 +236,60 @@ static int add_mprotect(unsigned long addr, unsigned long len,
+>   
+>   #define ADD_ROUND(n, inc) (((n) + (inc)) & ~((inc) - 1))
+>   
+> +static void add_kern_mmap(unsigned long virt, unsigned long phys,
+> +	unsigned long len, struct kernel_vm_change *kvc)
+> +{
+> +
+> +	if (kvc->mmap.active) {
+> +		if (
+> +		   (kvc->mmap.phys + kvc->mmap.len == phys) &&
+> +		   (kvc->mmap.virt + kvc->mmap.len == virt)) {
+> +			kvc->mmap.len += len;
+> +			return;
+> +		}
+> +		do_kern_ops(kvc);
+> +	}
+> +
+> +	kvc->mmap.phys = phys;
+> +	kvc->mmap.virt = virt;
+> +	kvc->mmap.len = len;
+> +	kvc->mmap.active = 1;
+> +}
+> +
+> +static void add_kern_munmap(unsigned long addr, unsigned long len,
+> +		      struct kernel_vm_change *kvc)
+> +{
+> +
+> +	if (kvc->munmap.active) {
+> +		if (
+> +		   (kvc->munmap.addr + kvc->munmap.len == addr)) {
+> +			kvc->munmap.len += len;
+> +			return;
+> +		}
+> +		do_kern_ops(kvc);
+> +	}
+> +	kvc->munmap.addr = addr;
+> +	kvc->munmap.len = len;
+> +	kvc->munmap.active = 1;
+> +}
+> +
+> +static void add_kern_mprotect(unsigned long addr,
+> +	unsigned long len, struct kernel_vm_change *kvc)
+> +{
+> +
+> +	if (kvc->mprotect.active) {
+> +		if (
+> +		   (kvc->mprotect.addr + kvc->mprotect.len == addr)) {
+> +			kvc->mprotect.len += len;
+> +			return;
+> +		}
+> +		do_kern_ops(kvc);
+> +	}
+> +	kvc->mprotect.addr = addr;
+> +	kvc->mprotect.len = len;
+> +	kvc->mprotect.active = 1;
+> +}
+> +
+>   static inline int update_pte_range(pmd_t *pmd, unsigned long addr,
+>   				   unsigned long end,
+>   				   struct host_vm_change *hvc)
+> @@ -216,12 +315,13 @@ static inline int update_pte_range(pmd_t *pmd, unsigned long addr,
+>   			(x ? UM_PROT_EXEC : 0));
+>   		if (hvc->force || pte_newpage(*pte)) {
+>   			if (pte_present(*pte))
+> -				ret = add_mmap(addr, pte_val(*pte) & PAGE_MASK,
+> -					       PAGE_SIZE, prot, hvc);
+> +				ret = add_host_mmap(addr,
+> +					pte_val(*pte) & PAGE_MASK,
+> +					PAGE_SIZE, prot, hvc);
+>   			else
+> -				ret = add_munmap(addr, PAGE_SIZE, hvc);
+> +				ret = add_host_munmap(addr, PAGE_SIZE, hvc);
+>   		} else if (pte_newprot(*pte))
+> -			ret = add_mprotect(addr, PAGE_SIZE, prot, hvc);
+> +			ret = add_host_mprotect(addr, PAGE_SIZE, prot, hvc);
+>   		*pte = pte_mkuptodate(*pte);
+>   	} while (pte++, addr += PAGE_SIZE, ((addr < end) && !ret));
+>   	return ret;
+> @@ -240,7 +340,7 @@ static inline int update_pmd_range(pud_t *pud, unsigned long addr,
+>   		next = pmd_addr_end(addr, end);
+>   		if (!pmd_present(*pmd)) {
+>   			if (hvc->force || pmd_newpage(*pmd)) {
+> -				ret = add_munmap(addr, next - addr, hvc);
+> +				ret = add_host_munmap(addr, next - addr, hvc);
+>   				pmd_mkuptodate(*pmd);
+>   			}
+>   		}
+> @@ -262,7 +362,7 @@ static inline int update_pud_range(pgd_t *pgd, unsigned long addr,
+>   		next = pud_addr_end(addr, end);
+>   		if (!pud_present(*pud)) {
+>   			if (hvc->force || pud_newpage(*pud)) {
+> -				ret = add_munmap(addr, next - addr, hvc);
+> +				ret = add_host_munmap(addr, next - addr, hvc);
+>   				pud_mkuptodate(*pud);
+>   			}
+>   		}
+> @@ -285,7 +385,7 @@ void fix_range_common(struct mm_struct *mm, unsigned long start_addr,
+>   		next = pgd_addr_end(addr, end_addr);
+>   		if (!pgd_present(*pgd)) {
+>   			if (force || pgd_newpage(*pgd)) {
+> -				ret = add_munmap(addr, next - addr, &hvc);
+> +				ret = add_host_munmap(addr, next - addr, &hvc);
+>   				pgd_mkuptodate(*pgd);
+>   			}
+>   		}
+> @@ -293,7 +393,7 @@ void fix_range_common(struct mm_struct *mm, unsigned long start_addr,
+>   	} while (pgd++, addr = next, ((addr < end_addr) && !ret));
+>   
+>   	if (!ret)
+> -		ret = do_ops(&hvc, hvc.index, 1);
+> +		ret = do_host_ops(&hvc, hvc.index, 1);
+>   
+>   	/* This is not an else because ret is modified above */
+>   	if (ret) {
+> @@ -314,7 +414,12 @@ static int flush_tlb_kernel_range_common(unsigned long start, unsigned long end)
+>   	pmd_t *pmd;
+>   	pte_t *pte;
+>   	unsigned long addr, last;
+> -	int updated = 0, err;
+> +	int updated = 0;
+> +	struct kernel_vm_change kvc;
+> +
+> +	kvc.mmap.active = 0;
+> +	kvc.munmap.active = 0;
+> +	kvc.mprotect.active = 0;
+>   
+>   	mm = &init_mm;
+>   	for (addr = start; addr < end;) {
+> @@ -325,11 +430,7 @@ static int flush_tlb_kernel_range_common(unsigned long start, unsigned long end)
+>   				last = end;
+>   			if (pgd_newpage(*pgd)) {
+>   				updated = 1;
+> -				err = os_unmap_memory((void *) addr,
+> -						      last - addr);
+> -				if (err < 0)
+> -					panic("munmap failed, errno = %d\n",
+> -					      -err);
+> +				add_kern_munmap(addr, last - addr, &kvc);
+>   			}
+>   			addr = last;
+>   			continue;
+> @@ -342,11 +443,7 @@ static int flush_tlb_kernel_range_common(unsigned long start, unsigned long end)
+>   				last = end;
+>   			if (pud_newpage(*pud)) {
+>   				updated = 1;
+> -				err = os_unmap_memory((void *) addr,
+> -						      last - addr);
+> -				if (err < 0)
+> -					panic("munmap failed, errno = %d\n",
+> -					      -err);
+> +				add_kern_munmap(addr, last - addr, &kvc);
+>   			}
+>   			addr = last;
+>   			continue;
+> @@ -359,11 +456,7 @@ static int flush_tlb_kernel_range_common(unsigned long start, unsigned long end)
+>   				last = end;
+>   			if (pmd_newpage(*pmd)) {
+>   				updated = 1;
+> -				err = os_unmap_memory((void *) addr,
+> -						      last - addr);
+> -				if (err < 0)
+> -					panic("munmap failed, errno = %d\n",
+> -					      -err);
+> +				add_kern_munmap(addr, last - addr, &kvc);
+>   			}
+>   			addr = last;
+>   			continue;
+> @@ -372,22 +465,19 @@ static int flush_tlb_kernel_range_common(unsigned long start, unsigned long end)
+>   		pte = pte_offset_kernel(pmd, addr);
+>   		if (!pte_present(*pte) || pte_newpage(*pte)) {
+>   			updated = 1;
+> -			err = os_unmap_memory((void *) addr,
+> -					      PAGE_SIZE);
+> -			if (err < 0)
+> -				panic("munmap failed, errno = %d\n",
+> -				      -err);
+> +			add_kern_munmap(addr, PAGE_SIZE, &kvc);
+>   			if (pte_present(*pte))
+> -				map_memory(addr,
+> +				add_kern_mmap(addr,
+>   					   pte_val(*pte) & PAGE_MASK,
+> -					   PAGE_SIZE, 1, 1, 1);
+> +					   PAGE_SIZE, &kvc);
+>   		}
+>   		else if (pte_newprot(*pte)) {
+>   			updated = 1;
+> -			os_protect_memory((void *) addr, PAGE_SIZE, 1, 1, 1);
+> +			add_kern_mprotect(addr, PAGE_SIZE, &kvc);
+>   		}
+>   		addr += PAGE_SIZE;
+>   	}
+> +	do_kern_ops(&kvc);
+>   	return updated;
+>   }
+>   
+> @@ -553,7 +643,7 @@ void force_flush_all(void)
+>   	struct vm_area_struct *vma = mm->mmap;
+>   
+>   	while (vma != NULL) {
+> -		fix_range(mm, vma->vm_start, vma->vm_end, 1);
+> +		fix_range(mm, vma->vm_start, vma->vm_end, (get_nr_swap_pages() > 0) ? 1 : 0);
+>   		vma = vma->vm_next;
+>   	}
+>   }
+
 -- 
-2.19.1.568.g152ad8e336-goog
+Anton R. Ivanov
+
+Cambridge Greys Limited, England and Wales company No 10273661
+http://www.cambridgegreys.com/
 
 
 _______________________________________________
