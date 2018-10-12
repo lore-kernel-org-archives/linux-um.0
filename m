@@ -1,64 +1,46 @@
-Return-Path: <elfring@users.sourceforge.net>
+Return-Path: <joel@joelfernandes.org>
+Date: Fri, 12 Oct 2018 09:46:44 -0700
+From: Joel Fernandes <joel@joelfernandes.org>
 Subject: Re: [PATCH v2 1/2] treewide: remove unused address argument from
  pte_alloc functions
+Message-ID: <20181012164644.GC223066@joelaf.mtv.corp.google.com>
 References: <20181012013756.11285-1-joel@joelfernandes.org>
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Message-ID: <03b524f3-5f3a-baa0-2254-9c588103d2d6@users.sourceforge.net>
-Date: Fri, 12 Oct 2018 20:51:45 +0200
+ <594fc952-5e87-3162-b2f9-963479d16eb3@kot-begemot.co.uk>
+ <20181012163433.GA223066@joelaf.mtv.corp.google.com>
+ <alpine.DEB.2.20.1810121838180.4366@hadrien>
 MIME-Version: 1.0
-In-Reply-To: <20181012013756.11285-1-joel@joelfernandes.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
-To: Joel Fernandes <joel@joelfernandes.org>, kernel-janitors@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, kernel-team@android.com, Michal Hocko <mhocko@kernel.org>, Julia Lawall <Julia.Lawall@lip6.fr>, Andrey Ryabinin <aryabinin@virtuozzo.com>, Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@alien8.de>, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, Daniel Colascione <dancol@google.com>, Dave Hansen <dave.hansen@linux.intel.com>, "David S. Miller" <davem@davemloft.net>, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Helge Deller <deller@gmx.de>, Hugh Dickins <hughd@google.com>, Ingo Molnar <mingo@redhat.com>, "James E. J. Bottomley" <jejb@parisc-linux.org>, Jeff Dike <jdike@addtoit.com>, Jonas Bonn <jonas@southpole.se>, kasan-dev@googlegroups.com, kvmarm@lists.cs.columbia.edu, Ley Foon Tan <lftan@altera.com>, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, pantin@google.com, Lokesh Gidra <lokeshgidra@google.com>, Max Filippov <jcmvbkbc@gmail.com>, Minchan Kim <minchan@kernel.org>, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Sam Creasey <sammy@sammy.net>, sparclinux@vger.kernel.org, Stafford Horne <shorne@gmail.com>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, Will Deacon <will.deacon@arm.com>, "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, "Kirill A. Shutemov" <kirill@shutemov.name>, Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.20.1810121838180.4366@hadrien>
+To: Julia Lawall <julia.lawall@lip6.fr>
+Cc: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, Rich Felker <dalias@libc.org>, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Catalin Marinas <catalin.marinas@arm.com>, Dave Hansen <dave.hansen@linux.intel.com>, Will Deacon <will.deacon@arm.com>, Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org, lokeshgidra@google.com, linux-riscv@lists.infradead.org, elfring@users.sourceforge.net, Jonas Bonn <jonas@southpole.se>, linux-s390@vger.kernel.org, dancol@google.com, Yoshinori Sato <ysato@users.sourceforge.jp>, sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-hexagon@vger.kernel.org, Helge Deller <deller@gmx.de>, "maintainer:X86 ARCHITECTURE 32-BIT AND 64-BIT" <x86@kernel.org>, hughd@google.com, "James E.J. Bottomley" <jejb@parisc-linux.org>, kasan-dev@googlegroups.com, kvmarm@lists.cs.columbia.edu, Ingo Molnar <mingo@redhat.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Andrey Ryabinin <aryabinin@virtuozzo.com>, linux-snps-arc@lists.infradead.org, kernel-team@android.com, Sam Creasey <sammy@sammy.net>, Fenghua Yu <fenghua.yu@intel.com>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, linux-m68k@vger.kernel.org, openrisc@lists.librecores.org, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, nios2-dev@lists.rocketboards.org, kirill@shutemov.name, Stafford Horne <shorne@gmail.com>, Guan Xuetao <gxt@pku.edu.cn>, linux-arm-kernel@lists.infradead.org, Chris Zankel <chris@zankel.net>, Tony Luck <tony.luck@intel.com>, Richard Weinberger <richard@nod.at>, linux-parisc@vger.kernel.org, pantin@google.com, Max Filippov <jcmvbkbc@gmail.com>, minchan@kernel.org, Thomas Gleixner <tglx@linutronix.de>, linux-alpha@vger.kernel.org, Ley Foon Tan <lftan@altera.com>, akpm@linux-foundation.org, linuxppc-dev@lists.ozlabs.org, "David S. Miller" <davem@davemloft.net>
 List-ID: <linux-um.lists.infradead.org>
 
-> The changes were obtained by applying the following Coccinelle script.
+On Fri, Oct 12, 2018 at 06:38:57PM +0200, Julia Lawall wrote:
+> > I wrote something like this as below but it failed to compile, Julia any
+> > suggestions on how to express this?
+> >
+> > @pte_alloc_func_proto depends on patch exists@
+> > type T1, T2, T3, T4;
+> > identifier fn =~
+> > "^(__pte_alloc|pte_alloc_one|pte_alloc|__pte_alloc_kernel|pte_alloc_one_kernel)$";
+> > @@
+> >
+> > (
+> > - T3 fn(T1, T2);
+> > + T3 fn(T1);
+> > |
+> > - T3 fn(T1, T2, T4);
+> > + T3 fn(T1, T2);
+> > )
+> 
+> What goes wrong?  It seems fine to me.
 
-A bit of clarification happened for its implementation details.
-https://systeme.lip6.fr/pipermail/cocci/2018-October/005374.html
+Weird it seems working now. I could swear 5 minutes ago it wasn't and I did
+give a unique rule name. Don't know what I missed.
 
-I have taken also another look at the following SmPL code.
+Anyway, thank you for all the quick responses and the help!
 
+- Joel
 
-> identifier fn =~
-> "^(__pte_alloc|pte_alloc_one|pte_alloc|__pte_alloc_kernel|pte_alloc_one_kernel)$";
-
-I suggest to adjust the regular expression for this constraint
-and in subsequent SmPL rules.
-
-"^(?:pte_alloc(?:_one(?:_kernel)?)?|__pte_alloc(?:_kernel)?)$";
-
-
-> (
-> - T3 fn(T1 E1, T2 E2);
-> + T3 fn(T1 E1);
-> |
-> - T3 fn(T1 E1, T2 E2, T4 E4);
-> + T3 fn(T1 E1, T2 E2);
-> )
-
-I propose to take an other SmPL disjunction into account here.
-
- T3 fn(T1 E1,
-(
--      T2 E2
-|      T2 E2,
--      T4 E4
-)      );
-
-
-> (
-> - #define fn(a, b, c)@p e
-> + #define fn(a, b) e
-> |
-> - #define fn(a, b)@p e
-> + #define fn(a) e
-> )
-
-How do you think about to omit the metavariable “position p” here?
-
-Regards,
-Markus
 
