@@ -1,17 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab6.miniserver.com ([5.153.251.140]
- helo=www.kot-begemot.co.uk)
+Received: from verein.lst.de ([213.95.11.211] helo=newverein.lst.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gByWd-0003Qx-IR
- for linux-um@lists.infradead.org; Mon, 15 Oct 2018 08:46:57 +0000
+ id 1gByVi-0003KV-4r
+ for linux-um@lists.infradead.org; Mon, 15 Oct 2018 08:45:59 +0000
+Date: Mon, 15 Oct 2018 10:45:41 +0200
+From: Christoph Hellwig <hch@lst.de>
 Subject: Re: [PATCH, RFC] ubd: remove use of blk_rq_map_sg
+Message-ID: <20181015084541.GA27159@lst.de>
 References: <20181015065637.1860-1-hch@lst.de> <4055590.4i3nx3fRmo@blindfold>
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Message-ID: <933e2a33-1bad-f68b-ac52-485f80f3562e@cambridgegreys.com>
-Date: Mon, 15 Oct 2018 09:46:40 +0100
 MIME-Version: 1.0
+Content-Disposition: inline
 In-Reply-To: <4055590.4i3nx3fRmo@blindfold>
-Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,61 +19,73 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard@nod.at>, Christoph Hellwig <hch@lst.de>
-Cc: axboe@kernel.dk, linux-block@vger.kernel.org, linux-um@lists.infradead.org
+To: Richard Weinberger <richard@nod.at>
+Cc: axboe@kernel.dk, linux-block@vger.kernel.org, linux-um@lists.infradead.org, Christoph Hellwig <hch@lst.de>, anton.ivanov@cambridgegreys.com
 
-On 10/15/18 9:40 AM, Richard Weinberger wrote:
-> Christoph,
->
-> [CC'ing also Anton, he improved the old driver a lot.]
-
-I was just about to start testing it :)
-
->
-> Anton, this patch is based on:
-> https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/?h=mq-conversions
-Thanks. I remember an RFC patch going across the mailing list during the 
-summer, but did not know where did this work get to.
->
-> Am Montag, 15. Oktober 2018, 08:56:37 CEST schrieb Christoph Hellwig:
->> There is no good reason to create a scatterlist in the ubd driver,
->> it can just iterate the request directly.
->>
->> Signed-off-by: Christoph Hellwig <hch@lst.de>
->> ---
->>
->> Now that we have the blk-mq conversion something like the patch below
->> should help to simplify the driver even further.
+On Mon, Oct 15, 2018 at 10:40:06AM +0200, Richard Weinberger wrote:
 > hm, this breaks UML.
 > Every filesystem fails to mount.
->
+> 
 > I did some very rough tests, it seems that the driver fails to read
 > data correctly as soon the upper layer tries to get more than 4096 bytes
 > at once out of the block device.
->
+> 
 > IOW:
 > dd if=/dev/ubda bs=4096 count=1 skip=0 2>/dev/null| md5sum -
 > is good.
 > As soon I set bs to something greater it returns garbage.
->
+> 
 > Later this day I might have some cycles left to debug further.
-I will have some time to look into this in the afternoon, but I have to 
-have a look at the mq-conversions first.
-> Thanks,
-> //richard
->
->
->
--- 
-Anton R. Ivanov
 
-Cambridge Greys Limited, England and Wales company No 10273661
-http://www.cambridgegreys.com/
+It probably needs this on top:
 
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index aafe9c467fdc..5adce80a7ee3 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -1290,7 +1290,7 @@ static void cowify_req(struct io_thread_req *req, unsigned long *bitmap,
+ }
+ 
+ static int ubd_queue_one_vec(struct blk_mq_hw_ctx *hctx, struct request *req,
+-		sector_t pos, struct bio_vec *bvec)
++		u64 off, struct bio_vec *bvec)
+ {
+ 	struct ubd *dev = hctx->queue->queuedata;
+ 	struct io_thread_req *io_req;
+@@ -1311,7 +1311,7 @@ static int ubd_queue_one_vec(struct blk_mq_hw_ctx *hctx, struct request *req,
+ 	} else {
+ 		io_req->fds[1] = dev->fd;
+ 		io_req->cow_offset = -1;
+-		io_req->offset = (unsigned long long)pos << 9;
++		io_req->offset = off;
+ 		io_req->length = bvec->bv_len;
+ 		io_req->error = 0;
+ 		io_req->sector_mask = 0;
+@@ -1346,17 +1346,17 @@ static blk_status_t ubd_queue_rq(struct blk_mq_hw_ctx *hctx,
+ 	struct bio *bio = req->bio;
+ 	struct bvec_iter iter;
+ 	struct bio_vec bvec;
+-	sector_t pos = blk_rq_pos(req);
++	u64 off = (u64)blk_rq_pos(req) << 9;
+ 
+ 	blk_mq_start_request(req);
+ 
+ 	for_each_bio(bio) {
+ 		bio_for_each_segment(bvec, bio, iter) {
+-			if (ubd_queue_one_vec(hctx, req, pos, &bvec) < 0) {
++			if (ubd_queue_one_vec(hctx, req, off, &bvec) < 0) {
+ 				blk_mq_requeue_request(req, true);
+ 				return BLK_STS_OK;
+ 			}
+-			pos += bvec.bv_len;
++			off += bvec.bv_len;
+ 		}
+ 	}
+ 
 
 _______________________________________________
 linux-um mailing list
