@@ -1,17 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-qk1-x74a.google.com ([2607:f8b0:4864:20::74a])
+Received: from mail-yb1-xb4a.google.com ([2607:f8b0:4864:20::b4a])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gCZB4-0004bo-H7
- for linux-um@lists.infradead.org; Tue, 16 Oct 2018 23:55:38 +0000
-Received: by mail-qk1-x74a.google.com with SMTP id w6-v6so22529519qka.15
- for <linux-um@lists.infradead.org>; Tue, 16 Oct 2018 16:54:55 -0700 (PDT)
-Date: Tue, 16 Oct 2018 16:51:17 -0700
+ id 1gCZA7-0003zB-TA
+ for linux-um@lists.infradead.org; Tue, 16 Oct 2018 23:54:10 +0000
+Received: by mail-yb1-xb4a.google.com with SMTP id g194-v6so13892275ybf.5
+ for <linux-um@lists.infradead.org>; Tue, 16 Oct 2018 16:53:56 -0700 (PDT)
+Date: Tue, 16 Oct 2018 16:50:53 -0700
 In-Reply-To: <20181016235120.138227-1-brendanhiggins@google.com>
-Message-Id: <20181016235120.138227-29-brendanhiggins@google.com>
+Message-Id: <20181016235120.138227-5-brendanhiggins@google.com>
 Mime-Version: 1.0
 References: <20181016235120.138227-1-brendanhiggins@google.com>
-Subject: [RFC v1 28/31] kunit: added Python libraries for handing KUnit config
- and kernel
+Subject: [RFC v1 04/31] kunit: test: added test_stream a std::stream like
+ logger
 From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -26,236 +26,287 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
-Cc: brakmo@fb.com, richard@nod.at, mpe@ellerman.id.au, Tim.Bird@sony.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, julia.lawall@lip6.fr, Felix Guo <felixguoxiuping@gmail.com>, joel@jms.id.au, linux-kselftest@vger.kernel.org, khilman@baylibre.com, joe@perches.com, jdike@addtoit.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
+Cc: brakmo@fb.com, richard@nod.at, mpe@ellerman.id.au, Tim.Bird@sony.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, julia.lawall@lip6.fr, joel@jms.id.au, linux-kselftest@vger.kernel.org, khilman@baylibre.com, joe@perches.com, jdike@addtoit.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
 
-kunit_config.py:
-  - parses .config and Kconfig files
+Adds a C++ style log library for for logging test results.
 
-kunit_kernel.py: provides helper functions to:
-  - configure the kernel using kunitconfig
-  - builds the kernel with the correct architecture
-  - provides function to invoke the kernel and stream the output back
-
-The kernel invocation is wrapped in a subprocess call within the module
-because regular invocation of the kernel (./linux) may modify TTY
-settings.
-
-Signed-off-by: Felix Guo <felixguoxiuping@gmail.com>
 Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
 ---
- tools/testing/kunit/.gitignore      |   3 +
- tools/testing/kunit/kunit_config.py |  60 ++++++++++++++
- tools/testing/kunit/kunit_kernel.py | 123 ++++++++++++++++++++++++++++
- 3 files changed, 186 insertions(+)
- create mode 100644 tools/testing/kunit/.gitignore
- create mode 100644 tools/testing/kunit/kunit_config.py
- create mode 100644 tools/testing/kunit/kunit_kernel.py
+ include/kunit/test-stream.h |  49 ++++++++++++
+ include/kunit/test.h        |   2 +
+ kunit/Makefile              |   2 +-
+ kunit/test-stream.c         | 153 ++++++++++++++++++++++++++++++++++++
+ kunit/test.c                |   8 ++
+ 5 files changed, 213 insertions(+), 1 deletion(-)
+ create mode 100644 include/kunit/test-stream.h
+ create mode 100644 kunit/test-stream.c
 
-diff --git a/tools/testing/kunit/.gitignore b/tools/testing/kunit/.gitignore
+diff --git a/include/kunit/test-stream.h b/include/kunit/test-stream.h
 new file mode 100644
-index 0000000000000..c791ff59a37a9
+index 0000000000000..c5dfd95ef21bb
 --- /dev/null
-+++ b/tools/testing/kunit/.gitignore
-@@ -0,0 +1,3 @@
-+# Byte-compiled / optimized / DLL files
-+__pycache__/
-+*.py[cod]
-\ No newline at end of file
-diff --git a/tools/testing/kunit/kunit_config.py b/tools/testing/kunit/kunit_config.py
++++ b/include/kunit/test-stream.h
+@@ -0,0 +1,49 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * C++ stream style string formatter and printer used in KUnit for outputting
++ * KUnit messages.
++ *
++ * Copyright (C) 2018, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++
++#ifndef _KUNIT_TEST_STREAM_H
++#define _KUNIT_TEST_STREAM_H
++
++#include <linux/types.h>
++#include <kunit/string-stream.h>
++
++struct test;
++
++/**
++ * struct test_stream - a std::stream style string builder.
++ * @set_level: sets the level that this string should be printed at.
++ * @add: adds the formatted input to the internal buffer.
++ * @commit: prints out the internal buffer to the user.
++ * @clear: clears the internal buffer.
++ *
++ * A std::stream style string builder. Allows messages to be built up and
++ * printed all at once.
++ */
++struct test_stream {
++	void (*set_level)(struct test_stream *this, const char *level);
++	void (*add)(struct test_stream *this, const char *fmt, ...);
++	void (*append)(struct test_stream *this, struct test_stream *other);
++	void (*commit)(struct test_stream *this);
++	void (*clear)(struct test_stream *this);
++	/* private: internal use only. */
++	struct test *test;
++	spinlock_t lock; /* Guards level. */
++	const char *level;
++	struct string_stream *internal_stream;
++};
++
++/**
++ * test_new_stream() - constructs a new &struct test_stream.
++ * @test: The test context object.
++ *
++ * Constructs a new test managed &struct test_stream.
++ */
++struct test_stream *test_new_stream(struct test *test);
++
++#endif /* _KUNIT_TEST_STREAM_H */
+diff --git a/include/kunit/test.h b/include/kunit/test.h
+index 1c116a20063da..68320fa2452de 100644
+--- a/include/kunit/test.h
++++ b/include/kunit/test.h
+@@ -11,6 +11,7 @@
+ 
+ #include <linux/types.h>
+ #include <linux/slab.h>
++#include <kunit/test-stream.h>
+ 
+ struct test_resource;
+ 
+@@ -171,6 +172,7 @@ struct test {
+ 	void (*vprintk)(const struct test *test,
+ 			const char *level,
+ 			struct va_format *vaf);
++	void (*fail)(struct test *test, struct test_stream *stream);
+ };
+ 
+ int test_init_test(struct test *test, const char *name);
+diff --git a/kunit/Makefile b/kunit/Makefile
+index 7fc613a9b383b..5b4562ea7f322 100644
+--- a/kunit/Makefile
++++ b/kunit/Makefile
+@@ -1 +1 @@
+-obj-$(CONFIG_KUNIT)		+= test.o string-stream.o
++obj-$(CONFIG_KUNIT)		+= test.o string-stream.o test-stream.o
+diff --git a/kunit/test-stream.c b/kunit/test-stream.c
 new file mode 100644
-index 0000000000000..183bd5e758762
+index 0000000000000..392966864a708
 --- /dev/null
-+++ b/tools/testing/kunit/kunit_config.py
-@@ -0,0 +1,60 @@
-+# SPDX-License-Identifier: GPL-2.0
++++ b/kunit/test-stream.c
+@@ -0,0 +1,153 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * C++ stream style string formatter and printer used in KUnit for outputting
++ * KUnit messages.
++ *
++ * Copyright (C) 2018, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
 +
-+import collections
-+import re
++#include <kunit/test.h>
++#include <kunit/test-stream.h>
++#include <kunit/string-stream.h>
 +
-+CONFIG_IS_NOT_SET_PATTERN = r'^# CONFIG_\w+ is not set$'
-+CONFIG_PATTERN = r'^CONFIG_\w+=\S+$'
++static const char *test_stream_get_level(struct test_stream *this)
++{
++	unsigned long flags;
++	const char *level;
 +
-+KconfigEntryBase = collections.namedtuple('KconfigEntry', ['raw_entry'])
++	spin_lock_irqsave(&this->lock, flags);
++	level = this->level;
++	spin_unlock_irqrestore(&this->lock, flags);
 +
++	return level;
++}
 +
-+class KconfigEntry(KconfigEntryBase):
++static void test_stream_set_level(struct test_stream *this, const char *level)
++{
++	unsigned long flags;
 +
-+	def __str__(self) -> str:
-+		return self.raw_entry
++	spin_lock_irqsave(&this->lock, flags);
++	this->level = level;
++	spin_unlock_irqrestore(&this->lock, flags);
++}
 +
++static void test_stream_add(struct test_stream *this, const char *fmt, ...)
++{
++	va_list args;
++	struct string_stream *stream = this->internal_stream;
 +
-+class KconfigParseError(Exception):
-+	"""Error parsing Kconfig defconfig or .config."""
++	va_start(args, fmt);
++	if (stream->vadd(stream, fmt, args) < 0)
++		test_err(this->test, "Failed to allocate fragment: %s", fmt);
 +
++	va_end(args);
++}
 +
-+class Kconfig(object):
-+	"""Represents defconfig or .config specified using the Kconfig language."""
++static void test_stream_append(struct test_stream *this,
++			       struct test_stream *other)
++{
++	struct string_stream *other_stream = other->internal_stream;
++	const char *other_content;
 +
-+	def __init__(self):
-+		self._entries = []
++	other_content = other_stream->get_string(other_stream);
 +
-+	def entries(self):
-+		return set(self._entries)
++	if (!other_content) {
++		test_err(this->test,
++			 "Failed to get string from second argument for appending.");
++		return;
++	}
 +
-+	def add_entry(self, entry: KconfigEntry) -> None:
-+		self._entries.append(entry)
++	this->add(this, other_content);
++}
 +
-+	def is_subset_of(self, other: "Kconfig") -> bool:
-+		return self.entries().issubset(other.entries())
++static void test_stream_clear(struct test_stream *this)
++{
++	this->internal_stream->clear(this->internal_stream);
++}
 +
-+	def write_to_file(self, path: str) -> None:
-+		with open(path, 'w') as f:
-+			for entry in self.entries():
-+				f.write(str(entry) + '\n')
++static void test_stream_commit(struct test_stream *this)
++{
++	struct string_stream *stream = this->internal_stream;
++	struct string_stream_fragment *fragment;
++	const char *level;
++	char *buf;
 +
-+	def parse_from_string(self, blob: str) -> None:
-+		"""Parses a string containing KconfigEntrys and populates this Kconfig."""
-+		self._entries = []
-+		is_not_set_matcher = re.compile(CONFIG_IS_NOT_SET_PATTERN)
-+		config_matcher = re.compile(CONFIG_PATTERN)
-+		for line in blob.split('\n'):
-+			line = line.strip()
-+			if not line:
-+				continue
-+			elif config_matcher.match(line) or is_not_set_matcher.match(line):
-+				self._entries.append(KconfigEntry(line))
-+			elif line[0] == '#':
-+				continue
-+			else:
-+				raise KconfigParseError('Failed to parse: ' + line)
++	level = test_stream_get_level(this);
++	if (!level) {
++		test_err(this->test,
++			 "Stream was committed without a specified log level.");
++		level = KERN_ERR;
++		this->set_level(this, level);
++	}
 +
-+	def read_from_file(self, path: str) -> None:
-+		with open(path, 'r') as f:
-+			self.parse_from_string(f.read())
-diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-new file mode 100644
-index 0000000000000..87abaede50513
---- /dev/null
-+++ b/tools/testing/kunit/kunit_kernel.py
-@@ -0,0 +1,123 @@
-+# SPDX-License-Identifier: GPL-2.0
++	buf = stream->get_string(stream);
++	if (!buf) {
++		test_err(this->test,
++			 "Could not allocate buffer, dumping stream:");
++		list_for_each_entry(fragment, &stream->fragments, node) {
++			test_err(this->test, fragment->fragment);
++		}
++		goto cleanup;
++	}
 +
-+import logging
-+import subprocess
-+import os
++	test_printk(level, this->test, buf);
++	kfree(buf);
 +
-+import kunit_config
++cleanup:
++	this->clear(this);
++}
 +
-+KCONFIG_PATH = '.config'
++static int test_stream_init(struct test_resource *res, void *context)
++{
++	struct test *test = context;
++	struct test_stream *stream;
 +
-+class ConfigError(Exception):
-+	"""Represents an error trying to configure the Linux kernel."""
++	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
++	if (!stream)
++		return -ENOMEM;
++	res->allocation = stream;
++	stream->test = test;
++	spin_lock_init(&stream->lock);
++	stream->internal_stream = new_string_stream();
 +
++	if (!stream->internal_stream)
++		return -ENOMEM;
 +
-+class BuildError(Exception):
-+	"""Represents an error trying to build the Linux kernel."""
++	stream->set_level = test_stream_set_level;
++	stream->add = test_stream_add;
++	stream->append = test_stream_append;
++	stream->commit = test_stream_commit;
++	stream->clear = test_stream_clear;
 +
++	return 0;
++}
 +
-+class LinuxSourceTreeOperations(object):
-+	"""An abstraction over command line operations performed on a source tree."""
++static void test_stream_free(struct test_resource *res)
++{
++	struct test_stream *stream = res->allocation;
 +
-+	def make_mrproper(self):
-+		try:
-+			subprocess.check_output(['make', 'mrproper'])
-+		except OSError as e:
-+			raise ConfigError('Could not call make command: ' + e)
-+		except subprocess.CalledProcessError as e:
-+			raise ConfigError(e.output)
++	if (!stream->internal_stream->is_empty(stream->internal_stream)) {
++		test_err(stream->test,
++			 "End of test case reached with uncommitted stream entries.");
++		stream->commit(stream);
++	}
 +
-+	def make_olddefconfig(self):
-+		try:
-+			subprocess.check_output(['make', 'ARCH=um', 'olddefconfig'])
-+		except OSError as e:
-+			raise ConfigError('Could not call make command: ' + e)
-+		except subprocess.CalledProcessError as e:
-+			raise ConfigError(e.output)
++	destroy_string_stream(stream->internal_stream);
++	kfree(stream);
++}
 +
-+	def make(self):
-+		try:
-+			subprocess.check_output(['make', 'ARCH=um'])
-+		except OSError as e:
-+			raise BuildError('Could not call execute make: ' + e)
-+		except subprocess.CalledProcessError as e:
-+			raise BuildError(e.output)
++struct test_stream *test_new_stream(struct test *test)
++{
++	struct test_resource *res;
 +
-+	def linux_bin(self, params, timeout):
-+		"""Runs the Linux UML binary. Must be named 'linux'."""
-+		process = subprocess.Popen(
-+			['./linux'] + params,
-+			stdin=subprocess.PIPE,
-+			stdout=subprocess.PIPE,
-+			stderr=subprocess.PIPE)
-+		process.wait(timeout=timeout)
-+		return process
++	res = test_alloc_resource(test,
++				  test_stream_init,
++				  test_stream_free,
++				  test);
 +
++	if (res)
++		return res->allocation;
++	else
++		return NULL;
++}
+diff --git a/kunit/test.c b/kunit/test.c
+index fd0a51245215e..f798183533c8d 100644
+--- a/kunit/test.c
++++ b/kunit/test.c
+@@ -63,12 +63,20 @@ static void test_vprintk(const struct test *test,
+ 			 "kunit %s: %pV", test->name, vaf);
+ }
+ 
++static void test_fail(struct test *test, struct test_stream *stream)
++{
++	test_set_success(test, false);
++	stream->set_level(stream, KERN_ERR);
++	stream->commit(stream);
++}
 +
-+class LinuxSourceTree(object):
-+	"""Represents a Linux kernel source tree with KUnit tests."""
-+
-+	def __init__(self):
-+		self._kconfig = kunit_config.Kconfig()
-+		self._kconfig.read_from_file('kunitconfig')
-+		self._ops = LinuxSourceTreeOperations()
-+
-+	def clean(self):
-+		try:
-+			self._ops.make_mrproper()
-+		except ConfigError as e:
-+			logging.error(e)
-+			return False
-+		return True
-+
-+	def build_config(self):
-+		self._kconfig.write_to_file(KCONFIG_PATH)
-+		try:
-+			self._ops.make_olddefconfig()
-+		except ConfigError as e:
-+			logging.error(e)
-+			return False
-+		validated_kconfig = kunit_config.Kconfig()
-+		validated_kconfig.read_from_file(KCONFIG_PATH)
-+		if not self._kconfig.is_subset_of(validated_kconfig):
-+			logging.error('Provided Kconfig is not contained in validated .config!')
-+			return False
-+		return True
-+
-+	def build_reconfig(self):
-+		"""Creates a new .config if it is not a subset of the kunitconfig."""
-+		if os.path.exists(KCONFIG_PATH):
-+			existing_kconfig = kunit_config.Kconfig()
-+			existing_kconfig.read_from_file(KCONFIG_PATH)
-+			if not self._kconfig.is_subset_of(existing_kconfig):
-+				print('Regenerating .config ...')
-+				os.remove(KCONFIG_PATH)
-+				return self.build_config()
-+			else:
-+				return True
-+		else:
-+			print('Generating .config ...')
-+			return self.build_config()
-+
-+	def build_um_kernel(self):
-+		try:
-+			self._ops.make_olddefconfig()
-+			self._ops.make()
-+		except (ConfigError, BuildError) as e:
-+			logging.error(e)
-+			return False
-+		used_kconfig = kunit_config.Kconfig()
-+		used_kconfig.read_from_file(KCONFIG_PATH)
-+		if not self._kconfig.is_subset_of(used_kconfig):
-+			logging.error('Provided Kconfig is not contained in final config!')
-+			return False
-+		return True
-+
-+	def run_kernel(self, args=[]):
-+		timeout = None
-+		args.extend(['mem=256M'])
-+		process = self._ops.linux_bin(args, timeout)
-+		with open('test.log', 'w') as f:
-+			for line in process.stdout:
-+				f.write(line.rstrip().decode('ascii') + '\n')
-+				yield line.rstrip().decode('ascii')
+ int test_init_test(struct test *test, const char *name)
+ {
+ 	spin_lock_init(&test->lock);
+ 	INIT_LIST_HEAD(&test->resources);
+ 	test->name = name;
+ 	test->vprintk = test_vprintk;
++	test->fail = test_fail;
+ 
+ 	return 0;
+ }
 -- 
 2.19.1.331.ge82ca0e54c-goog
 
