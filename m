@@ -1,13 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from lilium.sigma-star.at ([109.75.188.150])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gHSgK-00030U-Jq
- for linux-um@lists.infradead.org; Tue, 30 Oct 2018 11:59:38 +0000
-From: Richard Weinberger <richard@nod.at>
-Subject: [PATCH 1/4] um: Fix warning at kernel/time/clockevents.c:466
-Date: Tue, 30 Oct 2018 12:58:09 +0100
-Message-Id: <20181030115812.346-1-richard@nod.at>
-MIME-Version: 1.0
+Received: from mail-qt1-x849.google.com ([2607:f8b0:4864:20::849])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gCZB9-0004dt-VK
+ for linux-um@lists.infradead.org; Tue, 16 Oct 2018 23:55:40 +0000
+Received: by mail-qt1-x849.google.com with SMTP id s56-v6so26849759qtk.2
+ for <linux-um@lists.infradead.org>; Tue, 16 Oct 2018 16:55:00 -0700 (PDT)
+Date: Tue, 16 Oct 2018 16:51:19 -0700
+In-Reply-To: <20181016235120.138227-1-brendanhiggins@google.com>
+Message-Id: <20181016235120.138227-31-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20181016235120.138227-1-brendanhiggins@google.com>
+Subject: [RFC v1 30/31] kunit.py: improved output from python wrapper
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,35 +24,177 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Richard Weinberger <richard@nod.at>
+To: gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
+Cc: brakmo@fb.com, richard@nod.at, mpe@ellerman.id.au, Tim.Bird@sony.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, julia.lawall@lip6.fr, Felix Guo <felixguoxiuping@gmail.com>, joel@jms.id.au, linux-kselftest@vger.kernel.org, khilman@baylibre.com, joe@perches.com, jdike@addtoit.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
 
-Since fbfa9260085b ("clockevents: Warn if cpu_all_mask is used as
-cpumask") the WARN_ON() make sure that nobody is using cpu_all_mask.
-For UML this never was a real problem since it is UP only.
-Switch to cpu_possible_mask to no longer violate the rules of the clock
-framework.
+- added colors to displayed output
+- added timing and summary
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Felix Guo <felixguoxiuping@gmail.com>
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
 ---
- arch/um/kernel/time.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/kunit/kunit.py        | 20 ++++++-
+ tools/testing/kunit/kunit_parser.py | 93 ++++++++++++++++++++++++++++-
+ 2 files changed, 109 insertions(+), 4 deletions(-)
 
-diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
-index 052de4c8acb2..0c572a48158e 100644
---- a/arch/um/kernel/time.c
-+++ b/arch/um/kernel/time.c
-@@ -56,7 +56,7 @@ static int itimer_one_shot(struct clock_event_device *evt)
- static struct clock_event_device timer_clockevent = {
- 	.name			= "posix-timer",
- 	.rating			= 250,
--	.cpumask		= cpu_all_mask,
-+	.cpumask		= cpu_possible_mask,
- 	.features		= CLOCK_EVT_FEAT_PERIODIC |
- 				  CLOCK_EVT_FEAT_ONESHOT,
- 	.set_state_shutdown	= itimer_shutdown,
+diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+index 1356be404996b..b36c7b7924567 100755
+--- a/tools/testing/kunit/kunit.py
++++ b/tools/testing/kunit/kunit.py
+@@ -6,6 +6,7 @@
+ import argparse
+ import sys
+ import os
++import time
+ 
+ import kunit_config
+ import kunit_kernel
+@@ -24,17 +25,32 @@ parser.add_argument('--timeout', help='maximum number of seconds to allow for '
+ cli_args = parser.parse_args()
+ linux = kunit_kernel.LinuxSourceTree()
+ 
++config_start = time.time()
+ success = linux.build_reconfig()
++config_end = time.time()
+ if not success:
+ 	quit()
+ 
+-print('Building KUnit Kernel ...')
++kunit_parser.print_with_timestamp('Building KUnit Kernel ...')
++
++build_start = time.time()
+ success = linux.build_um_kernel()
++build_end = time.time()
+ if not success:
+ 	quit()
+ 
+-print('Starting KUnit Kernel ...')
++kunit_parser.print_with_timestamp('Starting KUnit Kernel ...')
++test_start = time.time()
++
+ if cli_args.raw_output:
+ 	kunit_parser.raw_output(linux.run_kernel(timeout=cli_args.timeout))
+ else:
+ 	kunit_parser.parse_run_tests(linux.run_kernel(timeout=cli_args.timeout))
++
++test_end = time.time()
++
++kunit_parser.print_with_timestamp((
++	"Elapsed time: %.3fs total, %.3fs configuring, %.3fs " +
++	"building, %.3fs running.\n") % (test_end - config_start,
++	config_end - config_start, build_end - build_start,
++	test_end - test_start))
+diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
+index 1dff3adb73bd3..d9051e407d5a7 100644
+--- a/tools/testing/kunit/kunit_parser.py
++++ b/tools/testing/kunit/kunit_parser.py
+@@ -1,6 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0
+ 
+ import re
++from datetime import datetime
+ 
+ kunit_start_re = re.compile('console .* enabled')
+ kunit_end_re = re.compile('List of all partitions:')
+@@ -19,6 +20,94 @@ def raw_output(kernel_output):
+ 	for line in kernel_output:
+ 		print(line)
+ 
++DIVIDER = "=" * 30
++
++RESET = '\033[0;0m'
++
++def red(text):
++	return '\033[1;31m' + text + RESET
++
++def yellow(text):
++	return '\033[1;33m' + text + RESET
++
++def green(text):
++	return '\033[1;32m' + text + RESET
++
++def print_with_timestamp(message):
++	print('[%s] %s' % (datetime.now().strftime('%H:%M:%S'), message))
++
++def print_log(log):
++	for m in log:
++		print_with_timestamp(m)
++
+ def parse_run_tests(kernel_output):
+-	for output in isolate_kunit_output(kernel_output):
+-		print(output)
++	test_case_output = re.compile('^kunit .*?: (.*)$')
++
++	test_module_success = re.compile('^kunit .*: all tests passed')
++	test_module_fail = re.compile('^kunit .*: one or more tests failed')
++
++	test_case_success = re.compile('^kunit (.*): (.*) passed')
++	test_case_fail = re.compile('^kunit (.*): (.*) failed')
++	test_case_crash = re.compile('^kunit (.*): (.*) crashed')
++
++	total_tests = set()
++	failed_tests = set()
++	crashed_tests = set()
++
++	def get_test_name(match):
++		return match.group(1) + ":" + match.group(2)
++
++	current_case_log = []
++	def end_one_test(match, log):
++		log.clear()
++		total_tests.add(get_test_name(match))
++
++	print_with_timestamp(DIVIDER)
++	for line in isolate_kunit_output(kernel_output):
++		# Ignore module output:
++		if (test_module_success.match(line) or
++		    test_module_fail.match(line)):
++			print_with_timestamp(DIVIDER)
++			continue
++
++		match = re.match(test_case_success, line)
++		if match:
++			print_with_timestamp(green("[PASSED] ") +
++					     get_test_name(match))
++			end_one_test(match, current_case_log)
++			continue
++
++		match = re.match(test_case_fail, line)
++		# Crashed tests will report as both failed and crashed. We only
++		# want to show and count it once.
++		if match and get_test_name(match) not in crashed_tests:
++			failed_tests.add(get_test_name(match))
++			print_with_timestamp(red("[FAILED] " +
++						 get_test_name(match)))
++			print_log(map(yellow, current_case_log))
++			print_with_timestamp("")
++			end_one_test(match, current_case_log)
++			continue
++
++		match = re.match(test_case_crash, line)
++		if match:
++			crashed_tests.add(get_test_name(match))
++			print_with_timestamp(yellow("[CRASH] " +
++						    get_test_name(match)))
++			print_log(current_case_log)
++			print_with_timestamp("")
++			end_one_test(match, current_case_log)
++			continue
++
++		# Strip off the `kunit module-name:` prefix
++		match = re.match(test_case_output, line)
++		if match:
++			current_case_log.append(match.group(1))
++		else:
++			current_case_log.append(line)
++
++	fmt = green if (len(failed_tests) + len(crashed_tests) == 0) else red
++	print_with_timestamp(
++		fmt("Testing complete. %d tests run. %d failed. %d crashed." %
++		    (len(total_tests), len(failed_tests), len(crashed_tests))))
++
 -- 
-2.19.1
+2.19.1.331.ge82ca0e54c-goog
 
 
 _______________________________________________
