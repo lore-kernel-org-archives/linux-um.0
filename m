@@ -1,20 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-ot1-x342.google.com ([2607:f8b0:4864:20::342])
+Received: from smtprelay0053.hostedemail.com ([216.40.44.53]
+ helo=smtprelay.hostedemail.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gCZJ9-0008RZ-7n
- for linux-um@lists.infradead.org; Wed, 17 Oct 2018 00:03:28 +0000
-Received: by mail-ot1-x342.google.com with SMTP id q50so24429955otd.0
- for <linux-um@lists.infradead.org>; Tue, 16 Oct 2018 17:03:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <20181016235120.138227-1-brendanhiggins@google.com>
- <20181016235120.138227-13-brendanhiggins@google.com>
- <bad13afe8c71860a85f12130a57fe9a96f017cf3.camel@perches.com>
-In-Reply-To: <bad13afe8c71860a85f12130a57fe9a96f017cf3.camel@perches.com>
-From: Brendan Higgins <brendanhiggins@google.com>
-Date: Tue, 16 Oct 2018 17:03:01 -0700
-Message-ID: <CAFd5g44VQqJVhUPQLHWzaXMbjJeGNs2nDZYTmzQ8OV7dyTXfVg@mail.gmail.com>
+ id 1gCZFW-0006fH-EZ
+ for linux-um@lists.infradead.org; Tue, 16 Oct 2018 23:59:43 +0000
+Message-ID: <bad13afe8c71860a85f12130a57fe9a96f017cf3.camel@perches.com>
 Subject: Re: [RFC v1 12/31] checkpatch: added support for struct MOCK(foo)
  syntax
+From: Joe Perches <joe@perches.com>
+Date: Tue, 16 Oct 2018 16:59:26 -0700
+In-Reply-To: <20181016235120.138227-13-brendanhiggins@google.com>
+References: <20181016235120.138227-1-brendanhiggins@google.com>
+ <20181016235120.138227-13-brendanhiggins@google.com>
+Mime-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -27,21 +25,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: joe@perches.com
-Cc: brakmo@fb.com, richard@nod.at, mpe@ellerman.id.au, Tim.Bird@sony.com, Kees Cook <keescook@google.com>, jdike@addtoit.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, rostedt@goodmis.org, linux-um@lists.infradead.org, julia.lawall@lip6.fr, mcgrof@kernel.org, Joel Stanley <joel@jms.id.au>, linux-kselftest@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>, shuah@kernel.org, khilman@baylibre.com, kunit-dev@googlegroups.com
+To: Brendan Higgins <brendanhiggins@google.com>, gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
+Cc: brakmo@fb.com, richard@nod.at, mpe@ellerman.id.au, Tim.Bird@sony.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, julia.lawall@lip6.fr, joel@jms.id.au, linux-kselftest@vger.kernel.org, khilman@baylibre.com, jdike@addtoit.com, kunit-dev@googlegroups.com
 
-On Tue, Oct 16, 2018 at 4:59 PM Joe Perches <joe@perches.com> wrote:
->
-> On Tue, 2018-10-16 at 16:51 -0700, Brendan Higgins wrote:
-> > This adds struct MOCK(foo) as a NonptrType so that it is recognized
-> > correctly in declarations.
->
-> I think this commit message is lacking context.
+On Tue, 2018-10-16 at 16:51 -0700, Brendan Higgins wrote:
+> This adds struct MOCK(foo) as a NonptrType so that it is recognized
+> correctly in declarations.
 
-Oh sorry, you are right. We added macros for generating mocks from
-types, so we decided to name the generated mock types struct MOCK(foo)
-(where the base type is struct foo); this commit makes checkpatch not
-complain at this new syntax.
+I think this commit message is lacking context.
+
+
+> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+> ---
+>  scripts/checkpatch.pl | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 447857ffaf6be..9806f190796de 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -745,6 +745,10 @@ sub build_types {
+>  			(?:
+>  				(?:typeof|__typeof__)\s*\([^\)]*\)|
+>  				(?:$typeTypedefs\b)|
+> +				# Matching a \b breaks struct MOCK(foo) syntax,
+> +				# so we need to have it not lumped in with the
+> +				# types in @typeList.
+> +				(?:struct\s+MOCK\($Ident\))|
+>  				(?:${all}\b)
+>  			)
+>  			(?:\s+$Modifier|\s+const)*
+
 
 _______________________________________________
 linux-um mailing list
