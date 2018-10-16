@@ -1,17 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-ua1-x94a.google.com ([2607:f8b0:4864:20::94a])
+Received: from mail-vk1-xa4a.google.com ([2607:f8b0:4864:20::a4a])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gCZAI-00043J-Gj
- for linux-um@lists.infradead.org; Tue, 16 Oct 2018 23:54:20 +0000
-Received: by mail-ua1-x94a.google.com with SMTP id o25so2253369ual.13
- for <linux-um@lists.infradead.org>; Tue, 16 Oct 2018 16:54:07 -0700 (PDT)
-Date: Tue, 16 Oct 2018 16:50:57 -0700
+ id 1gCZAx-0004Xj-R5
+ for linux-um@lists.infradead.org; Tue, 16 Oct 2018 23:55:26 +0000
+Received: by mail-vk1-xa4a.google.com with SMTP id y199-v6so2823231vkd.20
+ for <linux-um@lists.infradead.org>; Tue, 16 Oct 2018 16:54:48 -0700 (PDT)
+Date: Tue, 16 Oct 2018 16:51:14 -0700
 In-Reply-To: <20181016235120.138227-1-brendanhiggins@google.com>
-Message-Id: <20181016235120.138227-9-brendanhiggins@google.com>
+Message-Id: <20181016235120.138227-26-brendanhiggins@google.com>
 Mime-Version: 1.0
 References: <20181016235120.138227-1-brendanhiggins@google.com>
-Subject: [RFC v1 08/31] arch: um: added shim to trap to allow installing a
- fault catcher for tests
+Subject: [RFC v1 25/31] kunit: added concept of platform mocking
 From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -28,80 +27,172 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
 Cc: brakmo@fb.com, richard@nod.at, mpe@ellerman.id.au, Tim.Bird@sony.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, julia.lawall@lip6.fr, joel@jms.id.au, linux-kselftest@vger.kernel.org, khilman@baylibre.com, joe@perches.com, jdike@addtoit.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
 
-Added context to current thread that allows a test to specify that it
-wants to skip the normal checks to run an installed fault catcher.
+Platform mocking is the mocking of all platform specific functions that
+interact directly with hardware. In effect, this provides the ability to
+mock any hardware behavior.
 
 Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
 ---
- arch/um/include/asm/processor-generic.h |  4 +++-
- arch/um/kernel/trap.c                   | 15 +++++++++++----
- 2 files changed, 14 insertions(+), 5 deletions(-)
+ drivers/base/Makefile                |  1 +
+ drivers/base/platform-mock.c         | 65 ++++++++++++++++++++++++++++
+ include/linux/platform_device_mock.h | 64 +++++++++++++++++++++++++++
+ 3 files changed, 130 insertions(+)
+ create mode 100644 drivers/base/platform-mock.c
+ create mode 100644 include/linux/platform_device_mock.h
 
-diff --git a/arch/um/include/asm/processor-generic.h b/arch/um/include/asm/processor-generic.h
-index b58b746d3f2ca..d566cd416ff02 100644
---- a/arch/um/include/asm/processor-generic.h
-+++ b/arch/um/include/asm/processor-generic.h
-@@ -27,6 +27,7 @@ struct thread_struct {
- 	struct task_struct *prev_sched;
- 	struct arch_thread arch;
- 	jmp_buf switch_buf;
-+	bool is_running_test;
- 	struct {
- 		int op;
- 		union {
-@@ -51,7 +52,8 @@ struct thread_struct {
- 	.fault_addr		= NULL, \
- 	.prev_sched		= NULL, \
- 	.arch			= INIT_ARCH_THREAD, \
--	.request		= { 0 } \
-+	.request		= { 0 }, \
-+	.is_running_test	= false, \
- }
+diff --git a/drivers/base/Makefile b/drivers/base/Makefile
+index 704f442958103..77cc599daa020 100644
+--- a/drivers/base/Makefile
++++ b/drivers/base/Makefile
+@@ -23,6 +23,7 @@ obj-$(CONFIG_PINCTRL) += pinctrl.o
+ obj-$(CONFIG_DEV_COREDUMP) += devcoredump.o
+ obj-$(CONFIG_GENERIC_MSI_IRQ_DOMAIN) += platform-msi.o
+ obj-$(CONFIG_GENERIC_ARCH_TOPOLOGY) += arch_topology.o
++obj-$(CONFIG_PLATFORM_MOCK) += platform-mock.o
  
- static inline void release_thread(struct task_struct *task)
-diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
-index ec9a42c14c565..9b97712daf14f 100644
---- a/arch/um/kernel/trap.c
-+++ b/arch/um/kernel/trap.c
-@@ -201,6 +201,12 @@ void segv_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
- 	segv(*fi, UPT_IP(regs), UPT_IS_USER(regs), regs);
- }
+ obj-y			+= test/
  
-+static void segv_run_catcher(jmp_buf *catcher, void *fault_addr)
+diff --git a/drivers/base/platform-mock.c b/drivers/base/platform-mock.c
+new file mode 100644
+index 0000000000000..3df9f1b0bb50f
+--- /dev/null
++++ b/drivers/base/platform-mock.c
+@@ -0,0 +1,65 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Fake platform device API for unit testing platform drivers.
++ *
++ * Copyright (C) 2018, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++
++#include <linux/platform_device_mock.h>
++#include <linux/of_platform.h>
++
++struct device_node *of_fake_node(struct test *test, const char *name)
 +{
-+	current->thread.fault_addr = fault_addr;
-+	UML_LONGJMP(catcher, 1);
++	struct device_node *node;
++
++	node = test_kzalloc(test, sizeof(*node), GFP_KERNEL);
++	if (!node)
++		return NULL;
++
++	of_node_init(node);
++
++	return node;
 +}
 +
- /*
-  * We give a *copy* of the faultinfo in the regs to segv.
-  * This must be done, since nesting SEGVs could overwrite
-@@ -219,7 +225,10 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
- 	if (!is_user && regs)
- 		current->thread.segv_regs = container_of(regs, struct pt_regs, regs);
- 
--	if (!is_user && (address >= start_vm) && (address < end_vm)) {
-+	catcher = current->thread.fault_catcher;
-+	if (catcher && current->thread.is_running_test)
-+		segv_run_catcher(catcher, (void *) address);
-+	else if (!is_user && (address >= start_vm) && (address < end_vm)) {
- 		flush_tlb_kernel_vm();
- 		goto out;
- 	}
-@@ -246,12 +255,10 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
- 		address = 0;
- 	}
- 
--	catcher = current->thread.fault_catcher;
- 	if (!err)
- 		goto out;
- 	else if (catcher != NULL) {
--		current->thread.fault_addr = (void *) address;
--		UML_LONGJMP(catcher, 1);
-+		segv_run_catcher(catcher, (void *) address);
- 	}
- 	else if (current->thread.fault_addr != NULL)
- 		panic("fault_addr set but no fault catcher");
++struct platform_device *
++of_fake_probe_platform(struct test *test,
++		       const struct platform_driver *driver,
++		       const char *node_name)
++{
++	struct platform_device *pdev;
++	struct device_node *of_node;
++	int ret;
++
++	of_node = of_fake_node(test, node_name);
++	if (!of_node)
++		return ERR_PTR(-ENOMEM);
++
++	test_info(test, "Creating device");
++	pdev = of_platform_device_create(of_node, node_name, NULL);
++	if (!pdev)
++		return ERR_PTR(-ENODEV);
++
++	test_info(test, "Probing");
++	ret = driver->probe(pdev);
++	if (ret)
++		return ERR_PTR(ret);
++
++	return pdev;
++}
++
++struct platform_device *of_fake_probe_platform_by_name(struct test *test,
++						       const char *driver_name,
++						       const char *node_name)
++{
++	const struct device_driver *driver;
++
++	test_info(test, "Locating driver by name");
++	driver = driver_find(driver_name, &platform_bus_type);
++	if (!driver)
++		return ERR_PTR(-ENODEV);
++
++	return of_fake_probe_platform(test,
++				      to_platform_driver(driver),
++				      node_name);
++}
+diff --git a/include/linux/platform_device_mock.h b/include/linux/platform_device_mock.h
+new file mode 100644
+index 0000000000000..898539d166f66
+--- /dev/null
++++ b/include/linux/platform_device_mock.h
+@@ -0,0 +1,64 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Fake platform device API for unit testing platform drivers.
++ *
++ * Copyright (C) 2018, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++
++#include <linux/platform_device.h>
++#include <kunit/mock.h>
++
++static inline struct platform_driver *platform_driver_find(const char *name)
++{
++	struct device_driver *driver;
++
++	driver = driver_find(name, &platform_bus_type);
++	if (!driver)
++		return NULL;
++
++	return to_platform_driver(driver);
++}
++
++/**
++ * of_fake_node()
++ * @test: the test to associate node with
++ * @name: name of the node
++ *
++ * The &struct device_node returned is allocated as a root node with the given
++ * name and otherwise behaves as a real &struct device_node.
++ *
++ * Returns: the faked &struct device_node
++ */
++struct device_node *of_fake_node(struct test *test, const char *name);
++
++/**
++ * of_fake_probe_platform()
++ * @test: the test to associate the fake platform device with
++ * @driver: driver to probe
++ * @node_name: name of the device node created
++ *
++ * Creates a &struct platform_device and an associated &struct device_node,
++ * probes the provided &struct platform_driver with the &struct platform_device.
++ *
++ * Returns: the &struct platform_device that was created
++ */
++struct platform_device *
++of_fake_probe_platform(struct test *test,
++		       const struct platform_driver *driver,
++		       const char *node_name);
++
++/**
++ * of_fake_probe_platform_by_name()
++ * @test: the test to associate the fake platform device with
++ * @driver_name: name of the driver to probe
++ * @node_name: name of the device node created
++ *
++ * Same as of_fake_probe_platform() but looks up the &struct platform_driver by
++ * the provided name.
++ *
++ * Returns: the &struct platform_device that was created
++ */
++struct platform_device *of_fake_probe_platform_by_name(struct test *test,
++						       const char *driver_name,
++						       const char *node_name);
 -- 
 2.19.1.331.ge82ca0e54c-goog
 
