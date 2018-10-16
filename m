@@ -1,14 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from userp2130.oracle.com ([156.151.31.86])
+Received: from mail-qt1-x849.google.com ([2607:f8b0:4864:20::849])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gCi6W-0000gN-Qe
- for linux-um@lists.infradead.org; Wed, 17 Oct 2018 09:27:02 +0000
-Date: Wed, 17 Oct 2018 12:26:37 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [bug report] um: Convert ubd driver to blk-mq
-Message-ID: <20181017092637.p77e2ien4hrys7qy@kili.mountain>
-MIME-Version: 1.0
-Content-Disposition: inline
+ id 1gCZAM-000487-Ll
+ for linux-um@lists.infradead.org; Tue, 16 Oct 2018 23:54:26 +0000
+Received: by mail-qt1-x849.google.com with SMTP id f20-v6so26497660qta.16
+ for <linux-um@lists.infradead.org>; Tue, 16 Oct 2018 16:54:11 -0700 (PDT)
+Date: Tue, 16 Oct 2018 16:50:59 -0700
+In-Reply-To: <20181016235120.138227-1-brendanhiggins@google.com>
+Message-Id: <20181016235120.138227-11-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20181016235120.138227-1-brendanhiggins@google.com>
+Subject: [RFC v1 10/31] kunit: test: added concept of initcalls
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -21,71 +24,114 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: richard@nod.at
-Cc: linux-um@lists.infradead.org
+To: gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
+Cc: brakmo@fb.com, richard@nod.at, mpe@ellerman.id.au, Tim.Bird@sony.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, julia.lawall@lip6.fr, joel@jms.id.au, linux-kselftest@vger.kernel.org, khilman@baylibre.com, joe@perches.com, jdike@addtoit.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
 
-Hello Richard Weinberger,
+Added a way to add plugins that require a test module to be loaded
+during initialization.
 
-The patch 4e6da0fe8058: "um: Convert ubd driver to blk-mq" from Nov
-26, 2017, leads to the following static checker warning:
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+---
+ include/kunit/test.h | 19 +++++++++++++++++++
+ kunit/test.c         | 29 +++++++++++++++++++++++++++++
+ 2 files changed, 48 insertions(+)
 
-	arch/um/drivers/ubd_kern.c:963 ubd_add()
-	error: 'ubd_dev->queue' dereferencing possible ERR_PTR()
+diff --git a/include/kunit/test.h b/include/kunit/test.h
+index 49a9d6e43992c..58dbe2aee423f 100644
+--- a/include/kunit/test.h
++++ b/include/kunit/test.h
+@@ -152,6 +152,12 @@ struct test_module {
+ 	struct test_case *test_cases;
+ };
+ 
++struct test_initcall {
++	struct list_head node;
++	int (*init)(struct test_initcall *this, struct test *test);
++	void (*exit)(struct test_initcall *this);
++};
++
+ /**
+  * struct test - represents a running instance of a test.
+  * @priv: for user to store arbitrary data. Commonly used to pass data created
+@@ -183,6 +189,19 @@ int test_init_test(struct test *test, const char *name);
+ 
+ int test_run_tests(struct test_module *module);
+ 
++void test_install_initcall(struct test_initcall *initcall);
++
++#define test_pure_initcall(fn) postcore_initcall(fn)
++
++#define test_register_initcall(initcall) \
++		static int register_test_initcall_##initcall(void) \
++		{ \
++			test_install_initcall(&initcall); \
++			\
++			return 0; \
++		} \
++		test_pure_initcall(register_test_initcall_##initcall)
++
+ /**
+  * module_test() - used to register a &struct test_module with KUnit.
+  * @module: a statically allocated &struct test_module.
+diff --git a/kunit/test.c b/kunit/test.c
+index f89cfaaf5eb79..9737465fb0568 100644
+--- a/kunit/test.c
++++ b/kunit/test.c
+@@ -53,6 +53,19 @@ static void test_set_death_test(struct test *test, bool death_test)
+ 	spin_unlock_irqrestore(&test->lock, flags);
+ }
+ 
++struct test_global_context {
++	struct list_head initcalls;
++};
++
++static struct test_global_context test_global_context = {
++	.initcalls = LIST_HEAD_INIT(test_global_context.initcalls),
++};
++
++void test_install_initcall(struct test_initcall *initcall)
++{
++	list_add_tail(&initcall->node, &test_global_context.initcalls);
++}
++
+ static int test_vprintk_emit(const struct test *test,
+ 			     int level,
+ 			     const char *fmt,
+@@ -130,8 +143,18 @@ static void test_run_case_internal(struct test *test,
+ 				   struct test_module *module,
+ 				   struct test_case *test_case)
+ {
++	struct test_initcall *initcall;
+ 	int ret;
+ 
++	list_for_each_entry(initcall, &test_global_context.initcalls, node) {
++		ret = initcall->init(initcall, test);
++		if (ret) {
++			test_err(test, "failed to initialize: %d", ret);
++			test->success = false;
++			return;
++		}
++	}
++
+ 	if (module->init) {
+ 		ret = module->init(test);
+ 		if (ret) {
+@@ -146,6 +169,12 @@ static void test_run_case_internal(struct test *test,
+ 
+ static void test_case_internal_cleanup(struct test *test)
+ {
++	struct test_initcall *initcall;
++
++	list_for_each_entry(initcall, &test_global_context.initcalls, node) {
++		initcall->exit(initcall);
++	}
++
+ 	test_cleanup(test);
+ }
+ 
+-- 
+2.19.1.331.ge82ca0e54c-goog
 
-arch/um/drivers/ubd_kern.c
-   921          ubd_dev->tag_set.cmd_size = sizeof(struct ubd_pdu);
-   922          ubd_dev->tag_set.driver_data = ubd_dev;
-   923          ubd_dev->tag_set.nr_hw_queues = 1;
-   924  
-   925          err = blk_mq_alloc_tag_set(&ubd_dev->tag_set);
-   926          if (err)
-   927                  goto out;
-   928  
-   929          ubd_dev->queue = blk_mq_init_queue(&ubd_dev->tag_set);
-   930          if (IS_ERR(ubd_dev->queue)) {
-   931                  err = PTR_ERR(ubd_dev->queue);
-   932                  goto out_cleanup;
-                        ^^^^^^^^^^^^^^^^^
-
-   933          }
-   934  
-   935          ubd_dev->queue->queuedata = ubd_dev;
-   936          blk_queue_write_cache(ubd_dev->queue, true, false);
-   937  
-   938          blk_queue_max_segments(ubd_dev->queue, MAX_SG);
-   939          err = ubd_disk_register(UBD_MAJOR, ubd_dev->size, n, &ubd_gendisk[n]);
-   940          if(err){
-   941                  *error_out = "Failed to register device";
-   942                  goto out_cleanup_tags;
-   943          }
-   944  
-   945          if (fake_major != UBD_MAJOR)
-   946                  ubd_disk_register(fake_major, ubd_dev->size, n,
-   947                                    &fake_gendisk[n]);
-   948  
-   949          /*
-   950           * Perhaps this should also be under the "if (fake_major)" above
-   951           * using the fake_disk->disk_name
-   952           */
-   953          if (fake_ide)
-   954                  make_ide_entries(ubd_gendisk[n]->disk_name);
-   955  
-   956          err = 0;
-   957  out:
-   958          return err;
-   959  
-   960  out_cleanup_tags:
-   961          blk_mq_free_tag_set(&ubd_dev->tag_set);
-   962  out_cleanup:
-   963          blk_cleanup_queue(ubd_dev->queue);
-                                  ^^^^^^^^^^^^^^
-Dereferenced inside the function.
-
-   964          goto out;
-   965  }
-
-regards,
-dan carpenter
 
 _______________________________________________
 linux-um mailing list
