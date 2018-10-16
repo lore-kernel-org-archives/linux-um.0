@@ -1,17 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-it1-x149.google.com ([2607:f8b0:4864:20::149])
+Received: from mail-pg1-x549.google.com ([2607:f8b0:4864:20::549])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gF6as-0004Ge-VB
- for linux-um@lists.infradead.org; Wed, 24 Oct 2018 00:00:28 +0000
-Received: by mail-it1-x149.google.com with SMTP id m8-v6so3246928iti.2
- for <linux-um@lists.infradead.org>; Tue, 23 Oct 2018 17:00:03 -0700 (PDT)
-Date: Tue, 23 Oct 2018 16:57:46 -0700
-In-Reply-To: <20181023235750.103146-1-brendanhiggins@google.com>
-Message-Id: <20181023235750.103146-11-brendanhiggins@google.com>
+ id 1gCZAV-0004F9-BW
+ for linux-um@lists.infradead.org; Tue, 16 Oct 2018 23:54:54 +0000
+Received: by mail-pg1-x549.google.com with SMTP id m4-v6so18624147pgv.15
+ for <linux-um@lists.infradead.org>; Tue, 16 Oct 2018 16:54:19 -0700 (PDT)
+Date: Tue, 16 Oct 2018 16:51:02 -0700
+In-Reply-To: <20181016235120.138227-1-brendanhiggins@google.com>
+Message-Id: <20181016235120.138227-14-brendanhiggins@google.com>
 Mime-Version: 1.0
-References: <20181023235750.103146-1-brendanhiggins@google.com>
-Subject: [RFC v2 10/14] kunit: add Python libraries for handing KUnit config
- and kernel
+References: <20181016235120.138227-1-brendanhiggins@google.com>
+Subject: [RFC v1 13/31] kunit: mock: added parameter list minipulation macros
 From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -26,241 +25,497 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
-Cc: brakmo@fb.com, jdike@addtoit.com, dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org, robh@kernel.org, linux-nvdimm@lists.01.org, richard@nod.at, kieran.bingham@ideasonboard.com, Felix Guo <felixguoxiuping@gmail.com>, joel@jms.id.au, khilman@baylibre.com, Brendan Higgins <brendanhiggins@google.com>, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, joe@perches.com
+Cc: brakmo@fb.com, richard@nod.at, mpe@ellerman.id.au, Tim.Bird@sony.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, julia.lawall@lip6.fr, joel@jms.id.au, linux-kselftest@vger.kernel.org, khilman@baylibre.com, joe@perches.com, jdike@addtoit.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
 
-The ultimate goal is to create minimal isolated test binaries; in the
-meantime we are using UML to provide the infrastructure to run tests, so
-define an abstract way to configure and run tests that allow us to
-change the context in which tests are built without affecting the user.
-This also makes pretty and dynamic error reporting, and a lot of other
-nice features easier.
+Adds macros for parsing and manipulating parameter lists needed for
+generating mocks.
 
-kunit_config.py:
-  - parse .config and Kconfig files.
-
-kunit_kernel.py: provides helper functions to:
-  - configure the kernel using kunitconfig.
-  - build the kernel with the appropriate configuration.
-  - provide function to invoke the kernel and stream the output back.
-
-Signed-off-by: Felix Guo <felixguoxiuping@gmail.com>
 Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
 ---
- tools/testing/kunit/.gitignore      |   3 +
- tools/testing/kunit/kunit_config.py |  60 ++++++++++++++
- tools/testing/kunit/kunit_kernel.py | 123 ++++++++++++++++++++++++++++
- 3 files changed, 186 insertions(+)
- create mode 100644 tools/testing/kunit/.gitignore
- create mode 100644 tools/testing/kunit/kunit_config.py
- create mode 100644 tools/testing/kunit/kunit_kernel.py
+ include/kunit/params.h  | 305 ++++++++++++++++++++++++++++++++++++++++
+ kunit/Makefile          |   2 +-
+ kunit/mock-macro-test.c | 149 ++++++++++++++++++++
+ 3 files changed, 455 insertions(+), 1 deletion(-)
+ create mode 100644 include/kunit/params.h
+ create mode 100644 kunit/mock-macro-test.c
 
-diff --git a/tools/testing/kunit/.gitignore b/tools/testing/kunit/.gitignore
+diff --git a/include/kunit/params.h b/include/kunit/params.h
 new file mode 100644
-index 0000000000000..c791ff59a37a9
+index 0000000000000..f9692d3cd703f
 --- /dev/null
-+++ b/tools/testing/kunit/.gitignore
-@@ -0,0 +1,3 @@
-+# Byte-compiled / optimized / DLL files
-+__pycache__/
-+*.py[cod]
-\ No newline at end of file
-diff --git a/tools/testing/kunit/kunit_config.py b/tools/testing/kunit/kunit_config.py
++++ b/include/kunit/params.h
+@@ -0,0 +1,305 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Macros for parsing and manipulating parameter lists needed for generating
++ * mocks.
++ *
++ * Copyright (C) 2018, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++
++#ifndef _KUNIT_PARAMS_H
++#define _KUNIT_PARAMS_H
++
++#define NUM_VA_ARGS_IMPL(__dummy,					       \
++			 __1,						       \
++			 __2,						       \
++			 __3,						       \
++			 __4,						       \
++			 __5,						       \
++			 __6,						       \
++			 __7,						       \
++			 __8,						       \
++			 __9,						       \
++			 __10,						       \
++			 __11,						       \
++			 __12,						       \
++			 __13,						       \
++			 __14,						       \
++			 __15,						       \
++			 __16,						       \
++			 __nargs, args...) __nargs
++
++#define NUM_VA_ARGS(args...) NUM_VA_ARGS_IMPL(__dummy, ##args,		       \
++					  16,				       \
++					  15,				       \
++					  14,				       \
++					  13,				       \
++					  12,				       \
++					  11,				       \
++					  10,				       \
++					  9,				       \
++					  8,				       \
++					  7,				       \
++					  6,				       \
++					  5,				       \
++					  4,				       \
++					  3,				       \
++					  2,				       \
++					  1,				       \
++					  0)
++
++#define CONCAT_INTERNAL(left, right) left##right
++#define CONCAT(left, right) CONCAT_INTERNAL(left, right)
++
++#define EMPTY()
++
++/*
++ * Takes the name of a function style macro such as FOO() and prevents it from
++ * being evaluated on the current pass.
++ *
++ * This is useful when you need to write a "recursive" macro since a macro name
++ * becomes painted after it is pasted. If a different macro is pasted, this
++ * different macro won't be pasted; if we then defer the evaluation of the this
++ * "indirection macro", we can prevent the original definition from getting
++ * painted.
++ *
++ * Example:
++ *   #define EXAMPLE EXPAND(FOO()) // FOO() is evaluated on 1st pass.
++ *   #define EXAMPLE EXPAND(DEFER(FOO)()) // FOO() is evaluated on the second
++ *					  // pass.
++ */
++#define DEFER(macro_id) macro_id EMPTY()
++
++/*
++ * Takes the name of a function style macro such as FOO() and prevents it from
++ * being evaluated on the current or following pass.
++ *
++ * This is useful when you need to DEFER inside an operation which causes an
++ * extra pass, like IF.
++ *
++ * Example:
++ *   #define EXAMPLE EXPAND(FOO()) // FOO() is evaluated on 1st pass.
++ *   #define EXAMPLE EXPAND(DEFER(FOO)()) // FOO() is evaluated on the second
++ *					  // pass.
++ *   #define EXAMPLE EXPAND(OBSTRUCT(FOO)()) // FOO() is evaluated on the third
++ *					     // pass.
++ */
++#define OBSTRUCT(macro_id) macro_id DEFER(EMPTY)()
++
++#define EXPAND_1(args...) args
++#define EXPAND_2(args...) EXPAND_1(EXPAND_1(args))
++#define EXPAND_4(args...) EXPAND_2(EXPAND_2(args))
++#define EXPAND_8(args...) EXPAND_4(EXPAND_4(args))
++#define EXPAND_16(args...) EXPAND_8(EXPAND_8(args))
++
++/*
++ * Causes multiple evaluation passes of a macro.
++ *
++ * CPP is implemented as a push down automaton. It consumes a stream of tokens
++ * and as it comes across macros, it either evaluates them and pastes the
++ * result, or if the macro is a function macro, it pushes the macro to a stack,
++ * it evaluates the input to the function macro, pops the state from the stack
++ * and continues.
++ *
++ * This macro serves the function of making the cursor return to the beginging
++ * of a macro that requires mulitple passes to evaluate. It is most useful when
++ * used with DEFER(...) and OBSTRUCT(...).
++ */
++#define EXPAND(args...) EXPAND_16(args)
++
++#define INC(id) INC_##id
++#define INC_0  1
++#define INC_1  2
++#define INC_2  3
++#define INC_3  4
++#define INC_4  5
++#define INC_5  6
++#define INC_6  7
++#define INC_7  8
++#define INC_8  9
++#define INC_9  10
++#define INC_10 11
++#define INC_11 12
++#define INC_12 13
++#define INC_13 14
++#define INC_14 15
++#define INC_15 16
++#define INC_16 17
++
++#define DEC(id) DEC_##id
++#define DEC_1  0
++#define DEC_2  1
++#define DEC_3  2
++#define DEC_4  3
++#define DEC_5  4
++#define DEC_6  5
++#define DEC_7  6
++#define DEC_8  7
++#define DEC_9  8
++#define DEC_10 9
++#define DEC_11 10
++#define DEC_12 11
++#define DEC_13 12
++#define DEC_14 13
++#define DEC_15 14
++#define DEC_16 15
++
++#define DROP_FIRST_ARG_INTERNAL(dropped, x, args...) x
++#define DROP_FIRST_ARG(args...) DROP_FIRST_ARG_INTERNAL(args)
++
++#define EQUAL(left, right) EQUAL_##left##_##right
++#define EQUAL_0_0 dropped, 1
++#define EQUAL_1_1 dropped, 1
++#define EQUAL_2_2 dropped, 1
++#define EQUAL_3_3 dropped, 1
++#define EQUAL_4_4 dropped, 1
++#define EQUAL_5_5 dropped, 1
++#define EQUAL_6_6 dropped, 1
++#define EQUAL_7_7 dropped, 1
++#define EQUAL_8_8 dropped, 1
++#define EQUAL_9_9 dropped, 1
++#define EQUAL_10_10 dropped, 1
++#define EQUAL_11_11 dropped, 1
++#define EQUAL_12_12 dropped, 1
++#define EQUAL_13_13 dropped, 1
++#define EQUAL_14_14 dropped, 1
++#define EQUAL_15_15 dropped, 1
++#define EQUAL_16_16 dropped, 1
++
++#define IS_EQUAL(left, right) DROP_FIRST_ARG(EQUAL(left, right), 0)
++
++#define NOT_INTERNAL(condition) NOT_##condition
++#define NOT(condition) NOT_INTERNAL(condition)
++#define NOT_0 1
++#define NOT_1 0
++
++#define IS_NOT_EQUAL(left, right) NOT(IS_EQUAL(left, right))
++
++#define EMPTY_IMPL(tokens) CONCAT(EMPTY_, tokens)
++#define IS_EMPTY(tokens)
++
++#define OR_INTERNAL(left, right) OR_##left##_##right
++#define OR(left, right) OR_INTERNAL(left, right)
++#define OR_0_0 0
++#define OR_0_1 1
++#define OR_1_0 1
++#define OR_1_1 1
++
++#define IF(condition) CONCAT(IF_, condition)
++#define IF_0(body)
++#define IF_1(body) body
++
++#define COMMA() ,
++
++#define APPLY_TOKENS_INTERNAL(tokens, yield_token, seen_token) \
++		IF(yield_token)(IF(seen_token)(COMMA()) tokens)
++#define APPLY_TOKENS(tokens, yield_token, seen_token) \
++		APPLY_TOKENS_INTERNAL(tokens, yield_token, seen_token)
++
++/*
++ * Provides the indirection to keep the PARAM_LIST_RECURSE_INTERNAL from getting
++ * pasted, only useful if used with DEFER(...) or OBSTRUCT(...).
++ */
++#define PARAM_LIST_RECURSE_INDIRECT() PARAM_LIST_RECURSE_INTERNAL
++
++/*
++ * Given a starting index, a number of args, a MACRO to apply, and a list of
++ * types (with at least one element) this will call MACRO with the first type in
++ * the list and index; it will then call itself again on all remaining types, if
++ * any, while incrementing index, and decrementing nargs.
++ *
++ * Assumes nargs is the number of types in the list.
++ */
++#define PARAM_LIST_RECURSE_INTERNAL(index,				       \
++				    nargs,				       \
++				    MACRO,				       \
++				    FILTER,				       \
++				    context,				       \
++				    seen_token,				       \
++				    type,				       \
++				    args...)				       \
++		APPLY_TOKENS(MACRO(context, type, index),		       \
++			     FILTER(context, type, index),		       \
++			     seen_token)				       \
++		IF(IS_NOT_EQUAL(nargs, 1))				       \
++			(OBSTRUCT(PARAM_LIST_RECURSE_INDIRECT)()	       \
++			 (INC(index), DEC(nargs),			       \
++			  MACRO, FILTER, context,			       \
++			  OR(seen_token, FILTER(context, type, index)),	       \
++			  args))
++
++#define PARAM_LIST_RECURSE(index, nargs, MACRO, FILTER, context, args...)      \
++		IF(IS_NOT_EQUAL(nargs, 0))				       \
++			(OBSTRUCT(PARAM_LIST_RECURSE_INTERNAL)(index,	       \
++							       nargs,	       \
++							       MACRO,	       \
++							       FILTER,	       \
++							       context,	       \
++							       0,	       \
++							       args))
++
++#define FILTER_NONE(context, type, index) 1
++
++#define FILTER_INDEX_INTERNAL(index_to_drop, type, index) \
++		IS_NOT_EQUAL(index, index_to_drop)
++#define FILTER_INDEX(index_to_drop, type, index) \
++		FILTER_INDEX_INTERNAL(index_to_drop, type, index)
++
++/*
++ * Applies a MACRO which takes a type and the index of the type and outputs a
++ * sequence of tokens to a list of types.
++ */
++#define FOR_EACH_PARAM(MACRO, FILTER, context, args...) \
++		EXPAND(PARAM_LIST_RECURSE(0,\
++					  NUM_VA_ARGS(args),\
++					  MACRO,\
++					  FILTER,\
++					  context,\
++					  args))
++
++#define PRODUCE_TYPE_AND_ARG(context, type, index) type arg##index
++#define PARAM_LIST_FROM_TYPES(args...)					       \
++		FOR_EACH_PARAM(PRODUCE_TYPE_AND_ARG,			       \
++			       FILTER_NONE,				       \
++			       not_used,				       \
++			       args)
++
++#define PRODUCE_TYPE_NAME(context, type, index) #type
++#define TYPE_NAMES_FROM_TYPES(handle_index, args...)			       \
++		FOR_EACH_PARAM(PRODUCE_TYPE_NAME,			       \
++			       FILTER_INDEX,				       \
++			       handle_index,				       \
++			       args)
++
++#define PRODUCE_PTR_TO_ARG(context, type, index) &arg##index
++#define PTR_TO_ARG_FROM_TYPES(handle_index, args...)			       \
++		FOR_EACH_PARAM(PRODUCE_PTR_TO_ARG,			       \
++			       FILTER_INDEX,				       \
++			       handle_index,				       \
++			       args)
++
++#define PRODUCE_MATCHER_AND_ARG(ctrl_index, type, index)		       \
++		IF(IS_EQUAL(index, ctrl_index))(struct mock *arg##ctrl_index)  \
++		IF(IS_NOT_EQUAL(index, ctrl_index))(			       \
++				struct mock_param_matcher *arg##index)
++#define MATCHER_PARAM_LIST_FROM_TYPES(ctrl_index, args...)		       \
++		FOR_EACH_PARAM(PRODUCE_MATCHER_AND_ARG,			       \
++			       FILTER_NONE,				       \
++			       ctrl_index,				       \
++			       args)
++
++#define PRODUCE_ARG(context, type, index) arg##index
++#define ARG_NAMES_FROM_TYPES(ctrl_index, args...)			       \
++		FOR_EACH_PARAM(PRODUCE_ARG,				       \
++			       FILTER_INDEX,				       \
++			       ctrl_index,				       \
++			       args)
++
++#define PRODUCE_ARRAY_ACCESSOR(context, type, index) *((type *) params[index])
++#define ARRAY_ACCESSORS_FROM_TYPES(args...)				       \
++		FOR_EACH_PARAM(PRODUCE_ARRAY_ACCESSOR,			       \
++			       FILTER_NONE,				       \
++			       not_used,				       \
++			       args)
++
++#endif /* _KUNIT_PARAMS_H */
+diff --git a/kunit/Makefile b/kunit/Makefile
+index 2f1c069e165cb..f72a02cb9f23d 100644
+--- a/kunit/Makefile
++++ b/kunit/Makefile
+@@ -1,3 +1,3 @@
+ obj-$(CONFIG_KUNIT)		+= test.o string-stream.o test-stream.o
+-obj-$(CONFIG_KUNIT_TEST)		+= test-test.o string-stream-test.o
++obj-$(CONFIG_KUNIT_TEST)		+= test-test.o mock-macro-test.o string-stream-test.o
+ obj-$(CONFIG_EXAMPLE_TEST)	+= example-test.o
+diff --git a/kunit/mock-macro-test.c b/kunit/mock-macro-test.c
 new file mode 100644
-index 0000000000000..183bd5e758762
+index 0000000000000..c30b859ff2b14
 --- /dev/null
-+++ b/tools/testing/kunit/kunit_config.py
-@@ -0,0 +1,60 @@
-+# SPDX-License-Identifier: GPL-2.0
++++ b/kunit/mock-macro-test.c
+@@ -0,0 +1,149 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * KUnit test for parameter list parsing macros.
++ *
++ * Copyright (C) 2018, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
 +
-+import collections
-+import re
++#include <kunit/test.h>
++#include <kunit/params.h>
 +
-+CONFIG_IS_NOT_SET_PATTERN = r'^# CONFIG_\w+ is not set$'
-+CONFIG_PATTERN = r'^CONFIG_\w+=\S+$'
++#define TO_STR_INTERNAL(...) #__VA_ARGS__
++#define TO_STR(...) TO_STR_INTERNAL(__VA_ARGS__)
 +
-+KconfigEntryBase = collections.namedtuple('KconfigEntry', ['raw_entry'])
++static void mock_macro_is_equal(struct test *test)
++{
++	TEST_EXPECT_STREQ(test, "dropped, 1", TO_STR(EQUAL(1, 1)));
++	TEST_EXPECT_EQ(test, 1, DROP_FIRST_ARG(dropped, 1, 0));
++	TEST_EXPECT_EQ(test, 0, DROP_FIRST_ARG(1, 0));
++	TEST_EXPECT_EQ(test, 0, DROP_FIRST_ARG(EQUAL(1, 0), 0));
++	TEST_EXPECT_EQ(test, 1, IS_EQUAL(1, 1));
++	TEST_EXPECT_EQ(test, 0, IS_EQUAL(1, 0));
++}
 +
++static void mock_macro_if(struct test *test)
++{
++	TEST_EXPECT_STREQ(test, "body", ""IF(1)("body"));
++	TEST_EXPECT_STREQ(test, "", ""IF(0)("body"));
++	TEST_EXPECT_STREQ(test, "body", ""IF(IS_EQUAL(1, 1))("body"));
++	TEST_EXPECT_STREQ(test, "", ""IF(IS_EQUAL(0, 1))("body"));
++}
 +
-+class KconfigEntry(KconfigEntryBase):
++static void mock_macro_apply_tokens(struct test *test)
++{
++	TEST_EXPECT_STREQ(test, "type", TO_STR(APPLY_TOKENS(type, 1, 0)));
++	TEST_EXPECT_STREQ(test, ", type", TO_STR(APPLY_TOKENS(type, 1, 1)));
++	TEST_EXPECT_STREQ(test, "", TO_STR(APPLY_TOKENS(type, 0, 1)));
++}
 +
-+	def __str__(self) -> str:
-+		return self.raw_entry
++#define IDENTITY(context, type, index) type
 +
++static void mock_macro_param_list_recurse(struct test *test)
++{
++	TEST_EXPECT_STREQ(test, "", TO_STR(PARAM_LIST_RECURSE(0,
++							      0,
++							      IDENTITY,
++							      FILTER_NONE,
++							      not_used)));
++	TEST_EXPECT_STREQ(test,
++			  "type",
++			  TO_STR(EXPAND(PARAM_LIST_RECURSE(0,
++							   1,
++							   IDENTITY,
++							   FILTER_NONE,
++							   not_used,
++							   type))));
++	TEST_EXPECT_STREQ(test,
++			  "type0 , type1 , type2 , type3 , type4 , type5 , "
++			  "type6 , type7 , type8 , type9 , type10 , type11 , "
++			  "type12 , type13 , type14 , type15",
++			  TO_STR(EXPAND(PARAM_LIST_RECURSE(0, 16,
++							   IDENTITY,
++							   FILTER_NONE,
++							   not_used,
++							   type0, type1, type2,
++							   type3, type4, type5,
++							   type6, type7, type8,
++							   type9, type10,
++							   type11, type12,
++							   type13, type14,
++							   type15))));
++}
 +
-+class KconfigParseError(Exception):
-+	"""Error parsing Kconfig defconfig or .config."""
++static void mock_macro_for_each_param(struct test *test)
++{
++	TEST_EXPECT_STREQ(test,
++			  "type0 , type1",
++			  TO_STR(FOR_EACH_PARAM(IDENTITY,
++						FILTER_NONE,
++						not_used,
++						type0,
++						type1)));
++	TEST_EXPECT_STREQ(test,
++			  "type1",
++			  TO_STR(FOR_EACH_PARAM(IDENTITY,
++						FILTER_INDEX,
++						0,
++						type0,
++						type1)));
++}
 +
++static void mock_macro_param_list_from_types_basic(struct test *test)
++{
++	TEST_EXPECT_STREQ(test, "", TO_STR(PARAM_LIST_FROM_TYPES()));
++	TEST_EXPECT_STREQ(test, "int arg0", TO_STR(PARAM_LIST_FROM_TYPES(int)));
++	TEST_EXPECT_STREQ(test, "struct test_struct * arg0 , int arg1",
++			  TO_STR(PARAM_LIST_FROM_TYPES(struct test_struct *,
++						       int)));
++	TEST_EXPECT_STREQ(test,
++			  "type0 arg0 , type1 arg1 , type2 arg2 , type3 arg3 , "
++			  "type4 arg4 , type5 arg5 , type6 arg6 , type7 arg7 , "
++			  "type8 arg8 , type9 arg9 , type10 arg10 , "
++			  "type11 arg11 , type12 arg12 , type13 arg13 , "
++			  "type14 arg14 , type15 arg15",
++			  TO_STR(PARAM_LIST_FROM_TYPES(type0, type1, type2,
++						       type3, type4, type5,
++						       type6, type7, type8,
++						       type9, type10, type11,
++						       type12, type13, type14,
++						       type15)));
++}
 +
-+class Kconfig(object):
-+	"""Represents defconfig or .config specified using the Kconfig language."""
++static void mock_macro_arg_names_from_types(struct test *test)
++{
++	TEST_EXPECT_STREQ(test, "", TO_STR(ARG_NAMES_FROM_TYPES(0)));
++	TEST_EXPECT_STREQ(test, "", TO_STR(ARG_NAMES_FROM_TYPES(0, int)));
++	TEST_EXPECT_STREQ(test,
++			  "arg1",
++			  TO_STR(ARG_NAMES_FROM_TYPES(0,
++						      struct test_struct *,
++						      int)));
++	TEST_EXPECT_STREQ(test,
++			  "arg0 , arg1 , arg3 , arg4 , arg5 , arg6 , arg7 , "
++			  "arg8 , arg9 , arg10 , arg11 , arg12 , arg13 , "
++			  "arg14 , arg15",
++			  TO_STR(ARG_NAMES_FROM_TYPES(2, type0, type1, type2,
++						      type3, type4, type5,
++						      type6, type7, type8,
++						      type9, type10, type11,
++						      type12, type13, type14,
++						      type15)));
++}
 +
-+	def __init__(self):
-+		self._entries = []
++static struct test_case mock_macro_test_cases[] = {
++	TEST_CASE(mock_macro_is_equal),
++	TEST_CASE(mock_macro_if),
++	TEST_CASE(mock_macro_apply_tokens),
++	TEST_CASE(mock_macro_param_list_recurse),
++	TEST_CASE(mock_macro_for_each_param),
++	TEST_CASE(mock_macro_param_list_from_types_basic),
++	TEST_CASE(mock_macro_arg_names_from_types),
++	{},
++};
 +
-+	def entries(self):
-+		return set(self._entries)
-+
-+	def add_entry(self, entry: KconfigEntry) -> None:
-+		self._entries.append(entry)
-+
-+	def is_subset_of(self, other: "Kconfig") -> bool:
-+		return self.entries().issubset(other.entries())
-+
-+	def write_to_file(self, path: str) -> None:
-+		with open(path, 'w') as f:
-+			for entry in self.entries():
-+				f.write(str(entry) + '\n')
-+
-+	def parse_from_string(self, blob: str) -> None:
-+		"""Parses a string containing KconfigEntrys and populates this Kconfig."""
-+		self._entries = []
-+		is_not_set_matcher = re.compile(CONFIG_IS_NOT_SET_PATTERN)
-+		config_matcher = re.compile(CONFIG_PATTERN)
-+		for line in blob.split('\n'):
-+			line = line.strip()
-+			if not line:
-+				continue
-+			elif config_matcher.match(line) or is_not_set_matcher.match(line):
-+				self._entries.append(KconfigEntry(line))
-+			elif line[0] == '#':
-+				continue
-+			else:
-+				raise KconfigParseError('Failed to parse: ' + line)
-+
-+	def read_from_file(self, path: str) -> None:
-+		with open(path, 'r') as f:
-+			self.parse_from_string(f.read())
-diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-new file mode 100644
-index 0000000000000..87abaede50513
---- /dev/null
-+++ b/tools/testing/kunit/kunit_kernel.py
-@@ -0,0 +1,123 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+import logging
-+import subprocess
-+import os
-+
-+import kunit_config
-+
-+KCONFIG_PATH = '.config'
-+
-+class ConfigError(Exception):
-+	"""Represents an error trying to configure the Linux kernel."""
-+
-+
-+class BuildError(Exception):
-+	"""Represents an error trying to build the Linux kernel."""
-+
-+
-+class LinuxSourceTreeOperations(object):
-+	"""An abstraction over command line operations performed on a source tree."""
-+
-+	def make_mrproper(self):
-+		try:
-+			subprocess.check_output(['make', 'mrproper'])
-+		except OSError as e:
-+			raise ConfigError('Could not call make command: ' + e)
-+		except subprocess.CalledProcessError as e:
-+			raise ConfigError(e.output)
-+
-+	def make_olddefconfig(self):
-+		try:
-+			subprocess.check_output(['make', 'ARCH=um', 'olddefconfig'])
-+		except OSError as e:
-+			raise ConfigError('Could not call make command: ' + e)
-+		except subprocess.CalledProcessError as e:
-+			raise ConfigError(e.output)
-+
-+	def make(self):
-+		try:
-+			subprocess.check_output(['make', 'ARCH=um'])
-+		except OSError as e:
-+			raise BuildError('Could not call execute make: ' + e)
-+		except subprocess.CalledProcessError as e:
-+			raise BuildError(e.output)
-+
-+	def linux_bin(self, params, timeout):
-+		"""Runs the Linux UML binary. Must be named 'linux'."""
-+		process = subprocess.Popen(
-+			['./linux'] + params,
-+			stdin=subprocess.PIPE,
-+			stdout=subprocess.PIPE,
-+			stderr=subprocess.PIPE)
-+		process.wait(timeout=timeout)
-+		return process
-+
-+
-+class LinuxSourceTree(object):
-+	"""Represents a Linux kernel source tree with KUnit tests."""
-+
-+	def __init__(self):
-+		self._kconfig = kunit_config.Kconfig()
-+		self._kconfig.read_from_file('kunitconfig')
-+		self._ops = LinuxSourceTreeOperations()
-+
-+	def clean(self):
-+		try:
-+			self._ops.make_mrproper()
-+		except ConfigError as e:
-+			logging.error(e)
-+			return False
-+		return True
-+
-+	def build_config(self):
-+		self._kconfig.write_to_file(KCONFIG_PATH)
-+		try:
-+			self._ops.make_olddefconfig()
-+		except ConfigError as e:
-+			logging.error(e)
-+			return False
-+		validated_kconfig = kunit_config.Kconfig()
-+		validated_kconfig.read_from_file(KCONFIG_PATH)
-+		if not self._kconfig.is_subset_of(validated_kconfig):
-+			logging.error('Provided Kconfig is not contained in validated .config!')
-+			return False
-+		return True
-+
-+	def build_reconfig(self):
-+		"""Creates a new .config if it is not a subset of the kunitconfig."""
-+		if os.path.exists(KCONFIG_PATH):
-+			existing_kconfig = kunit_config.Kconfig()
-+			existing_kconfig.read_from_file(KCONFIG_PATH)
-+			if not self._kconfig.is_subset_of(existing_kconfig):
-+				print('Regenerating .config ...')
-+				os.remove(KCONFIG_PATH)
-+				return self.build_config()
-+			else:
-+				return True
-+		else:
-+			print('Generating .config ...')
-+			return self.build_config()
-+
-+	def build_um_kernel(self):
-+		try:
-+			self._ops.make_olddefconfig()
-+			self._ops.make()
-+		except (ConfigError, BuildError) as e:
-+			logging.error(e)
-+			return False
-+		used_kconfig = kunit_config.Kconfig()
-+		used_kconfig.read_from_file(KCONFIG_PATH)
-+		if not self._kconfig.is_subset_of(used_kconfig):
-+			logging.error('Provided Kconfig is not contained in final config!')
-+			return False
-+		return True
-+
-+	def run_kernel(self, args=[]):
-+		timeout = None
-+		args.extend(['mem=256M'])
-+		process = self._ops.linux_bin(args, timeout)
-+		with open('test.log', 'w') as f:
-+			for line in process.stdout:
-+				f.write(line.rstrip().decode('ascii') + '\n')
-+				yield line.rstrip().decode('ascii')
++static struct test_module mock_macro_test_module = {
++	.name = "mock-macro-test",
++	.test_cases = mock_macro_test_cases,
++};
++module_test(mock_macro_test_module);
 -- 
-2.19.1.568.g152ad8e336-goog
+2.19.1.331.ge82ca0e54c-goog
 
 
 _______________________________________________
