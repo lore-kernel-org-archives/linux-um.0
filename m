@@ -1,16 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from mail-vk1-xa4a.google.com ([2607:f8b0:4864:20::a4a])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gCZAx-0004Xj-R5
- for linux-um@lists.infradead.org; Tue, 16 Oct 2018 23:55:26 +0000
-Received: by mail-vk1-xa4a.google.com with SMTP id y199-v6so2823231vkd.20
- for <linux-um@lists.infradead.org>; Tue, 16 Oct 2018 16:54:48 -0700 (PDT)
-Date: Tue, 16 Oct 2018 16:51:14 -0700
+ id 1gCZAx-0004cn-R2
+ for linux-um@lists.infradead.org; Tue, 16 Oct 2018 23:55:23 +0000
+Received: by mail-vk1-xa4a.google.com with SMTP id 62-v6so6867946vkl.10
+ for <linux-um@lists.infradead.org>; Tue, 16 Oct 2018 16:54:57 -0700 (PDT)
+Date: Tue, 16 Oct 2018 16:51:18 -0700
 In-Reply-To: <20181016235120.138227-1-brendanhiggins@google.com>
-Message-Id: <20181016235120.138227-26-brendanhiggins@google.com>
+Message-Id: <20181016235120.138227-30-brendanhiggins@google.com>
 Mime-Version: 1.0
 References: <20181016235120.138227-1-brendanhiggins@google.com>
-Subject: [RFC v1 25/31] kunit: added concept of platform mocking
+Subject: [RFC v1 29/31] kunit: added KUnit wrapper script and simple output
+ parser
 From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -25,174 +26,122 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
-Cc: brakmo@fb.com, richard@nod.at, mpe@ellerman.id.au, Tim.Bird@sony.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, julia.lawall@lip6.fr, joel@jms.id.au, linux-kselftest@vger.kernel.org, khilman@baylibre.com, joe@perches.com, jdike@addtoit.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
+Cc: brakmo@fb.com, richard@nod.at, mpe@ellerman.id.au, Tim.Bird@sony.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, julia.lawall@lip6.fr, Felix Guo <felixguoxiuping@gmail.com>, joel@jms.id.au, linux-kselftest@vger.kernel.org, khilman@baylibre.com, joe@perches.com, jdike@addtoit.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
 
-Platform mocking is the mocking of all platform specific functions that
-interact directly with hardware. In effect, this provides the ability to
-mock any hardware behavior.
+The KUnit wrapper script interfaces with the two modules
+(kunit_config.py and kunit_kernel.py) and provides a command line
+interface for running KUnit tests. This interface allows the caller to
+specify options like test timeouts. The script handles configuring,
+building and running the kernel and tests.
 
+The output parser (kunit_parser.py) simply strips out all the output
+from the kernel that is outputted as part of it's initialization
+sequence. This ensures that only the output from KUnit is displayed
+on the screen.
+
+A full version of the output is written to test.log, or can be seen by
+passing --raw_output to the wrapper script.
+
+Signed-off-by: Felix Guo <felixguoxiuping@gmail.com>
 Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
 ---
- drivers/base/Makefile                |  1 +
- drivers/base/platform-mock.c         | 65 ++++++++++++++++++++++++++++
- include/linux/platform_device_mock.h | 64 +++++++++++++++++++++++++++
- 3 files changed, 130 insertions(+)
- create mode 100644 drivers/base/platform-mock.c
- create mode 100644 include/linux/platform_device_mock.h
+ tools/testing/kunit/kunit.py        | 40 +++++++++++++++++++++++++++++
+ tools/testing/kunit/kunit_kernel.py |  3 +--
+ tools/testing/kunit/kunit_parser.py | 24 +++++++++++++++++
+ 3 files changed, 65 insertions(+), 2 deletions(-)
+ create mode 100755 tools/testing/kunit/kunit.py
+ create mode 100644 tools/testing/kunit/kunit_parser.py
 
-diff --git a/drivers/base/Makefile b/drivers/base/Makefile
-index 704f442958103..77cc599daa020 100644
---- a/drivers/base/Makefile
-+++ b/drivers/base/Makefile
-@@ -23,6 +23,7 @@ obj-$(CONFIG_PINCTRL) += pinctrl.o
- obj-$(CONFIG_DEV_COREDUMP) += devcoredump.o
- obj-$(CONFIG_GENERIC_MSI_IRQ_DOMAIN) += platform-msi.o
- obj-$(CONFIG_GENERIC_ARCH_TOPOLOGY) += arch_topology.o
-+obj-$(CONFIG_PLATFORM_MOCK) += platform-mock.o
- 
- obj-y			+= test/
- 
-diff --git a/drivers/base/platform-mock.c b/drivers/base/platform-mock.c
-new file mode 100644
-index 0000000000000..3df9f1b0bb50f
+diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+new file mode 100755
+index 0000000000000..1356be404996b
 --- /dev/null
-+++ b/drivers/base/platform-mock.c
-@@ -0,0 +1,65 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Fake platform device API for unit testing platform drivers.
-+ *
-+ * Copyright (C) 2018, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
++++ b/tools/testing/kunit/kunit.py
+@@ -0,0 +1,40 @@
++#!/usr/bin/python3
++# SPDX-License-Identifier: GPL-2.0
 +
-+#include <linux/platform_device_mock.h>
-+#include <linux/of_platform.h>
++# A thin wrapper on top of the KUnit Kernel
 +
-+struct device_node *of_fake_node(struct test *test, const char *name)
-+{
-+	struct device_node *node;
++import argparse
++import sys
++import os
 +
-+	node = test_kzalloc(test, sizeof(*node), GFP_KERNEL);
-+	if (!node)
-+		return NULL;
++import kunit_config
++import kunit_kernel
++import kunit_parser
 +
-+	of_node_init(node);
++parser = argparse.ArgumentParser(description='Runs KUnit tests.')
 +
-+	return node;
-+}
++parser.add_argument('--raw_output', help='don\'t format output from kernel',
++		    action='store_true')
 +
-+struct platform_device *
-+of_fake_probe_platform(struct test *test,
-+		       const struct platform_driver *driver,
-+		       const char *node_name)
-+{
-+	struct platform_device *pdev;
-+	struct device_node *of_node;
-+	int ret;
++parser.add_argument('--timeout', help='maximum number of seconds to allow for '
++		    'all tests to run. This does not include time taken to '
++		    'build the tests.', type=int, default=300,
++		    metavar='timeout')
 +
-+	of_node = of_fake_node(test, node_name);
-+	if (!of_node)
-+		return ERR_PTR(-ENOMEM);
++cli_args = parser.parse_args()
++linux = kunit_kernel.LinuxSourceTree()
 +
-+	test_info(test, "Creating device");
-+	pdev = of_platform_device_create(of_node, node_name, NULL);
-+	if (!pdev)
-+		return ERR_PTR(-ENODEV);
++success = linux.build_reconfig()
++if not success:
++	quit()
 +
-+	test_info(test, "Probing");
-+	ret = driver->probe(pdev);
-+	if (ret)
-+		return ERR_PTR(ret);
++print('Building KUnit Kernel ...')
++success = linux.build_um_kernel()
++if not success:
++	quit()
 +
-+	return pdev;
-+}
-+
-+struct platform_device *of_fake_probe_platform_by_name(struct test *test,
-+						       const char *driver_name,
-+						       const char *node_name)
-+{
-+	const struct device_driver *driver;
-+
-+	test_info(test, "Locating driver by name");
-+	driver = driver_find(driver_name, &platform_bus_type);
-+	if (!driver)
-+		return ERR_PTR(-ENODEV);
-+
-+	return of_fake_probe_platform(test,
-+				      to_platform_driver(driver),
-+				      node_name);
-+}
-diff --git a/include/linux/platform_device_mock.h b/include/linux/platform_device_mock.h
++print('Starting KUnit Kernel ...')
++if cli_args.raw_output:
++	kunit_parser.raw_output(linux.run_kernel(timeout=cli_args.timeout))
++else:
++	kunit_parser.parse_run_tests(linux.run_kernel(timeout=cli_args.timeout))
+diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
+index 87abaede50513..c1259b174f7d4 100644
+--- a/tools/testing/kunit/kunit_kernel.py
++++ b/tools/testing/kunit/kunit_kernel.py
+@@ -113,8 +113,7 @@ class LinuxSourceTree(object):
+ 			return False
+ 		return True
+ 
+-	def run_kernel(self, args=[]):
+-		timeout = None
++	def run_kernel(self, args=[], timeout=None):
+ 		args.extend(['mem=256M'])
+ 		process = self._ops.linux_bin(args, timeout)
+ 		with open('test.log', 'w') as f:
+diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
 new file mode 100644
-index 0000000000000..898539d166f66
+index 0000000000000..1dff3adb73bd3
 --- /dev/null
-+++ b/include/linux/platform_device_mock.h
-@@ -0,0 +1,64 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Fake platform device API for unit testing platform drivers.
-+ *
-+ * Copyright (C) 2018, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
++++ b/tools/testing/kunit/kunit_parser.py
+@@ -0,0 +1,24 @@
++# SPDX-License-Identifier: GPL-2.0
 +
-+#include <linux/platform_device.h>
-+#include <kunit/mock.h>
++import re
 +
-+static inline struct platform_driver *platform_driver_find(const char *name)
-+{
-+	struct device_driver *driver;
++kunit_start_re = re.compile('console .* enabled')
++kunit_end_re = re.compile('List of all partitions:')
 +
-+	driver = driver_find(name, &platform_bus_type);
-+	if (!driver)
-+		return NULL;
++def isolate_kunit_output(kernel_output):
++	started = False
++	for line in kernel_output:
++		if kunit_start_re.match(line):
++			started = True
++		elif kunit_end_re.match(line):
++			break
++		elif started:
++			yield line
 +
-+	return to_platform_driver(driver);
-+}
++def raw_output(kernel_output):
++	for line in kernel_output:
++		print(line)
 +
-+/**
-+ * of_fake_node()
-+ * @test: the test to associate node with
-+ * @name: name of the node
-+ *
-+ * The &struct device_node returned is allocated as a root node with the given
-+ * name and otherwise behaves as a real &struct device_node.
-+ *
-+ * Returns: the faked &struct device_node
-+ */
-+struct device_node *of_fake_node(struct test *test, const char *name);
-+
-+/**
-+ * of_fake_probe_platform()
-+ * @test: the test to associate the fake platform device with
-+ * @driver: driver to probe
-+ * @node_name: name of the device node created
-+ *
-+ * Creates a &struct platform_device and an associated &struct device_node,
-+ * probes the provided &struct platform_driver with the &struct platform_device.
-+ *
-+ * Returns: the &struct platform_device that was created
-+ */
-+struct platform_device *
-+of_fake_probe_platform(struct test *test,
-+		       const struct platform_driver *driver,
-+		       const char *node_name);
-+
-+/**
-+ * of_fake_probe_platform_by_name()
-+ * @test: the test to associate the fake platform device with
-+ * @driver_name: name of the driver to probe
-+ * @node_name: name of the device node created
-+ *
-+ * Same as of_fake_probe_platform() but looks up the &struct platform_driver by
-+ * the provided name.
-+ *
-+ * Returns: the &struct platform_device that was created
-+ */
-+struct platform_device *of_fake_probe_platform_by_name(struct test *test,
-+						       const char *driver_name,
-+						       const char *node_name);
++def parse_run_tests(kernel_output):
++	for output in isolate_kunit_output(kernel_output):
++		print(output)
 -- 
 2.19.1.331.ge82ca0e54c-goog
 
