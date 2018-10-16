@@ -1,24 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from mail-it1-x149.google.com ([2607:f8b0:4864:20::149])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gCuIo-0000Pp-Ab
- for linux-um@lists.infradead.org; Wed, 17 Oct 2018 22:28:31 +0000
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com
- [209.85.221.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id D91A521476
- for <linux-um@lists.infradead.org>; Wed, 17 Oct 2018 22:28:17 +0000 (UTC)
-Received: by mail-wr1-f43.google.com with SMTP id n1-v6so31419456wrt.10
- for <linux-um@lists.infradead.org>; Wed, 17 Oct 2018 15:28:17 -0700 (PDT)
-MIME-Version: 1.0
+ id 1gCZAs-0004ZQ-O8
+ for linux-um@lists.infradead.org; Tue, 16 Oct 2018 23:55:24 +0000
+Received: by mail-it1-x149.google.com with SMTP id p125-v6so271843itg.1
+ for <linux-um@lists.infradead.org>; Tue, 16 Oct 2018 16:54:50 -0700 (PDT)
+Date: Tue, 16 Oct 2018 16:51:15 -0700
+In-Reply-To: <20181016235120.138227-1-brendanhiggins@google.com>
+Message-Id: <20181016235120.138227-27-brendanhiggins@google.com>
+Mime-Version: 1.0
 References: <20181016235120.138227-1-brendanhiggins@google.com>
- <20181016235120.138227-27-brendanhiggins@google.com>
-In-Reply-To: <20181016235120.138227-27-brendanhiggins@google.com>
-From: Rob Herring <robh@kernel.org>
-Date: Wed, 17 Oct 2018 17:28:04 -0500
-Message-ID: <CABGGisyMYC12UZtZ3wBw_1GO1Qq9-MEzSznq0r8796kVsQ6DoA@mail.gmail.com>
-Subject: Re: [RFC v1 26/31] arch: um: added stubs for mock iomem for KUnit
+Subject: [RFC v1 26/31] arch: um: added stubs for mock iomem for KUnit
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -31,115 +24,257 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: brendanhiggins@google.com
-Cc: brakmo@fb.com, richard@nod.at, Arnd Bergmann <arnd@arndb.de>, Michael Ellerman <mpe@ellerman.id.au>, Tim.Bird@sony.com, keescook@google.com, jdike@addtoit.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>, linux-um@lists.infradead.org, Julia Lawall <julia.lawall@lip6.fr>, mcgrof@kernel.org, joel@jms.id.au, linux-kselftest@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Joe Perches <joe@perches.com>, shuah@kernel.org, khilman@baylibre.com, kunit-dev@googlegroups.com
+To: gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
+Cc: brakmo@fb.com, richard@nod.at, mpe@ellerman.id.au, Tim.Bird@sony.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, julia.lawall@lip6.fr, joel@jms.id.au, linux-kselftest@vger.kernel.org, khilman@baylibre.com, joe@perches.com, jdike@addtoit.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
 
-On Tue, Oct 16, 2018 at 6:54 PM Brendan Higgins
-<brendanhiggins@google.com> wrote:
->
-> This mocks out some iomem functions (functions like readl and writel),
-> for mocking hardware interfaces.
->
-> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-> ---
->  arch/um/Kconfig.common               |  8 +++++-
->  arch/um/Kconfig.um                   |  5 ++++
->  arch/um/include/asm/Kbuild           |  1 -
->  arch/um/include/asm/io-mock-shared.h | 33 +++++++++++++++++++++
->  arch/um/include/asm/io-mock.h        | 43 ++++++++++++++++++++++++++++
->  arch/um/include/asm/io.h             |  8 ++++++
->  arch/um/kernel/Makefile              |  1 +
->  arch/um/kernel/io-mock.c             | 40 ++++++++++++++++++++++++++
->  kunit/Kconfig                        |  1 +
->  9 files changed, 138 insertions(+), 2 deletions(-)
->  create mode 100644 arch/um/include/asm/io-mock-shared.h
->  create mode 100644 arch/um/include/asm/io-mock.h
->  create mode 100644 arch/um/kernel/io-mock.c
->
-> diff --git a/arch/um/Kconfig.common b/arch/um/Kconfig.common
-> index 07f84c842cc31..72e7efb74f7fd 100644
-> --- a/arch/um/Kconfig.common
-> +++ b/arch/um/Kconfig.common
-> @@ -19,7 +19,13 @@ config MMU
->         default y
->
->  config NO_IOMEM
-> -       def_bool y
-> +       bool
-> +       default y if !KUNIT
-> +
-> +config HAS_IOMEM
+This mocks out some iomem functions (functions like readl and writel),
+for mocking hardware interfaces.
 
-HAS_IOMEM is essentially a disable flag for lots of drivers on UML.
-Ignoring drivers, it doesn't really control a significant amount of
-code (albeit small amount of code you need for this series). As a
-driver disable, it does a poor job as lots of drivers aren't MMIO and
-aren't disabled. I think we should decouple these 2 things. Perhaps
-get rid of the driver disable part altogether. We already do 'depends
-on ARCH_FOO || COMPILE_TEST' for lots of drivers.
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+---
+ arch/um/Kconfig.common               |  8 +++++-
+ arch/um/Kconfig.um                   |  5 ++++
+ arch/um/include/asm/Kbuild           |  1 -
+ arch/um/include/asm/io-mock-shared.h | 33 +++++++++++++++++++++
+ arch/um/include/asm/io-mock.h        | 43 ++++++++++++++++++++++++++++
+ arch/um/include/asm/io.h             |  8 ++++++
+ arch/um/kernel/Makefile              |  1 +
+ arch/um/kernel/io-mock.c             | 40 ++++++++++++++++++++++++++
+ kunit/Kconfig                        |  1 +
+ 9 files changed, 138 insertions(+), 2 deletions(-)
+ create mode 100644 arch/um/include/asm/io-mock-shared.h
+ create mode 100644 arch/um/include/asm/io-mock.h
+ create mode 100644 arch/um/kernel/io-mock.c
 
-Also, I wouldn't be surprised if turning on HAS_IOMEM causes UML
-randconfig failures. Arnd does lots of randconfig testing and might be
-willing to help check.
+diff --git a/arch/um/Kconfig.common b/arch/um/Kconfig.common
+index 07f84c842cc31..72e7efb74f7fd 100644
+--- a/arch/um/Kconfig.common
++++ b/arch/um/Kconfig.common
+@@ -19,7 +19,13 @@ config MMU
+ 	default y
+ 
+ config NO_IOMEM
+-	def_bool y
++	bool
++	default y if !KUNIT
++
++config HAS_IOMEM
++	bool "Turns on fake IOMEM support for KUnit"
++	depends on KUNIT
++	select MOCK_IOMEM
+ 
+ config ISA
+ 	bool
+diff --git a/arch/um/Kconfig.um b/arch/um/Kconfig.um
+index 20da5a8ca9490..8d35e0e2c23d1 100644
+--- a/arch/um/Kconfig.um
++++ b/arch/um/Kconfig.um
+@@ -122,3 +122,8 @@ config SECCOMP
+ 	  defined by each seccomp mode.
+ 
+ 	  If unsure, say Y.
++
++config PLATFORM_MOCK
++	bool "Enable a mock architecture used for unit testing."
++	depends on KUNIT && OF
++	default n
+diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
+index b10dde6cb793b..9fd2827ab76d1 100644
+--- a/arch/um/include/asm/Kbuild
++++ b/arch/um/include/asm/Kbuild
+@@ -12,7 +12,6 @@ generic-y += ftrace.h
+ generic-y += futex.h
+ generic-y += hardirq.h
+ generic-y += hw_irq.h
+-generic-y += io.h
+ generic-y += irq_regs.h
+ generic-y += irq_work.h
+ generic-y += kdebug.h
+diff --git a/arch/um/include/asm/io-mock-shared.h b/arch/um/include/asm/io-mock-shared.h
+new file mode 100644
+index 0000000000000..6baf59cb17a58
+--- /dev/null
++++ b/arch/um/include/asm/io-mock-shared.h
+@@ -0,0 +1,33 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_UM_IO_MOCK_SHARED_H
++#define _ASM_UM_IO_MOCK_SHARED_H
++
++#define readb readb
++u8 readb(const volatile void __iomem *);
++
++#define readw readw
++u16 readw(const volatile void __iomem *);
++
++#define readl readl
++u32 readl(const volatile void __iomem *);
++
++#ifdef CONFIG_64BIT
++#define readq readq
++u64 readq(const volatile void __iomem *);
++#endif /* CONFIG_64BIT */
++
++#define writeb writeb
++void writeb(u8, const volatile void __iomem *);
++
++#define writew writew
++void writew(u16, const volatile void __iomem *);
++
++#define writel writel
++void writel(u32, const volatile void __iomem *);
++
++#ifdef CONFIG_64BIT
++#define writeq writeq
++void writeq(u64, const volatile void __iomem *);
++#endif /* CONFIG_64BIT */
++
++#endif /* _ASM_UM_IO_MOCK_SHARED_H */
+diff --git a/arch/um/include/asm/io-mock.h b/arch/um/include/asm/io-mock.h
+new file mode 100644
+index 0000000000000..bdc5cd1d4e33c
+--- /dev/null
++++ b/arch/um/include/asm/io-mock.h
+@@ -0,0 +1,43 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Mock IO functions.
++ *
++ * Copyright (C) 2018, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++
++#ifndef _ASM_UM_IO_MOCK_H
++#define _ASM_UM_IO_MOCK_H
++
++#include <asm/io-mock-shared.h>
++#include <kunit/mock.h>
++
++DECLARE_FUNCTION_MOCK(readb,
++		      RETURNS(u8), PARAMS(const volatile void __iomem *));
++
++DECLARE_FUNCTION_MOCK(readw,
++		      RETURNS(u16), PARAMS(const volatile void __iomem *));
++
++DECLARE_FUNCTION_MOCK(readl,
++		      RETURNS(u32), PARAMS(const volatile void __iomem *));
++
++#ifdef CONFIG_64BIT
++DECLARE_FUNCTION_MOCK(readq,
++		      RETURNS(u64), PARAMS(const volatile void __iomem *));
++#endif /* CONFIG_64BIT */
++
++DECLARE_FUNCTION_MOCK_VOID_RETURN(writeb,
++				  PARAMS(u8, const volatile void __iomem *));
++
++DECLARE_FUNCTION_MOCK_VOID_RETURN(writew,
++				  PARAMS(u16, const volatile void __iomem *));
++
++DECLARE_FUNCTION_MOCK_VOID_RETURN(writel,
++				  PARAMS(u32, const volatile void __iomem *));
++
++#ifdef CONFIG_64BIT
++DECLARE_FUNCTION_MOCK_VOID_RETURN(writeq,
++				  PARAMS(u64, const volatile void __iomem *));
++#endif /* CONFIG_64BIT */
++
++#endif /* _ASM_UM_IO_MOCK_H */
+diff --git a/arch/um/include/asm/io.h b/arch/um/include/asm/io.h
+index 96f77b5232aaf..a7f61cf963756 100644
+--- a/arch/um/include/asm/io.h
++++ b/arch/um/include/asm/io.h
+@@ -2,11 +2,19 @@
+ #ifndef _ASM_UM_IO_H
+ #define _ASM_UM_IO_H
+ 
++#include <linux/types.h>
++#include <asm/byteorder.h>
++
++#if IS_ENABLED(CONFIG_PLATFORM_MOCK)
++#include <asm/io-mock-shared.h>
++#endif
++
+ #define ioremap ioremap
+ static inline void __iomem *ioremap(phys_addr_t offset, size_t size)
+ {
+ 	return (void __iomem *)(unsigned long)offset;
+ }
++#define ioremap_nocache ioremap
+ 
+ #define iounmap iounmap
+ static inline void iounmap(void __iomem *addr)
+diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
+index 2f36d515762ec..770c480d5a101 100644
+--- a/arch/um/kernel/Makefile
++++ b/arch/um/kernel/Makefile
+@@ -25,6 +25,7 @@ obj-$(CONFIG_GPROF)	+= gprof_syms.o
+ obj-$(CONFIG_GCOV)	+= gmon_syms.o
+ obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
+ obj-$(CONFIG_STACKTRACE) += stacktrace.o
++obj-$(CONFIG_PLATFORM_MOCK)	+= io-mock.o
+ 
+ USER_OBJS := config.o
+ 
+diff --git a/arch/um/kernel/io-mock.c b/arch/um/kernel/io-mock.c
+new file mode 100644
+index 0000000000000..e0d4648e97a6c
+--- /dev/null
++++ b/arch/um/kernel/io-mock.c
+@@ -0,0 +1,40 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Mock IO functions.
++ *
++ * Copyright (C) 2018, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++
++#include <linux/mm.h>
++#include <linux/io.h>
++#include <linux/kernel.h>
++#include <kunit/mock.h>
++
++DEFINE_FUNCTION_MOCK(readb,
++		     RETURNS(u8), PARAMS(const volatile void __iomem *));
++
++DEFINE_FUNCTION_MOCK(readw,
++		     RETURNS(u16), PARAMS(const volatile void __iomem *));
++
++DEFINE_FUNCTION_MOCK(readl,
++		     RETURNS(u32), PARAMS(const volatile void __iomem *));
++
++#ifdef CONFIG_64BIT
++DEFINE_FUNCTION_MOCK(readq,
++		     RETURNS(u64), PARAMS(const volatile void __iomem *));
++#endif /* CONFIG_64BIT */
++
++DEFINE_FUNCTION_MOCK_VOID_RETURN(writeb,
++				 PARAMS(u8, const volatile void __iomem *));
++
++DEFINE_FUNCTION_MOCK_VOID_RETURN(writew,
++				 PARAMS(u16, const volatile void __iomem *));
++
++DEFINE_FUNCTION_MOCK_VOID_RETURN(writel,
++				 PARAMS(u32, const volatile void __iomem *));
++
++#ifdef CONFIG_64BIT
++DEFINE_FUNCTION_MOCK_VOID_RETURN(writeq,
++				 PARAMS(u64, const volatile void __iomem *));
++#endif /* CONFIG_64BIT */
+diff --git a/kunit/Kconfig b/kunit/Kconfig
+index 5cb500355c873..9d4b7cfff9d92 100644
+--- a/kunit/Kconfig
++++ b/kunit/Kconfig
+@@ -6,6 +6,7 @@ menu "KUnit support"
+ 
+ config KUNIT
+ 	bool "Enable support for unit tests (KUnit)"
++	select HAS_IOMEM
+ 	help
+ 	  Enables support for kernel unit tests (KUnit), a lightweight unit
+ 	  testing and mocking framework for the Linux kernel. These tests are
+-- 
+2.19.1.331.ge82ca0e54c-goog
 
-> +       bool "Turns on fake IOMEM support for KUnit"
-> +       depends on KUNIT
-> +       select MOCK_IOMEM
->
->  config ISA
->         bool
-> diff --git a/arch/um/Kconfig.um b/arch/um/Kconfig.um
-> index 20da5a8ca9490..8d35e0e2c23d1 100644
-> --- a/arch/um/Kconfig.um
-> +++ b/arch/um/Kconfig.um
-> @@ -122,3 +122,8 @@ config SECCOMP
->           defined by each seccomp mode.
->
->           If unsure, say Y.
-> +
-> +config PLATFORM_MOCK
-> +       bool "Enable a mock architecture used for unit testing."
-> +       depends on KUNIT && OF
-> +       default n
-> diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
-> index b10dde6cb793b..9fd2827ab76d1 100644
-> --- a/arch/um/include/asm/Kbuild
-> +++ b/arch/um/include/asm/Kbuild
-> @@ -12,7 +12,6 @@ generic-y += ftrace.h
->  generic-y += futex.h
->  generic-y += hardirq.h
->  generic-y += hw_irq.h
-> -generic-y += io.h
->  generic-y += irq_regs.h
->  generic-y += irq_work.h
->  generic-y += kdebug.h
-> diff --git a/arch/um/include/asm/io-mock-shared.h b/arch/um/include/asm/io-mock-shared.h
-> new file mode 100644
-> index 0000000000000..6baf59cb17a58
-> --- /dev/null
-> +++ b/arch/um/include/asm/io-mock-shared.h
-> @@ -0,0 +1,33 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_UM_IO_MOCK_SHARED_H
-> +#define _ASM_UM_IO_MOCK_SHARED_H
-> +
-> +#define readb readb
-> +u8 readb(const volatile void __iomem *);
-
-What about all the other flavors of MMIO accessors like __raw_readb,
-readb_relaxed, etc.? readX/writeX is intended for PCI based drivers
-which doesn't seem to be what you are targeting in this series.
-
-I think it would be good if this capability was not just on UML. I
-could also imagine wanting to run tests on real h/w. Perhaps you just
-want to log and/or check i/o accesses. Or you need some dependencies
-in place rather than trying to fake everything (clocks, gpios, pinmux,
-irq, etc.). That being said, I'm not trying to add a bunch of things
-for you to do. Though maybe it makes sense to split this series some.
-How many of the patches are needed to convert the DT unittests for
-example?
-
-Rob
 
 _______________________________________________
 linux-um mailing list
