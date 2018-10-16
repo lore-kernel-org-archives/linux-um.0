@@ -1,16 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from mail-it1-x14a.google.com ([2607:f8b0:4864:20::14a])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gCZAq-0004T5-4L
- for linux-um@lists.infradead.org; Tue, 16 Oct 2018 23:55:17 +0000
-Received: by mail-it1-x14a.google.com with SMTP id v13-v6so230178itc.4
- for <linux-um@lists.infradead.org>; Tue, 16 Oct 2018 16:54:40 -0700 (PDT)
-Date: Tue, 16 Oct 2018 16:51:11 -0700
+ id 1gCZA1-0003yQ-Up
+ for linux-um@lists.infradead.org; Tue, 16 Oct 2018 23:54:04 +0000
+Received: by mail-it1-x14a.google.com with SMTP id f79-v6so231297ita.3
+ for <linux-um@lists.infradead.org>; Tue, 16 Oct 2018 16:53:51 -0700 (PDT)
+Date: Tue, 16 Oct 2018 16:50:51 -0700
 In-Reply-To: <20181016235120.138227-1-brendanhiggins@google.com>
-Message-Id: <20181016235120.138227-23-brendanhiggins@google.com>
+Message-Id: <20181016235120.138227-3-brendanhiggins@google.com>
 Mime-Version: 1.0
 References: <20181016235120.138227-1-brendanhiggins@google.com>
-Subject: [RFC v1 22/31] kunit: mock: add the concept of spyable functions
+Subject: [RFC v1 02/31] kunit: test: adds KUnit test runner core
 From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -27,234 +27,370 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
 Cc: brakmo@fb.com, richard@nod.at, mpe@ellerman.id.au, Tim.Bird@sony.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, julia.lawall@lip6.fr, joel@jms.id.au, linux-kselftest@vger.kernel.org, khilman@baylibre.com, joe@perches.com, jdike@addtoit.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
 
-Adds the concept of spying like in Mockito
-(http://static.javadoc.io/org.mockito/mockito-core/2.20.0/org/mockito/Mockito.html#spy-T-).
-This allows a function declaration to be labled as spyable which allows
-the function to be mocked *and* to allow the mock to invoke the original
-function definition.
+Adds the KUnit core, which allows test cases to be defined and
+associated with common initialization and cleanup logic.
 
 Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
 ---
- include/kunit/mock.h | 123 ++++++++++++++++++++++++++++++++++++++++++-
- kunit/common-mocks.c |  36 +++++++++++++
- 2 files changed, 158 insertions(+), 1 deletion(-)
+ include/kunit/test.h | 165 ++++++++++++++++++++++++++++++++++++++++++
+ kunit/Makefile       |   2 +-
+ kunit/test.c         | 168 +++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 334 insertions(+), 1 deletion(-)
+ create mode 100644 include/kunit/test.h
+ create mode 100644 kunit/test.c
 
-diff --git a/include/kunit/mock.h b/include/kunit/mock.h
-index b58e30ba02ce2..c3615e80d96ee 100644
---- a/include/kunit/mock.h
-+++ b/include/kunit/mock.h
-@@ -284,6 +284,13 @@ static inline bool is_naggy_mock(struct mock *mock)
- 		DECLARE_MOCK_CLIENT(name, return_type, param_types);	       \
- 		DECLARE_MOCK_MASTER(name, handle_index, param_types)
- 
-+#define DECLARE_SPYABLE(name, return_type, param_types...)		       \
-+		return_type REAL_ID(name)(param_types);			       \
-+		return_type name(param_types);				       \
-+		void *INVOKE_ID(name)(struct test *test,		       \
-+				      const void *params[],		       \
-+				      int len)
+diff --git a/include/kunit/test.h b/include/kunit/test.h
+new file mode 100644
+index 0000000000000..e0b14b227ac44
+--- /dev/null
++++ b/include/kunit/test.h
+@@ -0,0 +1,165 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Base unit test (KUnit) API.
++ *
++ * Copyright (C) 2018, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
 +
- #define DECLARE_MOCK_FUNC_CLIENT(name, return_type, param_types...) \
- 		DECLARE_MOCK_CLIENT(name, return_type, param_types)
- 
-@@ -465,6 +472,100 @@ static inline bool is_naggy_mock(struct mock *mock)
- 			RETURN(return_type, retval);			       \
- 		}
- 
-+#if IS_ENABLED(CONFIG_KUNIT)
-+#define DEFINE_INVOKABLE(name, return_type, RETURN_ASSIGN, param_types...)     \
-+		void *INVOKE_ID(name)(struct test *test,		       \
-+				      const void *params[],		       \
-+				      int len) {			       \
-+			return_type *retval;				       \
-+									       \
-+			TEST_ASSERT_EQ(test, NUM_VA_ARGS(param_types), len);   \
-+			retval = test_kzalloc(test,			       \
-+					      sizeof(*retval),		       \
-+					      GFP_KERNEL);		       \
-+			TEST_ASSERT_NOT_ERR_OR_NULL(test, retval);	       \
-+			RETURN_ASSIGN() REAL_ID(name)(			       \
-+					ARRAY_ACCESSORS_FROM_TYPES(	       \
-+							param_types));	       \
-+			return retval;					       \
-+		}
-+#else
-+#define DEFINE_INVOKABLE(name, return_type, RETURN_ASSIGN, param_types...)
-+#endif
++#ifndef _KUNIT_TEST_H
++#define _KUNIT_TEST_H
 +
-+#define DEFINE_SPYABLE_COMMON(name,					       \
-+			      return_type,				       \
-+			      RETURN_ASSIGN,				       \
-+			      param_types...)				       \
-+		return_type REAL_ID(name)(param_types);			       \
-+		return_type name(param_types) __mockable_alias(REAL_ID(name)); \
-+		DEFINE_INVOKABLE(name, return_type, RETURN_ASSIGN, param_types);
++#include <linux/types.h>
++#include <linux/slab.h>
 +
-+#define ASSIGN() *retval =
++struct test;
 +
 +/**
-+ * DEFINE_SPYABLE()
-+ * @name: name of the function
-+ * @return_type: return type of the function
-+ * @param_types: parameter types of the function
++ * struct test_case - represents an individual test case.
++ * @run_case: the function representing the actual test case.
++ * @name: the name of the test case.
 + *
-+ * Used to define a function which is *redirect-mockable*, which allows the
-+ * function to be mocked and refer to the original definition via
-+ * INVOKE_REAL().
++ * A test case is a function with the signature, ``void (*)(struct test *)``
++ * that makes expectations (see TEST_EXPECT_TRUE()) about code under test. Each
++ * test case is associated with a &struct test_module and will be run after the
++ * module's init function and followed by the module's exit function.
++ *
++ * A test case should be static and should only be created with the TEST_CASE()
++ * macro; additionally, every array of test cases should be terminated with an
++ * empty test case.
 + *
 + * Example:
 + *
 + * .. code-block:: c
 + *
-+ *	DEFINE_SPYABLE(i2c_add_adapter,
-+ *	               RETURNS(int), PARAMS(struct i2c_adapter *));
-+ *	int REAL_ID(i2c_add_adapter)(struct i2c_adapter *adapter)
++ *	void add_test_basic(struct test *test)
 + *	{
-+ *		...
++ *		TEST_EXPECT_EQ(test, 1, add(1, 0));
++ *		TEST_EXPECT_EQ(test, 2, add(1, 1));
++ *		TEST_EXPECT_EQ(test, 0, add(-1, 1));
++ *		TEST_EXPECT_EQ(test, INT_MAX, add(0, INT_MAX));
++ *		TEST_EXPECT_EQ(test, -1, add(INT_MAX, INT_MIN));
 + *	}
 + *
-+ *	static int aspeed_i2c_test_init(struct test *test)
-+ *	{
-+ *		struct mock_param_capturer *adap_capturer;
-+ *		struct mock_expectation *handle;
-+ *		struct aspeed_i2c_test *ctx;
-+ *		int ret;
++ *	static struct test_case example_test_cases[] = {
++ *		TEST_CASE(add_test_basic),
++ *		{},
++ *	};
 + *
-+ *		ctx = test_kzalloc(test, sizeof(*ctx), GFP_KERNEL);
-+ *		if (!ctx)
-+ *			return -ENOMEM;
-+ *		test->priv = ctx;
-+ *
-+ *		handle = TEST_EXPECT_CALL(
-+ *				i2c_add_adapter(capturer_to_matcher(
-+ *						adap_capturer)));
-+ *		handle->action = INVOKE_REAL(test, i2c_add_adapter);
-+ *		ret = of_fake_probe_platform_by_name(test,
-+ *						     "aspeed-i2c-bus",
-+ *						     "test-i2c-bus");
-+ *		if (ret < 0)
-+ *			return ret;
-+ *
-+ *		TEST_ASSERT_PARAM_CAPTURED(test, adap_capturer);
-+ *		ctx->adap = mock_capturer_get(adap_capturer,
-+ *					      struct i2c_adapter *);
-+ *
-+ *		return 0;
-+ *	}
 + */
-+#define DEFINE_SPYABLE(name, return_type, param_types...)		       \
-+		DEFINE_SPYABLE_COMMON(name,				       \
-+						return_type,		       \
-+						ASSIGN,			       \
-+						param_types)
++struct test_case {
++	void (*run_case)(struct test *test);
++	const char name[256];
 +
-+#define NO_ASSIGN()
-+#define DEFINE_SPYABLE_VOID_RETURN(name, param_types)			       \
-+		DEFINE_SPYABLE_COMMON(name,				       \
-+				      void,				       \
-+				      NO_ASSIGN,			       \
-+				      param_types)
-+
- #define CLASS_MOCK_CLIENT_SOURCE(ctx, handle_index) ctx(arg##handle_index)
- #define DEFINE_MOCK_METHOD_CLIENT_COMMON(name,				       \
- 					 handle_index,			       \
-@@ -745,7 +846,7 @@ DECLARE_STRUCT_CLASS_MOCK_INIT(void);
-  * @...: parameter types of the function
-  *
-  * Same as DEFINE_STRUCT_CLASS_MOCK() except can be used to mock any function
-- * declared %__mockable or DEFINE_REDIRECT_MOCKABLE()
-+ * declared %__mockable or DEFINE_SPYABLE()
-  */
- #define DEFINE_FUNCTION_MOCK(name, return_type, param_types...) \
- 		DEFINE_FUNCTION_MOCK_INTERNAL(name, return_type, param_types)
-@@ -777,6 +878,7 @@ DECLARE_STRUCT_CLASS_MOCK_INIT(void);
-  *	int __mockable example(int arg) { ... }
-  */
- #define __mockable __weak
-+#define __mockable_alias(id) __weak __alias(id)
- 
- /**
-  * __visible_for_testing - Makes a static function visible when testing.
-@@ -788,6 +890,7 @@ DECLARE_STRUCT_CLASS_MOCK_INIT(void);
- #define __visible_for_testing
- #else
- #define __mockable
-+#define __mockable_alias(id) __alias(id)
- #define __visible_for_testing static
- #endif
- 
-@@ -1069,6 +1172,24 @@ struct mock_param_matcher *test_struct_cmp(
- 		const char *struct_name,
- 		struct mock_struct_matcher_entry *entries);
- 
-+struct mock_action *invoke(struct test *test,
-+			   void *(*invokable)(struct test *,
-+					      const void *params[],
-+					      int len));
-+
-+/**
-+ * INVOKE_REAL()
-+ * @test: associated test
-+ * @func_name: name of the function
-+ *
-+ * See DEFINE_SPYABLE() for an example.
-+ *
-+ * Return: &struct mock_action that makes the associated mock method or function
-+ *         call the original function definition of a redirect-mockable
-+ *         function.
-+ */
-+#define INVOKE_REAL(test, func_name) invoke(test, INVOKE_ID(func_name))
-+
- struct mock_struct_formatter_entry {
- 	size_t member_offset;
- 	struct mock_param_formatter *formatter;
-diff --git a/kunit/common-mocks.c b/kunit/common-mocks.c
-index 1c52522808cab..ce0159923814d 100644
---- a/kunit/common-mocks.c
-+++ b/kunit/common-mocks.c
-@@ -386,6 +386,42 @@ DEFINE_RETURN_ACTION_WITH_TYPENAME(longlong, long long);
- DEFINE_RETURN_ACTION_WITH_TYPENAME(ulonglong, unsigned long long);
- DEFINE_RETURN_ACTION_WITH_TYPENAME(ptr, void *);
- 
-+struct mock_invoke_action {
-+	struct mock_action action;
-+	struct test *test;
-+	void *(*invokable)(struct test *test, const void *params[], int len);
++	/* private: internal use only. */
++	bool success;
 +};
 +
-+static void *do_invoke(struct mock_action *paction,
-+		       const void *params[],
-+		       int len)
-+{
-+	struct mock_invoke_action *action =
-+			container_of(paction,
-+				     struct mock_invoke_action,
-+				     action);
++/**
++ * TEST_CASE - A helper for creating a &struct test_case
++ * @test_name: a reference to a test case function.
++ *
++ * Takes a symbol for a function representing a test case and creates a &struct
++ * test_case object from it. See the documentation for &struct test_case for an
++ * example on how to use it.
++ */
++#define TEST_CASE(test_name) { .run_case = test_name, .name = #test_name }
 +
-+	return action->invokable(action->test, params, len);
++/**
++ * struct test_module - describes a related collection of &struct test_case s.
++ * @name: the name of the test. Purely informational.
++ * @init: called before every test case.
++ * @exit: called after every test case.
++ * @test_cases: a null terminated array of test cases.
++ *
++ * A test_module is a collection of related &struct test_case s, such that
++ * @init is called before every test case and @exit is called after every test
++ * case, similar to the notion of a *test fixture* or a *test class* in other
++ * unit testing frameworks like JUnit or Googletest.
++ *
++ * Every &struct test_case must be associated with a test_module for KUnit to
++ * run it.
++ */
++struct test_module {
++	const char name[256];
++	int (*init)(struct test *test);
++	void (*exit)(struct test *test);
++	struct test_case *test_cases;
++};
++
++/**
++ * struct test - represents a running instance of a test.
++ * @priv: for user to store arbitrary data. Commonly used to pass data created
++ * in the init function (see &struct test_module).
++ *
++ * Used to store information about the current context under which the test is
++ * running. Most of this data is private and should only be accessed indirectly
++ * via public functions; the one exception is @priv which can be used by the
++ * test writer to store arbitrary data.
++ */
++struct test {
++	void *priv;
++
++	/* private: internal use only. */
++	const char *name; /* Read only after initialization! */
++	spinlock_t lock; /* Gaurds all mutable test state. */
++	bool success; /* Protected by lock. */
++	void (*vprintk)(const struct test *test,
++			const char *level,
++			struct va_format *vaf);
++};
++
++int test_init_test(struct test *test, const char *name);
++
++int test_run_tests(struct test_module *module);
++
++/**
++ * module_test() - used to register a &struct test_module with KUnit.
++ * @module: a statically allocated &struct test_module.
++ *
++ * Registers @module with the test framework. See &struct test_module for more
++ * information.
++ */
++#define module_test(module) \
++		static int module_test_init##module(void) \
++		{ \
++			return test_run_tests(&module); \
++		} \
++		late_initcall(module_test_init##module)
++
++void __printf(3, 4) test_printk(const char *level,
++				const struct test *test,
++				const char *fmt, ...);
++
++/**
++ * test_info() - Prints an INFO level message associated with the current test.
++ * @test: The test context object.
++ * @fmt: A printk() style format string.
++ *
++ * Prints an info level message associated with the test module being run. Takes
++ * a variable number of format parameters just like printk().
++ */
++#define test_info(test, fmt, ...) \
++		test_printk(KERN_INFO, test, fmt, ##__VA_ARGS__)
++
++/**
++ * test_warn() - Prints a WARN level message associated with the current test.
++ * @test: The test context object.
++ * @fmt: A printk() style format string.
++ *
++ * See test_info().
++ */
++#define test_warn(test, fmt, ...) \
++		test_printk(KERN_WARNING, test, fmt, ##__VA_ARGS__)
++
++/**
++ * test_err() - Prints an ERROR level message associated with the current test.
++ * @test: The test context object.
++ * @fmt: A printk() style format string.
++ *
++ * See test_info().
++ */
++#define test_err(test, fmt, ...) \
++		test_printk(KERN_ERR, test, fmt, ##__VA_ARGS__)
++
++#endif /* _KUNIT_TEST_H */
+diff --git a/kunit/Makefile b/kunit/Makefile
+index de16cce9d6a27..7fc613a9b383b 100644
+--- a/kunit/Makefile
++++ b/kunit/Makefile
+@@ -1 +1 @@
+-obj-$(CONFIG_KUNIT)		+= string-stream.o
++obj-$(CONFIG_KUNIT)		+= test.o string-stream.o
+diff --git a/kunit/test.c b/kunit/test.c
+new file mode 100644
+index 0000000000000..4732e5f0d7575
+--- /dev/null
++++ b/kunit/test.c
+@@ -0,0 +1,168 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Base unit test (KUnit) API.
++ *
++ * Copyright (C) 2018, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++
++#include <linux/sched.h>
++#include <linux/sched/debug.h>
++#include <os.h>
++#include <kunit/test.h>
++
++static bool test_get_success(struct test *test)
++{
++	unsigned long flags;
++	bool success;
++
++	spin_lock_irqsave(&test->lock, flags);
++	success = test->success;
++	spin_unlock_irqrestore(&test->lock, flags);
++
++	return success;
 +}
 +
-+struct mock_action *invoke(struct test *test,
-+			   void *(*invokable)(struct test *,
-+					      const void *params[],
-+					      int len))
++static void test_set_success(struct test *test, bool success)
 +{
-+	struct mock_invoke_action *action;
++	unsigned long flags;
 +
-+	action = test_kmalloc(test, sizeof(*action), GFP_KERNEL);
-+	if (!action)
-+		return NULL;
-+
-+	action->action.do_action = do_invoke;
-+	action->test = test;
-+	action->invokable = invokable;
-+
-+	return &action->action;
++	spin_lock_irqsave(&test->lock, flags);
++	test->success = success;
++	spin_unlock_irqrestore(&test->lock, flags);
 +}
 +
- struct mock_param_integer_formatter {
- 	struct mock_param_formatter formatter;
- 	const char *fmt_str;
++static int test_vprintk_emit(const struct test *test,
++			     int level,
++			     const char *fmt,
++			     va_list args)
++{
++	return vprintk_emit(0, level, NULL, 0, fmt, args);
++}
++
++static int test_printk_emit(const struct test *test,
++			    int level,
++			    const char *fmt, ...)
++{
++	va_list args;
++	int ret;
++
++	va_start(args, fmt);
++	ret = test_vprintk_emit(test, level, fmt, args);
++	va_end(args);
++
++	return ret;
++}
++
++static void test_vprintk(const struct test *test,
++			 const char *level,
++			 struct va_format *vaf)
++{
++	test_printk_emit(test,
++			 level[1] - '0',
++			 "kunit %s: %pV", test->name, vaf);
++}
++
++int test_init_test(struct test *test, const char *name)
++{
++	spin_lock_init(&test->lock);
++	test->name = name;
++	test->vprintk = test_vprintk;
++
++	return 0;
++}
++
++/*
++ * Initializes and runs test case. Does not clean up or do post validations.
++ */
++static void test_run_case_internal(struct test *test,
++				   struct test_module *module,
++				   struct test_case *test_case)
++{
++	int ret;
++
++	if (module->init) {
++		ret = module->init(test);
++		if (ret) {
++			test_err(test, "failed to initialize: %d", ret);
++			test_set_success(test, false);
++			return;
++		}
++	}
++
++	test_case->run_case(test);
++}
++
++/*
++ * Performs post validations and cleanup after a test case was run.
++ * XXX: Should ONLY BE CALLED AFTER test_run_case_internal!
++ */
++static void test_run_case_cleanup(struct test *test,
++				  struct test_module *module,
++				  struct test_case *test_case)
++{
++	if (module->exit)
++		module->exit(test);
++}
++
++/*
++ * Performs all logic to run a test case.
++ */
++static bool test_run_case(struct test *test,
++			  struct test_module *module,
++			  struct test_case *test_case)
++{
++	test_set_success(test, true);
++
++	test_run_case_internal(test, module, test_case);
++	test_run_case_cleanup(test, module, test_case);
++
++	return test_get_success(test);
++}
++
++int test_run_tests(struct test_module *module)
++{
++	bool all_passed = true, success;
++	struct test_case *test_case;
++	struct test test;
++	int ret;
++
++	ret = test_init_test(&test, module->name);
++	if (ret)
++		return ret;
++
++	for (test_case = module->test_cases; test_case->run_case; test_case++) {
++		success = test_run_case(&test, module, test_case);
++		if (!success)
++			all_passed = false;
++
++		test_info(&test,
++			  "%s %s",
++			  test_case->name,
++			  success ? "passed" : "failed");
++	}
++
++	if (all_passed)
++		test_info(&test, "all tests passed");
++	else
++		test_info(&test, "one or more tests failed");
++
++	return 0;
++}
++
++void test_printk(const char *level,
++		 const struct test *test,
++		 const char *fmt, ...)
++{
++	struct va_format vaf;
++	va_list args;
++
++	va_start(args, fmt);
++
++	vaf.fmt = fmt;
++	vaf.va = &args;
++
++	test->vprintk(test, level, &vaf);
++
++	va_end(args);
++}
 -- 
 2.19.1.331.ge82ca0e54c-goog
 
