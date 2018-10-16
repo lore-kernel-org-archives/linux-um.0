@@ -1,15 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from lilium.sigma-star.at ([109.75.188.150])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gHSgK-00030V-K4
- for linux-um@lists.infradead.org; Tue, 30 Oct 2018 11:59:38 +0000
-From: Richard Weinberger <richard@nod.at>
-Subject: [PATCH 4/4] um: Make GCOV depend on !KCOV
-Date: Tue, 30 Oct 2018 12:58:12 +0100
-Message-Id: <20181030115812.346-4-richard@nod.at>
-In-Reply-To: <20181030115812.346-1-richard@nod.at>
-References: <20181030115812.346-1-richard@nod.at>
-MIME-Version: 1.0
+Received: from mail-qk1-x74a.google.com ([2607:f8b0:4864:20::74a])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gCZB5-0004f5-4O
+ for linux-um@lists.infradead.org; Tue, 16 Oct 2018 23:55:35 +0000
+Received: by mail-qk1-x74a.google.com with SMTP id a102-v6so25939075qka.0
+ for <linux-um@lists.infradead.org>; Tue, 16 Oct 2018 16:55:02 -0700 (PDT)
+Date: Tue, 16 Oct 2018 16:51:20 -0700
+In-Reply-To: <20181016235120.138227-1-brendanhiggins@google.com>
+Message-Id: <20181016235120.138227-32-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20181016235120.138227-1-brendanhiggins@google.com>
+Subject: [RFC v1 31/31] MAINTAINERS: add entry for KUnit the unit testing
+ framework
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,32 +25,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Richard Weinberger <richard@nod.at>
+To: gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
+Cc: brakmo@fb.com, richard@nod.at, mpe@ellerman.id.au, Tim.Bird@sony.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, julia.lawall@lip6.fr, joel@jms.id.au, linux-kselftest@vger.kernel.org, khilman@baylibre.com, joe@perches.com, jdike@addtoit.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
 
-Both do more or less the same thing and are mutually exclusive.
-If both are enabled the build will fail.
-Sooner or later we can kill UML's GCOV.
+Added myself as maintainer of KUnit, the Linux kernel's unit testing
+framework.
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
 ---
- arch/um/Kconfig.debug | 1 +
- 1 file changed, 1 insertion(+)
+ MAINTAINERS | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/arch/um/Kconfig.debug b/arch/um/Kconfig.debug
-index 2014597605ea..85726eeec345 100644
---- a/arch/um/Kconfig.debug
-+++ b/arch/um/Kconfig.debug
-@@ -16,6 +16,7 @@ config GPROF
- config GCOV
- 	bool "Enable gcov support"
- 	depends on DEBUG_INFO
-+	depends on !KCOV
- 	help
- 	  This option allows developers to retrieve coverage data from a UML
- 	  session.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 544cac829cf44..9c3d34f0062ad 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -7801,6 +7801,21 @@ S:	Maintained
+ F:	tools/testing/selftests/
+ F:	Documentation/dev-tools/kselftest*
+ 
++KERNEL UNIT TESTING FRAMEWORK (KUnit)
++M:	Brendan Higgins <brendanhiggins@google.com>
++L:	kunit-dev@googlegroups.com
++W:	https://google.github.io/kunit-docs/third_party/kernel/docs/
++S:	Maintained
++F:	Documentation/kunit/
++F:	arch/um/include/asm/io-mock-shared.h
++F:	arch/um/include/asm/io-mock.h
++F:	arch/um/kernel/io-mock.c
++F:	drivers/base/platform-mock.c
++F:	include/linux/platform_device_mock.h
++F:	include/kunit/
++F:	kunit/
++F:	tools/testing/kunit/
++
+ KERNEL USERMODE HELPER
+ M:	"Luis R. Rodriguez" <mcgrof@kernel.org>
+ L:	linux-kernel@vger.kernel.org
 -- 
-2.19.1
+2.19.1.331.ge82ca0e54c-goog
 
 
 _______________________________________________
