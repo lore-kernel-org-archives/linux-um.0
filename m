@@ -1,9 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH, RFC] ubd: remove use of blk_rq_map_sg
-Date: Mon, 15 Oct 2018 08:56:37 +0200
-Message-Id: <20181015065637.1860-1-hch@lst.de>
-MIME-Version: 1.0
+Received: from mail-it1-x14a.google.com ([2607:f8b0:4864:20::14a])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gCZAe-0004MP-Bj
+ for linux-um@lists.infradead.org; Tue, 16 Oct 2018 23:54:59 +0000
+Received: by mail-it1-x14a.google.com with SMTP id y73-v6so268190ita.2
+ for <linux-um@lists.infradead.org>; Tue, 16 Oct 2018 16:54:29 -0700 (PDT)
+Date: Tue, 16 Oct 2018 16:51:06 -0700
+In-Reply-To: <20181016235120.138227-1-brendanhiggins@google.com>
+Message-Id: <20181016235120.138227-18-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20181016235120.138227-1-brendanhiggins@google.com>
+Subject: [RFC v1 17/31] kunit: mock: added struct param matcher
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -16,240 +24,452 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: richard@nod.at
-Cc: axboe@kernel.dk, linux-block@vger.kernel.org, linux-um@lists.infradead.org
+To: gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
+Cc: brakmo@fb.com, richard@nod.at, mpe@ellerman.id.au, Tim.Bird@sony.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, julia.lawall@lip6.fr, joel@jms.id.au, linux-kselftest@vger.kernel.org, khilman@baylibre.com, joe@perches.com, jdike@addtoit.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
 
-There is no good reason to create a scatterlist in the ubd driver,
-it can just iterate the request directly.
+Added parameter matcher builder for matching struct values.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
 ---
+ include/kunit/mock.h     |  56 +++++++++++++++
+ kunit/Makefile           |   5 +-
+ kunit/common-mocks.c     | 116 ++++++++++++++++++++++++++++++
+ kunit/mock-test.c        |  43 +++++++++++
+ kunit/test-stream-test.c | 150 +++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 368 insertions(+), 2 deletions(-)
+ create mode 100644 kunit/test-stream-test.c
 
-Now that we have the blk-mq conversion something like the patch below
-should help to simplify the driver even further.
-
- arch/um/drivers/ubd_kern.c | 154 ++++++++++++-------------------------
- 1 file changed, 50 insertions(+), 104 deletions(-)
-
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 9cb0cabb4e02..aafe9c467fdc 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -160,12 +160,6 @@ struct ubd {
- 	spinlock_t lock;
- };
+diff --git a/include/kunit/mock.h b/include/kunit/mock.h
+index 1b7485e2cedb8..daf965cf954e6 100644
+--- a/include/kunit/mock.h
++++ b/include/kunit/mock.h
+@@ -760,6 +760,14 @@ struct mock_param_matcher *test_memeq(struct test *test,
+ 				      size_t size);
+ struct mock_param_matcher *test_streq(struct test *test, const char *str);
  
--struct ubd_pdu {
--	struct scatterlist sg[MAX_SG];
--	int start_sg, end_sg;
--	sector_t rq_pos;
--};
--
- #define DEFAULT_COW { \
- 	.file =			NULL, \
- 	.fd =			-1,	\
-@@ -197,9 +191,6 @@ static struct proc_dir_entry *proc_ide = NULL;
++struct mock_param_matcher *test_str_contains(struct test *test,
++					     const char *needle);
++
++/* Matches var-arg arguments. */
++struct mock_param_matcher *test_va_format_cmp(struct test *test,
++					 struct mock_param_matcher *fmt_matcher,
++					 struct mock_param_matcher *va_matcher);
++
+ struct mock_action *test_u8_return(struct test *test, u8 ret);
+ struct mock_action *test_u16_return(struct test *test, u16 ret);
+ struct mock_action *test_u32_return(struct test *test, u32 ret);
+@@ -778,4 +786,52 @@ struct mock_action *test_ulonglong_return(struct test *test,
+ 					  unsigned long long ret);
+ struct mock_action *test_ptr_return(struct test *test, void *ret);
  
- static blk_status_t ubd_queue_rq(struct blk_mq_hw_ctx *hctx,
- 				 const struct blk_mq_queue_data *bd);
--static int ubd_init_request(struct blk_mq_tag_set *set,
--			    struct request *req, unsigned int hctx_idx,
--			    unsigned int numa_node);
- 
- static void make_proc_ide(void)
- {
-@@ -895,7 +886,6 @@ static int ubd_disk_register(int major, u64 size, int unit,
- 
- static const struct blk_mq_ops ubd_mq_ops = {
- 	.queue_rq = ubd_queue_rq,
--	.init_request = ubd_init_request,
- };
- 
- static int ubd_add(int n, char **error_out)
-@@ -918,7 +908,6 @@ static int ubd_add(int n, char **error_out)
- 	ubd_dev->tag_set.queue_depth = 64;
- 	ubd_dev->tag_set.numa_node = NUMA_NO_NODE;
- 	ubd_dev->tag_set.flags = BLK_MQ_F_SHOULD_MERGE;
--	ubd_dev->tag_set.cmd_size = sizeof(struct ubd_pdu);
- 	ubd_dev->tag_set.driver_data = ubd_dev;
- 	ubd_dev->tag_set.nr_hw_queues = 1;
- 
-@@ -1300,123 +1289,80 @@ static void cowify_req(struct io_thread_req *req, unsigned long *bitmap,
- 			   req->bitmap_words, bitmap_len);
++/**
++ * struct mock_struct_matcher_entry - composed with other &struct
++ *                                    mock_struct_matcher_entry to make a
++ *                                    &struct struct_matcher
++ * @member_offset: offset of this member
++ * @matcher: matcher for this particular member
++ *
++ * This is used for struct_cmp() matchers.
++ */
++struct mock_struct_matcher_entry {
++	size_t member_offset;
++	struct mock_param_matcher *matcher;
++};
++
++static inline void init_mock_struct_matcher_entry_internal(
++		struct mock_struct_matcher_entry *entry,
++		size_t offset,
++		struct mock_param_matcher *matcher)
++{
++	entry->member_offset = offset;
++	entry->matcher = matcher;
++}
++
++/**
++ * INIT_MOCK_STRUCT_MATCHER_ENTRY()
++ * @entry: the &struct mock_struct_matcher_entry to initialize
++ * @type: the struct being matched
++ * @member: the member of the struct being matched, used to calculate the offset
++ * @matcher: matcher to match that member
++ *
++ * Initializes ``entry`` to match ``type->member`` with ``matcher``.
++ */
++#define INIT_MOCK_STRUCT_MATCHER_ENTRY(entry, type, member, matcher)	       \
++		init_mock_struct_matcher_entry_internal(entry,		       \
++							offsetof(type, member),\
++							matcher)
++
++static inline void INIT_MOCK_STRUCT_MATCHER_ENTRY_LAST(
++		struct mock_struct_matcher_entry *entry)
++{
++	entry->matcher = NULL;
++}
++
++struct mock_param_matcher *test_struct_cmp(
++		struct test *test,
++		const char *struct_name,
++		struct mock_struct_matcher_entry *entries);
++
+ #endif /* _KUNIT_MOCK_H */
+diff --git a/kunit/Makefile b/kunit/Makefile
+index 6fccfcdbc6f84..e05fbcae8bfb0 100644
+--- a/kunit/Makefile
++++ b/kunit/Makefile
+@@ -1,5 +1,6 @@
+ obj-$(CONFIG_KUNIT)		+= test.o mock.o common-mocks.o string-stream.o \
+   test-stream.o
+-obj-$(CONFIG_KUNIT_TEST)		+= \
+-  test-test.o test-mock.o mock-macro-test.o mock-test.o string-stream-test.o
++obj-$(CONFIG_KUNIT_TEST)	+= \
++  test-test.o test-mock.o mock-macro-test.o mock-test.o string-stream-test.o \
++  test-stream-test.o
+ obj-$(CONFIG_EXAMPLE_TEST)	+= example-test.o
+diff --git a/kunit/common-mocks.c b/kunit/common-mocks.c
+index ecac9c1c29c0e..ef88f8b8acda3 100644
+--- a/kunit/common-mocks.c
++++ b/kunit/common-mocks.c
+@@ -207,6 +207,122 @@ struct mock_param_matcher *test_streq(struct test *test, const char *str)
+ 	return &matcher->matcher;
  }
  
--/* Called with dev->lock held */
--static void prepare_request(struct request *req, struct io_thread_req *io_req,
--			    unsigned long long offset, int page_offset,
--			    int len, struct page *page)
-+static int ubd_queue_one_vec(struct blk_mq_hw_ctx *hctx, struct request *req,
-+		sector_t pos, struct bio_vec *bvec)
- {
--	struct gendisk *disk = req->rq_disk;
--	struct ubd *ubd_dev = disk->private_data;
--
--	io_req->req = req;
--	io_req->fds[0] = (ubd_dev->cow.file != NULL) ? ubd_dev->cow.fd :
--		ubd_dev->fd;
--	io_req->fds[1] = ubd_dev->fd;
--	io_req->cow_offset = -1;
--	io_req->offset = offset;
--	io_req->length = len;
--	io_req->error = 0;
--	io_req->sector_mask = 0;
--
--	io_req->op = (rq_data_dir(req) == READ) ? UBD_READ : UBD_WRITE;
--	io_req->offsets[0] = 0;
--	io_req->offsets[1] = ubd_dev->cow.data_offset;
--	io_req->buffer = page_address(page) + page_offset;
--	io_req->sectorsize = 1 << 9;
--
--	if(ubd_dev->cow.file != NULL)
--		cowify_req(io_req, ubd_dev->cow.bitmap,
--			   ubd_dev->cow.bitmap_offset, ubd_dev->cow.bitmap_len);
--
--}
-+	struct ubd *dev = hctx->queue->queuedata;
-+	struct io_thread_req *io_req;
-+	int written;
- 
--/* Called with dev->lock held */
--static void prepare_flush_request(struct request *req,
--				  struct io_thread_req *io_req)
--{
--	struct gendisk *disk = req->rq_disk;
--	struct ubd *ubd_dev = disk->private_data;
-+	io_req = kmalloc(sizeof(struct io_thread_req), GFP_ATOMIC);
-+	if (!io_req)
-+		return -ENOMEM;
- 
- 	io_req->req = req;
--	io_req->fds[0] = (ubd_dev->cow.file != NULL) ? ubd_dev->cow.fd :
--		ubd_dev->fd;
--	io_req->op = UBD_FLUSH;
--}
--
--static void submit_request(struct io_thread_req *io_req, struct ubd *dev)
--{
--	int n = os_write_file(thread_fd, &io_req,
--			     sizeof(io_req));
-+	if (dev->cow.file)
-+		io_req->fds[0] = dev->cow.fd;
++struct mock_str_contains_matcher {
++	struct mock_param_matcher matcher;
++	const char *needle;
++};
++
++static bool match_str_contains(struct mock_param_matcher *pmatcher,
++			       struct test_stream *stream,
++			       const void *phaystack)
++{
++	struct mock_str_contains_matcher *matcher =
++		container_of(pmatcher,
++			     struct mock_str_contains_matcher,
++			     matcher);
++	const char *haystack = CONVERT_TO_ACTUAL_TYPE(const char *, phaystack);
++	bool matches = strstr(haystack, matcher->needle);
++
++	if (matches)
++		stream->add(stream,
++			    "'%s' found in '%s'",
++			    matcher->needle,
++			    haystack);
 +	else
-+		io_req->fds[0] = dev->fd;
- 
--	if (n != sizeof(io_req)) {
--		if (n != -EAGAIN)
--			pr_err("write to io thread failed: %d\n", -n);
-+	if (req_op(req) == REQ_OP_FLUSH) {
-+		io_req->op = UBD_FLUSH;
-+	} else {
-+		io_req->fds[1] = dev->fd;
-+		io_req->cow_offset = -1;
-+		io_req->offset = (unsigned long long)pos << 9;
-+		io_req->length = bvec->bv_len;
-+		io_req->error = 0;
-+		io_req->sector_mask = 0;
++		stream->add(stream,
++			    "'%s' not found in '%s'",
++			    matcher->needle,
++			    haystack);
++	return matches;
++}
 +
-+		io_req->op = rq_data_dir(req) == READ ? UBD_READ : UBD_WRITE;
-+		io_req->offsets[0] = 0;
-+		io_req->offsets[1] = dev->cow.data_offset;
-+		io_req->buffer = page_address(bvec->bv_page) + bvec->bv_offset;
-+		io_req->sectorsize = 1 << 9;
++struct mock_param_matcher *test_str_contains(struct test *test, const char *str)
++{
++	struct mock_str_contains_matcher *matcher;
 +
-+		if (dev->cow.file) {
-+			cowify_req(io_req, dev->cow.bitmap,
-+				   dev->cow.bitmap_offset, dev->cow.bitmap_len);
-+		}
++	matcher = test_kzalloc(test, sizeof(*matcher), GFP_KERNEL);
++	if (!matcher)
++		return NULL;
++
++	matcher->matcher.match = match_str_contains;
++	matcher->needle = str;
++
++	return &matcher->matcher;
++}
++
++struct mock_param_matcher *test_va_format_cmp(
++		struct test *test,
++		struct mock_param_matcher *fmt_matcher,
++		struct mock_param_matcher *va_matcher)
++{
++	struct mock_struct_matcher_entry *entries;
++
++	entries = test_kzalloc(test, sizeof(*entries) * 3, GFP_KERNEL);
++	if (!entries)
++		return NULL;
++
++	INIT_MOCK_STRUCT_MATCHER_ENTRY(&entries[0],
++				       struct va_format,
++				       fmt,
++				       fmt_matcher);
++	INIT_MOCK_STRUCT_MATCHER_ENTRY(&entries[1],
++				       struct va_format,
++				       va,
++				       va_matcher);
++	INIT_MOCK_STRUCT_MATCHER_ENTRY_LAST(&entries[2]);
++
++	return test_struct_cmp(test, "va_format", entries);
++}
++
++struct mock_struct_matcher {
++	struct mock_param_matcher matcher;
++	const char *struct_name;
++	struct mock_struct_matcher_entry *entries;
++};
++
++static bool match_struct(struct mock_param_matcher *pmatcher,
++			 struct test_stream *stream,
++			 const void *pactual)
++{
++	struct mock_struct_matcher *matcher =
++			container_of(pmatcher,
++				     struct mock_struct_matcher,
++				     matcher);
++	struct mock_struct_matcher_entry *entry;
++	const char *actual = CONVERT_TO_ACTUAL_TYPE(const char *, pactual);
++	const char *member_ptr;
++	bool matches = true, tmp;
++
++	stream->add(stream, "struct %s {", matcher->struct_name);
++	for (entry = matcher->entries; entry->matcher; entry++) {
++		member_ptr = actual + entry->member_offset;
++		tmp = entry->matcher->match(entry->matcher, stream, member_ptr);
++		matches = matches && tmp;
++		stream->add(stream, ", ");
 +	}
++	stream->add(stream, "}");
++
++	return matches;
++}
++
++struct mock_param_matcher *test_struct_cmp(
++		struct test *test,
++		const char *struct_name,
++		struct mock_struct_matcher_entry *entries)
++{
++	struct mock_struct_matcher *matcher;
++
++	matcher = test_kzalloc(test, sizeof(*matcher), GFP_KERNEL);
++	if (!matcher)
++		return NULL;
++
++	matcher->matcher.match = match_struct;
++	matcher->struct_name = struct_name;
++	matcher->entries = entries;
++
++	return &matcher->matcher;
++}
++
+ #define DEFINE_RETURN_ACTION_STRUCT(type_name, type)			       \
+ 		struct mock_##type_name##_action {			       \
+ 			struct mock_action action;			       \
+diff --git a/kunit/mock-test.c b/kunit/mock-test.c
+index 523ddee8f24e2..77b16ad754424 100644
+--- a/kunit/mock-test.c
++++ b/kunit/mock-test.c
+@@ -187,6 +187,48 @@ static void mock_test_do_expect_default_return(struct test *test)
+ 	TEST_EXPECT_EQ(test, 0, expectation->times_called);
+ }
  
-+	written = os_write_file(thread_fd, &io_req, sizeof(io_req));
-+	if (written != sizeof(io_req)) {
-+		if (written != -EAGAIN)
-+			pr_err("write to io thread failed: %d\n", -written);
- 		blk_mq_requeue_request(io_req->req, true);
- 		kfree(io_req);
- 	}
++/*
++ * Method called on naggy mock with no expectations will not fail, but will show
++ * a warning message
++ */
++static void mock_test_naggy_no_expectations_no_fail(struct test *test)
++{
++	struct mock_test_context *ctx = test->priv;
++	struct MOCK(test) *mock_test = ctx->mock_test;
++	struct test *trgt = mock_get_trgt(mock_test);
++	struct mock *mock = ctx->mock;
++	int param0 = 5, param1 = -5;
++	static const char * const two_param_types[] = {"int", "int"};
++	const void *two_params[] = {&param0, &param1};
++	struct mock_expectation *expectation;
++
++	mock_set_default_action(mock,
++				"test_printk",
++				test_printk,
++				test_int_return(trgt, -4));
++
++	expectation = TEST_EXPECT_CALL(fail(mock_get_ctrl(mock_test),
++					    test_any(test)));
++	expectation->min_calls_expected = 0;
++	expectation->max_calls_expected = 0;
++
++	TEST_EXPECT_CALL(mock_vprintk(
++			mock_get_ctrl(mock_test),
++			test_any(test),
++			test_va_format_cmp(test,
++					   test_str_contains(test,
++							     "Method was called with no expectations declared"),
++					   test_any(test))));
++
++	mock->do_expect(mock,
++			"test_printk",
++			test_printk,
++			two_param_types,
++			two_params,
++			ARRAY_SIZE(two_params));
++	mock_validate_expectations(mock);
++}
++
+ static void mock_test_mock_validate_expectations(struct test *test)
+ {
+ 	struct mock_test_context *ctx = test->priv;
+@@ -264,6 +306,7 @@ static struct test_case mock_test_cases[] = {
+ 	TEST_CASE(mock_test_failed_expect_call_fails_test),
+ 	TEST_CASE(mock_test_do_expect_default_return),
+ 	TEST_CASE(mock_test_mock_validate_expectations),
++	TEST_CASE(mock_test_naggy_no_expectations_no_fail),
+ 	{},
+ };
+ 
+diff --git a/kunit/test-stream-test.c b/kunit/test-stream-test.c
+new file mode 100644
+index 0000000000000..875b0db15878d
+--- /dev/null
++++ b/kunit/test-stream-test.c
+@@ -0,0 +1,150 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * KUnit test for struct test_stream.
++ *
++ * Copyright (C) 2018, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++
++#include <kunit/test.h>
++#include <kunit/mock.h>
++#include <kunit/test-stream.h>
++
++#include "test-mock.h"
++
++struct test_stream_test_context {
++	struct MOCK(test)	*mock_test;
++	struct test_stream	*stream;
++};
++
++static void test_stream_test_add(struct test *test)
++{
++	struct test_stream_test_context *ctx = test->priv;
++	struct MOCK(test) *mock_test = ctx->mock_test;
++	struct test_stream *stream = ctx->stream;
++
++	stream->add(stream, "Foo");
++	stream->add(stream, " %s", "bar");
++	stream->set_level(stream, KERN_INFO);
++
++	TEST_EXPECT_CALL(mock_vprintk(
++			mock_get_ctrl(mock_test),
++			test_any(test),
++			test_va_format_cmp(test,
++					   test_streq(test, "Foo bar"),
++					   test_any(test))));
++
++	stream->commit(stream);
++}
++
++static void test_stream_test_append(struct test *test)
++{
++	struct test_stream_test_context *ctx = test->priv;
++	struct MOCK(test) *mock_test = ctx->mock_test;
++	struct test_stream *stream = ctx->stream;
++	struct test_stream *other_stream;
++
++	stream->add(stream, "Foo");
++	stream->set_level(stream, KERN_INFO);
++	other_stream = test_new_stream(mock_get_trgt(mock_test));
++	other_stream->add(other_stream, " %s", "bar");
++
++	stream->append(stream, other_stream);
++	TEST_EXPECT_CALL(mock_vprintk(
++			mock_get_ctrl(mock_test),
++			test_any(test),
++			test_va_format_cmp(test,
++					   test_streq(test, "Foo bar"),
++					   test_any(test))));
++
++	stream->commit(stream);
++}
++
++static void test_stream_error_message_when_no_level_set(struct test *test)
++{
++	struct test_stream_test_context *ctx = test->priv;
++	struct MOCK(test) *mock_test = ctx->mock_test;
++	struct test_stream *stream = ctx->stream;
++	struct test_stream *other_stream;
++
++	stream->add(stream, "Foo bar");
++	other_stream = test_new_stream(mock_get_trgt(mock_test));
++
++	stream->append(stream, other_stream);
++	TEST_EXPECT_CALL(mock_vprintk(
++			mock_get_ctrl(mock_test),
++			test_any(test),
++			test_va_format_cmp(test,
++					   test_streq(test,
++						      "Stream was committed without a specified log level."),
++					   test_any(test))));
++	TEST_EXPECT_CALL(mock_vprintk(
++			mock_get_ctrl(mock_test),
++			test_any(test),
++			test_va_format_cmp(test,
++					   test_streq(test, "Foo bar"),
++					   test_any(test))));
++	stream->commit(stream);
++}
++
++static void test_stream_test_commits_any_uncommitted_when_cleanup(
++		struct test *test)
++{
++	struct test_stream_test_context *ctx = test->priv;
++	struct MOCK(test) *mock_test = ctx->mock_test;
++	struct test_stream *stream = ctx->stream;
++
++	stream->add(stream, "Hello World");
++	stream->set_level(stream, KERN_WARNING);
++
++	TEST_EXPECT_CALL(mock_vprintk(
++			mock_get_ctrl(mock_test),
++			test_any(test),
++			test_va_format_cmp(test,
++					   test_streq(test,
++						      "End of test case reached with uncommitted stream entries."),
++					   test_any(test))));
++	TEST_EXPECT_CALL(mock_vprintk(
++			mock_get_ctrl(mock_test),
++			test_any(test),
++			test_va_format_cmp(test,
++					   test_streq(test,
++						      "Hello World"),
++					   test_any(test))));
++	test_cleanup(mock_get_trgt(mock_test));
++}
++
++static int test_stream_test_init(struct test *test)
++{
++	struct test_stream_test_context *ctx;
++
++	ctx = test_kzalloc(test, sizeof(*ctx), GFP_KERNEL);
++	if (!ctx)
++		return -ENOMEM;
++	test->priv = ctx;
++
++	ctx->mock_test = CONSTRUCT_MOCK(test, test);
++	if (!ctx->mock_test)
++		return -EINVAL;
++
++	ctx->stream = test_new_stream(mock_get_trgt(ctx->mock_test));
++	if (!ctx->stream)
++		return -ENOMEM;
 +
 +	return 0;
- }
- 
- static blk_status_t ubd_queue_rq(struct blk_mq_hw_ctx *hctx,
- 				 const struct blk_mq_queue_data *bd)
- {
- 	struct request *req = bd->rq;
--	struct ubd *dev = hctx->queue->queuedata;
--	struct ubd_pdu *pdu = blk_mq_rq_to_pdu(req);
--	struct io_thread_req *io_req;
-+	struct bio *bio = req->bio;
-+	struct bvec_iter iter;
-+	struct bio_vec bvec;
-+	sector_t pos = blk_rq_pos(req);
- 
- 	blk_mq_start_request(req);
- 
--	pdu->rq_pos = blk_rq_pos(req);
--	pdu->start_sg = 0;
--	pdu->end_sg = blk_rq_map_sg(req->q, req, pdu->sg);
--
--	if (req_op(req) == REQ_OP_FLUSH) {
--		io_req = kmalloc(sizeof(struct io_thread_req), GFP_ATOMIC);
--		if (io_req == NULL) {
--			blk_mq_requeue_request(req, true);
--			goto done;
--		}
--		prepare_flush_request(req, io_req);
--		submit_request(io_req, dev);
--
--		goto done;
--	}
--
--	while (pdu->start_sg < pdu->end_sg) {
--		struct scatterlist *sg = &pdu->sg[pdu->start_sg];
--
--		io_req = kmalloc(sizeof(struct io_thread_req),
--				 GFP_ATOMIC);
--		if (io_req == NULL) {
--			blk_mq_requeue_request(req, true);
--			goto done;
-+	for_each_bio(bio) {
-+		bio_for_each_segment(bvec, bio, iter) {
-+			if (ubd_queue_one_vec(hctx, req, pos, &bvec) < 0) {
-+				blk_mq_requeue_request(req, true);
-+				return BLK_STS_OK;
-+			}
-+			pos += bvec.bv_len;
- 		}
--		prepare_request(req, io_req,
--				(unsigned long long)pdu->rq_pos << 9,
--				sg->offset, sg->length, sg_page(sg));
--
--		submit_request(io_req, dev);
--
--		pdu->rq_pos += sg->length >> 9;
--		pdu->start_sg++;
- 	}
- 
--done:
- 	return BLK_STS_OK;
- }
- 
--static int ubd_init_request(struct blk_mq_tag_set *set,
--			    struct request *req, unsigned int hctx_idx,
--			    unsigned int numa_node)
--{
--	struct ubd_pdu *pdu = blk_mq_rq_to_pdu(req);
--
--	sg_init_table(pdu->sg, MAX_SG);
--
--	return 0;
--}
--
- static int ubd_getgeo(struct block_device *bdev, struct hd_geometry *geo)
- {
- 	struct ubd *ubd_dev = bdev->bd_disk->private_data;
++}
++
++static struct test_case test_stream_test_cases[] = {
++	TEST_CASE(test_stream_test_add),
++	TEST_CASE(test_stream_test_append),
++	TEST_CASE(test_stream_test_commits_any_uncommitted_when_cleanup),
++	TEST_CASE(test_stream_error_message_when_no_level_set),
++	{},
++};
++
++static struct test_module test_stream_test_module = {
++	.name = "test-stream-test",
++	.init = test_stream_test_init,
++	.test_cases = test_stream_test_cases,
++};
++module_test(test_stream_test_module);
 -- 
-2.19.1
+2.19.1.331.ge82ca0e54c-goog
 
 
 _______________________________________________
