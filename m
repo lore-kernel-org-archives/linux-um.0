@@ -1,17 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-oi1-x24a.google.com ([2607:f8b0:4864:20::24a])
+Received: from mail-yb1-xb49.google.com ([2607:f8b0:4864:20::b49])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gF6av-0004LY-6N
- for linux-um@lists.infradead.org; Wed, 24 Oct 2018 00:00:32 +0000
-Received: by mail-oi1-x24a.google.com with SMTP id n186-v6so2222416oig.13
- for <linux-um@lists.infradead.org>; Tue, 23 Oct 2018 17:00:05 -0700 (PDT)
-Date: Tue, 23 Oct 2018 16:57:47 -0700
-In-Reply-To: <20181023235750.103146-1-brendanhiggins@google.com>
-Message-Id: <20181023235750.103146-12-brendanhiggins@google.com>
+ id 1gCZAh-0004NY-BM
+ for linux-um@lists.infradead.org; Tue, 16 Oct 2018 23:55:01 +0000
+Received: by mail-yb1-xb49.google.com with SMTP id g194-v6so13894003ybf.5
+ for <linux-um@lists.infradead.org>; Tue, 16 Oct 2018 16:54:31 -0700 (PDT)
+Date: Tue, 16 Oct 2018 16:51:07 -0700
+In-Reply-To: <20181016235120.138227-1-brendanhiggins@google.com>
+Message-Id: <20181016235120.138227-19-brendanhiggins@google.com>
 Mime-Version: 1.0
-References: <20181023235750.103146-1-brendanhiggins@google.com>
-Subject: [RFC v2 11/14] kunit: add KUnit wrapper script and simple output
- parser
+References: <20181016235120.138227-1-brendanhiggins@google.com>
+Subject: [RFC v1 18/31] kunit: mock: added parameter formatters
 From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -26,124 +25,345 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
-Cc: brakmo@fb.com, jdike@addtoit.com, dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org, robh@kernel.org, linux-nvdimm@lists.01.org, richard@nod.at, kieran.bingham@ideasonboard.com, Felix Guo <felixguoxiuping@gmail.com>, joel@jms.id.au, khilman@baylibre.com, Brendan Higgins <brendanhiggins@google.com>, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, joe@perches.com
+Cc: brakmo@fb.com, richard@nod.at, mpe@ellerman.id.au, Tim.Bird@sony.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, julia.lawall@lip6.fr, joel@jms.id.au, linux-kselftest@vger.kernel.org, khilman@baylibre.com, joe@perches.com, jdike@addtoit.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
 
-The KUnit wrapper script interfaces with the two modules
-(kunit_config.py and kunit_kernel.py) and provides a command line
-interface for running KUnit tests. This interface allows the caller to
-specify options like test timeouts. The script handles configuring,
-building and running the kernel and tests.
+Added parameter formatters which provide string formatting for
+parameters that have no matchers to be matched against.
 
-The output parser (kunit_parser.py) simply strips out all the output
-from the kernel that is outputted as part of it's initialization
-sequence. This ensures that only the output from KUnit is displayed
-on the screen.
-
-A full version of the output is written to test.log, or can be seen by
-passing --raw_output to the wrapper script.
-
-Signed-off-by: Felix Guo <felixguoxiuping@gmail.com>
 Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
 ---
- tools/testing/kunit/kunit.py        | 40 +++++++++++++++++++++++++++++
- tools/testing/kunit/kunit_kernel.py |  3 +--
- tools/testing/kunit/kunit_parser.py | 24 +++++++++++++++++
- 3 files changed, 65 insertions(+), 2 deletions(-)
- create mode 100755 tools/testing/kunit/kunit.py
- create mode 100644 tools/testing/kunit/kunit_parser.py
+ include/kunit/mock.h     |  49 +++++++++++++++
+ kunit/common-mocks.c     | 132 +++++++++++++++++++++++++++++++++++++++
+ kunit/mock.c             |  48 ++++++++++++--
+ kunit/test-stream-test.c |  28 +++++++++
+ 4 files changed, 252 insertions(+), 5 deletions(-)
 
-diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-new file mode 100755
-index 0000000000000..1356be404996b
---- /dev/null
-+++ b/tools/testing/kunit/kunit.py
-@@ -0,0 +1,40 @@
-+#!/usr/bin/python3
-+# SPDX-License-Identifier: GPL-2.0
-+
-+# A thin wrapper on top of the KUnit Kernel
-+
-+import argparse
-+import sys
-+import os
-+
-+import kunit_config
-+import kunit_kernel
-+import kunit_parser
-+
-+parser = argparse.ArgumentParser(description='Runs KUnit tests.')
-+
-+parser.add_argument('--raw_output', help='don\'t format output from kernel',
-+		    action='store_true')
-+
-+parser.add_argument('--timeout', help='maximum number of seconds to allow for '
-+		    'all tests to run. This does not include time taken to '
-+		    'build the tests.', type=int, default=300,
-+		    metavar='timeout')
-+
-+cli_args = parser.parse_args()
-+linux = kunit_kernel.LinuxSourceTree()
-+
-+success = linux.build_reconfig()
-+if not success:
-+	quit()
-+
-+print('Building KUnit Kernel ...')
-+success = linux.build_um_kernel()
-+if not success:
-+	quit()
-+
-+print('Starting KUnit Kernel ...')
-+if cli_args.raw_output:
-+	kunit_parser.raw_output(linux.run_kernel(timeout=cli_args.timeout))
-+else:
-+	kunit_parser.parse_run_tests(linux.run_kernel(timeout=cli_args.timeout))
-diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-index 87abaede50513..c1259b174f7d4 100644
---- a/tools/testing/kunit/kunit_kernel.py
-+++ b/tools/testing/kunit/kunit_kernel.py
-@@ -113,8 +113,7 @@ class LinuxSourceTree(object):
- 			return False
- 		return True
+diff --git a/include/kunit/mock.h b/include/kunit/mock.h
+index daf965cf954e6..4f85b39d628d0 100644
+--- a/include/kunit/mock.h
++++ b/include/kunit/mock.h
+@@ -123,6 +123,18 @@ struct mock_expectation *mock_add_matcher(struct mock *mock,
+ 					  struct mock_param_matcher *matchers[],
+ 					  int len);
  
--	def run_kernel(self, args=[]):
--		timeout = None
-+	def run_kernel(self, args=[], timeout=None):
- 		args.extend(['mem=256M'])
- 		process = self._ops.linux_bin(args, timeout)
- 		with open('test.log', 'w') as f:
-diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
-new file mode 100644
-index 0000000000000..1dff3adb73bd3
---- /dev/null
-+++ b/tools/testing/kunit/kunit_parser.py
-@@ -0,0 +1,24 @@
-+# SPDX-License-Identifier: GPL-2.0
++struct mock_param_formatter {
++	struct list_head node;
++	const char *type_name;
++	void (*format)(struct mock_param_formatter *formatter,
++		       struct test_stream *stream,
++		       const void *param);
++};
 +
-+import re
++void mock_register_formatter(struct mock_param_formatter *formatter);
 +
-+kunit_start_re = re.compile('console .* enabled')
-+kunit_end_re = re.compile('List of all partitions:')
++void mock_unregister_formatter(struct mock_param_formatter *formatter);
 +
-+def isolate_kunit_output(kernel_output):
-+	started = False
-+	for line in kernel_output:
-+		if kunit_start_re.match(line):
-+			started = True
-+		elif kunit_end_re.match(line):
-+			break
-+		elif started:
-+			yield line
+ #define MOCK(name) name##_mock
+ 
+ /**
+@@ -834,4 +846,41 @@ struct mock_param_matcher *test_struct_cmp(
+ 		const char *struct_name,
+ 		struct mock_struct_matcher_entry *entries);
+ 
++struct mock_struct_formatter_entry {
++	size_t member_offset;
++	struct mock_param_formatter *formatter;
++};
 +
-+def raw_output(kernel_output):
-+	for line in kernel_output:
-+		print(line)
++static inline void init_mock_struct_formatter_entry_internal(
++		struct mock_struct_formatter_entry *entry,
++		size_t offset,
++		struct mock_param_formatter *formatter)
++{
++	entry->member_offset = offset;
++	entry->formatter = formatter;
++}
 +
-+def parse_run_tests(kernel_output):
-+	for output in isolate_kunit_output(kernel_output):
-+		print(output)
++#define INIT_MOCK_STRUCT_FORMATTER_ENTRY(entry, type, member, formatter)       \
++		init_mock_struct_formatter_entry_internal(entry,	       \
++							  offsetof(type,       \
++								   member),    \
++								   formatter)
++
++static inline void INIT_MOCK_STRUCT_FORMATTER_ENTRY_LAST(
++		struct mock_struct_formatter_entry *entry)
++{
++	entry->formatter = NULL;
++}
++
++struct mock_param_formatter *mock_struct_formatter(
++		struct test *test,
++		const char *struct_name,
++		struct mock_struct_formatter_entry *entries);
++
++struct mock_param_formatter *mock_find_formatter(const char *type_name);
++
++#define FORMATTER_FROM_TYPE(type) mock_find_formatter(#type)
++
++extern struct mock_param_formatter unknown_formatter[];
++
+ #endif /* _KUNIT_MOCK_H */
+diff --git a/kunit/common-mocks.c b/kunit/common-mocks.c
+index ef88f8b8acda3..1c52522808cab 100644
+--- a/kunit/common-mocks.c
++++ b/kunit/common-mocks.c
+@@ -386,3 +386,135 @@ DEFINE_RETURN_ACTION_WITH_TYPENAME(longlong, long long);
+ DEFINE_RETURN_ACTION_WITH_TYPENAME(ulonglong, unsigned long long);
+ DEFINE_RETURN_ACTION_WITH_TYPENAME(ptr, void *);
+ 
++struct mock_param_integer_formatter {
++	struct mock_param_formatter formatter;
++	const char *fmt_str;
++};
++
++static void mock_format_integer(struct mock_param_formatter *pformatter,
++				struct test_stream *stream,
++				const void *pparam)
++{
++	struct mock_param_integer_formatter *formatter =
++			container_of(pformatter,
++				     struct mock_param_integer_formatter,
++				     formatter);
++	long long param = CONVERT_TO_ACTUAL_TYPE(long long, pparam);
++
++	stream->add(stream, formatter->fmt_str, param);
++}
++
++#define INTEGER_FORMATTER_INIT(type, fmt) { \
++	.formatter = { \
++		.type_name = #type, \
++		.format = mock_format_integer, \
++	}, \
++	.fmt_str = fmt, \
++}
++
++static struct mock_param_integer_formatter integer_formatters[] = {
++	INTEGER_FORMATTER_INIT(u8, "%PRIu8"),
++	INTEGER_FORMATTER_INIT(u16, "%PRIu16"),
++	INTEGER_FORMATTER_INIT(u32, "%PRIu32"),
++	INTEGER_FORMATTER_INIT(u64, "%PRIu64"),
++	INTEGER_FORMATTER_INIT(char, "%c"),
++	INTEGER_FORMATTER_INIT(unsigned char, "%hhu"),
++	INTEGER_FORMATTER_INIT(signed char, "%hhd"),
++	INTEGER_FORMATTER_INIT(short, "%hd"),
++	INTEGER_FORMATTER_INIT(unsigned short, "%hu"),
++	INTEGER_FORMATTER_INIT(int, "%d"),
++	INTEGER_FORMATTER_INIT(unsigned int, "%u"),
++	INTEGER_FORMATTER_INIT(long, "%ld"),
++	INTEGER_FORMATTER_INIT(unsigned long, "%lu"),
++	INTEGER_FORMATTER_INIT(long long, "%lld"),
++	INTEGER_FORMATTER_INIT(unsigned long long, "%llu"),
++	INTEGER_FORMATTER_INIT(void *, "%px"),
++};
++
++static void mock_format_string(struct mock_param_formatter *formatter,
++			       struct test_stream *stream,
++			       const void *pparam)
++{
++	const char *param = CONVERT_TO_ACTUAL_TYPE(const char *, pparam);
++
++	stream->add(stream, "%s", param);
++}
++
++static struct mock_param_formatter string_formatter = {
++	.type_name = "const char *",
++	.format = mock_format_string,
++};
++
++static void mock_format_unknown(struct mock_param_formatter *formatter,
++				struct test_stream *stream,
++				const void *param)
++{
++	stream->add(stream, "%pS", param);
++}
++
++struct mock_param_formatter unknown_formatter[] = {
++	{
++		.type_name = "<unknown>",
++		.format = mock_format_unknown,
++	},
++	{},
++};
++
++static int mock_register_all_formatters(void)
++{
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(integer_formatters); i++)
++		mock_register_formatter(&integer_formatters[i].formatter);
++
++	mock_register_formatter(&string_formatter);
++
++	return 0;
++}
++test_pure_initcall(mock_register_all_formatters);
++
++struct mock_struct_formatter {
++	struct mock_param_formatter formatter;
++	const char *type_name;
++	struct mock_struct_formatter_entry *entries;
++};
++
++static void mock_format_struct(struct mock_param_formatter *pformatter,
++			       struct test_stream *stream,
++			       const void *pparam)
++{
++	struct mock_struct_formatter *formatter =
++			container_of(pformatter,
++				     struct mock_struct_formatter,
++				     formatter);
++	struct mock_struct_formatter_entry *entry;
++	const char *param = CONVERT_TO_ACTUAL_TYPE(const char *, pparam);
++	const char *member_ptr;
++
++	stream->add(stream, "%s {", formatter->type_name);
++	for (entry = formatter->entries; entry->formatter; entry++) {
++		member_ptr = param + entry->member_offset;
++		entry->formatter->format(entry->formatter, stream, member_ptr);
++		stream->add(stream, ", ");
++	}
++	stream->add(stream, "}");
++}
++
++struct mock_param_formatter *mock_struct_formatter(
++		struct test *test,
++		const char *type_name,
++		struct mock_struct_formatter_entry *entries)
++{
++	struct mock_struct_formatter *formatter;
++
++	formatter = test_kzalloc(test, sizeof(*formatter), GFP_KERNEL);
++	if (!formatter)
++		return NULL;
++
++	formatter->formatter.type_name = type_name;
++	formatter->formatter.format = mock_format_struct;
++	formatter->type_name = type_name;
++	formatter->entries = entries;
++
++	return &formatter->formatter;
++}
+diff --git a/kunit/mock.c b/kunit/mock.c
+index 424c612de553b..9be6b2d3621c4 100644
+--- a/kunit/mock.c
++++ b/kunit/mock.c
+@@ -186,15 +186,53 @@ int mock_set_default_action(struct mock *mock,
+ 	return 0;
+ }
+ 
++struct mock_param_formatter_repo {
++	struct list_head formatters;
++};
++
++static struct mock_param_formatter_repo mock_param_formatter_repo = {
++	.formatters = LIST_HEAD_INIT(mock_param_formatter_repo.formatters),
++};
++
++void mock_register_formatter(struct mock_param_formatter *formatter)
++{
++	list_add_tail(&formatter->node, &mock_param_formatter_repo.formatters);
++}
++
++void mock_unregister_formatter(struct mock_param_formatter *formatter)
++{
++	list_del(&formatter->node);
++}
++
++struct mock_param_formatter *mock_find_formatter(const char *type_name)
++{
++	struct mock_param_formatter *formatter;
++
++	list_for_each_entry(formatter,
++			    &mock_param_formatter_repo.formatters,
++			    node) {
++		if (!strcmp(type_name, formatter->type_name))
++			return formatter;
++	}
++
++	return NULL;
++}
++
+ static void mock_format_param(struct test_stream *stream,
+ 			      const char *type_name,
+ 			      const void *param)
+ {
+-	/*
+-	 * Cannot find formatter, so just print the pointer of the
+-	 * symbol.
+-	 */
+-	stream->add(stream, "<%pS>", param);
++	struct mock_param_formatter *formatter;
++
++	formatter = mock_find_formatter(type_name);
++	if (formatter)
++		formatter->format(formatter, stream, param);
++	else
++		/*
++		 * Cannot find formatter, so just print the pointer of the
++		 * symbol.
++		 */
++		stream->add(stream, "<%pS>", param);
+ }
+ 
+ static void mock_add_method_declaration_to_stream(
+diff --git a/kunit/test-stream-test.c b/kunit/test-stream-test.c
+index 875b0db15878d..b335e09805a0f 100644
+--- a/kunit/test-stream-test.c
++++ b/kunit/test-stream-test.c
+@@ -116,6 +116,7 @@ static void test_stream_test_commits_any_uncommitted_when_cleanup(
+ 
+ static int test_stream_test_init(struct test *test)
+ {
++	struct mock_struct_formatter_entry *entries;
+ 	struct test_stream_test_context *ctx;
+ 
+ 	ctx = test_kzalloc(test, sizeof(*ctx), GFP_KERNEL);
+@@ -131,9 +132,35 @@ static int test_stream_test_init(struct test *test)
+ 	if (!ctx->stream)
+ 		return -ENOMEM;
+ 
++	entries = test_kzalloc(test, sizeof(*entries) * 3, GFP_KERNEL);
++	if (!entries) {
++		test_warn(test,
++			  "Could not allocate arg formatter for struct va_format");
++		return 0;
++	}
++
++	INIT_MOCK_STRUCT_FORMATTER_ENTRY(&entries[0],
++					 struct va_format,
++					 fmt,
++					 FORMATTER_FROM_TYPE(const char *));
++	INIT_MOCK_STRUCT_FORMATTER_ENTRY(&entries[1],
++					 struct va_format,
++					 va,
++					 unknown_formatter);
++	INIT_MOCK_STRUCT_FORMATTER_ENTRY_LAST(&entries[2]);
++
++	mock_register_formatter(mock_struct_formatter(test,
++						      "struct va_format *",
++						      entries));
++
+ 	return 0;
+ }
+ 
++static void test_stream_test_exit(struct test *test)
++{
++	mock_unregister_formatter(mock_find_formatter("struct va_format *"));
++}
++
+ static struct test_case test_stream_test_cases[] = {
+ 	TEST_CASE(test_stream_test_add),
+ 	TEST_CASE(test_stream_test_append),
+@@ -145,6 +172,7 @@ static struct test_case test_stream_test_cases[] = {
+ static struct test_module test_stream_test_module = {
+ 	.name = "test-stream-test",
+ 	.init = test_stream_test_init,
++	.exit = test_stream_test_exit,
+ 	.test_cases = test_stream_test_cases,
+ };
+ module_test(test_stream_test_module);
 -- 
-2.19.1.568.g152ad8e336-goog
+2.19.1.331.ge82ca0e54c-goog
 
 
 _______________________________________________
