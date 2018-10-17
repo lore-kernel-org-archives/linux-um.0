@@ -1,78 +1,59 @@
-Return-Path: <kirill@shutemov.name>
-Date: Wed, 24 Oct 2018 13:12:56 +0300
-From: "Kirill A. Shutemov" <kirill@shutemov.name>
+Return-Path: <vbabka@suse.cz>
 Subject: Re: [PATCH 2/4] mm: speed up mremap by 500x on large regions (v2)
-Message-ID: <20181024101255.it4lptrjogalxbey@kshutemo-mobl1>
 References: <20181013013200.206928-1-joel@joelfernandes.org>
  <20181013013200.206928-3-joel@joelfernandes.org>
+ <20181015094209.GA31999@infradead.org>
+ <20181015223303.GA164293@joelaf.mtv.corp.google.com>
+ <35b9c85a-b366-9ca3-5647-c2568c811961@suse.cz>
+ <20181016194313.GA247930@joelaf.mtv.corp.google.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <80a7d851-51ca-2d81-1273-393d4f701bc4@suse.cz>
+Date: Wed, 17 Oct 2018 09:38:16 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20181013013200.206928-3-joel@joelfernandes.org>
-To: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc: linux-kernel@vger.kernel.org, kernel-team@android.com, minchan@kernel.org, pantin@google.com, hughd@google.com, lokeshgidra@google.com, dancol@google.com, mhocko@kernel.org, akpm@linux-foundation.org, Andrey Ryabinin <aryabinin@virtuozzo.com>, Andy Lutomirski <luto@kernel.org>, anton.ivanov@kot-begemot.co.uk, Borislav Petkov <bp@alien8.de>, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, Dave Hansen <dave.hansen@linux.intel.com>, "David S. Miller" <davem@davemloft.net>, elfring@users.sourceforge.net, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@redhat.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Jeff Dike <jdike@addtoit.com>, Jonas Bonn <jonas@southpole.se>, Julia Lawall <Julia.Lawall@lip6.fr>, kasan-dev@googlegroups.com, kvmarm@lists.cs.columbia.edu, Ley Foon Tan <lftan@altera.com>, linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, Max Filippov <jcmvbkbc@gmail.com>, nios2-dev@lists.rocketboards.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Sam Creasey <sammy@sammy.net>, sparclinux@vger.kernel.org, Stafford Horne <shorne@gmail.com>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, Will Deacon <will.deacon@arm.com>, "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>
+In-Reply-To: <20181016194313.GA247930@joelaf.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+To: Joel Fernandes <joel@joelfernandes.org>
+Cc: Christoph Hellwig <hch@infradead.org>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, Rich Felker <dalias@libc.org>, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Catalin Marinas <catalin.marinas@arm.com>, Dave Hansen <dave.hansen@linux.intel.com>, Will Deacon <will.deacon@arm.com>, mhocko@kernel.org, linux-mm@kvack.org, lokeshgidra@google.com, linux-riscv@lists.infradead.org, elfring@users.sourceforge.net, Jonas Bonn <jonas@southpole.se>, kvmarm@lists.cs.columbia.edu, dancol@google.com, Yoshinori Sato <ysato@users.sourceforge.jp>, sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-hexagon@vger.kernel.org, Helge Deller <deller@gmx.de>, "maintainer:X86 ARCHITECTURE 32-BIT AND 64-BIT" <x86@kernel.org>, hughd@google.com, "James E.J. Bottomley" <jejb@parisc-linux.org>, kasan-dev@googlegroups.com, anton.ivanov@kot-begemot.co.uk, Ingo Molnar <mingo@redhat.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Andrey Ryabinin <aryabinin@virtuozzo.com>, linux-snps-arc@lists.infradead.org, kernel-team@android.com, Sam Creasey <sammy@sammy.net>, Fenghua Yu <fenghua.yu@intel.com>, linux-s390@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Julia Lawall <Julia.Lawall@lip6.fr>, linux-m68k@lists.linux-m68k.org, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, nios2-dev@lists.rocketboards.org, kirill@shutemov.name, Stafford Horne <shorne@gmail.com>, Guan Xuetao <gxt@pku.edu.cn>, Chris Zankel <chris@zankel.net>, Tony Luck <tony.luck@intel.com>, Richard Weinberger <richard@nod.at>, linux-parisc@vger.kernel.org, pantin@google.com, Max Filippov <jcmvbkbc@gmail.com>, minchan@kernel.org, Thomas Gleixner <tglx@linutronix.de>, linux-alpha@vger.kernel.org, Ley Foon Tan <lftan@altera.com>, akpm@linux-foundation.org, linuxppc-dev@lists.ozlabs.org, "David S. Miller" <davem@davemloft.net>
 List-ID: <linux-um.lists.infradead.org>
 
-On Fri, Oct 12, 2018 at 06:31:58PM -0700, Joel Fernandes (Google) wrote:
-> diff --git a/mm/mremap.c b/mm/mremap.c
-> index 9e68a02a52b1..2fd163cff406 100644
-> --- a/mm/mremap.c
-> +++ b/mm/mremap.c
-> @@ -191,6 +191,54 @@ static void move_ptes(struct vm_area_struct *vma, pmd_t *old_pmd,
->  		drop_rmap_locks(vma);
->  }
->  
-> +static bool move_normal_pmd(struct vm_area_struct *vma, unsigned long old_addr,
-> +		  unsigned long new_addr, unsigned long old_end,
-> +		  pmd_t *old_pmd, pmd_t *new_pmd, bool *need_flush)
-> +{
-> +	spinlock_t *old_ptl, *new_ptl;
-> +	struct mm_struct *mm = vma->vm_mm;
-> +
-> +	if ((old_addr & ~PMD_MASK) || (new_addr & ~PMD_MASK)
-> +	    || old_end - old_addr < PMD_SIZE)
-> +		return false;
-> +
-> +	/*
-> +	 * The destination pmd shouldn't be established, free_pgtables()
-> +	 * should have release it.
-> +	 */
-> +	if (WARN_ON(!pmd_none(*new_pmd)))
-> +		return false;
-> +
-> +	/*
-> +	 * We don't have to worry about the ordering of src and dst
-> +	 * ptlocks because exclusive mmap_sem prevents deadlock.
-> +	 */
-> +	old_ptl = pmd_lock(vma->vm_mm, old_pmd);
-> +	if (old_ptl) {
+On 10/16/18 9:43 PM, Joel Fernandes wrote:
+> On Tue, Oct 16, 2018 at 01:29:52PM +0200, Vlastimil Babka wrote:
+>> On 10/16/18 12:33 AM, Joel Fernandes wrote:
+>>> On Mon, Oct 15, 2018 at 02:42:09AM -0700, Christoph Hellwig wrote:
+>>>> On Fri, Oct 12, 2018 at 06:31:58PM -0700, Joel Fernandes (Google) wrote:
+>>>>> Android needs to mremap large regions of memory during memory management
+>>>>> related operations.
+>>>>
+>>>> Just curious: why?
+>>>
+>>> In Android we have a requirement of moving a large (up to a GB now, but may
+>>> grow bigger in future) memory range from one location to another.
+>>
+>> I think Christoph's "why?" was about the requirement, not why it hurts
+>> applications. I admit I'm now also curious :)
+> 
+> This issue was discovered when we wanted to be able to move the physical
+> pages of a memory range to another location quickly so that, after the
+> application threads are resumed, UFFDIO_REGISTER_MODE_MISSING userfaultfd
+> faults can be received on the original memory range. The actual operations
+> performed on the memory range are beyond the scope of this discussion. The
+> user threads continue to refer to the old address which will now fault. The
+> reason we want retain the old memory range and receives faults there is to
+> avoid the need to fix the addresses all over the address space of the threads
+> after we finish with performing operations on them in the fault handlers, so
+> we mremap it and receive faults at the old addresses.
+> 
+> Does that answer your question?
 
-How can it ever be false?
+Yes, interesting, thanks!
 
-> +		pmd_t pmd;
-> +
-> +		new_ptl = pmd_lockptr(mm, new_pmd);
-> +		if (new_ptl != old_ptl)
-> +			spin_lock_nested(new_ptl, SINGLE_DEPTH_NESTING);
-> +
-> +		/* Clear the pmd */
-> +		pmd = *old_pmd;
-> +		pmd_clear(old_pmd);
-> +
-> +		VM_BUG_ON(!pmd_none(*new_pmd));
-> +
-> +		/* Set the new pmd */
-> +		set_pmd_at(mm, new_addr, new_pmd, pmd);
-> +		if (new_ptl != old_ptl)
-> +			spin_unlock(new_ptl);
-> +		spin_unlock(old_ptl);
-> +
-> +		*need_flush = true;
-> +		return true;
-> +	}
-> +	return false;
-> +}
-> +
--- 
- Kirill A. Shutemov
+Vlastimil
+
+> thanks,
+> 
+> - Joel
+> 
+
 
