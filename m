@@ -1,50 +1,100 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: <Tim.Bird@sony.com>
-Subject: RE: [RFC v1 00/31] kunit: Introducing KUnit, the Linux kernel unit
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-ed1-x543.google.com ([2a00:1450:4864:20::543])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gChoh-0000Cl-0s
+ for linux-um@lists.infradead.org; Wed, 17 Oct 2018 09:09:46 +0000
+Received: by mail-ed1-x543.google.com with SMTP id g32-v6so24079962edg.13
+ for <linux-um@lists.infradead.org>; Wed, 17 Oct 2018 02:08:23 -0700 (PDT)
+Date: Wed, 17 Oct 2018 11:08:19 +0200
+From: Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [RFC v1 00/31] kunit: Introducing KUnit, the Linux kernel unit
  testing framework
-Date: Wed, 17 Oct 2018 17:49:24 +0000
-Message-ID: <ECADFF3FD767C149AD96A924E7EA6EAF805242EE@USCULXMSG01.am.sony.com>
+Message-ID: <20181017090819.GM31561@phenom.ffwll.local>
 References: <20181016235120.138227-1-brendanhiggins@google.com>
-In-Reply-To: <20181016235120.138227-1-brendanhiggins@google.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Sender: linux-kernel-owner@vger.kernel.org
-To: brendanhiggins@google.com, gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
-Cc: joel@jms.id.au, mpe@ellerman.id.au, joe@perches.com, brakmo@fb.com, rostedt@goodmis.org, khilman@baylibre.com, julia.lawall@lip6.fr, linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org, jdike@addtoit.com, richard@nod.at, linux-um@lists.infradead.org
-List-ID: <linux-um.lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <20181016235120.138227-1-brendanhiggins@google.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Brendan Higgins <brendanhiggins@google.com>
+Cc: brakmo@fb.com, IGT development <igt-dev@lists.freedesktop.org>, richard@nod.at, Intel Graphics Development <intel-gfx@lists.freedesktop.org>, DRI Development <dri-devel@lists.freedesktop.org>, mpe@ellerman.id.au, Tim.Bird@sony.com, keescook@google.com, jdike@addtoit.com, linux-kernel@vger.kernel.org, rostedt@goodmis.org, linux-um@lists.infradead.org, julia.lawall@lip6.fr, mcgrof@kernel.org, joel@jms.id.au, linux-kselftest@vger.kernel.org, gregkh@linuxfoundation.org, joe@perches.com, shuah@kernel.org, khilman@baylibre.com, kunit-dev@googlegroups.com
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBCcmVuZGFuIEhpZ2dpbnMNCj4g
-DQo+IFRoaXMgcGF0Y2ggc2V0IHByb3Bvc2VzIEtVbml0LCBhIGxpZ2h0d2VpZ2h0IHVuaXQgdGVz
-dGluZyBhbmQgbW9ja2luZw0KPiBmcmFtZXdvcmsgZm9yIHRoZSBMaW51eCBrZXJuZWwuDQoNCkkn
-bSBpbnRlcmVzdGVkIGluIHRoaXMsIGFuZCB0aGluayB0aGUga2VybmVsIG1pZ2h0IGJlbmVmaXQg
-ZnJvbSB0aGlzLA0KYnV0IEkgaGF2ZSBsb3RzIG9mIHF1ZXN0aW9ucy4NCg0KPiBVbmxpa2UgQXV0
-b3Rlc3QgYW5kIGtzZWxmdGVzdCwgS1VuaXQgaXMgYSB0cnVlIHVuaXQgdGVzdGluZyBmcmFtZXdv
-cms7DQo+IGl0IGRvZXMgbm90IHJlcXVpcmUgaW5zdGFsbGluZyB0aGUga2VybmVsIG9uIGEgdGVz
-dCBtYWNoaW5lIG9yIGluIGEgVk0NCj4gYW5kIGRvZXMgbm90IHJlcXVpcmUgdGVzdHMgdG8gYmUg
-d3JpdHRlbiBpbiB1c2Vyc3BhY2UgcnVubmluZyBvbiBhIGhvc3QNCj4ga2VybmVsLg0KDQoNClRo
-aXMgaXMgc3RhdGVkIGhlcmUgYW5kIGEgZmV3IHBsYWNlcyBpbiB0aGUgZG9jdW1lbnRhdGlvbi4g
-IEp1c3QgdG8gY2xhcmlmeSwNCktVbml0IHdvcmtzIGJ5IGNvbXBpbGluZyB0aGUgdW5pdCB1bmRl
-ciB0ZXN0LCBhbG9uZyB3aXRoIHRoZSB0ZXN0IGNvZGUNCml0c2VsZiwgYW5kIHRoZW4gcnVucyBp
-dCBvbiB0aGUgbWFjaGluZSB3aGVyZSB0aGUgY29tcGlsYXRpb24gdG9vaw0KcGxhY2U/ICBJcyB0
-aGlzIHJpZ2h0PyAgSG93IGRvZXMgY3Jvc3MtY29tcGlsaW5nIGVudGVyIGludG8gdGhlIGVxdWF0
-aW9uPw0KSWYgbm90IHdoYXQgSSBkZXNjcmliZWQsIHRoZW4gd2hhdCBleGFjdGx5IGlzIGhhcHBl
-bmluZz8NCg0KU29ycnkgLSBJIGhhdmVuJ3QgaGFkIHRpbWUgdG8gbG9vayB0aHJvdWdoIHRoZSBw
-YXRjaGVzIGluIGRldGFpbC4NCg0KQW5vdGhlciBpc3N1ZSBpcywgd2hhdCByZXF1aXJlbWVudHMg
-ZG9lcyB0aGlzIHBsYWNlIG9uIHRoZSB0ZXN0ZWQNCmNvZGU/ICBJcyBleHRyYSBpbnN0cnVtZW50
-YXRpb24gcmVxdWlyZWQ/ICBJIGRpZG4ndCBzZWUgYW55LCBidXQgSQ0KZGlkbid0IGxvb2sgZXho
-YXVzdGl2ZWx5IGF0IHRoZSBjb2RlLg0KDQpBcmUgYWxsIHVuaXQgdGVzdHMgc3RvcmVkIHNlcGFy
-YXRlbHkgZnJvbSB0aGUgdW5pdC11bmRlci10ZXN0LCBvciBhcmUNCnRoZXkgZXhwZWN0ZWQgdG8g
-YmUgaW4gdGhlIHNhbWUgZGlyZWN0b3J5PyAgV2hvIGlzIGV4cGVjdGVkIHRvDQptYWludGFpbiB0
-aGUgdW5pdCB0ZXN0cz8gIEhvdyBvZnRlbiBhcmUgdGhleSBleHBlY3RlZCB0byBjaGFuZ2U/DQoo
-V291bGQgaXQgYmUgZXZlcnkgdGltZSB0aGUgdW5pdC11bmRlci10ZXN0IGNoYW5nZWQ/KQ0KDQpE
-b2VzIHRoZSB0ZXN0IGNvZGUgcmVxdWlyZSB0aGUgc2FtZSBsZXZlbCBvZiBleHBlcnRpc2UgdG8g
-d3JpdGUNCmFuZCBtYWludGFpbiBhcyB0aGUgdW5pdC11bmRlci10ZXN0IGNvZGU/ICBUaGF0IGlz
-LCBjb3VsZCB0aGlzIGJlDQphIG5ldyBvcHBvcnR1bml0eSBmb3IgYWRkaXRpb25hbCBkZXZlbG9w
-ZXJzIChlc3BlY2lhbGx5IHJlbGF0aXZlDQpuZXdjb21lcnMpIHRvIGFkZCB2YWx1ZSB0byB0aGUg
-a2VybmVsIGJ5IHdyaXRpbmcgYW5kIG1haW50YWluaW5nDQp0ZXN0IGNvZGUsIG9yIGRvZXMgdGhp
-cyBhZGQgdG8gdGhlIGFscmVhZHkgbGFyZ2UgYnVyZGVuIG9mIGNvZGUNCm1haW50ZW5hbmNlIGZv
-ciBvdXIgZXhpc3RpbmcgbWFpbnRhaW5lcnMuDQoNClRoYW5rcywNCiAtLSBUaW0NCg0KLi4uDQoN
-Cg==
+On Tue, Oct 16, 2018 at 04:50:49PM -0700, Brendan Higgins wrote:
+> This patch set proposes KUnit, a lightweight unit testing and mocking
+> framework for the Linux kernel.
+> 
+> Unlike Autotest and kselftest, KUnit is a true unit testing framework;
+> it does not require installing the kernel on a test machine or in a VM
+> and does not require tests to be written in userspace running on a host
+> kernel. Additionally, KUnit is fast: From invocation to completion KUnit
+> can run several dozen tests in under a second. Currently, the entire
+> KUnit test suite for KUnit runs in under a second from the initial
+> invocation (build time excluded).
+> 
+> KUnit is heavily inspired by JUnit, Python's unittest.mock, and
+> Googletest/Googlemock for C++. KUnit provides facilities for defining
+> unit test cases, grouping related test cases into test suites, providing
+> common infrastructure for running tests, mocking, spying, and much more.
+> 
+> ## What's so special about unit testing?
+> 
+> A unit test is supposed to test a single unit of code in isolation,
+> hence the name. There should be no dependencies outside the control of
+> the test; this means no external dependencies, which makes tests orders
+> of magnitudes faster. Likewise, since there are no external dependencies,
+> there are no hoops to jump through to run the tests. Additionally, this
+> makes unit tests deterministic: a failing unit test always indicates a
+> problem. Finally, because unit tests necessarily have finer granularity,
+> they are able to test all code paths easily solving the classic problem
+> of difficulty in exercising error handling code.
+> 
+> ## Is KUnit trying to replace other testing frameworks for the kernel?
+> 
+> No. Most existing tests for the Linux kernel are end-to-end tests, which
+> have their place. A well tested system has lots of unit tests, a
+> reasonable number of integration tests, and some end-to-end tests. KUnit
+> is just trying to address the unit test space which is currently not
+> being addressed.
+> 
+> ## More information on KUnit
+> 
+> There is a bunch of documentation near the end of this patch set that
+> describes how to use KUnit and best practices for writing unit tests.
+> For convenience I am hosting the compiled docs here:
+> https://google.github.io/kunit-docs/third_party/kernel/docs/
+
+We've started our own unit test framework (very early, and not any real
+infrastructure yet) under drivers/gpu/drm/selftests. They're all meant to
+test functions and small pieces of functionality of our libraries in
+isolation, without any need for a real (or virtual) gpu driver. It kinda
+integrates both with kselftests and with our graphics test suite, but
+directly running tests using UML as part of the build process sounds much,
+much better. Having proper and standardized infrastructure for kernel unit
+tests sounds terrific.
+
+In other words: I want.
+
+Please keep dri-devel@lists.freedesktop.org in the loop on future
+versions.
+
+Cheers, Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
