@@ -1,58 +1,47 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from verein.lst.de ([213.95.11.211] helo=newverein.lst.de)
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gCfEc-0006uH-Pm
- for linux-um@lists.infradead.org; Wed, 17 Oct 2018 06:23:11 +0000
-Date: Wed, 17 Oct 2018 08:21:51 +0200
+Return-Path: <linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org>
+Date: Wed, 17 Oct 2018 08:14:18 +0200
 From: Christoph Hellwig <hch@lst.de>
 Subject: Re: [PATCH, RFC] ubd: remove use of blk_rq_map_sg
-Message-ID: <20181017062150.GA22028@lst.de>
-References: <20181015065637.1860-1-hch@lst.de> <2132215.oDDApMmxLa@blindfold>
- <4bd66e34-acc5-053f-888e-d4e58c3cf440@kernel.dk>
- <5155064.LnyfiXsD0j@blindfold>
- <da877cdc-7873-30fd-fa33-72cd48419d46@kernel.dk>
+Message-ID: <20181017061418.GA21790@lst.de>
+References: <20181015065637.1860-1-hch@lst.de>
+ <CAFLxGvwx4TPTHRY91LMBdd7h4pgCjw2zY7Q67r3CRHTqfzSB1w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <da877cdc-7873-30fd-fa33-72cd48419d46@kernel.dk>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+In-Reply-To: <CAFLxGvwx4TPTHRY91LMBdd7h4pgCjw2zY7Q67r3CRHTqfzSB1w@mail.gmail.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org, linux-block@vger.kernel.org, dwalter@google.com, Christoph Hellwig <hch@lst.de>, anton.ivanov@cambridgegreys.com
+Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
+Errors-To: linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org, linux-block@vger.kernel.org, "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>, Christoph Hellwig <hch@lst.de>
+List-ID: <linux-um.lists.infradead.org>
 
-On Tue, Oct 16, 2018 at 08:26:31AM -0600, Jens Axboe wrote:
-> > Yes. Shall I send a patch with your suggestion or will you?
+On Wed, Oct 17, 2018 at 12:43:14AM +0200, Richard Weinberger wrote:
+> On Mon, Oct 15, 2018 at 8:56 AM Christoph Hellwig <hch@lst.de> wrote:
+> >
+> > There is no good reason to create a scatterlist in the ubd driver,
+> > it can just iterate the request directly.
 > 
-> Christoph should just fold it in, the bug only exists after his
-> change to it.
+> BTW: Does it make sense to drop blk_rq_map_sq from()
+> drivers/mtd/ubi/block.c too?
+> If so we have to allocate a temporary structure for the worker thread
+> for each segment, just like
+> UBD does already. I'm not sure if that is cheaper than blk_rq_map_sq().
 
-Sorry, I missed what suggestion we had.  Is that the patch form Jens
-earlier?
+UBI should not need a new per-thread structure, mostly because there
+are no threads involved.  The scatterlist support in UBI only seems
+to exists for ubiblock, but it goes down a few layers.  In the end
+all that could switch to a iov_iter-like setup and clean things up
+a lot, but it would be a fair amount of work.
 
-> 
-> > I have one more question, in your first conversion you set queue_depth to 2.
-> > How does one know this value?
-> > My conversion has 64, which is more or less an educated guess... ;)
-> 
-> 64 is most likely just fine. Some drivers rely on having 1 in flight and
-> it's easier to manage to just let blk-mq take care of that. Outside of that,
-> there aren't any magic values. We should probably just use BLKDEV_MAX_RQ
-> for ones that don't have a specific hw limit or need.
-
-Is a queue depth > 1 actually safe for ubd?  There are some odd global
-variables tracking struct io_thread_req.
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
