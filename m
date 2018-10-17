@@ -1,57 +1,42 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-oi1-x244.google.com ([2607:f8b0:4864:20::244])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gCt4N-0007yf-0y
- for linux-um@lists.infradead.org; Wed, 17 Oct 2018 21:09:32 +0000
-Received: by mail-oi1-x244.google.com with SMTP id v69-v6so22308520oif.1
- for <linux-um@lists.infradead.org>; Wed, 17 Oct 2018 14:09:19 -0700 (PDT)
-MIME-Version: 1.0
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: <Tim.Bird@sony.com>
+Subject: RE: [RFC v1 06/31] arch: um: enabled running kunit from User Mode
+ Linux
+Date: Wed, 17 Oct 2018 17:52:08 +0000
+Message-ID: <ECADFF3FD767C149AD96A924E7EA6EAF8052436B@USCULXMSG01.am.sony.com>
 References: <20181016235120.138227-1-brendanhiggins@google.com>
  <20181016235120.138227-7-brendanhiggins@google.com>
  <f0d64a0a-7914-f390-c0b5-dc7626b45476@ideasonboard.com>
- <ECADFF3FD767C149AD96A924E7EA6EAF8052436B@USCULXMSG01.am.sony.com>
-In-Reply-To: <ECADFF3FD767C149AD96A924E7EA6EAF8052436B@USCULXMSG01.am.sony.com>
-From: Brendan Higgins <brendanhiggins@google.com>
-Date: Wed, 17 Oct 2018 14:09:06 -0700
-Message-ID: <CAFd5g45owvjnVh633_kqf9DKeWQDYdGNi9j1crNZC3k02r=v1A@mail.gmail.com>
-Subject: Re: [RFC v1 06/31] arch: um: enabled running kunit from User Mode
- Linux
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Tim.Bird@sony.com
-Cc: brakmo@fb.com, richard@nod.at, mpe@ellerman.id.au, Greg KH <gregkh@linuxfoundation.org>, jdike@addtoit.com, linux-um@lists.infradead.org, kieran.bingham@ideasonboard.com, rostedt@goodmis.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Julia Lawall <julia.lawall@lip6.fr>, mcgrof@kernel.org, Joel Stanley <joel@jms.id.au>, linux-kselftest@vger.kernel.org, Kees Cook <keescook@google.com>, joe@perches.com, shuah@kernel.org, khilman@baylibre.com, kunit-dev@googlegroups.com
+In-Reply-To: <f0d64a0a-7914-f390-c0b5-dc7626b45476@ideasonboard.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Sender: linux-kernel-owner@vger.kernel.org
+To: kieran.bingham@ideasonboard.com, brendanhiggins@google.com, gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
+Cc: joel@jms.id.au, mpe@ellerman.id.au, joe@perches.com, brakmo@fb.com, rostedt@goodmis.org, khilman@baylibre.com, julia.lawall@lip6.fr, linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org, jdike@addtoit.com, richard@nod.at, linux-um@lists.infradead.org
+List-ID: <linux-um.lists.infradead.org>
 
-On Wed, Oct 17, 2018 at 10:52 AM <Tim.Bird@sony.com> wrote:
-> >
-> > It might be of interest to the automated testing mailing list too ? (Tim?)
->
->  I think this is interesting to groups doing automated testing of the kernel
-> (including myself) as another set of tests to run.  Right now I don't see it
-> as having any special attributes related to automation.  But I could be wrong.
-
-Pardon my ignorance, but by automated testing you mean a CI server
-with presubmits, nightlys, and things of the sort?
-
-If that's the case, KUnit could be helpful because of the low resource
-cost in running them and the speed at which they run. There are some
-other features we would like to add which would help with that goal as
-well like test isolation. We actually have a presubmit server
-internally for running KUnit tests that can usually respond to patches
-with test results within a couple minutes. Would something like that
-be interesting?
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogS2llcmFuIEJpbmdoYW0g
+DQo+IA0KPiBIaSBCcmVuZGFuLA0KPiANCj4gSSB2ZXJ5IGV4Y2l0ZWRseSBqdW1wZWQgb24gdGhl
+c2UgcGF0Y2hlcyB0byB0cnkgdGhlbSBvdXQsIGFzIHRoaXMgaXMNCj4gZXNzZW50aWFsbHkgc29t
+ZXRoaW5nIEkgd2FzIHRyeWluZyB0byBkbyBhIGZldyB3ZWVrcyBiYWNrLg0KPiANCj4gT24gMTcv
+MTAvMTggMDA6NTAsIEJyZW5kYW4gSGlnZ2lucyB3cm90ZToNCj4gPiBNYWtlcyBtaW5pbXVtIG51
+bWJlciBvZiBjaGFuZ2VzIG91dHNpZGUgb2YgdGhlIEtVbml0IGRpcmVjdG9yaWVzIGZvcg0KPiA+
+IEtVbml0IHRvIGJ1aWxkIGFuZCBydW4gdXNpbmcgVU1MLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1i
+eTogQnJlbmRhbiBIaWdnaW5zIDxicmVuZGFuaGlnZ2luc0Bnb29nbGUuY29tPg0KPiA+IC0tLQ0K
+PiA+ICBNYWtlZmlsZSAgICAgICAgICAgICB8IDIgKy0NCj4gPiAgYXJjaC91bS9LY29uZmlnLnJl
+c3QgfCAzICsrKw0KPiANCj4gQnV0IHRoaXMgZmlsZSBpc24ndCBwcmVzZW50IG9uIHY0LjE5LXJj
+OA0KPiANCj4gSXQgbG9va3MgbGlrZSB0aGUgZmlsZSBpcyByZW1vdmVkIGF0IGYxNjM5NzdkMjFh
+MiAoInVtOiBjbGVhbnVwIEtjb25maWcNCj4gZmlsZXMiKQ0KPiANCj4gV2hhdCB2ZXJzaW9uIGhh
+dmUgeW91IGN1cnJlbnRseSBiYXNlZCB0aGVzZSBwYXRjaGVzIG9uPw0KPiBEbyB5b3UgZXhwZWN0
+IHRvIGtlZXAgYSBicmFuY2ggc29tZXdoZXJlIHRoYXQncyBlYXN5IHRvIHB1bGwgaW4/DQo+IA0K
+PiBQbGVhc2UgYWRkIG1lIHRvIHRoZSBDQyBsaXN0IGFzIGFuIGludGVyZXN0ZWQgcGFydHkgb24g
+bGF0ZXIgdmVyc2lvbnMgOi0pDQo+IA0KPiBJdCBtaWdodCBiZSBvZiBpbnRlcmVzdCB0byB0aGUg
+YXV0b21hdGVkIHRlc3RpbmcgbWFpbGluZyBsaXN0IHRvbyA/IChUaW0/KQ0KDQogSSB0aGluayB0
+aGlzIGlzIGludGVyZXN0aW5nIHRvIGdyb3VwcyBkb2luZyBhdXRvbWF0ZWQgdGVzdGluZyBvZiB0
+aGUga2VybmVsDQooaW5jbHVkaW5nIG15c2VsZikgYXMgYW5vdGhlciBzZXQgb2YgdGVzdHMgdG8g
+cnVuLiAgUmlnaHQgbm93IEkgZG9uJ3Qgc2VlIGl0DQphcyBoYXZpbmcgYW55IHNwZWNpYWwgYXR0
+cmlidXRlcyByZWxhdGVkIHRvIGF1dG9tYXRpb24uICBCdXQgSSBjb3VsZCBiZSB3cm9uZy4NCiAt
+LSBUaW0NCg0K
 
