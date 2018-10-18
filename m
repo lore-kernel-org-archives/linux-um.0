@@ -1,70 +1,115 @@
-Return-Path: <f.fainelli@gmail.com>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Subject: [PATCH 0/2] arm64: Cut rebuild time when changing CONFIG_BLK_DEV_INITRD
-Date: Tue, 23 Oct 2018 16:40:41 -0700
-Message-Id: <20181023234044.1138-1-f.fainelli@gmail.com>
-To: linux-kernel@vger.kernel.org
-Cc: arnd@arndb.de, linux-arm-kernel@lists.infradead.org, Florian Fainelli <f.fainelli@gmail.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Mark Salter <msalter@redhat.com>, Aurelien Jacquiot <jacquiot.aurelien@gmail.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, James Hogan <jhogan@kernel.org>, Greentime Hu <green.hu@gmail.com>, Vincent Chen <deanbo422@gmail.com>, Ley Foon Tan <lftan@altera.com>, Jonas Bonn <jonas@southpole.se>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Palmer Dabbelt <palmer@sifive.com>, Albert Ou <aou@eecs.berkeley.edu>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Rich Felker <dalias@libc.org>, "David S. Miller" <davem@davemloft.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Guan Xuetao <gxt@pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>, "maintainer:X86 ARCHITECTURE 32-BIT AND 64-BIT" <x86@kernel.org>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Stephen Boyd <sboyd@codeaurora.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Kate Stewart <kstewart@linuxfoundation.org>, Philippe Ombredanne <pombredanne@nexb.com>, Andrew Morton <akpm@linux-foundation.org>, Andrey Ryabinin <aryabinin@virtuozzo.com>, Christoffer Dall <christoffer.dall@arm.com>, Andrey Konovalov <andreyknvl@google.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Marc Zyngier <marc.zyngier@arm.com>, Greg Ungerer <gerg@linux-m68k.org>, Matt Redfearn <matt.redfearn@mips.com>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Jan Henrik Weinstock <jan.weinstock@ice.rwth-aachen.de>, Alan Kao <alankao@andestech.com>, Deepa Dinamani <deepa.kernel@gmail.com>, Olof Johansson <olof@lixom.net>, Hendrik Brueckner <brueckner@linux.vnet.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jessica Yu <jeyu@kernel.org>, Ard Biesheuvel <ard.biesheuvel@linaro.org>, "open list:ALPHA PORT" <linux-alpha@vger.kernel.org>, "open list:SYNOPSYS ARC ARCHITECTURE" <linux-snps-arc@lists.infradead.org>, "open list:C6X ARCHITECTURE" <linux-c6x-dev@linux-c6x.org>, "moderated list:H8/300 ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>, "open list:QUALCOMM HEXAGON ARCHITECTURE" <linux-hexagon@vger.kernel.org>, "open list:IA64 Itanium PLATFORM" <linux-ia64@vger.kernel.org>, "open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>, "open list:MIPS" <linux-mips@linux-mips.org>, "moderated list:NIOS2 ARCHITECTURE" <nios2-dev@lists.rocketboards.org>, "open list:OPENRISC ARCHITECTURE" <openrisc@lists.librecores.org>, "open list:PARISC ARCHITECTURE" <linux-parisc@vger.kernel.org>, "open list:LINUX FOR POWERPC 32-BIT AND 64-BIT" <linuxppc-dev@lists.ozlabs.org>, "open list:RISC-V ARCHITECTURE" <linux-riscv@lists.infradead.org>, "open list:S390" <linux-s390@vger.kernel.org>, "open list:SUPERH" <linux-sh@vger.kernel.org>, "open list:SPARC + UltraSPARC sparc/sparc64" <sparclinux@vger.kernel.org>, "open list:USER-MODE LINUX UML" <linux-um@lists.infradead.org>, "open list:TENSILICA XTENSA PORT xtensa" <linux-xtensa@linux-xtensa.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" <devicetree@vger.kernel.org>, "open list:GENERIC INCLUDE/ASM HEADER FILES" <linux-arch@vger.kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from [172.30.20.202] (helo=mx.sourceforge.net)
+ by sfs-ml-1.v29.lw.sourceforge.com with esmtps
+ (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.90_1)
+ (envelope-from <ppessolani@hotmail.com>) id 1gD96Q-0007B9-Rn
+ for user-mode-linux-devel@lists.sourceforge.net;
+ Thu, 18 Oct 2018 14:16:42 +0000
+Received: from mail-oln040092005093.outbound.protection.outlook.com
+ ([40.92.5.93] helo=NAM02-SN1-obe.outbound.protection.outlook.com)
+ by sfi-mx-4.v28.lw.sourceforge.com with esmtps
+ (TLSv1.2:ECDHE-RSA-AES256-SHA384:256) (Exim 4.90_1)
+ id 1gD96N-004IV6-RI for user-mode-linux-devel@lists.sourceforge.net;
+ Thu, 18 Oct 2018 14:16:42 +0000
+From: Pablo Pessolani <ppessolani@hotmail.com>
+Date: Thu, 18 Oct 2018 14:16:31 +0000
+Message-ID: <BN6PR20MB19378107337A78D9CF58A748CFF80@BN6PR20MB1937.namprd20.prod.outlook.com>
+Content-Language: es-AR
+MIME-Version: 1.0
+Subject: [uml-devel] New filesystem prototype as a externfs
+List-Id: The user-mode Linux development list
+ <user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/options/user-mode-linux-devel>, 
+ <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>, 
+ <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============6283534205613321402=="
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-Hi all,
+--===============6283534205613321402==
+Content-Language: es-AR
+Content-Type: multipart/alternative;
+	boundary="_000_BN6PR20MB19378107337A78D9CF58A748CFF80BN6PR20MB1937namp_"
 
-While investigating why ARM64 required a ton of objects to be rebuilt
-when toggling CONFIG_DEV_BLK_INITRD, it became clear that this was
-because we define __early_init_dt_declare_initrd() differently and we do
-that in arch/arm64/include/asm/memory.h which gets included by a fair
-amount of other header files, and translation units as well.
+--_000_BN6PR20MB19378107337A78D9CF58A748CFF80BN6PR20MB1937namp_
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-This patch series proposes adding an empty initrd.h to satisfy the need
-for drivers/of/fdt.c to unconditionally include that file, and moves the
-custom __early_init_dt_declare_initrd() definition away from
-asm/memory.h
+Hi:
+    We wrote a filesystem prototype and we want to use it from UML as a ext=
+ernfs.
+    Is there any example code of another filesystem as externfs ?
+    Is externfs like a FUSE driver? Why do not use FUSE ? Which are the mai=
+n differences among both?
+Regards.
+PAP
 
-This cuts the number of objects rebuilds from 1920 down to 26, so a
-factor 73 approximately.
 
-Apologies for the long CC list, please let me know how you would go
-about merging that and if another approach would be preferable, e.g:
-introducing a CONFIG_ARCH_INITRD_BELOW_START_OK Kconfig option or
-something like that.
+--_000_BN6PR20MB19378107337A78D9CF58A748CFF80BN6PR20MB1937namp_
+Content-Type: text/html; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Florian Fainelli (2):
-  arch: Add asm-generic/initrd.h and make use of it for most
-    architectures
-  arm64: Create asm/initrd.h
+<html>
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859-=
+1">
+<style type=3D"text/css" style=3D"display:none;"> P {margin-top:0;margin-bo=
+ttom:0;} </style>
+</head>
+<body dir=3D"ltr">
+<div style=3D"font-family: Calibri, Helvetica, sans-serif; font-size: 12pt;=
+ color: rgb(0, 0, 0);">
+Hi:&nbsp;</div>
+<div style=3D"font-family: Calibri, Helvetica, sans-serif; font-size: 12pt;=
+ color: rgb(0, 0, 0);">
+&nbsp; &nbsp; We wrote a filesystem prototype and we want to use it from UM=
+L as a externfs.</div>
+<div style=3D"font-family: Calibri, Helvetica, sans-serif; font-size: 12pt;=
+ color: rgb(0, 0, 0);">
+&nbsp; &nbsp; Is there any example code of another filesystem as externfs ?=
+</div>
+<div style=3D"font-family: Calibri, Helvetica, sans-serif; font-size: 12pt;=
+ color: rgb(0, 0, 0);">
+&nbsp; &nbsp; Is externfs like a FUSE driver? Why do not use FUSE ? Which a=
+re the main differences among both?</div>
+<div style=3D"font-family: Calibri, Helvetica, sans-serif; font-size: 12pt;=
+ color: rgb(0, 0, 0);">
+Regards.</div>
+<div style=3D"font-family: Calibri, Helvetica, sans-serif; font-size: 12pt;=
+ color: rgb(0, 0, 0);">
+PAP</div>
+<div style=3D"font-family: Calibri, Helvetica, sans-serif; font-size: 12pt;=
+ color: rgb(0, 0, 0);">
+<br>
+</div>
+</body>
+</html>
 
- arch/alpha/include/asm/Kbuild      |  1 +
- arch/arc/include/asm/Kbuild        |  1 +
- arch/arm/include/asm/Kbuild        |  1 +
- arch/arm64/include/asm/initrd.h    | 13 +++++++++++++
- arch/arm64/include/asm/memory.h    |  8 --------
- arch/c6x/include/asm/Kbuild        |  1 +
- arch/h8300/include/asm/Kbuild      |  1 +
- arch/hexagon/include/asm/Kbuild    |  1 +
- arch/ia64/include/asm/Kbuild       |  1 +
- arch/m68k/include/asm/Kbuild       |  1 +
- arch/microblaze/include/asm/Kbuild |  1 +
- arch/mips/include/asm/Kbuild       |  1 +
- arch/nds32/include/asm/Kbuild      |  1 +
- arch/nios2/include/asm/Kbuild      |  1 +
- arch/openrisc/include/asm/Kbuild   |  1 +
- arch/parisc/include/asm/Kbuild     |  1 +
- arch/powerpc/include/asm/Kbuild    |  1 +
- arch/riscv/include/asm/Kbuild      |  1 +
- arch/s390/include/asm/Kbuild       |  1 +
- arch/sh/include/asm/Kbuild         |  1 +
- arch/sparc/include/asm/Kbuild      |  1 +
- arch/um/include/asm/Kbuild         |  1 +
- arch/unicore32/include/asm/Kbuild  |  1 +
- arch/x86/include/asm/Kbuild        |  1 +
- arch/xtensa/include/asm/Kbuild     |  1 +
- drivers/of/fdt.c                   |  1 +
- include/asm-generic/initrd.h       |  1 +
- 27 files changed, 38 insertions(+), 8 deletions(-)
- create mode 100644 arch/arm64/include/asm/initrd.h
- create mode 100644 include/asm-generic/initrd.h
+--_000_BN6PR20MB19378107337A78D9CF58A748CFF80BN6PR20MB1937namp_--
 
--- 
-2.17.1
+
+--===============6283534205613321402==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6283534205613321402==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--===============6283534205613321402==--
 
 
