@@ -1,85 +1,155 @@
-Return-Path: <joel@joelfernandes.org>
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Subject: [PATCH 0/4] Add support for fast mremap
-Date: Fri, 12 Oct 2018 18:31:56 -0700
-Message-Id: <20181013013200.206928-1-joel@joelfernandes.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-ot1-x344.google.com ([2607:f8b0:4864:20::344])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gCwuD-0000FR-MW
+ for linux-um@lists.infradead.org; Thu, 18 Oct 2018 01:15:19 +0000
+Received: by mail-ot1-x344.google.com with SMTP id x4so26758093otg.3
+ for <linux-um@lists.infradead.org>; Wed, 17 Oct 2018 18:15:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-kernel@vger.kernel.org
-Cc: kernel-team@android.com, "Joel Fernandes (Google)" <joel@joelfernandes.org>, akpm@linux-foundation.org, Andrey Ryabinin <aryabinin@virtuozzo.com>, Andy Lutomirski <luto@kernel.org>, anton.ivanov@kot-begemot.co.uk, Borislav Petkov <bp@alien8.de>, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, dancol@google.com, Dave Hansen <dave.hansen@linux.intel.com>, "David S. Miller" <davem@davemloft.net>, elfring@users.sourceforge.net, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Helge Deller <deller@gmx.de>, hughd@google.com, Ingo Molnar <mingo@redhat.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Jeff Dike <jdike@addtoit.com>, Jonas Bonn <jonas@southpole.se>, Julia Lawall <Julia.Lawall@lip6.fr>, kasan-dev@googlegroups.com, "Kirill A. Shutemov" <kirill@shutemov.name>, kvmarm@lists.cs.columbia.edu, Ley Foon Tan <lftan@altera.com>, linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, lokeshgidra@google.com, Max Filippov <jcmvbkbc@gmail.com>, mhocko@kernel.org, minchan@kernel.org, nios2-dev@lists.rocketboards.org, pantin@google.com, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Sam Creasey <sammy@sammy.net>, sparclinux@vger.kernel.org, Stafford Horne <shorne@gmail.com>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, Will Deacon <will.deacon@arm.com>, "maintainer:X86 ARCHITECTURE 32-BIT AND 64-BIT" <x86@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>
-List-ID: <linux-um.lists.infradead.org>
+References: <20181016235120.138227-1-brendanhiggins@google.com>
+ <20181016235120.138227-27-brendanhiggins@google.com>
+ <CABGGisyMYC12UZtZ3wBw_1GO1Qq9-MEzSznq0r8796kVsQ6DoA@mail.gmail.com>
+In-Reply-To: <CABGGisyMYC12UZtZ3wBw_1GO1Qq9-MEzSznq0r8796kVsQ6DoA@mail.gmail.com>
+From: Brendan Higgins <brendanhiggins@google.com>
+Date: Wed, 17 Oct 2018 18:14:49 -0700
+Message-ID: <CAFd5g445rkyALoe=RYsSzsn_coDX67c8dYC+8EAG3gXbAzMkPQ@mail.gmail.com>
+Subject: Re: [RFC v1 26/31] arch: um: added stubs for mock iomem for KUnit
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Rob Herring <robh@kernel.org>
+Cc: brakmo@fb.com, richard@nod.at, Arnd Bergmann <arnd@arndb.de>, mpe@ellerman.id.au, Tim.Bird@sony.com, Kees Cook <keescook@google.com>, jdike@addtoit.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, rostedt@goodmis.org, linux-um@lists.infradead.org, Julia Lawall <julia.lawall@lip6.fr>, mcgrof@kernel.org, Joel Stanley <joel@jms.id.au>, linux-kselftest@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>, joe@perches.com, shuah@kernel.org, khilman@baylibre.com, kunit-dev@googlegroups.com
 
-Hi,
-Here is the latest "fast mremap" series. The main change in this submission is
-to enable the fast mremap optimization on a per-architecture basis to prevent
-possible issues with architectures that may not behave well with such change.
+On Wed, Oct 17, 2018 at 3:28 PM Rob Herring <robh@kernel.org> wrote:
+<snip>
+> > diff --git a/arch/um/Kconfig.common b/arch/um/Kconfig.common
+> > index 07f84c842cc31..72e7efb74f7fd 100644
+> > --- a/arch/um/Kconfig.common
+> > +++ b/arch/um/Kconfig.common
+> > @@ -19,7 +19,13 @@ config MMU
+> >         default y
+> >
+> >  config NO_IOMEM
+> > -       def_bool y
+> > +       bool
+> > +       default y if !KUNIT
+> > +
+> > +config HAS_IOMEM
+>
+> HAS_IOMEM is essentially a disable flag for lots of drivers on UML.
+> Ignoring drivers, it doesn't really control a significant amount of
+> code (albeit small amount of code you need for this series). As a
+> driver disable, it does a poor job as lots of drivers aren't MMIO and
+> aren't disabled. I think we should decouple these 2 things. Perhaps
+> get rid of the driver disable part altogether. We already do 'depends
+> on ARCH_FOO || COMPILE_TEST' for lots of drivers.
+>
+I think that makes sense. Any code that can build should be able to
+build under KUnit, but we probably want to turn that on on a per
+driver basis as we write tests for them.
 
-x86: select HAVE_MOVE_PMD for faster mremap (v1)
+> Also, I wouldn't be surprised if turning on HAS_IOMEM causes UML
+> randconfig failures. Arnd does lots of randconfig testing and might be
+> willing to help check.
+>
+It almost certainly would fail randconfig. As you point out below, I
+don't implement everything that's required, just enough to show off
+KUnit in a couple examples.
 
-arm64: select HAVE_MOVE_PMD for faster mremap (v1)
+> > +       bool "Turns on fake IOMEM support for KUnit"
+> > +       depends on KUNIT
+> > +       select MOCK_IOMEM
+> >
+> >  config ISA
+> >         bool
+> > diff --git a/arch/um/Kconfig.um b/arch/um/Kconfig.um
+> > index 20da5a8ca9490..8d35e0e2c23d1 100644
+> > --- a/arch/um/Kconfig.um
+> > +++ b/arch/um/Kconfig.um
+> > @@ -122,3 +122,8 @@ config SECCOMP
+> >           defined by each seccomp mode.
+> >
+> >           If unsure, say Y.
+> > +
+> > +config PLATFORM_MOCK
+> > +       bool "Enable a mock architecture used for unit testing."
+> > +       depends on KUNIT && OF
+> > +       default n
+> > diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
+> > index b10dde6cb793b..9fd2827ab76d1 100644
+> > --- a/arch/um/include/asm/Kbuild
+> > +++ b/arch/um/include/asm/Kbuild
+> > @@ -12,7 +12,6 @@ generic-y += ftrace.h
+> >  generic-y += futex.h
+> >  generic-y += hardirq.h
+> >  generic-y += hw_irq.h
+> > -generic-y += io.h
+> >  generic-y += irq_regs.h
+> >  generic-y += irq_work.h
+> >  generic-y += kdebug.h
+> > diff --git a/arch/um/include/asm/io-mock-shared.h b/arch/um/include/asm/io-mock-shared.h
+> > new file mode 100644
+> > index 0000000000000..6baf59cb17a58
+> > --- /dev/null
+> > +++ b/arch/um/include/asm/io-mock-shared.h
+> > @@ -0,0 +1,33 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +#ifndef _ASM_UM_IO_MOCK_SHARED_H
+> > +#define _ASM_UM_IO_MOCK_SHARED_H
+> > +
+> > +#define readb readb
+> > +u8 readb(const volatile void __iomem *);
+>
+> What about all the other flavors of MMIO accessors like __raw_readb,
+> readb_relaxed, etc.? readX/writeX is intended for PCI based drivers
+> which doesn't seem to be what you are targeting in this series.
+>
+Those need to be done too. I just mostly wanted to illustrate that it
+can be done, and what is needed to support mocking MMIO. I wasn't sure
+how controversial my approach would be, so I didn't want to put any
+more work than was necessary for illustration without getting some
+feedback.
 
-mm: speed up mremap by 500x on large regions (v2)
-v1->v2: Added support for per-arch enablement (Kirill Shutemov)
+> I think it would be good if this capability was not just on UML. I
+> could also imagine wanting to run tests on real h/w. Perhaps you just
 
-treewide: remove unused address argument from pte_alloc functions (v2)
-v1->v2: fix arch/um/ prototype which was missed in v1 (Anton Ivanov)
-        update changelog with manual fixups for m68k and microblaze.
+I think that's reasonable.
 
-Joel Fernandes (Google) (4):
-  treewide: remove unused address argument from pte_alloc functions (v2)
-  mm: speed up mremap by 500x on large regions (v2)
-  arm64: select HAVE_MOVE_PMD for faster mremap (v1)
-  x86: select HAVE_MOVE_PMD for faster mremap (v1)
+> want to log and/or check i/o accesses. Or you need some dependencies
+> in place rather than trying to fake everything (clocks, gpios, pinmux,
+> irq, etc.). That being said, I'm not trying to add a bunch of things
+> for you to do. Though maybe it makes sense to split this series some.
 
- arch/Kconfig                                 |  5 ++
- arch/alpha/include/asm/pgalloc.h             |  6 +-
- arch/arc/include/asm/pgalloc.h               |  5 +-
- arch/arm/include/asm/pgalloc.h               |  4 +-
- arch/arm64/Kconfig                           |  1 +
- arch/arm64/include/asm/pgalloc.h             |  4 +-
- arch/hexagon/include/asm/pgalloc.h           |  6 +-
- arch/ia64/include/asm/pgalloc.h              |  5 +-
- arch/m68k/include/asm/mcf_pgalloc.h          |  8 +--
- arch/m68k/include/asm/motorola_pgalloc.h     |  4 +-
- arch/m68k/include/asm/sun3_pgalloc.h         |  6 +-
- arch/microblaze/include/asm/pgalloc.h        | 19 +-----
- arch/microblaze/mm/pgtable.c                 |  3 +-
- arch/mips/include/asm/pgalloc.h              |  6 +-
- arch/nds32/include/asm/pgalloc.h             |  5 +-
- arch/nios2/include/asm/pgalloc.h             |  6 +-
- arch/openrisc/include/asm/pgalloc.h          |  5 +-
- arch/openrisc/mm/ioremap.c                   |  3 +-
- arch/parisc/include/asm/pgalloc.h            |  4 +-
- arch/powerpc/include/asm/book3s/32/pgalloc.h |  4 +-
- arch/powerpc/include/asm/book3s/64/pgalloc.h | 12 ++--
- arch/powerpc/include/asm/nohash/32/pgalloc.h |  4 +-
- arch/powerpc/include/asm/nohash/64/pgalloc.h |  6 +-
- arch/powerpc/mm/pgtable-book3s64.c           |  2 +-
- arch/powerpc/mm/pgtable_32.c                 |  4 +-
- arch/riscv/include/asm/pgalloc.h             |  6 +-
- arch/s390/include/asm/pgalloc.h              |  4 +-
- arch/sh/include/asm/pgalloc.h                |  6 +-
- arch/sparc/include/asm/pgalloc_32.h          |  5 +-
- arch/sparc/include/asm/pgalloc_64.h          |  6 +-
- arch/sparc/mm/init_64.c                      |  6 +-
- arch/sparc/mm/srmmu.c                        |  4 +-
- arch/um/include/asm/pgalloc.h                |  4 +-
- arch/um/kernel/mem.c                         |  4 +-
- arch/unicore32/include/asm/pgalloc.h         |  4 +-
- arch/x86/Kconfig                             |  1 +
- arch/x86/include/asm/pgalloc.h               |  4 +-
- arch/x86/mm/pgtable.c                        |  4 +-
- arch/xtensa/include/asm/pgalloc.h            |  8 +--
- include/linux/mm.h                           | 13 ++--
- mm/huge_memory.c                             |  8 +--
- mm/kasan/kasan_init.c                        |  2 +-
- mm/memory.c                                  | 17 +++--
- mm/migrate.c                                 |  2 +-
- mm/mremap.c                                  | 67 +++++++++++++++++++-
- mm/userfaultfd.c                             |  2 +-
- virt/kvm/arm/mmu.c                           |  2 +-
- 47 files changed, 169 insertions(+), 147 deletions(-)
+Almost definitely. I figured this patchset, as is, is a good
+illustration of what I am trying to do, what is possible, and the kind
+of work that is necessary to get there. If people like what I am doing
+and want more of this type of thing, I think focussing on getting base
+support in and then working on features separately is the way to go.
 
--- 
-2.19.0.605.g01d371f741-goog
+> How many of the patches are needed to convert the DT unittests for
+> example?
+
+At first glance, just you probably only need the stuff in the first 9
+patches for that. You don't appear to be doing any IO of any sort, so
+you don't need this stuff. You appear to depend only on some fake
+data; everything else seems pretty self contained, so you don't need
+any of the mocking support for that. So if I understand correctly you
+just need the base support needed for bare bones unit tests, all that
+stuff is in the first 9 patches.
+
+Cheers
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
