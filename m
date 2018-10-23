@@ -1,16 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-qt1-x849.google.com ([2607:f8b0:4864:20::849])
+Received: from mail-oi1-x24a.google.com ([2607:f8b0:4864:20::24a])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gCZB9-0004dt-VK
- for linux-um@lists.infradead.org; Tue, 16 Oct 2018 23:55:40 +0000
-Received: by mail-qt1-x849.google.com with SMTP id s56-v6so26849759qtk.2
- for <linux-um@lists.infradead.org>; Tue, 16 Oct 2018 16:55:00 -0700 (PDT)
-Date: Tue, 16 Oct 2018 16:51:19 -0700
-In-Reply-To: <20181016235120.138227-1-brendanhiggins@google.com>
-Message-Id: <20181016235120.138227-31-brendanhiggins@google.com>
+ id 1gF6av-0004RU-64
+ for linux-um@lists.infradead.org; Wed, 24 Oct 2018 00:00:35 +0000
+Received: by mail-oi1-x24a.google.com with SMTP id o204-v6so2215140oif.10
+ for <linux-um@lists.infradead.org>; Tue, 23 Oct 2018 17:00:07 -0700 (PDT)
+Date: Tue, 23 Oct 2018 16:57:48 -0700
+In-Reply-To: <20181023235750.103146-1-brendanhiggins@google.com>
+Message-Id: <20181023235750.103146-13-brendanhiggins@google.com>
 Mime-Version: 1.0
-References: <20181016235120.138227-1-brendanhiggins@google.com>
-Subject: [RFC v1 30/31] kunit.py: improved output from python wrapper
+References: <20181023235750.103146-1-brendanhiggins@google.com>
+Subject: [RFC v2 12/14] kunit.py: improve output from python wrapper
 From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -25,10 +25,10 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
-Cc: brakmo@fb.com, richard@nod.at, mpe@ellerman.id.au, Tim.Bird@sony.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, julia.lawall@lip6.fr, Felix Guo <felixguoxiuping@gmail.com>, joel@jms.id.au, linux-kselftest@vger.kernel.org, khilman@baylibre.com, joe@perches.com, jdike@addtoit.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
+Cc: brakmo@fb.com, jdike@addtoit.com, dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org, robh@kernel.org, linux-nvdimm@lists.01.org, richard@nod.at, kieran.bingham@ideasonboard.com, Felix Guo <felixguoxiuping@gmail.com>, joel@jms.id.au, khilman@baylibre.com, Brendan Higgins <brendanhiggins@google.com>, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, joe@perches.com
 
-- added colors to displayed output
-- added timing and summary
+- add colors to displayed output
+- add timing and summary
 
 Signed-off-by: Felix Guo <felixguoxiuping@gmail.com>
 Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
@@ -194,7 +194,7 @@ index 1dff3adb73bd3..d9051e407d5a7 100644
 +		    (len(total_tests), len(failed_tests), len(crashed_tests))))
 +
 -- 
-2.19.1.331.ge82ca0e54c-goog
+2.19.1.568.g152ad8e336-goog
 
 
 _______________________________________________
