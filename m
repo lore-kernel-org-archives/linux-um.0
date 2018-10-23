@@ -1,17 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x54a.google.com ([2607:f8b0:4864:20::54a])
+Received: from mail-io1-xd49.google.com ([2607:f8b0:4864:20::d49])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gF6an-0004E2-Jz
- for linux-um@lists.infradead.org; Wed, 24 Oct 2018 00:00:14 +0000
-Received: by mail-pg1-x54a.google.com with SMTP id v10-v6so1600860pgs.15
- for <linux-um@lists.infradead.org>; Tue, 23 Oct 2018 16:59:58 -0700 (PDT)
-Date: Tue, 23 Oct 2018 16:57:44 -0700
+ id 1gF6ad-0004Cb-Un
+ for linux-um@lists.infradead.org; Wed, 24 Oct 2018 00:00:02 +0000
+Received: by mail-io1-xd49.google.com with SMTP id c7-v6so2596572iod.1
+ for <linux-um@lists.infradead.org>; Tue, 23 Oct 2018 16:59:53 -0700 (PDT)
+Date: Tue, 23 Oct 2018 16:57:42 -0700
 In-Reply-To: <20181023235750.103146-1-brendanhiggins@google.com>
-Message-Id: <20181023235750.103146-9-brendanhiggins@google.com>
+Message-Id: <20181023235750.103146-7-brendanhiggins@google.com>
 Mime-Version: 1.0
 References: <20181023235750.103146-1-brendanhiggins@google.com>
-Subject: [RFC v2 08/14] arch: um: add shim to trap to allow installing a fault
- catcher for tests
+Subject: [RFC v2 06/14] arch: um: enable running kunit from User Mode Linux
 From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -28,80 +27,38 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
 Cc: brakmo@fb.com, robh@kernel.org, richard@nod.at, dri-devel@lists.freedesktop.org, linux-nvdimm@lists.01.org, mpe@ellerman.id.au, Tim.Bird@sony.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, kieran.bingham@ideasonboard.com, julia.lawall@lip6.fr, joel@jms.id.au, linux-kselftest@vger.kernel.org, khilman@baylibre.com, joe@perches.com, daniel@ffwll.ch, dan.j.williams@intel.com, jdike@addtoit.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
 
-Add context to current thread that allows a test to specify that it
-wants to skip the normal checks to run an installed fault catcher.
+Make minimum number of changes outside of the KUnit directories for
+KUnit to build and run using UML.
 
 Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
 ---
- arch/um/include/asm/processor-generic.h |  4 +++-
- arch/um/kernel/trap.c                   | 15 +++++++++++----
- 2 files changed, 14 insertions(+), 5 deletions(-)
+ Kconfig  | 2 ++
+ Makefile | 2 +-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/um/include/asm/processor-generic.h b/arch/um/include/asm/processor-generic.h
-index b58b746d3f2ca..d566cd416ff02 100644
---- a/arch/um/include/asm/processor-generic.h
-+++ b/arch/um/include/asm/processor-generic.h
-@@ -27,6 +27,7 @@ struct thread_struct {
- 	struct task_struct *prev_sched;
- 	struct arch_thread arch;
- 	jmp_buf switch_buf;
-+	bool is_running_test;
- 	struct {
- 		int op;
- 		union {
-@@ -51,7 +52,8 @@ struct thread_struct {
- 	.fault_addr		= NULL, \
- 	.prev_sched		= NULL, \
- 	.arch			= INIT_ARCH_THREAD, \
--	.request		= { 0 } \
-+	.request		= { 0 }, \
-+	.is_running_test	= false, \
- }
+diff --git a/Kconfig b/Kconfig
+index 48a80beab6853..10428501edb78 100644
+--- a/Kconfig
++++ b/Kconfig
+@@ -30,3 +30,5 @@ source "crypto/Kconfig"
+ source "lib/Kconfig"
  
- static inline void release_thread(struct task_struct *task)
-diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
-index cced829460427..bf90e678b3d71 100644
---- a/arch/um/kernel/trap.c
-+++ b/arch/um/kernel/trap.c
-@@ -201,6 +201,12 @@ void segv_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
- 	segv(*fi, UPT_IP(regs), UPT_IS_USER(regs), regs);
- }
- 
-+static void segv_run_catcher(jmp_buf *catcher, void *fault_addr)
-+{
-+	current->thread.fault_addr = fault_addr;
-+	UML_LONGJMP(catcher, 1);
-+}
+ source "lib/Kconfig.debug"
 +
- /*
-  * We give a *copy* of the faultinfo in the regs to segv.
-  * This must be done, since nesting SEGVs could overwrite
-@@ -219,7 +225,10 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
- 	if (!is_user && regs)
- 		current->thread.segv_regs = container_of(regs, struct pt_regs, regs);
++source "kunit/Kconfig"
+diff --git a/Makefile b/Makefile
+index 69fa5c0310d83..197f01cbddf03 100644
+--- a/Makefile
++++ b/Makefile
+@@ -966,7 +966,7 @@ endif
  
--	if (!is_user && (address >= start_vm) && (address < end_vm)) {
-+	catcher = current->thread.fault_catcher;
-+	if (catcher && current->thread.is_running_test)
-+		segv_run_catcher(catcher, (void *) address);
-+	else if (!is_user && (address >= start_vm) && (address < end_vm)) {
- 		flush_tlb_kernel_vm();
- 		goto out;
- 	}
-@@ -246,12 +255,10 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
- 		address = 0;
- 	}
  
--	catcher = current->thread.fault_catcher;
- 	if (!err)
- 		goto out;
- 	else if (catcher != NULL) {
--		current->thread.fault_addr = (void *) address;
--		UML_LONGJMP(catcher, 1);
-+		segv_run_catcher(catcher, (void *) address);
- 	}
- 	else if (current->thread.fault_addr != NULL)
- 		panic("fault_addr set but no fault catcher");
+ ifeq ($(KBUILD_EXTMOD),)
+-core-y		+= kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ block/
++core-y		+= kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ block/ kunit/
+ 
+ vmlinux-dirs	:= $(patsubst %/,%,$(filter %/, $(init-y) $(init-m) \
+ 		     $(core-y) $(core-m) $(drivers-y) $(drivers-m) \
 -- 
 2.19.1.568.g152ad8e336-goog
 
