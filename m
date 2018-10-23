@@ -1,16 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-it1-x149.google.com ([2607:f8b0:4864:20::149])
+Received: from mail-io1-xd4a.google.com ([2607:f8b0:4864:20::d4a])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gCZAs-0004UP-4H
- for linux-um@lists.infradead.org; Tue, 16 Oct 2018 23:55:21 +0000
-Received: by mail-it1-x149.google.com with SMTP id z136-v6so255383itc.5
- for <linux-um@lists.infradead.org>; Tue, 16 Oct 2018 16:54:43 -0700 (PDT)
-Date: Tue, 16 Oct 2018 16:51:12 -0700
-In-Reply-To: <20181016235120.138227-1-brendanhiggins@google.com>
-Message-Id: <20181016235120.138227-24-brendanhiggins@google.com>
+ id 1gF6aZ-0004BG-Dm
+ for linux-um@lists.infradead.org; Tue, 23 Oct 2018 23:59:57 +0000
+Received: by mail-io1-xd4a.google.com with SMTP id o7-v6so2538902ioh.22
+ for <linux-um@lists.infradead.org>; Tue, 23 Oct 2018 16:59:43 -0700 (PDT)
+Date: Tue, 23 Oct 2018 16:57:38 -0700
+In-Reply-To: <20181023235750.103146-1-brendanhiggins@google.com>
+Message-Id: <20181023235750.103146-3-brendanhiggins@google.com>
 Mime-Version: 1.0
-References: <20181016235120.138227-1-brendanhiggins@google.com>
-Subject: [RFC v1 23/31] kunit: mock: add parameter capturers
+References: <20181023235750.103146-1-brendanhiggins@google.com>
+Subject: [RFC v2 02/14] kunit: test: add test resource management API
 From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -25,202 +25,284 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
-Cc: brakmo@fb.com, richard@nod.at, mpe@ellerman.id.au, Tim.Bird@sony.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, julia.lawall@lip6.fr, joel@jms.id.au, linux-kselftest@vger.kernel.org, khilman@baylibre.com, joe@perches.com, jdike@addtoit.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
+Cc: brakmo@fb.com, robh@kernel.org, richard@nod.at, dri-devel@lists.freedesktop.org, linux-nvdimm@lists.01.org, mpe@ellerman.id.au, Tim.Bird@sony.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, kieran.bingham@ideasonboard.com, julia.lawall@lip6.fr, joel@jms.id.au, linux-kselftest@vger.kernel.org, khilman@baylibre.com, joe@perches.com, daniel@ffwll.ch, dan.j.williams@intel.com, jdike@addtoit.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
 
-Adds the concept of an argument capturer which, when used with a matcher
-in an EXPECT_CALL(...), will capture the value of the matching argument.
+Create a common API for test managed resources like memory and test
+objects. A lot of times a test will want to set up infrastructure to be
+used in test cases; this could be anything from just wanting to allocate
+some memory to setting up a driver stack; this defines facilities for
+creating "test resources" which are managed by the test infrastructure
+and are automatically cleaned up at the conclusion of the test.
 
 Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
 ---
- include/kunit/mock.h | 83 ++++++++++++++++++++++++++++++++++++++++++++
- kunit/common-mocks.c | 78 +++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 161 insertions(+)
+ include/kunit/test.h | 109 +++++++++++++++++++++++++++++++++++++++++++
+ kunit/test.c         |  95 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 204 insertions(+)
 
-diff --git a/include/kunit/mock.h b/include/kunit/mock.h
-index c3615e80d96ee..0e1aa568709a1 100644
---- a/include/kunit/mock.h
-+++ b/include/kunit/mock.h
-@@ -1172,6 +1172,89 @@ struct mock_param_matcher *test_struct_cmp(
- 		const char *struct_name,
- 		struct mock_struct_matcher_entry *entries);
+diff --git a/include/kunit/test.h b/include/kunit/test.h
+index e0b14b227ac44..1c116a20063da 100644
+--- a/include/kunit/test.h
++++ b/include/kunit/test.h
+@@ -12,6 +12,69 @@
+ #include <linux/types.h>
+ #include <linux/slab.h>
  
++struct test_resource;
++
++typedef int (*test_resource_init_t)(struct test_resource *, void *);
++typedef void (*test_resource_free_t)(struct test_resource *);
++
 +/**
-+ * struct mock_param_capturer - used to capture parameter when matching
++ * struct test_resource - represents a *test managed resource*
++ * @allocation: for the user to store arbitrary data.
++ * @free: a user supplied function to free the resource. Populated by
++ * test_alloc_resource().
 + *
-+ * Use the associated helper macros to access relevant fields.
++ * Represents a *test managed resource*, a resource which will automatically be
++ * cleaned up at the end of a test case.
++ *
 + * Example:
 + *
-+ * .. code-block::c
++ * .. code-block:: c
 + *
-+ *	static int some_test(struct test *test)
++ *	struct test_kmalloc_params {
++ *		size_t size;
++ *		gfp_t gfp;
++ *	};
++ *
++ *	static int test_kmalloc_init(struct test_resource *res, void *context)
 + *	{
-+ *		// imagine a mocked function: int add(int a, int b)
-+ *		struct mock_param_capturer *capturer =
-+ *			mock_int_capturer_create(test, any(test));
-+ *		TEST_EXPECT_CALL(add(any(test), capturer_to_matcher(capturer)));
-+ *		TEST_ASSERT_PARAM_CAPTURED(test, capturer);
++ *		struct test_kmalloc_params *params = context;
++ *		res->allocation = kmalloc(params->size, params->gfp);
 + *
-+ *		int captured_value = mock_capturer_get(capturer, int);
++ *		if (!res->allocation)
++ *			return -ENOMEM;
++ *
++ *		return 0;
++ *	}
++ *
++ *	static void test_kmalloc_free(struct test_resource *res)
++ *	{
++ *		kfree(res->allocation);
++ *	}
++ *
++ *	void *test_kmalloc(struct test *test, size_t size, gfp_t gfp)
++ *	{
++ *		struct test_kmalloc_params params;
++ *		struct test_resource *res;
++ *
++ *		params.size = size;
++ *		params.gfp = gfp;
++ *
++ *		res = test_alloc_resource(test, test_kmalloc_init,
++ *			test_kmalloc_free, &params);
++ *		if (res)
++ *			return res->allocation;
++ *		else
++ *			return NULL;
 + *	}
 + */
-+struct mock_param_capturer {
++struct test_resource {
++	void *allocation;
++	test_resource_free_t free;
++
 +	/* private: internal use only. */
-+	struct mock_param_matcher matcher;
-+	struct mock_param_matcher *child_matcher;
-+	void *(*capture_param)(struct test *test, const void *param);
-+	void *captured_param;
++	struct list_head node;
 +};
 +
-+struct mock_param_capturer *mock_param_capturer_create(
-+		struct test *test,
-+		struct mock_param_matcher *child_matcher,
-+		void *(*capture_param)(struct test *, const void *));
+ struct test;
+ 
+ /**
+@@ -104,6 +167,7 @@ struct test {
+ 	const char *name; /* Read only after initialization! */
+ 	spinlock_t lock; /* Gaurds all mutable test state. */
+ 	bool success; /* Protected by lock. */
++	struct list_head resources; /* Protected by lock. */
+ 	void (*vprintk)(const struct test *test,
+ 			const char *level,
+ 			struct va_format *vaf);
+@@ -127,6 +191,51 @@ int test_run_tests(struct test_module *module);
+ 		} \
+ 		late_initcall(module_test_init##module)
+ 
++/**
++ * test_alloc_resource() - Allocates a *test managed resource*.
++ * @test: The test context object.
++ * @init: a user supplied function to initialize the resource.
++ * @free: a user supplied function to free the resource.
++ * @context: for the user to pass in arbitrary data.
++ *
++ * Allocates a *test managed resource*, a resource which will automatically be
++ * cleaned up at the end of a test case. See &struct test_resource for an
++ * example.
++ */
++struct test_resource *test_alloc_resource(struct test *test,
++					  test_resource_init_t init,
++					  test_resource_free_t free,
++					  void *context);
++
++void test_free_resource(struct test *test, struct test_resource *res);
 +
 +/**
-+ * mock_int_capturer_create() - creates a int parameter capturer
-+ * @test: associated test
-+ * @child_matcher: matcher used to match the integer
++ * test_kmalloc() - Just like kmalloc() except the allocation is *test managed*.
++ * @test: The test context object.
++ * @size: The size in bytes of the desired memory.
++ * @gfp: flags passed to underlying kmalloc().
 + *
-+ * The capturer will capture the value if the matcher is satisfied.
++ * Just like `kmalloc(...)`, except the allocation is managed by the test case
++ * and is automatically cleaned up after the test case concludes. See &struct
++ * test_resource for more information.
 + */
-+struct mock_param_capturer *mock_int_capturer_create(
-+		struct test *test, struct mock_param_matcher *child_matcher);
++void *test_kmalloc(struct test *test, size_t size, gfp_t gfp);
 +
 +/**
-+ * mock_int_capturer_create() - creates a generic pointer parameter capturer
-+ * @test: associated test
-+ * @child_matcher: matcher used to match the pointer
++ * test_kzalloc() - Just like test_kmalloc(), but zeroes the allocation.
++ * @test: The test context object.
++ * @size: The size in bytes of the desired memory.
++ * @gfp: flags passed to underlying kmalloc().
 + *
-+ * The capturer will capture the value if the matcher is satisfied
++ * See kzalloc() and test_kmalloc() for more information.
 + */
-+struct mock_param_capturer *mock_ptr_capturer_create(
-+		struct test *test, struct mock_param_matcher *child_matcher);
++static inline void *test_kzalloc(struct test *test, size_t size, gfp_t gfp)
++{
++	return test_kmalloc(test, size, gfp | __GFP_ZERO);
++}
 +
-+/**
-+ * capturer_to_matcher()
-+ * @capturer: the param capturer
-+ *
-+ * Use this function when passing a capturer into an EXPECT_CALL() where a
-+ * matcher would be expected. See the example for &struct mock_param_capturer.
-+ */
-+#define capturer_to_matcher(capturer) (&(capturer)->matcher)
++void test_cleanup(struct test *test);
 +
-+/**
-+ * TEST_ASSERT_PARAM_CAPTURED(): Asserts that a parameter has been captured.
-+ * @test: the associated test
-+ * @capturer: the param capturer
-+ *
-+ * See &struct mock_param_capturer for an example.
-+ */
-+#define TEST_ASSERT_PARAM_CAPTURED(test, capturer)			       \
-+		TEST_ASSERT(test,					       \
-+		       !IS_ERR_OR_NULL((capturer)->captured_param),	       \
-+		       "Asserted " #capturer " captured param, but did not.")
-+
-+/**
-+ * mock_capturer_get(): Returns the value captured by ``capturer``
-+ * @capturer: the param capturer
-+ * @type: the type of the value
-+ *
-+ * See &struct mock_param_capturer for an example.
-+ */
-+#define mock_capturer_get(capturer, type) \
-+		CONVERT_TO_ACTUAL_TYPE(type, (capturer)->captured_param)
-+
- struct mock_action *invoke(struct test *test,
- 			   void *(*invokable)(struct test *,
- 					      const void *params[],
-diff --git a/kunit/common-mocks.c b/kunit/common-mocks.c
-index ce0159923814d..62528b7df83c6 100644
---- a/kunit/common-mocks.c
-+++ b/kunit/common-mocks.c
-@@ -323,6 +323,84 @@ struct mock_param_matcher *test_struct_cmp(
- 	return &matcher->matcher;
+ void __printf(3, 4) test_printk(const char *level,
+ 				const struct test *test,
+ 				const char *fmt, ...);
+diff --git a/kunit/test.c b/kunit/test.c
+index 4732e5f0d7575..fd0a51245215e 100644
+--- a/kunit/test.c
++++ b/kunit/test.c
+@@ -66,6 +66,7 @@ static void test_vprintk(const struct test *test,
+ int test_init_test(struct test *test, const char *name)
+ {
+ 	spin_lock_init(&test->lock);
++	INIT_LIST_HEAD(&test->resources);
+ 	test->name = name;
+ 	test->vprintk = test_vprintk;
+ 
+@@ -93,6 +94,11 @@ static void test_run_case_internal(struct test *test,
+ 	test_case->run_case(test);
  }
  
-+static bool match_and_capture_param(struct mock_param_matcher *pmatcher,
-+				    struct test_stream *stream,
-+				    const void *param)
++static void test_case_internal_cleanup(struct test *test)
 +{
-+	struct mock_param_capturer *capturer =
-+			container_of(pmatcher,
-+				     struct mock_param_capturer,
-+				     matcher);
-+	struct mock_param_matcher *child_matcher = capturer->child_matcher;
-+	bool matches;
-+
-+	matches = child_matcher->match(child_matcher, stream, param);
-+	if (matches)
-+		capturer->captured_param = capturer->capture_param(stream->test,
-+								   param);
-+
-+	return matches;
++	test_cleanup(test);
 +}
 +
-+struct mock_param_capturer *mock_param_capturer_create(
-+		struct test *test,
-+		struct mock_param_matcher *child_matcher,
-+		void *(*capture_param)(struct test *, const void *))
-+{
-+	struct mock_param_capturer *capturer;
+ /*
+  * Performs post validations and cleanup after a test case was run.
+  * XXX: Should ONLY BE CALLED AFTER test_run_case_internal!
+@@ -103,6 +109,8 @@ static void test_run_case_cleanup(struct test *test,
+ {
+ 	if (module->exit)
+ 		module->exit(test);
 +
-+	capturer = test_kzalloc(test, sizeof(*capturer), GFP_KERNEL);
-+	if (!capturer)
++	test_case_internal_cleanup(test);
+ }
+ 
+ /*
+@@ -150,6 +158,93 @@ int test_run_tests(struct test_module *module)
+ 	return 0;
+ }
+ 
++struct test_resource *test_alloc_resource(struct test *test,
++					  test_resource_init_t init,
++					  test_resource_free_t free,
++					  void *context)
++{
++	struct test_resource *res;
++	unsigned long flags;
++	int ret;
++
++	res = kzalloc(sizeof(*res), GFP_KERNEL);
++	if (!res)
 +		return NULL;
 +
-+	capturer->matcher.match = match_and_capture_param;
-+	capturer->child_matcher = child_matcher;
-+	capturer->capture_param = capture_param;
-+	capturer->captured_param = NULL;
-+
-+	return capturer;
-+}
-+
-+static void *mock_capture_int(struct test *test, const void *param)
-+{
-+	int value = CONVERT_TO_ACTUAL_TYPE(int, param);
-+	int *pvalue;
-+
-+	pvalue = test_kzalloc(test, sizeof(*pvalue), GFP_KERNEL);
-+	if (!pvalue)
++	ret = init(res, context);
++	if (ret)
 +		return NULL;
-+	*pvalue = value;
 +
-+	return pvalue;
++	res->free = free;
++	spin_lock_irqsave(&test->lock, flags);
++	list_add_tail(&res->node, &test->resources);
++	spin_unlock_irqrestore(&test->lock, flags);
++
++	return res;
 +}
 +
-+struct mock_param_capturer *mock_int_capturer_create(
-+		struct test *test, struct mock_param_matcher *child_matcher)
++void test_free_resource(struct test *test, struct test_resource *res)
 +{
-+	return mock_param_capturer_create(test,
-+					  child_matcher,
-+					  mock_capture_int);
++	res->free(res);
++	list_del(&res->node);
++	kfree(res);
 +}
 +
-+static void *mock_capture_ptr(struct test *test, const void *param)
++struct test_kmalloc_params {
++	size_t size;
++	gfp_t gfp;
++};
++
++static int test_kmalloc_init(struct test_resource *res, void *context)
 +{
-+	void *ptr = CONVERT_TO_ACTUAL_TYPE(void *, param);
-+	void **pptr;
++	struct test_kmalloc_params *params = context;
 +
-+	pptr = test_kzalloc(test, sizeof(*pptr), GFP_KERNEL);
-+	*pptr = ptr;
++	res->allocation = kmalloc(params->size, params->gfp);
++	if (!res->allocation)
++		return -ENOMEM;
 +
-+	return pptr;
++	return 0;
 +}
 +
-+struct mock_param_capturer *mock_ptr_capturer_create(
-+		struct test *test, struct mock_param_matcher *child_matcher)
++static void test_kmalloc_free(struct test_resource *res)
 +{
-+	return mock_param_capturer_create(test,
-+					  child_matcher,
-+					  mock_capture_ptr);
++	kfree(res->allocation);
 +}
 +
- #define DEFINE_RETURN_ACTION_STRUCT(type_name, type)			       \
- 		struct mock_##type_name##_action {			       \
- 			struct mock_action action;			       \
++void *test_kmalloc(struct test *test, size_t size, gfp_t gfp)
++{
++	struct test_kmalloc_params params;
++	struct test_resource *res;
++
++	params.size = size;
++	params.gfp = gfp;
++
++	res = test_alloc_resource(test,
++				  test_kmalloc_init,
++				  test_kmalloc_free,
++				  &params);
++
++	if (res)
++		return res->allocation;
++	else
++		return NULL;
++}
++
++void test_cleanup(struct test *test)
++{
++	struct test_resource *resource, *resource_safe;
++	unsigned long flags;
++
++	spin_lock_irqsave(&test->lock, flags);
++	list_for_each_entry_safe(resource,
++				 resource_safe,
++				 &test->resources,
++				 node) {
++		test_free_resource(test, resource);
++	}
++	spin_unlock_irqrestore(&test->lock, flags);
++}
++
+ void test_printk(const char *level,
+ 		 const struct test *test,
+ 		 const char *fmt, ...)
 -- 
-2.19.1.331.ge82ca0e54c-goog
+2.19.1.568.g152ad8e336-goog
 
 
 _______________________________________________
