@@ -1,82 +1,113 @@
-Return-Path: <linux-m68k-owner@vger.kernel.org>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Subject: [PATCH v2 0/2] arm64: Cut rebuild time when changing CONFIG_BLK_DEV_INITRD
-Date: Wed, 24 Oct 2018 12:32:54 -0700
-Message-Id: <20181024193256.23734-1-f.fainelli@gmail.com>
-Sender: linux-m68k-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Florian Fainelli <f.fainelli@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Marc Zyngier <marc.zyngier@arm.com>, Olof Johansson <olof@lixom.net>, "open list:ALPHA PORT" <linux-alpha@vger.kernel.org>, "open list:SYNOPSYS ARC ARCHITECTURE" <linux-snps-arc@lists.infradead.org>, "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>, "open list:C6X ARCHITECTURE" <linux-c6x-dev@linux-c6x.org>, "moderated list:H8/300" <uclinux-h8-devel@lists.sourceforge.jp>, ARCHITECTURE, , "open list:QUALCOMM HEXAGON ARCHITECTURE" <linux-hexagon@vger.kernel.org>, "open list:IA64 Itanium PLATFORM" <linux-ia64@vger.kernel.org>, "open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>, "open list:MIPS" <linux-mips@linux-mips.org>, "moderated list:NIOS2 ARCHITECTURE" <nios2-dev@lists.rocketboards.org>, "open list:OPENRISC ARCHITECTURE" <openrisc@lists.librecores.org>, "open list:PARISC ARCHITECTURE" <linux-parisc@vger.kernel.org>, "open list:LINUX FOR POWERPC 32-BIT AND
-        64-BIT" <linuxppc-dev@lists.ozlabs.org>, , "open list:RISC-V ARCHITECTURE" <linux-riscv@lists.infradead.org>, "open list:S390" <linux-s390@vger.kernel.org>, "open list:SUPERH" <linux-sh@vger.kernel.org>, "open list:SPARC + UltraSPARC" <sparclinux@vger.kernel.org>, , "open list:USER-MODE LINUX UML" <linux-um@lists.infradead.org>, "open list:TENSILICA XTENSA PORT xtensa" <linux-xtensa@linux-xtensa.org>, "open list:OPEN FIRMWARE AND FLATTENED" <devicetree@vger.kernel.org>, DEVICE, , "open list:GENERIC INCLUDE/ASM HEADER FILES" <linux-arch@vger.kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pg1-x54a.google.com ([2607:f8b0:4864:20::54a])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gF6an-0004E2-Jz
+ for linux-um@lists.infradead.org; Wed, 24 Oct 2018 00:00:14 +0000
+Received: by mail-pg1-x54a.google.com with SMTP id v10-v6so1600860pgs.15
+ for <linux-um@lists.infradead.org>; Tue, 23 Oct 2018 16:59:58 -0700 (PDT)
+Date: Tue, 23 Oct 2018 16:57:44 -0700
+In-Reply-To: <20181023235750.103146-1-brendanhiggins@google.com>
+Message-Id: <20181023235750.103146-9-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20181023235750.103146-1-brendanhiggins@google.com>
+Subject: [RFC v2 08/14] arch: um: add shim to trap to allow installing a fault
+ catcher for tests
+From: Brendan Higgins <brendanhiggins@google.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
+Cc: brakmo@fb.com, robh@kernel.org, richard@nod.at, dri-devel@lists.freedesktop.org, linux-nvdimm@lists.01.org, mpe@ellerman.id.au, Tim.Bird@sony.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, kieran.bingham@ideasonboard.com, julia.lawall@lip6.fr, joel@jms.id.au, linux-kselftest@vger.kernel.org, khilman@baylibre.com, joe@perches.com, daniel@ffwll.ch, dan.j.williams@intel.com, jdike@addtoit.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
 
-Hi all,
+Add context to current thread that allows a test to specify that it
+wants to skip the normal checks to run an installed fault catcher.
 
-While investigating why ARM64 required a ton of objects to be rebuilt
-when toggling CONFIG_DEV_BLK_INITRD, it became clear that this was
-because we define __early_init_dt_declare_initrd() differently and we do
-that in arch/arm64/include/asm/memory.h which gets included by a fair
-amount of other header files, and translation units as well.
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+---
+ arch/um/include/asm/processor-generic.h |  4 +++-
+ arch/um/kernel/trap.c                   | 15 +++++++++++----
+ 2 files changed, 14 insertions(+), 5 deletions(-)
 
-Changing the value of CONFIG_DEV_BLK_INITRD is a common thing with build
-systems that generate two kernels: one with the initramfs and one
-without. buildroot is one of these build systems, OpenWrt is also
-another one that does this.
-
-This patch series proposes adding an empty initrd.h to satisfy the need
-for drivers/of/fdt.c to unconditionally include that file, and moves the
-custom __early_init_dt_declare_initrd() definition away from
-asm/memory.h
-
-This cuts the number of objects rebuilds from 1920 down to 26, so a
-factor 73 approximately.
-
-Apologies for the long CC list, please let me know how you would go
-about merging that and if another approach would be preferable, e.g:
-introducing a CONFIG_ARCH_INITRD_BELOW_START_OK Kconfig option or
-something like that.
-
-Changes in v2:
-
-- put an /* empty */ comment in the asm-generic/initrd.h file
-- trim down the CC list to maximize the chances of people receiving this
-
-Florian Fainelli (2):
-  arch: Add asm-generic/initrd.h and make use of it for most
-    architectures
-  arm64: Create asm/initrd.h
-
- arch/alpha/include/asm/Kbuild      |  1 +
- arch/arc/include/asm/Kbuild        |  1 +
- arch/arm/include/asm/Kbuild        |  1 +
- arch/arm64/include/asm/initrd.h    | 13 +++++++++++++
- arch/arm64/include/asm/memory.h    |  8 --------
- arch/c6x/include/asm/Kbuild        |  1 +
- arch/h8300/include/asm/Kbuild      |  1 +
- arch/hexagon/include/asm/Kbuild    |  1 +
- arch/ia64/include/asm/Kbuild       |  1 +
- arch/m68k/include/asm/Kbuild       |  1 +
- arch/microblaze/include/asm/Kbuild |  1 +
- arch/mips/include/asm/Kbuild       |  1 +
- arch/nds32/include/asm/Kbuild      |  1 +
- arch/nios2/include/asm/Kbuild      |  1 +
- arch/openrisc/include/asm/Kbuild   |  1 +
- arch/parisc/include/asm/Kbuild     |  1 +
- arch/powerpc/include/asm/Kbuild    |  1 +
- arch/riscv/include/asm/Kbuild      |  1 +
- arch/s390/include/asm/Kbuild       |  1 +
- arch/sh/include/asm/Kbuild         |  1 +
- arch/sparc/include/asm/Kbuild      |  1 +
- arch/um/include/asm/Kbuild         |  1 +
- arch/unicore32/include/asm/Kbuild  |  1 +
- arch/x86/include/asm/Kbuild        |  1 +
- arch/xtensa/include/asm/Kbuild     |  1 +
- drivers/of/fdt.c                   |  1 +
- include/asm-generic/initrd.h       |  1 +
- 27 files changed, 38 insertions(+), 8 deletions(-)
- create mode 100644 arch/arm64/include/asm/initrd.h
- create mode 100644 include/asm-generic/initrd.h
-
+diff --git a/arch/um/include/asm/processor-generic.h b/arch/um/include/asm/processor-generic.h
+index b58b746d3f2ca..d566cd416ff02 100644
+--- a/arch/um/include/asm/processor-generic.h
++++ b/arch/um/include/asm/processor-generic.h
+@@ -27,6 +27,7 @@ struct thread_struct {
+ 	struct task_struct *prev_sched;
+ 	struct arch_thread arch;
+ 	jmp_buf switch_buf;
++	bool is_running_test;
+ 	struct {
+ 		int op;
+ 		union {
+@@ -51,7 +52,8 @@ struct thread_struct {
+ 	.fault_addr		= NULL, \
+ 	.prev_sched		= NULL, \
+ 	.arch			= INIT_ARCH_THREAD, \
+-	.request		= { 0 } \
++	.request		= { 0 }, \
++	.is_running_test	= false, \
+ }
+ 
+ static inline void release_thread(struct task_struct *task)
+diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
+index cced829460427..bf90e678b3d71 100644
+--- a/arch/um/kernel/trap.c
++++ b/arch/um/kernel/trap.c
+@@ -201,6 +201,12 @@ void segv_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
+ 	segv(*fi, UPT_IP(regs), UPT_IS_USER(regs), regs);
+ }
+ 
++static void segv_run_catcher(jmp_buf *catcher, void *fault_addr)
++{
++	current->thread.fault_addr = fault_addr;
++	UML_LONGJMP(catcher, 1);
++}
++
+ /*
+  * We give a *copy* of the faultinfo in the regs to segv.
+  * This must be done, since nesting SEGVs could overwrite
+@@ -219,7 +225,10 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
+ 	if (!is_user && regs)
+ 		current->thread.segv_regs = container_of(regs, struct pt_regs, regs);
+ 
+-	if (!is_user && (address >= start_vm) && (address < end_vm)) {
++	catcher = current->thread.fault_catcher;
++	if (catcher && current->thread.is_running_test)
++		segv_run_catcher(catcher, (void *) address);
++	else if (!is_user && (address >= start_vm) && (address < end_vm)) {
+ 		flush_tlb_kernel_vm();
+ 		goto out;
+ 	}
+@@ -246,12 +255,10 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
+ 		address = 0;
+ 	}
+ 
+-	catcher = current->thread.fault_catcher;
+ 	if (!err)
+ 		goto out;
+ 	else if (catcher != NULL) {
+-		current->thread.fault_addr = (void *) address;
+-		UML_LONGJMP(catcher, 1);
++		segv_run_catcher(catcher, (void *) address);
+ 	}
+ 	else if (current->thread.fault_addr != NULL)
+ 		panic("fault_addr set but no fault catcher");
 -- 
-2.17.1
+2.19.1.568.g152ad8e336-goog
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
