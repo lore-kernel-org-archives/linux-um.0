@@ -1,17 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-qt1-x849.google.com ([2607:f8b0:4864:20::849])
+Received: from mail-oi1-x24a.google.com ([2607:f8b0:4864:20::24a])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gF6ab-0004BT-L0
- for linux-um@lists.infradead.org; Tue, 23 Oct 2018 23:59:59 +0000
-Received: by mail-qt1-x849.google.com with SMTP id f20-v6so3786765qta.16
- for <linux-um@lists.infradead.org>; Tue, 23 Oct 2018 16:59:46 -0700 (PDT)
-Date: Tue, 23 Oct 2018 16:57:39 -0700
+ id 1gF6av-0004LY-6N
+ for linux-um@lists.infradead.org; Wed, 24 Oct 2018 00:00:32 +0000
+Received: by mail-oi1-x24a.google.com with SMTP id n186-v6so2222416oig.13
+ for <linux-um@lists.infradead.org>; Tue, 23 Oct 2018 17:00:05 -0700 (PDT)
+Date: Tue, 23 Oct 2018 16:57:47 -0700
 In-Reply-To: <20181023235750.103146-1-brendanhiggins@google.com>
-Message-Id: <20181023235750.103146-4-brendanhiggins@google.com>
+Message-Id: <20181023235750.103146-12-brendanhiggins@google.com>
 Mime-Version: 1.0
 References: <20181023235750.103146-1-brendanhiggins@google.com>
-Subject: [RFC v2 03/14] kunit: test: add string_stream a std::stream like
- string builder
+Subject: [RFC v2 11/14] kunit: add KUnit wrapper script and simple output
+ parser
 From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -26,236 +26,122 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
-Cc: brakmo@fb.com, robh@kernel.org, richard@nod.at, dri-devel@lists.freedesktop.org, linux-nvdimm@lists.01.org, mpe@ellerman.id.au, Tim.Bird@sony.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, kieran.bingham@ideasonboard.com, julia.lawall@lip6.fr, joel@jms.id.au, linux-kselftest@vger.kernel.org, khilman@baylibre.com, joe@perches.com, daniel@ffwll.ch, dan.j.williams@intel.com, jdike@addtoit.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
+Cc: brakmo@fb.com, jdike@addtoit.com, dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org, robh@kernel.org, linux-nvdimm@lists.01.org, richard@nod.at, kieran.bingham@ideasonboard.com, Felix Guo <felixguoxiuping@gmail.com>, joel@jms.id.au, khilman@baylibre.com, Brendan Higgins <brendanhiggins@google.com>, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, joe@perches.com
 
-A number of test features need to do pretty complicated string printing
-where it may not be possible to rely on a single preallocated string
-with parameters.
+The KUnit wrapper script interfaces with the two modules
+(kunit_config.py and kunit_kernel.py) and provides a command line
+interface for running KUnit tests. This interface allows the caller to
+specify options like test timeouts. The script handles configuring,
+building and running the kernel and tests.
 
-So provide a library for constructing the string as you go similar to
-C++'s std::string.
+The output parser (kunit_parser.py) simply strips out all the output
+from the kernel that is outputted as part of it's initialization
+sequence. This ensures that only the output from KUnit is displayed
+on the screen.
 
+A full version of the output is written to test.log, or can be seen by
+passing --raw_output to the wrapper script.
+
+Signed-off-by: Felix Guo <felixguoxiuping@gmail.com>
 Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
 ---
- include/kunit/string-stream.h |  44 ++++++++++
- kunit/Makefile                |   2 +-
- kunit/string-stream.c         | 149 ++++++++++++++++++++++++++++++++++
- 3 files changed, 194 insertions(+), 1 deletion(-)
- create mode 100644 include/kunit/string-stream.h
- create mode 100644 kunit/string-stream.c
+ tools/testing/kunit/kunit.py        | 40 +++++++++++++++++++++++++++++
+ tools/testing/kunit/kunit_kernel.py |  3 +--
+ tools/testing/kunit/kunit_parser.py | 24 +++++++++++++++++
+ 3 files changed, 65 insertions(+), 2 deletions(-)
+ create mode 100755 tools/testing/kunit/kunit.py
+ create mode 100644 tools/testing/kunit/kunit_parser.py
 
-diff --git a/include/kunit/string-stream.h b/include/kunit/string-stream.h
-new file mode 100644
-index 0000000000000..933ed5740cf07
+diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+new file mode 100755
+index 0000000000000..1356be404996b
 --- /dev/null
-+++ b/include/kunit/string-stream.h
-@@ -0,0 +1,44 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * C++ stream style string builder used in KUnit for building messages.
-+ *
-+ * Copyright (C) 2018, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
++++ b/tools/testing/kunit/kunit.py
+@@ -0,0 +1,40 @@
++#!/usr/bin/python3
++# SPDX-License-Identifier: GPL-2.0
 +
-+#ifndef _KUNIT_STRING_STREAM_H
-+#define _KUNIT_STRING_STREAM_H
++# A thin wrapper on top of the KUnit Kernel
 +
-+#include <linux/types.h>
-+#include <linux/spinlock.h>
-+#include <linux/kref.h>
-+#include <stdarg.h>
++import argparse
++import sys
++import os
 +
-+struct string_stream_fragment {
-+	struct list_head node;
-+	char *fragment;
-+};
++import kunit_config
++import kunit_kernel
++import kunit_parser
 +
-+struct string_stream {
-+	size_t length;
-+	struct list_head fragments;
++parser = argparse.ArgumentParser(description='Runs KUnit tests.')
 +
-+	/* length and fragments are protected by this lock */
-+	spinlock_t lock;
-+	struct kref refcount;
-+	int (*add)(struct string_stream *this, const char *fmt, ...);
-+	int (*vadd)(struct string_stream *this, const char *fmt, va_list args);
-+	char *(*get_string)(struct string_stream *this);
-+	void (*clear)(struct string_stream *this);
-+	bool (*is_empty)(struct string_stream *this);
-+};
++parser.add_argument('--raw_output', help='don\'t format output from kernel',
++		    action='store_true')
 +
-+struct string_stream *new_string_stream(void);
++parser.add_argument('--timeout', help='maximum number of seconds to allow for '
++		    'all tests to run. This does not include time taken to '
++		    'build the tests.', type=int, default=300,
++		    metavar='timeout')
 +
-+void destroy_string_stream(struct string_stream *stream);
++cli_args = parser.parse_args()
++linux = kunit_kernel.LinuxSourceTree()
 +
-+void string_stream_get(struct string_stream *stream);
++success = linux.build_reconfig()
++if not success:
++	quit()
 +
-+int string_stream_put(struct string_stream *stream);
++print('Building KUnit Kernel ...')
++success = linux.build_um_kernel()
++if not success:
++	quit()
 +
-+#endif /* _KUNIT_STRING_STREAM_H */
-diff --git a/kunit/Makefile b/kunit/Makefile
-index dd7a0299514b7..7fc613a9b383b 100644
---- a/kunit/Makefile
-+++ b/kunit/Makefile
-@@ -1 +1 @@
--obj-$(CONFIG_KUNIT)		+= test.o
-+obj-$(CONFIG_KUNIT)		+= test.o string-stream.o
-diff --git a/kunit/string-stream.c b/kunit/string-stream.c
++print('Starting KUnit Kernel ...')
++if cli_args.raw_output:
++	kunit_parser.raw_output(linux.run_kernel(timeout=cli_args.timeout))
++else:
++	kunit_parser.parse_run_tests(linux.run_kernel(timeout=cli_args.timeout))
+diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
+index 87abaede50513..c1259b174f7d4 100644
+--- a/tools/testing/kunit/kunit_kernel.py
++++ b/tools/testing/kunit/kunit_kernel.py
+@@ -113,8 +113,7 @@ class LinuxSourceTree(object):
+ 			return False
+ 		return True
+ 
+-	def run_kernel(self, args=[]):
+-		timeout = None
++	def run_kernel(self, args=[], timeout=None):
+ 		args.extend(['mem=256M'])
+ 		process = self._ops.linux_bin(args, timeout)
+ 		with open('test.log', 'w') as f:
+diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
 new file mode 100644
-index 0000000000000..1e7efa630cc35
+index 0000000000000..1dff3adb73bd3
 --- /dev/null
-+++ b/kunit/string-stream.c
-@@ -0,0 +1,149 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * C++ stream style string builder used in KUnit for building messages.
-+ *
-+ * Copyright (C) 2018, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
++++ b/tools/testing/kunit/kunit_parser.py
+@@ -0,0 +1,24 @@
++# SPDX-License-Identifier: GPL-2.0
 +
-+#include <linux/list.h>
-+#include <linux/slab.h>
-+#include <kunit/string-stream.h>
++import re
 +
-+static int string_stream_vadd(struct string_stream *this,
-+			       const char *fmt,
-+			       va_list args)
-+{
-+	struct string_stream_fragment *fragment;
-+	int len;
-+	va_list args_for_counting;
-+	unsigned long flags;
++kunit_start_re = re.compile('console .* enabled')
++kunit_end_re = re.compile('List of all partitions:')
 +
-+	/* Make a copy because `vsnprintf` could change it */
-+	va_copy(args_for_counting, args);
++def isolate_kunit_output(kernel_output):
++	started = False
++	for line in kernel_output:
++		if kunit_start_re.match(line):
++			started = True
++		elif kunit_end_re.match(line):
++			break
++		elif started:
++			yield line
 +
-+	/* Need space for null byte. */
-+	len = vsnprintf(NULL, 0, fmt, args_for_counting) + 1;
++def raw_output(kernel_output):
++	for line in kernel_output:
++		print(line)
 +
-+	va_end(args_for_counting);
-+
-+	fragment = kmalloc(sizeof(*fragment), GFP_KERNEL);
-+	if (!fragment)
-+		return -ENOMEM;
-+
-+	fragment->fragment = kmalloc(len, GFP_KERNEL);
-+	if (!fragment->fragment) {
-+		kfree(fragment);
-+		return -ENOMEM;
-+	}
-+
-+	len = vsnprintf(fragment->fragment, len, fmt, args);
-+	spin_lock_irqsave(&this->lock, flags);
-+	this->length += len;
-+	list_add_tail(&fragment->node, &this->fragments);
-+	spin_unlock_irqrestore(&this->lock, flags);
-+	return 0;
-+}
-+
-+static int string_stream_add(struct string_stream *this, const char *fmt, ...)
-+{
-+	va_list args;
-+	int result;
-+
-+	va_start(args, fmt);
-+	result = string_stream_vadd(this, fmt, args);
-+	va_end(args);
-+	return result;
-+}
-+
-+static void string_stream_clear(struct string_stream *this)
-+{
-+	struct string_stream_fragment *fragment, *fragment_safe;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&this->lock, flags);
-+	list_for_each_entry_safe(fragment,
-+				 fragment_safe,
-+				 &this->fragments,
-+				 node) {
-+		list_del(&fragment->node);
-+		kfree(fragment->fragment);
-+		kfree(fragment);
-+	}
-+	this->length = 0;
-+	spin_unlock_irqrestore(&this->lock, flags);
-+}
-+
-+static char *string_stream_get_string(struct string_stream *this)
-+{
-+	struct string_stream_fragment *fragment;
-+	size_t buf_len = this->length + 1; /* +1 for null byte. */
-+	char *buf;
-+	unsigned long flags;
-+
-+	buf = kzalloc(buf_len, GFP_KERNEL);
-+	if (!buf)
-+		return NULL;
-+
-+	spin_lock_irqsave(&this->lock, flags);
-+	list_for_each_entry(fragment, &this->fragments, node)
-+		strlcat(buf, fragment->fragment, buf_len);
-+	spin_unlock_irqrestore(&this->lock, flags);
-+
-+	return buf;
-+}
-+
-+static bool string_stream_is_empty(struct string_stream *this)
-+{
-+	bool is_empty;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&this->lock, flags);
-+	is_empty = list_empty(&this->fragments);
-+	spin_unlock_irqrestore(&this->lock, flags);
-+
-+	return is_empty;
-+}
-+
-+void destroy_string_stream(struct string_stream *stream)
-+{
-+	stream->clear(stream);
-+	kfree(stream);
-+}
-+
-+static void string_stream_destroy(struct kref *kref)
-+{
-+	struct string_stream *stream = container_of(kref,
-+						    struct string_stream,
-+						    refcount);
-+	destroy_string_stream(stream);
-+}
-+
-+struct string_stream *new_string_stream(void)
-+{
-+	struct string_stream *stream = kzalloc(sizeof(*stream), GFP_KERNEL);
-+
-+	if (!stream)
-+		return NULL;
-+
-+	INIT_LIST_HEAD(&stream->fragments);
-+	spin_lock_init(&stream->lock);
-+	kref_init(&stream->refcount);
-+	stream->add = string_stream_add;
-+	stream->vadd = string_stream_vadd;
-+	stream->get_string = string_stream_get_string;
-+	stream->clear = string_stream_clear;
-+	stream->is_empty = string_stream_is_empty;
-+	return stream;
-+}
-+
-+void string_stream_get(struct string_stream *stream)
-+{
-+	kref_get(&stream->refcount);
-+}
-+
-+int string_stream_put(struct string_stream *stream)
-+{
-+	return kref_put(&stream->refcount, &string_stream_destroy);
-+}
-+
++def parse_run_tests(kernel_output):
++	for output in isolate_kunit_output(kernel_output):
++		print(output)
 -- 
 2.19.1.568.g152ad8e336-goog
 
