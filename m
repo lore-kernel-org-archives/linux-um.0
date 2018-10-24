@@ -1,17 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from mail-ed1-x542.google.com ([2a00:1450:4864:20::542])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gFjcV-0000qv-FT
- for linux-um@lists.infradead.org; Thu, 25 Oct 2018 17:40:33 +0000
+ id 1gFFFo-0005qD-VT
+ for linux-um@lists.infradead.org; Wed, 24 Oct 2018 09:15:08 +0000
+Received: by mail-ed1-x542.google.com with SMTP id e5-v6so4318419eds.6
+ for <linux-um@lists.infradead.org>; Wed, 24 Oct 2018 02:14:53 -0700 (PDT)
+Date: Wed, 24 Oct 2018 11:14:49 +0200
+From: Daniel Vetter <daniel@ffwll.ch>
 Subject: Re: [RFC v2 00/14] kunit: introduce KUnit, the Linux kernel unit
  testing framework
+Message-ID: <20181024091449.GL324@phenom.ffwll.local>
 References: <20181023235750.103146-1-brendanhiggins@google.com>
-From: Shuah Khan <shuah@kernel.org>
-Message-ID: <4b6eb273-8fe0-75be-dea0-fbbf17a7158c@kernel.org>
-Date: Thu, 25 Oct 2018 11:40:18 -0600
 MIME-Version: 1.0
+Content-Disposition: inline
 In-Reply-To: <20181023235750.103146-1-brendanhiggins@google.com>
-Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,10 +26,10 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Brendan Higgins <brendanhiggins@google.com>, gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org
-Cc: brakmo@fb.com, robh@kernel.org, richard@nod.at, dri-devel@lists.freedesktop.org, linux-nvdimm@lists.01.org, mpe@ellerman.id.au, Tim.Bird@sony.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, kieran.bingham@ideasonboard.com, julia.lawall@lip6.fr, joel@jms.id.au, linux-kselftest@vger.kernel.org, khilman@baylibre.com, joe@perches.com, daniel@ffwll.ch, dan.j.williams@intel.com, Shuah Khan <shuah@kernel.org>, jdike@addtoit.com, kunit-dev@googlegroups.com
+To: Brendan Higgins <brendanhiggins@google.com>
+Cc: brakmo@fb.com, dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org, shuah@kernel.org, robh@kernel.org, linux-nvdimm@lists.01.org, richard@nod.at, kieran.bingham@ideasonboard.com, joel@jms.id.au, jdike@addtoit.com, Tim.Bird@sony.com, keescook@google.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, mcgrof@kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, joe@perches.com, khilman@baylibre.com
 
-On 10/23/2018 05:57 PM, Brendan Higgins wrote:
+On Tue, Oct 23, 2018 at 04:57:36PM -0700, Brendan Higgins wrote:
 > This patch set proposes KUnit, a lightweight unit testing and mocking
 > framework for the Linux kernel.
 > 
@@ -80,14 +82,18 @@ On 10/23/2018 05:57 PM, Brendan Higgins wrote:
 >    as suggested by Rob.
 >  - Cleaned up some of the commit messages and tweaked commit order a
 >    bit based on suggestions.
-> 
 
-I am a bit behind on reviewing this patch series.
+Do you have some example unit tests somewhere? The docs are all neat, but
+real example helps a lot with the tried&true art of copypasting :-)
 
-Just a quick note that I will start looking at these early next week.
-
-thanks,
--- Shuah
+I'd like to give this a test spin with some of the unit tests we already
+have in drm. And especially figuring out how we could integrate this with
+our existing infrastructure.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
 
 _______________________________________________
 linux-um mailing list
