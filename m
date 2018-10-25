@@ -1,19 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-ot1-x343.google.com ([2607:f8b0:4864:20::343])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gFn8c-0006xK-A8
- for linux-um@lists.infradead.org; Thu, 25 Oct 2018 21:25:56 +0000
-Received: by mail-ot1-x343.google.com with SMTP id c32so10580476otb.8
- for <linux-um@lists.infradead.org>; Thu, 25 Oct 2018 14:25:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <20181023235750.103146-1-brendanhiggins@google.com>
- <20181024091449.GL324@phenom.ffwll.local>
-In-Reply-To: <20181024091449.GL324@phenom.ffwll.local>
-From: Brendan Higgins <brendanhiggins@google.com>
-Date: Thu, 25 Oct 2018 14:25:28 -0700
-Message-ID: <CAFd5g44RGcYzEb68y0jBpcpZPhbY9=M-==+9cNvs0XyMamobLA@mail.gmail.com>
+ id 1gFjcV-0000qv-FT
+ for linux-um@lists.infradead.org; Thu, 25 Oct 2018 17:40:33 +0000
 Subject: Re: [RFC v2 00/14] kunit: introduce KUnit, the Linux kernel unit
  testing framework
+References: <20181023235750.103146-1-brendanhiggins@google.com>
+From: Shuah Khan <shuah@kernel.org>
+Message-ID: <4b6eb273-8fe0-75be-dea0-fbbf17a7158c@kernel.org>
+Date: Thu, 25 Oct 2018 11:40:18 -0600
+MIME-Version: 1.0
+In-Reply-To: <20181023235750.103146-1-brendanhiggins@google.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -26,52 +24,70 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Greg KH <gregkh@linuxfoundation.org>, Kees Cook <keescook@google.com>, mcgrof@kernel.org, shuah@kernel.org, Joel Stanley <joel@jms.id.au>, mpe@ellerman.id.au, joe@perches.com, brakmo@fb.com, rostedt@goodmis.org, Tim.Bird@sony.com, khilman@baylibre.com, Julia Lawall <julia.lawall@lip6.fr>, linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, jdike@addtoit.com, richard@nod.at, linux-um@lists.infradead.org, dri-devel@lists.freedesktop.org, Rob Herring <robh@kernel.org>, dan.j.williams@intel.com, linux-nvdimm@lists.01.org, kieran.bingham@ideasonboard.com
-Cc: daniel@ffwll.ch
+To: Brendan Higgins <brendanhiggins@google.com>, gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org
+Cc: brakmo@fb.com, robh@kernel.org, richard@nod.at, dri-devel@lists.freedesktop.org, linux-nvdimm@lists.01.org, mpe@ellerman.id.au, Tim.Bird@sony.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, kieran.bingham@ideasonboard.com, julia.lawall@lip6.fr, joel@jms.id.au, linux-kselftest@vger.kernel.org, khilman@baylibre.com, joe@perches.com, daniel@ffwll.ch, dan.j.williams@intel.com, Shuah Khan <shuah@kernel.org>, jdike@addtoit.com, kunit-dev@googlegroups.com
 
-On Wed, Oct 24, 2018 at 2:14 AM Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Tue, Oct 23, 2018 at 04:57:36PM -0700, Brendan Higgins wrote:
-<snip>
-> > ## Changes Since Last Version
-> >
-> >  - Updated patchset to apply cleanly on 4.19.
-> >  - Stripped down patchset to focus on just the core features (I dropped
-> >    mocking, spying, and the MMIO stuff for now; you can find these
-> >    patches here: https://kunit-review.googlesource.com/c/linux/+/1132),
-> >    as suggested by Rob.
-> >  - Cleaned up some of the commit messages and tweaked commit order a
-> >    bit based on suggestions.
->
-> Do you have some example unit tests somewhere? The docs are all neat, but
-> real example helps a lot with the tried&true art of copypasting :-)
+On 10/23/2018 05:57 PM, Brendan Higgins wrote:
+> This patch set proposes KUnit, a lightweight unit testing and mocking
+> framework for the Linux kernel.
+> 
+> Unlike Autotest and kselftest, KUnit is a true unit testing framework;
+> it does not require installing the kernel on a test machine or in a VM
+> and does not require tests to be written in userspace running on a host
+> kernel. Additionally, KUnit is fast: From invocation to completion KUnit
+> can run several dozen tests in under a second. Currently, the entire
+> KUnit test suite for KUnit runs in under a second from the initial
+> invocation (build time excluded).
+> 
+> KUnit is heavily inspired by JUnit, Python's unittest.mock, and
+> Googletest/Googlemock for C++. KUnit provides facilities for defining
+> unit test cases, grouping related test cases into test suites, providing
+> common infrastructure for running tests, mocking, spying, and much more.
+> 
+> ## What's so special about unit testing?
+> 
+> A unit test is supposed to test a single unit of code in isolation,
+> hence the name. There should be no dependencies outside the control of
+> the test; this means no external dependencies, which makes tests orders
+> of magnitudes faster. Likewise, since there are no external dependencies,
+> there are no hoops to jump through to run the tests. Additionally, this
+> makes unit tests deterministic: a failing unit test always indicates a
+> problem. Finally, because unit tests necessarily have finer granularity,
+> they are able to test all code paths easily solving the classic problem
+> of difficulty in exercising error handling code.
+> 
+> ## Is KUnit trying to replace other testing frameworks for the kernel?
+> 
+> No. Most existing tests for the Linux kernel are end-to-end tests, which
+> have their place. A well tested system has lots of unit tests, a
+> reasonable number of integration tests, and some end-to-end tests. KUnit
+> is just trying to address the unit test space which is currently not
+> being addressed.
+> 
+> ## More information on KUnit
+> 
+> There is a bunch of documentation near the end of this patch set that
+> describes how to use KUnit and best practices for writing unit tests.
+> For convenience I am hosting the compiled docs here:
+> https://google.github.io/kunit-docs/third_party/kernel/docs/
+> 
+> ## Changes Since Last Version
+> 
+>  - Updated patchset to apply cleanly on 4.19.
+>  - Stripped down patchset to focus on just the core features (I dropped
+>    mocking, spying, and the MMIO stuff for now; you can find these
+>    patches here: https://kunit-review.googlesource.com/c/linux/+/1132),
+>    as suggested by Rob.
+>  - Cleaned up some of the commit messages and tweaked commit order a
+>    bit based on suggestions.
+> 
 
-Yes! So I have quite a few tests for KUnit itself, but they are mostly
-in the patches that I cut from the previous version of the RFC:
-https://kunit.googlesource.com/linux/+/c58019fb4fe15f820e51f857ae4ff14cd34075af/kunit/mock-macro-test.c
-https://kunit.googlesource.com/linux/+/c58019fb4fe15f820e51f857ae4ff14cd34075af/kunit/mock-test.c
-https://kunit.googlesource.com/linux/+/c58019fb4fe15f820e51f857ae4ff14cd34075af/kunit/string-stream-test.c
-https://kunit.googlesource.com/linux/+/c58019fb4fe15f820e51f857ae4ff14cd34075af/kunit/test-stream-test.c
-https://kunit.googlesource.com/linux/+/c58019fb4fe15f820e51f857ae4ff14cd34075af/kunit/test-test.c
+I am a bit behind on reviewing this patch series.
 
-There are some in this patchset (like here:
-https://lore.kernel.org/patchwork/patch/1002904/), but I should
-probably include some more...
+Just a quick note that I will start looking at these early next week.
 
-In any case, if you are looking for a more "realistic" example, you
-could look at these sets of tests, which I think is pretty good, and
-actually found a couple bugs in existing code:
-https://kunit.googlesource.com/linux/+/e10484ad2f9fc7926412ec84739fe105981b4771/drivers/i2c/busses/i2c-aspeed-test.c
-https://kunit.googlesource.com/linux/+/4b41b1594ffeab70f1b4364721940cb909509d97/net/ipv6/route-test.c
-
->
-> I'd like to give this a test spin with some of the unit tests we already
-> have in drm. And especially figuring out how we could integrate this with
-> our existing infrastructure.
-
-Awesome! I am looking forward to hearing how it goes!
-
-Cheers
+thanks,
+-- Shuah
 
 _______________________________________________
 linux-um mailing list
