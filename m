@@ -1,17 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-qk1-x74a.google.com ([2607:f8b0:4864:20::74a])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gF6af-0004C2-Mx
- for linux-um@lists.infradead.org; Wed, 24 Oct 2018 00:00:13 +0000
-Received: by mail-qk1-x74a.google.com with SMTP id m63-v6so3639119qkb.9
- for <linux-um@lists.infradead.org>; Tue, 23 Oct 2018 16:59:51 -0700 (PDT)
-Date: Tue, 23 Oct 2018 16:57:41 -0700
-In-Reply-To: <20181023235750.103146-1-brendanhiggins@google.com>
-Message-Id: <20181023235750.103146-6-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20181023235750.103146-1-brendanhiggins@google.com>
-Subject: [RFC v2 05/14] kunit: test: add the concept of expectations
-From: Brendan Higgins <brendanhiggins@google.com>
+Received: from lilium.sigma-star.at ([109.75.188.150])
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gHSgP-0002et-JC
+ for linux-um@lists.infradead.org; Tue, 30 Oct 2018 11:59:42 +0000
+From: Richard Weinberger <richard@nod.at>
+Subject: [PATCH 3/4] um: Include sys/uio.h to have writev()
+Date: Tue, 30 Oct 2018 12:58:11 +0100
+Message-Id: <20181030115812.346-3-richard@nod.at>
+In-Reply-To: <20181030115812.346-1-richard@nod.at>
+References: <20181030115812.346-1-richard@nod.at>
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,287 +22,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
-Cc: brakmo@fb.com, robh@kernel.org, richard@nod.at, dri-devel@lists.freedesktop.org, linux-nvdimm@lists.01.org, mpe@ellerman.id.au, Tim.Bird@sony.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, kieran.bingham@ideasonboard.com, julia.lawall@lip6.fr, joel@jms.id.au, linux-kselftest@vger.kernel.org, khilman@baylibre.com, joe@perches.com, daniel@ffwll.ch, dan.j.williams@intel.com, jdike@addtoit.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
+To: linux-um@lists.infradead.org
+Cc: Richard Weinberger <richard@nod.at>
 
-Add support for expectations, which allow properties to be specified and
-then verified in tests.
+sys/uio.h gives us writev(), otherwise the build might fail on
+some systems.
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Fixes: 49da7e64f33e ("High Performance UML Vector Network Driver")
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- include/kunit/test.h | 259 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 259 insertions(+)
+ arch/um/drivers/vector_user.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/kunit/test.h b/include/kunit/test.h
-index 68320fa2452de..d652825d7296f 100644
---- a/include/kunit/test.h
-+++ b/include/kunit/test.h
-@@ -273,4 +273,263 @@ void __printf(3, 4) test_printk(const char *level,
- #define test_err(test, fmt, ...) \
- 		test_printk(KERN_ERR, test, fmt, ##__VA_ARGS__)
+diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
+index 3d8cdbdb4e66..07dc8904510b 100644
+--- a/arch/um/drivers/vector_user.c
++++ b/arch/um/drivers/vector_user.c
+@@ -30,6 +30,7 @@
+ #include <stdlib.h>
+ #include <os.h>
+ #include <um_malloc.h>
++#include <sys/uio.h>
+ #include "vector_user.h"
  
-+static inline struct test_stream *test_expect_start(struct test *test,
-+						    const char *file,
-+						    const char *line)
-+{
-+	struct test_stream *stream = test_new_stream(test);
-+
-+	stream->add(stream, "EXPECTATION FAILED at %s:%s\n\t", file, line);
-+
-+	return stream;
-+}
-+
-+static inline void test_expect_end(struct test *test,
-+				   bool success,
-+				   struct test_stream *stream)
-+{
-+	if (!success)
-+		test->fail(test, stream);
-+	else
-+		stream->clear(stream);
-+}
-+
-+#define TEST_EXPECT_START(test) \
-+		test_expect_start(test, __FILE__, __stringify(__LINE__))
-+
-+#define TEST_EXPECT_END(test, success, stream) \
-+		test_expect_end(test, success, stream)
-+
-+#define TEST_EXPECT(test, success, message) do {			       \
-+	struct test_stream *__stream = TEST_EXPECT_START(test);		       \
-+									       \
-+	__stream->add(__stream, message);				       \
-+	TEST_EXPECT_END(test, success, __stream);			       \
-+} while (0)
-+
-+/**
-+ * TEST_SUCCEED() - A no-op expectation. Only exists for code clarity.
-+ * @test: The test context object.
-+ *
-+ * The opposite of TEST_FAIL(), it is an expectation that cannot fail. In other
-+ * words, it does nothing and only exists for code clarity. See
-+ * TEST_EXPECT_TRUE() for more information.
-+ */
-+#define TEST_SUCCEED(test) do {} while (0)
-+
-+/**
-+ * TEST_FAIL() - Always causes a test to fail when evaluated.
-+ * @test: The test context object.
-+ * @message: an informational message to be printed when the assertion is made.
-+ *
-+ * The opposite of TEST_SUCCEED(), it is an expectation that always fails. In
-+ * other words, it always results in a failed expectation, and consequently
-+ * always causes the test case to fail when evaluated. See TEST_EXPECT_TRUE()
-+ * for more information.
-+ */
-+#define TEST_FAIL(test, message) TEST_EXPECT(test, false, message)
-+
-+/**
-+ * TEST_EXPECT_TRUE() - Causes a test failure when the expression is not true.
-+ * @test: The test context object.
-+ * @condition: an arbitrary boolean expression. The test fails when this does
-+ * not evaluate to true.
-+ *
-+ * This and expectations of the form `TEST_EXPECT_*` will cause the test case to
-+ * fail when the specified condition is not met; however, it will not prevent
-+ * the test case from continuing to run; this is otherwise known as an
-+ * *expectation failure*.
-+ */
-+#define TEST_EXPECT_TRUE(test, condition)				       \
-+		TEST_EXPECT(test, (condition),				       \
-+		       "Expected " #condition " is true, but is false.")
-+
-+/**
-+ * TEST_EXPECT_FALSE() - Causes a test failure when the expression is not false.
-+ * @test: The test context object.
-+ * @condition: an arbitrary boolean expression. The test fails when this does
-+ * not evaluate to false.
-+ *
-+ * Sets an expectation that @condition evaluates to false. See
-+ * TEST_EXPECT_TRUE() for more information.
-+ */
-+#define TEST_EXPECT_FALSE(test, condition)				       \
-+		TEST_EXPECT(test, !(condition),				       \
-+		       "Expected " #condition " is false, but is true.")
-+
-+static inline void test_expect_binary(struct test *test,
-+				      long long left, const char *left_name,
-+				      long long right, const char *right_name,
-+				      bool compare_result,
-+				      const char *compare_name,
-+				      const char *file,
-+				      const char *line)
-+{
-+	struct test_stream *stream = test_expect_start(test, file, line);
-+
-+	stream->add(stream,
-+		    "Expected %s %s %s, but\n",
-+		    left_name, compare_name, right_name);
-+	stream->add(stream, "\t\t%s == %lld\n", left_name, left);
-+	stream->add(stream, "\t\t%s == %lld", right_name, right);
-+
-+	test_expect_end(test, compare_result, stream);
-+}
-+
-+/*
-+ * A factory macro for defining the expectations for the basic comparisons
-+ * defined for the built in types.
-+ *
-+ * Unfortunately, there is no common type that all types can be promoted to for
-+ * which all the binary operators behave the same way as for the actual types
-+ * (for example, there is no type that long long and unsigned long long can
-+ * both be cast to where the comparison result is preserved for all values). So
-+ * the best we can do is do the comparison in the original types and then coerce
-+ * everything to long long for printing; this way, the comparison behaves
-+ * correctly and the printed out value usually makes sense without
-+ * interpretation, but can always be interpretted to figure out the actual
-+ * value.
-+ */
-+#define TEST_EXPECT_BINARY(test, left, condition, right) do {		       \
-+	typeof(left) __left = (left);					       \
-+	typeof(right) __right = (right);				       \
-+	test_expect_binary(test,					       \
-+			   (long long) __left, #left,			       \
-+			   (long long) __right, #right,			       \
-+			   __left condition __right, #condition,	       \
-+			   __FILE__, __stringify(__LINE__));		       \
-+} while (0)
-+
-+/**
-+ * TEST_EXPECT_EQ() - Sets an expectation that @left and @right are equal.
-+ * @test: The test context object.
-+ * @left: an arbitrary expression that evaluates to a primitive C type.
-+ * @right: an arbitrary expression that evaluates to a primitive C type.
-+ *
-+ * Sets an expectation that the values that @left and @right evaluate to are
-+ * equal. This is semantically equivalent to
-+ * TEST_EXPECT_TRUE(@test, (@left) == (@right)). See TEST_EXPECT_TRUE() for more
-+ * information.
-+ */
-+#define TEST_EXPECT_EQ(test, left, right) \
-+		TEST_EXPECT_BINARY(test, left, ==, right)
-+
-+/**
-+ * TEST_EXPECT_NE() - An expectation that @left and @right are not equal.
-+ * @test: The test context object.
-+ * @left: an arbitrary expression that evaluates to a primitive C type.
-+ * @right: an arbitrary expression that evaluates to a primitive C type.
-+ *
-+ * Sets an expectation that the values that @left and @right evaluate to are not
-+ * equal. This is semantically equivalent to
-+ * TEST_EXPECT_TRUE(@test, (@left) != (@right)). See TEST_EXPECT_TRUE() for more
-+ * information.
-+ */
-+#define TEST_EXPECT_NE(test, left, right) \
-+		TEST_EXPECT_BINARY(test, left, !=, right)
-+
-+/**
-+ * TEST_EXPECT_LT() - An expectation that @left is less than @right.
-+ * @test: The test context object.
-+ * @left: an arbitrary expression that evaluates to a primitive C type.
-+ * @right: an arbitrary expression that evaluates to a primitive C type.
-+ *
-+ * Sets an expectation that the value that @left evaluates to is less than the
-+ * value that @right evaluates to. This is semantically equivalent to
-+ * TEST_EXPECT_TRUE(@test, (@left) < (@right)). See TEST_EXPECT_TRUE() for more
-+ * information.
-+ */
-+#define TEST_EXPECT_LT(test, left, right) \
-+		TEST_EXPECT_BINARY(test, left, <, right)
-+
-+/**
-+ * TEST_EXPECT_LE() - An expectation that @left is less than or equal to @right.
-+ * @test: The test context object.
-+ * @left: an arbitrary expression that evaluates to a primitive C type.
-+ * @right: an arbitrary expression that evaluates to a primitive C type.
-+ *
-+ * Sets an expectation that the value that @left evaluates to is less than or
-+ * equal to the value that @right evaluates to. Semantically this is equivalent
-+ * to TEST_EXPECT_TRUE(@test, (@left) <= (@right)). See TEST_EXPECT_TRUE() for
-+ * more information.
-+ */
-+#define TEST_EXPECT_LE(test, left, right) \
-+		TEST_EXPECT_BINARY(test, left, <=, right)
-+
-+/**
-+ * TEST_EXPECT_GT() - An expectation that @left is greater than @right.
-+ * @test: The test context object.
-+ * @left: an arbitrary expression that evaluates to a primitive C type.
-+ * @right: an arbitrary expression that evaluates to a primitive C type.
-+ *
-+ * Sets an expectation that the value that @left evaluates to is greater than
-+ * the value that @right evaluates to. This is semantically equivalent to
-+ * TEST_EXPECT_TRUE(@test, (@left) > (@right)). See TEST_EXPECT_TRUE() for more
-+ * information.
-+ */
-+#define TEST_EXPECT_GT(test, left, right) \
-+		TEST_EXPECT_BINARY(test, left, >, right)
-+
-+/**
-+ * TEST_EXPECT_GE() - Expects that @left is greater than or equal to @right.
-+ * @test: The test context object.
-+ * @left: an arbitrary expression that evaluates to a primitive C type.
-+ * @right: an arbitrary expression that evaluates to a primitive C type.
-+ *
-+ * Sets an expectation that the value that @left evaluates to is greater than
-+ * the value that @right evaluates to. This is semantically equivalent to
-+ * TEST_EXPECT_TRUE(@test, (@left) >= (@right)). See TEST_EXPECT_TRUE() for more
-+ * information.
-+ */
-+#define TEST_EXPECT_GE(test, left, right) \
-+		TEST_EXPECT_BINARY(test, left, >=, right)
-+
-+/**
-+ * TEST_EXPECT_STREQ() - An expectation that strings @left and @right are equal.
-+ * @test: The test context object.
-+ * @left: an arbitrary expression that evaluates to a null terminated string.
-+ * @right: an arbitrary expression that evaluates to a null terminated string.
-+ *
-+ * Sets an expectation that the values that @left and @right evaluate to are
-+ * equal. This is semantically equivalent to
-+ * TEST_EXPECT_TRUE(@test, !strcmp((@left), (@right))). See TEST_EXPECT_TRUE()
-+ * for more information.
-+ */
-+#define TEST_EXPECT_STREQ(test, left, right) do {			       \
-+	struct test_stream *__stream = TEST_EXPECT_START(test);		       \
-+	typeof(left) __left = (left);					       \
-+	typeof(right) __right = (right);				       \
-+									       \
-+	__stream->add(__stream, "Expected " #left " == " #right ", but\n");    \
-+	__stream->add(__stream, "\t\t%s == %s\n", #left, __left);	       \
-+	__stream->add(__stream, "\t\t%s == %s\n", #right, __right);	       \
-+									       \
-+	TEST_EXPECT_END(test, !strcmp(left, right), __stream);		       \
-+} while (0)
-+
-+/**
-+ * TEST_EXPECT_NOT_ERR_OR_NULL() - Expects that @ptr is not null and not err.
-+ * @test: The test context object.
-+ * @ptr: an arbitrary pointer.
-+ *
-+ * Sets an expectation that the value that @ptr evaluates to is not null and not
-+ * an errno stored in a pointer. This is semantically equivalent to
-+ * TEST_EXPECT_TRUE(@test, !IS_ERR_OR_NULL(@ptr)). See TEST_EXPECT_TRUE() for
-+ * more information.
-+ */
-+#define TEST_EXPECT_NOT_ERR_OR_NULL(test, ptr) do {			       \
-+	struct test_stream *__stream = TEST_EXPECT_START(test);		       \
-+	typeof(ptr) __ptr = (ptr);					       \
-+									       \
-+	if (!__ptr)							       \
-+		__stream->add(__stream,					       \
-+			      "Expected " #ptr " is not null, but is.");       \
-+	if (IS_ERR(__ptr))						       \
-+		__stream->add(__stream,					       \
-+			      "Expected " #ptr " is not error, but is: %ld",   \
-+			      PTR_ERR(__ptr));				       \
-+									       \
-+	TEST_EXPECT_END(test, !IS_ERR_OR_NULL(__ptr), __stream);	       \
-+} while (0)
-+
- #endif /* _KUNIT_TEST_H */
+ #define ID_GRE 0
 -- 
-2.19.1.568.g152ad8e336-goog
+2.19.1
 
 
 _______________________________________________
