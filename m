@@ -1,12 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from lithops.sigma-star.at ([195.201.40.130])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gHxwq-00013g-2G
- for linux-um@lists.infradead.org; Wed, 31 Oct 2018 21:22:45 +0000
+Received: from lilium.sigma-star.at ([109.75.188.150])
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gHSgP-0002es-Jp
+ for linux-um@lists.infradead.org; Tue, 30 Oct 2018 11:59:42 +0000
 From: Richard Weinberger <richard@nod.at>
-Subject: [GIT PULL] UML changes for 4.20-rc1
-Date: Wed, 31 Oct 2018 22:22:33 +0100
-Message-ID: <1829585.6m1bt7BjAO@blindfold>
+Subject: [PATCH 2/4] um: Add HAVE_DEBUG_BUGVERBOSE.
+Date: Tue, 30 Oct 2018 12:58:10 +0100
+Message-Id: <20181030115812.346-2-richard@nod.at>
+In-Reply-To: <20181030115812.346-1-richard@nod.at>
+References: <20181030115812.346-1-richard@nod.at>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -16,83 +18,27 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: torvalds@linux-foundation.org
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+To: linux-um@lists.infradead.org
+Cc: =?UTF-8?q?Hern=C3=A1n=20Gonzalez?= <hernan@vanguardiasur.com.ar>, Richard Weinberger <richard@nod.at>
 
-Linus,
-
-First of all, welcome back!
-
-Please note that the vast majority of these changes have
-been in -next since 4.18.
-Due to vacation and other troubles I didn't send a pull request
-back then.
-I rebased them a few days ago on top of 4.19.
-
-The following changes since commit 84df9525b0c27f3ebc2ebb1864fa62a97fdedb7d:
-
-  Linux 4.19 (2018-10-22 07:37:37 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git for-linus-4.20-rc1
-
-for you to fetch changes up to 917e2fd2c53eb3c4162f5397555cbd394390d4bc:
-
-  um: Make line/tty semantics use true write IRQ (2018-10-29 22:34:16 +0100)
-
-----------------------------------------------------------------
-This pull request contains the following updates for UML:
-
-- Removal of old and dead code
-- A bug fix for our tty driver
-- Other minor cleanups across the code base
-----------------------------------------------------------------
-
-Anton Ivanov (1):
-      um: Make line/tty semantics use true write IRQ
-
-Christoph Hellwig (1):
-      um: remove unused AIO code
-
-Colin Ian King (1):
-      um: trap: fix spelling mistake, EACCESS -> EACCES
-
-Richard Weinberger (3):
-      um: Drop own definition of PTRACE_SYSEMU/_SINGLESTEP
-      um: Remove update_debugregs()
-      um: Give start_idle_thread() a return code
-
-Ritesh Raj Sarraf (1):
-      um: Don't hardcode path as it is architecture dependent
-
-YueHaibing (1):
-      um: NULL check before kfree is not needed
-
- arch/um/drivers/line.c                |   4 +-
- arch/um/drivers/port_user.c           |   2 +-
- arch/um/drivers/vector_kern.c         |  15 +-
- arch/um/drivers/vector_user.c         |   6 +-
- arch/um/include/shared/aio.h          |  28 ---
- arch/um/kernel/irq.c                  |   3 +-
- arch/um/kernel/trap.c                 |   2 +-
- arch/um/os-Linux/Makefile             |   8 +-
- arch/um/os-Linux/aio.c                | 390 ----------------------------------
- arch/um/os-Linux/skas/process.c       |   5 +
- arch/x86/um/shared/sysdep/ptrace_32.h |  12 --
- 11 files changed, 19 insertions(+), 456 deletions(-)
- delete mode 100644 arch/um/include/shared/aio.h
- delete mode 100644 arch/um/os-Linux/aio.c
-
-
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+RnJvbTogSGVybsOhbiBHb256YWxleiA8aGVybmFuQHZhbmd1YXJkaWFzdXIuY29tLmFyPgoKVGhp
+cyBvcHRpb24gcmVzdG9yZXMgdGhlIERFQlVHX0JVR1ZFUkJPU0UgZnVuY3Rpb25hbGl0eSBhcyBp
+dCB3YXMKcHJldmlvdXMgdG8gY29tbWl0IDlhOTM4NDhmZTc4NyAoIng4Ni9kZWJ1ZzogSW1wbGVt
+ZW50IF9fV0FSTigpIHVzaW5nClVEMCIpLgoKU2lnbmVkLW9mZi1ieTogSGVybsOhbiBHb256YWxl
+eiA8aGVybmFuQHZhbmd1YXJkaWFzdXIuY29tLmFyPgpTaWduZWQtb2ZmLWJ5OiBSaWNoYXJkIFdl
+aW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0PgotLS0KIGFyY2gvdW0vS2NvbmZpZyB8IDEgKwogMSBm
+aWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspCgpkaWZmIC0tZ2l0IGEvYXJjaC91bS9LY29uZmln
+IGIvYXJjaC91bS9LY29uZmlnCmluZGV4IDZiOTkzODkxOWYwYi4uYzM3YzdkZmVlOGJlIDEwMDY0
+NAotLS0gYS9hcmNoL3VtL0tjb25maWcKKysrIGIvYXJjaC91bS9LY29uZmlnCkBAIC0xMiw2ICsx
+Miw3IEBAIGNvbmZpZyBVTUwKIAlzZWxlY3QgSEFWRV9VSUQxNgogCXNlbGVjdCBIQVZFX0ZVVEVY
+X0NNUFhDSEcgaWYgRlVURVgKIAlzZWxlY3QgSEFWRV9ERUJVR19LTUVNTEVBSworCXNlbGVjdCBI
+QVZFX0RFQlVHX0JVR1ZFUkJPU0UKIAlzZWxlY3QgR0VORVJJQ19JUlFfU0hPVwogCXNlbGVjdCBH
+RU5FUklDX0NQVV9ERVZJQ0VTCiAJc2VsZWN0IEdFTkVSSUNfQ0xPQ0tFVkVOVFMKLS0gCjIuMTku
+MQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4
+LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0
+cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
 
