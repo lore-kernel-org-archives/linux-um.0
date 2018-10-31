@@ -1,25 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-lj1-x243.google.com ([2a00:1450:4864:20::243])
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gHzHz-0004JW-Hk
- for linux-um@lists.infradead.org; Wed, 31 Oct 2018 22:48:41 +0000
-Received: by mail-lj1-x243.google.com with SMTP id c4-v6so16376873lja.4
- for <linux-um@lists.infradead.org>; Wed, 31 Oct 2018 15:48:27 -0700 (PDT)
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com.
- [209.85.208.171])
- by smtp.gmail.com with ESMTPSA id c22sm4278704lfd.88.2018.10.31.15.48.24
- for <linux-um@lists.infradead.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 31 Oct 2018 15:48:24 -0700 (PDT)
-Received: by mail-lj1-f171.google.com with SMTP id f3-v6so16371741ljk.9
- for <linux-um@lists.infradead.org>; Wed, 31 Oct 2018 15:48:24 -0700 (PDT)
+ id 1gHxwq-00013g-2G
+ for linux-um@lists.infradead.org; Wed, 31 Oct 2018 21:22:45 +0000
+From: Richard Weinberger <richard@nod.at>
+Subject: [GIT PULL] UML changes for 4.20-rc1
+Date: Wed, 31 Oct 2018 22:22:33 +0100
+Message-ID: <1829585.6m1bt7BjAO@blindfold>
 MIME-Version: 1.0
-References: <1829585.6m1bt7BjAO@blindfold>
-In-Reply-To: <1829585.6m1bt7BjAO@blindfold>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Wed, 31 Oct 2018 15:48:07 -0700
-Message-ID: <CAHk-=wjw8qra+SYDDjvSnZ=APsn9aFG9WiJGSLD94A0Q_+BZWg@mail.gmail.com>
-Subject: Re: [GIT PULL] UML changes for 4.20-rc1
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -32,24 +20,76 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: richard@nod.at
-Cc: linux-um@lists.infradead.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: torvalds@linux-foundation.org
+Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
 
-On Wed, Oct 31, 2018 at 2:22 PM Richard Weinberger <richard@nod.at> wrote:
->
-> - Removal of old and dead code
-> - A bug fix for our tty driver
-> - Other minor cleanups across the code base
+Linus,
 
-Pulled. I may not like recent rebases, but I do like this:
+First of all, welcome back!
 
->  11 files changed, 19 insertions(+), 456 deletions(-)
->  delete mode 100644 arch/um/include/shared/aio.h
->  delete mode 100644 arch/um/os-Linux/aio.c
+Please note that the vast majority of these changes have
+been in -next since 4.18.
+Due to vacation and other troubles I didn't send a pull request
+back then.
+I rebased them a few days ago on top of 4.19.
 
-Thanks,
+The following changes since commit 84df9525b0c27f3ebc2ebb1864fa62a97fdedb7d:
 
-                Linus
+  Linux 4.19 (2018-10-22 07:37:37 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git for-linus-4.20-rc1
+
+for you to fetch changes up to 917e2fd2c53eb3c4162f5397555cbd394390d4bc:
+
+  um: Make line/tty semantics use true write IRQ (2018-10-29 22:34:16 +0100)
+
+----------------------------------------------------------------
+This pull request contains the following updates for UML:
+
+- Removal of old and dead code
+- A bug fix for our tty driver
+- Other minor cleanups across the code base
+----------------------------------------------------------------
+
+Anton Ivanov (1):
+      um: Make line/tty semantics use true write IRQ
+
+Christoph Hellwig (1):
+      um: remove unused AIO code
+
+Colin Ian King (1):
+      um: trap: fix spelling mistake, EACCESS -> EACCES
+
+Richard Weinberger (3):
+      um: Drop own definition of PTRACE_SYSEMU/_SINGLESTEP
+      um: Remove update_debugregs()
+      um: Give start_idle_thread() a return code
+
+Ritesh Raj Sarraf (1):
+      um: Don't hardcode path as it is architecture dependent
+
+YueHaibing (1):
+      um: NULL check before kfree is not needed
+
+ arch/um/drivers/line.c                |   4 +-
+ arch/um/drivers/port_user.c           |   2 +-
+ arch/um/drivers/vector_kern.c         |  15 +-
+ arch/um/drivers/vector_user.c         |   6 +-
+ arch/um/include/shared/aio.h          |  28 ---
+ arch/um/kernel/irq.c                  |   3 +-
+ arch/um/kernel/trap.c                 |   2 +-
+ arch/um/os-Linux/Makefile             |   8 +-
+ arch/um/os-Linux/aio.c                | 390 ----------------------------------
+ arch/um/os-Linux/skas/process.c       |   5 +
+ arch/x86/um/shared/sysdep/ptrace_32.h |  12 --
+ 11 files changed, 19 insertions(+), 456 deletions(-)
+ delete mode 100644 arch/um/include/shared/aio.h
+ delete mode 100644 arch/um/os-Linux/aio.c
+
+
+
 
 _______________________________________________
 linux-um mailing list
