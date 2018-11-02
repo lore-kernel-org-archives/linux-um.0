@@ -1,19 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-oi1-x244.google.com ([2607:f8b0:4864:20::244])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKCTh-0002NZ-Kj
- for linux-um@lists.infradead.org; Wed, 07 Nov 2018 01:17:55 +0000
-Received: by mail-oi1-x244.google.com with SMTP id c25-v6so12534050oiy.0
- for <linux-um@lists.infradead.org>; Tue, 06 Nov 2018 17:17:40 -0800 (PST)
-MIME-Version: 1.0
-References: <20181023235750.103146-1-brendanhiggins@google.com>
- <f3682d48-6f27-5eef-8274-02f90dd65188@kernel.org>
-In-Reply-To: <f3682d48-6f27-5eef-8274-02f90dd65188@kernel.org>
-From: Brendan Higgins <brendanhiggins@google.com>
-Date: Tue, 6 Nov 2018 17:17:27 -0800
-Message-ID: <CAFd5g45Tgcx4RisrCF8QHneR7ELezPfpEPKh_mH8KEUi3skE7g@mail.gmail.com>
+ id 1gIe74-0002NZ-NQ
+ for linux-um@lists.infradead.org; Fri, 02 Nov 2018 18:24:08 +0000
 Subject: Re: [RFC v2 00/14] kunit: introduce KUnit, the Linux kernel unit
  testing framework
+References: <20181023235750.103146-1-brendanhiggins@google.com>
+From: Shuah Khan <shuah@kernel.org>
+Message-ID: <f3682d48-6f27-5eef-8274-02f90dd65188@kernel.org>
+Date: Fri, 2 Nov 2018 12:23:53 -0600
+MIME-Version: 1.0
+In-Reply-To: <20181023235750.103146-1-brendanhiggins@google.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -26,138 +24,101 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: shuah@kernel.org
-Cc: brakmo@fb.com, dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org, Rob Herring <robh@kernel.org>, linux-nvdimm@lists.01.org, richard@nod.at, kieran.bingham@ideasonboard.com, Joel Stanley <joel@jms.id.au>, jdike@addtoit.com, Tim.Bird@sony.com, Kees Cook <keescook@google.com>, linux-um@lists.infradead.org, rostedt@goodmis.org, Julia Lawall <julia.lawall@lip6.fr>, dan.j.williams@intel.com, kunit-dev@googlegroups.com, Greg KH <gregkh@linuxfoundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, mcgrof@kernel.org, Daniel Vetter <daniel@ffwll.ch>, mpe@ellerman.id.au, joe@perches.com, khilman@baylibre.com
+To: Brendan Higgins <brendanhiggins@google.com>, gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org
+Cc: brakmo@fb.com, robh@kernel.org, richard@nod.at, dri-devel@lists.freedesktop.org, linux-nvdimm@lists.01.org, mpe@ellerman.id.au, Tim.Bird@sony.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, kieran.bingham@ideasonboard.com, julia.lawall@lip6.fr, joel@jms.id.au, linux-kselftest@vger.kernel.org, khilman@baylibre.com, joe@perches.com, daniel@ffwll.ch, dan.j.williams@intel.com, Shuah Khan <shuah@kernel.org>, jdike@addtoit.com, kunit-dev@googlegroups.com
 
-On Fri, Nov 2, 2018 at 11:23 AM Shuah Khan <shuah@kernel.org> wrote:
+Hi Brendan,
+
+
+On 10/23/2018 05:57 PM, Brendan Higgins wrote:
+> This patch set proposes KUnit, a lightweight unit testing and mocking
+> framework for the Linux kernel.
+> 
+> Unlike Autotest and kselftest, KUnit is a true unit testing framework;
+> it does not require installing the kernel on a test machine or in a VM
+> and does not require tests to be written in userspace running on a host
+> kernel. Additionally, KUnit is fast: From invocation to completion KUnit
+> can run several dozen tests in under a second. Currently, the entire
+> KUnit test suite for KUnit runs in under a second from the initial
+> invocation (build time excluded).
+> 
+> KUnit is heavily inspired by JUnit, Python's unittest.mock, and
+> Googletest/Googlemock for C++. KUnit provides facilities for defining
+> unit test cases, grouping related test cases into test suites, providing
+> common infrastructure for running tests, mocking, spying, and much more.
+> 
+> ## What's so special about unit testing?
+> 
+> A unit test is supposed to test a single unit of code in isolation,
+> hence the name. There should be no dependencies outside the control of
+> the test; this means no external dependencies, which makes tests orders
+> of magnitudes faster. Likewise, since there are no external dependencies,
+> there are no hoops to jump through to run the tests. Additionally, this
+> makes unit tests deterministic: a failing unit test always indicates a
+> problem. Finally, because unit tests necessarily have finer granularity,
+> they are able to test all code paths easily solving the classic problem
+> of difficulty in exercising error handling code.
+> 
+> ## Is KUnit trying to replace other testing frameworks for the kernel?
+> 
+> No. Most existing tests for the Linux kernel are end-to-end tests, which
+> have their place. A well tested system has lots of unit tests, a
+> reasonable number of integration tests, and some end-to-end tests. KUnit
+> is just trying to address the unit test space which is currently not
+> being addressed.
+> 
+> ## More information on KUnit
+> 
+> There is a bunch of documentation near the end of this patch set that
+> describes how to use KUnit and best practices for writing unit tests.
+> For convenience I am hosting the compiled docs here:
+> https://google.github.io/kunit-docs/third_party/kernel/docs/
+> 
+> ## Changes Since Last Version
+> 
+>  - Updated patchset to apply cleanly on 4.19.
+>  - Stripped down patchset to focus on just the core features (I dropped
+>    mocking, spying, and the MMIO stuff for now; you can find these
+>    patches here: https://kunit-review.googlesource.com/c/linux/+/1132),
+>    as suggested by Rob.
+>  - Cleaned up some of the commit messages and tweaked commit order a
+>    bit based on suggestions.
 >
-> Hi Brendan,
-<snip>
-> Framework looks good. I think it would be helpful to include a real test
 
-Great to hear!
+Framework looks good. I think it would be helpful to include a real test
+in the patch series to get a feel for how effective it is.
 
-> in the patch series to get a feel for how effective it is.
+On one hand, KUnit stands on its own as its own and maybe it should be placed in
+under tools/testing/KUnit, however I am wondering would it be beneficial for the
+framework to under selftests.
 
-Alright, will do. Rob suggested converting
-https://elixir.bootlin.com/linux/v4.19/source/drivers/of/unittest.c to
-KUnit, so that might offer a good comparison.
+I am a bit concerned about the number of test framework we have at the moment and
+are we running the risk of fragmenting the landscape. I am concerned if this would
+lead to developer confusion as to where to add tests.
 
->
-> On one hand, KUnit stands on its own as its own and maybe it should be placed in
-> under tools/testing/KUnit, however I am wondering would it be beneficial for the
-> framework to under selftests.
->
-> I am a bit concerned about the number of test framework we have at the moment and
-> are we running the risk of fragmenting the landscape. I am concerned if this would
-> lead to developer confusion as to where to add tests.
+That being said, I don't have a strong opinion one way or the other.
 
-On one hand separating them makes sense because they are different
-things. kselftest seems to do its job, writing end-to-end tests,
-pretty well. Trying to associate KUnit with it could also be confusing
-since they have different requirements and should be used for
-different things. But on the other hand, you are right, it would be
-nice to have a coherent experience for developers. In either case, we
-will still need developers to understand when they should be writing
-unit tests and when they should be writing end-to-end tests. So in the
-end, I don't think it will matter too much, we will still need to
-address this confusion either way.
+btw I started playing with kunit following the instructions and ran into problems:
 
-The main reason I made it separate was just because I thought people
-would find it strange to have essentially normal kernel code depend on
-something in `tools/testing/`. You, me, and Greg had talked about this
-elsewhere, in summary, I am trying to do in-tree unit testing, so
-tests should live side-by-side with the code it tests, and the tests
-run at the same level of abstraction as the code that is under test.
-The tests do not run as userspace programs on an installed kernel
-under test. The goal is to be able to run arbitrary kernel code in
-isolation.
+./tools/testing/kunit/kunit.py 
+usage: kunit.py [-h] {run,new} ...
 
-Although it would be *possible* to put KUnit under `tools/testing/`,
-my understanding is that `tools/testing/` is for programs that compile
-independently of the kernel, rather they do not link against anything
-built-in to the kernel. (I saw there are some test drivers, but they
-seem to be modeled as out of tree drivers that have no option to be
-built into the kernel.) KUnit does not fall into this category as
-KUnit links directly against arbitrary kernel code, and actually
-reuses kernel infrastructure to provide an environment to run kernel
-code in.
+Helps writing and running KUnit tests.
 
-I do not feel strongly about where KUnit lives, but by my
-understanding, putting KUnit in `tools/testing/` might break
-assumptions about the relationship between `tools/` and the rest of
-the kernel.
+positional arguments:
+  {run,new}
+    run       Runs KUnit tests.
+    new       Prints out boilerplate for writing new tests.
 
-I know you previously said that there are unit tests under kselftest
-(like maybe this one:
-https://elixir.bootlin.com/linux/v4.19/source/lib/locking-selftest.c
-?). I agree that something like this example is trying to be a unit
-test, but the kselftest infrastructure is built around the idea of
-booting kernels and running tests against them; I know that some
-kselftests load test modules, but the point is the intention is to run
-the kernel somewhere. My end goal with KUnit is that we should not
-need to run a kernel anywhere (I know right now I am using UML, but
-the goal is to get away from that). So I think that decidedly makes
-them two different things.
+optional arguments:
+  -h, --help  show this help message and exit
 
-The number of test frameworks is a problem, I definitely agree with
-that. Most of the other tests I have seen for the kernel are
-indisputably end-to-end tests; it seems that kselftest is decidedly
-the favorite, maybe we should move those under kselftest?
+./tools/testing/kunit/kunit.py run
+Regenerating .config ...
+ERROR:root:Provided Kconfig is not contained in validated .config!
 
-I know there are other things that don't fit. Maybe we could start off
-with some suggestions for best practices for what to use and when?
->
-> That being said, I don't have a strong opinion one way or the other.
-
-I think it is pretty common on other projects to have unit tests
-separated from end-to-end tests in some way or another. You want to be
-able to run unit tests quickly and all the time, whereas you usually
-only want to run your end-to-end tests when you make a submission or a
-release. Regardless of where we put KUnit and what its relationship to
-kselftest becomes, we should definitely make it easy to run unit tests
-separate from all the end-to-end tests.
->
-> btw I started playing with kunit following the instructions and ran into problems:
->
-> ./tools/testing/kunit/kunit.py
-> usage: kunit.py [-h] {run,new} ...
->
-> Helps writing and running KUnit tests.
->
-> positional arguments:
->   {run,new}
->     run       Runs KUnit tests.
->     new       Prints out boilerplate for writing new tests.
->
-> optional arguments:
->   -h, --help  show this help message and exit
->
-> ./tools/testing/kunit/kunit.py run
-> Regenerating .config ...
-> ERROR:root:Provided Kconfig is not contained in validated .config!
-
-Oh sorry, I need to write some documentation for that.
-
-I take it you checked out
-https://kunit.googlesource.com/linux/+/kunit/alpha/master ?
-
-If so, you need a "kunitconfig" in the root of your kernel source with
-the following Kconfig options:
-CONFIG_TEST=y
-CONFIG_TEST_TEST=y
-CONFIG_EXAMPLE_TEST=y
-
-I am guessing what happened is that you used the "stable" branch which
-we have been using internally, but follow the instructions I posted
-for this patchset. Some of the Kconfig options have deviated between
-them. Sorry about the confusion.
-
->
-> thanks,
-> -- Shuah
-
-Thank you!
+thanks,
+-- Shuah
 
 _______________________________________________
 linux-um mailing list
