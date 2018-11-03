@@ -1,126 +1,91 @@
-Return-Path: <joel@joelfernandes.org>
-Date: Sat, 3 Nov 2018 08:20:06 -0700
-From: Joel Fernandes <joel@joelfernandes.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Subject: Re: [PATCH -next 0/3] Add support for fast mremap
-Message-ID: <20181103152006.GB259637@google.com>
 References: <20181103040041.7085-1-joelaf@google.com>
  <6886607.O3ZT5bM3Cy@blindfold>
- <e1d039a5-9c83-b9b9-98b5-d39bc48f04e0@kot-begemot.co.uk>
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Message-ID: <e1d039a5-9c83-b9b9-98b5-d39bc48f04e0@kot-begemot.co.uk>
+Date: Sat, 3 Nov 2018 09:24:05 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e1d039a5-9c83-b9b9-98b5-d39bc48f04e0@kot-begemot.co.uk>
-To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, kernel-team@android.com, akpm@linux-foundation.org, Andrey Ryabinin <aryabinin@virtuozzo.com>, Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@alien8.de>, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, dancol@google.com, Dave Hansen <dave.hansen@linux.intel.com>, "David S. Miller" <davem@davemloft.net>, elfring@users.sourceforge.net, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Helge Deller <deller@gmx.de>, hughd@google.com, Ingo Molnar <mingo@redhat.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Jeff Dike <jdike@addtoit.com>, Jonas Bonn <jonas@southpole.se>, Julia Lawall <Julia.Lawall@lip6.fr>, kasan-dev@googlegroups.com, kirill@shutemov.name, kvmarm@lists.cs.columbia.edu, Ley Foon Tan <lftan@altera.com>, linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vge.kvack.org, r.kernel.org@lithops.sigma-star.at, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, lokeshgidra@google.com, Max Filippov <jcmvbkbc@gmail.com>, Michal Hocko <mhocko@kernel.org>, minchan@kernel.org, nios2-dev@lists.rocketboards.org, pantin@google.com, Peter Zijlstra <peterz@infradead.org>, Rich Felker <dalias@libc.org>, Sam Creasey <sammy@sammy.net>, sparclinux@vger.kernel.org, Stafford Horne <shorne@gmail.com>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, Will Deacon <will.deacon@arm.com>, "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>
-List-ID: <linux-um.lists.infradead.org>
+In-Reply-To: <6886607.O3ZT5bM3Cy@blindfold>
+Content-Language: en-US
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Richard Weinberger <richard@nod.at>, Joel Fernandes <joel@joelfernandes.org>
+Cc: Joel Fernandes <joelaf@google.com>, linux-mips@linux-mips.org, Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Catalin Marinas <catalin.marinas@arm.com>, Dave Hansen <dave.hansen@linux.intel.com>, Will Deacon <will.deacon@arm.com>, "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>, Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org, lokeshgidra@google.com, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-ia64@vge, elfring@users.sourceforge.net, Jonas Bonn <jonas@southpole.se>, linux-s390@vger.kernel.org, dancol@google.com, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-xtensa@linux-xtensa.org, linux-hexagon@vger.kernel.org, Helge Deller <deller@gmx.de>, r.kernel.org@lithops.sigma-star.at, hughd@google.com, "James E.J. Bottomley" <jejb@parisc-linux.org>, kasan-dev@googlegroups.com, kvmarm@lists.cs.columbia.edu, Ingo Molnar <mingo@redhat.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Andrey Ryabinin <aryabinin@virtuozzo.com>, linux-snps-arc@lists.infradead.org, kernel-team@android.com, Sam Creasey <sammy@sammy.net>, Fenghua Yu <fenghua.yu@intel.com>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Julia Lawall <Julia.Lawall@lip6.fr>, linux-m68k@lists.linux-m68k.org, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, nios2-dev@lists.rocketboards.org, kirill@shutemov.name, Stafford Horne <shorne@gmail.com>, Guan Xuetao <gxt@pku.edu.cn>, Chris Zankel <chris@zankel.net>, Tony Luck <tony.luck@intel.com>, linux-parisc@vger.kernel.org, Max Filippov <jcmvbkbc@gmail.com>, pantin@google.com, linux-kernel@vger.kernel.org, minchan@kernel.org, Thomas Gleixner <tglx@linutronix.de>, linux-alpha@vger.kernel.org, Ley Foon Tan <lftan@altera.com>, akpm@linux-foundation.org, linuxppc-dev@lists.ozlabs.org, "David S. Miller" <davem@davemloft.net>
 
-On Sat, Nov 03, 2018 at 09:24:05AM +0000, Anton Ivanov wrote:
-> On 03/11/2018 09:15, Richard Weinberger wrote:
-> > Joel,
-> > 
-> > Am Samstag, 3. November 2018, 05:00:38 CET schrieb Joel Fernandes:
-> > > Hi,
-> > > Here is the latest "fast mremap" series. This just a repost with Kirill's
-> > > Acked-bys added. I would like this to be considered for linux -next.  I also
-> > > dropped the CONFIG enablement patch for arm64 since I am yet to test it with
-> > > the new TLB flushing code that is in very recent kernel releases. (None of my
-> > > arm64 devices run mainline right now.) so I will post the arm64 enablement once
-> > > I get to that. The performance numbers in the series are for x86.
-> > > 
-> > > List of patches in series:
-> > > 
-> > > (1) mm: select HAVE_MOVE_PMD in x86 for faster mremap
-> > > 
-> > > (2) mm: speed up mremap by 20x on large regions (v4)
-> > > v1->v2: Added support for per-arch enablement (Kirill Shutemov)
-> > > v2->v3: Updated commit message to state the optimization may also
-> > > 	run for non-thp type of systems (Daniel Col).
-> > > v3->v4: Remove useless pmd_lock check (Kirill Shutemov)
-> > > 	Rebased ontop of Linus's master, updated perf results based
-> > >          on x86 testing. Added Kirill's Acks.
-> > > 
-> > > (3) mm: treewide: remove unused address argument from pte_alloc functions (v2)
-> > > v1->v2: fix arch/um/ prototype which was missed in v1 (Anton Ivanov)
-> > >          update changelog with manual fixups for m68k and microblaze.
-> > > 
-> > > not included - (4) mm: select HAVE_MOVE_PMD in arm64 for faster mremap
-> > >      This patch is dropped since last posting pending further performance
-> > >      testing on arm64 with new TLB gather updates. See notes in patch
-> > >      titled "mm: speed up mremap by 500x on large regions" for more
-> > >      details.
-> > > 
-> > This breaks UML build:
-> >    CC      mm/mremap.o
-> > mm/mremap.c: In function ‘move_normal_pmd’:
-> > mm/mremap.c:229:2: error: implicit declaration of function ‘set_pmd_at’; did you mean ‘set_pte_at’? [-Werror=implicit-function-declaration]
-> >    set_pmd_at(mm, new_addr, new_pmd, pmd);
-> >    ^~~~~~~~~~
-> >    set_pte_at
-> >    CC      crypto/rng.o
-> >    CC      fs/direct-io.o
-> > cc1: some warnings being treated as errors
-> > 
-> > To test yourself, just run on a x86 box:
-> > $ make defconfig ARCH=um
-> > $ make linux ARCH=um
-> > 
-> > Thanks,
-> > //richard
-> > 
-> > 
-> > 
-> 
-> UM somehow managed to miss one of the 3-level functions, I sent a patch at
-> some point to add to the mmremap series, but it looks like it did not get
-> included in the final version.
-> 
-> You need these two incremental on top of Joel's patch. Richard - feel free
-> to relocate the actual implementation of the set_pgd_at elsewhere - I put it
-> at the end of tlb.c
-> 
-> diff --git a/arch/um/include/asm/pgtable.h b/arch/um/include/asm/pgtable.h
-> index 7485398d0737..1692da55e63a 100644
-> --- a/arch/um/include/asm/pgtable.h
-> +++ b/arch/um/include/asm/pgtable.h
-> @@ -359,4 +359,7 @@ do {                                                \
->         __flush_tlb_one((vaddr));               \
->  } while (0)
-> 
-> +extern void set_pmd_at(struct mm_struct *mm, unsigned long addr,
-> +               pmd_t *pmdp, pmd_t pmd);
-> +
->  #endif
-> diff --git a/arch/um/kernel/tlb.c b/arch/um/kernel/tlb.c
-> index 763d35bdda01..d17b74184ba0 100644
-> --- a/arch/um/kernel/tlb.c
-> +++ b/arch/um/kernel/tlb.c
-> @@ -647,3 +647,9 @@ void force_flush_all(void)
->                 vma = vma->vm_next;
->         }
->  }
-> +void set_pmd_at(struct mm_struct *mm, unsigned long addr,
-> +               pmd_t *pmdp, pmd_t pmd)
-> +{
-> +       *pmdp = pmd;
-> +}
-> +
-> 
-
-I see it now:
-https://www.mail-archive.com/linuxppc-dev@lists.ozlabs.org/msg140005.html
-
-Sorry about that.
-Actually the reason the suggestion got missed is it did not belong in the
-patch removing the pte_alloc address argument. The pte_alloc parts of the
-patch you proposed are infact already included.
-
-This set_pmd_at for UM should go into a separate patch and should not be
-rolled into any existing one. Could you send a proper patch adding this
-function with a commit message and everything? I can then include it as a
-separate patch of my series.
-
-thanks!
-
- - Joel
+T24gMDMvMTEvMjAxOCAwOToxNSwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgo+IEpvZWwsCj4K
+PiBBbSBTYW1zdGFnLCAzLiBOb3ZlbWJlciAyMDE4LCAwNTowMDozOCBDRVQgc2NocmllYiBKb2Vs
+IEZlcm5hbmRlczoKPj4gSGksCj4+IEhlcmUgaXMgdGhlIGxhdGVzdCAiZmFzdCBtcmVtYXAiIHNl
+cmllcy4gVGhpcyBqdXN0IGEgcmVwb3N0IHdpdGggS2lyaWxsJ3MKPj4gQWNrZWQtYnlzIGFkZGVk
+LiBJIHdvdWxkIGxpa2UgdGhpcyB0byBiZSBjb25zaWRlcmVkIGZvciBsaW51eCAtbmV4dC4gIEkg
+YWxzbwo+PiBkcm9wcGVkIHRoZSBDT05GSUcgZW5hYmxlbWVudCBwYXRjaCBmb3IgYXJtNjQgc2lu
+Y2UgSSBhbSB5ZXQgdG8gdGVzdCBpdCB3aXRoCj4+IHRoZSBuZXcgVExCIGZsdXNoaW5nIGNvZGUg
+dGhhdCBpcyBpbiB2ZXJ5IHJlY2VudCBrZXJuZWwgcmVsZWFzZXMuIChOb25lIG9mIG15Cj4+IGFy
+bTY0IGRldmljZXMgcnVuIG1haW5saW5lIHJpZ2h0IG5vdy4pIHNvIEkgd2lsbCBwb3N0IHRoZSBh
+cm02NCBlbmFibGVtZW50IG9uY2UKPj4gSSBnZXQgdG8gdGhhdC4gVGhlIHBlcmZvcm1hbmNlIG51
+bWJlcnMgaW4gdGhlIHNlcmllcyBhcmUgZm9yIHg4Ni4KPj4KPj4gTGlzdCBvZiBwYXRjaGVzIGlu
+IHNlcmllczoKPj4KPj4gKDEpIG1tOiBzZWxlY3QgSEFWRV9NT1ZFX1BNRCBpbiB4ODYgZm9yIGZh
+c3RlciBtcmVtYXAKPj4KPj4gKDIpIG1tOiBzcGVlZCB1cCBtcmVtYXAgYnkgMjB4IG9uIGxhcmdl
+IHJlZ2lvbnMgKHY0KQo+PiB2MS0+djI6IEFkZGVkIHN1cHBvcnQgZm9yIHBlci1hcmNoIGVuYWJs
+ZW1lbnQgKEtpcmlsbCBTaHV0ZW1vdikKPj4gdjItPnYzOiBVcGRhdGVkIGNvbW1pdCBtZXNzYWdl
+IHRvIHN0YXRlIHRoZSBvcHRpbWl6YXRpb24gbWF5IGFsc28KPj4gCXJ1biBmb3Igbm9uLXRocCB0
+eXBlIG9mIHN5c3RlbXMgKERhbmllbCBDb2wpLgo+PiB2My0+djQ6IFJlbW92ZSB1c2VsZXNzIHBt
+ZF9sb2NrIGNoZWNrIChLaXJpbGwgU2h1dGVtb3YpCj4+IAlSZWJhc2VkIG9udG9wIG9mIExpbnVz
+J3MgbWFzdGVyLCB1cGRhdGVkIHBlcmYgcmVzdWx0cyBiYXNlZAo+PiAgICAgICAgICBvbiB4ODYg
+dGVzdGluZy4gQWRkZWQgS2lyaWxsJ3MgQWNrcy4KPj4KPj4gKDMpIG1tOiB0cmVld2lkZTogcmVt
+b3ZlIHVudXNlZCBhZGRyZXNzIGFyZ3VtZW50IGZyb20gcHRlX2FsbG9jIGZ1bmN0aW9ucyAodjIp
+Cj4+IHYxLT52MjogZml4IGFyY2gvdW0vIHByb3RvdHlwZSB3aGljaCB3YXMgbWlzc2VkIGluIHYx
+IChBbnRvbiBJdmFub3YpCj4+ICAgICAgICAgIHVwZGF0ZSBjaGFuZ2Vsb2cgd2l0aCBtYW51YWwg
+Zml4dXBzIGZvciBtNjhrIGFuZCBtaWNyb2JsYXplLgo+Pgo+PiBub3QgaW5jbHVkZWQgLSAoNCkg
+bW06IHNlbGVjdCBIQVZFX01PVkVfUE1EIGluIGFybTY0IGZvciBmYXN0ZXIgbXJlbWFwCj4+ICAg
+ICAgVGhpcyBwYXRjaCBpcyBkcm9wcGVkIHNpbmNlIGxhc3QgcG9zdGluZyBwZW5kaW5nIGZ1cnRo
+ZXIgcGVyZm9ybWFuY2UKPj4gICAgICB0ZXN0aW5nIG9uIGFybTY0IHdpdGggbmV3IFRMQiBnYXRo
+ZXIgdXBkYXRlcy4gU2VlIG5vdGVzIGluIHBhdGNoCj4+ICAgICAgdGl0bGVkICJtbTogc3BlZWQg
+dXAgbXJlbWFwIGJ5IDUwMHggb24gbGFyZ2UgcmVnaW9ucyIgZm9yIG1vcmUKPj4gICAgICBkZXRh
+aWxzLgo+Pgo+IFRoaXMgYnJlYWtzIFVNTCBidWlsZDoKPiAgICBDQyAgICAgIG1tL21yZW1hcC5v
+Cj4gbW0vbXJlbWFwLmM6IEluIGZ1bmN0aW9uIOKAmG1vdmVfbm9ybWFsX3BtZOKAmToKPiBtbS9t
+cmVtYXAuYzoyMjk6MjogZXJyb3I6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uIOKA
+mHNldF9wbWRfYXTigJk7IGRpZCB5b3UgbWVhbiDigJhzZXRfcHRlX2F04oCZPyBbLVdlcnJvcj1p
+bXBsaWNpdC1mdW5jdGlvbi1kZWNsYXJhdGlvbl0KPiAgICBzZXRfcG1kX2F0KG1tLCBuZXdfYWRk
+ciwgbmV3X3BtZCwgcG1kKTsKPiAgICBefn5+fn5+fn5+Cj4gICAgc2V0X3B0ZV9hdAo+ICAgIEND
+ICAgICAgY3J5cHRvL3JuZy5vCj4gICAgQ0MgICAgICBmcy9kaXJlY3QtaW8ubwo+IGNjMTogc29t
+ZSB3YXJuaW5ncyBiZWluZyB0cmVhdGVkIGFzIGVycm9ycwo+Cj4gVG8gdGVzdCB5b3Vyc2VsZiwg
+anVzdCBydW4gb24gYSB4ODYgYm94Ogo+ICQgbWFrZSBkZWZjb25maWcgQVJDSD11bQo+ICQgbWFr
+ZSBsaW51eCBBUkNIPXVtCj4KPiBUaGFua3MsCj4gLy9yaWNoYXJkCj4KPgo+CgpVTSBzb21laG93
+IG1hbmFnZWQgdG8gbWlzcyBvbmUgb2YgdGhlIDMtbGV2ZWwgZnVuY3Rpb25zLCBJIHNlbnQgYSBw
+YXRjaCAKYXQgc29tZSBwb2ludCB0byBhZGQgdG8gdGhlIG1tcmVtYXAgc2VyaWVzLCBidXQgaXQg
+bG9va3MgbGlrZSBpdCBkaWQgbm90IApnZXQgaW5jbHVkZWQgaW4gdGhlIGZpbmFsIHZlcnNpb24u
+CgpZb3UgbmVlZCB0aGVzZSB0d28gaW5jcmVtZW50YWwgb24gdG9wIG9mIEpvZWwncyBwYXRjaC4g
+UmljaGFyZCAtIGZlZWwgCmZyZWUgdG8gcmVsb2NhdGUgdGhlIGFjdHVhbCBpbXBsZW1lbnRhdGlv
+biBvZiB0aGUgc2V0X3BnZF9hdCBlbHNld2hlcmUgLSAKSSBwdXQgaXQgYXQgdGhlIGVuZCBvZiB0
+bGIuYwoKZGlmZiAtLWdpdCBhL2FyY2gvdW0vaW5jbHVkZS9hc20vcGd0YWJsZS5oIGIvYXJjaC91
+bS9pbmNsdWRlL2FzbS9wZ3RhYmxlLmgKaW5kZXggNzQ4NTM5OGQwNzM3Li4xNjkyZGE1NWU2M2Eg
+MTAwNjQ0Ci0tLSBhL2FyY2gvdW0vaW5jbHVkZS9hc20vcGd0YWJsZS5oCisrKyBiL2FyY2gvdW0v
+aW5jbHVkZS9hc20vcGd0YWJsZS5oCkBAIC0zNTksNCArMzU5LDcgQEAgZG8ge8KgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgXAogwqDCoMKgwqDCoMKgwqAgX19mbHVzaF90bGJf
+b25lKCh2YWRkcikpO8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgXAogwqB9IHdoaWxlICgw
+KQoKK2V4dGVybiB2b2lkIHNldF9wbWRfYXQoc3RydWN0IG1tX3N0cnVjdCAqbW0sIHVuc2lnbmVk
+IGxvbmcgYWRkciwKK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcG1kX3QgKnBtZHAsIHBt
+ZF90IHBtZCk7CisKIMKgI2VuZGlmCmRpZmYgLS1naXQgYS9hcmNoL3VtL2tlcm5lbC90bGIuYyBi
+L2FyY2gvdW0va2VybmVsL3RsYi5jCmluZGV4IDc2M2QzNWJkZGEwMS4uZDE3Yjc0MTg0YmEwIDEw
+MDY0NAotLS0gYS9hcmNoL3VtL2tlcm5lbC90bGIuYworKysgYi9hcmNoL3VtL2tlcm5lbC90bGIu
+YwpAQCAtNjQ3LDMgKzY0Nyw5IEBAIHZvaWQgZm9yY2VfZmx1c2hfYWxsKHZvaWQpCiDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdm1hID0gdm1hLT52bV9uZXh0OwogwqDCoMKgwqDCoMKg
+wqAgfQogwqB9Cit2b2lkIHNldF9wbWRfYXQoc3RydWN0IG1tX3N0cnVjdCAqbW0sIHVuc2lnbmVk
+IGxvbmcgYWRkciwKK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcG1kX3QgKnBtZHAsIHBt
+ZF90IHBtZCkKK3sKK8KgwqDCoMKgwqDCoCAqcG1kcCA9IHBtZDsKK30KKwoKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlz
+dApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
+L21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
 
