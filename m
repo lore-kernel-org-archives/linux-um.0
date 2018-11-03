@@ -1,8 +1,8 @@
 Return-Path: <joel@joelfernandes.org>
-Date: Sat, 3 Nov 2018 11:32:08 -0700
+Date: Sat, 3 Nov 2018 08:20:06 -0700
 From: Joel Fernandes <joel@joelfernandes.org>
 Subject: Re: [PATCH -next 0/3] Add support for fast mremap
-Message-ID: <20181103183208.GA56850@google.com>
+Message-ID: <20181103152006.GB259637@google.com>
 References: <20181103040041.7085-1-joelaf@google.com>
  <6886607.O3ZT5bM3Cy@blindfold>
  <e1d039a5-9c83-b9b9-98b5-d39bc48f04e0@kot-begemot.co.uk>
@@ -107,30 +107,20 @@ On Sat, Nov 03, 2018 at 09:24:05AM +0000, Anton Ivanov wrote:
 > +
 > 
 
-Looks like more architectures don't define set_pmd_at. I am thinking the
-easiest way forward is to just do the following, instead of defining
-set_pmd_at for every architecture that doesn't care about it. Thoughts?
+I see it now:
+https://www.mail-archive.com/linuxppc-dev@lists.ozlabs.org/msg140005.html
 
-diff --git a/mm/mremap.c b/mm/mremap.c
-index 7cf6b0943090..31ad64dcdae6 100644
---- a/mm/mremap.c
-+++ b/mm/mremap.c
-@@ -281,7 +281,8 @@ unsigned long move_page_tables(struct vm_area_struct *vma,
- 			split_huge_pmd(vma, old_pmd, old_addr);
- 			if (pmd_trans_unstable(old_pmd))
- 				continue;
--		} else if (extent == PMD_SIZE && IS_ENABLED(CONFIG_HAVE_MOVE_PMD)) {
-+		} else if (extent == PMD_SIZE) {
-+#ifdef CONFIG_HAVE_MOVE_PMD
- 			/*
- 			 * If the extent is PMD-sized, try to speed the move by
- 			 * moving at the PMD level if possible.
-@@ -296,6 +297,7 @@ unsigned long move_page_tables(struct vm_area_struct *vma,
- 				drop_rmap_locks(vma);
- 			if (moved)
- 				continue;
-+#endif
- 		}
- 
- 		if (pte_alloc(new_vma->vm_mm, new_pmd))
+Sorry about that.
+Actually the reason the suggestion got missed is it did not belong in the
+patch removing the pte_alloc address argument. The pte_alloc parts of the
+patch you proposed are infact already included.
+
+This set_pmd_at for UM should go into a separate patch and should not be
+rolled into any existing one. Could you send a proper patch adding this
+function with a commit message and everything? I can then include it as a
+separate patch of my series.
+
+thanks!
+
+ - Joel
 
