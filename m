@@ -1,16 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab6.miniserver.com ([5.153.251.140]
  helo=www.kot-begemot.co.uk)
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gJgib-0008Cu-0f
- for linux-um@lists.infradead.org; Mon, 05 Nov 2018 15:23:10 +0000
-Subject: Re: 4.20-rc1 looks broken for UML
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gJeh4-00027f-Ku
+ for linux-um@lists.infradead.org; Mon, 05 Nov 2018 13:13:28 +0000
 From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-References: <4a096c4f-6552-dbcb-676b-a87306dde07a@kot-begemot.co.uk>
-Message-ID: <1ae6cae1-25a2-30e8-5078-ac318ce73f33@kot-begemot.co.uk>
-Date: Mon, 5 Nov 2018 15:22:36 +0000
+Subject: 4.20-rc1 looks broken for UML
+Message-ID: <4a096c4f-6552-dbcb-676b-a87306dde07a@kot-begemot.co.uk>
+Date: Mon, 5 Nov 2018 13:13:11 +0000
 MIME-Version: 1.0
-In-Reply-To: <4a096c4f-6552-dbcb-676b-a87306dde07a@kot-begemot.co.uk>
 Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -27,26 +25,13 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
 Cc: Richard Weinberger <richard@nod.at>
 
-This looks like something specific to ttys - the io there gets 
-corruption and/or hangs.
+Hi all,
 
-I cannot reproduce it when I ssh in.
-
-It does not look like it is the new write IRQ bugfix - that works fine 
-over 4.19.
-
-Still debugging...
+Looks like 4.20-rc1 is broken for us. It is not one of our changes, I 
+went through them again on top of 4.19 and they test out fine
 
 A.
 
-On 11/5/18 1:13 PM, Anton Ivanov wrote:
-> Hi all,
->
-> Looks like 4.20-rc1 is broken for us. It is not one of our changes, I 
-> went through them again on top of 4.19 and they test out fine
->
-> A.
->
 
 _______________________________________________
 linux-um mailing list
