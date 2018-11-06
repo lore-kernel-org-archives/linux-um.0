@@ -2,16 +2,16 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab6.miniserver.com ([5.153.251.140]
  helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gK5Mz-00013z-ME
- for linux-um@lists.infradead.org; Tue, 06 Nov 2018 17:42:30 +0000
+ id 1gK56V-0000cW-Vn
+ for linux-um@lists.infradead.org; Tue, 06 Nov 2018 17:25:28 +0000
 Subject: Re: 4.20-rc1 looks broken for UML
 References: <4a096c4f-6552-dbcb-676b-a87306dde07a@kot-begemot.co.uk>
  <11176055.DIHjKAC0ao@blindfold>
  <a14a0d2e-d734-7f1c-847b-7aa31e9affac@kot-begemot.co.uk>
  <1819644.8DN5KTyJeP@blindfold>
 From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Message-ID: <ce0ede07-20f2-800d-4e20-3d47a0980d57@kot-begemot.co.uk>
-Date: Tue, 6 Nov 2018 17:42:16 +0000
+Message-ID: <2bebae3b-e7e3-8f2c-42bf-89fba1ca32b6@kot-begemot.co.uk>
+Date: Tue, 6 Nov 2018 17:25:13 +0000
 MIME-Version: 1.0
 In-Reply-To: <1819644.8DN5KTyJeP@blindfold>
 Content-Language: en-US
@@ -30,8 +30,7 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: Richard Weinberger <richard@nod.at>
 Cc: gregkh@linuxfoundation.org, linux-um@lists.infradead.org
 
-
-On 11/6/18 5:04 PM, Richard Weinberger wrote:
+On 06/11/2018 17:04, Richard Weinberger wrote:
 > Am Dienstag, 6. November 2018, 16:00:59 CET schrieb Anton Ivanov:
 >> On 11/5/18 10:07 PM, Richard Weinberger wrote:
 >>> Anton,
@@ -61,18 +60,12 @@ On 11/6/18 5:04 PM, Richard Weinberger wrote:
 > This is "TTY: sn_console: Replace spin_is_locked() with spin_trylock()".
 > sn_console is "SGI Altix L1 serial console"...
 
-Mea culpa.
+OK. Then I am losing my mind.
 
-I was going through the commits from the tty changes one by one and for 
-some reason things started working after reverting this one.
+No idea what is going on...
 
-I cannot reproduce the original issue now with a totally clean build and 
-a clean image.
-
-I am going back through my local tree and images to see what caused in 
-the first place.
-
-For now it looks like 4.20-rc1 is OK.
+Going back and redoing all the tests starting from plain 4.20-rc1 and 
+onwards.
 
 A.
 
@@ -83,11 +76,7 @@ A.
 >
 >
 >
-> _______________________________________________
-> linux-um mailing list
-> linux-um@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-um
->
+
 
 _______________________________________________
 linux-um mailing list
