@@ -1,13 +1,21 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from conuserg-08.nifty.com ([210.131.2.75])
+Received: from ivanoab6.miniserver.com ([5.153.251.140]
+ helo=www.kot-begemot.co.uk)
  by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gND0y-00020J-SV
- for linux-um@lists.infradead.org; Thu, 15 Nov 2018 08:28:43 +0000
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [PATCH 0/8] kbuild: clean-up modversion, TRIM_UNUSED_KSYMS,
- if_changed_rule, etc.
-Date: Thu, 15 Nov 2018 17:27:07 +0900
-Message-Id: <1542270435-11181-1-git-send-email-yamada.masahiro@socionext.com>
+ id 1gKNxR-0001nB-Ej
+ for linux-um@lists.infradead.org; Wed, 07 Nov 2018 13:33:23 +0000
+Subject: Re: 4.20-rc1 looks broken for UML
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+References: <4a096c4f-6552-dbcb-676b-a87306dde07a@kot-begemot.co.uk>
+ <e5c51b9c-97d5-ae12-b06f-303f0469d46b@kot-begemot.co.uk>
+ <6298063.A9SzxUBULK@blindfold> <2177266.HJA9EnQ7lp@blindfold>
+ <20181107075318.GA24381@lst.de>
+ <31d79c23-0fa0-956e-5477-0c326416fc45@kot-begemot.co.uk>
+Message-ID: <b2f0593d-d0f6-3dd7-fa6e-3a5af4b69f33@kot-begemot.co.uk>
+Date: Wed, 7 Nov 2018 13:33:07 +0000
+MIME-Version: 1.0
+In-Reply-To: <31d79c23-0fa0-956e-5477-0c326416fc45@kot-begemot.co.uk>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -16,56 +24,55 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kbuild@vger.kernel.org
-Cc: Nicolas Pitre <nicolas.pitre@linaro.org>, linux-arch@vger.kernel.org, Michal Marek <michal.lkml@markovi.net>, Arnd Bergmann <arnd@arndb.de>, Ard Biesheuvel <ard.biesheuvel@linaro.org>, Michael Ellerman <mpe@ellerman.id.au>, Jeff Dike <jdike@addtoit.com>, Rasmus Villemoes <linux@rasmusvillemoes.dk>, linux-kernel@vger.kernel.org, Will Deacon <will.deacon@arm.com>, linux-um@lists.infradead.org, Masahiro Yamada <yamada.masahiro@socionext.com>, Richard Weinberger <richard@nod.at>, Sam Ravnborg <sam@ravnborg.org>, Ingo Molnar <mingo@kernel.org>
+To: Christoph Hellwig <hch@lst.de>, Richard Weinberger <richard@nod.at>
+Cc: axboe@kernel.dk, linux-um@lists.infradead.org
 
-As a Kbuild maintainer, I always struggle to keep the core makefiles
-clean because people tend to squeeze more and more clutter code into
-the kbuild core in order to do what they want to do.
-
-The biggest step forward in this series is to re-implement
-the build trick of CONFIG_TRIM_UNUSED_KSYMS in a cleaner way.
-scripts/Kbuild.include now looks nice again.
-Also, in my rough estimation, building with CONFIG_TRIM_UNUSED_KSYMS
-became 40-50 % faster.
-
-Besides those, nice cleanups are here and there.
-
-
-
-Masahiro Yamada (8):
-  kbuild: remove redundant 'set -e' from filechk_* defines
-  kbuild: remove redundant 'set -e' from sub_cmd_record_mcount
-  kbuild: refactor modversions build rules
-  kbuild: simplify dependency generation for CONFIG_TRIM_UNUSED_KSYMS
-  kbuild: change if_changed_rule to accept multi-line recipe
-  kbuild: remove trailing semicolon from cmd_* passed to if_changed_rule
-  kbuild: refactor if_changed and if_changed_dep
-  kbuild: remove redundant 'set -e' from cmd_* defines
-
- arch/um/Makefile             |  2 +-
- include/asm-generic/export.h | 13 +++---
- include/linux/export.h       | 18 ++++----
- scripts/Kbuild.include       | 44 +++-----------------
- scripts/Makefile.build       | 98 +++++++++++++++++++-------------------------
- scripts/Makefile.lib         |  2 +-
- scripts/basic/fixdep.c       | 31 ++------------
- scripts/gen_ksymdeps.sh      | 25 +++++++++++
- scripts/package/Makefile     |  1 -
- 9 files changed, 96 insertions(+), 138 deletions(-)
- create mode 100755 scripts/gen_ksymdeps.sh
-
--- 
-2.7.4
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+Ck9uIDExLzcvMTggMTA6NDYgQU0sIEFudG9uIEl2YW5vdiB3cm90ZToKPiBPbiAxMS83LzE4IDc6
+NTMgQU0sIENocmlzdG9waCBIZWxsd2lnIHdyb3RlOgo+Cj4+IE9uIFR1ZSwgTm92IDA2LCAyMDE4
+IGF0IDA5OjQ5OjQ1UE0gKzAxMDAsIFJpY2hhcmQgV2VpbmJlcmdlciB3cm90ZToKPj4+IENocmlz
+dG9waCwKPj4+Cj4+PiBBbnRvbiBmb3VuZCBhIHByb2JsZW0gaW4geW91ciAidWJkOiByZW1vdmUg
+dXNlIG9mIGJsa19ycV9tYXBfc2ciIHBhdGNoLgo+Pj4gV2l0aCBDT05GSUdfREVCVUdfUEFHRUFM
+TE9DIGVuYWJsZWQsIHRoZSB1YmQgZHJpdmVyIGNyYXNoZXMgYmVjYXVzZSAKPj4+IGl0IHRyaWVz
+Cj4+PiB0byBkZXJlZiBhZGRyZXNzIDB4MTIzNDU2NzgsIHdoaWNoIGlzIHRoZSBwb2lzb24gZnJv
+bSAKPj4+IHN0b3JlX3N0YWNraW5mbygpLgo+Pj4KPj4+IFBsZWFzZSBzZWUgYmVsb3cgZm9yIG1v
+cmUgaW5mby4KPj4+IENhbiBpdCBiZSB0aGF0IHlvdXIgY2hhbmdlIGludHJvZHVjZWQgYSB1c2Ut
+YWZ0ZXItZnJlZSBidWcgaW4gVU1MJ3MgCj4+PiBibG9jayBkcml2ZXI/Cj4+IFNvdW5kcyBsaWtl
+IGl0LsKgIEJ1dCBJJ2xsIG5lZWQgc29tZSBtb3JlIHRpbWUgdG8gZGVidWcgaXQuCj4KPiBJIGhh
+ZCB0byByZXZlcnQgNGU2ZGEwZmU4MDU4ZGY5YmZhOTM3OTAyZmNkOWNiMmI3Yjg5YjJkZiAidW06
+IENvbnZlcnQgCj4gdWJkIGRyaXZlciB0byBibGstbXEiIGFzIHdlbGwgdG8gZ2V0IHRoaW5ncyBi
+YWNrIHRvIGJ1c2luZXNzIGFzIHVzdWFsLgoKRmlyc3Qgb2YgYWxsLCBJIGFwb2xvZ2l6ZSBmb3Ig
+bm90IGxvb2tpbmcgYXQgaXQgcHJvcGVybHkgd2hlbiBpdCBmaXJzdCAKY2FtZSBvdXQsIEkgd2Fz
+IGJ1cmllZCB1bmRlciBvcGVuc3dpdGNoIGFuZCBvcGVuZGF5bGlnaHQgYXQgdGhlIHRpbWUuCgpJ
+IGhhdmUgbG9va2VkIGF0IGl0IGFnYWluIGFuZCBJIHNlZSBhIGZldyBpc3N1ZXMgd2l0aCBpdDoK
+CjEuIE9uIHRyYW5zaWVudCBmYWlsdXJlIGFmdGVyIGEgcmVxdWV1ZSBpdCByZXR1cm5zIEJMS19T
+VFNfT0ssIHNob3VsZG4ndCAKdGhpcyBiZSBCTEtfU1RTX1JFU09VUkNFPwoKMi4gT24gdHJhbnNp
+ZW50IGZhaWx1cmUgaXQgcmVkb2VzIHRoZSB3aG9sZSBTRyBsaXN0LiBUaGF0IHNob3VsZCBub3Qg
+YmUgCnRoZSBjYXNlLCBpdCBzaG91bGQgcmVjb3JkIGhvdyBmYXIgaXQgZ290IHRvIGFuZCByZWRv
+IHRoZSBsaXN0IGZyb20gdGhlcmU6CgpodHRwczovL2VsaXhpci5ib290bGluLmNvbS9saW51eC9s
+YXRlc3Qvc291cmNlL2RyaXZlcnMvYmxvY2svbmJkLmMjTDUwOQoKVGhlc2Ugc2hvdWxkIG5vdCBw
+cmV2ZW50IGl0IGZyb20gd29ya2luZyB0aG91Z2ggYW5kIHNob3VsZCBub3QgY2F1c2UgYW4gCmlt
+bWVkaWF0ZSBmYWlsdXJlIHdoZW4gdHJ5aW5nIHRvIG1vdW50IHJ3IG9yIHJlbW91bnQgYSBybyBh
+cyBydy4gSSBoYXZlIApub3QgZm91bmQgdGhlIGNhdXNlIGZvciB0aGF0IG9uZSB5ZXQuCgpBLgoK
+Cj4KPiBUaGUgYmxvY2stbXEgZHJpdmVyIHdvcmtzIGZvciByZWFkaW5nIC0gbm8gaXNzdWVzIGlm
+IGV2ZXJ5dGhpbmcgaXMgcm8uIAo+IEl0IGFsc28gY2xlYXJseSB3b3JrcyBmb3Igd3JpdGluZyBm
+b3Igc29tZSBjb25maWdzIGluIG9sZGVyIGtlcm5lbHMsIAo+IG90aGVyd2lzZSBpdCB3b3VsZCBo
+YXZlIGJlZW4gcGlja2VkIHVwLgo+Cj4gU29tZXRoaW5nIGNoYW5nZWQgaW4gNC4yMC1yYzEgd2hp
+Y2ggbWFkZSBpdCBmYWlsIGluIG15IGNvbmZpZy4gVGhlIAo+IGZhaWx1cmUgaXMgaW5zdGFudGFu
+ZW91cyBmb3IgNC4yMC1yYzEgd2l0aCBvbmx5IAo+IGVjYjBhODNlMzE5OGYyYzExNDI5MDE2ODdh
+ZmFjYmM3MzYwMmExM2IgIiB1YmQ6IHJlbW92ZSB1c2Ugb2YgCj4gYmxrX3JxX21hcF9zZyIgcmV2
+ZXJ0ZWQuCj4KPiBSZXZlcnRpbmcgYm90aCBhbmQgcmVzdG9yaW5nIHRoZSBkcml2ZXIgdG8gNC4x
+OSBzdGF0ZSBmaXhlcyB0aGluZ3MuCj4KPiBJIGFtIGdvaW5nIHRvIGdpdmUgaXQgYSBnbyB0byBk
+ZWJ1ZyBleGFjdGx5IHdoYXQgYnJlYWtzIGZvciB3cml0aW5nIGluIAo+IGVjYjBhODNlMzE5OGYy
+YzExNDI5MDE2ODdhZmFjYmM3MzYwMmExM2IgIiB1YmQ6IHJlbW92ZSB1c2Ugb2YgCj4gYmxrX3Jx
+X21hcF9zZyIuCj4KPiBBLgo+Cj4KPj4KPj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KPj4gbGludXgtdW0gbWFpbGluZyBsaXN0Cj4+IGxpbnV4LXVtQGxp
+c3RzLmluZnJhZGVhZC5vcmcKPj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9saW51eC11bQo+PgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVh
+ZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11
+bQo=
 
