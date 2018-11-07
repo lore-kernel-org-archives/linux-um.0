@@ -1,15 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from lithops.sigma-star.at ([195.201.40.130])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKSxJ-0006zK-5R
- for linux-um@lists.infradead.org; Wed, 07 Nov 2018 18:53:34 +0000
-From: Richard Weinberger <richard@nod.at>
-Subject: Re: Summary so far - ubd breakage in 4.20-rc1
-Date: Wed, 07 Nov 2018 19:53:14 +0100
-Message-ID: <1553895.q7DRUMsJH8@blindfold>
-In-Reply-To: <94397e9b-36a6-92b0-b074-ce3640cee00e@kot-begemot.co.uk>
-References: <94397e9b-36a6-92b0-b074-ce3640cee00e@kot-begemot.co.uk>
+Received: from ivanoab6.miniserver.com ([5.153.251.140]
+ helo=www.kot-begemot.co.uk)
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gKSkf-0000sk-GW
+ for linux-um@lists.infradead.org; Wed, 07 Nov 2018 18:40:30 +0000
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Subject: Summary so far - ubd breakage in 4.20-rc1
+Message-ID: <94397e9b-36a6-92b0-b074-ce3640cee00e@kot-begemot.co.uk>
+Date: Wed, 7 Nov 2018 18:40:13 +0000
 MIME-Version: 1.0
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,64 +18,43 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Cc: Jens Axboe <axboe@kernel.dk>, linux-um@lists.infradead.org, hch@lst.de
+To: linux-um@lists.infradead.org
+Cc: Richard Weinberger <richard@nod.at>
 
-[CC'ing hch and jens again.]
-
-Am Mittwoch, 7. November 2018, 19:40:13 CET schrieb Anton Ivanov:
-> Hi list, hi Richard.
-> 
-> I spent some time digging into the 4.20-rc1 issue today, and unless I am 
-> missing something it looks like UBD breakage and it looks like memory 
-> corruption. I cannot pin down where it is coming from.
-> 
-> These are my finding so far:
-> 
-> 1. It happens only for write requests - I have not picked up a case 
-> where a read req breaks in any way so far. UML boots fine until it tries 
-> to remount the root fs read only and then fails with an IO error.
-> 
-> 2. In my config it looks like it is introduced by the "um: Convert ubd 
-> driver to blk-mq" commit. It appears in 4.19 if I cherry-pick it and 
-> disappears in 4.20-rc1 if I revert it.
-> 
-> 3. The write req is correctly passed as far as the actual io handler and 
-> correctly processed by the io thread. Upon finishing the request in the 
-> io thread the value of req->error is 0 and all values look OK.
-> 
-> 4. The moment the req is read back by the irq handler req->error is 
-> something which looks like data from elsewhere instead of the request. 
-> F.e error may contain 55AA55AA
-> 
-> 5. Other bits of the req are also zapped in a similar manner.
-> 
-> 6. The pointer to the req passed along the IPC pipe is correct. If a req 
-> at 00000000deafe300 is given for execution to the IO thread, that is 
-> what is in the io_req variable in the handler. It is just contents of 
-> that req by that time are scrambled.
-> 
-> 7.  I see it only for write reqs.
-> 
-> I just do not see where it can be zapped. At all. I did a prototype to 
-> add the BLK_STS_AGAIN return code and continue from half-x-mitted req 
-> logic similar to the one in nbd driver. It is not that. There is 
-> something else which causes this and I just do not see it :(
-> 
-> A.
-> 
-> 
-
-
-
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+SGkgbGlzdCwgaGkgUmljaGFyZC4KCkkgc3BlbnQgc29tZSB0aW1lIGRpZ2dpbmcgaW50byB0aGUg
+NC4yMC1yYzEgaXNzdWUgdG9kYXksIGFuZCB1bmxlc3MgSSBhbSAKbWlzc2luZyBzb21ldGhpbmcg
+aXQgbG9va3MgbGlrZSBVQkQgYnJlYWthZ2UgYW5kIGl0IGxvb2tzIGxpa2UgbWVtb3J5IApjb3Jy
+dXB0aW9uLiBJIGNhbm5vdCBwaW4gZG93biB3aGVyZSBpdCBpcyBjb21pbmcgZnJvbS4KClRoZXNl
+IGFyZSBteSBmaW5kaW5nIHNvIGZhcjoKCjEuIEl0IGhhcHBlbnMgb25seSBmb3Igd3JpdGUgcmVx
+dWVzdHMgLSBJIGhhdmUgbm90IHBpY2tlZCB1cCBhIGNhc2UgCndoZXJlIGEgcmVhZCByZXEgYnJl
+YWtzIGluIGFueSB3YXkgc28gZmFyLiBVTUwgYm9vdHMgZmluZSB1bnRpbCBpdCB0cmllcyAKdG8g
+cmVtb3VudCB0aGUgcm9vdCBmcyByZWFkIG9ubHkgYW5kIHRoZW4gZmFpbHMgd2l0aCBhbiBJTyBl
+cnJvci4KCjIuIEluIG15IGNvbmZpZyBpdCBsb29rcyBsaWtlIGl0IGlzIGludHJvZHVjZWQgYnkg
+dGhlICJ1bTogQ29udmVydCB1YmQgCmRyaXZlciB0byBibGstbXEiIGNvbW1pdC4gSXQgYXBwZWFy
+cyBpbiA0LjE5IGlmIEkgY2hlcnJ5LXBpY2sgaXQgYW5kIApkaXNhcHBlYXJzIGluIDQuMjAtcmMx
+IGlmIEkgcmV2ZXJ0IGl0LgoKMy4gVGhlIHdyaXRlIHJlcSBpcyBjb3JyZWN0bHkgcGFzc2VkIGFz
+IGZhciBhcyB0aGUgYWN0dWFsIGlvIGhhbmRsZXIgYW5kIApjb3JyZWN0bHkgcHJvY2Vzc2VkIGJ5
+IHRoZSBpbyB0aHJlYWQuIFVwb24gZmluaXNoaW5nIHRoZSByZXF1ZXN0IGluIHRoZSAKaW8gdGhy
+ZWFkIHRoZSB2YWx1ZSBvZiByZXEtPmVycm9yIGlzIDAgYW5kIGFsbCB2YWx1ZXMgbG9vayBPSy4K
+CjQuIFRoZSBtb21lbnQgdGhlIHJlcSBpcyByZWFkIGJhY2sgYnkgdGhlIGlycSBoYW5kbGVyIHJl
+cS0+ZXJyb3IgaXMgCnNvbWV0aGluZyB3aGljaCBsb29rcyBsaWtlIGRhdGEgZnJvbSBlbHNld2hl
+cmUgaW5zdGVhZCBvZiB0aGUgcmVxdWVzdC4gCkYuZSBlcnJvciBtYXkgY29udGFpbiA1NUFBNTVB
+QQoKNS4gT3RoZXIgYml0cyBvZiB0aGUgcmVxIGFyZSBhbHNvIHphcHBlZCBpbiBhIHNpbWlsYXIg
+bWFubmVyLgoKNi4gVGhlIHBvaW50ZXIgdG8gdGhlIHJlcSBwYXNzZWQgYWxvbmcgdGhlIElQQyBw
+aXBlIGlzIGNvcnJlY3QuIElmIGEgcmVxIAphdCAwMDAwMDAwMGRlYWZlMzAwIGlzIGdpdmVuIGZv
+ciBleGVjdXRpb24gdG8gdGhlIElPIHRocmVhZCwgdGhhdCBpcyAKd2hhdCBpcyBpbiB0aGUgaW9f
+cmVxIHZhcmlhYmxlIGluIHRoZSBoYW5kbGVyLiBJdCBpcyBqdXN0IGNvbnRlbnRzIG9mIAp0aGF0
+IHJlcSBieSB0aGF0IHRpbWUgYXJlIHNjcmFtYmxlZC4KCjcuwqAgSSBzZWUgaXQgb25seSBmb3Ig
+d3JpdGUgcmVxcy4KCkkganVzdCBkbyBub3Qgc2VlIHdoZXJlIGl0IGNhbiBiZSB6YXBwZWQuIEF0
+IGFsbC4gSSBkaWQgYSBwcm90b3R5cGUgdG8gCmFkZCB0aGUgQkxLX1NUU19BR0FJTiByZXR1cm4g
+Y29kZSBhbmQgY29udGludWUgZnJvbSBoYWxmLXgtbWl0dGVkIHJlcSAKbG9naWMgc2ltaWxhciB0
+byB0aGUgb25lIGluIG5iZCBkcml2ZXIuIEl0IGlzIG5vdCB0aGF0LiBUaGVyZSBpcyAKc29tZXRo
+aW5nIGVsc2Ugd2hpY2ggY2F1c2VzIHRoaXMgYW5kIEkganVzdCBkbyBub3Qgc2VlIGl0IDooCgpB
+LgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4
+LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0
+cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
 
