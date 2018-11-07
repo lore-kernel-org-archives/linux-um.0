@@ -1,20 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab6.miniserver.com ([5.153.251.140]
- helo=www.kot-begemot.co.uk)
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKfhz-0007Bv-TF
- for linux-um@lists.infradead.org; Thu, 08 Nov 2018 08:30:36 +0000
+Received: from mail-it1-x12c.google.com ([2607:f8b0:4864:20::12c])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gKVfg-0002MV-5G
+ for linux-um@lists.infradead.org; Wed, 07 Nov 2018 21:47:33 +0000
+Received: by mail-it1-x12c.google.com with SMTP id b7-v6so25155743itd.5
+ for <linux-um@lists.infradead.org>; Wed, 07 Nov 2018 13:47:21 -0800 (PST)
 Subject: Re: Summary so far - ubd breakage in 4.20-rc1
 References: <94397e9b-36a6-92b0-b074-ce3640cee00e@kot-begemot.co.uk>
  <2067083.opUWeOxqyK@blindfold>
  <fe020526-ac24-0279-ca27-7ccabba7a6cc@kernel.dk>
  <4373302.HifUKF8Eoy@blindfold>
- <edaa00ed-7e65-7303-1034-7672d1ecd8cb@kernel.dk>
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Message-ID: <c1e0f38d-3af9-eaeb-6b63-26ad32c3824a@kot-begemot.co.uk>
-Date: Thu, 8 Nov 2018 08:30:21 +0000
+From: Jens Axboe <axboe@kernel.dk>
+Message-ID: <edaa00ed-7e65-7303-1034-7672d1ecd8cb@kernel.dk>
+Date: Wed, 7 Nov 2018 14:47:18 -0700
 MIME-Version: 1.0
-In-Reply-To: <edaa00ed-7e65-7303-1034-7672d1ecd8cb@kernel.dk>
+In-Reply-To: <4373302.HifUKF8Eoy@blindfold>
 Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -24,56 +24,35 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>
-Cc: linux-um@lists.infradead.org, hch@lst.de
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-um@lists.infradead.org, Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, hch@lst.de
 
-Ck9uIDExLzcvMTggOTo0NyBQTSwgSmVucyBBeGJvZSB3cm90ZToKPiBPbiAxMS83LzE4IDI6NDYg
-UE0sIFJpY2hhcmQgV2VpbmJlcmdlciB3cm90ZToKPj4gQW0gTWl0dHdvY2gsIDcuIE5vdmVtYmVy
-IDIwMTgsIDIyOjE2OjIwIENFVCBzY2hyaWViIEplbnMgQXhib2U6Cj4+Pj4+IERvZXMgdGhlIGJl
-bG93IGhlbHAgdGhpbmdzPwo+Pj4+Pgo+Pj4+IEl0IGRvZXMhCj4+Pj4gQW50b24sIHBsZWFzZSBn
-aXZlIGl0IGFsc28gYSB0cnkuCj4+PiBPSyBnb29kLCBpdCdzIGRlZmluaXRlbHkgYSBidWcsIGFu
-ZCBnaXZlbiB0aGUgc3ltcHRvbXMsIHNvdW5kcyBsaWtlCj4+PiBUSEUgYnVnIGluIHRoaXMgY2Fz
-ZS4KPj4gU2hhbGwgSSBzZW5kIHlvdXIgZml4IGFzIHBhdGNoIG9yIGRvIHlvdSB3YW50IHRvPwo+
-IEknbSBnb2luZyB0byBxdWV1ZSBpdCB1cCwganVzdCB3YWl0aW5nIGZvciBBbnRvbiB0byBhbHNv
-IHRlc3Qgc28gSQo+IGNhbiBhZGQgdGhlIGFwcHJvcHJpYXRlIFRlc3RlZC1ieS4KPgpJIGFtIHNv
-cnJ5IHRvIGRpc2FwcG9pbnQsIGJ1dCBpdCBmYWlscyB0ZXN0aW5nIGluIHRoZSBzYW1lIHdheS4g
-SSB0cmllZCAKdGhlIHBhdGNoICJhcyBpcyIgb24gdG9wIG9mIDQuMjAtcmMxIGFuZCBJIGFwcGxp
-ZWQgdGhlIHNhbWUgbG9naWMgdG8gbXkgCmJyYW5jaCB3aGljaCBoYWQgdGhlIGNoYW5nZXMgdG8g
-cmV0dXJuIEJMS19TVFNfQUdBSU4gaW5zdGVhZCBvZiAKQkxLX1NUU19PSyBmb3IgcGFydGlhbCBh
-cyB3ZWxsIGFzIG90aGVyIGZpeGVzLgoKSnVzdCB0byBjbGFyaWZ5IC0gaXQgaXMgIm91ciIgcmVx
-dWVzdCAtIHRoZSBVQkQgc3RydWN0dXJlIGlvX3RocmVhZF9yZXEgCmZvcm1lZCBmcm9tIHRoZSBt
-cSB3aGljaCBpcyBiZWluZyBjb3JydXB0ZWQsIG5vdCB0aGUgb3JpZ2luYWwgbXEgcmVxdWVzdC4K
-CkkgZG8gbm90IHVuZGVyc3RhbmQgaG93IGl0IGNhbiBlbmQgdXAgYmVpbmcgY29ycnVwdGVkIGlu
-IHRoZSBmaXJzdCAKcGxhY2UuIFRoZSBvbmx5IHdheSB0aGlzIGNhbiBoYXBwZW4gaWYgdGhlIHNh
-bWUgaW5zdGFuY2Ugb2YgaXQgaXMgCnByb2Nlc3NlZCB0d2ljZSBzb21ld2hlcmUgYW5kIEkgZG8g
-bm90IHNlZSBhbnl0aGluZyBpbiB0aGUgTVEgcGF0Y2hlcyAKd2hpY2ggY2FuIHByb2R1Y2UgdGhh
-dC4KCkRpdHRvIGZvciB3aHkgaXQgYWZmZWN0cyBvbmx5IHdyaXRlIHJlcXVlc3RzLiBEaXR0byB3
-aHkgaXQgZmFpbHMgb24gdGhlIAp2ZXJ5IGZpcnN0IHdyaXRlIHJlcXVlc3QgLSBJIGhhdmUgZGVi
-dWcgYWRkZWQgb24gbXkgYnJhbmNoIGFuZCBpdCBpcyB0aGUgCnZlcnkgZmlyc3Qgd3JpdGUgcmVx
-dWVzdCBhdCB0aGUgcG9pbnQgd2hlcmUgdGhlIGJvb3QgYXR0ZW1wdHMgdG8gcmVtb3VudCAKcm9v
-dCB3aGljaCBibG93cyB1cC4KCklNSE8gd2UgbmVlZCB0byBjb25jZW50cmF0ZSBvbiB3aGF0IGlz
-IGRpZmZlcmVudCBiZXR3ZWVuIFJpY2hhcmQncyBhbmQgCm15IHNldHVwIGFuZCB3aHkgaXQgcGFz
-c2VzIGluIGhpcyBjYXNlIGFuZCBmYWlscyBpbiBtaW5lLiBUaGlzIHdpbGwgCmhvcGVmdWxseSB5
-aWVsZCBzb21lIHRhcmdldGluZyBpbmZvcm1hdGlvbiB0byBpc29sYXRlIHRoZSBjdWxwcml0LgoK
-SGVyZSBpcyBteSBjb21tYW5kIGxpbmUgdG8gc3RhcnQgb2ZmIHdpdGg6CgovdmFyL2F1dG9mcy9s
-b2NhbC9zcmMvbGludXgtd29yay9saW51eC92bWxpbnV4IG1lbT0kTUVNT1JZIHVtaWQ9T1BYIFwK
-IMKgwqDCoCB1YmQwPS9leHBvcnRzL1VNTC1kZWJpYW4vT1BYLTMuMC1Xb3JrLmltZyBcCnZlYzA6
-dHJhbnNwb3J0PXJhdyxpZm5hbWU9JE1HTVRfSUYsZGVwdGg9MTI4LGdybz0xLG1hYz05Mjo5Yjoz
-Njo1ZTozODo2OCBcCnZlYzE6dHJhbnNwb3J0PXJhdyxpZm5hbWU9JExFRlRfSUYsZGVwdGg9MTI4
-LGdybz0xLG1hYz05Mjo5YjozNjo1ZTozODo2OSBcCnZlYzI6dHJhbnNwb3J0PXJhdyxpZm5hbWU9
-JFJJR0hUX0lGLGRlcHRoPTEyOCxncm89MSxtYWM9OTI6OWI6MzY6NWU6Mzg6NmEgXAogwqDCoMKg
-IHJvb3Q9L2Rldi91YmRhIHJvIGNvbj1udWxsIGNvbjA9bnVsbCxmZDoyIGNvbjE9ZmQ6MCxmZDox
-ICRACgpBbGwgaW50ZXJmYWNlcyBhcmUgdGhlIHBhaXIgZW5kcyBvZiB2ZXRocy4gJE1FTU9SWSBp
-cyAyRy4gSSB0cmllZCAKYm9vdGluZyB3aXRoIHZhcmlvdXMgbmV0d29ya2luZyBvbi9vZmYgY29t
-YmluYXRpb25zLCBzaW5nbGUgdXNlciBtb2RlLCAKZXRjIC0gdGhlIHJlc3VsdCBpcyB0aGUgc2Ft
-ZS4KCklNSE8gdGhpcyBpcyBzb21ldGhpbmcgcHVyZWx5IG9uIHRoZSBVTUwgc2lkZSwgbm90IHJl
-bGF0ZWQgdG8gdGhlIE1RIApwYXJ0IG9mIHRoZSBlcXVhdGlvbi4gSSBqdXN0IGNhbm5vdCBncm9r
-IHdoYXQgaXQgaXMuCgpBLgoKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFk
-Lm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVt
-Cg==
+On 11/7/18 2:46 PM, Richard Weinberger wrote:
+> Am Mittwoch, 7. November 2018, 22:16:20 CET schrieb Jens Axboe:
+>>>> Does the below help things?
+>>>>
+>>>
+>>> It does!
+>>> Anton, please give it also a try.
+>>
+>> OK good, it's definitely a bug, and given the symptoms, sounds like
+>> THE bug in this case.
+> 
+> Shall I send your fix as patch or do you want to?
+
+I'm going to queue it up, just waiting for Anton to also test so I
+can add the appropriate Tested-by.
+
+-- 
+Jens Axboe
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
