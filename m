@@ -1,20 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab6.miniserver.com ([5.153.251.140]
  helo=www.kot-begemot.co.uk)
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKNxR-0001nB-Ej
- for linux-um@lists.infradead.org; Wed, 07 Nov 2018 13:33:23 +0000
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gKLLw-0004P0-Ly
+ for linux-um@lists.infradead.org; Wed, 07 Nov 2018 10:46:29 +0000
 Subject: Re: 4.20-rc1 looks broken for UML
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
 References: <4a096c4f-6552-dbcb-676b-a87306dde07a@kot-begemot.co.uk>
  <e5c51b9c-97d5-ae12-b06f-303f0469d46b@kot-begemot.co.uk>
  <6298063.A9SzxUBULK@blindfold> <2177266.HJA9EnQ7lp@blindfold>
  <20181107075318.GA24381@lst.de>
- <31d79c23-0fa0-956e-5477-0c326416fc45@kot-begemot.co.uk>
-Message-ID: <b2f0593d-d0f6-3dd7-fa6e-3a5af4b69f33@kot-begemot.co.uk>
-Date: Wed, 7 Nov 2018 13:33:07 +0000
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Message-ID: <31d79c23-0fa0-956e-5477-0c326416fc45@kot-begemot.co.uk>
+Date: Wed, 7 Nov 2018 10:46:05 +0000
 MIME-Version: 1.0
-In-Reply-To: <31d79c23-0fa0-956e-5477-0c326416fc45@kot-begemot.co.uk>
+In-Reply-To: <20181107075318.GA24381@lst.de>
 Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -24,55 +23,56 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: Christoph Hellwig <hch@lst.de>, Richard Weinberger <richard@nod.at>
 Cc: axboe@kernel.dk, linux-um@lists.infradead.org
 
-Ck9uIDExLzcvMTggMTA6NDYgQU0sIEFudG9uIEl2YW5vdiB3cm90ZToKPiBPbiAxMS83LzE4IDc6
-NTMgQU0sIENocmlzdG9waCBIZWxsd2lnIHdyb3RlOgo+Cj4+IE9uIFR1ZSwgTm92IDA2LCAyMDE4
-IGF0IDA5OjQ5OjQ1UE0gKzAxMDAsIFJpY2hhcmQgV2VpbmJlcmdlciB3cm90ZToKPj4+IENocmlz
-dG9waCwKPj4+Cj4+PiBBbnRvbiBmb3VuZCBhIHByb2JsZW0gaW4geW91ciAidWJkOiByZW1vdmUg
-dXNlIG9mIGJsa19ycV9tYXBfc2ciIHBhdGNoLgo+Pj4gV2l0aCBDT05GSUdfREVCVUdfUEFHRUFM
-TE9DIGVuYWJsZWQsIHRoZSB1YmQgZHJpdmVyIGNyYXNoZXMgYmVjYXVzZSAKPj4+IGl0IHRyaWVz
-Cj4+PiB0byBkZXJlZiBhZGRyZXNzIDB4MTIzNDU2NzgsIHdoaWNoIGlzIHRoZSBwb2lzb24gZnJv
-bSAKPj4+IHN0b3JlX3N0YWNraW5mbygpLgo+Pj4KPj4+IFBsZWFzZSBzZWUgYmVsb3cgZm9yIG1v
-cmUgaW5mby4KPj4+IENhbiBpdCBiZSB0aGF0IHlvdXIgY2hhbmdlIGludHJvZHVjZWQgYSB1c2Ut
-YWZ0ZXItZnJlZSBidWcgaW4gVU1MJ3MgCj4+PiBibG9jayBkcml2ZXI/Cj4+IFNvdW5kcyBsaWtl
-IGl0LsKgIEJ1dCBJJ2xsIG5lZWQgc29tZSBtb3JlIHRpbWUgdG8gZGVidWcgaXQuCj4KPiBJIGhh
-ZCB0byByZXZlcnQgNGU2ZGEwZmU4MDU4ZGY5YmZhOTM3OTAyZmNkOWNiMmI3Yjg5YjJkZiAidW06
-IENvbnZlcnQgCj4gdWJkIGRyaXZlciB0byBibGstbXEiIGFzIHdlbGwgdG8gZ2V0IHRoaW5ncyBi
-YWNrIHRvIGJ1c2luZXNzIGFzIHVzdWFsLgoKRmlyc3Qgb2YgYWxsLCBJIGFwb2xvZ2l6ZSBmb3Ig
-bm90IGxvb2tpbmcgYXQgaXQgcHJvcGVybHkgd2hlbiBpdCBmaXJzdCAKY2FtZSBvdXQsIEkgd2Fz
-IGJ1cmllZCB1bmRlciBvcGVuc3dpdGNoIGFuZCBvcGVuZGF5bGlnaHQgYXQgdGhlIHRpbWUuCgpJ
-IGhhdmUgbG9va2VkIGF0IGl0IGFnYWluIGFuZCBJIHNlZSBhIGZldyBpc3N1ZXMgd2l0aCBpdDoK
-CjEuIE9uIHRyYW5zaWVudCBmYWlsdXJlIGFmdGVyIGEgcmVxdWV1ZSBpdCByZXR1cm5zIEJMS19T
-VFNfT0ssIHNob3VsZG4ndCAKdGhpcyBiZSBCTEtfU1RTX1JFU09VUkNFPwoKMi4gT24gdHJhbnNp
-ZW50IGZhaWx1cmUgaXQgcmVkb2VzIHRoZSB3aG9sZSBTRyBsaXN0LiBUaGF0IHNob3VsZCBub3Qg
-YmUgCnRoZSBjYXNlLCBpdCBzaG91bGQgcmVjb3JkIGhvdyBmYXIgaXQgZ290IHRvIGFuZCByZWRv
-IHRoZSBsaXN0IGZyb20gdGhlcmU6CgpodHRwczovL2VsaXhpci5ib290bGluLmNvbS9saW51eC9s
-YXRlc3Qvc291cmNlL2RyaXZlcnMvYmxvY2svbmJkLmMjTDUwOQoKVGhlc2Ugc2hvdWxkIG5vdCBw
-cmV2ZW50IGl0IGZyb20gd29ya2luZyB0aG91Z2ggYW5kIHNob3VsZCBub3QgY2F1c2UgYW4gCmlt
-bWVkaWF0ZSBmYWlsdXJlIHdoZW4gdHJ5aW5nIHRvIG1vdW50IHJ3IG9yIHJlbW91bnQgYSBybyBh
-cyBydy4gSSBoYXZlIApub3QgZm91bmQgdGhlIGNhdXNlIGZvciB0aGF0IG9uZSB5ZXQuCgpBLgoK
-Cj4KPiBUaGUgYmxvY2stbXEgZHJpdmVyIHdvcmtzIGZvciByZWFkaW5nIC0gbm8gaXNzdWVzIGlm
-IGV2ZXJ5dGhpbmcgaXMgcm8uIAo+IEl0IGFsc28gY2xlYXJseSB3b3JrcyBmb3Igd3JpdGluZyBm
-b3Igc29tZSBjb25maWdzIGluIG9sZGVyIGtlcm5lbHMsIAo+IG90aGVyd2lzZSBpdCB3b3VsZCBo
-YXZlIGJlZW4gcGlja2VkIHVwLgo+Cj4gU29tZXRoaW5nIGNoYW5nZWQgaW4gNC4yMC1yYzEgd2hp
-Y2ggbWFkZSBpdCBmYWlsIGluIG15IGNvbmZpZy4gVGhlIAo+IGZhaWx1cmUgaXMgaW5zdGFudGFu
-ZW91cyBmb3IgNC4yMC1yYzEgd2l0aCBvbmx5IAo+IGVjYjBhODNlMzE5OGYyYzExNDI5MDE2ODdh
-ZmFjYmM3MzYwMmExM2IgIiB1YmQ6IHJlbW92ZSB1c2Ugb2YgCj4gYmxrX3JxX21hcF9zZyIgcmV2
-ZXJ0ZWQuCj4KPiBSZXZlcnRpbmcgYm90aCBhbmQgcmVzdG9yaW5nIHRoZSBkcml2ZXIgdG8gNC4x
-OSBzdGF0ZSBmaXhlcyB0aGluZ3MuCj4KPiBJIGFtIGdvaW5nIHRvIGdpdmUgaXQgYSBnbyB0byBk
-ZWJ1ZyBleGFjdGx5IHdoYXQgYnJlYWtzIGZvciB3cml0aW5nIGluIAo+IGVjYjBhODNlMzE5OGYy
-YzExNDI5MDE2ODdhZmFjYmM3MzYwMmExM2IgIiB1YmQ6IHJlbW92ZSB1c2Ugb2YgCj4gYmxrX3Jx
-X21hcF9zZyIuCj4KPiBBLgo+Cj4KPj4KPj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KPj4gbGludXgtdW0gbWFpbGluZyBsaXN0Cj4+IGxpbnV4LXVtQGxp
-c3RzLmluZnJhZGVhZC5vcmcKPj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9saW51eC11bQo+PgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVh
-ZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11
-bQo=
+On 11/7/18 7:53 AM, Christoph Hellwig wrote:
+
+> On Tue, Nov 06, 2018 at 09:49:45PM +0100, Richard Weinberger wrote:
+>> Christoph,
+>>
+>> Anton found a problem in your "ubd: remove use of blk_rq_map_sg" patch.
+>> With CONFIG_DEBUG_PAGEALLOC enabled, the ubd driver crashes because it tries
+>> to deref address 0x12345678, which is the poison from store_stackinfo().
+>>
+>> Please see below for more info.
+>> Can it be that your change introduced a use-after-free bug in UML's block driver?
+> Sounds like it.  But I'll need some more time to debug it.
+
+I had to revert 4e6da0fe8058df9bfa937902fcd9cb2b7b89b2df "um: Convert 
+ubd driver to blk-mq" as well to get things back to business as usual.
+
+The block-mq driver works for reading - no issues if everything is ro. 
+It also clearly works for writing for some configs in older kernels, 
+otherwise it would have been picked up.
+
+Something changed in 4.20-rc1 which made it fail in my config. The 
+failure is instantaneous for 4.20-rc1 with only 
+ecb0a83e3198f2c1142901687afacbc73602a13b " ubd: remove use of 
+blk_rq_map_sg" reverted.
+
+Reverting both and restoring the driver to 4.19 state fixes things.
+
+I am going to give it a go to debug exactly what breaks for writing in 
+ecb0a83e3198f2c1142901687afacbc73602a13b " ubd: remove use of 
+blk_rq_map_sg".
+
+A.
+
+
+>
+> _______________________________________________
+> linux-um mailing list
+> linux-um@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-um
+>
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
