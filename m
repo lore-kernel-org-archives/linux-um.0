@@ -1,212 +1,161 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab6.miniserver.com ([5.153.251.140]
- helo=www.kot-begemot.co.uk)
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gMGEH-00035b-J7
- for linux-um@lists.infradead.org; Mon, 12 Nov 2018 17:42:30 +0000
-From: anton.ivanov@cambridgegreys.com
-Subject: [PATCH 1/3] um: Switch to block-mq constants in the UML UBD driver
-Date: Mon, 12 Nov 2018 17:41:59 +0000
-Message-Id: <20181112174201.12290-2-anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20181112174201.12290-1-anton.ivanov@cambridgegreys.com>
-References: <20181112174201.12290-1-anton.ivanov@cambridgegreys.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Return-Path: <joel@joelfernandes.org>
+From: Joel Fernandes <joel@joelfernandes.org>
+Subject: [PATCH -next-akpm 2/3] mm: speed up mremap by 20x on large regions (v5)
+Date: Thu,  8 Nov 2018 10:12:00 -0800
+Message-Id: <20181108181201.88826-3-joelaf@google.com>
+In-Reply-To: <20181108181201.88826-1-joelaf@google.com>
+References: <20181108181201.88826-1-joelaf@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: axboe@kernel.dk, richard@nod.at, hch@lst.de, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Content-Transfer-Encoding: 8bit
+To: linux-kernel@vger.kernel.org
+Cc: kernel-team@android.com, "Joel Fernandes (Google)" <joel@joelfernandes.org>, "Kirill A . Shutemov" <kirill@shutemov.name>, William Kucharski <william.kucharski@oracle.com>, akpm@linux-foundation.org, Andrey Ryabinin <aryabinin@virtuozzo.com>, Andy Lutomirski <luto@kernel.org>, anton.ivanov@kot-begemot.co.uk, Borislav Petkov <bp@alien8.de>, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, dancol@google.com, Dave Hansen <dave.hansen@linux.intel.com>, "David S. Miller" <davem@davemloft.net>, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Helge Deller <deller@gmx.de>, hughd@google.com, Ingo Molnar <mingo@redhat.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Jeff Dike <jdike@addtoit.com>, Jonas Bonn <jonas@southpole.se>, Julia Lawall <Julia.Lawall@lip6.fr>, kasan-dev@googlegroups.com, kvmarm@lists.cs.columbia.edu, Ley Foon Tan <lftan@altera.com>, linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, lokeshgidra@google.com, Max Filippov <jcmvbkbc@gmail.com>, Michal Hocko <mhocko@kernel.org>, minchan@kernel.org, nios2-dev@lists.rocketboards.org, pantin@google.com, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Sam Creasey <sammy@sammy.net>, sparclinux@vger.kernel.org, Stafford Horne <shorne@gmail.com>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, Will Deacon <will.deacon@arm.com>, "maintainer:X86 ARCHITECTURE 32-BIT AND 64-BIT" <x86@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>
+List-ID: <linux-um.lists.infradead.org>
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 
-Switch to block mq-constants for both commands and error codes.
+Android needs to mremap large regions of memory during memory management
+related operations. The mremap system call can be really slow if THP is
+not enabled. The bottleneck is move_page_tables, which is copying each
+pte at a time, and can be really slow across a large map. Turning on THP
+may not be a viable option, and is not for us. This patch speeds up the
+performance for non-THP system by copying at the PMD level when possible.
 
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+The speed up is an order of magnitude on x86 (~20x). On a 1GB mremap,
+the mremap completion times drops from 3.4-3.6 milliseconds to 144-160
+microseconds.
+
+Before:
+Total mremap time for 1GB data: 3521942 nanoseconds.
+Total mremap time for 1GB data: 3449229 nanoseconds.
+Total mremap time for 1GB data: 3488230 nanoseconds.
+
+After:
+Total mremap time for 1GB data: 150279 nanoseconds.
+Total mremap time for 1GB data: 144665 nanoseconds.
+Total mremap time for 1GB data: 158708 nanoseconds.
+
+Incase THP is enabled, the optimization is mostly skipped except in
+certain situations.
+
+Acked-by: Kirill A. Shutemov <kirill@shutemov.name>
+Reviewed-by: William Kucharski <william.kucharski@oracle.com>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- arch/um/drivers/ubd_kern.c | 54 ++++++++++++++++++++++++++++------------------
- 1 file changed, 33 insertions(+), 21 deletions(-)
 
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 28c40624bcb6..76cd21baac2b 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -43,11 +43,13 @@
- #include <os.h>
- #include "cow.h"
+Note that since the bug fix in [1], we now have to flush the TLB every
+PMD move. The above numbers were obtained on x86 with a flush done every
+move. For arm64, I previously encountered performance issues doing a
+flush everytime we move, however Will Deacon says [2] the performance
+should be better now with recent release. Until we can evaluate arm64, I
+am dropping the HAVE_MOVE_PMD config enable patch for ARM64 for now. It
+can be added back once we finish the performance evaluation. Also of
+note is that the speed up on arm64 with this patch but without the TLB
+flush every PMD move is around 500x.
+
+[1] https://bugs.chromium.org/p/project-zero/issues/detail?id=1695
+[2] https://www.mail-archive.com/linuxppc-dev@lists.ozlabs.org/msg140837.html
+
+ arch/Kconfig |  5 +++++
+ mm/mremap.c  | 62 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 67 insertions(+)
+
+diff --git a/arch/Kconfig b/arch/Kconfig
+index e1e540ffa979..b70c952ac838 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -535,6 +535,11 @@ config HAVE_IRQ_TIME_ACCOUNTING
+ 	  Archs need to ensure they use a high enough resolution clock to
+ 	  support irq time accounting and then call enable_sched_clock_irqtime().
  
--enum ubd_req { UBD_READ, UBD_WRITE, UBD_FLUSH };
-+#define UBD_SECTOR_SIZE (1 << 9)
-+/* Max request size is determined by sector mask - 32K */
-+#define UBD_MAX_REQUEST (8 * sizeof(long))
++config HAVE_MOVE_PMD
++	bool
++	help
++	  Archs that select this are able to move page tables at the PMD level.
++
+ config HAVE_ARCH_TRANSPARENT_HUGEPAGE
+ 	bool
  
- struct io_thread_req {
- 	struct request *req;
--	enum ubd_req op;
-+	int op;
- 	int fds[2];
- 	unsigned long offsets[2];
- 	unsigned long long offset;
-@@ -511,16 +513,13 @@ static void ubd_handler(void)
- 		}
- 		for (count = 0; count < n/sizeof(struct io_thread_req *); count++) {
- 			struct io_thread_req *io_req = (*irq_req_buffer)[count];
--			int err = io_req->error ? BLK_STS_IOERR : BLK_STS_OK;
- 
--			if (!blk_update_request(io_req->req, err, io_req->length))
--				__blk_mq_end_request(io_req->req, err);
-+			if (!blk_update_request(io_req->req, io_req->error, io_req->length))
-+				__blk_mq_end_request(io_req->req, io_req->error);
- 
- 			kfree(io_req);
- 		}
- 	}
--
--	reactivate_fd(thread_fd, UBD_IRQ);
+diff --git a/mm/mremap.c b/mm/mremap.c
+index 7c9ab747f19d..2591e512373a 100644
+--- a/mm/mremap.c
++++ b/mm/mremap.c
+@@ -191,6 +191,50 @@ static void move_ptes(struct vm_area_struct *vma, pmd_t *old_pmd,
+ 		drop_rmap_locks(vma);
  }
  
- static irqreturn_t ubd_intr(int irq, void *dev)
-@@ -830,6 +829,7 @@ static int ubd_open_dev(struct ubd *ubd_dev)
- 		if(err < 0) goto error;
- 		ubd_dev->cow.fd = err;
- 	}
-+	blk_queue_flag_set(QUEUE_FLAG_NONROT, ubd_dev->queue);
- 	return 0;
-  error:
- 	os_close_file(ubd_dev->fd);
-@@ -882,7 +882,7 @@ static int ubd_disk_register(int major, u64 size, int unit,
- 	return 0;
- }
- 
--#define ROUND_BLOCK(n) ((n + ((1 << 9) - 1)) & (-1 << 9))
-+#define ROUND_BLOCK(n) ((n + (UBD_SECTOR_SIZE - 1)) & (-UBD_SECTOR_SIZE))
- 
- static const struct blk_mq_ops ubd_mq_ops = {
- 	.queue_rq = ubd_queue_rq,
-@@ -1277,7 +1277,7 @@ static void cowify_req(struct io_thread_req *req, unsigned long *bitmap,
- 	if(req->length > (sizeof(req->sector_mask) * 8) << 9)
- 		panic("Operation too long");
- 
--	if(req->op == UBD_READ) {
-+	if (req_op(req->req) == REQ_OP_READ) {
- 		for(i = 0; i < req->length >> 9; i++){
- 			if(ubd_test_bit(sector + i, (unsigned char *) bitmap))
- 				ubd_set_bit(i, (unsigned char *)
-@@ -1307,15 +1307,12 @@ static int ubd_queue_one_vec(struct blk_mq_hw_ctx *hctx, struct request *req,
- 		io_req->fds[0] = dev->fd;
- 	io_req->error = 0;
- 
--	if (req_op(req) == REQ_OP_FLUSH) {
--		io_req->op = UBD_FLUSH;
--	} else {
-+	if (req_op(req) != REQ_OP_FLUSH) {
- 		io_req->fds[1] = dev->fd;
- 		io_req->cow_offset = -1;
- 		io_req->offset = off;
- 		io_req->length = bvec->bv_len;
- 		io_req->sector_mask = 0;
--		io_req->op = rq_data_dir(req) == READ ? UBD_READ : UBD_WRITE;
- 		io_req->offsets[0] = 0;
- 		io_req->offsets[1] = dev->cow.data_offset;
- 		io_req->buffer = page_address(bvec->bv_page) + bvec->bv_offset;
-@@ -1413,22 +1410,37 @@ static int ubd_ioctl(struct block_device *bdev, fmode_t mode,
- 	return -EINVAL;
- }
- 
-+static int map_error(int error_code)
++static bool move_normal_pmd(struct vm_area_struct *vma, unsigned long old_addr,
++		  unsigned long new_addr, unsigned long old_end,
++		  pmd_t *old_pmd, pmd_t *new_pmd)
 +{
-+	switch (error_code) {
-+	case 0:
-+		return BLK_STS_OK;
-+	case EOPNOTSUPP:
-+		return BLK_STS_NOTSUPP;
-+	case EPERM:
-+		return BLK_STS_PROTECTION;
-+	case ENOSPC:
-+		return BLK_STS_NOSPC;
-+	}
-+	return BLK_STS_IOERR;
++	spinlock_t *old_ptl, *new_ptl;
++	struct mm_struct *mm = vma->vm_mm;
++	pmd_t pmd;
++
++	if ((old_addr & ~PMD_MASK) || (new_addr & ~PMD_MASK)
++	    || old_end - old_addr < PMD_SIZE)
++		return false;
++
++	/*
++	 * The destination pmd shouldn't be established, free_pgtables()
++	 * should have release it.
++	 */
++	if (WARN_ON(!pmd_none(*new_pmd)))
++		return false;
++
++	/*
++	 * We don't have to worry about the ordering of src and dst
++	 * ptlocks because exclusive mmap_sem prevents deadlock.
++	 */
++	old_ptl = pmd_lock(vma->vm_mm, old_pmd);
++	new_ptl = pmd_lockptr(mm, new_pmd);
++	if (new_ptl != old_ptl)
++		spin_lock_nested(new_ptl, SINGLE_DEPTH_NESTING);
++
++	/* Clear the pmd */
++	pmd = *old_pmd;
++	pmd_clear(old_pmd);
++
++	VM_BUG_ON(!pmd_none(*new_pmd));
++
++	/* Set the new pmd */
++	set_pmd_at(mm, new_addr, new_pmd, pmd);
++	flush_tlb_range(vma, old_addr, old_addr + PMD_SIZE);
++	if (new_ptl != old_ptl)
++		spin_unlock(new_ptl);
++	spin_unlock(old_ptl);
++
++	return true;
 +}
 +
- static int update_bitmap(struct io_thread_req *req)
- {
- 	int n;
- 
- 	if(req->cow_offset == -1)
--		return 0;
-+		return map_error(0);
- 
- 	n = os_pwrite_file(req->fds[1], &req->bitmap_words,
- 			  sizeof(req->bitmap_words), req->cow_offset);
- 	if(n != sizeof(req->bitmap_words)){
- 		printk("do_io - bitmap update failed, err = %d fd = %d\n", -n,
- 		       req->fds[1]);
--		return 1;
-+		return map_error(-n);
- 	}
- 
--	return 0;
-+	return map_error(0);
- }
- 
- static void do_io(struct io_thread_req *req)
-@@ -1438,13 +1450,13 @@ static void do_io(struct io_thread_req *req)
- 	int n, nsectors, start, end, bit;
- 	__u64 off;
- 
--	if (req->op == UBD_FLUSH) {
-+	if (req_op(req->req) == REQ_OP_FLUSH) {
- 		/* fds[0] is always either the rw image or our cow file */
- 		n = os_sync_file(req->fds[0]);
- 		if (n != 0) {
- 			printk("do_io - sync failed err = %d "
- 			       "fd = %d\n", -n, req->fds[0]);
--			req->error = 1;
-+			req->error = map_error(-n);
+ unsigned long move_page_tables(struct vm_area_struct *vma,
+ 		unsigned long old_addr, struct vm_area_struct *new_vma,
+ 		unsigned long new_addr, unsigned long len,
+@@ -237,7 +281,25 @@ unsigned long move_page_tables(struct vm_area_struct *vma,
+ 			split_huge_pmd(vma, old_pmd, old_addr);
+ 			if (pmd_trans_unstable(old_pmd))
+ 				continue;
++		} else if (extent == PMD_SIZE) {
++#ifdef CONFIG_HAVE_MOVE_PMD
++			/*
++			 * If the extent is PMD-sized, try to speed the move by
++			 * moving at the PMD level if possible.
++			 */
++			bool moved;
++
++			if (need_rmap_locks)
++				take_rmap_locks(vma);
++			moved = move_normal_pmd(vma, old_addr, new_addr,
++					old_end, old_pmd, new_pmd);
++			if (need_rmap_locks)
++				drop_rmap_locks(vma);
++			if (moved)
++				continue;
++#endif
  		}
- 		return;
- 	}
-@@ -1464,7 +1476,7 @@ static void do_io(struct io_thread_req *req)
- 		len = (end - start) * req->sectorsize;
- 		buf = &req->buffer[start * req->sectorsize];
- 
--		if(req->op == UBD_READ){
-+		if (req_op(req->req) == REQ_OP_READ) {
- 			n = 0;
- 			do {
- 				buf = &buf[n];
-@@ -1473,7 +1485,7 @@ static void do_io(struct io_thread_req *req)
- 				if (n < 0) {
- 					printk("do_io - read failed, err = %d "
- 					       "fd = %d\n", -n, req->fds[bit]);
--					req->error = 1;
-+					req->error = map_error(-n);
- 					return;
- 				}
- 			} while((n < len) && (n != 0));
-@@ -1483,7 +1495,7 @@ static void do_io(struct io_thread_req *req)
- 			if(n != len){
- 				printk("do_io - write failed err = %d "
- 				       "fd = %d\n", -n, req->fds[bit]);
--				req->error = 1;
-+				req->error = map_error(-n);
- 				return;
- 			}
- 		}
++
+ 		if (pte_alloc(new_vma->vm_mm, new_pmd))
+ 			break;
+ 		next = (new_addr + PMD_SIZE) & PMD_MASK;
 -- 
-2.11.0
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+2.19.1.930.g4563a0d9d0-goog
 
