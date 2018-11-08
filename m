@@ -2,21 +2,20 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab6.miniserver.com ([5.153.251.140]
  helo=www.kot-begemot.co.uk)
  by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKp7P-0006d9-3D
- for linux-um@lists.infradead.org; Thu, 08 Nov 2018 18:33:28 +0000
+ id 1gKlSf-0004QT-N9
+ for linux-um@lists.infradead.org; Thu, 08 Nov 2018 14:39:11 +0000
 Subject: Re: [PATCH] Fix breakage from switching to MQ BLK framework
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 References: <20181108130723.12101-1-anton.ivanov@cambridgegreys.com>
  <60f9ff8e-d8e1-a0e6-5974-c2c4c49e27dc@kernel.dk>
  <e416f068-9cf5-3e42-560f-873515092c02@cambridgegreys.com>
  <5eec2bc9-083f-8b1b-2dd9-9ab7ea87c85b@kernel.dk>
  <5e309551-5fa7-7baf-baaf-f6d991b77ce3@cambridgegreys.com>
  <a1a05417-2560-f175-0926-ec355a063355@kernel.dk>
- <e74ed294-e9c1-593d-862b-2f48352ca2cf@cambridgegreys.com>
-Message-ID: <7178b983-57e6-578f-412f-d78205bb8636@cambridgegreys.com>
-Date: Thu, 8 Nov 2018 18:33:13 +0000
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <e74ed294-e9c1-593d-862b-2f48352ca2cf@cambridgegreys.com>
+Date: Thu, 8 Nov 2018 14:38:55 +0000
 MIME-Version: 1.0
-In-Reply-To: <e74ed294-e9c1-593d-862b-2f48352ca2cf@cambridgegreys.com>
+In-Reply-To: <a1a05417-2560-f175-0926-ec355a063355@kernel.dk>
 Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -26,108 +25,125 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: Jens Axboe <axboe@kernel.dk>, linux-um@lists.infradead.org
 Cc: richard@nod.at, hch@lst.de
 
-Ck9uIDExLzgvMTggMjozOCBQTSwgQW50b24gSXZhbm92IHdyb3RlOgo+Cj4gT24gMDgvMTEvMjAx
-OCAxMzozOCwgSmVucyBBeGJvZSB3cm90ZToKPj4gT24gMTEvOC8xOCA2OjMzIEFNLCBBbnRvbiBJ
-dmFub3Ygd3JvdGU6Cj4+PiBPbiAxMS84LzE4IDE6MjQgUE0sIEplbnMgQXhib2Ugd3JvdGU6Cj4+
-Pj4gT24gMTEvOC8xOCA2OjIyIEFNLCBBbnRvbiBJdmFub3Ygd3JvdGU6Cj4+Pj4+IE9uIDExLzgv
-MTggMToxMCBQTSwgSmVucyBBeGJvZSB3cm90ZToKPj4+Pj4+IE9uIDExLzgvMTggNjowNyBBTSwg
-YW50b24uaXZhbm92QGNhbWJyaWRnZWdyZXlzLmNvbSB3cm90ZToKPj4+Pj4+PiBGcm9tOiBBbnRv
-biBJdmFub3YgPGFudG9uLml2YW5vdkBjYW1icmlkZ2VncmV5cy5jb20+Cj4+Pj4+Pj4KPj4+Pj4+
-PiBJbml0aWFsIHZlcnNpb24gYnkgSmVucyBBeGJvZSA8YXhib2VAa2VybmVsLmRrPgo+Pj4+Pj4+
-Cj4+Pj4+Pj4gMS4gRml4IHVzZSBvZiB1c2UgdW5pdGl0YWxpemVkIHJlcS0+ZXJyb3IgZm9yIFNZ
-TkMgY29tbWFuZHMKPj4+Pj4+PiAyLiBHdWFyZCB0aGUgcmVxdWVzdCBzdWJtaXNzaW9uIGJ5IGEg
-c3BpbmxvY2sKPj4+Pj4+Pgo+Pj4+Pj4+IFNpZ25lZC1vZmYtYnk6IEFudG9uIEl2YW5vdiA8YW50
-b24uaXZhbm92QGNhbWJyaWRnZWdyZXlzLmNvbT4KPj4+Pj4+PiAtLS0KPj4+Pj4+PiDCoMKgwqAg
-YXJjaC91bS9kcml2ZXJzL3ViZF9rZXJuLmMgfCA5ICsrKysrKystLQo+Pj4+Pj4+IMKgwqDCoCAx
-IGZpbGUgY2hhbmdlZCwgNyBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQo+Pj4+Pj4+Cj4+
-Pj4+Pj4gZGlmZiAtLWdpdCBhL2FyY2gvdW0vZHJpdmVycy91YmRfa2Vybi5jIAo+Pj4+Pj4+IGIv
-YXJjaC91bS9kcml2ZXJzL3ViZF9rZXJuLmMKPj4+Pj4+PiBpbmRleCA3NGMwMDJkZGMwY2UuLmUz
-ZDU4N2Q5ZWZmNiAxMDA2NDQKPj4+Pj4+PiAtLS0gYS9hcmNoL3VtL2RyaXZlcnMvdWJkX2tlcm4u
-Ywo+Pj4+Pj4+ICsrKyBiL2FyY2gvdW0vZHJpdmVycy91YmRfa2Vybi5jCj4+Pj4+Pj4gQEAgLTEz
-MDUsNiArMTMwNSw3IEBAIHN0YXRpYyBpbnQgdWJkX3F1ZXVlX29uZV92ZWMoc3RydWN0IAo+Pj4+
-Pj4+IGJsa19tcV9od19jdHggKmhjdHgsIHN0cnVjdCByZXF1ZXN0ICpyZXEsCj4+Pj4+Pj4gwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCBpb19yZXEtPmZkc1swXSA9IGRldi0+Y293LmZkOwo+Pj4+Pj4+
-IMKgwqDCoMKgwqDCoMKgIGVsc2UKPj4+Pj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlvX3Jl
-cS0+ZmRzWzBdID0gZGV2LT5mZDsKPj4+Pj4+PiArwqDCoMKgIGlvX3JlcS0+ZXJyb3IgPSAwOwo+
-Pj4+Pj4+IMKgwqDCoCDCoMKgwqDCoMKgwqDCoCBpZiAocmVxX29wKHJlcSkgPT0gUkVRX09QX0ZM
-VVNIKSB7Cj4+Pj4+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpb19yZXEtPm9wID0gVUJEX0ZM
-VVNIOwo+Pj4+Pj4+IEBAIC0xMzEzLDkgKzEzMTQsNyBAQCBzdGF0aWMgaW50IHViZF9xdWV1ZV9v
-bmVfdmVjKHN0cnVjdCAKPj4+Pj4+PiBibGtfbXFfaHdfY3R4ICpoY3R4LCBzdHJ1Y3QgcmVxdWVz
-dCAqcmVxLAo+Pj4+Pj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaW9fcmVxLT5jb3dfb2Zmc2V0
-ID0gLTE7Cj4+Pj4+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpb19yZXEtPm9mZnNldCA9IG9m
-ZjsKPj4+Pj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlvX3JlcS0+bGVuZ3RoID0gYnZlYy0+
-YnZfbGVuOwo+Pj4+Pj4+IC3CoMKgwqDCoMKgwqDCoCBpb19yZXEtPmVycm9yID0gMDsKPj4+Pj4+
-PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlvX3JlcS0+c2VjdG9yX21hc2sgPSAwOwo+Pj4+Pj4+
-IC0KPj4+Pj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlvX3JlcS0+b3AgPSBycV9kYXRhX2Rp
-cihyZXEpID09IFJFQUQgPyBVQkRfUkVBRCA6IAo+Pj4+Pj4+IFVCRF9XUklURTsKPj4+Pj4+PiDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlvX3JlcS0+b2Zmc2V0c1swXSA9IDA7Cj4+Pj4+Pj4gwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCBpb19yZXEtPm9mZnNldHNbMV0gPSBkZXYtPmNvdy5kYXRhX29m
-ZnNldDsKPj4+Pj4+IFRoZXNlIHR3byBodW5rcyBsb29rIGZpbmUuCj4+Pj4+Pgo+Pj4+Pj4+IEBA
-IC0xMzQxLDExICsxMzQwLDE1IEBAIHN0YXRpYyBpbnQgdWJkX3F1ZXVlX29uZV92ZWMoc3RydWN0
-IAo+Pj4+Pj4+IGJsa19tcV9od19jdHggKmhjdHgsIHN0cnVjdCByZXF1ZXN0ICpyZXEsCj4+Pj4+
-Pj4gwqDCoMKgIHN0YXRpYyBibGtfc3RhdHVzX3QgdWJkX3F1ZXVlX3JxKHN0cnVjdCBibGtfbXFf
-aHdfY3R4ICpoY3R4LAo+Pj4+Pj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAgY29uc3Qgc3RydWN0IGJsa19tcV9xdWV1ZV9kYXRhICpiZCkKPj4+Pj4+PiDCoMKgwqAg
-ewo+Pj4+Pj4+ICvCoMKgwqAgc3RydWN0IHViZCAqdWJkX2RldiA9IGhjdHgtPnF1ZXVlLT5xdWV1
-ZWRhdGE7Cj4+Pj4+Pj4gwqDCoMKgwqDCoMKgwqAgc3RydWN0IHJlcXVlc3QgKnJlcSA9IGJkLT5y
-cTsKPj4+Pj4+PiArwqDCoMKgIHVuc2lnbmVkIGxvbmcgZmxhZ3M7Cj4+Pj4+Pj4gwqDCoMKgwqDC
-oMKgwqAgaW50IHJldCA9IDA7Cj4+Pj4+Pj4gwqDCoMKgIMKgwqDCoMKgwqDCoMKgIGJsa19tcV9z
-dGFydF9yZXF1ZXN0KHJlcSk7Cj4+Pj4+Pj4gwqDCoMKgICvCoMKgwqAgc3Bpbl9sb2NrX2lycXNh
-dmUoJnViZF9kZXYtPmxvY2ssIGZsYWdzKTsKPj4+Pj4+PiArCj4+Pj4+Pj4gwqDCoMKgwqDCoMKg
-wqAgaWYgKHJlcV9vcChyZXEpID09IFJFUV9PUF9GTFVTSCkgewo+Pj4+Pj4+IMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqAgcmV0ID0gdWJkX3F1ZXVlX29uZV92ZWMoaGN0eCwgcmVxLCAwLCBOVUxMKTsK
-Pj4+Pj4+PiDCoMKgwqDCoMKgwqDCoCB9IGVsc2Ugewo+Pj4+Pj4+IEBAIC0xMzYxLDYgKzEzNjQs
-OCBAQCBzdGF0aWMgYmxrX3N0YXR1c190IHViZF9xdWV1ZV9ycShzdHJ1Y3QgCj4+Pj4+Pj4gYmxr
-X21xX2h3X2N0eCAqaGN0eCwKPj4+Pj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIH0KPj4+Pj4+
-PiDCoMKgwqDCoMKgwqDCoCB9Cj4+Pj4+Pj4gwqDCoMKgIG91dDoKPj4+Pj4+PiArwqDCoMKgIHNw
-aW5fdW5sb2NrX2lycXJlc3RvcmUoJnViZF9kZXYtPmxvY2ssIGZsYWdzKTsKPj4+Pj4+PiArCj4+
-Pj4+Pj4gwqDCoMKgwqDCoMKgwqAgaWYgKHJldCA8IDApIHsKPj4+Pj4+PiDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIGJsa19tcV9yZXF1ZXVlX3JlcXVlc3QocmVxLCB0cnVlKTsKPj4+Pj4+PiDCoMKg
-wqDCoMKgwqDCoCB9Cj4+Pj4+PiBUaGlzIG9uZSBkb2Vzbid0IG5lZWQgdG8gYmUgc2F2ZS9yZXN0
-b3JlLiBJJ3ZlIGFscmVhZHkgcXVldWVkIHVwCj4+Pj4+PiB0aGUgbG9ja2luZyBmaXggeWVzdGVy
-ZGF5LCBJJ2xsIGFkZCB5b3VyIGluaXRpYWxpemF0aW9uIGZpeC4KPj4+Pj4gQXBvbG9naWVzLCBJ
-IGdvdCBhIGhhbmcgd2hlbiB0ZXN0aW5nIGl0IHdpdGgganVzdCBfaXJxLCBidXQgSSBkaWQgbm90
-Cj4+Pj4+IHJlcnVuIHRoZSB0ZXN0LiBJIHN1c3BlY3QgaXQgd2FzIG9uIHNvbWV0aGluZyBjb21w
-bGV0ZWx5IHVucmVsYXRlZCAKPj4+Pj4gYXMgSQo+Pj4+PiBjYW5ub3QgcmVwcm9kdWNlIGl0IGFu
-eSBtb3JlLgo+Pj4+Pgo+Pj4+PiBUaGF0IGlzIHdoeSBJIHN3aXRjaGVkIGl0IHRvIGlycXNhdmUs
-IHdoaWNoIGFzIHlvdSBleHBsYWluZWQgaXMKPj4+Pj4gdW5uZWNlc3NhcnkuCj4+Pj4gTm8gcHJv
-YmxlbSwgSSBjb21taXR0ZWQgYSBjdXQgZG93biB2ZXJzaW9uIGFuZCBmaXhlZCB1cCB5b3VyCj4+
-Pj4gY29tbWl0IG1lc3NhZ2UgYXMgd2VsbDoKPj4+Pgo+Pj4+IGh0dHA6Ly9naXQua2VybmVsLmRr
-L2NnaXQvbGludXgtYmxvY2svY29tbWl0Lz9oPWZvci1saW51cyZpZD0wMDMzZGZkOTJhNTY0NmE3
-ODAyNWU4NmY4ZGY0ZDViMTgxODFiYTJjIAo+Pj4+Cj4+Pj4KPj4+IFRoYW5rcywKPj4+Cj4+PiBU
-aGUgc3BlZWQgZGlmZmVyZW5jZSBiZXR3ZWVuIGlycSBhbmQgaXJxc2F2ZSBpcyBxdWl0ZSBzdWJz
-dGFudGlhbCAtIEkKPj4+IGdldCAyNTVNQi9zIHZzIDMxMk1CL3Mgb24gZGQtaW5nIGEgMTZHIGlt
-YWdlIHRvIC9kZXYvbnVsbAo+Pj4KPj4+IEkgc2hvdWxkIHByb2JhYmx5IGxvb2sgYXJvdW5kIHRo
-ZSByZXN0IG9mIFVNTCBhcyBpdCB1c2VzIF9pcnFzYXZlIAo+Pj4gbmVhcmx5Cj4+PiBldmVyeXdo
-ZXJlIGFuZCBzb21lIG9mIHRob3NlIG1heSBiZSBjb252ZXJ0ZWQgdG8gX2lycS4KPj4gc2F2ZS9y
-ZXN0b3JlIHZhcmlhbnRzIGFyZSBwcm9iYWJseSBtb3JlIGV4cGVuc2l2ZSBpbiBVTUwgdGhhbiBl
-bHNld2hlcmUuCj4+IEJ1dCB5ZXMsIHRoZXJlJ3MgYSBkaWZmZXJlbmNlIG9uIHg4NiBiYXJlIG1l
-dGFsIGFzIHdlbGwuCj4+Cj4gVGhhdCBpcyBpbmRlZWQgdGhlIGNhc2UgOikKPgo+IEkgaGF2ZSBh
-IHF1ZXN0aW9uLiBOYW1lbHkgLSB3aGF0IGlzIHRoZSB1cmdlbmN5IHRvIGltcGxlbWVudCB0aGUg
-b3RoZXIgCj4gY29tbWFuZCBjb2Rlcz8KPgo+IFdoaWxlIHRyeWluZyB0byBkZWJ1ZyB0aGlzIGlz
-c3VlIEkgbm90aWNlZCB0aGF0IHdlIHRyZWF0IGFueXRoaW5nIHRoYXQgCj4gaXMgbm90IHNpbXBs
-ZSBSRUFEIGFzIGEgV1JJVEUuCj4KPiBUaGF0IHdhcyBPSyB3aXRoIHRoZSBvbGRlciBBUEkuIElz
-IHRoYXQgc3RpbGwgdGhlIGNhc2Ugd2l0aCB0aGUgbXE/Cj4KPiBJIHNlZSBhIHJhZnQgb2YgYWRk
-aXRpb25hbCBjb21tYW5kIGNvZGVzIC0gdHJpbSwgd3JpdGUgbXVsdGlwbGUsIGV0Yy4gCj4gU29t
-ZSBvZiB0aG9zZSBzaG91bGQgYmUgZWFzeSB0byBpbXBsZW1lbnQsIHNvbWUgd2lsbCB0YWtlIHNv
-bWUgd29yay4gCj4gU2hvdWxkIHdlIHRyeSB0byBzb3J0IHRob3NlIG91dCBBU0FQPwoKSSBhbnN3
-ZXJlZCB0aG9zZSBxdWVzdGlvbnMgbXlzZWxmIGJ5IGRvaW5nIHNvbWUgZGlnZ2luZyBhcm91bmQg
-dGhlIG5iZCwgCmxvb3AgYW5kIG90aGVyICJub24tcGh5c2ljYWwiIGRyaXZlciB0cmVlcy4gTG9v
-cCB3YXMgbW9zdCBpbmZvcm1hdGl2ZSA6KQoKSSBub3cgaGF2ZSBhIGNsZWFuZWQgdXAgYW5kIG1v
-cmUgcm9idXN0IGRyaXZlciB3aXRoIHdvcmtpbmcgdHJpbSBhbmQgCnplcm8gZmlsbCBzdXBwb3J0
-LiBUZXN0ZWQgd2l0aCBleHQ0IGFuZCBmc3RyaW0uCgpJIGFtIGdvaW5nIHRvIHJlYmFzZSBpdCB2
-cyB0aGUgbGludXgtYmxvY2sgdHJlZSBhbmQgc3VibWl0IHRvbW9ycm93IG9uY2UgCmlmIGl0IHN1
-cnZpdmVzIG9uIHRoZSB0ZXN0IHJpZyBvdmVybmlnaHQuCgotLSAKQW50b24gUi4gSXZhbm92CgpD
-YW1icmlkZ2UgR3JleXMgTGltaXRlZCwgRW5nbGFuZCBhbmQgV2FsZXMgY29tcGFueSBObyAxMDI3
-MzY2MQpodHRwOi8vd3d3LmNhbWJyaWRnZWdyZXlzLmNvbS8KCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgt
-dW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2xpbnV4LXVtCg==
+
+On 08/11/2018 13:38, Jens Axboe wrote:
+> On 11/8/18 6:33 AM, Anton Ivanov wrote:
+>> On 11/8/18 1:24 PM, Jens Axboe wrote:
+>>> On 11/8/18 6:22 AM, Anton Ivanov wrote:
+>>>> On 11/8/18 1:10 PM, Jens Axboe wrote:
+>>>>> On 11/8/18 6:07 AM, anton.ivanov@cambridgegreys.com wrote:
+>>>>>> From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+>>>>>>
+>>>>>> Initial version by Jens Axboe <axboe@kernel.dk>
+>>>>>>
+>>>>>> 1. Fix use of use unititalized req->error for SYNC commands
+>>>>>> 2. Guard the request submission by a spinlock
+>>>>>>
+>>>>>> Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+>>>>>> ---
+>>>>>>     arch/um/drivers/ubd_kern.c | 9 +++++++--
+>>>>>>     1 file changed, 7 insertions(+), 2 deletions(-)
+>>>>>>
+>>>>>> diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+>>>>>> index 74c002ddc0ce..e3d587d9eff6 100644
+>>>>>> --- a/arch/um/drivers/ubd_kern.c
+>>>>>> +++ b/arch/um/drivers/ubd_kern.c
+>>>>>> @@ -1305,6 +1305,7 @@ static int ubd_queue_one_vec(struct blk_mq_hw_ctx *hctx, struct request *req,
+>>>>>>     		io_req->fds[0] = dev->cow.fd;
+>>>>>>     	else
+>>>>>>     		io_req->fds[0] = dev->fd;
+>>>>>> +	io_req->error = 0;
+>>>>>>     
+>>>>>>     	if (req_op(req) == REQ_OP_FLUSH) {
+>>>>>>     		io_req->op = UBD_FLUSH;
+>>>>>> @@ -1313,9 +1314,7 @@ static int ubd_queue_one_vec(struct blk_mq_hw_ctx *hctx, struct request *req,
+>>>>>>     		io_req->cow_offset = -1;
+>>>>>>     		io_req->offset = off;
+>>>>>>     		io_req->length = bvec->bv_len;
+>>>>>> -		io_req->error = 0;
+>>>>>>     		io_req->sector_mask = 0;
+>>>>>> -
+>>>>>>     		io_req->op = rq_data_dir(req) == READ ? UBD_READ : UBD_WRITE;
+>>>>>>     		io_req->offsets[0] = 0;
+>>>>>>     		io_req->offsets[1] = dev->cow.data_offset;
+>>>>> These two hunks look fine.
+>>>>>
+>>>>>> @@ -1341,11 +1340,15 @@ static int ubd_queue_one_vec(struct blk_mq_hw_ctx *hctx, struct request *req,
+>>>>>>     static blk_status_t ubd_queue_rq(struct blk_mq_hw_ctx *hctx,
+>>>>>>     				 const struct blk_mq_queue_data *bd)
+>>>>>>     {
+>>>>>> +	struct ubd *ubd_dev = hctx->queue->queuedata;
+>>>>>>     	struct request *req = bd->rq;
+>>>>>> +	unsigned long flags;
+>>>>>>     	int ret = 0;
+>>>>>>     
+>>>>>>     	blk_mq_start_request(req);
+>>>>>>     
+>>>>>> +	spin_lock_irqsave(&ubd_dev->lock, flags);
+>>>>>> +
+>>>>>>     	if (req_op(req) == REQ_OP_FLUSH) {
+>>>>>>     		ret = ubd_queue_one_vec(hctx, req, 0, NULL);
+>>>>>>     	} else {
+>>>>>> @@ -1361,6 +1364,8 @@ static blk_status_t ubd_queue_rq(struct blk_mq_hw_ctx *hctx,
+>>>>>>     		}
+>>>>>>     	}
+>>>>>>     out:
+>>>>>> +	spin_unlock_irqrestore(&ubd_dev->lock, flags);
+>>>>>> +
+>>>>>>     	if (ret < 0) {
+>>>>>>     		blk_mq_requeue_request(req, true);
+>>>>>>     	}
+>>>>> This one doesn't need to be save/restore. I've already queued up
+>>>>> the locking fix yesterday, I'll add your initialization fix.
+>>>> Apologies, I got a hang when testing it with just _irq, but I did not
+>>>> rerun the test. I suspect it was on something completely unrelated as I
+>>>> cannot reproduce it any more.
+>>>>
+>>>> That is why I switched it to irqsave, which as you explained is
+>>>> unnecessary.
+>>> No problem, I committed a cut down version and fixed up your
+>>> commit message as well:
+>>>
+>>> http://git.kernel.dk/cgit/linux-block/commit/?h=for-linus&id=0033dfd92a5646a78025e86f8df4d5b18181ba2c
+>>>
+>> Thanks,
+>>
+>> The speed difference between irq and irqsave is quite substantial - I
+>> get 255MB/s vs 312MB/s on dd-ing a 16G image to /dev/null
+>>
+>> I should probably look around the rest of UML as it uses _irqsave nearly
+>> everywhere and some of those may be converted to _irq.
+> save/restore variants are probably more expensive in UML than elsewhere.
+> But yes, there's a difference on x86 bare metal as well.
+>
+That is indeed the case :)
+
+I have a question. Namely - what is the urgency to implement the other 
+command codes?
+
+While trying to debug this issue I noticed that we treat anything that 
+is not simple READ as a WRITE.
+
+That was OK with the older API. Is that still the case with the mq?
+
+I see a raft of additional command codes - trim, write multiple, etc. 
+Some of those should be easy to implement, some will take some work. 
+Should we try to sort those out ASAP?
+
+-- 
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
