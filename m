@@ -1,17 +1,26 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-it1-x149.google.com ([2607:f8b0:4864:20::149])
+Received: from mail-pf1-x436.google.com ([2607:f8b0:4864:20::436])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gS5fH-0003gK-BP
- for linux-um@lists.infradead.org; Wed, 28 Nov 2018 19:38:29 +0000
-Received: by mail-it1-x149.google.com with SMTP id d1-v6so4291265itj.8
- for <linux-um@lists.infradead.org>; Wed, 28 Nov 2018 11:38:16 -0800 (PST)
-Date: Wed, 28 Nov 2018 11:36:30 -0800
-In-Reply-To: <20181128193636.254378-1-brendanhiggins@google.com>
-Message-Id: <20181128193636.254378-14-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20181128193636.254378-1-brendanhiggins@google.com>
-Subject: [RFC v3 13/19] kunit: improve output from python wrapper
-From: Brendan Higgins <brendanhiggins@google.com>
+ id 1gKk3X-0006Wt-5h
+ for linux-um@lists.infradead.org; Thu, 08 Nov 2018 13:09:09 +0000
+Received: by mail-pf1-x436.google.com with SMTP id v68-v6so5696131pfk.0
+ for <linux-um@lists.infradead.org>; Thu, 08 Nov 2018 05:08:56 -0800 (PST)
+Subject: Re: Summary so far - ubd breakage in 4.20-rc1
+References: <94397e9b-36a6-92b0-b074-ce3640cee00e@kot-begemot.co.uk>
+ <2067083.opUWeOxqyK@blindfold>
+ <fe020526-ac24-0279-ca27-7ccabba7a6cc@kernel.dk>
+ <4373302.HifUKF8Eoy@blindfold>
+ <edaa00ed-7e65-7303-1034-7672d1ecd8cb@kernel.dk>
+ <c1e0f38d-3af9-eaeb-6b63-26ad32c3824a@kot-begemot.co.uk>
+ <22344260-70ab-0f31-3526-e30251a06d1c@kot-begemot.co.uk>
+ <0313653c-af30-95ad-6841-30d1476d8b7d@kot-begemot.co.uk>
+ <435177aa-ef45-ee3d-0432-16b94daf8797@kot-begemot.co.uk>
+From: Jens Axboe <axboe@kernel.dk>
+Message-ID: <b2bc4879-ecae-7b5c-fc81-21c22b6e4f88@kernel.dk>
+Date: Thu, 8 Nov 2018 06:08:50 -0700
+MIME-Version: 1.0
+In-Reply-To: <435177aa-ef45-ee3d-0432-16b94daf8797@kot-begemot.co.uk>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,186 +33,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
-Cc: brakmo@fb.com, jdike@addtoit.com, dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org, frowand.list@gmail.com, robh@kernel.org, linux-nvdimm@lists.01.org, richard@nod.at, knut.omang@oracle.com, kieran.bingham@ideasonboard.com, Felix Guo <felixguoxiuping@gmail.com>, joel@jms.id.au, khilman@baylibre.com, Brendan Higgins <brendanhiggins@google.com>, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, joe@perches.com
+To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, Richard Weinberger <richard@nod.at>
+Cc: linux-um@lists.infradead.org, hch@lst.de
 
-- add colors to displayed output
-- add timing and summary
+>> printks are reordered (not surprising, two threads trying to write).
+>>
+>> It is not going in twice. Simply, error is uninitialized for SYNC and 
+>> set to a non-zero value only upon an error.
 
-Signed-off-by: Felix Guo <felixguoxiuping@gmail.com>
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
----
- tools/testing/kunit/kunit.py        | 27 ++++++++-
- tools/testing/kunit/kunit_parser.py | 93 ++++++++++++++++++++++++++++-
- 2 files changed, 115 insertions(+), 5 deletions(-)
+That makes more sense, since the io_req is allocted every time. That
+would have placed the error in the allocator, which would be extremely
+unlikely.
 
-diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-index 1356be404996b..0b8e8c20a746e 100755
---- a/tools/testing/kunit/kunit.py
-+++ b/tools/testing/kunit/kunit.py
-@@ -6,6 +6,7 @@
- import argparse
- import sys
- import os
-+import time
- 
- import kunit_config
- import kunit_kernel
-@@ -21,20 +22,40 @@ parser.add_argument('--timeout', help='maximum number of seconds to allow for '
- 		    'build the tests.', type=int, default=300,
- 		    metavar='timeout')
- 
-+parser.add_argument('--jobs',
-+		    help='As in the make command, "Specifies  the number of '
-+		    'jobs (commands) to run simultaneously."',
-+		    type=int, default=8, metavar='jobs')
-+
- cli_args = parser.parse_args()
- linux = kunit_kernel.LinuxSourceTree()
- 
-+config_start = time.time()
- success = linux.build_reconfig()
-+config_end = time.time()
- if not success:
- 	quit()
- 
--print('Building KUnit Kernel ...')
--success = linux.build_um_kernel()
-+kunit_parser.print_with_timestamp('Building KUnit Kernel ...')
-+
-+build_start = time.time()
-+success = linux.build_um_kernel(jobs=cli_args.jobs)
-+build_end = time.time()
- if not success:
- 	quit()
- 
--print('Starting KUnit Kernel ...')
-+kunit_parser.print_with_timestamp('Starting KUnit Kernel ...')
-+test_start = time.time()
-+
- if cli_args.raw_output:
- 	kunit_parser.raw_output(linux.run_kernel(timeout=cli_args.timeout))
- else:
- 	kunit_parser.parse_run_tests(linux.run_kernel(timeout=cli_args.timeout))
-+
-+test_end = time.time()
-+
-+kunit_parser.print_with_timestamp((
-+	"Elapsed time: %.3fs total, %.3fs configuring, %.3fs " +
-+	"building, %.3fs running.\n") % (test_end - config_start,
-+	config_end - config_start, build_end - build_start,
-+	test_end - test_start))
-diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
-index 1dff3adb73bd3..d9051e407d5a7 100644
---- a/tools/testing/kunit/kunit_parser.py
-+++ b/tools/testing/kunit/kunit_parser.py
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- 
- import re
-+from datetime import datetime
- 
- kunit_start_re = re.compile('console .* enabled')
- kunit_end_re = re.compile('List of all partitions:')
-@@ -19,6 +20,94 @@ def raw_output(kernel_output):
- 	for line in kernel_output:
- 		print(line)
- 
-+DIVIDER = "=" * 30
-+
-+RESET = '\033[0;0m'
-+
-+def red(text):
-+	return '\033[1;31m' + text + RESET
-+
-+def yellow(text):
-+	return '\033[1;33m' + text + RESET
-+
-+def green(text):
-+	return '\033[1;32m' + text + RESET
-+
-+def print_with_timestamp(message):
-+	print('[%s] %s' % (datetime.now().strftime('%H:%M:%S'), message))
-+
-+def print_log(log):
-+	for m in log:
-+		print_with_timestamp(m)
-+
- def parse_run_tests(kernel_output):
--	for output in isolate_kunit_output(kernel_output):
--		print(output)
-+	test_case_output = re.compile('^kunit .*?: (.*)$')
-+
-+	test_module_success = re.compile('^kunit .*: all tests passed')
-+	test_module_fail = re.compile('^kunit .*: one or more tests failed')
-+
-+	test_case_success = re.compile('^kunit (.*): (.*) passed')
-+	test_case_fail = re.compile('^kunit (.*): (.*) failed')
-+	test_case_crash = re.compile('^kunit (.*): (.*) crashed')
-+
-+	total_tests = set()
-+	failed_tests = set()
-+	crashed_tests = set()
-+
-+	def get_test_name(match):
-+		return match.group(1) + ":" + match.group(2)
-+
-+	current_case_log = []
-+	def end_one_test(match, log):
-+		log.clear()
-+		total_tests.add(get_test_name(match))
-+
-+	print_with_timestamp(DIVIDER)
-+	for line in isolate_kunit_output(kernel_output):
-+		# Ignore module output:
-+		if (test_module_success.match(line) or
-+		    test_module_fail.match(line)):
-+			print_with_timestamp(DIVIDER)
-+			continue
-+
-+		match = re.match(test_case_success, line)
-+		if match:
-+			print_with_timestamp(green("[PASSED] ") +
-+					     get_test_name(match))
-+			end_one_test(match, current_case_log)
-+			continue
-+
-+		match = re.match(test_case_fail, line)
-+		# Crashed tests will report as both failed and crashed. We only
-+		# want to show and count it once.
-+		if match and get_test_name(match) not in crashed_tests:
-+			failed_tests.add(get_test_name(match))
-+			print_with_timestamp(red("[FAILED] " +
-+						 get_test_name(match)))
-+			print_log(map(yellow, current_case_log))
-+			print_with_timestamp("")
-+			end_one_test(match, current_case_log)
-+			continue
-+
-+		match = re.match(test_case_crash, line)
-+		if match:
-+			crashed_tests.add(get_test_name(match))
-+			print_with_timestamp(yellow("[CRASH] " +
-+						    get_test_name(match)))
-+			print_log(current_case_log)
-+			print_with_timestamp("")
-+			end_one_test(match, current_case_log)
-+			continue
-+
-+		# Strip off the `kunit module-name:` prefix
-+		match = re.match(test_case_output, line)
-+		if match:
-+			current_case_log.append(match.group(1))
-+		else:
-+			current_case_log.append(line)
-+
-+	fmt = green if (len(failed_tests) + len(crashed_tests) == 0) else red
-+	print_with_timestamp(
-+		fmt("Testing complete. %d tests run. %d failed. %d crashed." %
-+		    (len(total_tests), len(failed_tests), len(crashed_tests))))
-+
+>> The error is from SYNC, not from the write.
+> 
+> And the spinlock needs to be irqsave/irqrestore after all.
+> 
+> I will send a patch to finish this one off shortly.
+
+The lock does NOT need to be save/restore, I already explained why.
+
 -- 
-2.20.0.rc0.387.gc7a69e6b6c-goog
+Jens Axboe
 
 
 _______________________________________________
