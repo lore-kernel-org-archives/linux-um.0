@@ -1,17 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-qt1-x84a.google.com ([2607:f8b0:4864:20::84a])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gS5f1-0003Xq-Qc
- for linux-um@lists.infradead.org; Wed, 28 Nov 2018 19:38:13 +0000
-Received: by mail-qt1-x84a.google.com with SMTP id z6so24799011qtj.21
- for <linux-um@lists.infradead.org>; Wed, 28 Nov 2018 11:38:01 -0800 (PST)
-Date: Wed, 28 Nov 2018 11:36:24 -0800
-In-Reply-To: <20181128193636.254378-1-brendanhiggins@google.com>
-Message-Id: <20181128193636.254378-8-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20181128193636.254378-1-brendanhiggins@google.com>
-Subject: [RFC v3 07/19] kunit: test: add initial tests
-From: Brendan Higgins <brendanhiggins@google.com>
+Received: from lithops.sigma-star.at ([195.201.40.130])
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gLEuz-000833-UF
+ for linux-um@lists.infradead.org; Fri, 09 Nov 2018 22:06:22 +0000
+From: Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH] Add DISCARD support to UML udb driver
+Date: Fri, 09 Nov 2018 23:06:00 +0100
+Message-ID: <5868448.ctSSMDQgOm@blindfold>
+In-Reply-To: <79343bcf-8cf7-27e8-1d53-ee404f6431bd@cambridgegreys.com>
+References: <20181109091937.25470-1-anton.ivanov@cambridgegreys.com>
+ <CAFLxGvxy7d_9--b_SPcPQ_e=Er0aJds5TBqfd5Q-OANCj6DOaQ@mail.gmail.com>
+ <79343bcf-8cf7-27e8-1d53-ee404f6431bd@cambridgegreys.com>
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,217 +24,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
-Cc: brakmo@fb.com, jdike@addtoit.com, dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org, frowand.list@gmail.com, robh@kernel.org, linux-nvdimm@lists.01.org, richard@nod.at, knut.omang@oracle.com, kieran.bingham@ideasonboard.com, joel@jms.id.au, khilman@baylibre.com, Brendan Higgins <brendanhiggins@google.com>, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, joe@perches.com
+To: Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
+Cc: Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>
 
-Add a test for string stream along with a simpler example.
+Am Freitag, 9. November 2018, 22:20:03 CET schrieb Anton Ivanov:
+> > What shall happen if the host filesystem does not support these
+> > fallocate() operations?
+> > I guess we need to probe for them first and decide whether to
+> > accept/offer the discard command
+> > at run time.
+> 
+> If it the filesystem is using periodic (not realtime) fstrim, It will 
+> return IO error on those and fstrim will fail. Normal file ops - write, 
+> read, fsync should continue as this should not force a remount.
+> 
+> I could not test with realtime fstrim ans btrfs was having some issues 
+> in 4.20-rc1. It was hitting spinlock recursions and irq on/off where 
+> they should not be BUG()s.
+> 
+> Non-destructive probing is a bit difficult. IMHO, we should leave this 
+> to the user and add flags the way nbd and loop have done it. We can also 
+> add a config option to set a default on or off at compile time (same as 
+> for sync io on ubd).
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
----
- kunit/Kconfig              | 12 ++++++
- kunit/Makefile             |  4 ++
- kunit/example-test.c       | 88 ++++++++++++++++++++++++++++++++++++++
- kunit/string-stream-test.c | 61 ++++++++++++++++++++++++++
- 4 files changed, 165 insertions(+)
- create mode 100644 kunit/example-test.c
- create mode 100644 kunit/string-stream-test.c
+Well, we could do what qemu does.
+If the syscall fails with -ENOTSUP, disable discard.
 
-diff --git a/kunit/Kconfig b/kunit/Kconfig
-index 49b44c4f6630a..c3dc7bca83f9d 100644
---- a/kunit/Kconfig
-+++ b/kunit/Kconfig
-@@ -14,4 +14,16 @@ config KUNIT
- 	  special hardware. For more information, please see
- 	  Documentation/kunit/
- 
-+config KUNIT_TEST
-+	bool "KUnit test for KUnit"
-+	depends on KUNIT
-+	help
-+	  Enables KUnit test to test KUnit.
-+
-+config KUNIT_EXAMPLE_TEST
-+	bool "Example test for KUnit"
-+	depends on KUNIT
-+	help
-+	  Enables example KUnit test to demo features of KUnit.
-+
- endmenu
-diff --git a/kunit/Makefile b/kunit/Makefile
-index 6ddc622ee6b1c..60a9ea6cb4697 100644
---- a/kunit/Makefile
-+++ b/kunit/Makefile
-@@ -1,3 +1,7 @@
- obj-$(CONFIG_KUNIT) +=			test.o \
- 					string-stream.o \
- 					kunit-stream.o
-+
-+obj-$(CONFIG_KUNIT_TEST) +=		string-stream-test.o
-+
-+obj-$(CONFIG_KUNIT_EXAMPLE_TEST) +=	example-test.o
-diff --git a/kunit/example-test.c b/kunit/example-test.c
-new file mode 100644
-index 0000000000000..4197cc217d96f
---- /dev/null
-+++ b/kunit/example-test.c
-@@ -0,0 +1,88 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Example KUnit test to show how to use KUnit.
-+ *
-+ * Copyright (C) 2018, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
-+
-+#include <kunit/test.h>
-+
-+/*
-+ * This is the most fundamental element of KUnit, the test case. A test case
-+ * makes a set EXPECTATIONs and ASSERTIONs about the behavior of some code; if
-+ * any expectations or assertions are not met, the test fails; otherwise, the
-+ * test passes.
-+ *
-+ * In KUnit, a test case is just a function with the signature
-+ * `void (*)(struct kunit *)`. `struct kunit` is a context object that stores
-+ * information about the current test.
-+ */
-+static void example_simple_test(struct kunit *test)
-+{
-+	/*
-+	 * This is an EXPECTATION; it is how KUnit tests things. When you want
-+	 * to test a piece of code, you set some expectations about what the
-+	 * code should do. KUnit then runs the test and verifies that the code's
-+	 * behavior matched what was expected.
-+	 */
-+	KUNIT_EXPECT_EQ(test, 1 + 1, 2);
-+}
-+
-+/*
-+ * This is run once before each test case, see the comment on
-+ * example_test_module for more information.
-+ */
-+static int example_test_init(struct kunit *test)
-+{
-+	kunit_info(test, "initializing");
-+
-+	return 0;
-+}
-+
-+/*
-+ * Here we make a list of all the test cases we want to add to the test module
-+ * below.
-+ */
-+static struct kunit_case example_test_cases[] = {
-+	/*
-+	 * This is a helper to create a test case object from a test case
-+	 * function; its exact function is not important to understand how to
-+	 * use KUnit, just know that this is how you associate test cases with a
-+	 * test module.
-+	 */
-+	KUNIT_CASE(example_simple_test),
-+	{},
-+};
-+
-+/*
-+ * This defines a suite or grouping of tests.
-+ *
-+ * Test cases are defined as belonging to the suite by adding them to
-+ * `kunit_cases`.
-+ *
-+ * Often it is desirable to run some function which will set up things which
-+ * will be used by every test; this is accomplished with an `init` function
-+ * which runs before each test case is invoked. Similarly, an `exit` function
-+ * may be specified which runs after every test case and can be used to for
-+ * cleanup. For clarity, running tests in a test module would behave as follows:
-+ *
-+ * module.init(test);
-+ * module.test_case[0](test);
-+ * module.exit(test);
-+ * module.init(test);
-+ * module.test_case[1](test);
-+ * module.exit(test);
-+ * ...;
-+ */
-+static struct kunit_module example_test_module = {
-+	.name = "example",
-+	.init = example_test_init,
-+	.test_cases = example_test_cases,
-+};
-+
-+/*
-+ * This registers the above test module telling KUnit that this is a suite of
-+ * tests that need to be run.
-+ */
-+module_test(example_test_module);
-diff --git a/kunit/string-stream-test.c b/kunit/string-stream-test.c
-new file mode 100644
-index 0000000000000..ec2675593c364
---- /dev/null
-+++ b/kunit/string-stream-test.c
-@@ -0,0 +1,61 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * KUnit test for struct string_stream.
-+ *
-+ * Copyright (C) 2018, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
-+
-+#include <linux/slab.h>
-+#include <kunit/test.h>
-+#include <kunit/string-stream.h>
-+
-+static void string_stream_test_get_string(struct kunit *test)
-+{
-+	struct string_stream *stream = new_string_stream();
-+	char *output;
-+
-+	stream->add(stream, "Foo");
-+	stream->add(stream, " %s", "bar");
-+
-+	output = stream->get_string(stream);
-+	KUNIT_EXPECT_STREQ(test, output, "Foo bar");
-+	kfree(output);
-+	destroy_string_stream(stream);
-+}
-+
-+static void string_stream_test_add_and_clear(struct kunit *test)
-+{
-+	struct string_stream *stream = new_string_stream();
-+	char *output;
-+	int i;
-+
-+	for (i = 0; i < 10; i++)
-+		stream->add(stream, "A");
-+
-+	output = stream->get_string(stream);
-+	KUNIT_EXPECT_STREQ(test, output, "AAAAAAAAAA");
-+	KUNIT_EXPECT_EQ(test, stream->length, 10);
-+	KUNIT_EXPECT_FALSE(test, stream->is_empty(stream));
-+	kfree(output);
-+
-+	stream->clear(stream);
-+
-+	output = stream->get_string(stream);
-+	KUNIT_EXPECT_STREQ(test, output, "");
-+	KUNIT_EXPECT_TRUE(test, stream->is_empty(stream));
-+	destroy_string_stream(stream);
-+}
-+
-+static struct kunit_case string_stream_test_cases[] = {
-+	KUNIT_CASE(string_stream_test_get_string),
-+	KUNIT_CASE(string_stream_test_add_and_clear),
-+	{}
-+};
-+
-+static struct kunit_module string_stream_test_module = {
-+	.name = "string-stream-test",
-+	.test_cases = string_stream_test_cases
-+};
-+module_test(string_stream_test_module);
-+
--- 
-2.20.0.rc0.387.gc7a69e6b6c-goog
+Thanks,
+//richard
+
 
 
 _______________________________________________
