@@ -1,10 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab6.miniserver.com ([5.153.251.140]
- helo=www.kot-begemot.co.uk)
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gMUHR-0002NX-D8
- for linux-um@lists.infradead.org; Tue, 13 Nov 2018 08:42:42 +0000
+Received: from mail-it1-x130.google.com ([2607:f8b0:4864:20::130])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gMHqw-0002uu-3s
+ for linux-um@lists.infradead.org; Mon, 12 Nov 2018 19:26:31 +0000
+Received: by mail-it1-x130.google.com with SMTP id w7-v6so14907006itd.1
+ for <linux-um@lists.infradead.org>; Mon, 12 Nov 2018 11:26:18 -0800 (PST)
 Subject: Re: New Patch series for the UBD Driver
+From: Jens Axboe <axboe@kernel.dk>
 References: <20181112174201.12290-1-anton.ivanov@cambridgegreys.com>
  <62f14981-9804-8fac-c3ec-b544a90751c3@kernel.dk>
  <58614d39-8c3b-4e8e-7b41-633bb52b533e@cambridgegreys.com>
@@ -15,12 +17,10 @@ References: <20181112174201.12290-1-anton.ivanov@cambridgegreys.com>
  <b50be83c-8309-5068-b5bb-8dad89f24913@kernel.dk>
  <1d334c50-0f89-70e7-b6c7-fe0d719ed5df@cambridgegreys.com>
  <1e27868d-974b-9554-1010-a7e28a238479@kernel.dk>
- <17fab2bf-416b-3c61-e5c6-d315fb9105b3@kernel.dk>
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Message-ID: <651eb31c-4f75-0174-cd1a-a045d8d93991@cambridgegreys.com>
-Date: Tue, 13 Nov 2018 08:42:22 +0000
+Message-ID: <17fab2bf-416b-3c61-e5c6-d315fb9105b3@kernel.dk>
+Date: Mon, 12 Nov 2018 12:26:15 -0700
 MIME-Version: 1.0
-In-Reply-To: <17fab2bf-416b-3c61-e5c6-d315fb9105b3@kernel.dk>
+In-Reply-To: <1e27868d-974b-9554-1010-a7e28a238479@kernel.dk>
 Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -30,64 +30,52 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jens Axboe <axboe@kernel.dk>, linux-um@lists.infradead.org
+To: Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
 Cc: richard@nod.at, hch@lst.de
 
-Ck9uIDExLzEyLzE4IDc6MjYgUE0sIEplbnMgQXhib2Ugd3JvdGU6Cj4gT24gMTEvMTIvMTggMTI6
-MTEgUE0sIEplbnMgQXhib2Ugd3JvdGU6Cj4+IE9uIDExLzEyLzE4IDExOjQxIEFNLCBBbnRvbiBJ
-dmFub3Ygd3JvdGU6Cj4+Pj4+IEFuZCBoYW5nLiBMZXQgbWUgdHJ5IGEgZmV3IG1vcmUgdGltZXMg
-dG8gc2VlIGlmIEkgY2FuIGdldCB0aGUgc3BpbmxvY2sKPj4+Pj4gcmVjdXJzaW9uIGFuZC9vciBh
-Ym9ydCBpbnN0ZWFkIG9mIGhhbmcgY2FzZSAodGhleSBhcmUgbW9yZSBkaWZmaWN1bHQgdG8KPj4+
-Pj4gcmVwcm9kdWNlKS4KPj4+PiBUaGlzIHNob3dzIGV4YWN0bHkgd2hhdCBJIHdhcyB0YWxraW5n
-IGFib3V0LCB5b3UgYXJlIHRyeWluZyB0bwo+Pj4+IGlzc3VlIElPIGZyb20gaXJxL25vbi1ibG9j
-a2luZyBjb250ZXh0LiBJZiB5b3UgbG9vayB1cCB0aGUgd2FybmluZywKPj4+PiB0aGF0J3MgZXhh
-Y3RseSB3aGF0IGl0IGlzIHRlbGxpbmcgeW91Lgo+Pj4KPj4+IFNvIHdoeSBkb2VzIHRoaXMgaGFw
-cGVuIG9ubHkgaW4gdGhlIGNhc2Ugb2YgYW4gZXJyb3I/IFdoeSBub3RoaW5nIGlzCj4+PiB0cmln
-Z2VyZWQgaW4gdGhlIE9LIHBhdGg/Cj4+Pgo+Pj4gQWZ0ZXIgYWRkaW5nIHRoaXMgZmxhZyBJIG5v
-IGxvbmdlciBnZXQgdGhlICBibG9jay9ibGsuaDo0MzkgVGhlIHNwaW5sb2NrCj4+PiByZWN1cnNp
-b24gYW5kIHRoZSBvdGhlciBiYXJmcyBhcmUgYWxpdmUgYW5kIHdlbGwuCj4+Pgo+Pj4gQmFjayB0
-byAid2hhdCBpcyB0aGF0IiAtIGNhbiBJIGV4ZWN1dGUgYmxrX3VwZGF0ZV9yZXF1ZXN0LAo+Pj4g
-X19ibGtfbXFfZW5kX3JlcXVlc3QsIGJsa19tcV9lbmRfcmVxdWVzdCBvdXQgb2YgYW4gaW50ZXJy
-dXB0IGNvbnRleHQ/Cj4+Pgo+Pj4gSXQgc2VlbXMgdGhhdCBJIGNhbiB3aGVuIGVycm9yIGlzIEJM
-S19TVFNfT0ssIGJ1dCBub3Qgd2hlbiBpdCBpcyBub3QuCj4+IFBvc3QgYSBuZXcgc3RhY2sgdHJh
-Y2Ugd2l0aCBCTE9DS0lORyBzZXQuIE9mIGNvdXJzZSB5b3UgY2FuIGNhbGwgdGhlIGVuZAo+PiBy
-ZXF1ZXN0IGZ1bmN0aW9ucyBmcm9tIGlycSBjb250ZXh0LCBtb3N0IGRyaXZlcnMgZW5kIHVwIGRv
-aW5nIHRoYXQuIEZvcgo+PiBPSyBhbmQgZXJyb3IuCj4+Cj4+IFRoZXJlJ3Mgc29tZXRoaW5nIGZ1
-bmRhbWVudGFsbHkgd3Jvbmcgd2l0aCB5b3VyIGNhc2UsIGl0IG1pZ2h0IGJlIHJldXNlCj4+IG9y
-IHNvbWV0aGluZyBsaWtlIHRoYXQuCj4gVG9vayBhIHF1aWNrIGxvb2sgYXQgeW91ciBjb2RlLCBh
-bmQgYSBxdWljayBndWVzcyB3b3VsZCBiZSB0aGF0IHlvdXIKPiBkaXNjYXJkIGNvbXBsZXRpb25z
-IGFyZSBiYWQuIEZvciBkaXNjYXJkLCBpbml0aWFsaXplIGlvX3JlcS0+bGVuZ3RoCj4gd2l0aCAt
-YmlvLT5iaV9zaXplID4+IDkuIEkgdGhpbmsgdGhpcyBpcyBwcmV2ZW50aW5nIHlvdXIgZGlzY2Fy
-ZAo+IGNvbXBsZXRpb24gZnJvbSBlbmRlZCBwcm9wZXJseS4KCjEuIElmIHRoYXQgaXMgdGhlIGlz
-c3VlIGJvdGggbG9vcCBhbmQgbmJkIGhhdmUgaXQgLSB0aGV5IHVzZSAKYmxrX3JxX2J5dGVzKHJl
-cSkgZm9yIHRoZWlyIGludGVybmFsIHJlcSBzdHJ1Y3R1cmUgbGVuZ3RoIGZpZWxkIHNhbWUgYXMg
-CkkgZG8gYW5kIHNob3VsZCBzdWZmZXIgZnJvbSB0aGUgc2FtZSBmYXRlIGlmIGRpc2NhcmQgZW5j
-b3VudGVycyBhbiAKZXJyb3IuIFRoZSBjb2RlIGluIHViZCBpcyBub3cgcHJldHR5IG11Y2ggaWRl
-bnRpY2FsIHRvIHdoYXQgdGhleSBkby4KCmxvb3AgKG1vcmUgcmVhZGFibGUpOiAKaHR0cHM6Ly9l
-bGl4aXIuYm9vdGxpbi5jb20vbGludXgvbGF0ZXN0L3NvdXJjZS9kcml2ZXJzL2Jsb2NrL2xvb3Au
-YyNMNDE5CgpuYmQ6IGh0dHBzOi8vZWxpeGlyLmJvb3RsaW4uY29tL2xpbnV4L2xhdGVzdC9zb3Vy
-Y2UvZHJpdmVycy9ibG9jay9uYmQuYyNMNDYwCgoyLiBUaGlzIGlzIGludGVybmFsIGxlbmd0aC4g
-SXQgaXMgdW51c2VkIGlmIEkgaW52b2tlIGJsa19tcV9lbmRfcmVxdWVzdCAKd2hpY2ggcGlja3Mg
-dXAgdGhlIHNpemluZyBvdXQgb2YgdGhlIHJlcS4gVGhpcyBpcyB3aGF0IGxvb3AgZG9lcyB3aGVu
-IGl0IAplbmNvdW50ZXJzIGFuIGVycm9yIGFuZCBJIHRyaWVkIHRoYXQgdG9vIHdpdGhvdXQgc3Vj
-Y2Vzcy4gVGhlIC0+bGVuZ3RoIApmaWVsZCBnZXRzIHVzZWQgb25seSBpZiB0aGUgcmVxdWVzdCBp
-cyBmZWQgaW50byBibGtfdXBkYXRlX3JlcXVlc3QuCgozLiBVbmxlc3MgSSBhbSBtaXNzaW5nIHNv
-bWV0aGluZywgYmlvLT5iaV9zaXplIGRvZXMgbm90IGV4aXN0IGluIDQuMTkgCmFuZCA0LjIwIC0g
-Cmh0dHBzOi8vZWxpeGlyLmJvb3RsaW4uY29tL2xpbnV4L3Y0LjIwLXJjMS9zb3VyY2UvaW5jbHVk
-ZS9saW51eC9ibGtfdHlwZXMuaCNMMTQ0Cgo0LiBUaGUgbWFqb3IgcmVtYWluaW5nIGRpZmZlcmVu
-Y2UgYmV0d2VlbiBVQkQgYXMgaXQgaXMgbm93IGFuZCBOQkQvTG9vcCAKaXMgdGhhdCB0aGVzZSBo
-YXZlIGNvbXBsZXRlIGZ1bmN0aW9ucyBhbmQgYW55dGhpbmcgZGlmZmVyZW50IGZyb20gClJFQUQv
-V1JJVEUgaXMgZmVkIHN0cmFpZ2h0IHRvIGNvbXBsZXRlLgoKaHR0cHM6Ly9lbGl4aXIuYm9vdGxp
-bi5jb20vbGludXgvbGF0ZXN0L3NvdXJjZS9kcml2ZXJzL2Jsb2NrL2xvb3AuYyNMMTc4NwoKSXQg
-ZG9lcyBub3QgZ28gZG93biB0aGUgYmxrX21xX2VuZF9yZXF1ZXN0IHBhdGguwqAgSSBhbSBnb2lu
-ZyB0byB0cnkgCnNvcnRpbmcgdGhhdCBvdXQgaW4gZmlyc3QgaW5zdGFuY2UgYW5kIHNlZSBpZiB0
-aGF0IGhlbHBzLgoKLS0gCgpBbnRvbiBSLiBJdmFub3YKCkNhbWJyaWRnZSBHcmV5cyBMaW1pdGVk
-LCBFbmdsYW5kIGFuZCBXYWxlcyBjb21wYW55IE5vIDEwMjczNjYxCmh0dHA6Ly93d3cuY2FtYnJp
-ZGdlZ3JleXMuY29tLwoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3Jn
-Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
+On 11/12/18 12:11 PM, Jens Axboe wrote:
+> On 11/12/18 11:41 AM, Anton Ivanov wrote:
+>>>> And hang. Let me try a few more times to see if I can get the spinlock
+>>>> recursion and/or abort instead of hang case (they are more difficult to
+>>>> reproduce).
+>>> This shows exactly what I was talking about, you are trying to
+>>> issue IO from irq/non-blocking context. If you look up the warning,
+>>> that's exactly what it is telling you.
+>>
+>>
+>> So why does this happen only in the case of an error? Why nothing is 
+>> triggered in the OK path?
+>>
+>> After adding this flag I no longer get the  block/blk.h:439 The spinlock 
+>> recursion and the other barfs are alive and well.
+>>
+>> Back to "what is that" - can I execute blk_update_request, 
+>> __blk_mq_end_request, blk_mq_end_request out of an interrupt context?
+>>
+>> It seems that I can when error is BLK_STS_OK, but not when it is not.
+> 
+> Post a new stack trace with BLOCKING set. Of course you can call the end
+> request functions from irq context, most drivers end up doing that. For
+> OK and error.
+> 
+> There's something fundamentally wrong with your case, it might be reuse
+> or something like that.
+
+Took a quick look at your code, and a quick guess would be that your
+discard completions are bad. For discard, initialize io_req->length
+with -bio->bi_size >> 9. I think this is preventing your discard
+completion from ended properly.
+
+-- 
+Jens Axboe
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
