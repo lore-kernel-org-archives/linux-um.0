@@ -1,99 +1,268 @@
-Return-Path: <joel@joelfernandes.org>
-From: Joel Fernandes <joel@joelfernandes.org>
-Subject: [PATCH -next 0/3] Add support for fast mremap
-Date: Fri,  2 Nov 2018 21:00:38 -0700
-Message-Id: <20181103040041.7085-1-joelaf@google.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from ivanoab6.miniserver.com ([5.153.251.140]
+ helo=www.kot-begemot.co.uk)
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gMGE6-0000Tp-Ui
+ for linux-um@lists.infradead.org; Mon, 12 Nov 2018 17:42:20 +0000
+From: anton.ivanov@cambridgegreys.com
+Subject: [PATCH 3/3] um: Add support for DISCARD in the UBD Driver
+Date: Mon, 12 Nov 2018 17:42:01 +0000
+Message-Id: <20181112174201.12290-4-anton.ivanov@cambridgegreys.com>
+In-Reply-To: <20181112174201.12290-1-anton.ivanov@cambridgegreys.com>
+References: <20181112174201.12290-1-anton.ivanov@cambridgegreys.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-kernel@vger.kernel.org
-Cc: kernel-team@android.com, Joel Fernandes <joelaf@google.com>, akpm@linux-foundation.org, Andrey Ryabinin <aryabinin@virtuozzo.com>, Andy Lutomirski <luto@kernel.org>, anton.ivanov@kot-begemot.co.uk, Borislav Petkov <bp@alien8.de>, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, dancol@google.com, Dave Hansen <dave.hansen@linux.intel.com>, "David S. Miller" <davem@davemloft.net>, elfring@users.sourceforge.net, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Helge Deller <deller@gmx.de>, hughd@google.com, Ingo Molnar <mingo@redhat.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Jeff Dike <jdike@addtoit.com>, Jonas Bonn <jonas@southpole.se>, Julia Lawall <Julia.Lawall@lip6.fr>, kasan-dev@googlegroups.com, kirill@shutemov.name, kvmarm@lists.cs.columbia.edu, Ley Foon Tan <lftan@altera.com>, linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, lokeshgidra@google.com, Max Filippov <jcmvbkbc@gmail.com>, Michal Hocko <mhocko@kernel.org>, minchan@kernel.org, nios2-dev@lists.rocketboards.org, pantin@google.com, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Sam Creasey <sammy@sammy.net>, sparclinux@vger.kernel.org, Stafford Horne <shorne@gmail.com>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, Will Deacon <will.deacon@arm.com>, "maintainer:X86 ARCHITECTURE 32-BIT AND 64-BIT" <x86@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>
-List-ID: <linux-um.lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
+Cc: axboe@kernel.dk, richard@nod.at, hch@lst.de, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Hi,
-Here is the latest "fast mremap" series. This just a repost with Kirill's
-Acked-bys added. I would like this to be considered for linux -next.  I also
-dropped the CONFIG enablement patch for arm64 since I am yet to test it with
-the new TLB flushing code that is in very recent kernel releases. (None of my
-arm64 devices run mainline right now.) so I will post the arm64 enablement once
-I get to that. The performance numbers in the series are for x86.
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-List of patches in series:
+Support DISCARD and WRITE_ZEROES in the ubd driver using
+fallocate.
 
-(1) mm: select HAVE_MOVE_PMD in x86 for faster mremap
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+---
+ arch/um/drivers/Kconfig     | 22 ++++++++++++++
+ arch/um/drivers/ubd_kern.c  | 71 +++++++++++++++++++++++++++++++++++++++------
+ arch/um/include/shared/os.h |  2 ++
+ arch/um/os-Linux/file.c     |  8 +++++
+ 4 files changed, 94 insertions(+), 9 deletions(-)
 
-(2) mm: speed up mremap by 20x on large regions (v4)
-v1->v2: Added support for per-arch enablement (Kirill Shutemov)
-v2->v3: Updated commit message to state the optimization may also
-	run for non-thp type of systems (Daniel Col).
-v3->v4: Remove useless pmd_lock check (Kirill Shutemov)
-	Rebased ontop of Linus's master, updated perf results based
-        on x86 testing. Added Kirill's Acks.
-
-(3) mm: treewide: remove unused address argument from pte_alloc functions (v2)
-v1->v2: fix arch/um/ prototype which was missed in v1 (Anton Ivanov)
-        update changelog with manual fixups for m68k and microblaze.
-
-not included - (4) mm: select HAVE_MOVE_PMD in arm64 for faster mremap
-    This patch is dropped since last posting pending further performance
-    testing on arm64 with new TLB gather updates. See notes in patch
-    titled "mm: speed up mremap by 500x on large regions" for more
-    details.
-
-
-Joel Fernandes (Google) (3):
-  mm: treewide: remove unused address argument from pte_alloc functions
-    (v2)
-  mm: speed up mremap by 20x on large regions (v4)
-  mm: select HAVE_MOVE_PMD in x86 for faster mremap
-
- arch/Kconfig                                 |  5 ++
- arch/alpha/include/asm/pgalloc.h             |  6 +-
- arch/arc/include/asm/pgalloc.h               |  5 +-
- arch/arm/include/asm/pgalloc.h               |  4 +-
- arch/arm64/include/asm/pgalloc.h             |  4 +-
- arch/hexagon/include/asm/pgalloc.h           |  6 +-
- arch/ia64/include/asm/pgalloc.h              |  5 +-
- arch/m68k/include/asm/mcf_pgalloc.h          |  8 +--
- arch/m68k/include/asm/motorola_pgalloc.h     |  4 +-
- arch/m68k/include/asm/sun3_pgalloc.h         |  6 +-
- arch/microblaze/include/asm/pgalloc.h        | 19 +-----
- arch/microblaze/mm/pgtable.c                 |  3 +-
- arch/mips/include/asm/pgalloc.h              |  6 +-
- arch/nds32/include/asm/pgalloc.h             |  5 +-
- arch/nios2/include/asm/pgalloc.h             |  6 +-
- arch/openrisc/include/asm/pgalloc.h          |  5 +-
- arch/openrisc/mm/ioremap.c                   |  3 +-
- arch/parisc/include/asm/pgalloc.h            |  4 +-
- arch/powerpc/include/asm/book3s/32/pgalloc.h |  4 +-
- arch/powerpc/include/asm/book3s/64/pgalloc.h | 12 ++--
- arch/powerpc/include/asm/nohash/32/pgalloc.h |  4 +-
- arch/powerpc/include/asm/nohash/64/pgalloc.h |  6 +-
- arch/powerpc/mm/pgtable-book3s64.c           |  2 +-
- arch/powerpc/mm/pgtable_32.c                 |  4 +-
- arch/riscv/include/asm/pgalloc.h             |  6 +-
- arch/s390/include/asm/pgalloc.h              |  4 +-
- arch/sh/include/asm/pgalloc.h                |  6 +-
- arch/sparc/include/asm/pgalloc_32.h          |  5 +-
- arch/sparc/include/asm/pgalloc_64.h          |  6 +-
- arch/sparc/mm/init_64.c                      |  6 +-
- arch/sparc/mm/srmmu.c                        |  4 +-
- arch/um/include/asm/pgalloc.h                |  4 +-
- arch/um/kernel/mem.c                         |  4 +-
- arch/unicore32/include/asm/pgalloc.h         |  4 +-
- arch/x86/Kconfig                             |  1 +
- arch/x86/include/asm/pgalloc.h               |  4 +-
- arch/x86/mm/pgtable.c                        |  4 +-
- arch/xtensa/include/asm/pgalloc.h            |  8 +--
- include/linux/mm.h                           | 13 ++--
- mm/huge_memory.c                             |  8 +--
- mm/kasan/kasan_init.c                        |  2 +-
- mm/memory.c                                  | 17 +++---
- mm/migrate.c                                 |  2 +-
- mm/mremap.c                                  | 62 +++++++++++++++++++-
- mm/userfaultfd.c                             |  2 +-
- virt/kvm/arm/mmu.c                           |  2 +-
- 46 files changed, 163 insertions(+), 147 deletions(-)
-
+diff --git a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
+index 2b1aaf7755aa..a3407cca6bf9 100644
+--- a/arch/um/drivers/Kconfig
++++ b/arch/um/drivers/Kconfig
+@@ -1,5 +1,27 @@
+ # SPDX-License-Identifier: GPL-2.0
+ 
++menu "UML Block Devices"
++
++config BLK_DEV_UBD
++	bool "UBD Block Device"
++	default y
++	help
++          User Mode Linux virtual block device driver
++
++config BLK_DEV_UBD_SYNC
++	bool "Use Synchronous mode for UBD"
++	default n
++	help
++          Perform all disk operations synchronously (extremely slow).
++
++config BLK_DEV_UBD_DISCARD
++	bool "Enable DISCARD/TRIM support in UBD"
++	default y
++	help
++          Enable discard/trim support. Requires host kernel 3.x or above and
++	  may not be supported on all host filesystems.
++endmenu
++
+ menu "UML Character Devices"
+ 
+ config STDERR_CONSOLE
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index 08b5ba9a5340..791d637ad4ef 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -514,9 +514,13 @@ static void ubd_handler(void)
+ 		for (count = 0; count < n/sizeof(struct io_thread_req *); count++) {
+ 			struct io_thread_req *io_req = (*irq_req_buffer)[count];
+ 
+-			if (!blk_update_request(io_req->req, io_req->error, io_req->length))
+-				__blk_mq_end_request(io_req->req, io_req->error);
+-
++			if ((io_req->error) || (io_req->buffer == NULL)) {
++				blk_mq_end_request(io_req->req, io_req->error);
++			} else {
++				if (!blk_update_request(io_req->req, io_req->error, io_req->length)) {
++					__blk_mq_end_request(io_req->req, io_req->error);
++				}
++			}
+ 			kfree(io_req);
+ 		}
+ 	}
+@@ -775,6 +779,7 @@ static int ubd_open_dev(struct ubd *ubd_dev)
+ 	char **back_ptr;
+ 	int err, create_cow, *create_ptr;
+ 	int fd;
++	int data;
+ 
+ 	ubd_dev->openflags = ubd_dev->boot_openflags;
+ 	create_cow = 0;
+@@ -829,6 +834,23 @@ static int ubd_open_dev(struct ubd *ubd_dev)
+ 		if(err < 0) goto error;
+ 		ubd_dev->cow.fd = err;
+ 	}
++#ifdef CONFIG_BLK_DEV_UBD_DISCARD
++	if (ubd_dev->cow.file != NULL)
++		fd = ubd_dev->cow.fd;
++	else
++		fd = ubd_dev->fd;
++	err = os_pread_file(fd, &data, sizeof(int), 0);
++	if (err == sizeof(int)) {
++		err = os_falloc_punch(fd, 0, sizeof(int));
++		if (err == 0) {
++			ubd_dev->queue->limits.discard_granularity = UBD_SECTOR_SIZE;
++			ubd_dev->queue->limits.discard_alignment = UBD_SECTOR_SIZE;
++			blk_queue_max_discard_sectors(ubd_dev->queue, UBD_MAX_REQUEST);
++			blk_queue_flag_set(QUEUE_FLAG_DISCARD, ubd_dev->queue);
++			os_pwrite_file(fd, &data, sizeof(int), 0);
++		}
++	}
++#endif
+ 	blk_queue_flag_set(QUEUE_FLAG_NONROT, ubd_dev->queue);
+ 	return 0;
+  error:
+@@ -1368,6 +1390,12 @@ static blk_status_t ubd_queue_rq(struct blk_mq_hw_ctx *hctx,
+ 			}
+ 		}
+ 		break;
++#ifdef CONFIG_BLK_DEV_UBD_DISCARD
++	case REQ_OP_DISCARD:
++	case REQ_OP_WRITE_ZEROES:
++		ret = ubd_queue_one_vec(hctx, req, (u64)blk_rq_pos(req) << 9, NULL);
++		break;
++#endif
+ 	default:
+ 		WARN_ON_ONCE(1);
+ 		spin_unlock_irq(&ubd_dev->lock);
+@@ -1429,6 +1457,7 @@ static int map_error(int error_code)
+ 	switch (error_code) {
+ 	case 0:
+ 		return BLK_STS_OK;
++	case ENOSYS:
+ 	case EOPNOTSUPP:
+ 		return BLK_STS_NOTSUPP;
+ 	case EPERM:
+@@ -1459,11 +1488,13 @@ static int update_bitmap(struct io_thread_req *req)
+ 
+ static void do_io(struct io_thread_req *req)
+ {
+-	char *buf;
++	char *buf = NULL;
+ 	unsigned long len;
+ 	int n, nsectors, start, end, bit;
+ 	__u64 off;
+ 
++	/* FLUSH is really a special case, we cannot "case" it with others */
++
+ 	if (req_op(req->req) == REQ_OP_FLUSH) {
+ 		/* fds[0] is always either the rw image or our cow file */
+ 		n = os_sync_file(req->fds[0]);
+@@ -1477,6 +1508,7 @@ static void do_io(struct io_thread_req *req)
+ 
+ 	nsectors = req->length / req->sectorsize;
+ 	start = 0;
++
+ 	do {
+ 		bit = ubd_test_bit(start, (unsigned char *) &req->sector_mask);
+ 		end = start;
+@@ -1488,9 +1520,11 @@ static void do_io(struct io_thread_req *req)
+ 		off = req->offset + req->offsets[bit] +
+ 			start * req->sectorsize;
+ 		len = (end - start) * req->sectorsize;
+-		buf = &req->buffer[start * req->sectorsize];
++		if (req->buffer != NULL)
++			buf = &req->buffer[start * req->sectorsize];
+ 
+-		if (req_op(req->req) == REQ_OP_READ) {
++		switch (req_op(req->req)) {
++		case REQ_OP_READ:
+ 			n = 0;
+ 			do {
+ 				buf = &buf[n];
+@@ -1504,7 +1538,8 @@ static void do_io(struct io_thread_req *req)
+ 				}
+ 			} while((n < len) && (n != 0));
+ 			if (n < len) memset(&buf[n], 0, len - n);
+-		} else {
++			break;
++		case REQ_OP_WRITE:
+ 			n = os_pwrite_file(req->fds[bit], buf, len, off);
+ 			if(n != len){
+ 				printk("do_io - write failed err = %d "
+@@ -1512,12 +1547,30 @@ static void do_io(struct io_thread_req *req)
+ 				req->error = map_error(-n);
+ 				return;
+ 			}
++			break;
++#ifdef CONFIG_BLK_DEV_UBD_DISCARD
++		case REQ_OP_DISCARD:
++		case REQ_OP_WRITE_ZEROES:
++			n = os_falloc_punch(req->fds[bit], off, len);
++			if (n) {
++				printk("do_io - discard failed err = %d "
++				       "fd = %d\n", -n, req->fds[bit]);
++				if (n == -EOPNOTSUPP)
++					req->error = map_error(-n);
++				return;
++			}
++			break;
++#endif
++		default:
++			WARN_ON_ONCE(1);
++			req->error = BLK_STS_NOTSUPP;
++			return;
+ 		}
+-
+ 		start = end;
+ 	} while(start < nsectors);
+ 
+-	req->error = update_bitmap(req);
++	if (req_op(req->req) != REQ_OP_READ)
++		req->error = update_bitmap(req);
+ }
+ 
+ /* Changed in start_io_thread, which is serialized by being called only
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index 048ae37eb5aa..9aa4b150e0a9 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -175,6 +175,8 @@ extern int os_fchange_dir(int fd);
+ extern unsigned os_major(unsigned long long dev);
+ extern unsigned os_minor(unsigned long long dev);
+ extern unsigned long long os_makedev(unsigned major, unsigned minor);
++extern int os_falloc_punch(int fd, unsigned long long offset, int count);
++
+ 
+ /* start_up.c */
+ extern void os_early_checks(void);
+diff --git a/arch/um/os-Linux/file.c b/arch/um/os-Linux/file.c
+index c0197097c86e..56e921ff3ff3 100644
+--- a/arch/um/os-Linux/file.c
++++ b/arch/um/os-Linux/file.c
+@@ -301,6 +301,14 @@ int os_pwrite_file(int fd, const void *buf, int len, unsigned long long offset)
+ 	return n;
+ }
+ 
++int os_falloc_punch(int fd, unsigned long long offset, int len)
++{
++	int n = fallocate(fd, FALLOC_FL_PUNCH_HOLE|FALLOC_FL_KEEP_SIZE, offset, len);
++
++	if (n < 0)
++		return -errno;
++	return n;
++}
+ 
+ int os_file_size(const char *file, unsigned long long *size_out)
+ {
 -- 
-2.19.1.930.g4563a0d9d0-goog
+2.11.0
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
