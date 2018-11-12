@@ -1,17 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab6.miniserver.com ([5.153.251.140]
- helo=www.kot-begemot.co.uk)
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gMGVy-0003BS-Cs
- for linux-um@lists.infradead.org; Mon, 12 Nov 2018 18:00:47 +0000
+Received: from mail-pl1-x636.google.com ([2607:f8b0:4864:20::636])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gMGMf-0003vM-Vv
+ for linux-um@lists.infradead.org; Mon, 12 Nov 2018 17:51:11 +0000
+Received: by mail-pl1-x636.google.com with SMTP id x21-v6so1962748pln.9
+ for <linux-um@lists.infradead.org>; Mon, 12 Nov 2018 09:50:59 -0800 (PST)
 Subject: Re: New Patch series for the UBD Driver
 References: <20181112174201.12290-1-anton.ivanov@cambridgegreys.com>
- <62f14981-9804-8fac-c3ec-b544a90751c3@kernel.dk>
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Message-ID: <58614d39-8c3b-4e8e-7b41-633bb52b533e@cambridgegreys.com>
-Date: Mon, 12 Nov 2018 18:00:32 +0000
+From: Jens Axboe <axboe@kernel.dk>
+Message-ID: <62f14981-9804-8fac-c3ec-b544a90751c3@kernel.dk>
+Date: Mon, 12 Nov 2018 10:50:56 -0700
 MIME-Version: 1.0
-In-Reply-To: <62f14981-9804-8fac-c3ec-b544a90751c3@kernel.dk>
+In-Reply-To: <20181112174201.12290-1-anton.ivanov@cambridgegreys.com>
 Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -21,43 +21,32 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jens Axboe <axboe@kernel.dk>, linux-um@lists.infradead.org
+To: anton.ivanov@cambridgegreys.com, linux-um@lists.infradead.org
 Cc: richard@nod.at, hch@lst.de
 
-Ck9uIDExLzEyLzE4IDU6NTAgUE0sIEplbnMgQXhib2Ugd3JvdGU6Cj4gT24gMTEvMTIvMTggMTA6
-NDEgQU0sIGFudG9uLml2YW5vdkBjYW1icmlkZ2VncmV5cy5jb20gd3JvdGU6Cj4+IFRoaXMgaXMg
-dGhlIHJldmlzZWQgcGF0Y2hzZXQgZm9yIHRoZSB1YmQgZHJpdmVyLiBLbm93biBpc3N1ZXM6Cj4+
-Cj4+IDEuIElmIGFuIGVycm9yIGlzIHJldHVybmVkIHRvIGFuIG9wZXJhdGlvbiBkaWZmZXJlbnQg
-ZnJvbSBSRUFEL1dSSVRFL1NZTkMKPj4gdGhlIGJsb2NrIHN1YnN5c3RlbSBnb2VzIHNvdXRoIGZp
-bmlzaGluZyB3aXRoIGEgY3Jhc2guIEkgaGF2ZSB0cmllZCBldmVyeXRoaW5nCj4+IEkgY2FuIHRo
-aW5rIG9mIGFuZCB3aGF0ZXZlciBJIGNvdWxkIGxpZnQgb3V0IG9mIHRoZSBsb29wIGFuZCBuYmQg
-ZHJpdmVyLiBJIGRvCj4+IG5vdCB0aGluayB0aGF0IHRoZSBwcm9ibGVtIGlzIGluIHRoZSB1YmQg
-ZHJpdmVyLiBJIGFtIGxvc3QgaGVyZSwgSmVucyBjYW4geW91Cj4+IHBsZWFzZSBnaXZlIG1lIGEg
-aGFuZCBpbiBoYW5kbGluZyB0aGUgY2FzZSB3aGVuIHViZF9oYW5kbGVyKCkgZ2V0cyBhbiBlcnJv
-ciBpbgo+PiByZXBseSB0byBhIGRpc2NhcmQuCj4gSXQgd291bGQgaGVscCBpZiB5b3Ugc2hvd2Vk
-IGEgY3Jhc2ggZnJvbSBkb2luZyB0aGF0LCBhbmQgYW4gZXhhbXBsZSBvZgo+IGhvdyB5b3UgYXJl
-IGRvaW5nIHRoYXQuCgpUZXN0IGNhc2UgLSAxRyBleHQ0IGltYWdlIG9uIE1TIERPUyBmaWxlc3lz
-dGVtLgoKV2l0aCB0aGUgcHJlc2VudCBwYXRjaCwgdGhlIGxvZ2ljIGFyb3VuZCBsaW5lIDg0NCBz
-aG91bGQgYmUgY29tbWVudGVkIApvdXQgc28gdGhhdCBESVNDQVJEIGlzIGFsd2F5cyBlbmFibGVk
-LiBJIGNhbiBzZW5kIGEgcGF0Y2ggd2hlcmUgdGhpcyBpcyAKYWx3YXlzIGVuYWJsZWQgZm9yIHRl
-c3RpbmcgcHVycG9zZXMuCgpNb3VudCBmaWxlc3lzdGVtIC0gbW91bnQgL2Rldi91YmRiIC9tbnQK
-ClRyeSBmc3RyaW0gL21udAoKQ3Jhc2ggaXMgaW1tZWRpYXRlLMKgIGJ1dCBkaWZmZXJlbnQgaW4g
-ZWFjaCBjYXNlLgoKU29tZSBjYXNlcyBjb250YWluIHRoZSBXQVJOIGZyb20gbGluZSA0MzkgaW4g
-YmxrLmggLiBTb21lIGNvbnRhaW4gCnNwaW5sb2NrIHJlY3Vyc2lvbiBCVUcoKS4gU29tZSBkbyBu
-b3QgY29udGFpbiBhbnl0aGluZyAtIGl0IGp1c3QgCmNyYXNoZXMuIE9yIGhhbmdzLgoKSSB0cmll
-ZCB2YXJpb3VzIGNvbWJpbmF0aW9ucyAoYW5kIGNvZGUgdGhlZnQgZnJvbSBsb29wIGFuZCBuYmQp
-IG9mIApibGtfdXBkYXRlX3JlcXVlc3QsIF9fYmxrX21xX2VuZF9yZXF1ZXN0LCBibGtfbXFfZW5k
-X3JlcXVlc3QsIGV0YyAtIHRoZSAKZmxhdm9yIG9mIHRoZSBjcmFzaCBjaGFuZ2VzIGEgYml0LCBi
-dXQgbm90IHRoZSBlc3NlbmNlLgoKRmlyc3RzIHF1ZXN0aW9uIC0gaXMgYW55IG9mIHRoYXQgZXhw
-ZWN0ZWQgdG8gYmUgaW52b2tlZCBvdXQgb2YgYW4gCmludGVycnVwdCBoYW5kbGVyIGluIHRoZSBm
-aXJzdCBwbGFjZT8KCkEuCj4KLS0gCkFudG9uIFIuIEl2YW5vdgoKQ2FtYnJpZGdlIEdyZXlzIExp
-bWl0ZWQsIEVuZ2xhbmQgYW5kIFdhbGVzIGNvbXBhbnkgTm8gMTAyNzM2NjEKaHR0cDovL3d3dy5j
-YW1icmlkZ2VncmV5cy5jb20vCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVh
-ZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11
-bQo=
+On 11/12/18 10:41 AM, anton.ivanov@cambridgegreys.com wrote:
+> This is the revised patchset for the ubd driver. Known issues:
+> 
+> 1. If an error is returned to an operation different from READ/WRITE/SYNC
+> the block subsystem goes south finishing with a crash. I have tried everything
+> I can think of and whatever I could lift out of the loop and nbd driver. I do
+> not think that the problem is in the ubd driver. I am lost here, Jens can you
+> please give me a hand in handling the case when ubd_handler() gets an error in
+> reply to a discard.
+
+It would help if you showed a crash from doing that, and an example of
+how you are doing that.
+
+-- 
+Jens Axboe
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
