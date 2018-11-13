@@ -1,17 +1,34 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x449.google.com ([2607:f8b0:4864:20::449])
+Received: from mail-it1-x141.google.com ([2607:f8b0:4864:20::141])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gS5f9-0003cm-83
- for linux-um@lists.infradead.org; Wed, 28 Nov 2018 19:38:20 +0000
-Received: by mail-pf1-x449.google.com with SMTP id p9so17654017pfj.3
- for <linux-um@lists.infradead.org>; Wed, 28 Nov 2018 11:38:08 -0800 (PST)
-Date: Wed, 28 Nov 2018 11:36:27 -0800
-In-Reply-To: <20181128193636.254378-1-brendanhiggins@google.com>
-Message-Id: <20181128193636.254378-11-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20181128193636.254378-1-brendanhiggins@google.com>
-Subject: [RFC v3 10/19] kunit: test: add test managed resource tests
-From: Brendan Higgins <brendanhiggins@google.com>
+ id 1gMadF-0005XR-Au
+ for linux-um@lists.infradead.org; Tue, 13 Nov 2018 15:29:38 +0000
+Received: by mail-it1-x141.google.com with SMTP id j79-v6so18995107itb.2
+ for <linux-um@lists.infradead.org>; Tue, 13 Nov 2018 07:29:27 -0800 (PST)
+Subject: Re: New Patch series for the UBD Driver
+References: <20181112174201.12290-1-anton.ivanov@cambridgegreys.com>
+ <62f14981-9804-8fac-c3ec-b544a90751c3@kernel.dk>
+ <58614d39-8c3b-4e8e-7b41-633bb52b533e@cambridgegreys.com>
+ <880075e6-1032-fe4f-0001-085d7409eb54@kernel.dk>
+ <b332d9d1-a5ee-c69f-fa3b-f5e0703c1153@cambridgegreys.com>
+ <2b318d17-7fde-991b-fda4-271fde2a7db9@kernel.dk>
+ <0e31d0a6-64f0-208e-bfc8-acd05db432f1@cambridgegreys.com>
+ <b50be83c-8309-5068-b5bb-8dad89f24913@kernel.dk>
+ <1d334c50-0f89-70e7-b6c7-fe0d719ed5df@cambridgegreys.com>
+ <1e27868d-974b-9554-1010-a7e28a238479@kernel.dk>
+ <17fab2bf-416b-3c61-e5c6-d315fb9105b3@kernel.dk>
+ <651eb31c-4f75-0174-cd1a-a045d8d93991@cambridgegreys.com>
+ <e6df0eee-6446-08b1-42be-ee93c95613cc@cambridgegreys.com>
+ <1d7151d0-62b7-000c-c506-7b321bf788bb@kernel.dk>
+ <80368030-ddd5-df57-1ecd-28fa91cc37b0@cambridgegreys.com>
+ <1991d24c-eda6-8d07-3d59-cb591c04ac4b@kernel.dk>
+ <db3d91c7-56eb-4782-08ac-664105cbe4eb@cambridgegreys.com>
+From: Jens Axboe <axboe@kernel.dk>
+Message-ID: <54b926fb-7a36-54a1-83c6-b2c7841ea6d2@kernel.dk>
+Date: Tue, 13 Nov 2018 08:29:23 -0700
+MIME-Version: 1.0
+In-Reply-To: <db3d91c7-56eb-4782-08ac-664105cbe4eb@cambridgegreys.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,165 +41,63 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
-Cc: brakmo@fb.com, jdike@addtoit.com, dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org, frowand.list@gmail.com, robh@kernel.org, linux-nvdimm@lists.01.org, richard@nod.at, knut.omang@oracle.com, kieran.bingham@ideasonboard.com, joel@jms.id.au, khilman@baylibre.com, Brendan Higgins <brendanhiggins@google.com>, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org, Avinash Kondareddy <avikr@google.com>, daniel@ffwll.ch, mpe@ellerman.id.au, joe@perches.com
+To: Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
+Cc: richard@nod.at, hch@lst.de
 
-Tests how tests interact with test managed resources in their lifetime.
+On 11/13/18 8:24 AM, Anton Ivanov wrote:
+> 
+> On 11/13/18 3:14 PM, Jens Axboe wrote:
+>> On 11/13/18 6:56 AM, Anton Ivanov wrote:
+>>> On 13/11/2018 13:30, Jens Axboe wrote:
+>>>> On 11/13/18 3:15 AM, Anton Ivanov wrote:
+>>>>> I have figured out part of it. It is not caused by the block layer at
+>>>>> all. The offending parts are printks in the io thread. You simply cannot
+>>>>> printk out of there, that causes the spinlock recursion, irqs, on/off,
+>>>>> etc warning.
+>>>>>
+>>>>> This means that any errors MUST be reported only after they have gone
+>>>>> back to the main UML kernel thread.
+>>>> That's a pretty serious issue with UML, there's absolutely nothing wrong
+>>>> with doing printk from IRQ context, or from an IO thread like this one.
+>>>> You don't know what the call stack below you will do for functions you
+>>>> call, this is a ticking time bomb.
+>>> This is not a normal kernel IO thread. It is a host-side helper thread.
+>>> There are two of those - one for UBD and and one for sigio.
+>>>
+>>> I am not qualified to judge what is normal and not there, but they
+>>> operate "outside" normal kernel authority and communicate only via their
+>>> IPC pipe.
+>>>
+>>> It is not interrupt context - it is an equivalent of "inside the actual
+>>> device".
+>> But it's running in the kernel, which means it's eligible to call
+>> any functions. If you have ANY function in your call path that
+>> isn't 100% controller by ubd or UML, then all bets are off.
+> 
+> Actually - no it is not. It is spawned once early at initialization and 
+> it is not doing anything besides disk IO into/from buffers allocated by 
+> the kernel proper. In fact it does not execute _ANY_ kernel calls at 
+> all. None.
+> 
+> Every single thing it executes is on the other side of the hypervisor 
+> boundary and on the host side.
 
-Signed-off-by: Avinash Kondareddy <avikr@google.com>
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
----
- kunit/test-test.c | 121 +++++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 110 insertions(+), 11 deletions(-)
+OK, I guess it's fine then and not something to worry about. Probably
+could do with a comment, then!
 
-diff --git a/kunit/test-test.c b/kunit/test-test.c
-index 88b3bcf9c4e00..36fd95c90a26a 100644
---- a/kunit/test-test.c
-+++ b/kunit/test-test.c
-@@ -7,31 +7,130 @@
-  */
- #include <kunit/test.h>
- 
--static void test_test_catches_segfault(struct kunit *test)
-+static void kunit_test_catches_segfault(struct kunit *test)
- {
- 	void (*invalid_func)(void) = (void (*)(void)) SIZE_MAX;
- 
- 	KUNIT_ASSERT_SIGSEGV(test, invalid_func());
- }
- 
--static int test_test_init(struct kunit *test)
-+/*
-+ * Context for testing test managed resources
-+ * is_resource_initialized is used to test arbitrary resources
-+ */
-+struct kunit_test_context {
-+	struct kunit test;
-+	bool is_resource_initialized;
-+};
-+
-+static int fake_resource_init(struct kunit_resource *res, void *context)
- {
-+	struct kunit_test_context *ctx = context;
-+
-+	res->allocation = &ctx->is_resource_initialized;
-+	ctx->is_resource_initialized = true;
- 	return 0;
- }
- 
--static void test_test_exit(struct kunit *test)
-+static void fake_resource_free(struct kunit_resource *res)
-+{
-+	bool *is_resource_initialized = res->allocation;
-+
-+	*is_resource_initialized = false;
-+}
-+
-+static void kunit_test_init_resources(struct kunit *test)
-+{
-+	struct kunit_test_context *ctx = test->priv;
-+
-+	kunit_init_test(&ctx->test, "testing_test_init_test");
-+
-+	KUNIT_EXPECT_TRUE(test, list_empty(&ctx->test.resources));
-+}
-+
-+static void kunit_test_alloc_resource(struct kunit *test)
-+{
-+	struct kunit_test_context *ctx = test->priv;
-+	struct kunit_resource *res;
-+	kunit_resource_free_t free = fake_resource_free;
-+
-+	res = kunit_alloc_resource(&ctx->test,
-+				   fake_resource_init,
-+				   fake_resource_free,
-+				   ctx);
-+
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, res);
-+	KUNIT_EXPECT_EQ(test, &ctx->is_resource_initialized, res->allocation);
-+	KUNIT_EXPECT_TRUE(test, list_is_last(&res->node, &ctx->test.resources));
-+	KUNIT_EXPECT_EQ(test, free, res->free);
-+}
-+
-+static void kunit_test_free_resource(struct kunit *test)
- {
-+	struct kunit_test_context *ctx = test->priv;
-+	struct kunit_resource *res = kunit_alloc_resource(&ctx->test,
-+							  fake_resource_init,
-+							  fake_resource_free,
-+							  ctx);
-+
-+	kunit_free_resource(&ctx->test, res);
-+
-+	KUNIT_EXPECT_EQ(test, false, ctx->is_resource_initialized);
-+	KUNIT_EXPECT_TRUE(test, list_empty(&ctx->test.resources));
-+}
-+
-+static void kunit_test_cleanup_resources(struct kunit *test)
-+{
-+	int i;
-+	const int num_res = 5;
-+	struct kunit_test_context *ctx = test->priv;
-+	struct kunit_resource *resources[num_res];
-+
-+	for (i = 0; i < num_res; i++) {
-+		resources[i] = kunit_alloc_resource(&ctx->test,
-+						    fake_resource_init,
-+						    fake_resource_free,
-+						    ctx);
-+	}
-+
-+	kunit_cleanup(&ctx->test);
-+
-+	KUNIT_EXPECT_TRUE(test, list_empty(&ctx->test.resources));
-+}
-+
-+static int kunit_test_init(struct kunit *test)
-+{
-+	struct kunit_test_context *ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
-+
-+	if (!ctx)
-+		return -ENOMEM;
-+	test->priv = ctx;
-+
-+	kunit_init_test(&ctx->test, "test_test_context");
-+	return 0;
-+}
-+
-+static void kunit_test_exit(struct kunit *test)
-+{
-+	struct kunit_test_context *ctx = test->priv;
-+
-+	kunit_cleanup(&ctx->test);
-+	kfree(ctx);
- }
- 
--static struct kunit_case test_test_cases[] = {
--	KUNIT_CASE(test_test_catches_segfault),
-+static struct kunit_case kunit_test_cases[] = {
-+	KUNIT_CASE(kunit_test_catches_segfault),
-+	KUNIT_CASE(kunit_test_init_resources),
-+	KUNIT_CASE(kunit_test_alloc_resource),
-+	KUNIT_CASE(kunit_test_free_resource),
-+	KUNIT_CASE(kunit_test_cleanup_resources),
- 	{},
- };
- 
--static struct kunit_module test_test_module = {
--	.name = "test-test",
--	.init = test_test_init,
--	.exit = test_test_exit,
--	.test_cases = test_test_cases,
-+static struct kunit_module kunit_test_module = {
-+	.name = "kunit-test",
-+	.init = kunit_test_init,
-+	.exit = kunit_test_exit,
-+	.test_cases = kunit_test_cases,
- };
--module_test(test_test_module);
-+module_test(kunit_test_module);
+> IMHO what is missing in the patch is a comment which ads a BIG FAT 
+> warning that do_io is not allowed to invoke any kernel resources. It is 
+> not in or any part of the kernel. It just happens to share address space 
+> with it to simulate "DMA".
+> 
+> I am happy to add it. In fact, it may be worth it to isolate the source 
+> completely and move to a different file to avoid any confusion that it 
+> is a part of the kernel in any way.
+
+Yes exactly, I think that would help a lot.
+
 -- 
-2.20.0.rc0.387.gc7a69e6b6c-goog
+Jens Axboe
 
 
 _______________________________________________
