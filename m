@@ -1,41 +1,50 @@
-Return-Path: <joel@joelfernandes.org>
-From: Joel Fernandes <joel@joelfernandes.org>
-Subject: [PATCH -next 3/3] mm: select HAVE_MOVE_PMD in x86 for faster mremap
-Date: Fri,  2 Nov 2018 21:00:41 -0700
-Message-Id: <20181103040041.7085-4-joelaf@google.com>
-In-Reply-To: <20181103040041.7085-1-joelaf@google.com>
-References: <20181103040041.7085-1-joelaf@google.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pl1-x644.google.com ([2607:f8b0:4864:20::644])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gMYnO-00029u-QF
+ for linux-um@lists.infradead.org; Tue, 13 Nov 2018 13:32:00 +0000
+Received: by mail-pl1-x644.google.com with SMTP id t13so3055916ply.13
+ for <linux-um@lists.infradead.org>; Tue, 13 Nov 2018 05:31:47 -0800 (PST)
+Subject: Re: [PATCH 3/4] um: Remove unsafe printks from the io thread
+References: <20181113115947.19290-1-anton.ivanov@cambridgegreys.com>
+ <20181113115947.19290-4-anton.ivanov@cambridgegreys.com>
+From: Jens Axboe <axboe@kernel.dk>
+Message-ID: <985e1e06-e779-047f-3ce3-fbd3c67a15de@kernel.dk>
+Date: Tue, 13 Nov 2018 06:31:44 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-kernel@vger.kernel.org
-Cc: kernel-team@android.com, "Joel Fernandes (Google)" <joel@joelfernandes.org>, "Kirill A . Shutemov" <kirill@shutemov.name>, akpm@linux-foundation.org, Andrey Ryabinin <aryabinin@virtuozzo.com>, Andy Lutomirski <luto@kernel.org>, anton.ivanov@kot-begemot.co.uk, Borislav Petkov <bp@alien8.de>, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, dancol@google.com, Dave Hansen <dave.hansen@linux.intel.com>, "David S. Miller" <davem@davemloft.net>, elfring@users.sourceforge.net, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Helge Deller <deller@gmx.de>, hughd@google.com, Ingo Molnar <mingo@redhat.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Jeff Dike <jdike@addtoit.com>, Jonas Bonn <jonas@southpole.se>, Julia Lawall <Julia.Lawall@lip6.fr>, kasan-dev@googlegroups.com, kvmarm@lists.cs.columbia.edu, Ley Foon Tan <lftan@altera.com>, linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, lokeshgidra@google.com, Max Filippov <jcmvbkbc@gmail.com>, Michal Hocko <mhocko@kernel.org>, minchan@kernel.org, nios2-dev@lists.rocketboards.org, pantin@google.com, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Sam Creasey <sammy@sammy.net>, sparclinux@vger.kernel.org, Stafford Horne <shorne@gmail.com>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, Will Deacon <will.deacon@arm.com>, "maintainer:X86 ARCHITECTURE 32-BIT AND 64-BIT" <x86@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>
-List-ID: <linux-um.lists.infradead.org>
+In-Reply-To: <20181113115947.19290-4-anton.ivanov@cambridgegreys.com>
+Content-Language: en-US
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: anton.ivanov@cambridgegreys.com, linux-um@lists.infradead.org
+Cc: richard@nod.at, hch@lst.de
 
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+On 11/13/18 4:59 AM, anton.ivanov@cambridgegreys.com wrote:
+> From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> 
+> Printk out of the io thread has been proven to be unsafe. It is
+> safer to pass the error to the block IO layer nad let it print
+> it if need be.
 
-Moving page-tables at the PMD-level on x86 is known to be safe. Enable
-this option so that we can do fast mremap when possible.
+As per previous message, I don't think this is a good idea at all.
+It'd be much better to fix the real issue, not work around it.
 
-Suggested-by: Kirill A. Shutemov <kirill@shutemov.name>
-Acked-by: Kirill A. Shutemov <kirill@shutemov.name>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- arch/x86/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index ba7e3464ee92..48aef01a0bd1 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -173,6 +173,7 @@ config X86
- 	select HAVE_MEMBLOCK_NODE_MAP
- 	select HAVE_MIXED_BREAKPOINTS_REGS
- 	select HAVE_MOD_ARCH_SPECIFIC
-+	select HAVE_MOVE_PMD
- 	select HAVE_NMI
- 	select HAVE_OPROFILE
- 	select HAVE_OPTPROBES
 -- 
-2.19.1.930.g4563a0d9d0-goog
+Jens Axboe
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
