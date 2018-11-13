@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gMRbl-00056l-Ja
- for linux-um@lists.infradead.org; Tue, 13 Nov 2018 05:51:31 +0000
+ id 1gMRao-0004un-Lz
+ for linux-um@lists.infradead.org; Tue, 13 Nov 2018 05:50:32 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.18 18/39] um: Give start_idle_thread() a return code
-Date: Tue, 13 Nov 2018 00:50:32 -0500
-Message-Id: <20181113055053.78352-18-sashal@kernel.org>
-In-Reply-To: <20181113055053.78352-1-sashal@kernel.org>
-References: <20181113055053.78352-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 20/44] um: Give start_idle_thread() a return code
+Date: Tue, 13 Nov 2018 00:49:26 -0500
+Message-Id: <20181113054950.77898-20-sashal@kernel.org>
+In-Reply-To: <20181113054950.77898-1-sashal@kernel.org>
+References: <20181113054950.77898-1-sashal@kernel.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
