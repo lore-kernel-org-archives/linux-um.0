@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gMRdB-0005QJ-DT
- for linux-um@lists.infradead.org; Tue, 13 Nov 2018 05:52:59 +0000
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gMRd0-0000vP-Me
+ for linux-um@lists.infradead.org; Tue, 13 Nov 2018 05:52:47 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.4 05/11] um: Give start_idle_thread() a return code
-Date: Tue, 13 Nov 2018 00:52:36 -0500
-Message-Id: <20181113055242.79261-5-sashal@kernel.org>
-In-Reply-To: <20181113055242.79261-1-sashal@kernel.org>
-References: <20181113055242.79261-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 07/17] um: Give start_idle_thread() a return code
+Date: Tue, 13 Nov 2018 00:52:13 -0500
+Message-Id: <20181113055223.79060-7-sashal@kernel.org>
+In-Reply-To: <20181113055223.79060-1-sashal@kernel.org>
+References: <20181113055223.79060-1-sashal@kernel.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -44,10 +44,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 5 insertions(+)
 
 diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index b856c66ebd3a..6dbf27ffafc8 100644
+index 23025d645160..0a99d4515065 100644
 --- a/arch/um/os-Linux/skas/process.c
 +++ b/arch/um/os-Linux/skas/process.c
-@@ -585,6 +585,11 @@ int start_idle_thread(void *stack, jmp_buf *switch_buf)
+@@ -578,6 +578,11 @@ int start_idle_thread(void *stack, jmp_buf *switch_buf)
  		fatal_sigsegv();
  	}
  	longjmp(*switch_buf, 1);
