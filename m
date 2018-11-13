@@ -1,10 +1,9 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-it1-x141.google.com ([2607:f8b0:4864:20::141])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gMadF-0005XR-Au
- for linux-um@lists.infradead.org; Tue, 13 Nov 2018 15:29:38 +0000
-Received: by mail-it1-x141.google.com with SMTP id j79-v6so18995107itb.2
- for <linux-um@lists.infradead.org>; Tue, 13 Nov 2018 07:29:27 -0800 (PST)
+Received: from ivanoab6.miniserver.com ([5.153.251.140]
+ helo=www.kot-begemot.co.uk)
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gMaYr-0006nw-AX
+ for linux-um@lists.infradead.org; Tue, 13 Nov 2018 15:25:06 +0000
 Subject: Re: New Patch series for the UBD Driver
 References: <20181112174201.12290-1-anton.ivanov@cambridgegreys.com>
  <62f14981-9804-8fac-c3ec-b544a90751c3@kernel.dk>
@@ -22,12 +21,11 @@ References: <20181112174201.12290-1-anton.ivanov@cambridgegreys.com>
  <1d7151d0-62b7-000c-c506-7b321bf788bb@kernel.dk>
  <80368030-ddd5-df57-1ecd-28fa91cc37b0@cambridgegreys.com>
  <1991d24c-eda6-8d07-3d59-cb591c04ac4b@kernel.dk>
- <db3d91c7-56eb-4782-08ac-664105cbe4eb@cambridgegreys.com>
-From: Jens Axboe <axboe@kernel.dk>
-Message-ID: <54b926fb-7a36-54a1-83c6-b2c7841ea6d2@kernel.dk>
-Date: Tue, 13 Nov 2018 08:29:23 -0700
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <db3d91c7-56eb-4782-08ac-664105cbe4eb@cambridgegreys.com>
+Date: Tue, 13 Nov 2018 15:24:48 +0000
 MIME-Version: 1.0
-In-Reply-To: <db3d91c7-56eb-4782-08ac-664105cbe4eb@cambridgegreys.com>
+In-Reply-To: <1991d24c-eda6-8d07-3d59-cb591c04ac4b@kernel.dk>
 Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -37,67 +35,83 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
+To: Jens Axboe <axboe@kernel.dk>, linux-um@lists.infradead.org
 Cc: richard@nod.at, hch@lst.de
 
-On 11/13/18 8:24 AM, Anton Ivanov wrote:
-> 
-> On 11/13/18 3:14 PM, Jens Axboe wrote:
->> On 11/13/18 6:56 AM, Anton Ivanov wrote:
->>> On 13/11/2018 13:30, Jens Axboe wrote:
->>>> On 11/13/18 3:15 AM, Anton Ivanov wrote:
->>>>> I have figured out part of it. It is not caused by the block layer at
->>>>> all. The offending parts are printks in the io thread. You simply cannot
->>>>> printk out of there, that causes the spinlock recursion, irqs, on/off,
->>>>> etc warning.
->>>>>
->>>>> This means that any errors MUST be reported only after they have gone
->>>>> back to the main UML kernel thread.
->>>> That's a pretty serious issue with UML, there's absolutely nothing wrong
->>>> with doing printk from IRQ context, or from an IO thread like this one.
->>>> You don't know what the call stack below you will do for functions you
->>>> call, this is a ticking time bomb.
->>> This is not a normal kernel IO thread. It is a host-side helper thread.
->>> There are two of those - one for UBD and and one for sigio.
->>>
->>> I am not qualified to judge what is normal and not there, but they
->>> operate "outside" normal kernel authority and communicate only via their
->>> IPC pipe.
->>>
->>> It is not interrupt context - it is an equivalent of "inside the actual
->>> device".
->> But it's running in the kernel, which means it's eligible to call
->> any functions. If you have ANY function in your call path that
->> isn't 100% controller by ubd or UML, then all bets are off.
-> 
-> Actually - no it is not. It is spawned once early at initialization and 
-> it is not doing anything besides disk IO into/from buffers allocated by 
-> the kernel proper. In fact it does not execute _ANY_ kernel calls at 
-> all. None.
-> 
-> Every single thing it executes is on the other side of the hypervisor 
-> boundary and on the host side.
 
-OK, I guess it's fine then and not something to worry about. Probably
-could do with a comment, then!
+On 11/13/18 3:14 PM, Jens Axboe wrote:
+> On 11/13/18 6:56 AM, Anton Ivanov wrote:
+>> On 13/11/2018 13:30, Jens Axboe wrote:
+>>> On 11/13/18 3:15 AM, Anton Ivanov wrote:
+>>>> I have figured out part of it. It is not caused by the block layer at
+>>>> all. The offending parts are printks in the io thread. You simply cannot
+>>>> printk out of there, that causes the spinlock recursion, irqs, on/off,
+>>>> etc warning.
+>>>>
+>>>> This means that any errors MUST be reported only after they have gone
+>>>> back to the main UML kernel thread.
+>>> That's a pretty serious issue with UML, there's absolutely nothing wrong
+>>> with doing printk from IRQ context, or from an IO thread like this one.
+>>> You don't know what the call stack below you will do for functions you
+>>> call, this is a ticking time bomb.
+>> This is not a normal kernel IO thread. It is a host-side helper thread.
+>> There are two of those - one for UBD and and one for sigio.
+>>
+>> I am not qualified to judge what is normal and not there, but they
+>> operate "outside" normal kernel authority and communicate only via their
+>> IPC pipe.
+>>
+>> It is not interrupt context - it is an equivalent of "inside the actual
+>> device".
+> But it's running in the kernel, which means it's eligible to call
+> any functions. If you have ANY function in your call path that
+> isn't 100% controller by ubd or UML, then all bets are off.
 
-> IMHO what is missing in the patch is a comment which ads a BIG FAT 
-> warning that do_io is not allowed to invoke any kernel resources. It is 
-> not in or any part of the kernel. It just happens to share address space 
-> with it to simulate "DMA".
-> 
-> I am happy to add it. In fact, it may be worth it to isolate the source 
-> completely and move to a different file to avoid any confusion that it 
-> is a part of the kernel in any way.
+Actually - no it is not. It is spawned once early at initialization and 
+it is not doing anything besides disk IO into/from buffers allocated by 
+the kernel proper. In fact it does not execute _ANY_ kernel calls at 
+all. None.
 
-Yes exactly, I think that would help a lot.
+Every single thing it executes is on the other side of the hypervisor 
+boundary and on the host side.
+
+>
+> I don't even see how your new patch 4 fixes anything, whether the
+> printk happens in the io_thread() or some call off of that should
+> be the same issue.
+
+An equivalent would be that let's say "QEMU is allowed at any time, 
+regardless of context, interrupt state, lock state and anythying else to 
+invoke a kernel routine". I do not think anyone would agree with that 
+statement.
+
+It is obviously invalid. Ditto for VMware. Ditto for VirtualBox.
+
+So why does a portion of the UML hypervisor which exists outside the 
+kernel get an entitlement to execute kernel functions while none of 
+these do?
+
+It should not have it to start off with - it is part of the host-side in 
+the hypervisor.
+
+IMHO what is missing in the patch is a comment which ads a BIG FAT 
+warning that do_io is not allowed to invoke any kernel resources. It is 
+not in or any part of the kernel. It just happens to share address space 
+with it to simulate "DMA".
+
+I am happy to add it. In fact, it may be worth it to isolate the source 
+completely and move to a different file to avoid any confusion that it 
+is a part of the kernel in any way.
 
 -- 
-Jens Axboe
+Anton R. Ivanov
+
+Cambridge Greys Limited, England and Wales company No 10273661
+http://www.cambridgegreys.com/
 
 
 _______________________________________________
