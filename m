@@ -1,18 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from verein.lst.de ([213.95.11.211] helo=newverein.lst.de)
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gMx66-00083G-Qi
- for linux-um@lists.infradead.org; Wed, 14 Nov 2018 15:28:55 +0000
-Date: Wed, 14 Nov 2018 16:28:42 +0100
-From: Christoph Hellwig <hch@lst.de>
+Received: from mail-pg1-x541.google.com ([2607:f8b0:4864:20::541])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gMYq6-0003vJ-Rq
+ for linux-um@lists.infradead.org; Tue, 13 Nov 2018 13:34:48 +0000
+Received: by mail-pg1-x541.google.com with SMTP id 17so5453141pgg.1
+ for <linux-um@lists.infradead.org>; Tue, 13 Nov 2018 05:34:36 -0800 (PST)
 Subject: Re: [PATCH 2/4] um: Clean-up command processing in UML UBD driver
-Message-ID: <20181114152842.GA28557@lst.de>
 References: <20181113115947.19290-1-anton.ivanov@cambridgegreys.com>
  <20181113115947.19290-3-anton.ivanov@cambridgegreys.com>
- <8a1d3dcb-ea52-e745-b961-ea51224d2405@kernel.dk>
+From: Jens Axboe <axboe@kernel.dk>
+Message-ID: <8a1d3dcb-ea52-e745-b961-ea51224d2405@kernel.dk>
+Date: Tue, 13 Nov 2018 06:34:31 -0700
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <8a1d3dcb-ea52-e745-b961-ea51224d2405@kernel.dk>
+In-Reply-To: <20181113115947.19290-3-anton.ivanov@cambridgegreys.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -25,31 +26,130 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jens Axboe <axboe@kernel.dk>
-Cc: richard@nod.at, linux-um@lists.infradead.org, hch@lst.de, anton.ivanov@cambridgegreys.com
+To: anton.ivanov@cambridgegreys.com, linux-um@lists.infradead.org
+Cc: richard@nod.at, hch@lst.de
 
-On Tue, Nov 13, 2018 at 06:34:31AM -0700, Jens Axboe wrote:
-> > +	/* operations with bio_vec arguments */
-> > +	case REQ_OP_READ:
-> > +	case REQ_OP_WRITE:
-> > +		{
-> > +			struct req_iterator iter;
-> > +			struct bio_vec bvec;
-> > +			u64 off = (u64)blk_rq_pos(req) << 9;
-> > +
-> > +			rq_for_each_segment(bvec, req, iter) {
-> > +				ret = ubd_queue_one_vec(hctx, req, off, &bvec);
-> > +				if (ret < 0)
-> > +					goto out;
-> > +				off += bvec.bv_len;
-> > +			}
-> >  		}
-> > +		break;
+On 11/13/18 4:59 AM, anton.ivanov@cambridgegreys.com wrote:
+> From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 > 
-> This indentation is wrong/awkward. The usual style is:
+> Clean-up command processing and return BLK_STS_NOTSUP for
+> uknown commands.
+> 
+> Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> ---
+>  arch/um/drivers/ubd_kern.c | 64 ++++++++++++++++++++++++++++------------------
+>  1 file changed, 39 insertions(+), 25 deletions(-)
+> 
+> diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+> index 331837f1f632..0f02373ef632 100644
+> --- a/arch/um/drivers/ubd_kern.c
+> +++ b/arch/um/drivers/ubd_kern.c
+> @@ -1307,21 +1307,25 @@ static int ubd_queue_one_vec(struct blk_mq_hw_ctx *hctx, struct request *req,
+>  		io_req->fds[0] = dev->fd;
+>  	io_req->error = 0;
+>  
+> -	if (req_op(req) != REQ_OP_FLUSH) {
+> -		io_req->fds[1] = dev->fd;
+> -		io_req->cow_offset = -1;
+> -		io_req->offset = off;
+> +	if (bvec != NULL) {
+>  		io_req->length = bvec->bv_len;
+> -		io_req->sector_mask = 0;
+> -		io_req->offsets[0] = 0;
+> -		io_req->offsets[1] = dev->cow.data_offset;
+>  		io_req->buffer = page_address(bvec->bv_page) + bvec->bv_offset;
+> -		io_req->sectorsize = 1 << 9;
+> +	} else {
+> +		io_req->buffer = NULL;
+> +		io_req->length = blk_rq_bytes(req);
+> +	}
+>  
+> -		if (dev->cow.file) {
+> -			cowify_req(io_req, dev->cow.bitmap,
+> -				   dev->cow.bitmap_offset, dev->cow.bitmap_len);
+> -		}
+> +	io_req->sectorsize = UBD_SECTOR_SIZE;
+> +	io_req->fds[1] = dev->fd;
+> +	io_req->cow_offset = -1;
+> +	io_req->offset = off;
+> +	io_req->sector_mask = 0;
+> +	io_req->offsets[0] = 0;
+> +	io_req->offsets[1] = dev->cow.data_offset;
+> +
+> +	if (dev->cow.file) {
+> +		cowify_req(io_req, dev->cow.bitmap,
+> +			   dev->cow.bitmap_offset, dev->cow.bitmap_len);
+>  	}
+>  
+>  	ret = os_write_file(thread_fd, &io_req, sizeof(io_req));
+> @@ -1330,7 +1334,6 @@ static int ubd_queue_one_vec(struct blk_mq_hw_ctx *hctx, struct request *req,
+>  			pr_err("write to io thread failed: %d\n", -ret);
+>  		kfree(io_req);
+>  	}
+> -
+>  	return ret;
+>  }
+>  
+> @@ -1344,20 +1347,31 @@ static blk_status_t ubd_queue_rq(struct blk_mq_hw_ctx *hctx,
+>  	blk_mq_start_request(req);
+>  
+>  	spin_lock_irq(&ubd_dev->lock);
+> -
+> -	if (req_op(req) == REQ_OP_FLUSH) {
+> +	switch (req_op(req)) {
+> +	/* operations with no lentgth/offset arguments */
+> +	case REQ_OP_FLUSH:
+>  		ret = ubd_queue_one_vec(hctx, req, 0, NULL);
+> -	} else {
+> -		struct req_iterator iter;
+> -		struct bio_vec bvec;
+> -		u64 off = (u64)blk_rq_pos(req) << 9;
+> -
+> -		rq_for_each_segment(bvec, req, iter) {
+> -			ret = ubd_queue_one_vec(hctx, req, off, &bvec);
+> -			if (ret < 0)
+> -				goto out;
+> -			off += bvec.bv_len;
+> +		break;
+> +	/* operations with bio_vec arguments */
+> +	case REQ_OP_READ:
+> +	case REQ_OP_WRITE:
+> +		{
+> +			struct req_iterator iter;
+> +			struct bio_vec bvec;
+> +			u64 off = (u64)blk_rq_pos(req) << 9;
+> +
+> +			rq_for_each_segment(bvec, req, iter) {
+> +				ret = ubd_queue_one_vec(hctx, req, off, &bvec);
+> +				if (ret < 0)
+> +					goto out;
+> +				off += bvec.bv_len;
+> +			}
+>  		}
+> +		break;
 
-And for extra point just split the code into a separate helper,
-avoiding the whole switch scoping issue entirely.
+This indentation is wrong/awkward. The usual style is:
+
+	case REQ_OP_READ:
+	case REQ_OP_WRITE: {
+		struct req_iterator iter;
+		struct bio_vec bvec;
+		u64 off = (u64)blk_rq_pos(req) << 9;
+
+		rq_for_each_segment(bvec, req, iter) {
+			ret = ubd_queue_one_vec(hctx, req, off, &bvec);
+			if (ret < 0)
+				goto out;
+			off += bvec.bv_len;
+		}
+		break;
+		}
+
+Apart from that, looks good to me.
+
+-- 
+Jens Axboe
+
 
 _______________________________________________
 linux-um mailing list
