@@ -1,13 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from conuserg-11.nifty.com ([210.131.2.78])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gOuVD-00081T-KL
- for linux-um@lists.infradead.org; Tue, 20 Nov 2018 01:06:57 +0000
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [PATCH v2 0/9] kbuild: clean-up modversion, TRIM_UNUSED_KSYMS,
- if_changed_rule, etc.
-Date: Tue, 20 Nov 2018 10:05:21 +0900
-Message-Id: <1542675930-21114-1-git-send-email-yamada.masahiro@socionext.com>
+Received: from verein.lst.de ([213.95.11.211] helo=newverein.lst.de)
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gMxAU-0007Eo-2h
+ for linux-um@lists.infradead.org; Wed, 14 Nov 2018 15:33:27 +0000
+Date: Wed, 14 Nov 2018 16:33:15 +0100
+From: Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 2/4] um: Clean-up command processing in UML UBD driver
+Message-ID: <20181114153315.GA28703@lst.de>
+References: <20181113115947.19290-1-anton.ivanov@cambridgegreys.com>
+ <20181113115947.19290-3-anton.ivanov@cambridgegreys.com>
+ <8a1d3dcb-ea52-e745-b961-ea51224d2405@kernel.dk>
+ <20181114152842.GA28557@lst.de>
+ <191d9b97-23e0-c5e3-1755-b8fc1fc28cf3@cambridgegreys.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <191d9b97-23e0-c5e3-1755-b8fc1fc28cf3@cambridgegreys.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -16,53 +23,20 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kbuild@vger.kernel.org
-Cc: Nicolas Pitre <nicolas.pitre@linaro.org>, linux-arch@vger.kernel.org, Michal Marek <michal.lkml@markovi.net>, Arnd Bergmann <arnd@arndb.de>, Ard Biesheuvel <ard.biesheuvel@linaro.org>, Michael Ellerman <mpe@ellerman.id.au>, Jeff Dike <jdike@addtoit.com>, Rasmus Villemoes <linux@rasmusvillemoes.dk>, linux-kernel@vger.kernel.org, Will Deacon <will.deacon@arm.com>, linux-um@lists.infradead.org, Masahiro Yamada <yamada.masahiro@socionext.com>, Richard Weinberger <richard@nod.at>, Andrew Morton <akpm@linux-foundation.org>, Sam Ravnborg <sam@ravnborg.org>
+To: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Jens Axboe <axboe@kernel.dk>, richard@nod.at, linux-um@lists.infradead.org, Christoph Hellwig <hch@lst.de>
 
-As a Kbuild maintainer, I always struggle to keep the core makefiles
-clean because people tend to squeeze more and more clutter code into
-the kbuild core in order to do what they want to do.
+On Wed, Nov 14, 2018 at 03:31:01PM +0000, Anton Ivanov wrote:
+> I thought about it :) And forgot as I was fighting with the origin of the 
+> crashes at the time.
+>
+> Do you want me to reissue the series or I can do an incremental?
 
-The biggest step forward in this series is to re-implement
-the build trick of CONFIG_TRIM_UNUSED_KSYMS in a cleaner way.
-scripts/Kbuild.include now looks nice again.
-Also, in my rough estimation, building with CONFIG_TRIM_UNUSED_KSYMS
-became 40-50 % faster.
-
-Besides those, nice cleanups are here and there.
-
-Masahiro Yamada (9):
-  kbuild: let fixdep directly write to .*.cmd files
-  kbuild: remove redundant 'set -e' from filechk_* defines
-  kbuild: remove redundant 'set -e' from sub_cmd_record_mcount
-  kbuild: refactor modversions build rules
-  kbuild: simplify dependency generation for CONFIG_TRIM_UNUSED_KSYMS
-  kbuild: change if_changed_rule for multi-line recipe
-  kbuild: remove trailing semicolon from cmd_* passed to if_changed_rule
-  kbuild: refactor if_changed and if_changed_dep
-  kbuild: remove redundant 'set -e' from cmd_* defines
-
- Makefile                     |  13 +++---
- arch/um/Makefile             |   2 +-
- include/asm-generic/export.h |  13 +++---
- include/linux/export.h       |  18 ++++----
- scripts/Kbuild.include       |  49 +++-----------------
- scripts/Makefile.build       | 105 ++++++++++++++++++-------------------------
- scripts/Makefile.lib         |   2 +-
- scripts/basic/fixdep.c       |  31 ++-----------
- scripts/gen_ksymdeps.sh      |  25 +++++++++++
- scripts/package/Makefile     |   1 -
- 10 files changed, 106 insertions(+), 153 deletions(-)
- create mode 100755 scripts/gen_ksymdeps.sh
-
--- 
-2.7.4
-
+Based on the other comments I had a resend might be worthwhile.
 
 _______________________________________________
 linux-um mailing list
