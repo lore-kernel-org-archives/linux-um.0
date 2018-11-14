@@ -2,14 +2,12 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab6.miniserver.com ([5.153.251.140]
  helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gMqG5-0003E9-AN
+ id 1gMqG5-0003E7-6Z
  for linux-um@lists.infradead.org; Wed, 14 Nov 2018 08:10:46 +0000
 From: anton.ivanov@cambridgegreys.com
-Subject: [PATCH 3/4] um: Remove unsafe printks from the io thread
-Date: Wed, 14 Nov 2018 08:10:16 +0000
-Message-Id: <20181114081017.10508-3-anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20181114081017.10508-1-anton.ivanov@cambridgegreys.com>
-References: <20181114081017.10508-1-anton.ivanov@cambridgegreys.com>
+Subject: [PATCH 1/4] um: Switch to block-mq constants in the UML UBD driver
+Date: Wed, 14 Nov 2018 08:10:14 +0000
+Message-Id: <20181114081017.10508-1-anton.ivanov@cambridgegreys.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -28,119 +26,176 @@ Cc: axboe@kernel.dk, richard@nod.at, hch@lst.de, Anton Ivanov <anton.ivanov@camb
 
 From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Printk out of the io thread has been proven to be unsafe. This
-is not surprising as the thread is part of the UML hypervisor
-code. It is not supposed to invoke any kernel code/resources.
-
-It is necesssary to pass the error to the block IO layer and let it
-process it and print any relevant messages.
+Switch to block mq-constants for both commands and error codes.
 
 Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 ---
- arch/um/drivers/ubd_kern.c | 42 +++++++++++++++++-------------------------
- 1 file changed, 17 insertions(+), 25 deletions(-)
+ arch/um/drivers/ubd_kern.c | 51 ++++++++++++++++++++++++++++------------------
+ 1 file changed, 31 insertions(+), 20 deletions(-)
 
 diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 0f02373ef632..c08d162f5dc9 100644
+index 28c40624bcb6..331837f1f632 100644
 --- a/arch/um/drivers/ubd_kern.c
 +++ b/arch/um/drivers/ubd_kern.c
-@@ -1,4 +1,5 @@
- /*
-+ * Copyright (C) 2018 Cambridge Greys Ltd
-  * Copyright (C) 2015-2016 Anton Ivanov (aivanov@brocade.com)
-  * Copyright (C) 2000 Jeff Dike (jdike@karaya.com)
-  * Licensed under the GPL
-@@ -1438,6 +1439,19 @@ static int map_error(int error_code)
- 	return BLK_STS_IOERR;
+@@ -43,11 +43,12 @@
+ #include <os.h>
+ #include "cow.h"
+ 
+-enum ubd_req { UBD_READ, UBD_WRITE, UBD_FLUSH };
++#define UBD_SECTOR_SIZE (1 << 9)
++/* Max request size is determined by sector mask - 32K */
++#define UBD_MAX_REQUEST (8 * sizeof(long))
+ 
+ struct io_thread_req {
+ 	struct request *req;
+-	enum ubd_req op;
+ 	int fds[2];
+ 	unsigned long offsets[2];
+ 	unsigned long long offset;
+@@ -511,15 +512,13 @@ static void ubd_handler(void)
+ 		}
+ 		for (count = 0; count < n/sizeof(struct io_thread_req *); count++) {
+ 			struct io_thread_req *io_req = (*irq_req_buffer)[count];
+-			int err = io_req->error ? BLK_STS_IOERR : BLK_STS_OK;
+ 
+-			if (!blk_update_request(io_req->req, err, io_req->length))
+-				__blk_mq_end_request(io_req->req, err);
++			if (!blk_update_request(io_req->req, io_req->error, io_req->length))
++				__blk_mq_end_request(io_req->req, io_req->error);
+ 
+ 			kfree(io_req);
+ 		}
+ 	}
+-
+ 	reactivate_fd(thread_fd, UBD_IRQ);
  }
  
-+/*
-+ * Everything from here onwards *IS NOT PART OF THE KERNEL*
-+ *
-+ * The following functions are part of UML hypervisor code.
-+ * All functions from here onwards are executed as a helper
-+ * thread and are not allowed to execute any kernel functions.
-+ *
-+ * Any communication must occur strictly via shared memory and IPC.
-+ *
-+ * Do not add printks, locks, kernel memory operations, etc - it
-+ * will result in unpredictable behaviour and/or crashes.
-+ */
+@@ -830,6 +829,7 @@ static int ubd_open_dev(struct ubd *ubd_dev)
+ 		if(err < 0) goto error;
+ 		ubd_dev->cow.fd = err;
+ 	}
++	blk_queue_flag_set(QUEUE_FLAG_NONROT, ubd_dev->queue);
+ 	return 0;
+  error:
+ 	os_close_file(ubd_dev->fd);
+@@ -882,7 +882,7 @@ static int ubd_disk_register(int major, u64 size, int unit,
+ 	return 0;
+ }
+ 
+-#define ROUND_BLOCK(n) ((n + ((1 << 9) - 1)) & (-1 << 9))
++#define ROUND_BLOCK(n) ((n + (UBD_SECTOR_SIZE - 1)) & (-UBD_SECTOR_SIZE))
+ 
+ static const struct blk_mq_ops ubd_mq_ops = {
+ 	.queue_rq = ubd_queue_rq,
+@@ -1277,7 +1277,7 @@ static void cowify_req(struct io_thread_req *req, unsigned long *bitmap,
+ 	if(req->length > (sizeof(req->sector_mask) * 8) << 9)
+ 		panic("Operation too long");
+ 
+-	if(req->op == UBD_READ) {
++	if (req_op(req->req) == REQ_OP_READ) {
+ 		for(i = 0; i < req->length >> 9; i++){
+ 			if(ubd_test_bit(sector + i, (unsigned char *) bitmap))
+ 				ubd_set_bit(i, (unsigned char *)
+@@ -1307,15 +1307,12 @@ static int ubd_queue_one_vec(struct blk_mq_hw_ctx *hctx, struct request *req,
+ 		io_req->fds[0] = dev->fd;
+ 	io_req->error = 0;
+ 
+-	if (req_op(req) == REQ_OP_FLUSH) {
+-		io_req->op = UBD_FLUSH;
+-	} else {
++	if (req_op(req) != REQ_OP_FLUSH) {
+ 		io_req->fds[1] = dev->fd;
+ 		io_req->cow_offset = -1;
+ 		io_req->offset = off;
+ 		io_req->length = bvec->bv_len;
+ 		io_req->sector_mask = 0;
+-		io_req->op = rq_data_dir(req) == READ ? UBD_READ : UBD_WRITE;
+ 		io_req->offsets[0] = 0;
+ 		io_req->offsets[1] = dev->cow.data_offset;
+ 		io_req->buffer = page_address(bvec->bv_page) + bvec->bv_offset;
+@@ -1413,22 +1410,36 @@ static int ubd_ioctl(struct block_device *bdev, fmode_t mode,
+ 	return -EINVAL;
+ }
+ 
++static int map_error(int error_code)
++{
++	switch (error_code) {
++	case 0:
++		return BLK_STS_OK;
++	case ENOSYS:
++	case EOPNOTSUPP:
++		return BLK_STS_NOTSUPP;
++	case ENOSPC:
++		return BLK_STS_NOSPC;
++	}
++	return BLK_STS_IOERR;
++}
 +
  static int update_bitmap(struct io_thread_req *req)
  {
  	int n;
-@@ -1447,11 +1461,8 @@ static int update_bitmap(struct io_thread_req *req)
+ 
+ 	if(req->cow_offset == -1)
+-		return 0;
++		return map_error(0);
  
  	n = os_pwrite_file(req->fds[1], &req->bitmap_words,
  			  sizeof(req->bitmap_words), req->cow_offset);
--	if(n != sizeof(req->bitmap_words)){
--		printk("do_io - bitmap update failed, err = %d fd = %d\n", -n,
--		       req->fds[1]);
-+	if(n != sizeof(req->bitmap_words))
- 		return map_error(-n);
--	}
- 
- 	return map_error(0);
- }
-@@ -1465,12 +1476,7 @@ static void do_io(struct io_thread_req *req)
- 
- 	if (req_op(req->req) == REQ_OP_FLUSH) {
- 		/* fds[0] is always either the rw image or our cow file */
--		n = os_sync_file(req->fds[0]);
--		if (n != 0) {
--			printk("do_io - sync failed err = %d "
--			       "fd = %d\n", -n, req->fds[0]);
--			req->error = map_error(-n);
--		}
-+		req->error = map_error(-os_sync_file(req->fds[0]));
- 		return;
+ 	if(n != sizeof(req->bitmap_words)){
+ 		printk("do_io - bitmap update failed, err = %d fd = %d\n", -n,
+ 		       req->fds[1]);
+-		return 1;
++		return map_error(-n);
  	}
  
-@@ -1495,9 +1501,7 @@ static void do_io(struct io_thread_req *req)
+-	return 0;
++	return map_error(0);
+ }
+ 
+ static void do_io(struct io_thread_req *req)
+@@ -1438,13 +1449,13 @@ static void do_io(struct io_thread_req *req)
+ 	int n, nsectors, start, end, bit;
+ 	__u64 off;
+ 
+-	if (req->op == UBD_FLUSH) {
++	if (req_op(req->req) == REQ_OP_FLUSH) {
+ 		/* fds[0] is always either the rw image or our cow file */
+ 		n = os_sync_file(req->fds[0]);
+ 		if (n != 0) {
+ 			printk("do_io - sync failed err = %d "
+ 			       "fd = %d\n", -n, req->fds[0]);
+-			req->error = 1;
++			req->error = map_error(-n);
+ 		}
+ 		return;
+ 	}
+@@ -1464,7 +1475,7 @@ static void do_io(struct io_thread_req *req)
+ 		len = (end - start) * req->sectorsize;
+ 		buf = &req->buffer[start * req->sectorsize];
+ 
+-		if(req->op == UBD_READ){
++		if (req_op(req->req) == REQ_OP_READ) {
+ 			n = 0;
+ 			do {
  				buf = &buf[n];
- 				len -= n;
- 				n = os_pread_file(req->fds[bit], buf, len, off);
--				if (n < 0) {
--					printk("do_io - read failed, err = %d "
--					       "fd = %d\n", -n, req->fds[bit]);
-+				if(n < 0){
- 					req->error = map_error(-n);
+@@ -1473,7 +1484,7 @@ static void do_io(struct io_thread_req *req)
+ 				if (n < 0) {
+ 					printk("do_io - read failed, err = %d "
+ 					       "fd = %d\n", -n, req->fds[bit]);
+-					req->error = 1;
++					req->error = map_error(-n);
  					return;
  				}
-@@ -1506,8 +1510,6 @@ static void do_io(struct io_thread_req *req)
- 		} else {
- 			n = os_pwrite_file(req->fds[bit], buf, len, off);
+ 			} while((n < len) && (n != 0));
+@@ -1483,7 +1494,7 @@ static void do_io(struct io_thread_req *req)
  			if(n != len){
--				printk("do_io - write failed err = %d "
--				       "fd = %d\n", -n, req->fds[bit]);
- 				req->error = map_error(-n);
+ 				printk("do_io - write failed err = %d "
+ 				       "fd = %d\n", -n, req->fds[bit]);
+-				req->error = 1;
++				req->error = map_error(-n);
  				return;
  			}
-@@ -1545,11 +1547,6 @@ int io_thread(void *arg)
- 			if (n == -EAGAIN) {
- 				ubd_read_poll(-1);
- 				continue;
--			} else {
--				printk("io_thread - read failed, fd = %d, "
--				       "err = %d,"
--				       "reminder = %d\n",
--				       kernel_fd, -n, io_remainder_size);
- 			}
  		}
- 
-@@ -1564,11 +1561,6 @@ int io_thread(void *arg)
- 			res = os_write_file(kernel_fd, ((char *) io_req_buffer) + written, n);
- 			if (res >= 0) {
- 				written += res;
--			} else {
--				if (res != -EAGAIN) {
--					printk("io_thread - write failed, fd = %d, "
--					       "err = %d\n", kernel_fd, -n);
--				}
- 			}
- 			if (written < n) {
- 				ubd_write_poll(-1);
 -- 
 2.11.0
 
