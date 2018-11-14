@@ -1,41 +1,152 @@
-MIME-Version: 1.0
-Date: Wed, 14 Nov 2018 10:35:04 +0100
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from ivanoab6.miniserver.com ([5.153.251.140]
+ helo=www.kot-begemot.co.uk)
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gMqG5-0003E9-AN
+ for linux-um@lists.infradead.org; Wed, 14 Nov 2018 08:10:46 +0000
+From: anton.ivanov@cambridgegreys.com
+Subject: [PATCH 3/4] um: Remove unsafe printks from the io thread
+Date: Wed, 14 Nov 2018 08:10:16 +0000
+Message-Id: <20181114081017.10508-3-anton.ivanov@cambridgegreys.com>
+In-Reply-To: <20181114081017.10508-1-anton.ivanov@cambridgegreys.com>
 References: <20181114081017.10508-1-anton.ivanov@cambridgegreys.com>
-	<20181114081017.10508-3-anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20181114081017.10508-3-anton.ivanov@cambridgegreys.com>
-Message-ID: <CAMuHMdVOD2SpJeq-Choegn4+ODODo+o25fRR3BU60agF27Nf9A@mail.gmail.com>
-Subject: Re: [PATCH 3/4] um: Remove unsafe printks from the io thread
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-To: anton.ivanov@cambridgegreys.com
-Cc: linux-um@lists.infradead.org, Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>, Christoph Hellwig <hch@lst.de>
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
+Cc: axboe@kernel.dk, richard@nod.at, hch@lst.de, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Hi Anton,
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-On Wed, Nov 14, 2018 at 9:11 AM <anton.ivanov@cambridgegreys.com> wrote:
-> From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
->
-> Printk out of the io thread has been proven to be unsafe. This
-> is not surprising as the thread is part of the UML hypervisor
-> code. It is not supposed to invoke any kernel code/resources.
+Printk out of the io thread has been proven to be unsafe. This
+is not surprising as the thread is part of the UML hypervisor
+code. It is not supposed to invoke any kernel code/resources.
 
-Thanks for your patch!
+It is necesssary to pass the error to the block IO layer and let it
+process it and print any relevant messages.
 
-Perhaps this can be made safer, so people don't shoot themselves in the foot?
-I was thinking about e.g. redefining printk() in kern.h to something
-that doesn't
-exist, to cause a link error, and preincluding kern.h in all *_kern.c files,
-like is currently done with user.h in arch/um/scripts/Makefile.rules.
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+---
+ arch/um/drivers/ubd_kern.c | 42 +++++++++++++++++-------------------------
+ 1 file changed, 17 insertions(+), 25 deletions(-)
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index 0f02373ef632..c08d162f5dc9 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -1,4 +1,5 @@
+ /*
++ * Copyright (C) 2018 Cambridge Greys Ltd
+  * Copyright (C) 2015-2016 Anton Ivanov (aivanov@brocade.com)
+  * Copyright (C) 2000 Jeff Dike (jdike@karaya.com)
+  * Licensed under the GPL
+@@ -1438,6 +1439,19 @@ static int map_error(int error_code)
+ 	return BLK_STS_IOERR;
+ }
+ 
++/*
++ * Everything from here onwards *IS NOT PART OF THE KERNEL*
++ *
++ * The following functions are part of UML hypervisor code.
++ * All functions from here onwards are executed as a helper
++ * thread and are not allowed to execute any kernel functions.
++ *
++ * Any communication must occur strictly via shared memory and IPC.
++ *
++ * Do not add printks, locks, kernel memory operations, etc - it
++ * will result in unpredictable behaviour and/or crashes.
++ */
++
+ static int update_bitmap(struct io_thread_req *req)
+ {
+ 	int n;
+@@ -1447,11 +1461,8 @@ static int update_bitmap(struct io_thread_req *req)
+ 
+ 	n = os_pwrite_file(req->fds[1], &req->bitmap_words,
+ 			  sizeof(req->bitmap_words), req->cow_offset);
+-	if(n != sizeof(req->bitmap_words)){
+-		printk("do_io - bitmap update failed, err = %d fd = %d\n", -n,
+-		       req->fds[1]);
++	if(n != sizeof(req->bitmap_words))
+ 		return map_error(-n);
+-	}
+ 
+ 	return map_error(0);
+ }
+@@ -1465,12 +1476,7 @@ static void do_io(struct io_thread_req *req)
+ 
+ 	if (req_op(req->req) == REQ_OP_FLUSH) {
+ 		/* fds[0] is always either the rw image or our cow file */
+-		n = os_sync_file(req->fds[0]);
+-		if (n != 0) {
+-			printk("do_io - sync failed err = %d "
+-			       "fd = %d\n", -n, req->fds[0]);
+-			req->error = map_error(-n);
+-		}
++		req->error = map_error(-os_sync_file(req->fds[0]));
+ 		return;
+ 	}
+ 
+@@ -1495,9 +1501,7 @@ static void do_io(struct io_thread_req *req)
+ 				buf = &buf[n];
+ 				len -= n;
+ 				n = os_pread_file(req->fds[bit], buf, len, off);
+-				if (n < 0) {
+-					printk("do_io - read failed, err = %d "
+-					       "fd = %d\n", -n, req->fds[bit]);
++				if(n < 0){
+ 					req->error = map_error(-n);
+ 					return;
+ 				}
+@@ -1506,8 +1510,6 @@ static void do_io(struct io_thread_req *req)
+ 		} else {
+ 			n = os_pwrite_file(req->fds[bit], buf, len, off);
+ 			if(n != len){
+-				printk("do_io - write failed err = %d "
+-				       "fd = %d\n", -n, req->fds[bit]);
+ 				req->error = map_error(-n);
+ 				return;
+ 			}
+@@ -1545,11 +1547,6 @@ int io_thread(void *arg)
+ 			if (n == -EAGAIN) {
+ 				ubd_read_poll(-1);
+ 				continue;
+-			} else {
+-				printk("io_thread - read failed, fd = %d, "
+-				       "err = %d,"
+-				       "reminder = %d\n",
+-				       kernel_fd, -n, io_remainder_size);
+ 			}
+ 		}
+ 
+@@ -1564,11 +1561,6 @@ int io_thread(void *arg)
+ 			res = os_write_file(kernel_fd, ((char *) io_req_buffer) + written, n);
+ 			if (res >= 0) {
+ 				written += res;
+-			} else {
+-				if (res != -EAGAIN) {
+-					printk("io_thread - write failed, fd = %d, "
+-					       "err = %d\n", kernel_fd, -n);
+-				}
+ 			}
+ 			if (written < n) {
+ 				ubd_write_poll(-1);
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.11.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
