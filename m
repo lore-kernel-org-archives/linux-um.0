@@ -2,14 +2,17 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab6.miniserver.com ([5.153.251.140]
  helo=www.kot-begemot.co.uk)
  by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gN06Y-0005Wn-Aa
- for linux-um@lists.infradead.org; Wed, 14 Nov 2018 18:41:35 +0000
-From: anton.ivanov@cambridgegreys.com
-Subject: [PATCH v2 4/4] um: Add support for DISCARD in the UBD Driver
-Date: Wed, 14 Nov 2018 18:41:09 +0000
-Message-Id: <20181114184109.19600-4-anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20181114184109.19600-1-anton.ivanov@cambridgegreys.com>
-References: <20181114184109.19600-1-anton.ivanov@cambridgegreys.com>
+ id 1gMzwM-0005II-5V
+ for linux-um@lists.infradead.org; Wed, 14 Nov 2018 18:31:04 +0000
+Subject: Re: [PATCH 4/4] um: Add support for DISCARD in the UBD Driver
+References: <20181114170943.12065-1-anton.ivanov@cambridgegreys.com>
+ <20181114170943.12065-4-anton.ivanov@cambridgegreys.com>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <d3530111-5c2a-8284-ac7d-bd86ec5c62ae@cambridgegreys.com>
+Date: Wed, 14 Nov 2018 18:30:48 +0000
+MIME-Version: 1.0
+In-Reply-To: <20181114170943.12065-4-anton.ivanov@cambridgegreys.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,240 +21,153 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: axboe@kernel.dk, richard@nod.at, hch@lst.de, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: axboe@kernel.dk, richard@nod.at, hch@lst.de
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-
-Support for DISCARD and WRITE_ZEROES in the ubd driver using
-fallocate.
-
-DISCARD is enabled by default and can be disabled using a new
-UBD command line flag.
-
-If the underlying fs on which the UBD image is stored does not
-support DISCARD the support for both DISCARD and WRITE_ZEROES
-is turned off.
-
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
----
- arch/um/drivers/ubd_kern.c  | 65 +++++++++++++++++++++++++++++++++++++--------
- arch/um/include/shared/os.h |  1 +
- arch/um/os-Linux/file.c     | 10 +++++++
- 3 files changed, 65 insertions(+), 11 deletions(-)
-
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 1672e3c49bfb..7aaa473909be 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -154,6 +154,7 @@ struct ubd {
- 	struct openflags openflags;
- 	unsigned shared:1;
- 	unsigned no_cow:1;
-+	unsigned no_trim:1;
- 	struct cow cow;
- 	struct platform_device pdev;
- 	struct request_queue *queue;
-@@ -177,6 +178,7 @@ struct ubd {
- 	.boot_openflags =	OPEN_FLAGS, \
- 	.openflags =		OPEN_FLAGS, \
- 	.no_cow =               0, \
-+	.no_trim =		0, \
- 	.shared =		0, \
- 	.cow =			DEFAULT_COW, \
- 	.lock =			__SPIN_LOCK_UNLOCKED(ubd_devs.lock), \
-@@ -323,7 +325,7 @@ static int ubd_setup_common(char *str, int *index_out, char **error_out)
- 		*index_out = n;
- 
- 	err = -EINVAL;
--	for (i = 0; i < sizeof("rscd="); i++) {
-+	for (i = 0; i < sizeof("rscdt="); i++) {
- 		switch (*str) {
- 		case 'r':
- 			flags.w = 0;
-@@ -337,12 +339,15 @@ static int ubd_setup_common(char *str, int *index_out, char **error_out)
- 		case 'c':
- 			ubd_dev->shared = 1;
- 			break;
-+		case 't':
-+			ubd_dev->no_trim = 1;
-+			break;
- 		case '=':
- 			str++;
- 			goto break_loop;
- 		default:
- 			*error_out = "Expected '=' or flag letter "
--				"(r, s, c, or d)";
-+				"(r, s, c, t or d)";
- 			goto out;
- 		}
- 		str++;
-@@ -415,6 +420,7 @@ __uml_help(ubd_setup,
- "    'c' will cause the device to be treated as being shared between multiple\n"
- "    UMLs and file locking will be turned off - this is appropriate for a\n"
- "    cluster filesystem and inappropriate at almost all other times.\n\n"
-+"    't' will disable trim/discard support on the device (enabled by default).\n\n"
- );
- 
- static int udb_setup(char *str)
-@@ -513,9 +519,17 @@ static void ubd_handler(void)
- 		for (count = 0; count < n/sizeof(struct io_thread_req *); count++) {
- 			struct io_thread_req *io_req = (*irq_req_buffer)[count];
- 
--			if (!blk_update_request(io_req->req, io_req->error, io_req->length))
--				__blk_mq_end_request(io_req->req, io_req->error);
--
-+			if ((io_req->error == BLK_STS_NOTSUPP) && (req_op(io_req->req) == REQ_OP_DISCARD)) {
-+				blk_queue_max_discard_sectors(io_req->req->q, 0);
-+				blk_queue_max_write_zeroes_sectors(io_req->req->q, 0);
-+				blk_queue_flag_clear(QUEUE_FLAG_DISCARD, io_req->req->q);
-+			}
-+			if ((io_req->error) || (io_req->buffer == NULL))
-+				blk_mq_end_request(io_req->req, io_req->error);
-+			else {
-+				if (!blk_update_request(io_req->req, io_req->error, io_req->length))
-+					__blk_mq_end_request(io_req->req, io_req->error);
-+			}
- 			kfree(io_req);
- 		}
- 	}
-@@ -829,6 +843,13 @@ static int ubd_open_dev(struct ubd *ubd_dev)
- 		if(err < 0) goto error;
- 		ubd_dev->cow.fd = err;
- 	}
-+	if (ubd_dev->no_trim == 0) {
-+		ubd_dev->queue->limits.discard_granularity = SECTOR_SIZE;
-+		ubd_dev->queue->limits.discard_alignment = SECTOR_SIZE;
-+		blk_queue_max_discard_sectors(ubd_dev->queue, UBD_MAX_REQUEST);
-+		blk_queue_max_write_zeroes_sectors(ubd_dev->queue, UBD_MAX_REQUEST);
-+		blk_queue_flag_set(QUEUE_FLAG_DISCARD, ubd_dev->queue);
-+	}
- 	blk_queue_flag_set(QUEUE_FLAG_NONROT, ubd_dev->queue);
- 	return 0;
-  error:
-@@ -1372,6 +1393,10 @@ static blk_status_t ubd_queue_rq(struct blk_mq_hw_ctx *hctx,
- 	case REQ_OP_WRITE:
- 		ret = queue_rw_req(hctx, req);
- 		break;
-+	case REQ_OP_DISCARD:
-+	case REQ_OP_WRITE_ZEROES:
-+		ret = ubd_queue_one_vec(hctx, req, (u64)blk_rq_pos(req) << 9, NULL);
-+		break;
- 	default:
- 		WARN_ON_ONCE(1);
- 		res = BLK_STS_NOTSUPP;
-@@ -1463,7 +1488,7 @@ static int update_bitmap(struct io_thread_req *req)
- 
- 	n = os_pwrite_file(req->fds[1], &req->bitmap_words,
- 			  sizeof(req->bitmap_words), req->cow_offset);
--	if(n != sizeof(req->bitmap_words))
-+	if (n != sizeof(req->bitmap_words))
- 		return map_error(-n);
- 
- 	return map_error(0);
-@@ -1471,11 +1496,13 @@ static int update_bitmap(struct io_thread_req *req)
- 
- static void do_io(struct io_thread_req *req)
- {
--	char *buf;
-+	char *buf = NULL;
- 	unsigned long len;
- 	int n, nsectors, start, end, bit;
- 	__u64 off;
- 
-+	/* FLUSH is really a special case, we cannot "case" it with others */
-+
- 	if (req_op(req->req) == REQ_OP_FLUSH) {
- 		/* fds[0] is always either the rw image or our cow file */
- 		req->error = map_error(-os_sync_file(req->fds[0]));
-@@ -1495,26 +1522,42 @@ static void do_io(struct io_thread_req *req)
- 		off = req->offset + req->offsets[bit] +
- 			start * req->sectorsize;
- 		len = (end - start) * req->sectorsize;
--		buf = &req->buffer[start * req->sectorsize];
-+		if (req->buffer != NULL)
-+			buf = &req->buffer[start * req->sectorsize];
- 
--		if (req_op(req->req) == REQ_OP_READ) {
-+		switch (req_op(req->req)) {
-+		case REQ_OP_READ:
- 			n = 0;
- 			do {
- 				buf = &buf[n];
- 				len -= n;
- 				n = os_pread_file(req->fds[bit], buf, len, off);
--				if(n < 0){
-+				if (n < 0) {
- 					req->error = map_error(-n);
- 					return;
- 				}
- 			} while((n < len) && (n != 0));
- 			if (n < len) memset(&buf[n], 0, len - n);
--		} else {
-+			break;
-+		case REQ_OP_WRITE:
- 			n = os_pwrite_file(req->fds[bit], buf, len, off);
- 			if(n != len){
- 				req->error = map_error(-n);
- 				return;
- 			}
-+			break;
-+		case REQ_OP_DISCARD:
-+		case REQ_OP_WRITE_ZEROES:
-+			n = os_falloc_punch(req->fds[bit], off, len);
-+			if (n) {
-+				req->error = map_error(-n);
-+				return;
-+			}
-+			break;
-+		default:
-+			WARN_ON_ONCE(1);
-+			req->error = BLK_STS_NOTSUPP;
-+			return;
- 		}
- 
- 		start = end;
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index 048ae37eb5aa..ebf23012a59b 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -175,6 +175,7 @@ extern int os_fchange_dir(int fd);
- extern unsigned os_major(unsigned long long dev);
- extern unsigned os_minor(unsigned long long dev);
- extern unsigned long long os_makedev(unsigned major, unsigned minor);
-+extern int os_falloc_punch(int fd, unsigned long long offset, int count);
- 
- /* start_up.c */
- extern void os_early_checks(void);
-diff --git a/arch/um/os-Linux/file.c b/arch/um/os-Linux/file.c
-index c0197097c86e..f25b110d4e70 100644
---- a/arch/um/os-Linux/file.c
-+++ b/arch/um/os-Linux/file.c
-@@ -610,3 +610,13 @@ unsigned long long os_makedev(unsigned major, unsigned minor)
- {
- 	return makedev(major, minor);
- }
-+
-+int os_falloc_punch(int fd, unsigned long long offset, int len)
-+{
-+	int n = fallocate(fd, FALLOC_FL_PUNCH_HOLE|FALLOC_FL_KEEP_SIZE, offset, len);
-+
-+	if (n < 0)
-+		return -errno;
-+	return n;
-+}
-+
--- 
-2.11.0
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+Ck9uIDExLzE0LzE4IDU6MDkgUE0sIGFudG9uLml2YW5vdkBjYW1icmlkZ2VncmV5cy5jb20gd3Jv
+dGU6Cj4gRnJvbTogQW50b24gSXZhbm92IDxhbnRvbi5pdmFub3ZAY2FtYnJpZGdlZ3JleXMuY29t
+Pgo+Cj4gU3VwcG9ydCBmb3IgRElTQ0FSRCBhbmQgV1JJVEVfWkVST0VTIGluIHRoZSB1YmQgZHJp
+dmVyIHVzaW5nCj4gZmFsbG9jYXRlLgo+Cj4gRElTQ0FSRCBpcyBlbmFibGVkIGJ5IGRlZmF1bHQg
+YW5kIGNhbiBiZSBkaXNhYmxlZCB1c2luZyBhIG5ldwo+IFVCRCBjb21tYW5kIGxpbmUgZmxhZy4K
+Pgo+IElmIHRoZSB1bmRlcmx5aW5nIGZzIG9uIHdoaWNoIHRoZSBVQkQgaW1hZ2UgaXMgc3RvcmVk
+IGRvZXMgbm90Cj4gc3VwcG9ydCBESVNDQVJEIHRoZSBzdXBwb3J0IGZvciBib3RoIERJU0NBUkQg
+YW5kIFdSSVRFX1pFUk9FUwo+IGlzIHR1cm5lZCBvZmYuCj4KPiBTaWduZWQtb2ZmLWJ5OiBBbnRv
+biBJdmFub3YgPGFudG9uLml2YW5vdkBjYW1icmlkZ2VncmV5cy5jb20+Cj4gLS0tCj4gICBhcmNo
+L3VtL2RyaXZlcnMvdWJkX2tlcm4uYyAgfCA2NiArKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrLS0tLS0tLS0KPiAgIGFyY2gvdW0vaW5jbHVkZS9zaGFyZWQvb3MuaCB8ICAxICsK
+PiAgIGFyY2gvdW0vb3MtTGludXgvZmlsZS5jICAgICB8IDEwICsrKysrKysKPiAgIDMgZmlsZXMg
+Y2hhbmdlZCwgNjYgaW5zZXJ0aW9ucygrKSwgMTEgZGVsZXRpb25zKC0pCj4KPiBkaWZmIC0tZ2l0
+IGEvYXJjaC91bS9kcml2ZXJzL3ViZF9rZXJuLmMgYi9hcmNoL3VtL2RyaXZlcnMvdWJkX2tlcm4u
+Ywo+IGluZGV4IDE2NzJlM2M0OWJmYi4uZTg1YzdmN2ZkYTZmIDEwMDY0NAo+IC0tLSBhL2FyY2gv
+dW0vZHJpdmVycy91YmRfa2Vybi5jCj4gKysrIGIvYXJjaC91bS9kcml2ZXJzL3ViZF9rZXJuLmMK
+PiBAQCAtMTU0LDYgKzE1NCw3IEBAIHN0cnVjdCB1YmQgewo+ICAgCXN0cnVjdCBvcGVuZmxhZ3Mg
+b3BlbmZsYWdzOwo+ICAgCXVuc2lnbmVkIHNoYXJlZDoxOwo+ICAgCXVuc2lnbmVkIG5vX2Nvdzox
+Owo+ICsJdW5zaWduZWQgbm9fdHJpbToxOwo+ICAgCXN0cnVjdCBjb3cgY293Owo+ICAgCXN0cnVj
+dCBwbGF0Zm9ybV9kZXZpY2UgcGRldjsKPiAgIAlzdHJ1Y3QgcmVxdWVzdF9xdWV1ZSAqcXVldWU7
+Cj4gQEAgLTE3Nyw2ICsxNzgsNyBAQCBzdHJ1Y3QgdWJkIHsKPiAgIAkuYm9vdF9vcGVuZmxhZ3Mg
+PQlPUEVOX0ZMQUdTLCBcCj4gICAJLm9wZW5mbGFncyA9CQlPUEVOX0ZMQUdTLCBcCj4gICAJLm5v
+X2NvdyA9ICAgICAgICAgICAgICAgMCwgXAo+ICsJLm5vX3RyaW0gPQkJMCwgXAo+ICAgCS5zaGFy
+ZWQgPQkJMCwgXAo+ICAgCS5jb3cgPQkJCURFRkFVTFRfQ09XLCBcCj4gICAJLmxvY2sgPQkJCV9f
+U1BJTl9MT0NLX1VOTE9DS0VEKHViZF9kZXZzLmxvY2spLCBcCj4gQEAgLTMyMyw3ICszMjUsNyBA
+QCBzdGF0aWMgaW50IHViZF9zZXR1cF9jb21tb24oY2hhciAqc3RyLCBpbnQgKmluZGV4X291dCwg
+Y2hhciAqKmVycm9yX291dCkKPiAgIAkJKmluZGV4X291dCA9IG47Cj4gICAKPiAgIAllcnIgPSAt
+RUlOVkFMOwo+IC0JZm9yIChpID0gMDsgaSA8IHNpemVvZigicnNjZD0iKTsgaSsrKSB7Cj4gKwlm
+b3IgKGkgPSAwOyBpIDwgc2l6ZW9mKCJyc2NkdD0iKTsgaSsrKSB7Cj4gICAJCXN3aXRjaCAoKnN0
+cikgewo+ICAgCQljYXNlICdyJzoKPiAgIAkJCWZsYWdzLncgPSAwOwo+IEBAIC0zMzcsMTIgKzMz
+OSwxNSBAQCBzdGF0aWMgaW50IHViZF9zZXR1cF9jb21tb24oY2hhciAqc3RyLCBpbnQgKmluZGV4
+X291dCwgY2hhciAqKmVycm9yX291dCkKPiAgIAkJY2FzZSAnYyc6Cj4gICAJCQl1YmRfZGV2LT5z
+aGFyZWQgPSAxOwo+ICAgCQkJYnJlYWs7Cj4gKwkJY2FzZSAndCc6Cj4gKwkJCXViZF9kZXYtPm5v
+X3RyaW0gPSAxOwo+ICsJCQlicmVhazsKPiAgIAkJY2FzZSAnPSc6Cj4gICAJCQlzdHIrKzsKPiAg
+IAkJCWdvdG8gYnJlYWtfbG9vcDsKPiAgIAkJZGVmYXVsdDoKPiAgIAkJCSplcnJvcl9vdXQgPSAi
+RXhwZWN0ZWQgJz0nIG9yIGZsYWcgbGV0dGVyICIKPiAtCQkJCSIociwgcywgYywgb3IgZCkiOwo+
+ICsJCQkJIihyLCBzLCBjLCB0IG9yIGQpIjsKPiAgIAkJCWdvdG8gb3V0Owo+ICAgCQl9Cj4gICAJ
+CXN0cisrOwo+IEBAIC00MTUsNiArNDIwLDcgQEAgX191bWxfaGVscCh1YmRfc2V0dXAsCj4gICAi
+ICAgICdjJyB3aWxsIGNhdXNlIHRoZSBkZXZpY2UgdG8gYmUgdHJlYXRlZCBhcyBiZWluZyBzaGFy
+ZWQgYmV0d2VlbiBtdWx0aXBsZVxuIgo+ICAgIiAgICBVTUxzIGFuZCBmaWxlIGxvY2tpbmcgd2ls
+bCBiZSB0dXJuZWQgb2ZmIC0gdGhpcyBpcyBhcHByb3ByaWF0ZSBmb3IgYVxuIgo+ICAgIiAgICBj
+bHVzdGVyIGZpbGVzeXN0ZW0gYW5kIGluYXBwcm9wcmlhdGUgYXQgYWxtb3N0IGFsbCBvdGhlciB0
+aW1lcy5cblxuIgo+ICsiICAgICd0JyB3aWxsIGRpc2FibGUgdHJpbS9kaXNjYXJkIHN1cHBvcnQg
+b24gdGhlIGRldmljZSAoZW5hYmxlZCBieSBkZWZhdWx0KS5cblxuIgo+ICAgKTsKPiAgIAo+ICAg
+c3RhdGljIGludCB1ZGJfc2V0dXAoY2hhciAqc3RyKQo+IEBAIC01MTMsOSArNTE5LDE3IEBAIHN0
+YXRpYyB2b2lkIHViZF9oYW5kbGVyKHZvaWQpCj4gICAJCWZvciAoY291bnQgPSAwOyBjb3VudCA8
+IG4vc2l6ZW9mKHN0cnVjdCBpb190aHJlYWRfcmVxICopOyBjb3VudCsrKSB7Cj4gICAJCQlzdHJ1
+Y3QgaW9fdGhyZWFkX3JlcSAqaW9fcmVxID0gKCppcnFfcmVxX2J1ZmZlcilbY291bnRdOwo+ICAg
+Cj4gLQkJCWlmICghYmxrX3VwZGF0ZV9yZXF1ZXN0KGlvX3JlcS0+cmVxLCBpb19yZXEtPmVycm9y
+LCBpb19yZXEtPmxlbmd0aCkpCj4gLQkJCQlfX2Jsa19tcV9lbmRfcmVxdWVzdChpb19yZXEtPnJl
+cSwgaW9fcmVxLT5lcnJvcik7Cj4gLQo+ICsJCQlpZiAoKGlvX3JlcS0+ZXJyb3IgPT0gQkxLX1NU
+U19OT1RTVVBQKSAmJiAocmVxX29wKGlvX3JlcS0+cmVxKSA9PSBSRVFfT1BfRElTQ0FSRCkpIHsK
+PiArCQkJCWJsa19xdWV1ZV9tYXhfZGlzY2FyZF9zZWN0b3JzKGlvX3JlcS0+cmVxLT5xLCAwKTsK
+PiArCQkJCWJsa19xdWV1ZV9tYXhfd3JpdGVfemVyb2VzX3NlY3RvcnMoaW9fcmVxLT5yZXEtPnEs
+IDApOwo+ICsJCQkJYmxrX3F1ZXVlX2ZsYWdfY2xlYXIoUVVFVUVfRkxBR19ESVNDQVJELCBpb19y
+ZXEtPnJlcS0+cSk7Cj4gKwkJCX0KPiArCQkJaWYgKChpb19yZXEtPmVycm9yKSB8fCAoaW9fcmVx
+LT5idWZmZXIgPT0gTlVMTCkpCj4gKwkJCQlibGtfbXFfZW5kX3JlcXVlc3QoaW9fcmVxLT5yZXEs
+IGlvX3JlcS0+ZXJyb3IpOwo+ICsJCQllbHNlIHsKPiArCQkJCWlmICghYmxrX3VwZGF0ZV9yZXF1
+ZXN0KGlvX3JlcS0+cmVxLCBpb19yZXEtPmVycm9yLCBpb19yZXEtPmxlbmd0aCkpCj4gKwkJCQkJ
+X19ibGtfbXFfZW5kX3JlcXVlc3QoaW9fcmVxLT5yZXEsIGlvX3JlcS0+ZXJyb3IpOwo+ICsJCQl9
+Cj4gICAJCQlrZnJlZShpb19yZXEpOwo+ICAgCQl9Cj4gICAJfQo+IEBAIC04MjksNiArODQzLDE0
+IEBAIHN0YXRpYyBpbnQgdWJkX29wZW5fZGV2KHN0cnVjdCB1YmQgKnViZF9kZXYpCj4gICAJCWlm
+KGVyciA8IDApIGdvdG8gZXJyb3I7Cj4gICAJCXViZF9kZXYtPmNvdy5mZCA9IGVycjsKPiAgIAl9
+Cj4gKwlpZiAodWJkX2Rldi0+bm9fdHJpbSA9PSAwKSB7Cj4gKwkJdWJkX2Rldi0+cXVldWUtPmxp
+bWl0cy5kaXNjYXJkX2dyYW51bGFyaXR5ID0gU0VDVE9SX1NJWkU7Cj4gKwkJdWJkX2Rldi0+cXVl
+dWUtPmxpbWl0cy5kaXNjYXJkX2FsaWdubWVudCA9IFNFQ1RPUl9TSVpFOwo+ICsJCWJsa19xdWV1
+ZV9tYXhfZGlzY2FyZF9zZWN0b3JzKHViZF9kZXYtPnF1ZXVlLCBVQkRfTUFYX1JFUVVFU1QpOwo+
+ICsJCXViZF9kZXYtPnF1ZXVlLT5saW1pdHMuZGlzY2FyZF9ncmFudWxhcml0eSA9IFNFQ1RPUl9T
+SVpFOwo+ICsJCXViZF9kZXYtPnF1ZXVlLT5saW1pdHMuZGlzY2FyZF9hbGlnbm1lbnQgPSBTRUNU
+T1JfU0laRTsKPiArCQlibGtfcXVldWVfZmxhZ19zZXQoUVVFVUVfRkxBR19ESVNDQVJELCB1YmRf
+ZGV2LT5xdWV1ZSk7CgoKU29ycnksIG1lc3NlZCBpdCB1cCB3aGVuIHJlYXBwbHlpbmcswqAgdGhp
+cyBzaG91bGQgaGF2ZSBzZXQgdGhlIHplcm8gCmxpbWl0cyBhcyB3ZWxsLCBub3QgcmVwZWF0IHRo
+ZSBkaXNjYXJkIG9uZXMuCgpBIHJldmlzZWQgdmVyc2lvbiB3aWxsIGJlIHJlc2VudCBzaG9ydGx5
+LgoKQQoKCgo+ICsJfQo+ICAgCWJsa19xdWV1ZV9mbGFnX3NldChRVUVVRV9GTEFHX05PTlJPVCwg
+dWJkX2Rldi0+cXVldWUpOwo+ICAgCXJldHVybiAwOwo+ICAgIGVycm9yOgo+IEBAIC0xMzcyLDYg
+KzEzOTQsMTAgQEAgc3RhdGljIGJsa19zdGF0dXNfdCB1YmRfcXVldWVfcnEoc3RydWN0IGJsa19t
+cV9od19jdHggKmhjdHgsCj4gICAJY2FzZSBSRVFfT1BfV1JJVEU6Cj4gICAJCXJldCA9IHF1ZXVl
+X3J3X3JlcShoY3R4LCByZXEpOwo+ICAgCQlicmVhazsKPiArCWNhc2UgUkVRX09QX0RJU0NBUkQ6
+Cj4gKwljYXNlIFJFUV9PUF9XUklURV9aRVJPRVM6Cj4gKwkJcmV0ID0gdWJkX3F1ZXVlX29uZV92
+ZWMoaGN0eCwgcmVxLCAodTY0KWJsa19ycV9wb3MocmVxKSA8PCA5LCBOVUxMKTsKPiArCQlicmVh
+azsKPiAgIAlkZWZhdWx0Ogo+ICAgCQlXQVJOX09OX09OQ0UoMSk7Cj4gICAJCXJlcyA9IEJMS19T
+VFNfTk9UU1VQUDsKPiBAQCAtMTQ2Myw3ICsxNDg5LDcgQEAgc3RhdGljIGludCB1cGRhdGVfYml0
+bWFwKHN0cnVjdCBpb190aHJlYWRfcmVxICpyZXEpCj4gICAKPiAgIAluID0gb3NfcHdyaXRlX2Zp
+bGUocmVxLT5mZHNbMV0sICZyZXEtPmJpdG1hcF93b3JkcywKPiAgIAkJCSAgc2l6ZW9mKHJlcS0+
+Yml0bWFwX3dvcmRzKSwgcmVxLT5jb3dfb2Zmc2V0KTsKPiAtCWlmKG4gIT0gc2l6ZW9mKHJlcS0+
+Yml0bWFwX3dvcmRzKSkKPiArCWlmIChuICE9IHNpemVvZihyZXEtPmJpdG1hcF93b3JkcykpCj4g
+ICAJCXJldHVybiBtYXBfZXJyb3IoLW4pOwo+ICAgCj4gICAJcmV0dXJuIG1hcF9lcnJvcigwKTsK
+PiBAQCAtMTQ3MSwxMSArMTQ5NywxMyBAQCBzdGF0aWMgaW50IHVwZGF0ZV9iaXRtYXAoc3RydWN0
+IGlvX3RocmVhZF9yZXEgKnJlcSkKPiAgIAo+ICAgc3RhdGljIHZvaWQgZG9faW8oc3RydWN0IGlv
+X3RocmVhZF9yZXEgKnJlcSkKPiAgIHsKPiAtCWNoYXIgKmJ1ZjsKPiArCWNoYXIgKmJ1ZiA9IE5V
+TEw7Cj4gICAJdW5zaWduZWQgbG9uZyBsZW47Cj4gICAJaW50IG4sIG5zZWN0b3JzLCBzdGFydCwg
+ZW5kLCBiaXQ7Cj4gICAJX191NjQgb2ZmOwo+ICAgCj4gKwkvKiBGTFVTSCBpcyByZWFsbHkgYSBz
+cGVjaWFsIGNhc2UsIHdlIGNhbm5vdCAiY2FzZSIgaXQgd2l0aCBvdGhlcnMgKi8KPiArCj4gICAJ
+aWYgKHJlcV9vcChyZXEtPnJlcSkgPT0gUkVRX09QX0ZMVVNIKSB7Cj4gICAJCS8qIGZkc1swXSBp
+cyBhbHdheXMgZWl0aGVyIHRoZSBydyBpbWFnZSBvciBvdXIgY293IGZpbGUgKi8KPiAgIAkJcmVx
+LT5lcnJvciA9IG1hcF9lcnJvcigtb3Nfc3luY19maWxlKHJlcS0+ZmRzWzBdKSk7Cj4gQEAgLTE0
+OTUsMjYgKzE1MjMsNDIgQEAgc3RhdGljIHZvaWQgZG9faW8oc3RydWN0IGlvX3RocmVhZF9yZXEg
+KnJlcSkKPiAgIAkJb2ZmID0gcmVxLT5vZmZzZXQgKyByZXEtPm9mZnNldHNbYml0XSArCj4gICAJ
+CQlzdGFydCAqIHJlcS0+c2VjdG9yc2l6ZTsKPiAgIAkJbGVuID0gKGVuZCAtIHN0YXJ0KSAqIHJl
+cS0+c2VjdG9yc2l6ZTsKPiAtCQlidWYgPSAmcmVxLT5idWZmZXJbc3RhcnQgKiByZXEtPnNlY3Rv
+cnNpemVdOwo+ICsJCWlmIChyZXEtPmJ1ZmZlciAhPSBOVUxMKQo+ICsJCQlidWYgPSAmcmVxLT5i
+dWZmZXJbc3RhcnQgKiByZXEtPnNlY3RvcnNpemVdOwo+ICAgCj4gLQkJaWYgKHJlcV9vcChyZXEt
+PnJlcSkgPT0gUkVRX09QX1JFQUQpIHsKPiArCQlzd2l0Y2ggKHJlcV9vcChyZXEtPnJlcSkpIHsK
+PiArCQljYXNlIFJFUV9PUF9SRUFEOgo+ICAgCQkJbiA9IDA7Cj4gICAJCQlkbyB7Cj4gICAJCQkJ
+YnVmID0gJmJ1ZltuXTsKPiAgIAkJCQlsZW4gLT0gbjsKPiAgIAkJCQluID0gb3NfcHJlYWRfZmls
+ZShyZXEtPmZkc1tiaXRdLCBidWYsIGxlbiwgb2ZmKTsKPiAtCQkJCWlmKG4gPCAwKXsKPiArCQkJ
+CWlmIChuIDwgMCkgewo+ICAgCQkJCQlyZXEtPmVycm9yID0gbWFwX2Vycm9yKC1uKTsKPiAgIAkJ
+CQkJcmV0dXJuOwo+ICAgCQkJCX0KPiAgIAkJCX0gd2hpbGUoKG4gPCBsZW4pICYmIChuICE9IDAp
+KTsKPiAgIAkJCWlmIChuIDwgbGVuKSBtZW1zZXQoJmJ1ZltuXSwgMCwgbGVuIC0gbik7Cj4gLQkJ
+fSBlbHNlIHsKPiArCQkJYnJlYWs7Cj4gKwkJY2FzZSBSRVFfT1BfV1JJVEU6Cj4gICAJCQluID0g
+b3NfcHdyaXRlX2ZpbGUocmVxLT5mZHNbYml0XSwgYnVmLCBsZW4sIG9mZik7Cj4gICAJCQlpZihu
+ICE9IGxlbil7Cj4gICAJCQkJcmVxLT5lcnJvciA9IG1hcF9lcnJvcigtbik7Cj4gICAJCQkJcmV0
+dXJuOwo+ICAgCQkJfQo+ICsJCQlicmVhazsKPiArCQljYXNlIFJFUV9PUF9ESVNDQVJEOgo+ICsJ
+CWNhc2UgUkVRX09QX1dSSVRFX1pFUk9FUzoKPiArCQkJbiA9IG9zX2ZhbGxvY19wdW5jaChyZXEt
+PmZkc1tiaXRdLCBvZmYsIGxlbik7Cj4gKwkJCWlmIChuKSB7Cj4gKwkJCQlyZXEtPmVycm9yID0g
+bWFwX2Vycm9yKC1uKTsKPiArCQkJCXJldHVybjsKPiArCQkJfQo+ICsJCQlicmVhazsKPiArCQlk
+ZWZhdWx0Ogo+ICsJCQlXQVJOX09OX09OQ0UoMSk7Cj4gKwkJCXJlcS0+ZXJyb3IgPSBCTEtfU1RT
+X05PVFNVUFA7Cj4gKwkJCXJldHVybjsKPiAgIAkJfQo+ICAgCj4gICAJCXN0YXJ0ID0gZW5kOwo+
+IGRpZmYgLS1naXQgYS9hcmNoL3VtL2luY2x1ZGUvc2hhcmVkL29zLmggYi9hcmNoL3VtL2luY2x1
+ZGUvc2hhcmVkL29zLmgKPiBpbmRleCAwNDhhZTM3ZWI1YWEuLmViZjIzMDEyYTU5YiAxMDA2NDQK
+PiAtLS0gYS9hcmNoL3VtL2luY2x1ZGUvc2hhcmVkL29zLmgKPiArKysgYi9hcmNoL3VtL2luY2x1
+ZGUvc2hhcmVkL29zLmgKPiBAQCAtMTc1LDYgKzE3NSw3IEBAIGV4dGVybiBpbnQgb3NfZmNoYW5n
+ZV9kaXIoaW50IGZkKTsKPiAgIGV4dGVybiB1bnNpZ25lZCBvc19tYWpvcih1bnNpZ25lZCBsb25n
+IGxvbmcgZGV2KTsKPiAgIGV4dGVybiB1bnNpZ25lZCBvc19taW5vcih1bnNpZ25lZCBsb25nIGxv
+bmcgZGV2KTsKPiAgIGV4dGVybiB1bnNpZ25lZCBsb25nIGxvbmcgb3NfbWFrZWRldih1bnNpZ25l
+ZCBtYWpvciwgdW5zaWduZWQgbWlub3IpOwo+ICtleHRlcm4gaW50IG9zX2ZhbGxvY19wdW5jaChp
+bnQgZmQsIHVuc2lnbmVkIGxvbmcgbG9uZyBvZmZzZXQsIGludCBjb3VudCk7Cj4gICAKPiAgIC8q
+IHN0YXJ0X3VwLmMgKi8KPiAgIGV4dGVybiB2b2lkIG9zX2Vhcmx5X2NoZWNrcyh2b2lkKTsKPiBk
+aWZmIC0tZ2l0IGEvYXJjaC91bS9vcy1MaW51eC9maWxlLmMgYi9hcmNoL3VtL29zLUxpbnV4L2Zp
+bGUuYwo+IGluZGV4IGMwMTk3MDk3Yzg2ZS4uZjI1YjExMGQ0ZTcwIDEwMDY0NAo+IC0tLSBhL2Fy
+Y2gvdW0vb3MtTGludXgvZmlsZS5jCj4gKysrIGIvYXJjaC91bS9vcy1MaW51eC9maWxlLmMKPiBA
+QCAtNjEwLDMgKzYxMCwxMyBAQCB1bnNpZ25lZCBsb25nIGxvbmcgb3NfbWFrZWRldih1bnNpZ25l
+ZCBtYWpvciwgdW5zaWduZWQgbWlub3IpCj4gICB7Cj4gICAJcmV0dXJuIG1ha2VkZXYobWFqb3Is
+IG1pbm9yKTsKPiAgIH0KPiArCj4gK2ludCBvc19mYWxsb2NfcHVuY2goaW50IGZkLCB1bnNpZ25l
+ZCBsb25nIGxvbmcgb2Zmc2V0LCBpbnQgbGVuKQo+ICt7Cj4gKwlpbnQgbiA9IGZhbGxvY2F0ZShm
+ZCwgRkFMTE9DX0ZMX1BVTkNIX0hPTEV8RkFMTE9DX0ZMX0tFRVBfU0laRSwgb2Zmc2V0LCBsZW4p
+Owo+ICsKPiArCWlmIChuIDwgMCkKPiArCQlyZXR1cm4gLWVycm5vOwo+ICsJcmV0dXJuIG47Cj4g
+K30KPiArCgotLSAKQW50b24gUi4gSXZhbm92CgpDYW1icmlkZ2UgR3JleXMgTGltaXRlZCwgRW5n
+bGFuZCBhbmQgV2FsZXMgY29tcGFueSBObyAxMDI3MzY2MQpodHRwOi8vd3d3LmNhbWJyaWRnZWdy
+ZXlzLmNvbS8KCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRw
+Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
 
