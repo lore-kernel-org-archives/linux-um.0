@@ -2,14 +2,14 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab6.miniserver.com ([5.153.251.140]
  helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gN06T-00018F-A8
- for linux-um@lists.infradead.org; Wed, 14 Nov 2018 18:41:30 +0000
+ id 1gMzs7-0000zX-1G
+ for linux-um@lists.infradead.org; Wed, 14 Nov 2018 18:26:40 +0000
 From: anton.ivanov@cambridgegreys.com
-Subject: [PATCH v2 2/4] um: Clean-up command processing in UML UBD driver
-Date: Wed, 14 Nov 2018 18:41:07 +0000
-Message-Id: <20181114184109.19600-2-anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20181114184109.19600-1-anton.ivanov@cambridgegreys.com>
-References: <20181114184109.19600-1-anton.ivanov@cambridgegreys.com>
+Subject: [PATCH 2/4] um: Clean-up command processing in UML UBD driver
+Date: Wed, 14 Nov 2018 17:09:41 +0000
+Message-Id: <20181114170943.12065-2-anton.ivanov@cambridgegreys.com>
+In-Reply-To: <20181114170943.12065-1-anton.ivanov@cambridgegreys.com>
+References: <20181114170943.12065-1-anton.ivanov@cambridgegreys.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
