@@ -1,17 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gIe74-0002NZ-NQ
- for linux-um@lists.infradead.org; Fri, 02 Nov 2018 18:24:08 +0000
-Subject: Re: [RFC v2 00/14] kunit: introduce KUnit, the Linux kernel unit
- testing framework
-References: <20181023235750.103146-1-brendanhiggins@google.com>
-From: Shuah Khan <shuah@kernel.org>
-Message-ID: <f3682d48-6f27-5eef-8274-02f90dd65188@kernel.org>
-Date: Fri, 2 Nov 2018 12:23:53 -0600
-MIME-Version: 1.0
-In-Reply-To: <20181023235750.103146-1-brendanhiggins@google.com>
-Content-Language: en-US
+Received: from conuserg-11.nifty.com ([210.131.2.78])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gOuVE-0007bu-7f
+ for linux-um@lists.infradead.org; Tue, 20 Nov 2018 01:06:59 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: [PATCH v2 2/9] kbuild: remove redundant 'set -e' from filechk_*
+ defines
+Date: Tue, 20 Nov 2018 10:05:23 +0900
+Message-Id: <1542675930-21114-3-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <1542675930-21114-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1542675930-21114-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,105 +18,54 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Brendan Higgins <brendanhiggins@google.com>, gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org
-Cc: brakmo@fb.com, robh@kernel.org, richard@nod.at, dri-devel@lists.freedesktop.org, linux-nvdimm@lists.01.org, mpe@ellerman.id.au, Tim.Bird@sony.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, kieran.bingham@ideasonboard.com, julia.lawall@lip6.fr, joel@jms.id.au, linux-kselftest@vger.kernel.org, khilman@baylibre.com, joe@perches.com, daniel@ffwll.ch, dan.j.williams@intel.com, Shuah Khan <shuah@kernel.org>, jdike@addtoit.com, kunit-dev@googlegroups.com
+To: linux-kbuild@vger.kernel.org
+Cc: Nicolas Pitre <nicolas.pitre@linaro.org>, Michal Marek <michal.lkml@markovi.net>, linux-um@lists.infradead.org, Jeff Dike <jdike@addtoit.com>, Rasmus Villemoes <linux@rasmusvillemoes.dk>, linux-kernel@vger.kernel.org, Masahiro Yamada <yamada.masahiro@socionext.com>, Richard Weinberger <richard@nod.at>, Sam Ravnborg <sam@ravnborg.org>
 
-Hi Brendan,
+The filechk macro in scripts/Kbuild.include already sets 'set -e'.
 
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
 
-On 10/23/2018 05:57 PM, Brendan Higgins wrote:
-> This patch set proposes KUnit, a lightweight unit testing and mocking
-> framework for the Linux kernel.
-> 
-> Unlike Autotest and kselftest, KUnit is a true unit testing framework;
-> it does not require installing the kernel on a test machine or in a VM
-> and does not require tests to be written in userspace running on a host
-> kernel. Additionally, KUnit is fast: From invocation to completion KUnit
-> can run several dozen tests in under a second. Currently, the entire
-> KUnit test suite for KUnit runs in under a second from the initial
-> invocation (build time excluded).
-> 
-> KUnit is heavily inspired by JUnit, Python's unittest.mock, and
-> Googletest/Googlemock for C++. KUnit provides facilities for defining
-> unit test cases, grouping related test cases into test suites, providing
-> common infrastructure for running tests, mocking, spying, and much more.
-> 
-> ## What's so special about unit testing?
-> 
-> A unit test is supposed to test a single unit of code in isolation,
-> hence the name. There should be no dependencies outside the control of
-> the test; this means no external dependencies, which makes tests orders
-> of magnitudes faster. Likewise, since there are no external dependencies,
-> there are no hoops to jump through to run the tests. Additionally, this
-> makes unit tests deterministic: a failing unit test always indicates a
-> problem. Finally, because unit tests necessarily have finer granularity,
-> they are able to test all code paths easily solving the classic problem
-> of difficulty in exercising error handling code.
-> 
-> ## Is KUnit trying to replace other testing frameworks for the kernel?
-> 
-> No. Most existing tests for the Linux kernel are end-to-end tests, which
-> have their place. A well tested system has lots of unit tests, a
-> reasonable number of integration tests, and some end-to-end tests. KUnit
-> is just trying to address the unit test space which is currently not
-> being addressed.
-> 
-> ## More information on KUnit
-> 
-> There is a bunch of documentation near the end of this patch set that
-> describes how to use KUnit and best practices for writing unit tests.
-> For convenience I am hosting the compiled docs here:
-> https://google.github.io/kunit-docs/third_party/kernel/docs/
-> 
-> ## Changes Since Last Version
-> 
->  - Updated patchset to apply cleanly on 4.19.
->  - Stripped down patchset to focus on just the core features (I dropped
->    mocking, spying, and the MMIO stuff for now; you can find these
->    patches here: https://kunit-review.googlesource.com/c/linux/+/1132),
->    as suggested by Rob.
->  - Cleaned up some of the commit messages and tweaked commit order a
->    bit based on suggestions.
->
+Changes in v2: None
 
-Framework looks good. I think it would be helpful to include a real test
-in the patch series to get a feel for how effective it is.
+ arch/um/Makefile     | 2 +-
+ scripts/Makefile.lib | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-On one hand, KUnit stands on its own as its own and maybe it should be placed in
-under tools/testing/KUnit, however I am wondering would it be beneficial for the
-framework to under selftests.
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index ab1066c..71ff3d0 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -152,7 +152,7 @@ $(HOST_DIR)/um/user-offsets.s: __headers FORCE
+ 	$(Q)$(MAKE) $(build)=$(HOST_DIR)/um $@
+ 
+ define filechk_gen-asm-offsets
+-        (set -e; \
++        ( \
+          echo "/*"; \
+          echo " * DO NOT MODIFY."; \
+          echo " *"; \
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index 8fe4468..ae3ae97 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -406,7 +406,7 @@ endef
+ # Use filechk to avoid rebuilds when a header changes, but the resulting file
+ # does not
+ define filechk_offsets
+-	(set -e; \
++	( \
+ 	 echo "#ifndef $2"; \
+ 	 echo "#define $2"; \
+ 	 echo "/*"; \
+-- 
+2.7.4
 
-I am a bit concerned about the number of test framework we have at the moment and
-are we running the risk of fragmenting the landscape. I am concerned if this would
-lead to developer confusion as to where to add tests.
-
-That being said, I don't have a strong opinion one way or the other.
-
-btw I started playing with kunit following the instructions and ran into problems:
-
-./tools/testing/kunit/kunit.py 
-usage: kunit.py [-h] {run,new} ...
-
-Helps writing and running KUnit tests.
-
-positional arguments:
-  {run,new}
-    run       Runs KUnit tests.
-    new       Prints out boilerplate for writing new tests.
-
-optional arguments:
-  -h, --help  show this help message and exit
-
-./tools/testing/kunit/kunit.py run
-Regenerating .config ...
-ERROR:root:Provided Kconfig is not contained in validated .config!
-
-thanks,
--- Shuah
 
 _______________________________________________
 linux-um mailing list
