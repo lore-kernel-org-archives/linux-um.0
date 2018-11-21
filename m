@@ -1,13 +1,17 @@
 Return-Path: <linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [PATCH v2 16/15] syscall_get_arch: add "struct task_struct *"
+From: Paul Burton <paul.burton@mips.com>
+Subject: Re: [PATCH v2 16/15 v2] syscall_get_arch: add "struct task_struct *"
  argument
-In-Reply-To: <20181121004422.GA29053@altlinux.org>
+Date: Wed, 21 Nov 2018 19:45:51 +0000
+Message-ID: <20181121194549.4glznckje73z2uxk@pburton-laptop>
 References: <20181107042751.3b519062@akathisia>
  <CALCETrV1v-DPRfDRwiH=xn29bxWxiHdZtAH1nw=dsmDtnT0YGQ@mail.gmail.com>
  <20181120001128.GA11300@altlinux.org> <20181121004422.GA29053@altlinux.org>
-Date: Tue, 27 Nov 2018 21:34:29 +1100
-Message-ID: <87in0ihkqy.fsf@concordia.ellerman.id.au>
+ <20181121184004.jro532jopnbmru2m@pburton-laptop>
+ <20181121190009.GA10301@altlinux.org> <20181121193512.GA11297@altlinux.org>
+In-Reply-To: <20181121193512.GA11297@altlinux.org>
+Content-Language: en-US
+Content-ID: <708ADDE084183B41A3B884270BF84771@namprd22.prod.outlook.com>
 MIME-Version: 1.0
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
@@ -20,41 +24,58 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
 Errors-To: linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "Dmitry V. Levin" <ldv@altlinux.org>, Andy Lutomirski <luto@kernel.org>, Eric Paris <eparis@redhat.com>, Paul Moore <paul@paul-moore.com>
-Cc: linux-mips@linux-mips.org, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-arch@vger.kernel.org, linux-s390@vger.kernel.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, x86@kernel.org, Eugene Syromyatnikov <esyr@redhat.com>, Elvira Khabirova <lineprinter@altlinux.org>, linux-snps-arc@lists.infradead.org, uclinux-h8-devel@lists.sourceforge.jp, linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>, linux-audit@redhat.com, linux-alpha@vger.kernel.org, nios2-dev@lists.rocketboards.org, linuxppc-dev@lists.ozlabs.org
+To: "Dmitry V. Levin" <ldv@altlinux.org>
+Cc: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, Paul Moore <paul@paul-moore.com>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, Eugene Syromyatnikov <esyr@redhat.com>, Elvira Khabirova <lineprinter@altlinux.org>, "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>, "uclinux-h8-devel@lists.sourceforge.jp" <uclinux-h8-devel@lists.sourceforge.jp>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, "openrisc@lists.librecores.org" <openrisc@lists.librecores.org>, Andy Lutomirski <luto@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-c6x-dev@linux-c6x.org" <linux-c6x-dev@linux-c6x.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, Oleg Nesterov <oleg@redhat.com>, Eric Paris <eparis@redhat.com>, "linux-audit@redhat.com" <linux-audit@redhat.com>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "nios2-dev@lists.rocketboards.org" <nios2-dev@lists.rocketboards.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-ID: <linux-um.lists.infradead.org>
 
-"Dmitry V. Levin" <ldv@altlinux.org> writes:
+Hi Dmitry,
 
-> diff --git a/arch/powerpc/include/asm/syscall.h b/arch/powerpc/include/asm/syscall.h
-> index ab9f3f0a8637..d88b34179118 100644
-> --- a/arch/powerpc/include/asm/syscall.h
-> +++ b/arch/powerpc/include/asm/syscall.h
-> @@ -100,9 +100,15 @@ static inline void syscall_set_arguments(struct task_struct *task,
->  		regs->orig_gpr3 = args[0];
->  }
->  
-> -static inline int syscall_get_arch(void)
-> +static inline int syscall_get_arch(struct task_struct *task)
->  {
-> -	int arch = is_32bit_task() ? AUDIT_ARCH_PPC : AUDIT_ARCH_PPC64;
-> +	int arch;
-> +
-> +	if (IS_ENABLED(CONFIG_PPC64) && !test_tsk_thread_flag(task, TIF_32BIT))
-> +		arch = AUDIT_ARCH_PPC64;
-> +	else
-> +		arch = AUDIT_ARCH_PPC;
-> +
->  #ifdef __LITTLE_ENDIAN__
->  	arch |= __AUDIT_ARCH_LE;
->  #endif
+On Wed, Nov 21, 2018 at 10:35:12PM +0300, Dmitry V. Levin wrote:
+> This argument is required to extend the generic ptrace API with
+> PTRACE_GET_SYSCALL_INFO request: syscall_get_arch() is going to be
+> called from ptrace_request() along with other syscall_get_* functions
+> with a tracee as their argument.
+> 
+> This change partially reverts commit 5e937a9ae913 ("syscall_get_arch:
+> remove useless function arguments").
+> 
+> Reviewed-by: Andy Lutomirski <luto@kernel.org> # for x86
+> Reviewed-by: Palmer Dabbelt <palmer@sifive.com>
+> Cc: linux-audit@redhat.com
+> Cc: linux-alpha@vger.kernel.org
+> Cc: linux-arch@vger.kernel.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-c6x-dev@linux-c6x.org
+> Cc: linux-hexagon@vger.kernel.org
+> Cc: linux-ia64@vger.kernel.org
+> Cc: linux-m68k@lists.linux-m68k.org
+> Cc: linux-mips@linux-mips.org
+> Cc: linux-parisc@vger.kernel.org
+> Cc: linux-riscv@lists.infradead.org
+> Cc: linux-s390@vger.kernel.org
+> Cc: linux-sh@vger.kernel.org
+> Cc: linux-snps-arc@lists.infradead.org
+> Cc: linux-um@lists.infradead.org
+> Cc: linux-xtensa@linux-xtensa.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: nios2-dev@lists.rocketboards.org
+> Cc: openrisc@lists.librecores.org
+> Cc: sparclinux@vger.kernel.org
+> Cc: uclinux-h8-devel@lists.sourceforge.jp
+> Cc: x86@kernel.org
+> Signed-off-by: Dmitry V. Levin <ldv@altlinux.org>
+> ---
+> 
+> v2: cleaned up mips part, added Reviewed-by
 
-LGTM.
+I thought the last one was v2? :)
 
-Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+Anyway, this looks fine to me now:
 
-cheers
+    Acked-by: Paul Burton <paul.burton@mips.com> # MIPS parts
 
+Thanks,
+    Paul
 
 _______________________________________________
 linux-arm-kernel mailing list
