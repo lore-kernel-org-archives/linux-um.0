@@ -1,11 +1,14 @@
 Return-Path: <linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Wed, 21 Nov 2018 07:47:07 -0800 (PST)
+MIME-Version: 1.0
+References: <20181107042751.3b519062@akathisia>
+ <CALCETrV1v-DPRfDRwiH=xn29bxWxiHdZtAH1nw=dsmDtnT0YGQ@mail.gmail.com>
+ <20181120001128.GA11300@altlinux.org> <20181121004422.GA29053@altlinux.org>
+In-Reply-To: <20181121004422.GA29053@altlinux.org>
+From: Andy Lutomirski <luto@kernel.org>
+Date: Wed, 21 Nov 2018 07:15:15 -0800
+Message-ID: <CALCETrV8AJPkZF7TzhXSte_wJgNXH+-s7-tPM-8xjcAfYgzdhg@mail.gmail.com>
 Subject: Re: [PATCH v2 16/15] syscall_get_arch: add "struct task_struct *"
  argument
-In-Reply-To: <20181121004422.GA29053@altlinux.org>
-From: Palmer Dabbelt <palmer@sifive.com>
-Message-ID: <mhng-c75e14b8-b36c-46c2-8ffc-914312ed0cef@palmer-si-x1c4>
-Mime-Version: 1.0 (MHng)
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -13,15 +16,16 @@ List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
 List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
 Errors-To: linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org
-To: ldv@altlinux.org
-Cc: linux-mips@linux-mips.org, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-arch@vger.kernel.org, linux-s390@vger.kernel.org, paul@paul-moore.com, linux-hexagon@vger.kernel.org, x86@kernel.org, esyr@redhat.com, lineprinter@altlinux.org, linux-snps-arc@lists.infradead.org, uclinux-h8-devel@lists.sourceforge.jp, linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, luto@kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-parisc@vger.kernel.org, oleg@redhat.com, eparis@redhat.com, linux-audit@redhat.com, linux-alpha@vger.kernel.org, nios2-dev@lists.rocketboards.org, linuxppc-dev@lists.ozlabs.org
+To: "Dmitry V. Levin" <ldv@altlinux.org>
+Cc: Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-arch <linux-arch@vger.kernel.org>, linux-s390 <linux-s390@vger.kernel.org>, Paul Moore <paul@paul-moore.com>, linux-hexagon@vger.kernel.org, X86 ML <x86@kernel.org>, Eugene Syromiatnikov <esyr@redhat.com>, Elvira Khabirova <lineprinter@altlinux.org>, arcml <linux-snps-arc@lists.infradead.org>, uclinux-h8-devel@lists.sourceforge.jp, linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, Andrew Lutomirski <luto@kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-c6x-dev@linux-c6x.org, linux-parisc@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>, Eric Paris <eparis@redhat.com>, linux-audit@redhat.com, linux-alpha@vger.kernel.org, nios2-dev@lists.rocketboards.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
 List-ID: <linux-um.lists.infradead.org>
 
-On Tue, 20 Nov 2018 16:44:22 PST (-0800), ldv@altlinux.org wrote:
+On Tue, Nov 20, 2018 at 4:44 PM Dmitry V. Levin <ldv@altlinux.org> wrote:
+>
 > This argument is required to extend the generic ptrace API
 > with PTRACE_GET_SYSCALL_INFO request: syscall_get_arch() is going to be
 > called from ptrace_request() along with other syscall_get_* functions
@@ -30,31 +34,8 @@ On Tue, 20 Nov 2018 16:44:22 PST (-0800), ldv@altlinux.org wrote:
 > This change partially reverts commit 5e937a9ae913 ("syscall_get_arch:
 > remove useless function arguments").
 >
-> Cc: linux-alpha@vger.kernel.org
-> Cc: linux-arch@vger.kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-audit@redhat.com
-> Cc: linux-c6x-dev@linux-c6x.org
-> Cc: linux-hexagon@vger.kernel.org
-> Cc: linux-ia64@vger.kernel.org
-> Cc: linux-m68k@lists.linux-m68k.org
-> Cc: linux-mips@linux-mips.org
-> Cc: linux-parisc@vger.kernel.org
-> Cc: linux-riscv@lists.infradead.org
-> Cc: linux-s390@vger.kernel.org
-> Cc: linux-sh@vger.kernel.org
-> Cc: linux-snps-arc@lists.infradead.org
-> Cc: linux-um@lists.infradead.org
-> Cc: linux-xtensa@linux-xtensa.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: nios2-dev@lists.rocketboards.org
-> Cc: openrisc@lists.librecores.org
-> Cc: sparclinux@vger.kernel.org
-> Cc: uclinux-h8-devel@lists.sourceforge.jp
-> Cc: x86@kernel.org
-> Signed-off-by: Dmitry V. Levin <ldv@altlinux.org>
 
-Reviewed-by: Palmer Dabbelt <palmer@sifive.com>
+Reviewed-by: Andy Lutomirski <luto@kernel.org> # for x86
 
 _______________________________________________
 linux-arm-kernel mailing list
