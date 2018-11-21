@@ -1,18 +1,22 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-qt1-x84a.google.com ([2607:f8b0:4864:20::84a])
+Received: from conssluserg-01.nifty.com ([210.131.2.80])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gS5f3-0003dm-0f
- for linux-um@lists.infradead.org; Wed, 28 Nov 2018 19:38:14 +0000
-Received: by mail-qt1-x84a.google.com with SMTP id n45so25100347qta.5
- for <linux-um@lists.infradead.org>; Wed, 28 Nov 2018 11:38:11 -0800 (PST)
-Date: Wed, 28 Nov 2018 11:36:28 -0800
-In-Reply-To: <20181128193636.254378-1-brendanhiggins@google.com>
-Message-Id: <20181128193636.254378-12-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20181128193636.254378-1-brendanhiggins@google.com>
-Subject: [RFC v3 11/19] kunit: add Python libraries for handing KUnit config
- and kernel
-From: Brendan Higgins <brendanhiggins@google.com>
+ id 1gPTfr-0006kl-Pp
+ for linux-um@lists.infradead.org; Wed, 21 Nov 2018 14:40:17 +0000
+Received: from mail-vs1-f49.google.com (mail-vs1-f49.google.com
+ [209.85.217.49]) (authenticated)
+ by conssluserg-01.nifty.com with ESMTP id wALEdoh6027893
+ for <linux-um@lists.infradead.org>; Wed, 21 Nov 2018 23:39:51 +0900
+Received: by mail-vs1-f49.google.com with SMTP id x1so3355806vsc.10
+ for <linux-um@lists.infradead.org>; Wed, 21 Nov 2018 06:39:50 -0800 (PST)
+MIME-Version: 1.0
+References: <1542675930-21114-1-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <1542675930-21114-1-git-send-email-yamada.masahiro@socionext.com>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Wed, 21 Nov 2018 23:39:13 +0900
+Message-ID: <CAK7LNAReYwYAgGfxsHX2uRxXrYizM9C0rmq7V_ck-V+dc+oN4A@mail.gmail.com>
+Subject: Re: [PATCH v2 0/9] kbuild: clean-up modversion, TRIM_UNUSED_KSYMS,
+ if_changed_rule, etc.
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -25,246 +29,62 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
-Cc: brakmo@fb.com, jdike@addtoit.com, dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org, frowand.list@gmail.com, robh@kernel.org, linux-nvdimm@lists.01.org, richard@nod.at, knut.omang@oracle.com, kieran.bingham@ideasonboard.com, Felix Guo <felixguoxiuping@gmail.com>, joel@jms.id.au, khilman@baylibre.com, Brendan Higgins <brendanhiggins@google.com>, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, joe@perches.com
+To: Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Cc: Nicolas Pitre <nicolas.pitre@linaro.org>, linux-arch <linux-arch@vger.kernel.org>, Michal Marek <michal.lkml@markovi.net>, Arnd Bergmann <arnd@arndb.de>, Ard Biesheuvel <ard.biesheuvel@linaro.org>, Michael Ellerman <mpe@ellerman.id.au>, Jeff Dike <jdike@addtoit.com>, Rasmus Villemoes <linux@rasmusvillemoes.dk>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Will Deacon <will.deacon@arm.com>, linux-um@lists.infradead.org, Richard Weinberger <richard@nod.at>, Andrew Morton <akpm@linux-foundation.org>, Sam Ravnborg <sam@ravnborg.org>
 
-The ultimate goal is to create minimal isolated test binaries; in the
-meantime we are using UML to provide the infrastructure to run tests, so
-define an abstract way to configure and run tests that allow us to
-change the context in which tests are built without affecting the user.
-This also makes pretty and dynamic error reporting, and a lot of other
-nice features easier.
+On Tue, Nov 20, 2018 at 10:11 AM Masahiro Yamada
+<yamada.masahiro@socionext.com> wrote:
+>
+> As a Kbuild maintainer, I always struggle to keep the core makefiles
+> clean because people tend to squeeze more and more clutter code into
+> the kbuild core in order to do what they want to do.
+>
+> The biggest step forward in this series is to re-implement
+> the build trick of CONFIG_TRIM_UNUSED_KSYMS in a cleaner way.
+> scripts/Kbuild.include now looks nice again.
+> Also, in my rough estimation, building with CONFIG_TRIM_UNUSED_KSYMS
+> became 40-50 % faster.
+>
+> Besides those, nice cleanups are here and there.
+>
+> Masahiro Yamada (9):
+>   kbuild: let fixdep directly write to .*.cmd files
+>   kbuild: remove redundant 'set -e' from filechk_* defines
+>   kbuild: remove redundant 'set -e' from sub_cmd_record_mcount
+>   kbuild: refactor modversions build rules
+>   kbuild: simplify dependency generation for CONFIG_TRIM_UNUSED_KSYMS
+>   kbuild: change if_changed_rule for multi-line recipe
+>   kbuild: remove trailing semicolon from cmd_* passed to if_changed_rule
+>   kbuild: refactor if_changed and if_changed_dep
+>   kbuild: remove redundant 'set -e' from cmd_* defines
 
-kunit_config.py:
-  - parse .config and Kconfig files.
+Series, applied to linux-kbuild.
 
-kunit_kernel.py: provides helper functions to:
-  - configure the kernel using kunitconfig.
-  - build the kernel with the appropriate configuration.
-  - provide function to invoke the kernel and stream the output back.
 
-Signed-off-by: Felix Guo <felixguoxiuping@gmail.com>
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
----
- tools/testing/kunit/.gitignore      |   3 +
- tools/testing/kunit/kunit_config.py |  60 +++++++++++++
- tools/testing/kunit/kunit_kernel.py | 126 ++++++++++++++++++++++++++++
- 3 files changed, 189 insertions(+)
- create mode 100644 tools/testing/kunit/.gitignore
- create mode 100644 tools/testing/kunit/kunit_config.py
- create mode 100644 tools/testing/kunit/kunit_kernel.py
 
-diff --git a/tools/testing/kunit/.gitignore b/tools/testing/kunit/.gitignore
-new file mode 100644
-index 0000000000000..c791ff59a37a9
---- /dev/null
-+++ b/tools/testing/kunit/.gitignore
-@@ -0,0 +1,3 @@
-+# Byte-compiled / optimized / DLL files
-+__pycache__/
-+*.py[cod]
-\ No newline at end of file
-diff --git a/tools/testing/kunit/kunit_config.py b/tools/testing/kunit/kunit_config.py
-new file mode 100644
-index 0000000000000..183bd5e758762
---- /dev/null
-+++ b/tools/testing/kunit/kunit_config.py
-@@ -0,0 +1,60 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+import collections
-+import re
-+
-+CONFIG_IS_NOT_SET_PATTERN = r'^# CONFIG_\w+ is not set$'
-+CONFIG_PATTERN = r'^CONFIG_\w+=\S+$'
-+
-+KconfigEntryBase = collections.namedtuple('KconfigEntry', ['raw_entry'])
-+
-+
-+class KconfigEntry(KconfigEntryBase):
-+
-+	def __str__(self) -> str:
-+		return self.raw_entry
-+
-+
-+class KconfigParseError(Exception):
-+	"""Error parsing Kconfig defconfig or .config."""
-+
-+
-+class Kconfig(object):
-+	"""Represents defconfig or .config specified using the Kconfig language."""
-+
-+	def __init__(self):
-+		self._entries = []
-+
-+	def entries(self):
-+		return set(self._entries)
-+
-+	def add_entry(self, entry: KconfigEntry) -> None:
-+		self._entries.append(entry)
-+
-+	def is_subset_of(self, other: "Kconfig") -> bool:
-+		return self.entries().issubset(other.entries())
-+
-+	def write_to_file(self, path: str) -> None:
-+		with open(path, 'w') as f:
-+			for entry in self.entries():
-+				f.write(str(entry) + '\n')
-+
-+	def parse_from_string(self, blob: str) -> None:
-+		"""Parses a string containing KconfigEntrys and populates this Kconfig."""
-+		self._entries = []
-+		is_not_set_matcher = re.compile(CONFIG_IS_NOT_SET_PATTERN)
-+		config_matcher = re.compile(CONFIG_PATTERN)
-+		for line in blob.split('\n'):
-+			line = line.strip()
-+			if not line:
-+				continue
-+			elif config_matcher.match(line) or is_not_set_matcher.match(line):
-+				self._entries.append(KconfigEntry(line))
-+			elif line[0] == '#':
-+				continue
-+			else:
-+				raise KconfigParseError('Failed to parse: ' + line)
-+
-+	def read_from_file(self, path: str) -> None:
-+		with open(path, 'r') as f:
-+			self.parse_from_string(f.read())
-diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-new file mode 100644
-index 0000000000000..bba7ea7ca1869
---- /dev/null
-+++ b/tools/testing/kunit/kunit_kernel.py
-@@ -0,0 +1,126 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+import logging
-+import subprocess
-+import os
-+
-+import kunit_config
-+
-+KCONFIG_PATH = '.config'
-+
-+class ConfigError(Exception):
-+	"""Represents an error trying to configure the Linux kernel."""
-+
-+
-+class BuildError(Exception):
-+	"""Represents an error trying to build the Linux kernel."""
-+
-+
-+class LinuxSourceTreeOperations(object):
-+	"""An abstraction over command line operations performed on a source tree."""
-+
-+	def make_mrproper(self):
-+		try:
-+			subprocess.check_output(['make', 'mrproper'])
-+		except OSError as e:
-+			raise ConfigError('Could not call make command: ' + e)
-+		except subprocess.CalledProcessError as e:
-+			raise ConfigError(e.output)
-+
-+	def make_olddefconfig(self):
-+		try:
-+			subprocess.check_output(['make', 'ARCH=um', 'olddefconfig'])
-+		except OSError as e:
-+			raise ConfigError('Could not call make command: ' + e)
-+		except subprocess.CalledProcessError as e:
-+			raise ConfigError(e.output)
-+
-+	def make(self, jobs):
-+		try:
-+			subprocess.check_output([
-+					'make',
-+					'ARCH=um',
-+					'--jobs=' + str(jobs)])
-+		except OSError as e:
-+			raise BuildError('Could not call execute make: ' + e)
-+		except subprocess.CalledProcessError as e:
-+			raise BuildError(e.output)
-+
-+	def linux_bin(self, params, timeout):
-+		"""Runs the Linux UML binary. Must be named 'linux'."""
-+		process = subprocess.Popen(
-+			['./linux'] + params,
-+			stdin=subprocess.PIPE,
-+			stdout=subprocess.PIPE,
-+			stderr=subprocess.PIPE)
-+		process.wait(timeout=timeout)
-+		return process
-+
-+
-+class LinuxSourceTree(object):
-+	"""Represents a Linux kernel source tree with KUnit tests."""
-+
-+	def __init__(self):
-+		self._kconfig = kunit_config.Kconfig()
-+		self._kconfig.read_from_file('kunitconfig')
-+		self._ops = LinuxSourceTreeOperations()
-+
-+	def clean(self):
-+		try:
-+			self._ops.make_mrproper()
-+		except ConfigError as e:
-+			logging.error(e)
-+			return False
-+		return True
-+
-+	def build_config(self):
-+		self._kconfig.write_to_file(KCONFIG_PATH)
-+		try:
-+			self._ops.make_olddefconfig()
-+		except ConfigError as e:
-+			logging.error(e)
-+			return False
-+		validated_kconfig = kunit_config.Kconfig()
-+		validated_kconfig.read_from_file(KCONFIG_PATH)
-+		if not self._kconfig.is_subset_of(validated_kconfig):
-+			logging.error('Provided Kconfig is not contained in validated .config!')
-+			return False
-+		return True
-+
-+	def build_reconfig(self):
-+		"""Creates a new .config if it is not a subset of the kunitconfig."""
-+		if os.path.exists(KCONFIG_PATH):
-+			existing_kconfig = kunit_config.Kconfig()
-+			existing_kconfig.read_from_file(KCONFIG_PATH)
-+			if not self._kconfig.is_subset_of(existing_kconfig):
-+				print('Regenerating .config ...')
-+				os.remove(KCONFIG_PATH)
-+				return self.build_config()
-+			else:
-+				return True
-+		else:
-+			print('Generating .config ...')
-+			return self.build_config()
-+
-+	def build_um_kernel(self, jobs):
-+		try:
-+			self._ops.make_olddefconfig()
-+			self._ops.make(jobs)
-+		except (ConfigError, BuildError) as e:
-+			logging.error(e)
-+			return False
-+		used_kconfig = kunit_config.Kconfig()
-+		used_kconfig.read_from_file(KCONFIG_PATH)
-+		if not self._kconfig.is_subset_of(used_kconfig):
-+			logging.error('Provided Kconfig is not contained in final config!')
-+			return False
-+		return True
-+
-+	def run_kernel(self, args=[]):
-+		timeout = None
-+		args.extend(['mem=256M'])
-+		process = self._ops.linux_bin(args, timeout)
-+		with open('test.log', 'w') as f:
-+			for line in process.stdout:
-+				f.write(line.rstrip().decode('ascii') + '\n')
-+				yield line.rstrip().decode('ascii')
+
+
+>  Makefile                     |  13 +++---
+>  arch/um/Makefile             |   2 +-
+>  include/asm-generic/export.h |  13 +++---
+>  include/linux/export.h       |  18 ++++----
+>  scripts/Kbuild.include       |  49 +++-----------------
+>  scripts/Makefile.build       | 105 ++++++++++++++++++-------------------------
+>  scripts/Makefile.lib         |   2 +-
+>  scripts/basic/fixdep.c       |  31 ++-----------
+>  scripts/gen_ksymdeps.sh      |  25 +++++++++++
+>  scripts/package/Makefile     |   1 -
+>  10 files changed, 106 insertions(+), 153 deletions(-)
+>  create mode 100755 scripts/gen_ksymdeps.sh
+>
+> --
+> 2.7.4
+>
+
+
 -- 
-2.20.0.rc0.387.gc7a69e6b6c-goog
-
+Best Regards
+Masahiro Yamada
 
 _______________________________________________
 linux-um mailing list
