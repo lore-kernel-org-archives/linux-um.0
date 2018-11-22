@@ -1,15 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab6.miniserver.com ([5.153.251.140]
  helo=www.kot-begemot.co.uk)
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gMzs7-0000zX-1G
- for linux-um@lists.infradead.org; Wed, 14 Nov 2018 18:26:40 +0000
-From: anton.ivanov@cambridgegreys.com
-Subject: [PATCH 2/4] um: Clean-up command processing in UML UBD driver
-Date: Wed, 14 Nov 2018 17:09:41 +0000
-Message-Id: <20181114170943.12065-2-anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20181114170943.12065-1-anton.ivanov@cambridgegreys.com>
-References: <20181114170943.12065-1-anton.ivanov@cambridgegreys.com>
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gPqMe-0006dY-J0
+ for linux-um@lists.infradead.org; Thu, 22 Nov 2018 14:53:58 +0000
+Subject: Re: [PATCH] um: Remove unnecessary kmap_atomic in uaccess on 64bit
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+References: <20181116083215.7165-1-anton.ivanov@cambridgegreys.com>
+ <CANB_DmtJAp6aye5_mnuCzf5D_hmAES+WEJcvYOUWPsaFXBL9vQ@mail.gmail.com>
+ <dd9e487e-b984-09fa-9293-c6855219429a@cambridgegreys.com>
+Message-ID: <05487267-6742-4780-ded3-8b57ae1c2c83@cambridgegreys.com>
+Date: Thu, 22 Nov 2018 14:53:42 +0000
+MIME-Version: 1.0
+In-Reply-To: <dd9e487e-b984-09fa-9293-c6855219429a@cambridgegreys.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,147 +22,80 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: axboe@kernel.dk, richard@nod.at, hch@lst.de, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: liwei <liwei@anbutu.com>
+Cc: richard@nod.at, linux-um@lists.infradead.org
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-
-Clean-up command processing and return BLK_STS_NOTSUP for
-uknown commands.
-
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
----
- arch/um/drivers/ubd_kern.c | 77 ++++++++++++++++++++++++++++------------------
- 1 file changed, 47 insertions(+), 30 deletions(-)
-
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 3a8a3d403ef8..58860ef6931a 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -1306,65 +1306,82 @@ static int ubd_queue_one_vec(struct blk_mq_hw_ctx *hctx, struct request *req,
- 		io_req->fds[0] = dev->fd;
- 	io_req->error = 0;
- 
--	if (req_op(req) != REQ_OP_FLUSH) {
--		io_req->fds[1] = dev->fd;
--		io_req->cow_offset = -1;
--		io_req->offset = off;
--		io_req->length = bvec->bv_len;
--		io_req->sector_mask = 0;
--		io_req->offsets[0] = 0;
--		io_req->offsets[1] = dev->cow.data_offset;
-+	if (bvec != NULL) {
- 		io_req->buffer = page_address(bvec->bv_page) + bvec->bv_offset;
--		io_req->sectorsize = SECTOR_SIZE;
--
--		if (dev->cow.file) {
--			cowify_req(io_req, dev->cow.bitmap,
--				   dev->cow.bitmap_offset, dev->cow.bitmap_len);
--		}
-+		io_req->length = bvec->bv_len;
-+	} else {
-+		io_req->buffer = NULL;
-+		io_req->length = blk_rq_bytes(req);
- 	}
- 
-+	io_req->sectorsize = SECTOR_SIZE;
-+	io_req->fds[1] = dev->fd;
-+	io_req->cow_offset = -1;
-+	io_req->offset = off;
-+	io_req->sector_mask = 0;
-+	io_req->offsets[0] = 0;
-+	io_req->offsets[1] = dev->cow.data_offset;
-+
-+	if (dev->cow.file)
-+		cowify_req(io_req, dev->cow.bitmap,
-+			   dev->cow.bitmap_offset, dev->cow.bitmap_len);
-+
- 	ret = os_write_file(thread_fd, &io_req, sizeof(io_req));
- 	if (ret != sizeof(io_req)) {
- 		if (ret != -EAGAIN)
- 			pr_err("write to io thread failed: %d\n", -ret);
- 		kfree(io_req);
- 	}
--
- 	return ret;
- }
- 
-+static int queue_rw_req(struct blk_mq_hw_ctx *hctx, struct request *req)
-+{
-+	struct req_iterator iter;
-+	struct bio_vec bvec;
-+	int ret;
-+	u64 off = (u64)blk_rq_pos(req) << SECTOR_SHIFT;
-+
-+	rq_for_each_segment(bvec, req, iter) {
-+		ret = ubd_queue_one_vec(hctx, req, off, &bvec);
-+		if (ret < 0)
-+			return ret;
-+		off += bvec.bv_len;
-+	}
-+	return 0;
-+}
-+
- static blk_status_t ubd_queue_rq(struct blk_mq_hw_ctx *hctx,
- 				 const struct blk_mq_queue_data *bd)
- {
- 	struct ubd *ubd_dev = hctx->queue->queuedata;
- 	struct request *req = bd->rq;
--	int ret = 0;
-+	int ret = 0, res = BLK_STS_OK;
- 
- 	blk_mq_start_request(req);
- 
- 	spin_lock_irq(&ubd_dev->lock);
- 
--	if (req_op(req) == REQ_OP_FLUSH) {
-+	switch (req_op(req)) {
-+	/* operations with no lentgth/offset arguments */
-+	case REQ_OP_FLUSH:
- 		ret = ubd_queue_one_vec(hctx, req, 0, NULL);
--	} else {
--		struct req_iterator iter;
--		struct bio_vec bvec;
--		u64 off = (u64)blk_rq_pos(req) << SECTOR_SHIFT;
--
--		rq_for_each_segment(bvec, req, iter) {
--			ret = ubd_queue_one_vec(hctx, req, off, &bvec);
--			if (ret < 0)
--				goto out;
--			off += bvec.bv_len;
--		}
-+		break;
-+	case REQ_OP_READ:
-+	case REQ_OP_WRITE:
-+		ret = queue_rw_req(hctx, req);
-+		break;
-+	default:
-+		WARN_ON_ONCE(1);
-+		res = BLK_STS_NOTSUPP;
- 	}
--out:
-+
- 	spin_unlock_irq(&ubd_dev->lock);
- 
- 	if (ret < 0)
- 		blk_mq_requeue_request(req, true);
- 
--	return BLK_STS_OK;
-+	return res;
- }
- 
- static int ubd_getgeo(struct block_device *bdev, struct hd_geometry *geo)
--- 
-2.11.0
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+SGkgbGl3ZWksCgpPbiAxMS8yMi8xOCA5OjE3IEFNLCBBbnRvbiBJdmFub3Ygd3JvdGU6Cj4KPiBP
+biAxMS8yMi8xOCAyOjA5IEFNLCBsaXdlaSB3cm90ZToKPj4gSGkgQW50b24sCj4+Cj4+IE9uIEZy
+aSwgTm92IDE2LCAyMDE4IGF0IDQ6MzIgUE0gPGFudG9uLml2YW5vdkBjYW1icmlkZ2VncmV5cy5j
+b20+IHdyb3RlOgo+Pj4gRnJvbTogQW50b24gSXZhbm92IDxhbnRvbi5pdmFub3ZAY2FtYnJpZGdl
+Z3JleXMuY29tPgo+Pj4KPj4+IE9uIDY0IGJpdCBhcmNoaXRlY3R1cmVzIGl0IGlzIG5vdCBuZWNl
+c3NhcnkgdG8gcGVyZm9ybSBoaWdobWVtCj4+PiBrbWFwXy9rdW5tYXAgZm9yIHZhcmlvdXMgY29w
+eSB0by9mcm9tIHVzZXIgb3BlcmF0aW9ucy4gVGhlIG1tdQo+Pj4gZW11bGF0aW9uIG9uIGl0cyBv
+d24gaXMgc3VmZmljaWVudCB0byBwcm92aWRlIHRoZSBjb3JyZWN0IGFkZHJlc3MKPj4+IG9mZnNl
+dCB0byBleGVjdXRlIGEgbWVtY3B5KCkuCj4+Pgo+Pj4gVGhpcyByZXN1bHRzIGluIDMlLTclIGlt
+cHJvdmVtZW50IGluIHZhcmlvdXMgY29weV90by9mcm9tIG9wcy4KPj4+Cj4+PiBTaWduZWQtb2Zm
+LWJ5OiBBbnRvbiBJdmFub3YgPGFudG9uLml2YW5vdkBjYW1icmlkZ2VncmV5cy5jb20+Cj4+PiAt
+LS0KPj4+IMKgIGFyY2gvdW0va2VybmVsL3NrYXMvdWFjY2Vzcy5jIHwgMTIgKysrKysrKysrLS0t
+Cj4+PiDCoCAxIGZpbGUgY2hhbmdlZCwgOSBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQo+
+Pj4KPj4+IGRpZmYgLS1naXQgYS9hcmNoL3VtL2tlcm5lbC9za2FzL3VhY2Nlc3MuYyAKPj4+IGIv
+YXJjaC91bS9rZXJuZWwvc2thcy91YWNjZXNzLmMKPj4+IGluZGV4IGQ0NTA3OTdhM2E3Yy4uNjE1
+YmUzZWM5OGViIDEwMDY0NAo+Pj4gLS0tIGEvYXJjaC91bS9rZXJuZWwvc2thcy91YWNjZXNzLmMK
+Pj4+ICsrKyBiL2FyY2gvdW0va2VybmVsL3NrYXMvdWFjY2Vzcy5jCj4+PiBAQCAtNjksMjAgKzY5
+LDI2IEBAIHN0YXRpYyBpbnQgZG9fb3Bfb25lX3BhZ2UodW5zaWduZWQgbG9uZyBhZGRyLCAKPj4+
+IGludCBsZW4sIGludCBpc193cml0ZSwKPj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgIHJldHVybiAtMTsKPj4+Cj4+PiDCoMKgwqDCoMKgwqDCoMKgIHBhZ2UgPSBwdGVfcGFnZSgq
+cHRlKTsKPj4+ICvCoMKgwqDCoMKgwqAgY3VycmVudC0+dGhyZWFkLmZhdWx0X2NhdGNoZXIgPSAm
+YnVmOwo+Pj4gK8KgwqDCoMKgwqDCoCBmYXVsdGVkID0gVU1MX1NFVEpNUCgmYnVmKTsKPj4gSSdt
+IHdvbmRlcmluZyB3aHkgc2hvdWxkIHdlIG1vdmUgdGhlc2UgaW4gZnJvbnQgb2Yga21hcF9hdG9t
+aWMoKSwgYXMKPj4gaW4gYSBmYXVsdGVkIHNpdHVhdGlvbgo+PiB0aGlzIHdpbGwgbGVhZCB0byBh
+IHNlY29uZCBrbWFwX2F0b21pYygpIGV4ZWN1dGlvbi4KPgo+IFRoYW5rcyBmb3Igbm90aW5nLgo+
+Cj4gSSB0aGluayB0aGV5IGFyZSBuZWVkZWQgb25seSBmb3IgdGhlIGNhc2Ugd2hlcmUgd2UgZG8g
+YSBzaW1wbGUgCj4gcGFnZV9hZGRyLCBpbnN0ZWFkIG9mIGttYXBfYXRvbWljIGJlY2F1c2Uga21h
+cF9hdG9taWMgdGVtcG9yYXJpbHkgCj4gdHVybnMgb2ZmIHBhZ2luZy4KPgo+IFNvIGlmIHB0ZSBp
+cyBub24tbnVsbCAoYXMgY2hlY2tlZCBieSB0aGUgcHJldmlvdXMgaWYpIHRoZXJlIHNob3VsZCBi
+ZSAKPiBubyBwb2ludCB0byBkbyBhIGZhdWx0ZWQgY2hlY2suCj4KPiBJIHdpbGwgZG91YmxlIGNo
+ZWNrIGFuZCByZS10ZXN0IGFsbCBjb21iaW5hdGlvbnMuCgpJIGhhdmUgdHJhY2VkIHRoZSB2YXJp
+b3VzIHBhdGhzIG9uIDY0IGFuZCAzMiBiaXRzIGFuZCB0aGUgZmF1bHRlZCBjaGVjayAKc2hvdWxk
+IG5vdCBiZSB0aGVyZS4gSW4gZmFjdCwgSSB3YXMgbG9va2luZyBhdCB0aGUgd3JvbmcgY3VscHJp
+dCAtIGl0IAp3YXMgdGhlIGZhdWx0IGNoZWNrICsgU0VUSk1QIHdoaWNoIHdlcmUgdGhlIGlzc3Vl
+LCBub3Qgc28gbXVjaCB0aGUgCmFjdHVhbCBtYXAvdW5tYXAuCgpJdCBpcyBhY3R1YWxseSBxdWl0
+ZSBjb3N0bHkgYW5kIHdpdGggcG90ZW50aWFscyBmb3IgZXJyb3IgY29uZGl0aW9ucyAKd2hlbiBt
+ZW1vcnkgaXMgbG93LsKgIEl0IHdhcyByZS1lbmFibGluZyBzaWduYWxzIG1pZC1jb3B5IHdpdGhv
+dXQgcGFnaW5nIApiZWluZyBlbmFibGVkIChpdCB3YXMgZGlzYWJsZWQgYnkga21hcCBhIGZldyBs
+aW5lcyBmdXJ0aGVyIHVwKS4KClNvIGl0IHdhcyBwb3NzaWJsZSB0byBlbmQgdXAgd2l0aCBhIHNj
+ZW5hcmlvIHdoZXJlIHBlbmRpbmcgSU8gcmVsZWFzZWQgCmJ5IHNpZ25hbHMgZW5hYmxlIHdvdWxk
+IHJlc3VsdCBpbiBhbiBPT00uCgpBcyBhIHNpZGUgZWZmZWN0LCBJIGFtIG5vdyBoYXZpbmcgYSBk
+aWZmaWN1bHR5IHRvIG1ha2UgVU1MIGdvIGludG8gYW4gCk9PTSBzaXR1YXRpb24gb24gbG93IG1l
+bW9yeSBhbmQgaGVhdnkgSU8uIFdoaWxlIEkgY2Fubm90IHNheSB0aGF0IHRoaXMgCmtpbGxzIHRo
+YXQgaXNzdWUsIGl0IHNlZW1zIHRvIGJlaGF2ZSBiZXR0ZXIuCgpJIGhhdmUgaXNzdWVkIGEgcmV2
+aXNlZCBwYXRjaC4gSW4gZmFjdCBpdCBpcyBub3Qgc28gbXVjaCByZXZpc2VkIGFzIApjb21wbGV0
+ZWx5IHJlZG9uZS4KCk9uY2UgYWdhaW4sIHRoYW5rcyBmb3Igbm90aW5nIHRoZSBpc3N1ZXMgd2l0
+aCB0aGUgb3JpZ2luYWwuCgo+Cj4+IFRoYW5rcwo+Pgo+Pj4gKyNpZm5kZWYgQ09ORklHXzY0QklU
+Cj4+PiDCoMKgwqDCoMKgwqDCoMKgIGFkZHIgPSAodW5zaWduZWQgbG9uZykga21hcF9hdG9taWMo
+cGFnZSkgKwo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKGFkZHIgJiB+UEFH
+RV9NQVNLKTsKPj4+ICsjZWxzZQo+Pj4gK8KgwqDCoMKgwqDCoCBhZGRyID0gKHVuc2lnbmVkIGxv
+bmcpIHBhZ2VfYWRkcmVzcyhwYWdlKSArCj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oCAoYWRkciAmIH5QQUdFX01BU0spOwo+Pj4gKyNlbmRpZgo+Pj4KPj4+IC3CoMKgwqDCoMKgwqAg
+Y3VycmVudC0+dGhyZWFkLmZhdWx0X2NhdGNoZXIgPSAmYnVmOwo+Pj4KPj4+IC3CoMKgwqDCoMKg
+wqAgZmF1bHRlZCA9IFVNTF9TRVRKTVAoJmJ1Zik7Cj4+PiDCoMKgwqDCoMKgwqDCoMKgIGlmIChm
+YXVsdGVkID09IDApCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBuID0gKCpv
+cCkoYWRkciwgbGVuLCBhcmcpOwo+Pj4gwqDCoMKgwqDCoMKgwqDCoCBlbHNlCj4+PiDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBuID0gLTE7Cj4+Pgo+Pj4gwqDCoMKgwqDCoMKgwqDC
+oCBjdXJyZW50LT50aHJlYWQuZmF1bHRfY2F0Y2hlciA9IE5VTEw7Cj4+PiAtCj4+PiArI2lmbmRl
+ZiBDT05GSUdfNjRCSVQKPj4+IMKgwqDCoMKgwqDCoMKgwqAga3VubWFwX2F0b21pYygodm9pZCAq
+KWFkZHIpOwo+Pj4gKyNlbmRpZgo+Pj4KPj4+IMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIG47Cj4+
+PiDCoCB9Cj4+PiAtLSAKPj4+IDIuMTEuMAo+Pj4KPj4+Cj4+PiBfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+Pj4gbGludXgtdW0gbWFpbGluZyBsaXN0Cj4+
+PiBsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCj4+PiBodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCj4KPiBCcmdkcywKPgotLSAKQW50b24gUi4g
+SXZhbm92CgpDYW1icmlkZ2UgR3JleXMgTGltaXRlZCwgRW5nbGFuZCBhbmQgV2FsZXMgY29tcGFu
+eSBObyAxMDI3MzY2MQpodHRwOi8vd3d3LmNhbWJyaWRnZWdyZXlzLmNvbS8KCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxp
+c3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
 
