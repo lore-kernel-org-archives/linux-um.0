@@ -1,14 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gMRao-0004un-Lz
- for linux-um@lists.infradead.org; Tue, 13 Nov 2018 05:50:32 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 20/44] um: Give start_idle_thread() a return code
-Date: Tue, 13 Nov 2018 00:49:26 -0500
-Message-Id: <20181113054950.77898-20-sashal@kernel.org>
-In-Reply-To: <20181113054950.77898-1-sashal@kernel.org>
-References: <20181113054950.77898-1-sashal@kernel.org>
+Received: from ivanoab6.miniserver.com ([5.153.251.140]
+ helo=www.kot-begemot.co.uk)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gPleC-0007sS-OX
+ for linux-um@lists.infradead.org; Thu, 22 Nov 2018 09:51:46 +0000
+Subject: Re: [PATCH] um/timer: fix tv_sec value setup in os_timer_one_shot
+References: <20181122015535.3943-1-liwei@anbutu.com>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <50d3eb2e-afc9-3bbe-1117-81a26d79c48b@cambridgegreys.com>
+Date: Thu, 22 Nov 2018 09:51:26 +0000
+MIME-Version: 1.0
+In-Reply-To: <20181122015535.3943-1-liwei@anbutu.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -17,50 +20,49 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: stable@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org
+To: Wei Li <liwei@anbutu.com>, linux-um@lists.infradead.org
+Cc: richard@nod.at, jdike@addtoit.com
 
-From: Richard Weinberger <richard@nod.at>
+On 11/22/18 1:55 AM, Wei Li wrote:
 
-[ Upstream commit 7ff1e34bbdc15acab823b1ee4240e94623d50ee8 ]
+> Signed-off-by: Wei Li <liwei@anbutu.com>
+> ---
+>   arch/um/os-Linux/time.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/um/os-Linux/time.c b/arch/um/os-Linux/time.c
+> index 0e39b9978729..c0c6bcb51241 100644
+> --- a/arch/um/os-Linux/time.c
+> +++ b/arch/um/os-Linux/time.c
+> @@ -119,11 +119,11 @@ int os_timer_one_shot(int ticks)
+>   	unsigned long long nsec;
+>   	unsigned long sec;
+>   
+> -    nsec = (ticks + 1);
+> -    sec = nsec / UM_NSEC_PER_SEC;
+> +	nsec = (ticks + 1);
+> +	sec = nsec / UM_NSEC_PER_SEC;
+>   	nsec = nsec % UM_NSEC_PER_SEC;
+>   
+> -	its.it_value.tv_sec = nsec / UM_NSEC_PER_SEC;
+> +	its.it_value.tv_sec = sec;
+>   	its.it_value.tv_nsec = nsec;
+>   
+>   	its.it_interval.tv_sec = 0;
 
-Fixes:
-arch/um/os-Linux/skas/process.c:613:1: warning: control reaches end of
-non-void function [-Wreturn-type]
+Thanks,
 
-longjmp() never returns but gcc still warns that the end of the function
-can be reached.
-Add a return code and debug aid to detect this impossible case.
+A.
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/um/os-Linux/skas/process.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index c94c3bd70ccd..df4a985716eb 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -610,6 +610,11 @@ int start_idle_thread(void *stack, jmp_buf *switch_buf)
- 		fatal_sigsegv();
- 	}
- 	longjmp(*switch_buf, 1);
-+
-+	/* unreachable */
-+	printk(UM_KERN_ERR "impossible long jump!");
-+	fatal_sigsegv();
-+	return 0;
- }
- 
- void initial_thread_cb_skas(void (*proc)(void *), void *arg)
 -- 
-2.17.1
+Anton R. Ivanov
+
+Cambridge Greys Limited, England and Wales company No 10273661
+http://www.cambridgegreys.com/
 
 
 _______________________________________________
