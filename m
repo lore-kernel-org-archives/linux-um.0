@@ -1,12 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from isilmar-4.linta.de ([136.243.71.142])
+Received: from verein.lst.de ([213.95.11.211] helo=newverein.lst.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gRD7h-00036K-Go
- for linux-um@lists.infradead.org; Mon, 26 Nov 2018 09:24:11 +0000
-Date: Mon, 26 Nov 2018 09:36:33 +0100
-From: Dominik Brodowski <linux@dominikbrodowski.net>
+ id 1gRC7C-0002jp-5f
+ for linux-um@lists.infradead.org; Mon, 26 Nov 2018 08:19:35 +0000
+Date: Mon, 26 Nov 2018 09:19:15 +0100
+From: Christoph Hellwig <hch@lst.de>
 Subject: Re: [PATCH] pcmcia: remove per-arch PCMCIA config entry
-Message-ID: <20181126083633.GA10604@light.dominikbrodowski.net>
+Message-ID: <20181126081915.GA1135@lst.de>
 References: <1543220141-13744-1-git-send-email-yamada.masahiro@socionext.com>
 MIME-Version: 1.0
 Content-Disposition: inline
@@ -37,10 +37,9 @@ On Mon, Nov 26, 2018 at 05:15:41PM +0900, Masahiro Yamada wrote:
 > I will queue this up to my kbuild tree
 > along with Christoph's clean-up patch set.
 
-Acked-by: Dominik Brodowski <linux@dominikbrodowski.net>
+Thanks a lot, not sure how I missed those.
 
-Thanks,
-	Dominik
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 
 _______________________________________________
 linux-um mailing list
