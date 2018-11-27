@@ -1,68 +1,63 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-oi1-x24a.google.com ([2607:f8b0:4864:20::24a])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gS5fM-0003jQ-B3
- for linux-um@lists.infradead.org; Wed, 28 Nov 2018 19:38:33 +0000
-Received: by mail-oi1-x24a.google.com with SMTP id e141so14641425oig.11
- for <linux-um@lists.infradead.org>; Wed, 28 Nov 2018 11:38:21 -0800 (PST)
-Date: Wed, 28 Nov 2018 11:36:32 -0800
-In-Reply-To: <20181128193636.254378-1-brendanhiggins@google.com>
-Message-Id: <20181128193636.254378-16-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20181128193636.254378-1-brendanhiggins@google.com>
-Subject: [RFC v3 15/19] MAINTAINERS: add entry for KUnit the unit testing
- framework
-From: Brendan Higgins <brendanhiggins@google.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Return-Path: <linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org>
+From: Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH v2 16/15] syscall_get_arch: add "struct task_struct *"
+ argument
+In-Reply-To: <20181121004422.GA29053@altlinux.org>
+References: <20181107042751.3b519062@akathisia>
+ <CALCETrV1v-DPRfDRwiH=xn29bxWxiHdZtAH1nw=dsmDtnT0YGQ@mail.gmail.com>
+ <20181120001128.GA11300@altlinux.org> <20181121004422.GA29053@altlinux.org>
+Date: Tue, 27 Nov 2018 21:34:29 +1100
+Message-ID: <87in0ihkqy.fsf@concordia.ellerman.id.au>
+MIME-Version: 1.0
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
-Cc: brakmo@fb.com, jdike@addtoit.com, dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org, frowand.list@gmail.com, robh@kernel.org, linux-nvdimm@lists.01.org, richard@nod.at, knut.omang@oracle.com, kieran.bingham@ideasonboard.com, joel@jms.id.au, khilman@baylibre.com, Brendan Higgins <brendanhiggins@google.com>, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, joe@perches.com
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org
+To: "Dmitry V. Levin" <ldv@altlinux.org>, Andy Lutomirski <luto@kernel.org>, Eric Paris <eparis@redhat.com>, Paul Moore <paul@paul-moore.com>
+Cc: linux-mips@linux-mips.org, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-arch@vger.kernel.org, linux-s390@vger.kernel.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, x86@kernel.org, Eugene Syromyatnikov <esyr@redhat.com>, Elvira Khabirova <lineprinter@altlinux.org>, linux-snps-arc@lists.infradead.org, uclinux-h8-devel@lists.sourceforge.jp, linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>, linux-audit@redhat.com, linux-alpha@vger.kernel.org, nios2-dev@lists.rocketboards.org, linuxppc-dev@lists.ozlabs.org
+List-ID: <linux-um.lists.infradead.org>
 
-Add myself as maintainer of KUnit, the Linux kernel's unit testing
-framework.
+"Dmitry V. Levin" <ldv@altlinux.org> writes:
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
----
- MAINTAINERS | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+> diff --git a/arch/powerpc/include/asm/syscall.h b/arch/powerpc/include/asm/syscall.h
+> index ab9f3f0a8637..d88b34179118 100644
+> --- a/arch/powerpc/include/asm/syscall.h
+> +++ b/arch/powerpc/include/asm/syscall.h
+> @@ -100,9 +100,15 @@ static inline void syscall_set_arguments(struct task_struct *task,
+>  		regs->orig_gpr3 = args[0];
+>  }
+>  
+> -static inline int syscall_get_arch(void)
+> +static inline int syscall_get_arch(struct task_struct *task)
+>  {
+> -	int arch = is_32bit_task() ? AUDIT_ARCH_PPC : AUDIT_ARCH_PPC64;
+> +	int arch;
+> +
+> +	if (IS_ENABLED(CONFIG_PPC64) && !test_tsk_thread_flag(task, TIF_32BIT))
+> +		arch = AUDIT_ARCH_PPC64;
+> +	else
+> +		arch = AUDIT_ARCH_PPC;
+> +
+>  #ifdef __LITTLE_ENDIAN__
+>  	arch |= __AUDIT_ARCH_LE;
+>  #endif
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b2f710eee67a7..8c9b56dbc9645 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -7988,6 +7988,16 @@ S:	Maintained
- F:	tools/testing/selftests/
- F:	Documentation/dev-tools/kselftest*
- 
-+KERNEL UNIT TESTING FRAMEWORK (KUnit)
-+M:	Brendan Higgins <brendanhiggins@google.com>
-+L:	kunit-dev@googlegroups.com
-+W:	https://google.github.io/kunit-docs/third_party/kernel/docs/
-+S:	Maintained
-+F:	Documentation/kunit/
-+F:	include/kunit/
-+F:	kunit/
-+F:	tools/testing/kunit/
-+
- KERNEL USERMODE HELPER
- M:	"Luis R. Rodriguez" <mcgrof@kernel.org>
- L:	linux-kernel@vger.kernel.org
--- 
-2.20.0.rc0.387.gc7a69e6b6c-goog
+LGTM.
+
+Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+
+cheers
 
 
 _______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
