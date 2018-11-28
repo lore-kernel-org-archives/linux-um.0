@@ -1,24 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from mail-pg1-x549.google.com ([2607:f8b0:4864:20::549])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gS7Lm-0000vr-D9
- for linux-um@lists.infradead.org; Wed, 28 Nov 2018 21:26:27 +0000
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com
- [209.85.160.182])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 91F0C213A2
- for <linux-um@lists.infradead.org>; Wed, 28 Nov 2018 21:26:15 +0000 (UTC)
-Received: by mail-qt1-f182.google.com with SMTP id y20so27605718qtm.13
- for <linux-um@lists.infradead.org>; Wed, 28 Nov 2018 13:26:15 -0800 (PST)
-MIME-Version: 1.0
+ id 1gS5ez-0003Wp-QQ
+ for linux-um@lists.infradead.org; Wed, 28 Nov 2018 19:38:11 +0000
+Received: by mail-pg1-x549.google.com with SMTP id s22so12725781pgv.8
+ for <linux-um@lists.infradead.org>; Wed, 28 Nov 2018 11:37:58 -0800 (PST)
+Date: Wed, 28 Nov 2018 11:36:23 -0800
+In-Reply-To: <20181128193636.254378-1-brendanhiggins@google.com>
+Message-Id: <20181128193636.254378-7-brendanhiggins@google.com>
+Mime-Version: 1.0
 References: <20181128193636.254378-1-brendanhiggins@google.com>
- <20181128193636.254378-7-brendanhiggins@google.com>
-In-Reply-To: <20181128193636.254378-7-brendanhiggins@google.com>
-From: Rob Herring <robh@kernel.org>
-Date: Wed, 28 Nov 2018 15:26:03 -0600
-Message-ID: <CAL_JsqJLNSg-38hej8LV+Oh-YXBM2hRGomie3b_psa9LvzoRYg@mail.gmail.com>
-Subject: Re: [RFC v3 06/19] arch: um: enable running kunit from User Mode Linux
+Subject: [RFC v3 06/19] arch: um: enable running kunit from User Mode Linux
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -31,24 +24,44 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Brendan Higgins <brendanhiggins@google.com>
-Cc: brakmo@fb.com, dri-devel <dri-devel@lists.freedesktop.org>, linux-kselftest@vger.kernel.org, shuah@kernel.org, Frank Rowand <frowand.list@gmail.com>, linux-nvdimm <linux-nvdimm@lists.01.org>, Richard Weinberger <richard@nod.at>, knut.omang@oracle.com, Kieran Bingham <kieran.bingham@ideasonboard.com>, Joel Stanley <joel@jms.id.au>, Jeff Dike <jdike@addtoit.com>, "Bird," Timothy" <Tim.Bird@sony.com>, Kees Cook <keescook@google.com>," linux-um@lists.infradead.org, Steven Rostedt <rostedt@goodmis.org>, Julia Lawall <julia.lawall@lip6.fr>, Dan Williams <dan.j.williams@intel.com>, kunit-dev@googlegroups.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Luis R. Rodriguez" <mcgrof@kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Michael Ellerman <mpe@ellerman.id.au>, Joe Perches <joe@perches.com>, Kevin Hilman <khilman@baylibre.com>
+To: gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
+Cc: brakmo@fb.com, jdike@addtoit.com, dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org, frowand.list@gmail.com, robh@kernel.org, linux-nvdimm@lists.01.org, richard@nod.at, knut.omang@oracle.com, kieran.bingham@ideasonboard.com, joel@jms.id.au, khilman@baylibre.com, Brendan Higgins <brendanhiggins@google.com>, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, joe@perches.com
 
-On Wed, Nov 28, 2018 at 1:37 PM Brendan Higgins
-<brendanhiggins@google.com> wrote:
->
-> Make minimum number of changes outside of the KUnit directories for
-> KUnit to build and run using UML.
+Make minimum number of changes outside of the KUnit directories for
+KUnit to build and run using UML.
 
-There's nothing in this patch limiting this to UML. Only patch 1 does
-that and I would remove that depends. I'd guess most folks will want
-to run under something other than UML. DRM for instance (though the
-virtual KMS stuff may work in UML?).
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+---
+ Kconfig  | 2 ++
+ Makefile | 2 +-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-Plus you want to make sure this all builds with allmodconfig for x86
-(or ARM) because those get the most (and quickest) compile coverage.
+diff --git a/Kconfig b/Kconfig
+index 48a80beab6853..10428501edb78 100644
+--- a/Kconfig
++++ b/Kconfig
+@@ -30,3 +30,5 @@ source "crypto/Kconfig"
+ source "lib/Kconfig"
+ 
+ source "lib/Kconfig.debug"
++
++source "kunit/Kconfig"
+diff --git a/Makefile b/Makefile
+index 69fa5c0310d83..197f01cbddf03 100644
+--- a/Makefile
++++ b/Makefile
+@@ -966,7 +966,7 @@ endif
+ 
+ 
+ ifeq ($(KBUILD_EXTMOD),)
+-core-y		+= kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ block/
++core-y		+= kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ block/ kunit/
+ 
+ vmlinux-dirs	:= $(patsubst %/,%,$(filter %/, $(init-y) $(init-m) \
+ 		     $(core-y) $(core-m) $(drivers-y) $(drivers-m) \
+-- 
+2.20.0.rc0.387.gc7a69e6b6c-goog
 
-Rob
 
 _______________________________________________
 linux-um mailing list
