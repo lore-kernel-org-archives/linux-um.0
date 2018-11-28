@@ -1,158 +1,68 @@
-Return-Path: <joel@joelfernandes.org>
-From: Joel Fernandes <joel@joelfernandes.org>
-Subject: [PATCH -next 2/3] mm: speed up mremap by 20x on large regions (v4)
-Date: Fri,  2 Nov 2018 21:00:40 -0700
-Message-Id: <20181103040041.7085-3-joelaf@google.com>
-In-Reply-To: <20181103040041.7085-1-joelaf@google.com>
-References: <20181103040041.7085-1-joelaf@google.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-kernel@vger.kernel.org
-Cc: kernel-team@android.com, "Joel Fernandes (Google)" <joel@joelfernandes.org>, "Kirill A . Shutemov" <kirill@shutemov.name>, akpm@linux-foundation.org, Andrey Ryabinin <aryabinin@virtuozzo.com>, Andy Lutomirski <luto@kernel.org>, anton.ivanov@kot-begemot.co.uk, Borislav Petkov <bp@alien8.de>, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, dancol@google.com, Dave Hansen <dave.hansen@linux.intel.com>, "David S. Miller" <davem@davemloft.net>, elfring@users.sourceforge.net, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Helge Deller <deller@gmx.de>, hughd@google.com, Ingo Molnar <mingo@redhat.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Jeff Dike <jdike@addtoit.com>, Jonas Bonn <jonas@southpole.se>, Julia Lawall <Julia.Lawall@lip6.fr>, kasan-dev@googlegroups.com, kvmarm@lists.cs.columbia.edu, Ley Foon Tan <lftan@altera.com>, linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, lokeshgidra@google.com, Max Filippov <jcmvbkbc@gmail.com>, Michal Hocko <mhocko@kernel.org>, minchan@kernel.org, nios2-dev@lists.rocketboards.org, pantin@google.com, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Sam Creasey <sammy@sammy.net>, sparclinux@vger.kernel.org, Stafford Horne <shorne@gmail.com>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, Will Deacon <will.deacon@arm.com>, "maintainer:X86 ARCHITECTURE 32-BIT AND 64-BIT" <x86@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-oi1-x24a.google.com ([2607:f8b0:4864:20::24a])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gS5fM-0003jQ-B3
+ for linux-um@lists.infradead.org; Wed, 28 Nov 2018 19:38:33 +0000
+Received: by mail-oi1-x24a.google.com with SMTP id e141so14641425oig.11
+ for <linux-um@lists.infradead.org>; Wed, 28 Nov 2018 11:38:21 -0800 (PST)
+Date: Wed, 28 Nov 2018 11:36:32 -0800
+In-Reply-To: <20181128193636.254378-1-brendanhiggins@google.com>
+Message-Id: <20181128193636.254378-16-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20181128193636.254378-1-brendanhiggins@google.com>
+Subject: [RFC v3 15/19] MAINTAINERS: add entry for KUnit the unit testing
+ framework
+From: Brendan Higgins <brendanhiggins@google.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
+Cc: brakmo@fb.com, jdike@addtoit.com, dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org, frowand.list@gmail.com, robh@kernel.org, linux-nvdimm@lists.01.org, richard@nod.at, knut.omang@oracle.com, kieran.bingham@ideasonboard.com, joel@jms.id.au, khilman@baylibre.com, Brendan Higgins <brendanhiggins@google.com>, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, joe@perches.com
 
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Add myself as maintainer of KUnit, the Linux kernel's unit testing
+framework.
 
-Android needs to mremap large regions of memory during memory management
-related operations. The mremap system call can be really slow if THP is
-not enabled. The bottleneck is move_page_tables, which is copying each
-pte at a time, and can be really slow across a large map. Turning on THP
-may not be a viable option, and is not for us. This patch speeds up the
-performance for non-THP system by copying at the PMD level when possible.
-
-The speed up is an order of magnitude on x86 (~20x). On a 1GB mremap,
-the mremap completion times drops from 3.4-3.6 milliseconds to 144-160
-microseconds.
-
-Before:
-Total mremap time for 1GB data: 3521942 nanoseconds.
-Total mremap time for 1GB data: 3449229 nanoseconds.
-Total mremap time for 1GB data: 3488230 nanoseconds.
-
-After:
-Total mremap time for 1GB data: 150279 nanoseconds.
-Total mremap time for 1GB data: 144665 nanoseconds.
-Total mremap time for 1GB data: 158708 nanoseconds.
-
-Incase THP is enabled, the optimization is mostly skipped except in
-certain situations.
-
-Acked-by: Kirill A. Shutemov <kirill@shutemov.name>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
 ---
+ MAINTAINERS | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Note that since the bug fix in [1], we now have to flush the TLB every
-PMD move. The above numbers were obtained on x86 with a flush done every
-move. For arm64, I previously encountered performance issues doing a
-flush everytime we move, however Will Deacon says [2] the performance
-should be better now with recent release. Until we can evaluate arm64, I
-am dropping the HAVE_MOVE_PMD config enable patch for ARM64 for now. It
-can be added back once we finish the performance evaluation. Also of
-note is that the speed up on arm64 with this patch but without the TLB
-flush every PMD move is around 500x.
-
-[1] https://bugs.chromium.org/p/project-zero/issues/detail?id=1695
-[2] https://www.mail-archive.com/linuxppc-dev@lists.ozlabs.org/msg140837.html
-
- arch/Kconfig |  5 +++++
- mm/mremap.c  | 60 ++++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 65 insertions(+)
-
-diff --git a/arch/Kconfig b/arch/Kconfig
-index e1e540ffa979..b70c952ac838 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -535,6 +535,11 @@ config HAVE_IRQ_TIME_ACCOUNTING
- 	  Archs need to ensure they use a high enough resolution clock to
- 	  support irq time accounting and then call enable_sched_clock_irqtime().
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b2f710eee67a7..8c9b56dbc9645 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -7988,6 +7988,16 @@ S:	Maintained
+ F:	tools/testing/selftests/
+ F:	Documentation/dev-tools/kselftest*
  
-+config HAVE_MOVE_PMD
-+	bool
-+	help
-+	  Archs that select this are able to move page tables at the PMD level.
++KERNEL UNIT TESTING FRAMEWORK (KUnit)
++M:	Brendan Higgins <brendanhiggins@google.com>
++L:	kunit-dev@googlegroups.com
++W:	https://google.github.io/kunit-docs/third_party/kernel/docs/
++S:	Maintained
++F:	Documentation/kunit/
++F:	include/kunit/
++F:	kunit/
++F:	tools/testing/kunit/
 +
- config HAVE_ARCH_TRANSPARENT_HUGEPAGE
- 	bool
- 
-diff --git a/mm/mremap.c b/mm/mremap.c
-index 7c9ab747f19d..7cf6b0943090 100644
---- a/mm/mremap.c
-+++ b/mm/mremap.c
-@@ -191,6 +191,50 @@ static void move_ptes(struct vm_area_struct *vma, pmd_t *old_pmd,
- 		drop_rmap_locks(vma);
- }
- 
-+static bool move_normal_pmd(struct vm_area_struct *vma, unsigned long old_addr,
-+		  unsigned long new_addr, unsigned long old_end,
-+		  pmd_t *old_pmd, pmd_t *new_pmd)
-+{
-+	spinlock_t *old_ptl, *new_ptl;
-+	struct mm_struct *mm = vma->vm_mm;
-+	pmd_t pmd;
-+
-+	if ((old_addr & ~PMD_MASK) || (new_addr & ~PMD_MASK)
-+	    || old_end - old_addr < PMD_SIZE)
-+		return false;
-+
-+	/*
-+	 * The destination pmd shouldn't be established, free_pgtables()
-+	 * should have release it.
-+	 */
-+	if (WARN_ON(!pmd_none(*new_pmd)))
-+		return false;
-+
-+	/*
-+	 * We don't have to worry about the ordering of src and dst
-+	 * ptlocks because exclusive mmap_sem prevents deadlock.
-+	 */
-+	old_ptl = pmd_lock(vma->vm_mm, old_pmd);
-+	new_ptl = pmd_lockptr(mm, new_pmd);
-+	if (new_ptl != old_ptl)
-+		spin_lock_nested(new_ptl, SINGLE_DEPTH_NESTING);
-+
-+	/* Clear the pmd */
-+	pmd = *old_pmd;
-+	pmd_clear(old_pmd);
-+
-+	VM_BUG_ON(!pmd_none(*new_pmd));
-+
-+	/* Set the new pmd */
-+	set_pmd_at(mm, new_addr, new_pmd, pmd);
-+	flush_tlb_range(vma, old_addr, old_addr + PMD_SIZE);
-+	if (new_ptl != old_ptl)
-+		spin_unlock(new_ptl);
-+	spin_unlock(old_ptl);
-+
-+	return true;
-+}
-+
- unsigned long move_page_tables(struct vm_area_struct *vma,
- 		unsigned long old_addr, struct vm_area_struct *new_vma,
- 		unsigned long new_addr, unsigned long len,
-@@ -237,7 +281,23 @@ unsigned long move_page_tables(struct vm_area_struct *vma,
- 			split_huge_pmd(vma, old_pmd, old_addr);
- 			if (pmd_trans_unstable(old_pmd))
- 				continue;
-+		} else if (extent == PMD_SIZE && IS_ENABLED(CONFIG_HAVE_MOVE_PMD)) {
-+			/*
-+			 * If the extent is PMD-sized, try to speed the move by
-+			 * moving at the PMD level if possible.
-+			 */
-+			bool moved;
-+
-+			if (need_rmap_locks)
-+				take_rmap_locks(vma);
-+			moved = move_normal_pmd(vma, old_addr, new_addr,
-+					old_end, old_pmd, new_pmd);
-+			if (need_rmap_locks)
-+				drop_rmap_locks(vma);
-+			if (moved)
-+				continue;
- 		}
-+
- 		if (pte_alloc(new_vma->vm_mm, new_pmd))
- 			break;
- 		next = (new_addr + PMD_SIZE) & PMD_MASK;
+ KERNEL USERMODE HELPER
+ M:	"Luis R. Rodriguez" <mcgrof@kernel.org>
+ L:	linux-kernel@vger.kernel.org
 -- 
-2.19.1.930.g4563a0d9d0-goog
+2.20.0.rc0.387.gc7a69e6b6c-goog
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
