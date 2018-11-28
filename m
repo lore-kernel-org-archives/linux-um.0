@@ -1,17 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x54a.google.com ([2607:f8b0:4864:20::54a])
+Received: from mail-ot1-x34a.google.com ([2607:f8b0:4864:20::34a])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gS5fE-0003fJ-F3
- for linux-um@lists.infradead.org; Wed, 28 Nov 2018 19:38:25 +0000
-Received: by mail-pg1-x54a.google.com with SMTP id h9so12797168pgm.1
- for <linux-um@lists.infradead.org>; Wed, 28 Nov 2018 11:38:13 -0800 (PST)
-Date: Wed, 28 Nov 2018 11:36:29 -0800
+ id 1gS5eu-0003WT-RT
+ for linux-um@lists.infradead.org; Wed, 28 Nov 2018 19:38:06 +0000
+Received: by mail-ot1-x34a.google.com with SMTP id 62so12558052otr.14
+ for <linux-um@lists.infradead.org>; Wed, 28 Nov 2018 11:37:54 -0800 (PST)
+Date: Wed, 28 Nov 2018 11:36:21 -0800
 In-Reply-To: <20181128193636.254378-1-brendanhiggins@google.com>
-Message-Id: <20181128193636.254378-13-brendanhiggins@google.com>
+Message-Id: <20181128193636.254378-5-brendanhiggins@google.com>
 Mime-Version: 1.0
 References: <20181128193636.254378-1-brendanhiggins@google.com>
-Subject: [RFC v3 12/19] kunit: add KUnit wrapper script and simple output
- parser
+Subject: [RFC v3 04/19] kunit: test: add test_stream a std::stream like logger
 From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -26,122 +25,292 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
-Cc: brakmo@fb.com, jdike@addtoit.com, dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org, frowand.list@gmail.com, robh@kernel.org, linux-nvdimm@lists.01.org, richard@nod.at, knut.omang@oracle.com, kieran.bingham@ideasonboard.com, Felix Guo <felixguoxiuping@gmail.com>, joel@jms.id.au, khilman@baylibre.com, Brendan Higgins <brendanhiggins@google.com>, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, joe@perches.com
+Cc: brakmo@fb.com, jdike@addtoit.com, dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org, frowand.list@gmail.com, robh@kernel.org, linux-nvdimm@lists.01.org, richard@nod.at, knut.omang@oracle.com, kieran.bingham@ideasonboard.com, joel@jms.id.au, khilman@baylibre.com, Brendan Higgins <brendanhiggins@google.com>, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, joe@perches.com
 
-The KUnit wrapper script interfaces with the two modules
-(kunit_config.py and kunit_kernel.py) and provides a command line
-interface for running KUnit tests. This interface allows the caller to
-specify options like test timeouts. The script handles configuring,
-building and running the kernel and tests.
+A lot of the expectation and assertion infrastructure prints out fairly
+complicated test failure messages, so add a C++ style log library for
+for logging test results.
 
-The output parser (kunit_parser.py) simply strips out all the output
-from the kernel that is outputted as part of it's initialization
-sequence. This ensures that only the output from KUnit is displayed
-on the screen.
-
-A full version of the output is written to test.log, or can be seen by
-passing --raw_output to the wrapper script.
-
-Signed-off-by: Felix Guo <felixguoxiuping@gmail.com>
 Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
 ---
- tools/testing/kunit/kunit.py        | 40 +++++++++++++++++++++++++++++
- tools/testing/kunit/kunit_kernel.py |  3 +--
- tools/testing/kunit/kunit_parser.py | 24 +++++++++++++++++
- 3 files changed, 65 insertions(+), 2 deletions(-)
- create mode 100755 tools/testing/kunit/kunit.py
- create mode 100644 tools/testing/kunit/kunit_parser.py
+ include/kunit/kunit-stream.h |  50 ++++++++++++
+ include/kunit/test.h         |   2 +
+ kunit/Makefile               |   3 +-
+ kunit/kunit-stream.c         | 153 +++++++++++++++++++++++++++++++++++
+ kunit/test.c                 |   8 ++
+ 5 files changed, 215 insertions(+), 1 deletion(-)
+ create mode 100644 include/kunit/kunit-stream.h
+ create mode 100644 kunit/kunit-stream.c
 
-diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-new file mode 100755
-index 0000000000000..1356be404996b
---- /dev/null
-+++ b/tools/testing/kunit/kunit.py
-@@ -0,0 +1,40 @@
-+#!/usr/bin/python3
-+# SPDX-License-Identifier: GPL-2.0
-+
-+# A thin wrapper on top of the KUnit Kernel
-+
-+import argparse
-+import sys
-+import os
-+
-+import kunit_config
-+import kunit_kernel
-+import kunit_parser
-+
-+parser = argparse.ArgumentParser(description='Runs KUnit tests.')
-+
-+parser.add_argument('--raw_output', help='don\'t format output from kernel',
-+		    action='store_true')
-+
-+parser.add_argument('--timeout', help='maximum number of seconds to allow for '
-+		    'all tests to run. This does not include time taken to '
-+		    'build the tests.', type=int, default=300,
-+		    metavar='timeout')
-+
-+cli_args = parser.parse_args()
-+linux = kunit_kernel.LinuxSourceTree()
-+
-+success = linux.build_reconfig()
-+if not success:
-+	quit()
-+
-+print('Building KUnit Kernel ...')
-+success = linux.build_um_kernel()
-+if not success:
-+	quit()
-+
-+print('Starting KUnit Kernel ...')
-+if cli_args.raw_output:
-+	kunit_parser.raw_output(linux.run_kernel(timeout=cli_args.timeout))
-+else:
-+	kunit_parser.parse_run_tests(linux.run_kernel(timeout=cli_args.timeout))
-diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-index bba7ea7ca1869..623f25b16f6c8 100644
---- a/tools/testing/kunit/kunit_kernel.py
-+++ b/tools/testing/kunit/kunit_kernel.py
-@@ -116,8 +116,7 @@ class LinuxSourceTree(object):
- 			return False
- 		return True
- 
--	def run_kernel(self, args=[]):
--		timeout = None
-+	def run_kernel(self, args=[], timeout=None):
- 		args.extend(['mem=256M'])
- 		process = self._ops.linux_bin(args, timeout)
- 		with open('test.log', 'w') as f:
-diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
+diff --git a/include/kunit/kunit-stream.h b/include/kunit/kunit-stream.h
 new file mode 100644
-index 0000000000000..1dff3adb73bd3
+index 0000000000000..3b3119450be3f
 --- /dev/null
-+++ b/tools/testing/kunit/kunit_parser.py
-@@ -0,0 +1,24 @@
-+# SPDX-License-Identifier: GPL-2.0
++++ b/include/kunit/kunit-stream.h
+@@ -0,0 +1,50 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * C++ stream style string formatter and printer used in KUnit for outputting
++ * KUnit messages.
++ *
++ * Copyright (C) 2018, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
 +
-+import re
++#ifndef _KUNIT_KUNIT_STREAM_H
++#define _KUNIT_KUNIT_STREAM_H
 +
-+kunit_start_re = re.compile('console .* enabled')
-+kunit_end_re = re.compile('List of all partitions:')
++#include <linux/types.h>
++#include <kunit/string-stream.h>
 +
-+def isolate_kunit_output(kernel_output):
-+	started = False
-+	for line in kernel_output:
-+		if kunit_start_re.match(line):
-+			started = True
-+		elif kunit_end_re.match(line):
-+			break
-+		elif started:
-+			yield line
++struct kunit;
 +
-+def raw_output(kernel_output):
-+	for line in kernel_output:
-+		print(line)
++/**
++ * struct kunit_stream - a std::stream style string builder.
++ * @set_level: sets the level that this string should be printed at.
++ * @add: adds the formatted input to the internal buffer.
++ * @append: adds the contents of other to this.
++ * @commit: prints out the internal buffer to the user.
++ * @clear: clears the internal buffer.
++ *
++ * A std::stream style string builder. Allows messages to be built up and
++ * printed all at once.
++ */
++struct kunit_stream {
++	void (*set_level)(struct kunit_stream *this, const char *level);
++	void (*add)(struct kunit_stream *this, const char *fmt, ...);
++	void (*append)(struct kunit_stream *this, struct kunit_stream *other);
++	void (*commit)(struct kunit_stream *this);
++	void (*clear)(struct kunit_stream *this);
++	/* private: internal use only. */
++	struct kunit *test;
++	spinlock_t lock; /* Guards level. */
++	const char *level;
++	struct string_stream *internal_stream;
++};
 +
-+def parse_run_tests(kernel_output):
-+	for output in isolate_kunit_output(kernel_output):
-+		print(output)
++/**
++ * kunit_new_stream() - constructs a new &struct kunit_stream.
++ * @test: The test context object.
++ *
++ * Constructs a new test managed &struct kunit_stream.
++ */
++struct kunit_stream *kunit_new_stream(struct kunit *test);
++
++#endif /* _KUNIT_KUNIT_STREAM_H */
+diff --git a/include/kunit/test.h b/include/kunit/test.h
+index 583840e24ffda..ea424095e4fb4 100644
+--- a/include/kunit/test.h
++++ b/include/kunit/test.h
+@@ -11,6 +11,7 @@
+ 
+ #include <linux/types.h>
+ #include <linux/slab.h>
++#include <kunit/kunit-stream.h>
+ 
+ struct kunit_resource;
+ 
+@@ -171,6 +172,7 @@ struct kunit {
+ 	void (*vprintk)(const struct kunit *test,
+ 			const char *level,
+ 			struct va_format *vaf);
++	void (*fail)(struct kunit *test, struct kunit_stream *stream);
+ };
+ 
+ int kunit_init_test(struct kunit *test, const char *name);
+diff --git a/kunit/Makefile b/kunit/Makefile
+index 275b565a0e81f..6ddc622ee6b1c 100644
+--- a/kunit/Makefile
++++ b/kunit/Makefile
+@@ -1,2 +1,3 @@
+ obj-$(CONFIG_KUNIT) +=			test.o \
+-					string-stream.o
++					string-stream.o \
++					kunit-stream.o
+diff --git a/kunit/kunit-stream.c b/kunit/kunit-stream.c
+new file mode 100644
+index 0000000000000..70f5182245e0b
+--- /dev/null
++++ b/kunit/kunit-stream.c
+@@ -0,0 +1,153 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * C++ stream style string formatter and printer used in KUnit for outputting
++ * KUnit messages.
++ *
++ * Copyright (C) 2018, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++
++#include <kunit/test.h>
++#include <kunit/kunit-stream.h>
++#include <kunit/string-stream.h>
++
++static const char *kunit_stream_get_level(struct kunit_stream *this)
++{
++	unsigned long flags;
++	const char *level;
++
++	spin_lock_irqsave(&this->lock, flags);
++	level = this->level;
++	spin_unlock_irqrestore(&this->lock, flags);
++
++	return level;
++}
++
++static void kunit_stream_set_level(struct kunit_stream *this, const char *level)
++{
++	unsigned long flags;
++
++	spin_lock_irqsave(&this->lock, flags);
++	this->level = level;
++	spin_unlock_irqrestore(&this->lock, flags);
++}
++
++static void kunit_stream_add(struct kunit_stream *this, const char *fmt, ...)
++{
++	va_list args;
++	struct string_stream *stream = this->internal_stream;
++
++	va_start(args, fmt);
++	if (stream->vadd(stream, fmt, args) < 0)
++		kunit_err(this->test, "Failed to allocate fragment: %s", fmt);
++
++	va_end(args);
++}
++
++static void kunit_stream_append(struct kunit_stream *this,
++				struct kunit_stream *other)
++{
++	struct string_stream *other_stream = other->internal_stream;
++	const char *other_content;
++
++	other_content = other_stream->get_string(other_stream);
++
++	if (!other_content) {
++		kunit_err(this->test,
++			  "Failed to get string from second argument for appending.");
++		return;
++	}
++
++	this->add(this, other_content);
++}
++
++static void kunit_stream_clear(struct kunit_stream *this)
++{
++	this->internal_stream->clear(this->internal_stream);
++}
++
++static void kunit_stream_commit(struct kunit_stream *this)
++{
++	struct string_stream *stream = this->internal_stream;
++	struct string_stream_fragment *fragment;
++	const char *level;
++	char *buf;
++
++	level = kunit_stream_get_level(this);
++	if (!level) {
++		kunit_err(this->test,
++			  "Stream was committed without a specified log level.");
++		level = KERN_ERR;
++		this->set_level(this, level);
++	}
++
++	buf = stream->get_string(stream);
++	if (!buf) {
++		kunit_err(this->test,
++			 "Could not allocate buffer, dumping stream:");
++		list_for_each_entry(fragment, &stream->fragments, node) {
++			kunit_err(this->test, fragment->fragment);
++		}
++		goto cleanup;
++	}
++
++	kunit_printk(level, this->test, buf);
++	kfree(buf);
++
++cleanup:
++	this->clear(this);
++}
++
++static int kunit_stream_init(struct kunit_resource *res, void *context)
++{
++	struct kunit *test = context;
++	struct kunit_stream *stream;
++
++	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
++	if (!stream)
++		return -ENOMEM;
++	res->allocation = stream;
++	stream->test = test;
++	spin_lock_init(&stream->lock);
++	stream->internal_stream = new_string_stream();
++
++	if (!stream->internal_stream)
++		return -ENOMEM;
++
++	stream->set_level = kunit_stream_set_level;
++	stream->add = kunit_stream_add;
++	stream->append = kunit_stream_append;
++	stream->commit = kunit_stream_commit;
++	stream->clear = kunit_stream_clear;
++
++	return 0;
++}
++
++static void kunit_stream_free(struct kunit_resource *res)
++{
++	struct kunit_stream *stream = res->allocation;
++
++	if (!stream->internal_stream->is_empty(stream->internal_stream)) {
++		kunit_err(stream->test,
++			 "End of test case reached with uncommitted stream entries.");
++		stream->commit(stream);
++	}
++
++	destroy_string_stream(stream->internal_stream);
++	kfree(stream);
++}
++
++struct kunit_stream *kunit_new_stream(struct kunit *test)
++{
++	struct kunit_resource *res;
++
++	res = kunit_alloc_resource(test,
++				   kunit_stream_init,
++				   kunit_stream_free,
++				   test);
++
++	if (res)
++		return res->allocation;
++	else
++		return NULL;
++}
+diff --git a/kunit/test.c b/kunit/test.c
+index fb1a786e4c94f..abeb939dc7fa2 100644
+--- a/kunit/test.c
++++ b/kunit/test.c
+@@ -63,12 +63,20 @@ static void kunit_vprintk(const struct kunit *test,
+ 			  "kunit %s: %pV", test->name, vaf);
+ }
+ 
++static void kunit_fail(struct kunit *test, struct kunit_stream *stream)
++{
++	kunit_set_success(test, false);
++	stream->set_level(stream, KERN_ERR);
++	stream->commit(stream);
++}
++
+ int kunit_init_test(struct kunit *test, const char *name)
+ {
+ 	spin_lock_init(&test->lock);
+ 	INIT_LIST_HEAD(&test->resources);
+ 	test->name = name;
+ 	test->vprintk = kunit_vprintk;
++	test->fail = kunit_fail;
+ 
+ 	return 0;
+ }
 -- 
 2.20.0.rc0.387.gc7a69e6b6c-goog
 
