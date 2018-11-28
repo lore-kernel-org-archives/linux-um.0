@@ -1,15 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab6.miniserver.com ([5.153.251.140]
- helo=www.kot-begemot.co.uk)
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gMGEH-00035c-JX
- for linux-um@lists.infradead.org; Mon, 12 Nov 2018 17:42:30 +0000
-From: anton.ivanov@cambridgegreys.com
-Subject: [PATCH 2/3] um: Clean-up command processing in UML UBD driver
-Date: Mon, 12 Nov 2018 17:42:00 +0000
-Message-Id: <20181112174201.12290-3-anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20181112174201.12290-1-anton.ivanov@cambridgegreys.com>
-References: <20181112174201.12290-1-anton.ivanov@cambridgegreys.com>
+Received: from mail-it1-x149.google.com ([2607:f8b0:4864:20::149])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gS5fH-0003gK-BP
+ for linux-um@lists.infradead.org; Wed, 28 Nov 2018 19:38:29 +0000
+Received: by mail-it1-x149.google.com with SMTP id d1-v6so4291265itj.8
+ for <linux-um@lists.infradead.org>; Wed, 28 Nov 2018 11:38:16 -0800 (PST)
+Date: Wed, 28 Nov 2018 11:36:30 -0800
+In-Reply-To: <20181128193636.254378-1-brendanhiggins@google.com>
+Message-Id: <20181128193636.254378-14-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20181128193636.254378-1-brendanhiggins@google.com>
+Subject: [RFC v3 13/19] kunit: improve output from python wrapper
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,120 +20,190 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: axboe@kernel.dk, richard@nod.at, hch@lst.de, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
+Cc: brakmo@fb.com, jdike@addtoit.com, dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org, frowand.list@gmail.com, robh@kernel.org, linux-nvdimm@lists.01.org, richard@nod.at, knut.omang@oracle.com, kieran.bingham@ideasonboard.com, Felix Guo <felixguoxiuping@gmail.com>, joel@jms.id.au, khilman@baylibre.com, Brendan Higgins <brendanhiggins@google.com>, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, joe@perches.com
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+- add colors to displayed output
+- add timing and summary
 
-Clean-up command processing and return BLK_STS_NOTSUP for
-uknown commands.
-
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Signed-off-by: Felix Guo <felixguoxiuping@gmail.com>
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
 ---
- arch/um/drivers/ubd_kern.c | 64 ++++++++++++++++++++++++++++------------------
- 1 file changed, 39 insertions(+), 25 deletions(-)
+ tools/testing/kunit/kunit.py        | 27 ++++++++-
+ tools/testing/kunit/kunit_parser.py | 93 ++++++++++++++++++++++++++++-
+ 2 files changed, 115 insertions(+), 5 deletions(-)
 
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 76cd21baac2b..08b5ba9a5340 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -1307,21 +1307,25 @@ static int ubd_queue_one_vec(struct blk_mq_hw_ctx *hctx, struct request *req,
- 		io_req->fds[0] = dev->fd;
- 	io_req->error = 0;
+diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+index 1356be404996b..0b8e8c20a746e 100755
+--- a/tools/testing/kunit/kunit.py
++++ b/tools/testing/kunit/kunit.py
+@@ -6,6 +6,7 @@
+ import argparse
+ import sys
+ import os
++import time
  
--	if (req_op(req) != REQ_OP_FLUSH) {
--		io_req->fds[1] = dev->fd;
--		io_req->cow_offset = -1;
--		io_req->offset = off;
-+	if (bvec != NULL) {
- 		io_req->length = bvec->bv_len;
--		io_req->sector_mask = 0;
--		io_req->offsets[0] = 0;
--		io_req->offsets[1] = dev->cow.data_offset;
- 		io_req->buffer = page_address(bvec->bv_page) + bvec->bv_offset;
--		io_req->sectorsize = 1 << 9;
-+	} else {
-+		io_req->buffer = NULL;
-+		io_req->length = blk_rq_bytes(req);
-+	}
+ import kunit_config
+ import kunit_kernel
+@@ -21,20 +22,40 @@ parser.add_argument('--timeout', help='maximum number of seconds to allow for '
+ 		    'build the tests.', type=int, default=300,
+ 		    metavar='timeout')
  
--		if (dev->cow.file) {
--			cowify_req(io_req, dev->cow.bitmap,
--				   dev->cow.bitmap_offset, dev->cow.bitmap_len);
--		}
-+	io_req->sectorsize = UBD_SECTOR_SIZE;
-+	io_req->fds[1] = dev->fd;
-+	io_req->cow_offset = -1;
-+	io_req->offset = off;
-+	io_req->sector_mask = 0;
-+	io_req->offsets[0] = 0;
-+	io_req->offsets[1] = dev->cow.data_offset;
++parser.add_argument('--jobs',
++		    help='As in the make command, "Specifies  the number of '
++		    'jobs (commands) to run simultaneously."',
++		    type=int, default=8, metavar='jobs')
 +
-+	if (dev->cow.file) {
-+		cowify_req(io_req, dev->cow.bitmap,
-+			   dev->cow.bitmap_offset, dev->cow.bitmap_len);
- 	}
+ cli_args = parser.parse_args()
+ linux = kunit_kernel.LinuxSourceTree()
  
- 	ret = os_write_file(thread_fd, &io_req, sizeof(io_req));
-@@ -1330,7 +1334,6 @@ static int ubd_queue_one_vec(struct blk_mq_hw_ctx *hctx, struct request *req,
- 			pr_err("write to io thread failed: %d\n", -ret);
- 		kfree(io_req);
- 	}
--
- 	return ret;
- }
++config_start = time.time()
+ success = linux.build_reconfig()
++config_end = time.time()
+ if not success:
+ 	quit()
  
-@@ -1344,20 +1347,31 @@ static blk_status_t ubd_queue_rq(struct blk_mq_hw_ctx *hctx,
- 	blk_mq_start_request(req);
- 
- 	spin_lock_irq(&ubd_dev->lock);
--
--	if (req_op(req) == REQ_OP_FLUSH) {
-+	switch (req_op(req)) {
-+	/* operations with no lentgth/offset arguments */
-+	case REQ_OP_FLUSH:
- 		ret = ubd_queue_one_vec(hctx, req, 0, NULL);
--	} else {
--		struct req_iterator iter;
--		struct bio_vec bvec;
--		u64 off = (u64)blk_rq_pos(req) << 9;
--
--		rq_for_each_segment(bvec, req, iter) {
--			ret = ubd_queue_one_vec(hctx, req, off, &bvec);
--			if (ret < 0)
--				goto out;
--			off += bvec.bv_len;
-+		break;
-+	/* operations with bio_vec arguments */
-+	case REQ_OP_READ:
-+	case REQ_OP_WRITE:
-+		{
-+			struct req_iterator iter;
-+			struct bio_vec bvec;
-+			u64 off = (u64)blk_rq_pos(req) << 9;
+-print('Building KUnit Kernel ...')
+-success = linux.build_um_kernel()
++kunit_parser.print_with_timestamp('Building KUnit Kernel ...')
 +
-+			rq_for_each_segment(bvec, req, iter) {
-+				ret = ubd_queue_one_vec(hctx, req, off, &bvec);
-+				if (ret < 0)
-+					goto out;
-+				off += bvec.bv_len;
-+			}
- 		}
-+		break;
-+	default:
-+		WARN_ON_ONCE(1);
-+		spin_unlock_irq(&ubd_dev->lock);
-+		return BLK_STS_NOTSUPP;
- 	}
- out:
- 	spin_unlock_irq(&ubd_dev->lock);
++build_start = time.time()
++success = linux.build_um_kernel(jobs=cli_args.jobs)
++build_end = time.time()
+ if not success:
+ 	quit()
+ 
+-print('Starting KUnit Kernel ...')
++kunit_parser.print_with_timestamp('Starting KUnit Kernel ...')
++test_start = time.time()
++
+ if cli_args.raw_output:
+ 	kunit_parser.raw_output(linux.run_kernel(timeout=cli_args.timeout))
+ else:
+ 	kunit_parser.parse_run_tests(linux.run_kernel(timeout=cli_args.timeout))
++
++test_end = time.time()
++
++kunit_parser.print_with_timestamp((
++	"Elapsed time: %.3fs total, %.3fs configuring, %.3fs " +
++	"building, %.3fs running.\n") % (test_end - config_start,
++	config_end - config_start, build_end - build_start,
++	test_end - test_start))
+diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
+index 1dff3adb73bd3..d9051e407d5a7 100644
+--- a/tools/testing/kunit/kunit_parser.py
++++ b/tools/testing/kunit/kunit_parser.py
+@@ -1,6 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0
+ 
+ import re
++from datetime import datetime
+ 
+ kunit_start_re = re.compile('console .* enabled')
+ kunit_end_re = re.compile('List of all partitions:')
+@@ -19,6 +20,94 @@ def raw_output(kernel_output):
+ 	for line in kernel_output:
+ 		print(line)
+ 
++DIVIDER = "=" * 30
++
++RESET = '\033[0;0m'
++
++def red(text):
++	return '\033[1;31m' + text + RESET
++
++def yellow(text):
++	return '\033[1;33m' + text + RESET
++
++def green(text):
++	return '\033[1;32m' + text + RESET
++
++def print_with_timestamp(message):
++	print('[%s] %s' % (datetime.now().strftime('%H:%M:%S'), message))
++
++def print_log(log):
++	for m in log:
++		print_with_timestamp(m)
++
+ def parse_run_tests(kernel_output):
+-	for output in isolate_kunit_output(kernel_output):
+-		print(output)
++	test_case_output = re.compile('^kunit .*?: (.*)$')
++
++	test_module_success = re.compile('^kunit .*: all tests passed')
++	test_module_fail = re.compile('^kunit .*: one or more tests failed')
++
++	test_case_success = re.compile('^kunit (.*): (.*) passed')
++	test_case_fail = re.compile('^kunit (.*): (.*) failed')
++	test_case_crash = re.compile('^kunit (.*): (.*) crashed')
++
++	total_tests = set()
++	failed_tests = set()
++	crashed_tests = set()
++
++	def get_test_name(match):
++		return match.group(1) + ":" + match.group(2)
++
++	current_case_log = []
++	def end_one_test(match, log):
++		log.clear()
++		total_tests.add(get_test_name(match))
++
++	print_with_timestamp(DIVIDER)
++	for line in isolate_kunit_output(kernel_output):
++		# Ignore module output:
++		if (test_module_success.match(line) or
++		    test_module_fail.match(line)):
++			print_with_timestamp(DIVIDER)
++			continue
++
++		match = re.match(test_case_success, line)
++		if match:
++			print_with_timestamp(green("[PASSED] ") +
++					     get_test_name(match))
++			end_one_test(match, current_case_log)
++			continue
++
++		match = re.match(test_case_fail, line)
++		# Crashed tests will report as both failed and crashed. We only
++		# want to show and count it once.
++		if match and get_test_name(match) not in crashed_tests:
++			failed_tests.add(get_test_name(match))
++			print_with_timestamp(red("[FAILED] " +
++						 get_test_name(match)))
++			print_log(map(yellow, current_case_log))
++			print_with_timestamp("")
++			end_one_test(match, current_case_log)
++			continue
++
++		match = re.match(test_case_crash, line)
++		if match:
++			crashed_tests.add(get_test_name(match))
++			print_with_timestamp(yellow("[CRASH] " +
++						    get_test_name(match)))
++			print_log(current_case_log)
++			print_with_timestamp("")
++			end_one_test(match, current_case_log)
++			continue
++
++		# Strip off the `kunit module-name:` prefix
++		match = re.match(test_case_output, line)
++		if match:
++			current_case_log.append(match.group(1))
++		else:
++			current_case_log.append(line)
++
++	fmt = green if (len(failed_tests) + len(crashed_tests) == 0) else red
++	print_with_timestamp(
++		fmt("Testing complete. %d tests run. %d failed. %d crashed." %
++		    (len(total_tests), len(failed_tests), len(crashed_tests))))
++
 -- 
-2.11.0
+2.20.0.rc0.387.gc7a69e6b6c-goog
 
 
 _______________________________________________
