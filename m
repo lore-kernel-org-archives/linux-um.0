@@ -1,13 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Mon, 22 Oct 2018 20:11:22 +0200
-From: Michal Hocko <mhocko@kernel.org>
-Subject: Re: [PATCH] mm: convert totalram_pages, totalhigh_pages and
- managed_pages to atomic.
-Message-ID: <20181022181122.GK18839@dhcp22.suse.cz>
-References: <1540229092-25207-1-git-send-email-arunks@codeaurora.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1540229092-25207-1-git-send-email-arunks@codeaurora.org>
+Received: from conuserg-09.nifty.com ([210.131.2.76])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gSCYN-0001HT-R0
+ for linux-um@lists.infradead.org; Thu, 29 Nov 2018 02:59:49 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: [PATCH] kbuild: fix UML build error with CONFIG_GCC_PLUGINS
+Date: Thu, 29 Nov 2018 11:58:50 +0900
+Message-Id: <1543460330-2219-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -16,23 +15,141 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Arun KS <arunks@codeaurora.org>
-Cc: Mike Snitzer <snitzer@redhat.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Kemi Wang <kemi.wang@intel.com>, dri-devel@lists.freedesktop.org, "J. Bruce Fields" <bfields@fieldses.org>, linux-sctp@vger.kernel.org, Paul Mackerras <paulus@samba.org>, Pavel Machek <pavel@ucw.cz>, Christoph Lameter <cl@linux.com>, "K. Y. Srinivasan" <kys@microsoft.com>, Sumit Semwal <sumit.semwal@linaro.org>, "David (ChunMing) Zhou" <David1.Zhou@amd.com>, Petr Tesarik <ptesarik@suse.com>, Michael Ellerman <mpe@ellerman.id.au>, ceph-devel@vger.kernel.org, "James E.J. Bottomley" <jejb@parisc-linux.org>, kasan-dev@googlegroups.com, Marcos Paulo de Souza <marcos.souza.org@gmail.com>, "Steven J. Hill" <steven.hill@cavium.com>, David Rientjes <rientjes@google.com>, Anthony Yznaga <anthony.yznaga@oracle.com>, Daniel Vacek <neelx@redhat.com>, Roman Gushchin <guro@fb.com>, Len Brown <len.brown@intel.com>, linux-pm@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>, linux-um@lists.infradead.org, Mike Rapoport <rppt@linux.vnet.ibm.com>, Alexander Viro <viro@zeniv.linux.org.uk>, Thomas Gleixner <tglx@linutronix.de>, Trond Myklebust <trond.myklebust@hammerspace.com>, Anton Altaparmakov <anton@tuxera.com>, linux-parisc@vger.kernel.org, Mathieu Malaterre <malat@debian.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-kernel@vger.kernel.org, Cyril Bur <cyrilbur@gmail.com>, Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>, netfilter-devel@vger.kernel.org, Souptick Joarder <jrdr.linux@gmail.com>, Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, Alex Deucher <alexander.deucher@amd.com>, Andrew Morton <akpm@linux-foundation.org>, Andrew-CT Chen <andrew-ct.chen@mediatek.com>, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, David Airlie <airlied@linux.ie>, dm-devel@redhat.com, Nadav Amit <namit@vmware.com>, Omar Sandoval <osandov@fb.com>, Alasdair Kergon <agk@redhat.com>, linux-s390@vger.kernel.org, Stephen Hemminger <sthemmin@microsoft.com>, intel-gfx@lists.freedesktop.org, Helge Deller <deller@gmx.de>, Hugh Dickins <hughd@google.com>, "Luis R. Rodriguez" <mcgrof@kernel.org>, coreteam@netfilter.org, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Andrey Ryabinin <aryabinin@virtuozzo.com>, linux-media@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>, Todd Kjos <tkjos@android.com>, Philippe Ombredanne <pombredanne@nexb.com>, Jani Nikula <jani.nikula@linux.intel.com>, Jia He <jia.he@hxt-semitech.com>, Tejun Heo <tj@kernel.org>, Shakeel Butt <shakeelb@google.com>, Houlong Wei <houlong.wei@mediatek.com>, devel@linuxdriverproject.org, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Martijn Coenen <maco@android.com>, linux-arm-kernel@lists.infradead.org, Khalid Aziz <khalid@gonehiking.org>, Oded Gabbay <oded.gabbay@gmail.com>, linaro-mm-sig@lists.linaro.org, linux-ntfs-dev@lists.sourceforge.net, Jonathan Corbet <corbet@lwn.net>, Florian Westphal <fw@strlen.de>, Anna Schumaker <anna.schumaker@netapp.com>, Pekka Enberg <penberg@kernel.org>, Minchan Kim <minchan@kernel.org>, Eric Biederman <ebiederm@xmission.com>, "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>, Kate Stewart <kstewart@linuxfoundation.org>, Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>, linux-fsdevel@vger.kernel.org, Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Stefan Agner <stefan@agner.ch>, James Morris <jmorris@namei.org>, netdev@vger.kernel.org, amd-gfx@lists.freedesktop.org, Jan Kara <jack@suse.cz>, Alexander Duyck <alexander.h.duyck@linux.intel.com>, Gerrit Renker <gerrit@erg.abdn.ac.uk>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Miklos Szeredi <miklos@szeredi.hu>, David Hildenbrand <david@redhat.com>, Matthew Wilcox <willy@infradead.org>, Konstantin Khlebnikov <khlebnikov@yandex-team.ru>, Matthew Auld <matthew.auld@intel.com>, Guo Ren <ren_guo@c-sky.com>, Huang Ying <ying.huang@intel.com>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, Ilya Dryomov <idryomov@gmail.com>, Alexey Dobriyan <adobriyan@gmail.com>, Pablo Neira Ayuso <pablo@netfilter.org>, "Serge E. Hallyn" <serge@hallyn.com>, Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>, Haiyang Zhang <haiyangz@microsoft.com>, Mark Brown <broonie@kernel.org>, Borislav Petkov <bp@alien8.de>, Rodrigo Vivi <rodrigo.vivi@intel.com>, Dan Williams <dan.j.williams@intel.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Dan Streetman <ddstreet@ieee.org>, Oscar Salvador <osalvador@suse.de>, linux-nfs@vger.kernel.org, Neil Horman <nhorman@tuxdriver.com>, Tvrtko Ursulin <tvrtko.ursulin@intel.com>, Jeff Layton <jlayton@kernel.org>, Eric Dumazet <edumazet@google.com>, Jessica Yu <jeyu@kernel.org>, Joe Perches <joe@perches.com>, "David S. Miller" <davem@davemloft.net>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, Minghsiu Tsai <minghsiu.tsai@mediatek.com>, Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>, "VMware, Inc.  <pv-drivers@vmware.com>, Sebastian Andrzej Siewior" <bigeasy@linutronix.de>, Russell Currey <ruscur@russell.cc>, Chris Wilson <chris@chris-wilson.co.uk>, linux-mm@kvack.org, Alexander Potapenko <glider@google.com>, "H. Peter Anvin" <hpa@zytor.com>, getarunks@gmail.com, Chintan Pandya <cpandya@codeaurora.org>, devel@driverdev.osuosl.org, "Yan, Zheng  <zyan@redhat.com>, xen-devel@lists.xenproject.org, Sage Weil" <sage@redhat.com>, dccp@vger.kernel.org, Richard Weinberger <richard@nod.at>, Seth Jennings <sjenning@redhat.com>, x86@kernel.org, Ingo Molnar <mingo@redhat.com>, Laura Abbott <labbott@redhat.com>, Mimi Zohar <zohar@linux.vnet.ibm.com>, Jeff Dike <jdike@addtoit.com>, Pavel Tatashin <pavel.tatashin@microsoft.com>, Jann Horn <jannh@google.com>, Xavier Deguillard <xdeguillard@vmware.com>, Johannes Weiner <hannes@cmpxchg.org>, =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>, Kirill Tkhai <ktkhai@virtuozzo.com>, linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>, Tiffany Lin <tiffany.lin@mediatek.com>, linux-integrity@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>, Juergen Gross <jgross@suse.com>, Yang Shi <yang.shi@linux.alibaba.com>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, linuxppc-dev@lists.ozlabs.org, Vlad Yasevich <vyasevich@gmail.com>, linux-decnet-user@lists.sourceforge.net, kexec@lists.infradead.org, linux-security-module@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>, Mika Kuoppala <mika.kuoppala@linux.intel.com>, Mel Gorman <mgorman@techsingularity.net>
+To: linux-kbuild@vger.kernel.org
+Cc: Michal Marek <michal.lkml@markovi.net>, Kees Cook <keescook@chromium.org>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, x86@kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Masahiro Yamada <yamada.masahiro@socionext.com>, Emese Revfy <re.emese@gmail.com>, Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>
 
-On Mon 22-10-18 22:53:22, Arun KS wrote:
-> Remove managed_page_count_lock spinlock and instead use atomic
-> variables.
+UML fails to build with CONFIG_GCC_PLUGINS=y.
 
-I assume this has been auto-generated. If yes, it would be better to
-mention the script so that people can review it and regenerate for
-comparision. Such a large change is hard to review manually.
+$ make -s ARCH=um mrproper
+$ make -s ARCH=um allmodconfig
+$ make ARCH=um
+  UPD     include/generated/uapi/linux/version.h
+  WRAP    arch/x86/include/generated/uapi/asm/bpf_perf_event.h
+  WRAP    arch/x86/include/generated/uapi/asm/poll.h
+  WRAP    arch/x86/include/generated/asm/dma-contiguous.h
+  WRAP    arch/x86/include/generated/asm/early_ioremap.h
+  WRAP    arch/x86/include/generated/asm/export.h
+  WRAP    arch/x86/include/generated/asm/mcs_spinlock.h
+  WRAP    arch/x86/include/generated/asm/mm-arch-hooks.h
+  SYSTBL  arch/x86/include/generated/asm/syscalls_32.h
+  SYSHDR  arch/x86/include/generated/asm/unistd_32_ia32.h
+  SYSHDR  arch/x86/include/generated/asm/unistd_64_x32.h
+  SYSTBL  arch/x86/include/generated/asm/syscalls_64.h
+  SYSHDR  arch/x86/include/generated/uapi/asm/unistd_32.h
+  SYSHDR  arch/x86/include/generated/uapi/asm/unistd_64.h
+  SYSHDR  arch/x86/include/generated/uapi/asm/unistd_x32.h
+  HOSTCC  scripts/unifdef
+  CC      arch/x86/um/user-offsets.s
+cc1: error: cannot load plugin ./scripts/gcc-plugins/cyc_complexity_plugin.so
+./scripts/gcc-plugins/cyc_complexity_plugin.so: cannot open shared object file: No such file or directory
+cc1: error: cannot load plugin ./scripts/gcc-plugins/structleak_plugin.so
+./scripts/gcc-plugins/structleak_plugin.so: cannot open shared object file: No such file or directory
+cc1: error: cannot load plugin ./scripts/gcc-plugins/latent_entropy_plugin.so
+./scripts/gcc-plugins/latent_entropy_plugin.so: cannot open shared object file: No such file or directory
+cc1: error: cannot load plugin ./scripts/gcc-plugins/randomize_layout_plugin.so
+./scripts/gcc-plugins/randomize_layout_plugin.so: cannot open shared object file: No such file or directory
+make[1]: *** [scripts/Makefile.build;119: arch/x86/um/user-offsets.s] Error 1
+make: *** [arch/um/Makefile;152: arch/x86/um/user-offsets.s] Error 2
+
+Change the order of the preparation stage (with cleanups) to make sure
+gcc-plugins is built before descending to arch/x86/um/.
+
+Reported-by: kbuild test robot <lkp@intel.com>
+Fixes: 6b90bd4ba40b ("GCC plugin infrastructure")
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
+
+I will pick up this to kbuild tree to avoid conflicts.
+Ack from UML people is appreciated, though.
+
+
+ Makefile             |  4 ++--
+ arch/um/Makefile     | 24 ++----------------------
+ arch/x86/um/Makefile |  4 +++-
+ 3 files changed, 7 insertions(+), 25 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 0ce4e29..a066dab 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1106,9 +1106,9 @@ prepare1: prepare2 $(version_h) $(autoksyms_h) include/generated/utsrelease.h
+ 
+ macroprepare: prepare1 archmacros
+ 
+-archprepare: archheaders archscripts macroprepare scripts_basic
++archprepare: archheaders archscripts macroprepare scripts_basic gcc-plugins
+ 
+-prepare0: archprepare gcc-plugins
++prepare0: archprepare
+ 	$(Q)$(MAKE) $(build)=.
+ 
+ # All the preparing..
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index ab1066c..c080359 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -116,7 +116,8 @@ endef
+ archheaders:
+ 	$(Q)$(MAKE) -f $(srctree)/Makefile ARCH=$(HEADER_ARCH) asm-generic archheaders
+ 
+-archprepare: include/generated/user_constants.h
++archprepare:
++	$(Q)$(MAKE) $(build)=$(HOST_DIR)/um include/generated/user_constants.h
+ 
+ LINK-$(CONFIG_LD_SCRIPT_STATIC) += -static
+ LINK-$(CONFIG_LD_SCRIPT_DYN) += -Wl,-rpath,/lib $(call cc-option, -no-pie)
+@@ -146,25 +147,4 @@ archclean:
+ 	@find . \( -name '*.bb' -o -name '*.bbg' -o -name '*.da' \
+ 		-o -name '*.gcov' \) -type f -print | xargs rm -f
+ 
+-# Generated files
+-
+-$(HOST_DIR)/um/user-offsets.s: __headers FORCE
+-	$(Q)$(MAKE) $(build)=$(HOST_DIR)/um $@
+-
+-define filechk_gen-asm-offsets
+-        (set -e; \
+-         echo "/*"; \
+-         echo " * DO NOT MODIFY."; \
+-         echo " *"; \
+-         echo " * This file was generated by arch/$(ARCH)/Makefile"; \
+-         echo " *"; \
+-         echo " */"; \
+-         echo ""; \
+-         sed -ne "/^->/{s:^->\([^ ]*\) [\$$#]*\([^ ]*\) \(.*\):#define \1 \2 /* \3 */:; s:->::; p;}" < $<; \
+-         echo ""; )
+-endef
+-
+-include/generated/user_constants.h: $(HOST_DIR)/um/user-offsets.s
+-	$(call filechk,gen-asm-offsets)
+-
+ export HEADER_ARCH SUBARCH USER_CFLAGS CFLAGS_NO_HARDENING OS DEV_NULL_PATH
+diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
+index c2d3d7c..1792464 100644
+--- a/arch/x86/um/Makefile
++++ b/arch/x86/um/Makefile
+@@ -36,10 +36,12 @@ subarch-$(CONFIG_MODULES) += ../kernel/module.o
+ 
+ USER_OBJS := bugs_$(BITS).o ptrace_user.o fault.o
+ 
+-extra-y += user-offsets.s
+ $(obj)/user-offsets.s: c_flags = -Wp,-MD,$(depfile) $(USER_CFLAGS) \
+ 	-Iarch/x86/include/generated
+ 
++include/generated/user_constants.h: $(obj)/user-offsets.s
++	$(call filechk,offsets,__USER_CONSTANT_H__)
++
+ UNPROFILE_OBJS := stub_segv.o
+ CFLAGS_stub_segv.o := $(CFLAGS_NO_HARDENING)
+ 
 -- 
-Michal Hocko
-SUSE Labs
+2.7.4
+
 
 _______________________________________________
 linux-um mailing list
