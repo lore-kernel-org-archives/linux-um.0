@@ -1,55 +1,59 @@
-Return-Path: <elfring@users.sourceforge.net>
-Subject: Re: [PATCH -next v2 1/3] mm: treewide: remove unused address argument
- from pte_alloc functions
-References: <20181103040041.7085-1-joelaf@google.com>
- <20181103040041.7085-2-joelaf@google.com>
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Message-ID: <fd939e7c-3d9e-760e-f20c-e7263f064153@users.sourceforge.net>
-Date: Sat, 3 Nov 2018 13:51:20 +0100
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pg1-f195.google.com ([209.85.215.195])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gSZjM-0005EL-Gs
+ for linux-um@lists.infradead.org; Fri, 30 Nov 2018 03:44:41 +0000
+Received: by mail-pg1-f195.google.com with SMTP id d72so1884873pga.9
+ for <linux-um@lists.infradead.org>; Thu, 29 Nov 2018 19:44:30 -0800 (PST)
+Date: Thu, 29 Nov 2018 19:44:25 -0800
+From: Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: [RFC v3 11/19] kunit: add Python libraries for handing KUnit
+ config and kernel
+Message-ID: <20181130034425.GO18410@garbanzo.do-not-panic.com>
+References: <20181128193636.254378-1-brendanhiggins@google.com>
+ <20181128193636.254378-12-brendanhiggins@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20181103040041.7085-2-joelaf@google.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
-To: Joel Fernandes <joel@joelfernandes.org>, kernel-janitors@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, kernel-team@android.com, "Kirill A . Shutemov" <kirill@shutemov.name>, Michal Hocko <mhocko@kernel.org>, Julia Lawall <Julia.Lawall@lip6.fr>, Andrew Morton <akpm@linux-foundation.org>, Andrey Ryabinin <aryabinin@virtuozzo.com>, Andy Lutomirski <luto@kernel.org>, Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, Borislav Petkov <bp@alien8.de>, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, Daniel Colascione <dancol@google.com>, Dave Hansen <dave.hansen@linux.intel.com>, "David S. Miller" <davem@davemloft.net>, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Helge Deller <deller@gmx.de>, Hugh Dickins <hughd@google.com>, Ingo Molnar <mingo@redhat.com>, "James E. J. Bottomley" <jejb@parisc-linux.org>, Jeff Dike <jdike@addtoit.com>, Jonas Bonn <jonas@southpole.se>, kasan-dev@googlegroups.com, kvmarm@lists.cs.columbia.edu, Ley Foon Tan <lftan@altera.com>, linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, Lokesh Gidra <lokeshgidra@google.com>, Max Filippov <jcmvbkbc@gmail.com>, Minchan Kim <minchan@kernel.org>, nios2-dev@lists.rocketboards.org, pantin@google.com, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Sam Creasey <sammy@sammy.net>, sparclinux@vger.kernel.org, Stafford Horne <shorne@gmail.com>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, Will Deacon <will.deacon@arm.com>, "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>
-List-ID: <linux-um.lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <20181128193636.254378-12-brendanhiggins@google.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Brendan Higgins <brendanhiggins@google.com>
+Cc: brakmo@fb.com, dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org, shuah@kernel.org, robh@kernel.org, frowand.list@gmail.com, linux-nvdimm@lists.01.org, richard@nod.at, knut.omang@oracle.com, kieran.bingham@ideasonboard.com, Felix Guo <felixguoxiuping@gmail.com>, joel@jms.id.au, jdike@addtoit.com, Tim.Bird@sony.com, keescook@google.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, joe@perches.com, khilman@baylibre.com
 
-> … There is concern that …
+On Wed, Nov 28, 2018 at 11:36:28AM -0800, Brendan Higgins wrote:
+> The ultimate goal is to create minimal isolated test binaries; in the
+> meantime we are using UML to provide the infrastructure to run tests, so
+> define an abstract way to configure and run tests that allow us to
+> change the context in which tests are built without affecting the user.
+> This also makes pretty and dynamic error reporting, and a lot of other
+> nice features easier.
+> 
+> kunit_config.py:
+>   - parse .config and Kconfig files.
+>
+> 
+> kunit_kernel.py: provides helper functions to:
+>   - configure the kernel using kunitconfig.
 
-Does this wording need a small adjustment?
+We get the tools to run the config stuff, build, etc, but not a top
+level 'make kunitconfig' or whatever. We have things like 'make
+kvmconfig' and 'make xenconfig', I think it would be reasonable to
+add similar for this.
 
+  Luis
 
-> The changes were obtained by applying the following Coccinelle script.
-
-I would find it nicer if previous patch review comments will trigger
-further useful effects here.
-https://patchwork.kernel.org/patch/10637703/#22265203
-https://lore.kernel.org/linuxppc-dev/03b524f3-5f3a-baa0-2254-9c588103d2d6@users.sourceforge.net/
-https://www.mail-archive.com/linuxppc-dev@lists.ozlabs.org/msg140009.html
-
-
-If you have got difficulties with the usage of advanced regular expressions
-for SmPL constraints, I suggest to use desired function names in SmPL lists
-or disjunctions instead because of different run time characteristics
-for such a source code transformation approach.
-
-
-> // Note: I split the 'identifier fn' line, so if you are manually
-> // running it, please unsplit it so it runs for you.
-
-Please delete this questionable comment.
-
-* The semantic patch language should handle the mentioned code formatting.
-* You can use multi-line regular expressions (if it would be desired).
-
-
-> @pte_alloc_func_def depends on patch exists@
-> identifier E2;
-> identifier fn =~
-
-How do you think about to avoid the repetition of a SmPL key word at such places?
-
-Regards,
-Markus
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
