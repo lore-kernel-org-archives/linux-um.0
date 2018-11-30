@@ -1,17 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x549.google.com ([2607:f8b0:4864:20::549])
+Received: from mail-pg1-f174.google.com ([209.85.215.174])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gS5ez-0003Wp-QQ
- for linux-um@lists.infradead.org; Wed, 28 Nov 2018 19:38:11 +0000
-Received: by mail-pg1-x549.google.com with SMTP id s22so12725781pgv.8
- for <linux-um@lists.infradead.org>; Wed, 28 Nov 2018 11:37:58 -0800 (PST)
-Date: Wed, 28 Nov 2018 11:36:23 -0800
-In-Reply-To: <20181128193636.254378-1-brendanhiggins@google.com>
-Message-Id: <20181128193636.254378-7-brendanhiggins@google.com>
-Mime-Version: 1.0
+ id 1gSZf6-0003za-QG
+ for linux-um@lists.infradead.org; Fri, 30 Nov 2018 03:40:18 +0000
+Received: by mail-pg1-f174.google.com with SMTP id 70so1881101pgh.8
+ for <linux-um@lists.infradead.org>; Thu, 29 Nov 2018 19:40:06 -0800 (PST)
+Date: Thu, 29 Nov 2018 19:40:01 -0800
+From: Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: [RFC v3 07/19] kunit: test: add initial tests
+Message-ID: <20181130034001.GM18410@garbanzo.do-not-panic.com>
 References: <20181128193636.254378-1-brendanhiggins@google.com>
-Subject: [RFC v3 06/19] arch: um: enable running kunit from User Mode Linux
-From: Brendan Higgins <brendanhiggins@google.com>
+ <20181128193636.254378-8-brendanhiggins@google.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20181128193636.254378-8-brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,44 +26,26 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
-Cc: brakmo@fb.com, jdike@addtoit.com, dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org, frowand.list@gmail.com, robh@kernel.org, linux-nvdimm@lists.01.org, richard@nod.at, knut.omang@oracle.com, kieran.bingham@ideasonboard.com, joel@jms.id.au, khilman@baylibre.com, Brendan Higgins <brendanhiggins@google.com>, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, joe@perches.com
+To: Brendan Higgins <brendanhiggins@google.com>
+Cc: brakmo@fb.com, dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org, shuah@kernel.org, robh@kernel.org, frowand.list@gmail.com, linux-nvdimm@lists.01.org, richard@nod.at, knut.omang@oracle.com, kieran.bingham@ideasonboard.com, joel@jms.id.au, jdike@addtoit.com, Tim.Bird@sony.com, keescook@google.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, joe@perches.com, khilman@baylibre.com
 
-Make minimum number of changes outside of the KUnit directories for
-KUnit to build and run using UML.
+On Wed, Nov 28, 2018 at 11:36:24AM -0800, Brendan Higgins wrote:
+> Add a test for string stream along with a simpler example.
+> 
+> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+> ---
+>  kunit/Kconfig              | 12 ++++++
+>  kunit/Makefile             |  4 ++
+>  kunit/example-test.c       | 88 ++++++++++++++++++++++++++++++++++++++
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
----
- Kconfig  | 2 ++
- Makefile | 2 +-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+BTW if you need another more concrete but very simple example I think it
+may be possible to port tools/testing/selftests/sysctl/sysctl.sh +
+lib/test_sysctl.c into a kunit test. Correct me if I'm wrong.
 
-diff --git a/Kconfig b/Kconfig
-index 48a80beab6853..10428501edb78 100644
---- a/Kconfig
-+++ b/Kconfig
-@@ -30,3 +30,5 @@ source "crypto/Kconfig"
- source "lib/Kconfig"
- 
- source "lib/Kconfig.debug"
-+
-+source "kunit/Kconfig"
-diff --git a/Makefile b/Makefile
-index 69fa5c0310d83..197f01cbddf03 100644
---- a/Makefile
-+++ b/Makefile
-@@ -966,7 +966,7 @@ endif
- 
- 
- ifeq ($(KBUILD_EXTMOD),)
--core-y		+= kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ block/
-+core-y		+= kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ block/ kunit/
- 
- vmlinux-dirs	:= $(patsubst %/,%,$(filter %/, $(init-y) $(init-m) \
- 		     $(core-y) $(core-m) $(drivers-y) $(drivers-m) \
--- 
-2.20.0.rc0.387.gc7a69e6b6c-goog
+I think that would show the differences clearly between selftests and
+kunit as well.
 
+  Luis
 
 _______________________________________________
 linux-um mailing list
