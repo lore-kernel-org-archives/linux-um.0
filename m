@@ -1,12 +1,23 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from conuserg-11.nifty.com ([210.131.2.78])
+Received: from mail-pf1-f193.google.com ([209.85.210.193])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gRC43-0001ii-Q3
- for linux-um@lists.infradead.org; Mon, 26 Nov 2018 08:16:21 +0000
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [PATCH] pcmcia: remove per-arch PCMCIA config entry
-Date: Mon, 26 Nov 2018 17:15:41 +0900
-Message-Id: <1543220141-13744-1-git-send-email-yamada.masahiro@socionext.com>
+ id 1gSXA0-00051N-63
+ for linux-um@lists.infradead.org; Fri, 30 Nov 2018 01:00:01 +0000
+Received: by mail-pf1-f193.google.com with SMTP id g62so1892695pfd.12
+ for <linux-um@lists.infradead.org>; Thu, 29 Nov 2018 16:59:48 -0800 (PST)
+Date: Thu, 29 Nov 2018 16:59:42 -0800
+From: Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: [RFC v2 00/14] kunit: introduce KUnit, the Linux kernel unit
+ testing framework
+Message-ID: <20181130005942.GL4922@garbanzo.do-not-panic.com>
+References: <20181023235750.103146-1-brendanhiggins@google.com>
+ <1543036529.4680.655.camel@oracle.com>
+ <CAFd5g45oPSp870hJLDSHiMfU7Mh-EvpYcFdAaOQxecXNde5PSw@mail.gmail.com>
+ <1543434888.4680.862.camel@oracle.com>
+ <abf3aff0-dfb3-717e-f14f-02dbe5574f49@kernel.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <abf3aff0-dfb3-717e-f14f-02dbe5574f49@kernel.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -15,60 +26,84 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kbuild@vger.kernel.org
-Cc: linux-s390@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Masahiro Yamada <yamada.masahiro@socionext.com>, Richard Weinberger <richard@nod.at>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Christoph Hellwig <hch@lst.de>
+To: shuah <shuah@kernel.org>
+Cc: brakmo@fb.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org, hidenori.yamaji@sony.com, linux-nvdimm@lists.01.org, richard@nod.at, Knut Omang <knut.omang@oracle.com>, kieran.bingham@ideasonboard.com, khilman@baylibre.com, Tim.Bird@sony.com, Joel Stanley <joel@jms.id.au>, jdike@addtoit.com, Kees Cook <keescook@google.com>, linux-um@lists.infradead.org, rostedt@goodmis.org, Julia Lawall <julia.lawall@lip6.fr>, dan.j.williams@intel.com, kunit-dev@googlegroups.com, Greg KH <gregkh@linuxfoundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, mpe@ellerman.id.au, joe@perches.com, alan.maguire@oracle.com
 
-Now that all architectures include drivers/pcmcia/Kconfig where
-the PCMCIA config is defined, the PCMCIA config entries in per-arch
-Kconfig files are redundant.
+On Wed, Nov 28, 2018 at 01:50:01PM -0700, shuah wrote:
+> On 11/28/18 12:54 PM, Knut Omang wrote:
+> > On Mon, 2018-11-26 at 17:41 -0800, Brendan Higgins wrote:
+> > Both approaches provide assertion macros for running tests inside the kernel,
+> > I doubt the kernel community would like to see yet two such sets of macros,
+> > with differing syntax merged. One of the good reasons to have a *framework*
+> > is that it is widely used and understood, so that people coming from one part of the
+> > kernel can easily run, understand and relate to selected tests from another part.
+> > 
+> > The goal with KTF is to allow this for any kernel, old or new, not just kernels
+> > built specifically for testing purposes. We felt that providing it as a separate git
+> > module (still open source, for anyone to contribute to) is a more efficient approach
+> > until we have more examples and experience with using it in different parts
+> > of the kernel. We can definitely post the kernel side of KTF as a patch series fairly soon
+> > if the community wants us to. Except for hybrid tests, the ktf.ko module works fine
+> > independently of any user side support, just using the debugfs interface to run and
+> > examine tests.
+> > 
+> 
+> Having test framework in the kernel sources tree has benefits. It allows
+> us (kernel developers) to do co-development of kernel features and tests
+> for these features.
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
+Agreed!
 
-I will queue this up to my kbuild tree
-along with Christoph's clean-up patch set.
+> It encourages developers to write regression tests. More importantly,
+> kernel features and tests for these features are included in the same
+> release in most cases and/or allows us freedom to do so if test framework
+> and tests are part of the kernel sources.
+> 
+> We have seen this with our experience with kselftest. It would not have
+> see the same level of attention and growth if it stayed outside the
+> kernel sources.
+> 
+> Most kernel developers would not want to include a externally maintained
+> module for testing. As a general rule, it has to be easy to run tests.
+> 
+> > I think there are good uses cases for having the ability to maintain a
+> > single source for tests that can be run against multiple kernels,
+> > also distro kernels that the test framework cannot expect to be able to modify,
+> > except from using the module interfaces.
+> 
+> Same reasons as above. Having the tests included in the kernel sources
+> makes it easier for distros to run those tests and include running them
+> during their qualification.
 
+Also... selftests are an example of tests which *are* upstream and yet
+there are teams out there using them to test these tests on older
+kernels. So the scripts for instance are supposed to work with older
+kernels. So if you expand on a feature your selftest script should
+detect if the new mechanism is present or not, and also be backward
+compatible with older kernels.
 
- arch/s390/Kconfig | 3 ---
- arch/um/Kconfig   | 3 ---
- 2 files changed, 6 deletions(-)
+> > And there are good arguments for having (at least parts of)
+> > the test framework easily available within the kernel under test.
+> > 
+> 
+> When Kernel unit, functional, and regressions tests reside in the kernel
+> sources, they evolve quicker as kernel developers contribute tests as
+> part of their kernel work-flow. Maintaining tests and framework
+> separately will make it harder to maintain them and keep them updated
+> for us the kernel community.
 
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index 5173366..b212c59 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -837,9 +837,6 @@ source "kernel/power/Kconfig"
- 
- endmenu
- 
--config PCMCIA
--	def_bool n
--
- config CCW
- 	def_bool y
- 
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index 6b99389..a7d09a7 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -34,9 +34,6 @@ config SBUS
- config PCI
- 	bool
- 
--config PCMCIA
--	bool
--
- config TRACE_IRQFLAGS_SUPPORT
- 	bool
- 	default y
--- 
-2.7.4
+Agreed!
 
+Also, I actually see no issue with having *both* kunit / ktest merged
+upstream. IMHO we should not be forcing people to pick one or the other
+but rather we should: let the best test framework win. Similar as we
+did with LSMs. Each test framework has its own gains / advantages.
+
+  Luis
 
 _______________________________________________
 linux-um mailing list
