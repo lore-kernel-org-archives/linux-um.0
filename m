@@ -1,19 +1,21 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab6.miniserver.com ([5.153.251.140]
- helo=www.kot-begemot.co.uk)
+Received: from mail-oi1-x244.google.com ([2607:f8b0:4864:20::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gUX2A-00010M-MW
- for linux-um@lists.infradead.org; Wed, 05 Dec 2018 13:16:12 +0000
-Subject: Re: [RFC v3 01/19] kunit: test: add KUnit test runner core
+ id 1gTx0C-00082B-IU
+ for linux-um@lists.infradead.org; Mon, 03 Dec 2018 22:47:45 +0000
+Received: by mail-oi1-x244.google.com with SMTP id y23so12549986oia.4
+ for <linux-um@lists.infradead.org>; Mon, 03 Dec 2018 14:47:31 -0800 (PST)
+MIME-Version: 1.0
 References: <20181128193636.254378-1-brendanhiggins@google.com>
  <20181128193636.254378-2-brendanhiggins@google.com>
- <20181130031438.GQ4922@garbanzo.do-not-panic.com>
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Message-ID: <e2ed9df2-c06b-f0d3-d50a-d03166f586df@cambridgegreys.com>
-Date: Wed, 5 Dec 2018 13:15:28 +0000
-MIME-Version: 1.0
-In-Reply-To: <20181130031438.GQ4922@garbanzo.do-not-panic.com>
-Content-Language: en-US
+ <20181130032802.GG18410@garbanzo.do-not-panic.com>
+ <CAFd5g45F0RViYDQyXRwyxVPAU=CO_Goqy3yHz=BbcMeAT7o6-g@mail.gmail.com>
+ <20181201031049.GL28501@garbanzo.do-not-panic.com>
+In-Reply-To: <20181201031049.GL28501@garbanzo.do-not-panic.com>
+From: Brendan Higgins <brendanhiggins@google.com>
+Date: Mon, 3 Dec 2018 14:47:19 -0800
+Message-ID: <CAFd5g45DQ7V_pMpkNpRw3iRsCgO-MQvJV=hV7axP4gG++qm2JA@mail.gmail.com>
+Subject: Re: [RFC v3 01/19] kunit: test: add KUnit test runner core
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,101 +24,101 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Luis Chamberlain <mcgrof@kernel.org>, Brendan Higgins <brendanhiggins@google.com>
-Cc: brakmo@fb.com, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, mpe@ellerman.id.au, linux-kselftest@vger.kernel.org, frowand.list@gmail.com, robh@kernel.org, linux-nvdimm@lists.01.org, richard@nod.at, knut.omang@oracle.com, kieran.bingham@ideasonboard.com, joel@jms.id.au, Tim.Bird@sony.com, shuah@kernel.org, jdike@addtoit.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, levinsasha928@gmail.com, dan.j.williams@intel.com, kunit-dev@googlegroups.com, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, keescook@google.com, joe@perches.com, khilman@baylibre.com
+To: mcgrof@kernel.org
+Cc: brakmo@fb.com, dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org, shuah@kernel.org, Rob Herring <robh@kernel.org>, Frank Rowand <frowand.list@gmail.com>, linux-nvdimm@lists.01.org, richard@nod.at, Knut Omang <knut.omang@oracle.com>, kieran.bingham@ideasonboard.com, Joel Stanley <joel@jms.id.au>, jdike@addtoit.com, Tim.Bird@sony.com, Kees Cook <keescook@google.com>, linux-um@lists.infradead.org, rostedt@goodmis.org, Julia Lawall <julia.lawall@lip6.fr>, dan.j.williams@intel.com, kunit-dev@googlegroups.com, Greg KH <gregkh@linuxfoundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Daniel Vetter <daniel@ffwll.ch>, mpe@ellerman.id.au, joe@perches.com, khilman@baylibre.com
 
-On 30/11/2018 03:14, Luis Chamberlain wrote:
-> On Wed, Nov 28, 2018 at 11:36:18AM -0800, Brendan Higgins wrote:
->> +#define module_test(module) \
->> +		static int module_kunit_init##module(void) \
->> +		{ \
->> +			return kunit_run_tests(&module); \
->> +		} \
->> +		late_initcall(module_kunit_init##module)
-> Here in lies an assumption that suffices. I'm inclined to believe we
-> need new initcall level here so to ensure we *do* run after all the
-> respective kernels iniut calls. Otherwise we're left at the whims of
-> link order for kunit. For instance if a kunit test relies on frameworks
-> which are also late_initcall() we'd have complete incompatibility with
-> anything linked *after* kunit.
+On Fri, Nov 30, 2018 at 7:10 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
 >
->> diff --git a/kunit/Kconfig b/kunit/Kconfig
->> new file mode 100644
->> index 0000000000000..49b44c4f6630a
->> --- /dev/null
->> +++ b/kunit/Kconfig
->> @@ -0,0 +1,17 @@
->> +#
->> +# KUnit base configuration
->> +#
->> +
->> +menu "KUnit support"
->> +
->> +config KUNIT
->> +	bool "Enable support for unit tests (KUnit)"
->> +	depends on UML
-> Consider using:
+> On Fri, Nov 30, 2018 at 06:08:36PM -0800, Brendan Higgins wrote:
+> > On Thu, Nov 29, 2018 at 7:28 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
+> > >
+> > > > +static void kunit_run_case_internal(struct kunit *test,
+> > > > +                                 struct kunit_module *module,
+> > > > +                                 struct kunit_case *test_case)
+> > > > +{
+> > > > +     int ret;
+> > > > +
+> > > > +     if (module->init) {
+> > > > +             ret = module->init(test);
+> > > > +             if (ret) {
+> > > > +                     kunit_err(test, "failed to initialize: %d", ret);
+> > > > +                     kunit_set_success(test, false);
+> > > > +                     return;
+> > > > +             }
+> > > > +     }
+> > > > +
+> > > > +     test_case->run_case(test);
+> > > > +}
+> > >
+> > > <-- snip -->
+> > >
+> > > > +static bool kunit_run_case(struct kunit *test,
+> > > > +                        struct kunit_module *module,
+> > > > +                        struct kunit_case *test_case)
+> > > > +{
+> > > > +     kunit_set_success(test, true);
+> > > > +
+> > > > +     kunit_run_case_internal(test, module, test_case);
+> > > > +     kunit_run_case_cleanup(test, module, test_case);
+> > > > +
+> > > > +     return kunit_get_success(test);
+> > > > +}
+> > >
+> > > So we are running the module->init() for each test case... is that
+> > > correct? Shouldn't the init run once? Also, typically init calls are
+> >
+> > Yep, it's correct. `module->init()` should run once before every test
+> > case, reason being that the kunit_module serves as a test fixture in
+> > which each test cases should be run completely independently of every
+> > other.
 >
-> if UML
->     ...
-> endif
->
-> That allows the depends to be done once.
->
->> +	help
->> +	  Enables support for kernel unit tests (KUnit), a lightweight unit
->> +	  testing and mocking framework for the Linux kernel. These tests are
->> +	  able to be run locally on a developer's workstation without a VM or
->> +	  special hardware.
->
-> Some mention of UML may be good here?
->
->> For more information, please see
->> +	  Documentation/kunit/
->> +
->> +endmenu
-> I'm a bit conflicted here. This currently depends on UML but yet you
-> noted on RFC v2 that your intention is to liberate kunit from UML and
-> ideally allow unit tests to depend only on userspace. I've addressed
-> tests using both selftests kernels drivers and also re-written kernel
-> APIs to userspace to test there. I think we may need to live with both.
->
-> Then for the UML stuff, I think if we *really* accept that UML will
-> always be a viable option we should probably consider now throwing these
-> things under drivers/platform/uml/. This follows the pattern of arch
-> specific drivers. Whether or not we end up with a complete userspace
+> Shouldn't the init be test_case specific as well? Right now we just
+> past the struct kunit, but not the struct kunit_case. I though that
+> that the struct kunit_case was where we'd customize each specific
+> test case as we see fit for each test case. If not, how would we
+> do say, a different type of initialization for a different type of
+> test (for the same unit)?
 
-UML platform drivers predate that and are under arch/um/drivers/
+Maybe there should be other init functions, but specifying an init
+function per case is not typical. In most unit testing frameworks
+there is some sort of optional per test case init function that sets
+up the fixture common to all cases; it is also fairly common to have
+an init function that runs once at the very beginning of the entire
+test suite (like what you thought I was doing); however, it is not
+used nearly as often as the former, and even then is usually used in
+conjunction with the former.
 
-We should either keep to current convention or consider relocating the 
-existing ones - having things spread in different places around the tree 
-is not good in the long run (UML already has a few of those under the 
-x86 tree, let's not increase the number).
+Nevertheless, I don't think I have ever seen a unit test framework
+provide a way to make init functions specific to each case. I don't
+see any good reason not to do it other than the lack of examples in
+the wild suggest it would not get much usage.
 
-> component independent of UML may implicate having a shared component
-> somewhere else.
+In general, some limited initialization specific to a test case is
+allowed in the test case itself, and if you have really complicated
+initialization that warrants a separate init function, but isn't
+shared between cases, you should probably put the test in a separate
+test suite with a separate test fixture. I am sure there will be edge
+cases that don't fit, but there is no technical reason why you cannot
+just do the initialization in the test case itself in these cases.
+
 >
-> Likewise, I realize the goal is to *avoid* using a virtual machine for
-> these tests, but would it in any way make sense to share kunit to be
-> supported for other architectures to allow easier-to-write tests as
-> well?
+> > init and exit is supposed to allow code common to all test
+> > cases to run since it is so common to have dependencies needed for a
+> > test to be common to every test case.
 >
->    Luis
->
-> _______________________________________________
-> linux-um mailing list
-> linux-um@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-um
+> Sure things in common make sense, however the differntiating aspects
+> seem important as well on init? Or should the author be doing all
+> custom specific initializations on run_case() instead?
 >
 
--- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
+Usually limited initialization specific to a test case will just go in
+that test case.
 
+Cheers
 
 _______________________________________________
 linux-um mailing list
