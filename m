@@ -1,19 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
+Received: from mail-oi1-x244.google.com ([2607:f8b0:4864:20::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gU8NP-0007WN-U2
- for linux-um@lists.infradead.org; Tue, 04 Dec 2018 10:56:29 +0000
-Received: by mail-pf1-x441.google.com with SMTP id i12so8022950pfo.7
- for <linux-um@lists.infradead.org>; Tue, 04 Dec 2018 02:56:17 -0800 (PST)
-Subject: Re: [RFC v3 17/19] of: unittest: migrate tests to run on KUnit
+ id 1gTyM4-00061D-2K
+ for linux-um@lists.infradead.org; Tue, 04 Dec 2018 00:14:25 +0000
+Received: by mail-oi1-x244.google.com with SMTP id a77so12691533oii.5
+ for <linux-um@lists.infradead.org>; Mon, 03 Dec 2018 16:14:09 -0800 (PST)
+MIME-Version: 1.0
 References: <20181128193636.254378-1-brendanhiggins@google.com>
  <20181128193636.254378-18-brendanhiggins@google.com>
-From: Frank Rowand <frowand.list@gmail.com>
-Message-ID: <630d0c82-401e-28f8-73fc-6e684ec57bbf@gmail.com>
-Date: Tue, 4 Dec 2018 02:56:10 -0800
-MIME-Version: 1.0
-In-Reply-To: <20181128193636.254378-18-brendanhiggins@google.com>
-Content-Language: en-US
+ <CAL_Jsq+09Kx7yMBC_Jw45QGmk6U_fp4N6HOZDwYrM4tWw+_dOA@mail.gmail.com>
+ <18814973-8f0a-4647-a097-fcc3dc0b3cd3@infradead.org>
+In-Reply-To: <18814973-8f0a-4647-a097-fcc3dc0b3cd3@infradead.org>
+From: Brendan Higgins <brendanhiggins@google.com>
+Date: Mon, 3 Dec 2018 16:13:58 -0800
+Message-ID: <CAFd5g475RK9v9X4qxmXwuHiPMOs05WrZAw6EJWNdVoAHQWguFQ@mail.gmail.com>
+Subject: Re: [RFC v3 17/19] of: unittest: migrate tests to run on KUnit
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -26,26 +27,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Brendan Higgins <brendanhiggins@google.com>, gregkh@linuxfoundation.org, keescook@google.com, mcgrof@kernel.org, shuah@kernel.org
-Cc: brakmo@fb.com, robh@kernel.org, knut.omang@oracle.com, richard@nod.at, dri-devel@lists.freedesktop.org, linux-nvdimm@lists.01.org, mpe@ellerman.id.au, Tim.Bird@sony.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, kieran.bingham@ideasonboard.com, julia.lawall@lip6.fr, joel@jms.id.au, linux-kselftest@vger.kernel.org, khilman@baylibre.com, joe@perches.com, daniel@ffwll.ch, dan.j.williams@intel.com, jdike@addtoit.com, kunit-dev@googlegroups.com
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: brakmo@fb.com, dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org, shuah@kernel.org, Rob Herring <robh@kernel.org>, Frank Rowand <frowand.list@gmail.com>, linux-nvdimm@lists.01.org, richard@nod.at, Knut Omang <knut.omang@oracle.com>, kieran.bingham@ideasonboard.com, Joel Stanley <joel@jms.id.au>, jdike@addtoit.com, Tim.Bird@sony.com, Kees Cook <keescook@google.com>, linux-um@lists.infradead.org, rostedt@goodmis.org, Julia Lawall <julia.lawall@lip6.fr>, dan.j.williams@intel.com, kunit-dev@googlegroups.com, Greg KH <gregkh@linuxfoundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, mcgrof@kernel.org, Daniel Vetter <daniel@ffwll.ch>, mpe@ellerman.id.au, joe@perches.com, khilman@baylibre.com
 
-On 11/28/18 11:36 AM, Brendan Higgins wrote:
-> Migrate tests without any cleanup, or modifying test logic in anyway to
-> run under KUnit using the KUnit expectation and assertion API.
-> 
-> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-> ---
->  drivers/of/Kconfig    |    1 +
->  drivers/of/unittest.c | 1405 ++++++++++++++++++++++-------------------
->  2 files changed, 752 insertions(+), 654 deletions(-)
+On Thu, Nov 29, 2018 at 4:40 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> On 11/28/18 12:56 PM, Rob Herring wrote:
+> >> diff --git a/drivers/of/Kconfig b/drivers/of/Kconfig
+> >> index ad3fcad4d75b8..f309399deac20 100644
+> >> --- a/drivers/of/Kconfig
+> >> +++ b/drivers/of/Kconfig
+> >> @@ -15,6 +15,7 @@ if OF
+> >>  config OF_UNITTEST
+> >>         bool "Device Tree runtime unit tests"
+> >>         depends on !SPARC
+> >> +       depends on KUNIT
+> > Unless KUNIT has depends, better to be a select here.
+>
+> That's just style or taste.  I would prefer to use depends
+> instead of select, but that's also just my preference.
 
-< snip >
-
-I am travelling and will not have an opportunity to properly review this
-patch, patch 18, or patch 19 until next week.
-
--Frank
-
+I prefer depends too, but Rob is the maintainer here.
 
 _______________________________________________
 linux-um mailing list
