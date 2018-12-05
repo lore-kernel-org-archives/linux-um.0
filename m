@@ -1,108 +1,224 @@
-Return-Path: <linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [PATCH 2/3] treewide: add intermediate .s files to targets
-Date: Sat, 22 Dec 2018 18:50:34 +0900
-Message-Id: <1545472235-12782-2-git-send-email-yamada.masahiro@socionext.com>
-In-Reply-To: <1545472235-12782-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1545472235-12782-1-git-send-email-yamada.masahiro@socionext.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from ivanoab6.miniserver.com ([5.153.251.140]
+ helo=www.kot-begemot.co.uk)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gUWRM-0007oD-0K
+ for linux-um@lists.infradead.org; Wed, 05 Dec 2018 12:38:12 +0000
+From: anton.ivanov@cambridgegreys.com
+Subject: [PATCH 1/3] um: Optimize TLB operations v2
+Date: Wed,  5 Dec 2018 12:37:39 +0000
+Message-Id: <20181205123741.15456-1-anton.ivanov@cambridgegreys.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kbuild@vger.kernel.org
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, linux-ia64@vger.kernel.org, Tony Lindgren <tony@atomide.com>, Alexei Starovoitov <ast@kernel.org>, Masahiro Yamada <yamada.masahiro@socionext.com>, "H. Peter Anvin" <hpa@zytor.com>, Daniel Borkmann <daniel@iogearbox.net>, Richard Weinberger <richard@nod.at>, x86@kernel.org, Russell King <linux@armlinux.org.uk>, Ludovic Desroches <ludovic.desroches@microchip.com>, Ingo Molnar <mingo@redhat.com>, Fenghua Yu <fenghua.yu@intel.com>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, Borislav Petkov <bp@alien8.de>, Thomas Gleixner <tglx@linutronix.de>, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Tony Luck <tony.luck@intel.com>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
+Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Avoid unneeded recreation of these in the incremental build.
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Make the code to merge mmap/munmap/mprotect operations in tlb.c
+common for userspace and kernel. Kernel tlb operations can now
+be merged as well.
+
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 ---
+ arch/um/kernel/tlb.c | 85 +++++++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 57 insertions(+), 28 deletions(-)
 
- arch/arm/mach-at91/Makefile         | 2 ++
- arch/arm/mach-omap2/Makefile        | 2 ++
- arch/ia64/kernel/Makefile           | 2 ++
- arch/x86/um/Makefile                | 1 +
- drivers/memory/Makefile.asm-offsets | 2 ++
- samples/bpf/Makefile                | 1 +
- 6 files changed, 10 insertions(+)
-
-diff --git a/arch/arm/mach-at91/Makefile b/arch/arm/mach-at91/Makefile
-index f87066b..31b61f0 100644
---- a/arch/arm/mach-at91/Makefile
-+++ b/arch/arm/mach-at91/Makefile
-@@ -23,3 +23,5 @@ include/generated/at91_pm_data-offsets.h: arch/arm/mach-at91/pm_data-offsets.s F
- 	$(call filechk,offsets,__PM_DATA_OFFSETS_H__)
+diff --git a/arch/um/kernel/tlb.c b/arch/um/kernel/tlb.c
+index 37508b190106..b7f7a60a0928 100644
+--- a/arch/um/kernel/tlb.c
++++ b/arch/um/kernel/tlb.c
+@@ -37,17 +37,19 @@ struct host_vm_change {
+ 			} mprotect;
+ 		} u;
+ 	} ops[1];
++	int userspace;
+ 	int index;
+-	struct mm_id *id;
++	struct mm_struct *mm;
+ 	void *data;
+ 	int force;
+ };
  
- arch/arm/mach-at91/pm_suspend.o: include/generated/at91_pm_data-offsets.h
+-#define INIT_HVC(mm, force) \
++#define INIT_HVC(mm, force, userspace) \
+ 	((struct host_vm_change) \
+ 	 { .ops		= { { .type = NONE } },	\
+-	   .id		= &mm->context.id, \
++	   .mm		= mm, \
+        	   .data	= NULL, \
++	   .userspace	= userspace, \
+ 	   .index	= 0, \
+ 	   .force	= force })
+ 
+@@ -68,18 +70,40 @@ static int do_ops(struct host_vm_change *hvc, int end,
+ 		op = &hvc->ops[i];
+ 		switch (op->type) {
+ 		case MMAP:
+-			ret = map(hvc->id, op->u.mmap.addr, op->u.mmap.len,
+-				  op->u.mmap.prot, op->u.mmap.fd,
+-				  op->u.mmap.offset, finished, &hvc->data);
++			if (hvc->userspace)
++				ret = map(&hvc->mm->context.id, op->u.mmap.addr,
++					  op->u.mmap.len, op->u.mmap.prot,
++					  op->u.mmap.fd,
++					  op->u.mmap.offset, finished,
++					  &hvc->data);
++			else
++				map_memory(op->u.mmap.addr, op->u.mmap.offset,
++					   op->u.mmap.len, 1, 1, 1);
+ 			break;
+ 		case MUNMAP:
+-			ret = unmap(hvc->id, op->u.munmap.addr,
+-				    op->u.munmap.len, finished, &hvc->data);
++			if (hvc->userspace)
++				ret = unmap(&hvc->mm->context.id,
++					    op->u.munmap.addr,
++					    op->u.munmap.len, finished,
++					    &hvc->data);
++			else
++				ret = os_unmap_memory(
++					(void *) op->u.munmap.addr,
++						      op->u.munmap.len);
 +
-+targets += pm_data-offsets.s
-diff --git a/arch/arm/mach-omap2/Makefile b/arch/arm/mach-omap2/Makefile
-index 55c482c..4afdf56 100644
---- a/arch/arm/mach-omap2/Makefile
-+++ b/arch/arm/mach-omap2/Makefile
-@@ -240,3 +240,5 @@ include/generated/ti-pm-asm-offsets.h: arch/arm/mach-omap2/pm-asm-offsets.s FORC
- 	$(call filechk,offsets,__TI_PM_ASM_OFFSETS_H__)
+ 			break;
+ 		case MPROTECT:
+-			ret = protect(hvc->id, op->u.mprotect.addr,
+-				      op->u.mprotect.len, op->u.mprotect.prot,
+-				      finished, &hvc->data);
++			if (hvc->userspace)
++				ret = protect(&hvc->mm->context.id,
++					      op->u.mprotect.addr,
++					      op->u.mprotect.len,
++					      op->u.mprotect.prot,
++					      finished, &hvc->data);
++			else
++				ret = os_protect_memory(
++					(void *) op->u.mprotect.addr,
++							op->u.mprotect.len,
++							1, 1, 1);
+ 			break;
+ 		default:
+ 			printk(KERN_ERR "Unknown op type %d in do_ops\n",
+@@ -100,9 +124,12 @@ static int add_mmap(unsigned long virt, unsigned long phys, unsigned long len,
+ {
+ 	__u64 offset;
+ 	struct host_vm_op *last;
+-	int fd, ret = 0;
++	int fd = -1, ret = 0;
  
- $(obj)/sleep33xx.o $(obj)/sleep43xx.o: include/generated/ti-pm-asm-offsets.h
+-	fd = phys_mapping(phys, &offset);
++	if (hvc->userspace)
++		fd = phys_mapping(phys, &offset);
++	else
++		offset = phys;
+ 	if (hvc->index != 0) {
+ 		last = &hvc->ops[hvc->index - 1];
+ 		if ((last->type == MMAP) &&
+@@ -277,9 +304,9 @@ void fix_range_common(struct mm_struct *mm, unsigned long start_addr,
+ 	pgd_t *pgd;
+ 	struct host_vm_change hvc;
+ 	unsigned long addr = start_addr, next;
+-	int ret = 0;
++	int ret = 0, userspace = 1;
+ 
+-	hvc = INIT_HVC(mm, force);
++	hvc = INIT_HVC(mm, force, userspace);
+ 	pgd = pgd_offset(mm, addr);
+ 	do {
+ 		next = pgd_addr_end(addr, end_addr);
+@@ -314,9 +341,11 @@ static int flush_tlb_kernel_range_common(unsigned long start, unsigned long end)
+ 	pmd_t *pmd;
+ 	pte_t *pte;
+ 	unsigned long addr, last;
+-	int updated = 0, err;
++	int updated = 0, err = 0, force = 0, userspace = 0;
++	struct host_vm_change hvc;
+ 
+ 	mm = &init_mm;
++	hvc = INIT_HVC(mm, force, userspace);
+ 	for (addr = start; addr < end;) {
+ 		pgd = pgd_offset(mm, addr);
+ 		if (!pgd_present(*pgd)) {
+@@ -325,8 +354,7 @@ static int flush_tlb_kernel_range_common(unsigned long start, unsigned long end)
+ 				last = end;
+ 			if (pgd_newpage(*pgd)) {
+ 				updated = 1;
+-				err = os_unmap_memory((void *) addr,
+-						      last - addr);
++				err = add_munmap(addr, last - addr, &hvc);
+ 				if (err < 0)
+ 					panic("munmap failed, errno = %d\n",
+ 					      -err);
+@@ -342,8 +370,7 @@ static int flush_tlb_kernel_range_common(unsigned long start, unsigned long end)
+ 				last = end;
+ 			if (pud_newpage(*pud)) {
+ 				updated = 1;
+-				err = os_unmap_memory((void *) addr,
+-						      last - addr);
++				err = add_munmap(addr, last - addr, &hvc);
+ 				if (err < 0)
+ 					panic("munmap failed, errno = %d\n",
+ 					      -err);
+@@ -359,8 +386,7 @@ static int flush_tlb_kernel_range_common(unsigned long start, unsigned long end)
+ 				last = end;
+ 			if (pmd_newpage(*pmd)) {
+ 				updated = 1;
+-				err = os_unmap_memory((void *) addr,
+-						      last - addr);
++				err = add_munmap(addr, last - addr, &hvc);
+ 				if (err < 0)
+ 					panic("munmap failed, errno = %d\n",
+ 					      -err);
+@@ -372,22 +398,25 @@ static int flush_tlb_kernel_range_common(unsigned long start, unsigned long end)
+ 		pte = pte_offset_kernel(pmd, addr);
+ 		if (!pte_present(*pte) || pte_newpage(*pte)) {
+ 			updated = 1;
+-			err = os_unmap_memory((void *) addr,
+-					      PAGE_SIZE);
++			err = add_munmap(addr, PAGE_SIZE, &hvc);
+ 			if (err < 0)
+ 				panic("munmap failed, errno = %d\n",
+ 				      -err);
+ 			if (pte_present(*pte))
+-				map_memory(addr,
+-					   pte_val(*pte) & PAGE_MASK,
+-					   PAGE_SIZE, 1, 1, 1);
++				err = add_mmap(addr, pte_val(*pte) & PAGE_MASK,
++					       PAGE_SIZE, 0, &hvc);
+ 		}
+ 		else if (pte_newprot(*pte)) {
+ 			updated = 1;
+-			os_protect_memory((void *) addr, PAGE_SIZE, 1, 1, 1);
++			err = add_mprotect(addr, PAGE_SIZE, 0, &hvc);
+ 		}
+ 		addr += PAGE_SIZE;
+ 	}
++	if (!err)
++		err = do_ops(&hvc, hvc.index, 1);
 +
-+targets += pm-asm-offsets.s
-diff --git a/arch/ia64/kernel/Makefile b/arch/ia64/kernel/Makefile
-index 7372d99..4ba0514 100644
---- a/arch/ia64/kernel/Makefile
-+++ b/arch/ia64/kernel/Makefile
-@@ -52,3 +52,5 @@ include $(src)/Makefile.gate
++	if (err < 0)
++		panic("flush_tlb_kernel failed, errno = %d\n", err);
+ 	return updated;
+ }
  
- include/generated/nr-irqs.h: arch/$(SRCARCH)/kernel/nr-irqs.s FORCE
- 	$(call filechk,offsets,__ASM_NR_IRQS_H__)
-+
-+targets += nr-irqs.s
-diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
-index 1792464..2d686ae 100644
---- a/arch/x86/um/Makefile
-+++ b/arch/x86/um/Makefile
-@@ -38,6 +38,7 @@ USER_OBJS := bugs_$(BITS).o ptrace_user.o fault.o
- 
- $(obj)/user-offsets.s: c_flags = -Wp,-MD,$(depfile) $(USER_CFLAGS) \
- 	-Iarch/x86/include/generated
-+targets += user-offsets.s
- 
- include/generated/user_constants.h: $(obj)/user-offsets.s
- 	$(call filechk,offsets,__USER_CONSTANT_H__)
-diff --git a/drivers/memory/Makefile.asm-offsets b/drivers/memory/Makefile.asm-offsets
-index f968dfa..0447e17 100644
---- a/drivers/memory/Makefile.asm-offsets
-+++ b/drivers/memory/Makefile.asm-offsets
-@@ -1,2 +1,4 @@
- include/generated/ti-emif-asm-offsets.h: drivers/memory/emif-asm-offsets.s FORCE
- 	$(call filechk,offsets,__TI_EMIF_ASM_OFFSETS_H__)
-+
-+targets += emif-asm-offsets.s
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index 100a49d..82d5a38 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -230,6 +230,7 @@ $(LIBBPF): FORCE
- $(obj)/syscall_nrs.h:	$(obj)/syscall_nrs.s FORCE
- 	$(call filechk,offsets,__SYSCALL_NRS_H__)
- 
-+targets += syscall_nrs.s
- clean-files += syscall_nrs.h
- 
- FORCE:
 -- 
-2.7.4
+2.11.0
 
 
 _______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
