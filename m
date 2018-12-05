@@ -1,20 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-oi1-x242.google.com ([2607:f8b0:4864:20::242])
+Received: from ivanoab6.miniserver.com ([5.153.251.140]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gTxkF-0001NV-Ga
- for linux-um@lists.infradead.org; Mon, 03 Dec 2018 23:35:20 +0000
-Received: by mail-oi1-x242.google.com with SMTP id b141so12608075oii.12
- for <linux-um@lists.infradead.org>; Mon, 03 Dec 2018 15:35:09 -0800 (PST)
-MIME-Version: 1.0
-References: <20181128193636.254378-1-brendanhiggins@google.com>
- <20181128193636.254378-9-brendanhiggins@google.com>
- <20181130033429.GK18410@garbanzo.do-not-panic.com>
-In-Reply-To: <20181130033429.GK18410@garbanzo.do-not-panic.com>
-From: Brendan Higgins <brendanhiggins@google.com>
-Date: Mon, 3 Dec 2018 15:34:57 -0800
-Message-ID: <CAFd5g45+MAVaSW8HN9x57Y8Um=TV1Oa=-K8yExPBS-4KjLyciQ@mail.gmail.com>
-Subject: Re: [RFC v3 08/19] arch: um: add shim to trap to allow installing a
- fault catcher for tests
+ id 1gUWRM-0007oF-1O
+ for linux-um@lists.infradead.org; Wed, 05 Dec 2018 12:38:10 +0000
+From: anton.ivanov@cambridgegreys.com
+Subject: [PATCH 2/3] um: Skip TLB flushing where not needed
+Date: Wed,  5 Dec 2018 12:37:40 +0000
+Message-Id: <20181205123741.15456-2-anton.ivanov@cambridgegreys.com>
+In-Reply-To: <20181205123741.15456-1-anton.ivanov@cambridgegreys.com>
+References: <20181205123741.15456-1-anton.ivanov@cambridgegreys.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -23,77 +18,73 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: mcgrof@kernel.org
-Cc: brakmo@fb.com, dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org, shuah@kernel.org, Rob Herring <robh@kernel.org>, Frank Rowand <frowand.list@gmail.com>, linux-nvdimm@lists.01.org, richard@nod.at, Knut Omang <knut.omang@oracle.com>, kieran.bingham@ideasonboard.com, Joel Stanley <joel@jms.id.au>, jdike@addtoit.com, Tim.Bird@sony.com, Kees Cook <keescook@google.com>, linux-um@lists.infradead.org, rostedt@goodmis.org, Julia Lawall <julia.lawall@lip6.fr>, dan.j.williams@intel.com, kunit-dev@googlegroups.com, Greg KH <gregkh@linuxfoundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Daniel Vetter <daniel@ffwll.ch>, mpe@ellerman.id.au, joe@perches.com, khilman@baylibre.com
+To: linux-um@lists.infradead.org
+Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-On Thu, Nov 29, 2018 at 7:34 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
->
-> On Wed, Nov 28, 2018 at 11:36:25AM -0800, Brendan Higgins wrote:
-> > diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
-> > index cced829460427..bf90e678b3d71 100644
-> > --- a/arch/um/kernel/trap.c
-> > +++ b/arch/um/kernel/trap.c
-> > @@ -201,6 +201,12 @@ void segv_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
-> >       segv(*fi, UPT_IP(regs), UPT_IS_USER(regs), regs);
-> >  }
-> >
-> > +static void segv_run_catcher(jmp_buf *catcher, void *fault_addr)
-> > +{
-> > +     current->thread.fault_addr = fault_addr;
-> > +     UML_LONGJMP(catcher, 1);
-> > +}
-> > +
-> >  /*
-> >   * We give a *copy* of the faultinfo in the regs to segv.
-> >   * This must be done, since nesting SEGVs could overwrite
-> > @@ -219,7 +225,10 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
-> >       if (!is_user && regs)
-> >               current->thread.segv_regs = container_of(regs, struct pt_regs, regs);
-> >
-> > -     if (!is_user && (address >= start_vm) && (address < end_vm)) {
-> > +     catcher = current->thread.fault_catcher;
->
-> This and..
->
-> > +     if (catcher && current->thread.is_running_test)
-> > +             segv_run_catcher(catcher, (void *) address);
-> > +     else if (!is_user && (address >= start_vm) && (address < end_vm)) {
-> >               flush_tlb_kernel_vm();
-> >               goto out;
-> >       }
->
-> *not this*
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-I don't understand. Are you saying the previous block of code is good
-and this one is bad?
+Skip TLB flushing for all cases where it is not needed, not
+just flush_tlb_mm_range
 
->
-> > @@ -246,12 +255,10 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
-> >               address = 0;
-> >       }
-> >
-> > -     catcher = current->thread.fault_catcher;
-> >       if (!err)
-> >               goto out;
-> >       else if (catcher != NULL) {
-> > -             current->thread.fault_addr = (void *) address;
-> > -             UML_LONGJMP(catcher, 1);
-> > +             segv_run_catcher(catcher, (void *) address);
-> >       }
-> >       else if (current->thread.fault_addr != NULL)
-> >               panic("fault_addr set but no fault catcher");
->
-> But with this seems one atomic change which should be submitted
-> separately, its just a helper. Think it would make the actual
-> change needed easier to review, ie, your needed changes would
-> be smaller and clearer for what you need.
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+---
+ arch/um/kernel/tlb.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
-Are you suggesting that I pull out the bits needed to implement abort
-in the next patch and squash it into this one?
+diff --git a/arch/um/kernel/tlb.c b/arch/um/kernel/tlb.c
+index b7f7a60a0928..9ca902df243a 100644
+--- a/arch/um/kernel/tlb.c
++++ b/arch/um/kernel/tlb.c
+@@ -520,6 +520,13 @@ pte_t *addr_pte(struct task_struct *task, unsigned long addr)
+ 
+ void flush_tlb_all(void)
+ {
++	/*
++	 * Don't bother flushing if this address space is about to be
++	 * destroyed.
++	 */
++	if (atomic_read(&current->mm->mm_users) == 0)
++		return;
++
+ 	flush_tlb_mm(current->mm);
+ }
+ 
+@@ -541,6 +548,13 @@ void __flush_tlb_one(unsigned long addr)
+ static void fix_range(struct mm_struct *mm, unsigned long start_addr,
+ 		      unsigned long end_addr, int force)
+ {
++	/*
++	 * Don't bother flushing if this address space is about to be
++	 * destroyed.
++	 */
++	if (atomic_read(&mm->mm_users) == 0)
++		return;
++
+ 	fix_range_common(mm, start_addr, end_addr, force);
+ }
+ 
+@@ -556,13 +570,6 @@ EXPORT_SYMBOL(flush_tlb_range);
+ void flush_tlb_mm_range(struct mm_struct *mm, unsigned long start,
+ 			unsigned long end)
+ {
+-	/*
+-	 * Don't bother flushing if this address space is about to be
+-	 * destroyed.
+-	 */
+-	if (atomic_read(&mm->mm_users) == 0)
+-		return;
+-
+ 	fix_range(mm, start, end, 0);
+ }
+ 
+-- 
+2.11.0
+
 
 _______________________________________________
 linux-um mailing list
