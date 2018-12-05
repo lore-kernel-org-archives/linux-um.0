@@ -1,9 +1,21 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH] um: writev needs <sys/uio.h>
-Date: Thu, 27 Dec 2018 08:33:24 +0100
-Message-Id: <20181227073324.10090-1-hch@lst.de>
+Received: from ivanoab6.miniserver.com ([5.153.251.140]
+ helo=www.kot-begemot.co.uk)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gUYUc-0001uo-2K
+ for linux-um@lists.infradead.org; Wed, 05 Dec 2018 14:49:39 +0000
+Subject: Re: [RFC v3 01/19] kunit: test: add KUnit test runner core
+References: <20181128193636.254378-1-brendanhiggins@google.com>
+ <20181128193636.254378-2-brendanhiggins@google.com>
+ <20181130031438.GQ4922@garbanzo.do-not-panic.com>
+ <e2ed9df2-c06b-f0d3-d50a-d03166f586df@cambridgegreys.com>
+ <CAK8P3a2HrOTYv7qCJH1XGVxZ2HDqwkHqRWaAJ93nWc5p8LnCig@mail.gmail.com>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <5bd5581f-f192-4ed0-6f5f-9e1bf9f443e2@cambridgegreys.com>
+Date: Wed, 5 Dec 2018 14:49:10 +0000
 MIME-Version: 1.0
+In-Reply-To: <CAK8P3a2HrOTYv7qCJH1XGVxZ2HDqwkHqRWaAJ93nWc5p8LnCig@mail.gmail.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -12,34 +24,48 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: richard@nod.at
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Lawrence Brakmo <brakmo@fb.com>, Brendan Higgins <brendanhiggins@google.com>, dri-devel <dri-devel@lists.freedesktop.org>, Sasha Levin <Alexander.Levin@microsoft.com>, Michael Ellerman <mpe@ellerman.id.au>, linux-kselftest@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>, Rob Herring <robh@kernel.org>, linux-nvdimm@lists.01.org, Richard Weinberger <richard@nod.at>, knut.omang@oracle.com, Kieran Bingham <kieran.bingham@ideasonboard.com>, Joel Stanley <joel@jms.id.au>, "Bird, Timothy" <Tim.Bird@sony.com>, Shuah Khan <shuah@kernel.org>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, Steven Rostedt <rostedt@goodmis.org>, Julia Lawall <julia.lawall@lip6.fr>, levinsasha928@gmail.com, Dan Williams <dan.j.williams@intel.com>, kunit-dev@googlegroups.com, gregkh <gregkh@linuxfoundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "Luis R. Rodriguez" <mcgrof@kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@google.com>, Joe Perches <joe@perches.com>, Kevin Hilman <khilman@baylibre.com>
 
-vector_user.c doesn't compile without this for me.
+On 05/12/2018 14:45, Arnd Bergmann wrote:
+> On Wed, Dec 5, 2018 at 2:42 PM Anton Ivanov
+> <anton.ivanov@cambridgegreys.com> wrote:
+>> On 30/11/2018 03:14, Luis Chamberlain wrote:
+>>> On Wed, Nov 28, 2018 at 11:36:18AM -0800, Brendan Higgins wrote:
+>>> Then for the UML stuff, I think if we *really* accept that UML will
+>>> always be a viable option we should probably consider now throwing these
+>>> things under drivers/platform/uml/. This follows the pattern of arch
+>>> specific drivers. Whether or not we end up with a complete userspace
+>> UML platform drivers predate that and are under arch/um/drivers/
+>>
+>> We should either keep to current convention or consider relocating the
+>> existing ones - having things spread in different places around the tree
+>> is not good in the long run (UML already has a few of those under the
+>> x86 tree, let's not increase the number).
+> I don't mind the current location much, but if we move drivers, we should
+> move the into the appropriate subsystems based on what they do, rather
+> than having a new place with a mix of things.
+>
+> E.g. the tty drivers should all be in drivers/tty/ and the network drivers in
+> drivers/net. To paraphrase what you said above: having tty drivers spread in
+> different places around the tree is not good in the long run. We have long
+> ago moved from organizing drivers by bus interface to organizing drivers
+> by class, uml and drivers/platform are just exceptions to this rule.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- arch/um/drivers/vector_user.c | 1 +
- 1 file changed, 1 insertion(+)
+There are some issues with that because uml drivers have bits of what is 
+effectively host side of the hypervisor as a part of them. IMHO, having 
+that in driver/X is not very appropriate. So at least the *_user.c and 
+*_user.h bits have to go (or stay) somewhere else
 
-diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
-index 3d8cdbdb4e66..41eefbcdc86f 100644
---- a/arch/um/drivers/vector_user.c
-+++ b/arch/um/drivers/vector_user.c
-@@ -25,6 +25,7 @@
- #include <linux/if_packet.h>
- #include <sys/socket.h>
- #include <sys/wait.h>
-+#include <sys/uio.h>
- #include <linux/virtio_net.h>
- #include <netdb.h>
- #include <stdlib.h>
+Brgds,
+
 -- 
-2.19.2
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
 
 
 _______________________________________________
