@@ -1,224 +1,126 @@
-Return-Path: <ldv@altlinux.org>
-Date: Thu, 13 Dec 2018 20:18:33 +0300
-From: "Dmitry V. Levin" <ldv@altlinux.org>
-Subject: [PATCH v6 00/27] ptrace: add PTRACE_GET_SYSCALL_INFO request
-Message-ID: <20181213171833.GA5240@altlinux.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from ivanoab6.miniserver.com ([5.153.251.140]
+ helo=www.kot-begemot.co.uk)
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gUosl-0004wN-35
+ for linux-um@lists.infradead.org; Thu, 06 Dec 2018 08:19:42 +0000
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Subject: Re: [PATCH v3] Optimise TLB flush for kernel mm in UML
+References: <20181004172510.27410-1-anton.ivanov@cambridgegreys.com>
+ <1615399.BP76ARYnqk@blindfold>
+ <83f296bd-feb1-5177-228e-f294aa22fa5f@kot-begemot.co.uk>
+ <1764739.0Z0hY7T85t@blindfold>
+ <0603f0a8-c824-b783-7708-fefd5be68f57@kot-begemot.co.uk>
+Message-ID: <ea57230c-efe3-8c57-092b-83849896a506@cambridgegreys.com>
+Date: Thu, 6 Dec 2018 08:19:02 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-To: Oleg Nesterov <oleg@redhat.com>, Andy Lutomirski <luto@kernel.org>
-Cc: Elvira Khabirova <lineprinter@altlinux.org>, Eugene Syromyatnikov <esyr@redhat.com>, Albert Ou <aou@eecs.berkeley.edu>, Alexey Brodkin <alexey.brodkin@synopsys.com>, Arnd Bergmann <arnd@arndb.de>, Aurelien Jacquiot <jacquiot.aurelien@gmail.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Borislav Petkov <bp@alien8.de>, Breno Leitao <leitao@debian.org>, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, "David S. Miller" <davem@davemloft.net>, Eric Paris <eparis@redhat.com>, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, "James E.J. Bottomley" <jejb@parisc-linux.org>, James Hogan <jhogan@kernel.org>, Jann Horn <jannh@google.com>, Jeff Dike <jdike@addtoit.com>, Jonas Bonn <jonas@southpole.se>, Kees Cook <keescook@chromium.org>, Ley Foon Tan <lftan@altera.com>, Mark Salter <msalter@redhat.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, Palmer Dabbelt <palmer@sifive.com>, Paul Burton <paul.burton@mips.com>, Paul Mackerras <paulus@samba.org>, Paul Moore <paul@paul-moore.com>, Ralf Baechle <ralf@linux-mips.org>, Richard Henderson <rth@twiddle.net>, Richard Kuo <rkuo@codeaurora.org>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, Shuah Khan <shuah@kernel.org>, Stafford Horne <shorne@gmail.com>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, Vincent Chen <deanbo422@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Will Deacon <will.deacon@arm.com>, Will Drewry <wad@chromium.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-api@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-audit@redhat.com, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, strace-devel@lists.strace.io, linux-kernel@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+In-Reply-To: <0603f0a8-c824-b783-7708-fefd5be68f57@kot-begemot.co.uk>
+Content-Language: en-US
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
+Cc: Richard Weinberger <richard@nod.at>
 
-PTRACE_GET_SYSCALL_INFO is a generic ptrace API that lets ptracer obtain
-details of the syscall the tracee is blocked in.
-
-There are two reasons for a special syscall-related ptrace request.
-
-Firstly, with the current ptrace API there are cases when ptracer cannot
-retrieve necessary information about syscalls.  Some examples include:
-* The notorious int-0x80-from-64-bit-task issue.  See [1] for details.
-In short, if a 64-bit task performs a syscall through int 0x80, its tracer
-has no reliable means to find out that the syscall was, in fact,
-a compat syscall, and misidentifies it.
-* Syscall-enter-stop and syscall-exit-stop look the same for the tracer.
-Common practice is to keep track of the sequence of ptrace-stops in order
-not to mix the two syscall-stops up.  But it is not as simple as it looks;
-for example, strace had a (just recently fixed) long-standing bug where
-attaching strace to a tracee that is performing the execve system call
-led to the tracer identifying the following syscall-exit-stop as
-syscall-enter-stop, which messed up all the state tracking.
-* Since the introduction of commit 84d77d3f06e7e8dea057d10e8ec77ad71f721be3
-("ptrace: Don't allow accessing an undumpable mm"), both PTRACE_PEEKDATA
-and process_vm_readv become unavailable when the process dumpable flag
-is cleared.  On such architectures as ia64 this results in all syscall
-arguments being unavailable for the tracer.
-
-Secondly, ptracers also have to support a lot of arch-specific code for
-obtaining information about the tracee.  For some architectures, this
-requires a ptrace(PTRACE_PEEKUSER, ...) invocation for every syscall
-argument and return value.
-
-PTRACE_GET_SYSCALL_INFO returns the following structure:
-
-struct ptrace_syscall_info {
-	__u8 op;	/* PTRACE_SYSCALL_INFO_* */
-	__u32 arch __attribute__((__aligned__(sizeof(__u32))));
-	__u64 instruction_pointer;
-	__u64 stack_pointer;
-	union {
-		struct {
-			__u64 nr;
-			__u64 args[6];
-		} entry;
-		struct {
-			__s64 rval;
-			__u8 is_error;
-		} exit;
-		struct {
-			__u64 nr;
-			__u64 args[6];
-			__u32 ret_data;
-		} seccomp;
-	};
-};
-
-The structure was chosen according to [2], except for the following
-changes:
-* seccomp substructure was added as a superset of entry substructure;
-* the type of nr field was changed from int to __u64 because syscall
-numbers are, as a practical matter, 64 bits;
-* stack_pointer field was added along with instruction_pointer field
-since it is readily available and can save the tracer from extra
-PTRACE_GETREGS/PTRACE_GETREGSET calls;
-* arch is always initialized to aid with tracing system calls
-* such as execve();
-* instruction_pointer and stack_pointer are always initialized
-so they could be easily obtained for non-syscall stops;
-* a boolean is_error field was added along with rval field, this way
-the tracer can more reliably distinguish a return value
-from an error value.
-
-strace has been ported to PTRACE_GET_SYSCALL_INFO, you can find it
-in [3] and [4].
-
-[1] https://lore.kernel.org/lkml/CA+55aFzcSVmdDj9Lh_gdbz1OzHyEm6ZrGPBDAJnywm2LF_eVyg@mail.gmail.com/
-[2] https://lore.kernel.org/lkml/CAObL_7GM0n80N7J_DFw_eQyfLyzq+sf4y2AvsCCV88Tb3AwEHA@mail.gmail.com/
-[3] https://github.com/strace/strace/commits/ldv/PTRACE_GET_SYSCALL_INFO
-[4] https://gitlab.com/strace/strace/commits/ldv/PTRACE_GET_SYSCALL_INFO
-
----
-
-Notes:
-    v6:
-    * Add syscall_get_arguments and syscall_set_arguments wrappers
-      to asm-generic/syscall.h, requested by Geert.
-    * Change PTRACE_GET_SYSCALL_INFO return code: do not take trailing paddings
-      into account, use the end of the last field of the structure being written.
-    * Change struct ptrace_syscall_info:
-      * remove .frame_pointer field, is is not needed and not portable;
-      * make .arch field explicitly aligned, remove no longer needed
-        padding before .arch field;
-      * remove trailing pads, they are no longer needed.
-
-    v5:
-    * Merge separate series and patches into the single series.
-    * Change PTRACE_EVENTMSG_SYSCALL_{ENTRY,EXIT} values as requested by Oleg.
-    * Change struct ptrace_syscall_info: generalize instruction_pointer,
-      stack_pointer, and frame_pointer fields by moving them from
-      ptrace_syscall_info.{entry,seccomp} substructures to ptrace_syscall_info
-      and initializing them for all stops.
-    * Add PTRACE_SYSCALL_INFO_NONE, set it when not in a syscall stop,
-      so e.g. "strace -i" could use PTRACE_SYSCALL_INFO_SECCOMP to obtain
-      instruction_pointer when the tracee is in a signal stop.
-    * Patch all remaining architectures to provide all necessary
-      syscall_get_* functions.
-    * Make available for all architectures: do not conditionalize on
-      CONFIG_HAVE_ARCH_TRACEHOOK since all syscall_get_* functions
-      are implemented on all architectures.
-    * Add a test for PTRACE_GET_SYSCALL_INFO to selftests/ptrace.
-    
-    v4:
-    * Do not introduce task_struct.ptrace_event,
-      use child->last_siginfo->si_code instead.
-    * Implement PTRACE_SYSCALL_INFO_SECCOMP and ptrace_syscall_info.seccomp
-      support along with PTRACE_SYSCALL_INFO_{ENTRY,EXIT} and
-      ptrace_syscall_info.{entry,exit}.
-    
-    v3:
-    * Change struct ptrace_syscall_info.
-    * Support PTRACE_EVENT_SECCOMP by adding ptrace_event to task_struct.
-    * Add proper defines for ptrace_syscall_info.op values.
-    * Rename PT_SYSCALL_IS_ENTERING and PT_SYSCALL_IS_EXITING to
-      PTRACE_EVENTMSG_SYSCALL_ENTRY and PTRACE_EVENTMSG_SYSCALL_EXIT
-    * and move them to uapi.
-    
-    v2:
-    * Do not use task->ptrace.
-    * Replace entry_info.is_compat with entry_info.arch, use syscall_get_arch().
-    * Use addr argument of sys_ptrace to get expected size of the struct;
-      return full size of the struct.
-
-Dmitry V. Levin (25):
-  asm-generic/syscall.h: prepare for inclusion by other files
-  asm-generic/syscall.h: turn syscall_[gs]et_arguments into wrappers
-  alpha: define remaining syscall_get_* functions
-  Move EM_ARCOMPACT and EM_ARCV2 to uapi/linux/elf-em.h
-  arc: define syscall_get_arch()
-  c6x: define syscall_get_arch()
-  elf-em.h: add EM_CSKY
-  csky: define syscall_get_arch()
-  h8300: define remaining syscall_get_* functions
-  Move EM_HEXAGON to uapi/linux/elf-em.h
-  hexagon: define remaining syscall_get_* functions
-  Move EM_NDS32 to uapi/linux/elf-em.h
-  nds32: define syscall_get_arch()
-  nios2: define syscall_get_arch()
-  m68k: add asm/syscall.h
-  mips: define syscall_get_error()
-  parisc: define syscall_get_error()
-  powerpc: define syscall_get_error()
-  riscv: define syscall_get_arch()
-  Move EM_XTENSA to uapi/linux/elf-em.h
-  xtensa: define syscall_get_* functions
-  Move EM_UNICORE to uapi/linux/elf-em.h
-  unicore32: add asm/syscall.h
-  syscall_get_arch: add "struct task_struct *" argument
-  selftests/ptrace: add a test case for PTRACE_GET_SYSCALL_INFO
-
-Elvira Khabirova (2):
-  powerpc/ptrace: replace ptrace_report_syscall() with a tracehook call
-  ptrace: add PTRACE_GET_SYSCALL_INFO request
-
- arch/alpha/include/asm/syscall.h              |  31 +-
- arch/arc/include/asm/elf.h                    |   6 +-
- arch/arc/include/asm/syscall.h                |  11 +
- arch/arm/include/asm/syscall.h                |   2 +-
- arch/arm64/include/asm/syscall.h              |   4 +-
- arch/c6x/include/asm/syscall.h                |   7 +
- arch/csky/include/asm/syscall.h               |   7 +
- arch/h8300/include/asm/syscall.h              |  19 ++
- arch/hexagon/include/asm/elf.h                |   6 +-
- arch/hexagon/include/asm/syscall.h            |  22 ++
- arch/ia64/include/asm/syscall.h               |   2 +-
- arch/m68k/include/asm/syscall.h               |  42 +++
- arch/microblaze/include/asm/syscall.h         |   2 +-
- arch/mips/include/asm/syscall.h               |  12 +-
- arch/mips/kernel/ptrace.c                     |   2 +-
- arch/nds32/include/asm/elf.h                  |   3 +-
- arch/nds32/include/asm/syscall.h              |   8 +
- arch/nios2/include/asm/syscall.h              |   6 +
- arch/openrisc/include/asm/syscall.h           |   2 +-
- arch/parisc/include/asm/syscall.h             |  11 +-
- arch/powerpc/include/asm/syscall.h            |  20 +-
- arch/powerpc/kernel/ptrace.c                  |   7 +-
- arch/riscv/include/asm/syscall.h              |  10 +
- arch/s390/include/asm/syscall.h               |   4 +-
- arch/sh/include/asm/syscall_32.h              |   2 +-
- arch/sh/include/asm/syscall_64.h              |   2 +-
- arch/sparc/include/asm/syscall.h              |   5 +-
- arch/unicore32/include/asm/elf.h              |   3 +-
- arch/unicore32/include/asm/syscall.h          |  46 +++
- arch/x86/include/asm/syscall.h                |   8 +-
- arch/x86/um/asm/syscall.h                     |   2 +-
- arch/xtensa/include/asm/elf.h                 |   2 +-
- arch/xtensa/include/asm/syscall.h             |  65 +++++
- include/asm-generic/syscall.h                 |  85 ++++--
- include/linux/tracehook.h                     |   9 +-
- include/uapi/linux/audit.h                    |  16 ++
- include/uapi/linux/elf-em.h                   |   8 +
- include/uapi/linux/ptrace.h                   |  35 +++
- kernel/auditsc.c                              |   4 +-
- kernel/ptrace.c                               | 101 ++++++-
- kernel/seccomp.c                              |   4 +-
- tools/testing/selftests/ptrace/.gitignore     |   1 +
- tools/testing/selftests/ptrace/Makefile       |   2 +-
- .../selftests/ptrace/get_syscall_info.c       | 271 ++++++++++++++++++
- 44 files changed, 851 insertions(+), 66 deletions(-)
- create mode 100644 arch/m68k/include/asm/syscall.h
- create mode 100644 arch/unicore32/include/asm/syscall.h
- create mode 100644 tools/testing/selftests/ptrace/get_syscall_info.c
-
--- 
-ldv
+Ck9uIDEyLzQvMTggMTE6MTkgQU0sIEFudG9uIEl2YW5vdiB3cm90ZToKPgo+IE9uIDEwLzYvMTgg
+MTA6MTUgUE0sIFJpY2hhcmQgV2VpbmJlcmdlciB3cm90ZToKPj4gQW0gU2Ftc3RhZywgNi4gT2t0
+b2JlciAyMDE4LCAyMzowNDowOCBDRVNUIHNjaHJpZWIgQW50b24gSXZhbm92Ogo+Pj4gT24gMDYv
+MTAvMjAxOCAyMTozOCwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgo+Pj4+IEFudG9uLAo+Pj4+
+Cj4+Pj4gQW0gRG9ubmVyc3RhZywgNC4gT2t0b2JlciAyMDE4LCAxOToyNToxMCBDRVNUIHNjaHJp
+ZWIgCj4+Pj4gYW50b24uaXZhbm92QGNhbWJyaWRnZWdyZXlzLmNvbToKPj4+Pj4gRnJvbTogQW50
+b24gSXZhbm92IDxhbnRvbi5pdmFub3ZAY2FtYnJpZGdlZ3JleXMuY29tPgo+Pj4+Pgo+Pj4+PiBU
+aGlzIHBhdGNoIGludHJvZHVjZXMgYnVsa2luZyB1cCBtZW1vcnkgcmFuZ2VzIHRvIGJlIHBhc3Nl
+ZCB0bwo+Pj4+PiBtbWFwL211bm1hcC9tcHJvdGVjdCBpbnN0ZWFkIG9mIGRvaW5nIGV2ZXJ5dGhp
+bmcgb25lIHBhZ2UgYXQgYSB0aW1lLgo+Pj4+Pgo+Pj4+PiBUaGlzIGlzIGFscmVhZHkgYmVpbmcg
+ZG9uZSBmb3IgdGhlIHVzZXJzcGFjZSBVTUwgcG9ydGlvbiwgdGhpcwo+Pj4+PiBhZGRzIGEgc2lt
+cGxpZmllZCB2ZXJzaW9uIG9mIGl0IGZvciB0aGUga2VybmVsIG1tLgo+Pj4+Pgo+Pj4+PiBUaGlz
+IHJlc3VsdHMgaW4gc3BlZWQgdXAgb2YgdXAgdG8gMTAlKyBpbiBzb21lIGFyZWFzIChzZXF1ZW50
+aWFsCj4+Pj4+IGRpc2sgcmVhZCBtZWFzdXJlZCB3aXRoIGRkLCBldGMpLgo+Pj4+IE5pY2UhCj4+
+Pj4gRG8geW91IGhhdmUgYWxzbyBkYXRhIG9uIGhvdyBtdWNoIGxlc3MgbWVtb3J5IG1hcHBpbmdz
+IGdldCBpbnN0YWxsZWQ/Cj4+Pgo+Pj4gTm90IHByb3BlciBzdGF0aXN0aWNzLiBJIGhhZCBzb21l
+IGRlYnVnIHByaW50a3MgZWFybHkgb24gYW5kIGluc3RlYWQgb2YKPj4+IHNpbmdsZSBwYWdlcyBJ
+IHdhcyBzZWVpbmcgYSBmZXcgaHVuZHJlZCBLYnl0ZXMgYXQgYSB0aW1lIGJlaW5nIAo+Pj4gbWFw
+cGVkIGluCj4+PiBwbGFjZXMuIEkgY2FuIHRyeSBhIGZldyB0cmlhbCBydW5zIHdpdGggc29tZSBk
+ZWJ1ZyBwcmludGtzIHRvIAo+Pj4gY29sbGVjdCBzdGF0cy4KPj4+Cj4+Pj4+IEFkZCBmdXJ0aGVy
+IHNwZWVkLXVwIGJ5IHJlbW92aW5nIGEgbWFuZGF0b3J5IHRsYiBmb3JjZSBmbHVzaAo+Pj4+PiBm
+b3Igc3dhcGxlc3Mga2VybmVsLgo+Pj4+IEl0IGlzIGFsc28gbm90IGVudGlyZWx5IGNsZWFyIHRv
+IG1lIHdoeSBzd2FwIGlzIGEgcHJvYmxlbSBoZXJlLAo+Pj4+IGNhbiB5b3UgcGxlYXNlIGVsYWJv
+cmF0ZT8KPj4+IEkgYXNrZWQgdGhpcyBxdWVzdGlvbiBvbiB0aGUgbGlzdCBhIHdoaWxlIGJhY2su
+Cj4+Pgo+Pj4gT25lIG9mIHRoZSBtYWluIHJlbWFpbmluZyBodWdlIHBlcmZvcm1hbmNlIGJ1Z2Jl
+YXJzwqAgaW4gVU1MIHdoaWNoCj4+PiBhY2NvdW50cyBmb3IgbW9zdCBvZiBpdHMgImZhbWUiIG9m
+IGJlaW5nIHNsb3cgaXMgdGhlIGZhY3QgdGhhdCB0aGVyZSBpcwo+Pj4gYSBmdWxsIFRMQiBmbHVz
+aCBldmVyeSB0aW1lIGEgZm9yayBoYXBwZW5zIGluIHRoZSBVTUwgdXNlcnNwYWNlLiBJdCBpcwo+
+Pj4gYWxzbyBleGVjdXRlZCB3aXRoIGZvcmNlID0gMS4KPj4+Cj4+PiBZb3UgcG9pbnRlZCBtZSB0
+byBhbiBvbGQgY29tbWl0IGZyb20gdGhlIGRheXMgc3ZuIHdhcyBiZWluZyB1c2VkIHdoaWNoCj4+
+PiB3YXMgZml4aW5nIGV4YWN0bHkgdGhhdCBieSBpbnRyb2R1Y2luZyB0aGUgZm9yY2UgcGFyYW1l
+dGVyLgo+Pj4KPj4+IEkgdGVzdGVkIGZvcmNlIG9uL29mZiBhbmQgdGhlIGNvbmRpdGlvbiB0aGF0
+IGNvbW1pdCBpcyB0cnlpbmcgdG8gY3VyZQo+Pj4gc3RpbGwgc3RhbmRzLiBJZiBzd2FwIGlzIGVu
+YWJsZWQgdGhlIHRsYiBmbHVzaCBvbiBmb3JrL2V4ZWMgbmVlZHMgdG8KPj4+IGhhdmUgZm9yY2U9
+MS4gSWYsIGhvd2V2ZXIsIHRoZXJlIGlzIG5vIHN3YXAgaW4gdGhlIHN5c3RlbSB0aGUgZm9yY2Ug
+aXMKPj4+IG5vdCBuZWVkZWQuIEl0IGhhcHBpbHkgd29ya3Mgd2l0aG91dCBpdC4KPj4+Cj4+PiBX
+aHkgLSBkdW5uby4gSSBkbyBub3QgZnVsbHkgdW5kZXJzdGFuZCBzb21lIG9mIHRoYXQgY29kZS4K
+Pj4gT2theSwgSSBob3BlZCB5b3UgZmlndXJlZCBpbiB0aGUgbWVhbndoaWxlLgo+PiBTZWVtcyBs
+aWtlIHdlIG5lZWQgdG8gZGlnIGRlZXBlciBpbiB0aGUgaGlzdG9yeS4KPgo+IEkgYW0gZ29pbmcg
+dG8gc3BsaXQgdGhpcyBpbnRvIHR3byBwYXRjaGVzLgo+Cj4gVGhlIHRsYiBtYXBwaW5nIGFjY2Vs
+ZXJhdGlvbiBmb3IgdGhlIGtlcm5lbCBpcyBsb2dpY2FsbHkgaW5kZXBlbmRlbnQgCj4gZnJvbSB0
+aGUgY2hhbmdlIHdoaWNoIG1ha2VzIGZvcmNlX2FsbCAic29mdCIgaWYgdGhlcmUgaXMgbm8gc3dh
+cC4KPgo+IFdoaWxlIHRoZSBtZXJnaW5nIG9mIGFyZWFzIGlzIGZhaXJseSBjbGVhciBhbmQgaXRz
+IGFkdmFudGFnZXMgYXJlIHdlbGwgCj4gZGVmaW5lZCwgdGhlIHNlY29uZCBpcyBub3Qgc29tZXRo
+aW5nIEkgdW5kZXJzdGFuZCBmdWxseS4KPgo+IEl0IGxvb2tzIGxpa2UgaXQgaW1wbGVtZW50cyB0
+aGUgZm9sbG93aW5nIG9ic2VydmF0aW9uIHdoaWNoIEkgY2Fubm90IAo+IGp1ZGdlIGFzIHZhbGlk
+IG9yIGludmFsaWQgb3V0IG9mIGhhbmQ6Cj4KPiAiT24gVU1MLCBpbiB0aGUgYWJzZW5jZSBvZiBz
+d2FwIHRoZSBtZW1vcnkgbWFwIGFmdGVyIGEgZm9yayBkb2VzIG5vdCAKPiBuZWVkIHRvIGJlIHVw
+ZGF0ZWQuIFRoZSBuZXcgcHJvY2VzcyBpcyBPSyB3aXRoIHdoYXRldmVyIGlzIGFscmVhZHkgCj4g
+bWFwcGVkL3VubWFwcGVkIGFzIHN0YXJ0aW5nIHBvaW50Ii4KCgpJIGhhdmUgaXQgZmlndXJlZCBv
+dXQuIEFmdGVyIGEgZm9yaywgdGhlICJtYXBwaW5ncyBpbiIgYXJlIHZhbGlkLCB0aGUgCm1hcHBp
+bmdzIG91dCB3aGljaCB0cmlnZ2VyIHRoZSBmYXVsdHMgbmVlZGVkIGZvciBwYWdpbmcgYXJlIG5v
+dCAKbmVjZXNzYXJpbHkgc28uIFRoYXQgaXMgd2h5IG1ha2luZyBhICJzb2Z0ZXIgZmx1c2giIHdv
+cmtzIGZpbmUgd2l0aG91dCAKc3dhcCBhbmQgZmFpbHMgd2l0aCBzd2FwIC0gdGhlIHJlbGV2YW50
+IHBhZ2VzIHdoaWNoIGFyZSBwYWdlZCBvdXQgYXJlIApub3QgbWFya2VkIGNvcnJlY3RseSBhcyBz
+dWNoLiBBcyBhIHJlc3VsdCwgd2hlbiB0aGV5IGFyZSBhY2Nlc3NlZCAKImludGVyZXN0aW5nIHRo
+aW5ncyIgaGFwcGVuIGluc3RlYWQgb2YgYSBwYWdlIGZhdWx0LgoKVGh1cywgdGhlIHRsYiBmbHVz
+aCBhZnRlciBhIGZvcmsgaGFzIHRvIGVuc3VyZSB0aGF0IGFsbCB1bm1hcHMgYW5kIApwZW5kaW5n
+IHByb3RlY3Rpb24gY2hhbmdlcyBoYXZlIGJlZW4gcmVmcmVzaGVkLiBUaGF0IGlzIHdoYXQgaXMg
+YWN0dWFsbHkgCmdvaW5nIG9uIGhlcmUgYW5kIHRoZXJlIGlzIGEgcG9zc2libGUgb3B0aW1pemF0
+aW9uIC0gbW1hcHMgZm9yIGFueXRoaW5nIApiZXNpZGVzIG5ldyBwYWdlcyBjYW4gYmUgc2tpcHBl
+ZC4gU2tpcHBpbmcgbXVubWFwcyBhbmQgbXByb3RlY3RzIGluIGFueSAKc2hhcGUgb3IgZm9ybSBp
+cyBhY3R1YWxseSBub3QgYWR2aXNhYmxlIC0gaXQgbWF5IGxlYWQgdG8gCnNlY3VyaXR5L2luZm9y
+bWF0aW9uIGxlYWtzLgoKQXMgd2l0aCBhbGwgb3RoZXIgdGxiIG9wdGltaXphdGlvbnMsIHRoaXMg
+aW1wcm92ZXMgdGhpbmdzIHByZWRvbWluYW50bHkgCmJ5IGRlY3JlYXNpbmcgdGhlIGFtb3VudCBv
+ZiAiaW50ZXJydXB0aW9ucyIgaW4gdGhlIG1lbW9yeSBvcGVyYXRpb24gCnNlcXVlbmNlcyBleGVj
+dXRlZCBieSBkb19ob3N0X29wcygpLgoKSSB3aWxsIGhhdmUgdGhlIHBhdGNoIHBvc3RlZCB0aGlz
+IGFmdGVybm9vbiBhbG9uZyB3aXRoIGJlbmNobWFya3MgdG8gCmRlbW9uc3RyYXRlIGl0LiBTbyBm
+YXIgdGhlIGJvb3Qgc3BlZWQgaW1wcm92ZW1lbnQgaXMgfiAxNSUuIEl0IGlzIHN0YWJsZSAKd2l0
+aCBhbmQgd2l0aG91dCBzd2FwIGFuZCBJIGFtIG5vdyBjbGVhciB3aGF0IGl0IGRvZXMuIE9uY2Ug
+SSBkbyBteSAKb3RoZXIgImhlYXZ5IiB0ZXN0cyBsaWtlIGYuZS4gcmVjb21waWxpbmcgVU1MIGl0
+c2VsZiBJIHdpbGwgaGF2ZSB0aGF0IApwb3N0ZWQgYXMgd2VsbC4KClRoZSBkcmVhbSBzY2VuYXJp
+byBoZXJlIHdvdWxkIGJlIHRvIGJlIGFibGUgdG8gc29tZWhvdyBoYXZlIGEgc2V0IG9mIApmdWxs
+eSB2YWxpZCB0YWJsZXMgYWZ0ZXIgZm9yayBtYWtpbmcgdGhlIGZsdXNoIHVubmVjZXNzYXJ5LiBU
+aGF0IHdpbGwgCnNwZWVkIHVwIFVNTCBmb3IgZGF5LXRvLWRheSB1c2UgYnkgYW4gb3JkZXIgb2Yg
+bWFnbml0dWRlLiBUaGVyZSBpcyBubyAKc29sdXRpb24gZm9yIHRoaXMgaW4gdGxiLmMgdGhvdWdo
+LiBJZiB0aGlzIGlzIHBvc3NpYmxlIGluIHRoZSBmaXJzdCAKcGxhY2UsIHRoZSB3YXkgdG8gZG8g
+aXQgc2hvdWxkIGJlIHNvbWV3aGVyZSBkb3duIGluIHRoZSBndXRzIG9mIHNrYXMgCndoaWNoIEkg
+ZG8gbm90IGZ1bGx5IHVuZGVyc3RhbmQuCgpBLgoKPgo+IFRoaXMgZG9lcyBub3Qgc2VlbSB0byBi
+ZSB0aGUgY2FzZSBpZiB0aGVyZSBhcmUgc3dhcHBlZCBwYWdlcyBhbmQgSSAKPiBhY3R1YWxseSBk
+byBub3QgdW5kZXJzdGFuZCB3aHkuCj4KPiBBLgo+Cj4+Cj4+IFRoYW5rcywKPj4gLy9yaWNoYXJk
+Cj4+Cj4+Cj4+Cj4+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCj4+IGxpbnV4LXVtIG1haWxpbmcgbGlzdAo+PiBsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQu
+b3JnCj4+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
+dW0KPj4KPgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+Cj4gbGludXgtdW0gbWFpbGluZyBsaXN0Cj4gbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwo+
+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0KPgot
+LSAKQW50b24gUi4gSXZhbm92CgpDYW1icmlkZ2UgR3JleXMgTGltaXRlZCwgRW5nbGFuZCBhbmQg
+V2FsZXMgY29tcGFueSBObyAxMDI3MzY2MQpodHRwOi8vd3d3LmNhbWJyaWRnZWdyZXlzLmNvbS8K
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11
+bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
+aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
 
