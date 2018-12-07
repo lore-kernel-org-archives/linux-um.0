@@ -1,21 +1,29 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-oi1-x244.google.com ([2607:f8b0:4864:20::244])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gTx0C-00082B-IU
- for linux-um@lists.infradead.org; Mon, 03 Dec 2018 22:47:45 +0000
-Received: by mail-oi1-x244.google.com with SMTP id y23so12549986oia.4
- for <linux-um@lists.infradead.org>; Mon, 03 Dec 2018 14:47:31 -0800 (PST)
+ id 1gV4Db-0001La-8a
+ for linux-um@lists.infradead.org; Fri, 07 Dec 2018 00:42:15 +0000
+Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com
+ [209.85.222.170])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 923142154B
+ for <linux-um@lists.infradead.org>; Fri,  7 Dec 2018 00:41:58 +0000 (UTC)
+Received: by mail-qk1-f170.google.com with SMTP id r71so1512129qkr.10
+ for <linux-um@lists.infradead.org>; Thu, 06 Dec 2018 16:41:58 -0800 (PST)
 MIME-Version: 1.0
 References: <20181128193636.254378-1-brendanhiggins@google.com>
- <20181128193636.254378-2-brendanhiggins@google.com>
- <20181130032802.GG18410@garbanzo.do-not-panic.com>
- <CAFd5g45F0RViYDQyXRwyxVPAU=CO_Goqy3yHz=BbcMeAT7o6-g@mail.gmail.com>
- <20181201031049.GL28501@garbanzo.do-not-panic.com>
-In-Reply-To: <20181201031049.GL28501@garbanzo.do-not-panic.com>
-From: Brendan Higgins <brendanhiggins@google.com>
-Date: Mon, 3 Dec 2018 14:47:19 -0800
-Message-ID: <CAFd5g45DQ7V_pMpkNpRw3iRsCgO-MQvJV=hV7axP4gG++qm2JA@mail.gmail.com>
-Subject: Re: [RFC v3 01/19] kunit: test: add KUnit test runner core
+ <20181128193636.254378-18-brendanhiggins@google.com>
+ <CAL_Jsq+09Kx7yMBC_Jw45QGmk6U_fp4N6HOZDwYrM4tWw+_dOA@mail.gmail.com>
+ <18814973-8f0a-4647-a097-fcc3dc0b3cd3@infradead.org>
+ <CAFd5g475RK9v9X4qxmXwuHiPMOs05WrZAw6EJWNdVoAHQWguFQ@mail.gmail.com>
+ <CAL_JsqL_PivQbrJFEusdKAy-2EQtKL3OHbmyYSK9bzuTOQegqA@mail.gmail.com>
+ <CAFd5g45-HGytAPTx7OQD8B0oAdLncDGSMMTyHCTtyobeUJ15AQ@mail.gmail.com>
+In-Reply-To: <CAFd5g45-HGytAPTx7OQD8B0oAdLncDGSMMTyHCTtyobeUJ15AQ@mail.gmail.com>
+From: Rob Herring <robh@kernel.org>
+Date: Thu, 6 Dec 2018 18:41:46 -0600
+Message-ID: <CAL_JsqKvsCNk5oz-f9-G2TsKbfvO=9HO+-+QfOMz_xEAN8TJJg@mail.gmail.com>
+Subject: Re: [RFC v3 17/19] of: unittest: migrate tests to run on KUnit
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -28,97 +36,72 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: mcgrof@kernel.org
-Cc: brakmo@fb.com, dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org, shuah@kernel.org, Rob Herring <robh@kernel.org>, Frank Rowand <frowand.list@gmail.com>, linux-nvdimm@lists.01.org, richard@nod.at, Knut Omang <knut.omang@oracle.com>, kieran.bingham@ideasonboard.com, Joel Stanley <joel@jms.id.au>, jdike@addtoit.com, Tim.Bird@sony.com, Kees Cook <keescook@google.com>, linux-um@lists.infradead.org, rostedt@goodmis.org, Julia Lawall <julia.lawall@lip6.fr>, dan.j.williams@intel.com, kunit-dev@googlegroups.com, Greg KH <gregkh@linuxfoundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Daniel Vetter <daniel@ffwll.ch>, mpe@ellerman.id.au, joe@perches.com, khilman@baylibre.com
+To: Brendan Higgins <brendanhiggins@google.com>
+Cc: brakmo@fb.com, dri-devel <dri-devel@lists.freedesktop.org>, linux-kselftest@vger.kernel.org, shuah@kernel.org, Frank Rowand <frowand.list@gmail.com>, linux-nvdimm <linux-nvdimm@lists.01.org>, Richard Weinberger <richard@nod.at>, knut.omang@oracle.com, Kieran Bingham <kieran.bingham@ideasonboard.com>, Joel Stanley <joel@jms.id.au>, Jeff Dike <jdike@addtoit.com>, "Bird," Timothy" <Tim.Bird@sony.com>, Kees Cook <keescook@google.com>," linux-um@lists.infradead.org, Steven Rostedt <rostedt@goodmis.org>, Julia Lawall <julia.lawall@lip6.fr>, Dan Williams <dan.j.williams@intel.com>, kunit-dev@googlegroups.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Luis R. Rodriguez" <mcgrof@kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Michael Ellerman <mpe@ellerman.id.au>, Joe Perches <joe@perches.com>, Kevin Hilman <khilman@baylibre.com>
 
-On Fri, Nov 30, 2018 at 7:10 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
+On Wed, Dec 5, 2018 at 5:43 PM Brendan Higgins
+<brendanhiggins@google.com> wrote:
 >
-> On Fri, Nov 30, 2018 at 06:08:36PM -0800, Brendan Higgins wrote:
-> > On Thu, Nov 29, 2018 at 7:28 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
-> > >
-> > > > +static void kunit_run_case_internal(struct kunit *test,
-> > > > +                                 struct kunit_module *module,
-> > > > +                                 struct kunit_case *test_case)
-> > > > +{
-> > > > +     int ret;
-> > > > +
-> > > > +     if (module->init) {
-> > > > +             ret = module->init(test);
-> > > > +             if (ret) {
-> > > > +                     kunit_err(test, "failed to initialize: %d", ret);
-> > > > +                     kunit_set_success(test, false);
-> > > > +                     return;
-> > > > +             }
-> > > > +     }
-> > > > +
-> > > > +     test_case->run_case(test);
-> > > > +}
-> > >
-> > > <-- snip -->
-> > >
-> > > > +static bool kunit_run_case(struct kunit *test,
-> > > > +                        struct kunit_module *module,
-> > > > +                        struct kunit_case *test_case)
-> > > > +{
-> > > > +     kunit_set_success(test, true);
-> > > > +
-> > > > +     kunit_run_case_internal(test, module, test_case);
-> > > > +     kunit_run_case_cleanup(test, module, test_case);
-> > > > +
-> > > > +     return kunit_get_success(test);
-> > > > +}
-> > >
-> > > So we are running the module->init() for each test case... is that
-> > > correct? Shouldn't the init run once? Also, typically init calls are
+> On Tue, Dec 4, 2018 at 5:41 AM Rob Herring <robh@kernel.org> wrote:
 > >
-> > Yep, it's correct. `module->init()` should run once before every test
-> > case, reason being that the kunit_module serves as a test fixture in
-> > which each test cases should be run completely independently of every
-> > other.
+> > On Mon, Dec 3, 2018 at 6:14 PM Brendan Higgins
+> > <brendanhiggins@google.com> wrote:
+> > >
+> > > On Thu, Nov 29, 2018 at 4:40 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+> > > >
+> > > > On 11/28/18 12:56 PM, Rob Herring wrote:
+> > > > >> diff --git a/drivers/of/Kconfig b/drivers/of/Kconfig
+> > > > >> index ad3fcad4d75b8..f309399deac20 100644
+> > > > >> --- a/drivers/of/Kconfig
+> > > > >> +++ b/drivers/of/Kconfig
+> > > > >> @@ -15,6 +15,7 @@ if OF
+> > > > >>  config OF_UNITTEST
+> > > > >>         bool "Device Tree runtime unit tests"
+> > > > >>         depends on !SPARC
+> > > > >> +       depends on KUNIT
+> > > > > Unless KUNIT has depends, better to be a select here.
+> > > >
+> > > > That's just style or taste.  I would prefer to use depends
+> > > > instead of select, but that's also just my preference.
+> > >
+> > > I prefer depends too, but Rob is the maintainer here.
+> >
+> > Well, we should be consistent, not the follow the whims of each maintainer.
 >
-> Shouldn't the init be test_case specific as well? Right now we just
-> past the struct kunit, but not the struct kunit_case. I though that
-> that the struct kunit_case was where we'd customize each specific
-> test case as we see fit for each test case. If not, how would we
-> do say, a different type of initialization for a different type of
-> test (for the same unit)?
+> Sorry, I don't think that came out the way I meant it. I don't really
+> think we are consistent on this point across the kernel, and I don't
+> feel very strongly about the point, so I was just looking to follow
+> the path of least resistance. (I also just assumed Rob would keep us
+> consistent within drivers/of/.)
 
-Maybe there should be other init functions, but specifying an init
-function per case is not typical. In most unit testing frameworks
-there is some sort of optional per test case init function that sets
-up the fixture common to all cases; it is also fairly common to have
-an init function that runs once at the very beginning of the entire
-test suite (like what you thought I was doing); however, it is not
-used nearly as often as the former, and even then is usually used in
-conjunction with the former.
+I meant across unittests, we should be consistent. All unittests do
+either "depends on KUNIT" or "select KUNIT". The question I would ask
+is does KUNIT need to be user visible or is useful to enable without
+any unittests enabled? With depends, a user has 2 options to go enable
+vs. 1 with select.
 
-Nevertheless, I don't think I have ever seen a unit test framework
-provide a way to make init functions specific to each case. I don't
-see any good reason not to do it other than the lack of examples in
-the wild suggest it would not get much usage.
+But if you want a global kill switch to turn off all unittests, then
+depends works better.
 
-In general, some limited initialization specific to a test case is
-allowed in the test case itself, and if you have really complicated
-initialization that warrants a separate init function, but isn't
-shared between cases, you should probably put the test in a separate
-test suite with a separate test fixture. I am sure there will be edge
-cases that don't fit, but there is no technical reason why you cannot
-just do the initialization in the test case itself in these cases.
-
+> I figure if we are running unit tests from the test runner script or
+> from an automated system, you won't be hunting for dependencies for a
+> single test every time you want to run a test, so select doesn't make
+> it easier to configure in most imagined use cases.
 >
-> > init and exit is supposed to allow code common to all test
-> > cases to run since it is so common to have dependencies needed for a
-> > test to be common to every test case.
+> KUNIT hypothetically should not depend on anything, so select should
+> be safe to use.
 >
-> Sure things in common make sense, however the differntiating aspects
-> seem important as well on init? Or should the author be doing all
-> custom specific initializations on run_case() instead?
->
+> On the other hand, if we end up being wrong on this point and KUnit
+> gains widespread adoption, I would prefer not to be in a position
+> where I have to change a bunch of configs all over the kernel because
+> this example got copied and pasted.
 
-Usually limited initialization specific to a test case will just go in
-that test case.
+You'll be so happy that 100s of tests have been created using kunit,
+it won't be a big deal. :)
 
-Cheers
+In any case, I wouldn't spend more time on this.
+
+Rob
 
 _______________________________________________
 linux-um mailing list
