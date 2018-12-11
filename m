@@ -1,14 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from mx2.suse.de ([195.135.220.15] helo=mx1.suse.de)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gWjET-0002Va-3z
- for linux-um@lists.infradead.org; Tue, 11 Dec 2018 14:41:59 +0000
-Date: Tue, 11 Dec 2018 09:41:40 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
+ id 1gWijG-00045s-6C
+ for linux-um@lists.infradead.org; Tue, 11 Dec 2018 14:09:44 +0000
+Date: Tue, 11 Dec 2018 15:09:26 +0100
+From: Petr Mladek <pmladek@suse.com>
 Subject: Re: [RFC v3 11/19] kunit: add Python libraries for handing KUnit
  config and kernel
-Message-ID: <20181211094140.2a928fe7@gandalf.local.home>
-In-Reply-To: <20181211140926.7wzd5jh6klcfsfgz@pathway.suse.cz>
+Message-ID: <20181211140926.7wzd5jh6klcfsfgz@pathway.suse.cz>
 References: <20181128193636.254378-1-brendanhiggins@google.com>
  <20181128193636.254378-12-brendanhiggins@google.com>
  <841cf4ae-501b-05ae-5863-a51010709b67@ideasonboard.com>
@@ -16,8 +15,9 @@ References: <20181128193636.254378-1-brendanhiggins@google.com>
  <20181204204701.GT28501@garbanzo.do-not-panic.com>
  <f8722f4a-44c8-24c2-c433-5178f9f40b82@ideasonboard.com>
  <20181206153718.GD24603@bombadil.infradead.org>
- <20181211140926.7wzd5jh6klcfsfgz@pathway.suse.cz>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20181206153718.GD24603@bombadil.infradead.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -30,42 +30,57 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Petr Mladek <pmladek@suse.com>
-Cc: brakmo@fb.com, Knut Omang <knut.omang@oracle.com>, jeffm@suse.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Sasha Levin <Alexander.Levin@microsoft.com>, Linux Trace Devel <linux-trace-devel@vger.kernel.org>, linux-kselftest@vger.kernel.org, shuah@kernel.org, Rob Herring <robh@kernel.org>, Frank Rowand <frowand.list@gmail.com>, linux-nvdimm@lists.01.org, mpe@ellerman.id.au, Eric Sandeen <sandeen@sandeen.net>, Kieran Bingham <kieran.bingham@ideasonboard.com>, Matthew Wilcox <willy@infradead.org>, Felix Guo <felixguoxiuping@gmail.com>, Joel Stanley <joel@jms.id.au>, Kent Overstreet <kent.overstreet@gmail.com>, jdike@addtoit.com, Tim.Bird@sony.com, linux-um@lists.infradead.org, Julia Lawall <julia.lawall@lip6.fr>, dan.j.williams@intel.com, kunit-dev@googlegroups.com, richard@nod.at, Greg KH <gregkh@linuxfoundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Eryu Guan <guaneryu@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@google.com>, joe@perches.com, linux-fsdevel@vger.kernel.org, khilman@baylibre.com
+To: Matthew Wilcox <willy@infradead.org>
+Cc: brakmo@fb.com, Knut Omang <knut.omang@oracle.com>, jeffm@suse.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Sasha Levin <Alexander.Levin@microsoft.com>, linux-kselftest@vger.kernel.org, shuah@kernel.org, Rob Herring <robh@kernel.org>, Frank Rowand <frowand.list@gmail.com>, linux-nvdimm@lists.01.org, mpe@ellerman.id.au, Eric Sandeen <sandeen@sandeen.net>, Kieran Bingham <kieran.bingham@ideasonboard.com>, Felix Guo <felixguoxiuping@gmail.com>, Joel Stanley <joel@jms.id.au>, Kent Overstreet <kent.overstreet@gmail.com>, jdike@addtoit.com, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, Julia Lawall <julia.lawall@lip6.fr>, dan.j.williams@intel.com, kunit-dev@googlegroups.com, richard@nod.at, Greg KH <gregkh@linuxfoundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Eryu Guan <guaneryu@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@google.com>, joe@perches.com, linux-fsdevel@vger.kernel.org, khilman@baylibre.com
 
-On Tue, 11 Dec 2018 15:09:26 +0100
-Petr Mladek <pmladek@suse.com> wrote:
-
-> > We have liburcu already, which is good.  The main sticking points are:
+On Thu 2018-12-06 07:37:18, Matthew Wilcox wrote:
+> On Thu, Dec 06, 2018 at 12:32:47PM +0000, Kieran Bingham wrote:
+> > On 04/12/2018 20:47, Luis Chamberlain wrote:
+> > > On Mon, Dec 03, 2018 at 03:48:15PM -0800, Brendan Higgins wrote:
+> > >> On Thu, Nov 29, 2018 at 5:54 AM Kieran Bingham
+> > >> <kieran.bingham@ideasonboard.com> wrote:
+> > > Developers working upstream do modify their kernels a lot, so we'd have
+> > > to update such libraries quite a bit, but I think that's fine too. The
+> > > *real* value I think from the above suggestion would be enterprise /
+> > > mobile distros or stable kernel maintainers which have a static kernel
+> > > they need to support for a relatively *long time*, consider a 10 year
+> > > time frame. Running unit tests without qemu with uml and libraries for
+> > > respective kernels seems real worthy.
 > > 
-> >  - printk has started adding a lot of %pX enhancements which printf
-> >    obviously doesn't know about.  
+> > I think any such library might be something generated by the kernel
+> > build system, so if someone makes substantial changes to a core
+> > component provided by the library - it can be up to them to build a
+> > corresponding userspace library as well.
+> > 
+> > My main initial idea for a libumlinux is to provide infrastructure such
+> > as our linked-lists and other kernel formatting so that we can take
+> > kernel code directly to userspace for test and debug (assuming that
+> > there are no hardware dependencies or things that we can't mock out)
 > 
-> I wonder how big problem it is and if it is worth using another
-> approach.
-
-No, please do not change the %pX approach.
-
+> We have liburcu already, which is good.  The main sticking points are:
 > 
-> An alternative would be to replace them with helper functions
-> the would produce the same string. The meaning would be easier
-> to understand. But concatenating with the surrounding text
-> would be less elegant. People might start using pr_cont()
-> that is problematic (mixed lines).
-> 
-> Also the %pX formats are mostly used to print context of some
-> structures. Even the helper functions would need some maintenance
-> to keep them compatible.
-> 
-> BTW: The printk() feature has been introduced 10 years ago by
-> the commit 4d8a743cdd2690c0bc8 ("vsprintf: add infrastructure
-> support for extended '%p' specifiers").
+>  - printk has started adding a lot of %pX enhancements which printf
+>    obviously doesn't know about.
 
-trace-cmd and perf know about most of the %pX data and how to read it.
-Perhaps we can extend the libtraceevent library to export a generic way
-to read data from printk() output for other tools to use.
+I wonder how big problem it is and if it is worth using another
+approach.
 
--- Steve
+An alternative would be to replace them with helper functions
+the would produce the same string. The meaning would be easier
+to understand. But concatenating with the surrounding text
+would be less elegant. People might start using pr_cont()
+that is problematic (mixed lines).
+
+Also the %pX formats are mostly used to print context of some
+structures. Even the helper functions would need some maintenance
+to keep them compatible.
+
+BTW: The printk() feature has been introduced 10 years ago by
+the commit 4d8a743cdd2690c0bc8 ("vsprintf: add infrastructure
+support for extended '%p' specifiers").
+
+Best Regards,
+Petr
 
 _______________________________________________
 linux-um mailing list
