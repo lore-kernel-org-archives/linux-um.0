@@ -1,14 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1getJh-0006Dt-R4
- for linux-um@lists.infradead.org; Thu, 03 Jan 2019 03:05:07 +0000
-Subject: Re: [GIT PULL] UML changes for 4.21
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <1590974.xBRWhrZ5gH@blindfold>
-References: <1590974.xBRWhrZ5gH@blindfold>
-Message-Id: <20190103030505.10885.2666.pr-tracker-bot@pdx-korg-gitolite-1.ci.codeaurora.org>
-Date: Thu, 03 Jan 2019 03:05:05 +0000
+ id 1gepNP-000865-CB
+ for linux-um@lists.infradead.org; Wed, 02 Jan 2019 22:52:41 +0000
+From: Richard Weinberger <richard@nod.at>
+Subject: [GIT PULL] UML changes for 4.21
+Date: Wed, 02 Jan 2019 23:52:26 +0100
+Message-ID: <1590974.xBRWhrZ5gH@blindfold>
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -17,26 +16,89 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-um@lists.infradead.org, torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
+To: torvalds@linux-foundation.org
+Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 02 Jan 2019 23:52:26 +0100:
+Linus,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git for-linus-4.21-rc1
+The following changes since commit 8fe28cb58bcb235034b64cbbb7550a8a43fd88be:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/6aa293d8ff0939802a6c86cee6cd152c1b0a7a0d
+  Linux 4.20 (2018-12-23 15:55:59 -0800)
 
-Thank you!
+are available in the Git repository at:
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git for-linus-4.21-r=
+c1
+
+for you to fetch changes up to 940b241d9050fc354f68c182e99fc3da1ff36bc0:
+
+  um: Remove obsolete reenable_XX calls (2018-12-27 22:48:35 +0100)
+
+----------------------------------------------------------------
+Thiss pull requests contains UML updates for 4.21:
+
+- DISCARD support for our block device driver
+- Many TLB flush optimizations
+- Various smaller fixes
+- And most important, Anton agreed to help me maintaining UML
+
+----------------------------------------------------------------
+Anton Ivanov (11):
+      um: Switch to block-mq constants in the UML UBD driver
+      um: Clean-up command processing in UML UBD driver
+      um: Remove unsafe printks from the io thread
+      um: Add support for DISCARD in the UBD Driver
+      um: Remove unnecessary faulted check in uaccess.c
+      um: Optimize TLB operations v2
+      um: Skip TLB flushing where not needed
+      um: Avoid marking pages with "changed protection"
+      um: Optimize Flush TLB for force/fork case
+      Add Anton Ivanov to UML maintainers
+      um: Remove obsolete reenable_XX calls
+
+Christoph Hellwig (1):
+      um: writev needs <sys/uio.h>
+
+Hern=E1n Gonzalez (1):
+      um: Add HAVE_DEBUG_BUGVERBOSE
+
+Masahiro Yamada (1):
+      um: remove redundant generic-y
+
+Richard Weinberger (3):
+      um: Update maintainers file entry
+      um: Include sys/uio.h to have writev()
+      um: Make GCOV depend on !KCOV
+
+ MAINTAINERS                       |   3 +-
+ arch/um/Kconfig                   |   1 +
+ arch/um/Kconfig.debug             |   1 +
+ arch/um/drivers/chan_kern.c       |  10 --
+ arch/um/drivers/line.c            |  10 --
+ arch/um/drivers/mconsole_kern.c   |   2 -
+ arch/um/drivers/net_kern.c        |   2 -
+ arch/um/drivers/port_kern.c       |   1 -
+ arch/um/drivers/random.c          |   1 -
+ arch/um/drivers/ubd_kern.c        | 231 ++++++++++++++++++++++++----------=
+----
+ arch/um/drivers/vector_user.c     |   2 +
+ arch/um/include/asm/Kbuild        |   2 -
+ arch/um/include/asm/pgtable.h     |   9 +-
+ arch/um/include/shared/irq_user.h |   1 -
+ arch/um/include/shared/os.h       |   1 +
+ arch/um/kernel/irq.c              |   6 -
+ arch/um/kernel/sigio.c            |   1 -
+ arch/um/kernel/skas/uaccess.c     |  23 ++--
+ arch/um/kernel/tlb.c              | 115 ++++++++++++-------
+ arch/um/os-Linux/file.c           |  10 ++
+ 20 files changed, 259 insertions(+), 173 deletions(-)
+
+
+
 
 _______________________________________________
 linux-um mailing list
