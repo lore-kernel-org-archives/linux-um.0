@@ -2,16 +2,15 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab6.miniserver.com ([5.153.251.140]
  helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gfAYO-0003K1-CP
- for linux-um@lists.infradead.org; Thu, 03 Jan 2019 21:29:26 +0000
+ id 1gf6Yl-0007q8-PZ
+ for linux-um@lists.infradead.org; Thu, 03 Jan 2019 17:13:34 +0000
 Subject: Re: [PATCH] um: Try to avoid kmalloc in signal handling
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 References: <20190103160917.10217-1-anton.ivanov@cambridgegreys.com>
- <cfcec59e-e1fd-1dd9-48ac-9645152cca4d@cambridgegreys.com>
-Message-ID: <da88ec54-3d0b-360a-863d-59e29c8eaa00@cambridgegreys.com>
-Date: Thu, 3 Jan 2019 21:29:17 +0000
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <cfcec59e-e1fd-1dd9-48ac-9645152cca4d@cambridgegreys.com>
+Date: Thu, 3 Jan 2019 17:13:24 +0000
 MIME-Version: 1.0
-In-Reply-To: <cfcec59e-e1fd-1dd9-48ac-9645152cca4d@cambridgegreys.com>
+In-Reply-To: <20190103160917.10217-1-anton.ivanov@cambridgegreys.com>
 Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -21,71 +20,94 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
 Cc: richard@nod.at
 
-T24gMDMvMDEvMjAxOSAxNzoxMywgQW50b24gSXZhbm92IHdyb3RlOgo+IAo+IAo+IE9uIDEvMy8x
-OSA0OjA5IFBNLCBhbnRvbi5pdmFub3ZAY2FtYnJpZGdlZ3JleXMuY29tIHdyb3RlOgo+PiBGcm9t
-OiBBbnRvbiBJdmFub3YgPGFudG9uLml2YW5vdkBjYW1icmlkZ2VncmV5cy5jb20+Cj4+Cj4+IFNp
-Z25hbCBoYW5kbGluZyAod2hpY2ggbWFwcyB0byBpbnRlcnJ1cHQgaGFuZGxpbmcgaW4gVU1MKSBu
-ZWVkcwo+PiB0byBwYXNzIGN1cnJlbnQgcmVnaXN0ZXJzIHRvIHRoZSByZWxldmFudCBoYW5kbGVy
-cyBhbmQgd2FzCj4+IGFsbG9jYXRpbmcgYSBzdHJ1Y3R1cmUgZm9yIHRoYXQgdXNpbmcga21hbGxv
-Yy4gSXQgaXMgcG9zc2libGUKPj4gdG8gYXZvaWQgdGhpcyBrbWFsbG9jIGJ5IHVzaW5nIGEgc21h
-bGwgInNpZ25hbCByZWdpc3RlciBzdGFjayIuCj4+IEEgZGVwdGggb2YgNCBzdWZmaWNlcyA5OSUr
-IG9mIHRoZSB0aW1lLiBJZiBpdCBpcyBleGNlZWRlZAo+PiBmdXJ0aGVyIHNldHMgb2YgcmVnaXN0
-ZXJzIGFyZSBhbGxvY2F0ZWQgYXMgYmVmb3JlIHZpYSBrbWFsbG9jLgo+Pgo+PiBUaGUgZW5kIHJl
-c3VsdCBpcyA+MTAlIHBlcmZvcm1hbmNlIGluY3JlYXNlIGluIG5ldHdvcmtpbmcKPj4gYXMgbWVh
-c3VyZWQgYnkgaXBlcmYuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IEFudG9uIEl2YW5vdiA8YW50b24u
-aXZhbm92QGNhbWJyaWRnZWdyZXlzLmNvbT4KPj4gLS0tCj4+IMKgIGFyY2gvdW0vb3MtTGludXgv
-c2lnbmFsLmMgfCAyMCArKysrKysrKysrKysrKysrLS0tLQo+PiDCoCAxIGZpbGUgY2hhbmdlZCwg
-MTYgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdpdCBhL2FyY2gv
-dW0vb3MtTGludXgvc2lnbmFsLmMgYi9hcmNoL3VtL29zLUxpbnV4L3NpZ25hbC5jCj4+IGluZGV4
-IGJmMGFjYjhhYWQ4Yi4uMjE1MzY1ODFhYjU3IDEwMDY0NAo+PiAtLS0gYS9hcmNoL3VtL29zLUxp
-bnV4L3NpZ25hbC5jCj4+ICsrKyBiL2FyY2gvdW0vb3MtTGludXgvc2lnbmFsLmMKPj4gQEAgLTI5
-LDE0ICsyOSwyNCBAQCB2b2lkICgqc2lnX2luZm9bTlNJR10pKGludCwgc3RydWN0IHNpZ2luZm8g
-KiwgCj4+IHN0cnVjdCB1bWxfcHRfcmVncyAqKSA9IHsKPj4gwqDCoMKgwqDCoCBbU0lHQUxSTV3C
-oMKgwqAgPSB0aW1lcl9oYW5kbGVyCj4+IMKgIH07Cj4+ICtzdGF0aWMgaW50IHJlZ19kZXB0aDsK
-Pj4gKwo+PiArc3RhdGljIHN0cnVjdCB1bWxfcHRfcmVncyByZWdfZmlsZVs0XTsKPj4gKyNkZWZp
-bmUgUkVHX1NXSVRDSF9UT19LTUFMTE9DX0RFUFRIIDMKPj4gKwo+PiDCoCBzdGF0aWMgdm9pZCBz
-aWdfaGFuZGxlcl9jb21tb24oaW50IHNpZywgc3RydWN0IHNpZ2luZm8gKnNpLCAKPj4gbWNvbnRl
-eHRfdCAqbWMpCj4+IMKgIHsKPj4gwqDCoMKgwqDCoCBzdHJ1Y3QgdW1sX3B0X3JlZ3MgKnI7Cj4+
-IMKgwqDCoMKgwqAgaW50IHNhdmVfZXJybm8gPSBlcnJubzsKPj4gLcKgwqDCoCByID0gdW1sX2tt
-YWxsb2Moc2l6ZW9mKHN0cnVjdCB1bWxfcHRfcmVncyksIFVNX0dGUF9BVE9NSUMpOwo+PiAtwqDC
-oMKgIGlmICghcikKPj4gLcKgwqDCoMKgwqDCoMKgIHBhbmljKCJvdXQgb2YgbWVtb3J5Iik7Cj4+
-ICvCoMKgwqAgaWYgKHJlZ19kZXB0aCA+PSBSRUdfU1dJVENIX1RPX0tNQUxMT0NfREVQVEgpIHsK
-Pj4gK8KgwqDCoMKgwqDCoMKgIHIgPSB1bWxfa21hbGxvYyhzaXplb2Yoc3RydWN0IHVtbF9wdF9y
-ZWdzKSwgVU1fR0ZQX0FUT01JQyk7Cj4+ICvCoMKgwqDCoMKgwqDCoCBpZiAoIXIpCj4+ICvCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIHBhbmljKCJvdXQgb2YgbWVtb3J5Iik7Cj4+ICvCoMKgwqAgfSBl
-bHNlIHsKPj4gK8KgwqDCoMKgwqDCoMKgIHIgPSAmcmVnX2ZpbGVbcmVnX2RlcHRoXTsKPj4gK8Kg
-wqDCoCB9Cj4+ICvCoMKgwqAgcmVnX2RlcHRoKys7Cj4+IMKgwqDCoMKgwqAgci0+aXNfdXNlciA9
-IDA7Cj4+IMKgwqDCoMKgwqAgaWYgKHNpZyA9PSBTSUdTRUdWKSB7Cj4+IEBAIC01Myw3ICs2Myw5
-IEBAIHN0YXRpYyB2b2lkIHNpZ19oYW5kbGVyX2NvbW1vbihpbnQgc2lnLCBzdHJ1Y3QgCj4+IHNp
-Z2luZm8gKnNpLCBtY29udGV4dF90ICptYykKPj4gwqDCoMKgwqDCoCBlcnJubyA9IHNhdmVfZXJy
-bm87Cj4+IC3CoMKgwqAgZnJlZShyKTsKPj4gK8KgwqDCoCByZWdfZGVwdGgtLTsKPj4gK8KgwqDC
-oCBpZiAocmVnX2RlcHRoID49IFJFR19TV0lUQ0hfVE9fS01BTExPQ19ERVBUSCkKPj4gK8KgwqDC
-oMKgwqDCoMKgIGZyZWUocik7Cj4+IMKgIH0KPj4gwqAgLyoKPj4KPiAKPiBUaGlzIHJlZHJlc3Nl
-cyB0aGUgcGVyZm9ybWFuY2UgbG9zcyBpbnRyb2R1Y2VkIGluIHRoZSBJUlEgaGFuZGxpbmcgcGF0
-aCAKPiBieSBiNjAyNGIyMWZlYzgzNjdlZjk2MWE3NzFjYzlkZGUzMWYxODMxOTY1LiBNZWEgY3Vs
-cGEsIEkgc2hvdWxkIGhhdmUgCj4gc3BvdHRlZCB0aGF0IG9uZSBhdCB0aGUgdGltZS4KPiAKPiBJ
-biBteSB0ZXN0cyB0aGUgZGVwdGggaGFzIG5ldmVyIG1hbmFnZWQgdG8gZXhjZWVkIDIuIFNvIGEg
-dGhyZXNob2xkIGZvciAKPiBzd2l0Y2hpbmcgdG8ga21hbGxvYyBzZXQgdG8gMyBpcyBwb3NzaWJs
-eSBhbiBvdmVya2lsbCBhbmQgY2FuIGJlIHJlZHVjZWQgCj4gdG8gMi4KPiAKClNlY29uZCB0aG91
-Z2h0IC0gdGhpcyBzaG91bGQgbm90IHVzZSBrbWFsbG9jIGF0IGFsbCBpZiBpdCBjYW4uIEl0IHNo
-b3VsZCAKZWl0aGVyIGdvIG9uIHRoZSBzdGFjayB0aGUgd2F5IGl0IHVzZWQgdG8gZG8gYmVmb3Jl
-IApiNjAyNGIyMWZlYzgzNjdlZjk2MWE3NzFjYzlkZGUzMWYxODMxOTY1IG9yIGl0IHNob3VsZCBo
-YXZlIGEgc3VmZmljaWVudCAKInJlZ2lzdGVyIHN0YWNrIiB0byBwdXNoIHJlZ2lzdGVycyBmb3Ig
-YWxsIHVzZSBjYXNlcy4KCkttYWxsb2MvQVRPTUlDIGNhbiBmYWlsIGp1c3QgYmVjYXVzZSBpdCBm
-ZWVscyBsaWtlIGl0IHdoaWNoIG1lYW5zIHRoYXQgCnRoaXMgY2FuIHRocm93IGEgcGFuaWMoKSB1
-bmRlciB2ZXJ5IGhlYXZ5IElPLgoKSSBhbSBzdXJwcmlzZWQgdGhpcyB3YXMgbm90IHRyaWdnZXJl
-ZCBiZWZvcmUuIFRoZSB2ZWN0b3IgSU8gcmVndWxhcmx5IApoYXMgImhvbGVzIiBpbiB0aGUgdmVj
-dG9yIGZyb20gZmFpbGVkIGF0b21pYyBhbGxvY2F0aW9ucyBpbiB0aGUgc2FtZSBwYXRoLgoKLS0g
-CkFudG9uIFIuIEl2YW5vdgpDYW1icmlkZ2VncmV5cyBMaW1pdGVkLiBSZWdpc3RlcmVkIGluIEVu
-Z2xhbmQuIENvbXBhbnkgTnVtYmVyIDEwMjczNjYxCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlz
-dHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2xpbnV4LXVtCg==
+
+
+On 1/3/19 4:09 PM, anton.ivanov@cambridgegreys.com wrote:
+> From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> 
+> Signal handling (which maps to interrupt handling in UML) needs
+> to pass current registers to the relevant handlers and was
+> allocating a structure for that using kmalloc. It is possible
+> to avoid this kmalloc by using a small "signal register stack".
+> A depth of 4 suffices 99%+ of the time. If it is exceeded
+> further sets of registers are allocated as before via kmalloc.
+> 
+> The end result is >10% performance increase in networking
+> as measured by iperf.
+> 
+> Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> ---
+>   arch/um/os-Linux/signal.c | 20 ++++++++++++++++----
+>   1 file changed, 16 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
+> index bf0acb8aad8b..21536581ab57 100644
+> --- a/arch/um/os-Linux/signal.c
+> +++ b/arch/um/os-Linux/signal.c
+> @@ -29,14 +29,24 @@ void (*sig_info[NSIG])(int, struct siginfo *, struct uml_pt_regs *) = {
+>   	[SIGALRM]	= timer_handler
+>   };
+>   
+> +static int reg_depth;
+> +
+> +static struct uml_pt_regs reg_file[4];
+> +#define REG_SWITCH_TO_KMALLOC_DEPTH 3
+> +
+>   static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
+>   {
+>   	struct uml_pt_regs *r;
+>   	int save_errno = errno;
+>   
+> -	r = uml_kmalloc(sizeof(struct uml_pt_regs), UM_GFP_ATOMIC);
+> -	if (!r)
+> -		panic("out of memory");
+> +	if (reg_depth >= REG_SWITCH_TO_KMALLOC_DEPTH) {
+> +		r = uml_kmalloc(sizeof(struct uml_pt_regs), UM_GFP_ATOMIC);
+> +		if (!r)
+> +			panic("out of memory");
+> +	} else {
+> +		r = &reg_file[reg_depth];
+> +	}
+> +	reg_depth++;
+>   
+>   	r->is_user = 0;
+>   	if (sig == SIGSEGV) {
+> @@ -53,7 +63,9 @@ static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
+>   
+>   	errno = save_errno;
+>   
+> -	free(r);
+> +	reg_depth--;
+> +	if (reg_depth >= REG_SWITCH_TO_KMALLOC_DEPTH)
+> +		free(r);
+>   }
+>   
+>   /*
+> 
+
+This redresses the performance loss introduced in the IRQ handling path 
+by b6024b21fec8367ef961a771cc9dde31f1831965. Mea culpa, I should have 
+spotted that one at the time.
+
+In my tests the depth has never managed to exceed 2. So a threshold for 
+switching to kmalloc set to 3 is possibly an overkill and can be reduced 
+to 2.
+
+-- 
+Anton R. Ivanov
+
+Cambridge Greys Limited, England and Wales company No 10273661
+http://www.cambridgegreys.com/
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
