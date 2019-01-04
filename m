@@ -2,16 +2,12 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab6.miniserver.com ([5.153.251.140]
  helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gejTS-00005W-GN
- for linux-um@lists.infradead.org; Wed, 02 Jan 2019 16:34:32 +0000
-Subject: Re: [PATCH 2/2] um: vector: Use 'kmalloc_array' instead of 'kmalloc'
-References: <20181226075449.11071-1-christophe.jaillet@wanadoo.fr>
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Message-ID: <49451efd-0984-ab88-eef9-4dfd8b8473a7@cambridgegreys.com>
-Date: Wed, 2 Jan 2019 16:34:22 +0000
-MIME-Version: 1.0
-In-Reply-To: <20181226075449.11071-1-christophe.jaillet@wanadoo.fr>
-Content-Language: en-US
+ id 1gfRYO-0003yf-Qp
+ for linux-um@lists.infradead.org; Fri, 04 Jan 2019 15:38:35 +0000
+From: anton.ivanov@cambridgegreys.com
+Subject: [PATCH] um: Revert to using stack for pt_regs in signal handling
+Date: Fri,  4 Jan 2019 15:38:21 +0000
+Message-Id: <20190104153821.8642-1-anton.ivanov@cambridgegreys.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,56 +16,125 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>, jdike@addtoit.com, richard@nod.at, rppt@linux.vnet.ibm.com, akpm@linux-foundation.org, yuehaibing@huawei.com, keescook@chromium.org
-Cc: kernel-janitors@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+To: linux-um@lists.infradead.org
+Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
+Reverts commit b6024b21fec8367ef961a771cc9dde31f1831965 and
+adjusts default stack sizing to cope with larger size of
+floating point save registers on the newer Intel CPUs.
 
-On 12/26/18 7:54 AM, Christophe JAILLET wrote:
-> Use 'kmalloc_array' instead of 'kmalloc' when appropriate.
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
-> I don't know why it has not already been replaced in 6da2ec56059c
-> ("treewide: kmalloc() -> kmalloc_array()".
-> ---
->   arch/um/drivers/vector_kern.c | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-> index 5b917716289d..dee5246bda81 100644
-> --- a/arch/um/drivers/vector_kern.c
-> +++ b/arch/um/drivers/vector_kern.c
-> @@ -507,12 +507,12 @@ static struct vector_queue *create_queue(
->   		return NULL;
->   	result->max_depth = max_size;
->   	result->dev = vp->dev;
-> -	result->mmsg_vector = kmalloc(
-> -		(sizeof(struct mmsghdr) * max_size), GFP_KERNEL);
-> +	result->mmsg_vector = kmalloc_array(max_size, sizeof(struct mmsghdr),
-> +					    GFP_KERNEL);
->   	if (result->mmsg_vector == NULL)
->   		goto out_mmsg_fail;
-> -	result->skbuff_vector = kmalloc(
-> -		(sizeof(void *) * max_size), GFP_KERNEL);
-> +	result->skbuff_vector = kmalloc_array(max_size, sizeof(void *),
-> +					      GFP_KERNEL);
->   	if (result->skbuff_vector == NULL)
->   		goto out_skb_fail;
->   
-> 
+b6024b21fec8367ef961a771cc9dde31f1831965 replaced storing the
+register state on the stack with kmalloc-ed storage. That has
+a number of issues and a panic if that fails.
+    1. kmalloc/ATOMIC can fail. There was a latent hard crash
+in all interrupt and fault handling as a result.
+    2. kmalloc in the interrupt path introduces a considerable
+performance penalty for networking ~ 14% on iperf.
 
-Acked-by: Anton Ivanov <anton.ivanov at cambridgegreys.com>
+This commit restores uml to a stable state until a better
+solution is found.
 
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+---
+ arch/um/Kconfig           | 10 +++++++---
+ arch/um/os-Linux/signal.c | 28 ++++++++--------------------
+ 2 files changed, 15 insertions(+), 23 deletions(-)
+
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index ec9711d068b7..41913504a56e 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -142,13 +142,17 @@ config MAGIC_SYSRQ
+ 
+ config KERNEL_STACK_ORDER
+ 	int "Kernel stack size order"
+-	default 1 if 64BIT
+-	range 1 10 if 64BIT
+-	default 0 if !64BIT
++	default 2 if 64BIT
++	range 2 10 if 64BIT
++	default 1 if !64BIT
+ 	help
+ 	  This option determines the size of UML kernel stacks.  They will
+ 	  be 1 << order pages.  The default is OK unless you're running Valgrind
+ 	  on UML, in which case, set this to 3.
++	  It is possible to reduce the stack to 1 for 64BIT and 0 for 32BIT on
++	  older (pre-2017) CPUs. It is not recommended on newer CPUs due to the
++	  increase in the size of the state which needs to be saved when handling
++          signals.
+ 
+ config MMAPPER
+ 	tristate "iomem emulation driver"
+diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
+index bf0acb8aad8b..75b10235d369 100644
+--- a/arch/um/os-Linux/signal.c
++++ b/arch/um/os-Linux/signal.c
+@@ -31,29 +31,23 @@ void (*sig_info[NSIG])(int, struct siginfo *, struct uml_pt_regs *) = {
+ 
+ static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
+ {
+-	struct uml_pt_regs *r;
++	struct uml_pt_regs r;
+ 	int save_errno = errno;
+ 
+-	r = uml_kmalloc(sizeof(struct uml_pt_regs), UM_GFP_ATOMIC);
+-	if (!r)
+-		panic("out of memory");
+-
+-	r->is_user = 0;
++	r.is_user = 0;
+ 	if (sig == SIGSEGV) {
+ 		/* For segfaults, we want the data from the sigcontext. */
+-		get_regs_from_mc(r, mc);
+-		GET_FAULTINFO_FROM_MC(r->faultinfo, mc);
++		get_regs_from_mc(&r, mc);
++		GET_FAULTINFO_FROM_MC(r.faultinfo, mc);
+ 	}
+ 
+ 	/* enable signals if sig isn't IRQ signal */
+ 	if ((sig != SIGIO) && (sig != SIGWINCH) && (sig != SIGALRM))
+ 		unblock_signals();
+ 
+-	(*sig_info[sig])(sig, si, r);
++	(*sig_info[sig])(sig, si, &r);
+ 
+ 	errno = save_errno;
+-
+-	free(r);
+ }
+ 
+ /*
+@@ -91,17 +85,11 @@ void sig_handler(int sig, struct siginfo *si, mcontext_t *mc)
+ 
+ static void timer_real_alarm_handler(mcontext_t *mc)
+ {
+-	struct uml_pt_regs *regs;
+-
+-	regs = uml_kmalloc(sizeof(struct uml_pt_regs), UM_GFP_ATOMIC);
+-	if (!regs)
+-		panic("out of memory");
++	struct uml_pt_regs regs;
+ 
+ 	if (mc != NULL)
+-		get_regs_from_mc(regs, mc);
+-	timer_handler(SIGALRM, NULL, regs);
+-
+-	free(regs);
++		get_regs_from_mc(&regs, mc);
++	timer_handler(SIGALRM, NULL, &regs);
+ }
+ 
+ void timer_alarm_handler(int sig, struct siginfo *unused_si, mcontext_t *mc)
 -- 
-Anton R. Ivanov
+2.11.0
 
-Cambridge Greys Limited, England and Wales company No 10273661
-http://www.cambridgegreys.com/
 
 _______________________________________________
 linux-um mailing list
