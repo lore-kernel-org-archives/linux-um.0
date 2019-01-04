@@ -2,19 +2,18 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab6.miniserver.com ([5.153.251.140]
  helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ggRoU-00068u-EW
- for linux-um@lists.infradead.org; Mon, 07 Jan 2019 10:07:20 +0000
+ id 1gfRjo-0000as-QB
+ for linux-um@lists.infradead.org; Fri, 04 Jan 2019 15:50:26 +0000
 Subject: Re: [PATCH] um: Try to avoid kmalloc in signal handling
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 References: <20190103160917.10217-1-anton.ivanov@cambridgegreys.com>
  <cfcec59e-e1fd-1dd9-48ac-9645152cca4d@cambridgegreys.com>
  <da88ec54-3d0b-360a-863d-59e29c8eaa00@cambridgegreys.com>
  <8232816.4fJl4d8jsT@blindfold>
- <f0771316-f932-6e60-6165-e47411ef33b3@cambridgegreys.com>
-Message-ID: <d37d7c2a-9e82-c3d4-f725-454a7d710343@cambridgegreys.com>
-Date: Mon, 7 Jan 2019 10:07:09 +0000
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <f0771316-f932-6e60-6165-e47411ef33b3@cambridgegreys.com>
+Date: Fri, 4 Jan 2019 15:50:16 +0000
 MIME-Version: 1.0
-In-Reply-To: <f0771316-f932-6e60-6165-e47411ef33b3@cambridgegreys.com>
+In-Reply-To: <8232816.4fJl4d8jsT@blindfold>
 Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -33,61 +32,45 @@ Cc: linux-um@lists.infradead.org
 
 
 
-On 1/4/19 3:50 PM, Anton Ivanov wrote:
-> 
-> 
-> On 1/3/19 9:42 PM, Richard Weinberger wrote:
->> Am Donnerstag, 3. Januar 2019, 22:29:17 CET schrieb Anton Ivanov:
->>> Second thought - this should not use kmalloc at all if it can. It should
->>> either go on the stack the way it used to do before
->>> b6024b21fec8367ef961a771cc9dde31f1831965 or it should have a sufficient
->>> "register stack" to push registers for all use cases.
->>>
->>> Kmalloc/ATOMIC can fail just because it feels like it which means that
->>> this can throw a panic() under very heavy IO.
+On 1/3/19 9:42 PM, Richard Weinberger wrote:
+> Am Donnerstag, 3. Januar 2019, 22:29:17 CET schrieb Anton Ivanov:
+>> Second thought - this should not use kmalloc at all if it can. It should
+>> either go on the stack the way it used to do before
+>> b6024b21fec8367ef961a771cc9dde31f1831965 or it should have a sufficient
+>> "register stack" to push registers for all use cases.
 >>
->> Not good. :-(
->> We cannot go back to stack based allocation. The stack is too small for
->> AVX register sets.
->> Maybe we can preallocate it.
+>> Kmalloc/ATOMIC can fail just because it feels like it which means that
+>> this can throw a panic() under very heavy IO.
 > 
-> I will write a pre-allocation alternative, but that may take some time 
-> because it needs to do additional allocations at some "safe" point in 
-> time like system idle, not in the IO/signal path where they can fail.
-> 
-> In the meantime we have to make sure that we are not sitting on a latent 
-> crash in the IO/Fault path so I have sent out a patch which removes 
-> kmalloc/ATOMIC and puts things back on the stack.
-> 
-> There are a few other options which are worth investigating like sizing 
-> the storage dynamically based on CPU and/or storing fp regs only if they 
-> have been touched, not every time (afaik MIPS was doing something like 
-> that). Once again, this may take a while to figure out if it is possible 
-> and some time to make it happen after that. That may be worth doing 
-> anyway for performance reasons. If memory serves me right, storing FPU 
-> state is a high cost operation. Not doing it for cases where it is not 
-> needed should yield some performance gains.
-> 
->> (And check what arch/x86/ does)
->>
->> Thanks,
->> //richard
->>
->>
->>
-> 
+> Not good. :-(
+> We cannot go back to stack based allocation. The stack is too small for
+> AVX register sets.
+> Maybe we can preallocate it.
 
-After digging both x86 and uml sources, I think that the long term goal 
-should be to get rid of regs->fp altogether.
+I will write a pre-allocation alternative, but that may take some time 
+because it needs to do additional allocations at some "safe" point in 
+time like system idle, not in the IO/signal path where they can fail.
 
-x86 does not have it and keeps fp state separate under most 
-circumstances. As a result it has no issues pushing pt_reqs on the stack 
-- it is small.
+In the meantime we have to make sure that we are not sitting on a latent 
+crash in the IO/Fault path so I have sent out a patch which removes 
+kmalloc/ATOMIC and puts things back on the stack.
 
-It is not easy though - references to it are all over the place and I am 
-having quite an interesting time figuring out where we can replace them 
-with the fpu field in the thread_info structure and where we have to do 
-something else :)
+There are a few other options which are worth investigating like sizing 
+the storage dynamically based on CPU and/or storing fp regs only if they 
+have been touched, not every time (afaik MIPS was doing something like 
+that). Once again, this may take a while to figure out if it is possible 
+and some time to make it happen after that. That may be worth doing 
+anyway for performance reasons. If memory serves me right, storing FPU 
+state is a high cost operation. Not doing it for cases where it is not 
+needed should yield some performance gains.
+
+> (And check what arch/x86/ does)
+> 
+> Thanks,
+> //richard
+> 
+> 
+> 
 
 -- 
 Anton R. Ivanov
