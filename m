@@ -2,16 +2,16 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab6.miniserver.com ([5.153.251.140]
  helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gfNhI-0007aI-2o
- for linux-um@lists.infradead.org; Fri, 04 Jan 2019 11:31:29 +0000
+ id 1gfN2y-00018C-Ci
+ for linux-um@lists.infradead.org; Fri, 04 Jan 2019 10:49:50 +0000
 Subject: Re: [PATCH] um: Try to avoid kmalloc in signal handling
 References: <20190104100517.9809-1-anton.ivanov@cambridgegreys.com>
  <2157515.SUgOQPs8Ts@blindfold>
  <108ad3b6-93ee-5d8c-c1bf-b83e22ff3d3f@cambridgegreys.com>
  <9157944.H6u4diqB1j@blindfold>
 From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Message-ID: <4c1000e7-adb7-eb24-b7a4-e2977f30bdff@cambridgegreys.com>
-Date: Fri, 4 Jan 2019 11:31:22 +0000
+Message-ID: <0558d80c-1c04-3eab-eb28-307216a9b030@cambridgegreys.com>
+Date: Fri, 4 Jan 2019 10:49:42 +0000
 MIME-Version: 1.0
 In-Reply-To: <9157944.H6u4diqB1j@blindfold>
 Content-Language: en-US
@@ -45,6 +45,15 @@ On 1/4/19 10:33 AM, Richard Weinberger wrote:
 >> I cannot trigger that for the other ones, but it may be possible.
 > 
 > We need to be super sure about this.
+
+I am pretty sure about the IRQ ones. That call chain goes cleanly down 
+and up resulting in whatever was pushed to be popped.
+
+I am trying to get my head around what can possibly happen in the 
+various fault ones that will result in a task switch to a task which is 
+half-done with handling signal and is about to return (and pop the wrong 
+one).
+
 >   
 >> IMO we should just bite the bullet and go back to using the stack
 >> increasing the minimum stack order needed to 1 for 32 bit and to 2 for
@@ -52,18 +61,6 @@ On 1/4/19 10:33 AM, Richard Weinberger wrote:
 > 
 > Increasing the kernel stack just for this is also a huge overhead.
 > But I never benchmarked it myself.
-
-I just did. I wrote a quick alternative to put it back on the stack.
-
-Stack is marginally ~ 1% or thereabouts faster than the data segment 
-patch on network tests. That makes it 14% faster than kmalloc-ing the 
-pt_regs in the signal handling path.
-
-The difference for other stuff (disk, etc) is within statistical error.
-
-It is indeed using more stack - the minimum stack order needed for my 
-setup on 64 bit is now 2 (On AMD A12).
-
 > 
 >> x86 if I read it correctly is still using the stack even for the new
 >> register sets.
@@ -71,6 +68,10 @@ setup on 64 bit is now 2 (On AMD A12).
 > Are you sure? I don't think so. The kernel stack is small and the xregset is
 > huge.
 > Where did you see this?
+
+It looked like that when I skimmed across get_sigframe and 
+fpu_alloc_mathframe in x86 signal.c in first read, but I may be wrong.
+
 > 
 > Thanks,
 > //richard
