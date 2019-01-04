@@ -2,18 +2,18 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab6.miniserver.com ([5.153.251.140]
  helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gfRjo-0000as-QB
- for linux-um@lists.infradead.org; Fri, 04 Jan 2019 15:50:26 +0000
+ id 1gfNhI-0007aI-2o
+ for linux-um@lists.infradead.org; Fri, 04 Jan 2019 11:31:29 +0000
 Subject: Re: [PATCH] um: Try to avoid kmalloc in signal handling
-References: <20190103160917.10217-1-anton.ivanov@cambridgegreys.com>
- <cfcec59e-e1fd-1dd9-48ac-9645152cca4d@cambridgegreys.com>
- <da88ec54-3d0b-360a-863d-59e29c8eaa00@cambridgegreys.com>
- <8232816.4fJl4d8jsT@blindfold>
+References: <20190104100517.9809-1-anton.ivanov@cambridgegreys.com>
+ <2157515.SUgOQPs8Ts@blindfold>
+ <108ad3b6-93ee-5d8c-c1bf-b83e22ff3d3f@cambridgegreys.com>
+ <9157944.H6u4diqB1j@blindfold>
 From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Message-ID: <f0771316-f932-6e60-6165-e47411ef33b3@cambridgegreys.com>
-Date: Fri, 4 Jan 2019 15:50:16 +0000
+Message-ID: <4c1000e7-adb7-eb24-b7a4-e2977f30bdff@cambridgegreys.com>
+Date: Fri, 4 Jan 2019 11:31:22 +0000
 MIME-Version: 1.0
-In-Reply-To: <8232816.4fJl4d8jsT@blindfold>
+In-Reply-To: <9157944.H6u4diqB1j@blindfold>
 Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -32,39 +32,45 @@ Cc: linux-um@lists.infradead.org
 
 
 
-On 1/3/19 9:42 PM, Richard Weinberger wrote:
-> Am Donnerstag, 3. Januar 2019, 22:29:17 CET schrieb Anton Ivanov:
->> Second thought - this should not use kmalloc at all if it can. It should
->> either go on the stack the way it used to do before
->> b6024b21fec8367ef961a771cc9dde31f1831965 or it should have a sufficient
->> "register stack" to push registers for all use cases.
+On 1/4/19 10:33 AM, Richard Weinberger wrote:
+> Am Freitag, 4. Januar 2019, 11:19:46 CET schrieb Anton Ivanov:
+>>> I fear this is not correct.
+>>> Think of task switching, if you push something to reg_file[],
+>>> it is not guaranteed that the same task will run next and pop the item.
+>>> The order can change.
 >>
->> Kmalloc/ATOMIC can fail just because it feels like it which means that
->> this can throw a panic() under very heavy IO.
+>> It should not occur for the signals that map onto IRQ (timer and IO) -
+>> there it is all kernel.
+>>
+>> I cannot trigger that for the other ones, but it may be possible.
 > 
-> Not good. :-(
-> We cannot go back to stack based allocation. The stack is too small for
-> AVX register sets.
-> Maybe we can preallocate it.
+> We need to be super sure about this.
+>   
+>> IMO we should just bite the bullet and go back to using the stack
+>> increasing the minimum stack order needed to 1 for 32 bit and to 2 for
+>> 64 bit.
+> 
+> Increasing the kernel stack just for this is also a huge overhead.
+> But I never benchmarked it myself.
 
-I will write a pre-allocation alternative, but that may take some time 
-because it needs to do additional allocations at some "safe" point in 
-time like system idle, not in the IO/signal path where they can fail.
+I just did. I wrote a quick alternative to put it back on the stack.
 
-In the meantime we have to make sure that we are not sitting on a latent 
-crash in the IO/Fault path so I have sent out a patch which removes 
-kmalloc/ATOMIC and puts things back on the stack.
+Stack is marginally ~ 1% or thereabouts faster than the data segment 
+patch on network tests. That makes it 14% faster than kmalloc-ing the 
+pt_regs in the signal handling path.
 
-There are a few other options which are worth investigating like sizing 
-the storage dynamically based on CPU and/or storing fp regs only if they 
-have been touched, not every time (afaik MIPS was doing something like 
-that). Once again, this may take a while to figure out if it is possible 
-and some time to make it happen after that. That may be worth doing 
-anyway for performance reasons. If memory serves me right, storing FPU 
-state is a high cost operation. Not doing it for cases where it is not 
-needed should yield some performance gains.
+The difference for other stuff (disk, etc) is within statistical error.
 
-> (And check what arch/x86/ does)
+It is indeed using more stack - the minimum stack order needed for my 
+setup on 64 bit is now 2 (On AMD A12).
+
+> 
+>> x86 if I read it correctly is still using the stack even for the new
+>> register sets.
+> 
+> Are you sure? I don't think so. The kernel stack is small and the xregset is
+> huge.
+> Where did you see this?
 > 
 > Thanks,
 > //richard
