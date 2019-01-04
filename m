@@ -2,16 +2,16 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab6.miniserver.com ([5.153.251.140]
  helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gfKDb-0000TX-6Y
- for linux-um@lists.infradead.org; Fri, 04 Jan 2019 07:48:36 +0000
+ id 1gfJaA-0002i5-MU
+ for linux-um@lists.infradead.org; Fri, 04 Jan 2019 07:07:52 +0000
 Subject: Re: [PATCH] um: Try to avoid kmalloc in signal handling
 References: <20190103160917.10217-1-anton.ivanov@cambridgegreys.com>
  <cfcec59e-e1fd-1dd9-48ac-9645152cca4d@cambridgegreys.com>
  <da88ec54-3d0b-360a-863d-59e29c8eaa00@cambridgegreys.com>
  <8232816.4fJl4d8jsT@blindfold>
 From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Message-ID: <62055169-65ce-f2e9-7247-4cbd5fd296cc@cambridgegreys.com>
-Date: Fri, 4 Jan 2019 07:48:30 +0000
+Message-ID: <f639a4b7-3729-7bfd-b260-a160ff3bb41b@cambridgegreys.com>
+Date: Fri, 4 Jan 2019 07:07:44 +0000
 MIME-Version: 1.0
 In-Reply-To: <8232816.4fJl4d8jsT@blindfold>
 Content-Language: en-US
@@ -43,12 +43,25 @@ On 03/01/2019 21:42, Richard Weinberger wrote:
 > Not good. :-(
 > We cannot go back to stack based allocation. The stack is too small for
 > AVX register sets.
-
-If I read it correctly it still uses the stack even for the new register 
-sets.
-
 > Maybe we can preallocate it.
+
+I can update the patch so it uses a preallocated buffer instead of a 
+data segment. IMO for this particular case there is little benefit in 
+kmallocing that at init. It is not something you can get away without so 
+data segment is probably OK.
+
+Unless I am mistaken, the worst case scenario for depth there is 4 (as 
+in the patch at the moment).
+
+IO + timer + fault + FPU.
+
+We can still leave the "overfill kmalloc" and add a WARN() on that and 
+see if it gets triggered in the wild.
+
 > (And check what arch/x86/ does)
+
+I will have a look and update the patch.
+
 > 
 > Thanks,
 > //richard
