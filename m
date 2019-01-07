@@ -1,194 +1,102 @@
-Return-Path: <rppt@linux.ibm.com>
-From: Mike Rapoport <rppt@linux.ibm.com>
-Subject: [PATCH 00/21] Refine memblock API
-Date: Wed, 16 Jan 2019 15:44:00 +0200
-Message-Id: <1547646261-32535-1-git-send-email-rppt@linux.ibm.com>
-To: linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, Christoph Hellwig <hch@lst.de>, "David S. Miller" <davem@davemloft.net>, Dennis Zhou <dennis@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, Paul Burton <paul.burton@mips.com>, Petr Mladek <pmladek@suse.com>, Rich Felker <dalias@libc.org>, Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, devicetree@vger.kernel.org, kasan-dev@googlegroups.com, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-usb@vger.kernel.org, linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, x86@kernel.org, xen-devel@lists.xenproject.org, Mike Rapoport <rppt@linux.ibm.com>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from ivanoab6.miniserver.com ([5.153.251.140]
+ helo=www.kot-begemot.co.uk)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ggRoU-00068u-EW
+ for linux-um@lists.infradead.org; Mon, 07 Jan 2019 10:07:20 +0000
+Subject: Re: [PATCH] um: Try to avoid kmalloc in signal handling
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+References: <20190103160917.10217-1-anton.ivanov@cambridgegreys.com>
+ <cfcec59e-e1fd-1dd9-48ac-9645152cca4d@cambridgegreys.com>
+ <da88ec54-3d0b-360a-863d-59e29c8eaa00@cambridgegreys.com>
+ <8232816.4fJl4d8jsT@blindfold>
+ <f0771316-f932-6e60-6165-e47411ef33b3@cambridgegreys.com>
+Message-ID: <d37d7c2a-9e82-c3d4-f725-454a7d710343@cambridgegreys.com>
+Date: Mon, 7 Jan 2019 10:07:09 +0000
+MIME-Version: 1.0
+In-Reply-To: <f0771316-f932-6e60-6165-e47411ef33b3@cambridgegreys.com>
+Content-Language: en-US
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-um@lists.infradead.org
 
-Hi,
 
-Current memblock API is quite extensive and, which is more annoying,
-duplicated. Except the low-level functions that allow searching for a free
-memory region and marking it as reserved, memblock provides three (well,
-two and a half) sets of functions to allocate memory. There are several
-overlapping functions that return a physical address and there are
-functions that return virtual address. Those that return the virtual
-address may also clear the allocated memory. And, on top of all that, some
-allocators panic and some return NULL in case of error.
 
-This set tries to reduce the mess, and trim down the amount of memblock
-allocation methods.
+On 1/4/19 3:50 PM, Anton Ivanov wrote:
+> 
+> 
+> On 1/3/19 9:42 PM, Richard Weinberger wrote:
+>> Am Donnerstag, 3. Januar 2019, 22:29:17 CET schrieb Anton Ivanov:
+>>> Second thought - this should not use kmalloc at all if it can. It should
+>>> either go on the stack the way it used to do before
+>>> b6024b21fec8367ef961a771cc9dde31f1831965 or it should have a sufficient
+>>> "register stack" to push registers for all use cases.
+>>>
+>>> Kmalloc/ATOMIC can fail just because it feels like it which means that
+>>> this can throw a panic() under very heavy IO.
+>>
+>> Not good. :-(
+>> We cannot go back to stack based allocation. The stack is too small for
+>> AVX register sets.
+>> Maybe we can preallocate it.
+> 
+> I will write a pre-allocation alternative, but that may take some time 
+> because it needs to do additional allocations at some "safe" point in 
+> time like system idle, not in the IO/signal path where they can fail.
+> 
+> In the meantime we have to make sure that we are not sitting on a latent 
+> crash in the IO/Fault path so I have sent out a patch which removes 
+> kmalloc/ATOMIC and puts things back on the stack.
+> 
+> There are a few other options which are worth investigating like sizing 
+> the storage dynamically based on CPU and/or storing fp regs only if they 
+> have been touched, not every time (afaik MIPS was doing something like 
+> that). Once again, this may take a while to figure out if it is possible 
+> and some time to make it happen after that. That may be worth doing 
+> anyway for performance reasons. If memory serves me right, storing FPU 
+> state is a high cost operation. Not doing it for cases where it is not 
+> needed should yield some performance gains.
+> 
+>> (And check what arch/x86/ does)
+>>
+>> Thanks,
+>> //richard
+>>
+>>
+>>
+> 
 
-Patches 1-10 consolidate the functions that return physical address of
-the allocated memory
+After digging both x86 and uml sources, I think that the long term goal 
+should be to get rid of regs->fp altogether.
 
-Patches 11-13 are some trivial cleanups
+x86 does not have it and keeps fp state separate under most 
+circumstances. As a result it has no issues pushing pt_reqs on the stack 
+- it is small.
 
-Patches 14-19 add checks for the return value of memblock_alloc*() and
-panics in case of errors. The patches 14-18 include some minor refactoring
-to have better readability of the resulting code and patch 19 is a
-mechanical addition of
-
-	if (!ptr)
-		panic();
-
-after memblock_alloc*() calls.
-
-And, finally, patches 20 and 21 remove panic() calls memblock and _nopanic
-variants from memblock.
-
-Christophe Leroy (1):
-  powerpc: use memblock functions returning virtual address
-
-Mike Rapoport (20):
-  openrisc: prefer memblock APIs returning virtual address
-  memblock: replace memblock_alloc_base(ANYWHERE) with memblock_phys_alloc
-  memblock: drop memblock_alloc_base_nid()
-  memblock: emphasize that memblock_alloc_range() returns a physical address
-  memblock: memblock_phys_alloc_try_nid(): don't panic
-  memblock: memblock_phys_alloc(): don't panic
-  memblock: drop __memblock_alloc_base()
-  memblock: drop memblock_alloc_base()
-  memblock: refactor internal allocation functions
-  memblock: make memblock_find_in_range_node() and choose_memblock_flags() static
-  arch: use memblock_alloc() instead of memblock_alloc_from(size, align, 0)
-  arch: don't memset(0) memory returned by memblock_alloc()
-  ia64: add checks for the return value of memblock_alloc*()
-  sparc: add checks for the return value of memblock_alloc*()
-  mm/percpu: add checks for the return value of memblock_alloc*()
-  init/main: add checks for the return value of memblock_alloc*()
-  swiotlb: add checks for the return value of memblock_alloc*()
-  treewide: add checks for the return value of memblock_alloc*()
-  memblock: memblock_alloc_try_nid: don't panic
-  memblock: drop memblock_alloc_*_nopanic() variants
-
- arch/alpha/kernel/core_cia.c              |   5 +-
- arch/alpha/kernel/core_marvel.c           |   6 +
- arch/alpha/kernel/pci-noop.c              |  11 +-
- arch/alpha/kernel/pci.c                   |  11 +-
- arch/alpha/kernel/pci_iommu.c             |  16 +-
- arch/alpha/kernel/setup.c                 |   2 +-
- arch/arc/kernel/unwind.c                  |   3 +-
- arch/arc/mm/highmem.c                     |   4 +
- arch/arm/kernel/setup.c                   |   6 +
- arch/arm/mm/init.c                        |   6 +-
- arch/arm/mm/mmu.c                         |  14 +-
- arch/arm64/kernel/setup.c                 |   9 +-
- arch/arm64/mm/kasan_init.c                |  10 ++
- arch/arm64/mm/mmu.c                       |   2 +
- arch/arm64/mm/numa.c                      |   4 +
- arch/c6x/mm/dma-coherent.c                |   4 +
- arch/c6x/mm/init.c                        |   4 +-
- arch/csky/mm/highmem.c                    |   5 +
- arch/h8300/mm/init.c                      |   4 +-
- arch/ia64/kernel/mca.c                    |  25 +--
- arch/ia64/mm/contig.c                     |   8 +-
- arch/ia64/mm/discontig.c                  |   4 +
- arch/ia64/mm/init.c                       |  38 ++++-
- arch/ia64/mm/tlb.c                        |   6 +
- arch/ia64/sn/kernel/io_common.c           |   3 +
- arch/ia64/sn/kernel/setup.c               |  12 +-
- arch/m68k/atari/stram.c                   |   4 +
- arch/m68k/mm/init.c                       |   3 +
- arch/m68k/mm/mcfmmu.c                     |   7 +-
- arch/m68k/mm/motorola.c                   |   9 ++
- arch/m68k/mm/sun3mmu.c                    |   6 +
- arch/m68k/sun3/sun3dvma.c                 |   3 +
- arch/microblaze/mm/init.c                 |  10 +-
- arch/mips/cavium-octeon/dma-octeon.c      |   3 +
- arch/mips/kernel/setup.c                  |   3 +
- arch/mips/kernel/traps.c                  |   5 +-
- arch/mips/mm/init.c                       |   5 +
- arch/nds32/mm/init.c                      |  12 ++
- arch/openrisc/mm/init.c                   |   5 +-
- arch/openrisc/mm/ioremap.c                |   8 +-
- arch/powerpc/kernel/dt_cpu_ftrs.c         |   8 +-
- arch/powerpc/kernel/irq.c                 |   5 -
- arch/powerpc/kernel/paca.c                |   6 +-
- arch/powerpc/kernel/pci_32.c              |   3 +
- arch/powerpc/kernel/prom.c                |   5 +-
- arch/powerpc/kernel/rtas.c                |   6 +-
- arch/powerpc/kernel/setup-common.c        |   3 +
- arch/powerpc/kernel/setup_32.c            |  26 ++--
- arch/powerpc/kernel/setup_64.c            |   4 +
- arch/powerpc/lib/alloc.c                  |   3 +
- arch/powerpc/mm/hash_utils_64.c           |  11 +-
- arch/powerpc/mm/mmu_context_nohash.c      |   9 ++
- arch/powerpc/mm/numa.c                    |   4 +
- arch/powerpc/mm/pgtable-book3e.c          |  12 +-
- arch/powerpc/mm/pgtable-book3s64.c        |   3 +
- arch/powerpc/mm/pgtable-radix.c           |   9 +-
- arch/powerpc/mm/ppc_mmu_32.c              |   3 +
- arch/powerpc/platforms/pasemi/iommu.c     |   3 +
- arch/powerpc/platforms/powermac/nvram.c   |   3 +
- arch/powerpc/platforms/powernv/opal.c     |   3 +
- arch/powerpc/platforms/powernv/pci-ioda.c |   8 +
- arch/powerpc/platforms/ps3/setup.c        |   3 +
- arch/powerpc/sysdev/dart_iommu.c          |   3 +
- arch/powerpc/sysdev/msi_bitmap.c          |   3 +
- arch/s390/kernel/crash_dump.c             |   3 +
- arch/s390/kernel/setup.c                  |  16 ++
- arch/s390/kernel/smp.c                    |   9 +-
- arch/s390/kernel/topology.c               |   6 +
- arch/s390/numa/mode_emu.c                 |   3 +
- arch/s390/numa/numa.c                     |   6 +-
- arch/s390/numa/toptree.c                  |   8 +-
- arch/sh/boards/mach-ap325rxa/setup.c      |   5 +-
- arch/sh/boards/mach-ecovec24/setup.c      |  10 +-
- arch/sh/boards/mach-kfr2r09/setup.c       |   5 +-
- arch/sh/boards/mach-migor/setup.c         |   5 +-
- arch/sh/boards/mach-se/7724/setup.c       |  10 +-
- arch/sh/kernel/machine_kexec.c            |   3 +-
- arch/sh/mm/init.c                         |   8 +-
- arch/sh/mm/numa.c                         |   4 +
- arch/sparc/kernel/prom_32.c               |   6 +-
- arch/sparc/kernel/setup_64.c              |   6 +
- arch/sparc/kernel/smp_64.c                |  12 ++
- arch/sparc/mm/init_32.c                   |   2 +-
- arch/sparc/mm/init_64.c                   |  11 ++
- arch/sparc/mm/srmmu.c                     |  18 ++-
- arch/um/drivers/net_kern.c                |   3 +
- arch/um/drivers/vector_kern.c             |   3 +
- arch/um/kernel/initrd.c                   |   2 +
- arch/um/kernel/mem.c                      |  16 ++
- arch/unicore32/kernel/setup.c             |   4 +
- arch/unicore32/mm/mmu.c                   |  15 +-
- arch/x86/kernel/acpi/boot.c               |   3 +
- arch/x86/kernel/apic/io_apic.c            |   5 +
- arch/x86/kernel/e820.c                    |   5 +-
- arch/x86/kernel/setup_percpu.c            |  10 +-
- arch/x86/mm/kasan_init_64.c               |  14 +-
- arch/x86/mm/numa.c                        |  12 +-
- arch/x86/platform/olpc/olpc_dt.c          |   3 +
- arch/x86/xen/p2m.c                        |  11 +-
- arch/xtensa/mm/kasan_init.c               |  10 +-
- arch/xtensa/mm/mmu.c                      |   3 +
- drivers/clk/ti/clk.c                      |   3 +
- drivers/firmware/memmap.c                 |   2 +-
- drivers/macintosh/smu.c                   |   5 +-
- drivers/of/fdt.c                          |   8 +-
- drivers/of/of_reserved_mem.c              |   7 +-
- drivers/of/unittest.c                     |   8 +-
- drivers/usb/early/xhci-dbc.c              |   2 +-
- drivers/xen/swiotlb-xen.c                 |   7 +-
- include/linux/memblock.h                  |  59 +------
- init/main.c                               |  26 +++-
- kernel/dma/swiotlb.c                      |  21 ++-
- kernel/power/snapshot.c                   |   3 +
- kernel/printk/printk.c                    |  17 +-
- lib/cpumask.c                             |   3 +
- mm/cma.c                                  |  10 +-
- mm/kasan/init.c                           |  10 +-
- mm/memblock.c                             | 249 ++++++++++--------------------
- mm/page_alloc.c                           |  10 +-
- mm/page_ext.c                             |   2 +-
- mm/percpu.c                               |  84 +++++++---
- mm/sparse.c                               |  25 ++-
- 122 files changed, 872 insertions(+), 415 deletions(-)
+It is not easy though - references to it are all over the place and I am 
+having quite an interesting time figuring out where we can replace them 
+with the fpu field in the thread_info structure and where we have to do 
+something else :)
 
 -- 
-2.7.4
+Anton R. Ivanov
 
+Cambridge Greys Limited, England and Wales company No 10273661
+http://www.cambridgegreys.com/
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
