@@ -1,143 +1,95 @@
-Return-Path: <rppt@linux.ibm.com>
-From: Mike Rapoport <rppt@linux.ibm.com>
-Subject: [PATCH 03/21] memblock: replace memblock_alloc_base(ANYWHERE) with memblock_phys_alloc
-Date: Wed, 16 Jan 2019 15:44:03 +0200
-In-Reply-To: <1547646261-32535-1-git-send-email-rppt@linux.ibm.com>
-References: <1547646261-32535-1-git-send-email-rppt@linux.ibm.com>
-Message-Id: <1547646261-32535-4-git-send-email-rppt@linux.ibm.com>
-To: linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, Christoph Hellwig <hch@lst.de>, "David S. Miller" <davem@davemloft.net>, Dennis Zhou <dennis@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, Paul Burton <paul.burton@mips.com>, Petr Mladek <pmladek@suse.com>, Rich Felker <dalias@libc.org>, Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, devicetree@vger.kernel.org, kasan-dev@googlegroups.com, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-usb@vger.kernel.org, linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, x86@kernel.org, xen-devel@lists.xenproject.org, Mike Rapoport <rppt@linux.ibm.com>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-vs1-xe44.google.com ([2607:f8b0:4864:20::e44])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gh1Go-0007Cf-Dw
+ for linux-um@lists.infradead.org; Tue, 08 Jan 2019 23:58:55 +0000
+Received: by mail-vs1-xe44.google.com with SMTP id x28so3625838vsh.12
+ for <linux-um@lists.infradead.org>; Tue, 08 Jan 2019 15:58:54 -0800 (PST)
+Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com.
+ [209.85.221.172])
+ by smtp.gmail.com with ESMTPSA id e67sm32718753vsd.32.2019.01.08.15.58.51
+ for <linux-um@lists.infradead.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Tue, 08 Jan 2019 15:58:52 -0800 (PST)
+Received: by mail-vk1-f172.google.com with SMTP id 197so1293265vkf.4
+ for <linux-um@lists.infradead.org>; Tue, 08 Jan 2019 15:58:51 -0800 (PST)
+MIME-Version: 1.0
+References: <20181226075436.11018-1-christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20181226075436.11018-1-christophe.jaillet@wanadoo.fr>
+From: Kees Cook <keescook@chromium.org>
+Date: Tue, 8 Jan 2019 15:58:40 -0800
+Message-ID: <CAGXu5jKhBmBX90aXi3J57cVAZ2aSrRggzwNpvfnxYufZLoYCeA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] um: vector: Fix a potential NULL pointer dereference
+ in 'vector_net_open()'
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: kernel-janitors@vger.kernel.org, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, YueHaibing <yuehaibing@huawei.com>, LKML <linux-kernel@vger.kernel.org>, linux-um@lists.infradead.org, Mike Rapoport <rppt@linux.vnet.ibm.com>, Andrew Morton <akpm@linux-foundation.org>, anton.ivanov@cambridgegreys.com
 
-The calls to memblock_alloc_base(size, align, MEMBLOCK_ALLOC_ANYWHERE) and
-memblock_phys_alloc(size, align) are equivalent as both try to allocate
-'size' bytes with 'align' alignment anywhere in the memory and panic if hte
-allocation fails.
+On Fri, Dec 28, 2018 at 1:57 AM Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
+>
+> 'create_queue()' returns NULL in case of memory allocation failure. So we
+> must check if it succeeds in order to avoid potential NULL pointer
+> dereference.
+>
+> For 'vp->rx_queue', the dereference would occur just one line after the
+> failed allocation. For 'vp->tx_queue', it would occur later during normal
+> processing.
+>
+> Fixes: 49da7e64f33e ("High Performance UML Vector Network Driver")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-The conversion is done using the following semantic patch:
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-@@
-expression size, align;
-@@
-- memblock_alloc_base(size, align, MEMBLOCK_ALLOC_ANYWHERE)
-+ memblock_phys_alloc(size, align)
+-Kees
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- arch/arm/mm/init.c                   | 2 +-
- arch/sh/boards/mach-ap325rxa/setup.c | 2 +-
- arch/sh/boards/mach-ecovec24/setup.c | 4 ++--
- arch/sh/boards/mach-kfr2r09/setup.c  | 2 +-
- arch/sh/boards/mach-migor/setup.c    | 2 +-
- arch/sh/boards/mach-se/7724/setup.c  | 4 ++--
- arch/xtensa/mm/kasan_init.c          | 3 +--
- 7 files changed, 9 insertions(+), 10 deletions(-)
+> ---
+>  arch/um/drivers/vector_kern.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
+> index 046fa9ea0ccc..5b917716289d 100644
+> --- a/arch/um/drivers/vector_kern.c
+> +++ b/arch/um/drivers/vector_kern.c
+> @@ -1182,6 +1182,8 @@ static int vector_net_open(struct net_device *dev)
+>                         vp->rx_header_size,
+>                         MAX_IOV_SIZE
+>                 );
+> +               if (!vp->rx_queue)
+> +                       goto out_close;
+>                 vp->rx_queue->queue_depth = get_depth(vp->parsed);
+>         } else {
+>                 vp->header_rxbuffer = kmalloc(
+> @@ -1198,6 +1200,8 @@ static int vector_net_open(struct net_device *dev)
+>                         vp->header_size,
+>                         MAX_IOV_SIZE
+>                 );
+> +               if (!vp->tx_queue)
+> +                       goto out_close;
+>         } else {
+>                 vp->header_txbuffer = kmalloc(vp->header_size, GFP_KERNEL);
+>                 if (vp->header_txbuffer == NULL)
+> --
+> 2.19.1
+>
 
-diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
-index 478ea8b..b76b90e 100644
---- a/arch/arm/mm/init.c
-+++ b/arch/arm/mm/init.c
-@@ -205,7 +205,7 @@ phys_addr_t __init arm_memblock_steal(phys_addr_t size, phys_addr_t align)
- 
- 	BUG_ON(!arm_memblock_steal_permitted);
- 
--	phys = memblock_alloc_base(size, align, MEMBLOCK_ALLOC_ANYWHERE);
-+	phys = memblock_phys_alloc(size, align);
- 	memblock_free(phys, size);
- 	memblock_remove(phys, size);
- 
-diff --git a/arch/sh/boards/mach-ap325rxa/setup.c b/arch/sh/boards/mach-ap325rxa/setup.c
-index 8f234d04..d7ceab6 100644
---- a/arch/sh/boards/mach-ap325rxa/setup.c
-+++ b/arch/sh/boards/mach-ap325rxa/setup.c
-@@ -557,7 +557,7 @@ static void __init ap325rxa_mv_mem_reserve(void)
- 	phys_addr_t phys;
- 	phys_addr_t size = CEU_BUFFER_MEMORY_SIZE;
- 
--	phys = memblock_alloc_base(size, PAGE_SIZE, MEMBLOCK_ALLOC_ANYWHERE);
-+	phys = memblock_phys_alloc(size, PAGE_SIZE);
- 	memblock_free(phys, size);
- 	memblock_remove(phys, size);
- 
-diff --git a/arch/sh/boards/mach-ecovec24/setup.c b/arch/sh/boards/mach-ecovec24/setup.c
-index 22b4106..a3901806 100644
---- a/arch/sh/boards/mach-ecovec24/setup.c
-+++ b/arch/sh/boards/mach-ecovec24/setup.c
-@@ -1480,12 +1480,12 @@ static void __init ecovec_mv_mem_reserve(void)
- 	phys_addr_t phys;
- 	phys_addr_t size = CEU_BUFFER_MEMORY_SIZE;
- 
--	phys = memblock_alloc_base(size, PAGE_SIZE, MEMBLOCK_ALLOC_ANYWHERE);
-+	phys = memblock_phys_alloc(size, PAGE_SIZE);
- 	memblock_free(phys, size);
- 	memblock_remove(phys, size);
- 	ceu0_dma_membase = phys;
- 
--	phys = memblock_alloc_base(size, PAGE_SIZE, MEMBLOCK_ALLOC_ANYWHERE);
-+	phys = memblock_phys_alloc(size, PAGE_SIZE);
- 	memblock_free(phys, size);
- 	memblock_remove(phys, size);
- 	ceu1_dma_membase = phys;
-diff --git a/arch/sh/boards/mach-kfr2r09/setup.c b/arch/sh/boards/mach-kfr2r09/setup.c
-index 203d249..55bdf4a 100644
---- a/arch/sh/boards/mach-kfr2r09/setup.c
-+++ b/arch/sh/boards/mach-kfr2r09/setup.c
-@@ -631,7 +631,7 @@ static void __init kfr2r09_mv_mem_reserve(void)
- 	phys_addr_t phys;
- 	phys_addr_t size = CEU_BUFFER_MEMORY_SIZE;
- 
--	phys = memblock_alloc_base(size, PAGE_SIZE, MEMBLOCK_ALLOC_ANYWHERE);
-+	phys = memblock_phys_alloc(size, PAGE_SIZE);
- 	memblock_free(phys, size);
- 	memblock_remove(phys, size);
- 
-diff --git a/arch/sh/boards/mach-migor/setup.c b/arch/sh/boards/mach-migor/setup.c
-index f4ad33c..ba7eee6 100644
---- a/arch/sh/boards/mach-migor/setup.c
-+++ b/arch/sh/boards/mach-migor/setup.c
-@@ -630,7 +630,7 @@ static void __init migor_mv_mem_reserve(void)
- 	phys_addr_t phys;
- 	phys_addr_t size = CEU_BUFFER_MEMORY_SIZE;
- 
--	phys = memblock_alloc_base(size, PAGE_SIZE, MEMBLOCK_ALLOC_ANYWHERE);
-+	phys = memblock_phys_alloc(size, PAGE_SIZE);
- 	memblock_free(phys, size);
- 	memblock_remove(phys, size);
- 
-diff --git a/arch/sh/boards/mach-se/7724/setup.c b/arch/sh/boards/mach-se/7724/setup.c
-index fdbec22a..4696e10 100644
---- a/arch/sh/boards/mach-se/7724/setup.c
-+++ b/arch/sh/boards/mach-se/7724/setup.c
-@@ -965,12 +965,12 @@ static void __init ms7724se_mv_mem_reserve(void)
- 	phys_addr_t phys;
- 	phys_addr_t size = CEU_BUFFER_MEMORY_SIZE;
- 
--	phys = memblock_alloc_base(size, PAGE_SIZE, MEMBLOCK_ALLOC_ANYWHERE);
-+	phys = memblock_phys_alloc(size, PAGE_SIZE);
- 	memblock_free(phys, size);
- 	memblock_remove(phys, size);
- 	ceu0_dma_membase = phys;
- 
--	phys = memblock_alloc_base(size, PAGE_SIZE, MEMBLOCK_ALLOC_ANYWHERE);
-+	phys = memblock_phys_alloc(size, PAGE_SIZE);
- 	memblock_free(phys, size);
- 	memblock_remove(phys, size);
- 	ceu1_dma_membase = phys;
-diff --git a/arch/xtensa/mm/kasan_init.c b/arch/xtensa/mm/kasan_init.c
-index 1734cda..48dbb03 100644
---- a/arch/xtensa/mm/kasan_init.c
-+++ b/arch/xtensa/mm/kasan_init.c
-@@ -52,8 +52,7 @@ static void __init populate(void *start, void *end)
- 
- 		for (k = 0; k < PTRS_PER_PTE; ++k, ++j) {
- 			phys_addr_t phys =
--				memblock_alloc_base(PAGE_SIZE, PAGE_SIZE,
--						    MEMBLOCK_ALLOC_ANYWHERE);
-+				memblock_phys_alloc(PAGE_SIZE, PAGE_SIZE);
- 
- 			set_pte(pte + j, pfn_pte(PHYS_PFN(phys), PAGE_KERNEL));
- 		}
+
 -- 
-2.7.4
+Kees Cook
 
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
