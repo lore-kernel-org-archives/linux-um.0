@@ -1,98 +1,93 @@
-Return-Path: <rppt@linux.ibm.com>
-From: Mike Rapoport <rppt@linux.ibm.com>
-Subject: [PATCH v2 05/21] memblock: emphasize that memblock_alloc_range() returns a physical address
-Date: Mon, 21 Jan 2019 10:03:52 +0200
-In-Reply-To: <1548057848-15136-1-git-send-email-rppt@linux.ibm.com>
-References: <1548057848-15136-1-git-send-email-rppt@linux.ibm.com>
-Message-Id: <1548057848-15136-6-git-send-email-rppt@linux.ibm.com>
-To: linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, Christoph Hellwig <hch@lst.de>, "David S. Miller" <davem@davemloft.net>, Dennis Zhou <dennis@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, Paul Burton <paul.burton@mips.com>, Petr Mladek <pmladek@suse.com>, Rich Felker <dalias@libc.org>, Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, devicetree@vger.kernel.org, kasan-dev@googlegroups.com, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-usb@vger.kernel.org, linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, x86@kernel.org, xen-devel@lists.xenproject.org, Mike Rapoport <rppt@linux.ibm.com>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-vs1-xe44.google.com ([2607:f8b0:4864:20::e44])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gh1GQ-0007Ak-Oo
+ for linux-um@lists.infradead.org; Tue, 08 Jan 2019 23:58:32 +0000
+Received: by mail-vs1-xe44.google.com with SMTP id z3so3653527vsf.7
+ for <linux-um@lists.infradead.org>; Tue, 08 Jan 2019 15:58:29 -0800 (PST)
+Received: from mail-vk1-f180.google.com (mail-vk1-f180.google.com.
+ [209.85.221.180])
+ by smtp.gmail.com with ESMTPSA id r130sm32293094vka.55.2019.01.08.15.58.26
+ for <linux-um@lists.infradead.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Tue, 08 Jan 2019 15:58:26 -0800 (PST)
+Received: by mail-vk1-f180.google.com with SMTP id 185so1290756vkc.3
+ for <linux-um@lists.infradead.org>; Tue, 08 Jan 2019 15:58:26 -0800 (PST)
+MIME-Version: 1.0
+References: <20181226075449.11071-1-christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20181226075449.11071-1-christophe.jaillet@wanadoo.fr>
+From: Kees Cook <keescook@chromium.org>
+Date: Tue, 8 Jan 2019 15:58:14 -0800
+Message-ID: <CAGXu5jKogPgKdL9kZEEbaNYL44LQ8o7EupDiwN+DE42JtckkHg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] um: vector: Use 'kmalloc_array' instead of 'kmalloc'
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: kernel-janitors@vger.kernel.org, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, YueHaibing <yuehaibing@huawei.com>, LKML <linux-kernel@vger.kernel.org>, linux-um@lists.infradead.org, Mike Rapoport <rppt@linux.vnet.ibm.com>, Andrew Morton <akpm@linux-foundation.org>, anton.ivanov@cambridgegreys.com
 
-Rename memblock_alloc_range() to memblock_phys_alloc_range() to emphasize
-that it returns a physical address.
-While on it, remove the 'enum memblock_flags' parameter from this function
-as its only user anyway sets it to MEMBLOCK_NONE, which is the default for
-the most of memblock allocations.
+On Fri, Dec 28, 2018 at 1:57 AM Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
+>
+> Use 'kmalloc_array' instead of 'kmalloc' when appropriate.
+>
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- include/linux/memblock.h |  5 ++---
- mm/cma.c                 | 10 ++++------
- mm/memblock.c            |  9 +++++----
- 3 files changed, 11 insertions(+), 13 deletions(-)
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-index f7ef313..66dfdb3 100644
---- a/include/linux/memblock.h
-+++ b/include/linux/memblock.h
-@@ -369,6 +369,8 @@ static inline int memblock_get_region_node(const struct memblock_region *r)
- #define ARCH_LOW_ADDRESS_LIMIT  0xffffffffUL
- #endif
- 
-+phys_addr_t memblock_phys_alloc_range(phys_addr_t size, phys_addr_t align,
-+				      phys_addr_t start, phys_addr_t end);
- phys_addr_t memblock_phys_alloc_nid(phys_addr_t size, phys_addr_t align, int nid);
- phys_addr_t memblock_phys_alloc_try_nid(phys_addr_t size, phys_addr_t align, int nid);
- 
-@@ -487,9 +489,6 @@ static inline bool memblock_bottom_up(void)
- 	return memblock.bottom_up;
- }
- 
--phys_addr_t __init memblock_alloc_range(phys_addr_t size, phys_addr_t align,
--					phys_addr_t start, phys_addr_t end,
--					enum memblock_flags flags);
- phys_addr_t memblock_alloc_base(phys_addr_t size, phys_addr_t align,
- 				phys_addr_t max_addr);
- phys_addr_t __memblock_alloc_base(phys_addr_t size, phys_addr_t align,
-diff --git a/mm/cma.c b/mm/cma.c
-index c7b39dd..e4530ae 100644
---- a/mm/cma.c
-+++ b/mm/cma.c
-@@ -327,16 +327,14 @@ int __init cma_declare_contiguous(phys_addr_t base,
- 		 * memory in case of failure.
- 		 */
- 		if (base < highmem_start && limit > highmem_start) {
--			addr = memblock_alloc_range(size, alignment,
--						    highmem_start, limit,
--						    MEMBLOCK_NONE);
-+			addr = memblock_phys_alloc_range(size, alignment,
-+							 highmem_start, limit);
- 			limit = highmem_start;
- 		}
- 
- 		if (!addr) {
--			addr = memblock_alloc_range(size, alignment, base,
--						    limit,
--						    MEMBLOCK_NONE);
-+			addr = memblock_phys_alloc_range(size, alignment, base,
-+							 limit);
- 			if (!addr) {
- 				ret = -ENOMEM;
- 				goto err;
-diff --git a/mm/memblock.c b/mm/memblock.c
-index c80029e..f019aee 100644
---- a/mm/memblock.c
-+++ b/mm/memblock.c
-@@ -1338,12 +1338,13 @@ static phys_addr_t __init memblock_alloc_range_nid(phys_addr_t size,
- 	return 0;
- }
- 
--phys_addr_t __init memblock_alloc_range(phys_addr_t size, phys_addr_t align,
--					phys_addr_t start, phys_addr_t end,
--					enum memblock_flags flags)
-+phys_addr_t __init memblock_phys_alloc_range(phys_addr_t size,
-+					     phys_addr_t align,
-+					     phys_addr_t start,
-+					     phys_addr_t end)
- {
- 	return memblock_alloc_range_nid(size, align, start, end, NUMA_NO_NODE,
--					flags);
-+					MEMBLOCK_NONE);
- }
- 
- phys_addr_t __init memblock_phys_alloc_nid(phys_addr_t size, phys_addr_t align, int nid)
+Richard, can you take these?
+
+> ---
+> I don't know why it has not already been replaced in 6da2ec56059c
+> ("treewide: kmalloc() -> kmalloc_array()".
+
+Hm, not sure. I'd guess it was from the ()s and some Coccinelle rule
+missing handling that. I thought I caught them all. :P
+
+> ---
+>  arch/um/drivers/vector_kern.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
+> index 5b917716289d..dee5246bda81 100644
+> --- a/arch/um/drivers/vector_kern.c
+> +++ b/arch/um/drivers/vector_kern.c
+> @@ -507,12 +507,12 @@ static struct vector_queue *create_queue(
+>                 return NULL;
+>         result->max_depth = max_size;
+>         result->dev = vp->dev;
+> -       result->mmsg_vector = kmalloc(
+> -               (sizeof(struct mmsghdr) * max_size), GFP_KERNEL);
+> +       result->mmsg_vector = kmalloc_array(max_size, sizeof(struct mmsghdr),
+> +                                           GFP_KERNEL);
+>         if (result->mmsg_vector == NULL)
+>                 goto out_mmsg_fail;
+> -       result->skbuff_vector = kmalloc(
+> -               (sizeof(void *) * max_size), GFP_KERNEL);
+> +       result->skbuff_vector = kmalloc_array(max_size, sizeof(void *),
+> +                                             GFP_KERNEL);
+>         if (result->skbuff_vector == NULL)
+>                 goto out_skb_fail;
+>
+> --
+> 2.19.1
+>
+
+
 -- 
-2.7.4
+Kees Cook
 
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
