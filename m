@@ -1,112 +1,118 @@
-Return-Path: <robh+dt@kernel.org>
+Return-Path: <rppt@linux.ibm.com>
+Date: Wed, 16 Jan 2019 17:13:49 +0200
+From: Mike Rapoport <rppt@linux.ibm.com>
+Subject: Re: [PATCH 19/21] treewide: add checks for the return value of
+ memblock_alloc*()
+References: <1547646261-32535-1-git-send-email-rppt@linux.ibm.com>
+ <1547646261-32535-20-git-send-email-rppt@linux.ibm.com>
+ <CAMuHMdWKPj-2Let44rmaVwh-b6kkGg+0cFPQ-+3k9LP86pB7NA@mail.gmail.com>
 MIME-Version: 1.0
-References: <1547646261-32535-1-git-send-email-rppt@linux.ibm.com> <1547646261-32535-20-git-send-email-rppt@linux.ibm.com>
-In-Reply-To: <1547646261-32535-20-git-send-email-rppt@linux.ibm.com>
-From: Rob Herring <robh+dt@kernel.org>
-Date: Wed, 16 Jan 2019 09:18:24 -0600
-Message-ID: <CAL_JsqJv=+SQwmbwuw1C5Rv9sFHhk4SiP=Z_cKJu3HG5kdwhrg@mail.gmail.com>
-Subject: Re: [PATCH 19/21] treewide: add checks for the return value of memblock_alloc*()
-Content-Type: text/plain; charset="UTF-8"
-To: Mike Rapoport <rppt@linux.ibm.com>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, Christoph Hellwig <hch@lst.de>, "David S. Miller" <davem@davemloft.net>, Dennis Zhou <dennis@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, Paul Burton <paul.burton@mips.com>, Petr Mladek <pmladek@suse.com>, Rich Felker <dalias@libc.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, devicetree@vger.kernel.org, kasan-dev@googlegroups.com, linux-alpha@vger.kernel.org, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-s390@vger.kernel.org, SH-Linux <linux-sh@vger.kernel.org>, arcml <linux-snps-arc@lists.infradead.org>, linux-um@lists.infradead.org, Linux USB List <linux-usb@vger.kernel.org>, linux-xtensa@linux-xtensa.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, Openrisc <openrisc@lists.librecores.org>, sparclinux@vger.kernel.org, "moderated list:H8/300 ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>, x86@kernel.org, xen-devel@lists.xenproject.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdWKPj-2Let44rmaVwh-b6kkGg+0cFPQ-+3k9LP86pB7NA@mail.gmail.com>
+Message-Id: <20190116151348.GD6643@rapoport-lnx>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linux MM <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, Christoph Hellwig <hch@lst.de>, "David S. Miller" <davem@davemloft.net>, Dennis Zhou <dennis@kernel.org>, Greentime Hu <green.hu@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, Paul Burton <paul.burton@mips.com>, Petr Mladek <pmladek@suse.com>, Rich Felker <dalias@libc.org>, Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, kasan-dev@googlegroups.com, alpha <linux-alpha@vger.kernel.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-c6x-dev@linux-c6x.org, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, linux-mips@vger.kernel.org, linux-s390 <linux-s390@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, arcml <linux-snps-arc@lists.infradead.org>, linux-um@lists.infradead.org, USB list <linux-usb@vger.kernel.org>, linux-xtensa@linux-xtensa.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, Openrisc <openrisc@lists.librecores.org>, sparclinux <sparclinux@vger.kernel.org>, "moderated list:H8/300 ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>, the arch/x86 maintainers <x86@kernel.org>, xen-devel@lists.xenproject.org
 List-ID: <linux-um.lists.infradead.org>
 
-On Wed, Jan 16, 2019 at 7:46 AM Mike Rapoport <rppt@linux.ibm.com> wrote:
->
-> Add check for the return value of memblock_alloc*() functions and call
-> panic() in case of error.
-> The panic message repeats the one used by panicing memblock allocators with
-> adjustment of parameters to include only relevant ones.
->
-> The replacement was mostly automated with semantic patches like the one
-> below with manual massaging of format strings.
->
-> @@
-> expression ptr, size, align;
-> @@
-> ptr = memblock_alloc(size, align);
-> + if (!ptr)
-> +       panic("%s: Failed to allocate %lu bytes align=0x%lx\n", __func__,
-> size, align);
->
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> ---
->  arch/alpha/kernel/core_cia.c              |  3 +++
->  arch/alpha/kernel/core_marvel.c           |  6 ++++++
->  arch/alpha/kernel/pci-noop.c              | 11 ++++++++++-
->  arch/alpha/kernel/pci.c                   | 11 ++++++++++-
->  arch/alpha/kernel/pci_iommu.c             | 12 ++++++++++++
->  arch/arc/mm/highmem.c                     |  4 ++++
->  arch/arm/kernel/setup.c                   |  6 ++++++
->  arch/arm/mm/mmu.c                         | 14 +++++++++++++-
->  arch/arm64/kernel/setup.c                 |  9 ++++++---
->  arch/arm64/mm/kasan_init.c                | 10 ++++++++++
->  arch/c6x/mm/dma-coherent.c                |  4 ++++
->  arch/c6x/mm/init.c                        |  3 +++
->  arch/csky/mm/highmem.c                    |  5 +++++
->  arch/h8300/mm/init.c                      |  3 +++
->  arch/m68k/atari/stram.c                   |  4 ++++
->  arch/m68k/mm/init.c                       |  3 +++
->  arch/m68k/mm/mcfmmu.c                     |  6 ++++++
->  arch/m68k/mm/motorola.c                   |  9 +++++++++
->  arch/m68k/mm/sun3mmu.c                    |  6 ++++++
->  arch/m68k/sun3/sun3dvma.c                 |  3 +++
->  arch/microblaze/mm/init.c                 |  8 ++++++--
->  arch/mips/cavium-octeon/dma-octeon.c      |  3 +++
->  arch/mips/kernel/setup.c                  |  3 +++
->  arch/mips/kernel/traps.c                  |  3 +++
->  arch/mips/mm/init.c                       |  5 +++++
->  arch/nds32/mm/init.c                      | 12 ++++++++++++
->  arch/openrisc/mm/ioremap.c                |  8 ++++++--
->  arch/powerpc/kernel/dt_cpu_ftrs.c         |  5 +++++
->  arch/powerpc/kernel/pci_32.c              |  3 +++
->  arch/powerpc/kernel/setup-common.c        |  3 +++
->  arch/powerpc/kernel/setup_64.c            |  4 ++++
->  arch/powerpc/lib/alloc.c                  |  3 +++
->  arch/powerpc/mm/hash_utils_64.c           |  3 +++
->  arch/powerpc/mm/mmu_context_nohash.c      |  9 +++++++++
->  arch/powerpc/mm/pgtable-book3e.c          | 12 ++++++++++--
->  arch/powerpc/mm/pgtable-book3s64.c        |  3 +++
->  arch/powerpc/mm/pgtable-radix.c           |  9 ++++++++-
->  arch/powerpc/mm/ppc_mmu_32.c              |  3 +++
->  arch/powerpc/platforms/pasemi/iommu.c     |  3 +++
->  arch/powerpc/platforms/powermac/nvram.c   |  3 +++
->  arch/powerpc/platforms/powernv/opal.c     |  3 +++
->  arch/powerpc/platforms/powernv/pci-ioda.c |  8 ++++++++
->  arch/powerpc/platforms/ps3/setup.c        |  3 +++
->  arch/powerpc/sysdev/msi_bitmap.c          |  3 +++
->  arch/s390/kernel/setup.c                  | 13 +++++++++++++
->  arch/s390/kernel/smp.c                    |  5 ++++-
->  arch/s390/kernel/topology.c               |  6 ++++++
->  arch/s390/numa/mode_emu.c                 |  3 +++
->  arch/s390/numa/numa.c                     |  6 +++++-
->  arch/s390/numa/toptree.c                  |  8 ++++++--
->  arch/sh/mm/init.c                         |  6 ++++++
->  arch/sh/mm/numa.c                         |  4 ++++
->  arch/um/drivers/net_kern.c                |  3 +++
->  arch/um/drivers/vector_kern.c             |  3 +++
->  arch/um/kernel/initrd.c                   |  2 ++
->  arch/um/kernel/mem.c                      | 16 ++++++++++++++++
->  arch/unicore32/kernel/setup.c             |  4 ++++
->  arch/unicore32/mm/mmu.c                   | 15 +++++++++++++--
->  arch/x86/kernel/acpi/boot.c               |  3 +++
->  arch/x86/kernel/apic/io_apic.c            |  5 +++++
->  arch/x86/kernel/e820.c                    |  3 +++
->  arch/x86/platform/olpc/olpc_dt.c          |  3 +++
->  arch/x86/xen/p2m.c                        | 11 +++++++++--
->  arch/xtensa/mm/kasan_init.c               |  4 ++++
->  arch/xtensa/mm/mmu.c                      |  3 +++
->  drivers/clk/ti/clk.c                      |  3 +++
->  drivers/macintosh/smu.c                   |  3 +++
->  drivers/of/fdt.c                          |  8 +++++++-
->  drivers/of/unittest.c                     |  8 +++++++-
+On Wed, Jan 16, 2019 at 03:27:35PM +0100, Geert Uytterhoeven wrote:
+> Hi Mike,
+> 
+> On Wed, Jan 16, 2019 at 2:46 PM Mike Rapoport <rppt@linux.ibm.com> wrote:
+> > Add check for the return value of memblock_alloc*() functions and call
+> > panic() in case of error.
+> > The panic message repeats the one used by panicing memblock allocators with
+> > adjustment of parameters to include only relevant ones.
+> >
+> > The replacement was mostly automated with semantic patches like the one
+> > below with manual massaging of format strings.
+> >
+> > @@
+> > expression ptr, size, align;
+> > @@
+> > ptr = memblock_alloc(size, align);
+> > + if (!ptr)
+> > +       panic("%s: Failed to allocate %lu bytes align=0x%lx\n", __func__,
+> 
+> In general, you want to use %zu for size_t
+> 
+> > size, align);
+> >
+> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> Thanks for your patch!
+> 
+> >  74 files changed, 415 insertions(+), 29 deletions(-)
+> 
+> I'm wondering if this is really an improvement?
 
-Acked-by: Rob Herring <robh@kernel.org>
+From memblock perspective it's definitely an improvement :)
 
->  drivers/xen/swiotlb-xen.c                 |  7 +++++--
->  kernel/power/snapshot.c                   |  3 +++
->  lib/cpumask.c                             |  3 +++
->  mm/kasan/init.c                           | 10 ++++++++--
->  mm/sparse.c                               | 19 +++++++++++++++++--
->  74 files changed, 415 insertions(+), 29 deletions(-)
+git diff --stat mmotm/master include/linux/memblock.h mm/memblock.c
+ include/linux/memblock.h |  59 ++---------
+ mm/memblock.c            | 249 ++++++++++++++++-------------------------------
+ 2 files changed, 90 insertions(+), 218 deletions(-)
+
+> For the normal memory allocator, the trend is to remove printing of errors
+> from all callers, as the core takes care of that.
+
+It's more about allocation errors handling than printing of the errors.
+Indeed, there is not much that can be done if an early allocation fails,
+but I believe having an explicit pattern
+
+	ptr = alloc();
+	if (!ptr)
+		do_something_about_it();
+
+is clearer than relying on the allocator to panic().
+
+Besides, the diversity of panic and nopanic variants creates a confusion
+and I've caught several places that call nopanic variant and do not check
+its return value.
+ 
+> > --- a/arch/alpha/kernel/core_marvel.c
+> > +++ b/arch/alpha/kernel/core_marvel.c
+> > @@ -83,6 +83,9 @@ mk_resource_name(int pe, int port, char *str)
+> >
+> >         sprintf(tmp, "PCI %s PE %d PORT %d", str, pe, port);
+> >         name = memblock_alloc(strlen(tmp) + 1, SMP_CACHE_BYTES);
+> > +       if (!name)
+> > +               panic("%s: Failed to allocate %lu bytes\n", __func__,
+> 
+> %zu, as strlen() returns size_t.
+
+Thanks for spotting it, will fix.
+
+> > +                     strlen(tmp) + 1);
+> >         strcpy(name, tmp);
+> >
+> >         return name;
+> > @@ -118,6 +121,9 @@ alloc_io7(unsigned int pe)
+> >         }
+> >
+> >         io7 = memblock_alloc(sizeof(*io7), SMP_CACHE_BYTES);
+> > +       if (!io7)
+> > +               panic("%s: Failed to allocate %lu bytes\n", __func__,
+> 
+> %zu, as sizeof() returns size_t.
+> Probably there are more. Yes, it's hard to get them right in all callers.
+
+Yeah :)
+ 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
+> -- 
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
+> 
+
+-- 
+Sincerely yours,
+Mike.
+
 
