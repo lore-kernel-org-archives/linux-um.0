@@ -1,35 +1,181 @@
-Return-Path: <davem@davemloft.net>
-Date: Wed, 16 Jan 2019 09:21:47 -0800 (PST)
-Message-Id: <20190116.092147.2222967221278304230.davem@davemloft.net>
-Subject: Re: [PATCH 15/21] sparc: add checks for the return value of
- memblock_alloc*()
-From: David Miller <davem@davemloft.net>
-In-Reply-To: <1547646261-32535-16-git-send-email-rppt@linux.ibm.com>
+Return-Path: <rppt@linux.ibm.com>
+From: Mike Rapoport <rppt@linux.ibm.com>
+Subject: [PATCH 15/21] sparc: add checks for the return value of memblock_alloc*()
+Date: Wed, 16 Jan 2019 15:44:15 +0200
+In-Reply-To: <1547646261-32535-1-git-send-email-rppt@linux.ibm.com>
 References: <1547646261-32535-1-git-send-email-rppt@linux.ibm.com>
-	<1547646261-32535-16-git-send-email-rppt@linux.ibm.com>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-To: rppt@linux.ibm.com
-Cc: linux-mm@kvack.org, akpm@linux-foundation.org, catalin.marinas@arm.com, hch@lst.de, dennis@kernel.org, geert@linux-m68k.org, green.hu@gmail.com, gregkh@linuxfoundation.org, gxt@pku.edu.cn, guoren@kernel.org, heiko.carstens@de.ibm.com, msalter@redhat.com, mattst88@gmail.com, jcmvbkbc@gmail.com, mpe@ellerman.id.au, monstr@monstr.eu, paul.burton@mips.com, pmladek@suse.com, dalias@libc.org, richard@nod.at, robh+dt@kernel.org, linux@armlinux.org.uk, shorne@gmail.com, tony.luck@intel.com, vgupta@synopsys.com, ysato@users.sourceforge.jp, devicetree@vger.kernel.org, kasan-dev@googlegroups.com, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-usb@vger.kernel.org, linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, x86@kernel.org, xen-devel@lists.xenproject.org
+Message-Id: <1547646261-32535-16-git-send-email-rppt@linux.ibm.com>
+To: linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, Christoph Hellwig <hch@lst.de>, "David S. Miller" <davem@davemloft.net>, Dennis Zhou <dennis@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, Paul Burton <paul.burton@mips.com>, Petr Mladek <pmladek@suse.com>, Rich Felker <dalias@libc.org>, Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, devicetree@vger.kernel.org, kasan-dev@googlegroups.com, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-usb@vger.kernel.org, linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, x86@kernel.org, xen-devel@lists.xenproject.org, Mike Rapoport <rppt@linux.ibm.com>
 List-ID: <linux-um.lists.infradead.org>
 
-From: Mike Rapoport <rppt@linux.ibm.com>
-Date: Wed, 16 Jan 2019 15:44:15 +0200
+Add panic() calls if memblock_alloc*() returns NULL.
 
-> Add panic() calls if memblock_alloc*() returns NULL.
-> 
-> Most of the changes are simply addition of
-> 
->         if(!ptr)
->                 panic();
-> 
-> statements after the calls to memblock_alloc*() variants.
-> 
-> Exceptions are pcpu_populate_pte() and kernel_map_range() that were
-> slightly refactored to accommodate the change.
-> 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Most of the changes are simply addition of
 
-Acked-by: David S. Miller <davem@davemloft.net>
+        if(!ptr)
+                panic();
+
+statements after the calls to memblock_alloc*() variants.
+
+Exceptions are pcpu_populate_pte() and kernel_map_range() that were
+slightly refactored to accommodate the change.
+
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+---
+ arch/sparc/kernel/prom_32.c  |  2 ++
+ arch/sparc/kernel/setup_64.c |  6 ++++++
+ arch/sparc/kernel/smp_64.c   | 12 ++++++++++++
+ arch/sparc/mm/init_64.c      | 11 +++++++++++
+ arch/sparc/mm/srmmu.c        |  8 ++++++++
+ 5 files changed, 39 insertions(+)
+
+diff --git a/arch/sparc/kernel/prom_32.c b/arch/sparc/kernel/prom_32.c
+index e7126ca..869b16c 100644
+--- a/arch/sparc/kernel/prom_32.c
++++ b/arch/sparc/kernel/prom_32.c
+@@ -33,6 +33,8 @@ void * __init prom_early_alloc(unsigned long size)
+ 	void *ret;
+ 
+ 	ret = memblock_alloc(size, SMP_CACHE_BYTES);
++	if (!ret)
++		panic("%s: Failed to allocate %lu bytes\n", __func__, size);
+ 
+ 	prom_early_allocated += size;
+ 
+diff --git a/arch/sparc/kernel/setup_64.c b/arch/sparc/kernel/setup_64.c
+index 51c4d12..fd2182a 100644
+--- a/arch/sparc/kernel/setup_64.c
++++ b/arch/sparc/kernel/setup_64.c
+@@ -624,8 +624,14 @@ void __init alloc_irqstack_bootmem(void)
+ 
+ 		softirq_stack[i] = memblock_alloc_node(THREAD_SIZE,
+ 						       THREAD_SIZE, node);
++		if (!softirq_stack[i])
++			panic("%s: Failed to allocate %lu bytes align=%lx nid=%d\n",
++			      __func__, THREAD_SIZE, THREAD_SIZE, node);
+ 		hardirq_stack[i] = memblock_alloc_node(THREAD_SIZE,
+ 						       THREAD_SIZE, node);
++		if (!hardirq_stack[i])
++			panic("%s: Failed to allocate %lu bytes align=%lx nid=%d\n",
++			      __func__, THREAD_SIZE, THREAD_SIZE, node);
+ 	}
+ }
+ 
+diff --git a/arch/sparc/kernel/smp_64.c b/arch/sparc/kernel/smp_64.c
+index f45d876..a8275fe 100644
+--- a/arch/sparc/kernel/smp_64.c
++++ b/arch/sparc/kernel/smp_64.c
+@@ -1628,6 +1628,8 @@ static void __init pcpu_populate_pte(unsigned long addr)
+ 		pud_t *new;
+ 
+ 		new = memblock_alloc_from(PAGE_SIZE, PAGE_SIZE, PAGE_SIZE);
++		if (!new)
++			goto err_alloc;
+ 		pgd_populate(&init_mm, pgd, new);
+ 	}
+ 
+@@ -1636,6 +1638,8 @@ static void __init pcpu_populate_pte(unsigned long addr)
+ 		pmd_t *new;
+ 
+ 		new = memblock_alloc_from(PAGE_SIZE, PAGE_SIZE, PAGE_SIZE);
++		if (!new)
++			goto err_alloc;
+ 		pud_populate(&init_mm, pud, new);
+ 	}
+ 
+@@ -1644,8 +1648,16 @@ static void __init pcpu_populate_pte(unsigned long addr)
+ 		pte_t *new;
+ 
+ 		new = memblock_alloc_from(PAGE_SIZE, PAGE_SIZE, PAGE_SIZE);
++		if (!new)
++			goto err_alloc;
+ 		pmd_populate_kernel(&init_mm, pmd, new);
+ 	}
++
++	return;
++
++err_alloc:
++	panic("%s: Failed to allocate %lu bytes align=%lx from=%lx\n",
++	      __func__, PAGE_SIZE, PAGE_SIZE, PAGE_SIZE);
+ }
+ 
+ void __init setup_per_cpu_areas(void)
+diff --git a/arch/sparc/mm/init_64.c b/arch/sparc/mm/init_64.c
+index ef340e8..f2d70ff 100644
+--- a/arch/sparc/mm/init_64.c
++++ b/arch/sparc/mm/init_64.c
+@@ -1809,6 +1809,8 @@ static unsigned long __ref kernel_map_range(unsigned long pstart,
+ 
+ 			new = memblock_alloc_from(PAGE_SIZE, PAGE_SIZE,
+ 						  PAGE_SIZE);
++			if (!new)
++				goto err_alloc;
+ 			alloc_bytes += PAGE_SIZE;
+ 			pgd_populate(&init_mm, pgd, new);
+ 		}
+@@ -1822,6 +1824,8 @@ static unsigned long __ref kernel_map_range(unsigned long pstart,
+ 			}
+ 			new = memblock_alloc_from(PAGE_SIZE, PAGE_SIZE,
+ 						  PAGE_SIZE);
++			if (!new)
++				goto err_alloc;
+ 			alloc_bytes += PAGE_SIZE;
+ 			pud_populate(&init_mm, pud, new);
+ 		}
+@@ -1836,6 +1840,8 @@ static unsigned long __ref kernel_map_range(unsigned long pstart,
+ 			}
+ 			new = memblock_alloc_from(PAGE_SIZE, PAGE_SIZE,
+ 						  PAGE_SIZE);
++			if (!new)
++				goto err_alloc;
+ 			alloc_bytes += PAGE_SIZE;
+ 			pmd_populate_kernel(&init_mm, pmd, new);
+ 		}
+@@ -1855,6 +1861,11 @@ static unsigned long __ref kernel_map_range(unsigned long pstart,
+ 	}
+ 
+ 	return alloc_bytes;
++
++err_alloc:
++	panic("%s: Failed to allocate %lu bytes align=%lx from=%lx\n",
++	      __func__, PAGE_SIZE, PAGE_SIZE, PAGE_SIZE);
++	return -ENOMEM;
+ }
+ 
+ static void __init flush_all_kernel_tsbs(void)
+diff --git a/arch/sparc/mm/srmmu.c b/arch/sparc/mm/srmmu.c
+index a400ec3..aaebbc0 100644
+--- a/arch/sparc/mm/srmmu.c
++++ b/arch/sparc/mm/srmmu.c
+@@ -305,11 +305,17 @@ static void __init srmmu_nocache_init(void)
+ 
+ 	srmmu_nocache_pool = memblock_alloc(srmmu_nocache_size,
+ 					    SRMMU_NOCACHE_ALIGN_MAX);
++	if (!srmmu_nocache_pool)
++		panic("%s: Failed to allocate %lu bytes align=0x%x\n",
++		      __func__, srmmu_nocache_size, SRMMU_NOCACHE_ALIGN_MAX);
+ 	memset(srmmu_nocache_pool, 0, srmmu_nocache_size);
+ 
+ 	srmmu_nocache_bitmap =
+ 		memblock_alloc(BITS_TO_LONGS(bitmap_bits) * sizeof(long),
+ 			       SMP_CACHE_BYTES);
++	if (!srmmu_nocache_bitmap)
++		panic("%s: Failed to allocate %zu bytes\n", __func__,
++		      BITS_TO_LONGS(bitmap_bits) * sizeof(long));
+ 	bit_map_init(&srmmu_nocache_map, srmmu_nocache_bitmap, bitmap_bits);
+ 
+ 	srmmu_swapper_pg_dir = __srmmu_get_nocache(SRMMU_PGD_TABLE_SIZE, SRMMU_PGD_TABLE_SIZE);
+@@ -468,6 +474,8 @@ static void __init sparc_context_init(int numctx)
+ 
+ 	size = numctx * sizeof(struct ctx_list);
+ 	ctx_list_pool = memblock_alloc(size, SMP_CACHE_BYTES);
++	if (!ctx_list_pool)
++		panic("%s: Failed to allocate %lu bytes\n", __func__, size);
+ 
+ 	for (ctx = 0; ctx < numctx; ctx++) {
+ 		struct ctx_list *clist;
+-- 
+2.7.4
+
 
