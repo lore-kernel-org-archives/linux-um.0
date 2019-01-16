@@ -1,43 +1,81 @@
-Return-Path: <jgross@suse.com>
-Subject: Re: [Xen-devel] [PATCH 19/21] treewide: add checks for the return
- value of memblock_alloc*()
-References: <1547646261-32535-1-git-send-email-rppt@linux.ibm.com>
- <1547646261-32535-20-git-send-email-rppt@linux.ibm.com>
-From: Juergen Gross <jgross@suse.com>
-Message-ID: <1c04fc81-7e7c-9b4a-cab2-c9b023e1a3b1@suse.com>
-Date: Wed, 16 Jan 2019 15:32:03 +0100
 MIME-Version: 1.0
+Date: Wed, 16 Jan 2019 15:27:35 +0100
+References: <1547646261-32535-1-git-send-email-rppt@linux.ibm.com>
+	<1547646261-32535-20-git-send-email-rppt@linux.ibm.com>
 In-Reply-To: <1547646261-32535-20-git-send-email-rppt@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: 7bit
-To: Mike Rapoport <rppt@linux.ibm.com>, linux-mm@kvack.org
-Cc: Rich Felker <dalias@libc.org>, linux-ia64@vger.kernel.org, devicetree@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, x86@kernel.org, linux-mips@vger.kernel.org, Max Filippov <jcmvbkbc@gmail.com>, Guo Ren <guoren@kernel.org>, sparclinux@vger.kernel.org, Christoph Hellwig <hch@lst.de>, linux-s390@vger.kernel.org, linux-c6x-dev@linux-c6x.org, Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Weinberger <richard@nod.at>, linux-sh@vger.kernel.org, Russell King <linux@armlinux.org.uk>, kasan-dev@googlegroups.com, Geert Uytterhoeven <geert@linux-m68k.org>, Mark Salter <msalter@redhat.com>, Dennis Zhou <dennis@kernel.org>, Matt Turner <mattst88@gmail.com>, linux-snps-arc@lists.infradead.org, uclinux-h8-devel@lists.sourceforge.jp, Petr Mladek <pmladek@suse.com>, linux-xtensa@linux-xtensa.org, linux-alpha@vger.kernel.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, Rob Herring <robh+dt@kernel.org>, Greentime Hu <green.hu@gmail.com>, xen-devel@lists.xenproject.org, Stafford Horne <shorne@gmail.com>, Guan Xuetao <gxt@pku.edu.cn>, linux-arm-kernel@lists.infradead.org, Michal Simek <monstr@monstr.eu>, Tony Luck <tony.luck@intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, Paul Burton <paul.burton@mips.com>, Vineet Gupta <vgupta@synopsys.com>, Michael Ellerman <mpe@ellerman.id.au>, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org, "David S. Miller" <davem@davemloft.net>, openrisc@lists.librecores.org
+Message-ID: <CAMuHMdWKPj-2Let44rmaVwh-b6kkGg+0cFPQ-+3k9LP86pB7NA@mail.gmail.com>
+Subject: Re: [PATCH 19/21] treewide: add checks for the return value of memblock_alloc*()
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+To: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Linux MM <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, Christoph Hellwig <hch@lst.de>, "David S. Miller" <davem@davemloft.net>, Dennis Zhou <dennis@kernel.org>, Greentime Hu <green.hu@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, Paul Burton <paul.burton@mips.com>, Petr Mladek <pmladek@suse.com>, Rich Felker <dalias@libc.org>, Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, kasan-dev@googlegroups.com, alpha <linux-alpha@vger.kernel.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-c6x-dev@linux-c6x.org, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, linux-mips@vger.kernel.org, linux-s390 <linux-s390@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, arcml <linux-snps-arc@lists.infradead.org>, linux-um@lists.infradead.org, USB list <linux-usb@vger.kernel.org>, linux-xtensa@linux-xtensa.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, Openrisc <openrisc@lists.librecores.org>, sparclinux <sparclinux@vger.kernel.org>, "moderated list:H8/300 ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>, the arch/x86 maintainers <x86@kernel.org>, xen-devel@lists.xenproject.org, Mike Rapoport <rppt@linux.ibm.com>
 List-ID: <linux-um.lists.infradead.org>
 
-On 16/01/2019 14:44, Mike Rapoport wrote:
+Hi Mike,
+
+On Wed, Jan 16, 2019 at 2:46 PM Mike Rapoport <rppt@linux.ibm.com> wrote:
 > Add check for the return value of memblock_alloc*() functions and call
 > panic() in case of error.
 > The panic message repeats the one used by panicing memblock allocators with
 > adjustment of parameters to include only relevant ones.
-> 
+>
 > The replacement was mostly automated with semantic patches like the one
 > below with manual massaging of format strings.
-> 
+>
 > @@
 > expression ptr, size, align;
 > @@
 > ptr = memblock_alloc(size, align);
 > + if (!ptr)
-> + 	panic("%s: Failed to allocate %lu bytes align=0x%lx\n", __func__,
+> +       panic("%s: Failed to allocate %lu bytes align=0x%lx\n", __func__,
+
+In general, you want to use %zu for size_t
+
 > size, align);
-> 
+>
 > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 
-For the Xen part:
+Thanks for your patch!
 
-Reviewed-by: Juergen Gross <jgross@suse.com>
+>  74 files changed, 415 insertions(+), 29 deletions(-)
 
+I'm wondering if this is really an improvement?
+For the normal memory allocator, the trend is to remove printing of errors
+from all callers, as the core takes care of that.
 
-Juergen
+> --- a/arch/alpha/kernel/core_marvel.c
+> +++ b/arch/alpha/kernel/core_marvel.c
+> @@ -83,6 +83,9 @@ mk_resource_name(int pe, int port, char *str)
+>
+>         sprintf(tmp, "PCI %s PE %d PORT %d", str, pe, port);
+>         name = memblock_alloc(strlen(tmp) + 1, SMP_CACHE_BYTES);
+> +       if (!name)
+> +               panic("%s: Failed to allocate %lu bytes\n", __func__,
+
+%zu, as strlen() returns size_t.
+
+> +                     strlen(tmp) + 1);
+>         strcpy(name, tmp);
+>
+>         return name;
+> @@ -118,6 +121,9 @@ alloc_io7(unsigned int pe)
+>         }
+>
+>         io7 = memblock_alloc(sizeof(*io7), SMP_CACHE_BYTES);
+> +       if (!io7)
+> +               panic("%s: Failed to allocate %lu bytes\n", __func__,
+
+%zu, as sizeof() returns size_t.
+Probably there are more. Yes, it's hard to get them right in all callers.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
