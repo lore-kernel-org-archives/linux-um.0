@@ -1,46 +1,107 @@
-MIME-Version: 1.0
-Date: Wed, 16 Jan 2019 15:17:22 +0100
+Return-Path: <rppt@linux.ibm.com>
+From: Mike Rapoport <rppt@linux.ibm.com>
+Subject: [PATCH 13/21] arch: don't memset(0) memory returned by memblock_alloc()
+Date: Wed, 16 Jan 2019 15:44:13 +0200
+In-Reply-To: <1547646261-32535-1-git-send-email-rppt@linux.ibm.com>
 References: <1547646261-32535-1-git-send-email-rppt@linux.ibm.com>
-	<1547646261-32535-14-git-send-email-rppt@linux.ibm.com>
-In-Reply-To: <1547646261-32535-14-git-send-email-rppt@linux.ibm.com>
-Message-ID: <CAMuHMdXt8fPgAGp3KPGM=qVT_QzU=FJS7f5XUbK2hGXYdE9Yeg@mail.gmail.com>
-Subject: Re: [PATCH 13/21] arch: don't memset(0) memory returned by memblock_alloc()
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-To: Mike Rapoport <rppt@linux.ibm.com>
-Cc: Linux MM <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, Christoph Hellwig <hch@lst.de>, "David S. Miller" <davem@davemloft.net>, Dennis Zhou <dennis@kernel.org>, Greentime Hu <green.hu@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, Paul Burton <paul.burton@mips.com>, Petr Mladek <pmladek@suse.com>, Rich Felker <dalias@libc.org>, Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, kasan-dev@googlegroups.com, alpha <linux-alpha@vger.kernel.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-c6x-dev@linux-c6x.org, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, linux-mips@vger.kernel.org, linux-s390 <linux-s390@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, arcml <linux-snps-arc@lists.infradead.org>, linux-um@lists.infradead.org, USB list <linux-usb@vger.kernel.org>, linux-xtensa@linux-xtensa.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, Openrisc <openrisc@lists.librecores.org>, sparclinux <sparclinux@vger.kernel.org>, "moderated list:H8/300 ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>, the arch/x86 maintainers <x86@kernel.org>, xen-devel@lists.xenproject.org, Mike Rapoport <rppt@linux.ibm.com>, Greg Ungerer <gerg@linux-m68k.org>
+Message-Id: <1547646261-32535-14-git-send-email-rppt@linux.ibm.com>
+To: linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, Christoph Hellwig <hch@lst.de>, "David S. Miller" <davem@davemloft.net>, Dennis Zhou <dennis@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, Paul Burton <paul.burton@mips.com>, Petr Mladek <pmladek@suse.com>, Rich Felker <dalias@libc.org>, Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, devicetree@vger.kernel.org, kasan-dev@googlegroups.com, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-usb@vger.kernel.org, linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, x86@kernel.org, xen-devel@lists.xenproject.org, Mike Rapoport <rppt@linux.ibm.com>
 List-ID: <linux-um.lists.infradead.org>
 
-On Wed, Jan 16, 2019 at 2:45 PM Mike Rapoport <rppt@linux.ibm.com> wrote:
-> memblock_alloc() already clears the allocated memory, no point in doing it
-> twice.
->
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+memblock_alloc() already clears the allocated memory, no point in doing it
+twice.
 
->  arch/m68k/mm/mcfmmu.c       | 1 -
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+---
+ arch/c6x/mm/init.c          | 1 -
+ arch/h8300/mm/init.c        | 1 -
+ arch/ia64/kernel/mca.c      | 2 --
+ arch/m68k/mm/mcfmmu.c       | 1 -
+ arch/microblaze/mm/init.c   | 6 ++----
+ arch/sparc/kernel/prom_32.c | 2 --
+ 6 files changed, 2 insertions(+), 11 deletions(-)
 
-For m68k part:
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-> --- a/arch/m68k/mm/mcfmmu.c
-> +++ b/arch/m68k/mm/mcfmmu.c
-> @@ -44,7 +44,6 @@ void __init paging_init(void)
->         int i;
->
->         empty_zero_page = (void *) memblock_alloc(PAGE_SIZE, PAGE_SIZE);
-> -       memset((void *) empty_zero_page, 0, PAGE_SIZE);
->
->         pg_dir = swapper_pg_dir;
->         memset(swapper_pg_dir, 0, sizeof(swapper_pg_dir));
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/arch/c6x/mm/init.c b/arch/c6x/mm/init.c
+index af5ada0..e83c046 100644
+--- a/arch/c6x/mm/init.c
++++ b/arch/c6x/mm/init.c
+@@ -40,7 +40,6 @@ void __init paging_init(void)
+ 
+ 	empty_zero_page      = (unsigned long) memblock_alloc(PAGE_SIZE,
+ 							      PAGE_SIZE);
+-	memset((void *)empty_zero_page, 0, PAGE_SIZE);
+ 
+ 	/*
+ 	 * Set up user data space
+diff --git a/arch/h8300/mm/init.c b/arch/h8300/mm/init.c
+index 6519252..a157890 100644
+--- a/arch/h8300/mm/init.c
++++ b/arch/h8300/mm/init.c
+@@ -68,7 +68,6 @@ void __init paging_init(void)
+ 	 * to a couple of allocated pages.
+ 	 */
+ 	empty_zero_page = (unsigned long)memblock_alloc(PAGE_SIZE, PAGE_SIZE);
+-	memset((void *)empty_zero_page, 0, PAGE_SIZE);
+ 
+ 	/*
+ 	 * Set up SFC/DFC registers (user data space).
+diff --git a/arch/ia64/kernel/mca.c b/arch/ia64/kernel/mca.c
+index 74d148b..370bc34 100644
+--- a/arch/ia64/kernel/mca.c
++++ b/arch/ia64/kernel/mca.c
+@@ -400,8 +400,6 @@ ia64_log_init(int sal_info_type)
+ 
+ 	// set up OS data structures to hold error info
+ 	IA64_LOG_ALLOCATE(sal_info_type, max_size);
+-	memset(IA64_LOG_CURR_BUFFER(sal_info_type), 0, max_size);
+-	memset(IA64_LOG_NEXT_BUFFER(sal_info_type), 0, max_size);
+ }
+ 
+ /*
+diff --git a/arch/m68k/mm/mcfmmu.c b/arch/m68k/mm/mcfmmu.c
+index 0de4999..492f953 100644
+--- a/arch/m68k/mm/mcfmmu.c
++++ b/arch/m68k/mm/mcfmmu.c
+@@ -44,7 +44,6 @@ void __init paging_init(void)
+ 	int i;
+ 
+ 	empty_zero_page = (void *) memblock_alloc(PAGE_SIZE, PAGE_SIZE);
+-	memset((void *) empty_zero_page, 0, PAGE_SIZE);
+ 
+ 	pg_dir = swapper_pg_dir;
+ 	memset(swapper_pg_dir, 0, sizeof(swapper_pg_dir));
+diff --git a/arch/microblaze/mm/init.c b/arch/microblaze/mm/init.c
+index 44f4b89..bd1cd4b 100644
+--- a/arch/microblaze/mm/init.c
++++ b/arch/microblaze/mm/init.c
+@@ -376,10 +376,8 @@ void * __ref zalloc_maybe_bootmem(size_t size, gfp_t mask)
+ 
+ 	if (mem_init_done)
+ 		p = kzalloc(size, mask);
+-	else {
++	else
+ 		p = memblock_alloc(size, SMP_CACHE_BYTES);
+-		if (p)
+-			memset(p, 0, size);
+-	}
++
+ 	return p;
+ }
+diff --git a/arch/sparc/kernel/prom_32.c b/arch/sparc/kernel/prom_32.c
+index 38940af..e7126ca 100644
+--- a/arch/sparc/kernel/prom_32.c
++++ b/arch/sparc/kernel/prom_32.c
+@@ -33,8 +33,6 @@ void * __init prom_early_alloc(unsigned long size)
+ 	void *ret;
+ 
+ 	ret = memblock_alloc(size, SMP_CACHE_BYTES);
+-	if (ret != NULL)
+-		memset(ret, 0, size);
+ 
+ 	prom_early_allocated += size;
+ 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.7.4
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
 
