@@ -1,151 +1,198 @@
 Return-Path: <rppt@linux.ibm.com>
 From: Mike Rapoport <rppt@linux.ibm.com>
-Subject: [PATCH 16/21] mm/percpu: add checks for the return value of memblock_alloc*()
-Date: Wed, 16 Jan 2019 15:44:16 +0200
-In-Reply-To: <1547646261-32535-1-git-send-email-rppt@linux.ibm.com>
-References: <1547646261-32535-1-git-send-email-rppt@linux.ibm.com>
-Message-Id: <1547646261-32535-17-git-send-email-rppt@linux.ibm.com>
+Subject: [PATCH v2 00/21] Refine memblock API
+Date: Mon, 21 Jan 2019 10:03:47 +0200
+Message-Id: <1548057848-15136-1-git-send-email-rppt@linux.ibm.com>
 To: linux-mm@kvack.org
 Cc: Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, Christoph Hellwig <hch@lst.de>, "David S. Miller" <davem@davemloft.net>, Dennis Zhou <dennis@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, Paul Burton <paul.burton@mips.com>, Petr Mladek <pmladek@suse.com>, Rich Felker <dalias@libc.org>, Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, devicetree@vger.kernel.org, kasan-dev@googlegroups.com, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-usb@vger.kernel.org, linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, x86@kernel.org, xen-devel@lists.xenproject.org, Mike Rapoport <rppt@linux.ibm.com>
 List-ID: <linux-um.lists.infradead.org>
 
-Add panic() calls if memblock_alloc() returns NULL.
+Hi,
 
-The panic() format duplicates the one used by memblock itself and in order
-to avoid explosion with long parameters list replace open coded allocation
-size calculations with a local variable.
+Current memblock API is quite extensive and, which is more annoying,
+duplicated. Except the low-level functions that allow searching for a free
+memory region and marking it as reserved, memblock provides three (well,
+two and a half) sets of functions to allocate memory. There are several
+overlapping functions that return a physical address and there are
+functions that return virtual address. Those that return the virtual
+address may also clear the allocated memory. And, on top of all that, some
+allocators panic and some return NULL in case of error.
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- mm/percpu.c | 73 +++++++++++++++++++++++++++++++++++++++++++++++--------------
- 1 file changed, 56 insertions(+), 17 deletions(-)
+This set tries to reduce the mess, and trim down the amount of memblock
+allocation methods.
 
-diff --git a/mm/percpu.c b/mm/percpu.c
-index db86282..5998b03 100644
---- a/mm/percpu.c
-+++ b/mm/percpu.c
-@@ -1086,6 +1086,7 @@ static struct pcpu_chunk * __init pcpu_alloc_first_chunk(unsigned long tmp_addr,
- 	struct pcpu_chunk *chunk;
- 	unsigned long aligned_addr, lcm_align;
- 	int start_offset, offset_bits, region_size, region_bits;
-+	size_t alloc_size;
- 
- 	/* region calculations */
- 	aligned_addr = tmp_addr & PAGE_MASK;
-@@ -1101,9 +1102,12 @@ static struct pcpu_chunk * __init pcpu_alloc_first_chunk(unsigned long tmp_addr,
- 	region_size = ALIGN(start_offset + map_size, lcm_align);
- 
- 	/* allocate chunk */
--	chunk = memblock_alloc(sizeof(struct pcpu_chunk) +
--			       BITS_TO_LONGS(region_size >> PAGE_SHIFT),
--			       SMP_CACHE_BYTES);
-+	alloc_size = sizeof(struct pcpu_chunk) +
-+		BITS_TO_LONGS(region_size >> PAGE_SHIFT);
-+	chunk = memblock_alloc(alloc_size, SMP_CACHE_BYTES);
-+	if (!chunk)
-+		panic("%s: Failed to allocate %zu bytes\n", __func__,
-+		      alloc_size);
- 
- 	INIT_LIST_HEAD(&chunk->list);
- 
-@@ -1114,12 +1118,25 @@ static struct pcpu_chunk * __init pcpu_alloc_first_chunk(unsigned long tmp_addr,
- 	chunk->nr_pages = region_size >> PAGE_SHIFT;
- 	region_bits = pcpu_chunk_map_bits(chunk);
- 
--	chunk->alloc_map = memblock_alloc(BITS_TO_LONGS(region_bits) * sizeof(chunk->alloc_map[0]),
--					  SMP_CACHE_BYTES);
--	chunk->bound_map = memblock_alloc(BITS_TO_LONGS(region_bits + 1) * sizeof(chunk->bound_map[0]),
--					  SMP_CACHE_BYTES);
--	chunk->md_blocks = memblock_alloc(pcpu_chunk_nr_blocks(chunk) * sizeof(chunk->md_blocks[0]),
--					  SMP_CACHE_BYTES);
-+	alloc_size = BITS_TO_LONGS(region_bits) * sizeof(chunk->alloc_map[0]);
-+	chunk->alloc_map = memblock_alloc(alloc_size, SMP_CACHE_BYTES);
-+	if (!chunk->alloc_map)
-+		panic("%s: Failed to allocate %zu bytes\n", __func__,
-+		      alloc_size);
-+
-+	alloc_size =
-+		BITS_TO_LONGS(region_bits + 1) * sizeof(chunk->bound_map[0]);
-+	chunk->bound_map = memblock_alloc(alloc_size, SMP_CACHE_BYTES);
-+	if (!chunk->bound_map)
-+		panic("%s: Failed to allocate %zu bytes\n", __func__,
-+		      alloc_size);
-+
-+	alloc_size = pcpu_chunk_nr_blocks(chunk) * sizeof(chunk->md_blocks[0]);
-+	chunk->md_blocks = memblock_alloc(alloc_size, SMP_CACHE_BYTES);
-+	if (!chunk->md_blocks)
-+		panic("%s: Failed to allocate %zu bytes\n", __func__,
-+		      alloc_size);
-+
- 	pcpu_init_md_blocks(chunk);
- 
- 	/* manage populated page bitmap */
-@@ -2044,6 +2061,7 @@ int __init pcpu_setup_first_chunk(const struct pcpu_alloc_info *ai,
- 	int group, unit, i;
- 	int map_size;
- 	unsigned long tmp_addr;
-+	size_t alloc_size;
- 
- #define PCPU_SETUP_BUG_ON(cond)	do {					\
- 	if (unlikely(cond)) {						\
-@@ -2075,14 +2093,29 @@ int __init pcpu_setup_first_chunk(const struct pcpu_alloc_info *ai,
- 	PCPU_SETUP_BUG_ON(pcpu_verify_alloc_info(ai) < 0);
- 
- 	/* process group information and build config tables accordingly */
--	group_offsets = memblock_alloc(ai->nr_groups * sizeof(group_offsets[0]),
--				       SMP_CACHE_BYTES);
--	group_sizes = memblock_alloc(ai->nr_groups * sizeof(group_sizes[0]),
--				     SMP_CACHE_BYTES);
--	unit_map = memblock_alloc(nr_cpu_ids * sizeof(unit_map[0]),
--				  SMP_CACHE_BYTES);
--	unit_off = memblock_alloc(nr_cpu_ids * sizeof(unit_off[0]),
--				  SMP_CACHE_BYTES);
-+	alloc_size = ai->nr_groups * sizeof(group_offsets[0]);
-+	group_offsets = memblock_alloc(alloc_size, SMP_CACHE_BYTES);
-+	if (!group_offsets)
-+		panic("%s: Failed to allocate %zu bytes\n", __func__,
-+		      alloc_size);
-+
-+	alloc_size = ai->nr_groups * sizeof(group_sizes[0]);
-+	group_sizes = memblock_alloc(alloc_size, SMP_CACHE_BYTES);
-+	if (!group_sizes)
-+		panic("%s: Failed to allocate %zu bytes\n", __func__,
-+		      alloc_size);
-+
-+	alloc_size = nr_cpu_ids * sizeof(unit_map[0]);
-+	unit_map = memblock_alloc(alloc_size, SMP_CACHE_BYTES);
-+	if (!unit_map)
-+		panic("%s: Failed to allocate %zu bytes\n", __func__,
-+		      alloc_size);
-+
-+	alloc_size = nr_cpu_ids * sizeof(unit_off[0]);
-+	unit_off = memblock_alloc(alloc_size, SMP_CACHE_BYTES);
-+	if (!unit_off)
-+		panic("%s: Failed to allocate %zu bytes\n", __func__,
-+		      alloc_size);
- 
- 	for (cpu = 0; cpu < nr_cpu_ids; cpu++)
- 		unit_map[cpu] = UINT_MAX;
-@@ -2148,6 +2181,9 @@ int __init pcpu_setup_first_chunk(const struct pcpu_alloc_info *ai,
- 	pcpu_nr_slots = __pcpu_size_to_slot(pcpu_unit_size) + 2;
- 	pcpu_slot = memblock_alloc(pcpu_nr_slots * sizeof(pcpu_slot[0]),
- 				   SMP_CACHE_BYTES);
-+	if (!pcpu_slot)
-+		panic("%s: Failed to allocate %zu bytes\n", __func__,
-+		      pcpu_nr_slots * sizeof(pcpu_slot[0]));
- 	for (i = 0; i < pcpu_nr_slots; i++)
- 		INIT_LIST_HEAD(&pcpu_slot[i]);
- 
-@@ -2602,6 +2638,9 @@ int __init pcpu_page_first_chunk(size_t reserved_size,
- 	pages_size = PFN_ALIGN(unit_pages * num_possible_cpus() *
- 			       sizeof(pages[0]));
- 	pages = memblock_alloc(pages_size, SMP_CACHE_BYTES);
-+	if (!pages)
-+		panic("%s: Failed to allocate %zu bytes\n", __func__,
-+		      pages_size);
- 
- 	/* allocate pages */
- 	j = 0;
+Patches 1-10 consolidate the functions that return physical address of
+the allocated memory
+
+Patches 11-13 are some trivial cleanups
+
+Patches 14-19 add checks for the return value of memblock_alloc*() and
+panics in case of errors. The patches 14-18 include some minor refactoring
+to have better readability of the resulting code and patch 19 is a
+mechanical addition of
+
+	if (!ptr)
+		panic();
+
+after memblock_alloc*() calls.
+
+And, finally, patches 20 and 21 remove panic() calls memblock and _nopanic
+variants from memblock.
+
+v2 changes:
+* replace some more %lu with %zu
+* remove panics where they are not needed in s390 and in printk
+* collect Acked-by and Reviewed-by.
+
+
+Christophe Leroy (1):
+  powerpc: use memblock functions returning virtual address
+
+Mike Rapoport (20):
+  openrisc: prefer memblock APIs returning virtual address
+  memblock: replace memblock_alloc_base(ANYWHERE) with memblock_phys_alloc
+  memblock: drop memblock_alloc_base_nid()
+  memblock: emphasize that memblock_alloc_range() returns a physical address
+  memblock: memblock_phys_alloc_try_nid(): don't panic
+  memblock: memblock_phys_alloc(): don't panic
+  memblock: drop __memblock_alloc_base()
+  memblock: drop memblock_alloc_base()
+  memblock: refactor internal allocation functions
+  memblock: make memblock_find_in_range_node() and choose_memblock_flags() static
+  arch: use memblock_alloc() instead of memblock_alloc_from(size, align, 0)
+  arch: don't memset(0) memory returned by memblock_alloc()
+  ia64: add checks for the return value of memblock_alloc*()
+  sparc: add checks for the return value of memblock_alloc*()
+  mm/percpu: add checks for the return value of memblock_alloc*()
+  init/main: add checks for the return value of memblock_alloc*()
+  swiotlb: add checks for the return value of memblock_alloc*()
+  treewide: add checks for the return value of memblock_alloc*()
+  memblock: memblock_alloc_try_nid: don't panic
+  memblock: drop memblock_alloc_*_nopanic() variants
+
+ arch/alpha/kernel/core_cia.c              |   5 +-
+ arch/alpha/kernel/core_marvel.c           |   6 +
+ arch/alpha/kernel/pci-noop.c              |  13 +-
+ arch/alpha/kernel/pci.c                   |  11 +-
+ arch/alpha/kernel/pci_iommu.c             |  16 +-
+ arch/alpha/kernel/setup.c                 |   2 +-
+ arch/arc/kernel/unwind.c                  |   3 +-
+ arch/arc/mm/highmem.c                     |   4 +
+ arch/arm/kernel/setup.c                   |   6 +
+ arch/arm/mm/init.c                        |   6 +-
+ arch/arm/mm/mmu.c                         |  14 +-
+ arch/arm64/kernel/setup.c                 |   8 +-
+ arch/arm64/mm/kasan_init.c                |  10 ++
+ arch/arm64/mm/mmu.c                       |   2 +
+ arch/arm64/mm/numa.c                      |   4 +
+ arch/c6x/mm/dma-coherent.c                |   4 +
+ arch/c6x/mm/init.c                        |   4 +-
+ arch/csky/mm/highmem.c                    |   5 +
+ arch/h8300/mm/init.c                      |   4 +-
+ arch/ia64/kernel/mca.c                    |  25 +--
+ arch/ia64/mm/contig.c                     |   8 +-
+ arch/ia64/mm/discontig.c                  |   4 +
+ arch/ia64/mm/init.c                       |  38 ++++-
+ arch/ia64/mm/tlb.c                        |   6 +
+ arch/ia64/sn/kernel/io_common.c           |   3 +
+ arch/ia64/sn/kernel/setup.c               |  12 +-
+ arch/m68k/atari/stram.c                   |   4 +
+ arch/m68k/mm/init.c                       |   3 +
+ arch/m68k/mm/mcfmmu.c                     |   7 +-
+ arch/m68k/mm/motorola.c                   |   9 ++
+ arch/m68k/mm/sun3mmu.c                    |   6 +
+ arch/m68k/sun3/sun3dvma.c                 |   3 +
+ arch/microblaze/mm/init.c                 |  10 +-
+ arch/mips/cavium-octeon/dma-octeon.c      |   3 +
+ arch/mips/kernel/setup.c                  |   3 +
+ arch/mips/kernel/traps.c                  |   5 +-
+ arch/mips/mm/init.c                       |   5 +
+ arch/nds32/mm/init.c                      |  12 ++
+ arch/openrisc/mm/init.c                   |   5 +-
+ arch/openrisc/mm/ioremap.c                |   8 +-
+ arch/powerpc/kernel/dt_cpu_ftrs.c         |   8 +-
+ arch/powerpc/kernel/irq.c                 |   5 -
+ arch/powerpc/kernel/paca.c                |   6 +-
+ arch/powerpc/kernel/pci_32.c              |   3 +
+ arch/powerpc/kernel/prom.c                |   5 +-
+ arch/powerpc/kernel/rtas.c                |   6 +-
+ arch/powerpc/kernel/setup-common.c        |   3 +
+ arch/powerpc/kernel/setup_32.c            |  26 ++--
+ arch/powerpc/kernel/setup_64.c            |   4 +
+ arch/powerpc/lib/alloc.c                  |   3 +
+ arch/powerpc/mm/hash_utils_64.c           |  11 +-
+ arch/powerpc/mm/mmu_context_nohash.c      |   9 ++
+ arch/powerpc/mm/numa.c                    |   4 +
+ arch/powerpc/mm/pgtable-book3e.c          |  12 +-
+ arch/powerpc/mm/pgtable-book3s64.c        |   3 +
+ arch/powerpc/mm/pgtable-radix.c           |   9 +-
+ arch/powerpc/mm/ppc_mmu_32.c              |   3 +
+ arch/powerpc/platforms/pasemi/iommu.c     |   3 +
+ arch/powerpc/platforms/powermac/nvram.c   |   3 +
+ arch/powerpc/platforms/powernv/opal.c     |   3 +
+ arch/powerpc/platforms/powernv/pci-ioda.c |   8 +
+ arch/powerpc/platforms/ps3/setup.c        |   3 +
+ arch/powerpc/sysdev/dart_iommu.c          |   3 +
+ arch/powerpc/sysdev/msi_bitmap.c          |   3 +
+ arch/s390/kernel/crash_dump.c             |   3 +
+ arch/s390/kernel/setup.c                  |  16 ++
+ arch/s390/kernel/smp.c                    |   9 +-
+ arch/s390/kernel/topology.c               |   6 +
+ arch/s390/numa/mode_emu.c                 |   3 +
+ arch/s390/numa/numa.c                     |   6 +-
+ arch/sh/boards/mach-ap325rxa/setup.c      |   5 +-
+ arch/sh/boards/mach-ecovec24/setup.c      |  10 +-
+ arch/sh/boards/mach-kfr2r09/setup.c       |   5 +-
+ arch/sh/boards/mach-migor/setup.c         |   5 +-
+ arch/sh/boards/mach-se/7724/setup.c       |  10 +-
+ arch/sh/kernel/machine_kexec.c            |   3 +-
+ arch/sh/mm/init.c                         |   8 +-
+ arch/sh/mm/numa.c                         |   4 +
+ arch/sparc/kernel/prom_32.c               |   6 +-
+ arch/sparc/kernel/setup_64.c              |   6 +
+ arch/sparc/kernel/smp_64.c                |  12 ++
+ arch/sparc/mm/init_32.c                   |   2 +-
+ arch/sparc/mm/init_64.c                   |  11 ++
+ arch/sparc/mm/srmmu.c                     |  18 ++-
+ arch/um/drivers/net_kern.c                |   3 +
+ arch/um/drivers/vector_kern.c             |   3 +
+ arch/um/kernel/initrd.c                   |   2 +
+ arch/um/kernel/mem.c                      |  16 ++
+ arch/unicore32/kernel/setup.c             |   4 +
+ arch/unicore32/mm/mmu.c                   |  15 +-
+ arch/x86/kernel/acpi/boot.c               |   3 +
+ arch/x86/kernel/apic/io_apic.c            |   5 +
+ arch/x86/kernel/e820.c                    |   5 +-
+ arch/x86/kernel/setup_percpu.c            |  10 +-
+ arch/x86/mm/kasan_init_64.c               |  14 +-
+ arch/x86/mm/numa.c                        |  12 +-
+ arch/x86/platform/olpc/olpc_dt.c          |   3 +
+ arch/x86/xen/p2m.c                        |  11 +-
+ arch/xtensa/mm/kasan_init.c               |  10 +-
+ arch/xtensa/mm/mmu.c                      |   3 +
+ drivers/clk/ti/clk.c                      |   3 +
+ drivers/firmware/memmap.c                 |   2 +-
+ drivers/macintosh/smu.c                   |   5 +-
+ drivers/of/fdt.c                          |   8 +-
+ drivers/of/of_reserved_mem.c              |   7 +-
+ drivers/of/unittest.c                     |   8 +-
+ drivers/usb/early/xhci-dbc.c              |   2 +-
+ drivers/xen/swiotlb-xen.c                 |   7 +-
+ include/linux/memblock.h                  |  59 +------
+ init/main.c                               |  26 +++-
+ kernel/dma/swiotlb.c                      |  21 ++-
+ kernel/power/snapshot.c                   |   3 +
+ kernel/printk/printk.c                    |   9 +-
+ lib/cpumask.c                             |   3 +
+ mm/cma.c                                  |  10 +-
+ mm/kasan/init.c                           |  10 +-
+ mm/memblock.c                             | 249 ++++++++++--------------------
+ mm/page_alloc.c                           |  10 +-
+ mm/page_ext.c                             |   2 +-
+ mm/percpu.c                               |  84 +++++++---
+ mm/sparse.c                               |  25 ++-
+ 121 files changed, 860 insertions(+), 412 deletions(-)
+
 -- 
 2.7.4
 
