@@ -1,39 +1,76 @@
-Return-Path: <catalin.marinas@arm.com>
-Date: Fri, 25 Jan 2019 17:45:02 +0000
-From: Catalin Marinas <catalin.marinas@arm.com>
-Subject: Re: [PATCH v2 06/21] memblock: memblock_phys_alloc_try_nid(): don't
- panic
-Message-ID: <20190125174502.GL25901@arrakis.emea.arm.com>
+Return-Path: <rppt@linux.ibm.com>
+From: Mike Rapoport <rppt@linux.ibm.com>
+Subject: [PATCH v2 06/21] memblock: memblock_phys_alloc_try_nid(): don't panic
+Date: Mon, 21 Jan 2019 10:03:53 +0200
+In-Reply-To: <1548057848-15136-1-git-send-email-rppt@linux.ibm.com>
 References: <1548057848-15136-1-git-send-email-rppt@linux.ibm.com>
- <1548057848-15136-7-git-send-email-rppt@linux.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1548057848-15136-7-git-send-email-rppt@linux.ibm.com>
-To: Mike Rapoport <rppt@linux.ibm.com>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, Christoph Hellwig <hch@lst.de>, "David S. Miller" <davem@davemloft.net>, Dennis Zhou <dennis@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, Paul Burton <paul.burton@mips.com>, Petr Mladek <pmladek@suse.com>, Rich Felker <dalias@libc.org>, Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, devicetree@vger.kernel.org, kasan-dev@googlegroups.com, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-usb@vger.kernel.org, linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, x86@kernel.org, xen-devel@lists.xenproject.org
+Message-Id: <1548057848-15136-7-git-send-email-rppt@linux.ibm.com>
+To: linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, Christoph Hellwig <hch@lst.de>, "David S. Miller" <davem@davemloft.net>, Dennis Zhou <dennis@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, Paul Burton <paul.burton@mips.com>, Petr Mladek <pmladek@suse.com>, Rich Felker <dalias@libc.org>, Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, devicetree@vger.kernel.org, kasan-dev@googlegroups.com, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-usb@vger.kernel.org, linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, x86@kernel.org, xen-devel@lists.xenproject.org, Mike Rapoport <rppt@linux.ibm.com>
 List-ID: <linux-um.lists.infradead.org>
 
-On Mon, Jan 21, 2019 at 10:03:53AM +0200, Mike Rapoport wrote:
-> diff --git a/arch/arm64/mm/numa.c b/arch/arm64/mm/numa.c
-> index ae34e3a..2c61ea4 100644
-> --- a/arch/arm64/mm/numa.c
-> +++ b/arch/arm64/mm/numa.c
-> @@ -237,6 +237,10 @@ static void __init setup_node_data(int nid, u64 start_pfn, u64 end_pfn)
->  		pr_info("Initmem setup node %d [<memory-less node>]\n", nid);
->  
->  	nd_pa = memblock_phys_alloc_try_nid(nd_size, SMP_CACHE_BYTES, nid);
-> +	if (!nd_pa)
-> +		panic("Cannot allocate %zu bytes for node %d data\n",
-> +		      nd_size, nid);
-> +
->  	nd = __va(nd_pa);
->  
->  	/* report and initialize */
+The memblock_phys_alloc_try_nid() function tries to allocate memory from
+the requested node and then falls back to allocation from any node in the
+system. The memblock_alloc_base() fallback used by this function panics if
+the allocation fails.
 
-Does it mean that memblock_phys_alloc_try_nid() never returns valid
-physical memory starting at 0?
+Replace the memblock_alloc_base() fallback with the direct call to
+memblock_alloc_range_nid() and update the memblock_phys_alloc_try_nid()
+callers to check the returned value and panic in case of error.
 
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+---
+ arch/arm64/mm/numa.c   | 4 ++++
+ arch/powerpc/mm/numa.c | 4 ++++
+ mm/memblock.c          | 4 +++-
+ 3 files changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/mm/numa.c b/arch/arm64/mm/numa.c
+index ae34e3a..2c61ea4 100644
+--- a/arch/arm64/mm/numa.c
++++ b/arch/arm64/mm/numa.c
+@@ -237,6 +237,10 @@ static void __init setup_node_data(int nid, u64 start_pfn, u64 end_pfn)
+ 		pr_info("Initmem setup node %d [<memory-less node>]\n", nid);
+ 
+ 	nd_pa = memblock_phys_alloc_try_nid(nd_size, SMP_CACHE_BYTES, nid);
++	if (!nd_pa)
++		panic("Cannot allocate %zu bytes for node %d data\n",
++		      nd_size, nid);
++
+ 	nd = __va(nd_pa);
+ 
+ 	/* report and initialize */
+diff --git a/arch/powerpc/mm/numa.c b/arch/powerpc/mm/numa.c
+index 270cefb..8f2bbe1 100644
+--- a/arch/powerpc/mm/numa.c
++++ b/arch/powerpc/mm/numa.c
+@@ -788,6 +788,10 @@ static void __init setup_node_data(int nid, u64 start_pfn, u64 end_pfn)
+ 	int tnid;
+ 
+ 	nd_pa = memblock_phys_alloc_try_nid(nd_size, SMP_CACHE_BYTES, nid);
++	if (!nd_pa)
++		panic("Cannot allocate %zu bytes for node %d data\n",
++		      nd_size, nid);
++
+ 	nd = __va(nd_pa);
+ 
+ 	/* report and initialize */
+diff --git a/mm/memblock.c b/mm/memblock.c
+index f019aee..8aabb1b 100644
+--- a/mm/memblock.c
++++ b/mm/memblock.c
+@@ -1393,7 +1393,9 @@ phys_addr_t __init memblock_phys_alloc_try_nid(phys_addr_t size, phys_addr_t ali
+ 
+ 	if (res)
+ 		return res;
+-	return memblock_alloc_base(size, align, MEMBLOCK_ALLOC_ACCESSIBLE);
++	return memblock_alloc_range_nid(size, align, 0,
++					MEMBLOCK_ALLOC_ACCESSIBLE,
++					NUMA_NO_NODE, MEMBLOCK_NONE);
+ }
+ 
+ /**
 -- 
-Catalin
+2.7.4
+
 
