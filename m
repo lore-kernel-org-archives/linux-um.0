@@ -1,15 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1go9jV-00006l-Te
- for linux-um@lists.infradead.org; Mon, 28 Jan 2019 16:26:03 +0000
+ id 1go9h2-0006Zk-1Z
+ for linux-um@lists.infradead.org; Mon, 28 Jan 2019 16:23:29 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.4 69/80] um: Avoid marking pages with "changed
+Subject: [PATCH AUTOSEL 4.9 091/107] um: Avoid marking pages with "changed
  protection"
-Date: Mon, 28 Jan 2019 11:23:50 -0500
-Message-Id: <20190128162401.58841-69-sashal@kernel.org>
-In-Reply-To: <20190128162401.58841-1-sashal@kernel.org>
-References: <20190128162401.58841-1-sashal@kernel.org>
+Date: Mon, 28 Jan 2019 11:19:31 -0500
+Message-Id: <20190128161947.57405-91-sashal@kernel.org>
+In-Reply-To: <20190128161947.57405-1-sashal@kernel.org>
+References: <20190128161947.57405-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -45,7 +45,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/arch/um/include/asm/pgtable.h b/arch/um/include/asm/pgtable.h
-index 18eb9924dda3..aeb430212947 100644
+index 7485398d0737..9c04562310b3 100644
 --- a/arch/um/include/asm/pgtable.h
 +++ b/arch/um/include/asm/pgtable.h
 @@ -197,12 +197,17 @@ static inline pte_t pte_mkold(pte_t pte)
