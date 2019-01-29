@@ -1,63 +1,43 @@
-Return-Path: <rppt@linux.ibm.com>
-From: Mike Rapoport <rppt@linux.ibm.com>
-Subject: [PATCH 18/21] swiotlb: add checks for the return value of memblock_alloc*()
-Date: Wed, 16 Jan 2019 15:44:18 +0200
-In-Reply-To: <1547646261-32535-1-git-send-email-rppt@linux.ibm.com>
-References: <1547646261-32535-1-git-send-email-rppt@linux.ibm.com>
-Message-Id: <1547646261-32535-19-git-send-email-rppt@linux.ibm.com>
-To: linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, Christoph Hellwig <hch@lst.de>, "David S. Miller" <davem@davemloft.net>, Dennis Zhou <dennis@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, Paul Burton <paul.burton@mips.com>, Petr Mladek <pmladek@suse.com>, Rich Felker <dalias@libc.org>, Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, devicetree@vger.kernel.org, kasan-dev@googlegroups.com, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-usb@vger.kernel.org, linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, x86@kernel.org, xen-devel@lists.xenproject.org, Mike Rapoport <rppt@linux.ibm.com>
+Return-Path: <linux-m68k-owner@vger.kernel.org>
+From: Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH v2 02/21] powerpc: use memblock functions returning virtual address
+In-Reply-To: <1548057848-15136-3-git-send-email-rppt@linux.ibm.com>
+References: <1548057848-15136-1-git-send-email-rppt@linux.ibm.com> <1548057848-15136-3-git-send-email-rppt@linux.ibm.com>
+Date: Tue, 29 Jan 2019 20:52:17 +1100
+Message-ID: <871s4vssdq.fsf@concordia.ellerman.id.au>
+MIME-Version: 1.0
+Content-Type: text/plain
+Sender: linux-m68k-owner@vger.kernel.org
+To: Mike Rapoport <rppt@linux.ibm.com>, linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, Christoph Hellwig <hch@lst.de>, "David S. Miller" <davem@davemloft.net>, Dennis Zhou <dennis@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michal Simek <monstr@monstr.eu>, Paul Burton <paul.burton@mips.com>, Petr Mladek <pmladek@suse.com>, Rich Felker <dalias@libc.org>, Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, devicetree@vger.kernel.org, kasan-dev@googlegroups.com, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-usb@vger.kernel.org, linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, x86@kernel.org, xen-devel@lists.xenproject.org, Christophe Leroy <christophe.leroy@c-s.fr>, Mike Rapoport <rppt@linux.ibm.com>
 List-ID: <linux-um.lists.infradead.org>
 
-Add panic() calls if memblock_alloc() returns NULL.
+Mike Rapoport <rppt@linux.ibm.com> writes:
 
-The panic() format duplicates the one used by memblock itself and in order
-to avoid explosion with long parameters list replace open coded allocation
-size calculations with a local variable.
+> From: Christophe Leroy <christophe.leroy@c-s.fr>
+>
+> Since only the virtual address of allocated blocks is used,
+> lets use functions returning directly virtual address.
+>
+> Those functions have the advantage of also zeroing the block.
+>
+> [ MR:
+>  - updated error message in alloc_stack() to be more verbose
+>  - convereted several additional call sites ]
+>
+> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> ---
+>  arch/powerpc/kernel/dt_cpu_ftrs.c |  3 +--
+>  arch/powerpc/kernel/irq.c         |  5 -----
+>  arch/powerpc/kernel/paca.c        |  6 +++++-
+>  arch/powerpc/kernel/prom.c        |  5 ++++-
+>  arch/powerpc/kernel/setup_32.c    | 26 ++++++++++++++++----------
+>  5 files changed, 26 insertions(+), 19 deletions(-)
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- kernel/dma/swiotlb.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+LGTM.
 
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index d636177..e78835c8 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -191,6 +191,7 @@ void __init swiotlb_update_mem_attributes(void)
- int __init swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose)
- {
- 	unsigned long i, bytes;
-+	size_t alloc_size;
- 
- 	bytes = nslabs << IO_TLB_SHIFT;
- 
-@@ -203,12 +204,18 @@ int __init swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose)
- 	 * to find contiguous free memory regions of size up to IO_TLB_SEGSIZE
- 	 * between io_tlb_start and io_tlb_end.
- 	 */
--	io_tlb_list = memblock_alloc(
--				PAGE_ALIGN(io_tlb_nslabs * sizeof(int)),
--				PAGE_SIZE);
--	io_tlb_orig_addr = memblock_alloc(
--				PAGE_ALIGN(io_tlb_nslabs * sizeof(phys_addr_t)),
--				PAGE_SIZE);
-+	alloc_size = PAGE_ALIGN(io_tlb_nslabs * sizeof(int));
-+	io_tlb_list = memblock_alloc(alloc_size, PAGE_SIZE);
-+	if (!io_tlb_list)
-+		panic("%s: Failed to allocate %lu bytes align=0x%lx\n",
-+		      __func__, alloc_size, PAGE_SIZE);
-+
-+	alloc_size = PAGE_ALIGN(io_tlb_nslabs * sizeof(phys_addr_t));
-+	io_tlb_orig_addr = memblock_alloc(alloc_size, PAGE_SIZE);
-+	if (!io_tlb_orig_addr)
-+		panic("%s: Failed to allocate %lu bytes align=0x%lx\n",
-+		      __func__, alloc_size, PAGE_SIZE);
-+
- 	for (i = 0; i < io_tlb_nslabs; i++) {
- 		io_tlb_list[i] = IO_TLB_SEGSIZE - OFFSET(i, IO_TLB_SEGSIZE);
- 		io_tlb_orig_addr[i] = INVALID_PHYS_ADDR;
--- 
-2.7.4
+Acked-by: Michael Ellerman <mpe@ellerman.id.au>
 
+cheers
 
