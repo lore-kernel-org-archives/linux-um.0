@@ -1,13 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Date: Thu, 14 Feb 2019 11:37:15 +0100
+From: Peter Zijlstra <peterz@infradead.org>
 Subject: Re: [PATCH v4 0/3] locking/rwsem: Rwsem rearchitecture part 0
+Message-ID: <20190214103715.GI32494@hirez.programming.kicks-ass.net>
 References: <1550095217-12047-1-git-send-email-longman@redhat.com>
- <20190214103715.GI32494@hirez.programming.kicks-ass.net>
-From: Waiman Long <longman@redhat.com>
-Message-ID: <5c373ba6-419e-c4d5-965f-a566a6182b28@redhat.com>
-Date: Thu, 14 Feb 2019 17:05:27 -0500
 MIME-Version: 1.0
-In-Reply-To: <20190214103715.GI32494@hirez.programming.kicks-ass.net>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <1550095217-12047-1-git-send-email-longman@redhat.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -16,69 +15,44 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Peter Zijlstra <peterz@infradead.org>
+To: Waiman Long <longman@redhat.com>
 Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, Will Deacon <will.deacon@arm.com>, linux-mips@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-arch@vger.kernel.org, linux-s390@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, x86@kernel.org, Ingo Molnar <mingo@redhat.com>, uclinux-h8-devel@lists.sourceforge.jp, linux-xtensa@linux-xtensa.org, Arnd Bergmann <arnd@arndb.de>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, Borislav Petkov <bp@alien8.de>, Thomas Gleixner <tglx@linutronix.de>, linux-arm-kernel@lists.infradead.org, Tim Chen <tim.c.chen@linux.intel.com>, linux-parisc@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, nios2-dev@lists.rocketboards.org, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org
 
-T24gMDIvMTQvMjAxOSAwNTozNyBBTSwgUGV0ZXIgWmlqbHN0cmEgd3JvdGU6Cj4gT24gV2VkLCBG
-ZWIgMTMsIDIwMTkgYXQgMDU6MDA6MTRQTSAtMDUwMCwgV2FpbWFuIExvbmcgd3JvdGU6Cj4+IHY0
-Ogo+PiAgLSBSZW1vdmUgcndzZW0tc3BpbmxvY2suYyBhbmQgbWFrZSBhbGwgYXJjaHMgdXNlIHJ3
-c2VtLXhhZGQuYy4KPj4KPj4gdjM6Cj4+ICAtIE9wdGltaXplIF9fZG93bl9yZWFkX3RyeWxvY2so
-KSBmb3IgdGhlIHVuY29udGVuZGVkIGNhc2UgYXMgc3VnZ2VzdGVkCj4+ICAgIGJ5IExpbnVzLgo+
-Pgo+PiB2MjoKPj4gIC0gQWRkIHBhdGNoIDIgdG8gb3B0aW1pemUgX19kb3duX3JlYWRfdHJ5bG9j
-aygpIGFzIHN1Z2dlc3RlZCBieSBQZXRlclouCj4+ICAtIFVwZGF0ZSBwZXJmb3JtYW5jZSB0ZXN0
-IGRhdGEgaW4gcGF0Y2ggMS4KPj4KPj4gVGhlIGdvYWwgb2YgdGhpcyBwYXRjaHNldCBpcyB0byBy
-ZW1vdmUgdGhlIGFyY2hpdGVjdHVyZSBzcGVjaWZpYyBmaWxlcwo+PiBmb3IgcndzZW0teGFkZCB0
-byBtYWtlIGl0IGVhc2VyIHRvIGFkZCBlbmhhbmNlbWVudHMgaW4gdGhlIGxhdGVyIHJ3c2VtCj4+
-IHBhdGNoZXMuIEl0IGFsc28gcmVtb3ZlcyB0aGUgbGVnYWN5IHJ3c2VtLXNwaW5sb2NrLmMgZmls
-ZSBhbmQgbWFrZSBhbGwKPj4gdGhlIGFyY2hpdGVjdHVyZXMgdXNlIG9uZSBzaW5nbGUgaW1wbGVt
-ZW50YXRpb24gb2YgcndzZW0gLSByd3NlbS14YWRkLmMuCj4+Cj4+IFdhaW1hbiBMb25nICgzKToK
-Pj4gICBsb2NraW5nL3J3c2VtOiBSZW1vdmUgYXJjaCBzcGVjaWZpYyByd3NlbSBmaWxlcwo+PiAg
-IGxvY2tpbmcvcndzZW06IFJlbW92ZSByd3NlbS1zcGlubG9jay5jICYgdXNlIHJ3c2VtLXhhZGQu
-YyBmb3IgYWxsCj4+ICAgICBhcmNocwo+PiAgIGxvY2tpbmcvcndzZW06IE9wdGltaXplIGRvd25f
-cmVhZF90cnlsb2NrKCkKPiBBY2tlZC1ieTogUGV0ZXIgWmlqbHN0cmEgKEludGVsKSA8cGV0ZXJ6
-QGluZnJhZGVhZC5vcmc+Cj4KPiB3aXRoIHRoZSBjYXZlYXQgdGhhdCBJJ20gaGFwcHkgdG8gZXhj
-aGFuZ2UgcGF0Y2ggMyBiYWNrIHRvIG15IGVhcmxpZXIKPiBzdWdnZXN0aW9uIGluIGNhc2UgV2ls
-bCBleHBlc3NlcyBjb25jZXJucyB3cnQgdGhlIEFSTTY0IHBlcmZvcm1hbmNlIG9mCj4gTGludXMn
-IHN1Z2dlc3Rpb24uCgpJIGluc2VydGVkIGEgZmV3IGxvY2sgZXZlbnQgY291bnRlcnMgaW50byB0
-aGUgcndzZW0gdHJ5bG9jayBjb2RlOgoKc3RhdGljIGlubGluZSBpbnQgX19kb3duX3JlYWRfdHJ5
-bG9jayhzdHJ1Y3Qgcndfc2VtYXBob3JlICpzZW0pCnsKwqDCoMKgwqDCoMKgwqAgLyoKwqDCoMKg
-wqDCoMKgwqDCoCAqIE9wdGltaXplIGZvciB0aGUgY2FzZSB3aGVuIHRoZSByd3NlbSBpcyBub3Qg
-bG9ja2VkIGF0IGFsbC4KwqDCoMKgwqDCoMKgwqDCoCAqLwrCoMKgwqDCoMKgwqDCoCBsb25nIHRt
-cCA9IFJXU0VNX1VOTE9DS0VEX1ZBTFVFOwoKwqDCoMKgwqDCoMKgwqAgbG9ja2V2ZW50X2luYyhy
-d3NlbV9ydHJ5bG9jayk7CsKgwqDCoMKgwqDCoMKgIGRvIHsKwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIGlmIChhdG9taWNfbG9uZ190cnlfY21weGNoZ19hY3F1aXJlKCZzZW0tPmNvdW50
-LCAmdG1wLArCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdG1wICsgUldTRU1fQUNUSVZFX1JFQURfQklB
-UykpIHsKwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByd3Nl
-bV9zZXRfcmVhZGVyX293bmVkKHNlbSk7CsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgcmV0dXJuIDE7CsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB9
-CsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBsb2NrZXZlbnRfaW5jKHJ3c2VtX3J0cnls
-b2NrX3JldHJ5KTsKwqDCoMKgwqDCoMKgwqAgfSB3aGlsZSAodG1wID49IDApOwrCoMKgwqDCoMKg
-wqDCoCBsb2NrZXZlbnRfaW5jKHJ3c2VtX3J0cnlsb2NrX2ZhaWwpOwrCoMKgwqDCoMKgwqDCoCBy
-ZXR1cm4gMDsKfQoKc3RhdGljIGlubGluZSBpbnQgX19kb3duX3dyaXRlX3RyeWxvY2soc3RydWN0
-IHJ3X3NlbWFwaG9yZSAqc2VtKQp7CsKgwqDCoMKgwqDCoMKgIGxvbmcgdG1wOwoKwqDCoMKgwqDC
-oMKgwqAgbG9ja2V2ZW50X2luYyhyd3NlbV93dHJ5bG9jayk7CsKgwqDCoMKgwqDCoMKgIHRtcCA9
-IGF0b21pY19sb25nX2NtcHhjaGdfYWNxdWlyZSgmc2VtLT5jb3VudCwgUldTRU1fVU5MT0NLRURf
-VkFMVUUsCsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBSV1NFTV9B
-Q1RJVkVfV1JJVEVfQklBUyk7CsKgwqDCoMKgwqDCoMKgIGlmICh0bXAgPT0gUldTRU1fVU5MT0NL
-RURfVkFMVUUpIHsKwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJ3c2VtX3NldF9vd25l
-cihzZW0pOwrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIHRydWU7CsKgwqDC
-oMKgwqDCoMKgIH0KwqDCoMKgwqDCoMKgwqAgbG9ja2V2ZW50X2luYyhyd3NlbV93dHJ5bG9ja19m
-YWlsKTsKwqDCoMKgwqDCoMKgwqAgcmV0dXJuIGZhbHNlOwp9CgpJIGJvb3RlZCB0aGUgbmV3IGtl
-cm5lbCBvbiBhIDQtc29ja2V0IDU2LWNvcmUgMTEyLXRocmVhZCBCcm9hZHdlbGwKc3lzdGVtLiBU
-aGUgY291bnRlciB2YWx1ZXMKCjEpIEFmdGVyIGJvb3R1cDoKCnJ3c2VtX3J0cnlsb2NrPTc4NDAy
-OQpyd3NlbV9ydHJ5bG9ja19mYWlsPTU5CnJ3c2VtX3J0cnlsb2NrX3JldHJ5PTM5NApyd3NlbV93
-dHJ5bG9jaz0xODI4NApyd3NlbV93dHJ5bG9ja19mYWlsPTIzMAoKMikgQWZ0ZXIgcGFyYWxsZWwg
-a2VybmVsIGJ1aWxkICgtajExMik6Cgpyd3NlbV9ydHJ5bG9jaz0zMzg2Njc1NTkKcndzZW1fcnRy
-eWxvY2tfZmFpbD0xOApyd3NlbV9ydHJ5bG9ja19yZXRyeT01MQpyd3NlbV93dHJ5bG9jaz0xNzAx
-NjMzMgpyd3NlbV93dHJ5bG9ja19mYWlsPTk4MDU4CgpBdCBsZWFzdCBmb3IgdGhlc2UgdHdvIHVz
-ZSBjYXNlcywgdHJ5LWZvci1vd25lcnNoaXAgYXMgc3VnZ2VzdGVkIGJ5CkxpbnVzIGlzIHRoZSBy
-aWdodCBjaG9pY2UuCgpDaGVlcnMsCkxvbmdtYW4KCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0
-cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vbGludXgtdW0K
+On Wed, Feb 13, 2019 at 05:00:14PM -0500, Waiman Long wrote:
+> v4:
+>  - Remove rwsem-spinlock.c and make all archs use rwsem-xadd.c.
+> 
+> v3:
+>  - Optimize __down_read_trylock() for the uncontended case as suggested
+>    by Linus.
+> 
+> v2:
+>  - Add patch 2 to optimize __down_read_trylock() as suggested by PeterZ.
+>  - Update performance test data in patch 1.
+> 
+> The goal of this patchset is to remove the architecture specific files
+> for rwsem-xadd to make it easer to add enhancements in the later rwsem
+> patches. It also removes the legacy rwsem-spinlock.c file and make all
+> the architectures use one single implementation of rwsem - rwsem-xadd.c.
+> 
+> Waiman Long (3):
+>   locking/rwsem: Remove arch specific rwsem files
+>   locking/rwsem: Remove rwsem-spinlock.c & use rwsem-xadd.c for all
+>     archs
+>   locking/rwsem: Optimize down_read_trylock()
+
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+
+with the caveat that I'm happy to exchange patch 3 back to my earlier
+suggestion in case Will expesses concerns wrt the ARM64 performance of
+Linus' suggestion.
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
