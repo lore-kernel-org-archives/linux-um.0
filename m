@@ -1,8 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Waiman Long <longman@redhat.com>
-Subject: [PATCH v4 0/3] locking/rwsem: Rwsem rearchitecture part 0
-Date: Wed, 13 Feb 2019 17:00:14 -0500
-Message-Id: <1550095217-12047-1-git-send-email-longman@redhat.com>
+Received: from mail-vs1-xe49.google.com ([2607:f8b0:4864:20::e49])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1guOik-0002EU-P2
+ for linux-um@lists.infradead.org; Thu, 14 Feb 2019 21:39:04 +0000
+Received: by mail-vs1-xe49.google.com with SMTP id z189so1780208vsc.16
+ for <linux-um@lists.infradead.org>; Thu, 14 Feb 2019 13:39:01 -0800 (PST)
+Date: Thu, 14 Feb 2019 13:37:24 -0800
+In-Reply-To: <20190214213729.21702-1-brendanhiggins@google.com>
+Message-Id: <20190214213729.21702-13-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20190214213729.21702-1-brendanhiggins@google.com>
+Subject: [RFC v4 12/17] kunit: defconfig: add defconfigs for building KUnit
+ tests
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -11,95 +21,124 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Will Deacon <will.deacon@arm.com>, Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-mips@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-arch@vger.kernel.org, linux-s390@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, x86@kernel.org, Waiman Long <longman@redhat.com>, uclinux-h8-devel@lists.sourceforge.jp, linux-xtensa@linux-xtensa.org, Arnd Bergmann <arnd@arndb.de>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, Borislav Petkov <bp@alien8.de>, linux-arm-kernel@lists.infradead.org, Tim Chen <tim.c.chen@linux.intel.com>, linux-parisc@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, nios2-dev@lists.rocketboards.org, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org
+To: keescook@google.com, mcgrof@kernel.org, shuah@kernel.org, robh@kernel.org, kieran.bingham@ideasonboard.com, frowand.list@gmail.com
+Cc: brakmo@fb.com, pmladek@suse.com, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, richard@nod.at, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, joe@perches.com, khilman@baylibre.com
 
-v4:
- - Remove rwsem-spinlock.c and make all archs use rwsem-xadd.c.
+Add defconfig for UML and a fragment that can be used to configure other
+architectures for building KUnit tests. Add option to kunit_tool to use
+a defconfig to create the kunitconfig.
 
-v3:
- - Optimize __down_read_trylock() for the uncontended case as suggested
-   by Linus.
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+---
+Changes Since Last Version
+ - This patch is new adding default configs to build KUnit.
+ - NOTE: there is still some discussion to be had here about whether we
+   should go with a defconfig, a config fragment, or both.
+---
+ arch/um/configs/kunit_defconfig              |  8 ++++++++
+ tools/testing/kunit/configs/all_tests.config |  8 ++++++++
+ tools/testing/kunit/kunit.py                 | 17 +++++++++++++++--
+ tools/testing/kunit/kunit_kernel.py          |  3 ++-
+ 4 files changed, 33 insertions(+), 3 deletions(-)
+ create mode 100644 arch/um/configs/kunit_defconfig
+ create mode 100644 tools/testing/kunit/configs/all_tests.config
 
-v2:
- - Add patch 2 to optimize __down_read_trylock() as suggested by PeterZ.
- - Update performance test data in patch 1.
-
-The goal of this patchset is to remove the architecture specific files
-for rwsem-xadd to make it easer to add enhancements in the later rwsem
-patches. It also removes the legacy rwsem-spinlock.c file and make all
-the architectures use one single implementation of rwsem - rwsem-xadd.c.
-
-Waiman Long (3):
-  locking/rwsem: Remove arch specific rwsem files
-  locking/rwsem: Remove rwsem-spinlock.c & use rwsem-xadd.c for all
-    archs
-  locking/rwsem: Optimize down_read_trylock()
-
- MAINTAINERS                     |   1 -
- arch/alpha/Kconfig              |   7 -
- arch/alpha/include/asm/rwsem.h  | 211 -------------------------
- arch/arc/Kconfig                |   3 -
- arch/arm/Kconfig                |   4 -
- arch/arm/include/asm/Kbuild     |   1 -
- arch/arm64/Kconfig              |   3 -
- arch/arm64/include/asm/Kbuild   |   1 -
- arch/c6x/Kconfig                |   3 -
- arch/csky/Kconfig               |   3 -
- arch/h8300/Kconfig              |   3 -
- arch/hexagon/Kconfig            |   6 -
- arch/hexagon/include/asm/Kbuild |   1 -
- arch/ia64/Kconfig               |   4 -
- arch/ia64/include/asm/rwsem.h   | 172 --------------------
- arch/m68k/Kconfig               |   7 -
- arch/microblaze/Kconfig         |   6 -
- arch/mips/Kconfig               |   7 -
- arch/nds32/Kconfig              |   3 -
- arch/nios2/Kconfig              |   3 -
- arch/openrisc/Kconfig           |   6 -
- arch/parisc/Kconfig             |   6 -
- arch/powerpc/Kconfig            |   7 -
- arch/powerpc/include/asm/Kbuild |   1 -
- arch/riscv/Kconfig              |   3 -
- arch/s390/Kconfig               |   6 -
- arch/s390/include/asm/Kbuild    |   1 -
- arch/sh/Kconfig                 |   6 -
- arch/sh/include/asm/Kbuild      |   1 -
- arch/sparc/Kconfig              |   8 -
- arch/sparc/include/asm/Kbuild   |   1 -
- arch/unicore32/Kconfig          |   6 -
- arch/x86/Kconfig                |   3 -
- arch/x86/include/asm/rwsem.h    | 237 ----------------------------
- arch/x86/lib/Makefile           |   1 -
- arch/x86/lib/rwsem.S            | 156 ------------------
- arch/x86/um/Kconfig             |   6 -
- arch/x86/um/Makefile            |   1 -
- arch/xtensa/Kconfig             |   3 -
- arch/xtensa/include/asm/Kbuild  |   1 -
- include/asm-generic/rwsem.h     | 140 -----------------
- include/linux/rwsem-spinlock.h  |  47 ------
- include/linux/rwsem.h           |   9 +-
- kernel/Kconfig.locks            |   2 +-
- kernel/locking/Makefile         |   4 +-
- kernel/locking/percpu-rwsem.c   |   2 +
- kernel/locking/rwsem-spinlock.c | 339 ----------------------------------------
- kernel/locking/rwsem.h          | 130 +++++++++++++++
- 48 files changed, 135 insertions(+), 1447 deletions(-)
- delete mode 100644 arch/alpha/include/asm/rwsem.h
- delete mode 100644 arch/ia64/include/asm/rwsem.h
- delete mode 100644 arch/x86/include/asm/rwsem.h
- delete mode 100644 arch/x86/lib/rwsem.S
- delete mode 100644 include/asm-generic/rwsem.h
- delete mode 100644 include/linux/rwsem-spinlock.h
- delete mode 100644 kernel/locking/rwsem-spinlock.c
-
+diff --git a/arch/um/configs/kunit_defconfig b/arch/um/configs/kunit_defconfig
+new file mode 100644
+index 0000000000000..bfe49689038f1
+--- /dev/null
++++ b/arch/um/configs/kunit_defconfig
+@@ -0,0 +1,8 @@
++CONFIG_OF=y
++CONFIG_OF_UNITTEST=y
++CONFIG_OF_OVERLAY=y
++CONFIG_I2C=y
++CONFIG_I2C_MUX=y
++CONFIG_KUNIT=y
++CONFIG_KUNIT_TEST=y
++CONFIG_KUNIT_EXAMPLE_TEST=y
+diff --git a/tools/testing/kunit/configs/all_tests.config b/tools/testing/kunit/configs/all_tests.config
+new file mode 100644
+index 0000000000000..bfe49689038f1
+--- /dev/null
++++ b/tools/testing/kunit/configs/all_tests.config
+@@ -0,0 +1,8 @@
++CONFIG_OF=y
++CONFIG_OF_UNITTEST=y
++CONFIG_OF_OVERLAY=y
++CONFIG_I2C=y
++CONFIG_I2C_MUX=y
++CONFIG_KUNIT=y
++CONFIG_KUNIT_TEST=y
++CONFIG_KUNIT_EXAMPLE_TEST=y
+diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+index 7413ec7351a20..63e9fb3b60200 100755
+--- a/tools/testing/kunit/kunit.py
++++ b/tools/testing/kunit/kunit.py
+@@ -11,6 +11,7 @@ import argparse
+ import sys
+ import os
+ import time
++import shutil
+ 
+ import kunit_config
+ import kunit_kernel
+@@ -36,14 +37,26 @@ parser.add_argument('--build_dir',
+ 		    'directory.',
+ 		    type=str, default=None, metavar='build_dir')
+ 
+-cli_args = parser.parse_args()
++parser.add_argument('--defconfig',
++		    help='Uses a default kunitconfig.',
++		    action='store_true')
+ 
+-linux = kunit_kernel.LinuxSourceTree()
++def create_default_kunitconfig():
++	if not os.path.exists(kunit_kernel.KUNITCONFIG_PATH):
++		shutil.copyfile('arch/um/configs/kunit_defconfig',
++				kunit_kernel.KUNITCONFIG_PATH)
++
++cli_args = parser.parse_args()
+ 
+ build_dir = None
+ if cli_args.build_dir:
+ 	build_dir = cli_args.build_dir
+ 
++if cli_args.defconfig:
++	create_default_kunitconfig()
++
++linux = kunit_kernel.LinuxSourceTree()
++
+ config_start = time.time()
+ success = linux.build_reconfig(build_dir)
+ config_end = time.time()
+diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
+index 07c0abf2f47df..bf38768353313 100644
+--- a/tools/testing/kunit/kunit_kernel.py
++++ b/tools/testing/kunit/kunit_kernel.py
+@@ -14,6 +14,7 @@ import os
+ import kunit_config
+ 
+ KCONFIG_PATH = '.config'
++KUNITCONFIG_PATH = 'kunitconfig'
+ 
+ class ConfigError(Exception):
+ 	"""Represents an error trying to configure the Linux kernel."""
+@@ -81,7 +82,7 @@ class LinuxSourceTree(object):
+ 
+ 	def __init__(self):
+ 		self._kconfig = kunit_config.Kconfig()
+-		self._kconfig.read_from_file('kunitconfig')
++		self._kconfig.read_from_file(KUNITCONFIG_PATH)
+ 		self._ops = LinuxSourceTreeOperations()
+ 
+ 	def clean(self):
 -- 
-1.8.3.1
+2.21.0.rc0.258.g878e2cd30e-goog
 
 
 _______________________________________________
