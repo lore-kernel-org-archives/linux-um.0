@@ -1,18 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-qt1-x849.google.com ([2607:f8b0:4864:20::849])
+Received: from mail-it1-x141.google.com ([2607:f8b0:4864:20::141])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1guOiq-0002GU-ED
- for linux-um@lists.infradead.org; Thu, 14 Feb 2019 21:39:09 +0000
-Received: by mail-qt1-x849.google.com with SMTP id q17so6954588qta.17
- for <linux-um@lists.infradead.org>; Thu, 14 Feb 2019 13:39:07 -0800 (PST)
-Date: Thu, 14 Feb 2019 13:37:26 -0800
-In-Reply-To: <20190214213729.21702-1-brendanhiggins@google.com>
-Message-Id: <20190214213729.21702-15-brendanhiggins@google.com>
-Mime-Version: 1.0
+ id 1gwEkI-0001Wm-Ca
+ for linux-um@lists.infradead.org; Tue, 19 Feb 2019 23:24:15 +0000
+Received: by mail-it1-x141.google.com with SMTP id h6so11029273itl.1
+ for <linux-um@lists.infradead.org>; Tue, 19 Feb 2019 15:24:13 -0800 (PST)
+MIME-Version: 1.0
 References: <20190214213729.21702-1-brendanhiggins@google.com>
-Subject: [RFC v4 14/17] MAINTAINERS: add entry for KUnit the unit testing
- framework
+ <20190214213729.21702-3-brendanhiggins@google.com>
+ <155026451067.115909.17082794837098610153@swboyd.mtv.corp.google.com>
+In-Reply-To: <155026451067.115909.17082794837098610153@swboyd.mtv.corp.google.com>
 From: Brendan Higgins <brendanhiggins@google.com>
+Date: Tue, 19 Feb 2019 15:24:01 -0800
+Message-ID: <CAFd5g47yPUQFiEb4PaN_6xgY-ORTr-Z6W_gf8sWmpQ82fuSB_g@mail.gmail.com>
+Subject: Re: [RFC v4 02/17] kunit: test: add test resource management API
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -25,41 +26,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: keescook@google.com, mcgrof@kernel.org, shuah@kernel.org, robh@kernel.org, kieran.bingham@ideasonboard.com, frowand.list@gmail.com
-Cc: brakmo@fb.com, pmladek@suse.com, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, richard@nod.at, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, joe@perches.com, khilman@baylibre.com
+To: Stephen Boyd <sboyd@kernel.org>
+Cc: brakmo@fb.com, Petr Mladek <pmladek@suse.com>, amir73il@gmail.com, dri-devel <dri-devel@lists.freedesktop.org>, Sasha Levin <Alexander.Levin@microsoft.com>, linux-kselftest@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>, Rob Herring <robh@kernel.org>, linux-nvdimm <linux-nvdimm@lists.01.org>, Richard Weinberger <richard@nod.at>, Knut Omang <knut.omang@oracle.com>, Kieran Bingham <kieran.bingham@ideasonboard.com>, wfg@linux.intel.com, Joel Stanley <joel@jms.id.au>, Jeff Dike <jdike@addtoit.com>, dan.carpenter@oracle.com, devicetree <devicetree@vger.kernel.org>, shuah@kernel.org, "Bird, Timothy" <Tim.Bird@sony.com>, Kees Cook <keescook@google.com>, linux-um@lists.infradead.org, Steven Rostedt <rostedt@goodmis.org>, Julia Lawall <julia.lawall@lip6.fr>, Dan Williams <dan.j.williams@intel.com>, kunit-dev@googlegroups.com, Greg KH <gregkh@linuxfoundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Michael Ellerman <mpe@ellerman.id.au>, Joe Perches <joe@perches.com>, Kevin Hilman <khilman@baylibre.com>
 
-Add myself as maintainer of KUnit, the Linux kernel's unit testing
-framework.
+On Fri, Feb 15, 2019 at 1:01 PM Stephen Boyd <sboyd@kernel.org> wrote:
+>
+> Quoting Brendan Higgins (2019-02-14 13:37:14)
+> > @@ -104,6 +167,7 @@ struct kunit {
+> >         const char *name; /* Read only after initialization! */
+> >         spinlock_t lock; /* Gaurds all mutable test state. */
+> >         bool success; /* Protected by lock. */
+> > +       struct list_head resources; /* Protected by lock. */
+> >         void (*vprintk)(const struct kunit *test,
+> >                         const char *level,
+> >                         struct va_format *vaf);
+> > @@ -127,6 +191,51 @@ int kunit_run_tests(struct kunit_module *module);
+> >                 } \
+> >                 late_initcall(module_kunit_init##module)
+> >
+> > +/**
+> > + * kunit_alloc_resource() - Allocates a *test managed resource*.
+> > + * @test: The test context object.
+> > + * @init: a user supplied function to initialize the resource.
+> > + * @free: a user supplied function to free the resource.
+> > + * @context: for the user to pass in arbitrary data.
+>
+> Nitpick: "pass in arbitrary data to the init function"? Maybe that
+> provides some more clarity.
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
----
- MAINTAINERS | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 8c68de3cfd80e..ff2cc9fcb49ad 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8267,6 +8267,16 @@ S:	Maintained
- F:	tools/testing/selftests/
- F:	Documentation/dev-tools/kselftest*
- 
-+KERNEL UNIT TESTING FRAMEWORK (KUnit)
-+M:	Brendan Higgins <brendanhiggins@google.com>
-+L:	kunit-dev@googlegroups.com
-+W:	https://google.github.io/kunit-docs/third_party/kernel/docs/
-+S:	Maintained
-+F:	Documentation/kunit/
-+F:	include/kunit/
-+F:	kunit/
-+F:	tools/testing/kunit/
-+
- KERNEL USERMODE HELPER
- M:	Luis Chamberlain <mcgrof@kernel.org>
- L:	linux-kernel@vger.kernel.org
--- 
-2.21.0.rc0.258.g878e2cd30e-goog
-
+I think that makes sense. Will fix in next revision.
 
 _______________________________________________
 linux-um mailing list
