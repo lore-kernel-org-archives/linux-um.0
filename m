@@ -1,16 +1,21 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from mail-pg1-x541.google.com ([2607:f8b0:4864:20::541])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gyjS6-0003nb-OT
- for linux-um@lists.infradead.org; Tue, 26 Feb 2019 20:35:48 +0000
-MIME-Version: 1.0
+ id 1gwLcK-00077o-99
+ for linux-um@lists.infradead.org; Wed, 20 Feb 2019 06:44:29 +0000
+Received: by mail-pg1-x541.google.com with SMTP id r11so11360094pgp.6
+ for <linux-um@lists.infradead.org>; Tue, 19 Feb 2019 22:44:27 -0800 (PST)
+Subject: Re: [RFC v4 08/17] kunit: test: add support for test abort
 References: <20190214213729.21702-1-brendanhiggins@google.com>
  <20190214213729.21702-9-brendanhiggins@google.com>
-Message-ID: <155121334527.260864.5324117081460979741@swboyd.mtv.corp.google.com>
-Subject: Re: [RFC v4 08/17] kunit: test: add support for test abort
-From: Stephen Boyd <sboyd@kernel.org>
-In-Reply-To: <20190214213729.21702-9-brendanhiggins@google.com>
-Date: Tue, 26 Feb 2019 12:35:45 -0800
+ <da1995fa-a362-dfe6-8184-7fcdf2b923e8@gmail.com>
+ <CAFd5g467OV8wTB7zEshgZw8g8=zoq0dLVfwx3wDH-8UA+9GWFA@mail.gmail.com>
+From: Frank Rowand <frowand.list@gmail.com>
+Message-ID: <0124ed28-466c-e954-ddde-495419630a9f@gmail.com>
+Date: Tue, 19 Feb 2019 22:44:23 -0800
+MIME-Version: 1.0
+In-Reply-To: <CAFd5g467OV8wTB7zEshgZw8g8=zoq0dLVfwx3wDH-8UA+9GWFA@mail.gmail.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -23,173 +28,154 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Brendan Higgins <brendanhiggins@google.com>, frowand.list@gmail.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, robh@kernel.org, shuah@kernel.org
-Cc: brakmo@fb.com, pmladek@suse.com, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, richard@nod.at, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, joe@perches.com, khilman@baylibre.com
+To: Brendan Higgins <brendanhiggins@google.com>
+Cc: brakmo@fb.com, Petr Mladek <pmladek@suse.com>, Amir Goldstein <amir73il@gmail.com>, dri-devel <dri-devel@lists.freedesktop.org>, Sasha Levin <Alexander.Levin@microsoft.com>, linux-kselftest@vger.kernel.org, shuah@kernel.org, Rob Herring <robh@kernel.org>, linux-nvdimm <linux-nvdimm@lists.01.org>, Richard Weinberger <richard@nod.at>, Knut Omang <knut.omang@oracle.com>, Kieran Bingham <kieran.bingham@ideasonboard.com>, wfg@linux.intel.com, Joel Stanley <joel@jms.id.au>, Jeff Dike <jdike@addtoit.com>, dan.carpenter@oracle.com, devicetree <devicetree@vger.kernel.org>, "Bird," Timothy" <Tim.Bird@sony.com>, Kees Cook <keescook@google.com>," linux-um@lists.infradead.org, Steven Rostedt <rostedt@goodmis.org>, Julia Lawall <julia.lawall@lip6.fr>, Dan Williams <dan.j.williams@intel.com>, kunit-dev@googlegroups.com, Greg KH <gregkh@linuxfoundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Michael Ellerman <mpe@ellerman.id.au>, Joe Perches <joe@perches.com>, Kevin Hilman <khilman@baylibre.com>
 
-Quoting Brendan Higgins (2019-02-14 13:37:20)
-> Add support for aborting/bailing out of test cases. Needed for
-> implementing assertions.
-
-Can you add some more text here with the motivating reasons for
-implementing assertions and bailing out of test cases?
-
-For example, I wonder why unit tests can't just return with a failure
-when they need to abort and then the test runner would detect that error
-via the return value from the 'run test' function. That would be a more
-direct approach, but also more verbose than a single KUNIT_ASSERT()
-line. It would be more kernel idiomatic too because the control flow
-isn't hidden inside a macro and it isn't intimately connected with
-kthreads and completions.
-
+On 2/19/19 7:39 PM, Brendan Higgins wrote:
+> On Mon, Feb 18, 2019 at 11:52 AM Frank Rowand <frowand.list@gmail.com> wrote:
+>>
+>> On 2/14/19 1:37 PM, Brendan Higgins wrote:
+>>> Add support for aborting/bailing out of test cases. Needed for
+>>> implementing assertions.
+>>>
+>>> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+>>> ---
+>>> Changes Since Last Version
+>>>  - This patch is new introducing a new cross-architecture way to abort
+>>>    out of a test case (needed for KUNIT_ASSERT_*, see next patch for
+>>>    details).
+>>>  - On a side note, this is not a complete replacement for the UML abort
+>>>    mechanism, but covers the majority of necessary functionality. UML
+>>>    architecture specific featurs have been dropped from the initial
+>>>    patchset.
+>>> ---
+>>>  include/kunit/test.h |  24 +++++
+>>>  kunit/Makefile       |   3 +-
+>>>  kunit/test-test.c    | 127 ++++++++++++++++++++++++++
+>>>  kunit/test.c         | 208 +++++++++++++++++++++++++++++++++++++++++--
+>>>  4 files changed, 353 insertions(+), 9 deletions(-)
+>>>  create mode 100644 kunit/test-test.c
+>>
+>> < snip >
+>>
+>>> diff --git a/kunit/test.c b/kunit/test.c
+>>> index d18c50d5ed671..6e5244642ab07 100644
+>>> --- a/kunit/test.c
+>>> +++ b/kunit/test.c
+>>> @@ -6,9 +6,9 @@
+>>>   * Author: Brendan Higgins <brendanhiggins@google.com>
+>>>   */
+>>>
+>>> -#include <linux/sched.h>
+>>>  #include <linux/sched/debug.h>
+>>> -#include <os.h>
+>>> +#include <linux/completion.h>
+>>> +#include <linux/kthread.h>
+>>>  #include <kunit/test.h>
+>>>
+>>>  static bool kunit_get_success(struct kunit *test)
+>>> @@ -32,6 +32,27 @@ static void kunit_set_success(struct kunit *test, bool success)
+>>>       spin_unlock_irqrestore(&test->lock, flags);
+>>>  }
+>>>
+>>> +static bool kunit_get_death_test(struct kunit *test)
+>>> +{
+>>> +     unsigned long flags;
+>>> +     bool death_test;
+>>> +
+>>> +     spin_lock_irqsave(&test->lock, flags);
+>>> +     death_test = test->death_test;
+>>> +     spin_unlock_irqrestore(&test->lock, flags);
+>>> +
+>>> +     return death_test;
+>>> +}
+>>> +
+>>> +static void kunit_set_death_test(struct kunit *test, bool death_test)
+>>> +{
+>>> +     unsigned long flags;
+>>> +
+>>> +     spin_lock_irqsave(&test->lock, flags);
+>>> +     test->death_test = death_test;
+>>> +     spin_unlock_irqrestore(&test->lock, flags);
+>>> +}
+>>> +
+>>>  static int kunit_vprintk_emit(const struct kunit *test,
+>>>                             int level,
+>>>                             const char *fmt,
+>>> @@ -70,13 +91,29 @@ static void kunit_fail(struct kunit *test, struct kunit_stream *stream)
+>>>       stream->commit(stream);
+>>>  }
+>>>
+>>> +static void __noreturn kunit_abort(struct kunit *test)
+>>> +{
+>>> +     kunit_set_death_test(test, true);
+>>> +
+>>> +     test->try_catch.throw(&test->try_catch);
+>>> +
+>>> +     /*
+>>> +      * Throw could not abort from test.
+>>> +      */
+>>> +     kunit_err(test, "Throw could not abort from test!");
+>>> +     show_stack(NULL, NULL);
+>>> +     BUG();
+>>
+>> kunit_abort() is what will be call as the result of an assert failure.
 > 
-> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-[...]
-> diff --git a/kunit/test-test.c b/kunit/test-test.c
-> new file mode 100644
-> index 0000000000000..a936c041f1c8f
+> Yep. Does that need clarified somewhere.
+>>
+>> BUG(), which is a panic, which is crashing the system is not acceptable
+>> in the Linux kernel.  You will just annoy Linus if you submit this.
+> 
+> Sorry, I thought this was an acceptable use case since, a) this should
+> never be compiled in a production kernel, b) we are in a pretty bad,
+> unpredictable state if we get here and keep going. I think you might
+> have said elsewhere that you think "a" is not valid? In any case, I
+> can replace this with a WARN, would that be acceptable?
 
-Could this whole file be another patch? It seems to be a test for the
-try catch mechanism.
+A WARN may or may not make sense, depending on the context.  It may
+be sufficient to simply report a test failure (as in the old version
+of case (2) below.
 
-> diff --git a/kunit/test.c b/kunit/test.c
-> index d18c50d5ed671..6e5244642ab07 100644
-> --- a/kunit/test.c
-> +++ b/kunit/test.c
-[...]
-> +
-> +static void kunit_generic_throw(struct kunit_try_catch *try_catch)
-> +{
-> +       try_catch->context.try_result = -EFAULT;
-> +       complete_and_exit(try_catch->context.try_completion, -EFAULT);
-> +}
-> +
-> +static int kunit_generic_run_threadfn_adapter(void *data)
-> +{
-> +       struct kunit_try_catch *try_catch = data;
->  
-> +       try_catch->try(&try_catch->context);
-> +
-> +       complete_and_exit(try_catch->context.try_completion, 0);
+Answers to "a)" and "b)":
 
-The exit code doesn't matter, right? If so, it might be clearer to just
-return 0 from this function because kthreads exit themselves as far as I
-recall.
+a) it might be in a production kernel
 
-> +}
-> +
-> +static void kunit_generic_run_try_catch(struct kunit_try_catch *try_catch)
-> +{
-> +       struct task_struct *task_struct;
-> +       struct kunit *test = try_catch->context.test;
-> +       int exit_code, wake_result;
-> +       DECLARE_COMPLETION(test_case_completion);
+a') it is not acceptable in my development kernel either
 
-DECLARE_COMPLETION_ONSTACK()?
+b) No.  You don't crash a developer's kernel either unless it is
+required to avoid data corruption.
 
-> +
-> +       try_catch->context.try_completion = &test_case_completion;
-> +       try_catch->context.try_result = 0;
-> +       task_struct = kthread_create(kunit_generic_run_threadfn_adapter,
-> +                                            try_catch,
-> +                                            "kunit_try_catch_thread");
-> +       if (IS_ERR_OR_NULL(task_struct)) {
+b') And you can not do replacements like:
 
-It looks like NULL is never returned from kthread_create(), so don't
-check for it here.
+(1) in of_unittest_check_tree_linkage()
 
-> +               try_catch->catch(&try_catch->context);
-> +               return;
-> +       }
-> +
-> +       wake_result = wake_up_process(task_struct);
-> +       if (wake_result != 0 && wake_result != 1) {
+-----  old  -----
 
-These are the only two possible return values of wake_up_process(), so
-why not just use kthread_run() and check for an error on the process
-creation?
+        if (!of_root)
+                return;
 
-> +               kunit_err(test, "task was not woken properly: %d", wake_result);
-> +               try_catch->catch(&try_catch->context);
-> +       }
-> +
-> +       /*
-> +        * TODO(brendanhiggins@google.com): We should probably have some type of
-> +        * timeout here. The only question is what that timeout value should be.
-> +        *
-> +        * The intention has always been, at some point, to be able to label
-> +        * tests with some type of size bucket (unit/small, integration/medium,
-> +        * large/system/end-to-end, etc), where each size bucket would get a
-> +        * default timeout value kind of like what Bazel does:
-> +        * https://docs.bazel.build/versions/master/be/common-definitions.html#test.size
-> +        * There is still some debate to be had on exactly how we do this. (For
-> +        * one, we probably want to have some sort of test runner level
-> +        * timeout.)
-> +        *
-> +        * For more background on this topic, see:
-> +        * https://mike-bland.com/2011/11/01/small-medium-large.html
-> +        */
-> +       wait_for_completion(&test_case_completion);
+-----  new  -----
 
-It doesn't seem like a bad idea to make this have some arbitrarily large
-timeout value to start with. Just to make sure the whole thing doesn't
-get wedged. It's a timeout, so in theory it should never trigger if it's
-large enough.
+        KUNIT_ASSERT_NOT_ERR_OR_NULL(test, of_root);
 
-> +
-> +       exit_code = try_catch->context.try_result;
-> +       if (exit_code == -EFAULT)
-> +               try_catch->catch(&try_catch->context);
-> +       else if (exit_code == -EINTR)
-> +               kunit_err(test, "wake_up_process() was never called.");
+(2) in of_unittest_property_string()
 
-Does kunit_err() add newlines? It would be good to stick to the rest of
-kernel style (printk, tracing, etc.) and rely on the callers to have the
-newlines they want. Also, remove the full-stop because it isn't really
-necessary to have those in error logs.
+-----  old  -----
 
-> +       else if (exit_code)
-> +               kunit_err(test, "Unknown error: %d", exit_code);
-> +}
-> +
-> +void kunit_generic_try_catch_init(struct kunit_try_catch *try_catch)
-> +{
-> +       try_catch->run = kunit_generic_run_try_catch;
+        /* of_property_read_string_index() tests */
+        rc = of_property_read_string_index(np, "string-property", 0, strings);
+        unittest(rc == 0 && !strcmp(strings[0], "foobar"), "of_property_read_string_index() failure; rc=%i\n", rc);
 
-Is the idea that 'run' would be anything besides
-'kunit_generic_run_try_catch'? If it isn't going to be different, then
-maybe it's simpler to just have a function like
-kunit_generic_run_try_catch() that is called by the unit tests instead
-of having to write 'try_catch->run(try_catch)' and indirect for the
-basic case. Maybe I've missed the point entirely though and this is all
-scaffolding for more complicated exception handling later on.
+-----  new  -----
 
-> +       try_catch->throw = kunit_generic_throw;
-> +}
-> +
-> +void __weak kunit_try_catch_init(struct kunit_try_catch *try_catch)
-> +{
-> +       kunit_generic_try_catch_init(try_catch);
-> +}
-> +
-> +static void kunit_try_run_case(struct kunit_try_catch_context *context)
-> +{
-> +       struct kunit_try_catch_context *ctx = context;
-> +       struct kunit *test = ctx->test;
-> +       struct kunit_module *module = ctx->module;
-> +       struct kunit_case *test_case = ctx->test_case;
-> +
-> +       /*
-> +        * kunit_run_case_internal may encounter a fatal error; if it does, we
-> +        * will jump to ENTER_HANDLER above instead of continuing normal control
+        /* of_property_read_string_index() tests */
+        rc = of_property_read_string_index(np, "string-property", 0, strings);
+        KUNIT_ASSERT_EQ(test, rc, 0);
+        KUNIT_EXPECT_STREQ(test, strings[0], "foobar");
 
-Where is 'ENTER_HANDLER' above?
 
-> +        * flow.
-> +        */
->         kunit_run_case_internal(test, module, test_case);
-> +       /* This line may never be reached. */
->         kunit_run_case_cleanup(test, module, test_case);
-> +}
+If a test fails, that is no reason to abort testing.  The remainder of the unit
+tests can still run.  There may be cascading failures, but that is ok.
 
 _______________________________________________
 linux-um mailing list
