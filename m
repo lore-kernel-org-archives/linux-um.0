@@ -1,13 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab6.miniserver.com ([5.153.251.140]
- helo=www.kot-begemot.co.uk)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gyf54-0006If-1v
- for linux-um@lists.infradead.org; Tue, 26 Feb 2019 15:55:43 +0000
-From: anton.ivanov@cambridgegreys.com
-Subject: [PATCH] um: Fix for a possible OOPS in ubd initialization
-Date: Tue, 26 Feb 2019 15:55:25 +0000
-Message-Id: <20190226155525.30549-1-anton.ivanov@cambridgegreys.com>
+Date: Wed, 20 Feb 2019 14:47:56 +0000
+From: Will Deacon <will.deacon@arm.com>
+Subject: Re: [PATCH v4 2/3] locking/rwsem: Remove rwsem-spinlock.c & use
+ rwsem-xadd.c for all archs
+Message-ID: <20190220144756.GK7523@fuggles.cambridge.arm.com>
+References: <1550095217-12047-1-git-send-email-longman@redhat.com>
+ <1550095217-12047-3-git-send-email-longman@redhat.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1550095217-12047-3-git-send-email-longman@redhat.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -16,56 +17,76 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: Waiman Long <longman@redhat.com>
+Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, linux-mips@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-arch@vger.kernel.org, linux-s390@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, x86@kernel.org, Ingo Molnar <mingo@redhat.com>, uclinux-h8-devel@lists.sourceforge.jp, linux-xtensa@linux-xtensa.org, Arnd Bergmann <arnd@arndb.de>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, Borislav Petkov <bp@alien8.de>, Thomas Gleixner <tglx@linutronix.de>, linux-arm-kernel@lists.infradead.org, Tim Chen <tim.c.chen@linux.intel.com>, linux-parisc@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, nios2-dev@lists.rocketboards.org, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+On Wed, Feb 13, 2019 at 05:00:16PM -0500, Waiman Long wrote:
+> Currently, we have two different implementation of rwsem:
+>  1) CONFIG_RWSEM_GENERIC_SPINLOCK (rwsem-spinlock.c)
+>  2) CONFIG_RWSEM_XCHGADD_ALGORITHM (rwsem-xadd.c)
+> 
+> As we are going to use a single generic implementation for rwsem-xadd.c
+> and no architecture-specific code will be needed, there is no point
+> in keeping two different implementations of rwsem. In most cases, the
+> performance of rwsem-spinlock.c will be worse. It also doesn't get all
+> the performance tuning and optimizations that had been implemented in
+> rwsem-xadd.c over the years.
+> 
+> For simplication, we are going to remove rwsem-spinlock.c and make all
+> architectures use a single implementation of rwsem - rwsem-xadd.c.
+> 
+> All references to RWSEM_GENERIC_SPINLOCK and RWSEM_XCHGADD_ALGORITHM
+> in the code are removed.
+> 
+> Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> ---
+>  arch/alpha/Kconfig              |   7 -
+>  arch/arc/Kconfig                |   3 -
+>  arch/arm/Kconfig                |   4 -
+>  arch/arm64/Kconfig              |   3 -
+>  arch/c6x/Kconfig                |   3 -
+>  arch/csky/Kconfig               |   3 -
+>  arch/h8300/Kconfig              |   3 -
+>  arch/hexagon/Kconfig            |   6 -
+>  arch/ia64/Kconfig               |   4 -
+>  arch/m68k/Kconfig               |   7 -
+>  arch/microblaze/Kconfig         |   6 -
+>  arch/mips/Kconfig               |   7 -
+>  arch/nds32/Kconfig              |   3 -
+>  arch/nios2/Kconfig              |   3 -
+>  arch/openrisc/Kconfig           |   6 -
+>  arch/parisc/Kconfig             |   6 -
+>  arch/powerpc/Kconfig            |   7 -
+>  arch/riscv/Kconfig              |   3 -
+>  arch/s390/Kconfig               |   6 -
+>  arch/sh/Kconfig                 |   6 -
+>  arch/sparc/Kconfig              |   8 -
+>  arch/unicore32/Kconfig          |   6 -
+>  arch/x86/Kconfig                |   3 -
+>  arch/x86/um/Kconfig             |   6 -
+>  arch/xtensa/Kconfig             |   3 -
+>  include/linux/rwsem-spinlock.h  |  47 ------
+>  include/linux/rwsem.h           |   5 -
+>  kernel/Kconfig.locks            |   2 +-
+>  kernel/locking/Makefile         |   4 +-
+>  kernel/locking/rwsem-spinlock.c | 339 ----------------------------------------
+>  kernel/locking/rwsem.h          |   3 -
+>  31 files changed, 2 insertions(+), 520 deletions(-)
+>  delete mode 100644 include/linux/rwsem-spinlock.h
+>  delete mode 100644 kernel/locking/rwsem-spinlock.c
 
-If the ubd device failed to allocate a queue during
-initialization it tried call blk_cleanup_queue resulting
-in an oops.
+Another nice cleanup, and it looks like the optimistic spinning in the xadd
+implementation is predicated on ARCH_SUPPORTS_ATOMIC_RMW, so we're all good
+there too.
 
-This patch simplifies the cleanup logic and ensures that
-blk_queue_cleanup is called only if there is a valid queue.
+Acked-by: Will Deacon <will.deacon@arm.com>
 
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
----
- arch/um/drivers/ubd_kern.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index a4a41421c5e2..aca09be2373e 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -938,7 +938,7 @@ static int ubd_add(int n, char **error_out)
- 	ubd_dev->queue = blk_mq_init_queue(&ubd_dev->tag_set);
- 	if (IS_ERR(ubd_dev->queue)) {
- 		err = PTR_ERR(ubd_dev->queue);
--		goto out_cleanup;
-+		goto out_cleanup_tags;
- 	}
- 
- 	ubd_dev->queue->queuedata = ubd_dev;
-@@ -968,8 +968,8 @@ static int ubd_add(int n, char **error_out)
- 
- out_cleanup_tags:
- 	blk_mq_free_tag_set(&ubd_dev->tag_set);
--out_cleanup:
--	blk_cleanup_queue(ubd_dev->queue);
-+	if (!(IS_ERR(ubd_dev->queue)))
-+		blk_cleanup_queue(ubd_dev->queue);
- 	goto out;
- }
- 
--- 
-2.11.0
-
+Will
 
 _______________________________________________
 linux-um mailing list
