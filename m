@@ -1,85 +1,133 @@
-Return-Path: <linux-m68k-owner@vger.kernel.org>
-From: Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [PATCH v2 10/21] memblock: refactor internal allocation functions
-In-Reply-To: <1548057848-15136-11-git-send-email-rppt@linux.ibm.com>
-References: <1548057848-15136-1-git-send-email-rppt@linux.ibm.com> <1548057848-15136-11-git-send-email-rppt@linux.ibm.com>
-Date: Sun, 03 Feb 2019 20:39:20 +1100
-Message-ID: <87ftt5nrcn.fsf@concordia.ellerman.id.au>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from ivanoab6.miniserver.com ([5.153.251.140]
+ helo=www.kot-begemot.co.uk)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gxAS9-000685-6p
+ for linux-um@lists.infradead.org; Fri, 22 Feb 2019 13:01:28 +0000
+Subject: Re: [bug report] um: Convert ubd driver to blk-mq
+References: <20190222111100.GA19880@kadam>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <c2bc44f1-3a00-307b-4b21-3d08c788e4f7@cambridgegreys.com>
+Date: Fri, 22 Feb 2019 12:31:50 +0000
 MIME-Version: 1.0
-Content-Type: text/plain
-Sender: linux-m68k-owner@vger.kernel.org
-To: Mike Rapoport <rppt@linux.ibm.com>, linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, Christoph Hellwig <hch@lst.de>, "David S. Miller" <davem@davemloft.net>, Dennis Zhou <dennis@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michal Simek <monstr@monstr.eu>, Paul Burton <paul.burton@mips.com>, Petr Mladek <pmladek@suse.com>, Rich Felker <dalias@libc.org>, Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, devicetree@vger.kernel.org, kasan-dev@googlegroups.com, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-usb@vger.kernel.org, linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, x86@kernel.org, xen-devel@lists.xenproject.org, Mike Rapoport <rppt@linux.ibm.com>
-List-ID: <linux-um.lists.infradead.org>
+In-Reply-To: <20190222111100.GA19880@kadam>
+Content-Language: en-US
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Dan Carpenter <dan.carpenter@oracle.com>, richard@nod.at
+Cc: linux-um@lists.infradead.org
 
-Mike Rapoport <rppt@linux.ibm.com> writes:
-
-> Currently, memblock has several internal functions with overlapping
-> functionality. They all call memblock_find_in_range_node() to find free
-> memory and then reserve the allocated range and mark it with kmemleak.
-> However, there is difference in the allocation constraints and in fallback
-> strategies.
+On 22/02/2019 11:11, Dan Carpenter wrote:
+> Hello Richard Weinberger,
 >
-> The allocations returning physical address first attempt to find free
-> memory on the specified node within mirrored memory regions, then retry on
-> the same node without the requirement for memory mirroring and finally fall
-> back to all available memory.
+> The patch 4e6da0fe8058: "um: Convert ubd driver to blk-mq" from Nov
+> 26, 2017, leads to the following static checker warning:
 >
-> The allocations returning virtual address start with clamping the allowed
-> range to memblock.current_limit, attempt to allocate from the specified
-> node from regions with mirroring and with user defined minimal address. If
-> such allocation fails, next attempt is done with node restriction lifted.
-> Next, the allocation is retried with minimal address reset to zero and at
-> last without the requirement for mirrored regions.
+> 	arch/um/drivers/ubd_kern.c:972 ubd_add()
+> 	error: 'ubd_dev->queue' dereferencing possible ERR_PTR()
 >
-> Let's consolidate various fallbacks handling and make them more consistent
-> for physical and virtual variants. Most of the fallback handling is moved
-> to memblock_alloc_range_nid() and it now handles node and mirror fallbacks.
+> arch/um/drivers/ubd_kern.c
+>      911 static int ubd_add(int n, char **error_out)
+>      912 {
+>      913 	struct ubd *ubd_dev = &ubd_devs[n];
+>      914 	int err = 0;
+>      915
+>      916 	if(ubd_dev->file == NULL)
+>      917 		goto out;
+>      918
+>      919 	err = ubd_file_size(ubd_dev, &ubd_dev->size);
+>      920 	if(err < 0){
+>      921 		*error_out = "Couldn't determine size of device's file";
+>      922 		goto out;
+>      923 	}
+>      924
+>      925 	ubd_dev->size = ROUND_BLOCK(ubd_dev->size);
+>      926
+>      927 	ubd_dev->tag_set.ops = &ubd_mq_ops;
+>      928 	ubd_dev->tag_set.queue_depth = 64;
+>      929 	ubd_dev->tag_set.numa_node = NUMA_NO_NODE;
+>      930 	ubd_dev->tag_set.flags = BLK_MQ_F_SHOULD_MERGE;
+>      931 	ubd_dev->tag_set.driver_data = ubd_dev;
+>      932 	ubd_dev->tag_set.nr_hw_queues = 1;
+>      933
+>      934 	err = blk_mq_alloc_tag_set(&ubd_dev->tag_set);
+>                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> We do want to clean up this allocation.
 >
-> The memblock_alloc_internal() uses memblock_alloc_range_nid() to get a
-> physical address of the allocated range and converts it to virtual address.
+>      935 	if (err)
+>      936 		goto out;
+>      937
+>      938 	ubd_dev->queue = blk_mq_init_queue(&ubd_dev->tag_set);
+>      939 	if (IS_ERR(ubd_dev->queue)) {
+>      940 		err = PTR_ERR(ubd_dev->queue);
+>      941 		goto out_cleanup;
+>                          ^^^^^^^^^^^^^^^^
+> But this goto will Oops.
 >
-> The fallback for allocation below the specified minimal address remains in
-> memblock_alloc_internal() because memblock_alloc_range_nid() is used by CMA
-> with exact requirement for lower bounds.
+>      942 	}
+>      943
+>      944 	ubd_dev->queue->queuedata = ubd_dev;
+>      945 	blk_queue_write_cache(ubd_dev->queue, true, false);
+>      946
+>      947 	blk_queue_max_segments(ubd_dev->queue, MAX_SG);
+>      948 	err = ubd_disk_register(UBD_MAJOR, ubd_dev->size, n, &ubd_gendisk[n]);
+>      949 	if(err){
+>      950 		*error_out = "Failed to register device";
+>      951 		goto out_cleanup_tags;
+>      952 	}
+>      953
+>      954 	if (fake_major != UBD_MAJOR)
+>      955 		ubd_disk_register(fake_major, ubd_dev->size, n,
+>      956 				  &fake_gendisk[n]);
+>      957
+>      958 	/*
+>      959 	 * Perhaps this should also be under the "if (fake_major)" above
+>      960 	 * using the fake_disk->disk_name
+>      961 	 */
+>      962 	if (fake_ide)
+>      963 		make_ide_entries(ubd_gendisk[n]->disk_name);
+>      964
+>      965 	err = 0;
+>      966 out:
+>      967 	return err;
+>      968
+>      969 out_cleanup_tags:
+>      970 	blk_mq_free_tag_set(&ubd_dev->tag_set);
+>      971 out_cleanup:
+> --> 972 	blk_cleanup_queue(ubd_dev->queue);
+>                                    ^^^^^^^^^^^^^^
+>
+>      973 	goto out;
+>      974 }
+>
+> regards,
+> dan carpenter
+>
+> _______________________________________________
+> linux-um mailing list
+> linux-um@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-um
+>
+Thanks Dan, will look into it today.
 
-This is causing problems on some of my machines.
-
-I see NODE_DATA allocations falling back to node 0 when they shouldn't,
-or didn't previously.
-
-eg, before:
-
-57990190: (116011251): numa:   NODE_DATA [mem 0xfffe4980-0xfffebfff]
-58152042: (116373087): numa:   NODE_DATA [mem 0x8fff90980-0x8fff97fff]
-
-after:
-
-16356872061562: (6296877055): numa:   NODE_DATA [mem 0xfffe4980-0xfffebfff]
-16356872079279: (6296894772): numa:   NODE_DATA [mem 0xfffcd300-0xfffd497f]
-16356872096376: (6296911869): numa:     NODE_DATA(1) on node 0
+-- 
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
 
-On some of my other systems it does that, and then panics because it
-can't allocate anything at all:
-
-[    0.000000] numa:   NODE_DATA [mem 0x7ffcaee80-0x7ffcb3fff]
-[    0.000000] numa:   NODE_DATA [mem 0x7ffc99d00-0x7ffc9ee7f]
-[    0.000000] numa:     NODE_DATA(1) on node 0
-[    0.000000] Kernel panic - not syncing: Cannot allocate 20864 bytes for node 16 data
-[    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted 5.0.0-rc4-gccN-next-20190201-gdc4c899 #1
-[    0.000000] Call Trace:
-[    0.000000] [c0000000011cfca0] [c000000000c11044] dump_stack+0xe8/0x164 (unreliable)
-[    0.000000] [c0000000011cfcf0] [c0000000000fdd6c] panic+0x17c/0x3e0
-[    0.000000] [c0000000011cfd90] [c000000000f61bc8] initmem_init+0x128/0x260
-[    0.000000] [c0000000011cfe60] [c000000000f57940] setup_arch+0x398/0x418
-[    0.000000] [c0000000011cfee0] [c000000000f50a94] start_kernel+0xa0/0x684
-[    0.000000] [c0000000011cff90] [c00000000000af70] start_here_common+0x1c/0x52c
-[    0.000000] Rebooting in 180 seconds..
-
-
-So there's something going wrong there, I haven't had time to dig into
-it though (Sunday night here).
-
-cheers
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
