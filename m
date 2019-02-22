@@ -1,322 +1,130 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-yw1-xc4a.google.com ([2607:f8b0:4864:20::c4a])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1guOiO-000273-6c
- for linux-um@lists.infradead.org; Thu, 14 Feb 2019 21:38:41 +0000
-Received: by mail-yw1-xc4a.google.com with SMTP id r67so3714828ywd.4
- for <linux-um@lists.infradead.org>; Thu, 14 Feb 2019 13:38:39 -0800 (PST)
-Date: Thu, 14 Feb 2019 13:37:16 -0800
-In-Reply-To: <20190214213729.21702-1-brendanhiggins@google.com>
-Message-Id: <20190214213729.21702-5-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20190214213729.21702-1-brendanhiggins@google.com>
-Subject: [RFC v4 04/17] kunit: test: add test_stream a std::stream like logger
-From: Brendan Higgins <brendanhiggins@google.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+Return-Path: <linux-sh-owner@vger.kernel.org>
+Subject: Re: [PATCH v4 3/3] locking/rwsem: Optimize down_read_trylock()
+References: <1550095217-12047-1-git-send-email-longman@redhat.com>
+ <1550095217-12047-4-git-send-email-longman@redhat.com>
+ <20190221141420.GC12696@fuggles.cambridge.arm.com>
+From: Waiman Long <longman@redhat.com>
+Message-ID: <9dc33d11-4570-f2d9-e097-d4e6586d13e2@redhat.com>
+Date: Thu, 21 Feb 2019 22:28:47 -0500
+MIME-Version: 1.0
+In-Reply-To: <20190221141420.GC12696@fuggles.cambridge.arm.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: keescook@google.com, mcgrof@kernel.org, shuah@kernel.org, robh@kernel.org, kieran.bingham@ideasonboard.com, frowand.list@gmail.com
-Cc: brakmo@fb.com, pmladek@suse.com, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, richard@nod.at, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, joe@perches.com, khilman@baylibre.com
+Content-Language: en-US
+Sender: linux-sh-owner@vger.kernel.org
+To: Will Deacon <will.deacon@arm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org, x86@kernel.org, Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>, Davidlohr Bueso <dave@stgolabs.net>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, Tim Chen <tim.c.chen@linux.intel.com>
+List-ID: <linux-um.lists.infradead.org>
 
-A lot of the expectation and assertion infrastructure prints out fairly
-complicated test failure messages, so add a C++ style log library for
-for logging test results.
+On 02/21/2019 09:14 AM, Will Deacon wrote:
+> On Wed, Feb 13, 2019 at 05:00:17PM -0500, Waiman Long wrote:
+>> Modify __down_read_trylock() to optimize for an unlocked rwsem and make
+>> it generate slightly better code.
+>>
+>> Before this patch, down_read_trylock:
+>>
+>>    0x0000000000000000 <+0>:     callq  0x5 <down_read_trylock+5>
+>>    0x0000000000000005 <+5>:     jmp    0x18 <down_read_trylock+24>
+>>    0x0000000000000007 <+7>:     lea    0x1(%rdx),%rcx
+>>    0x000000000000000b <+11>:    mov    %rdx,%rax
+>>    0x000000000000000e <+14>:    lock cmpxchg %rcx,(%rdi)
+>>    0x0000000000000013 <+19>:    cmp    %rax,%rdx
+>>    0x0000000000000016 <+22>:    je     0x23 <down_read_trylock+35>
+>>    0x0000000000000018 <+24>:    mov    (%rdi),%rdx
+>>    0x000000000000001b <+27>:    test   %rdx,%rdx
+>>    0x000000000000001e <+30>:    jns    0x7 <down_read_trylock+7>
+>>    0x0000000000000020 <+32>:    xor    %eax,%eax
+>>    0x0000000000000022 <+34>:    retq
+>>    0x0000000000000023 <+35>:    mov    %gs:0x0,%rax
+>>    0x000000000000002c <+44>:    or     $0x3,%rax
+>>    0x0000000000000030 <+48>:    mov    %rax,0x20(%rdi)
+>>    0x0000000000000034 <+52>:    mov    $0x1,%eax
+>>    0x0000000000000039 <+57>:    retq
+>>
+>> After patch, down_read_trylock:
+>>
+>>    0x0000000000000000 <+0>:	callq  0x5 <down_read_trylock+5>
+>>    0x0000000000000005 <+5>:	xor    %eax,%eax
+>>    0x0000000000000007 <+7>:	lea    0x1(%rax),%rdx
+>>    0x000000000000000b <+11>:	lock cmpxchg %rdx,(%rdi)
+>>    0x0000000000000010 <+16>:	jne    0x29 <down_read_trylock+41>
+>>    0x0000000000000012 <+18>:	mov    %gs:0x0,%rax
+>>    0x000000000000001b <+27>:	or     $0x3,%rax
+>>    0x000000000000001f <+31>:	mov    %rax,0x20(%rdi)
+>>    0x0000000000000023 <+35>:	mov    $0x1,%eax
+>>    0x0000000000000028 <+40>:	retq
+>>    0x0000000000000029 <+41>:	test   %rax,%rax
+>>    0x000000000000002c <+44>:	jns    0x7 <down_read_trylock+7>
+>>    0x000000000000002e <+46>:	xor    %eax,%eax
+>>    0x0000000000000030 <+48>:	retq
+>>
+>> By using a rwsem microbenchmark, the down_read_trylock() rate (with a
+>> load of 10 to lengthen the lock critical section) on a x86-64 system
+>> before and after the patch were:
+>>
+>>                  Before Patch    After Patch
+>>    # of Threads     rlock           rlock
+>>    ------------     -----           -----
+>>         1           14,496          14,716
+>>         2            8,644           8,453
+>> 	4            6,799           6,983
+>> 	8            5,664           7,190
+>>
+>> On a ARM64 system, the performance results were:
+>>
+>>                  Before Patch    After Patch
+>>    # of Threads     rlock           rlock
+>>    ------------     -----           -----
+>>         1           23,676          24,488
+>>         2            7,697           9,502
+>>         4            4,945           3,440
+>>         8            2,641           1,603
+>>
+>> For the uncontended case (1 thread), the new down_read_trylock() is a
+>> little bit faster. For the contended cases, the new down_read_trylock()
+>> perform pretty well in x86-64, but performance degrades at high
+>> contention level on ARM64.
+>>
+>> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> ---
+>>  kernel/locking/rwsem.h | 13 ++++++++-----
+>>  1 file changed, 8 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/kernel/locking/rwsem.h b/kernel/locking/rwsem.h
+>> index 45ee002..1f5775a 100644
+>> --- a/kernel/locking/rwsem.h
+>> +++ b/kernel/locking/rwsem.h
+>> @@ -174,14 +174,17 @@ static inline int __down_read_killable(struct rw_semaphore *sem)
+>>  
+>>  static inline int __down_read_trylock(struct rw_semaphore *sem)
+>>  {
+>> -	long tmp;
+>> +	/*
+>> +	 * Optimize for the case when the rwsem is not locked at all.
+>> +	 */
+>> +	long tmp = RWSEM_UNLOCKED_VALUE;
+>>  
+>> -	while ((tmp = atomic_long_read(&sem->count)) >= 0) {
+>> -		if (tmp == atomic_long_cmpxchg_acquire(&sem->count, tmp,
+>> -				   tmp + RWSEM_ACTIVE_READ_BIAS)) {
+>> +	do {
+>> +		if (atomic_long_try_cmpxchg_acquire(&sem->count, &tmp,
+>> +					tmp + RWSEM_ACTIVE_READ_BIAS)) {
+>>  			return 1;
+>>  		}
+>> -	}
+>> +	} while (tmp >= 0);
+> Nit: but I guess that should be RWSEM_UNLOCKED_VALUE instead of 0.
+>
+> Will
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
----
- include/kunit/kunit-stream.h |  50 ++++++++++++
- include/kunit/test.h         |   2 +
- kunit/Makefile               |   3 +-
- kunit/kunit-stream.c         | 153 +++++++++++++++++++++++++++++++++++
- kunit/test.c                 |   8 ++
- 5 files changed, 215 insertions(+), 1 deletion(-)
- create mode 100644 include/kunit/kunit-stream.h
- create mode 100644 kunit/kunit-stream.c
+Using RWSEM_UNLOCKED_VALUE may be better. Anyway, it is not a big deal
+as I am going to change this again in a later patch.
 
-diff --git a/include/kunit/kunit-stream.h b/include/kunit/kunit-stream.h
-new file mode 100644
-index 0000000000000..15ad83a6b7aae
---- /dev/null
-+++ b/include/kunit/kunit-stream.h
-@@ -0,0 +1,50 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * C++ stream style string formatter and printer used in KUnit for outputting
-+ * KUnit messages.
-+ *
-+ * Copyright (C) 2019, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
-+
-+#ifndef _KUNIT_KUNIT_STREAM_H
-+#define _KUNIT_KUNIT_STREAM_H
-+
-+#include <linux/types.h>
-+#include <kunit/string-stream.h>
-+
-+struct kunit;
-+
-+/**
-+ * struct kunit_stream - a std::stream style string builder.
-+ * @set_level: sets the level that this string should be printed at.
-+ * @add: adds the formatted input to the internal buffer.
-+ * @append: adds the contents of other to this.
-+ * @commit: prints out the internal buffer to the user.
-+ * @clear: clears the internal buffer.
-+ *
-+ * A std::stream style string builder. Allows messages to be built up and
-+ * printed all at once.
-+ */
-+struct kunit_stream {
-+	void (*set_level)(struct kunit_stream *this, const char *level);
-+	void (*add)(struct kunit_stream *this, const char *fmt, ...);
-+	void (*append)(struct kunit_stream *this, struct kunit_stream *other);
-+	void (*commit)(struct kunit_stream *this);
-+	void (*clear)(struct kunit_stream *this);
-+	/* private: internal use only. */
-+	struct kunit *test;
-+	spinlock_t lock; /* Guards level. */
-+	const char *level;
-+	struct string_stream *internal_stream;
-+};
-+
-+/**
-+ * kunit_new_stream() - constructs a new &struct kunit_stream.
-+ * @test: The test context object.
-+ *
-+ * Constructs a new test managed &struct kunit_stream.
-+ */
-+struct kunit_stream *kunit_new_stream(struct kunit *test);
-+
-+#endif /* _KUNIT_KUNIT_STREAM_H */
-diff --git a/include/kunit/test.h b/include/kunit/test.h
-index 21abc9e953969..75cd3c3ab1b4b 100644
---- a/include/kunit/test.h
-+++ b/include/kunit/test.h
-@@ -11,6 +11,7 @@
- 
- #include <linux/types.h>
- #include <linux/slab.h>
-+#include <kunit/kunit-stream.h>
- 
- struct kunit_resource;
- 
-@@ -171,6 +172,7 @@ struct kunit {
- 	void (*vprintk)(const struct kunit *test,
- 			const char *level,
- 			struct va_format *vaf);
-+	void (*fail)(struct kunit *test, struct kunit_stream *stream);
- };
- 
- int kunit_init_test(struct kunit *test, const char *name);
-diff --git a/kunit/Makefile b/kunit/Makefile
-index 275b565a0e81f..6ddc622ee6b1c 100644
---- a/kunit/Makefile
-+++ b/kunit/Makefile
-@@ -1,2 +1,3 @@
- obj-$(CONFIG_KUNIT) +=			test.o \
--					string-stream.o
-+					string-stream.o \
-+					kunit-stream.o
-diff --git a/kunit/kunit-stream.c b/kunit/kunit-stream.c
-new file mode 100644
-index 0000000000000..bc88638aef3b1
---- /dev/null
-+++ b/kunit/kunit-stream.c
-@@ -0,0 +1,153 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * C++ stream style string formatter and printer used in KUnit for outputting
-+ * KUnit messages.
-+ *
-+ * Copyright (C) 2019, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
-+
-+#include <kunit/test.h>
-+#include <kunit/kunit-stream.h>
-+#include <kunit/string-stream.h>
-+
-+static const char *kunit_stream_get_level(struct kunit_stream *this)
-+{
-+	unsigned long flags;
-+	const char *level;
-+
-+	spin_lock_irqsave(&this->lock, flags);
-+	level = this->level;
-+	spin_unlock_irqrestore(&this->lock, flags);
-+
-+	return level;
-+}
-+
-+static void kunit_stream_set_level(struct kunit_stream *this, const char *level)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&this->lock, flags);
-+	this->level = level;
-+	spin_unlock_irqrestore(&this->lock, flags);
-+}
-+
-+static void kunit_stream_add(struct kunit_stream *this, const char *fmt, ...)
-+{
-+	va_list args;
-+	struct string_stream *stream = this->internal_stream;
-+
-+	va_start(args, fmt);
-+	if (stream->vadd(stream, fmt, args) < 0)
-+		kunit_err(this->test, "Failed to allocate fragment: %s", fmt);
-+
-+	va_end(args);
-+}
-+
-+static void kunit_stream_append(struct kunit_stream *this,
-+				struct kunit_stream *other)
-+{
-+	struct string_stream *other_stream = other->internal_stream;
-+	const char *other_content;
-+
-+	other_content = other_stream->get_string(other_stream);
-+
-+	if (!other_content) {
-+		kunit_err(this->test,
-+			  "Failed to get string from second argument for appending.");
-+		return;
-+	}
-+
-+	this->add(this, other_content);
-+}
-+
-+static void kunit_stream_clear(struct kunit_stream *this)
-+{
-+	this->internal_stream->clear(this->internal_stream);
-+}
-+
-+static void kunit_stream_commit(struct kunit_stream *this)
-+{
-+	struct string_stream *stream = this->internal_stream;
-+	struct string_stream_fragment *fragment;
-+	const char *level;
-+	char *buf;
-+
-+	level = kunit_stream_get_level(this);
-+	if (!level) {
-+		kunit_err(this->test,
-+			  "Stream was committed without a specified log level.");
-+		level = KERN_ERR;
-+		this->set_level(this, level);
-+	}
-+
-+	buf = stream->get_string(stream);
-+	if (!buf) {
-+		kunit_err(this->test,
-+			 "Could not allocate buffer, dumping stream:");
-+		list_for_each_entry(fragment, &stream->fragments, node) {
-+			kunit_err(this->test, fragment->fragment);
-+		}
-+		goto cleanup;
-+	}
-+
-+	kunit_printk(level, this->test, buf);
-+	kfree(buf);
-+
-+cleanup:
-+	this->clear(this);
-+}
-+
-+static int kunit_stream_init(struct kunit_resource *res, void *context)
-+{
-+	struct kunit *test = context;
-+	struct kunit_stream *stream;
-+
-+	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
-+	if (!stream)
-+		return -ENOMEM;
-+	res->allocation = stream;
-+	stream->test = test;
-+	spin_lock_init(&stream->lock);
-+	stream->internal_stream = new_string_stream();
-+
-+	if (!stream->internal_stream)
-+		return -ENOMEM;
-+
-+	stream->set_level = kunit_stream_set_level;
-+	stream->add = kunit_stream_add;
-+	stream->append = kunit_stream_append;
-+	stream->commit = kunit_stream_commit;
-+	stream->clear = kunit_stream_clear;
-+
-+	return 0;
-+}
-+
-+static void kunit_stream_free(struct kunit_resource *res)
-+{
-+	struct kunit_stream *stream = res->allocation;
-+
-+	if (!stream->internal_stream->is_empty(stream->internal_stream)) {
-+		kunit_err(stream->test,
-+			 "End of test case reached with uncommitted stream entries.");
-+		stream->commit(stream);
-+	}
-+
-+	destroy_string_stream(stream->internal_stream);
-+	kfree(stream);
-+}
-+
-+struct kunit_stream *kunit_new_stream(struct kunit *test)
-+{
-+	struct kunit_resource *res;
-+
-+	res = kunit_alloc_resource(test,
-+				   kunit_stream_init,
-+				   kunit_stream_free,
-+				   test);
-+
-+	if (res)
-+		return res->allocation;
-+	else
-+		return NULL;
-+}
-diff --git a/kunit/test.c b/kunit/test.c
-index 84f2e1c040af3..1a2e5e6b7ffee 100644
---- a/kunit/test.c
-+++ b/kunit/test.c
-@@ -63,12 +63,20 @@ static void kunit_vprintk(const struct kunit *test,
- 			  "kunit %s: %pV", test->name, vaf);
- }
- 
-+static void kunit_fail(struct kunit *test, struct kunit_stream *stream)
-+{
-+	kunit_set_success(test, false);
-+	stream->set_level(stream, KERN_ERR);
-+	stream->commit(stream);
-+}
-+
- int kunit_init_test(struct kunit *test, const char *name)
- {
- 	spin_lock_init(&test->lock);
- 	INIT_LIST_HEAD(&test->resources);
- 	test->name = name;
- 	test->vprintk = kunit_vprintk;
-+	test->fail = kunit_fail;
- 
- 	return 0;
- }
--- 
-2.21.0.rc0.258.g878e2cd30e-goog
+Thanks,
+Longman
 
+RWSEM_UNLOCKED_VALUE
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
