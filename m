@@ -1,74 +1,70 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-qt1-x849.google.com ([2607:f8b0:4864:20::849])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1guOiS-00028g-Qt
- for linux-um@lists.infradead.org; Thu, 14 Feb 2019 21:38:46 +0000
-Received: by mail-qt1-x849.google.com with SMTP id n95so7013278qte.16
- for <linux-um@lists.infradead.org>; Thu, 14 Feb 2019 13:38:43 -0800 (PST)
-Date: Thu, 14 Feb 2019 13:37:18 -0800
-In-Reply-To: <20190214213729.21702-1-brendanhiggins@google.com>
-Message-Id: <20190214213729.21702-7-brendanhiggins@google.com>
-Mime-Version: 1.0
+Return-Path: <devicetree-owner@vger.kernel.org>
+MIME-Version: 1.0
 References: <20190214213729.21702-1-brendanhiggins@google.com>
-Subject: [RFC v4 06/17] kbuild: enable building KUnit
+ <a6ae907e-391b-993e-6011-6f40c761b339@gmail.com> <CAFd5g44AmF6eN-HKwHOqPiGZHNc2K_wAmWR3PkV0OX-=YNUKDw@mail.gmail.com>
+ <4dff3b1a-7ded-7218-5325-3c397cc3c73e@gmail.com> <871s3zeeay.fsf@morokweng.localdomain>
+In-Reply-To: <871s3zeeay.fsf@morokweng.localdomain>
 From: Brendan Higgins <brendanhiggins@google.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: keescook@google.com, mcgrof@kernel.org, shuah@kernel.org, robh@kernel.org, kieran.bingham@ideasonboard.com, frowand.list@gmail.com
-Cc: brakmo@fb.com, pmladek@suse.com, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, richard@nod.at, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, joe@perches.com, khilman@baylibre.com
+Date: Wed, 27 Feb 2019 20:18:46 -0800
+Message-ID: <CAFd5g450Vy73fR5mfbuZe=KUzsFD=NAbg40GbuVmJg2udp3tmQ@mail.gmail.com>
+Subject: Re: [RFC v4 00/17] kunit: introduce KUnit, the Linux kernel unit
+ testing framework
+Content-Type: text/plain; charset="UTF-8"
+Sender: devicetree-owner@vger.kernel.org
+To: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+Cc: Frank Rowand <frowand.list@gmail.com>, Kees Cook <keescook@google.com>, Luis Chamberlain <mcgrof@kernel.org>, shuah@kernel.org, Rob Herring <robh@kernel.org>, Kieran Bingham <kieran.bingham@ideasonboard.com>, Greg KH <gregkh@linuxfoundation.org>, Joel Stanley <joel@jms.id.au>, Michael Ellerman <mpe@ellerman.id.au>, Joe Perches <joe@perches.com>, brakmo@fb.com, Steven Rostedt <rostedt@goodmis.org>, "Bird, Timothy" <Tim.Bird@sony.com>, Kevin Hilman <khilman@baylibre.com>, Julia Lawall <julia.lawall@lip6.fr>, linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org, Daniel Vetter <daniel@ffwll.ch>, dri-devel <dri-devel@lists.freedesktop.org>, Dan Williams <dan.j.williams@intel.com>, linux-nvdimm <linux-nvdimm@lists.01.org>, Knut Omang <knut.omang@oracle.com>, devicetree <devicetree@vger.kernel.org>, Petr Mladek <pmladek@suse.com>, Sasha Levin <Alexander.Levin@microsoft.com>, Amir Goldstein <amir73il@gmail.com>, dan.carpenter@oracle.com, wfg@linux.intel.com
+List-ID: <linux-um.lists.infradead.org>
 
-Add KUnit to root Kconfig and Makefile allowing it to actually be built.
+On Fri, Feb 22, 2019 at 12:53 PM Thiago Jung Bauermann
+<bauerman@linux.ibm.com> wrote:
+>
+>
+> Frank Rowand <frowand.list@gmail.com> writes:
+>
+> > On 2/19/19 10:34 PM, Brendan Higgins wrote:
+> >> On Mon, Feb 18, 2019 at 12:02 PM Frank Rowand <frowand.list@gmail.com> wrote:
+> >> <snip>
+> >>> I have not read through the patches in any detail.  I have read some of
+> >>> the code to try to understand the patches to the devicetree unit tests.
+> >>> So that may limit how valid my comments below are.
+> >>
+> >> No problem.
+> >>
+> >>>
+> >>> I found the code difficult to read in places where it should have been
+> >>> much simpler to read.  Structuring the code in a pseudo object oriented
+> >>> style meant that everywhere in a code path that I encountered a dynamic
+> >>> function call, I had to go find where that dynamic function call was
+> >>> initialized (and being the cautious person that I am, verify that
+> >>> no where else was the value of that dynamic function call).  With
+> >>> primitive vi and tags, that search would have instead just been a
+> >>> simple key press (or at worst a few keys) if hard coded function
+> >>> calls were done instead of dynamic function calls.  In the code paths
+> >>> that I looked at, I did not see any case of a dynamic function being
+> >>> anything other than the value it was originally initialized as.
+> >>> There may be such cases, I did not read the entire patch set.  There
+> >>> may also be cases envisioned in the architects mind of how this
+> >>> flexibility may be of future value.  Dunno.
+> >>
+> >> Yeah, a lot of it is intended to make architecture specific
+> >> implementations and some other future work easier. Some of it is also
+> >> for testing purposes. Admittedly some is for neither reason, but given
+> >> the heavy usage elsewhere, I figured there was no harm since it was
+> >> all private internal usage anyway.
+> >>
+> >
+> > Increasing the cost for me (and all the other potential code readers)
+> > to read the code is harm.
+>
+> Dynamic function calls aren't necessary for arch-specific
+> implementations either. See for example arch_kexec_image_load() in
+> kernel/kexec_file.c, which uses a weak symbol that is overriden by
+> arch-specific code. Not everybody likes weak symbols, so another
+> alternative (which admitedly not everybody likes either) is to use a
+> macro with the name of the arch-specific function, as used by
+> arch_kexec_post_alloc_pages() in <linux/kexec.h> for instance.
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
----
-Changes Since Last Version
- - Rewrote patch description. This was previously called "[RFC v3 06/19]
-   arch: um: enable running kunit from User Mode Linux," which was
-   incorrect since this patch does not have any UML specific bits in it.
----
- Kconfig  | 2 ++
- Makefile | 2 +-
- 2 files changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/Kconfig b/Kconfig
-index 48a80beab6853..10428501edb78 100644
---- a/Kconfig
-+++ b/Kconfig
-@@ -30,3 +30,5 @@ source "crypto/Kconfig"
- source "lib/Kconfig"
- 
- source "lib/Kconfig.debug"
-+
-+source "kunit/Kconfig"
-diff --git a/Makefile b/Makefile
-index 3142e67d03f1b..d10308eb7f214 100644
---- a/Makefile
-+++ b/Makefile
-@@ -958,7 +958,7 @@ endif
- PHONY += prepare0
- 
- ifeq ($(KBUILD_EXTMOD),)
--core-y		+= kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ block/
-+core-y		+= kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ block/ kunit/
- 
- vmlinux-dirs	:= $(patsubst %/,%,$(filter %/, $(init-y) $(init-m) \
- 		     $(core-y) $(core-m) $(drivers-y) $(drivers-m) \
--- 
-2.21.0.rc0.258.g878e2cd30e-goog
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+I personally have a strong preference for dynamic function calls over
+weak symbols or macros, but I can change it if it really makes
+anyone's eyes bleed.
 
