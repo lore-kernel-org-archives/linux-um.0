@@ -1,16 +1,21 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from szxga07-in.huawei.com ([45.249.212.35] helo=huawei.com)
+Received: from mail-oi1-x242.google.com ([2607:f8b0:4864:20::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gys3L-0005yd-SV
- for linux-um@lists.infradead.org; Wed, 27 Feb 2019 05:46:49 +0000
-Subject: Re: [-next] um: Remove duplicated include from vector_user.c
-References: <1546485161-142907-1-git-send-email-yuehaibing@huawei.com>
- <cff7d34e-7afa-70cc-427d-ebeaa1e65e73@cambridgegreys.com>
-From: YueHaibing <yuehaibing@huawei.com>
-Message-ID: <3691363f-84b1-b5ab-8637-132fdc4cbd81@huawei.com>
-Date: Wed, 27 Feb 2019 13:46:35 +0800
+ id 1gz9Zf-0003et-Ou
+ for linux-um@lists.infradead.org; Thu, 28 Feb 2019 00:29:21 +0000
+Received: by mail-oi1-x242.google.com with SMTP id e7so15094581oia.8
+ for <linux-um@lists.infradead.org>; Wed, 27 Feb 2019 16:29:16 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <cff7d34e-7afa-70cc-427d-ebeaa1e65e73@cambridgegreys.com>
+References: <20181128193636.254378-1-brendanhiggins@google.com>
+ <20181128193636.254378-18-brendanhiggins@google.com>
+ <CAL_Jsq+09Kx7yMBC_Jw45QGmk6U_fp4N6HOZDwYrM4tWw+_dOA@mail.gmail.com>
+ <CAFd5g46NehKo=TT4reQ8r74bDTG9BkR=ELg+Q3n5YooUxFwBmA@mail.gmail.com>
+ <1d72f04e-08ba-e3dd-c8c0-512946126113@gmail.com>
+In-Reply-To: <1d72f04e-08ba-e3dd-c8c0-512946126113@gmail.com>
+From: Brendan Higgins <brendanhiggins@google.com>
+Date: Wed, 27 Feb 2019 16:29:04 -0800
+Message-ID: <CAFd5g45GjG871ynfMADN+4zmecfARCk2ribY7MsMSc4=QkNqgQ@mail.gmail.com>
+Subject: Re: [RFC v3 17/19] of: unittest: migrate tests to run on KUnit
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -23,56 +28,201 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Anton Ivanov <anton.ivanov@cambridgegreys.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
-Cc: linux-um@lists.infradead.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Frank Rowand <frowand.list@gmail.com>
+Cc: brakmo@fb.com, dri-devel <dri-devel@lists.freedesktop.org>, linux-kselftest@vger.kernel.org, shuah@kernel.org, Rob Herring <robh@kernel.org>, linux-nvdimm <linux-nvdimm@lists.01.org>, Richard Weinberger <richard@nod.at>, Knut Omang <knut.omang@oracle.com>, Kieran Bingham <kieran.bingham@ideasonboard.com>, Joel Stanley <joel@jms.id.au>, Jeff Dike <jdike@addtoit.com>, "Bird," Timothy" <Tim.Bird@sony.com>, Kees Cook <keescook@google.com>," linux-um@lists.infradead.org, Steven Rostedt <rostedt@goodmis.org>, Julia Lawall <julia.lawall@lip6.fr>, Dan Williams <dan.j.williams@intel.com>, kunit-dev@googlegroups.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Luis R. Rodriguez" <mcgrof@kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Michael Ellerman <mpe@ellerman.id.au>, Joe Perches <joe@perches.com>, Kevin Hilman <khilman@baylibre.com>
 
+On Mon, Feb 18, 2019 at 2:56 PM Frank Rowand <frowand.list@gmail.com> wrote:
+>
+> On 2/12/19 5:44 PM, Brendan Higgins wrote:
+> > On Wed, Nov 28, 2018 at 12:56 PM Rob Herring <robh@kernel.org> wrote:
+> >>
+> >> On Wed, Nov 28, 2018 at 1:38 PM Brendan Higgins
+> >> <brendanhiggins@google.com> wrote:
+<snip>
+> >>> ---
+> >>>  drivers/of/Kconfig    |    1 +
+> >>>  drivers/of/unittest.c | 1405 ++++++++++++++++++++++-------------------
+> >>>  2 files changed, 752 insertions(+), 654 deletions(-)
+> >>>
+> > <snip>
+> >>> diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
+> >>> index 41b49716ac75f..a5ef44730ffdb 100644
+> >>> --- a/drivers/of/unittest.c
+> >>> +++ b/drivers/of/unittest.c
+<snip>
+> >>> +
+> >>> +       KUNIT_EXPECT_EQ(test,
+> >>> +                       of_property_match_string(np,
+> >>> +                                                "phandle-list-names",
+> >>> +                                                "first"),
+> >>> +                       0);
+> >>> +       KUNIT_EXPECT_EQ(test,
+> >>> +                       of_property_match_string(np,
+> >>> +                                                "phandle-list-names",
+> >>> +                                                "second"),
+> >>> +                       1);
+> >>
+> >> Fewer lines on these would be better even if we go over 80 chars.
+>
+> Agreed.  unittest.c already is a greater than 80 char file in general, and
+> is a file that benefits from that.
+>
 
-Friendly ping:
+Noted.
 
-Who can take this, please?
+>
+> > On the of_property_match_string(...), I have no opinion. I will do
+> > whatever you like best.
+> >
+> > Nevertheless, as far as the KUNIT_EXPECT_*(...), I do have an opinion: I am
+> > trying to establish a good, readable convention. Given an expect statement
+> > structured as
+> > ```
+> > KUNIT_EXPECT_*(
+> >     test,
+> >     expect_arg_0, ..., expect_arg_n,
+> >     fmt_str, fmt_arg_0, ..., fmt_arg_n)
+> > ```
+> > where `test` is the `struct kunit` context argument, `expect_arg_{0, ..., n}`
+> > are the arguments the expectations is being made about (so in the above example,
+> > `of_property_match_string(...)` and `1`), and `fmt_*` is the optional format
+> > string that comes at the end of some expectations.
+> >
+> > The pattern I had been trying to promote is the following:
+> >
+> > 1) If everything fits on 1 line, do that.
+> > 2) If you must make a line split, prefer to keep `test` on its own line,
+> > `expect_arg_{0, ..., n}` should be kept together, if possible, and the format
+> > string should follow the conventions already most commonly used with format
+> > strings.
+> > 3) If you must split up `expect_arg_{0, ..., n}` each argument should get its
+> > own line and should not share a line with either `test` or any `fmt_*`.
+> >
+> > The reason I care about this so much is because expectations should be
+> > extremely easy to read; they are the most important part of a unit
+> > test because they tell you what the test is verifying. I am not
+> > married to the formatting I proposed above, but I want something that
+> > will be extremely easy to identify the arguments that the expectation
+> > is on. Maybe that means that I need to add some syntactic fluff to
+> > make it clearer, I don't know, but this is definitely something we
+> > need to get right, especially in the earliest examples.
+>
+> I will probably raise the ire of the kernel formatting rule makers by offering
+> what I think is a _much_ more readable format __for this specific case__.
+> In other words for drivers/of/unittest.c.
+>
+> If you can not make your mail window _very_ wide, or if this email has been
+> line wrapped, this example will not be clear.
+>
+> Two possible formats:
+>
+>
+> ### -----  version 1, as created by the patch series
+>
+> static void of_unittest_property_string(struct kunit *test)
+> {
+>         const char *strings[4];
+>         struct device_node *np;
+>         int rc;
+>
+>         np = of_find_node_by_path("/testcase-data/phandle-tests/consumer-a");
+>         KUNIT_ASSERT_NOT_ERR_OR_NULL(test, np);
+>
+>         KUNIT_EXPECT_EQ(
+>                 test,
+>                 of_property_match_string(np, "phandle-list-names", "first"),
+>                 0);
+>         KUNIT_EXPECT_EQ(
+>                 test,
+>                 of_property_match_string(np, "phandle-list-names", "second"),
+>                 1);
+>         KUNIT_EXPECT_EQ(
+>                 test,
+>                 of_property_match_string(np, "phandle-list-names", "third"),
+>                 2);
+>         KUNIT_EXPECT_EQ_MSG(
+>                 test,
+>                 of_property_match_string(np, "phandle-list-names", "fourth"),
+>                 -ENODATA,
+>                 "unmatched string");
+>         KUNIT_EXPECT_EQ_MSG(
+>                 test,
+>                 of_property_match_string(np, "missing-property", "blah"),
+>                 -EINVAL,
+>                 "missing property");
+>         KUNIT_EXPECT_EQ_MSG(
+>                 test,
+>                 of_property_match_string(np, "empty-property", "blah"),
+>                 -ENODATA,
+>                 "empty property");
+>         KUNIT_EXPECT_EQ_MSG(
+>                 test,
+>                 of_property_match_string(np, "unterminated-string", "blah"),
+>                 -EILSEQ,
+>                 "unterminated string");
+>
+>         /* of_property_count_strings() tests */
+>         KUNIT_EXPECT_EQ(test,
+>                         of_property_count_strings(np, "string-property"), 1);
+>         KUNIT_EXPECT_EQ(test,
+>                         of_property_count_strings(np, "phandle-list-names"), 3);
+>         KUNIT_EXPECT_EQ_MSG(
+>                 test,
+>                 of_property_count_strings(np, "unterminated-string"), -EILSEQ,
+>                 "unterminated string");
+>         KUNIT_EXPECT_EQ_MSG(
+>                 test,
+>                 of_property_count_strings(np, "unterminated-string-list"),
+>                 -EILSEQ,
+>                 "unterminated string array");
+>
+>
+>
+>
+> ### -----  version 2, modified to use really long lines
+>
+> static void of_unittest_property_string(struct kunit *test)
+> {
+>         const char *strings[4];
+>         struct device_node *np;
+>         int rc;
+>
+>         np = of_find_node_by_path("/testcase-data/phandle-tests/consumer-a");
+>         KUNIT_ASSERT_NOT_ERR_OR_NULL(test, np);
+>
+>         KUNIT_EXPECT_EQ(    test, of_property_match_string(np, "phandle-list-names", "first"),  0);
+>         KUNIT_EXPECT_EQ(    test, of_property_match_string(np, "phandle-list-names", "second"), 1);
+>         KUNIT_EXPECT_EQ(    test, of_property_match_string(np, "phandle-list-names", "third"),  2);
+>         KUNIT_EXPECT_EQ_MSG(test, of_property_match_string(np, "phandle-list-names", "fourth"), -ENODATA, "unmatched string");
+>         KUNIT_EXPECT_EQ_MSG(test, of_property_match_string(np, "missing-property", "blah"),     -EINVAL, "missing property");
+>         KUNIT_EXPECT_EQ_MSG(test, of_property_match_string(np, "empty-property", "blah"),       -ENODATA, "empty property");
+>         KUNIT_EXPECT_EQ_MSG(test, of_property_match_string(np, "unterminated-string", "blah"),  -EILSEQ, "unterminated string");
+>
+>         /* of_property_count_strings() tests */
+>         KUNIT_EXPECT_EQ(    test, of_property_count_strings(np, "string-property"),             1);
+>         KUNIT_EXPECT_EQ(    test, of_property_count_strings(np, "phandle-list-names"),          3);
+>         KUNIT_EXPECT_EQ_MSG(test, of_property_count_strings(np, "unterminated-string"),         -EILSEQ, "unterminated string");
+>         KUNIT_EXPECT_EQ_MSG(test, of_property_count_strings(np, "unterminated-string-list"),    -EILSEQ, "unterminated string array");
+>
+>
+>         ------------------------  ------------------------------------------------------------- --------------------------------------
+>              ^                         ^                                                             ^
+>              |                         |                                                             |
+>              |                         |                                                             |
+>             mostly boilerplate        what is being tested                                          expected result, error message
+>             (can vary in relop
+>              and _MSG or not)
+>
+> In my opinion, the second version is much more readable.  It is easy to see the
+> differences in the boilerplate.  It is easy to see what is being tested, and how
+> the arguments of the tested function vary for each test.  It is easy to see the
+> expected result and error message.  The entire block fits into a single short
+> window (though much wider).
 
-On 2019/1/21 2:54, Anton Ivanov wrote:
-> 
-> 
-> On 1/3/19 3:12 AM, YueHaibing wrote:
->> Remove duplicated include.
->>
->> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
->> ---
->>   arch/um/drivers/vector_user.c | 3 ---
->>   1 file changed, 3 deletions(-)
->>
->> diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
->> index d2c17dd..b3f7b3c 100644
->> --- a/arch/um/drivers/vector_user.c
->> +++ b/arch/um/drivers/vector_user.c
->> @@ -16,14 +16,12 @@
->>   #include <sys/types.h>
->>   #include <sys/stat.h>
->>   #include <fcntl.h>
->> -#include <sys/types.h>
->>   #include <sys/socket.h>
->>   #include <net/ethernet.h>
->>   #include <netinet/ip.h>
->>   #include <netinet/ether.h>
->>   #include <linux/if_ether.h>
->>   #include <linux/if_packet.h>
->> -#include <sys/socket.h>
->>   #include <sys/wait.h>
->>   #include <sys/uio.h>
->>   #include <linux/virtio_net.h>
->> @@ -31,7 +29,6 @@
->>   #include <stdlib.h>
->>   #include <os.h>
->>   #include <um_malloc.h>
->> -#include <sys/uio.h>
->>   #include "vector_user.h"
->>     #define ID_GRE 0
->>
-> 
-> Reviewed-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-> Acked-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+I have no opinion on the over 80 char thing, so as long as everyone
+else is okay with it, I have no complaints.
 
+Cheers
 
 _______________________________________________
 linux-um mailing list
