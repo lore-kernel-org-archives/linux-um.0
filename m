@@ -1,45 +1,59 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: [PATCH] um: define set_pte_at() as a static inline function, not a macro
-Date: Wed, 13 Mar 2019 11:14:39 +0100
-Message-Id: <20190313101439.7092-1-brgl@bgdev.pl>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from imap.cs.msu.ru ([188.44.42.39] helo=mail.cs.msu.ru)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1h0qup-0000X8-NJ
+ for linux-um@lists.infradead.org; Mon, 04 Mar 2019 16:58:36 +0000
+From: Arseny Maslennikov <ar@cs.msu.ru>
+Date: Mon,  4 Mar 2019 19:57:32 +0300
+Message-Id: <20190304165732.24043-4-ar@cs.msu.ru>
+In-Reply-To: <20190304165732.24043-1-ar@cs.msu.ru>
+References: <20190304165732.24043-1-ar@cs.msu.ru>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
-List-ID: <linux-um.lists.infradead.org>
+Subject: [PATCH 3/3] arch/um/kernel/Makefile: use KCONFIG_CONFIG
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Masahiro Yamada <yamada.masahiro@socionext.com>, Michal Marek <michal.lkml@markovi.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Arseny Maslennikov <ar@cs.msu.ru>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+If the config file is reassigned through the KCONFIG_CONFIG
+makeflag/envvar, this rule still attempts to use the wrong, possibly
+nonexistent file.
+Let's fix that.
 
-When defined as macro, the mm argument is unused and subsequently the
-variable passed as mm is considered unused by the compiler. This fixes
-a build warning.
-
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Signed-off-by: Arseny Maslennikov <ar@cs.msu.ru>
 ---
- arch/um/include/asm/pgtable.h | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ arch/um/kernel/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/um/include/asm/pgtable.h b/arch/um/include/asm/pgtable.h
-index 9c04562310b3..b377df76cc28 100644
---- a/arch/um/include/asm/pgtable.h
-+++ b/arch/um/include/asm/pgtable.h
-@@ -263,7 +263,12 @@ static inline void set_pte(pte_t *pteptr, pte_t pteval)
- 	*pteptr = pte_mknewpage(*pteptr);
- 	if(pte_present(*pteptr)) *pteptr = pte_mknewprot(*pteptr);
- }
--#define set_pte_at(mm,addr,ptep,pteval) set_pte(ptep,pteval)
-+
-+static inline void set_pte_at(struct mm_struct *mm, unsigned long addr,
-+			      pte_t *pteptr, pte_t pteval)
-+{
-+	set_pte(pteptr, pteval);
-+}
+diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
+index 2f36d515762e..f5afd186a0ab 100644
+--- a/arch/um/kernel/Makefile
++++ b/arch/um/kernel/Makefile
+@@ -35,7 +35,7 @@ targets := config.c config.tmp
+ # Be careful with the below Sed code - sed is pitfall-rich!
+ # We use sed to lower build requirements, for "embedded" builders for instance.
  
- #define __HAVE_ARCH_PTE_SAME
- static inline int pte_same(pte_t pte_a, pte_t pte_b)
+-$(obj)/config.tmp: $(objtree)/.config FORCE
++$(obj)/config.tmp: $(objtree)/$(KCONFIG_CONFIG) FORCE
+ 	$(call if_changed,quote1)
+ 
+ quiet_cmd_quote1 = QUOTE   $@
 -- 
 2.20.1
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
