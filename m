@@ -1,15 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from imap.cs.msu.ru ([188.44.42.39] helo=mail.cs.msu.ru)
+Received: from mout.kundenserver.de ([212.227.17.24])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h0qup-0000XB-N2
- for linux-um@lists.infradead.org; Mon, 04 Mar 2019 16:58:38 +0000
-From: Arseny Maslennikov <ar@cs.msu.ru>
-Date: Mon,  4 Mar 2019 19:57:31 +0300
-Message-Id: <20190304165732.24043-3-ar@cs.msu.ru>
-In-Reply-To: <20190304165732.24043-1-ar@cs.msu.ru>
-References: <20190304165732.24043-1-ar@cs.msu.ru>
-MIME-Version: 1.0
-Subject: [PATCH 2/3] Makefile: kselftest: use KCONFIG_CONFIG
+ id 1h1dsW-0002xq-DN
+ for linux-um@lists.infradead.org; Wed, 06 Mar 2019 21:15:08 +0000
+From: "Enrico Weigelt, metux IT consult" <info@metux.net>
+Subject: [PATCH v2] arch: um: Kconfig: pedantic indention cleanups
+Date: Wed,  6 Mar 2019 22:14:55 +0100
+Message-Id: <1551906895-6065-1-git-send-email-info@metux.net>
+In-Reply-To: <31062067.NyzppZ7ELz@blindfold>
+References: <31062067.NyzppZ7ELz@blindfold>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,41 +17,101 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Masahiro Yamada <yamada.masahiro@socionext.com>, Michal Marek <michal.lkml@markovi.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Arseny Maslennikov <ar@cs.msu.ru>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: richard@nod.at, jdike@addtoit.com, linux-um@lists.infradead.org, anton.ivanov@cambridgegreys.com
 
-If the config file is reassigned through the KCONFIG_CONFIG
-makeflag/envvar, this rule still attempts to use the wrong, possibly
-nonexistent file.
-Let's fix that.
+Formatting of Kconfig files doesn't look so pretty, so just
+take damp cloth and clean it up.
 
-Signed-off-by: Arseny Maslennikov <ar@cs.msu.ru>
+Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
 ---
- Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/um/Kconfig | 52 ++++++++++++++++++++++++++--------------------------
+ 1 file changed, 26 insertions(+), 26 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index d5713e7b1e50..4d8760166a47 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1199,9 +1199,9 @@ kselftest-clean:
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index ec9711d..216ee50 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -80,46 +80,46 @@ config LD_SCRIPT_DYN
+ 	bool
+ 	default y
+ 	depends on !LD_SCRIPT_STATIC
+-        select MODULE_REL_CRCS if MODVERSIONS
++	select MODULE_REL_CRCS if MODVERSIONS
  
- PHONY += kselftest-merge
- kselftest-merge:
--	$(if $(wildcard $(objtree)/.config),, $(error No .config exists, config your kernel first!))
-+	$(if $(wildcard $(objtree)/$(KCONFIG_CONFIG)),, $(error No $(KCONFIG_CONFIG) exists, config your kernel first!))
- 	$(Q)$(CONFIG_SHELL) $(srctree)/scripts/kconfig/merge_config.sh \
--		-m $(objtree)/.config \
-+		-m $(objtree)/$(KCONFIG_CONFIG) \
- 		$(srctree)/tools/testing/selftests/*/config
- 	+$(Q)$(MAKE) -f $(srctree)/Makefile olddefconfig
+ config HOSTFS
+ 	tristate "Host filesystem"
+ 	help
+-          While the User-Mode Linux port uses its own root file system for
+-          booting and normal file access, this module lets the UML user
+-          access files stored on the host.  It does not require any
+-          network connection between the Host and UML.  An example use of
+-          this might be:
++	  While the User-Mode Linux port uses its own root file system for
++	  booting and normal file access, this module lets the UML user
++	  access files stored on the host.  It does not require any
++	  network connection between the Host and UML.  An example use of
++	  this might be:
  
+-          mount none /tmp/fromhost -t hostfs -o /tmp/umlshare
++	  mount none /tmp/fromhost -t hostfs -o /tmp/umlshare
+ 
+-          where /tmp/fromhost is an empty directory inside UML and
+-          /tmp/umlshare is a directory on the host with files the UML user
+-          wishes to access.
++	  where /tmp/fromhost is an empty directory inside UML and
++	  /tmp/umlshare is a directory on the host with files the UML user
++	  wishes to access.
+ 
+-          For more information, see
+-          <http://user-mode-linux.sourceforge.net/hostfs.html>.
++	  For more information, see
++	  <http://user-mode-linux.sourceforge.net/hostfs.html>.
+ 
+-          If you'd like to be able to work with files stored on the host,
+-          say Y or M here; otherwise say N.
++	  If you'd like to be able to work with files stored on the host,
++	  say Y or M here; otherwise say N.
+ 
+ config MCONSOLE
+ 	bool "Management console"
+ 	depends on PROC_FS
+ 	default y
+ 	help
+-          The user mode linux management console is a low-level interface to
+-          the kernel, somewhat like the i386 SysRq interface.  Since there is
+-          a full-blown operating system running under every user mode linux
+-          instance, there is much greater flexibility possible than with the
+-          SysRq mechanism.
+-
+-          If you answer 'Y' to this option, to use this feature, you need the
+-          mconsole client (called uml_mconsole) which is present in CVS in
+-          2.4.5-9um and later (path /tools/mconsole), and is also in the
+-          distribution RPM package in 2.4.6 and later.
+-
+-          It is safe to say 'Y' here.
++	  The user mode linux management console is a low-level interface to
++	  the kernel, somewhat like the i386 SysRq interface.  Since there is
++	  a full-blown operating system running under every user mode linux
++	  instance, there is much greater flexibility possible than with the
++	  SysRq mechanism.
++
++	  If you answer 'Y' to this option, to use this feature, you need the
++	  mconsole client (called uml_mconsole) which is present in CVS in
++	  2.4.5-9um and later (path /tools/mconsole), and is also in the
++	  distribution RPM package in 2.4.6 and later.
++
++	  It is safe to say 'Y' here.
+ 
+ config MAGIC_SYSRQ
+ 	bool "Magic SysRq key"
 -- 
-2.20.1
+1.9.1
 
 
 _______________________________________________
