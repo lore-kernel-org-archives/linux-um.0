@@ -1,13 +1,22 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from conssluserg-04.nifty.com ([210.131.2.83])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h3j6U-0006ji-VK
- for linux-um@lists.infradead.org; Tue, 12 Mar 2019 15:14:08 +0000
-From: Richard Weinberger <richard@nod.at>
-Subject: [GIT PULL] UML updates for 5.1-rc1
-Date: Tue, 12 Mar 2019 16:14:04 +0100
-Message-ID: <31705653.NnsrL61LRB@blindfold>
+ id 1h3Ogn-0003WR-0p
+ for linux-um@lists.infradead.org; Mon, 11 Mar 2019 17:26:14 +0000
+Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com
+ [209.85.217.44]) (authenticated)
+ by conssluserg-04.nifty.com with ESMTP id x2BHPo1P005982
+ for <linux-um@lists.infradead.org>; Tue, 12 Mar 2019 02:25:50 +0900
+Received: by mail-vs1-f44.google.com with SMTP id w14so3218566vso.6
+ for <linux-um@lists.infradead.org>; Mon, 11 Mar 2019 10:25:50 -0700 (PDT)
 MIME-Version: 1.0
+References: <20190304165732.24043-1-ar@cs.msu.ru>
+ <20190304165732.24043-3-ar@cs.msu.ru>
+In-Reply-To: <20190304165732.24043-3-ar@cs.msu.ru>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Tue, 12 Mar 2019 02:25:13 +0900
+Message-ID: <CAK7LNATzyyga_jbd_9BbEqws9PE-19L3FSxxoPwbC7ieic0yQg@mail.gmail.com>
+Subject: Re: [PATCH 2/3] Makefile: kselftest: use KCONFIG_CONFIG
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,41 +29,62 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: torvalds@linux-foundation.org
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+To: Arseny Maslennikov <ar@cs.msu.ru>
+Cc: Michal Marek <michal.lkml@markovi.net>, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Linus,
-
-The following changes since commit 1c163f4c7b3f621efff9b28a47abb36f7378d783:
-
-  Linux 5.0 (2019-03-03 15:21:29 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git for-linus-5.1-rc1
-
-for you to fetch changes up to aea05eb56e47046de1e5b508d40931dca969f1e5:
-
-  um: Fix for a possible OOPS in ubd initialization (2019-03-06 22:39:18 +0100)
-
-----------------------------------------------------------------
-This pull request contains updates for UML:
-
-- Bugfix for the UML block device driver
-
-----------------------------------------------------------------
-Anton Ivanov (1):
-      um: Fix for a possible OOPS in ubd initialization
-
-YueHaibing (1):
-      um: Remove duplicated include from vector_user.c
-
- arch/um/drivers/ubd_kern.c    | 6 +++---
- arch/um/drivers/vector_user.c | 3 ---
- 2 files changed, 3 insertions(+), 6 deletions(-)
+On Tue, Mar 5, 2019 at 1:58 AM Arseny Maslennikov <ar@cs.msu.ru> wrote:
+>
+> If the config file is reassigned through the KCONFIG_CONFIG
+> makeflag/envvar, this rule still attempts to use the wrong, possibly
+> nonexistent file.
+> Let's fix that.
+>
+> Signed-off-by: Arseny Maslennikov <ar@cs.msu.ru>
+> ---
+>  Makefile | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/Makefile b/Makefile
+> index d5713e7b1e50..4d8760166a47 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -1199,9 +1199,9 @@ kselftest-clean:
+>
+>  PHONY += kselftest-merge
+>  kselftest-merge:
+> -       $(if $(wildcard $(objtree)/.config),, $(error No .config exists, config your kernel first!))
+> +       $(if $(wildcard $(objtree)/$(KCONFIG_CONFIG)),, $(error No $(KCONFIG_CONFIG) exists, config your kernel first!))
+>         $(Q)$(CONFIG_SHELL) $(srctree)/scripts/kconfig/merge_config.sh \
+> -               -m $(objtree)/.config \
+> +               -m $(objtree)/$(KCONFIG_CONFIG) \
 
 
+You are blindly replacing .config with $(KCONFIG_CONFIG).
 
+
+What kind of usage do you assume for KCONFIG_CONFIG ?
+
+$(objtree)/$(KCONFIG_CONFIG) means
+$(KCONFIG_CONFIG) never becomes an absolute path.
+
+
+
+
+
+
+
+
+>                 $(srctree)/tools/testing/selftests/*/config
+>         +$(Q)$(MAKE) -f $(srctree)/Makefile olddefconfig
+>
+> --
+> 2.20.1
+>
+
+
+--
+Best Regards
+Masahiro Yamada
 
 _______________________________________________
 linux-um mailing list
