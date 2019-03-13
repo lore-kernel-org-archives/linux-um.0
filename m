@@ -1,100 +1,129 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-it1-x142.google.com ([2607:f8b0:4864:20::142])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h4QUl-0006Ci-OV
- for linux-um@lists.infradead.org; Thu, 14 Mar 2019 13:34:06 +0000
-Received: by mail-it1-x142.google.com with SMTP id z124so4882173itc.2
- for <linux-um@lists.infradead.org>; Thu, 14 Mar 2019 06:34:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190312133047.16201-1-brgl@bgdev.pl>
- <56704758-ee74-0e9b-de1c-1dc94deda8d7@cambridgegreys.com>
-In-Reply-To: <56704758-ee74-0e9b-de1c-1dc94deda8d7@cambridgegreys.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Thu, 14 Mar 2019 14:33:49 +0100
-Message-ID: <CAMRc=MdBsovEpMxwyGmHB_AL=pLtPsE3g=+y1ghYeHhXvobYbw@mail.gmail.com>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
 Subject: Re: [PATCH] um: remove uses of variable length arrays
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Bartosz Golaszewski <bgolaszewski@baylibre.com>
+References: <20190312133047.16201-1-brgl@bgdev.pl>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <56704758-ee74-0e9b-de1c-1dc94deda8d7@cambridgegreys.com>
+Date: Wed, 13 Mar 2019 09:45:30 +0000
+MIME-Version: 1.0
+In-Reply-To: <20190312133047.16201-1-brgl@bgdev.pl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Sender: linux-kernel-owner@vger.kernel.org
+To: Bartosz Golaszewski <brgl@bgdev.pl>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
+Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-xZtyLiwgMTMgbWFyIDIwMTkgbyAxMDo0NSBBbnRvbiBJdmFub3YKPGFudG9uLml2YW5vdkBjYW1i
-cmlkZ2VncmV5cy5jb20+IG5hcGlzYcWCKGEpOgo+Cj4gT24gMTIvMDMvMjAxOSAxMzozMCwgQmFy
-dG9zeiBHb2xhc3pld3NraSB3cm90ZToKPiA+IEZyb206IEJhcnRvc3ogR29sYXN6ZXdza2kgPGJn
-b2xhc3pld3NraUBiYXlsaWJyZS5jb20+Cj4gPgo+ID4gV2hpbGUgdGhlIGFmZmVjdGVkIGNvZGUg
-aXMgcnVuIGluIHVzZXItbW9kZSwgdGhlIGJ1aWxkIHN0aWxsIHdhcm5zCj4gPiBhYm91dCBpdC4g
-Q29udmVydCBhbGwgdXNlcyBvZiBWTEEgdG8gZHluYW1pYyBhbGxvY2F0aW9ucy4KPiA+Cj4gPiBT
-aWduZWQtb2ZmLWJ5OiBCYXJ0b3N6IEdvbGFzemV3c2tpIDxiZ29sYXN6ZXdza2lAYmF5bGlicmUu
-Y29tPgo+ID4gLS0tCj4gPiAgIGFyY2gvdW0vb3MtTGludXgvdW1pZC5jIHwgMzYgKysrKysrKysr
-KysrKysrKysrKysrKysrKysrLS0tLS0tLS0tCj4gPiAgIDEgZmlsZSBjaGFuZ2VkLCAyNyBpbnNl
-cnRpb25zKCspLCA5IGRlbGV0aW9ucygtKQo+ID4KPiA+IGRpZmYgLS1naXQgYS9hcmNoL3VtL29z
-LUxpbnV4L3VtaWQuYyBiL2FyY2gvdW0vb3MtTGludXgvdW1pZC5jCj4gPiBpbmRleCA5OThmYmI0
-NDU0NTguLmUyNjE2NTZmZTlkNyAxMDA2NDQKPiA+IC0tLSBhL2FyY2gvdW0vb3MtTGludXgvdW1p
-ZC5jCj4gPiArKysgYi9hcmNoL3VtL29zLUxpbnV4L3VtaWQuYwo+ID4gQEAgLTEzNSwxMiArMTM1
-LDE4IEBAIHN0YXRpYyBpbnQgcmVtb3ZlX2ZpbGVzX2FuZF9kaXIoY2hhciAqZGlyKQo+ID4gICAg
-Ki8KPiA+ICAgc3RhdGljIGlubGluZSBpbnQgaXNfdW1kaXJfdXNlZChjaGFyICpkaXIpCj4gPiAg
-IHsKPiA+IC0gICAgIGNoYXIgZmlsZVtzdHJsZW4odW1sX2RpcikgKyBVTUlEX0xFTiArIHNpemVv
-ZigiL3BpZFwwIildOwo+ID4gLSAgICAgY2hhciBwaWRbc2l6ZW9mKCJubm5ublwwIildLCAqZW5k
-Owo+ID4gKyAgICAgY2hhciBwaWRbc2l6ZW9mKCJubm5ublwwIildLCAqZW5kLCAqZmlsZTsKPiA+
-ICAgICAgIGludCBkZWFkLCBmZCwgcCwgbiwgZXJyOwo+ID4gKyAgICAgc2l6ZV90IGZpbGVsZW47
-Cj4gPgo+ID4gLSAgICAgbiA9IHNucHJpbnRmKGZpbGUsIHNpemVvZihmaWxlKSwgIiVzL3BpZCIs
-IGRpcik7Cj4gPiAtICAgICBpZiAobiA+PSBzaXplb2YoZmlsZSkpIHsKPiA+ICsgICAgIGVyciA9
-IGFzcHJpbnRmKCZmaWxlLCAiJXMvcGlkIiwgZGlyKTsKPiA+ICsgICAgIGlmIChlcnIgPCAwKQo+
-ID4gKyAgICAgICAgICAgICByZXR1cm4gMDsKPiA+ICsKPiA+ICsgICAgIGZpbGVsZW4gPSBzdHJs
-ZW4oZmlsZSk7Cj4gPiArCj4gPiArICAgICBuID0gc25wcmludGYoZmlsZSwgZmlsZWxlbiwgIiVz
-L3BpZCIsIGRpcik7Cj4gPiArICAgICBpZiAobiA+PSBmaWxlbGVuKSB7Cj4gPiAgICAgICAgICAg
-ICAgIHByaW50ayhVTV9LRVJOX0VSUiAiaXNfdW1kaXJfdXNlZCAtIHBpZCBmaWxlbmFtZSB0b28g
-bG9uZ1xuIik7Cj4gPiAgICAgICAgICAgICAgIGVyciA9IC1FMkJJRzsKPiA+ICAgICAgICAgICAg
-ICAgZ290byBvdXQ7Cj4gPiBAQCAtMTg1LDYgKzE5MSw3IEBAIHN0YXRpYyBpbmxpbmUgaW50IGlz
-X3VtZGlyX3VzZWQoY2hhciAqZGlyKQo+ID4gICBvdXRfY2xvc2U6Cj4gPiAgICAgICBjbG9zZShm
-ZCk7Cj4gPiAgIG91dDoKPiA+ICsgICAgIGZyZWUoZmlsZSk7Cj4gPiAgICAgICByZXR1cm4gMDsK
-PiA+ICAgfQo+ID4KPiA+IEBAIC0yMTAsMTggKzIxNywyMSBAQCBzdGF0aWMgaW50IHVtZGlyX3Rh
-a2VfaWZfZGVhZChjaGFyICpkaXIpCj4gPgo+ID4gICBzdGF0aWMgdm9pZCBfX2luaXQgY3JlYXRl
-X3BpZF9maWxlKHZvaWQpCj4gPiAgIHsKPiA+IC0gICAgIGNoYXIgZmlsZVtzdHJsZW4odW1sX2Rp
-cikgKyBVTUlEX0xFTiArIHNpemVvZigiL3BpZFwwIildOwo+ID4gLSAgICAgY2hhciBwaWRbc2l6
-ZW9mKCJubm5ublwwIildOwo+ID4gKyAgICAgY2hhciBwaWRbc2l6ZW9mKCJubm5ublwwIildLCAq
-ZmlsZTsKPiA+ICAgICAgIGludCBmZCwgbjsKPiA+Cj4gPiAtICAgICBpZiAodW1pZF9maWxlX25h
-bWUoInBpZCIsIGZpbGUsIHNpemVvZihmaWxlKSkpCj4gPiArICAgICBmaWxlID0gbWFsbG9jKHN0
-cmxlbih1bWxfZGlyKSArIFVNSURfTEVOICsgc2l6ZW9mKCIvcGlkXDAiKSk7Cj4gPiArICAgICBp
-ZiAoIWZpbGUpCj4gPiAgICAgICAgICAgICAgIHJldHVybjsKPiA+Cj4gPiArICAgICBpZiAodW1p
-ZF9maWxlX25hbWUoInBpZCIsIGZpbGUsIHNpemVvZihmaWxlKSkpCj4gPiArICAgICAgICAgICAg
-IGdvdG8gb3V0Owo+ID4gKwo+ID4gICAgICAgZmQgPSBvcGVuKGZpbGUsIE9fUkRXUiB8IE9fQ1JF
-QVQgfCBPX0VYQ0wsIDA2NDQpOwo+ID4gICAgICAgaWYgKGZkIDwgMCkgewo+ID4gICAgICAgICAg
-ICAgICBwcmludGsoVU1fS0VSTl9FUlIgIk9wZW4gb2YgbWFjaGluZSBwaWQgZmlsZSBcIiVzXCIg
-ZmFpbGVkOiAiCj4gPiAgICAgICAgICAgICAgICAgICAgICAiJXNcbiIsIGZpbGUsIHN0cmVycm9y
-KGVycm5vKSk7Cj4gPiAtICAgICAgICAgICAgIHJldHVybjsKPiA+ICsgICAgICAgICAgICAgZ290
-byBvdXQ7Cj4gPiAgICAgICB9Cj4gPgo+ID4gICAgICAgc25wcmludGYocGlkLCBzaXplb2YocGlk
-KSwgIiVkXG4iLCBnZXRwaWQoKSk7Cj4gPiBAQCAtMjMxLDYgKzI0MSw4IEBAIHN0YXRpYyB2b2lk
-IF9faW5pdCBjcmVhdGVfcGlkX2ZpbGUodm9pZCkKPiA+ICAgICAgICAgICAgICAgICAgICAgIGVy
-cm5vKTsKPiA+Cj4gPiAgICAgICBjbG9zZShmZCk7Cj4gPiArb3V0Ogo+ID4gKyAgICAgZnJlZShm
-aWxlKTsKPiA+ICAgfQo+ID4KPiA+ICAgaW50IF9faW5pdCBzZXRfdW1pZChjaGFyICpuYW1lKQo+
-ID4gQEAgLTM4NSwxMyArMzk3LDE5IEBAIF9fdW1sX3NldHVwKCJ1bWxfZGlyPSIsIHNldF91bWxf
-ZGlyLAo+ID4KPiA+ICAgc3RhdGljIHZvaWQgcmVtb3ZlX3VtaWRfZGlyKHZvaWQpCj4gPiAgIHsK
-PiA+IC0gICAgIGNoYXIgZGlyW3N0cmxlbih1bWxfZGlyKSArIFVNSURfTEVOICsgMV0sIGVycjsK
-PiA+ICsgICAgIGNoYXIgKmRpciwgZXJyOwo+ID4gKwo+ID4gKyAgICAgZGlyID0gbWFsbG9jKHN0
-cmxlbih1bWxfZGlyKSArIFVNSURfTEVOICsgMSk7Cj4gPiArICAgICBpZiAoIWRpcikKPiA+ICsg
-ICAgICAgICAgICAgcmV0dXJuOwo+ID4KPiA+ICAgICAgIHNwcmludGYoZGlyLCAiJXMlcyIsIHVt
-bF9kaXIsIHVtaWQpOwo+ID4gICAgICAgZXJyID0gcmVtb3ZlX2ZpbGVzX2FuZF9kaXIoZGlyKTsK
-PiA+ICAgICAgIGlmIChlcnIpCj4gPiAgICAgICAgICAgICAgIG9zX3dhcm4oIiVzIC0gcmVtb3Zl
-X2ZpbGVzX2FuZF9kaXIgZmFpbGVkIHdpdGggZXJyID0gJWRcbiIsCj4gPiAgICAgICAgICAgICAg
-ICAgICAgICAgX19mdW5jX18sIGVycik7Cj4gPiArCj4gPiArICAgICBmcmVlKGRpcik7Cj4gPiAg
-IH0KPiA+Cj4gPiAgIF9fdW1sX2V4aXRjYWxsKHJlbW92ZV91bWlkX2Rpcik7Cj4gPgo+Cj4gVGhh
-bmtzIGZvciBicmluZ2luZyBpdCB1cC4gSXQgaGVscGVkIG1lIG5vdGljZSB0aGF0IHRoaXMgaXMg
-YWN0dWFsbHkgYnJva2VuLgo+Cj4gUElEIGNhbiBiZSBtb3JlIHRoYW4gNSBkaWdpdHMgbm93ZGF5
-cy4KPgo+IC0tCgpEbyB5b3Ugd2FudCB0byB0YWtlIHRoaXMgcGF0Y2ggYW55d2F5IGFuZCB0aGVu
-IGFwcGx5IHRoZSBmaXggZm9yIHRoZQphcnJheSBvbiB0b3Agb2YgdGhhdCBvciBkbyB5b3UgcHJl
-ZmVyIGl0IGJlIGZpeGVkIGJlZm9yZSB0aGF0PwoKQmFydAoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVt
-QGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9saW51eC11bQo=
+On 12/03/2019 13:30, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> 
+> While the affected code is run in user-mode, the build still warns
+> about it. Convert all uses of VLA to dynamic allocations.
+> 
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> ---
+>   arch/um/os-Linux/umid.c | 36 +++++++++++++++++++++++++++---------
+>   1 file changed, 27 insertions(+), 9 deletions(-)
+> 
+> diff --git a/arch/um/os-Linux/umid.c b/arch/um/os-Linux/umid.c
+> index 998fbb445458..e261656fe9d7 100644
+> --- a/arch/um/os-Linux/umid.c
+> +++ b/arch/um/os-Linux/umid.c
+> @@ -135,12 +135,18 @@ static int remove_files_and_dir(char *dir)
+>    */
+>   static inline int is_umdir_used(char *dir)
+>   {
+> -	char file[strlen(uml_dir) + UMID_LEN + sizeof("/pid\0")];
+> -	char pid[sizeof("nnnnn\0")], *end;
+> +	char pid[sizeof("nnnnn\0")], *end, *file;
+>   	int dead, fd, p, n, err;
+> +	size_t filelen;
+>   
+> -	n = snprintf(file, sizeof(file), "%s/pid", dir);
+> -	if (n >= sizeof(file)) {
+> +	err = asprintf(&file, "%s/pid", dir);
+> +	if (err < 0)
+> +		return 0;
+> +
+> +	filelen = strlen(file);
+> +
+> +	n = snprintf(file, filelen, "%s/pid", dir);
+> +	if (n >= filelen) {
+>   		printk(UM_KERN_ERR "is_umdir_used - pid filename too long\n");
+>   		err = -E2BIG;
+>   		goto out;
+> @@ -185,6 +191,7 @@ static inline int is_umdir_used(char *dir)
+>   out_close:
+>   	close(fd);
+>   out:
+> +	free(file);
+>   	return 0;
+>   }
+>   
+> @@ -210,18 +217,21 @@ static int umdir_take_if_dead(char *dir)
+>   
+>   static void __init create_pid_file(void)
+>   {
+> -	char file[strlen(uml_dir) + UMID_LEN + sizeof("/pid\0")];
+> -	char pid[sizeof("nnnnn\0")];
+> +	char pid[sizeof("nnnnn\0")], *file;
+>   	int fd, n;
+>   
+> -	if (umid_file_name("pid", file, sizeof(file)))
+> +	file = malloc(strlen(uml_dir) + UMID_LEN + sizeof("/pid\0"));
+> +	if (!file)
+>   		return;
+>   
+> +	if (umid_file_name("pid", file, sizeof(file)))
+> +		goto out;
+> +
+>   	fd = open(file, O_RDWR | O_CREAT | O_EXCL, 0644);
+>   	if (fd < 0) {
+>   		printk(UM_KERN_ERR "Open of machine pid file \"%s\" failed: "
+>   		       "%s\n", file, strerror(errno));
+> -		return;
+> +		goto out;
+>   	}
+>   
+>   	snprintf(pid, sizeof(pid), "%d\n", getpid());
+> @@ -231,6 +241,8 @@ static void __init create_pid_file(void)
+>   		       errno);
+>   
+>   	close(fd);
+> +out:
+> +	free(file);
+>   }
+>   
+>   int __init set_umid(char *name)
+> @@ -385,13 +397,19 @@ __uml_setup("uml_dir=", set_uml_dir,
+>   
+>   static void remove_umid_dir(void)
+>   {
+> -	char dir[strlen(uml_dir) + UMID_LEN + 1], err;
+> +	char *dir, err;
+> +
+> +	dir = malloc(strlen(uml_dir) + UMID_LEN + 1);
+> +	if (!dir)
+> +		return;
+>   
+>   	sprintf(dir, "%s%s", uml_dir, umid);
+>   	err = remove_files_and_dir(dir);
+>   	if (err)
+>   		os_warn("%s - remove_files_and_dir failed with err = %d\n",
+>   			__func__, err);
+> +
+> +	free(dir);
+>   }
+>   
+>   __uml_exitcall(remove_umid_dir);
+> 
+
+Thanks for bringing it up. It helped me notice that this is actually broken.
+
+PID can be more than 5 digits nowdays.
+
+-- 
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
