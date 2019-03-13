@@ -1,129 +1,50 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Subject: Re: [PATCH] um: remove uses of variable length arrays
-References: <20190312133047.16201-1-brgl@bgdev.pl>
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Message-ID: <56704758-ee74-0e9b-de1c-1dc94deda8d7@cambridgegreys.com>
-Date: Wed, 13 Mar 2019 09:45:30 +0000
 MIME-Version: 1.0
-In-Reply-To: <20190312133047.16201-1-brgl@bgdev.pl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Sender: linux-kernel-owner@vger.kernel.org
-To: Bartosz Golaszewski <brgl@bgdev.pl>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
-Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+Date: Wed, 13 Mar 2019 11:11:08 +0100
+References: <20190312133047.16201-1-brgl@bgdev.pl>
+	<56704758-ee74-0e9b-de1c-1dc94deda8d7@cambridgegreys.com>
+	<CAMRc=MdRKvM8ug_KNcwUGHv9J6OLFa1o_WaCbebxWUGyGVZtiw@mail.gmail.com>
+In-Reply-To: <CAMRc=MdRKvM8ug_KNcwUGHv9J6OLFa1o_WaCbebxWUGyGVZtiw@mail.gmail.com>
+Message-ID: <CAMuHMdXC5QffaOj479j3WCt5_GH2jeQnGrPoCrRPoFkHmFeDfw@mail.gmail.com>
+Subject: Re: [PATCH] um: remove uses of variable length arrays
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Bartosz Golaszewski <bgolaszewski@baylibre.com>, linux-um@lists.infradead.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-ID: <linux-um.lists.infradead.org>
 
-On 12/03/2019 13:30, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> 
-> While the affected code is run in user-mode, the build still warns
-> about it. Convert all uses of VLA to dynamic allocations.
-> 
-> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> ---
->   arch/um/os-Linux/umid.c | 36 +++++++++++++++++++++++++++---------
->   1 file changed, 27 insertions(+), 9 deletions(-)
-> 
-> diff --git a/arch/um/os-Linux/umid.c b/arch/um/os-Linux/umid.c
-> index 998fbb445458..e261656fe9d7 100644
-> --- a/arch/um/os-Linux/umid.c
-> +++ b/arch/um/os-Linux/umid.c
-> @@ -135,12 +135,18 @@ static int remove_files_and_dir(char *dir)
->    */
->   static inline int is_umdir_used(char *dir)
->   {
-> -	char file[strlen(uml_dir) + UMID_LEN + sizeof("/pid\0")];
-> -	char pid[sizeof("nnnnn\0")], *end;
-> +	char pid[sizeof("nnnnn\0")], *end, *file;
->   	int dead, fd, p, n, err;
-> +	size_t filelen;
->   
-> -	n = snprintf(file, sizeof(file), "%s/pid", dir);
-> -	if (n >= sizeof(file)) {
-> +	err = asprintf(&file, "%s/pid", dir);
-> +	if (err < 0)
-> +		return 0;
-> +
-> +	filelen = strlen(file);
-> +
-> +	n = snprintf(file, filelen, "%s/pid", dir);
-> +	if (n >= filelen) {
->   		printk(UM_KERN_ERR "is_umdir_used - pid filename too long\n");
->   		err = -E2BIG;
->   		goto out;
-> @@ -185,6 +191,7 @@ static inline int is_umdir_used(char *dir)
->   out_close:
->   	close(fd);
->   out:
-> +	free(file);
->   	return 0;
->   }
->   
-> @@ -210,18 +217,21 @@ static int umdir_take_if_dead(char *dir)
->   
->   static void __init create_pid_file(void)
->   {
-> -	char file[strlen(uml_dir) + UMID_LEN + sizeof("/pid\0")];
-> -	char pid[sizeof("nnnnn\0")];
-> +	char pid[sizeof("nnnnn\0")], *file;
->   	int fd, n;
->   
-> -	if (umid_file_name("pid", file, sizeof(file)))
-> +	file = malloc(strlen(uml_dir) + UMID_LEN + sizeof("/pid\0"));
-> +	if (!file)
->   		return;
->   
-> +	if (umid_file_name("pid", file, sizeof(file)))
-> +		goto out;
-> +
->   	fd = open(file, O_RDWR | O_CREAT | O_EXCL, 0644);
->   	if (fd < 0) {
->   		printk(UM_KERN_ERR "Open of machine pid file \"%s\" failed: "
->   		       "%s\n", file, strerror(errno));
-> -		return;
-> +		goto out;
->   	}
->   
->   	snprintf(pid, sizeof(pid), "%d\n", getpid());
-> @@ -231,6 +241,8 @@ static void __init create_pid_file(void)
->   		       errno);
->   
->   	close(fd);
-> +out:
-> +	free(file);
->   }
->   
->   int __init set_umid(char *name)
-> @@ -385,13 +397,19 @@ __uml_setup("uml_dir=", set_uml_dir,
->   
->   static void remove_umid_dir(void)
->   {
-> -	char dir[strlen(uml_dir) + UMID_LEN + 1], err;
-> +	char *dir, err;
-> +
-> +	dir = malloc(strlen(uml_dir) + UMID_LEN + 1);
-> +	if (!dir)
-> +		return;
->   
->   	sprintf(dir, "%s%s", uml_dir, umid);
->   	err = remove_files_and_dir(dir);
->   	if (err)
->   		os_warn("%s - remove_files_and_dir failed with err = %d\n",
->   			__func__, err);
-> +
-> +	free(dir);
->   }
->   
->   __uml_exitcall(remove_umid_dir);
-> 
+Hi Bartosz,
 
-Thanks for bringing it up. It helped me notice that this is actually broken.
+On Wed, Mar 13, 2019 at 10:50 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> =C5=9Br., 13 mar 2019 o 10:45 Anton Ivanov
+> <anton.ivanov@cambridgegreys.com> napisa=C5=82(a):
+> > PID can be more than 5 digits nowdays.
+>
+> Do we have a macro in the kernel that yields the minimum size of an
+> array to fit a number? I can't find it. I vagely remember seeing
+> something like this in systemd tree. If it doesn't exist in the kernel
+> then maybe we should copy it over.
 
-PID can be more than 5 digits nowdays.
+1 + const_ilog2(n) / log2(10) =3D 1 + const_ilog2(n) / 3.321928
 
--- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
-https://www.cambridgegreys.com/
+Using fixed point calculations, that can be approximated as
+
+    1 + 19728 * const_ilog2(n) >> 16
+    1 + 77 * const_ilog2(n) >> 8
+
+(the factors might be one off)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
