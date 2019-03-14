@@ -1,47 +1,106 @@
-Return-Path: <brgl@bgdev.pl>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: [PATCH] um: irq: don't set the chip for all irqs
-Date: Thu, 14 Mar 2019 16:03:44 +0100
-Message-Id: <20190314150344.8555-1-brgl@bgdev.pl>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from ivanoab6.miniserver.com ([5.153.251.140]
+ helo=www.kot-begemot.co.uk)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1h4Qfk-0002cT-Qh
+ for linux-um@lists.infradead.org; Thu, 14 Mar 2019 13:45:26 +0000
+Subject: Re: [PATCH] um: remove uses of variable length arrays
+References: <20190312133047.16201-1-brgl@bgdev.pl>
+ <56704758-ee74-0e9b-de1c-1dc94deda8d7@cambridgegreys.com>
+ <CAMRc=MdBsovEpMxwyGmHB_AL=pLtPsE3g=+y1ghYeHhXvobYbw@mail.gmail.com>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <d574ef46-2935-4afa-c128-8aac74474512@cambridgegreys.com>
+Date: Thu, 14 Mar 2019 13:45:18 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
-List-ID: <linux-um.lists.infradead.org>
+In-Reply-To: <CAMRc=MdBsovEpMxwyGmHB_AL=pLtPsE3g=+y1ghYeHhXvobYbw@mail.gmail.com>
+Content-Language: en-US
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-
-Setting a chip for an interrupt marks it as allocated. Since UM doesn't
-support dynamic interrupt numbers (yet), it means we cannot simply
-increase NR_IRQS and then use the free irqs between LAST_IRQ and NR_IRQS
-with gpio-mockup or iio testing drivers as irq_alloc_descs() will fail
-after not being able to neither find an unallocated range of interrupts
-nor expand the range.
-
-Only call irq_set_chip_and_handler() for irqs until LAST_IRQ.
-
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
-Note: I plan to introduce support for SPARSE_IRQ but AFAICT it will be
-a bit more complicated, so in the meantime I'd like to propose this change.
-
- arch/um/kernel/irq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-index f4874b7ec503..598d7b3d9355 100644
---- a/arch/um/kernel/irq.c
-+++ b/arch/um/kernel/irq.c
-@@ -479,7 +479,7 @@ void __init init_IRQ(void)
- 	irq_set_chip_and_handler(TIMER_IRQ, &SIGVTALRM_irq_type, handle_edge_irq);
- 
- 
--	for (i = 1; i < NR_IRQS; i++)
-+	for (i = 1; i < LAST_IRQ; i++)
- 		irq_set_chip_and_handler(i, &normal_irq_type, handle_edge_irq);
- 	/* Initialize EPOLL Loop */
- 	os_setup_epoll();
--- 
-2.20.1
-
+Ck9uIDE0LzAzLzIwMTkgMTM6MzMsIEJhcnRvc3ogR29sYXN6ZXdza2kgd3JvdGU6Cj4gxZtyLiwg
+MTMgbWFyIDIwMTkgbyAxMDo0NSBBbnRvbiBJdmFub3YKPiA8YW50b24uaXZhbm92QGNhbWJyaWRn
+ZWdyZXlzLmNvbT4gbmFwaXNhxYIoYSk6Cj4+IE9uIDEyLzAzLzIwMTkgMTM6MzAsIEJhcnRvc3og
+R29sYXN6ZXdza2kgd3JvdGU6Cj4+PiBGcm9tOiBCYXJ0b3N6IEdvbGFzemV3c2tpIDxiZ29sYXN6
+ZXdza2lAYmF5bGlicmUuY29tPgo+Pj4KPj4+IFdoaWxlIHRoZSBhZmZlY3RlZCBjb2RlIGlzIHJ1
+biBpbiB1c2VyLW1vZGUsIHRoZSBidWlsZCBzdGlsbCB3YXJucwo+Pj4gYWJvdXQgaXQuIENvbnZl
+cnQgYWxsIHVzZXMgb2YgVkxBIHRvIGR5bmFtaWMgYWxsb2NhdGlvbnMuCj4+Pgo+Pj4gU2lnbmVk
+LW9mZi1ieTogQmFydG9zeiBHb2xhc3pld3NraSA8YmdvbGFzemV3c2tpQGJheWxpYnJlLmNvbT4K
+Pj4+IC0tLQo+Pj4gICAgYXJjaC91bS9vcy1MaW51eC91bWlkLmMgfCAzNiArKysrKysrKysrKysr
+KysrKysrKysrKysrKystLS0tLS0tLS0KPj4+ICAgIDEgZmlsZSBjaGFuZ2VkLCAyNyBpbnNlcnRp
+b25zKCspLCA5IGRlbGV0aW9ucygtKQo+Pj4KPj4+IGRpZmYgLS1naXQgYS9hcmNoL3VtL29zLUxp
+bnV4L3VtaWQuYyBiL2FyY2gvdW0vb3MtTGludXgvdW1pZC5jCj4+PiBpbmRleCA5OThmYmI0NDU0
+NTguLmUyNjE2NTZmZTlkNyAxMDA2NDQKPj4+IC0tLSBhL2FyY2gvdW0vb3MtTGludXgvdW1pZC5j
+Cj4+PiArKysgYi9hcmNoL3VtL29zLUxpbnV4L3VtaWQuYwo+Pj4gQEAgLTEzNSwxMiArMTM1LDE4
+IEBAIHN0YXRpYyBpbnQgcmVtb3ZlX2ZpbGVzX2FuZF9kaXIoY2hhciAqZGlyKQo+Pj4gICAgICov
+Cj4+PiAgICBzdGF0aWMgaW5saW5lIGludCBpc191bWRpcl91c2VkKGNoYXIgKmRpcikKPj4+ICAg
+IHsKPj4+IC0gICAgIGNoYXIgZmlsZVtzdHJsZW4odW1sX2RpcikgKyBVTUlEX0xFTiArIHNpemVv
+ZigiL3BpZFwwIildOwo+Pj4gLSAgICAgY2hhciBwaWRbc2l6ZW9mKCJubm5ublwwIildLCAqZW5k
+Owo+Pj4gKyAgICAgY2hhciBwaWRbc2l6ZW9mKCJubm5ublwwIildLCAqZW5kLCAqZmlsZTsKPj4+
+ICAgICAgICBpbnQgZGVhZCwgZmQsIHAsIG4sIGVycjsKPj4+ICsgICAgIHNpemVfdCBmaWxlbGVu
+Owo+Pj4KPj4+IC0gICAgIG4gPSBzbnByaW50ZihmaWxlLCBzaXplb2YoZmlsZSksICIlcy9waWQi
+LCBkaXIpOwo+Pj4gLSAgICAgaWYgKG4gPj0gc2l6ZW9mKGZpbGUpKSB7Cj4+PiArICAgICBlcnIg
+PSBhc3ByaW50ZigmZmlsZSwgIiVzL3BpZCIsIGRpcik7Cj4+PiArICAgICBpZiAoZXJyIDwgMCkK
+Pj4+ICsgICAgICAgICAgICAgcmV0dXJuIDA7Cj4+PiArCj4+PiArICAgICBmaWxlbGVuID0gc3Ry
+bGVuKGZpbGUpOwo+Pj4gKwo+Pj4gKyAgICAgbiA9IHNucHJpbnRmKGZpbGUsIGZpbGVsZW4sICIl
+cy9waWQiLCBkaXIpOwo+Pj4gKyAgICAgaWYgKG4gPj0gZmlsZWxlbikgewo+Pj4gICAgICAgICAg
+ICAgICAgcHJpbnRrKFVNX0tFUk5fRVJSICJpc191bWRpcl91c2VkIC0gcGlkIGZpbGVuYW1lIHRv
+byBsb25nXG4iKTsKPj4+ICAgICAgICAgICAgICAgIGVyciA9IC1FMkJJRzsKPj4+ICAgICAgICAg
+ICAgICAgIGdvdG8gb3V0Owo+Pj4gQEAgLTE4NSw2ICsxOTEsNyBAQCBzdGF0aWMgaW5saW5lIGlu
+dCBpc191bWRpcl91c2VkKGNoYXIgKmRpcikKPj4+ICAgIG91dF9jbG9zZToKPj4+ICAgICAgICBj
+bG9zZShmZCk7Cj4+PiAgICBvdXQ6Cj4+PiArICAgICBmcmVlKGZpbGUpOwo+Pj4gICAgICAgIHJl
+dHVybiAwOwo+Pj4gICAgfQo+Pj4KPj4+IEBAIC0yMTAsMTggKzIxNywyMSBAQCBzdGF0aWMgaW50
+IHVtZGlyX3Rha2VfaWZfZGVhZChjaGFyICpkaXIpCj4+Pgo+Pj4gICAgc3RhdGljIHZvaWQgX19p
+bml0IGNyZWF0ZV9waWRfZmlsZSh2b2lkKQo+Pj4gICAgewo+Pj4gLSAgICAgY2hhciBmaWxlW3N0
+cmxlbih1bWxfZGlyKSArIFVNSURfTEVOICsgc2l6ZW9mKCIvcGlkXDAiKV07Cj4+PiAtICAgICBj
+aGFyIHBpZFtzaXplb2YoIm5ubm5uXDAiKV07Cj4+PiArICAgICBjaGFyIHBpZFtzaXplb2YoIm5u
+bm5uXDAiKV0sICpmaWxlOwo+Pj4gICAgICAgIGludCBmZCwgbjsKPj4+Cj4+PiAtICAgICBpZiAo
+dW1pZF9maWxlX25hbWUoInBpZCIsIGZpbGUsIHNpemVvZihmaWxlKSkpCj4+PiArICAgICBmaWxl
+ID0gbWFsbG9jKHN0cmxlbih1bWxfZGlyKSArIFVNSURfTEVOICsgc2l6ZW9mKCIvcGlkXDAiKSk7
+Cj4+PiArICAgICBpZiAoIWZpbGUpCj4+PiAgICAgICAgICAgICAgICByZXR1cm47Cj4+Pgo+Pj4g
+KyAgICAgaWYgKHVtaWRfZmlsZV9uYW1lKCJwaWQiLCBmaWxlLCBzaXplb2YoZmlsZSkpKQo+Pj4g
+KyAgICAgICAgICAgICBnb3RvIG91dDsKPj4+ICsKPj4+ICAgICAgICBmZCA9IG9wZW4oZmlsZSwg
+T19SRFdSIHwgT19DUkVBVCB8IE9fRVhDTCwgMDY0NCk7Cj4+PiAgICAgICAgaWYgKGZkIDwgMCkg
+ewo+Pj4gICAgICAgICAgICAgICAgcHJpbnRrKFVNX0tFUk5fRVJSICJPcGVuIG9mIG1hY2hpbmUg
+cGlkIGZpbGUgXCIlc1wiIGZhaWxlZDogIgo+Pj4gICAgICAgICAgICAgICAgICAgICAgICIlc1xu
+IiwgZmlsZSwgc3RyZXJyb3IoZXJybm8pKTsKPj4+IC0gICAgICAgICAgICAgcmV0dXJuOwo+Pj4g
+KyAgICAgICAgICAgICBnb3RvIG91dDsKPj4+ICAgICAgICB9Cj4+Pgo+Pj4gICAgICAgIHNucHJp
+bnRmKHBpZCwgc2l6ZW9mKHBpZCksICIlZFxuIiwgZ2V0cGlkKCkpOwo+Pj4gQEAgLTIzMSw2ICsy
+NDEsOCBAQCBzdGF0aWMgdm9pZCBfX2luaXQgY3JlYXRlX3BpZF9maWxlKHZvaWQpCj4+PiAgICAg
+ICAgICAgICAgICAgICAgICAgZXJybm8pOwo+Pj4KPj4+ICAgICAgICBjbG9zZShmZCk7Cj4+PiAr
+b3V0Ogo+Pj4gKyAgICAgZnJlZShmaWxlKTsKPj4+ICAgIH0KPj4+Cj4+PiAgICBpbnQgX19pbml0
+IHNldF91bWlkKGNoYXIgKm5hbWUpCj4+PiBAQCAtMzg1LDEzICszOTcsMTkgQEAgX191bWxfc2V0
+dXAoInVtbF9kaXI9Iiwgc2V0X3VtbF9kaXIsCj4+Pgo+Pj4gICAgc3RhdGljIHZvaWQgcmVtb3Zl
+X3VtaWRfZGlyKHZvaWQpCj4+PiAgICB7Cj4+PiAtICAgICBjaGFyIGRpcltzdHJsZW4odW1sX2Rp
+cikgKyBVTUlEX0xFTiArIDFdLCBlcnI7Cj4+PiArICAgICBjaGFyICpkaXIsIGVycjsKPj4+ICsK
+Pj4+ICsgICAgIGRpciA9IG1hbGxvYyhzdHJsZW4odW1sX2RpcikgKyBVTUlEX0xFTiArIDEpOwo+
+Pj4gKyAgICAgaWYgKCFkaXIpCj4+PiArICAgICAgICAgICAgIHJldHVybjsKPj4+Cj4+PiAgICAg
+ICAgc3ByaW50ZihkaXIsICIlcyVzIiwgdW1sX2RpciwgdW1pZCk7Cj4+PiAgICAgICAgZXJyID0g
+cmVtb3ZlX2ZpbGVzX2FuZF9kaXIoZGlyKTsKPj4+ICAgICAgICBpZiAoZXJyKQo+Pj4gICAgICAg
+ICAgICAgICAgb3Nfd2FybigiJXMgLSByZW1vdmVfZmlsZXNfYW5kX2RpciBmYWlsZWQgd2l0aCBl
+cnIgPSAlZFxuIiwKPj4+ICAgICAgICAgICAgICAgICAgICAgICAgX19mdW5jX18sIGVycik7Cj4+
+PiArCj4+PiArICAgICBmcmVlKGRpcik7Cj4+PiAgICB9Cj4+Pgo+Pj4gICAgX191bWxfZXhpdGNh
+bGwocmVtb3ZlX3VtaWRfZGlyKTsKPj4+Cj4+IFRoYW5rcyBmb3IgYnJpbmdpbmcgaXQgdXAuIEl0
+IGhlbHBlZCBtZSBub3RpY2UgdGhhdCB0aGlzIGlzIGFjdHVhbGx5IGJyb2tlbi4KPj4KPj4gUElE
+IGNhbiBiZSBtb3JlIHRoYW4gNSBkaWdpdHMgbm93ZGF5cy4KPj4KPj4gLS0KPiBEbyB5b3Ugd2Fu
+dCB0byB0YWtlIHRoaXMgcGF0Y2ggYW55d2F5IGFuZCB0aGVuIGFwcGx5IHRoZSBmaXggZm9yIHRo
+ZQo+IGFycmF5IG9uIHRvcCBvZiB0aGF0IG9yIGRvIHlvdSBwcmVmZXIgaXQgYmUgZml4ZWQgYmVm
+b3JlIHRoYXQ/Cj4KPiBCYXJ0Cj4KSSBhbSBPSyB0byB0YWtlIGl0IGFzIGlzIGFuZCBoYXZlIHRo
+ZSBQSUQgbGVuZ3RoIGZpeGVkIGFmdGVyIHRoYXQuCgotLSAKQW50b24gUi4gSXZhbm92CkNhbWJy
+aWRnZWdyZXlzIExpbWl0ZWQuIFJlZ2lzdGVyZWQgaW4gRW5nbGFuZC4gQ29tcGFueSBOdW1iZXIg
+MTAyNzM2NjEKaHR0cHM6Ly93d3cuY2FtYnJpZGdlZ3JleXMuY29tLwoKCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdAps
+aW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vbGludXgtdW0K
 
