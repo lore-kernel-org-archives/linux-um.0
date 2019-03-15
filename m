@@ -1,121 +1,60 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mout.kundenserver.de ([212.227.17.24])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h1dsW-0002xq-DN
- for linux-um@lists.infradead.org; Wed, 06 Mar 2019 21:15:08 +0000
-From: "Enrico Weigelt, metux IT consult" <info@metux.net>
-Subject: [PATCH v2] arch: um: Kconfig: pedantic indention cleanups
-Date: Wed,  6 Mar 2019 22:14:55 +0100
-Message-Id: <1551906895-6065-1-git-send-email-info@metux.net>
-In-Reply-To: <31062067.NyzppZ7ELz@blindfold>
-References: <31062067.NyzppZ7ELz@blindfold>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Return-Path: <anton.ivanov@cambridgegreys.com>
+Subject: Re: [PATCH] um: irq: don't set the chip for all irqs
+References: <20190314150344.8555-1-brgl@bgdev.pl>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <ebcc2921-9048-9943-331b-6cc5baee95ea@cambridgegreys.com>
+Date: Fri, 15 Mar 2019 08:35:31 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20190314150344.8555-1-brgl@bgdev.pl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: richard@nod.at, jdike@addtoit.com, linux-um@lists.infradead.org, anton.ivanov@cambridgegreys.com
+To: Bartosz Golaszewski <brgl@bgdev.pl>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-Formatting of Kconfig files doesn't look so pretty, so just
-take damp cloth and clean it up.
 
-Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
----
- arch/um/Kconfig | 52 ++++++++++++++++++++++++++--------------------------
- 1 file changed, 26 insertions(+), 26 deletions(-)
 
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index ec9711d..216ee50 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -80,46 +80,46 @@ config LD_SCRIPT_DYN
- 	bool
- 	default y
- 	depends on !LD_SCRIPT_STATIC
--        select MODULE_REL_CRCS if MODVERSIONS
-+	select MODULE_REL_CRCS if MODVERSIONS
- 
- config HOSTFS
- 	tristate "Host filesystem"
- 	help
--          While the User-Mode Linux port uses its own root file system for
--          booting and normal file access, this module lets the UML user
--          access files stored on the host.  It does not require any
--          network connection between the Host and UML.  An example use of
--          this might be:
-+	  While the User-Mode Linux port uses its own root file system for
-+	  booting and normal file access, this module lets the UML user
-+	  access files stored on the host.  It does not require any
-+	  network connection between the Host and UML.  An example use of
-+	  this might be:
- 
--          mount none /tmp/fromhost -t hostfs -o /tmp/umlshare
-+	  mount none /tmp/fromhost -t hostfs -o /tmp/umlshare
- 
--          where /tmp/fromhost is an empty directory inside UML and
--          /tmp/umlshare is a directory on the host with files the UML user
--          wishes to access.
-+	  where /tmp/fromhost is an empty directory inside UML and
-+	  /tmp/umlshare is a directory on the host with files the UML user
-+	  wishes to access.
- 
--          For more information, see
--          <http://user-mode-linux.sourceforge.net/hostfs.html>.
-+	  For more information, see
-+	  <http://user-mode-linux.sourceforge.net/hostfs.html>.
- 
--          If you'd like to be able to work with files stored on the host,
--          say Y or M here; otherwise say N.
-+	  If you'd like to be able to work with files stored on the host,
-+	  say Y or M here; otherwise say N.
- 
- config MCONSOLE
- 	bool "Management console"
- 	depends on PROC_FS
- 	default y
- 	help
--          The user mode linux management console is a low-level interface to
--          the kernel, somewhat like the i386 SysRq interface.  Since there is
--          a full-blown operating system running under every user mode linux
--          instance, there is much greater flexibility possible than with the
--          SysRq mechanism.
--
--          If you answer 'Y' to this option, to use this feature, you need the
--          mconsole client (called uml_mconsole) which is present in CVS in
--          2.4.5-9um and later (path /tools/mconsole), and is also in the
--          distribution RPM package in 2.4.6 and later.
--
--          It is safe to say 'Y' here.
-+	  The user mode linux management console is a low-level interface to
-+	  the kernel, somewhat like the i386 SysRq interface.  Since there is
-+	  a full-blown operating system running under every user mode linux
-+	  instance, there is much greater flexibility possible than with the
-+	  SysRq mechanism.
-+
-+	  If you answer 'Y' to this option, to use this feature, you need the
-+	  mconsole client (called uml_mconsole) which is present in CVS in
-+	  2.4.5-9um and later (path /tools/mconsole), and is also in the
-+	  distribution RPM package in 2.4.6 and later.
-+
-+	  It is safe to say 'Y' here.
- 
- config MAGIC_SYSRQ
- 	bool "Magic SysRq key"
+On 14/03/2019 15:03, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> 
+> Setting a chip for an interrupt marks it as allocated. Since UM doesn't
+> support dynamic interrupt numbers (yet), it means we cannot simply
+> increase NR_IRQS and then use the free irqs between LAST_IRQ and NR_IRQS
+> with gpio-mockup or iio testing drivers as irq_alloc_descs() will fail
+> after not being able to neither find an unallocated range of interrupts
+> nor expand the range.
+> 
+> Only call irq_set_chip_and_handler() for irqs until LAST_IRQ.
+> 
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> ---
+> Note: I plan to introduce support for SPARSE_IRQ but AFAICT it will be
+> a bit more complicated, so in the meantime I'd like to propose this change.
+> 
+>   arch/um/kernel/irq.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
+> index f4874b7ec503..598d7b3d9355 100644
+> --- a/arch/um/kernel/irq.c
+> +++ b/arch/um/kernel/irq.c
+> @@ -479,7 +479,7 @@ void __init init_IRQ(void)
+>   	irq_set_chip_and_handler(TIMER_IRQ, &SIGVTALRM_irq_type, handle_edge_irq);
+>   
+>   
+> -	for (i = 1; i < NR_IRQS; i++)
+> +	for (i = 1; i < LAST_IRQ; i++)
+>   		irq_set_chip_and_handler(i, &normal_irq_type, handle_edge_irq);
+>   	/* Initialize EPOLL Loop */
+>   	os_setup_epoll();
+> 
+
+Reviewed-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Acked-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+
 -- 
-1.9.1
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
