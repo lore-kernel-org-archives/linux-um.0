@@ -1,25 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-lj1-x241.google.com ([2a00:1450:4864:20::241])
+Received: from mail-wr1-x442.google.com ([2a00:1450:4864:20::442])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h4uxA-0000hO-2c
- for linux-um@lists.infradead.org; Fri, 15 Mar 2019 22:05:25 +0000
-Received: by mail-lj1-x241.google.com with SMTP id t13so9241750lji.2
- for <linux-um@lists.infradead.org>; Fri, 15 Mar 2019 15:05:23 -0700 (PDT)
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com.
- [209.85.208.179])
- by smtp.gmail.com with ESMTPSA id q22sm636037ljc.59.2019.03.15.15.05.20
- for <linux-um@lists.infradead.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Fri, 15 Mar 2019 15:05:20 -0700 (PDT)
-Received: by mail-lj1-f179.google.com with SMTP id v10so9235157lji.3
- for <linux-um@lists.infradead.org>; Fri, 15 Mar 2019 15:05:20 -0700 (PDT)
+ id 1h4utO-00078R-1f
+ for linux-um@lists.infradead.org; Fri, 15 Mar 2019 22:01:31 +0000
+Received: by mail-wr1-x442.google.com with SMTP id k1so10595638wre.1
+ for <linux-um@lists.infradead.org>; Fri, 15 Mar 2019 15:01:29 -0700 (PDT)
 MIME-Version: 1.0
 References: <31705653.NnsrL61LRB@blindfold>
- <CAFLxGvy54Fa0Dr9jbqvv2utSi3WvCusAHbYreJ1C=wg2bWtPRg@mail.gmail.com>
-In-Reply-To: <CAFLxGvy54Fa0Dr9jbqvv2utSi3WvCusAHbYreJ1C=wg2bWtPRg@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Fri, 15 Mar 2019 15:05:03 -0700
-Message-ID: <CAHk-=whfc=JP7JAz0DKbQkrsvTYeAypjp_a0i13tMuD6Yk9szA@mail.gmail.com>
+In-Reply-To: <31705653.NnsrL61LRB@blindfold>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Fri, 15 Mar 2019 23:01:16 +0100
+Message-ID: <CAFLxGvy54Fa0Dr9jbqvv2utSi3WvCusAHbYreJ1C=wg2bWtPRg@mail.gmail.com>
 Subject: Re: [GIT PULL] UML updates for 5.1-rc1
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -33,18 +24,47 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard.weinberger@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
 Cc: linux-um@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
 
-On Fri, Mar 15, 2019 at 3:01 PM Richard Weinberger
-<richard.weinberger@gmail.com> wrote:
+On Tue, Mar 12, 2019 at 4:14 PM Richard Weinberger <richard@nod.at> wrote:
 >
-> *kind ping* to make sure this PR is not lost. :-)
-> I guess you skipped this one too after the git.infradead.org outage.
+> Linus,
+>
+> The following changes since commit 1c163f4c7b3f621efff9b28a47abb36f7378d783:
+>
+>   Linux 5.0 (2019-03-03 15:21:29 -0800)
+>
+> are available in the Git repository at:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git for-linus-5.1-rc1
+>
+> for you to fetch changes up to aea05eb56e47046de1e5b508d40931dca969f1e5:
+>
+>   um: Fix for a possible OOPS in ubd initialization (2019-03-06 22:39:18 +0100)
+>
+> ----------------------------------------------------------------
+> This pull request contains updates for UML:
+>
+> - Bugfix for the UML block device driver
+>
+> ----------------------------------------------------------------
+> Anton Ivanov (1):
+>       um: Fix for a possible OOPS in ubd initialization
+>
+> YueHaibing (1):
+>       um: Remove duplicated include from vector_user.c
+>
+>  arch/um/drivers/ubd_kern.c    | 6 +++---
+>  arch/um/drivers/vector_user.c | 3 ---
+>  2 files changed, 3 insertions(+), 6 deletions(-)
 
-Right you are. Thanks for the ping,
+*kind ping* to make sure this PR is not lost. :-)
+I guess you skipped this one too after the git.infradead.org outage.
 
-                Linus
+-- 
+Thanks,
+//richard
 
 _______________________________________________
 linux-um mailing list
