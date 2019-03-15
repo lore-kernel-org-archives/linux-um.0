@@ -1,15 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from imap.cs.msu.ru ([188.44.42.39] helo=mail.cs.msu.ru)
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h0qup-0000Wv-Nb
- for linux-um@lists.infradead.org; Mon, 04 Mar 2019 16:58:37 +0000
-From: Arseny Maslennikov <ar@cs.msu.ru>
-Date: Mon,  4 Mar 2019 19:57:30 +0300
-Message-Id: <20190304165732.24043-2-ar@cs.msu.ru>
-In-Reply-To: <20190304165732.24043-1-ar@cs.msu.ru>
-References: <20190304165732.24043-1-ar@cs.msu.ru>
-MIME-Version: 1.0
-Subject: [PATCH 1/3] kconfig/Makefile: localmodconfig: use KCONFIG_CONFIG
+ id 1h4v1t-0002j2-QF
+ for linux-um@lists.infradead.org; Fri, 15 Mar 2019 22:10:19 +0000
+Subject: Re: [GIT PULL] UML updates for 5.1-rc1
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <31705653.NnsrL61LRB@blindfold>
+References: <31705653.NnsrL61LRB@blindfold>
+Message-Id: <155268781589.7789.6803567278190687959.pr-tracker-bot@kernel.org>
+Date: Fri, 15 Mar 2019 22:10:15 +0000
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,51 +17,26 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Masahiro Yamada <yamada.masahiro@socionext.com>, Michal Marek <michal.lkml@markovi.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Arseny Maslennikov <ar@cs.msu.ru>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-um@lists.infradead.org, torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
 
-If the config file is reassigned through the KCONFIG_CONFIG
-makeflag/envvar, this rule still attempts to use the wrong, possibly
-nonexistent file.
-Let's fix that.
+The pull request you sent on Tue, 12 Mar 2019 16:14:04 +0100:
 
-Signed-off-by: Arseny Maslennikov <ar@cs.msu.ru>
----
- scripts/kconfig/Makefile | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+> git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git for-linus-5.1-rc1
 
-diff --git a/scripts/kconfig/Makefile b/scripts/kconfig/Makefile
-index 1c7ac07def4d..28be91964a20 100644
---- a/scripts/kconfig/Makefile
-+++ b/scripts/kconfig/Makefile
-@@ -44,14 +44,14 @@ build_xconfig: $(obj)/qconf
- 
- localyesconfig localmodconfig: $(obj)/conf
- 	$(Q)perl $(srctree)/$(src)/streamline_config.pl --$@ $(srctree) $(Kconfig) > .tmp.config
--	$(Q)if [ -f .config ]; then 					\
--			cmp -s .tmp.config .config ||			\
--			(mv -f .config .config.old.1;			\
--			 mv -f .tmp.config .config;			\
-+	$(Q)if [ -f $(KCONFIG_CONFIG) ]; then 				\
-+			cmp -s .tmp.config $(KCONFIG_CONFIG) ||		\
-+			(mv -f $(KCONFIG_CONFIG) .tmp.config.old.1;	\
-+			 mv -f .tmp.config $(KCONFIG_CONFIG);		\
- 			 $< $(silent) --oldconfig $(Kconfig);		\
--			 mv -f .config.old.1 .config.old)		\
-+			 mv -f .tmp.config.old.1 $(KCONFIG_CONFIG).old)	\
- 	else								\
--			mv -f .tmp.config .config;			\
-+			mv -f .tmp.config $(KCONFIG_CONFIG);		\
- 			$< $(silent) --oldconfig $(Kconfig);		\
- 	fi
- 	$(Q)rm -f .tmp.config
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/6c83d0d5eb62846b8591884e246ab67d70b651ef
+
+Thank you!
+
 -- 
-2.20.1
-
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
 
 _______________________________________________
 linux-um mailing list
