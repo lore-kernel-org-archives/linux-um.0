@@ -1,14 +1,14 @@
 Return-Path: <linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org>
-Date: Fri, 22 Mar 2019 23:30:34 +0200
-From: Mike Rapoport <rppt@linux.ibm.com>
+Date: Fri, 22 Mar 2019 15:30:28 +0100
+From: David Sterba <dsterba@suse.cz>
 Subject: Re: [PATCH 1/2] treewide: Switch printk users from %pf and %pF to
  %ps and %pS, respectively
+Message-ID: <20190322143028.GD28481@twin.jikos.cz>
 References: <20190322132108.25501-1-sakari.ailus@linux.intel.com>
  <20190322132108.25501-2-sakari.ailus@linux.intel.com>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <20190322132108.25501-2-sakari.ailus@linux.intel.com>
-Message-Id: <20190322213034.GA9303@rapoport-lnx>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -16,6 +16,7 @@ List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
 List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Reply-To: dsterba@suse.cz
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
@@ -39,12 +40,12 @@ On Fri, Mar 22, 2019 at 03:21:07PM +0200, Sakari Ailus wrote:
 > Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 > ---
 
-For
+For 
 
->  mm/memblock.c                           | 12 ++++++------
+>  fs/btrfs/tests/free-space-tree-tests.c  |  4 ++--
+>  include/trace/events/btrfs.h            |  2 +-
 
-Acked-by: Mike Rapoport <rppt@linux.ibm.com>
-
+Acked-by: David Sterba <dsterba@suse.com>
 
 _______________________________________________
 linux-arm-kernel mailing list
