@@ -1,12 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x442.google.com ([2607:f8b0:4864:20::442])
+Received: from mail-pg1-x52c.google.com ([2607:f8b0:4864:20::52c])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h79HX-00083Y-GI
- for linux-um@lists.infradead.org; Fri, 22 Mar 2019 01:47:43 +0000
-Received: by mail-pf1-x442.google.com with SMTP id d25so366318pfn.8
- for <linux-um@lists.infradead.org>; Thu, 21 Mar 2019 18:47:38 -0700 (PDT)
+ id 1h794k-0003AQ-CK
+ for linux-um@lists.infradead.org; Fri, 22 Mar 2019 01:34:27 +0000
+Received: by mail-pg1-x52c.google.com with SMTP id i2so298916pgj.11
+ for <linux-um@lists.infradead.org>; Thu, 21 Mar 2019 18:34:25 -0700 (PDT)
 Subject: Re: [RFC v3 18/19] of: unittest: split out a couple of test cases
  from unittest
+From: Frank Rowand <frowand.list@gmail.com>
 References: <20181128193636.254378-1-brendanhiggins@google.com>
  <20181128193636.254378-19-brendanhiggins@google.com>
  <990bfc7d-dc5e-d8d3-c151-9b321ff2ac10@gmail.com>
@@ -19,12 +20,10 @@ References: <20181128193636.254378-1-brendanhiggins@google.com>
  <72cd1c5b-6f68-73ad-c8fd-f3a3268a0529@gmail.com>
  <CAFd5g46UU9wk+F6A5wnKYYtYKmmtv__SaY8eg6v-T9xUjsoxhA@mail.gmail.com>
  <bb5bcd3d-a09a-cfbe-c7fa-16e5eb75b0e4@gmail.com>
- <CAFd5g448xQLOJwVYU5Zmu4+OPWuboiWZPhBvK6au8Pgm5B9haQ@mail.gmail.com>
-From: Frank Rowand <frowand.list@gmail.com>
-Message-ID: <bf094685-3f2a-dc7b-7291-0340136b87f3@gmail.com>
-Date: Thu, 21 Mar 2019 18:47:35 -0700
+Message-ID: <767d14bf-3429-58b7-dcbf-c8ef86133265@gmail.com>
+Date: Thu, 21 Mar 2019 18:34:21 -0700
 MIME-Version: 1.0
-In-Reply-To: <CAFd5g448xQLOJwVYU5Zmu4+OPWuboiWZPhBvK6au8Pgm5B9haQ@mail.gmail.com>
+In-Reply-To: <bb5bcd3d-a09a-cfbe-c7fa-16e5eb75b0e4@gmail.com>
 Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -39,46 +38,26 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: Brendan Higgins <brendanhiggins@google.com>
-Cc: brakmo@fb.com, dri-devel <dri-devel@lists.freedesktop.org>, linux-kselftest@vger.kernel.org, shuah@kernel.org, Rob Herring <robh@kernel.org>, Frank Rowand <frowand.list@gmail.com>, linux-nvdimm <linux-nvdimm@lists.01.org>, Richard Weinberger <richard@nod.at>, Knut Omang <knut.omang@oracle.com>, Kieran Bingham <kieran.bingham@ideasonboard.com>, Joel Stanley <joel@jms.id.au>, Jeff Dike <jdike@addtoit.com>, "Bird," Timothy" <Tim.Bird@sony.com>, Kees Cook <keescook@google.com>," linux-um@lists.infradead.org, Steven Rostedt <rostedt@goodmis.org>, Julia Lawall <julia.lawall@lip6.fr>, Dan Williams <dan.j.williams@intel.com>, kunit-dev@googlegroups.com, Greg KH <gregkh@linuxfoundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Michael Ellerman <mpe@ellerman.id.au>, Joe Perches <joe@perches.com>, Kevin Hilman <khilman@baylibre.com>
+Cc: brakmo@fb.com, dri-devel <dri-devel@lists.freedesktop.org>, linux-kselftest@vger.kernel.org, shuah@kernel.org, Rob Herring <robh@kernel.org>, linux-nvdimm <linux-nvdimm@lists.01.org>, Richard Weinberger <richard@nod.at>, Knut Omang <knut.omang@oracle.com>, Kieran Bingham <kieran.bingham@ideasonboard.com>, Joel Stanley <joel@jms.id.au>, Jeff Dike <jdike@addtoit.com>, "Bird," Timothy" <Tim.Bird@sony.com>, Kees Cook <keescook@google.com>," linux-um@lists.infradead.org, Steven Rostedt <rostedt@goodmis.org>, Julia Lawall <julia.lawall@lip6.fr>, Dan Williams <dan.j.williams@intel.com>, kunit-dev@googlegroups.com, Greg KH <gregkh@linuxfoundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Michael Ellerman <mpe@ellerman.id.au>, Joe Perches <joe@perches.com>, Kevin Hilman <khilman@baylibre.com>
 
-On 3/21/19 6:30 PM, Brendan Higgins wrote:
-> On Thu, Mar 21, 2019 at 5:22 PM Frank Rowand <frowand.list@gmail.com> wrote:
->>
->> On 2/27/19 7:52 PM, Brendan Higgins wrote:
+On 3/21/19 5:22 PM, Frank Rowand wrote:
+> On 2/27/19 7:52 PM, Brendan Higgins wrote:
 
-< snip >  but thanks for the comments in the snipped section.
+< snip >
 
-
->>
->> Thanks for leaving 18/19 and 19/19 off in v4.
+>> Now I know that, hermeticity especially, but other features as well
+>> (test suite summary, error on unused test case function, etc) are not
+>> actually in KUnit as it is under consideration here. Maybe it would be
+>> best to save these last two patches (18/19, and 19/19) until I have
+>> these other features checked in and reconsider them then?
 > 
-> Sure, no problem. It was pretty clear that it was a waste of both of
-> our times to continue discussing those at this juncture. :-)
-> 
-> Do you still want me to try to convert the DT not-exactly-unittest to
-> KUnit? I would kind of prefer (I don't feel *super* strongly about the
-> matter) we don't call it that since I was intending for it to be the
-> flagship initial example, but I certainly don't mind trying to clean
-> this patch up to get it up to snuff. It's really just a question of
-> whether it is worth it to you.
+> Thanks for leaving 18/19 and 19/19 off in v4.
 
-In the long term, if KUnit is adopted by the kernel, then I think it
-probably makes sense for devicetree unittest to convert from using
-our own unittest() function to report an individual test pass/fail
-to instead use something like KUNIT_EXPECT_*() to provide more
-consistent test messages to test frameworks.  That is assuming
-KUNIT_EXPECT_*() provides comparable functionality.  I still have
-not looked into that question since the converted tests (patch 15/17
-in v4) still does not execute without throwing internal errors.
-
-If that conversion occurred, I would also avoid the ASSERTs.
+Oops, they got into v4 but as 16/17 and 17/17, I think.  But it sounds
+like you are planning to leave them out of v5.
 
 > 
-> < snip >
-> 
-> Cheers!
-> 
-
+> -Frank
 
 _______________________________________________
 linux-um mailing list
