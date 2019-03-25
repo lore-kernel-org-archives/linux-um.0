@@ -1,131 +1,68 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from [172.30.20.202] (helo=mx.sourceforge.net)
- by sfs-ml-2.v29.lw.sourceforge.com with esmtps
- (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.90_1)
- (envelope-from <ppessolani@hotmail.com>) id 1gwWjx-0002cp-6j
- for user-mode-linux-devel@lists.sourceforge.net;
- Wed, 20 Feb 2019 18:37:05 +0000
-Received: from mail-oln040092002077.outbound.protection.outlook.com
- ([40.92.2.77] helo=NAM01-SN1-obe.outbound.protection.outlook.com)
- by sfi-mx-3.v28.lw.sourceforge.com with esmtps
- (TLSv1.2:ECDHE-RSA-AES256-SHA384:256) (Exim 4.90_1)
- id 1gwWju-003d5p-UW for user-mode-linux-devel@lists.sourceforge.net;
- Wed, 20 Feb 2019 18:37:05 +0000
-From: Pablo Pessolani <ppessolani@hotmail.com>
-Date: Wed, 20 Feb 2019 18:36:56 +0000
-Message-ID: <BN6PR20MB1937E3301E14A7C38B26DD6DCF7D0@BN6PR20MB1937.namprd20.prod.outlook.com>
-Content-Language: es-AR
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-ot1-x342.google.com ([2607:f8b0:4864:20::342])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1h8XvF-0007wR-AP
+ for linux-um@lists.infradead.org; Mon, 25 Mar 2019 22:18:27 +0000
+Received: by mail-ot1-x342.google.com with SMTP id k21so8245045otf.1
+ for <linux-um@lists.infradead.org>; Mon, 25 Mar 2019 15:18:25 -0700 (PDT)
 MIME-Version: 1.0
-Subject: [uml-devel] UML: Access to a host device from UML
-List-Id: The user-mode Linux development list
- <user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/options/user-mode-linux-devel>, 
- <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>, 
- <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2948405168866707937=="
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
-
---===============2948405168866707937==
-Content-Language: es-AR
-Content-Type: multipart/alternative;
-	boundary="_000_BN6PR20MB1937E3301E14A7C38B26DD6DCF7D0BN6PR20MB1937namp_"
-
---_000_BN6PR20MB1937E3301E14A7C38B26DD6DCF7D0BN6PR20MB1937namp_
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-Hi:
-        I wrote an IPC mechanism as a Linux kernel module. The access to th=
-eir services is through a dummy character device called /dev/dvk using ioct=
-l(). Therefore, only open(), ioctl() and close() system calls are used.
-        How can a process running within an UML Guest access the /dev/dvk h=
-ost device?  (humfs??)
-        The idea is to communicate two o more UML instances through this IP=
-C mechanism.
-        Thanks in advance.
-Regards.
-PAP
-
-
---_000_BN6PR20MB1937E3301E14A7C38B26DD6DCF7D0BN6PR20MB1937namp_
-Content-Type: text/html; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<html>
-<head>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859-=
-1">
-<style type=3D"text/css" style=3D"display:none;"> P {margin-top:0;margin-bo=
-ttom:0;} </style>
-</head>
-<body dir=3D"ltr">
-<div style=3D"font-family: Calibri, Helvetica, sans-serif; font-size: 12pt;=
- color: rgb(0, 0, 0);">
-Hi:</div>
-<div style=3D"font-family: Calibri, Helvetica, sans-serif; font-size: 12pt;=
- color: rgb(0, 0, 0);">
-&nbsp; &nbsp; &nbsp; &nbsp; I wrote an IPC mechanism as a Linux kernel modu=
-le. The access to their services is through a dummy character device called=
- /dev/dvk using ioctl(). Therefore, only open(), ioctl() and close() system=
- calls are used.</div>
-<div style=3D"font-family: Calibri, Helvetica, sans-serif; font-size: 12pt;=
- color: rgb(0, 0, 0);">
-<span style=3D"color: rgb(0, 0, 0); font-family: Calibri, Helvetica, sans-s=
-erif; font-size: 12pt;">&nbsp; &nbsp; &nbsp; &nbsp; How can a process runni=
-ng within an UML Guest access the /dev/dvk host device?&nbsp; (humfs??)</sp=
-an></div>
-<div style=3D"font-family: Calibri, Helvetica, sans-serif; font-size: 12pt;=
- color: rgb(0, 0, 0);">
-<span style=3D"color: rgb(0, 0, 0); font-family: Calibri, Helvetica, sans-s=
-erif; font-size: 12pt;">&nbsp; &nbsp; &nbsp; &nbsp; The idea is to communic=
-ate two o more UML instances through this IPC mechanism.</span></div>
-<div style=3D"font-family: Calibri, Helvetica, sans-serif; font-size: 12pt;=
- color: rgb(0, 0, 0);">
-<span style=3D"color: rgb(0, 0, 0); font-family: Calibri, Helvetica, sans-s=
-erif; font-size: 12pt;">&nbsp; &nbsp; &nbsp; &nbsp; Thanks in advance.</spa=
-n></div>
-<div style=3D"font-family: Calibri, Helvetica, sans-serif; font-size: 12pt;=
- color: rgb(0, 0, 0);">
-<span style=3D"color: rgb(0, 0, 0); font-family: Calibri, Helvetica, sans-s=
-erif; font-size: 12pt;">Regards.</span></div>
-<div style=3D"font-family: Calibri, Helvetica, sans-serif; font-size: 12pt;=
- color: rgb(0, 0, 0);">
-<span style=3D"color: rgb(0, 0, 0); font-family: Calibri, Helvetica, sans-s=
-erif; font-size: 12pt;">PAP</span></div>
-<div style=3D"font-family: Calibri, Helvetica, sans-serif; font-size: 12pt;=
- color: rgb(0, 0, 0);">
-<span style=3D"color: rgb(0, 0, 0); font-family: Calibri, Helvetica, sans-s=
-erif; font-size: 12pt;"><br>
-</span></div>
-</body>
-</html>
-
---_000_BN6PR20MB1937E3301E14A7C38B26DD6DCF7D0BN6PR20MB1937namp_--
-
-
---===============2948405168866707937==
+References: <20181128193636.254378-1-brendanhiggins@google.com>
+ <20181128193636.254378-19-brendanhiggins@google.com>
+ <990bfc7d-dc5e-d8d3-c151-9b321ff2ac10@gmail.com>
+ <CAFd5g45tOGgf_sKGYRC=fpnTBKGaG=8frbQdgZ3ZTkQFyTfP5A@mail.gmail.com>
+ <88fe0546-7850-5bb4-9673-b1aef2dccb3e@gmail.com>
+ <CAFd5g444f-FBq4x3U7BL-EY+bFxP0rsJhJ14=mjOi89PhMkURg@mail.gmail.com>
+ <0e311e88-c4d4-e98d-1720-53a04bd526fc@gmail.com>
+ <CAFd5g44NTZoSAJPMvXP2xvJgn7m5QoV-KJu2AMrr67+eL+CKrQ@mail.gmail.com>
+ <d9f7e000-4cac-a35a-3ff9-60130e12ebea@gmail.com>
+ <72cd1c5b-6f68-73ad-c8fd-f3a3268a0529@gmail.com>
+ <CAFd5g46UU9wk+F6A5wnKYYtYKmmtv__SaY8eg6v-T9xUjsoxhA@mail.gmail.com>
+ <bb5bcd3d-a09a-cfbe-c7fa-16e5eb75b0e4@gmail.com>
+ <767d14bf-3429-58b7-dcbf-c8ef86133265@gmail.com>
+In-Reply-To: <767d14bf-3429-58b7-dcbf-c8ef86133265@gmail.com>
+From: Brendan Higgins <brendanhiggins@google.com>
+Date: Mon, 25 Mar 2019 15:18:12 -0700
+Message-ID: <CAFd5g45yNw5VA5teZ0fBzqND47yfGZyFJiEfNqZfvNYJqiG78Q@mail.gmail.com>
+Subject: Re: [RFC v3 18/19] of: unittest: split out a couple of test cases
+ from unittest
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Frank Rowand <frowand.list@gmail.com>
+Cc: brakmo@fb.com, dri-devel <dri-devel@lists.freedesktop.org>, linux-kselftest@vger.kernel.org, shuah@kernel.org, Rob Herring <robh@kernel.org>, linux-nvdimm <linux-nvdimm@lists.01.org>, Richard Weinberger <richard@nod.at>, Knut Omang <knut.omang@oracle.com>, Kieran Bingham <kieran.bingham@ideasonboard.com>, Joel Stanley <joel@jms.id.au>, Jeff Dike <jdike@addtoit.com>, "Bird," Timothy" <Tim.Bird@sony.com>, Kees Cook <keescook@google.com>," linux-um@lists.infradead.org, Steven Rostedt <rostedt@goodmis.org>, Julia Lawall <julia.lawall@lip6.fr>, Dan Williams <dan.j.williams@intel.com>, kunit-dev@googlegroups.com, Greg KH <gregkh@linuxfoundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Michael Ellerman <mpe@ellerman.id.au>, Joe Perches <joe@perches.com>, Kevin Hilman <khilman@baylibre.com>
 
+On Thu, Mar 21, 2019 at 6:34 PM Frank Rowand <frowand.list@gmail.com> wrote:
+>
+> On 3/21/19 5:22 PM, Frank Rowand wrote:
+> > On 2/27/19 7:52 PM, Brendan Higgins wrote:
+>
+> < snip >
+>
+> >> Now I know that, hermeticity especially, but other features as well
+> >> (test suite summary, error on unused test case function, etc) are not
+> >> actually in KUnit as it is under consideration here. Maybe it would be
+> >> best to save these last two patches (18/19, and 19/19) until I have
+> >> these other features checked in and reconsider them then?
+> >
+> > Thanks for leaving 18/19 and 19/19 off in v4.
+>
+> Oops, they got into v4 but as 16/17 and 17/17, I think.  But it sounds
+> like you are planning to leave them out of v5.
 
---===============2948405168866707937==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Oh, I thought you meant v5 when you were thanking me. In any case, to
+confirm, I will be leaving off 16/17, and 17/17 in the next version.
 
 _______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---===============2948405168866707937==--
-
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
