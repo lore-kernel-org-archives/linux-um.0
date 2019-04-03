@@ -1,270 +1,118 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-io1-xd49.google.com ([2607:f8b0:4864:20::d49])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hCAYl-0008Mr-Dk
- for linux-um@lists.infradead.org; Thu, 04 Apr 2019 22:10:12 +0000
-Received: by mail-io1-xd49.google.com with SMTP id p143so3178420iod.19
- for <linux-um@lists.infradead.org>; Thu, 04 Apr 2019 15:10:09 -0700 (PDT)
-Date: Thu,  4 Apr 2019 15:06:38 -0700
-In-Reply-To: <20190404220652.19765-1-brendanhiggins@google.com>
-Message-Id: <20190404220652.19765-4-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20190404220652.19765-1-brendanhiggins@google.com>
-Subject: [PATCH v1 03/17] kunit: test: add string_stream a std::stream like
- string builder
-From: Brendan Higgins <brendanhiggins@google.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: corbet@lwn.net, frowand.list@gmail.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, robh@kernel.org, shuah@kernel.org, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, richard@nod.at, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org
+Return-Path: <brgl@bgdev.pl>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [RESEND PATCH 2/4] um: remove uses of variable length arrays
+Date: Wed,  3 Apr 2019 10:39:00 +0200
+Message-Id: <20190403083902.3975-3-brgl@bgdev.pl>
+In-Reply-To: <20190403083902.3975-1-brgl@bgdev.pl>
+References: <20190403083902.3975-1-brgl@bgdev.pl>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
+List-ID: <linux-um.lists.infradead.org>
 
-A number of test features need to do pretty complicated string printing
-where it may not be possible to rely on a single preallocated string
-with parameters.
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-So provide a library for constructing the string as you go similar to
-C++'s std::string.
+While the affected code is run in user-mode, the build still warns
+about it. Convert all uses of VLA to dynamic allocations.
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- include/kunit/string-stream.h |  51 ++++++++++++
- kunit/Makefile                |   3 +-
- kunit/string-stream.c         | 144 ++++++++++++++++++++++++++++++++++
- 3 files changed, 197 insertions(+), 1 deletion(-)
- create mode 100644 include/kunit/string-stream.h
- create mode 100644 kunit/string-stream.c
+ arch/um/os-Linux/umid.c | 36 +++++++++++++++++++++++++++---------
+ 1 file changed, 27 insertions(+), 9 deletions(-)
 
-diff --git a/include/kunit/string-stream.h b/include/kunit/string-stream.h
-new file mode 100644
-index 0000000000000..567a4629406da
---- /dev/null
-+++ b/include/kunit/string-stream.h
-@@ -0,0 +1,51 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * C++ stream style string builder used in KUnit for building messages.
-+ *
-+ * Copyright (C) 2019, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
+diff --git a/arch/um/os-Linux/umid.c b/arch/um/os-Linux/umid.c
+index 998fbb445458..e261656fe9d7 100644
+--- a/arch/um/os-Linux/umid.c
++++ b/arch/um/os-Linux/umid.c
+@@ -135,12 +135,18 @@ static int remove_files_and_dir(char *dir)
+  */
+ static inline int is_umdir_used(char *dir)
+ {
+-	char file[strlen(uml_dir) + UMID_LEN + sizeof("/pid\0")];
+-	char pid[sizeof("nnnnn\0")], *end;
++	char pid[sizeof("nnnnn\0")], *end, *file;
+ 	int dead, fd, p, n, err;
++	size_t filelen;
+ 
+-	n = snprintf(file, sizeof(file), "%s/pid", dir);
+-	if (n >= sizeof(file)) {
++	err = asprintf(&file, "%s/pid", dir);
++	if (err < 0)
++		return 0;
 +
-+#ifndef _KUNIT_STRING_STREAM_H
-+#define _KUNIT_STRING_STREAM_H
++	filelen = strlen(file);
 +
-+#include <linux/types.h>
-+#include <linux/spinlock.h>
-+#include <linux/kref.h>
-+#include <stdarg.h>
++	n = snprintf(file, filelen, "%s/pid", dir);
++	if (n >= filelen) {
+ 		printk(UM_KERN_ERR "is_umdir_used - pid filename too long\n");
+ 		err = -E2BIG;
+ 		goto out;
+@@ -185,6 +191,7 @@ static inline int is_umdir_used(char *dir)
+ out_close:
+ 	close(fd);
+ out:
++	free(file);
+ 	return 0;
+ }
+ 
+@@ -210,18 +217,21 @@ static int umdir_take_if_dead(char *dir)
+ 
+ static void __init create_pid_file(void)
+ {
+-	char file[strlen(uml_dir) + UMID_LEN + sizeof("/pid\0")];
+-	char pid[sizeof("nnnnn\0")];
++	char pid[sizeof("nnnnn\0")], *file;
+ 	int fd, n;
+ 
+-	if (umid_file_name("pid", file, sizeof(file)))
++	file = malloc(strlen(uml_dir) + UMID_LEN + sizeof("/pid\0"));
++	if (!file)
+ 		return;
+ 
++	if (umid_file_name("pid", file, sizeof(file)))
++		goto out;
 +
-+struct string_stream_fragment {
-+	struct list_head node;
-+	char *fragment;
-+};
+ 	fd = open(file, O_RDWR | O_CREAT | O_EXCL, 0644);
+ 	if (fd < 0) {
+ 		printk(UM_KERN_ERR "Open of machine pid file \"%s\" failed: "
+ 		       "%s\n", file, strerror(errno));
+-		return;
++		goto out;
+ 	}
+ 
+ 	snprintf(pid, sizeof(pid), "%d\n", getpid());
+@@ -231,6 +241,8 @@ static void __init create_pid_file(void)
+ 		       errno);
+ 
+ 	close(fd);
++out:
++	free(file);
+ }
+ 
+ int __init set_umid(char *name)
+@@ -385,13 +397,19 @@ __uml_setup("uml_dir=", set_uml_dir,
+ 
+ static void remove_umid_dir(void)
+ {
+-	char dir[strlen(uml_dir) + UMID_LEN + 1], err;
++	char *dir, err;
 +
-+struct string_stream {
-+	size_t length;
-+	struct list_head fragments;
++	dir = malloc(strlen(uml_dir) + UMID_LEN + 1);
++	if (!dir)
++		return;
+ 
+ 	sprintf(dir, "%s%s", uml_dir, umid);
+ 	err = remove_files_and_dir(dir);
+ 	if (err)
+ 		os_warn("%s - remove_files_and_dir failed with err = %d\n",
+ 			__func__, err);
 +
-+	/* length and fragments are protected by this lock */
-+	spinlock_t lock;
-+	struct kref refcount;
-+};
-+
-+struct string_stream *new_string_stream(void);
-+
-+void destroy_string_stream(struct string_stream *stream);
-+
-+void string_stream_get(struct string_stream *stream);
-+
-+int string_stream_put(struct string_stream *stream);
-+
-+int string_stream_add(struct string_stream *this, const char *fmt, ...);
-+
-+int string_stream_vadd(struct string_stream *this,
-+		       const char *fmt,
-+		       va_list args);
-+
-+char *string_stream_get_string(struct string_stream *this);
-+
-+void string_stream_clear(struct string_stream *this);
-+
-+bool string_stream_is_empty(struct string_stream *this);
-+
-+#endif /* _KUNIT_STRING_STREAM_H */
-diff --git a/kunit/Makefile b/kunit/Makefile
-index 5efdc4dea2c08..275b565a0e81f 100644
---- a/kunit/Makefile
-+++ b/kunit/Makefile
-@@ -1 +1,2 @@
--obj-$(CONFIG_KUNIT) +=			test.o
-+obj-$(CONFIG_KUNIT) +=			test.o \
-+					string-stream.o
-diff --git a/kunit/string-stream.c b/kunit/string-stream.c
-new file mode 100644
-index 0000000000000..7018194ecf2fa
---- /dev/null
-+++ b/kunit/string-stream.c
-@@ -0,0 +1,144 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * C++ stream style string builder used in KUnit for building messages.
-+ *
-+ * Copyright (C) 2019, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
-+
-+#include <linux/list.h>
-+#include <linux/slab.h>
-+#include <kunit/string-stream.h>
-+
-+int string_stream_vadd(struct string_stream *this,
-+		       const char *fmt,
-+		       va_list args)
-+{
-+	struct string_stream_fragment *fragment;
-+	int len;
-+	va_list args_for_counting;
-+	unsigned long flags;
-+
-+	/* Make a copy because `vsnprintf` could change it */
-+	va_copy(args_for_counting, args);
-+
-+	/* Need space for null byte. */
-+	len = vsnprintf(NULL, 0, fmt, args_for_counting) + 1;
-+
-+	va_end(args_for_counting);
-+
-+	fragment = kmalloc(sizeof(*fragment), GFP_KERNEL);
-+	if (!fragment)
-+		return -ENOMEM;
-+
-+	fragment->fragment = kmalloc(len, GFP_KERNEL);
-+	if (!fragment->fragment) {
-+		kfree(fragment);
-+		return -ENOMEM;
-+	}
-+
-+	len = vsnprintf(fragment->fragment, len, fmt, args);
-+	spin_lock_irqsave(&this->lock, flags);
-+	this->length += len;
-+	list_add_tail(&fragment->node, &this->fragments);
-+	spin_unlock_irqrestore(&this->lock, flags);
-+	return 0;
-+}
-+
-+int string_stream_add(struct string_stream *this, const char *fmt, ...)
-+{
-+	va_list args;
-+	int result;
-+
-+	va_start(args, fmt);
-+	result = string_stream_vadd(this, fmt, args);
-+	va_end(args);
-+	return result;
-+}
-+
-+void string_stream_clear(struct string_stream *this)
-+{
-+	struct string_stream_fragment *fragment, *fragment_safe;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&this->lock, flags);
-+	list_for_each_entry_safe(fragment,
-+				 fragment_safe,
-+				 &this->fragments,
-+				 node) {
-+		list_del(&fragment->node);
-+		kfree(fragment->fragment);
-+		kfree(fragment);
-+	}
-+	this->length = 0;
-+	spin_unlock_irqrestore(&this->lock, flags);
-+}
-+
-+char *string_stream_get_string(struct string_stream *this)
-+{
-+	struct string_stream_fragment *fragment;
-+	size_t buf_len = this->length + 1; /* +1 for null byte. */
-+	char *buf;
-+	unsigned long flags;
-+
-+	buf = kzalloc(buf_len, GFP_KERNEL);
-+	if (!buf)
-+		return NULL;
-+
-+	spin_lock_irqsave(&this->lock, flags);
-+	list_for_each_entry(fragment, &this->fragments, node)
-+		strlcat(buf, fragment->fragment, buf_len);
-+	spin_unlock_irqrestore(&this->lock, flags);
-+
-+	return buf;
-+}
-+
-+bool string_stream_is_empty(struct string_stream *this)
-+{
-+	bool is_empty;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&this->lock, flags);
-+	is_empty = list_empty(&this->fragments);
-+	spin_unlock_irqrestore(&this->lock, flags);
-+
-+	return is_empty;
-+}
-+
-+void destroy_string_stream(struct string_stream *stream)
-+{
-+	string_stream_clear(stream);
-+	kfree(stream);
-+}
-+
-+static void string_stream_destroy(struct kref *kref)
-+{
-+	struct string_stream *stream = container_of(kref,
-+						    struct string_stream,
-+						    refcount);
-+	destroy_string_stream(stream);
-+}
-+
-+struct string_stream *new_string_stream(void)
-+{
-+	struct string_stream *stream = kzalloc(sizeof(*stream), GFP_KERNEL);
-+
-+	if (!stream)
-+		return NULL;
-+
-+	INIT_LIST_HEAD(&stream->fragments);
-+	spin_lock_init(&stream->lock);
-+	kref_init(&stream->refcount);
-+	return stream;
-+}
-+
-+void string_stream_get(struct string_stream *stream)
-+{
-+	kref_get(&stream->refcount);
-+}
-+
-+int string_stream_put(struct string_stream *stream)
-+{
-+	return kref_put(&stream->refcount, &string_stream_destroy);
-+}
-+
++	free(dir);
+ }
+ 
+ __uml_exitcall(remove_umid_dir);
 -- 
-2.21.0.392.gf8f6787159e-goog
+2.21.0
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
