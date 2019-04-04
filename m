@@ -1,16 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-yw1-xc49.google.com ([2607:f8b0:4864:20::c49])
+Received: from mail-vs1-xe49.google.com ([2607:f8b0:4864:20::e49])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hCAYi-00089D-Pt
- for linux-um@lists.infradead.org; Thu, 04 Apr 2019 22:10:10 +0000
-Received: by mail-yw1-xc49.google.com with SMTP id o66so3072774ywc.3
- for <linux-um@lists.infradead.org>; Thu, 04 Apr 2019 15:10:07 -0700 (PDT)
-Date: Thu,  4 Apr 2019 15:06:37 -0700
+ id 1hCAZG-0000EF-Sc
+ for linux-um@lists.infradead.org; Thu, 04 Apr 2019 22:10:44 +0000
+Received: by mail-vs1-xe49.google.com with SMTP id g67so789542vsd.18
+ for <linux-um@lists.infradead.org>; Thu, 04 Apr 2019 15:10:41 -0700 (PDT)
+Date: Thu,  4 Apr 2019 15:06:51 -0700
 In-Reply-To: <20190404220652.19765-1-brendanhiggins@google.com>
-Message-Id: <20190404220652.19765-3-brendanhiggins@google.com>
+Message-Id: <20190404220652.19765-17-brendanhiggins@google.com>
 Mime-Version: 1.0
 References: <20190404220652.19765-1-brendanhiggins@google.com>
-Subject: [PATCH v1 02/17] kunit: test: add test resource management API
+Subject: [PATCH v1 16/17] kernel/sysctl-test: Add null pointer test for
+ sysctl.c:proc_dointvec()
 From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -25,282 +26,351 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: corbet@lwn.net, frowand.list@gmail.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, robh@kernel.org, shuah@kernel.org, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, richard@nod.at, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, Iurii Zaikin <yzaikin@google.com>, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, richard@nod.at, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org
 
-Create a common API for test managed resources like memory and test
-objects. A lot of times a test will want to set up infrastructure to be
-used in test cases; this could be anything from just wanting to allocate
-some memory to setting up a driver stack; this defines facilities for
-creating "test resources" which are managed by the test infrastructure
-and are automatically cleaned up at the conclusion of the test.
+From: Iurii Zaikin <yzaikin@google.com>
 
+KUnit tests for initialized data behavior of proc_dointvec that is
+explicitly checked in the code. Includes basic parsing tests including
+int min/max overflow.
+
+Signed-off-by: Iurii Zaikin <yzaikin@google.com>
 Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
 ---
- include/kunit/test.h | 109 +++++++++++++++++++++++++++++++++++++++++++
- kunit/test.c         |  95 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 204 insertions(+)
+ kernel/Makefile      |   2 +
+ kernel/sysctl-test.c | 292 +++++++++++++++++++++++++++++++++++++++++++
+ lib/Kconfig.debug    |   6 +
+ 3 files changed, 300 insertions(+)
+ create mode 100644 kernel/sysctl-test.c
 
-diff --git a/include/kunit/test.h b/include/kunit/test.h
-index 23c2ebedd6dd9..819edd8db4e81 100644
---- a/include/kunit/test.h
-+++ b/include/kunit/test.h
-@@ -12,6 +12,69 @@
- #include <linux/types.h>
- #include <linux/slab.h>
+diff --git a/kernel/Makefile b/kernel/Makefile
+index 6c57e78817dad..c81a8976b6a4b 100644
+--- a/kernel/Makefile
++++ b/kernel/Makefile
+@@ -112,6 +112,8 @@ obj-$(CONFIG_HAS_IOMEM) += iomem.o
+ obj-$(CONFIG_ZONE_DEVICE) += memremap.o
+ obj-$(CONFIG_RSEQ) += rseq.o
  
-+struct kunit_resource;
++obj-$(CONFIG_SYSCTL_KUNIT_TEST) += sysctl-test.o
 +
-+typedef int (*kunit_resource_init_t)(struct kunit_resource *, void *);
-+typedef void (*kunit_resource_free_t)(struct kunit_resource *);
-+
-+/**
-+ * struct kunit_resource - represents a *test managed resource*
-+ * @allocation: for the user to store arbitrary data.
-+ * @free: a user supplied function to free the resource. Populated by
-+ * kunit_alloc_resource().
-+ *
-+ * Represents a *test managed resource*, a resource which will automatically be
-+ * cleaned up at the end of a test case.
-+ *
-+ * Example:
-+ *
-+ * .. code-block:: c
-+ *
-+ *	struct kunit_kmalloc_params {
-+ *		size_t size;
-+ *		gfp_t gfp;
-+ *	};
-+ *
-+ *	static int kunit_kmalloc_init(struct kunit_resource *res, void *context)
-+ *	{
-+ *		struct kunit_kmalloc_params *params = context;
-+ *		res->allocation = kmalloc(params->size, params->gfp);
-+ *
-+ *		if (!res->allocation)
-+ *			return -ENOMEM;
-+ *
-+ *		return 0;
-+ *	}
-+ *
-+ *	static void kunit_kmalloc_free(struct kunit_resource *res)
-+ *	{
-+ *		kfree(res->allocation);
-+ *	}
-+ *
-+ *	void *kunit_kmalloc(struct kunit *test, size_t size, gfp_t gfp)
-+ *	{
-+ *		struct kunit_kmalloc_params params;
-+ *		struct kunit_resource *res;
-+ *
-+ *		params.size = size;
-+ *		params.gfp = gfp;
-+ *
-+ *		res = kunit_alloc_resource(test, kunit_kmalloc_init,
-+ *			kunit_kmalloc_free, &params);
-+ *		if (res)
-+ *			return res->allocation;
-+ *		else
-+ *			return NULL;
-+ *	}
+ obj-$(CONFIG_GCC_PLUGIN_STACKLEAK) += stackleak.o
+ KASAN_SANITIZE_stackleak.o := n
+ KCOV_INSTRUMENT_stackleak.o := n
+diff --git a/kernel/sysctl-test.c b/kernel/sysctl-test.c
+new file mode 100644
+index 0000000000000..a0fba6b6fc2dc
+--- /dev/null
++++ b/kernel/sysctl-test.c
+@@ -0,0 +1,292 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * KUnit test of proc sysctl.
 + */
-+struct kunit_resource {
-+	void *allocation;
-+	kunit_resource_free_t free;
 +
-+	/* private: internal use only. */
-+	struct list_head node;
++#include <kunit/test.h>
++#include <linux/printk.h>
++#include <linux/sysctl.h>
++#include <linux/uaccess.h>
++
++static int i_zero;
++static int i_one_hundred = 100;
++
++struct test_sysctl_data {
++	int int_0001;
++	int int_0002;
++	int int_0003[4];
++
++	unsigned int uint_0001;
++
++	char string_0001[65];
 +};
 +
- struct kunit;
- 
- /**
-@@ -104,6 +167,7 @@ struct kunit {
- 	const char *name; /* Read only after initialization! */
- 	spinlock_t lock; /* Gaurds all mutable test state. */
- 	bool success; /* Protected by lock. */
-+	struct list_head resources; /* Protected by lock. */
- 	void (*vprintk)(const struct kunit *test,
- 			const char *level,
- 			struct va_format *vaf);
-@@ -127,6 +191,51 @@ int kunit_run_tests(struct kunit_module *module);
- 		} \
- 		late_initcall(module_kunit_init##module)
- 
-+/**
-+ * kunit_alloc_resource() - Allocates a *test managed resource*.
-+ * @test: The test context object.
-+ * @init: a user supplied function to initialize the resource.
-+ * @free: a user supplied function to free the resource.
-+ * @context: for the user to pass in arbitrary data to the init function.
-+ *
-+ * Allocates a *test managed resource*, a resource which will automatically be
-+ * cleaned up at the end of a test case. See &struct kunit_resource for an
-+ * example.
-+ */
-+struct kunit_resource *kunit_alloc_resource(struct kunit *test,
-+					    kunit_resource_init_t init,
-+					    kunit_resource_free_t free,
-+					    void *context);
++static struct test_sysctl_data test_data = {
++	.int_0001 = 60,
++	.int_0002 = 1,
 +
-+void kunit_free_resource(struct kunit *test, struct kunit_resource *res);
++	.int_0003[0] = 0,
++	.int_0003[1] = 1,
++	.int_0003[2] = 2,
++	.int_0003[3] = 3,
 +
-+/**
-+ * kunit_kmalloc() - Like kmalloc() except the allocation is *test managed*.
-+ * @test: The test context object.
-+ * @size: The size in bytes of the desired memory.
-+ * @gfp: flags passed to underlying kmalloc().
-+ *
-+ * Just like `kmalloc(...)`, except the allocation is managed by the test case
-+ * and is automatically cleaned up after the test case concludes. See &struct
-+ * kunit_resource for more information.
-+ */
-+void *kunit_kmalloc(struct kunit *test, size_t size, gfp_t gfp);
++	.uint_0001 = 314,
 +
-+/**
-+ * kunit_kzalloc() - Just like kunit_kmalloc(), but zeroes the allocation.
-+ * @test: The test context object.
-+ * @size: The size in bytes of the desired memory.
-+ * @gfp: flags passed to underlying kmalloc().
-+ *
-+ * See kzalloc() and kunit_kmalloc() for more information.
-+ */
-+static inline void *kunit_kzalloc(struct kunit *test, size_t size, gfp_t gfp)
-+{
-+	return kunit_kmalloc(test, size, gfp | __GFP_ZERO);
-+}
-+
-+void kunit_cleanup(struct kunit *test);
-+
- void __printf(3, 4) kunit_printk(const char *level,
- 				 const struct kunit *test,
- 				 const char *fmt, ...);
-diff --git a/kunit/test.c b/kunit/test.c
-index 5bf97e2935579..541f9adb1608c 100644
---- a/kunit/test.c
-+++ b/kunit/test.c
-@@ -66,6 +66,7 @@ static void kunit_vprintk(const struct kunit *test,
- int kunit_init_test(struct kunit *test, const char *name)
- {
- 	spin_lock_init(&test->lock);
-+	INIT_LIST_HEAD(&test->resources);
- 	test->name = name;
- 	test->vprintk = kunit_vprintk;
- 
-@@ -93,6 +94,11 @@ static void kunit_run_case_internal(struct kunit *test,
- 	test_case->run_case(test);
- }
- 
-+static void kunit_case_internal_cleanup(struct kunit *test)
-+{
-+	kunit_cleanup(test);
-+}
-+
- /*
-  * Performs post validations and cleanup after a test case was run.
-  * XXX: Should ONLY BE CALLED AFTER kunit_run_case_internal!
-@@ -103,6 +109,8 @@ static void kunit_run_case_cleanup(struct kunit *test,
- {
- 	if (module->exit)
- 		module->exit(test);
-+
-+	kunit_case_internal_cleanup(test);
- }
- 
- /*
-@@ -150,6 +158,93 @@ int kunit_run_tests(struct kunit_module *module)
- 	return 0;
- }
- 
-+struct kunit_resource *kunit_alloc_resource(struct kunit *test,
-+					    kunit_resource_init_t init,
-+					    kunit_resource_free_t free,
-+					    void *context)
-+{
-+	struct kunit_resource *res;
-+	unsigned long flags;
-+	int ret;
-+
-+	res = kzalloc(sizeof(*res), GFP_KERNEL);
-+	if (!res)
-+		return NULL;
-+
-+	ret = init(res, context);
-+	if (ret)
-+		return NULL;
-+
-+	res->free = free;
-+	spin_lock_irqsave(&test->lock, flags);
-+	list_add_tail(&res->node, &test->resources);
-+	spin_unlock_irqrestore(&test->lock, flags);
-+
-+	return res;
-+}
-+
-+void kunit_free_resource(struct kunit *test, struct kunit_resource *res)
-+{
-+	res->free(res);
-+	list_del(&res->node);
-+	kfree(res);
-+}
-+
-+struct kunit_kmalloc_params {
-+	size_t size;
-+	gfp_t gfp;
++	.string_0001 = "(none)",
 +};
 +
-+static int kunit_kmalloc_init(struct kunit_resource *res, void *context)
++static void sysctl_test_dointvec_null_tbl_data(struct kunit *test)
 +{
-+	struct kunit_kmalloc_params *params = context;
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= NULL,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	void  *buffer = kunit_kzalloc(test, sizeof(int), GFP_USER);
++	size_t len;
++	loff_t pos;
 +
-+	res->allocation = kmalloc(params->size, params->gfp);
-+	if (!res->allocation)
-+		return -ENOMEM;
++	len = 1234;
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, 0, buffer, &len, &pos));
++	KUNIT_EXPECT_EQ(test, 0, len);
++	len = 1234;
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, 1, buffer, &len, &pos));
++	KUNIT_EXPECT_EQ(test, 0, len);
++}
 +
++static void sysctl_test_dointvec_table_maxlen_unset(struct kunit *test)
++{
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &test_data.int_0001,
++		.maxlen		= 0,
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	void  *buffer = kunit_kzalloc(test, sizeof(int), GFP_USER);
++	size_t len;
++	loff_t pos;
++
++	len = 1234;
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, 0, buffer, &len, &pos));
++	KUNIT_EXPECT_EQ(test, 0, len);
++	len = 1234;
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, 1, buffer, &len, &pos));
++	KUNIT_EXPECT_EQ(test, 0, len);
++}
++
++static void sysctl_test_dointvec_table_len_is_zero(struct kunit *test)
++{
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &test_data.int_0001,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	void  *buffer = kunit_kzalloc(test, sizeof(int), GFP_USER);
++	size_t len;
++	loff_t pos;
++
++	len = 0;
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, 0, buffer, &len, &pos));
++	KUNIT_EXPECT_EQ(test, 0, len);
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, 1, buffer, &len, &pos));
++	KUNIT_EXPECT_EQ(test, 0, len);
++}
++
++static void sysctl_test_dointvec_table_read_but_position_set(struct kunit *test)
++{
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &test_data.int_0001,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	void  *buffer = kunit_kzalloc(test, sizeof(int), GFP_USER);
++	size_t len;
++	loff_t pos;
++
++	len = 1234;
++	pos = 1;
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, 0, buffer, &len, &pos));
++	KUNIT_EXPECT_EQ(test, 0, len);
++}
++
++static void sysctl_test_dointvec_happy_single_positive(struct kunit *test)
++{
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &test_data.int_0001,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	char input[] = "9";
++	size_t len = sizeof(input) - 1;
++	loff_t pos = 0;
++
++	table.data = kunit_kzalloc(test, sizeof(int), GFP_USER);
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, 1, input, &len, &pos));
++	KUNIT_EXPECT_EQ(test, sizeof(input) - 1, len);
++	KUNIT_EXPECT_EQ(test, sizeof(input) - 1, pos);
++	KUNIT_EXPECT_EQ(test, 9, *(int *)table.data);
++}
++
++static void sysctl_test_dointvec_happy_single_negative(struct kunit *test)
++{
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &test_data.int_0001,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	char input[] = "-9";
++	size_t len = sizeof(input) - 1;
++	loff_t pos = 0;
++
++	table.data = kunit_kzalloc(test, sizeof(int), GFP_USER);
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, 1, input, &len, &pos));
++	KUNIT_EXPECT_EQ(test, sizeof(input) - 1, len);
++	KUNIT_EXPECT_EQ(test, sizeof(input) - 1, pos);
++	KUNIT_EXPECT_EQ(test, -9, *(int *)table.data);
++}
++
++static void sysctl_test_dointvec_single_less_int_min(struct kunit *test)
++{
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &test_data.int_0001,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	char input[32];
++	size_t len = sizeof(input) - 1;
++	loff_t pos = 0;
++	long less_than_min = (long)INT_MIN - 1;
++
++	KUNIT_EXPECT_LT(test, less_than_min, INT_MIN);
++	KUNIT_EXPECT_LT(test,
++			snprintf(input, sizeof(input), "%ld", less_than_min),
++			sizeof(input));
++
++	table.data = kunit_kzalloc(test, sizeof(int), GFP_USER);
++	KUNIT_EXPECT_EQ(test, -EINVAL,
++			proc_dointvec(&table, 1, input, &len, &pos));
++	KUNIT_EXPECT_EQ(test, sizeof(input) - 1, len);
++	KUNIT_EXPECT_EQ(test, 0, *(int *)table.data);
++}
++
++static void sysctl_test_dointvec_single_greater_int_max(struct kunit *test)
++{
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &test_data.int_0001,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	char input[32];
++	size_t len = sizeof(input) - 1;
++	loff_t pos = 0;
++	long greater_than_max = (long)INT_MAX + 1;
++
++	KUNIT_EXPECT_GT(test, greater_than_max, INT_MAX);
++	KUNIT_EXPECT_LT(test, snprintf(input, sizeof(input), "%ld",
++				       greater_than_max),
++			sizeof(input));
++	table.data = kunit_kzalloc(test, sizeof(int), GFP_USER);
++	KUNIT_EXPECT_EQ(test, -EINVAL,
++			proc_dointvec(&table, 1, input, &len, &pos));
++	KUNIT_EXPECT_EQ(test, sizeof(input) - 1, len);
++	KUNIT_EXPECT_EQ(test, 0, *(int *)table.data);
++}
++
++static int sysctl_test_init(struct kunit *test)
++{
 +	return 0;
 +}
 +
-+static void kunit_kmalloc_free(struct kunit_resource *res)
++/*
++ * This is run once after each test case, see the comment on example_test_module
++ * for more information.
++ */
++static void sysctl_test_exit(struct kunit *test)
 +{
-+	kfree(res->allocation);
 +}
 +
-+void *kunit_kmalloc(struct kunit *test, size_t size, gfp_t gfp)
-+{
-+	struct kunit_kmalloc_params params;
-+	struct kunit_resource *res;
++/*
++ * Here we make a list of all the test cases we want to add to the test module
++ * below.
++ */
++static struct kunit_case sysctl_test_cases[] = {
++	/*
++	 * This is a helper to create a test case object from a test case
++	 * function; its exact function is not important to understand how to
++	 * use KUnit, just know that this is how you associate test cases with a
++	 * test module.
++	 */
++	KUNIT_CASE(sysctl_test_dointvec_null_tbl_data),
++	KUNIT_CASE(sysctl_test_dointvec_table_maxlen_unset),
++	KUNIT_CASE(sysctl_test_dointvec_table_len_is_zero),
++	KUNIT_CASE(sysctl_test_dointvec_table_read_but_position_set),
++	KUNIT_CASE(sysctl_test_dointvec_happy_single_positive),
++	KUNIT_CASE(sysctl_test_dointvec_happy_single_negative),
++	KUNIT_CASE(sysctl_test_dointvec_single_less_int_min),
++	KUNIT_CASE(sysctl_test_dointvec_single_greater_int_max),
++	{},
++};
 +
-+	params.size = size;
-+	params.gfp = gfp;
++/*
++ * This defines a suite or grouping of tests.
++ *
++ * Test cases are defined as belonging to the suite by adding them to
++ * `test_cases`.
++ *
++ * Often it is desirable to run some function which will set up things which
++ * will be used by every test; this is accomplished with an `init` function
++ * which runs before each test case is invoked. Similarly, an `exit` function
++ * may be specified which runs after every test case and can be used to for
++ * cleanup. For clarity, running tests in a test module would behave as follows:
++ *
++ * module.init(test);
++ * module.test_case[0](test);
++ * module.exit(test);
++ * module.init(test);
++ * module.test_case[1](test);
++ * module.exit(test);
++ * ...;
++ */
++static struct kunit_module sysctl_test_module = {
++	.name = "sysctl_test",
++	.init = sysctl_test_init,
++	.exit = sysctl_test_exit,
++	.test_cases = sysctl_test_cases,
++};
 +
-+	res = kunit_alloc_resource(test,
-+				   kunit_kmalloc_init,
-+				   kunit_kmalloc_free,
-+				   &params);
++/*
++ * This registers the above test module telling KUnit that this is a suite of
++ * tests that need to be run.
++ */
++module_test(sysctl_test_module);
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 0d9e81779e373..c20fd8a12bb3f 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1908,6 +1908,12 @@ config TEST_SYSCTL
+ 
+ 	  If unsure, say N.
+ 
++config SYSCTL_KUNIT_TEST
++	bool "KUnit test for sysctl"
++	depends on KUNIT
++	help
++	  Enables KUnit sysctl test.
 +
-+	if (res)
-+		return res->allocation;
-+	else
-+		return NULL;
-+}
-+
-+void kunit_cleanup(struct kunit *test)
-+{
-+	struct kunit_resource *resource, *resource_safe;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&test->lock, flags);
-+	list_for_each_entry_safe(resource,
-+				 resource_safe,
-+				 &test->resources,
-+				 node) {
-+		kunit_free_resource(test, resource);
-+	}
-+	spin_unlock_irqrestore(&test->lock, flags);
-+}
-+
- void kunit_printk(const char *level,
- 		  const struct kunit *test,
- 		  const char *fmt, ...)
+ config TEST_UDELAY
+ 	tristate "udelay test driver"
+ 	help
 -- 
 2.21.0.392.gf8f6787159e-goog
 
