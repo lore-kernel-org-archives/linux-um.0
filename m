@@ -1,15 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
+Received: from mail-vk1-xa49.google.com ([2607:f8b0:4864:20::a49])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hEHf6-00005M-Dx
- for linux-um@lists.infradead.org; Wed, 10 Apr 2019 18:09:29 +0000
-Received: by mail-pl1-x643.google.com with SMTP id w23so1896880ply.4
- for <linux-um@lists.infradead.org>; Wed, 10 Apr 2019 11:09:27 -0700 (PDT)
-From: =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <zenczykowski@gmail.com>
-Subject: [PATCH] uml: fix a boot splat wrt use of cpu_all_mask
-Date: Wed, 10 Apr 2019 11:09:08 -0700
-Message-Id: <20190410180908.173650-1-zenczykowski@gmail.com>
-MIME-Version: 1.0
+ id 1hCAZ0-0008WB-1K
+ for linux-um@lists.infradead.org; Thu, 04 Apr 2019 22:10:27 +0000
+Received: by mail-vk1-xa49.google.com with SMTP id 62so1668920vkx.16
+ for <linux-um@lists.infradead.org>; Thu, 04 Apr 2019 15:10:24 -0700 (PDT)
+Date: Thu,  4 Apr 2019 15:06:44 -0700
+In-Reply-To: <20190404220652.19765-1-brendanhiggins@google.com>
+Message-Id: <20190404220652.19765-10-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20190404220652.19765-1-brendanhiggins@google.com>
+Subject: [PATCH v1 09/17] kunit: test: add tests for kunit test abort
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,66 +20,184 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>
-Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: corbet@lwn.net, frowand.list@gmail.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, robh@kernel.org, shuah@kernel.org, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, richard@nod.at, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org
 
-RnJvbTogTWFjaWVqIMW7ZW5jenlrb3dza2kgPG1hemVAZ29vZ2xlLmNvbT4KCk1lbW9yeTogNTA5
-MTA4Sy81NDI2MTJLIGF2YWlsYWJsZSAoMzgzNUsga2VybmVsIGNvZGUsIDkxOUsgcndkYXRhLCAx
-MDI4SyByb2RhdGEsIDEyOUsgaW5pdCwgMjExSyBic3MsIDMzNTA0SyByZXNlcnZlZCwgMEsgY21h
-LXJlc2VydmVkKQpOUl9JUlFTOiAxNQpjbG9ja3NvdXJjZTogdGltZXI6IG1hc2s6IDB4ZmZmZmZm
-ZmZmZmZmZmZmZiBtYXhfY3ljbGVzOiAweDFjZDQyZTIwNSwgbWF4X2lkbGVfbnM6IDg4MTU5MDQw
-NDQyNiBucwotLS0tLS0tLS0tLS1bIGN1dCBoZXJlIF0tLS0tLS0tLS0tLS0KV0FSTklORzogQ1BV
-OiAwIFBJRDogMCBhdCBrZXJuZWwvdGltZS9jbG9ja2V2ZW50cy5jOjQ1OCBjbG9ja2V2ZW50c19y
-ZWdpc3Rlcl9kZXZpY2UrMHg3Mi8weDE0MApwb3NpeC10aW1lciBjcHVtYXNrID09IGNwdV9hbGxf
-bWFzaywgdXNpbmcgY3B1X3Bvc3NpYmxlX21hc2sgaW5zdGVhZApNb2R1bGVzIGxpbmtlZCBpbjoK
-Q1BVOiAwIFBJRDogMCBDb21tOiBzd2FwcGVyIE5vdCB0YWludGVkIDUuMS4wLXJjNC0wMDA0OC1n
-ZWQ3OWNjODczMDJiICM0ClN0YWNrOgogNjA0ZWJkYTAgNjAzYzUzNzAgNjA0ZWJlMjAgNjA0NmZk
-MTcKIDAwMDAwMDAwIDYwMDZmY2JiIDYwNGViZGIwIDYwM2M1M2I1CiA2MDRlYmUxMCA2MDAzYmZj
-NCA2MDRlYmRkMCA5MDAwMDAxY2EKQ2FsbCBUcmFjZToKIFs8NjAwNmZjYmI+XSA/IHByaW50aysw
-eDAvMHg5NAogWzw2MDA4MzE2MD5dID8gY2xvY2tldmVudHNfcmVnaXN0ZXJfZGV2aWNlKzB4NzIv
-MHgxNDAKIFs8NjAwMWYxNmU+XSBzaG93X3N0YWNrKzB4MTNiLzB4MTU1CiBbPDYwM2M1MzcwPl0g
-PyBkdW1wX3N0YWNrX3ByaW50X2luZm8rMHhlMi8weGViCiBbPDYwMDZmY2JiPl0gPyBwcmludGsr
-MHgwLzB4OTQKIFs8NjAzYzUzYjU+XSBkdW1wX3N0YWNrKzB4MmEvMHgyYwogWzw2MDAzYmZjND5d
-IF9fd2FybisweDEwZS8weDEzZQogWzw2MDA3MDMyMD5dID8gdnByaW50a19mdW5jKzB4YzgvMHhj
-ZgogWzw2MDAzMGZkNj5dID8gYmxvY2tfc2lnbmFscysweDAvMHgxNgogWzw2MDA2ZmNiYj5dID8g
-cHJpbnRrKzB4MC8weDk0CiBbPDYwMDNjMDhiPl0gd2Fybl9zbG93cGF0aF9mbXQrMHg5Ny8weDk5
-CiBbPDYwMDMxMWExPl0gPyBzZXRfc2lnbmFscysweDAvMHgzZgogWzw2MDAzYmZmND5dID8gd2Fy
-bl9zbG93cGF0aF9mbXQrMHgwLzB4OTkKIFs8NjAwODQyY2I+XSA/IHRpY2tfb25lc2hvdF9tb2Rl
-X2FjdGl2ZSsweDQ0LzB4NGYKIFs8NjAwMzBmZDY+XSA/IGJsb2NrX3NpZ25hbHMrMHgwLzB4MTYK
-IFs8NjAwNmZjYmI+XSA/IHByaW50aysweDAvMHg5NAogWzw2MDA3ZDJkNT5dID8gX19jbG9ja3Nv
-dXJjZV9zZWxlY3QrMHgyMC8weDFiMQogWzw2MDAzMGZkNj5dID8gYmxvY2tfc2lnbmFscysweDAv
-MHgxNgogWzw2MDA2ZmNiYj5dID8gcHJpbnRrKzB4MC8weDk0CiBbPDYwMDgzMTYwPl0gY2xvY2tl
-dmVudHNfcmVnaXN0ZXJfZGV2aWNlKzB4NzIvMHgxNDAKIFs8NjAwMzExOTI+XSA/IGdldF9zaWdu
-YWxzKzB4MC8weGYKIFs8NjAwMzBmZDY+XSA/IGJsb2NrX3NpZ25hbHMrMHgwLzB4MTYKIFs8NjAw
-NmZjYmI+XSA/IHByaW50aysweDAvMHg5NAogWzw2MDAwMmVlYz5dIHVtX3RpbWVyX3NldHVwKzB4
-YzgvMHhjYQogWzw2MDAwMWI1OT5dIHN0YXJ0X2tlcm5lbCsweDQ3Zi8weDU3ZQogWzw2MDAwMzVi
-Yz5dIHN0YXJ0X2tlcm5lbF9wcm9jKzB4NDkvMHg0ZAogWzw2MDA2YzQ4Mz5dID8ga21zZ19kdW1w
-X3JlZ2lzdGVyKzB4ODIvMHg4YQogWzw2MDAxZGU2Mj5dIG5ld190aHJlYWRfaGFuZGxlcisweDgx
-LzB4YjIKIFs8NjAwMDM1NzE+XSA/IGttc2dfZHVtcGVyX3N0ZG91dF9pbml0KzB4MWEvMHgxYwog
-Wzw2MDAyMGM3NT5dIHVtbF9maW5pc2hzZXR1cCsweDU0LzB4NTkKCnJhbmRvbTogZ2V0X3JhbmRv
-bV9ieXRlcyBjYWxsZWQgZnJvbSBpbml0X29vcHNfaWQrMHgyNy8weDM0IHdpdGggY3JuZ19pbml0
-PTAKLS0tWyBlbmQgdHJhY2UgMDAxNzNkMDExN2E4OGFjYiBdLS0tCkNhbGlicmF0aW5nIGRlbGF5
-IGxvb3AuLi4gNjk0MS45MCBCb2dvTUlQUyAobHBqPTM0NzA5NTA0KQoKU2lnbmVkLW9mZi1ieTog
-TWFjaWVqIMW7ZW5jenlrb3dza2kgPG1hemVAZ29vZ2xlLmNvbT4KQ2M6IEplZmYgRGlrZSA8amRp
-a2VAYWRkdG9pdC5jb20+CkNjOiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0PgpD
-YzogQW50b24gSXZhbm92IDxhbnRvbi5pdmFub3ZAY2FtYnJpZGdlZ3JleXMuY29tPgpDYzogbGlu
-dXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpDYzogbGludXgta2VybmVsQHZnZXIua2VybmVsLm9y
-ZwotLS0KIGFyY2gvdW0va2VybmVsL3RpbWUuYyB8IDIgKy0KIDEgZmlsZSBjaGFuZ2VkLCAxIGlu
-c2VydGlvbigrKSwgMSBkZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL2FyY2gvdW0va2VybmVsL3Rp
-bWUuYyBiL2FyY2gvdW0va2VybmVsL3RpbWUuYwppbmRleCAwNTJkZTRjOGFjYjIuLjdjMmVhM2I1
-NzEwMiAxMDA2NDQKLS0tIGEvYXJjaC91bS9rZXJuZWwvdGltZS5jCisrKyBiL2FyY2gvdW0va2Vy
-bmVsL3RpbWUuYwpAQCAtNTYsNyArNTYsNyBAQCBzdGF0aWMgaW50IGl0aW1lcl9vbmVfc2hvdChz
-dHJ1Y3QgY2xvY2tfZXZlbnRfZGV2aWNlICpldnQpCiBzdGF0aWMgc3RydWN0IGNsb2NrX2V2ZW50
-X2RldmljZSB0aW1lcl9jbG9ja2V2ZW50ID0gewogCS5uYW1lCQkJPSAicG9zaXgtdGltZXIiLAog
-CS5yYXRpbmcJCQk9IDI1MCwKLQkuY3B1bWFzawkJPSBjcHVfYWxsX21hc2ssCisJLmNwdW1hc2sJ
-CT0gY3B1X3Bvc3NpYmxlX21hc2ssIC8vY3B1X2FsbF9tYXNrLAogCS5mZWF0dXJlcwkJPSBDTE9D
-S19FVlRfRkVBVF9QRVJJT0RJQyB8CiAJCQkJICBDTE9DS19FVlRfRkVBVF9PTkVTSE9ULAogCS5z
-ZXRfc3RhdGVfc2h1dGRvd24JPSBpdGltZXJfc2h1dGRvd24sCi0tIAoyLjIxLjAuMzkyLmdmOGY2
-Nzg3MTU5ZS1nb29nCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcK
-aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
+Add KUnit tests for the KUnit test abort mechanism (see preceding
+commit). Add tests both for general try catch mechanism as well as
+non-architecture specific mechanism.
+
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+---
+ kunit/Makefile    |   3 +-
+ kunit/test-test.c | 135 ++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 137 insertions(+), 1 deletion(-)
+ create mode 100644 kunit/test-test.c
+
+diff --git a/kunit/Makefile b/kunit/Makefile
+index 1f7680cfa11ad..533355867abd2 100644
+--- a/kunit/Makefile
++++ b/kunit/Makefile
+@@ -3,6 +3,7 @@ obj-$(CONFIG_KUNIT) +=			test.o \
+ 					kunit-stream.o \
+ 					try-catch.o
+ 
+-obj-$(CONFIG_KUNIT_TEST) +=		string-stream-test.o
++obj-$(CONFIG_KUNIT_TEST) +=		test-test.o \
++					string-stream-test.o
+ 
+ obj-$(CONFIG_KUNIT_EXAMPLE_TEST) +=	example-test.o
+diff --git a/kunit/test-test.c b/kunit/test-test.c
+new file mode 100644
+index 0000000000000..c81ae6efb959f
+--- /dev/null
++++ b/kunit/test-test.c
+@@ -0,0 +1,135 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * KUnit test for core test infrastructure.
++ *
++ * Copyright (C) 2019, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++#include <kunit/test.h>
++
++struct kunit_try_catch_test_context {
++	struct kunit_try_catch *try_catch;
++	bool function_called;
++};
++
++void kunit_test_successful_try(void *data)
++{
++	struct kunit *test = data;
++	struct kunit_try_catch_test_context *ctx = test->priv;
++
++	ctx->function_called = true;
++}
++
++void kunit_test_no_catch(void *data)
++{
++	struct kunit *test = data;
++
++	KUNIT_FAIL(test, "Catch should not be called.\n");
++}
++
++static void kunit_test_try_catch_successful_try_no_catch(struct kunit *test)
++{
++	struct kunit_try_catch_test_context *ctx = test->priv;
++	struct kunit_try_catch *try_catch = ctx->try_catch;
++
++	kunit_try_catch_init(try_catch,
++			     test,
++			     kunit_test_successful_try,
++			     kunit_test_no_catch);
++	kunit_try_catch_run(try_catch, test);
++
++	KUNIT_EXPECT_TRUE(test, ctx->function_called);
++}
++
++void kunit_test_unsuccessful_try(void *data)
++{
++	struct kunit *test = data;
++	struct kunit_try_catch_test_context *ctx = test->priv;
++	struct kunit_try_catch *try_catch = ctx->try_catch;
++
++	kunit_try_catch_throw(try_catch);
++	KUNIT_FAIL(test, "This line should never be reached.\n");
++}
++
++void kunit_test_catch(void *data)
++{
++	struct kunit *test = data;
++	struct kunit_try_catch_test_context *ctx = test->priv;
++
++	ctx->function_called = true;
++}
++
++static void kunit_test_try_catch_unsuccessful_try_does_catch(struct kunit *test)
++{
++	struct kunit_try_catch_test_context *ctx = test->priv;
++	struct kunit_try_catch *try_catch = ctx->try_catch;
++
++	kunit_try_catch_init(try_catch,
++			     test,
++			     kunit_test_unsuccessful_try,
++			     kunit_test_catch);
++	kunit_try_catch_run(try_catch, test);
++
++	KUNIT_EXPECT_TRUE(test, ctx->function_called);
++}
++
++static void kunit_test_generic_try_catch_successful_try_no_catch(
++		struct kunit *test)
++{
++	struct kunit_try_catch_test_context *ctx = test->priv;
++	struct kunit_try_catch *try_catch = ctx->try_catch;
++
++	try_catch->test = test;
++	kunit_generic_try_catch_init(try_catch);
++	try_catch->try = kunit_test_successful_try;
++	try_catch->catch = kunit_test_no_catch;
++
++	kunit_try_catch_run(try_catch, test);
++
++	KUNIT_EXPECT_TRUE(test, ctx->function_called);
++}
++
++static void kunit_test_generic_try_catch_unsuccessful_try_does_catch(
++		struct kunit *test)
++{
++	struct kunit_try_catch_test_context *ctx = test->priv;
++	struct kunit_try_catch *try_catch = ctx->try_catch;
++
++	try_catch->test = test;
++	kunit_generic_try_catch_init(try_catch);
++	try_catch->try = kunit_test_unsuccessful_try;
++	try_catch->catch = kunit_test_catch;
++
++	kunit_try_catch_run(try_catch, test);
++
++	KUNIT_EXPECT_TRUE(test, ctx->function_called);
++}
++
++static int kunit_try_catch_test_init(struct kunit *test)
++{
++	struct kunit_try_catch_test_context *ctx;
++
++	ctx = kunit_kzalloc(test, sizeof(*ctx), GFP_KERNEL);
++	test->priv = ctx;
++
++	ctx->try_catch = kunit_kmalloc(test,
++				       sizeof(*ctx->try_catch),
++				       GFP_KERNEL);
++
++	return 0;
++}
++
++static struct kunit_case kunit_try_catch_test_cases[] = {
++	KUNIT_CASE(kunit_test_try_catch_successful_try_no_catch),
++	KUNIT_CASE(kunit_test_try_catch_unsuccessful_try_does_catch),
++	KUNIT_CASE(kunit_test_generic_try_catch_successful_try_no_catch),
++	KUNIT_CASE(kunit_test_generic_try_catch_unsuccessful_try_does_catch),
++	{},
++};
++
++static struct kunit_module kunit_try_catch_test_module = {
++	.name = "kunit-try-catch-test",
++	.init = kunit_try_catch_test_init,
++	.test_cases = kunit_try_catch_test_cases,
++};
++module_test(kunit_try_catch_test_module);
+-- 
+2.21.0.392.gf8f6787159e-goog
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
