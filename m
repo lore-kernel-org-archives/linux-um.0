@@ -1,108 +1,44 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab6.miniserver.com ([5.153.251.140]
- helo=www.kot-begemot.co.uk)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hLX4F-00022C-6E
- for linux-um@lists.infradead.org; Tue, 30 Apr 2019 18:01:25 +0000
-Subject: Re: [uml-devel] How to convert UML user-space virtual address into
- HOST user-space virtual address?
-References: <DM5PR2001MB17712DD834B1FE3447F1904ECF3A0@DM5PR2001MB1771.namprd20.prod.outlook.com>
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Message-ID: <92895366-dab3-ffe4-877a-f6c9f90b9471@kot-begemot.co.uk>
-Date: Tue, 30 Apr 2019 18:19:36 +0100
+Return-Path: <linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org>
+Date: Thu, 4 Apr 2019 17:06:08 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH 5/6 v3] syscalls: Remove start and number from
+ syscall_get_arguments() args
+Message-ID: <20190404170608.25cadc7d@gandalf.local.home>
+In-Reply-To: <20190404181758.GA8071@altlinux.org>
+References: <20190401134104.676620247@goodmis.org>
+ <20190401134421.278590567@goodmis.org>
+ <20190404181758.GA8071@altlinux.org>
 MIME-Version: 1.0
-In-Reply-To: <DM5PR2001MB17712DD834B1FE3447F1904ECF3A0@DM5PR2001MB1771.namprd20.prod.outlook.com>
-Content-Language: en-US
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="windows-1252"; Format="flowed"
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Pablo Pessolani <ppessolani@hotmail.com>, linux-um@lists.infradead.org
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org
+To: "Dmitry V. Levin" <ldv@altlinux.org>
+Cc: linux-ia64@vger.kernel.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Peter Zijlstra <peterz@infradead.org>, Palmer Dabbelt <palmer@sifive.com>, Dominik Brodowski <linux@dominikbrodowski.net>, Oleg Nesterov <oleg@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, Ingo Molnar <mingo@kernel.org>, linux-arch@vger.kernel.org, linux-s390@vger.kernel.org, linux-c6x-dev@linux-c6x.org, linux-sh@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, Ingo Molnar <mingo@redhat.com>, linux-snps-arc@lists.infradead.org, Dave Martin <dave.martin@arm.com>, uclinux-h8-devel@lists.sourceforge.jp, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Roland McGrath <roland@hack.frob.com>, linux-um@lists.infradead.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, Andy Lutomirski <luto@amacapital.net>, "Eric W. Biederman" <ebiederm@xmission.com>, nios2-dev@lists.rocketboards.org, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>
+List-ID: <linux-um.lists.infradead.org>
 
+On Thu, 4 Apr 2019 21:17:58 +0300
+"Dmitry V. Levin" <ldv@altlinux.org> wrote:
 
+> There are several places listed below where I'd prefer to see more readable
+> equivalents, but feel free to leave it to respective arch maintainers.
 
-On 30/04/2019 16:38, Pablo Pessolani wrote:
-> Hi:
->  =A0 =A0 I am writing a UML device driver wrapper (uml/drivers),=A0 and I=
- need =
+I was going to do similar changes, but figured I'd do just that (let
+the arch maintainers further optimize the code). I made this more about
+fixing the interface and less about the optimization and clean ups that
+it can allow.
 
-> to convert=A0an address of a UML user-space process into an address of UM=
-L =
-
-> kernel space.
-> =
-
-> i.e.
-> =
-
-> Process_running_within_UML(){
->  =A0 =A0 =A0 =A0 =A0char uml_usr_buffer[MAXBUF];
->  =A0 =A0 =A0 =A0 =A0.....
-> ret =3D ioctl(dvk_fd,DVK_IOCSDCINIT, (int) uml_usr_buffer);
-> }
-> =
-
-> UML *ioctl()* syscall is translated by UML to os_ioctl_generic =
-
-> <https://elixir.bootlin.com/linux/v4.9.88/ident/os_ioctl_generic>()  =
-
-> which then calls host *ioctl().*
-> =
-
-> The *uml_usr_buffe*r address is a UML virtual address, not host virtual =
-
-> address.
-> I need to convert this UML user-space virtual address into user-space =
-
-> HOST virtual address.
-
-UML Kernel "phys" address =3D=3D Host kernel process user space address.
-
-> *
-> *
-> Can I use, virt_to_phys() ??
-
-Off the top of my head - Yes.
-
-> *
-> *
-> *Thanks in advance.*
-> *PAP*
-> *
-> *
-> =
-
-> =
-
-> =
-
-> =
-
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-> =
-
-
-Switching to the new mailing list.
-Best Regards,
-
--- =
-
-Anton R. Ivanov
-https://www.kot-begemot.co.uk/
+-- Steve
 
 _______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
