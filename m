@@ -1,17 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x64a.google.com ([2607:f8b0:4864:20::64a])
+Received: from ivanoab6.miniserver.com ([5.153.251.140]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hCAYr-0008RP-UC
- for linux-um@lists.infradead.org; Thu, 04 Apr 2019 22:10:19 +0000
-Received: by mail-pl1-x64a.google.com with SMTP id d10so2655319plo.12
- for <linux-um@lists.infradead.org>; Thu, 04 Apr 2019 15:10:17 -0700 (PDT)
-Date: Thu,  4 Apr 2019 15:06:41 -0700
-In-Reply-To: <20190404220652.19765-1-brendanhiggins@google.com>
-Message-Id: <20190404220652.19765-7-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20190404220652.19765-1-brendanhiggins@google.com>
-Subject: [PATCH v1 06/17] kbuild: enable building KUnit
-From: Brendan Higgins <brendanhiggins@google.com>
+ id 1hCRX4-0002TE-VU
+ for linux-um@lists.infradead.org; Fri, 05 Apr 2019 16:17:36 +0000
+Subject: Re: [PATCH] um: Do not unlock mutex that is not hold.
+References: <20190402084332.88965-1-dwalter@google.com>
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Message-ID: <cb5e35f0-9f95-fec1-9325-be8fa580bf00@kot-begemot.co.uk>
+Date: Fri, 5 Apr 2019 17:17:27 +0100
+MIME-Version: 1.0
+In-Reply-To: <20190402084332.88965-1-dwalter@google.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,47 +20,52 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: corbet@lwn.net, frowand.list@gmail.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, robh@kernel.org, shuah@kernel.org, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, richard@nod.at, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org
+To: Daniel Walter <dwalter@google.com>, richard@nod.at, linux-um@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
 
-Add KUnit to root Kconfig and Makefile allowing it to actually be built.
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
----
- Kconfig  | 2 ++
- Makefile | 2 +-
- 2 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/Kconfig b/Kconfig
-index 48a80beab6853..10428501edb78 100644
---- a/Kconfig
-+++ b/Kconfig
-@@ -30,3 +30,5 @@ source "crypto/Kconfig"
- source "lib/Kconfig"
- 
- source "lib/Kconfig.debug"
-+
-+source "kunit/Kconfig"
-diff --git a/Makefile b/Makefile
-index c0a34064c5744..639d353f98ca9 100644
---- a/Makefile
-+++ b/Makefile
-@@ -964,7 +964,7 @@ endif
- PHONY += prepare0
- 
- ifeq ($(KBUILD_EXTMOD),)
--core-y		+= kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ block/
-+core-y		+= kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ block/ kunit/
- 
- vmlinux-dirs	:= $(patsubst %/,%,$(filter %/, $(init-y) $(init-m) \
- 		     $(core-y) $(core-m) $(drivers-y) $(drivers-m) \
+On 02/04/2019 09:43, Daniel Walter wrote:
+>   Return error instead of trying to unlock a mutex that is not hold.
+> 
+> Signed-off-by: Daniel Walter <dwalter@google.com>
+> ---
+>   arch/um/drivers/ubd_kern.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+> index aca09be2373e..33c1cd6a12ac 100644
+> --- a/arch/um/drivers/ubd_kern.c
+> +++ b/arch/um/drivers/ubd_kern.c
+> @@ -276,14 +276,14 @@ static int ubd_setup_common(char *str, int *index_out, char **error_out)
+>   		str++;
+>   		if(!strcmp(str, "sync")){
+>   			global_openflags = of_sync(global_openflags);
+> -			goto out1;
+> +			return err;
+>   		}
+>   
+>   		err = -EINVAL;
+>   		major = simple_strtoul(str, &end, 0);
+>   		if((*end != '\0') || (end == str)){
+>   			*error_out = "Didn't parse major number";
+> -			goto out1;
+> +			return err;
+>   		}
+>   
+>   		mutex_lock(&ubd_lock);
+> 
+
+Reviewed-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Acked-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+
 -- 
-2.21.0.392.gf8f6787159e-goog
-
+Anton R. Ivanov
+https://www.kot-begemot.co.uk/
 
 _______________________________________________
 linux-um mailing list
