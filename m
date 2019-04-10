@@ -1,33 +1,57 @@
-Return-Path: <brgl@bgdev.pl>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: [RESEND PATCH 0/4] um: build and irq fixes
-Date: Wed,  3 Apr 2019 10:38:58 +0200
-Message-Id: <20190403083902.3975-1-brgl@bgdev.pl>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from galois.linutronix.de ([2a01:7a0:2:106d:700::1])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1hEB32-0002e7-W9
+ for linux-um@lists.infradead.org; Wed, 10 Apr 2019 11:05:47 +0000
+Message-Id: <20190410103643.662853876@linutronix.de>
+Date: Wed, 10 Apr 2019 12:27:55 +0200
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: [RFC patch 01/41] um/stacktrace: Remove the pointless ULONG_MAX marker
+References: <20190410102754.387743324@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Richard Weinberger <richard@nod.at>, x86@kernel.org, linux-um@lists.infradead.org, Steven Rostedt <rostedt@goodmis.org>, Alexander Potapenko <glider@google.com>, Andy Lutomirski <luto@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Terminating the last trace entry with ULONG_MAX is a completely pointless
+exercise and none of the consumers can rely on it because it's
+inconsistently implemented across architectures. In fact quite some of the
+callers remove the entry and adjust stack_trace.nr_entries afterwards.
 
-I've previously sent these patches separately. I still don't see them
-in next and I don't know what the policy is for picking up uml patches
-but I thought I'd resend them rebased together on top of v5.1-rc3.
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: linux-um@lists.infradead.org
+---
+ arch/um/kernel/stacktrace.c |    2 --
+ 1 file changed, 2 deletions(-)
 
-Bartosz Golaszewski (4):
-  um: remove unused variable
-  um: remove uses of variable length arrays
-  um: define set_pte_at() as a static inline function, not a macro
-  um: irq: don't set the chip for all irqs
+--- a/arch/um/kernel/stacktrace.c
++++ b/arch/um/kernel/stacktrace.c
+@@ -63,8 +63,6 @@ static const struct stacktrace_ops dump_
+ static void __save_stack_trace(struct task_struct *tsk, struct stack_trace *trace)
+ {
+ 	dump_trace(tsk, &dump_ops, trace);
+-	if (trace->nr_entries < trace->max_entries)
+-		trace->entries[trace->nr_entries++] = ULONG_MAX;
+ }
+ 
+ void save_stack_trace(struct stack_trace *trace)
 
- arch/um/include/asm/pgtable.h |  7 ++++++-
- arch/um/kernel/irq.c          |  2 +-
- arch/um/kernel/skas/uaccess.c |  1 -
- arch/um/os-Linux/umid.c       | 36 ++++++++++++++++++++++++++---------
- 4 files changed, 34 insertions(+), 12 deletions(-)
 
--- 
-2.21.0
 
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
