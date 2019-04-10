@@ -1,16 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x641.google.com ([2607:f8b0:4864:20::641])
+Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hEHhG-0001hG-Am
- for linux-um@lists.infradead.org; Wed, 10 Apr 2019 18:11:43 +0000
-Received: by mail-pl1-x641.google.com with SMTP id ck15so1906940plb.3
- for <linux-um@lists.infradead.org>; Wed, 10 Apr 2019 11:11:42 -0700 (PDT)
+ id 1hEHf6-00005M-Dx
+ for linux-um@lists.infradead.org; Wed, 10 Apr 2019 18:09:29 +0000
+Received: by mail-pl1-x643.google.com with SMTP id w23so1896880ply.4
+ for <linux-um@lists.infradead.org>; Wed, 10 Apr 2019 11:09:27 -0700 (PDT)
 From: =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <zenczykowski@gmail.com>
-Subject: [PATCH v2] uml: fix a boot splat wrt use of cpu_all_mask
-Date: Wed, 10 Apr 2019 11:11:23 -0700
-Message-Id: <20190410181123.174142-1-zenczykowski@gmail.com>
-In-Reply-To: <20190410180908.173650-1-zenczykowski@gmail.com>
-References: <20190410180908.173650-1-zenczykowski@gmail.com>
+Subject: [PATCH] uml: fix a boot splat wrt use of cpu_all_mask
+Date: Wed, 10 Apr 2019 11:09:08 -0700
+Message-Id: <20190410180908.173650-1-zenczykowski@gmail.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -70,16 +68,16 @@ YzogQW50b24gSXZhbm92IDxhbnRvbi5pdmFub3ZAY2FtYnJpZGdlZ3JleXMuY29tPgpDYzogbGlu
 dXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpDYzogbGludXgta2VybmVsQHZnZXIua2VybmVsLm9y
 ZwotLS0KIGFyY2gvdW0va2VybmVsL3RpbWUuYyB8IDIgKy0KIDEgZmlsZSBjaGFuZ2VkLCAxIGlu
 c2VydGlvbigrKSwgMSBkZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL2FyY2gvdW0va2VybmVsL3Rp
-bWUuYyBiL2FyY2gvdW0va2VybmVsL3RpbWUuYwppbmRleCAwNTJkZTRjOGFjYjIuLjBjNTcyYTQ4
-MTU4ZSAxMDA2NDQKLS0tIGEvYXJjaC91bS9rZXJuZWwvdGltZS5jCisrKyBiL2FyY2gvdW0va2Vy
+bWUuYyBiL2FyY2gvdW0va2VybmVsL3RpbWUuYwppbmRleCAwNTJkZTRjOGFjYjIuLjdjMmVhM2I1
+NzEwMiAxMDA2NDQKLS0tIGEvYXJjaC91bS9rZXJuZWwvdGltZS5jCisrKyBiL2FyY2gvdW0va2Vy
 bmVsL3RpbWUuYwpAQCAtNTYsNyArNTYsNyBAQCBzdGF0aWMgaW50IGl0aW1lcl9vbmVfc2hvdChz
 dHJ1Y3QgY2xvY2tfZXZlbnRfZGV2aWNlICpldnQpCiBzdGF0aWMgc3RydWN0IGNsb2NrX2V2ZW50
 X2RldmljZSB0aW1lcl9jbG9ja2V2ZW50ID0gewogCS5uYW1lCQkJPSAicG9zaXgtdGltZXIiLAog
 CS5yYXRpbmcJCQk9IDI1MCwKLQkuY3B1bWFzawkJPSBjcHVfYWxsX21hc2ssCisJLmNwdW1hc2sJ
-CT0gY3B1X3Bvc3NpYmxlX21hc2ssCiAJLmZlYXR1cmVzCQk9IENMT0NLX0VWVF9GRUFUX1BFUklP
-RElDIHwKIAkJCQkgIENMT0NLX0VWVF9GRUFUX09ORVNIT1QsCiAJLnNldF9zdGF0ZV9zaHV0ZG93
-bgk9IGl0aW1lcl9zaHV0ZG93biwKLS0gCjIuMjEuMC4zOTIuZ2Y4ZjY3ODcxNTllLWdvb2cKCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBt
-YWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
+CT0gY3B1X3Bvc3NpYmxlX21hc2ssIC8vY3B1X2FsbF9tYXNrLAogCS5mZWF0dXJlcwkJPSBDTE9D
+S19FVlRfRkVBVF9QRVJJT0RJQyB8CiAJCQkJICBDTE9DS19FVlRfRkVBVF9PTkVTSE9ULAogCS5z
+ZXRfc3RhdGVfc2h1dGRvd24JPSBpdGltZXJfc2h1dGRvd24sCi0tIAoyLjIxLjAuMzkyLmdmOGY2
+Nzg3MTU5ZS1nb29nCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcK
+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
 
