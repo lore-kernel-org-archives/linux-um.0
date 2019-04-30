@@ -1,17 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x449.google.com ([2607:f8b0:4864:20::449])
+Received: from ivanoab6.miniserver.com ([5.153.251.140]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hCAYu-0008Sg-Qr
- for linux-um@lists.infradead.org; Thu, 04 Apr 2019 22:10:22 +0000
-Received: by mail-pf1-x449.google.com with SMTP id f7so2709772pfd.7
- for <linux-um@lists.infradead.org>; Thu, 04 Apr 2019 15:10:19 -0700 (PDT)
-Date: Thu,  4 Apr 2019 15:06:42 -0700
-In-Reply-To: <20190404220652.19765-1-brendanhiggins@google.com>
-Message-Id: <20190404220652.19765-8-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20190404220652.19765-1-brendanhiggins@google.com>
-Subject: [PATCH v1 07/17] kunit: test: add initial tests
-From: Brendan Higgins <brendanhiggins@google.com>
+ id 1hLX4F-00022C-6E
+ for linux-um@lists.infradead.org; Tue, 30 Apr 2019 18:01:25 +0000
+Subject: Re: [uml-devel] How to convert UML user-space virtual address into
+ HOST user-space virtual address?
+References: <DM5PR2001MB17712DD834B1FE3447F1904ECF3A0@DM5PR2001MB1771.namprd20.prod.outlook.com>
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Message-ID: <92895366-dab3-ffe4-877a-f6c9f90b9471@kot-begemot.co.uk>
+Date: Tue, 30 Apr 2019 18:19:36 +0100
+MIME-Version: 1.0
+In-Reply-To: <DM5PR2001MB17712DD834B1FE3447F1904ECF3A0@DM5PR2001MB1771.namprd20.prod.outlook.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,222 +21,85 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="windows-1252"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: corbet@lwn.net, frowand.list@gmail.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, robh@kernel.org, shuah@kernel.org, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, richard@nod.at, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org
+To: Pablo Pessolani <ppessolani@hotmail.com>, linux-um@lists.infradead.org
 
-Add a test for string stream along with a simpler example.
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
----
- kunit/Kconfig              | 12 ++++++
- kunit/Makefile             |  4 ++
- kunit/example-test.c       | 88 ++++++++++++++++++++++++++++++++++++++
- kunit/string-stream-test.c | 61 ++++++++++++++++++++++++++
- 4 files changed, 165 insertions(+)
- create mode 100644 kunit/example-test.c
- create mode 100644 kunit/string-stream-test.c
 
-diff --git a/kunit/Kconfig b/kunit/Kconfig
-index 64480092b2c24..5cb500355c873 100644
---- a/kunit/Kconfig
-+++ b/kunit/Kconfig
-@@ -13,4 +13,16 @@ config KUNIT
- 	  special hardware. For more information, please see
- 	  Documentation/kunit/
- 
-+config KUNIT_TEST
-+	bool "KUnit test for KUnit"
-+	depends on KUNIT
-+	help
-+	  Enables KUnit test to test KUnit.
-+
-+config KUNIT_EXAMPLE_TEST
-+	bool "Example test for KUnit"
-+	depends on KUNIT
-+	help
-+	  Enables example KUnit test to demo features of KUnit.
-+
- endmenu
-diff --git a/kunit/Makefile b/kunit/Makefile
-index 6ddc622ee6b1c..60a9ea6cb4697 100644
---- a/kunit/Makefile
-+++ b/kunit/Makefile
-@@ -1,3 +1,7 @@
- obj-$(CONFIG_KUNIT) +=			test.o \
- 					string-stream.o \
- 					kunit-stream.o
-+
-+obj-$(CONFIG_KUNIT_TEST) +=		string-stream-test.o
-+
-+obj-$(CONFIG_KUNIT_EXAMPLE_TEST) +=	example-test.o
-diff --git a/kunit/example-test.c b/kunit/example-test.c
-new file mode 100644
-index 0000000000000..3947dd7c8f922
---- /dev/null
-+++ b/kunit/example-test.c
-@@ -0,0 +1,88 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Example KUnit test to show how to use KUnit.
-+ *
-+ * Copyright (C) 2019, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
-+
-+#include <kunit/test.h>
-+
-+/*
-+ * This is the most fundamental element of KUnit, the test case. A test case
-+ * makes a set EXPECTATIONs and ASSERTIONs about the behavior of some code; if
-+ * any expectations or assertions are not met, the test fails; otherwise, the
-+ * test passes.
-+ *
-+ * In KUnit, a test case is just a function with the signature
-+ * `void (*)(struct kunit *)`. `struct kunit` is a context object that stores
-+ * information about the current test.
-+ */
-+static void example_simple_test(struct kunit *test)
-+{
-+	/*
-+	 * This is an EXPECTATION; it is how KUnit tests things. When you want
-+	 * to test a piece of code, you set some expectations about what the
-+	 * code should do. KUnit then runs the test and verifies that the code's
-+	 * behavior matched what was expected.
-+	 */
-+	KUNIT_EXPECT_EQ(test, 1 + 1, 2);
-+}
-+
-+/*
-+ * This is run once before each test case, see the comment on
-+ * example_test_module for more information.
-+ */
-+static int example_test_init(struct kunit *test)
-+{
-+	kunit_info(test, "initializing\n");
-+
-+	return 0;
-+}
-+
-+/*
-+ * Here we make a list of all the test cases we want to add to the test module
-+ * below.
-+ */
-+static struct kunit_case example_test_cases[] = {
-+	/*
-+	 * This is a helper to create a test case object from a test case
-+	 * function; its exact function is not important to understand how to
-+	 * use KUnit, just know that this is how you associate test cases with a
-+	 * test module.
-+	 */
-+	KUNIT_CASE(example_simple_test),
-+	{},
-+};
-+
-+/*
-+ * This defines a suite or grouping of tests.
-+ *
-+ * Test cases are defined as belonging to the suite by adding them to
-+ * `kunit_cases`.
-+ *
-+ * Often it is desirable to run some function which will set up things which
-+ * will be used by every test; this is accomplished with an `init` function
-+ * which runs before each test case is invoked. Similarly, an `exit` function
-+ * may be specified which runs after every test case and can be used to for
-+ * cleanup. For clarity, running tests in a test module would behave as follows:
-+ *
-+ * module.init(test);
-+ * module.test_case[0](test);
-+ * module.exit(test);
-+ * module.init(test);
-+ * module.test_case[1](test);
-+ * module.exit(test);
-+ * ...;
-+ */
-+static struct kunit_module example_test_module = {
-+	.name = "example",
-+	.init = example_test_init,
-+	.test_cases = example_test_cases,
-+};
-+
-+/*
-+ * This registers the above test module telling KUnit that this is a suite of
-+ * tests that need to be run.
-+ */
-+module_test(example_test_module);
-diff --git a/kunit/string-stream-test.c b/kunit/string-stream-test.c
-new file mode 100644
-index 0000000000000..b2a98576797c9
---- /dev/null
-+++ b/kunit/string-stream-test.c
-@@ -0,0 +1,61 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * KUnit test for struct string_stream.
-+ *
-+ * Copyright (C) 2019, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
-+
-+#include <linux/slab.h>
-+#include <kunit/test.h>
-+#include <kunit/string-stream.h>
-+
-+static void string_stream_test_get_string(struct kunit *test)
-+{
-+	struct string_stream *stream = new_string_stream();
-+	char *output;
-+
-+	string_stream_add(stream, "Foo");
-+	string_stream_add(stream, " %s", "bar");
-+
-+	output = string_stream_get_string(stream);
-+	KUNIT_EXPECT_STREQ(test, output, "Foo bar");
-+	kfree(output);
-+	destroy_string_stream(stream);
-+}
-+
-+static void string_stream_test_add_and_clear(struct kunit *test)
-+{
-+	struct string_stream *stream = new_string_stream();
-+	char *output;
-+	int i;
-+
-+	for (i = 0; i < 10; i++)
-+		string_stream_add(stream, "A");
-+
-+	output = string_stream_get_string(stream);
-+	KUNIT_EXPECT_STREQ(test, output, "AAAAAAAAAA");
-+	KUNIT_EXPECT_EQ(test, stream->length, 10);
-+	KUNIT_EXPECT_FALSE(test, string_stream_is_empty(stream));
-+	kfree(output);
-+
-+	string_stream_clear(stream);
-+
-+	output = string_stream_get_string(stream);
-+	KUNIT_EXPECT_STREQ(test, output, "");
-+	KUNIT_EXPECT_TRUE(test, string_stream_is_empty(stream));
-+	destroy_string_stream(stream);
-+}
-+
-+static struct kunit_case string_stream_test_cases[] = {
-+	KUNIT_CASE(string_stream_test_get_string),
-+	KUNIT_CASE(string_stream_test_add_and_clear),
-+	{}
-+};
-+
-+static struct kunit_module string_stream_test_module = {
-+	.name = "string-stream-test",
-+	.test_cases = string_stream_test_cases
-+};
-+module_test(string_stream_test_module);
-+
--- 
-2.21.0.392.gf8f6787159e-goog
+On 30/04/2019 16:38, Pablo Pessolani wrote:
+> Hi:
+>  =A0 =A0 I am writing a UML device driver wrapper (uml/drivers),=A0 and I=
+ need =
 
+> to convert=A0an address of a UML user-space process into an address of UM=
+L =
+
+> kernel space.
+> =
+
+> i.e.
+> =
+
+> Process_running_within_UML(){
+>  =A0 =A0 =A0 =A0 =A0char uml_usr_buffer[MAXBUF];
+>  =A0 =A0 =A0 =A0 =A0.....
+> ret =3D ioctl(dvk_fd,DVK_IOCSDCINIT, (int) uml_usr_buffer);
+> }
+> =
+
+> UML *ioctl()* syscall is translated by UML to os_ioctl_generic =
+
+> <https://elixir.bootlin.com/linux/v4.9.88/ident/os_ioctl_generic>()  =
+
+> which then calls host *ioctl().*
+> =
+
+> The *uml_usr_buffe*r address is a UML virtual address, not host virtual =
+
+> address.
+> I need to convert this UML user-space virtual address into user-space =
+
+> HOST virtual address.
+
+UML Kernel "phys" address =3D=3D Host kernel process user space address.
+
+> *
+> *
+> Can I use, virt_to_phys() ??
+
+Off the top of my head - Yes.
+
+> *
+> *
+> *Thanks in advance.*
+> *PAP*
+> *
+> *
+> =
+
+> =
+
+> =
+
+> =
+
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+> =
+
+
+Switching to the new mailing list.
+Best Regards,
+
+-- =
+
+Anton R. Ivanov
+https://www.kot-begemot.co.uk/
 
 _______________________________________________
 linux-um mailing list
