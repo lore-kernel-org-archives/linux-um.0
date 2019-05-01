@@ -1,17 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-vs1-xe49.google.com ([2607:f8b0:4864:20::e49])
+Received: from mail-ot1-x349.google.com ([2607:f8b0:4864:20::349])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hQQEJ-0004oQ-LR
- for linux-um@lists.infradead.org; Tue, 14 May 2019 05:44:01 +0000
-Received: by mail-vs1-xe49.google.com with SMTP id h22so1962646vso.18
- for <linux-um@lists.infradead.org>; Mon, 13 May 2019 22:43:58 -0700 (PDT)
-Date: Mon, 13 May 2019 22:42:36 -0700
-In-Reply-To: <20190514054251.186196-1-brendanhiggins@google.com>
-Message-Id: <20190514054251.186196-4-brendanhiggins@google.com>
+ id 1hLyGy-0007SO-FU
+ for linux-um@lists.infradead.org; Wed, 01 May 2019 23:04:21 +0000
+Received: by mail-ot1-x349.google.com with SMTP id i21so306245otf.4
+ for <linux-um@lists.infradead.org>; Wed, 01 May 2019 16:04:19 -0700 (PDT)
+Date: Wed,  1 May 2019 16:01:18 -0700
+In-Reply-To: <20190501230126.229218-1-brendanhiggins@google.com>
+Message-Id: <20190501230126.229218-10-brendanhiggins@google.com>
 Mime-Version: 1.0
-References: <20190514054251.186196-1-brendanhiggins@google.com>
-Subject: [PATCH v3 03/18] kunit: test: add string_stream a std::stream like
- string builder
+References: <20190501230126.229218-1-brendanhiggins@google.com>
+Subject: [PATCH v2 09/17] kunit: test: add tests for kunit test abort
 From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -25,247 +24,176 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+To: frowand.list@gmail.com, gregkh@linuxfoundation.org, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, richard@nod.at, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-A number of test features need to do pretty complicated string printing
-where it may not be possible to rely on a single preallocated string
-with parameters.
-
-So provide a library for constructing the string as you go similar to
-C++'s std::string.
+Add KUnit tests for the KUnit test abort mechanism (see preceding
+commit). Add tests both for general try catch mechanism as well as
+non-architecture specific mechanism.
 
 Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
 ---
-Changes Since Last Revision:
- - Renamed struct instance with field of the same name, as per Shuah's
-   comments.
----
- include/kunit/string-stream.h |  51 ++++++++++++
- kunit/Makefile                |   3 +-
- kunit/string-stream.c         | 143 ++++++++++++++++++++++++++++++++++
- 3 files changed, 196 insertions(+), 1 deletion(-)
- create mode 100644 include/kunit/string-stream.h
- create mode 100644 kunit/string-stream.c
+ kunit/Makefile    |   3 +-
+ kunit/test-test.c | 135 ++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 137 insertions(+), 1 deletion(-)
+ create mode 100644 kunit/test-test.c
 
-diff --git a/include/kunit/string-stream.h b/include/kunit/string-stream.h
-new file mode 100644
-index 0000000000000..567a4629406da
---- /dev/null
-+++ b/include/kunit/string-stream.h
-@@ -0,0 +1,51 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * C++ stream style string builder used in KUnit for building messages.
-+ *
-+ * Copyright (C) 2019, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
-+
-+#ifndef _KUNIT_STRING_STREAM_H
-+#define _KUNIT_STRING_STREAM_H
-+
-+#include <linux/types.h>
-+#include <linux/spinlock.h>
-+#include <linux/kref.h>
-+#include <stdarg.h>
-+
-+struct string_stream_fragment {
-+	struct list_head node;
-+	char *fragment;
-+};
-+
-+struct string_stream {
-+	size_t length;
-+	struct list_head fragments;
-+
-+	/* length and fragments are protected by this lock */
-+	spinlock_t lock;
-+	struct kref refcount;
-+};
-+
-+struct string_stream *new_string_stream(void);
-+
-+void destroy_string_stream(struct string_stream *stream);
-+
-+void string_stream_get(struct string_stream *stream);
-+
-+int string_stream_put(struct string_stream *stream);
-+
-+int string_stream_add(struct string_stream *this, const char *fmt, ...);
-+
-+int string_stream_vadd(struct string_stream *this,
-+		       const char *fmt,
-+		       va_list args);
-+
-+char *string_stream_get_string(struct string_stream *this);
-+
-+void string_stream_clear(struct string_stream *this);
-+
-+bool string_stream_is_empty(struct string_stream *this);
-+
-+#endif /* _KUNIT_STRING_STREAM_H */
 diff --git a/kunit/Makefile b/kunit/Makefile
-index 5efdc4dea2c08..275b565a0e81f 100644
+index 1f7680cfa11ad..533355867abd2 100644
 --- a/kunit/Makefile
 +++ b/kunit/Makefile
-@@ -1 +1,2 @@
--obj-$(CONFIG_KUNIT) +=			test.o
-+obj-$(CONFIG_KUNIT) +=			test.o \
-+					string-stream.o
-diff --git a/kunit/string-stream.c b/kunit/string-stream.c
+@@ -3,6 +3,7 @@ obj-$(CONFIG_KUNIT) +=			test.o \
+ 					kunit-stream.o \
+ 					try-catch.o
+ 
+-obj-$(CONFIG_KUNIT_TEST) +=		string-stream-test.o
++obj-$(CONFIG_KUNIT_TEST) +=		test-test.o \
++					string-stream-test.o
+ 
+ obj-$(CONFIG_KUNIT_EXAMPLE_TEST) +=	example-test.o
+diff --git a/kunit/test-test.c b/kunit/test-test.c
 new file mode 100644
-index 0000000000000..d4e4252dc10b8
+index 0000000000000..c81ae6efb959f
 --- /dev/null
-+++ b/kunit/string-stream.c
-@@ -0,0 +1,143 @@
++++ b/kunit/test-test.c
+@@ -0,0 +1,135 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * C++ stream style string builder used in KUnit for building messages.
++ * KUnit test for core test infrastructure.
 + *
 + * Copyright (C) 2019, Google LLC.
 + * Author: Brendan Higgins <brendanhiggins@google.com>
 + */
++#include <kunit/test.h>
 +
-+#include <linux/list.h>
-+#include <linux/slab.h>
-+#include <kunit/string-stream.h>
++struct kunit_try_catch_test_context {
++	struct kunit_try_catch *try_catch;
++	bool function_called;
++};
 +
-+int string_stream_vadd(struct string_stream *this,
-+		       const char *fmt,
-+		       va_list args)
++void kunit_test_successful_try(void *data)
 +{
-+	struct string_stream_fragment *frag_container;
-+	int len;
-+	va_list args_for_counting;
-+	unsigned long flags;
++	struct kunit *test = data;
++	struct kunit_try_catch_test_context *ctx = test->priv;
 +
-+	/* Make a copy because `vsnprintf` could change it */
-+	va_copy(args_for_counting, args);
++	ctx->function_called = true;
++}
 +
-+	/* Need space for null byte. */
-+	len = vsnprintf(NULL, 0, fmt, args_for_counting) + 1;
++void kunit_test_no_catch(void *data)
++{
++	struct kunit *test = data;
 +
-+	va_end(args_for_counting);
++	KUNIT_FAIL(test, "Catch should not be called.\n");
++}
 +
-+	frag_container = kmalloc(sizeof(*frag_container), GFP_KERNEL);
-+	if (!frag_container)
-+		return -ENOMEM;
++static void kunit_test_try_catch_successful_try_no_catch(struct kunit *test)
++{
++	struct kunit_try_catch_test_context *ctx = test->priv;
++	struct kunit_try_catch *try_catch = ctx->try_catch;
 +
-+	frag_container->fragment = kmalloc(len, GFP_KERNEL);
-+	if (!frag_container->fragment) {
-+		kfree(frag_container);
-+		return -ENOMEM;
-+	}
++	kunit_try_catch_init(try_catch,
++			     test,
++			     kunit_test_successful_try,
++			     kunit_test_no_catch);
++	kunit_try_catch_run(try_catch, test);
 +
-+	len = vsnprintf(frag_container->fragment, len, fmt, args);
-+	spin_lock_irqsave(&this->lock, flags);
-+	this->length += len;
-+	list_add_tail(&frag_container->node, &this->fragments);
-+	spin_unlock_irqrestore(&this->lock, flags);
++	KUNIT_EXPECT_TRUE(test, ctx->function_called);
++}
++
++void kunit_test_unsuccessful_try(void *data)
++{
++	struct kunit *test = data;
++	struct kunit_try_catch_test_context *ctx = test->priv;
++	struct kunit_try_catch *try_catch = ctx->try_catch;
++
++	kunit_try_catch_throw(try_catch);
++	KUNIT_FAIL(test, "This line should never be reached.\n");
++}
++
++void kunit_test_catch(void *data)
++{
++	struct kunit *test = data;
++	struct kunit_try_catch_test_context *ctx = test->priv;
++
++	ctx->function_called = true;
++}
++
++static void kunit_test_try_catch_unsuccessful_try_does_catch(struct kunit *test)
++{
++	struct kunit_try_catch_test_context *ctx = test->priv;
++	struct kunit_try_catch *try_catch = ctx->try_catch;
++
++	kunit_try_catch_init(try_catch,
++			     test,
++			     kunit_test_unsuccessful_try,
++			     kunit_test_catch);
++	kunit_try_catch_run(try_catch, test);
++
++	KUNIT_EXPECT_TRUE(test, ctx->function_called);
++}
++
++static void kunit_test_generic_try_catch_successful_try_no_catch(
++		struct kunit *test)
++{
++	struct kunit_try_catch_test_context *ctx = test->priv;
++	struct kunit_try_catch *try_catch = ctx->try_catch;
++
++	try_catch->test = test;
++	kunit_generic_try_catch_init(try_catch);
++	try_catch->try = kunit_test_successful_try;
++	try_catch->catch = kunit_test_no_catch;
++
++	kunit_try_catch_run(try_catch, test);
++
++	KUNIT_EXPECT_TRUE(test, ctx->function_called);
++}
++
++static void kunit_test_generic_try_catch_unsuccessful_try_does_catch(
++		struct kunit *test)
++{
++	struct kunit_try_catch_test_context *ctx = test->priv;
++	struct kunit_try_catch *try_catch = ctx->try_catch;
++
++	try_catch->test = test;
++	kunit_generic_try_catch_init(try_catch);
++	try_catch->try = kunit_test_unsuccessful_try;
++	try_catch->catch = kunit_test_catch;
++
++	kunit_try_catch_run(try_catch, test);
++
++	KUNIT_EXPECT_TRUE(test, ctx->function_called);
++}
++
++static int kunit_try_catch_test_init(struct kunit *test)
++{
++	struct kunit_try_catch_test_context *ctx;
++
++	ctx = kunit_kzalloc(test, sizeof(*ctx), GFP_KERNEL);
++	test->priv = ctx;
++
++	ctx->try_catch = kunit_kmalloc(test,
++				       sizeof(*ctx->try_catch),
++				       GFP_KERNEL);
++
 +	return 0;
 +}
 +
-+int string_stream_add(struct string_stream *this, const char *fmt, ...)
-+{
-+	va_list args;
-+	int result;
++static struct kunit_case kunit_try_catch_test_cases[] = {
++	KUNIT_CASE(kunit_test_try_catch_successful_try_no_catch),
++	KUNIT_CASE(kunit_test_try_catch_unsuccessful_try_does_catch),
++	KUNIT_CASE(kunit_test_generic_try_catch_successful_try_no_catch),
++	KUNIT_CASE(kunit_test_generic_try_catch_unsuccessful_try_does_catch),
++	{},
++};
 +
-+	va_start(args, fmt);
-+	result = string_stream_vadd(this, fmt, args);
-+	va_end(args);
-+	return result;
-+}
-+
-+void string_stream_clear(struct string_stream *this)
-+{
-+	struct string_stream_fragment *frag_container, *frag_container_safe;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&this->lock, flags);
-+	list_for_each_entry_safe(frag_container,
-+				 frag_container_safe,
-+				 &this->fragments,
-+				 node) {
-+		list_del(&frag_container->node);
-+		kfree(frag_container->fragment);
-+		kfree(frag_container);
-+	}
-+	this->length = 0;
-+	spin_unlock_irqrestore(&this->lock, flags);
-+}
-+
-+char *string_stream_get_string(struct string_stream *this)
-+{
-+	struct string_stream_fragment *frag_container;
-+	size_t buf_len = this->length + 1; /* +1 for null byte. */
-+	char *buf;
-+	unsigned long flags;
-+
-+	buf = kzalloc(buf_len, GFP_KERNEL);
-+	if (!buf)
-+		return NULL;
-+
-+	spin_lock_irqsave(&this->lock, flags);
-+	list_for_each_entry(frag_container, &this->fragments, node)
-+		strlcat(buf, frag_container->fragment, buf_len);
-+	spin_unlock_irqrestore(&this->lock, flags);
-+
-+	return buf;
-+}
-+
-+bool string_stream_is_empty(struct string_stream *this)
-+{
-+	bool is_empty;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&this->lock, flags);
-+	is_empty = list_empty(&this->fragments);
-+	spin_unlock_irqrestore(&this->lock, flags);
-+
-+	return is_empty;
-+}
-+
-+void destroy_string_stream(struct string_stream *stream)
-+{
-+	string_stream_clear(stream);
-+	kfree(stream);
-+}
-+
-+static void string_stream_destroy(struct kref *kref)
-+{
-+	struct string_stream *stream = container_of(kref,
-+						    struct string_stream,
-+						    refcount);
-+	destroy_string_stream(stream);
-+}
-+
-+struct string_stream *new_string_stream(void)
-+{
-+	struct string_stream *stream = kzalloc(sizeof(*stream), GFP_KERNEL);
-+
-+	if (!stream)
-+		return NULL;
-+
-+	INIT_LIST_HEAD(&stream->fragments);
-+	spin_lock_init(&stream->lock);
-+	kref_init(&stream->refcount);
-+	return stream;
-+}
-+
-+void string_stream_get(struct string_stream *stream)
-+{
-+	kref_get(&stream->refcount);
-+}
-+
-+int string_stream_put(struct string_stream *stream)
-+{
-+	return kref_put(&stream->refcount, &string_stream_destroy);
-+}
++static struct kunit_module kunit_try_catch_test_module = {
++	.name = "kunit-try-catch-test",
++	.init = kunit_try_catch_test_init,
++	.test_cases = kunit_try_catch_test_cases,
++};
++module_test(kunit_try_catch_test_module);
 -- 
-2.21.0.1020.gf2820cf01a-goog
+2.21.0.593.g511ec345e18-goog
 
 
 _______________________________________________
