@@ -1,18 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from mail-qt1-x849.google.com ([2607:f8b0:4864:20::849])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hMMyF-00007o-Ku
- for linux-um@lists.infradead.org; Fri, 03 May 2019 01:26:41 +0000
-Subject: Re: [PATCH v2 03/17] kunit: test: add string_stream a std::stream
- like string builder
+ id 1hLyFr-00073k-Af
+ for linux-um@lists.infradead.org; Wed, 01 May 2019 23:03:13 +0000
+Received: by mail-qt1-x849.google.com with SMTP id w34so329261qtc.16
+ for <linux-um@lists.infradead.org>; Wed, 01 May 2019 16:03:10 -0700 (PDT)
+Date: Wed,  1 May 2019 16:01:12 -0700
+In-Reply-To: <20190501230126.229218-1-brendanhiggins@google.com>
+Message-Id: <20190501230126.229218-4-brendanhiggins@google.com>
+Mime-Version: 1.0
 References: <20190501230126.229218-1-brendanhiggins@google.com>
- <20190501230126.229218-4-brendanhiggins@google.com>
-From: shuah <shuah@kernel.org>
-Message-ID: <1befe456-d981-d726-44f9-ebe3702ee51d@kernel.org>
-Date: Thu, 2 May 2019 19:26:35 -0600
-MIME-Version: 1.0
-In-Reply-To: <20190501230126.229218-4-brendanhiggins@google.com>
-Content-Language: en-US
+Subject: [PATCH v2 03/17] kunit: test: add string_stream a std::stream like
+ string builder
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -21,263 +21,247 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Brendan Higgins <brendanhiggins@google.com>, frowand.list@gmail.com, gregkh@linuxfoundation.org, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, robh@kernel.org, sboyd@kernel.org
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, skhan@linuxfoundation.org, dan.j.williams@intel.com, kunit-dev@googlegroups.com, richard@nod.at, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+To: frowand.list@gmail.com, gregkh@linuxfoundation.org, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, richard@nod.at, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-On 5/1/19 5:01 PM, Brendan Higgins wrote:
-> A number of test features need to do pretty complicated string printing
-> where it may not be possible to rely on a single preallocated string
-> with parameters.
-> 
-> So provide a library for constructing the string as you go similar to
-> C++'s std::string.
-> 
-> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-> ---
->   include/kunit/string-stream.h |  51 ++++++++++++
->   kunit/Makefile                |   3 +-
->   kunit/string-stream.c         | 144 ++++++++++++++++++++++++++++++++++
->   3 files changed, 197 insertions(+), 1 deletion(-)
->   create mode 100644 include/kunit/string-stream.h
->   create mode 100644 kunit/string-stream.c
-> 
-> diff --git a/include/kunit/string-stream.h b/include/kunit/string-stream.h
-> new file mode 100644
-> index 0000000000000..567a4629406da
-> --- /dev/null
-> +++ b/include/kunit/string-stream.h
-> @@ -0,0 +1,51 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * C++ stream style string builder used in KUnit for building messages.
-> + *
-> + * Copyright (C) 2019, Google LLC.
-> + * Author: Brendan Higgins <brendanhiggins@google.com>
-> + */
-> +
-> +#ifndef _KUNIT_STRING_STREAM_H
-> +#define _KUNIT_STRING_STREAM_H
-> +
-> +#include <linux/types.h>
-> +#include <linux/spinlock.h>
-> +#include <linux/kref.h>
-> +#include <stdarg.h>
-> +
-> +struct string_stream_fragment {
-> +	struct list_head node;
-> +	char *fragment;
-> +};
-> +
-> +struct string_stream {
-> +	size_t length;
-> +	struct list_head fragments;
-> +
-> +	/* length and fragments are protected by this lock */
-> +	spinlock_t lock;
-> +	struct kref refcount;
-> +};
-> +
-> +struct string_stream *new_string_stream(void);
-> +
-> +void destroy_string_stream(struct string_stream *stream);
-> +
-> +void string_stream_get(struct string_stream *stream);
-> +
-> +int string_stream_put(struct string_stream *stream);
-> +
-> +int string_stream_add(struct string_stream *this, const char *fmt, ...);
-> +
-> +int string_stream_vadd(struct string_stream *this,
-> +		       const char *fmt,
-> +		       va_list args);
-> +
-> +char *string_stream_get_string(struct string_stream *this);
-> +
-> +void string_stream_clear(struct string_stream *this);
-> +
-> +bool string_stream_is_empty(struct string_stream *this);
-> +
-> +#endif /* _KUNIT_STRING_STREAM_H */
-> diff --git a/kunit/Makefile b/kunit/Makefile
-> index 5efdc4dea2c08..275b565a0e81f 100644
-> --- a/kunit/Makefile
-> +++ b/kunit/Makefile
-> @@ -1 +1,2 @@
-> -obj-$(CONFIG_KUNIT) +=			test.o
-> +obj-$(CONFIG_KUNIT) +=			test.o \
-> +					string-stream.o
-> diff --git a/kunit/string-stream.c b/kunit/string-stream.c
-> new file mode 100644
-> index 0000000000000..7018194ecf2fa
-> --- /dev/null
-> +++ b/kunit/string-stream.c
-> @@ -0,0 +1,144 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * C++ stream style string builder used in KUnit for building messages.
-> + *
-> + * Copyright (C) 2019, Google LLC.
-> + * Author: Brendan Higgins <brendanhiggins@google.com>
-> + */
-> +
-> +#include <linux/list.h>
-> +#include <linux/slab.h>
-> +#include <kunit/string-stream.h>
-> +
-> +int string_stream_vadd(struct string_stream *this,
-> +		       const char *fmt,
-> +		       va_list args)
-> +{
-> +	struct string_stream_fragment *fragment;
+A number of test features need to do pretty complicated string printing
+where it may not be possible to rely on a single preallocated string
+with parameters.
 
-Since there is field with the same name, please use a different
-name. Using the same name for the struct which contains a field
-of the same name get very confusing and will hard to maintain
-the code.
+So provide a library for constructing the string as you go similar to
+C++'s std::string.
 
-> +	int len;
-> +	va_list args_for_counting;
-> +	unsigned long flags;
-> +
-> +	/* Make a copy because `vsnprintf` could change it */
-> +	va_copy(args_for_counting, args);
-> +
-> +	/* Need space for null byte. */
-> +	len = vsnprintf(NULL, 0, fmt, args_for_counting) + 1;
-> +
-> +	va_end(args_for_counting);
-> +
-> +	fragment = kmalloc(sizeof(*fragment), GFP_KERNEL);
-> +	if (!fragment)
-> +		return -ENOMEM;
-> +
-> +	fragment->fragment = kmalloc(len, GFP_KERNEL);
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+---
+ include/kunit/string-stream.h |  51 ++++++++++++
+ kunit/Makefile                |   3 +-
+ kunit/string-stream.c         | 144 ++++++++++++++++++++++++++++++++++
+ 3 files changed, 197 insertions(+), 1 deletion(-)
+ create mode 100644 include/kunit/string-stream.h
+ create mode 100644 kunit/string-stream.c
 
-This is confusing. See above comment.
+diff --git a/include/kunit/string-stream.h b/include/kunit/string-stream.h
+new file mode 100644
+index 0000000000000..567a4629406da
+--- /dev/null
++++ b/include/kunit/string-stream.h
+@@ -0,0 +1,51 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * C++ stream style string builder used in KUnit for building messages.
++ *
++ * Copyright (C) 2019, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++
++#ifndef _KUNIT_STRING_STREAM_H
++#define _KUNIT_STRING_STREAM_H
++
++#include <linux/types.h>
++#include <linux/spinlock.h>
++#include <linux/kref.h>
++#include <stdarg.h>
++
++struct string_stream_fragment {
++	struct list_head node;
++	char *fragment;
++};
++
++struct string_stream {
++	size_t length;
++	struct list_head fragments;
++
++	/* length and fragments are protected by this lock */
++	spinlock_t lock;
++	struct kref refcount;
++};
++
++struct string_stream *new_string_stream(void);
++
++void destroy_string_stream(struct string_stream *stream);
++
++void string_stream_get(struct string_stream *stream);
++
++int string_stream_put(struct string_stream *stream);
++
++int string_stream_add(struct string_stream *this, const char *fmt, ...);
++
++int string_stream_vadd(struct string_stream *this,
++		       const char *fmt,
++		       va_list args);
++
++char *string_stream_get_string(struct string_stream *this);
++
++void string_stream_clear(struct string_stream *this);
++
++bool string_stream_is_empty(struct string_stream *this);
++
++#endif /* _KUNIT_STRING_STREAM_H */
+diff --git a/kunit/Makefile b/kunit/Makefile
+index 5efdc4dea2c08..275b565a0e81f 100644
+--- a/kunit/Makefile
++++ b/kunit/Makefile
+@@ -1 +1,2 @@
+-obj-$(CONFIG_KUNIT) +=			test.o
++obj-$(CONFIG_KUNIT) +=			test.o \
++					string-stream.o
+diff --git a/kunit/string-stream.c b/kunit/string-stream.c
+new file mode 100644
+index 0000000000000..7018194ecf2fa
+--- /dev/null
++++ b/kunit/string-stream.c
+@@ -0,0 +1,144 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * C++ stream style string builder used in KUnit for building messages.
++ *
++ * Copyright (C) 2019, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++
++#include <linux/list.h>
++#include <linux/slab.h>
++#include <kunit/string-stream.h>
++
++int string_stream_vadd(struct string_stream *this,
++		       const char *fmt,
++		       va_list args)
++{
++	struct string_stream_fragment *fragment;
++	int len;
++	va_list args_for_counting;
++	unsigned long flags;
++
++	/* Make a copy because `vsnprintf` could change it */
++	va_copy(args_for_counting, args);
++
++	/* Need space for null byte. */
++	len = vsnprintf(NULL, 0, fmt, args_for_counting) + 1;
++
++	va_end(args_for_counting);
++
++	fragment = kmalloc(sizeof(*fragment), GFP_KERNEL);
++	if (!fragment)
++		return -ENOMEM;
++
++	fragment->fragment = kmalloc(len, GFP_KERNEL);
++	if (!fragment->fragment) {
++		kfree(fragment);
++		return -ENOMEM;
++	}
++
++	len = vsnprintf(fragment->fragment, len, fmt, args);
++	spin_lock_irqsave(&this->lock, flags);
++	this->length += len;
++	list_add_tail(&fragment->node, &this->fragments);
++	spin_unlock_irqrestore(&this->lock, flags);
++	return 0;
++}
++
++int string_stream_add(struct string_stream *this, const char *fmt, ...)
++{
++	va_list args;
++	int result;
++
++	va_start(args, fmt);
++	result = string_stream_vadd(this, fmt, args);
++	va_end(args);
++	return result;
++}
++
++void string_stream_clear(struct string_stream *this)
++{
++	struct string_stream_fragment *fragment, *fragment_safe;
++	unsigned long flags;
++
++	spin_lock_irqsave(&this->lock, flags);
++	list_for_each_entry_safe(fragment,
++				 fragment_safe,
++				 &this->fragments,
++				 node) {
++		list_del(&fragment->node);
++		kfree(fragment->fragment);
++		kfree(fragment);
++	}
++	this->length = 0;
++	spin_unlock_irqrestore(&this->lock, flags);
++}
++
++char *string_stream_get_string(struct string_stream *this)
++{
++	struct string_stream_fragment *fragment;
++	size_t buf_len = this->length + 1; /* +1 for null byte. */
++	char *buf;
++	unsigned long flags;
++
++	buf = kzalloc(buf_len, GFP_KERNEL);
++	if (!buf)
++		return NULL;
++
++	spin_lock_irqsave(&this->lock, flags);
++	list_for_each_entry(fragment, &this->fragments, node)
++		strlcat(buf, fragment->fragment, buf_len);
++	spin_unlock_irqrestore(&this->lock, flags);
++
++	return buf;
++}
++
++bool string_stream_is_empty(struct string_stream *this)
++{
++	bool is_empty;
++	unsigned long flags;
++
++	spin_lock_irqsave(&this->lock, flags);
++	is_empty = list_empty(&this->fragments);
++	spin_unlock_irqrestore(&this->lock, flags);
++
++	return is_empty;
++}
++
++void destroy_string_stream(struct string_stream *stream)
++{
++	string_stream_clear(stream);
++	kfree(stream);
++}
++
++static void string_stream_destroy(struct kref *kref)
++{
++	struct string_stream *stream = container_of(kref,
++						    struct string_stream,
++						    refcount);
++	destroy_string_stream(stream);
++}
++
++struct string_stream *new_string_stream(void)
++{
++	struct string_stream *stream = kzalloc(sizeof(*stream), GFP_KERNEL);
++
++	if (!stream)
++		return NULL;
++
++	INIT_LIST_HEAD(&stream->fragments);
++	spin_lock_init(&stream->lock);
++	kref_init(&stream->refcount);
++	return stream;
++}
++
++void string_stream_get(struct string_stream *stream)
++{
++	kref_get(&stream->refcount);
++}
++
++int string_stream_put(struct string_stream *stream)
++{
++	return kref_put(&stream->refcount, &string_stream_destroy);
++}
++
+-- 
+2.21.0.593.g511ec345e18-goog
 
-
-> +	if (!fragment->fragment) {
-> +		kfree(fragment);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	len = vsnprintf(fragment->fragment, len, fmt, args);
-> +	spin_lock_irqsave(&this->lock, flags);
-> +	this->length += len;
-> +	list_add_tail(&fragment->node, &this->fragments);
-> +	spin_unlock_irqrestore(&this->lock, flags);
-> +	return 0;
-> +}
-> +
-> +int string_stream_add(struct string_stream *this, const char *fmt, ...)
-> +{
-> +	va_list args;
-> +	int result;
-> +
-> +	va_start(args, fmt);
-> +	result = string_stream_vadd(this, fmt, args);
-> +	va_end(args);
-> +	return result;
-> +}
-> +
-> +void string_stream_clear(struct string_stream *this)
-> +{
-> +	struct string_stream_fragment *fragment, *fragment_safe;
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&this->lock, flags);
-> +	list_for_each_entry_safe(fragment,
-> +				 fragment_safe,
-> +				 &this->fragments,
-> +				 node) {
-> +		list_del(&fragment->node);
-> +		kfree(fragment->fragment);
-> +		kfree(fragment);
-
-This is what git me down the road of checking the structure
-name to begin with. :)
-
-> +	}
-> +	this->length = 0;
-> +	spin_unlock_irqrestore(&this->lock, flags);
-> +}
-> +
-> +char *string_stream_get_string(struct string_stream *this)
-> +{
-> +	struct string_stream_fragment *fragment;
-> +	size_t buf_len = this->length + 1; /* +1 for null byte. */
-> +	char *buf;
-> +	unsigned long flags;
-> +
-> +	buf = kzalloc(buf_len, GFP_KERNEL);
-> +	if (!buf)
-> +		return NULL;
-> +
-> +	spin_lock_irqsave(&this->lock, flags);
-> +	list_for_each_entry(fragment, &this->fragments, node)
-> +		strlcat(buf, fragment->fragment, buf_len);
-> +	spin_unlock_irqrestore(&this->lock, flags);
-> +
-> +	return buf;
-> +}
-> +
-> +bool string_stream_is_empty(struct string_stream *this)
-> +{
-> +	bool is_empty;
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&this->lock, flags);
-> +	is_empty = list_empty(&this->fragments);
-> +	spin_unlock_irqrestore(&this->lock, flags);
-> +
-> +	return is_empty;
-> +}
-> +
-> +void destroy_string_stream(struct string_stream *stream)
-> +{
-> +	string_stream_clear(stream);
-> +	kfree(stream);
-> +}
-> +
-> +static void string_stream_destroy(struct kref *kref)
-> +{
-> +	struct string_stream *stream = container_of(kref,
-> +						    struct string_stream,
-> +						    refcount);
-> +	destroy_string_stream(stream);
-> +}
-> +
-> +struct string_stream *new_string_stream(void)
-> +{
-> +	struct string_stream *stream = kzalloc(sizeof(*stream), GFP_KERNEL);
-> +
-> +	if (!stream)
-> +		return NULL;
-> +
-> +	INIT_LIST_HEAD(&stream->fragments);
-> +	spin_lock_init(&stream->lock);
-> +	kref_init(&stream->refcount);
-> +	return stream;
-> +}
-> +
-> +void string_stream_get(struct string_stream *stream)
-> +{
-> +	kref_get(&stream->refcount);
-> +}
-> +
-> +int string_stream_put(struct string_stream *stream)
-> +{
-> +	return kref_put(&stream->refcount, &string_stream_destroy);
-> +}
-> +
-> 
-
-thanks,
--- Shuah
 
 _______________________________________________
 linux-um mailing list
