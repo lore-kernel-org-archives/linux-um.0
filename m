@@ -1,358 +1,78 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x549.google.com ([2607:f8b0:4864:20::549])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hQQEM-0004qi-UP
- for linux-um@lists.infradead.org; Tue, 14 May 2019 05:44:04 +0000
-Received: by mail-pg1-x549.google.com with SMTP id h14so10734883pgn.23
- for <linux-um@lists.infradead.org>; Mon, 13 May 2019 22:44:02 -0700 (PDT)
-Date: Mon, 13 May 2019 22:42:37 -0700
-In-Reply-To: <20190514054251.186196-1-brendanhiggins@google.com>
-Message-Id: <20190514054251.186196-5-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20190514054251.186196-1-brendanhiggins@google.com>
-Subject: [PATCH v3 04/18] kunit: test: add kunit_stream a std::stream like
- logger
-From: Brendan Higgins <brendanhiggins@google.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+Return-Path: <rppt@linux.ibm.com>
+From: Mike Rapoport <rppt@linux.ibm.com>
+Subject: [PATCH 06/15] hexagon: switch to generic version of pte allocation
+Date: Thu,  2 May 2019 18:28:33 +0300
+In-Reply-To: <1556810922-20248-1-git-send-email-rppt@linux.ibm.com>
+References: <1556810922-20248-1-git-send-email-rppt@linux.ibm.com>
+Message-Id: <1556810922-20248-7-git-send-email-rppt@linux.ibm.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Catalin Marinas <catalin.marinas@arm.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>, Ley Foon Tan <lftan@altera.com>, Matthew Wilcox <willy@infradead.org>, Matt Turner <mattst88@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@suse.com>, Palmer Dabbelt <palmer@sifive.com>, Paul Burton <paul.burton@mips.com>, Richard Kuo <rkuo@codeaurora.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-um@lists.infradead.org, nios2-dev@lists.rocketboards.org, Mike Rapoport <rppt@linux.ibm.com>
+List-ID: <linux-um.lists.infradead.org>
 
-A lot of the expectation and assertion infrastructure prints out fairly
-complicated test failure messages, so add a C++ style log library for
-for logging test results.
+The hexagon implementation pte_alloc_one(), pte_alloc_one_kernel(),
+pte_free_kernel() and pte_free() is identical to the generic except of
+lack of __GFP_ACCOUNT for the user PTEs allocation.
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+Switch hexagon to use generic version of these functions.
+
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
-Changes Since Last Revision:
- - Greg and Frank requested that KUnit prints out results in TAP format;
-   the work to support this mostly happened in PATCH 01/18.
- - `kunit_stream_get_level` was made static as suggested by kbuild bot.
----
- include/kunit/kunit-stream.h |  85 ++++++++++++++++++++
- include/kunit/test.h         |   3 +
- kunit/Makefile               |   3 +-
- kunit/kunit-stream.c         | 152 +++++++++++++++++++++++++++++++++++
- kunit/test.c                 |   7 ++
- 5 files changed, 249 insertions(+), 1 deletion(-)
- create mode 100644 include/kunit/kunit-stream.h
- create mode 100644 kunit/kunit-stream.c
+ arch/hexagon/include/asm/pgalloc.h | 34 ++--------------------------------
+ 1 file changed, 2 insertions(+), 32 deletions(-)
 
-diff --git a/include/kunit/kunit-stream.h b/include/kunit/kunit-stream.h
-new file mode 100644
-index 0000000000000..d457a54fe0100
---- /dev/null
-+++ b/include/kunit/kunit-stream.h
-@@ -0,0 +1,85 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * C++ stream style string formatter and printer used in KUnit for outputting
-+ * KUnit messages.
-+ *
-+ * Copyright (C) 2019, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
-+
-+#ifndef _KUNIT_KUNIT_STREAM_H
-+#define _KUNIT_KUNIT_STREAM_H
-+
-+#include <linux/types.h>
-+#include <kunit/string-stream.h>
-+
-+struct kunit;
-+
-+/**
-+ * struct kunit_stream - a std::stream style string builder.
-+ *
-+ * A std::stream style string builder. Allows messages to be built up and
-+ * printed all at once.
-+ */
-+struct kunit_stream {
-+	/* private: internal use only. */
-+	struct kunit *test;
-+	spinlock_t lock; /* Guards level. */
-+	const char *level;
-+	struct string_stream *internal_stream;
-+};
-+
-+/**
-+ * kunit_new_stream() - constructs a new &struct kunit_stream.
-+ * @test: The test context object.
-+ *
-+ * Constructs a new test managed &struct kunit_stream.
-+ */
-+struct kunit_stream *kunit_new_stream(struct kunit *test);
-+
-+/**
-+ * kunit_stream_set_level(): sets the level that string should be printed at.
-+ * @this: the stream being operated on.
-+ * @level: the print level the stream is set to output to.
-+ *
-+ * Sets the print level at which the stream outputs.
-+ */
-+void kunit_stream_set_level(struct kunit_stream *this, const char *level);
-+
-+/**
-+ * kunit_stream_add(): adds the formatted input to the internal buffer.
-+ * @this: the stream being operated on.
-+ * @fmt: printf style format string to append to stream.
-+ *
-+ * Appends the formatted string, @fmt, to the internal buffer.
-+ */
-+void __printf(2, 3) kunit_stream_add(struct kunit_stream *this,
-+				     const char *fmt, ...);
-+
-+/**
-+ * kunit_stream_append(): appends the contents of @other to @this.
-+ * @this: the stream to which @other is appended.
-+ * @other: the stream whose contents are appended to @this.
-+ *
-+ * Appends the contents of @other to @this.
-+ */
-+void kunit_stream_append(struct kunit_stream *this, struct kunit_stream *other);
-+
-+/**
-+ * kunit_stream_commit(): prints out the internal buffer to the user.
-+ * @this: the stream being operated on.
-+ *
-+ * Outputs the contents of the internal buffer as a kunit_printk formatted
-+ * output.
-+ */
-+void kunit_stream_commit(struct kunit_stream *this);
-+
-+/**
-+ * kunit_stream_clear(): clears the internal buffer.
-+ * @this: the stream being operated on.
-+ *
-+ * Clears the contents of the internal buffer.
-+ */
-+void kunit_stream_clear(struct kunit_stream *this);
-+
-+#endif /* _KUNIT_KUNIT_STREAM_H */
-diff --git a/include/kunit/test.h b/include/kunit/test.h
-index 5e86d88cd5305..4bc839884a83c 100644
---- a/include/kunit/test.h
-+++ b/include/kunit/test.h
-@@ -11,6 +11,7 @@
+diff --git a/arch/hexagon/include/asm/pgalloc.h b/arch/hexagon/include/asm/pgalloc.h
+index d361838..7661a26 100644
+--- a/arch/hexagon/include/asm/pgalloc.h
++++ b/arch/hexagon/include/asm/pgalloc.h
+@@ -24,6 +24,8 @@
+ #include <asm/mem-layout.h>
+ #include <asm/atomic.h>
  
- #include <linux/types.h>
- #include <linux/slab.h>
-+#include <kunit/kunit-stream.h>
++#include <asm-generic/pgalloc.h>	/* for pte_{alloc,free}_one */
++
+ #define check_pgt_cache() do {} while (0)
  
- struct kunit_resource;
- 
-@@ -172,6 +173,8 @@ struct kunit {
- 
- void kunit_init_test(struct kunit *test, const char *name);
- 
-+void kunit_fail(struct kunit *test, struct kunit_stream *stream);
-+
- int kunit_run_tests(struct kunit_module *module);
- 
- /**
-diff --git a/kunit/Makefile b/kunit/Makefile
-index 275b565a0e81f..6ddc622ee6b1c 100644
---- a/kunit/Makefile
-+++ b/kunit/Makefile
-@@ -1,2 +1,3 @@
- obj-$(CONFIG_KUNIT) +=			test.o \
--					string-stream.o
-+					string-stream.o \
-+					kunit-stream.o
-diff --git a/kunit/kunit-stream.c b/kunit/kunit-stream.c
-new file mode 100644
-index 0000000000000..1884f1b550888
---- /dev/null
-+++ b/kunit/kunit-stream.c
-@@ -0,0 +1,152 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * C++ stream style string formatter and printer used in KUnit for outputting
-+ * KUnit messages.
-+ *
-+ * Copyright (C) 2019, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
-+
-+#include <kunit/test.h>
-+#include <kunit/kunit-stream.h>
-+#include <kunit/string-stream.h>
-+
-+static const char *kunit_stream_get_level(struct kunit_stream *this)
-+{
-+	unsigned long flags;
-+	const char *level;
-+
-+	spin_lock_irqsave(&this->lock, flags);
-+	level = this->level;
-+	spin_unlock_irqrestore(&this->lock, flags);
-+
-+	return level;
-+}
-+
-+void kunit_stream_set_level(struct kunit_stream *this, const char *level)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&this->lock, flags);
-+	this->level = level;
-+	spin_unlock_irqrestore(&this->lock, flags);
-+}
-+
-+void kunit_stream_add(struct kunit_stream *this, const char *fmt, ...)
-+{
-+	va_list args;
-+	struct string_stream *stream = this->internal_stream;
-+
-+	va_start(args, fmt);
-+
-+	if (string_stream_vadd(stream, fmt, args) < 0)
-+		kunit_err(this->test, "Failed to allocate fragment: %s\n", fmt);
-+
-+	va_end(args);
-+}
-+
-+void kunit_stream_append(struct kunit_stream *this,
-+				struct kunit_stream *other)
-+{
-+	struct string_stream *other_stream = other->internal_stream;
-+	const char *other_content;
-+
-+	other_content = string_stream_get_string(other_stream);
-+
-+	if (!other_content) {
-+		kunit_err(this->test,
-+			  "Failed to get string from second argument for appending.\n");
-+		return;
-+	}
-+
-+	kunit_stream_add(this, other_content);
-+}
-+
-+void kunit_stream_clear(struct kunit_stream *this)
-+{
-+	string_stream_clear(this->internal_stream);
-+}
-+
-+void kunit_stream_commit(struct kunit_stream *this)
-+{
-+	struct string_stream *stream = this->internal_stream;
-+	struct string_stream_fragment *fragment;
-+	const char *level;
-+	char *buf;
-+
-+	level = kunit_stream_get_level(this);
-+	if (!level) {
-+		kunit_err(this->test,
-+			  "Stream was committed without a specified log level.\n");
-+		level = KERN_ERR;
-+		kunit_stream_set_level(this, level);
-+	}
-+
-+	buf = string_stream_get_string(stream);
-+	if (!buf) {
-+		kunit_err(this->test,
-+			 "Could not allocate buffer, dumping stream:\n");
-+		list_for_each_entry(fragment, &stream->fragments, node) {
-+			kunit_err(this->test, fragment->fragment);
-+		}
-+		kunit_err(this->test, "\n");
-+		goto cleanup;
-+	}
-+
-+	kunit_printk(level, this->test, buf);
-+	kfree(buf);
-+
-+cleanup:
-+	kunit_stream_clear(this);
-+}
-+
-+static int kunit_stream_init(struct kunit_resource *res, void *context)
-+{
-+	struct kunit *test = context;
-+	struct kunit_stream *stream;
-+
-+	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
-+	if (!stream)
-+		return -ENOMEM;
-+
-+	res->allocation = stream;
-+	stream->test = test;
-+	spin_lock_init(&stream->lock);
-+	stream->internal_stream = new_string_stream();
-+
-+	if (!stream->internal_stream) {
-+		kfree(stream);
-+		return -ENOMEM;
-+	}
-+
-+	return 0;
-+}
-+
-+static void kunit_stream_free(struct kunit_resource *res)
-+{
-+	struct kunit_stream *stream = res->allocation;
-+
-+	if (!string_stream_is_empty(stream->internal_stream)) {
-+		kunit_err(stream->test,
-+			 "End of test case reached with uncommitted stream entries.\n");
-+		kunit_stream_commit(stream);
-+	}
-+
-+	destroy_string_stream(stream->internal_stream);
-+	kfree(stream);
-+}
-+
-+struct kunit_stream *kunit_new_stream(struct kunit *test)
-+{
-+	struct kunit_resource *res;
-+
-+	res = kunit_alloc_resource(test,
-+				   kunit_stream_init,
-+				   kunit_stream_free,
-+				   test);
-+
-+	if (res)
-+		return res->allocation;
-+	else
-+		return NULL;
-+}
-diff --git a/kunit/test.c b/kunit/test.c
-index a15e6f8c41582..0bb6f53a7f87e 100644
---- a/kunit/test.c
-+++ b/kunit/test.c
-@@ -138,6 +138,13 @@ static void kunit_print_test_case_ok_not_ok(struct kunit_case *test_case,
- 			      test_case->name);
+ extern unsigned long long kmap_generation;
+@@ -59,38 +61,6 @@ static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
+ 	free_page((unsigned long) pgd);
  }
  
-+void kunit_fail(struct kunit *test, struct kunit_stream *stream)
-+{
-+	kunit_set_success(test, false);
-+	kunit_stream_set_level(stream, KERN_ERR);
-+	kunit_stream_commit(stream);
-+}
-+
- void kunit_init_test(struct kunit *test, const char *name)
+-static inline struct page *pte_alloc_one(struct mm_struct *mm)
+-{
+-	struct page *pte;
+-
+-	pte = alloc_page(GFP_KERNEL | __GFP_ZERO);
+-	if (!pte)
+-		return NULL;
+-	if (!pgtable_page_ctor(pte)) {
+-		__free_page(pte);
+-		return NULL;
+-	}
+-	return pte;
+-}
+-
+-/* _kernel variant gets to use a different allocator */
+-static inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm)
+-{
+-	gfp_t flags =  GFP_KERNEL | __GFP_ZERO;
+-	return (pte_t *) __get_free_page(flags);
+-}
+-
+-static inline void pte_free(struct mm_struct *mm, struct page *pte)
+-{
+-	pgtable_page_dtor(pte);
+-	__free_page(pte);
+-}
+-
+-static inline void pte_free_kernel(struct mm_struct *mm, pte_t *pte)
+-{
+-	free_page((unsigned long)pte);
+-}
+-
+ static inline void pmd_populate(struct mm_struct *mm, pmd_t *pmd,
+ 				pgtable_t pte)
  {
- 	spin_lock_init(&test->lock);
 -- 
-2.21.0.1020.gf2820cf01a-goog
+2.7.4
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
