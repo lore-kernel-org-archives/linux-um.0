@@ -1,41 +1,88 @@
-Return-Path: <pburton@wavecomp.com>
-From: Paul Burton <paul.burton@mips.com>
-Subject: Re: [PATCH 08/15] mips: switch to generic version of pte allocation
-Date: Thu, 2 May 2019 19:09:47 +0000
-Message-ID: <20190502190945.rrrxfxo3rbhgc3cx@pburton-laptop>
+Return-Path: <rppt@linux.ibm.com>
+From: Mike Rapoport <rppt@linux.ibm.com>
+Subject: [PATCH 08/15] mips: switch to generic version of pte allocation
+Date: Thu,  2 May 2019 18:28:35 +0300
+In-Reply-To: <1556810922-20248-1-git-send-email-rppt@linux.ibm.com>
 References: <1556810922-20248-1-git-send-email-rppt@linux.ibm.com>
- <1556810922-20248-9-git-send-email-rppt@linux.ibm.com>
-In-Reply-To: <1556810922-20248-9-git-send-email-rppt@linux.ibm.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <5F06A475B76E7846961ABC0FB62B828B@namprd22.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-To: Mike Rapoport <rppt@linux.ibm.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Catalin Marinas <catalin.marinas@arm.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>, Ley Foon Tan <lftan@altera.com>, Matthew Wilcox <willy@infradead.org>, Matt Turner <mattst88@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@suse.com>, Palmer Dabbelt <palmer@sifive.com>, Richard Kuo <rkuo@codeaurora.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, "x86@kernel.org" <x86@kernel.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "nios2-dev@lists.rocketboards.org" <nios2-dev@lists.rocketboards.org>
+Message-Id: <1556810922-20248-9-git-send-email-rppt@linux.ibm.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Catalin Marinas <catalin.marinas@arm.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>, Ley Foon Tan <lftan@altera.com>, Matthew Wilcox <willy@infradead.org>, Matt Turner <mattst88@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@suse.com>, Palmer Dabbelt <palmer@sifive.com>, Paul Burton <paul.burton@mips.com>, Richard Kuo <rkuo@codeaurora.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-um@lists.infradead.org, nios2-dev@lists.rocketboards.org, Mike Rapoport <rppt@linux.ibm.com>
 List-ID: <linux-um.lists.infradead.org>
 
-Hi Mike,
+MIPS allocates kernel PTE pages with
 
-On Thu, May 02, 2019 at 06:28:35PM +0300, Mike Rapoport wrote:
-> MIPS allocates kernel PTE pages with
->=20
-> 	__get_free_pages(GFP_KERNEL | __GFP_ZERO, PTE_ORDER)
->=20
-> and user PTE pages with
->=20
-> 	alloc_pages(GFP_KERNEL | __GFP_ZERO, PTE_ORDER)
+	__get_free_pages(GFP_KERNEL | __GFP_ZERO, PTE_ORDER)
 
-That bit isn't quite true - we don't use __GFP_ZERO in pte_alloc_one() &
-instead call clear_highpage() on the allocated page. Not that I have a
-problem with using __GFP_ZERO - it seems like the more optimal choice.
-It just might be worth mentioning the change & expected equivalent
-behavior.
+and user PTE pages with
 
-Otherwise:
+	alloc_pages(GFP_KERNEL | __GFP_ZERO, PTE_ORDER)
 
-    Acked-by: Paul Burton <paul.burton@mips.com>
+The PTE_ORDER is hardwired to zero, which makes MIPS implementation almost
+identical to the generic one.
 
-Thanks,
-    Paul
+Switch MIPS to the generic version that does exactly the same thing for the
+kernel page tables and adds __GFP_ACCOUNT for the user PTEs.
+
+The pte_free_kernel() and pte_free() versions on mips are identical to the
+generic ones and can be simply dropped.
+
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+---
+ arch/mips/include/asm/pgalloc.h | 33 ++-------------------------------
+ 1 file changed, 2 insertions(+), 31 deletions(-)
+
+diff --git a/arch/mips/include/asm/pgalloc.h b/arch/mips/include/asm/pgalloc.h
+index 27808d9..aa16b85 100644
+--- a/arch/mips/include/asm/pgalloc.h
++++ b/arch/mips/include/asm/pgalloc.h
+@@ -13,6 +13,8 @@
+ #include <linux/mm.h>
+ #include <linux/sched.h>
+ 
++#include <asm-generic/pgalloc.h>	/* for pte_{alloc,free}_one */
++
+ static inline void pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd,
+ 	pte_t *pte)
+ {
+@@ -50,37 +52,6 @@ static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
+ 	free_pages((unsigned long)pgd, PGD_ORDER);
+ }
+ 
+-static inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm)
+-{
+-	return (pte_t *)__get_free_pages(GFP_KERNEL | __GFP_ZERO, PTE_ORDER);
+-}
+-
+-static inline struct page *pte_alloc_one(struct mm_struct *mm)
+-{
+-	struct page *pte;
+-
+-	pte = alloc_pages(GFP_KERNEL, PTE_ORDER);
+-	if (!pte)
+-		return NULL;
+-	clear_highpage(pte);
+-	if (!pgtable_page_ctor(pte)) {
+-		__free_page(pte);
+-		return NULL;
+-	}
+-	return pte;
+-}
+-
+-static inline void pte_free_kernel(struct mm_struct *mm, pte_t *pte)
+-{
+-	free_pages((unsigned long)pte, PTE_ORDER);
+-}
+-
+-static inline void pte_free(struct mm_struct *mm, pgtable_t pte)
+-{
+-	pgtable_page_dtor(pte);
+-	__free_pages(pte, PTE_ORDER);
+-}
+-
+ #define __pte_free_tlb(tlb,pte,address)			\
+ do {							\
+ 	pgtable_page_dtor(pte);				\
+-- 
+2.7.4
+
 
