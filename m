@@ -1,146 +1,94 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hNcuL-0002eD-7G
- for linux-um@lists.infradead.org; Mon, 06 May 2019 12:39:52 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v2 1/5] arch: um: Fix IRQ controller regression on console read
-Date: Mon,  6 May 2019 14:39:35 +0200
-Message-Id: <20190506123939.21091-2-johannes@sipsolutions.net>
-In-Reply-To: <20190506123939.21091-1-johannes@sipsolutions.net>
-References: <20190506123939.21091-1-johannes@sipsolutions.net>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: j@w1.fi
+Return-Path: <rppt@linux.ibm.com>
+From: Mike Rapoport <rppt@linux.ibm.com>
+Subject: [PATCH 10/15] nios2: switch to generic version of pte allocation
+Date: Thu,  2 May 2019 18:28:37 +0300
+In-Reply-To: <1556810922-20248-1-git-send-email-rppt@linux.ibm.com>
+References: <1556810922-20248-1-git-send-email-rppt@linux.ibm.com>
+Message-Id: <1556810922-20248-11-git-send-email-rppt@linux.ibm.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Catalin Marinas <catalin.marinas@arm.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>, Ley Foon Tan <lftan@altera.com>, Matthew Wilcox <willy@infradead.org>, Matt Turner <mattst88@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@suse.com>, Palmer Dabbelt <palmer@sifive.com>, Paul Burton <paul.burton@mips.com>, Richard Kuo <rkuo@codeaurora.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-um@lists.infradead.org, nios2-dev@lists.rocketboards.org, Mike Rapoport <rppt@linux.ibm.com>
+List-ID: <linux-um.lists.infradead.org>
 
-From: Jouni Malinen <j@w1.fi>
+nios2 allocates kernel PTE pages with
 
-The conversion of UML to use epoll based IRQ controller claimed that
-clone_one_chan() can safely call um_free_irq() while starting to ignore
-the delay_free_irq parameter that explicitly noted that the IRQ cannot
-be freed because this is being called from chan_interrupt(). This
-resulted in free_irq() getting called in interrupt context ("Trying to
-free IRQ 6 from IRQ context!").
+        __get_free_pages(GFP_KERNEL | __GFP_ZERO, PTE_ORDER);
 
-Fix this by restoring previously used delay_free_irq processing.
+and user page tables with
 
-Fixes: ff6a17989c08 ("Epoll based IRQ controller")
-Signed-off-by: Jouni Malinen <j@w1.fi>
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+        pte = alloc_pages(GFP_KERNEL, PTE_ORDER);
+	if (pte)
+		clear_highpage();
+
+The PTE_ORDER is hardwired to zero, which makes nios2 implementation almost
+identical to the generic one.
+
+Switch nios2 to the generic version that does exactly the same thing for
+the kernel page tables and adds __GFP_ACCOUNT for the user PTEs.
+
+The pte_free_kernel() and pte_free() versions on nios2 are identical to the
+generic ones and can be simply dropped.
+
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
- arch/um/drivers/chan_kern.c | 52 +++++++++++++++++++++++++++++++------
- arch/um/kernel/irq.c        |  4 +++
- 2 files changed, 48 insertions(+), 8 deletions(-)
+ arch/nios2/include/asm/pgalloc.h | 37 ++-----------------------------------
+ 1 file changed, 2 insertions(+), 35 deletions(-)
 
-diff --git a/arch/um/drivers/chan_kern.c b/arch/um/drivers/chan_kern.c
-index a4e64edb8f38..749d2bf59599 100644
---- a/arch/um/drivers/chan_kern.c
-+++ b/arch/um/drivers/chan_kern.c
-@@ -171,19 +171,55 @@ int enable_chan(struct line *line)
- 	return err;
- }
+diff --git a/arch/nios2/include/asm/pgalloc.h b/arch/nios2/include/asm/pgalloc.h
+index 3a149ea..4bc8cf7 100644
+--- a/arch/nios2/include/asm/pgalloc.h
++++ b/arch/nios2/include/asm/pgalloc.h
+@@ -12,6 +12,8 @@
  
-+/* Items are added in IRQ context, when free_irq can't be called, and
-+ * removed in process context, when it can.
-+ * This handles interrupt sources which disappear, and which need to
-+ * be permanently disabled.  This is discovered in IRQ context, but
-+ * the freeing of the IRQ must be done later.
-+ */
-+static DEFINE_SPINLOCK(irqs_to_free_lock);
-+static LIST_HEAD(irqs_to_free);
+ #include <linux/mm.h>
+ 
++#include <asm-generic/pgalloc.h>	/* for pte_{alloc,free}_one */
 +
-+void free_irqs(void)
-+{
-+	struct chan *chan;
-+	LIST_HEAD(list);
-+	struct list_head *ele;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&irqs_to_free_lock, flags);
-+	list_splice_init(&irqs_to_free, &list);
-+	spin_unlock_irqrestore(&irqs_to_free_lock, flags);
-+
-+	list_for_each(ele, &list) {
-+		chan = list_entry(ele, struct chan, free_list);
-+
-+		if (chan->input && chan->enabled)
-+			um_free_irq(chan->line->driver->read_irq, chan);
-+		if (chan->output && chan->enabled)
-+			um_free_irq(chan->line->driver->write_irq, chan);
-+		chan->enabled = 0;
-+	}
-+}
-+
- static void close_one_chan(struct chan *chan, int delay_free_irq)
+ static inline void pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd,
+ 	pte_t *pte)
  {
-+	unsigned long flags;
-+
- 	if (!chan->opened)
- 		return;
- 
--    /* we can safely call free now - it will be marked
--     *  as free and freed once the IRQ stopped processing
--     */
--	if (chan->input && chan->enabled)
--		um_free_irq(chan->line->driver->read_irq, chan);
--	if (chan->output && chan->enabled)
--		um_free_irq(chan->line->driver->write_irq, chan);
--	chan->enabled = 0;
-+	if (delay_free_irq) {
-+		spin_lock_irqsave(&irqs_to_free_lock, flags);
-+		list_add(&chan->free_list, &irqs_to_free);
-+		spin_unlock_irqrestore(&irqs_to_free_lock, flags);
-+	} else {
-+		if (chan->input && chan->enabled)
-+			um_free_irq(chan->line->driver->read_irq, chan);
-+		if (chan->output && chan->enabled)
-+			um_free_irq(chan->line->driver->write_irq, chan);
-+		chan->enabled = 0;
-+	}
- 	if (chan->ops->close != NULL)
- 		(*chan->ops->close)(chan->fd, chan->data);
- 
-diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-index f4874b7ec503..52444be9f162 100644
---- a/arch/um/kernel/irq.c
-+++ b/arch/um/kernel/irq.c
-@@ -21,6 +21,8 @@
- #include <irq_user.h>
- 
- 
-+extern void free_irqs(void);
-+
- /* When epoll triggers we do not know why it did so
-  * we can also have different IRQs for read and write.
-  * This is why we keep a small irq_fd array for each fd -
-@@ -100,6 +102,8 @@ void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
- 			}
- 		}
- 	}
-+
-+	free_irqs();
+@@ -37,41 +39,6 @@ static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
+ 	free_pages((unsigned long)pgd, PGD_ORDER);
  }
  
- static int assign_epoll_events_to_irq(struct irq_entry *irq_entry)
+-static inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm)
+-{
+-	pte_t *pte;
+-
+-	pte = (pte_t *) __get_free_pages(GFP_KERNEL|__GFP_ZERO, PTE_ORDER);
+-
+-	return pte;
+-}
+-
+-static inline pgtable_t pte_alloc_one(struct mm_struct *mm)
+-{
+-	struct page *pte;
+-
+-	pte = alloc_pages(GFP_KERNEL, PTE_ORDER);
+-	if (pte) {
+-		if (!pgtable_page_ctor(pte)) {
+-			__free_page(pte);
+-			return NULL;
+-		}
+-		clear_highpage(pte);
+-	}
+-	return pte;
+-}
+-
+-static inline void pte_free_kernel(struct mm_struct *mm, pte_t *pte)
+-{
+-	free_pages((unsigned long)pte, PTE_ORDER);
+-}
+-
+-static inline void pte_free(struct mm_struct *mm, struct page *pte)
+-{
+-	pgtable_page_dtor(pte);
+-	__free_pages(pte, PTE_ORDER);
+-}
+-
+ #define __pte_free_tlb(tlb, pte, addr)				\
+ 	do {							\
+ 		pgtable_page_dtor(pte);				\
 -- 
-2.17.2
+2.7.4
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
