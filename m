@@ -1,15 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ale.deltatee.com ([207.54.116.67])
+Received: from mail-oi1-x241.google.com ([2607:f8b0:4864:20::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hMOjI-0005o0-Os
- for linux-um@lists.infradead.org; Fri, 03 May 2019 03:19:22 +0000
-References: <20190501230126.229218-1-brendanhiggins@google.com>
-From: Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <ea36c3d6-8c13-2186-16f3-596d834aeebe@deltatee.com>
-Date: Thu, 2 May 2019 21:18:40 -0600
+ id 1hMMJG-0003Ln-3R
+ for linux-um@lists.infradead.org; Fri, 03 May 2019 00:44:19 +0000
+Received: by mail-oi1-x241.google.com with SMTP id v23so3221029oif.8
+ for <linux-um@lists.infradead.org>; Thu, 02 May 2019 17:44:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190501230126.229218-1-brendanhiggins@google.com>
-Content-Language: en-US
+References: <20190501230126.229218-1-brendanhiggins@google.com>
+ <20190502105053.GA12416@kroah.com>
+ <76e84d54-6b7e-8cc1-492b-43822fc43ac4@kernel.org>
+In-Reply-To: <76e84d54-6b7e-8cc1-492b-43822fc43ac4@kernel.org>
+From: Brendan Higgins <brendanhiggins@google.com>
+Date: Thu, 2 May 2019 17:44:05 -0700
+Message-ID: <CAFd5g47JiSXHvMEu9NovkGdG7ugMCwVO0pGwT7bC=NCghD0w-g@mail.gmail.com>
 Subject: Re: [PATCH v2 00/17] kunit: introduce KUnit, the Linux kernel unit
  testing framework
 List-Id: <linux-um.lists.infradead.org>
@@ -24,31 +27,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Brendan Higgins <brendanhiggins@google.com>, frowand.list@gmail.com, gregkh@linuxfoundation.org, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, richard@nod.at, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org
+To: shuah <shuah@kernel.org>
+Cc: Petr Mladek <pmladek@suse.com>, linux-doc@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>, dri-devel <dri-devel@lists.freedesktop.org>, Sasha Levin <Alexander.Levin@microsoft.com>, Michael Ellerman <mpe@ellerman.id.au>, linux-kselftest@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>, Rob Herring <robh@kernel.org>, linux-nvdimm <linux-nvdimm@lists.01.org>, Kevin Hilman <khilman@baylibre.com>, Knut Omang <knut.omang@oracle.com>, Kieran Bingham <kieran.bingham@ideasonboard.com>, wfg@linux.intel.com, Joel Stanley <joel@jms.id.au>, David Rientjes <rientjes@google.com>, Jeff Dike <jdike@addtoit.com>, Dan Carpenter <dan.carpenter@oracle.com>, devicetree <devicetree@vger.kernel.org>, linux-kbuild@vger.kernel.org, "Bird, Timothy  <Tim.Bird@sony.com>, linux-um@lists.infradead.org, Steven Rostedt" <rostedt@goodmis.org>, Julia Lawall <julia.lawall@lip6.fr>, Dan Williams <dan.j.williams@intel.com>, kunit-dev@googlegroups.com, Richard Weinberger <richard@nod.at>, Stephen Boyd <sboyd@kernel.org>, Greg KH <gregkh@linuxfoundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@google.com>, linux-fsdevel@vger.kernel.org, Logan Gunthorpe <logang@deltatee.com>
 
+On Thu, May 2, 2019 at 7:04 AM shuah <shuah@kernel.org> wrote:
+>
+> On 5/2/19 4:50 AM, Greg KH wrote:
+> > On Wed, May 01, 2019 at 04:01:09PM -0700, Brendan Higgins wrote:
+> >> ## TLDR
+> >>
+> >> I rebased the last patchset on 5.1-rc7 in hopes that we can get this in
+> >> 5.2.
+> >
+> > That might be rushing it, normally trees are already closed now for
+> > 5.2-rc1 if 5.1-final comes out this Sunday.
+> >
+> >> Shuah, I think you, Greg KH, and myself talked off thread, and we agreed
+> >> we would merge through your tree when the time came? Am I remembering
+> >> correctly?
+> >
+> > No objection from me.
+> >
+>
+> Yes. I can take these through kselftest tree when the time comes.
 
+Awesome.
 
-On 2019-05-01 5:01 p.m., Brendan Higgins wrote:
-> ## TLDR
-> 
-> I rebased the last patchset on 5.1-rc7 in hopes that we can get this in
-> 5.2.
-> 
+> Agree with Greg that 5.2 might be rushing it. 5.3 would be a good
+> target.
 
-As I said on the last posting, I like this and would like to see it move
-forward. I still have the same concerns over the downsides of using UML
-(ie. not being able to compile large swaths of the tree due to features
-that don't exist in that arch) but these are concerns for later.
-
-I'd prefer to see the unnecessary indirection that I pointed out in
-patch 8 cleaned up but, besides that, the code looks good to me.
-
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
-
-Thanks!
-
-Logan
+Whoops. I guess I should have sent this out a bit earlier. Oh well, as
+long as we are on our way!
 
 _______________________________________________
 linux-um mailing list
