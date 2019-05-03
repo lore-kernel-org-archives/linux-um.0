@@ -1,13 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from mail-ot1-x341.google.com ([2607:f8b0:4864:20::341])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hMfnk-0007CN-H0
- for linux-um@lists.infradead.org; Fri, 03 May 2019 21:33:07 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH 1/3] arch: um: fix os_timer_one_shot()
-Date: Fri,  3 May 2019 23:32:47 +0200
-Message-Id: <20190503213249.30008-1-johannes@sipsolutions.net>
+ id 1hMR3e-0007kN-Ar
+ for linux-um@lists.infradead.org; Fri, 03 May 2019 05:48:31 +0000
+Received: by mail-ot1-x341.google.com with SMTP id s11so4330561otp.0
+ for <linux-um@lists.infradead.org>; Thu, 02 May 2019 22:48:29 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190501230126.229218-1-brendanhiggins@google.com>
+ <20190501230126.229218-5-brendanhiggins@google.com>
+ <ead23600-eecd-cf74-bdd1-94a6964e29b2@kernel.org>
+In-Reply-To: <ead23600-eecd-cf74-bdd1-94a6964e29b2@kernel.org>
+From: Brendan Higgins <brendanhiggins@google.com>
+Date: Thu, 2 May 2019 22:48:16 -0700
+Message-ID: <CAFd5g463PQGn3618Vo2Spu81zzL40jM6Skr1gSWtJqMx7Faj5A@mail.gmail.com>
+Subject: Re: [PATCH v2 04/17] kunit: test: add kunit_stream a std::stream like
+ logger
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -16,55 +23,51 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, Johannes Berg <johannes.berg@intel.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: shuah <shuah@kernel.org>
+Cc: Petr Mladek <pmladek@suse.com>, linux-doc@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>, dri-devel <dri-devel@lists.freedesktop.org>, Sasha Levin <Alexander.Levin@microsoft.com>, Michael Ellerman <mpe@ellerman.id.au>, linux-kselftest@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>, Rob Herring <robh@kernel.org>, linux-nvdimm <linux-nvdimm@lists.01.org>, Kevin Hilman <khilman@baylibre.com>, Knut Omang <knut.omang@oracle.com>, Kieran Bingham <kieran.bingham@ideasonboard.com>, wfg@linux.intel.com, Joel Stanley <joel@jms.id.au>, David Rientjes <rientjes@google.com>, Jeff Dike <jdike@addtoit.com>, Dan Carpenter <dan.carpenter@oracle.com>, devicetree <devicetree@vger.kernel.org>, linux-kbuild@vger.kernel.org, "Bird, Timothy  <Tim.Bird@sony.com>, linux-um@lists.infradead.org, Steven Rostedt" <rostedt@goodmis.org>, Julia Lawall <julia.lawall@lip6.fr>, Dan Williams <dan.j.williams@intel.com>, kunit-dev@googlegroups.com, Richard Weinberger <richard@nod.at>, Stephen Boyd <sboyd@kernel.org>, Greg KH <gregkh@linuxfoundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@google.com>, linux-fsdevel@vger.kernel.org, Logan Gunthorpe <logang@deltatee.com>
 
-From: Johannes Berg <johannes.berg@intel.com>
+On Thu, May 2, 2019 at 6:50 PM shuah <shuah@kernel.org> wrote:
+>
+> On 5/1/19 5:01 PM, Brendan Higgins wrote:
 
-os_timer_one_shot() gets passed a value "unsigned long delta",
-so must not have an "int ticks" as that actually ends up being
--1, and thus triggering a timer over and over again.
+< snip >
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- arch/um/include/shared/os.h | 2 +-
- arch/um/os-Linux/time.c     | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+> > diff --git a/kunit/kunit-stream.c b/kunit/kunit-stream.c
+> > new file mode 100644
+> > index 0000000000000..93c14eec03844
+> > --- /dev/null
+> > +++ b/kunit/kunit-stream.c
+> > @@ -0,0 +1,149 @@
 
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index ebf23012a59b..d579adcb2690 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -252,7 +252,7 @@ extern void os_warn(const char *fmt, ...)
- extern void os_idle_sleep(unsigned long long nsecs);
- extern int os_timer_create(void* timer);
- extern int os_timer_set_interval(void* timer, void* its);
--extern int os_timer_one_shot(int ticks);
-+extern int os_timer_one_shot(unsigned long ticks);
- extern long long os_timer_disable(void);
- extern long os_timer_remain(void* timer);
- extern void uml_idle_timer(void);
-diff --git a/arch/um/os-Linux/time.c b/arch/um/os-Linux/time.c
-index 0e39b9978729..b28cc35da21f 100644
---- a/arch/um/os-Linux/time.c
-+++ b/arch/um/os-Linux/time.c
-@@ -113,7 +113,7 @@ long os_timer_remain(void* timer)
- 	return its.it_value.tv_nsec;
- }
- 
--int os_timer_one_shot(int ticks)
-+int os_timer_one_shot(unsigned long ticks)
- {
- 	struct itimerspec its;
- 	unsigned long long nsec;
--- 
-2.17.2
+< snip >
 
+> > +static int kunit_stream_init(struct kunit_resource *res, void *context)
+> > +{
+> > +     struct kunit *test = context;
+> > +     struct kunit_stream *stream;
+> > +
+> > +     stream = kzalloc(sizeof(*stream), GFP_KERNEL);
+> > +     if (!stream)
+> > +             return -ENOMEM;
+> > +     res->allocation = stream;
+> > +     stream->test = test;
+> > +     spin_lock_init(&stream->lock);
+> > +     stream->internal_stream = new_string_stream();
+> > +
+> > +     if (!stream->internal_stream)
+> > +             return -ENOMEM;
+>
+> What happens to stream? Don't you want to free that?
+
+Good catch. Will fix in next revision.
+
+< snip >
+
+Cheers
 
 _______________________________________________
 linux-um mailing list
