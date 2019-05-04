@@ -1,78 +1,118 @@
-Return-Path: <rppt@linux.ibm.com>
-From: Mike Rapoport <rppt@linux.ibm.com>
-Subject: [PATCH 06/15] hexagon: switch to generic version of pte allocation
-Date: Thu,  2 May 2019 18:28:33 +0300
-In-Reply-To: <1556810922-20248-1-git-send-email-rppt@linux.ibm.com>
-References: <1556810922-20248-1-git-send-email-rppt@linux.ibm.com>
-Message-Id: <1556810922-20248-7-git-send-email-rppt@linux.ibm.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Catalin Marinas <catalin.marinas@arm.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>, Ley Foon Tan <lftan@altera.com>, Matthew Wilcox <willy@infradead.org>, Matt Turner <mattst88@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@suse.com>, Palmer Dabbelt <palmer@sifive.com>, Paul Burton <paul.burton@mips.com>, Richard Kuo <rkuo@codeaurora.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-um@lists.infradead.org, nios2-dev@lists.rocketboards.org, Mike Rapoport <rppt@linux.ibm.com>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail.kernel.org ([198.145.29.99])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1hMs5Z-0007E2-OP
+ for linux-um@lists.infradead.org; Sat, 04 May 2019 10:40:19 +0000
+Date: Sat, 4 May 2019 12:40:12 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v2 16/17] kernel/sysctl-test: Add null pointer test for
+ sysctl.c:proc_dointvec()
+Message-ID: <20190504104012.GA1478@kroah.com>
+References: <20190501230126.229218-1-brendanhiggins@google.com>
+ <20190501230126.229218-17-brendanhiggins@google.com>
+ <20190502110347.GE12416@kroah.com>
+ <ECADFF3FD767C149AD96A924E7EA6EAF9770A3A0@USCULXMSG01.am.sony.com>
+ <CAFd5g471Wawu6g14p0AO3aY8VPBKLA0mjHSdfR1qStFGzp3iGQ@mail.gmail.com>
+ <20190503064241.GC20723@kroah.com>
+ <CAFd5g44NrKM9WQCF1xW-BWpFNsC05UAS9jt1-S+vNRuBDZVsHQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CAFd5g44NrKM9WQCF1xW-BWpFNsC05UAS9jt1-S+vNRuBDZVsHQ@mail.gmail.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Brendan Higgins <brendanhiggins@google.com>
+Cc: Petr Mladek <pmladek@suse.com>, linux-doc@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>, dri-devel <dri-devel@lists.freedesktop.org>, Sasha Levin <Alexander.Levin@microsoft.com>, Michael Ellerman <mpe@ellerman.id.au>, linux-kselftest@vger.kernel.org, shuah <shuah@kernel.org>, Rob Herring <robh@kernel.org>, linux-nvdimm <linux-nvdimm@lists.01.org>, Frank Rowand <frowand.list@gmail.com>, Knut Omang <knut.omang@oracle.com>, Kieran Bingham <kieran.bingham@ideasonboard.com>, wfg@linux.intel.com, Joel Stanley <joel@jms.id.au>, David Rientjes <rientjes@google.com>, Iurii Zaikin <yzaikin@google.com>, Jeff Dike <jdike@addtoit.com>, Dan Carpenter <dan.carpenter@oracle.com>, devicetree <devicetree@vger.kernel.org>, linux-kbuild@vger.kernel.org, "Bird, Timothy  <Tim.Bird@sony.com>, linux-um@lists.infradead.org, Steven Rostedt" <rostedt@goodmis.org>, Julia Lawall <julia.lawall@lip6.fr>, Dan Williams <dan.j.williams@intel.com>, kunit-dev@googlegroups.com, Richard Weinberger <richard@nod.at>, Stephen Boyd <sboyd@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@google.com>, linux-fsdevel@vger.kernel.org, Logan Gunthorpe <logang@deltatee.com>, Kevin Hilman <khilman@baylibre.com>
 
-The hexagon implementation pte_alloc_one(), pte_alloc_one_kernel(),
-pte_free_kernel() and pte_free() is identical to the generic except of
-lack of __GFP_ACCOUNT for the user PTEs allocation.
+On Fri, May 03, 2019 at 04:41:10PM -0700, Brendan Higgins wrote:
+> > On Thu, May 02, 2019 at 11:45:43AM -0700, Brendan Higgins wrote:
+> > > On Thu, May 2, 2019 at 11:15 AM <Tim.Bird@sony.com> wrote:
+> > > >
+> > > >
+> > > >
+> > > > > -----Original Message-----
+> > > > > From: Greg KH
+> > > > >
+> > > > > On Wed, May 01, 2019 at 04:01:25PM -0700, Brendan Higgins wrote:
+> > > > > > From: Iurii Zaikin <yzaikin@google.com>
+> > > > > >
+> > > > > > KUnit tests for initialized data behavior of proc_dointvec that is
+> > > > > > explicitly checked in the code. Includes basic parsing tests including
+> > > > > > int min/max overflow.
+> > > > > >
+> > > > > > Signed-off-by: Iurii Zaikin <yzaikin@google.com>
+> > > > > > Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+> > > > > > ---
+> > > > > >  kernel/Makefile      |   2 +
+> > > > > >  kernel/sysctl-test.c | 292
+> > > > > +++++++++++++++++++++++++++++++++++++++++++
+> > > > > >  lib/Kconfig.debug    |   6 +
+> > > > > >  3 files changed, 300 insertions(+)
+> > > > > >  create mode 100644 kernel/sysctl-test.c
+> > > > > >
+> > > > > > diff --git a/kernel/Makefile b/kernel/Makefile
+> > > > > > index 6c57e78817dad..c81a8976b6a4b 100644
+> > > > > > --- a/kernel/Makefile
+> > > > > > +++ b/kernel/Makefile
+> > > > > > @@ -112,6 +112,8 @@ obj-$(CONFIG_HAS_IOMEM) += iomem.o
+> > > > > >  obj-$(CONFIG_ZONE_DEVICE) += memremap.o
+> > > > > >  obj-$(CONFIG_RSEQ) += rseq.o
+> > > > > >
+> > > > > > +obj-$(CONFIG_SYSCTL_KUNIT_TEST) += sysctl-test.o
+> > > > >
+> > > > > You are going to have to have a "standard" naming scheme for test
+> > > > > modules, are you going to recommend "foo-test" over "test-foo"?  If so,
+> > > > > that's fine, we should just be consistant and document it somewhere.
+> > > > >
+> > > > > Personally, I'd prefer "test-foo", but that's just me, naming is hard...
+> > > >
+> > > > My preference would be "test-foo" as well.  Just my 2 cents.
+> > >
+> > > I definitely agree we should be consistent. My personal bias
+> > > (unsurprisingly) is "foo-test," but this is just because that is the
+> > > convention I am used to in other projects I have worked on.
+> > >
+> > > On an unbiased note, we are currently almost evenly split between the
+> > > two conventions with *slight* preference for "foo-test": I ran the two
+> > > following grep commands on v5.1-rc7:
+> > >
+> > > grep -Hrn --exclude-dir="build" -e "config [a-zA-Z_0-9]\+_TEST$" | wc -l
+> > > grep -Hrn --exclude-dir="build" -e "config TEST_[a-zA-Z_0-9]\+" | wc -l
+> > >
+> > > "foo-test" has 36 occurrences.
+> > > "test-foo" has 33 occurrences.
+> > >
+> > > The things I am more concerned about is how this would affect file
+> > > naming. If we have a unit test for foo.c, I think foo_test.c is more
+> > > consistent with our namespacing conventions. The other thing, is if we
+> > > already have a Kconfig symbol called FOO_TEST (or TEST_FOO) what
+> > > should we name the KUnit test in this case? FOO_UNIT_TEST?
+> > > FOO_KUNIT_TEST, like I did above?
+> >
+> > Ok, I can live with "foo-test", as you are right, in a directory listing
+> > and config option, it makes more sense to add it as a suffix.
+> 
+> Cool, so just for future reference, if we already have a Kconfig
+> symbol called FOO_TEST (or TEST_FOO) what should we name the KUnit
+> test in this case? FOO_UNIT_TEST? FOO_KUNIT_TEST, like I did above?
 
-Switch hexagon to use generic version of these functions.
+FOO_KUNIT_TEST is fine, I doubt that's going to come up very often.
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- arch/hexagon/include/asm/pgalloc.h | 34 ++--------------------------------
- 1 file changed, 2 insertions(+), 32 deletions(-)
+thanks,
 
-diff --git a/arch/hexagon/include/asm/pgalloc.h b/arch/hexagon/include/asm/pgalloc.h
-index d361838..7661a26 100644
---- a/arch/hexagon/include/asm/pgalloc.h
-+++ b/arch/hexagon/include/asm/pgalloc.h
-@@ -24,6 +24,8 @@
- #include <asm/mem-layout.h>
- #include <asm/atomic.h>
- 
-+#include <asm-generic/pgalloc.h>	/* for pte_{alloc,free}_one */
-+
- #define check_pgt_cache() do {} while (0)
- 
- extern unsigned long long kmap_generation;
-@@ -59,38 +61,6 @@ static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
- 	free_page((unsigned long) pgd);
- }
- 
--static inline struct page *pte_alloc_one(struct mm_struct *mm)
--{
--	struct page *pte;
--
--	pte = alloc_page(GFP_KERNEL | __GFP_ZERO);
--	if (!pte)
--		return NULL;
--	if (!pgtable_page_ctor(pte)) {
--		__free_page(pte);
--		return NULL;
--	}
--	return pte;
--}
--
--/* _kernel variant gets to use a different allocator */
--static inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm)
--{
--	gfp_t flags =  GFP_KERNEL | __GFP_ZERO;
--	return (pte_t *) __get_free_page(flags);
--}
--
--static inline void pte_free(struct mm_struct *mm, struct page *pte)
--{
--	pgtable_page_dtor(pte);
--	__free_page(pte);
--}
--
--static inline void pte_free_kernel(struct mm_struct *mm, pte_t *pte)
--{
--	free_page((unsigned long)pte);
--}
--
- static inline void pmd_populate(struct mm_struct *mm, pmd_t *pmd,
- 				pgtable_t pte)
- {
--- 
-2.7.4
+greg k-h
 
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
