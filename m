@@ -1,70 +1,51 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hVjCv-0004UR-3g
- for linux-um@lists.infradead.org; Tue, 28 May 2019 21:00:30 +0000
-Message-ID: <a5611c91d4883c7ef91dc14a72946e18bf5809b6.camel@sipsolutions.net>
-Subject: TRACE_IRQFLAGS_SUPPORT seems incomplete
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Tue, 28 May 2019 23:00:21 +0200
-Mime-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org, Richard Weinberger <richard.weinberger@gmail.com>
-Cc: j@w1.fi
+Return-Path: <rppt@linux.ibm.com>
+Date: Sun, 5 May 2019 09:17:37 +0300
+From: Mike Rapoport <rppt@linux.ibm.com>
+Subject: Re: [PATCH 08/15] mips: switch to generic version of pte allocation
+References: <1556810922-20248-1-git-send-email-rppt@linux.ibm.com>
+ <1556810922-20248-9-git-send-email-rppt@linux.ibm.com>
+ <20190502190945.rrrxfxo3rbhgc3cx@pburton-laptop>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190502190945.rrrxfxo3rbhgc3cx@pburton-laptop>
+Message-Id: <20190505061737.GD15755@rapoport-lnx>
+To: Paul Burton <paul.burton@mips.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Catalin Marinas <catalin.marinas@arm.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>, Ley Foon Tan <lftan@altera.com>, Matthew Wilcox <willy@infradead.org>, Matt Turner <mattst88@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@suse.com>, Palmer Dabbelt <palmer@sifive.com>, Richard Kuo <rkuo@codeaurora.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, "x86@kernel.org" <x86@kernel.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "nios2-dev@lists.rocketboards.org" <nios2-dev@lists.rocketboards.org>
+List-ID: <linux-um.lists.infradead.org>
 
-Hi,
+On Thu, May 02, 2019 at 07:09:47PM +0000, Paul Burton wrote:
+> Hi Mike,
+> 
+> On Thu, May 02, 2019 at 06:28:35PM +0300, Mike Rapoport wrote:
+> > MIPS allocates kernel PTE pages with
+> > 
+> > 	__get_free_pages(GFP_KERNEL | __GFP_ZERO, PTE_ORDER)
+> > 
+> > and user PTE pages with
+> > 
+> > 	alloc_pages(GFP_KERNEL | __GFP_ZERO, PTE_ORDER)
+> 
+> That bit isn't quite true - we don't use __GFP_ZERO in pte_alloc_one() &
+> instead call clear_highpage() on the allocated page. Not that I have a
+> problem with using __GFP_ZERO - it seems like the more optimal choice.
+> It just might be worth mentioning the change & expected equivalent
+> behavior.
 
-Now I've tried for a while ... but can't figure it out.
+You are right, I'll fix the changelog.
+ 
+> Otherwise:
+> 
+>     Acked-by: Paul Burton <paul.burton@mips.com>
 
-It looks like TRACE_IRQFLAGS_SUPPORT is incomplete, we're getting lots
-of warnings like
+Thanks.
 
-[    0.000000] ------------[ cut here ]------------
-[    0.000000] WARNING: CPU: 0 PID: 1 at kernel/locking/lockdep.c:4220 check_flags+0xa4/0x255
-[    0.000000] DEBUG_LOCKS_WARN_ON(current->hardirqs_enabled)
-[    0.000000] Call Trace:
-[    0.000000]  [<60047243>] show_stack+0x13b/0x155
-[    0.000000]  [<60521206>] dump_stack+0x2a/0x2c
-[    0.000000]  [<600652af>] __warn+0x10c/0x151
-[    0.000000]  [<6006538b>] warn_slowpath_fmt+0x97/0x99
-[    0.000000]  [<600a3355>] check_flags+0xa4/0x255
-[    0.000000]  [<600a554e>] lock_acquire+0x6c/0x1a0
-[    0.000000]  [<60539298>] _raw_spin_lock+0x30/0x83
-[    0.000000]  [<600b6d41>] handle_edge_irq+0x23/0x13d
-[    0.000000]  [<600b2b17>] generic_handle_irq+0x23/0x27
-[    0.000000]  [<600454ab>] do_IRQ+0x39/0x54
-[    0.000000]  [<6004556d>] sigio_handler+0xa7/0x111
-[    0.000000]  [<6005badf>] sig_handler_common+0xa9/0xbf
-[...]
-[    0.000000] possible reason: unannotated irqs-off.
+> Thanks,
+>     Paul
+> 
 
+-- 
+Sincerely yours,
+Mike.
 
-I've tried to put the right trace_irqflags_{on,off} calls in places like
-sig_handler_common(), but I can only seem to shift the warning around.
-
-Has anyone looked at this? You need to enable CONFIG_PROVE_LOCKING,
-CONFIG_DEBUG_LOCKDEP and CONFIG_TRACE_IRQFLAGS for this to show up, but
-I think Jouni had some others that might be related, without having
-enabled CONFIG_DEBUG_LOCKDEP.
-
-Thanks,
-johannes
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
