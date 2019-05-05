@@ -1,82 +1,82 @@
 Return-Path: <rppt@linux.ibm.com>
+Date: Sun, 5 May 2019 09:19:57 +0300
 From: Mike Rapoport <rppt@linux.ibm.com>
-Subject: [PATCH v2 05/14] csky: switch to generic version of pte allocation
-Date: Wed,  8 May 2019 09:17:02 +0300
-In-Reply-To: <1557296232-15361-1-git-send-email-rppt@linux.ibm.com>
-References: <1557296232-15361-1-git-send-email-rppt@linux.ibm.com>
-Message-Id: <1557296232-15361-6-git-send-email-rppt@linux.ibm.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Anshuman Khandual <anshuman.khandual@arm.com>, Catalin Marinas <catalin.marinas@arm.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>, Ley Foon Tan <lftan@altera.com>, Matthew Wilcox <willy@infradead.org>, Matt Turner <mattst88@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@suse.com>, Palmer Dabbelt <palmer@sifive.com>, Paul Burton <paul.burton@mips.com>, Richard Kuo <rkuo@codeaurora.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-um@lists.infradead.org, nios2-dev@lists.rocketboards.org, Mike Rapoport <rppt@linux.ibm.com>
+Subject: Re: [PATCH 04/15] arm64: switch to generic version of pte allocation
+References: <1556810922-20248-1-git-send-email-rppt@linux.ibm.com>
+ <1556810922-20248-5-git-send-email-rppt@linux.ibm.com>
+ <20190503100508.GB47811@lakrids.cambridge.arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190503100508.GB47811@lakrids.cambridge.arm.com>
+Message-Id: <20190505061956.GE15755@rapoport-lnx>
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Catalin Marinas <catalin.marinas@arm.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>, Ley Foon Tan <lftan@altera.com>, Matthew Wilcox <willy@infradead.org>, Matt Turner <mattst88@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@suse.com>, Palmer Dabbelt <palmer@sifive.com>, Paul Burton <paul.burton@mips.com>, Richard Kuo <rkuo@codeaurora.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-um@lists.infradead.org, nios2-dev@lists.rocketboards.org
 List-ID: <linux-um.lists.infradead.org>
 
-The csky implementation pte_alloc_one(), pte_free_kernel() and pte_free()
-is identical to the generic except of lack of __GFP_ACCOUNT for the user
-PTEs allocation.
+On Fri, May 03, 2019 at 11:05:09AM +0100, Mark Rutland wrote:
+> Hi,
+> 
+> On Thu, May 02, 2019 at 06:28:31PM +0300, Mike Rapoport wrote:
+> > The PTE allocations in arm64 are identical to the generic ones modulo the
+> > GFP flags.
+> > 
+> > Using the generic pte_alloc_one() functions ensures that the user page
+> > tables are allocated with __GFP_ACCOUNT set.
+> > 
+> > The arm64 definition of PGALLOC_GFP is removed and replaced with
+> > GFP_PGTABLE_USER for p[gum]d_alloc_one() and for KVM memory cache.
+> > 
+> > The mappings created with create_pgd_mapping() are now using
+> > GFP_PGTABLE_KERNEL.
+> > 
+> > The conversion to the generic version of pte_free_kernel() removes the NULL
+> > check for pte.
+> > 
+> > The pte_free() version on arm64 is identical to the generic one and
+> > can be simply dropped.
+> > 
+> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> > ---
+> >  arch/arm64/include/asm/pgalloc.h | 43 ++++------------------------------------
+> >  arch/arm64/mm/mmu.c              |  2 +-
+> >  arch/arm64/mm/pgd.c              |  4 ++--
+> >  virt/kvm/arm/mmu.c               |  2 +-
+> >  4 files changed, 8 insertions(+), 43 deletions(-)
+> 
+> [...]
+> 
+> > diff --git a/arch/arm64/mm/pgd.c b/arch/arm64/mm/pgd.c
+> > index 289f911..2ef1a53 100644
+> > --- a/arch/arm64/mm/pgd.c
+> > +++ b/arch/arm64/mm/pgd.c
+> > @@ -31,9 +31,9 @@ static struct kmem_cache *pgd_cache __ro_after_init;
+> >  pgd_t *pgd_alloc(struct mm_struct *mm)
+> >  {
+> >  	if (PGD_SIZE == PAGE_SIZE)
+> > -		return (pgd_t *)__get_free_page(PGALLOC_GFP);
+> > +		return (pgd_t *)__get_free_page(GFP_PGTABLE_USER);
+> >  	else
+> > -		return kmem_cache_alloc(pgd_cache, PGALLOC_GFP);
+> > +		return kmem_cache_alloc(pgd_cache, GFP_PGTABLE_USER);
+> >  }
+> 
+> In efi_virtmap_init() we use pgd_alloc() to allocate a pgd for EFI
+> runtime services, which we map with a special kernel page table.
+> 
+> I'm not sure if accounting that is problematic, as it's allocated in a
+> kernel thread off the back of an early_initcall.
 
-Switch csky to use generic version of these functions.
-
-The csky implementation of pte_alloc_one_kernel() is not replaced because
-it does not clear the allocated page but rather sets each PTE in it to a
-non-zero value.
-
-The pte_free_kernel() and pte_free() versions on csky are identical to the
-generic ones and can be simply dropped.
-
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Acked-by: Guo Ren <ren_guo@c-sky.com>
----
- arch/csky/include/asm/pgalloc.h | 30 +++---------------------------
- 1 file changed, 3 insertions(+), 27 deletions(-)
-
-diff --git a/arch/csky/include/asm/pgalloc.h b/arch/csky/include/asm/pgalloc.h
-index d213bb4..98c571670 100644
---- a/arch/csky/include/asm/pgalloc.h
-+++ b/arch/csky/include/asm/pgalloc.h
-@@ -8,6 +8,9 @@
- #include <linux/mm.h>
- #include <linux/sched.h>
+The accounting bypasses kernel threads so there should be no problem.
  
-+#define __HAVE_ARCH_PTE_ALLOC_ONE_KERNEL
-+#include <asm-generic/pgalloc.h>	/* for pte_{alloc,free}_one */
-+
- static inline void pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd,
- 					pte_t *pte)
- {
-@@ -39,33 +42,6 @@ static inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm)
- 	return pte;
- }
- 
--static inline struct page *pte_alloc_one(struct mm_struct *mm)
--{
--	struct page *pte;
--
--	pte = alloc_pages(GFP_KERNEL | __GFP_ZERO, 0);
--	if (!pte)
--		return NULL;
--
--	if (!pgtable_page_ctor(pte)) {
--		__free_page(pte);
--		return NULL;
--	}
--
--	return pte;
--}
--
--static inline void pte_free_kernel(struct mm_struct *mm, pte_t *pte)
--{
--	free_pages((unsigned long)pte, PTE_ORDER);
--}
--
--static inline void pte_free(struct mm_struct *mm, pgtable_t pte)
--{
--	pgtable_page_dtor(pte);
--	__free_pages(pte, PTE_ORDER);
--}
--
- static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
- {
- 	free_pages((unsigned long)pgd, PGD_ORDER);
+> Just to check, Is that sound, or do we need a pgd_alloc_kernel()?
+> 
+> Thanks,
+> Mark.
+> 
+
 -- 
-2.7.4
+Sincerely yours,
+Mike.
 
 
