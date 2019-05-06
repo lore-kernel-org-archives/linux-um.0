@@ -1,90 +1,60 @@
-Return-Path: <rppt@linux.ibm.com>
-From: Mike Rapoport <rppt@linux.ibm.com>
-Subject: [PATCH v2 00/14] introduce generic pte_{alloc,free}_one[_kernel]
-Date: Wed,  8 May 2019 09:16:57 +0300
-Message-Id: <1557296232-15361-1-git-send-email-rppt@linux.ibm.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Anshuman Khandual <anshuman.khandual@arm.com>, Catalin Marinas <catalin.marinas@arm.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>, Ley Foon Tan <lftan@altera.com>, Matthew Wilcox <willy@infradead.org>, Matt Turner <mattst88@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@suse.com>, Palmer Dabbelt <palmer@sifive.com>, Paul Burton <paul.burton@mips.com>, Richard Kuo <rkuo@codeaurora.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-um@lists.infradead.org, nios2-dev@lists.rocketboards.org, Mike Rapoport <rppt@linux.ibm.com>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1hNcuL-0002eF-7M
+ for linux-um@lists.infradead.org; Mon, 06 May 2019 12:39:52 +0000
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [PATCH v2 2/5] arch: um: use cpu_possible_mask to avoid warning
+Date: Mon,  6 May 2019 14:39:36 +0200
+Message-Id: <20190506123939.21091-3-johannes@sipsolutions.net>
+In-Reply-To: <20190506123939.21091-1-johannes@sipsolutions.net>
+References: <20190506123939.21091-1-johannes@sipsolutions.net>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
+Cc: j@w1.fi, Johannes Berg <johannes.berg@intel.com>
 
-Hi,
+From: Johannes Berg <johannes.berg@intel.com>
 
-Many architectures have similar, if not identical implementation of
-pte_alloc_one_kernel(), pte_alloc_one(), pte_free_kernel() and pte_free().
+Using cpu_all_mask in a struct clock_event_device leads to
+a warning from clockevents_register_device(), fix this.
 
-A while ago Anshuman suggested to introduce a common definition of
-GFP_PGTABLE and during the discussion it was suggested to rather
-consolidate the allocators.
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+---
+ arch/um/kernel/time.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-These patches introduce generic version of PTE allocation and free and
-enable their use on several architectures.
-
-The conversion introduces some changes for some of the architectures.
-Here's the executive summary and the details are described at each patch.
-
-* Most architectures do not set __GFP_ACCOUNT for the user page tables.
-Switch to the generic functions is "spreading that goodness to all other
-architectures"
-* arm, arm64 and unicore32 used to check if the pte is not NULL before
-freeing its memory in pte_free_kernel(). It's dropped during the
-conversion as it seems superfluous.
-* x86 used to BUG_ON() is pte was not page aligned duirng
-pte_free_kernel(), the generic version simply frees the memory without any
-checks.
-
-This set only performs the straightforward conversion, the architectures
-with different logic in pte_alloc_one() and pte_alloc_one_kernel() are not
-touched, as well as architectures that have custom page table allocators.
-
-v2 changes:
-* rebase on the current upstream
-* fix copy-paste error in the description of pte_free()
-* fix changelog for MIPS to match actual changes
-* drop powerpc changes
-* add Acked/Reviewed tags
-
-[1] https://lore.kernel.org/lkml/1547619692-7946-1-git-send-email-anshuman.khandual@arm.com
-
-Mike Rapoport (14):
-  asm-generic, x86: introduce generic pte_{alloc,free}_one[_kernel]
-  alpha: switch to generic version of pte allocation
-  arm: switch to generic version of pte allocation
-  arm64: switch to generic version of pte allocation
-  csky: switch to generic version of pte allocation
-  hexagon: switch to generic version of pte allocation
-  m68k: sun3: switch to generic version of pte allocation
-  mips: switch to generic version of pte allocation
-  nds32: switch to generic version of pte allocation
-  nios2: switch to generic version of pte allocation
-  parisc: switch to generic version of pte allocation
-  riscv: switch to generic version of pte allocation
-  um: switch to generic version of pte allocation
-  unicore32: switch to generic version of pte allocation
-
- arch/alpha/include/asm/pgalloc.h     |  40 +------------
- arch/arm/include/asm/pgalloc.h       |  41 +++++---------
- arch/arm/mm/mmu.c                    |   2 +-
- arch/arm64/include/asm/pgalloc.h     |  47 +++------------
- arch/arm64/mm/mmu.c                  |   2 +-
- arch/arm64/mm/pgd.c                  |   9 ++-
- arch/csky/include/asm/pgalloc.h      |  30 +---------
- arch/hexagon/include/asm/pgalloc.h   |  34 +----------
- arch/m68k/include/asm/sun3_pgalloc.h |  41 +-------------
- arch/mips/include/asm/pgalloc.h      |  33 +----------
- arch/nds32/include/asm/pgalloc.h     |  31 ++--------
- arch/nios2/include/asm/pgalloc.h     |  37 +-----------
- arch/parisc/include/asm/pgalloc.h    |  33 +----------
- arch/riscv/include/asm/pgalloc.h     |  29 +---------
- arch/um/include/asm/pgalloc.h        |  16 +-----
- arch/um/kernel/mem.c                 |  22 -------
- arch/unicore32/include/asm/pgalloc.h |  36 +++---------
- arch/x86/include/asm/pgalloc.h       |  19 +------
- arch/x86/mm/pgtable.c                |  33 +++--------
- include/asm-generic/pgalloc.h        | 107 +++++++++++++++++++++++++++++++++--
- virt/kvm/arm/mmu.c                   |   2 +-
- 21 files changed, 178 insertions(+), 466 deletions(-)
-
+diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
+index 052de4c8acb2..0c572a48158e 100644
+--- a/arch/um/kernel/time.c
++++ b/arch/um/kernel/time.c
+@@ -56,7 +56,7 @@ static int itimer_one_shot(struct clock_event_device *evt)
+ static struct clock_event_device timer_clockevent = {
+ 	.name			= "posix-timer",
+ 	.rating			= 250,
+-	.cpumask		= cpu_all_mask,
++	.cpumask		= cpu_possible_mask,
+ 	.features		= CLOCK_EVT_FEAT_PERIODIC |
+ 				  CLOCK_EVT_FEAT_ONESHOT,
+ 	.set_state_shutdown	= itimer_shutdown,
 -- 
-2.7.4
+2.17.2
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
