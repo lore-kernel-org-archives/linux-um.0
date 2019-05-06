@@ -1,62 +1,82 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from lithops.sigma-star.at ([195.201.40.130])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hPwEL-0004Mp-5Y
- for linux-um@lists.infradead.org; Sun, 12 May 2019 21:42:03 +0000
-Date: Sun, 12 May 2019 23:41:49 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <1836274340.56055.1557697309728.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] UML changes for v5.2-rc1
-MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: torvalds <torvalds@linux-foundation.org>
-Cc: linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, anton ivanov <anton.ivanov@cambridgegreys.com>
+Return-Path: <palmer@sifive.com>
+Date: Mon, 06 May 2019 11:25:52 -0700 (PDT)
+Subject: Re: [PATCH 13/15] riscv: switch to generic version of pte allocation
+In-Reply-To: <1556810922-20248-14-git-send-email-rppt@linux.ibm.com>
+From: Palmer Dabbelt <palmer@sifive.com>
+Message-ID: <mhng-c23d2e8b-1dc0-48db-a4cf-d6964ca650c0@palmer-si-x1e>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: akpm@linux-foundation.org, Arnd Bergmann <arnd@arndb.de>, catalin.marinas@arm.com, geert@linux-m68k.org, green.hu@gmail.com, gxt@pku.edu.cn, guoren@kernel.org, deller@gmx.de, lftan@altera.com, willy@infradead.org, mattst88@gmail.com, mpe@ellerman.id.au, mhocko@suse.com, paul.burton@mips.com, rkuo@codeaurora.org, richard@nod.at, linux@armlinux.org.uk, sammy@sammy.net, x86@kernel.org, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-um@lists.infradead.org, nios2-dev@lists.rocketboards.org, rppt@linux.ibm.com
+List-ID: <linux-um.lists.infradead.org>
 
-TGludXMsCgpUaGUgZm9sbG93aW5nIGNoYW5nZXMgc2luY2UgY29tbWl0IDM3NjI0YjU4NTQyZmI5
-ZjJkOWE3MGU2ZWEwMDZlZjhhNWY2NmMzMGI6CgogIExpbnV4IDUuMS1yYzcgKDIwMTktMDQtMjgg
-MTc6MDQ6MTMgLTA3MDApCgphcmUgYXZhaWxhYmxlIGluIHRoZSBHaXQgcmVwb3NpdG9yeSBhdDoK
-CiAgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3J3L3VtbC5n
-aXQgdGFncy9mb3ItbGludXMtNS4yLXJjMQoKZm9yIHlvdSB0byBmZXRjaCBjaGFuZ2VzIHVwIHRv
-IDE5ODdiMWI4ZjlmMTdhMDYyNTU4NzdlNzkxN2QwYmI1YjUzNzc3NzQ6CgogIHVtOiBpcnE6IGRv
-bid0IHNldCB0aGUgY2hpcCBmb3IgYWxsIGlycXMgKDIwMTktMDUtMDcgMjM6MTg6MjggKzAyMDAp
-CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tClRoaXMgcHVsbCByZXF1ZXN0IGNvbnRhaW5zIHRoZSBmb2xsb3dpbmcgY2hhbmdl
-cyBmb3IgVU1MOgoKLSBLY29uZmlnIGNsZWFudXBzCi0gRml4IGNwdV9hbGxfbWFzaygpIHVzYWdl
-Ci0gVmFyaW91cyBidWcgZml4ZXMKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQW50b24gSXZhbm92ICgxKToKICAgICAgdW06
-IFJldmVydCB0byB1c2luZyBzdGFjayBmb3IgcHRfcmVncyBpbiBzaWduYWwgaGFuZGxpbmcKCkJh
-cnRvc3ogR29sYXN6ZXdza2kgKDQpOgogICAgICB1bTogcmVtb3ZlIHVudXNlZCB2YXJpYWJsZQog
-ICAgICB1bTogcmVtb3ZlIHVzZXMgb2YgdmFyaWFibGUgbGVuZ3RoIGFycmF5cwogICAgICB1bTog
-ZGVmaW5lIHNldF9wdGVfYXQoKSBhcyBhIHN0YXRpYyBpbmxpbmUgZnVuY3Rpb24sIG5vdCBhIG1h
-Y3JvCiAgICAgIHVtOiBpcnE6IGRvbid0IHNldCB0aGUgY2hpcCBmb3IgYWxsIGlycXMKCkNvbGlu
-IElhbiBLaW5nICgxKToKICAgICAgaG9zdGZzOiBmaXggbWlzbWF0Y2ggYmV0d2VlbiBsaW5rX2Zp
-bGUgZGVmaW5pdGlvbiBhbmQgZGVjbGFyYXRpb24KCkRhbmllbCBXYWx0ZXIgKDEpOgogICAgICB1
-bTogRG8gbm90IHVubG9jayBtdXRleCB0aGF0IGlzIG5vdCBob2xkLgoKRW5yaWNvIFdlaWdlbHQs
-IG1ldHV4IElUIGNvbnN1bHQgKDIpOgogICAgICBhcmNoOiB1bTogS2NvbmZpZzogcGVkYW50aWMg
-aW5kZW50aW9uIGNsZWFudXBzCiAgICAgIGFyY2g6IHVtOiBkcml2ZXJzOiBLY29uZmlnOiBwZWRh
-bnRpYyBmb3JtYXR0aW5nCgpNYWNpZWogxbtlbmN6eWtvd3NraSAoMSk6CiAgICAgIHVtbDogZml4
-IGEgYm9vdCBzcGxhdCB3cnQgdXNlIG9mIGNwdV9hbGxfbWFzawoKIGFyY2gvdW0vS2NvbmZpZyAg
-ICAgICAgICAgICAgIHwgIDU4ICsrKy0tLS0KIGFyY2gvdW0vZHJpdmVycy9LY29uZmlnICAgICAg
-IHwgMzUyICsrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tLQogYXJjaC91
-bS9kcml2ZXJzL3ViZF9rZXJuLmMgICAgfCAgIDQgKy0KIGFyY2gvdW0vaW5jbHVkZS9hc20vcGd0
-YWJsZS5oIHwgICA3ICstCiBhcmNoL3VtL2tlcm5lbC9pcnEuYyAgICAgICAgICB8ICAgMiArLQog
-YXJjaC91bS9rZXJuZWwvc2thcy91YWNjZXNzLmMgfCAgIDEgLQogYXJjaC91bS9rZXJuZWwvdGlt
-ZS5jICAgICAgICAgfCAgIDIgKy0KIGFyY2gvdW0vb3MtTGludXgvc2lnbmFsLmMgICAgIHwgIDI4
-ICstLS0KIGFyY2gvdW0vb3MtTGludXgvdW1pZC5jICAgICAgIHwgIDM2ICsrKy0tCiBmcy9ob3N0
-ZnMvaG9zdGZzLmggICAgICAgICAgICB8ICAgMiArLQogMTAgZmlsZXMgY2hhbmdlZCwgMjUzIGlu
-c2VydGlvbnMoKyksIDIzOSBkZWxldGlvbnMoLSkKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0
-cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vbGludXgtdW0K
+On Thu, 02 May 2019 08:28:40 PDT (-0700), rppt@linux.ibm.com wrote:
+> The only difference between the generic and RISC-V implementation of PTE
+> allocation is the usage of __GFP_RETRY_MAYFAIL for both kernel and user
+> PTEs and the absence of __GFP_ACCOUNT for the user PTEs.
+>
+> The conversion to the generic version removes the __GFP_RETRY_MAYFAIL and
+> ensures that GFP_ACCOUNT is used for the user PTE allocations.
+
+Reviewed-by: Palmer Dabbelt <palmer@sifive.com>
+
+I'm assuming this is going in along with the rest of the patches, so I'm not
+going to add it to my tree.
+
+>
+> The pte_free() and pte_free_kernel() versions are identical to the generic
+> ones and can be simply dropped.
+>
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> ---
+>  arch/riscv/include/asm/pgalloc.h | 29 ++---------------------------
+>  1 file changed, 2 insertions(+), 27 deletions(-)
+>
+> diff --git a/arch/riscv/include/asm/pgalloc.h b/arch/riscv/include/asm/pgalloc.h
+> index 94043cf..48f28bb 100644
+> --- a/arch/riscv/include/asm/pgalloc.h
+> +++ b/arch/riscv/include/asm/pgalloc.h
+> @@ -18,6 +18,8 @@
+>  #include <linux/mm.h>
+>  #include <asm/tlb.h>
+>
+> +#include <asm-generic/pgalloc.h>	/* for pte_{alloc,free}_one */
+> +
+>  static inline void pmd_populate_kernel(struct mm_struct *mm,
+>  	pmd_t *pmd, pte_t *pte)
+>  {
+> @@ -82,33 +84,6 @@ static inline void pmd_free(struct mm_struct *mm, pmd_t *pmd)
+>
+>  #endif /* __PAGETABLE_PMD_FOLDED */
+>
+> -static inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm)
+> -{
+> -	return (pte_t *)__get_free_page(
+> -		GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_ZERO);
+> -}
+> -
+> -static inline struct page *pte_alloc_one(struct mm_struct *mm)
+> -{
+> -	struct page *pte;
+> -
+> -	pte = alloc_page(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_ZERO);
+> -	if (likely(pte != NULL))
+> -		pgtable_page_ctor(pte);
+> -	return pte;
+> -}
+> -
+> -static inline void pte_free_kernel(struct mm_struct *mm, pte_t *pte)
+> -{
+> -	free_page((unsigned long)pte);
+> -}
+> -
+> -static inline void pte_free(struct mm_struct *mm, pgtable_t pte)
+> -{
+> -	pgtable_page_dtor(pte);
+> -	__free_page(pte);
+> -}
+> -
+>  #define __pte_free_tlb(tlb, pte, buf)   \
+>  do {                                    \
+>  	pgtable_page_dtor(pte);         \
 
