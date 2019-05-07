@@ -1,483 +1,235 @@
-Return-Path: <devicetree-owner@vger.kernel.org>
-Date: Wed,  1 May 2019 16:01:17 -0700
-In-Reply-To: <20190501230126.229218-1-brendanhiggins@google.com>
-Message-Id: <20190501230126.229218-9-brendanhiggins@google.com>
-Mime-Version: 1.0
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-dm3nam03on0707.outbound.protection.outlook.com
+ ([2a01:111:f400:fe49::707]
+ helo=NAM03-DM3-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1hO5XA-0004kQ-AZ
+ for linux-um@lists.infradead.org; Tue, 07 May 2019 19:13:50 +0000
+From: <Tim.Bird@sony.com>
+Subject: RE: [PATCH v2 12/17] kunit: tool: add Python wrappers for running
+ KUnit tests
+Date: Tue, 7 May 2019 19:13:14 +0000
+Message-ID: <ECADFF3FD767C149AD96A924E7EA6EAF9770AE37@USCULXMSG01.am.sony.com>
 References: <20190501230126.229218-1-brendanhiggins@google.com>
-Subject: [PATCH v2 08/17] kunit: test: add support for test abort
-From: Brendan Higgins <brendanhiggins@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Sender: devicetree-owner@vger.kernel.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org
-Cc: devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org, kunit-dev@googlegroups.com, linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, linux-um@lists.infradead.org, Alexander.Levin@microsoft.com, Tim.Bird@sony.com, amir73il@gmail.com, dan.carpenter@oracle.com, dan.j.williams@intel.com, daniel@ffwll.ch, jdike@addtoit.com, joel@jms.id.au, julia.lawall@lip6.fr, khilman@baylibre.com, knut.omang@oracle.com, logang@deltatee.com, mpe@ellerman.id.au, pmladek@suse.com, richard@nod.at, rientjes@google.com, rostedt@goodmis.org, wfg@linux.intel.com, Brendan Higgins <brendanhiggins@google.com>
-List-ID: <linux-um.lists.infradead.org>
+ <20190501230126.229218-13-brendanhiggins@google.com>
+ <20190502110220.GD12416@kroah.com>
+ <CAFd5g47t=EdLKFCT=CnPkrM2z0nDVo24Gz4j0VxFOJbARP37Lg@mail.gmail.com>
+ <a49c5088-a821-210c-66de-f422536f5b01@gmail.com>
+ <CAFd5g44iWRchQKdJYtjRtPY6e-6e0eXpKXXsx5Ooi6sWE474KA@mail.gmail.com>
+ <1a5f3c44-9fa9-d423-66bf-45255a90c468@gmail.com>
+ <CAFd5g45RYm+zfdJXnyp2KZZH5ojfOzy++aq+4zBeE5VDu6WgEw@mail.gmail.com>
+ <052fa196-4ea9-8384-79b7-fe6bacc0ee82@gmail.com>
+ <CAFd5g47aY-CL+d7DfiyTidY4aAVY+eg1TM1UJ4nYqKSfHOi-0w@mail.gmail.com>
+ <63f63c7c-6185-5e64-b338-6a5e7fb9e27c@gmail.com>
+ <CAFd5g46=ZU58uJ=Qhs3soBzJjzJKJFY0_uzZ7fe1CxPfJioNOA@mail.gmail.com>
+In-Reply-To: <CAFd5g46=ZU58uJ=Qhs3soBzJjzJKJFY0_uzZ7fe1CxPfJioNOA@mail.gmail.com>
+Content-Language: en-US
+MIME-Version: 1.0
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: brendanhiggins@google.com, frowand.list@gmail.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, mpe@ellerman.id.au, linux-kselftest@vger.kernel.org, shuah@kernel.org, robh@kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, kieran.bingham@ideasonboard.com, felixguoxiuping@gmail.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, jdike@addtoit.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, richard@nod.at, sboyd@kernel.org, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, mcgrof@kernel.org, daniel@ffwll.ch, keescook@google.com, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-Add support for aborting/bailing out of test cases, which is needed for
-implementing assertions.
+Here is a bit of inline commentary on the TAP13/TAP14 discussion.
 
-An assertion is like an expectation, but bails out of the test case
-early if the assertion is not met. The idea with assertions is that you
-use them to state all the preconditions for your test. Logically
-speaking, these are the premises of the test case, so if a premise isn't
-true, there is no point in continuing the test case because there are no
-conclusions that can be drawn without the premises. Whereas, the
-expectation is the thing you are trying to prove.
+> -----Original Message-----
+> From: Brendan Higgins 
+> 
+> > On 5/3/19 4:14 PM, Brendan Higgins wrote:
+> > >> On 5/2/19 10:36 PM, Brendan Higgins wrote:
+> > > In any case, it sounds like you and Greg are in agreement on the core
+> > > libraries generating the output in TAP13, so I won't argue that point
+> > > further.
+> > >
+> > > ## Analysis of using TAP13
+> >
+> > I have never looked at TAP version 13 in any depth at all, so do not consider
+> > me to be any sort of expert.
+> >
+> > My entire TAP knowledge is based on:
+> >
+> >   https://testanything.org/tap-version-13-specification.html
+> >
+> > and the pull request to create the TAP version 14 specification:
+> >
+> >    https://github.com/TestAnything/testanything.github.io/pull/36/files
+> >
+> > You can see the full version 14 document in the submitter's repo:
+> >
+> >   $ git clone https://github.com/isaacs/testanything.github.io.git
+> >   $ cd testanything.github.io
+> >   $ git checkout tap14
+> >   $ ls tap-version-14-specification.md
+> >
+> > My understanding is the the version 14 specification is not trying to
+> > add new features, but instead capture what is already implemented in
+> > the wild.
+> >
+> >
+> > > One of my earlier concerns was that TAP13 is a bit over constrained
+> > > for what I would like to output from the KUnit core. It only allows
+> > > data to be output as either:
+> > >  - test number
+> > >  - ok/not ok with single line description
+> > >  - directive
+> > >  - diagnostics
+> > >  - YAML block
+> > >
+> > > The test number must become before a set of ok/not ok lines, and does
+> > > not contain any additional information. One annoying thing about this
+> > > is it doesn't provide any kind of nesting or grouping.
+> >
+> > Greg's response mentions ktest (?) already does nesting.
+> 
+> I think we are talking about kselftest.
+> 
+> > Version 14 allows nesting through subtests.  I have not looked at what
+> > ktest does, so I do not know if it uses subtest, or something else.
+> 
+> Oh nice! That is new in version 14. I can use that.
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
----
- include/kunit/test.h      |  13 ++++
- include/kunit/try-catch.h |  91 +++++++++++++++++++++++++
- kunit/Makefile            |   3 +-
- kunit/test.c              | 138 +++++++++++++++++++++++++++++++++++---
- kunit/try-catch.c         |  96 ++++++++++++++++++++++++++
- 5 files changed, 332 insertions(+), 9 deletions(-)
- create mode 100644 include/kunit/try-catch.h
- create mode 100644 kunit/try-catch.c
+We have run into the problem of subtests (or nested tests, both using
+TAP13) in Fuego.  I recall that this issue came up in kselftest, and I believe
+we discussed a solution, but I don't recall what it was.
 
-diff --git a/include/kunit/test.h b/include/kunit/test.h
-index e441270561ece..1b77caeb5d51f 100644
---- a/include/kunit/test.h
-+++ b/include/kunit/test.h
-@@ -12,6 +12,7 @@
- #include <linux/types.h>
- #include <linux/slab.h>
- #include <kunit/kunit-stream.h>
-+#include <kunit/try-catch.h>
- 
- struct kunit_resource;
- 
-@@ -166,15 +167,27 @@ struct kunit {
- 
- 	/* private: internal use only. */
- 	const char *name; /* Read only after initialization! */
-+	struct kunit_try_catch try_catch;
- 	spinlock_t lock; /* Gaurds all mutable test state. */
- 	bool success; /* Protected by lock. */
-+	bool death_test; /* Protected by lock. */
- 	struct list_head resources; /* Protected by lock. */
- 	void (*vprintk)(const struct kunit *test,
- 			const char *level,
- 			struct va_format *vaf);
- 	void (*fail)(struct kunit *test, struct kunit_stream *stream);
-+	void (*abort)(struct kunit *test);
- };
- 
-+static inline void kunit_set_death_test(struct kunit *test, bool death_test)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&test->lock, flags);
-+	test->death_test = death_test;
-+	spin_unlock_irqrestore(&test->lock, flags);
-+}
-+
- int kunit_init_test(struct kunit *test, const char *name);
- 
- int kunit_run_tests(struct kunit_module *module);
-diff --git a/include/kunit/try-catch.h b/include/kunit/try-catch.h
-new file mode 100644
-index 0000000000000..e85abe044b6b5
---- /dev/null
-+++ b/include/kunit/try-catch.h
-@@ -0,0 +1,91 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * An API to allow a function, that may fail, to be executed, and recover in a
-+ * controlled manner.
-+ *
-+ * Copyright (C) 2019, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
-+
-+#ifndef _KUNIT_TRY_CATCH_H
-+#define _KUNIT_TRY_CATCH_H
-+
-+#include <linux/types.h>
-+
-+typedef void (*kunit_try_catch_func_t)(void *);
-+
-+struct kunit;
-+
-+/*
-+ * struct kunit_try_catch - provides a generic way to run code which might fail.
-+ * @context: used to pass user data to the try and catch functions.
-+ *
-+ * kunit_try_catch provides a generic, architecture independent way to execute
-+ * an arbitrary function of type kunit_try_catch_func_t which may bail out by
-+ * calling kunit_try_catch_throw(). If kunit_try_catch_throw() is called, @try
-+ * is stopped at the site of invocation and @catch is catch is called.
-+ *
-+ * struct kunit_try_catch provides a generic interface for the functionality
-+ * needed to implement kunit->abort() which in turn is needed for implementing
-+ * assertions. Assertions allow stating a precondition for a test simplifying
-+ * how test cases are written and presented.
-+ *
-+ * Assertions are like expectations, except they abort (call
-+ * kunit_try_catch_throw()) when the specified condition is not met. This is
-+ * useful when you look at a test case as a logical statement about some piece
-+ * of code, where assertions are the premises for the test case, and the
-+ * conclusion is a set of predicates, rather expectations, that must all be
-+ * true. If your premises are violated, it does not makes sense to continue.
-+ */
-+struct kunit_try_catch {
-+	/* private: internal use only. */
-+	void (*run)(struct kunit_try_catch *try_catch);
-+	void __noreturn (*throw)(struct kunit_try_catch *try_catch);
-+	struct kunit *test;
-+	struct completion *try_completion;
-+	int try_result;
-+	kunit_try_catch_func_t try;
-+	kunit_try_catch_func_t catch;
-+	void *context;
-+};
-+
-+/*
-+ * Exposed to be overridden for other architectures.
-+ */
-+void kunit_try_catch_init_internal(struct kunit_try_catch *try_catch);
-+
-+static inline void kunit_try_catch_init(struct kunit_try_catch *try_catch,
-+					struct kunit *test,
-+					kunit_try_catch_func_t try,
-+					kunit_try_catch_func_t catch)
-+{
-+	try_catch->test = test;
-+	kunit_try_catch_init_internal(try_catch);
-+	try_catch->try = try;
-+	try_catch->catch = catch;
-+}
-+
-+static inline void kunit_try_catch_run(struct kunit_try_catch *try_catch,
-+				       void *context)
-+{
-+	try_catch->context = context;
-+	try_catch->run(try_catch);
-+}
-+
-+static inline void __noreturn kunit_try_catch_throw(
-+		struct kunit_try_catch *try_catch)
-+{
-+	try_catch->throw(try_catch);
-+}
-+
-+static inline int kunit_try_catch_get_result(struct kunit_try_catch *try_catch)
-+{
-+	return try_catch->try_result;
-+}
-+
-+/*
-+ * Exposed for testing only.
-+ */
-+void kunit_generic_try_catch_init(struct kunit_try_catch *try_catch);
-+
-+#endif /* _KUNIT_TRY_CATCH_H */
-diff --git a/kunit/Makefile b/kunit/Makefile
-index 60a9ea6cb4697..1f7680cfa11ad 100644
---- a/kunit/Makefile
-+++ b/kunit/Makefile
-@@ -1,6 +1,7 @@
- obj-$(CONFIG_KUNIT) +=			test.o \
- 					string-stream.o \
--					kunit-stream.o
-+					kunit-stream.o \
-+					try-catch.o
- 
- obj-$(CONFIG_KUNIT_TEST) +=		string-stream-test.o
- 
-diff --git a/kunit/test.c b/kunit/test.c
-index 01e82c18b2fa6..5eace2a527a4e 100644
---- a/kunit/test.c
-+++ b/kunit/test.c
-@@ -6,10 +6,9 @@
-  * Author: Brendan Higgins <brendanhiggins@google.com>
-  */
- 
--#include <linux/sched.h>
- #include <linux/sched/debug.h>
--#include <os.h>
- #include <kunit/test.h>
-+#include <kunit/try-catch.h>
- 
- static bool kunit_get_success(struct kunit *test)
- {
-@@ -32,6 +31,18 @@ static void kunit_set_success(struct kunit *test, bool success)
- 	spin_unlock_irqrestore(&test->lock, flags);
- }
- 
-+static bool kunit_get_death_test(struct kunit *test)
-+{
-+	unsigned long flags;
-+	bool death_test;
-+
-+	spin_lock_irqsave(&test->lock, flags);
-+	death_test = test->death_test;
-+	spin_unlock_irqrestore(&test->lock, flags);
-+
-+	return death_test;
-+}
-+
- static int kunit_vprintk_emit(const struct kunit *test,
- 			      int level,
- 			      const char *fmt,
-@@ -70,6 +81,21 @@ static void kunit_fail(struct kunit *test, struct kunit_stream *stream)
- 	kunit_stream_commit(stream);
- }
- 
-+static void __noreturn kunit_abort(struct kunit *test)
-+{
-+	kunit_set_death_test(test, true);
-+
-+	kunit_try_catch_throw(&test->try_catch);
-+
-+	/*
-+	 * Throw could not abort from test.
-+	 *
-+	 * XXX: we should never reach this line! As kunit_try_catch_throw is
-+	 * marked __noreturn.
-+	 */
-+	WARN_ONCE(true, "Throw could not abort from test!\n");
-+}
-+
- int kunit_init_test(struct kunit *test, const char *name)
- {
- 	spin_lock_init(&test->lock);
-@@ -77,6 +103,7 @@ int kunit_init_test(struct kunit *test, const char *name)
- 	test->name = name;
- 	test->vprintk = kunit_vprintk;
- 	test->fail = kunit_fail;
-+	test->abort = kunit_abort;
- 
- 	return 0;
- }
-@@ -122,16 +149,111 @@ static void kunit_run_case_cleanup(struct kunit *test,
- }
- 
- /*
-- * Performs all logic to run a test case.
-+ * Handles an unexpected crash in a test case.
-  */
--static bool kunit_run_case(struct kunit *test,
--			   struct kunit_module *module,
--			   struct kunit_case *test_case)
-+static void kunit_handle_test_crash(struct kunit *test,
-+				   struct kunit_module *module,
-+				   struct kunit_case *test_case)
- {
--	kunit_set_success(test, true);
-+	kunit_err(test, "%s crashed", test_case->name);
-+	/*
-+	 * TODO(brendanhiggins@google.com): This prints the stack trace up
-+	 * through this frame, not up to the frame that caused the crash.
-+	 */
-+	show_stack(NULL, NULL);
-+
-+	kunit_case_internal_cleanup(test);
-+}
- 
-+struct kunit_try_catch_context {
-+	struct kunit *test;
-+	struct kunit_module *module;
-+	struct kunit_case *test_case;
-+};
-+
-+static void kunit_try_run_case(void *data)
-+{
-+	struct kunit_try_catch_context *ctx = data;
-+	struct kunit *test = ctx->test;
-+	struct kunit_module *module = ctx->module;
-+	struct kunit_case *test_case = ctx->test_case;
-+
-+	/*
-+	 * kunit_run_case_internal may encounter a fatal error; if it does,
-+	 * abort will be called, this thread will exit, and finally the parent
-+	 * thread will resume control and handle any necessary clean up.
-+	 */
- 	kunit_run_case_internal(test, module, test_case);
-+	/* This line may never be reached. */
- 	kunit_run_case_cleanup(test, module, test_case);
-+}
-+
-+static void kunit_catch_run_case(void *data)
-+{
-+	struct kunit_try_catch_context *ctx = data;
-+	struct kunit *test = ctx->test;
-+	struct kunit_module *module = ctx->module;
-+	struct kunit_case *test_case = ctx->test_case;
-+	int try_exit_code = kunit_try_catch_get_result(&test->try_catch);
-+
-+	if (try_exit_code) {
-+		kunit_set_success(test, false);
-+		/*
-+		 * Test case could not finish, we have no idea what state it is
-+		 * in, so don't do clean up.
-+		 */
-+		if (try_exit_code == -ETIMEDOUT)
-+			kunit_err(test, "test case timed out\n");
-+		/*
-+		 * Unknown internal error occurred preventing test case from
-+		 * running, so there is nothing to clean up.
-+		 */
-+		else
-+			kunit_err(test, "internal error occurred preventing test case from running: %d\n",
-+				  try_exit_code);
-+		return;
-+	}
-+
-+	if (kunit_get_death_test(test)) {
-+		/*
-+		 * EXPECTED DEATH: kunit_run_case_internal encountered
-+		 * anticipated fatal error. Everything should be in a safe
-+		 * state.
-+		 */
-+		kunit_run_case_cleanup(test, module, test_case);
-+	} else {
-+		/*
-+		 * UNEXPECTED DEATH: kunit_run_case_internal encountered an
-+		 * unanticipated fatal error. We have no idea what the state of
-+		 * the test case is in.
-+		 */
-+		kunit_handle_test_crash(test, module, test_case);
-+		kunit_set_success(test, false);
-+	}
-+}
-+
-+/*
-+ * Performs all logic to run a test case. It also catches most errors that
-+ * occurs in a test case and reports them as failures.
-+ */
-+static bool kunit_run_case_catch_errors(struct kunit *test,
-+				       struct kunit_module *module,
-+				       struct kunit_case *test_case)
-+{
-+	struct kunit_try_catch *try_catch = &test->try_catch;
-+	struct kunit_try_catch_context context;
-+
-+	kunit_set_success(test, true);
-+	kunit_set_death_test(test, false);
-+
-+	kunit_try_catch_init(try_catch,
-+			     test,
-+			     kunit_try_run_case,
-+			     kunit_catch_run_case);
-+	context.test = test;
-+	context.module = module;
-+	context.test_case = test_case;
-+	kunit_try_catch_run(try_catch, &context);
- 
- 	return kunit_get_success(test);
- }
-@@ -148,7 +270,7 @@ int kunit_run_tests(struct kunit_module *module)
- 		return ret;
- 
- 	for (test_case = module->test_cases; test_case->run_case; test_case++) {
--		success = kunit_run_case(&test, module, test_case);
-+		success = kunit_run_case_catch_errors(&test, module, test_case);
- 		if (!success)
- 			all_passed = false;
- 
-diff --git a/kunit/try-catch.c b/kunit/try-catch.c
-new file mode 100644
-index 0000000000000..c4cdb30880714
---- /dev/null
-+++ b/kunit/try-catch.c
-@@ -0,0 +1,96 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * An API to allow a function, that may fail, to be executed, and recover in a
-+ * controlled manner.
-+ *
-+ * Copyright (C) 2019, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
-+
-+#include <kunit/try-catch.h>
-+#include <kunit/test.h>
-+#include <linux/completion.h>
-+#include <linux/kthread.h>
-+
-+static void __noreturn kunit_generic_throw(struct kunit_try_catch *try_catch)
-+{
-+	try_catch->try_result = -EFAULT;
-+	complete_and_exit(try_catch->try_completion, -EFAULT);
-+}
-+
-+static int kunit_generic_run_threadfn_adapter(void *data)
-+{
-+	struct kunit_try_catch *try_catch = data;
-+
-+	try_catch->try(try_catch->context);
-+
-+	complete_and_exit(try_catch->try_completion, 0);
-+}
-+
-+static void kunit_generic_run_try_catch(struct kunit_try_catch *try_catch)
-+{
-+	DECLARE_COMPLETION_ONSTACK(try_completion);
-+	struct kunit *test = try_catch->test;
-+	struct task_struct *task_struct;
-+	int exit_code, status;
-+
-+	try_catch->try_completion = &try_completion;
-+	try_catch->try_result = 0;
-+	task_struct = kthread_run(kunit_generic_run_threadfn_adapter,
-+				  try_catch,
-+				  "kunit_try_catch_thread");
-+	if (IS_ERR(task_struct)) {
-+		try_catch->catch(try_catch->context);
-+		return;
-+	}
-+
-+	/*
-+	 * TODO(brendanhiggins@google.com): We should probably have some type of
-+	 * variable timeout here. The only question is what that timeout value
-+	 * should be.
-+	 *
-+	 * The intention has always been, at some point, to be able to label
-+	 * tests with some type of size bucket (unit/small, integration/medium,
-+	 * large/system/end-to-end, etc), where each size bucket would get a
-+	 * default timeout value kind of like what Bazel does:
-+	 * https://docs.bazel.build/versions/master/be/common-definitions.html#test.size
-+	 * There is still some debate to be had on exactly how we do this. (For
-+	 * one, we probably want to have some sort of test runner level
-+	 * timeout.)
-+	 *
-+	 * For more background on this topic, see:
-+	 * https://mike-bland.com/2011/11/01/small-medium-large.html
-+	 */
-+	status = wait_for_completion_timeout(&try_completion,
-+					     300 * MSEC_PER_SEC); /* 5 min */
-+	if (status < 0) {
-+		kunit_err(test, "try timed out\n");
-+		try_catch->try_result = -ETIMEDOUT;
-+	}
-+
-+	exit_code = try_catch->try_result;
-+
-+	if (!exit_code)
-+		return;
-+
-+	if (exit_code == -EFAULT)
-+		try_catch->try_result = 0;
-+	else if (exit_code == -EINTR)
-+		kunit_err(test, "wake_up_process() was never called\n");
-+	else if (exit_code)
-+		kunit_err(test, "Unknown error: %d\n", exit_code);
-+
-+	try_catch->catch(try_catch->context);
-+}
-+
-+void kunit_generic_try_catch_init(struct kunit_try_catch *try_catch)
-+{
-+	try_catch->run = kunit_generic_run_try_catch;
-+	try_catch->throw = kunit_generic_throw;
-+}
-+
-+void __weak kunit_try_catch_init_internal(struct kunit_try_catch *try_catch)
-+{
-+	kunit_generic_try_catch_init(try_catch);
-+}
-+
--- 
-2.21.0.593.g511ec345e18-goog
+Can someone remind me what kselftest does to handle nested tests
+(in terms of TAP13 output)?
 
+> 
+> > > There is one ok/not ok line per test and it may have a short
+> > > description of the test immediately after 'ok' or 'not ok'; this is
+> > > problematic because it wants the first thing you say about a test to
+> > > be after you know whether it passes or not.
+> >
+> > I think you could output a diagnostic line that says a test is starting.
+> > This is important to me because printk() errors and warnings that are
+> > related to a test can be output by a subsystem other than the subsystem
+> > that I am testing.  If there is no marker at the start of the test
+> > then there is no way to attribute the printk()s to the test.
+> 
+> I agree.
+
+This is a significant problem.  In Fuego we output each line with a test id prefix,
+which goes against the spec, but helps solve this.  Test output should be
+kept separate from system output, but if I understand correctly, there are no
+channels in prinkt to use to keep different data streams separate.
+
+How does kselftest deal with this now?
+
+> 
+> Technically conforms with the spec, and kselftest does that, but is
+> also not part of the spec. Well, it *is* specified if you use
+> subtests. I think the right approach is to make each
+> "kunit_module/test suite" a test, and all the test cases will be
+> subtests.
+> 
+> > > Directives are just a way to specify skipped tests and TODOs.
+> > >
+> > > Diagnostics seem useful, it looks like you can put whatever
+> > > information in them and print them out at anytime. It looks like a lot
+> > > of kselftests emit a lot of data this way.
+> > >
+> > > The YAML block seems to be the way that they prefer users to emit data
+> > > beyond number of tests run and whether a test passed or failed. I
+> > > could express most things I want to express in terms of YAML, but it
+> > > is not the nicest format for displaying a lot of data like
+> > > expectations, missed function calls, and other things which have a
+> > > natural concise representation. Nevertheless, YAML readability is
+> > > mostly a problem who won't be using the wrapper scripts.
+> >
+> > The examples in specification V13 and V14 look very simple and very
+> > readable to me.  (And I am not a fan of YAML.)
+> >
+> >
+> > > My biggest
+> > > problem with the YAML block is that you can only have one, and TAP
+> > > specifies that it must come after the corresponding ok/not ok line,
+> > > which again has the issue that you have to hold on to a lot of
+> > > diagnostic data longer than you ideally would. Another downside is
+> > > that I now have to write a YAML serializer for the kernel.
+> >
+> > If a test generates diagnostic data, then I would expect that to be
+> > the direct result of a test failure.  So the test can output the
+> > "not ok" line, then immediately output the YAML block.  I do not
+> > see a need for stashing YAML output ahead of time.
+> >
+> > If diagnostic data is generated before the test can determine
+> > success or failure, then it can be output as diagnostic data
+> > instead of stashing it for later.
+> 
+> Cool, that's what I am thinking I am going to do - I just wanted to
+> make sure people were okay with this approach. I mean, I think that is
+> what kselftest does.
+
+IMHO the diagnostic data does not have to be in YAML.  That's only
+if there's a well-known schema for the diagnostic data, to make the
+data machine-readable.   TAP13 specifically avoided defining such a
+schema.  I need to look at TAP14 and see if they have defined something.
+(Thanks for bringing that to my attention.)
+
+The important part, since there are no start and end delimiters for each
+testcase, is to structure output (including from unrelated sub-systems
+affected by the test) to either occur all before or all after the test line.
+Otherwise it's impossible to sensibly parse the diagnostic data and associate it
+with a test.  (That is, the TAP lines become the delimiters between each testcase's
+output and data).  This is a pretty big weakness of TAP13.  Since the TAP line
+has the test result, it usually means that the subsystem output for the test
+is emitted *before* the TAP line.  It's preferable, in order to keep the
+data together, that the diagnostic data also be emitted before the TAP
+line.
+
+> 
+> We can hold off on the YAML stuff for now then.
+> 
+> > > ## Here is what I propose for this patchset:
+> > >
+> > >  - Print out test number range at the beginning of each test suite.
+> > >  - Print out log lines as soon as they happen as diagnostics.
+> > >  - Print out the lines that state whether a test passes or fails as a
+> > > ok/not ok line.
+> > >
+> > > This would be technically conforming with TAP13 and is consistent with
+> > > what some kselftests have done.
+> > >
+> > > ## To be done in a future patchset:
+> > >
+> > > Add a YAML serializer and print out some logs containing structured
+> > > data (like expectation failures, unexpected function calls, etc) in
+> > > YAML blocks.
+> >
+> > YAML serializer sounds like not needed complexity.
+I agree, for now.
+
+I think if we start to see some patterns for some data that many tests
+output, we might want (as a kernel community) to define a YAML
+schema for the kselftest output.  But I think that's biting off too much
+right now.  IMHO we would want any YAML schema we define to
+cover more than just unit tests, so the job of defining that would be
+pretty big.
+
+This would be a good discussion to have at a testing micro-conference
+or summit. :-)
+
+> >
+> > >
+> > > Does this sound reasonable? I will go ahead and start working on this,
+> > > but feel free to give me feedback on the overall idea in the meantime.
+
+Sounds good.  Thanks for working on this.
+ -- Tim
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
