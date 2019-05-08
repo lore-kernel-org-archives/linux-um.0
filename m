@@ -1,162 +1,96 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-ot1-x34a.google.com ([2607:f8b0:4864:20::34a])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hQQGj-0006Px-6V
- for linux-um@lists.infradead.org; Tue, 14 May 2019 05:46:30 +0000
-Received: by mail-ot1-x34a.google.com with SMTP id v16so8606071otp.17
- for <linux-um@lists.infradead.org>; Mon, 13 May 2019 22:46:28 -0700 (PDT)
-Date: Mon, 13 May 2019 22:42:48 -0700
-In-Reply-To: <20190514054251.186196-1-brendanhiggins@google.com>
-Message-Id: <20190514054251.186196-15-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20190514054251.186196-1-brendanhiggins@google.com>
-Subject: [PATCH v3 14/18] kunit: defconfig: add defconfigs for building KUnit
- tests
-From: Brendan Higgins <brendanhiggins@google.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+Return-Path: <rppt@linux.ibm.com>
+From: Mike Rapoport <rppt@linux.ibm.com>
+Subject: [PATCH v2 09/14] nds32: switch to generic version of pte allocation
+Date: Wed,  8 May 2019 09:17:06 +0300
+In-Reply-To: <1557296232-15361-1-git-send-email-rppt@linux.ibm.com>
+References: <1557296232-15361-1-git-send-email-rppt@linux.ibm.com>
+Message-Id: <1557296232-15361-10-git-send-email-rppt@linux.ibm.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Anshuman Khandual <anshuman.khandual@arm.com>, Catalin Marinas <catalin.marinas@arm.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>, Ley Foon Tan <lftan@altera.com>, Matthew Wilcox <willy@infradead.org>, Matt Turner <mattst88@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@suse.com>, Palmer Dabbelt <palmer@sifive.com>, Paul Burton <paul.burton@mips.com>, Richard Kuo <rkuo@codeaurora.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-um@lists.infradead.org, nios2-dev@lists.rocketboards.org, Mike Rapoport <rppt@linux.ibm.com>
+List-ID: <linux-um.lists.infradead.org>
 
-Add defconfig for UML and a fragment that can be used to configure other
-architectures for building KUnit tests. Add option to kunit_tool to use
-a defconfig to create the kunitconfig.
+The nds32 implementation of pte_alloc_one_kernel() differs from the generic
+in the use of __GFP_RETRY_MAYFAIL flag, which is removed after the
+conversion.
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+The nds32 version of pte_alloc_one() missed the call to pgtable_page_ctor()
+and also used __GFP_RETRY_MAYFAIL. Switching it to use generic
+__pte_alloc_one() for the PTE page allocation ensures that page table
+constructor is run and the user page tables are allocated with
+__GFP_ACCOUNT.
+
+The conversion to the generic version of pte_free_kernel() removes the NULL
+check for pte.
+
+The pte_free() version on nds32 is identical to the generic one and can be
+simply dropped.
+
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
- arch/um/configs/kunit_defconfig              |  8 ++++++++
- tools/testing/kunit/configs/all_tests.config |  8 ++++++++
- tools/testing/kunit/kunit.py                 | 18 ++++++++++++++++--
- tools/testing/kunit/kunit_kernel.py          |  3 ++-
- 4 files changed, 34 insertions(+), 3 deletions(-)
- create mode 100644 arch/um/configs/kunit_defconfig
- create mode 100644 tools/testing/kunit/configs/all_tests.config
+ arch/nds32/include/asm/pgalloc.h | 31 ++++---------------------------
+ 1 file changed, 4 insertions(+), 27 deletions(-)
 
-diff --git a/arch/um/configs/kunit_defconfig b/arch/um/configs/kunit_defconfig
-new file mode 100644
-index 0000000000000..bfe49689038f1
---- /dev/null
-+++ b/arch/um/configs/kunit_defconfig
-@@ -0,0 +1,8 @@
-+CONFIG_OF=y
-+CONFIG_OF_UNITTEST=y
-+CONFIG_OF_OVERLAY=y
-+CONFIG_I2C=y
-+CONFIG_I2C_MUX=y
-+CONFIG_KUNIT=y
-+CONFIG_KUNIT_TEST=y
-+CONFIG_KUNIT_EXAMPLE_TEST=y
-diff --git a/tools/testing/kunit/configs/all_tests.config b/tools/testing/kunit/configs/all_tests.config
-new file mode 100644
-index 0000000000000..bfe49689038f1
---- /dev/null
-+++ b/tools/testing/kunit/configs/all_tests.config
-@@ -0,0 +1,8 @@
-+CONFIG_OF=y
-+CONFIG_OF_UNITTEST=y
-+CONFIG_OF_OVERLAY=y
-+CONFIG_I2C=y
-+CONFIG_I2C_MUX=y
-+CONFIG_KUNIT=y
-+CONFIG_KUNIT_TEST=y
-+CONFIG_KUNIT_EXAMPLE_TEST=y
-diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-index 85ed1c32a6c48..956326f87101f 100755
---- a/tools/testing/kunit/kunit.py
-+++ b/tools/testing/kunit/kunit.py
-@@ -11,6 +11,7 @@ import argparse
- import sys
- import os
- import time
-+import shutil
+diff --git a/arch/nds32/include/asm/pgalloc.h b/arch/nds32/include/asm/pgalloc.h
+index 3c5fee5..954696c 100644
+--- a/arch/nds32/include/asm/pgalloc.h
++++ b/arch/nds32/include/asm/pgalloc.h
+@@ -9,6 +9,9 @@
+ #include <asm/tlbflush.h>
+ #include <asm/proc-fns.h>
  
- from collections import namedtuple
- from enum import Enum, auto
-@@ -21,7 +22,7 @@ import kunit_parser
- 
- KunitResult = namedtuple('KunitResult', ['status','result'])
- 
--KunitRequest = namedtuple('KunitRequest', ['raw_output','timeout', 'jobs', 'build_dir'])
-+KunitRequest = namedtuple('KunitRequest', ['raw_output','timeout', 'jobs', 'build_dir', 'defconfig'])
- 
- class KunitStatus(Enum):
- 	SUCCESS = auto()
-@@ -29,8 +30,16 @@ class KunitStatus(Enum):
- 	BUILD_FAILURE = auto()
- 	TEST_FAILURE = auto()
- 
-+def create_default_kunitconfig():
-+	if not os.path.exists(kunit_kernel.KUNITCONFIG_PATH):
-+		shutil.copyfile('arch/um/configs/kunit_defconfig',
-+				kunit_kernel.KUNITCONFIG_PATH)
++#define __HAVE_ARCH_PTE_ALLOC_ONE
++#include <asm-generic/pgalloc.h>	/* for pte_{alloc,free}_one */
 +
- def run_tests(linux: kunit_kernel.LinuxSourceTree,
- 	      request: KunitRequest) -> KunitResult:
-+	if request.defconfig:
-+		create_default_kunitconfig()
-+
- 	config_start = time.time()
- 	success = linux.build_reconfig(request.build_dir)
- 	config_end = time.time()
-@@ -99,13 +108,18 @@ def main(argv, linux):
- 				'directory.',
- 				type=str, default=None, metavar='build_dir')
+ /*
+  * Since we have only two-level page tables, these are trivial
+  */
+@@ -22,22 +25,11 @@ extern void pgd_free(struct mm_struct *mm, pgd_t * pgd);
  
-+	run_parser.add_argument('--defconfig',
-+				help='Uses a default kunitconfig.',
-+				action='store_true')
-+
- 	cli_args = parser.parse_args(argv)
+ #define check_pgt_cache()		do { } while (0)
  
- 	if cli_args.subcommand == 'run':
- 		request = KunitRequest(cli_args.raw_output,
- 				       cli_args.timeout,
- 				       cli_args.jobs,
--				       cli_args.build_dir)
-+				       cli_args.build_dir,
-+				       cli_args.defconfig)
- 		result = run_tests(linux, request)
- 		if result.status != KunitStatus.SUCCESS:
- 			sys.exit(1)
-diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-index 07c0abf2f47df..bf38768353313 100644
---- a/tools/testing/kunit/kunit_kernel.py
-+++ b/tools/testing/kunit/kunit_kernel.py
-@@ -14,6 +14,7 @@ import os
- import kunit_config
+-static inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm)
+-{
+-	pte_t *pte;
+-
+-	pte =
+-	    (pte_t *) __get_free_page(GFP_KERNEL | __GFP_RETRY_MAYFAIL |
+-				      __GFP_ZERO);
+-
+-	return pte;
+-}
+-
+ static inline pgtable_t pte_alloc_one(struct mm_struct *mm)
+ {
+ 	pgtable_t pte;
  
- KCONFIG_PATH = '.config'
-+KUNITCONFIG_PATH = 'kunitconfig'
+-	pte = alloc_pages(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_ZERO, 0);
++	pte = __pte_alloc_one(mm, GFP_PGTABLE_USER);
+ 	if (pte)
+ 		cpu_dcache_wb_page((unsigned long)page_address(pte));
  
- class ConfigError(Exception):
- 	"""Represents an error trying to configure the Linux kernel."""
-@@ -81,7 +82,7 @@ class LinuxSourceTree(object):
+@@ -45,21 +37,6 @@ static inline pgtable_t pte_alloc_one(struct mm_struct *mm)
+ }
  
- 	def __init__(self):
- 		self._kconfig = kunit_config.Kconfig()
--		self._kconfig.read_from_file('kunitconfig')
-+		self._kconfig.read_from_file(KUNITCONFIG_PATH)
- 		self._ops = LinuxSourceTreeOperations()
- 
- 	def clean(self):
+ /*
+- * Free one PTE table.
+- */
+-static inline void pte_free_kernel(struct mm_struct *mm, pte_t * pte)
+-{
+-	if (pte) {
+-		free_page((unsigned long)pte);
+-	}
+-}
+-
+-static inline void pte_free(struct mm_struct *mm, pgtable_t pte)
+-{
+-	__free_page(pte);
+-}
+-
+-/*
+  * Populate the pmdp entry with a pointer to the pte.  This pmd is part
+  * of the mm address space.
+  *
 -- 
-2.21.0.1020.gf2820cf01a-goog
+2.7.4
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
