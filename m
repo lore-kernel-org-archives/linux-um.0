@@ -1,433 +1,111 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-qt1-x84a.google.com ([2607:f8b0:4864:20::84a])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hLyFY-0006yn-HX
- for linux-um@lists.infradead.org; Wed, 01 May 2019 23:02:54 +0000
-Received: by mail-qt1-x84a.google.com with SMTP id j12so367466qth.3
- for <linux-um@lists.infradead.org>; Wed, 01 May 2019 16:02:51 -0700 (PDT)
-Date: Wed,  1 May 2019 16:01:10 -0700
-In-Reply-To: <20190501230126.229218-1-brendanhiggins@google.com>
-Message-Id: <20190501230126.229218-2-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20190501230126.229218-1-brendanhiggins@google.com>
-Subject: [PATCH v2 01/17] kunit: test: add KUnit test runner core
-From: Brendan Higgins <brendanhiggins@google.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Return-Path: <linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org>
+From: Mike Rapoport <rppt@linux.ibm.com>
+Subject: [PATCH v2 02/14] alpha: switch to generic version of pte allocation
+Date: Wed,  8 May 2019 09:16:59 +0300
+In-Reply-To: <1557296232-15361-1-git-send-email-rppt@linux.ibm.com>
+References: <1557296232-15361-1-git-send-email-rppt@linux.ibm.com>
+Message-Id: <1557296232-15361-3-git-send-email-rppt@linux.ibm.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, richard@nod.at, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Michal Hocko <mhocko@suse.com>, Catalin Marinas <catalin.marinas@arm.com>, Palmer Dabbelt <palmer@sifive.com>, linux-mips@vger.kernel.org, linux-mm@kvack.org, Guo Ren <guoren@kernel.org>, linux-hexagon@vger.kernel.org, linux-riscv@lists.infradead.org, linux-arch@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>, Helge Deller <deller@gmx.de>, x86@kernel.org, Russell King <linux@armlinux.org.uk>, Matthew Wilcox <willy@infradead.org>, Mike Rapoport <rppt@linux.ibm.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Matt Turner <mattst88@gmail.com>, Sam Creasey <sammy@sammy.net>, Arnd Bergmann <arnd@arndb.de>, Anshuman Khandual <anshuman.khandual@arm.com>, linux-um@lists.infradead.org, Richard Weinberger <richard@nod.at>, linux-m68k@lists.linux-m68k.org, Greentime Hu <green.hu@gmail.com>, nios2-dev@lists.rocketboards.org, Guan Xuetao <gxt@pku.edu.cn>, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org, Richard Kuo <rkuo@codeaurora.org>, Paul Burton <paul.burton@mips.com>, linux-alpha@vger.kernel.org, Ley Foon Tan <lftan@altera.com>, linuxppc-dev@lists.ozlabs.org
+List-ID: <linux-um.lists.infradead.org>
 
-Add core facilities for defining unit tests; this provides a common way
-to define test cases, functions that execute code which is under test
-and determine whether the code under test behaves as expected; this also
-provides a way to group together related test cases in test suites (here
-we call them test_modules).
+alpha allocates PTE pages with __get_free_page() and uses
+GFP_KERNEL | __GFP_ZERO for the allocations.
 
-Just define test cases and how to execute them for now; setting
-expectations on code will be defined later.
+Switch it to the generic version that does exactly the same thing for the
+kernel page tables and adds __GFP_ACCOUNT for the user PTEs.
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+The alpha pte_free() and pte_free_kernel() versions are identical to the
+generic ones and can be simply dropped.
+
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
- include/kunit/test.h | 165 ++++++++++++++++++++++++++++++++++++++++++
- kunit/Kconfig        |  16 +++++
- kunit/Makefile       |   1 +
- kunit/test.c         | 168 +++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 350 insertions(+)
- create mode 100644 include/kunit/test.h
- create mode 100644 kunit/Kconfig
- create mode 100644 kunit/Makefile
- create mode 100644 kunit/test.c
+ arch/alpha/include/asm/pgalloc.h | 40 +++-------------------------------------
+ 1 file changed, 3 insertions(+), 37 deletions(-)
 
-diff --git a/include/kunit/test.h b/include/kunit/test.h
-new file mode 100644
-index 0000000000000..23c2ebedd6dd9
---- /dev/null
-+++ b/include/kunit/test.h
-@@ -0,0 +1,165 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Base unit test (KUnit) API.
-+ *
-+ * Copyright (C) 2019, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
+diff --git a/arch/alpha/include/asm/pgalloc.h b/arch/alpha/include/asm/pgalloc.h
+index 02f9f91..71ded3b 100644
+--- a/arch/alpha/include/asm/pgalloc.h
++++ b/arch/alpha/include/asm/pgalloc.h
+@@ -5,6 +5,8 @@
+ #include <linux/mm.h>
+ #include <linux/mmzone.h>
+ 
++#include <asm-generic/pgalloc.h>	/* for pte_{alloc,free}_one */
 +
-+#ifndef _KUNIT_TEST_H
-+#define _KUNIT_TEST_H
-+
-+#include <linux/types.h>
-+#include <linux/slab.h>
-+
-+struct kunit;
-+
-+/**
-+ * struct kunit_case - represents an individual test case.
-+ * @run_case: the function representing the actual test case.
-+ * @name: the name of the test case.
-+ *
-+ * A test case is a function with the signature, ``void (*)(struct kunit *)``
-+ * that makes expectations (see KUNIT_EXPECT_TRUE()) about code under test. Each
-+ * test case is associated with a &struct kunit_module and will be run after the
-+ * module's init function and followed by the module's exit function.
-+ *
-+ * A test case should be static and should only be created with the KUNIT_CASE()
-+ * macro; additionally, every array of test cases should be terminated with an
-+ * empty test case.
-+ *
-+ * Example:
-+ *
-+ * .. code-block:: c
-+ *
-+ *	void add_test_basic(struct kunit *test)
-+ *	{
-+ *		KUNIT_EXPECT_EQ(test, 1, add(1, 0));
-+ *		KUNIT_EXPECT_EQ(test, 2, add(1, 1));
-+ *		KUNIT_EXPECT_EQ(test, 0, add(-1, 1));
-+ *		KUNIT_EXPECT_EQ(test, INT_MAX, add(0, INT_MAX));
-+ *		KUNIT_EXPECT_EQ(test, -1, add(INT_MAX, INT_MIN));
-+ *	}
-+ *
-+ *	static struct kunit_case example_test_cases[] = {
-+ *		KUNIT_CASE(add_test_basic),
-+ *		{},
-+ *	};
-+ *
-+ */
-+struct kunit_case {
-+	void (*run_case)(struct kunit *test);
-+	const char name[256];
-+
-+	/* private: internal use only. */
-+	bool success;
-+};
-+
-+/**
-+ * KUNIT_CASE - A helper for creating a &struct kunit_case
-+ * @test_name: a reference to a test case function.
-+ *
-+ * Takes a symbol for a function representing a test case and creates a
-+ * &struct kunit_case object from it. See the documentation for
-+ * &struct kunit_case for an example on how to use it.
-+ */
-+#define KUNIT_CASE(test_name) { .run_case = test_name, .name = #test_name }
-+
-+/**
-+ * struct kunit_module - describes a related collection of &struct kunit_case s.
-+ * @name: the name of the test. Purely informational.
-+ * @init: called before every test case.
-+ * @exit: called after every test case.
-+ * @test_cases: a null terminated array of test cases.
-+ *
-+ * A kunit_module is a collection of related &struct kunit_case s, such that
-+ * @init is called before every test case and @exit is called after every test
-+ * case, similar to the notion of a *test fixture* or a *test class* in other
-+ * unit testing frameworks like JUnit or Googletest.
-+ *
-+ * Every &struct kunit_case must be associated with a kunit_module for KUnit to
-+ * run it.
-+ */
-+struct kunit_module {
-+	const char name[256];
-+	int (*init)(struct kunit *test);
-+	void (*exit)(struct kunit *test);
-+	struct kunit_case *test_cases;
-+};
-+
-+/**
-+ * struct kunit - represents a running instance of a test.
-+ * @priv: for user to store arbitrary data. Commonly used to pass data created
-+ * in the init function (see &struct kunit_module).
-+ *
-+ * Used to store information about the current context under which the test is
-+ * running. Most of this data is private and should only be accessed indirectly
-+ * via public functions; the one exception is @priv which can be used by the
-+ * test writer to store arbitrary data.
-+ */
-+struct kunit {
-+	void *priv;
-+
-+	/* private: internal use only. */
-+	const char *name; /* Read only after initialization! */
-+	spinlock_t lock; /* Gaurds all mutable test state. */
-+	bool success; /* Protected by lock. */
-+	void (*vprintk)(const struct kunit *test,
-+			const char *level,
-+			struct va_format *vaf);
-+};
-+
-+int kunit_init_test(struct kunit *test, const char *name);
-+
-+int kunit_run_tests(struct kunit_module *module);
-+
-+/**
-+ * module_test() - used to register a &struct kunit_module with KUnit.
-+ * @module: a statically allocated &struct kunit_module.
-+ *
-+ * Registers @module with the test framework. See &struct kunit_module for more
-+ * information.
-+ */
-+#define module_test(module) \
-+		static int module_kunit_init##module(void) \
-+		{ \
-+			return kunit_run_tests(&module); \
-+		} \
-+		late_initcall(module_kunit_init##module)
-+
-+void __printf(3, 4) kunit_printk(const char *level,
-+				 const struct kunit *test,
-+				 const char *fmt, ...);
-+
-+/**
-+ * kunit_info() - Prints an INFO level message associated with the current test.
-+ * @test: The test context object.
-+ * @fmt: A printk() style format string.
-+ *
-+ * Prints an info level message associated with the test module being run. Takes
-+ * a variable number of format parameters just like printk().
-+ */
-+#define kunit_info(test, fmt, ...) \
-+		kunit_printk(KERN_INFO, test, fmt, ##__VA_ARGS__)
-+
-+/**
-+ * kunit_warn() - Prints a WARN level message associated with the current test.
-+ * @test: The test context object.
-+ * @fmt: A printk() style format string.
-+ *
-+ * See kunit_info().
-+ */
-+#define kunit_warn(test, fmt, ...) \
-+		kunit_printk(KERN_WARNING, test, fmt, ##__VA_ARGS__)
-+
-+/**
-+ * kunit_err() - Prints an ERROR level message associated with the current test.
-+ * @test: The test context object.
-+ * @fmt: A printk() style format string.
-+ *
-+ * See kunit_info().
-+ */
-+#define kunit_err(test, fmt, ...) \
-+		kunit_printk(KERN_ERR, test, fmt, ##__VA_ARGS__)
-+
-+#endif /* _KUNIT_TEST_H */
-diff --git a/kunit/Kconfig b/kunit/Kconfig
-new file mode 100644
-index 0000000000000..64480092b2c24
---- /dev/null
-+++ b/kunit/Kconfig
-@@ -0,0 +1,16 @@
-+#
-+# KUnit base configuration
-+#
-+
-+menu "KUnit support"
-+
-+config KUNIT
-+	bool "Enable support for unit tests (KUnit)"
-+	help
-+	  Enables support for kernel unit tests (KUnit), a lightweight unit
-+	  testing and mocking framework for the Linux kernel. These tests are
-+	  able to be run locally on a developer's workstation without a VM or
-+	  special hardware. For more information, please see
-+	  Documentation/kunit/
-+
-+endmenu
-diff --git a/kunit/Makefile b/kunit/Makefile
-new file mode 100644
-index 0000000000000..5efdc4dea2c08
---- /dev/null
-+++ b/kunit/Makefile
-@@ -0,0 +1 @@
-+obj-$(CONFIG_KUNIT) +=			test.o
-diff --git a/kunit/test.c b/kunit/test.c
-new file mode 100644
-index 0000000000000..5bf97e2935579
---- /dev/null
-+++ b/kunit/test.c
-@@ -0,0 +1,168 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Base unit test (KUnit) API.
-+ *
-+ * Copyright (C) 2019, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
-+
-+#include <linux/sched.h>
-+#include <linux/sched/debug.h>
-+#include <os.h>
-+#include <kunit/test.h>
-+
-+static bool kunit_get_success(struct kunit *test)
-+{
-+	unsigned long flags;
-+	bool success;
-+
-+	spin_lock_irqsave(&test->lock, flags);
-+	success = test->success;
-+	spin_unlock_irqrestore(&test->lock, flags);
-+
-+	return success;
-+}
-+
-+static void kunit_set_success(struct kunit *test, bool success)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&test->lock, flags);
-+	test->success = success;
-+	spin_unlock_irqrestore(&test->lock, flags);
-+}
-+
-+static int kunit_vprintk_emit(const struct kunit *test,
-+			      int level,
-+			      const char *fmt,
-+			      va_list args)
-+{
-+	return vprintk_emit(0, level, NULL, 0, fmt, args);
-+}
-+
-+static int kunit_printk_emit(const struct kunit *test,
-+			     int level,
-+			     const char *fmt, ...)
-+{
-+	va_list args;
-+	int ret;
-+
-+	va_start(args, fmt);
-+	ret = kunit_vprintk_emit(test, level, fmt, args);
-+	va_end(args);
-+
-+	return ret;
-+}
-+
-+static void kunit_vprintk(const struct kunit *test,
-+			  const char *level,
-+			  struct va_format *vaf)
-+{
-+	kunit_printk_emit(test,
-+			  level[1] - '0',
-+			  "kunit %s: %pV", test->name, vaf);
-+}
-+
-+int kunit_init_test(struct kunit *test, const char *name)
-+{
-+	spin_lock_init(&test->lock);
-+	test->name = name;
-+	test->vprintk = kunit_vprintk;
-+
-+	return 0;
-+}
-+
-+/*
-+ * Initializes and runs test case. Does not clean up or do post validations.
-+ */
-+static void kunit_run_case_internal(struct kunit *test,
-+				    struct kunit_module *module,
-+				    struct kunit_case *test_case)
-+{
-+	int ret;
-+
-+	if (module->init) {
-+		ret = module->init(test);
-+		if (ret) {
-+			kunit_err(test, "failed to initialize: %d\n", ret);
-+			kunit_set_success(test, false);
-+			return;
-+		}
-+	}
-+
-+	test_case->run_case(test);
-+}
-+
-+/*
-+ * Performs post validations and cleanup after a test case was run.
-+ * XXX: Should ONLY BE CALLED AFTER kunit_run_case_internal!
-+ */
-+static void kunit_run_case_cleanup(struct kunit *test,
-+				   struct kunit_module *module,
-+				   struct kunit_case *test_case)
-+{
-+	if (module->exit)
-+		module->exit(test);
-+}
-+
-+/*
-+ * Performs all logic to run a test case.
-+ */
-+static bool kunit_run_case(struct kunit *test,
-+			   struct kunit_module *module,
-+			   struct kunit_case *test_case)
-+{
-+	kunit_set_success(test, true);
-+
-+	kunit_run_case_internal(test, module, test_case);
-+	kunit_run_case_cleanup(test, module, test_case);
-+
-+	return kunit_get_success(test);
-+}
-+
-+int kunit_run_tests(struct kunit_module *module)
-+{
-+	bool all_passed = true, success;
-+	struct kunit_case *test_case;
-+	struct kunit test;
-+	int ret;
-+
-+	ret = kunit_init_test(&test, module->name);
-+	if (ret)
-+		return ret;
-+
-+	for (test_case = module->test_cases; test_case->run_case; test_case++) {
-+		success = kunit_run_case(&test, module, test_case);
-+		if (!success)
-+			all_passed = false;
-+
-+		kunit_info(&test,
-+			  "%s %s\n",
-+			  test_case->name,
-+			  success ? "passed" : "failed");
-+	}
-+
-+	if (all_passed)
-+		kunit_info(&test, "all tests passed\n");
-+	else
-+		kunit_info(&test, "one or more tests failed\n");
-+
-+	return 0;
-+}
-+
-+void kunit_printk(const char *level,
-+		  const struct kunit *test,
-+		  const char *fmt, ...)
-+{
-+	struct va_format vaf;
-+	va_list args;
-+
-+	va_start(args, fmt);
-+
-+	vaf.fmt = fmt;
-+	vaf.va = &args;
-+
-+	test->vprintk(test, level, &vaf);
-+
-+	va_end(args);
-+}
+ /*      
+  * Allocate and free page tables. The xxx_kernel() versions are
+  * used to allocate a kernel page table - this turns on ASN bits
+@@ -41,7 +43,7 @@ pgd_free(struct mm_struct *mm, pgd_t *pgd)
+ static inline pmd_t *
+ pmd_alloc_one(struct mm_struct *mm, unsigned long address)
+ {
+-	pmd_t *ret = (pmd_t *)__get_free_page(GFP_KERNEL|__GFP_ZERO);
++	pmd_t *ret = (pmd_t *)__get_free_page(GFP_PGTABLE_USER);
+ 	return ret;
+ }
+ 
+@@ -51,42 +53,6 @@ pmd_free(struct mm_struct *mm, pmd_t *pmd)
+ 	free_page((unsigned long)pmd);
+ }
+ 
+-static inline pte_t *
+-pte_alloc_one_kernel(struct mm_struct *mm)
+-{
+-	pte_t *pte = (pte_t *)__get_free_page(GFP_KERNEL|__GFP_ZERO);
+-	return pte;
+-}
+-
+-static inline void
+-pte_free_kernel(struct mm_struct *mm, pte_t *pte)
+-{
+-	free_page((unsigned long)pte);
+-}
+-
+-static inline pgtable_t
+-pte_alloc_one(struct mm_struct *mm)
+-{
+-	pte_t *pte = pte_alloc_one_kernel(mm);
+-	struct page *page;
+-
+-	if (!pte)
+-		return NULL;
+-	page = virt_to_page(pte);
+-	if (!pgtable_page_ctor(page)) {
+-		__free_page(page);
+-		return NULL;
+-	}
+-	return page;
+-}
+-
+-static inline void
+-pte_free(struct mm_struct *mm, pgtable_t page)
+-{
+-	pgtable_page_dtor(page);
+-	__free_page(page);
+-}
+-
+ #define check_pgt_cache()	do { } while (0)
+ 
+ #endif /* _ALPHA_PGALLOC_H */
 -- 
-2.21.0.593.g511ec345e18-goog
+2.7.4
 
 
 _______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
