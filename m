@@ -1,72 +1,94 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hPRIE-0000VJ-RG
- for linux-um@lists.infradead.org; Sat, 11 May 2019 12:40:00 +0000
-Date: Sat, 11 May 2019 08:39:54 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH] x86: Hide the int3_emulate_call/jmp functions from UML
-Message-ID: <20190511083954.23a60052@gandalf.local.home>
-MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Jiri Kosina <jkosina@suse.cz>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, Andy Lutomirski <luto@amacapital.net>, Richard Weinberger <richard@nod.at>, Josh Poimboeuf <jpoimboe@redhat.com>, Linus Torvalds <torvalds@linux-foundation.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Return-Path: <rppt@linux.ibm.com>
+From: Mike Rapoport <rppt@linux.ibm.com>
+Subject: [PATCH v2 10/14] nios2: switch to generic version of pte allocation
+Date: Wed,  8 May 2019 09:17:07 +0300
+In-Reply-To: <1557296232-15361-1-git-send-email-rppt@linux.ibm.com>
+References: <1557296232-15361-1-git-send-email-rppt@linux.ibm.com>
+Message-Id: <1557296232-15361-11-git-send-email-rppt@linux.ibm.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Anshuman Khandual <anshuman.khandual@arm.com>, Catalin Marinas <catalin.marinas@arm.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>, Ley Foon Tan <lftan@altera.com>, Matthew Wilcox <willy@infradead.org>, Matt Turner <mattst88@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@suse.com>, Palmer Dabbelt <palmer@sifive.com>, Paul Burton <paul.burton@mips.com>, Richard Kuo <rkuo@codeaurora.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-um@lists.infradead.org, nios2-dev@lists.rocketboards.org, Mike Rapoport <rppt@linux.ibm.com>
+List-ID: <linux-um.lists.infradead.org>
 
+nios2 allocates kernel PTE pages with
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+        __get_free_pages(GFP_KERNEL | __GFP_ZERO, PTE_ORDER);
 
-User Mode Linux does not have access to the ip or sp fields of the
-pt_regs, and accessing them causes UML to fail to build. Hide the
-int3_emulate_jmp() and int3_emulate_call() instructions from UML, as it
-doesn't need them anyway.
+and user page tables with
 
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+        pte = alloc_pages(GFP_KERNEL, PTE_ORDER);
+        if (pte)
+                clear_highpage();
+
+The PTE_ORDER is hardwired to zero, which makes nios2 implementation almost
+identical to the generic one.
+
+Switch nios2 to the generic version that does exactly the same thing for
+the kernel page tables and adds __GFP_ACCOUNT for the user PTEs.
+
+The pte_free_kernel() and pte_free() versions on nios2 are identical to the
+generic ones and can be simply dropped.
+
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
+ arch/nios2/include/asm/pgalloc.h | 37 ++-----------------------------------
+ 1 file changed, 2 insertions(+), 35 deletions(-)
 
-[ I added this to my queue to test too ]
-
- arch/x86/include/asm/text-patching.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/include/asm/text-patching.h
-b/arch/x86/include/asm/text-patching.h index 05861cc08787..0bbb07eaed6b
-100644 --- a/arch/x86/include/asm/text-patching.h
-+++ b/arch/x86/include/asm/text-patching.h
-@@ -39,6 +39,7 @@ extern int poke_int3_handler(struct pt_regs *regs);
- extern void *text_poke_bp(void *addr, const void *opcode, size_t len,
-void *handler); extern int after_bootmem;
+diff --git a/arch/nios2/include/asm/pgalloc.h b/arch/nios2/include/asm/pgalloc.h
+index 3a149ea..4bc8cf7 100644
+--- a/arch/nios2/include/asm/pgalloc.h
++++ b/arch/nios2/include/asm/pgalloc.h
+@@ -12,6 +12,8 @@
  
-+#ifndef CONFIG_UML_X86
- static inline void int3_emulate_jmp(struct pt_regs *regs, unsigned
-long ip) {
- 	regs->ip = ip;
-@@ -65,6 +66,7 @@ static inline void int3_emulate_call(struct pt_regs
-*regs, unsigned long func) int3_emulate_push(regs, regs->ip -
-INT3_INSN_SIZE + CALL_INSN_SIZE); int3_emulate_jmp(regs, func);
+ #include <linux/mm.h>
+ 
++#include <asm-generic/pgalloc.h>	/* for pte_{alloc,free}_one */
++
+ static inline void pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd,
+ 	pte_t *pte)
+ {
+@@ -37,41 +39,6 @@ static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
+ 	free_pages((unsigned long)pgd, PGD_ORDER);
  }
--#endif
-+#endif /* CONFIG_X86_64 */
-+#endif /* !CONFIG_UML_X86 */
  
- #endif /* _ASM_X86_TEXT_PATCHING_H */
+-static inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm)
+-{
+-	pte_t *pte;
+-
+-	pte = (pte_t *) __get_free_pages(GFP_KERNEL|__GFP_ZERO, PTE_ORDER);
+-
+-	return pte;
+-}
+-
+-static inline pgtable_t pte_alloc_one(struct mm_struct *mm)
+-{
+-	struct page *pte;
+-
+-	pte = alloc_pages(GFP_KERNEL, PTE_ORDER);
+-	if (pte) {
+-		if (!pgtable_page_ctor(pte)) {
+-			__free_page(pte);
+-			return NULL;
+-		}
+-		clear_highpage(pte);
+-	}
+-	return pte;
+-}
+-
+-static inline void pte_free_kernel(struct mm_struct *mm, pte_t *pte)
+-{
+-	free_pages((unsigned long)pte, PTE_ORDER);
+-}
+-
+-static inline void pte_free(struct mm_struct *mm, struct page *pte)
+-{
+-	pgtable_page_dtor(pte);
+-	__free_pages(pte, PTE_ORDER);
+-}
+-
+ #define __pte_free_tlb(tlb, pte, addr)				\
+ 	do {							\
+ 		pgtable_page_dtor(pte);				\
 -- 
-2.20.1
+2.7.4
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
