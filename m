@@ -1,49 +1,71 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Wed,  1 May 2019 16:01:15 -0700
-In-Reply-To: <20190501230126.229218-1-brendanhiggins@google.com>
-Message-Id: <20190501230126.229218-7-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20190501230126.229218-1-brendanhiggins@google.com>
-Subject: [PATCH v2 06/17] kbuild: enable building KUnit
-From: Brendan Higgins <brendanhiggins@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Sender: linux-kernel-owner@vger.kernel.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org, kunit-dev@googlegroups.com, linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, linux-um@lists.infradead.org, Alexander.Levin@microsoft.com, Tim.Bird@sony.com, amir73il@gmail.com, dan.carpenter@oracle.com, dan.j.williams@intel.com, daniel@ffwll.ch, jdike@addtoit.com, joel@jms.id.au, julia.lawall@lip6.fr, khilman@baylibre.com, knut.omang@oracle.com, logang@deltatee.com, mpe@ellerman.id.au, pmladek@suse.com, richard@nod.at, rientjes@google.com, rostedt@goodmis.org, wfg@linux.intel.com, Brendan Higgins <brendanhiggins@google.com>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-wm1-x333.google.com ([2a00:1450:4864:20::333])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1hOeSU-0006Rp-95
+ for linux-um@lists.infradead.org; Thu, 09 May 2019 08:31:21 +0000
+Received: by mail-wm1-x333.google.com with SMTP id j187so2005806wmj.1
+ for <linux-um@lists.infradead.org>; Thu, 09 May 2019 01:31:16 -0700 (PDT)
+Date: Thu, 9 May 2019 10:31:11 +0200
+From: Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH] [v2] x86/mpx: fix recursive munmap() corruption
+Message-ID: <20190509083111.GA75918@gmail.com>
+References: <20190419194747.5E1AD6DC@viggo.jf.intel.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20190419194747.5E1AD6DC@viggo.jf.intel.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: linux-arch@vger.kernel.org, hjl.tools@gmail.com, mhocko@suse.com, rguenther@suse.de, richard@nod.at, gxt@pku.edu.cn, benh@kernel.crashing.org, jdike@addtoit.com, x86@kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org, luto@amacapital.net, linux-mm@kvack.org, paulus@samba.org, mpe@ellerman.id.au, yang.shi@linux.alibaba.com, akpm@linux-foundation.org, linuxppc-dev@lists.ozlabs.org, vbabka@suse.cz, anton.ivanov@cambridgegreys.com
 
-Add KUnit to root Kconfig and Makefile allowing it to actually be built.
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
----
- Kconfig  | 2 ++
- Makefile | 2 +-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+* Dave Hansen <dave.hansen@linux.intel.com> wrote:
 
-diff --git a/Kconfig b/Kconfig
-index 48a80beab6853..10428501edb78 100644
---- a/Kconfig
-+++ b/Kconfig
-@@ -30,3 +30,5 @@ source "crypto/Kconfig"
- source "lib/Kconfig"
- 
- source "lib/Kconfig.debug"
-+
-+source "kunit/Kconfig"
-diff --git a/Makefile b/Makefile
-index 2b99679148dc7..77368f498d84c 100644
---- a/Makefile
-+++ b/Makefile
-@@ -969,7 +969,7 @@ endif
- PHONY += prepare0
- 
- ifeq ($(KBUILD_EXTMOD),)
--core-y		+= kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ block/
-+core-y		+= kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ block/ kunit/
- 
- vmlinux-dirs	:= $(patsubst %/,%,$(filter %/, $(init-y) $(init-m) \
- 		     $(core-y) $(core-m) $(drivers-y) $(drivers-m) \
--- 
-2.21.0.593.g511ec345e18-goog
+> Reported-by: Richard Biener <rguenther@suse.de>
+> Reported-by: H.J. Lu <hjl.tools@gmail.com>
+> Fixes: dd2283f2605e ("mm: mmap: zap pages with read mmap_sem in munmap")
+> Cc: Yang Shi <yang.shi@linux.alibaba.com>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Cc: Andy Lutomirski <luto@amacapital.net>
+> Cc: x86@kernel.org
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-mm@kvack.org
+> Cc: stable@vger.kernel.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-um@lists.infradead.org
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: linux-arch@vger.kernel.org
+> Cc: Guan Xuetao <gxt@pku.edu.cn>
+> Cc: Jeff Dike <jdike@addtoit.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
+I've also added your:
+
+  Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+
+Because I suppose you intended to sign off on it?
+
+Thanks,
+
+	Ingo
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
