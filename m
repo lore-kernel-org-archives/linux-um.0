@@ -1,23 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11] helo=outgoing.mit.edu)
+Received: from mail-ot1-x343.google.com ([2607:f8b0:4864:20::343])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hP31B-0001Og-JM
- for linux-um@lists.infradead.org; Fri, 10 May 2019 10:44:47 +0000
-Date: Fri, 10 May 2019 06:43:38 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
+ id 1hP2iN-0003zL-SO
+ for linux-um@lists.infradead.org; Fri, 10 May 2019 10:25:21 +0000
+Received: by mail-ot1-x343.google.com with SMTP id r10so4374230otd.4
+ for <linux-um@lists.infradead.org>; Fri, 10 May 2019 03:25:19 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190501230126.229218-1-brendanhiggins@google.com>
+ <CAK7LNARzaeZ+ZNbDSii2cpFkk4bUqOu3keNq4qX0LhftuK8+MQ@mail.gmail.com>
+In-Reply-To: <CAK7LNARzaeZ+ZNbDSii2cpFkk4bUqOu3keNq4qX0LhftuK8+MQ@mail.gmail.com>
+From: Brendan Higgins <brendanhiggins@google.com>
+Date: Fri, 10 May 2019 03:25:06 -0700
+Message-ID: <CAFd5g47iaxW5Nk+sELxgasnbpNX7O6kwUTT7gMWoN3gA=_we6Q@mail.gmail.com>
 Subject: Re: [PATCH v2 00/17] kunit: introduce KUnit, the Linux kernel unit
  testing framework
-Message-ID: <20190510104338.GB6889@mit.edu>
-References: <20190501230126.229218-1-brendanhiggins@google.com>
- <54940124-50df-16ec-1a32-ad794ee05da7@gmail.com>
- <20190507080119.GB28121@kroah.com>
- <a09a7e0e-9894-8c1a-34eb-fc482b1759d0@gmail.com>
- <20190509015856.GB7031@mit.edu>
- <580e092f-fa4e-eedc-9e9a-a57dd085f0a6@gmail.com>
- <78e4d46e-6212-9871-51d6-dd2126f39d45@gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <78e4d46e-6212-9871-51d6-dd2126f39d45@gmail.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -30,66 +26,129 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Frank Rowand <frowand.list@gmail.com>
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, mpe@ellerman.id.au, linux-kselftest@vger.kernel.org, shuah@kernel.org, robh@kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, kieran.bingham@ideasonboard.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, richard@nod.at, sboyd@kernel.org, Greg KH <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, mcgrof@kernel.org, daniel@ffwll.ch, keescook@google.com, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: Petr Mladek <pmladek@suse.com>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Amir Goldstein <amir73il@gmail.com>, dri-devel <dri-devel@lists.freedesktop.org>, Sasha Levin <Alexander.Levin@microsoft.com>, Michael Ellerman <mpe@ellerman.id.au>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, "Cc: Shuah Khan" <shuah@kernel.org>, Rob Herring <robh@kernel.org>, linux-nvdimm <linux-nvdimm@lists.01.org>, Frank Rowand <frowand.list@gmail.com>, Knut Omang <knut.omang@oracle.com>, Kieran Bingham <kieran.bingham@ideasonboard.com>, wfg@linux.intel.com, Joel Stanley <joel@jms.id.au>, David Rientjes <rientjes@google.com>, Jeff Dike <jdike@addtoit.com>, Dan Carpenter <dan.carpenter@oracle.com>, DTML <devicetree@vger.kernel.org>, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, Tim Bird <Tim.Bird@sony.com>, linux-um@lists.infradead.org, Steven Rostedt <rostedt@goodmis.org>, Julia Lawall <julia.lawall@lip6.fr>, Dan Williams <dan.j.williams@intel.com>, kunit-dev@googlegroups.com, Richard Weinberger <richard@nod.at>, Stephen Boyd <sboyd@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "Luis R. Rodriguez" <mcgrof@kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@google.com>, linux-fsdevel@vger.kernel.org, Logan Gunthorpe <logang@deltatee.com>, Kevin Hilman <khilman@baylibre.com>
 
-On Thu, May 09, 2019 at 10:11:01PM -0700, Frank Rowand wrote:
-> >> You *can* run in-kernel test using modules; but there is no framework
-> >> for the in-kernel code found in the test modules, which means each of
-> >> the in-kernel code has to create their own in-kernel test
-> >> infrastructure.
-> 
-> The kselftest in-kernel tests follow a common pattern.  As such, there
-> is a framework.
+> On Thu, May 2, 2019 at 8:02 AM Brendan Higgins
+> <brendanhiggins@google.com> wrote:
+> >
+> > ## TLDR
+> >
+> > I rebased the last patchset on 5.1-rc7 in hopes that we can get this in
+> > 5.2.
+> >
+> > Shuah, I think you, Greg KH, and myself talked off thread, and we agreed
+> > we would merge through your tree when the time came? Am I remembering
+> > correctly?
+> >
+> > ## Background
+> >
+> > This patch set proposes KUnit, a lightweight unit testing and mocking
+> > framework for the Linux kernel.
+> >
+> > Unlike Autotest and kselftest, KUnit is a true unit testing framework;
+> > it does not require installing the kernel on a test machine or in a VM
+> > and does not require tests to be written in userspace running on a host
+> > kernel. Additionally, KUnit is fast: From invocation to completion KUnit
+> > can run several dozen tests in under a second. Currently, the entire
+> > KUnit test suite for KUnit runs in under a second from the initial
+> > invocation (build time excluded).
+> >
+> > KUnit is heavily inspired by JUnit, Python's unittest.mock, and
+> > Googletest/Googlemock for C++. KUnit provides facilities for defining
+> > unit test cases, grouping related test cases into test suites, providing
+> > common infrastructure for running tests, mocking, spying, and much more.
+> >
+> > ## What's so special about unit testing?
+> >
+> > A unit test is supposed to test a single unit of code in isolation,
+> > hence the name. There should be no dependencies outside the control of
+> > the test; this means no external dependencies, which makes tests orders
+> > of magnitudes faster. Likewise, since there are no external dependencies,
+> > there are no hoops to jump through to run the tests. Additionally, this
+> > makes unit tests deterministic: a failing unit test always indicates a
+> > problem. Finally, because unit tests necessarily have finer granularity,
+> > they are able to test all code paths easily solving the classic problem
+> > of difficulty in exercising error handling code.
+> >
+> > ## Is KUnit trying to replace other testing frameworks for the kernel?
+> >
+> > No. Most existing tests for the Linux kernel are end-to-end tests, which
+> > have their place. A well tested system has lots of unit tests, a
+> > reasonable number of integration tests, and some end-to-end tests. KUnit
+> > is just trying to address the unit test space which is currently not
+> > being addressed.
+> >
+> > ## More information on KUnit
+> >
+> > There is a bunch of documentation near the end of this patch set that
+> > describes how to use KUnit and best practices for writing unit tests.
+> > For convenience I am hosting the compiled docs here:
+> > https://google.github.io/kunit-docs/third_party/kernel/docs/
+> > Additionally for convenience, I have applied these patches to a branch:
+> > https://kunit.googlesource.com/linux/+/kunit/rfc/v5.1-rc7/v1
+> > The repo may be cloned with:
+> > git clone https://kunit.googlesource.com/linux
+> > This patchset is on the kunit/rfc/v5.1-rc7/v1 branch.
+> >
+> > ## Changes Since Last Version
+> >
+> > None. I just rebased the last patchset on v5.1-rc7.
+> >
+> > --
+> > 2.21.0.593.g511ec345e18-goog
+> >
+>
+> The following is the log of 'git am' of this series.
+> I see several 'new blank line at EOF' warnings.
+>
+>
+>
+> masahiro@pug:~/workspace/bsp/linux$ git am ~/Downloads/*.patch
+> Applying: kunit: test: add KUnit test runner core
+> Applying: kunit: test: add test resource management API
+> Applying: kunit: test: add string_stream a std::stream like string builder
+> .git/rebase-apply/patch:223: new blank line at EOF.
+> +
+> warning: 1 line adds whitespace errors.
+> Applying: kunit: test: add kunit_stream a std::stream like logger
+> Applying: kunit: test: add the concept of expectations
+> .git/rebase-apply/patch:475: new blank line at EOF.
+> +
+> warning: 1 line adds whitespace errors.
+> Applying: kbuild: enable building KUnit
+> Applying: kunit: test: add initial tests
+> .git/rebase-apply/patch:203: new blank line at EOF.
+> +
+> warning: 1 line adds whitespace errors.
+> Applying: kunit: test: add support for test abort
+> .git/rebase-apply/patch:453: new blank line at EOF.
+> +
+> warning: 1 line adds whitespace errors.
+> Applying: kunit: test: add tests for kunit test abort
+> Applying: kunit: test: add the concept of assertions
+> .git/rebase-apply/patch:518: new blank line at EOF.
+> +
+> warning: 1 line adds whitespace errors.
+> Applying: kunit: test: add test managed resource tests
+> Applying: kunit: tool: add Python wrappers for running KUnit tests
+> .git/rebase-apply/patch:457: new blank line at EOF.
+> +
+> warning: 1 line adds whitespace errors.
+> Applying: kunit: defconfig: add defconfigs for building KUnit tests
+> Applying: Documentation: kunit: add documentation for KUnit
+> .git/rebase-apply/patch:71: new blank line at EOF.
+> +
+> .git/rebase-apply/patch:209: new blank line at EOF.
+> +
+> .git/rebase-apply/patch:848: new blank line at EOF.
+> +
+> warning: 3 lines add whitespace errors.
+> Applying: MAINTAINERS: add entry for KUnit the unit testing framework
+> Applying: kernel/sysctl-test: Add null pointer test for sysctl.c:proc_dointvec()
+> Applying: MAINTAINERS: add proc sysctl KUnit test to PROC SYSCTL section
 
-So we may have different definitions of "framework".  In my book, code
-reuse by "cut and paste" does not make a framework.  Could they be
-rewritten to *use* a framework, whether it be KTF or KUnit?  Sure!
-But they are not using a framework *today*.
-
-> This next two paragraphs you ignored entirely in your reply:
-> 
-> > Why create an entire new subsystem (KUnit) when you can add a header
-> > file (and .c code as appropriate) that outputs the proper TAP formatted
-> > results from kselftest kernel test modules?
-
-And you keep ignoring my main observation, which is that spinning up a
-VM, letting systemd start, mounting a root file system, etc., is all
-unnecessary overhead which takes time.  This is important to me,
-because developer velocity is extremely important if you are doing
-test driven development.
-
-Yes, you can manually unload a module, recompile the module, somehow
-get the module back into the VM (perhaps by using virtio-9p), and then
-reloading the module with the in-kernel test code, and the restart the
-test.  BUT: (a) even if it is faster, it requires a lot of manual
-steps, and would be very hard to automate, and (b) if the test code
-ever OOPS or triggers a lockdep warning, you will need to restart the
-VM, and so this involves all of the VM restart overhead, plus trying
-to automate determining when you actually do need to restart the VM
-versus unloading and reloading the module.   It's clunky.
-
-Being able to do the equivalent of "make && make check" is a really
-big deal.  And "make check" needs to go fast.
-
-You keep ignore this point, perhaps because you don't care about this
-issue?  Which is fine, and why we may just need to agree to disagree.
-
-Cheers,
-
-						- Ted
-
-P.S.  Running scripts is Turing-equivalent, so it's self-evident that
-*anything* you can do with other test frameworks you can somehow do in
-kselftests.  That argument doesn't impress me, and why I do consider
-it quite flippant.  (Heck, /bin/vi is Turing equivalent so we could
-use vi to as a kernel test framework.  Or we could use emacs.  Let's
-not.  :-)
-
-The question is whether it is the most best and most efficient way to
-do that testing.  And developer velocity is a really big part of my
-evaluation function when judging whether or a test framework is fit
-for that purpose.
+Sorry about this! I will have it fixed on the next revision.
 
 _______________________________________________
 linux-um mailing list
