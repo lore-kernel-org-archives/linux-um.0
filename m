@@ -1,10 +1,10 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
+Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hPDRv-0000xa-N7
- for linux-um@lists.infradead.org; Fri, 10 May 2019 21:53:05 +0000
-Received: by mail-pg1-x544.google.com with SMTP id j26so3613472pgl.5
- for <linux-um@lists.infradead.org>; Fri, 10 May 2019 14:53:03 -0700 (PDT)
+ id 1hPCou-0008Iw-9j
+ for linux-um@lists.infradead.org; Fri, 10 May 2019 21:12:45 +0000
+Received: by mail-pf1-x444.google.com with SMTP id 13so3841066pfw.9
+ for <linux-um@lists.infradead.org>; Fri, 10 May 2019 14:12:43 -0700 (PDT)
 Subject: Re: [PATCH v2 00/17] kunit: introduce KUnit, the Linux kernel unit
  testing framework
 References: <54940124-50df-16ec-1a32-ad794ee05da7@gmail.com>
@@ -18,12 +18,11 @@ References: <54940124-50df-16ec-1a32-ad794ee05da7@gmail.com>
  <ECADFF3FD767C149AD96A924E7EA6EAF9770D591@USCULXMSG01.am.sony.com>
  <875c546d-9713-bb59-47e4-77a1d2c69a6d@gmail.com>
  <20190509214233.GA20877@mit.edu>
- <b09ba170-229b-fde4-3e9a-e50d6ab4c1b5@deltatee.com>
 From: Frank Rowand <frowand.list@gmail.com>
-Message-ID: <2aed675e-0408-c812-3e1a-b90710c528f2@gmail.com>
-Date: Fri, 10 May 2019 14:52:59 -0700
+Message-ID: <80c72e64-2665-bd51-f78c-97f50f9a53ba@gmail.com>
+Date: Fri, 10 May 2019 14:12:40 -0700
 MIME-Version: 1.0
-In-Reply-To: <b09ba170-229b-fde4-3e9a-e50d6ab4c1b5@deltatee.com>
+In-Reply-To: <20190509214233.GA20877@mit.edu>
 Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -33,92 +32,55 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Logan Gunthorpe <logang@deltatee.com>, Theodore Ts'o <tytso@mit.edu>, Tim.Bird@sony.com, knut.omang@oracle.com, gregkh@linuxfoundation.org, brendanhiggins@google.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org, kunit-dev@googlegroups.com, linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, linux-um@lists.infradead.org, Alexander.Levin@microsoft.com, amir73il@gmail.com, dan.carpenter@oracle.com, dan.j.williams@intel.com, daniel@ffwll.ch, jdike@addtoit.com, joel@jms.id.au, julia.lawall@lip6.fr, khilman@baylibre.com, mpe@ellerman.id.au, pmladek@suse.com, richard@nod.at, rientjes@google.com, rostedt@goodmis.org, wfg@linux.intel.com
+To: Theodore Ts'o <tytso@mit.edu>, Tim.Bird@sony.com, knut.omang@oracle.com, gregkh@linuxfoundation.org, brendanhiggins@google.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org, kunit-dev@googlegroups.com, linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, linux-um@lists.infradead.org, Alexander.Levin@microsoft.com, amir73il@gmail.com, dan.carpenter@oracle.com, dan.j.williams@intel.com, daniel@ffwll.ch, jdike@addtoit.com, joel@jms.id.au, julia.lawall@lip6.fr, khilman@baylibre.com, logang@deltatee.com, mpe@ellerman.id.au, pmladek@suse.com, richard@nod.at, rientjes@google.com, rostedt@goodmis.org, wfg@linux.intel.com
 
-T24gNS85LzE5IDM6MjAgUE0sIExvZ2FuIEd1bnRob3JwZSB3cm90ZToKPiAKPiAKPiBPbiAyMDE5
-LTA1LTA5IDM6NDIgcC5tLiwgVGhlb2RvcmUgVHMnbyB3cm90ZToKPj4gT24gVGh1LCBNYXkgMDks
-IDIwMTkgYXQgMTE6MTI6MTJBTSAtMDcwMCwgRnJhbmsgUm93YW5kIHdyb3RlOgo+Pj4KPj4+IMKg
-wqDCoCAiTXkgdW5kZXJzdGFuZGluZyBpcyB0aGF0IHRoZSBpbnRlbnQgb2YgS1VuaXQgaXMgdG8g
-YXZvaWQgYm9vdGluZyBhIGtlcm5lbCBvbgo+Pj4gwqDCoMKgIHJlYWwgaGFyZHdhcmUgb3IgaW4g
-YSB2aXJ0dWFsIG1hY2hpbmUuwqAgVGhhdCBzZWVtcyB0byBiZSBhIG1hdHRlciBvZiBzZW1hbnRp
-Y3MKPj4+IMKgwqDCoCB0byBtZSBiZWNhdXNlIGlzbid0IGludm9raW5nIGEgVU1MIExpbnV4IGp1
-c3QgcnVubmluZyB0aGUgTGludXgga2VybmVsIGluCj4+PiDCoMKgwqAgYSBkaWZmZXJlbnQgZm9y
-bSBvZiB2aXJ0dWFsaXphdGlvbj8KPj4+Cj4+PiDCoMKgwqAgU28gSSBkbyBub3QgdW5kZXJzdGFu
-ZCB3aHkgS1VuaXQgaXMgYW4gaW1wcm92ZW1lbnQgb3ZlciBrc2VsZnRlc3QuCj4+Pgo+Pj4gwqDC
-oCAgLi4uCj4+PiAKPj4+IFdoYXQgYW0gSSBtaXNzaW5nPyIKPj4gCj4+IE9uZSBtYWpvciBkaWZm
-ZXJlbmNlOiBrc2VsZnRlc3QgcmVxdWlyZXMgYSB1c2Vyc3BhY2UgZW52aXJvbm1lbnQ7Cj4+IGl0
-IHN0YXJ0cyBzeXN0ZW1kLCByZXF1aXJlcyBhIHJvb3QgZmlsZSBzeXN0ZW0gZnJvbSB3aGljaCB5
-b3UgY2FuCj4+IGxvYWQgbW9kdWxlcywgZXRjLiAgS3VuaXQgZG9lc24ndCByZXF1aXJlIGEgcm9v
-dCBmaWxlIHN5c3RlbTsKPj4gZG9lc24ndCByZXF1aXJlIHRoYXQgeW91IHN0YXJ0IHN5c3RlbWQ7
-IGRvZXNuJ3QgYWxsb3cgeW91IHRvIHJ1bgo+PiBhcmJpdHJhcnkgcGVybCwgcHl0aG9uLCBiYXNo
-LCBldGMuIHNjcmlwdHMuICBBcyBzdWNoLCBpdCdzIG11Y2gKPj4gbGlnaHRlciB3ZWlnaHQgdGhh
-biBrc2VsZnRlc3QsIGFuZCB3aWxsIGhhdmUgbXVjaCBsZXNzIG92ZXJoZWFkCj4+IGJlZm9yZSB5
-b3UgY2FuIHN0YXJ0IHJ1bm5pbmcgdGVzdHMuICBTbyBpdCdzIG5vdCByZWFsbHkgdGhlIHNhbWUK
-Pj4ga2luZCBvZiB2aXJ0dWFsaXphdGlvbi4KCkknbSBiYWNrIHRvIHJlcGx5IHRvIHRoaXMgc3Vi
-dGhyZWFkLCBhZnRlciBhIGRlbGF5LCBhcyBwcm9taXNlZC4KCgo+IEkgbGFyZ2VseSBhZ3JlZSB3
-aXRoIGV2ZXJ5dGhpbmcgVGVkIGhhcyBzYWlkIGluIHRoaXMgdGhyZWFkLCBidXQgSQo+IHdvbmRl
-ciBpZiB3ZSBhcmUgY29uZmxhdGluZyB0d28gZGlmZmVyZW50IGlkZWFzIHRoYXQgaXMgY2F1c2lu
-ZyBhbgo+IGltcGFzc2UuIEZyb20gd2hhdCBJIHNlZSwgS3VuaXQgYWN0dWFsbHkgcHJvdmlkZXMg
-dHdvIGRpZmZlcmVudAo+IHRoaW5nczoKCj4gMSkgQW4gZXhlY3V0aW9uIGVudmlyb25tZW50IHRo
-YXQgY2FuIGJlIHJ1biB2ZXJ5IHF1aWNrbHkgaW4gdXNlcnNwYWNlCj4gb24gdGVzdHMgaW4gdGhl
-IGtlcm5lbCBzb3VyY2UuIFRoaXMgc3BlZWRzIHVwIHRoZSB0ZXN0cyBhbmQgZ2l2ZXMgYQo+IGxv
-dCBvZiBiZW5lZml0IHRvIGRldmVsb3BlcnMgdXNpbmcgdGhvc2UgdGVzdHMgYmVjYXVzZSB0aGV5
-IGNhbiBnZXQKPiBmZWVkYmFjayBvbiB0aGVpciBjb2RlIGNoYW5nZXMgYSAqbG90KiBxdWlja2Vy
-LgoKa3NlbGZ0ZXN0IGluLWtlcm5lbCB0ZXN0cyBwcm92aWRlIGV4YWN0bHkgdGhlIHNhbWUgd2hl
-biB0aGUgdGVzdHMgYXJlCmNvbmZpZ3VyZWQgYXMgImJ1aWx0LWluIiBjb2RlIGluc3RlYWQgb2Yg
-YXMgbW9kdWxlcy4KCgo+IDIpIEEgZnJhbWV3b3JrIHRvIHdyaXRlIHVuaXQgdGVzdHMgdGhhdCBw
-cm92aWRlcyBhIGxvdCBvZiB0aGUgc2FtZQo+IGZhY2lsaXRpZXMgYXMgb3RoZXIgY29tbW9uIHVu
-aXQgdGVzdGluZyBmcmFtZXdvcmtzIGZyb20gdXNlcnNwYWNlCj4gKGllLiBhIHJ1bm5lciB0aGF0
-IHJ1bnMgYSBsaXN0IG9mIHRlc3RzIGFuZCBhIGJ1bmNoIG9mIGhlbHBlcnMgc3VjaAo+IGFzIEtV
-TklUX0VYUEVDVF8qIHRvIHNpbXBsaWZ5IHRlc3QgcGFzc2VzIGFuZCBmYWlsdXJlcykuCgo+IFRo
-ZSBmaXJzdCBpdGVtIGZyb20gS3VuaXQgaXMgbm92ZWwgYW5kIEkgc2VlIGFic29sdXRlbHkgbm8g
-b3ZlcmxhcAo+IHdpdGggYW55dGhpbmcga3NlbGZ0ZXN0IGRvZXMuIEl0J3MgYWxzbyB0aGUgdmFs
-dWFibGUgdGhpbmcgSSdkIGxpa2UKPiB0byBzZWUgbWVyZ2VkIGFuZCBncm93LgoKVGhlIGZpcnN0
-IGl0ZW0gZXhpc3RzIGluIGtzZWxmdGVzdC4KCgo+IFRoZSBzZWNvbmQgaXRlbSwgYXJndWFibHks
-IGRvZXMgaGF2ZSBzaWduaWZpY2FudCBvdmVybGFwIHdpdGgKPiBrc2VsZnRlc3QuIFdoZXRoZXIg
-eW91IGFyZSBydW5uaW5nIHNob3J0IHRlc3RzIGluIGEgbGlnaHQgd2VpZ2h0IFVNTAo+IGVudmly
-b25tZW50IG9yIGhpZ2hlciBsZXZlbCB0ZXN0cyBpbiBhbiBoZWF2aWVyIFZNIHRoZSB0d28gY291
-bGQgYmUKPiB1c2luZyB0aGUgc2FtZSBmcmFtZXdvcmsgZm9yIHdyaXRpbmcgb3IgZGVmaW5pbmcg
-aW4ta2VybmVsIHRlc3RzLiBJdAo+ICptYXkqIGFsc28gYmUgdmFsdWFibGUgZm9yIHNvbWUgcGVv
-cGxlIHRvIGJlIGFibGUgdG8gcnVuIGFsbCB0aGUgVU1MCj4gdGVzdHMgaW4gdGhlIGhlYXZ5IFZN
-IGVudmlyb25tZW50IGFsb25nIHNpZGUgb3RoZXIgaGlnaGVyIGxldmVsCj4gdGVzdHMuCj4gCj4g
-TG9va2luZyBhdCB0aGUgc2VsZnRlc3RzIHRyZWUgaW4gdGhlIHJlcG8sIHdlIGFscmVhZHkgaGF2
-ZSBzaW1pbGFyCj4gaXRlbXMgdG8gd2hhdCBLdW5pdCBpcyBhZGRpbmcgYXMgSSBkZXNjcmliZWQg
-aW4gcG9pbnQgKDIpIGFib3ZlLgo+IGtzZWxmdGVzdF9oYXJuZXNzLmggY29udGFpbnMgbWFjcm9z
-IGxpa2UgRVhQRUNUXyogYW5kIEFTU0VSVF8qIHdpdGgKPiB2ZXJ5IHNpbWlsYXIgaW50ZW50aW9u
-cyB0byB0aGUgbmV3IEtVTklUX0VYRUNQVF8qIGFuZCBLVU5JVF9BU1NFUlRfKgo+IG1hY3Jvcy4K
-CkkgbWlnaHQgYmUgd3JvbmcgaGVyZSBiZWNhdXNlIEkgaGF2ZSBub3QgZHVnIGRlZXBseSBlbm91
-Z2ggaW50byB0aGUKY29kZSEhISAgRG9lcyB0aGlzIGZyYW1ld29yayBhcHBseSB0byB0aGUgdXNl
-cnNwYWNlIHRlc3RzLCB0aGUKaW4ta2VybmVsIHRlc3RzLCBvciBib3RoPyAgTXkgIm5vdCBoYXZp
-bmcgZHVnIGVub3VnaCBHVUVTUyIgaXMgdGhhdAp0aGVzZSBhcmUgZm9yIHRoZSB1c2VyIHNwYWNl
-IHRlc3RzIChhbHRob3VnaCBpZiBzbywgdGhleSBjb3VsZCBiZQpleHRlbmRlZCBmb3IgaW4ta2Vy
-bmVsIHVzZSBhbHNvKS4KClNvIEkgdGhpbmsgdGhpcyBvbmUgbWF5YmUgZG9lcyBub3QgaGF2ZSBh
-biBvdmVybGFwIGJldHdlZW4gS1VuaXQKYW5kIGtzZWxmdGVzdC4KCgo+IEhvd2V2ZXIsIHRoZSBu
-dW1iZXIgb2YgdXNlcnMgb2YgdGhpcyBoYXJuZXNzIGFwcGVhcnMgdG8gYmUgcXVpdGUKPiBzbWFs
-bC4gTW9zdCBvZiB0aGUgY29kZSBpbiB0aGUgc2VsZnRlc3RzIHRyZWUgc2VlbXMgdG8gYmUgYSBy
-YW5kb20KPiBtaXNtYXNoIG9mIHNjcmlwdHMgYW5kIHVzZXJzcGFjZSBjb2RlIHNvIGl0J3Mgbm90
-IGhhcmQgdG8gc2VlIGl0IGFzCj4gc29tZXRoaW5nIGNvbXBsZXRlbHkgZGlmZmVyZW50IGZyb20g
-dGhlIG5ldyBLdW5pdDoKPiAkIGdpdCBncmVwIC0tZmlsZXMtd2l0aC1tYXRjaGVzIGtzZWxmdGVz
-dF9oYXJuZXNzLmggKgo+IERvY3VtZW50YXRpb24vZGV2LXRvb2xzL2tzZWxmdGVzdC5yc3QKPiBN
-QUlOVEFJTkVSUwo+IHRvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2tzZWxmdGVzdF9oYXJuZXNzLmgK
-PiB0b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9uZXQvdGxzLmMKPiB0b29scy90ZXN0aW5nL3NlbGZ0
-ZXN0cy9ydGMvcnRjdGVzdC5jCj4gdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvc2VjY29tcC9NYWtl
-ZmlsZQo+IHRvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL3NlY2NvbXAvc2VjY29tcF9icGYuYwo+IHRv
-b2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL3VldmVudC9NYWtlZmlsZQo+IHRvb2xzL3Rlc3Rpbmcvc2Vs
-ZnRlc3RzL3VldmVudC91ZXZlbnRfZmlsdGVyaW5nLmMKCgo+IFRodXMsIEkgY2FuIHBlcnNvbmFs
-bHkgc2VlIGEgbG90IG9mIHZhbHVlIGluIGludGVncmF0aW5nIHRoZSBrdW5pdAo+IHRlc3QgZnJh
-bWV3b3JrIHdpdGggdGhpcyBrc2VsZnRlc3QgaGFybmVzcy4gVGhlcmUncyBvbmx5IGEgc21hbGwK
-PiBudW1iZXIgb2YgdXNlcnMgb2YgdGhlIGtzZWxmdGVzdCBoYXJuZXNzIHRvZGF5LCBzbyBvbmUg
-d2F5IG9yIGFub3RoZXIKPiBpdCBzZWVtcyBsaWtlIGdldHRpbmcgdGhpcyBpbnRlZ3JhdGVkIGVh
-cmx5IHdvdWxkIGJlIGEgZ29vZCBpZGVhLgo+IExldHRpbmcgS3VuaXQgYW5kIEtzZWxmdGVzdHMg
-cHJvZ3Jlc3MgaW5kZXBlbmRlbnRseSBmb3IgYSBmZXcgeWVhcnMKPiB3aWxsIG9ubHkgbWFrZSB0
-aGlzIHdvcnNlIGFuZCBtYXkgYmVjb21lIHNvbWV0aGluZyB3ZSBlbmQgdXAKPiByZWdyZXR0aW5n
-LgoKWWVzLCB0aGlzIEkgYWdyZWUgd2l0aC4KCi1GcmFuawoKPiAKPiBMb2dhbgoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBs
-aXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
+On 5/9/19 2:42 PM, Theodore Ts'o wrote:
+> On Thu, May 09, 2019 at 11:12:12AM -0700, Frank Rowand wrote:
+>>
+>>    "My understanding is that the intent of KUnit is to avoid booting a kernel on
+>>    real hardware or in a virtual machine.  That seems to be a matter of semantics
+>>    to me because isn't invoking a UML Linux just running the Linux kernel in
+>>    a different form of virtualization?
+>>
+>>    So I do not understand why KUnit is an improvement over kselftest.
+>>
+>>    ...
+>>
+>>    What am I missing?"
+> 
+> One major difference: kselftest requires a userspace environment; it
+> starts systemd, requires a root file system from which you can load
+> modules, etc.  Kunit doesn't require a root file system; doesn't
+> require that you start systemd; doesn't allow you to run arbitrary
+> perl, python, bash, etc. scripts.  As such, it's much lighter weight
+> than kselftest, and will have much less overhead before you can start
+> running tests.  So it's not really the same kind of virtualization.
+> 
+> Does this help?
+> 
+> 					- Ted
+> 
+
+I'm back to reply to this subthread, after a delay, as promised.
+
+That is the type of information that I was looking for, so
+thank you for the reply.
+
+However, the reply is incorrect.  Kselftest in-kernel tests (which
+is the context here) can be configured as built in instead of as
+a module, and built in a UML kernel.  The UML kernel can boot,
+running the in-kernel tests before UML attempts to invoke the
+init process.
+
+No userspace environment needed.  So exactly the same overhead
+as KUnit when invoked in that manner.
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
