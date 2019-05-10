@@ -1,14 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from aserp2130.oracle.com ([141.146.126.79])
+Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hOyQ9-0007FJ-Qb
- for linux-um@lists.infradead.org; Fri, 10 May 2019 05:50:15 +0000
-Message-ID: <a1b88d5add15d43de0468c32d9a2427629337abb.camel@oracle.com>
+ id 1hOxvS-0003VE-Mg
+ for linux-um@lists.infradead.org; Fri, 10 May 2019 05:18:34 +0000
+Received: by mail-pf1-x441.google.com with SMTP id u17so2561144pfn.7
+ for <linux-um@lists.infradead.org>; Thu, 09 May 2019 22:18:29 -0700 (PDT)
 Subject: Re: [PATCH v2 00/17] kunit: introduce KUnit, the Linux kernel unit
  testing framework
-From: Knut Omang <knut.omang@oracle.com>
-Date: Fri, 10 May 2019 07:48:35 +0200
-In-Reply-To: <6d6e91ec-33d3-830b-4895-4d7a20ba7d45@gmail.com>
 References: <a09a7e0e-9894-8c1a-34eb-fc482b1759d0@gmail.com>
  <20190509015856.GB7031@mit.edu>
  <580e092f-fa4e-eedc-9e9a-a57dd085f0a6@gmail.com>
@@ -21,8 +19,12 @@ References: <a09a7e0e-9894-8c1a-34eb-fc482b1759d0@gmail.com>
  <b09ba170-229b-fde4-3e9a-e50d6ab4c1b5@deltatee.com>
  <20190509233043.GC20877@mit.edu>
  <8914afef-1e66-e6e3-f891-5855768d3018@deltatee.com>
- <6d6e91ec-33d3-830b-4895-4d7a20ba7d45@gmail.com>
+From: Frank Rowand <frowand.list@gmail.com>
+Message-ID: <6d6e91ec-33d3-830b-4895-4d7a20ba7d45@gmail.com>
+Date: Thu, 9 May 2019 22:18:25 -0700
 MIME-Version: 1.0
+In-Reply-To: <8914afef-1e66-e6e3-f891-5855768d3018@deltatee.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -31,122 +33,87 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Frank Rowand <frowand.list@gmail.com>, Logan Gunthorpe <logang@deltatee.com>, Theodore Ts'o <tytso@mit.edu>, Tim.Bird@sony.com, gregkh@linuxfoundation.org, brendanhiggins@google.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org, kunit-dev@googlegroups.com, linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, linux-um@lists.infradead.org, Alexander.Levin@microsoft.com, amir73il@gmail.com, dan.carpenter@oracle.com, dan.j.williams@intel.com, daniel@ffwll.ch, jdike@addtoit.com, joel@jms.id.au, julia.lawall@lip6.fr, khilman@baylibre.com, mpe@ellerman.id.au, pmladek@suse.com, richard@nod.at, rientjes@google.com, rostedt@goodmis.org, wfg@linux.intel.com
+To: Logan Gunthorpe <logang@deltatee.com>, Theodore Ts'o <tytso@mit.edu>, Tim.Bird@sony.com, knut.omang@oracle.com, gregkh@linuxfoundation.org, brendanhiggins@google.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org, kunit-dev@googlegroups.com, linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, linux-um@lists.infradead.org, Alexander.Levin@microsoft.com, amir73il@gmail.com, dan.carpenter@oracle.com, dan.j.williams@intel.com, daniel@ffwll.ch, jdike@addtoit.com, joel@jms.id.au, julia.lawall@lip6.fr, khilman@baylibre.com, mpe@ellerman.id.au, pmladek@suse.com, richard@nod.at, rientjes@google.com, rostedt@goodmis.org, wfg@linux.intel.com
 
-On Thu, 2019-05-09 at 22:18 -0700, Frank Rowand wrote:
-> On 5/9/19 4:40 PM, Logan Gunthorpe wrote:
-> > 
-> > 
-> > On 2019-05-09 5:30 p.m., Theodore Ts'o wrote:
-> >> On Thu, May 09, 2019 at 04:20:05PM -0600, Logan Gunthorpe wrote:
-> >>>
-> >>> The second item, arguably, does have significant overlap with kselftest.
-> >>> Whether you are running short tests in a light weight UML environment or
-> >>> higher level tests in an heavier VM the two could be using the same
-> >>> framework for writing or defining in-kernel tests. It *may* also be valuable
-> >>> for some people to be able to run all the UML tests in the heavy VM
-> >>> environment along side other higher level tests.
-> >>>
-> >>> Looking at the selftests tree in the repo, we already have similar items to
-> >>> what Kunit is adding as I described in point (2) above. kselftest_harness.h
-> >>> contains macros like EXPECT_* and ASSERT_* with very similar intentions to
-> >>> the new KUNIT_EXECPT_* and KUNIT_ASSERT_* macros.
-> >>>
-> >>> However, the number of users of this harness appears to be quite small. Most
-> >>> of the code in the selftests tree seems to be a random mismash of scripts
-> >>> and userspace code so it's not hard to see it as something completely
-> >>> different from the new Kunit:
-> >>>
-> >>> $ git grep --files-with-matches kselftest_harness.h *
-> >>
-> >> To the extent that we can unify how tests are written, I agree that
-> >> this would be a good thing.  However, you should note that
-> >> kselftest_harness.h is currently assums that it will be included in
-> >> userspace programs.  This is most obviously seen if you look closely
-> >> at the functions defined in the header files which makes calls to
-> >> fork(), abort() and fprintf().
-> > 
-> > Ah, yes. I obviously did not dig deep enough. Using kunit for
-> > in-kernel tests and kselftest_harness for userspace tests seems like
-> > a sensible line to draw to me. Trying to unify kernel and userspace
-> > here sounds like it could be difficult so it's probably not worth
-> > forcing the issue unless someone wants to do some really fancy work
-> > to get it done.
-> > 
-> > Based on some of the other commenters, I was under the impression
-> > that kselftests had in-kernel tests but I'm not sure where or if they
-> > exist.
-> 
-> YES, kselftest has in-kernel tests.  (Excuse the shouting...)
-> 
-> Here is a likely list of them in the kernel source tree:
-> 
-> $ grep module_init lib/test_*.c
-> lib/test_bitfield.c:module_init(test_bitfields)
-> lib/test_bitmap.c:module_init(test_bitmap_init);
-> lib/test_bpf.c:module_init(test_bpf_init);
-> lib/test_debug_virtual.c:module_init(test_debug_virtual_init);
-> lib/test_firmware.c:module_init(test_firmware_init);
-> lib/test_hash.c:module_init(test_hash_init);	/* Does everything */
-> lib/test_hexdump.c:module_init(test_hexdump_init);
-> lib/test_ida.c:module_init(ida_checks);
-> lib/test_kasan.c:module_init(kmalloc_tests_init);
-> lib/test_list_sort.c:module_init(list_sort_test);
-> lib/test_memcat_p.c:module_init(test_memcat_p_init);
-> lib/test_module.c:static int __init test_module_init(void)
-> lib/test_module.c:module_init(test_module_init);
-> lib/test_objagg.c:module_init(test_objagg_init);
-> lib/test_overflow.c:static int __init test_module_init(void)
-> lib/test_overflow.c:module_init(test_module_init);
-> lib/test_parman.c:module_init(test_parman_init);
-> lib/test_printf.c:module_init(test_printf_init);
-> lib/test_rhashtable.c:module_init(test_rht_init);
-> lib/test_siphash.c:module_init(siphash_test_init);
-> lib/test_sort.c:module_init(test_sort_init);
-> lib/test_stackinit.c:module_init(test_stackinit_init);
-> lib/test_static_key_base.c:module_init(test_static_key_base_init);
-> lib/test_static_keys.c:module_init(test_static_key_init);
-> lib/test_string.c:module_init(string_selftest_init);
-> lib/test_ubsan.c:module_init(test_ubsan_init);
-> lib/test_user_copy.c:module_init(test_user_copy_init);
-> lib/test_uuid.c:module_init(test_uuid_init);
-> lib/test_vmalloc.c:module_init(vmalloc_test_init)
-> lib/test_xarray.c:module_init(xarray_checks);
-> 
-> 
-> > If they do exists, it seems like it would make sense to
-> > convert those to kunit and have Kunit tests run-able in a VM or
-> > baremetal instance.
-> 
-> They already run in a VM.
-> 
-> They already run on bare metal.
-> 
-> They already run in UML.
-> 
-> This is not to say that KUnit does not make sense.  But I'm still trying
-> to get a better description of the KUnit features (and there are
-> some).
-
-FYI, I have a master student who looks at converting some of these to KTF, such as for
-instance the XArray tests, which lended themselves quite good to a semi-automated
-conversion. 
-
-The result is also a somewhat more compact code as well as the flexibility 
-provided by the Googletest executor and the KTF frameworks, such as running selected
-tests, output formatting, debugging features etc.
-
-Knut
-
-> -Frank
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gNS85LzE5IDQ6NDAgUE0sIExvZ2FuIEd1bnRob3JwZSB3cm90ZToKPiAKPiAKPiBPbiAyMDE5
+LTA1LTA5IDU6MzAgcC5tLiwgVGhlb2RvcmUgVHMnbyB3cm90ZToKPj4gT24gVGh1LCBNYXkgMDks
+IDIwMTkgYXQgMDQ6MjA6MDVQTSAtMDYwMCwgTG9nYW4gR3VudGhvcnBlIHdyb3RlOgo+Pj4KPj4+
+IFRoZSBzZWNvbmQgaXRlbSwgYXJndWFibHksIGRvZXMgaGF2ZSBzaWduaWZpY2FudCBvdmVybGFw
+IHdpdGgga3NlbGZ0ZXN0Lgo+Pj4gV2hldGhlciB5b3UgYXJlIHJ1bm5pbmcgc2hvcnQgdGVzdHMg
+aW4gYSBsaWdodCB3ZWlnaHQgVU1MIGVudmlyb25tZW50IG9yCj4+PiBoaWdoZXIgbGV2ZWwgdGVz
+dHMgaW4gYW4gaGVhdmllciBWTSB0aGUgdHdvIGNvdWxkIGJlIHVzaW5nIHRoZSBzYW1lCj4+PiBm
+cmFtZXdvcmsgZm9yIHdyaXRpbmcgb3IgZGVmaW5pbmcgaW4ta2VybmVsIHRlc3RzLiBJdCAqbWF5
+KiBhbHNvIGJlIHZhbHVhYmxlCj4+PiBmb3Igc29tZSBwZW9wbGUgdG8gYmUgYWJsZSB0byBydW4g
+YWxsIHRoZSBVTUwgdGVzdHMgaW4gdGhlIGhlYXZ5IFZNCj4+PiBlbnZpcm9ubWVudCBhbG9uZyBz
+aWRlIG90aGVyIGhpZ2hlciBsZXZlbCB0ZXN0cy4KPj4+Cj4+PiBMb29raW5nIGF0IHRoZSBzZWxm
+dGVzdHMgdHJlZSBpbiB0aGUgcmVwbywgd2UgYWxyZWFkeSBoYXZlIHNpbWlsYXIgaXRlbXMgdG8K
+Pj4+IHdoYXQgS3VuaXQgaXMgYWRkaW5nIGFzIEkgZGVzY3JpYmVkIGluIHBvaW50ICgyKSBhYm92
+ZS4ga3NlbGZ0ZXN0X2hhcm5lc3MuaAo+Pj4gY29udGFpbnMgbWFjcm9zIGxpa2UgRVhQRUNUXyog
+YW5kIEFTU0VSVF8qIHdpdGggdmVyeSBzaW1pbGFyIGludGVudGlvbnMgdG8KPj4+IHRoZSBuZXcg
+S1VOSVRfRVhFQ1BUXyogYW5kIEtVTklUX0FTU0VSVF8qIG1hY3Jvcy4KPj4+Cj4+PiBIb3dldmVy
+LCB0aGUgbnVtYmVyIG9mIHVzZXJzIG9mIHRoaXMgaGFybmVzcyBhcHBlYXJzIHRvIGJlIHF1aXRl
+IHNtYWxsLiBNb3N0Cj4+PiBvZiB0aGUgY29kZSBpbiB0aGUgc2VsZnRlc3RzIHRyZWUgc2VlbXMg
+dG8gYmUgYSByYW5kb20gbWlzbWFzaCBvZiBzY3JpcHRzCj4+PiBhbmQgdXNlcnNwYWNlIGNvZGUg
+c28gaXQncyBub3QgaGFyZCB0byBzZWUgaXQgYXMgc29tZXRoaW5nIGNvbXBsZXRlbHkKPj4+IGRp
+ZmZlcmVudCBmcm9tIHRoZSBuZXcgS3VuaXQ6Cj4+Pgo+Pj4gJCBnaXQgZ3JlcCAtLWZpbGVzLXdp
+dGgtbWF0Y2hlcyBrc2VsZnRlc3RfaGFybmVzcy5oICoKPj4KPj4gVG8gdGhlIGV4dGVudCB0aGF0
+IHdlIGNhbiB1bmlmeSBob3cgdGVzdHMgYXJlIHdyaXR0ZW4sIEkgYWdyZWUgdGhhdAo+PiB0aGlz
+IHdvdWxkIGJlIGEgZ29vZCB0aGluZy7CoCBIb3dldmVyLCB5b3Ugc2hvdWxkIG5vdGUgdGhhdAo+
+PiBrc2VsZnRlc3RfaGFybmVzcy5oIGlzIGN1cnJlbnRseSBhc3N1bXMgdGhhdCBpdCB3aWxsIGJl
+IGluY2x1ZGVkIGluCj4+IHVzZXJzcGFjZSBwcm9ncmFtcy7CoCBUaGlzIGlzIG1vc3Qgb2J2aW91
+c2x5IHNlZW4gaWYgeW91IGxvb2sgY2xvc2VseQo+PiBhdCB0aGUgZnVuY3Rpb25zIGRlZmluZWQg
+aW4gdGhlIGhlYWRlciBmaWxlcyB3aGljaCBtYWtlcyBjYWxscyB0bwo+PiBmb3JrKCksIGFib3J0
+KCkgYW5kIGZwcmludGYoKS4KPiAKPiBBaCwgeWVzLiBJIG9idmlvdXNseSBkaWQgbm90IGRpZyBk
+ZWVwIGVub3VnaC4gVXNpbmcga3VuaXQgZm9yCj4gaW4ta2VybmVsIHRlc3RzIGFuZCBrc2VsZnRl
+c3RfaGFybmVzcyBmb3IgdXNlcnNwYWNlIHRlc3RzIHNlZW1zIGxpa2UKPiBhIHNlbnNpYmxlIGxp
+bmUgdG8gZHJhdyB0byBtZS4gVHJ5aW5nIHRvIHVuaWZ5IGtlcm5lbCBhbmQgdXNlcnNwYWNlCj4g
+aGVyZSBzb3VuZHMgbGlrZSBpdCBjb3VsZCBiZSBkaWZmaWN1bHQgc28gaXQncyBwcm9iYWJseSBu
+b3Qgd29ydGgKPiBmb3JjaW5nIHRoZSBpc3N1ZSB1bmxlc3Mgc29tZW9uZSB3YW50cyB0byBkbyBz
+b21lIHJlYWxseSBmYW5jeSB3b3JrCj4gdG8gZ2V0IGl0IGRvbmUuCj4gCj4gQmFzZWQgb24gc29t
+ZSBvZiB0aGUgb3RoZXIgY29tbWVudGVycywgSSB3YXMgdW5kZXIgdGhlIGltcHJlc3Npb24KPiB0
+aGF0IGtzZWxmdGVzdHMgaGFkIGluLWtlcm5lbCB0ZXN0cyBidXQgSSdtIG5vdCBzdXJlIHdoZXJl
+IG9yIGlmIHRoZXkKPiBleGlzdC4KCllFUywga3NlbGZ0ZXN0IGhhcyBpbi1rZXJuZWwgdGVzdHMu
+ICAoRXhjdXNlIHRoZSBzaG91dGluZy4uLikKCkhlcmUgaXMgYSBsaWtlbHkgbGlzdCBvZiB0aGVt
+IGluIHRoZSBrZXJuZWwgc291cmNlIHRyZWU6CgokIGdyZXAgbW9kdWxlX2luaXQgbGliL3Rlc3Rf
+Ki5jCmxpYi90ZXN0X2JpdGZpZWxkLmM6bW9kdWxlX2luaXQodGVzdF9iaXRmaWVsZHMpCmxpYi90
+ZXN0X2JpdG1hcC5jOm1vZHVsZV9pbml0KHRlc3RfYml0bWFwX2luaXQpOwpsaWIvdGVzdF9icGYu
+Yzptb2R1bGVfaW5pdCh0ZXN0X2JwZl9pbml0KTsKbGliL3Rlc3RfZGVidWdfdmlydHVhbC5jOm1v
+ZHVsZV9pbml0KHRlc3RfZGVidWdfdmlydHVhbF9pbml0KTsKbGliL3Rlc3RfZmlybXdhcmUuYzpt
+b2R1bGVfaW5pdCh0ZXN0X2Zpcm13YXJlX2luaXQpOwpsaWIvdGVzdF9oYXNoLmM6bW9kdWxlX2lu
+aXQodGVzdF9oYXNoX2luaXQpOwkvKiBEb2VzIGV2ZXJ5dGhpbmcgKi8KbGliL3Rlc3RfaGV4ZHVt
+cC5jOm1vZHVsZV9pbml0KHRlc3RfaGV4ZHVtcF9pbml0KTsKbGliL3Rlc3RfaWRhLmM6bW9kdWxl
+X2luaXQoaWRhX2NoZWNrcyk7CmxpYi90ZXN0X2thc2FuLmM6bW9kdWxlX2luaXQoa21hbGxvY190
+ZXN0c19pbml0KTsKbGliL3Rlc3RfbGlzdF9zb3J0LmM6bW9kdWxlX2luaXQobGlzdF9zb3J0X3Rl
+c3QpOwpsaWIvdGVzdF9tZW1jYXRfcC5jOm1vZHVsZV9pbml0KHRlc3RfbWVtY2F0X3BfaW5pdCk7
+CmxpYi90ZXN0X21vZHVsZS5jOnN0YXRpYyBpbnQgX19pbml0IHRlc3RfbW9kdWxlX2luaXQodm9p
+ZCkKbGliL3Rlc3RfbW9kdWxlLmM6bW9kdWxlX2luaXQodGVzdF9tb2R1bGVfaW5pdCk7CmxpYi90
+ZXN0X29iamFnZy5jOm1vZHVsZV9pbml0KHRlc3Rfb2JqYWdnX2luaXQpOwpsaWIvdGVzdF9vdmVy
+Zmxvdy5jOnN0YXRpYyBpbnQgX19pbml0IHRlc3RfbW9kdWxlX2luaXQodm9pZCkKbGliL3Rlc3Rf
+b3ZlcmZsb3cuYzptb2R1bGVfaW5pdCh0ZXN0X21vZHVsZV9pbml0KTsKbGliL3Rlc3RfcGFybWFu
+LmM6bW9kdWxlX2luaXQodGVzdF9wYXJtYW5faW5pdCk7CmxpYi90ZXN0X3ByaW50Zi5jOm1vZHVs
+ZV9pbml0KHRlc3RfcHJpbnRmX2luaXQpOwpsaWIvdGVzdF9yaGFzaHRhYmxlLmM6bW9kdWxlX2lu
+aXQodGVzdF9yaHRfaW5pdCk7CmxpYi90ZXN0X3NpcGhhc2guYzptb2R1bGVfaW5pdChzaXBoYXNo
+X3Rlc3RfaW5pdCk7CmxpYi90ZXN0X3NvcnQuYzptb2R1bGVfaW5pdCh0ZXN0X3NvcnRfaW5pdCk7
+CmxpYi90ZXN0X3N0YWNraW5pdC5jOm1vZHVsZV9pbml0KHRlc3Rfc3RhY2tpbml0X2luaXQpOwps
+aWIvdGVzdF9zdGF0aWNfa2V5X2Jhc2UuYzptb2R1bGVfaW5pdCh0ZXN0X3N0YXRpY19rZXlfYmFz
+ZV9pbml0KTsKbGliL3Rlc3Rfc3RhdGljX2tleXMuYzptb2R1bGVfaW5pdCh0ZXN0X3N0YXRpY19r
+ZXlfaW5pdCk7CmxpYi90ZXN0X3N0cmluZy5jOm1vZHVsZV9pbml0KHN0cmluZ19zZWxmdGVzdF9p
+bml0KTsKbGliL3Rlc3RfdWJzYW4uYzptb2R1bGVfaW5pdCh0ZXN0X3Vic2FuX2luaXQpOwpsaWIv
+dGVzdF91c2VyX2NvcHkuYzptb2R1bGVfaW5pdCh0ZXN0X3VzZXJfY29weV9pbml0KTsKbGliL3Rl
+c3RfdXVpZC5jOm1vZHVsZV9pbml0KHRlc3RfdXVpZF9pbml0KTsKbGliL3Rlc3Rfdm1hbGxvYy5j
+Om1vZHVsZV9pbml0KHZtYWxsb2NfdGVzdF9pbml0KQpsaWIvdGVzdF94YXJyYXkuYzptb2R1bGVf
+aW5pdCh4YXJyYXlfY2hlY2tzKTsKCgo+IElmIHRoZXkgZG8gZXhpc3RzLCBpdCBzZWVtcyBsaWtl
+IGl0IHdvdWxkIG1ha2Ugc2Vuc2UgdG8KPiBjb252ZXJ0IHRob3NlIHRvIGt1bml0IGFuZCBoYXZl
+IEt1bml0IHRlc3RzIHJ1bi1hYmxlIGluIGEgVk0gb3IKPiBiYXJlbWV0YWwgaW5zdGFuY2UuCgpU
+aGV5IGFscmVhZHkgcnVuIGluIGEgVk0uCgpUaGV5IGFscmVhZHkgcnVuIG9uIGJhcmUgbWV0YWwu
+CgpUaGV5IGFscmVhZHkgcnVuIGluIFVNTC4KClRoaXMgaXMgbm90IHRvIHNheSB0aGF0IEtVbml0
+IGRvZXMgbm90IG1ha2Ugc2Vuc2UuICBCdXQgSSdtIHN0aWxsIHRyeWluZwp0byBnZXQgYSBiZXR0
+ZXIgZGVzY3JpcHRpb24gb2YgdGhlIEtVbml0IGZlYXR1cmVzIChhbmQgdGhlcmUgYXJlCnNvbWUp
+LgoKLUZyYW5rCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRw
+Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
 
