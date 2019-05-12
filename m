@@ -1,14 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hPwu9-0001UM-Tz
- for linux-um@lists.infradead.org; Sun, 12 May 2019 22:25:15 +0000
-Subject: Re: [GIT PULL] UML changes for v5.2-rc1
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <1836274340.56055.1557697309728.JavaMail.zimbra@nod.at>
-References: <1836274340.56055.1557697309728.JavaMail.zimbra@nod.at>
-Message-Id: <155769991315.32032.11407094999268511120.pr-tracker-bot@kernel.org>
-Date: Sun, 12 May 2019 22:25:13 +0000
+ id 1hPwEL-0004Mp-5Y
+ for linux-um@lists.infradead.org; Sun, 12 May 2019 21:42:03 +0000
+Date: Sun, 12 May 2019 23:41:49 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <1836274340.56055.1557697309728.JavaMail.zimbra@nod.at>
+Subject: [GIT PULL] UML changes for v5.2-rc1
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -17,29 +16,47 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-um <linux-um@lists.infradead.org>, torvalds <torvalds@linux-foundation.org>, linux-kernel <linux-kernel@vger.kernel.org>, anton ivanov <anton.ivanov@cambridgegreys.com>
+To: torvalds <torvalds@linux-foundation.org>
+Cc: linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, anton ivanov <anton.ivanov@cambridgegreys.com>
 
-The pull request you sent on Sun, 12 May 2019 23:41:49 +0200 (CEST):
-
-> git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.2-rc1
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/983dfa4b6ee556563f7963348e4e2f97fc8a15b8
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+TGludXMsCgpUaGUgZm9sbG93aW5nIGNoYW5nZXMgc2luY2UgY29tbWl0IDM3NjI0YjU4NTQyZmI5
+ZjJkOWE3MGU2ZWEwMDZlZjhhNWY2NmMzMGI6CgogIExpbnV4IDUuMS1yYzcgKDIwMTktMDQtMjgg
+MTc6MDQ6MTMgLTA3MDApCgphcmUgYXZhaWxhYmxlIGluIHRoZSBHaXQgcmVwb3NpdG9yeSBhdDoK
+CiAgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3J3L3VtbC5n
+aXQgdGFncy9mb3ItbGludXMtNS4yLXJjMQoKZm9yIHlvdSB0byBmZXRjaCBjaGFuZ2VzIHVwIHRv
+IDE5ODdiMWI4ZjlmMTdhMDYyNTU4NzdlNzkxN2QwYmI1YjUzNzc3NzQ6CgogIHVtOiBpcnE6IGRv
+bid0IHNldCB0aGUgY2hpcCBmb3IgYWxsIGlycXMgKDIwMTktMDUtMDcgMjM6MTg6MjggKzAyMDAp
+CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tClRoaXMgcHVsbCByZXF1ZXN0IGNvbnRhaW5zIHRoZSBmb2xsb3dpbmcgY2hhbmdl
+cyBmb3IgVU1MOgoKLSBLY29uZmlnIGNsZWFudXBzCi0gRml4IGNwdV9hbGxfbWFzaygpIHVzYWdl
+Ci0gVmFyaW91cyBidWcgZml4ZXMKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQW50b24gSXZhbm92ICgxKToKICAgICAgdW06
+IFJldmVydCB0byB1c2luZyBzdGFjayBmb3IgcHRfcmVncyBpbiBzaWduYWwgaGFuZGxpbmcKCkJh
+cnRvc3ogR29sYXN6ZXdza2kgKDQpOgogICAgICB1bTogcmVtb3ZlIHVudXNlZCB2YXJpYWJsZQog
+ICAgICB1bTogcmVtb3ZlIHVzZXMgb2YgdmFyaWFibGUgbGVuZ3RoIGFycmF5cwogICAgICB1bTog
+ZGVmaW5lIHNldF9wdGVfYXQoKSBhcyBhIHN0YXRpYyBpbmxpbmUgZnVuY3Rpb24sIG5vdCBhIG1h
+Y3JvCiAgICAgIHVtOiBpcnE6IGRvbid0IHNldCB0aGUgY2hpcCBmb3IgYWxsIGlycXMKCkNvbGlu
+IElhbiBLaW5nICgxKToKICAgICAgaG9zdGZzOiBmaXggbWlzbWF0Y2ggYmV0d2VlbiBsaW5rX2Zp
+bGUgZGVmaW5pdGlvbiBhbmQgZGVjbGFyYXRpb24KCkRhbmllbCBXYWx0ZXIgKDEpOgogICAgICB1
+bTogRG8gbm90IHVubG9jayBtdXRleCB0aGF0IGlzIG5vdCBob2xkLgoKRW5yaWNvIFdlaWdlbHQs
+IG1ldHV4IElUIGNvbnN1bHQgKDIpOgogICAgICBhcmNoOiB1bTogS2NvbmZpZzogcGVkYW50aWMg
+aW5kZW50aW9uIGNsZWFudXBzCiAgICAgIGFyY2g6IHVtOiBkcml2ZXJzOiBLY29uZmlnOiBwZWRh
+bnRpYyBmb3JtYXR0aW5nCgpNYWNpZWogxbtlbmN6eWtvd3NraSAoMSk6CiAgICAgIHVtbDogZml4
+IGEgYm9vdCBzcGxhdCB3cnQgdXNlIG9mIGNwdV9hbGxfbWFzawoKIGFyY2gvdW0vS2NvbmZpZyAg
+ICAgICAgICAgICAgIHwgIDU4ICsrKy0tLS0KIGFyY2gvdW0vZHJpdmVycy9LY29uZmlnICAgICAg
+IHwgMzUyICsrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tLQogYXJjaC91
+bS9kcml2ZXJzL3ViZF9rZXJuLmMgICAgfCAgIDQgKy0KIGFyY2gvdW0vaW5jbHVkZS9hc20vcGd0
+YWJsZS5oIHwgICA3ICstCiBhcmNoL3VtL2tlcm5lbC9pcnEuYyAgICAgICAgICB8ICAgMiArLQog
+YXJjaC91bS9rZXJuZWwvc2thcy91YWNjZXNzLmMgfCAgIDEgLQogYXJjaC91bS9rZXJuZWwvdGlt
+ZS5jICAgICAgICAgfCAgIDIgKy0KIGFyY2gvdW0vb3MtTGludXgvc2lnbmFsLmMgICAgIHwgIDI4
+ICstLS0KIGFyY2gvdW0vb3MtTGludXgvdW1pZC5jICAgICAgIHwgIDM2ICsrKy0tCiBmcy9ob3N0
+ZnMvaG9zdGZzLmggICAgICAgICAgICB8ICAgMiArLQogMTAgZmlsZXMgY2hhbmdlZCwgMjUzIGlu
+c2VydGlvbnMoKyksIDIzOSBkZWxldGlvbnMoLSkKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0
+cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vbGludXgtdW0K
 
