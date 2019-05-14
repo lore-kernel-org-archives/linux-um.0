@@ -1,29 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x543.google.com ([2607:f8b0:4864:20::543])
+Received: from mail-yw1-xc49.google.com ([2607:f8b0:4864:20::c49])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hQhZ7-0006EG-TM
- for linux-um@lists.infradead.org; Wed, 15 May 2019 00:14:39 +0000
-Received: by mail-pg1-x543.google.com with SMTP id w22so376885pgi.6
- for <linux-um@lists.infradead.org>; Tue, 14 May 2019 17:14:35 -0700 (PDT)
-Subject: Re: [PATCH v2 00/17] kunit: introduce KUnit, the Linux kernel unit
+ id 1hQfjx-0000dH-Bd
+ for linux-um@lists.infradead.org; Tue, 14 May 2019 22:17:43 +0000
+Received: by mail-yw1-xc49.google.com with SMTP id j62so712680ywe.3
+ for <linux-um@lists.infradead.org>; Tue, 14 May 2019 15:17:40 -0700 (PDT)
+Date: Tue, 14 May 2019 15:16:53 -0700
+Message-Id: <20190514221711.248228-1-brendanhiggins@google.com>
+Mime-Version: 1.0
+Subject: [PATCH v4 00/18] kunit: introduce KUnit, the Linux kernel unit
  testing framework
-References: <20190509133551.GD29703@mit.edu>
- <ECADFF3FD767C149AD96A924E7EA6EAF9770D591@USCULXMSG01.am.sony.com>
- <875c546d-9713-bb59-47e4-77a1d2c69a6d@gmail.com>
- <20190509214233.GA20877@mit.edu>
- <b09ba170-229b-fde4-3e9a-e50d6ab4c1b5@deltatee.com>
- <20190509233043.GC20877@mit.edu>
- <8914afef-1e66-e6e3-f891-5855768d3018@deltatee.com>
- <6d6e91ec-33d3-830b-4895-4d7a20ba7d45@gmail.com>
- <3faa022b-0b70-0375-aa6d-12ea83a2671f@deltatee.com>
- <d148a554-2a71-a5a4-4bb2-d84d2c483277@gmail.com>
- <20190514083819.GC230665@google.com>
-From: Frank Rowand <frowand.list@gmail.com>
-Message-ID: <5ff098a9-9424-901c-9017-d4492e306528@gmail.com>
-Date: Tue, 14 May 2019 17:14:30 -0700
-MIME-Version: 1.0
-In-Reply-To: <20190514083819.GC230665@google.com>
-Content-Language: en-US
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -36,129 +23,110 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Brendan Higgins <brendanhiggins@google.com>
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, mpe@ellerman.id.au, linux-kselftest@vger.kernel.org, shuah@kernel.org, robh@kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, kieran.bingham@ideasonboard.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, Theodore Ts'o <tytso@mit.edu>, richard@nod.at, sboyd@kernel.org, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, mcgrof@kernel.org, daniel@ffwll.ch, keescook@google.com, linux-fsdevel@vger.kernel.org, Logan Gunthorpe <logang@deltatee.com>
+To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-On 5/14/19 1:38 AM, Brendan Higgins wrote:
-> On Fri, May 10, 2019 at 03:13:40PM -0700, Frank Rowand wrote:
->> On 5/10/19 9:17 AM, Logan Gunthorpe wrote:
->>>
->>>
->>> On 2019-05-09 11:18 p.m., Frank Rowand wrote:
->>>
->>>> YES, kselftest has in-kernel tests.  (Excuse the shouting...)
->>>
->>> Cool. From my cursory look, in my opinion, these would be greatly
->>> improved by converting them to the framework Brendan is proposing for Kunit.
->>>
->>>>> If they do exists, it seems like it would make sense to
->>>>> convert those to kunit and have Kunit tests run-able in a VM or
->>>>> baremetal instance.
->>>>
->>>> They already run in a VM.
->>>>
->>>> They already run on bare metal.
->>>>
->>>> They already run in UML.
->>>
->>> Simply being able to run in UML is not the only thing here. Kunit
->>> provides the infrastructure to quickly build, run and report results for
->>> all the tests from userspace without needing to worry about the details
->>> of building and running a UML kernel, then parsing dmesg to figure out
->>> what tests were run or not.
->>
->> Yes.  But that is not the only environment that KUnit must support to be
->> of use to me for devicetree unittests (this is not new, Brendan is quite
->> aware of my needs and is not ignoring them).
->>
->>
->>>> This is not to say that KUnit does not make sense.  But I'm still trying
->>>> to get a better description of the KUnit features (and there are
->>>> some).
->>>
->>> So read the patches, or the documentation[1] or the LWN article[2]. It's
->>> pretty well described in a lot of places -- that's one of the big
->>> advantages of it. In contrast, few people seems to have any concept of
->>> what kselftests are or where they are or how to run them (I was
->>> surprised to find the in-kernel tests in the lib tree).
->>>
->>> Logan
->>>
->>> [1] https://google.github.io/kunit-docs/third_party/kernel/docs/
->>> [2] https://lwn.net/Articles/780985/
->>
->> I have been following the RFC versions.  I have installed the RFC patches
->> and run them to the extent that they worked (devicetree unittests were
->> a guinea pig for test conversion in the RFC series, but the converted
->> tests did not work).  I read portions of the code while trying to
->> understand the unittests conversion.  I made review comments based on
->> the portion of the code that I did read.  I have read the documentation
->> (very nice btw, as I have said before, but should be expanded).
->>
->> My comment is that the description to submit the patch series should
->> be fuller -- KUnit potentially has a lot of nice attributes, and I
->> still think I have only scratched the surface.  The average reviewer
->> may have even less in-depth knowledge than I do.  And as I have
->> commented before, I keep diving into areas that I had no previous
->> experience with (such as kselftest) to be able to properly judge this
->> patch series.
-> 
-> Thanks for the praise! That means a lot coming from you!
-> 
-> I really cannot disagree that I could use more documentation. You can
-> pretty much always use more documentation. Nevertheless, is there a
-> particular part of the documentation that you think it lacking?
+## TLDR
 
-I wasn't talking about the documentation that is part of KUnit.  I was
-targeting patch 0.
+A quick follow up to yesterday's revision. I got some feedback that I
+wanted to incorporate before anyone else read the update. For this
+reason, I will leave a TLDR of the biggest changes since v2.
 
+Biggest things to look out for (since v2):
 
-> It sounds like there was a pretty long discussion here about, a number
-> of different things.
-> 
-> Do you want a better description of what unit testing is and how KUnit
-> helps make it possible?
-> 
-> Do you want more of an explanation distinguishing KUnit from kselftest?
-> How so?
+- KUnit core now outputs results in TAP14.
+- Heavily reworked tools/testing/kunit/kunit.py
+  - Changed how parsing works.
+  - Added testing.
+  - Greg, Logan, you might want to re-review this.
+- Added documentation on how to use KUnit on non-UML kernels. You can
+  see the docs rendered here[1].
 
-The high level issue is to provide reviewers with enough context to be
-able to evaluate the patch series.  That is probably not very obvious
-at this point in the thread.  At this point I was responding to Logan's
-response to me that I should be reading Documentation to get a better
-description of KUnit features.  I _think_ that Logan thought that I
-did not understand KUnit features and was trying to be helpful by
-pointing out where I could get more information.  If so, he was missing
-my intended point had been that patch 0 should provide more information
-to justify adding this feature.
+There is still some discussion going on on the [PATCH v2 00/17] thread,
+but I wanted to get some of these updates out before they got too stale
+(and too difficult for me to keep track of). I hope no one minds.
 
-One thing that has become very apparent in the discussion of this patch
-series is that some people do not understand that kselftest includes
-in-kernel tests, not just userspace tests.  As such, KUnit is an
-additional implementation of "the same feature".  (One can debate
-exactly which in-kernel test features kselftest and KUnit provide,
-and how much overlap exists or does not exist.  So don't take "the
-same feature" as my final opinion of how much overlap exists.)  So
-that is a key element to be noted and explained.
+## Background
 
-I don't have a goal of finding all the things to include in patch 0,
-that is really your job as the patch submitter.  But as a reviewer,
-it is easy for me to point out an obvious hole, even if I don't find
-all of the holes.  kselftest vs KUnit overlap was an obvious hole to
-me.
+This patch set proposes KUnit, a lightweight unit testing and mocking
+framework for the Linux kernel.
 
-So, yes, more of an explanation about the in-kernel testing available
-via kselftest vs the in-kernel testing available via KUnit, and how
-they provide the same or different functionality.  Should both exist?
-Should one replace the other?  If one provides additional features,
-should the additional features be merged into a common base?
+Unlike Autotest and kselftest, KUnit is a true unit testing framework;
+it does not require installing the kernel on a test machine or in a VM
+(however, KUnit still allows you to run tests on test machines or in VMs
+if you want) and does not require tests to be written in userspace
+running on a host kernel. Additionally, KUnit is fast: From invocation
+to completion KUnit can run several dozen tests in under a second.
+Currently, the entire KUnit test suite for KUnit runs in under a second
+from the initial invocation (build time excluded).
 
-> Do you just want better documentation on how to test the kernel? What
-> tools we have at our disposal and when to use what tools?
-> 
-> Thanks!
-> .
-> 
+KUnit is heavily inspired by JUnit, Python's unittest.mock, and
+Googletest/Googlemock for C++. KUnit provides facilities for defining
+unit test cases, grouping related test cases into test suites, providing
+common infrastructure for running tests, mocking, spying, and much more.
+
+## What's so special about unit testing?
+
+A unit test is supposed to test a single unit of code in isolation,
+hence the name. There should be no dependencies outside the control of
+the test; this means no external dependencies, which makes tests orders
+of magnitudes faster. Likewise, since there are no external dependencies,
+there are no hoops to jump through to run the tests. Additionally, this
+makes unit tests deterministic: a failing unit test always indicates a
+problem. Finally, because unit tests necessarily have finer granularity,
+they are able to test all code paths easily solving the classic problem
+of difficulty in exercising error handling code.
+
+## Is KUnit trying to replace other testing frameworks for the kernel?
+
+No. Most existing tests for the Linux kernel are end-to-end tests, which
+have their place. A well tested system has lots of unit tests, a
+reasonable number of integration tests, and some end-to-end tests. KUnit
+is just trying to address the unit test space which is currently not
+being addressed.
+
+## More information on KUnit
+
+There is a bunch of documentation near the end of this patch set that
+describes how to use KUnit and best practices for writing unit tests.
+For convenience I am hosting the compiled docs here[2].
+
+Additionally for convenience, I have applied these patches to a
+branch[3].
+The repo may be cloned with:
+git clone https://kunit.googlesource.com/linux
+This patchset is on the kunit/rfc/v5.1/v4 branch.
+
+## Changes Since Last Version
+
+As I mentioned above, there are a significant number of updates since
+v2:
+- Converted KUnit core to print test results in TAP14 format as
+  suggested by Greg and Frank.
+- Heavily reworked tools/testing/kunit/kunit.py
+  - Changed how parsing works.
+  - Added testing.
+- Added documentation on how to use KUnit on non-UML kernels. You can
+  see the docs rendered here[1].
+- Added a new set of EXPECTs and ASSERTs for pointer comparison.
+- Removed more function indirection as suggested by Logan.
+- Added a new patch that adds `kunit_try_catch_throw` to objtool's
+  noreturn list.
+- Fixed a number of minorish issues pointed out by Shuah, Masahiro, and
+  kbuild bot.
+
+Nevertheless, there are only a couple of minor updates since v3:
+- Added more context to the changelog on the objtool patch, as per
+  Peter's request.
+- Moved all KUnit documentation under the Documentation/dev-tools/
+  directory as per Jonathan's suggestion.
+
+[1] https://google.github.io/kunit-docs/third_party/kernel/docs/usage.html#kunit-on-non-uml-architectures
+[2] https://google.github.io/kunit-docs/third_party/kernel/docs/
+[3] https://kunit.googlesource.com/linux/+/kunit/rfc/v5.1/v4
+
+-- 
+2.21.0.1020.gf2820cf01a-goog
 
 
 _______________________________________________
