@@ -1,79 +1,79 @@
-Return-Path: <rppt@linux.ibm.com>
-From: Mike Rapoport <rppt@linux.ibm.com>
-Subject: [PATCH 12/15] powerpc/nohash/64: switch to generic version of pte allocation
-Date: Thu,  2 May 2019 18:28:39 +0300
-In-Reply-To: <1556810922-20248-1-git-send-email-rppt@linux.ibm.com>
-References: <1556810922-20248-1-git-send-email-rppt@linux.ibm.com>
-Message-Id: <1556810922-20248-13-git-send-email-rppt@linux.ibm.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Catalin Marinas <catalin.marinas@arm.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>, Ley Foon Tan <lftan@altera.com>, Matthew Wilcox <willy@infradead.org>, Matt Turner <mattst88@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@suse.com>, Palmer Dabbelt <palmer@sifive.com>, Paul Burton <paul.burton@mips.com>, Richard Kuo <rkuo@codeaurora.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-um@lists.infradead.org, nios2-dev@lists.rocketboards.org, Mike Rapoport <rppt@linux.ibm.com>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1hQgnJ-0007st-Te
+ for linux-um@lists.infradead.org; Tue, 14 May 2019 23:25:15 +0000
+Received: by mail-pf1-x441.google.com with SMTP id s11so285936pfm.12
+ for <linux-um@lists.infradead.org>; Tue, 14 May 2019 16:25:13 -0700 (PDT)
+Date: Tue, 14 May 2019 16:25:06 -0700
+From: Brendan Higgins <brendanhiggins@google.com>
+Subject: Re: [PATCH v4 16/18] MAINTAINERS: add entry for KUnit the unit
+ testing framework
+Message-ID: <20190514232506.GA16788@google.com>
+References: <20190514221711.248228-1-brendanhiggins@google.com>
+ <20190514221711.248228-17-brendanhiggins@google.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20190514221711.248228-17-brendanhiggins@google.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-The 64-bit book-E powerpc implements pte_alloc_one(),
-pte_alloc_one_kernel(), pte_free_kernel() and pte_free() the same way as
-the generic version.
+On Tue, May 14, 2019 at 03:17:09PM -0700, Brendan Higgins wrote:
+> Add myself as maintainer of KUnit, the Linux kernel's unit testing
+> framework.
+> 
+> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+> ---
+>  MAINTAINERS | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 2c2fce72e694f..8a91887c8d541 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -8448,6 +8448,17 @@ S:	Maintained
+>  F:	tools/testing/selftests/
+>  F:	Documentation/dev-tools/kselftest*
+>  
+> +KERNEL UNIT TESTING FRAMEWORK (KUnit)
+> +M:	Brendan Higgins <brendanhiggins@google.com>
+> +L:	linux-kselftest@vger.kernel.org
+> +L:	kunit-dev@googlegroups.com
+> +W:	https://google.github.io/kunit-docs/third_party/kernel/docs/
+> +S:	Maintained
+> +F:	Documentation/kunit/
 
-Switch it to the generic version that does exactly the same thing.
+Dang it! I forgot to update the documentation path...
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- arch/powerpc/include/asm/nohash/64/pgalloc.h | 35 ++--------------------------
- 1 file changed, 2 insertions(+), 33 deletions(-)
+Will fix in next revision.
 
-diff --git a/arch/powerpc/include/asm/nohash/64/pgalloc.h b/arch/powerpc/include/asm/nohash/64/pgalloc.h
-index 66d086f..bfb53a0 100644
---- a/arch/powerpc/include/asm/nohash/64/pgalloc.h
-+++ b/arch/powerpc/include/asm/nohash/64/pgalloc.h
-@@ -11,6 +11,8 @@
- #include <linux/cpumask.h>
- #include <linux/percpu.h>
- 
-+#include <asm-generic/pgalloc.h>	/* for pte_{alloc,free}_one */
-+
- struct vmemmap_backing {
- 	struct vmemmap_backing *list;
- 	unsigned long phys;
-@@ -92,39 +94,6 @@ static inline void pmd_free(struct mm_struct *mm, pmd_t *pmd)
- 	kmem_cache_free(PGT_CACHE(PMD_CACHE_INDEX), pmd);
- }
- 
--
--static inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm)
--{
--	return (pte_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
--}
--
--static inline pgtable_t pte_alloc_one(struct mm_struct *mm)
--{
--	struct page *page;
--	pte_t *pte;
--
--	pte = (pte_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO | __GFP_ACCOUNT);
--	if (!pte)
--		return NULL;
--	page = virt_to_page(pte);
--	if (!pgtable_page_ctor(page)) {
--		__free_page(page);
--		return NULL;
--	}
--	return page;
--}
--
--static inline void pte_free_kernel(struct mm_struct *mm, pte_t *pte)
--{
--	free_page((unsigned long)pte);
--}
--
--static inline void pte_free(struct mm_struct *mm, pgtable_t ptepage)
--{
--	pgtable_page_dtor(ptepage);
--	__free_page(ptepage);
--}
--
- static inline void pgtable_free(void *table, int shift)
- {
- 	if (!shift) {
--- 
-2.7.4
+> +F:	include/kunit/
+> +F:	kunit/
+> +F:	tools/testing/kunit/
+> +
+>  KERNEL USERMODE HELPER
+>  M:	Luis Chamberlain <mcgrof@kernel.org>
+>  L:	linux-kernel@vger.kernel.org
+> -- 
+> 2.21.0.1020.gf2820cf01a-goog
+> 
 
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
