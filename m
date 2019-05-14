@@ -1,96 +1,263 @@
-Return-Path: <rppt@linux.ibm.com>
-From: Mike Rapoport <rppt@linux.ibm.com>
-Subject: [PATCH v2 09/14] nds32: switch to generic version of pte allocation
-Date: Wed,  8 May 2019 09:17:06 +0300
-In-Reply-To: <1557296232-15361-1-git-send-email-rppt@linux.ibm.com>
-References: <1557296232-15361-1-git-send-email-rppt@linux.ibm.com>
-Message-Id: <1557296232-15361-10-git-send-email-rppt@linux.ibm.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Anshuman Khandual <anshuman.khandual@arm.com>, Catalin Marinas <catalin.marinas@arm.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>, Ley Foon Tan <lftan@altera.com>, Matthew Wilcox <willy@infradead.org>, Matt Turner <mattst88@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@suse.com>, Palmer Dabbelt <palmer@sifive.com>, Paul Burton <paul.burton@mips.com>, Richard Kuo <rkuo@codeaurora.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-um@lists.infradead.org, nios2-dev@lists.rocketboards.org, Mike Rapoport <rppt@linux.ibm.com>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-vs1-xe4a.google.com ([2607:f8b0:4864:20::e4a])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1hQQEm-000508-NZ
+ for linux-um@lists.infradead.org; Tue, 14 May 2019 05:44:30 +0000
+Received: by mail-vs1-xe4a.google.com with SMTP id a197so1430083vsd.21
+ for <linux-um@lists.infradead.org>; Mon, 13 May 2019 22:44:27 -0700 (PDT)
+Date: Mon, 13 May 2019 22:42:40 -0700
+In-Reply-To: <20190514054251.186196-1-brendanhiggins@google.com>
+Message-Id: <20190514054251.186196-8-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20190514054251.186196-1-brendanhiggins@google.com>
+Subject: [PATCH v3 07/18] kunit: test: add initial tests
+From: Brendan Higgins <brendanhiggins@google.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: frowand.list@gmail.com, gregkh@linuxfoundation.org, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-The nds32 implementation of pte_alloc_one_kernel() differs from the generic
-in the use of __GFP_RETRY_MAYFAIL flag, which is removed after the
-conversion.
+Add a test for string stream along with a simpler example.
 
-The nds32 version of pte_alloc_one() missed the call to pgtable_page_ctor()
-and also used __GFP_RETRY_MAYFAIL. Switching it to use generic
-__pte_alloc_one() for the PTE page allocation ensures that page table
-constructor is run and the user page tables are allocated with
-__GFP_ACCOUNT.
-
-The conversion to the generic version of pte_free_kernel() removes the NULL
-check for pte.
-
-The pte_free() version on nds32 is identical to the generic one and can be
-simply dropped.
-
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
 ---
- arch/nds32/include/asm/pgalloc.h | 31 ++++---------------------------
- 1 file changed, 4 insertions(+), 27 deletions(-)
+Changes Since Last Revision:
+ - Added more Kconfig help text for KUNIT_TEST and KUNIT_EXAMPLE_TEST as
+   per Shuah's comments.
+---
+ kunit/Kconfig              | 25 ++++++++++-
+ kunit/Makefile             |  4 ++
+ kunit/example-test.c       | 88 ++++++++++++++++++++++++++++++++++++++
+ kunit/string-stream-test.c | 60 ++++++++++++++++++++++++++
+ 4 files changed, 175 insertions(+), 2 deletions(-)
+ create mode 100644 kunit/example-test.c
+ create mode 100644 kunit/string-stream-test.c
 
-diff --git a/arch/nds32/include/asm/pgalloc.h b/arch/nds32/include/asm/pgalloc.h
-index 3c5fee5..954696c 100644
---- a/arch/nds32/include/asm/pgalloc.h
-+++ b/arch/nds32/include/asm/pgalloc.h
-@@ -9,6 +9,9 @@
- #include <asm/tlbflush.h>
- #include <asm/proc-fns.h>
- 
-+#define __HAVE_ARCH_PTE_ALLOC_ONE
-+#include <asm-generic/pgalloc.h>	/* for pte_{alloc,free}_one */
+diff --git a/kunit/Kconfig b/kunit/Kconfig
+index 64480092b2c24..2052536cf9d3c 100644
+--- a/kunit/Kconfig
++++ b/kunit/Kconfig
+@@ -10,7 +10,28 @@ config KUNIT
+ 	  Enables support for kernel unit tests (KUnit), a lightweight unit
+ 	  testing and mocking framework for the Linux kernel. These tests are
+ 	  able to be run locally on a developer's workstation without a VM or
+-	  special hardware. For more information, please see
+-	  Documentation/kunit/
++	  special hardware when using UML. Can also be used on most other
++	  architectures. For more information, please see Documentation/kunit/.
 +
- /*
-  * Since we have only two-level page tables, these are trivial
-  */
-@@ -22,22 +25,11 @@ extern void pgd_free(struct mm_struct *mm, pgd_t * pgd);
++config KUNIT_TEST
++	bool "KUnit test for KUnit"
++	depends on KUNIT
++	help
++	  Enables the unit tests for the KUnit test framework. These tests test
++	  the KUnit test framework itself; the tests are both written using
++	  KUnit and test KUnit. This option should only be enabled for testing
++	  purposes by developers interested in testing that KUnit works as
++	  expected.
++
++config KUNIT_EXAMPLE_TEST
++	bool "Example test for KUnit"
++	depends on KUNIT
++	help
++	  Enables an example unit test that illustrates some of the basic
++	  features of KUnit. This test only exists to help new users understand
++	  what KUnit is and how it is used. Please refer to the example test
++	  itself, kunit/example-test.c, for more information. This option is
++	  intended for curious hackers who would like to understand how to use
++	  KUnit for kernel development.
  
- #define check_pgt_cache()		do { } while (0)
- 
--static inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm)
--{
--	pte_t *pte;
--
--	pte =
--	    (pte_t *) __get_free_page(GFP_KERNEL | __GFP_RETRY_MAYFAIL |
--				      __GFP_ZERO);
--
--	return pte;
--}
--
- static inline pgtable_t pte_alloc_one(struct mm_struct *mm)
- {
- 	pgtable_t pte;
- 
--	pte = alloc_pages(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_ZERO, 0);
-+	pte = __pte_alloc_one(mm, GFP_PGTABLE_USER);
- 	if (pte)
- 		cpu_dcache_wb_page((unsigned long)page_address(pte));
- 
-@@ -45,21 +37,6 @@ static inline pgtable_t pte_alloc_one(struct mm_struct *mm)
- }
- 
- /*
-- * Free one PTE table.
-- */
--static inline void pte_free_kernel(struct mm_struct *mm, pte_t * pte)
--{
--	if (pte) {
--		free_page((unsigned long)pte);
--	}
--}
--
--static inline void pte_free(struct mm_struct *mm, pgtable_t pte)
--{
--	__free_page(pte);
--}
--
--/*
-  * Populate the pmdp entry with a pointer to the pte.  This pmd is part
-  * of the mm address space.
-  *
+ endmenu
+diff --git a/kunit/Makefile b/kunit/Makefile
+index 6ddc622ee6b1c..60a9ea6cb4697 100644
+--- a/kunit/Makefile
++++ b/kunit/Makefile
+@@ -1,3 +1,7 @@
+ obj-$(CONFIG_KUNIT) +=			test.o \
+ 					string-stream.o \
+ 					kunit-stream.o
++
++obj-$(CONFIG_KUNIT_TEST) +=		string-stream-test.o
++
++obj-$(CONFIG_KUNIT_EXAMPLE_TEST) +=	example-test.o
+diff --git a/kunit/example-test.c b/kunit/example-test.c
+new file mode 100644
+index 0000000000000..3947dd7c8f922
+--- /dev/null
++++ b/kunit/example-test.c
+@@ -0,0 +1,88 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Example KUnit test to show how to use KUnit.
++ *
++ * Copyright (C) 2019, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++
++#include <kunit/test.h>
++
++/*
++ * This is the most fundamental element of KUnit, the test case. A test case
++ * makes a set EXPECTATIONs and ASSERTIONs about the behavior of some code; if
++ * any expectations or assertions are not met, the test fails; otherwise, the
++ * test passes.
++ *
++ * In KUnit, a test case is just a function with the signature
++ * `void (*)(struct kunit *)`. `struct kunit` is a context object that stores
++ * information about the current test.
++ */
++static void example_simple_test(struct kunit *test)
++{
++	/*
++	 * This is an EXPECTATION; it is how KUnit tests things. When you want
++	 * to test a piece of code, you set some expectations about what the
++	 * code should do. KUnit then runs the test and verifies that the code's
++	 * behavior matched what was expected.
++	 */
++	KUNIT_EXPECT_EQ(test, 1 + 1, 2);
++}
++
++/*
++ * This is run once before each test case, see the comment on
++ * example_test_module for more information.
++ */
++static int example_test_init(struct kunit *test)
++{
++	kunit_info(test, "initializing\n");
++
++	return 0;
++}
++
++/*
++ * Here we make a list of all the test cases we want to add to the test module
++ * below.
++ */
++static struct kunit_case example_test_cases[] = {
++	/*
++	 * This is a helper to create a test case object from a test case
++	 * function; its exact function is not important to understand how to
++	 * use KUnit, just know that this is how you associate test cases with a
++	 * test module.
++	 */
++	KUNIT_CASE(example_simple_test),
++	{},
++};
++
++/*
++ * This defines a suite or grouping of tests.
++ *
++ * Test cases are defined as belonging to the suite by adding them to
++ * `kunit_cases`.
++ *
++ * Often it is desirable to run some function which will set up things which
++ * will be used by every test; this is accomplished with an `init` function
++ * which runs before each test case is invoked. Similarly, an `exit` function
++ * may be specified which runs after every test case and can be used to for
++ * cleanup. For clarity, running tests in a test module would behave as follows:
++ *
++ * module.init(test);
++ * module.test_case[0](test);
++ * module.exit(test);
++ * module.init(test);
++ * module.test_case[1](test);
++ * module.exit(test);
++ * ...;
++ */
++static struct kunit_module example_test_module = {
++	.name = "example",
++	.init = example_test_init,
++	.test_cases = example_test_cases,
++};
++
++/*
++ * This registers the above test module telling KUnit that this is a suite of
++ * tests that need to be run.
++ */
++module_test(example_test_module);
+diff --git a/kunit/string-stream-test.c b/kunit/string-stream-test.c
+new file mode 100644
+index 0000000000000..9cbd99236d15e
+--- /dev/null
++++ b/kunit/string-stream-test.c
+@@ -0,0 +1,60 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * KUnit test for struct string_stream.
++ *
++ * Copyright (C) 2019, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++
++#include <linux/slab.h>
++#include <kunit/test.h>
++#include <kunit/string-stream.h>
++
++static void string_stream_test_get_string(struct kunit *test)
++{
++	struct string_stream *stream = new_string_stream();
++	char *output;
++
++	string_stream_add(stream, "Foo");
++	string_stream_add(stream, " %s", "bar");
++
++	output = string_stream_get_string(stream);
++	KUNIT_EXPECT_STREQ(test, output, "Foo bar");
++	kfree(output);
++	destroy_string_stream(stream);
++}
++
++static void string_stream_test_add_and_clear(struct kunit *test)
++{
++	struct string_stream *stream = new_string_stream();
++	char *output;
++	int i;
++
++	for (i = 0; i < 10; i++)
++		string_stream_add(stream, "A");
++
++	output = string_stream_get_string(stream);
++	KUNIT_EXPECT_STREQ(test, output, "AAAAAAAAAA");
++	KUNIT_EXPECT_EQ(test, stream->length, 10);
++	KUNIT_EXPECT_FALSE(test, string_stream_is_empty(stream));
++	kfree(output);
++
++	string_stream_clear(stream);
++
++	output = string_stream_get_string(stream);
++	KUNIT_EXPECT_STREQ(test, output, "");
++	KUNIT_EXPECT_TRUE(test, string_stream_is_empty(stream));
++	destroy_string_stream(stream);
++}
++
++static struct kunit_case string_stream_test_cases[] = {
++	KUNIT_CASE(string_stream_test_get_string),
++	KUNIT_CASE(string_stream_test_add_and_clear),
++	{}
++};
++
++static struct kunit_module string_stream_test_module = {
++	.name = "string-stream-test",
++	.test_cases = string_stream_test_cases
++};
++module_test(string_stream_test_module);
 -- 
-2.7.4
+2.21.0.1020.gf2820cf01a-goog
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
