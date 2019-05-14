@@ -1,21 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hQSY3-0007ne-1e
- for linux-um@lists.infradead.org; Tue, 14 May 2019 08:12:33 +0000
-Received: by mail-pl1-x643.google.com with SMTP id f12so5844281plt.8
- for <linux-um@lists.infradead.org>; Tue, 14 May 2019 01:12:30 -0700 (PDT)
-Date: Tue, 14 May 2019 01:12:23 -0700
-From: Brendan Higgins <brendanhiggins@google.com>
+Date: Tue, 14 May 2019 08:56:43 +0200
+From: Peter Zijlstra <peterz@infradead.org>
 Subject: Re: [PATCH v3 08/18] objtool: add kunit_try_catch_throw to the
  noreturn list
-Message-ID: <20190514081223.GA230665@google.com>
+Message-ID: <20190514065643.GC2589@hirez.programming.kicks-ass.net>
 References: <20190514054251.186196-1-brendanhiggins@google.com>
  <20190514054251.186196-9-brendanhiggins@google.com>
- <20190514065643.GC2589@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20190514065643.GC2589@hirez.programming.kicks-ass.net>
+In-Reply-To: <20190514054251.186196-9-brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -28,28 +21,16 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Peter Zijlstra <peterz@infradead.org>
+To: Brendan Higgins <brendanhiggins@google.com>
 Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, yamada.masahiro@socionext.com, mpe@ellerman.id.au, linux-kselftest@vger.kernel.org, shuah@kernel.org, robh@kernel.org, kbuild test robot <lkp@intel.com>, linux-nvdimm@lists.01.org, frowand.list@gmail.com, knut.omang@oracle.com, kieran.bingham@ideasonboard.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, Josh Poimboeuf <jpoimboe@redhat.com>, dan.j.williams@intel.com, kunit-dev@googlegroups.com, tytso@mit.edu, richard@nod.at, sboyd@kernel.org, gregkh@linuxfoundation.org, rdunlap@infradead.org, linux-kernel@vger.kernel.org, mcgrof@kernel.org, daniel@ffwll.ch, keescook@google.com, linux-fsdevel@vger.kernel.org, logang@deltatee.com, khilman@baylibre.com
 
-On Tue, May 14, 2019 at 08:56:43AM +0200, Peter Zijlstra wrote:
-> On Mon, May 13, 2019 at 10:42:42PM -0700, Brendan Higgins wrote:
-> > This fixes the following warning seen on GCC 7.3:
-> >   kunit/test-test.o: warning: objtool: kunit_test_unsuccessful_try() falls through to next function kunit_test_catch()
-> > 
+On Mon, May 13, 2019 at 10:42:42PM -0700, Brendan Higgins wrote:
+> This fixes the following warning seen on GCC 7.3:
+>   kunit/test-test.o: warning: objtool: kunit_test_unsuccessful_try() falls through to next function kunit_test_catch()
 > 
-> What is that file and function; no kernel tree near me seems to have
-> that.
 
-Oh, sorry about that. The function is added in the following patch,
-"[PATCH v3 09/18] kunit: test: add support for test abort"[1].
-
-My apologies if this patch is supposed to come after it in sequence, but
-I assumed it should come before otherwise objtool would complain about
-the symbol when it is introduced.
-
-Thanks!
-
-[1] https://lkml.org/lkml/2019/5/14/44
+What is that file and function; no kernel tree near me seems to have
+that.
 
 _______________________________________________
 linux-um mailing list
