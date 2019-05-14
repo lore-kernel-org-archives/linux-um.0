@@ -1,160 +1,278 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Tue, 14 May 2019 01:22:14 -0700
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pl1-x641.google.com ([2607:f8b0:4864:20::641])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1hQSM5-0001fj-AM
+ for linux-um@lists.infradead.org; Tue, 14 May 2019 08:00:11 +0000
+Received: by mail-pl1-x641.google.com with SMTP id r18so3082019pls.13
+ for <linux-um@lists.infradead.org>; Tue, 14 May 2019 01:00:08 -0700 (PDT)
+Date: Tue, 14 May 2019 01:00:00 -0700
 From: Brendan Higgins <brendanhiggins@google.com>
 Subject: Re: [PATCH v2 00/17] kunit: introduce KUnit, the Linux kernel unit
  testing framework
-Message-ID: <20190514082214.GB230665@google.com>
-References: <20190501230126.229218-1-brendanhiggins@google.com>
- <54940124-50df-16ec-1a32-ad794ee05da7@gmail.com>
- <20190507080119.GB28121@kroah.com>
- <20190507172256.GB5900@mit.edu>
- <4d963cdc-1cbb-35a3-292c-552f865ed1f7@gmail.com>
+Message-ID: <20190514080000.GA212892@google.com>
+References: <20190509214233.GA20877@mit.edu>
+ <b09ba170-229b-fde4-3e9a-e50d6ab4c1b5@deltatee.com>
+ <20190509233043.GC20877@mit.edu>
+ <8914afef-1e66-e6e3-f891-5855768d3018@deltatee.com>
+ <6d6e91ec-33d3-830b-4895-4d7a20ba7d45@gmail.com>
+ <a1b88d5add15d43de0468c32d9a2427629337abb.camel@oracle.com>
+ <CAKMK7uFd1xUx8u3xWLwifVSq4OEnMO4S-m0hESe68UzONXnMFg@mail.gmail.com>
+ <CAFd5g47Fvafwgh15JNfxSBRf5qqG2z+V+XGAB2cJtNnHFTiFfQ@mail.gmail.com>
+ <8abaf5f2-dd33-98d0-7b34-b57de7fe7c8b@gmail.com>
+ <a3362d96a6d95d852753739384ded814f5269aac.camel@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4d963cdc-1cbb-35a3-292c-552f865ed1f7@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Frank Rowand <frowand.list@gmail.com>
-Cc: Theodore Ts'o <tytso@mit.edu>, Greg KH <gregkh@linuxfoundation.org>, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org, kunit-dev@googlegroups.com, linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, linux-um@lists.infradead.org, Alexander.Levin@microsoft.com, Tim.Bird@sony.com, amir73il@gmail.com, dan.carpenter@oracle.com, dan.j.williams@intel.com, daniel@ffwll.ch, jdike@addtoit.com, joel@jms.id.au, julia.lawall@lip6.fr, khilman@baylibre.com, knut.omang@oracle.com, logang@deltatee.com, mpe@ellerman.id.au, pmladek@suse.com, richard@nod.at, rientjes@google.com, rostedt@goodmis.org, wfg@linux.intel.com
-List-ID: <linux-um.lists.infradead.org>
+In-Reply-To: <a3362d96a6d95d852753739384ded814f5269aac.camel@oracle.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Knut Omang <knut.omang@oracle.com>
+Cc: Petr Mladek <pmladek@suse.com>, Linux Doc Mailing List <linux-doc@vger.kernel.org>, Amir Goldstein <amir73il@gmail.com>, dri-devel <dri-devel@lists.freedesktop.org>, Sasha Levin <Alexander.Levin@microsoft.com>, Michael Ellerman <mpe@ellerman.id.au>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>, Rob Herring <robh@kernel.org>, linux-nvdimm <linux-nvdimm@lists.01.org>, Frank Rowand <frowand.list@gmail.com>, Kieran Bingham <kieran.bingham@ideasonboard.com>, wfg@linux.intel.com, Joel Stanley <joel@jms.id.au>, David Rientjes <rientjes@google.com>, Jeff Dike <jdike@addtoit.com>, Dan Carpenter <dan.carpenter@oracle.com>, devicetree <devicetree@vger.kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, "Bird, Timothy  <Tim.Bird@sony.com>, linux-um@lists.infradead.org, Steven Rostedt" <rostedt@goodmis.org>, Julia Lawall <julia.lawall@lip6.fr>, Dan Williams <dan.j.williams@intel.com>, kunit-dev@googlegroups.com, Theodore Ts'o <tytso@mit.edu>, Richard Weinberger <richard@nod.at>, Stephen Boyd <sboyd@kernel.org>, Greg KH <gregkh@linuxfoundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "Luis R. Rodriguez" <mcgrof@kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@google.com>, linux-fsdevel@vger.kernel.org, Logan Gunthorpe <logang@deltatee.com>, Kevin Hilman <khilman@baylibre.com>
 
-On Wed, May 08, 2019 at 05:58:49PM -0700, Frank Rowand wrote:
-> Hi Ted,
-> 
-> On 5/7/19 10:22 AM, Theodore Ts'o wrote:
-> > On Tue, May 07, 2019 at 10:01:19AM +0200, Greg KH wrote:
-> Not very helpful to cut the text here, plus not explicitly indicating that
-> text was cut (yes, I know the ">>>" will be a clue for the careful reader),
-> losing the set up for my question.
-> 
-> 
-> >>> My understanding is that the intent of KUnit is to avoid booting a kernel on
-> >>> real hardware or in a virtual machine.  That seems to be a matter of semantics
-> >>> to me because isn't invoking a UML Linux just running the Linux kernel in
-> >>> a different form of virtualization?
-> >>>
-> >>> So I do not understand why KUnit is an improvement over kselftest.
-> >>>
-> >>> It seems to me that KUnit is just another piece of infrastructure that I
-> >>> am going to have to be familiar with as a kernel developer.  More overhead,
-> >>> more information to stuff into my tiny little brain.
-> >>>
-> >>> I would guess that some developers will focus on just one of the two test
-> >>> environments (and some will focus on both), splitting the development
-> >>> resources instead of pooling them on a common infrastructure.
-> >>>
-> >>> What am I missing?
-> >>
-> >> kselftest provides no in-kernel framework for testing kernel code
-> >> specifically.  That should be what kunit provides, an "easy" way to
-> >> write in-kernel tests for things.
-> >>
-> >> Brendan, did I get it right?
+On Sat, May 11, 2019 at 08:43:23AM +0200, Knut Omang wrote:
+> On Fri, 2019-05-10 at 14:59 -0700, Frank Rowand wrote:
+> > On 5/10/19 3:23 AM, Brendan Higgins wrote:
+> > >> On Fri, May 10, 2019 at 7:49 AM Knut Omang <knut.omang@oracle.com> wrote:
+> > >>>
+> > >>> On Thu, 2019-05-09 at 22:18 -0700, Frank Rowand wrote:
+> > >>>> On 5/9/19 4:40 PM, Logan Gunthorpe wrote:
+> > >>>>>
+> > >>>>>
+> > >>>>> On 2019-05-09 5:30 p.m., Theodore Ts'o wrote:
+> > >>>>>> On Thu, May 09, 2019 at 04:20:05PM -0600, Logan Gunthorpe wrote:
+> > >>>>>>>
+> > >>>>>>> The second item, arguably, does have significant overlap with kselftest.
+> > >>>>>>> Whether you are running short tests in a light weight UML environment or
+> > >>>>>>> higher level tests in an heavier VM the two could be using the same
+> > >>>>>>> framework for writing or defining in-kernel tests. It *may* also be valuable
+> > >>>>>>> for some people to be able to run all the UML tests in the heavy VM
+> > >>>>>>> environment along side other higher level tests.
+> > >>>>>>>
+> > >>>>>>> Looking at the selftests tree in the repo, we already have similar items to
+> > >>>>>>> what Kunit is adding as I described in point (2) above. kselftest_harness.h
+> > >>>>>>> contains macros like EXPECT_* and ASSERT_* with very similar intentions to
+> > >>>>>>> the new KUNIT_EXECPT_* and KUNIT_ASSERT_* macros.
+> > >>>>>>>
+> > >>>>>>> However, the number of users of this harness appears to be quite small. Most
+> > >>>>>>> of the code in the selftests tree seems to be a random mismash of scripts
+> > >>>>>>> and userspace code so it's not hard to see it as something completely
+> > >>>>>>> different from the new Kunit:
+> > >>>>>>>
+> > >>>>>>> $ git grep --files-with-matches kselftest_harness.h *
+> > >>>>>>
+> > >>>>>> To the extent that we can unify how tests are written, I agree that
+> > >>>>>> this would be a good thing.  However, you should note that
+> > >>>>>> kselftest_harness.h is currently assums that it will be included in
+> > >>>>>> userspace programs.  This is most obviously seen if you look closely
+> > >>>>>> at the functions defined in the header files which makes calls to
+> > >>>>>> fork(), abort() and fprintf().
+> > >>>>>
+> > >>>>> Ah, yes. I obviously did not dig deep enough. Using kunit for
+> > >>>>> in-kernel tests and kselftest_harness for userspace tests seems like
+> > >>>>> a sensible line to draw to me. Trying to unify kernel and userspace
+> > >>>>> here sounds like it could be difficult so it's probably not worth
+> > >>>>> forcing the issue unless someone wants to do some really fancy work
+> > >>>>> to get it done.
+> > >>>>>
+> > >>>>> Based on some of the other commenters, I was under the impression
+> > >>>>> that kselftests had in-kernel tests but I'm not sure where or if they
+> > >>>>> exist.
+> > >>>>
+> > >>>> YES, kselftest has in-kernel tests.  (Excuse the shouting...)
+> > >>>>
+> > >>>> Here is a likely list of them in the kernel source tree:
+> > >>>>
+> > >>>> $ grep module_init lib/test_*.c
+> > >>>> lib/test_bitfield.c:module_init(test_bitfields)
+> > >>>> lib/test_bitmap.c:module_init(test_bitmap_init);
+> > >>>> lib/test_bpf.c:module_init(test_bpf_init);
+> > >>>> lib/test_debug_virtual.c:module_init(test_debug_virtual_init);
+> > >>>> lib/test_firmware.c:module_init(test_firmware_init);
+> > >>>> lib/test_hash.c:module_init(test_hash_init);  /* Does everything */
+> > >>>> lib/test_hexdump.c:module_init(test_hexdump_init);
+> > >>>> lib/test_ida.c:module_init(ida_checks);
+> > >>>> lib/test_kasan.c:module_init(kmalloc_tests_init);
+> > >>>> lib/test_list_sort.c:module_init(list_sort_test);
+> > >>>> lib/test_memcat_p.c:module_init(test_memcat_p_init);
+> > >>>> lib/test_module.c:static int __init test_module_init(void)
+> > >>>> lib/test_module.c:module_init(test_module_init);
+> > >>>> lib/test_objagg.c:module_init(test_objagg_init);
+> > >>>> lib/test_overflow.c:static int __init test_module_init(void)
+> > >>>> lib/test_overflow.c:module_init(test_module_init);
+> > >>>> lib/test_parman.c:module_init(test_parman_init);
+> > >>>> lib/test_printf.c:module_init(test_printf_init);
+> > >>>> lib/test_rhashtable.c:module_init(test_rht_init);
+> > >>>> lib/test_siphash.c:module_init(siphash_test_init);
+> > >>>> lib/test_sort.c:module_init(test_sort_init);
+> > >>>> lib/test_stackinit.c:module_init(test_stackinit_init);
+> > >>>> lib/test_static_key_base.c:module_init(test_static_key_base_init);
+> > >>>> lib/test_static_keys.c:module_init(test_static_key_init);
+> > >>>> lib/test_string.c:module_init(string_selftest_init);
+> > >>>> lib/test_ubsan.c:module_init(test_ubsan_init);
+> > >>>> lib/test_user_copy.c:module_init(test_user_copy_init);
+> > >>>> lib/test_uuid.c:module_init(test_uuid_init);
+> > >>>> lib/test_vmalloc.c:module_init(vmalloc_test_init)
+> > >>>> lib/test_xarray.c:module_init(xarray_checks);
+> > >>>>
+> > >>>>
+> > >>>>> If they do exists, it seems like it would make sense to
+> > >>>>> convert those to kunit and have Kunit tests run-able in a VM or
+> > >>>>> baremetal instance.
+> > >>>>
+> > >>>> They already run in a VM.
+> > >>>>
+> > >>>> They already run on bare metal.
+> > >>>>
+> > >>>> They already run in UML.
+> > >>>>
+> > >>>> This is not to say that KUnit does not make sense.  But I'm still trying
+> > >>>> to get a better description of the KUnit features (and there are
+> > >>>> some).
+> > >>>
+> > >>> FYI, I have a master student who looks at converting some of these to KTF, such as
+> > for
+> > >>> instance the XArray tests, which lended themselves quite good to a semi-automated
+> > >>> conversion.
+> > >>>
+> > >>> The result is also a somewhat more compact code as well as the flexibility
+> > >>> provided by the Googletest executor and the KTF frameworks, such as running selected
+> > >>> tests, output formatting, debugging features etc.
+> > >>
+> > >> So is KTF already in upstream? Or is the plan to unify the KTF and
+> > > 
+> > > I am not certain about KTF's upstream plans, but I assume that Knut
+> > > would have CC'ed me on the thread if he had started working on it.
+> > > 
+> > >> Kunit in-kernel test harnesses? Because there's tons of these
+> > > 
+> > > No, no plan. Knut and I talked about this a good while ago and it
+> > > seemed that we had pretty fundamentally different approaches both in
+> > > terms of implementation and end goal. Combining them seemed pretty
+> > > infeasible, at least from a technical perspective. Anyway, I am sure
+> > > Knut would like to give him perspective on the matter and I don't want
+> > > to say too much without first giving him a chance to chime in on the
+> > > matter.
+> > > 
+> > > Nevertheless, I hope you don't see resolving this as a condition for
+> > > accepting this patchset. I had several rounds of RFC on KUnit, and no
+> > > one had previously brought this up.
 > > 
-> > Yes, that's basically right.  You don't *have* to use KUnit.  It's
+> > I seem to recall a request in reply to the KUnit RFC email threads to
+> > work together.
 > 
-> If KUnit is added to the kernel, and a subsystem that I am submitting
-> code for has chosen to use KUnit instead of kselftest, then yes, I do
-> *have* to use KUnit if my submission needs to contain a test for the
-> code unless I want to convince the maintainer that somehow my case
-> is special and I prefer to use kselftest instead of KUnittest.
-> 
-> 
-> > supposed to be a simple way to run a large number of small tests that
-> > for specific small components in a system.
-> 
-> kselftest also supports running a subset of tests.  That subset of tests
-> can also be a large number of small tests.  There is nothing inherent
-> in KUnit vs kselftest in this regard, as far as I am aware.
-> 
-> 
-> > For example, I currently use xfstests using KVM and GCE to test all of
-> > ext4.  These tests require using multiple 5 GB and 20GB virtual disks,
-> > and it works by mounting ext4 file systems and exercising ext4 through
-> > the system call interfaces, using userspace tools such as fsstress,
-> > fsx, fio, etc.  It requires time overhead to start the VM, create and
-> > allocate virtual disks, etc.  For example, to run a single 3 seconds
-> > xfstest (generic/001), it requires full 10 seconds to run it via
-> > kvm-xfstests.
-> > 
-> 
-> 
-> > KUnit is something else; it's specifically intended to allow you to
-> > create lightweight tests quickly and easily, and by reducing the
-> > effort needed to write and run unit tests, hopefully we'll have a lot
-> > more of them and thus improve kernel quality.
-> 
-> The same is true of kselftest.  You can create lightweight tests in
-> kselftest.
-> 
-> 
-> > As an example, I have a volunteer working on developing KUinit tests
-> > for ext4.  We're going to start by testing the ext4 extent status
-> > tree.  The source code is at fs/ext4/extent_status.c; it's
-> > approximately 1800 LOC.  The Kunit tests for the extent status tree
-> > will exercise all of the corner cases for the various extent status
-> > tree functions --- e.g., ext4_es_insert_delayed_block(),
-> > ext4_es_remove_extent(), ext4_es_cache_extent(), etc.  And it will do
-> > this in isolation without our needing to create a test file system or
-> > using a test block device.
-> > 
-> 
-> > Next we'll test the ext4 block allocator, again in isolation.  To test
-> > the block allocator we will have to write "mock functions" which
-> > simulate reading allocation bitmaps from disk.  Again, this will allow
-> > the test writer to explicitly construct corner cases and validate that
-> > the block allocator works as expected without having to reverese
-> > engineer file system data structures which will force a particular
-> > code path to be executed.
-> 
-> This would be a difference, but mock functions do not exist in KUnit.
-> The KUnit test will call the real kernel function in the UML kernel.
-> 
-> I think Brendan has indicated a desire to have mock functions in the
-> future.
-> 
-> Brendan, do I understand that correctly?
+> You recall right.
+> I wanted us to work together to refine a common approach.
 
-Oh, sorry, I missed this comment from earlier.
+Are you talking about right after we met at LPC in 2017? We talked about
+working together, but I thought you didn't really see much value in what
+I was doing with KUnit.
 
-Yes, you are correct. Function mocking is a feature I will be
-introducing in a follow up patchset (assuming this one gets merged of
-course ;-) ).
+Or are you talking about our fist discussion on the RFC[1]. In this
+case, you seemed to assert that KTF's approach was fundamentally
+different and superior. You also didn't really seem interested in trying
+to merge KTF at the time. The discussion concluded with Luis suggesting
+that we should just keep working on both separately and let individual
+users decide.
+
+What changed since then?
+
+> I still think that's possible.
+
+I hope you aren't asserting that I have been unwilling to work with you.
+At the outset (before I sent out the RFC), I was willing to let you take
+the lead on things, but you didn't seem very interested in anything that
+I brought to the table and most importantly were not interested in
+sending out any code for discussion on the mailing lists.
+
+After I started the RFC, most of your comments were very high level and,
+at least to me, seemed like pretty fundamental philosophical differences
+in our approaches, which is fine! I think Luis recognized that and I
+think that is part of why he suggested for us to continue to work on
+them separately.
+
+I am not trying to be mean, but I don't really know what you expected me
+to do. I don't recall any specific changes you suggested me to make in
+my code (I think you only ever made a single comment on a thread on
+anything other than the cover letter.) And you never proposed any of
+your own code demonstrating an alternative way of doing things.
+
+Nevertheless, you are of course fully welcome to critique anything I
+have proposed, or to propose your own way of doing things, but we need
+to do so here on the mailing lists.
+
+> > However whether that impacts acceptance of this patch set is up to
+> > the maintainer and how she wants to resolve the potential collision
+> > of KUnit and KTF (if there is indeed any sort of collision).
+> 
+> I believe there's overlap and potential for unification and code sharing.
+> My concern is to make sure that that can happen without disrupting too 
+> many test users. I'd really like to get some more time to explore that.
+
+It's possible. Like I said before, our approaches are pretty
+fundamentally different. It sounds like there might be some overlap
+between our expectaion/assertion macros, but we probably cannot use the
+ones from Googletest without introducing C++ into the kernel which is a
+no-no.
+
+> It strikes me that the main difference in the two approaches 
+> lies in the way reporting is done by default. Since KUnit handles all the
+> reporting itself, while KTF relies on Googletest for that, a lot more code 
+> in KUnit revolves around that part, while with KTF we have focused more on 
+> features to enable writing powerful and effective tests.
+
+I have a lot more features on the way, but what is in this initial
+patchset are the absolutely core things needed to produce an MVP, and
+yes, most of that code revolves around reporting and the fundamental
+structure of tests.
+
+Developing cool features is great, but you need to start off on a basis
+that the community will accept. Sometimes you need to play around
+downstream a bit to develop your ideas, but you always want to get
+upstream feedback as early as possible; it's always possible that
+someone might propose something, or point out something that breaks a
+fundamental assumption that all your later features depend on.
+
+> The reporting part can possibly be made configurable: Reporting with printk or reporting 
+> via netlink to user space. In fact, as a KTF debugging option KTF already 
+> supports printk reporting which can be enabled via sysfs.
+
+Yep, I intentionally left an interface so printk (well actually
+vprintk_emit) can be swapped out with another mechanism.
+
+> If macros can have the same syntax, then there's 
+> likely features in KTF that KUnit users would benefit from too. 
+> But this of course have to be tried out.
+
+Cool. Looking forward to hearing about it.
 
 Cheers!
 
-> -Frank
+[1] https://lkml.org/lkml/2018/11/24/170
+
+> > >> in-kernel unit tests already, and every merge we get more (Frank's
+> > >> list didn't even look into drivers or anywhere else, e.g. it's missing
+> > >> the locking self tests I worked on in the past), and a more structured
+> > >> approach would really be good.
+> > > 
+> > > Well, that's what I am trying to do. I hope you like it!
+> > > 
+> > > Cheers!
+> > > .
+> > > 
+> > 
 > 
-> > So this is why it's largely irrelevant to me that KUinit uses UML.  In
-> > fact, it's a feature.  We're not testing device drivers, or the
-> > scheduler, or anything else architecture-specific.  UML is not about
-> > virtualization.  What it's about in this context is allowing us to
-> > start running test code as quickly as possible.  Booting KVM takes
-> > about 3-4 seconds, and this includes initializing virtio_scsi and
-> > other device drivers.  If by using UML we can hold the amount of
-> > unnecessary kernel subsystem initialization down to the absolute
-> > minimum, and if it means that we can communicating to the test
-> > framework via a userspace "printf" from UML/KUnit code, as opposed to
-> > via a virtual serial port to KVM's virtual console, it all makes for
-> > lighter weight testing.
-> > 
-> > Why did I go looking for a volunteer to write KUnit tests for ext4?
-> > Well, I have a plan to make some changes in restructing how ext4's
-> > write path works, in order to support things like copy-on-write, a
-> > more efficient delayed allocation system, etc.  This will require
-> > making changes to the extent status tree, and by having unit tests for
-> > the extent status tree, we'll be able to detect any bugs that we might
-> > accidentally introduce in the es tree far more quickly than if we
-> > didn't have those tests available.  Google has long found that having
-> > these sorts of unit tests is a real win for developer velocity for any
-> > non-trivial code module (or C++ class), even when you take into
-> > account the time it takes to create the unit tests.
-> > 
-> > 					- Ted>
-> > P.S.  Many thanks to Brendan for finding such a volunteer for me; the
-> > person in question is a SRE from Switzerland who is interested in
-> > getting involved with kernel testing, and this is going to be their
-> > 20% project.  :-)
-> > 
-> > 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
