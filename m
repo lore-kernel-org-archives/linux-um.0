@@ -1,17 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-ua1-x949.google.com ([2607:f8b0:4864:20::949])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hQfla-00010x-Os
- for linux-um@lists.infradead.org; Tue, 14 May 2019 22:19:24 +0000
-Received: by mail-ua1-x949.google.com with SMTP id m5so272942uak.11
- for <linux-um@lists.infradead.org>; Tue, 14 May 2019 15:19:21 -0700 (PDT)
-Date: Tue, 14 May 2019 15:17:05 -0700
-In-Reply-To: <20190514221711.248228-1-brendanhiggins@google.com>
-Message-Id: <20190514221711.248228-13-brendanhiggins@google.com>
-Mime-Version: 1.0
+ id 1hRh7y-0004vY-Ix
+ for linux-um@lists.infradead.org; Fri, 17 May 2019 17:58:44 +0000
+MIME-Version: 1.0
+In-Reply-To: <20190514221711.248228-5-brendanhiggins@google.com>
 References: <20190514221711.248228-1-brendanhiggins@google.com>
-Subject: [PATCH v4 12/18] kunit: test: add tests for KUnit managed resources
-From: Brendan Higgins <brendanhiggins@google.com>
+ <20190514221711.248228-5-brendanhiggins@google.com>
+Subject: Re: [PATCH v4 04/18] kunit: test: add kunit_stream a std::stream like
+ logger
+From: Stephen Boyd <sboyd@kernel.org>
+Date: Fri, 17 May 2019 10:58:41 -0700
+Message-Id: <20190517175841.F3396216FD@mail.kernel.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,157 +24,207 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, Avinash Kondareddy <akndr41@gmail.com>, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+To: Brendan Higgins <brendanhiggins@google.com>, frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-From: Avinash Kondareddy <akndr41@gmail.com>
+Quoting Brendan Higgins (2019-05-14 15:16:57)
+> diff --git a/kunit/kunit-stream.c b/kunit/kunit-stream.c
+> new file mode 100644
+> index 0000000000000..1884f1b550888
+> --- /dev/null
+> +++ b/kunit/kunit-stream.c
+> @@ -0,0 +1,152 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * C++ stream style string formatter and printer used in KUnit for outputting
+> + * KUnit messages.
+> + *
+> + * Copyright (C) 2019, Google LLC.
+> + * Author: Brendan Higgins <brendanhiggins@google.com>
+> + */
+> +
+> +#include <kunit/test.h>
+> +#include <kunit/kunit-stream.h>
+> +#include <kunit/string-stream.h>
+> +
+> +static const char *kunit_stream_get_level(struct kunit_stream *this)
+> +{
+> +       unsigned long flags;
+> +       const char *level;
+> +
+> +       spin_lock_irqsave(&this->lock, flags);
+> +       level = this->level;
+> +       spin_unlock_irqrestore(&this->lock, flags);
+> +
+> +       return level;
 
-Add unit tests for KUnit managed resources. KUnit managed resources
-(struct kunit_resource) are resources that are automatically cleaned up
-at the end of a KUnit test, similar to the concept of devm_* managed
-resources.
+Please remove this whole function and inline it to the one call-site.
 
-Signed-off-by: Avinash Kondareddy <akndr41@gmail.com>
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
----
- kunit/test-test.c | 123 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 123 insertions(+)
+> +}
+> +
+> +void kunit_stream_set_level(struct kunit_stream *this, const char *level)
+> +{
+> +       unsigned long flags;
+> +
+> +       spin_lock_irqsave(&this->lock, flags);
+> +       this->level = level;
+> +       spin_unlock_irqrestore(&this->lock, flags);
 
-diff --git a/kunit/test-test.c b/kunit/test-test.c
-index 7afc9bb52f7be..ee926f798b266 100644
---- a/kunit/test-test.c
-+++ b/kunit/test-test.c
-@@ -101,3 +101,126 @@ static struct kunit_module kunit_try_catch_test_module = {
- 	.test_cases = kunit_try_catch_test_cases,
- };
- module_test(kunit_try_catch_test_module);
-+
-+/*
-+ * Context for testing test managed resources
-+ * is_resource_initialized is used to test arbitrary resources
-+ */
-+struct kunit_test_resource_context {
-+	struct kunit test;
-+	bool is_resource_initialized;
-+};
-+
-+static int fake_resource_init(struct kunit_resource *res, void *context)
-+{
-+	struct kunit_test_resource_context *ctx = context;
-+
-+	res->allocation = &ctx->is_resource_initialized;
-+	ctx->is_resource_initialized = true;
-+	return 0;
-+}
-+
-+static void fake_resource_free(struct kunit_resource *res)
-+{
-+	bool *is_resource_initialized = res->allocation;
-+
-+	*is_resource_initialized = false;
-+}
-+
-+static void kunit_resource_test_init_resources(struct kunit *test)
-+{
-+	struct kunit_test_resource_context *ctx = test->priv;
-+
-+	kunit_init_test(&ctx->test, "testing_test_init_test");
-+
-+	KUNIT_EXPECT_TRUE(test, list_empty(&ctx->test.resources));
-+}
-+
-+static void kunit_resource_test_alloc_resource(struct kunit *test)
-+{
-+	struct kunit_test_resource_context *ctx = test->priv;
-+	struct kunit_resource *res;
-+	kunit_resource_free_t free = fake_resource_free;
-+
-+	res = kunit_alloc_resource(&ctx->test,
-+				   fake_resource_init,
-+				   fake_resource_free,
-+				   ctx);
-+
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, res);
-+	KUNIT_EXPECT_PTR_EQ(test,
-+			    &ctx->is_resource_initialized, res->allocation);
-+	KUNIT_EXPECT_TRUE(test, list_is_last(&res->node, &ctx->test.resources));
-+	KUNIT_EXPECT_PTR_EQ(test, free, res->free);
-+}
-+
-+static void kunit_resource_test_free_resource(struct kunit *test)
-+{
-+	struct kunit_test_resource_context *ctx = test->priv;
-+	struct kunit_resource *res = kunit_alloc_resource(&ctx->test,
-+							  fake_resource_init,
-+							  fake_resource_free,
-+							  ctx);
-+
-+	kunit_free_resource(&ctx->test, res);
-+
-+	KUNIT_EXPECT_EQ(test, false, ctx->is_resource_initialized);
-+	KUNIT_EXPECT_TRUE(test, list_empty(&ctx->test.resources));
-+}
-+
-+static void kunit_resource_test_cleanup_resources(struct kunit *test)
-+{
-+	int i;
-+	struct kunit_test_resource_context *ctx = test->priv;
-+	struct kunit_resource *resources[5];
-+
-+	for (i = 0; i < ARRAY_SIZE(resources); i++) {
-+		resources[i] = kunit_alloc_resource(&ctx->test,
-+						    fake_resource_init,
-+						    fake_resource_free,
-+						    ctx);
-+	}
-+
-+	kunit_cleanup(&ctx->test);
-+
-+	KUNIT_EXPECT_TRUE(test, list_empty(&ctx->test.resources));
-+}
-+
-+static int kunit_resource_test_init(struct kunit *test)
-+{
-+	struct kunit_test_resource_context *ctx =
-+			kzalloc(sizeof(*ctx), GFP_KERNEL);
-+
-+	if (!ctx)
-+		return -ENOMEM;
-+
-+	test->priv = ctx;
-+
-+	kunit_init_test(&ctx->test, "test_test_context");
-+
-+	return 0;
-+}
-+
-+static void kunit_resource_test_exit(struct kunit *test)
-+{
-+	struct kunit_test_resource_context *ctx = test->priv;
-+
-+	kunit_cleanup(&ctx->test);
-+	kfree(ctx);
-+}
-+
-+static struct kunit_case kunit_resource_test_cases[] = {
-+	KUNIT_CASE(kunit_resource_test_init_resources),
-+	KUNIT_CASE(kunit_resource_test_alloc_resource),
-+	KUNIT_CASE(kunit_resource_test_free_resource),
-+	KUNIT_CASE(kunit_resource_test_cleanup_resources),
-+	{},
-+};
-+
-+static struct kunit_module kunit_resource_test_module = {
-+	.name = "kunit-resource-test",
-+	.init = kunit_resource_test_init,
-+	.exit = kunit_resource_test_exit,
-+	.test_cases = kunit_resource_test_cases,
-+};
-+module_test(kunit_resource_test_module);
--- 
-2.21.0.1020.gf2820cf01a-goog
+I don't get the locking here. What are we protecting against? Are tests
+running in parallel using the same kunit_stream? If so, why is the level
+changeable in one call and then adding strings is done in a different
+function call? It would make sense to combine the level setting and
+string adding so that it's one atomic operation if it's truly a parallel
+operation, or remove the locking entirely.
+
+> +}
+> +
+> +void kunit_stream_add(struct kunit_stream *this, const char *fmt, ...)
+> +{
+> +       va_list args;
+> +       struct string_stream *stream = this->internal_stream;
+> +
+> +       va_start(args, fmt);
+> +
+> +       if (string_stream_vadd(stream, fmt, args) < 0)
+> +               kunit_err(this->test, "Failed to allocate fragment: %s\n", fmt);
+> +
+> +       va_end(args);
+> +}
+> +
+> +void kunit_stream_append(struct kunit_stream *this,
+> +                               struct kunit_stream *other)
+> +{
+> +       struct string_stream *other_stream = other->internal_stream;
+> +       const char *other_content;
+> +
+> +       other_content = string_stream_get_string(other_stream);
+> +
+> +       if (!other_content) {
+> +               kunit_err(this->test,
+> +                         "Failed to get string from second argument for appending.\n");
+> +               return;
+> +       }
+> +
+> +       kunit_stream_add(this, other_content);
+> +}
+> +
+> +void kunit_stream_clear(struct kunit_stream *this)
+> +{
+> +       string_stream_clear(this->internal_stream);
+> +}
+> +
+> +void kunit_stream_commit(struct kunit_stream *this)
+
+Should this be rather called kunit_stream_flush()?
+
+> +{
+> +       struct string_stream *stream = this->internal_stream;
+> +       struct string_stream_fragment *fragment;
+> +       const char *level;
+> +       char *buf;
+> +
+> +       level = kunit_stream_get_level(this);
+> +       if (!level) {
+> +               kunit_err(this->test,
+> +                         "Stream was committed without a specified log level.\n");
+
+Drop the full-stop?
+
+> +               level = KERN_ERR;
+> +               kunit_stream_set_level(this, level);
+> +       }
+> +
+> +       buf = string_stream_get_string(stream);
+> +       if (!buf) {
+> +               kunit_err(this->test,
+
+Can you grow a local variable for 'this->test'? It's used many times.
+
+Also, 'this' is not very kernel idiomatic. We usually name variables by
+their type instead of 'this' which is a keyword in other languages.
+Perhaps it could be named 'kstream'?
+
+> +                        "Could not allocate buffer, dumping stream:\n");
+> +               list_for_each_entry(fragment, &stream->fragments, node) {
+> +                       kunit_err(this->test, fragment->fragment);
+> +               }
+> +               kunit_err(this->test, "\n");
+> +               goto cleanup;
+> +       }
+> +
+> +       kunit_printk(level, this->test, buf);
+> +       kfree(buf);
+> +
+> +cleanup:
+> +       kunit_stream_clear(this);
+> +}
+> +
+> +static int kunit_stream_init(struct kunit_resource *res, void *context)
+> +{
+> +       struct kunit *test = context;
+> +       struct kunit_stream *stream;
+> +
+> +       stream = kzalloc(sizeof(*stream), GFP_KERNEL);
+
+Of course, here it's called 'stream', so maybe it should be 'kstream'
+here too.
+
+> +       if (!stream)
+> +               return -ENOMEM;
+> +
+> +       res->allocation = stream;
+> +       stream->test = test;
+> +       spin_lock_init(&stream->lock);
+> +       stream->internal_stream = new_string_stream();
+
+Can new_string_stream() be renamed to alloc_string_stream()? Sorry, I
+just see so much C++ isms in here it's hard to read from the kernel
+developer perspective.
+
+> +
+> +       if (!stream->internal_stream) {
+
+Nitpick: Please join this to the "allocation" event above instead of
+keeping it separated.
+
+> +               kfree(stream);
+> +               return -ENOMEM;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static void kunit_stream_free(struct kunit_resource *res)
+> +{
+> +       struct kunit_stream *stream = res->allocation;
+> +
+> +       if (!string_stream_is_empty(stream->internal_stream)) {
+> +               kunit_err(stream->test,
+> +                        "End of test case reached with uncommitted stream entries.\n");
+> +               kunit_stream_commit(stream);
+> +       }
+> +
+> +       destroy_string_stream(stream->internal_stream);
+> +       kfree(stream);
+> +}
+> +
+> +struct kunit_stream *kunit_new_stream(struct kunit *test)
+> +{
+> +       struct kunit_resource *res;
+> +
+> +       res = kunit_alloc_resource(test,
+> +                                  kunit_stream_init,
+> +                                  kunit_stream_free,
+> +                                  test);
+> +
+> +       if (res)
+> +               return res->allocation;
+> +       else
+> +               return NULL;
+
+Don't have if (...) return ...; else return ..., just return instead of
+else.
 
 
 _______________________________________________
