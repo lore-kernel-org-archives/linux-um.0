@@ -1,17 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-vs1-xe4a.google.com ([2607:f8b0:4864:20::e4a])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hQQEm-000508-NZ
- for linux-um@lists.infradead.org; Tue, 14 May 2019 05:44:30 +0000
-Received: by mail-vs1-xe4a.google.com with SMTP id a197so1430083vsd.21
- for <linux-um@lists.infradead.org>; Mon, 13 May 2019 22:44:27 -0700 (PDT)
-Date: Mon, 13 May 2019 22:42:40 -0700
-In-Reply-To: <20190514054251.186196-1-brendanhiggins@google.com>
-Message-Id: <20190514054251.186196-8-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20190514054251.186196-1-brendanhiggins@google.com>
-Subject: [PATCH v3 07/18] kunit: test: add initial tests
-From: Brendan Higgins <brendanhiggins@google.com>
+ id 1hRhVO-0004dg-UO
+ for linux-um@lists.infradead.org; Fri, 17 May 2019 18:22:56 +0000
+MIME-Version: 1.0
+In-Reply-To: <20190514221711.248228-18-brendanhiggins@google.com>
+References: <20190514221711.248228-1-brendanhiggins@google.com>
+ <20190514221711.248228-18-brendanhiggins@google.com>
+Subject: Re: [PATCH v4 17/18] kernel/sysctl-test: Add null pointer test for
+ sysctl.c:proc_dointvec()
+From: Stephen Boyd <sboyd@kernel.org>
+Date: Fri, 17 May 2019 11:22:53 -0700
+Message-Id: <20190517182254.548EA20815@mail.kernel.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,237 +24,212 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+To: Brendan Higgins <brendanhiggins@google.com>, frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, Iurii Zaikin <yzaikin@google.com>, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-Add a test for string stream along with a simpler example.
+Quoting Brendan Higgins (2019-05-14 15:17:10)
+> diff --git a/kernel/sysctl-test.c b/kernel/sysctl-test.c
+> new file mode 100644
+> index 0000000000000..fe0f2bae66085
+> --- /dev/null
+> +++ b/kernel/sysctl-test.c
+> @@ -0,0 +1,293 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * KUnit test of proc sysctl.
+> + */
+> +
+> +#include <kunit/test.h>
+> +#include <linux/printk.h>
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
----
-Changes Since Last Revision:
- - Added more Kconfig help text for KUNIT_TEST and KUNIT_EXAMPLE_TEST as
-   per Shuah's comments.
----
- kunit/Kconfig              | 25 ++++++++++-
- kunit/Makefile             |  4 ++
- kunit/example-test.c       | 88 ++++++++++++++++++++++++++++++++++++++
- kunit/string-stream-test.c | 60 ++++++++++++++++++++++++++
- 4 files changed, 175 insertions(+), 2 deletions(-)
- create mode 100644 kunit/example-test.c
- create mode 100644 kunit/string-stream-test.c
+Is this include used?
 
-diff --git a/kunit/Kconfig b/kunit/Kconfig
-index 64480092b2c24..2052536cf9d3c 100644
---- a/kunit/Kconfig
-+++ b/kunit/Kconfig
-@@ -10,7 +10,28 @@ config KUNIT
- 	  Enables support for kernel unit tests (KUnit), a lightweight unit
- 	  testing and mocking framework for the Linux kernel. These tests are
- 	  able to be run locally on a developer's workstation without a VM or
--	  special hardware. For more information, please see
--	  Documentation/kunit/
-+	  special hardware when using UML. Can also be used on most other
-+	  architectures. For more information, please see Documentation/kunit/.
-+
-+config KUNIT_TEST
-+	bool "KUnit test for KUnit"
-+	depends on KUNIT
-+	help
-+	  Enables the unit tests for the KUnit test framework. These tests test
-+	  the KUnit test framework itself; the tests are both written using
-+	  KUnit and test KUnit. This option should only be enabled for testing
-+	  purposes by developers interested in testing that KUnit works as
-+	  expected.
-+
-+config KUNIT_EXAMPLE_TEST
-+	bool "Example test for KUnit"
-+	depends on KUNIT
-+	help
-+	  Enables an example unit test that illustrates some of the basic
-+	  features of KUnit. This test only exists to help new users understand
-+	  what KUnit is and how it is used. Please refer to the example test
-+	  itself, kunit/example-test.c, for more information. This option is
-+	  intended for curious hackers who would like to understand how to use
-+	  KUnit for kernel development.
- 
- endmenu
-diff --git a/kunit/Makefile b/kunit/Makefile
-index 6ddc622ee6b1c..60a9ea6cb4697 100644
---- a/kunit/Makefile
-+++ b/kunit/Makefile
-@@ -1,3 +1,7 @@
- obj-$(CONFIG_KUNIT) +=			test.o \
- 					string-stream.o \
- 					kunit-stream.o
-+
-+obj-$(CONFIG_KUNIT_TEST) +=		string-stream-test.o
-+
-+obj-$(CONFIG_KUNIT_EXAMPLE_TEST) +=	example-test.o
-diff --git a/kunit/example-test.c b/kunit/example-test.c
-new file mode 100644
-index 0000000000000..3947dd7c8f922
---- /dev/null
-+++ b/kunit/example-test.c
-@@ -0,0 +1,88 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Example KUnit test to show how to use KUnit.
-+ *
-+ * Copyright (C) 2019, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
-+
-+#include <kunit/test.h>
-+
-+/*
-+ * This is the most fundamental element of KUnit, the test case. A test case
-+ * makes a set EXPECTATIONs and ASSERTIONs about the behavior of some code; if
-+ * any expectations or assertions are not met, the test fails; otherwise, the
-+ * test passes.
-+ *
-+ * In KUnit, a test case is just a function with the signature
-+ * `void (*)(struct kunit *)`. `struct kunit` is a context object that stores
-+ * information about the current test.
-+ */
-+static void example_simple_test(struct kunit *test)
-+{
-+	/*
-+	 * This is an EXPECTATION; it is how KUnit tests things. When you want
-+	 * to test a piece of code, you set some expectations about what the
-+	 * code should do. KUnit then runs the test and verifies that the code's
-+	 * behavior matched what was expected.
-+	 */
-+	KUNIT_EXPECT_EQ(test, 1 + 1, 2);
-+}
-+
-+/*
-+ * This is run once before each test case, see the comment on
-+ * example_test_module for more information.
-+ */
-+static int example_test_init(struct kunit *test)
-+{
-+	kunit_info(test, "initializing\n");
-+
-+	return 0;
-+}
-+
-+/*
-+ * Here we make a list of all the test cases we want to add to the test module
-+ * below.
-+ */
-+static struct kunit_case example_test_cases[] = {
-+	/*
-+	 * This is a helper to create a test case object from a test case
-+	 * function; its exact function is not important to understand how to
-+	 * use KUnit, just know that this is how you associate test cases with a
-+	 * test module.
-+	 */
-+	KUNIT_CASE(example_simple_test),
-+	{},
-+};
-+
-+/*
-+ * This defines a suite or grouping of tests.
-+ *
-+ * Test cases are defined as belonging to the suite by adding them to
-+ * `kunit_cases`.
-+ *
-+ * Often it is desirable to run some function which will set up things which
-+ * will be used by every test; this is accomplished with an `init` function
-+ * which runs before each test case is invoked. Similarly, an `exit` function
-+ * may be specified which runs after every test case and can be used to for
-+ * cleanup. For clarity, running tests in a test module would behave as follows:
-+ *
-+ * module.init(test);
-+ * module.test_case[0](test);
-+ * module.exit(test);
-+ * module.init(test);
-+ * module.test_case[1](test);
-+ * module.exit(test);
-+ * ...;
-+ */
-+static struct kunit_module example_test_module = {
-+	.name = "example",
-+	.init = example_test_init,
-+	.test_cases = example_test_cases,
-+};
-+
-+/*
-+ * This registers the above test module telling KUnit that this is a suite of
-+ * tests that need to be run.
-+ */
-+module_test(example_test_module);
-diff --git a/kunit/string-stream-test.c b/kunit/string-stream-test.c
-new file mode 100644
-index 0000000000000..9cbd99236d15e
---- /dev/null
-+++ b/kunit/string-stream-test.c
-@@ -0,0 +1,60 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * KUnit test for struct string_stream.
-+ *
-+ * Copyright (C) 2019, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
-+
-+#include <linux/slab.h>
-+#include <kunit/test.h>
-+#include <kunit/string-stream.h>
-+
-+static void string_stream_test_get_string(struct kunit *test)
-+{
-+	struct string_stream *stream = new_string_stream();
-+	char *output;
-+
-+	string_stream_add(stream, "Foo");
-+	string_stream_add(stream, " %s", "bar");
-+
-+	output = string_stream_get_string(stream);
-+	KUNIT_EXPECT_STREQ(test, output, "Foo bar");
-+	kfree(output);
-+	destroy_string_stream(stream);
-+}
-+
-+static void string_stream_test_add_and_clear(struct kunit *test)
-+{
-+	struct string_stream *stream = new_string_stream();
-+	char *output;
-+	int i;
-+
-+	for (i = 0; i < 10; i++)
-+		string_stream_add(stream, "A");
-+
-+	output = string_stream_get_string(stream);
-+	KUNIT_EXPECT_STREQ(test, output, "AAAAAAAAAA");
-+	KUNIT_EXPECT_EQ(test, stream->length, 10);
-+	KUNIT_EXPECT_FALSE(test, string_stream_is_empty(stream));
-+	kfree(output);
-+
-+	string_stream_clear(stream);
-+
-+	output = string_stream_get_string(stream);
-+	KUNIT_EXPECT_STREQ(test, output, "");
-+	KUNIT_EXPECT_TRUE(test, string_stream_is_empty(stream));
-+	destroy_string_stream(stream);
-+}
-+
-+static struct kunit_case string_stream_test_cases[] = {
-+	KUNIT_CASE(string_stream_test_get_string),
-+	KUNIT_CASE(string_stream_test_add_and_clear),
-+	{}
-+};
-+
-+static struct kunit_module string_stream_test_module = {
-+	.name = "string-stream-test",
-+	.test_cases = string_stream_test_cases
-+};
-+module_test(string_stream_test_module);
--- 
-2.21.0.1020.gf2820cf01a-goog
+> +#include <linux/sysctl.h>
+> +#include <linux/uaccess.h>
 
+Is this include used?
+
+> +
+> +
+> +static void sysctl_test_dointvec_happy_single_negative(struct kunit *test)
+> +{
+> +       struct ctl_table table = {
+> +               .procname = "foo",
+> +               .data           = &test_data.int_0001,
+> +               .maxlen         = sizeof(int),
+> +               .mode           = 0644,
+> +               .proc_handler   = proc_dointvec,
+> +               .extra1         = &i_zero,
+> +               .extra2         = &i_one_hundred,
+> +       };
+> +       char input[] = "-9";
+> +       size_t len = sizeof(input) - 1;
+> +       loff_t pos = 0;
+> +
+> +       table.data = kunit_kzalloc(test, sizeof(int), GFP_USER);
+> +       KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, 1, input, &len, &pos));
+> +       KUNIT_EXPECT_EQ(test, sizeof(input) - 1, len);
+> +       KUNIT_EXPECT_EQ(test, sizeof(input) - 1, pos);
+> +       KUNIT_EXPECT_EQ(test, -9, *(int *)table.data);
+
+Is the casting necessary? Or can the macro do a type coercion of the
+second parameter based on the first type?
+
+> +}
+> +
+> +static void sysctl_test_dointvec_single_less_int_min(struct kunit *test)
+> +{
+> +       struct ctl_table table = {
+> +               .procname = "foo",
+> +               .data           = &test_data.int_0001,
+> +               .maxlen         = sizeof(int),
+> +               .mode           = 0644,
+> +               .proc_handler   = proc_dointvec,
+> +               .extra1         = &i_zero,
+> +               .extra2         = &i_one_hundred,
+> +       };
+> +       char input[32];
+> +       size_t len = sizeof(input) - 1;
+> +       loff_t pos = 0;
+> +       unsigned long abs_of_less_than_min = (unsigned long)INT_MAX
+> +                                            - (INT_MAX + INT_MIN) + 1;
+> +
+> +       KUNIT_EXPECT_LT(test,
+> +                       snprintf(input, sizeof(input), "-%lu",
+> +                                abs_of_less_than_min),
+> +                       sizeof(input));
+> +
+> +       table.data = kunit_kzalloc(test, sizeof(int), GFP_USER);
+> +       KUNIT_EXPECT_EQ(test, -EINVAL,
+> +                       proc_dointvec(&table, 1, input, &len, &pos));
+> +       KUNIT_EXPECT_EQ(test, sizeof(input) - 1, len);
+> +       KUNIT_EXPECT_EQ(test, 0, *(int *)table.data);
+> +}
+> +
+> +static void sysctl_test_dointvec_single_greater_int_max(struct kunit *test)
+> +{
+> +       struct ctl_table table = {
+> +               .procname = "foo",
+> +               .data           = &test_data.int_0001,
+> +               .maxlen         = sizeof(int),
+> +               .mode           = 0644,
+> +               .proc_handler   = proc_dointvec,
+> +               .extra1         = &i_zero,
+> +               .extra2         = &i_one_hundred,
+> +       };
+> +       char input[32];
+> +       size_t len = sizeof(input) - 1;
+> +       loff_t pos = 0;
+> +       unsigned long greater_than_max = (unsigned long)INT_MAX + 1;
+> +
+> +       KUNIT_EXPECT_GT(test, greater_than_max, INT_MAX);
+> +       KUNIT_EXPECT_LT(test, snprintf(input, sizeof(input), "%lu",
+> +                                      greater_than_max),
+> +                       sizeof(input));
+> +       table.data = kunit_kzalloc(test, sizeof(int), GFP_USER);
+> +       KUNIT_EXPECT_EQ(test, -EINVAL,
+> +                       proc_dointvec(&table, 1, input, &len, &pos));
+> +       KUNIT_EXPECT_EQ(test, sizeof(input) - 1, len);
+> +       KUNIT_EXPECT_EQ(test, 0, *(int *)table.data);
+> +}
+> +
+> +static int sysctl_test_init(struct kunit *test)
+> +{
+> +       return 0;
+> +}
+> +
+> +/*
+> + * This is run once after each test case, see the comment on example_test_module
+> + * for more information.
+> + */
+> +static void sysctl_test_exit(struct kunit *test)
+> +{
+> +}
+
+Can the above two be omitted? If they can be empty sometimes it would be
+nice to avoid the extra symbols and code by letting them be assigned to
+NULL in the kunit_module.
+
+> +
+> +/*
+> + * Here we make a list of all the test cases we want to add to the test module
+> + * below.
+> + */
+> +static struct kunit_case sysctl_test_cases[] = {
+> +       /*
+> +        * This is a helper to create a test case object from a test case
+> +        * function; its exact function is not important to understand how to
+> +        * use KUnit, just know that this is how you associate test cases with a
+> +        * test module.
+> +        */
+> +       KUNIT_CASE(sysctl_test_dointvec_null_tbl_data),
+> +       KUNIT_CASE(sysctl_test_dointvec_table_maxlen_unset),
+> +       KUNIT_CASE(sysctl_test_dointvec_table_len_is_zero),
+> +       KUNIT_CASE(sysctl_test_dointvec_table_read_but_position_set),
+> +       KUNIT_CASE(sysctl_test_dointvec_happy_single_positive),
+> +       KUNIT_CASE(sysctl_test_dointvec_happy_single_negative),
+> +       KUNIT_CASE(sysctl_test_dointvec_single_less_int_min),
+> +       KUNIT_CASE(sysctl_test_dointvec_single_greater_int_max),
+> +       {},
+> +};
+> +
+> +/*
+> + * This defines a suite or grouping of tests.
+> + *
+> + * Test cases are defined as belonging to the suite by adding them to
+> + * `test_cases`.
+> + *
+> + * Often it is desirable to run some function which will set up things which
+> + * will be used by every test; this is accomplished with an `init` function
+> + * which runs before each test case is invoked. Similarly, an `exit` function
+> + * may be specified which runs after every test case and can be used to for
+> + * cleanup. For clarity, running tests in a test module would behave as follows:
+> + *
+> + * module.init(test);
+> + * module.test_case[0](test);
+> + * module.exit(test);
+> + * module.init(test);
+> + * module.test_case[1](test);
+> + * module.exit(test);
+> + * ...;
+
+This comment (and the one above for "this is a helper") looks generic
+and should probably only be in some documentation somewhere and not for
+a sysctl test?
+
+> + */
+> +static struct kunit_module sysctl_test_module = {
+> +       .name = "sysctl_test",
+> +       .init = sysctl_test_init,
+> +       .exit = sysctl_test_exit,
+> +       .test_cases = sysctl_test_cases,
+> +};
+> +
+> +/*
+> + * This registers the above test module telling KUnit that this is a suite of
+> + * tests that need to be run.
+> + */
+
+Same comment about generic comment.
+
+> +module_test(sysctl_test_module);
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index d5a4a4036d2f8..772af4ec70111 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -1908,6 +1908,12 @@ config TEST_SYSCTL
+>  
+>           If unsure, say N.
+>  
+> +config SYSCTL_KUNIT_TEST
+> +       bool "KUnit test for sysctl"
+
+Why not tristate?
+
+> +       depends on KUNIT
+> +       help
+> +         Enables KUnit sysctl test.
+> +
 
 _______________________________________________
 linux-um mailing list
