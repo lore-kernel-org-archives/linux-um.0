@@ -1,17 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-wm1-x343.google.com ([2a00:1450:4864:20::343])
+Received: from ivanoab6.miniserver.com ([5.153.251.140]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hTmO2-0007lI-Pk
- for linux-um@lists.infradead.org; Thu, 23 May 2019 11:59:56 +0000
-Received: by mail-wm1-x343.google.com with SMTP id y3so5549324wmm.2
- for <linux-um@lists.infradead.org>; Thu, 23 May 2019 04:59:53 -0700 (PDT)
-Date: Thu, 23 May 2019 12:59:50 +0100
-From: Stefan Hajnoczi <stefanha@gmail.com>
-Subject: Re: [Qemu-devel] custom virt-io support (in user-mode-linux)
-Message-ID: <20190523115950.GH26632@stefanha-x1.localdomain>
+ id 1hTRnM-0005Gk-R9
+ for linux-um@lists.infradead.org; Wed, 22 May 2019 14:00:43 +0000
+Subject: Re: custom virt-io support (in user-mode-linux)
 References: <0952696452f5ff4e38d2417029243fc60efa33d6.camel@sipsolutions.net>
+ <ddeee710-d546-ff05-5c53-991a7d807067@kot-begemot.co.uk>
+ <8b30e5cea2692d62fd7f486fc98effdb589a1412.camel@sipsolutions.net>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <f21ae7ac-ae56-71e6-cebd-f97c8912f5e1@cambridgegreys.com>
+Date: Wed, 22 May 2019 15:00:32 +0100
 MIME-Version: 1.0
-In-Reply-To: <0952696452f5ff4e38d2417029243fc60efa33d6.camel@sipsolutions.net>
+In-Reply-To: <8b30e5cea2692d62fd7f486fc98effdb589a1412.camel@sipsolutions.net>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,108 +22,99 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0179395269234899570=="
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-um@lists.infradead.org, qemu-devel@nongnu.org, virtualization@lists.linux-foundation.org
+To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, virtualization@lists.linux-foundation.org, qemu-devel@nongnu.org
 
 
---===============0179395269234899570==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="82evfD9Ogz2JrdWZ"
-Content-Disposition: inline
 
+On 22/05/2019 14:46, Johannes Berg wrote:
+> Hi Anton,
+> 
+>>> I'm thinking about adding virt-io support to UML, but the tricky part is
+>>> that while I want to use the virt-io basics (because it's a nice
+>>> interface from the 'inside'), I don't actually want the stock drivers
+>>> that are part of the kernel now (like virtio-net etc.) but rather
+>>> something that integrates with wifi (probably building on hwsim).
+> 
+>> I have looked at using virtio semantics in UML in the past around the
+>> point when I wanted to make the recvmmsg/sendmmsg vector drivers common
+>> in UML and QEMU. It is certainly possible,
+>>
+>> I went for the native approach at the end though.
+> 
+> Hmm. I'm not sure what you mean by either :-)
+> 
+> Is there any commonality between the vector drivers? 
 
---82evfD9Ogz2JrdWZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I was looking purely from a network driver perspective.
 
-On Wed, May 22, 2019 at 03:02:38PM +0200, Johannes Berg wrote:
-> Hi,
->=20
-> While my main interest is mostly in UML right now [1] I've CC'ed the
-> qemu and virtualization lists because something similar might actually
-> apply to other types of virtualization.
->=20
-> I'm thinking about adding virt-io support to UML, but the tricky part is
-> that while I want to use the virt-io basics (because it's a nice
-> interface from the 'inside'), I don't actually want the stock drivers
-> that are part of the kernel now (like virtio-net etc.) but rather
-> something that integrates with wifi (probably building on hwsim).
->=20
-> The 'inside' interfaces aren't really a problem - just have a specific
-> device ID for this, and then write a normal virtio kernel driver for it.
->=20
-> The 'outside' interfaces are where my thinking breaks down right now.
->=20
-> Looking at lkl, the outside is just all implemented in lkl as code that
-> gets linked to the library, so in UML terms it'd just be extra 'outside'
-> code like the timer handling or other netdev stuff we have today.
-> Looking at qemu, it's of course also implemented there, and then
-> interfaces with the real network, console abstraction, etc.
->=20
-> However, like I said above, I really need something very custom and not
-> likely to make it upstream to any project (because what point is that if
-> you cannot connect to the rest of the environment I'm building), so I'm
-> thinking that perhaps it should be possible to write an abstract
-> 'outside' that lets you interact with it really from out-of-process?
-> Perhaps through some kind of shared memory segment? I think that gets
-> tricky with virt-io doing DMA (I think it does?) though, so that part
-> would have to be implemented directly and not out-of-process?
->=20
-> But really that's why I'm asking - is there a better way than to just
-> link the device-side virt-io code into the same binary (be it lkl lib,
-> uml binary, qemu binary)?
+I had two options - either do a direct read/write as it does today or 
+implement the ring/king semantics and read/write from that.
 
-Hi Johannes,
-Check out vhost-user.  It's a protocol for running a subset of a VIRTIO
-device's emulation in a separate process (usually just the data plane
-with the PCI emulation and other configuration/setup still handled by
-QEMU).
+I decided to not bother with the latter and read/write directly from/to 
+skbs.
 
-vhost-user uses a UNIX domain socket to pass file descriptors to shared
-memory regions.  This way the vhost-user device backend process has
-access to guest RAM.
+> I can't see how
+> that'd work without a bus abstraction (like virtio) in qemu? I mean, the
+> kernel driver just calls uml_vector_sendmmsg(), which I'd say belongs
+> more to the 'outside world', but that can't really be done in qemu?
+> 
+> Ok, I guess then I see what you mean by 'native' though.
+> 
+> Similarly, of course, I can implement arbitrary virt-io devices - just
+> the kernel side doesn't call a function like uml_vector_sendmmsg()
+> directly, but instead the virt-io model, and the model calls the
+> function, which essentially is the same just with a (convenient)
+> abstraction layer.
+> 
+> But this leaves the fundamental fact the model code ("vector_user.c" or
+> a similar "virtio_user.c") is still part of the build.
+> 
+> I guess what I'm thinking is have something like "virtio_user_rpc.c"
+> that uses some appropriate RPC to interact with the real model. IOW,
+> rather than having all the model-specific logic actually be here (like
+> vector_user.c actually knows how to send network packets over a real
+> socket fd), try to call out to some RPC that contains the real model.
+> 
+> Now that I thought about it further, I guess my question boils down to
+> "did anyone ever think about doing RPC for Virt-IO instead of putting
+> the entire device model into the hypervisor/emulator/...".
 
-This would be quite different for UML since my understanding is you
-don't have guest RAM but actual host Linux processes, but vhost-user
-might still give you ideas:
-https://git.qemu.org/?p=3Dqemu.git;a=3Dblob_plain;f=3Ddocs/interop/vhost-us=
-er.rst;hb=3DHEAD
+Virtio in general no. UML specifically - yes. I have thought of mapping 
+out all key device calls to RPCs for a few applications. The issue is 
+that it is fairly difficult to make all of this function cleanly without 
+blocking in strange places.
 
-Stefan
+You may probably want to look at the UML UBD driver. That is an example 
+of moving out all processing to an external thread and talking to it via 
+a request/response API. While it still expects shared memory and needs 
+access to UML address space the model should be more amenable to 
+replacing various calls with RPCs as you have now left the rest of the 
+kernel to run while you are processing the RPC. It also provides you 
+with RPC completion interrupts, etc as a side effect.
 
---82evfD9Ogz2JrdWZ
-Content-Type: application/pgp-signature; name="signature.asc"
+So you basically have UML -> Thread -> RPCs -> Model?
 
------BEGIN PGP SIGNATURE-----
+> 
+> johannes
+> 
+> 
+> _______________________________________________
+> linux-um mailing list
+> linux-um@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-um
+> 
 
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAlzmizYACgkQnKSrs4Gr
-c8iyiQgAtcvNB/axTFWFW8B8Yja3ssAl/WQoNmZFkMVKrMmaRWNWwkZpLvFuijDm
-hKISZpLqpwJLktRbr57OEBdVBGqyORDULJABoB+Tk4le6zQhgXARKoEetmjUQgEM
-0CFEvYO5HrlTERLU0hFfudeH39yz8r3xMI+yZ3PWjCkqZC/KYu8Ny2s82Ltc4mnb
-6OjybksHD4G5MDYC0BJO/lXeARjOO6/eLgxMGDPTWENAJTXOCeXg1ZvYtdvPsdOs
-TFmzkvY63x8j8jKkgR1iJb1QjtGzpLjzhadfIPSl2MQN7hhBmOOsBzvBNJFAqOlo
-ue1U9AT0+ZRt1HMcfWx59MyXofnM+Q==
-=2T/5
------END PGP SIGNATURE-----
-
---82evfD9Ogz2JrdWZ--
-
-
---===============0179395269234899570==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
 _______________________________________________
 linux-um mailing list
 linux-um@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-um
-
---===============0179395269234899570==--
-
 
