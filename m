@@ -1,19 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab6.miniserver.com ([5.153.251.140]
- helo=www.kot-begemot.co.uk)
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hTRnM-0005Gk-R9
- for linux-um@lists.infradead.org; Wed, 22 May 2019 14:00:43 +0000
+ id 1hTRZy-00076V-J1
+ for linux-um@lists.infradead.org; Wed, 22 May 2019 13:46:56 +0000
+Message-ID: <8b30e5cea2692d62fd7f486fc98effdb589a1412.camel@sipsolutions.net>
 Subject: Re: custom virt-io support (in user-mode-linux)
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Wed, 22 May 2019 15:46:47 +0200
+In-Reply-To: <ddeee710-d546-ff05-5c53-991a7d807067@kot-begemot.co.uk>
 References: <0952696452f5ff4e38d2417029243fc60efa33d6.camel@sipsolutions.net>
  <ddeee710-d546-ff05-5c53-991a7d807067@kot-begemot.co.uk>
- <8b30e5cea2692d62fd7f486fc98effdb589a1412.camel@sipsolutions.net>
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Message-ID: <f21ae7ac-ae56-71e6-cebd-f97c8912f5e1@cambridgegreys.com>
-Date: Wed, 22 May 2019 15:00:32 +0100
-MIME-Version: 1.0
-In-Reply-To: <8b30e5cea2692d62fd7f486fc98effdb589a1412.camel@sipsolutions.net>
-Content-Language: en-US
+Mime-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,96 +20,56 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, virtualization@lists.linux-foundation.org, qemu-devel@nongnu.org
+To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, linux-um@lists.infradead.org, virtualization@lists.linux-foundation.org, qemu-devel@nongnu.org
 
+Hi Anton,
 
+> > I'm thinking about adding virt-io support to UML, but the tricky part is
+> > that while I want to use the virt-io basics (because it's a nice
+> > interface from the 'inside'), I don't actually want the stock drivers
+> > that are part of the kernel now (like virtio-net etc.) but rather
+> > something that integrates with wifi (probably building on hwsim).
 
-On 22/05/2019 14:46, Johannes Berg wrote:
-> Hi Anton,
+> I have looked at using virtio semantics in UML in the past around the 
+> point when I wanted to make the recvmmsg/sendmmsg vector drivers common 
+> in UML and QEMU. It is certainly possible,
 > 
->>> I'm thinking about adding virt-io support to UML, but the tricky part is
->>> that while I want to use the virt-io basics (because it's a nice
->>> interface from the 'inside'), I don't actually want the stock drivers
->>> that are part of the kernel now (like virtio-net etc.) but rather
->>> something that integrates with wifi (probably building on hwsim).
-> 
->> I have looked at using virtio semantics in UML in the past around the
->> point when I wanted to make the recvmmsg/sendmmsg vector drivers common
->> in UML and QEMU. It is certainly possible,
->>
->> I went for the native approach at the end though.
-> 
-> Hmm. I'm not sure what you mean by either :-)
-> 
-> Is there any commonality between the vector drivers? 
+> I went for the native approach at the end though.
 
-I was looking purely from a network driver perspective.
+Hmm. I'm not sure what you mean by either :-)
 
-I had two options - either do a direct read/write as it does today or 
-implement the ring/king semantics and read/write from that.
+Is there any commonality between the vector drivers? I can't see how
+that'd work without a bus abstraction (like virtio) in qemu? I mean, the
+kernel driver just calls uml_vector_sendmmsg(), which I'd say belongs
+more to the 'outside world', but that can't really be done in qemu?
 
-I decided to not bother with the latter and read/write directly from/to 
-skbs.
+Ok, I guess then I see what you mean by 'native' though.
 
-> I can't see how
-> that'd work without a bus abstraction (like virtio) in qemu? I mean, the
-> kernel driver just calls uml_vector_sendmmsg(), which I'd say belongs
-> more to the 'outside world', but that can't really be done in qemu?
-> 
-> Ok, I guess then I see what you mean by 'native' though.
-> 
-> Similarly, of course, I can implement arbitrary virt-io devices - just
-> the kernel side doesn't call a function like uml_vector_sendmmsg()
-> directly, but instead the virt-io model, and the model calls the
-> function, which essentially is the same just with a (convenient)
-> abstraction layer.
-> 
-> But this leaves the fundamental fact the model code ("vector_user.c" or
-> a similar "virtio_user.c") is still part of the build.
-> 
-> I guess what I'm thinking is have something like "virtio_user_rpc.c"
-> that uses some appropriate RPC to interact with the real model. IOW,
-> rather than having all the model-specific logic actually be here (like
-> vector_user.c actually knows how to send network packets over a real
-> socket fd), try to call out to some RPC that contains the real model.
-> 
-> Now that I thought about it further, I guess my question boils down to
-> "did anyone ever think about doing RPC for Virt-IO instead of putting
-> the entire device model into the hypervisor/emulator/...".
+Similarly, of course, I can implement arbitrary virt-io devices - just
+the kernel side doesn't call a function like uml_vector_sendmmsg()
+directly, but instead the virt-io model, and the model calls the
+function, which essentially is the same just with a (convenient)
+abstraction layer.
 
-Virtio in general no. UML specifically - yes. I have thought of mapping 
-out all key device calls to RPCs for a few applications. The issue is 
-that it is fairly difficult to make all of this function cleanly without 
-blocking in strange places.
+But this leaves the fundamental fact the model code ("vector_user.c" or
+a similar "virtio_user.c") is still part of the build.
 
-You may probably want to look at the UML UBD driver. That is an example 
-of moving out all processing to an external thread and talking to it via 
-a request/response API. While it still expects shared memory and needs 
-access to UML address space the model should be more amenable to 
-replacing various calls with RPCs as you have now left the rest of the 
-kernel to run while you are processing the RPC. It also provides you 
-with RPC completion interrupts, etc as a side effect.
+I guess what I'm thinking is have something like "virtio_user_rpc.c"
+that uses some appropriate RPC to interact with the real model. IOW,
+rather than having all the model-specific logic actually be here (like
+vector_user.c actually knows how to send network packets over a real
+socket fd), try to call out to some RPC that contains the real model.
 
-So you basically have UML -> Thread -> RPCs -> Model?
+Now that I thought about it further, I guess my question boils down to
+"did anyone ever think about doing RPC for Virt-IO instead of putting
+the entire device model into the hypervisor/emulator/...".
 
-> 
-> johannes
-> 
-> 
-> _______________________________________________
-> linux-um mailing list
-> linux-um@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-um
-> 
+johannes
 
--- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
-https://www.cambridgegreys.com/
 
 _______________________________________________
 linux-um mailing list
