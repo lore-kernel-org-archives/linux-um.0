@@ -1,17 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-ua1-x94a.google.com ([2607:f8b0:4864:20::94a])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hQflq-00016s-Gx
- for linux-um@lists.infradead.org; Tue, 14 May 2019 22:19:41 +0000
-Received: by mail-ua1-x94a.google.com with SMTP id k25so276740uaq.8
- for <linux-um@lists.infradead.org>; Tue, 14 May 2019 15:19:37 -0700 (PDT)
-Date: Tue, 14 May 2019 15:17:08 -0700
-In-Reply-To: <20190514221711.248228-1-brendanhiggins@google.com>
-Message-Id: <20190514221711.248228-16-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20190514221711.248228-1-brendanhiggins@google.com>
-Subject: [PATCH v4 15/18] Documentation: kunit: add documentation for KUnit
-From: Brendan Higgins <brendanhiggins@google.com>
+ id 1hTlvj-0006y5-1d
+ for linux-um@lists.infradead.org; Thu, 23 May 2019 11:30:41 +0000
+Subject: Patch "x86/mpx,
+ mm/core: Fix recursive munmap() corruption" has been added to the
+ 5.1-stable tree
+From: <gregkh@linuxfoundation.org>
+Date: Thu, 23 May 2019 13:26:35 +0200
+Message-ID: <155861079524166@kroah.com>
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,1010 +22,385 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com, Jonathan Corbet <corbet@lwn.net>
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, Felix Guo <felixguoxiuping@gmail.com>, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+To: 20190419194747.5E1AD6DC@viggo.jf.intel.com, akpm@linux-foundation.org, anton.ivanov@cambridgegreys.com, benh@kernel.crashing.org, bp@alien8.de, dave.hansen@linux.intel.com, gregkh@linuxfoundation.org, gxt@pku.edu.cn, hjl.tools@gmail.com, hpa@zytor.com, jdike@addtoit.com, linux-mm@kvack.org, linux-um@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, luto@kernel.org, mhocko@suse.com, mingo@kernel.org, mpe@ellerman.id.au, paulus@samba.org, peterz@infradead.org, rguenther@suse.de, richard@nod.at, riel@surriel.com, tglx@linutronix.de, torvalds@linux-foundation.org, vbabka@suse.cz, yang.shi@linux.alibaba.com
+Cc: stable-commits@vger.kernel.org
 
-Add documentation for KUnit, the Linux kernel unit testing framework.
-- Add intro and usage guide for KUnit
-- Add API reference
 
-Signed-off-by: Felix Guo <felixguoxiuping@gmail.com>
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+This is a note to let you know that I've just added the patch titled
+
+    x86/mpx, mm/core: Fix recursive munmap() corruption
+
+to the 5.1-stable tree which can be found at:
+    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+
+The filename of the patch is:
+     x86-mpx-mm-core-fix-recursive-munmap-corruption.patch
+and it can be found in the queue-5.1 subdirectory.
+
+If you, or anyone else, feels it should not be added to the stable tree,
+please let <stable@vger.kernel.org> know about it.
+
+
+From 5a28fc94c9143db766d1ba5480cae82d856ad080 Mon Sep 17 00:00:00 2001
+From: Dave Hansen <dave.hansen@linux.intel.com>
+Date: Fri, 19 Apr 2019 12:47:47 -0700
+Subject: x86/mpx, mm/core: Fix recursive munmap() corruption
+
+From: Dave Hansen <dave.hansen@linux.intel.com>
+
+commit 5a28fc94c9143db766d1ba5480cae82d856ad080 upstream.
+
+This is a bit of a mess, to put it mildly.  But, it's a bug
+that only seems to have showed up in 4.20 but wasn't noticed
+until now, because nobody uses MPX.
+
+MPX has the arch_unmap() hook inside of munmap() because MPX
+uses bounds tables that protect other areas of memory.  When
+memory is unmapped, there is also a need to unmap the MPX
+bounds tables.  Barring this, unused bounds tables can eat 80%
+of the address space.
+
+But, the recursive do_munmap() that gets called vi arch_unmap()
+wreaks havoc with __do_munmap()'s state.  It can result in
+freeing populated page tables, accessing bogus VMA state,
+double-freed VMAs and more.
+
+See the "long story" further below for the gory details.
+
+To fix this, call arch_unmap() before __do_unmap() has a chance
+to do anything meaningful.  Also, remove the 'vma' argument
+and force the MPX code to do its own, independent VMA lookup.
+
+== UML / unicore32 impact ==
+
+Remove unused 'vma' argument to arch_unmap().  No functional
+change.
+
+I compile tested this on UML but not unicore32.
+
+== powerpc impact ==
+
+powerpc uses arch_unmap() well to watch for munmap() on the
+VDSO and zeroes out 'current->mm->context.vdso_base'.  Moving
+arch_unmap() makes this happen earlier in __do_munmap().  But,
+'vdso_base' seems to only be used in perf and in the signal
+delivery that happens near the return to userspace.  I can not
+find any likely impact to powerpc, other than the zeroing
+happening a little earlier.
+
+powerpc does not use the 'vma' argument and is unaffected by
+its removal.
+
+I compile-tested a 64-bit powerpc defconfig.
+
+== x86 impact ==
+
+For the common success case this is functionally identical to
+what was there before.  For the munmap() failure case, it's
+possible that some MPX tables will be zapped for memory that
+continues to be in use.  But, this is an extraordinarily
+unlikely scenario and the harm would be that MPX provides no
+protection since the bounds table got reset (zeroed).
+
+I can't imagine anyone doing this:
+
+	ptr = mmap();
+	// use ptr
+	ret = munmap(ptr);
+	if (ret)
+		// oh, there was an error, I'll
+		// keep using ptr.
+
+Because if you're doing munmap(), you are *done* with the
+memory.  There's probably no good data in there _anyway_.
+
+This passes the original reproducer from Richard Biener as
+well as the existing mpx selftests/.
+
+The long story:
+
+munmap() has a couple of pieces:
+
+ 1. Find the affected VMA(s)
+ 2. Split the start/end one(s) if neceesary
+ 3. Pull the VMAs out of the rbtree
+ 4. Actually zap the memory via unmap_region(), including
+    freeing page tables (or queueing them to be freed).
+ 5. Fix up some of the accounting (like fput()) and actually
+    free the VMA itself.
+
+This specific ordering was actually introduced by:
+
+  dd2283f2605e ("mm: mmap: zap pages with read mmap_sem in munmap")
+
+during the 4.20 merge window.  The previous __do_munmap() code
+was actually safe because the only thing after arch_unmap() was
+remove_vma_list().  arch_unmap() could not see 'vma' in the
+rbtree because it was detached, so it is not even capable of
+doing operations unsafe for remove_vma_list()'s use of 'vma'.
+
+Richard Biener reported a test that shows this in dmesg:
+
+  [1216548.787498] BUG: Bad rss-counter state mm:0000000017ce560b idx:1 val:551
+  [1216548.787500] BUG: non-zero pgtables_bytes on freeing mm: 24576
+
+What triggered this was the recursive do_munmap() called via
+arch_unmap().  It was freeing page tables that has not been
+properly zapped.
+
+But, the problem was bigger than this.  For one, arch_unmap()
+can free VMAs.  But, the calling __do_munmap() has variables
+that *point* to VMAs and obviously can't handle them just
+getting freed while the pointer is still in use.
+
+I tried a couple of things here.  First, I tried to fix the page
+table freeing problem in isolation, but I then found the VMA
+issue.  I also tried having the MPX code return a flag if it
+modified the rbtree which would force __do_munmap() to re-walk
+to restart.  That spiralled out of control in complexity pretty
+fast.
+
+Just moving arch_unmap() and accepting that the bonkers failure
+case might eat some bounds tables seems like the simplest viable
+fix.
+
+This was also reported in the following kernel bugzilla entry:
+
+  https://bugzilla.kernel.org/show_bug.cgi?id=203123
+
+There are some reports that this commit triggered this bug:
+
+  dd2283f2605 ("mm: mmap: zap pages with read mmap_sem in munmap")
+
+While that commit certainly made the issues easier to hit, I believe
+the fundamental issue has been with us as long as MPX itself, thus
+the Fixes: tag below is for one of the original MPX commits.
+
+[ mingo: Minor edits to the changelog and the patch. ]
+
+Reported-by: Richard Biener <rguenther@suse.de>
+Reported-by: H.J. Lu <hjl.tools@gmail.com>
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Reviewed-by Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Yang Shi <yang.shi@linux.alibaba.com>
+Acked-by: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Guan Xuetao <gxt@pku.edu.cn>
+Cc: H. Peter Anvin <hpa@zytor.com>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Rik van Riel <riel@surriel.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: linux-arch@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: linux-um@lists.infradead.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: stable@vger.kernel.org
+Fixes: dd2283f2605e ("mm: mmap: zap pages with read mmap_sem in munmap")
+Link: http://lkml.kernel.org/r/20190419194747.5E1AD6DC@viggo.jf.intel.com
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- Documentation/dev-tools/index.rst           |   1 +
- Documentation/dev-tools/kunit/api/index.rst |  16 +
- Documentation/dev-tools/kunit/api/test.rst  |  14 +
- Documentation/dev-tools/kunit/faq.rst       |  62 +++
- Documentation/dev-tools/kunit/index.rst     |  79 +++
- Documentation/dev-tools/kunit/start.rst     | 180 ++++++
- Documentation/dev-tools/kunit/usage.rst     | 575 ++++++++++++++++++++
- 7 files changed, 927 insertions(+)
- create mode 100644 Documentation/dev-tools/kunit/api/index.rst
- create mode 100644 Documentation/dev-tools/kunit/api/test.rst
- create mode 100644 Documentation/dev-tools/kunit/faq.rst
- create mode 100644 Documentation/dev-tools/kunit/index.rst
- create mode 100644 Documentation/dev-tools/kunit/start.rst
- create mode 100644 Documentation/dev-tools/kunit/usage.rst
+ arch/powerpc/include/asm/mmu_context.h   |    1 -
+ arch/um/include/asm/mmu_context.h        |    1 -
+ arch/unicore32/include/asm/mmu_context.h |    1 -
+ arch/x86/include/asm/mmu_context.h       |    6 +++---
+ arch/x86/include/asm/mpx.h               |   15 ++++++++-------
+ arch/x86/mm/mpx.c                        |   10 ++++++----
+ include/asm-generic/mm_hooks.h           |    1 -
+ mm/mmap.c                                |   15 ++++++++-------
+ 8 files changed, 25 insertions(+), 25 deletions(-)
 
-diff --git a/Documentation/dev-tools/index.rst b/Documentation/dev-tools/index.rst
-index b0522a4dd1073..09dee10d25928 100644
---- a/Documentation/dev-tools/index.rst
-+++ b/Documentation/dev-tools/index.rst
-@@ -24,6 +24,7 @@ whole; patches welcome!
-    gdb-kernel-debugging
-    kgdb
-    kselftest
-+   kunit/index
+--- a/arch/powerpc/include/asm/mmu_context.h
++++ b/arch/powerpc/include/asm/mmu_context.h
+@@ -237,7 +237,6 @@ extern void arch_exit_mmap(struct mm_str
+ #endif
  
+ static inline void arch_unmap(struct mm_struct *mm,
+-			      struct vm_area_struct *vma,
+ 			      unsigned long start, unsigned long end)
+ {
+ 	if (start <= mm->context.vdso_base && mm->context.vdso_base < end)
+--- a/arch/um/include/asm/mmu_context.h
++++ b/arch/um/include/asm/mmu_context.h
+@@ -22,7 +22,6 @@ static inline int arch_dup_mmap(struct m
+ }
+ extern void arch_exit_mmap(struct mm_struct *mm);
+ static inline void arch_unmap(struct mm_struct *mm,
+-			struct vm_area_struct *vma,
+ 			unsigned long start, unsigned long end)
+ {
+ }
+--- a/arch/unicore32/include/asm/mmu_context.h
++++ b/arch/unicore32/include/asm/mmu_context.h
+@@ -88,7 +88,6 @@ static inline int arch_dup_mmap(struct m
+ }
  
- .. only::  subproject and html
-diff --git a/Documentation/dev-tools/kunit/api/index.rst b/Documentation/dev-tools/kunit/api/index.rst
-new file mode 100644
-index 0000000000000..9b9bffe5d41a0
---- /dev/null
-+++ b/Documentation/dev-tools/kunit/api/index.rst
-@@ -0,0 +1,16 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=============
-+API Reference
-+=============
-+.. toctree::
-+
-+	test
-+
-+This section documents the KUnit kernel testing API. It is divided into the
-+following sections:
-+
-+================================= ==============================================
-+:doc:`test`                       documents all of the standard testing API
-+                                  excluding mocking or mocking related features.
-+================================= ==============================================
-diff --git a/Documentation/dev-tools/kunit/api/test.rst b/Documentation/dev-tools/kunit/api/test.rst
-new file mode 100644
-index 0000000000000..d0ce19b1e1185
---- /dev/null
-+++ b/Documentation/dev-tools/kunit/api/test.rst
-@@ -0,0 +1,14 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+========
-+Test API
-+========
-+
-+This file documents all of the standard testing API excluding mocking or mocking
-+related features.
-+
-+.. kernel-doc:: include/kunit/test.h
-+   :internal:
-+
-+.. kernel-doc:: include/kunit/kunit-stream.h
-+   :internal:
-diff --git a/Documentation/dev-tools/kunit/faq.rst b/Documentation/dev-tools/kunit/faq.rst
-new file mode 100644
-index 0000000000000..bf2095112d899
---- /dev/null
-+++ b/Documentation/dev-tools/kunit/faq.rst
-@@ -0,0 +1,62 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+==========================
-+Frequently Asked Questions
-+==========================
-+
-+How is this different from Autotest, kselftest, etc?
-+====================================================
-+KUnit is a unit testing framework. Autotest, kselftest (and some others) are
-+not.
-+
-+A `unit test <https://martinfowler.com/bliki/UnitTest.html>`_ is supposed to
-+test a single unit of code in isolation, hence the name. A unit test should be
-+the finest granularity of testing and as such should allow all possible code
-+paths to be tested in the code under test; this is only possible if the code
-+under test is very small and does not have any external dependencies outside of
-+the test's control like hardware.
-+
-+There are no testing frameworks currently available for the kernel that do not
-+require installing the kernel on a test machine or in a VM and all require
-+tests to be written in userspace and run on the kernel under test; this is true
-+for Autotest, kselftest, and some others, disqualifying any of them from being
-+considered unit testing frameworks.
-+
-+Does KUnit support running on architectures other than UML?
-+===========================================================
-+
-+Yes, well, mostly.
-+
-+For the most part, the KUnit core framework (what you use to write the tests)
-+can compile to any architecture; it compiles like just another part of the
-+kernel and runs when the kernel boots. However, there is some infrastructure,
-+like the KUnit Wrapper (``tools/testing/kunit/kunit.py``) that does not support
-+other architectures.
-+
-+In short, this means that, yes, you can run KUnit on other architectures, but
-+it might require more work than using KUnit on UML.
-+
-+For more information, see :ref:`kunit-on-non-uml`.
-+
-+What is the difference between a unit test and these other kinds of tests?
-+==========================================================================
-+Most existing tests for the Linux kernel would be categorized as an integration
-+test, or an end-to-end test.
-+
-+- A unit test is supposed to test a single unit of code in isolation, hence the
-+  name. A unit test should be the finest granularity of testing and as such
-+  should allow all possible code paths to be tested in the code under test; this
-+  is only possible if the code under test is very small and does not have any
-+  external dependencies outside of the test's control like hardware.
-+- An integration test tests the interaction between a minimal set of components,
-+  usually just two or three. For example, someone might write an integration
-+  test to test the interaction between a driver and a piece of hardware, or to
-+  test the interaction between the userspace libraries the kernel provides and
-+  the kernel itself; however, one of these tests would probably not test the
-+  entire kernel along with hardware interactions and interactions with the
-+  userspace.
-+- An end-to-end test usually tests the entire system from the perspective of the
-+  code under test. For example, someone might write an end-to-end test for the
-+  kernel by installing a production configuration of the kernel on production
-+  hardware with a production userspace and then trying to exercise some behavior
-+  that depends on interactions between the hardware, the kernel, and userspace.
-diff --git a/Documentation/dev-tools/kunit/index.rst b/Documentation/dev-tools/kunit/index.rst
-new file mode 100644
-index 0000000000000..a317ab45bfe2d
---- /dev/null
-+++ b/Documentation/dev-tools/kunit/index.rst
-@@ -0,0 +1,79 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=========================================
-+KUnit - Unit Testing for the Linux Kernel
-+=========================================
-+
-+.. toctree::
-+	:maxdepth: 2
-+
-+	start
-+	usage
-+	api/index
-+	faq
-+
-+What is KUnit?
-+==============
-+
-+KUnit is a lightweight unit testing and mocking framework for the Linux kernel.
-+These tests are able to be run locally on a developer's workstation without a VM
-+or special hardware.
-+
-+KUnit is heavily inspired by JUnit, Python's unittest.mock, and
-+Googletest/Googlemock for C++. KUnit provides facilities for defining unit test
-+cases, grouping related test cases into test suites, providing common
-+infrastructure for running tests, and much more.
-+
-+Get started now: :doc:`start`
-+
-+Why KUnit?
-+==========
-+
-+A unit test is supposed to test a single unit of code in isolation, hence the
-+name. A unit test should be the finest granularity of testing and as such should
-+allow all possible code paths to be tested in the code under test; this is only
-+possible if the code under test is very small and does not have any external
-+dependencies outside of the test's control like hardware.
-+
-+Outside of KUnit, there are no testing frameworks currently
-+available for the kernel that do not require installing the kernel on a test
-+machine or in a VM and all require tests to be written in userspace running on
-+the kernel; this is true for Autotest, and kselftest, disqualifying
-+any of them from being considered unit testing frameworks.
-+
-+KUnit addresses the problem of being able to run tests without needing a virtual
-+machine or actual hardware with User Mode Linux. User Mode Linux is a Linux
-+architecture, like ARM or x86; however, unlike other architectures it compiles
-+to a standalone program that can be run like any other program directly inside
-+of a host operating system; to be clear, it does not require any virtualization
-+support; it is just a regular program.
-+
-+KUnit is fast. Excluding build time, from invocation to completion KUnit can run
-+several dozen tests in only 10 to 20 seconds; this might not sound like a big
-+deal to some people, but having such fast and easy to run tests fundamentally
-+changes the way you go about testing and even writing code in the first place.
-+Linus himself said in his `git talk at Google
-+<https://gist.github.com/lorn/1272686/revisions#diff-53c65572127855f1b003db4064a94573R874>`_:
-+
-+	"... a lot of people seem to think that performance is about doing the
-+	same thing, just doing it faster, and that is not true. That is not what
-+	performance is all about. If you can do something really fast, really
-+	well, people will start using it differently."
-+
-+In this context Linus was talking about branching and merging,
-+but this point also applies to testing. If your tests are slow, unreliable, are
-+difficult to write, and require a special setup or special hardware to run,
-+then you wait a lot longer to write tests, and you wait a lot longer to run
-+tests; this means that tests are likely to break, unlikely to test a lot of
-+things, and are unlikely to be rerun once they pass. If your tests are really
-+fast, you run them all the time, every time you make a change, and every time
-+someone sends you some code. Why trust that someone ran all their tests
-+correctly on every change when you can just run them yourself in less time than
-+it takes to read his / her test log?
-+
-+How do I use it?
-+================
-+
-+*   :doc:`start` - for new users of KUnit
-+*   :doc:`usage` - for a more detailed explanation of KUnit features
-+*   :doc:`api/index` - for the list of KUnit APIs used for testing
-diff --git a/Documentation/dev-tools/kunit/start.rst b/Documentation/dev-tools/kunit/start.rst
-new file mode 100644
-index 0000000000000..1f8d1f247202c
---- /dev/null
-+++ b/Documentation/dev-tools/kunit/start.rst
-@@ -0,0 +1,180 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+===============
-+Getting Started
-+===============
-+
-+Installing dependencies
-+=======================
-+KUnit has the same dependencies as the Linux kernel. As long as you can build
-+the kernel, you can run KUnit.
-+
-+KUnit Wrapper
-+=============
-+Included with KUnit is a simple Python wrapper that helps format the output to
-+easily use and read KUnit output. It handles building and running the kernel, as
-+well as formatting the output.
-+
-+The wrapper can be run with:
-+
-+.. code-block:: bash
-+
-+   ./tools/testing/kunit/kunit.py
-+
-+Creating a kunitconfig
-+======================
-+The Python script is a thin wrapper around Kbuild as such, it needs to be
-+configured with a ``kunitconfig`` file. This file essentially contains the
-+regular Kernel config, with the specific test targets as well.
-+
-+.. code-block:: bash
-+
-+	git clone -b master https://kunit.googlesource.com/kunitconfig $PATH_TO_KUNITCONFIG_REPO
-+	cd $PATH_TO_LINUX_REPO
-+	ln -s $PATH_TO_KUNIT_CONFIG_REPO/kunitconfig kunitconfig
-+
-+You may want to add kunitconfig to your local gitignore.
-+
-+Verifying KUnit Works
-+---------------------
-+
-+To make sure that everything is set up correctly, simply invoke the Python
-+wrapper from your kernel repo:
-+
-+.. code-block:: bash
-+
-+	./tools/testing/kunit/kunit.py
-+
-+.. note::
-+   You may want to run ``make mrproper`` first.
-+
-+If everything worked correctly, you should see the following:
-+
-+.. code-block:: bash
-+
-+	Generating .config ...
-+	Building KUnit Kernel ...
-+	Starting KUnit Kernel ...
-+
-+followed by a list of tests that are run. All of them should be passing.
-+
-+.. note::
-+   Because it is building a lot of sources for the first time, the ``Building
-+   kunit kernel`` step may take a while.
-+
-+Writing your first test
-+=======================
-+
-+In your kernel repo let's add some code that we can test. Create a file
-+``drivers/misc/example.h`` with the contents:
-+
-+.. code-block:: c
-+
-+	int misc_example_add(int left, int right);
-+
-+create a file ``drivers/misc/example.c``:
-+
-+.. code-block:: c
-+
-+	#include <linux/errno.h>
-+
-+	#include "example.h"
-+
-+	int misc_example_add(int left, int right)
-+	{
-+		return left + right;
+ static inline void arch_unmap(struct mm_struct *mm,
+-			struct vm_area_struct *vma,
+ 			unsigned long start, unsigned long end)
+ {
+ }
+--- a/arch/x86/include/asm/mmu_context.h
++++ b/arch/x86/include/asm/mmu_context.h
+@@ -277,8 +277,8 @@ static inline void arch_bprm_mm_init(str
+ 	mpx_mm_init(mm);
+ }
+ 
+-static inline void arch_unmap(struct mm_struct *mm, struct vm_area_struct *vma,
+-			      unsigned long start, unsigned long end)
++static inline void arch_unmap(struct mm_struct *mm, unsigned long start,
++			      unsigned long end)
+ {
+ 	/*
+ 	 * mpx_notify_unmap() goes and reads a rarely-hot
+@@ -298,7 +298,7 @@ static inline void arch_unmap(struct mm_
+ 	 * consistently wrong.
+ 	 */
+ 	if (unlikely(cpu_feature_enabled(X86_FEATURE_MPX)))
+-		mpx_notify_unmap(mm, vma, start, end);
++		mpx_notify_unmap(mm, start, end);
+ }
+ 
+ /*
+--- a/arch/x86/include/asm/mpx.h
++++ b/arch/x86/include/asm/mpx.h
+@@ -64,12 +64,15 @@ struct mpx_fault_info {
+ };
+ 
+ #ifdef CONFIG_X86_INTEL_MPX
+-int mpx_fault_info(struct mpx_fault_info *info, struct pt_regs *regs);
+-int mpx_handle_bd_fault(void);
++
++extern int mpx_fault_info(struct mpx_fault_info *info, struct pt_regs *regs);
++extern int mpx_handle_bd_fault(void);
++
+ static inline int kernel_managing_mpx_tables(struct mm_struct *mm)
+ {
+ 	return (mm->context.bd_addr != MPX_INVALID_BOUNDS_DIR);
+ }
++
+ static inline void mpx_mm_init(struct mm_struct *mm)
+ {
+ 	/*
+@@ -78,11 +81,10 @@ static inline void mpx_mm_init(struct mm
+ 	 */
+ 	mm->context.bd_addr = MPX_INVALID_BOUNDS_DIR;
+ }
+-void mpx_notify_unmap(struct mm_struct *mm, struct vm_area_struct *vma,
+-		      unsigned long start, unsigned long end);
+ 
+-unsigned long mpx_unmapped_area_check(unsigned long addr, unsigned long len,
+-		unsigned long flags);
++extern void mpx_notify_unmap(struct mm_struct *mm, unsigned long start, unsigned long end);
++extern unsigned long mpx_unmapped_area_check(unsigned long addr, unsigned long len, unsigned long flags);
++
+ #else
+ static inline int mpx_fault_info(struct mpx_fault_info *info, struct pt_regs *regs)
+ {
+@@ -100,7 +102,6 @@ static inline void mpx_mm_init(struct mm
+ {
+ }
+ static inline void mpx_notify_unmap(struct mm_struct *mm,
+-				    struct vm_area_struct *vma,
+ 				    unsigned long start, unsigned long end)
+ {
+ }
+--- a/arch/x86/mm/mpx.c
++++ b/arch/x86/mm/mpx.c
+@@ -881,9 +881,10 @@ static int mpx_unmap_tables(struct mm_st
+  * the virtual address region start...end have already been split if
+  * necessary, and the 'vma' is the first vma in this range (start -> end).
+  */
+-void mpx_notify_unmap(struct mm_struct *mm, struct vm_area_struct *vma,
+-		unsigned long start, unsigned long end)
++void mpx_notify_unmap(struct mm_struct *mm, unsigned long start,
++		      unsigned long end)
+ {
++	struct vm_area_struct *vma;
+ 	int ret;
+ 
+ 	/*
+@@ -902,11 +903,12 @@ void mpx_notify_unmap(struct mm_struct *
+ 	 * which should not occur normally. Being strict about it here
+ 	 * helps ensure that we do not have an exploitable stack overflow.
+ 	 */
+-	do {
++	vma = find_vma(mm, start);
++	while (vma && vma->vm_start < end) {
+ 		if (vma->vm_flags & VM_MPX)
+ 			return;
+ 		vma = vma->vm_next;
+-	} while (vma && vma->vm_start < end);
 +	}
-+
-+Now add the following lines to ``drivers/misc/Kconfig``:
-+
-+.. code-block:: kconfig
-+
-+	config MISC_EXAMPLE
-+		bool "My example"
-+
-+and the following lines to ``drivers/misc/Makefile``:
-+
-+.. code-block:: make
-+
-+	obj-$(CONFIG_MISC_EXAMPLE) += example.o
-+
-+Now we are ready to write the test. The test will be in
-+``drivers/misc/example-test.c``:
-+
-+.. code-block:: c
-+
-+	#include <kunit/test.h>
-+	#include "example.h"
-+
-+	/* Define the test cases. */
-+
-+	static void misc_example_add_test_basic(struct kunit *test)
-+	{
-+		KUNIT_EXPECT_EQ(test, 1, misc_example_add(1, 0));
-+		KUNIT_EXPECT_EQ(test, 2, misc_example_add(1, 1));
-+		KUNIT_EXPECT_EQ(test, 0, misc_example_add(-1, 1));
-+		KUNIT_EXPECT_EQ(test, INT_MAX, misc_example_add(0, INT_MAX));
-+		KUNIT_EXPECT_EQ(test, -1, misc_example_add(INT_MAX, INT_MIN));
-+	}
-+
-+	static void misc_example_test_failure(struct kunit *test)
-+	{
-+		KUNIT_FAIL(test, "This test never passes.");
-+	}
-+
-+	static struct kunit_case misc_example_test_cases[] = {
-+		KUNIT_CASE(misc_example_add_test_basic),
-+		KUNIT_CASE(misc_example_test_failure),
-+		{},
-+	};
-+
-+	static struct kunit_module misc_example_test_module = {
-+		.name = "misc-example",
-+		.test_cases = misc_example_test_cases,
-+	};
-+	module_test(misc_example_test_module);
-+
-+Now add the following to ``drivers/misc/Kconfig``:
-+
-+.. code-block:: kconfig
-+
-+	config MISC_EXAMPLE_TEST
-+		bool "Test for my example"
-+		depends on MISC_EXAMPLE && KUNIT
-+
-+and the following to ``drivers/misc/Makefile``:
-+
-+.. code-block:: make
-+
-+	obj-$(CONFIG_MISC_EXAMPLE_TEST) += example-test.o
-+
-+Now add it to your ``kunitconfig``:
-+
-+.. code-block:: none
-+
-+	CONFIG_MISC_EXAMPLE=y
-+	CONFIG_MISC_EXAMPLE_TEST=y
-+
-+Now you can run the test:
-+
-+.. code-block:: bash
-+
-+	./tools/testing/kunit/kunit.py
-+
-+You should see the following failure:
-+
-+.. code-block:: none
-+
-+	...
-+	[16:08:57] [PASSED] misc-example:misc_example_add_test_basic
-+	[16:08:57] [FAILED] misc-example:misc_example_test_failure
-+	[16:08:57] EXPECTATION FAILED at drivers/misc/example-test.c:17
-+	[16:08:57] 	This test never passes.
-+	...
-+
-+Congrats! You just wrote your first KUnit test!
-+
-+Next Steps
-+==========
-+*   Check out the :doc:`usage` page for a more
-+    in-depth explanation of KUnit.
-diff --git a/Documentation/dev-tools/kunit/usage.rst b/Documentation/dev-tools/kunit/usage.rst
-new file mode 100644
-index 0000000000000..4647219f99b4c
---- /dev/null
-+++ b/Documentation/dev-tools/kunit/usage.rst
-@@ -0,0 +1,575 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+===========
-+Using KUnit
-+===========
-+
-+The purpose of this document is to describe what KUnit is, how it works, how it
-+is intended to be used, and all the concepts and terminology that are needed to
-+understand it. This guide assumes a working knowledge of the Linux kernel and
-+some basic knowledge of testing.
-+
-+For a high level introduction to KUnit, including setting up KUnit for your
-+project, see :doc:`start`.
-+
-+Organization of this document
-+=============================
-+
-+This document is organized into two main sections: Testing and Isolating
-+Behavior. The first covers what a unit test is and how to use KUnit to write
-+them. The second covers how to use KUnit to isolate code and make it possible
-+to unit test code that was otherwise un-unit-testable.
-+
-+Testing
-+=======
-+
-+What is KUnit?
-+--------------
-+
-+"K" is short for "kernel" so "KUnit" is the "(Linux) Kernel Unit Testing
-+Framework." KUnit is intended first and foremost for writing unit tests; it is
-+general enough that it can be used to write integration tests; however, this is
-+a secondary goal. KUnit has no ambition of being the only testing framework for
-+the kernel; for example, it does not intend to be an end-to-end testing
-+framework.
-+
-+What is Unit Testing?
-+---------------------
-+
-+A `unit test <https://martinfowler.com/bliki/UnitTest.html>`_ is a test that
-+tests code at the smallest possible scope, a *unit* of code. In the C
-+programming language that's a function.
-+
-+Unit tests should be written for all the publicly exposed functions in a
-+compilation unit; so that is all the functions that are exported in either a
-+*class* (defined below) or all functions which are **not** static.
-+
-+Writing Tests
-+-------------
-+
-+Test Cases
-+~~~~~~~~~~
-+
-+The fundamental unit in KUnit is the test case. A test case is a function with
-+the signature ``void (*)(struct kunit *test)``. It calls a function to be tested
-+and then sets *expectations* for what should happen. For example:
-+
-+.. code-block:: c
-+
-+	void example_test_success(struct kunit *test)
-+	{
-+	}
-+
-+	void example_test_failure(struct kunit *test)
-+	{
-+		KUNIT_FAIL(test, "This test never passes.");
-+	}
-+
-+In the above example ``example_test_success`` always passes because it does
-+nothing; no expectations are set, so all expectations pass. On the other hand
-+``example_test_failure`` always fails because it calls ``KUNIT_FAIL``, which is
-+a special expectation that logs a message and causes the test case to fail.
-+
-+Expectations
-+~~~~~~~~~~~~
-+An *expectation* is a way to specify that you expect a piece of code to do
-+something in a test. An expectation is called like a function. A test is made
-+by setting expectations about the behavior of a piece of code under test; when
-+one or more of the expectations fail, the test case fails and information about
-+the failure is logged. For example:
-+
-+.. code-block:: c
-+
-+	void add_test_basic(struct kunit *test)
-+	{
-+		KUNIT_EXPECT_EQ(test, 1, add(1, 0));
-+		KUNIT_EXPECT_EQ(test, 2, add(1, 1));
-+	}
-+
-+In the above example ``add_test_basic`` makes a number of assertions about the
-+behavior of a function called ``add``; the first parameter is always of type
-+``struct kunit *``, which contains information about the current test context;
-+the second parameter, in this case, is what the value is expected to be; the
-+last value is what the value actually is. If ``add`` passes all of these
-+expectations, the test case, ``add_test_basic`` will pass; if any one of these
-+expectations fail, the test case will fail.
-+
-+It is important to understand that a test case *fails* when any expectation is
-+violated; however, the test will continue running, potentially trying other
-+expectations until the test case ends or is otherwise terminated. This is as
-+opposed to *assertions* which are discussed later.
-+
-+To learn about more expectations supported by KUnit, see :doc:`api/test`.
-+
-+.. note::
-+   A single test case should be pretty short, pretty easy to understand,
-+   focused on a single behavior.
-+
-+For example, if we wanted to properly test the add function above, we would
-+create additional tests cases which would each test a different property that an
-+add function should have like this:
-+
-+.. code-block:: c
-+
-+	void add_test_basic(struct kunit *test)
-+	{
-+		KUNIT_EXPECT_EQ(test, 1, add(1, 0));
-+		KUNIT_EXPECT_EQ(test, 2, add(1, 1));
-+	}
-+
-+	void add_test_negative(struct kunit *test)
-+	{
-+		KUNIT_EXPECT_EQ(test, 0, add(-1, 1));
-+	}
-+
-+	void add_test_max(struct kunit *test)
-+	{
-+		KUNIT_EXPECT_EQ(test, INT_MAX, add(0, INT_MAX));
-+		KUNIT_EXPECT_EQ(test, -1, add(INT_MAX, INT_MIN));
-+	}
-+
-+	void add_test_overflow(struct kunit *test)
-+	{
-+		KUNIT_EXPECT_EQ(test, INT_MIN, add(INT_MAX, 1));
-+	}
-+
-+Notice how it is immediately obvious what all the properties that we are testing
-+for are.
-+
-+Assertions
-+~~~~~~~~~~
-+
-+KUnit also has the concept of an *assertion*. An assertion is just like an
-+expectation except the assertion immediately terminates the test case if it is
-+not satisfied.
-+
-+For example:
-+
-+.. code-block:: c
-+
-+	static void mock_test_do_expect_default_return(struct kunit *test)
-+	{
-+		struct mock_test_context *ctx = test->priv;
-+		struct mock *mock = ctx->mock;
-+		int param0 = 5, param1 = -5;
-+		const char *two_param_types[] = {"int", "int"};
-+		const void *two_params[] = {&param0, &param1};
-+		const void *ret;
-+
-+		ret = mock->do_expect(mock,
-+				      "test_printk", test_printk,
-+				      two_param_types, two_params,
-+				      ARRAY_SIZE(two_params));
-+		KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ret);
-+		KUNIT_EXPECT_EQ(test, -4, *((int *) ret));
-+	}
-+
-+In this example, the method under test should return a pointer to a value, so
-+if the pointer returned by the method is null or an errno, we don't want to
-+bother continuing the test since the following expectation could crash the test
-+case. `ASSERT_NOT_ERR_OR_NULL(...)` allows us to bail out of the test case if
-+the appropriate conditions have not been satisfied to complete the test.
-+
-+Modules / Test Suites
-+~~~~~~~~~~~~~~~~~~~~~
-+
-+Now obviously one unit test isn't very helpful; the power comes from having
-+many test cases covering all of your behaviors. Consequently it is common to
-+have many *similar* tests; in order to reduce duplication in these closely
-+related tests most unit testing frameworks provide the concept of a *test
-+suite*, in KUnit we call it a *test module*; all it is is just a collection of
-+test cases for a unit of code with a set up function that gets invoked before
-+every test cases and then a tear down function that gets invoked after every
-+test case completes.
-+
-+Example:
-+
-+.. code-block:: c
-+
-+	static struct kunit_case example_test_cases[] = {
-+		KUNIT_CASE(example_test_foo),
-+		KUNIT_CASE(example_test_bar),
-+		KUNIT_CASE(example_test_baz),
-+		{},
-+	};
-+
-+	static struct kunit_module example_test_module = {
-+		.name = "example",
-+		.init = example_test_init,
-+		.exit = example_test_exit,
-+		.test_cases = example_test_cases,
-+	};
-+	module_test(example_test_module);
-+
-+In the above example the test suite, ``example_test_module``, would run the test
-+cases ``example_test_foo``, ``example_test_bar``, and ``example_test_baz``, each
-+would have ``example_test_init`` called immediately before it and would have
-+``example_test_exit`` called immediately after it.
-+``module_test(example_test_module)`` registers the test suite with the KUnit
-+test framework.
-+
-+.. note::
-+   A test case will only be run if it is associated with a test suite.
-+
-+For a more information on these types of things see the :doc:`api/test`.
-+
-+Isolating Behavior
-+==================
-+
-+The most important aspect of unit testing that other forms of testing do not
-+provide is the ability to limit the amount of code under test to a single unit.
-+In practice, this is only possible by being able to control what code gets run
-+when the unit under test calls a function and this is usually accomplished
-+through some sort of indirection where a function is exposed as part of an API
-+such that the definition of that function can be changed without affecting the
-+rest of the code base. In the kernel this primarily comes from two constructs,
-+classes, structs that contain function pointers that are provided by the
-+implementer, and architecture specific functions which have definitions selected
-+at compile time.
-+
-+Classes
-+-------
-+
-+Classes are not a construct that is built into the C programming language;
-+however, it is an easily derived concept. Accordingly, pretty much every project
-+that does not use a standardized object oriented library (like GNOME's GObject)
-+has their own slightly different way of doing object oriented programming; the
-+Linux kernel is no exception.
-+
-+The central concept in kernel object oriented programming is the class. In the
-+kernel, a *class* is a struct that contains function pointers. This creates a
-+contract between *implementers* and *users* since it forces them to use the
-+same function signature without having to call the function directly. In order
-+for it to truly be a class, the function pointers must specify that a pointer
-+to the class, known as a *class handle*, be one of the parameters; this makes
-+it possible for the member functions (also known as *methods*) to have access
-+to member variables (more commonly known as *fields*) allowing the same
-+implementation to have multiple *instances*.
-+
-+Typically a class can be *overridden* by *child classes* by embedding the
-+*parent class* in the child class. Then when a method provided by the child
-+class is called, the child implementation knows that the pointer passed to it is
-+of a parent contained within the child; because of this, the child can compute
-+the pointer to itself because the pointer to the parent is always a fixed offset
-+from the pointer to the child; this offset is the offset of the parent contained
-+in the child struct. For example:
-+
-+.. code-block:: c
-+
-+	struct shape {
-+		int (*area)(struct shape *this);
-+	};
-+
-+	struct rectangle {
-+		struct shape parent;
-+		int length;
-+		int width;
-+	};
-+
-+	int rectangle_area(struct shape *this)
-+	{
-+		struct rectangle *self = container_of(this, struct shape, parent);
-+
-+		return self->length * self->width;
-+	};
-+
-+	void rectangle_new(struct rectangle *self, int length, int width)
-+	{
-+		self->parent.area = rectangle_area;
-+		self->length = length;
-+		self->width = width;
-+	}
-+
-+In this example (as in most kernel code) the operation of computing the pointer
-+to the child from the pointer to the parent is done by ``container_of``.
-+
-+Faking Classes
-+~~~~~~~~~~~~~~
-+
-+In order to unit test a piece of code that calls a method in a class, the
-+behavior of the method must be controllable, otherwise the test ceases to be a
-+unit test and becomes an integration test.
-+
-+A fake just provides an implementation of a piece of code that is different than
-+what runs in a production instance, but behaves identically from the standpoint
-+of the callers; this is usually done to replace a dependency that is hard to
-+deal with, or is slow.
-+
-+A good example for this might be implementing a fake EEPROM that just stores the
-+"contents" in an internal buffer. For example, let's assume we have a class that
-+represents an EEPROM:
-+
-+.. code-block:: c
-+
-+	struct eeprom {
-+		ssize_t (*read)(struct eeprom *this, size_t offset, char *buffer, size_t count);
-+		ssize_t (*write)(struct eeprom *this, size_t offset, const char *buffer, size_t count);
-+	};
-+
-+And we want to test some code that buffers writes to the EEPROM:
-+
-+.. code-block:: c
-+
-+	struct eeprom_buffer {
-+		ssize_t (*write)(struct eeprom_buffer *this, const char *buffer, size_t count);
-+		int flush(struct eeprom_buffer *this);
-+		size_t flush_count; /* Flushes when buffer exceeds flush_count. */
-+	};
-+
-+	struct eeprom_buffer *new_eeprom_buffer(struct eeprom *eeprom);
-+	void destroy_eeprom_buffer(struct eeprom *eeprom);
-+
-+We can easily test this code by *faking out* the underlying EEPROM:
-+
-+.. code-block:: c
-+
-+	struct fake_eeprom {
-+		struct eeprom parent;
-+		char contents[FAKE_EEPROM_CONTENTS_SIZE];
-+	};
-+
-+	ssize_t fake_eeprom_read(struct eeprom *parent, size_t offset, char *buffer, size_t count)
-+	{
-+		struct fake_eeprom *this = container_of(parent, struct fake_eeprom, parent);
-+
-+		count = min(count, FAKE_EEPROM_CONTENTS_SIZE - offset);
-+		memcpy(buffer, this->contents + offset, count);
-+
-+		return count;
-+	}
-+
-+	ssize_t fake_eeprom_write(struct eeprom *this, size_t offset, const char *buffer, size_t count)
-+	{
-+		struct fake_eeprom *this = container_of(parent, struct fake_eeprom, parent);
-+
-+		count = min(count, FAKE_EEPROM_CONTENTS_SIZE - offset);
-+		memcpy(this->contents + offset, buffer, count);
-+
-+		return count;
-+	}
-+
-+	void fake_eeprom_init(struct fake_eeprom *this)
-+	{
-+		this->parent.read = fake_eeprom_read;
-+		this->parent.write = fake_eeprom_write;
-+		memset(this->contents, 0, FAKE_EEPROM_CONTENTS_SIZE);
-+	}
-+
-+We can now use it to test ``struct eeprom_buffer``:
-+
-+.. code-block:: c
-+
-+	struct eeprom_buffer_test {
-+		struct fake_eeprom *fake_eeprom;
-+		struct eeprom_buffer *eeprom_buffer;
-+	};
-+
-+	static void eeprom_buffer_test_does_not_write_until_flush(struct kunit *test)
-+	{
-+		struct eeprom_buffer_test *ctx = test->priv;
-+		struct eeprom_buffer *eeprom_buffer = ctx->eeprom_buffer;
-+		struct fake_eeprom *fake_eeprom = ctx->fake_eeprom;
-+		char buffer[] = {0xff};
-+
-+		eeprom_buffer->flush_count = SIZE_MAX;
-+
-+		eeprom_buffer->write(eeprom_buffer, buffer, 1);
-+		KUNIT_EXPECT_EQ(test, fake_eeprom->contents[0], 0);
-+
-+		eeprom_buffer->write(eeprom_buffer, buffer, 1);
-+		KUNIT_EXPECT_EQ(test, fake_eeprom->contents[1], 0);
-+
-+		eeprom_buffer->flush(eeprom_buffer);
-+		KUNIT_EXPECT_EQ(test, fake_eeprom->contents[0], 0xff);
-+		KUNIT_EXPECT_EQ(test, fake_eeprom->contents[1], 0xff);
-+	}
-+
-+	static void eeprom_buffer_test_flushes_after_flush_count_met(struct kunit *test)
-+	{
-+		struct eeprom_buffer_test *ctx = test->priv;
-+		struct eeprom_buffer *eeprom_buffer = ctx->eeprom_buffer;
-+		struct fake_eeprom *fake_eeprom = ctx->fake_eeprom;
-+		char buffer[] = {0xff};
-+
-+		eeprom_buffer->flush_count = 2;
-+
-+		eeprom_buffer->write(eeprom_buffer, buffer, 1);
-+		KUNIT_EXPECT_EQ(test, fake_eeprom->contents[0], 0);
-+
-+		eeprom_buffer->write(eeprom_buffer, buffer, 1);
-+		KUNIT_EXPECT_EQ(test, fake_eeprom->contents[0], 0xff);
-+		KUNIT_EXPECT_EQ(test, fake_eeprom->contents[1], 0xff);
-+	}
-+
-+	static void eeprom_buffer_test_flushes_increments_of_flush_count(struct kunit *test)
-+	{
-+		struct eeprom_buffer_test *ctx = test->priv;
-+		struct eeprom_buffer *eeprom_buffer = ctx->eeprom_buffer;
-+		struct fake_eeprom *fake_eeprom = ctx->fake_eeprom;
-+		char buffer[] = {0xff, 0xff};
-+
-+		eeprom_buffer->flush_count = 2;
-+
-+		eeprom_buffer->write(eeprom_buffer, buffer, 1);
-+		KUNIT_EXPECT_EQ(test, fake_eeprom->contents[0], 0);
-+
-+		eeprom_buffer->write(eeprom_buffer, buffer, 2);
-+		KUNIT_EXPECT_EQ(test, fake_eeprom->contents[0], 0xff);
-+		KUNIT_EXPECT_EQ(test, fake_eeprom->contents[1], 0xff);
-+		/* Should have only flushed the first two bytes. */
-+		KUNIT_EXPECT_EQ(test, fake_eeprom->contents[2], 0);
-+	}
-+
-+	static int eeprom_buffer_test_init(struct kunit *test)
-+	{
-+		struct eeprom_buffer_test *ctx;
-+
-+		ctx = kunit_kzalloc(test, sizeof(*ctx), GFP_KERNEL);
-+		ASSERT_NOT_ERR_OR_NULL(test, ctx);
-+
-+		ctx->fake_eeprom = kunit_kzalloc(test, sizeof(*ctx->fake_eeprom), GFP_KERNEL);
-+		ASSERT_NOT_ERR_OR_NULL(test, ctx->fake_eeprom);
-+
-+		ctx->eeprom_buffer = new_eeprom_buffer(&ctx->fake_eeprom->parent);
-+		ASSERT_NOT_ERR_OR_NULL(test, ctx->eeprom_buffer);
-+
-+		test->priv = ctx;
-+
-+		return 0;
-+	}
-+
-+	static void eeprom_buffer_test_exit(struct kunit *test)
-+	{
-+		struct eeprom_buffer_test *ctx = test->priv;
-+
-+		destroy_eeprom_buffer(ctx->eeprom_buffer);
-+	}
-+
-+.. _kunit-on-non-uml:
-+
-+KUnit on non-UML architectures
-+==============================
-+
-+By default KUnit uses UML as a way to provide dependencies for code under test.
-+Under most circumstances KUnit's usage of UML should be treated as an
-+implementation detail of how KUnit works under the hood. Nevertheless, there
-+are instances where being able to run architecture specific code, or test
-+against real hardware is desirable. For these reasons KUnit supports running on
-+other architectures.
-+
-+Running existing KUnit tests on non-UML architectures
-+-----------------------------------------------------
-+
-+There are some special considerations when running existing KUnit tests on
-+non-UML architectures:
-+
-+*   Hardware may not be deterministic, so a test that always passes or fails
-+    when run under UML may not always do so on real hardware.
-+*   Hardware and VM environments may not be hermetic. KUnit tries its best to
-+    provide a hermetic environment to run tests; however, it cannot manage state
-+    that it doesn't know about outside of the kernel. Consequently, tests that
-+    may be hermetic on UML may not be hermetic on other architectures.
-+*   Some features and tooling may not be supported outside of UML.
-+*   Hardware and VMs are slower than UML.
-+
-+None of these are reasons not to run your KUnit tests on real hardware; they are
-+only things to be aware of when doing so.
-+
-+The biggest impediment will likely be that certain KUnit features and
-+infrastructure may not support your target environment. For example, at this
-+time the KUnit Wrapper (``tools/testing/kunit/kunit.py``) does not work outside
-+of UML. Unfortunately, there is no way around this. Using UML (or even just a
-+particular architecture) allows us to make a lot of assumptions that make it
-+possible to do things which might otherwise be impossible.
-+
-+Nevertheless, all core KUnit framework features are fully supported on all
-+architectures, and using them is straightforward: all you need to do is to take
-+your kunitconfig, your Kconfig options for the tests you would like to run, and
-+merge them into whatever config your are using for your platform. That's it!
-+
-+For example, let's say you have the following kunitconfig:
-+
-+.. code-block:: none
-+
-+	CONFIG_KUNIT=y
-+	CONFIG_KUNIT_EXAMPLE_TEST=y
-+
-+If you wanted to run this test on an x86 VM, you might add the following config
-+options to your ``.config``:
-+
-+.. code-block:: none
-+
-+	CONFIG_KUNIT=y
-+	CONFIG_KUNIT_EXAMPLE_TEST=y
-+	CONFIG_SERIAL_8250=y
-+	CONFIG_SERIAL_8250_CONSOLE=y
-+
-+All these new options do is enable support for a common serial console needed
-+for logging.
-+
-+Next, you could build a kernel with these tests as follows:
-+
-+
-+.. code-block:: bash
-+
-+	make ARCH=x86 olddefconfig
-+	make ARCH=x86
-+
-+Once you have built a kernel, you could run it on QEMU as follows:
-+
-+.. code-block:: bash
-+
-+	qemu-system-x86_64 -enable-kvm \
-+			   -m 1024 \
-+			   -kernel arch/x86_64/boot/bzImage \
-+			   -append 'console=ttyS0' \
-+			   --nographic
-+
-+Interspersed in the kernel logs you might see the following:
-+
-+.. code-block:: none
-+
-+	TAP version 14
-+		# Subtest: example
-+		1..1
-+		# example_simple_test: initializing
-+		ok 1 - example_simple_test
-+	ok 1 - example
-+
-+Congratulations, you just ran a KUnit test on the x86 architecture!
-+
-+Writing new tests for other architectures
-+-----------------------------------------
-+
-+The first thing you must do is ask yourself whether it is necessary to write a
-+KUnit test for a specific architecture, and then whether it is necessary to
-+write that test for a particular piece of hardware. In general, writing a test
-+that depends on having access to a particular piece of hardware or software (not
-+included in the Linux source repo) should be avoided at all costs.
-+
-+Even if you only ever plan on running your KUnit test on your hardware
-+configuration, other people may want to run your tests and may not have access
-+to your hardware. If you write your test to run on UML, then anyone can run your
-+tests without knowing anything about your particular setup, and you can still
-+run your tests on your hardware setup just by compiling for your architecture.
-+
-+.. important::
-+   Always prefer tests that run on UML to tests that only run under a particular
-+   architecture, and always prefer tests that run under QEMU or another easy
-+   (and monitarily free) to obtain software environment to a specific piece of
-+   hardware.
-+
-+Nevertheless, there are still valid reasons to write an architecture or hardware
-+specific test: for example, you might want to test some code that really belongs
-+in ``arch/some-arch/*``. Even so, try your best to write the test so that it
-+does not depend on physical hardware: if some of your test cases don't need the
-+hardware, only require the hardware for tests that actually need it.
-+
-+Now that you have narrowed down exactly what bits are hardware specific, the
-+actual procedure for writing and running the tests is pretty much the same as
-+writing normal KUnit tests. One special caveat is that you have to reset
-+hardware state in between test cases; if this is not possible, you may only be
-+able to run one test case per invocation.
-+
-+.. TODO(brendanhiggins@google.com): Add an actual example of an architecture
-+   dependent KUnit test.
--- 
-2.21.0.1020.gf2820cf01a-goog
+ 
+ 	ret = mpx_unmap_tables(mm, start, end);
+ 	if (ret)
+--- a/include/asm-generic/mm_hooks.h
++++ b/include/asm-generic/mm_hooks.h
+@@ -18,7 +18,6 @@ static inline void arch_exit_mmap(struct
+ }
+ 
+ static inline void arch_unmap(struct mm_struct *mm,
+-			struct vm_area_struct *vma,
+ 			unsigned long start, unsigned long end)
+ {
+ }
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -2735,9 +2735,17 @@ int __do_munmap(struct mm_struct *mm, un
+ 		return -EINVAL;
+ 
+ 	len = PAGE_ALIGN(len);
++	end = start + len;
+ 	if (len == 0)
+ 		return -EINVAL;
+ 
++	/*
++	 * arch_unmap() might do unmaps itself.  It must be called
++	 * and finish any rbtree manipulation before this code
++	 * runs and also starts to manipulate the rbtree.
++	 */
++	arch_unmap(mm, start, end);
++
+ 	/* Find the first overlapping VMA */
+ 	vma = find_vma(mm, start);
+ 	if (!vma)
+@@ -2746,7 +2754,6 @@ int __do_munmap(struct mm_struct *mm, un
+ 	/* we have  start < vma->vm_end  */
+ 
+ 	/* if it doesn't overlap, we have nothing.. */
+-	end = start + len;
+ 	if (vma->vm_start >= end)
+ 		return 0;
+ 
+@@ -2816,12 +2823,6 @@ int __do_munmap(struct mm_struct *mm, un
+ 	/* Detach vmas from rbtree */
+ 	detach_vmas_to_be_unmapped(mm, vma, prev, end);
+ 
+-	/*
+-	 * mpx unmap needs to be called with mmap_sem held for write.
+-	 * It is safe to call it before unmap_region().
+-	 */
+-	arch_unmap(mm, vma, start, end);
+-
+ 	if (downgrade)
+ 		downgrade_write(&mm->mmap_sem);
+ 
 
+
+Patches currently in stable-queue which might be from dave.hansen@linux.intel.com are
+
+queue-5.1/x86-mpx-mm-core-fix-recursive-munmap-corruption.patch
 
 _______________________________________________
 linux-um mailing list
