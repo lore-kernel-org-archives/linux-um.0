@@ -1,17 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x54a.google.com ([2607:f8b0:4864:20::54a])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hQQGY-0006LE-Pg
- for linux-um@lists.infradead.org; Tue, 14 May 2019 05:46:20 +0000
-Received: by mail-pg1-x54a.google.com with SMTP id e14so10760634pgg.12
- for <linux-um@lists.infradead.org>; Mon, 13 May 2019 22:46:18 -0700 (PDT)
-Date: Mon, 13 May 2019 22:42:44 -0700
-In-Reply-To: <20190514054251.186196-1-brendanhiggins@google.com>
-Message-Id: <20190514054251.186196-11-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20190514054251.186196-1-brendanhiggins@google.com>
-Subject: [PATCH v3 10/18] kunit: test: add tests for kunit test abort
-From: Brendan Higgins <brendanhiggins@google.com>
+ id 1hTlua-0005bT-15
+ for linux-um@lists.infradead.org; Thu, 23 May 2019 11:29:30 +0000
+Subject: Patch "x86/mpx,
+ mm/core: Fix recursive munmap() corruption" has been added to the
+ 5.0-stable tree
+From: <gregkh@linuxfoundation.org>
+Date: Thu, 23 May 2019 13:26:17 +0200
+Message-ID: <155861077763253@kroah.com>
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,145 +22,385 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+To: 20190419194747.5E1AD6DC@viggo.jf.intel.com, akpm@linux-foundation.org, anton.ivanov@cambridgegreys.com, benh@kernel.crashing.org, bp@alien8.de, dave.hansen@linux.intel.com, gregkh@linuxfoundation.org, gxt@pku.edu.cn, hjl.tools@gmail.com, hpa@zytor.com, jdike@addtoit.com, linux-mm@kvack.org, linux-um@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, luto@kernel.org, mhocko@suse.com, mingo@kernel.org, mpe@ellerman.id.au, paulus@samba.org, peterz@infradead.org, rguenther@suse.de, richard@nod.at, riel@surriel.com, tglx@linutronix.de, torvalds@linux-foundation.org, vbabka@suse.cz, yang.shi@linux.alibaba.com
+Cc: stable-commits@vger.kernel.org
 
-Add KUnit tests for the KUnit test abort mechanism (see preceding
-commit). Add tests both for general try catch mechanism as well as
-non-architecture specific mechanism.
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+This is a note to let you know that I've just added the patch titled
+
+    x86/mpx, mm/core: Fix recursive munmap() corruption
+
+to the 5.0-stable tree which can be found at:
+    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+
+The filename of the patch is:
+     x86-mpx-mm-core-fix-recursive-munmap-corruption.patch
+and it can be found in the queue-5.0 subdirectory.
+
+If you, or anyone else, feels it should not be added to the stable tree,
+please let <stable@vger.kernel.org> know about it.
+
+
+From 5a28fc94c9143db766d1ba5480cae82d856ad080 Mon Sep 17 00:00:00 2001
+From: Dave Hansen <dave.hansen@linux.intel.com>
+Date: Fri, 19 Apr 2019 12:47:47 -0700
+Subject: x86/mpx, mm/core: Fix recursive munmap() corruption
+
+From: Dave Hansen <dave.hansen@linux.intel.com>
+
+commit 5a28fc94c9143db766d1ba5480cae82d856ad080 upstream.
+
+This is a bit of a mess, to put it mildly.  But, it's a bug
+that only seems to have showed up in 4.20 but wasn't noticed
+until now, because nobody uses MPX.
+
+MPX has the arch_unmap() hook inside of munmap() because MPX
+uses bounds tables that protect other areas of memory.  When
+memory is unmapped, there is also a need to unmap the MPX
+bounds tables.  Barring this, unused bounds tables can eat 80%
+of the address space.
+
+But, the recursive do_munmap() that gets called vi arch_unmap()
+wreaks havoc with __do_munmap()'s state.  It can result in
+freeing populated page tables, accessing bogus VMA state,
+double-freed VMAs and more.
+
+See the "long story" further below for the gory details.
+
+To fix this, call arch_unmap() before __do_unmap() has a chance
+to do anything meaningful.  Also, remove the 'vma' argument
+and force the MPX code to do its own, independent VMA lookup.
+
+== UML / unicore32 impact ==
+
+Remove unused 'vma' argument to arch_unmap().  No functional
+change.
+
+I compile tested this on UML but not unicore32.
+
+== powerpc impact ==
+
+powerpc uses arch_unmap() well to watch for munmap() on the
+VDSO and zeroes out 'current->mm->context.vdso_base'.  Moving
+arch_unmap() makes this happen earlier in __do_munmap().  But,
+'vdso_base' seems to only be used in perf and in the signal
+delivery that happens near the return to userspace.  I can not
+find any likely impact to powerpc, other than the zeroing
+happening a little earlier.
+
+powerpc does not use the 'vma' argument and is unaffected by
+its removal.
+
+I compile-tested a 64-bit powerpc defconfig.
+
+== x86 impact ==
+
+For the common success case this is functionally identical to
+what was there before.  For the munmap() failure case, it's
+possible that some MPX tables will be zapped for memory that
+continues to be in use.  But, this is an extraordinarily
+unlikely scenario and the harm would be that MPX provides no
+protection since the bounds table got reset (zeroed).
+
+I can't imagine anyone doing this:
+
+	ptr = mmap();
+	// use ptr
+	ret = munmap(ptr);
+	if (ret)
+		// oh, there was an error, I'll
+		// keep using ptr.
+
+Because if you're doing munmap(), you are *done* with the
+memory.  There's probably no good data in there _anyway_.
+
+This passes the original reproducer from Richard Biener as
+well as the existing mpx selftests/.
+
+The long story:
+
+munmap() has a couple of pieces:
+
+ 1. Find the affected VMA(s)
+ 2. Split the start/end one(s) if neceesary
+ 3. Pull the VMAs out of the rbtree
+ 4. Actually zap the memory via unmap_region(), including
+    freeing page tables (or queueing them to be freed).
+ 5. Fix up some of the accounting (like fput()) and actually
+    free the VMA itself.
+
+This specific ordering was actually introduced by:
+
+  dd2283f2605e ("mm: mmap: zap pages with read mmap_sem in munmap")
+
+during the 4.20 merge window.  The previous __do_munmap() code
+was actually safe because the only thing after arch_unmap() was
+remove_vma_list().  arch_unmap() could not see 'vma' in the
+rbtree because it was detached, so it is not even capable of
+doing operations unsafe for remove_vma_list()'s use of 'vma'.
+
+Richard Biener reported a test that shows this in dmesg:
+
+  [1216548.787498] BUG: Bad rss-counter state mm:0000000017ce560b idx:1 val:551
+  [1216548.787500] BUG: non-zero pgtables_bytes on freeing mm: 24576
+
+What triggered this was the recursive do_munmap() called via
+arch_unmap().  It was freeing page tables that has not been
+properly zapped.
+
+But, the problem was bigger than this.  For one, arch_unmap()
+can free VMAs.  But, the calling __do_munmap() has variables
+that *point* to VMAs and obviously can't handle them just
+getting freed while the pointer is still in use.
+
+I tried a couple of things here.  First, I tried to fix the page
+table freeing problem in isolation, but I then found the VMA
+issue.  I also tried having the MPX code return a flag if it
+modified the rbtree which would force __do_munmap() to re-walk
+to restart.  That spiralled out of control in complexity pretty
+fast.
+
+Just moving arch_unmap() and accepting that the bonkers failure
+case might eat some bounds tables seems like the simplest viable
+fix.
+
+This was also reported in the following kernel bugzilla entry:
+
+  https://bugzilla.kernel.org/show_bug.cgi?id=203123
+
+There are some reports that this commit triggered this bug:
+
+  dd2283f2605 ("mm: mmap: zap pages with read mmap_sem in munmap")
+
+While that commit certainly made the issues easier to hit, I believe
+the fundamental issue has been with us as long as MPX itself, thus
+the Fixes: tag below is for one of the original MPX commits.
+
+[ mingo: Minor edits to the changelog and the patch. ]
+
+Reported-by: Richard Biener <rguenther@suse.de>
+Reported-by: H.J. Lu <hjl.tools@gmail.com>
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Reviewed-by Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Yang Shi <yang.shi@linux.alibaba.com>
+Acked-by: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Guan Xuetao <gxt@pku.edu.cn>
+Cc: H. Peter Anvin <hpa@zytor.com>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Rik van Riel <riel@surriel.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: linux-arch@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: linux-um@lists.infradead.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: stable@vger.kernel.org
+Fixes: dd2283f2605e ("mm: mmap: zap pages with read mmap_sem in munmap")
+Link: http://lkml.kernel.org/r/20190419194747.5E1AD6DC@viggo.jf.intel.com
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- kunit/Makefile    |   3 +-
- kunit/test-test.c | 101 ++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 103 insertions(+), 1 deletion(-)
- create mode 100644 kunit/test-test.c
+ arch/powerpc/include/asm/mmu_context.h   |    1 -
+ arch/um/include/asm/mmu_context.h        |    1 -
+ arch/unicore32/include/asm/mmu_context.h |    1 -
+ arch/x86/include/asm/mmu_context.h       |    6 +++---
+ arch/x86/include/asm/mpx.h               |   15 ++++++++-------
+ arch/x86/mm/mpx.c                        |   10 ++++++----
+ include/asm-generic/mm_hooks.h           |    1 -
+ mm/mmap.c                                |   15 ++++++++-------
+ 8 files changed, 25 insertions(+), 25 deletions(-)
 
-diff --git a/kunit/Makefile b/kunit/Makefile
-index 1f7680cfa11ad..533355867abd2 100644
---- a/kunit/Makefile
-+++ b/kunit/Makefile
-@@ -3,6 +3,7 @@ obj-$(CONFIG_KUNIT) +=			test.o \
- 					kunit-stream.o \
- 					try-catch.o
+--- a/arch/powerpc/include/asm/mmu_context.h
++++ b/arch/powerpc/include/asm/mmu_context.h
+@@ -237,7 +237,6 @@ extern void arch_exit_mmap(struct mm_str
+ #endif
  
--obj-$(CONFIG_KUNIT_TEST) +=		string-stream-test.o
-+obj-$(CONFIG_KUNIT_TEST) +=		test-test.o \
-+					string-stream-test.o
+ static inline void arch_unmap(struct mm_struct *mm,
+-			      struct vm_area_struct *vma,
+ 			      unsigned long start, unsigned long end)
+ {
+ 	if (start <= mm->context.vdso_base && mm->context.vdso_base < end)
+--- a/arch/um/include/asm/mmu_context.h
++++ b/arch/um/include/asm/mmu_context.h
+@@ -22,7 +22,6 @@ static inline int arch_dup_mmap(struct m
+ }
+ extern void arch_exit_mmap(struct mm_struct *mm);
+ static inline void arch_unmap(struct mm_struct *mm,
+-			struct vm_area_struct *vma,
+ 			unsigned long start, unsigned long end)
+ {
+ }
+--- a/arch/unicore32/include/asm/mmu_context.h
++++ b/arch/unicore32/include/asm/mmu_context.h
+@@ -88,7 +88,6 @@ static inline int arch_dup_mmap(struct m
+ }
  
- obj-$(CONFIG_KUNIT_EXAMPLE_TEST) +=	example-test.o
-diff --git a/kunit/test-test.c b/kunit/test-test.c
-new file mode 100644
-index 0000000000000..577df5a8d309e
---- /dev/null
-+++ b/kunit/test-test.c
-@@ -0,0 +1,101 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * KUnit test for core test infrastructure.
-+ *
-+ * Copyright (C) 2019, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
-+#include <kunit/test.h>
+ static inline void arch_unmap(struct mm_struct *mm,
+-			struct vm_area_struct *vma,
+ 			unsigned long start, unsigned long end)
+ {
+ }
+--- a/arch/x86/include/asm/mmu_context.h
++++ b/arch/x86/include/asm/mmu_context.h
+@@ -277,8 +277,8 @@ static inline void arch_bprm_mm_init(str
+ 	mpx_mm_init(mm);
+ }
+ 
+-static inline void arch_unmap(struct mm_struct *mm, struct vm_area_struct *vma,
+-			      unsigned long start, unsigned long end)
++static inline void arch_unmap(struct mm_struct *mm, unsigned long start,
++			      unsigned long end)
+ {
+ 	/*
+ 	 * mpx_notify_unmap() goes and reads a rarely-hot
+@@ -298,7 +298,7 @@ static inline void arch_unmap(struct mm_
+ 	 * consistently wrong.
+ 	 */
+ 	if (unlikely(cpu_feature_enabled(X86_FEATURE_MPX)))
+-		mpx_notify_unmap(mm, vma, start, end);
++		mpx_notify_unmap(mm, start, end);
+ }
+ 
+ /*
+--- a/arch/x86/include/asm/mpx.h
++++ b/arch/x86/include/asm/mpx.h
+@@ -64,12 +64,15 @@ struct mpx_fault_info {
+ };
+ 
+ #ifdef CONFIG_X86_INTEL_MPX
+-int mpx_fault_info(struct mpx_fault_info *info, struct pt_regs *regs);
+-int mpx_handle_bd_fault(void);
 +
-+struct kunit_try_catch_test_context {
-+	struct kunit_try_catch *try_catch;
-+	bool function_called;
-+};
++extern int mpx_fault_info(struct mpx_fault_info *info, struct pt_regs *regs);
++extern int mpx_handle_bd_fault(void);
 +
-+void kunit_test_successful_try(void *data)
-+{
-+	struct kunit *test = data;
-+	struct kunit_try_catch_test_context *ctx = test->priv;
+ static inline int kernel_managing_mpx_tables(struct mm_struct *mm)
+ {
+ 	return (mm->context.bd_addr != MPX_INVALID_BOUNDS_DIR);
+ }
 +
-+	ctx->function_called = true;
-+}
+ static inline void mpx_mm_init(struct mm_struct *mm)
+ {
+ 	/*
+@@ -78,11 +81,10 @@ static inline void mpx_mm_init(struct mm
+ 	 */
+ 	mm->context.bd_addr = MPX_INVALID_BOUNDS_DIR;
+ }
+-void mpx_notify_unmap(struct mm_struct *mm, struct vm_area_struct *vma,
+-		      unsigned long start, unsigned long end);
+ 
+-unsigned long mpx_unmapped_area_check(unsigned long addr, unsigned long len,
+-		unsigned long flags);
++extern void mpx_notify_unmap(struct mm_struct *mm, unsigned long start, unsigned long end);
++extern unsigned long mpx_unmapped_area_check(unsigned long addr, unsigned long len, unsigned long flags);
 +
-+void kunit_test_no_catch(void *data)
-+{
-+	struct kunit *test = data;
+ #else
+ static inline int mpx_fault_info(struct mpx_fault_info *info, struct pt_regs *regs)
+ {
+@@ -100,7 +102,6 @@ static inline void mpx_mm_init(struct mm
+ {
+ }
+ static inline void mpx_notify_unmap(struct mm_struct *mm,
+-				    struct vm_area_struct *vma,
+ 				    unsigned long start, unsigned long end)
+ {
+ }
+--- a/arch/x86/mm/mpx.c
++++ b/arch/x86/mm/mpx.c
+@@ -881,9 +881,10 @@ static int mpx_unmap_tables(struct mm_st
+  * the virtual address region start...end have already been split if
+  * necessary, and the 'vma' is the first vma in this range (start -> end).
+  */
+-void mpx_notify_unmap(struct mm_struct *mm, struct vm_area_struct *vma,
+-		unsigned long start, unsigned long end)
++void mpx_notify_unmap(struct mm_struct *mm, unsigned long start,
++		      unsigned long end)
+ {
++	struct vm_area_struct *vma;
+ 	int ret;
+ 
+ 	/*
+@@ -902,11 +903,12 @@ void mpx_notify_unmap(struct mm_struct *
+ 	 * which should not occur normally. Being strict about it here
+ 	 * helps ensure that we do not have an exploitable stack overflow.
+ 	 */
+-	do {
++	vma = find_vma(mm, start);
++	while (vma && vma->vm_start < end) {
+ 		if (vma->vm_flags & VM_MPX)
+ 			return;
+ 		vma = vma->vm_next;
+-	} while (vma && vma->vm_start < end);
++	}
+ 
+ 	ret = mpx_unmap_tables(mm, start, end);
+ 	if (ret)
+--- a/include/asm-generic/mm_hooks.h
++++ b/include/asm-generic/mm_hooks.h
+@@ -18,7 +18,6 @@ static inline void arch_exit_mmap(struct
+ }
+ 
+ static inline void arch_unmap(struct mm_struct *mm,
+-			struct vm_area_struct *vma,
+ 			unsigned long start, unsigned long end)
+ {
+ }
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -2736,9 +2736,17 @@ int __do_munmap(struct mm_struct *mm, un
+ 		return -EINVAL;
+ 
+ 	len = PAGE_ALIGN(len);
++	end = start + len;
+ 	if (len == 0)
+ 		return -EINVAL;
+ 
++	/*
++	 * arch_unmap() might do unmaps itself.  It must be called
++	 * and finish any rbtree manipulation before this code
++	 * runs and also starts to manipulate the rbtree.
++	 */
++	arch_unmap(mm, start, end);
 +
-+	KUNIT_FAIL(test, "Catch should not be called.\n");
-+}
-+
-+static void kunit_test_try_catch_successful_try_no_catch(struct kunit *test)
-+{
-+	struct kunit_try_catch_test_context *ctx = test->priv;
-+	struct kunit_try_catch *try_catch = ctx->try_catch;
-+
-+	kunit_try_catch_init(try_catch,
-+			     test,
-+			     kunit_test_successful_try,
-+			     kunit_test_no_catch);
-+	kunit_try_catch_run(try_catch, test);
-+
-+	KUNIT_EXPECT_TRUE(test, ctx->function_called);
-+}
-+
-+void kunit_test_unsuccessful_try(void *data)
-+{
-+	struct kunit *test = data;
-+	struct kunit_try_catch_test_context *ctx = test->priv;
-+	struct kunit_try_catch *try_catch = ctx->try_catch;
-+
-+	kunit_try_catch_throw(try_catch);
-+	KUNIT_FAIL(test, "This line should never be reached.\n");
-+}
-+
-+void kunit_test_catch(void *data)
-+{
-+	struct kunit *test = data;
-+	struct kunit_try_catch_test_context *ctx = test->priv;
-+
-+	ctx->function_called = true;
-+}
-+
-+static void kunit_test_try_catch_unsuccessful_try_does_catch(struct kunit *test)
-+{
-+	struct kunit_try_catch_test_context *ctx = test->priv;
-+	struct kunit_try_catch *try_catch = ctx->try_catch;
-+
-+	kunit_try_catch_init(try_catch,
-+			     test,
-+			     kunit_test_unsuccessful_try,
-+			     kunit_test_catch);
-+	kunit_try_catch_run(try_catch, test);
-+
-+	KUNIT_EXPECT_TRUE(test, ctx->function_called);
-+}
-+
-+static int kunit_try_catch_test_init(struct kunit *test)
-+{
-+	struct kunit_try_catch_test_context *ctx;
-+
-+	ctx = kunit_kzalloc(test, sizeof(*ctx), GFP_KERNEL);
-+	test->priv = ctx;
-+
-+	ctx->try_catch = kunit_kmalloc(test,
-+				       sizeof(*ctx->try_catch),
-+				       GFP_KERNEL);
-+
-+	return 0;
-+}
-+
-+static struct kunit_case kunit_try_catch_test_cases[] = {
-+	KUNIT_CASE(kunit_test_try_catch_successful_try_no_catch),
-+	KUNIT_CASE(kunit_test_try_catch_unsuccessful_try_does_catch),
-+	{},
-+};
-+
-+static struct kunit_module kunit_try_catch_test_module = {
-+	.name = "kunit-try-catch-test",
-+	.init = kunit_try_catch_test_init,
-+	.test_cases = kunit_try_catch_test_cases,
-+};
-+module_test(kunit_try_catch_test_module);
--- 
-2.21.0.1020.gf2820cf01a-goog
+ 	/* Find the first overlapping VMA */
+ 	vma = find_vma(mm, start);
+ 	if (!vma)
+@@ -2747,7 +2755,6 @@ int __do_munmap(struct mm_struct *mm, un
+ 	/* we have  start < vma->vm_end  */
+ 
+ 	/* if it doesn't overlap, we have nothing.. */
+-	end = start + len;
+ 	if (vma->vm_start >= end)
+ 		return 0;
+ 
+@@ -2817,12 +2824,6 @@ int __do_munmap(struct mm_struct *mm, un
+ 	/* Detach vmas from rbtree */
+ 	detach_vmas_to_be_unmapped(mm, vma, prev, end);
+ 
+-	/*
+-	 * mpx unmap needs to be called with mmap_sem held for write.
+-	 * It is safe to call it before unmap_region().
+-	 */
+-	arch_unmap(mm, vma, start, end);
+-
+ 	if (downgrade)
+ 		downgrade_write(&mm->mmap_sem);
+ 
 
+
+Patches currently in stable-queue which might be from dave.hansen@linux.intel.com are
+
+queue-5.0/x86-mpx-mm-core-fix-recursive-munmap-corruption.patch
 
 _______________________________________________
 linux-um mailing list
