@@ -1,18 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-qt1-x849.google.com ([2607:f8b0:4864:20::849])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hLyHg-0007k7-4c
- for linux-um@lists.infradead.org; Wed, 01 May 2019 23:05:05 +0000
-Received: by mail-qt1-x849.google.com with SMTP id q57so351468qtf.11
- for <linux-um@lists.infradead.org>; Wed, 01 May 2019 16:05:03 -0700 (PDT)
-Date: Wed,  1 May 2019 16:01:24 -0700
-In-Reply-To: <20190501230126.229218-1-brendanhiggins@google.com>
-Message-Id: <20190501230126.229218-16-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20190501230126.229218-1-brendanhiggins@google.com>
-Subject: [PATCH v2 15/17] MAINTAINERS: add entry for KUnit the unit testing
- framework
-From: Brendan Higgins <brendanhiggins@google.com>
+ id 1hUG0L-0006lX-QY
+ for linux-um@lists.infradead.org; Fri, 24 May 2019 19:37:27 +0000
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [PATCH] arch: um: remove locking in deactivate_all_fds()
+Date: Fri, 24 May 2019 21:37:00 +0200
+Message-Id: <20190524193700.13500-1-johannes@sipsolutions.net>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -21,44 +16,56 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, dan.j.williams@intel.com, kunit-dev@googlegroups.com, richard@nod.at, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+To: linux-um@lists.infradead.org
+Cc: j@w1.fi, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, Johannes Berg <johannes.berg@intel.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Add myself as maintainer of KUnit, the Linux kernel's unit testing
-framework.
+From: Johannes Berg <johannes.berg@intel.com>
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Not only does the locking contradict the comment, and as
+the comment says is pointless and actually harmful (all
+the actual OS threads have exited already), but it also
+causes crashes when lockdep is enabled, because calling
+into the spinlock calls into lockdep, which then tries
+to determine the current task, which no longer exists.
+
+Remove the locking to let UML shut down cleanly in case
+lockdep is enabled.
+
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- MAINTAINERS | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ arch/um/kernel/irq.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5c38f21aee787..c78ae95c56b80 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8448,6 +8448,16 @@ S:	Maintained
- F:	tools/testing/selftests/
- F:	Documentation/dev-tools/kselftest*
+diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
+index b40dac71e25b..d532377f5808 100644
+--- a/arch/um/kernel/irq.c
++++ b/arch/um/kernel/irq.c
+@@ -384,10 +384,8 @@ EXPORT_SYMBOL(deactivate_fd);
+  */
+ int deactivate_all_fds(void)
+ {
+-	unsigned long flags;
+ 	struct irq_entry *to_free;
  
-+KERNEL UNIT TESTING FRAMEWORK (KUnit)
-+M:	Brendan Higgins <brendanhiggins@google.com>
-+L:	kunit-dev@googlegroups.com
-+W:	https://google.github.io/kunit-docs/third_party/kernel/docs/
-+S:	Maintained
-+F:	Documentation/kunit/
-+F:	include/kunit/
-+F:	kunit/
-+F:	tools/testing/kunit/
-+
- KERNEL USERMODE HELPER
- M:	Luis Chamberlain <mcgrof@kernel.org>
- L:	linux-kernel@vger.kernel.org
+-	spin_lock_irqsave(&irq_lock, flags);
+ 	/* Stop IO. The IRQ loop has no lock so this is our
+ 	 * only way of making sure we are safe to dispose
+ 	 * of all IRQ handlers
+@@ -404,7 +402,6 @@ int deactivate_all_fds(void)
+ 		to_free = to_free->next;
+ 	}
+ 	garbage_collect_irq_entries();
+-	spin_unlock_irqrestore(&irq_lock, flags);
+ 	os_close_epoll_fd();
+ 	return 0;
+ }
 -- 
-2.21.0.593.g511ec345e18-goog
+2.17.2
 
 
 _______________________________________________
