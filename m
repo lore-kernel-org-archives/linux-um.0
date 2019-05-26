@@ -1,20 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from mail-wr1-x443.google.com ([2a00:1450:4864:20::443])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hV1Tq-0000ta-J7
- for linux-um@lists.infradead.org; Sun, 26 May 2019 22:19:05 +0000
-Message-ID: <6a6dd0548031aedc34044d89953e4c8c9d7e45f5.camel@sipsolutions.net>
-Subject: Re: [PATCH v2 5/5] arch: um: support virtual time
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Mon, 27 May 2019 00:18:57 +0200
-In-Reply-To: <CAFLxGvza1da-q=XakFimKc-aZd5M9bSxtNZdvLmTz5_Ck1HJ3Q@mail.gmail.com>
- (sfid-20190526_235537_530411_48770A6E)
+ id 1hV17D-00039v-Fz
+ for linux-um@lists.infradead.org; Sun, 26 May 2019 21:55:41 +0000
+Received: by mail-wr1-x443.google.com with SMTP id l17so6547849wrm.10
+ for <linux-um@lists.infradead.org>; Sun, 26 May 2019 14:55:38 -0700 (PDT)
+MIME-Version: 1.0
 References: <20190506123939.21091-1-johannes@sipsolutions.net>
  <20190506123939.21091-6-johannes@sipsolutions.net>
- <CAFLxGvza1da-q=XakFimKc-aZd5M9bSxtNZdvLmTz5_Ck1HJ3Q@mail.gmail.com>
- (sfid-20190526_235537_530411_48770A6E)
-Mime-Version: 1.0
+In-Reply-To: <20190506123939.21091-6-johannes@sipsolutions.net>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Sun, 26 May 2019 23:55:24 +0200
+Message-ID: <CAFLxGvza1da-q=XakFimKc-aZd5M9bSxtNZdvLmTz5_Ck1HJ3Q@mail.gmail.com>
+Subject: Re: [PATCH v2 5/5] arch: um: support virtual time
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -27,170 +25,278 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Cc: j@w1.fi, linux-um@lists.infradead.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: j@w1.fi, linux-um@lists.infradead.org, Johannes Berg <johannes.berg@intel.com>
 
-On Sun, 2019-05-26 at 23:55 +0200, Richard Weinberger wrote:
+On Mon, May 6, 2019 at 2:40 PM Johannes Berg <johannes@sipsolutions.net> wrote:
+>
+> From: Johannes Berg <johannes.berg@intel.com>
+>
+> Sometimes it can be useful to run with virtual time inside the
+> UML instance, for example for testing. For example, some tests
+> for the wireless subsystem and userspace are based on hwsim, a
+> virtual wireless adapter. Some tests can take a long time to
+> run because they e.g. wait for 120 seconds to elapse for some
+> regulatory checks. This obviously goes faster if it need not
+> actually wait that long, but time inside the test environment
+> just "bumps up" when there's nothing to do.
+>
+> Add a mode - CONFIG_UML_VIRTUAL_TIME_SUPPORT - to support such
+> behavior; it needs to be enabled with the "virtual-time" option
+> passed to the UML invocation.
 
-> > Add a mode - CONFIG_UML_VIRTUAL_TIME_SUPPORT - to support such
-> > behavior; it needs to be enabled with the "virtual-time" option
-> > passed to the UML invocation.
-> 
-> I like this feature!
-> Is "virtual time" a common name for such a mode?
+I like this feature!
+Is "virtual time" a common name for such a mode?
+To me "virtual time" reads like a clock that runs with different speed or is in
+some other way untangled from the host.
+What you have implement is time traveling. ;-)
 
-I have no idea, sorry. If you find any references to this being done
-elsewhere, we can certainly rename it. A colleague pointed me to various
-network simulation papers which play with the clock, but I don't recall
-seeing a good name for this (but it's also past midnight, so ...)
+> With this enabled, the test mentioned above goes from a runtime
+> of about 130 seconds (with startup overhead and all) to being
+> CPU bound and finishing in 16 seconds (on my slow laptop).
+>
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+> ---
+>  arch/um/Kconfig             | 17 ++++++++++
+>  arch/um/include/shared/os.h | 14 ++++++++
+>  arch/um/kernel/time.c       | 13 +++++++
+>  arch/um/os-Linux/time.c     | 68 ++++++++++++++++++++++++++++++++++++-
+>  4 files changed, 111 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+> index ec9711d068b7..71ff7ef3aa0c 100644
+> --- a/arch/um/Kconfig
+> +++ b/arch/um/Kconfig
+> @@ -180,6 +180,23 @@ config SECCOMP
+>
+>           If unsure, say Y.
+>
+> +config UML_VIRTUAL_TIME_SUPPORT
+> +       bool
+> +       prompt "Support virtual time (e.g. for test execution)"
+> +       help
+> +         Enable this option to support virtual time inside the UML instance,
+> +         which means that whenever there's nothing to do it just skips time
+> +         forward rather than waiting for any real time to elapse.
+> +
+> +         Note that this changes behaviour a bit - used CPU time may not always
+> +         cause the virtual time to increase unless enough CPU was consumed to
+> +         advance the tick (HZ).
+> +
+> +         Note that to enable the virtual time, you also need to pass
+> +         "virtual-time" on the command-line.
+> +
+> +         It is safe to say Y, but you probably don't need this, so say N.
+> +
+>  endmenu
+>
+>  source "arch/um/drivers/Kconfig"
+> diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+> index 449e71edefaa..a891a5665704 100644
+> --- a/arch/um/include/shared/os.h
+> +++ b/arch/um/include/shared/os.h
+> @@ -257,6 +257,20 @@ extern void os_timer_disable(void);
+>  extern void uml_idle_timer(void);
+>  extern long long os_persistent_clock_emulation(void);
+>  extern long long os_nsecs(void);
+> +#ifdef CONFIG_UML_VIRTUAL_TIME_SUPPORT
+> +extern unsigned long long virtual_time;
+> +extern unsigned long long timer_expiry;
+> +int os_setup_virtual_time(char *str);
+> +static inline void os_set_virtual_time_to_timer(void)
+> +{
+> +       /* ignored if virtual time isn't enabled */
+> +       virtual_time = timer_expiry;
+> +}
+> +#else
+> +static inline void os_set_virtual_time_to_timer(void)
+> +{
+> +}
+> +#endif
+>
+>  /* skas/mem.c */
+>  extern long run_syscall_stub(struct mm_id * mm_idp,
+> diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
+> index 3898119f773e..0ceb7c540d60 100644
+> --- a/arch/um/kernel/time.c
+> +++ b/arch/um/kernel/time.c
+> @@ -19,11 +19,14 @@
+>  #include <kern_util.h>
+>  #include <os.h>
+>  #include <timer-internal.h>
+> +#include <shared/init.h>
+>
+>  void timer_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
+>  {
+>         unsigned long flags;
+>
+> +       os_set_virtual_time_to_timer();
+> +
+>         local_irq_save(flags);
+>         do_IRQ(TIMER_IRQ, regs);
+>         local_irq_restore(flags);
+> @@ -134,3 +137,13 @@ void __init time_init(void)
+>         timer_set_signal_handler();
+>         late_time_init = um_timer_setup;
+>  }
+> +
+> +#ifdef CONFIG_UML_VIRTUAL_TIME_SUPPORT
+> +__setup("virtual-time", os_setup_virtual_time);
+> +__uml_help(os_setup_virtual_time,
+> +"virtual-time\n"
+> +"    Run the system in virtual time mode, i.e. bump time\n"
+> +"    forward when there's nothing to do, rather than waiting\n"
+> +"    for real time to elapse. Useful for test execution.\n\n"
+> +);
+> +#endif
+> diff --git a/arch/um/os-Linux/time.c b/arch/um/os-Linux/time.c
+> index ea720149f5b8..d37ee59cb936 100644
+> --- a/arch/um/os-Linux/time.c
+> +++ b/arch/um/os-Linux/time.c
+> @@ -15,8 +15,27 @@
+>  #include <os.h>
+>  #include <string.h>
+>  #include <timer-internal.h>
+> +#include <generated/autoconf.h>
+>
+>  static timer_t event_high_res_timer = 0;
+> +#ifdef CONFIG_UML_VIRTUAL_TIME_SUPPORT
+> +unsigned long long virtual_time;
+> +unsigned long long timer_expiry;
+> +static enum {
+> +       TMR_DIS,
+> +       TMR_ONE,
+> +       TMR_INT,
+> +} timer_mode;
 
-> To me "virtual time" reads like a clock that runs with different speed or is in
-> some other way untangled from the host.
-> What you have implement is time traveling. ;-)
+You set the timer mode in the os_*-functions, this works because the only user
+is UML's posix-timer.
+Is there a reason why you didn't install most virtual time hooks in
+the itimer_* functions?
+This feels more natural to me and would keep the os_*-functions
+stateless and generic.
 
-True :-)
+> +static bool virtual_time_enabled;
+> +
+> +int os_setup_virtual_time(char *str)
+> +{
+> +       virtual_time_enabled = true;
+> +       return 1;
+> +}
+> +#else
+> +#define virtual_time_enabled false
+> +#endif
+>
+>  static inline long long timeval_to_ns(const struct timeval *tv)
+>  {
+> @@ -66,6 +85,11 @@ int os_timer_set_interval(void)
+>         if (timer_settime(event_high_res_timer, 0, &its, NULL) == -1)
+>                 return -errno;
+>
+> +#ifdef CONFIG_UML_VIRTUAL_TIME_SUPPORT
+> +       timer_mode = TMR_INT;
+> +       timer_expiry = virtual_time + nsec;
+> +#endif
+>
 
-I have a version of this that even implements "infinite CPU power" by
-completely eliding the calls to the host timer (which lets us do
-preemption). This has a large number of issues, but also found a few
-bugs already, e.g.
-https://github.com/bcopeland/wmediumd/commit/414bee49eda82046b61e0a3cd583d235ebd3f017
+Can we please have a static inline helper for this?
+...to avoid more ifdefs in C files.
 
-The biggest issue is that nothing actually takes time, and so things
-like
+>         return 0;
+>  }
+>
+> @@ -81,6 +105,10 @@ int os_timer_one_shot(unsigned long ticks)
+>         };
+>
+>         timer_settime(event_high_res_timer, 0, &its, NULL);
+> +#ifdef CONFIG_UML_VIRTUAL_TIME_SUPPORT
+> +       timer_mode = TMR_ONE;
+> +       timer_expiry = virtual_time + nsec;
+> +#endif
 
-https://bugs.python.org/issue37026
+Same.
 
-result. When I make just reading out the time take 10 ns or so, things
-like that go away.
+>         return 0;
+>  }
+>
+> @@ -93,12 +121,20 @@ void os_timer_disable(void)
+>
+>         memset(&its, 0, sizeof(struct itimerspec));
+>         timer_settime(event_high_res_timer, 0, &its, NULL);
+> +#ifdef CONFIG_UML_VIRTUAL_TIME_SUPPORT
+> +       timer_mode = TMR_DIS;
+> +#endif
+>  }
 
-It still has issues, like kernel work queues won't run until userspace
-is completely quiescent, which is clearly unrealistic. Trying to model
-some time into the syscall now, so that can "take" some time and the
-scheduler will run kernel threads, but it's not really clear to me yet
-how that can be made to work. It should solve this problem though.
+Same.
 
-The reason I'm interested in that is that it completely decouples the
-code from the real time, e.g. if I run a ton of debug code somewhere, it
-won't affect my "timing", and thus not cause differences in the test
-execution.
+>  long long os_nsecs(void)
+>  {
+>         struct timespec ts;
+>
+> +#ifdef CONFIG_UML_VIRTUAL_TIME_SUPPORT
+> +       if (virtual_time_enabled)
+> +               return virtual_time;
+> +#endif
+>
 
-> > +++ b/arch/um/os-Linux/time.c
-> > @@ -15,8 +15,27 @@
-> >  #include <os.h>
-> >  #include <string.h>
-> >  #include <timer-internal.h>
-> > +#include <generated/autoconf.h>
-> > 
-> >  static timer_t event_high_res_timer = 0;
-> > +#ifdef CONFIG_UML_VIRTUAL_TIME_SUPPORT
-> > +unsigned long long virtual_time;
-> > +unsigned long long timer_expiry;
-> > +static enum {
-> > +       TMR_DIS,
-> > +       TMR_ONE,
-> > +       TMR_INT,
-> > +} timer_mode;
-> 
-> You set the timer mode in the os_*-functions, this works because the only user
-> is UML's posix-timer.
-> Is there a reason why you didn't install most virtual time hooks in
-> the itimer_* functions?
-> This feels more natural to me and would keep the os_*-functions
-> stateless and generic.
+Do we need the ifdef here?
+If CONFIG_UML_VIRTUAL_TIME_SUPPORT is disabled, virtual_time_enabled
+should never be non-zero/true.
 
-Can't really say I had a good reason for that. It's probably just the
-place I could actually reason best about - and in the case of my non-
-preemptible mode (that I described above) really be sure nothing was
-calling any real timers :-)
+>         clock_gettime(CLOCK_MONOTONIC,&ts);
+>         return timespec_to_ns(&ts);
+>  }
+> @@ -109,6 +145,10 @@ long long os_nsecs(void)
+>   */
+>  void os_idle_sleep(unsigned long long nsecs)
+>  {
+> +#ifdef CONFIG_UML_VIRTUAL_TIME_SUPPORT
+> +       unsigned long long next = virtual_time + nsecs;
+> +       struct itimerspec stop = {}, cfg;
+> +#endif
+>         struct timespec ts = {
+>                 .tv_sec  = nsecs / UM_NSEC_PER_SEC,
+>                 .tv_nsec = nsecs % UM_NSEC_PER_SEC
+> @@ -117,6 +157,32 @@ void os_idle_sleep(unsigned long long nsecs)
+>         /*
+>          * Relay the signal if clock_nanosleep is interrupted.
+>          */
+> -       if (clock_nanosleep(CLOCK_MONOTONIC, 0, &ts, NULL))
+> +       if (!virtual_time_enabled) {
+> +               if (clock_nanosleep(CLOCK_MONOTONIC, 0, &ts, NULL))
+> +                       deliver_alarm();
+> +               return;
+> +       }
+> +
+> +#ifdef CONFIG_UML_VIRTUAL_TIME_SUPPORT
+> +       timer_settime(event_high_res_timer, 0, &stop, &cfg);
+> +
+> +       if (timer_mode != TMR_DIS && timer_expiry < next) {
+> +               if (timer_mode == TMR_ONE)
+> +                       timer_mode = TMR_DIS;
+> +               /* virtual_time will be adjusted in timer_handler() */
+>                 deliver_alarm();
+> +               return;
+> +       }
+> +
+> +       virtual_time = next;
+> +
+> +       if (timer_mode != TMR_DIS) {
+> +               unsigned long long remaining = timer_expiry - virtual_time;
+> +
+> +               cfg.it_value.tv_sec = remaining / UM_NSEC_PER_SEC;
+> +               cfg.it_value.tv_nsec = remaining % UM_NSEC_PER_SEC;
+> +
+> +               timer_settime(event_high_res_timer, 0, &cfg, NULL);
+> +       }
+> +#endif
 
-It could totally be done in the itimer_* functions, but then also has to
-be in arch_cpu_idle() I guess, to be done in the kernel side (rather
-than in the host side in os_*).
+Please split the function to get rid of the ifdefs.
 
-> > +#ifdef CONFIG_UML_VIRTUAL_TIME_SUPPORT
-> > +       timer_mode = TMR_INT;
-> > +       timer_expiry = virtual_time + nsec;
-> > +#endif
-> > 
-> 
-> Can we please have a static inline helper for this?
-> ...to avoid more ifdefs in C files.
-
-Sure. Not sure it's worth putting it into a header file, but it could
-be, even common code with the similar code you pointed out, declared at
-the top of the C file with the other ifdefs.
-
-> >  long long os_nsecs(void)
-> >  {
-> >         struct timespec ts;
-> > 
-> > +#ifdef CONFIG_UML_VIRTUAL_TIME_SUPPORT
-> > +       if (virtual_time_enabled)
-> > +               return virtual_time;
-> > +#endif
-> > 
-> 
-> Do we need the ifdef here?
-> If CONFIG_UML_VIRTUAL_TIME_SUPPORT is disabled, virtual_time_enabled
-> should never be non-zero/true.
-
-Yeah, some variable are ifdef'ed out so this wouldn't compile, but if
-you prefer I can remove those ifdefs and this can always be compiled.
-
-> >  void os_idle_sleep(unsigned long long nsecs)
-> >  {
-> > +#ifdef CONFIG_UML_VIRTUAL_TIME_SUPPORT
-> > +       unsigned long long next = virtual_time + nsecs;
-> > +       struct itimerspec stop = {}, cfg;
-> > +#endif
-> >         struct timespec ts = {
-> >                 .tv_sec  = nsecs / UM_NSEC_PER_SEC,
-> >                 .tv_nsec = nsecs % UM_NSEC_PER_SEC
-> > @@ -117,6 +157,32 @@ void os_idle_sleep(unsigned long long nsecs)
-> >         /*
-> >          * Relay the signal if clock_nanosleep is interrupted.
-> >          */
-> > -       if (clock_nanosleep(CLOCK_MONOTONIC, 0, &ts, NULL))
-> > +       if (!virtual_time_enabled) {
-> > +               if (clock_nanosleep(CLOCK_MONOTONIC, 0, &ts, NULL))
-> > +                       deliver_alarm();
-> > +               return;
-> > +       }
-> > +
-> > +#ifdef CONFIG_UML_VIRTUAL_TIME_SUPPORT
-> > +       timer_settime(event_high_res_timer, 0, &stop, &cfg);
-> > +
-> > +       if (timer_mode != TMR_DIS && timer_expiry < next) {
-> > +               if (timer_mode == TMR_ONE)
-> > +                       timer_mode = TMR_DIS;
-> > +               /* virtual_time will be adjusted in timer_handler() */
-> >                 deliver_alarm();
-> > +               return;
-> > +       }
-> > +
-> > +       virtual_time = next;
-> > +
-> > +       if (timer_mode != TMR_DIS) {
-> > +               unsigned long long remaining = timer_expiry - virtual_time;
-> > +
-> > +               cfg.it_value.tv_sec = remaining / UM_NSEC_PER_SEC;
-> > +               cfg.it_value.tv_nsec = remaining % UM_NSEC_PER_SEC;
-> > +
-> > +               timer_settime(event_high_res_timer, 0, &cfg, NULL);
-> > +       }
-> > +#endif
-> 
-> Please split the function to get rid of the ifdefs.
-
-Hmm. We need an ifdef there somewhere anyway.
-
-If you dislike the ifdefs so much and wanted to keep the if in
-os_nsecs() anyway maybe I should just remove the Kconfig option entirely
-and just let the runtime configuration control it?
-
-johannes
-
+-- 
+Thanks,
+//richard
 
 _______________________________________________
 linux-um mailing list
