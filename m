@@ -1,14 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-lf1-x144.google.com ([2a00:1450:4864:20::144])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hY7V4-00061U-Q7
- for linux-um@lists.infradead.org; Tue, 04 Jun 2019 11:21:11 +0000
-Received: by mail-lf1-x144.google.com with SMTP id q26so16154944lfc.3
- for <linux-um@lists.infradead.org>; Tue, 04 Jun 2019 04:21:05 -0700 (PDT)
-From: Marek Majkowski <marek@cloudflare.com>
-Subject: [PATCH] uml: fix kcov crash during startup
-Date: Tue,  4 Jun 2019 13:20:50 +0200
-Message-Id: <20190604112050.4787-1-marek@cloudflare.com>
+ id 1hX41B-0005Z1-OW
+ for linux-um@lists.infradead.org; Sat, 01 Jun 2019 13:25:55 +0000
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 27/74] uml: fix a boot splat wrt use of
+ cpu_all_mask
+Date: Sat,  1 Jun 2019 09:24:14 -0400
+Message-Id: <20190601132501.27021-27-sashal@kernel.org>
+In-Reply-To: <20190601132501.27021-1-sashal@kernel.org>
+References: <20190601132501.27021-1-sashal@kernel.org>
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -17,44 +19,69 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: marek@cloudflare.com
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Sasha Levin <sashal@kernel.org>, =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Kcov fails to start when compiled with kcov. Disable KCOV on
-arch/uml/kernel/skas.
-
-  $ gdb -q -ex r ./vmlinux
-  Program received signal SIGSEGV, Segmentation fault.
-  check_kcov_mode (t=<>, needed_mode=<>) at kernel/kcov.c:70
-  70		mode = READ_ONCE(t->kcov_mode);
-
-Signed-off-by: Marek Majkowski <marek@cloudflare.com>
----
- arch/um/kernel/skas/Makefile | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/um/kernel/skas/Makefile b/arch/um/kernel/skas/Makefile
-index 0b76d8869c94..5bd3edfcfedf 100644
---- a/arch/um/kernel/skas/Makefile
-+++ b/arch/um/kernel/skas/Makefile
-@@ -12,4 +12,6 @@ obj-y := clone.o mmu.o process.o syscall.o uaccess.o
- CFLAGS_clone.o := $(CFLAGS_NO_HARDENING)
- UNPROFILE_OBJS := clone.o
- 
-+KCOV_INSTRUMENT := n
-+
- include arch/um/scripts/Makefile.rules
--- 
-2.17.1
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+RnJvbTogTWFjaWVqIMW7ZW5jenlrb3dza2kgPG1hemVAZ29vZ2xlLmNvbT4KClsgVXBzdHJlYW0g
+Y29tbWl0IDY4OWE1ODYwNWI2MzE3M2FjYjBhOGNmOTU0YWY2YThmNjA0NDBjOTMgXQoKTWVtb3J5
+OiA1MDkxMDhLLzU0MjYxMksgYXZhaWxhYmxlICgzODM1SyBrZXJuZWwgY29kZSwgOTE5SyByd2Rh
+dGEsIDEwMjhLIHJvZGF0YSwgMTI5SyBpbml0LCAyMTFLIGJzcywgMzM1MDRLIHJlc2VydmVkLCAw
+SyBjbWEtcmVzZXJ2ZWQpCk5SX0lSUVM6IDE1CmNsb2Nrc291cmNlOiB0aW1lcjogbWFzazogMHhm
+ZmZmZmZmZmZmZmZmZmZmIG1heF9jeWNsZXM6IDB4MWNkNDJlMjA1LCBtYXhfaWRsZV9uczogODgx
+NTkwNDA0NDI2IG5zCi0tLS0tLS0tLS0tLVsgY3V0IGhlcmUgXS0tLS0tLS0tLS0tLQpXQVJOSU5H
+OiBDUFU6IDAgUElEOiAwIGF0IGtlcm5lbC90aW1lL2Nsb2NrZXZlbnRzLmM6NDU4IGNsb2NrZXZl
+bnRzX3JlZ2lzdGVyX2RldmljZSsweDcyLzB4MTQwCnBvc2l4LXRpbWVyIGNwdW1hc2sgPT0gY3B1
+X2FsbF9tYXNrLCB1c2luZyBjcHVfcG9zc2libGVfbWFzayBpbnN0ZWFkCk1vZHVsZXMgbGlua2Vk
+IGluOgpDUFU6IDAgUElEOiAwIENvbW06IHN3YXBwZXIgTm90IHRhaW50ZWQgNS4xLjAtcmM0LTAw
+MDQ4LWdlZDc5Y2M4NzMwMmIgIzQKU3RhY2s6CiA2MDRlYmRhMCA2MDNjNTM3MCA2MDRlYmUyMCA2
+MDQ2ZmQxNwogMDAwMDAwMDAgNjAwNmZjYmIgNjA0ZWJkYjAgNjAzYzUzYjUKIDYwNGViZTEwIDYw
+MDNiZmM0IDYwNGViZGQwIDkwMDAwMDFjYQpDYWxsIFRyYWNlOgogWzw2MDA2ZmNiYj5dID8gcHJp
+bnRrKzB4MC8weDk0CiBbPDYwMDgzMTYwPl0gPyBjbG9ja2V2ZW50c19yZWdpc3Rlcl9kZXZpY2Ur
+MHg3Mi8weDE0MAogWzw2MDAxZjE2ZT5dIHNob3dfc3RhY2srMHgxM2IvMHgxNTUKIFs8NjAzYzUz
+NzA+XSA/IGR1bXBfc3RhY2tfcHJpbnRfaW5mbysweGUyLzB4ZWIKIFs8NjAwNmZjYmI+XSA/IHBy
+aW50aysweDAvMHg5NAogWzw2MDNjNTNiNT5dIGR1bXBfc3RhY2srMHgyYS8weDJjCiBbPDYwMDNi
+ZmM0Pl0gX193YXJuKzB4MTBlLzB4MTNlCiBbPDYwMDcwMzIwPl0gPyB2cHJpbnRrX2Z1bmMrMHhj
+OC8weGNmCiBbPDYwMDMwZmQ2Pl0gPyBibG9ja19zaWduYWxzKzB4MC8weDE2CiBbPDYwMDZmY2Ji
+Pl0gPyBwcmludGsrMHgwLzB4OTQKIFs8NjAwM2MwOGI+XSB3YXJuX3Nsb3dwYXRoX2ZtdCsweDk3
+LzB4OTkKIFs8NjAwMzExYTE+XSA/IHNldF9zaWduYWxzKzB4MC8weDNmCiBbPDYwMDNiZmY0Pl0g
+PyB3YXJuX3Nsb3dwYXRoX2ZtdCsweDAvMHg5OQogWzw2MDA4NDJjYj5dID8gdGlja19vbmVzaG90
+X21vZGVfYWN0aXZlKzB4NDQvMHg0ZgogWzw2MDAzMGZkNj5dID8gYmxvY2tfc2lnbmFscysweDAv
+MHgxNgogWzw2MDA2ZmNiYj5dID8gcHJpbnRrKzB4MC8weDk0CiBbPDYwMDdkMmQ1Pl0gPyBfX2Ns
+b2Nrc291cmNlX3NlbGVjdCsweDIwLzB4MWIxCiBbPDYwMDMwZmQ2Pl0gPyBibG9ja19zaWduYWxz
+KzB4MC8weDE2CiBbPDYwMDZmY2JiPl0gPyBwcmludGsrMHgwLzB4OTQKIFs8NjAwODMxNjA+XSBj
+bG9ja2V2ZW50c19yZWdpc3Rlcl9kZXZpY2UrMHg3Mi8weDE0MAogWzw2MDAzMTE5Mj5dID8gZ2V0
+X3NpZ25hbHMrMHgwLzB4ZgogWzw2MDAzMGZkNj5dID8gYmxvY2tfc2lnbmFscysweDAvMHgxNgog
+Wzw2MDA2ZmNiYj5dID8gcHJpbnRrKzB4MC8weDk0CiBbPDYwMDAyZWVjPl0gdW1fdGltZXJfc2V0
+dXArMHhjOC8weGNhCiBbPDYwMDAxYjU5Pl0gc3RhcnRfa2VybmVsKzB4NDdmLzB4NTdlCiBbPDYw
+MDAzNWJjPl0gc3RhcnRfa2VybmVsX3Byb2MrMHg0OS8weDRkCiBbPDYwMDZjNDgzPl0gPyBrbXNn
+X2R1bXBfcmVnaXN0ZXIrMHg4Mi8weDhhCiBbPDYwMDFkZTYyPl0gbmV3X3RocmVhZF9oYW5kbGVy
+KzB4ODEvMHhiMgogWzw2MDAwMzU3MT5dID8ga21zZ19kdW1wZXJfc3Rkb3V0X2luaXQrMHgxYS8w
+eDFjCiBbPDYwMDIwYzc1Pl0gdW1sX2ZpbmlzaHNldHVwKzB4NTQvMHg1OQoKcmFuZG9tOiBnZXRf
+cmFuZG9tX2J5dGVzIGNhbGxlZCBmcm9tIGluaXRfb29wc19pZCsweDI3LzB4MzQgd2l0aCBjcm5n
+X2luaXQ9MAotLS1bIGVuZCB0cmFjZSAwMDE3M2QwMTE3YTg4YWNiIF0tLS0KQ2FsaWJyYXRpbmcg
+ZGVsYXkgbG9vcC4uLiA2OTQxLjkwIEJvZ29NSVBTIChscGo9MzQ3MDk1MDQpCgpTaWduZWQtb2Zm
+LWJ5OiBNYWNpZWogxbtlbmN6eWtvd3NraSA8bWF6ZUBnb29nbGUuY29tPgpDYzogSmVmZiBEaWtl
+IDxqZGlrZUBhZGR0b2l0LmNvbT4KQ2M6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2Qu
+YXQ+CkNjOiBBbnRvbiBJdmFub3YgPGFudG9uLml2YW5vdkBjYW1icmlkZ2VncmV5cy5jb20+CkNj
+OiBsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCkNjOiBsaW51eC1rZXJuZWxAdmdlci5rZXJu
+ZWwub3JnCgpTaWduZWQtb2ZmLWJ5OiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0
+PgpTaWduZWQtb2ZmLWJ5OiBTYXNoYSBMZXZpbiA8c2FzaGFsQGtlcm5lbC5vcmc+Ci0tLQogYXJj
+aC91bS9rZXJuZWwvdGltZS5jIHwgMiArLQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCsp
+LCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0IGEvYXJjaC91bS9rZXJuZWwvdGltZS5jIGIvYXJj
+aC91bS9rZXJuZWwvdGltZS5jCmluZGV4IDI1YzIzNjY2ZDU5MjQuLjA0MGUzZWZkYzlhNjcgMTAw
+NjQ0Ci0tLSBhL2FyY2gvdW0va2VybmVsL3RpbWUuYworKysgYi9hcmNoL3VtL2tlcm5lbC90aW1l
+LmMKQEAgLTU2LDcgKzU2LDcgQEAgc3RhdGljIGludCBpdGltZXJfb25lX3Nob3Qoc3RydWN0IGNs
+b2NrX2V2ZW50X2RldmljZSAqZXZ0KQogc3RhdGljIHN0cnVjdCBjbG9ja19ldmVudF9kZXZpY2Ug
+dGltZXJfY2xvY2tldmVudCA9IHsKIAkubmFtZQkJCT0gInBvc2l4LXRpbWVyIiwKIAkucmF0aW5n
+CQkJPSAyNTAsCi0JLmNwdW1hc2sJCT0gY3B1X2FsbF9tYXNrLAorCS5jcHVtYXNrCQk9IGNwdV9w
+b3NzaWJsZV9tYXNrLAogCS5mZWF0dXJlcwkJPSBDTE9DS19FVlRfRkVBVF9QRVJJT0RJQyB8CiAJ
+CQkJICBDTE9DS19FVlRfRkVBVF9PTkVTSE9ULAogCS5zZXRfc3RhdGVfc2h1dGRvd24JPSBpdGlt
+ZXJfc2h1dGRvd24sCi0tIAoyLjIwLjEKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5m
+cmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
+bnV4LXVtCg==
 
