@@ -1,16 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-vk1-xa4a.google.com ([2607:f8b0:4864:20::a4a])
- by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hcmyD-0006wU-3p
- for linux-um@lists.infradead.org; Mon, 17 Jun 2019 08:26:31 +0000
-Received: by mail-vk1-xa4a.google.com with SMTP id l186so4464278vke.19
- for <linux-um@lists.infradead.org>; Mon, 17 Jun 2019 01:26:27 -0700 (PDT)
-Date: Mon, 17 Jun 2019 01:25:55 -0700
-Message-Id: <20190617082613.109131-1-brendanhiggins@google.com>
-Mime-Version: 1.0
-Subject: [PATCH v5 00/18] kunit: introduce KUnit, the Linux kernel unit
- testing framework
-From: Brendan Higgins <brendanhiggins@google.com>
+Received: from mail.kernel.org ([198.145.29.99])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1hX40C-0004CD-00
+ for linux-um@lists.infradead.org; Sat, 01 Jun 2019 13:24:53 +0000
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 34/99] uml: fix a boot splat wrt use of
+ cpu_all_mask
+Date: Sat,  1 Jun 2019 09:22:41 -0400
+Message-Id: <20190601132346.26558-34-sashal@kernel.org>
+In-Reply-To: <20190601132346.26558-1-sashal@kernel.org>
+References: <20190601132346.26558-1-sashal@kernel.org>
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -19,170 +19,69 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Sasha Levin <sashal@kernel.org>, =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-## TL;DR
-
-A not so quick follow-up to Stephen's suggestions on PATCH v4. Nothing
-that really changes any functionality or usage with the minor exception
-of a couple public functions that Stephen asked me to rename.
-Nevertheless, a good deal of clean up and fixes. See changes below.
-
-As for our current status, right now we got Reviewed-bys on all patches
-except:
-
-- [PATCH v5 08/18] objtool: add kunit_try_catch_throw to the noreturn
-  list
-
-However, it would probably be good to get reviews/acks from the
-subsystem maintainers on:
-
-- [PATCH v5 06/18] kbuild: enable building KUnit
-- [PATCH v5 08/18] objtool: add kunit_try_catch_throw to the noreturn
-  list
-- [PATCH v5 15/18] Documentation: kunit: add documentation for KUnit
-- [PATCH v5 17/18] kernel/sysctl-test: Add null pointer test for
-  sysctl.c:proc_dointvec()
-- [PATCH v5 18/18] MAINTAINERS: add proc sysctl KUnit test to PROC
-  SYSCTL section
-
-Other than that, I think we should be good to go.
-
-One last thing, I updated the background to include my thoughts on KUnit
-vs. in kernel testing with kselftest in the background sections as
-suggested by Frank in the discussion on PATCH v2.
-
-## Background
-
-This patch set proposes KUnit, a lightweight unit testing and mocking
-framework for the Linux kernel.
-
-Unlike Autotest and kselftest, KUnit is a true unit testing framework;
-it does not require installing the kernel on a test machine or in a VM
-(however, KUnit still allows you to run tests on test machines or in VMs
-if you want[1]) and does not require tests to be written in userspace
-running on a host kernel. Additionally, KUnit is fast: From invocation
-to completion KUnit can run several dozen tests in under a second.
-Currently, the entire KUnit test suite for KUnit runs in under a second
-from the initial invocation (build time excluded).
-
-KUnit is heavily inspired by JUnit, Python's unittest.mock, and
-Googletest/Googlemock for C++. KUnit provides facilities for defining
-unit test cases, grouping related test cases into test suites, providing
-common infrastructure for running tests, mocking, spying, and much more.
-
-### But wait! Doesn't kselftest support in kernel testing?!
-
-In a previous version of this patchset Frank pointed out that kselftest
-already supports writing a test that resides in the kernel using the
-test module feature[2]. LWN did a really great summary on this
-discussion here[3].
-
-Kselftest has a feature that allows a test module to be loaded into a
-kernel using the kselftest framework; this does allow someone to write
-tests against kernel code not directly exposed to userland; however, it
-does not provide much of a framework around how to structure the tests.
-The kselftest test module feature just provides a header which has a
-standardized way of reporting test failures, and then provides
-infrastructure to load and run the tests using the kselftest test
-harness.
-
-The kselftest test module does not seem to be opinionated at all in
-regards to how tests are structured, how they check for failures, how
-tests are organized. Even in the method it provides for reporting
-failures is pretty simple; it doesn't have any more advanced failure
-reporting or logging features. Given what's there, I think it is fair to
-say that it is not actually a framework, but a feature that makes it
-possible for someone to do some checks in kernel space.
-
-Furthermore, kselftest test module has very few users. I checked for all
-the tests that use it using the following grep command:
-
-grep -Hrn -e 'kselftest_module\.h'
-
-and only got three results: lib/test_strscpy.c, lib/test_printf.c, and
-lib/test_bitmap.c.
-
-So despite kselftest test module's existence, there really is no feature
-overlap between kselftest and KUnit, save one: that you can use either
-to write an in-kernel test, but this is a very small feature in
-comparison to everything that KUnit allows you to do. KUnit is a full
-x-unit style unit testing framework, whereas kselftest looks a lot more
-like an end-to-end/functional testing framework, with a feature that
-makes it possible to write in-kernel tests.
-
-### What's so special about unit testing?
-
-A unit test is supposed to test a single unit of code in isolation,
-hence the name. There should be no dependencies outside the control of
-the test; this means no external dependencies, which makes tests orders
-of magnitudes faster. Likewise, since there are no external dependencies,
-there are no hoops to jump through to run the tests. Additionally, this
-makes unit tests deterministic: a failing unit test always indicates a
-problem. Finally, because unit tests necessarily have finer granularity,
-they are able to test all code paths easily solving the classic problem
-of difficulty in exercising error handling code.
-
-### Is KUnit trying to replace other testing frameworks for the kernel?
-
-No. Most existing tests for the Linux kernel are end-to-end tests, which
-have their place. A well tested system has lots of unit tests, a
-reasonable number of integration tests, and some end-to-end tests. KUnit
-is just trying to address the unit test space which is currently not
-being addressed.
-
-### More information on KUnit
-
-There is a bunch of documentation near the end of this patch set that
-describes how to use KUnit and best practices for writing unit tests.
-For convenience I am hosting the compiled docs here[4].
-
-Additionally for convenience, I have applied these patches to a
-branch[5]. The repo may be cloned with:
-git clone https://kunit.googlesource.com/linux
-This patchset is on the kunit/rfc/v5.2-rc4/v5 branch.
-
-## Changes Since Last Version
-
-Aside from a couple public function renames, there isn't really anything
-in here that changes any functionality.
-
-- Went through and fixed a couple of anti-patterns suggested by Stephen
-  Boyd. Things like:
-  - Dropping an else clause at the end of a function.
-  - Dropping the comma on the closing sentinel, `{}`, of a list.
-- Inlines a bunch of functions in the test case running logic in patch
-  01/18 to make it more readable as suggested by Stephen Boyd
-- Found and fixed bug in resource deallocation logic in patch 02/18. Bug
-  was discovered as a result of making a change suggested by Stephen
-  Boyd. This does not substantially change how any of the code works
-  conceptually.
-- Renamed new_string_stream() to alloc_string_stream() as suggested by
-  Stephen Boyd.
-- Made string-stream a KUnit managed object - based on a suggestion made
-  by Stephen Boyd.
-- Renamed kunit_new_stream() to alloc_kunit_stream() as suggested by
-  Stephen Boyd.
-- Removed the ability to set log level after allocating a kunit_stream,
-  as suggested by Stephen Boyd.
-
-[1] https://google.github.io/kunit-docs/third_party/kernel/docs/usage.html#kunit-on-non-uml-architectures
-[2] https://www.kernel.org/doc/html/latest/dev-tools/kselftest.html#test-module
-[3] https://lwn.net/Articles/790235/
-[4] https://google.github.io/kunit-docs/third_party/kernel/docs/
-[5] https://kunit.googlesource.com/linux/+/kunit/rfc/v5.2-rc4/v5
-
--- 
-2.22.0.410.gd8fdbe21b5-goog
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+RnJvbTogTWFjaWVqIMW7ZW5jenlrb3dza2kgPG1hemVAZ29vZ2xlLmNvbT4KClsgVXBzdHJlYW0g
+Y29tbWl0IDY4OWE1ODYwNWI2MzE3M2FjYjBhOGNmOTU0YWY2YThmNjA0NDBjOTMgXQoKTWVtb3J5
+OiA1MDkxMDhLLzU0MjYxMksgYXZhaWxhYmxlICgzODM1SyBrZXJuZWwgY29kZSwgOTE5SyByd2Rh
+dGEsIDEwMjhLIHJvZGF0YSwgMTI5SyBpbml0LCAyMTFLIGJzcywgMzM1MDRLIHJlc2VydmVkLCAw
+SyBjbWEtcmVzZXJ2ZWQpCk5SX0lSUVM6IDE1CmNsb2Nrc291cmNlOiB0aW1lcjogbWFzazogMHhm
+ZmZmZmZmZmZmZmZmZmZmIG1heF9jeWNsZXM6IDB4MWNkNDJlMjA1LCBtYXhfaWRsZV9uczogODgx
+NTkwNDA0NDI2IG5zCi0tLS0tLS0tLS0tLVsgY3V0IGhlcmUgXS0tLS0tLS0tLS0tLQpXQVJOSU5H
+OiBDUFU6IDAgUElEOiAwIGF0IGtlcm5lbC90aW1lL2Nsb2NrZXZlbnRzLmM6NDU4IGNsb2NrZXZl
+bnRzX3JlZ2lzdGVyX2RldmljZSsweDcyLzB4MTQwCnBvc2l4LXRpbWVyIGNwdW1hc2sgPT0gY3B1
+X2FsbF9tYXNrLCB1c2luZyBjcHVfcG9zc2libGVfbWFzayBpbnN0ZWFkCk1vZHVsZXMgbGlua2Vk
+IGluOgpDUFU6IDAgUElEOiAwIENvbW06IHN3YXBwZXIgTm90IHRhaW50ZWQgNS4xLjAtcmM0LTAw
+MDQ4LWdlZDc5Y2M4NzMwMmIgIzQKU3RhY2s6CiA2MDRlYmRhMCA2MDNjNTM3MCA2MDRlYmUyMCA2
+MDQ2ZmQxNwogMDAwMDAwMDAgNjAwNmZjYmIgNjA0ZWJkYjAgNjAzYzUzYjUKIDYwNGViZTEwIDYw
+MDNiZmM0IDYwNGViZGQwIDkwMDAwMDFjYQpDYWxsIFRyYWNlOgogWzw2MDA2ZmNiYj5dID8gcHJp
+bnRrKzB4MC8weDk0CiBbPDYwMDgzMTYwPl0gPyBjbG9ja2V2ZW50c19yZWdpc3Rlcl9kZXZpY2Ur
+MHg3Mi8weDE0MAogWzw2MDAxZjE2ZT5dIHNob3dfc3RhY2srMHgxM2IvMHgxNTUKIFs8NjAzYzUz
+NzA+XSA/IGR1bXBfc3RhY2tfcHJpbnRfaW5mbysweGUyLzB4ZWIKIFs8NjAwNmZjYmI+XSA/IHBy
+aW50aysweDAvMHg5NAogWzw2MDNjNTNiNT5dIGR1bXBfc3RhY2srMHgyYS8weDJjCiBbPDYwMDNi
+ZmM0Pl0gX193YXJuKzB4MTBlLzB4MTNlCiBbPDYwMDcwMzIwPl0gPyB2cHJpbnRrX2Z1bmMrMHhj
+OC8weGNmCiBbPDYwMDMwZmQ2Pl0gPyBibG9ja19zaWduYWxzKzB4MC8weDE2CiBbPDYwMDZmY2Ji
+Pl0gPyBwcmludGsrMHgwLzB4OTQKIFs8NjAwM2MwOGI+XSB3YXJuX3Nsb3dwYXRoX2ZtdCsweDk3
+LzB4OTkKIFs8NjAwMzExYTE+XSA/IHNldF9zaWduYWxzKzB4MC8weDNmCiBbPDYwMDNiZmY0Pl0g
+PyB3YXJuX3Nsb3dwYXRoX2ZtdCsweDAvMHg5OQogWzw2MDA4NDJjYj5dID8gdGlja19vbmVzaG90
+X21vZGVfYWN0aXZlKzB4NDQvMHg0ZgogWzw2MDAzMGZkNj5dID8gYmxvY2tfc2lnbmFscysweDAv
+MHgxNgogWzw2MDA2ZmNiYj5dID8gcHJpbnRrKzB4MC8weDk0CiBbPDYwMDdkMmQ1Pl0gPyBfX2Ns
+b2Nrc291cmNlX3NlbGVjdCsweDIwLzB4MWIxCiBbPDYwMDMwZmQ2Pl0gPyBibG9ja19zaWduYWxz
+KzB4MC8weDE2CiBbPDYwMDZmY2JiPl0gPyBwcmludGsrMHgwLzB4OTQKIFs8NjAwODMxNjA+XSBj
+bG9ja2V2ZW50c19yZWdpc3Rlcl9kZXZpY2UrMHg3Mi8weDE0MAogWzw2MDAzMTE5Mj5dID8gZ2V0
+X3NpZ25hbHMrMHgwLzB4ZgogWzw2MDAzMGZkNj5dID8gYmxvY2tfc2lnbmFscysweDAvMHgxNgog
+Wzw2MDA2ZmNiYj5dID8gcHJpbnRrKzB4MC8weDk0CiBbPDYwMDAyZWVjPl0gdW1fdGltZXJfc2V0
+dXArMHhjOC8weGNhCiBbPDYwMDAxYjU5Pl0gc3RhcnRfa2VybmVsKzB4NDdmLzB4NTdlCiBbPDYw
+MDAzNWJjPl0gc3RhcnRfa2VybmVsX3Byb2MrMHg0OS8weDRkCiBbPDYwMDZjNDgzPl0gPyBrbXNn
+X2R1bXBfcmVnaXN0ZXIrMHg4Mi8weDhhCiBbPDYwMDFkZTYyPl0gbmV3X3RocmVhZF9oYW5kbGVy
+KzB4ODEvMHhiMgogWzw2MDAwMzU3MT5dID8ga21zZ19kdW1wZXJfc3Rkb3V0X2luaXQrMHgxYS8w
+eDFjCiBbPDYwMDIwYzc1Pl0gdW1sX2ZpbmlzaHNldHVwKzB4NTQvMHg1OQoKcmFuZG9tOiBnZXRf
+cmFuZG9tX2J5dGVzIGNhbGxlZCBmcm9tIGluaXRfb29wc19pZCsweDI3LzB4MzQgd2l0aCBjcm5n
+X2luaXQ9MAotLS1bIGVuZCB0cmFjZSAwMDE3M2QwMTE3YTg4YWNiIF0tLS0KQ2FsaWJyYXRpbmcg
+ZGVsYXkgbG9vcC4uLiA2OTQxLjkwIEJvZ29NSVBTIChscGo9MzQ3MDk1MDQpCgpTaWduZWQtb2Zm
+LWJ5OiBNYWNpZWogxbtlbmN6eWtvd3NraSA8bWF6ZUBnb29nbGUuY29tPgpDYzogSmVmZiBEaWtl
+IDxqZGlrZUBhZGR0b2l0LmNvbT4KQ2M6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2Qu
+YXQ+CkNjOiBBbnRvbiBJdmFub3YgPGFudG9uLml2YW5vdkBjYW1icmlkZ2VncmV5cy5jb20+CkNj
+OiBsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCkNjOiBsaW51eC1rZXJuZWxAdmdlci5rZXJu
+ZWwub3JnCgpTaWduZWQtb2ZmLWJ5OiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0
+PgpTaWduZWQtb2ZmLWJ5OiBTYXNoYSBMZXZpbiA8c2FzaGFsQGtlcm5lbC5vcmc+Ci0tLQogYXJj
+aC91bS9rZXJuZWwvdGltZS5jIHwgMiArLQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCsp
+LCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0IGEvYXJjaC91bS9rZXJuZWwvdGltZS5jIGIvYXJj
+aC91bS9rZXJuZWwvdGltZS5jCmluZGV4IDdmNjlkMTdkZTM1NDAuLjliMjFhZTg5MjAwOWYgMTAw
+NjQ0Ci0tLSBhL2FyY2gvdW0va2VybmVsL3RpbWUuYworKysgYi9hcmNoL3VtL2tlcm5lbC90aW1l
+LmMKQEAgLTU2LDcgKzU2LDcgQEAgc3RhdGljIGludCBpdGltZXJfb25lX3Nob3Qoc3RydWN0IGNs
+b2NrX2V2ZW50X2RldmljZSAqZXZ0KQogc3RhdGljIHN0cnVjdCBjbG9ja19ldmVudF9kZXZpY2Ug
+dGltZXJfY2xvY2tldmVudCA9IHsKIAkubmFtZQkJCT0gInBvc2l4LXRpbWVyIiwKIAkucmF0aW5n
+CQkJPSAyNTAsCi0JLmNwdW1hc2sJCT0gY3B1X2FsbF9tYXNrLAorCS5jcHVtYXNrCQk9IGNwdV9w
+b3NzaWJsZV9tYXNrLAogCS5mZWF0dXJlcwkJPSBDTE9DS19FVlRfRkVBVF9QRVJJT0RJQyB8CiAJ
+CQkJICBDTE9DS19FVlRfRkVBVF9PTkVTSE9ULAogCS5zZXRfc3RhdGVfc2h1dGRvd24JPSBpdGlt
+ZXJfc2h1dGRvd24sCi0tIAoyLjIwLjEKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5m
+cmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
+bnV4LXVtCg==
 
