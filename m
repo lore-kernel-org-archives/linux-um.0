@@ -1,130 +1,113 @@
-Return-Path: <rppt@linux.ibm.com>
-From: Mike Rapoport <rppt@linux.ibm.com>
-Subject: [PATCH 03/15] arm: switch to generic version of pte allocation
-Date: Thu,  2 May 2019 18:28:30 +0300
-In-Reply-To: <1556810922-20248-1-git-send-email-rppt@linux.ibm.com>
-References: <1556810922-20248-1-git-send-email-rppt@linux.ibm.com>
-Message-Id: <1556810922-20248-4-git-send-email-rppt@linux.ibm.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Catalin Marinas <catalin.marinas@arm.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>, Ley Foon Tan <lftan@altera.com>, Matthew Wilcox <willy@infradead.org>, Matt Turner <mattst88@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@suse.com>, Palmer Dabbelt <palmer@sifive.com>, Paul Burton <paul.burton@mips.com>, Richard Kuo <rkuo@codeaurora.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-um@lists.infradead.org, nios2-dev@lists.rocketboards.org, Mike Rapoport <rppt@linux.ibm.com>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1hXsgh-00058V-7v
+ for linux-um@lists.infradead.org; Mon, 03 Jun 2019 19:32:08 +0000
+Received: by mail-pf1-x441.google.com with SMTP id j2so11180712pfe.6
+ for <linux-um@lists.infradead.org>; Mon, 03 Jun 2019 12:32:06 -0700 (PDT)
+References: <20190411094944.12245-1-brgl@bgdev.pl>
+ <20190411094944.12245-5-brgl@bgdev.pl>
+ <CAFLxGvwb8YzNiXCXru8Tw9pxH9qoc7gAO4sk0MXK1Xmp7fm-2g@mail.gmail.com>
+ <0e8fbdf3-c40d-e4e8-6235-c744ec7317c3@cambridgegreys.com>
+ <684874198.48863.1557299587958.JavaMail.zimbra@nod.at>
+ <CAMRc=MdsA7A1DdS1ZJ8NS8xtuCjgc_7WZD1797H3oZ=2w+fOBA@mail.gmail.com>
+ <CAMRc=McCxvwHgk-3wYE0e+qxJNoHK0AmpJWjNsOZBmGF2yFT6Q@mail.gmail.com>
+ <c5918fa9-ec37-9636-5230-57260f7e8427@cambridgegreys.com>
+ <CAMRc=MeOHr0bKJYGgOrhHq4dYFwCnpYvuFAL3jZerwCPvQgC3Q@mail.gmail.com>
+ <0aa6028b-7b7b-4123-07a3-786f700f3c14@gmail.com>
+ <28917cf9-9192-11a4-7ebd-a21ed2fea71d@cambridgegreys.com>
+From: Dana Johnson <djohns042@gmail.com>
+Subject: Re: [RESEND PATCH 4/4] um: irq: don't set the chip for all irqs
+Message-ID: <dade856b-7169-b072-9883-7f6b560eccaf@gmail.com>
+Date: Mon, 3 Jun 2019 12:32:01 -0700
+MIME-Version: 1.0
+In-Reply-To: <28917cf9-9192-11a4-7ebd-a21ed2fea71d@cambridgegreys.com>
+Content-Language: en-US
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Reply-To: djohns042@gmail.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Anton Ivanov <anton.ivanov@cambridgegreys.com>, Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Richard Weinberger <richard.weinberger@gmail.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Replace __get_free_page() and alloc_pages() calls with the generic
-__pte_alloc_one_kernel() and __pte_alloc_one().
-
-There is no functional change for the kernel PTE allocation.
-
-The difference for the user PTEs, is that the clear_pte_table() is now
-called after pgtable_page_ctor() and the addition of __GFP_ACCOUNT to the
-GFP flags.
-
-The conversion to the generic version of pte_free_kernel() removes the NULL
-check for pte.
-
-The pte_free() version on arm is identical to the generic one and can be
-simply dropped.
-
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- arch/arm/include/asm/pgalloc.h | 41 +++++++++++++----------------------------
- arch/arm/mm/mmu.c              |  2 +-
- 2 files changed, 14 insertions(+), 29 deletions(-)
-
-diff --git a/arch/arm/include/asm/pgalloc.h b/arch/arm/include/asm/pgalloc.h
-index 17ab72f..13c5a9d 100644
---- a/arch/arm/include/asm/pgalloc.h
-+++ b/arch/arm/include/asm/pgalloc.h
-@@ -57,8 +57,6 @@ static inline void pud_populate(struct mm_struct *mm, pud_t *pud, pmd_t *pmd)
- extern pgd_t *pgd_alloc(struct mm_struct *mm);
- extern void pgd_free(struct mm_struct *mm, pgd_t *pgd);
- 
--#define PGALLOC_GFP	(GFP_KERNEL | __GFP_ZERO)
--
- static inline void clean_pte_table(pte_t *pte)
- {
- 	clean_dcache_area(pte + PTE_HWTABLE_PTRS, PTE_HWTABLE_SIZE);
-@@ -80,54 +78,41 @@ static inline void clean_pte_table(pte_t *pte)
-  *  |  h/w pt 1  |
-  *  +------------+
-  */
-+
-+#define __HAVE_ARCH_PTE_ALLOC_ONE_KERNEL
-+#define __HAVE_ARCH_PTE_ALLOC_ONE
-+#include <asm-generic/pgalloc.h>
-+
- static inline pte_t *
- pte_alloc_one_kernel(struct mm_struct *mm)
- {
--	pte_t *pte;
-+	pte_t *pte = __pte_alloc_one_kernel(mm);
- 
--	pte = (pte_t *)__get_free_page(PGALLOC_GFP);
- 	if (pte)
- 		clean_pte_table(pte);
- 
- 	return pte;
- }
- 
-+#ifdef CONFIG_HIGHPTE
-+#define PGTABLE_HIGHMEM __GFP_HIGHMEM
-+#else
-+#define PGTABLE_HIGHMEM 0
-+#endif
-+
- static inline pgtable_t
- pte_alloc_one(struct mm_struct *mm)
- {
- 	struct page *pte;
- 
--#ifdef CONFIG_HIGHPTE
--	pte = alloc_pages(PGALLOC_GFP | __GFP_HIGHMEM, 0);
--#else
--	pte = alloc_pages(PGALLOC_GFP, 0);
--#endif
-+	pte = __pte_alloc_one(mm, GFP_PGTABLE_USER | PGTABLE_HIGHMEM);
- 	if (!pte)
- 		return NULL;
- 	if (!PageHighMem(pte))
- 		clean_pte_table(page_address(pte));
--	if (!pgtable_page_ctor(pte)) {
--		__free_page(pte);
--		return NULL;
--	}
- 	return pte;
- }
- 
--/*
-- * Free one PTE table.
-- */
--static inline void pte_free_kernel(struct mm_struct *mm, pte_t *pte)
--{
--	if (pte)
--		free_page((unsigned long)pte);
--}
--
--static inline void pte_free(struct mm_struct *mm, pgtable_t pte)
--{
--	pgtable_page_dtor(pte);
--	__free_page(pte);
--}
--
- static inline void __pmd_populate(pmd_t *pmdp, phys_addr_t pte,
- 				  pmdval_t prot)
- {
-diff --git a/arch/arm/mm/mmu.c b/arch/arm/mm/mmu.c
-index f3ce341..e8e0382 100644
---- a/arch/arm/mm/mmu.c
-+++ b/arch/arm/mm/mmu.c
-@@ -732,7 +732,7 @@ static void __init *early_alloc(unsigned long sz)
- 
- static void *__init late_alloc(unsigned long sz)
- {
--	void *ptr = (void *)__get_free_pages(PGALLOC_GFP, get_order(sz));
-+	void *ptr = (void *)__get_free_pages(GFP_PGTABLE_KERNEL, get_order(sz));
- 
- 	if (!ptr || !pgtable_page_ctor(virt_to_page(ptr)))
- 		BUG();
--- 
-2.7.4
-
+T24gNi8yLzE5IDExOjU0IFBNLCBBbnRvbiBJdmFub3Ygd3JvdGU6Cj4gCj4gCj4gT24gMzEvMDUv
+MjAxOSAxMTozMCwgRGFuYSBKb2huc29uIHdyb3RlOgo+PiBPbiA1LzExLzE5IDU6NDggQU0sIEJh
+cnRvc3ogR29sYXN6ZXdza2kgd3JvdGU6Cj4+PiBwdC4sIDEwIG1haiAyMDE5IG8gMTg6MjIgQW50
+b24gSXZhbm92Cj4+PiA8YW50b24uaXZhbm92QGNhbWJyaWRnZWdyZXlzLmNvbT4gbmFwaXNhxYIo
+YSk6Cj4+Pj4KPj4+Pgo+Pj4+IE9uIDEwLzA1LzIwMTkgMTc6MjAsIEJhcnRvc3ogR29sYXN6ZXdz
+a2kgd3JvdGU6Cj4+Pj4+IHB0LiwgMTAgbWFqIDIwMTkgbyAxMToxNiBCYXJ0b3N6IEdvbGFzemV3
+c2tpIDxicmdsQGJnZGV2LnBsPiBuYXBpc2HFgihhKToKPj4+Pj4+IMWbci4sIDggbWFqIDIwMTkg
+byAwOToxMyBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0PiBuYXBpc2HFgihhKToK
+Pj4+Pj4+PiAtLS0tLSBVcnNwcsO8bmdsaWNoZSBNYWlsIC0tLS0tCj4+Pj4+Pj4+PiBDYW4geW91
+IHBsZWFzZSBjaGVjaz8KPj4+Pj4+Pj4+IFRoaXMgcGF0Y2ggaXMgYWxyZWFkeSBxdWV1ZWQgaW4g
+LW5leHQuIFNvIHdlIG5lZWQgdG8gZGVjaWRlIHdoZXRoZXIgdG8KPj4+Pj4+Pj4+IHJldmVydCBv
+ciBmaXggaXQgbm93Lgo+Pj4+Pj4+Pj4KPj4+Pj4+Pj4gSSBhbSBsb29raW5nIGF0IGl0LiBJdCBw
+YXNzZWQgdGVzdHMgaW4gbXkgY2FzZSAoSSBkaWQgdGhlIHVzdWFsIHJvdW5kKS4KPj4+Pj4+PiBJ
+dCB3b3JrcyBoZXJlIHRvby4gVGhhdCdzIHdoeSBJIG5ldmVyIG5vdGljZWQuCj4+Pj4+Pj4gWWVz
+dGVyZGF5IEkgbm90aWNlZCBqdXN0IGJlY2F1c2UgSSBsb29rZWQgZm9yIHNvbWV0aGluZyBlbHNl
+IGluIHRoZSBrZXJuZWwgbG9ncy4KPj4+Pj4+Pgo+Pj4+Pj4+IFRoYW5rcywKPj4+Pj4+PiAvL3Jp
+Y2hhcmQKPj4+Pj4+IEhpLAo+Pj4+Pj4KPj4+Pj4+IHNvcnJ5IGZvciB0aGUgbGF0ZSByZXBseSAt
+IEkganVzdCBjYW1lIGJhY2sgZnJvbSB2YWNhdGlvbi4KPj4+Pj4+Cj4+Pj4+PiBJIHNlZSBpdCBo
+ZXJlIHRvbywgSSdsbCBjaGVjayBpZiBJIGNhbiBmaW5kIHRoZSBjdWxwcml0IGFuZCBmaXggaXQg
+dG9kYXkuCj4+Pj4+Pgo+Pj4+Pj4gQmFydAo+Pj4+PiBIaSBSaWNoYXJkLCBBbnRvbiwKPj4+Pj4K
+Pj4+Pj4gSSdtIG5vdCBzdXJlIHlldCB3aGF0IHRoaXMgaXMgY2F1c2VkIGJ5LiBJdCBkb2Vzbid0
+IHNlZW0gdG8gYnJlYWsKPj4+Pj4gYW55dGhpbmcgZm9yIG1lIGJ1dCBzaW5jZSBpdCdzIGEgbmV3
+IGVycm9yIG1lc3NhZ2UgSSBndWVzcyBpdCdzIGJlc3QKPj4+Pj4gdG8gcmV2ZXJ0IHRoaXMgcGF0
+Y2ggKG90aGVycyBhcmUgZ29vZCkgYW5kIHJldmlzaXQgaXQgZm9yIHY1LjMuCj4+Pj4KPj4+PiBD
+YW4geW91IHNlbmQgbWUgeW91ciBjb21tYW5kIGxpbmUgYW5kIC5jb25maWcgc28gSSBjYW4gdHJ5
+IHRvIHJlcHJvZHVjZSBpdC4KPj4+Pgo+Pj4KPj4+IFN1cmUsCj4+Pgo+Pj4gdGhlIGNvbW1hbmQg
+bGluZSBpczoKPj4+Cj4+PiAuL2xpbnV4IHJvb3Rmc3R5cGU9aG9zdGZzIHJvb3RmbGFncz08cGF0
+aCB0byBhIHJlZ3VsYXIgYnVpbGRyb290Cj4+PiByb290ZnM+IHJ3IG1lbT00OE0KPj4+Cj4+PiBU
+aGUgY29uZmlnIGlzIHRoZSByZWd1bGFyIHg4Nl82NF9kZWZjb25maWcgZnJvbSBhcmNoL3VtLgo+
+Pj4KPj4+IEJhcnQKPj4+Cj4+IMKgIEkgaGl0IHRoaXMgY29tcGlsaW5nIDUuMi4wLXJjMi0wMDAy
+NC1nYmVjNzU1MGNjYTEwCj4+Cj4+IEkgY2FuIHRyaWdnZXI6Cj4+Cj4+IFRyeWluZyB0byByZXJl
+Z2lzdGVyIElSUSAxMSBGRCA5IFRZUEUgMCBJRCAoX19fX3B0cnZhbF9fX18pCj4+IHdyaXRlX3Np
+Z2lvX2lycSA6IHVtX3JlcXVlc3RfaXJxIGZhaWxlZCwgZXJyID0gLTE2Cj4+Cj4+IGR1cmluZyBi
+b290IHdoZW46Cj4+Cj4+ICMgQ09ORklHX1VNTF9ORVRfVkVDVE9SIGlzIG5vdCBzZXQKPj4KPj4g
+TG9va2luZyBhdCB0aGUgY29kZSB0aGVyZSBzZWVtcyB0byBiZSBhIG9uZSBvZmYgZXJyb3IKPj4g
+aW4gdGhlIExBU1RfSVJRIGNhbGN1bGF0aW9uIHdoZW4gQ09ORklHX1VNTF9ORVRfVkVDVE9SIGlz
+IGVuYWJsZWQuCj4+IEluIHRoYXQgY2FzZSB0aGUgcGF0Y2ggc2hvdWxkIGJlIHJldmVydGVkIGFu
+ZCB0aGUgZm9sbG93aW5nIGFwcGxpZWQ6Cj4+Cj4+Cj4+IGRpZmYgLS1naXQgYS9hcmNoL3VtL2lu
+Y2x1ZGUvYXNtL2lycS5oIGIvYXJjaC91bS9pbmNsdWRlL2FzbS9pcnEuaAo+PiBpbmRleCA0OWVk
+M2UzNWIzNWEuLmNlN2E3OGMzYmNmMiAxMDA2NDQKPj4gLS0tIGEvYXJjaC91bS9pbmNsdWRlL2Fz
+bS9pcnEuaAo+PiArKysgYi9hcmNoL3VtL2luY2x1ZGUvYXNtL2lycS5oCj4+IEBAIC0yMyw3ICsy
+Myw3IEBACj4+IMKgICNkZWZpbmUgVkVDVE9SX0JBU0VfSVJRwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgIDE1Cj4+IMKgICNkZWZpbmUgVkVDVE9SX0lSUV9TUEFDRcKgwqDCoMKgwqDCoCA4
+Cj4+Cj4+IC0jZGVmaW5lIExBU1RfSVJRIChWRUNUT1JfSVJRX1NQQUNFICsgVkVDVE9SX0JBU0Vf
+SVJRKQo+PiArI2RlZmluZSBMQVNUX0lSUSAoVkVDVE9SX0lSUV9TUEFDRSArIFZFQ1RPUl9CQVNF
+X0lSUSAtIDEpCj4+Cj4gCj4gVGhhdCBkb2VzIG5vdCB3b3JrLiBWZWN0b3IgSVJRcyBhcmUgYWxs
+b2NhdGVkIG1vZHVsbyBWRUNUT1JfSVJRX1NQQUNFLiBMaW5lIDEyMTkgYW5kIDEyMzQgaW4gdmVj
+dG9yX2tlcm4uYy4KPiAKPiBpcnFfcnIgPSAoaXJxX3JyICsgMSkgJSBWRUNUT1JfSVJRX1NQQUNF
+Owo+IAo+ICNkZWZpbmUgTEFTVF9JUlEgKFZFQ1RPUl9JUlFfU1BBQ0UgKyBWRUNUT1JfQkFTRV9J
+UlEgLSAxKSB3aWxsIGRlZmluaXRlbHkgZ2l2ZSBvZmYtYnktb25lIGlmIHZlY3RvciBuZXR3b3Jr
+IGRyaXZlcnMgYXJlIGVuYWJsZWQuCj4gCj4gSVJRIDExIGlzIHNpZ2lvLCB0aGlzIGlzIHNvbWV0
+aGluZyBlbHNlLgo+IAo+IENhbiBJIGhhdmUgeW91ciAuY29uZmlnIHBsZWFzZSBzbyBJIGNhbiB0
+cnkgdG8gcmVwcm9kdWNlIGl0Lgo+IAo+PiDCoCAjZWxzZQo+Pgo+PiBEYW5hCj4+Cj4gCgpZZXMg
+ZXhhY3RseSBpcnFfcnIgdGFrZXMgb24gdGhlIHZhbHVlczogMC4uKFZFQ1RPUl9JUlFfU1BBQ0Ug
+LSAxKS4KVGhlIG1heGltdW0gdmFsdWUgb2YgaXJxX3JyIGlzIChWRUNUT1JfSVJRX1NQQUNFIC0g
+MSkKU28gTEFTVF9JUlEgaXM6CgojZGVmaW5lIExBU1RfSVJRIChWRUNUT1JfQkFTRV9JUlEgKyAo
+VkVDVE9SX0lSUV9TUEFDRSAtIDEpKQoKQmVmb3JlIHRoZSBwYXRjaCB3ZSBiZW5pZ25seSBpbml0
+aWFsaXplZCBhbiBleHRyYSBpbnRlcnJ1cHQgdXNpbmcKCiNkZWZpbmUgTEFTVF9JUlEgKFZFQ1RP
+Ul9JUlFfU1BBQ0UgKyBWRUNUT1JfQkFTRV9JUlEpCgpBZnRlciB0aGUgcGF0Y2ggZXZlcnl0aGlu
+ZyBpcyBzdGlsbCBnb29kIGZvciB2ZWN0b3IgYmVjYXVzZSBvZiB0aGUKYmVuaWduIGNsYWltIG9m
+IGFuIGV4dHJhIGludGVycnVwdCwgYnV0CgpXaGVuOgoKIyBDT05GSUdfVU1MX05FVF9WRUNUT1Ig
+aXMgbm90IHNldAoKY2hhbmdpbmcgaW4ga2VybmVsL2lycS5jIGZyb206CiAgICAgICBmb3IgKGkg
+PSAxOyBpIDwgTlJfSVJRUzsgaSsrKQp0bzoKICAgICAgIGZvciAoaSA9IDE7IGkgPCBMQVNUX0lS
+UTsgaSsrKQoKV2Ugc3RvcCBvbmUgc2hvcnQgaW4gaW5pdGFsaXppbmcgd2l0aCBsZWFkcyB0byB0
+aGUgYnVyYmxlLgoKU28ga2VlcGluZyB0aGUgcGF0Y2ggd2UgbmVlZCB0byB1c2UgJzw9IiBub3Qg
+JzwnCgpUaGUgdGVzdCBuZWVkcyB0byBiZToKCiAgICAgICBmb3IgKGkgPSAxOyBpIDw9IExBU1Rf
+SVJROyBpKyspCgphbmQgTEFTVF9JUlE6CgojZGVmaW5lIExBU1RfSVJRIChWRUNUT1JfQkFTRV9J
+UlEgKyAoVkVDVE9SX0lSUV9TUEFDRSAtIDEpKQoKRGFuYQoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVt
+QGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9saW51eC11bQo=
 
