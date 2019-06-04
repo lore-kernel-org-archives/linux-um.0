@@ -1,15 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
- by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1he1Oo-0001BP-B7
- for linux-um@lists.infradead.org; Thu, 20 Jun 2019 18:03:03 +0000
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 4.9 025/117] uml: fix a boot splat wrt use of cpu_all_mask
-Date: Thu, 20 Jun 2019 19:55:59 +0200
-Message-Id: <20190620174353.488243233@linuxfoundation.org>
-In-Reply-To: <20190620174351.964339809@linuxfoundation.org>
-References: <20190620174351.964339809@linuxfoundation.org>
-MIME-Version: 1.0
+Received: from mail-lf1-x144.google.com ([2a00:1450:4864:20::144])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1hY7V4-00061U-Q7
+ for linux-um@lists.infradead.org; Tue, 04 Jun 2019 11:21:11 +0000
+Received: by mail-lf1-x144.google.com with SMTP id q26so16154944lfc.3
+ for <linux-um@lists.infradead.org>; Tue, 04 Jun 2019 04:21:05 -0700 (PDT)
+From: Marek Majkowski <marek@cloudflare.com>
+Subject: [PATCH] uml: fix kcov crash during startup
+Date: Tue,  4 Jun 2019 13:20:50 +0200
+Message-Id: <20190604112050.4787-1-marek@cloudflare.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,68 +17,44 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, stable@vger.kernel.org, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: linux-um@lists.infradead.org
+Cc: marek@cloudflare.com
 
-WyBVcHN0cmVhbSBjb21taXQgNjg5YTU4NjA1YjYzMTczYWNiMGE4Y2Y5NTRhZjZhOGY2MDQ0MGM5
-MyBdCgpNZW1vcnk6IDUwOTEwOEsvNTQyNjEySyBhdmFpbGFibGUgKDM4MzVLIGtlcm5lbCBjb2Rl
-LCA5MTlLIHJ3ZGF0YSwgMTAyOEsgcm9kYXRhLCAxMjlLIGluaXQsIDIxMUsgYnNzLCAzMzUwNEsg
-cmVzZXJ2ZWQsIDBLIGNtYS1yZXNlcnZlZCkKTlJfSVJRUzogMTUKY2xvY2tzb3VyY2U6IHRpbWVy
-OiBtYXNrOiAweGZmZmZmZmZmZmZmZmZmZmYgbWF4X2N5Y2xlczogMHgxY2Q0MmUyMDUsIG1heF9p
-ZGxlX25zOiA4ODE1OTA0MDQ0MjYgbnMKLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0tLS0tLS0t
-LS0tCldBUk5JTkc6IENQVTogMCBQSUQ6IDAgYXQga2VybmVsL3RpbWUvY2xvY2tldmVudHMuYzo0
-NTggY2xvY2tldmVudHNfcmVnaXN0ZXJfZGV2aWNlKzB4NzIvMHgxNDAKcG9zaXgtdGltZXIgY3B1
-bWFzayA9PSBjcHVfYWxsX21hc2ssIHVzaW5nIGNwdV9wb3NzaWJsZV9tYXNrIGluc3RlYWQKTW9k
-dWxlcyBsaW5rZWQgaW46CkNQVTogMCBQSUQ6IDAgQ29tbTogc3dhcHBlciBOb3QgdGFpbnRlZCA1
-LjEuMC1yYzQtMDAwNDgtZ2VkNzljYzg3MzAyYiAjNApTdGFjazoKIDYwNGViZGEwIDYwM2M1Mzcw
-IDYwNGViZTIwIDYwNDZmZDE3CiAwMDAwMDAwMCA2MDA2ZmNiYiA2MDRlYmRiMCA2MDNjNTNiNQog
-NjA0ZWJlMTAgNjAwM2JmYzQgNjA0ZWJkZDAgOTAwMDAwMWNhCkNhbGwgVHJhY2U6CiBbPDYwMDZm
-Y2JiPl0gPyBwcmludGsrMHgwLzB4OTQKIFs8NjAwODMxNjA+XSA/IGNsb2NrZXZlbnRzX3JlZ2lz
-dGVyX2RldmljZSsweDcyLzB4MTQwCiBbPDYwMDFmMTZlPl0gc2hvd19zdGFjaysweDEzYi8weDE1
-NQogWzw2MDNjNTM3MD5dID8gZHVtcF9zdGFja19wcmludF9pbmZvKzB4ZTIvMHhlYgogWzw2MDA2
-ZmNiYj5dID8gcHJpbnRrKzB4MC8weDk0CiBbPDYwM2M1M2I1Pl0gZHVtcF9zdGFjaysweDJhLzB4
-MmMKIFs8NjAwM2JmYzQ+XSBfX3dhcm4rMHgxMGUvMHgxM2UKIFs8NjAwNzAzMjA+XSA/IHZwcmlu
-dGtfZnVuYysweGM4LzB4Y2YKIFs8NjAwMzBmZDY+XSA/IGJsb2NrX3NpZ25hbHMrMHgwLzB4MTYK
-IFs8NjAwNmZjYmI+XSA/IHByaW50aysweDAvMHg5NAogWzw2MDAzYzA4Yj5dIHdhcm5fc2xvd3Bh
-dGhfZm10KzB4OTcvMHg5OQogWzw2MDAzMTFhMT5dID8gc2V0X3NpZ25hbHMrMHgwLzB4M2YKIFs8
-NjAwM2JmZjQ+XSA/IHdhcm5fc2xvd3BhdGhfZm10KzB4MC8weDk5CiBbPDYwMDg0MmNiPl0gPyB0
-aWNrX29uZXNob3RfbW9kZV9hY3RpdmUrMHg0NC8weDRmCiBbPDYwMDMwZmQ2Pl0gPyBibG9ja19z
-aWduYWxzKzB4MC8weDE2CiBbPDYwMDZmY2JiPl0gPyBwcmludGsrMHgwLzB4OTQKIFs8NjAwN2Qy
-ZDU+XSA/IF9fY2xvY2tzb3VyY2Vfc2VsZWN0KzB4MjAvMHgxYjEKIFs8NjAwMzBmZDY+XSA/IGJs
-b2NrX3NpZ25hbHMrMHgwLzB4MTYKIFs8NjAwNmZjYmI+XSA/IHByaW50aysweDAvMHg5NAogWzw2
-MDA4MzE2MD5dIGNsb2NrZXZlbnRzX3JlZ2lzdGVyX2RldmljZSsweDcyLzB4MTQwCiBbPDYwMDMx
-MTkyPl0gPyBnZXRfc2lnbmFscysweDAvMHhmCiBbPDYwMDMwZmQ2Pl0gPyBibG9ja19zaWduYWxz
-KzB4MC8weDE2CiBbPDYwMDZmY2JiPl0gPyBwcmludGsrMHgwLzB4OTQKIFs8NjAwMDJlZWM+XSB1
-bV90aW1lcl9zZXR1cCsweGM4LzB4Y2EKIFs8NjAwMDFiNTk+XSBzdGFydF9rZXJuZWwrMHg0N2Yv
-MHg1N2UKIFs8NjAwMDM1YmM+XSBzdGFydF9rZXJuZWxfcHJvYysweDQ5LzB4NGQKIFs8NjAwNmM0
-ODM+XSA/IGttc2dfZHVtcF9yZWdpc3RlcisweDgyLzB4OGEKIFs8NjAwMWRlNjI+XSBuZXdfdGhy
-ZWFkX2hhbmRsZXIrMHg4MS8weGIyCiBbPDYwMDAzNTcxPl0gPyBrbXNnX2R1bXBlcl9zdGRvdXRf
-aW5pdCsweDFhLzB4MWMKIFs8NjAwMjBjNzU+XSB1bWxfZmluaXNoc2V0dXArMHg1NC8weDU5Cgpy
-YW5kb206IGdldF9yYW5kb21fYnl0ZXMgY2FsbGVkIGZyb20gaW5pdF9vb3BzX2lkKzB4MjcvMHgz
-NCB3aXRoIGNybmdfaW5pdD0wCi0tLVsgZW5kIHRyYWNlIDAwMTczZDAxMTdhODhhY2IgXS0tLQpD
-YWxpYnJhdGluZyBkZWxheSBsb29wLi4uIDY5NDEuOTAgQm9nb01JUFMgKGxwaj0zNDcwOTUwNCkK
-ClNpZ25lZC1vZmYtYnk6IE1hY2llaiDFu2VuY3p5a293c2tpIDxtYXplQGdvb2dsZS5jb20+CkNj
-OiBKZWZmIERpa2UgPGpkaWtlQGFkZHRvaXQuY29tPgpDYzogUmljaGFyZCBXZWluYmVyZ2VyIDxy
-aWNoYXJkQG5vZC5hdD4KQ2M6IEFudG9uIEl2YW5vdiA8YW50b24uaXZhbm92QGNhbWJyaWRnZWdy
-ZXlzLmNvbT4KQ2M6IGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKQ2M6IGxpbnV4LWtlcm5l
-bEB2Z2VyLmtlcm5lbC5vcmcKClNpZ25lZC1vZmYtYnk6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmlj
-aGFyZEBub2QuYXQ+ClNpZ25lZC1vZmYtYnk6IFNhc2hhIExldmluIDxzYXNoYWxAa2VybmVsLm9y
-Zz4KLS0tCiBhcmNoL3VtL2tlcm5lbC90aW1lLmMgfCAyICstCiAxIGZpbGUgY2hhbmdlZCwgMSBp
-bnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKCmRpZmYgLS1naXQgYS9hcmNoL3VtL2tlcm5lbC90
-aW1lLmMgYi9hcmNoL3VtL2tlcm5lbC90aW1lLmMKaW5kZXggMjVjMjM2NjZkNTkyLi4wNDBlM2Vm
-ZGM5YTYgMTAwNjQ0Ci0tLSBhL2FyY2gvdW0va2VybmVsL3RpbWUuYworKysgYi9hcmNoL3VtL2tl
-cm5lbC90aW1lLmMKQEAgLTU2LDcgKzU2LDcgQEAgc3RhdGljIGludCBpdGltZXJfb25lX3Nob3Qo
-c3RydWN0IGNsb2NrX2V2ZW50X2RldmljZSAqZXZ0KQogc3RhdGljIHN0cnVjdCBjbG9ja19ldmVu
-dF9kZXZpY2UgdGltZXJfY2xvY2tldmVudCA9IHsKIAkubmFtZQkJCT0gInBvc2l4LXRpbWVyIiwK
-IAkucmF0aW5nCQkJPSAyNTAsCi0JLmNwdW1hc2sJCT0gY3B1X2FsbF9tYXNrLAorCS5jcHVtYXNr
-CQk9IGNwdV9wb3NzaWJsZV9tYXNrLAogCS5mZWF0dXJlcwkJPSBDTE9DS19FVlRfRkVBVF9QRVJJ
-T0RJQyB8CiAJCQkJICBDTE9DS19FVlRfRkVBVF9PTkVTSE9ULAogCS5zZXRfc3RhdGVfc2h1dGRv
-d24JPSBpdGltZXJfc2h1dGRvd24sCi0tIAoyLjIwLjEKCgoKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11
-bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vbGludXgtdW0K
+Kcov fails to start when compiled with kcov. Disable KCOV on
+arch/uml/kernel/skas.
+
+  $ gdb -q -ex r ./vmlinux
+  Program received signal SIGSEGV, Segmentation fault.
+  check_kcov_mode (t=<>, needed_mode=<>) at kernel/kcov.c:70
+  70		mode = READ_ONCE(t->kcov_mode);
+
+Signed-off-by: Marek Majkowski <marek@cloudflare.com>
+---
+ arch/um/kernel/skas/Makefile | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/um/kernel/skas/Makefile b/arch/um/kernel/skas/Makefile
+index 0b76d8869c94..5bd3edfcfedf 100644
+--- a/arch/um/kernel/skas/Makefile
++++ b/arch/um/kernel/skas/Makefile
+@@ -12,4 +12,6 @@ obj-y := clone.o mmu.o process.o syscall.o uaccess.o
+ CFLAGS_clone.o := $(CFLAGS_NO_HARDENING)
+ UNPROFILE_OBJS := clone.o
+ 
++KCOV_INSTRUMENT := n
++
+ include arch/um/scripts/Makefile.rules
+-- 
+2.17.1
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
