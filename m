@@ -1,26 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab6.miniserver.com ([5.153.251.140]
- helo=www.kot-begemot.co.uk)
+Received: from mail-lj1-x242.google.com ([2a00:1450:4864:20::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hXhRD-00032m-5S
- for linux-um@lists.infradead.org; Mon, 03 Jun 2019 07:31:25 +0000
-Subject: Re: [RESEND PATCH 4/4] um: irq: don't set the chip for all irqs
-References: <20190411094944.12245-1-brgl@bgdev.pl>
- <20190411094944.12245-5-brgl@bgdev.pl>
- <CAFLxGvwb8YzNiXCXru8Tw9pxH9qoc7gAO4sk0MXK1Xmp7fm-2g@mail.gmail.com>
- <0e8fbdf3-c40d-e4e8-6235-c744ec7317c3@cambridgegreys.com>
- <684874198.48863.1557299587958.JavaMail.zimbra@nod.at>
- <CAMRc=MdsA7A1DdS1ZJ8NS8xtuCjgc_7WZD1797H3oZ=2w+fOBA@mail.gmail.com>
- <CAMRc=McCxvwHgk-3wYE0e+qxJNoHK0AmpJWjNsOZBmGF2yFT6Q@mail.gmail.com>
- <c5918fa9-ec37-9636-5230-57260f7e8427@cambridgegreys.com>
- <CAMRc=MeOHr0bKJYGgOrhHq4dYFwCnpYvuFAL3jZerwCPvQgC3Q@mail.gmail.com>
- <0aa6028b-7b7b-4123-07a3-786f700f3c14@gmail.com>
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Message-ID: <28917cf9-9192-11a4-7ebd-a21ed2fea71d@cambridgegreys.com>
-Date: Mon, 3 Jun 2019 07:54:14 +0100
+ id 1hYJeY-0003uv-IY
+ for linux-um@lists.infradead.org; Wed, 05 Jun 2019 00:19:43 +0000
+Received: by mail-lj1-x242.google.com with SMTP id v18so342794ljh.6
+ for <linux-um@lists.infradead.org>; Tue, 04 Jun 2019 17:19:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <0aa6028b-7b7b-4123-07a3-786f700f3c14@gmail.com>
-Content-Language: en-US
+References: <20190514221711.248228-1-brendanhiggins@google.com>
+ <20190514221711.248228-4-brendanhiggins@google.com>
+ <20190517174300.7949F20848@mail.kernel.org>
+In-Reply-To: <20190517174300.7949F20848@mail.kernel.org>
+From: Brendan Higgins <brendanhiggins@google.com>
+Date: Tue, 4 Jun 2019 17:19:28 -0700
+Message-ID: <CAFd5g45WrARi7eXsVKyq2eJH5j+wSrCCaHHSHrMptG7+MnNiTg@mail.gmail.com>
+Subject: Re: [PATCH v4 03/18] kunit: test: add string_stream a std::stream
+ like string builder
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -29,69 +23,53 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: djohns042@gmail.com, Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Richard Weinberger <richard.weinberger@gmail.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
+To: Stephen Boyd <sboyd@kernel.org>
+Cc: Petr Mladek <pmladek@suse.com>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, Amir Goldstein <amir73il@gmail.com>, dri-devel <dri-devel@lists.freedesktop.org>, Sasha Levin <Alexander.Levin@microsoft.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Michael Ellerman <mpe@ellerman.id.au>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, shuah <shuah@kernel.org>, Rob Herring <robh@kernel.org>, linux-nvdimm <linux-nvdimm@lists.01.org>, Frank Rowand <frowand.list@gmail.com>, Knut Omang <knut.omang@oracle.com>, Kieran Bingham <kieran.bingham@ideasonboard.com>, wfg@linux.intel.com, Joel Stanley <joel@jms.id.au>, David Rientjes <rientjes@google.com>, Jeff Dike <jdike@addtoit.com>, Dan Carpenter <dan.carpenter@oracle.com>, devicetree <devicetree@vger.kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, "Bird, Timothy  <Tim.Bird@sony.com>, linux-um@lists.infradead.org, Steven Rostedt" <rostedt@goodmis.org>, Julia Lawall <julia.lawall@lip6.fr>, Josh Poimboeuf <jpoimboe@redhat.com>, kunit-dev@googlegroups.com, Theodore Ts'o <tytso@mit.edu>, Richard Weinberger <richard@nod.at>, Greg KH <gregkh@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@google.com>, linux-fsdevel@vger.kernel.org, Logan Gunthorpe <logang@deltatee.com>, Kevin Hilman <khilman@baylibre.com>
 
-CgpPbiAzMS8wNS8yMDE5IDExOjMwLCBEYW5hIEpvaG5zb24gd3JvdGU6Cj4gT24gNS8xMS8xOSA1
-OjQ4IEFNLCBCYXJ0b3N6IEdvbGFzemV3c2tpIHdyb3RlOgo+PiBwdC4sIDEwIG1haiAyMDE5IG8g
-MTg6MjIgQW50b24gSXZhbm92Cj4+IDxhbnRvbi5pdmFub3ZAY2FtYnJpZGdlZ3JleXMuY29tPiBu
-YXBpc2HFgihhKToKPj4+Cj4+Pgo+Pj4gT24gMTAvMDUvMjAxOSAxNzoyMCwgQmFydG9zeiBHb2xh
-c3pld3NraSB3cm90ZToKPj4+PiBwdC4sIDEwIG1haiAyMDE5IG8gMTE6MTYgQmFydG9zeiBHb2xh
-c3pld3NraSA8YnJnbEBiZ2Rldi5wbD4gbmFwaXNhxYIoYSk6Cj4+Pj4+IMWbci4sIDggbWFqIDIw
-MTkgbyAwOToxMyBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0PiBuYXBpc2HFgihh
-KToKPj4+Pj4+IC0tLS0tIFVyc3Byw7xuZ2xpY2hlIE1haWwgLS0tLS0KPj4+Pj4+Pj4gQ2FuIHlv
-dSBwbGVhc2UgY2hlY2s/Cj4+Pj4+Pj4+IFRoaXMgcGF0Y2ggaXMgYWxyZWFkeSBxdWV1ZWQgaW4g
-LW5leHQuIFNvIHdlIG5lZWQgdG8gZGVjaWRlIHdoZXRoZXIgdG8KPj4+Pj4+Pj4gcmV2ZXJ0IG9y
-IGZpeCBpdCBub3cuCj4+Pj4+Pj4+Cj4+Pj4+Pj4gSSBhbSBsb29raW5nIGF0IGl0LiBJdCBwYXNz
-ZWQgdGVzdHMgaW4gbXkgY2FzZSAoSSBkaWQgdGhlIHVzdWFsIHJvdW5kKS4KPj4+Pj4+IEl0IHdv
-cmtzIGhlcmUgdG9vLiBUaGF0J3Mgd2h5IEkgbmV2ZXIgbm90aWNlZC4KPj4+Pj4+IFllc3RlcmRh
-eSBJIG5vdGljZWQganVzdCBiZWNhdXNlIEkgbG9va2VkIGZvciBzb21ldGhpbmcgZWxzZSBpbiB0
-aGUga2VybmVsIGxvZ3MuCj4+Pj4+Pgo+Pj4+Pj4gVGhhbmtzLAo+Pj4+Pj4gLy9yaWNoYXJkCj4+
-Pj4+IEhpLAo+Pj4+Pgo+Pj4+PiBzb3JyeSBmb3IgdGhlIGxhdGUgcmVwbHkgLSBJIGp1c3QgY2Ft
-ZSBiYWNrIGZyb20gdmFjYXRpb24uCj4+Pj4+Cj4+Pj4+IEkgc2VlIGl0IGhlcmUgdG9vLCBJJ2xs
-IGNoZWNrIGlmIEkgY2FuIGZpbmQgdGhlIGN1bHByaXQgYW5kIGZpeCBpdCB0b2RheS4KPj4+Pj4K
-Pj4+Pj4gQmFydAo+Pj4+IEhpIFJpY2hhcmQsIEFudG9uLAo+Pj4+Cj4+Pj4gSSdtIG5vdCBzdXJl
-IHlldCB3aGF0IHRoaXMgaXMgY2F1c2VkIGJ5LiBJdCBkb2Vzbid0IHNlZW0gdG8gYnJlYWsKPj4+
-PiBhbnl0aGluZyBmb3IgbWUgYnV0IHNpbmNlIGl0J3MgYSBuZXcgZXJyb3IgbWVzc2FnZSBJIGd1
-ZXNzIGl0J3MgYmVzdAo+Pj4+IHRvIHJldmVydCB0aGlzIHBhdGNoIChvdGhlcnMgYXJlIGdvb2Qp
-IGFuZCByZXZpc2l0IGl0IGZvciB2NS4zLgo+Pj4KPj4+IENhbiB5b3Ugc2VuZCBtZSB5b3VyIGNv
-bW1hbmQgbGluZSBhbmQgLmNvbmZpZyBzbyBJIGNhbiB0cnkgdG8gcmVwcm9kdWNlIGl0Lgo+Pj4K
-Pj4KPj4gU3VyZSwKPj4KPj4gdGhlIGNvbW1hbmQgbGluZSBpczoKPj4KPj4gLi9saW51eCByb290
-ZnN0eXBlPWhvc3RmcyByb290ZmxhZ3M9PHBhdGggdG8gYSByZWd1bGFyIGJ1aWxkcm9vdAo+PiBy
-b290ZnM+IHJ3IG1lbT00OE0KPj4KPj4gVGhlIGNvbmZpZyBpcyB0aGUgcmVndWxhciB4ODZfNjRf
-ZGVmY29uZmlnIGZyb20gYXJjaC91bS4KPj4KPj4gQmFydAo+Pgo+ICAgCj4gSSBoaXQgdGhpcyBj
-b21waWxpbmcgNS4yLjAtcmMyLTAwMDI0LWdiZWM3NTUwY2NhMTAKPiAKPiBJIGNhbiB0cmlnZ2Vy
-Ogo+IAo+IFRyeWluZyB0byByZXJlZ2lzdGVyIElSUSAxMSBGRCA5IFRZUEUgMCBJRCAoX19fX3B0
-cnZhbF9fX18pCj4gd3JpdGVfc2lnaW9faXJxIDogdW1fcmVxdWVzdF9pcnEgZmFpbGVkLCBlcnIg
-PSAtMTYKPiAKPiBkdXJpbmcgYm9vdCB3aGVuOgo+IAo+ICMgQ09ORklHX1VNTF9ORVRfVkVDVE9S
-IGlzIG5vdCBzZXQKPiAKPiBMb29raW5nIGF0IHRoZSBjb2RlIHRoZXJlIHNlZW1zIHRvIGJlIGEg
-b25lIG9mZiBlcnJvcgo+IGluIHRoZSBMQVNUX0lSUSBjYWxjdWxhdGlvbiB3aGVuIENPTkZJR19V
-TUxfTkVUX1ZFQ1RPUiBpcyBlbmFibGVkLgo+IEluIHRoYXQgY2FzZSB0aGUgcGF0Y2ggc2hvdWxk
-IGJlIHJldmVydGVkIGFuZCB0aGUgZm9sbG93aW5nIGFwcGxpZWQ6Cj4gCj4gCj4gZGlmZiAtLWdp
-dCBhL2FyY2gvdW0vaW5jbHVkZS9hc20vaXJxLmggYi9hcmNoL3VtL2luY2x1ZGUvYXNtL2lycS5o
-Cj4gaW5kZXggNDllZDNlMzViMzVhLi5jZTdhNzhjM2JjZjIgMTAwNjQ0Cj4gLS0tIGEvYXJjaC91
-bS9pbmNsdWRlL2FzbS9pcnEuaAo+ICsrKyBiL2FyY2gvdW0vaW5jbHVkZS9hc20vaXJxLmgKPiBA
-QCAtMjMsNyArMjMsNyBAQAo+ICAgI2RlZmluZSBWRUNUT1JfQkFTRV9JUlEgICAgICAgICAgICAg
-ICAgMTUKPiAgICNkZWZpbmUgVkVDVE9SX0lSUV9TUEFDRSAgICAgICA4Cj4gCj4gLSNkZWZpbmUg
-TEFTVF9JUlEgKFZFQ1RPUl9JUlFfU1BBQ0UgKyBWRUNUT1JfQkFTRV9JUlEpCj4gKyNkZWZpbmUg
-TEFTVF9JUlEgKFZFQ1RPUl9JUlFfU1BBQ0UgKyBWRUNUT1JfQkFTRV9JUlEgLSAxKQo+CgpUaGF0
-IGRvZXMgbm90IHdvcmsuIFZlY3RvciBJUlFzIGFyZSBhbGxvY2F0ZWQgbW9kdWxvIFZFQ1RPUl9J
-UlFfU1BBQ0UuIApMaW5lIDEyMTkgYW5kIDEyMzQgaW4gdmVjdG9yX2tlcm4uYy4KCmlycV9yciA9
-IChpcnFfcnIgKyAxKSAlIFZFQ1RPUl9JUlFfU1BBQ0U7CgojZGVmaW5lIExBU1RfSVJRIChWRUNU
-T1JfSVJRX1NQQUNFICsgVkVDVE9SX0JBU0VfSVJRIC0gMSkgd2lsbCAKZGVmaW5pdGVseSBnaXZl
-IG9mZi1ieS1vbmUgaWYgdmVjdG9yIG5ldHdvcmsgZHJpdmVycyBhcmUgZW5hYmxlZC4KCklSUSAx
-MSBpcyBzaWdpbywgdGhpcyBpcyBzb21ldGhpbmcgZWxzZS4KCkNhbiBJIGhhdmUgeW91ciAuY29u
-ZmlnIHBsZWFzZSBzbyBJIGNhbiB0cnkgdG8gcmVwcm9kdWNlIGl0LgoKPiAgICNlbHNlCj4gCj4g
-RGFuYQo+IAo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-Cj4gbGludXgtdW0gbWFpbGluZyBsaXN0Cj4gbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwo+
-IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0KPiAK
-Ci0tIApBbnRvbiBSLiBJdmFub3YKQ2FtYnJpZGdlZ3JleXMgTGltaXRlZC4gUmVnaXN0ZXJlZCBp
-biBFbmdsYW5kLiBDb21wYW55IE51bWJlciAxMDI3MzY2MQpodHRwczovL3d3dy5jYW1icmlkZ2Vn
-cmV5cy5jb20vCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRw
-Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
+On Fri, May 17, 2019 at 10:43 AM Stephen Boyd <sboyd@kernel.org> wrote:
+>
+> Quoting Brendan Higgins (2019-05-14 15:16:56)
+> > A number of test features need to do pretty complicated string printing
+> > where it may not be possible to rely on a single preallocated string
+> > with parameters.
+> >
+> > So provide a library for constructing the string as you go similar to
+> > C++'s std::string.
+> >
+> > Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+> > Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+>
+> Is there any reason why we can't use the seqfile API for this? These
+> both share a similar goal, formatting strings into a buffer to be read
+> later. Maybe some new APIs would be needed to extract the buffer
+> differently, but I hope we could share the code.
+
+I can see why you are asking. It seems as though they are trying to do
+*similar* things, and it seems possible that we might be able to
+extract some common functionality out of seq_file that could replace
+this; however, it looks like it would be require a significant
+refactoring of seq_file to separate out the file system specific bits
+from the more general stringbuilder functionality.
+
+In my opinion, a refactoring like this makes no sense in this
+patchset; it probably belongs in its own patchset (preferably as a
+follow on). I also am not sure if the FS people would appreciate
+indirection that serves them no benefit, but I can ask if you like.
+
+> If it can't be used, can you please add the reasoning to the commit text
+> here?
+
+Will do.
+
+Thanks!
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
