@@ -1,23 +1,22 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from mail-pl1-x641.google.com ([2607:f8b0:4864:20::641])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hal2d-0006r1-TQ
- for linux-um@lists.infradead.org; Tue, 11 Jun 2019 17:58:42 +0000
-Received: by mail-pl1-x641.google.com with SMTP id bi6so5040772plb.12
- for <linux-um@lists.infradead.org>; Tue, 11 Jun 2019 10:58:37 -0700 (PDT)
-Date: Tue, 11 Jun 2019 10:58:30 -0700
-From: Brendan Higgins <brendanhiggins@google.com>
-Subject: Re: [PATCH v4 17/18] kernel/sysctl-test: Add null pointer test for
- sysctl.c:proc_dointvec()
-Message-ID: <20190611175830.GA236872@google.com>
+ id 1hZNGP-0007GI-Ok
+ for linux-um@lists.infradead.org; Fri, 07 Jun 2019 22:23:11 +0000
+Received: by mail-pl1-x641.google.com with SMTP id d21so1332756plr.3
+ for <linux-um@lists.infradead.org>; Fri, 07 Jun 2019 15:23:05 -0700 (PDT)
+MIME-Version: 1.0
 References: <20190514221711.248228-1-brendanhiggins@google.com>
  <20190514221711.248228-18-brendanhiggins@google.com>
  <20190517182254.548EA20815@mail.kernel.org>
  <CAAXuY3p4qhKVsSpQ44_kQeGDMfg7OuFLgFyxhcFWS3yf-5A_7g@mail.gmail.com>
  <20190607190047.C3E7A20868@mail.kernel.org>
-MIME-Version: 1.0
-Content-Disposition: inline
 In-Reply-To: <20190607190047.C3E7A20868@mail.kernel.org>
+From: Brendan Higgins <brendanhiggins@google.com>
+Date: Fri, 7 Jun 2019 15:22:53 -0700
+Message-ID: <CAFd5g475eUKnpNM3kDe_9PboCyZ=aanPeV2gTuzuJXRp-xbsWg@mail.gmail.com>
+Subject: Re: [PATCH v4 17/18] kernel/sysctl-test: Add null pointer test for
+ sysctl.c:proc_dointvec()
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -31,9 +30,10 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: Stephen Boyd <sboyd@kernel.org>
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, peterz@infradead.org, amir73il@gmail.com, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, yamada.masahiro@socionext.com, mpe@ellerman.id.au, linux-kselftest@vger.kernel.org, shuah@kernel.org, robh@kernel.org, linux-nvdimm@lists.01.org, frowand.list@gmail.com, knut.omang@oracle.com, kieran.bingham@ideasonboard.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, Iurii Zaikin <yzaikin@google.com>, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, jpoimboe@redhat.com, kunit-dev@googlegroups.com, tytso@mit.edu, richard@nod.at, gregkh@linuxfoundation.org, rdunlap@infradead.org, linux-kernel@vger.kernel.org, mcgrof@kernel.org, daniel@ffwll.ch, keescook@google.com, linux-fsdevel@vger.kernel.org, logang@deltatee.com, khilman@baylibre.com
+Cc: Petr Mladek <pmladek@suse.com>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, Amir Goldstein <amir73il@gmail.com>, dri-devel <dri-devel@lists.freedesktop.org>, Sasha Levin <Alexander.Levin@microsoft.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Michael Ellerman <mpe@ellerman.id.au>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, shuah <shuah@kernel.org>, Rob Herring <robh@kernel.org>, linux-nvdimm <linux-nvdimm@lists.01.org>, Frank Rowand <frowand.list@gmail.com>, Knut Omang <knut.omang@oracle.com>, Kieran Bingham <kieran.bingham@ideasonboard.com>, wfg@linux.intel.com, Joel Stanley <joel@jms.id.au>, David Rientjes <rientjes@google.com>, Iurii Zaikin <yzaikin@google.com>, Jeff Dike <jdike@addtoit.com>, Dan Carpenter <dan.carpenter@oracle.com>, devicetree <devicetree@vger.kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, "Bird, Timothy  <Tim.Bird@sony.com>, linux-um@lists.infradead.org, Steven Rostedt" <rostedt@goodmis.org>, Julia Lawall <julia.lawall@lip6.fr>, Josh Poimboeuf <jpoimboe@redhat.com>, kunit-dev@googlegroups.com, Theodore Ts'o <tytso@mit.edu>, Richard Weinberger <richard@nod.at>, Greg KH <gregkh@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@google.com>, linux-fsdevel@vger.kernel.org, Logan Gunthorpe <logang@deltatee.com>, Kevin Hilman <khilman@baylibre.com>
 
-On Fri, Jun 07, 2019 at 12:00:47PM -0700, Stephen Boyd wrote:
+On Fri, Jun 7, 2019 at 12:00 PM Stephen Boyd <sboyd@kernel.org> wrote:
+>
 > Quoting Iurii Zaikin (2019-06-05 18:29:42)
 > > On Fri, May 17, 2019 at 11:22 AM Stephen Boyd <sboyd@kernel.org> wrote:
 > > >
@@ -73,7 +73,7 @@ On Fri, Jun 07, 2019 at 12:00:47PM -0700, Stephen Boyd wrote:
 > > macro should do any type coercion that == operator wouldn't do.
 > >  I did change the cast to make it more clear that it's a pointer to an
 > > array of ints being dereferenced.
-> 
+>
 > Ok, I still wonder if we should make KUNIT_EXPECT_EQ check the types on
 > both sides and cause a build warning/error if the types aren't the same.
 > This would be similar to our min/max macros that complain about
@@ -82,111 +82,14 @@ On Fri, Jun 07, 2019 at 12:00:47PM -0700, Stephen Boyd wrote:
 > KUNIT_EXPECT_EQ_T() macro that lists the types to coerce both sides to
 > explicitly.
 
-Do you think it would be better to do a phony compare similar to how
-min/max used to work prior to 4.17, or to use the new __typecheck(...)
-macro? This might seem like a dumb question (and maybe it is), but Iurii
-and I thought the former created an error message that was a bit easier
-to understand, whereas __typecheck is obviously superior in terms of
-code reuse.
+Good point. I would definitely like to do this, for me it is only a
+question of how difficult it would be to make all that happen.
 
-This is what we are thinking right now; if you don't have any complaints
-I will squash it into the relevant commits on the next revision:
----
-From: Iurii Zaikin <yzaikin@google.com>
+We will investigate and report back on it.
 
-Adds a warning message when comparing values of different types similar
-to what min() / max() macros do.
+Thanks for the suggestion! It's a really good idea!
 
-Signed-off-by: Iurii Zaikin <yzaikin@google.com>
----
- include/kunit/test.h | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
-
-diff --git a/include/kunit/test.h b/include/kunit/test.h
-index 511c9e85401a6..791e22fba5620 100644
---- a/include/kunit/test.h
-+++ b/include/kunit/test.h
-@@ -335,6 +335,13 @@ void __printf(3, 4) kunit_printk(const char *level,
- #define kunit_err(test, fmt, ...) \
- 		kunit_printk(KERN_ERR, test, fmt, ##__VA_ARGS__)
- 
-+/*
-+ * 'Unnecessary' cast serves to generate a compile-time warning in case
-+ * of comparing incompatible types. Inspired by include/linux/kernel.h
-+ */
-+#define __kunit_typecheck(lhs, rhs) \
-+	((void) (&(lhs) == &(rhs)))
-+
- static inline struct kunit_stream *kunit_expect_start(struct kunit *test,
- 						      const char *file,
- 						      const char *line)
-@@ -514,6 +521,7 @@ static inline void kunit_expect_ptr_binary(struct kunit *test,
- #define KUNIT_EXPECT_BINARY(test, left, condition, right) do {		       \
- 	typeof(left) __left = (left);					       \
- 	typeof(right) __right = (right);				       \
-+	__kunit_typecheck(__left, __right);				       \
- 	kunit_expect_binary(test,					       \
- 			    (long long) __left, #left,			       \
- 			    (long long) __right, #right,		       \
-@@ -524,6 +532,7 @@ static inline void kunit_expect_ptr_binary(struct kunit *test,
- #define KUNIT_EXPECT_BINARY_MSG(test, left, condition, right, fmt, ...) do {   \
- 	typeof(left) __left = (left);					       \
- 	typeof(right) __right = (right);				       \
-+	__kunit_typecheck(__left, __right);				       \
- 	kunit_expect_binary_msg(test,					       \
- 				(long long) __left, #left,		       \
- 				(long long) __right, #right,		       \
-@@ -538,6 +547,7 @@ static inline void kunit_expect_ptr_binary(struct kunit *test,
- #define KUNIT_EXPECT_PTR_BINARY(test, left, condition, right) do {	       \
- 	typeof(left) __left = (left);					       \
- 	typeof(right) __right = (right);				       \
-+	__kunit_typecheck(__left, __right);				       \
- 	kunit_expect_ptr_binary(test,					       \
- 			    (void *) __left, #left,			       \
- 			    (void *) __right, #right,			       \
-@@ -553,6 +563,7 @@ static inline void kunit_expect_ptr_binary(struct kunit *test,
- 				    ...) do {				       \
- 	typeof(left) __left = (left);					       \
- 	typeof(right) __right = (right);				       \
-+	__kunit_typecheck(__left, __right);				       \
- 	kunit_expect_ptr_binary_msg(test,				       \
- 				    (void *) __left, #left,		       \
- 				    (void *) __right, #right,		       \
-@@ -1013,6 +1024,7 @@ static inline void kunit_assert_ptr_binary(struct kunit *test,
- #define KUNIT_ASSERT_BINARY(test, left, condition, right) do {		       \
- 	typeof(left) __left = (left);					       \
- 	typeof(right) __right = (right);				       \
-+	__kunit_typecheck(__left, __right);				       \
- 	kunit_assert_binary(test,					       \
- 			    (long long) __left, #left,			       \
- 			    (long long) __right, #right,		       \
-@@ -1023,6 +1035,7 @@ static inline void kunit_assert_ptr_binary(struct kunit *test,
- #define KUNIT_ASSERT_BINARY_MSG(test, left, condition, right, fmt, ...) do {   \
- 	typeof(left) __left = (left);					       \
- 	typeof(right) __right = (right);				       \
-+	__kunit_typecheck(__left, __right);				       \
- 	kunit_assert_binary_msg(test,					       \
- 				(long long) __left, #left,		       \
- 				(long long) __right, #right,		       \
-@@ -1037,6 +1050,7 @@ static inline void kunit_assert_ptr_binary(struct kunit *test,
- #define KUNIT_ASSERT_PTR_BINARY(test, left, condition, right) do {	       \
- 	typeof(left) __left = (left);					       \
- 	typeof(right) __right = (right);				       \
-+	__kunit_typecheck(__left, __right);				       \
- 	kunit_assert_ptr_binary(test,					       \
- 				(void *) __left, #left,			       \
- 				(void *) __right, #right,		       \
-@@ -1051,6 +1065,7 @@ static inline void kunit_assert_ptr_binary(struct kunit *test,
- 				    fmt, ...) do {			       \
- 	typeof(left) __left = (left);					       \
- 	typeof(right) __right = (right);				       \
-+	__kunit_typecheck(__left, __right);				       \
- 	kunit_assert_ptr_binary_msg(test,				       \
- 				    (void *) __left, #left,		       \
- 				    (void *) __right, #right,		       \
--- 
-2.22.0.rc2.383.gf4fbbf30c2-goog
-
+Cheers
 
 _______________________________________________
 linux-um mailing list
