@@ -1,21 +1,23 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from mail-pl1-x641.google.com ([2607:f8b0:4864:20::641])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1halqd-0008G7-9q
- for linux-um@lists.infradead.org; Tue, 11 Jun 2019 18:50:20 +0000
-MIME-Version: 1.0
-In-Reply-To: <20190611175830.GA236872@google.com>
+ id 1hal2d-0006r1-TQ
+ for linux-um@lists.infradead.org; Tue, 11 Jun 2019 17:58:42 +0000
+Received: by mail-pl1-x641.google.com with SMTP id bi6so5040772plb.12
+ for <linux-um@lists.infradead.org>; Tue, 11 Jun 2019 10:58:37 -0700 (PDT)
+Date: Tue, 11 Jun 2019 10:58:30 -0700
+From: Brendan Higgins <brendanhiggins@google.com>
+Subject: Re: [PATCH v4 17/18] kernel/sysctl-test: Add null pointer test for
+ sysctl.c:proc_dointvec()
+Message-ID: <20190611175830.GA236872@google.com>
 References: <20190514221711.248228-1-brendanhiggins@google.com>
  <20190514221711.248228-18-brendanhiggins@google.com>
  <20190517182254.548EA20815@mail.kernel.org>
  <CAAXuY3p4qhKVsSpQ44_kQeGDMfg7OuFLgFyxhcFWS3yf-5A_7g@mail.gmail.com>
  <20190607190047.C3E7A20868@mail.kernel.org>
- <20190611175830.GA236872@google.com>
-From: Stephen Boyd <sboyd@kernel.org>
-Subject: Re: [PATCH v4 17/18] kernel/sysctl-test: Add null pointer test for
- sysctl.c:proc_dointvec()
-Date: Tue, 11 Jun 2019 11:50:17 -0700
-Message-Id: <20190611185018.2E1C021744@mail.kernel.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20190607190047.C3E7A20868@mail.kernel.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -28,91 +30,163 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Brendan Higgins <brendanhiggins@google.com>
+To: Stephen Boyd <sboyd@kernel.org>
 Cc: pmladek@suse.com, linux-doc@vger.kernel.org, peterz@infradead.org, amir73il@gmail.com, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, yamada.masahiro@socionext.com, mpe@ellerman.id.au, linux-kselftest@vger.kernel.org, shuah@kernel.org, robh@kernel.org, linux-nvdimm@lists.01.org, frowand.list@gmail.com, knut.omang@oracle.com, kieran.bingham@ideasonboard.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, Iurii Zaikin <yzaikin@google.com>, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, jpoimboe@redhat.com, kunit-dev@googlegroups.com, tytso@mit.edu, richard@nod.at, gregkh@linuxfoundation.org, rdunlap@infradead.org, linux-kernel@vger.kernel.org, mcgrof@kernel.org, daniel@ffwll.ch, keescook@google.com, linux-fsdevel@vger.kernel.org, logang@deltatee.com, khilman@baylibre.com
 
-Quoting Brendan Higgins (2019-06-11 10:58:30)
-> On Fri, Jun 07, 2019 at 12:00:47PM -0700, Stephen Boyd wrote:
-> > Quoting Iurii Zaikin (2019-06-05 18:29:42)
-> > > On Fri, May 17, 2019 at 11:22 AM Stephen Boyd <sboyd@kernel.org> wrote:
-> > > >
-> > > > Quoting Brendan Higgins (2019-05-14 15:17:10)
-> > > > > diff --git a/kernel/sysctl-test.c b/kernel/sysctl-test.c
-> > > > > new file mode 100644
-> > > > > index 0000000000000..fe0f2bae66085
-> > > > > --- /dev/null
-> > > > > +++ b/kernel/sysctl-test.c
-> > > > > +
-> > > > > +
-> > > > > +static void sysctl_test_dointvec_happy_single_negative(struct kunit *test)
-> > > > > +{
-> > > > > +       struct ctl_table table = {
-> > > > > +               .procname = "foo",
-> > > > > +               .data           = &test_data.int_0001,
-> > > > > +               .maxlen         = sizeof(int),
-> > > > > +               .mode           = 0644,
-> > > > > +               .proc_handler   = proc_dointvec,
-> > > > > +               .extra1         = &i_zero,
-> > > > > +               .extra2         = &i_one_hundred,
-> > > > > +       };
-> > > > > +       char input[] = "-9";
-> > > > > +       size_t len = sizeof(input) - 1;
-> > > > > +       loff_t pos = 0;
-> > > > > +
-> > > > > +       table.data = kunit_kzalloc(test, sizeof(int), GFP_USER);
-> > > > > +       KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, 1, input, &len, &pos));
-> > > > > +       KUNIT_EXPECT_EQ(test, sizeof(input) - 1, len);
-> > > > > +       KUNIT_EXPECT_EQ(test, sizeof(input) - 1, pos);
-> > > > > +       KUNIT_EXPECT_EQ(test, -9, *(int *)table.data);
-> > > >
-> > > > Is the casting necessary? Or can the macro do a type coercion of the
-> > > > second parameter based on the first type?
-> > >  Data field is defined as void* so I believe casting is necessary to
-> > > dereference it as a pointer to an array of ints. I don't think the
-> > > macro should do any type coercion that == operator wouldn't do.
-> > >  I did change the cast to make it more clear that it's a pointer to an
-> > > array of ints being dereferenced.
-> > 
-> > Ok, I still wonder if we should make KUNIT_EXPECT_EQ check the types on
-> > both sides and cause a build warning/error if the types aren't the same.
-> > This would be similar to our min/max macros that complain about
-> > mismatched types in the comparisons. Then if a test developer needs to
-> > convert one type or the other they could do so with a
-> > KUNIT_EXPECT_EQ_T() macro that lists the types to coerce both sides to
-> > explicitly.
+On Fri, Jun 07, 2019 at 12:00:47PM -0700, Stephen Boyd wrote:
+> Quoting Iurii Zaikin (2019-06-05 18:29:42)
+> > On Fri, May 17, 2019 at 11:22 AM Stephen Boyd <sboyd@kernel.org> wrote:
+> > >
+> > > Quoting Brendan Higgins (2019-05-14 15:17:10)
+> > > > diff --git a/kernel/sysctl-test.c b/kernel/sysctl-test.c
+> > > > new file mode 100644
+> > > > index 0000000000000..fe0f2bae66085
+> > > > --- /dev/null
+> > > > +++ b/kernel/sysctl-test.c
+> > > > +
+> > > > +
+> > > > +static void sysctl_test_dointvec_happy_single_negative(struct kunit *test)
+> > > > +{
+> > > > +       struct ctl_table table = {
+> > > > +               .procname = "foo",
+> > > > +               .data           = &test_data.int_0001,
+> > > > +               .maxlen         = sizeof(int),
+> > > > +               .mode           = 0644,
+> > > > +               .proc_handler   = proc_dointvec,
+> > > > +               .extra1         = &i_zero,
+> > > > +               .extra2         = &i_one_hundred,
+> > > > +       };
+> > > > +       char input[] = "-9";
+> > > > +       size_t len = sizeof(input) - 1;
+> > > > +       loff_t pos = 0;
+> > > > +
+> > > > +       table.data = kunit_kzalloc(test, sizeof(int), GFP_USER);
+> > > > +       KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, 1, input, &len, &pos));
+> > > > +       KUNIT_EXPECT_EQ(test, sizeof(input) - 1, len);
+> > > > +       KUNIT_EXPECT_EQ(test, sizeof(input) - 1, pos);
+> > > > +       KUNIT_EXPECT_EQ(test, -9, *(int *)table.data);
+> > >
+> > > Is the casting necessary? Or can the macro do a type coercion of the
+> > > second parameter based on the first type?
+> >  Data field is defined as void* so I believe casting is necessary to
+> > dereference it as a pointer to an array of ints. I don't think the
+> > macro should do any type coercion that == operator wouldn't do.
+> >  I did change the cast to make it more clear that it's a pointer to an
+> > array of ints being dereferenced.
 > 
-> Do you think it would be better to do a phony compare similar to how
-> min/max used to work prior to 4.17, or to use the new __typecheck(...)
-> macro? This might seem like a dumb question (and maybe it is), but Iurii
-> and I thought the former created an error message that was a bit easier
-> to understand, whereas __typecheck is obviously superior in terms of
-> code reuse.
-> 
-> This is what we are thinking right now; if you don't have any complaints
-> I will squash it into the relevant commits on the next revision:
+> Ok, I still wonder if we should make KUNIT_EXPECT_EQ check the types on
+> both sides and cause a build warning/error if the types aren't the same.
+> This would be similar to our min/max macros that complain about
+> mismatched types in the comparisons. Then if a test developer needs to
+> convert one type or the other they could do so with a
+> KUNIT_EXPECT_EQ_T() macro that lists the types to coerce both sides to
+> explicitly.
 
-Can you provide the difference in error messages and describe that in
-the commit text? The commit message is where you "sell" the patch, so
-being able to compare the tradeoff of having another macro to do type
-comparisons vs. reusing the one that's there in kernel.h would be useful
-to allay concerns that we're duplicating logic for better error
-messages.
+Do you think it would be better to do a phony compare similar to how
+min/max used to work prior to 4.17, or to use the new __typecheck(...)
+macro? This might seem like a dumb question (and maybe it is), but Iurii
+and I thought the former created an error message that was a bit easier
+to understand, whereas __typecheck is obviously superior in terms of
+code reuse.
 
-Honestly, I'd prefer we just use the macros that we've developed in
-kernel.h to do comparisons here so that we can get code reuse, but more
-importantly so that we don't trip over problems that caused those macros
-to be created in the first place. If the error message is bad, perhaps
-that can be fixed with some sort of compiler directive to make the error
-message a little more useful, i.e. compiletime_warning() thrown into
-__typecheck() or something.
+This is what we are thinking right now; if you don't have any complaints
+I will squash it into the relevant commits on the next revision:
+---
+From: Iurii Zaikin <yzaikin@google.com>
 
-> ---
-> From: Iurii Zaikin <yzaikin@google.com>
-> 
-> Adds a warning message when comparing values of different types similar
-> to what min() / max() macros do.
-> 
-> Signed-off-by: Iurii Zaikin <yzaikin@google.com>
+Adds a warning message when comparing values of different types similar
+to what min() / max() macros do.
+
+Signed-off-by: Iurii Zaikin <yzaikin@google.com>
+---
+ include/kunit/test.h | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/include/kunit/test.h b/include/kunit/test.h
+index 511c9e85401a6..791e22fba5620 100644
+--- a/include/kunit/test.h
++++ b/include/kunit/test.h
+@@ -335,6 +335,13 @@ void __printf(3, 4) kunit_printk(const char *level,
+ #define kunit_err(test, fmt, ...) \
+ 		kunit_printk(KERN_ERR, test, fmt, ##__VA_ARGS__)
+ 
++/*
++ * 'Unnecessary' cast serves to generate a compile-time warning in case
++ * of comparing incompatible types. Inspired by include/linux/kernel.h
++ */
++#define __kunit_typecheck(lhs, rhs) \
++	((void) (&(lhs) == &(rhs)))
++
+ static inline struct kunit_stream *kunit_expect_start(struct kunit *test,
+ 						      const char *file,
+ 						      const char *line)
+@@ -514,6 +521,7 @@ static inline void kunit_expect_ptr_binary(struct kunit *test,
+ #define KUNIT_EXPECT_BINARY(test, left, condition, right) do {		       \
+ 	typeof(left) __left = (left);					       \
+ 	typeof(right) __right = (right);				       \
++	__kunit_typecheck(__left, __right);				       \
+ 	kunit_expect_binary(test,					       \
+ 			    (long long) __left, #left,			       \
+ 			    (long long) __right, #right,		       \
+@@ -524,6 +532,7 @@ static inline void kunit_expect_ptr_binary(struct kunit *test,
+ #define KUNIT_EXPECT_BINARY_MSG(test, left, condition, right, fmt, ...) do {   \
+ 	typeof(left) __left = (left);					       \
+ 	typeof(right) __right = (right);				       \
++	__kunit_typecheck(__left, __right);				       \
+ 	kunit_expect_binary_msg(test,					       \
+ 				(long long) __left, #left,		       \
+ 				(long long) __right, #right,		       \
+@@ -538,6 +547,7 @@ static inline void kunit_expect_ptr_binary(struct kunit *test,
+ #define KUNIT_EXPECT_PTR_BINARY(test, left, condition, right) do {	       \
+ 	typeof(left) __left = (left);					       \
+ 	typeof(right) __right = (right);				       \
++	__kunit_typecheck(__left, __right);				       \
+ 	kunit_expect_ptr_binary(test,					       \
+ 			    (void *) __left, #left,			       \
+ 			    (void *) __right, #right,			       \
+@@ -553,6 +563,7 @@ static inline void kunit_expect_ptr_binary(struct kunit *test,
+ 				    ...) do {				       \
+ 	typeof(left) __left = (left);					       \
+ 	typeof(right) __right = (right);				       \
++	__kunit_typecheck(__left, __right);				       \
+ 	kunit_expect_ptr_binary_msg(test,				       \
+ 				    (void *) __left, #left,		       \
+ 				    (void *) __right, #right,		       \
+@@ -1013,6 +1024,7 @@ static inline void kunit_assert_ptr_binary(struct kunit *test,
+ #define KUNIT_ASSERT_BINARY(test, left, condition, right) do {		       \
+ 	typeof(left) __left = (left);					       \
+ 	typeof(right) __right = (right);				       \
++	__kunit_typecheck(__left, __right);				       \
+ 	kunit_assert_binary(test,					       \
+ 			    (long long) __left, #left,			       \
+ 			    (long long) __right, #right,		       \
+@@ -1023,6 +1035,7 @@ static inline void kunit_assert_ptr_binary(struct kunit *test,
+ #define KUNIT_ASSERT_BINARY_MSG(test, left, condition, right, fmt, ...) do {   \
+ 	typeof(left) __left = (left);					       \
+ 	typeof(right) __right = (right);				       \
++	__kunit_typecheck(__left, __right);				       \
+ 	kunit_assert_binary_msg(test,					       \
+ 				(long long) __left, #left,		       \
+ 				(long long) __right, #right,		       \
+@@ -1037,6 +1050,7 @@ static inline void kunit_assert_ptr_binary(struct kunit *test,
+ #define KUNIT_ASSERT_PTR_BINARY(test, left, condition, right) do {	       \
+ 	typeof(left) __left = (left);					       \
+ 	typeof(right) __right = (right);				       \
++	__kunit_typecheck(__left, __right);				       \
+ 	kunit_assert_ptr_binary(test,					       \
+ 				(void *) __left, #left,			       \
+ 				(void *) __right, #right,		       \
+@@ -1051,6 +1065,7 @@ static inline void kunit_assert_ptr_binary(struct kunit *test,
+ 				    fmt, ...) do {			       \
+ 	typeof(left) __left = (left);					       \
+ 	typeof(right) __right = (right);				       \
++	__kunit_typecheck(__left, __right);				       \
+ 	kunit_assert_ptr_binary_msg(test,				       \
+ 				    (void *) __left, #left,		       \
+ 				    (void *) __right, #right,		       \
+-- 
+2.22.0.rc2.383.gf4fbbf30c2-goog
+
 
 _______________________________________________
 linux-um mailing list
