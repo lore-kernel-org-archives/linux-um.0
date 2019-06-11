@@ -1,18 +1,24 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-ot1-x34a.google.com ([2607:f8b0:4864:20::34a])
+Received: from mail-pg1-x541.google.com ([2607:f8b0:4864:20::541])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hcmya-00075s-D7
- for linux-um@lists.infradead.org; Mon, 17 Jun 2019 08:26:53 +0000
-Received: by mail-ot1-x34a.google.com with SMTP id f36so4604672otf.7
- for <linux-um@lists.infradead.org>; Mon, 17 Jun 2019 01:26:50 -0700 (PDT)
-Date: Mon, 17 Jun 2019 01:25:58 -0700
-In-Reply-To: <20190617082613.109131-1-brendanhiggins@google.com>
-Message-Id: <20190617082613.109131-4-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20190617082613.109131-1-brendanhiggins@google.com>
-Subject: [PATCH v5 03/18] kunit: test: add string_stream a std::stream like
- string builder
+ id 1hanOL-0002z9-AZ
+ for linux-um@lists.infradead.org; Tue, 11 Jun 2019 20:29:14 +0000
+Received: by mail-pg1-x541.google.com with SMTP id l19so4989438pgh.9
+ for <linux-um@lists.infradead.org>; Tue, 11 Jun 2019 13:29:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190514221711.248228-1-brendanhiggins@google.com>
+ <20190514221711.248228-18-brendanhiggins@google.com>
+ <20190517182254.548EA20815@mail.kernel.org>
+ <CAAXuY3p4qhKVsSpQ44_kQeGDMfg7OuFLgFyxhcFWS3yf-5A_7g@mail.gmail.com>
+ <20190607190047.C3E7A20868@mail.kernel.org>
+ <20190611175830.GA236872@google.com>
+ <20190611185018.2E1C021744@mail.kernel.org>
+In-Reply-To: <20190611185018.2E1C021744@mail.kernel.org>
 From: Brendan Higgins <brendanhiggins@google.com>
+Date: Tue, 11 Jun 2019 13:29:01 -0700
+Message-ID: <CAFd5g47dmcHOCX41cr2v9Kaj3xa_5-PoqUPX_1=AoQLUG90NkQ@mail.gmail.com>
+Subject: Re: [PATCH v4 17/18] kernel/sysctl-test: Add null pointer test for
+ sysctl.c:proc_dointvec()
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -25,254 +31,105 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+To: Stephen Boyd <sboyd@kernel.org>
+Cc: Petr Mladek <pmladek@suse.com>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, Amir Goldstein <amir73il@gmail.com>, dri-devel <dri-devel@lists.freedesktop.org>, Sasha Levin <Alexander.Levin@microsoft.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Michael Ellerman <mpe@ellerman.id.au>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, shuah <shuah@kernel.org>, Rob Herring <robh@kernel.org>, linux-nvdimm <linux-nvdimm@lists.01.org>, Frank Rowand <frowand.list@gmail.com>, Knut Omang <knut.omang@oracle.com>, Kieran Bingham <kieran.bingham@ideasonboard.com>, wfg@linux.intel.com, Joel Stanley <joel@jms.id.au>, David Rientjes <rientjes@google.com>, Iurii Zaikin <yzaikin@google.com>, Jeff Dike <jdike@addtoit.com>, Dan Carpenter <dan.carpenter@oracle.com>, devicetree <devicetree@vger.kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, "Bird, Timothy  <Tim.Bird@sony.com>, linux-um@lists.infradead.org, Steven Rostedt" <rostedt@goodmis.org>, Julia Lawall <julia.lawall@lip6.fr>, Josh Poimboeuf <jpoimboe@redhat.com>, kunit-dev@googlegroups.com, Theodore Ts'o <tytso@mit.edu>, Richard Weinberger <richard@nod.at>, Greg KH <gregkh@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@google.com>, linux-fsdevel@vger.kernel.org, Logan Gunthorpe <logang@deltatee.com>, Kevin Hilman <khilman@baylibre.com>
 
-A number of test features need to do pretty complicated string printing
-where it may not be possible to rely on a single preallocated string
-with parameters.
+On Tue, Jun 11, 2019 at 11:50 AM Stephen Boyd <sboyd@kernel.org> wrote:
+>
+> Quoting Brendan Higgins (2019-06-11 10:58:30)
+> > On Fri, Jun 07, 2019 at 12:00:47PM -0700, Stephen Boyd wrote:
+> > > Quoting Iurii Zaikin (2019-06-05 18:29:42)
+> > > > On Fri, May 17, 2019 at 11:22 AM Stephen Boyd <sboyd@kernel.org> wrote:
+> > > > >
+> > > > > Quoting Brendan Higgins (2019-05-14 15:17:10)
+> > > > > > diff --git a/kernel/sysctl-test.c b/kernel/sysctl-test.c
+> > > > > > new file mode 100644
+> > > > > > index 0000000000000..fe0f2bae66085
+> > > > > > --- /dev/null
+> > > > > > +++ b/kernel/sysctl-test.c
+> > > > > > +
+> > > > > > +
+> > > > > > +static void sysctl_test_dointvec_happy_single_negative(struct kunit *test)
+> > > > > > +{
+> > > > > > +       struct ctl_table table = {
+> > > > > > +               .procname = "foo",
+> > > > > > +               .data           = &test_data.int_0001,
+> > > > > > +               .maxlen         = sizeof(int),
+> > > > > > +               .mode           = 0644,
+> > > > > > +               .proc_handler   = proc_dointvec,
+> > > > > > +               .extra1         = &i_zero,
+> > > > > > +               .extra2         = &i_one_hundred,
+> > > > > > +       };
+> > > > > > +       char input[] = "-9";
+> > > > > > +       size_t len = sizeof(input) - 1;
+> > > > > > +       loff_t pos = 0;
+> > > > > > +
+> > > > > > +       table.data = kunit_kzalloc(test, sizeof(int), GFP_USER);
+> > > > > > +       KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, 1, input, &len, &pos));
+> > > > > > +       KUNIT_EXPECT_EQ(test, sizeof(input) - 1, len);
+> > > > > > +       KUNIT_EXPECT_EQ(test, sizeof(input) - 1, pos);
+> > > > > > +       KUNIT_EXPECT_EQ(test, -9, *(int *)table.data);
+> > > > >
+> > > > > Is the casting necessary? Or can the macro do a type coercion of the
+> > > > > second parameter based on the first type?
+> > > >  Data field is defined as void* so I believe casting is necessary to
+> > > > dereference it as a pointer to an array of ints. I don't think the
+> > > > macro should do any type coercion that == operator wouldn't do.
+> > > >  I did change the cast to make it more clear that it's a pointer to an
+> > > > array of ints being dereferenced.
+> > >
+> > > Ok, I still wonder if we should make KUNIT_EXPECT_EQ check the types on
+> > > both sides and cause a build warning/error if the types aren't the same.
+> > > This would be similar to our min/max macros that complain about
+> > > mismatched types in the comparisons. Then if a test developer needs to
+> > > convert one type or the other they could do so with a
+> > > KUNIT_EXPECT_EQ_T() macro that lists the types to coerce both sides to
+> > > explicitly.
+> >
+> > Do you think it would be better to do a phony compare similar to how
+> > min/max used to work prior to 4.17, or to use the new __typecheck(...)
+> > macro? This might seem like a dumb question (and maybe it is), but Iurii
+> > and I thought the former created an error message that was a bit easier
+> > to understand, whereas __typecheck is obviously superior in terms of
+> > code reuse.
+> >
+> > This is what we are thinking right now; if you don't have any complaints
+> > I will squash it into the relevant commits on the next revision:
+>
+> Can you provide the difference in error messages and describe that in
+> the commit text? The commit message is where you "sell" the patch, so
+> being able to compare the tradeoff of having another macro to do type
+> comparisons vs. reusing the one that's there in kernel.h would be useful
+> to allay concerns that we're duplicating logic for better error
+> messages.
 
-So provide a library for constructing the string as you go similar to
-C++'s std::string.
+Oh sorry, I didn't think too hard about the commit message since I
+figured it would get split up and squashed into the existing commits.
+I just wanted to get it out sooner to discuss this before I post the
+next revision (probably later this week).
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
----
-Changes Since Last Revision:
- - Renamed new_string_stream() to alloc_string_stream() as suggested by
-   Stephen Boyd.
- - Made string-stream a KUnit managed object - based on a suggestion
-   made by Stephen Boyd.
- - Made a number of other small changes like renaming parameters as
-   suggested by Stephen Boyd.
----
- include/kunit/string-stream.h |  49 ++++++++++++
- kunit/Makefile                |   3 +-
- kunit/string-stream.c         | 147 ++++++++++++++++++++++++++++++++++
- 3 files changed, 198 insertions(+), 1 deletion(-)
- create mode 100644 include/kunit/string-stream.h
- create mode 100644 kunit/string-stream.c
+> Honestly, I'd prefer we just use the macros that we've developed in
+> kernel.h to do comparisons here so that we can get code reuse, but more
+> importantly so that we don't trip over problems that caused those macros
+> to be created in the first place. If the error message is bad, perhaps
+> that can be fixed with some sort of compiler directive to make the error
+> message a little more useful, i.e. compiletime_warning() thrown into
+> __typecheck() or something.
 
-diff --git a/include/kunit/string-stream.h b/include/kunit/string-stream.h
-new file mode 100644
-index 0000000000000..0552a05781afe
---- /dev/null
-+++ b/include/kunit/string-stream.h
-@@ -0,0 +1,49 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * C++ stream style string builder used in KUnit for building messages.
-+ *
-+ * Copyright (C) 2019, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
-+
-+#ifndef _KUNIT_STRING_STREAM_H
-+#define _KUNIT_STRING_STREAM_H
-+
-+#include <linux/types.h>
-+#include <linux/spinlock.h>
-+#include <linux/kref.h>
-+#include <stdarg.h>
-+
-+struct string_stream_fragment {
-+	struct list_head node;
-+	char *fragment;
-+};
-+
-+struct string_stream {
-+	size_t length;
-+	struct list_head fragments;
-+	/* length and fragments are protected by this lock */
-+	spinlock_t lock;
-+};
-+
-+struct kunit;
-+
-+struct string_stream *alloc_string_stream(struct kunit *test);
-+
-+void string_stream_get(struct string_stream *stream);
-+
-+int string_stream_put(struct string_stream *stream);
-+
-+int string_stream_add(struct string_stream *stream, const char *fmt, ...);
-+
-+int string_stream_vadd(struct string_stream *stream,
-+		       const char *fmt,
-+		       va_list args);
-+
-+char *string_stream_get_string(struct string_stream *stream);
-+
-+void string_stream_clear(struct string_stream *stream);
-+
-+bool string_stream_is_empty(struct string_stream *stream);
-+
-+#endif /* _KUNIT_STRING_STREAM_H */
-diff --git a/kunit/Makefile b/kunit/Makefile
-index 5efdc4dea2c08..275b565a0e81f 100644
---- a/kunit/Makefile
-+++ b/kunit/Makefile
-@@ -1 +1,2 @@
--obj-$(CONFIG_KUNIT) +=			test.o
-+obj-$(CONFIG_KUNIT) +=			test.o \
-+					string-stream.o
-diff --git a/kunit/string-stream.c b/kunit/string-stream.c
-new file mode 100644
-index 0000000000000..0463a92dad74b
---- /dev/null
-+++ b/kunit/string-stream.c
-@@ -0,0 +1,147 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * C++ stream style string builder used in KUnit for building messages.
-+ *
-+ * Copyright (C) 2019, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
-+
-+#include <linux/list.h>
-+#include <linux/slab.h>
-+#include <kunit/string-stream.h>
-+#include <kunit/test.h>
-+
-+int string_stream_vadd(struct string_stream *stream,
-+		       const char *fmt,
-+		       va_list args)
-+{
-+	struct string_stream_fragment *frag_container;
-+	int len;
-+	va_list args_for_counting;
-+	unsigned long flags;
-+
-+	/* Make a copy because `vsnprintf` could change it */
-+	va_copy(args_for_counting, args);
-+
-+	/* Need space for null byte. */
-+	len = vsnprintf(NULL, 0, fmt, args_for_counting) + 1;
-+
-+	va_end(args_for_counting);
-+
-+	frag_container = kmalloc(sizeof(*frag_container), GFP_KERNEL);
-+	if (!frag_container)
-+		return -ENOMEM;
-+
-+	frag_container->fragment = kmalloc(len, GFP_KERNEL);
-+	if (!frag_container->fragment) {
-+		kfree(frag_container);
-+		return -ENOMEM;
-+	}
-+
-+	len = vsnprintf(frag_container->fragment, len, fmt, args);
-+	spin_lock_irqsave(&stream->lock, flags);
-+	stream->length += len;
-+	list_add_tail(&frag_container->node, &stream->fragments);
-+	spin_unlock_irqrestore(&stream->lock, flags);
-+
-+	return 0;
-+}
-+
-+int string_stream_add(struct string_stream *stream, const char *fmt, ...)
-+{
-+	va_list args;
-+	int result;
-+
-+	va_start(args, fmt);
-+	result = string_stream_vadd(stream, fmt, args);
-+	va_end(args);
-+
-+	return result;
-+}
-+
-+void string_stream_clear(struct string_stream *stream)
-+{
-+	struct string_stream_fragment *frag_container, *frag_container_safe;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&stream->lock, flags);
-+	list_for_each_entry_safe(frag_container,
-+				 frag_container_safe,
-+				 &stream->fragments,
-+				 node) {
-+		list_del(&frag_container->node);
-+		kfree(frag_container->fragment);
-+		kfree(frag_container);
-+	}
-+	stream->length = 0;
-+	spin_unlock_irqrestore(&stream->lock, flags);
-+}
-+
-+char *string_stream_get_string(struct string_stream *stream)
-+{
-+	struct string_stream_fragment *frag_container;
-+	size_t buf_len = stream->length + 1; /* +1 for null byte. */
-+	char *buf;
-+	unsigned long flags;
-+
-+	buf = kzalloc(buf_len, GFP_KERNEL);
-+	if (!buf)
-+		return NULL;
-+
-+	spin_lock_irqsave(&stream->lock, flags);
-+	list_for_each_entry(frag_container, &stream->fragments, node)
-+		strlcat(buf, frag_container->fragment, buf_len);
-+	spin_unlock_irqrestore(&stream->lock, flags);
-+
-+	return buf;
-+}
-+
-+bool string_stream_is_empty(struct string_stream *stream)
-+{
-+	bool is_empty;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&stream->lock, flags);
-+	is_empty = list_empty(&stream->fragments);
-+	spin_unlock_irqrestore(&stream->lock, flags);
-+
-+	return is_empty;
-+}
-+
-+static int string_stream_init(struct kunit_resource *res, void *context)
-+{
-+	struct string_stream *stream;
-+
-+	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
-+	if (!stream)
-+		return -ENOMEM;
-+
-+	res->allocation = stream;
-+	INIT_LIST_HEAD(&stream->fragments);
-+	spin_lock_init(&stream->lock);
-+
-+	return 0;
-+}
-+
-+static void string_stream_free(struct kunit_resource *res)
-+{
-+	struct string_stream *stream = res->allocation;
-+
-+	string_stream_clear(stream);
-+	kfree(stream);
-+}
-+
-+struct string_stream *alloc_string_stream(struct kunit *test)
-+{
-+	struct kunit_resource *res;
-+
-+	res = kunit_alloc_resource(test,
-+				   string_stream_init,
-+				   string_stream_free,
-+				   NULL);
-+
-+	if (!res)
-+		return NULL;
-+
-+	return res->allocation;
-+}
--- 
-2.22.0.410.gd8fdbe21b5-goog
+That's a good point. I have no qualms sticking with __typecheck(...)
+for now; if we later feel that it is causing problems, we can always
+fix it later by supplying our own warning in the manner you suggest.
 
+Iurii, do you have any additional thoughts on this?
+
+>
+> > ---
+> > From: Iurii Zaikin <yzaikin@google.com>
+> >
+> > Adds a warning message when comparing values of different types similar
+> > to what min() / max() macros do.
+> >
+> > Signed-off-by: Iurii Zaikin <yzaikin@google.com>
 
 _______________________________________________
 linux-um mailing list
