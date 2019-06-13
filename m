@@ -1,18 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-qk1-x749.google.com ([2607:f8b0:4864:20::749])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hcmye-00078O-FJ
- for linux-um@lists.infradead.org; Mon, 17 Jun 2019 08:26:58 +0000
-Received: by mail-qk1-x749.google.com with SMTP id v80so8525575qkb.19
- for <linux-um@lists.infradead.org>; Mon, 17 Jun 2019 01:26:55 -0700 (PDT)
-Date: Mon, 17 Jun 2019 01:25:59 -0700
-In-Reply-To: <20190617082613.109131-1-brendanhiggins@google.com>
-Message-Id: <20190617082613.109131-5-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20190617082613.109131-1-brendanhiggins@google.com>
-Subject: [PATCH v5 04/18] kunit: test: add kunit_stream a std::stream like
- logger
-From: Brendan Higgins <brendanhiggins@google.com>
+ id 1hbLIb-0002ZD-RU
+ for linux-um@lists.infradead.org; Thu, 13 Jun 2019 08:41:35 +0000
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 4.19 044/118] uml: fix a boot splat wrt use of cpu_all_mask
+Date: Thu, 13 Jun 2019 10:33:02 +0200
+Message-Id: <20190613075646.294833490@linuxfoundation.org>
+In-Reply-To: <20190613075643.642092651@linuxfoundation.org>
+References: <20190613075643.642092651@linuxfoundation.org>
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -21,308 +18,68 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+To: linux-kernel@vger.kernel.org
+Cc: Sasha Levin <sashal@kernel.org>, =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, stable@vger.kernel.org, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-A lot of the expectation and assertion infrastructure prints out fairly
-complicated test failure messages, so add a C++ style log library for
-for logging test results.
-
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
----
-Changes Since Last Revision:
- - Renamed kunit_new_stream() to alloc_kunit_stream() as suggested by
-   Stephen Boyd.
- - Removed the ability to set log level after allocating a stream, as
-   suggested by Stephen Boyd.
- - Removed locking, as it is now unnecessary with the previous change.
- - Made a number of other small changes like renaming parameters as
-   suggested by Stephen Boyd.
----
- include/kunit/kunit-stream.h |  81 +++++++++++++++++++++++
- include/kunit/test.h         |   3 +
- kunit/Makefile               |   3 +-
- kunit/kunit-stream.c         | 123 +++++++++++++++++++++++++++++++++++
- kunit/test.c                 |   6 ++
- 5 files changed, 215 insertions(+), 1 deletion(-)
- create mode 100644 include/kunit/kunit-stream.h
- create mode 100644 kunit/kunit-stream.c
-
-diff --git a/include/kunit/kunit-stream.h b/include/kunit/kunit-stream.h
-new file mode 100644
-index 0000000000000..a7b53eabf6be4
---- /dev/null
-+++ b/include/kunit/kunit-stream.h
-@@ -0,0 +1,81 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * C++ stream style string formatter and printer used in KUnit for outputting
-+ * KUnit messages.
-+ *
-+ * Copyright (C) 2019, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
-+
-+#ifndef _KUNIT_KUNIT_STREAM_H
-+#define _KUNIT_KUNIT_STREAM_H
-+
-+#include <linux/types.h>
-+#include <kunit/string-stream.h>
-+
-+struct kunit;
-+
-+/**
-+ * struct kunit_stream - a std::stream style string builder.
-+ *
-+ * A std::stream style string builder. Allows messages to be built up and
-+ * printed all at once.
-+ */
-+struct kunit_stream {
-+	/* private: internal use only. */
-+	struct kunit *test;
-+	const char *level;
-+	struct string_stream *internal_stream;
-+};
-+
-+/**
-+ * alloc_kunit_stream() - constructs a new &struct kunit_stream.
-+ * @test: The test context object.
-+ * @level: The log level at which to print out the message.
-+ *
-+ * Constructs a new test managed &struct kunit_stream.
-+ */
-+struct kunit_stream *alloc_kunit_stream(struct kunit *test, const char *level);
-+
-+/**
-+ * kunit_stream_add(): adds the formatted input to the internal buffer.
-+ * @kstream: the stream being operated on.
-+ * @fmt: printf style format string to append to stream.
-+ *
-+ * Appends the formatted string, @fmt, to the internal buffer.
-+ */
-+void __printf(2, 3) kunit_stream_add(struct kunit_stream *kstream,
-+				     const char *fmt, ...);
-+
-+/**
-+ * kunit_stream_append(): appends the contents of @other to @kstream.
-+ * @kstream: the stream to which @other is appended.
-+ * @other: the stream whose contents are appended to @kstream.
-+ *
-+ * Appends the contents of @other to @kstream.
-+ */
-+void kunit_stream_append(struct kunit_stream *kstream,
-+			 struct kunit_stream *other);
-+
-+/**
-+ * kunit_stream_commit(): prints out the internal buffer to the user.
-+ * @kstream: the stream being operated on.
-+ *
-+ * Outputs the contents of the internal buffer as a kunit_printk formatted
-+ * output. KUNIT_STREAM ONLY OUTPUTS ITS BUFFER TO THE USER IF COMMIT IS
-+ * CALLED!!! The reason for this is that it allows us to construct a message
-+ * before we know whether we want to print it out; this can be extremely handy
-+ * if there is information you might need for a failure message that is easiest
-+ * to collect in the steps leading up to the actual check.
-+ */
-+void kunit_stream_commit(struct kunit_stream *kstream);
-+
-+/**
-+ * kunit_stream_clear(): clears the internal buffer.
-+ * @kstream: the stream being operated on.
-+ *
-+ * Clears the contents of the internal buffer.
-+ */
-+void kunit_stream_clear(struct kunit_stream *kstream);
-+
-+#endif /* _KUNIT_KUNIT_STREAM_H */
-diff --git a/include/kunit/test.h b/include/kunit/test.h
-index 27bd95b6b5523..83fb7ace1b320 100644
---- a/include/kunit/test.h
-+++ b/include/kunit/test.h
-@@ -11,6 +11,7 @@
- 
- #include <linux/types.h>
- #include <linux/slab.h>
-+#include <kunit/kunit-stream.h>
- 
- struct kunit_resource;
- 
-@@ -172,6 +173,8 @@ struct kunit {
- 
- void kunit_init_test(struct kunit *test, const char *name);
- 
-+void kunit_fail(struct kunit *test, struct kunit_stream *stream);
-+
- int kunit_run_tests(struct kunit_module *module);
- 
- /**
-diff --git a/kunit/Makefile b/kunit/Makefile
-index 275b565a0e81f..6ddc622ee6b1c 100644
---- a/kunit/Makefile
-+++ b/kunit/Makefile
-@@ -1,2 +1,3 @@
- obj-$(CONFIG_KUNIT) +=			test.o \
--					string-stream.o
-+					string-stream.o \
-+					kunit-stream.o
-diff --git a/kunit/kunit-stream.c b/kunit/kunit-stream.c
-new file mode 100644
-index 0000000000000..8bea1f22eafb5
---- /dev/null
-+++ b/kunit/kunit-stream.c
-@@ -0,0 +1,123 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * C++ stream style string formatter and printer used in KUnit for outputting
-+ * KUnit messages.
-+ *
-+ * Copyright (C) 2019, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
-+
-+#include <kunit/test.h>
-+#include <kunit/kunit-stream.h>
-+#include <kunit/string-stream.h>
-+
-+void kunit_stream_add(struct kunit_stream *kstream, const char *fmt, ...)
-+{
-+	va_list args;
-+	struct string_stream *stream = kstream->internal_stream;
-+
-+	va_start(args, fmt);
-+
-+	if (string_stream_vadd(stream, fmt, args) < 0)
-+		kunit_err(kstream->test,
-+			  "Failed to allocate fragment: %s\n",
-+			  fmt);
-+
-+	va_end(args);
-+}
-+
-+void kunit_stream_append(struct kunit_stream *kstream,
-+				struct kunit_stream *other)
-+{
-+	struct string_stream *other_stream = other->internal_stream;
-+	const char *other_content;
-+
-+	other_content = string_stream_get_string(other_stream);
-+
-+	if (!other_content) {
-+		kunit_err(kstream->test,
-+			  "Failed to get string from second argument for appending\n");
-+		return;
-+	}
-+
-+	kunit_stream_add(kstream, other_content);
-+}
-+
-+void kunit_stream_clear(struct kunit_stream *kstream)
-+{
-+	string_stream_clear(kstream->internal_stream);
-+}
-+
-+void kunit_stream_commit(struct kunit_stream *kstream)
-+{
-+	struct string_stream *stream = kstream->internal_stream;
-+	struct string_stream_fragment *fragment;
-+	struct kunit *test = kstream->test;
-+	char *buf;
-+
-+	buf = string_stream_get_string(stream);
-+	if (!buf) {
-+		kunit_err(test,
-+			  "Could not allocate buffer, dumping stream:\n");
-+		list_for_each_entry(fragment, &stream->fragments, node) {
-+			kunit_err(test, fragment->fragment);
-+		}
-+		kunit_err(test, "\n");
-+		goto cleanup;
-+	}
-+
-+	kunit_printk(kstream->level, test, buf);
-+	kfree(buf);
-+
-+cleanup:
-+	kunit_stream_clear(kstream);
-+}
-+
-+static int kunit_stream_init(struct kunit_resource *res, void *context)
-+{
-+	struct kunit *test = context;
-+	struct kunit_stream *stream;
-+
-+	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
-+	if (!stream)
-+		return -ENOMEM;
-+
-+	res->allocation = stream;
-+	stream->test = test;
-+	stream->internal_stream = alloc_string_stream(test);
-+
-+	if (!stream->internal_stream)
-+		return -ENOMEM;
-+
-+	return 0;
-+}
-+
-+static void kunit_stream_free(struct kunit_resource *res)
-+{
-+	struct kunit_stream *stream = res->allocation;
-+
-+	if (!string_stream_is_empty(stream->internal_stream)) {
-+		kunit_err(stream->test,
-+			  "End of test case reached with uncommitted stream entries\n");
-+		kunit_stream_commit(stream);
-+	}
-+}
-+
-+struct kunit_stream *alloc_kunit_stream(struct kunit *test, const char *level)
-+{
-+	struct kunit_stream *kstream;
-+	struct kunit_resource *res;
-+
-+	res = kunit_alloc_resource(test,
-+				   kunit_stream_init,
-+				   kunit_stream_free,
-+				   test);
-+
-+	if (!res)
-+		return NULL;
-+
-+	kstream = res->allocation;
-+	kstream->level = level;
-+
-+	return kstream;
-+}
-diff --git a/kunit/test.c b/kunit/test.c
-index 53838f5394303..9404e4d34fa3f 100644
---- a/kunit/test.c
-+++ b/kunit/test.c
-@@ -139,6 +139,12 @@ static void kunit_print_test_case_ok_not_ok(struct kunit_case *test_case,
- 			      test_case->name);
- }
- 
-+void kunit_fail(struct kunit *test, struct kunit_stream *stream)
-+{
-+	kunit_set_success(test, false);
-+	kunit_stream_commit(stream);
-+}
-+
- void kunit_init_test(struct kunit *test, const char *name)
- {
- 	spin_lock_init(&test->lock);
--- 
-2.22.0.410.gd8fdbe21b5-goog
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+WyBVcHN0cmVhbSBjb21taXQgNjg5YTU4NjA1YjYzMTczYWNiMGE4Y2Y5NTRhZjZhOGY2MDQ0MGM5
+MyBdCgpNZW1vcnk6IDUwOTEwOEsvNTQyNjEySyBhdmFpbGFibGUgKDM4MzVLIGtlcm5lbCBjb2Rl
+LCA5MTlLIHJ3ZGF0YSwgMTAyOEsgcm9kYXRhLCAxMjlLIGluaXQsIDIxMUsgYnNzLCAzMzUwNEsg
+cmVzZXJ2ZWQsIDBLIGNtYS1yZXNlcnZlZCkKTlJfSVJRUzogMTUKY2xvY2tzb3VyY2U6IHRpbWVy
+OiBtYXNrOiAweGZmZmZmZmZmZmZmZmZmZmYgbWF4X2N5Y2xlczogMHgxY2Q0MmUyMDUsIG1heF9p
+ZGxlX25zOiA4ODE1OTA0MDQ0MjYgbnMKLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0tLS0tLS0t
+LS0tCldBUk5JTkc6IENQVTogMCBQSUQ6IDAgYXQga2VybmVsL3RpbWUvY2xvY2tldmVudHMuYzo0
+NTggY2xvY2tldmVudHNfcmVnaXN0ZXJfZGV2aWNlKzB4NzIvMHgxNDAKcG9zaXgtdGltZXIgY3B1
+bWFzayA9PSBjcHVfYWxsX21hc2ssIHVzaW5nIGNwdV9wb3NzaWJsZV9tYXNrIGluc3RlYWQKTW9k
+dWxlcyBsaW5rZWQgaW46CkNQVTogMCBQSUQ6IDAgQ29tbTogc3dhcHBlciBOb3QgdGFpbnRlZCA1
+LjEuMC1yYzQtMDAwNDgtZ2VkNzljYzg3MzAyYiAjNApTdGFjazoKIDYwNGViZGEwIDYwM2M1Mzcw
+IDYwNGViZTIwIDYwNDZmZDE3CiAwMDAwMDAwMCA2MDA2ZmNiYiA2MDRlYmRiMCA2MDNjNTNiNQog
+NjA0ZWJlMTAgNjAwM2JmYzQgNjA0ZWJkZDAgOTAwMDAwMWNhCkNhbGwgVHJhY2U6CiBbPDYwMDZm
+Y2JiPl0gPyBwcmludGsrMHgwLzB4OTQKIFs8NjAwODMxNjA+XSA/IGNsb2NrZXZlbnRzX3JlZ2lz
+dGVyX2RldmljZSsweDcyLzB4MTQwCiBbPDYwMDFmMTZlPl0gc2hvd19zdGFjaysweDEzYi8weDE1
+NQogWzw2MDNjNTM3MD5dID8gZHVtcF9zdGFja19wcmludF9pbmZvKzB4ZTIvMHhlYgogWzw2MDA2
+ZmNiYj5dID8gcHJpbnRrKzB4MC8weDk0CiBbPDYwM2M1M2I1Pl0gZHVtcF9zdGFjaysweDJhLzB4
+MmMKIFs8NjAwM2JmYzQ+XSBfX3dhcm4rMHgxMGUvMHgxM2UKIFs8NjAwNzAzMjA+XSA/IHZwcmlu
+dGtfZnVuYysweGM4LzB4Y2YKIFs8NjAwMzBmZDY+XSA/IGJsb2NrX3NpZ25hbHMrMHgwLzB4MTYK
+IFs8NjAwNmZjYmI+XSA/IHByaW50aysweDAvMHg5NAogWzw2MDAzYzA4Yj5dIHdhcm5fc2xvd3Bh
+dGhfZm10KzB4OTcvMHg5OQogWzw2MDAzMTFhMT5dID8gc2V0X3NpZ25hbHMrMHgwLzB4M2YKIFs8
+NjAwM2JmZjQ+XSA/IHdhcm5fc2xvd3BhdGhfZm10KzB4MC8weDk5CiBbPDYwMDg0MmNiPl0gPyB0
+aWNrX29uZXNob3RfbW9kZV9hY3RpdmUrMHg0NC8weDRmCiBbPDYwMDMwZmQ2Pl0gPyBibG9ja19z
+aWduYWxzKzB4MC8weDE2CiBbPDYwMDZmY2JiPl0gPyBwcmludGsrMHgwLzB4OTQKIFs8NjAwN2Qy
+ZDU+XSA/IF9fY2xvY2tzb3VyY2Vfc2VsZWN0KzB4MjAvMHgxYjEKIFs8NjAwMzBmZDY+XSA/IGJs
+b2NrX3NpZ25hbHMrMHgwLzB4MTYKIFs8NjAwNmZjYmI+XSA/IHByaW50aysweDAvMHg5NAogWzw2
+MDA4MzE2MD5dIGNsb2NrZXZlbnRzX3JlZ2lzdGVyX2RldmljZSsweDcyLzB4MTQwCiBbPDYwMDMx
+MTkyPl0gPyBnZXRfc2lnbmFscysweDAvMHhmCiBbPDYwMDMwZmQ2Pl0gPyBibG9ja19zaWduYWxz
+KzB4MC8weDE2CiBbPDYwMDZmY2JiPl0gPyBwcmludGsrMHgwLzB4OTQKIFs8NjAwMDJlZWM+XSB1
+bV90aW1lcl9zZXR1cCsweGM4LzB4Y2EKIFs8NjAwMDFiNTk+XSBzdGFydF9rZXJuZWwrMHg0N2Yv
+MHg1N2UKIFs8NjAwMDM1YmM+XSBzdGFydF9rZXJuZWxfcHJvYysweDQ5LzB4NGQKIFs8NjAwNmM0
+ODM+XSA/IGttc2dfZHVtcF9yZWdpc3RlcisweDgyLzB4OGEKIFs8NjAwMWRlNjI+XSBuZXdfdGhy
+ZWFkX2hhbmRsZXIrMHg4MS8weGIyCiBbPDYwMDAzNTcxPl0gPyBrbXNnX2R1bXBlcl9zdGRvdXRf
+aW5pdCsweDFhLzB4MWMKIFs8NjAwMjBjNzU+XSB1bWxfZmluaXNoc2V0dXArMHg1NC8weDU5Cgpy
+YW5kb206IGdldF9yYW5kb21fYnl0ZXMgY2FsbGVkIGZyb20gaW5pdF9vb3BzX2lkKzB4MjcvMHgz
+NCB3aXRoIGNybmdfaW5pdD0wCi0tLVsgZW5kIHRyYWNlIDAwMTczZDAxMTdhODhhY2IgXS0tLQpD
+YWxpYnJhdGluZyBkZWxheSBsb29wLi4uIDY5NDEuOTAgQm9nb01JUFMgKGxwaj0zNDcwOTUwNCkK
+ClNpZ25lZC1vZmYtYnk6IE1hY2llaiDFu2VuY3p5a293c2tpIDxtYXplQGdvb2dsZS5jb20+CkNj
+OiBKZWZmIERpa2UgPGpkaWtlQGFkZHRvaXQuY29tPgpDYzogUmljaGFyZCBXZWluYmVyZ2VyIDxy
+aWNoYXJkQG5vZC5hdD4KQ2M6IEFudG9uIEl2YW5vdiA8YW50b24uaXZhbm92QGNhbWJyaWRnZWdy
+ZXlzLmNvbT4KQ2M6IGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKQ2M6IGxpbnV4LWtlcm5l
+bEB2Z2VyLmtlcm5lbC5vcmcKClNpZ25lZC1vZmYtYnk6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmlj
+aGFyZEBub2QuYXQ+ClNpZ25lZC1vZmYtYnk6IFNhc2hhIExldmluIDxzYXNoYWxAa2VybmVsLm9y
+Zz4KLS0tCiBhcmNoL3VtL2tlcm5lbC90aW1lLmMgfCAyICstCiAxIGZpbGUgY2hhbmdlZCwgMSBp
+bnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKCmRpZmYgLS1naXQgYS9hcmNoL3VtL2tlcm5lbC90
+aW1lLmMgYi9hcmNoL3VtL2tlcm5lbC90aW1lLmMKaW5kZXggMDUyZGU0YzhhY2IyLi4wYzU3MmE0
+ODE1OGUgMTAwNjQ0Ci0tLSBhL2FyY2gvdW0va2VybmVsL3RpbWUuYworKysgYi9hcmNoL3VtL2tl
+cm5lbC90aW1lLmMKQEAgLTU2LDcgKzU2LDcgQEAgc3RhdGljIGludCBpdGltZXJfb25lX3Nob3Qo
+c3RydWN0IGNsb2NrX2V2ZW50X2RldmljZSAqZXZ0KQogc3RhdGljIHN0cnVjdCBjbG9ja19ldmVu
+dF9kZXZpY2UgdGltZXJfY2xvY2tldmVudCA9IHsKIAkubmFtZQkJCT0gInBvc2l4LXRpbWVyIiwK
+IAkucmF0aW5nCQkJPSAyNTAsCi0JLmNwdW1hc2sJCT0gY3B1X2FsbF9tYXNrLAorCS5jcHVtYXNr
+CQk9IGNwdV9wb3NzaWJsZV9tYXNrLAogCS5mZWF0dXJlcwkJPSBDTE9DS19FVlRfRkVBVF9QRVJJ
+T0RJQyB8CiAJCQkJICBDTE9DS19FVlRfRkVBVF9PTkVTSE9ULAogCS5zZXRfc3RhdGVfc2h1dGRv
+d24JPSBpdGltZXJfc2h1dGRvd24sCi0tIAoyLjIwLjEKCgoKCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11
+bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vbGludXgtdW0K
 
