@@ -1,20 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-lj1-x242.google.com ([2a00:1450:4864:20::242])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hYJeY-0003uv-IY
- for linux-um@lists.infradead.org; Wed, 05 Jun 2019 00:19:43 +0000
-Received: by mail-lj1-x242.google.com with SMTP id v18so342794ljh.6
- for <linux-um@lists.infradead.org>; Tue, 04 Jun 2019 17:19:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190514221711.248228-1-brendanhiggins@google.com>
- <20190514221711.248228-4-brendanhiggins@google.com>
- <20190517174300.7949F20848@mail.kernel.org>
-In-Reply-To: <20190517174300.7949F20848@mail.kernel.org>
+Received: from mail-qk1-x749.google.com ([2607:f8b0:4864:20::749])
+ by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
+ id 1hcmye-00078O-FJ
+ for linux-um@lists.infradead.org; Mon, 17 Jun 2019 08:26:58 +0000
+Received: by mail-qk1-x749.google.com with SMTP id v80so8525575qkb.19
+ for <linux-um@lists.infradead.org>; Mon, 17 Jun 2019 01:26:55 -0700 (PDT)
+Date: Mon, 17 Jun 2019 01:25:59 -0700
+In-Reply-To: <20190617082613.109131-1-brendanhiggins@google.com>
+Message-Id: <20190617082613.109131-5-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20190617082613.109131-1-brendanhiggins@google.com>
+Subject: [PATCH v5 04/18] kunit: test: add kunit_stream a std::stream like
+ logger
 From: Brendan Higgins <brendanhiggins@google.com>
-Date: Tue, 4 Jun 2019 17:19:28 -0700
-Message-ID: <CAFd5g45WrARi7eXsVKyq2eJH5j+wSrCCaHHSHrMptG7+MnNiTg@mail.gmail.com>
-Subject: Re: [PATCH v4 03/18] kunit: test: add string_stream a std::stream
- like string builder
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -27,46 +25,301 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Stephen Boyd <sboyd@kernel.org>
-Cc: Petr Mladek <pmladek@suse.com>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, Amir Goldstein <amir73il@gmail.com>, dri-devel <dri-devel@lists.freedesktop.org>, Sasha Levin <Alexander.Levin@microsoft.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Michael Ellerman <mpe@ellerman.id.au>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, shuah <shuah@kernel.org>, Rob Herring <robh@kernel.org>, linux-nvdimm <linux-nvdimm@lists.01.org>, Frank Rowand <frowand.list@gmail.com>, Knut Omang <knut.omang@oracle.com>, Kieran Bingham <kieran.bingham@ideasonboard.com>, wfg@linux.intel.com, Joel Stanley <joel@jms.id.au>, David Rientjes <rientjes@google.com>, Jeff Dike <jdike@addtoit.com>, Dan Carpenter <dan.carpenter@oracle.com>, devicetree <devicetree@vger.kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, "Bird, Timothy  <Tim.Bird@sony.com>, linux-um@lists.infradead.org, Steven Rostedt" <rostedt@goodmis.org>, Julia Lawall <julia.lawall@lip6.fr>, Josh Poimboeuf <jpoimboe@redhat.com>, kunit-dev@googlegroups.com, Theodore Ts'o <tytso@mit.edu>, Richard Weinberger <richard@nod.at>, Greg KH <gregkh@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@google.com>, linux-fsdevel@vger.kernel.org, Logan Gunthorpe <logang@deltatee.com>, Kevin Hilman <khilman@baylibre.com>
+To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-On Fri, May 17, 2019 at 10:43 AM Stephen Boyd <sboyd@kernel.org> wrote:
->
-> Quoting Brendan Higgins (2019-05-14 15:16:56)
-> > A number of test features need to do pretty complicated string printing
-> > where it may not be possible to rely on a single preallocated string
-> > with parameters.
-> >
-> > So provide a library for constructing the string as you go similar to
-> > C++'s std::string.
-> >
-> > Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-> > Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
->
-> Is there any reason why we can't use the seqfile API for this? These
-> both share a similar goal, formatting strings into a buffer to be read
-> later. Maybe some new APIs would be needed to extract the buffer
-> differently, but I hope we could share the code.
+A lot of the expectation and assertion infrastructure prints out fairly
+complicated test failure messages, so add a C++ style log library for
+for logging test results.
 
-I can see why you are asking. It seems as though they are trying to do
-*similar* things, and it seems possible that we might be able to
-extract some common functionality out of seq_file that could replace
-this; however, it looks like it would be require a significant
-refactoring of seq_file to separate out the file system specific bits
-from the more general stringbuilder functionality.
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+---
+Changes Since Last Revision:
+ - Renamed kunit_new_stream() to alloc_kunit_stream() as suggested by
+   Stephen Boyd.
+ - Removed the ability to set log level after allocating a stream, as
+   suggested by Stephen Boyd.
+ - Removed locking, as it is now unnecessary with the previous change.
+ - Made a number of other small changes like renaming parameters as
+   suggested by Stephen Boyd.
+---
+ include/kunit/kunit-stream.h |  81 +++++++++++++++++++++++
+ include/kunit/test.h         |   3 +
+ kunit/Makefile               |   3 +-
+ kunit/kunit-stream.c         | 123 +++++++++++++++++++++++++++++++++++
+ kunit/test.c                 |   6 ++
+ 5 files changed, 215 insertions(+), 1 deletion(-)
+ create mode 100644 include/kunit/kunit-stream.h
+ create mode 100644 kunit/kunit-stream.c
 
-In my opinion, a refactoring like this makes no sense in this
-patchset; it probably belongs in its own patchset (preferably as a
-follow on). I also am not sure if the FS people would appreciate
-indirection that serves them no benefit, but I can ask if you like.
+diff --git a/include/kunit/kunit-stream.h b/include/kunit/kunit-stream.h
+new file mode 100644
+index 0000000000000..a7b53eabf6be4
+--- /dev/null
++++ b/include/kunit/kunit-stream.h
+@@ -0,0 +1,81 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * C++ stream style string formatter and printer used in KUnit for outputting
++ * KUnit messages.
++ *
++ * Copyright (C) 2019, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++
++#ifndef _KUNIT_KUNIT_STREAM_H
++#define _KUNIT_KUNIT_STREAM_H
++
++#include <linux/types.h>
++#include <kunit/string-stream.h>
++
++struct kunit;
++
++/**
++ * struct kunit_stream - a std::stream style string builder.
++ *
++ * A std::stream style string builder. Allows messages to be built up and
++ * printed all at once.
++ */
++struct kunit_stream {
++	/* private: internal use only. */
++	struct kunit *test;
++	const char *level;
++	struct string_stream *internal_stream;
++};
++
++/**
++ * alloc_kunit_stream() - constructs a new &struct kunit_stream.
++ * @test: The test context object.
++ * @level: The log level at which to print out the message.
++ *
++ * Constructs a new test managed &struct kunit_stream.
++ */
++struct kunit_stream *alloc_kunit_stream(struct kunit *test, const char *level);
++
++/**
++ * kunit_stream_add(): adds the formatted input to the internal buffer.
++ * @kstream: the stream being operated on.
++ * @fmt: printf style format string to append to stream.
++ *
++ * Appends the formatted string, @fmt, to the internal buffer.
++ */
++void __printf(2, 3) kunit_stream_add(struct kunit_stream *kstream,
++				     const char *fmt, ...);
++
++/**
++ * kunit_stream_append(): appends the contents of @other to @kstream.
++ * @kstream: the stream to which @other is appended.
++ * @other: the stream whose contents are appended to @kstream.
++ *
++ * Appends the contents of @other to @kstream.
++ */
++void kunit_stream_append(struct kunit_stream *kstream,
++			 struct kunit_stream *other);
++
++/**
++ * kunit_stream_commit(): prints out the internal buffer to the user.
++ * @kstream: the stream being operated on.
++ *
++ * Outputs the contents of the internal buffer as a kunit_printk formatted
++ * output. KUNIT_STREAM ONLY OUTPUTS ITS BUFFER TO THE USER IF COMMIT IS
++ * CALLED!!! The reason for this is that it allows us to construct a message
++ * before we know whether we want to print it out; this can be extremely handy
++ * if there is information you might need for a failure message that is easiest
++ * to collect in the steps leading up to the actual check.
++ */
++void kunit_stream_commit(struct kunit_stream *kstream);
++
++/**
++ * kunit_stream_clear(): clears the internal buffer.
++ * @kstream: the stream being operated on.
++ *
++ * Clears the contents of the internal buffer.
++ */
++void kunit_stream_clear(struct kunit_stream *kstream);
++
++#endif /* _KUNIT_KUNIT_STREAM_H */
+diff --git a/include/kunit/test.h b/include/kunit/test.h
+index 27bd95b6b5523..83fb7ace1b320 100644
+--- a/include/kunit/test.h
++++ b/include/kunit/test.h
+@@ -11,6 +11,7 @@
+ 
+ #include <linux/types.h>
+ #include <linux/slab.h>
++#include <kunit/kunit-stream.h>
+ 
+ struct kunit_resource;
+ 
+@@ -172,6 +173,8 @@ struct kunit {
+ 
+ void kunit_init_test(struct kunit *test, const char *name);
+ 
++void kunit_fail(struct kunit *test, struct kunit_stream *stream);
++
+ int kunit_run_tests(struct kunit_module *module);
+ 
+ /**
+diff --git a/kunit/Makefile b/kunit/Makefile
+index 275b565a0e81f..6ddc622ee6b1c 100644
+--- a/kunit/Makefile
++++ b/kunit/Makefile
+@@ -1,2 +1,3 @@
+ obj-$(CONFIG_KUNIT) +=			test.o \
+-					string-stream.o
++					string-stream.o \
++					kunit-stream.o
+diff --git a/kunit/kunit-stream.c b/kunit/kunit-stream.c
+new file mode 100644
+index 0000000000000..8bea1f22eafb5
+--- /dev/null
++++ b/kunit/kunit-stream.c
+@@ -0,0 +1,123 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * C++ stream style string formatter and printer used in KUnit for outputting
++ * KUnit messages.
++ *
++ * Copyright (C) 2019, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++
++#include <kunit/test.h>
++#include <kunit/kunit-stream.h>
++#include <kunit/string-stream.h>
++
++void kunit_stream_add(struct kunit_stream *kstream, const char *fmt, ...)
++{
++	va_list args;
++	struct string_stream *stream = kstream->internal_stream;
++
++	va_start(args, fmt);
++
++	if (string_stream_vadd(stream, fmt, args) < 0)
++		kunit_err(kstream->test,
++			  "Failed to allocate fragment: %s\n",
++			  fmt);
++
++	va_end(args);
++}
++
++void kunit_stream_append(struct kunit_stream *kstream,
++				struct kunit_stream *other)
++{
++	struct string_stream *other_stream = other->internal_stream;
++	const char *other_content;
++
++	other_content = string_stream_get_string(other_stream);
++
++	if (!other_content) {
++		kunit_err(kstream->test,
++			  "Failed to get string from second argument for appending\n");
++		return;
++	}
++
++	kunit_stream_add(kstream, other_content);
++}
++
++void kunit_stream_clear(struct kunit_stream *kstream)
++{
++	string_stream_clear(kstream->internal_stream);
++}
++
++void kunit_stream_commit(struct kunit_stream *kstream)
++{
++	struct string_stream *stream = kstream->internal_stream;
++	struct string_stream_fragment *fragment;
++	struct kunit *test = kstream->test;
++	char *buf;
++
++	buf = string_stream_get_string(stream);
++	if (!buf) {
++		kunit_err(test,
++			  "Could not allocate buffer, dumping stream:\n");
++		list_for_each_entry(fragment, &stream->fragments, node) {
++			kunit_err(test, fragment->fragment);
++		}
++		kunit_err(test, "\n");
++		goto cleanup;
++	}
++
++	kunit_printk(kstream->level, test, buf);
++	kfree(buf);
++
++cleanup:
++	kunit_stream_clear(kstream);
++}
++
++static int kunit_stream_init(struct kunit_resource *res, void *context)
++{
++	struct kunit *test = context;
++	struct kunit_stream *stream;
++
++	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
++	if (!stream)
++		return -ENOMEM;
++
++	res->allocation = stream;
++	stream->test = test;
++	stream->internal_stream = alloc_string_stream(test);
++
++	if (!stream->internal_stream)
++		return -ENOMEM;
++
++	return 0;
++}
++
++static void kunit_stream_free(struct kunit_resource *res)
++{
++	struct kunit_stream *stream = res->allocation;
++
++	if (!string_stream_is_empty(stream->internal_stream)) {
++		kunit_err(stream->test,
++			  "End of test case reached with uncommitted stream entries\n");
++		kunit_stream_commit(stream);
++	}
++}
++
++struct kunit_stream *alloc_kunit_stream(struct kunit *test, const char *level)
++{
++	struct kunit_stream *kstream;
++	struct kunit_resource *res;
++
++	res = kunit_alloc_resource(test,
++				   kunit_stream_init,
++				   kunit_stream_free,
++				   test);
++
++	if (!res)
++		return NULL;
++
++	kstream = res->allocation;
++	kstream->level = level;
++
++	return kstream;
++}
+diff --git a/kunit/test.c b/kunit/test.c
+index 53838f5394303..9404e4d34fa3f 100644
+--- a/kunit/test.c
++++ b/kunit/test.c
+@@ -139,6 +139,12 @@ static void kunit_print_test_case_ok_not_ok(struct kunit_case *test_case,
+ 			      test_case->name);
+ }
+ 
++void kunit_fail(struct kunit *test, struct kunit_stream *stream)
++{
++	kunit_set_success(test, false);
++	kunit_stream_commit(stream);
++}
++
+ void kunit_init_test(struct kunit *test, const char *name)
+ {
+ 	spin_lock_init(&test->lock);
+-- 
+2.22.0.410.gd8fdbe21b5-goog
 
-> If it can't be used, can you please add the reasoning to the commit text
-> here?
-
-Will do.
-
-Thanks!
 
 _______________________________________________
 linux-um mailing list
