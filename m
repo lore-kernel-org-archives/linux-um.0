@@ -1,14 +1,11 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-f193.google.com ([209.85.214.193])
+Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hgFzU-0000Xs-2U
- for linux-um@lists.infradead.org; Wed, 26 Jun 2019 22:02:09 +0000
-Received: by mail-pl1-f193.google.com with SMTP id w24so89722plp.2
- for <linux-um@lists.infradead.org>; Wed, 26 Jun 2019 15:02:07 -0700 (PDT)
-Date: Wed, 26 Jun 2019 22:02:04 +0000
-From: Luis Chamberlain <mcgrof@kernel.org>
-Subject: Re: [PATCH v5 01/18] kunit: test: add KUnit test runner core
-Message-ID: <20190626220204.GZ19023@42.do-not-panic.com>
+ id 1hg1d2-00010f-GC
+ for linux-um@lists.infradead.org; Wed, 26 Jun 2019 06:42:02 +0000
+Received: by mail-pl1-x643.google.com with SMTP id bi6so846098plb.12
+ for <linux-um@lists.infradead.org>; Tue, 25 Jun 2019 23:42:00 -0700 (PDT)
+MIME-Version: 1.0
 References: <20190617082613.109131-1-brendanhiggins@google.com>
  <20190617082613.109131-2-brendanhiggins@google.com>
  <20190620001526.93426218BE@mail.kernel.org>
@@ -16,10 +13,11 @@ References: <20190617082613.109131-1-brendanhiggins@google.com>
  <20190625214427.GN19023@42.do-not-panic.com>
  <CAFd5g47OABqN127cPKqoCOA_Wr9w=LFh_0XkF7LXu2iY9sFkSw@mail.gmail.com>
  <20190625230253.GQ19023@42.do-not-panic.com>
- <CAFd5g45fSdpytudDyD3Yo1ti=kU_JJ6S9yz53_L=pnZTjQFU9A@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAFd5g45fSdpytudDyD3Yo1ti=kU_JJ6S9yz53_L=pnZTjQFU9A@mail.gmail.com>
+In-Reply-To: <20190625230253.GQ19023@42.do-not-panic.com>
+From: Brendan Higgins <brendanhiggins@google.com>
+Date: Tue, 25 Jun 2019 23:41:47 -0700
+Message-ID: <CAFd5g45fSdpytudDyD3Yo1ti=kU_JJ6S9yz53_L=pnZTjQFU9A@mail.gmail.com>
+Subject: Re: [PATCH v5 01/18] kunit: test: add KUnit test runner core
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -32,152 +30,115 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Brendan Higgins <brendanhiggins@google.com>
+To: Luis Chamberlain <mcgrof@kernel.org>
 Cc: Petr Mladek <pmladek@suse.com>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, Amir Goldstein <amir73il@gmail.com>, dri-devel <dri-devel@lists.freedesktop.org>, Sasha Levin <Alexander.Levin@microsoft.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Michael Ellerman <mpe@ellerman.id.au>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, shuah <shuah@kernel.org>, Rob Herring <robh@kernel.org>, linux-nvdimm <linux-nvdimm@lists.01.org>, Frank Rowand <frowand.list@gmail.com>, Knut Omang <knut.omang@oracle.com>, Kieran Bingham <kieran.bingham@ideasonboard.com>, wfg@linux.intel.com, Joel Stanley <joel@jms.id.au>, David Rientjes <rientjes@google.com>, Jeff Dike <jdike@addtoit.com>, Dan Carpenter <dan.carpenter@oracle.com>, devicetree <devicetree@vger.kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, "Bird, Timothy  <Tim.Bird@sony.com>, linux-um@lists.infradead.org, Steven Rostedt" <rostedt@goodmis.org>, Julia Lawall <julia.lawall@lip6.fr>, Josh Poimboeuf <jpoimboe@redhat.com>, kunit-dev@googlegroups.com, Theodore Ts'o <tytso@mit.edu>, Richard Weinberger <richard@nod.at>, Stephen Boyd <sboyd@kernel.org>, Greg KH <gregkh@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@google.com>, linux-fsdevel@vger.kernel.org, Logan Gunthorpe <logang@deltatee.com>, Kevin Hilman <khilman@baylibre.com>
 
-On Tue, Jun 25, 2019 at 11:41:47PM -0700, Brendan Higgins wrote:
-> On Tue, Jun 25, 2019 at 4:02 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
+On Tue, Jun 25, 2019 at 4:02 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
+>
+> On Tue, Jun 25, 2019 at 03:14:45PM -0700, Brendan Higgins wrote:
+> > On Tue, Jun 25, 2019 at 2:44 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
+> > > Since its a new architecture and since you seem to imply most tests
+> > > don't require locking or even IRQs disabled, I think its worth to
+> > > consider the impact of adding such extreme locking requirements for
+> > > an initial ramp up.
 > >
-> > On Tue, Jun 25, 2019 at 03:14:45PM -0700, Brendan Higgins wrote:
-> > > On Tue, Jun 25, 2019 at 2:44 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
-> > > > Since its a new architecture and since you seem to imply most tests
-> > > > don't require locking or even IRQs disabled, I think its worth to
-> > > > consider the impact of adding such extreme locking requirements for
-> > > > an initial ramp up.
-> > >
-> > > Fair enough, I can see the point of not wanting to use irq disabled
-> > > until we get someone complaining about it, but I think making it
-> > > thread safe is reasonable. It means there is one less thing to confuse
-> > > a KUnit user and the only penalty paid is some very minor performance.
-> >
-> > One reason I'm really excited about kunit is speed... so by all means I
-> > think we're at a good point to analyze performance optimizationsm if
-> > they do make sense.
-> 
-> Yeah, but I think there are much lower hanging fruit than this (as you
-> point out below). I am all for making/keeping KUnit super fast, but I
-> also don't want to waste time with premature optimizations and I think
-> having thread safe expectations and non-thread safe expectations hurts
-> usability.
-> 
-> Still, I am on board with making this a mutex instead of a spinlock for now.
-> 
-> > While on the topic of parallization, what about support for running
-> > different test cases in parallel? Or at the very least different kunit
-> > modules in parallel.  Few questions come up based on this prospect:
-> >
-> >   * Why not support parallelism from the start?
-> 
-> Just because it is more work and there isn't much to gain from it right now.
-> 
-> Some numbers:
-> I currently have a collection of 86 test cases in the branch that this
-> patchset is from.
+> > Fair enough, I can see the point of not wanting to use irq disabled
+> > until we get someone complaining about it, but I think making it
+> > thread safe is reasonable. It means there is one less thing to confuse
+> > a KUnit user and the only penalty paid is some very minor performance.
+>
+> One reason I'm really excited about kunit is speed... so by all means I
+> think we're at a good point to analyze performance optimizationsm if
+> they do make sense.
 
-Impressive, imagine 86 tests and kunit is not even *merged yet*.
+Yeah, but I think there are much lower hanging fruit than this (as you
+point out below). I am all for making/keeping KUnit super fast, but I
+also don't want to waste time with premature optimizations and I think
+having thread safe expectations and non-thread safe expectations hurts
+usability.
 
-> I turned on PRINTK_TIME and looked at the first
-> KUnit output and the last. On UML, start time was 0.090000, and end
-> time was 0.090000. Looks like sched_clock is not very good on UML.
+Still, I am on board with making this a mutex instead of a spinlock for now.
 
-Since you have a python thing that kicks tests, what if you just run
-time on it?
+> While on the topic of parallization, what about support for running
+> different test cases in parallel? Or at the very least different kunit
+> modules in parallel.  Few questions come up based on this prospect:
+>
+>   * Why not support parallelism from the start?
 
-> Still it seems quite likely that all of these tests run around 0.01
-> seconds or less on UML: I ran KUnit with only 2 test cases enabled
-> three times and got an average runtime of 1.55867 seconds with a
-> standard deviation of 0.0346747. I then ran it another three times
-> with all test cases enabled and got an average runtime of 1.535
-> seconds with a standard deviation of 0.0150997. The second average is
-> less, but that doesn't really mean anything because it is well within
-> one standard deviation with a very small sample size. Nevertheless, we
-> can conclude that the actual runtime of those 84 test cases is most
-> likely within one standard deviation, so on the order of 0.01 seconds.
-> 
-> On x86 running on QEMU, first message from KUnit was printed at
-> 0.194251 and the last KUnit message was printed at 0.340915, meaning
-> that all 86 test cases ran in about 0.146664 seconds.
+Just because it is more work and there isn't much to gain from it right now.
 
-Pretty impressive numbers. But can you blame me for expressing the
-desire to possibly being able to do better? I am not saying -- let's
-definitely have parallelism in place *now*. Just wanted to hear out
-tangibles of why we *don't* want it now.
+Some numbers:
+I currently have a collection of 86 test cases in the branch that this
+patchset is from. I turned on PRINTK_TIME and looked at the first
+KUnit output and the last. On UML, start time was 0.090000, and end
+time was 0.090000. Looks like sched_clock is not very good on UML.
 
-And.. also, since we are reviewing now, try to target so that the code
-can later likely get a face lift to support parallelism without
-requiring much changes.
+Still it seems quite likely that all of these tests run around 0.01
+seconds or less on UML: I ran KUnit with only 2 test cases enabled
+three times and got an average runtime of 1.55867 seconds with a
+standard deviation of 0.0346747. I then ran it another three times
+with all test cases enabled and got an average runtime of 1.535
+seconds with a standard deviation of 0.0150997. The second average is
+less, but that doesn't really mean anything because it is well within
+one standard deviation with a very small sample size. Nevertheless, we
+can conclude that the actual runtime of those 84 test cases is most
+likely within one standard deviation, so on the order of 0.01 seconds.
 
-> In any case, running KUnit tests in parallel is definitely something I
-> plan on adding it eventually, but it just doesn't really seem worth it
-> right now.
+On x86 running on QEMU, first message from KUnit was printed at
+0.194251 and the last KUnit message was printed at 0.340915, meaning
+that all 86 test cases ran in about 0.146664 seconds.
 
-Makes sense!
+In any case, running KUnit tests in parallel is definitely something I
+plan on adding it eventually, but it just doesn't really seem worth it
+right now. I find the incremental build time of the kernel to
+typically be between 3 and 30 seconds, and a clean build to be between
+30 seconds to several minutes, depending on the number of available
+cores, so I don't think most users would even notice the amount of
+runtime contributed by the actual unit tests until we start getting
+into the 1000s of test cases. I don't suspect it will become an issue
+until we get into the 10,000s of test cases. I think we are a pretty
+long way off from that.
 
-> I find the incremental build time of the kernel to
-> typically be between 3 and 30 seconds, and a clean build to be between
-> 30 seconds to several minutes, depending on the number of available
-> cores, so I don't think most users would even notice the amount of
-> runtime contributed by the actual unit tests until we start getting
-> into the 1000s of test cases. I don't suspect it will become an issue
-> until we get into the 10,000s of test cases. I think we are a pretty
-> long way off from that.
+>   * Are you opposed to eventually having this added? For instance, there is
+>     enough code on lib/test_kmod.c for batching tons of kthreads each
+>     one running its own thing for testing purposes which could be used
+>     as template.
 
-All makes sense, and agreed based on the numbers you are providing.
-Thanks for the details!
+I am not opposed to adding it eventually at all. I actually plan on
+doing so, just not in this patchset. There are a lot of additional
+features, improvements, and sugar that I really want to add, so much
+so that most of it doesn't belong in this patchset; I just think this
+is one of those things that belongs in a follow up. I tried to boil
+down this patchset to as small as I could while still being useful;
+this is basically an MVP. Maybe after this patchset gets merged I
+should post a list of things I have ready for review, or would like to
+work on, and people can comment on what things they want to see next.
 
-> >   * Are you opposed to eventually having this added? For instance, there is
-> >     enough code on lib/test_kmod.c for batching tons of kthreads each
-> >     one running its own thing for testing purposes which could be used
-> >     as template.
-> 
-> I am not opposed to adding it eventually at all. I actually plan on
-> doing so, just not in this patchset. There are a lot of additional
-> features, improvements, and sugar that I really want to add, so much
-> so that most of it doesn't belong in this patchset; I just think this
-> is one of those things that belongs in a follow up. I tried to boil
-> down this patchset to as small as I could while still being useful;
-> this is basically an MVP. Maybe after this patchset gets merged I
-> should post a list of things I have ready for review, or would like to
-> work on, and people can comment on what things they want to see next.
+>   * If we eventually *did* support it:
+>     - Would logs be skewed?
 
-Groovy.
+Probably, before I went with the TAP approach, I was tagging each
+message with the test case it came from and I could have parsed it and
+assembled a coherent view of the logs using that; now that I am using
+TAP conforming output, that won't work. I haven't really thought too
+hard about how to address it, but there are ways. For the UML users, I
+am planning on adding a feature to guarantee hermeticity between tests
+running in different modules by adding a feature that allows a single
+kernel to be built with all tests included, and then determine which
+tests get run by passing in command line arguments or something. This
+way you can get the isolation from running tests in separate
+environments without increasing the build cost. We could also use this
+method to achieve parallelism by dispatching multiple kernels at once.
+That only works for UML, but I imagine you could do something similar
+for users running tests under qemu.
 
-> >   * If we eventually *did* support it:
-> >     - Would logs be skewed?
-> 
-> Probably, before I went with the TAP approach, I was tagging each
-> message with the test case it came from and I could have parsed it and
-> assembled a coherent view of the logs using that; now that I am using
-> TAP conforming output, that won't work. I haven't really thought too
-> hard about how to address it, but there are ways. For the UML users, I
-> am planning on adding a feature to guarantee hermeticity between tests
-> running in different modules by adding a feature that allows a single
-> kernel to be built with all tests included, and then determine which
-> tests get run by passing in command line arguments or something. This
-> way you can get the isolation from running tests in separate
-> environments without increasing the build cost. We could also use this
-> method to achieve parallelism by dispatching multiple kernels at once.
+>     - Could we have a way to query: give me log for only kunit module
+>       named "foo"?
 
-Indeed. Or... wait for it... containers... There tools for these sorts
-of things already. And I'm evaluating such prospects now for some other
-tests I care for.
+Yeah, I think that would make sense as part of the hermeticity thing I
+mentioned above.
 
-> That only works for UML, but I imagine you could do something similar
-> for users running tests under qemu.
-
-Or containers.
-
-> >     - Could we have a way to query: give me log for only kunit module
-> >       named "foo"?
-> 
-> Yeah, I think that would make sense as part of the hermeticity thing I
-> mentioned above.
-> 
-> Hope that seems reasonable!
-
-All groovy. Thanks for the details!
-
-  Luis
+Hope that seems reasonable!
 
 _______________________________________________
 linux-um mailing list
