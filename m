@@ -1,17 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-vk1-xa49.google.com ([2607:f8b0:4864:20::a49])
+Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hcmym-0007C3-GK
- for linux-um@lists.infradead.org; Mon, 17 Jun 2019 08:27:06 +0000
-Received: by mail-vk1-xa49.google.com with SMTP id d143so4472490vkf.10
- for <linux-um@lists.infradead.org>; Mon, 17 Jun 2019 01:27:03 -0700 (PDT)
-Date: Mon, 17 Jun 2019 01:26:01 -0700
-In-Reply-To: <20190617082613.109131-1-brendanhiggins@google.com>
-Message-Id: <20190617082613.109131-7-brendanhiggins@google.com>
-Mime-Version: 1.0
+ id 1hg2kF-0004tp-3t
+ for linux-um@lists.infradead.org; Wed, 26 Jun 2019 07:53:32 +0000
+Received: by mail-pl1-x643.google.com with SMTP id ay6so962713plb.9
+ for <linux-um@lists.infradead.org>; Wed, 26 Jun 2019 00:53:30 -0700 (PDT)
+MIME-Version: 1.0
 References: <20190617082613.109131-1-brendanhiggins@google.com>
-Subject: [PATCH v5 06/18] kbuild: enable building KUnit
+ <20190617082613.109131-8-brendanhiggins@google.com>
+ <20190625232249.GS19023@42.do-not-panic.com>
+In-Reply-To: <20190625232249.GS19023@42.do-not-panic.com>
 From: Brendan Higgins <brendanhiggins@google.com>
+Date: Wed, 26 Jun 2019 00:53:18 -0700
+Message-ID: <CAFd5g46mnd=a0OqFCx0hOHX+DxW+5yA2LXH5Q0gEg8yUZK=4FA@mail.gmail.com>
+Subject: Re: [PATCH v5 07/18] kunit: test: add initial tests
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,47 +26,48 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Petr Mladek <pmladek@suse.com>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, Amir Goldstein <amir73il@gmail.com>, dri-devel <dri-devel@lists.freedesktop.org>, Sasha Levin <Alexander.Levin@microsoft.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Michael Ellerman <mpe@ellerman.id.au>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, shuah <shuah@kernel.org>, Rob Herring <robh@kernel.org>, linux-nvdimm <linux-nvdimm@lists.01.org>, Frank Rowand <frowand.list@gmail.com>, Knut Omang <knut.omang@oracle.com>, Kieran Bingham <kieran.bingham@ideasonboard.com>, wfg@linux.intel.com, Joel Stanley <joel@jms.id.au>, David Rientjes <rientjes@google.com>, Jeff Dike <jdike@addtoit.com>, Dan Carpenter <dan.carpenter@oracle.com>, devicetree <devicetree@vger.kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, "Bird, Timothy  <Tim.Bird@sony.com>, linux-um@lists.infradead.org, Steven Rostedt" <rostedt@goodmis.org>, Julia Lawall <julia.lawall@lip6.fr>, Josh Poimboeuf <jpoimboe@redhat.com>, kunit-dev@googlegroups.com, Theodore Ts'o <tytso@mit.edu>, Richard Weinberger <richard@nod.at>, Stephen Boyd <sboyd@kernel.org>, Greg KH <gregkh@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@google.com>, linux-fsdevel@vger.kernel.org, Logan Gunthorpe <logang@deltatee.com>, Kevin Hilman <khilman@baylibre.com>
 
-KUnit is a new unit testing framework for the kernel and when used is
-built into the kernel as a part of it. Add KUnit to the root Kconfig and
-Makefile to allow it to be actually built.
+On Tue, Jun 25, 2019 at 4:22 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
+>
+> On Mon, Jun 17, 2019 at 01:26:02AM -0700, Brendan Higgins wrote:
+> > diff --git a/kunit/example-test.c b/kunit/example-test.c
+> > new file mode 100644
+> > index 0000000000000..f44b8ece488bb
+> > --- /dev/null
+> > +++ b/kunit/example-test.c
+>
+> <-- snip -->
+>
+> > +/*
+> > + * This defines a suite or grouping of tests.
+> > + *
+> > + * Test cases are defined as belonging to the suite by adding them to
+> > + * `kunit_cases`.
+> > + *
+> > + * Often it is desirable to run some function which will set up things which
+> > + * will be used by every test; this is accomplished with an `init` function
+> > + * which runs before each test case is invoked. Similarly, an `exit` function
+> > + * may be specified which runs after every test case and can be used to for
+> > + * cleanup. For clarity, running tests in a test module would behave as follows:
+> > + *
+>
+> To be clear this is not the kernel module init, but rather the kunit
+> module init. I think using kmodule would make this clearer to a reader.
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
----
- Kconfig  | 2 ++
- Makefile | 2 +-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+Seems reasonable. Will fix in next revision.
 
-diff --git a/Kconfig b/Kconfig
-index 48a80beab6853..10428501edb78 100644
---- a/Kconfig
-+++ b/Kconfig
-@@ -30,3 +30,5 @@ source "crypto/Kconfig"
- source "lib/Kconfig"
- 
- source "lib/Kconfig.debug"
-+
-+source "kunit/Kconfig"
-diff --git a/Makefile b/Makefile
-index b81e172612507..4b544a8eebee4 100644
---- a/Makefile
-+++ b/Makefile
-@@ -991,7 +991,7 @@ endif
- PHONY += prepare0
- 
- ifeq ($(KBUILD_EXTMOD),)
--core-y		+= kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ block/
-+core-y		+= kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ block/ kunit/
- 
- vmlinux-dirs	:= $(patsubst %/,%,$(filter %/, $(init-y) $(init-m) \
- 		     $(core-y) $(core-m) $(drivers-y) $(drivers-m) \
--- 
-2.22.0.410.gd8fdbe21b5-goog
-
+> > + * module.init(test);
+> > + * module.test_case[0](test);
+> > + * module.exit(test);
+> > + * module.init(test);
+> > + * module.test_case[1](test);
+> > + * module.exit(test);
+> > + * ...;
+> > + */
+>
+>   Luis
 
 _______________________________________________
 linux-um mailing list
