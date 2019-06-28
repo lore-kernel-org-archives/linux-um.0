@@ -1,15 +1,24 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from mail-pl1-f193.google.com ([209.85.214.193])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hbLIb-0002ZD-RU
- for linux-um@lists.infradead.org; Thu, 13 Jun 2019 08:41:35 +0000
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 4.19 044/118] uml: fix a boot splat wrt use of cpu_all_mask
-Date: Thu, 13 Jun 2019 10:33:02 +0200
-Message-Id: <20190613075646.294833490@linuxfoundation.org>
-In-Reply-To: <20190613075643.642092651@linuxfoundation.org>
-References: <20190613075643.642092651@linuxfoundation.org>
+ id 1hgyYp-0005s7-1m
+ for linux-um@lists.infradead.org; Fri, 28 Jun 2019 21:37:36 +0000
+Received: by mail-pl1-f193.google.com with SMTP id bh12so3937637plb.4
+ for <linux-um@lists.infradead.org>; Fri, 28 Jun 2019 14:37:34 -0700 (PDT)
+Date: Fri, 28 Jun 2019 21:37:31 +0000
+From: Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: [PATCH v5 17/18] kernel/sysctl-test: Add null pointer test for
+ sysctl.c:proc_dointvec()
+Message-ID: <20190628213731.GJ19023@42.do-not-panic.com>
+References: <20190617082613.109131-1-brendanhiggins@google.com>
+ <20190617082613.109131-18-brendanhiggins@google.com>
+ <20190626021744.GU19023@42.do-not-panic.com>
+ <CAAXuY3p+kVhjQ4LYtzormqVcH2vKu1abc_K9Z0XY=JX=bp8NcQ@mail.gmail.com>
+ <20190627061021.GE19023@42.do-not-panic.com>
+ <CAFd5g45VJ9yfuESUc=E0ydJyN+mk1b1kyHSCYvO2x9KPC7+3GQ@mail.gmail.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CAFd5g45VJ9yfuESUc=E0ydJyN+mk1b1kyHSCYvO2x9KPC7+3GQ@mail.gmail.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,68 +27,115 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, stable@vger.kernel.org, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: Brendan Higgins <brendanhiggins@google.com>, Dominik Brodowski <linux@dominikbrodowski.net>
+Cc: Petr Mladek <pmladek@suse.com>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, Amir Goldstein <amir73il@gmail.com>, dri-devel <dri-devel@lists.freedesktop.org>, Sasha Levin <Alexander.Levin@microsoft.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Michael Ellerman <mpe@ellerman.id.au>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, shuah <shuah@kernel.org>, Rob Herring <robh@kernel.org>, linux-nvdimm <linux-nvdimm@lists.01.org>, Frank Rowand <frowand.list@gmail.com>, Knut Omang <knut.omang@oracle.com>, Kieran Bingham <kieran.bingham@ideasonboard.com>, wfg@linux.intel.com, "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>, David Rientjes <rientjes@google.com>, Iurii Zaikin <yzaikin@google.com>, Jeff Dike <jdike@addtoit.com>, Dan Carpenter <dan.carpenter@oracle.com>, Joel Stanley <joel@jms.id.au>, devicetree <devicetree@vger.kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, "Bird," Timothy" <Tim.Bird@sony.com>, Kees Cook <keescook@google.com>," linux-um@lists.infradead.org, Steven Rostedt <rostedt@goodmis.org>, Julia Lawall <julia.lawall@lip6.fr>, Josh Poimboeuf <jpoimboe@redhat.com>, kunit-dev@googlegroups.com, Theodore Ts'o <tytso@mit.edu>, Richard Weinberger <richard@nod.at>, Stephen Boyd <sboyd@kernel.org>, Greg KH <gregkh@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Daniel Vetter <daniel@ffwll.ch>, linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org, Logan Gunthorpe <logang@deltatee.com>, Kevin Hilman <khilman@baylibre.com>
 
-WyBVcHN0cmVhbSBjb21taXQgNjg5YTU4NjA1YjYzMTczYWNiMGE4Y2Y5NTRhZjZhOGY2MDQ0MGM5
-MyBdCgpNZW1vcnk6IDUwOTEwOEsvNTQyNjEySyBhdmFpbGFibGUgKDM4MzVLIGtlcm5lbCBjb2Rl
-LCA5MTlLIHJ3ZGF0YSwgMTAyOEsgcm9kYXRhLCAxMjlLIGluaXQsIDIxMUsgYnNzLCAzMzUwNEsg
-cmVzZXJ2ZWQsIDBLIGNtYS1yZXNlcnZlZCkKTlJfSVJRUzogMTUKY2xvY2tzb3VyY2U6IHRpbWVy
-OiBtYXNrOiAweGZmZmZmZmZmZmZmZmZmZmYgbWF4X2N5Y2xlczogMHgxY2Q0MmUyMDUsIG1heF9p
-ZGxlX25zOiA4ODE1OTA0MDQ0MjYgbnMKLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0tLS0tLS0t
-LS0tCldBUk5JTkc6IENQVTogMCBQSUQ6IDAgYXQga2VybmVsL3RpbWUvY2xvY2tldmVudHMuYzo0
-NTggY2xvY2tldmVudHNfcmVnaXN0ZXJfZGV2aWNlKzB4NzIvMHgxNDAKcG9zaXgtdGltZXIgY3B1
-bWFzayA9PSBjcHVfYWxsX21hc2ssIHVzaW5nIGNwdV9wb3NzaWJsZV9tYXNrIGluc3RlYWQKTW9k
-dWxlcyBsaW5rZWQgaW46CkNQVTogMCBQSUQ6IDAgQ29tbTogc3dhcHBlciBOb3QgdGFpbnRlZCA1
-LjEuMC1yYzQtMDAwNDgtZ2VkNzljYzg3MzAyYiAjNApTdGFjazoKIDYwNGViZGEwIDYwM2M1Mzcw
-IDYwNGViZTIwIDYwNDZmZDE3CiAwMDAwMDAwMCA2MDA2ZmNiYiA2MDRlYmRiMCA2MDNjNTNiNQog
-NjA0ZWJlMTAgNjAwM2JmYzQgNjA0ZWJkZDAgOTAwMDAwMWNhCkNhbGwgVHJhY2U6CiBbPDYwMDZm
-Y2JiPl0gPyBwcmludGsrMHgwLzB4OTQKIFs8NjAwODMxNjA+XSA/IGNsb2NrZXZlbnRzX3JlZ2lz
-dGVyX2RldmljZSsweDcyLzB4MTQwCiBbPDYwMDFmMTZlPl0gc2hvd19zdGFjaysweDEzYi8weDE1
-NQogWzw2MDNjNTM3MD5dID8gZHVtcF9zdGFja19wcmludF9pbmZvKzB4ZTIvMHhlYgogWzw2MDA2
-ZmNiYj5dID8gcHJpbnRrKzB4MC8weDk0CiBbPDYwM2M1M2I1Pl0gZHVtcF9zdGFjaysweDJhLzB4
-MmMKIFs8NjAwM2JmYzQ+XSBfX3dhcm4rMHgxMGUvMHgxM2UKIFs8NjAwNzAzMjA+XSA/IHZwcmlu
-dGtfZnVuYysweGM4LzB4Y2YKIFs8NjAwMzBmZDY+XSA/IGJsb2NrX3NpZ25hbHMrMHgwLzB4MTYK
-IFs8NjAwNmZjYmI+XSA/IHByaW50aysweDAvMHg5NAogWzw2MDAzYzA4Yj5dIHdhcm5fc2xvd3Bh
-dGhfZm10KzB4OTcvMHg5OQogWzw2MDAzMTFhMT5dID8gc2V0X3NpZ25hbHMrMHgwLzB4M2YKIFs8
-NjAwM2JmZjQ+XSA/IHdhcm5fc2xvd3BhdGhfZm10KzB4MC8weDk5CiBbPDYwMDg0MmNiPl0gPyB0
-aWNrX29uZXNob3RfbW9kZV9hY3RpdmUrMHg0NC8weDRmCiBbPDYwMDMwZmQ2Pl0gPyBibG9ja19z
-aWduYWxzKzB4MC8weDE2CiBbPDYwMDZmY2JiPl0gPyBwcmludGsrMHgwLzB4OTQKIFs8NjAwN2Qy
-ZDU+XSA/IF9fY2xvY2tzb3VyY2Vfc2VsZWN0KzB4MjAvMHgxYjEKIFs8NjAwMzBmZDY+XSA/IGJs
-b2NrX3NpZ25hbHMrMHgwLzB4MTYKIFs8NjAwNmZjYmI+XSA/IHByaW50aysweDAvMHg5NAogWzw2
-MDA4MzE2MD5dIGNsb2NrZXZlbnRzX3JlZ2lzdGVyX2RldmljZSsweDcyLzB4MTQwCiBbPDYwMDMx
-MTkyPl0gPyBnZXRfc2lnbmFscysweDAvMHhmCiBbPDYwMDMwZmQ2Pl0gPyBibG9ja19zaWduYWxz
-KzB4MC8weDE2CiBbPDYwMDZmY2JiPl0gPyBwcmludGsrMHgwLzB4OTQKIFs8NjAwMDJlZWM+XSB1
-bV90aW1lcl9zZXR1cCsweGM4LzB4Y2EKIFs8NjAwMDFiNTk+XSBzdGFydF9rZXJuZWwrMHg0N2Yv
-MHg1N2UKIFs8NjAwMDM1YmM+XSBzdGFydF9rZXJuZWxfcHJvYysweDQ5LzB4NGQKIFs8NjAwNmM0
-ODM+XSA/IGttc2dfZHVtcF9yZWdpc3RlcisweDgyLzB4OGEKIFs8NjAwMWRlNjI+XSBuZXdfdGhy
-ZWFkX2hhbmRsZXIrMHg4MS8weGIyCiBbPDYwMDAzNTcxPl0gPyBrbXNnX2R1bXBlcl9zdGRvdXRf
-aW5pdCsweDFhLzB4MWMKIFs8NjAwMjBjNzU+XSB1bWxfZmluaXNoc2V0dXArMHg1NC8weDU5Cgpy
-YW5kb206IGdldF9yYW5kb21fYnl0ZXMgY2FsbGVkIGZyb20gaW5pdF9vb3BzX2lkKzB4MjcvMHgz
-NCB3aXRoIGNybmdfaW5pdD0wCi0tLVsgZW5kIHRyYWNlIDAwMTczZDAxMTdhODhhY2IgXS0tLQpD
-YWxpYnJhdGluZyBkZWxheSBsb29wLi4uIDY5NDEuOTAgQm9nb01JUFMgKGxwaj0zNDcwOTUwNCkK
-ClNpZ25lZC1vZmYtYnk6IE1hY2llaiDFu2VuY3p5a293c2tpIDxtYXplQGdvb2dsZS5jb20+CkNj
-OiBKZWZmIERpa2UgPGpkaWtlQGFkZHRvaXQuY29tPgpDYzogUmljaGFyZCBXZWluYmVyZ2VyIDxy
-aWNoYXJkQG5vZC5hdD4KQ2M6IEFudG9uIEl2YW5vdiA8YW50b24uaXZhbm92QGNhbWJyaWRnZWdy
-ZXlzLmNvbT4KQ2M6IGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKQ2M6IGxpbnV4LWtlcm5l
-bEB2Z2VyLmtlcm5lbC5vcmcKClNpZ25lZC1vZmYtYnk6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmlj
-aGFyZEBub2QuYXQ+ClNpZ25lZC1vZmYtYnk6IFNhc2hhIExldmluIDxzYXNoYWxAa2VybmVsLm9y
-Zz4KLS0tCiBhcmNoL3VtL2tlcm5lbC90aW1lLmMgfCAyICstCiAxIGZpbGUgY2hhbmdlZCwgMSBp
-bnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKCmRpZmYgLS1naXQgYS9hcmNoL3VtL2tlcm5lbC90
-aW1lLmMgYi9hcmNoL3VtL2tlcm5lbC90aW1lLmMKaW5kZXggMDUyZGU0YzhhY2IyLi4wYzU3MmE0
-ODE1OGUgMTAwNjQ0Ci0tLSBhL2FyY2gvdW0va2VybmVsL3RpbWUuYworKysgYi9hcmNoL3VtL2tl
-cm5lbC90aW1lLmMKQEAgLTU2LDcgKzU2LDcgQEAgc3RhdGljIGludCBpdGltZXJfb25lX3Nob3Qo
-c3RydWN0IGNsb2NrX2V2ZW50X2RldmljZSAqZXZ0KQogc3RhdGljIHN0cnVjdCBjbG9ja19ldmVu
-dF9kZXZpY2UgdGltZXJfY2xvY2tldmVudCA9IHsKIAkubmFtZQkJCT0gInBvc2l4LXRpbWVyIiwK
-IAkucmF0aW5nCQkJPSAyNTAsCi0JLmNwdW1hc2sJCT0gY3B1X2FsbF9tYXNrLAorCS5jcHVtYXNr
-CQk9IGNwdV9wb3NzaWJsZV9tYXNrLAogCS5mZWF0dXJlcwkJPSBDTE9DS19FVlRfRkVBVF9QRVJJ
-T0RJQyB8CiAJCQkJICBDTE9DS19FVlRfRkVBVF9PTkVTSE9ULAogCS5zZXRfc3RhdGVfc2h1dGRv
-d24JPSBpdGltZXJfc2h1dGRvd24sCi0tIAoyLjIwLjEKCgoKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11
-bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vbGludXgtdW0K
+On Fri, Jun 28, 2019 at 01:01:54AM -0700, Brendan Higgins wrote:
+> On Wed, Jun 26, 2019 at 11:10 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
+> >
+> > On Wed, Jun 26, 2019 at 09:07:43PM -0700, Iurii Zaikin wrote:
+> > > On Tue, Jun 25, 2019 at 7:17 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
+> > > > > +static void sysctl_test_dointvec_table_maxlen_unset(struct kunit *test)
+> > > > > +{
+> > > > > +     struct ctl_table table = {
+> > > > > +             .procname = "foo",
+> > > > > +             .data           = &test_data.int_0001,
+> > > > > +             .maxlen         = 0,
+> > > > > +             .mode           = 0644,
+> > > > > +             .proc_handler   = proc_dointvec,
+> > > > > +             .extra1         = &i_zero,
+> > > > > +             .extra2         = &i_one_hundred,
+> > > > > +     };
+> > > > > +     void  *buffer = kunit_kzalloc(test, sizeof(int), GFP_USER);
+> > > > > +     size_t len;
+> > > > > +     loff_t pos;
+> > > > > +
+> > > > > +     len = 1234;
+> > > > > +     KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, 0, buffer, &len, &pos));
+> > > > > +     KUNIT_EXPECT_EQ(test, (size_t)0, len);
+> > > > > +     len = 1234;
+> > > > > +     KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, 1, buffer, &len, &pos));
+> > > > > +     KUNIT_EXPECT_EQ(test, (size_t)0, len);
+> > > > > +}
+> > > >
+> > > > In a way this is also testing for general kernel API changes. This is and the
+> > > > last one were good examples. So this is not just testing functionality
+> > > > here. There is no wrong or write answer if 0 or -EINVAL was returned
+> > > > other than the fact that we have been doing this for years.
+> > > >
+> > > > Its a perhaps small but important difference for some of these tests.  I
+> > > > *do* think its worth clarifying through documentation which ones are
+> > > > testing for API consistency Vs proper correctness.
+> > >
+> > > You make a good point that the test codifies the existing behavior of
+> > > the function in lieu of formal documentation.  However, the test cases
+> > > were derived from examining the source code of the function under test
+> > > and attempting to cover all branches. The assertions were added only
+> > > for the values that appeared to be set deliberately in the
+> > > implementation. And it makes sense to me to test that the code does
+> > > exactly what the implementation author intended.
+> >
+> > I'm not arguing against adding them. I'm suggesting that it is different
+> > to test for API than for correctness of intended functionality, and
+> > it would be wise to make it clear which test cases are for API and which
+> > for correctness.
+> 
+> I see later on that some of the API stuff you are talking about is
+> public APIs from the standpoint of user (outside of LInux) visible.
+
+Right, UAPI.
+
+> To
+> be clear, is that what you mean by public APIs throughout, or would
+> you distinguish between correctness tests, internal API tests, and
+> external API tests?
+
+I would definitely recommend distingishing between all of these.
+Kernel API (or just call it API), UAPI, and correctness.
+
+> > This will come up later for other kunit tests and it would be great
+> > to set precendent so that other kunit tests can follow similar
+> > practices to ensure its clear what is API realted Vs correctness of
+> > intended functionality.
+> >
+> > In fact, I'm not yet sure if its possible to test public kernel API to
+> > userspace with kunit, but if it is possible... well, that could make
+> > linux-api folks happy as they could enable us to codify interpreation of
+> > what is expected into kunit test cases, and we'd ensure that the
+> > codified interpretation is not only documented in man pages but also
+> > through formal kunit test cases.
+> >
+> > A regression in linux-api then could be formalized through a proper
+> > kunit tests case. And if an API evolves, it would force developers to
+> > update the respective kunit which codifies that contract.
+> 
+> Yep, I think that is long term hope. Some of the file system interface
+> stuff that requires a filesystem to be mounted somewhere might get a
+> little weird/difficult, but I suspect we should be able to do it
+> eventually. I mean it's all just C code right? Should mostly boil down
+> to someone figuring out how to do it the first time.
+
+There used to be hacks in the kernel the call syscalls in a few places.
+This was cleaned up and addressed via Dominik Brodowski's series last
+year in March:
+
+http://lkml.kernel.org/r/20180325162527.GA17492@light.dominikbrodowski.net
+
+An example commit: d300b610812f3 ("kernel: use kernel_wait4() instead of
+sys_wait4()").
+
+So it would seem the work is done, and you'd just have to use the
+respective exposed kernel_syscallname() calls, or add some if you
+want to test a specific syscall in kernel space.
+
+  Luis
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
