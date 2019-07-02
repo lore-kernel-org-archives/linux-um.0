@@ -1,18 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hiZEQ-0003YA-D5
- for linux-um@lists.infradead.org; Wed, 03 Jul 2019 06:59:08 +0000
-Message-ID: <cc17f3a1c5af71a2e7f1e94cc7c553a4084293ca.camel@sipsolutions.net>
-Subject: Re: [PATCH v3 2/2] arch: um: support time travel mode
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Wed, 03 Jul 2019 08:58:56 +0200
-In-Reply-To: <46402789.25380.1562104450930.JavaMail.zimbra@nod.at>
+ id 1hiQjI-0007Ks-Nc
+ for linux-um@lists.infradead.org; Tue, 02 Jul 2019 21:54:26 +0000
+Date: Tue, 2 Jul 2019 23:54:10 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <46402789.25380.1562104450930.JavaMail.zimbra@nod.at>
+In-Reply-To: <20190527083427.6293-2-johannes@sipsolutions.net>
 References: <20190527083427.6293-1-johannes@sipsolutions.net>
  <20190527083427.6293-2-johannes@sipsolutions.net>
- <46402789.25380.1562104450930.JavaMail.zimbra@nod.at>
-Mime-Version: 1.0
+Subject: Re: [PATCH v3 2/2] arch: um: support time travel mode
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -21,79 +19,104 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard@nod.at>
-Cc: j@w1.fi, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, anton ivanov <anton.ivanov@cambridgegreys.com>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: j@w1.fi, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, Johannes Berg <johannes.berg@intel.com>, anton ivanov <anton.ivanov@cambridgegreys.com>
 
-On Tue, 2019-07-02 at 23:54 +0200, Richard Weinberger wrote:
-> 
-> This breaks the build for CONFIG_UML_TIME_TRAVEL_SUPPORT=n
-
-D'oh. I was sure I tested that, but I guess not on the last version or
-something... Sorry.
-
-> What do you think about this followup fixup?
-> I committed your patch already to linux-next.
-> So, no need to resend. 
-> 
-> diff --git a/arch/um/include/shared/timer-internal.h b/arch/um/include/shared/timer-internal.h
-> index 5ca74f415d52..c15883b30c19 100644
-> --- a/arch/um/include/shared/timer-internal.h
-> +++ b/arch/um/include/shared/timer-internal.h
-> @@ -25,7 +25,7 @@ enum time_travel_timer_mode {
->  #ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
->  extern enum time_travel_mode time_travel_mode;
->  extern unsigned long long time_travel_time;
-> -extern enum time_travel_timer_mode time_travel_timer_mode;
-> +extern enum time_travel_timer_mode tt_timer_mode;
->  extern unsigned long long time_travel_timer_expiry;
->  extern unsigned long long time_travel_timer_interval;
-
-Not sure renaming just this one makes sense (vs. the two others
-above/below), but your call, I don't really care.
-
-FWIW, my intent (after the comments wrt. ifdefs) had been to do it like
-this:
-
-diff --git a/arch/um/include/shared/timer-internal.h
-b/arch/um/include/shared/timer-internal.h
-index 5ca74f415d52..8574338bf23b 100644
---- a/arch/um/include/shared/timer-internal.h
-+++ b/arch/um/include/shared/timer-internal.h
-@@ -54,6 +54,8 @@ static inline void time_travel_set_timer(enum
-time_travel_timer_mode mode,
- 					 unsigned long long expiry)
- {
- }
-+
-+#define time_travel_timer_mode TT_TMR_DISABLED
- #endif
- 
- #endif
-diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index def2091697ca..67c0d1a860e9 100644
---- a/arch/um/kernel/process.c
-+++ b/arch/um/kernel/process.c
-@@ -213,7 +213,7 @@ static void time_travel_sleep(unsigned long long
-duration)
- 	if (time_travel_timer_mode != TT_TMR_DISABLED ||
- 	    time_travel_timer_expiry < next) {
- 		if (time_travel_timer_mode == TT_TMR_ONESHOT)
--			time_travel_timer_mode = TT_TMR_DISABLED;
-+			time_travel_set_timer(TT_TMR_DISABLED, 0);
- 		/*
- 		 * time_travel_time will be adjusted in the timer
- 		 * IRQ handler so it works even when the signal
-
-johannes
-
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIkpvaGFubmVzIEJlcmciIDxq
+b2hhbm5lc0BzaXBzb2x1dGlvbnMubmV0Pgo+IEFuOiAibGludXgtdW0iIDxsaW51eC11bUBsaXN0
+cy5pbmZyYWRlYWQub3JnPgo+IENDOiAiSmVmZiBEaWtlIiA8amRpa2VAYWRkdG9pdC5jb20+LCAi
+cmljaGFyZCIgPHJpY2hhcmRAbm9kLmF0PiwgImFudG9uIGl2YW5vdiIgPGFudG9uLml2YW5vdkBj
+YW1icmlkZ2VncmV5cy5jb20+LAo+IGpAdzEuZmksICJKb2hhbm5lcyBCZXJnIiA8am9oYW5uZXMu
+YmVyZ0BpbnRlbC5jb20+Cj4gR2VzZW5kZXQ6IE1vbnRhZywgMjcuIE1haSAyMDE5IDEwOjM0OjI3
+Cj4gQmV0cmVmZjogW1BBVENIIHYzIDIvMl0gYXJjaDogdW06IHN1cHBvcnQgdGltZSB0cmF2ZWwg
+bW9kZQoKPiBGcm9tOiBKb2hhbm5lcyBCZXJnIDxqb2hhbm5lcy5iZXJnQGludGVsLmNvbT4KPiAK
+PiBTb21ldGltZXMgaXQgY2FuIGJlIHVzZWZ1bCB0byBydW4gd2l0aCAidGltZSB0cmF2ZWwiIGlu
+c2lkZSB0aGUKPiBVTUwgaW5zdGFuY2UsIGZvciBleGFtcGxlIGZvciB0ZXN0aW5nLiBGb3IgZXhh
+bXBsZSwgc29tZSB0ZXN0cwo+IGZvciB0aGUgd2lyZWxlc3Mgc3Vic3lzdGVtIGFuZCB1c2Vyc3Bh
+Y2UgYXJlIGJhc2VkIG9uIGh3c2ltLCBhCj4gdmlydHVhbCB3aXJlbGVzcyBhZGFwdGVyLiBTb21l
+IHRlc3RzIGNhbiB0YWtlIGEgbG9uZyB0aW1lIHRvCj4gcnVuIGJlY2F1c2UgdGhleSBlLmcuIHdh
+aXQgZm9yIDEyMCBzZWNvbmRzIHRvIGVsYXBzZSBmb3Igc29tZQo+IHJlZ3VsYXRvcnkgY2hlY2tz
+LiBUaGlzIG9idmlvdXNseSBnb2VzIGZhc3RlciBpZiBpdCBuZWVkIG5vdAo+IGFjdHVhbGx5IHdh
+aXQgdGhhdCBsb25nLCBidXQgdGltZSBpbnNpZGUgdGhlIHRlc3QgZW52aXJvbm1lbnQKPiBqdXN0
+ICJidW1wcyB1cCIgd2hlbiB0aGVyZSdzIG5vdGhpbmcgdG8gZG8uCj4gCj4gQWRkIENPTkZJR19V
+TUxfVElNRV9UUkFWRUxfU1VQUE9SVCB0byBlbmFibGUgY29kZSB0byBzdXBwb3J0Cj4gc3VjaCBt
+b2RlcyBhdCBydW50aW1lLCBzZWxlY3RlZCBvbiB0aGUgY29tbWFuZCBsaW5lOgo+ICoganVzdCAi
+dGltZS10cmF2ZWwiLCBpbiB3aGljaCB0aW1lIGluc2lkZSB0aGUgVU1MIGluc3RhbmNlCj4gICBj
+YW4gbW92ZSBmYXN0ZXIgdGhhbiByZWFsIHRpbWUsIGlmIHRoZXJlJ3Mgbm90aGluZyB0byBkbwo+
+ICogInRpbWUtdHJhdmVsPWluZi1jcHUiIGluIHdoaWNoIHRpbWUgYWxzbyBtb3ZlcyBzbG93ZXIg
+YW5kCj4gICBhbnkgQ1BVIHByb2Nlc3NpbmcgdGFrZXMgbm8gdGltZSBhdCBhbGwsIHdoaWNoIGFs
+bG93cyB0bwo+ICAgaW1wbGVtZW50IGNvbnNpc3RlbnQgYmVoYXZpb3VyIHJlZ2FyZGxlc3Mgb2Yg
+aG9zdCBDUFUgbG9hZAo+ICAgKG9yIHNwZWVkKSBvciBkZWJ1ZyBvdmVyaGVhZC4KPiAKPiBBbiBh
+ZGRpdGlvbmFsICJ0aW1lLXRyYXZlbC1zdGFydD08c2Vjb25kcz4iIHBhcmFtZXRlciBpcyBhbHNv
+Cj4gc3VwcG9ydGVkIGluIHRoaXMgY2FzZSB0byBzdGFydCB0aGUgd2FsbCBjbG9jayBhdCB0aGlz
+IHRpbWUKPiAoaW4gdW5peCBlcG9jaCkuCj4gCj4gV2l0aCB0aGlzIGVuYWJsZWQsIHRoZSB0ZXN0
+IG1lbnRpb25lZCBhYm92ZSBnb2VzIGZyb20gYSBydW50aW1lCj4gb2YgYWJvdXQgMTQwIHNlY29u
+ZHMgKHdpdGggc3RhcnR1cCBvdmVyaGVhZCBhbmQgYWxsKSB0byBiZWluZwo+IENQVSBib3VuZCBh
+bmQgZmluaXNoaW5nIGluIDE1IHNlY29uZHMgKG9uIG15IHNsb3cgbGFwdG9wKS4KPiAKPiBTaWdu
+ZWQtb2ZmLWJ5OiBKb2hhbm5lcyBCZXJnIDxqb2hhbm5lcy5iZXJnQGludGVsLmNvbT4KClRoaXMg
+YnJlYWtzIHRoZSBidWlsZCBmb3IgQ09ORklHX1VNTF9USU1FX1RSQVZFTF9TVVBQT1JUPW4KCldo
+YXQgZG8geW91IHRoaW5rIGFib3V0IHRoaXMgZm9sbG93dXAgZml4dXA/CkkgY29tbWl0dGVkIHlv
+dXIgcGF0Y2ggYWxyZWFkeSB0byBsaW51eC1uZXh0LgpTbywgbm8gbmVlZCB0byByZXNlbmQuIAoK
+ZGlmZiAtLWdpdCBhL2FyY2gvdW0vaW5jbHVkZS9zaGFyZWQvdGltZXItaW50ZXJuYWwuaCBiL2Fy
+Y2gvdW0vaW5jbHVkZS9zaGFyZWQvdGltZXItaW50ZXJuYWwuaAppbmRleCA1Y2E3NGY0MTVkNTIu
+LmMxNTg4M2IzMGMxOSAxMDA2NDQKLS0tIGEvYXJjaC91bS9pbmNsdWRlL3NoYXJlZC90aW1lci1p
+bnRlcm5hbC5oCisrKyBiL2FyY2gvdW0vaW5jbHVkZS9zaGFyZWQvdGltZXItaW50ZXJuYWwuaApA
+QCAtMjUsNyArMjUsNyBAQCBlbnVtIHRpbWVfdHJhdmVsX3RpbWVyX21vZGUgewogI2lmZGVmIENP
+TkZJR19VTUxfVElNRV9UUkFWRUxfU1VQUE9SVAogZXh0ZXJuIGVudW0gdGltZV90cmF2ZWxfbW9k
+ZSB0aW1lX3RyYXZlbF9tb2RlOwogZXh0ZXJuIHVuc2lnbmVkIGxvbmcgbG9uZyB0aW1lX3RyYXZl
+bF90aW1lOwotZXh0ZXJuIGVudW0gdGltZV90cmF2ZWxfdGltZXJfbW9kZSB0aW1lX3RyYXZlbF90
+aW1lcl9tb2RlOworZXh0ZXJuIGVudW0gdGltZV90cmF2ZWxfdGltZXJfbW9kZSB0dF90aW1lcl9t
+b2RlOwogZXh0ZXJuIHVuc2lnbmVkIGxvbmcgbG9uZyB0aW1lX3RyYXZlbF90aW1lcl9leHBpcnk7
+CiBleHRlcm4gdW5zaWduZWQgbG9uZyBsb25nIHRpbWVfdHJhdmVsX3RpbWVyX2ludGVydmFsOwog
+CkBAIC0zNyw3ICszNyw3IEBAIHN0YXRpYyBpbmxpbmUgdm9pZCB0aW1lX3RyYXZlbF9zZXRfdGlt
+ZSh1bnNpZ25lZCBsb25nIGxvbmcgbnMpCiBzdGF0aWMgaW5saW5lIHZvaWQgdGltZV90cmF2ZWxf
+c2V0X3RpbWVyKGVudW0gdGltZV90cmF2ZWxfdGltZXJfbW9kZSBtb2RlLAogICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIHVuc2lnbmVkIGxvbmcgbG9uZyBleHBpcnkpCiB7
+Ci0gICAgICAgdGltZV90cmF2ZWxfdGltZXJfbW9kZSA9IG1vZGU7CisgICAgICAgdHRfdGltZXJf
+bW9kZSA9IG1vZGU7CiAgICAgICAgdGltZV90cmF2ZWxfdGltZXJfZXhwaXJ5ID0gZXhwaXJ5Owog
+fQogI2Vsc2UKZGlmZiAtLWdpdCBhL2FyY2gvdW0va2VybmVsL3Byb2Nlc3MuYyBiL2FyY2gvdW0v
+a2VybmVsL3Byb2Nlc3MuYwppbmRleCBkZWYyMDkxNjk3Y2EuLjUwNTQwOGUyNjY4ZCAxMDA2NDQK
+LS0tIGEvYXJjaC91bS9rZXJuZWwvcHJvY2Vzcy5jCisrKyBiL2FyY2gvdW0va2VybmVsL3Byb2Nl
+c3MuYwpAQCAtMjA1LDE1ICsyMDUsMTYgQEAgdm9pZCBpbml0aWFsX3RocmVhZF9jYih2b2lkICgq
+cHJvYykodm9pZCAqKSwgdm9pZCAqYXJnKQogCiBzdGF0aWMgdm9pZCB0aW1lX3RyYXZlbF9zbGVl
+cCh1bnNpZ25lZCBsb25nIGxvbmcgZHVyYXRpb24pCiB7CisjaWZkZWYgQ09ORklHX1VNTF9USU1F
+X1RSQVZFTF9TVVBQT1JUCiAgICAgICAgdW5zaWduZWQgbG9uZyBsb25nIG5leHQgPSB0aW1lX3Ry
+YXZlbF90aW1lICsgZHVyYXRpb247CiAKICAgICAgICBpZiAodGltZV90cmF2ZWxfbW9kZSAhPSBU
+VF9NT0RFX0lORkNQVSkKICAgICAgICAgICAgICAgIG9zX3RpbWVyX2Rpc2FibGUoKTsKIAotICAg
+ICAgIGlmICh0aW1lX3RyYXZlbF90aW1lcl9tb2RlICE9IFRUX1RNUl9ESVNBQkxFRCB8fAorICAg
+ICAgIGlmICh0dF90aW1lcl9tb2RlICE9IFRUX1RNUl9ESVNBQkxFRCB8fAogICAgICAgICAgICB0
+aW1lX3RyYXZlbF90aW1lcl9leHBpcnkgPCBuZXh0KSB7Ci0gICAgICAgICAgICAgICBpZiAodGlt
+ZV90cmF2ZWxfdGltZXJfbW9kZSA9PSBUVF9UTVJfT05FU0hPVCkKLSAgICAgICAgICAgICAgICAg
+ICAgICAgdGltZV90cmF2ZWxfdGltZXJfbW9kZSA9IFRUX1RNUl9ESVNBQkxFRDsKKyAgICAgICAg
+ICAgICAgIGlmICh0dF90aW1lcl9tb2RlID09IFRUX1RNUl9PTkVTSE9UKQorICAgICAgICAgICAg
+ICAgICAgICAgICB0dF90aW1lcl9tb2RlID0gVFRfVE1SX0RJU0FCTEVEOwogICAgICAgICAgICAg
+ICAgLyoKICAgICAgICAgICAgICAgICAqIHRpbWVfdHJhdmVsX3RpbWUgd2lsbCBiZSBhZGp1c3Rl
+ZCBpbiB0aGUgdGltZXIKICAgICAgICAgICAgICAgICAqIElSUSBoYW5kbGVyIHNvIGl0IHdvcmtz
+IGV2ZW4gd2hlbiB0aGUgc2lnbmFsCkBAIC0yMjUsMTEgKzIyNiwxMiBAQCBzdGF0aWMgdm9pZCB0
+aW1lX3RyYXZlbF9zbGVlcCh1bnNpZ25lZCBsb25nIGxvbmcgZHVyYXRpb24pCiAgICAgICAgfQog
+CiAgICAgICAgaWYgKHRpbWVfdHJhdmVsX21vZGUgIT0gVFRfTU9ERV9JTkZDUFUpIHsKLSAgICAg
+ICAgICAgICAgIGlmICh0aW1lX3RyYXZlbF90aW1lcl9tb2RlID09IFRUX1RNUl9QRVJJT0RJQykK
+KyAgICAgICAgICAgICAgIGlmICh0dF90aW1lcl9tb2RlID09IFRUX1RNUl9QRVJJT0RJQykKICAg
+ICAgICAgICAgICAgICAgICAgICAgb3NfdGltZXJfc2V0X2ludGVydmFsKHRpbWVfdHJhdmVsX3Rp
+bWVyX2ludGVydmFsKTsKLSAgICAgICAgICAgICAgIGVsc2UgaWYgKHRpbWVfdHJhdmVsX3RpbWVy
+X21vZGUgPT0gVFRfVE1SX09ORVNIT1QpCisgICAgICAgICAgICAgICBlbHNlIGlmICh0dF90aW1l
+cl9tb2RlID09IFRUX1RNUl9PTkVTSE9UKQogICAgICAgICAgICAgICAgICAgICAgICBvc190aW1l
+cl9vbmVfc2hvdCh0aW1lX3RyYXZlbF90aW1lcl9leHBpcnkgLSBuZXh0KTsKICAgICAgICB9Cisj
+ZW5kaWYKIH0KIAogc3RhdGljIHZvaWQgdW1faWRsZV9zbGVlcCh2b2lkKQpkaWZmIC0tZ2l0IGEv
+YXJjaC91bS9rZXJuZWwvdGltZS5jIGIvYXJjaC91bS9rZXJuZWwvdGltZS5jCmluZGV4IDZhMDUx
+YjA3ODM1OS4uZDI3ZGQ1YmFjMGE2IDEwMDY0NAotLS0gYS9hcmNoL3VtL2tlcm5lbC90aW1lLmMK
+KysrIGIvYXJjaC91bS9rZXJuZWwvdGltZS5jCkBAIC0yNCw3ICsyNCw3IEBACiAjaWZkZWYgQ09O
+RklHX1VNTF9USU1FX1RSQVZFTF9TVVBQT1JUCiBlbnVtIHRpbWVfdHJhdmVsX21vZGUgdGltZV90
+cmF2ZWxfbW9kZTsKIHVuc2lnbmVkIGxvbmcgbG9uZyB0aW1lX3RyYXZlbF90aW1lOwotZW51bSB0
+aW1lX3RyYXZlbF90aW1lcl9tb2RlIHRpbWVfdHJhdmVsX3RpbWVyX21vZGU7CitlbnVtIHRpbWVf
+dHJhdmVsX3RpbWVyX21vZGUgdHRfdGltZXJfbW9kZTsKIHVuc2lnbmVkIGxvbmcgbG9uZyB0aW1l
+X3RyYXZlbF90aW1lcl9leHBpcnk7CiB1bnNpZ25lZCBsb25nIGxvbmcgdGltZV90cmF2ZWxfdGlt
+ZXJfaW50ZXJ2YWw7CgpUaGFua3MsCi8vcmljaGFyZAoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxp
+c3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9saW51eC11bQo=
 
