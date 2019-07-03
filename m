@@ -1,17 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x44a.google.com ([2607:f8b0:4864:20::44a])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hkjhc-0000Eo-RJ
- for linux-um@lists.infradead.org; Tue, 09 Jul 2019 06:34:14 +0000
-Received: by mail-pf1-x44a.google.com with SMTP id x10so11837640pfa.23
- for <linux-um@lists.infradead.org>; Mon, 08 Jul 2019 23:34:11 -0700 (PDT)
-Date: Mon,  8 Jul 2019 23:30:12 -0700
-In-Reply-To: <20190709063023.251446-1-brendanhiggins@google.com>
-Message-Id: <20190709063023.251446-8-brendanhiggins@google.com>
+ id 1hiZEQ-0003YA-D5
+ for linux-um@lists.infradead.org; Wed, 03 Jul 2019 06:59:08 +0000
+Message-ID: <cc17f3a1c5af71a2e7f1e94cc7c553a4084293ca.camel@sipsolutions.net>
+Subject: Re: [PATCH v3 2/2] arch: um: support time travel mode
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Wed, 03 Jul 2019 08:58:56 +0200
+In-Reply-To: <46402789.25380.1562104450930.JavaMail.zimbra@nod.at>
+References: <20190527083427.6293-1-johannes@sipsolutions.net>
+ <20190527083427.6293-2-johannes@sipsolutions.net>
+ <46402789.25380.1562104450930.JavaMail.zimbra@nod.at>
 Mime-Version: 1.0
-References: <20190709063023.251446-1-brendanhiggins@google.com>
-Subject: [PATCH v7 07/18] kunit: test: add initial tests
-From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,242 +25,71 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+To: Richard Weinberger <richard@nod.at>
+Cc: j@w1.fi, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, anton ivanov <anton.ivanov@cambridgegreys.com>
 
-Add a test for string stream along with a simpler example.
+On Tue, 2019-07-02 at 23:54 +0200, Richard Weinberger wrote:
+> 
+> This breaks the build for CONFIG_UML_TIME_TRAVEL_SUPPORT=n
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
----
- kunit/Kconfig              | 21 +++++++++
- kunit/Makefile             |  4 ++
- kunit/example-test.c       | 88 ++++++++++++++++++++++++++++++++++++++
- kunit/string-stream-test.c | 75 ++++++++++++++++++++++++++++++++
- 4 files changed, 188 insertions(+)
- create mode 100644 kunit/example-test.c
- create mode 100644 kunit/string-stream-test.c
+D'oh. I was sure I tested that, but I guess not on the last version or
+something... Sorry.
 
-diff --git a/kunit/Kconfig b/kunit/Kconfig
-index 330ae83527c23..8541ef95b65ad 100644
---- a/kunit/Kconfig
-+++ b/kunit/Kconfig
-@@ -14,4 +14,25 @@ config KUNIT
- 	  architectures. For more information, please see
- 	  Documentation/dev-tools/kunit/.
+> What do you think about this followup fixup?
+> I committed your patch already to linux-next.
+> So, no need to resend. 
+> 
+> diff --git a/arch/um/include/shared/timer-internal.h b/arch/um/include/shared/timer-internal.h
+> index 5ca74f415d52..c15883b30c19 100644
+> --- a/arch/um/include/shared/timer-internal.h
+> +++ b/arch/um/include/shared/timer-internal.h
+> @@ -25,7 +25,7 @@ enum time_travel_timer_mode {
+>  #ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
+>  extern enum time_travel_mode time_travel_mode;
+>  extern unsigned long long time_travel_time;
+> -extern enum time_travel_timer_mode time_travel_timer_mode;
+> +extern enum time_travel_timer_mode tt_timer_mode;
+>  extern unsigned long long time_travel_timer_expiry;
+>  extern unsigned long long time_travel_timer_interval;
+
+Not sure renaming just this one makes sense (vs. the two others
+above/below), but your call, I don't really care.
+
+FWIW, my intent (after the comments wrt. ifdefs) had been to do it like
+this:
+
+diff --git a/arch/um/include/shared/timer-internal.h
+b/arch/um/include/shared/timer-internal.h
+index 5ca74f415d52..8574338bf23b 100644
+--- a/arch/um/include/shared/timer-internal.h
++++ b/arch/um/include/shared/timer-internal.h
+@@ -54,6 +54,8 @@ static inline void time_travel_set_timer(enum
+time_travel_timer_mode mode,
+ 					 unsigned long long expiry)
+ {
+ }
++
++#define time_travel_timer_mode TT_TMR_DISABLED
+ #endif
  
-+config KUNIT_TEST
-+	bool "KUnit test for KUnit"
-+	depends on KUNIT
-+	help
-+	  Enables the unit tests for the KUnit test framework. These tests test
-+	  the KUnit test framework itself; the tests are both written using
-+	  KUnit and test KUnit. This option should only be enabled for testing
-+	  purposes by developers interested in testing that KUnit works as
-+	  expected.
-+
-+config KUNIT_EXAMPLE_TEST
-+	bool "Example test for KUnit"
-+	depends on KUNIT
-+	help
-+	  Enables an example unit test that illustrates some of the basic
-+	  features of KUnit. This test only exists to help new users understand
-+	  what KUnit is and how it is used. Please refer to the example test
-+	  itself, kunit/example-test.c, for more information. This option is
-+	  intended for curious hackers who would like to understand how to use
-+	  KUnit for kernel development.
-+
- endmenu
-diff --git a/kunit/Makefile b/kunit/Makefile
-index 6ddc622ee6b1c..60a9ea6cb4697 100644
---- a/kunit/Makefile
-+++ b/kunit/Makefile
-@@ -1,3 +1,7 @@
- obj-$(CONFIG_KUNIT) +=			test.o \
- 					string-stream.o \
- 					kunit-stream.o
-+
-+obj-$(CONFIG_KUNIT_TEST) +=		string-stream-test.o
-+
-+obj-$(CONFIG_KUNIT_EXAMPLE_TEST) +=	example-test.o
-diff --git a/kunit/example-test.c b/kunit/example-test.c
-new file mode 100644
-index 0000000000000..f64a829aa441f
---- /dev/null
-+++ b/kunit/example-test.c
-@@ -0,0 +1,88 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Example KUnit test to show how to use KUnit.
-+ *
-+ * Copyright (C) 2019, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
-+
-+#include <kunit/test.h>
-+
-+/*
-+ * This is the most fundamental element of KUnit, the test case. A test case
-+ * makes a set EXPECTATIONs and ASSERTIONs about the behavior of some code; if
-+ * any expectations or assertions are not met, the test fails; otherwise, the
-+ * test passes.
-+ *
-+ * In KUnit, a test case is just a function with the signature
-+ * `void (*)(struct kunit *)`. `struct kunit` is a context object that stores
-+ * information about the current test.
-+ */
-+static void example_simple_test(struct kunit *test)
-+{
-+	/*
-+	 * This is an EXPECTATION; it is how KUnit tests things. When you want
-+	 * to test a piece of code, you set some expectations about what the
-+	 * code should do. KUnit then runs the test and verifies that the code's
-+	 * behavior matched what was expected.
-+	 */
-+	KUNIT_EXPECT_EQ(test, 1 + 1, 2);
-+}
-+
-+/*
-+ * This is run once before each test case, see the comment on
-+ * example_test_suite for more information.
-+ */
-+static int example_test_init(struct kunit *test)
-+{
-+	kunit_info(test, "initializing\n");
-+
-+	return 0;
-+}
-+
-+/*
-+ * Here we make a list of all the test cases we want to add to the test suite
-+ * below.
-+ */
-+static struct kunit_case example_test_cases[] = {
-+	/*
-+	 * This is a helper to create a test case object from a test case
-+	 * function; its exact function is not important to understand how to
-+	 * use KUnit, just know that this is how you associate test cases with a
-+	 * test suite.
-+	 */
-+	KUNIT_CASE(example_simple_test),
-+	{}
-+};
-+
-+/*
-+ * This defines a suite or grouping of tests.
-+ *
-+ * Test cases are defined as belonging to the suite by adding them to
-+ * `kunit_cases`.
-+ *
-+ * Often it is desirable to run some function which will set up things which
-+ * will be used by every test; this is accomplished with an `init` function
-+ * which runs before each test case is invoked. Similarly, an `exit` function
-+ * may be specified which runs after every test case and can be used to for
-+ * cleanup. For clarity, running tests in a test suite would behave as follows:
-+ *
-+ * suite.init(test);
-+ * suite.test_case[0](test);
-+ * suite.exit(test);
-+ * suite.init(test);
-+ * suite.test_case[1](test);
-+ * suite.exit(test);
-+ * ...;
-+ */
-+static struct kunit_suite example_test_suite = {
-+	.name = "example",
-+	.init = example_test_init,
-+	.test_cases = example_test_cases,
-+};
-+
-+/*
-+ * This registers the above test suite telling KUnit that this is a suite of
-+ * tests that need to be run.
-+ */
-+kunit_test_suite(example_test_suite);
-diff --git a/kunit/string-stream-test.c b/kunit/string-stream-test.c
-new file mode 100644
-index 0000000000000..b5641b078b8f6
---- /dev/null
-+++ b/kunit/string-stream-test.c
-@@ -0,0 +1,75 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * KUnit test for struct string_stream.
-+ *
-+ * Copyright (C) 2019, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
-+
-+#include <linux/slab.h>
-+#include <kunit/test.h>
-+#include <kunit/string-stream.h>
-+
-+static void string_stream_test_empty_on_creation(struct kunit *test)
-+{
-+	struct string_stream *stream = alloc_string_stream(test);
-+
-+	KUNIT_EXPECT_TRUE(test, string_stream_is_empty(stream));
-+}
-+
-+static void string_stream_test_not_empty_after_add(struct kunit *test)
-+{
-+	struct string_stream *stream = alloc_string_stream(test);
-+
-+	string_stream_add(stream, "Foo");
-+
-+	KUNIT_EXPECT_FALSE(test, string_stream_is_empty(stream));
-+}
-+static void string_stream_test_get_string(struct kunit *test)
-+{
-+	struct string_stream *stream = alloc_string_stream(test);
-+	char *output;
-+
-+	string_stream_add(stream, "Foo");
-+	string_stream_add(stream, " %s", "bar");
-+
-+	output = string_stream_get_string(stream);
-+	KUNIT_EXPECT_STREQ(test, output, "Foo bar");
-+	kfree(output);
-+}
-+
-+static void string_stream_test_add_and_clear(struct kunit *test)
-+{
-+	struct string_stream *stream = alloc_string_stream(test);
-+	char *output;
-+	int i;
-+
-+	for (i = 0; i < 10; i++)
-+		string_stream_add(stream, "A");
-+
-+	output = string_stream_get_string(stream);
-+	KUNIT_EXPECT_STREQ(test, output, "AAAAAAAAAA");
-+	KUNIT_EXPECT_EQ(test, stream->length, (size_t)10);
-+	KUNIT_EXPECT_FALSE(test, string_stream_is_empty(stream));
-+	kfree(output);
-+
-+	string_stream_clear(stream);
-+
-+	output = string_stream_get_string(stream);
-+	KUNIT_EXPECT_STREQ(test, output, "");
-+	KUNIT_EXPECT_TRUE(test, string_stream_is_empty(stream));
-+}
-+
-+static struct kunit_case string_stream_test_cases[] = {
-+	KUNIT_CASE(string_stream_test_empty_on_creation),
-+	KUNIT_CASE(string_stream_test_not_empty_after_add),
-+	KUNIT_CASE(string_stream_test_get_string),
-+	KUNIT_CASE(string_stream_test_add_and_clear),
-+	{}
-+};
-+
-+static struct kunit_suite string_stream_test_suite = {
-+	.name = "string-stream-test",
-+	.test_cases = string_stream_test_cases
-+};
-+kunit_test_suite(string_stream_test_suite);
--- 
-2.22.0.410.gd8fdbe21b5-goog
+ #endif
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index def2091697ca..67c0d1a860e9 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -213,7 +213,7 @@ static void time_travel_sleep(unsigned long long
+duration)
+ 	if (time_travel_timer_mode != TT_TMR_DISABLED ||
+ 	    time_travel_timer_expiry < next) {
+ 		if (time_travel_timer_mode == TT_TMR_ONESHOT)
+-			time_travel_timer_mode = TT_TMR_DISABLED;
++			time_travel_set_timer(TT_TMR_DISABLED, 0);
+ 		/*
+ 		 * time_travel_time will be adjusted in the timer
+ 		 * IRQ handler so it works even when the signal
+
+johannes
+
 
 
 _______________________________________________
