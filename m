@@ -1,16 +1,23 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-vk1-xa49.google.com ([2607:f8b0:4864:20::a49])
+Received: from mail-pg1-x542.google.com ([2607:f8b0:4864:20::542])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hipkF-00074I-Oe
- for linux-um@lists.infradead.org; Thu, 04 Jul 2019 00:37:05 +0000
-Received: by mail-vk1-xa49.google.com with SMTP id d14so449680vka.6
- for <linux-um@lists.infradead.org>; Wed, 03 Jul 2019 17:37:02 -0700 (PDT)
-Date: Wed,  3 Jul 2019 17:35:57 -0700
-Message-Id: <20190704003615.204860-1-brendanhiggins@google.com>
-Mime-Version: 1.0
-Subject: [PATCH v6 00/18] kunit: introduce KUnit, the Linux kernel unit
- testing framework
+ id 1hios6-0005fd-AI
+ for linux-um@lists.infradead.org; Wed, 03 Jul 2019 23:41:08 +0000
+Received: by mail-pg1-x542.google.com with SMTP id w10so1969940pgj.7
+ for <linux-um@lists.infradead.org>; Wed, 03 Jul 2019 16:41:03 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190617082613.109131-1-brendanhiggins@google.com>
+ <10feac3e-7621-65e5-fbf0-9c63fcbe09c9@gmail.com>
+ <69809117-dcda-160a-ee0a-d1d3b4c5cd8a@kernel.org>
+ <20190621181342.GA17166@mit.edu>
+ <6f3f5184-d14e-1b46-17f1-391ee67e699c@kernel.org>
+ <CAFd5g46W1u+6JKLW0WX9uicK5utvJe9tvq4YBsCkghuo0rCmng@mail.gmail.com>
+In-Reply-To: <CAFd5g46W1u+6JKLW0WX9uicK5utvJe9tvq4YBsCkghuo0rCmng@mail.gmail.com>
 From: Brendan Higgins <brendanhiggins@google.com>
+Date: Wed, 3 Jul 2019 16:40:50 -0700
+Message-ID: <CAFd5g4515jAOzEtiZfXP0d6YUgOxOZCknw0Nd-2wsY=mPFdGqg@mail.gmail.com>
+Subject: Re: [PATCH v5 00/18] kunit: introduce KUnit, the Linux kernel unit
+ testing framework
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -23,108 +30,155 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+To: shuah <shuah@kernel.org>
+Cc: Petr Mladek <pmladek@suse.com>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, Amir Goldstein <amir73il@gmail.com>, dri-devel <dri-devel@lists.freedesktop.org>, Sasha Levin <Alexander.Levin@microsoft.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Michael Ellerman <mpe@ellerman.id.au>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Frank Rowand <frowand.list@gmail.com>, Rob Herring <robh@kernel.org>, linux-nvdimm <linux-nvdimm@lists.01.org>, Kevin Hilman <khilman@baylibre.com>, Knut Omang <knut.omang@oracle.com>, Kieran Bingham <kieran.bingham@ideasonboard.com>, wfg@linux.intel.com, Joel Stanley <joel@jms.id.au>, David Rientjes <rientjes@google.com>, Jeff Dike <jdike@addtoit.com>, Dan Carpenter <dan.carpenter@oracle.com>, devicetree <devicetree@vger.kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, "Bird, Timothy  <Tim.Bird@sony.com>, linux-um@lists.infradead.org, Steven Rostedt" <rostedt@goodmis.org>, Julia Lawall <julia.lawall@lip6.fr>, Josh Poimboeuf <jpoimboe@redhat.com>, kunit-dev@googlegroups.com, Theodore Ts'o <tytso@mit.edu>, Richard Weinberger <richard@nod.at>, Stephen Boyd <sboyd@kernel.org>, Greg KH <gregkh@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@google.com>, linux-fsdevel@vger.kernel.org, Logan Gunthorpe <logang@deltatee.com>
 
-## TL;DR
+On Fri, Jun 21, 2019 at 5:54 PM Brendan Higgins
+<brendanhiggins@google.com> wrote:
+>
+> On Fri, Jun 21, 2019 at 12:21 PM shuah <shuah@kernel.org> wrote:
+> >
+> > On 6/21/19 12:13 PM, Theodore Ts'o wrote:
+> > > On Fri, Jun 21, 2019 at 08:59:48AM -0600, shuah wrote:
+> > >>>> ### But wait! Doesn't kselftest support in kernel testing?!
+> > >>>>
+> > >>>> ....
+> > >>
+> > >> I think I commented on this before. I agree with the statement that
+> > >> there is no overlap between Kselftest and KUnit. I would like see this
+> > >> removed. Kselftest module support supports use-cases KUnit won't be able
+> > >> to. I can build an kernel with Kselftest test modules and use it in the
+> > >> filed to load and run tests if I need to debug a problem and get data
+> > >> from a system. I can't do that with KUnit.
+>
+> Sure, I think this point has been brought up a number of times before.
+> Maybe I didn't write this section well because, like Frank said, it
+> comes across as being critical of the Kselftest module support; that
+> wasn't my intention. I was speaking from the perspective that
+> Kselftest module support is just a feature of Kselftest, and not a
+> full framework like KUnit is (obviously Kselftest itself *is* a
+> framework, but a very small part of it is not).
+>
+> It was obvious to me what Kselftest module support was intended for,
+> and it is not intended to cover the use case that KUnit is targeting.
+>
+> > >> In my mind, I am not viewing this as which is better. Kselftest and
+> > >> KUnit both have their place in the kernel development process. It isn't
+> > >> productive and/or necessary to comparing Kselftest and KUnit without a
+> > >> good understanding of the problem spaces for each of these.
+>
+> Again, I didn't mean to draw a comparison of which is better than the
+> other. I was just trying to point out that Kselftest module support
+> doesn't make sense as a stand alone unit testing framework, or really
+> a framework of any kind, despite how it might actually be used.
+>
+> > >> I would strongly recommend not making reference to Kselftest and talk
+> > >> about what KUnit offers.
+>
+> I can see your point. It seems that both you and Frank seem to think
+> that I drew a comparison between Kselftest and KUnit, which was
+> unintended. I probably should have spent more time editing this
+> section, but I can see the point of drawing the comparison itself
+> might invite this confusion.
+>
+> > > Shuah,
+> > >
+> > > Just to recall the history, this section of the FAQ was added to rebut
+> > > the ***very*** strong statements that Frank made that there was
+> > > overlap between Kselftest and Kunit, and that having too many ways for
+> > > kernel developers to do the identical thing was harmful (he said it
+> > > was too much of a burden on a kernel developer) --- and this was an
+> > > argument for not including Kunit in the upstream kernel.
+>
+> I don't think he was actually advocating that we don't include KUnit,
+> maybe playing devil's advocate; nevertheless, at the end, Frank seemed
+> to agree that there were valuable things that KUnit offered. I thought
+> he just wanted to make the point that I hadn't made the distinction
+> sufficiently clear in the cover letter, and other reviewers might get
+> confused in the future as well.
+>
+> Additionally, it does look like people were trying to use Kselftest
+> module support to cover some things which really were trying to be
+> unit tests. I know this isn't really intended - everything looks like
+> a nail when you only have a hammer, which I think Frank was pointing
+> out furthers the above confusion.
+>
+> In anycase, it sounds like I have, if anything, only made the
+> discussion even more confusing by adding this section; sorry about
+> that.
+>
+> > > If we're past that objection, then perhaps this section can be
+> > > dropped, but there's a very good reason why it was there.  I wouldn't
+> > > Brendan to be accused of ignoring feedback from those who reviewed his
+> > > patches.   :-)
+> > >
+> >
+> > Agreed. I understand that this FAQ probably was needed at one time and
+> > Brendan added it to address the concerns.
+>
+> I don't want to speak for Frank, but I don't think it was an objection
+> to KUnit itself, but rather an objection to not sufficiently
+> addressing the point about how they differ.
+>
+> > I think at some point we do need to have a document that outlines when
+> > to KUnit and when to use Kselftest modules. I think one concern people
+> > have is that if KUnit is perceived as a  replacement for Ksefltest
+> > module, Kselftest module will be ignored leaving users without the
+> > ability to build and run with Kselftest modules and load them on a need
+> > basis to gather data on a systems that aren't dedicated strictly for
+> > testing.
+>
+> I absolutely agree! I posed a suggestion here[1], which after I just
+> now searched for a link, I realize for some reason it didn't seem like
+> it reached a number of the mailing lists that I sent it to, so I
+> should probably resend it.
+>
+> Anyway, a summary of what I suggested: We should start off by better
+> organizing Documentation/dev-tools/ and create a landing page that
+> groups the dev-tools by function according to what person is likely to
+> use them and for what. Eventually and specifically for Kselftest and
+> KUnit, I would like to have a testing guide for the kernel that
+> explains what testing procedure should look like and what to use and
+> when.
+>
+> > I am trying to move the conversation forward from KUnit vs. Kselftest
+> > modules discussion to which problem areas each one addresses keeping
+> > in mind that it is not about which is better. Kselftest and KUnit both
+> > have their place in the kernel development process. We just have to be
+> > clear on usage as we write tests for each.
+>
+> I think that is the right long term approach. I think a good place to
+> start, like I suggested above, is cleaning up
+> Documentation/dev-tools/, but I think that belongs in a (probably
+> several) follow-up patchset.
+>
+> Frank, I believe your objection was mostly related to how KUnit is
+> presented specifically in the cover letter, and doesn't necessarily
+> deal with the intended use case. So I don't think that doing this,
+> especially doing this later, really addresses your concern. I don't
+> want to belabor the issue, but I would also rather not put words in
+> your mouth, what are your thoughts on the above?
+>
+> I think my main concern moving forward on this point is that I am not
+> sure that I can address the debate that this section covers in a way
+> that is both sufficiently concise for a cover letter, but also doesn't
+> invite more potential confusion. My inclination at this point is to
+> drop it since I think the set of reviewers for this patchset has at
+> this point become fixed, and it seems that it will likely cause more
+> confusion rather than reduce it; also, I don't really think this will
 
-This is a pretty straightforward follow-up to Stephen and Luis' comments
-on PATCH v5: There is nothing that really changes any functionality or
-usage with the minor exception that I renamed `struct kunit_module` to
-`struct kunit_suite`. Nevertheless, a good deal of clean ups and fixes.
-See "Changes Since Last Version" section below.
+Since no one has objected to dropping the "### But wait! Doesn't
+kselftest support in kernel testing?!" section in the past almost two
+weeks, I am just going to continue on without it.
 
-As for our current status, right now we got Reviewed-bys on all patches
-except:
+Cheers
 
-- [PATCH v6 08/18] objtool: add kunit_try_catch_throw to the noreturn
-  list
-
-However, it would probably be good to get reviews/acks from the
-subsystem maintainers on:
-
-- [PATCH v6 06/18] kbuild: enable building KUnit
-- [PATCH v6 08/18] objtool: add kunit_try_catch_throw to the noreturn
-  list
-- [PATCH v6 15/18] Documentation: kunit: add documentation for KUnit
-- [PATCH v6 17/18] kernel/sysctl-test: Add null pointer test for
-  sysctl.c:proc_dointvec()
-
-Other than that, I think we should be good to go.
-
-## Background
-
-This patch set proposes KUnit, a lightweight unit testing and mocking
-framework for the Linux kernel.
-
-Unlike Autotest and kselftest, KUnit is a true unit testing framework;
-it does not require installing the kernel on a test machine or in a VM
-(however, KUnit still allows you to run tests on test machines or in VMs
-if you want[1]) and does not require tests to be written in userspace
-running on a host kernel. Additionally, KUnit is fast: From invocation
-to completion KUnit can run several dozen tests in about a second.
-Currently, the entire KUnit test suite for KUnit runs in under a second
-from the initial invocation (build time excluded).
-
-KUnit is heavily inspired by JUnit, Python's unittest.mock, and
-Googletest/Googlemock for C++. KUnit provides facilities for defining
-unit test cases, grouping related test cases into test suites, providing
-common infrastructure for running tests, mocking, spying, and much more.
-
-### What's so special about unit testing?
-
-A unit test is supposed to test a single unit of code in isolation,
-hence the name. There should be no dependencies outside the control of
-the test; this means no external dependencies, which makes tests orders
-of magnitudes faster. Likewise, since there are no external dependencies,
-there are no hoops to jump through to run the tests. Additionally, this
-makes unit tests deterministic: a failing unit test always indicates a
-problem. Finally, because unit tests necessarily have finer granularity,
-they are able to test all code paths easily solving the classic problem
-of difficulty in exercising error handling code.
-
-### Is KUnit trying to replace other testing frameworks for the kernel?
-
-No. Most existing tests for the Linux kernel are end-to-end tests, which
-have their place. A well tested system has lots of unit tests, a
-reasonable number of integration tests, and some end-to-end tests. KUnit
-is just trying to address the unit test space which is currently not
-being addressed.
-
-### More information on KUnit
-
-There is a bunch of documentation near the end of this patch set that
-describes how to use KUnit and best practices for writing unit tests.
-For convenience I am hosting the compiled docs here[2].
-
-Additionally for convenience, I have applied these patches to a
-branch[3]. The repo may be cloned with:
-git clone https://kunit.googlesource.com/linux
-This patchset is on the kunit/rfc/v5.2-rc7/v6 branch.
-
-## Changes Since Last Version
-
-Aside from renaming `struct kunit_module` to `struct kunit_suite`, there
-isn't really anything in here that changes any functionality:
-
-- Rebased on v5.2-rc7
-- Got rid of spinlocks.
-  - Now update success field using WRITE_ONCE. - Suggested by Stephen
-  - Other instances replaced by mutex. - Suggested by Stephen and Luis
-- Renamed `struct kunit_module` to `struct kunit_suite`. - Inspired by
-  Luis.
-- Fixed a broken example of how to use kunit_tool. - Pointed out by Ted
-- Added descriptions to unit tests. - Suggested by Luis
-- Labeled unit tests which tested the API. - Suggested by Luis
-- Made a number of minor cleanups. - Suggested by Luis and Stephen.
-
-[1] https://google.github.io/kunit-docs/third_party/kernel/docs/usage.html#kunit-on-non-uml-architectures
-[2] https://google.github.io/kunit-docs/third_party/kernel/docs/
-[3] https://kunit.googlesource.com/linux/+/kunit/rfc/v5.2-rc7/v6
-
--- 
-2.22.0.410.gd8fdbe21b5-goog
-
+> be an issue for end users, especially once we have proper
+> documentation in place. Alternatively, I guess I could maybe address
+> the point elsewhere and refer to it in the cover letter? Or maybe just
+> put it at the end of the cover letter?
+>
+> [1] https://www.mail-archive.com/kgdb-bugreport@lists.sourceforge.net/msg05059.html
 
 _______________________________________________
 linux-um mailing list
