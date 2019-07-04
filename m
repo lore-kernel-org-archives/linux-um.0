@@ -1,15 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab6.miniserver.com ([5.153.251.140]
- helo=www.kot-begemot.co.uk)
+Received: from mail-pf1-x449.google.com ([2607:f8b0:4864:20::449])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hnJJV-0006DU-IB
- for linux-um@lists.infradead.org; Tue, 16 Jul 2019 08:59:59 +0000
-From: anton.ivanov@cambridgegreys.com
-Subject: [PATCHv3 5/5] um: Error handling fixes in vector drivers
-Date: Tue, 16 Jul 2019 09:59:39 +0100
-Message-Id: <20190716085939.21297-5-anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20190716085939.21297-1-anton.ivanov@cambridgegreys.com>
-References: <20190716085939.21297-1-anton.ivanov@cambridgegreys.com>
+ id 1hipkj-00079x-3i
+ for linux-um@lists.infradead.org; Thu, 04 Jul 2019 00:37:34 +0000
+Received: by mail-pf1-x449.google.com with SMTP id c17so2502497pfb.21
+ for <linux-um@lists.infradead.org>; Wed, 03 Jul 2019 17:37:32 -0700 (PDT)
+Date: Wed,  3 Jul 2019 17:36:00 -0700
+In-Reply-To: <20190704003615.204860-1-brendanhiggins@google.com>
+Message-Id: <20190704003615.204860-4-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20190704003615.204860-1-brendanhiggins@google.com>
+Subject: [PATCH v6 03/18] kunit: test: add string_stream a std::stream like
+ string builder
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,192 +21,249 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+A number of test features need to do pretty complicated string printing
+where it may not be possible to rely on a single preallocated string
+with parameters.
 
-With the addition of bess support which uses connection
-oriented SEQPACKET sockets the vector routines can now
-encounter a "remote end closed the connection" scenario.
+So provide a library for constructing the string as you go similar to
+C++'s std::string.
 
-This adds handling code to detect it in the TX path and
-the legacy RX path. There is no way to detect it in the
-vector RX path because that can legitimately return 0
-even if the remote end has not closed the connection. As
-a result the detection is delayed until the first TX
-event after the close.
-
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
 ---
- arch/um/drivers/vector_kern.c | 37 ++++++++++++++++++++++++++++++++-----
- arch/um/drivers/vector_kern.h |  1 +
- arch/um/drivers/vector_user.c |  4 ++--
- 3 files changed, 35 insertions(+), 7 deletions(-)
+ include/kunit/string-stream.h |  49 ++++++++++++
+ kunit/Makefile                |   3 +-
+ kunit/string-stream.c         | 147 ++++++++++++++++++++++++++++++++++
+ 3 files changed, 198 insertions(+), 1 deletion(-)
+ create mode 100644 include/kunit/string-stream.h
+ create mode 100644 kunit/string-stream.c
 
-diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-index e79cd1dcb018..165ee1636598 100644
---- a/arch/um/drivers/vector_kern.c
-+++ b/arch/um/drivers/vector_kern.c
-@@ -76,6 +76,7 @@ static void vector_eth_configure(int n, struct arglist *def);
- #define DEFAULT_VECTOR_SIZE 64
- #define TX_SMALL_PACKET 128
- #define MAX_IOV_SIZE (MAX_SKB_FRAGS + 1)
-+#define MAX_ITERATIONS 64
- 
- static const struct {
- 	const char string[ETH_GSTRING_LEN];
-@@ -418,6 +419,7 @@ static int vector_send(struct vector_queue *qi)
- 					if (net_ratelimit())
- 						netdev_err(vp->dev, "sendmmsg err=%i\n",
- 							result);
-+					vp->in_error = true;
- 					result = send_len;
- 				}
- 				if (result > 0) {
-@@ -845,6 +847,10 @@ static int vector_legacy_rx(struct vector_private *vp)
- 	}
- 
- 	pkt_len = uml_vector_recvmsg(vp->fds->rx_fd, &hdr, 0);
-+	if (pkt_len < 0) {
-+		vp->in_error = true;
-+		return pkt_len;
+diff --git a/include/kunit/string-stream.h b/include/kunit/string-stream.h
+new file mode 100644
+index 0000000000000..0552a05781afe
+--- /dev/null
++++ b/include/kunit/string-stream.h
+@@ -0,0 +1,49 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * C++ stream style string builder used in KUnit for building messages.
++ *
++ * Copyright (C) 2019, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++
++#ifndef _KUNIT_STRING_STREAM_H
++#define _KUNIT_STRING_STREAM_H
++
++#include <linux/types.h>
++#include <linux/spinlock.h>
++#include <linux/kref.h>
++#include <stdarg.h>
++
++struct string_stream_fragment {
++	struct list_head node;
++	char *fragment;
++};
++
++struct string_stream {
++	size_t length;
++	struct list_head fragments;
++	/* length and fragments are protected by this lock */
++	spinlock_t lock;
++};
++
++struct kunit;
++
++struct string_stream *alloc_string_stream(struct kunit *test);
++
++void string_stream_get(struct string_stream *stream);
++
++int string_stream_put(struct string_stream *stream);
++
++int string_stream_add(struct string_stream *stream, const char *fmt, ...);
++
++int string_stream_vadd(struct string_stream *stream,
++		       const char *fmt,
++		       va_list args);
++
++char *string_stream_get_string(struct string_stream *stream);
++
++void string_stream_clear(struct string_stream *stream);
++
++bool string_stream_is_empty(struct string_stream *stream);
++
++#endif /* _KUNIT_STRING_STREAM_H */
+diff --git a/kunit/Makefile b/kunit/Makefile
+index 5efdc4dea2c08..275b565a0e81f 100644
+--- a/kunit/Makefile
++++ b/kunit/Makefile
+@@ -1 +1,2 @@
+-obj-$(CONFIG_KUNIT) +=			test.o
++obj-$(CONFIG_KUNIT) +=			test.o \
++					string-stream.o
+diff --git a/kunit/string-stream.c b/kunit/string-stream.c
+new file mode 100644
+index 0000000000000..0463a92dad74b
+--- /dev/null
++++ b/kunit/string-stream.c
+@@ -0,0 +1,147 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * C++ stream style string builder used in KUnit for building messages.
++ *
++ * Copyright (C) 2019, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++
++#include <linux/list.h>
++#include <linux/slab.h>
++#include <kunit/string-stream.h>
++#include <kunit/test.h>
++
++int string_stream_vadd(struct string_stream *stream,
++		       const char *fmt,
++		       va_list args)
++{
++	struct string_stream_fragment *frag_container;
++	int len;
++	va_list args_for_counting;
++	unsigned long flags;
++
++	/* Make a copy because `vsnprintf` could change it */
++	va_copy(args_for_counting, args);
++
++	/* Need space for null byte. */
++	len = vsnprintf(NULL, 0, fmt, args_for_counting) + 1;
++
++	va_end(args_for_counting);
++
++	frag_container = kmalloc(sizeof(*frag_container), GFP_KERNEL);
++	if (!frag_container)
++		return -ENOMEM;
++
++	frag_container->fragment = kmalloc(len, GFP_KERNEL);
++	if (!frag_container->fragment) {
++		kfree(frag_container);
++		return -ENOMEM;
 +	}
- 
- 	if (skb != NULL) {
- 		if (pkt_len > vp->header_size) {
-@@ -891,12 +897,16 @@ static int writev_tx(struct vector_private *vp, struct sk_buff *skb)
- 
- 	if (iov_count < 1)
- 		goto drop;
 +
- 	pkt_len = uml_vector_writev(
- 		vp->fds->tx_fd,
- 		(struct iovec *) &iov,
- 		iov_count
- 	);
- 
-+	if (pkt_len < 0)
-+		goto drop;
++	len = vsnprintf(frag_container->fragment, len, fmt, args);
++	spin_lock_irqsave(&stream->lock, flags);
++	stream->length += len;
++	list_add_tail(&frag_container->node, &stream->fragments);
++	spin_unlock_irqrestore(&stream->lock, flags);
 +
- 	netif_trans_update(vp->dev);
- 	netif_wake_queue(vp->dev);
- 
-@@ -911,6 +921,8 @@ static int writev_tx(struct vector_private *vp, struct sk_buff *skb)
- drop:
- 	vp->dev->stats.tx_dropped++;
- 	consume_skb(skb);
-+	if (pkt_len < 0)
-+		vp->in_error = true;
- 	return pkt_len;
- }
- 
-@@ -939,6 +951,9 @@ static int vector_mmsg_rx(struct vector_private *vp)
- 	packet_count = uml_vector_recvmmsg(
- 		vp->fds->rx_fd, qi->mmsg_vector, qi->max_depth, 0);
- 
-+	if (packet_count < 0)
-+		vp->in_error = true;
++	return 0;
++}
 +
- 	if (packet_count <= 0)
- 		return packet_count;
- 
-@@ -1008,15 +1023,18 @@ static int vector_mmsg_rx(struct vector_private *vp)
- static void vector_rx(struct vector_private *vp)
- {
- 	int err;
-+	int iter = 0;
- 
- 	if ((vp->options & VECTOR_RX) > 0)
--		while ((err = vector_mmsg_rx(vp)) > 0)
--			;
-+		while (((err = vector_mmsg_rx(vp)) > 0) && (iter < MAX_ITERATIONS))
-+			iter++;
- 	else
--		while ((err = vector_legacy_rx(vp)) > 0)
--			;
-+		while (((err = vector_legacy_rx(vp)) > 0) && (iter < MAX_ITERATIONS))
-+			iter++;
- 	if ((err != 0) && net_ratelimit())
- 		netdev_err(vp->dev, "vector_rx: error(%d)\n", err);
-+	if (iter == MAX_ITERATIONS)
-+		netdev_err(vp->dev, "vector_rx: device stuck, remote end may have closed the connection\n");
- }
- 
- static int vector_net_start_xmit(struct sk_buff *skb, struct net_device *dev)
-@@ -1024,6 +1042,13 @@ static int vector_net_start_xmit(struct sk_buff *skb, struct net_device *dev)
- 	struct vector_private *vp = netdev_priv(dev);
- 	int queue_depth = 0;
- 
-+	if (vp->in_error) {
-+		deactivate_fd(vp->fds->rx_fd, vp->rx_irq);
-+		if ((vp->fds->rx_fd != vp->fds->tx_fd) && (vp->tx_irq != 0))
-+			deactivate_fd(vp->fds->tx_fd, vp->tx_irq);
-+		return NETDEV_TX_BUSY;
++int string_stream_add(struct string_stream *stream, const char *fmt, ...)
++{
++	va_list args;
++	int result;
++
++	va_start(args, fmt);
++	result = string_stream_vadd(stream, fmt, args);
++	va_end(args);
++
++	return result;
++}
++
++void string_stream_clear(struct string_stream *stream)
++{
++	struct string_stream_fragment *frag_container, *frag_container_safe;
++	unsigned long flags;
++
++	spin_lock_irqsave(&stream->lock, flags);
++	list_for_each_entry_safe(frag_container,
++				 frag_container_safe,
++				 &stream->fragments,
++				 node) {
++		list_del(&frag_container->node);
++		kfree(frag_container->fragment);
++		kfree(frag_container);
 +	}
++	stream->length = 0;
++	spin_unlock_irqrestore(&stream->lock, flags);
++}
 +
- 	if ((vp->options & VECTOR_TX) == 0) {
- 		writev_tx(vp, skb);
- 		return NETDEV_TX_OK;
-@@ -1134,6 +1159,7 @@ static int vector_net_close(struct net_device *dev)
- 	vp->fds = NULL;
- 	spin_lock_irqsave(&vp->lock, flags);
- 	vp->opened = false;
-+	vp->in_error = false;
- 	spin_unlock_irqrestore(&vp->lock, flags);
- 	return 0;
- }
-@@ -1501,7 +1527,8 @@ static void vector_eth_configure(
- 		.transport_data		= NULL,
- 		.in_write_poll		= false,
- 		.coalesce		= 2,
--		.req_size		= get_req_size(def)
-+		.req_size		= get_req_size(def),
-+		.in_error		= false
- 		});
- 
- 	dev->features = dev->hw_features = (NETIF_F_SG | NETIF_F_FRAGLIST);
-diff --git a/arch/um/drivers/vector_kern.h b/arch/um/drivers/vector_kern.h
-index 0b0a767b9076..684d2e60ad86 100644
---- a/arch/um/drivers/vector_kern.h
-+++ b/arch/um/drivers/vector_kern.h
-@@ -116,6 +116,7 @@ struct vector_private {
- 	bool rexmit_scheduled;
- 	bool opened;
- 	bool in_write_poll;
-+	bool in_error;
- 
- 	/* ethtool stats */
- 
-diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
-index 6dd9b4379507..00c34ef31be5 100644
---- a/arch/um/drivers/vector_user.c
-+++ b/arch/um/drivers/vector_user.c
-@@ -619,7 +619,7 @@ int uml_vector_writev(int fd, void *hdr, int iovcount)
- 	int n;
- 
- 	CATCH_EINTR(n = writev(fd, (struct iovec *) hdr,  iovcount));
--	if ((n < 0) && (errno == EAGAIN))
-+	if ((n < 0) && (errno == EAGAIN) && (errno == ENOBUFS))
- 		return 0;
- 	if (n >= 0)
- 		return n;
-@@ -636,7 +636,7 @@ int uml_vector_sendmmsg(
- 	int n;
- 
- 	CATCH_EINTR(n = sendmmsg(fd, (struct mmsghdr *) msgvec, vlen, flags));
--	if ((n < 0) && (errno == EAGAIN))
-+	if ((n < 0) && (errno == EAGAIN) && (errno == ENOBUFS))
- 		return 0;
- 	if (n >= 0)
- 		return n;
++char *string_stream_get_string(struct string_stream *stream)
++{
++	struct string_stream_fragment *frag_container;
++	size_t buf_len = stream->length + 1; /* +1 for null byte. */
++	char *buf;
++	unsigned long flags;
++
++	buf = kzalloc(buf_len, GFP_KERNEL);
++	if (!buf)
++		return NULL;
++
++	spin_lock_irqsave(&stream->lock, flags);
++	list_for_each_entry(frag_container, &stream->fragments, node)
++		strlcat(buf, frag_container->fragment, buf_len);
++	spin_unlock_irqrestore(&stream->lock, flags);
++
++	return buf;
++}
++
++bool string_stream_is_empty(struct string_stream *stream)
++{
++	bool is_empty;
++	unsigned long flags;
++
++	spin_lock_irqsave(&stream->lock, flags);
++	is_empty = list_empty(&stream->fragments);
++	spin_unlock_irqrestore(&stream->lock, flags);
++
++	return is_empty;
++}
++
++static int string_stream_init(struct kunit_resource *res, void *context)
++{
++	struct string_stream *stream;
++
++	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
++	if (!stream)
++		return -ENOMEM;
++
++	res->allocation = stream;
++	INIT_LIST_HEAD(&stream->fragments);
++	spin_lock_init(&stream->lock);
++
++	return 0;
++}
++
++static void string_stream_free(struct kunit_resource *res)
++{
++	struct string_stream *stream = res->allocation;
++
++	string_stream_clear(stream);
++	kfree(stream);
++}
++
++struct string_stream *alloc_string_stream(struct kunit *test)
++{
++	struct kunit_resource *res;
++
++	res = kunit_alloc_resource(test,
++				   string_stream_init,
++				   string_stream_free,
++				   NULL);
++
++	if (!res)
++		return NULL;
++
++	return res->allocation;
++}
 -- 
-2.11.0
+2.22.0.410.gd8fdbe21b5-goog
 
 
 _______________________________________________
