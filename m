@@ -1,14 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab6.miniserver.com ([5.153.251.140]
- helo=www.kot-begemot.co.uk)
+Received: from mail-pf1-x443.google.com ([2607:f8b0:4864:20::443])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hlqm7-0006ff-HQ
- for linux-um@lists.infradead.org; Fri, 12 Jul 2019 08:19:29 +0000
-From: anton.ivanov@cambridgegreys.com
-Subject: [RESEND PATCHv2 1/3] um: Add legacy tap support and rename existing
- vector to hybrid
-Date: Fri, 12 Jul 2019 09:19:12 +0100
-Message-Id: <20190712081914.3074-1-anton.ivanov@cambridgegreys.com>
+ id 1hkaRF-0007M9-Eu
+ for linux-um@lists.infradead.org; Mon, 08 Jul 2019 20:40:43 +0000
+Received: by mail-pf1-x443.google.com with SMTP id i189so8146170pfg.10
+ for <linux-um@lists.infradead.org>; Mon, 08 Jul 2019 13:40:39 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190704003615.204860-1-brendanhiggins@google.com>
+ <20190704003615.204860-2-brendanhiggins@google.com>
+ <20190705201505.GA19023@42.do-not-panic.com>
+ <CAFd5g45cF9rYc8YupnCgd=7xz_yW+_TMp_L+cSFUBW7d9njnVQ@mail.gmail.com>
+In-Reply-To: <CAFd5g45cF9rYc8YupnCgd=7xz_yW+_TMp_L+cSFUBW7d9njnVQ@mail.gmail.com>
+From: Brendan Higgins <brendanhiggins@google.com>
+Date: Mon, 8 Jul 2019 13:40:26 -0700
+Message-ID: <CAFd5g44XV0zDpNgyDPSFMq86kSvwGb_WjhxzK=AoDMjwXD5CgQ@mail.gmail.com>
+Subject: Re: [PATCH v6 01/18] kunit: test: add KUnit test runner core
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -17,409 +23,98 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Petr Mladek <pmladek@suse.com>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, Amir Goldstein <amir73il@gmail.com>, dri-devel <dri-devel@lists.freedesktop.org>, Sasha Levin <Alexander.Levin@microsoft.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Michael Ellerman <mpe@ellerman.id.au>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, shuah <shuah@kernel.org>, Rob Herring <robh@kernel.org>, linux-nvdimm <linux-nvdimm@lists.01.org>, Frank Rowand <frowand.list@gmail.com>, Knut Omang <knut.omang@oracle.com>, Kieran Bingham <kieran.bingham@ideasonboard.com>, wfg@linux.intel.com, Joel Stanley <joel@jms.id.au>, David Rientjes <rientjes@google.com>, Jeff Dike <jdike@addtoit.com>, Dan Carpenter <dan.carpenter@oracle.com>, devicetree <devicetree@vger.kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, "Bird, Timothy  <Tim.Bird@sony.com>, linux-um@lists.infradead.org, Steven Rostedt" <rostedt@goodmis.org>, Julia Lawall <julia.lawall@lip6.fr>, Josh Poimboeuf <jpoimboe@redhat.com>, kunit-dev@googlegroups.com, Theodore Ts'o <tytso@mit.edu>, Richard Weinberger <richard@nod.at>, Stephen Boyd <sboyd@kernel.org>, Greg KH <gregkh@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@google.com>, linux-fsdevel@vger.kernel.org, Logan Gunthorpe <logang@deltatee.com>, Kevin Hilman <khilman@baylibre.com>
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+On Mon, Jul 8, 2019 at 11:08 AM Brendan Higgins
+<brendanhiggins@google.com> wrote:
+>
+> On Fri, Jul 5, 2019 at 1:15 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
+> >
+> > On Wed, Jul 03, 2019 at 05:35:58PM -0700, Brendan Higgins wrote:
+> > > Add core facilities for defining unit tests; this provides a common way
+> > > to define test cases, functions that execute code which is under test
+> > > and determine whether the code under test behaves as expected; this also
+> > > provides a way to group together related test cases in test suites (here
+> > > we call them test_modules).
+> > >
+> > > Just define test cases and how to execute them for now; setting
+> > > expectations on code will be defined later.
+> > >
+> > > Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+> > > Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+> >
+> > Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
+> >
+> > But a nitpick below, I think that can be fixed later with a follow up
+> > patch.
+> >
+> > > +/**
+> > > + * struct kunit - represents a running instance of a test.
+> > > + * @priv: for user to store arbitrary data. Commonly used to pass data created
+> > > + * in the init function (see &struct kunit_suite).
+> > > + *
+> > > + * Used to store information about the current context under which the test is
+> > > + * running. Most of this data is private and should only be accessed indirectly
+> > > + * via public functions; the one exception is @priv which can be used by the
+> > > + * test writer to store arbitrary data.
+> > > + *
+> > > + * A brief note on locking:
+> > > + *
+> > > + * First off, we need to lock because in certain cases a user may want to use an
+> > > + * expectation in a thread other than the thread that the test case is running
+> > > + * in.
+> >
+> > This as a prefix to the struct without a lock seems odd. It would be
+> > clearer I think if you'd explain here what locking mechanism we decided
+> > to use and why it suffices today.
+>
+> Whoops, sorry this should have been in the next patch. Will fix.
 
-1. Adds legacy tap support
-2. Renames tap+raw as hybrid
+Err..no, this shouldn't be here at all. Sorry about that. I just need
+to rewrite the comment.
 
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
----
- arch/um/drivers/vector_kern.c       |   2 +
- arch/um/drivers/vector_transports.c |  29 +++++-
- arch/um/drivers/vector_user.c       | 203 +++++++++++++++++++++---------------
- arch/um/drivers/vector_user.h       |   4 +-
- 4 files changed, 151 insertions(+), 87 deletions(-)
-
-diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-index 046fa9ea0ccc..e314a60cdc98 100644
---- a/arch/um/drivers/vector_kern.c
-+++ b/arch/um/drivers/vector_kern.c
-@@ -186,6 +186,8 @@ static int get_transport_options(struct arglist *def)
- 
- 
- 	if (strncmp(transport, TRANS_TAP, TRANS_TAP_LEN) == 0)
-+		return 0;
-+	if (strncmp(transport, TRANS_HYBRID, TRANS_HYBRID_LEN) == 0)
- 		return (vec_rx | VECTOR_BPF);
- 	if (strncmp(transport, TRANS_RAW, TRANS_RAW_LEN) == 0)
- 		return (vec_rx | vec_tx | VECTOR_QDISC_BYPASS);
-diff --git a/arch/um/drivers/vector_transports.c b/arch/um/drivers/vector_transports.c
-index 77e4ebc206ae..2999f3bd1781 100644
---- a/arch/um/drivers/vector_transports.c
-+++ b/arch/um/drivers/vector_transports.c
-@@ -418,7 +418,7 @@ static int build_raw_transport_data(struct vector_private *vp)
- 	return 0;
- }
- 
--static int build_tap_transport_data(struct vector_private *vp)
-+static int build_hybrid_transport_data(struct vector_private *vp)
- {
- 	if (uml_raw_enable_vnet_headers(vp->fds->rx_fd)) {
- 		vp->form_header = &raw_form_header;
-@@ -432,7 +432,7 @@ static int build_tap_transport_data(struct vector_private *vp)
- 				NETIF_F_TSO | NETIF_F_GSO | NETIF_F_GRO);
- 		netdev_info(
- 			vp->dev,
--			"tap/raw: using vnet headers for tso and tx/rx checksum"
-+			"tap/raw hybrid: using vnet headers for tso and tx/rx checksum"
- 		);
- 	} else {
- 		return 0; /* do not try to enable tap too if raw failed */
-@@ -442,6 +442,29 @@ static int build_tap_transport_data(struct vector_private *vp)
- 	return -1;
- }
- 
-+static int build_tap_transport_data(struct vector_private *vp)
-+{
-+	/* "Pure" tap uses the same fd for rx and tx */
-+	if (uml_tap_enable_vnet_headers(vp->fds->tx_fd)) {
-+		vp->form_header = &raw_form_header;
-+		vp->verify_header = &raw_verify_header;
-+		vp->header_size = sizeof(struct virtio_net_hdr);
-+		vp->rx_header_size = sizeof(struct virtio_net_hdr);
-+		vp->dev->hw_features |=
-+			(NETIF_F_TSO | NETIF_F_GSO | NETIF_F_GRO);
-+		vp->dev->features |=
-+			(NETIF_F_RXCSUM | NETIF_F_HW_CSUM |
-+				NETIF_F_TSO | NETIF_F_GSO | NETIF_F_GRO);
-+		netdev_info(
-+			vp->dev,
-+			"tap: using vnet headers for tso and tx/rx checksum"
-+		);
-+		return 0;
-+	}
-+	return -1;
-+}
-+
-+
- int build_transport_data(struct vector_private *vp)
- {
- 	char *transport = uml_vector_fetch_arg(vp->parsed, "transport");
-@@ -454,6 +477,8 @@ int build_transport_data(struct vector_private *vp)
- 		return build_raw_transport_data(vp);
- 	if (strncmp(transport, TRANS_TAP, TRANS_TAP_LEN) == 0)
- 		return build_tap_transport_data(vp);
-+	if (strncmp(transport, TRANS_HYBRID, TRANS_HYBRID_LEN) == 0)
-+		return build_hybrid_transport_data(vp);
- 	return 0;
- }
- 
-diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
-index 3d8cdbdb4e66..af1a1da432ca 100644
---- a/arch/um/drivers/vector_user.c
-+++ b/arch/um/drivers/vector_user.c
-@@ -115,12 +115,76 @@ struct arglist *uml_parse_vector_ifspec(char *arg)
- 
- #define PATH_NET_TUN "/dev/net/tun"
- 
--static struct vector_fds *user_init_tap_fds(struct arglist *ifspec)
-+
-+static int create_tap_fd(char *iface)
- {
- 	struct ifreq ifr;
- 	int fd = -1;
--	struct sockaddr_ll sock;
- 	int err = -ENOMEM, offload;
-+
-+	fd = open(PATH_NET_TUN, O_RDWR);
-+	if (fd < 0) {
-+		printk(UM_KERN_ERR "uml_tap: failed to open tun device\n");
-+		goto tap_fd_cleanup;
-+	}
-+	memset(&ifr, 0, sizeof(ifr));
-+	ifr.ifr_flags = IFF_TAP | IFF_NO_PI | IFF_VNET_HDR;
-+	strncpy((char *)&ifr.ifr_name, iface, sizeof(ifr.ifr_name) - 1);
-+
-+	err = ioctl(fd, TUNSETIFF, (void *) &ifr);
-+	if (err != 0) {
-+		printk(UM_KERN_ERR "uml_tap: failed to select tap interface\n");
-+		goto tap_fd_cleanup;
-+	}
-+
-+	offload = TUN_F_CSUM | TUN_F_TSO4 | TUN_F_TSO6;
-+	ioctl(fd, TUNSETOFFLOAD, offload);
-+	return fd;
-+tap_fd_cleanup:
-+	if (fd >= 0)
-+		os_close_file(fd);
-+	return err;
-+}
-+
-+static int create_raw_fd(char *iface, int flags, int proto)
-+{
-+	struct ifreq ifr;
-+	int fd = -1;
-+	struct sockaddr_ll sock;
-+	int err = -ENOMEM;
-+
-+	fd = socket(AF_PACKET, SOCK_RAW, flags);
-+	if (fd == -1) {
-+		err = -errno;
-+		goto raw_fd_cleanup;
-+	}
-+	memset(&ifr, 0, sizeof(ifr));
-+	strncpy((char *)&ifr.ifr_name, iface, sizeof(ifr.ifr_name) - 1);
-+	if (ioctl(fd, SIOCGIFINDEX, (void *) &ifr) < 0) {
-+		err = -errno;
-+		goto raw_fd_cleanup;
-+	}
-+
-+	sock.sll_family = AF_PACKET;
-+	sock.sll_protocol = htons(proto);
-+	sock.sll_ifindex = ifr.ifr_ifindex;
-+
-+	if (bind(fd,
-+		(struct sockaddr *) &sock, sizeof(struct sockaddr_ll)) < 0) {
-+		err = -errno;
-+		goto raw_fd_cleanup;
-+	}
-+	return fd;
-+raw_fd_cleanup:
-+	printk(UM_KERN_ERR "user_init_raw: init failed, error %d", err);
-+	if (fd >= 0)
-+		os_close_file(fd);
-+	return err;
-+}
-+
-+static struct vector_fds *user_init_tap_fds(struct arglist *ifspec)
-+{
-+	int fd = -1;
- 	char *iface;
- 	struct vector_fds *result = NULL;
- 
-@@ -142,117 +206,88 @@ static struct vector_fds *user_init_tap_fds(struct arglist *ifspec)
- 
- 	/* TAP */
- 
--	fd = open(PATH_NET_TUN, O_RDWR);
-+	fd = create_tap_fd(iface);
- 	if (fd < 0) {
--		printk(UM_KERN_ERR "uml_tap: failed to open tun device\n");
-+		printk(UM_KERN_ERR "uml_tap: failed to create tun interface\n");
- 		goto tap_cleanup;
- 	}
- 	result->tx_fd = fd;
--	memset(&ifr, 0, sizeof(ifr));
--	ifr.ifr_flags = IFF_TAP | IFF_NO_PI | IFF_VNET_HDR;
--	strncpy((char *)&ifr.ifr_name, iface, sizeof(ifr.ifr_name) - 1);
-+	result->rx_fd = fd;
-+	return result;
-+tap_cleanup:
-+	printk(UM_KERN_ERR "user_init_tap: init failed, error %d", fd);
-+	if (result != NULL)
-+		kfree(result);
-+	return NULL;
-+}
- 
--	err = ioctl(fd, TUNSETIFF, (void *) &ifr);
--	if (err != 0) {
--		printk(UM_KERN_ERR "uml_tap: failed to select tap interface\n");
--		goto tap_cleanup;
-+static struct vector_fds *user_init_hybrid_fds(struct arglist *ifspec)
-+{
-+	char *iface;
-+	struct vector_fds *result = NULL;
-+
-+	iface = uml_vector_fetch_arg(ifspec, TOKEN_IFNAME);
-+	if (iface == NULL) {
-+		printk(UM_KERN_ERR "uml_tap: failed to parse interface spec\n");
-+		goto hybrid_cleanup;
- 	}
- 
--	offload = TUN_F_CSUM | TUN_F_TSO4 | TUN_F_TSO6;
--	ioctl(fd, TUNSETOFFLOAD, offload);
-+	result = uml_kmalloc(sizeof(struct vector_fds), UM_GFP_KERNEL);
-+	if (result == NULL) {
-+		printk(UM_KERN_ERR "uml_tap: failed to allocate file descriptors\n");
-+		goto hybrid_cleanup;
-+	}
-+	result->rx_fd = -1;
-+	result->tx_fd = -1;
-+	result->remote_addr = NULL;
-+	result->remote_addr_size = 0;
- 
--	/* RAW */
-+	/* TAP */
- 
--	fd = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
--	if (fd == -1) {
--		printk(UM_KERN_ERR
--			"uml_tap: failed to create socket: %i\n", -errno);
--		goto tap_cleanup;
--	}
--	result->rx_fd = fd;
--	memset(&ifr, 0, sizeof(ifr));
--	strncpy((char *)&ifr.ifr_name, iface, sizeof(ifr.ifr_name) - 1);
--	if (ioctl(fd, SIOCGIFINDEX, (void *) &ifr) < 0) {
--		printk(UM_KERN_ERR
--			"uml_tap: failed to set interface: %i\n", -errno);
--		goto tap_cleanup;
-+	result->tx_fd = create_tap_fd(iface);
-+	if (result->tx_fd < 0) {
-+		printk(UM_KERN_ERR "uml_tap: failed to create tun interface: %i\n", result->tx_fd);
-+		goto hybrid_cleanup;
- 	}
- 
--	sock.sll_family = AF_PACKET;
--	sock.sll_protocol = htons(ETH_P_ALL);
--	sock.sll_ifindex = ifr.ifr_ifindex;
-+	/* RAW */
- 
--	if (bind(fd,
--		(struct sockaddr *) &sock, sizeof(struct sockaddr_ll)) < 0) {
-+	result->rx_fd = create_raw_fd(iface, ETH_P_ALL, ETH_P_ALL);
-+	if (result->rx_fd == -1) {
- 		printk(UM_KERN_ERR
--			"user_init_tap: failed to bind raw pair, err %d\n",
--				-errno);
--		goto tap_cleanup;
-+			"uml_tap: failed to create paired raw socket: %i\n", result->rx_fd);
-+		goto hybrid_cleanup;
- 	}
- 	return result;
--tap_cleanup:
--	printk(UM_KERN_ERR "user_init_tap: init failed, error %d", err);
--	if (result != NULL) {
--		if (result->rx_fd >= 0)
--			os_close_file(result->rx_fd);
--		if (result->tx_fd >= 0)
--			os_close_file(result->tx_fd);
-+hybrid_cleanup:
-+	printk(UM_KERN_ERR "user_init_hybrid: init failed");
-+	if (result != NULL)
- 		kfree(result);
--	}
- 	return NULL;
- }
- 
- 
- static struct vector_fds *user_init_raw_fds(struct arglist *ifspec)
- {
--	struct ifreq ifr;
- 	int rxfd = -1, txfd = -1;
--	struct sockaddr_ll sock;
- 	int err = -ENOMEM;
- 	char *iface;
- 	struct vector_fds *result = NULL;
- 
- 	iface = uml_vector_fetch_arg(ifspec, TOKEN_IFNAME);
- 	if (iface == NULL)
--		goto cleanup;
-+		goto raw_cleanup;
- 
--	rxfd = socket(AF_PACKET, SOCK_RAW, ETH_P_ALL);
-+	rxfd = create_raw_fd(iface, ETH_P_ALL, ETH_P_ALL);
- 	if (rxfd == -1) {
- 		err = -errno;
--		goto cleanup;
-+		goto raw_cleanup;
- 	}
--	txfd = socket(AF_PACKET, SOCK_RAW, 0); /* Turn off RX on this fd */
-+	txfd = create_raw_fd(iface, 0, ETH_P_IP); /* Turn off RX on this fd */
- 	if (txfd == -1) {
- 		err = -errno;
--		goto cleanup;
--	}
--	memset(&ifr, 0, sizeof(ifr));
--	strncpy((char *)&ifr.ifr_name, iface, sizeof(ifr.ifr_name) - 1);
--	if (ioctl(rxfd, SIOCGIFINDEX, (void *) &ifr) < 0) {
--		err = -errno;
--		goto cleanup;
--	}
--
--	sock.sll_family = AF_PACKET;
--	sock.sll_protocol = htons(ETH_P_ALL);
--	sock.sll_ifindex = ifr.ifr_ifindex;
--
--	if (bind(rxfd,
--		(struct sockaddr *) &sock, sizeof(struct sockaddr_ll)) < 0) {
--		err = -errno;
--		goto cleanup;
-+		goto raw_cleanup;
- 	}
--
--	sock.sll_family = AF_PACKET;
--	sock.sll_protocol = htons(ETH_P_IP);
--	sock.sll_ifindex = ifr.ifr_ifindex;
--
--	if (bind(txfd,
--		(struct sockaddr *) &sock, sizeof(struct sockaddr_ll)) < 0) {
--		err = -errno;
--		goto cleanup;
--	}
--
- 	result = uml_kmalloc(sizeof(struct vector_fds), UM_GFP_KERNEL);
- 	if (result != NULL) {
- 		result->rx_fd = rxfd;
-@@ -261,13 +296,10 @@ static struct vector_fds *user_init_raw_fds(struct arglist *ifspec)
- 		result->remote_addr_size = 0;
- 	}
- 	return result;
--cleanup:
-+raw_cleanup:
- 	printk(UM_KERN_ERR "user_init_raw: init failed, error %d", err);
--	if (rxfd >= 0)
--		os_close_file(rxfd);
--	if (txfd >= 0)
--		os_close_file(txfd);
--	kfree(result);
-+	if (result != NULL)
-+		kfree(result);
- 	return NULL;
- }
- 
-@@ -457,6 +489,8 @@ struct vector_fds *uml_vector_user_open(
- 	}
- 	if (strncmp(transport, TRANS_RAW, TRANS_RAW_LEN) == 0)
- 		return user_init_raw_fds(parsed);
-+	if (strncmp(transport, TRANS_HYBRID, TRANS_HYBRID_LEN) == 0)
-+		return user_init_hybrid_fds(parsed);
- 	if (strncmp(transport, TRANS_TAP, TRANS_TAP_LEN) == 0)
- 		return user_init_tap_fds(parsed);
- 	if (strncmp(transport, TRANS_GRE, TRANS_GRE_LEN) == 0)
-@@ -483,8 +517,9 @@ int uml_vector_sendmsg(int fd, void *hdr, int flags)
- int uml_vector_recvmsg(int fd, void *hdr, int flags)
- {
- 	int n;
-+	struct msghdr *msg = (struct msghdr *) hdr;
- 
--	CATCH_EINTR(n = recvmsg(fd, (struct msghdr *) hdr,  flags));
-+	CATCH_EINTR(n = readv(fd, msg->msg_iov, msg->msg_iovlen));
- 	if ((n < 0) && (errno == EAGAIN))
- 		return 0;
- 	if (n >= 0)
-diff --git a/arch/um/drivers/vector_user.h b/arch/um/drivers/vector_user.h
-index d7cbff73b7ff..6bf50cf78ad0 100644
---- a/arch/um/drivers/vector_user.h
-+++ b/arch/um/drivers/vector_user.h
-@@ -16,13 +16,15 @@
- #define TRANS_TAP "tap"
- #define TRANS_TAP_LEN strlen(TRANS_TAP)
- 
--
- #define TRANS_GRE "gre"
- #define TRANS_GRE_LEN strlen(TRANS_RAW)
- 
- #define TRANS_L2TPV3 "l2tpv3"
- #define TRANS_L2TPV3_LEN strlen(TRANS_L2TPV3)
- 
-+#define TRANS_HYBRID "hybrid"
-+#define TRANS_HYBRID_LEN strlen(TRANS_HYBRID)
-+
- #ifndef IPPROTO_GRE
- #define IPPROTO_GRE 0x2F
- #endif
--- 
-2.11.0
-
+> > > +/**
+> > > + * suite_test() - used to register a &struct kunit_suite with KUnit.
+> >
+> > You mean kunit_test_suite()?
+>
+> Yep, sorry about that. Will fix.
+>
+> > > + * @suite: a statically allocated &struct kunit_suite.
+> > > + *
+> > > + * Registers @suite with the test framework. See &struct kunit_suite for more
+> > > + * information.
+> > > + *
+> > > + * NOTE: Currently KUnit tests are all run as late_initcalls; this means that
+> > > + * they cannot test anything where tests must run at a different init phase. One
+> > > + * significant restriction resulting from this is that KUnit cannot reliably
+> > > + * test anything that is initialize in the late_init phase.
+> >                             initialize prior to the late init phase.
+> >
+> >
+> > That is, this is useless to test things running early.
+>
+> Yeah, I can add that phrasing in.
+>
+> > > + *
+> > > + * TODO(brendanhiggins@google.com): Don't run all KUnit tests as late_initcalls.
+> > > + * I have some future work planned to dispatch all KUnit tests from the same
+> > > + * place, and at the very least to do so after everything else is definitely
+> > > + * initialized.
+> >
+> > TODOs are odd to be adding to documentation, this is just not common
+> > place practice. The NOTE should suffice for you.
+>
+> Because it is a kernel doc? Would you usually make a separate
+> non-kernel doc comment for a TODO? I guess that makes sense.
+>
+> Thanks!
 
 _______________________________________________
 linux-um mailing list
