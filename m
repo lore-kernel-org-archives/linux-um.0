@@ -1,17 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x549.google.com ([2607:f8b0:4864:20::549])
+Received: from ivanoab6.miniserver.com ([5.153.251.140]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hnZAn-0006KE-NX
- for linux-um@lists.infradead.org; Wed, 17 Jul 2019 01:56:03 +0000
-Received: by mail-pg1-x549.google.com with SMTP id k20so13722624pgg.15
- for <linux-um@lists.infradead.org>; Tue, 16 Jul 2019 18:55:59 -0700 (PDT)
-Date: Tue, 16 Jul 2019 18:55:27 -0700
-In-Reply-To: <20190717015543.152251-1-brendanhiggins@google.com>
-Message-Id: <20190717015543.152251-3-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20190717015543.152251-1-brendanhiggins@google.com>
-Subject: [PATCH v11 02/18] kunit: test: add test resource management API
-From: Brendan Higgins <brendanhiggins@google.com>
+ id 1hn4IP-00043a-FJ
+ for linux-um@lists.infradead.org; Mon, 15 Jul 2019 16:57:51 +0000
+Subject: Re: [RESEND PATCHv2 2/3] um: Added support for unix socket transports
+ and bess transport
+References: <20190712081914.3074-1-anton.ivanov@cambridgegreys.com>
+ <20190712081914.3074-2-anton.ivanov@cambridgegreys.com>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <07abb620-fcce-192b-1d26-3def9d1cdb46@cambridgegreys.com>
+Date: Mon, 15 Jul 2019 17:57:41 +0100
+MIME-Version: 1.0
+In-Reply-To: <20190712081914.3074-2-anton.ivanov@cambridgegreys.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,316 +22,219 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+To: linux-um@lists.infradead.org
+Cc: richard@nod.at
 
-Create a common API for test managed resources like memory and test
-objects. A lot of times a test will want to set up infrastructure to be
-used in test cases; this could be anything from just wanting to allocate
-some memory to setting up a driver stack; this defines facilities for
-creating "test resources" which are managed by the test infrastructure
-and are automatically cleaned up at the conclusion of the test.
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
----
- include/kunit/test.h | 143 +++++++++++++++++++++++++++++++++++++++++++
- kunit/test.c         |  92 ++++++++++++++++++++++++++++
- 2 files changed, 235 insertions(+)
 
-diff --git a/include/kunit/test.h b/include/kunit/test.h
-index e0b34acb9ee4e..d0bf112910caf 100644
---- a/include/kunit/test.h
-+++ b/include/kunit/test.h
-@@ -10,6 +10,70 @@
- #define _KUNIT_TEST_H
- 
- #include <linux/types.h>
-+#include <linux/slab.h>
-+
-+struct kunit_resource;
-+
-+typedef int (*kunit_resource_init_t)(struct kunit_resource *, void *);
-+typedef void (*kunit_resource_free_t)(struct kunit_resource *);
-+
-+/**
-+ * struct kunit_resource - represents a *test managed resource*
-+ * @allocation: for the user to store arbitrary data.
-+ * @free: a user supplied function to free the resource. Populated by
-+ * kunit_alloc_resource().
-+ *
-+ * Represents a *test managed resource*, a resource which will automatically be
-+ * cleaned up at the end of a test case.
-+ *
-+ * Example:
-+ *
-+ * .. code-block:: c
-+ *
-+ *	struct kunit_kmalloc_params {
-+ *		size_t size;
-+ *		gfp_t gfp;
-+ *	};
-+ *
-+ *	static int kunit_kmalloc_init(struct kunit_resource *res, void *context)
-+ *	{
-+ *		struct kunit_kmalloc_params *params = context;
-+ *		res->allocation = kmalloc(params->size, params->gfp);
-+ *
-+ *		if (!res->allocation)
-+ *			return -ENOMEM;
-+ *
-+ *		return 0;
-+ *	}
-+ *
-+ *	static void kunit_kmalloc_free(struct kunit_resource *res)
-+ *	{
-+ *		kfree(res->allocation);
-+ *	}
-+ *
-+ *	void *kunit_kmalloc(struct kunit *test, size_t size, gfp_t gfp)
-+ *	{
-+ *		struct kunit_kmalloc_params params;
-+ *		struct kunit_resource *res;
-+ *
-+ *		params.size = size;
-+ *		params.gfp = gfp;
-+ *
-+ *		res = kunit_alloc_resource(test, kunit_kmalloc_init,
-+ *			kunit_kmalloc_free, &params);
-+ *		if (res)
-+ *			return res->allocation;
-+ *
-+ *		return NULL;
-+ *	}
-+ */
-+struct kunit_resource {
-+	void *allocation;
-+	kunit_resource_free_t free;
-+
-+	/* private: internal use only. */
-+	struct list_head node;
-+};
- 
- struct kunit;
- 
-@@ -109,6 +173,13 @@ struct kunit {
- 	 * have terminated.
- 	 */
- 	bool success; /* Read only after test_case finishes! */
-+	spinlock_t lock; /* Gaurds all mutable test state. */
-+	/*
-+	 * Because resources is a list that may be updated multiple times (with
-+	 * new resources) from any thread associated with a test case, we must
-+	 * protect it with some type of lock.
-+	 */
-+	struct list_head resources; /* Protected by lock. */
- };
- 
- void kunit_init_test(struct kunit *test, const char *name);
-@@ -141,6 +212,78 @@ int kunit_run_tests(struct kunit_suite *suite);
- 		}							       \
- 		late_initcall(kunit_suite_init##suite)
- 
-+/*
-+ * Like kunit_alloc_resource() below, but returns the struct kunit_resource
-+ * object that contains the allocation. This is mostly for testing purposes.
-+ */
-+struct kunit_resource *kunit_alloc_and_get_resource(struct kunit *test,
-+						    kunit_resource_init_t init,
-+						    kunit_resource_free_t free,
-+						    gfp_t internal_gfp,
-+						    void *context);
-+
-+/**
-+ * kunit_alloc_resource() - Allocates a *test managed resource*.
-+ * @test: The test context object.
-+ * @init: a user supplied function to initialize the resource.
-+ * @free: a user supplied function to free the resource.
-+ * @internal_gfp: gfp to use for internal allocations, if unsure, use GFP_KERNEL
-+ * @context: for the user to pass in arbitrary data to the init function.
-+ *
-+ * Allocates a *test managed resource*, a resource which will automatically be
-+ * cleaned up at the end of a test case. See &struct kunit_resource for an
-+ * example.
-+ *
-+ * NOTE: KUnit needs to allocate memory for each kunit_resource object. You must
-+ * specify an @internal_gfp that is compatible with the use context of your
-+ * resource.
-+ */
-+static inline void *kunit_alloc_resource(struct kunit *test,
-+					 kunit_resource_init_t init,
-+					 kunit_resource_free_t free,
-+					 gfp_t internal_gfp,
-+					 void *context)
-+{
-+	struct kunit_resource *res;
-+
-+	res = kunit_alloc_and_get_resource(test, init, free, internal_gfp,
-+					   context);
-+
-+	if (res)
-+		return res->allocation;
-+
-+	return NULL;
-+}
-+
-+void kunit_free_resource(struct kunit *test, struct kunit_resource *res);
-+
-+/**
-+ * kunit_kmalloc() - Like kmalloc() except the allocation is *test managed*.
-+ * @test: The test context object.
-+ * @size: The size in bytes of the desired memory.
-+ * @gfp: flags passed to underlying kmalloc().
-+ *
-+ * Just like `kmalloc(...)`, except the allocation is managed by the test case
-+ * and is automatically cleaned up after the test case concludes. See &struct
-+ * kunit_resource for more information.
-+ */
-+void *kunit_kmalloc(struct kunit *test, size_t size, gfp_t gfp);
-+
-+/**
-+ * kunit_kzalloc() - Just like kunit_kmalloc(), but zeroes the allocation.
-+ * @test: The test context object.
-+ * @size: The size in bytes of the desired memory.
-+ * @gfp: flags passed to underlying kmalloc().
-+ *
-+ * See kzalloc() and kunit_kmalloc() for more information.
-+ */
-+static inline void *kunit_kzalloc(struct kunit *test, size_t size, gfp_t gfp)
-+{
-+	return kunit_kmalloc(test, size, gfp | __GFP_ZERO);
-+}
-+
-+void kunit_cleanup(struct kunit *test);
-+
- void __printf(3, 4) kunit_printk(const char *level,
- 				 const struct kunit *test,
- 				 const char *fmt, ...);
-diff --git a/kunit/test.c b/kunit/test.c
-index d302cff0f1dc7..4c178a817f2fe 100644
---- a/kunit/test.c
-+++ b/kunit/test.c
-@@ -122,6 +122,8 @@ static void kunit_print_test_case_ok_not_ok(struct kunit_case *test_case,
- 
- void kunit_init_test(struct kunit *test, const char *name)
- {
-+	spin_lock_init(&test->lock);
-+	INIT_LIST_HEAD(&test->resources);
- 	test->name = name;
- 	test->success = true;
- }
-@@ -153,6 +155,8 @@ static void kunit_run_case(struct kunit_suite *suite,
- 	if (suite->exit)
- 		suite->exit(&test);
- 
-+	kunit_cleanup(&test);
-+
- 	test_case->success = test.success;
- }
- 
-@@ -173,6 +177,94 @@ int kunit_run_tests(struct kunit_suite *suite)
- 	return 0;
- }
- 
-+struct kunit_resource *kunit_alloc_and_get_resource(struct kunit *test,
-+						    kunit_resource_init_t init,
-+						    kunit_resource_free_t free,
-+						    gfp_t internal_gfp,
-+						    void *context)
-+{
-+	struct kunit_resource *res;
-+	int ret;
-+
-+	res = kzalloc(sizeof(*res), internal_gfp);
-+	if (!res)
-+		return NULL;
-+
-+	ret = init(res, context);
-+	if (ret)
-+		return NULL;
-+
-+	res->free = free;
-+	spin_lock(&test->lock);
-+	list_add_tail(&res->node, &test->resources);
-+	spin_unlock(&test->lock);
-+
-+	return res;
-+}
-+
-+void kunit_free_resource(struct kunit *test, struct kunit_resource *res)
-+{
-+	lockdep_assert_held(&test->lock);
-+
-+	res->free(res);
-+	list_del(&res->node);
-+	kfree(res);
-+}
-+
-+struct kunit_kmalloc_params {
-+	size_t size;
-+	gfp_t gfp;
-+};
-+
-+static int kunit_kmalloc_init(struct kunit_resource *res, void *context)
-+{
-+	struct kunit_kmalloc_params *params = context;
-+
-+	res->allocation = kmalloc(params->size, params->gfp);
-+	if (!res->allocation)
-+		return -ENOMEM;
-+
-+	return 0;
-+}
-+
-+static void kunit_kmalloc_free(struct kunit_resource *res)
-+{
-+	kfree(res->allocation);
-+}
-+
-+void *kunit_kmalloc(struct kunit *test, size_t size, gfp_t gfp)
-+{
-+	struct kunit_kmalloc_params params = {
-+		.size = size,
-+		.gfp = gfp
-+	};
-+
-+	return kunit_alloc_resource(test,
-+				    kunit_kmalloc_init,
-+				    kunit_kmalloc_free,
-+				    gfp,
-+				    &params);
-+}
-+
-+void kunit_cleanup(struct kunit *test)
-+{
-+	struct kunit_resource *resource, *resource_safe;
-+
-+	spin_lock(&test->lock);
-+	/*
-+	 * test->resources is a stack - each allocation must be freed in the
-+	 * reverse order from which it was added since one resource may depend
-+	 * on another for its entire lifetime.
-+	 */
-+	list_for_each_entry_safe_reverse(resource,
-+					 resource_safe,
-+					 &test->resources,
-+					 node) {
-+		kunit_free_resource(test, resource);
-+	}
-+	spin_unlock(&test->lock);
-+}
-+
- void kunit_printk(const char *level,
- 		  const struct kunit *test,
- 		  const char *fmt, ...)
+On 12/07/2019 09:19, anton.ivanov@cambridgegreys.com wrote:
+> From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> 
+> This adds support for the UNIX domain socket transports in
+> general and implements a Netsys::BESS compatible transport
+> interface.
+> For details on Netsys::BESS see https://github.com/NetSys/bess
+> 
+> Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> ---
+>   arch/um/drivers/vector_transports.c | 11 +++++
+>   arch/um/drivers/vector_user.c       | 89 ++++++++++++++++++++++++++++++++++++-
+>   arch/um/drivers/vector_user.h       |  3 ++
+>   3 files changed, 102 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/um/drivers/vector_transports.c b/arch/um/drivers/vector_transports.c
+> index 2999f3bd1781..a43310cd84fb 100644
+> --- a/arch/um/drivers/vector_transports.c
+> +++ b/arch/um/drivers/vector_transports.c
+> @@ -465,6 +465,15 @@ static int build_tap_transport_data(struct vector_private *vp)
+>   }
+>   
+>   
+> +static int build_bess_transport_data(struct vector_private *vp)
+> +{
+> +	vp->form_header = NULL;
+> +	vp->verify_header = NULL;
+> +	vp->header_size = 0;
+> +	vp->rx_header_size = 0;
+> +	return 0;
+> +}
+> +
+>   int build_transport_data(struct vector_private *vp)
+>   {
+>   	char *transport = uml_vector_fetch_arg(vp->parsed, "transport");
+> @@ -479,6 +488,8 @@ int build_transport_data(struct vector_private *vp)
+>   		return build_tap_transport_data(vp);
+>   	if (strncmp(transport, TRANS_HYBRID, TRANS_HYBRID_LEN) == 0)
+>   		return build_hybrid_transport_data(vp);
+> +	if (strncmp(transport, TRANS_BESS, TRANS_BESS_LEN) == 0)
+> +		return build_bess_transport_data(vp);
+>   	return 0;
+>   }
+>   
+> diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
+> index af1a1da432ca..4c5228de7f53 100644
+> --- a/arch/um/drivers/vector_user.c
+> +++ b/arch/um/drivers/vector_user.c
+> @@ -18,6 +18,7 @@
+>   #include <fcntl.h>
+>   #include <sys/types.h>
+>   #include <sys/socket.h>
+> +#include <sys/un.h>
+>   #include <net/ethernet.h>
+>   #include <netinet/ip.h>
+>   #include <netinet/ether.h>
+> @@ -34,7 +35,8 @@
+>   
+>   #define ID_GRE 0
+>   #define ID_L2TPV3 1
+> -#define ID_MAX 1
+> +#define ID_BESS 2
+> +#define ID_MAX 2
+>   
+>   #define TOKEN_IFNAME "ifname"
+>   
+> @@ -44,8 +46,11 @@
+>   #define VNET_HDR_FAIL "could not enable vnet headers on fd %d"
+>   #define TUN_GET_F_FAIL "tapraw: TUNGETFEATURES failed: %s"
+>   #define L2TPV3_BIND_FAIL "l2tpv3_open : could not bind socket err=%i"
+> +#define UNIX_BIND_FAIL "unix_open : could not bind socket err=%i"
+>   #define BPF_ATTACH_FAIL "Failed to attach filter size %d to %d, err %d\n"
+>   
+> +#define MAX_UN_LEN 107
+> +
+>   /* This is very ugly and brute force lookup, but it is done
+>    * only once at initialization so not worth doing hashes or
+>    * anything more intelligent
+> @@ -266,6 +271,86 @@ static struct vector_fds *user_init_hybrid_fds(struct arglist *ifspec)
+>   	return NULL;
+>   }
+>   
+> +static struct vector_fds *user_init_unix_fds(struct arglist *ifspec, int id)
+> +{
+> +	int fd = -1;
+> +	int socktype;
+> +	char *src, *dst;
+> +	struct vector_fds *result = NULL;
+> +	struct sockaddr_un *local_addr = NULL, *remote_addr = NULL;
+> +
+> +
+> +	src = uml_vector_fetch_arg(ifspec, "src");
+> +	dst = uml_vector_fetch_arg(ifspec, "dst");
+> +	result = uml_kmalloc(sizeof(struct vector_fds), UM_GFP_KERNEL);
+> +	if (result == NULL) {
+> +		printk(UM_KERN_ERR "unix open:cannot allocate remote addr");
+> +		goto unix_cleanup;
+> +	}
+> +	remote_addr = uml_kmalloc(sizeof(struct sockaddr_un), UM_GFP_KERNEL);
+> +	if (remote_addr == NULL) {
+> +		printk(UM_KERN_ERR "unix open:cannot allocate remote addr");
+> +		goto unix_cleanup;
+> +	}
+> +
+> +	switch (id) {
+> +	case ID_BESS:
+> +		socktype = SOCK_SEQPACKET;
+> +		if ((src != NULL) && (strlen(src) <= MAX_UN_LEN)) {
+> +			local_addr = uml_kmalloc(sizeof(struct sockaddr_un), UM_GFP_KERNEL);
+> +			if (local_addr == NULL) {
+> +				printk(UM_KERN_ERR "bess open:cannot allocate local addr");
+> +				goto unix_cleanup;
+> +			}
+> +			memcpy(local_addr->sun_path, src, strlen(src));
+> +		}
+> +		if ((dst == NULL) && (strlen(dst) > MAX_UN_LEN))
+> +			goto unix_cleanup;
+> +		memcpy(remote_addr->sun_path, src, strlen(dst));
+> +		break;
+> +	default:
+> +		printk(KERN_ERR "Unsupported unix socket type\n");
+> +		return NULL;
+> +	}
+> +
+> +	fd = socket(AF_UNIX, socktype, 0);
+> +	if (fd == -1) {
+> +		printk(UM_KERN_ERR
+> +			"unix open: could not open socket, error = %d",
+> +			-errno
+> +		);
+> +		goto unix_cleanup;
+> +	}
+> +	if (local_addr != NULL) {
+> +		if (bind(fd, (struct sockaddr *) local_addr, sizeof(struct sockaddr_un))) {
+> +			printk(UM_KERN_ERR UNIX_BIND_FAIL, errno);
+> +			goto unix_cleanup;
+> +		}
+> +	}
+> +	switch (id) {
+> +	case ID_BESS:
+> +		if (connect(fd, remote_addr, sizeof(struct sockaddr_un)) < 0) {
+> +			printk(UM_KERN_ERR "bess open:cannot connect");
+> +			goto unix_cleanup;
+> +		}
+> +		break;
+> +	}
+> +	if (result != NULL) {
+> +		result->rx_fd = fd;
+> +		result->tx_fd = fd;
+> +		result->remote_addr_size = 0;
+> +		result->remote_addr = remote_addr;
+> +	}
+> +	return result;
+> +unix_cleanup:
+> +	if (fd >= 0)
+> +		os_close_file(fd);
+> +	if (remote_addr != NULL)
+> +		kfree(remote_addr);
+> +	if (result != NULL)
+> +		kfree(result);
+> +	return NULL;
+> +}
+>   
+>   static struct vector_fds *user_init_raw_fds(struct arglist *ifspec)
+>   {
+> @@ -497,6 +582,8 @@ struct vector_fds *uml_vector_user_open(
+>   		return user_init_socket_fds(parsed, ID_GRE);
+>   	if (strncmp(transport, TRANS_L2TPV3, TRANS_L2TPV3_LEN) == 0)
+>   		return user_init_socket_fds(parsed, ID_L2TPV3);
+> +	if (strncmp(transport, TRANS_BESS, TRANS_BESS_LEN) == 0)
+> +		return user_init_unix_fds(parsed, ID_BESS);
+>   	return NULL;
+>   }
+>   
+> diff --git a/arch/um/drivers/vector_user.h b/arch/um/drivers/vector_user.h
+> index 6bf50cf78ad0..0a13ca9592d1 100644
+> --- a/arch/um/drivers/vector_user.h
+> +++ b/arch/um/drivers/vector_user.h
+> @@ -25,6 +25,9 @@
+>   #define TRANS_HYBRID "hybrid"
+>   #define TRANS_HYBRID_LEN strlen(TRANS_HYBRID)
+>   
+> +#define TRANS_BESS "bess"
+> +#define TRANS_BESS_LEN strlen(TRANS_BESS)
+> +
+>   #ifndef IPPROTO_GRE
+>   #define IPPROTO_GRE 0x2F
+>   #endif
+> 
+
+I somehow managed to push the wrong version (before I fixed all the bugs 
+in it).
+
+I also found an issue which does not show up for any of the current 
+vector drivers, but needs to be fixed going forward in the vector_kernel 
+RX - it will not handle correctly a socket closed by the other side.
+
+I will send an updated version as well as a fix for the vector_kern side 
+tomorrow morning after I have tested it properly.
+
 -- 
-2.22.0.510.g264f2c817a-goog
-
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
 _______________________________________________
 linux-um mailing list
