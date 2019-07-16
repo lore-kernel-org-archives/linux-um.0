@@ -1,14 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab6.miniserver.com ([5.153.251.140]
- helo=www.kot-begemot.co.uk)
+Received: from mail-vs1-xe49.google.com ([2607:f8b0:4864:20::e49])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hpSmK-0003Ms-TP
- for linux-um@lists.infradead.org; Mon, 22 Jul 2019 07:30:39 +0000
-From: anton.ivanov@cambridgegreys.com
-Subject: [PATCHv3 1/5] um: Add legacy tap support and rename existing vector
- to hybrid
-Date: Mon, 22 Jul 2019 08:30:21 +0100
-Message-Id: <20190722073025.20844-1-anton.ivanov@cambridgegreys.com>
+ id 1hnJzY-0005qn-1j
+ for linux-um@lists.infradead.org; Tue, 16 Jul 2019 09:43:25 +0000
+Received: by mail-vs1-xe49.google.com with SMTP id b23so4211154vsl.20
+ for <linux-um@lists.infradead.org>; Tue, 16 Jul 2019 02:43:21 -0700 (PDT)
+Date: Tue, 16 Jul 2019 02:42:48 -0700
+In-Reply-To: <20190716094302.180360-1-brendanhiggins@google.com>
+Message-Id: <20190716094302.180360-5-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20190716094302.180360-1-brendanhiggins@google.com>
+Subject: [PATCH v10 04/18] kunit: test: add kunit_stream a std::stream like
+ logger
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -17,408 +21,293 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+A lot of the expectation and assertion infrastructure prints out fairly
+complicated test failure messages, so add a C++ style log library for
+for logging test results called `struct kunit_stream`.
 
-1. Adds legacy tap support
-2. Renames tap+raw as hybrid
+kunit_stream allows us to construct a message before we know whether we
+want to print it out; this can be extremely handy if there is
+information you might need for a failure message that is easiest to
+collect in the steps leading up to the actual check.
 
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
 ---
- arch/um/drivers/vector_kern.c       |   2 +
- arch/um/drivers/vector_transports.c |  29 +++++-
- arch/um/drivers/vector_user.c       | 203 +++++++++++++++++++++---------------
- arch/um/drivers/vector_user.h       |   4 +-
- 4 files changed, 151 insertions(+), 87 deletions(-)
+ include/kunit/kunit-stream.h |  81 ++++++++++++++++++++++++
+ include/kunit/test.h         |   3 +
+ kunit/Makefile               |   3 +-
+ kunit/kunit-stream.c         | 116 +++++++++++++++++++++++++++++++++++
+ kunit/test.c                 |   6 ++
+ 5 files changed, 208 insertions(+), 1 deletion(-)
+ create mode 100644 include/kunit/kunit-stream.h
+ create mode 100644 kunit/kunit-stream.c
 
-diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-index 046fa9ea0ccc..e314a60cdc98 100644
---- a/arch/um/drivers/vector_kern.c
-+++ b/arch/um/drivers/vector_kern.c
-@@ -186,6 +186,8 @@ static int get_transport_options(struct arglist *def)
+diff --git a/include/kunit/kunit-stream.h b/include/kunit/kunit-stream.h
+new file mode 100644
+index 0000000000000..a7b53eabf6be4
+--- /dev/null
++++ b/include/kunit/kunit-stream.h
+@@ -0,0 +1,81 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * C++ stream style string formatter and printer used in KUnit for outputting
++ * KUnit messages.
++ *
++ * Copyright (C) 2019, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++
++#ifndef _KUNIT_KUNIT_STREAM_H
++#define _KUNIT_KUNIT_STREAM_H
++
++#include <linux/types.h>
++#include <kunit/string-stream.h>
++
++struct kunit;
++
++/**
++ * struct kunit_stream - a std::stream style string builder.
++ *
++ * A std::stream style string builder. Allows messages to be built up and
++ * printed all at once.
++ */
++struct kunit_stream {
++	/* private: internal use only. */
++	struct kunit *test;
++	const char *level;
++	struct string_stream *internal_stream;
++};
++
++/**
++ * alloc_kunit_stream() - constructs a new &struct kunit_stream.
++ * @test: The test context object.
++ * @level: The log level at which to print out the message.
++ *
++ * Constructs a new test managed &struct kunit_stream.
++ */
++struct kunit_stream *alloc_kunit_stream(struct kunit *test, const char *level);
++
++/**
++ * kunit_stream_add(): adds the formatted input to the internal buffer.
++ * @kstream: the stream being operated on.
++ * @fmt: printf style format string to append to stream.
++ *
++ * Appends the formatted string, @fmt, to the internal buffer.
++ */
++void __printf(2, 3) kunit_stream_add(struct kunit_stream *kstream,
++				     const char *fmt, ...);
++
++/**
++ * kunit_stream_append(): appends the contents of @other to @kstream.
++ * @kstream: the stream to which @other is appended.
++ * @other: the stream whose contents are appended to @kstream.
++ *
++ * Appends the contents of @other to @kstream.
++ */
++void kunit_stream_append(struct kunit_stream *kstream,
++			 struct kunit_stream *other);
++
++/**
++ * kunit_stream_commit(): prints out the internal buffer to the user.
++ * @kstream: the stream being operated on.
++ *
++ * Outputs the contents of the internal buffer as a kunit_printk formatted
++ * output. KUNIT_STREAM ONLY OUTPUTS ITS BUFFER TO THE USER IF COMMIT IS
++ * CALLED!!! The reason for this is that it allows us to construct a message
++ * before we know whether we want to print it out; this can be extremely handy
++ * if there is information you might need for a failure message that is easiest
++ * to collect in the steps leading up to the actual check.
++ */
++void kunit_stream_commit(struct kunit_stream *kstream);
++
++/**
++ * kunit_stream_clear(): clears the internal buffer.
++ * @kstream: the stream being operated on.
++ *
++ * Clears the contents of the internal buffer.
++ */
++void kunit_stream_clear(struct kunit_stream *kstream);
++
++#endif /* _KUNIT_KUNIT_STREAM_H */
+diff --git a/include/kunit/test.h b/include/kunit/test.h
+index 12196719cf8f4..e92940d7e9e50 100644
+--- a/include/kunit/test.h
++++ b/include/kunit/test.h
+@@ -11,6 +11,7 @@
  
+ #include <linux/types.h>
+ #include <linux/slab.h>
++#include <kunit/kunit-stream.h>
  
- 	if (strncmp(transport, TRANS_TAP, TRANS_TAP_LEN) == 0)
-+		return 0;
-+	if (strncmp(transport, TRANS_HYBRID, TRANS_HYBRID_LEN) == 0)
- 		return (vec_rx | VECTOR_BPF);
- 	if (strncmp(transport, TRANS_RAW, TRANS_RAW_LEN) == 0)
- 		return (vec_rx | vec_tx | VECTOR_QDISC_BYPASS);
-diff --git a/arch/um/drivers/vector_transports.c b/arch/um/drivers/vector_transports.c
-index 77e4ebc206ae..2999f3bd1781 100644
---- a/arch/um/drivers/vector_transports.c
-+++ b/arch/um/drivers/vector_transports.c
-@@ -418,7 +418,7 @@ static int build_raw_transport_data(struct vector_private *vp)
- 	return 0;
- }
+ struct kunit_resource;
  
--static int build_tap_transport_data(struct vector_private *vp)
-+static int build_hybrid_transport_data(struct vector_private *vp)
- {
- 	if (uml_raw_enable_vnet_headers(vp->fds->rx_fd)) {
- 		vp->form_header = &raw_form_header;
-@@ -432,7 +432,7 @@ static int build_tap_transport_data(struct vector_private *vp)
- 				NETIF_F_TSO | NETIF_F_GSO | NETIF_F_GRO);
- 		netdev_info(
- 			vp->dev,
--			"tap/raw: using vnet headers for tso and tx/rx checksum"
-+			"tap/raw hybrid: using vnet headers for tso and tx/rx checksum"
- 		);
- 	} else {
- 		return 0; /* do not try to enable tap too if raw failed */
-@@ -442,6 +442,29 @@ static int build_tap_transport_data(struct vector_private *vp)
- 	return -1;
- }
+@@ -184,6 +185,8 @@ struct kunit {
  
-+static int build_tap_transport_data(struct vector_private *vp)
+ void kunit_init_test(struct kunit *test, const char *name);
+ 
++void kunit_fail(struct kunit *test, struct kunit_stream *stream);
++
+ int kunit_run_tests(struct kunit_suite *suite);
+ 
+ /**
+diff --git a/kunit/Makefile b/kunit/Makefile
+index 275b565a0e81f..6ddc622ee6b1c 100644
+--- a/kunit/Makefile
++++ b/kunit/Makefile
+@@ -1,2 +1,3 @@
+ obj-$(CONFIG_KUNIT) +=			test.o \
+-					string-stream.o
++					string-stream.o \
++					kunit-stream.o
+diff --git a/kunit/kunit-stream.c b/kunit/kunit-stream.c
+new file mode 100644
+index 0000000000000..c87b7fd3c06b4
+--- /dev/null
++++ b/kunit/kunit-stream.c
+@@ -0,0 +1,116 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * C++ stream style string formatter and printer used in KUnit for outputting
++ * KUnit messages.
++ *
++ * Copyright (C) 2019, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++
++#include <kunit/test.h>
++#include <kunit/kunit-stream.h>
++#include <kunit/string-stream.h>
++
++void kunit_stream_add(struct kunit_stream *kstream, const char *fmt, ...)
 +{
-+	/* "Pure" tap uses the same fd for rx and tx */
-+	if (uml_tap_enable_vnet_headers(vp->fds->tx_fd)) {
-+		vp->form_header = &raw_form_header;
-+		vp->verify_header = &raw_verify_header;
-+		vp->header_size = sizeof(struct virtio_net_hdr);
-+		vp->rx_header_size = sizeof(struct virtio_net_hdr);
-+		vp->dev->hw_features |=
-+			(NETIF_F_TSO | NETIF_F_GSO | NETIF_F_GRO);
-+		vp->dev->features |=
-+			(NETIF_F_RXCSUM | NETIF_F_HW_CSUM |
-+				NETIF_F_TSO | NETIF_F_GSO | NETIF_F_GRO);
-+		netdev_info(
-+			vp->dev,
-+			"tap: using vnet headers for tso and tx/rx checksum"
-+		);
-+		return 0;
-+	}
-+	return -1;
++	va_list args;
++	struct string_stream *stream = kstream->internal_stream;
++
++	va_start(args, fmt);
++
++	if (string_stream_vadd(stream, fmt, args))
++		kunit_err(kstream->test,
++			  "Failed to allocate fragment: %s\n",
++			  fmt);
++
++	va_end(args);
 +}
 +
++void kunit_stream_append(struct kunit_stream *kstream,
++			 struct kunit_stream *other)
++{
++	int ret;
 +
- int build_transport_data(struct vector_private *vp)
- {
- 	char *transport = uml_vector_fetch_arg(vp->parsed, "transport");
-@@ -454,6 +477,8 @@ int build_transport_data(struct vector_private *vp)
- 		return build_raw_transport_data(vp);
- 	if (strncmp(transport, TRANS_TAP, TRANS_TAP_LEN) == 0)
- 		return build_tap_transport_data(vp);
-+	if (strncmp(transport, TRANS_HYBRID, TRANS_HYBRID_LEN) == 0)
-+		return build_hybrid_transport_data(vp);
- 	return 0;
- }
- 
-diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
-index 3d8cdbdb4e66..af1a1da432ca 100644
---- a/arch/um/drivers/vector_user.c
-+++ b/arch/um/drivers/vector_user.c
-@@ -115,12 +115,76 @@ struct arglist *uml_parse_vector_ifspec(char *arg)
- 
- #define PATH_NET_TUN "/dev/net/tun"
- 
--static struct vector_fds *user_init_tap_fds(struct arglist *ifspec)
++	ret = string_stream_append(kstream->internal_stream,
++				   other->internal_stream);
 +
-+static int create_tap_fd(char *iface)
- {
- 	struct ifreq ifr;
- 	int fd = -1;
--	struct sockaddr_ll sock;
- 	int err = -ENOMEM, offload;
-+
-+	fd = open(PATH_NET_TUN, O_RDWR);
-+	if (fd < 0) {
-+		printk(UM_KERN_ERR "uml_tap: failed to open tun device\n");
-+		goto tap_fd_cleanup;
-+	}
-+	memset(&ifr, 0, sizeof(ifr));
-+	ifr.ifr_flags = IFF_TAP | IFF_NO_PI | IFF_VNET_HDR;
-+	strncpy((char *)&ifr.ifr_name, iface, sizeof(ifr.ifr_name) - 1);
-+
-+	err = ioctl(fd, TUNSETIFF, (void *) &ifr);
-+	if (err != 0) {
-+		printk(UM_KERN_ERR "uml_tap: failed to select tap interface\n");
-+		goto tap_fd_cleanup;
-+	}
-+
-+	offload = TUN_F_CSUM | TUN_F_TSO4 | TUN_F_TSO6;
-+	ioctl(fd, TUNSETOFFLOAD, offload);
-+	return fd;
-+tap_fd_cleanup:
-+	if (fd >= 0)
-+		os_close_file(fd);
-+	return err;
++	if (ret)
++		kunit_err(kstream->test,
++			  "Failed to append other stream: %d\n", ret);
 +}
 +
-+static int create_raw_fd(char *iface, int flags, int proto)
++void kunit_stream_clear(struct kunit_stream *kstream)
 +{
-+	struct ifreq ifr;
-+	int fd = -1;
-+	struct sockaddr_ll sock;
-+	int err = -ENOMEM;
-+
-+	fd = socket(AF_PACKET, SOCK_RAW, flags);
-+	if (fd == -1) {
-+		err = -errno;
-+		goto raw_fd_cleanup;
-+	}
-+	memset(&ifr, 0, sizeof(ifr));
-+	strncpy((char *)&ifr.ifr_name, iface, sizeof(ifr.ifr_name) - 1);
-+	if (ioctl(fd, SIOCGIFINDEX, (void *) &ifr) < 0) {
-+		err = -errno;
-+		goto raw_fd_cleanup;
-+	}
-+
-+	sock.sll_family = AF_PACKET;
-+	sock.sll_protocol = htons(proto);
-+	sock.sll_ifindex = ifr.ifr_ifindex;
-+
-+	if (bind(fd,
-+		(struct sockaddr *) &sock, sizeof(struct sockaddr_ll)) < 0) {
-+		err = -errno;
-+		goto raw_fd_cleanup;
-+	}
-+	return fd;
-+raw_fd_cleanup:
-+	printk(UM_KERN_ERR "user_init_raw: init failed, error %d", err);
-+	if (fd >= 0)
-+		os_close_file(fd);
-+	return err;
++	string_stream_clear(kstream->internal_stream);
 +}
 +
-+static struct vector_fds *user_init_tap_fds(struct arglist *ifspec)
++void kunit_stream_commit(struct kunit_stream *kstream)
 +{
-+	int fd = -1;
- 	char *iface;
- 	struct vector_fds *result = NULL;
- 
-@@ -142,117 +206,88 @@ static struct vector_fds *user_init_tap_fds(struct arglist *ifspec)
- 
- 	/* TAP */
- 
--	fd = open(PATH_NET_TUN, O_RDWR);
-+	fd = create_tap_fd(iface);
- 	if (fd < 0) {
--		printk(UM_KERN_ERR "uml_tap: failed to open tun device\n");
-+		printk(UM_KERN_ERR "uml_tap: failed to create tun interface\n");
- 		goto tap_cleanup;
- 	}
- 	result->tx_fd = fd;
--	memset(&ifr, 0, sizeof(ifr));
--	ifr.ifr_flags = IFF_TAP | IFF_NO_PI | IFF_VNET_HDR;
--	strncpy((char *)&ifr.ifr_name, iface, sizeof(ifr.ifr_name) - 1);
-+	result->rx_fd = fd;
-+	return result;
-+tap_cleanup:
-+	printk(UM_KERN_ERR "user_init_tap: init failed, error %d", fd);
-+	if (result != NULL)
-+		kfree(result);
-+	return NULL;
-+}
- 
--	err = ioctl(fd, TUNSETIFF, (void *) &ifr);
--	if (err != 0) {
--		printk(UM_KERN_ERR "uml_tap: failed to select tap interface\n");
--		goto tap_cleanup;
-+static struct vector_fds *user_init_hybrid_fds(struct arglist *ifspec)
-+{
-+	char *iface;
-+	struct vector_fds *result = NULL;
++	struct string_stream *stream = kstream->internal_stream;
++	struct string_stream_fragment *fragment;
++	struct kunit *test = kstream->test;
++	char *buf;
 +
-+	iface = uml_vector_fetch_arg(ifspec, TOKEN_IFNAME);
-+	if (iface == NULL) {
-+		printk(UM_KERN_ERR "uml_tap: failed to parse interface spec\n");
-+		goto hybrid_cleanup;
- 	}
- 
--	offload = TUN_F_CSUM | TUN_F_TSO4 | TUN_F_TSO6;
--	ioctl(fd, TUNSETOFFLOAD, offload);
-+	result = uml_kmalloc(sizeof(struct vector_fds), UM_GFP_KERNEL);
-+	if (result == NULL) {
-+		printk(UM_KERN_ERR "uml_tap: failed to allocate file descriptors\n");
-+		goto hybrid_cleanup;
++	buf = string_stream_get_string(stream);
++	if (!buf) {
++		kunit_err(test,
++			  "Could not allocate buffer, dumping stream:\n");
++		list_for_each_entry(fragment, &stream->fragments, node) {
++			kunit_err(test, fragment->fragment);
++		}
++		kunit_err(test, "\n");
++	} else {
++		kunit_printk(kstream->level, test, buf);
++		kfree(buf);
 +	}
-+	result->rx_fd = -1;
-+	result->tx_fd = -1;
-+	result->remote_addr = NULL;
-+	result->remote_addr_size = 0;
- 
--	/* RAW */
-+	/* TAP */
- 
--	fd = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
--	if (fd == -1) {
--		printk(UM_KERN_ERR
--			"uml_tap: failed to create socket: %i\n", -errno);
--		goto tap_cleanup;
--	}
--	result->rx_fd = fd;
--	memset(&ifr, 0, sizeof(ifr));
--	strncpy((char *)&ifr.ifr_name, iface, sizeof(ifr.ifr_name) - 1);
--	if (ioctl(fd, SIOCGIFINDEX, (void *) &ifr) < 0) {
--		printk(UM_KERN_ERR
--			"uml_tap: failed to set interface: %i\n", -errno);
--		goto tap_cleanup;
-+	result->tx_fd = create_tap_fd(iface);
-+	if (result->tx_fd < 0) {
-+		printk(UM_KERN_ERR "uml_tap: failed to create tun interface: %i\n", result->tx_fd);
-+		goto hybrid_cleanup;
- 	}
- 
--	sock.sll_family = AF_PACKET;
--	sock.sll_protocol = htons(ETH_P_ALL);
--	sock.sll_ifindex = ifr.ifr_ifindex;
-+	/* RAW */
- 
--	if (bind(fd,
--		(struct sockaddr *) &sock, sizeof(struct sockaddr_ll)) < 0) {
-+	result->rx_fd = create_raw_fd(iface, ETH_P_ALL, ETH_P_ALL);
-+	if (result->rx_fd == -1) {
- 		printk(UM_KERN_ERR
--			"user_init_tap: failed to bind raw pair, err %d\n",
--				-errno);
--		goto tap_cleanup;
-+			"uml_tap: failed to create paired raw socket: %i\n", result->rx_fd);
-+		goto hybrid_cleanup;
- 	}
- 	return result;
--tap_cleanup:
--	printk(UM_KERN_ERR "user_init_tap: init failed, error %d", err);
--	if (result != NULL) {
--		if (result->rx_fd >= 0)
--			os_close_file(result->rx_fd);
--		if (result->tx_fd >= 0)
--			os_close_file(result->tx_fd);
-+hybrid_cleanup:
-+	printk(UM_KERN_ERR "user_init_hybrid: init failed");
-+	if (result != NULL)
- 		kfree(result);
--	}
- 	return NULL;
- }
- 
- 
- static struct vector_fds *user_init_raw_fds(struct arglist *ifspec)
- {
--	struct ifreq ifr;
- 	int rxfd = -1, txfd = -1;
--	struct sockaddr_ll sock;
- 	int err = -ENOMEM;
- 	char *iface;
- 	struct vector_fds *result = NULL;
- 
- 	iface = uml_vector_fetch_arg(ifspec, TOKEN_IFNAME);
- 	if (iface == NULL)
--		goto cleanup;
-+		goto raw_cleanup;
- 
--	rxfd = socket(AF_PACKET, SOCK_RAW, ETH_P_ALL);
-+	rxfd = create_raw_fd(iface, ETH_P_ALL, ETH_P_ALL);
- 	if (rxfd == -1) {
- 		err = -errno;
--		goto cleanup;
-+		goto raw_cleanup;
- 	}
--	txfd = socket(AF_PACKET, SOCK_RAW, 0); /* Turn off RX on this fd */
-+	txfd = create_raw_fd(iface, 0, ETH_P_IP); /* Turn off RX on this fd */
- 	if (txfd == -1) {
- 		err = -errno;
--		goto cleanup;
--	}
--	memset(&ifr, 0, sizeof(ifr));
--	strncpy((char *)&ifr.ifr_name, iface, sizeof(ifr.ifr_name) - 1);
--	if (ioctl(rxfd, SIOCGIFINDEX, (void *) &ifr) < 0) {
--		err = -errno;
--		goto cleanup;
--	}
--
--	sock.sll_family = AF_PACKET;
--	sock.sll_protocol = htons(ETH_P_ALL);
--	sock.sll_ifindex = ifr.ifr_ifindex;
--
--	if (bind(rxfd,
--		(struct sockaddr *) &sock, sizeof(struct sockaddr_ll)) < 0) {
--		err = -errno;
--		goto cleanup;
-+		goto raw_cleanup;
- 	}
--
--	sock.sll_family = AF_PACKET;
--	sock.sll_protocol = htons(ETH_P_IP);
--	sock.sll_ifindex = ifr.ifr_ifindex;
--
--	if (bind(txfd,
--		(struct sockaddr *) &sock, sizeof(struct sockaddr_ll)) < 0) {
--		err = -errno;
--		goto cleanup;
--	}
--
- 	result = uml_kmalloc(sizeof(struct vector_fds), UM_GFP_KERNEL);
- 	if (result != NULL) {
- 		result->rx_fd = rxfd;
-@@ -261,13 +296,10 @@ static struct vector_fds *user_init_raw_fds(struct arglist *ifspec)
- 		result->remote_addr_size = 0;
- 	}
- 	return result;
--cleanup:
-+raw_cleanup:
- 	printk(UM_KERN_ERR "user_init_raw: init failed, error %d", err);
--	if (rxfd >= 0)
--		os_close_file(rxfd);
--	if (txfd >= 0)
--		os_close_file(txfd);
--	kfree(result);
-+	if (result != NULL)
-+		kfree(result);
- 	return NULL;
- }
- 
-@@ -457,6 +489,8 @@ struct vector_fds *uml_vector_user_open(
- 	}
- 	if (strncmp(transport, TRANS_RAW, TRANS_RAW_LEN) == 0)
- 		return user_init_raw_fds(parsed);
-+	if (strncmp(transport, TRANS_HYBRID, TRANS_HYBRID_LEN) == 0)
-+		return user_init_hybrid_fds(parsed);
- 	if (strncmp(transport, TRANS_TAP, TRANS_TAP_LEN) == 0)
- 		return user_init_tap_fds(parsed);
- 	if (strncmp(transport, TRANS_GRE, TRANS_GRE_LEN) == 0)
-@@ -483,8 +517,9 @@ int uml_vector_sendmsg(int fd, void *hdr, int flags)
- int uml_vector_recvmsg(int fd, void *hdr, int flags)
- {
- 	int n;
-+	struct msghdr *msg = (struct msghdr *) hdr;
- 
--	CATCH_EINTR(n = recvmsg(fd, (struct msghdr *) hdr,  flags));
-+	CATCH_EINTR(n = readv(fd, msg->msg_iov, msg->msg_iovlen));
- 	if ((n < 0) && (errno == EAGAIN))
- 		return 0;
- 	if (n >= 0)
-diff --git a/arch/um/drivers/vector_user.h b/arch/um/drivers/vector_user.h
-index d7cbff73b7ff..6bf50cf78ad0 100644
---- a/arch/um/drivers/vector_user.h
-+++ b/arch/um/drivers/vector_user.h
-@@ -16,13 +16,15 @@
- #define TRANS_TAP "tap"
- #define TRANS_TAP_LEN strlen(TRANS_TAP)
- 
--
- #define TRANS_GRE "gre"
- #define TRANS_GRE_LEN strlen(TRANS_RAW)
- 
- #define TRANS_L2TPV3 "l2tpv3"
- #define TRANS_L2TPV3_LEN strlen(TRANS_L2TPV3)
- 
-+#define TRANS_HYBRID "hybrid"
-+#define TRANS_HYBRID_LEN strlen(TRANS_HYBRID)
 +
- #ifndef IPPROTO_GRE
- #define IPPROTO_GRE 0x2F
- #endif
++	kunit_stream_clear(kstream);
++}
++
++static int kunit_stream_init(struct kunit_resource *res, void *context)
++{
++	struct kunit *test = context;
++	struct kunit_stream *stream;
++
++	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
++	if (!stream)
++		return -ENOMEM;
++
++	res->allocation = stream;
++	stream->test = test;
++	stream->internal_stream = alloc_string_stream(test);
++
++	if (!stream->internal_stream)
++		return -ENOMEM;
++
++	return 0;
++}
++
++static void kunit_stream_free(struct kunit_resource *res)
++{
++	struct kunit_stream *stream = res->allocation;
++
++	if (!string_stream_is_empty(stream->internal_stream)) {
++		kunit_err(stream->test,
++			  "End of test case reached with uncommitted stream entries\n");
++		kunit_stream_commit(stream);
++	}
++}
++
++struct kunit_stream *alloc_kunit_stream(struct kunit *test, const char *level)
++{
++	struct kunit_stream *kstream;
++
++	kstream = kunit_alloc_resource(test,
++				       kunit_stream_init,
++				       kunit_stream_free,
++				       GFP_KERNEL,
++				       test);
++
++	if (!kstream)
++		return NULL;
++
++	kstream->level = level;
++
++	return kstream;
++}
+diff --git a/kunit/test.c b/kunit/test.c
+index 4c178a817f2fe..fdab07bb0b529 100644
+--- a/kunit/test.c
++++ b/kunit/test.c
+@@ -120,6 +120,12 @@ static void kunit_print_test_case_ok_not_ok(struct kunit_case *test_case,
+ 			      test_case->name);
+ }
+ 
++void kunit_fail(struct kunit *test, struct kunit_stream *stream)
++{
++	kunit_set_failure(test);
++	kunit_stream_commit(stream);
++}
++
+ void kunit_init_test(struct kunit *test, const char *name)
+ {
+ 	spin_lock_init(&test->lock);
 -- 
-2.11.0
+2.22.0.510.g264f2c817a-goog
 
 
 _______________________________________________
