@@ -1,23 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x542.google.com ([2607:f8b0:4864:20::542])
+Received: from mail-pl1-x649.google.com ([2607:f8b0:4864:20::649])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hios6-0005fd-AI
- for linux-um@lists.infradead.org; Wed, 03 Jul 2019 23:41:08 +0000
-Received: by mail-pg1-x542.google.com with SMTP id w10so1969940pgj.7
- for <linux-um@lists.infradead.org>; Wed, 03 Jul 2019 16:41:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190617082613.109131-1-brendanhiggins@google.com>
- <10feac3e-7621-65e5-fbf0-9c63fcbe09c9@gmail.com>
- <69809117-dcda-160a-ee0a-d1d3b4c5cd8a@kernel.org>
- <20190621181342.GA17166@mit.edu>
- <6f3f5184-d14e-1b46-17f1-391ee67e699c@kernel.org>
- <CAFd5g46W1u+6JKLW0WX9uicK5utvJe9tvq4YBsCkghuo0rCmng@mail.gmail.com>
-In-Reply-To: <CAFd5g46W1u+6JKLW0WX9uicK5utvJe9tvq4YBsCkghuo0rCmng@mail.gmail.com>
+ id 1hnJzj-0005zR-W6
+ for linux-um@lists.infradead.org; Tue, 16 Jul 2019 09:43:38 +0000
+Received: by mail-pl1-x649.google.com with SMTP id d6so9878697pls.17
+ for <linux-um@lists.infradead.org>; Tue, 16 Jul 2019 02:43:35 -0700 (PDT)
+Date: Tue, 16 Jul 2019 02:42:53 -0700
+In-Reply-To: <20190716094302.180360-1-brendanhiggins@google.com>
+Message-Id: <20190716094302.180360-10-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20190716094302.180360-1-brendanhiggins@google.com>
+Subject: [PATCH v10 09/18] kunit: test: add support for test abort
 From: Brendan Higgins <brendanhiggins@google.com>
-Date: Wed, 3 Jul 2019 16:40:50 -0700
-Message-ID: <CAFd5g4515jAOzEtiZfXP0d6YUgOxOZCknw0Nd-2wsY=mPFdGqg@mail.gmail.com>
-Subject: Re: [PATCH v5 00/18] kunit: introduce KUnit, the Linux kernel unit
- testing framework
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -30,155 +24,507 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: shuah <shuah@kernel.org>
-Cc: Petr Mladek <pmladek@suse.com>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, Amir Goldstein <amir73il@gmail.com>, dri-devel <dri-devel@lists.freedesktop.org>, Sasha Levin <Alexander.Levin@microsoft.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Michael Ellerman <mpe@ellerman.id.au>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Frank Rowand <frowand.list@gmail.com>, Rob Herring <robh@kernel.org>, linux-nvdimm <linux-nvdimm@lists.01.org>, Kevin Hilman <khilman@baylibre.com>, Knut Omang <knut.omang@oracle.com>, Kieran Bingham <kieran.bingham@ideasonboard.com>, wfg@linux.intel.com, Joel Stanley <joel@jms.id.au>, David Rientjes <rientjes@google.com>, Jeff Dike <jdike@addtoit.com>, Dan Carpenter <dan.carpenter@oracle.com>, devicetree <devicetree@vger.kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, "Bird, Timothy  <Tim.Bird@sony.com>, linux-um@lists.infradead.org, Steven Rostedt" <rostedt@goodmis.org>, Julia Lawall <julia.lawall@lip6.fr>, Josh Poimboeuf <jpoimboe@redhat.com>, kunit-dev@googlegroups.com, Theodore Ts'o <tytso@mit.edu>, Richard Weinberger <richard@nod.at>, Stephen Boyd <sboyd@kernel.org>, Greg KH <gregkh@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@google.com>, linux-fsdevel@vger.kernel.org, Logan Gunthorpe <logang@deltatee.com>
+To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-On Fri, Jun 21, 2019 at 5:54 PM Brendan Higgins
-<brendanhiggins@google.com> wrote:
->
-> On Fri, Jun 21, 2019 at 12:21 PM shuah <shuah@kernel.org> wrote:
-> >
-> > On 6/21/19 12:13 PM, Theodore Ts'o wrote:
-> > > On Fri, Jun 21, 2019 at 08:59:48AM -0600, shuah wrote:
-> > >>>> ### But wait! Doesn't kselftest support in kernel testing?!
-> > >>>>
-> > >>>> ....
-> > >>
-> > >> I think I commented on this before. I agree with the statement that
-> > >> there is no overlap between Kselftest and KUnit. I would like see this
-> > >> removed. Kselftest module support supports use-cases KUnit won't be able
-> > >> to. I can build an kernel with Kselftest test modules and use it in the
-> > >> filed to load and run tests if I need to debug a problem and get data
-> > >> from a system. I can't do that with KUnit.
->
-> Sure, I think this point has been brought up a number of times before.
-> Maybe I didn't write this section well because, like Frank said, it
-> comes across as being critical of the Kselftest module support; that
-> wasn't my intention. I was speaking from the perspective that
-> Kselftest module support is just a feature of Kselftest, and not a
-> full framework like KUnit is (obviously Kselftest itself *is* a
-> framework, but a very small part of it is not).
->
-> It was obvious to me what Kselftest module support was intended for,
-> and it is not intended to cover the use case that KUnit is targeting.
->
-> > >> In my mind, I am not viewing this as which is better. Kselftest and
-> > >> KUnit both have their place in the kernel development process. It isn't
-> > >> productive and/or necessary to comparing Kselftest and KUnit without a
-> > >> good understanding of the problem spaces for each of these.
->
-> Again, I didn't mean to draw a comparison of which is better than the
-> other. I was just trying to point out that Kselftest module support
-> doesn't make sense as a stand alone unit testing framework, or really
-> a framework of any kind, despite how it might actually be used.
->
-> > >> I would strongly recommend not making reference to Kselftest and talk
-> > >> about what KUnit offers.
->
-> I can see your point. It seems that both you and Frank seem to think
-> that I drew a comparison between Kselftest and KUnit, which was
-> unintended. I probably should have spent more time editing this
-> section, but I can see the point of drawing the comparison itself
-> might invite this confusion.
->
-> > > Shuah,
-> > >
-> > > Just to recall the history, this section of the FAQ was added to rebut
-> > > the ***very*** strong statements that Frank made that there was
-> > > overlap between Kselftest and Kunit, and that having too many ways for
-> > > kernel developers to do the identical thing was harmful (he said it
-> > > was too much of a burden on a kernel developer) --- and this was an
-> > > argument for not including Kunit in the upstream kernel.
->
-> I don't think he was actually advocating that we don't include KUnit,
-> maybe playing devil's advocate; nevertheless, at the end, Frank seemed
-> to agree that there were valuable things that KUnit offered. I thought
-> he just wanted to make the point that I hadn't made the distinction
-> sufficiently clear in the cover letter, and other reviewers might get
-> confused in the future as well.
->
-> Additionally, it does look like people were trying to use Kselftest
-> module support to cover some things which really were trying to be
-> unit tests. I know this isn't really intended - everything looks like
-> a nail when you only have a hammer, which I think Frank was pointing
-> out furthers the above confusion.
->
-> In anycase, it sounds like I have, if anything, only made the
-> discussion even more confusing by adding this section; sorry about
-> that.
->
-> > > If we're past that objection, then perhaps this section can be
-> > > dropped, but there's a very good reason why it was there.  I wouldn't
-> > > Brendan to be accused of ignoring feedback from those who reviewed his
-> > > patches.   :-)
-> > >
-> >
-> > Agreed. I understand that this FAQ probably was needed at one time and
-> > Brendan added it to address the concerns.
->
-> I don't want to speak for Frank, but I don't think it was an objection
-> to KUnit itself, but rather an objection to not sufficiently
-> addressing the point about how they differ.
->
-> > I think at some point we do need to have a document that outlines when
-> > to KUnit and when to use Kselftest modules. I think one concern people
-> > have is that if KUnit is perceived as a  replacement for Ksefltest
-> > module, Kselftest module will be ignored leaving users without the
-> > ability to build and run with Kselftest modules and load them on a need
-> > basis to gather data on a systems that aren't dedicated strictly for
-> > testing.
->
-> I absolutely agree! I posed a suggestion here[1], which after I just
-> now searched for a link, I realize for some reason it didn't seem like
-> it reached a number of the mailing lists that I sent it to, so I
-> should probably resend it.
->
-> Anyway, a summary of what I suggested: We should start off by better
-> organizing Documentation/dev-tools/ and create a landing page that
-> groups the dev-tools by function according to what person is likely to
-> use them and for what. Eventually and specifically for Kselftest and
-> KUnit, I would like to have a testing guide for the kernel that
-> explains what testing procedure should look like and what to use and
-> when.
->
-> > I am trying to move the conversation forward from KUnit vs. Kselftest
-> > modules discussion to which problem areas each one addresses keeping
-> > in mind that it is not about which is better. Kselftest and KUnit both
-> > have their place in the kernel development process. We just have to be
-> > clear on usage as we write tests for each.
->
-> I think that is the right long term approach. I think a good place to
-> start, like I suggested above, is cleaning up
-> Documentation/dev-tools/, but I think that belongs in a (probably
-> several) follow-up patchset.
->
-> Frank, I believe your objection was mostly related to how KUnit is
-> presented specifically in the cover letter, and doesn't necessarily
-> deal with the intended use case. So I don't think that doing this,
-> especially doing this later, really addresses your concern. I don't
-> want to belabor the issue, but I would also rather not put words in
-> your mouth, what are your thoughts on the above?
->
-> I think my main concern moving forward on this point is that I am not
-> sure that I can address the debate that this section covers in a way
-> that is both sufficiently concise for a cover letter, but also doesn't
-> invite more potential confusion. My inclination at this point is to
-> drop it since I think the set of reviewers for this patchset has at
-> this point become fixed, and it seems that it will likely cause more
-> confusion rather than reduce it; also, I don't really think this will
+Add support for aborting/bailing out of test cases, which is needed for
+implementing assertions.
 
-Since no one has objected to dropping the "### But wait! Doesn't
-kselftest support in kernel testing?!" section in the past almost two
-weeks, I am just going to continue on without it.
+An assertion is like an expectation, but bails out of the test case
+early if the assertion is not met. The idea with assertions is that you
+use them to state all the preconditions for your test. Logically
+speaking, these are the premises of the test case, so if a premise isn't
+true, there is no point in continuing the test case because there are no
+conclusions that can be drawn without the premises. Whereas, the
+expectation is the thing you are trying to prove.
 
-Cheers
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+---
+ include/kunit/test.h      |  16 ++++
+ include/kunit/try-catch.h |  69 +++++++++++++++
+ kunit/Makefile            |   3 +-
+ kunit/test.c              | 176 ++++++++++++++++++++++++++++++++++----
+ kunit/try-catch.c         |  95 ++++++++++++++++++++
+ 5 files changed, 343 insertions(+), 16 deletions(-)
+ create mode 100644 include/kunit/try-catch.h
+ create mode 100644 kunit/try-catch.c
 
-> be an issue for end users, especially once we have proper
-> documentation in place. Alternatively, I guess I could maybe address
-> the point elsewhere and refer to it in the cover letter? Or maybe just
-> put it at the end of the cover letter?
->
-> [1] https://www.mail-archive.com/kgdb-bugreport@lists.sourceforge.net/msg05059.html
+diff --git a/include/kunit/test.h b/include/kunit/test.h
+index 4cc94f09389d7..1d35f542a30c9 100644
+--- a/include/kunit/test.h
++++ b/include/kunit/test.h
+@@ -13,6 +13,7 @@
+ #include <linux/types.h>
+ #include <linux/slab.h>
+ #include <kunit/kunit-stream.h>
++#include <kunit/try-catch.h>
+ 
+ struct kunit_resource;
+ 
+@@ -167,6 +168,7 @@ struct kunit {
+ 
+ 	/* private: internal use only. */
+ 	const char *name; /* Read only after initialization! */
++	struct kunit_try_catch try_catch;
+ 	/*
+ 	 * success starts as true, and may only be set to false during a test
+ 	 * case; thus, it is safe to update this across multiple threads using
+@@ -176,6 +178,11 @@ struct kunit {
+ 	 */
+ 	bool success; /* Read only after test_case finishes! */
+ 	spinlock_t lock; /* Gaurds all mutable test state. */
++	/*
++	 * death_test may be both set and unset from multiple threads in a test
++	 * case.
++	 */
++	bool death_test; /* Protected by lock. */
+ 	/*
+ 	 * Because resources is a list that may be updated multiple times (with
+ 	 * new resources) from any thread associated with a test case, we must
+@@ -184,10 +191,19 @@ struct kunit {
+ 	struct list_head resources; /* Protected by lock. */
+ };
+ 
++static inline void kunit_set_death_test(struct kunit *test, bool death_test)
++{
++	spin_lock(&test->lock);
++	test->death_test = death_test;
++	spin_unlock(&test->lock);
++}
++
+ void kunit_init_test(struct kunit *test, const char *name);
+ 
+ void kunit_fail(struct kunit *test, struct kunit_stream *stream);
+ 
++void kunit_abort(struct kunit *test);
++
+ int kunit_run_tests(struct kunit_suite *suite);
+ 
+ /**
+diff --git a/include/kunit/try-catch.h b/include/kunit/try-catch.h
+new file mode 100644
+index 0000000000000..8a414a9af0b64
+--- /dev/null
++++ b/include/kunit/try-catch.h
+@@ -0,0 +1,69 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * An API to allow a function, that may fail, to be executed, and recover in a
++ * controlled manner.
++ *
++ * Copyright (C) 2019, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++
++#ifndef _KUNIT_TRY_CATCH_H
++#define _KUNIT_TRY_CATCH_H
++
++#include <linux/types.h>
++
++typedef void (*kunit_try_catch_func_t)(void *);
++
++struct kunit;
++
++/*
++ * struct kunit_try_catch - provides a generic way to run code which might fail.
++ * @context: used to pass user data to the try and catch functions.
++ *
++ * kunit_try_catch provides a generic, architecture independent way to execute
++ * an arbitrary function of type kunit_try_catch_func_t which may bail out by
++ * calling kunit_try_catch_throw(). If kunit_try_catch_throw() is called, @try
++ * is stopped at the site of invocation and @catch is catch is called.
++ *
++ * struct kunit_try_catch provides a generic interface for the functionality
++ * needed to implement kunit->abort() which in turn is needed for implementing
++ * assertions. Assertions allow stating a precondition for a test simplifying
++ * how test cases are written and presented.
++ *
++ * Assertions are like expectations, except they abort (call
++ * kunit_try_catch_throw()) when the specified condition is not met. This is
++ * useful when you look at a test case as a logical statement about some piece
++ * of code, where assertions are the premises for the test case, and the
++ * conclusion is a set of predicates, rather expectations, that must all be
++ * true. If your premises are violated, it does not makes sense to continue.
++ */
++struct kunit_try_catch {
++	/* private: internal use only. */
++	struct kunit *test;
++	struct completion *try_completion;
++	int try_result;
++	kunit_try_catch_func_t try;
++	kunit_try_catch_func_t catch;
++	void *context;
++};
++
++void kunit_try_catch_init(struct kunit_try_catch *try_catch,
++			  struct kunit *test,
++			  kunit_try_catch_func_t try,
++			  kunit_try_catch_func_t catch);
++
++void kunit_try_catch_run(struct kunit_try_catch *try_catch, void *context);
++
++void __noreturn kunit_try_catch_throw(struct kunit_try_catch *try_catch);
++
++static inline int kunit_try_catch_get_result(struct kunit_try_catch *try_catch)
++{
++	return try_catch->try_result;
++}
++
++/*
++ * Exposed for testing only.
++ */
++void kunit_generic_try_catch_init(struct kunit_try_catch *try_catch);
++
++#endif /* _KUNIT_TRY_CATCH_H */
+diff --git a/kunit/Makefile b/kunit/Makefile
+index 60a9ea6cb4697..1f7680cfa11ad 100644
+--- a/kunit/Makefile
++++ b/kunit/Makefile
+@@ -1,6 +1,7 @@
+ obj-$(CONFIG_KUNIT) +=			test.o \
+ 					string-stream.o \
+-					kunit-stream.o
++					kunit-stream.o \
++					try-catch.o
+ 
+ obj-$(CONFIG_KUNIT_TEST) +=		string-stream-test.o
+ 
+diff --git a/kunit/test.c b/kunit/test.c
+index 1f94a9224b03e..12db50b221781 100644
+--- a/kunit/test.c
++++ b/kunit/test.c
+@@ -7,13 +7,26 @@
+  */
+ 
+ #include <linux/kernel.h>
++#include <linux/sched/debug.h>
+ #include <kunit/test.h>
++#include <kunit/try-catch.h>
+ 
+ static void kunit_set_failure(struct kunit *test)
+ {
+ 	WRITE_ONCE(test->success, false);
+ }
+ 
++static bool kunit_get_death_test(struct kunit *test)
++{
++	bool death_test;
++
++	spin_lock(&test->lock);
++	death_test = test->death_test;
++	spin_unlock(&test->lock);
++
++	return death_test;
++}
++
+ static int kunit_vprintk_emit(int level, const char *fmt, va_list args)
+ {
+ 	return vprintk_emit(0, level, NULL, 0, fmt, args);
+@@ -126,42 +139,175 @@ void kunit_fail(struct kunit *test, struct kunit_stream *stream)
+ 	kunit_stream_commit(stream);
+ }
+ 
++void __noreturn kunit_abort(struct kunit *test)
++{
++	kunit_set_death_test(test, true);
++
++	kunit_try_catch_throw(&test->try_catch);
++
++	/*
++	 * Throw could not abort from test.
++	 *
++	 * XXX: we should never reach this line! As kunit_try_catch_throw is
++	 * marked __noreturn.
++	 */
++	WARN_ONCE(true, "Throw could not abort from test!\n");
++}
++
+ void kunit_init_test(struct kunit *test, const char *name)
+ {
+ 	spin_lock_init(&test->lock);
+ 	INIT_LIST_HEAD(&test->resources);
+ 	test->name = name;
+ 	test->success = true;
++	test->death_test = false;
+ }
+ 
+ /*
+- * Performs all logic to run a test case.
++ * Initializes and runs test case. Does not clean up or do post validations.
+  */
+-static void kunit_run_case(struct kunit_suite *suite,
+-			   struct kunit_case *test_case)
++static void kunit_run_case_internal(struct kunit *test,
++				    struct kunit_suite *suite,
++				    struct kunit_case *test_case)
+ {
+-	struct kunit test;
+-
+-	kunit_init_test(&test, test_case->name);
+-
+ 	if (suite->init) {
+ 		int ret;
+ 
+-		ret = suite->init(&test);
++		ret = suite->init(test);
+ 		if (ret) {
+-			kunit_err(&test, "failed to initialize: %d\n", ret);
+-			kunit_set_failure(&test);
+-			test_case->success = test.success;
++			kunit_err(test, "failed to initialize: %d\n", ret);
++			kunit_set_failure(test);
+ 			return;
+ 		}
+ 	}
+ 
+-	test_case->run_case(&test);
++	test_case->run_case(test);
++}
++
++static void kunit_case_internal_cleanup(struct kunit *test)
++{
++	kunit_cleanup(test);
++}
+ 
++/*
++ * Performs post validations and cleanup after a test case was run.
++ * XXX: Should ONLY BE CALLED AFTER kunit_run_case_internal!
++ */
++static void kunit_run_case_cleanup(struct kunit *test,
++				   struct kunit_suite *suite)
++{
+ 	if (suite->exit)
+-		suite->exit(&test);
++		suite->exit(test);
++
++	kunit_case_internal_cleanup(test);
++}
++
++/*
++ * Handles an unexpected crash in a test case.
++ */
++static void kunit_handle_test_crash(struct kunit *test,
++				   struct kunit_suite *suite,
++				   struct kunit_case *test_case)
++{
++	kunit_err(test, "kunit test case crashed!");
++	/*
++	 * TODO(brendanhiggins@google.com): This prints the stack trace up
++	 * through this frame, not up to the frame that caused the crash.
++	 */
++	show_stack(NULL, NULL);
++
++	kunit_case_internal_cleanup(test);
++}
++
++struct kunit_try_catch_context {
++	struct kunit *test;
++	struct kunit_suite *suite;
++	struct kunit_case *test_case;
++};
++
++static void kunit_try_run_case(void *data)
++{
++	struct kunit_try_catch_context *ctx = data;
++	struct kunit *test = ctx->test;
++	struct kunit_suite *suite = ctx->suite;
++	struct kunit_case *test_case = ctx->test_case;
++
++	/*
++	 * kunit_run_case_internal may encounter a fatal error; if it does,
++	 * abort will be called, this thread will exit, and finally the parent
++	 * thread will resume control and handle any necessary clean up.
++	 */
++	kunit_run_case_internal(test, suite, test_case);
++	/* This line may never be reached. */
++	kunit_run_case_cleanup(test, suite);
++}
++
++static void kunit_catch_run_case(void *data)
++{
++	struct kunit_try_catch_context *ctx = data;
++	struct kunit *test = ctx->test;
++	struct kunit_suite *suite = ctx->suite;
++	struct kunit_case *test_case = ctx->test_case;
++	int try_exit_code = kunit_try_catch_get_result(&test->try_catch);
++
++	if (try_exit_code) {
++		kunit_set_failure(test);
++		/*
++		 * Test case could not finish, we have no idea what state it is
++		 * in, so don't do clean up.
++		 */
++		if (try_exit_code == -ETIMEDOUT)
++			kunit_err(test, "test case timed out\n");
++		/*
++		 * Unknown internal error occurred preventing test case from
++		 * running, so there is nothing to clean up.
++		 */
++		else
++			kunit_err(test, "internal error occurred preventing test case from running: %d\n",
++				  try_exit_code);
++		return;
++	}
++
++	if (kunit_get_death_test(test)) {
++		/*
++		 * EXPECTED DEATH: kunit_run_case_internal encountered
++		 * anticipated fatal error. Everything should be in a safe
++		 * state.
++		 */
++		kunit_run_case_cleanup(test, suite);
++	} else {
++		/*
++		 * UNEXPECTED DEATH: kunit_run_case_internal encountered an
++		 * unanticipated fatal error. We have no idea what the state of
++		 * the test case is in.
++		 */
++		kunit_handle_test_crash(test, suite, test_case);
++		kunit_set_failure(test);
++	}
++}
++
++/*
++ * Performs all logic to run a test case. It also catches most errors that
++ * occurs in a test case and reports them as failures.
++ */
++static void kunit_run_case_catch_errors(struct kunit_suite *suite,
++					struct kunit_case *test_case)
++{
++	struct kunit_try_catch_context context;
++	struct kunit_try_catch *try_catch;
++	struct kunit test;
++
++	kunit_init_test(&test, test_case->name);
++	try_catch = &test.try_catch;
+ 
+-	kunit_cleanup(&test);
++	kunit_try_catch_init(try_catch,
++			     &test,
++			     kunit_try_run_case,
++			     kunit_catch_run_case);
++	context.test = &test;
++	context.suite = suite;
++	context.test_case = test_case;
++	kunit_try_catch_run(try_catch, &context);
+ 
+ 	test_case->success = test.success;
+ }
+@@ -174,7 +320,7 @@ int kunit_run_tests(struct kunit_suite *suite)
+ 	kunit_print_subtest_start(suite);
+ 
+ 	for (test_case = suite->test_cases; test_case->run_case; test_case++) {
+-		kunit_run_case(suite, test_case);
++		kunit_run_case_catch_errors(suite, test_case);
+ 		kunit_print_test_case_ok_not_ok(test_case, test_case_count++);
+ 	}
+ 
+diff --git a/kunit/try-catch.c b/kunit/try-catch.c
+new file mode 100644
+index 0000000000000..de580f074387b
+--- /dev/null
++++ b/kunit/try-catch.c
+@@ -0,0 +1,95 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * An API to allow a function, that may fail, to be executed, and recover in a
++ * controlled manner.
++ *
++ * Copyright (C) 2019, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++
++#include <kunit/try-catch.h>
++#include <kunit/test.h>
++#include <linux/completion.h>
++#include <linux/kthread.h>
++
++void __noreturn kunit_try_catch_throw(struct kunit_try_catch *try_catch)
++{
++	try_catch->try_result = -EFAULT;
++	complete_and_exit(try_catch->try_completion, -EFAULT);
++}
++
++static int kunit_generic_run_threadfn_adapter(void *data)
++{
++	struct kunit_try_catch *try_catch = data;
++
++	try_catch->try(try_catch->context);
++
++	complete_and_exit(try_catch->try_completion, 0);
++}
++
++void kunit_try_catch_run(struct kunit_try_catch *try_catch, void *context)
++{
++	DECLARE_COMPLETION_ONSTACK(try_completion);
++	struct kunit *test = try_catch->test;
++	struct task_struct *task_struct;
++	int exit_code, status;
++
++	try_catch->context = context;
++	try_catch->try_completion = &try_completion;
++	try_catch->try_result = 0;
++	task_struct = kthread_run(kunit_generic_run_threadfn_adapter,
++				  try_catch,
++				  "kunit_try_catch_thread");
++	if (IS_ERR(task_struct)) {
++		try_catch->catch(try_catch->context);
++		return;
++	}
++
++	/*
++	 * TODO(brendanhiggins@google.com): We should probably have some type of
++	 * variable timeout here. The only question is what that timeout value
++	 * should be.
++	 *
++	 * The intention has always been, at some point, to be able to label
++	 * tests with some type of size bucket (unit/small, integration/medium,
++	 * large/system/end-to-end, etc), where each size bucket would get a
++	 * default timeout value kind of like what Bazel does:
++	 * https://docs.bazel.build/versions/master/be/common-definitions.html#test.size
++	 * There is still some debate to be had on exactly how we do this. (For
++	 * one, we probably want to have some sort of test runner level
++	 * timeout.)
++	 *
++	 * For more background on this topic, see:
++	 * https://mike-bland.com/2011/11/01/small-medium-large.html
++	 */
++	status = wait_for_completion_timeout(&try_completion,
++					     300 * MSEC_PER_SEC); /* 5 min */
++	if (status < 0) {
++		kunit_err(test, "try timed out\n");
++		try_catch->try_result = -ETIMEDOUT;
++	}
++
++	exit_code = try_catch->try_result;
++
++	if (!exit_code)
++		return;
++
++	if (exit_code == -EFAULT)
++		try_catch->try_result = 0;
++	else if (exit_code == -EINTR)
++		kunit_err(test, "wake_up_process() was never called\n");
++	else if (exit_code)
++		kunit_err(test, "Unknown error: %d\n", exit_code);
++
++	try_catch->catch(try_catch->context);
++}
++
++void kunit_try_catch_init(struct kunit_try_catch *try_catch,
++			  struct kunit *test,
++			  kunit_try_catch_func_t try,
++			  kunit_try_catch_func_t catch)
++{
++	try_catch->test = test;
++	try_catch->try = try;
++	try_catch->catch = catch;
++}
+-- 
+2.22.0.510.g264f2c817a-goog
+
 
 _______________________________________________
 linux-um mailing list
