@@ -1,17 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-qk1-x74a.google.com ([2607:f8b0:4864:20::74a])
+Received: from ivanoab6.miniserver.com ([5.153.251.140]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hl6pP-00016A-1x
- for linux-um@lists.infradead.org; Wed, 10 Jul 2019 07:15:48 +0000
-Received: by mail-qk1-x74a.google.com with SMTP id z13so1180175qka.15
- for <linux-um@lists.infradead.org>; Wed, 10 Jul 2019 00:15:45 -0700 (PDT)
-Date: Wed, 10 Jul 2019 00:14:52 -0700
-In-Reply-To: <20190710071508.173491-1-brendanhiggins@google.com>
-Message-Id: <20190710071508.173491-3-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20190710071508.173491-1-brendanhiggins@google.com>
-Subject: [PATCH v8 02/18] kunit: test: add test resource management API
-From: Brendan Higgins <brendanhiggins@google.com>
+ id 1hnJJV-0006DU-IB
+ for linux-um@lists.infradead.org; Tue, 16 Jul 2019 08:59:59 +0000
+From: anton.ivanov@cambridgegreys.com
+Subject: [PATCHv3 5/5] um: Error handling fixes in vector drivers
+Date: Tue, 16 Jul 2019 09:59:39 +0100
+Message-Id: <20190716085939.21297-5-anton.ivanov@cambridgegreys.com>
+In-Reply-To: <20190716085939.21297-1-anton.ivanov@cambridgegreys.com>
+References: <20190716085939.21297-1-anton.ivanov@cambridgegreys.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,290 +18,192 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+To: linux-um@lists.infradead.org
+Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Create a common API for test managed resources like memory and test
-objects. A lot of times a test will want to set up infrastructure to be
-used in test cases; this could be anything from just wanting to allocate
-some memory to setting up a driver stack; this defines facilities for
-creating "test resources" which are managed by the test infrastructure
-and are automatically cleaned up at the conclusion of the test.
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+With the addition of bess support which uses connection
+oriented SEQPACKET sockets the vector routines can now
+encounter a "remote end closed the connection" scenario.
+
+This adds handling code to detect it in the TX path and
+the legacy RX path. There is no way to detect it in the
+vector RX path because that can legitimately return 0
+even if the remote end has not closed the connection. As
+a result the detection is delayed until the first TX
+event after the close.
+
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 ---
- include/kunit/test.h | 116 +++++++++++++++++++++++++++++++++++++++++++
- kunit/test.c         |  94 +++++++++++++++++++++++++++++++++++
- 2 files changed, 210 insertions(+)
+ arch/um/drivers/vector_kern.c | 37 ++++++++++++++++++++++++++++++++-----
+ arch/um/drivers/vector_kern.h |  1 +
+ arch/um/drivers/vector_user.c |  4 ++--
+ 3 files changed, 35 insertions(+), 7 deletions(-)
 
-diff --git a/include/kunit/test.h b/include/kunit/test.h
-index e0b34acb9ee4e..bdf41d31c343c 100644
---- a/include/kunit/test.h
-+++ b/include/kunit/test.h
-@@ -10,6 +10,70 @@
- #define _KUNIT_TEST_H
+diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
+index e79cd1dcb018..165ee1636598 100644
+--- a/arch/um/drivers/vector_kern.c
++++ b/arch/um/drivers/vector_kern.c
+@@ -76,6 +76,7 @@ static void vector_eth_configure(int n, struct arglist *def);
+ #define DEFAULT_VECTOR_SIZE 64
+ #define TX_SMALL_PACKET 128
+ #define MAX_IOV_SIZE (MAX_SKB_FRAGS + 1)
++#define MAX_ITERATIONS 64
  
- #include <linux/types.h>
-+#include <linux/slab.h>
-+
-+struct kunit_resource;
-+
-+typedef int (*kunit_resource_init_t)(struct kunit_resource *, void *);
-+typedef void (*kunit_resource_free_t)(struct kunit_resource *);
-+
-+/**
-+ * struct kunit_resource - represents a *test managed resource*
-+ * @allocation: for the user to store arbitrary data.
-+ * @free: a user supplied function to free the resource. Populated by
-+ * kunit_alloc_resource().
-+ *
-+ * Represents a *test managed resource*, a resource which will automatically be
-+ * cleaned up at the end of a test case.
-+ *
-+ * Example:
-+ *
-+ * .. code-block:: c
-+ *
-+ *	struct kunit_kmalloc_params {
-+ *		size_t size;
-+ *		gfp_t gfp;
-+ *	};
-+ *
-+ *	static int kunit_kmalloc_init(struct kunit_resource *res, void *context)
-+ *	{
-+ *		struct kunit_kmalloc_params *params = context;
-+ *		res->allocation = kmalloc(params->size, params->gfp);
-+ *
-+ *		if (!res->allocation)
-+ *			return -ENOMEM;
-+ *
-+ *		return 0;
-+ *	}
-+ *
-+ *	static void kunit_kmalloc_free(struct kunit_resource *res)
-+ *	{
-+ *		kfree(res->allocation);
-+ *	}
-+ *
-+ *	void *kunit_kmalloc(struct kunit *test, size_t size, gfp_t gfp)
-+ *	{
-+ *		struct kunit_kmalloc_params params;
-+ *		struct kunit_resource *res;
-+ *
-+ *		params.size = size;
-+ *		params.gfp = gfp;
-+ *
-+ *		res = kunit_alloc_resource(test, kunit_kmalloc_init,
-+ *			kunit_kmalloc_free, &params);
-+ *		if (res)
-+ *			return res->allocation;
-+ *
-+ *		return NULL;
-+ *	}
-+ */
-+struct kunit_resource {
-+	void *allocation;
-+	kunit_resource_free_t free;
-+
-+	/* private: internal use only. */
-+	struct list_head node;
-+};
+ static const struct {
+ 	const char string[ETH_GSTRING_LEN];
+@@ -418,6 +419,7 @@ static int vector_send(struct vector_queue *qi)
+ 					if (net_ratelimit())
+ 						netdev_err(vp->dev, "sendmmsg err=%i\n",
+ 							result);
++					vp->in_error = true;
+ 					result = send_len;
+ 				}
+ 				if (result > 0) {
+@@ -845,6 +847,10 @@ static int vector_legacy_rx(struct vector_private *vp)
+ 	}
  
- struct kunit;
+ 	pkt_len = uml_vector_recvmsg(vp->fds->rx_fd, &hdr, 0);
++	if (pkt_len < 0) {
++		vp->in_error = true;
++		return pkt_len;
++	}
  
-@@ -109,6 +173,13 @@ struct kunit {
- 	 * have terminated.
- 	 */
- 	bool success; /* Read only after test_case finishes! */
-+	struct mutex lock; /* Gaurds all mutable test state. */
-+	/*
-+	 * Because resources is a list that may be updated multiple times (with
-+	 * new resources) from any thread associated with a test case, we must
-+	 * protect it with some type of lock.
-+	 */
-+	struct list_head resources; /* Protected by lock. */
- };
+ 	if (skb != NULL) {
+ 		if (pkt_len > vp->header_size) {
+@@ -891,12 +897,16 @@ static int writev_tx(struct vector_private *vp, struct sk_buff *skb)
  
- void kunit_init_test(struct kunit *test, const char *name);
-@@ -141,6 +212,51 @@ int kunit_run_tests(struct kunit_suite *suite);
- 		}							       \
- 		late_initcall(kunit_suite_init##suite)
+ 	if (iov_count < 1)
+ 		goto drop;
++
+ 	pkt_len = uml_vector_writev(
+ 		vp->fds->tx_fd,
+ 		(struct iovec *) &iov,
+ 		iov_count
+ 	);
  
-+/**
-+ * kunit_alloc_resource() - Allocates a *test managed resource*.
-+ * @test: The test context object.
-+ * @init: a user supplied function to initialize the resource.
-+ * @free: a user supplied function to free the resource.
-+ * @context: for the user to pass in arbitrary data to the init function.
-+ *
-+ * Allocates a *test managed resource*, a resource which will automatically be
-+ * cleaned up at the end of a test case. See &struct kunit_resource for an
-+ * example.
-+ */
-+struct kunit_resource *kunit_alloc_resource(struct kunit *test,
-+					    kunit_resource_init_t init,
-+					    kunit_resource_free_t free,
-+					    void *context);
++	if (pkt_len < 0)
++		goto drop;
 +
-+void kunit_free_resource(struct kunit *test, struct kunit_resource *res);
-+
-+/**
-+ * kunit_kmalloc() - Like kmalloc() except the allocation is *test managed*.
-+ * @test: The test context object.
-+ * @size: The size in bytes of the desired memory.
-+ * @gfp: flags passed to underlying kmalloc().
-+ *
-+ * Just like `kmalloc(...)`, except the allocation is managed by the test case
-+ * and is automatically cleaned up after the test case concludes. See &struct
-+ * kunit_resource for more information.
-+ */
-+void *kunit_kmalloc(struct kunit *test, size_t size, gfp_t gfp);
-+
-+/**
-+ * kunit_kzalloc() - Just like kunit_kmalloc(), but zeroes the allocation.
-+ * @test: The test context object.
-+ * @size: The size in bytes of the desired memory.
-+ * @gfp: flags passed to underlying kmalloc().
-+ *
-+ * See kzalloc() and kunit_kmalloc() for more information.
-+ */
-+static inline void *kunit_kzalloc(struct kunit *test, size_t size, gfp_t gfp)
-+{
-+	return kunit_kmalloc(test, size, gfp | __GFP_ZERO);
-+}
-+
-+void kunit_cleanup(struct kunit *test);
-+
- void __printf(3, 4) kunit_printk(const char *level,
- 				 const struct kunit *test,
- 				 const char *fmt, ...);
-diff --git a/kunit/test.c b/kunit/test.c
-index 571e4c65deb5c..f165c9d8e10b0 100644
---- a/kunit/test.c
-+++ b/kunit/test.c
-@@ -122,6 +122,8 @@ static void kunit_print_test_case_ok_not_ok(struct kunit_case *test_case,
+ 	netif_trans_update(vp->dev);
+ 	netif_wake_queue(vp->dev);
  
- void kunit_init_test(struct kunit *test, const char *name)
+@@ -911,6 +921,8 @@ static int writev_tx(struct vector_private *vp, struct sk_buff *skb)
+ drop:
+ 	vp->dev->stats.tx_dropped++;
+ 	consume_skb(skb);
++	if (pkt_len < 0)
++		vp->in_error = true;
+ 	return pkt_len;
+ }
+ 
+@@ -939,6 +951,9 @@ static int vector_mmsg_rx(struct vector_private *vp)
+ 	packet_count = uml_vector_recvmmsg(
+ 		vp->fds->rx_fd, qi->mmsg_vector, qi->max_depth, 0);
+ 
++	if (packet_count < 0)
++		vp->in_error = true;
++
+ 	if (packet_count <= 0)
+ 		return packet_count;
+ 
+@@ -1008,15 +1023,18 @@ static int vector_mmsg_rx(struct vector_private *vp)
+ static void vector_rx(struct vector_private *vp)
  {
-+	mutex_init(&test->lock);
-+	INIT_LIST_HEAD(&test->resources);
- 	test->name = name;
- 	test->success = true;
- }
-@@ -151,6 +153,8 @@ static void kunit_run_case(struct kunit_suite *suite,
- 	if (suite->exit)
- 		suite->exit(&test);
+ 	int err;
++	int iter = 0;
  
-+	kunit_cleanup(&test);
+ 	if ((vp->options & VECTOR_RX) > 0)
+-		while ((err = vector_mmsg_rx(vp)) > 0)
+-			;
++		while (((err = vector_mmsg_rx(vp)) > 0) && (iter < MAX_ITERATIONS))
++			iter++;
+ 	else
+-		while ((err = vector_legacy_rx(vp)) > 0)
+-			;
++		while (((err = vector_legacy_rx(vp)) > 0) && (iter < MAX_ITERATIONS))
++			iter++;
+ 	if ((err != 0) && net_ratelimit())
+ 		netdev_err(vp->dev, "vector_rx: error(%d)\n", err);
++	if (iter == MAX_ITERATIONS)
++		netdev_err(vp->dev, "vector_rx: device stuck, remote end may have closed the connection\n");
+ }
+ 
+ static int vector_net_start_xmit(struct sk_buff *skb, struct net_device *dev)
+@@ -1024,6 +1042,13 @@ static int vector_net_start_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	struct vector_private *vp = netdev_priv(dev);
+ 	int queue_depth = 0;
+ 
++	if (vp->in_error) {
++		deactivate_fd(vp->fds->rx_fd, vp->rx_irq);
++		if ((vp->fds->rx_fd != vp->fds->tx_fd) && (vp->tx_irq != 0))
++			deactivate_fd(vp->fds->tx_fd, vp->tx_irq);
++		return NETDEV_TX_BUSY;
++	}
 +
- 	test_case->success = test.success;
- }
- 
-@@ -171,6 +175,96 @@ int kunit_run_tests(struct kunit_suite *suite)
+ 	if ((vp->options & VECTOR_TX) == 0) {
+ 		writev_tx(vp, skb);
+ 		return NETDEV_TX_OK;
+@@ -1134,6 +1159,7 @@ static int vector_net_close(struct net_device *dev)
+ 	vp->fds = NULL;
+ 	spin_lock_irqsave(&vp->lock, flags);
+ 	vp->opened = false;
++	vp->in_error = false;
+ 	spin_unlock_irqrestore(&vp->lock, flags);
  	return 0;
  }
+@@ -1501,7 +1527,8 @@ static void vector_eth_configure(
+ 		.transport_data		= NULL,
+ 		.in_write_poll		= false,
+ 		.coalesce		= 2,
+-		.req_size		= get_req_size(def)
++		.req_size		= get_req_size(def),
++		.in_error		= false
+ 		});
  
-+struct kunit_resource *kunit_alloc_resource(struct kunit *test,
-+					    kunit_resource_init_t init,
-+					    kunit_resource_free_t free,
-+					    void *context)
-+{
-+	struct kunit_resource *res;
-+	int ret;
-+
-+	res = kzalloc(sizeof(*res), GFP_KERNEL);
-+	if (!res)
-+		return NULL;
-+
-+	ret = init(res, context);
-+	if (ret)
-+		return NULL;
-+
-+	res->free = free;
-+	mutex_lock(&test->lock);
-+	list_add_tail(&res->node, &test->resources);
-+	mutex_unlock(&test->lock);
-+
-+	return res;
-+}
-+
-+void kunit_free_resource(struct kunit *test, struct kunit_resource *res)
-+{
-+	res->free(res);
-+	list_del(&res->node);
-+	kfree(res);
-+}
-+
-+struct kunit_kmalloc_params {
-+	size_t size;
-+	gfp_t gfp;
-+};
-+
-+static int kunit_kmalloc_init(struct kunit_resource *res, void *context)
-+{
-+	struct kunit_kmalloc_params *params = context;
-+
-+	res->allocation = kmalloc(params->size, params->gfp);
-+	if (!res->allocation)
-+		return -ENOMEM;
-+
-+	return 0;
-+}
-+
-+static void kunit_kmalloc_free(struct kunit_resource *res)
-+{
-+	kfree(res->allocation);
-+}
-+
-+void *kunit_kmalloc(struct kunit *test, size_t size, gfp_t gfp)
-+{
-+	struct kunit_kmalloc_params params;
-+	struct kunit_resource *res;
-+
-+	params.size = size;
-+	params.gfp = gfp;
-+
-+	res = kunit_alloc_resource(test,
-+				   kunit_kmalloc_init,
-+				   kunit_kmalloc_free,
-+				   &params);
-+
-+	if (res)
-+		return res->allocation;
-+
-+	return NULL;
-+}
-+
-+void kunit_cleanup(struct kunit *test)
-+{
-+	struct kunit_resource *resource, *resource_safe;
-+
-+	mutex_lock(&test->lock);
-+	/*
-+	 * test->resources is a stack - each allocation must be freed in the
-+	 * reverse order from which it was added since one resource may depend
-+	 * on another for its entire lifetime.
-+	 */
-+	list_for_each_entry_safe_reverse(resource,
-+					 resource_safe,
-+					 &test->resources,
-+					 node) {
-+		kunit_free_resource(test, resource);
-+	}
-+	mutex_unlock(&test->lock);
-+}
-+
- void kunit_printk(const char *level,
- 		  const struct kunit *test,
- 		  const char *fmt, ...)
+ 	dev->features = dev->hw_features = (NETIF_F_SG | NETIF_F_FRAGLIST);
+diff --git a/arch/um/drivers/vector_kern.h b/arch/um/drivers/vector_kern.h
+index 0b0a767b9076..684d2e60ad86 100644
+--- a/arch/um/drivers/vector_kern.h
++++ b/arch/um/drivers/vector_kern.h
+@@ -116,6 +116,7 @@ struct vector_private {
+ 	bool rexmit_scheduled;
+ 	bool opened;
+ 	bool in_write_poll;
++	bool in_error;
+ 
+ 	/* ethtool stats */
+ 
+diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
+index 6dd9b4379507..00c34ef31be5 100644
+--- a/arch/um/drivers/vector_user.c
++++ b/arch/um/drivers/vector_user.c
+@@ -619,7 +619,7 @@ int uml_vector_writev(int fd, void *hdr, int iovcount)
+ 	int n;
+ 
+ 	CATCH_EINTR(n = writev(fd, (struct iovec *) hdr,  iovcount));
+-	if ((n < 0) && (errno == EAGAIN))
++	if ((n < 0) && (errno == EAGAIN) && (errno == ENOBUFS))
+ 		return 0;
+ 	if (n >= 0)
+ 		return n;
+@@ -636,7 +636,7 @@ int uml_vector_sendmmsg(
+ 	int n;
+ 
+ 	CATCH_EINTR(n = sendmmsg(fd, (struct mmsghdr *) msgvec, vlen, flags));
+-	if ((n < 0) && (errno == EAGAIN))
++	if ((n < 0) && (errno == EAGAIN) && (errno == ENOBUFS))
+ 		return 0;
+ 	if (n >= 0)
+ 		return n;
 -- 
-2.22.0.410.gd8fdbe21b5-goog
+2.11.0
 
 
 _______________________________________________
