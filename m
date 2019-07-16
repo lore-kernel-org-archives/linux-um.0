@@ -1,15 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab6.miniserver.com ([5.153.251.140]
- helo=www.kot-begemot.co.uk)
+Received: from mail-pf1-x449.google.com ([2607:f8b0:4864:20::449])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hpSmO-0003OO-5l
- for linux-um@lists.infradead.org; Mon, 22 Jul 2019 07:30:41 +0000
-From: anton.ivanov@cambridgegreys.com
-Subject: [PATCHv3 5/5] um: Error handling fixes in vector drivers
-Date: Mon, 22 Jul 2019 08:30:25 +0100
-Message-Id: <20190722073025.20844-5-anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20190722073025.20844-1-anton.ivanov@cambridgegreys.com>
-References: <20190722073025.20844-1-anton.ivanov@cambridgegreys.com>
+ id 1hnJzh-0005vy-ND
+ for linux-um@lists.infradead.org; Tue, 16 Jul 2019 09:43:35 +0000
+Received: by mail-pf1-x449.google.com with SMTP id f25so12026177pfk.14
+ for <linux-um@lists.infradead.org>; Tue, 16 Jul 2019 02:43:29 -0700 (PDT)
+Date: Tue, 16 Jul 2019 02:42:51 -0700
+In-Reply-To: <20190716094302.180360-1-brendanhiggins@google.com>
+Message-Id: <20190716094302.180360-8-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20190716094302.180360-1-brendanhiggins@google.com>
+Subject: [PATCH v10 07/18] kunit: test: add initial tests
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,192 +20,246 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Add a test for string stream along with a simpler example.
 
-With the addition of bess support which uses connection
-oriented SEQPACKET sockets the vector routines can now
-encounter a "remote end closed the connection" scenario.
-
-This adds handling code to detect it in the TX path and
-the legacy RX path. There is no way to detect it in the
-vector RX path because that can legitimately return 0
-even if the remote end has not closed the connection. As
-a result the detection is delayed until the first TX
-event after the close.
-
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
 ---
- arch/um/drivers/vector_kern.c | 37 ++++++++++++++++++++++++++++++++-----
- arch/um/drivers/vector_kern.h |  1 +
- arch/um/drivers/vector_user.c |  4 ++--
- 3 files changed, 35 insertions(+), 7 deletions(-)
+ kunit/Kconfig              | 21 +++++++++
+ kunit/Makefile             |  4 ++
+ kunit/example-test.c       | 88 ++++++++++++++++++++++++++++++++++++++
+ kunit/string-stream-test.c | 75 ++++++++++++++++++++++++++++++++
+ 4 files changed, 188 insertions(+)
+ create mode 100644 kunit/example-test.c
+ create mode 100644 kunit/string-stream-test.c
 
-diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-index e79cd1dcb018..165ee1636598 100644
---- a/arch/um/drivers/vector_kern.c
-+++ b/arch/um/drivers/vector_kern.c
-@@ -76,6 +76,7 @@ static void vector_eth_configure(int n, struct arglist *def);
- #define DEFAULT_VECTOR_SIZE 64
- #define TX_SMALL_PACKET 128
- #define MAX_IOV_SIZE (MAX_SKB_FRAGS + 1)
-+#define MAX_ITERATIONS 64
+diff --git a/kunit/Kconfig b/kunit/Kconfig
+index 330ae83527c23..8541ef95b65ad 100644
+--- a/kunit/Kconfig
++++ b/kunit/Kconfig
+@@ -14,4 +14,25 @@ config KUNIT
+ 	  architectures. For more information, please see
+ 	  Documentation/dev-tools/kunit/.
  
- static const struct {
- 	const char string[ETH_GSTRING_LEN];
-@@ -418,6 +419,7 @@ static int vector_send(struct vector_queue *qi)
- 					if (net_ratelimit())
- 						netdev_err(vp->dev, "sendmmsg err=%i\n",
- 							result);
-+					vp->in_error = true;
- 					result = send_len;
- 				}
- 				if (result > 0) {
-@@ -845,6 +847,10 @@ static int vector_legacy_rx(struct vector_private *vp)
- 	}
- 
- 	pkt_len = uml_vector_recvmsg(vp->fds->rx_fd, &hdr, 0);
-+	if (pkt_len < 0) {
-+		vp->in_error = true;
-+		return pkt_len;
-+	}
- 
- 	if (skb != NULL) {
- 		if (pkt_len > vp->header_size) {
-@@ -891,12 +897,16 @@ static int writev_tx(struct vector_private *vp, struct sk_buff *skb)
- 
- 	if (iov_count < 1)
- 		goto drop;
++config KUNIT_TEST
++	bool "KUnit test for KUnit"
++	depends on KUNIT
++	help
++	  Enables the unit tests for the KUnit test framework. These tests test
++	  the KUnit test framework itself; the tests are both written using
++	  KUnit and test KUnit. This option should only be enabled for testing
++	  purposes by developers interested in testing that KUnit works as
++	  expected.
 +
- 	pkt_len = uml_vector_writev(
- 		vp->fds->tx_fd,
- 		(struct iovec *) &iov,
- 		iov_count
- 	);
- 
-+	if (pkt_len < 0)
-+		goto drop;
++config KUNIT_EXAMPLE_TEST
++	bool "Example test for KUnit"
++	depends on KUNIT
++	help
++	  Enables an example unit test that illustrates some of the basic
++	  features of KUnit. This test only exists to help new users understand
++	  what KUnit is and how it is used. Please refer to the example test
++	  itself, kunit/example-test.c, for more information. This option is
++	  intended for curious hackers who would like to understand how to use
++	  KUnit for kernel development.
 +
- 	netif_trans_update(vp->dev);
- 	netif_wake_queue(vp->dev);
- 
-@@ -911,6 +921,8 @@ static int writev_tx(struct vector_private *vp, struct sk_buff *skb)
- drop:
- 	vp->dev->stats.tx_dropped++;
- 	consume_skb(skb);
-+	if (pkt_len < 0)
-+		vp->in_error = true;
- 	return pkt_len;
- }
- 
-@@ -939,6 +951,9 @@ static int vector_mmsg_rx(struct vector_private *vp)
- 	packet_count = uml_vector_recvmmsg(
- 		vp->fds->rx_fd, qi->mmsg_vector, qi->max_depth, 0);
- 
-+	if (packet_count < 0)
-+		vp->in_error = true;
+ endmenu
+diff --git a/kunit/Makefile b/kunit/Makefile
+index 6ddc622ee6b1c..60a9ea6cb4697 100644
+--- a/kunit/Makefile
++++ b/kunit/Makefile
+@@ -1,3 +1,7 @@
+ obj-$(CONFIG_KUNIT) +=			test.o \
+ 					string-stream.o \
+ 					kunit-stream.o
 +
- 	if (packet_count <= 0)
- 		return packet_count;
- 
-@@ -1008,15 +1023,18 @@ static int vector_mmsg_rx(struct vector_private *vp)
- static void vector_rx(struct vector_private *vp)
- {
- 	int err;
-+	int iter = 0;
- 
- 	if ((vp->options & VECTOR_RX) > 0)
--		while ((err = vector_mmsg_rx(vp)) > 0)
--			;
-+		while (((err = vector_mmsg_rx(vp)) > 0) && (iter < MAX_ITERATIONS))
-+			iter++;
- 	else
--		while ((err = vector_legacy_rx(vp)) > 0)
--			;
-+		while (((err = vector_legacy_rx(vp)) > 0) && (iter < MAX_ITERATIONS))
-+			iter++;
- 	if ((err != 0) && net_ratelimit())
- 		netdev_err(vp->dev, "vector_rx: error(%d)\n", err);
-+	if (iter == MAX_ITERATIONS)
-+		netdev_err(vp->dev, "vector_rx: device stuck, remote end may have closed the connection\n");
- }
- 
- static int vector_net_start_xmit(struct sk_buff *skb, struct net_device *dev)
-@@ -1024,6 +1042,13 @@ static int vector_net_start_xmit(struct sk_buff *skb, struct net_device *dev)
- 	struct vector_private *vp = netdev_priv(dev);
- 	int queue_depth = 0;
- 
-+	if (vp->in_error) {
-+		deactivate_fd(vp->fds->rx_fd, vp->rx_irq);
-+		if ((vp->fds->rx_fd != vp->fds->tx_fd) && (vp->tx_irq != 0))
-+			deactivate_fd(vp->fds->tx_fd, vp->tx_irq);
-+		return NETDEV_TX_BUSY;
-+	}
++obj-$(CONFIG_KUNIT_TEST) +=		string-stream-test.o
 +
- 	if ((vp->options & VECTOR_TX) == 0) {
- 		writev_tx(vp, skb);
- 		return NETDEV_TX_OK;
-@@ -1134,6 +1159,7 @@ static int vector_net_close(struct net_device *dev)
- 	vp->fds = NULL;
- 	spin_lock_irqsave(&vp->lock, flags);
- 	vp->opened = false;
-+	vp->in_error = false;
- 	spin_unlock_irqrestore(&vp->lock, flags);
- 	return 0;
- }
-@@ -1501,7 +1527,8 @@ static void vector_eth_configure(
- 		.transport_data		= NULL,
- 		.in_write_poll		= false,
- 		.coalesce		= 2,
--		.req_size		= get_req_size(def)
-+		.req_size		= get_req_size(def),
-+		.in_error		= false
- 		});
- 
- 	dev->features = dev->hw_features = (NETIF_F_SG | NETIF_F_FRAGLIST);
-diff --git a/arch/um/drivers/vector_kern.h b/arch/um/drivers/vector_kern.h
-index 0b0a767b9076..684d2e60ad86 100644
---- a/arch/um/drivers/vector_kern.h
-+++ b/arch/um/drivers/vector_kern.h
-@@ -116,6 +116,7 @@ struct vector_private {
- 	bool rexmit_scheduled;
- 	bool opened;
- 	bool in_write_poll;
-+	bool in_error;
- 
- 	/* ethtool stats */
- 
-diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
-index 6dd9b4379507..4e31121246b1 100644
---- a/arch/um/drivers/vector_user.c
-+++ b/arch/um/drivers/vector_user.c
-@@ -619,7 +619,7 @@ int uml_vector_writev(int fd, void *hdr, int iovcount)
- 	int n;
- 
- 	CATCH_EINTR(n = writev(fd, (struct iovec *) hdr,  iovcount));
--	if ((n < 0) && (errno == EAGAIN))
-+	if ((n < 0) && ((errno == EAGAIN) || (errno == ENOBUFS)))
- 		return 0;
- 	if (n >= 0)
- 		return n;
-@@ -636,7 +636,7 @@ int uml_vector_sendmmsg(
- 	int n;
- 
- 	CATCH_EINTR(n = sendmmsg(fd, (struct mmsghdr *) msgvec, vlen, flags));
--	if ((n < 0) && (errno == EAGAIN))
-+	if ((n < 0) && ((errno == EAGAIN) || (errno == ENOBUFS)))
- 		return 0;
- 	if (n >= 0)
- 		return n;
++obj-$(CONFIG_KUNIT_EXAMPLE_TEST) +=	example-test.o
+diff --git a/kunit/example-test.c b/kunit/example-test.c
+new file mode 100644
+index 0000000000000..f64a829aa441f
+--- /dev/null
++++ b/kunit/example-test.c
+@@ -0,0 +1,88 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Example KUnit test to show how to use KUnit.
++ *
++ * Copyright (C) 2019, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++
++#include <kunit/test.h>
++
++/*
++ * This is the most fundamental element of KUnit, the test case. A test case
++ * makes a set EXPECTATIONs and ASSERTIONs about the behavior of some code; if
++ * any expectations or assertions are not met, the test fails; otherwise, the
++ * test passes.
++ *
++ * In KUnit, a test case is just a function with the signature
++ * `void (*)(struct kunit *)`. `struct kunit` is a context object that stores
++ * information about the current test.
++ */
++static void example_simple_test(struct kunit *test)
++{
++	/*
++	 * This is an EXPECTATION; it is how KUnit tests things. When you want
++	 * to test a piece of code, you set some expectations about what the
++	 * code should do. KUnit then runs the test and verifies that the code's
++	 * behavior matched what was expected.
++	 */
++	KUNIT_EXPECT_EQ(test, 1 + 1, 2);
++}
++
++/*
++ * This is run once before each test case, see the comment on
++ * example_test_suite for more information.
++ */
++static int example_test_init(struct kunit *test)
++{
++	kunit_info(test, "initializing\n");
++
++	return 0;
++}
++
++/*
++ * Here we make a list of all the test cases we want to add to the test suite
++ * below.
++ */
++static struct kunit_case example_test_cases[] = {
++	/*
++	 * This is a helper to create a test case object from a test case
++	 * function; its exact function is not important to understand how to
++	 * use KUnit, just know that this is how you associate test cases with a
++	 * test suite.
++	 */
++	KUNIT_CASE(example_simple_test),
++	{}
++};
++
++/*
++ * This defines a suite or grouping of tests.
++ *
++ * Test cases are defined as belonging to the suite by adding them to
++ * `kunit_cases`.
++ *
++ * Often it is desirable to run some function which will set up things which
++ * will be used by every test; this is accomplished with an `init` function
++ * which runs before each test case is invoked. Similarly, an `exit` function
++ * may be specified which runs after every test case and can be used to for
++ * cleanup. For clarity, running tests in a test suite would behave as follows:
++ *
++ * suite.init(test);
++ * suite.test_case[0](test);
++ * suite.exit(test);
++ * suite.init(test);
++ * suite.test_case[1](test);
++ * suite.exit(test);
++ * ...;
++ */
++static struct kunit_suite example_test_suite = {
++	.name = "example",
++	.init = example_test_init,
++	.test_cases = example_test_cases,
++};
++
++/*
++ * This registers the above test suite telling KUnit that this is a suite of
++ * tests that need to be run.
++ */
++kunit_test_suite(example_test_suite);
+diff --git a/kunit/string-stream-test.c b/kunit/string-stream-test.c
+new file mode 100644
+index 0000000000000..b5641b078b8f6
+--- /dev/null
++++ b/kunit/string-stream-test.c
+@@ -0,0 +1,75 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * KUnit test for struct string_stream.
++ *
++ * Copyright (C) 2019, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++
++#include <linux/slab.h>
++#include <kunit/test.h>
++#include <kunit/string-stream.h>
++
++static void string_stream_test_empty_on_creation(struct kunit *test)
++{
++	struct string_stream *stream = alloc_string_stream(test);
++
++	KUNIT_EXPECT_TRUE(test, string_stream_is_empty(stream));
++}
++
++static void string_stream_test_not_empty_after_add(struct kunit *test)
++{
++	struct string_stream *stream = alloc_string_stream(test);
++
++	string_stream_add(stream, "Foo");
++
++	KUNIT_EXPECT_FALSE(test, string_stream_is_empty(stream));
++}
++static void string_stream_test_get_string(struct kunit *test)
++{
++	struct string_stream *stream = alloc_string_stream(test);
++	char *output;
++
++	string_stream_add(stream, "Foo");
++	string_stream_add(stream, " %s", "bar");
++
++	output = string_stream_get_string(stream);
++	KUNIT_EXPECT_STREQ(test, output, "Foo bar");
++	kfree(output);
++}
++
++static void string_stream_test_add_and_clear(struct kunit *test)
++{
++	struct string_stream *stream = alloc_string_stream(test);
++	char *output;
++	int i;
++
++	for (i = 0; i < 10; i++)
++		string_stream_add(stream, "A");
++
++	output = string_stream_get_string(stream);
++	KUNIT_EXPECT_STREQ(test, output, "AAAAAAAAAA");
++	KUNIT_EXPECT_EQ(test, stream->length, (size_t)10);
++	KUNIT_EXPECT_FALSE(test, string_stream_is_empty(stream));
++	kfree(output);
++
++	string_stream_clear(stream);
++
++	output = string_stream_get_string(stream);
++	KUNIT_EXPECT_STREQ(test, output, "");
++	KUNIT_EXPECT_TRUE(test, string_stream_is_empty(stream));
++}
++
++static struct kunit_case string_stream_test_cases[] = {
++	KUNIT_CASE(string_stream_test_empty_on_creation),
++	KUNIT_CASE(string_stream_test_not_empty_after_add),
++	KUNIT_CASE(string_stream_test_get_string),
++	KUNIT_CASE(string_stream_test_add_and_clear),
++	{}
++};
++
++static struct kunit_suite string_stream_test_suite = {
++	.name = "string-stream-test",
++	.test_cases = string_stream_test_cases
++};
++kunit_test_suite(string_stream_test_suite);
 -- 
-2.11.0
+2.22.0.510.g264f2c817a-goog
 
 
 _______________________________________________
