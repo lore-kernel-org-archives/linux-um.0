@@ -1,16 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from mail-pg1-x54a.google.com ([2607:f8b0:4864:20::54a])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hoK43-00069D-S8
- for linux-um@lists.infradead.org; Fri, 19 Jul 2019 04:00:13 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.2 103/171] um: Silence lockdep complaint about
- mmap_sem
-Date: Thu, 18 Jul 2019 23:55:34 -0400
-Message-Id: <20190719035643.14300-103-sashal@kernel.org>
-In-Reply-To: <20190719035643.14300-1-sashal@kernel.org>
-References: <20190719035643.14300-1-sashal@kernel.org>
-MIME-Version: 1.0
+ id 1hnZAg-0006Is-Re
+ for linux-um@lists.infradead.org; Wed, 17 Jul 2019 01:55:56 +0000
+Received: by mail-pg1-x54a.google.com with SMTP id k20so13722481pgg.15
+ for <linux-um@lists.infradead.org>; Tue, 16 Jul 2019 18:55:53 -0700 (PDT)
+Date: Tue, 16 Jul 2019 18:55:25 -0700
+Message-Id: <20190717015543.152251-1-brendanhiggins@google.com>
+Mime-Version: 1.0
+Subject: [PATCH v11 00/18] kunit: introduce KUnit, the Linux kernel unit
+ testing framework
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -23,116 +23,83 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org, Johannes Berg <johannes.berg@intel.com>
+To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, Iurii Zaikin <yzaikin@google.com>, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, Michal Marek <michal.lkml@markovi.net>, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-From: Johannes Berg <johannes.berg@intel.com>
+## TL;DR
 
-[ Upstream commit 80bf6ceaf9310b3f61934c69b382d4912deee049 ]
+This patchset addresses comments from Stephen Boyd. No changes affect
+the API, and all changes are specific to patches 02, 03, and 04;
+however, there were some significant changes to how string_stream and
+kunit_stream work under the hood.
 
-When we get into activate_mm(), lockdep complains that we're doing
-something strange:
+## Background
 
-    WARNING: possible circular locking dependency detected
-    5.1.0-10252-gb00152307319-dirty #121 Not tainted
-    ------------------------------------------------------
-    inside.sh/366 is trying to acquire lock:
-    (____ptrval____) (&(&p->alloc_lock)->rlock){+.+.}, at: flush_old_exec+0x703/0x8d7
+This patch set proposes KUnit, a lightweight unit testing and mocking
+framework for the Linux kernel.
 
-    but task is already holding lock:
-    (____ptrval____) (&mm->mmap_sem){++++}, at: flush_old_exec+0x6c5/0x8d7
+Unlike Autotest and kselftest, KUnit is a true unit testing framework;
+it does not require installing the kernel on a test machine or in a VM
+(however, KUnit still allows you to run tests on test machines or in VMs
+if you want[1]) and does not require tests to be written in userspace
+running on a host kernel. Additionally, KUnit is fast: From invocation
+to completion KUnit can run several dozen tests in about a second.
+Currently, the entire KUnit test suite for KUnit runs in under a second
+from the initial invocation (build time excluded).
 
-    which lock already depends on the new lock.
+KUnit is heavily inspired by JUnit, Python's unittest.mock, and
+Googletest/Googlemock for C++. KUnit provides facilities for defining
+unit test cases, grouping related test cases into test suites, providing
+common infrastructure for running tests, mocking, spying, and much more.
 
-    the existing dependency chain (in reverse order) is:
+### What's so special about unit testing?
 
-    -> #1 (&mm->mmap_sem){++++}:
-           [...]
-           __lock_acquire+0x12ab/0x139f
-           lock_acquire+0x155/0x18e
-           down_write+0x3f/0x98
-           flush_old_exec+0x748/0x8d7
-           load_elf_binary+0x2ca/0xddb
-           [...]
+A unit test is supposed to test a single unit of code in isolation,
+hence the name. There should be no dependencies outside the control of
+the test; this means no external dependencies, which makes tests orders
+of magnitudes faster. Likewise, since there are no external dependencies,
+there are no hoops to jump through to run the tests. Additionally, this
+makes unit tests deterministic: a failing unit test always indicates a
+problem. Finally, because unit tests necessarily have finer granularity,
+they are able to test all code paths easily solving the classic problem
+of difficulty in exercising error handling code.
 
-    -> #0 (&(&p->alloc_lock)->rlock){+.+.}:
-           [...]
-           __lock_acquire+0x12ab/0x139f
-           lock_acquire+0x155/0x18e
-           _raw_spin_lock+0x30/0x83
-           flush_old_exec+0x703/0x8d7
-           load_elf_binary+0x2ca/0xddb
-           [...]
+### Is KUnit trying to replace other testing frameworks for the kernel?
 
-    other info that might help us debug this:
+No. Most existing tests for the Linux kernel are end-to-end tests, which
+have their place. A well tested system has lots of unit tests, a
+reasonable number of integration tests, and some end-to-end tests. KUnit
+is just trying to address the unit test space which is currently not
+being addressed.
 
-     Possible unsafe locking scenario:
+### More information on KUnit
 
-           CPU0                    CPU1
-           ----                    ----
-      lock(&mm->mmap_sem);
-                                   lock(&(&p->alloc_lock)->rlock);
-                                   lock(&mm->mmap_sem);
-      lock(&(&p->alloc_lock)->rlock);
+There is a bunch of documentation near the end of this patch set that
+describes how to use KUnit and best practices for writing unit tests.
+For convenience I am hosting the compiled docs here[2].
 
-     *** DEADLOCK ***
+Additionally for convenience, I have applied these patches to a
+branch[3]. The repo may be cloned with:
+git clone https://kunit.googlesource.com/linux
+This patchset is on the kunit/rfc/v5.2/v11 branch.
 
-    2 locks held by inside.sh/366:
-     #0: (____ptrval____) (&sig->cred_guard_mutex){+.+.}, at: __do_execve_file+0x12d/0x869
-     #1: (____ptrval____) (&mm->mmap_sem){++++}, at: flush_old_exec+0x6c5/0x8d7
+## Changes Since Last Version
 
-    stack backtrace:
-    CPU: 0 PID: 366 Comm: inside.sh Not tainted 5.1.0-10252-gb00152307319-dirty #121
-    Stack:
-     [...]
-    Call Trace:
-     [<600420de>] show_stack+0x13b/0x155
-     [<6048906b>] dump_stack+0x2a/0x2c
-     [<6009ae64>] print_circular_bug+0x332/0x343
-     [<6009c5c6>] check_prev_add+0x669/0xdad
-     [<600a06b4>] __lock_acquire+0x12ab/0x139f
-     [<6009f3d0>] lock_acquire+0x155/0x18e
-     [<604a07e0>] _raw_spin_lock+0x30/0x83
-     [<60151e6a>] flush_old_exec+0x703/0x8d7
-     [<601a8eb8>] load_elf_binary+0x2ca/0xddb
-     [...]
+- Went back to using spinlock in `struct string_stream`. Needed for so
+  that it is compatible with different GFP flags to address comment from
+  Stephen.
+- Added string_stream_append function to string_stream API. - suggested
+  by Stephen.
+- Made all string fragments and other allocations internal to
+  string_stream and kunit_stream managed by the KUnit resource
+  management API.
 
-I think it's because in exec_mmap() we have
+[1] https://google.github.io/kunit-docs/third_party/kernel/docs/usage.html#kunit-on-non-uml-architectures
+[2] https://google.github.io/kunit-docs/third_party/kernel/docs/
+[3] https://kunit.googlesource.com/linux/+/kunit/rfc/v5.2/v11
 
-	down_read(&old_mm->mmap_sem);
-...
-        task_lock(tsk);
-...
-	activate_mm(active_mm, mm);
-	(which does down_write(&mm->mmap_sem))
-
-I'm not really sure why lockdep throws in the whole knowledge
-about the task lock, but it seems that old_mm and mm shouldn't
-ever be the same (and it doesn't deadlock) so tell lockdep that
-they're different.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/um/include/asm/mmu_context.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/um/include/asm/mmu_context.h b/arch/um/include/asm/mmu_context.h
-index 9f4b4bb78120..00cefd33afdd 100644
---- a/arch/um/include/asm/mmu_context.h
-+++ b/arch/um/include/asm/mmu_context.h
-@@ -52,7 +52,7 @@ static inline void activate_mm(struct mm_struct *old, struct mm_struct *new)
- 	 * when the new ->mm is used for the first time.
- 	 */
- 	__switch_mm(&new->context.id);
--	down_write(&new->mmap_sem);
-+	down_write_nested(&new->mmap_sem, 1);
- 	uml_setup_stubs(new);
- 	up_write(&new->mmap_sem);
- }
 -- 
-2.20.1
+2.22.0.510.g264f2c817a-goog
 
 
 _______________________________________________
