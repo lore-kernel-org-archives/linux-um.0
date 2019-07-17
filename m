@@ -1,16 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab6.miniserver.com ([5.153.251.140]
- helo=www.kot-begemot.co.uk)
+Received: from mail-vk1-xa4a.google.com ([2607:f8b0:4864:20::a4a])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hnJJQ-0006Ac-KV
- for linux-um@lists.infradead.org; Tue, 16 Jul 2019 08:59:54 +0000
-From: anton.ivanov@cambridgegreys.com
-Subject: [PATCHv3 2/5] um: Added support for unix socket transports and bess
- transport
-Date: Tue, 16 Jul 2019 09:59:36 +0100
-Message-Id: <20190716085939.21297-2-anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20190716085939.21297-1-anton.ivanov@cambridgegreys.com>
-References: <20190716085939.21297-1-anton.ivanov@cambridgegreys.com>
+ id 1hnZBE-0006ZU-OL
+ for linux-um@lists.infradead.org; Wed, 17 Jul 2019 01:56:30 +0000
+Received: by mail-vk1-xa4a.google.com with SMTP id r4so10591298vkr.8
+ for <linux-um@lists.infradead.org>; Tue, 16 Jul 2019 18:56:27 -0700 (PDT)
+Date: Tue, 16 Jul 2019 18:55:37 -0700
+In-Reply-To: <20190717015543.152251-1-brendanhiggins@google.com>
+Message-Id: <20190717015543.152251-13-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20190717015543.152251-1-brendanhiggins@google.com>
+Subject: [PATCH v11 12/18] kunit: test: add tests for KUnit managed resources
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -19,202 +20,263 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, Avinash Kondareddy <akndr41@gmail.com>, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+From: Avinash Kondareddy <akndr41@gmail.com>
 
-This adds support for the UNIX domain socket transports in
-general and implements a Netsys::BESS compatible transport
-interface.
-For details on Netsys::BESS see https://github.com/NetSys/bess
+Add unit tests for KUnit managed resources. KUnit managed resources
+(struct kunit_resource) are resources that are automatically cleaned up
+at the end of a KUnit test, similar to the concept of devm_* managed
+resources.
 
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Signed-off-by: Avinash Kondareddy <akndr41@gmail.com>
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
 ---
- arch/um/drivers/vector_transports.c | 11 +++++
- arch/um/drivers/vector_user.c       | 88 ++++++++++++++++++++++++++++++++++++-
- arch/um/drivers/vector_user.h       |  3 ++
- 3 files changed, 101 insertions(+), 1 deletion(-)
+ kunit/test-test.c | 225 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 225 insertions(+)
 
-diff --git a/arch/um/drivers/vector_transports.c b/arch/um/drivers/vector_transports.c
-index 2999f3bd1781..a43310cd84fb 100644
---- a/arch/um/drivers/vector_transports.c
-+++ b/arch/um/drivers/vector_transports.c
-@@ -465,6 +465,15 @@ static int build_tap_transport_data(struct vector_private *vp)
- }
- 
- 
-+static int build_bess_transport_data(struct vector_private *vp)
+diff --git a/kunit/test-test.c b/kunit/test-test.c
+index 058f3fb37458a..725f1486376fa 100644
+--- a/kunit/test-test.c
++++ b/kunit/test-test.c
+@@ -101,3 +101,228 @@ static struct kunit_suite kunit_try_catch_test_suite = {
+ 	.test_cases = kunit_try_catch_test_cases,
+ };
+ kunit_test_suite(kunit_try_catch_test_suite);
++
++/*
++ * Context for testing test managed resources
++ * is_resource_initialized is used to test arbitrary resources
++ */
++struct kunit_test_resource_context {
++	struct kunit test;
++	bool is_resource_initialized;
++	int allocate_order[2];
++	int free_order[2];
++};
++
++static int fake_resource_init(struct kunit_resource *res, void *context)
 +{
-+	vp->form_header = NULL;
-+	vp->verify_header = NULL;
-+	vp->header_size = 0;
-+	vp->rx_header_size = 0;
++	struct kunit_test_resource_context *ctx = context;
++
++	res->allocation = &ctx->is_resource_initialized;
++	ctx->is_resource_initialized = true;
 +	return 0;
 +}
 +
- int build_transport_data(struct vector_private *vp)
- {
- 	char *transport = uml_vector_fetch_arg(vp->parsed, "transport");
-@@ -479,6 +488,8 @@ int build_transport_data(struct vector_private *vp)
- 		return build_tap_transport_data(vp);
- 	if (strncmp(transport, TRANS_HYBRID, TRANS_HYBRID_LEN) == 0)
- 		return build_hybrid_transport_data(vp);
-+	if (strncmp(transport, TRANS_BESS, TRANS_BESS_LEN) == 0)
-+		return build_bess_transport_data(vp);
- 	return 0;
- }
- 
-diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
-index af1a1da432ca..6dd9b4379507 100644
---- a/arch/um/drivers/vector_user.c
-+++ b/arch/um/drivers/vector_user.c
-@@ -18,6 +18,7 @@
- #include <fcntl.h>
- #include <sys/types.h>
- #include <sys/socket.h>
-+#include <sys/un.h>
- #include <net/ethernet.h>
- #include <netinet/ip.h>
- #include <netinet/ether.h>
-@@ -34,7 +35,8 @@
- 
- #define ID_GRE 0
- #define ID_L2TPV3 1
--#define ID_MAX 1
-+#define ID_BESS 2
-+#define ID_MAX 2
- 
- #define TOKEN_IFNAME "ifname"
- 
-@@ -44,8 +46,11 @@
- #define VNET_HDR_FAIL "could not enable vnet headers on fd %d"
- #define TUN_GET_F_FAIL "tapraw: TUNGETFEATURES failed: %s"
- #define L2TPV3_BIND_FAIL "l2tpv3_open : could not bind socket err=%i"
-+#define UNIX_BIND_FAIL "unix_open : could not bind socket err=%i"
- #define BPF_ATTACH_FAIL "Failed to attach filter size %d to %d, err %d\n"
- 
-+#define MAX_UN_LEN 107
-+
- /* This is very ugly and brute force lookup, but it is done
-  * only once at initialization so not worth doing hashes or
-  * anything more intelligent
-@@ -266,6 +271,85 @@ static struct vector_fds *user_init_hybrid_fds(struct arglist *ifspec)
- 	return NULL;
- }
- 
-+static struct vector_fds *user_init_unix_fds(struct arglist *ifspec, int id)
++static void fake_resource_free(struct kunit_resource *res)
 +{
-+	int fd = -1;
-+	int socktype;
-+	char *src, *dst;
-+	struct vector_fds *result = NULL;
-+	struct sockaddr_un *local_addr = NULL, *remote_addr = NULL;
++	bool *is_resource_initialized = res->allocation;
 +
-+	src = uml_vector_fetch_arg(ifspec, "src");
-+	dst = uml_vector_fetch_arg(ifspec, "dst");
-+	result = uml_kmalloc(sizeof(struct vector_fds), UM_GFP_KERNEL);
-+	if (result == NULL) {
-+		printk(UM_KERN_ERR "unix open:cannot allocate remote addr");
-+		goto unix_cleanup;
-+	}
-+	remote_addr = uml_kmalloc(sizeof(struct sockaddr_un), UM_GFP_KERNEL);
-+	if (remote_addr == NULL) {
-+		printk(UM_KERN_ERR "unix open:cannot allocate remote addr");
-+		goto unix_cleanup;
-+	}
-+
-+	switch (id) {
-+	case ID_BESS:
-+		socktype = SOCK_SEQPACKET;
-+		if ((src != NULL) && (strlen(src) <= MAX_UN_LEN)) {
-+			local_addr = uml_kmalloc(sizeof(struct sockaddr_un), UM_GFP_KERNEL);
-+			if (local_addr == NULL) {
-+				printk(UM_KERN_ERR "bess open:cannot allocate local addr");
-+				goto unix_cleanup;
-+			}
-+			local_addr->sun_family = AF_UNIX;
-+			memcpy(local_addr->sun_path, src, strlen(src) + 1);
-+		}
-+		if ((dst == NULL) || (strlen(dst) > MAX_UN_LEN))
-+			goto unix_cleanup;
-+		remote_addr->sun_family = AF_UNIX;
-+		memcpy(remote_addr->sun_path, dst, strlen(dst) + 1);
-+		break;
-+	default:
-+		printk(KERN_ERR "Unsupported unix socket type\n");
-+		return NULL;
-+	}
-+
-+	fd = socket(AF_UNIX, socktype, 0);
-+	if (fd == -1) {
-+		printk(UM_KERN_ERR
-+			"unix open: could not open socket, error = %d",
-+			-errno
-+		);
-+		goto unix_cleanup;
-+	}
-+	if (local_addr != NULL) {
-+		if (bind(fd, (struct sockaddr *) local_addr, sizeof(struct sockaddr_un))) {
-+			printk(UM_KERN_ERR UNIX_BIND_FAIL, errno);
-+			goto unix_cleanup;
-+		}
-+	}
-+	switch (id) {
-+	case ID_BESS:
-+		if (connect(fd, remote_addr, sizeof(struct sockaddr_un)) < 0) {
-+			printk(UM_KERN_ERR "bess open:cannot connect to %s %i", remote_addr->sun_path, -errno);
-+			goto unix_cleanup;
-+		}
-+		break;
-+	}
-+	result->rx_fd = fd;
-+	result->tx_fd = fd;
-+	result->remote_addr_size = sizeof(struct sockaddr_un);
-+	result->remote_addr = remote_addr;
-+	return result;
-+unix_cleanup:
-+	if (fd >= 0)
-+		os_close_file(fd);
-+	if (remote_addr != NULL)
-+		kfree(remote_addr);
-+	if (result != NULL)
-+		kfree(result);
-+	return NULL;
++	*is_resource_initialized = false;
 +}
- 
- static struct vector_fds *user_init_raw_fds(struct arglist *ifspec)
- {
-@@ -497,6 +581,8 @@ struct vector_fds *uml_vector_user_open(
- 		return user_init_socket_fds(parsed, ID_GRE);
- 	if (strncmp(transport, TRANS_L2TPV3, TRANS_L2TPV3_LEN) == 0)
- 		return user_init_socket_fds(parsed, ID_L2TPV3);
-+	if (strncmp(transport, TRANS_BESS, TRANS_BESS_LEN) == 0)
-+		return user_init_unix_fds(parsed, ID_BESS);
- 	return NULL;
- }
- 
-diff --git a/arch/um/drivers/vector_user.h b/arch/um/drivers/vector_user.h
-index 6bf50cf78ad0..0a13ca9592d1 100644
---- a/arch/um/drivers/vector_user.h
-+++ b/arch/um/drivers/vector_user.h
-@@ -25,6 +25,9 @@
- #define TRANS_HYBRID "hybrid"
- #define TRANS_HYBRID_LEN strlen(TRANS_HYBRID)
- 
-+#define TRANS_BESS "bess"
-+#define TRANS_BESS_LEN strlen(TRANS_BESS)
 +
- #ifndef IPPROTO_GRE
- #define IPPROTO_GRE 0x2F
- #endif
++static void kunit_resource_test_init_resources(struct kunit *test)
++{
++	struct kunit_test_resource_context *ctx = test->priv;
++
++	kunit_init_test(&ctx->test, "testing_test_init_test");
++
++	KUNIT_EXPECT_TRUE(test, list_empty(&ctx->test.resources));
++}
++
++static void kunit_resource_test_alloc_resource(struct kunit *test)
++{
++	struct kunit_test_resource_context *ctx = test->priv;
++	struct kunit_resource *res;
++	kunit_resource_free_t free = fake_resource_free;
++
++	res = kunit_alloc_and_get_resource(&ctx->test,
++					   fake_resource_init,
++					   fake_resource_free,
++					   GFP_KERNEL,
++					   ctx);
++
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, res);
++	KUNIT_EXPECT_PTR_EQ(test,
++			    &ctx->is_resource_initialized,
++			    (bool *) res->allocation);
++	KUNIT_EXPECT_TRUE(test, list_is_last(&res->node, &ctx->test.resources));
++	KUNIT_EXPECT_PTR_EQ(test, free, res->free);
++}
++
++static void kunit_resource_test_free_resource(struct kunit *test)
++{
++	struct kunit_test_resource_context *ctx = test->priv;
++	struct kunit_resource *res = kunit_alloc_and_get_resource(
++			&ctx->test,
++			fake_resource_init,
++			fake_resource_free,
++			GFP_KERNEL,
++			ctx);
++
++	kunit_free_resource(&ctx->test, res);
++
++	KUNIT_EXPECT_FALSE(test, ctx->is_resource_initialized);
++	KUNIT_EXPECT_TRUE(test, list_empty(&ctx->test.resources));
++}
++
++static void kunit_resource_test_cleanup_resources(struct kunit *test)
++{
++	int i;
++	struct kunit_test_resource_context *ctx = test->priv;
++	struct kunit_resource *resources[5];
++
++	for (i = 0; i < ARRAY_SIZE(resources); i++) {
++		resources[i] = kunit_alloc_and_get_resource(&ctx->test,
++							    fake_resource_init,
++							    fake_resource_free,
++							    GFP_KERNEL,
++							    ctx);
++	}
++
++	kunit_cleanup(&ctx->test);
++
++	KUNIT_EXPECT_TRUE(test, list_empty(&ctx->test.resources));
++}
++
++static void kunit_resource_test_mark_order(int order_array[],
++					   size_t order_size,
++					   int key)
++{
++	int i;
++
++	for (i = 0; i < order_size && order_array[i]; i++)
++		;
++
++	order_array[i] = key;
++}
++
++#define KUNIT_RESOURCE_TEST_MARK_ORDER(ctx, order_field, key)		       \
++		kunit_resource_test_mark_order(ctx->order_field,	       \
++					       ARRAY_SIZE(ctx->order_field),   \
++					       key)
++
++static int fake_resource_2_init(struct kunit_resource *res, void *context)
++{
++	struct kunit_test_resource_context *ctx = context;
++
++	KUNIT_RESOURCE_TEST_MARK_ORDER(ctx, allocate_order, 2);
++
++	res->allocation = ctx;
++
++	return 0;
++}
++
++static void fake_resource_2_free(struct kunit_resource *res)
++{
++	struct kunit_test_resource_context *ctx = res->allocation;
++
++	KUNIT_RESOURCE_TEST_MARK_ORDER(ctx, free_order, 2);
++}
++
++static int fake_resource_1_init(struct kunit_resource *res, void *context)
++{
++	struct kunit_test_resource_context *ctx = context;
++
++	kunit_alloc_and_get_resource(&ctx->test,
++				     fake_resource_2_init,
++				     fake_resource_2_free,
++				     GFP_KERNEL,
++				     ctx);
++
++	KUNIT_RESOURCE_TEST_MARK_ORDER(ctx, allocate_order, 1);
++
++	res->allocation = ctx;
++
++	return 0;
++}
++
++static void fake_resource_1_free(struct kunit_resource *res)
++{
++	struct kunit_test_resource_context *ctx = res->allocation;
++
++	KUNIT_RESOURCE_TEST_MARK_ORDER(ctx, free_order, 1);
++}
++
++/*
++ * TODO(brendanhiggins@google.com): replace the arrays that keep track of the
++ * order of allocation and freeing with strict mocks using the IN_SEQUENCE macro
++ * to assert allocation and freeing order when the feature becomes available.
++ */
++static void kunit_resource_test_proper_free_ordering(struct kunit *test)
++{
++	struct kunit_test_resource_context *ctx = test->priv;
++
++	/* fake_resource_1 allocates a fake_resource_2 in its init. */
++	kunit_alloc_and_get_resource(&ctx->test,
++				     fake_resource_1_init,
++				     fake_resource_1_free,
++				     GFP_KERNEL,
++				     ctx);
++
++	/*
++	 * Since fake_resource_2_init calls KUNIT_RESOURCE_TEST_MARK_ORDER
++	 * before returning to fake_resource_1_init, it should be the first to
++	 * put its key in the allocate_order array.
++	 */
++	KUNIT_EXPECT_EQ(test, ctx->allocate_order[0], 2);
++	KUNIT_EXPECT_EQ(test, ctx->allocate_order[1], 1);
++
++	kunit_cleanup(&ctx->test);
++
++	/*
++	 * Because fake_resource_2 finishes allocation before fake_resource_1,
++	 * fake_resource_1 should be freed first since it could depend on
++	 * fake_resource_2.
++	 */
++	KUNIT_EXPECT_EQ(test, ctx->free_order[0], 1);
++	KUNIT_EXPECT_EQ(test, ctx->free_order[1], 2);
++}
++
++static int kunit_resource_test_init(struct kunit *test)
++{
++	struct kunit_test_resource_context *ctx =
++			kzalloc(sizeof(*ctx), GFP_KERNEL);
++
++	if (!ctx)
++		return -ENOMEM;
++
++	test->priv = ctx;
++
++	kunit_init_test(&ctx->test, "test_test_context");
++
++	return 0;
++}
++
++static void kunit_resource_test_exit(struct kunit *test)
++{
++	struct kunit_test_resource_context *ctx = test->priv;
++
++	kunit_cleanup(&ctx->test);
++	kfree(ctx);
++}
++
++static struct kunit_case kunit_resource_test_cases[] = {
++	KUNIT_CASE(kunit_resource_test_init_resources),
++	KUNIT_CASE(kunit_resource_test_alloc_resource),
++	KUNIT_CASE(kunit_resource_test_free_resource),
++	KUNIT_CASE(kunit_resource_test_cleanup_resources),
++	KUNIT_CASE(kunit_resource_test_proper_free_ordering),
++	{}
++};
++
++static struct kunit_suite kunit_resource_test_suite = {
++	.name = "kunit-resource-test",
++	.init = kunit_resource_test_init,
++	.exit = kunit_resource_test_exit,
++	.test_cases = kunit_resource_test_cases,
++};
++kunit_test_suite(kunit_resource_test_suite);
 -- 
-2.11.0
+2.22.0.510.g264f2c817a-goog
 
 
 _______________________________________________
