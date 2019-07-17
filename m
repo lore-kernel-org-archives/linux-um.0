@@ -1,16 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from mail-qk1-x749.google.com ([2607:f8b0:4864:20::749])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hiQjI-0007Ks-Nc
- for linux-um@lists.infradead.org; Tue, 02 Jul 2019 21:54:26 +0000
-Date: Tue, 2 Jul 2019 23:54:10 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <46402789.25380.1562104450930.JavaMail.zimbra@nod.at>
-In-Reply-To: <20190527083427.6293-2-johannes@sipsolutions.net>
-References: <20190527083427.6293-1-johannes@sipsolutions.net>
- <20190527083427.6293-2-johannes@sipsolutions.net>
-Subject: Re: [PATCH v3 2/2] arch: um: support time travel mode
-MIME-Version: 1.0
+ id 1hnZB2-0006Sz-Td
+ for linux-um@lists.infradead.org; Wed, 17 Jul 2019 01:56:18 +0000
+Received: by mail-qk1-x749.google.com with SMTP id s25so18663867qkj.18
+ for <linux-um@lists.infradead.org>; Tue, 16 Jul 2019 18:56:16 -0700 (PDT)
+Date: Tue, 16 Jul 2019 18:55:33 -0700
+In-Reply-To: <20190717015543.152251-1-brendanhiggins@google.com>
+Message-Id: <20190717015543.152251-9-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20190717015543.152251-1-brendanhiggins@google.com>
+Subject: [PATCH v11 08/18] objtool: add kunit_try_catch_throw to the noreturn
+ list
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -19,104 +21,49 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: j@w1.fi, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, Johannes Berg <johannes.berg@intel.com>, anton ivanov <anton.ivanov@cambridgegreys.com>
+To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, kbuild test robot <lkp@intel.com>, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIkpvaGFubmVzIEJlcmciIDxq
-b2hhbm5lc0BzaXBzb2x1dGlvbnMubmV0Pgo+IEFuOiAibGludXgtdW0iIDxsaW51eC11bUBsaXN0
-cy5pbmZyYWRlYWQub3JnPgo+IENDOiAiSmVmZiBEaWtlIiA8amRpa2VAYWRkdG9pdC5jb20+LCAi
-cmljaGFyZCIgPHJpY2hhcmRAbm9kLmF0PiwgImFudG9uIGl2YW5vdiIgPGFudG9uLml2YW5vdkBj
-YW1icmlkZ2VncmV5cy5jb20+LAo+IGpAdzEuZmksICJKb2hhbm5lcyBCZXJnIiA8am9oYW5uZXMu
-YmVyZ0BpbnRlbC5jb20+Cj4gR2VzZW5kZXQ6IE1vbnRhZywgMjcuIE1haSAyMDE5IDEwOjM0OjI3
-Cj4gQmV0cmVmZjogW1BBVENIIHYzIDIvMl0gYXJjaDogdW06IHN1cHBvcnQgdGltZSB0cmF2ZWwg
-bW9kZQoKPiBGcm9tOiBKb2hhbm5lcyBCZXJnIDxqb2hhbm5lcy5iZXJnQGludGVsLmNvbT4KPiAK
-PiBTb21ldGltZXMgaXQgY2FuIGJlIHVzZWZ1bCB0byBydW4gd2l0aCAidGltZSB0cmF2ZWwiIGlu
-c2lkZSB0aGUKPiBVTUwgaW5zdGFuY2UsIGZvciBleGFtcGxlIGZvciB0ZXN0aW5nLiBGb3IgZXhh
-bXBsZSwgc29tZSB0ZXN0cwo+IGZvciB0aGUgd2lyZWxlc3Mgc3Vic3lzdGVtIGFuZCB1c2Vyc3Bh
-Y2UgYXJlIGJhc2VkIG9uIGh3c2ltLCBhCj4gdmlydHVhbCB3aXJlbGVzcyBhZGFwdGVyLiBTb21l
-IHRlc3RzIGNhbiB0YWtlIGEgbG9uZyB0aW1lIHRvCj4gcnVuIGJlY2F1c2UgdGhleSBlLmcuIHdh
-aXQgZm9yIDEyMCBzZWNvbmRzIHRvIGVsYXBzZSBmb3Igc29tZQo+IHJlZ3VsYXRvcnkgY2hlY2tz
-LiBUaGlzIG9idmlvdXNseSBnb2VzIGZhc3RlciBpZiBpdCBuZWVkIG5vdAo+IGFjdHVhbGx5IHdh
-aXQgdGhhdCBsb25nLCBidXQgdGltZSBpbnNpZGUgdGhlIHRlc3QgZW52aXJvbm1lbnQKPiBqdXN0
-ICJidW1wcyB1cCIgd2hlbiB0aGVyZSdzIG5vdGhpbmcgdG8gZG8uCj4gCj4gQWRkIENPTkZJR19V
-TUxfVElNRV9UUkFWRUxfU1VQUE9SVCB0byBlbmFibGUgY29kZSB0byBzdXBwb3J0Cj4gc3VjaCBt
-b2RlcyBhdCBydW50aW1lLCBzZWxlY3RlZCBvbiB0aGUgY29tbWFuZCBsaW5lOgo+ICoganVzdCAi
-dGltZS10cmF2ZWwiLCBpbiB3aGljaCB0aW1lIGluc2lkZSB0aGUgVU1MIGluc3RhbmNlCj4gICBj
-YW4gbW92ZSBmYXN0ZXIgdGhhbiByZWFsIHRpbWUsIGlmIHRoZXJlJ3Mgbm90aGluZyB0byBkbwo+
-ICogInRpbWUtdHJhdmVsPWluZi1jcHUiIGluIHdoaWNoIHRpbWUgYWxzbyBtb3ZlcyBzbG93ZXIg
-YW5kCj4gICBhbnkgQ1BVIHByb2Nlc3NpbmcgdGFrZXMgbm8gdGltZSBhdCBhbGwsIHdoaWNoIGFs
-bG93cyB0bwo+ICAgaW1wbGVtZW50IGNvbnNpc3RlbnQgYmVoYXZpb3VyIHJlZ2FyZGxlc3Mgb2Yg
-aG9zdCBDUFUgbG9hZAo+ICAgKG9yIHNwZWVkKSBvciBkZWJ1ZyBvdmVyaGVhZC4KPiAKPiBBbiBh
-ZGRpdGlvbmFsICJ0aW1lLXRyYXZlbC1zdGFydD08c2Vjb25kcz4iIHBhcmFtZXRlciBpcyBhbHNv
-Cj4gc3VwcG9ydGVkIGluIHRoaXMgY2FzZSB0byBzdGFydCB0aGUgd2FsbCBjbG9jayBhdCB0aGlz
-IHRpbWUKPiAoaW4gdW5peCBlcG9jaCkuCj4gCj4gV2l0aCB0aGlzIGVuYWJsZWQsIHRoZSB0ZXN0
-IG1lbnRpb25lZCBhYm92ZSBnb2VzIGZyb20gYSBydW50aW1lCj4gb2YgYWJvdXQgMTQwIHNlY29u
-ZHMgKHdpdGggc3RhcnR1cCBvdmVyaGVhZCBhbmQgYWxsKSB0byBiZWluZwo+IENQVSBib3VuZCBh
-bmQgZmluaXNoaW5nIGluIDE1IHNlY29uZHMgKG9uIG15IHNsb3cgbGFwdG9wKS4KPiAKPiBTaWdu
-ZWQtb2ZmLWJ5OiBKb2hhbm5lcyBCZXJnIDxqb2hhbm5lcy5iZXJnQGludGVsLmNvbT4KClRoaXMg
-YnJlYWtzIHRoZSBidWlsZCBmb3IgQ09ORklHX1VNTF9USU1FX1RSQVZFTF9TVVBQT1JUPW4KCldo
-YXQgZG8geW91IHRoaW5rIGFib3V0IHRoaXMgZm9sbG93dXAgZml4dXA/CkkgY29tbWl0dGVkIHlv
-dXIgcGF0Y2ggYWxyZWFkeSB0byBsaW51eC1uZXh0LgpTbywgbm8gbmVlZCB0byByZXNlbmQuIAoK
-ZGlmZiAtLWdpdCBhL2FyY2gvdW0vaW5jbHVkZS9zaGFyZWQvdGltZXItaW50ZXJuYWwuaCBiL2Fy
-Y2gvdW0vaW5jbHVkZS9zaGFyZWQvdGltZXItaW50ZXJuYWwuaAppbmRleCA1Y2E3NGY0MTVkNTIu
-LmMxNTg4M2IzMGMxOSAxMDA2NDQKLS0tIGEvYXJjaC91bS9pbmNsdWRlL3NoYXJlZC90aW1lci1p
-bnRlcm5hbC5oCisrKyBiL2FyY2gvdW0vaW5jbHVkZS9zaGFyZWQvdGltZXItaW50ZXJuYWwuaApA
-QCAtMjUsNyArMjUsNyBAQCBlbnVtIHRpbWVfdHJhdmVsX3RpbWVyX21vZGUgewogI2lmZGVmIENP
-TkZJR19VTUxfVElNRV9UUkFWRUxfU1VQUE9SVAogZXh0ZXJuIGVudW0gdGltZV90cmF2ZWxfbW9k
-ZSB0aW1lX3RyYXZlbF9tb2RlOwogZXh0ZXJuIHVuc2lnbmVkIGxvbmcgbG9uZyB0aW1lX3RyYXZl
-bF90aW1lOwotZXh0ZXJuIGVudW0gdGltZV90cmF2ZWxfdGltZXJfbW9kZSB0aW1lX3RyYXZlbF90
-aW1lcl9tb2RlOworZXh0ZXJuIGVudW0gdGltZV90cmF2ZWxfdGltZXJfbW9kZSB0dF90aW1lcl9t
-b2RlOwogZXh0ZXJuIHVuc2lnbmVkIGxvbmcgbG9uZyB0aW1lX3RyYXZlbF90aW1lcl9leHBpcnk7
-CiBleHRlcm4gdW5zaWduZWQgbG9uZyBsb25nIHRpbWVfdHJhdmVsX3RpbWVyX2ludGVydmFsOwog
-CkBAIC0zNyw3ICszNyw3IEBAIHN0YXRpYyBpbmxpbmUgdm9pZCB0aW1lX3RyYXZlbF9zZXRfdGlt
-ZSh1bnNpZ25lZCBsb25nIGxvbmcgbnMpCiBzdGF0aWMgaW5saW5lIHZvaWQgdGltZV90cmF2ZWxf
-c2V0X3RpbWVyKGVudW0gdGltZV90cmF2ZWxfdGltZXJfbW9kZSBtb2RlLAogICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIHVuc2lnbmVkIGxvbmcgbG9uZyBleHBpcnkpCiB7
-Ci0gICAgICAgdGltZV90cmF2ZWxfdGltZXJfbW9kZSA9IG1vZGU7CisgICAgICAgdHRfdGltZXJf
-bW9kZSA9IG1vZGU7CiAgICAgICAgdGltZV90cmF2ZWxfdGltZXJfZXhwaXJ5ID0gZXhwaXJ5Owog
-fQogI2Vsc2UKZGlmZiAtLWdpdCBhL2FyY2gvdW0va2VybmVsL3Byb2Nlc3MuYyBiL2FyY2gvdW0v
-a2VybmVsL3Byb2Nlc3MuYwppbmRleCBkZWYyMDkxNjk3Y2EuLjUwNTQwOGUyNjY4ZCAxMDA2NDQK
-LS0tIGEvYXJjaC91bS9rZXJuZWwvcHJvY2Vzcy5jCisrKyBiL2FyY2gvdW0va2VybmVsL3Byb2Nl
-c3MuYwpAQCAtMjA1LDE1ICsyMDUsMTYgQEAgdm9pZCBpbml0aWFsX3RocmVhZF9jYih2b2lkICgq
-cHJvYykodm9pZCAqKSwgdm9pZCAqYXJnKQogCiBzdGF0aWMgdm9pZCB0aW1lX3RyYXZlbF9zbGVl
-cCh1bnNpZ25lZCBsb25nIGxvbmcgZHVyYXRpb24pCiB7CisjaWZkZWYgQ09ORklHX1VNTF9USU1F
-X1RSQVZFTF9TVVBQT1JUCiAgICAgICAgdW5zaWduZWQgbG9uZyBsb25nIG5leHQgPSB0aW1lX3Ry
-YXZlbF90aW1lICsgZHVyYXRpb247CiAKICAgICAgICBpZiAodGltZV90cmF2ZWxfbW9kZSAhPSBU
-VF9NT0RFX0lORkNQVSkKICAgICAgICAgICAgICAgIG9zX3RpbWVyX2Rpc2FibGUoKTsKIAotICAg
-ICAgIGlmICh0aW1lX3RyYXZlbF90aW1lcl9tb2RlICE9IFRUX1RNUl9ESVNBQkxFRCB8fAorICAg
-ICAgIGlmICh0dF90aW1lcl9tb2RlICE9IFRUX1RNUl9ESVNBQkxFRCB8fAogICAgICAgICAgICB0
-aW1lX3RyYXZlbF90aW1lcl9leHBpcnkgPCBuZXh0KSB7Ci0gICAgICAgICAgICAgICBpZiAodGlt
-ZV90cmF2ZWxfdGltZXJfbW9kZSA9PSBUVF9UTVJfT05FU0hPVCkKLSAgICAgICAgICAgICAgICAg
-ICAgICAgdGltZV90cmF2ZWxfdGltZXJfbW9kZSA9IFRUX1RNUl9ESVNBQkxFRDsKKyAgICAgICAg
-ICAgICAgIGlmICh0dF90aW1lcl9tb2RlID09IFRUX1RNUl9PTkVTSE9UKQorICAgICAgICAgICAg
-ICAgICAgICAgICB0dF90aW1lcl9tb2RlID0gVFRfVE1SX0RJU0FCTEVEOwogICAgICAgICAgICAg
-ICAgLyoKICAgICAgICAgICAgICAgICAqIHRpbWVfdHJhdmVsX3RpbWUgd2lsbCBiZSBhZGp1c3Rl
-ZCBpbiB0aGUgdGltZXIKICAgICAgICAgICAgICAgICAqIElSUSBoYW5kbGVyIHNvIGl0IHdvcmtz
-IGV2ZW4gd2hlbiB0aGUgc2lnbmFsCkBAIC0yMjUsMTEgKzIyNiwxMiBAQCBzdGF0aWMgdm9pZCB0
-aW1lX3RyYXZlbF9zbGVlcCh1bnNpZ25lZCBsb25nIGxvbmcgZHVyYXRpb24pCiAgICAgICAgfQog
-CiAgICAgICAgaWYgKHRpbWVfdHJhdmVsX21vZGUgIT0gVFRfTU9ERV9JTkZDUFUpIHsKLSAgICAg
-ICAgICAgICAgIGlmICh0aW1lX3RyYXZlbF90aW1lcl9tb2RlID09IFRUX1RNUl9QRVJJT0RJQykK
-KyAgICAgICAgICAgICAgIGlmICh0dF90aW1lcl9tb2RlID09IFRUX1RNUl9QRVJJT0RJQykKICAg
-ICAgICAgICAgICAgICAgICAgICAgb3NfdGltZXJfc2V0X2ludGVydmFsKHRpbWVfdHJhdmVsX3Rp
-bWVyX2ludGVydmFsKTsKLSAgICAgICAgICAgICAgIGVsc2UgaWYgKHRpbWVfdHJhdmVsX3RpbWVy
-X21vZGUgPT0gVFRfVE1SX09ORVNIT1QpCisgICAgICAgICAgICAgICBlbHNlIGlmICh0dF90aW1l
-cl9tb2RlID09IFRUX1RNUl9PTkVTSE9UKQogICAgICAgICAgICAgICAgICAgICAgICBvc190aW1l
-cl9vbmVfc2hvdCh0aW1lX3RyYXZlbF90aW1lcl9leHBpcnkgLSBuZXh0KTsKICAgICAgICB9Cisj
-ZW5kaWYKIH0KIAogc3RhdGljIHZvaWQgdW1faWRsZV9zbGVlcCh2b2lkKQpkaWZmIC0tZ2l0IGEv
-YXJjaC91bS9rZXJuZWwvdGltZS5jIGIvYXJjaC91bS9rZXJuZWwvdGltZS5jCmluZGV4IDZhMDUx
-YjA3ODM1OS4uZDI3ZGQ1YmFjMGE2IDEwMDY0NAotLS0gYS9hcmNoL3VtL2tlcm5lbC90aW1lLmMK
-KysrIGIvYXJjaC91bS9rZXJuZWwvdGltZS5jCkBAIC0yNCw3ICsyNCw3IEBACiAjaWZkZWYgQ09O
-RklHX1VNTF9USU1FX1RSQVZFTF9TVVBQT1JUCiBlbnVtIHRpbWVfdHJhdmVsX21vZGUgdGltZV90
-cmF2ZWxfbW9kZTsKIHVuc2lnbmVkIGxvbmcgbG9uZyB0aW1lX3RyYXZlbF90aW1lOwotZW51bSB0
-aW1lX3RyYXZlbF90aW1lcl9tb2RlIHRpbWVfdHJhdmVsX3RpbWVyX21vZGU7CitlbnVtIHRpbWVf
-dHJhdmVsX3RpbWVyX21vZGUgdHRfdGltZXJfbW9kZTsKIHVuc2lnbmVkIGxvbmcgbG9uZyB0aW1l
-X3RyYXZlbF90aW1lcl9leHBpcnk7CiB1bnNpZ25lZCBsb25nIGxvbmcgdGltZV90cmF2ZWxfdGlt
-ZXJfaW50ZXJ2YWw7CgpUaGFua3MsCi8vcmljaGFyZAoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxp
-c3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9saW51eC11bQo=
+Fix the following warning seen on GCC 7.3:
+  kunit/test-test.o: warning: objtool: kunit_test_unsuccessful_try() falls through to next function kunit_test_catch()
+
+kunit_try_catch_throw is a function added in the following patch in this
+series; it allows KUnit, a unit testing framework for the kernel, to
+bail out of a broken test. As a consequence, it is a new __noreturn
+function that objtool thinks is broken (as seen above). So fix this
+warning by adding kunit_try_catch_throw to objtool's noreturn list.
+
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Link: https://www.spinics.net/lists/linux-kbuild/msg21708.html
+Cc: Peter Zijlstra <peterz@infradead.org>
+---
+ tools/objtool/check.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 172f991957269..98db5fe85c797 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -134,6 +134,7 @@ static int __dead_end_function(struct objtool_file *file, struct symbol *func,
+ 		"usercopy_abort",
+ 		"machine_real_restart",
+ 		"rewind_stack_do_exit",
++		"kunit_try_catch_throw",
+ 	};
+ 
+ 	if (func->bind == STB_WEAK)
+-- 
+2.22.0.510.g264f2c817a-goog
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
