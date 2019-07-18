@@ -1,17 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from mail-pg1-x543.google.com ([2607:f8b0:4864:20::543])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hodtr-0004gu-SI
- for linux-um@lists.infradead.org; Sat, 20 Jul 2019 01:11:01 +0000
-Received: by mail-pg1-x543.google.com with SMTP id u17so15162798pgi.6
- for <linux-um@lists.infradead.org>; Fri, 19 Jul 2019 18:10:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190718012136.GA135592@google.com>
-In-Reply-To: <20190718012136.GA135592@google.com>
+ id 1hnv7B-0000PA-Tu
+ for linux-um@lists.infradead.org; Thu, 18 Jul 2019 01:21:47 +0000
+Received: by mail-pg1-x543.google.com with SMTP id s1so5725344pgr.2
+ for <linux-um@lists.infradead.org>; Wed, 17 Jul 2019 18:21:43 -0700 (PDT)
+Date: Wed, 17 Jul 2019 18:21:36 -0700
 From: Brendan Higgins <brendanhiggins@google.com>
-Date: Fri, 19 Jul 2019 18:10:44 -0700
-Message-ID: <CAFd5g46YthkN=8Qsdb330b1Z2E=qadT3iW6WFz1FFvrAi7Oydw@mail.gmail.com>
-Subject: Re: UML GCOV fails to produce *.gcda files
+Subject: UML GCOV fails to produce *.gcda files
+Message-ID: <20190718012136.GA135592@google.com>
+MIME-Version: 1.0
+Content-Disposition: inline
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -27,45 +26,87 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 Cc: Darya Verzhbinsky <daryaver@google.com>, Daniel Latypov <dlatypov@google.com>, Maria Ignacio <mariaignacio@google.com>, linux-um@lists.infradead.org
 
-On Wed, Jul 17, 2019 at 6:21 PM Brendan Higgins
-<brendanhiggins@google.com> wrote:
->
-> Following the instructions here[1], we have been trying to get gcov
-> support working under UML. However, despite the fact that it seems to be
-> configured correctly (I see it producing *.gcno files), it does not
-> appear to be producing *.gcda files (or *.da) files when we run the UML
-> kernel.
->
-> Sor far we have mostly been working with v5.2.
->
-> Running make with KBUILD_VERBOSE=1 we see that gcc is being called with
-> the appropriate gcov flags: -fprofile-arcs -ftest-coverage
->
-> As I mentioned above, we see that *.gcno files are being produced.
->
-> We also see that libgcov is being linked into the linux binary:
->
-> readelf -s linux | grep __gcov_init
->  29312: 000000006041d070   200 FUNC    GLOBAL HIDDEN    13 __gcov_init
->
-> To ensure that __gcov_flush() is actually being called, we manually
-> inserted it in the kernel's init (just to see if we get some coverage
-> information). I copied the patch at the end of this email.
->
-> And yet we still see no *.gcda files being generated.
->
-> It looks like it has been a very long time since anyone has touched the
-> UML gcov code, so I have started looking into building an older version
-> of the kernel where it might have worked, but have not gotten any useful
-> results back from that yet.
+Following the instructions here[1], we have been trying to get gcov
+support working under UML. However, despite the fact that it seems to be
+configured correctly (I see it producing *.gcno files), it does not
+appear to be producing *.gcda files (or *.da) files when we run the UML
+kernel.
 
-I have an update on this!
+Sor far we have mostly been working with v5.2.
 
-I tried building the kernel with gcc-4.9.4 when I discovered that gcov
-*does* work with v5.2 of the kernel, just not gcc-7.3.0. So it seems
-this may actually be an issue with gcc and not UML.
+Running make with KBUILD_VERBOSE=1 we see that gcc is being called with
+the appropriate gcov flags: -fprofile-arcs -ftest-coverage
 
-I will update when I learn more.
+As I mentioned above, we see that *.gcno files are being produced.
+
+We also see that libgcov is being linked into the linux binary:
+
+readelf -s linux | grep __gcov_init
+ 29312: 000000006041d070   200 FUNC    GLOBAL HIDDEN    13 __gcov_init
+
+To ensure that __gcov_flush() is actually being called, we manually
+inserted it in the kernel's init (just to see if we get some coverage
+information). I copied the patch at the end of this email.
+
+And yet we still see no *.gcda files being generated.
+
+It looks like it has been a very long time since anyone has touched the
+UML gcov code, so I have started looking into building an older version
+of the kernel where it might have worked, but have not gotten any useful
+results back from that yet.
+
+We are aware that gcov has also been implemented for other architectures
+under separate Kconfigs (CONFIG_GCOV_KERNEL and friends); however, we
+are very keen to get gcov working with UML (where we don't have to
+scrape sysfs for the *.gcda files) as we are running tests in UML and it
+would be much easier to get coverage for these tests on UML as well.
+
+Hope someone can help!
+
+Thanks!
+
+[1]http://user-mode-linux.sourceforge.net/old/gprof.html
+
+Our .config can be generated by running `make ARCH=um olddefconfig` on
+the following defconfig:
+
+CONFIG_DEBUG_INFO=y
+CONFIG_DEBUG_KERNEL=y
+CONFIG_GCOV=y
+
+The __gcov_flush() patch mentioned above is here:
+
+From e021b659b51670bc0a063b6817c31d30ab809be6 Mon Sep 17 00:00:00 2001
+From: Brendan Higgins <brendanhiggins@google.com>
+Date: Wed, 17 Jul 2019 18:11:29 -0700
+Subject: [PATCH v1] DO NOT MERGE: added __gcov_flush() to init to ensure it is
+ called
+
+---
+ init/main.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/init/main.c b/init/main.c
+index 66a196c5e4c3c..70d7a6cb9ea0f 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -1080,10 +1080,14 @@ void __weak free_initmem(void)
+ 	free_initmem_default(POISON_FREE_INITMEM);
+ }
+ 
++extern void __gcov_flush(void);
++
+ static int __ref kernel_init(void *unused)
+ {
+ 	int ret;
+ 
++	__gcov_flush();
++	printk("__gcov_flush\n");
+ 	kernel_init_freeable();
+ 	/* need to finish all async __init code before freeing the memory */
+ 	async_synchronize_full();
+-- 
+2.22.0.510.g264f2c817a-goog
 
 _______________________________________________
 linux-um mailing list
