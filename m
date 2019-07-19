@@ -1,17 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x649.google.com ([2607:f8b0:4864:20::649])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hl6pq-0001I8-3W
- for linux-um@lists.infradead.org; Wed, 10 Jul 2019 07:16:15 +0000
-Received: by mail-pl1-x649.google.com with SMTP id i3so841566plb.8
- for <linux-um@lists.infradead.org>; Wed, 10 Jul 2019 00:16:13 -0700 (PDT)
-Date: Wed, 10 Jul 2019 00:14:56 -0700
-In-Reply-To: <20190710071508.173491-1-brendanhiggins@google.com>
-Message-Id: <20190710071508.173491-7-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20190710071508.173491-1-brendanhiggins@google.com>
-Subject: [PATCH v8 06/18] kbuild: enable building KUnit
-From: Brendan Higgins <brendanhiggins@google.com>
+ id 1hoK91-0002KH-0G
+ for linux-um@lists.infradead.org; Fri, 19 Jul 2019 04:05:25 +0000
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.1 079/141] um: Silence lockdep complaint about
+ mmap_sem
+Date: Fri, 19 Jul 2019 00:01:44 -0400
+Message-Id: <20190719040246.15945-79-sashal@kernel.org>
+In-Reply-To: <20190719040246.15945-1-sashal@kernel.org>
+References: <20190719040246.15945-1-sashal@kernel.org>
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,48 +23,116 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, Michal Marek <michal.lkml@markovi.net>, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Sasha Levin <sashal@kernel.org>, Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org, Johannes Berg <johannes.berg@intel.com>
 
-KUnit is a new unit testing framework for the kernel and when used is
-built into the kernel as a part of it. Add KUnit to the root Kconfig and
-Makefile to allow it to be actually built.
+From: Johannes Berg <johannes.berg@intel.com>
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Michal Marek <michal.lkml@markovi.net>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+[ Upstream commit 80bf6ceaf9310b3f61934c69b382d4912deee049 ]
+
+When we get into activate_mm(), lockdep complains that we're doing
+something strange:
+
+    WARNING: possible circular locking dependency detected
+    5.1.0-10252-gb00152307319-dirty #121 Not tainted
+    ------------------------------------------------------
+    inside.sh/366 is trying to acquire lock:
+    (____ptrval____) (&(&p->alloc_lock)->rlock){+.+.}, at: flush_old_exec+0x703/0x8d7
+
+    but task is already holding lock:
+    (____ptrval____) (&mm->mmap_sem){++++}, at: flush_old_exec+0x6c5/0x8d7
+
+    which lock already depends on the new lock.
+
+    the existing dependency chain (in reverse order) is:
+
+    -> #1 (&mm->mmap_sem){++++}:
+           [...]
+           __lock_acquire+0x12ab/0x139f
+           lock_acquire+0x155/0x18e
+           down_write+0x3f/0x98
+           flush_old_exec+0x748/0x8d7
+           load_elf_binary+0x2ca/0xddb
+           [...]
+
+    -> #0 (&(&p->alloc_lock)->rlock){+.+.}:
+           [...]
+           __lock_acquire+0x12ab/0x139f
+           lock_acquire+0x155/0x18e
+           _raw_spin_lock+0x30/0x83
+           flush_old_exec+0x703/0x8d7
+           load_elf_binary+0x2ca/0xddb
+           [...]
+
+    other info that might help us debug this:
+
+     Possible unsafe locking scenario:
+
+           CPU0                    CPU1
+           ----                    ----
+      lock(&mm->mmap_sem);
+                                   lock(&(&p->alloc_lock)->rlock);
+                                   lock(&mm->mmap_sem);
+      lock(&(&p->alloc_lock)->rlock);
+
+     *** DEADLOCK ***
+
+    2 locks held by inside.sh/366:
+     #0: (____ptrval____) (&sig->cred_guard_mutex){+.+.}, at: __do_execve_file+0x12d/0x869
+     #1: (____ptrval____) (&mm->mmap_sem){++++}, at: flush_old_exec+0x6c5/0x8d7
+
+    stack backtrace:
+    CPU: 0 PID: 366 Comm: inside.sh Not tainted 5.1.0-10252-gb00152307319-dirty #121
+    Stack:
+     [...]
+    Call Trace:
+     [<600420de>] show_stack+0x13b/0x155
+     [<6048906b>] dump_stack+0x2a/0x2c
+     [<6009ae64>] print_circular_bug+0x332/0x343
+     [<6009c5c6>] check_prev_add+0x669/0xdad
+     [<600a06b4>] __lock_acquire+0x12ab/0x139f
+     [<6009f3d0>] lock_acquire+0x155/0x18e
+     [<604a07e0>] _raw_spin_lock+0x30/0x83
+     [<60151e6a>] flush_old_exec+0x703/0x8d7
+     [<601a8eb8>] load_elf_binary+0x2ca/0xddb
+     [...]
+
+I think it's because in exec_mmap() we have
+
+	down_read(&old_mm->mmap_sem);
+...
+        task_lock(tsk);
+...
+	activate_mm(active_mm, mm);
+	(which does down_write(&mm->mmap_sem))
+
+I'm not really sure why lockdep throws in the whole knowledge
+about the task lock, but it seems that old_mm and mm shouldn't
+ever be the same (and it doesn't deadlock) so tell lockdep that
+they're different.
+
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Kconfig  | 2 ++
- Makefile | 2 ++
- 2 files changed, 4 insertions(+)
+ arch/um/include/asm/mmu_context.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Kconfig b/Kconfig
-index 48a80beab6853..10428501edb78 100644
---- a/Kconfig
-+++ b/Kconfig
-@@ -30,3 +30,5 @@ source "crypto/Kconfig"
- source "lib/Kconfig"
- 
- source "lib/Kconfig.debug"
-+
-+source "kunit/Kconfig"
-diff --git a/Makefile b/Makefile
-index 3e4868a6498b2..0ce1a8a2b6fec 100644
---- a/Makefile
-+++ b/Makefile
-@@ -993,6 +993,8 @@ PHONY += prepare0
- ifeq ($(KBUILD_EXTMOD),)
- core-y		+= kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ block/
- 
-+core-$(CONFIG_KUNIT) += kunit/
-+
- vmlinux-dirs	:= $(patsubst %/,%,$(filter %/, $(init-y) $(init-m) \
- 		     $(core-y) $(core-m) $(drivers-y) $(drivers-m) \
- 		     $(net-y) $(net-m) $(libs-y) $(libs-m) $(virt-y)))
+diff --git a/arch/um/include/asm/mmu_context.h b/arch/um/include/asm/mmu_context.h
+index 9f4b4bb78120..00cefd33afdd 100644
+--- a/arch/um/include/asm/mmu_context.h
++++ b/arch/um/include/asm/mmu_context.h
+@@ -52,7 +52,7 @@ static inline void activate_mm(struct mm_struct *old, struct mm_struct *new)
+ 	 * when the new ->mm is used for the first time.
+ 	 */
+ 	__switch_mm(&new->context.id);
+-	down_write(&new->mmap_sem);
++	down_write_nested(&new->mmap_sem, 1);
+ 	uml_setup_stubs(new);
+ 	up_write(&new->mmap_sem);
+ }
 -- 
-2.22.0.410.gd8fdbe21b5-goog
+2.20.1
 
 
 _______________________________________________
