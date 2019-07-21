@@ -2,12 +2,12 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hpSVS-0003PT-KJ
- for linux-um@lists.infradead.org; Mon, 22 Jul 2019 07:13:12 +0000
+ id 1hpIOZ-0008QX-OW
+ for linux-um@lists.infradead.org; Sun, 21 Jul 2019 20:25:25 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v2] um: fix time travel mode
-Date: Mon, 22 Jul 2019 09:12:56 +0200
-Message-Id: <20190722071256.15360-1-johannes@sipsolutions.net>
+Subject: [PATCH] um: fix time travel mode
+Date: Sun, 21 Jul 2019 22:25:10 +0200
+Message-Id: <20190721202510.10265-1-johannes@sipsolutions.net>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -37,15 +37,13 @@ the _mode() one in the relevant code path.
 Fixes: b482e48d29f1 ("um: fix build without CONFIG_UML_TIME_TRAVEL_SUPPORT")
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
-v2: don't break non-TIME_TRAVEL build again
----
- arch/um/include/shared/timer-internal.h | 14 ++++++++++----
+ arch/um/include/shared/timer-internal.h |  7 +++++--
  arch/um/kernel/process.c                |  2 +-
  arch/um/kernel/time.c                   | 16 +++++++++-------
- 3 files changed, 20 insertions(+), 12 deletions(-)
+ 3 files changed, 15 insertions(+), 10 deletions(-)
 
 diff --git a/arch/um/include/shared/timer-internal.h b/arch/um/include/shared/timer-internal.h
-index 8574338bf23b..9991ec2371e4 100644
+index 8574338bf23b..160b21a58e8a 100644
 --- a/arch/um/include/shared/timer-internal.h
 +++ b/arch/um/include/shared/timer-internal.h
 @@ -34,10 +34,13 @@ static inline void time_travel_set_time(unsigned long long ns)
@@ -64,20 +62,6 @@ index 8574338bf23b..9991ec2371e4 100644
  	time_travel_timer_expiry = expiry;
  }
  #else
-@@ -50,8 +53,11 @@ static inline void time_travel_set_time(unsigned long long ns)
- {
- }
- 
--static inline void time_travel_set_timer(enum time_travel_timer_mode mode,
--					 unsigned long long expiry)
-+static inline void time_travel_set_timer_mode(enum time_travel_timer_mode mode)
-+{
-+}
-+
-+static inline void time_travel_set_timer_expiry(unsigned long long expiry)
- {
- }
- 
 diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
 index 67c0d1a860e9..6bede7888fc2 100644
 --- a/arch/um/kernel/process.c
