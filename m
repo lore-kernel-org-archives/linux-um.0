@@ -2,15 +2,14 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab6.miniserver.com ([5.153.251.140]
  helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hlqm7-0006fz-RT
- for linux-um@lists.infradead.org; Fri, 12 Jul 2019 08:19:30 +0000
+ id 1hpSmO-0003OO-5l
+ for linux-um@lists.infradead.org; Mon, 22 Jul 2019 07:30:41 +0000
 From: anton.ivanov@cambridgegreys.com
-Subject: [RESEND PATCHv2 2/3] um: Added support for unix socket transports and
- bess transport
-Date: Fri, 12 Jul 2019 09:19:13 +0100
-Message-Id: <20190712081914.3074-2-anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20190712081914.3074-1-anton.ivanov@cambridgegreys.com>
-References: <20190712081914.3074-1-anton.ivanov@cambridgegreys.com>
+Subject: [PATCHv3 5/5] um: Error handling fixes in vector drivers
+Date: Mon, 22 Jul 2019 08:30:25 +0100
+Message-Id: <20190722073025.20844-5-anton.ivanov@cambridgegreys.com>
+In-Reply-To: <20190722073025.20844-1-anton.ivanov@cambridgegreys.com>
+References: <20190722073025.20844-1-anton.ivanov@cambridgegreys.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -29,191 +28,180 @@ Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
 From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-This adds support for the UNIX domain socket transports in
-general and implements a Netsys::BESS compatible transport
-interface.
-For details on Netsys::BESS see https://github.com/NetSys/bess
+With the addition of bess support which uses connection
+oriented SEQPACKET sockets the vector routines can now
+encounter a "remote end closed the connection" scenario.
+
+This adds handling code to detect it in the TX path and
+the legacy RX path. There is no way to detect it in the
+vector RX path because that can legitimately return 0
+even if the remote end has not closed the connection. As
+a result the detection is delayed until the first TX
+event after the close.
 
 Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 ---
- arch/um/drivers/vector_transports.c | 11 +++++
- arch/um/drivers/vector_user.c       | 89 ++++++++++++++++++++++++++++++++++++-
- arch/um/drivers/vector_user.h       |  3 ++
- 3 files changed, 102 insertions(+), 1 deletion(-)
+ arch/um/drivers/vector_kern.c | 37 ++++++++++++++++++++++++++++++++-----
+ arch/um/drivers/vector_kern.h |  1 +
+ arch/um/drivers/vector_user.c |  4 ++--
+ 3 files changed, 35 insertions(+), 7 deletions(-)
 
-diff --git a/arch/um/drivers/vector_transports.c b/arch/um/drivers/vector_transports.c
-index 2999f3bd1781..a43310cd84fb 100644
---- a/arch/um/drivers/vector_transports.c
-+++ b/arch/um/drivers/vector_transports.c
-@@ -465,6 +465,15 @@ static int build_tap_transport_data(struct vector_private *vp)
+diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
+index e79cd1dcb018..165ee1636598 100644
+--- a/arch/um/drivers/vector_kern.c
++++ b/arch/um/drivers/vector_kern.c
+@@ -76,6 +76,7 @@ static void vector_eth_configure(int n, struct arglist *def);
+ #define DEFAULT_VECTOR_SIZE 64
+ #define TX_SMALL_PACKET 128
+ #define MAX_IOV_SIZE (MAX_SKB_FRAGS + 1)
++#define MAX_ITERATIONS 64
+ 
+ static const struct {
+ 	const char string[ETH_GSTRING_LEN];
+@@ -418,6 +419,7 @@ static int vector_send(struct vector_queue *qi)
+ 					if (net_ratelimit())
+ 						netdev_err(vp->dev, "sendmmsg err=%i\n",
+ 							result);
++					vp->in_error = true;
+ 					result = send_len;
+ 				}
+ 				if (result > 0) {
+@@ -845,6 +847,10 @@ static int vector_legacy_rx(struct vector_private *vp)
+ 	}
+ 
+ 	pkt_len = uml_vector_recvmsg(vp->fds->rx_fd, &hdr, 0);
++	if (pkt_len < 0) {
++		vp->in_error = true;
++		return pkt_len;
++	}
+ 
+ 	if (skb != NULL) {
+ 		if (pkt_len > vp->header_size) {
+@@ -891,12 +897,16 @@ static int writev_tx(struct vector_private *vp, struct sk_buff *skb)
+ 
+ 	if (iov_count < 1)
+ 		goto drop;
++
+ 	pkt_len = uml_vector_writev(
+ 		vp->fds->tx_fd,
+ 		(struct iovec *) &iov,
+ 		iov_count
+ 	);
+ 
++	if (pkt_len < 0)
++		goto drop;
++
+ 	netif_trans_update(vp->dev);
+ 	netif_wake_queue(vp->dev);
+ 
+@@ -911,6 +921,8 @@ static int writev_tx(struct vector_private *vp, struct sk_buff *skb)
+ drop:
+ 	vp->dev->stats.tx_dropped++;
+ 	consume_skb(skb);
++	if (pkt_len < 0)
++		vp->in_error = true;
+ 	return pkt_len;
  }
  
+@@ -939,6 +951,9 @@ static int vector_mmsg_rx(struct vector_private *vp)
+ 	packet_count = uml_vector_recvmmsg(
+ 		vp->fds->rx_fd, qi->mmsg_vector, qi->max_depth, 0);
  
-+static int build_bess_transport_data(struct vector_private *vp)
-+{
-+	vp->form_header = NULL;
-+	vp->verify_header = NULL;
-+	vp->header_size = 0;
-+	vp->rx_header_size = 0;
-+	return 0;
-+}
++	if (packet_count < 0)
++		vp->in_error = true;
 +
- int build_transport_data(struct vector_private *vp)
+ 	if (packet_count <= 0)
+ 		return packet_count;
+ 
+@@ -1008,15 +1023,18 @@ static int vector_mmsg_rx(struct vector_private *vp)
+ static void vector_rx(struct vector_private *vp)
  {
- 	char *transport = uml_vector_fetch_arg(vp->parsed, "transport");
-@@ -479,6 +488,8 @@ int build_transport_data(struct vector_private *vp)
- 		return build_tap_transport_data(vp);
- 	if (strncmp(transport, TRANS_HYBRID, TRANS_HYBRID_LEN) == 0)
- 		return build_hybrid_transport_data(vp);
-+	if (strncmp(transport, TRANS_BESS, TRANS_BESS_LEN) == 0)
-+		return build_bess_transport_data(vp);
+ 	int err;
++	int iter = 0;
+ 
+ 	if ((vp->options & VECTOR_RX) > 0)
+-		while ((err = vector_mmsg_rx(vp)) > 0)
+-			;
++		while (((err = vector_mmsg_rx(vp)) > 0) && (iter < MAX_ITERATIONS))
++			iter++;
+ 	else
+-		while ((err = vector_legacy_rx(vp)) > 0)
+-			;
++		while (((err = vector_legacy_rx(vp)) > 0) && (iter < MAX_ITERATIONS))
++			iter++;
+ 	if ((err != 0) && net_ratelimit())
+ 		netdev_err(vp->dev, "vector_rx: error(%d)\n", err);
++	if (iter == MAX_ITERATIONS)
++		netdev_err(vp->dev, "vector_rx: device stuck, remote end may have closed the connection\n");
+ }
+ 
+ static int vector_net_start_xmit(struct sk_buff *skb, struct net_device *dev)
+@@ -1024,6 +1042,13 @@ static int vector_net_start_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	struct vector_private *vp = netdev_priv(dev);
+ 	int queue_depth = 0;
+ 
++	if (vp->in_error) {
++		deactivate_fd(vp->fds->rx_fd, vp->rx_irq);
++		if ((vp->fds->rx_fd != vp->fds->tx_fd) && (vp->tx_irq != 0))
++			deactivate_fd(vp->fds->tx_fd, vp->tx_irq);
++		return NETDEV_TX_BUSY;
++	}
++
+ 	if ((vp->options & VECTOR_TX) == 0) {
+ 		writev_tx(vp, skb);
+ 		return NETDEV_TX_OK;
+@@ -1134,6 +1159,7 @@ static int vector_net_close(struct net_device *dev)
+ 	vp->fds = NULL;
+ 	spin_lock_irqsave(&vp->lock, flags);
+ 	vp->opened = false;
++	vp->in_error = false;
+ 	spin_unlock_irqrestore(&vp->lock, flags);
  	return 0;
  }
+@@ -1501,7 +1527,8 @@ static void vector_eth_configure(
+ 		.transport_data		= NULL,
+ 		.in_write_poll		= false,
+ 		.coalesce		= 2,
+-		.req_size		= get_req_size(def)
++		.req_size		= get_req_size(def),
++		.in_error		= false
+ 		});
+ 
+ 	dev->features = dev->hw_features = (NETIF_F_SG | NETIF_F_FRAGLIST);
+diff --git a/arch/um/drivers/vector_kern.h b/arch/um/drivers/vector_kern.h
+index 0b0a767b9076..684d2e60ad86 100644
+--- a/arch/um/drivers/vector_kern.h
++++ b/arch/um/drivers/vector_kern.h
+@@ -116,6 +116,7 @@ struct vector_private {
+ 	bool rexmit_scheduled;
+ 	bool opened;
+ 	bool in_write_poll;
++	bool in_error;
+ 
+ 	/* ethtool stats */
  
 diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
-index af1a1da432ca..4c5228de7f53 100644
+index 6dd9b4379507..4e31121246b1 100644
 --- a/arch/um/drivers/vector_user.c
 +++ b/arch/um/drivers/vector_user.c
-@@ -18,6 +18,7 @@
- #include <fcntl.h>
- #include <sys/types.h>
- #include <sys/socket.h>
-+#include <sys/un.h>
- #include <net/ethernet.h>
- #include <netinet/ip.h>
- #include <netinet/ether.h>
-@@ -34,7 +35,8 @@
+@@ -619,7 +619,7 @@ int uml_vector_writev(int fd, void *hdr, int iovcount)
+ 	int n;
  
- #define ID_GRE 0
- #define ID_L2TPV3 1
--#define ID_MAX 1
-+#define ID_BESS 2
-+#define ID_MAX 2
+ 	CATCH_EINTR(n = writev(fd, (struct iovec *) hdr,  iovcount));
+-	if ((n < 0) && (errno == EAGAIN))
++	if ((n < 0) && ((errno == EAGAIN) || (errno == ENOBUFS)))
+ 		return 0;
+ 	if (n >= 0)
+ 		return n;
+@@ -636,7 +636,7 @@ int uml_vector_sendmmsg(
+ 	int n;
  
- #define TOKEN_IFNAME "ifname"
- 
-@@ -44,8 +46,11 @@
- #define VNET_HDR_FAIL "could not enable vnet headers on fd %d"
- #define TUN_GET_F_FAIL "tapraw: TUNGETFEATURES failed: %s"
- #define L2TPV3_BIND_FAIL "l2tpv3_open : could not bind socket err=%i"
-+#define UNIX_BIND_FAIL "unix_open : could not bind socket err=%i"
- #define BPF_ATTACH_FAIL "Failed to attach filter size %d to %d, err %d\n"
- 
-+#define MAX_UN_LEN 107
-+
- /* This is very ugly and brute force lookup, but it is done
-  * only once at initialization so not worth doing hashes or
-  * anything more intelligent
-@@ -266,6 +271,86 @@ static struct vector_fds *user_init_hybrid_fds(struct arglist *ifspec)
- 	return NULL;
- }
- 
-+static struct vector_fds *user_init_unix_fds(struct arglist *ifspec, int id)
-+{
-+	int fd = -1;
-+	int socktype;
-+	char *src, *dst;
-+	struct vector_fds *result = NULL;
-+	struct sockaddr_un *local_addr = NULL, *remote_addr = NULL;
-+
-+
-+	src = uml_vector_fetch_arg(ifspec, "src");
-+	dst = uml_vector_fetch_arg(ifspec, "dst");
-+	result = uml_kmalloc(sizeof(struct vector_fds), UM_GFP_KERNEL);
-+	if (result == NULL) {
-+		printk(UM_KERN_ERR "unix open:cannot allocate remote addr");
-+		goto unix_cleanup;
-+	}
-+	remote_addr = uml_kmalloc(sizeof(struct sockaddr_un), UM_GFP_KERNEL);
-+	if (remote_addr == NULL) {
-+		printk(UM_KERN_ERR "unix open:cannot allocate remote addr");
-+		goto unix_cleanup;
-+	}
-+
-+	switch (id) {
-+	case ID_BESS:
-+		socktype = SOCK_SEQPACKET;
-+		if ((src != NULL) && (strlen(src) <= MAX_UN_LEN)) {
-+			local_addr = uml_kmalloc(sizeof(struct sockaddr_un), UM_GFP_KERNEL);
-+			if (local_addr == NULL) {
-+				printk(UM_KERN_ERR "bess open:cannot allocate local addr");
-+				goto unix_cleanup;
-+			}
-+			memcpy(local_addr->sun_path, src, strlen(src));
-+		}
-+		if ((dst == NULL) && (strlen(dst) > MAX_UN_LEN))
-+			goto unix_cleanup;
-+		memcpy(remote_addr->sun_path, src, strlen(dst));
-+		break;
-+	default:
-+		printk(KERN_ERR "Unsupported unix socket type\n");
-+		return NULL;
-+	}
-+
-+	fd = socket(AF_UNIX, socktype, 0);
-+	if (fd == -1) {
-+		printk(UM_KERN_ERR
-+			"unix open: could not open socket, error = %d",
-+			-errno
-+		);
-+		goto unix_cleanup;
-+	}
-+	if (local_addr != NULL) {
-+		if (bind(fd, (struct sockaddr *) local_addr, sizeof(struct sockaddr_un))) {
-+			printk(UM_KERN_ERR UNIX_BIND_FAIL, errno);
-+			goto unix_cleanup;
-+		}
-+	}
-+	switch (id) {
-+	case ID_BESS:
-+		if (connect(fd, remote_addr, sizeof(struct sockaddr_un)) < 0) {
-+			printk(UM_KERN_ERR "bess open:cannot connect");
-+			goto unix_cleanup;
-+		}
-+		break;
-+	}
-+	if (result != NULL) {
-+		result->rx_fd = fd;
-+		result->tx_fd = fd;
-+		result->remote_addr_size = 0;
-+		result->remote_addr = remote_addr;
-+	}
-+	return result;
-+unix_cleanup:
-+	if (fd >= 0)
-+		os_close_file(fd);
-+	if (remote_addr != NULL)
-+		kfree(remote_addr);
-+	if (result != NULL)
-+		kfree(result);
-+	return NULL;
-+}
- 
- static struct vector_fds *user_init_raw_fds(struct arglist *ifspec)
- {
-@@ -497,6 +582,8 @@ struct vector_fds *uml_vector_user_open(
- 		return user_init_socket_fds(parsed, ID_GRE);
- 	if (strncmp(transport, TRANS_L2TPV3, TRANS_L2TPV3_LEN) == 0)
- 		return user_init_socket_fds(parsed, ID_L2TPV3);
-+	if (strncmp(transport, TRANS_BESS, TRANS_BESS_LEN) == 0)
-+		return user_init_unix_fds(parsed, ID_BESS);
- 	return NULL;
- }
- 
-diff --git a/arch/um/drivers/vector_user.h b/arch/um/drivers/vector_user.h
-index 6bf50cf78ad0..0a13ca9592d1 100644
---- a/arch/um/drivers/vector_user.h
-+++ b/arch/um/drivers/vector_user.h
-@@ -25,6 +25,9 @@
- #define TRANS_HYBRID "hybrid"
- #define TRANS_HYBRID_LEN strlen(TRANS_HYBRID)
- 
-+#define TRANS_BESS "bess"
-+#define TRANS_BESS_LEN strlen(TRANS_BESS)
-+
- #ifndef IPPROTO_GRE
- #define IPPROTO_GRE 0x2F
- #endif
+ 	CATCH_EINTR(n = sendmmsg(fd, (struct mmsghdr *) msgvec, vlen, flags));
+-	if ((n < 0) && (errno == EAGAIN))
++	if ((n < 0) && ((errno == EAGAIN) || (errno == ENOBUFS)))
+ 		return 0;
+ 	if (n >= 0)
+ 		return n;
 -- 
 2.11.0
 
