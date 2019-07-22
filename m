@@ -1,17 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-vk1-xa49.google.com ([2607:f8b0:4864:20::a49])
+Received: from ivanoab6.miniserver.com ([5.153.251.140]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hlqkh-000626-72
- for linux-um@lists.infradead.org; Fri, 12 Jul 2019 08:18:00 +0000
-Received: by mail-vk1-xa49.google.com with SMTP id y198so3633978vky.9
- for <linux-um@lists.infradead.org>; Fri, 12 Jul 2019 01:17:57 -0700 (PDT)
-Date: Fri, 12 Jul 2019 01:17:28 -0700
-In-Reply-To: <20190712081744.87097-1-brendanhiggins@google.com>
-Message-Id: <20190712081744.87097-3-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20190712081744.87097-1-brendanhiggins@google.com>
-Subject: [PATCH v9 02/18] kunit: test: add test resource management API
-From: Brendan Higgins <brendanhiggins@google.com>
+ id 1hpSmK-0003Ms-TP
+ for linux-um@lists.infradead.org; Mon, 22 Jul 2019 07:30:39 +0000
+From: anton.ivanov@cambridgegreys.com
+Subject: [PATCHv3 1/5] um: Add legacy tap support and rename existing vector
+ to hybrid
+Date: Mon, 22 Jul 2019 08:30:21 +0100
+Message-Id: <20190722073025.20844-1-anton.ivanov@cambridgegreys.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,290 +17,408 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+To: linux-um@lists.infradead.org
+Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Create a common API for test managed resources like memory and test
-objects. A lot of times a test will want to set up infrastructure to be
-used in test cases; this could be anything from just wanting to allocate
-some memory to setting up a driver stack; this defines facilities for
-creating "test resources" which are managed by the test infrastructure
-and are automatically cleaned up at the conclusion of the test.
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+1. Adds legacy tap support
+2. Renames tap+raw as hybrid
+
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 ---
- include/kunit/test.h | 116 +++++++++++++++++++++++++++++++++++++++++++
- kunit/test.c         |  94 +++++++++++++++++++++++++++++++++++
- 2 files changed, 210 insertions(+)
+ arch/um/drivers/vector_kern.c       |   2 +
+ arch/um/drivers/vector_transports.c |  29 +++++-
+ arch/um/drivers/vector_user.c       | 203 +++++++++++++++++++++---------------
+ arch/um/drivers/vector_user.h       |   4 +-
+ 4 files changed, 151 insertions(+), 87 deletions(-)
 
-diff --git a/include/kunit/test.h b/include/kunit/test.h
-index e0b34acb9ee4e..bdf41d31c343c 100644
---- a/include/kunit/test.h
-+++ b/include/kunit/test.h
-@@ -10,6 +10,70 @@
- #define _KUNIT_TEST_H
+diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
+index 046fa9ea0ccc..e314a60cdc98 100644
+--- a/arch/um/drivers/vector_kern.c
++++ b/arch/um/drivers/vector_kern.c
+@@ -186,6 +186,8 @@ static int get_transport_options(struct arglist *def)
  
- #include <linux/types.h>
-+#include <linux/slab.h>
-+
-+struct kunit_resource;
-+
-+typedef int (*kunit_resource_init_t)(struct kunit_resource *, void *);
-+typedef void (*kunit_resource_free_t)(struct kunit_resource *);
-+
-+/**
-+ * struct kunit_resource - represents a *test managed resource*
-+ * @allocation: for the user to store arbitrary data.
-+ * @free: a user supplied function to free the resource. Populated by
-+ * kunit_alloc_resource().
-+ *
-+ * Represents a *test managed resource*, a resource which will automatically be
-+ * cleaned up at the end of a test case.
-+ *
-+ * Example:
-+ *
-+ * .. code-block:: c
-+ *
-+ *	struct kunit_kmalloc_params {
-+ *		size_t size;
-+ *		gfp_t gfp;
-+ *	};
-+ *
-+ *	static int kunit_kmalloc_init(struct kunit_resource *res, void *context)
-+ *	{
-+ *		struct kunit_kmalloc_params *params = context;
-+ *		res->allocation = kmalloc(params->size, params->gfp);
-+ *
-+ *		if (!res->allocation)
-+ *			return -ENOMEM;
-+ *
-+ *		return 0;
-+ *	}
-+ *
-+ *	static void kunit_kmalloc_free(struct kunit_resource *res)
-+ *	{
-+ *		kfree(res->allocation);
-+ *	}
-+ *
-+ *	void *kunit_kmalloc(struct kunit *test, size_t size, gfp_t gfp)
-+ *	{
-+ *		struct kunit_kmalloc_params params;
-+ *		struct kunit_resource *res;
-+ *
-+ *		params.size = size;
-+ *		params.gfp = gfp;
-+ *
-+ *		res = kunit_alloc_resource(test, kunit_kmalloc_init,
-+ *			kunit_kmalloc_free, &params);
-+ *		if (res)
-+ *			return res->allocation;
-+ *
-+ *		return NULL;
-+ *	}
-+ */
-+struct kunit_resource {
-+	void *allocation;
-+	kunit_resource_free_t free;
-+
-+	/* private: internal use only. */
-+	struct list_head node;
-+};
  
- struct kunit;
- 
-@@ -109,6 +173,13 @@ struct kunit {
- 	 * have terminated.
- 	 */
- 	bool success; /* Read only after test_case finishes! */
-+	struct mutex lock; /* Gaurds all mutable test state. */
-+	/*
-+	 * Because resources is a list that may be updated multiple times (with
-+	 * new resources) from any thread associated with a test case, we must
-+	 * protect it with some type of lock.
-+	 */
-+	struct list_head resources; /* Protected by lock. */
- };
- 
- void kunit_init_test(struct kunit *test, const char *name);
-@@ -141,6 +212,51 @@ int kunit_run_tests(struct kunit_suite *suite);
- 		}							       \
- 		late_initcall(kunit_suite_init##suite)
- 
-+/**
-+ * kunit_alloc_resource() - Allocates a *test managed resource*.
-+ * @test: The test context object.
-+ * @init: a user supplied function to initialize the resource.
-+ * @free: a user supplied function to free the resource.
-+ * @context: for the user to pass in arbitrary data to the init function.
-+ *
-+ * Allocates a *test managed resource*, a resource which will automatically be
-+ * cleaned up at the end of a test case. See &struct kunit_resource for an
-+ * example.
-+ */
-+struct kunit_resource *kunit_alloc_resource(struct kunit *test,
-+					    kunit_resource_init_t init,
-+					    kunit_resource_free_t free,
-+					    void *context);
-+
-+void kunit_free_resource(struct kunit *test, struct kunit_resource *res);
-+
-+/**
-+ * kunit_kmalloc() - Like kmalloc() except the allocation is *test managed*.
-+ * @test: The test context object.
-+ * @size: The size in bytes of the desired memory.
-+ * @gfp: flags passed to underlying kmalloc().
-+ *
-+ * Just like `kmalloc(...)`, except the allocation is managed by the test case
-+ * and is automatically cleaned up after the test case concludes. See &struct
-+ * kunit_resource for more information.
-+ */
-+void *kunit_kmalloc(struct kunit *test, size_t size, gfp_t gfp);
-+
-+/**
-+ * kunit_kzalloc() - Just like kunit_kmalloc(), but zeroes the allocation.
-+ * @test: The test context object.
-+ * @size: The size in bytes of the desired memory.
-+ * @gfp: flags passed to underlying kmalloc().
-+ *
-+ * See kzalloc() and kunit_kmalloc() for more information.
-+ */
-+static inline void *kunit_kzalloc(struct kunit *test, size_t size, gfp_t gfp)
-+{
-+	return kunit_kmalloc(test, size, gfp | __GFP_ZERO);
-+}
-+
-+void kunit_cleanup(struct kunit *test);
-+
- void __printf(3, 4) kunit_printk(const char *level,
- 				 const struct kunit *test,
- 				 const char *fmt, ...);
-diff --git a/kunit/test.c b/kunit/test.c
-index 571e4c65deb5c..f165c9d8e10b0 100644
---- a/kunit/test.c
-+++ b/kunit/test.c
-@@ -122,6 +122,8 @@ static void kunit_print_test_case_ok_not_ok(struct kunit_case *test_case,
- 
- void kunit_init_test(struct kunit *test, const char *name)
- {
-+	mutex_init(&test->lock);
-+	INIT_LIST_HEAD(&test->resources);
- 	test->name = name;
- 	test->success = true;
- }
-@@ -151,6 +153,8 @@ static void kunit_run_case(struct kunit_suite *suite,
- 	if (suite->exit)
- 		suite->exit(&test);
- 
-+	kunit_cleanup(&test);
-+
- 	test_case->success = test.success;
- }
- 
-@@ -171,6 +175,96 @@ int kunit_run_tests(struct kunit_suite *suite)
+ 	if (strncmp(transport, TRANS_TAP, TRANS_TAP_LEN) == 0)
++		return 0;
++	if (strncmp(transport, TRANS_HYBRID, TRANS_HYBRID_LEN) == 0)
+ 		return (vec_rx | VECTOR_BPF);
+ 	if (strncmp(transport, TRANS_RAW, TRANS_RAW_LEN) == 0)
+ 		return (vec_rx | vec_tx | VECTOR_QDISC_BYPASS);
+diff --git a/arch/um/drivers/vector_transports.c b/arch/um/drivers/vector_transports.c
+index 77e4ebc206ae..2999f3bd1781 100644
+--- a/arch/um/drivers/vector_transports.c
++++ b/arch/um/drivers/vector_transports.c
+@@ -418,7 +418,7 @@ static int build_raw_transport_data(struct vector_private *vp)
  	return 0;
  }
  
-+struct kunit_resource *kunit_alloc_resource(struct kunit *test,
-+					    kunit_resource_init_t init,
-+					    kunit_resource_free_t free,
-+					    void *context)
+-static int build_tap_transport_data(struct vector_private *vp)
++static int build_hybrid_transport_data(struct vector_private *vp)
+ {
+ 	if (uml_raw_enable_vnet_headers(vp->fds->rx_fd)) {
+ 		vp->form_header = &raw_form_header;
+@@ -432,7 +432,7 @@ static int build_tap_transport_data(struct vector_private *vp)
+ 				NETIF_F_TSO | NETIF_F_GSO | NETIF_F_GRO);
+ 		netdev_info(
+ 			vp->dev,
+-			"tap/raw: using vnet headers for tso and tx/rx checksum"
++			"tap/raw hybrid: using vnet headers for tso and tx/rx checksum"
+ 		);
+ 	} else {
+ 		return 0; /* do not try to enable tap too if raw failed */
+@@ -442,6 +442,29 @@ static int build_tap_transport_data(struct vector_private *vp)
+ 	return -1;
+ }
+ 
++static int build_tap_transport_data(struct vector_private *vp)
 +{
-+	struct kunit_resource *res;
-+	int ret;
-+
-+	res = kzalloc(sizeof(*res), GFP_KERNEL);
-+	if (!res)
-+		return NULL;
-+
-+	ret = init(res, context);
-+	if (ret)
-+		return NULL;
-+
-+	res->free = free;
-+	mutex_lock(&test->lock);
-+	list_add_tail(&res->node, &test->resources);
-+	mutex_unlock(&test->lock);
-+
-+	return res;
++	/* "Pure" tap uses the same fd for rx and tx */
++	if (uml_tap_enable_vnet_headers(vp->fds->tx_fd)) {
++		vp->form_header = &raw_form_header;
++		vp->verify_header = &raw_verify_header;
++		vp->header_size = sizeof(struct virtio_net_hdr);
++		vp->rx_header_size = sizeof(struct virtio_net_hdr);
++		vp->dev->hw_features |=
++			(NETIF_F_TSO | NETIF_F_GSO | NETIF_F_GRO);
++		vp->dev->features |=
++			(NETIF_F_RXCSUM | NETIF_F_HW_CSUM |
++				NETIF_F_TSO | NETIF_F_GSO | NETIF_F_GRO);
++		netdev_info(
++			vp->dev,
++			"tap: using vnet headers for tso and tx/rx checksum"
++		);
++		return 0;
++	}
++	return -1;
 +}
 +
-+void kunit_free_resource(struct kunit *test, struct kunit_resource *res)
-+{
-+	res->free(res);
-+	list_del(&res->node);
-+	kfree(res);
++
+ int build_transport_data(struct vector_private *vp)
+ {
+ 	char *transport = uml_vector_fetch_arg(vp->parsed, "transport");
+@@ -454,6 +477,8 @@ int build_transport_data(struct vector_private *vp)
+ 		return build_raw_transport_data(vp);
+ 	if (strncmp(transport, TRANS_TAP, TRANS_TAP_LEN) == 0)
+ 		return build_tap_transport_data(vp);
++	if (strncmp(transport, TRANS_HYBRID, TRANS_HYBRID_LEN) == 0)
++		return build_hybrid_transport_data(vp);
+ 	return 0;
+ }
+ 
+diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
+index 3d8cdbdb4e66..af1a1da432ca 100644
+--- a/arch/um/drivers/vector_user.c
++++ b/arch/um/drivers/vector_user.c
+@@ -115,12 +115,76 @@ struct arglist *uml_parse_vector_ifspec(char *arg)
+ 
+ #define PATH_NET_TUN "/dev/net/tun"
+ 
+-static struct vector_fds *user_init_tap_fds(struct arglist *ifspec)
++
++static int create_tap_fd(char *iface)
+ {
+ 	struct ifreq ifr;
+ 	int fd = -1;
+-	struct sockaddr_ll sock;
+ 	int err = -ENOMEM, offload;
++
++	fd = open(PATH_NET_TUN, O_RDWR);
++	if (fd < 0) {
++		printk(UM_KERN_ERR "uml_tap: failed to open tun device\n");
++		goto tap_fd_cleanup;
++	}
++	memset(&ifr, 0, sizeof(ifr));
++	ifr.ifr_flags = IFF_TAP | IFF_NO_PI | IFF_VNET_HDR;
++	strncpy((char *)&ifr.ifr_name, iface, sizeof(ifr.ifr_name) - 1);
++
++	err = ioctl(fd, TUNSETIFF, (void *) &ifr);
++	if (err != 0) {
++		printk(UM_KERN_ERR "uml_tap: failed to select tap interface\n");
++		goto tap_fd_cleanup;
++	}
++
++	offload = TUN_F_CSUM | TUN_F_TSO4 | TUN_F_TSO6;
++	ioctl(fd, TUNSETOFFLOAD, offload);
++	return fd;
++tap_fd_cleanup:
++	if (fd >= 0)
++		os_close_file(fd);
++	return err;
 +}
 +
-+struct kunit_kmalloc_params {
-+	size_t size;
-+	gfp_t gfp;
-+};
-+
-+static int kunit_kmalloc_init(struct kunit_resource *res, void *context)
++static int create_raw_fd(char *iface, int flags, int proto)
 +{
-+	struct kunit_kmalloc_params *params = context;
++	struct ifreq ifr;
++	int fd = -1;
++	struct sockaddr_ll sock;
++	int err = -ENOMEM;
 +
-+	res->allocation = kmalloc(params->size, params->gfp);
-+	if (!res->allocation)
-+		return -ENOMEM;
++	fd = socket(AF_PACKET, SOCK_RAW, flags);
++	if (fd == -1) {
++		err = -errno;
++		goto raw_fd_cleanup;
++	}
++	memset(&ifr, 0, sizeof(ifr));
++	strncpy((char *)&ifr.ifr_name, iface, sizeof(ifr.ifr_name) - 1);
++	if (ioctl(fd, SIOCGIFINDEX, (void *) &ifr) < 0) {
++		err = -errno;
++		goto raw_fd_cleanup;
++	}
 +
-+	return 0;
++	sock.sll_family = AF_PACKET;
++	sock.sll_protocol = htons(proto);
++	sock.sll_ifindex = ifr.ifr_ifindex;
++
++	if (bind(fd,
++		(struct sockaddr *) &sock, sizeof(struct sockaddr_ll)) < 0) {
++		err = -errno;
++		goto raw_fd_cleanup;
++	}
++	return fd;
++raw_fd_cleanup:
++	printk(UM_KERN_ERR "user_init_raw: init failed, error %d", err);
++	if (fd >= 0)
++		os_close_file(fd);
++	return err;
 +}
 +
-+static void kunit_kmalloc_free(struct kunit_resource *res)
++static struct vector_fds *user_init_tap_fds(struct arglist *ifspec)
 +{
-+	kfree(res->allocation);
-+}
-+
-+void *kunit_kmalloc(struct kunit *test, size_t size, gfp_t gfp)
-+{
-+	struct kunit_kmalloc_params params;
-+	struct kunit_resource *res;
-+
-+	params.size = size;
-+	params.gfp = gfp;
-+
-+	res = kunit_alloc_resource(test,
-+				   kunit_kmalloc_init,
-+				   kunit_kmalloc_free,
-+				   &params);
-+
-+	if (res)
-+		return res->allocation;
-+
++	int fd = -1;
+ 	char *iface;
+ 	struct vector_fds *result = NULL;
+ 
+@@ -142,117 +206,88 @@ static struct vector_fds *user_init_tap_fds(struct arglist *ifspec)
+ 
+ 	/* TAP */
+ 
+-	fd = open(PATH_NET_TUN, O_RDWR);
++	fd = create_tap_fd(iface);
+ 	if (fd < 0) {
+-		printk(UM_KERN_ERR "uml_tap: failed to open tun device\n");
++		printk(UM_KERN_ERR "uml_tap: failed to create tun interface\n");
+ 		goto tap_cleanup;
+ 	}
+ 	result->tx_fd = fd;
+-	memset(&ifr, 0, sizeof(ifr));
+-	ifr.ifr_flags = IFF_TAP | IFF_NO_PI | IFF_VNET_HDR;
+-	strncpy((char *)&ifr.ifr_name, iface, sizeof(ifr.ifr_name) - 1);
++	result->rx_fd = fd;
++	return result;
++tap_cleanup:
++	printk(UM_KERN_ERR "user_init_tap: init failed, error %d", fd);
++	if (result != NULL)
++		kfree(result);
 +	return NULL;
 +}
-+
-+void kunit_cleanup(struct kunit *test)
+ 
+-	err = ioctl(fd, TUNSETIFF, (void *) &ifr);
+-	if (err != 0) {
+-		printk(UM_KERN_ERR "uml_tap: failed to select tap interface\n");
+-		goto tap_cleanup;
++static struct vector_fds *user_init_hybrid_fds(struct arglist *ifspec)
 +{
-+	struct kunit_resource *resource, *resource_safe;
++	char *iface;
++	struct vector_fds *result = NULL;
 +
-+	mutex_lock(&test->lock);
-+	/*
-+	 * test->resources is a stack - each allocation must be freed in the
-+	 * reverse order from which it was added since one resource may depend
-+	 * on another for its entire lifetime.
-+	 */
-+	list_for_each_entry_safe_reverse(resource,
-+					 resource_safe,
-+					 &test->resources,
-+					 node) {
-+		kunit_free_resource(test, resource);
++	iface = uml_vector_fetch_arg(ifspec, TOKEN_IFNAME);
++	if (iface == NULL) {
++		printk(UM_KERN_ERR "uml_tap: failed to parse interface spec\n");
++		goto hybrid_cleanup;
+ 	}
+ 
+-	offload = TUN_F_CSUM | TUN_F_TSO4 | TUN_F_TSO6;
+-	ioctl(fd, TUNSETOFFLOAD, offload);
++	result = uml_kmalloc(sizeof(struct vector_fds), UM_GFP_KERNEL);
++	if (result == NULL) {
++		printk(UM_KERN_ERR "uml_tap: failed to allocate file descriptors\n");
++		goto hybrid_cleanup;
 +	}
-+	mutex_unlock(&test->lock);
-+}
++	result->rx_fd = -1;
++	result->tx_fd = -1;
++	result->remote_addr = NULL;
++	result->remote_addr_size = 0;
+ 
+-	/* RAW */
++	/* TAP */
+ 
+-	fd = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
+-	if (fd == -1) {
+-		printk(UM_KERN_ERR
+-			"uml_tap: failed to create socket: %i\n", -errno);
+-		goto tap_cleanup;
+-	}
+-	result->rx_fd = fd;
+-	memset(&ifr, 0, sizeof(ifr));
+-	strncpy((char *)&ifr.ifr_name, iface, sizeof(ifr.ifr_name) - 1);
+-	if (ioctl(fd, SIOCGIFINDEX, (void *) &ifr) < 0) {
+-		printk(UM_KERN_ERR
+-			"uml_tap: failed to set interface: %i\n", -errno);
+-		goto tap_cleanup;
++	result->tx_fd = create_tap_fd(iface);
++	if (result->tx_fd < 0) {
++		printk(UM_KERN_ERR "uml_tap: failed to create tun interface: %i\n", result->tx_fd);
++		goto hybrid_cleanup;
+ 	}
+ 
+-	sock.sll_family = AF_PACKET;
+-	sock.sll_protocol = htons(ETH_P_ALL);
+-	sock.sll_ifindex = ifr.ifr_ifindex;
++	/* RAW */
+ 
+-	if (bind(fd,
+-		(struct sockaddr *) &sock, sizeof(struct sockaddr_ll)) < 0) {
++	result->rx_fd = create_raw_fd(iface, ETH_P_ALL, ETH_P_ALL);
++	if (result->rx_fd == -1) {
+ 		printk(UM_KERN_ERR
+-			"user_init_tap: failed to bind raw pair, err %d\n",
+-				-errno);
+-		goto tap_cleanup;
++			"uml_tap: failed to create paired raw socket: %i\n", result->rx_fd);
++		goto hybrid_cleanup;
+ 	}
+ 	return result;
+-tap_cleanup:
+-	printk(UM_KERN_ERR "user_init_tap: init failed, error %d", err);
+-	if (result != NULL) {
+-		if (result->rx_fd >= 0)
+-			os_close_file(result->rx_fd);
+-		if (result->tx_fd >= 0)
+-			os_close_file(result->tx_fd);
++hybrid_cleanup:
++	printk(UM_KERN_ERR "user_init_hybrid: init failed");
++	if (result != NULL)
+ 		kfree(result);
+-	}
+ 	return NULL;
+ }
+ 
+ 
+ static struct vector_fds *user_init_raw_fds(struct arglist *ifspec)
+ {
+-	struct ifreq ifr;
+ 	int rxfd = -1, txfd = -1;
+-	struct sockaddr_ll sock;
+ 	int err = -ENOMEM;
+ 	char *iface;
+ 	struct vector_fds *result = NULL;
+ 
+ 	iface = uml_vector_fetch_arg(ifspec, TOKEN_IFNAME);
+ 	if (iface == NULL)
+-		goto cleanup;
++		goto raw_cleanup;
+ 
+-	rxfd = socket(AF_PACKET, SOCK_RAW, ETH_P_ALL);
++	rxfd = create_raw_fd(iface, ETH_P_ALL, ETH_P_ALL);
+ 	if (rxfd == -1) {
+ 		err = -errno;
+-		goto cleanup;
++		goto raw_cleanup;
+ 	}
+-	txfd = socket(AF_PACKET, SOCK_RAW, 0); /* Turn off RX on this fd */
++	txfd = create_raw_fd(iface, 0, ETH_P_IP); /* Turn off RX on this fd */
+ 	if (txfd == -1) {
+ 		err = -errno;
+-		goto cleanup;
+-	}
+-	memset(&ifr, 0, sizeof(ifr));
+-	strncpy((char *)&ifr.ifr_name, iface, sizeof(ifr.ifr_name) - 1);
+-	if (ioctl(rxfd, SIOCGIFINDEX, (void *) &ifr) < 0) {
+-		err = -errno;
+-		goto cleanup;
+-	}
+-
+-	sock.sll_family = AF_PACKET;
+-	sock.sll_protocol = htons(ETH_P_ALL);
+-	sock.sll_ifindex = ifr.ifr_ifindex;
+-
+-	if (bind(rxfd,
+-		(struct sockaddr *) &sock, sizeof(struct sockaddr_ll)) < 0) {
+-		err = -errno;
+-		goto cleanup;
++		goto raw_cleanup;
+ 	}
+-
+-	sock.sll_family = AF_PACKET;
+-	sock.sll_protocol = htons(ETH_P_IP);
+-	sock.sll_ifindex = ifr.ifr_ifindex;
+-
+-	if (bind(txfd,
+-		(struct sockaddr *) &sock, sizeof(struct sockaddr_ll)) < 0) {
+-		err = -errno;
+-		goto cleanup;
+-	}
+-
+ 	result = uml_kmalloc(sizeof(struct vector_fds), UM_GFP_KERNEL);
+ 	if (result != NULL) {
+ 		result->rx_fd = rxfd;
+@@ -261,13 +296,10 @@ static struct vector_fds *user_init_raw_fds(struct arglist *ifspec)
+ 		result->remote_addr_size = 0;
+ 	}
+ 	return result;
+-cleanup:
++raw_cleanup:
+ 	printk(UM_KERN_ERR "user_init_raw: init failed, error %d", err);
+-	if (rxfd >= 0)
+-		os_close_file(rxfd);
+-	if (txfd >= 0)
+-		os_close_file(txfd);
+-	kfree(result);
++	if (result != NULL)
++		kfree(result);
+ 	return NULL;
+ }
+ 
+@@ -457,6 +489,8 @@ struct vector_fds *uml_vector_user_open(
+ 	}
+ 	if (strncmp(transport, TRANS_RAW, TRANS_RAW_LEN) == 0)
+ 		return user_init_raw_fds(parsed);
++	if (strncmp(transport, TRANS_HYBRID, TRANS_HYBRID_LEN) == 0)
++		return user_init_hybrid_fds(parsed);
+ 	if (strncmp(transport, TRANS_TAP, TRANS_TAP_LEN) == 0)
+ 		return user_init_tap_fds(parsed);
+ 	if (strncmp(transport, TRANS_GRE, TRANS_GRE_LEN) == 0)
+@@ -483,8 +517,9 @@ int uml_vector_sendmsg(int fd, void *hdr, int flags)
+ int uml_vector_recvmsg(int fd, void *hdr, int flags)
+ {
+ 	int n;
++	struct msghdr *msg = (struct msghdr *) hdr;
+ 
+-	CATCH_EINTR(n = recvmsg(fd, (struct msghdr *) hdr,  flags));
++	CATCH_EINTR(n = readv(fd, msg->msg_iov, msg->msg_iovlen));
+ 	if ((n < 0) && (errno == EAGAIN))
+ 		return 0;
+ 	if (n >= 0)
+diff --git a/arch/um/drivers/vector_user.h b/arch/um/drivers/vector_user.h
+index d7cbff73b7ff..6bf50cf78ad0 100644
+--- a/arch/um/drivers/vector_user.h
++++ b/arch/um/drivers/vector_user.h
+@@ -16,13 +16,15 @@
+ #define TRANS_TAP "tap"
+ #define TRANS_TAP_LEN strlen(TRANS_TAP)
+ 
+-
+ #define TRANS_GRE "gre"
+ #define TRANS_GRE_LEN strlen(TRANS_RAW)
+ 
+ #define TRANS_L2TPV3 "l2tpv3"
+ #define TRANS_L2TPV3_LEN strlen(TRANS_L2TPV3)
+ 
++#define TRANS_HYBRID "hybrid"
++#define TRANS_HYBRID_LEN strlen(TRANS_HYBRID)
 +
- void kunit_printk(const char *level,
- 		  const struct kunit *test,
- 		  const char *fmt, ...)
+ #ifndef IPPROTO_GRE
+ #define IPPROTO_GRE 0x2F
+ #endif
 -- 
-2.22.0.410.gd8fdbe21b5-goog
+2.11.0
 
 
 _______________________________________________
