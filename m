@@ -1,18 +1,26 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x64a.google.com ([2607:f8b0:4864:20::64a])
+Received: from mx2.suse.de ([195.135.220.15] helo=mx1.suse.de)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hnZAq-0006L4-Ea
- for linux-um@lists.infradead.org; Wed, 17 Jul 2019 01:56:06 +0000
-Received: by mail-pl1-x64a.google.com with SMTP id n4so10695381plp.4
- for <linux-um@lists.infradead.org>; Tue, 16 Jul 2019 18:56:02 -0700 (PDT)
-Date: Tue, 16 Jul 2019 18:55:28 -0700
-In-Reply-To: <20190717015543.152251-1-brendanhiggins@google.com>
-Message-Id: <20190717015543.152251-4-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20190717015543.152251-1-brendanhiggins@google.com>
-Subject: [PATCH v11 03/18] kunit: test: add string_stream a std::stream like
- string builder
-From: Brendan Higgins <brendanhiggins@google.com>
+ id 1hqvdv-0000Zm-Bt
+ for linux-um@lists.infradead.org; Fri, 26 Jul 2019 08:32:01 +0000
+Date: Fri, 26 Jul 2019 10:31:48 +0200
+From: Petr Mladek <pmladek@suse.com>
+Subject: Re: [PATCH v9 04/18] kunit: test: add kunit_stream a std::stream
+ like logger
+Message-ID: <20190726083148.d4gf57w2nt5k7t6n@pathway.suse.cz>
+References: <20190716175021.9CA412173C@mail.kernel.org>
+ <CAFd5g453vXeSUCZenCk_CzJ-8a1ym9RaPo0NVF=FujF9ac-5Ag@mail.gmail.com>
+ <20190718175024.C3EC421019@mail.kernel.org>
+ <CAFd5g46a7C1+R6ZcE_SkqaYqgrH5Rx3M=X7orFyaMgFLDbeYYA@mail.gmail.com>
+ <20190719000834.GA3228@google.com>
+ <20190722200347.261D3218C9@mail.kernel.org>
+ <CAFd5g45hdCxEavSxirr0un_uLzo5Z-J4gHRA06qjzcQrTzmjVg@mail.gmail.com>
+ <20190722235411.06C1320840@mail.kernel.org>
+ <20190724073125.xyzfywctrcvg6fmh@pathway.suse.cz>
+ <CAFd5g47v3Mr4GEGOjqyYy9Jwwm+ow7ypbu9j88rxEN06QCzdxQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CAFd5g47v3Mr4GEGOjqyYy9Jwwm+ow7ypbu9j88rxEN06QCzdxQ@mail.gmail.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -25,252 +33,122 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+To: Brendan Higgins <brendanhiggins@google.com>
+Cc: "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, Amir Goldstein <amir73il@gmail.com>, dri-devel <dri-devel@lists.freedesktop.org>, Sasha Levin <Alexander.Levin@microsoft.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Michael Ellerman <mpe@ellerman.id.au>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, shuah <shuah@kernel.org>, Rob Herring <robh@kernel.org>, linux-nvdimm <linux-nvdimm@lists.01.org>, Frank Rowand <frowand.list@gmail.com>, Knut Omang <knut.omang@oracle.com>, Kieran Bingham <kieran.bingham@ideasonboard.com>, wfg@linux.intel.com, Kevin Hilman <khilman@baylibre.com>, David Rientjes <rientjes@google.com>, Timothy Bird <Tim.Bird@sony.com>, Dan Carpenter <dan.carpenter@oracle.com>, Joel Stanley <joel@jms.id.au>, devicetree <devicetree@vger.kernel.org>, John Ogness <john.ogness@linutronix.de>, linux-kbuild <linux-kbuild@vger.kernel.org>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, Steven Rostedt <rostedt@goodmis.org>, Julia Lawall <julia.lawall@lip6.fr>, Josh Poimboeuf <jpoimboe@redhat.com>, kunit-dev@googlegroups.com, Theodore Ts'o <tytso@mit.edu>, Richard Weinberger <richard@nod.at>, Stephen Boyd <sboyd@kernel.org>, Greg KH <gregkh@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@google.com>, linux-fsdevel@vger.kernel.org, Logan Gunthorpe <logang@deltatee.com>
 
-A number of test features need to do pretty complicated string printing
-where it may not be possible to rely on a single preallocated string
-with parameters.
+On Thu 2019-07-25 13:21:12, Brendan Higgins wrote:
+> On Wed, Jul 24, 2019 at 12:31 AM Petr Mladek <pmladek@suse.com> wrote:
+> >
+> > On Mon 2019-07-22 16:54:10, Stephen Boyd wrote:
+> > > Quoting Brendan Higgins (2019-07-22 15:30:49)
+> > > > On Mon, Jul 22, 2019 at 1:03 PM Stephen Boyd <sboyd@kernel.org> wrote:
+> > > > >
+> > > > >
+> > > > > What's the calling context of the assertions and expectations? I still
+> > > > > don't like the fact that string stream needs to allocate buffers and
+> > > > > throw them into a list somewhere because the calling context matters
+> > > > > there.
+> > > >
+> > > > The calling context is the same as before, which is anywhere.
+> > >
+> > > Ok. That's concerning then.
+> > >
+> > > >
+> > > > > I'd prefer we just wrote directly to the console/log via printk
+> > > > > instead. That way things are simple because we use the existing
+> > > > > buffering path of printk, but maybe there's some benefit to the string
+> > > > > stream that I don't see? Right now it looks like it builds a string and
+> > > > > then dumps it to printk so I'm sort of lost what the benefit is over
+> > > > > just writing directly with printk.
+> > > >
+> > > > It's just buffering it so the whole string gets printed uninterrupted.
+> > > > If we were to print out piecemeal to printk, couldn't we have another
+> > > > call to printk come in causing it to garble the KUnit message we are
+> > > > in the middle of printing?
+> > >
+> > > Yes, printing piecemeal by calling printk many times could lead to
+> > > interleaving of messages if something else comes in such as an interrupt
+> > > printing something. Printk has some support to hold "records" but I'm
+> > > not sure how that would work here because KERN_CONT talks about only
+> > > being used early on in boot code. I haven't looked at printk in detail
+> > > though so maybe I'm all wrong and KERN_CONT just works?
+> >
+> > KERN_CONT does not guarantee that the message will get printed
+> > together. The pieces get interleaved with messages printed in
+> > parallel.
+> >
+> > Note that KERN_CONT was originally really meant to be used only during
+> > boot. It was later used more widely and ended in the best effort category.
+> >
+> > There were several attempts to make it more reliable. But it was
+> > always either too complicated or error prone or both.
+> >
+> > You need to use your own buffering if you rely want perfect output.
+> > The question is if it is really worth the complexity. Also note that
+> > any buffering reduces the chance that the messages will reach
+> > the console.
+> 
+> Seems like that settles it then. Thanks!
+> 
+> > BTW: There is a work in progress on a lockless printk ring buffer.
+> > It will make printk() more secure regarding deadlocks. But it might
+> > make transparent handling of continuous lines even more tricky.
+> >
+> > I guess that local buffering, before calling printk(), will be
+> > even more important then. Well, it might really force us to create
+> > an API for it.
+> 
+> Cool! Can you CC me on that discussion?
 
-So provide a library for constructing the string as you go similar to
-C++'s std::string. string_stream is really just a string builder,
-nothing more.
+Adding John Oggness into CC.
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
----
- include/kunit/string-stream.h |  49 +++++++++++
- kunit/Makefile                |   3 +-
- kunit/string-stream.c         | 152 ++++++++++++++++++++++++++++++++++
- 3 files changed, 203 insertions(+), 1 deletion(-)
- create mode 100644 include/kunit/string-stream.h
- create mode 100644 kunit/string-stream.c
+John, please CC Brendan Higgins on the patchsets eventually switching
+printk() into the lockless buffer. The test framework is going to
+do its own buffering to keep the related messages together.
 
-diff --git a/include/kunit/string-stream.h b/include/kunit/string-stream.h
-new file mode 100644
-index 0000000000000..4fa107e38deb5
---- /dev/null
-+++ b/include/kunit/string-stream.h
-@@ -0,0 +1,49 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * C++ stream style string builder used in KUnit for building messages.
-+ *
-+ * Copyright (C) 2019, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
-+
-+#ifndef _KUNIT_STRING_STREAM_H
-+#define _KUNIT_STRING_STREAM_H
-+
-+#include <linux/types.h>
-+#include <linux/spinlock.h>
-+#include <stdarg.h>
-+
-+struct string_stream_fragment {
-+	struct list_head node;
-+	char *fragment;
-+};
-+
-+struct string_stream {
-+	size_t length;
-+	struct list_head fragments;
-+	/* length and fragments are protected by this lock */
-+	spinlock_t lock;
-+	struct kunit *test;
-+	gfp_t gfp;
-+};
-+
-+struct kunit;
-+
-+struct string_stream *alloc_string_stream(struct kunit *test, gfp_t gfp);
-+
-+int string_stream_add(struct string_stream *stream, const char *fmt, ...);
-+
-+int string_stream_vadd(struct string_stream *stream,
-+		       const char *fmt,
-+		       va_list args);
-+
-+char *string_stream_get_string(struct string_stream *stream);
-+
-+int string_stream_append(struct string_stream *stream,
-+			 struct string_stream *other);
-+
-+void string_stream_clear(struct string_stream *stream);
-+
-+bool string_stream_is_empty(struct string_stream *stream);
-+
-+#endif /* _KUNIT_STRING_STREAM_H */
-diff --git a/kunit/Makefile b/kunit/Makefile
-index 5efdc4dea2c08..275b565a0e81f 100644
---- a/kunit/Makefile
-+++ b/kunit/Makefile
-@@ -1 +1,2 @@
--obj-$(CONFIG_KUNIT) +=			test.o
-+obj-$(CONFIG_KUNIT) +=			test.o \
-+					string-stream.o
-diff --git a/kunit/string-stream.c b/kunit/string-stream.c
-new file mode 100644
-index 0000000000000..bcd56d6755544
---- /dev/null
-+++ b/kunit/string-stream.c
-@@ -0,0 +1,152 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * C++ stream style string builder used in KUnit for building messages.
-+ *
-+ * Copyright (C) 2019, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
-+
-+#include <linux/list.h>
-+#include <linux/slab.h>
-+#include <kunit/string-stream.h>
-+#include <kunit/test.h>
-+
-+int string_stream_vadd(struct string_stream *stream,
-+		       const char *fmt,
-+		       va_list args)
-+{
-+	struct string_stream_fragment *frag_container;
-+	int len;
-+	va_list args_for_counting;
-+
-+	/* Make a copy because `vsnprintf` could change it */
-+	va_copy(args_for_counting, args);
-+
-+	/* Need space for null byte. */
-+	len = vsnprintf(NULL, 0, fmt, args_for_counting) + 1;
-+
-+	va_end(args_for_counting);
-+
-+	frag_container = kunit_kmalloc(stream->test, sizeof(*frag_container),
-+				       stream->gfp);
-+	if (!frag_container)
-+		return -ENOMEM;
-+
-+	frag_container->fragment = kunit_kmalloc(stream->test, len,
-+						 stream->gfp);
-+	if (!frag_container->fragment)
-+		return -ENOMEM;
-+
-+	len = vsnprintf(frag_container->fragment, len, fmt, args);
-+	spin_lock(&stream->lock);
-+	stream->length += len;
-+	list_add_tail(&frag_container->node, &stream->fragments);
-+	spin_unlock(&stream->lock);
-+
-+	return 0;
-+}
-+
-+int string_stream_add(struct string_stream *stream, const char *fmt, ...)
-+{
-+	va_list args;
-+	int result;
-+
-+	va_start(args, fmt);
-+	result = string_stream_vadd(stream, fmt, args);
-+	va_end(args);
-+
-+	return result;
-+}
-+
-+void string_stream_clear(struct string_stream *stream)
-+{
-+	struct string_stream_fragment *frag_container, *frag_container_safe;
-+
-+	spin_lock(&stream->lock);
-+	list_for_each_entry_safe(frag_container,
-+				 frag_container_safe,
-+				 &stream->fragments,
-+				 node) {
-+		list_del(&frag_container->node);
-+	}
-+	stream->length = 0;
-+	spin_unlock(&stream->lock);
-+}
-+
-+char *string_stream_get_string(struct string_stream *stream)
-+{
-+	struct string_stream_fragment *frag_container;
-+	size_t buf_len = stream->length + 1; /* +1 for null byte. */
-+	char *buf;
-+
-+	buf = kunit_kzalloc(stream->test, buf_len, stream->gfp);
-+	if (!buf)
-+		return NULL;
-+
-+	spin_lock(&stream->lock);
-+	list_for_each_entry(frag_container, &stream->fragments, node)
-+		strlcat(buf, frag_container->fragment, buf_len);
-+	spin_unlock(&stream->lock);
-+
-+	return buf;
-+}
-+
-+int string_stream_append(struct string_stream *stream,
-+			 struct string_stream *other)
-+{
-+	const char *other_content;
-+
-+	other_content = string_stream_get_string(other);
-+
-+	if (!other_content)
-+		return -ENOMEM;
-+
-+	return string_stream_add(stream, other_content);
-+}
-+
-+bool string_stream_is_empty(struct string_stream *stream)
-+{
-+	return list_empty(&stream->fragments);
-+}
-+
-+struct string_stream_alloc_context {
-+	struct kunit *test;
-+	gfp_t gfp;
-+};
-+
-+static int string_stream_init(struct kunit_resource *res, void *context)
-+{
-+	struct string_stream *stream;
-+	struct string_stream_alloc_context *ctx = context;
-+
-+	stream = kunit_kzalloc(ctx->test, sizeof(*stream), ctx->gfp);
-+	if (!stream)
-+		return -ENOMEM;
-+
-+	res->allocation = stream;
-+	stream->gfp = ctx->gfp;
-+	stream->test = ctx->test;
-+	INIT_LIST_HEAD(&stream->fragments);
-+	spin_lock_init(&stream->lock);
-+
-+	return 0;
-+}
-+
-+static void string_stream_free(struct kunit_resource *res)
-+{
-+	/* Nothing to do since everything is already a KUnit managed resource */
-+}
-+
-+struct string_stream *alloc_string_stream(struct kunit *test, gfp_t gfp)
-+{
-+	struct string_stream_alloc_context context = {
-+		.test = test,
-+		.gfp = gfp
-+	};
-+
-+	return kunit_alloc_resource(test,
-+				    string_stream_init,
-+				    string_stream_free,
-+				    gfp,
-+				    &context);
-+}
--- 
-2.22.0.510.g264f2c817a-goog
+The lockless ringbuffer might make handling of related (partial)
+lines worse or better. It might justify KUnit's extra buffering
+or it might allow to get rid of it.
 
+> > Note that stroring the messages into the printk log is basically safe in any
+> > context. It uses temporary per-CPU buffers for recursive messages and
+> > in NMI. The only problem is panic() when some CPU gets stuck with the
+> > lock taken. This will get solved by the lockless ringbuffer. Also
+> > the temporary buffers will not be necessary any longer.
+> 
+> Sure, I think Stephen's concern is all the supporting code that is
+> involved. Not printk specifically. It just means a lot more of KUnit
+> has to be IRQ safe.
+
+I see.
+
+BTW: I wonder if KUnit could reuse the existing seq_buf implementation
+for buffering messages.
+
+I am sorry if it has already been proposed and rejected for some
+reason. I might have missed it. Feel free to just point me to
+same older mail.
+
+> > Much bigger problems are with consoles. There are many of them. It
+> > means a lot of code and more locks involved, including scheduler
+> > locks. Note that console lock is a semaphore.
+> 
+> That shouldn't affect us though, right? As long as we continue to use
+> the printk interface?
+
+I guess that it should not affect KUnit.
+
+The only problem might be if the testing framework calls printk()
+inside scheduler or console code. And only when the tested code
+uses the same locks that will be used by the called printk().
+
+To be honest I do not fully understand KUnit design. I am not
+completely sure how the tested code is isolated from the running
+system. Namely, I do not know if the tested code shares
+the same locks with the system running the test.
+
+Best Regards,
+Petr
 
 _______________________________________________
 linux-um mailing list
