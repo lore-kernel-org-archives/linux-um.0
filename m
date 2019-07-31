@@ -1,18 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x549.google.com ([2607:f8b0:4864:20::549])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hnK08-0006HJ-8k
- for linux-um@lists.infradead.org; Tue, 16 Jul 2019 09:44:02 +0000
-Received: by mail-pg1-x549.google.com with SMTP id d3so12300877pgc.9
- for <linux-um@lists.infradead.org>; Tue, 16 Jul 2019 02:43:59 -0700 (PDT)
-Date: Tue, 16 Jul 2019 02:43:02 -0700
-In-Reply-To: <20190716094302.180360-1-brendanhiggins@google.com>
-Message-Id: <20190716094302.180360-19-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20190716094302.180360-1-brendanhiggins@google.com>
-Subject: [PATCH v10 18/18] MAINTAINERS: add proc sysctl KUnit test to PROC
- SYSCTL section
-From: Brendan Higgins <brendanhiggins@google.com>
+ id 1hsvF6-00058l-Rx
+ for linux-um@lists.infradead.org; Wed, 31 Jul 2019 20:30:39 +0000
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [RFC] um: virtio: Workaround for using virtio_net with snabb
+Date: Wed, 31 Jul 2019 22:30:30 +0200
+Message-Id: <20190731203030.29821-1-johannes@sipsolutions.net>
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -25,42 +21,48 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, Iurii Zaikin <yzaikin@google.com>, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+To: linux-um@lists.infradead.org
+Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, Erel Geron <erelx.geron@intel.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Add entry for the new proc sysctl KUnit test to the PROC SYSCTL section,
-and add Iurii as a maintainer.
+From: Erel Geron <erelx.geron@intel.com>
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Cc: Iurii Zaikin <yzaikin@google.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
-Acked-by: Luis Chamberlain <mcgrof@kernel.org>
+Workaround a crash of snabb when using virtio_uml.
+
+Signed-off-by: Erel Geron <erelx.geron@intel.com>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- MAINTAINERS | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/um/drivers/virtio_uml.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 48d04d180a988..f8204c75114da 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12721,12 +12721,14 @@ F:	Documentation/filesystems/proc.txt
- PROC SYSCTL
- M:	Luis Chamberlain <mcgrof@kernel.org>
- M:	Kees Cook <keescook@chromium.org>
-+M:	Iurii Zaikin <yzaikin@google.com>
- L:	linux-kernel@vger.kernel.org
- L:	linux-fsdevel@vger.kernel.org
- S:	Maintained
- F:	fs/proc/proc_sysctl.c
- F:	include/linux/sysctl.h
- F:	kernel/sysctl.c
-+F:	kernel/sysctl-test.c
- F:	tools/testing/selftests/sysctl/
+diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
+index 30eeb907f42a..9c1308f56b93 100644
+--- a/arch/um/drivers/virtio_uml.c
++++ b/arch/um/drivers/virtio_uml.c
+@@ -31,6 +31,10 @@
+ #include <os.h>
+ #include "vhost_user.h"
  
- PS3 NETWORK SUPPORT
++/* TODO for the workaround in vhost_user_init */
++#include <linux/virtio_ids.h>
++#include <linux/virtio_net.h>
++
+ /* Workaround due to a conflict between irq_user.h and irqreturn.h */
+ #ifdef IRQ_NONE
+ #undef IRQ_NONE
+@@ -200,6 +204,11 @@ static int vhost_user_init(struct virtio_uml_device *vu_dev)
+ 	if (rc)
+ 		return rc;
+ 
++	/* TODO workaround for some implementations */
++	if (vu_dev->vdev.id.device == VIRTIO_ID_NET)
++		vu_dev->features &= ~BIT_ULL(VIRTIO_NET_F_CTRL_VQ) &
++				~BIT_ULL(VIRTIO_NET_F_MQ);
++
+ 	if (vu_dev->features & BIT_ULL(VHOST_USER_F_PROTOCOL_FEATURES)) {
+ 		rc = vhost_user_get_protocol_features(vu_dev,
+ 				&vu_dev->protocol_features);
 -- 
-2.22.0.510.g264f2c817a-goog
+2.20.1
 
 
 _______________________________________________
