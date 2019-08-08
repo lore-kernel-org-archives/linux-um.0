@@ -2,14 +2,14 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab6.miniserver.com ([5.153.251.140]
  helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hxm0b-0007DY-5m
- for linux-um@lists.infradead.org; Wed, 14 Aug 2019 05:39:44 +0000
+ id 1hvcgh-0005Aq-3O
+ for linux-um@lists.infradead.org; Thu, 08 Aug 2019 07:18:19 +0000
 Subject: Re: [PATCH 2/2] um: drivers: Add virtio vhost-user driver
 References: <20190731202942.29630-1-johannes@sipsolutions.net>
  <20190731202942.29630-2-johannes@sipsolutions.net>
 From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Message-ID: <aa0e9645-add5-0169-95d0-e11dc36dcfaa@cambridgegreys.com>
-Date: Wed, 14 Aug 2019 06:39:19 +0100
+Message-ID: <cd53289b-a9a1-8367-c808-fdffa6398706@cambridgegreys.com>
+Date: Thu, 8 Aug 2019 08:18:00 +0100
 MIME-Version: 1.0
 In-Reply-To: <20190731202942.29630-2-johannes@sipsolutions.net>
 Content-Language: en-US
@@ -1288,14 +1288,12 @@ On 31/07/2019 21:29, Johannes Berg wrote:
 > +}
 > 
 
-Can you send me your config?
 
-It goes into an always busy loop early in boot with mine and the boot 
-never completes. I will debug it in the meantime, but having the config 
-with which it works will be helpful.
+Patch looks OK on first read, builds OK, I will test it vs Netsys:BESS 
+DPDK virtio-user driver for a couple of days (that will also show if we 
+need the "RFC" extra portion).
 
-For the record - I have vector enabled and I tried virtio and virtio-net 
-compiled in.
+Brgds,
 
 -- 
 Anton R. Ivanov
