@@ -1,18 +1,21 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x549.google.com ([2607:f8b0:4864:20::549])
+Received: from ivanoab6.miniserver.com ([5.153.251.140]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hxF0B-0003gb-03
- for linux-um@lists.infradead.org; Mon, 12 Aug 2019 18:25:04 +0000
-Received: by mail-pg1-x549.google.com with SMTP id m17so56152987pgh.21
- for <linux-um@lists.infradead.org>; Mon, 12 Aug 2019 11:25:01 -0700 (PDT)
-Date: Mon, 12 Aug 2019 11:24:11 -0700
-In-Reply-To: <20190812182421.141150-1-brendanhiggins@google.com>
-Message-Id: <20190812182421.141150-9-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20190812182421.141150-1-brendanhiggins@google.com>
-Subject: [PATCH v12 08/18] objtool: add kunit_try_catch_throw to the noreturn
- list
-From: Brendan Higgins <brendanhiggins@google.com>
+ id 1hvzNA-0005HO-79
+ for linux-um@lists.infradead.org; Fri, 09 Aug 2019 07:31:38 +0000
+Subject: Re: [RFC] um: virtio: Workaround for using virtio_net with snabb
+References: <20190731203030.29821-1-johannes@sipsolutions.net>
+ <394f11ad-88e3-1d1f-8b8e-51fdc14aea8d@cambridgegreys.com>
+ <1e988e1583b94761ba876827af24eede0c46ccf4.camel@sipsolutions.net>
+ <36928187-8013-9e25-3ff8-a7a0962c8274@cambridgegreys.com>
+ <1db90d466d11b5cb8b379c05efb885e0816195dc.camel@sipsolutions.net>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <a66c9235-8c04-8beb-d7cc-0c76c5d27310@cambridgegreys.com>
+Date: Fri, 9 Aug 2019 08:31:17 +0100
+MIME-Version: 1.0
+In-Reply-To: <1db90d466d11b5cb8b379c05efb885e0816195dc.camel@sipsolutions.net>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -21,46 +24,77 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, kbuild test robot <lkp@intel.com>, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
+Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, Erel Geron <erelx.geron@intel.com>
 
-Fix the following warning seen on GCC 7.3:
-  kunit/test-test.o: warning: objtool: kunit_test_unsuccessful_try() falls through to next function kunit_test_catch()
 
-kunit_try_catch_throw is a function added in the following patch in this
-series; it allows KUnit, a unit testing framework for the kernel, to
-bail out of a broken test. As a consequence, it is a new __noreturn
-function that objtool thinks is broken (as seen above). So fix this
-warning by adding kunit_try_catch_throw to objtool's noreturn list.
 
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Link: https://www.spinics.net/lists/linux-kbuild/msg21708.html
-Cc: Peter Zijlstra <peterz@infradead.org>
----
- tools/objtool/check.c | 1 +
- 1 file changed, 1 insertion(+)
+On 09/08/2019 08:19, Johannes Berg wrote:
+> On Thu, 2019-08-08 at 08:56 +0100, Anton Ivanov wrote:
+> 
+>> However, a cursory search shows these being turned off in a few other
+>> cases as well including vs some DPDK based software.
+>>
+>> So snabb is not alone having issues with MQ and VQ flags.
+> 
+> Oh. I hadn't really researched it much more.
+> 
+>>>> Have you tried it vs let's say dpdk (IIRC it supports vhost_user as an
+>>>> interface).
+>>>
+>>> No, and we probably won't, we're not really particularly interested in
+>>> the network aspect of it. Trying it out here with existing device
+>>> implementations was really just for development, ultimately our plan is
+>>> to have our own device implementation(s) and driver(s).
+>>
+>> Understood, however for it to be upstreamed it should work with
+>> something else which is publicly available. That is why I am going to
+>> try it vs Bess/DPDK (it is also lowest effort for me as I already have
+>> that set-up).
+> 
+> True. Erel tried some of the samples from qemu contrib as well as snabb.
+> But if you have a DPDK setup then that's certainly an interesting option
+> to try, one that would likely also be useful for others to use this
+> with.
 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 176f2f0840609..0c8e17f946cda 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -145,6 +145,7 @@ static bool __dead_end_function(struct objtool_file *file, struct symbol *func,
- 		"usercopy_abort",
- 		"machine_real_restart",
- 		"rewind_stack_do_exit",
-+		"kunit_try_catch_throw",
- 	};
- 
- 	if (!func)
+I am working on this at the moment: https://github.com/NetSys/bess
+
+It is a simple DPDK based L2/L3 forwarder.
+
+I have it set-up already so I can try to use it as a test case.
+
+> 
+> If needed, we can respin this as a real patch to add options to the
+> command line, I suppose.
+
+I hope to have some answers to that by early next week.
+
+> 
+>>> I'm hoping to
+>>> publish and upstream something that will let you run multiple UML
+>>> machines in "synchronized time travel" mode over vhost-user though.
+>>
+>> vhost-user clock? Interesting idea.
+> 
+> I'm on vacation right now, but once I'm back I'll start looking into
+> that. Not sure how to really tie that in though since it needs the idle
+> hook too, and that's arch specific. So I guess it just has to be
+> integrated with all the time-travel mode code, rather than being more
+> generic/separate.
+> 
+> johannes
+> 
+> 
+
 -- 
-2.23.0.rc1.153.gdeed80330f-goog
+Anton R. Ivanov
 
+Cambridge Greys Limited, England and Wales company No 10273661
+http://www.cambridgegreys.com/
 
 _______________________________________________
 linux-um mailing list
