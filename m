@@ -1,17 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x549.google.com ([2607:f8b0:4864:20::549])
+Received: from ivanoab6.miniserver.com ([5.153.251.140]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hxmCz-0002yZ-EG
- for linux-um@lists.infradead.org; Wed, 14 Aug 2019 05:52:31 +0000
-Received: by mail-pg1-x549.google.com with SMTP id q1so12150927pgt.2
- for <linux-um@lists.infradead.org>; Tue, 13 Aug 2019 22:52:29 -0700 (PDT)
-Date: Tue, 13 Aug 2019 22:50:57 -0700
-In-Reply-To: <20190814055108.214253-1-brendanhiggins@google.com>
-Message-Id: <20190814055108.214253-8-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20190814055108.214253-1-brendanhiggins@google.com>
-Subject: [PATCH v13 07/18] kunit: test: add initial tests
-From: Brendan Higgins <brendanhiggins@google.com>
+ id 1hvzVo-00020M-LL
+ for linux-um@lists.infradead.org; Fri, 09 Aug 2019 07:40:33 +0000
+From: anton.ivanov@cambridgegreys.com
+Subject: [PATCHv4 3/4] um: Add checks to mtu parameter parsing
+Date: Fri,  9 Aug 2019 08:40:19 +0100
+Message-Id: <20190809074020.14351-4-anton.ivanov@cambridgegreys.com>
+In-Reply-To: <20190809074020.14351-1-anton.ivanov@cambridgegreys.com>
+References: <20190809074020.14351-1-anton.ivanov@cambridgegreys.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,224 +18,39 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+To: linux-um@lists.infradead.org
+Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Add a test for string stream along with a simpler example.
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
-Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+Adds a sanity check to the parsing of mtu command line param
+
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 ---
- kunit/Kconfig              | 21 +++++++++
- kunit/Makefile             |  4 ++
- kunit/example-test.c       | 88 ++++++++++++++++++++++++++++++++++++++
- kunit/string-stream-test.c | 52 ++++++++++++++++++++++
- 4 files changed, 165 insertions(+)
- create mode 100644 kunit/example-test.c
- create mode 100644 kunit/string-stream-test.c
+ arch/um/drivers/vector_kern.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kunit/Kconfig b/kunit/Kconfig
-index 330ae83527c23..8541ef95b65ad 100644
---- a/kunit/Kconfig
-+++ b/kunit/Kconfig
-@@ -14,4 +14,25 @@ config KUNIT
- 	  architectures. For more information, please see
- 	  Documentation/dev-tools/kunit/.
+diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
+index 8fa094770965..45ec9bc2430f 100644
+--- a/arch/um/drivers/vector_kern.c
++++ b/arch/um/drivers/vector_kern.c
+@@ -121,7 +121,8 @@ static int get_mtu(struct arglist *def)
  
-+config KUNIT_TEST
-+	bool "KUnit test for KUnit"
-+	depends on KUNIT
-+	help
-+	  Enables the unit tests for the KUnit test framework. These tests test
-+	  the KUnit test framework itself; the tests are both written using
-+	  KUnit and test KUnit. This option should only be enabled for testing
-+	  purposes by developers interested in testing that KUnit works as
-+	  expected.
-+
-+config KUNIT_EXAMPLE_TEST
-+	bool "Example test for KUnit"
-+	depends on KUNIT
-+	help
-+	  Enables an example unit test that illustrates some of the basic
-+	  features of KUnit. This test only exists to help new users understand
-+	  what KUnit is and how it is used. Please refer to the example test
-+	  itself, kunit/example-test.c, for more information. This option is
-+	  intended for curious hackers who would like to understand how to use
-+	  KUnit for kernel development.
-+
- endmenu
-diff --git a/kunit/Makefile b/kunit/Makefile
-index 6dcbe309036b8..4e46450bcb3a8 100644
---- a/kunit/Makefile
-+++ b/kunit/Makefile
-@@ -1,3 +1,7 @@
- obj-$(CONFIG_KUNIT) +=			test.o \
- 					string-stream.o \
- 					assert.o
-+
-+obj-$(CONFIG_KUNIT_TEST) +=		string-stream-test.o
-+
-+obj-$(CONFIG_KUNIT_EXAMPLE_TEST) +=	example-test.o
-diff --git a/kunit/example-test.c b/kunit/example-test.c
-new file mode 100644
-index 0000000000000..f64a829aa441f
---- /dev/null
-+++ b/kunit/example-test.c
-@@ -0,0 +1,88 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Example KUnit test to show how to use KUnit.
-+ *
-+ * Copyright (C) 2019, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
-+
-+#include <kunit/test.h>
-+
-+/*
-+ * This is the most fundamental element of KUnit, the test case. A test case
-+ * makes a set EXPECTATIONs and ASSERTIONs about the behavior of some code; if
-+ * any expectations or assertions are not met, the test fails; otherwise, the
-+ * test passes.
-+ *
-+ * In KUnit, a test case is just a function with the signature
-+ * `void (*)(struct kunit *)`. `struct kunit` is a context object that stores
-+ * information about the current test.
-+ */
-+static void example_simple_test(struct kunit *test)
-+{
-+	/*
-+	 * This is an EXPECTATION; it is how KUnit tests things. When you want
-+	 * to test a piece of code, you set some expectations about what the
-+	 * code should do. KUnit then runs the test and verifies that the code's
-+	 * behavior matched what was expected.
-+	 */
-+	KUNIT_EXPECT_EQ(test, 1 + 1, 2);
-+}
-+
-+/*
-+ * This is run once before each test case, see the comment on
-+ * example_test_suite for more information.
-+ */
-+static int example_test_init(struct kunit *test)
-+{
-+	kunit_info(test, "initializing\n");
-+
-+	return 0;
-+}
-+
-+/*
-+ * Here we make a list of all the test cases we want to add to the test suite
-+ * below.
-+ */
-+static struct kunit_case example_test_cases[] = {
-+	/*
-+	 * This is a helper to create a test case object from a test case
-+	 * function; its exact function is not important to understand how to
-+	 * use KUnit, just know that this is how you associate test cases with a
-+	 * test suite.
-+	 */
-+	KUNIT_CASE(example_simple_test),
-+	{}
-+};
-+
-+/*
-+ * This defines a suite or grouping of tests.
-+ *
-+ * Test cases are defined as belonging to the suite by adding them to
-+ * `kunit_cases`.
-+ *
-+ * Often it is desirable to run some function which will set up things which
-+ * will be used by every test; this is accomplished with an `init` function
-+ * which runs before each test case is invoked. Similarly, an `exit` function
-+ * may be specified which runs after every test case and can be used to for
-+ * cleanup. For clarity, running tests in a test suite would behave as follows:
-+ *
-+ * suite.init(test);
-+ * suite.test_case[0](test);
-+ * suite.exit(test);
-+ * suite.init(test);
-+ * suite.test_case[1](test);
-+ * suite.exit(test);
-+ * ...;
-+ */
-+static struct kunit_suite example_test_suite = {
-+	.name = "example",
-+	.init = example_test_init,
-+	.test_cases = example_test_cases,
-+};
-+
-+/*
-+ * This registers the above test suite telling KUnit that this is a suite of
-+ * tests that need to be run.
-+ */
-+kunit_test_suite(example_test_suite);
-diff --git a/kunit/string-stream-test.c b/kunit/string-stream-test.c
-new file mode 100644
-index 0000000000000..75229e267c323
---- /dev/null
-+++ b/kunit/string-stream-test.c
-@@ -0,0 +1,52 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * KUnit test for struct string_stream.
-+ *
-+ * Copyright (C) 2019, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
-+
-+#include <kunit/string-stream.h>
-+#include <kunit/test.h>
-+#include <linux/slab.h>
-+
-+static void string_stream_test_empty_on_creation(struct kunit *test)
-+{
-+	struct string_stream *stream = alloc_string_stream(test, GFP_KERNEL);
-+
-+	KUNIT_EXPECT_TRUE(test, string_stream_is_empty(stream));
-+}
-+
-+static void string_stream_test_not_empty_after_add(struct kunit *test)
-+{
-+	struct string_stream *stream = alloc_string_stream(test, GFP_KERNEL);
-+
-+	string_stream_add(stream, "Foo");
-+
-+	KUNIT_EXPECT_FALSE(test, string_stream_is_empty(stream));
-+}
-+
-+static void string_stream_test_get_string(struct kunit *test)
-+{
-+	struct string_stream *stream = alloc_string_stream(test, GFP_KERNEL);
-+	char *output;
-+
-+	string_stream_add(stream, "Foo");
-+	string_stream_add(stream, " %s", "bar");
-+
-+	output = string_stream_get_string(stream);
-+	KUNIT_EXPECT_STREQ(test, output, "Foo bar");
-+}
-+
-+static struct kunit_case string_stream_test_cases[] = {
-+	KUNIT_CASE(string_stream_test_empty_on_creation),
-+	KUNIT_CASE(string_stream_test_not_empty_after_add),
-+	KUNIT_CASE(string_stream_test_get_string),
-+	{}
-+};
-+
-+static struct kunit_suite string_stream_test_suite = {
-+	.name = "string-stream-test",
-+	.test_cases = string_stream_test_cases
-+};
-+kunit_test_suite(string_stream_test_suite);
+ 	if (mtu != NULL) {
+ 		if (kstrtoul(mtu, 10, &result) == 0)
+-			return result;
++			if ((result < (1 << 16) - 1) && (result >= 576))
++				return result;
+ 	}
+ 	return ETH_MAX_PACKET;
+ }
 -- 
-2.23.0.rc1.153.gdeed80330f-goog
+2.11.0
 
 
 _______________________________________________
