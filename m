@@ -1,13 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mx1.volatile.bz ([185.163.46.97])
+Received: from ivanoab6.miniserver.com ([5.153.251.140]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i39Us-0006yp-IC
- for linux-um@lists.infradead.org; Thu, 29 Aug 2019 01:45:12 +0000
-Date: Wed, 28 Aug 2019 21:44:50 -0400
-From: Alexander Neville <dark@volatile.bz>
-Subject: [PATCH] um: Rewrite host RNG driver.
-Message-ID: <20190828204609.02a7ff70@TheDarkness>
-MIME-Version: 1.0
+ id 1hvzVq-00021D-Mp
+ for linux-um@lists.infradead.org; Fri, 09 Aug 2019 07:40:36 +0000
+From: anton.ivanov@cambridgegreys.com
+Subject: [PATCHv4 4/4] um: Error handling fixes in vector drivers
+Date: Fri,  9 Aug 2019 08:40:20 +0100
+Message-Id: <20190809074020.14351-5-anton.ivanov@cambridgegreys.com>
+In-Reply-To: <20190809074020.14351-1-anton.ivanov@cambridgegreys.com>
+References: <20190809074020.14351-1-anton.ivanov@cambridgegreys.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -16,325 +18,193 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+To: linux-um@lists.infradead.org
+Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-The old driver had a bug that would cause it to outright stop working if
-the host's /dev/random were to block. Instead of trying to track down
-the cause of said bug, rewriting it from scratch turned out to be a much
-better option as it came with a few benefits:
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
- - The new driver properly registers itself as an hardware RNG.
+With the addition of bess support which uses connection
+oriented SEQPACKET sockets the vector routines can now
+encounter a "remote end closed the connection" scenario.
 
- - The code is simpler and therefore easier to maintain.
+This adds handling code to detect it in the TX path and
+the legacy RX path. There is no way to detect it in the
+vector RX path because that can legitimately return 0
+even if the remote end has not closed the connection. As
+a result the detection is delayed until the first TX
+event after the close.
 
- - It serves as a minimal example of writing a hardware RNG driver.
-
-I also edited the Kconfig symbol to bring it up to more modern
-standards.
-
-Signed-off-by: Alexander Neville <dark@volatile.bz>
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 ---
- arch/um/drivers/Makefile       |   3 +-
- arch/um/drivers/random.c       | 192 ++++++++-------------------------
- drivers/char/hw_random/Kconfig |  21 ++--
- 3 files changed, 59 insertions(+), 157 deletions(-)
+ arch/um/drivers/vector_kern.c | 37 ++++++++++++++++++++++++++++++++-----
+ arch/um/drivers/vector_kern.h |  1 +
+ arch/um/drivers/vector_user.c |  4 ++--
+ 3 files changed, 35 insertions(+), 7 deletions(-)
 
-diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
-index 693319839f69..29b0364f267d 100644
---- a/arch/um/drivers/Makefile
-+++ b/arch/um/drivers/Makefile
-@@ -17,6 +17,7 @@ hostaudio-objs := hostaudio_kern.o
- ubd-objs := ubd_kern.o ubd_user.o
- port-objs := port_kern.o port_user.o
- harddog-objs := harddog_kern.o harddog_user.o
-+uml-rng-objs := random.o
+diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
+index 45ec9bc2430f..af27d5c41776 100644
+--- a/arch/um/drivers/vector_kern.c
++++ b/arch/um/drivers/vector_kern.c
+@@ -76,6 +76,7 @@ static void vector_eth_configure(int n, struct arglist *def);
+ #define DEFAULT_VECTOR_SIZE 64
+ #define TX_SMALL_PACKET 128
+ #define MAX_IOV_SIZE (MAX_SKB_FRAGS + 1)
++#define MAX_ITERATIONS 64
  
- LDFLAGS_pcap.o := -r $(shell $(CC) $(KBUILD_CFLAGS) -print-file-name=libpcap.a)
- 
-@@ -60,7 +61,7 @@ obj-$(CONFIG_TTY_CHAN) += tty.o
- obj-$(CONFIG_XTERM_CHAN) += xterm.o xterm_kern.o
- obj-$(CONFIG_UML_WATCHDOG) += harddog.o
- obj-$(CONFIG_BLK_DEV_COW_COMMON) += cow_user.o
--obj-$(CONFIG_UML_RANDOM) += random.o
-+obj-$(CONFIG_UML_RANDOM) += uml-rng.o
- 
- # pcap_user.o must be added explicitly.
- USER_OBJS := fd.o null.o pty.o tty.o xterm.o slip_common.o pcap_user.o vde_user.o vector_user.o
-diff --git a/arch/um/drivers/random.c b/arch/um/drivers/random.c
-index 1d5d3057e6f1..7a3099277ebd 100644
---- a/arch/um/drivers/random.c
-+++ b/arch/um/drivers/random.c
-@@ -1,175 +1,75 @@
--/* Copyright (C) 2005 - 2008 Jeff Dike <jdike@{linux.intel,addtoit}.com> */
--
--/* Much of this ripped from drivers/char/hw_random.c, see there for other
-- * copyright.
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * UML Host RNG Driver
-+ *
-+ * (c) Copright 2019 Alexander Neville <dark@volatile.bz>
-  *
-- * This software may be used and distributed according to the terms
-- * of the GNU General Public License, incorporated herein by reference.
-+ * This file is licensed under the terms of the GNU General Public
-+ * License version 2. This program is licensed "as is" without any
-+ * warranty of any kind, whether express or implied.
-  */
--#include <linux/sched/signal.h>
-+
-+#include <linux/kernel.h>
-+#include <linux/types.h>
- #include <linux/module.h>
--#include <linux/fs.h>
--#include <linux/interrupt.h>
--#include <linux/miscdevice.h>
--#include <linux/delay.h>
--#include <linux/uaccess.h>
--#include <init.h>
--#include <irq_kern.h>
-+#include <linux/hw_random.h>
-+#include <linux/fcntl.h>
- #include <os.h>
- 
--/*
-- * core module and version information
-- */
--#define RNG_VERSION "1.0.0"
--#define RNG_MODULE_NAME "hw_random"
--
--#define RNG_MISCDEV_MINOR		183 /* official */
--
--/* Changed at init time, in the non-modular case, and at module load
-- * time, in the module case.  Presumably, the module subsystem
-- * protects against a module being loaded twice at the same time.
-- */
--static int random_fd = -1;
--static DECLARE_WAIT_QUEUE_HEAD(host_read_wait);
--
--static int rng_dev_open (struct inode *inode, struct file *filp)
-+static int uml_rng_read(struct hwrng *rng, void *data, size_t bufsize,
-+			bool wait)
- {
--	/* enforce read-only access to this chrdev */
--	if ((filp->f_mode & FMODE_READ) == 0)
--		return -EINVAL;
--	if ((filp->f_mode & FMODE_WRITE) != 0)
--		return -EINVAL;
--
--	return 0;
-+	return os_read_file(rng->priv, data, bufsize);
- }
- 
--static atomic_t host_sleep_count = ATOMIC_INIT(0);
--
--static ssize_t rng_dev_read (struct file *filp, char __user *buf, size_t size,
--			     loff_t *offp)
-+static int uml_rng_init(struct hwrng *rng)
- {
--	u32 data;
--	int n, ret = 0, have_data;
--
--	while (size) {
--		n = os_read_file(random_fd, &data, sizeof(data));
--		if (n > 0) {
--			have_data = n;
--			while (have_data && size) {
--				if (put_user((u8) data, buf++)) {
--					ret = ret ? : -EFAULT;
--					break;
--				}
--				size--;
--				ret++;
--				have_data--;
--				data >>= 8;
--			}
--		}
--		else if (n == -EAGAIN) {
--			DECLARE_WAITQUEUE(wait, current);
--
--			if (filp->f_flags & O_NONBLOCK)
--				return ret ? : -EAGAIN;
--
--			atomic_inc(&host_sleep_count);
--			add_sigio_fd(random_fd);
--
--			add_wait_queue(&host_read_wait, &wait);
--			set_current_state(TASK_INTERRUPTIBLE);
--
--			schedule();
--			remove_wait_queue(&host_read_wait, &wait);
--
--			if (atomic_dec_and_test(&host_sleep_count)) {
--				ignore_sigio_fd(random_fd);
--				deactivate_fd(random_fd, RANDOM_IRQ);
--			}
--		}
--		else
--			return n;
-+	int fd = os_open_file("/dev/random", of_read(OPENFLAGS()), O_NONBLOCK);
- 
--		if (signal_pending (current))
--			return ret ? : -ERESTARTSYS;
-+	if (fd < 0) {
-+		pr_debug("uml-rng: failed to open /dev/random");
-+		return fd;
+ static const struct {
+ 	const char string[ETH_GSTRING_LEN];
+@@ -418,6 +419,7 @@ static int vector_send(struct vector_queue *qi)
+ 					if (net_ratelimit())
+ 						netdev_err(vp->dev, "sendmmsg err=%i\n",
+ 							result);
++					vp->in_error = true;
+ 					result = send_len;
+ 				}
+ 				if (result > 0) {
+@@ -845,6 +847,10 @@ static int vector_legacy_rx(struct vector_private *vp)
  	}
--	return ret;
--}
  
--static const struct file_operations rng_chrdev_ops = {
--	.owner		= THIS_MODULE,
--	.open		= rng_dev_open,
--	.read		= rng_dev_read,
--	.llseek		= noop_llseek,
--};
-+	int err = os_set_fd_async(fd);
- 
--/* rng_init shouldn't be called more than once at boot time */
--static struct miscdevice rng_miscdev = {
--	RNG_MISCDEV_MINOR,
--	RNG_MODULE_NAME,
--	&rng_chrdev_ops,
--};
-+	if (err < 0) {
-+		os_close_file(fd);
-+		return err;
+ 	pkt_len = uml_vector_recvmsg(vp->fds->rx_fd, &hdr, 0);
++	if (pkt_len < 0) {
++		vp->in_error = true;
++		return pkt_len;
 +	}
  
--static irqreturn_t random_interrupt(int irq, void *data)
--{
--	wake_up(&host_read_wait);
-+	rng->priv = fd;
+ 	if (skb != NULL) {
+ 		if (pkt_len > vp->header_size) {
+@@ -891,12 +897,16 @@ static int writev_tx(struct vector_private *vp, struct sk_buff *skb)
  
--	return IRQ_HANDLED;
-+	return 0;
+ 	if (iov_count < 1)
+ 		goto drop;
++
+ 	pkt_len = uml_vector_writev(
+ 		vp->fds->tx_fd,
+ 		(struct iovec *) &iov,
+ 		iov_count
+ 	);
+ 
++	if (pkt_len < 0)
++		goto drop;
++
+ 	netif_trans_update(vp->dev);
+ 	netif_wake_queue(vp->dev);
+ 
+@@ -911,6 +921,8 @@ static int writev_tx(struct vector_private *vp, struct sk_buff *skb)
+ drop:
+ 	vp->dev->stats.tx_dropped++;
+ 	consume_skb(skb);
++	if (pkt_len < 0)
++		vp->in_error = true;
+ 	return pkt_len;
  }
  
--/*
-- * rng_init - initialize RNG module
-- */
--static int __init rng_init (void)
-+static void uml_rng_cleanup(struct hwrng *rng)
+@@ -939,6 +951,9 @@ static int vector_mmsg_rx(struct vector_private *vp)
+ 	packet_count = uml_vector_recvmmsg(
+ 		vp->fds->rx_fd, qi->mmsg_vector, qi->max_depth, 0);
+ 
++	if (packet_count < 0)
++		vp->in_error = true;
++
+ 	if (packet_count <= 0)
+ 		return packet_count;
+ 
+@@ -1008,15 +1023,18 @@ static int vector_mmsg_rx(struct vector_private *vp)
+ static void vector_rx(struct vector_private *vp)
  {
--	int err;
--
--	err = os_open_file("/dev/random", of_read(OPENFLAGS()), 0);
--	if (err < 0)
--		goto out;
--
--	random_fd = err;
--
--	err = um_request_irq(RANDOM_IRQ, random_fd, IRQ_READ, random_interrupt,
--			     0, "random", NULL);
--	if (err)
--		goto err_out_cleanup_hw;
--
--	sigio_broken(random_fd, 1);
--
--	err = misc_register (&rng_miscdev);
--	if (err) {
--		printk (KERN_ERR RNG_MODULE_NAME ": misc device register "
--			"failed\n");
--		goto err_out_cleanup_hw;
--	}
--out:
--	return err;
--
--err_out_cleanup_hw:
--	os_close_file(random_fd);
--	random_fd = -1;
--	goto out;
-+	os_close_file(rng->priv);
+ 	int err;
++	int iter = 0;
+ 
+ 	if ((vp->options & VECTOR_RX) > 0)
+-		while ((err = vector_mmsg_rx(vp)) > 0)
+-			;
++		while (((err = vector_mmsg_rx(vp)) > 0) && (iter < MAX_ITERATIONS))
++			iter++;
+ 	else
+-		while ((err = vector_legacy_rx(vp)) > 0)
+-			;
++		while (((err = vector_legacy_rx(vp)) > 0) && (iter < MAX_ITERATIONS))
++			iter++;
+ 	if ((err != 0) && net_ratelimit())
+ 		netdev_err(vp->dev, "vector_rx: error(%d)\n", err);
++	if (iter == MAX_ITERATIONS)
++		netdev_err(vp->dev, "vector_rx: device stuck, remote end may have closed the connection\n");
  }
  
--/*
-- * rng_cleanup - shutdown RNG module
-- */
+ static int vector_net_start_xmit(struct sk_buff *skb, struct net_device *dev)
+@@ -1024,6 +1042,13 @@ static int vector_net_start_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	struct vector_private *vp = netdev_priv(dev);
+ 	int queue_depth = 0;
  
--static void cleanup(void)
-+static struct hwrng uml_rng_ops = {
-+	.name		= "uml-rng",
-+	.init		= uml_rng_init,
-+	.cleanup	= uml_rng_cleanup,
-+	.read		= uml_rng_read,
-+	.quality	= 1024
-+};
++	if (vp->in_error) {
++		deactivate_fd(vp->fds->rx_fd, vp->rx_irq);
++		if ((vp->fds->rx_fd != vp->fds->tx_fd) && (vp->tx_irq != 0))
++			deactivate_fd(vp->fds->tx_fd, vp->tx_irq);
++		return NETDEV_TX_BUSY;
++	}
 +
-+static int __init uml_rng_mod_init(void)
- {
--	free_irq_by_fd(random_fd);
--	os_close_file(random_fd);
-+	return hwrng_register(&uml_rng_ops);
+ 	if ((vp->options & VECTOR_TX) == 0) {
+ 		writev_tx(vp, skb);
+ 		return NETDEV_TX_OK;
+@@ -1134,6 +1159,7 @@ static int vector_net_close(struct net_device *dev)
+ 	vp->fds = NULL;
+ 	spin_lock_irqsave(&vp->lock, flags);
+ 	vp->opened = false;
++	vp->in_error = false;
+ 	spin_unlock_irqrestore(&vp->lock, flags);
+ 	return 0;
  }
+@@ -1501,7 +1527,8 @@ static void vector_eth_configure(
+ 		.transport_data		= NULL,
+ 		.in_write_poll		= false,
+ 		.coalesce		= 2,
+-		.req_size		= get_req_size(def)
++		.req_size		= get_req_size(def),
++		.in_error		= false
+ 		});
  
--static void __exit rng_cleanup(void)
-+static void __exit uml_rng_mod_exit(void)
- {
--	os_close_file(random_fd);
--	misc_deregister (&rng_miscdev);
-+	hwrng_unregister(&uml_rng_ops);
- }
+ 	dev->features = dev->hw_features = (NETIF_F_SG | NETIF_F_FRAGLIST);
+diff --git a/arch/um/drivers/vector_kern.h b/arch/um/drivers/vector_kern.h
+index 0b0a767b9076..684d2e60ad86 100644
+--- a/arch/um/drivers/vector_kern.h
++++ b/arch/um/drivers/vector_kern.h
+@@ -116,6 +116,7 @@ struct vector_private {
+ 	bool rexmit_scheduled;
+ 	bool opened;
+ 	bool in_write_poll;
++	bool in_error;
  
--module_init (rng_init);
--module_exit (rng_cleanup);
--__uml_exitcall(cleanup);
-+module_init(uml_rng_mod_init);
-+module_exit(uml_rng_mod_exit);
+ 	/* ethtool stats */
  
--MODULE_DESCRIPTION("UML Host Random Number Generator (RNG) driver");
-+MODULE_AUTHOR("Alexander Neville <dark@volatile.bz>");
-+MODULE_DESCRIPTION("UML Host RNG Driver");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
-index 59f25286befe..762acbdd52ce 100644
---- a/drivers/char/hw_random/Kconfig
-+++ b/drivers/char/hw_random/Kconfig
-@@ -440,22 +440,23 @@ config HW_RANDOM_OPTEE
+diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
+index 4e068beb9f66..f92e05ad145f 100644
+--- a/arch/um/drivers/vector_user.c
++++ b/arch/um/drivers/vector_user.c
+@@ -618,7 +618,7 @@ int uml_vector_writev(int fd, void *hdr, int iovcount)
+ 	int n;
  
- 	  If unsure, say Y.
+ 	CATCH_EINTR(n = writev(fd, (struct iovec *) hdr,  iovcount));
+-	if ((n < 0) && (errno == EAGAIN))
++	if ((n < 0) && ((errno == EAGAIN) || (errno == ENOBUFS)))
+ 		return 0;
+ 	if (n >= 0)
+ 		return n;
+@@ -635,7 +635,7 @@ int uml_vector_sendmmsg(
+ 	int n;
  
--endif # HW_RANDOM
--
- config UML_RANDOM
-+	tristate "UML Host Random Number Generator Support"
- 	depends on UML
--	tristate "Hardware random number generator"
-+	default HW_RANDOM
- 	help
- 	  This option enables UML's "hardware" random number generator.  It
- 	  attaches itself to the host's /dev/random, supplying as much entropy
- 	  as the host has, rather than the small amount the UML gets from its
--	  own drivers.  It registers itself as a standard hardware random number
--	  generator, major 10, minor 183, and the canonical device name is
--	  /dev/hwrng.
--	  The way to make use of this is to install the rng-tools package
--	  (check your distro, or download from
--	  http://sourceforge.net/projects/gkernel/).  rngd periodically reads
--	  /dev/hwrng and injects the entropy into /dev/random.
-+	  own drivers.
-+
-+	  To compile this driver as a moudle, choose M here: the module
-+	  will be called uml-rng
-+
-+	  If unsure, say Y.
-+
-+endif # HW_RANDOM
-+
- 
- config HW_RANDOM_KEYSTONE
- 	depends on ARCH_KEYSTONE
+ 	CATCH_EINTR(n = sendmmsg(fd, (struct mmsghdr *) msgvec, vlen, flags));
+-	if ((n < 0) && (errno == EAGAIN))
++	if ((n < 0) && ((errno == EAGAIN) || (errno == ENOBUFS)))
+ 		return 0;
+ 	if (n >= 0)
+ 		return n;
 -- 
-2.23.0
+2.11.0
 
-Sorry about the diff being a bit messy. If desired, I can manually fix
-the diff.
-
-Also, please let me know if my mail client decided to mangle my patch.
 
 _______________________________________________
 linux-um mailing list
