@@ -1,16 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x449.google.com ([2607:f8b0:4864:20::449])
+Received: from mail-qt1-x849.google.com ([2607:f8b0:4864:20::849])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hxmDB-00036j-Hs
- for linux-um@lists.infradead.org; Wed, 14 Aug 2019 05:52:43 +0000
-Received: by mail-pf1-x449.google.com with SMTP id t14so2672186pfq.15
- for <linux-um@lists.infradead.org>; Tue, 13 Aug 2019 22:52:40 -0700 (PDT)
-Date: Tue, 13 Aug 2019 22:51:01 -0700
-In-Reply-To: <20190814055108.214253-1-brendanhiggins@google.com>
-Message-Id: <20190814055108.214253-12-brendanhiggins@google.com>
+ id 1hxEzp-0003TQ-Su
+ for linux-um@lists.infradead.org; Mon, 12 Aug 2019 18:24:43 +0000
+Received: by mail-qt1-x849.google.com with SMTP id g33so5049194qtc.14
+ for <linux-um@lists.infradead.org>; Mon, 12 Aug 2019 11:24:40 -0700 (PDT)
+Date: Mon, 12 Aug 2019 11:24:03 -0700
+Message-Id: <20190812182421.141150-1-brendanhiggins@google.com>
 Mime-Version: 1.0
-References: <20190814055108.214253-1-brendanhiggins@google.com>
-Subject: [PATCH v13 11/18] kunit: test: add the concept of assertions
+Subject: [PATCH v12 00/18] kunit: introduce KUnit, the Linux kernel unit
+ testing framework
 From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -27,365 +26,88 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
 Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-Add support for assertions which are like expectations except the test
-terminates if the assertion is not satisfied.
+## TL;DR
 
-The idea with assertions is that you use them to state all the
-preconditions for your test. Logically speaking, these are the premises
-of the test case, so if a premise isn't true, there is no point in
-continuing the test case because there are no conclusions that can be
-drawn without the premises. Whereas, the expectation is the thing you
-are trying to prove. It is not used universally in x-unit style test
-frameworks, but I really like it as a convention.  You could still
-express the idea of a premise using the above idiom, but I think
-KUNIT_ASSERT_* states the intended idea perfectly.
+This revision removes dependence on kunit_stream in favor of
+kunit_assert, as suggested by Stephen Boyd. kunit_assert provides a more
+structured interface for constructing messages and allows most required
+data to be stored on the stack for most expectations until it is
+determined that a failure message must be produced.
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
-Reviewed-by: Stephen Boyd <sboyd@kernel.org>
----
- include/kunit/test.h       | 284 ++++++++++++++++++++++++++++++++++++-
- kunit/string-stream-test.c |   2 +-
- kunit/test-test.c          |   7 +-
- 3 files changed, 284 insertions(+), 9 deletions(-)
+As a part of introducing kunit_assert, expectations (KUNIT_EXPECT_*) and
+assertions (KUNIT_ASSERT_*) have been substantially refactored.
+Nevertheless, behavior should be the same.
 
-diff --git a/include/kunit/test.h b/include/kunit/test.h
-index f52c7c65ef651..d521d7e5be6ee 100644
---- a/include/kunit/test.h
-+++ b/include/kunit/test.h
-@@ -86,9 +86,10 @@ struct kunit;
-  * @name: the name of the test case.
-  *
-  * A test case is a function with the signature, ``void (*)(struct kunit *)``
-- * that makes expectations (see KUNIT_EXPECT_TRUE()) about code under test. Each
-- * test case is associated with a &struct kunit_suite and will be run after the
-- * suite's init function and followed by the suite's exit function.
-+ * that makes expectations and assertions (see KUNIT_EXPECT_TRUE() and
-+ * KUNIT_ASSERT_TRUE()) about code under test. Each test case is associated with
-+ * a &struct kunit_suite and will be run after the suite's init function and
-+ * followed by the suite's exit function.
-  *
-  * A test case should be static and should only be created with the KUNIT_CASE()
-  * macro; additionally, every array of test cases should be terminated with an
-@@ -1193,4 +1194,281 @@ do {									       \
- 						fmt,			       \
- 						##__VA_ARGS__)
- 
-+#define KUNIT_ASSERT_FAILURE(test, fmt, ...) \
-+	KUNIT_FAIL_ASSERTION(test, KUNIT_ASSERTION, fmt, ##__VA_ARGS__)
-+
-+/**
-+ * KUNIT_ASSERT_TRUE() - Sets an assertion that @condition is true.
-+ * @test: The test context object.
-+ * @condition: an arbitrary boolean expression. The test fails and aborts when
-+ * this does not evaluate to true.
-+ *
-+ * This and assertions of the form `KUNIT_ASSERT_*` will cause the test case to
-+ * fail *and immediately abort* when the specified condition is not met. Unlike
-+ * an expectation failure, it will prevent the test case from continuing to run;
-+ * this is otherwise known as an *assertion failure*.
-+ */
-+#define KUNIT_ASSERT_TRUE(test, condition) \
-+	KUNIT_TRUE_ASSERTION(test, KUNIT_ASSERTION, condition)
-+
-+#define KUNIT_ASSERT_TRUE_MSG(test, condition, fmt, ...)		       \
-+	KUNIT_TRUE_MSG_ASSERTION(test,					       \
-+				 KUNIT_ASSERTION,			       \
-+				 condition,				       \
-+				 fmt,					       \
-+				 ##__VA_ARGS__)
-+
-+/**
-+ * KUNIT_ASSERT_FALSE() - Sets an assertion that @condition is false.
-+ * @test: The test context object.
-+ * @condition: an arbitrary boolean expression.
-+ *
-+ * Sets an assertion that the value that @condition evaluates to is false. This
-+ * is the same as KUNIT_EXPECT_FALSE(), except it causes an assertion failure
-+ * (see KUNIT_ASSERT_TRUE()) when the assertion is not met.
-+ */
-+#define KUNIT_ASSERT_FALSE(test, condition) \
-+	KUNIT_FALSE_ASSERTION(test, KUNIT_ASSERTION, condition)
-+
-+#define KUNIT_ASSERT_FALSE_MSG(test, condition, fmt, ...)		       \
-+	KUNIT_FALSE_MSG_ASSERTION(test,					       \
-+				  KUNIT_ASSERTION,			       \
-+				  condition,				       \
-+				  fmt,					       \
-+				  ##__VA_ARGS__)
-+
-+/**
-+ * KUNIT_ASSERT_EQ() - Sets an assertion that @left and @right are equal.
-+ * @test: The test context object.
-+ * @left: an arbitrary expression that evaluates to a primitive C type.
-+ * @right: an arbitrary expression that evaluates to a primitive C type.
-+ *
-+ * Sets an assertion that the values that @left and @right evaluate to are
-+ * equal. This is the same as KUNIT_EXPECT_EQ(), except it causes an assertion
-+ * failure (see KUNIT_ASSERT_TRUE()) when the assertion is not met.
-+ */
-+#define KUNIT_ASSERT_EQ(test, left, right) \
-+	KUNIT_BINARY_EQ_ASSERTION(test, KUNIT_ASSERTION, left, right)
-+
-+#define KUNIT_ASSERT_EQ_MSG(test, left, right, fmt, ...)		       \
-+	KUNIT_BINARY_EQ_MSG_ASSERTION(test,				       \
-+				      KUNIT_ASSERTION,			       \
-+				      left,				       \
-+				      right,				       \
-+				      fmt,				       \
-+				      ##__VA_ARGS__)
-+
-+/**
-+ * KUNIT_ASSERT_PTR_EQ() - Asserts that pointers @left and @right are equal.
-+ * @test: The test context object.
-+ * @left: an arbitrary expression that evaluates to a pointer.
-+ * @right: an arbitrary expression that evaluates to a pointer.
-+ *
-+ * Sets an assertion that the values that @left and @right evaluate to are
-+ * equal. This is the same as KUNIT_EXPECT_EQ(), except it causes an assertion
-+ * failure (see KUNIT_ASSERT_TRUE()) when the assertion is not met.
-+ */
-+#define KUNIT_ASSERT_PTR_EQ(test, left, right) \
-+	KUNIT_BINARY_PTR_EQ_ASSERTION(test, KUNIT_ASSERTION, left, right)
-+
-+#define KUNIT_ASSERT_PTR_EQ_MSG(test, left, right, fmt, ...)		       \
-+	KUNIT_BINARY_PTR_EQ_MSG_ASSERTION(test,				       \
-+					  KUNIT_ASSERTION,		       \
-+					  left,				       \
-+					  right,			       \
-+					  fmt,				       \
-+					  ##__VA_ARGS__)
-+
-+/**
-+ * KUNIT_ASSERT_NE() - An assertion that @left and @right are not equal.
-+ * @test: The test context object.
-+ * @left: an arbitrary expression that evaluates to a primitive C type.
-+ * @right: an arbitrary expression that evaluates to a primitive C type.
-+ *
-+ * Sets an assertion that the values that @left and @right evaluate to are not
-+ * equal. This is the same as KUNIT_EXPECT_NE(), except it causes an assertion
-+ * failure (see KUNIT_ASSERT_TRUE()) when the assertion is not met.
-+ */
-+#define KUNIT_ASSERT_NE(test, left, right) \
-+	KUNIT_BINARY_NE_ASSERTION(test, KUNIT_ASSERTION, left, right)
-+
-+#define KUNIT_ASSERT_NE_MSG(test, left, right, fmt, ...)		       \
-+	KUNIT_BINARY_NE_MSG_ASSERTION(test,				       \
-+				      KUNIT_ASSERTION,			       \
-+				      left,				       \
-+				      right,				       \
-+				      fmt,				       \
-+				      ##__VA_ARGS__)
-+
-+/**
-+ * KUNIT_ASSERT_PTR_NE() - Asserts that pointers @left and @right are not equal.
-+ * KUNIT_ASSERT_PTR_EQ() - Asserts that pointers @left and @right are equal.
-+ * @test: The test context object.
-+ * @left: an arbitrary expression that evaluates to a pointer.
-+ * @right: an arbitrary expression that evaluates to a pointer.
-+ *
-+ * Sets an assertion that the values that @left and @right evaluate to are not
-+ * equal. This is the same as KUNIT_EXPECT_NE(), except it causes an assertion
-+ * failure (see KUNIT_ASSERT_TRUE()) when the assertion is not met.
-+ */
-+#define KUNIT_ASSERT_PTR_NE(test, left, right) \
-+	KUNIT_BINARY_PTR_NE_ASSERTION(test, KUNIT_ASSERTION, left, right)
-+
-+#define KUNIT_ASSERT_PTR_NE_MSG(test, left, right, fmt, ...)		       \
-+	KUNIT_BINARY_PTR_NE_MSG_ASSERTION(test,				       \
-+					  KUNIT_ASSERTION,		       \
-+					  left,				       \
-+					  right,			       \
-+					  fmt,				       \
-+					  ##__VA_ARGS__)
-+/**
-+ * KUNIT_ASSERT_LT() - An assertion that @left is less than @right.
-+ * @test: The test context object.
-+ * @left: an arbitrary expression that evaluates to a primitive C type.
-+ * @right: an arbitrary expression that evaluates to a primitive C type.
-+ *
-+ * Sets an assertion that the value that @left evaluates to is less than the
-+ * value that @right evaluates to. This is the same as KUNIT_EXPECT_LT(), except
-+ * it causes an assertion failure (see KUNIT_ASSERT_TRUE()) when the assertion
-+ * is not met.
-+ */
-+#define KUNIT_ASSERT_LT(test, left, right) \
-+	KUNIT_BINARY_LT_ASSERTION(test, KUNIT_ASSERTION, left, right)
-+
-+#define KUNIT_ASSERT_LT_MSG(test, left, right, fmt, ...)		       \
-+	KUNIT_BINARY_LT_MSG_ASSERTION(test,				       \
-+				      KUNIT_ASSERTION,			       \
-+				      left,				       \
-+				      right,				       \
-+				      fmt,				       \
-+				      ##__VA_ARGS__)
-+/**
-+ * KUNIT_ASSERT_LE() - An assertion that @left is less than or equal to @right.
-+ * @test: The test context object.
-+ * @left: an arbitrary expression that evaluates to a primitive C type.
-+ * @right: an arbitrary expression that evaluates to a primitive C type.
-+ *
-+ * Sets an assertion that the value that @left evaluates to is less than or
-+ * equal to the value that @right evaluates to. This is the same as
-+ * KUNIT_EXPECT_LE(), except it causes an assertion failure (see
-+ * KUNIT_ASSERT_TRUE()) when the assertion is not met.
-+ */
-+#define KUNIT_ASSERT_LE(test, left, right) \
-+	KUNIT_BINARY_LE_ASSERTION(test, KUNIT_ASSERTION, left, right)
-+
-+#define KUNIT_ASSERT_LE_MSG(test, left, right, fmt, ...)		       \
-+	KUNIT_BINARY_LE_MSG_ASSERTION(test,				       \
-+				      KUNIT_ASSERTION,			       \
-+				      left,				       \
-+				      right,				       \
-+				      fmt,				       \
-+				      ##__VA_ARGS__)
-+
-+/**
-+ * KUNIT_ASSERT_GT() - An assertion that @left is greater than @right.
-+ * @test: The test context object.
-+ * @left: an arbitrary expression that evaluates to a primitive C type.
-+ * @right: an arbitrary expression that evaluates to a primitive C type.
-+ *
-+ * Sets an assertion that the value that @left evaluates to is greater than the
-+ * value that @right evaluates to. This is the same as KUNIT_EXPECT_GT(), except
-+ * it causes an assertion failure (see KUNIT_ASSERT_TRUE()) when the assertion
-+ * is not met.
-+ */
-+#define KUNIT_ASSERT_GT(test, left, right) \
-+	KUNIT_BINARY_GT_ASSERTION(test, KUNIT_ASSERTION, left, right)
-+
-+#define KUNIT_ASSERT_GT_MSG(test, left, right, fmt, ...)		       \
-+	KUNIT_BINARY_GT_MSG_ASSERTION(test,				       \
-+				      KUNIT_ASSERTION,			       \
-+				      left,				       \
-+				      right,				       \
-+				      fmt,				       \
-+				      ##__VA_ARGS__)
-+
-+/**
-+ * KUNIT_ASSERT_GE() - Assertion that @left is greater than or equal to @right.
-+ * @test: The test context object.
-+ * @left: an arbitrary expression that evaluates to a primitive C type.
-+ * @right: an arbitrary expression that evaluates to a primitive C type.
-+ *
-+ * Sets an assertion that the value that @left evaluates to is greater than the
-+ * value that @right evaluates to. This is the same as KUNIT_EXPECT_GE(), except
-+ * it causes an assertion failure (see KUNIT_ASSERT_TRUE()) when the assertion
-+ * is not met.
-+ */
-+#define KUNIT_ASSERT_GE(test, left, right) \
-+	KUNIT_BINARY_GE_ASSERTION(test, KUNIT_ASSERTION, left, right)
-+
-+#define KUNIT_ASSERT_GE_MSG(test, left, right, fmt, ...)		       \
-+	KUNIT_BINARY_GE_MSG_ASSERTION(test,				       \
-+				      KUNIT_ASSERTION,			       \
-+				      left,				       \
-+				      right,				       \
-+				      fmt,				       \
-+				      ##__VA_ARGS__)
-+
-+/**
-+ * KUNIT_ASSERT_STREQ() - An assertion that strings @left and @right are equal.
-+ * @test: The test context object.
-+ * @left: an arbitrary expression that evaluates to a null terminated string.
-+ * @right: an arbitrary expression that evaluates to a null terminated string.
-+ *
-+ * Sets an assertion that the values that @left and @right evaluate to are
-+ * equal. This is the same as KUNIT_EXPECT_STREQ(), except it causes an
-+ * assertion failure (see KUNIT_ASSERT_TRUE()) when the assertion is not met.
-+ */
-+#define KUNIT_ASSERT_STREQ(test, left, right) \
-+	KUNIT_BINARY_STR_EQ_ASSERTION(test, KUNIT_ASSERTION, left, right)
-+
-+#define KUNIT_ASSERT_STREQ_MSG(test, left, right, fmt, ...)		       \
-+	KUNIT_BINARY_STR_EQ_MSG_ASSERTION(test,				       \
-+					  KUNIT_ASSERTION,		       \
-+					  left,				       \
-+					  right,			       \
-+					  fmt,				       \
-+					  ##__VA_ARGS__)
-+
-+/**
-+ * KUNIT_ASSERT_STRNEQ() - Expects that strings @left and @right are not equal.
-+ * @test: The test context object.
-+ * @left: an arbitrary expression that evaluates to a null terminated string.
-+ * @right: an arbitrary expression that evaluates to a null terminated string.
-+ *
-+ * Sets an expectation that the values that @left and @right evaluate to are
-+ * not equal. This is semantically equivalent to
-+ * KUNIT_ASSERT_TRUE(@test, strcmp((@left), (@right))). See KUNIT_ASSERT_TRUE()
-+ * for more information.
-+ */
-+#define KUNIT_ASSERT_STRNEQ(test, left, right) \
-+	KUNIT_BINARY_STR_NE_ASSERTION(test, KUNIT_ASSERTION, left, right)
-+
-+#define KUNIT_ASSERT_STRNEQ_MSG(test, left, right, fmt, ...)		       \
-+	KUNIT_BINARY_STR_NE_MSG_ASSERTION(test,				       \
-+					  KUNIT_ASSERTION,		       \
-+					  left,				       \
-+					  right,			       \
-+					  fmt,				       \
-+					  ##__VA_ARGS__)
-+
-+/**
-+ * KUNIT_ASSERT_NOT_ERR_OR_NULL() - Assertion that @ptr is not null and not err.
-+ * @test: The test context object.
-+ * @ptr: an arbitrary pointer.
-+ *
-+ * Sets an assertion that the value that @ptr evaluates to is not null and not
-+ * an errno stored in a pointer. This is the same as
-+ * KUNIT_EXPECT_NOT_ERR_OR_NULL(), except it causes an assertion failure (see
-+ * KUNIT_ASSERT_TRUE()) when the assertion is not met.
-+ */
-+#define KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr) \
-+	KUNIT_PTR_NOT_ERR_OR_NULL_ASSERTION(test, KUNIT_ASSERTION, ptr)
-+
-+#define KUNIT_ASSERT_NOT_ERR_OR_NULL_MSG(test, ptr, fmt, ...)		       \
-+	KUNIT_PTR_NOT_ERR_OR_NULL_MSG_ASSERTION(test,			       \
-+						KUNIT_ASSERTION,	       \
-+						ptr,			       \
-+						fmt,			       \
-+						##__VA_ARGS__)
-+
- #endif /* _KUNIT_TEST_H */
-diff --git a/kunit/string-stream-test.c b/kunit/string-stream-test.c
-index 75229e267c323..76cc05eb00edd 100644
---- a/kunit/string-stream-test.c
-+++ b/kunit/string-stream-test.c
-@@ -35,7 +35,7 @@ static void string_stream_test_get_string(struct kunit *test)
- 	string_stream_add(stream, " %s", "bar");
- 
- 	output = string_stream_get_string(stream);
--	KUNIT_EXPECT_STREQ(test, output, "Foo bar");
-+	KUNIT_ASSERT_STREQ(test, output, "Foo bar");
- }
- 
- static struct kunit_case string_stream_test_cases[] = {
-diff --git a/kunit/test-test.c b/kunit/test-test.c
-index 06d34d36b1038..e0ab4bd546eac 100644
---- a/kunit/test-test.c
-+++ b/kunit/test-test.c
-@@ -78,16 +78,13 @@ static int kunit_try_catch_test_init(struct kunit *test)
- 	struct kunit_try_catch_test_context *ctx;
- 
- 	ctx = kunit_kzalloc(test, sizeof(*ctx), GFP_KERNEL);
--	if (!ctx)
--		return -ENOMEM;
--
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx);
- 	test->priv = ctx;
- 
- 	ctx->try_catch = kunit_kmalloc(test,
- 				       sizeof(*ctx->try_catch),
- 				       GFP_KERNEL);
--	if (!ctx->try_catch)
--		return -ENOMEM;
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx->try_catch);
- 
- 	return 0;
- }
+As this revision, adds a new patch, it, [PATCH v12 04/18], needs to be
+reviewed. All other patches have appropriate reviews and acks.
+
+I also rebased the patchset on v5.3-rc3.
+
+## Background
+
+This patch set proposes KUnit, a lightweight unit testing and mocking
+framework for the Linux kernel.
+
+Unlike Autotest and kselftest, KUnit is a true unit testing framework;
+it does not require installing the kernel on a test machine or in a VM
+(however, KUnit still allows you to run tests on test machines or in VMs
+if you want[1]) and does not require tests to be written in userspace
+running on a host kernel. Additionally, KUnit is fast: From invocation
+to completion KUnit can run several dozen tests in about a second.
+Currently, the entire KUnit test suite for KUnit runs in under a second
+from the initial invocation (build time excluded).
+
+KUnit is heavily inspired by JUnit, Python's unittest.mock, and
+Googletest/Googlemock for C++. KUnit provides facilities for defining
+unit test cases, grouping related test cases into test suites, providing
+common infrastructure for running tests, mocking, spying, and much more.
+
+### What's so special about unit testing?
+
+A unit test is supposed to test a single unit of code in isolation,
+hence the name. There should be no dependencies outside the control of
+the test; this means no external dependencies, which makes tests orders
+of magnitudes faster. Likewise, since there are no external dependencies,
+there are no hoops to jump through to run the tests. Additionally, this
+makes unit tests deterministic: a failing unit test always indicates a
+problem. Finally, because unit tests necessarily have finer granularity,
+they are able to test all code paths easily solving the classic problem
+of difficulty in exercising error handling code.
+
+### Is KUnit trying to replace other testing frameworks for the kernel?
+
+No. Most existing tests for the Linux kernel are end-to-end tests, which
+have their place. A well tested system has lots of unit tests, a
+reasonable number of integration tests, and some end-to-end tests. KUnit
+is just trying to address the unit test space which is currently not
+being addressed.
+
+### More information on KUnit
+
+There is a bunch of documentation near the end of this patch set that
+describes how to use KUnit and best practices for writing unit tests.
+For convenience I am hosting the compiled docs here[2].
+
+Additionally for convenience, I have applied these patches to a
+branch[3]. The repo may be cloned with:
+git clone https://kunit.googlesource.com/linux
+This patchset is on the kunit/rfc/v5.3/v12 branch.
+
+## Changes Since Last Version
+
+- Dropped patch "[PATCH v11 04/18] kunit: test: add kunit_stream a
+  std::stream like logger" and replaced it with "[PATCH v12 04/18]
+  kunit: test: add assertion printing library", which provides a totally
+  new mechanism for constructing expectation/assertion failure messages.
+- Substantially refactored expectations and assertions definitions in
+  [PATCH 05/18] and [PATCH 11/18] respectively.
+- Rebased patchset on v5.3-rc3.
+- Fixed a minor documentation bug.
+
+[1] https://google.github.io/kunit-docs/third_party/kernel/docs/usage.html#kunit-on-non-uml-architectures
+[2] https://google.github.io/kunit-docs/third_party/kernel/docs/
+[3] https://kunit.googlesource.com/linux/+/kunit/rfc/v5.3/v12
+
 -- 
 2.23.0.rc1.153.gdeed80330f-goog
 
