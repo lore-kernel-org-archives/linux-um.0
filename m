@@ -1,16 +1,28 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-qt1-x849.google.com ([2607:f8b0:4864:20::849])
+Received: from mail-pf1-x443.google.com ([2607:f8b0:4864:20::443])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hxEzp-0003TQ-Su
- for linux-um@lists.infradead.org; Mon, 12 Aug 2019 18:24:43 +0000
-Received: by mail-qt1-x849.google.com with SMTP id g33so5049194qtc.14
- for <linux-um@lists.infradead.org>; Mon, 12 Aug 2019 11:24:40 -0700 (PDT)
-Date: Mon, 12 Aug 2019 11:24:03 -0700
-Message-Id: <20190812182421.141150-1-brendanhiggins@google.com>
-Mime-Version: 1.0
-Subject: [PATCH v12 00/18] kunit: introduce KUnit, the Linux kernel unit
- testing framework
+ id 1hxHc3-0004XD-8c
+ for linux-um@lists.infradead.org; Mon, 12 Aug 2019 21:12:21 +0000
+Received: by mail-pf1-x443.google.com with SMTP id v12so2539311pfn.10
+ for <linux-um@lists.infradead.org>; Mon, 12 Aug 2019 14:12:18 -0700 (PDT)
+Date: Mon, 12 Aug 2019 14:12:11 -0700
 From: Brendan Higgins <brendanhiggins@google.com>
+Subject: Re: [PATCH v9 04/18] kunit: test: add kunit_stream a std::stream
+ like logger
+Message-ID: <20190812211211.GA197038@google.com>
+References: <CAFd5g46a7C1+R6ZcE_SkqaYqgrH5Rx3M=X7orFyaMgFLDbeYYA@mail.gmail.com>
+ <20190719000834.GA3228@google.com>
+ <20190722200347.261D3218C9@mail.kernel.org>
+ <CAFd5g45hdCxEavSxirr0un_uLzo5Z-J4gHRA06qjzcQrTzmjVg@mail.gmail.com>
+ <20190722235411.06C1320840@mail.kernel.org>
+ <20190724073125.xyzfywctrcvg6fmh@pathway.suse.cz>
+ <CAFd5g47v3Mr4GEGOjqyYy9Jwwm+ow7ypbu9j88rxEN06QCzdxQ@mail.gmail.com>
+ <20190726083148.d4gf57w2nt5k7t6n@pathway.suse.cz>
+ <CAFd5g46iAhDZ5C_chi7oYLVOkwcoj6+0nw+kPWuXhqWwWKd9jA@mail.gmail.com>
+ <871ry4yq3y.fsf@linutronix.de>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <871ry4yq3y.fsf@linutronix.de>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -23,94 +35,191 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+To: John Ogness <john.ogness@linutronix.de>
+Cc: devicetree <devicetree@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, Amir Goldstein <amir73il@gmail.com>, dri-devel <dri-devel@lists.freedesktop.org>, Sasha Levin <Alexander.Levin@microsoft.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Michael Ellerman <mpe@ellerman.id.au>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, shuah <shuah@kernel.org>, Rob Herring <robh@kernel.org>, linux-nvdimm <linux-nvdimm@lists.01.org>, Timothy Bird <Tim.Bird@sony.com>, Frank Rowand <frowand.list@gmail.com>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Knut Omang <knut.omang@oracle.com>, Kieran Bingham <kieran.bingham@ideasonboard.com>, wfg@linux.intel.com, Joel Stanley <joel@jms.id.au>, David Rientjes <rientjes@google.com>, Kevin Hilman <khilman@baylibre.com>, Dan Carpenter <dan.carpenter@oracle.com>, Petr Mladek <pmladek@suse.com>, linux-kbuild <linux-kbuild@vger.kernel.org>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, Steven Rostedt <rostedt@goodmis.org>, Julia Lawall <julia.lawall@lip6.fr>, Josh Poimboeuf <jpoimboe@redhat.com>, kunit-dev@googlegroups.com, Theodore Ts'o <tytso@mit.edu>, Richard Weinberger <richard@nod.at>, Stephen Boyd <sboyd@kernel.org>, Greg KH <gregkh@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@google.com>, linux-fsdevel@vger.kernel.org, Logan Gunthorpe <logang@deltatee.com>
 
-## TL;DR
+On Fri, Aug 02, 2019 at 09:37:53AM +0200, John Ogness wrote:
+> On 2019-08-01, Brendan Higgins <brendanhiggins@google.com> wrote:
+> > On Fri, Jul 26, 2019 at 1:31 AM Petr Mladek <pmladek@suse.com> wrote:
+> >> On Thu 2019-07-25 13:21:12, Brendan Higgins wrote:
+> >>> On Wed, Jul 24, 2019 at 12:31 AM Petr Mladek <pmladek@suse.com> wrote:
+> >>>> On Mon 2019-07-22 16:54:10, Stephen Boyd wrote:
+> >>>>> Quoting Brendan Higgins (2019-07-22 15:30:49)
+> >>>>>> On Mon, Jul 22, 2019 at 1:03 PM Stephen Boyd <sboyd@kernel.org> wrote:
+> >>>>>>> What's the calling context of the assertions and expectations? I
+> >>>>>>> still don't like the fact that string stream needs to allocate
+> >>>>>>> buffers and throw them into a list somewhere because the calling
+> >>>>>>> context matters there.
+> >>>>>>
+> >>>>>> The calling context is the same as before, which is anywhere.
+> >>>>>
+> >>>>> Ok. That's concerning then.
+> >>>>>
+> >>>>>>> I'd prefer we just wrote directly to the console/log via printk
+> >>>>>>> instead. That way things are simple because we use the existing
+> >>>>>>> buffering path of printk, but maybe there's some benefit to the
+> >>>>>>> string stream that I don't see? Right now it looks like it
+> >>>>>>> builds a string and then dumps it to printk so I'm sort of lost
+> >>>>>>> what the benefit is over just writing directly with printk.
+> >>>>>>
+> >>>>>> It's just buffering it so the whole string gets printed
+> >>>>>> uninterrupted.  If we were to print out piecemeal to printk,
+> >>>>>> couldn't we have another call to printk come in causing it to
+> >>>>>> garble the KUnit message we are in the middle of printing?
+> >>>>>
+> >>>>> Yes, printing piecemeal by calling printk many times could lead to
+> >>>>> interleaving of messages if something else comes in such as an
+> >>>>> interrupt printing something. Printk has some support to hold
+> >>>>> "records" but I'm not sure how that would work here because
+> >>>>> KERN_CONT talks about only being used early on in boot code. I
+> >>>>> haven't looked at printk in detail though so maybe I'm all wrong
+> >>>>> and KERN_CONT just works?
+> >>>>
+> >>>> KERN_CONT does not guarantee that the message will get printed
+> >>>> together. The pieces get interleaved with messages printed in
+> >>>> parallel.
+> >>>>
+> >>>> Note that KERN_CONT was originally really meant to be used only
+> >>>> during boot. It was later used more widely and ended in the best
+> >>>> effort category.
+> >>>>
+> >>>> There were several attempts to make it more reliable. But it was
+> >>>> always either too complicated or error prone or both.
+> >>>>
+> >>>> You need to use your own buffering if you rely want perfect output.
+> >>>> The question is if it is really worth the complexity. Also note
+> >>>> that any buffering reduces the chance that the messages will reach
+> >>>> the console.
+> >>>
+> >>> Seems like that settles it then. Thanks!
+> >>>
+> >>>> BTW: There is a work in progress on a lockless printk ring buffer.
+> >>>> It will make printk() more secure regarding deadlocks. But it might
+> >>>> make transparent handling of continuous lines even more tricky.
+> >>>>
+> >>>> I guess that local buffering, before calling printk(), will be
+> >>>> even more important then. Well, it might really force us to create
+> >>>> an API for it.
+> >>>
+> >>> Cool! Can you CC me on that discussion?
+> >>
+> >> Adding John Oggness into CC.
+> >>
+> >> John, please CC Brendan Higgins on the patchsets eventually switching
+> >> printk() into the lockless buffer. The test framework is going to
+> >> do its own buffering to keep the related messages together.
+> >>
+> >> The lockless ringbuffer might make handling of related (partial)
+> >> lines worse or better. It might justify KUnit's extra buffering
+> >> or it might allow to get rid of it.
+> >
+> > Thanks for CC'ing me on the printk ringbuffer thread. It looks like it
+> > actually probably won't affect my needs for KUnit logging. The biggest
+> > reason I need some sort of buffering system is to be able to compose
+> > messages piece meal into a single message that will be printed out to
+> > the user as a single message with no messages from other printk
+> > callers printed out in the middle of mine.
+> 
+> printk has this same requirement for its CONT messages. You can read
+> about how I propose to implement that here[0], using a separate prb
+> ringbuffer for buffered storage until all the pieces are available.
+> 
+> It is not my goal that multiple subsystems start making use of the prb
+> ringbuffer. However, its features can be attractive if you don't want to
+> worry about multiple writers/readers or context (including NMI). Before
 
-This revision removes dependence on kunit_stream in favor of
-kunit_assert, as suggested by Stephen Boyd. kunit_assert provides a more
-structured interface for constructing messages and allows most required
-data to be stored on the stack for most expectations until it is
-determined that a failure message must be produced.
+That sounds like it might be useful down the road, but not to replace
+the string_stream.
 
-As a part of introducing kunit_assert, expectations (KUNIT_EXPECT_*) and
-assertions (KUNIT_ASSERT_*) have been substantially refactored.
-Nevertheless, behavior should be the same.
+> writing "yet another ringbuffer" [1] it might be worth the effort to at
+> least see if one of the existing implementations can work (or be
+> extended to work) for you.
 
-As this revision, adds a new patch, it, [PATCH v12 04/18], needs to be
-reviewed. All other patches have appropriate reviews and acks.
+In regards to the conversation here about string_stream/kunit_stream, I
+think Petr already answered that question. As I said previously:
+> [I]t appears that to get the
+> semantics that I need, I would have to put my entire message in a
+> single data block and would consequently need to know the size of my
+> message a priori, which is problematic. Consequently, it seems as
+> though I will probably need to compose my entire message using my own
+> buffering system.
 
-I also rebased the patchset on v5.3-rc3.
+I could potentially use my own set of prbs for that buffering; however,
+I think this use case is probably closer to seq_buf than your prb.
+Really, I just want some kind of string builder, not a message queue.
 
-## Background
+The place where I think your prb is relevant here is once I have
+composed the message and I just want to print it, having a way to print
+it without worrying about context is nice, but I think that is a
+separate discussion from the main topic here which was just figuring out
+the right way to compose that message in the first place.
 
-This patch set proposes KUnit, a lightweight unit testing and mocking
-framework for the Linux kernel.
+Cheers
 
-Unlike Autotest and kselftest, KUnit is a true unit testing framework;
-it does not require installing the kernel on a test machine or in a VM
-(however, KUnit still allows you to run tests on test machines or in VMs
-if you want[1]) and does not require tests to be written in userspace
-running on a host kernel. Additionally, KUnit is fast: From invocation
-to completion KUnit can run several dozen tests in about a second.
-Currently, the entire KUnit test suite for KUnit runs in under a second
-from the initial invocation (build time excluded).
-
-KUnit is heavily inspired by JUnit, Python's unittest.mock, and
-Googletest/Googlemock for C++. KUnit provides facilities for defining
-unit test cases, grouping related test cases into test suites, providing
-common infrastructure for running tests, mocking, spying, and much more.
-
-### What's so special about unit testing?
-
-A unit test is supposed to test a single unit of code in isolation,
-hence the name. There should be no dependencies outside the control of
-the test; this means no external dependencies, which makes tests orders
-of magnitudes faster. Likewise, since there are no external dependencies,
-there are no hoops to jump through to run the tests. Additionally, this
-makes unit tests deterministic: a failing unit test always indicates a
-problem. Finally, because unit tests necessarily have finer granularity,
-they are able to test all code paths easily solving the classic problem
-of difficulty in exercising error handling code.
-
-### Is KUnit trying to replace other testing frameworks for the kernel?
-
-No. Most existing tests for the Linux kernel are end-to-end tests, which
-have their place. A well tested system has lots of unit tests, a
-reasonable number of integration tests, and some end-to-end tests. KUnit
-is just trying to address the unit test space which is currently not
-being addressed.
-
-### More information on KUnit
-
-There is a bunch of documentation near the end of this patch set that
-describes how to use KUnit and best practices for writing unit tests.
-For convenience I am hosting the compiled docs here[2].
-
-Additionally for convenience, I have applied these patches to a
-branch[3]. The repo may be cloned with:
-git clone https://kunit.googlesource.com/linux
-This patchset is on the kunit/rfc/v5.3/v12 branch.
-
-## Changes Since Last Version
-
-- Dropped patch "[PATCH v11 04/18] kunit: test: add kunit_stream a
-  std::stream like logger" and replaced it with "[PATCH v12 04/18]
-  kunit: test: add assertion printing library", which provides a totally
-  new mechanism for constructing expectation/assertion failure messages.
-- Substantially refactored expectations and assertions definitions in
-  [PATCH 05/18] and [PATCH 11/18] respectively.
-- Rebased patchset on v5.3-rc3.
-- Fixed a minor documentation bug.
-
-[1] https://google.github.io/kunit-docs/third_party/kernel/docs/usage.html#kunit-on-non-uml-architectures
-[2] https://google.github.io/kunit-docs/third_party/kernel/docs/
-[3] https://kunit.googlesource.com/linux/+/kunit/rfc/v5.3/v12
-
--- 
-2.23.0.rc1.153.gdeed80330f-goog
-
+> John Ogness
+> 
+> [0] https://lkml.kernel.org/r/87imt2bl0k.fsf@linutronix.de
+> [1] https://lwn.net/Articles/789603/
+> 
+> > The prb does look interesting; however, it appears that to get the
+> > semantics that I need, I would have to put my entire message in a
+> > single data block and would consequently need to know the size of my
+> > message a priori, which is problematic. Consequently, it seems as
+> > though I will probably need to compose my entire message using my own
+> > buffering system.
+> >
+> >>>> Note that stroring the messages into the printk log is basically
+> >>>> safe in any context. It uses temporary per-CPU buffers for
+> >>>> recursive messages and in NMI. The only problem is panic() when
+> >>>> some CPU gets stuck with the lock taken. This will get solved by
+> >>>> the lockless ringbuffer. Also the temporary buffers will not be
+> >>>> necessary any longer.
+> >>>
+> >>> Sure, I think Stephen's concern is all the supporting code that is
+> >>> involved. Not printk specifically. It just means a lot more of KUnit
+> >>> has to be IRQ safe.
+> >>
+> >> I see.
+> >>
+> >> BTW: I wonder if KUnit could reuse the existing seq_buf
+> >> implementation for buffering messages.
+> >>
+> >> I am sorry if it has already been proposed and rejected for some
+> >> reason. I might have missed it. Feel free to just point me to
+> >> same older mail.
+> >
+> > Yeah, we discussed it briefly here:
+> >
+> > https://lkml.org/lkml/2019/5/17/497
+> >
+> > Looks like I forgot to include my reasoning in the commit text, sorry
+> > about that.
+> >
+> >>>> Much bigger problems are with consoles. There are many of them. It
+> >>>> means a lot of code and more locks involved, including scheduler
+> >>>> locks. Note that console lock is a semaphore.
+> >>>
+> >>> That shouldn't affect us though, right? As long as we continue to
+> >>> use the printk interface?
+> >>
+> >> I guess that it should not affect KUnit.
+> >>
+> >> The only problem might be if the testing framework calls printk()
+> >> inside scheduler or console code. And only when the tested code
+> >> uses the same locks that will be used by the called printk().
+> >
+> > Yeah, well printk will not be our only problem in those instances.
+> >
+> >> To be honest I do not fully understand KUnit design. I am not
+> >> completely sure how the tested code is isolated from the running
+> >> system. Namely, I do not know if the tested code shares
+> >> the same locks with the system running the test.
+> >
+> > No worries, I don't expect printk to be the hang up in those cases. It
+> > sounds like KUnit has a long way to evolve before printk is going to
+> > be a limitation.
+> >
+> > Thanks!
 
 _______________________________________________
 linux-um mailing list
