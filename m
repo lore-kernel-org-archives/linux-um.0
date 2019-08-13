@@ -1,18 +1,21 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-vs1-xe4a.google.com ([2607:f8b0:4864:20::e4a])
+Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hxF0Y-00055j-40
- for linux-um@lists.infradead.org; Mon, 12 Aug 2019 18:25:28 +0000
-Received: by mail-vs1-xe4a.google.com with SMTP id p63so508314vsd.10
- for <linux-um@lists.infradead.org>; Mon, 12 Aug 2019 11:25:24 -0700 (PDT)
-Date: Mon, 12 Aug 2019 11:24:19 -0700
-In-Reply-To: <20190812182421.141150-1-brendanhiggins@google.com>
-Message-Id: <20190812182421.141150-17-brendanhiggins@google.com>
-Mime-Version: 1.0
+ id 1hxRcj-0000EL-JZ
+ for linux-um@lists.infradead.org; Tue, 13 Aug 2019 07:53:42 +0000
+Received: by mail-pg1-x544.google.com with SMTP id n190so10018925pgn.0
+ for <linux-um@lists.infradead.org>; Tue, 13 Aug 2019 00:53:41 -0700 (PDT)
+MIME-Version: 1.0
 References: <20190812182421.141150-1-brendanhiggins@google.com>
-Subject: [PATCH v12 16/18] MAINTAINERS: add entry for KUnit the unit testing
- framework
+ <20190812182421.141150-11-brendanhiggins@google.com>
+ <20190813042455.4A04320644@mail.kernel.org>
+ <CAFd5g46LHq1sQaio2Vj5jt54YN-Y2HuCT8FbALQhJoekkYJ-uQ@mail.gmail.com>
+ <20190813055707.8B2BB206C2@mail.kernel.org>
+In-Reply-To: <20190813055707.8B2BB206C2@mail.kernel.org>
 From: Brendan Higgins <brendanhiggins@google.com>
+Date: Tue, 13 Aug 2019 00:53:28 -0700
+Message-ID: <CAFd5g45rLTB965BX24DKFauumbdbn=m4kxtzgwr_4uj66Vmzmw@mail.gmail.com>
+Subject: Re: [PATCH v12 10/18] kunit: test: add tests for kunit test abort
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -25,44 +28,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+To: Stephen Boyd <sboyd@kernel.org>
+Cc: Petr Mladek <pmladek@suse.com>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, Amir Goldstein <amir73il@gmail.com>, dri-devel <dri-devel@lists.freedesktop.org>, Sasha Levin <Alexander.Levin@microsoft.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Michael Ellerman <mpe@ellerman.id.au>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, shuah <shuah@kernel.org>, Rob Herring <robh@kernel.org>, linux-nvdimm <linux-nvdimm@lists.01.org>, Frank Rowand <frowand.list@gmail.com>, Knut Omang <knut.omang@oracle.com>, Kieran Bingham <kieran.bingham@ideasonboard.com>, wfg@linux.intel.com, Joel Stanley <joel@jms.id.au>, David Rientjes <rientjes@google.com>, Jeff Dike <jdike@addtoit.com>, Dan Carpenter <dan.carpenter@oracle.com>, devicetree <devicetree@vger.kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, "Bird, Timothy  <Tim.Bird@sony.com>, linux-um@lists.infradead.org, Steven Rostedt" <rostedt@goodmis.org>, Julia Lawall <julia.lawall@lip6.fr>, Josh Poimboeuf <jpoimboe@redhat.com>, kunit-dev@googlegroups.com, Theodore Ts'o <tytso@mit.edu>, Richard Weinberger <richard@nod.at>, Greg KH <gregkh@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@google.com>, linux-fsdevel@vger.kernel.org, Logan Gunthorpe <logang@deltatee.com>, Kevin Hilman <khilman@baylibre.com>
 
-Add myself as maintainer of KUnit, the Linux kernel's unit testing
-framework.
+On Mon, Aug 12, 2019 at 10:57 PM Stephen Boyd <sboyd@kernel.org> wrote:
+>
+> Quoting Brendan Higgins (2019-08-12 22:06:04)
+> > On Mon, Aug 12, 2019 at 9:24 PM Stephen Boyd <sboyd@kernel.org> wrote:
+> > >
+> > > Quoting Brendan Higgins (2019-08-12 11:24:13)
+> > > > +
+> > > > +static int kunit_try_catch_test_init(struct kunit *test)
+> > > > +{
+> > > > +       struct kunit_try_catch_test_context *ctx;
+> > > > +
+> > > > +       ctx = kunit_kzalloc(test, sizeof(*ctx), GFP_KERNEL);
+> > >
+> > > Can this fail? Should return -ENOMEM in that case?
+> >
+> > Yes, I should do that.
+>
+> Looks like it's asserted to not be an error. If it's pushed into the API
+> then there's nothing to do here, and you can have my reviewed-by on this
+> patch.
+>
+> Reviewed-by: Stephen Boyd <sboyd@kernel.org>
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
----
- MAINTAINERS | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index a2c343ee3b2ca..f0bd77e8a8a2f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8799,6 +8799,17 @@ S:	Maintained
- F:	tools/testing/selftests/
- F:	Documentation/dev-tools/kselftest*
- 
-+KERNEL UNIT TESTING FRAMEWORK (KUnit)
-+M:	Brendan Higgins <brendanhiggins@google.com>
-+L:	linux-kselftest@vger.kernel.org
-+L:	kunit-dev@googlegroups.com
-+W:	https://google.github.io/kunit-docs/third_party/kernel/docs/
-+S:	Maintained
-+F:	Documentation/dev-tools/kunit/
-+F:	include/kunit/
-+F:	kunit/
-+F:	tools/testing/kunit/
-+
- KERNEL USERMODE HELPER
- M:	Luis Chamberlain <mcgrof@kernel.org>
- L:	linux-kernel@vger.kernel.org
--- 
-2.23.0.rc1.153.gdeed80330f-goog
-
+Cool, thanks!
 
 _______________________________________________
 linux-um mailing list
