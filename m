@@ -1,14 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i19Gd-0004uH-KJ
- for linux-um@lists.infradead.org; Fri, 23 Aug 2019 13:06:12 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH] arch: um: place (soft)irq text with macros
-Date: Fri, 23 Aug 2019 15:06:06 +0200
-Message-Id: <20190823130606.15951-1-johannes@sipsolutions.net>
+ id 1hxPsg-0006rx-6b
+ for linux-um@lists.infradead.org; Tue, 13 Aug 2019 06:02:03 +0000
 MIME-Version: 1.0
+In-Reply-To: <20190812182421.141150-14-brendanhiggins@google.com>
+References: <20190812182421.141150-1-brendanhiggins@google.com>
+ <20190812182421.141150-14-brendanhiggins@google.com>
+Subject: Re: [PATCH v12 13/18] kunit: tool: add Python wrappers for running
+ KUnit tests
+From: Stephen Boyd <sboyd@kernel.org>
+Date: Mon, 12 Aug 2019 23:02:00 -0700
+Message-Id: <20190813060201.9658A206C2@mail.kernel.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -21,47 +24,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+To: Brendan Higgins <brendanhiggins@google.com>, frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, Felix Guo <felixguoxiuping@gmail.com>, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-From: Johannes Berg <johannes.berg@intel.com>
+Quoting Brendan Higgins (2019-08-12 11:24:16)
+> From: Felix Guo <felixguoxiuping@gmail.com>
+> 
+> The ultimate goal is to create minimal isolated test binaries; in the
+> meantime we are using UML to provide the infrastructure to run tests, so
+> define an abstract way to configure and run tests that allow us to
+> change the context in which tests are built without affecting the user.
+> This also makes pretty and dynamic error reporting, and a lot of other
+> nice features easier.
+> 
+> kunit_config.py:
+>   - parse .config and Kconfig files.
+> 
+> kunit_kernel.py: provides helper functions to:
+>   - configure the kernel using kunitconfig.
+>   - build the kernel with the appropriate configuration.
+>   - provide function to invoke the kernel and stream the output back.
+> 
+> kunit_parser.py: parses raw logs returned out by kunit_kernel and
+> displays them in a user friendly way.
+> 
+> test_data/*: samples of test data for testing kunit.py, kunit_config.py,
+> etc.
+> 
+> Signed-off-by: Felix Guo <felixguoxiuping@gmail.com>
+> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+> ---
 
-Otherwise it gets placed without the start/end markers.
+Reviewed-by: Stephen Boyd <sboyd@kernel.org>
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- arch/um/kernel/dyn.lds.S | 2 ++
- arch/um/kernel/uml.lds.S | 2 ++
- 2 files changed, 4 insertions(+)
-
-diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
-index 5568cf882371..f5001481010c 100644
---- a/arch/um/kernel/dyn.lds.S
-+++ b/arch/um/kernel/dyn.lds.S
-@@ -70,6 +70,8 @@ SECTIONS
-     SCHED_TEXT
-     CPUIDLE_TEXT
-     LOCK_TEXT
-+    IRQENTRY_TEXT
-+    SOFTIRQENTRY_TEXT
-     *(.fixup)
-     *(.stub .text.* .gnu.linkonce.t.*)
-     /* .gnu.warning sections are handled specially by elf32.em.  */
-diff --git a/arch/um/kernel/uml.lds.S b/arch/um/kernel/uml.lds.S
-index 36b07ec09742..9f21443be2c9 100644
---- a/arch/um/kernel/uml.lds.S
-+++ b/arch/um/kernel/uml.lds.S
-@@ -31,6 +31,8 @@ SECTIONS
-     SCHED_TEXT
-     CPUIDLE_TEXT
-     LOCK_TEXT
-+    IRQENTRY_TEXT
-+    SOFTIRQENTRY_TEXT
-     *(.fixup)
-     /* .gnu.warning sections are handled specially by elf32.em.  */
-     *(.gnu.warning)
--- 
-2.20.1
+I look forward to the single binary solution, but until then, we have
+this.
 
 
 _______________________________________________
