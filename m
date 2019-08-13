@@ -1,19 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x542.google.com ([2607:f8b0:4864:20::542])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hxP3z-0007as-DY
- for linux-um@lists.infradead.org; Tue, 13 Aug 2019 05:09:40 +0000
-Received: by mail-pg1-x542.google.com with SMTP id n190so9806474pgn.0
- for <linux-um@lists.infradead.org>; Mon, 12 Aug 2019 22:09:38 -0700 (PDT)
+ id 1hxOpz-0004K7-Ko
+ for linux-um@lists.infradead.org; Tue, 13 Aug 2019 04:55:12 +0000
 MIME-Version: 1.0
+In-Reply-To: <20190812182421.141150-12-brendanhiggins@google.com>
 References: <20190812182421.141150-1-brendanhiggins@google.com>
  <20190812182421.141150-12-brendanhiggins@google.com>
- <20190813045510.C1D6E206C2@mail.kernel.org>
-In-Reply-To: <20190813045510.C1D6E206C2@mail.kernel.org>
-From: Brendan Higgins <brendanhiggins@google.com>
-Date: Mon, 12 Aug 2019 22:09:26 -0700
-Message-ID: <CAFd5g47jrUd+ES4AaWsLDRCfsGiKDB-rOP6TR-NdymCeVAK3Kg@mail.gmail.com>
 Subject: Re: [PATCH v12 11/18] kunit: test: add the concept of assertions
+From: Stephen Boyd <sboyd@kernel.org>
+Date: Mon, 12 Aug 2019 21:55:09 -0700
+Message-Id: <20190813045510.C1D6E206C2@mail.kernel.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -26,77 +23,69 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Stephen Boyd <sboyd@kernel.org>
-Cc: Petr Mladek <pmladek@suse.com>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, Amir Goldstein <amir73il@gmail.com>, dri-devel <dri-devel@lists.freedesktop.org>, Sasha Levin <Alexander.Levin@microsoft.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Michael Ellerman <mpe@ellerman.id.au>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, shuah <shuah@kernel.org>, Rob Herring <robh@kernel.org>, linux-nvdimm <linux-nvdimm@lists.01.org>, Frank Rowand <frowand.list@gmail.com>, Knut Omang <knut.omang@oracle.com>, Kieran Bingham <kieran.bingham@ideasonboard.com>, wfg@linux.intel.com, Joel Stanley <joel@jms.id.au>, David Rientjes <rientjes@google.com>, Jeff Dike <jdike@addtoit.com>, Dan Carpenter <dan.carpenter@oracle.com>, devicetree <devicetree@vger.kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, "Bird, Timothy  <Tim.Bird@sony.com>, linux-um@lists.infradead.org, Steven Rostedt" <rostedt@goodmis.org>, Julia Lawall <julia.lawall@lip6.fr>, Josh Poimboeuf <jpoimboe@redhat.com>, kunit-dev@googlegroups.com, Theodore Ts'o <tytso@mit.edu>, Richard Weinberger <richard@nod.at>, Greg KH <gregkh@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@google.com>, linux-fsdevel@vger.kernel.org, Logan Gunthorpe <logang@deltatee.com>, Kevin Hilman <khilman@baylibre.com>
+To: Brendan Higgins <brendanhiggins@google.com>, frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-On Mon, Aug 12, 2019 at 9:55 PM Stephen Boyd <sboyd@kernel.org> wrote:
->
-> Quoting Brendan Higgins (2019-08-12 11:24:14)
-> > Add support for assertions which are like expectations except the test
-> > terminates if the assertion is not satisfied.
-> >
-> > The idea with assertions is that you use them to state all the
-> > preconditions for your test. Logically speaking, these are the premises
-> > of the test case, so if a premise isn't true, there is no point in
-> > continuing the test case because there are no conclusions that can be
-> > drawn without the premises. Whereas, the expectation is the thing you
-> > are trying to prove. It is not used universally in x-unit style test
-> > frameworks, but I really like it as a convention.  You could still
-> > express the idea of a premise using the above idiom, but I think
-> > KUNIT_ASSERT_* states the intended idea perfectly.
-> >
-> > Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-> > Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
->
-> Reviewed-by: Stephen Boyd <sboyd@kernel.org>
->
-> > + * Sets an expectation that the values that @left and @right evaluate to are
-> > + * not equal. This is semantically equivalent to
-> > + * KUNIT_ASSERT_TRUE(@test, strcmp((@left), (@right))). See KUNIT_ASSERT_TRUE()
-> > + * for more information.
-> > + */
-> > +#define KUNIT_ASSERT_STRNEQ(test, left, right)                                \
-> > +               KUNIT_BINARY_STR_NE_ASSERTION(test,                            \
-> > +                                             KUNIT_ASSERTION,                 \
-> > +                                             left,                            \
-> > +                                             right)
-> > +
-> > +#define KUNIT_ASSERT_STRNEQ_MSG(test, left, right, fmt, ...)                  \
-> > +               KUNIT_BINARY_STR_NE_MSG_ASSERTION(test,                        \
-> > +                                                 KUNIT_ASSERTION,             \
-> > +                                                 left,                        \
-> > +                                                 right,                       \
-> > +                                                 fmt,                         \
->
-> Same question about tabbing too.
+Quoting Brendan Higgins (2019-08-12 11:24:14)
+> Add support for assertions which are like expectations except the test
+> terminates if the assertion is not satisfied.
+> 
+> The idea with assertions is that you use them to state all the
+> preconditions for your test. Logically speaking, these are the premises
+> of the test case, so if a premise isn't true, there is no point in
+> continuing the test case because there are no conclusions that can be
+> drawn without the premises. Whereas, the expectation is the thing you
+> are trying to prove. It is not used universally in x-unit style test
+> frameworks, but I really like it as a convention.  You could still
+> express the idea of a premise using the above idiom, but I think
+> KUNIT_ASSERT_* states the intended idea perfectly.
+> 
+> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
 
-Yep. WIll fix.
+Reviewed-by: Stephen Boyd <sboyd@kernel.org>
 
-> > diff --git a/kunit/test-test.c b/kunit/test-test.c
-> > index 88f4cdf03db2a..058f3fb37458a 100644
-> > --- a/kunit/test-test.c
-> > +++ b/kunit/test-test.c
-> > @@ -78,11 +78,13 @@ static int kunit_try_catch_test_init(struct kunit *test)
-> >         struct kunit_try_catch_test_context *ctx;
-> >
-> >         ctx = kunit_kzalloc(test, sizeof(*ctx), GFP_KERNEL);
-> > +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx);
->
-> Ah ok. Question still stands if kunit_kzalloc() should just have the
-> assertion on failure.
+> + * Sets an expectation that the values that @left and @right evaluate to are
+> + * not equal. This is semantically equivalent to
+> + * KUNIT_ASSERT_TRUE(@test, strcmp((@left), (@right))). See KUNIT_ASSERT_TRUE()
+> + * for more information.
+> + */
+> +#define KUNIT_ASSERT_STRNEQ(test, left, right)                                \
+> +               KUNIT_BINARY_STR_NE_ASSERTION(test,                            \
+> +                                             KUNIT_ASSERTION,                 \
+> +                                             left,                            \
+> +                                             right)
+> +
+> +#define KUNIT_ASSERT_STRNEQ_MSG(test, left, right, fmt, ...)                  \
+> +               KUNIT_BINARY_STR_NE_MSG_ASSERTION(test,                        \
+> +                                                 KUNIT_ASSERTION,             \
+> +                                                 left,                        \
+> +                                                 right,                       \
+> +                                                 fmt,                         \
 
-Right. In the previous patch KUNIT_ASSERT_* doesn't exist yet, so I
-can't use it. And rather than fall back to return -ENOMEM like I
-should have, I evidently forgot to do that.
+Same question about tabbing too.
 
-> >         test->priv = ctx;
-> >
-> >         ctx->try_catch = kunit_kmalloc(test,
-> >                                        sizeof(*ctx->try_catch),
-> >                                        GFP_KERNEL);
-> > +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx->try_catch);
-> >
+> diff --git a/kunit/test-test.c b/kunit/test-test.c
+> index 88f4cdf03db2a..058f3fb37458a 100644
+> --- a/kunit/test-test.c
+> +++ b/kunit/test-test.c
+> @@ -78,11 +78,13 @@ static int kunit_try_catch_test_init(struct kunit *test)
+>         struct kunit_try_catch_test_context *ctx;
+>  
+>         ctx = kunit_kzalloc(test, sizeof(*ctx), GFP_KERNEL);
+> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx);
+
+Ah ok. Question still stands if kunit_kzalloc() should just have the
+assertion on failure.
+
+>         test->priv = ctx;
+>  
+>         ctx->try_catch = kunit_kmalloc(test,
+>                                        sizeof(*ctx->try_catch),
+>                                        GFP_KERNEL);
+> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx->try_catch);
+>  
 
 _______________________________________________
 linux-um mailing list
