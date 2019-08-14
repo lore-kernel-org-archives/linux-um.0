@@ -1,14 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i19GU-0004qW-G0
- for linux-um@lists.infradead.org; Fri, 23 Aug 2019 13:06:03 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH] arch: um: enable CONFIG_CONSTRUCTORS
-Date: Fri, 23 Aug 2019 15:05:57 +0200
-Message-Id: <20190823130557.15870-1-johannes@sipsolutions.net>
+ id 1hxnXc-0001YF-Nc
+ for linux-um@lists.infradead.org; Wed, 14 Aug 2019 07:17:55 +0000
 MIME-Version: 1.0
+In-Reply-To: <20190814055108.214253-4-brendanhiggins@google.com>
+References: <20190814055108.214253-1-brendanhiggins@google.com>
+ <20190814055108.214253-4-brendanhiggins@google.com>
+Subject: Re: [PATCH v13 03/18] kunit: test: add string_stream a std::stream
+ like string builder
+From: Stephen Boyd <sboyd@kernel.org>
+Date: Wed, 14 Aug 2019 00:17:51 -0700
+Message-Id: <20190814071752.1CF0F2054F@mail.kernel.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -21,67 +24,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+To: Brendan Higgins <brendanhiggins@google.com>, frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-From: Johannes Berg <johannes.berg@intel.com>
+Quoting Brendan Higgins (2019-08-13 22:50:53)
+> A number of test features need to do pretty complicated string printing
+> where it may not be possible to rely on a single preallocated string
+> with parameters.
+> 
+> So provide a library for constructing the string as you go similar to
+> C++'s std::string. string_stream is really just a string builder,
+> nothing more.
+> 
+> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+> ---
 
-We do need to call the constructors for *modules*, even
-if libc calls the ones for the kernel binary itself, so
-allow enabling CONFIG_CONSTRUCTORS but skip the kernel.
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 
-Tested that it indeed doesn't work in modules, and does
-work after the fixes in both, with a few functions with
-__attribute__((constructor)) in both dynamic and static
-builds.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- init/Kconfig        | 1 -
- init/main.c         | 2 +-
- kernel/gcov/Kconfig | 2 +-
- 3 files changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/init/Kconfig b/init/Kconfig
-index bd7d650d4a99..81293d78a6ad 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -48,7 +48,6 @@ config CC_DISABLE_WARN_MAYBE_UNINITIALIZED
- 
- config CONSTRUCTORS
- 	bool
--	depends on !UML
- 
- config IRQ_WORK
- 	bool
-diff --git a/init/main.c b/init/main.c
-index 96f8d5af52d6..1e670be141c8 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -788,7 +788,7 @@ asmlinkage __visible void __init start_kernel(void)
- /* Call all constructor functions linked into the kernel. */
- static void __init do_ctors(void)
- {
--#ifdef CONFIG_CONSTRUCTORS
-+#if defined(CONFIG_CONSTRUCTORS) && !defined(CONFIG_UML)
- 	ctor_fn_t *fn = (ctor_fn_t *) __ctors_start;
- 
- 	for (; fn < (ctor_fn_t *) __ctors_end; fn++)
-diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
-index 3941a9c48f83..060e8e726755 100644
---- a/kernel/gcov/Kconfig
-+++ b/kernel/gcov/Kconfig
-@@ -4,7 +4,7 @@ menu "GCOV-based kernel profiling"
- config GCOV_KERNEL
- 	bool "Enable gcov-based kernel profiling"
- 	depends on DEBUG_FS
--	select CONSTRUCTORS if !UML
-+	select CONSTRUCTORS
- 	default n
- 	---help---
- 	This option enables gcov-based code profiling (e.g. for code coverage
--- 
-2.20.1
+The spinlocks will probably need to change to be irqsaves in the future,
+but I guess we can cross that bridge when we come to it.
 
 
 _______________________________________________
