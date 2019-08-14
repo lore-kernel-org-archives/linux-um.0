@@ -1,57 +1,40 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
- by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i07sI-0003dI-6c
- for linux-um@lists.infradead.org; Tue, 20 Aug 2019 17:24:51 +0000
-Subject: Re: [PATCH v13 00/18] kunit: introduce KUnit, the Linux kernel unit
- testing framework
-References: <20190814055108.214253-1-brendanhiggins@google.com>
-From: shuah <shuah@kernel.org>
-Message-ID: <5b880f49-0213-1a6e-9c9f-153e6ab91eeb@kernel.org>
-Date: Tue, 20 Aug 2019 11:24:45 -0600
+Return-Path: <devicetree-owner@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20190814055108.214253-1-brendanhiggins@google.com>
-Content-Language: en-US
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Brendan Higgins <brendanhiggins@google.com>, frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, shuah <shuah@kernel.org>, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, Bjorn Helgaas <bhelgaas@google.com>, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAFd5g45NdQEcP0JQpZc3HYYgNZfsBsHL+ByXRK+OupWObwMuqg@mail.gmail.com>
+References: <20190814055108.214253-1-brendanhiggins@google.com> <CAFd5g45NdQEcP0JQpZc3HYYgNZfsBsHL+ByXRK+OupWObwMuqg@mail.gmail.com>
+Subject: Re: [PATCH v13 00/18] kunit: introduce KUnit, the Linux kernel unit testing framework
+From: Stephen Boyd <sboyd@kernel.org>
+Date: Wed, 14 Aug 2019 10:23:00 -0700
+Message-Id: <20190814172301.9246520665@mail.kernel.org>
+Sender: devicetree-owner@vger.kernel.org
+To: Brendan Higgins <brendanhiggins@google.com>, Frank Rowand <frowand.list@gmail.com>, Greg KH <gregkh@linuxfoundation.org>, Josh Poimboeuf <jpoimboe@redhat.com>, Kees Cook <keescook@google.com>, Kieran Bingham <kieran.bingham@ideasonboard.com>, Luis Chamberlain <mcgrof@kernel.org>, Masahiro Yamada <yamada.masahiro@socionext.com>, Peter Zijlstra <peterz@infradead.org>, Rob Herring <robh@kernel.org>, Theodore Ts'o <tytso@mit.edu>, shuah <shuah@kernel.org>
+Cc: devicetree <devicetree@vger.kernel.org>, dri-devel <dri-devel@lists.freedesktop.org>, kunit-dev@googlegroups.com, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, linux-fsdevel@vger.kernel.org, linux-kbuild <linux-kbuild@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-nvdimm <linux-nvdimm@lists.01.org>, linux-um@lists.infradead.org, Sasha Levin <Alexander.Levin@microsoft.com>, "Bird, Timothy" <Tim.Bird@sony.com>, Amir Goldstein <amir73il@gmail.com>, Dan Carpenter <dan.carpenter@oracle.com>, Daniel Vetter <daniel@ffwll.ch>, Jeff Dike <jdike@addtoit.com>, Joel Stanley <joel@jms.id.au>, Julia Lawall <julia.lawall@lip6.fr>, Kevin Hilman <khilman@baylibre.com>, Knut Omang <knut.omang@oracle.com>, Logan Gunthorpe <logang@deltatee.com>, Michael Ellerman <mpe@ellerman.id.au>, Petr Mladek <pmladek@suse.com>, Randy Dunlap <rdunlap@infradead.org>, Richard Weinberger <richard@nod.at>, David Rientjes <rientjes@google.com>, Steven Rostedt <rostedt@goodmis.org>, wfg@linux.intel.com, Bjorn Helgaas <bhelgaas@google.com>
+List-ID: <linux-um.lists.infradead.org>
 
-On 8/13/19 11:50 PM, Brendan Higgins wrote:
-> ## TL;DR
-> 
-> This revision addresses comments from Stephen and Bjorn Helgaas. Most
-> changes are pretty minor stuff that doesn't affect the API in anyway.
-> One significant change, however, is that I added support for freeing
-> kunit_resource managed resources before the test case is finished via
-> kunit_resource_destroy(). Additionally, Bjorn pointed out that I broke
-> KUnit on certain configurations (like the default one for x86, whoops).
-> 
-> Based on Stephen's feedback on the previous change, I think we are
-> pretty close. I am not expecting any significant changes from here on
-> out.
-> 
+Quoting Brendan Higgins (2019-08-14 03:03:47)
+> On Tue, Aug 13, 2019 at 10:52 PM Brendan Higgins
+> <brendanhiggins@google.com> wrote:
+> >
+> > ## TL;DR
+> >
+> > This revision addresses comments from Stephen and Bjorn Helgaas. Most
+> > changes are pretty minor stuff that doesn't affect the API in anyway.
+> > One significant change, however, is that I added support for freeing
+> > kunit_resource managed resources before the test case is finished via
+> > kunit_resource_destroy(). Additionally, Bjorn pointed out that I broke
+> > KUnit on certain configurations (like the default one for x86, whoops).
+> >
+> > Based on Stephen's feedback on the previous change, I think we are
+> > pretty close. I am not expecting any significant changes from here on
+> > out.
+>=20
+> Stephen, it looks like you have just replied with "Reviewed-bys" on
+> all the remaining emails that you looked at. Is there anything else
+> that we are missing? Or is this ready for Shuah to apply?
+>=20
 
-Hi Brendan,
+I think it's good to go! Thanks for the persistence.
 
-I found checkpatch errors in one or two patches. Can you fix those and
-send v14.
-
-thanks,
--- Shuah
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
