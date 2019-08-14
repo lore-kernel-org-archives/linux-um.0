@@ -1,17 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x54a.google.com ([2607:f8b0:4864:20::54a])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i0DR9-00032k-LI
- for linux-um@lists.infradead.org; Tue, 20 Aug 2019 23:21:12 +0000
-Received: by mail-pg1-x54a.google.com with SMTP id x19so199919pgx.1
- for <linux-um@lists.infradead.org>; Tue, 20 Aug 2019 16:21:10 -0700 (PDT)
-Date: Tue, 20 Aug 2019 16:20:34 -0700
-In-Reply-To: <20190820232046.50175-1-brendanhiggins@google.com>
-Message-Id: <20190820232046.50175-7-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20190820232046.50175-1-brendanhiggins@google.com>
-Subject: [PATCH v14 06/18] kbuild: enable building KUnit
-From: Brendan Higgins <brendanhiggins@google.com>
+ id 1hxnYP-0001uA-BB
+ for linux-um@lists.infradead.org; Wed, 14 Aug 2019 07:18:42 +0000
+MIME-Version: 1.0
+In-Reply-To: <20190814055108.214253-13-brendanhiggins@google.com>
+References: <20190814055108.214253-1-brendanhiggins@google.com>
+ <20190814055108.214253-13-brendanhiggins@google.com>
+Subject: Re: [PATCH v13 12/18] kunit: test: add tests for KUnit managed
+ resources
+From: Stephen Boyd <sboyd@kernel.org>
+Date: Wed, 14 Aug 2019 00:18:40 -0700
+Message-Id: <20190814071840.E76072054F@mail.kernel.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,49 +24,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, Michal Marek <michal.lkml@markovi.net>, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+To: Brendan Higgins <brendanhiggins@google.com>, frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, Avinash Kondareddy <akndr41@gmail.com>, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-KUnit is a new unit testing framework for the kernel and when used is
-built into the kernel as a part of it. Add KUnit to the root Kconfig and
-Makefile to allow it to be actually built.
+Quoting Brendan Higgins (2019-08-13 22:51:02)
+> From: Avinash Kondareddy <akndr41@gmail.com>
+> 
+> Add unit tests for KUnit managed resources. KUnit managed resources
+> (struct kunit_resource) are resources that are automatically cleaned up
+> at the end of a KUnit test, similar to the concept of devm_* managed
+> resources.
+> 
+> Signed-off-by: Avinash Kondareddy <akndr41@gmail.com>
+> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+> ---
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Acked-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Michal Marek <michal.lkml@markovi.net>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
 Reviewed-by: Stephen Boyd <sboyd@kernel.org>
----
- Kconfig  | 2 ++
- Makefile | 2 ++
- 2 files changed, 4 insertions(+)
-
-diff --git a/Kconfig b/Kconfig
-index e10b3ee084d4d..47886dbd6c2a6 100644
---- a/Kconfig
-+++ b/Kconfig
-@@ -32,3 +32,5 @@ source "lib/Kconfig"
- source "lib/Kconfig.debug"
- 
- source "Documentation/Kconfig"
-+
-+source "kunit/Kconfig"
-diff --git a/Makefile b/Makefile
-index 23cdf1f413646..3795d0a5d0376 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1005,6 +1005,8 @@ PHONY += prepare0
- ifeq ($(KBUILD_EXTMOD),)
- core-y		+= kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ block/
- 
-+core-$(CONFIG_KUNIT) += kunit/
-+
- vmlinux-dirs	:= $(patsubst %/,%,$(filter %/, $(init-y) $(init-m) \
- 		     $(core-y) $(core-m) $(drivers-y) $(drivers-m) \
- 		     $(net-y) $(net-m) $(libs-y) $(libs-m) $(virt-y)))
--- 
-2.23.0.rc1.153.gdeed80330f-goog
 
 
 _______________________________________________
