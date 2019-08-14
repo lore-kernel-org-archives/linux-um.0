@@ -1,14 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from mail-pg1-x549.google.com ([2607:f8b0:4864:20::549])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i1IW6-00056S-4s
- for linux-um@lists.infradead.org; Fri, 23 Aug 2019 22:58:48 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH] arch: um: implement memory protection
-Date: Sat, 24 Aug 2019 00:58:31 +0200
-Message-Id: <20190823225831.23517-1-johannes@sipsolutions.net>
-MIME-Version: 1.0
+ id 1hxmCz-0002yZ-EG
+ for linux-um@lists.infradead.org; Wed, 14 Aug 2019 05:52:31 +0000
+Received: by mail-pg1-x549.google.com with SMTP id q1so12150927pgt.2
+ for <linux-um@lists.infradead.org>; Tue, 13 Aug 2019 22:52:29 -0700 (PDT)
+Date: Tue, 13 Aug 2019 22:50:57 -0700
+In-Reply-To: <20190814055108.214253-1-brendanhiggins@google.com>
+Message-Id: <20190814055108.214253-8-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20190814055108.214253-1-brendanhiggins@google.com>
+Subject: [PATCH v13 07/18] kunit: test: add initial tests
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -21,180 +24,220 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-From: Johannes Berg <johannes.berg@intel.com>
+Add a test for string stream along with a simpler example.
 
-Implement memory protection, namely
- * ARCH_HAS_SET_MEMORY
- * ARCH_HAS_STRICT_KERNEL_RWX
- * ARCH_HAS_STRICT_MODULE_RWX
-
-The .text section is marked as RO.
-The rodata is marked as RO & NX.
-The remaining data is marked NX.
-
-Move the .kstrtab to be covered by the NX.
-
-Note that you can now enable CONFIG_DEBUG_RODATA_TEST,
-but it's broken as the fixup is broken - it'll just
-crash with
-
- Kernel panic - not syncing: Segfault with no mm
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+Reviewed-by: Stephen Boyd <sboyd@kernel.org>
 ---
- arch/um/Kconfig               |  3 ++
- arch/um/include/asm/pgtable.h |  2 +
- arch/um/kernel/dyn.lds.S      |  4 +-
- arch/um/kernel/mem.c          | 76 +++++++++++++++++++++++++++++++++++
- 4 files changed, 83 insertions(+), 2 deletions(-)
+ kunit/Kconfig              | 21 +++++++++
+ kunit/Makefile             |  4 ++
+ kunit/example-test.c       | 88 ++++++++++++++++++++++++++++++++++++++
+ kunit/string-stream-test.c | 52 ++++++++++++++++++++++
+ 4 files changed, 165 insertions(+)
+ create mode 100644 kunit/example-test.c
+ create mode 100644 kunit/string-stream-test.c
 
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index 3c3adfc486f2..e84264be26c9 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -18,6 +18,9 @@ config UML
- 	select GENERIC_CLOCKEVENTS
- 	select HAVE_GCC_PLUGINS
- 	select TTY # Needed for line.c
-+	select ARCH_HAS_SET_MEMORY
-+	select ARCH_HAS_STRICT_KERNEL_RWX
-+	select ARCH_HAS_STRICT_MODULE_RWX
+diff --git a/kunit/Kconfig b/kunit/Kconfig
+index 330ae83527c23..8541ef95b65ad 100644
+--- a/kunit/Kconfig
++++ b/kunit/Kconfig
+@@ -14,4 +14,25 @@ config KUNIT
+ 	  architectures. For more information, please see
+ 	  Documentation/dev-tools/kunit/.
  
- config MMU
- 	bool
-diff --git a/arch/um/include/asm/pgtable.h b/arch/um/include/asm/pgtable.h
-index b377df76cc28..0e6cda3516c6 100644
---- a/arch/um/include/asm/pgtable.h
-+++ b/arch/um/include/asm/pgtable.h
-@@ -17,6 +17,8 @@
- #define _PAGE_USER	0x040
- #define _PAGE_ACCESSED	0x080
- #define _PAGE_DIRTY	0x100
-+#define _PAGE_RO	0x200
-+#define _PAGE_NX	0x400
- /* If _PAGE_PRESENT is clear, we use these: */
- #define _PAGE_PROTNONE	0x010	/* if the user mapped it with PROT_NONE;
- 				   pte_present gives true */
-diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
-index c69d69ee96be..da6b42793e0a 100644
---- a/arch/um/kernel/dyn.lds.S
-+++ b/arch/um/kernel/dyn.lds.S
-@@ -89,10 +89,10 @@ SECTIONS
-     KEEP (*(.fini))
-   } =0x90909090
- 
--  .kstrtab : { *(.kstrtab) }
--
-   #include <asm/common.lds.S>
- 
-+  .kstrtab : { *(.kstrtab) }
++config KUNIT_TEST
++	bool "KUnit test for KUnit"
++	depends on KUNIT
++	help
++	  Enables the unit tests for the KUnit test framework. These tests test
++	  the KUnit test framework itself; the tests are both written using
++	  KUnit and test KUnit. This option should only be enabled for testing
++	  purposes by developers interested in testing that KUnit works as
++	  expected.
 +
-   __init_begin = .;
-   init.data : { INIT_DATA }
-   __init_end = .;
-diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
-index f256be1d77bd..7ce445bfa58f 100644
---- a/arch/um/kernel/mem.c
-+++ b/arch/um/kernel/mem.c
-@@ -10,6 +10,7 @@
- #include <linux/mm.h>
- #include <linux/swap.h>
- #include <linux/slab.h>
-+#include <asm/set_memory.h>
- #include <asm/fixmap.h>
- #include <asm/page.h>
- #include <as-layout.h>
-@@ -37,6 +38,22 @@ int kmalloc_ok = 0;
- /* Used during early boot */
- static unsigned long brk_end;
- 
-+void mark_rodata_ro(void)
++config KUNIT_EXAMPLE_TEST
++	bool "Example test for KUnit"
++	depends on KUNIT
++	help
++	  Enables an example unit test that illustrates some of the basic
++	  features of KUnit. This test only exists to help new users understand
++	  what KUnit is and how it is used. Please refer to the example test
++	  itself, kunit/example-test.c, for more information. This option is
++	  intended for curious hackers who would like to understand how to use
++	  KUnit for kernel development.
++
+ endmenu
+diff --git a/kunit/Makefile b/kunit/Makefile
+index 6dcbe309036b8..4e46450bcb3a8 100644
+--- a/kunit/Makefile
++++ b/kunit/Makefile
+@@ -1,3 +1,7 @@
+ obj-$(CONFIG_KUNIT) +=			test.o \
+ 					string-stream.o \
+ 					assert.o
++
++obj-$(CONFIG_KUNIT_TEST) +=		string-stream-test.o
++
++obj-$(CONFIG_KUNIT_EXAMPLE_TEST) +=	example-test.o
+diff --git a/kunit/example-test.c b/kunit/example-test.c
+new file mode 100644
+index 0000000000000..f64a829aa441f
+--- /dev/null
++++ b/kunit/example-test.c
+@@ -0,0 +1,88 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Example KUnit test to show how to use KUnit.
++ *
++ * Copyright (C) 2019, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++
++#include <kunit/test.h>
++
++/*
++ * This is the most fundamental element of KUnit, the test case. A test case
++ * makes a set EXPECTATIONs and ASSERTIONs about the behavior of some code; if
++ * any expectations or assertions are not met, the test fails; otherwise, the
++ * test passes.
++ *
++ * In KUnit, a test case is just a function with the signature
++ * `void (*)(struct kunit *)`. `struct kunit` is a context object that stores
++ * information about the current test.
++ */
++static void example_simple_test(struct kunit *test)
 +{
-+	unsigned long text_start = PFN_ALIGN(_text);
-+	unsigned long rodata_start = PFN_ALIGN(__start_rodata);
-+	unsigned long rodata_end = PFN_ALIGN(&__end_rodata);
-+	unsigned long all_end = PFN_ALIGN(&__bss_stop);
-+
-+	printk(KERN_INFO "Write protecting the kernel read-only data: %luk\n",
-+	       (rodata_end - text_start) >> 10);
-+
-+	set_memory_ro(text_start,
-+		      (rodata_end - text_start) >> PAGE_SHIFT);
-+	set_memory_nx(rodata_start,
-+		      (all_end - rodata_start) >> PAGE_SHIFT);
++	/*
++	 * This is an EXPECTATION; it is how KUnit tests things. When you want
++	 * to test a piece of code, you set some expectations about what the
++	 * code should do. KUnit then runs the test and verifies that the code's
++	 * behavior matched what was expected.
++	 */
++	KUNIT_EXPECT_EQ(test, 1 + 1, 2);
 +}
 +
- void __init mem_init(void)
- {
- 	/* clear the zero-page */
-@@ -225,3 +242,62 @@ void *uml_kmalloc(int size, int flags)
- {
- 	return kmalloc(size, flags);
- }
-+
-+struct page_change_data {
-+	u32 set, clear;
-+};
-+
-+static int change_page_range(pte_t *ptep, unsigned long addr, void *data)
++/*
++ * This is run once before each test case, see the comment on
++ * example_test_suite for more information.
++ */
++static int example_test_init(struct kunit *test)
 +{
-+	struct page_change_data *cdata = data;
-+	pte_t pte = READ_ONCE(*ptep);
++	kunit_info(test, "initializing\n");
 +
-+	pte_clear_bits(pte, cdata->clear);
-+	pte_set_bits(pte, cdata->set);
-+
-+	set_pte(ptep, pte);
-+
-+	os_protect_memory((void *)addr, PAGE_SIZE,
-+			  1, !(pte.pte & _PAGE_RO), !(pte.pte & _PAGE_NX));
 +	return 0;
 +}
 +
-+static int change_memory_common(unsigned long addr, int numpages,
-+				u32 set, u32 clear)
++/*
++ * Here we make a list of all the test cases we want to add to the test suite
++ * below.
++ */
++static struct kunit_case example_test_cases[] = {
++	/*
++	 * This is a helper to create a test case object from a test case
++	 * function; its exact function is not important to understand how to
++	 * use KUnit, just know that this is how you associate test cases with a
++	 * test suite.
++	 */
++	KUNIT_CASE(example_simple_test),
++	{}
++};
++
++/*
++ * This defines a suite or grouping of tests.
++ *
++ * Test cases are defined as belonging to the suite by adding them to
++ * `kunit_cases`.
++ *
++ * Often it is desirable to run some function which will set up things which
++ * will be used by every test; this is accomplished with an `init` function
++ * which runs before each test case is invoked. Similarly, an `exit` function
++ * may be specified which runs after every test case and can be used to for
++ * cleanup. For clarity, running tests in a test suite would behave as follows:
++ *
++ * suite.init(test);
++ * suite.test_case[0](test);
++ * suite.exit(test);
++ * suite.init(test);
++ * suite.test_case[1](test);
++ * suite.exit(test);
++ * ...;
++ */
++static struct kunit_suite example_test_suite = {
++	.name = "example",
++	.init = example_test_init,
++	.test_cases = example_test_cases,
++};
++
++/*
++ * This registers the above test suite telling KUnit that this is a suite of
++ * tests that need to be run.
++ */
++kunit_test_suite(example_test_suite);
+diff --git a/kunit/string-stream-test.c b/kunit/string-stream-test.c
+new file mode 100644
+index 0000000000000..75229e267c323
+--- /dev/null
++++ b/kunit/string-stream-test.c
+@@ -0,0 +1,52 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * KUnit test for struct string_stream.
++ *
++ * Copyright (C) 2019, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++
++#include <kunit/string-stream.h>
++#include <kunit/test.h>
++#include <linux/slab.h>
++
++static void string_stream_test_empty_on_creation(struct kunit *test)
 +{
-+	unsigned long start = addr & PAGE_MASK;
-+	unsigned long end = PAGE_ALIGN(addr) + numpages * PAGE_SIZE;
-+	unsigned long size = end - start;
-+	struct page_change_data data;
++	struct string_stream *stream = alloc_string_stream(test, GFP_KERNEL);
 +
-+	WARN_ON_ONCE(start != addr);
-+
-+	if (!size)
-+		return 0;
-+
-+	data.set = set;
-+	data.clear = clear;
-+
-+	return apply_to_page_range(&init_mm, start, size, change_page_range,
-+				   &data);
++	KUNIT_EXPECT_TRUE(test, string_stream_is_empty(stream));
 +}
 +
-+int set_memory_ro(unsigned long addr, int numpages)
++static void string_stream_test_not_empty_after_add(struct kunit *test)
 +{
-+	return change_memory_common(addr, numpages, _PAGE_RO, 0);
++	struct string_stream *stream = alloc_string_stream(test, GFP_KERNEL);
++
++	string_stream_add(stream, "Foo");
++
++	KUNIT_EXPECT_FALSE(test, string_stream_is_empty(stream));
 +}
 +
-+int set_memory_rw(unsigned long addr, int numpages)
++static void string_stream_test_get_string(struct kunit *test)
 +{
-+	return change_memory_common(addr, numpages, 0, _PAGE_RO);
++	struct string_stream *stream = alloc_string_stream(test, GFP_KERNEL);
++	char *output;
++
++	string_stream_add(stream, "Foo");
++	string_stream_add(stream, " %s", "bar");
++
++	output = string_stream_get_string(stream);
++	KUNIT_EXPECT_STREQ(test, output, "Foo bar");
 +}
 +
-+int set_memory_nx(unsigned long addr, int numpages)
-+{
-+	return change_memory_common(addr, numpages, _PAGE_NX, 0);
-+}
++static struct kunit_case string_stream_test_cases[] = {
++	KUNIT_CASE(string_stream_test_empty_on_creation),
++	KUNIT_CASE(string_stream_test_not_empty_after_add),
++	KUNIT_CASE(string_stream_test_get_string),
++	{}
++};
 +
-+int set_memory_x(unsigned long addr, int numpages)
-+{
-+	return change_memory_common(addr, numpages, 0, _PAGE_NX);
-+}
++static struct kunit_suite string_stream_test_suite = {
++	.name = "string-stream-test",
++	.test_cases = string_stream_test_cases
++};
++kunit_test_suite(string_stream_test_suite);
 -- 
-2.20.1
+2.23.0.rc1.153.gdeed80330f-goog
 
 
 _______________________________________________
