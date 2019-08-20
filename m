@@ -1,380 +1,247 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Alex Dewar <alex.dewar@gmx.co.uk>
-Subject: [PATCH 3/4] Add SPDX headers for files in arch/um/os-Linux
-Date: Sun, 25 Aug 2019 10:49:18 +0100
-Message-Id: <20190825094919.4731-4-alex.dewar@gmx.co.uk>
-In-Reply-To: <20190825094919.4731-1-alex.dewar@gmx.co.uk>
-References: <20190825094919.4731-1-alex.dewar@gmx.co.uk>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Sender: linux-kernel-owner@vger.kernel.org
-To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Alex Dewar <alex.dewar@gmx.co.uk>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pl1-x64a.google.com ([2607:f8b0:4864:20::64a])
+ by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
+ id 1i0DRD-00035H-5p
+ for linux-um@lists.infradead.org; Tue, 20 Aug 2019 23:21:16 +0000
+Received: by mail-pl1-x64a.google.com with SMTP id y5so271208plt.6
+ for <linux-um@lists.infradead.org>; Tue, 20 Aug 2019 16:21:13 -0700 (PDT)
+Date: Tue, 20 Aug 2019 16:20:35 -0700
+In-Reply-To: <20190820232046.50175-1-brendanhiggins@google.com>
+Message-Id: <20190820232046.50175-8-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20190820232046.50175-1-brendanhiggins@google.com>
+Subject: [PATCH v14 07/18] kunit: test: add initial tests
+From: Brendan Higgins <brendanhiggins@google.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-Convert files to use SPDX header. All files are licensed under the GPLv2.
+Add a test for string stream along with a simpler example.
 
-Signed-off-by: Alex Dewar <alex.dewar@gmx.co.uk>
-=2D--
- arch/um/os-Linux/Makefile                | 2 +-
- arch/um/os-Linux/drivers/Makefile        | 2 +-
- arch/um/os-Linux/drivers/etap.h          | 2 +-
- arch/um/os-Linux/drivers/ethertap_kern.c | 2 +-
- arch/um/os-Linux/drivers/ethertap_user.c | 2 +-
- arch/um/os-Linux/drivers/tuntap.h        | 2 +-
- arch/um/os-Linux/drivers/tuntap_kern.c   | 2 +-
- arch/um/os-Linux/drivers/tuntap_user.c   | 2 +-
- arch/um/os-Linux/file.c                  | 2 +-
- arch/um/os-Linux/helper.c                | 2 +-
- arch/um/os-Linux/irq.c                   | 2 +-
- arch/um/os-Linux/main.c                  | 2 +-
- arch/um/os-Linux/mem.c                   | 2 +-
- arch/um/os-Linux/process.c               | 2 +-
- arch/um/os-Linux/registers.c             | 2 +-
- arch/um/os-Linux/sigio.c                 | 2 +-
- arch/um/os-Linux/signal.c                | 2 +-
- arch/um/os-Linux/skas/Makefile           | 2 +-
- arch/um/os-Linux/skas/mem.c              | 2 +-
- arch/um/os-Linux/skas/process.c          | 2 +-
- arch/um/os-Linux/start_up.c              | 2 +-
- arch/um/os-Linux/time.c                  | 2 +-
- arch/um/os-Linux/tty.c                   | 2 +-
- arch/um/os-Linux/umid.c                  | 2 +-
- arch/um/os-Linux/util.c                  | 2 +-
- 25 files changed, 25 insertions(+), 25 deletions(-)
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+---
+ kunit/Kconfig              | 21 +++++++++
+ kunit/Makefile             |  4 ++
+ kunit/example-test.c       | 88 ++++++++++++++++++++++++++++++++++++++
+ kunit/string-stream-test.c | 52 ++++++++++++++++++++++
+ 4 files changed, 165 insertions(+)
+ create mode 100644 kunit/example-test.c
+ create mode 100644 kunit/string-stream-test.c
 
-diff --git a/arch/um/os-Linux/Makefile b/arch/um/os-Linux/Makefile
-index 455b500afe97..839915b8c31c 100644
-=2D-- a/arch/um/os-Linux/Makefile
-+++ b/arch/um/os-Linux/Makefile
-@@ -1,6 +1,6 @@
-+# SPDX-License-Identifier: GPL-2.0
- #
- # Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
--# Licensed under the GPL
- #
-
- # Don't instrument UML-specific code
-diff --git a/arch/um/os-Linux/drivers/Makefile b/arch/um/os-Linux/drivers/=
-Makefile
-index 6c546dc9222b..d79e75f1b69a 100644
-=2D-- a/arch/um/os-Linux/drivers/Makefile
-+++ b/arch/um/os-Linux/drivers/Makefile
-@@ -1,6 +1,6 @@
-+# SPDX-License-Identifier: GPL-2.0
- #
- # Copyright (C) 2000, 2002 Jeff Dike (jdike@karaya.com)
--# Licensed under the GPL
- #
-
- ethertap-objs :=3D ethertap_kern.o ethertap_user.o
-diff --git a/arch/um/os-Linux/drivers/etap.h b/arch/um/os-Linux/drivers/et=
-ap.h
-index 54183a679fdd..a475259f90e1 100644
-=2D-- a/arch/um/os-Linux/drivers/etap.h
-+++ b/arch/um/os-Linux/drivers/etap.h
-@@ -1,6 +1,6 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
- /*
-  * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-- * Licensed under the GPL
-  */
-
- #ifndef __DRIVERS_ETAP_H
-diff --git a/arch/um/os-Linux/drivers/ethertap_kern.c b/arch/um/os-Linux/d=
-rivers/ethertap_kern.c
-index f424600a583f..3182e759d8de 100644
-=2D-- a/arch/um/os-Linux/drivers/ethertap_kern.c
-+++ b/arch/um/os-Linux/drivers/ethertap_kern.c
-@@ -1,9 +1,9 @@
+diff --git a/kunit/Kconfig b/kunit/Kconfig
+index 330ae83527c23..8541ef95b65ad 100644
+--- a/kunit/Kconfig
++++ b/kunit/Kconfig
+@@ -14,4 +14,25 @@ config KUNIT
+ 	  architectures. For more information, please see
+ 	  Documentation/dev-tools/kunit/.
+ 
++config KUNIT_TEST
++	bool "KUnit test for KUnit"
++	depends on KUNIT
++	help
++	  Enables the unit tests for the KUnit test framework. These tests test
++	  the KUnit test framework itself; the tests are both written using
++	  KUnit and test KUnit. This option should only be enabled for testing
++	  purposes by developers interested in testing that KUnit works as
++	  expected.
++
++config KUNIT_EXAMPLE_TEST
++	bool "Example test for KUnit"
++	depends on KUNIT
++	help
++	  Enables an example unit test that illustrates some of the basic
++	  features of KUnit. This test only exists to help new users understand
++	  what KUnit is and how it is used. Please refer to the example test
++	  itself, kunit/example-test.c, for more information. This option is
++	  intended for curious hackers who would like to understand how to use
++	  KUnit for kernel development.
++
+ endmenu
+diff --git a/kunit/Makefile b/kunit/Makefile
+index 6dcbe309036b8..4e46450bcb3a8 100644
+--- a/kunit/Makefile
++++ b/kunit/Makefile
+@@ -1,3 +1,7 @@
+ obj-$(CONFIG_KUNIT) +=			test.o \
+ 					string-stream.o \
+ 					assert.o
++
++obj-$(CONFIG_KUNIT_TEST) +=		string-stream-test.o
++
++obj-$(CONFIG_KUNIT_EXAMPLE_TEST) +=	example-test.o
+diff --git a/kunit/example-test.c b/kunit/example-test.c
+new file mode 100644
+index 0000000000000..f64a829aa441f
+--- /dev/null
++++ b/kunit/example-test.c
+@@ -0,0 +1,88 @@
 +// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (C) 2001 Lennert Buytenhek (buytenh@gnu.org) and
-  * James Leu (jleu@mindspring.net).
-  * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-  * Copyright (C) 2001 by various other people who didn't put their name h=
-ere.
-- * Licensed under the GPL.
-  */
-
- #include <linux/init.h>
-diff --git a/arch/um/os-Linux/drivers/ethertap_user.c b/arch/um/os-Linux/d=
-rivers/ethertap_user.c
-index 6d4918246ffe..9483021d86dd 100644
-=2D-- a/arch/um/os-Linux/drivers/ethertap_user.c
-+++ b/arch/um/os-Linux/drivers/ethertap_user.c
-@@ -1,9 +1,9 @@
++/*
++ * Example KUnit test to show how to use KUnit.
++ *
++ * Copyright (C) 2019, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++
++#include <kunit/test.h>
++
++/*
++ * This is the most fundamental element of KUnit, the test case. A test case
++ * makes a set EXPECTATIONs and ASSERTIONs about the behavior of some code; if
++ * any expectations or assertions are not met, the test fails; otherwise, the
++ * test passes.
++ *
++ * In KUnit, a test case is just a function with the signature
++ * `void (*)(struct kunit *)`. `struct kunit` is a context object that stores
++ * information about the current test.
++ */
++static void example_simple_test(struct kunit *test)
++{
++	/*
++	 * This is an EXPECTATION; it is how KUnit tests things. When you want
++	 * to test a piece of code, you set some expectations about what the
++	 * code should do. KUnit then runs the test and verifies that the code's
++	 * behavior matched what was expected.
++	 */
++	KUNIT_EXPECT_EQ(test, 1 + 1, 2);
++}
++
++/*
++ * This is run once before each test case, see the comment on
++ * example_test_suite for more information.
++ */
++static int example_test_init(struct kunit *test)
++{
++	kunit_info(test, "initializing\n");
++
++	return 0;
++}
++
++/*
++ * Here we make a list of all the test cases we want to add to the test suite
++ * below.
++ */
++static struct kunit_case example_test_cases[] = {
++	/*
++	 * This is a helper to create a test case object from a test case
++	 * function; its exact function is not important to understand how to
++	 * use KUnit, just know that this is how you associate test cases with a
++	 * test suite.
++	 */
++	KUNIT_CASE(example_simple_test),
++	{}
++};
++
++/*
++ * This defines a suite or grouping of tests.
++ *
++ * Test cases are defined as belonging to the suite by adding them to
++ * `kunit_cases`.
++ *
++ * Often it is desirable to run some function which will set up things which
++ * will be used by every test; this is accomplished with an `init` function
++ * which runs before each test case is invoked. Similarly, an `exit` function
++ * may be specified which runs after every test case and can be used to for
++ * cleanup. For clarity, running tests in a test suite would behave as follows:
++ *
++ * suite.init(test);
++ * suite.test_case[0](test);
++ * suite.exit(test);
++ * suite.init(test);
++ * suite.test_case[1](test);
++ * suite.exit(test);
++ * ...;
++ */
++static struct kunit_suite example_test_suite = {
++	.name = "example",
++	.init = example_test_init,
++	.test_cases = example_test_cases,
++};
++
++/*
++ * This registers the above test suite telling KUnit that this is a suite of
++ * tests that need to be run.
++ */
++kunit_test_suite(example_test_suite);
+diff --git a/kunit/string-stream-test.c b/kunit/string-stream-test.c
+new file mode 100644
+index 0000000000000..75229e267c323
+--- /dev/null
++++ b/kunit/string-stream-test.c
+@@ -0,0 +1,52 @@
 +// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-  * Copyright (C) 2001 Lennert Buytenhek (buytenh@gnu.org) and
-  * James Leu (jleu@mindspring.net).
-  * Copyright (C) 2001 by various other people who didn't put their name h=
-ere.
-- * Licensed under the GPL.
-  */
++/*
++ * KUnit test for struct string_stream.
++ *
++ * Copyright (C) 2019, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++
++#include <kunit/string-stream.h>
++#include <kunit/test.h>
++#include <linux/slab.h>
++
++static void string_stream_test_empty_on_creation(struct kunit *test)
++{
++	struct string_stream *stream = alloc_string_stream(test, GFP_KERNEL);
++
++	KUNIT_EXPECT_TRUE(test, string_stream_is_empty(stream));
++}
++
++static void string_stream_test_not_empty_after_add(struct kunit *test)
++{
++	struct string_stream *stream = alloc_string_stream(test, GFP_KERNEL);
++
++	string_stream_add(stream, "Foo");
++
++	KUNIT_EXPECT_FALSE(test, string_stream_is_empty(stream));
++}
++
++static void string_stream_test_get_string(struct kunit *test)
++{
++	struct string_stream *stream = alloc_string_stream(test, GFP_KERNEL);
++	char *output;
++
++	string_stream_add(stream, "Foo");
++	string_stream_add(stream, " %s", "bar");
++
++	output = string_stream_get_string(stream);
++	KUNIT_EXPECT_STREQ(test, output, "Foo bar");
++}
++
++static struct kunit_case string_stream_test_cases[] = {
++	KUNIT_CASE(string_stream_test_empty_on_creation),
++	KUNIT_CASE(string_stream_test_not_empty_after_add),
++	KUNIT_CASE(string_stream_test_get_string),
++	{}
++};
++
++static struct kunit_suite string_stream_test_suite = {
++	.name = "string-stream-test",
++	.test_cases = string_stream_test_cases
++};
++kunit_test_suite(string_stream_test_suite);
+-- 
+2.23.0.rc1.153.gdeed80330f-goog
 
- #include <stdio.h>
-diff --git a/arch/um/os-Linux/drivers/tuntap.h b/arch/um/os-Linux/drivers/=
-tuntap.h
-index 7367354ac8df..e364e42abfc5 100644
-=2D-- a/arch/um/os-Linux/drivers/tuntap.h
-+++ b/arch/um/os-Linux/drivers/tuntap.h
-@@ -1,6 +1,6 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
- /*
-  * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-- * Licensed under the GPL
-  */
 
- #ifndef __UM_TUNTAP_H
-diff --git a/arch/um/os-Linux/drivers/tuntap_kern.c b/arch/um/os-Linux/dri=
-vers/tuntap_kern.c
-index d9d56e5810fe..adcb6717be6f 100644
-=2D-- a/arch/um/os-Linux/drivers/tuntap_kern.c
-+++ b/arch/um/os-Linux/drivers/tuntap_kern.c
-@@ -1,6 +1,6 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-- * Licensed under the GPL
-  */
-
- #include <linux/netdevice.h>
-diff --git a/arch/um/os-Linux/drivers/tuntap_user.c b/arch/um/os-Linux/dri=
-vers/tuntap_user.c
-index db24ce0d09a6..53eb3d508645 100644
-=2D-- a/arch/um/os-Linux/drivers/tuntap_user.c
-+++ b/arch/um/os-Linux/drivers/tuntap_user.c
-@@ -1,6 +1,6 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-- * Licensed under the GPL
-  */
-
- #include <stdio.h>
-diff --git a/arch/um/os-Linux/file.c b/arch/um/os-Linux/file.c
-index f25b110d4e70..453a2273e8c6 100644
-=2D-- a/arch/um/os-Linux/file.c
-+++ b/arch/um/os-Linux/file.c
-@@ -1,6 +1,6 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (C) 2002 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-- * Licensed under the GPL
-  */
-
- #include <stdio.h>
-diff --git a/arch/um/os-Linux/helper.c b/arch/um/os-Linux/helper.c
-index 3f02d4232812..9fa6e4187d4f 100644
-=2D-- a/arch/um/os-Linux/helper.c
-+++ b/arch/um/os-Linux/helper.c
-@@ -1,6 +1,6 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (C) 2002 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-- * Licensed under the GPL
-  */
-
- #include <stdlib.h>
-diff --git a/arch/um/os-Linux/irq.c b/arch/um/os-Linux/irq.c
-index 365823010346..d508310ee5e1 100644
-=2D-- a/arch/um/os-Linux/irq.c
-+++ b/arch/um/os-Linux/irq.c
-@@ -1,8 +1,8 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (C) 2017 - Cambridge Greys Ltd
-  * Copyright (C) 2011 - 2014 Cisco Systems Inc
-  * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-- * Licensed under the GPL
-  */
-
- #include <stdlib.h>
-diff --git a/arch/um/os-Linux/main.c b/arch/um/os-Linux/main.c
-index f1fee2b91239..c8a42ecbd7a2 100644
-=2D-- a/arch/um/os-Linux/main.c
-+++ b/arch/um/os-Linux/main.c
-@@ -1,7 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (C) 2015 Thomas Meyer (thomas@m3y3r.de)
-  * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-- * Licensed under the GPL
-  */
-
- #include <stdio.h>
-diff --git a/arch/um/os-Linux/mem.c b/arch/um/os-Linux/mem.c
-index e162a95ad7dd..3c1b77474d2d 100644
-=2D-- a/arch/um/os-Linux/mem.c
-+++ b/arch/um/os-Linux/mem.c
-@@ -1,6 +1,6 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (C) 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-- * Licensed under the GPL
-  */
-
- #include <stdio.h>
-diff --git a/arch/um/os-Linux/process.c b/arch/um/os-Linux/process.c
-index b3e0d40932e1..e52dd37ddadc 100644
-=2D-- a/arch/um/os-Linux/process.c
-+++ b/arch/um/os-Linux/process.c
-@@ -1,7 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (C) 2015 Thomas Meyer (thomas@m3y3r.de)
-  * Copyright (C) 2002 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-- * Licensed under the GPL
-  */
-
- #include <stdio.h>
-diff --git a/arch/um/os-Linux/registers.c b/arch/um/os-Linux/registers.c
-index 2ff8d4fe83c4..2d9270508e15 100644
-=2D-- a/arch/um/os-Linux/registers.c
-+++ b/arch/um/os-Linux/registers.c
-@@ -1,7 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (C) 2004 PathScale, Inc
-  * Copyright (C) 2004 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-- * Licensed under the GPL
-  */
-
- #include <errno.h>
-diff --git a/arch/um/os-Linux/sigio.c b/arch/um/os-Linux/sigio.c
-index 46e762f926eb..d88e9cb739c4 100644
-=2D-- a/arch/um/os-Linux/sigio.c
-+++ b/arch/um/os-Linux/sigio.c
-@@ -1,6 +1,6 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (C) 2002 - 2008 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-- * Licensed under the GPL
-  */
-
- #include <unistd.h>
-diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
-index 75b10235d369..f450147b9711 100644
-=2D-- a/arch/um/os-Linux/signal.c
-+++ b/arch/um/os-Linux/signal.c
-@@ -1,9 +1,9 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (C) 2015 Anton Ivanov (aivanov@{brocade.com,kot-begemot.co.u=
-k})
-  * Copyright (C) 2015 Thomas Meyer (thomas@m3y3r.de)
-  * Copyright (C) 2004 PathScale, Inc
-  * Copyright (C) 2004 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-- * Licensed under the GPL
-  */
-
- #include <stdlib.h>
-diff --git a/arch/um/os-Linux/skas/Makefile b/arch/um/os-Linux/skas/Makefi=
-le
-index d2ea3409e072..c4566e788815 100644
-=2D-- a/arch/um/os-Linux/skas/Makefile
-+++ b/arch/um/os-Linux/skas/Makefile
-@@ -1,6 +1,6 @@
-+# SPDX-License-Identifier: GPL-2.0
- #
- # Copyright (C) 2002 - 2007 Jeff Dike (jdike@{linux.intel,addtoit}.com)
--# Licensed under the GPL
- #
-
- obj-y :=3D mem.o process.o
-diff --git a/arch/um/os-Linux/skas/mem.c b/arch/um/os-Linux/skas/mem.c
-index 35015e3e1e87..c546d16f8dfe 100644
-=2D-- a/arch/um/os-Linux/skas/mem.c
-+++ b/arch/um/os-Linux/skas/mem.c
-@@ -1,6 +1,6 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (C) 2002 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-- * Licensed under the GPL
-  */
-
- #include <stddef.h>
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/proce=
-ss.c
-index df4a985716eb..f34a7126aec5 100644
-=2D-- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -1,7 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (C) 2015 Thomas Meyer (thomas@m3y3r.de)
-  * Copyright (C) 2002- 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-- * Licensed under the GPL
-  */
-
- #include <stdlib.h>
-diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
-index 82bf5f8442ba..f79dc338279e 100644
-=2D-- a/arch/um/os-Linux/start_up.c
-+++ b/arch/um/os-Linux/start_up.c
-@@ -1,6 +1,6 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-- * Licensed under the GPL
-  */
-
- #include <stdio.h>
-diff --git a/arch/um/os-Linux/time.c b/arch/um/os-Linux/time.c
-index 6d94ff52362c..432f8e1f55c2 100644
-=2D-- a/arch/um/os-Linux/time.c
-+++ b/arch/um/os-Linux/time.c
-@@ -1,9 +1,9 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (C) 2015 Anton Ivanov (aivanov@{brocade.com,kot-begemot.co.u=
-k})
-  * Copyright (C) 2015 Thomas Meyer (thomas@m3y3r.de)
-  * Copyright (C) 2012-2014 Cisco Systems
-  * Copyright (C) 2000 - 2007 Jeff Dike (jdike{addtoit,linux.intel}.com)
-- * Licensed under the GPL
-  */
-
- #include <stddef.h>
-diff --git a/arch/um/os-Linux/tty.c b/arch/um/os-Linux/tty.c
-index 721d8afa329b..f784db83e026 100644
-=2D-- a/arch/um/os-Linux/tty.c
-+++ b/arch/um/os-Linux/tty.c
-@@ -1,6 +1,6 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (C) 2002 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-- * Licensed under the GPL
-  */
-
- #include <stdlib.h>
-diff --git a/arch/um/os-Linux/umid.c b/arch/um/os-Linux/umid.c
-index e261656fe9d7..44def53a11cd 100644
-=2D-- a/arch/um/os-Linux/umid.c
-+++ b/arch/um/os-Linux/umid.c
-@@ -1,6 +1,6 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (C) 2002 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-- * Licensed under the GPL
-  */
-
- #include <stdio.h>
-diff --git a/arch/um/os-Linux/util.c b/arch/um/os-Linux/util.c
-index 8cc8b2617a67..ecf2f390fad2 100644
-=2D-- a/arch/um/os-Linux/util.c
-+++ b/arch/um/os-Linux/util.c
-@@ -1,6 +1,6 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-- * Licensed under the GPL
-  */
-
- #include <stdio.h>
-=2D-
-2.23.0
-
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
