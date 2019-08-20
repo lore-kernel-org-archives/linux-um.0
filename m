@@ -1,16 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x44a.google.com ([2607:f8b0:4864:20::44a])
+Received: from mail-pl1-x649.google.com ([2607:f8b0:4864:20::649])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i0DQy-0002vf-KR
- for linux-um@lists.infradead.org; Tue, 20 Aug 2019 23:21:02 +0000
-Received: by mail-pf1-x44a.google.com with SMTP id x1so254228pfq.2
- for <linux-um@lists.infradead.org>; Tue, 20 Aug 2019 16:20:59 -0700 (PDT)
-Date: Tue, 20 Aug 2019 16:20:30 -0700
+ id 1i0DRW-0003It-Tt
+ for linux-um@lists.infradead.org; Tue, 20 Aug 2019 23:21:36 +0000
+Received: by mail-pl1-x649.google.com with SMTP id b30so257398pla.16
+ for <linux-um@lists.infradead.org>; Tue, 20 Aug 2019 16:21:33 -0700 (PDT)
+Date: Tue, 20 Aug 2019 16:20:42 -0700
 In-Reply-To: <20190820232046.50175-1-brendanhiggins@google.com>
-Message-Id: <20190820232046.50175-3-brendanhiggins@google.com>
+Message-Id: <20190820232046.50175-15-brendanhiggins@google.com>
 Mime-Version: 1.0
 References: <20190820232046.50175-1-brendanhiggins@google.com>
-Subject: [PATCH v14 02/18] kunit: test: add test resource management API
+Subject: [PATCH v14 14/18] kunit: defconfig: add defconfigs for building KUnit
+ tests
 From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -27,424 +28,141 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
 Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-Create a common API for test managed resources like memory and test
-objects. A lot of times a test will want to set up infrastructure to be
-used in test cases; this could be anything from just wanting to allocate
-some memory to setting up a driver stack; this defines facilities for
-creating "test resources" which are managed by the test infrastructure
-and are automatically cleaned up at the conclusion of the test.
+Add defconfig for UML and a fragment that can be used to configure other
+architectures for building KUnit tests. Add option to kunit_tool to use
+a defconfig to create the kunitconfig.
 
 Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
 Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
 Reviewed-by: Stephen Boyd <sboyd@kernel.org>
 ---
- include/kunit/test.h | 187 +++++++++++++++++++++++++++++++++++++++++++
- kunit/test.c         | 163 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 350 insertions(+)
+ arch/um/configs/kunit_defconfig              |  3 +++
+ tools/testing/kunit/configs/all_tests.config |  3 +++
+ tools/testing/kunit/kunit.py                 | 28 +++++++++++++++++---
+ tools/testing/kunit/kunit_kernel.py          |  3 ++-
+ 4 files changed, 32 insertions(+), 5 deletions(-)
+ create mode 100644 arch/um/configs/kunit_defconfig
+ create mode 100644 tools/testing/kunit/configs/all_tests.config
 
-diff --git a/include/kunit/test.h b/include/kunit/test.h
-index e0b34acb9ee4e..f264ffe58f008 100644
---- a/include/kunit/test.h
-+++ b/include/kunit/test.h
-@@ -9,8 +9,72 @@
- #ifndef _KUNIT_TEST_H
- #define _KUNIT_TEST_H
+diff --git a/arch/um/configs/kunit_defconfig b/arch/um/configs/kunit_defconfig
+new file mode 100644
+index 0000000000000..9235b7d42d389
+--- /dev/null
++++ b/arch/um/configs/kunit_defconfig
+@@ -0,0 +1,3 @@
++CONFIG_KUNIT=y
++CONFIG_KUNIT_TEST=y
++CONFIG_KUNIT_EXAMPLE_TEST=y
+diff --git a/tools/testing/kunit/configs/all_tests.config b/tools/testing/kunit/configs/all_tests.config
+new file mode 100644
+index 0000000000000..9235b7d42d389
+--- /dev/null
++++ b/tools/testing/kunit/configs/all_tests.config
+@@ -0,0 +1,3 @@
++CONFIG_KUNIT=y
++CONFIG_KUNIT_TEST=y
++CONFIG_KUNIT_EXAMPLE_TEST=y
+diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+index da11bd62a4b82..0944dea5c3211 100755
+--- a/tools/testing/kunit/kunit.py
++++ b/tools/testing/kunit/kunit.py
+@@ -11,6 +11,7 @@ import argparse
+ import sys
+ import os
+ import time
++import shutil
  
-+#include <linux/slab.h>
- #include <linux/types.h>
+ from collections import namedtuple
+ from enum import Enum, auto
+@@ -21,7 +22,7 @@ import kunit_parser
  
-+struct kunit_resource;
-+
-+typedef int (*kunit_resource_init_t)(struct kunit_resource *, void *);
-+typedef void (*kunit_resource_free_t)(struct kunit_resource *);
-+
-+/**
-+ * struct kunit_resource - represents a *test managed resource*
-+ * @allocation: for the user to store arbitrary data.
-+ * @free: a user supplied function to free the resource. Populated by
-+ * kunit_alloc_resource().
-+ *
-+ * Represents a *test managed resource*, a resource which will automatically be
-+ * cleaned up at the end of a test case.
-+ *
-+ * Example:
-+ *
-+ * .. code-block:: c
-+ *
-+ *	struct kunit_kmalloc_params {
-+ *		size_t size;
-+ *		gfp_t gfp;
-+ *	};
-+ *
-+ *	static int kunit_kmalloc_init(struct kunit_resource *res, void *context)
-+ *	{
-+ *		struct kunit_kmalloc_params *params = context;
-+ *		res->allocation = kmalloc(params->size, params->gfp);
-+ *
-+ *		if (!res->allocation)
-+ *			return -ENOMEM;
-+ *
-+ *		return 0;
-+ *	}
-+ *
-+ *	static void kunit_kmalloc_free(struct kunit_resource *res)
-+ *	{
-+ *		kfree(res->allocation);
-+ *	}
-+ *
-+ *	void *kunit_kmalloc(struct kunit *test, size_t size, gfp_t gfp)
-+ *	{
-+ *		struct kunit_kmalloc_params params;
-+ *		struct kunit_resource *res;
-+ *
-+ *		params.size = size;
-+ *		params.gfp = gfp;
-+ *
-+ *		res = kunit_alloc_resource(test, kunit_kmalloc_init,
-+ *			kunit_kmalloc_free, &params);
-+ *		if (res)
-+ *			return res->allocation;
-+ *
-+ *		return NULL;
-+ *	}
-+ */
-+struct kunit_resource {
-+	void *allocation;
-+	kunit_resource_free_t free;
-+
-+	/* private: internal use only. */
-+	struct list_head node;
-+};
-+
- struct kunit;
+ KunitResult = namedtuple('KunitResult', ['status','result'])
  
- /**
-@@ -109,6 +173,13 @@ struct kunit {
- 	 * have terminated.
- 	 */
- 	bool success; /* Read only after test_case finishes! */
-+	spinlock_t lock; /* Guards all mutable test state. */
-+	/*
-+	 * Because resources is a list that may be updated multiple times (with
-+	 * new resources) from any thread associated with a test case, we must
-+	 * protect it with some type of lock.
-+	 */
-+	struct list_head resources; /* Protected by lock. */
- };
+-KunitRequest = namedtuple('KunitRequest', ['raw_output','timeout', 'jobs', 'build_dir'])
++KunitRequest = namedtuple('KunitRequest', ['raw_output','timeout', 'jobs', 'build_dir', 'defconfig'])
  
- void kunit_init_test(struct kunit *test, const char *name);
-@@ -141,6 +212,122 @@ int kunit_run_tests(struct kunit_suite *suite);
- 		}							       \
- 		late_initcall(kunit_suite_init##suite)
+ class KunitStatus(Enum):
+ 	SUCCESS = auto()
+@@ -29,8 +30,16 @@ class KunitStatus(Enum):
+ 	BUILD_FAILURE = auto()
+ 	TEST_FAILURE = auto()
  
-+/*
-+ * Like kunit_alloc_resource() below, but returns the struct kunit_resource
-+ * object that contains the allocation. This is mostly for testing purposes.
-+ */
-+struct kunit_resource *kunit_alloc_and_get_resource(struct kunit *test,
-+						    kunit_resource_init_t init,
-+						    kunit_resource_free_t free,
-+						    gfp_t internal_gfp,
-+						    void *context);
++def create_default_kunitconfig():
++	if not os.path.exists(kunit_kernel.KUNITCONFIG_PATH):
++		shutil.copyfile('arch/um/configs/kunit_defconfig',
++				kunit_kernel.KUNITCONFIG_PATH)
 +
-+/**
-+ * kunit_alloc_resource() - Allocates a *test managed resource*.
-+ * @test: The test context object.
-+ * @init: a user supplied function to initialize the resource.
-+ * @free: a user supplied function to free the resource.
-+ * @internal_gfp: gfp to use for internal allocations, if unsure, use GFP_KERNEL
-+ * @context: for the user to pass in arbitrary data to the init function.
-+ *
-+ * Allocates a *test managed resource*, a resource which will automatically be
-+ * cleaned up at the end of a test case. See &struct kunit_resource for an
-+ * example.
-+ *
-+ * NOTE: KUnit needs to allocate memory for each kunit_resource object. You must
-+ * specify an @internal_gfp that is compatible with the use context of your
-+ * resource.
-+ */
-+static inline void *kunit_alloc_resource(struct kunit *test,
-+					 kunit_resource_init_t init,
-+					 kunit_resource_free_t free,
-+					 gfp_t internal_gfp,
-+					 void *context)
-+{
-+	struct kunit_resource *res;
+ def run_tests(linux: kunit_kernel.LinuxSourceTree,
+ 	      request: KunitRequest) -> KunitResult:
++	if request.defconfig:
++		create_default_kunitconfig()
 +
-+	res = kunit_alloc_and_get_resource(test, init, free, internal_gfp,
-+					   context);
-+
-+	if (res)
-+		return res->allocation;
-+
-+	return NULL;
-+}
-+
-+typedef bool (*kunit_resource_match_t)(struct kunit *test,
-+				       const void *res,
-+				       void *match_data);
-+
-+/**
-+ * kunit_resource_instance_match() - Match a resource with the same instance.
-+ * @test: Test case to which the resource belongs.
-+ * @res: The data stored in kunit_resource->allocation.
-+ * @match_data: The resource pointer to match against.
-+ *
-+ * An instance of kunit_resource_match_t that matches a resource whose
-+ * allocation matches @match_data.
-+ */
-+static inline bool kunit_resource_instance_match(struct kunit *test,
-+						 const void *res,
-+						 void *match_data)
-+{
-+	return res == match_data;
-+}
-+
-+/**
-+ * kunit_resource_destroy() - Find a kunit_resource and destroy it.
-+ * @test: Test case to which the resource belongs.
-+ * @match: Match function. Returns whether a given resource matches @match_data.
-+ * @free: Must match free on the kunit_resource to free.
-+ * @match_data: Data passed into @match.
-+ *
-+ * Free the latest kunit_resource of @test for which @free matches the
-+ * kunit_resource_free_t associated with the resource and for which @match
-+ * returns true.
-+ *
-+ * RETURNS:
-+ * 0 if kunit_resource is found and freed, -ENOENT if not found.
-+ */
-+int kunit_resource_destroy(struct kunit *test,
-+			   kunit_resource_match_t match,
-+			   kunit_resource_free_t free,
-+			   void *match_data);
-+
-+/**
-+ * kunit_kmalloc() - Like kmalloc() except the allocation is *test managed*.
-+ * @test: The test context object.
-+ * @size: The size in bytes of the desired memory.
-+ * @gfp: flags passed to underlying kmalloc().
-+ *
-+ * Just like `kmalloc(...)`, except the allocation is managed by the test case
-+ * and is automatically cleaned up after the test case concludes. See &struct
-+ * kunit_resource for more information.
-+ */
-+void *kunit_kmalloc(struct kunit *test, size_t size, gfp_t gfp);
-+
-+/**
-+ * kunit_kfree() - Like kfree except for allocations managed by KUnit.
-+ * @test: The test case to which the resource belongs.
-+ * @ptr: The memory allocation to free.
-+ */
-+void kunit_kfree(struct kunit *test, const void *ptr);
-+
-+/**
-+ * kunit_kzalloc() - Just like kunit_kmalloc(), but zeroes the allocation.
-+ * @test: The test context object.
-+ * @size: The size in bytes of the desired memory.
-+ * @gfp: flags passed to underlying kmalloc().
-+ *
-+ * See kzalloc() and kunit_kmalloc() for more information.
-+ */
-+static inline void *kunit_kzalloc(struct kunit *test, size_t size, gfp_t gfp)
-+{
-+	return kunit_kmalloc(test, size, gfp | __GFP_ZERO);
-+}
-+
-+void kunit_cleanup(struct kunit *test);
-+
- void __printf(3, 4) kunit_printk(const char *level,
- 				 const struct kunit *test,
- 				 const char *fmt, ...);
-diff --git a/kunit/test.c b/kunit/test.c
-index d3dda359f99b1..68b1037ab74d0 100644
---- a/kunit/test.c
-+++ b/kunit/test.c
-@@ -122,6 +122,8 @@ static void kunit_print_test_case_ok_not_ok(struct kunit_case *test_case,
+ 	config_start = time.time()
+ 	success = linux.build_reconfig(request.build_dir)
+ 	config_end = time.time()
+@@ -72,7 +81,7 @@ def run_tests(linux: kunit_kernel.LinuxSourceTree,
+ 	else:
+ 		return KunitResult(KunitStatus.SUCCESS, test_result)
  
- void kunit_init_test(struct kunit *test, const char *name)
- {
-+	spin_lock_init(&test->lock);
-+	INIT_LIST_HEAD(&test->resources);
- 	test->name = name;
- 	test->success = true;
- }
-@@ -153,6 +155,8 @@ static void kunit_run_case(struct kunit_suite *suite,
- 	if (suite->exit)
- 		suite->exit(&test);
+-def main(argv, linux):
++def main(argv, linux=None):
+ 	parser = argparse.ArgumentParser(
+ 			description='Helps writing and running KUnit tests.')
+ 	subparser = parser.add_subparsers(dest='subcommand')
+@@ -99,13 +108,24 @@ def main(argv, linux):
+ 				'directory.',
+ 				type=str, default=None, metavar='build_dir')
  
-+	kunit_cleanup(&test);
++	run_parser.add_argument('--defconfig',
++				help='Uses a default kunitconfig.',
++				action='store_true')
 +
- 	test_case->success = test.success;
- }
+ 	cli_args = parser.parse_args(argv)
  
-@@ -173,6 +177,165 @@ int kunit_run_tests(struct kunit_suite *suite)
- 	return 0;
- }
+ 	if cli_args.subcommand == 'run':
++		if cli_args.defconfig:
++			create_default_kunitconfig()
++
++		if not linux:
++			linux = kunit_kernel.LinuxSourceTree()
++
+ 		request = KunitRequest(cli_args.raw_output,
+ 				       cli_args.timeout,
+ 				       cli_args.jobs,
+-				       cli_args.build_dir)
++				       cli_args.build_dir,
++				       cli_args.defconfig)
+ 		result = run_tests(linux, request)
+ 		if result.status != KunitStatus.SUCCESS:
+ 			sys.exit(1)
+@@ -113,4 +133,4 @@ def main(argv, linux):
+ 		parser.print_help()
  
-+struct kunit_resource *kunit_alloc_and_get_resource(struct kunit *test,
-+						    kunit_resource_init_t init,
-+						    kunit_resource_free_t free,
-+						    gfp_t internal_gfp,
-+						    void *context)
-+{
-+	struct kunit_resource *res;
-+	int ret;
-+
-+	res = kzalloc(sizeof(*res), internal_gfp);
-+	if (!res)
-+		return NULL;
-+
-+	ret = init(res, context);
-+	if (ret)
-+		return NULL;
-+
-+	res->free = free;
-+	spin_lock(&test->lock);
-+	list_add_tail(&res->node, &test->resources);
-+	spin_unlock(&test->lock);
-+
-+	return res;
-+}
-+
-+static void kunit_resource_free(struct kunit *test, struct kunit_resource *res)
-+{
-+	res->free(res);
-+	kfree(res);
-+}
-+
-+static struct kunit_resource *kunit_resource_find(struct kunit *test,
-+						  kunit_resource_match_t match,
-+						  kunit_resource_free_t free,
-+						  void *match_data)
-+{
-+	struct kunit_resource *resource;
-+
-+	lockdep_assert_held(&test->lock);
-+
-+	list_for_each_entry_reverse(resource, &test->resources, node) {
-+		if (resource->free != free)
-+			continue;
-+		if (match(test, resource->allocation, match_data))
-+			return resource;
-+	}
-+
-+	return NULL;
-+}
-+
-+static struct kunit_resource *kunit_resource_remove(
-+		struct kunit *test,
-+		kunit_resource_match_t match,
-+		kunit_resource_free_t free,
-+		void *match_data)
-+{
-+	struct kunit_resource *resource;
-+
-+	spin_lock(&test->lock);
-+	resource = kunit_resource_find(test, match, free, match_data);
-+	if (resource)
-+		list_del(&resource->node);
-+	spin_unlock(&test->lock);
-+
-+	return resource;
-+}
-+
-+int kunit_resource_destroy(struct kunit *test,
-+			   kunit_resource_match_t match,
-+			   kunit_resource_free_t free,
-+			   void *match_data)
-+{
-+	struct kunit_resource *resource;
-+
-+	resource = kunit_resource_remove(test, match, free, match_data);
-+
-+	if (!resource)
-+		return -ENOENT;
-+
-+	kunit_resource_free(test, resource);
-+	return 0;
-+}
-+
-+struct kunit_kmalloc_params {
-+	size_t size;
-+	gfp_t gfp;
-+};
-+
-+static int kunit_kmalloc_init(struct kunit_resource *res, void *context)
-+{
-+	struct kunit_kmalloc_params *params = context;
-+
-+	res->allocation = kmalloc(params->size, params->gfp);
-+	if (!res->allocation)
-+		return -ENOMEM;
-+
-+	return 0;
-+}
-+
-+static void kunit_kmalloc_free(struct kunit_resource *res)
-+{
-+	kfree(res->allocation);
-+}
-+
-+void *kunit_kmalloc(struct kunit *test, size_t size, gfp_t gfp)
-+{
-+	struct kunit_kmalloc_params params = {
-+		.size = size,
-+		.gfp = gfp
-+	};
-+
-+	return kunit_alloc_resource(test,
-+				    kunit_kmalloc_init,
-+				    kunit_kmalloc_free,
-+				    gfp,
-+				    &params);
-+}
-+
-+void kunit_kfree(struct kunit *test, const void *ptr)
-+{
-+	int rc;
-+
-+	rc = kunit_resource_destroy(test,
-+				    kunit_resource_instance_match,
-+				    kunit_kmalloc_free,
-+				    (void *)ptr);
-+
-+	WARN_ON(rc);
-+}
-+
-+void kunit_cleanup(struct kunit *test)
-+{
-+	struct kunit_resource *resource;
-+
-+	/*
-+	 * test->resources is a stack - each allocation must be freed in the
-+	 * reverse order from which it was added since one resource may depend
-+	 * on another for its entire lifetime.
-+	 * Also, we cannot use the normal list_for_each constructs, even the
-+	 * safe ones because *arbitrary* nodes may be deleted when
-+	 * kunit_resource_free is called; the list_for_each_safe variants only
-+	 * protect against the current node being deleted, not the next.
-+	 */
-+	while (true) {
-+		spin_lock(&test->lock);
-+		if (list_empty(&test->resources)) {
-+			spin_unlock(&test->lock);
-+			break;
-+		}
-+		resource = list_last_entry(&test->resources,
-+					   struct kunit_resource,
-+					   node);
-+		list_del(&resource->node);
-+		spin_unlock(&test->lock);
-+
-+		kunit_resource_free(test, resource);
-+	}
-+}
-+
- void kunit_printk(const char *level,
- 		  const struct kunit *test,
- 		  const char *fmt, ...)
+ if __name__ == '__main__':
+-	main(sys.argv[1:], kunit_kernel.LinuxSourceTree())
++	main(sys.argv[1:])
+diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
+index 07c0abf2f47df..bf38768353313 100644
+--- a/tools/testing/kunit/kunit_kernel.py
++++ b/tools/testing/kunit/kunit_kernel.py
+@@ -14,6 +14,7 @@ import os
+ import kunit_config
+ 
+ KCONFIG_PATH = '.config'
++KUNITCONFIG_PATH = 'kunitconfig'
+ 
+ class ConfigError(Exception):
+ 	"""Represents an error trying to configure the Linux kernel."""
+@@ -81,7 +82,7 @@ class LinuxSourceTree(object):
+ 
+ 	def __init__(self):
+ 		self._kconfig = kunit_config.Kconfig()
+-		self._kconfig.read_from_file('kunitconfig')
++		self._kconfig.read_from_file(KUNITCONFIG_PATH)
+ 		self._ops = LinuxSourceTreeOperations()
+ 
+ 	def clean(self):
 -- 
 2.23.0.rc1.153.gdeed80330f-goog
 
