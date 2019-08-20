@@ -1,12 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from conuserg-11.nifty.com ([210.131.2.78])
+Received: from mail-qk1-x74a.google.com ([2607:f8b0:4864:20::74a])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hvmEB-00046v-Sh
- for linux-um@lists.infradead.org; Thu, 08 Aug 2019 17:29:29 +0000
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [PATCH] um: remove meaningless clearing of clean-files
-Date: Fri,  9 Aug 2019 02:28:43 +0900
-Message-Id: <20190808172843.1568-1-yamada.masahiro@socionext.com>
+ id 1i0DRF-00036y-F3
+ for linux-um@lists.infradead.org; Tue, 20 Aug 2019 23:21:18 +0000
+Received: by mail-qk1-x74a.google.com with SMTP id d203so229791qke.4
+ for <linux-um@lists.infradead.org>; Tue, 20 Aug 2019 16:21:16 -0700 (PDT)
+Date: Tue, 20 Aug 2019 16:20:36 -0700
+In-Reply-To: <20190820232046.50175-1-brendanhiggins@google.com>
+Message-Id: <20190820232046.50175-9-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20190820232046.50175-1-brendanhiggins@google.com>
+Subject: [PATCH v14 08/18] objtool: add kunit_try_catch_throw to the noreturn
+ list
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -15,34 +21,45 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
-Cc: Masahiro Yamada <yamada.masahiro@socionext.com>, linux-kernel@vger.kernel.org
+To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, kbuild test robot <lkp@intel.com>, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Fix the following warning seen on GCC 7.3:
+  kunit/test-test.o: warning: objtool: kunit_test_unsuccessful_try() falls through to next function kunit_test_catch()
+
+kunit_try_catch_throw is a function added in the following patch in this
+series; it allows KUnit, a unit testing framework for the kernel, to
+bail out of a broken test. As a consequence, it is a new __noreturn
+function that objtool thinks is broken (as seen above). So fix this
+warning by adding kunit_try_catch_throw to objtool's noreturn list.
+
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Link: https://www.spinics.net/lists/linux-kbuild/msg21708.html
+Cc: Peter Zijlstra <peterz@infradead.org>
 ---
+ tools/objtool/check.c | 1 +
+ 1 file changed, 1 insertion(+)
 
- arch/um/kernel/Makefile | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
-index 2f36d515762e..89afc54f8699 100644
---- a/arch/um/kernel/Makefile
-+++ b/arch/um/kernel/Makefile
-@@ -13,7 +13,6 @@ CPPFLAGS_vmlinux.lds := -DSTART=$(LDS_START)		\
-                         -DELF_FORMAT=$(LDS_ELF_FORMAT)	\
- 			$(LDS_EXTRA)
- extra-y := vmlinux.lds
--clean-files :=
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 176f2f0840609..0c8e17f946cda 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -145,6 +145,7 @@ static bool __dead_end_function(struct objtool_file *file, struct symbol *func,
+ 		"usercopy_abort",
+ 		"machine_real_restart",
+ 		"rewind_stack_do_exit",
++		"kunit_try_catch_throw",
+ 	};
  
- obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
- 	physmem.o process.o ptrace.o reboot.o sigio.o \
+ 	if (!func)
 -- 
-2.17.1
+2.23.0.rc1.153.gdeed80330f-goog
 
 
 _______________________________________________
