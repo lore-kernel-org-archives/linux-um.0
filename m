@@ -2,12 +2,14 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i17P3-0004SP-4D
- for linux-um@lists.infradead.org; Fri, 23 Aug 2019 11:06:46 +0000
+ id 1i174u-00053Y-2G
+ for linux-um@lists.infradead.org; Fri, 23 Aug 2019 10:45:59 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v2] arch: um: implement TRACE_IRQFLAGS_SUPPORT
-Date: Fri, 23 Aug 2019 13:06:38 +0200
-Message-Id: <20190823110638.12220-1-johannes@sipsolutions.net>
+Subject: [PATCH 4/4] arch: um: implement TRACE_IRQFLAGS_SUPPORT
+Date: Fri, 23 Aug 2019 12:44:29 +0200
+Message-Id: <20190823104429.11047-4-johannes@sipsolutions.net>
+In-Reply-To: <20190823104429.11047-1-johannes@sipsolutions.net>
+References: <20190823104429.11047-1-johannes@sipsolutions.net>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -36,19 +38,17 @@ Implement it now.
 Fixes: 711553efa5b8 ("[PATCH] uml: declare in Kconfig our partial LOCKDEP support")
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
-v2: remove some erroneous/superfluous um_trace_signals_on()/off() calls,
-    we only need this for the adjustment during pending signal handling.
----
  arch/um/include/shared/longjmp.h |  2 +-
  arch/um/include/shared/os.h      |  7 +++++
- arch/um/kernel/signal.c          | 30 ++++++++++++++++++++--
+ arch/um/kernel/process.c         |  2 ++
+ arch/um/kernel/signal.c          | 30 +++++++++++++++++++--
  arch/um/kernel/skas/mmu.c        |  4 +--
  arch/um/kernel/skas/process.c    |  2 +-
  arch/um/os-Linux/main.c          |  2 +-
  arch/um/os-Linux/sigio.c         |  6 ++---
- arch/um/os-Linux/signal.c        | 44 +++++++++++++++++++++++---------
+ arch/um/os-Linux/signal.c        | 46 +++++++++++++++++++++++---------
  arch/um/os-Linux/skas/process.c  | 12 ++++-----
- 9 files changed, 81 insertions(+), 28 deletions(-)
+ 10 files changed, 85 insertions(+), 28 deletions(-)
 
 diff --git a/arch/um/include/shared/longjmp.h b/arch/um/include/shared/longjmp.h
 index b3315c1f198b..85a1cc290ecb 100644
@@ -86,6 +86,19 @@ index da7ebbe4ebb3..72c22843ac9f 100644
 +extern void um_trace_signals_off(void);
 +
  #endif
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index 6bede7888fc2..30f8516eb2aa 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -127,6 +127,8 @@ void new_thread_handler(void)
+ 	fn = current->thread.request.u.thread.proc;
+ 	arg = current->thread.request.u.thread.arg;
+ 
++	um_trace_signals_on();
++
+ 	/*
+ 	 * callback returns only if the kernel thread execs a process
+ 	 */
 diff --git a/arch/um/kernel/signal.c b/arch/um/kernel/signal.c
 index 57acbd67d85d..1a8050bcd168 100644
 --- a/arch/um/kernel/signal.c
@@ -210,10 +223,19 @@ index 46e762f926eb..21b226aa1041 100644
  
  int add_sigio_fd(int fd)
 diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
-index 4cd88b5b9006..bde54c4a27da 100644
+index 4cd88b5b9006..d8c52ee3eb3a 100644
 --- a/arch/um/os-Linux/signal.c
 +++ b/arch/um/os-Linux/signal.c
-@@ -43,7 +43,7 @@ static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
+@@ -34,6 +34,8 @@ static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
+ 	struct uml_pt_regs r;
+ 	int save_errno = errno;
+ 
++	um_trace_signals_off();
++
+ 	r.is_user = 0;
+ 	if (sig == SIGSEGV) {
+ 		/* For segfaults, we want the data from the sigcontext. */
+@@ -43,7 +45,7 @@ static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
  
  	/* enable signals if sig isn't IRQ signal */
  	if ((sig != SIGIO) && (sig != SIGWINCH))
@@ -222,7 +244,7 @@ index 4cd88b5b9006..bde54c4a27da 100644
  
  	(*sig_info[sig])(sig, si, &r);
  
-@@ -76,11 +76,11 @@ void sig_handler(int sig, struct siginfo *si, mcontext_t *mc)
+@@ -76,11 +78,11 @@ void sig_handler(int sig, struct siginfo *si, mcontext_t *mc)
  		return;
  	}
  
@@ -236,7 +258,7 @@ index 4cd88b5b9006..bde54c4a27da 100644
  }
  
  static void timer_real_alarm_handler(mcontext_t *mc)
-@@ -104,7 +104,7 @@ void timer_alarm_handler(int sig, struct siginfo *unused_si, mcontext_t *mc)
+@@ -104,7 +106,7 @@ void timer_alarm_handler(int sig, struct siginfo *unused_si, mcontext_t *mc)
  		return;
  	}
  
@@ -245,7 +267,7 @@ index 4cd88b5b9006..bde54c4a27da 100644
  
  	signals_active |= SIGALRM_MASK;
  
-@@ -112,7 +112,7 @@ void timer_alarm_handler(int sig, struct siginfo *unused_si, mcontext_t *mc)
+@@ -112,7 +114,7 @@ void timer_alarm_handler(int sig, struct siginfo *unused_si, mcontext_t *mc)
  
  	signals_active &= ~SIGALRM_MASK;
  
@@ -254,7 +276,7 @@ index 4cd88b5b9006..bde54c4a27da 100644
  }
  
  void deliver_alarm(void) {
-@@ -253,6 +253,8 @@ void unblock_signals(void)
+@@ -253,6 +255,8 @@ void unblock_signals(void)
  	if (signals_enabled == 1)
  		return;
  
@@ -263,7 +285,7 @@ index 4cd88b5b9006..bde54c4a27da 100644
  	/*
  	 * We loop because the IRQ handler returns with interrupts off.  So,
  	 * interrupts may have arrived and we need to re-enable them and
-@@ -262,12 +264,9 @@ void unblock_signals(void)
+@@ -262,12 +266,9 @@ void unblock_signals(void)
  		/*
  		 * Save and reset save_pending after enabling signals.  This
  		 * way, signals_pending won't be changed while we're reading it.
@@ -278,7 +300,7 @@ index 4cd88b5b9006..bde54c4a27da 100644
  		 */
  		barrier();
  
-@@ -280,10 +279,13 @@ void unblock_signals(void)
+@@ -280,10 +281,13 @@ void unblock_signals(void)
  		/*
  		 * We have pending interrupts, so disable signals, as the
  		 * handlers expect them off when they are called.  They will
@@ -294,7 +316,7 @@ index 4cd88b5b9006..bde54c4a27da 100644
  
  		/*
  		 * Deal with SIGIO first because the alarm handler might
-@@ -306,6 +308,9 @@ void unblock_signals(void)
+@@ -306,6 +310,9 @@ void unblock_signals(void)
  		if (!(signals_pending & SIGIO_MASK) && (signals_active & SIGALRM_MASK))
  			return;
  
@@ -304,7 +326,7 @@ index 4cd88b5b9006..bde54c4a27da 100644
  	}
  }
  
-@@ -328,6 +333,21 @@ int set_signals(int enable)
+@@ -328,6 +335,21 @@ int set_signals(int enable)
  	return ret;
  }
  
