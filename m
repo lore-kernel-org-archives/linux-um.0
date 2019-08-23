@@ -2,12 +2,12 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i1IZU-0006TF-Ib
- for linux-um@lists.infradead.org; Fri, 23 Aug 2019 23:02:17 +0000
+ id 1i1IW6-00056S-4s
+ for linux-um@lists.infradead.org; Fri, 23 Aug 2019 22:58:48 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v2] arch: um: implement memory protection
-Date: Sat, 24 Aug 2019 01:02:11 +0200
-Message-Id: <20190823230211.23870-1-johannes@sipsolutions.net>
+Subject: [PATCH] arch: um: implement memory protection
+Date: Sat, 24 Aug 2019 00:58:31 +0200
+Message-Id: <20190823225831.23517-1-johannes@sipsolutions.net>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -45,15 +45,11 @@ crash with
 
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
-v2: include forgotten file
----
- arch/um/Kconfig                  |  3 ++
- arch/um/include/asm/pgtable.h    |  2 +
- arch/um/include/asm/set_memory.h |  1 +
- arch/um/kernel/dyn.lds.S         |  4 +-
- arch/um/kernel/mem.c             | 76 ++++++++++++++++++++++++++++++++
- 5 files changed, 84 insertions(+), 2 deletions(-)
- create mode 100644 arch/um/include/asm/set_memory.h
+ arch/um/Kconfig               |  3 ++
+ arch/um/include/asm/pgtable.h |  2 +
+ arch/um/kernel/dyn.lds.S      |  4 +-
+ arch/um/kernel/mem.c          | 76 +++++++++++++++++++++++++++++++++++
+ 4 files changed, 83 insertions(+), 2 deletions(-)
 
 diff --git a/arch/um/Kconfig b/arch/um/Kconfig
 index 3c3adfc486f2..e84264be26c9 100644
@@ -82,13 +78,6 @@ index b377df76cc28..0e6cda3516c6 100644
  /* If _PAGE_PRESENT is clear, we use these: */
  #define _PAGE_PROTNONE	0x010	/* if the user mapped it with PROT_NONE;
  				   pte_present gives true */
-diff --git a/arch/um/include/asm/set_memory.h b/arch/um/include/asm/set_memory.h
-new file mode 100644
-index 000000000000..24266c63720d
---- /dev/null
-+++ b/arch/um/include/asm/set_memory.h
-@@ -0,0 +1 @@
-+#include <asm-generic/set_memory.h>
 diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
 index c69d69ee96be..da6b42793e0a 100644
 --- a/arch/um/kernel/dyn.lds.S
