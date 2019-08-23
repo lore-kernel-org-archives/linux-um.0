@@ -2,12 +2,12 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i17YS-0001Ts-LR
- for linux-um@lists.infradead.org; Fri, 23 Aug 2019 11:16:30 +0000
+ id 1i17P3-0004SP-4D
+ for linux-um@lists.infradead.org; Fri, 23 Aug 2019 11:06:46 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v3] arch: um: implement TRACE_IRQFLAGS_SUPPORT
-Date: Fri, 23 Aug 2019 13:16:23 +0200
-Message-Id: <20190823111623.13312-1-johannes@sipsolutions.net>
+Subject: [PATCH v2] arch: um: implement TRACE_IRQFLAGS_SUPPORT
+Date: Fri, 23 Aug 2019 13:06:38 +0200
+Message-Id: <20190823110638.12220-1-johannes@sipsolutions.net>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -38,18 +38,17 @@ Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
 v2: remove some erroneous/superfluous um_trace_signals_on()/off() calls,
     we only need this for the adjustment during pending signal handling.
-v3: add back erroneously removed EXPORT_SYMBOLs
 ---
  arch/um/include/shared/longjmp.h |  2 +-
  arch/um/include/shared/os.h      |  7 +++++
- arch/um/kernel/signal.c          | 28 ++++++++++++++++++++
+ arch/um/kernel/signal.c          | 30 ++++++++++++++++++++--
  arch/um/kernel/skas/mmu.c        |  4 +--
  arch/um/kernel/skas/process.c    |  2 +-
  arch/um/os-Linux/main.c          |  2 +-
  arch/um/os-Linux/sigio.c         |  6 ++---
  arch/um/os-Linux/signal.c        | 44 +++++++++++++++++++++++---------
  arch/um/os-Linux/skas/process.c  | 12 ++++-----
- 9 files changed, 81 insertions(+), 26 deletions(-)
+ 9 files changed, 81 insertions(+), 28 deletions(-)
 
 diff --git a/arch/um/include/shared/longjmp.h b/arch/um/include/shared/longjmp.h
 index b3315c1f198b..85a1cc290ecb 100644
@@ -88,10 +87,10 @@ index da7ebbe4ebb3..72c22843ac9f 100644
 +
  #endif
 diff --git a/arch/um/kernel/signal.c b/arch/um/kernel/signal.c
-index 57acbd67d85d..3a8012520e22 100644
+index 57acbd67d85d..1a8050bcd168 100644
 --- a/arch/um/kernel/signal.c
 +++ b/arch/um/kernel/signal.c
-@@ -6,15 +6,43 @@
+@@ -6,14 +6,40 @@
  #include <linux/module.h>
  #include <linux/ptrace.h>
  #include <linux/sched.h>
@@ -103,9 +102,9 @@ index 57acbd67d85d..3a8012520e22 100644
  #include <kern_util.h>
 +#include <os.h>
  
- EXPORT_SYMBOL(block_signals);
- EXPORT_SYMBOL(unblock_signals);
- 
+-EXPORT_SYMBOL(block_signals);
+-EXPORT_SYMBOL(unblock_signals);
++
 +void block_signals_trace(void)
 +{
 +	block_signals();
@@ -131,10 +130,9 @@ index 57acbd67d85d..3a8012520e22 100644
 +	if (current_thread_info())
 +		trace_hardirqs_off();
 +}
-+
+ 
  /*
   * OK, we're invoking a handler
-  */
 diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
 index 29e7f5f9f188..ace71f805700 100644
 --- a/arch/um/kernel/skas/mmu.c
