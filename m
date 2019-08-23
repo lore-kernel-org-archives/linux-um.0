@@ -2,18 +2,12 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i19e0-0006Wk-P5
- for linux-um@lists.infradead.org; Fri, 23 Aug 2019 13:30:21 +0000
-Received: by sipsolutions.net with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <johannes@sipsolutions.net>) id 1i19dz-0005Dc-FT
- for linux-um@lists.infradead.org; Fri, 23 Aug 2019 15:30:19 +0200
-Message-ID: <80288c363d70b517004c61a02e1d5514f2769554.camel@sipsolutions.net>
-Subject: Re: [PATCH] arch: um: enable CONFIG_CONSTRUCTORS
+ id 1i19GU-0004qW-G0
+ for linux-um@lists.infradead.org; Fri, 23 Aug 2019 13:06:03 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Fri, 23 Aug 2019 15:30:18 +0200
-In-Reply-To: <20190823130557.15870-1-johannes@sipsolutions.net>
-References: <20190823130557.15870-1-johannes@sipsolutions.net>
+Subject: [PATCH] arch: um: enable CONFIG_CONSTRUCTORS
+Date: Fri, 23 Aug 2019 15:05:57 +0200
+Message-Id: <20190823130557.15870-1-johannes@sipsolutions.net>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -28,21 +22,66 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
 
-On Fri, 2019-08-23 at 15:05 +0200, Johannes Berg wrote:
-> 
-> -#ifdef CONFIG_CONSTRUCTORS
-> +#if defined(CONFIG_CONSTRUCTORS) && !defined(CONFIG_UML)
->  	ctor_fn_t *fn = (ctor_fn_t *) __ctors_start;
+From: Johannes Berg <johannes.berg@intel.com>
 
-Hmm, no, this doesn't work. I was trying to do this for KASAN, but libc
-calls this stuff WAY too early, and so KASAN just crashes.
+We do need to call the constructors for *modules*, even
+if libc calls the ones for the kernel binary itself, so
+allow enabling CONFIG_CONSTRUCTORS but skip the kernel.
 
-It *does* get called (only once), but much too early.
+Tested that it indeed doesn't work in modules, and does
+work after the fixes in both, with a few functions with
+__attribute__((constructor)) in both dynamic and static
+builds.
 
-Let's see if I can come up with a fix.
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+---
+ init/Kconfig        | 1 -
+ init/main.c         | 2 +-
+ kernel/gcov/Kconfig | 2 +-
+ 3 files changed, 2 insertions(+), 3 deletions(-)
 
-johannes
+diff --git a/init/Kconfig b/init/Kconfig
+index bd7d650d4a99..81293d78a6ad 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -48,7 +48,6 @@ config CC_DISABLE_WARN_MAYBE_UNINITIALIZED
+ 
+ config CONSTRUCTORS
+ 	bool
+-	depends on !UML
+ 
+ config IRQ_WORK
+ 	bool
+diff --git a/init/main.c b/init/main.c
+index 96f8d5af52d6..1e670be141c8 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -788,7 +788,7 @@ asmlinkage __visible void __init start_kernel(void)
+ /* Call all constructor functions linked into the kernel. */
+ static void __init do_ctors(void)
+ {
+-#ifdef CONFIG_CONSTRUCTORS
++#if defined(CONFIG_CONSTRUCTORS) && !defined(CONFIG_UML)
+ 	ctor_fn_t *fn = (ctor_fn_t *) __ctors_start;
+ 
+ 	for (; fn < (ctor_fn_t *) __ctors_end; fn++)
+diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
+index 3941a9c48f83..060e8e726755 100644
+--- a/kernel/gcov/Kconfig
++++ b/kernel/gcov/Kconfig
+@@ -4,7 +4,7 @@ menu "GCOV-based kernel profiling"
+ config GCOV_KERNEL
+ 	bool "Enable gcov-based kernel profiling"
+ 	depends on DEBUG_FS
+-	select CONSTRUCTORS if !UML
++	select CONSTRUCTORS
+ 	default n
+ 	---help---
+ 	This option enables gcov-based code profiling (e.g. for code coverage
+-- 
+2.20.1
 
 
 _______________________________________________
