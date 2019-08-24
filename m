@@ -1,16 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x649.google.com ([2607:f8b0:4864:20::649])
+Received: from mail-pl1-x64a.google.com ([2607:f8b0:4864:20::64a])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hxmCk-0002nl-2F
- for linux-um@lists.infradead.org; Wed, 14 Aug 2019 05:52:16 +0000
-Received: by mail-pl1-x649.google.com with SMTP id ci3so21601560plb.8
- for <linux-um@lists.infradead.org>; Tue, 13 Aug 2019 22:52:12 -0700 (PDT)
-Date: Tue, 13 Aug 2019 22:50:51 -0700
-In-Reply-To: <20190814055108.214253-1-brendanhiggins@google.com>
-Message-Id: <20190814055108.214253-2-brendanhiggins@google.com>
+ id 1i1Kwx-0003gO-S7
+ for linux-um@lists.infradead.org; Sat, 24 Aug 2019 01:34:42 +0000
+Received: by mail-pl1-x64a.google.com with SMTP id g7so3571519plm.8
+ for <linux-um@lists.infradead.org>; Fri, 23 Aug 2019 18:34:39 -0700 (PDT)
+Date: Fri, 23 Aug 2019 18:34:08 -0700
+In-Reply-To: <20190824013425.175645-1-brendanhiggins@google.com>
+Message-Id: <20190824013425.175645-2-brendanhiggins@google.com>
 Mime-Version: 1.0
-References: <20190814055108.214253-1-brendanhiggins@google.com>
-Subject: [PATCH v13 01/18] kunit: test: add KUnit test runner core
+References: <20190824013425.175645-1-brendanhiggins@google.com>
+Subject: [PATCH v15 01/18] kunit: test: add KUnit test runner core
 From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -42,11 +42,11 @@ Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
 Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
 Reviewed-by: Stephen Boyd <sboyd@kernel.org>
 ---
- include/kunit/test.h | 179 ++++++++++++++++++++++++++++++++++++++++
+ include/kunit/test.h | 188 ++++++++++++++++++++++++++++++++++++++++++
  kunit/Kconfig        |  17 ++++
  kunit/Makefile       |   1 +
  kunit/test.c         | 191 +++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 388 insertions(+)
+ 4 files changed, 397 insertions(+)
  create mode 100644 include/kunit/test.h
  create mode 100644 kunit/Kconfig
  create mode 100644 kunit/Makefile
@@ -54,10 +54,10 @@ Reviewed-by: Stephen Boyd <sboyd@kernel.org>
 
 diff --git a/include/kunit/test.h b/include/kunit/test.h
 new file mode 100644
-index 0000000000000..e0b34acb9ee4e
+index 000000000000..e30d1bf2fb68
 --- /dev/null
 +++ b/include/kunit/test.h
-@@ -0,0 +1,179 @@
+@@ -0,0 +1,188 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
 + * Base unit test (KUnit) API.
@@ -75,17 +75,19 @@ index 0000000000000..e0b34acb9ee4e
 +
 +/**
 + * struct kunit_case - represents an individual test case.
++ *
 + * @run_case: the function representing the actual test case.
-+ * @name: the name of the test case.
++ * @name:     the name of the test case.
 + *
-+ * A test case is a function with the signature, ``void (*)(struct kunit *)``
-+ * that makes expectations (see KUNIT_EXPECT_TRUE()) about code under test. Each
-+ * test case is associated with a &struct kunit_suite and will be run after the
-+ * suite's init function and followed by the suite's exit function.
++ * A test case is a function with the signature,
++ * ``void (*)(struct kunit *)`` that makes expectations (see
++ * KUNIT_EXPECT_TRUE()) about code under test. Each test case is associated
++ * with a &struct kunit_suite and will be run after the suite's init
++ * function and followed by the suite's exit function.
 + *
-+ * A test case should be static and should only be created with the KUNIT_CASE()
-+ * macro; additionally, every array of test cases should be terminated with an
-+ * empty test case.
++ * A test case should be static and should only be created with the
++ * KUNIT_CASE() macro; additionally, every array of test cases should be
++ * terminated with an empty test case.
 + *
 + * Example:
 + *
@@ -116,6 +118,7 @@ index 0000000000000..e0b34acb9ee4e
 +
 +/**
 + * KUNIT_CASE - A helper for creating a &struct kunit_case
++ *
 + * @test_name: a reference to a test case function.
 + *
 + * Takes a symbol for a function representing a test case and creates a
@@ -125,19 +128,20 @@ index 0000000000000..e0b34acb9ee4e
 +#define KUNIT_CASE(test_name) { .run_case = test_name, .name = #test_name }
 +
 +/**
-+ * struct kunit_suite - describes a related collection of &struct kunit_case s.
-+ * @name: the name of the test. Purely informational.
-+ * @init: called before every test case.
-+ * @exit: called after every test case.
-+ * @test_cases: a null terminated array of test cases.
++ * struct kunit_suite - describes a related collection of &struct kunit_case
++ *
++ * @name:	the name of the test. Purely informational.
++ * @init:	called before every test case.
++ * @exit:	called after every test case.
++ * @test_cases:	a null terminated array of test cases.
 + *
 + * A kunit_suite is a collection of related &struct kunit_case s, such that
-+ * @init is called before every test case and @exit is called after every test
-+ * case, similar to the notion of a *test fixture* or a *test class* in other
-+ * unit testing frameworks like JUnit or Googletest.
++ * @init is called before every test case and @exit is called after every
++ * test case, similar to the notion of a *test fixture* or a *test class*
++ * in other unit testing frameworks like JUnit or Googletest.
 + *
-+ * Every &struct kunit_case must be associated with a kunit_suite for KUnit to
-+ * run it.
++ * Every &struct kunit_case must be associated with a kunit_suite for KUnit
++ * to run it.
 + */
 +struct kunit_suite {
 +	const char name[256];
@@ -148,13 +152,14 @@ index 0000000000000..e0b34acb9ee4e
 +
 +/**
 + * struct kunit - represents a running instance of a test.
-+ * @priv: for user to store arbitrary data. Commonly used to pass data created
-+ * in the init function (see &struct kunit_suite).
 + *
-+ * Used to store information about the current context under which the test is
-+ * running. Most of this data is private and should only be accessed indirectly
-+ * via public functions; the one exception is @priv which can be used by the
-+ * test writer to store arbitrary data.
++ * @priv: for user to store arbitrary data. Commonly used to pass data
++ *	  created in the init function (see &struct kunit_suite).
++ *
++ * Used to store information about the current context under which the test
++ * is running. Most of this data is private and should only be accessed
++ * indirectly via public functions; the one exception is @priv which can be
++ * used by the test writer to store arbitrary data.
 + */
 +struct kunit {
 +	void *priv;
@@ -162,11 +167,11 @@ index 0000000000000..e0b34acb9ee4e
 +	/* private: internal use only. */
 +	const char *name; /* Read only after initialization! */
 +	/*
-+	 * success starts as true, and may only be set to false during a test
-+	 * case; thus, it is safe to update this across multiple threads using
-+	 * WRITE_ONCE; however, as a consequence, it may only be read after the
-+	 * test case finishes once all threads associated with the test case
-+	 * have terminated.
++	 * success starts as true, and may only be set to false during a
++	 * test case; thus, it is safe to update this across multiple
++	 * threads using WRITE_ONCE; however, as a consequence, it may only
++	 * be read after the test case finishes once all threads associated
++	 * with the test case have terminated.
 +	 */
 +	bool success; /* Read only after test_case finishes! */
 +};
@@ -177,69 +182,73 @@ index 0000000000000..e0b34acb9ee4e
 +
 +/**
 + * kunit_test_suite() - used to register a &struct kunit_suite with KUnit.
++ *
 + * @suite: a statically allocated &struct kunit_suite.
 + *
-+ * Registers @suite with the test framework. See &struct kunit_suite for more
-+ * information.
++ * Registers @suite with the test framework. See &struct kunit_suite for
++ * more information.
 + *
-+ * NOTE: Currently KUnit tests are all run as late_initcalls; this means that
-+ * they cannot test anything where tests must run at a different init phase. One
-+ * significant restriction resulting from this is that KUnit cannot reliably
-+ * test anything that is initialize in the late_init phase; another is that
-+ * KUnit is useless to test things that need to be run in an earlier init phase.
++ * NOTE: Currently KUnit tests are all run as late_initcalls; this means
++ * that they cannot test anything where tests must run at a different init
++ * phase. One significant restriction resulting from this is that KUnit
++ * cannot reliably test anything that is initialize in the late_init phase;
++ * another is that KUnit is useless to test things that need to be run in
++ * an earlier init phase.
++ *
++ * TODO(brendanhiggins@google.com): Don't run all KUnit tests as
++ * late_initcalls.  I have some future work planned to dispatch all KUnit
++ * tests from the same place, and at the very least to do so after
++ * everything else is definitely initialized.
 + */
 +#define kunit_test_suite(suite)						       \
-+		/*
-+		 * TODO(brendanhiggins@google.com): Don't run all KUnit tests as
-+		 * late_initcalls.  I have some future work planned to dispatch
-+		 * all KUnit tests from the same place, and at the very least to
-+		 * do so after everything else is definitely initialized.
-+		 */							       \
-+		static int kunit_suite_init##suite(void)		       \
-+		{							       \
-+			return kunit_run_tests(&suite);			       \
-+		}							       \
-+		late_initcall(kunit_suite_init##suite)
++	static int kunit_suite_init##suite(void)			       \
++	{								       \
++		return kunit_run_tests(&suite);				       \
++	}								       \
++	late_initcall(kunit_suite_init##suite)
 +
 +void __printf(3, 4) kunit_printk(const char *level,
 +				 const struct kunit *test,
 +				 const char *fmt, ...);
 +
 +/**
-+ * kunit_info() - Prints an INFO level message associated with the current test.
-+ * @test: The test context object.
-+ * @fmt: A printk() style format string.
++ * kunit_info() - Prints an INFO level message associated with @test.
 + *
-+ * Prints an info level message associated with the test suite being run. Takes
-+ * a variable number of format parameters just like printk().
++ * @test: The test context object.
++ * @fmt:  A printk() style format string.
++ *
++ * Prints an info level message associated with the test suite being run.
++ * Takes a variable number of format parameters just like printk().
 + */
 +#define kunit_info(test, fmt, ...) \
-+		kunit_printk(KERN_INFO, test, fmt, ##__VA_ARGS__)
++	kunit_printk(KERN_INFO, test, fmt, ##__VA_ARGS__)
 +
 +/**
-+ * kunit_warn() - Prints a WARN level message associated with the current test.
++ * kunit_warn() - Prints a WARN level message associated with @test.
++ *
 + * @test: The test context object.
-+ * @fmt: A printk() style format string.
++ * @fmt:  A printk() style format string.
 + *
 + * Prints a warning level message.
 + */
 +#define kunit_warn(test, fmt, ...) \
-+		kunit_printk(KERN_WARNING, test, fmt, ##__VA_ARGS__)
++	kunit_printk(KERN_WARNING, test, fmt, ##__VA_ARGS__)
 +
 +/**
-+ * kunit_err() - Prints an ERROR level message associated with the current test.
++ * kunit_err() - Prints an ERROR level message associated with @test.
++ *
 + * @test: The test context object.
-+ * @fmt: A printk() style format string.
++ * @fmt:  A printk() style format string.
 + *
 + * Prints an error level message.
 + */
 +#define kunit_err(test, fmt, ...) \
-+		kunit_printk(KERN_ERR, test, fmt, ##__VA_ARGS__)
++	kunit_printk(KERN_ERR, test, fmt, ##__VA_ARGS__)
 +
 +#endif /* _KUNIT_TEST_H */
 diff --git a/kunit/Kconfig b/kunit/Kconfig
 new file mode 100644
-index 0000000000000..330ae83527c23
+index 000000000000..330ae83527c2
 --- /dev/null
 +++ b/kunit/Kconfig
 @@ -0,0 +1,17 @@
@@ -262,14 +271,14 @@ index 0000000000000..330ae83527c23
 +endmenu
 diff --git a/kunit/Makefile b/kunit/Makefile
 new file mode 100644
-index 0000000000000..5efdc4dea2c08
+index 000000000000..5efdc4dea2c0
 --- /dev/null
 +++ b/kunit/Makefile
 @@ -0,0 +1 @@
 +obj-$(CONFIG_KUNIT) +=			test.o
 diff --git a/kunit/test.c b/kunit/test.c
 new file mode 100644
-index 0000000000000..d3dda359f99b1
+index 000000000000..d3dda359f99b
 --- /dev/null
 +++ b/kunit/test.c
 @@ -0,0 +1,191 @@
@@ -465,7 +474,7 @@ index 0000000000000..d3dda359f99b1
 +	va_end(args);
 +}
 -- 
-2.23.0.rc1.153.gdeed80330f-goog
+2.23.0.187.g17f5b7556c-goog
 
 
 _______________________________________________
