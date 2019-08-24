@@ -1,16 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab6.miniserver.com ([5.153.251.140]
- helo=www.kot-begemot.co.uk)
+Received: from mail-pl1-x649.google.com ([2607:f8b0:4864:20::649])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hvzVl-0001zL-9U
- for linux-um@lists.infradead.org; Fri, 09 Aug 2019 07:40:31 +0000
-From: anton.ivanov@cambridgegreys.com
-Subject: [PATCHv4 1/4] um: Add legacy tap support and rename existing vector
- to hybrid
-Date: Fri,  9 Aug 2019 08:40:17 +0100
-Message-Id: <20190809074020.14351-2-anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20190809074020.14351-1-anton.ivanov@cambridgegreys.com>
-References: <20190809074020.14351-1-anton.ivanov@cambridgegreys.com>
+ id 1i1Kx4-0003iS-B9
+ for linux-um@lists.infradead.org; Sat, 24 Aug 2019 01:34:48 +0000
+Received: by mail-pl1-x649.google.com with SMTP id x5so6864357pln.5
+ for <linux-um@lists.infradead.org>; Fri, 23 Aug 2019 18:34:45 -0700 (PDT)
+Date: Fri, 23 Aug 2019 18:34:10 -0700
+In-Reply-To: <20190824013425.175645-1-brendanhiggins@google.com>
+Message-Id: <20190824013425.175645-4-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20190824013425.175645-1-brendanhiggins@google.com>
+Subject: [PATCH v15 03/18] kunit: test: add string_stream a std::stream like
+ string builder
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -19,408 +21,323 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, Stephen Boyd <swboyd@chromium.org>, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+A number of test features need to do pretty complicated string printing
+where it may not be possible to rely on a single preallocated string
+with parameters.
 
-1. Adds legacy tap support
-2. Renames tap+raw as hybrid
+So provide a library for constructing the string as you go similar to
+C++'s std::string. string_stream is really just a string builder,
+nothing more.
 
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 ---
- arch/um/drivers/vector_kern.c       |   2 +
- arch/um/drivers/vector_transports.c |  29 +++++-
- arch/um/drivers/vector_user.c       | 203 +++++++++++++++++++++---------------
- arch/um/drivers/vector_user.h       |   4 +-
- 4 files changed, 151 insertions(+), 87 deletions(-)
+ include/kunit/string-stream.h |  51 ++++++++
+ kunit/Makefile                |   3 +-
+ kunit/string-stream.c         | 217 ++++++++++++++++++++++++++++++++++
+ 3 files changed, 270 insertions(+), 1 deletion(-)
+ create mode 100644 include/kunit/string-stream.h
+ create mode 100644 kunit/string-stream.c
 
-diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-index e190e4ca52e1..8fa094770965 100644
---- a/arch/um/drivers/vector_kern.c
-+++ b/arch/um/drivers/vector_kern.c
-@@ -186,6 +186,8 @@ static int get_transport_options(struct arglist *def)
- 
- 
- 	if (strncmp(transport, TRANS_TAP, TRANS_TAP_LEN) == 0)
-+		return 0;
-+	if (strncmp(transport, TRANS_HYBRID, TRANS_HYBRID_LEN) == 0)
- 		return (vec_rx | VECTOR_BPF);
- 	if (strncmp(transport, TRANS_RAW, TRANS_RAW_LEN) == 0)
- 		return (vec_rx | vec_tx | VECTOR_QDISC_BYPASS);
-diff --git a/arch/um/drivers/vector_transports.c b/arch/um/drivers/vector_transports.c
-index 77e4ebc206ae..2999f3bd1781 100644
---- a/arch/um/drivers/vector_transports.c
-+++ b/arch/um/drivers/vector_transports.c
-@@ -418,7 +418,7 @@ static int build_raw_transport_data(struct vector_private *vp)
- 	return 0;
- }
- 
--static int build_tap_transport_data(struct vector_private *vp)
-+static int build_hybrid_transport_data(struct vector_private *vp)
- {
- 	if (uml_raw_enable_vnet_headers(vp->fds->rx_fd)) {
- 		vp->form_header = &raw_form_header;
-@@ -432,7 +432,7 @@ static int build_tap_transport_data(struct vector_private *vp)
- 				NETIF_F_TSO | NETIF_F_GSO | NETIF_F_GRO);
- 		netdev_info(
- 			vp->dev,
--			"tap/raw: using vnet headers for tso and tx/rx checksum"
-+			"tap/raw hybrid: using vnet headers for tso and tx/rx checksum"
- 		);
- 	} else {
- 		return 0; /* do not try to enable tap too if raw failed */
-@@ -442,6 +442,29 @@ static int build_tap_transport_data(struct vector_private *vp)
- 	return -1;
- }
- 
-+static int build_tap_transport_data(struct vector_private *vp)
+diff --git a/include/kunit/string-stream.h b/include/kunit/string-stream.h
+new file mode 100644
+index 000000000000..fe98a00b75a9
+--- /dev/null
++++ b/include/kunit/string-stream.h
+@@ -0,0 +1,51 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * C++ stream style string builder used in KUnit for building messages.
++ *
++ * Copyright (C) 2019, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++
++#ifndef _KUNIT_STRING_STREAM_H
++#define _KUNIT_STRING_STREAM_H
++
++#include <linux/spinlock.h>
++#include <linux/types.h>
++#include <stdarg.h>
++
++struct string_stream_fragment {
++	struct kunit *test;
++	struct list_head node;
++	char *fragment;
++};
++
++struct string_stream {
++	size_t length;
++	struct list_head fragments;
++	/* length and fragments are protected by this lock */
++	spinlock_t lock;
++	struct kunit *test;
++	gfp_t gfp;
++};
++
++struct kunit;
++
++struct string_stream *alloc_string_stream(struct kunit *test, gfp_t gfp);
++
++int __printf(2, 3) string_stream_add(struct string_stream *stream,
++				     const char *fmt, ...);
++
++int string_stream_vadd(struct string_stream *stream,
++		       const char *fmt,
++		       va_list args);
++
++char *string_stream_get_string(struct string_stream *stream);
++
++int string_stream_append(struct string_stream *stream,
++			 struct string_stream *other);
++
++bool string_stream_is_empty(struct string_stream *stream);
++
++int string_stream_destroy(struct string_stream *stream);
++
++#endif /* _KUNIT_STRING_STREAM_H */
+diff --git a/kunit/Makefile b/kunit/Makefile
+index 5efdc4dea2c0..275b565a0e81 100644
+--- a/kunit/Makefile
++++ b/kunit/Makefile
+@@ -1 +1,2 @@
+-obj-$(CONFIG_KUNIT) +=			test.o
++obj-$(CONFIG_KUNIT) +=			test.o \
++					string-stream.o
+diff --git a/kunit/string-stream.c b/kunit/string-stream.c
+new file mode 100644
+index 000000000000..e6d17aacca30
+--- /dev/null
++++ b/kunit/string-stream.c
+@@ -0,0 +1,217 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * C++ stream style string builder used in KUnit for building messages.
++ *
++ * Copyright (C) 2019, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++
++#include <kunit/string-stream.h>
++#include <kunit/test.h>
++#include <linux/list.h>
++#include <linux/slab.h>
++
++struct string_stream_fragment_alloc_context {
++	struct kunit *test;
++	int len;
++	gfp_t gfp;
++};
++
++static int string_stream_fragment_init(struct kunit_resource *res,
++				       void *context)
 +{
-+	/* "Pure" tap uses the same fd for rx and tx */
-+	if (uml_tap_enable_vnet_headers(vp->fds->tx_fd)) {
-+		vp->form_header = &raw_form_header;
-+		vp->verify_header = &raw_verify_header;
-+		vp->header_size = sizeof(struct virtio_net_hdr);
-+		vp->rx_header_size = sizeof(struct virtio_net_hdr);
-+		vp->dev->hw_features |=
-+			(NETIF_F_TSO | NETIF_F_GSO | NETIF_F_GRO);
-+		vp->dev->features |=
-+			(NETIF_F_RXCSUM | NETIF_F_HW_CSUM |
-+				NETIF_F_TSO | NETIF_F_GSO | NETIF_F_GRO);
-+		netdev_info(
-+			vp->dev,
-+			"tap: using vnet headers for tso and tx/rx checksum"
-+		);
-+		return 0;
-+	}
-+	return -1;
++	struct string_stream_fragment_alloc_context *ctx = context;
++	struct string_stream_fragment *frag;
++
++	frag = kunit_kzalloc(ctx->test, sizeof(*frag), ctx->gfp);
++	if (!frag)
++		return -ENOMEM;
++
++	frag->test = ctx->test;
++	frag->fragment = kunit_kmalloc(ctx->test, ctx->len, ctx->gfp);
++	if (!frag->fragment)
++		return -ENOMEM;
++
++	res->allocation = frag;
++
++	return 0;
 +}
 +
++static void string_stream_fragment_free(struct kunit_resource *res)
++{
++	struct string_stream_fragment *frag = res->allocation;
 +
- int build_transport_data(struct vector_private *vp)
- {
- 	char *transport = uml_vector_fetch_arg(vp->parsed, "transport");
-@@ -454,6 +477,8 @@ int build_transport_data(struct vector_private *vp)
- 		return build_raw_transport_data(vp);
- 	if (strncmp(transport, TRANS_TAP, TRANS_TAP_LEN) == 0)
- 		return build_tap_transport_data(vp);
-+	if (strncmp(transport, TRANS_HYBRID, TRANS_HYBRID_LEN) == 0)
-+		return build_hybrid_transport_data(vp);
- 	return 0;
- }
- 
-diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
-index b3f7b3ca896d..0ada22f82965 100644
---- a/arch/um/drivers/vector_user.c
-+++ b/arch/um/drivers/vector_user.c
-@@ -114,12 +114,76 @@ struct arglist *uml_parse_vector_ifspec(char *arg)
- 
- #define PATH_NET_TUN "/dev/net/tun"
- 
--static struct vector_fds *user_init_tap_fds(struct arglist *ifspec)
-+
-+static int create_tap_fd(char *iface)
- {
- 	struct ifreq ifr;
- 	int fd = -1;
--	struct sockaddr_ll sock;
- 	int err = -ENOMEM, offload;
-+
-+	fd = open(PATH_NET_TUN, O_RDWR);
-+	if (fd < 0) {
-+		printk(UM_KERN_ERR "uml_tap: failed to open tun device\n");
-+		goto tap_fd_cleanup;
-+	}
-+	memset(&ifr, 0, sizeof(ifr));
-+	ifr.ifr_flags = IFF_TAP | IFF_NO_PI | IFF_VNET_HDR;
-+	strncpy((char *)&ifr.ifr_name, iface, sizeof(ifr.ifr_name) - 1);
-+
-+	err = ioctl(fd, TUNSETIFF, (void *) &ifr);
-+	if (err != 0) {
-+		printk(UM_KERN_ERR "uml_tap: failed to select tap interface\n");
-+		goto tap_fd_cleanup;
-+	}
-+
-+	offload = TUN_F_CSUM | TUN_F_TSO4 | TUN_F_TSO6;
-+	ioctl(fd, TUNSETOFFLOAD, offload);
-+	return fd;
-+tap_fd_cleanup:
-+	if (fd >= 0)
-+		os_close_file(fd);
-+	return err;
++	list_del(&frag->node);
++	kunit_kfree(frag->test, frag->fragment);
++	kunit_kfree(frag->test, frag);
 +}
 +
-+static int create_raw_fd(char *iface, int flags, int proto)
++static struct string_stream_fragment *alloc_string_stream_fragment(
++		struct kunit *test, int len, gfp_t gfp)
 +{
-+	struct ifreq ifr;
-+	int fd = -1;
-+	struct sockaddr_ll sock;
-+	int err = -ENOMEM;
++	struct string_stream_fragment_alloc_context context = {
++		.test = test,
++		.len = len,
++		.gfp = gfp
++	};
 +
-+	fd = socket(AF_PACKET, SOCK_RAW, flags);
-+	if (fd == -1) {
-+		err = -errno;
-+		goto raw_fd_cleanup;
-+	}
-+	memset(&ifr, 0, sizeof(ifr));
-+	strncpy((char *)&ifr.ifr_name, iface, sizeof(ifr.ifr_name) - 1);
-+	if (ioctl(fd, SIOCGIFINDEX, (void *) &ifr) < 0) {
-+		err = -errno;
-+		goto raw_fd_cleanup;
-+	}
-+
-+	sock.sll_family = AF_PACKET;
-+	sock.sll_protocol = htons(proto);
-+	sock.sll_ifindex = ifr.ifr_ifindex;
-+
-+	if (bind(fd,
-+		(struct sockaddr *) &sock, sizeof(struct sockaddr_ll)) < 0) {
-+		err = -errno;
-+		goto raw_fd_cleanup;
-+	}
-+	return fd;
-+raw_fd_cleanup:
-+	printk(UM_KERN_ERR "user_init_raw: init failed, error %d", err);
-+	if (fd >= 0)
-+		os_close_file(fd);
-+	return err;
++	return kunit_alloc_resource(test,
++				    string_stream_fragment_init,
++				    string_stream_fragment_free,
++				    gfp,
++				    &context);
 +}
 +
-+static struct vector_fds *user_init_tap_fds(struct arglist *ifspec)
++static int string_stream_fragment_destroy(struct string_stream_fragment *frag)
 +{
-+	int fd = -1;
- 	char *iface;
- 	struct vector_fds *result = NULL;
- 
-@@ -141,117 +205,88 @@ static struct vector_fds *user_init_tap_fds(struct arglist *ifspec)
- 
- 	/* TAP */
- 
--	fd = open(PATH_NET_TUN, O_RDWR);
-+	fd = create_tap_fd(iface);
- 	if (fd < 0) {
--		printk(UM_KERN_ERR "uml_tap: failed to open tun device\n");
-+		printk(UM_KERN_ERR "uml_tap: failed to create tun interface\n");
- 		goto tap_cleanup;
- 	}
- 	result->tx_fd = fd;
--	memset(&ifr, 0, sizeof(ifr));
--	ifr.ifr_flags = IFF_TAP | IFF_NO_PI | IFF_VNET_HDR;
--	strncpy((char *)&ifr.ifr_name, iface, sizeof(ifr.ifr_name) - 1);
-+	result->rx_fd = fd;
++	return kunit_resource_destroy(frag->test,
++				      kunit_resource_instance_match,
++				      string_stream_fragment_free,
++				      frag);
++}
++
++int string_stream_vadd(struct string_stream *stream,
++		       const char *fmt,
++		       va_list args)
++{
++	struct string_stream_fragment *frag_container;
++	int len;
++	va_list args_for_counting;
++
++	/* Make a copy because `vsnprintf` could change it */
++	va_copy(args_for_counting, args);
++
++	/* Need space for null byte. */
++	len = vsnprintf(NULL, 0, fmt, args_for_counting) + 1;
++
++	va_end(args_for_counting);
++
++	frag_container = alloc_string_stream_fragment(stream->test,
++						      len,
++						      stream->gfp);
++	if (!frag_container)
++		return -ENOMEM;
++
++	len = vsnprintf(frag_container->fragment, len, fmt, args);
++	spin_lock(&stream->lock);
++	stream->length += len;
++	list_add_tail(&frag_container->node, &stream->fragments);
++	spin_unlock(&stream->lock);
++
++	return 0;
++}
++
++int string_stream_add(struct string_stream *stream, const char *fmt, ...)
++{
++	va_list args;
++	int result;
++
++	va_start(args, fmt);
++	result = string_stream_vadd(stream, fmt, args);
++	va_end(args);
++
 +	return result;
-+tap_cleanup:
-+	printk(UM_KERN_ERR "user_init_tap: init failed, error %d", fd);
-+	if (result != NULL)
-+		kfree(result);
-+	return NULL;
 +}
- 
--	err = ioctl(fd, TUNSETIFF, (void *) &ifr);
--	if (err != 0) {
--		printk(UM_KERN_ERR "uml_tap: failed to select tap interface\n");
--		goto tap_cleanup;
-+static struct vector_fds *user_init_hybrid_fds(struct arglist *ifspec)
++
++static void string_stream_clear(struct string_stream *stream)
 +{
-+	char *iface;
-+	struct vector_fds *result = NULL;
++	struct string_stream_fragment *frag_container, *frag_container_safe;
 +
-+	iface = uml_vector_fetch_arg(ifspec, TOKEN_IFNAME);
-+	if (iface == NULL) {
-+		printk(UM_KERN_ERR "uml_tap: failed to parse interface spec\n");
-+		goto hybrid_cleanup;
- 	}
- 
--	offload = TUN_F_CSUM | TUN_F_TSO4 | TUN_F_TSO6;
--	ioctl(fd, TUNSETOFFLOAD, offload);
-+	result = uml_kmalloc(sizeof(struct vector_fds), UM_GFP_KERNEL);
-+	if (result == NULL) {
-+		printk(UM_KERN_ERR "uml_tap: failed to allocate file descriptors\n");
-+		goto hybrid_cleanup;
++	spin_lock(&stream->lock);
++	list_for_each_entry_safe(frag_container,
++				 frag_container_safe,
++				 &stream->fragments,
++				 node) {
++		string_stream_fragment_destroy(frag_container);
 +	}
-+	result->rx_fd = -1;
-+	result->tx_fd = -1;
-+	result->remote_addr = NULL;
-+	result->remote_addr_size = 0;
- 
--	/* RAW */
-+	/* TAP */
- 
--	fd = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
--	if (fd == -1) {
--		printk(UM_KERN_ERR
--			"uml_tap: failed to create socket: %i\n", -errno);
--		goto tap_cleanup;
--	}
--	result->rx_fd = fd;
--	memset(&ifr, 0, sizeof(ifr));
--	strncpy((char *)&ifr.ifr_name, iface, sizeof(ifr.ifr_name) - 1);
--	if (ioctl(fd, SIOCGIFINDEX, (void *) &ifr) < 0) {
--		printk(UM_KERN_ERR
--			"uml_tap: failed to set interface: %i\n", -errno);
--		goto tap_cleanup;
-+	result->tx_fd = create_tap_fd(iface);
-+	if (result->tx_fd < 0) {
-+		printk(UM_KERN_ERR "uml_tap: failed to create tun interface: %i\n", result->tx_fd);
-+		goto hybrid_cleanup;
- 	}
- 
--	sock.sll_family = AF_PACKET;
--	sock.sll_protocol = htons(ETH_P_ALL);
--	sock.sll_ifindex = ifr.ifr_ifindex;
-+	/* RAW */
- 
--	if (bind(fd,
--		(struct sockaddr *) &sock, sizeof(struct sockaddr_ll)) < 0) {
-+	result->rx_fd = create_raw_fd(iface, ETH_P_ALL, ETH_P_ALL);
-+	if (result->rx_fd == -1) {
- 		printk(UM_KERN_ERR
--			"user_init_tap: failed to bind raw pair, err %d\n",
--				-errno);
--		goto tap_cleanup;
-+			"uml_tap: failed to create paired raw socket: %i\n", result->rx_fd);
-+		goto hybrid_cleanup;
- 	}
- 	return result;
--tap_cleanup:
--	printk(UM_KERN_ERR "user_init_tap: init failed, error %d", err);
--	if (result != NULL) {
--		if (result->rx_fd >= 0)
--			os_close_file(result->rx_fd);
--		if (result->tx_fd >= 0)
--			os_close_file(result->tx_fd);
-+hybrid_cleanup:
-+	printk(UM_KERN_ERR "user_init_hybrid: init failed");
-+	if (result != NULL)
- 		kfree(result);
--	}
- 	return NULL;
- }
- 
- 
- static struct vector_fds *user_init_raw_fds(struct arglist *ifspec)
- {
--	struct ifreq ifr;
- 	int rxfd = -1, txfd = -1;
--	struct sockaddr_ll sock;
- 	int err = -ENOMEM;
- 	char *iface;
- 	struct vector_fds *result = NULL;
- 
- 	iface = uml_vector_fetch_arg(ifspec, TOKEN_IFNAME);
- 	if (iface == NULL)
--		goto cleanup;
-+		goto raw_cleanup;
- 
--	rxfd = socket(AF_PACKET, SOCK_RAW, ETH_P_ALL);
-+	rxfd = create_raw_fd(iface, ETH_P_ALL, ETH_P_ALL);
- 	if (rxfd == -1) {
- 		err = -errno;
--		goto cleanup;
-+		goto raw_cleanup;
- 	}
--	txfd = socket(AF_PACKET, SOCK_RAW, 0); /* Turn off RX on this fd */
-+	txfd = create_raw_fd(iface, 0, ETH_P_IP); /* Turn off RX on this fd */
- 	if (txfd == -1) {
- 		err = -errno;
--		goto cleanup;
--	}
--	memset(&ifr, 0, sizeof(ifr));
--	strncpy((char *)&ifr.ifr_name, iface, sizeof(ifr.ifr_name) - 1);
--	if (ioctl(rxfd, SIOCGIFINDEX, (void *) &ifr) < 0) {
--		err = -errno;
--		goto cleanup;
--	}
--
--	sock.sll_family = AF_PACKET;
--	sock.sll_protocol = htons(ETH_P_ALL);
--	sock.sll_ifindex = ifr.ifr_ifindex;
--
--	if (bind(rxfd,
--		(struct sockaddr *) &sock, sizeof(struct sockaddr_ll)) < 0) {
--		err = -errno;
--		goto cleanup;
-+		goto raw_cleanup;
- 	}
--
--	sock.sll_family = AF_PACKET;
--	sock.sll_protocol = htons(ETH_P_IP);
--	sock.sll_ifindex = ifr.ifr_ifindex;
--
--	if (bind(txfd,
--		(struct sockaddr *) &sock, sizeof(struct sockaddr_ll)) < 0) {
--		err = -errno;
--		goto cleanup;
--	}
--
- 	result = uml_kmalloc(sizeof(struct vector_fds), UM_GFP_KERNEL);
- 	if (result != NULL) {
- 		result->rx_fd = rxfd;
-@@ -260,13 +295,10 @@ static struct vector_fds *user_init_raw_fds(struct arglist *ifspec)
- 		result->remote_addr_size = 0;
- 	}
- 	return result;
--cleanup:
-+raw_cleanup:
- 	printk(UM_KERN_ERR "user_init_raw: init failed, error %d", err);
--	if (rxfd >= 0)
--		os_close_file(rxfd);
--	if (txfd >= 0)
--		os_close_file(txfd);
--	kfree(result);
-+	if (result != NULL)
-+		kfree(result);
- 	return NULL;
- }
- 
-@@ -456,6 +488,8 @@ struct vector_fds *uml_vector_user_open(
- 	}
- 	if (strncmp(transport, TRANS_RAW, TRANS_RAW_LEN) == 0)
- 		return user_init_raw_fds(parsed);
-+	if (strncmp(transport, TRANS_HYBRID, TRANS_HYBRID_LEN) == 0)
-+		return user_init_hybrid_fds(parsed);
- 	if (strncmp(transport, TRANS_TAP, TRANS_TAP_LEN) == 0)
- 		return user_init_tap_fds(parsed);
- 	if (strncmp(transport, TRANS_GRE, TRANS_GRE_LEN) == 0)
-@@ -482,8 +516,9 @@ int uml_vector_sendmsg(int fd, void *hdr, int flags)
- int uml_vector_recvmsg(int fd, void *hdr, int flags)
- {
- 	int n;
-+	struct msghdr *msg = (struct msghdr *) hdr;
- 
--	CATCH_EINTR(n = recvmsg(fd, (struct msghdr *) hdr,  flags));
-+	CATCH_EINTR(n = readv(fd, msg->msg_iov, msg->msg_iovlen));
- 	if ((n < 0) && (errno == EAGAIN))
- 		return 0;
- 	if (n >= 0)
-diff --git a/arch/um/drivers/vector_user.h b/arch/um/drivers/vector_user.h
-index d7cbff73b7ff..6bf50cf78ad0 100644
---- a/arch/um/drivers/vector_user.h
-+++ b/arch/um/drivers/vector_user.h
-@@ -16,13 +16,15 @@
- #define TRANS_TAP "tap"
- #define TRANS_TAP_LEN strlen(TRANS_TAP)
- 
--
- #define TRANS_GRE "gre"
- #define TRANS_GRE_LEN strlen(TRANS_RAW)
- 
- #define TRANS_L2TPV3 "l2tpv3"
- #define TRANS_L2TPV3_LEN strlen(TRANS_L2TPV3)
- 
-+#define TRANS_HYBRID "hybrid"
-+#define TRANS_HYBRID_LEN strlen(TRANS_HYBRID)
++	stream->length = 0;
++	spin_unlock(&stream->lock);
++}
 +
- #ifndef IPPROTO_GRE
- #define IPPROTO_GRE 0x2F
- #endif
++char *string_stream_get_string(struct string_stream *stream)
++{
++	struct string_stream_fragment *frag_container;
++	size_t buf_len = stream->length + 1; /* +1 for null byte. */
++	char *buf;
++
++	buf = kunit_kzalloc(stream->test, buf_len, stream->gfp);
++	if (!buf)
++		return NULL;
++
++	spin_lock(&stream->lock);
++	list_for_each_entry(frag_container, &stream->fragments, node)
++		strlcat(buf, frag_container->fragment, buf_len);
++	spin_unlock(&stream->lock);
++
++	return buf;
++}
++
++int string_stream_append(struct string_stream *stream,
++			 struct string_stream *other)
++{
++	const char *other_content;
++
++	other_content = string_stream_get_string(other);
++
++	if (!other_content)
++		return -ENOMEM;
++
++	return string_stream_add(stream, other_content);
++}
++
++bool string_stream_is_empty(struct string_stream *stream)
++{
++	return list_empty(&stream->fragments);
++}
++
++struct string_stream_alloc_context {
++	struct kunit *test;
++	gfp_t gfp;
++};
++
++static int string_stream_init(struct kunit_resource *res, void *context)
++{
++	struct string_stream *stream;
++	struct string_stream_alloc_context *ctx = context;
++
++	stream = kunit_kzalloc(ctx->test, sizeof(*stream), ctx->gfp);
++	if (!stream)
++		return -ENOMEM;
++
++	res->allocation = stream;
++	stream->gfp = ctx->gfp;
++	stream->test = ctx->test;
++	INIT_LIST_HEAD(&stream->fragments);
++	spin_lock_init(&stream->lock);
++
++	return 0;
++}
++
++static void string_stream_free(struct kunit_resource *res)
++{
++	struct string_stream *stream = res->allocation;
++
++	string_stream_clear(stream);
++}
++
++struct string_stream *alloc_string_stream(struct kunit *test, gfp_t gfp)
++{
++	struct string_stream_alloc_context context = {
++		.test = test,
++		.gfp = gfp
++	};
++
++	return kunit_alloc_resource(test,
++				    string_stream_init,
++				    string_stream_free,
++				    gfp,
++				    &context);
++}
++
++int string_stream_destroy(struct string_stream *stream)
++{
++	return kunit_resource_destroy(stream->test,
++				      kunit_resource_instance_match,
++				      string_stream_free,
++				      stream);
++}
 -- 
-2.11.0
+2.23.0.187.g17f5b7556c-goog
 
 
 _______________________________________________
