@@ -1,880 +1,1036 @@
-Return-Path: <linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org>
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v5 06/18] compat_ioctl: move WDIOC handling into wdt drivers
-Date: Wed, 14 Aug 2019 22:49:18 +0200
-Message-Id: <20190814205245.121691-1-arnd@arndb.de>
-In-Reply-To: <20190814204259.120942-1-arnd@arndb.de>
-References: <20190814204259.120942-1-arnd@arndb.de>
-MIME-Version: 1.0
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pl1-x64a.google.com ([2607:f8b0:4864:20::64a])
+ by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
+ id 1i1Kxb-0005ET-Sq
+ for linux-um@lists.infradead.org; Sat, 24 Aug 2019 01:35:23 +0000
+Received: by mail-pl1-x64a.google.com with SMTP id 71so6867469pld.1
+ for <linux-um@lists.infradead.org>; Fri, 23 Aug 2019 18:35:19 -0700 (PDT)
+Date: Fri, 23 Aug 2019 18:34:22 -0700
+In-Reply-To: <20190824013425.175645-1-brendanhiggins@google.com>
+Message-Id: <20190824013425.175645-16-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20190824013425.175645-1-brendanhiggins@google.com>
+Subject: [PATCH v15 15/18] Documentation: kunit: add documentation for KUnit
+From: Brendan Higgins <brendanhiggins@google.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org
-To: linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org, Wim Van Sebroeck <wim@linux-watchdog.org>
-Cc: linux-hwmon@vger.kernel.org, linux-rtc@vger.kernel.org, Alexandre Belloni <alexandre.belloni@bootlin.com>, Jean Delvare <jdelvare@suse.com>, linux-watchdog@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, linux-um@lists.infradead.org, Ludovic Desroches <ludovic.desroches@microchip.com>, Florian Fainelli <f.fainelli@gmail.com>, bcm-kernel-feedback-list@broadcom.com, linux-arm-kernel@lists.infradead.org, openipmi-developer@lists.sourceforge.net, Anatolij Gustschin <agust@denx.de>, linuxppc-dev@lists.ozlabs.org, Guenter Roeck <linux@roeck-us.net>
-List-ID: <linux-um.lists.infradead.org>
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, Felix Guo <felixguoxiuping@gmail.com>, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-All watchdog drivers implement the same set of ioctl commands, and
-fortunately all of them are compatible between 32-bit and 64-bit
-architectures.
+Add documentation for KUnit, the Linux kernel unit testing framework.
+- Add intro and usage guide for KUnit
+- Add API reference
 
-Modern drivers always go through drivers/watchdog/wdt.c as an abstraction
-layer, but older ones implement their own file_operations on a character
-device for this.
-
-Move the handling from fs/compat_ioctl.c into the individual drivers.
-
-Note that most of the legacy drivers will never be used on 64-bit
-hardware, because they are for an old 32-bit SoC implementation, but
-doing them all at once is safer than trying to guess which ones do
-or do not need the compat_ioctl handling.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Felix Guo <felixguoxiuping@gmail.com>
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+Reviewed-by: Stephen Boyd <sboyd@kernel.org>
 ---
- arch/powerpc/platforms/52xx/mpc52xx_gpt.c |  1 +
- arch/um/drivers/harddog_kern.c            |  1 +
- drivers/char/ipmi/ipmi_watchdog.c         |  1 +
- drivers/hwmon/fschmd.c                    |  1 +
- drivers/rtc/rtc-ds1374.c                  |  1 +
- drivers/watchdog/acquirewdt.c             |  1 +
- drivers/watchdog/advantechwdt.c           |  1 +
- drivers/watchdog/alim1535_wdt.c           |  1 +
- drivers/watchdog/alim7101_wdt.c           |  1 +
- drivers/watchdog/ar7_wdt.c                |  1 +
- drivers/watchdog/at91rm9200_wdt.c         |  1 +
- drivers/watchdog/ath79_wdt.c              |  1 +
- drivers/watchdog/bcm63xx_wdt.c            |  1 +
- drivers/watchdog/cpu5wdt.c                |  1 +
- drivers/watchdog/eurotechwdt.c            |  1 +
- drivers/watchdog/f71808e_wdt.c            |  1 +
- drivers/watchdog/gef_wdt.c                |  1 +
- drivers/watchdog/geodewdt.c               |  1 +
- drivers/watchdog/ib700wdt.c               |  1 +
- drivers/watchdog/ibmasr.c                 |  1 +
- drivers/watchdog/indydog.c                |  1 +
- drivers/watchdog/intel_scu_watchdog.c     |  1 +
- drivers/watchdog/iop_wdt.c                |  1 +
- drivers/watchdog/it8712f_wdt.c            |  1 +
- drivers/watchdog/ixp4xx_wdt.c             |  1 +
- drivers/watchdog/ks8695_wdt.c             |  1 +
- drivers/watchdog/m54xx_wdt.c              |  1 +
- drivers/watchdog/machzwd.c                |  1 +
- drivers/watchdog/mixcomwd.c               |  1 +
- drivers/watchdog/mtx-1_wdt.c              |  1 +
- drivers/watchdog/mv64x60_wdt.c            |  1 +
- drivers/watchdog/nuc900_wdt.c             |  1 +
- drivers/watchdog/nv_tco.c                 |  1 +
- drivers/watchdog/pc87413_wdt.c            |  1 +
- drivers/watchdog/pcwd.c                   |  1 +
- drivers/watchdog/pcwd_pci.c               |  1 +
- drivers/watchdog/pcwd_usb.c               |  1 +
- drivers/watchdog/pika_wdt.c               |  1 +
- drivers/watchdog/pnx833x_wdt.c            |  1 +
- drivers/watchdog/rc32434_wdt.c            |  1 +
- drivers/watchdog/rdc321x_wdt.c            |  1 +
- drivers/watchdog/riowd.c                  |  1 +
- drivers/watchdog/sa1100_wdt.c             |  1 +
- drivers/watchdog/sb_wdog.c                |  1 +
- drivers/watchdog/sbc60xxwdt.c             |  1 +
- drivers/watchdog/sbc7240_wdt.c            |  1 +
- drivers/watchdog/sbc_epx_c3.c             |  1 +
- drivers/watchdog/sbc_fitpc2_wdt.c         |  1 +
- drivers/watchdog/sc1200wdt.c              |  1 +
- drivers/watchdog/sc520_wdt.c              |  1 +
- drivers/watchdog/sch311x_wdt.c            |  1 +
- drivers/watchdog/scx200_wdt.c             |  1 +
- drivers/watchdog/smsc37b787_wdt.c         |  1 +
- drivers/watchdog/w83877f_wdt.c            |  1 +
- drivers/watchdog/w83977f_wdt.c            |  1 +
- drivers/watchdog/wafer5823wdt.c           |  1 +
- drivers/watchdog/watchdog_dev.c           |  1 +
- drivers/watchdog/wdrtas.c                 |  1 +
- drivers/watchdog/wdt.c                    |  1 +
- drivers/watchdog/wdt285.c                 |  1 +
- drivers/watchdog/wdt977.c                 |  1 +
- drivers/watchdog/wdt_pci.c                |  1 +
- fs/compat_ioctl.c                         | 11 -----------
- 63 files changed, 62 insertions(+), 11 deletions(-)
+ Documentation/dev-tools/index.rst           |   1 +
+ Documentation/dev-tools/kunit/api/index.rst |  16 +
+ Documentation/dev-tools/kunit/api/test.rst  |  11 +
+ Documentation/dev-tools/kunit/faq.rst       |  62 +++
+ Documentation/dev-tools/kunit/index.rst     |  79 +++
+ Documentation/dev-tools/kunit/start.rst     | 180 ++++++
+ Documentation/dev-tools/kunit/usage.rst     | 576 ++++++++++++++++++++
+ 7 files changed, 925 insertions(+)
+ create mode 100644 Documentation/dev-tools/kunit/api/index.rst
+ create mode 100644 Documentation/dev-tools/kunit/api/test.rst
+ create mode 100644 Documentation/dev-tools/kunit/faq.rst
+ create mode 100644 Documentation/dev-tools/kunit/index.rst
+ create mode 100644 Documentation/dev-tools/kunit/start.rst
+ create mode 100644 Documentation/dev-tools/kunit/usage.rst
 
-diff --git a/arch/powerpc/platforms/52xx/mpc52xx_gpt.c b/arch/powerpc/platforms/52xx/mpc52xx_gpt.c
-index ba12dc14a3d1..8c0d324f657e 100644
---- a/arch/powerpc/platforms/52xx/mpc52xx_gpt.c
-+++ b/arch/powerpc/platforms/52xx/mpc52xx_gpt.c
-@@ -650,6 +650,7 @@ static const struct file_operations mpc52xx_wdt_fops = {
- 	.llseek		= no_llseek,
- 	.write		= mpc52xx_wdt_write,
- 	.unlocked_ioctl = mpc52xx_wdt_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= mpc52xx_wdt_open,
- 	.release	= mpc52xx_wdt_release,
- };
-diff --git a/arch/um/drivers/harddog_kern.c b/arch/um/drivers/harddog_kern.c
-index 000cb69ba0bc..e6d4f43deba8 100644
---- a/arch/um/drivers/harddog_kern.c
-+++ b/arch/um/drivers/harddog_kern.c
-@@ -165,6 +165,7 @@ static const struct file_operations harddog_fops = {
- 	.owner		= THIS_MODULE,
- 	.write		= harddog_write,
- 	.unlocked_ioctl	= harddog_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= harddog_open,
- 	.release	= harddog_release,
- 	.llseek		= no_llseek,
-diff --git a/drivers/char/ipmi/ipmi_watchdog.c b/drivers/char/ipmi/ipmi_watchdog.c
-index 74c6d1f34132..55986e10a124 100644
---- a/drivers/char/ipmi/ipmi_watchdog.c
-+++ b/drivers/char/ipmi/ipmi_watchdog.c
-@@ -893,6 +893,7 @@ static const struct file_operations ipmi_wdog_fops = {
- 	.poll    = ipmi_poll,
- 	.write   = ipmi_write,
- 	.unlocked_ioctl = ipmi_unlocked_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open    = ipmi_open,
- 	.release = ipmi_close,
- 	.fasync  = ipmi_fasync,
-diff --git a/drivers/hwmon/fschmd.c b/drivers/hwmon/fschmd.c
-index fa0c2f1fb443..4136643d8e0c 100644
---- a/drivers/hwmon/fschmd.c
-+++ b/drivers/hwmon/fschmd.c
-@@ -954,6 +954,7 @@ static const struct file_operations watchdog_fops = {
- 	.release = watchdog_release,
- 	.write = watchdog_write,
- 	.unlocked_ioctl = watchdog_ioctl,
-+	.compat_ioctl = compat_ptr_ioctl,
- };
+diff --git a/Documentation/dev-tools/index.rst b/Documentation/dev-tools/index.rst
+index b0522a4dd107..09dee10d2592 100644
+--- a/Documentation/dev-tools/index.rst
++++ b/Documentation/dev-tools/index.rst
+@@ -24,6 +24,7 @@ whole; patches welcome!
+    gdb-kernel-debugging
+    kgdb
+    kselftest
++   kunit/index
  
  
-diff --git a/drivers/rtc/rtc-ds1374.c b/drivers/rtc/rtc-ds1374.c
-index 225a8df1d4e9..7e73be9898ac 100644
---- a/drivers/rtc/rtc-ds1374.c
-+++ b/drivers/rtc/rtc-ds1374.c
-@@ -586,6 +586,7 @@ static const struct file_operations ds1374_wdt_fops = {
- 	.owner			= THIS_MODULE,
- 	.read			= ds1374_wdt_read,
- 	.unlocked_ioctl		= ds1374_wdt_unlocked_ioctl,
-+	.compat_ioctl		= compat_ptr_ioctl,
- 	.write			= ds1374_wdt_write,
- 	.open                   = ds1374_wdt_open,
- 	.release                = ds1374_wdt_release,
-diff --git a/drivers/watchdog/acquirewdt.c b/drivers/watchdog/acquirewdt.c
-index 848db958411e..bc6f333565d3 100644
---- a/drivers/watchdog/acquirewdt.c
-+++ b/drivers/watchdog/acquirewdt.c
-@@ -221,6 +221,7 @@ static const struct file_operations acq_fops = {
- 	.llseek		= no_llseek,
- 	.write		= acq_write,
- 	.unlocked_ioctl	= acq_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= acq_open,
- 	.release	= acq_close,
- };
-diff --git a/drivers/watchdog/advantechwdt.c b/drivers/watchdog/advantechwdt.c
-index 0d02bb275b3d..0e4c18a2aa42 100644
---- a/drivers/watchdog/advantechwdt.c
-+++ b/drivers/watchdog/advantechwdt.c
-@@ -220,6 +220,7 @@ static const struct file_operations advwdt_fops = {
- 	.llseek		= no_llseek,
- 	.write		= advwdt_write,
- 	.unlocked_ioctl	= advwdt_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= advwdt_open,
- 	.release	= advwdt_close,
- };
-diff --git a/drivers/watchdog/alim1535_wdt.c b/drivers/watchdog/alim1535_wdt.c
-index c157dd3d92a3..42338c7d4540 100644
---- a/drivers/watchdog/alim1535_wdt.c
-+++ b/drivers/watchdog/alim1535_wdt.c
-@@ -362,6 +362,7 @@ static const struct file_operations ali_fops = {
- 	.llseek		=	no_llseek,
- 	.write		=	ali_write,
- 	.unlocked_ioctl =	ali_ioctl,
-+	.compat_ioctl	= 	compat_ptr_ioctl,
- 	.open		=	ali_open,
- 	.release	=	ali_release,
- };
-diff --git a/drivers/watchdog/alim7101_wdt.c b/drivers/watchdog/alim7101_wdt.c
-index c8e3ab056767..5af0358f4390 100644
---- a/drivers/watchdog/alim7101_wdt.c
-+++ b/drivers/watchdog/alim7101_wdt.c
-@@ -294,6 +294,7 @@ static const struct file_operations wdt_fops = {
- 	.open		=	fop_open,
- 	.release	=	fop_close,
- 	.unlocked_ioctl	=	fop_ioctl,
-+	.compat_ioctl	= 	compat_ptr_ioctl,
- };
- 
- static struct miscdevice wdt_miscdev = {
-diff --git a/drivers/watchdog/ar7_wdt.c b/drivers/watchdog/ar7_wdt.c
-index 668a1c704f28..c087027ffd5d 100644
---- a/drivers/watchdog/ar7_wdt.c
-+++ b/drivers/watchdog/ar7_wdt.c
-@@ -250,6 +250,7 @@ static const struct file_operations ar7_wdt_fops = {
- 	.owner		= THIS_MODULE,
- 	.write		= ar7_wdt_write,
- 	.unlocked_ioctl	= ar7_wdt_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= ar7_wdt_open,
- 	.release	= ar7_wdt_release,
- 	.llseek		= no_llseek,
-diff --git a/drivers/watchdog/at91rm9200_wdt.c b/drivers/watchdog/at91rm9200_wdt.c
-index 907a4545dee6..6d751eb8191d 100644
---- a/drivers/watchdog/at91rm9200_wdt.c
-+++ b/drivers/watchdog/at91rm9200_wdt.c
-@@ -213,6 +213,7 @@ static const struct file_operations at91wdt_fops = {
- 	.owner		= THIS_MODULE,
- 	.llseek		= no_llseek,
- 	.unlocked_ioctl	= at91_wdt_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= at91_wdt_open,
- 	.release	= at91_wdt_close,
- 	.write		= at91_wdt_write,
-diff --git a/drivers/watchdog/ath79_wdt.c b/drivers/watchdog/ath79_wdt.c
-index 2e09981fe978..9ca8e5117dd8 100644
---- a/drivers/watchdog/ath79_wdt.c
-+++ b/drivers/watchdog/ath79_wdt.c
-@@ -234,6 +234,7 @@ static const struct file_operations ath79_wdt_fops = {
- 	.llseek		= no_llseek,
- 	.write		= ath79_wdt_write,
- 	.unlocked_ioctl	= ath79_wdt_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= ath79_wdt_open,
- 	.release	= ath79_wdt_release,
- };
-diff --git a/drivers/watchdog/bcm63xx_wdt.c b/drivers/watchdog/bcm63xx_wdt.c
-index e2af37c9a266..8a043b52aa2f 100644
---- a/drivers/watchdog/bcm63xx_wdt.c
-+++ b/drivers/watchdog/bcm63xx_wdt.c
-@@ -221,6 +221,7 @@ static const struct file_operations bcm63xx_wdt_fops = {
- 	.llseek		= no_llseek,
- 	.write		= bcm63xx_wdt_write,
- 	.unlocked_ioctl	= bcm63xx_wdt_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= bcm63xx_wdt_open,
- 	.release	= bcm63xx_wdt_release,
- };
-diff --git a/drivers/watchdog/cpu5wdt.c b/drivers/watchdog/cpu5wdt.c
-index d6d53014cb68..9867a3a936df 100644
---- a/drivers/watchdog/cpu5wdt.c
-+++ b/drivers/watchdog/cpu5wdt.c
-@@ -187,6 +187,7 @@ static const struct file_operations cpu5wdt_fops = {
- 	.owner		= THIS_MODULE,
- 	.llseek		= no_llseek,
- 	.unlocked_ioctl	= cpu5wdt_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= cpu5wdt_open,
- 	.write		= cpu5wdt_write,
- 	.release	= cpu5wdt_release,
-diff --git a/drivers/watchdog/eurotechwdt.c b/drivers/watchdog/eurotechwdt.c
-index 3a83a48abcae..f5ffa7be066e 100644
---- a/drivers/watchdog/eurotechwdt.c
-+++ b/drivers/watchdog/eurotechwdt.c
-@@ -371,6 +371,7 @@ static const struct file_operations eurwdt_fops = {
- 	.llseek		= no_llseek,
- 	.write		= eurwdt_write,
- 	.unlocked_ioctl	= eurwdt_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= eurwdt_open,
- 	.release	= eurwdt_release,
- };
-diff --git a/drivers/watchdog/f71808e_wdt.c b/drivers/watchdog/f71808e_wdt.c
-index ff5cf1b48a4d..a30ac5b120c9 100644
---- a/drivers/watchdog/f71808e_wdt.c
-+++ b/drivers/watchdog/f71808e_wdt.c
-@@ -657,6 +657,7 @@ static const struct file_operations watchdog_fops = {
- 	.release	= watchdog_release,
- 	.write		= watchdog_write,
- 	.unlocked_ioctl	= watchdog_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- };
- 
- static struct miscdevice watchdog_miscdev = {
-diff --git a/drivers/watchdog/gef_wdt.c b/drivers/watchdog/gef_wdt.c
-index 7d5f56994f09..f6541d1b65e3 100644
---- a/drivers/watchdog/gef_wdt.c
-+++ b/drivers/watchdog/gef_wdt.c
-@@ -248,6 +248,7 @@ static const struct file_operations gef_wdt_fops = {
- 	.llseek = no_llseek,
- 	.write = gef_wdt_write,
- 	.unlocked_ioctl = gef_wdt_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open = gef_wdt_open,
- 	.release = gef_wdt_release,
- };
-diff --git a/drivers/watchdog/geodewdt.c b/drivers/watchdog/geodewdt.c
-index 8d105d98908e..9914a4283cb2 100644
---- a/drivers/watchdog/geodewdt.c
-+++ b/drivers/watchdog/geodewdt.c
-@@ -201,6 +201,7 @@ static const struct file_operations geodewdt_fops = {
- 	.llseek         = no_llseek,
- 	.write          = geodewdt_write,
- 	.unlocked_ioctl = geodewdt_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open           = geodewdt_open,
- 	.release        = geodewdt_release,
- };
-diff --git a/drivers/watchdog/ib700wdt.c b/drivers/watchdog/ib700wdt.c
-index 92fd7f33bc4d..2b65ea9451d1 100644
---- a/drivers/watchdog/ib700wdt.c
-+++ b/drivers/watchdog/ib700wdt.c
-@@ -259,6 +259,7 @@ static const struct file_operations ibwdt_fops = {
- 	.llseek		= no_llseek,
- 	.write		= ibwdt_write,
- 	.unlocked_ioctl	= ibwdt_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= ibwdt_open,
- 	.release	= ibwdt_close,
- };
-diff --git a/drivers/watchdog/ibmasr.c b/drivers/watchdog/ibmasr.c
-index 897f7eda9e6a..4a22fe152086 100644
---- a/drivers/watchdog/ibmasr.c
-+++ b/drivers/watchdog/ibmasr.c
-@@ -344,6 +344,7 @@ static const struct file_operations asr_fops = {
- 	.llseek =		no_llseek,
- 	.write =		asr_write,
- 	.unlocked_ioctl =	asr_ioctl,
-+	.compat_ioctl =		compat_ptr_ioctl,
- 	.open =			asr_open,
- 	.release =		asr_release,
- };
-diff --git a/drivers/watchdog/indydog.c b/drivers/watchdog/indydog.c
-index 550358528084..9857bb74a723 100644
---- a/drivers/watchdog/indydog.c
-+++ b/drivers/watchdog/indydog.c
-@@ -152,6 +152,7 @@ static const struct file_operations indydog_fops = {
- 	.llseek		= no_llseek,
- 	.write		= indydog_write,
- 	.unlocked_ioctl	= indydog_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= indydog_open,
- 	.release	= indydog_release,
- };
-diff --git a/drivers/watchdog/intel_scu_watchdog.c b/drivers/watchdog/intel_scu_watchdog.c
-index 1c85103b750b..6ad5bf3451ec 100644
---- a/drivers/watchdog/intel_scu_watchdog.c
-+++ b/drivers/watchdog/intel_scu_watchdog.c
-@@ -412,6 +412,7 @@ static const struct file_operations intel_scu_fops = {
- 	.llseek         = no_llseek,
- 	.write          = intel_scu_write,
- 	.unlocked_ioctl = intel_scu_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open           = intel_scu_open,
- 	.release        = intel_scu_release,
- };
-diff --git a/drivers/watchdog/iop_wdt.c b/drivers/watchdog/iop_wdt.c
-index a9ccdb9a9159..6bf68d4750de 100644
---- a/drivers/watchdog/iop_wdt.c
-+++ b/drivers/watchdog/iop_wdt.c
-@@ -202,6 +202,7 @@ static const struct file_operations iop_wdt_fops = {
- 	.llseek = no_llseek,
- 	.write = iop_wdt_write,
- 	.unlocked_ioctl = iop_wdt_ioctl,
-+	.compat_ioctl = compat_ptr_ioctl,
- 	.open = iop_wdt_open,
- 	.release = iop_wdt_release,
- };
-diff --git a/drivers/watchdog/it8712f_wdt.c b/drivers/watchdog/it8712f_wdt.c
-index 2fe1a3c499ed..2fed40d14007 100644
---- a/drivers/watchdog/it8712f_wdt.c
-+++ b/drivers/watchdog/it8712f_wdt.c
-@@ -345,6 +345,7 @@ static const struct file_operations it8712f_wdt_fops = {
- 	.llseek = no_llseek,
- 	.write = it8712f_wdt_write,
- 	.unlocked_ioctl = it8712f_wdt_ioctl,
-+	.compat_ioctl = compat_ptr_ioctl,
- 	.open = it8712f_wdt_open,
- 	.release = it8712f_wdt_release,
- };
-diff --git a/drivers/watchdog/ixp4xx_wdt.c b/drivers/watchdog/ixp4xx_wdt.c
-index 9067998759e3..09886616fd21 100644
---- a/drivers/watchdog/ixp4xx_wdt.c
-+++ b/drivers/watchdog/ixp4xx_wdt.c
-@@ -163,6 +163,7 @@ static const struct file_operations ixp4xx_wdt_fops = {
- 	.llseek		= no_llseek,
- 	.write		= ixp4xx_wdt_write,
- 	.unlocked_ioctl	= ixp4xx_wdt_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= ixp4xx_wdt_open,
- 	.release	= ixp4xx_wdt_release,
- };
-diff --git a/drivers/watchdog/ks8695_wdt.c b/drivers/watchdog/ks8695_wdt.c
-index 1550ce3c5702..6f375f302135 100644
---- a/drivers/watchdog/ks8695_wdt.c
-+++ b/drivers/watchdog/ks8695_wdt.c
-@@ -221,6 +221,7 @@ static const struct file_operations ks8695wdt_fops = {
- 	.owner		= THIS_MODULE,
- 	.llseek		= no_llseek,
- 	.unlocked_ioctl	= ks8695_wdt_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= ks8695_wdt_open,
- 	.release	= ks8695_wdt_close,
- 	.write		= ks8695_wdt_write,
-diff --git a/drivers/watchdog/m54xx_wdt.c b/drivers/watchdog/m54xx_wdt.c
-index 752d03620f0a..22f335e1e164 100644
---- a/drivers/watchdog/m54xx_wdt.c
-+++ b/drivers/watchdog/m54xx_wdt.c
-@@ -183,6 +183,7 @@ static const struct file_operations m54xx_wdt_fops = {
- 	.llseek		= no_llseek,
- 	.write		= m54xx_wdt_write,
- 	.unlocked_ioctl	= m54xx_wdt_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= m54xx_wdt_open,
- 	.release	= m54xx_wdt_release,
- };
-diff --git a/drivers/watchdog/machzwd.c b/drivers/watchdog/machzwd.c
-index cef2baf59dda..80ff94688487 100644
---- a/drivers/watchdog/machzwd.c
-+++ b/drivers/watchdog/machzwd.c
-@@ -361,6 +361,7 @@ static const struct file_operations zf_fops = {
- 	.llseek		= no_llseek,
- 	.write		= zf_write,
- 	.unlocked_ioctl = zf_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= zf_open,
- 	.release	= zf_close,
- };
-diff --git a/drivers/watchdog/mixcomwd.c b/drivers/watchdog/mixcomwd.c
-index a86faa5000f1..d387bad377c4 100644
---- a/drivers/watchdog/mixcomwd.c
-+++ b/drivers/watchdog/mixcomwd.c
-@@ -227,6 +227,7 @@ static const struct file_operations mixcomwd_fops = {
- 	.llseek		= no_llseek,
- 	.write		= mixcomwd_write,
- 	.unlocked_ioctl	= mixcomwd_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= mixcomwd_open,
- 	.release	= mixcomwd_release,
- };
-diff --git a/drivers/watchdog/mtx-1_wdt.c b/drivers/watchdog/mtx-1_wdt.c
-index 25a92857b217..8aa1cb4a295f 100644
---- a/drivers/watchdog/mtx-1_wdt.c
-+++ b/drivers/watchdog/mtx-1_wdt.c
-@@ -181,6 +181,7 @@ static const struct file_operations mtx1_wdt_fops = {
- 	.owner		= THIS_MODULE,
- 	.llseek		= no_llseek,
- 	.unlocked_ioctl	= mtx1_wdt_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= mtx1_wdt_open,
- 	.write		= mtx1_wdt_write,
- 	.release	= mtx1_wdt_release,
-diff --git a/drivers/watchdog/mv64x60_wdt.c b/drivers/watchdog/mv64x60_wdt.c
-index 74bf7144a970..0bc72dd69b70 100644
---- a/drivers/watchdog/mv64x60_wdt.c
-+++ b/drivers/watchdog/mv64x60_wdt.c
-@@ -241,6 +241,7 @@ static const struct file_operations mv64x60_wdt_fops = {
- 	.llseek = no_llseek,
- 	.write = mv64x60_wdt_write,
- 	.unlocked_ioctl = mv64x60_wdt_ioctl,
-+	.compat_ioctl = compat_ptr_ioctl,
- 	.open = mv64x60_wdt_open,
- 	.release = mv64x60_wdt_release,
- };
-diff --git a/drivers/watchdog/nuc900_wdt.c b/drivers/watchdog/nuc900_wdt.c
-index db124cebe838..bfe3e4e5d159 100644
---- a/drivers/watchdog/nuc900_wdt.c
-+++ b/drivers/watchdog/nuc900_wdt.c
-@@ -225,6 +225,7 @@ static const struct file_operations nuc900wdt_fops = {
- 	.owner		= THIS_MODULE,
- 	.llseek		= no_llseek,
- 	.unlocked_ioctl	= nuc900_wdt_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= nuc900_wdt_open,
- 	.release	= nuc900_wdt_close,
- 	.write		= nuc900_wdt_write,
-diff --git a/drivers/watchdog/nv_tco.c b/drivers/watchdog/nv_tco.c
-index 5f0082e300bd..d7a560e348d5 100644
---- a/drivers/watchdog/nv_tco.c
-+++ b/drivers/watchdog/nv_tco.c
-@@ -267,6 +267,7 @@ static const struct file_operations nv_tco_fops = {
- 	.llseek =		no_llseek,
- 	.write =		nv_tco_write,
- 	.unlocked_ioctl =	nv_tco_ioctl,
-+	.compat_ioctl =		compat_ptr_ioctl,
- 	.open =			nv_tco_open,
- 	.release =		nv_tco_release,
- };
-diff --git a/drivers/watchdog/pc87413_wdt.c b/drivers/watchdog/pc87413_wdt.c
-index 2af1a8b3f973..73fbfc99083b 100644
---- a/drivers/watchdog/pc87413_wdt.c
-+++ b/drivers/watchdog/pc87413_wdt.c
-@@ -473,6 +473,7 @@ static const struct file_operations pc87413_fops = {
- 	.llseek		= no_llseek,
- 	.write		= pc87413_write,
- 	.unlocked_ioctl	= pc87413_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= pc87413_open,
- 	.release	= pc87413_release,
- };
-diff --git a/drivers/watchdog/pcwd.c b/drivers/watchdog/pcwd.c
-index c3c93e00b320..7a0587fdc52c 100644
---- a/drivers/watchdog/pcwd.c
-+++ b/drivers/watchdog/pcwd.c
-@@ -752,6 +752,7 @@ static const struct file_operations pcwd_fops = {
- 	.llseek		= no_llseek,
- 	.write		= pcwd_write,
- 	.unlocked_ioctl	= pcwd_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= pcwd_open,
- 	.release	= pcwd_close,
- };
-diff --git a/drivers/watchdog/pcwd_pci.c b/drivers/watchdog/pcwd_pci.c
-index e30c1f762045..81508a42a90c 100644
---- a/drivers/watchdog/pcwd_pci.c
-+++ b/drivers/watchdog/pcwd_pci.c
-@@ -646,6 +646,7 @@ static const struct file_operations pcipcwd_fops = {
- 	.llseek =	no_llseek,
- 	.write =	pcipcwd_write,
- 	.unlocked_ioctl = pcipcwd_ioctl,
-+	.compat_ioctl = compat_ptr_ioctl,
- 	.open =		pcipcwd_open,
- 	.release =	pcipcwd_release,
- };
-diff --git a/drivers/watchdog/pcwd_usb.c b/drivers/watchdog/pcwd_usb.c
-index 6727f8ab2d18..2f44af1831d0 100644
---- a/drivers/watchdog/pcwd_usb.c
-+++ b/drivers/watchdog/pcwd_usb.c
-@@ -550,6 +550,7 @@ static const struct file_operations usb_pcwd_fops = {
- 	.llseek =	no_llseek,
- 	.write =	usb_pcwd_write,
- 	.unlocked_ioctl = usb_pcwd_ioctl,
-+	.compat_ioctl = compat_ptr_ioctl,
- 	.open =		usb_pcwd_open,
- 	.release =	usb_pcwd_release,
- };
-diff --git a/drivers/watchdog/pika_wdt.c b/drivers/watchdog/pika_wdt.c
-index 205c3c68fca1..a98abd0d3146 100644
---- a/drivers/watchdog/pika_wdt.c
-+++ b/drivers/watchdog/pika_wdt.c
-@@ -214,6 +214,7 @@ static const struct file_operations pikawdt_fops = {
- 	.release	= pikawdt_release,
- 	.write		= pikawdt_write,
- 	.unlocked_ioctl	= pikawdt_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- };
- 
- static struct miscdevice pikawdt_miscdev = {
-diff --git a/drivers/watchdog/pnx833x_wdt.c b/drivers/watchdog/pnx833x_wdt.c
-index aa53babf2bab..4097d076aab8 100644
---- a/drivers/watchdog/pnx833x_wdt.c
-+++ b/drivers/watchdog/pnx833x_wdt.c
-@@ -215,6 +215,7 @@ static const struct file_operations pnx833x_wdt_fops = {
- 	.llseek		= no_llseek,
- 	.write		= pnx833x_wdt_write,
- 	.unlocked_ioctl	= pnx833x_wdt_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= pnx833x_wdt_open,
- 	.release	= pnx833x_wdt_release,
- };
-diff --git a/drivers/watchdog/rc32434_wdt.c b/drivers/watchdog/rc32434_wdt.c
-index a8a4b3a41a90..1dfede0abf18 100644
---- a/drivers/watchdog/rc32434_wdt.c
-+++ b/drivers/watchdog/rc32434_wdt.c
-@@ -245,6 +245,7 @@ static const struct file_operations rc32434_wdt_fops = {
- 	.llseek		= no_llseek,
- 	.write		= rc32434_wdt_write,
- 	.unlocked_ioctl	= rc32434_wdt_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= rc32434_wdt_open,
- 	.release	= rc32434_wdt_release,
- };
-diff --git a/drivers/watchdog/rdc321x_wdt.c b/drivers/watchdog/rdc321x_wdt.c
-index 2e608ae6cbc7..57187efeb86f 100644
---- a/drivers/watchdog/rdc321x_wdt.c
-+++ b/drivers/watchdog/rdc321x_wdt.c
-@@ -199,6 +199,7 @@ static const struct file_operations rdc321x_wdt_fops = {
- 	.owner		= THIS_MODULE,
- 	.llseek		= no_llseek,
- 	.unlocked_ioctl	= rdc321x_wdt_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= rdc321x_wdt_open,
- 	.write		= rdc321x_wdt_write,
- 	.release	= rdc321x_wdt_release,
-diff --git a/drivers/watchdog/riowd.c b/drivers/watchdog/riowd.c
-index b35f7be20c00..dc3c06a92f93 100644
---- a/drivers/watchdog/riowd.c
-+++ b/drivers/watchdog/riowd.c
-@@ -163,6 +163,7 @@ static const struct file_operations riowd_fops = {
- 	.owner =		THIS_MODULE,
- 	.llseek =		no_llseek,
- 	.unlocked_ioctl =	riowd_ioctl,
-+	.compat_ioctl	=	compat_ptr_ioctl,
- 	.open =			riowd_open,
- 	.write =		riowd_write,
- 	.release =		riowd_release,
-diff --git a/drivers/watchdog/sa1100_wdt.c b/drivers/watchdog/sa1100_wdt.c
-index cbd8c957182f..9b93be00109f 100644
---- a/drivers/watchdog/sa1100_wdt.c
-+++ b/drivers/watchdog/sa1100_wdt.c
-@@ -141,6 +141,7 @@ static const struct file_operations sa1100dog_fops = {
- 	.llseek		= no_llseek,
- 	.write		= sa1100dog_write,
- 	.unlocked_ioctl	= sa1100dog_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= sa1100dog_open,
- 	.release	= sa1100dog_release,
- };
-diff --git a/drivers/watchdog/sb_wdog.c b/drivers/watchdog/sb_wdog.c
-index 202fc8d8ca5f..da2dad00d473 100644
---- a/drivers/watchdog/sb_wdog.c
-+++ b/drivers/watchdog/sb_wdog.c
-@@ -237,6 +237,7 @@ static const struct file_operations sbwdog_fops = {
- 	.llseek		= no_llseek,
- 	.write		= sbwdog_write,
- 	.unlocked_ioctl	= sbwdog_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= sbwdog_open,
- 	.release	= sbwdog_release,
- };
-diff --git a/drivers/watchdog/sbc60xxwdt.c b/drivers/watchdog/sbc60xxwdt.c
-index c3151642694c..f2cbe6d880a8 100644
---- a/drivers/watchdog/sbc60xxwdt.c
-+++ b/drivers/watchdog/sbc60xxwdt.c
-@@ -280,6 +280,7 @@ static const struct file_operations wdt_fops = {
- 	.open		= fop_open,
- 	.release	= fop_close,
- 	.unlocked_ioctl	= fop_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- };
- 
- static struct miscdevice wdt_miscdev = {
-diff --git a/drivers/watchdog/sbc7240_wdt.c b/drivers/watchdog/sbc7240_wdt.c
-index 12cdee7d5069..0bf583b76e6b 100644
---- a/drivers/watchdog/sbc7240_wdt.c
-+++ b/drivers/watchdog/sbc7240_wdt.c
-@@ -211,6 +211,7 @@ static const struct file_operations wdt_fops = {
- 	.open = fop_open,
- 	.release = fop_close,
- 	.unlocked_ioctl = fop_ioctl,
-+	.compat_ioctl = compat_ptr_ioctl,
- };
- 
- static struct miscdevice wdt_miscdev = {
-diff --git a/drivers/watchdog/sbc_epx_c3.c b/drivers/watchdog/sbc_epx_c3.c
-index 86828c28843f..5e3a9ddb952e 100644
---- a/drivers/watchdog/sbc_epx_c3.c
-+++ b/drivers/watchdog/sbc_epx_c3.c
-@@ -156,6 +156,7 @@ static const struct file_operations epx_c3_fops = {
- 	.llseek		= no_llseek,
- 	.write		= epx_c3_write,
- 	.unlocked_ioctl	= epx_c3_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= epx_c3_open,
- 	.release	= epx_c3_release,
- };
-diff --git a/drivers/watchdog/sbc_fitpc2_wdt.c b/drivers/watchdog/sbc_fitpc2_wdt.c
-index 3822a60a8d2b..1b20b33879c4 100644
---- a/drivers/watchdog/sbc_fitpc2_wdt.c
-+++ b/drivers/watchdog/sbc_fitpc2_wdt.c
-@@ -186,6 +186,7 @@ static const struct file_operations fitpc2_wdt_fops = {
- 	.llseek		= no_llseek,
- 	.write		= fitpc2_wdt_write,
- 	.unlocked_ioctl	= fitpc2_wdt_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= fitpc2_wdt_open,
- 	.release	= fitpc2_wdt_release,
- };
-diff --git a/drivers/watchdog/sc1200wdt.c b/drivers/watchdog/sc1200wdt.c
-index 960385a766b3..9673eb12dacd 100644
---- a/drivers/watchdog/sc1200wdt.c
-+++ b/drivers/watchdog/sc1200wdt.c
-@@ -307,6 +307,7 @@ static const struct file_operations sc1200wdt_fops = {
- 	.llseek		= no_llseek,
- 	.write		= sc1200wdt_write,
- 	.unlocked_ioctl = sc1200wdt_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= sc1200wdt_open,
- 	.release	= sc1200wdt_release,
- };
-diff --git a/drivers/watchdog/sc520_wdt.c b/drivers/watchdog/sc520_wdt.c
-index a612128c5f80..fbe79bcc9297 100644
---- a/drivers/watchdog/sc520_wdt.c
-+++ b/drivers/watchdog/sc520_wdt.c
-@@ -336,6 +336,7 @@ static const struct file_operations wdt_fops = {
- 	.open		= fop_open,
- 	.release	= fop_close,
- 	.unlocked_ioctl	= fop_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- };
- 
- static struct miscdevice wdt_miscdev = {
-diff --git a/drivers/watchdog/sch311x_wdt.c b/drivers/watchdog/sch311x_wdt.c
-index 3612f1df381b..83949a385f62 100644
---- a/drivers/watchdog/sch311x_wdt.c
-+++ b/drivers/watchdog/sch311x_wdt.c
-@@ -337,6 +337,7 @@ static const struct file_operations sch311x_wdt_fops = {
- 	.llseek		= no_llseek,
- 	.write		= sch311x_wdt_write,
- 	.unlocked_ioctl	= sch311x_wdt_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= sch311x_wdt_open,
- 	.release	= sch311x_wdt_close,
- };
-diff --git a/drivers/watchdog/scx200_wdt.c b/drivers/watchdog/scx200_wdt.c
-index 46268309ee9b..c94098acb78f 100644
---- a/drivers/watchdog/scx200_wdt.c
-+++ b/drivers/watchdog/scx200_wdt.c
-@@ -201,6 +201,7 @@ static const struct file_operations scx200_wdt_fops = {
- 	.llseek = no_llseek,
- 	.write = scx200_wdt_write,
- 	.unlocked_ioctl = scx200_wdt_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open = scx200_wdt_open,
- 	.release = scx200_wdt_release,
- };
-diff --git a/drivers/watchdog/smsc37b787_wdt.c b/drivers/watchdog/smsc37b787_wdt.c
-index f5713030d0f7..43de56acd767 100644
---- a/drivers/watchdog/smsc37b787_wdt.c
-+++ b/drivers/watchdog/smsc37b787_wdt.c
-@@ -505,6 +505,7 @@ static const struct file_operations wb_smsc_wdt_fops = {
- 	.llseek		= no_llseek,
- 	.write		= wb_smsc_wdt_write,
- 	.unlocked_ioctl	= wb_smsc_wdt_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= wb_smsc_wdt_open,
- 	.release	= wb_smsc_wdt_release,
- };
-diff --git a/drivers/watchdog/w83877f_wdt.c b/drivers/watchdog/w83877f_wdt.c
-index 6eb5185d6ea6..6b3b667e6f23 100644
---- a/drivers/watchdog/w83877f_wdt.c
-+++ b/drivers/watchdog/w83877f_wdt.c
-@@ -304,6 +304,7 @@ static const struct file_operations wdt_fops = {
- 	.open		= fop_open,
- 	.release	= fop_close,
- 	.unlocked_ioctl	= fop_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- };
- 
- static struct miscdevice wdt_miscdev = {
-diff --git a/drivers/watchdog/w83977f_wdt.c b/drivers/watchdog/w83977f_wdt.c
-index 16e9cbe72acc..5212e68c6b01 100644
---- a/drivers/watchdog/w83977f_wdt.c
-+++ b/drivers/watchdog/w83977f_wdt.c
-@@ -446,6 +446,7 @@ static const struct file_operations wdt_fops = {
- 	.llseek		= no_llseek,
- 	.write		= wdt_write,
- 	.unlocked_ioctl	= wdt_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= wdt_open,
- 	.release	= wdt_release,
- };
-diff --git a/drivers/watchdog/wafer5823wdt.c b/drivers/watchdog/wafer5823wdt.c
-index 6d2071a0590d..a6925847f76f 100644
---- a/drivers/watchdog/wafer5823wdt.c
-+++ b/drivers/watchdog/wafer5823wdt.c
-@@ -230,6 +230,7 @@ static const struct file_operations wafwdt_fops = {
- 	.llseek		= no_llseek,
- 	.write		= wafwdt_write,
- 	.unlocked_ioctl	= wafwdt_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= wafwdt_open,
- 	.release	= wafwdt_close,
- };
-diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
-index dbd2ad4c9294..3858094ca6ba 100644
---- a/drivers/watchdog/watchdog_dev.c
-+++ b/drivers/watchdog/watchdog_dev.c
-@@ -933,6 +933,7 @@ static const struct file_operations watchdog_fops = {
- 	.owner		= THIS_MODULE,
- 	.write		= watchdog_write,
- 	.unlocked_ioctl	= watchdog_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= watchdog_open,
- 	.release	= watchdog_release,
- };
-diff --git a/drivers/watchdog/wdrtas.c b/drivers/watchdog/wdrtas.c
-index 6ad7edb4a712..184a06a74f83 100644
---- a/drivers/watchdog/wdrtas.c
-+++ b/drivers/watchdog/wdrtas.c
-@@ -472,6 +472,7 @@ static const struct file_operations wdrtas_fops = {
- 	.llseek		= no_llseek,
- 	.write		= wdrtas_write,
- 	.unlocked_ioctl	= wdrtas_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= wdrtas_open,
- 	.release	= wdrtas_close,
- };
-diff --git a/drivers/watchdog/wdt.c b/drivers/watchdog/wdt.c
-index 7d278b37e083..f9054cb0f8e2 100644
---- a/drivers/watchdog/wdt.c
-+++ b/drivers/watchdog/wdt.c
-@@ -523,6 +523,7 @@ static const struct file_operations wdt_fops = {
- 	.llseek		= no_llseek,
- 	.write		= wdt_write,
- 	.unlocked_ioctl	= wdt_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= wdt_open,
- 	.release	= wdt_release,
- };
-diff --git a/drivers/watchdog/wdt285.c b/drivers/watchdog/wdt285.c
-index 4eacfb1ce1ac..4ec0580da76d 100644
---- a/drivers/watchdog/wdt285.c
-+++ b/drivers/watchdog/wdt285.c
-@@ -181,6 +181,7 @@ static const struct file_operations watchdog_fops = {
- 	.llseek		= no_llseek,
- 	.write		= watchdog_write,
- 	.unlocked_ioctl	= watchdog_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= watchdog_open,
- 	.release	= watchdog_release,
- };
-diff --git a/drivers/watchdog/wdt977.c b/drivers/watchdog/wdt977.c
-index 5c52c73e1839..066a4fb4d75b 100644
---- a/drivers/watchdog/wdt977.c
-+++ b/drivers/watchdog/wdt977.c
-@@ -422,6 +422,7 @@ static const struct file_operations wdt977_fops = {
- 	.llseek		= no_llseek,
- 	.write		= wdt977_write,
- 	.unlocked_ioctl	= wdt977_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= wdt977_open,
- 	.release	= wdt977_release,
- };
-diff --git a/drivers/watchdog/wdt_pci.c b/drivers/watchdog/wdt_pci.c
-index 66303ab95685..e528024faa41 100644
---- a/drivers/watchdog/wdt_pci.c
-+++ b/drivers/watchdog/wdt_pci.c
-@@ -566,6 +566,7 @@ static const struct file_operations wdtpci_fops = {
- 	.llseek		= no_llseek,
- 	.write		= wdtpci_write,
- 	.unlocked_ioctl	= wdtpci_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= wdtpci_open,
- 	.release	= wdtpci_release,
- };
-diff --git a/fs/compat_ioctl.c b/fs/compat_ioctl.c
-index b20228c19ccd..10ba2d9e20bc 100644
---- a/fs/compat_ioctl.c
-+++ b/fs/compat_ioctl.c
-@@ -412,17 +412,6 @@ COMPATIBLE_IOCTL(PPPIOCDISCONN)
- COMPATIBLE_IOCTL(PPPIOCATTCHAN)
- COMPATIBLE_IOCTL(PPPIOCGCHAN)
- COMPATIBLE_IOCTL(PPPIOCGL2TPSTATS)
--/* Watchdog */
--COMPATIBLE_IOCTL(WDIOC_GETSUPPORT)
--COMPATIBLE_IOCTL(WDIOC_GETSTATUS)
--COMPATIBLE_IOCTL(WDIOC_GETBOOTSTATUS)
--COMPATIBLE_IOCTL(WDIOC_GETTEMP)
--COMPATIBLE_IOCTL(WDIOC_SETOPTIONS)
--COMPATIBLE_IOCTL(WDIOC_KEEPALIVE)
--COMPATIBLE_IOCTL(WDIOC_SETTIMEOUT)
--COMPATIBLE_IOCTL(WDIOC_GETTIMEOUT)
--COMPATIBLE_IOCTL(WDIOC_SETPRETIMEOUT)
--COMPATIBLE_IOCTL(WDIOC_GETPRETIMEOUT)
- };
- 
- /*
+ .. only::  subproject and html
+diff --git a/Documentation/dev-tools/kunit/api/index.rst b/Documentation/dev-tools/kunit/api/index.rst
+new file mode 100644
+index 000000000000..9b9bffe5d41a
+--- /dev/null
++++ b/Documentation/dev-tools/kunit/api/index.rst
+@@ -0,0 +1,16 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++=============
++API Reference
++=============
++.. toctree::
++
++	test
++
++This section documents the KUnit kernel testing API. It is divided into the
++following sections:
++
++================================= ==============================================
++:doc:`test`                       documents all of the standard testing API
++                                  excluding mocking or mocking related features.
++================================= ==============================================
+diff --git a/Documentation/dev-tools/kunit/api/test.rst b/Documentation/dev-tools/kunit/api/test.rst
+new file mode 100644
+index 000000000000..aaa97f17e5b3
+--- /dev/null
++++ b/Documentation/dev-tools/kunit/api/test.rst
+@@ -0,0 +1,11 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++========
++Test API
++========
++
++This file documents all of the standard testing API excluding mocking or mocking
++related features.
++
++.. kernel-doc:: include/kunit/test.h
++   :internal:
+diff --git a/Documentation/dev-tools/kunit/faq.rst b/Documentation/dev-tools/kunit/faq.rst
+new file mode 100644
+index 000000000000..bf2095112d89
+--- /dev/null
++++ b/Documentation/dev-tools/kunit/faq.rst
+@@ -0,0 +1,62 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++==========================
++Frequently Asked Questions
++==========================
++
++How is this different from Autotest, kselftest, etc?
++====================================================
++KUnit is a unit testing framework. Autotest, kselftest (and some others) are
++not.
++
++A `unit test <https://martinfowler.com/bliki/UnitTest.html>`_ is supposed to
++test a single unit of code in isolation, hence the name. A unit test should be
++the finest granularity of testing and as such should allow all possible code
++paths to be tested in the code under test; this is only possible if the code
++under test is very small and does not have any external dependencies outside of
++the test's control like hardware.
++
++There are no testing frameworks currently available for the kernel that do not
++require installing the kernel on a test machine or in a VM and all require
++tests to be written in userspace and run on the kernel under test; this is true
++for Autotest, kselftest, and some others, disqualifying any of them from being
++considered unit testing frameworks.
++
++Does KUnit support running on architectures other than UML?
++===========================================================
++
++Yes, well, mostly.
++
++For the most part, the KUnit core framework (what you use to write the tests)
++can compile to any architecture; it compiles like just another part of the
++kernel and runs when the kernel boots. However, there is some infrastructure,
++like the KUnit Wrapper (``tools/testing/kunit/kunit.py``) that does not support
++other architectures.
++
++In short, this means that, yes, you can run KUnit on other architectures, but
++it might require more work than using KUnit on UML.
++
++For more information, see :ref:`kunit-on-non-uml`.
++
++What is the difference between a unit test and these other kinds of tests?
++==========================================================================
++Most existing tests for the Linux kernel would be categorized as an integration
++test, or an end-to-end test.
++
++- A unit test is supposed to test a single unit of code in isolation, hence the
++  name. A unit test should be the finest granularity of testing and as such
++  should allow all possible code paths to be tested in the code under test; this
++  is only possible if the code under test is very small and does not have any
++  external dependencies outside of the test's control like hardware.
++- An integration test tests the interaction between a minimal set of components,
++  usually just two or three. For example, someone might write an integration
++  test to test the interaction between a driver and a piece of hardware, or to
++  test the interaction between the userspace libraries the kernel provides and
++  the kernel itself; however, one of these tests would probably not test the
++  entire kernel along with hardware interactions and interactions with the
++  userspace.
++- An end-to-end test usually tests the entire system from the perspective of the
++  code under test. For example, someone might write an end-to-end test for the
++  kernel by installing a production configuration of the kernel on production
++  hardware with a production userspace and then trying to exercise some behavior
++  that depends on interactions between the hardware, the kernel, and userspace.
+diff --git a/Documentation/dev-tools/kunit/index.rst b/Documentation/dev-tools/kunit/index.rst
+new file mode 100644
+index 000000000000..26ffb46bdf99
+--- /dev/null
++++ b/Documentation/dev-tools/kunit/index.rst
+@@ -0,0 +1,79 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++=========================================
++KUnit - Unit Testing for the Linux Kernel
++=========================================
++
++.. toctree::
++	:maxdepth: 2
++
++	start
++	usage
++	api/index
++	faq
++
++What is KUnit?
++==============
++
++KUnit is a lightweight unit testing and mocking framework for the Linux kernel.
++These tests are able to be run locally on a developer's workstation without a VM
++or special hardware.
++
++KUnit is heavily inspired by JUnit, Python's unittest.mock, and
++Googletest/Googlemock for C++. KUnit provides facilities for defining unit test
++cases, grouping related test cases into test suites, providing common
++infrastructure for running tests, and much more.
++
++Get started now: :doc:`start`
++
++Why KUnit?
++==========
++
++A unit test is supposed to test a single unit of code in isolation, hence the
++name. A unit test should be the finest granularity of testing and as such should
++allow all possible code paths to be tested in the code under test; this is only
++possible if the code under test is very small and does not have any external
++dependencies outside of the test's control like hardware.
++
++Outside of KUnit, there are no testing frameworks currently
++available for the kernel that do not require installing the kernel on a test
++machine or in a VM and all require tests to be written in userspace running on
++the kernel; this is true for Autotest, and kselftest, disqualifying
++any of them from being considered unit testing frameworks.
++
++KUnit addresses the problem of being able to run tests without needing a virtual
++machine or actual hardware with User Mode Linux. User Mode Linux is a Linux
++architecture, like ARM or x86; however, unlike other architectures it compiles
++to a standalone program that can be run like any other program directly inside
++of a host operating system; to be clear, it does not require any virtualization
++support; it is just a regular program.
++
++KUnit is fast. Excluding build time, from invocation to completion KUnit can run
++several dozen tests in only 10 to 20 seconds; this might not sound like a big
++deal to some people, but having such fast and easy to run tests fundamentally
++changes the way you go about testing and even writing code in the first place.
++Linus himself said in his `git talk at Google
++<https://gist.github.com/lorn/1272686/revisions#diff-53c65572127855f1b003db4064a94573R874>`_:
++
++	"... a lot of people seem to think that performance is about doing the
++	same thing, just doing it faster, and that is not true. That is not what
++	performance is all about. If you can do something really fast, really
++	well, people will start using it differently."
++
++In this context Linus was talking about branching and merging,
++but this point also applies to testing. If your tests are slow, unreliable, are
++difficult to write, and require a special setup or special hardware to run,
++then you wait a lot longer to write tests, and you wait a lot longer to run
++tests; this means that tests are likely to break, unlikely to test a lot of
++things, and are unlikely to be rerun once they pass. If your tests are really
++fast, you run them all the time, every time you make a change, and every time
++someone sends you some code. Why trust that someone ran all their tests
++correctly on every change when you can just run them yourself in less time than
++it takes to read their test log?
++
++How do I use it?
++================
++
++*   :doc:`start` - for new users of KUnit
++*   :doc:`usage` - for a more detailed explanation of KUnit features
++*   :doc:`api/index` - for the list of KUnit APIs used for testing
+diff --git a/Documentation/dev-tools/kunit/start.rst b/Documentation/dev-tools/kunit/start.rst
+new file mode 100644
+index 000000000000..6dc229e46bb3
+--- /dev/null
++++ b/Documentation/dev-tools/kunit/start.rst
+@@ -0,0 +1,180 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++===============
++Getting Started
++===============
++
++Installing dependencies
++=======================
++KUnit has the same dependencies as the Linux kernel. As long as you can build
++the kernel, you can run KUnit.
++
++KUnit Wrapper
++=============
++Included with KUnit is a simple Python wrapper that helps format the output to
++easily use and read KUnit output. It handles building and running the kernel, as
++well as formatting the output.
++
++The wrapper can be run with:
++
++.. code-block:: bash
++
++   ./tools/testing/kunit/kunit.py run
++
++Creating a kunitconfig
++======================
++The Python script is a thin wrapper around Kbuild as such, it needs to be
++configured with a ``kunitconfig`` file. This file essentially contains the
++regular Kernel config, with the specific test targets as well.
++
++.. code-block:: bash
++
++	git clone -b master https://kunit.googlesource.com/kunitconfig $PATH_TO_KUNITCONFIG_REPO
++	cd $PATH_TO_LINUX_REPO
++	ln -s $PATH_TO_KUNIT_CONFIG_REPO/kunitconfig kunitconfig
++
++You may want to add kunitconfig to your local gitignore.
++
++Verifying KUnit Works
++---------------------
++
++To make sure that everything is set up correctly, simply invoke the Python
++wrapper from your kernel repo:
++
++.. code-block:: bash
++
++	./tools/testing/kunit/kunit.py
++
++.. note::
++   You may want to run ``make mrproper`` first.
++
++If everything worked correctly, you should see the following:
++
++.. code-block:: bash
++
++	Generating .config ...
++	Building KUnit Kernel ...
++	Starting KUnit Kernel ...
++
++followed by a list of tests that are run. All of them should be passing.
++
++.. note::
++   Because it is building a lot of sources for the first time, the ``Building
++   kunit kernel`` step may take a while.
++
++Writing your first test
++=======================
++
++In your kernel repo let's add some code that we can test. Create a file
++``drivers/misc/example.h`` with the contents:
++
++.. code-block:: c
++
++	int misc_example_add(int left, int right);
++
++create a file ``drivers/misc/example.c``:
++
++.. code-block:: c
++
++	#include <linux/errno.h>
++
++	#include "example.h"
++
++	int misc_example_add(int left, int right)
++	{
++		return left + right;
++	}
++
++Now add the following lines to ``drivers/misc/Kconfig``:
++
++.. code-block:: kconfig
++
++	config MISC_EXAMPLE
++		bool "My example"
++
++and the following lines to ``drivers/misc/Makefile``:
++
++.. code-block:: make
++
++	obj-$(CONFIG_MISC_EXAMPLE) += example.o
++
++Now we are ready to write the test. The test will be in
++``drivers/misc/example-test.c``:
++
++.. code-block:: c
++
++	#include <kunit/test.h>
++	#include "example.h"
++
++	/* Define the test cases. */
++
++	static void misc_example_add_test_basic(struct kunit *test)
++	{
++		KUNIT_EXPECT_EQ(test, 1, misc_example_add(1, 0));
++		KUNIT_EXPECT_EQ(test, 2, misc_example_add(1, 1));
++		KUNIT_EXPECT_EQ(test, 0, misc_example_add(-1, 1));
++		KUNIT_EXPECT_EQ(test, INT_MAX, misc_example_add(0, INT_MAX));
++		KUNIT_EXPECT_EQ(test, -1, misc_example_add(INT_MAX, INT_MIN));
++	}
++
++	static void misc_example_test_failure(struct kunit *test)
++	{
++		KUNIT_FAIL(test, "This test never passes.");
++	}
++
++	static struct kunit_case misc_example_test_cases[] = {
++		KUNIT_CASE(misc_example_add_test_basic),
++		KUNIT_CASE(misc_example_test_failure),
++		{}
++	};
++
++	static struct kunit_suite misc_example_test_suite = {
++		.name = "misc-example",
++		.test_cases = misc_example_test_cases,
++	};
++	kunit_test_suite(misc_example_test_suite);
++
++Now add the following to ``drivers/misc/Kconfig``:
++
++.. code-block:: kconfig
++
++	config MISC_EXAMPLE_TEST
++		bool "Test for my example"
++		depends on MISC_EXAMPLE && KUNIT
++
++and the following to ``drivers/misc/Makefile``:
++
++.. code-block:: make
++
++	obj-$(CONFIG_MISC_EXAMPLE_TEST) += example-test.o
++
++Now add it to your ``kunitconfig``:
++
++.. code-block:: none
++
++	CONFIG_MISC_EXAMPLE=y
++	CONFIG_MISC_EXAMPLE_TEST=y
++
++Now you can run the test:
++
++.. code-block:: bash
++
++	./tools/testing/kunit/kunit.py
++
++You should see the following failure:
++
++.. code-block:: none
++
++	...
++	[16:08:57] [PASSED] misc-example:misc_example_add_test_basic
++	[16:08:57] [FAILED] misc-example:misc_example_test_failure
++	[16:08:57] EXPECTATION FAILED at drivers/misc/example-test.c:17
++	[16:08:57] 	This test never passes.
++	...
++
++Congrats! You just wrote your first KUnit test!
++
++Next Steps
++==========
++*   Check out the :doc:`usage` page for a more
++    in-depth explanation of KUnit.
+diff --git a/Documentation/dev-tools/kunit/usage.rst b/Documentation/dev-tools/kunit/usage.rst
+new file mode 100644
+index 000000000000..c6e69634e274
+--- /dev/null
++++ b/Documentation/dev-tools/kunit/usage.rst
+@@ -0,0 +1,576 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++===========
++Using KUnit
++===========
++
++The purpose of this document is to describe what KUnit is, how it works, how it
++is intended to be used, and all the concepts and terminology that are needed to
++understand it. This guide assumes a working knowledge of the Linux kernel and
++some basic knowledge of testing.
++
++For a high level introduction to KUnit, including setting up KUnit for your
++project, see :doc:`start`.
++
++Organization of this document
++=============================
++
++This document is organized into two main sections: Testing and Isolating
++Behavior. The first covers what a unit test is and how to use KUnit to write
++them. The second covers how to use KUnit to isolate code and make it possible
++to unit test code that was otherwise un-unit-testable.
++
++Testing
++=======
++
++What is KUnit?
++--------------
++
++"K" is short for "kernel" so "KUnit" is the "(Linux) Kernel Unit Testing
++Framework." KUnit is intended first and foremost for writing unit tests; it is
++general enough that it can be used to write integration tests; however, this is
++a secondary goal. KUnit has no ambition of being the only testing framework for
++the kernel; for example, it does not intend to be an end-to-end testing
++framework.
++
++What is Unit Testing?
++---------------------
++
++A `unit test <https://martinfowler.com/bliki/UnitTest.html>`_ is a test that
++tests code at the smallest possible scope, a *unit* of code. In the C
++programming language that's a function.
++
++Unit tests should be written for all the publicly exposed functions in a
++compilation unit; so that is all the functions that are exported in either a
++*class* (defined below) or all functions which are **not** static.
++
++Writing Tests
++-------------
++
++Test Cases
++~~~~~~~~~~
++
++The fundamental unit in KUnit is the test case. A test case is a function with
++the signature ``void (*)(struct kunit *test)``. It calls a function to be tested
++and then sets *expectations* for what should happen. For example:
++
++.. code-block:: c
++
++	void example_test_success(struct kunit *test)
++	{
++	}
++
++	void example_test_failure(struct kunit *test)
++	{
++		KUNIT_FAIL(test, "This test never passes.");
++	}
++
++In the above example ``example_test_success`` always passes because it does
++nothing; no expectations are set, so all expectations pass. On the other hand
++``example_test_failure`` always fails because it calls ``KUNIT_FAIL``, which is
++a special expectation that logs a message and causes the test case to fail.
++
++Expectations
++~~~~~~~~~~~~
++An *expectation* is a way to specify that you expect a piece of code to do
++something in a test. An expectation is called like a function. A test is made
++by setting expectations about the behavior of a piece of code under test; when
++one or more of the expectations fail, the test case fails and information about
++the failure is logged. For example:
++
++.. code-block:: c
++
++	void add_test_basic(struct kunit *test)
++	{
++		KUNIT_EXPECT_EQ(test, 1, add(1, 0));
++		KUNIT_EXPECT_EQ(test, 2, add(1, 1));
++	}
++
++In the above example ``add_test_basic`` makes a number of assertions about the
++behavior of a function called ``add``; the first parameter is always of type
++``struct kunit *``, which contains information about the current test context;
++the second parameter, in this case, is what the value is expected to be; the
++last value is what the value actually is. If ``add`` passes all of these
++expectations, the test case, ``add_test_basic`` will pass; if any one of these
++expectations fail, the test case will fail.
++
++It is important to understand that a test case *fails* when any expectation is
++violated; however, the test will continue running, potentially trying other
++expectations until the test case ends or is otherwise terminated. This is as
++opposed to *assertions* which are discussed later.
++
++To learn about more expectations supported by KUnit, see :doc:`api/test`.
++
++.. note::
++   A single test case should be pretty short, pretty easy to understand,
++   focused on a single behavior.
++
++For example, if we wanted to properly test the add function above, we would
++create additional tests cases which would each test a different property that an
++add function should have like this:
++
++.. code-block:: c
++
++	void add_test_basic(struct kunit *test)
++	{
++		KUNIT_EXPECT_EQ(test, 1, add(1, 0));
++		KUNIT_EXPECT_EQ(test, 2, add(1, 1));
++	}
++
++	void add_test_negative(struct kunit *test)
++	{
++		KUNIT_EXPECT_EQ(test, 0, add(-1, 1));
++	}
++
++	void add_test_max(struct kunit *test)
++	{
++		KUNIT_EXPECT_EQ(test, INT_MAX, add(0, INT_MAX));
++		KUNIT_EXPECT_EQ(test, -1, add(INT_MAX, INT_MIN));
++	}
++
++	void add_test_overflow(struct kunit *test)
++	{
++		KUNIT_EXPECT_EQ(test, INT_MIN, add(INT_MAX, 1));
++	}
++
++Notice how it is immediately obvious what all the properties that we are testing
++for are.
++
++Assertions
++~~~~~~~~~~
++
++KUnit also has the concept of an *assertion*. An assertion is just like an
++expectation except the assertion immediately terminates the test case if it is
++not satisfied.
++
++For example:
++
++.. code-block:: c
++
++	static void mock_test_do_expect_default_return(struct kunit *test)
++	{
++		struct mock_test_context *ctx = test->priv;
++		struct mock *mock = ctx->mock;
++		int param0 = 5, param1 = -5;
++		const char *two_param_types[] = {"int", "int"};
++		const void *two_params[] = {&param0, &param1};
++		const void *ret;
++
++		ret = mock->do_expect(mock,
++				      "test_printk", test_printk,
++				      two_param_types, two_params,
++				      ARRAY_SIZE(two_params));
++		KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ret);
++		KUNIT_EXPECT_EQ(test, -4, *((int *) ret));
++	}
++
++In this example, the method under test should return a pointer to a value, so
++if the pointer returned by the method is null or an errno, we don't want to
++bother continuing the test since the following expectation could crash the test
++case. `ASSERT_NOT_ERR_OR_NULL(...)` allows us to bail out of the test case if
++the appropriate conditions have not been satisfied to complete the test.
++
++Test Suites
++~~~~~~~~~~~
++
++Now obviously one unit test isn't very helpful; the power comes from having
++many test cases covering all of your behaviors. Consequently it is common to
++have many *similar* tests; in order to reduce duplication in these closely
++related tests most unit testing frameworks provide the concept of a *test
++suite*, in KUnit we call it a *test suite*; all it is is just a collection of
++test cases for a unit of code with a set up function that gets invoked before
++every test cases and then a tear down function that gets invoked after every
++test case completes.
++
++Example:
++
++.. code-block:: c
++
++	static struct kunit_case example_test_cases[] = {
++		KUNIT_CASE(example_test_foo),
++		KUNIT_CASE(example_test_bar),
++		KUNIT_CASE(example_test_baz),
++		{}
++	};
++
++	static struct kunit_suite example_test_suite = {
++		.name = "example",
++		.init = example_test_init,
++		.exit = example_test_exit,
++		.test_cases = example_test_cases,
++	};
++	kunit_test_suite(example_test_suite);
++
++In the above example the test suite, ``example_test_suite``, would run the test
++cases ``example_test_foo``, ``example_test_bar``, and ``example_test_baz``,
++each would have ``example_test_init`` called immediately before it and would
++have ``example_test_exit`` called immediately after it.
++``kunit_test_suite(example_test_suite)`` registers the test suite with the
++KUnit test framework.
++
++.. note::
++   A test case will only be run if it is associated with a test suite.
++
++For a more information on these types of things see the :doc:`api/test`.
++
++Isolating Behavior
++==================
++
++The most important aspect of unit testing that other forms of testing do not
++provide is the ability to limit the amount of code under test to a single unit.
++In practice, this is only possible by being able to control what code gets run
++when the unit under test calls a function and this is usually accomplished
++through some sort of indirection where a function is exposed as part of an API
++such that the definition of that function can be changed without affecting the
++rest of the code base. In the kernel this primarily comes from two constructs,
++classes, structs that contain function pointers that are provided by the
++implementer, and architecture specific functions which have definitions selected
++at compile time.
++
++Classes
++-------
++
++Classes are not a construct that is built into the C programming language;
++however, it is an easily derived concept. Accordingly, pretty much every project
++that does not use a standardized object oriented library (like GNOME's GObject)
++has their own slightly different way of doing object oriented programming; the
++Linux kernel is no exception.
++
++The central concept in kernel object oriented programming is the class. In the
++kernel, a *class* is a struct that contains function pointers. This creates a
++contract between *implementers* and *users* since it forces them to use the
++same function signature without having to call the function directly. In order
++for it to truly be a class, the function pointers must specify that a pointer
++to the class, known as a *class handle*, be one of the parameters; this makes
++it possible for the member functions (also known as *methods*) to have access
++to member variables (more commonly known as *fields*) allowing the same
++implementation to have multiple *instances*.
++
++Typically a class can be *overridden* by *child classes* by embedding the
++*parent class* in the child class. Then when a method provided by the child
++class is called, the child implementation knows that the pointer passed to it is
++of a parent contained within the child; because of this, the child can compute
++the pointer to itself because the pointer to the parent is always a fixed offset
++from the pointer to the child; this offset is the offset of the parent contained
++in the child struct. For example:
++
++.. code-block:: c
++
++	struct shape {
++		int (*area)(struct shape *this);
++	};
++
++	struct rectangle {
++		struct shape parent;
++		int length;
++		int width;
++	};
++
++	int rectangle_area(struct shape *this)
++	{
++		struct rectangle *self = container_of(this, struct shape, parent);
++
++		return self->length * self->width;
++	};
++
++	void rectangle_new(struct rectangle *self, int length, int width)
++	{
++		self->parent.area = rectangle_area;
++		self->length = length;
++		self->width = width;
++	}
++
++In this example (as in most kernel code) the operation of computing the pointer
++to the child from the pointer to the parent is done by ``container_of``.
++
++Faking Classes
++~~~~~~~~~~~~~~
++
++In order to unit test a piece of code that calls a method in a class, the
++behavior of the method must be controllable, otherwise the test ceases to be a
++unit test and becomes an integration test.
++
++A fake just provides an implementation of a piece of code that is different than
++what runs in a production instance, but behaves identically from the standpoint
++of the callers; this is usually done to replace a dependency that is hard to
++deal with, or is slow.
++
++A good example for this might be implementing a fake EEPROM that just stores the
++"contents" in an internal buffer. For example, let's assume we have a class that
++represents an EEPROM:
++
++.. code-block:: c
++
++	struct eeprom {
++		ssize_t (*read)(struct eeprom *this, size_t offset, char *buffer, size_t count);
++		ssize_t (*write)(struct eeprom *this, size_t offset, const char *buffer, size_t count);
++	};
++
++And we want to test some code that buffers writes to the EEPROM:
++
++.. code-block:: c
++
++	struct eeprom_buffer {
++		ssize_t (*write)(struct eeprom_buffer *this, const char *buffer, size_t count);
++		int flush(struct eeprom_buffer *this);
++		size_t flush_count; /* Flushes when buffer exceeds flush_count. */
++	};
++
++	struct eeprom_buffer *new_eeprom_buffer(struct eeprom *eeprom);
++	void destroy_eeprom_buffer(struct eeprom *eeprom);
++
++We can easily test this code by *faking out* the underlying EEPROM:
++
++.. code-block:: c
++
++	struct fake_eeprom {
++		struct eeprom parent;
++		char contents[FAKE_EEPROM_CONTENTS_SIZE];
++	};
++
++	ssize_t fake_eeprom_read(struct eeprom *parent, size_t offset, char *buffer, size_t count)
++	{
++		struct fake_eeprom *this = container_of(parent, struct fake_eeprom, parent);
++
++		count = min(count, FAKE_EEPROM_CONTENTS_SIZE - offset);
++		memcpy(buffer, this->contents + offset, count);
++
++		return count;
++	}
++
++	ssize_t fake_eeprom_write(struct eeprom *this, size_t offset, const char *buffer, size_t count)
++	{
++		struct fake_eeprom *this = container_of(parent, struct fake_eeprom, parent);
++
++		count = min(count, FAKE_EEPROM_CONTENTS_SIZE - offset);
++		memcpy(this->contents + offset, buffer, count);
++
++		return count;
++	}
++
++	void fake_eeprom_init(struct fake_eeprom *this)
++	{
++		this->parent.read = fake_eeprom_read;
++		this->parent.write = fake_eeprom_write;
++		memset(this->contents, 0, FAKE_EEPROM_CONTENTS_SIZE);
++	}
++
++We can now use it to test ``struct eeprom_buffer``:
++
++.. code-block:: c
++
++	struct eeprom_buffer_test {
++		struct fake_eeprom *fake_eeprom;
++		struct eeprom_buffer *eeprom_buffer;
++	};
++
++	static void eeprom_buffer_test_does_not_write_until_flush(struct kunit *test)
++	{
++		struct eeprom_buffer_test *ctx = test->priv;
++		struct eeprom_buffer *eeprom_buffer = ctx->eeprom_buffer;
++		struct fake_eeprom *fake_eeprom = ctx->fake_eeprom;
++		char buffer[] = {0xff};
++
++		eeprom_buffer->flush_count = SIZE_MAX;
++
++		eeprom_buffer->write(eeprom_buffer, buffer, 1);
++		KUNIT_EXPECT_EQ(test, fake_eeprom->contents[0], 0);
++
++		eeprom_buffer->write(eeprom_buffer, buffer, 1);
++		KUNIT_EXPECT_EQ(test, fake_eeprom->contents[1], 0);
++
++		eeprom_buffer->flush(eeprom_buffer);
++		KUNIT_EXPECT_EQ(test, fake_eeprom->contents[0], 0xff);
++		KUNIT_EXPECT_EQ(test, fake_eeprom->contents[1], 0xff);
++	}
++
++	static void eeprom_buffer_test_flushes_after_flush_count_met(struct kunit *test)
++	{
++		struct eeprom_buffer_test *ctx = test->priv;
++		struct eeprom_buffer *eeprom_buffer = ctx->eeprom_buffer;
++		struct fake_eeprom *fake_eeprom = ctx->fake_eeprom;
++		char buffer[] = {0xff};
++
++		eeprom_buffer->flush_count = 2;
++
++		eeprom_buffer->write(eeprom_buffer, buffer, 1);
++		KUNIT_EXPECT_EQ(test, fake_eeprom->contents[0], 0);
++
++		eeprom_buffer->write(eeprom_buffer, buffer, 1);
++		KUNIT_EXPECT_EQ(test, fake_eeprom->contents[0], 0xff);
++		KUNIT_EXPECT_EQ(test, fake_eeprom->contents[1], 0xff);
++	}
++
++	static void eeprom_buffer_test_flushes_increments_of_flush_count(struct kunit *test)
++	{
++		struct eeprom_buffer_test *ctx = test->priv;
++		struct eeprom_buffer *eeprom_buffer = ctx->eeprom_buffer;
++		struct fake_eeprom *fake_eeprom = ctx->fake_eeprom;
++		char buffer[] = {0xff, 0xff};
++
++		eeprom_buffer->flush_count = 2;
++
++		eeprom_buffer->write(eeprom_buffer, buffer, 1);
++		KUNIT_EXPECT_EQ(test, fake_eeprom->contents[0], 0);
++
++		eeprom_buffer->write(eeprom_buffer, buffer, 2);
++		KUNIT_EXPECT_EQ(test, fake_eeprom->contents[0], 0xff);
++		KUNIT_EXPECT_EQ(test, fake_eeprom->contents[1], 0xff);
++		/* Should have only flushed the first two bytes. */
++		KUNIT_EXPECT_EQ(test, fake_eeprom->contents[2], 0);
++	}
++
++	static int eeprom_buffer_test_init(struct kunit *test)
++	{
++		struct eeprom_buffer_test *ctx;
++
++		ctx = kunit_kzalloc(test, sizeof(*ctx), GFP_KERNEL);
++		KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx);
++
++		ctx->fake_eeprom = kunit_kzalloc(test, sizeof(*ctx->fake_eeprom), GFP_KERNEL);
++		KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx->fake_eeprom);
++		fake_eeprom_init(ctx->fake_eeprom);
++
++		ctx->eeprom_buffer = new_eeprom_buffer(&ctx->fake_eeprom->parent);
++		KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx->eeprom_buffer);
++
++		test->priv = ctx;
++
++		return 0;
++	}
++
++	static void eeprom_buffer_test_exit(struct kunit *test)
++	{
++		struct eeprom_buffer_test *ctx = test->priv;
++
++		destroy_eeprom_buffer(ctx->eeprom_buffer);
++	}
++
++.. _kunit-on-non-uml:
++
++KUnit on non-UML architectures
++==============================
++
++By default KUnit uses UML as a way to provide dependencies for code under test.
++Under most circumstances KUnit's usage of UML should be treated as an
++implementation detail of how KUnit works under the hood. Nevertheless, there
++are instances where being able to run architecture specific code, or test
++against real hardware is desirable. For these reasons KUnit supports running on
++other architectures.
++
++Running existing KUnit tests on non-UML architectures
++-----------------------------------------------------
++
++There are some special considerations when running existing KUnit tests on
++non-UML architectures:
++
++*   Hardware may not be deterministic, so a test that always passes or fails
++    when run under UML may not always do so on real hardware.
++*   Hardware and VM environments may not be hermetic. KUnit tries its best to
++    provide a hermetic environment to run tests; however, it cannot manage state
++    that it doesn't know about outside of the kernel. Consequently, tests that
++    may be hermetic on UML may not be hermetic on other architectures.
++*   Some features and tooling may not be supported outside of UML.
++*   Hardware and VMs are slower than UML.
++
++None of these are reasons not to run your KUnit tests on real hardware; they are
++only things to be aware of when doing so.
++
++The biggest impediment will likely be that certain KUnit features and
++infrastructure may not support your target environment. For example, at this
++time the KUnit Wrapper (``tools/testing/kunit/kunit.py``) does not work outside
++of UML. Unfortunately, there is no way around this. Using UML (or even just a
++particular architecture) allows us to make a lot of assumptions that make it
++possible to do things which might otherwise be impossible.
++
++Nevertheless, all core KUnit framework features are fully supported on all
++architectures, and using them is straightforward: all you need to do is to take
++your kunitconfig, your Kconfig options for the tests you would like to run, and
++merge them into whatever config your are using for your platform. That's it!
++
++For example, let's say you have the following kunitconfig:
++
++.. code-block:: none
++
++	CONFIG_KUNIT=y
++	CONFIG_KUNIT_EXAMPLE_TEST=y
++
++If you wanted to run this test on an x86 VM, you might add the following config
++options to your ``.config``:
++
++.. code-block:: none
++
++	CONFIG_KUNIT=y
++	CONFIG_KUNIT_EXAMPLE_TEST=y
++	CONFIG_SERIAL_8250=y
++	CONFIG_SERIAL_8250_CONSOLE=y
++
++All these new options do is enable support for a common serial console needed
++for logging.
++
++Next, you could build a kernel with these tests as follows:
++
++
++.. code-block:: bash
++
++	make ARCH=x86 olddefconfig
++	make ARCH=x86
++
++Once you have built a kernel, you could run it on QEMU as follows:
++
++.. code-block:: bash
++
++	qemu-system-x86_64 -enable-kvm \
++			   -m 1024 \
++			   -kernel arch/x86_64/boot/bzImage \
++			   -append 'console=ttyS0' \
++			   --nographic
++
++Interspersed in the kernel logs you might see the following:
++
++.. code-block:: none
++
++	TAP version 14
++		# Subtest: example
++		1..1
++		# example_simple_test: initializing
++		ok 1 - example_simple_test
++	ok 1 - example
++
++Congratulations, you just ran a KUnit test on the x86 architecture!
++
++Writing new tests for other architectures
++-----------------------------------------
++
++The first thing you must do is ask yourself whether it is necessary to write a
++KUnit test for a specific architecture, and then whether it is necessary to
++write that test for a particular piece of hardware. In general, writing a test
++that depends on having access to a particular piece of hardware or software (not
++included in the Linux source repo) should be avoided at all costs.
++
++Even if you only ever plan on running your KUnit test on your hardware
++configuration, other people may want to run your tests and may not have access
++to your hardware. If you write your test to run on UML, then anyone can run your
++tests without knowing anything about your particular setup, and you can still
++run your tests on your hardware setup just by compiling for your architecture.
++
++.. important::
++   Always prefer tests that run on UML to tests that only run under a particular
++   architecture, and always prefer tests that run under QEMU or another easy
++   (and monitarily free) to obtain software environment to a specific piece of
++   hardware.
++
++Nevertheless, there are still valid reasons to write an architecture or hardware
++specific test: for example, you might want to test some code that really belongs
++in ``arch/some-arch/*``. Even so, try your best to write the test so that it
++does not depend on physical hardware: if some of your test cases don't need the
++hardware, only require the hardware for tests that actually need it.
++
++Now that you have narrowed down exactly what bits are hardware specific, the
++actual procedure for writing and running the tests is pretty much the same as
++writing normal KUnit tests. One special caveat is that you have to reset
++hardware state in between test cases; if this is not possible, you may only be
++able to run one test case per invocation.
++
++.. TODO(brendanhiggins@google.com): Add an actual example of an architecture
++   dependent KUnit test.
 -- 
-2.20.0
+2.23.0.187.g17f5b7556c-goog
 
 
 _______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
