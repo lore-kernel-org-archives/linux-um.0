@@ -1,16 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x449.google.com ([2607:f8b0:4864:20::449])
+Received: from mail-pl1-x649.google.com ([2607:f8b0:4864:20::649])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i0DRK-0003AY-R3
- for linux-um@lists.infradead.org; Tue, 20 Aug 2019 23:21:24 +0000
-Received: by mail-pf1-x449.google.com with SMTP id j22so243648pfe.11
- for <linux-um@lists.infradead.org>; Tue, 20 Aug 2019 16:21:22 -0700 (PDT)
-Date: Tue, 20 Aug 2019 16:20:38 -0700
-In-Reply-To: <20190820232046.50175-1-brendanhiggins@google.com>
-Message-Id: <20190820232046.50175-11-brendanhiggins@google.com>
+ id 1i1KxN-0004J2-9T
+ for linux-um@lists.infradead.org; Sat, 24 Aug 2019 01:35:06 +0000
+Received: by mail-pl1-x649.google.com with SMTP id s21so6863377plr.2
+ for <linux-um@lists.infradead.org>; Fri, 23 Aug 2019 18:35:04 -0700 (PDT)
+Date: Fri, 23 Aug 2019 18:34:17 -0700
+In-Reply-To: <20190824013425.175645-1-brendanhiggins@google.com>
+Message-Id: <20190824013425.175645-11-brendanhiggins@google.com>
 Mime-Version: 1.0
-References: <20190820232046.50175-1-brendanhiggins@google.com>
-Subject: [PATCH v14 10/18] kunit: test: add tests for kunit test abort
+References: <20190824013425.175645-1-brendanhiggins@google.com>
+Subject: [PATCH v15 10/18] kunit: test: add tests for kunit test abort
 From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -42,7 +42,7 @@ Reviewed-by: Stephen Boyd <sboyd@kernel.org>
  create mode 100644 kunit/test-test.c
 
 diff --git a/kunit/Makefile b/kunit/Makefile
-index c9176c9c578c6..769d9402b5d3a 100644
+index c9176c9c578c..769d9402b5d3 100644
 --- a/kunit/Makefile
 +++ b/kunit/Makefile
 @@ -3,6 +3,7 @@ obj-$(CONFIG_KUNIT) +=			test.o \
@@ -56,7 +56,7 @@ index c9176c9c578c6..769d9402b5d3a 100644
  obj-$(CONFIG_KUNIT_EXAMPLE_TEST) +=	example-test.o
 diff --git a/kunit/test-test.c b/kunit/test-test.c
 new file mode 100644
-index 0000000000000..06d34d36b1038
+index 000000000000..06d34d36b103
 --- /dev/null
 +++ b/kunit/test-test.c
 @@ -0,0 +1,106 @@
@@ -167,7 +167,7 @@ index 0000000000000..06d34d36b1038
 +};
 +kunit_test_suite(kunit_try_catch_test_suite);
 -- 
-2.23.0.rc1.153.gdeed80330f-goog
+2.23.0.187.g17f5b7556c-goog
 
 
 _______________________________________________
