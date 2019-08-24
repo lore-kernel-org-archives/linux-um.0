@@ -1,16 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x64a.google.com ([2607:f8b0:4864:20::64a])
+Received: from mail-qt1-x849.google.com ([2607:f8b0:4864:20::849])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i0DRD-00035H-5p
- for linux-um@lists.infradead.org; Tue, 20 Aug 2019 23:21:16 +0000
-Received: by mail-pl1-x64a.google.com with SMTP id y5so271208plt.6
- for <linux-um@lists.infradead.org>; Tue, 20 Aug 2019 16:21:13 -0700 (PDT)
-Date: Tue, 20 Aug 2019 16:20:35 -0700
-In-Reply-To: <20190820232046.50175-1-brendanhiggins@google.com>
-Message-Id: <20190820232046.50175-8-brendanhiggins@google.com>
+ id 1i1Kxi-0005IQ-6P
+ for linux-um@lists.infradead.org; Sat, 24 Aug 2019 01:35:28 +0000
+Received: by mail-qt1-x849.google.com with SMTP id l17so11611367qtk.16
+ for <linux-um@lists.infradead.org>; Fri, 23 Aug 2019 18:35:25 -0700 (PDT)
+Date: Fri, 23 Aug 2019 18:34:24 -0700
+In-Reply-To: <20190824013425.175645-1-brendanhiggins@google.com>
+Message-Id: <20190824013425.175645-18-brendanhiggins@google.com>
 Mime-Version: 1.0
-References: <20190820232046.50175-1-brendanhiggins@google.com>
-Subject: [PATCH v14 07/18] kunit: test: add initial tests
+References: <20190824013425.175645-1-brendanhiggins@google.com>
+Subject: [PATCH v15 17/18] kernel/sysctl-test: Add null pointer test for
+ sysctl.c:proc_dointvec()
 From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -25,219 +26,462 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, Iurii Zaikin <yzaikin@google.com>, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-Add a test for string stream along with a simpler example.
+From: Iurii Zaikin <yzaikin@google.com>
 
+KUnit tests for initialized data behavior of proc_dointvec that is
+explicitly checked in the code. Includes basic parsing tests including
+int min/max overflow.
+
+Signed-off-by: Iurii Zaikin <yzaikin@google.com>
 Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
 Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+Acked-by: Luis Chamberlain <mcgrof@kernel.org>
 Reviewed-by: Stephen Boyd <sboyd@kernel.org>
 ---
- kunit/Kconfig              | 21 +++++++++
- kunit/Makefile             |  4 ++
- kunit/example-test.c       | 88 ++++++++++++++++++++++++++++++++++++++
- kunit/string-stream-test.c | 52 ++++++++++++++++++++++
- 4 files changed, 165 insertions(+)
- create mode 100644 kunit/example-test.c
- create mode 100644 kunit/string-stream-test.c
+ kernel/Makefile      |   2 +
+ kernel/sysctl-test.c | 392 +++++++++++++++++++++++++++++++++++++++++++
+ lib/Kconfig.debug    |  11 ++
+ 3 files changed, 405 insertions(+)
+ create mode 100644 kernel/sysctl-test.c
 
-diff --git a/kunit/Kconfig b/kunit/Kconfig
-index 330ae83527c23..8541ef95b65ad 100644
---- a/kunit/Kconfig
-+++ b/kunit/Kconfig
-@@ -14,4 +14,25 @@ config KUNIT
- 	  architectures. For more information, please see
- 	  Documentation/dev-tools/kunit/.
+diff --git a/kernel/Makefile b/kernel/Makefile
+index ef0d95a190b4..63e9ea6122c2 100644
+--- a/kernel/Makefile
++++ b/kernel/Makefile
+@@ -113,6 +113,8 @@ obj-$(CONFIG_TORTURE_TEST) += torture.o
+ obj-$(CONFIG_HAS_IOMEM) += iomem.o
+ obj-$(CONFIG_RSEQ) += rseq.o
  
-+config KUNIT_TEST
-+	bool "KUnit test for KUnit"
-+	depends on KUNIT
-+	help
-+	  Enables the unit tests for the KUnit test framework. These tests test
-+	  the KUnit test framework itself; the tests are both written using
-+	  KUnit and test KUnit. This option should only be enabled for testing
-+	  purposes by developers interested in testing that KUnit works as
-+	  expected.
++obj-$(CONFIG_SYSCTL_KUNIT_TEST) += sysctl-test.o
 +
-+config KUNIT_EXAMPLE_TEST
-+	bool "Example test for KUnit"
-+	depends on KUNIT
-+	help
-+	  Enables an example unit test that illustrates some of the basic
-+	  features of KUnit. This test only exists to help new users understand
-+	  what KUnit is and how it is used. Please refer to the example test
-+	  itself, kunit/example-test.c, for more information. This option is
-+	  intended for curious hackers who would like to understand how to use
-+	  KUnit for kernel development.
-+
- endmenu
-diff --git a/kunit/Makefile b/kunit/Makefile
-index 6dcbe309036b8..4e46450bcb3a8 100644
---- a/kunit/Makefile
-+++ b/kunit/Makefile
-@@ -1,3 +1,7 @@
- obj-$(CONFIG_KUNIT) +=			test.o \
- 					string-stream.o \
- 					assert.o
-+
-+obj-$(CONFIG_KUNIT_TEST) +=		string-stream-test.o
-+
-+obj-$(CONFIG_KUNIT_EXAMPLE_TEST) +=	example-test.o
-diff --git a/kunit/example-test.c b/kunit/example-test.c
+ obj-$(CONFIG_GCC_PLUGIN_STACKLEAK) += stackleak.o
+ KASAN_SANITIZE_stackleak.o := n
+ KCOV_INSTRUMENT_stackleak.o := n
+diff --git a/kernel/sysctl-test.c b/kernel/sysctl-test.c
 new file mode 100644
-index 0000000000000..f64a829aa441f
+index 000000000000..2a63241a8453
 --- /dev/null
-+++ b/kunit/example-test.c
-@@ -0,0 +1,88 @@
++++ b/kernel/sysctl-test.c
+@@ -0,0 +1,392 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * Example KUnit test to show how to use KUnit.
-+ *
-+ * Copyright (C) 2019, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
++ * KUnit test of proc sysctl.
 + */
 +
 +#include <kunit/test.h>
++#include <linux/sysctl.h>
++
++#define KUNIT_PROC_READ 0
++#define KUNIT_PROC_WRITE 1
++
++static int i_zero;
++static int i_one_hundred = 100;
 +
 +/*
-+ * This is the most fundamental element of KUnit, the test case. A test case
-+ * makes a set EXPECTATIONs and ASSERTIONs about the behavior of some code; if
-+ * any expectations or assertions are not met, the test fails; otherwise, the
-+ * test passes.
-+ *
-+ * In KUnit, a test case is just a function with the signature
-+ * `void (*)(struct kunit *)`. `struct kunit` is a context object that stores
-+ * information about the current test.
++ * Test that proc_dointvec will not try to use a NULL .data field even when the
++ * length is non-zero.
 + */
-+static void example_simple_test(struct kunit *test)
++static void sysctl_test_api_dointvec_null_tbl_data(struct kunit *test)
 +{
++	struct ctl_table null_data_table = {
++		.procname = "foo",
++		/*
++		 * Here we are testing that proc_dointvec behaves correctly when
++		 * we give it a NULL .data field. Normally this would point to a
++		 * piece of memory where the value would be stored.
++		 */
++		.data		= NULL,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
 +	/*
-+	 * This is an EXPECTATION; it is how KUnit tests things. When you want
-+	 * to test a piece of code, you set some expectations about what the
-+	 * code should do. KUnit then runs the test and verifies that the code's
-+	 * behavior matched what was expected.
++	 * proc_dointvec expects a buffer in user space, so we allocate one. We
++	 * also need to cast it to __user so sparse doesn't get mad.
 +	 */
-+	KUNIT_EXPECT_EQ(test, 1 + 1, 2);
++	void __user *buffer = (void __user *)kunit_kzalloc(test, sizeof(int),
++							   GFP_USER);
++	size_t len;
++	loff_t pos;
++
++	/*
++	 * We don't care what the starting length is since proc_dointvec should
++	 * not try to read because .data is NULL.
++	 */
++	len = 1234;
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&null_data_table,
++					       KUNIT_PROC_READ, buffer, &len,
++					       &pos));
++	KUNIT_EXPECT_EQ(test, (size_t)0, len);
++
++	/*
++	 * See above.
++	 */
++	len = 1234;
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&null_data_table,
++					       KUNIT_PROC_WRITE, buffer, &len,
++					       &pos));
++	KUNIT_EXPECT_EQ(test, (size_t)0, len);
 +}
 +
 +/*
-+ * This is run once before each test case, see the comment on
-+ * example_test_suite for more information.
++ * Similar to the previous test, we create a struct ctrl_table that has a .data
++ * field that proc_dointvec cannot do anything with; however, this time it is
++ * because we tell proc_dointvec that the size is 0.
 + */
-+static int example_test_init(struct kunit *test)
++static void sysctl_test_api_dointvec_table_maxlen_unset(struct kunit *test)
 +{
-+	kunit_info(test, "initializing\n");
++	int data = 0;
++	struct ctl_table data_maxlen_unset_table = {
++		.procname = "foo",
++		.data		= &data,
++		/*
++		 * So .data is no longer NULL, but we tell proc_dointvec its
++		 * length is 0, so it still shouldn't try to use it.
++		 */
++		.maxlen		= 0,
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	void __user *buffer = (void __user *)kunit_kzalloc(test, sizeof(int),
++							   GFP_USER);
++	size_t len;
++	loff_t pos;
 +
-+	return 0;
++	/*
++	 * As before, we don't care what buffer length is because proc_dointvec
++	 * cannot do anything because its internal .data buffer has zero length.
++	 */
++	len = 1234;
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&data_maxlen_unset_table,
++					       KUNIT_PROC_READ, buffer, &len,
++					       &pos));
++	KUNIT_EXPECT_EQ(test, (size_t)0, len);
++
++	/*
++	 * See previous comment.
++	 */
++	len = 1234;
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&data_maxlen_unset_table,
++					       KUNIT_PROC_WRITE, buffer, &len,
++					       &pos));
++	KUNIT_EXPECT_EQ(test, (size_t)0, len);
 +}
 +
 +/*
-+ * Here we make a list of all the test cases we want to add to the test suite
-+ * below.
++ * Here we provide a valid struct ctl_table, but we try to read and write from
++ * it using a buffer of zero length, so it should still fail in a similar way as
++ * before.
 + */
-+static struct kunit_case example_test_cases[] = {
++static void sysctl_test_api_dointvec_table_len_is_zero(struct kunit *test)
++{
++	int data = 0;
++	/* Good table. */
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &data,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	void __user *buffer = (void __user *)kunit_kzalloc(test, sizeof(int),
++							   GFP_USER);
 +	/*
-+	 * This is a helper to create a test case object from a test case
-+	 * function; its exact function is not important to understand how to
-+	 * use KUnit, just know that this is how you associate test cases with a
-+	 * test suite.
++	 * However, now our read/write buffer has zero length.
 +	 */
-+	KUNIT_CASE(example_simple_test),
++	size_t len = 0;
++	loff_t pos;
++
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, KUNIT_PROC_READ, buffer,
++					       &len, &pos));
++	KUNIT_EXPECT_EQ(test, (size_t)0, len);
++
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, KUNIT_PROC_WRITE, buffer,
++					       &len, &pos));
++	KUNIT_EXPECT_EQ(test, (size_t)0, len);
++}
++
++/*
++ * Test that proc_dointvec refuses to read when the file position is non-zero.
++ */
++static void sysctl_test_api_dointvec_table_read_but_position_set(
++		struct kunit *test)
++{
++	int data = 0;
++	/* Good table. */
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &data,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	void __user *buffer = (void __user *)kunit_kzalloc(test, sizeof(int),
++							   GFP_USER);
++	/*
++	 * We don't care about our buffer length because we start off with a
++	 * non-zero file position.
++	 */
++	size_t len = 1234;
++	/*
++	 * proc_dointvec should refuse to read into the buffer since the file
++	 * pos is non-zero.
++	 */
++	loff_t pos = 1;
++
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, KUNIT_PROC_READ, buffer,
++					       &len, &pos));
++	KUNIT_EXPECT_EQ(test, (size_t)0, len);
++}
++
++/*
++ * Test that we can read a two digit number in a sufficiently size buffer.
++ * Nothing fancy.
++ */
++static void sysctl_test_dointvec_read_happy_single_positive(struct kunit *test)
++{
++	int data = 0;
++	/* Good table. */
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &data,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	size_t len = 4;
++	loff_t pos = 0;
++	char *buffer = kunit_kzalloc(test, len, GFP_USER);
++	char __user *user_buffer = (char __user *)buffer;
++	/* Store 13 in the data field. */
++	*((int *)table.data) = 13;
++
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, KUNIT_PROC_READ,
++					       user_buffer, &len, &pos));
++	KUNIT_ASSERT_EQ(test, (size_t)3, len);
++	buffer[len] = '\0';
++	/* And we read 13 back out. */
++	KUNIT_EXPECT_STREQ(test, "13\n", buffer);
++}
++
++/*
++ * Same as previous test, just now with negative numbers.
++ */
++static void sysctl_test_dointvec_read_happy_single_negative(struct kunit *test)
++{
++	int data = 0;
++	/* Good table. */
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &data,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	size_t len = 5;
++	loff_t pos = 0;
++	char *buffer = kunit_kzalloc(test, len, GFP_USER);
++	char __user *user_buffer = (char __user *)buffer;
++	*((int *)table.data) = -16;
++
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, KUNIT_PROC_READ,
++					       user_buffer, &len, &pos));
++	KUNIT_ASSERT_EQ(test, (size_t)4, len);
++	buffer[len] = '\0';
++	KUNIT_EXPECT_STREQ(test, "-16\n", (char *)buffer);
++}
++
++/*
++ * Test that a simple positive write works.
++ */
++static void sysctl_test_dointvec_write_happy_single_positive(struct kunit *test)
++{
++	int data = 0;
++	/* Good table. */
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &data,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	char input[] = "9";
++	size_t len = sizeof(input) - 1;
++	loff_t pos = 0;
++	char *buffer = kunit_kzalloc(test, len, GFP_USER);
++	char __user *user_buffer = (char __user *)buffer;
++
++	memcpy(buffer, input, len);
++
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, KUNIT_PROC_WRITE,
++					       user_buffer, &len, &pos));
++	KUNIT_EXPECT_EQ(test, sizeof(input) - 1, len);
++	KUNIT_EXPECT_EQ(test, sizeof(input) - 1, (size_t)pos);
++	KUNIT_EXPECT_EQ(test, 9, *((int *)table.data));
++}
++
++/*
++ * Same as previous test, but now with negative numbers.
++ */
++static void sysctl_test_dointvec_write_happy_single_negative(struct kunit *test)
++{
++	int data = 0;
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &data,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	char input[] = "-9";
++	size_t len = sizeof(input) - 1;
++	loff_t pos = 0;
++	char *buffer = kunit_kzalloc(test, len, GFP_USER);
++	char __user *user_buffer = (char __user *)buffer;
++
++	memcpy(buffer, input, len);
++
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, KUNIT_PROC_WRITE,
++					       user_buffer, &len, &pos));
++	KUNIT_EXPECT_EQ(test, sizeof(input) - 1, len);
++	KUNIT_EXPECT_EQ(test, sizeof(input) - 1, (size_t)pos);
++	KUNIT_EXPECT_EQ(test, -9, *((int *)table.data));
++}
++
++/*
++ * Test that writing a value smaller than the minimum possible value is not
++ * allowed.
++ */
++static void sysctl_test_api_dointvec_write_single_less_int_min(
++		struct kunit *test)
++{
++	int data = 0;
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &data,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	size_t max_len = 32, len = max_len;
++	loff_t pos = 0;
++	char *buffer = kunit_kzalloc(test, max_len, GFP_USER);
++	char __user *user_buffer = (char __user *)buffer;
++	unsigned long abs_of_less_than_min = (unsigned long)INT_MAX
++					     - (INT_MAX + INT_MIN) + 1;
++
++	/*
++	 * We use this rigmarole to create a string that contains a value one
++	 * less than the minimum accepted value.
++	 */
++	KUNIT_ASSERT_LT(test,
++			(size_t)snprintf(buffer, max_len, "-%lu",
++					 abs_of_less_than_min),
++			max_len);
++
++	KUNIT_EXPECT_EQ(test, -EINVAL, proc_dointvec(&table, KUNIT_PROC_WRITE,
++						     user_buffer, &len, &pos));
++	KUNIT_EXPECT_EQ(test, max_len, len);
++	KUNIT_EXPECT_EQ(test, 0, *((int *)table.data));
++}
++
++/*
++ * Test that writing the maximum possible value works.
++ */
++static void sysctl_test_api_dointvec_write_single_greater_int_max(
++		struct kunit *test)
++{
++	int data = 0;
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &data,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	size_t max_len = 32, len = max_len;
++	loff_t pos = 0;
++	char *buffer = kunit_kzalloc(test, max_len, GFP_USER);
++	char __user *user_buffer = (char __user *)buffer;
++	unsigned long greater_than_max = (unsigned long)INT_MAX + 1;
++
++	KUNIT_ASSERT_GT(test, greater_than_max, (unsigned long)INT_MAX);
++	KUNIT_ASSERT_LT(test, (size_t)snprintf(buffer, max_len, "%lu",
++					       greater_than_max),
++			max_len);
++	KUNIT_EXPECT_EQ(test, -EINVAL, proc_dointvec(&table, KUNIT_PROC_WRITE,
++						     user_buffer, &len, &pos));
++	KUNIT_ASSERT_EQ(test, max_len, len);
++	KUNIT_EXPECT_EQ(test, 0, *((int *)table.data));
++}
++
++static struct kunit_case sysctl_test_cases[] = {
++	KUNIT_CASE(sysctl_test_api_dointvec_null_tbl_data),
++	KUNIT_CASE(sysctl_test_api_dointvec_table_maxlen_unset),
++	KUNIT_CASE(sysctl_test_api_dointvec_table_len_is_zero),
++	KUNIT_CASE(sysctl_test_api_dointvec_table_read_but_position_set),
++	KUNIT_CASE(sysctl_test_dointvec_read_happy_single_positive),
++	KUNIT_CASE(sysctl_test_dointvec_read_happy_single_negative),
++	KUNIT_CASE(sysctl_test_dointvec_write_happy_single_positive),
++	KUNIT_CASE(sysctl_test_dointvec_write_happy_single_negative),
++	KUNIT_CASE(sysctl_test_api_dointvec_write_single_less_int_min),
++	KUNIT_CASE(sysctl_test_api_dointvec_write_single_greater_int_max),
 +	{}
 +};
 +
-+/*
-+ * This defines a suite or grouping of tests.
-+ *
-+ * Test cases are defined as belonging to the suite by adding them to
-+ * `kunit_cases`.
-+ *
-+ * Often it is desirable to run some function which will set up things which
-+ * will be used by every test; this is accomplished with an `init` function
-+ * which runs before each test case is invoked. Similarly, an `exit` function
-+ * may be specified which runs after every test case and can be used to for
-+ * cleanup. For clarity, running tests in a test suite would behave as follows:
-+ *
-+ * suite.init(test);
-+ * suite.test_case[0](test);
-+ * suite.exit(test);
-+ * suite.init(test);
-+ * suite.test_case[1](test);
-+ * suite.exit(test);
-+ * ...;
-+ */
-+static struct kunit_suite example_test_suite = {
-+	.name = "example",
-+	.init = example_test_init,
-+	.test_cases = example_test_cases,
++static struct kunit_suite sysctl_test_suite = {
++	.name = "sysctl_test",
++	.test_cases = sysctl_test_cases,
 +};
 +
-+/*
-+ * This registers the above test suite telling KUnit that this is a suite of
-+ * tests that need to be run.
-+ */
-+kunit_test_suite(example_test_suite);
-diff --git a/kunit/string-stream-test.c b/kunit/string-stream-test.c
-new file mode 100644
-index 0000000000000..75229e267c323
---- /dev/null
-+++ b/kunit/string-stream-test.c
-@@ -0,0 +1,52 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * KUnit test for struct string_stream.
-+ *
-+ * Copyright (C) 2019, Google LLC.
-+ * Author: Brendan Higgins <brendanhiggins@google.com>
-+ */
++kunit_test_suite(sysctl_test_suite);
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 5960e2980a8a..a425741907b0 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1965,6 +1965,17 @@ config TEST_SYSCTL
+ 
+ 	  If unsure, say N.
+ 
++config SYSCTL_KUNIT_TEST
++	bool "KUnit test for sysctl"
++	depends on KUNIT
++	help
++	  This builds the proc sysctl unit test, which runs on boot.
++	  Tests the API contract and implementation correctness of sysctl.
++	  For more information on KUnit and unit tests in general please refer
++	  to the KUnit documentation in Documentation/dev-tools/kunit/.
 +
-+#include <kunit/string-stream.h>
-+#include <kunit/test.h>
-+#include <linux/slab.h>
++	  If unsure, say N.
 +
-+static void string_stream_test_empty_on_creation(struct kunit *test)
-+{
-+	struct string_stream *stream = alloc_string_stream(test, GFP_KERNEL);
-+
-+	KUNIT_EXPECT_TRUE(test, string_stream_is_empty(stream));
-+}
-+
-+static void string_stream_test_not_empty_after_add(struct kunit *test)
-+{
-+	struct string_stream *stream = alloc_string_stream(test, GFP_KERNEL);
-+
-+	string_stream_add(stream, "Foo");
-+
-+	KUNIT_EXPECT_FALSE(test, string_stream_is_empty(stream));
-+}
-+
-+static void string_stream_test_get_string(struct kunit *test)
-+{
-+	struct string_stream *stream = alloc_string_stream(test, GFP_KERNEL);
-+	char *output;
-+
-+	string_stream_add(stream, "Foo");
-+	string_stream_add(stream, " %s", "bar");
-+
-+	output = string_stream_get_string(stream);
-+	KUNIT_EXPECT_STREQ(test, output, "Foo bar");
-+}
-+
-+static struct kunit_case string_stream_test_cases[] = {
-+	KUNIT_CASE(string_stream_test_empty_on_creation),
-+	KUNIT_CASE(string_stream_test_not_empty_after_add),
-+	KUNIT_CASE(string_stream_test_get_string),
-+	{}
-+};
-+
-+static struct kunit_suite string_stream_test_suite = {
-+	.name = "string-stream-test",
-+	.test_cases = string_stream_test_cases
-+};
-+kunit_test_suite(string_stream_test_suite);
+ config TEST_UDELAY
+ 	tristate "udelay test driver"
+ 	help
 -- 
-2.23.0.rc1.153.gdeed80330f-goog
+2.23.0.187.g17f5b7556c-goog
 
 
 _______________________________________________
