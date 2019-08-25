@@ -1,14 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i1xVl-0007dR-RD
- for linux-um@lists.infradead.org; Sun, 25 Aug 2019 18:45:11 +0000
-Subject: Re: [GIT PULL] UML fixes for 5.3-rc6
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <1911490926.73826.1566741715800.JavaMail.zimbra@nod.at>
-References: <1911490926.73826.1566741715800.JavaMail.zimbra@nod.at>
-Message-Id: <156675870739.26029.6141227322739942733.pr-tracker-bot@kernel.org>
-Date: Sun, 25 Aug 2019 18:45:07 +0000
+ id 1i1t5q-0001WM-CA
+ for linux-um@lists.infradead.org; Sun, 25 Aug 2019 14:02:07 +0000
+Date: Sun, 25 Aug 2019 16:01:55 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <1911490926.73826.1566741715800.JavaMail.zimbra@nod.at>
+Subject: [GIT PULL] UML fixes for 5.3-rc6
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -17,26 +16,40 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-um <linux-um@lists.infradead.org>, torvalds <torvalds@linux-foundation.org>, linux-kernel <linux-kernel@vger.kernel.org>
+To: torvalds <torvalds@linux-foundation.org>
+Cc: linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
 
-The pull request you sent on Sun, 25 Aug 2019 16:01:55 +0200 (CEST):
+Linus,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.3-rc6
+The following changes since commit d1abaeb3be7b5fa6d7a1fbbd2e14e3310005c4c1:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/32ae83ffec6373c226d177bdbbbb156962cc638e
+  Linux 5.3-rc5 (2019-08-18 14:31:08 -0700)
 
-Thank you!
+are available in the Git repository at:
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.3-rc6
+
+for you to fetch changes up to e0917f879536cbf57367429d084775d8224c986c:
+
+  um: fix time travel mode (2019-08-23 00:39:53 +0200)
+
+----------------------------------------------------------------
+This pull request contains a single bug fix for UML:
+
+- Fix time travel mode
+
+----------------------------------------------------------------
+Johannes Berg (1):
+      um: fix time travel mode
+
+ arch/um/include/shared/timer-internal.h | 14 ++++++++++----
+ arch/um/kernel/process.c                |  2 +-
+ arch/um/kernel/time.c                   | 16 +++++++++-------
+ 3 files changed, 20 insertions(+), 12 deletions(-)
 
 _______________________________________________
 linux-um mailing list
