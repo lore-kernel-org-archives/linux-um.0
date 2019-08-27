@@ -1,17 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x649.google.com ([2607:f8b0:4864:20::649])
+Received: from ivanoab6.miniserver.com ([5.153.251.140]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hxF05-0003b1-FT
- for linux-um@lists.infradead.org; Mon, 12 Aug 2019 18:25:00 +0000
-Received: by mail-pl1-x649.google.com with SMTP id y9so61589346plp.12
- for <linux-um@lists.infradead.org>; Mon, 12 Aug 2019 11:24:56 -0700 (PDT)
-Date: Mon, 12 Aug 2019 11:24:09 -0700
-In-Reply-To: <20190812182421.141150-1-brendanhiggins@google.com>
-Message-Id: <20190812182421.141150-7-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20190812182421.141150-1-brendanhiggins@google.com>
-Subject: [PATCH v12 06/18] kbuild: enable building KUnit
-From: Brendan Higgins <brendanhiggins@google.com>
+ id 1i2U2N-0005YN-W0
+ for linux-um@lists.infradead.org; Tue, 27 Aug 2019 05:29:01 +0000
+Subject: Re: [PATCH 3/4] arch: um: remove misleading #define ARCh_IRQ_ENABLED
+References: <20190823104429.11047-1-johannes@sipsolutions.net>
+ <20190823104429.11047-3-johannes@sipsolutions.net>
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Message-ID: <20658329-a148-40de-66d1-d820f905b8fd@kot-begemot.co.uk>
+Date: Tue, 27 Aug 2019 06:28:54 +0100
+MIME-Version: 1.0
+In-Reply-To: <20190823104429.11047-3-johannes@sipsolutions.net>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,54 +21,48 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, Michal Marek <michal.lkml@markovi.net>, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
 
-KUnit is a new unit testing framework for the kernel and when used is
-built into the kernel as a part of it. Add KUnit to the root Kconfig and
-Makefile to allow it to be actually built.
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Acked-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Michal Marek <michal.lkml@markovi.net>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
-Reviewed-by: Stephen Boyd <sboyd@kernel.org>
----
- Kconfig  | 2 ++
- Makefile | 2 ++
- 2 files changed, 4 insertions(+)
 
-diff --git a/Kconfig b/Kconfig
-index e10b3ee084d4d..47886dbd6c2a6 100644
---- a/Kconfig
-+++ b/Kconfig
-@@ -32,3 +32,5 @@ source "lib/Kconfig"
- source "lib/Kconfig.debug"
- 
- source "Documentation/Kconfig"
-+
-+source "kunit/Kconfig"
-diff --git a/Makefile b/Makefile
-index 23cdf1f413646..3795d0a5d0376 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1005,6 +1005,8 @@ PHONY += prepare0
- ifeq ($(KBUILD_EXTMOD),)
- core-y		+= kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ block/
- 
-+core-$(CONFIG_KUNIT) += kunit/
-+
- vmlinux-dirs	:= $(patsubst %/,%,$(filter %/, $(init-y) $(init-m) \
- 		     $(core-y) $(core-m) $(drivers-y) $(drivers-m) \
- 		     $(net-y) $(net-m) $(libs-y) $(libs-m) $(virt-y)))
+On 23/08/2019 11:44, Johannes Berg wrote:
+> From: Johannes Berg <johannes.berg@intel.com>
+> 
+> Due to the typo in the name, this can never be used, but
+> it's also misleading because our value for enabled/disabled
+> is always just 0/1, not an actual signal mask.
+> 
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+> ---
+>   arch/um/include/asm/irqflags.h | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/arch/um/include/asm/irqflags.h b/arch/um/include/asm/irqflags.h
+> index cbc6c0013a64..0642ad9035d1 100644
+> --- a/arch/um/include/asm/irqflags.h
+> +++ b/arch/um/include/asm/irqflags.h
+> @@ -32,7 +32,6 @@ static inline void arch_local_irq_disable(void)
+>   }
+>   
+>   #define ARCH_IRQ_DISABLED	0
+> -#define ARCh_IRQ_ENABLED	(SIGIO|SIGVTALRM)
+>   
+>   #include <asm-generic/irqflags.h>
+>   
+> 
+
+Acked-by: Anton Ivanov <anton.ivanov@cambridgegreys.co.uk>
+
+
 -- 
-2.23.0.rc1.153.gdeed80330f-goog
+Anton R Ivanov
 
+http://www.kot-begemot.co.uk
 
 _______________________________________________
 linux-um mailing list
