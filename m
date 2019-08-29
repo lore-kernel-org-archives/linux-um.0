@@ -1,88 +1,65 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mx1.volatile.bz ([2001:67c:2db8:301:138:0:101:1])
- by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i3Nw9-0001XW-Qs
- for linux-um@lists.infradead.org; Thu, 29 Aug 2019 17:10:22 +0000
-Date: Thu, 29 Aug 2019 13:10:01 -0400
-From: Dark <dark@volatile.bz>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Thu, 29 Aug 2019 17:30:59 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <1851013915.76434.1567092659763.JavaMail.zimbra@nod.at>
+In-Reply-To: <20190829103628.61953f50@thedarkness.local>
+References: <20190828204609.02a7ff70@TheDarkness> <CAFLxGvyiviQxr_Bj57ibTU4DQ1H5wQC4DE5DNFBtAFoohcgbsg@mail.gmail.com> <20190829103628.61953f50@thedarkness.local>
 Subject: Re: [PATCH] um: Rewrite host RNG driver.
-Message-ID: <20190829130804.5e644540@TheDarkness>
-In-Reply-To: <1851013915.76434.1567092659763.JavaMail.zimbra@nod.at>
-References: <20190828204609.02a7ff70@TheDarkness>
- <CAFLxGvyiviQxr_Bj57ibTU4DQ1H5wQC4DE5DNFBtAFoohcgbsg@mail.gmail.com>
- <20190829103628.61953f50@thedarkness.local>
- <1851013915.76434.1567092659763.JavaMail.zimbra@nod.at>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard@nod.at>
-Cc: Richard Weinberger <richard.weinberger@gmail.com>, linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, anton ivanov <anton.ivanov@cambridgegreys.com>
+Content-Transfer-Encoding: 8bit
+Sender: linux-kernel-owner@vger.kernel.org
+To: Dark <dark@volatile.bz>
+Cc: Richard Weinberger <richard.weinberger@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, anton ivanov <anton.ivanov@cambridgegreys.com>, linux-um <linux-um@lists.infradead.org>
+List-ID: <linux-um.lists.infradead.org>
 
-PiBXZWxsLCBpdCBkb2VzIG5vdCBibG9jayBidXQgcGFzc2luZyAtRUFHQUlOIGRpcmVjdGx5IGJh
-Y2sgaXMgbm90IG5pY2UuCj4gT3IgZG9lcyB0aGUgaHdfcmFuZG9tIGZyYW1ld29yayBoYW5kbGUg
-dGhpcz8KClRoZSBmcmFtZXdvcmsgaXMgcGFzc2luZyAtRUFHQUlOIHRvIHVzZXJzcGFjZSB3aGlj
-aCBpc24ndCB2ZXJ5IG5pY2UgYXQKYWxsLiBMdWNraWx5LCBoYW5kbGluZyBpdCBpcyBwcmV0dHkg
-dHJpdmFsIHNvIEkgd2VudCBhaGVhZCBhbmQgbWFkZSBhbgp1cGRhdGVkIHBhdGNoIHRvIGFkZHJl
-c3MgdGhpcy4gKEknbSB1bnN1cmUgb2YgaG93IHRvIHN1Ym1pdCBhbiB1cGRhdGUKdG8gbXkgcGF0
-Y2ggc28gSSdsbCBuZWVkIGEgYml0IG9mIGd1aWRlbmNlIG9uIHRoaXMuKQoKPiBNYXliZSBvdXIg
-LUVBR0FJTiBoYW5kbGluZyBpcyBidWdneS4KPiBUaGF0IHNhaWQgSSdtIGFsbCBmb3IgY2hhbmdp
-bmcgdGhlIGRyaXZlciB0byB1c2UgdGhlIHJpZ2h0IGZyYW1ld29yawo+IGJ1dCBwbGVhc2UgbWFr
-ZSBzdXJlIHRoYXQgd2UgZG9uJ3QgZHJvcCB1c2VmdWwgc3R1ZmYgbGlrZSAtRUFHQUlOIGhhbmRs
-aW5nLgoKTW9zdCBvZiB0aGUgb2xkIGNvZGUgd2FzIHB1bGxlZCBmcm9tIHRoZSBmcmFtZXdvcmsg
-YW55d2F5IHNvIGl0J3MgdmVyeQp1bmxpa2VseSB0aGF0IGFueXRoaW5nIGVsc2Ugd291bGQgYmUg
-ZHJvcHBlZCBoZXJlLgoKT24gVGh1LCAyOSBBdWcgMjAxOSAxNzozMDo1OSArMDIwMCAoQ0VTVCks
-IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+IHdyb3RlOgoKPiAtLS0tLSBVcnNw
-csO8bmdsaWNoZSBNYWlsIC0tLS0tCj4gPiBWb246ICJEYXJrIiA8ZGFya0B2b2xhdGlsZS5iej4K
-PiA+IEFuOiAiUmljaGFyZCBXZWluYmVyZ2VyIiA8cmljaGFyZC53ZWluYmVyZ2VyQGdtYWlsLmNv
-bT4sICJsaW51eC1rZXJuZWwiIDxsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnPgo+ID4gQ0M6
-ICJyaWNoYXJkIiA8cmljaGFyZEBub2QuYXQ+LCAiYW50b24gaXZhbm92IiA8YW50b24uaXZhbm92
-QGNhbWJyaWRnZWdyZXlzLmNvbT4sICJsaW51eC11bSIKPiA+IDxsaW51eC11bUBsaXN0cy5pbmZy
-YWRlYWQub3JnPgo+ID4gR2VzZW5kZXQ6IERvbm5lcnN0YWcsIDI5LiBBdWd1c3QgMjAxOSAxNjoz
-NjoyOAo+ID4gQmV0cmVmZjogUmU6IFtQQVRDSF0gdW06IFJld3JpdGUgaG9zdCBSTkcgZHJpdmVy
-LiAgCj4gCj4gPiBPbiBUaHUsIDI5IEF1ZyAyMDE5IDE1OjI2OjI0ICswMjAwLCBSaWNoYXJkIFdl
-aW5iZXJnZXIKPiA+IDxyaWNoYXJkLndlaW5iZXJnZXJAZ21haWwuY29tPiB3cm90ZTogIAo+ID4+
-IFNvLCB5b3UgcmVtb3ZlZCAtRUFHQUlOIGhhbmRsaW5nLCBtYWRlIGV2ZXJ5dGhpbmcgc3luY2hy
-b25vdXMsCj4gPj4gYW5kIGNoYW5nZWQgdGhlIGludGVyZmFjZS50Cj4gPj4gSSdtIG5vdCBzdXJl
-IGlmIHRoaXMgcmVhbGx5IGEgbXVjaCBiZXR0ZXIgb3B0aW9uLiAgCj4gPiAKPiA+IEkgc2hvdWxk
-IGhhdmUgYmVlbiBtb3JlIGNsZWFyIGhlcmUgdGhhdCBJJ20gdXNpbmcgdGhlIGludGVyZmFjZXMK
-PiA+IHByb3ZpZGVkIGJ5IGBkcml2ZXJzL2NoYXIvaHdfcmFuZG9tL2NvcmUuY2AgZm9yIGNvbnNp
-c3RlbmN5IHdpdGggdGhlCj4gPiBvdGhlciBoYXJkd2FyZSBSTkcgZHJpdmVycyBhbmQgdG8gYXZv
-aWQgcmVpbXBsZW1lbnRpbmcgc3R1ZmYgdGhhdCdzCj4gPiBhbHJlYWR5IHRoZXJlLiAgCj4gCj4g
-SSBnb3QgdGhpcywgYW5kIHRoaXMgaXMgYSBnb29kIHRoaW5nIQo+ICAKPiA+IEl0IG1pZ2h0IGJl
-IGEgYml0IGhhcmQgdG8gc2VlIGluIHRoZSBkaWZmLCBidXQgSSBwYXNzIHRoZSBmaWxlCj4gPiBk
-ZXNjcmlwdG9yIHRvIGBvc19zZXRfZmRfYXN5bmMoKWAgdG8gcHJldmVudCBpdCBmcm9tIGJsb2Nr
-aW5nLiAgCj4gCj4gV2VsbCwgaXQgZG9lcyBub3QgYmxvY2sgYnV0IHBhc3NpbmcgLUVBR0FJTiBk
-aXJlY3RseSBiYWNrIGlzIG5vdCBuaWNlLgo+IE9yIGRvZXMgdGhlIGh3X3JhbmRvbSBmcmFtZXdv
-cmsgaGFuZGxlIHRoaXM/Cj4gCj4gPiBGb3IgdGhlIC1FQUdBSU4gaGFuZGxpbmcsIEknbSBwYXNz
-aW5nIGl0IG9udG8gdGhlIGNhbGxlci4gU2luY2UgeW91Cj4gPiBtZW50aW9uZWQgaXQsIEl0IHdv
-dWxkIGJlIGJldHRlciB0byBoYW5kbGUgaXQgaW4gdGhlIGRyaXZlciBpdHNlbGYKPiA+IHNvIEkn
-bGwgdXBkYXRlIHRoZSBwYXRjaCB0byBhZGRyZXNzIHRoYXQuCj4gPiAgIAo+ID4+IFJld3JpdGlu
-ZyB0aGUgZHJpdmVyIGluIGEgbW9kZXJuIG1hbm5lciBpcyBhIGdvb2QgdGhpbmcsIGJ1dCB0aHJv
-d2luZyB0aGUKPiA+PiBvbGQgb25lIHdheSB3aXRoIGEgbGl0dGxlIGhhbmQgd2VhdmluZyBqdXN0
-IGJlY2F1c2Ugb2YgYSB1bnNwZWNpZmllZCBpc3N1ZQo+ID4+IGlzIGEgbGl0dGxlIGhhcnNoLgo+
-ID4+IENhbiB5b3UgYXQgbGVzdCBwcm92aWRlIG1vcmUgaW5mb3Mgd2hhdCBwcm9ibGVtIHlvdSdy
-ZSBmYWNpbmcgd2l0aCB0aGUKPiA+PiBvbGQgZHJpdmVyPyAgCj4gPiAKPiA+IE1vc3Qgb2YgaXQg
-Ym9pbGVkIGRvd24gdG8gaXQgc2lsZW50bHkgYnJlYWtpbmcgaWYgL2Rldi9yYW5kb20gb24gdGhl
-Cj4gPiBob3N0IHdlcmUgdG8gYmxvY2sgZm9yIGFueSByZWFzb24sIGFuZCB0aGVyZSB3YXMgdGhl
-IHVzZXJzcGFjZSB0b29sCj4gPiByZXF1aXJlbWVudCB0byBwcm9wZXJseSBtYWtlIHVzZSBvZiBp
-dC4gV2l0aCB0aGF0IHNhaWQsIHRoZSBpbnRlcmZhY2UKPiA+IHdhcyBhbHNvIGluY29uc2lzdGVu
-dCB3aXRoIHRoZSBvdGhlciBoYXJkd2FyZSBSTkcgZHJpdmVycyB3aGljaCB3b3VsZAo+ID4gcmVx
-dWlyZSBhIHJld3JpdGUgdG8gYWRkcmVzcyBhbnl3YXkuICAKPiAKPiBNYXliZSBvdXIgLUVBR0FJ
-TiBoYW5kbGluZyBpcyBidWdneS4KPiBUaGF0IHNhaWQgSSdtIGFsbCBmb3IgY2hhbmdpbmcgdGhl
-IGRyaXZlciB0byB1c2UgdGhlIHJpZ2h0IGZyYW1ld29yawo+IGJ1dCBwbGVhc2UgbWFrZSBzdXJl
-IHRoYXQgd2UgZG9uJ3QgZHJvcCB1c2VmdWwgc3R1ZmYgbGlrZSAtRUFHQUlOIGhhbmRsaW5nLgo+
-IAo+IFRoYW5rcywKPiAvL3JpY2hhcmQKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5m
-cmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
-bnV4LXVtCg==
+----- Ursprüngliche Mail -----
+> Von: "Dark" <dark@volatile.bz>
+> An: "Richard Weinberger" <richard.weinberger@gmail.com>, "linux-kernel" <linux-kernel@vger.kernel.org>
+> CC: "richard" <richard@nod.at>, "anton ivanov" <anton.ivanov@cambridgegreys.com>, "linux-um"
+> <linux-um@lists.infradead.org>
+> Gesendet: Donnerstag, 29. August 2019 16:36:28
+> Betreff: Re: [PATCH] um: Rewrite host RNG driver.
+
+> On Thu, 29 Aug 2019 15:26:24 +0200, Richard Weinberger
+> <richard.weinberger@gmail.com> wrote:
+>> So, you removed -EAGAIN handling, made everything synchronous,
+>> and changed the interface.t
+>> I'm not sure if this really a much better option.
+> 
+> I should have been more clear here that I'm using the interfaces
+> provided by `drivers/char/hw_random/core.c` for consistency with the
+> other hardware RNG drivers and to avoid reimplementing stuff that's
+> already there.
+
+I got this, and this is a good thing!
+ 
+> It might be a bit hard to see in the diff, but I pass the file
+> descriptor to `os_set_fd_async()` to prevent it from blocking.
+
+Well, it does not block but passing -EAGAIN directly back is not nice.
+Or does the hw_random framework handle this?
+
+> For the -EAGAIN handling, I'm passing it onto the caller. Since you
+> mentioned it, It would be better to handle it in the driver itself
+> so I'll update the patch to address that.
+> 
+>> Rewriting the driver in a modern manner is a good thing, but throwing the
+>> old one way with a little hand weaving just because of a unspecified issue
+>> is a little harsh.
+>> Can you at lest provide more infos what problem you're facing with the
+>> old driver?
+> 
+> Most of it boiled down to it silently breaking if /dev/random on the
+> host were to block for any reason, and there was the userspace tool
+> requirement to properly make use of it. With that said, the interface
+> was also inconsistent with the other hardware RNG drivers which would
+> require a rewrite to address anyway.
+
+Maybe our -EAGAIN handling is buggy.
+That said I'm all for changing the driver to use the right framework
+but please make sure that we don't drop useful stuff like -EAGAIN handling.
+
+Thanks,
+//richard
 
