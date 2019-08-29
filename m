@@ -1,18 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x449.google.com ([2607:f8b0:4864:20::449])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i1Kxx-0005Nq-Dw
- for linux-um@lists.infradead.org; Sat, 24 Aug 2019 01:35:42 +0000
-Received: by mail-pf1-x449.google.com with SMTP id q12so7694988pfl.14
- for <linux-um@lists.infradead.org>; Fri, 23 Aug 2019 18:35:40 -0700 (PDT)
-Date: Fri, 23 Aug 2019 18:34:25 -0700
-In-Reply-To: <20190824013425.175645-1-brendanhiggins@google.com>
-Message-Id: <20190824013425.175645-19-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20190824013425.175645-1-brendanhiggins@google.com>
-Subject: [PATCH v15 18/18] MAINTAINERS: add proc sysctl KUnit test to PROC
- SYSCTL section
-From: Brendan Higgins <brendanhiggins@google.com>
+ id 1i3OCT-0006ym-Jp
+ for linux-um@lists.infradead.org; Thu, 29 Aug 2019 17:27:11 +0000
+Message-ID: <605f243573cd0e0f14c995f6850984b4dca2a50c.camel@sipsolutions.net>
+Subject: Re: [PATCH] um: Rewrite host RNG driver.
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Thu, 29 Aug 2019 19:27:01 +0200
+In-Reply-To: <20190829130804.5e644540@TheDarkness>
+References: <20190828204609.02a7ff70@TheDarkness>
+ <CAFLxGvyiviQxr_Bj57ibTU4DQ1H5wQC4DE5DNFBtAFoohcgbsg@mail.gmail.com>
+ <20190829103628.61953f50@thedarkness.local>
+ <1851013915.76434.1567092659763.JavaMail.zimbra@nod.at>
+ <20190829130804.5e644540@TheDarkness>
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -25,42 +27,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, Iurii Zaikin <yzaikin@google.com>, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+To: Dark <dark@volatile.bz>, Richard Weinberger <richard@nod.at>
+Cc: Richard Weinberger <richard.weinberger@gmail.com>, linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, anton ivanov <anton.ivanov@cambridgegreys.com>
 
-Add entry for the new proc sysctl KUnit test to the PROC SYSCTL section,
-and add Iurii as a maintainer.
+On Thu, 2019-08-29 at 13:10 -0400, Dark wrote:
+> (I'm unsure of how to submit an update
+> to my patch so I'll need a bit of guidence on this.)
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Cc: Iurii Zaikin <yzaikin@google.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
-Acked-by: Luis Chamberlain <mcgrof@kernel.org>
+Resend the patch, but use --subject-prefix 'PATCH v2' and ideally note
+somewhere in the patch (possibly after a "---" marker after Signed-off-
+by) the changes between the versions, like
+
+[...]
+Signed-off-by: ...
 ---
- MAINTAINERS | 2 ++
- 1 file changed, 2 insertions(+)
+v2:
+ * fix -EAGAIN handling
+[...]
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index f0bd77e8a8a2..0cac78807137 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12965,12 +12965,14 @@ F:	Documentation/filesystems/proc.txt
- PROC SYSCTL
- M:	Luis Chamberlain <mcgrof@kernel.org>
- M:	Kees Cook <keescook@chromium.org>
-+M:	Iurii Zaikin <yzaikin@google.com>
- L:	linux-kernel@vger.kernel.org
- L:	linux-fsdevel@vger.kernel.org
- S:	Maintained
- F:	fs/proc/proc_sysctl.c
- F:	include/linux/sysctl.h
- F:	kernel/sysctl.c
-+F:	kernel/sysctl-test.c
- F:	tools/testing/selftests/sysctl/
- 
- PS3 NETWORK SUPPORT
--- 
-2.23.0.187.g17f5b7556c-goog
+Hmm, but looks like you didn't actually use git send-email directly, so
+I guess just put "[PATCH v2]" manually.
+
+johannes
 
 
 _______________________________________________
