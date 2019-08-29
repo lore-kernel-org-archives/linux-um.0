@@ -1,15 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mx1.volatile.bz ([185.163.46.97])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i3LXX-0007sR-Cs
- for linux-um@lists.infradead.org; Thu, 29 Aug 2019 14:36:44 +0000
-Date: Thu, 29 Aug 2019 10:36:28 -0400
-From: Dark <dark@volatile.bz>
+ id 1i3KcS-0003rz-I6
+ for linux-um@lists.infradead.org; Thu, 29 Aug 2019 13:37:45 +0000
+Message-ID: <696734afb27182d7a1a9218dd3cfa01f47a76093.camel@sipsolutions.net>
 Subject: Re: [PATCH] um: Rewrite host RNG driver.
-Message-ID: <20190829103628.61953f50@thedarkness.local>
-In-Reply-To: <CAFLxGvyiviQxr_Bj57ibTU4DQ1H5wQC4DE5DNFBtAFoohcgbsg@mail.gmail.com>
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Thu, 29 Aug 2019 15:37:32 +0200
+In-Reply-To: <20190828204609.02a7ff70@TheDarkness>
 References: <20190828204609.02a7ff70@TheDarkness>
- <CAFLxGvyiviQxr_Bj57ibTU4DQ1H5wQC4DE5DNFBtAFoohcgbsg@mail.gmail.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -23,37 +23,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard.weinberger@gmail.com>, LKML <linux-kernel@vger.kernel.org>
-Cc: Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: Alexander Neville <dark@volatile.bz>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
 
-On Thu, 29 Aug 2019 15:26:24 +0200, Richard Weinberger <richard.weinberger@gmail.com> wrote: 
-> So, you removed -EAGAIN handling, made everything synchronous,
-> and changed the interface.t
-> I'm not sure if this really a much better option.
+On Wed, 2019-08-28 at 21:44 -0400, Alexander Neville wrote:
+> The old driver had a bug that would cause it to outright stop working if
+> the host's /dev/random were to block. Instead of trying to track down
+> the cause of said bug, rewriting it from scratch turned out to be a much
+> better option as it came with a few benefits:
+> 
+>  - The new driver properly registers itself as an hardware RNG.
+> 
+>  - The code is simpler and therefore easier to maintain.
+> 
+>  - It serves as a minimal example of writing a hardware RNG driver.
+> 
+> I also edited the Kconfig symbol to bring it up to more modern
+> standards.
 
-I should have been more clear here that I'm using the interfaces 
-provided by `drivers/char/hw_random/core.c` for consistency with the
-other hardware RNG drivers and to avoid reimplementing stuff that's 
-already there. 
+I realize that it's still easier to use, but theoretically you could
+just use the virtio implementation, and use that driver with a suitable
+small vhost device implementation. :-)
 
-It might be a bit hard to see in the diff, but I pass the file 
-descriptor to `os_set_fd_async()` to prevent it from blocking.
+johannes
 
-For the -EAGAIN handling, I'm passing it onto the caller. Since you 
-mentioned it, It would be better to handle it in the driver itself 
-so I'll update the patch to address that.
-
-> Rewriting the driver in a modern manner is a good thing, but throwing the
-> old one way with a little hand weaving just because of a unspecified issue
-> is a little harsh.
-> Can you at lest provide more infos what problem you're facing with the
-> old driver?
-
-Most of it boiled down to it silently breaking if /dev/random on the 
-host were to block for any reason, and there was the userspace tool
-requirement to properly make use of it. With that said, the interface 
-was also inconsistent with the other hardware RNG drivers which would 
-require a rewrite to address anyway.
 
 _______________________________________________
 linux-um mailing list
