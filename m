@@ -1,186 +1,299 @@
-Return-Path: <linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org>
-From: Christian Brauner <christian.brauner@ubuntu.com>
-Subject: [PATCH v1] seccomp: simplify secure_computing()
-Date: Tue, 24 Sep 2019 08:44:20 +0200
-Message-Id: <20190924064420.6353-1-christian.brauner@ubuntu.com>
-In-Reply-To: <20190920131907.6886-1-christian.brauner@ubuntu.com>
-References: <20190920131907.6886-1-christian.brauner@ubuntu.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
+ by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
+ id 1i5xmI-0006wU-I6
+ for linux-um@lists.infradead.org; Thu, 05 Sep 2019 19:50:48 +0000
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [PATCH v2 2/2] um: virtio: implement VHOST_USER_PROTOCOL_F_REPLY_ACK
+Date: Thu,  5 Sep 2019 21:50:38 +0200
+Message-Id: <1567713038-Iff9fc2b625929a3a2189e82a1356b689878825da@changeid>
+In-Reply-To: <1567713038-I2fd1049a09368398124caa2a4e132f0b6ebde347@changeid>
+References: <1567713038-I2fd1049a09368398124caa2a4e132f0b6ebde347@changeid>
 MIME-Version: 1.0
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org
-To: christian.brauner@ubuntu.com
-Cc: linux-s390@vger.kernel.org, wad@chromium.org, keescook@chromium.org, linux-parisc@vger.kernel.org, x86@kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, oleg@redhat.com, Borislav Petkov <bp@alien8.de>, luto@kernel.org, tglx@linutronix.de, linux-arm-kernel@lists.infradead.org
-List-ID: <linux-um.lists.infradead.org>
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
 
-Afaict, the struct seccomp_data argument to secure_computing() is unused
-by all current callers. So let's remove it.
-The argument was added in [1]. It was added because having the arch
-supply the syscall arguments used to be faster than having it done by
-secure_computing() (cf. Andy's comment in [2]). This is not true anymore
-though.
+From: Johannes Berg <johannes.berg@intel.com>
 
-/* References */
-[1]: 2f275de5d1ed ("seccomp: Add a seccomp_data parameter secure_computing()")
-[2]: https://lore.kernel.org/r/CALCETrU_fs_At-hTpr231kpaAd0z7xJN4ku-DvzhRU6cvcJA_w@mail.gmail.com
+Implement the VHOST_USER_PROTOCOL_F_REPLY_ACK extension for both
+slave requests (previous patch) where we have to reply and our
+own requests where it helps understand if the slave failed.
 
-Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Will Drewry <wad@chromium.org>
-Cc: Oleg Nesterov <oleg@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-parisc@vger.kernel.org
-Cc: linux-s390@vger.kernel.org
-Cc: linux-um@lists.infradead.org
-Cc: x86@kernel.org
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
-/* v1 */
-- Borislav Petkov <bp@alien8.de>:
-  - provide context for the arg addition to secure_computing() in the
-    commit message
+ arch/um/drivers/vhost_user.h |  5 +-
+ arch/um/drivers/virtio_uml.c | 97 +++++++++++++++++++++++++++++-------
+ 2 files changed, 84 insertions(+), 18 deletions(-)
 
-/* v0 */
-Link: https://lore.kernel.org/r/20190920131907.6886-1-christian.brauner@ubuntu.com
----
- arch/arm/kernel/ptrace.c              | 2 +-
- arch/arm64/kernel/ptrace.c            | 2 +-
- arch/parisc/kernel/ptrace.c           | 2 +-
- arch/s390/kernel/ptrace.c             | 4 ++--
- arch/um/kernel/skas/syscall.c         | 2 +-
- arch/x86/entry/vsyscall/vsyscall_64.c | 2 +-
- include/linux/seccomp.h               | 6 +++---
- 7 files changed, 10 insertions(+), 10 deletions(-)
-
-diff --git a/arch/arm/kernel/ptrace.c b/arch/arm/kernel/ptrace.c
-index 324352787aea..b606cded90cd 100644
---- a/arch/arm/kernel/ptrace.c
-+++ b/arch/arm/kernel/ptrace.c
-@@ -923,7 +923,7 @@ asmlinkage int syscall_trace_enter(struct pt_regs *regs, int scno)
+diff --git a/arch/um/drivers/vhost_user.h b/arch/um/drivers/vhost_user.h
+index 8aee9919581e..45ff5ea22fea 100644
+--- a/arch/um/drivers/vhost_user.h
++++ b/arch/um/drivers/vhost_user.h
+@@ -6,9 +6,11 @@
  
- 	/* Do seccomp after ptrace; syscall may have changed. */
- #ifdef CONFIG_HAVE_ARCH_SECCOMP_FILTER
--	if (secure_computing(NULL) == -1)
-+	if (secure_computing() == -1)
- 		return -1;
- #else
- 	/* XXX: remove this once OABI gets fixed */
-diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
-index 3cf3b135027e..010a835302d3 100644
---- a/arch/arm64/kernel/ptrace.c
-+++ b/arch/arm64/kernel/ptrace.c
-@@ -1816,7 +1816,7 @@ int syscall_trace_enter(struct pt_regs *regs)
- 	}
+ /* Message flags */
+ #define VHOST_USER_FLAG_REPLY		BIT(2)
++#define VHOST_USER_FLAG_NEED_REPLY	BIT(3)
+ /* Feature bits */
+ #define VHOST_USER_F_PROTOCOL_FEATURES	30
+ /* Protocol feature bits */
++#define VHOST_USER_PROTOCOL_F_REPLY_ACK		3
+ #define VHOST_USER_PROTOCOL_F_SLAVE_REQ		5
+ #define VHOST_USER_PROTOCOL_F_CONFIG		9
+ /* Vring state index masks */
+@@ -20,7 +22,8 @@
+ /* Supported transport features */
+ #define VHOST_USER_SUPPORTED_F		BIT_ULL(VHOST_USER_F_PROTOCOL_FEATURES)
+ /* Supported protocol features */
+-#define VHOST_USER_SUPPORTED_PROTOCOL_F	(BIT_ULL(VHOST_USER_PROTOCOL_F_SLAVE_REQ) | \
++#define VHOST_USER_SUPPORTED_PROTOCOL_F	(BIT_ULL(VHOST_USER_PROTOCOL_F_REPLY_ACK) | \
++					 BIT_ULL(VHOST_USER_PROTOCOL_F_SLAVE_REQ) | \
+ 					 BIT_ULL(VHOST_USER_PROTOCOL_F_CONFIG))
  
- 	/* Do the secure computing after ptrace; failures should be fast. */
--	if (secure_computing(NULL) == -1)
-+	if (secure_computing() == -1)
- 		return -1;
+ enum vhost_user_request {
+diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
+index a12c36520cbe..6897ff015802 100644
+--- a/arch/um/drivers/virtio_uml.c
++++ b/arch/um/drivers/virtio_uml.c
+@@ -163,30 +163,64 @@ static int vhost_user_recv_req(struct virtio_uml_device *vu_dev,
+ 	if (rc)
+ 		return rc;
  
- 	if (test_thread_flag(TIF_SYSCALL_TRACEPOINT))
-diff --git a/arch/parisc/kernel/ptrace.c b/arch/parisc/kernel/ptrace.c
-index 9f6ff7bc06f9..f8c07dcbfb49 100644
---- a/arch/parisc/kernel/ptrace.c
-+++ b/arch/parisc/kernel/ptrace.c
-@@ -342,7 +342,7 @@ long do_syscall_trace_enter(struct pt_regs *regs)
- 	}
+-	if (msg->header.flags != VHOST_USER_VERSION)
++	if ((msg->header.flags & ~VHOST_USER_FLAG_NEED_REPLY) !=
++			VHOST_USER_VERSION)
+ 		return -EPROTO;
  
- 	/* Do the secure computing check after ptrace. */
--	if (secure_computing(NULL) == -1)
-+	if (secure_computing() == -1)
- 		return -1;
- 
- #ifdef CONFIG_HAVE_SYSCALL_TRACEPOINTS
-diff --git a/arch/s390/kernel/ptrace.c b/arch/s390/kernel/ptrace.c
-index ad71132374f0..ed80bdfbf5fe 100644
---- a/arch/s390/kernel/ptrace.c
-+++ b/arch/s390/kernel/ptrace.c
-@@ -439,7 +439,7 @@ static int poke_user(struct task_struct *child, addr_t addr, addr_t data)
- long arch_ptrace(struct task_struct *child, long request,
- 		 unsigned long addr, unsigned long data)
- {
--	ptrace_area parea; 
-+	ptrace_area parea;
- 	int copied, ret;
- 
- 	switch (request) {
-@@ -856,7 +856,7 @@ asmlinkage long do_syscall_trace_enter(struct pt_regs *regs)
- 	}
- 
- 	/* Do the secure computing check after ptrace. */
--	if (secure_computing(NULL)) {
-+	if (secure_computing()) {
- 		/* seccomp failures shouldn't expose any additional code. */
- 		return -1;
- 	}
-diff --git a/arch/um/kernel/skas/syscall.c b/arch/um/kernel/skas/syscall.c
-index 44bb10785075..fc37259d5971 100644
---- a/arch/um/kernel/skas/syscall.c
-+++ b/arch/um/kernel/skas/syscall.c
-@@ -35,7 +35,7 @@ void handle_syscall(struct uml_pt_regs *r)
- 		goto out;
- 
- 	/* Do the seccomp check after ptrace; failures should be fast. */
--	if (secure_computing(NULL) == -1)
-+	if (secure_computing() == -1)
- 		goto out;
- 
- 	syscall = UPT_SYSCALL_NR(r);
-diff --git a/arch/x86/entry/vsyscall/vsyscall_64.c b/arch/x86/entry/vsyscall/vsyscall_64.c
-index e7c596dea947..b10cbf71a8cc 100644
---- a/arch/x86/entry/vsyscall/vsyscall_64.c
-+++ b/arch/x86/entry/vsyscall/vsyscall_64.c
-@@ -222,7 +222,7 @@ bool emulate_vsyscall(unsigned long error_code,
- 	 */
- 	regs->orig_ax = syscall_nr;
- 	regs->ax = -ENOSYS;
--	tmp = secure_computing(NULL);
-+	tmp = secure_computing();
- 	if ((!tmp && regs->orig_ax != syscall_nr) || regs->ip != address) {
- 		warn_bad_vsyscall(KERN_DEBUG, regs,
- 				  "seccomp tried to change syscall nr or ip");
-diff --git a/include/linux/seccomp.h b/include/linux/seccomp.h
-index 84868d37b35d..03583b6d1416 100644
---- a/include/linux/seccomp.h
-+++ b/include/linux/seccomp.h
-@@ -33,10 +33,10 @@ struct seccomp {
- 
- #ifdef CONFIG_HAVE_ARCH_SECCOMP_FILTER
- extern int __secure_computing(const struct seccomp_data *sd);
--static inline int secure_computing(const struct seccomp_data *sd)
-+static inline int secure_computing(void)
- {
- 	if (unlikely(test_thread_flag(TIF_SECCOMP)))
--		return  __secure_computing(sd);
-+		return  __secure_computing(NULL);
  	return 0;
  }
- #else
-@@ -59,7 +59,7 @@ struct seccomp { };
- struct seccomp_filter { };
  
- #ifdef CONFIG_HAVE_ARCH_SECCOMP_FILTER
--static inline int secure_computing(struct seccomp_data *sd) { return 0; }
-+static inline int secure_computing(void) { return 0; }
- #else
- static inline void secure_computing_strict(int this_syscall) { return; }
- #endif
+ static int vhost_user_send(struct virtio_uml_device *vu_dev,
+-			   struct vhost_user_msg *msg,
++			   bool need_response, struct vhost_user_msg *msg,
+ 			   int *fds, size_t num_fds)
+ {
+ 	size_t size = sizeof(msg->header) + msg->header.size;
++	bool request_ack;
++	int rc;
+ 
+ 	msg->header.flags |= VHOST_USER_VERSION;
+-	return full_sendmsg_fds(vu_dev->sock, msg, size, fds, num_fds);
++
++	/*
++	 * The need_response flag indicates that we already need a response,
++	 * e.g. to read the features. In these cases, don't request an ACK as
++	 * it is meaningless. Also request an ACK only if supported.
++	 */
++	request_ack = !need_response;
++	if (!(vu_dev->protocol_features &
++			BIT_ULL(VHOST_USER_PROTOCOL_F_REPLY_ACK)))
++		request_ack = false;
++
++	if (request_ack)
++		msg->header.flags |= VHOST_USER_FLAG_NEED_REPLY;
++
++	rc = full_sendmsg_fds(vu_dev->sock, msg, size, fds, num_fds);
++	if (rc < 0)
++		return rc;
++
++	if (request_ack) {
++		uint64_t status;
++
++		rc = vhost_user_recv_u64(vu_dev, &status);
++		if (rc)
++			return rc;
++
++		if (status) {
++			vu_err(vu_dev, "slave reports error: %llu\n", status);
++			return -EIO;
++		}
++	}
++
++	return 0;
+ }
+ 
+ static int vhost_user_send_no_payload(struct virtio_uml_device *vu_dev,
+-				      u32 request)
++				      bool need_response, u32 request)
+ {
+ 	struct vhost_user_msg msg = {
+ 		.header.request = request,
+ 	};
+ 
+-	return vhost_user_send(vu_dev, &msg, NULL, 0);
++	return vhost_user_send(vu_dev, need_response, &msg, NULL, 0);
+ }
+ 
+ static int vhost_user_send_no_payload_fd(struct virtio_uml_device *vu_dev,
+@@ -196,7 +230,7 @@ static int vhost_user_send_no_payload_fd(struct virtio_uml_device *vu_dev,
+ 		.header.request = request,
+ 	};
+ 
+-	return vhost_user_send(vu_dev, &msg, &fd, 1);
++	return vhost_user_send(vu_dev, false, &msg, &fd, 1);
+ }
+ 
+ static int vhost_user_send_u64(struct virtio_uml_device *vu_dev,
+@@ -208,18 +242,19 @@ static int vhost_user_send_u64(struct virtio_uml_device *vu_dev,
+ 		.payload.integer = value,
+ 	};
+ 
+-	return vhost_user_send(vu_dev, &msg, NULL, 0);
++	return vhost_user_send(vu_dev, false, &msg, NULL, 0);
+ }
+ 
+ static int vhost_user_set_owner(struct virtio_uml_device *vu_dev)
+ {
+-	return vhost_user_send_no_payload(vu_dev, VHOST_USER_SET_OWNER);
++	return vhost_user_send_no_payload(vu_dev, false, VHOST_USER_SET_OWNER);
+ }
+ 
+ static int vhost_user_get_features(struct virtio_uml_device *vu_dev,
+ 				   u64 *features)
+ {
+-	int rc = vhost_user_send_no_payload(vu_dev, VHOST_USER_GET_FEATURES);
++	int rc = vhost_user_send_no_payload(vu_dev, true,
++					    VHOST_USER_GET_FEATURES);
+ 
+ 	if (rc)
+ 		return rc;
+@@ -235,7 +270,7 @@ static int vhost_user_set_features(struct virtio_uml_device *vu_dev,
+ static int vhost_user_get_protocol_features(struct virtio_uml_device *vu_dev,
+ 					    u64 *protocol_features)
+ {
+-	int rc = vhost_user_send_no_payload(vu_dev,
++	int rc = vhost_user_send_no_payload(vu_dev, true,
+ 			VHOST_USER_GET_PROTOCOL_FEATURES);
+ 
+ 	if (rc)
+@@ -250,9 +285,32 @@ static int vhost_user_set_protocol_features(struct virtio_uml_device *vu_dev,
+ 				   protocol_features);
+ }
+ 
++static void vhost_user_reply(struct virtio_uml_device *vu_dev,
++			     struct vhost_user_msg *msg, int response)
++{
++	struct vhost_user_msg reply = {
++		.payload.integer = response,
++	};
++	size_t size = sizeof(reply.header) + sizeof(reply.payload.integer);
++	int rc;
++
++	reply.header = msg->header;
++	reply.header.flags &= ~VHOST_USER_FLAG_NEED_REPLY;
++	reply.header.flags |= VHOST_USER_FLAG_REPLY;
++	reply.header.size = sizeof(reply.payload.integer);
++
++	rc = full_sendmsg_fds(vu_dev->req_fd, &reply, size, NULL, 0);
++
++	if (rc)
++		vu_err(vu_dev,
++		       "sending reply to slave request failed: %d (size %zu)\n",
++		       rc, size);
++}
++
+ static irqreturn_t vu_req_interrupt(int irq, void *data)
+ {
+ 	struct virtio_uml_device *vu_dev = data;
++	int response = 1;
+ 	struct {
+ 		struct vhost_user_msg msg;
+ 		u8 extra_payload[512];
+@@ -269,6 +327,7 @@ static irqreturn_t vu_req_interrupt(int irq, void *data)
+ 	switch (msg.msg.header.request) {
+ 	case VHOST_USER_SLAVE_CONFIG_CHANGE_MSG:
+ 		virtio_config_changed(&vu_dev->vdev);
++		response = 0;
+ 		break;
+ 	case VHOST_USER_SLAVE_IOTLB_MSG:
+ 		/* not supported - VIRTIO_F_IOMMU_PLATFORM */
+@@ -279,6 +338,9 @@ static irqreturn_t vu_req_interrupt(int irq, void *data)
+ 		       msg.msg.header.request);
+ 	}
+ 
++	if (msg.msg.header.flags & VHOST_USER_FLAG_NEED_REPLY)
++		vhost_user_reply(vu_dev, &msg.msg, response);
++
+ 	return IRQ_HANDLED;
+ }
+ 
+@@ -371,7 +433,7 @@ static void vhost_user_get_config(struct virtio_uml_device *vu_dev,
+ 	msg->payload.config.offset = 0;
+ 	msg->payload.config.size = cfg_size;
+ 
+-	rc = vhost_user_send(vu_dev, msg, NULL, 0);
++	rc = vhost_user_send(vu_dev, true, msg, NULL, 0);
+ 	if (rc) {
+ 		vu_err(vu_dev, "sending VHOST_USER_GET_CONFIG failed: %d\n",
+ 		       rc);
+@@ -422,7 +484,7 @@ static void vhost_user_set_config(struct virtio_uml_device *vu_dev,
+ 	msg->payload.config.size = len;
+ 	memcpy(msg->payload.config.payload, buf, len);
+ 
+-	rc = vhost_user_send(vu_dev, msg, NULL, 0);
++	rc = vhost_user_send(vu_dev, false, msg, NULL, 0);
+ 	if (rc)
+ 		vu_err(vu_dev, "sending VHOST_USER_SET_CONFIG failed: %d\n",
+ 		       rc);
+@@ -473,7 +535,8 @@ static int vhost_user_set_mem_table(struct virtio_uml_device *vu_dev)
+ 			return rc;
+ 	}
+ 
+-	return vhost_user_send(vu_dev, &msg, fds, msg.payload.mem_regions.num);
++	return vhost_user_send(vu_dev, false, &msg, fds,
++			       msg.payload.mem_regions.num);
+ }
+ 
+ static int vhost_user_set_vring_state(struct virtio_uml_device *vu_dev,
+@@ -486,7 +549,7 @@ static int vhost_user_set_vring_state(struct virtio_uml_device *vu_dev,
+ 		.payload.vring_state.num = num,
+ 	};
+ 
+-	return vhost_user_send(vu_dev, &msg, NULL, 0);
++	return vhost_user_send(vu_dev, false, &msg, NULL, 0);
+ }
+ 
+ static int vhost_user_set_vring_num(struct virtio_uml_device *vu_dev,
+@@ -517,7 +580,7 @@ static int vhost_user_set_vring_addr(struct virtio_uml_device *vu_dev,
+ 		.payload.vring_addr.log = log,
+ 	};
+ 
+-	return vhost_user_send(vu_dev, &msg, NULL, 0);
++	return vhost_user_send(vu_dev, false, &msg, NULL, 0);
+ }
+ 
+ static int vhost_user_set_vring_fd(struct virtio_uml_device *vu_dev,
+@@ -533,9 +596,9 @@ static int vhost_user_set_vring_fd(struct virtio_uml_device *vu_dev,
+ 		return -EINVAL;
+ 	if (fd < 0) {
+ 		msg.payload.integer |= VHOST_USER_VRING_POLL_MASK;
+-		return vhost_user_send(vu_dev, &msg, NULL, 0);
++		return vhost_user_send(vu_dev, false, &msg, NULL, 0);
+ 	}
+-	return vhost_user_send(vu_dev, &msg, &fd, 1);
++	return vhost_user_send(vu_dev, false, &msg, &fd, 1);
+ }
+ 
+ static int vhost_user_set_vring_call(struct virtio_uml_device *vu_dev,
 -- 
-2.23.0
+2.20.1
 
 
 _______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
