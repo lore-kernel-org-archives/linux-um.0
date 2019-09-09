@@ -1,12 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from lithops.sigma-star.at ([195.201.40.130])
- by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iBZwn-0006xs-29
- for linux-um@lists.infradead.org; Sat, 21 Sep 2019 07:36:50 +0000
-Date: Sat, 21 Sep 2019 09:36:39 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <466534311.3528.1569051399653.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] UML updates for 5.4-rc1
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
+ by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
+ id 1i7E81-00071m-Fx
+ for linux-um@lists.infradead.org; Mon, 09 Sep 2019 07:30:26 +0000
+Message-ID: <3d9298b447ca662da4475169896e767ad89b5146.camel@sipsolutions.net>
+Subject: Re: [RFC] um: have real DMA barriers with virtio
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Mon, 09 Sep 2019 09:30:23 +0200
+In-Reply-To: <58f4cdd7-6601-f0e1-2d0b-58b62cbc1020@kot-begemot.co.uk>
+References: <1567807353-Ieca0b50a173f8a587d412db861c7ae4d6bae97c4@changeid>
+ <a5415671bfe700f197a72e25351d13207f86641e.camel@sipsolutions.net>
+ <02eb6880-1e7b-1921-2057-008737ee8d48@kot-begemot.co.uk>
+ <300774e43e0a755a9e57c587ece7bb44537f1d22.camel@sipsolutions.net>
+ <58f4cdd7-6601-f0e1-2d0b-58b62cbc1020@kot-begemot.co.uk>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -20,224 +27,50 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: torvalds <torvalds@linux-foundation.org>
-Cc: linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, anton ivanov <anton.ivanov@cambridgegreys.com>
+To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, linux-um@lists.infradead.org
 
-Linus,
+On Mon, 2019-09-09 at 08:27 +0100, Anton Ivanov wrote:
 
-The following changes since commit 089cf7f6ecb266b6a4164919a2e69bd2f938374a:
+> I would like at some point to convert the "helper thread" semantics of 
+> ubd, etc to look like DMA and use DMA barrier as well as have the 
+> relevant DMA infrastructure.
 
-  Linux 5.3-rc7 (2019-09-02 09:57:40 -0700)
+Right, I got that part, makes sense.
 
-are available in the Git repository at:
+> At present they work only because the IPC forces the host kernel to 
+> invoke a barrier. If I remember correctly, the actual place where the 
+> barrier is invoked is the IPC socket enqueue/dequeue in the host kernel.
+> 
+> If, for some reason the host kernel does not invoke the barrier (f.e., 
+> if someone optimizes the queue operations so there is no need) they will 
+> break.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.4-rc1
+Sure, also makes sense.
 
-for you to fetch changes up to 73625ed66389d4c620520058d828f43a93ab4d0c:
+> IMHO adding DMA emulation will have benefits for both existing and 
+> future drivers.
 
-  um: irq: Fix LAST_IRQ usage in init_IRQ() (2019-09-16 08:38:58 +0200)
+Well, in a sense virtio is emulating DMA. We could even just add another
+virtio transport (not the vhost-user backed one we have now) and just
+rely on virtio-blk, and implement just the device side like qemu already
+would. I suppose it might be easy to even copy that.
 
-----------------------------------------------------------------
-This pull request contains the following changes for UML:
+But anyway - sorry for being dense, maybe it's too early morning :-) But
+I still don't understand what that means for this patch...
 
-- virtio support
-- Fixes for our new time travel mode
-- Various improvements to make lockdep and kasan work better
-- SPDX header updates
+> > That said, I did find a few other issues still, so I'll be reposting.
+> > I'll also try to open /proc/self/mem as the file descriptor to pass to
+> > the virtio device instead of using physmem_fd, because our .bss isn't
+> > actually part of physmem_fd, and that cost me a few hours debugging
+> > already ;-)
+> 
+> I will retest vs BESS/DPDK when it is ready.
 
-----------------------------------------------------------------
-Alex Dewar (4):
-      um: Add SPDX headers for files in arch/um/drivers
-      um: Add SPDX headers to files in arch/um/kernel/
-      um: Add SPDX headers for files in arch/um/os-Linux
-      um: Add SPDX headers for files in arch/um/include
+Thanks. I'll repost in the next couple of days, want to experiment with
+the /proc/self/mem first, and if that works better use it.
 
-Anton Ivanov (5):
-      um: Fix off by one error in IRQ enumeration
-      um: Add legacy tap support and rename existing vector to hybrid
-      um: Added support for unix socket transports and bess transport
-      um: Add checks to mtu parameter parsing
-      um: Error handling fixes in vector drivers
+johannes
 
-Erel Geron (2):
-      um: drivers: Add virtio vhost-user driver
-      um: irq: Fix LAST_IRQ usage in init_IRQ()
-
-Johannes Berg (13):
-      um: Remove sig_info[SIGALRM]
-      um: Avoid using uninitialized regs
-      um: Remove misleading #define ARCh_IRQ_ENABLED
-      um: Implement TRACE_IRQFLAGS_SUPPORT
-      um: Fix VDSO compiler warning
-      um: Place (soft)irq text with macros
-      um: Enable CONFIG_CONSTRUCTORS
-      um: time-travel: Fix periodic timers
-      um: time-travel: Restrict time update in IRQ handler
-      um: Don't use generic barrier.h
-      um: Use real DMA barriers
-      um: virtio: Implement VHOST_USER_PROTOCOL_F_SLAVE_REQ
-      um: virtio: Implement VHOST_USER_PROTOCOL_F_REPLY_ACK
-
-Masahiro Yamada (1):
-      um: Remove meaningless clearing of clean-files
-
- arch/um/drivers/Kconfig                  |    7 +
- arch/um/drivers/Makefile                 |    3 +-
- arch/um/drivers/chan.h                   |    2 +-
- arch/um/drivers/chan_kern.c              |    2 +-
- arch/um/drivers/chan_user.c              |    2 +-
- arch/um/drivers/chan_user.h              |    2 +-
- arch/um/drivers/cow_user.c               |    2 +-
- arch/um/drivers/daemon.h                 |    2 +-
- arch/um/drivers/daemon_kern.c            |    2 +-
- arch/um/drivers/daemon_user.c            |    2 +-
- arch/um/drivers/fd.c                     |    2 +-
- arch/um/drivers/harddog_user.c           |    2 +-
- arch/um/drivers/hostaudio_kern.c         |    2 +-
- arch/um/drivers/line.c                   |    2 +-
- arch/um/drivers/line.h                   |    2 +-
- arch/um/drivers/mconsole.h               |    2 +-
- arch/um/drivers/mconsole_kern.c          |    2 +-
- arch/um/drivers/mconsole_kern.h          |    2 +-
- arch/um/drivers/mconsole_user.c          |    2 +-
- arch/um/drivers/net_kern.c               |    2 +-
- arch/um/drivers/net_user.c               |    2 +-
- arch/um/drivers/null.c                   |    2 +-
- arch/um/drivers/pcap_kern.c              |    2 +-
- arch/um/drivers/pcap_user.c              |    2 +-
- arch/um/drivers/pcap_user.h              |    2 +-
- arch/um/drivers/port.h                   |    2 +-
- arch/um/drivers/port_kern.c              |    2 +-
- arch/um/drivers/port_user.c              |    2 +-
- arch/um/drivers/pty.c                    |    2 +-
- arch/um/drivers/slip_kern.c              |    2 +-
- arch/um/drivers/slip_user.c              |    2 +-
- arch/um/drivers/slirp_kern.c             |    2 +-
- arch/um/drivers/slirp_user.c             |    2 +-
- arch/um/drivers/ssl.c                    |    2 +-
- arch/um/drivers/stdio_console.c          |    2 +-
- arch/um/drivers/stdio_console.h          |    2 +-
- arch/um/drivers/tty.c                    |    2 +-
- arch/um/drivers/ubd.h                    |    2 +-
- arch/um/drivers/ubd_kern.c               |    2 +-
- arch/um/drivers/ubd_user.c               |    2 +-
- arch/um/drivers/umcast.h                 |    2 +-
- arch/um/drivers/umcast_kern.c            |    2 +-
- arch/um/drivers/umcast_user.c            |    2 +-
- arch/um/drivers/vde.h                    |    2 +-
- arch/um/drivers/vde_kern.c               |    2 +-
- arch/um/drivers/vde_user.c               |    2 +-
- arch/um/drivers/vector_kern.c            |   44 +-
- arch/um/drivers/vector_kern.h            |    3 +-
- arch/um/drivers/vector_transports.c      |   42 +-
- arch/um/drivers/vector_user.c            |  293 +++++---
- arch/um/drivers/vector_user.h            |    9 +-
- arch/um/drivers/vhost_user.h             |  117 +++
- arch/um/drivers/virtio_uml.c             | 1177 ++++++++++++++++++++++++++++++
- arch/um/drivers/xterm.c                  |    2 +-
- arch/um/drivers/xterm.h                  |    2 +-
- arch/um/drivers/xterm_kern.c             |    2 +-
- arch/um/include/asm/Kbuild               |    1 -
- arch/um/include/asm/common.lds.S         |    2 +-
- arch/um/include/asm/irq.h                |    7 +-
- arch/um/include/asm/irqflags.h           |    1 -
- arch/um/include/asm/kmap_types.h         |    2 +-
- arch/um/include/asm/mmu.h                |    2 +-
- arch/um/include/asm/mmu_context.h        |    2 +-
- arch/um/include/asm/page.h               |    2 +-
- arch/um/include/asm/pgalloc.h            |    2 +-
- arch/um/include/asm/pgtable-2level.h     |    2 +-
- arch/um/include/asm/pgtable-3level.h     |    2 +-
- arch/um/include/asm/pgtable.h            |    2 +-
- arch/um/include/asm/processor-generic.h  |    2 +-
- arch/um/include/asm/ptrace-generic.h     |    2 +-
- arch/um/include/asm/thread_info.h        |    2 +-
- arch/um/include/asm/tlbflush.h           |    2 +-
- arch/um/include/asm/uaccess.h            |    2 +-
- arch/um/include/shared/arch.h            |    2 +-
- arch/um/include/shared/as-layout.h       |    2 +-
- arch/um/include/shared/elf_user.h        |    2 +-
- arch/um/include/shared/frame_kern.h      |    2 +-
- arch/um/include/shared/irq_kern.h        |    2 +-
- arch/um/include/shared/irq_user.h        |    2 +-
- arch/um/include/shared/kern.h            |    2 +-
- arch/um/include/shared/kern_util.h       |    2 +-
- arch/um/include/shared/longjmp.h         |    2 +-
- arch/um/include/shared/mem.h             |    2 +-
- arch/um/include/shared/net_kern.h        |    2 +-
- arch/um/include/shared/net_user.h        |    2 +-
- arch/um/include/shared/os.h              |   14 +-
- arch/um/include/shared/ptrace_user.h     |    2 +-
- arch/um/include/shared/registers.h       |    2 +-
- arch/um/include/shared/sigio.h           |    2 +-
- arch/um/include/shared/skas/mm_id.h      |    2 +-
- arch/um/include/shared/skas/skas.h       |    2 +-
- arch/um/include/shared/skas/stub-data.h  |    2 +-
- arch/um/include/shared/timer-internal.h  |   11 +-
- arch/um/include/shared/um_malloc.h       |    2 +-
- arch/um/include/shared/user.h            |    2 +-
- arch/um/kernel/Makefile                  |    3 +-
- arch/um/kernel/config.c.in               |    4 +-
- arch/um/kernel/dyn.lds.S                 |    3 +-
- arch/um/kernel/exec.c                    |    2 +-
- arch/um/kernel/exitcode.c                |    2 +-
- arch/um/kernel/gmon_syms.c               |    2 +-
- arch/um/kernel/gprof_syms.c              |    2 +-
- arch/um/kernel/initrd.c                  |    2 +-
- arch/um/kernel/irq.c                     |    4 +-
- arch/um/kernel/ksyms.c                   |    4 +-
- arch/um/kernel/mem.c                     |    3 +-
- arch/um/kernel/physmem.c                 |    3 +-
- arch/um/kernel/process.c                 |   18 +-
- arch/um/kernel/ptrace.c                  |    2 +-
- arch/um/kernel/reboot.c                  |    2 +-
- arch/um/kernel/sigio.c                   |    2 +-
- arch/um/kernel/signal.c                  |   30 +-
- arch/um/kernel/skas/Makefile             |    2 +-
- arch/um/kernel/skas/clone.c              |    2 +-
- arch/um/kernel/skas/mmu.c                |    6 +-
- arch/um/kernel/skas/process.c            |    4 +-
- arch/um/kernel/skas/syscall.c            |    2 +-
- arch/um/kernel/skas/uaccess.c            |    2 +-
- arch/um/kernel/syscall.c                 |    2 +-
- arch/um/kernel/time.c                    |   13 +-
- arch/um/kernel/tlb.c                     |    2 +-
- arch/um/kernel/trap.c                    |    2 +-
- arch/um/kernel/um_arch.c                 |    3 +-
- arch/um/kernel/umid.c                    |    2 +-
- arch/um/kernel/uml.lds.S                 |    2 +
- arch/um/os-Linux/Makefile                |    2 +-
- arch/um/os-Linux/drivers/Makefile        |    2 +-
- arch/um/os-Linux/drivers/etap.h          |    2 +-
- arch/um/os-Linux/drivers/ethertap_kern.c |    2 +-
- arch/um/os-Linux/drivers/ethertap_user.c |    2 +-
- arch/um/os-Linux/drivers/tuntap.h        |    2 +-
- arch/um/os-Linux/drivers/tuntap_kern.c   |    2 +-
- arch/um/os-Linux/drivers/tuntap_user.c   |    2 +-
- arch/um/os-Linux/file.c                  |   46 +-
- arch/um/os-Linux/helper.c                |    2 +-
- arch/um/os-Linux/irq.c                   |    2 +-
- arch/um/os-Linux/main.c                  |    4 +-
- arch/um/os-Linux/mem.c                   |    2 +-
- arch/um/os-Linux/process.c               |    2 +-
- arch/um/os-Linux/registers.c             |    2 +-
- arch/um/os-Linux/sigio.c                 |    8 +-
- arch/um/os-Linux/signal.c                |   52 +-
- arch/um/os-Linux/skas/Makefile           |    2 +-
- arch/um/os-Linux/skas/mem.c              |    2 +-
- arch/um/os-Linux/skas/process.c          |   14 +-
- arch/um/os-Linux/start_up.c              |    2 +-
- arch/um/os-Linux/time.c                  |    2 +-
- arch/um/os-Linux/tty.c                   |    2 +-
- arch/um/os-Linux/umid.c                  |    2 +-
- arch/um/os-Linux/util.c                  |    2 +-
- arch/x86/um/asm/barrier.h                |   12 +-
- arch/x86/um/vdso/um_vdso.c               |    2 +-
- init/Kconfig                             |    1 -
- kernel/gcov/Kconfig                      |    2 +-
- 154 files changed, 1913 insertions(+), 291 deletions(-)
- create mode 100644 arch/um/drivers/vhost_user.h
- create mode 100644 arch/um/drivers/virtio_uml.c
 
 _______________________________________________
 linux-um mailing list
