@@ -2,12 +2,14 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i5PQq-00066A-Sc
- for linux-um@lists.infradead.org; Wed, 04 Sep 2019 07:10:22 +0000
+ id 1i7gYR-00011p-U2
+ for linux-um@lists.infradead.org; Tue, 10 Sep 2019 13:51:37 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v2] um: irq: Fix LAST_IRQ usage
-Date: Wed,  4 Sep 2019 09:10:07 +0200
-Message-Id: <20190904071007.7837-1-johannes@sipsolutions.net>
+Subject: [PATCH v4 5/5] um: virtio: implement VHOST_USER_PROTOCOL_F_REPLY_ACK
+Date: Tue, 10 Sep 2019 15:51:29 +0200
+Message-Id: <1568123461-Iff9fc2b625929a3a2189e82a1356b689878825da@changeid>
+In-Reply-To: <20190910135129.23095-1-johannes@sipsolutions.net>
+References: <20190910135129.23095-1-johannes@sipsolutions.net>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,49 +24,270 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: Erel Geron <erelx.geron@intel.com>, Johannes Berg <johannes.berg@intel.com>
+Cc: Johannes Berg <johannes.berg@intel.com>
 
-From: Erel Geron <erelx.geron@intel.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-LAST_IRQ was used incorrectly in init_IRQ.
-Fix this.
+Implement the VHOST_USER_PROTOCOL_F_REPLY_ACK extension for both
+slave requests (previous patch) where we have to reply and our
+own requests where it helps understand if the slave failed.
 
-Change-Id: I8676920b31fbe61adadc35e36d6f8ad677af5b08
-Signed-off-by: Erel Geron <erelx.geron@intel.com>
-Reviewed-by: Johannes Berg <johannes.berg@intel.com>
-Reviewed-on: https://git-ger-8.devtools.intel.com/gerrit/95123
-Tested-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- arch/um/include/asm/irq.h | 2 +-
- arch/um/kernel/irq.c      | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/um/drivers/vhost_user.h |  5 +-
+ arch/um/drivers/virtio_uml.c | 97 +++++++++++++++++++++++++++++-------
+ 2 files changed, 84 insertions(+), 18 deletions(-)
 
-diff --git a/arch/um/include/asm/irq.h b/arch/um/include/asm/irq.h
-index 49ed3e35b35a..ce7a78c3bcf2 100644
---- a/arch/um/include/asm/irq.h
-+++ b/arch/um/include/asm/irq.h
-@@ -23,7 +23,7 @@
- #define VECTOR_BASE_IRQ		15
- #define VECTOR_IRQ_SPACE	8
+diff --git a/arch/um/drivers/vhost_user.h b/arch/um/drivers/vhost_user.h
+index 8aee9919581e..45ff5ea22fea 100644
+--- a/arch/um/drivers/vhost_user.h
++++ b/arch/um/drivers/vhost_user.h
+@@ -6,9 +6,11 @@
  
--#define LAST_IRQ (VECTOR_IRQ_SPACE + VECTOR_BASE_IRQ)
-+#define LAST_IRQ (VECTOR_IRQ_SPACE + VECTOR_BASE_IRQ - 1)
+ /* Message flags */
+ #define VHOST_USER_FLAG_REPLY		BIT(2)
++#define VHOST_USER_FLAG_NEED_REPLY	BIT(3)
+ /* Feature bits */
+ #define VHOST_USER_F_PROTOCOL_FEATURES	30
+ /* Protocol feature bits */
++#define VHOST_USER_PROTOCOL_F_REPLY_ACK		3
+ #define VHOST_USER_PROTOCOL_F_SLAVE_REQ		5
+ #define VHOST_USER_PROTOCOL_F_CONFIG		9
+ /* Vring state index masks */
+@@ -20,7 +22,8 @@
+ /* Supported transport features */
+ #define VHOST_USER_SUPPORTED_F		BIT_ULL(VHOST_USER_F_PROTOCOL_FEATURES)
+ /* Supported protocol features */
+-#define VHOST_USER_SUPPORTED_PROTOCOL_F	(BIT_ULL(VHOST_USER_PROTOCOL_F_SLAVE_REQ) | \
++#define VHOST_USER_SUPPORTED_PROTOCOL_F	(BIT_ULL(VHOST_USER_PROTOCOL_F_REPLY_ACK) | \
++					 BIT_ULL(VHOST_USER_PROTOCOL_F_SLAVE_REQ) | \
+ 					 BIT_ULL(VHOST_USER_PROTOCOL_F_CONFIG))
  
- #else
+ enum vhost_user_request {
+diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
+index c12e9e22a1e3..bc42215e1348 100644
+--- a/arch/um/drivers/virtio_uml.c
++++ b/arch/um/drivers/virtio_uml.c
+@@ -160,30 +160,64 @@ static int vhost_user_recv_req(struct virtio_uml_device *vu_dev,
+ 	if (rc)
+ 		return rc;
  
-diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-index efde1f16c603..402e59bdb65b 100644
---- a/arch/um/kernel/irq.c
-+++ b/arch/um/kernel/irq.c
-@@ -480,7 +480,7 @@ void __init init_IRQ(void)
- 	irq_set_chip_and_handler(TIMER_IRQ, &SIGVTALRM_irq_type, handle_edge_irq);
+-	if (msg->header.flags != VHOST_USER_VERSION)
++	if ((msg->header.flags & ~VHOST_USER_FLAG_NEED_REPLY) !=
++			VHOST_USER_VERSION)
+ 		return -EPROTO;
  
+ 	return 0;
+ }
  
--	for (i = 1; i < LAST_IRQ; i++)
-+	for (i = 1; i <= LAST_IRQ; i++)
- 		irq_set_chip_and_handler(i, &normal_irq_type, handle_edge_irq);
- 	/* Initialize EPOLL Loop */
- 	os_setup_epoll();
+ static int vhost_user_send(struct virtio_uml_device *vu_dev,
+-			   struct vhost_user_msg *msg,
++			   bool need_response, struct vhost_user_msg *msg,
+ 			   int *fds, size_t num_fds)
+ {
+ 	size_t size = sizeof(msg->header) + msg->header.size;
++	bool request_ack;
++	int rc;
+ 
+ 	msg->header.flags |= VHOST_USER_VERSION;
+-	return full_sendmsg_fds(vu_dev->sock, msg, size, fds, num_fds);
++
++	/*
++	 * The need_response flag indicates that we already need a response,
++	 * e.g. to read the features. In these cases, don't request an ACK as
++	 * it is meaningless. Also request an ACK only if supported.
++	 */
++	request_ack = !need_response;
++	if (!(vu_dev->protocol_features &
++			BIT_ULL(VHOST_USER_PROTOCOL_F_REPLY_ACK)))
++		request_ack = false;
++
++	if (request_ack)
++		msg->header.flags |= VHOST_USER_FLAG_NEED_REPLY;
++
++	rc = full_sendmsg_fds(vu_dev->sock, msg, size, fds, num_fds);
++	if (rc < 0)
++		return rc;
++
++	if (request_ack) {
++		uint64_t status;
++
++		rc = vhost_user_recv_u64(vu_dev, &status);
++		if (rc)
++			return rc;
++
++		if (status) {
++			vu_err(vu_dev, "slave reports error: %llu\n", status);
++			return -EIO;
++		}
++	}
++
++	return 0;
+ }
+ 
+ static int vhost_user_send_no_payload(struct virtio_uml_device *vu_dev,
+-				      u32 request)
++				      bool need_response, u32 request)
+ {
+ 	struct vhost_user_msg msg = {
+ 		.header.request = request,
+ 	};
+ 
+-	return vhost_user_send(vu_dev, &msg, NULL, 0);
++	return vhost_user_send(vu_dev, need_response, &msg, NULL, 0);
+ }
+ 
+ static int vhost_user_send_no_payload_fd(struct virtio_uml_device *vu_dev,
+@@ -193,7 +227,7 @@ static int vhost_user_send_no_payload_fd(struct virtio_uml_device *vu_dev,
+ 		.header.request = request,
+ 	};
+ 
+-	return vhost_user_send(vu_dev, &msg, &fd, 1);
++	return vhost_user_send(vu_dev, false, &msg, &fd, 1);
+ }
+ 
+ static int vhost_user_send_u64(struct virtio_uml_device *vu_dev,
+@@ -205,18 +239,19 @@ static int vhost_user_send_u64(struct virtio_uml_device *vu_dev,
+ 		.payload.integer = value,
+ 	};
+ 
+-	return vhost_user_send(vu_dev, &msg, NULL, 0);
++	return vhost_user_send(vu_dev, false, &msg, NULL, 0);
+ }
+ 
+ static int vhost_user_set_owner(struct virtio_uml_device *vu_dev)
+ {
+-	return vhost_user_send_no_payload(vu_dev, VHOST_USER_SET_OWNER);
++	return vhost_user_send_no_payload(vu_dev, false, VHOST_USER_SET_OWNER);
+ }
+ 
+ static int vhost_user_get_features(struct virtio_uml_device *vu_dev,
+ 				   u64 *features)
+ {
+-	int rc = vhost_user_send_no_payload(vu_dev, VHOST_USER_GET_FEATURES);
++	int rc = vhost_user_send_no_payload(vu_dev, true,
++					    VHOST_USER_GET_FEATURES);
+ 
+ 	if (rc)
+ 		return rc;
+@@ -232,7 +267,7 @@ static int vhost_user_set_features(struct virtio_uml_device *vu_dev,
+ static int vhost_user_get_protocol_features(struct virtio_uml_device *vu_dev,
+ 					    u64 *protocol_features)
+ {
+-	int rc = vhost_user_send_no_payload(vu_dev,
++	int rc = vhost_user_send_no_payload(vu_dev, true,
+ 			VHOST_USER_GET_PROTOCOL_FEATURES);
+ 
+ 	if (rc)
+@@ -247,9 +282,32 @@ static int vhost_user_set_protocol_features(struct virtio_uml_device *vu_dev,
+ 				   protocol_features);
+ }
+ 
++static void vhost_user_reply(struct virtio_uml_device *vu_dev,
++			     struct vhost_user_msg *msg, int response)
++{
++	struct vhost_user_msg reply = {
++		.payload.integer = response,
++	};
++	size_t size = sizeof(reply.header) + sizeof(reply.payload.integer);
++	int rc;
++
++	reply.header = msg->header;
++	reply.header.flags &= ~VHOST_USER_FLAG_NEED_REPLY;
++	reply.header.flags |= VHOST_USER_FLAG_REPLY;
++	reply.header.size = sizeof(reply.payload.integer);
++
++	rc = full_sendmsg_fds(vu_dev->req_fd, &reply, size, NULL, 0);
++
++	if (rc)
++		vu_err(vu_dev,
++		       "sending reply to slave request failed: %d (size %zu)\n",
++		       rc, size);
++}
++
+ static irqreturn_t vu_req_interrupt(int irq, void *data)
+ {
+ 	struct virtio_uml_device *vu_dev = data;
++	int response = 1;
+ 	struct {
+ 		struct vhost_user_msg msg;
+ 		u8 extra_payload[512];
+@@ -266,6 +324,7 @@ static irqreturn_t vu_req_interrupt(int irq, void *data)
+ 	switch (msg.msg.header.request) {
+ 	case VHOST_USER_SLAVE_CONFIG_CHANGE_MSG:
+ 		virtio_config_changed(&vu_dev->vdev);
++		response = 0;
+ 		break;
+ 	case VHOST_USER_SLAVE_IOTLB_MSG:
+ 		/* not supported - VIRTIO_F_IOMMU_PLATFORM */
+@@ -276,6 +335,9 @@ static irqreturn_t vu_req_interrupt(int irq, void *data)
+ 		       msg.msg.header.request);
+ 	}
+ 
++	if (msg.msg.header.flags & VHOST_USER_FLAG_NEED_REPLY)
++		vhost_user_reply(vu_dev, &msg.msg, response);
++
+ 	return IRQ_HANDLED;
+ }
+ 
+@@ -365,7 +427,7 @@ static void vhost_user_get_config(struct virtio_uml_device *vu_dev,
+ 	msg->payload.config.offset = 0;
+ 	msg->payload.config.size = cfg_size;
+ 
+-	rc = vhost_user_send(vu_dev, msg, NULL, 0);
++	rc = vhost_user_send(vu_dev, true, msg, NULL, 0);
+ 	if (rc) {
+ 		vu_err(vu_dev, "sending VHOST_USER_GET_CONFIG failed: %d\n",
+ 		       rc);
+@@ -416,7 +478,7 @@ static void vhost_user_set_config(struct virtio_uml_device *vu_dev,
+ 	msg->payload.config.size = len;
+ 	memcpy(msg->payload.config.payload, buf, len);
+ 
+-	rc = vhost_user_send(vu_dev, msg, NULL, 0);
++	rc = vhost_user_send(vu_dev, false, msg, NULL, 0);
+ 	if (rc)
+ 		vu_err(vu_dev, "sending VHOST_USER_SET_CONFIG failed: %d\n",
+ 		       rc);
+@@ -506,7 +568,8 @@ static int vhost_user_set_mem_table(struct virtio_uml_device *vu_dev)
+ 			return rc;
+ 	}
+ 
+-	return vhost_user_send(vu_dev, &msg, fds, msg.payload.mem_regions.num);
++	return vhost_user_send(vu_dev, false, &msg, fds,
++			       msg.payload.mem_regions.num);
+ }
+ 
+ static int vhost_user_set_vring_state(struct virtio_uml_device *vu_dev,
+@@ -519,7 +582,7 @@ static int vhost_user_set_vring_state(struct virtio_uml_device *vu_dev,
+ 		.payload.vring_state.num = num,
+ 	};
+ 
+-	return vhost_user_send(vu_dev, &msg, NULL, 0);
++	return vhost_user_send(vu_dev, false, &msg, NULL, 0);
+ }
+ 
+ static int vhost_user_set_vring_num(struct virtio_uml_device *vu_dev,
+@@ -550,7 +613,7 @@ static int vhost_user_set_vring_addr(struct virtio_uml_device *vu_dev,
+ 		.payload.vring_addr.log = log,
+ 	};
+ 
+-	return vhost_user_send(vu_dev, &msg, NULL, 0);
++	return vhost_user_send(vu_dev, false, &msg, NULL, 0);
+ }
+ 
+ static int vhost_user_set_vring_fd(struct virtio_uml_device *vu_dev,
+@@ -566,9 +629,9 @@ static int vhost_user_set_vring_fd(struct virtio_uml_device *vu_dev,
+ 		return -EINVAL;
+ 	if (fd < 0) {
+ 		msg.payload.integer |= VHOST_USER_VRING_POLL_MASK;
+-		return vhost_user_send(vu_dev, &msg, NULL, 0);
++		return vhost_user_send(vu_dev, false, &msg, NULL, 0);
+ 	}
+-	return vhost_user_send(vu_dev, &msg, &fd, 1);
++	return vhost_user_send(vu_dev, false, &msg, &fd, 1);
+ }
+ 
+ static int vhost_user_set_vring_call(struct virtio_uml_device *vu_dev,
 -- 
 2.20.1
 
