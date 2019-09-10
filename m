@@ -1,13 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
- by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iAtRm-00067K-N2
- for linux-um@lists.infradead.org; Thu, 19 Sep 2019 10:14:00 +0000
+ by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
+ id 1i7gVC-0006Ev-9Y
+ for linux-um@lists.infradead.org; Tue, 10 Sep 2019 13:48:16 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH] um: virtio: keep reading on -EAGAIN
-Date: Thu, 19 Sep 2019 12:13:48 +0200
-Message-Id: <1568888028-I2734f0a83b4b28ea237050d5def17b4529b8b446@changeid>
+Subject: [PATCH 2/2] um: time-travel: restrict time update in IRQ handler
+Date: Tue, 10 Sep 2019 15:47:56 +0200
+Message-Id: <1568123276-Iaa969e227dff394fd66cc145454590a435cf646d@changeid>
+In-Reply-To: <1568123276-I40b0f15a0fdd0f17e6636fbfe661e0d3d52e5ef7@changeid>
+References: <1568123276-I40b0f15a0fdd0f17e6636fbfe661e0d3d52e5ef7@changeid>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -26,58 +28,63 @@ Cc: Johannes Berg <johannes.berg@intel.com>
 
 From: Johannes Berg <johannes.berg@intel.com>
 
-When we get an interrupt from the socket getting readable,
-and start reading, there's a possibility for a race. This
-depends on the implementation of the device, but e.g. with
-qemu's libvhost-user, we can see:
+We currently do the time updates in the timer handler, even if
+we just call the timer handler ourselves. In basic mode we must
+in fact do it there since otherwise the OS timer signal won't
+move time forward, but in inf-cpu mode we don't need to, and
+it's harder to understand.
 
- device                 virtio_uml
----------------------------------------
-  write header
-                         get interrupt
-                         read header
-                         read body -> returns -EAGAIN
-  write body
+Restrict the update there to basic mode, adding a comment, and
+do it in the idle code otherwise.
 
-The -EAGAIN return is because the socket is non-blocking,
-and then this leads us to abandon this message.
-
-In fact, we've already read the header, so when the get
-another signal/interrupt for the body, we again read it
-as though it's a new message header, and also abandon it
-for the same reason (wrong size etc.)
-
-This essentially breaks things, and if that message was
-one that required a response, it leads to a deadlock as
-the device is waiting for the response but we'll never
-reply.
-
-Fix this by spinning on -EAGAIN as well.
-
-Note that this situation is highly unlikely to occur in
-normal usage, since there will be very few messages and
-only in the startup phase. With the inband call feature
-this does tend to happen (eventually) though.
-
-Fixes: 5d38f324993f ("um: drivers: Add virtio vhost-user driver")
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- arch/um/drivers/virtio_uml.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/um/kernel/process.c |  9 ++++++---
+ arch/um/kernel/time.c    | 10 +++++++++-
+ 2 files changed, 15 insertions(+), 4 deletions(-)
 
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index 12f3b0bf14b7..66b5a936f289 100644
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -112,7 +112,7 @@ static int full_read(int fd, void *buf, int len)
- 			buf += rc;
- 			len -= rc;
- 		}
--	} while (len && (rc > 0 || rc == -EINTR));
-+	} while (len && (rc > 0 || rc == -EINTR || rc == -EAGAIN));
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index cf242fc5fe94..094028720567 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -220,10 +220,13 @@ static void time_travel_sleep(unsigned long long duration)
+ 		if (time_travel_timer_mode == TT_TMR_ONESHOT)
+ 			time_travel_set_timer_mode(TT_TMR_DISABLED);
+ 		/*
+-		 * time_travel_time will be adjusted in the timer
+-		 * IRQ handler so it works even when the signal
+-		 * comes from the OS timer
++		 * In basic mode, time_travel_time will be adjusted in
++		 * the timer IRQ handler so it works even when the signal
++		 * comes from the OS timer, see there.
+ 		 */
++		if (time_travel_mode != TT_MODE_BASIC)
++			time_travel_set_time(time_travel_timer_expiry);
++
+ 		deliver_alarm();
+ 	} else {
+ 		time_travel_set_time(next);
+diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
+index 4ecabf7e54c9..15f2e88ba927 100644
+--- a/arch/um/kernel/time.c
++++ b/arch/um/kernel/time.c
+@@ -39,7 +39,15 @@ void timer_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
+ {
+ 	unsigned long flags;
  
- 	if (rc < 0)
- 		return rc;
+-	if (time_travel_mode != TT_MODE_OFF)
++	/*
++	 * In basic time-travel mode we still get real interrupts
++	 * (signals) but since we don't read time from the OS, we
++	 * must update the simulated time here to the expiry when
++	 * we get a signal.
++	 * This is not the case in inf-cpu mode, since there we
++	 * never get any real signals from the OS.
++	 */
++	if (time_travel_mode == TT_MODE_BASIC)
+ 		time_travel_set_time(time_travel_timer_expiry);
+ 
+ 	local_irq_save(flags);
 -- 
 2.20.1
 
