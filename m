@@ -1,15 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
- by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1i825n-0003Hj-WC
- for linux-um@lists.infradead.org; Wed, 11 Sep 2019 12:51:33 +0000
+ by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
+ id 1i7gYR-00011Q-4m
+ for linux-um@lists.infradead.org; Tue, 10 Sep 2019 13:51:38 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v5 3/5] um: drivers: Add virtio vhost-user driver
-Date: Wed, 11 Sep 2019 14:51:20 +0200
-Message-Id: <1568206252-I9af9d5570ad9db937a299cee28de8387ee14055e@changeid>
-In-Reply-To: <20190911125122.20772-1-johannes@sipsolutions.net>
-References: <20190911125122.20772-1-johannes@sipsolutions.net>
+Subject: [PATCH v4 3/5] um: drivers: Add virtio vhost-user driver
+Date: Tue, 10 Sep 2019 15:51:27 +0200
+Message-Id: <1568123461-I9af9d5570ad9db937a299cee28de8387ee14055e@changeid>
+In-Reply-To: <20190910135129.23095-1-johannes@sipsolutions.net>
+References: <20190910135129.23095-1-johannes@sipsolutions.net>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -49,15 +49,11 @@ v3:
    (see comments)
  * fix memory leak with platform_device_register_data()
  * factor out call FD setup to simplify code
-v4:
- * resend
-v5:
- * fix platform data freeing
 ---
  arch/um/drivers/Kconfig      |    7 +
  arch/um/drivers/Makefile     |    1 +
  arch/um/drivers/vhost_user.h |  102 ++++
- arch/um/drivers/virtio_uml.c | 1002 ++++++++++++++++++++++++++++++++++
+ arch/um/drivers/virtio_uml.c | 1003 ++++++++++++++++++++++++++++++++++
  arch/um/include/asm/irq.h    |    5 +-
  arch/um/include/shared/os.h  |    5 +
  arch/um/kernel/ksyms.c       |    2 +
@@ -65,7 +61,7 @@ v5:
  arch/um/kernel/physmem.c     |    1 +
  arch/um/kernel/um_arch.c     |    1 +
  arch/um/os-Linux/file.c      |   44 ++
- 11 files changed, 1169 insertions(+), 2 deletions(-)
+ 11 files changed, 1170 insertions(+), 2 deletions(-)
  create mode 100644 arch/um/drivers/vhost_user.h
  create mode 100644 arch/um/drivers/virtio_uml.c
 
@@ -206,10 +202,10 @@ index 000000000000..2a9829b0782b
 +#endif
 diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
 new file mode 100644
-index 000000000000..a63da4fcc5ae
+index 000000000000..fa6b3bba4522
 --- /dev/null
 +++ b/arch/um/drivers/virtio_uml.c
-@@ -0,0 +1,1002 @@
+@@ -0,0 +1,1003 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Virtio vhost-user driver
@@ -1163,8 +1159,9 @@ index 000000000000..a63da4fcc5ae
 +	struct platform_device *pdev = to_platform_device(dev);
 +	struct virtio_uml_platform_data *pdata = pdev->dev.platform_data;
 +
-+	kfree(pdata->socket_path);
 +	platform_device_unregister(pdev);
++	kfree(pdata->socket_path);
++	kfree(pdata);
 +	return 0;
 +}
 +
