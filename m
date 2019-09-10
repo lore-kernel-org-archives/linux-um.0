@@ -2,12 +2,12 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i7hgX-0004tO-D1
- for linux-um@lists.infradead.org; Tue, 10 Sep 2019 15:04:03 +0000
+ id 1i7gVC-0006F3-As
+ for linux-um@lists.infradead.org; Tue, 10 Sep 2019 13:48:16 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v2 1/2] um: time-travel: fix periodic timers
-Date: Tue, 10 Sep 2019 17:03:52 +0200
-Message-Id: <1568127832-I40b0f15a0fdd0f17e6636fbfe661e0d3d52e5ef7@changeid>
+Subject: [PATCH 1/2] um: time-travel: fix periodic timers
+Date: Tue, 10 Sep 2019 15:47:55 +0200
+Message-Id: <1568123276-I40b0f15a0fdd0f17e6636fbfe661e0d3d52e5ef7@changeid>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -26,20 +26,7 @@ Cc: Johannes Berg <johannes.berg@intel.com>
 
 From: Johannes Berg <johannes.berg@intel.com>
 
-Periodic timers are broken, because the also only fire once.
-As it happens, Linux doesn't care because it only sets the
-timer to periodic very briefly during boot, and then switches
-it only between one-shot and off later.
-
-Nevertheless, fix the logic (we shouldn't even be looking at
-time_travel_timer_expiry unless the timer is enabled) and
-change the code to fire the timer periodically in periodic
-mode, in case it ever gets used in the future.
-
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
-v2:
- - add an explanation to the commit log
 ---
  arch/um/include/shared/timer-internal.h | 9 +++++++++
  arch/um/kernel/process.c                | 7 ++++++-
