@@ -2,14 +2,16 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1i82W2-0005xC-08
- for linux-um@lists.infradead.org; Wed, 11 Sep 2019 13:18:35 +0000
-Message-ID: <2b6ac17c16113892e27e82df9802264ef934d4d8.camel@sipsolutions.net>
-Subject: Re: [PATCH v5 0/5] um: virtio support
+ id 1i825n-0003HK-Sj
+ for linux-um@lists.infradead.org; Wed, 11 Sep 2019 12:51:29 +0000
+Received: by sipsolutions.net with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <johannes@sipsolutions.net>) id 1i825l-0007ON-Fn
+ for linux-um@lists.infradead.org; Wed, 11 Sep 2019 14:51:25 +0200
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Wed, 11 Sep 2019 15:18:31 +0200
-In-Reply-To: <20190911125122.20772-1-johannes@sipsolutions.net>
-References: <20190911125122.20772-1-johannes@sipsolutions.net>
+Subject: [PATCH v5 0/5] um: virtio support
+Date: Wed, 11 Sep 2019 14:51:17 +0200
+Message-Id: <20190911125122.20772-1-johannes@sipsolutions.net>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -23,20 +25,13 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org, Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+To: linux-um@lists.infradead.org
 
-On Wed, 2019-09-11 at 14:51 +0200, Johannes Berg wrote:
-> Yet another respin, with a small fix in the virtio platform data
-> freeing code.
-
-I'm getting to the "tiny little fixes" territory, so would appreciate if
-you could give it a spin again.
-
-I think quite possibly much of the issues you saw were just from the
-uninitialized variable we had in one of the early versions, and
-regardless of that the error messages should be more verbose now.
+Yet another respin, with a small fix in the virtio platform data
+freeing code.
 
 johannes
+
 
 
 _______________________________________________
