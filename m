@@ -1,13 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
- by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i7gVC-0006F3-As
- for linux-um@lists.infradead.org; Tue, 10 Sep 2019 13:48:16 +0000
+ by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
+ id 1i825n-0003HX-Si
+ for linux-um@lists.infradead.org; Wed, 11 Sep 2019 12:51:31 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH 1/2] um: time-travel: fix periodic timers
-Date: Tue, 10 Sep 2019 15:47:55 +0200
-Message-Id: <1568123276-I40b0f15a0fdd0f17e6636fbfe661e0d3d52e5ef7@changeid>
+Subject: [PATCH v5 1/5] um: don't use generic barrier.h
+Date: Wed, 11 Sep 2019 14:51:18 +0200
+Message-Id: <1568206252-I95235a4f9e6929241afd5150f1ceceb45f5e28af@changeid>
+In-Reply-To: <20190911125122.20772-1-johannes@sipsolutions.net>
+References: <20190911125122.20772-1-johannes@sipsolutions.net>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -26,70 +28,46 @@ Cc: Johannes Berg <johannes.berg@intel.com>
 
 From: Johannes Berg <johannes.berg@intel.com>
 
+UML has its own platform-specific barrier.h under arch/x86/um/,
+which should get used. Fix the build system to use it, and then
+fix the barrier.h to actually compile.
+
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- arch/um/include/shared/timer-internal.h | 9 +++++++++
- arch/um/kernel/process.c                | 7 ++++++-
- arch/um/kernel/time.c                   | 1 +
- 3 files changed, 16 insertions(+), 1 deletion(-)
+ arch/um/include/asm/Kbuild | 1 -
+ arch/x86/um/asm/barrier.h  | 9 +--------
+ 2 files changed, 1 insertion(+), 9 deletions(-)
 
-diff --git a/arch/um/include/shared/timer-internal.h b/arch/um/include/shared/timer-internal.h
-index 9991ec2371e4..a4d79389b223 100644
---- a/arch/um/include/shared/timer-internal.h
-+++ b/arch/um/include/shared/timer-internal.h
-@@ -43,6 +43,11 @@ static inline void time_travel_set_timer_expiry(unsigned long long expiry)
- {
- 	time_travel_timer_expiry = expiry;
- }
-+
-+static inline void time_travel_set_timer_interval(unsigned long long interval)
-+{
-+	time_travel_timer_interval = interval;
-+}
- #else
- #define time_travel_mode TT_MODE_OFF
- #define time_travel_time 0
-@@ -61,6 +66,10 @@ static inline void time_travel_set_timer_expiry(unsigned long long expiry)
- {
- }
+diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
+index b352ed09260e..398006d27e40 100644
+--- a/arch/um/include/asm/Kbuild
++++ b/arch/um/include/asm/Kbuild
+@@ -1,5 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0
+-generic-y += barrier.h
+ generic-y += bpf_perf_event.h
+ generic-y += bug.h
+ generic-y += compat.h
+diff --git a/arch/x86/um/asm/barrier.h b/arch/x86/um/asm/barrier.h
+index f31e5d903161..eb0654f39fd2 100644
+--- a/arch/x86/um/asm/barrier.h
++++ b/arch/x86/um/asm/barrier.h
+@@ -2,14 +2,7 @@
+ #ifndef _ASM_UM_BARRIER_H_
+ #define _ASM_UM_BARRIER_H_
  
-+static inline void time_travel_set_timer_interval(unsigned long long interval)
-+{
-+}
-+
- #define time_travel_timer_mode TT_TMR_DISABLED
- #endif
+-#include <asm/asm.h>
+-#include <asm/segment.h>
+-#include <asm/cpufeatures.h>
+-#include <asm/cmpxchg.h>
+-#include <asm/nops.h>
+-
+-#include <linux/kernel.h>
+-#include <linux/irqflags.h>
++#include <asm/alternative.h>
  
-diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index 6bede7888fc2..cf242fc5fe94 100644
---- a/arch/um/kernel/process.c
-+++ b/arch/um/kernel/process.c
-@@ -210,7 +210,12 @@ static void time_travel_sleep(unsigned long long duration)
- 	if (time_travel_mode != TT_MODE_INFCPU)
- 		os_timer_disable();
- 
--	if (time_travel_timer_mode != TT_TMR_DISABLED ||
-+	while (time_travel_timer_mode == TT_TMR_PERIODIC &&
-+	       time_travel_timer_expiry < time_travel_time)
-+		time_travel_set_timer_expiry(time_travel_timer_expiry +
-+					     time_travel_timer_interval);
-+
-+	if (time_travel_timer_mode != TT_TMR_DISABLED &&
- 	    time_travel_timer_expiry < next) {
- 		if (time_travel_timer_mode == TT_TMR_ONESHOT)
- 			time_travel_set_timer_mode(TT_TMR_DISABLED);
-diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
-index 234757233355..4ecabf7e54c9 100644
---- a/arch/um/kernel/time.c
-+++ b/arch/um/kernel/time.c
-@@ -65,6 +65,7 @@ static int itimer_set_periodic(struct clock_event_device *evt)
- 	if (time_travel_mode != TT_MODE_OFF) {
- 		time_travel_set_timer_mode(TT_TMR_PERIODIC);
- 		time_travel_set_timer_expiry(time_travel_time + interval);
-+		time_travel_set_timer_interval(interval);
- 	}
- 
- 	if (time_travel_mode != TT_MODE_INFCPU)
+ /*
+  * Force strict CPU ordering.
 -- 
 2.20.1
 
