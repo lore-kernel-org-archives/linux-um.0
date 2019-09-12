@@ -1,20 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab7.miniserver.com ([37.128.132.42]
- helo=www.kot-begemot.co.uk)
+Received: from mail-pl1-x641.google.com ([2607:f8b0:4864:20::641])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1i8QIa-0005p9-4L
- for linux-um@lists.infradead.org; Thu, 12 Sep 2019 14:42:17 +0000
+ id 1i8NzE-0002ph-7Z
+ for linux-um@lists.infradead.org; Thu, 12 Sep 2019 12:14:09 +0000
+Received: by mail-pl1-x641.google.com with SMTP id k1so11717267pls.11
+ for <linux-um@lists.infradead.org>; Thu, 12 Sep 2019 05:14:07 -0700 (PDT)
+Message-ID: <2947157812216eae1aad2840b8981163a7af2209.camel@debian.org>
 Subject: Re: Bug#938962: user-mode-linux needs update for new linux
+From: Ritesh Raj Sarraf <rrs@debian.org>
+Date: Thu, 12 Sep 2019 17:44:02 +0530
+In-Reply-To: <CAHt6kzG5V3N9i68jMvxwz-5kk9h709QZsqcH9uM+cthCam87Lg@mail.gmail.com>
 References: <20190830152801.GA23318@debian.org>
  <f13e90782de567a8537a15dec1834a9b8c27bd6b.camel@debian.org>
  <CAHt6kzG5V3N9i68jMvxwz-5kk9h709QZsqcH9uM+cthCam87Lg@mail.gmail.com>
- <2947157812216eae1aad2840b8981163a7af2209.camel@debian.org>
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Message-ID: <9bd76406-dab6-74c8-7e0a-92468e15d150@kot-begemot.co.uk>
-Date: Thu, 12 Sep 2019 15:42:02 +0100
 MIME-Version: 1.0
-In-Reply-To: <2947157812216eae1aad2840b8981163a7af2209.camel@debian.org>
-Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -23,52 +22,103 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Reply-To: rrs@debian.org
+Content-Type: multipart/mixed; boundary="===============0127271452299290666=="
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: rrs@debian.org, linux-um@lists.infradead.org, Richard Weinberger <richard@nod.at>
+To: linux-um@lists.infradead.org, Richard Weinberger <richard@nod.at>
 Cc: 938962@bugs.debian.org
 
-CgpPbiAxMi8wOS8yMDE5IDEzOjE0LCBSaXRlc2ggUmFqIFNhcnJhZiB3cm90ZToKPiBIaSwKPiAK
-PiBJIGFtIG5vdCBzdXJlIGlmIHRoaXMgaGFzIGJlZW4gcmVwb3J0ZWQgdXBzdHJlYW0gYnV0IHdp
-dGggbGlicGNhcCAxLjksCj4gdXNlciBtb2RlIGxpbnV4IGZhaWxzIHRvIGJ1aWxkLiBUaGUgYnVp
-bGQgZmFpbHVyZSBoYXBwZW5zIHdpdGggYm90aCwKPiA1LjIgYW5kIDQuMTkgTFRTIGtlcm5lbHMu
-Cj4gCj4gQSBtdWNoIGRldGFpbGVkIHJlcG9ydCBpcyBhdmFpbGFibGUgYXQ6Cj4gaHR0cHM6Ly9i
-dWdzLmRlYmlhbi5vcmcvY2dpLWJpbi9idWdyZXBvcnQuY2dpP2J1Zz05Mzg5NjIKPiAKPiBsaWJw
-Y2FwIDEuOSBpbnRyb2R1Y2VzIGBwY2FwX29wZW5gIHdoaWNoIGlzIGFsc28gZGVjbGFyZWQgaW4g
-bGludXgKPiBoZWFkZXJzIGluIGFyY2gvdW0vZHJpdmVycy9wY2FwX3VzZXIuYwo+IAo+IAoKCkkg
-dGhpbmsgdGhlIGJlc3Qgd2F5IGZvcndhcmQgaGVyZSBpcyB0byBraWxsIHRoZSBvbGQgbGlicGNh
-cCBkcml2ZXIgCmFsdG9nZXRoZXIuCgpZb3UgZ2V0IHRoZSBzYW1lIGZ1bmN0aW9uYWxpdHkgZnJv
-bSB2ZWN0b3IgcmF3IGluY2x1ZGluZyB0aGUgYWJpbGl0eSB0byAKbG9hZCBhIGJwZiBmaWx0ZXIu
-CgpUaGUgb25seSB0aGluZyB0aGF0IG5lZWRzIGlzIGEgd3JhcHBlciB0byBjb21waWxlIHRoZSBm
-aWx0ZXIgYmVmb3JlIApoYW5kaW5nIGl0IHRvIFVNTC4KCkEgc2lkZSBlZmZlY3QgaXMgdGhhdCBp
-dCBpcyB+IDEwKyB0aW1lIGZhc3RlciAtIGluIHRoZSBtdWx0aWdpZ2FiaXQgcmFuZ2UuCgpBbHRl
-cm5hdGl2ZWx5LCBJIGNhbiB3cmFwIGl0IHNvIGl0IGxvb2tzIGxpa2UgcGNhcCB0byBhbnkgZXhp
-c3RpbmcgCnNjcmlwdHMgYW5kIGlzIGFjdHVhbGx5IHZlY3RvciB1bmRlcm5lYXRoLCBidXQgdGhh
-dCB3aWxsIGxvc2Ugc29tZSBvZiAKdGhlIHR1bmFibGVzLCBsaWtlIG9mZmxvYWRzLCB2ZWN0b3Ig
-ZGVwdGgsIGV0Yy4KCgo+IFRoYW5rcywKPiBSaXRlc2gKPiAKPiBPbiBTYXQsIDIwMTktMDktMDcg
-YXQgMTc6MTggKzAyMDAsIFJvbWFpbiBGcmFuY29pc2Ugd3JvdGU6Cj4+IEhpLAo+Pgo+PiBPbiBU
-dWUsIFNlcCAzLCAyMDE5IGF0IDM6MjEgUE0gUml0ZXNoIFJhaiBTYXJyYWYgPHJyc0BkZWJpYW4u
-b3JnPgo+PiB3cm90ZToKPj4gWy4uLl0KPj4+IEluIGZpbGUgaW5jbHVkZWQgZnJvbSAvdXNyL2lu
-Y2x1ZGUvcGNhcC5oOjQzLAo+Pj4gICAgICAgICAgICAgICAgICAgZnJvbSBhcmNoL3VtL2RyaXZl
-cnMvcGNhcF91c2VyLmM6NzoKPj4+IC91c3IvaW5jbHVkZS9wY2FwL3BjYXAuaDo4MzU6MTg6IG5v
-dGU6IHByZXZpb3VzIGRlY2xhcmF0aW9uIG9mCj4+PiDigJhwY2FwX29wZW7igJkgd2FzIGhlcmUK
-Pj4+ICAgUENBUF9BUEkgcGNhcF90ICpwY2FwX29wZW4oY29uc3QgY2hhciAqc291cmNlLCBpbnQg
-c25hcGxlbiwgaW50Cj4+PiBmbGFncywKPj4+ICAgICAgICAgICAgICAgICAgICBefn5+fn5+fn4K
-Pj4+IG1ha2VbMl06ICoqKiBbc2NyaXB0cy9NYWtlZmlsZS5idWlsZDozMDk6Cj4+PiBhcmNoL3Vt
-L2RyaXZlcnMvcGNhcF91c2VyLm9dIEVycm9yIDEKPj4KPj4gbGlicGNhcCAxLjkgaW5jbHVkZXMg
-c3VwcG9ydCBmb3IgcmVtb3RlIGNhcHR1cmUsIHdoaWNoIHdhcyBvcmlnaW5hbGx5Cj4+IGEgcGFy
-dCBvZiBXaW5QY2FwIGV4dGVuc2lvbnMuIFRoZSBgcGNhcF9vcGVuKCknIHN5bWJvbCBpcyBwYXJ0
-IG9mCj4+IHRoYXQKPj4gQVBJIGFuZCB0aGF0J3Mgd2h5IGl0J3MgZGVmaW5lZCBpbiB0aGUgaGVh
-ZGVyIGZpbGUgZXZlbiB0aG91Z2ggcmVtb3RlCj4+IHN1cHBvcnQgaXMgbm90IGVuYWJsZWQgaW4g
-RGViaWFuLiBJIHN1Z2dlc3QgeW91IHJlbmFtZSB0aGUgZnVuY3Rpb24KPj4gZGVmaW5lZCBpbiB5
-b3VyIHByb2dyYW0gc28gdGhhdCBpdCBkb2Vzbid0IGNvbmZsaWN0IHdpdGggbGlicGNhcC4KPj4K
-Pj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPj4gbGlu
-dXgtdW0gbWFpbGluZyBsaXN0Cj4+IGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKPj4gaHR0
-cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQoKLS0gCkFu
-dG9uIFIuIEl2YW5vdgpodHRwczovL3d3dy5rb3QtYmVnZW1vdC5jby51ay8KCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlz
-dApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
-L21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
+
+--===============0127271452299290666==
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="=-+3T570S6nMOOKkAPJpQP"
+
+
+--=-+3T570S6nMOOKkAPJpQP
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+I am not sure if this has been reported upstream but with libpcap 1.9,
+user mode linux fails to build. The build failure happens with both,
+5.2 and 4.19 LTS kernels.
+
+A much detailed report is available at:
+https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=3D938962
+
+libpcap 1.9 introduces `pcap_open` which is also declared in linux
+headers in arch/um/drivers/pcap_user.c
+
+
+Thanks,
+Ritesh
+
+On Sat, 2019-09-07 at 17:18 +0200, Romain Francoise wrote:
+> Hi,
+>=20
+> On Tue, Sep 3, 2019 at 3:21 PM Ritesh Raj Sarraf <rrs@debian.org>
+> wrote:
+> [...]
+> > In file included from /usr/include/pcap.h:43,
+> >                  from arch/um/drivers/pcap_user.c:7:
+> > /usr/include/pcap/pcap.h:835:18: note: previous declaration of
+> > =E2=80=98pcap_open=E2=80=99 was here
+> >  PCAP_API pcap_t *pcap_open(const char *source, int snaplen, int
+> > flags,
+> >                   ^~~~~~~~~
+> > make[2]: *** [scripts/Makefile.build:309:
+> > arch/um/drivers/pcap_user.o] Error 1
+>=20
+> libpcap 1.9 includes support for remote capture, which was originally
+> a part of WinPcap extensions. The `pcap_open()' symbol is part of
+> that
+> API and that's why it's defined in the header file even though remote
+> support is not enabled in Debian. I suggest you rename the function
+> defined in your program so that it doesn't conflict with libpcap.
+--=20
+Ritesh Raj Sarraf | http://people.debian.org/~rrs
+Debian - The Universal Operating System
+
+--=-+3T570S6nMOOKkAPJpQP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEQCVDstmIVAB/Yn02pjpYo/LhdWkFAl16NooACgkQpjpYo/Lh
+dWlaXRAAld5HyPSq3EJqTWgMVT/xlFKQAos1glktwIrxfKKKqf9Su2loNHoXZgl8
+c1rpg0TeZnayDM7VraDN3POrCmwLjLoTbeSE3hfGIXBQLvb9dXlLTL1Uc5r2McYz
+nbuibkIXZXP5FRuqyvXlhbhm3F9CeDLMcRfa00nyVGJjgTGfhG9a6f3b3aPFCHKm
+Y2YeOiuuZ2FqLzpULoMJinfmLdeyuKOxB800xKCnRglHhu6T38Mw96Mko9RouhlL
+GUJ7LCTPXvnt+l0G1feRTdUHbtSAHhKDK5DDbTD7jud2hmXVIaNFso0SxHYaiDhQ
+A77dfYNBxybqLBctMVVTcIrnIlFW0WUez0af7xnGFJdrrPEejvEIRUPTveBfjKgL
+yrwhL5mTNFxcgDtR+VnzLPUED5p7T3R0q2F9KqA3j+zLdsSm0h1QvHZGpBf/tCiG
+TZsDAUG93iqFVB6TrhO/PJEaGSQOBXWtnSGHvre4p4NECXZLb9CnUlZ5HHUdb19i
+twuOXb/zgN3pKm4SpdeiNYjIBhMaQkgFW5fgVk/qPrC2V2pBUvA/2D8qnaPbLKE+
+qgrIV5GV9WkFxXj/qpuXuyToHFO2UW4psJH94uTjihLp2VsaKvJ1li0UWZYcSpRu
+uEOrdSFRt89A6a0rQ3bObMXnWmFAftf3tiqPUL7lCKrw+nN/+68=
+=WmX9
+-----END PGP SIGNATURE-----
+
+--=-+3T570S6nMOOKkAPJpQP--
+
+
+
+--===============0127271452299290666==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
+
+--===============0127271452299290666==--
+
+
 
