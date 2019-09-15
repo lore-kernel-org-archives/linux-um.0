@@ -1,16 +1,21 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from mail-wm1-x341.google.com ([2a00:1450:4864:20::341])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1i825n-0003HX-Si
- for linux-um@lists.infradead.org; Wed, 11 Sep 2019 12:51:31 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v5 1/5] um: don't use generic barrier.h
-Date: Wed, 11 Sep 2019 14:51:18 +0200
-Message-Id: <1568206252-I95235a4f9e6929241afd5150f1ceceb45f5e28af@changeid>
-In-Reply-To: <20190911125122.20772-1-johannes@sipsolutions.net>
-References: <20190911125122.20772-1-johannes@sipsolutions.net>
+ id 1i9a5x-0000l3-S5
+ for linux-um@lists.infradead.org; Sun, 15 Sep 2019 19:22:03 +0000
+Received: by mail-wm1-x341.google.com with SMTP id r17so5762771wme.0
+ for <linux-um@lists.infradead.org>; Sun, 15 Sep 2019 12:21:59 -0700 (PDT)
 MIME-Version: 1.0
+References: <20190911125122.20772-1-johannes@sipsolutions.net>
+ <2b6ac17c16113892e27e82df9802264ef934d4d8.camel@sipsolutions.net>
+ <3ccfa0c9-7b5c-6135-693e-a9700dfdd19f@kot-begemot.co.uk>
+ <9e8e9db8-eafb-9132-21a2-762ea09b501a@kot-begemot.co.uk>
+ <69bf4022f3c6b7af20b2188673d3c0563c340f5e.camel@sipsolutions.net>
+In-Reply-To: <69bf4022f3c6b7af20b2188673d3c0563c340f5e.camel@sipsolutions.net>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Sun, 15 Sep 2019 21:21:46 +0200
+Message-ID: <CAFLxGvypG+CN2+groNOnkx0OYmzPOd-du2YwThHh9i6zD2tdNA@mail.gmail.com>
+Subject: Re: [PATCH v5 0/5] um: virtio support
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -23,54 +28,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-um@lists.infradead.org, Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
 
-From: Johannes Berg <johannes.berg@intel.com>
+On Fri, Sep 13, 2019 at 10:16 AM Johannes Berg
+<johannes@sipsolutions.net> wrote:
+>
+> On Fri, 2019-09-13 at 09:14 +0100, Anton Ivanov wrote:
+>
+> > It does not build as is at the moment, you need to add
+> >
+> > EXPORT_SYMBOL(uml_reserved);
+> >
+> > to ./kernel/um_arch.c
+> >
+> > I could not find that anywhere in the patch series so it is probably
+> > lingering in your tree from somewhere else.
+>
+> Oh, no, but I've been using it built-in rather than as a module, sorry.
 
-UML has its own platform-specific barrier.h under arch/x86/um/,
-which should get used. Fix the build system to use it, and then
-fix the barrier.h to actually compile.
+This can be fixed after -rc1.
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- arch/um/include/asm/Kbuild | 1 -
- arch/x86/um/asm/barrier.h  | 9 +--------
- 2 files changed, 1 insertion(+), 9 deletions(-)
-
-diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
-index b352ed09260e..398006d27e40 100644
---- a/arch/um/include/asm/Kbuild
-+++ b/arch/um/include/asm/Kbuild
-@@ -1,5 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0
--generic-y += barrier.h
- generic-y += bpf_perf_event.h
- generic-y += bug.h
- generic-y += compat.h
-diff --git a/arch/x86/um/asm/barrier.h b/arch/x86/um/asm/barrier.h
-index f31e5d903161..eb0654f39fd2 100644
---- a/arch/x86/um/asm/barrier.h
-+++ b/arch/x86/um/asm/barrier.h
-@@ -2,14 +2,7 @@
- #ifndef _ASM_UM_BARRIER_H_
- #define _ASM_UM_BARRIER_H_
- 
--#include <asm/asm.h>
--#include <asm/segment.h>
--#include <asm/cpufeatures.h>
--#include <asm/cmpxchg.h>
--#include <asm/nops.h>
--
--#include <linux/kernel.h>
--#include <linux/irqflags.h>
-+#include <asm/alternative.h>
- 
- /*
-  * Force strict CPU ordering.
 -- 
-2.20.1
-
+Thanks,
+//richard
 
 _______________________________________________
 linux-um mailing list
