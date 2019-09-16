@@ -1,15 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
- by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i7hgX-0004tQ-D0
- for linux-um@lists.infradead.org; Tue, 10 Sep 2019 15:04:03 +0000
+ by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
+ id 1i9qlr-0004Nz-Pb
+ for linux-um@lists.infradead.org; Mon, 16 Sep 2019 13:10:25 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v2 2/2] um: time-travel: restrict time update in IRQ handler
-Date: Tue, 10 Sep 2019 17:03:53 +0200
-Message-Id: <1568127832-Iaa969e227dff394fd66cc145454590a435cf646d@changeid>
-In-Reply-To: <1568127832-I40b0f15a0fdd0f17e6636fbfe661e0d3d52e5ef7@changeid>
-References: <1568127832-I40b0f15a0fdd0f17e6636fbfe661e0d3d52e5ef7@changeid>
+Subject: [RFC 2/3] um: virtio: wrap irq request/free functions
+Date: Mon, 16 Sep 2019 15:10:17 +0200
+Message-Id: <1568639418-Idb5cc482e329c30eff3b4f53e5f86d60cb078738@changeid>
+In-Reply-To: <1568639418-I895f9019593bd579566f14e5af9346e3c9b56f28@changeid>
+References: <1568639418-I895f9019593bd579566f14e5af9346e3c9b56f28@changeid>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -28,66 +28,110 @@ Cc: Johannes Berg <johannes.berg@intel.com>
 
 From: Johannes Berg <johannes.berg@intel.com>
 
-We currently do the time updates in the timer handler, even if
-we just call the timer handler ourselves. In basic mode we must
-in fact do it there since otherwise the OS timer signal won't
-move time forward, but in inf-cpu mode we don't need to, and
-it's harder to understand.
-
-Restrict the update there to basic mode, adding a comment, and
-do it before calling the timer_handler() in inf-cpu mode.
+For the time-travel=virtio patch, we need some different
+logic here - just split out the refactoring to make the
+review easier.
 
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
-v2:
- - tweak commit log slightly
----
- arch/um/kernel/process.c |  9 ++++++---
- arch/um/kernel/time.c    | 10 +++++++++-
- 2 files changed, 15 insertions(+), 4 deletions(-)
+ arch/um/drivers/virtio_uml.c | 32 +++++++++++++++++++++++---------
+ 1 file changed, 23 insertions(+), 9 deletions(-)
 
-diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index cf242fc5fe94..094028720567 100644
---- a/arch/um/kernel/process.c
-+++ b/arch/um/kernel/process.c
-@@ -220,10 +220,13 @@ static void time_travel_sleep(unsigned long long duration)
- 		if (time_travel_timer_mode == TT_TMR_ONESHOT)
- 			time_travel_set_timer_mode(TT_TMR_DISABLED);
- 		/*
--		 * time_travel_time will be adjusted in the timer
--		 * IRQ handler so it works even when the signal
--		 * comes from the OS timer
-+		 * In basic mode, time_travel_time will be adjusted in
-+		 * the timer IRQ handler so it works even when the signal
-+		 * comes from the OS timer, see there.
- 		 */
-+		if (time_travel_mode != TT_MODE_BASIC)
-+			time_travel_set_time(time_travel_timer_expiry);
+diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
+index f25bcd147c6b..c23129b1c220 100644
+--- a/arch/um/drivers/virtio_uml.c
++++ b/arch/um/drivers/virtio_uml.c
+@@ -373,6 +373,20 @@ static irqreturn_t vu_req_interrupt(int irq, void *data)
+ 	return IRQ_HANDLED;
+ }
+ 
++static int vu_request_irq(struct virtio_uml_device *vu_dev,
++			  int fd, irq_handler_t handler,
++			  const char *name, void *data)
++{
++	return um_request_irq(VIRTIO_IRQ, fd, IRQ_READ, handler,
++			      IRQF_SHARED, name, data);
++}
 +
- 		deliver_alarm();
- 	} else {
- 		time_travel_set_time(next);
-diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
-index 4ecabf7e54c9..15f2e88ba927 100644
---- a/arch/um/kernel/time.c
-+++ b/arch/um/kernel/time.c
-@@ -39,7 +39,15 @@ void timer_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
++static void vu_free_irq(struct virtio_uml_device *vu_dev,
++			int fd, void *data)
++{
++	um_free_irq(VIRTIO_IRQ, data);
++}
++
+ static int vhost_user_init_slave_req(struct virtio_uml_device *vu_dev)
  {
- 	unsigned long flags;
+ 	int rc, req_fds[2];
+@@ -383,8 +397,7 @@ static int vhost_user_init_slave_req(struct virtio_uml_device *vu_dev)
+ 		return rc;
+ 	vu_dev->req_fd = req_fds[0];
  
--	if (time_travel_mode != TT_MODE_OFF)
-+	/*
-+	 * In basic time-travel mode we still get real interrupts
-+	 * (signals) but since we don't read time from the OS, we
-+	 * must update the simulated time here to the expiry when
-+	 * we get a signal.
-+	 * This is not the case in inf-cpu mode, since there we
-+	 * never get any real signals from the OS.
-+	 */
-+	if (time_travel_mode == TT_MODE_BASIC)
- 		time_travel_set_time(time_travel_timer_expiry);
+-	rc = um_request_irq(VIRTIO_IRQ, vu_dev->req_fd, IRQ_READ,
+-			    vu_req_interrupt, IRQF_SHARED,
++	rc = vu_request_irq(vu_dev, vu_dev->req_fd, vu_req_interrupt,
+ 			    vu_dev->pdev->name, vu_dev);
+ 	if (rc)
+ 		goto err_close;
+@@ -397,7 +410,7 @@ static int vhost_user_init_slave_req(struct virtio_uml_device *vu_dev)
+ 	goto out;
  
- 	local_irq_save(flags);
+ err_free_irq:
+-	um_free_irq(VIRTIO_IRQ, vu_dev);
++	vu_free_irq(vu_dev, vu_dev->req_fd, vu_dev);
+ err_close:
+ 	os_close_file(req_fds[0]);
+ out:
+@@ -771,10 +784,11 @@ static void vu_reset(struct virtio_device *vdev)
+ 
+ static void vu_del_vq(struct virtqueue *vq)
+ {
++	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vq->vdev);
+ 	struct virtio_uml_vq_info *info = vq->priv;
+ 
+ 	if (info->call_fd >= 0) {
+-		um_free_irq(VIRTIO_IRQ, vq);
++		vu_free_irq(vu_dev, info->call_fd, vq);
+ 		os_close_file(info->call_fd);
+ 	}
+ 
+@@ -824,8 +838,8 @@ static int vu_setup_vq_call_fd(struct virtio_uml_device *vu_dev,
+ 		return rc;
+ 
+ 	info->call_fd = call_fds[0];
+-	rc = um_request_irq(VIRTIO_IRQ, info->call_fd, IRQ_READ,
+-			    vu_interrupt, IRQF_SHARED, info->name, vq);
++	rc = vu_request_irq(vu_dev, info->call_fd, vu_interrupt,
++			    info->name, vq);
+ 	if (rc)
+ 		goto close_both;
+ 
+@@ -836,7 +850,7 @@ static int vu_setup_vq_call_fd(struct virtio_uml_device *vu_dev,
+ 	goto out;
+ 
+ release_irq:
+-	um_free_irq(VIRTIO_IRQ, vq);
++	vu_free_irq(vu_dev, info->call_fd, vq);
+ close_both:
+ 	os_close_file(call_fds[0]);
+ out:
+@@ -908,7 +922,7 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
+ 
+ error_setup:
+ 	if (info->call_fd >= 0) {
+-		um_free_irq(VIRTIO_IRQ, vq);
++		vu_free_irq(vu_dev, info->call_fd, vq);
+ 		os_close_file(info->call_fd);
+ 	}
+ error_call:
+@@ -1015,7 +1029,7 @@ static void virtio_uml_release_dev(struct device *d)
+ 
+ 	/* might not have been opened due to not negotiating the feature */
+ 	if (vu_dev->req_fd >= 0) {
+-		um_free_irq(VIRTIO_IRQ, vu_dev);
++		vu_free_irq(vu_dev, vu_dev->req_fd, vu_dev);
+ 		os_close_file(vu_dev->req_fd);
+ 	}
+ 
 -- 
 2.20.1
 
