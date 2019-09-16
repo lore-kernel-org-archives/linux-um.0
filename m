@@ -2,13 +2,13 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1i9zCO-0000jj-Qx
- for linux-um@lists.infradead.org; Mon, 16 Sep 2019 22:10:22 +0000
+ id 1i9qlr-0004Nl-G2
+ for linux-um@lists.infradead.org; Mon, 16 Sep 2019 13:10:25 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [RFC v2 1/2] um: virtio: implement
+Subject: [RFC 1/3] um: virtio: implement
  VHOST_USER_PROTOCOL_F_INBAND_NOTIFICATIONS
-Date: Tue, 17 Sep 2019 00:10:14 +0200
-Message-Id: <1568671815-I895f9019593bd579566f14e5af9346e3c9b56f28@changeid>
+Date: Mon, 16 Sep 2019 15:10:16 +0200
+Message-Id: <1568639418-I895f9019593bd579566f14e5af9346e3c9b56f28@changeid>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -81,10 +81,10 @@ index 45ff5ea22fea..ffa6b632d70e 100644
  
  struct vhost_user_header {
 diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index d47dcdc212aa..1f486b9d860c 100644
+index 1705fad4ad8f..f25bcd147c6b 100644
 --- a/arch/um/drivers/virtio_uml.c
 +++ b/arch/um/drivers/virtio_uml.c
-@@ -57,6 +57,7 @@ struct virtio_uml_device {
+@@ -53,6 +53,7 @@ struct virtio_uml_device {
  	struct virtio_device vdev;
  	struct platform_device *pdev;
  
@@ -92,7 +92,7 @@ index d47dcdc212aa..1f486b9d860c 100644
  	int sock, req_fd;
  	u64 features;
  	u64 protocol_features;
-@@ -192,6 +193,7 @@ static int vhost_user_send(struct virtio_uml_device *vu_dev,
+@@ -188,6 +189,7 @@ static int vhost_user_send(struct virtio_uml_device *vu_dev,
  			   int *fds, size_t num_fds)
  {
  	size_t size = sizeof(msg->header) + msg->header.size;
@@ -100,7 +100,7 @@ index d47dcdc212aa..1f486b9d860c 100644
  	bool request_ack;
  	int rc;
  
-@@ -210,24 +212,28 @@ static int vhost_user_send(struct virtio_uml_device *vu_dev,
+@@ -206,24 +208,28 @@ static int vhost_user_send(struct virtio_uml_device *vu_dev,
  	if (request_ack)
  		msg->header.flags |= VHOST_USER_FLAG_NEED_REPLY;
  
@@ -133,7 +133,7 @@ index d47dcdc212aa..1f486b9d860c 100644
  }
  
  static int vhost_user_send_no_payload(struct virtio_uml_device *vu_dev,
-@@ -327,6 +333,7 @@ static void vhost_user_reply(struct virtio_uml_device *vu_dev,
+@@ -323,6 +329,7 @@ static void vhost_user_reply(struct virtio_uml_device *vu_dev,
  static irqreturn_t vu_req_interrupt(int irq, void *data)
  {
  	struct virtio_uml_device *vu_dev = data;
@@ -141,7 +141,7 @@ index d47dcdc212aa..1f486b9d860c 100644
  	int response = 1;
  	struct {
  		struct vhost_user_msg msg;
-@@ -346,6 +353,15 @@ static irqreturn_t vu_req_interrupt(int irq, void *data)
+@@ -342,6 +349,15 @@ static irqreturn_t vu_req_interrupt(int irq, void *data)
  		virtio_config_changed(&vu_dev->vdev);
  		response = 0;
  		break;
@@ -157,7 +157,7 @@ index d47dcdc212aa..1f486b9d860c 100644
  	case VHOST_USER_SLAVE_IOTLB_MSG:
  		/* not supported - VIRTIO_F_IOMMU_PLATFORM */
  	case VHOST_USER_SLAVE_VRING_HOST_NOTIFIER_MSG:
-@@ -692,6 +708,15 @@ static bool vu_notify(struct virtqueue *vq)
+@@ -683,6 +699,15 @@ static bool vu_notify(struct virtqueue *vq)
  	const uint64_t n = 1;
  	int rc;
  
@@ -173,7 +173,7 @@ index d47dcdc212aa..1f486b9d860c 100644
  	do {
  		rc = os_write_file(info->kick_fd, &n, sizeof(n));
  	} while (rc == -EINTR);
-@@ -757,10 +782,13 @@ static void vu_del_vq(struct virtqueue *vq)
+@@ -748,10 +773,13 @@ static void vu_del_vq(struct virtqueue *vq)
  {
  	struct virtio_uml_vq_info *info = vq->priv;
  
@@ -190,7 +190,7 @@ index d47dcdc212aa..1f486b9d860c 100644
  
  	vring_del_virtqueue(vq);
  	kfree(info);
-@@ -790,6 +818,15 @@ static int vu_setup_vq_call_fd(struct virtio_uml_device *vu_dev,
+@@ -781,6 +809,15 @@ static int vu_setup_vq_call_fd(struct virtio_uml_device *vu_dev,
  	int call_fds[2];
  	int rc;
  
@@ -206,7 +206,7 @@ index d47dcdc212aa..1f486b9d860c 100644
  	/* Use a pipe for call fd, since SIGIO is not supported for eventfd */
  	rc = os_pipe(call_fds, true, true);
  	if (rc < 0)
-@@ -846,10 +883,15 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
+@@ -837,10 +874,15 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
  	vq->priv = info;
  	num = virtqueue_get_vring_size(vq);
  
@@ -226,7 +226,7 @@ index d47dcdc212aa..1f486b9d860c 100644
  
  	rc = vu_setup_vq_call_fd(vu_dev, vq);
  	if (rc)
-@@ -874,10 +916,13 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
+@@ -865,10 +907,13 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
  	return vq;
  
  error_setup:
@@ -243,7 +243,7 @@ index d47dcdc212aa..1f486b9d860c 100644
  error_kick:
  	vring_del_virtqueue(vq);
  error_create:
-@@ -1016,6 +1061,8 @@ static int virtio_uml_probe(struct platform_device *pdev)
+@@ -1012,6 +1057,8 @@ static int virtio_uml_probe(struct platform_device *pdev)
  		return rc;
  	vu_dev->sock = rc;
  
