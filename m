@@ -2,12 +2,17 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iCf8g-00012S-2f
- for linux-um@lists.infradead.org; Tue, 24 Sep 2019 07:21:36 +0000
+ id 1iADrG-0001va-Kk
+ for linux-um@lists.infradead.org; Tue, 17 Sep 2019 13:49:31 +0000
+Message-ID: <2a6fc1c8ab6312ad0683d3b4f6f11767b1803929.camel@sipsolutions.net>
+Subject: Re: [RFC v3 2/2] um: implement time-travel=ext
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v2] um: virtio: keep reading on -EAGAIN
-Date: Tue, 24 Sep 2019 09:21:17 +0200
-Message-Id: <1569309677-I2734f0a83b4b28ea237050d5def17b4529b8b446@changeid>
+Date: Tue, 17 Sep 2019 15:49:27 +0200
+In-Reply-To: <ddaf73a2-762a-91d2-40ab-d432e363d52b@kot-begemot.co.uk>
+References: <20190917132943.20102-1-johannes@sipsolutions.net>
+ <1568726354-I0c06fae89d77d5b272dfb4c7ea64641b597b5c7b@changeid>
+ <a8a2a033d8dc988c34d321425b7d0baa65b8df81.camel@sipsolutions.net>
+ <ddaf73a2-762a-91d2-40ab-d432e363d52b@kot-begemot.co.uk>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -21,97 +26,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, linux-um@lists.infradead.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+On Tue, 2019-09-17 at 14:47 +0100, Anton Ivanov wrote:
 
-When we get an interrupt from the socket getting readable,
-and start reading, there's a possibility for a race. This
-depends on the implementation of the device, but e.g. with
-qemu's libvhost-user, we can see:
+> > Though, come to think of it, I probably broke modular builds again here.
+> 
+> :)
 
- device                 virtio_uml
----------------------------------------
-  write header
-                         get interrupt
-                         read header
-                         read body -> returns -EAGAIN
-  write body
+I'll fix it later, or maybe I'll just prohibit it, though there isn't
+really a strict reason to other than not having to sprinkle
+EXPORT_SYMBOL all over.
 
-The -EAGAIN return is because the socket is non-blocking,
-and then this leads us to abandon this message.
+> > Anyway, I won't send a new version soon I think, comments welcome and
+> > I'll see how the qemu changes progress.
+> 
+> As I said - I am going to wait for Richard's next PR so I have a settled 
+> tree and I will get on with testing. I should have a bit more time then 
+> as well as ONS Europe will be out of the way. At the moment all of my 
+> time is being eaten by various k8 related stuff for that.
 
-In fact, we've already read the header, so when the get
-another signal/interrupt for the body, we again read it
-as though it's a new message header, and also abandon it
-for the same reason (wrong size etc.)
+Sure, thanks. I'll keep rebasing this as that happens too, maybe I
+should publish a git tree on kernel.org for it?
 
-This essentially breaks things, and if that message was
-one that required a response, it leads to a deadlock as
-the device is waiting for the response but we'll never
-reply.
+Not that I really expect you to (want to) test all the time-travel
+stuff, it seems like a fairly niche feature :-)
 
-Fix this by spinning on -EAGAIN as well when we read the
-message body. We need to handle -EAGAIN as "no message"
-while reading the header, since we share an interrupt.
-
-Note that this situation is highly unlikely to occur in
-normal usage, since there will be very few messages and
-only in the startup phase. With the inband call feature
-this does tend to happen (eventually) though.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
-v2:
- * spin on -EAGAIN only on the body, not the header,
-   otherwise we deadlock with shared interrupts
----
- arch/um/drivers/virtio_uml.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index a2d9b3347945..31ffb27be172 100644
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -87,7 +87,7 @@ static int full_sendmsg_fds(int fd, const void *buf, unsigned int len,
- 	return 0;
- }
- 
--static int full_read(int fd, void *buf, int len)
-+static int full_read(int fd, void *buf, int len, bool abortable)
- {
- 	int rc;
- 
-@@ -97,7 +97,7 @@ static int full_read(int fd, void *buf, int len)
- 			buf += rc;
- 			len -= rc;
- 		}
--	} while (len && (rc > 0 || rc == -EINTR));
-+	} while (len && (rc > 0 || rc == -EINTR || (!abortable && rc == -EAGAIN)));
- 
- 	if (rc < 0)
- 		return rc;
-@@ -108,7 +108,7 @@ static int full_read(int fd, void *buf, int len)
- 
- static int vhost_user_recv_header(int fd, struct vhost_user_msg *msg)
- {
--	return full_read(fd, msg, sizeof(msg->header));
-+	return full_read(fd, msg, sizeof(msg->header), true);
- }
- 
- static int vhost_user_recv(int fd, struct vhost_user_msg *msg,
-@@ -122,7 +122,7 @@ static int vhost_user_recv(int fd, struct vhost_user_msg *msg,
- 	size = msg->header.size;
- 	if (size > max_payload_size)
- 		return -EPROTO;
--	return full_read(fd, &msg->payload, size);
-+	return full_read(fd, &msg->payload, size, false);
- }
- 
- static int vhost_user_recv_resp(struct virtio_uml_device *vu_dev,
--- 
-2.20.1
+johannes
 
 
 _______________________________________________
