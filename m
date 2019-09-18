@@ -1,15 +1,21 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1i9qlr-0004Nl-G2
- for linux-um@lists.infradead.org; Mon, 16 Sep 2019 13:10:25 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [RFC 1/3] um: virtio: implement
- VHOST_USER_PROTOCOL_F_INBAND_NOTIFICATIONS
-Date: Mon, 16 Sep 2019 15:10:16 +0200
-Message-Id: <1568639418-I895f9019593bd579566f14e5af9346e3c9b56f28@changeid>
+ id 1iAVRK-0001wG-Sf
+ for linux-um@lists.infradead.org; Wed, 18 Sep 2019 08:35:56 +0000
+Subject: Re: Bug#938962: user-mode-linux needs update for new linux
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+References: <20190830152801.GA23318@debian.org>
+ <f13e90782de567a8537a15dec1834a9b8c27bd6b.camel@debian.org>
+ <CAHt6kzG5V3N9i68jMvxwz-5kk9h709QZsqcH9uM+cthCam87Lg@mail.gmail.com>
+ <2947157812216eae1aad2840b8981163a7af2209.camel@debian.org>
+ <9bd76406-dab6-74c8-7e0a-92468e15d150@kot-begemot.co.uk>
+Message-ID: <9f5dad04-5fd0-8466-71de-b966804d9dbd@kot-begemot.co.uk>
+Date: Wed, 18 Sep 2019 09:35:46 +0100
 MIME-Version: 1.0
+In-Reply-To: <9bd76406-dab6-74c8-7e0a-92468e15d150@kot-begemot.co.uk>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,246 +24,59 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+To: rrs@debian.org, linux-um@lists.infradead.org, Richard Weinberger <richard@nod.at>
+Cc: 938962@bugs.debian.org
 
-From: Johannes Berg <johannes.berg@intel.com>
-
-We'll prefer this feature, under the assumption that only a
-few (simulation) devices will ever support it, since it's not
-very efficient.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- arch/um/drivers/vhost_user.h | 12 ++++--
- arch/um/drivers/virtio_uml.c | 75 +++++++++++++++++++++++++++++-------
- 2 files changed, 69 insertions(+), 18 deletions(-)
-
-diff --git a/arch/um/drivers/vhost_user.h b/arch/um/drivers/vhost_user.h
-index 45ff5ea22fea..ffa6b632d70e 100644
---- a/arch/um/drivers/vhost_user.h
-+++ b/arch/um/drivers/vhost_user.h
-@@ -10,9 +10,10 @@
- /* Feature bits */
- #define VHOST_USER_F_PROTOCOL_FEATURES	30
- /* Protocol feature bits */
--#define VHOST_USER_PROTOCOL_F_REPLY_ACK		3
--#define VHOST_USER_PROTOCOL_F_SLAVE_REQ		5
--#define VHOST_USER_PROTOCOL_F_CONFIG		9
-+#define VHOST_USER_PROTOCOL_F_REPLY_ACK			3
-+#define VHOST_USER_PROTOCOL_F_SLAVE_REQ			5
-+#define VHOST_USER_PROTOCOL_F_CONFIG			9
-+#define VHOST_USER_PROTOCOL_F_INBAND_NOTIFICATIONS	13
- /* Vring state index masks */
- #define VHOST_USER_VRING_INDEX_MASK	0xff
- #define VHOST_USER_VRING_POLL_MASK	BIT(8)
-@@ -24,7 +25,8 @@
- /* Supported protocol features */
- #define VHOST_USER_SUPPORTED_PROTOCOL_F	(BIT_ULL(VHOST_USER_PROTOCOL_F_REPLY_ACK) | \
- 					 BIT_ULL(VHOST_USER_PROTOCOL_F_SLAVE_REQ) | \
--					 BIT_ULL(VHOST_USER_PROTOCOL_F_CONFIG))
-+					 BIT_ULL(VHOST_USER_PROTOCOL_F_CONFIG) | \
-+					 BIT_ULL(VHOST_USER_PROTOCOL_F_INBAND_NOTIFICATIONS))
- 
- enum vhost_user_request {
- 	VHOST_USER_GET_FEATURES = 1,
-@@ -52,12 +54,14 @@ enum vhost_user_request {
- 	VHOST_USER_SET_VRING_ENDIAN = 23,
- 	VHOST_USER_GET_CONFIG = 24,
- 	VHOST_USER_SET_CONFIG = 25,
-+	VHOST_USER_VRING_KICK = 34,
- };
- 
- enum vhost_user_slave_request {
- 	VHOST_USER_SLAVE_IOTLB_MSG = 1,
- 	VHOST_USER_SLAVE_CONFIG_CHANGE_MSG = 2,
- 	VHOST_USER_SLAVE_VRING_HOST_NOTIFIER_MSG = 3,
-+	VHOST_USER_SLAVE_VRING_CALL = 4,
- };
- 
- struct vhost_user_header {
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index 1705fad4ad8f..f25bcd147c6b 100644
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -53,6 +53,7 @@ struct virtio_uml_device {
- 	struct virtio_device vdev;
- 	struct platform_device *pdev;
- 
-+	spinlock_t sock_lock;
- 	int sock, req_fd;
- 	u64 features;
- 	u64 protocol_features;
-@@ -188,6 +189,7 @@ static int vhost_user_send(struct virtio_uml_device *vu_dev,
- 			   int *fds, size_t num_fds)
- {
- 	size_t size = sizeof(msg->header) + msg->header.size;
-+	unsigned long flags;
- 	bool request_ack;
- 	int rc;
- 
-@@ -206,24 +208,28 @@ static int vhost_user_send(struct virtio_uml_device *vu_dev,
- 	if (request_ack)
- 		msg->header.flags |= VHOST_USER_FLAG_NEED_REPLY;
- 
-+	spin_lock_irqsave(&vu_dev->sock_lock, flags);
- 	rc = full_sendmsg_fds(vu_dev->sock, msg, size, fds, num_fds);
- 	if (rc < 0)
--		return rc;
-+		goto out;
- 
- 	if (request_ack) {
- 		uint64_t status;
- 
- 		rc = vhost_user_recv_u64(vu_dev, &status);
- 		if (rc)
--			return rc;
-+			goto out;
- 
- 		if (status) {
- 			vu_err(vu_dev, "slave reports error: %llu\n", status);
--			return -EIO;
-+			rc = -EIO;
-+			goto out;
- 		}
- 	}
- 
--	return 0;
-+out:
-+	spin_unlock_irqrestore(&vu_dev->sock_lock, flags);
-+	return rc;
- }
- 
- static int vhost_user_send_no_payload(struct virtio_uml_device *vu_dev,
-@@ -323,6 +329,7 @@ static void vhost_user_reply(struct virtio_uml_device *vu_dev,
- static irqreturn_t vu_req_interrupt(int irq, void *data)
- {
- 	struct virtio_uml_device *vu_dev = data;
-+	struct virtqueue *vq;
- 	int response = 1;
- 	struct {
- 		struct vhost_user_msg msg;
-@@ -342,6 +349,15 @@ static irqreturn_t vu_req_interrupt(int irq, void *data)
- 		virtio_config_changed(&vu_dev->vdev);
- 		response = 0;
- 		break;
-+	case VHOST_USER_SLAVE_VRING_CALL:
-+		virtio_device_for_each_vq((&vu_dev->vdev), vq) {
-+			if (vq->index == msg.msg.payload.vring_state.index) {
-+				response = 0;
-+				vring_interrupt(0 /* ignored */, vq);
-+				break;
-+			}
-+		}
-+		break;
- 	case VHOST_USER_SLAVE_IOTLB_MSG:
- 		/* not supported - VIRTIO_F_IOMMU_PLATFORM */
- 	case VHOST_USER_SLAVE_VRING_HOST_NOTIFIER_MSG:
-@@ -683,6 +699,15 @@ static bool vu_notify(struct virtqueue *vq)
- 	const uint64_t n = 1;
- 	int rc;
- 
-+	if (info->kick_fd < 0) {
-+		struct virtio_uml_device *vu_dev;
-+
-+		vu_dev = to_virtio_uml_device(vq->vdev);
-+
-+		return vhost_user_set_vring_state(vu_dev, VHOST_USER_VRING_KICK,
-+						  vq->index, 0) == 0;
-+	}
-+
- 	do {
- 		rc = os_write_file(info->kick_fd, &n, sizeof(n));
- 	} while (rc == -EINTR);
-@@ -748,10 +773,13 @@ static void vu_del_vq(struct virtqueue *vq)
- {
- 	struct virtio_uml_vq_info *info = vq->priv;
- 
--	um_free_irq(VIRTIO_IRQ, vq);
-+	if (info->call_fd >= 0) {
-+		um_free_irq(VIRTIO_IRQ, vq);
-+		os_close_file(info->call_fd);
-+	}
- 
--	os_close_file(info->call_fd);
--	os_close_file(info->kick_fd);
-+	if (info->kick_fd >= 0)
-+		os_close_file(info->kick_fd);
- 
- 	vring_del_virtqueue(vq);
- 	kfree(info);
-@@ -781,6 +809,15 @@ static int vu_setup_vq_call_fd(struct virtio_uml_device *vu_dev,
- 	int call_fds[2];
- 	int rc;
- 
-+	/* no call FD needed/desired in this case */
-+	if (vu_dev->protocol_features &
-+			BIT_ULL(VHOST_USER_PROTOCOL_F_INBAND_NOTIFICATIONS) &&
-+	    vu_dev->protocol_features &
-+			BIT_ULL(VHOST_USER_PROTOCOL_F_SLAVE_REQ)) {
-+		info->call_fd = -1;
-+		return vhost_user_set_vring_call(vu_dev, vq->index, -1);
-+	}
-+
- 	/* Use a pipe for call fd, since SIGIO is not supported for eventfd */
- 	rc = os_pipe(call_fds, true, true);
- 	if (rc < 0)
-@@ -837,10 +874,15 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
- 	vq->priv = info;
- 	num = virtqueue_get_vring_size(vq);
- 
--	rc = os_eventfd(0, 0);
--	if (rc < 0)
--		goto error_kick;
--	info->kick_fd = rc;
-+	if (vu_dev->protocol_features &
-+			BIT_ULL(VHOST_USER_PROTOCOL_F_INBAND_NOTIFICATIONS)) {
-+		info->kick_fd = -1;
-+	} else {
-+		rc = os_eventfd(0, 0);
-+		if (rc < 0)
-+			goto error_kick;
-+		info->kick_fd = rc;
-+	}
- 
- 	rc = vu_setup_vq_call_fd(vu_dev, vq);
- 	if (rc)
-@@ -865,10 +907,13 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
- 	return vq;
- 
- error_setup:
--	um_free_irq(VIRTIO_IRQ, vq);
--	os_close_file(info->call_fd);
-+	if (info->call_fd >= 0) {
-+		um_free_irq(VIRTIO_IRQ, vq);
-+		os_close_file(info->call_fd);
-+	}
- error_call:
--	os_close_file(info->kick_fd);
-+	if (info->kick_fd >= 0)
-+		os_close_file(info->kick_fd);
- error_kick:
- 	vring_del_virtqueue(vq);
- error_create:
-@@ -1012,6 +1057,8 @@ static int virtio_uml_probe(struct platform_device *pdev)
- 		return rc;
- 	vu_dev->sock = rc;
- 
-+	spin_lock_init(&vu_dev->sock_lock);
-+
- 	rc = vhost_user_init(vu_dev);
- 	if (rc)
- 		goto error_init;
--- 
-2.20.1
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gMTIvMDkvMjAxOSAxNTo0MiwgQW50b24gSXZhbm92IHdyb3RlOgo+IAo+IAo+IE9uIDEyLzA5
+LzIwMTkgMTM6MTQsIFJpdGVzaCBSYWogU2FycmFmIHdyb3RlOgo+PiBIaSwKPj4KPj4gSSBhbSBu
+b3Qgc3VyZSBpZiB0aGlzIGhhcyBiZWVuIHJlcG9ydGVkIHVwc3RyZWFtIGJ1dCB3aXRoIGxpYnBj
+YXAgMS45LAo+PiB1c2VyIG1vZGUgbGludXggZmFpbHMgdG8gYnVpbGQuIFRoZSBidWlsZCBmYWls
+dXJlIGhhcHBlbnMgd2l0aCBib3RoLAo+PiA1LjIgYW5kIDQuMTkgTFRTIGtlcm5lbHMuCj4+Cj4+
+IEEgbXVjaCBkZXRhaWxlZCByZXBvcnQgaXMgYXZhaWxhYmxlIGF0Ogo+PiBodHRwczovL2J1Z3Mu
+ZGViaWFuLm9yZy9jZ2ktYmluL2J1Z3JlcG9ydC5jZ2k/YnVnPTkzODk2Mgo+Pgo+PiBsaWJwY2Fw
+IDEuOSBpbnRyb2R1Y2VzIGBwY2FwX29wZW5gIHdoaWNoIGlzIGFsc28gZGVjbGFyZWQgaW4gbGlu
+dXgKPj4gaGVhZGVycyBpbiBhcmNoL3VtL2RyaXZlcnMvcGNhcF91c2VyLmMKPj4KPj4KPiAKPiAK
+PiBJIHRoaW5rIHRoZSBiZXN0IHdheSBmb3J3YXJkIGhlcmUgaXMgdG8ga2lsbCB0aGUgb2xkIGxp
+YnBjYXAgZHJpdmVyIAo+IGFsdG9nZXRoZXIuCj4gCj4gWW91IGdldCB0aGUgc2FtZSBmdW5jdGlv
+bmFsaXR5IGZyb20gdmVjdG9yIHJhdyBpbmNsdWRpbmcgdGhlIGFiaWxpdHkgdG8gCj4gbG9hZCBh
+IGJwZiBmaWx0ZXIuCj4gCj4gVGhlIG9ubHkgdGhpbmcgdGhhdCBuZWVkcyBpcyBhIHdyYXBwZXIg
+dG8gY29tcGlsZSB0aGUgZmlsdGVyIGJlZm9yZSAKPiBoYW5kaW5nIGl0IHRvIFVNTC4KPiAKPiBB
+IHNpZGUgZWZmZWN0IGlzIHRoYXQgaXQgaXMgfiAxMCsgdGltZSBmYXN0ZXIgLSBpbiB0aGUgbXVs
+dGlnaWdhYml0IHJhbmdlLgo+IAo+IEFsdGVybmF0aXZlbHksIEkgY2FuIHdyYXAgaXQgc28gaXQg
+bG9va3MgbGlrZSBwY2FwIHRvIGFueSBleGlzdGluZyAKPiBzY3JpcHRzIGFuZCBpcyBhY3R1YWxs
+eSB2ZWN0b3IgdW5kZXJuZWF0aCwgYnV0IHRoYXQgd2lsbCBsb3NlIHNvbWUgb2YgCj4gdGhlIHR1
+bmFibGVzLCBsaWtlIG9mZmxvYWRzLCB2ZWN0b3IgZGVwdGgsIGV0Yy4KPiAKPiAKPj4gVGhhbmtz
+LAo+PiBSaXRlc2gKPj4KPj4gT24gU2F0LCAyMDE5LTA5LTA3IGF0IDE3OjE4ICswMjAwLCBSb21h
+aW4gRnJhbmNvaXNlIHdyb3RlOgo+Pj4gSGksCj4+Pgo+Pj4gT24gVHVlLCBTZXAgMywgMjAxOSBh
+dCAzOjIxIFBNIFJpdGVzaCBSYWogU2FycmFmIDxycnNAZGViaWFuLm9yZz4KPj4+IHdyb3RlOgo+
+Pj4gWy4uLl0KPj4+PiBJbiBmaWxlIGluY2x1ZGVkIGZyb20gL3Vzci9pbmNsdWRlL3BjYXAuaDo0
+MywKPj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGZyb20gYXJjaC91bS9k
+cml2ZXJzL3BjYXBfdXNlci5jOjc6Cj4+Pj4gL3Vzci9pbmNsdWRlL3BjYXAvcGNhcC5oOjgzNTox
+ODogbm90ZTogcHJldmlvdXMgZGVjbGFyYXRpb24gb2YKPj4+PiDigJhwY2FwX29wZW7igJkgd2Fz
+IGhlcmUKPj4+PiDCoCBQQ0FQX0FQSSBwY2FwX3QgKnBjYXBfb3Blbihjb25zdCBjaGFyICpzb3Vy
+Y2UsIGludCBzbmFwbGVuLCBpbnQKPj4+PiBmbGFncywKPj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgXn5+fn5+fn5+Cj4+Pj4gbWFrZVsyXTogKioqIFtzY3JpcHRzL01h
+a2VmaWxlLmJ1aWxkOjMwOToKPj4+PiBhcmNoL3VtL2RyaXZlcnMvcGNhcF91c2VyLm9dIEVycm9y
+IDEKPj4+Cj4+PiBsaWJwY2FwIDEuOSBpbmNsdWRlcyBzdXBwb3J0IGZvciByZW1vdGUgY2FwdHVy
+ZSwgd2hpY2ggd2FzIG9yaWdpbmFsbHkKPj4+IGEgcGFydCBvZiBXaW5QY2FwIGV4dGVuc2lvbnMu
+IFRoZSBgcGNhcF9vcGVuKCknIHN5bWJvbCBpcyBwYXJ0IG9mCj4+PiB0aGF0Cj4+PiBBUEkgYW5k
+IHRoYXQncyB3aHkgaXQncyBkZWZpbmVkIGluIHRoZSBoZWFkZXIgZmlsZSBldmVuIHRob3VnaCBy
+ZW1vdGUKPj4+IHN1cHBvcnQgaXMgbm90IGVuYWJsZWQgaW4gRGViaWFuLiBJIHN1Z2dlc3QgeW91
+IHJlbmFtZSB0aGUgZnVuY3Rpb24KPj4+IGRlZmluZWQgaW4geW91ciBwcm9ncmFtIHNvIHRoYXQg
+aXQgZG9lc24ndCBjb25mbGljdCB3aXRoIGxpYnBjYXAuCj4+Pgo+Pj4gX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPj4+IGxpbnV4LXVtIG1haWxpbmcgbGlz
+dAo+Pj4gbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwo+Pj4gaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo+IAoKSSBhbSBnb2luZyB0byB0cnkg
+dG8gd3JpdGUgYSB3cmFwcGVyIHRvIGZvcm0gYXJndW1lbnRzIGZvciB0aGUgY3VycmVudCAKdmVj
+dG9yIHJhdyBkcml2ZXIgYW5kIGlmIHRoZXJlIGlzIHNvbWV0aGluZyB0aGF0IG5lZWRzIHRvIGJl
+IGZpeGVkIGluIGl0LgoKSSB3aWxsIHBvc3QgaXMgYXMgYSBwcm9wb3NlZCBwYXRjaCB2cyB0aGUg
+ZGViaWFuIHBhY2thZ2Ugb25jZSAgaXRzIHJlYWR5LgoKQnJnZHMsCgpBCgotLSAKQW50b24gUi4g
+SXZhbm92Cmh0dHBzOi8vd3d3LmtvdC1iZWdlbW90LmNvLnVrLwoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4
+LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9saW51eC11bQo=
 
