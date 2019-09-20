@@ -1,16 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from mail-vk1-xa49.google.com ([2607:f8b0:4864:20::a49])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1i9zCO-0000ji-Ol
- for linux-um@lists.infradead.org; Mon, 16 Sep 2019 22:10:23 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [RFC v2 2/2] um: implement time-travel=ext
-Date: Tue, 17 Sep 2019 00:10:15 +0200
-Message-Id: <1568671815-I0c06fae89d77d5b272dfb4c7ea64641b597b5c7b@changeid>
-In-Reply-To: <1568671815-I895f9019593bd579566f14e5af9346e3c9b56f28@changeid>
-References: <1568671815-I895f9019593bd579566f14e5af9346e3c9b56f28@changeid>
-MIME-Version: 1.0
+ id 1iBSCS-0004lm-7O
+ for linux-um@lists.infradead.org; Fri, 20 Sep 2019 23:20:30 +0000
+Received: by mail-vk1-xa49.google.com with SMTP id d21so3387198vkf.5
+ for <linux-um@lists.infradead.org>; Fri, 20 Sep 2019 16:20:27 -0700 (PDT)
+Date: Fri, 20 Sep 2019 16:19:21 -0700
+In-Reply-To: <20190920231923.141900-1-brendanhiggins@google.com>
+Message-Id: <20190920231923.141900-18-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20190920231923.141900-1-brendanhiggins@google.com>
+Subject: [PATCH v16 17/19] kernel/sysctl-test: Add null pointer test for
+ sysctl.c:proc_dointvec()
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -23,750 +25,463 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, Iurii Zaikin <yzaikin@google.com>, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, torvalds@linux-foundation.org, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Iurii Zaikin <yzaikin@google.com>
 
-This implements synchronized time-travel mode which - using a special
-application on a unix socket - lets multiple machines take part in a
-time-travelling simulation together.
+KUnit tests for initialized data behavior of proc_dointvec that is
+explicitly checked in the code. Includes basic parsing tests including
+int min/max overflow.
 
-The protocol for the unix domain socket is defined in the new file
-include/uapi/linux/um_timetravel.h.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Iurii Zaikin <yzaikin@google.com>
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+Acked-by: Luis Chamberlain <mcgrof@kernel.org>
+Reviewed-by: Stephen Boyd <sboyd@kernel.org>
 ---
- arch/um/drivers/virtio_uml.c          |  59 ++++++-
- arch/um/include/linux/time-internal.h |  28 +++
- arch/um/include/shared/os.h           |   1 +
- arch/um/kernel/skas/syscall.c         |   3 +-
- arch/um/kernel/time.c                 | 243 ++++++++++++++++++++++++--
- arch/um/os-Linux/file.c               |  31 ++++
- include/uapi/linux/um_timetravel.h    | 107 ++++++++++++
- 7 files changed, 458 insertions(+), 14 deletions(-)
- create mode 100644 include/uapi/linux/um_timetravel.h
+ kernel/Makefile      |   2 +
+ kernel/sysctl-test.c | 392 +++++++++++++++++++++++++++++++++++++++++++
+ lib/Kconfig.debug    |  11 ++
+ 3 files changed, 405 insertions(+)
+ create mode 100644 kernel/sysctl-test.c
 
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index 1f486b9d860c..f77eb70045e2 100644
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -26,6 +26,7 @@
- #include <linux/virtio.h>
- #include <linux/virtio_config.h>
- #include <linux/virtio_ring.h>
-+#include <linux/time-internal.h>
- #include <shared/as-layout.h>
- #include <irq_kern.h>
- #include <init.h>
-@@ -67,6 +68,11 @@ struct virtio_uml_device {
- struct virtio_uml_vq_info {
- 	int kick_fd, call_fd;
- 	char name[32];
-+#ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
-+	struct virtqueue *vq;
-+	vq_callback_t *callback;
-+	struct time_travel_event defer;
-+#endif
- };
+diff --git a/kernel/Makefile b/kernel/Makefile
+index ef0d95a190b4..63e9ea6122c2 100644
+--- a/kernel/Makefile
++++ b/kernel/Makefile
+@@ -113,6 +113,8 @@ obj-$(CONFIG_TORTURE_TEST) += torture.o
+ obj-$(CONFIG_HAS_IOMEM) += iomem.o
+ obj-$(CONFIG_RSEQ) += rseq.o
  
- extern unsigned long long physmem_size, highmem;
-@@ -124,7 +130,23 @@ static int vhost_user_recv(struct virtio_uml_device *vu_dev,
- 			   size_t max_payload_size)
- {
- 	size_t size;
--	int rc = vhost_user_recv_header(fd, msg);
-+	int rc;
++obj-$(CONFIG_SYSCTL_KUNIT_TEST) += sysctl-test.o
 +
-+	/*
-+	 * In virtio time-travel mode, we're handling all the vhost-user
-+	 * FDs by polling them whenever appropriate. However, we may get
-+	 * into a situation where we're sending out an interrupt message
-+	 * to a device (e.g. a net device) and need to handle a simulation
-+	 * time message while doing so, e.g. one that tells us to update
-+	 * our idea of how long we can run without scheduling.
-+	 *
-+	 * Thus, we need to not just read() from the given fd, but need
-+	 * to also handle messages for the simulation time - this function
-+	 * does that for us while waiting for the given fd to be readable.
-+	 */
-+	time_travel_wait_readable(fd);
-+
-+	rc = vhost_user_recv_header(fd, msg);
- 
- 	if (rc == -ECONNRESET) {
- 		struct virtio_uml_platform_data *pdata;
-@@ -708,6 +730,8 @@ static bool vu_notify(struct virtqueue *vq)
- 	const uint64_t n = 1;
- 	int rc;
- 
-+	time_travel_propagate_time();
-+
- 	if (info->kick_fd < 0) {
- 		struct virtio_uml_device *vu_dev;
- 
-@@ -855,6 +879,23 @@ static int vu_setup_vq_call_fd(struct virtio_uml_device *vu_dev,
- 	return rc;
- }
- 
-+#ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
-+static void vu_defer_irq_handle(struct time_travel_event *d)
-+{
-+	struct virtio_uml_vq_info *info;
-+
-+	info = container_of(d, struct virtio_uml_vq_info, defer);
-+	info->callback(info->vq);
-+}
-+
-+static void vu_defer_irq_callback(struct virtqueue *vq)
-+{
-+	struct virtio_uml_vq_info *info = vq->priv;
-+
-+	time_travel_add_irq_event(&info->defer);
-+}
-+#endif
-+
- static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
- 				     unsigned index, vq_callback_t *callback,
- 				     const char *name, bool ctx)
-@@ -874,6 +915,19 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
- 	snprintf(info->name, sizeof(info->name), "%s.%d-%s", pdev->name,
- 		 pdev->id, name);
- 
-+#ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
-+	/*
-+	 * When we get an interrupt, we must bounce it through the simulation
-+	 * calendar (the simtime device), except for the simtime device itself
-+	 * since that's part of the simulation control.
-+	 */
-+	if (time_travel_mode == TT_MODE_EXTERNAL) {
-+		info->callback = callback;
-+		callback = vu_defer_irq_callback;
-+		time_travel_set_event_fn(&info->defer, vu_defer_irq_handle);
-+	}
-+#endif
-+
- 	vq = vring_create_virtqueue(index, num, PAGE_SIZE, vdev, true, true,
- 				    ctx, vu_notify, callback, info->name);
- 	if (!vq) {
-@@ -882,6 +936,9 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
- 	}
- 	vq->priv = info;
- 	num = virtqueue_get_vring_size(vq);
-+#ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
-+	info->vq = vq;
-+#endif
- 
- 	if (vu_dev->protocol_features &
- 			BIT_ULL(VHOST_USER_PROTOCOL_F_INBAND_NOTIFICATIONS)) {
-diff --git a/arch/um/include/linux/time-internal.h b/arch/um/include/linux/time-internal.h
-index 752a47d44557..09bae5d188a5 100644
---- a/arch/um/include/linux/time-internal.h
-+++ b/arch/um/include/linux/time-internal.h
-@@ -7,6 +7,7 @@
- #ifndef __TIMER_INTERNAL_H__
- #define __TIMER_INTERNAL_H__
- #include <linux/list.h>
-+#include <linux/interrupt.h>
- 
- #define TIMER_MULTIPLIER 256
- #define TIMER_MIN_DELTA  500
-@@ -15,6 +16,7 @@ enum time_travel_mode {
- 	TT_MODE_OFF,
- 	TT_MODE_BASIC,
- 	TT_MODE_INFCPU,
-+	TT_MODE_EXTERNAL,
- };
- 
- #ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
-@@ -35,6 +37,24 @@ time_travel_set_event_fn(struct time_travel_event *e,
- {
- 	e->fn = fn;
- }
-+
-+void __time_travel_propagate_time(void);
-+
-+static inline void time_travel_propagate_time(void)
-+{
-+	if (time_travel_mode == TT_MODE_EXTERNAL)
-+		__time_travel_propagate_time();
-+}
-+
-+void __time_travel_wait_readable(int fd);
-+
-+static inline void time_travel_wait_readable(int fd)
-+{
-+	if (time_travel_mode == TT_MODE_EXTERNAL)
-+		__time_travel_wait_readable(fd);
-+}
-+
-+void time_travel_add_irq_event(struct time_travel_event *e);
- #else
- struct time_travel_event {
- };
-@@ -47,5 +67,13 @@ static inline void time_travel_sleep(unsigned long long duration)
- 
- /* this is a macro so the event/function need not exist */
- #define time_travel_set_event_fn(e, fn) do {} while (0)
-+
-+static inline void time_travel_propagate_time(void)
-+{
-+}
-+
-+static inline void time_travel_wait_readable(int fd)
-+{
-+}
- #endif /* CONFIG_UML_TIME_TRAVEL_SUPPORT */
- #endif /* __TIMER_INTERNAL_H__ */
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index 506bcd1bca68..65af1f27b968 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -181,6 +181,7 @@ extern int os_falloc_punch(int fd, unsigned long long offset, int count);
- extern int os_eventfd(unsigned int initval, int flags);
- extern int os_sendmsg_fds(int fd, const void *buf, unsigned int len,
- 			  const int *fds, unsigned int fds_num);
-+int os_poll(unsigned int n, const int *fds);
- 
- /* start_up.c */
- extern void os_early_checks(void);
-diff --git a/arch/um/kernel/skas/syscall.c b/arch/um/kernel/skas/syscall.c
-index 58d40fe4f1aa..bc550bc1e497 100644
---- a/arch/um/kernel/skas/syscall.c
-+++ b/arch/um/kernel/skas/syscall.c
-@@ -24,7 +24,8 @@ void handle_syscall(struct uml_pt_regs *r)
- 	 * went to sleep, even if said userspace interacts with the kernel in
- 	 * various ways.
- 	 */
--	if (time_travel_mode == TT_MODE_INFCPU)
-+	if (time_travel_mode == TT_MODE_INFCPU ||
-+	    time_travel_mode == TT_MODE_EXTERNAL)
- 		schedule();
- 
- 	/* Initialize the syscall number and default return value. */
-diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
-index 82b912419d5f..042ef2cfda54 100644
---- a/arch/um/kernel/time.c
-+++ b/arch/um/kernel/time.c
-@@ -15,11 +15,13 @@
- #include <linux/sched.h>
- #include <linux/spinlock.h>
- #include <linux/threads.h>
-+#include <linux/module.h>
- #include <asm/irq.h>
- #include <asm/param.h>
- #include <kern_util.h>
- #include <os.h>
- #include <linux/time-internal.h>
-+#include <linux/um_timetravel.h>
- #include <shared/init.h>
- 
- #ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
-@@ -32,6 +34,12 @@ static LIST_HEAD(time_travel_events);
- static unsigned long long time_travel_timer_interval;
- static unsigned long long time_travel_next_event;
- static struct time_travel_event time_travel_timer_event;
-+static int time_travel_ext_fd = -1;
-+static unsigned int time_travel_ext_waiting;
-+static bool time_travel_ext_prev_request_valid;
-+static unsigned long long time_travel_ext_prev_request;
-+static bool time_travel_ext_free_until_valid;
-+static unsigned long long time_travel_ext_free_until;
- 
- static void time_travel_set_time(unsigned long long ns)
- {
-@@ -39,6 +47,155 @@ static void time_travel_set_time(unsigned long long ns)
- 		panic("time-travel: time goes backwards %lld -> %lld\n",
- 		      time_travel_time, ns);
- 	time_travel_time = ns;
-+	if (ns == 30001389)
-+		dump_stack();
-+}
-+
-+static void time_travel_handle_message(struct um_timetravel_msg *msg,
-+				       bool idle)
-+{
-+	struct um_timetravel_msg resp = {
-+		.op = UM_TIMETRAVEL_ACK,
-+	};
-+	int ret;
-+
-+	if (idle) {
-+		while (os_poll(1, &time_travel_ext_fd) != 0) {
-+			local_irq_enable();
-+			local_irq_disable();
-+		}
-+	}
-+
-+	ret = os_read_file(time_travel_ext_fd, msg, sizeof(*msg));
-+
-+	if (ret == 0)
-+		panic("time-travel external link is broken\n");
-+	if (ret != sizeof(*msg))
-+		panic("invalid time-travel message - %d bytes\n", ret);
-+
-+	switch (msg->op) {
-+	default:
-+		WARN_ONCE(1, "time-travel: unexpected message %lld\n",
-+			  (unsigned long long)msg->op);
-+		break;
-+	case UM_TIMETRAVEL_ACK:
-+		return;
-+	case UM_TIMETRAVEL_RUN:
-+		time_travel_set_time(msg->time);
-+		break;
-+	case UM_TIMETRAVEL_FREE_UNTIL:
-+		time_travel_ext_free_until_valid = true;
-+		time_travel_ext_free_until = msg->time;
-+		break;
-+	}
-+
-+	os_write_file(time_travel_ext_fd, &resp, sizeof(resp));
-+}
-+
-+static void time_travel_ext_req(u64 op, u64 time)
-+{
-+	struct um_timetravel_msg msg = {
-+		.op = op,
-+		.time = time,
-+	};
-+
-+	os_write_file(time_travel_ext_fd, &msg, sizeof(msg));
-+
-+	while (msg.op != UM_TIMETRAVEL_ACK)
-+		time_travel_handle_message(&msg, false);
-+
-+	if (op == UM_TIMETRAVEL_GET)
-+		time_travel_set_time(msg.time);
-+}
-+
-+void __time_travel_wait_readable(int fd)
-+{
-+	int fds[2] = { fd, time_travel_ext_fd };
-+
-+	if (time_travel_mode != TT_MODE_EXTERNAL)
-+		return;
-+
-+	while (os_poll(2, fds) != 0) {
-+		struct um_timetravel_msg msg;
-+
-+		time_travel_handle_message(&msg, false);
-+	}
-+}
-+
-+static void time_travel_ext_update_request(unsigned long long time)
-+{
-+	if (time_travel_mode != TT_MODE_EXTERNAL)
-+		return;
-+
-+	/* asked for exactly this time previously */
-+	if (time_travel_ext_prev_request_valid &&
-+	    time >= time_travel_ext_prev_request)
-+		return;
-+
-+	time_travel_ext_prev_request = time;
-+	time_travel_ext_prev_request_valid = true;
-+	time_travel_ext_req(UM_TIMETRAVEL_REQUEST, time);
-+}
-+
-+void __time_travel_propagate_time(void)
-+{
-+	time_travel_ext_req(UM_TIMETRAVEL_UPDATE, time_travel_time);
-+}
-+
-+/* returns true if we must do a wait to the simtime device */
-+static bool time_travel_ext_request(unsigned long long time)
-+{
-+	/*
-+	 * If we received an external sync point ("free until") then we
-+	 * don't have to request/wait for anything until then, unless
-+	 * we're already waiting.
-+	 */
-+	if (!time_travel_ext_waiting && time_travel_ext_free_until_valid &&
-+	    time < time_travel_ext_free_until)
-+		return false;
-+
-+	time_travel_ext_update_request(time);
-+	return true;
-+}
-+
-+static void time_travel_ext_wait(bool idle)
-+{
-+	struct um_timetravel_msg msg = {
-+		.op = UM_TIMETRAVEL_ACK,
-+	};
-+
-+	time_travel_ext_prev_request_valid = false;
-+	time_travel_ext_waiting++;
-+
-+	time_travel_ext_req(UM_TIMETRAVEL_WAIT, -1);
-+
-+	/*
-+	 * Here we are deep in the idle loop, so we have to break out of the
-+	 * kernel abstraction in a sense and implement this in terms of the
-+	 * UML system waiting on the VQ interrupt while sleeping, when we get
-+	 * the signal it'll call time_travel_ext_vq_notify_done() completing the
-+	 * call.
-+	 */
-+	while (msg.op != UM_TIMETRAVEL_RUN)
-+		time_travel_handle_message(&msg, idle);
-+
-+	time_travel_ext_waiting--;
-+
-+	/* we might request more stuff while polling - reset when we run */
-+	time_travel_ext_prev_request_valid = false;
-+}
-+
-+static void time_travel_ext_get_time(void)
-+{
-+	time_travel_ext_req(UM_TIMETRAVEL_GET, -1);
-+}
-+
-+static void __time_travel_update_time(unsigned long long ns, bool idle)
-+{
-+	if (time_travel_mode == TT_MODE_EXTERNAL && time_travel_ext_request(ns))
-+		time_travel_ext_wait(idle);
-+	else
-+		time_travel_set_time(ns);
- }
- 
- static void time_travel_add_event(struct time_travel_event *e,
-@@ -75,6 +232,7 @@ static void time_travel_add_event(struct time_travel_event *e,
- 	tmp = list_first_entry(&time_travel_events,
- 			       struct time_travel_event,
- 			       list);
-+	time_travel_ext_update_request(tmp->time);
- 	time_travel_next_event = tmp->time;
- }
- 
-@@ -87,8 +245,17 @@ void time_travel_periodic_timer(struct time_travel_event *e)
- 
- static void time_travel_deliver_event(struct time_travel_event *e)
- {
--	/* this is basically just deliver_alarm(), handles IRQs itself */
--	e->fn(e);
-+	if (e == &time_travel_timer_event) {
-+		/*
-+		 * deliver_alarm() does the irq_enter/irq_exit
-+		 * by itself, so must handle it specially here
-+		 */
-+		e->fn(e);
-+	} else {
-+		irq_enter();
-+		e->fn(e);
-+		irq_exit();
-+	}
- }
- 
- static bool time_travel_del_event(struct time_travel_event *e)
-@@ -100,7 +267,7 @@ static bool time_travel_del_event(struct time_travel_event *e)
- 	return true;
- }
- 
--static void time_travel_update_time(unsigned long long next, bool retearly)
-+static void time_travel_update_time(unsigned long long next, bool idle)
- {
- 	struct time_travel_event *e;
- 
-@@ -111,15 +278,34 @@ static void time_travel_update_time(unsigned long long next, bool retearly)
- 
- 		if (e && e->time <= next) {
- 			BUG_ON(!time_travel_del_event(e));
--			time_travel_set_time(e->time);
-+			__time_travel_update_time(e->time, idle);
- 			time_travel_deliver_event(e);
- 		} else {
--			time_travel_set_time(next);
-+			__time_travel_update_time(next, idle);
- 		}
--	} while (!retearly && time_travel_time < next);
-+
-+		e = list_first_entry_or_null(&time_travel_events,
-+					     struct time_travel_event,
-+					     list);
-+		if (e)
-+			time_travel_ext_update_request(e->time);
-+	} while (!idle && time_travel_time < next);
-+}
-+
-+void time_travel_add_irq_event(struct time_travel_event *e)
-+{
-+	BUG_ON(time_travel_mode != TT_MODE_EXTERNAL);
-+
-+	time_travel_ext_get_time();
-+	/*
-+	 * We could model interrupt latency here, for now just
-+	 * don't have any latency at all and request the exact
-+	 * same time (again) to run the interrupt...
-+	 */
-+	time_travel_add_event(e, time_travel_time);
- }
- 
--static void time_travel_oneshot_timer(struct time_travel_event *e)
-+void time_travel_oneshot_timer(struct time_travel_event *e)
- {
- 	deliver_alarm();
- }
-@@ -163,6 +349,21 @@ static void time_travel_set_interval(unsigned long long interval)
- {
- 	time_travel_timer_interval = interval;
- }
-+
-+static int time_travel_connect_external(const char *socket)
-+{
-+	int rc;
-+
-+	rc = os_connect_socket(socket);
-+	if (rc < 0) {
-+		panic("time-travel: failed to connect to external socket %s\n",
-+		      socket);
-+		return rc;
-+	}
-+
-+	time_travel_ext_fd = rc;
-+	return 1;
-+}
- #else /* CONFIG_UML_TIME_TRAVEL_SUPPORT */
- #define time_travel_start_set 0
- #define time_travel_start 0
-@@ -210,7 +411,8 @@ static int itimer_shutdown(struct clock_event_device *evt)
- 	if (time_travel_mode != TT_MODE_OFF)
- 		time_travel_del_event(&time_travel_timer_event);
- 
--	if (time_travel_mode != TT_MODE_INFCPU)
-+	if (time_travel_mode != TT_MODE_INFCPU &&
-+	    time_travel_mode != TT_MODE_EXTERNAL)
- 		os_timer_disable();
- 
- 	return 0;
-@@ -229,7 +431,8 @@ static int itimer_set_periodic(struct clock_event_device *evt)
- 				      time_travel_time + interval);
- 	}
- 
--	if (time_travel_mode != TT_MODE_INFCPU)
-+	if (time_travel_mode != TT_MODE_INFCPU &&
-+	    time_travel_mode != TT_MODE_EXTERNAL)
- 		os_timer_set_interval(interval);
- 
- 	return 0;
-@@ -248,7 +451,8 @@ static int itimer_next_event(unsigned long delta,
- 				      time_travel_time + delta);
- 	}
- 
--	if (time_travel_mode != TT_MODE_INFCPU)
-+	if (time_travel_mode != TT_MODE_INFCPU &&
-+	    time_travel_mode != TT_MODE_EXTERNAL)
- 		return os_timer_one_shot(delta);
- 
- 	return 0;
-@@ -363,7 +567,8 @@ void __init time_init(void)
- #ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
- unsigned long calibrate_delay_is_known(void)
- {
--	if (time_travel_mode == TT_MODE_INFCPU)
-+	if (time_travel_mode == TT_MODE_INFCPU ||
-+	    time_travel_mode == TT_MODE_EXTERNAL)
- 		return 1;
- 	return 0;
- }
-@@ -377,6 +582,13 @@ int setup_time_travel(char *str)
- 		return 1;
- 	}
- 
-+	if (strncmp(str, "=ext:", 5) == 0) {
-+		time_travel_mode = TT_MODE_EXTERNAL;
-+		timer_clockevent.name = "time-travel-timer-external";
-+		timer_clocksource.name = "time-travel-clock-external";
-+		return time_travel_connect_external(str + 5);
-+	}
-+
- 	if (!*str) {
- 		time_travel_mode = TT_MODE_BASIC;
- 		timer_clockevent.name = "time-travel-timer";
-@@ -401,7 +613,14 @@ __uml_help(setup_time_travel,
- "are no wall clock timers, and any CPU processing happens - as seen from the\n"
- "guest - instantly. This can be useful for accurate simulation regardless of\n"
- "debug overhead, physical CPU speed, etc. but is somewhat dangerous as it can\n"
--"easily lead to getting stuck (e.g. if anything in the system busy loops).\n");
-+"easily lead to getting stuck (e.g. if anything in the system busy loops).\n"
-+"\n"
-+"time-travel=ext:/path/to/socket\n"
-+"This enables time travel mode similar to =inf-cpu, except the system will\n"
-+"use the given socket to coordinate with a central scheduler, in order to\n"
-+"have more than one system simultaneously be on simulated time. The virtio\n"
-+"driver code in UML knows about this so you can also simulate networks and\n"
-+"devices using it, assuming the device has the right capabilities.\n");
- 
- int setup_time_travel_start(char *str)
- {
-diff --git a/arch/um/os-Linux/file.c b/arch/um/os-Linux/file.c
-index 5133e3afb96f..d55e6e599678 100644
---- a/arch/um/os-Linux/file.c
-+++ b/arch/um/os-Linux/file.c
-@@ -5,6 +5,7 @@
- 
- #include <stdio.h>
- #include <unistd.h>
-+#include <stdlib.h>
- #include <errno.h>
- #include <fcntl.h>
- #include <signal.h>
-@@ -16,6 +17,7 @@
- #include <sys/un.h>
- #include <sys/types.h>
- #include <sys/eventfd.h>
-+#include <poll.h>
- #include <os.h>
- 
- static void copy_stat(struct uml_stat *dst, const struct stat64 *src)
-@@ -664,3 +666,32 @@ int os_sendmsg_fds(int fd, const void *buf, unsigned int len, const int *fds,
- 		return -errno;
- 	return err;
- }
-+
-+int os_poll(unsigned int n, const int *fds)
-+{
-+	/* currently need 2 FDs at most so avoid dynamic allocation */
-+	struct pollfd pollfds[2];
-+	unsigned int i;
-+	int ret;
-+
-+	if (n > ARRAY_SIZE(pollfds))
-+		return -EINVAL;
-+
-+	memset(pollfds, 0, sizeof(pollfds));
-+	for (i = 0; i < n; i++) {
-+		pollfds[i].fd = fds[i];
-+		pollfds[i].events = POLLIN;
-+	}
-+
-+	ret = poll(pollfds, n, -1);
-+	if (ret < 0)
-+		return -errno;
-+
-+	/* Return the index of the available FD */
-+	for (i = 0; i < n; i++) {
-+		if (pollfds[i].revents)
-+			return i;
-+	}
-+
-+	return -EIO;
-+}
-diff --git a/include/uapi/linux/um_timetravel.h b/include/uapi/linux/um_timetravel.h
+ obj-$(CONFIG_GCC_PLUGIN_STACKLEAK) += stackleak.o
+ KASAN_SANITIZE_stackleak.o := n
+ KCOV_INSTRUMENT_stackleak.o := n
+diff --git a/kernel/sysctl-test.c b/kernel/sysctl-test.c
 new file mode 100644
-index 000000000000..3aaced426a92
+index 000000000000..2a63241a8453
 --- /dev/null
-+++ b/include/uapi/linux/um_timetravel.h
-@@ -0,0 +1,107 @@
++++ b/kernel/sysctl-test.c
+@@ -0,0 +1,392 @@
++// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * Permission to use, copy, modify, and/or distribute this software for any
-+ * purpose with or without fee is hereby granted, provided that the above
-+ * copyright notice and this permission notice appear in all copies.
-+ *
-+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-+ *
-+ * Copyright (C) 2019 Intel Corporation
++ * KUnit test of proc sysctl.
 + */
-+#ifndef _UAPI_LINUX_UM_TIMETRAVEL_H
-+#define _UAPI_LINUX_UM_TIMETRAVEL_H
-+#include <linux/types.h>
 +
-+/**
-+ * struct um_timetravel_msg - UM time travel message
-+ *
-+ * This is the basic message type, going in both directions.
-+ *
-+ * This is the message passed between the host (user-mode Linux instance)
-+ * and the calendar (the application on the other side of the socket) in
-+ * order to implement common scheduling.
-+ *
-+ * Whenever UML has an event it will request runtime for it from the
-+ * calendar, and then wait for its turn until it can run, etc. Note
-+ * that it will only ever request the single next runtime, i.e. multiple
-+ * REQUEST messages override each other.
++#include <kunit/test.h>
++#include <linux/sysctl.h>
++
++#define KUNIT_PROC_READ 0
++#define KUNIT_PROC_WRITE 1
++
++static int i_zero;
++static int i_one_hundred = 100;
++
++/*
++ * Test that proc_dointvec will not try to use a NULL .data field even when the
++ * length is non-zero.
 + */
-+struct um_timetravel_msg {
-+	/**
-+	 * @op: operation value from &enum um_timetravel_ops
++static void sysctl_test_api_dointvec_null_tbl_data(struct kunit *test)
++{
++	struct ctl_table null_data_table = {
++		.procname = "foo",
++		/*
++		 * Here we are testing that proc_dointvec behaves correctly when
++		 * we give it a NULL .data field. Normally this would point to a
++		 * piece of memory where the value would be stored.
++		 */
++		.data		= NULL,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	/*
++	 * proc_dointvec expects a buffer in user space, so we allocate one. We
++	 * also need to cast it to __user so sparse doesn't get mad.
 +	 */
-+	__u64 op;
++	void __user *buffer = (void __user *)kunit_kzalloc(test, sizeof(int),
++							   GFP_USER);
++	size_t len;
++	loff_t pos;
 +
-+	/**
-+	 * @time: time in nanoseconds
++	/*
++	 * We don't care what the starting length is since proc_dointvec should
++	 * not try to read because .data is NULL.
 +	 */
-+	__u64 time;
++	len = 1234;
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&null_data_table,
++					       KUNIT_PROC_READ, buffer, &len,
++					       &pos));
++	KUNIT_EXPECT_EQ(test, (size_t)0, len);
++
++	/*
++	 * See above.
++	 */
++	len = 1234;
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&null_data_table,
++					       KUNIT_PROC_WRITE, buffer, &len,
++					       &pos));
++	KUNIT_EXPECT_EQ(test, (size_t)0, len);
++}
++
++/*
++ * Similar to the previous test, we create a struct ctrl_table that has a .data
++ * field that proc_dointvec cannot do anything with; however, this time it is
++ * because we tell proc_dointvec that the size is 0.
++ */
++static void sysctl_test_api_dointvec_table_maxlen_unset(struct kunit *test)
++{
++	int data = 0;
++	struct ctl_table data_maxlen_unset_table = {
++		.procname = "foo",
++		.data		= &data,
++		/*
++		 * So .data is no longer NULL, but we tell proc_dointvec its
++		 * length is 0, so it still shouldn't try to use it.
++		 */
++		.maxlen		= 0,
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	void __user *buffer = (void __user *)kunit_kzalloc(test, sizeof(int),
++							   GFP_USER);
++	size_t len;
++	loff_t pos;
++
++	/*
++	 * As before, we don't care what buffer length is because proc_dointvec
++	 * cannot do anything because its internal .data buffer has zero length.
++	 */
++	len = 1234;
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&data_maxlen_unset_table,
++					       KUNIT_PROC_READ, buffer, &len,
++					       &pos));
++	KUNIT_EXPECT_EQ(test, (size_t)0, len);
++
++	/*
++	 * See previous comment.
++	 */
++	len = 1234;
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&data_maxlen_unset_table,
++					       KUNIT_PROC_WRITE, buffer, &len,
++					       &pos));
++	KUNIT_EXPECT_EQ(test, (size_t)0, len);
++}
++
++/*
++ * Here we provide a valid struct ctl_table, but we try to read and write from
++ * it using a buffer of zero length, so it should still fail in a similar way as
++ * before.
++ */
++static void sysctl_test_api_dointvec_table_len_is_zero(struct kunit *test)
++{
++	int data = 0;
++	/* Good table. */
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &data,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	void __user *buffer = (void __user *)kunit_kzalloc(test, sizeof(int),
++							   GFP_USER);
++	/*
++	 * However, now our read/write buffer has zero length.
++	 */
++	size_t len = 0;
++	loff_t pos;
++
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, KUNIT_PROC_READ, buffer,
++					       &len, &pos));
++	KUNIT_EXPECT_EQ(test, (size_t)0, len);
++
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, KUNIT_PROC_WRITE, buffer,
++					       &len, &pos));
++	KUNIT_EXPECT_EQ(test, (size_t)0, len);
++}
++
++/*
++ * Test that proc_dointvec refuses to read when the file position is non-zero.
++ */
++static void sysctl_test_api_dointvec_table_read_but_position_set(
++		struct kunit *test)
++{
++	int data = 0;
++	/* Good table. */
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &data,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	void __user *buffer = (void __user *)kunit_kzalloc(test, sizeof(int),
++							   GFP_USER);
++	/*
++	 * We don't care about our buffer length because we start off with a
++	 * non-zero file position.
++	 */
++	size_t len = 1234;
++	/*
++	 * proc_dointvec should refuse to read into the buffer since the file
++	 * pos is non-zero.
++	 */
++	loff_t pos = 1;
++
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, KUNIT_PROC_READ, buffer,
++					       &len, &pos));
++	KUNIT_EXPECT_EQ(test, (size_t)0, len);
++}
++
++/*
++ * Test that we can read a two digit number in a sufficiently size buffer.
++ * Nothing fancy.
++ */
++static void sysctl_test_dointvec_read_happy_single_positive(struct kunit *test)
++{
++	int data = 0;
++	/* Good table. */
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &data,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	size_t len = 4;
++	loff_t pos = 0;
++	char *buffer = kunit_kzalloc(test, len, GFP_USER);
++	char __user *user_buffer = (char __user *)buffer;
++	/* Store 13 in the data field. */
++	*((int *)table.data) = 13;
++
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, KUNIT_PROC_READ,
++					       user_buffer, &len, &pos));
++	KUNIT_ASSERT_EQ(test, (size_t)3, len);
++	buffer[len] = '\0';
++	/* And we read 13 back out. */
++	KUNIT_EXPECT_STREQ(test, "13\n", buffer);
++}
++
++/*
++ * Same as previous test, just now with negative numbers.
++ */
++static void sysctl_test_dointvec_read_happy_single_negative(struct kunit *test)
++{
++	int data = 0;
++	/* Good table. */
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &data,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	size_t len = 5;
++	loff_t pos = 0;
++	char *buffer = kunit_kzalloc(test, len, GFP_USER);
++	char __user *user_buffer = (char __user *)buffer;
++	*((int *)table.data) = -16;
++
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, KUNIT_PROC_READ,
++					       user_buffer, &len, &pos));
++	KUNIT_ASSERT_EQ(test, (size_t)4, len);
++	buffer[len] = '\0';
++	KUNIT_EXPECT_STREQ(test, "-16\n", (char *)buffer);
++}
++
++/*
++ * Test that a simple positive write works.
++ */
++static void sysctl_test_dointvec_write_happy_single_positive(struct kunit *test)
++{
++	int data = 0;
++	/* Good table. */
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &data,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	char input[] = "9";
++	size_t len = sizeof(input) - 1;
++	loff_t pos = 0;
++	char *buffer = kunit_kzalloc(test, len, GFP_USER);
++	char __user *user_buffer = (char __user *)buffer;
++
++	memcpy(buffer, input, len);
++
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, KUNIT_PROC_WRITE,
++					       user_buffer, &len, &pos));
++	KUNIT_EXPECT_EQ(test, sizeof(input) - 1, len);
++	KUNIT_EXPECT_EQ(test, sizeof(input) - 1, (size_t)pos);
++	KUNIT_EXPECT_EQ(test, 9, *((int *)table.data));
++}
++
++/*
++ * Same as previous test, but now with negative numbers.
++ */
++static void sysctl_test_dointvec_write_happy_single_negative(struct kunit *test)
++{
++	int data = 0;
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &data,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	char input[] = "-9";
++	size_t len = sizeof(input) - 1;
++	loff_t pos = 0;
++	char *buffer = kunit_kzalloc(test, len, GFP_USER);
++	char __user *user_buffer = (char __user *)buffer;
++
++	memcpy(buffer, input, len);
++
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, KUNIT_PROC_WRITE,
++					       user_buffer, &len, &pos));
++	KUNIT_EXPECT_EQ(test, sizeof(input) - 1, len);
++	KUNIT_EXPECT_EQ(test, sizeof(input) - 1, (size_t)pos);
++	KUNIT_EXPECT_EQ(test, -9, *((int *)table.data));
++}
++
++/*
++ * Test that writing a value smaller than the minimum possible value is not
++ * allowed.
++ */
++static void sysctl_test_api_dointvec_write_single_less_int_min(
++		struct kunit *test)
++{
++	int data = 0;
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &data,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	size_t max_len = 32, len = max_len;
++	loff_t pos = 0;
++	char *buffer = kunit_kzalloc(test, max_len, GFP_USER);
++	char __user *user_buffer = (char __user *)buffer;
++	unsigned long abs_of_less_than_min = (unsigned long)INT_MAX
++					     - (INT_MAX + INT_MIN) + 1;
++
++	/*
++	 * We use this rigmarole to create a string that contains a value one
++	 * less than the minimum accepted value.
++	 */
++	KUNIT_ASSERT_LT(test,
++			(size_t)snprintf(buffer, max_len, "-%lu",
++					 abs_of_less_than_min),
++			max_len);
++
++	KUNIT_EXPECT_EQ(test, -EINVAL, proc_dointvec(&table, KUNIT_PROC_WRITE,
++						     user_buffer, &len, &pos));
++	KUNIT_EXPECT_EQ(test, max_len, len);
++	KUNIT_EXPECT_EQ(test, 0, *((int *)table.data));
++}
++
++/*
++ * Test that writing the maximum possible value works.
++ */
++static void sysctl_test_api_dointvec_write_single_greater_int_max(
++		struct kunit *test)
++{
++	int data = 0;
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &data,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	size_t max_len = 32, len = max_len;
++	loff_t pos = 0;
++	char *buffer = kunit_kzalloc(test, max_len, GFP_USER);
++	char __user *user_buffer = (char __user *)buffer;
++	unsigned long greater_than_max = (unsigned long)INT_MAX + 1;
++
++	KUNIT_ASSERT_GT(test, greater_than_max, (unsigned long)INT_MAX);
++	KUNIT_ASSERT_LT(test, (size_t)snprintf(buffer, max_len, "%lu",
++					       greater_than_max),
++			max_len);
++	KUNIT_EXPECT_EQ(test, -EINVAL, proc_dointvec(&table, KUNIT_PROC_WRITE,
++						     user_buffer, &len, &pos));
++	KUNIT_ASSERT_EQ(test, max_len, len);
++	KUNIT_EXPECT_EQ(test, 0, *((int *)table.data));
++}
++
++static struct kunit_case sysctl_test_cases[] = {
++	KUNIT_CASE(sysctl_test_api_dointvec_null_tbl_data),
++	KUNIT_CASE(sysctl_test_api_dointvec_table_maxlen_unset),
++	KUNIT_CASE(sysctl_test_api_dointvec_table_len_is_zero),
++	KUNIT_CASE(sysctl_test_api_dointvec_table_read_but_position_set),
++	KUNIT_CASE(sysctl_test_dointvec_read_happy_single_positive),
++	KUNIT_CASE(sysctl_test_dointvec_read_happy_single_negative),
++	KUNIT_CASE(sysctl_test_dointvec_write_happy_single_positive),
++	KUNIT_CASE(sysctl_test_dointvec_write_happy_single_negative),
++	KUNIT_CASE(sysctl_test_api_dointvec_write_single_less_int_min),
++	KUNIT_CASE(sysctl_test_api_dointvec_write_single_greater_int_max),
++	{}
 +};
 +
-+/**
-+ * enum um_timetravel_ops - Operation codes
-+ */
-+enum um_timetravel_ops {
-+	/**
-+	 * @UM_TIMETRAVEL_ACK: response (ACK) to any previous message,
-+	 *	this usually doesn't carry any data in the 'time' field
-+	 *	unless otherwise specified below
-+	 */
-+	UM_TIMETRAVEL_ACK		= 0,
-+
-+	/**
-+	 * @UM_TIMETRAVEL_REQUEST: request to run at the given time
-+	 *	(host -> calendar)
-+	 */
-+	UM_TIMETRAVEL_REQUEST		= 1,
-+
-+	/**
-+	 * @UM_TIMETRAVEL_WAIT: Indicate waiting for the previously requested
-+	 *	runtime, new requests may be made while waiting (e.g. due to
-+	 *	interrupts); the time field is ignored. The calendar must process
-+	 *	this message and later	send a %UM_TIMETRAVEL_RUN message when
-+	 *	the host can run again.
-+	 *	(host -> calendar)
-+	 */
-+	UM_TIMETRAVEL_WAIT		= 2,
-+
-+	/**
-+	 * @UM_TIMETRAVEL_GET: return the current time from the calendar in the
-+	 *	ACK message, the time in the request message is ignored
-+	 *	(host -> calendar)
-+	 */
-+	UM_TIMETRAVEL_GET		= 3,
-+
-+	/**
-+	 * @UM_TIMETRAVEL_UPDATE: time update to the calendar, must be sent e.g.
-+	 *	before kicking an interrupt to another calendar
-+	 *	(host -> calendar)
-+	 */
-+	UM_TIMETRAVEL_UPDATE		= 4,
-+
-+	/**
-+	 * @UM_TIMETRAVEL_RUN: run time request granted, current time is in
-+	 *	the time field
-+	 *	(calendar -> host)
-+	 */
-+	UM_TIMETRAVEL_RUN		= 5,
-+
-+	/**
-+	 * @UM_TIMETRAVEL_FREE_UNTIL: Enable free-running until the given time,
-+	 *	this is a message from the calendar telling the host that it can
-+	 *	freely do its own scheduling for anything before the indicated
-+	 *	time.
-+	 *	Note that if a calendar sends this message once, the host may
-+	 *	assume that it will also do so in the future, if it implements
-+	 *	wraparound semantics for the time field.
-+	 *	(calendar -> host)
-+	 */
-+	UM_TIMETRAVEL_FREE_UNTIL	= 6,
++static struct kunit_suite sysctl_test_suite = {
++	.name = "sysctl_test",
++	.test_cases = sysctl_test_cases,
 +};
 +
-+#endif /* _UAPI_LINUX_UM_TIMETRAVEL_H */
++kunit_test_suite(sysctl_test_suite);
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 5870fbe11e9b..d9a6a45ba7aa 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1965,6 +1965,17 @@ config TEST_SYSCTL
+ 
+ 	  If unsure, say N.
+ 
++config SYSCTL_KUNIT_TEST
++	bool "KUnit test for sysctl"
++	depends on KUNIT
++	help
++	  This builds the proc sysctl unit test, which runs on boot.
++	  Tests the API contract and implementation correctness of sysctl.
++	  For more information on KUnit and unit tests in general please refer
++	  to the KUnit documentation in Documentation/dev-tools/kunit/.
++
++	  If unsure, say N.
++
+ config TEST_UDELAY
+ 	tristate "udelay test driver"
+ 	help
 -- 
-2.20.1
+2.23.0.351.gc4317032e6-goog
 
 
 _______________________________________________
