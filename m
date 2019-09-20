@@ -1,16 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from mail-pf1-x44a.google.com ([2607:f8b0:4864:20::44a])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1i825o-0003Hr-FJ
- for linux-um@lists.infradead.org; Wed, 11 Sep 2019 12:51:31 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v5 5/5] um: virtio: implement VHOST_USER_PROTOCOL_F_REPLY_ACK
-Date: Wed, 11 Sep 2019 14:51:22 +0200
-Message-Id: <1568206252-Iff9fc2b625929a3a2189e82a1356b689878825da@changeid>
-In-Reply-To: <20190911125122.20772-1-johannes@sipsolutions.net>
-References: <20190911125122.20772-1-johannes@sipsolutions.net>
-MIME-Version: 1.0
+ id 1iBSCJ-0004hl-M9
+ for linux-um@lists.infradead.org; Fri, 20 Sep 2019 23:20:21 +0000
+Received: by mail-pf1-x44a.google.com with SMTP id g15so5764827pfb.8
+ for <linux-um@lists.infradead.org>; Fri, 20 Sep 2019 16:20:18 -0700 (PDT)
+Date: Fri, 20 Sep 2019 16:19:18 -0700
+In-Reply-To: <20190920231923.141900-1-brendanhiggins@google.com>
+Message-Id: <20190920231923.141900-15-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20190920231923.141900-1-brendanhiggins@google.com>
+Subject: [PATCH v16 14/19] kunit: defconfig: add defconfigs for building KUnit
+ tests
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -23,273 +25,146 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, torvalds@linux-foundation.org, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-From: Johannes Berg <johannes.berg@intel.com>
+Add defconfig for UML and a fragment that can be used to configure other
+architectures for building KUnit tests. Add option to kunit_tool to use
+a defconfig to create the kunitconfig.
 
-Implement the VHOST_USER_PROTOCOL_F_REPLY_ACK extension for both
-slave requests (previous patch) where we have to reply and our
-own requests where it helps understand if the slave failed.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+Reviewed-by: Stephen Boyd <sboyd@kernel.org>
 ---
- arch/um/drivers/vhost_user.h |  5 +-
- arch/um/drivers/virtio_uml.c | 97 +++++++++++++++++++++++++++++-------
- 2 files changed, 84 insertions(+), 18 deletions(-)
+ arch/um/configs/kunit_defconfig              |  3 +++
+ tools/testing/kunit/configs/all_tests.config |  3 +++
+ tools/testing/kunit/kunit.py                 | 28 +++++++++++++++++---
+ tools/testing/kunit/kunit_kernel.py          |  3 ++-
+ 4 files changed, 32 insertions(+), 5 deletions(-)
+ create mode 100644 arch/um/configs/kunit_defconfig
+ create mode 100644 tools/testing/kunit/configs/all_tests.config
 
-diff --git a/arch/um/drivers/vhost_user.h b/arch/um/drivers/vhost_user.h
-index 8aee9919581e..45ff5ea22fea 100644
---- a/arch/um/drivers/vhost_user.h
-+++ b/arch/um/drivers/vhost_user.h
-@@ -6,9 +6,11 @@
+diff --git a/arch/um/configs/kunit_defconfig b/arch/um/configs/kunit_defconfig
+new file mode 100644
+index 000000000000..9235b7d42d38
+--- /dev/null
++++ b/arch/um/configs/kunit_defconfig
+@@ -0,0 +1,3 @@
++CONFIG_KUNIT=y
++CONFIG_KUNIT_TEST=y
++CONFIG_KUNIT_EXAMPLE_TEST=y
+diff --git a/tools/testing/kunit/configs/all_tests.config b/tools/testing/kunit/configs/all_tests.config
+new file mode 100644
+index 000000000000..9235b7d42d38
+--- /dev/null
++++ b/tools/testing/kunit/configs/all_tests.config
+@@ -0,0 +1,3 @@
++CONFIG_KUNIT=y
++CONFIG_KUNIT_TEST=y
++CONFIG_KUNIT_EXAMPLE_TEST=y
+diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+index da11bd62a4b8..0944dea5c321 100755
+--- a/tools/testing/kunit/kunit.py
++++ b/tools/testing/kunit/kunit.py
+@@ -11,6 +11,7 @@ import argparse
+ import sys
+ import os
+ import time
++import shutil
  
- /* Message flags */
- #define VHOST_USER_FLAG_REPLY		BIT(2)
-+#define VHOST_USER_FLAG_NEED_REPLY	BIT(3)
- /* Feature bits */
- #define VHOST_USER_F_PROTOCOL_FEATURES	30
- /* Protocol feature bits */
-+#define VHOST_USER_PROTOCOL_F_REPLY_ACK		3
- #define VHOST_USER_PROTOCOL_F_SLAVE_REQ		5
- #define VHOST_USER_PROTOCOL_F_CONFIG		9
- /* Vring state index masks */
-@@ -20,7 +22,8 @@
- /* Supported transport features */
- #define VHOST_USER_SUPPORTED_F		BIT_ULL(VHOST_USER_F_PROTOCOL_FEATURES)
- /* Supported protocol features */
--#define VHOST_USER_SUPPORTED_PROTOCOL_F	(BIT_ULL(VHOST_USER_PROTOCOL_F_SLAVE_REQ) | \
-+#define VHOST_USER_SUPPORTED_PROTOCOL_F	(BIT_ULL(VHOST_USER_PROTOCOL_F_REPLY_ACK) | \
-+					 BIT_ULL(VHOST_USER_PROTOCOL_F_SLAVE_REQ) | \
- 					 BIT_ULL(VHOST_USER_PROTOCOL_F_CONFIG))
+ from collections import namedtuple
+ from enum import Enum, auto
+@@ -21,7 +22,7 @@ import kunit_parser
  
- enum vhost_user_request {
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index ea4d9c1784d2..fc8c52cff5aa 100644
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -160,30 +160,64 @@ static int vhost_user_recv_req(struct virtio_uml_device *vu_dev,
- 	if (rc)
- 		return rc;
+ KunitResult = namedtuple('KunitResult', ['status','result'])
  
--	if (msg->header.flags != VHOST_USER_VERSION)
-+	if ((msg->header.flags & ~VHOST_USER_FLAG_NEED_REPLY) !=
-+			VHOST_USER_VERSION)
- 		return -EPROTO;
+-KunitRequest = namedtuple('KunitRequest', ['raw_output','timeout', 'jobs', 'build_dir'])
++KunitRequest = namedtuple('KunitRequest', ['raw_output','timeout', 'jobs', 'build_dir', 'defconfig'])
  
- 	return 0;
- }
+ class KunitStatus(Enum):
+ 	SUCCESS = auto()
+@@ -29,8 +30,16 @@ class KunitStatus(Enum):
+ 	BUILD_FAILURE = auto()
+ 	TEST_FAILURE = auto()
  
- static int vhost_user_send(struct virtio_uml_device *vu_dev,
--			   struct vhost_user_msg *msg,
-+			   bool need_response, struct vhost_user_msg *msg,
- 			   int *fds, size_t num_fds)
- {
- 	size_t size = sizeof(msg->header) + msg->header.size;
-+	bool request_ack;
-+	int rc;
- 
- 	msg->header.flags |= VHOST_USER_VERSION;
--	return full_sendmsg_fds(vu_dev->sock, msg, size, fds, num_fds);
++def create_default_kunitconfig():
++	if not os.path.exists(kunit_kernel.KUNITCONFIG_PATH):
++		shutil.copyfile('arch/um/configs/kunit_defconfig',
++				kunit_kernel.KUNITCONFIG_PATH)
 +
-+	/*
-+	 * The need_response flag indicates that we already need a response,
-+	 * e.g. to read the features. In these cases, don't request an ACK as
-+	 * it is meaningless. Also request an ACK only if supported.
-+	 */
-+	request_ack = !need_response;
-+	if (!(vu_dev->protocol_features &
-+			BIT_ULL(VHOST_USER_PROTOCOL_F_REPLY_ACK)))
-+		request_ack = false;
+ def run_tests(linux: kunit_kernel.LinuxSourceTree,
+ 	      request: KunitRequest) -> KunitResult:
++	if request.defconfig:
++		create_default_kunitconfig()
 +
-+	if (request_ack)
-+		msg->header.flags |= VHOST_USER_FLAG_NEED_REPLY;
+ 	config_start = time.time()
+ 	success = linux.build_reconfig(request.build_dir)
+ 	config_end = time.time()
+@@ -72,7 +81,7 @@ def run_tests(linux: kunit_kernel.LinuxSourceTree,
+ 	else:
+ 		return KunitResult(KunitStatus.SUCCESS, test_result)
+ 
+-def main(argv, linux):
++def main(argv, linux=None):
+ 	parser = argparse.ArgumentParser(
+ 			description='Helps writing and running KUnit tests.')
+ 	subparser = parser.add_subparsers(dest='subcommand')
+@@ -99,13 +108,24 @@ def main(argv, linux):
+ 				'directory.',
+ 				type=str, default=None, metavar='build_dir')
+ 
++	run_parser.add_argument('--defconfig',
++				help='Uses a default kunitconfig.',
++				action='store_true')
 +
-+	rc = full_sendmsg_fds(vu_dev->sock, msg, size, fds, num_fds);
-+	if (rc < 0)
-+		return rc;
+ 	cli_args = parser.parse_args(argv)
+ 
+ 	if cli_args.subcommand == 'run':
++		if cli_args.defconfig:
++			create_default_kunitconfig()
 +
-+	if (request_ack) {
-+		uint64_t status;
++		if not linux:
++			linux = kunit_kernel.LinuxSourceTree()
 +
-+		rc = vhost_user_recv_u64(vu_dev, &status);
-+		if (rc)
-+			return rc;
-+
-+		if (status) {
-+			vu_err(vu_dev, "slave reports error: %llu\n", status);
-+			return -EIO;
-+		}
-+	}
-+
-+	return 0;
- }
+ 		request = KunitRequest(cli_args.raw_output,
+ 				       cli_args.timeout,
+ 				       cli_args.jobs,
+-				       cli_args.build_dir)
++				       cli_args.build_dir,
++				       cli_args.defconfig)
+ 		result = run_tests(linux, request)
+ 		if result.status != KunitStatus.SUCCESS:
+ 			sys.exit(1)
+@@ -113,4 +133,4 @@ def main(argv, linux):
+ 		parser.print_help()
  
- static int vhost_user_send_no_payload(struct virtio_uml_device *vu_dev,
--				      u32 request)
-+				      bool need_response, u32 request)
- {
- 	struct vhost_user_msg msg = {
- 		.header.request = request,
- 	};
+ if __name__ == '__main__':
+-	main(sys.argv[1:], kunit_kernel.LinuxSourceTree())
++	main(sys.argv[1:])
+diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
+index 07c0abf2f47d..bf3876835331 100644
+--- a/tools/testing/kunit/kunit_kernel.py
++++ b/tools/testing/kunit/kunit_kernel.py
+@@ -14,6 +14,7 @@ import os
+ import kunit_config
  
--	return vhost_user_send(vu_dev, &msg, NULL, 0);
-+	return vhost_user_send(vu_dev, need_response, &msg, NULL, 0);
- }
+ KCONFIG_PATH = '.config'
++KUNITCONFIG_PATH = 'kunitconfig'
  
- static int vhost_user_send_no_payload_fd(struct virtio_uml_device *vu_dev,
-@@ -193,7 +227,7 @@ static int vhost_user_send_no_payload_fd(struct virtio_uml_device *vu_dev,
- 		.header.request = request,
- 	};
+ class ConfigError(Exception):
+ 	"""Represents an error trying to configure the Linux kernel."""
+@@ -81,7 +82,7 @@ class LinuxSourceTree(object):
  
--	return vhost_user_send(vu_dev, &msg, &fd, 1);
-+	return vhost_user_send(vu_dev, false, &msg, &fd, 1);
- }
+ 	def __init__(self):
+ 		self._kconfig = kunit_config.Kconfig()
+-		self._kconfig.read_from_file('kunitconfig')
++		self._kconfig.read_from_file(KUNITCONFIG_PATH)
+ 		self._ops = LinuxSourceTreeOperations()
  
- static int vhost_user_send_u64(struct virtio_uml_device *vu_dev,
-@@ -205,18 +239,19 @@ static int vhost_user_send_u64(struct virtio_uml_device *vu_dev,
- 		.payload.integer = value,
- 	};
- 
--	return vhost_user_send(vu_dev, &msg, NULL, 0);
-+	return vhost_user_send(vu_dev, false, &msg, NULL, 0);
- }
- 
- static int vhost_user_set_owner(struct virtio_uml_device *vu_dev)
- {
--	return vhost_user_send_no_payload(vu_dev, VHOST_USER_SET_OWNER);
-+	return vhost_user_send_no_payload(vu_dev, false, VHOST_USER_SET_OWNER);
- }
- 
- static int vhost_user_get_features(struct virtio_uml_device *vu_dev,
- 				   u64 *features)
- {
--	int rc = vhost_user_send_no_payload(vu_dev, VHOST_USER_GET_FEATURES);
-+	int rc = vhost_user_send_no_payload(vu_dev, true,
-+					    VHOST_USER_GET_FEATURES);
- 
- 	if (rc)
- 		return rc;
-@@ -232,7 +267,7 @@ static int vhost_user_set_features(struct virtio_uml_device *vu_dev,
- static int vhost_user_get_protocol_features(struct virtio_uml_device *vu_dev,
- 					    u64 *protocol_features)
- {
--	int rc = vhost_user_send_no_payload(vu_dev,
-+	int rc = vhost_user_send_no_payload(vu_dev, true,
- 			VHOST_USER_GET_PROTOCOL_FEATURES);
- 
- 	if (rc)
-@@ -247,9 +282,32 @@ static int vhost_user_set_protocol_features(struct virtio_uml_device *vu_dev,
- 				   protocol_features);
- }
- 
-+static void vhost_user_reply(struct virtio_uml_device *vu_dev,
-+			     struct vhost_user_msg *msg, int response)
-+{
-+	struct vhost_user_msg reply = {
-+		.payload.integer = response,
-+	};
-+	size_t size = sizeof(reply.header) + sizeof(reply.payload.integer);
-+	int rc;
-+
-+	reply.header = msg->header;
-+	reply.header.flags &= ~VHOST_USER_FLAG_NEED_REPLY;
-+	reply.header.flags |= VHOST_USER_FLAG_REPLY;
-+	reply.header.size = sizeof(reply.payload.integer);
-+
-+	rc = full_sendmsg_fds(vu_dev->req_fd, &reply, size, NULL, 0);
-+
-+	if (rc)
-+		vu_err(vu_dev,
-+		       "sending reply to slave request failed: %d (size %zu)\n",
-+		       rc, size);
-+}
-+
- static irqreturn_t vu_req_interrupt(int irq, void *data)
- {
- 	struct virtio_uml_device *vu_dev = data;
-+	int response = 1;
- 	struct {
- 		struct vhost_user_msg msg;
- 		u8 extra_payload[512];
-@@ -266,6 +324,7 @@ static irqreturn_t vu_req_interrupt(int irq, void *data)
- 	switch (msg.msg.header.request) {
- 	case VHOST_USER_SLAVE_CONFIG_CHANGE_MSG:
- 		virtio_config_changed(&vu_dev->vdev);
-+		response = 0;
- 		break;
- 	case VHOST_USER_SLAVE_IOTLB_MSG:
- 		/* not supported - VIRTIO_F_IOMMU_PLATFORM */
-@@ -276,6 +335,9 @@ static irqreturn_t vu_req_interrupt(int irq, void *data)
- 		       msg.msg.header.request);
- 	}
- 
-+	if (msg.msg.header.flags & VHOST_USER_FLAG_NEED_REPLY)
-+		vhost_user_reply(vu_dev, &msg.msg, response);
-+
- 	return IRQ_HANDLED;
- }
- 
-@@ -365,7 +427,7 @@ static void vhost_user_get_config(struct virtio_uml_device *vu_dev,
- 	msg->payload.config.offset = 0;
- 	msg->payload.config.size = cfg_size;
- 
--	rc = vhost_user_send(vu_dev, msg, NULL, 0);
-+	rc = vhost_user_send(vu_dev, true, msg, NULL, 0);
- 	if (rc) {
- 		vu_err(vu_dev, "sending VHOST_USER_GET_CONFIG failed: %d\n",
- 		       rc);
-@@ -416,7 +478,7 @@ static void vhost_user_set_config(struct virtio_uml_device *vu_dev,
- 	msg->payload.config.size = len;
- 	memcpy(msg->payload.config.payload, buf, len);
- 
--	rc = vhost_user_send(vu_dev, msg, NULL, 0);
-+	rc = vhost_user_send(vu_dev, false, msg, NULL, 0);
- 	if (rc)
- 		vu_err(vu_dev, "sending VHOST_USER_SET_CONFIG failed: %d\n",
- 		       rc);
-@@ -506,7 +568,8 @@ static int vhost_user_set_mem_table(struct virtio_uml_device *vu_dev)
- 			return rc;
- 	}
- 
--	return vhost_user_send(vu_dev, &msg, fds, msg.payload.mem_regions.num);
-+	return vhost_user_send(vu_dev, false, &msg, fds,
-+			       msg.payload.mem_regions.num);
- }
- 
- static int vhost_user_set_vring_state(struct virtio_uml_device *vu_dev,
-@@ -519,7 +582,7 @@ static int vhost_user_set_vring_state(struct virtio_uml_device *vu_dev,
- 		.payload.vring_state.num = num,
- 	};
- 
--	return vhost_user_send(vu_dev, &msg, NULL, 0);
-+	return vhost_user_send(vu_dev, false, &msg, NULL, 0);
- }
- 
- static int vhost_user_set_vring_num(struct virtio_uml_device *vu_dev,
-@@ -550,7 +613,7 @@ static int vhost_user_set_vring_addr(struct virtio_uml_device *vu_dev,
- 		.payload.vring_addr.log = log,
- 	};
- 
--	return vhost_user_send(vu_dev, &msg, NULL, 0);
-+	return vhost_user_send(vu_dev, false, &msg, NULL, 0);
- }
- 
- static int vhost_user_set_vring_fd(struct virtio_uml_device *vu_dev,
-@@ -566,9 +629,9 @@ static int vhost_user_set_vring_fd(struct virtio_uml_device *vu_dev,
- 		return -EINVAL;
- 	if (fd < 0) {
- 		msg.payload.integer |= VHOST_USER_VRING_POLL_MASK;
--		return vhost_user_send(vu_dev, &msg, NULL, 0);
-+		return vhost_user_send(vu_dev, false, &msg, NULL, 0);
- 	}
--	return vhost_user_send(vu_dev, &msg, &fd, 1);
-+	return vhost_user_send(vu_dev, false, &msg, &fd, 1);
- }
- 
- static int vhost_user_set_vring_call(struct virtio_uml_device *vu_dev,
+ 	def clean(self):
 -- 
-2.20.1
+2.23.0.351.gc4317032e6-goog
 
 
 _______________________________________________
