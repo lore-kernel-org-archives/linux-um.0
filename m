@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from mail-pf1-x449.google.com ([2607:f8b0:4864:20::449])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iBT7B-0005BX-1v
- for linux-um@lists.infradead.org; Sat, 21 Sep 2019 00:19:07 +0000
-Received: by mail-pf1-x449.google.com with SMTP id q127so5828596pfc.17
- for <linux-um@lists.infradead.org>; Fri, 20 Sep 2019 17:19:04 -0700 (PDT)
-Date: Fri, 20 Sep 2019 17:18:36 -0700
-Message-Id: <20190921001855.200947-1-brendanhiggins@google.com>
+ id 1iBSBi-0003BS-Ik
+ for linux-um@lists.infradead.org; Fri, 20 Sep 2019 23:19:44 +0000
+Received: by mail-pf1-x449.google.com with SMTP id z13so5748209pfr.15
+ for <linux-um@lists.infradead.org>; Fri, 20 Sep 2019 16:19:40 -0700 (PDT)
+Date: Fri, 20 Sep 2019 16:19:04 -0700
+Message-Id: <20190920231923.141900-1-brendanhiggins@google.com>
 Mime-Version: 1.0
-Subject: [PATCH v17 00/19] kunit: introduce KUnit, the Linux kernel unit
+Subject: [PATCH v16 00/19] kunit: introduce KUnit, the Linux kernel unit
  testing framework
 From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
@@ -84,29 +84,13 @@ For convenience I am hosting the compiled docs here[4].
 Additionally for convenience, I have applied these patches to a
 branch[5]. The repo may be cloned with:
 git clone https://kunit.googlesource.com/linux
-This patchset is on the kunit/initial/v5.3/v17 branch.
-
-## History since v15
-
-### v17
-
- - Addressed comments on 06/19 (lib: enable building KUnit in lib/) from
-   Stephen Boyd by moving KUnit submenu ahead of Runtime Testing
-   submenu.
-
-### v16
-
- - Addressed comments from Linus Torvalds by moving all kunit/ paths to
-   lib/kunit/.
- - Addressed comments by Randy Dunlap by moving KUnit Kconfig under
-   lib/Kconfig.debug so the KUnit submenu shows up under the "Kernel
-   Hacking" menu.
+This patchset is on the kunit/initial/v5.3/v16 branch.
 
 [1] https://www.lkml.org/lkml/2019/9/20/696
 [2] https://www.lkml.org/lkml/2019/9/20/738
 [3] https://google.github.io/kunit-docs/third_party/kernel/docs/usage.html#kunit-on-non-uml-architectures
 [4] https://google.github.io/kunit-docs/third_party/kernel/docs/
-[5] https://kunit.googlesource.com/linux/+/kunit/initial/v5.3/v17
+[5] https://kunit.googlesource.com/linux/+/kunit/initial/v5.3/v16
 
 ---
 
