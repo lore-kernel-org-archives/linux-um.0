@@ -1,14 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from mail-pg1-x54a.google.com ([2607:f8b0:4864:20::54a])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iCg12-0002Ov-2O
- for linux-um@lists.infradead.org; Tue, 24 Sep 2019 08:17:45 +0000
-Message-ID: <c8cbee753dc0306fd7597f43a45e05d99d404b29.camel@sipsolutions.net>
-Subject: static EXPORT_SYMBOL checker causes false positives on ARCH=um
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Tue, 24 Sep 2019 10:17:40 +0200
-MIME-Version: 1.0
+ id 1iBSCU-0004nC-J6
+ for linux-um@lists.infradead.org; Fri, 20 Sep 2019 23:20:31 +0000
+Received: by mail-pg1-x54a.google.com with SMTP id d19so5379940pgh.3
+ for <linux-um@lists.infradead.org>; Fri, 20 Sep 2019 16:20:29 -0700 (PDT)
+Date: Fri, 20 Sep 2019 16:19:22 -0700
+In-Reply-To: <20190920231923.141900-1-brendanhiggins@google.com>
+Message-Id: <20190920231923.141900-19-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20190920231923.141900-1-brendanhiggins@google.com>
+Subject: [PATCH v16 18/19] MAINTAINERS: add proc sysctl KUnit test to PROC
+ SYSCTL section
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -21,63 +25,42 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, Denis Efremov <efremov@linux.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Emil Velikov <emil.l.velikov@gmail.com>
-Cc: linux-kbuild@vger.kernel.org
+To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, Iurii Zaikin <yzaikin@google.com>, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, torvalds@linux-foundation.org, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-Hi,
+Add entry for the new proc sysctl KUnit test to the PROC SYSCTL section,
+and add Iurii as a maintainer.
 
-With the new commit 15bfc2348d54 ("modpost: check for static
-EXPORT_SYMBOL* functions") we get a lot of warnings on ARCH=um builds:
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Cc: Iurii Zaikin <yzaikin@google.com>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+Acked-by: Luis Chamberlain <mcgrof@kernel.org>
+---
+ MAINTAINERS | 2 ++
+ 1 file changed, 2 insertions(+)
 
-WARNING: "rename" [vmlinux] is a static EXPORT_SYMBOL
-WARNING: "lseek" [vmlinux] is a static EXPORT_SYMBOL
-WARNING: "ftruncate64" [vmlinux] is a static EXPORT_SYMBOL
-[...]
-see https://p.sipsolutions.net/7232995f34907b9d.txt
-
-
-This hack fixes *most* of them:
-
-diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index 820eed87fb43..3e443563ebea 100644
---- a/scripts/mod/modpost.c
-+++ b/scripts/mod/modpost.c
-@@ -1931,12 +1931,18 @@ static void check_sec_ref(struct module *mod, const char *modname,
- static char *remove_dot(char *s)
- {
- 	size_t n = strcspn(s, ".");
-+	char *at;
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e3d0d184ae4e..6663d4accd36 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -12983,12 +12983,14 @@ F:	Documentation/filesystems/proc.txt
+ PROC SYSCTL
+ M:	Luis Chamberlain <mcgrof@kernel.org>
+ M:	Kees Cook <keescook@chromium.org>
++M:	Iurii Zaikin <yzaikin@google.com>
+ L:	linux-kernel@vger.kernel.org
+ L:	linux-fsdevel@vger.kernel.org
+ S:	Maintained
+ F:	fs/proc/proc_sysctl.c
+ F:	include/linux/sysctl.h
+ F:	kernel/sysctl.c
++F:	kernel/sysctl-test.c
+ F:	tools/testing/selftests/sysctl/
  
- 	if (n && s[n]) {
- 		size_t m = strspn(s + n + 1, "0123456789");
- 		if (m && (s[n + m] == '.' || s[n + m] == 0))
- 			s[n] = 0;
- 	}
-+
-+	at = strchr(s, '@');
-+	if (at)
-+		*at = 0;
-+
- 	return s;
- }
- 
-
-(but obviously just serves to give you an idea of what's going on).
-
-
-With that, only two remain for me:
-
-WARNING: "__guard" [vmlinux] is a static EXPORT_SYMBOL
-WARNING: "__stack_smash_handler" [vmlinux] is a static EXPORT_SYMBOL
-
-and I think that's because they don't even exist at all, so arguably the
-code shouldn't export them, but I didn't find a way to detect at build
-time if -fstack-protector was enabled or not?
-
-Any thoughts?
-
-Thanks,
-johannes
+ PS3 NETWORK SUPPORT
+-- 
+2.23.0.351.gc4317032e6-goog
 
 
 _______________________________________________
