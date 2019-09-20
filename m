@@ -1,13 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
- by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i5xmI-0006wE-I7
- for linux-um@lists.infradead.org; Thu, 05 Sep 2019 19:50:48 +0000
+ by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
+ id 1iBO9Q-00043j-8z
+ for linux-um@lists.infradead.org; Fri, 20 Sep 2019 19:01:06 +0000
+Message-ID: <592db08196f0a89425f40d33324128741c2acf9f.camel@sipsolutions.net>
+Subject: Re: linux-image-5.2.0-2-amd64: breaks UML all versions, both debian
+ stock and compiled from source.
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v2 1/2] um: virtio: implement VHOST_USER_PROTOCOL_F_SLAVE_REQ
-Date: Thu,  5 Sep 2019 21:50:37 +0200
-Message-Id: <1567713038-I2fd1049a09368398124caa2a4e132f0b6ebde347@changeid>
+Date: Fri, 20 Sep 2019 21:01:00 +0200
+In-Reply-To: <dd5de310-86b8-eb66-771f-d1cbaf246da1@kot-begemot.co.uk>
+References: <156897436056.2001.10040310871991691509.reportbug@sleer.kot.begemot.co.uk>
+ <ded0fc52-3631-375f-e4b5-c18e93777c4f@kot-begemot.co.uk>
+ <edc683fbb6596f2a35656f8951d2b7a692ca7620.camel@sipsolutions.net>
+ <dd5de310-86b8-eb66-771f-d1cbaf246da1@kot-begemot.co.uk>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -21,310 +27,50 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Cc: linux-um@lists.infradead.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+[removing debbugs submit address, it doesn't understand this thread]
 
-Implement the communication channel for the device to notify
-us of some events, and notably implement the handling of the
-config updates needed for the combination of this feature
-and VHOST_USER_PROTOCOL_F_CONFIG.
+On Fri, 2019-09-20 at 19:57 +0100, Anton Ivanov wrote:
+> On 20/09/2019 18:53, Johannes Berg wrote:
+> > On Fri, 2019-09-20 at 15:48 +0100, Anton Ivanov wrote:
+> > > These are the Start (that is what sbrk(0) returns) and &_end values I
+> > > get for the two kernels:
+> > > 
+> > > Linux 4.19 on host - Start 1645867008 end 1631412224 diff 14454784
+> > > 
+> > > Linux 5.2 on host - Start 93825006145536 end 1631412224 diff 93823374733312
+> > Does this need some specific configuration for 5.2? I have a system
+> > running 5.2.8 (compiled a relatively simple kernel for my usage there -
+> > it's a VM), and it can run my UML linux binary just fine.
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- arch/um/drivers/vhost_user.h |  18 ++++-
- arch/um/drivers/virtio_uml.c | 150 ++++++++++++++++++++++++++++++-----
- 2 files changed, 145 insertions(+), 23 deletions(-)
+> That is starting to narrow it down to something in the debian 5.2 config :)
 
-diff --git a/arch/um/drivers/vhost_user.h b/arch/um/drivers/vhost_user.h
-index 2a9829b0782b..8aee9919581e 100644
---- a/arch/um/drivers/vhost_user.h
-+++ b/arch/um/drivers/vhost_user.h
-@@ -9,7 +9,8 @@
- /* Feature bits */
- #define VHOST_USER_F_PROTOCOL_FEATURES	30
- /* Protocol feature bits */
--#define VHOST_USER_PROTOCOL_F_CONFIG	9
-+#define VHOST_USER_PROTOCOL_F_SLAVE_REQ		5
-+#define VHOST_USER_PROTOCOL_F_CONFIG		9
- /* Vring state index masks */
- #define VHOST_USER_VRING_INDEX_MASK	0xff
- #define VHOST_USER_VRING_POLL_MASK	BIT(8)
-@@ -19,7 +20,8 @@
- /* Supported transport features */
- #define VHOST_USER_SUPPORTED_F		BIT_ULL(VHOST_USER_F_PROTOCOL_FEATURES)
- /* Supported protocol features */
--#define VHOST_USER_SUPPORTED_PROTOCOL_F	BIT_ULL(VHOST_USER_PROTOCOL_F_CONFIG)
-+#define VHOST_USER_SUPPORTED_PROTOCOL_F	(BIT_ULL(VHOST_USER_PROTOCOL_F_SLAVE_REQ) | \
-+					 BIT_ULL(VHOST_USER_PROTOCOL_F_CONFIG))
- 
- enum vhost_user_request {
- 	VHOST_USER_GET_FEATURES = 1,
-@@ -49,8 +51,18 @@ enum vhost_user_request {
- 	VHOST_USER_SET_CONFIG = 25,
- };
- 
-+enum vhost_user_slave_request {
-+	VHOST_USER_SLAVE_IOTLB_MSG = 1,
-+	VHOST_USER_SLAVE_CONFIG_CHANGE_MSG = 2,
-+	VHOST_USER_SLAVE_VRING_HOST_NOTIFIER_MSG = 3,
-+};
-+
- struct vhost_user_header {
--	u32 request; /* Use enum vhost_user_request */
-+	/*
-+	 * Use enum vhost_user_request for outgoing messages,
-+	 * uses enum vhost_user_slave_request for incoming ones.
-+	 */
-+	u32 request;
- 	u32 flags;
- 	u32 size;
- } __packed;
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index 2651d27c4fba..a12c36520cbe 100644
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -49,7 +49,7 @@ struct virtio_uml_device {
- 	struct virtio_device vdev;
- 	struct platform_device *pdev;
- 
--	int sock;
-+	int sock, req_fd;
- 	u64 features;
- 	u64 protocol_features;
- 	u8 status;
-@@ -105,40 +105,46 @@ static int full_read(int fd, void *buf, int len)
- 	return 0;
- }
- 
--static int vhost_user_recv_header(struct virtio_uml_device *vu_dev,
--				  struct vhost_user_msg *msg)
-+static int vhost_user_recv_header(int fd, struct vhost_user_msg *msg)
- {
--	size_t size = sizeof(msg->header);
--	int rc;
--
--	rc = full_read(vu_dev->sock, (void *) msg, size);
--	if (rc)
--		return rc;
--	if (msg->header.flags != (VHOST_USER_FLAG_REPLY | VHOST_USER_VERSION))
--		return -EPROTO;
--	return 0;
-+	return full_read(fd, msg, sizeof(msg->header));
- }
- 
--static int vhost_user_recv(struct virtio_uml_device *vu_dev,
--			   struct vhost_user_msg *msg,
-+static int vhost_user_recv(int fd, struct vhost_user_msg *msg,
- 			   size_t max_payload_size)
- {
- 	size_t size;
--	int rc = vhost_user_recv_header(vu_dev, msg);
-+	int rc = vhost_user_recv_header(fd, msg);
- 
- 	if (rc)
- 		return rc;
- 	size = msg->header.size;
- 	if (size > max_payload_size)
- 		return -EPROTO;
--	return full_read(vu_dev->sock, (void *) &msg->payload, size);
-+	return full_read(fd, &msg->payload, size);
-+}
-+
-+static int vhost_user_recv_resp(struct virtio_uml_device *vu_dev,
-+				struct vhost_user_msg *msg,
-+				size_t max_payload_size)
-+{
-+	int rc = vhost_user_recv(vu_dev->sock, msg, max_payload_size);
-+
-+	if (rc)
-+		return rc;
-+
-+	if (msg->header.flags != (VHOST_USER_FLAG_REPLY | VHOST_USER_VERSION))
-+		return -EPROTO;
-+
-+	return 0;
- }
- 
- static int vhost_user_recv_u64(struct virtio_uml_device *vu_dev,
- 			       u64 *value)
- {
- 	struct vhost_user_msg msg;
--	int rc = vhost_user_recv(vu_dev, &msg, sizeof(msg.payload.integer));
-+	int rc = vhost_user_recv_resp(vu_dev, &msg,
-+				      sizeof(msg.payload.integer));
- 
- 	if (rc)
- 		return rc;
-@@ -148,6 +154,21 @@ static int vhost_user_recv_u64(struct virtio_uml_device *vu_dev,
- 	return 0;
- }
- 
-+static int vhost_user_recv_req(struct virtio_uml_device *vu_dev,
-+			       struct vhost_user_msg *msg,
-+			       size_t max_payload_size)
-+{
-+	int rc = vhost_user_recv(vu_dev->req_fd, msg, max_payload_size);
-+
-+	if (rc)
-+		return rc;
-+
-+	if (msg->header.flags != VHOST_USER_VERSION)
-+		return -EPROTO;
-+
-+	return 0;
-+}
-+
- static int vhost_user_send(struct virtio_uml_device *vu_dev,
- 			   struct vhost_user_msg *msg,
- 			   int *fds, size_t num_fds)
-@@ -168,6 +189,16 @@ static int vhost_user_send_no_payload(struct virtio_uml_device *vu_dev,
- 	return vhost_user_send(vu_dev, &msg, NULL, 0);
- }
- 
-+static int vhost_user_send_no_payload_fd(struct virtio_uml_device *vu_dev,
-+					 u32 request, int fd)
-+{
-+	struct vhost_user_msg msg = {
-+		.header.request = request,
-+	};
-+
-+	return vhost_user_send(vu_dev, &msg, &fd, 1);
-+}
-+
- static int vhost_user_send_u64(struct virtio_uml_device *vu_dev,
- 			       u32 request, u64 value)
- {
-@@ -219,6 +250,70 @@ static int vhost_user_set_protocol_features(struct virtio_uml_device *vu_dev,
- 				   protocol_features);
- }
- 
-+static irqreturn_t vu_req_interrupt(int irq, void *data)
-+{
-+	struct virtio_uml_device *vu_dev = data;
-+	struct {
-+		struct vhost_user_msg msg;
-+		u8 extra_payload[512];
-+	} msg;
-+	int rc;
-+
-+	rc = vhost_user_recv_req(vu_dev, &msg.msg,
-+				 sizeof(msg.msg.payload) +
-+				 sizeof(msg.extra_payload));
-+
-+	if (rc == -EAGAIN)
-+		return IRQ_NONE;
-+
-+	switch (msg.msg.header.request) {
-+	case VHOST_USER_SLAVE_CONFIG_CHANGE_MSG:
-+		virtio_config_changed(&vu_dev->vdev);
-+		break;
-+	case VHOST_USER_SLAVE_IOTLB_MSG:
-+		/* not supported - VIRTIO_F_IOMMU_PLATFORM */
-+	case VHOST_USER_SLAVE_VRING_HOST_NOTIFIER_MSG:
-+		/* not supported - VHOST_USER_PROTOCOL_F_HOST_NOTIFIER */
-+	default:
-+		vu_err(vu_dev, "unexpected slave request %d\n",
-+		       msg.msg.header.request);
-+	}
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static int vhost_user_init_slave_req(struct virtio_uml_device *vu_dev)
-+{
-+	int rc, req_fds[2];
-+
-+	rc = os_pipe(req_fds, true, true);
-+	if (rc < 0)
-+		return rc;
-+	vu_dev->req_fd = req_fds[0];
-+
-+	rc = um_request_irq(VIRTIO_IRQ, vu_dev->req_fd, IRQ_READ,
-+			    vu_req_interrupt, IRQF_SHARED,
-+			    vu_dev->pdev->name, vu_dev);
-+	if (rc)
-+		goto err_close;
-+
-+	rc = vhost_user_send_no_payload_fd(vu_dev, VHOST_USER_SET_SLAVE_REQ_FD,
-+					   req_fds[1]);
-+	if (rc)
-+		goto err_free_irq;
-+
-+	goto out;
-+
-+err_free_irq:
-+	um_free_irq(vu_dev->req_fd, vu_dev);
-+err_close:
-+	os_close_file(req_fds[0]);
-+out:
-+	/* Close unused write end of request fds */
-+	os_close_file(req_fds[1]);
-+	return rc;
-+}
-+
- static int vhost_user_init(struct virtio_uml_device *vu_dev)
- {
- 	int rc = vhost_user_set_owner(vu_dev);
-@@ -242,8 +337,17 @@ static int vhost_user_init(struct virtio_uml_device *vu_dev)
- 		vu_dev->protocol_features &= VHOST_USER_SUPPORTED_PROTOCOL_F;
- 		rc = vhost_user_set_protocol_features(vu_dev,
- 				vu_dev->protocol_features);
-+		if (rc)
-+			return rc;
- 	}
--	return rc;
-+
-+	if (vu_dev->protocol_features & VHOST_USER_PROTOCOL_F_SLAVE_REQ) {
-+		rc = vhost_user_init_slave_req(vu_dev);
-+		if (rc)
-+			return rc;
-+	}
-+
-+	return 0;
- }
- 
- static void vhost_user_get_config(struct virtio_uml_device *vu_dev,
-@@ -274,7 +378,7 @@ static void vhost_user_get_config(struct virtio_uml_device *vu_dev,
- 		goto free;
- 	}
- 
--	rc = vhost_user_recv(vu_dev, msg, msg_size);
-+	rc = vhost_user_recv_resp(vu_dev, msg, msg_size);
- 	if (rc) {
- 		vu_err(vu_dev,
- 		       "receiving VHOST_USER_GET_CONFIG response failed: %d\n",
-@@ -728,13 +832,18 @@ static const struct virtio_config_ops virtio_uml_config_ops = {
- 	.bus_name = vu_bus_name,
- };
- 
--
- static void virtio_uml_release_dev(struct device *d)
- {
- 	struct virtio_device *vdev =
- 			container_of(d, struct virtio_device, dev);
- 	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
- 
-+	/* might not have been opened due to not negotiating the feature */
-+	if (vu_dev->req_fd >= 0) {
-+		um_free_irq(VIRTIO_IRQ, vu_dev);
-+		os_close_file(vu_dev->req_fd);
-+	}
-+
- 	os_close_file(vu_dev->sock);
- }
- 
-@@ -764,6 +873,7 @@ static int virtio_uml_probe(struct platform_device *pdev)
- 	vu_dev->vdev.id.device = pdata->virtio_device_id;
- 	vu_dev->vdev.id.vendor = VIRTIO_DEV_ANY_ID;
- 	vu_dev->pdev = pdev;
-+	vu_dev->req_fd = -1;
- 
- 	do {
- 		rc = os_connect_socket(pdata->socket_path);
--- 
-2.20.1
+Not sure if it's purely the kernel config. I am running debian on that
+machine, but it's some bastardized thing I suspect ...
+
+> > Or perhaps there's some interaction with some other userspace too?
+> 
+> It definitely occurs on a debian system with current stable (buster) 
+> userspace and the kernel from testing which 5.2 with patches.
+> 
+> It definitely does not occur on a buster system with a buster stock 
+> kernel which is 4.19 or anything prior to that. Tested on same hardware 
+> and a couple of similar ones I have around.
+
+OK.
+
+> I got as far as narrowing down the differences between the two cases to 
+> __binary_start which is derived from START in the source.
+> 
+> I have not really looked at where to go from that point.
+
+Could you put a breakpoint or a sleep or something in there and capture
+/proc/<pid>/maps before it gives up? I'd be interested in the difference
+(but have good cases enough here).
+
+johannes
 
 
 _______________________________________________
