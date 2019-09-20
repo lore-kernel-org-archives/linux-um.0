@@ -1,19 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iBSa6-0003oc-9m
- for linux-um@lists.infradead.org; Fri, 20 Sep 2019 23:44:56 +0000
-Received: by mail-pl1-x643.google.com with SMTP id u12so3901387pls.12
- for <linux-um@lists.infradead.org>; Fri, 20 Sep 2019 16:44:50 -0700 (PDT)
+ id 1iBSRV-00025a-HH
+ for linux-um@lists.infradead.org; Fri, 20 Sep 2019 23:36:03 +0000
 MIME-Version: 1.0
+In-Reply-To: <20190920231923.141900-7-brendanhiggins@google.com>
 References: <20190920231923.141900-1-brendanhiggins@google.com>
  <20190920231923.141900-7-brendanhiggins@google.com>
- <20190920233600.48BBA20644@mail.kernel.org>
-In-Reply-To: <20190920233600.48BBA20644@mail.kernel.org>
-From: Brendan Higgins <brendanhiggins@google.com>
-Date: Fri, 20 Sep 2019 16:44:38 -0700
-Message-ID: <CAFd5g46pndA_gOD9i8M5e5fb8x4mSL9mcgMDujN7XufeFs8bmQ@mail.gmail.com>
+From: Stephen Boyd <sboyd@kernel.org>
 Subject: Re: [PATCH v16 06/19] lib: enable building KUnit in lib/
+Date: Fri, 20 Sep 2019 16:35:59 -0700
+Message-Id: <20190920233600.48BBA20644@mail.kernel.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -26,42 +23,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Stephen Boyd <sboyd@kernel.org>
-Cc: Petr Mladek <pmladek@suse.com>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, Amir Goldstein <amir73il@gmail.com>, dri-devel <dri-devel@lists.freedesktop.org>, Sasha Levin <Alexander.Levin@microsoft.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Michael Ellerman <mpe@ellerman.id.au>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, shuah <shuah@kernel.org>, Rob Herring <robh@kernel.org>, linux-nvdimm <linux-nvdimm@lists.01.org>, Frank Rowand <frowand.list@gmail.com>, Knut Omang <knut.omang@oracle.com>, Kieran Bingham <kieran.bingham@ideasonboard.com>, Linus Torvalds <torvalds@linux-foundation.org>, wfg@linux.intel.com, Joel Stanley <joel@jms.id.au>, David Rientjes <rientjes@google.com>, Jeff Dike <jdike@addtoit.com>, Dan Carpenter <dan.carpenter@oracle.com>, devicetree <devicetree@vger.kernel.org>, Kees Cook <keescook@chromium.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, "Bird, Timothy  <Tim.Bird@sony.com>, linux-um@lists.infradead.org, Steven Rostedt" <rostedt@goodmis.org>, Julia Lawall <julia.lawall@lip6.fr>, Josh Poimboeuf <jpoimboe@redhat.com>, kunit-dev@googlegroups.com, Theodore Ts'o <tytso@mit.edu>, Richard Weinberger <richard@nod.at>, Greg KH <gregkh@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@google.com>, linux-fsdevel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, Logan Gunthorpe <logang@deltatee.com>, Kevin Hilman <khilman@baylibre.com>
+To: Brendan Higgins <brendanhiggins@google.com>, frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, Kees Cook <keescook@chromium.org>, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, torvalds@linux-foundation.org, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, logang@deltatee.com
 
-On Fri, Sep 20, 2019 at 4:36 PM Stephen Boyd <sboyd@kernel.org> wrote:
->
-> Quoting Brendan Higgins (2019-09-20 16:19:10)
-> > KUnit is a new unit testing framework for the kernel and when used is
-> > built into the kernel as a part of it. Add KUnit to the lib Kconfig and
-> > Makefile to allow it to be actually built.
-> >
-> > Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-> > Cc: Randy Dunlap <rdunlap@infradead.org>
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
-> > Cc: Kees Cook <keescook@chromium.org>
-> > ---
-> >  lib/Kconfig.debug | 2 ++
-> >  lib/Makefile      | 2 ++
-> >  2 files changed, 4 insertions(+)
-> >
-> > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> > index 5960e2980a8a..5870fbe11e9b 100644
-> > --- a/lib/Kconfig.debug
-> > +++ b/lib/Kconfig.debug
-> > @@ -2144,4 +2144,6 @@ config IO_STRICT_DEVMEM
-> >
-> >  source "arch/$(SRCARCH)/Kconfig.debug"
-> >
-> > +source "lib/kunit/Kconfig"
-> > +
->
-> Perhaps this should go by the "Runtime Testing" part? Before or after.
+Quoting Brendan Higgins (2019-09-20 16:19:10)
+> KUnit is a new unit testing framework for the kernel and when used is
+> built into the kernel as a part of it. Add KUnit to the lib Kconfig and
+> Makefile to allow it to be actually built.
+> 
+> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+> Cc: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
+> Cc: Kees Cook <keescook@chromium.org>
+> ---
+>  lib/Kconfig.debug | 2 ++
+>  lib/Makefile      | 2 ++
+>  2 files changed, 4 insertions(+)
+> 
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 5960e2980a8a..5870fbe11e9b 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -2144,4 +2144,6 @@ config IO_STRICT_DEVMEM
+>  
+>  source "arch/$(SRCARCH)/Kconfig.debug"
+>  
+> +source "lib/kunit/Kconfig"
+> +
 
-Yeah, that probably makes sense.
+Perhaps this should go by the "Runtime Testing" part? Before or after.
 
-> >  endmenu # Kernel hacking
+>  endmenu # Kernel hacking
 
 _______________________________________________
 linux-um mailing list
