@@ -1,14 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
- by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i6MG8-0000gr-JJ
- for linux-um@lists.infradead.org; Fri, 06 Sep 2019 21:59:13 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [RFC] um: don't use generic barrier.h
-Date: Fri,  6 Sep 2019 23:58:50 +0200
-Message-Id: <1567807130-I95235a4f9e6929241afd5150f1ceceb45f5e28af@changeid>
-MIME-Version: 1.0
+Received: from mail-qk1-x74a.google.com ([2607:f8b0:4864:20::74a])
+ by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
+ id 1iBT7T-0005Ls-83
+ for linux-um@lists.infradead.org; Sat, 21 Sep 2019 00:19:24 +0000
+Received: by mail-qk1-x74a.google.com with SMTP id n135so10127712qke.23
+ for <linux-um@lists.infradead.org>; Fri, 20 Sep 2019 17:19:22 -0700 (PDT)
+Date: Fri, 20 Sep 2019 17:18:42 -0700
+In-Reply-To: <20190921001855.200947-1-brendanhiggins@google.com>
+Message-Id: <20190921001855.200947-7-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20190921001855.200947-1-brendanhiggins@google.com>
+Subject: [PATCH v17 06/19] lib: enable building KUnit in lib/
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -21,60 +24,51 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, Kees Cook <keescook@chromium.org>, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, torvalds@linux-foundation.org, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, logang@deltatee.com
 
-From: Johannes Berg <johannes.berg@intel.com>
+KUnit is a new unit testing framework for the kernel and when used is
+built into the kernel as a part of it. Add KUnit to the lib Kconfig and
+Makefile to allow it to be actually built.
 
-UML has its own platform-specific barrier.h under arch/x86/um/,
-which should get used. Fix the build system to use it, and then
-fix the barrier.h to actually compile.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: Kees Cook <keescook@chromium.org>
 ---
-I'm debugging some odd stuff with virtio, and the next patch is to
-remove dma_rmb/dma_wmb from this, or at least make them conditional
-on virtio support, since if we have virtio support we really need
-memory barriers there, not just compiler barriers.
+ lib/Kconfig.debug | 2 ++
+ lib/Makefile      | 2 ++
+ 2 files changed, 4 insertions(+)
 
-At least in theory. My problem isn't actually fixed by this.
----
- arch/um/include/asm/Kbuild | 1 -
- arch/x86/um/asm/barrier.h  | 9 +--------
- 2 files changed, 1 insertion(+), 9 deletions(-)
-
-diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
-index b352ed09260e..398006d27e40 100644
---- a/arch/um/include/asm/Kbuild
-+++ b/arch/um/include/asm/Kbuild
-@@ -1,5 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0
--generic-y += barrier.h
- generic-y += bpf_perf_event.h
- generic-y += bug.h
- generic-y += compat.h
-diff --git a/arch/x86/um/asm/barrier.h b/arch/x86/um/asm/barrier.h
-index f31e5d903161..eb0654f39fd2 100644
---- a/arch/x86/um/asm/barrier.h
-+++ b/arch/x86/um/asm/barrier.h
-@@ -2,14 +2,7 @@
- #ifndef _ASM_UM_BARRIER_H_
- #define _ASM_UM_BARRIER_H_
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 5960e2980a8a..1c69640e712f 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1681,6 +1681,8 @@ config PROVIDE_OHCI1394_DMA_INIT
  
--#include <asm/asm.h>
--#include <asm/segment.h>
--#include <asm/cpufeatures.h>
--#include <asm/cmpxchg.h>
--#include <asm/nops.h>
--
--#include <linux/kernel.h>
--#include <linux/irqflags.h>
-+#include <asm/alternative.h>
+ 	  See Documentation/debugging-via-ohci1394.txt for more information.
  
- /*
-  * Force strict CPU ordering.
++source "lib/kunit/Kconfig"
++
+ menuconfig RUNTIME_TESTING_MENU
+ 	bool "Runtime Testing"
+ 	def_bool y
+diff --git a/lib/Makefile b/lib/Makefile
+index 29c02a924973..67e79d3724ed 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -96,6 +96,8 @@ obj-$(CONFIG_TEST_MEMINIT) += test_meminit.o
+ 
+ obj-$(CONFIG_TEST_LIVEPATCH) += livepatch/
+ 
++obj-$(CONFIG_KUNIT) += kunit/
++
+ ifeq ($(CONFIG_DEBUG_KOBJECT),y)
+ CFLAGS_kobject.o += -DDEBUG
+ CFLAGS_kobject_uevent.o += -DDEBUG
 -- 
-2.20.1
+2.23.0.351.gc4317032e6-goog
 
 
 _______________________________________________
