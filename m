@@ -1,169 +1,70 @@
-Return-Path: <linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org>
-From: Christian Brauner <christian.brauner@ubuntu.com>
-Subject: [PATCH] seccomp: remove unused arg from secure_computing()
-Date: Fri, 20 Sep 2019 15:19:09 +0200
-Message-Id: <20190920131907.6886-1-christian.brauner@ubuntu.com>
-MIME-Version: 1.0
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pl1-x64a.google.com ([2607:f8b0:4864:20::64a])
+ by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
+ id 1iCKG2-0003Fm-0k
+ for linux-um@lists.infradead.org; Mon, 23 Sep 2019 09:03:47 +0000
+Received: by mail-pl1-x64a.google.com with SMTP id 99so2503405plc.18
+ for <linux-um@lists.infradead.org>; Mon, 23 Sep 2019 02:03:45 -0700 (PDT)
+Date: Mon, 23 Sep 2019 02:02:48 -0700
+In-Reply-To: <20190923090249.127984-1-brendanhiggins@google.com>
+Message-Id: <20190923090249.127984-19-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20190923090249.127984-1-brendanhiggins@google.com>
+Subject: [PATCH v18 18/19] MAINTAINERS: add proc sysctl KUnit test to PROC
+ SYSCTL section
+From: Brendan Higgins <brendanhiggins@google.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: linux-s390@vger.kernel.org, Will Drewry <wad@chromium.org>, Kees Cook <keescook@chromium.org>, linux-parisc@vger.kernel.org, x86@kernel.org, linux-um@lists.infradead.org, Oleg Nesterov <oleg@redhat.com>, Andy Lutomirski <luto@kernel.org>, Christian Brauner <christian.brauner@ubuntu.com>, Thomas Gleixner <tglx@linutronix.de>, linux-arm-kernel@lists.infradead.org
-List-ID: <linux-um.lists.infradead.org>
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, Iurii Zaikin <yzaikin@google.com>, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, torvalds@linux-foundation.org, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-While touching seccomp code I realized that the struct seccomp_data
-argument to secure_computing() seems to be unused by all current
-callers. So let's remove it unless there is some subtlety I missed.
-Note, I only tested this on x86.
+Add entry for the new proc sysctl KUnit test to the PROC SYSCTL section,
+and add Iurii as a maintainer.
 
-Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Will Drewry <wad@chromium.org>
-Cc: Oleg Nesterov <oleg@redhat.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-parisc@vger.kernel.org
-Cc: linux-s390@vger.kernel.org
-Cc: linux-um@lists.infradead.org
-Cc: x86@kernel.org
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Cc: Iurii Zaikin <yzaikin@google.com>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+Acked-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- arch/arm/kernel/ptrace.c              | 2 +-
- arch/arm64/kernel/ptrace.c            | 2 +-
- arch/parisc/kernel/ptrace.c           | 2 +-
- arch/s390/kernel/ptrace.c             | 4 ++--
- arch/um/kernel/skas/syscall.c         | 2 +-
- arch/x86/entry/vsyscall/vsyscall_64.c | 2 +-
- include/linux/seccomp.h               | 6 +++---
- 7 files changed, 10 insertions(+), 10 deletions(-)
+ MAINTAINERS | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm/kernel/ptrace.c b/arch/arm/kernel/ptrace.c
-index 324352787aea..b606cded90cd 100644
---- a/arch/arm/kernel/ptrace.c
-+++ b/arch/arm/kernel/ptrace.c
-@@ -923,7 +923,7 @@ asmlinkage int syscall_trace_enter(struct pt_regs *regs, int scno)
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e3d0d184ae4e..6663d4accd36 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -12983,12 +12983,14 @@ F:	Documentation/filesystems/proc.txt
+ PROC SYSCTL
+ M:	Luis Chamberlain <mcgrof@kernel.org>
+ M:	Kees Cook <keescook@chromium.org>
++M:	Iurii Zaikin <yzaikin@google.com>
+ L:	linux-kernel@vger.kernel.org
+ L:	linux-fsdevel@vger.kernel.org
+ S:	Maintained
+ F:	fs/proc/proc_sysctl.c
+ F:	include/linux/sysctl.h
+ F:	kernel/sysctl.c
++F:	kernel/sysctl-test.c
+ F:	tools/testing/selftests/sysctl/
  
- 	/* Do seccomp after ptrace; syscall may have changed. */
- #ifdef CONFIG_HAVE_ARCH_SECCOMP_FILTER
--	if (secure_computing(NULL) == -1)
-+	if (secure_computing() == -1)
- 		return -1;
- #else
- 	/* XXX: remove this once OABI gets fixed */
-diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
-index 3cf3b135027e..010a835302d3 100644
---- a/arch/arm64/kernel/ptrace.c
-+++ b/arch/arm64/kernel/ptrace.c
-@@ -1816,7 +1816,7 @@ int syscall_trace_enter(struct pt_regs *regs)
- 	}
- 
- 	/* Do the secure computing after ptrace; failures should be fast. */
--	if (secure_computing(NULL) == -1)
-+	if (secure_computing() == -1)
- 		return -1;
- 
- 	if (test_thread_flag(TIF_SYSCALL_TRACEPOINT))
-diff --git a/arch/parisc/kernel/ptrace.c b/arch/parisc/kernel/ptrace.c
-index 9f6ff7bc06f9..f8c07dcbfb49 100644
---- a/arch/parisc/kernel/ptrace.c
-+++ b/arch/parisc/kernel/ptrace.c
-@@ -342,7 +342,7 @@ long do_syscall_trace_enter(struct pt_regs *regs)
- 	}
- 
- 	/* Do the secure computing check after ptrace. */
--	if (secure_computing(NULL) == -1)
-+	if (secure_computing() == -1)
- 		return -1;
- 
- #ifdef CONFIG_HAVE_SYSCALL_TRACEPOINTS
-diff --git a/arch/s390/kernel/ptrace.c b/arch/s390/kernel/ptrace.c
-index ad71132374f0..ed80bdfbf5fe 100644
---- a/arch/s390/kernel/ptrace.c
-+++ b/arch/s390/kernel/ptrace.c
-@@ -439,7 +439,7 @@ static int poke_user(struct task_struct *child, addr_t addr, addr_t data)
- long arch_ptrace(struct task_struct *child, long request,
- 		 unsigned long addr, unsigned long data)
- {
--	ptrace_area parea; 
-+	ptrace_area parea;
- 	int copied, ret;
- 
- 	switch (request) {
-@@ -856,7 +856,7 @@ asmlinkage long do_syscall_trace_enter(struct pt_regs *regs)
- 	}
- 
- 	/* Do the secure computing check after ptrace. */
--	if (secure_computing(NULL)) {
-+	if (secure_computing()) {
- 		/* seccomp failures shouldn't expose any additional code. */
- 		return -1;
- 	}
-diff --git a/arch/um/kernel/skas/syscall.c b/arch/um/kernel/skas/syscall.c
-index 44bb10785075..fc37259d5971 100644
---- a/arch/um/kernel/skas/syscall.c
-+++ b/arch/um/kernel/skas/syscall.c
-@@ -35,7 +35,7 @@ void handle_syscall(struct uml_pt_regs *r)
- 		goto out;
- 
- 	/* Do the seccomp check after ptrace; failures should be fast. */
--	if (secure_computing(NULL) == -1)
-+	if (secure_computing() == -1)
- 		goto out;
- 
- 	syscall = UPT_SYSCALL_NR(r);
-diff --git a/arch/x86/entry/vsyscall/vsyscall_64.c b/arch/x86/entry/vsyscall/vsyscall_64.c
-index e7c596dea947..b10cbf71a8cc 100644
---- a/arch/x86/entry/vsyscall/vsyscall_64.c
-+++ b/arch/x86/entry/vsyscall/vsyscall_64.c
-@@ -222,7 +222,7 @@ bool emulate_vsyscall(unsigned long error_code,
- 	 */
- 	regs->orig_ax = syscall_nr;
- 	regs->ax = -ENOSYS;
--	tmp = secure_computing(NULL);
-+	tmp = secure_computing();
- 	if ((!tmp && regs->orig_ax != syscall_nr) || regs->ip != address) {
- 		warn_bad_vsyscall(KERN_DEBUG, regs,
- 				  "seccomp tried to change syscall nr or ip");
-diff --git a/include/linux/seccomp.h b/include/linux/seccomp.h
-index 84868d37b35d..03583b6d1416 100644
---- a/include/linux/seccomp.h
-+++ b/include/linux/seccomp.h
-@@ -33,10 +33,10 @@ struct seccomp {
- 
- #ifdef CONFIG_HAVE_ARCH_SECCOMP_FILTER
- extern int __secure_computing(const struct seccomp_data *sd);
--static inline int secure_computing(const struct seccomp_data *sd)
-+static inline int secure_computing(void)
- {
- 	if (unlikely(test_thread_flag(TIF_SECCOMP)))
--		return  __secure_computing(sd);
-+		return  __secure_computing(NULL);
- 	return 0;
- }
- #else
-@@ -59,7 +59,7 @@ struct seccomp { };
- struct seccomp_filter { };
- 
- #ifdef CONFIG_HAVE_ARCH_SECCOMP_FILTER
--static inline int secure_computing(struct seccomp_data *sd) { return 0; }
-+static inline int secure_computing(void) { return 0; }
- #else
- static inline void secure_computing_strict(int this_syscall) { return; }
- #endif
+ PS3 NETWORK SUPPORT
 -- 
-2.23.0
+2.23.0.351.gc4317032e6-goog
 
 
 _______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
