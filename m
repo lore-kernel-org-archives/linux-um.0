@@ -1,8 +1,8 @@
 Return-Path: <linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org>
-Date: Tue, 24 Sep 2019 08:19:51 +0200
-From: Christian Brauner <christian.brauner@ubuntu.com>
+Date: Mon, 23 Sep 2019 16:51:32 -0700
+From: Kees Cook <keescook@chromium.org>
 Subject: Re: [PATCH] seccomp: remove unused arg from secure_computing()
-Message-ID: <20190924061950.cu6aosio57pz4r3m@wittgenstein>
+Message-ID: <201909231650.1CCAFBA6@keescook>
 References: <20190920131907.6886-1-christian.brauner@ubuntu.com>
  <20190923094916.GB15355@zn.tnic>
  <CALCETrU_fs_At-hTpr231kpaAd0z7xJN4ku-DvzhRU6cvcJA_w@mail.gmail.com>
@@ -22,7 +22,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
 Errors-To: linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org
 To: Borislav Petkov <bp@alien8.de>
-Cc: linux-s390 <linux-s390@vger.kernel.org>, Will Drewry <wad@chromium.org>, Kees Cook <keescook@chromium.org>, Parisc List <linux-parisc@vger.kernel.org>, X86 ML <x86@kernel.org>, linux-um@lists.infradead.org, Oleg Nesterov <oleg@redhat.com>, LKML <linux-kernel@vger.kernel.org>, Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Cc: linux-s390 <linux-s390@vger.kernel.org>, Will Drewry <wad@chromium.org>, Parisc List <linux-parisc@vger.kernel.org>, X86 ML <x86@kernel.org>, linux-um@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>, Oleg Nesterov <oleg@redhat.com>, Andy Lutomirski <luto@kernel.org>, Christian Brauner <christian.brauner@ubuntu.com>, Thomas Gleixner <tglx@linutronix.de>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-ID: <linux-um.lists.infradead.org>
 
 On Mon, Sep 23, 2019 at 09:34:46PM +0200, Borislav Petkov wrote:
@@ -48,9 +48,12 @@ On Mon, Sep 23, 2019 at 09:34:46PM +0200, Borislav Petkov wrote:
 > 
 > Christian, pls add that piece of history to the commit message.
 
-Yip, will do. Thanks!
+Yeah, this is just left-over from the "two phase" seccomp optimization
+that was removed a while back. I'll take this clean up into the seccomp
+tree. Thanks!
 
-Christian
+-- 
+Kees Cook
 
 _______________________________________________
 linux-arm-kernel mailing list
