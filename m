@@ -1,14 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from mail-pf1-x44a.google.com ([2607:f8b0:4864:20::44a])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1i9qiI-0002xb-0k
- for linux-um@lists.infradead.org; Mon, 16 Sep 2019 13:06:44 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH] um: time-travel: rewrite as an event scheduler
-Date: Mon, 16 Sep 2019 15:06:37 +0200
-Message-Id: <1568639197-I5687e9cdda059457fa2771ee06f9b4f399dc6f70@changeid>
-MIME-Version: 1.0
+ id 1iCKFz-0003Db-7A
+ for linux-um@lists.infradead.org; Mon, 23 Sep 2019 09:03:45 +0000
+Received: by mail-pf1-x44a.google.com with SMTP id q127so9680175pfc.17
+ for <linux-um@lists.infradead.org>; Mon, 23 Sep 2019 02:03:42 -0700 (PDT)
+Date: Mon, 23 Sep 2019 02:02:47 -0700
+In-Reply-To: <20190923090249.127984-1-brendanhiggins@google.com>
+Message-Id: <20190923090249.127984-18-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20190923090249.127984-1-brendanhiggins@google.com>
+Subject: [PATCH v18 17/19] kernel/sysctl-test: Add null pointer test for
+ sysctl.c:proc_dointvec()
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -21,519 +25,463 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, Iurii Zaikin <yzaikin@google.com>, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, torvalds@linux-foundation.org, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Iurii Zaikin <yzaikin@google.com>
 
-Instead of tracking all the various timer configurations,
-modify the time-travel mode to have an event scheduler and
-use a timer event on the scheduler to handle the different
-timer configurations.
+KUnit tests for initialized data behavior of proc_dointvec that is
+explicitly checked in the code. Includes basic parsing tests including
+int min/max overflow.
 
-This doesn't change the function right now, but it prepares
-the code for having different kinds of events in the future
-(i.e. interrupts coming from other devices that are part of
-co-simulation.)
-
-While at it, also move time_travel_sleep() to time.c to
-reduce the externally visible API surface.
-
-Also, we really should mark time-travel as incompatible with
-SMP, even if UML doesn't support SMP yet.
-
-Finally, I noticed a bug while developing this - if we move
-time forward due to consuming time while reading the clock,
-we might move across the next event and that would cause us
-to go backward in time when we then handle that event. Fix
-that by invoking the whole event machine in this case.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Iurii Zaikin <yzaikin@google.com>
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+Acked-by: Luis Chamberlain <mcgrof@kernel.org>
+Reviewed-by: Stephen Boyd <sboyd@kernel.org>
 ---
- arch/um/Kconfig                       |   1 +
- arch/um/include/linux/time-internal.h |  65 +++-----
- arch/um/include/shared/os.h           |   2 +
- arch/um/kernel/process.c              |  37 -----
- arch/um/kernel/time.c                 | 210 ++++++++++++++++++++++++--
- arch/um/os-Linux/signal.c             |  11 ++
- 6 files changed, 231 insertions(+), 95 deletions(-)
+ kernel/Makefile      |   2 +
+ kernel/sysctl-test.c | 392 +++++++++++++++++++++++++++++++++++++++++++
+ lib/Kconfig.debug    |  11 ++
+ 3 files changed, 405 insertions(+)
+ create mode 100644 kernel/sysctl-test.c
 
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index 3c3adfc486f2..3debe293169c 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -187,6 +187,7 @@ config SECCOMP
- config UML_TIME_TRAVEL_SUPPORT
- 	bool
- 	prompt "Support time-travel mode (e.g. for test execution)"
-+	depends on !SMP
- 	help
- 	  Enable this option to support time travel inside the UML instance.
+diff --git a/kernel/Makefile b/kernel/Makefile
+index ef0d95a190b4..63e9ea6122c2 100644
+--- a/kernel/Makefile
++++ b/kernel/Makefile
+@@ -113,6 +113,8 @@ obj-$(CONFIG_TORTURE_TEST) += torture.o
+ obj-$(CONFIG_HAS_IOMEM) += iomem.o
+ obj-$(CONFIG_RSEQ) += rseq.o
  
-diff --git a/arch/um/include/linux/time-internal.h b/arch/um/include/linux/time-internal.h
-index 2d2d13c9b46f..752a47d44557 100644
---- a/arch/um/include/linux/time-internal.h
-+++ b/arch/um/include/linux/time-internal.h
-@@ -6,6 +6,7 @@
- 
- #ifndef __TIMER_INTERNAL_H__
- #define __TIMER_INTERNAL_H__
-+#include <linux/list.h>
- 
- #define TIMER_MULTIPLIER 256
- #define TIMER_MIN_DELTA  500
-@@ -16,61 +17,35 @@ enum time_travel_mode {
- 	TT_MODE_INFCPU,
- };
- 
--enum time_travel_timer_mode {
--	TT_TMR_DISABLED,
--	TT_TMR_ONESHOT,
--	TT_TMR_PERIODIC,
-+#ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
-+struct time_travel_event {
-+	unsigned long long time;
-+	void (*fn)(struct time_travel_event *d);
-+	struct list_head list;
-+	bool pending;
- };
- 
--#ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
- extern enum time_travel_mode time_travel_mode;
--extern unsigned long long time_travel_time;
--extern enum time_travel_timer_mode time_travel_timer_mode;
--extern unsigned long long time_travel_timer_expiry;
--extern unsigned long long time_travel_timer_interval;
- 
--static inline void time_travel_set_time(unsigned long long ns)
--{
--	time_travel_time = ns;
--}
-+void time_travel_sleep(unsigned long long duration);
- 
--static inline void time_travel_set_timer_mode(enum time_travel_timer_mode mode)
-+static inline void
-+time_travel_set_event_fn(struct time_travel_event *e,
-+			 void (*fn)(struct time_travel_event *d))
- {
--	time_travel_timer_mode = mode;
--}
--
--static inline void time_travel_set_timer_expiry(unsigned long long expiry)
--{
--	time_travel_timer_expiry = expiry;
--}
--
--static inline void time_travel_set_timer_interval(unsigned long long interval)
--{
--	time_travel_timer_interval = interval;
-+	e->fn = fn;
- }
- #else
--#define time_travel_mode TT_MODE_OFF
--#define time_travel_time 0
--#define time_travel_timer_expiry 0
--#define time_travel_timer_interval 0
--
--static inline void time_travel_set_time(unsigned long long ns)
--{
--}
--
--static inline void time_travel_set_timer_mode(enum time_travel_timer_mode mode)
--{
--}
-+struct time_travel_event {
++obj-$(CONFIG_SYSCTL_KUNIT_TEST) += sysctl-test.o
++
+ obj-$(CONFIG_GCC_PLUGIN_STACKLEAK) += stackleak.o
+ KASAN_SANITIZE_stackleak.o := n
+ KCOV_INSTRUMENT_stackleak.o := n
+diff --git a/kernel/sysctl-test.c b/kernel/sysctl-test.c
+new file mode 100644
+index 000000000000..2a63241a8453
+--- /dev/null
++++ b/kernel/sysctl-test.c
+@@ -0,0 +1,392 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * KUnit test of proc sysctl.
++ */
++
++#include <kunit/test.h>
++#include <linux/sysctl.h>
++
++#define KUNIT_PROC_READ 0
++#define KUNIT_PROC_WRITE 1
++
++static int i_zero;
++static int i_one_hundred = 100;
++
++/*
++ * Test that proc_dointvec will not try to use a NULL .data field even when the
++ * length is non-zero.
++ */
++static void sysctl_test_api_dointvec_null_tbl_data(struct kunit *test)
++{
++	struct ctl_table null_data_table = {
++		.procname = "foo",
++		/*
++		 * Here we are testing that proc_dointvec behaves correctly when
++		 * we give it a NULL .data field. Normally this would point to a
++		 * piece of memory where the value would be stored.
++		 */
++		.data		= NULL,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	/*
++	 * proc_dointvec expects a buffer in user space, so we allocate one. We
++	 * also need to cast it to __user so sparse doesn't get mad.
++	 */
++	void __user *buffer = (void __user *)kunit_kzalloc(test, sizeof(int),
++							   GFP_USER);
++	size_t len;
++	loff_t pos;
++
++	/*
++	 * We don't care what the starting length is since proc_dointvec should
++	 * not try to read because .data is NULL.
++	 */
++	len = 1234;
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&null_data_table,
++					       KUNIT_PROC_READ, buffer, &len,
++					       &pos));
++	KUNIT_EXPECT_EQ(test, (size_t)0, len);
++
++	/*
++	 * See above.
++	 */
++	len = 1234;
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&null_data_table,
++					       KUNIT_PROC_WRITE, buffer, &len,
++					       &pos));
++	KUNIT_EXPECT_EQ(test, (size_t)0, len);
++}
++
++/*
++ * Similar to the previous test, we create a struct ctrl_table that has a .data
++ * field that proc_dointvec cannot do anything with; however, this time it is
++ * because we tell proc_dointvec that the size is 0.
++ */
++static void sysctl_test_api_dointvec_table_maxlen_unset(struct kunit *test)
++{
++	int data = 0;
++	struct ctl_table data_maxlen_unset_table = {
++		.procname = "foo",
++		.data		= &data,
++		/*
++		 * So .data is no longer NULL, but we tell proc_dointvec its
++		 * length is 0, so it still shouldn't try to use it.
++		 */
++		.maxlen		= 0,
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	void __user *buffer = (void __user *)kunit_kzalloc(test, sizeof(int),
++							   GFP_USER);
++	size_t len;
++	loff_t pos;
++
++	/*
++	 * As before, we don't care what buffer length is because proc_dointvec
++	 * cannot do anything because its internal .data buffer has zero length.
++	 */
++	len = 1234;
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&data_maxlen_unset_table,
++					       KUNIT_PROC_READ, buffer, &len,
++					       &pos));
++	KUNIT_EXPECT_EQ(test, (size_t)0, len);
++
++	/*
++	 * See previous comment.
++	 */
++	len = 1234;
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&data_maxlen_unset_table,
++					       KUNIT_PROC_WRITE, buffer, &len,
++					       &pos));
++	KUNIT_EXPECT_EQ(test, (size_t)0, len);
++}
++
++/*
++ * Here we provide a valid struct ctl_table, but we try to read and write from
++ * it using a buffer of zero length, so it should still fail in a similar way as
++ * before.
++ */
++static void sysctl_test_api_dointvec_table_len_is_zero(struct kunit *test)
++{
++	int data = 0;
++	/* Good table. */
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &data,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	void __user *buffer = (void __user *)kunit_kzalloc(test, sizeof(int),
++							   GFP_USER);
++	/*
++	 * However, now our read/write buffer has zero length.
++	 */
++	size_t len = 0;
++	loff_t pos;
++
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, KUNIT_PROC_READ, buffer,
++					       &len, &pos));
++	KUNIT_EXPECT_EQ(test, (size_t)0, len);
++
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, KUNIT_PROC_WRITE, buffer,
++					       &len, &pos));
++	KUNIT_EXPECT_EQ(test, (size_t)0, len);
++}
++
++/*
++ * Test that proc_dointvec refuses to read when the file position is non-zero.
++ */
++static void sysctl_test_api_dointvec_table_read_but_position_set(
++		struct kunit *test)
++{
++	int data = 0;
++	/* Good table. */
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &data,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	void __user *buffer = (void __user *)kunit_kzalloc(test, sizeof(int),
++							   GFP_USER);
++	/*
++	 * We don't care about our buffer length because we start off with a
++	 * non-zero file position.
++	 */
++	size_t len = 1234;
++	/*
++	 * proc_dointvec should refuse to read into the buffer since the file
++	 * pos is non-zero.
++	 */
++	loff_t pos = 1;
++
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, KUNIT_PROC_READ, buffer,
++					       &len, &pos));
++	KUNIT_EXPECT_EQ(test, (size_t)0, len);
++}
++
++/*
++ * Test that we can read a two digit number in a sufficiently size buffer.
++ * Nothing fancy.
++ */
++static void sysctl_test_dointvec_read_happy_single_positive(struct kunit *test)
++{
++	int data = 0;
++	/* Good table. */
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &data,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	size_t len = 4;
++	loff_t pos = 0;
++	char *buffer = kunit_kzalloc(test, len, GFP_USER);
++	char __user *user_buffer = (char __user *)buffer;
++	/* Store 13 in the data field. */
++	*((int *)table.data) = 13;
++
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, KUNIT_PROC_READ,
++					       user_buffer, &len, &pos));
++	KUNIT_ASSERT_EQ(test, (size_t)3, len);
++	buffer[len] = '\0';
++	/* And we read 13 back out. */
++	KUNIT_EXPECT_STREQ(test, "13\n", buffer);
++}
++
++/*
++ * Same as previous test, just now with negative numbers.
++ */
++static void sysctl_test_dointvec_read_happy_single_negative(struct kunit *test)
++{
++	int data = 0;
++	/* Good table. */
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &data,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	size_t len = 5;
++	loff_t pos = 0;
++	char *buffer = kunit_kzalloc(test, len, GFP_USER);
++	char __user *user_buffer = (char __user *)buffer;
++	*((int *)table.data) = -16;
++
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, KUNIT_PROC_READ,
++					       user_buffer, &len, &pos));
++	KUNIT_ASSERT_EQ(test, (size_t)4, len);
++	buffer[len] = '\0';
++	KUNIT_EXPECT_STREQ(test, "-16\n", (char *)buffer);
++}
++
++/*
++ * Test that a simple positive write works.
++ */
++static void sysctl_test_dointvec_write_happy_single_positive(struct kunit *test)
++{
++	int data = 0;
++	/* Good table. */
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &data,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	char input[] = "9";
++	size_t len = sizeof(input) - 1;
++	loff_t pos = 0;
++	char *buffer = kunit_kzalloc(test, len, GFP_USER);
++	char __user *user_buffer = (char __user *)buffer;
++
++	memcpy(buffer, input, len);
++
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, KUNIT_PROC_WRITE,
++					       user_buffer, &len, &pos));
++	KUNIT_EXPECT_EQ(test, sizeof(input) - 1, len);
++	KUNIT_EXPECT_EQ(test, sizeof(input) - 1, (size_t)pos);
++	KUNIT_EXPECT_EQ(test, 9, *((int *)table.data));
++}
++
++/*
++ * Same as previous test, but now with negative numbers.
++ */
++static void sysctl_test_dointvec_write_happy_single_negative(struct kunit *test)
++{
++	int data = 0;
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &data,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	char input[] = "-9";
++	size_t len = sizeof(input) - 1;
++	loff_t pos = 0;
++	char *buffer = kunit_kzalloc(test, len, GFP_USER);
++	char __user *user_buffer = (char __user *)buffer;
++
++	memcpy(buffer, input, len);
++
++	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, KUNIT_PROC_WRITE,
++					       user_buffer, &len, &pos));
++	KUNIT_EXPECT_EQ(test, sizeof(input) - 1, len);
++	KUNIT_EXPECT_EQ(test, sizeof(input) - 1, (size_t)pos);
++	KUNIT_EXPECT_EQ(test, -9, *((int *)table.data));
++}
++
++/*
++ * Test that writing a value smaller than the minimum possible value is not
++ * allowed.
++ */
++static void sysctl_test_api_dointvec_write_single_less_int_min(
++		struct kunit *test)
++{
++	int data = 0;
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &data,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	size_t max_len = 32, len = max_len;
++	loff_t pos = 0;
++	char *buffer = kunit_kzalloc(test, max_len, GFP_USER);
++	char __user *user_buffer = (char __user *)buffer;
++	unsigned long abs_of_less_than_min = (unsigned long)INT_MAX
++					     - (INT_MAX + INT_MIN) + 1;
++
++	/*
++	 * We use this rigmarole to create a string that contains a value one
++	 * less than the minimum accepted value.
++	 */
++	KUNIT_ASSERT_LT(test,
++			(size_t)snprintf(buffer, max_len, "-%lu",
++					 abs_of_less_than_min),
++			max_len);
++
++	KUNIT_EXPECT_EQ(test, -EINVAL, proc_dointvec(&table, KUNIT_PROC_WRITE,
++						     user_buffer, &len, &pos));
++	KUNIT_EXPECT_EQ(test, max_len, len);
++	KUNIT_EXPECT_EQ(test, 0, *((int *)table.data));
++}
++
++/*
++ * Test that writing the maximum possible value works.
++ */
++static void sysctl_test_api_dointvec_write_single_greater_int_max(
++		struct kunit *test)
++{
++	int data = 0;
++	struct ctl_table table = {
++		.procname = "foo",
++		.data		= &data,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++		.extra1		= &i_zero,
++		.extra2         = &i_one_hundred,
++	};
++	size_t max_len = 32, len = max_len;
++	loff_t pos = 0;
++	char *buffer = kunit_kzalloc(test, max_len, GFP_USER);
++	char __user *user_buffer = (char __user *)buffer;
++	unsigned long greater_than_max = (unsigned long)INT_MAX + 1;
++
++	KUNIT_ASSERT_GT(test, greater_than_max, (unsigned long)INT_MAX);
++	KUNIT_ASSERT_LT(test, (size_t)snprintf(buffer, max_len, "%lu",
++					       greater_than_max),
++			max_len);
++	KUNIT_EXPECT_EQ(test, -EINVAL, proc_dointvec(&table, KUNIT_PROC_WRITE,
++						     user_buffer, &len, &pos));
++	KUNIT_ASSERT_EQ(test, max_len, len);
++	KUNIT_EXPECT_EQ(test, 0, *((int *)table.data));
++}
++
++static struct kunit_case sysctl_test_cases[] = {
++	KUNIT_CASE(sysctl_test_api_dointvec_null_tbl_data),
++	KUNIT_CASE(sysctl_test_api_dointvec_table_maxlen_unset),
++	KUNIT_CASE(sysctl_test_api_dointvec_table_len_is_zero),
++	KUNIT_CASE(sysctl_test_api_dointvec_table_read_but_position_set),
++	KUNIT_CASE(sysctl_test_dointvec_read_happy_single_positive),
++	KUNIT_CASE(sysctl_test_dointvec_read_happy_single_negative),
++	KUNIT_CASE(sysctl_test_dointvec_write_happy_single_positive),
++	KUNIT_CASE(sysctl_test_dointvec_write_happy_single_negative),
++	KUNIT_CASE(sysctl_test_api_dointvec_write_single_less_int_min),
++	KUNIT_CASE(sysctl_test_api_dointvec_write_single_greater_int_max),
++	{}
 +};
++
++static struct kunit_suite sysctl_test_suite = {
++	.name = "sysctl_test",
++	.test_cases = sysctl_test_cases,
++};
++
++kunit_test_suite(sysctl_test_suite);
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 1c69640e712f..9331c864df81 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1967,6 +1967,17 @@ config TEST_SYSCTL
  
--static inline void time_travel_set_timer_expiry(unsigned long long expiry)
--{
--}
-+#define time_travel_mode TT_MODE_OFF
+ 	  If unsure, say N.
  
--static inline void time_travel_set_timer_interval(unsigned long long interval)
-+static inline void time_travel_sleep(unsigned long long duration)
- {
- }
- 
--#define time_travel_timer_mode TT_TMR_DISABLED
--#endif
--
--#endif
-+/* this is a macro so the event/function need not exist */
-+#define time_travel_set_event_fn(e, fn) do {} while (0)
-+#endif /* CONFIG_UML_TIME_TRAVEL_SUPPORT */
-+#endif /* __TIMER_INTERNAL_H__ */
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index 506bcd1bca68..69cc88b51168 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -240,6 +240,7 @@ extern int set_signals(int enable);
- extern int set_signals_trace(int enable);
- extern int os_is_signal_stack(void);
- extern void deliver_alarm(void);
-+extern void mark_time_travel_irq_pending(void);
- 
- /* util.c */
- extern void stack_protections(unsigned long address);
-@@ -263,6 +264,7 @@ extern void os_timer_disable(void);
- extern void uml_idle_timer(void);
- extern long long os_persistent_clock_emulation(void);
- extern long long os_nsecs(void);
-+extern void time_travel_deliver_pending(void);
- 
- /* skas/mem.c */
- extern long run_syscall_stub(struct mm_id * mm_idp,
-diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index 201ca2b4c758..3abe5ebdf148 100644
---- a/arch/um/kernel/process.c
-+++ b/arch/um/kernel/process.c
-@@ -203,43 +203,6 @@ void initial_thread_cb(void (*proc)(void *), void *arg)
- 	kmalloc_ok = save_kmalloc_ok;
- }
- 
--static void time_travel_sleep(unsigned long long duration)
--{
--	unsigned long long next = time_travel_time + duration;
--
--	if (time_travel_mode != TT_MODE_INFCPU)
--		os_timer_disable();
--
--	while (time_travel_timer_mode == TT_TMR_PERIODIC &&
--	       time_travel_timer_expiry < time_travel_time)
--		time_travel_set_timer_expiry(time_travel_timer_expiry +
--					     time_travel_timer_interval);
--
--	if (time_travel_timer_mode != TT_TMR_DISABLED &&
--	    time_travel_timer_expiry < next) {
--		if (time_travel_timer_mode == TT_TMR_ONESHOT)
--			time_travel_set_timer_mode(TT_TMR_DISABLED);
--		/*
--		 * In basic mode, time_travel_time will be adjusted in
--		 * the timer IRQ handler so it works even when the signal
--		 * comes from the OS timer, see there.
--		 */
--		if (time_travel_mode != TT_MODE_BASIC)
--			time_travel_set_time(time_travel_timer_expiry);
--
--		deliver_alarm();
--	} else {
--		time_travel_set_time(next);
--	}
--
--	if (time_travel_mode != TT_MODE_INFCPU) {
--		if (time_travel_timer_mode == TT_TMR_PERIODIC)
--			os_timer_set_interval(time_travel_timer_interval);
--		else if (time_travel_timer_mode == TT_TMR_ONESHOT)
--			os_timer_one_shot(time_travel_timer_expiry - next);
--	}
--}
--
- static void um_idle_sleep(void)
- {
- 	unsigned long long duration = UM_NSEC_PER_SEC;
-diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
-index a849d391e909..d3ebb6a448d7 100644
---- a/arch/um/kernel/time.c
-+++ b/arch/um/kernel/time.c
-@@ -4,6 +4,7 @@
-  * Copyright (C) 2015 Thomas Meyer (thomas@m3y3r.de)
-  * Copyright (C) 2012-2014 Cisco Systems
-  * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-+ * Copyright (C) 2019 Intel Corporation
-  */
- 
- #include <linux/clockchips.h>
-@@ -23,16 +24,192 @@
- 
- #ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
- enum time_travel_mode time_travel_mode;
--unsigned long long time_travel_time;
--enum time_travel_timer_mode time_travel_timer_mode;
--unsigned long long time_travel_timer_expiry;
--unsigned long long time_travel_timer_interval;
- 
- static bool time_travel_start_set;
- static unsigned long long time_travel_start;
--#else
-+static unsigned long long time_travel_time;
-+static LIST_HEAD(time_travel_events);
-+static LIST_HEAD(time_travel_events_pending);
-+static unsigned long long time_travel_timer_interval;
-+static unsigned long long time_travel_next_event;
-+static struct time_travel_event time_travel_timer_event;
++config SYSCTL_KUNIT_TEST
++	bool "KUnit test for sysctl"
++	depends on KUNIT
++	help
++	  This builds the proc sysctl unit test, which runs on boot.
++	  Tests the API contract and implementation correctness of sysctl.
++	  For more information on KUnit and unit tests in general please refer
++	  to the KUnit documentation in Documentation/dev-tools/kunit/.
 +
-+static void time_travel_set_time(unsigned long long ns)
-+{
-+	if (unlikely(ns < time_travel_time))
-+		panic("time-travel: time goes backwards %lld -> %lld\n",
-+		      time_travel_time, ns);
-+	time_travel_time = ns;
-+}
++	  If unsure, say N.
 +
-+static void time_travel_add_event(struct time_travel_event *e,
-+				  unsigned long long time)
-+{
-+	struct time_travel_event *tmp;
-+	bool inserted = false;
-+
-+	if (WARN(time_travel_mode == TT_MODE_BASIC &&
-+		 e != &time_travel_timer_event,
-+		 "only timer events can be handled in basic mode"))
-+		return;
-+
-+	if (WARN_ON(!e->fn))
-+		return;
-+
-+	if (e->pending)
-+		return;
-+
-+	list_for_each_entry(tmp, &time_travel_events, list) {
-+		if (tmp->time > e->time) {
-+			list_add_tail(&e->list, &tmp->list);
-+			inserted = true;
-+			break;
-+		}
-+	}
-+
-+	if (!inserted)
-+		list_add_tail(&e->list, &time_travel_events);
-+
-+	e->pending = true;
-+	e->time = time;
-+
-+	tmp = list_first_entry(&time_travel_events,
-+			       struct time_travel_event,
-+			       list);
-+	time_travel_next_event = tmp->time;
-+}
-+
-+void time_travel_periodic_timer(struct time_travel_event *e)
-+{
-+	time_travel_add_event(&time_travel_timer_event,
-+			      time_travel_time + time_travel_timer_interval);
-+	deliver_alarm();
-+}
-+
-+static void time_travel_deliver_event(struct time_travel_event *e)
-+{
-+	/* this is basically just deliver_alarm(), handles IRQs itself */
-+	e->fn(e);
-+}
-+
-+static bool time_travel_del_event(struct time_travel_event *e)
-+{
-+	if (!e->pending)
-+		return false;
-+	list_del(&e->list);
-+	e->pending = false;
-+	return true;
-+}
-+
-+static void time_travel_update_time(unsigned long long next, bool retearly)
-+{
-+	struct time_travel_event *e;
-+
-+	do {
-+		e = list_first_entry_or_null(&time_travel_events,
-+					     struct time_travel_event,
-+					     list);
-+
-+		if (e && e->time <= next) {
-+			BUG_ON(!time_travel_del_event(e));
-+			time_travel_set_time(e->time);
-+			if (irqs_disabled()) {
-+				mark_time_travel_irq_pending();
-+				e->pending = true;
-+				list_add_tail(&e->list,
-+					      &time_travel_events_pending);
-+			} else {
-+				time_travel_deliver_event(e);
-+			}
-+		} else {
-+			time_travel_set_time(next);
-+		}
-+	} while (!retearly && time_travel_time < next);
-+}
-+
-+void time_travel_deliver_pending(void)
-+{
-+	struct time_travel_event *e;
-+
-+	while ((e = list_first_entry_or_null(&time_travel_events_pending,
-+					     struct time_travel_event,
-+					     list))) {
-+		e->pending = false;
-+		list_del(&e->list);
-+		time_travel_deliver_event(e);
-+	}
-+}
-+
-+static void time_travel_oneshot_timer(struct time_travel_event *e)
-+{
-+	deliver_alarm();
-+}
-+
-+void time_travel_sleep(unsigned long long duration)
-+{
-+	unsigned long long next = time_travel_time + duration;
-+
-+	if (time_travel_mode == TT_MODE_BASIC)
-+		os_timer_disable();
-+
-+	time_travel_update_time(next, true);
-+
-+	if (time_travel_mode == TT_MODE_BASIC &&
-+	    time_travel_timer_event.pending) {
-+		if (time_travel_timer_event.fn == time_travel_periodic_timer) {
-+			/*
-+			 * This is somewhat wrong - we should get the first
-+			 * one sooner like the os_timer_one_shot() below...
-+			 */
-+			os_timer_set_interval(time_travel_timer_interval);
-+		} else {
-+			os_timer_one_shot(time_travel_timer_event.time - next);
-+		}
-+	}
-+}
-+
-+static void time_travel_handle_real_alarm(void)
-+{
-+	time_travel_set_time(time_travel_next_event);
-+
-+	time_travel_del_event(&time_travel_timer_event);
-+
-+	if (time_travel_timer_event.fn == time_travel_periodic_timer)
-+		time_travel_add_event(&time_travel_timer_event,
-+				      time_travel_time +
-+				      time_travel_timer_interval);
-+}
-+
-+static void time_travel_set_interval(unsigned long long interval)
-+{
-+	time_travel_timer_interval = interval;
-+}
-+#else /* CONFIG_UML_TIME_TRAVEL_SUPPORT */
- #define time_travel_start_set 0
- #define time_travel_start 0
-+#define time_travel_time 0
-+
-+static inline void time_travel_update_time(unsigned long long ns, bool retearly)
-+{
-+}
-+
-+static inline void time_travel_handle_real_alarm(void)
-+{
-+}
-+
-+static void time_travel_set_interval(unsigned long long interval)
-+{
-+}
-+
-+/* these are empty macros so the struct/fn need not exist */
-+#define time_travel_add_event(e, time) do { } while (0)
-+#define time_travel_del_event(e) do { } while (0)
-+
-+void time_travel_deliver_pending(void)
-+{
-+	/* we never mark as pending w/o time-travel, so this cannot happen */
-+	WARN_ON_ONCE(1);
-+}
- #endif
- 
- void timer_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
-@@ -48,7 +225,7 @@ void timer_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
- 	 * never get any real signals from the OS.
- 	 */
- 	if (time_travel_mode == TT_MODE_BASIC)
--		time_travel_set_time(time_travel_timer_expiry);
-+		time_travel_handle_real_alarm();
- 
- 	local_irq_save(flags);
- 	do_IRQ(TIMER_IRQ, regs);
-@@ -58,7 +235,7 @@ void timer_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
- static int itimer_shutdown(struct clock_event_device *evt)
- {
- 	if (time_travel_mode != TT_MODE_OFF)
--		time_travel_set_timer_mode(TT_TMR_DISABLED);
-+		time_travel_del_event(&time_travel_timer_event);
- 
- 	if (time_travel_mode != TT_MODE_INFCPU)
- 		os_timer_disable();
-@@ -71,9 +248,12 @@ static int itimer_set_periodic(struct clock_event_device *evt)
- 	unsigned long long interval = NSEC_PER_SEC / HZ;
- 
- 	if (time_travel_mode != TT_MODE_OFF) {
--		time_travel_set_timer_mode(TT_TMR_PERIODIC);
--		time_travel_set_timer_expiry(time_travel_time + interval);
--		time_travel_set_timer_interval(interval);
-+		time_travel_del_event(&time_travel_timer_event);
-+		time_travel_set_event_fn(&time_travel_timer_event,
-+					 time_travel_periodic_timer);
-+		time_travel_set_interval(interval);
-+		time_travel_add_event(&time_travel_timer_event,
-+				      time_travel_time + interval);
- 	}
- 
- 	if (time_travel_mode != TT_MODE_INFCPU)
-@@ -88,8 +268,11 @@ static int itimer_next_event(unsigned long delta,
- 	delta += 1;
- 
- 	if (time_travel_mode != TT_MODE_OFF) {
--		time_travel_set_timer_mode(TT_TMR_ONESHOT);
--		time_travel_set_timer_expiry(time_travel_time + delta);
-+		time_travel_del_event(&time_travel_timer_event);
-+		time_travel_set_event_fn(&time_travel_timer_event,
-+					 time_travel_oneshot_timer);
-+		time_travel_add_event(&time_travel_timer_event,
-+				      time_travel_time + delta);
- 	}
- 
- 	if (time_travel_mode != TT_MODE_INFCPU)
-@@ -144,7 +327,8 @@ static u64 timer_read(struct clocksource *cs)
- 		 * exact requested sleep amount, e.g. python's socket server,
- 		 * see https://bugs.python.org/issue37026.
- 		 */
--		time_travel_set_time(time_travel_time + TIMER_MULTIPLIER);
-+		time_travel_update_time(time_travel_time + TIMER_MULTIPLIER,
-+					false);
- 		return time_travel_time / TIMER_MULTIPLIER;
- 	}
- 
-diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
-index b58bc68cbe64..838b8d6e2093 100644
---- a/arch/um/os-Linux/signal.c
-+++ b/arch/um/os-Linux/signal.c
-@@ -62,10 +62,18 @@ static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
- #define SIGALRM_BIT 1
- #define SIGALRM_MASK (1 << SIGALRM_BIT)
- 
-+#define SIGTIMETRAVEL_BIT 31
-+#define SIGTIMETRAVEL_MASK (1U << SIGTIMETRAVEL_BIT)
-+
- static int signals_enabled;
- static unsigned int signals_pending;
- static unsigned int signals_active = 0;
- 
-+void mark_time_travel_irq_pending(void)
-+{
-+	signals_pending |= SIGTIMETRAVEL_MASK;
-+}
-+
- void sig_handler(int sig, struct siginfo *si, mcontext_t *mc)
- {
- 	int enabled;
-@@ -303,6 +311,9 @@ void unblock_signals(void)
- 		if ((save_pending & SIGALRM_MASK) && (!(signals_active & SIGALRM_MASK)))
- 			timer_real_alarm_handler(NULL);
- 
-+		if (save_pending & SIGTIMETRAVEL_MASK)
-+			time_travel_deliver_pending();
-+
- 		/* Rerun the loop only if there is still pending SIGIO and not in TIMER handler */
- 
- 		if (!(signals_pending & SIGIO_MASK) && (signals_active & SIGALRM_MASK))
+ config TEST_UDELAY
+ 	tristate "udelay test driver"
+ 	help
 -- 
-2.20.1
+2.23.0.351.gc4317032e6-goog
 
 
 _______________________________________________
