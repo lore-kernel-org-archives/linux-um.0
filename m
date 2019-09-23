@@ -1,483 +1,395 @@
-Return-Path: <linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH trivial 2/3] treewide: Fix Kconfig indentation
-Date: Mon, 23 Sep 2019 18:00:12 +0200
-Message-Id: <20190923160013.8550-2-krzk@kernel.org>
-In-Reply-To: <20190923160013.8550-1-krzk@kernel.org>
-References: <20190923160013.8550-1-krzk@kernel.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
-List-Post: <mailto:linux-mtd@lists.infradead.org>
-List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pl1-x649.google.com ([2607:f8b0:4864:20::649])
+ by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
+ id 1iCKFh-000327-TI
+ for linux-um@lists.infradead.org; Mon, 23 Sep 2019 09:03:27 +0000
+Received: by mail-pl1-x649.google.com with SMTP id g7so70054plo.5
+ for <linux-um@lists.infradead.org>; Mon, 23 Sep 2019 02:03:25 -0700 (PDT)
+Date: Mon, 23 Sep 2019 02:02:41 -0700
+In-Reply-To: <20190923090249.127984-1-brendanhiggins@google.com>
+Message-Id: <20190923090249.127984-12-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20190923090249.127984-1-brendanhiggins@google.com>
+Subject: [PATCH v18 11/19] kunit: test: add the concept of assertions
+From: Brendan Higgins <brendanhiggins@google.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-Errors-To: linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jiri Kosina <trivial@kernel.org>, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, linux-samsung-soc@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, keyrings@vger.kernel.org, linux-acpi@vger.kernel.org, linux-ide@vger.kernel.org, linux-block@vger.kernel.org, linux-crypto@vger.kernel.org, openipmi-developer@lists.sourceforge.net, linux-clk@vger.kernel.org, linux-pm@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, dmaengine@vger.kernel.org, linux-edac@vger.kernel.org, linux-efi@vger.kernel.org, linux-input@vger.kernel.org, linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org, linux-iio@vger.kernel.org, linux-rdma@vger.kernel.org, iommu@lists.linux-foundation.org, netdev@vger.kernel.org, linux-raid@vger.kernel.org, dm-devel@redhat.com, linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-pci@vger.kernel.org, linux-gpio@vger.kernel.org, linux-arm-msm@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-rtc@vger.kernel.org, linux-scsi@vger.kernel.org, esc.storagedev@microsemi.com, linux-rockchip@lists.infradead.org, linux-spi@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org, devel@driverdev.osuosl.org, ac100@lists.launchpad.net, linux-tegra@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, linux-rpi-kernel@lists.infradead.org, linux-serial@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-mm@kvack.org, linux-security-module@vger.kernel.org, linux-integrity@vger.kernel.org, linux-mediatek@lists.infradead.org
-Cc: Krzysztof Kozlowski <krzk@kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, torvalds@linux-foundation.org, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-Adjust indentation from spaces to tab (+optional two spaces) as in
-coding style with command like:
-    $ sed -e 's/^        /\t/' -i */Kconfig
+Add support for assertions which are like expectations except the test
+terminates if the assertion is not satisfied.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+The idea with assertions is that you use them to state all the
+preconditions for your test. Logically speaking, these are the premises
+of the test case, so if a premise isn't true, there is no point in
+continuing the test case because there are no conclusions that can be
+drawn without the premises. Whereas, the expectation is the thing you
+are trying to prove. It is not used universally in x-unit style test
+frameworks, but I really like it as a convention.  You could still
+express the idea of a premise using the above idiom, but I think
+KUNIT_ASSERT_* states the intended idea perfectly.
+
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+Reviewed-by: Stephen Boyd <sboyd@kernel.org>
 ---
- certs/Kconfig                  | 14 ++++++-------
- init/Kconfig                   | 28 +++++++++++++-------------
- kernel/trace/Kconfig           |  8 ++++----
- lib/Kconfig                    |  2 +-
- lib/Kconfig.debug              | 36 +++++++++++++++++-----------------
- lib/Kconfig.kgdb               |  8 ++++----
- mm/Kconfig                     | 28 +++++++++++++-------------
- samples/Kconfig                |  2 +-
- security/apparmor/Kconfig      |  2 +-
- security/integrity/Kconfig     | 24 +++++++++++------------
- security/integrity/ima/Kconfig | 12 ++++++------
- security/safesetid/Kconfig     | 24 +++++++++++------------
- 12 files changed, 94 insertions(+), 94 deletions(-)
+ include/kunit/test.h           | 282 ++++++++++++++++++++++++++++++++-
+ lib/kunit/string-stream-test.c |   2 +-
+ lib/kunit/test-test.c          |   7 +-
+ 3 files changed, 283 insertions(+), 8 deletions(-)
 
-diff --git a/certs/Kconfig b/certs/Kconfig
-index c94e93d8bccf..0358c66d3d7c 100644
---- a/certs/Kconfig
-+++ b/certs/Kconfig
-@@ -6,14 +6,14 @@ config MODULE_SIG_KEY
- 	default "certs/signing_key.pem"
- 	depends on MODULE_SIG
- 	help
--         Provide the file name of a private key/certificate in PEM format,
--         or a PKCS#11 URI according to RFC7512. The file should contain, or
--         the URI should identify, both the certificate and its corresponding
--         private key.
-+	 Provide the file name of a private key/certificate in PEM format,
-+	 or a PKCS#11 URI according to RFC7512. The file should contain, or
-+	 the URI should identify, both the certificate and its corresponding
-+	 private key.
+diff --git a/include/kunit/test.h b/include/kunit/test.h
+index 3d554d7c1c79..8b7eb03d4971 100644
+--- a/include/kunit/test.h
++++ b/include/kunit/test.h
+@@ -87,8 +87,9 @@ struct kunit;
+  * @name:     the name of the test case.
+  *
+  * A test case is a function with the signature,
+- * ``void (*)(struct kunit *)`` that makes expectations (see
+- * KUNIT_EXPECT_TRUE()) about code under test. Each test case is associated
++ * ``void (*)(struct kunit *)``
++ * that makes expectations and assertions (see KUNIT_EXPECT_TRUE() and
++ * KUNIT_ASSERT_TRUE()) about code under test. Each test case is associated
+  * with a &struct kunit_suite and will be run after the suite's init
+  * function and followed by the suite's exit function.
+  *
+@@ -1210,4 +1211,281 @@ do {									       \
+ 						fmt,			       \
+ 						##__VA_ARGS__)
  
--         If this option is unchanged from its default "certs/signing_key.pem",
--         then the kernel will automatically generate the private key and
--         certificate as described in Documentation/admin-guide/module-signing.rst
-+	 If this option is unchanged from its default "certs/signing_key.pem",
-+	 then the kernel will automatically generate the private key and
-+	 certificate as described in Documentation/admin-guide/module-signing.rst
++#define KUNIT_ASSERT_FAILURE(test, fmt, ...) \
++	KUNIT_FAIL_ASSERTION(test, KUNIT_ASSERTION, fmt, ##__VA_ARGS__)
++
++/**
++ * KUNIT_ASSERT_TRUE() - Sets an assertion that @condition is true.
++ * @test: The test context object.
++ * @condition: an arbitrary boolean expression. The test fails and aborts when
++ * this does not evaluate to true.
++ *
++ * This and assertions of the form `KUNIT_ASSERT_*` will cause the test case to
++ * fail *and immediately abort* when the specified condition is not met. Unlike
++ * an expectation failure, it will prevent the test case from continuing to run;
++ * this is otherwise known as an *assertion failure*.
++ */
++#define KUNIT_ASSERT_TRUE(test, condition) \
++	KUNIT_TRUE_ASSERTION(test, KUNIT_ASSERTION, condition)
++
++#define KUNIT_ASSERT_TRUE_MSG(test, condition, fmt, ...)		       \
++	KUNIT_TRUE_MSG_ASSERTION(test,					       \
++				 KUNIT_ASSERTION,			       \
++				 condition,				       \
++				 fmt,					       \
++				 ##__VA_ARGS__)
++
++/**
++ * KUNIT_ASSERT_FALSE() - Sets an assertion that @condition is false.
++ * @test: The test context object.
++ * @condition: an arbitrary boolean expression.
++ *
++ * Sets an assertion that the value that @condition evaluates to is false. This
++ * is the same as KUNIT_EXPECT_FALSE(), except it causes an assertion failure
++ * (see KUNIT_ASSERT_TRUE()) when the assertion is not met.
++ */
++#define KUNIT_ASSERT_FALSE(test, condition) \
++	KUNIT_FALSE_ASSERTION(test, KUNIT_ASSERTION, condition)
++
++#define KUNIT_ASSERT_FALSE_MSG(test, condition, fmt, ...)		       \
++	KUNIT_FALSE_MSG_ASSERTION(test,					       \
++				  KUNIT_ASSERTION,			       \
++				  condition,				       \
++				  fmt,					       \
++				  ##__VA_ARGS__)
++
++/**
++ * KUNIT_ASSERT_EQ() - Sets an assertion that @left and @right are equal.
++ * @test: The test context object.
++ * @left: an arbitrary expression that evaluates to a primitive C type.
++ * @right: an arbitrary expression that evaluates to a primitive C type.
++ *
++ * Sets an assertion that the values that @left and @right evaluate to are
++ * equal. This is the same as KUNIT_EXPECT_EQ(), except it causes an assertion
++ * failure (see KUNIT_ASSERT_TRUE()) when the assertion is not met.
++ */
++#define KUNIT_ASSERT_EQ(test, left, right) \
++	KUNIT_BINARY_EQ_ASSERTION(test, KUNIT_ASSERTION, left, right)
++
++#define KUNIT_ASSERT_EQ_MSG(test, left, right, fmt, ...)		       \
++	KUNIT_BINARY_EQ_MSG_ASSERTION(test,				       \
++				      KUNIT_ASSERTION,			       \
++				      left,				       \
++				      right,				       \
++				      fmt,				       \
++				      ##__VA_ARGS__)
++
++/**
++ * KUNIT_ASSERT_PTR_EQ() - Asserts that pointers @left and @right are equal.
++ * @test: The test context object.
++ * @left: an arbitrary expression that evaluates to a pointer.
++ * @right: an arbitrary expression that evaluates to a pointer.
++ *
++ * Sets an assertion that the values that @left and @right evaluate to are
++ * equal. This is the same as KUNIT_EXPECT_EQ(), except it causes an assertion
++ * failure (see KUNIT_ASSERT_TRUE()) when the assertion is not met.
++ */
++#define KUNIT_ASSERT_PTR_EQ(test, left, right) \
++	KUNIT_BINARY_PTR_EQ_ASSERTION(test, KUNIT_ASSERTION, left, right)
++
++#define KUNIT_ASSERT_PTR_EQ_MSG(test, left, right, fmt, ...)		       \
++	KUNIT_BINARY_PTR_EQ_MSG_ASSERTION(test,				       \
++					  KUNIT_ASSERTION,		       \
++					  left,				       \
++					  right,			       \
++					  fmt,				       \
++					  ##__VA_ARGS__)
++
++/**
++ * KUNIT_ASSERT_NE() - An assertion that @left and @right are not equal.
++ * @test: The test context object.
++ * @left: an arbitrary expression that evaluates to a primitive C type.
++ * @right: an arbitrary expression that evaluates to a primitive C type.
++ *
++ * Sets an assertion that the values that @left and @right evaluate to are not
++ * equal. This is the same as KUNIT_EXPECT_NE(), except it causes an assertion
++ * failure (see KUNIT_ASSERT_TRUE()) when the assertion is not met.
++ */
++#define KUNIT_ASSERT_NE(test, left, right) \
++	KUNIT_BINARY_NE_ASSERTION(test, KUNIT_ASSERTION, left, right)
++
++#define KUNIT_ASSERT_NE_MSG(test, left, right, fmt, ...)		       \
++	KUNIT_BINARY_NE_MSG_ASSERTION(test,				       \
++				      KUNIT_ASSERTION,			       \
++				      left,				       \
++				      right,				       \
++				      fmt,				       \
++				      ##__VA_ARGS__)
++
++/**
++ * KUNIT_ASSERT_PTR_NE() - Asserts that pointers @left and @right are not equal.
++ * KUNIT_ASSERT_PTR_EQ() - Asserts that pointers @left and @right are equal.
++ * @test: The test context object.
++ * @left: an arbitrary expression that evaluates to a pointer.
++ * @right: an arbitrary expression that evaluates to a pointer.
++ *
++ * Sets an assertion that the values that @left and @right evaluate to are not
++ * equal. This is the same as KUNIT_EXPECT_NE(), except it causes an assertion
++ * failure (see KUNIT_ASSERT_TRUE()) when the assertion is not met.
++ */
++#define KUNIT_ASSERT_PTR_NE(test, left, right) \
++	KUNIT_BINARY_PTR_NE_ASSERTION(test, KUNIT_ASSERTION, left, right)
++
++#define KUNIT_ASSERT_PTR_NE_MSG(test, left, right, fmt, ...)		       \
++	KUNIT_BINARY_PTR_NE_MSG_ASSERTION(test,				       \
++					  KUNIT_ASSERTION,		       \
++					  left,				       \
++					  right,			       \
++					  fmt,				       \
++					  ##__VA_ARGS__)
++/**
++ * KUNIT_ASSERT_LT() - An assertion that @left is less than @right.
++ * @test: The test context object.
++ * @left: an arbitrary expression that evaluates to a primitive C type.
++ * @right: an arbitrary expression that evaluates to a primitive C type.
++ *
++ * Sets an assertion that the value that @left evaluates to is less than the
++ * value that @right evaluates to. This is the same as KUNIT_EXPECT_LT(), except
++ * it causes an assertion failure (see KUNIT_ASSERT_TRUE()) when the assertion
++ * is not met.
++ */
++#define KUNIT_ASSERT_LT(test, left, right) \
++	KUNIT_BINARY_LT_ASSERTION(test, KUNIT_ASSERTION, left, right)
++
++#define KUNIT_ASSERT_LT_MSG(test, left, right, fmt, ...)		       \
++	KUNIT_BINARY_LT_MSG_ASSERTION(test,				       \
++				      KUNIT_ASSERTION,			       \
++				      left,				       \
++				      right,				       \
++				      fmt,				       \
++				      ##__VA_ARGS__)
++/**
++ * KUNIT_ASSERT_LE() - An assertion that @left is less than or equal to @right.
++ * @test: The test context object.
++ * @left: an arbitrary expression that evaluates to a primitive C type.
++ * @right: an arbitrary expression that evaluates to a primitive C type.
++ *
++ * Sets an assertion that the value that @left evaluates to is less than or
++ * equal to the value that @right evaluates to. This is the same as
++ * KUNIT_EXPECT_LE(), except it causes an assertion failure (see
++ * KUNIT_ASSERT_TRUE()) when the assertion is not met.
++ */
++#define KUNIT_ASSERT_LE(test, left, right) \
++	KUNIT_BINARY_LE_ASSERTION(test, KUNIT_ASSERTION, left, right)
++
++#define KUNIT_ASSERT_LE_MSG(test, left, right, fmt, ...)		       \
++	KUNIT_BINARY_LE_MSG_ASSERTION(test,				       \
++				      KUNIT_ASSERTION,			       \
++				      left,				       \
++				      right,				       \
++				      fmt,				       \
++				      ##__VA_ARGS__)
++
++/**
++ * KUNIT_ASSERT_GT() - An assertion that @left is greater than @right.
++ * @test: The test context object.
++ * @left: an arbitrary expression that evaluates to a primitive C type.
++ * @right: an arbitrary expression that evaluates to a primitive C type.
++ *
++ * Sets an assertion that the value that @left evaluates to is greater than the
++ * value that @right evaluates to. This is the same as KUNIT_EXPECT_GT(), except
++ * it causes an assertion failure (see KUNIT_ASSERT_TRUE()) when the assertion
++ * is not met.
++ */
++#define KUNIT_ASSERT_GT(test, left, right) \
++	KUNIT_BINARY_GT_ASSERTION(test, KUNIT_ASSERTION, left, right)
++
++#define KUNIT_ASSERT_GT_MSG(test, left, right, fmt, ...)		       \
++	KUNIT_BINARY_GT_MSG_ASSERTION(test,				       \
++				      KUNIT_ASSERTION,			       \
++				      left,				       \
++				      right,				       \
++				      fmt,				       \
++				      ##__VA_ARGS__)
++
++/**
++ * KUNIT_ASSERT_GE() - Assertion that @left is greater than or equal to @right.
++ * @test: The test context object.
++ * @left: an arbitrary expression that evaluates to a primitive C type.
++ * @right: an arbitrary expression that evaluates to a primitive C type.
++ *
++ * Sets an assertion that the value that @left evaluates to is greater than the
++ * value that @right evaluates to. This is the same as KUNIT_EXPECT_GE(), except
++ * it causes an assertion failure (see KUNIT_ASSERT_TRUE()) when the assertion
++ * is not met.
++ */
++#define KUNIT_ASSERT_GE(test, left, right) \
++	KUNIT_BINARY_GE_ASSERTION(test, KUNIT_ASSERTION, left, right)
++
++#define KUNIT_ASSERT_GE_MSG(test, left, right, fmt, ...)		       \
++	KUNIT_BINARY_GE_MSG_ASSERTION(test,				       \
++				      KUNIT_ASSERTION,			       \
++				      left,				       \
++				      right,				       \
++				      fmt,				       \
++				      ##__VA_ARGS__)
++
++/**
++ * KUNIT_ASSERT_STREQ() - An assertion that strings @left and @right are equal.
++ * @test: The test context object.
++ * @left: an arbitrary expression that evaluates to a null terminated string.
++ * @right: an arbitrary expression that evaluates to a null terminated string.
++ *
++ * Sets an assertion that the values that @left and @right evaluate to are
++ * equal. This is the same as KUNIT_EXPECT_STREQ(), except it causes an
++ * assertion failure (see KUNIT_ASSERT_TRUE()) when the assertion is not met.
++ */
++#define KUNIT_ASSERT_STREQ(test, left, right) \
++	KUNIT_BINARY_STR_EQ_ASSERTION(test, KUNIT_ASSERTION, left, right)
++
++#define KUNIT_ASSERT_STREQ_MSG(test, left, right, fmt, ...)		       \
++	KUNIT_BINARY_STR_EQ_MSG_ASSERTION(test,				       \
++					  KUNIT_ASSERTION,		       \
++					  left,				       \
++					  right,			       \
++					  fmt,				       \
++					  ##__VA_ARGS__)
++
++/**
++ * KUNIT_ASSERT_STRNEQ() - Expects that strings @left and @right are not equal.
++ * @test: The test context object.
++ * @left: an arbitrary expression that evaluates to a null terminated string.
++ * @right: an arbitrary expression that evaluates to a null terminated string.
++ *
++ * Sets an expectation that the values that @left and @right evaluate to are
++ * not equal. This is semantically equivalent to
++ * KUNIT_ASSERT_TRUE(@test, strcmp((@left), (@right))). See KUNIT_ASSERT_TRUE()
++ * for more information.
++ */
++#define KUNIT_ASSERT_STRNEQ(test, left, right) \
++	KUNIT_BINARY_STR_NE_ASSERTION(test, KUNIT_ASSERTION, left, right)
++
++#define KUNIT_ASSERT_STRNEQ_MSG(test, left, right, fmt, ...)		       \
++	KUNIT_BINARY_STR_NE_MSG_ASSERTION(test,				       \
++					  KUNIT_ASSERTION,		       \
++					  left,				       \
++					  right,			       \
++					  fmt,				       \
++					  ##__VA_ARGS__)
++
++/**
++ * KUNIT_ASSERT_NOT_ERR_OR_NULL() - Assertion that @ptr is not null and not err.
++ * @test: The test context object.
++ * @ptr: an arbitrary pointer.
++ *
++ * Sets an assertion that the value that @ptr evaluates to is not null and not
++ * an errno stored in a pointer. This is the same as
++ * KUNIT_EXPECT_NOT_ERR_OR_NULL(), except it causes an assertion failure (see
++ * KUNIT_ASSERT_TRUE()) when the assertion is not met.
++ */
++#define KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr) \
++	KUNIT_PTR_NOT_ERR_OR_NULL_ASSERTION(test, KUNIT_ASSERTION, ptr)
++
++#define KUNIT_ASSERT_NOT_ERR_OR_NULL_MSG(test, ptr, fmt, ...)		       \
++	KUNIT_PTR_NOT_ERR_OR_NULL_MSG_ASSERTION(test,			       \
++						KUNIT_ASSERTION,	       \
++						ptr,			       \
++						fmt,			       \
++						##__VA_ARGS__)
++
+ #endif /* _KUNIT_TEST_H */
+diff --git a/lib/kunit/string-stream-test.c b/lib/kunit/string-stream-test.c
+index 75229e267c32..76cc05eb00ed 100644
+--- a/lib/kunit/string-stream-test.c
++++ b/lib/kunit/string-stream-test.c
+@@ -35,7 +35,7 @@ static void string_stream_test_get_string(struct kunit *test)
+ 	string_stream_add(stream, " %s", "bar");
  
- config SYSTEM_TRUSTED_KEYRING
- 	bool "Provide system-wide ring of trusted keys"
-diff --git a/init/Kconfig b/init/Kconfig
-index 6d4db887f696..f59c854839d2 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -169,10 +169,10 @@ config BUILD_SALT
-        string "Build ID Salt"
-        default ""
-        help
--          The build ID is used to link binaries and their debug info. Setting
--          this option will use the value in the calculation of the build id.
--          This is mostly useful for distributions which want to ensure the
--          build is unique between builds. It's safe to leave the default.
-+	  The build ID is used to link binaries and their debug info. Setting
-+	  this option will use the value in the calculation of the build id.
-+	  This is mostly useful for distributions which want to ensure the
-+	  build is unique between builds. It's safe to leave the default.
+ 	output = string_stream_get_string(stream);
+-	KUNIT_EXPECT_STREQ(test, output, "Foo bar");
++	KUNIT_ASSERT_STREQ(test, output, "Foo bar");
+ }
  
- config HAVE_KERNEL_GZIP
- 	bool
-@@ -1327,9 +1327,9 @@ menuconfig EXPERT
- 	select DEBUG_KERNEL
- 	help
- 	  This option allows certain base kernel options and settings
--          to be disabled or tweaked. This is for specialized
--          environments which can tolerate a "non-standard" kernel.
--          Only use this if you really know what you are doing.
-+	  to be disabled or tweaked. This is for specialized
-+	  environments which can tolerate a "non-standard" kernel.
-+	  Only use this if you really know what you are doing.
+ static struct kunit_case string_stream_test_cases[] = {
+diff --git a/lib/kunit/test-test.c b/lib/kunit/test-test.c
+index 06d34d36b103..e0ab4bd546ea 100644
+--- a/lib/kunit/test-test.c
++++ b/lib/kunit/test-test.c
+@@ -78,16 +78,13 @@ static int kunit_try_catch_test_init(struct kunit *test)
+ 	struct kunit_try_catch_test_context *ctx;
  
- config UID16
- 	bool "Enable 16-bit UID system calls" if EXPERT
-@@ -1439,11 +1439,11 @@ config BUG
- 	bool "BUG() support" if EXPERT
- 	default y
- 	help
--          Disabling this option eliminates support for BUG and WARN, reducing
--          the size of your kernel image and potentially quietly ignoring
--          numerous fatal conditions. You should only consider disabling this
--          option for embedded systems with no facilities for reporting errors.
--          Just say Y.
-+	  Disabling this option eliminates support for BUG and WARN, reducing
-+	  the size of your kernel image and potentially quietly ignoring
-+	  numerous fatal conditions. You should only consider disabling this
-+	  option for embedded systems with no facilities for reporting errors.
-+	  Just say Y.
+ 	ctx = kunit_kzalloc(test, sizeof(*ctx), GFP_KERNEL);
+-	if (!ctx)
+-		return -ENOMEM;
+-
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx);
+ 	test->priv = ctx;
  
- config ELF_CORE
- 	depends on COREDUMP
-@@ -1459,8 +1459,8 @@ config PCSPKR_PLATFORM
- 	select I8253_LOCK
- 	default y
- 	help
--          This option allows to disable the internal PC-Speaker
--          support, saving some memory.
-+	  This option allows to disable the internal PC-Speaker
-+	  support, saving some memory.
+ 	ctx->try_catch = kunit_kmalloc(test,
+ 				       sizeof(*ctx->try_catch),
+ 				       GFP_KERNEL);
+-	if (!ctx->try_catch)
+-		return -ENOMEM;
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx->try_catch);
  
- config BASE_FULL
- 	default y
-diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-index e08527f50d2a..0393003f102f 100644
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -76,7 +76,7 @@ config FTRACE_NMI_ENTER
- 
- config EVENT_TRACING
- 	select CONTEXT_SWITCH_TRACER
--        select GLOB
-+	select GLOB
- 	bool
- 
- config CONTEXT_SWITCH_TRACER
-@@ -308,7 +308,7 @@ config TRACER_SNAPSHOT
- 	      cat snapshot
- 
- config TRACER_SNAPSHOT_PER_CPU_SWAP
--        bool "Allow snapshot to swap per CPU"
-+	bool "Allow snapshot to swap per CPU"
- 	depends on TRACER_SNAPSHOT
- 	select RING_BUFFER_ALLOW_SWAP
- 	help
-@@ -675,7 +675,7 @@ config MMIOTRACE_TEST
- 	  Say N, unless you absolutely know what you are doing.
- 
- config TRACEPOINT_BENCHMARK
--        bool "Add tracepoint that benchmarks tracepoints"
-+	bool "Add tracepoint that benchmarks tracepoints"
- 	help
- 	 This option creates the tracepoint "benchmark:benchmark_event".
- 	 When the tracepoint is enabled, it kicks off a kernel thread that
-@@ -724,7 +724,7 @@ config RING_BUFFER_STARTUP_TEST
-        bool "Ring buffer startup self test"
-        depends on RING_BUFFER
-        help
--         Run a simple self test on the ring buffer on boot up. Late in the
-+	 Run a simple self test on the ring buffer on boot up. Late in the
- 	 kernel boot sequence, the test will start that kicks off
- 	 a thread per cpu. Each thread will write various size events
- 	 into the ring buffer. Another thread is created to send IPIs
-diff --git a/lib/Kconfig b/lib/Kconfig
-index 4e6b1c3e4c98..0562296471c0 100644
---- a/lib/Kconfig
-+++ b/lib/Kconfig
-@@ -574,7 +574,7 @@ config OID_REGISTRY
- 	  Enable fast lookup object identifier registry.
- 
- config UCS2_STRING
--        tristate
-+	tristate
- 
- #
- # generic vdso
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 10023dbac8e4..e5e7f9fc6839 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -128,8 +128,8 @@ config DYNAMIC_DEBUG
- 	  lineno : line number of the debug statement
- 	  module : module that contains the debug statement
- 	  function : function that contains the debug statement
--          flags : '=p' means the line is turned 'on' for printing
--          format : the format used for the debug statement
-+	  flags : '=p' means the line is turned 'on' for printing
-+	  format : the format used for the debug statement
- 
- 	  From a live system:
- 
-@@ -172,7 +172,7 @@ config DEBUG_INFO
- 	bool "Compile the kernel with debug info"
- 	depends on DEBUG_KERNEL && !COMPILE_TEST
- 	help
--          If you say Y here the resulting kernel image will include
-+	  If you say Y here the resulting kernel image will include
- 	  debugging info resulting in a larger kernel image.
- 	  This adds debug symbols to the kernel and modules (gcc -g), and
- 	  is needed if you intend to use kernel crashdump or binary object
-@@ -269,13 +269,13 @@ config STRIP_ASM_SYMS
- 	  get_wchan() and suchlike.
- 
- config READABLE_ASM
--        bool "Generate readable assembler code"
--        depends on DEBUG_KERNEL
--        help
--          Disable some compiler optimizations that tend to generate human unreadable
--          assembler output. This may make the kernel slightly slower, but it helps
--          to keep kernel developers who have to stare a lot at assembler listings
--          sane.
-+	bool "Generate readable assembler code"
-+	depends on DEBUG_KERNEL
-+	help
-+	  Disable some compiler optimizations that tend to generate human unreadable
-+	  assembler output. This may make the kernel slightly slower, but it helps
-+	  to keep kernel developers who have to stare a lot at assembler listings
-+	  sane.
- 
- config UNUSED_SYMBOLS
- 	bool "Enable unused/obsolete exported symbols"
-@@ -526,11 +526,11 @@ config DEBUG_OBJECTS_PERCPU_COUNTER
- 
- config DEBUG_OBJECTS_ENABLE_DEFAULT
- 	int "debug_objects bootup default value (0-1)"
--        range 0 1
--        default "1"
--        depends on DEBUG_OBJECTS
--        help
--          Debug objects boot parameter default value
-+	range 0 1
-+	default "1"
-+	depends on DEBUG_OBJECTS
-+	help
-+	  Debug objects boot parameter default value
- 
- config DEBUG_SLAB
- 	bool "Debug slab memory allocations"
-@@ -649,7 +649,7 @@ config DEBUG_VM
- 	depends on DEBUG_KERNEL
- 	help
- 	  Enable this to turn on extended checks in the virtual-memory system
--          that may impact performance.
-+	  that may impact performance.
- 
- 	  If unsure, say N.
- 
-@@ -1439,7 +1439,7 @@ config DEBUG_WQ_FORCE_RR_CPU
- 	  be impacted.
- 
- config DEBUG_BLOCK_EXT_DEVT
--        bool "Force extended block device numbers and spread them"
-+	bool "Force extended block device numbers and spread them"
- 	depends on DEBUG_KERNEL
- 	depends on BLOCK
- 	default n
-@@ -2158,7 +2158,7 @@ config DEBUG_AID_FOR_SYZBOT
-        bool "Additional debug code for syzbot"
-        default n
-        help
--         This option is intended for testing by syzbot.
-+	 This option is intended for testing by syzbot.
- 
- source "arch/$(SRCARCH)/Kconfig.debug"
- 
-diff --git a/lib/Kconfig.kgdb b/lib/Kconfig.kgdb
-index bbe397df04a3..933680b59e2d 100644
---- a/lib/Kconfig.kgdb
-+++ b/lib/Kconfig.kgdb
-@@ -64,9 +64,9 @@ config KGDB_LOW_LEVEL_TRAP
-        depends on X86 || MIPS
-        default n
-        help
--         This will add an extra call back to kgdb for the breakpoint
--         exception handler which will allow kgdb to step through a
--         notify handler.
-+	 This will add an extra call back to kgdb for the breakpoint
-+	 exception handler which will allow kgdb to step through a
-+	 notify handler.
- 
- config KGDB_KDB
- 	bool "KGDB_KDB: include kdb frontend for kgdb"
-@@ -96,7 +96,7 @@ config KDB_DEFAULT_ENABLE
- 
- 	  The config option merely sets the default at boot time. Both
- 	  issuing 'echo X > /sys/module/kdb/parameters/cmd_enable' or
--          setting with kdb.cmd_enable=X kernel command line option will
-+	  setting with kdb.cmd_enable=X kernel command line option will
- 	  override the default settings.
- 
- config KDB_KEYBOARD
-diff --git a/mm/Kconfig b/mm/Kconfig
-index a5dae9a7eb51..e6e16d0ef544 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -160,9 +160,9 @@ config MEMORY_HOTPLUG_SPARSE
- 	depends on SPARSEMEM && MEMORY_HOTPLUG
- 
- config MEMORY_HOTPLUG_DEFAULT_ONLINE
--        bool "Online the newly added memory blocks by default"
--        depends on MEMORY_HOTPLUG
--        help
-+	bool "Online the newly added memory blocks by default"
-+	depends on MEMORY_HOTPLUG
-+	help
- 	  This option sets the default policy setting for memory hotplug
- 	  onlining policy (/sys/devices/system/memory/auto_online_blocks) which
- 	  determines what happens to newly added memory regions. Policy setting
-@@ -227,14 +227,14 @@ config COMPACTION
- 	select MIGRATION
- 	depends on MMU
- 	help
--          Compaction is the only memory management component to form
--          high order (larger physically contiguous) memory blocks
--          reliably. The page allocator relies on compaction heavily and
--          the lack of the feature can lead to unexpected OOM killer
--          invocations for high order memory requests. You shouldn't
--          disable this option unless there really is a strong reason for
--          it and then we would be really interested to hear about that at
--          linux-mm@kvack.org.
-+	  Compaction is the only memory management component to form
-+	  high order (larger physically contiguous) memory blocks
-+	  reliably. The page allocator relies on compaction heavily and
-+	  the lack of the feature can lead to unexpected OOM killer
-+	  invocations for high order memory requests. You shouldn't
-+	  disable this option unless there really is a strong reason for
-+	  it and then we would be really interested to hear about that at
-+	  linux-mm@kvack.org.
- 
- #
- # support for page migration
-@@ -301,10 +301,10 @@ config KSM
- 	  root has set /sys/kernel/mm/ksm/run to 1 (if CONFIG_SYSFS is set).
- 
- config DEFAULT_MMAP_MIN_ADDR
--        int "Low address space to protect from user allocation"
-+	int "Low address space to protect from user allocation"
- 	depends on MMU
--        default 4096
--        help
-+	default 4096
-+	help
- 	  This is the portion of low virtual memory which should be protected
- 	  from userspace allocation.  Keeping a user from writing to low pages
- 	  can help reduce the impact of kernel NULL pointer bugs.
-diff --git a/samples/Kconfig b/samples/Kconfig
-index 2c3e07addd38..c5937c5175d2 100644
---- a/samples/Kconfig
-+++ b/samples/Kconfig
-@@ -13,7 +13,7 @@ config SAMPLE_TRACE_EVENTS
- 	  This build trace event example modules.
- 
- config SAMPLE_TRACE_PRINTK
--        tristate "Build trace_printk module - tests various trace_printk formats"
-+	tristate "Build trace_printk module - tests various trace_printk formats"
- 	depends on EVENT_TRACING && m
- 	help
- 	 This builds a module that calls trace_printk() and can be used to
-diff --git a/security/apparmor/Kconfig b/security/apparmor/Kconfig
-index a422a349f926..1f0e712c5e50 100644
---- a/security/apparmor/Kconfig
-+++ b/security/apparmor/Kconfig
-@@ -32,7 +32,7 @@ config SECURITY_APPARMOR_HASH_DEFAULT
-        depends on SECURITY_APPARMOR_HASH
-        default y
-        help
--         This option selects whether sha1 hashing of loaded policy
-+	 This option selects whether sha1 hashing of loaded policy
- 	 is enabled by default. The generation of sha1 hashes for
- 	 loaded policy provide system administrators a quick way
- 	 to verify that policy in the kernel matches what is expected,
-diff --git a/security/integrity/Kconfig b/security/integrity/Kconfig
-index 0bae6adb63a9..f7f2df082f51 100644
---- a/security/integrity/Kconfig
-+++ b/security/integrity/Kconfig
-@@ -34,10 +34,10 @@ config INTEGRITY_ASYMMETRIC_KEYS
- 	bool "Enable asymmetric keys support"
- 	depends on INTEGRITY_SIGNATURE
- 	default n
--        select ASYMMETRIC_KEY_TYPE
--        select ASYMMETRIC_PUBLIC_KEY_SUBTYPE
--        select CRYPTO_RSA
--        select X509_CERTIFICATE_PARSER
-+	select ASYMMETRIC_KEY_TYPE
-+	select ASYMMETRIC_PUBLIC_KEY_SUBTYPE
-+	select CRYPTO_RSA
-+	select X509_CERTIFICATE_PARSER
- 	help
- 	  This option enables digital signature verification using
- 	  asymmetric keys.
-@@ -53,14 +53,14 @@ config INTEGRITY_TRUSTED_KEYRING
- 	   keyring.
- 
- config INTEGRITY_PLATFORM_KEYRING
--        bool "Provide keyring for platform/firmware trusted keys"
--        depends on INTEGRITY_ASYMMETRIC_KEYS
--        depends on SYSTEM_BLACKLIST_KEYRING
--        help
--         Provide a separate, distinct keyring for platform trusted keys, which
--         the kernel automatically populates during initialization from values
--         provided by the platform for verifying the kexec'ed kerned image
--         and, possibly, the initramfs signature.
-+	bool "Provide keyring for platform/firmware trusted keys"
-+	depends on INTEGRITY_ASYMMETRIC_KEYS
-+	depends on SYSTEM_BLACKLIST_KEYRING
-+	help
-+	 Provide a separate, distinct keyring for platform trusted keys, which
-+	 the kernel automatically populates during initialization from values
-+	 provided by the platform for verifying the kexec'ed kerned image
-+	 and, possibly, the initramfs signature.
- 
- config LOAD_UEFI_KEYS
-        depends on INTEGRITY_PLATFORM_KEYRING
-diff --git a/security/integrity/ima/Kconfig b/security/integrity/ima/Kconfig
-index 838476d780e5..ec9259bd8115 100644
---- a/security/integrity/ima/Kconfig
-+++ b/security/integrity/ima/Kconfig
-@@ -159,13 +159,13 @@ config IMA_APPRAISE
- 	  If unsure, say N.
- 
- config IMA_ARCH_POLICY
--        bool "Enable loading an IMA architecture specific policy"
--        depends on (KEXEC_SIG && IMA) || IMA_APPRAISE \
-+	bool "Enable loading an IMA architecture specific policy"
-+	depends on (KEXEC_SIG && IMA) || IMA_APPRAISE \
- 		   && INTEGRITY_ASYMMETRIC_KEYS
--        default n
--        help
--          This option enables loading an IMA architecture specific policy
--          based on run time secure boot flags.
-+	default n
-+	help
-+	  This option enables loading an IMA architecture specific policy
-+	  based on run time secure boot flags.
- 
- config IMA_APPRAISE_BUILD_POLICY
- 	bool "IMA build time configured policy rules"
-diff --git a/security/safesetid/Kconfig b/security/safesetid/Kconfig
-index 18b5fb90417b..ab1a2c69b0b8 100644
---- a/security/safesetid/Kconfig
-+++ b/security/safesetid/Kconfig
-@@ -1,15 +1,15 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config SECURITY_SAFESETID
--        bool "Gate setid transitions to limit CAP_SET{U/G}ID capabilities"
--        depends on SECURITY
--        select SECURITYFS
--        default n
--        help
--          SafeSetID is an LSM module that gates the setid family of syscalls to
--          restrict UID/GID transitions from a given UID/GID to only those
--          approved by a system-wide whitelist. These restrictions also prohibit
--          the given UIDs/GIDs from obtaining auxiliary privileges associated
--          with CAP_SET{U/G}ID, such as allowing a user to set up user namespace
--          UID mappings.
-+	bool "Gate setid transitions to limit CAP_SET{U/G}ID capabilities"
-+	depends on SECURITY
-+	select SECURITYFS
-+	default n
-+	help
-+	  SafeSetID is an LSM module that gates the setid family of syscalls to
-+	  restrict UID/GID transitions from a given UID/GID to only those
-+	  approved by a system-wide whitelist. These restrictions also prohibit
-+	  the given UIDs/GIDs from obtaining auxiliary privileges associated
-+	  with CAP_SET{U/G}ID, such as allowing a user to set up user namespace
-+	  UID mappings.
- 
--          If you are unsure how to answer this question, answer N.
-+	  If you are unsure how to answer this question, answer N.
+ 	return 0;
+ }
 -- 
-2.17.1
+2.23.0.351.gc4317032e6-goog
 
 
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
