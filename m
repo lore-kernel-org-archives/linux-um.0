@@ -1,25 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab7.miniserver.com ([37.128.132.42]
- helo=www.kot-begemot.co.uk)
+Received: from mail-pl1-x649.google.com ([2607:f8b0:4864:20::649])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iBDvt-0005im-KP
- for linux-um@lists.infradead.org; Fri, 20 Sep 2019 08:06:27 +0000
-Received: from tun252.jain.kot-begemot.co.uk ([192.168.18.6]
- helo=jain.kot-begemot.co.uk)
- by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
- (Exim 4.92) (envelope-from <anton.ivanov@kot-begemot.co.uk>)
- id 1iBDvn-0004Jq-92
- for linux-um@lists.infradead.org; Fri, 20 Sep 2019 08:06:19 +0000
-Received: from jain.kot-begemot.co.uk ([192.168.3.3])
- by jain.kot-begemot.co.uk with esmtp (Exim 4.92)
- (envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1iBDvk-0002Zo-Ub
- for linux-um@lists.infradead.org; Fri, 20 Sep 2019 09:06:18 +0100
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Subject: Anyone running uml on a 5.x host?
-Message-ID: <c5e112ff-3d53-784d-9f3d-38d36e27354a@kot-begemot.co.uk>
-Date: Fri, 20 Sep 2019 09:06:16 +0100
-MIME-Version: 1.0
-Content-Language: en-US
+ id 1iCKFf-00030j-Ma
+ for linux-um@lists.infradead.org; Mon, 23 Sep 2019 09:03:25 +0000
+Received: by mail-pl1-x649.google.com with SMTP id g20so8215000plj.15
+ for <linux-um@lists.infradead.org>; Mon, 23 Sep 2019 02:03:22 -0700 (PDT)
+Date: Mon, 23 Sep 2019 02:02:40 -0700
+In-Reply-To: <20190923090249.127984-1-brendanhiggins@google.com>
+Message-Id: <20190923090249.127984-11-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20190923090249.127984-1-brendanhiggins@google.com>
+Subject: [PATCH v18 10/19] kunit: test: add tests for kunit test abort
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -28,28 +20,154 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
+To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, torvalds@linux-foundation.org, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-Hi all,
+Add KUnit tests for the KUnit test abort mechanism (see preceding
+commit). Add tests both for general try catch mechanism as well as
+non-architecture specific mechanism.
 
-Has anyone tried to run UML on a 5.2 host?
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+---
+ lib/kunit/Makefile    |   3 +-
+ lib/kunit/test-test.c | 106 ++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 108 insertions(+), 1 deletion(-)
+ create mode 100644 lib/kunit/test-test.c
 
-I get the following on 5.2 from debian testing:
-
-Adding 93823388884992 bytes to physical memory to account for 
-exec-shield gap
-Too few physical memory! Needed=93823417974784, given=547037904896
-
-The same machine when booted with 4.19 (stock) runs the same UML 
-instance just fine.
-
+diff --git a/lib/kunit/Makefile b/lib/kunit/Makefile
+index c9176c9c578c..769d9402b5d3 100644
+--- a/lib/kunit/Makefile
++++ b/lib/kunit/Makefile
+@@ -3,6 +3,7 @@ obj-$(CONFIG_KUNIT) +=			test.o \
+ 					assert.o \
+ 					try-catch.o
+ 
+-obj-$(CONFIG_KUNIT_TEST) +=		string-stream-test.o
++obj-$(CONFIG_KUNIT_TEST) +=		test-test.o \
++					string-stream-test.o
+ 
+ obj-$(CONFIG_KUNIT_EXAMPLE_TEST) +=	example-test.o
+diff --git a/lib/kunit/test-test.c b/lib/kunit/test-test.c
+new file mode 100644
+index 000000000000..06d34d36b103
+--- /dev/null
++++ b/lib/kunit/test-test.c
+@@ -0,0 +1,106 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * KUnit test for core test infrastructure.
++ *
++ * Copyright (C) 2019, Google LLC.
++ * Author: Brendan Higgins <brendanhiggins@google.com>
++ */
++#include <kunit/test.h>
++
++struct kunit_try_catch_test_context {
++	struct kunit_try_catch *try_catch;
++	bool function_called;
++};
++
++static void kunit_test_successful_try(void *data)
++{
++	struct kunit *test = data;
++	struct kunit_try_catch_test_context *ctx = test->priv;
++
++	ctx->function_called = true;
++}
++
++static void kunit_test_no_catch(void *data)
++{
++	struct kunit *test = data;
++
++	KUNIT_FAIL(test, "Catch should not be called\n");
++}
++
++static void kunit_test_try_catch_successful_try_no_catch(struct kunit *test)
++{
++	struct kunit_try_catch_test_context *ctx = test->priv;
++	struct kunit_try_catch *try_catch = ctx->try_catch;
++
++	kunit_try_catch_init(try_catch,
++			     test,
++			     kunit_test_successful_try,
++			     kunit_test_no_catch);
++	kunit_try_catch_run(try_catch, test);
++
++	KUNIT_EXPECT_TRUE(test, ctx->function_called);
++}
++
++static void kunit_test_unsuccessful_try(void *data)
++{
++	struct kunit *test = data;
++	struct kunit_try_catch_test_context *ctx = test->priv;
++	struct kunit_try_catch *try_catch = ctx->try_catch;
++
++	kunit_try_catch_throw(try_catch);
++	KUNIT_FAIL(test, "This line should never be reached\n");
++}
++
++static void kunit_test_catch(void *data)
++{
++	struct kunit *test = data;
++	struct kunit_try_catch_test_context *ctx = test->priv;
++
++	ctx->function_called = true;
++}
++
++static void kunit_test_try_catch_unsuccessful_try_does_catch(struct kunit *test)
++{
++	struct kunit_try_catch_test_context *ctx = test->priv;
++	struct kunit_try_catch *try_catch = ctx->try_catch;
++
++	kunit_try_catch_init(try_catch,
++			     test,
++			     kunit_test_unsuccessful_try,
++			     kunit_test_catch);
++	kunit_try_catch_run(try_catch, test);
++
++	KUNIT_EXPECT_TRUE(test, ctx->function_called);
++}
++
++static int kunit_try_catch_test_init(struct kunit *test)
++{
++	struct kunit_try_catch_test_context *ctx;
++
++	ctx = kunit_kzalloc(test, sizeof(*ctx), GFP_KERNEL);
++	if (!ctx)
++		return -ENOMEM;
++
++	test->priv = ctx;
++
++	ctx->try_catch = kunit_kmalloc(test,
++				       sizeof(*ctx->try_catch),
++				       GFP_KERNEL);
++	if (!ctx->try_catch)
++		return -ENOMEM;
++
++	return 0;
++}
++
++static struct kunit_case kunit_try_catch_test_cases[] = {
++	KUNIT_CASE(kunit_test_try_catch_successful_try_no_catch),
++	KUNIT_CASE(kunit_test_try_catch_unsuccessful_try_does_catch),
++	{}
++};
++
++static struct kunit_suite kunit_try_catch_test_suite = {
++	.name = "kunit-try-catch-test",
++	.init = kunit_try_catch_test_init,
++	.test_cases = kunit_try_catch_test_cases,
++};
++kunit_test_suite(kunit_try_catch_test_suite);
 -- 
-Anton R. Ivanov
-https://www.kot-begemot.co.uk/
+2.23.0.351.gc4317032e6-goog
 
 
 _______________________________________________
