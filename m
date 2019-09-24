@@ -1,18 +1,21 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x44a.google.com ([2607:f8b0:4864:20::44a])
+Received: from conssluserg-04.nifty.com ([210.131.2.83])
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iBSCJ-0004hl-M9
- for linux-um@lists.infradead.org; Fri, 20 Sep 2019 23:20:21 +0000
-Received: by mail-pf1-x44a.google.com with SMTP id g15so5764827pfb.8
- for <linux-um@lists.infradead.org>; Fri, 20 Sep 2019 16:20:18 -0700 (PDT)
-Date: Fri, 20 Sep 2019 16:19:18 -0700
-In-Reply-To: <20190920231923.141900-1-brendanhiggins@google.com>
-Message-Id: <20190920231923.141900-15-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20190920231923.141900-1-brendanhiggins@google.com>
-Subject: [PATCH v16 14/19] kunit: defconfig: add defconfigs for building KUnit
- tests
-From: Brendan Higgins <brendanhiggins@google.com>
+ id 1iCjf0-0000de-Fg
+ for linux-um@lists.infradead.org; Tue, 24 Sep 2019 12:11:16 +0000
+Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com
+ [209.85.222.54]) (authenticated)
+ by conssluserg-04.nifty.com with ESMTP id x8OCAXFB021398
+ for <linux-um@lists.infradead.org>; Tue, 24 Sep 2019 21:10:33 +0900
+Received: by mail-ua1-f54.google.com with SMTP id r19so460953uap.9
+ for <linux-um@lists.infradead.org>; Tue, 24 Sep 2019 05:10:33 -0700 (PDT)
+MIME-Version: 1.0
+References: <c8cbee753dc0306fd7597f43a45e05d99d404b29.camel@sipsolutions.net>
+In-Reply-To: <c8cbee753dc0306fd7597f43a45e05d99d404b29.camel@sipsolutions.net>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Tue, 24 Sep 2019 21:09:56 +0900
+Message-ID: <CAK7LNATkejPwwsfJoR4veX+pvCnoK4Seg-ZOcDrZgeTaJTfp0w@mail.gmail.com>
+Subject: Re: static EXPORT_SYMBOL checker causes false positives on ARCH=um
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -25,147 +28,86 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, torvalds@linux-foundation.org, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Emil Velikov <emil.l.velikov@gmail.com>, linux-um@lists.infradead.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Denis Efremov <efremov@linux.com>, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
 
-Add defconfig for UML and a fragment that can be used to configure other
-architectures for building KUnit tests. Add option to kunit_tool to use
-a defconfig to create the kunitconfig.
+Hi Johannes,
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
-Reviewed-by: Stephen Boyd <sboyd@kernel.org>
----
- arch/um/configs/kunit_defconfig              |  3 +++
- tools/testing/kunit/configs/all_tests.config |  3 +++
- tools/testing/kunit/kunit.py                 | 28 +++++++++++++++++---
- tools/testing/kunit/kunit_kernel.py          |  3 ++-
- 4 files changed, 32 insertions(+), 5 deletions(-)
- create mode 100644 arch/um/configs/kunit_defconfig
- create mode 100644 tools/testing/kunit/configs/all_tests.config
+On Tue, Sep 24, 2019 at 5:17 PM Johannes Berg <johannes@sipsolutions.net> wrote:
+>
+> Hi,
+>
+> With the new commit 15bfc2348d54 ("modpost: check for static
+> EXPORT_SYMBOL* functions") we get a lot of warnings on ARCH=um builds:
+>
+> WARNING: "rename" [vmlinux] is a static EXPORT_SYMBOL
+> WARNING: "lseek" [vmlinux] is a static EXPORT_SYMBOL
+> WARNING: "ftruncate64" [vmlinux] is a static EXPORT_SYMBOL
+> [...]
+> see https://p.sipsolutions.net/7232995f34907b9d.txt
 
-diff --git a/arch/um/configs/kunit_defconfig b/arch/um/configs/kunit_defconfig
-new file mode 100644
-index 000000000000..9235b7d42d38
---- /dev/null
-+++ b/arch/um/configs/kunit_defconfig
-@@ -0,0 +1,3 @@
-+CONFIG_KUNIT=y
-+CONFIG_KUNIT_TEST=y
-+CONFIG_KUNIT_EXAMPLE_TEST=y
-diff --git a/tools/testing/kunit/configs/all_tests.config b/tools/testing/kunit/configs/all_tests.config
-new file mode 100644
-index 000000000000..9235b7d42d38
---- /dev/null
-+++ b/tools/testing/kunit/configs/all_tests.config
-@@ -0,0 +1,3 @@
-+CONFIG_KUNIT=y
-+CONFIG_KUNIT_TEST=y
-+CONFIG_KUNIT_EXAMPLE_TEST=y
-diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-index da11bd62a4b8..0944dea5c321 100755
---- a/tools/testing/kunit/kunit.py
-+++ b/tools/testing/kunit/kunit.py
-@@ -11,6 +11,7 @@ import argparse
- import sys
- import os
- import time
-+import shutil
- 
- from collections import namedtuple
- from enum import Enum, auto
-@@ -21,7 +22,7 @@ import kunit_parser
- 
- KunitResult = namedtuple('KunitResult', ['status','result'])
- 
--KunitRequest = namedtuple('KunitRequest', ['raw_output','timeout', 'jobs', 'build_dir'])
-+KunitRequest = namedtuple('KunitRequest', ['raw_output','timeout', 'jobs', 'build_dir', 'defconfig'])
- 
- class KunitStatus(Enum):
- 	SUCCESS = auto()
-@@ -29,8 +30,16 @@ class KunitStatus(Enum):
- 	BUILD_FAILURE = auto()
- 	TEST_FAILURE = auto()
- 
-+def create_default_kunitconfig():
-+	if not os.path.exists(kunit_kernel.KUNITCONFIG_PATH):
-+		shutil.copyfile('arch/um/configs/kunit_defconfig',
-+				kunit_kernel.KUNITCONFIG_PATH)
-+
- def run_tests(linux: kunit_kernel.LinuxSourceTree,
- 	      request: KunitRequest) -> KunitResult:
-+	if request.defconfig:
-+		create_default_kunitconfig()
-+
- 	config_start = time.time()
- 	success = linux.build_reconfig(request.build_dir)
- 	config_end = time.time()
-@@ -72,7 +81,7 @@ def run_tests(linux: kunit_kernel.LinuxSourceTree,
- 	else:
- 		return KunitResult(KunitStatus.SUCCESS, test_result)
- 
--def main(argv, linux):
-+def main(argv, linux=None):
- 	parser = argparse.ArgumentParser(
- 			description='Helps writing and running KUnit tests.')
- 	subparser = parser.add_subparsers(dest='subcommand')
-@@ -99,13 +108,24 @@ def main(argv, linux):
- 				'directory.',
- 				type=str, default=None, metavar='build_dir')
- 
-+	run_parser.add_argument('--defconfig',
-+				help='Uses a default kunitconfig.',
-+				action='store_true')
-+
- 	cli_args = parser.parse_args(argv)
- 
- 	if cli_args.subcommand == 'run':
-+		if cli_args.defconfig:
-+			create_default_kunitconfig()
-+
-+		if not linux:
-+			linux = kunit_kernel.LinuxSourceTree()
-+
- 		request = KunitRequest(cli_args.raw_output,
- 				       cli_args.timeout,
- 				       cli_args.jobs,
--				       cli_args.build_dir)
-+				       cli_args.build_dir,
-+				       cli_args.defconfig)
- 		result = run_tests(linux, request)
- 		if result.status != KunitStatus.SUCCESS:
- 			sys.exit(1)
-@@ -113,4 +133,4 @@ def main(argv, linux):
- 		parser.print_help()
- 
- if __name__ == '__main__':
--	main(sys.argv[1:], kunit_kernel.LinuxSourceTree())
-+	main(sys.argv[1:])
-diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-index 07c0abf2f47d..bf3876835331 100644
---- a/tools/testing/kunit/kunit_kernel.py
-+++ b/tools/testing/kunit/kunit_kernel.py
-@@ -14,6 +14,7 @@ import os
- import kunit_config
- 
- KCONFIG_PATH = '.config'
-+KUNITCONFIG_PATH = 'kunitconfig'
- 
- class ConfigError(Exception):
- 	"""Represents an error trying to configure the Linux kernel."""
-@@ -81,7 +82,7 @@ class LinuxSourceTree(object):
- 
- 	def __init__(self):
- 		self._kconfig = kunit_config.Kconfig()
--		self._kconfig.read_from_file('kunitconfig')
-+		self._kconfig.read_from_file(KUNITCONFIG_PATH)
- 		self._ops = LinuxSourceTreeOperations()
- 
- 	def clean(self):
+Thanks for the report.
+
+I think this should work:
+https://lore.kernel.org/patchwork/patch/1131017/
+
+It fixes "__guard" and "__stack_smash_handler" too.
+
+
+Thanks.
+
+
+
+>
+>
+> This hack fixes *most* of them:
+>
+> diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+> index 820eed87fb43..3e443563ebea 100644
+> --- a/scripts/mod/modpost.c
+> +++ b/scripts/mod/modpost.c
+> @@ -1931,12 +1931,18 @@ static void check_sec_ref(struct module *mod, const char *modname,
+>  static char *remove_dot(char *s)
+>  {
+>         size_t n = strcspn(s, ".");
+> +       char *at;
+>
+>         if (n && s[n]) {
+>                 size_t m = strspn(s + n + 1, "0123456789");
+>                 if (m && (s[n + m] == '.' || s[n + m] == 0))
+>                         s[n] = 0;
+>         }
+> +
+> +       at = strchr(s, '@');
+> +       if (at)
+> +               *at = 0;
+> +
+>         return s;
+>  }
+>
+>
+> (but obviously just serves to give you an idea of what's going on).
+>
+>
+> With that, only two remain for me:
+>
+> WARNING: "__guard" [vmlinux] is a static EXPORT_SYMBOL
+> WARNING: "__stack_smash_handler" [vmlinux] is a static EXPORT_SYMBOL
+>
+> and I think that's because they don't even exist at all, so arguably the
+> code shouldn't export them, but I didn't find a way to detect at build
+> time if -fstack-protector was enabled or not?
+>
+> Any thoughts?
+>
+> Thanks,
+> johannes
+>
+
+
 -- 
-2.23.0.351.gc4317032e6-goog
-
+Best Regards
+Masahiro Yamada
 
 _______________________________________________
 linux-um mailing list
