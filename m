@@ -1,59 +1,73 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
- by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1i9qhv-0002nG-IQ
- for linux-um@lists.infradead.org; Mon, 16 Sep 2019 13:06:20 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH] um: export uml_reserved
-Date: Mon, 16 Sep 2019 15:06:14 +0200
-Message-Id: <1568639174-I89491153563c5836b17475c319aeeb3582a7b5e3@changeid>
+Return-Path: <linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org>
+Date: Tue, 24 Sep 2019 08:30:36 +0200
+From: Christian Brauner <christian.brauner@ubuntu.com>
+Subject: Re: [PATCH] seccomp: remove unused arg from secure_computing()
+Message-ID: <20190924063035.n3dmryhn6cb52ida@wittgenstein>
+References: <20190920131907.6886-1-christian.brauner@ubuntu.com>
+ <20190923094916.GB15355@zn.tnic>
+ <CALCETrU_fs_At-hTpr231kpaAd0z7xJN4ku-DvzhRU6cvcJA_w@mail.gmail.com>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Disposition: inline
+In-Reply-To: <CALCETrU_fs_At-hTpr231kpaAd0z7xJN4ku-DvzhRU6cvcJA_w@mail.gmail.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org
+To: Andy Lutomirski <luto@kernel.org>
+Cc: linux-s390 <linux-s390@vger.kernel.org>, Will Drewry <wad@chromium.org>, Kees Cook <keescook@chromium.org>, Parisc List <linux-parisc@vger.kernel.org>, X86 ML <x86@kernel.org>, linux-um@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>, Oleg Nesterov <oleg@redhat.com>, Borislav Petkov <bp@alien8.de>, Thomas Gleixner <tglx@linutronix.de>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+List-ID: <linux-um.lists.infradead.org>
 
-From: Johannes Berg <johannes.berg@intel.com>
+On Mon, Sep 23, 2019 at 11:41:59AM -0700, Andy Lutomirski wrote:
+> On Mon, Sep 23, 2019 at 2:49 AM Borislav Petkov <bp@alien8.de> wrote:
+> >
+> > On Fri, Sep 20, 2019 at 03:19:09PM +0200, Christian Brauner wrote:
+> > > While touching seccomp code I realized that the struct seccomp_data
+> > > argument to secure_computing() seems to be unused by all current
+> > > callers. So let's remove it unless there is some subtlety I missed.
+> > > Note, I only tested this on x86.
+> >
+> > What was amluto thinking in
+> >
+> > 2f275de5d1ed ("seccomp: Add a seccomp_data parameter secure_computing()")
+> 
+> IIRC there was a period of time in which x86 used secure_computing()
+> for normal syscalls, and it was a good deal faster to have the arch
+> code supply seccomp_data.  x86 no longer works like this, and syscalls
+> aren't fast anymore ayway :(
 
-We need this symbol now, in case the virtio_uml driver
-is a module, as it needs to know how much memory was
-reserved to not advertise that to the device.
+I started looking at this and actually had a slightly bigger cleanup in
+mind. It seems odd that we have secure_computing() and
+__secure_computing(). Especially in the mips and x86 case. From what I
+can tell they could both rely on secure_computing() and don't need
+__secure_computing().
+If I can make those changes, we can make __secure_computing() static and
+have only a single function secure_computing() that is used by all
+arches which would make this code simpler.
+Apparenly mips once switched from secure_computing() to
+__secure_computing() because of bpf and tracepoints. The last change to
+this was:
 
-Fixes: 5d38f324993f ("um: drivers: Add virtio vhost-user driver")
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- arch/um/kernel/um_arch.c | 1 +
- 1 file changed, 1 insertion(+)
+commit 3d729deaf287c43e415c5d791c9ac8414dbeff70
+Author: James Hogan <jhogan@kernel.org>
+Date:   Fri Aug 11 21:56:50 2017 +0100
 
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index 0f40eccbd759..474790b146c3 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -102,6 +102,7 @@ unsigned long uml_physmem;
- EXPORT_SYMBOL(uml_physmem);
- 
- unsigned long uml_reserved; /* Also modified in mem_init */
-+EXPORT_SYMBOL(uml_reserved);
- unsigned long start_vm;
- unsigned long end_vm;
- 
--- 
-2.20.1
+    MIPS: seccomp: Fix indirect syscall args
 
+which references a broken samples/bpf/tracex5 test. But in the thread to
+this last change Kees and others were less than sure that this makes
+sense. So I'm not sure. Maybe I should just try and send it out...
+
+Christian
 
 _______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
