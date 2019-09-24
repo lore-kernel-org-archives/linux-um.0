@@ -1,17 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x44a.google.com ([2607:f8b0:4864:20::44a])
- by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iBT7j-0005Wp-6y
- for linux-um@lists.infradead.org; Sat, 21 Sep 2019 00:19:40 +0000
-Received: by mail-pf1-x44a.google.com with SMTP id p2so3746389pff.4
- for <linux-um@lists.infradead.org>; Fri, 20 Sep 2019 17:19:38 -0700 (PDT)
-Date: Fri, 20 Sep 2019 17:18:48 -0700
-In-Reply-To: <20190921001855.200947-1-brendanhiggins@google.com>
-Message-Id: <20190921001855.200947-13-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20190921001855.200947-1-brendanhiggins@google.com>
-Subject: [PATCH v17 12/19] kunit: test: add tests for KUnit managed resources
-From: Brendan Higgins <brendanhiggins@google.com>
+Subject: Re: [PATCH v18 15/19] Documentation: kunit: add documentation for
+ KUnit
+References: <20190923090249.127984-1-brendanhiggins@google.com>
+ <20190923090249.127984-16-brendanhiggins@google.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <9cd80aa2-fc8d-1fed-838b-cf4951692b6d@infradead.org>
+Date: Mon, 23 Sep 2019 17:51:41 -0700
+MIME-Version: 1.0
+In-Reply-To: <20190923090249.127984-16-brendanhiggins@google.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,264 +21,176 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
-Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, Brendan Higgins <brendanhiggins@google.com>, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, Avinash Kondareddy <akndr41@gmail.com>, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, torvalds@linux-foundation.org, rdunlap@infradead.org, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
+To: Brendan Higgins <brendanhiggins@google.com>, frowand.list@gmail.com, gregkh@linuxfoundation.org, jpoimboe@redhat.com, keescook@google.com, kieran.bingham@ideasonboard.com, mcgrof@kernel.org, peterz@infradead.org, robh@kernel.org, sboyd@kernel.org, shuah@kernel.org, tytso@mit.edu, yamada.masahiro@socionext.com
+Cc: pmladek@suse.com, linux-doc@vger.kernel.org, amir73il@gmail.com, dri-devel@lists.freedesktop.org, Alexander.Levin@microsoft.com, linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org, khilman@baylibre.com, knut.omang@oracle.com, Felix Guo <felixguoxiuping@gmail.com>, wfg@linux.intel.com, joel@jms.id.au, rientjes@google.com, jdike@addtoit.com, dan.carpenter@oracle.com, devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org, Tim.Bird@sony.com, linux-um@lists.infradead.org, rostedt@goodmis.org, julia.lawall@lip6.fr, kunit-dev@googlegroups.com, richard@nod.at, torvalds@linux-foundation.org, Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org, daniel@ffwll.ch, mpe@ellerman.id.au, linux-fsdevel@vger.kernel.org, logang@deltatee.com
 
-From: Avinash Kondareddy <akndr41@gmail.com>
+On 9/23/19 2:02 AM, Brendan Higgins wrote:
 
-Add unit tests for KUnit managed resources. KUnit managed resources
-(struct kunit_resource) are resources that are automatically cleaned up
-at the end of a KUnit test, similar to the concept of devm_* managed
-resources.
+> diff --git a/Documentation/dev-tools/kunit/usage.rst b/Documentation/dev-tools/kunit/usage.rst
+> new file mode 100644
+> index 000000000000..c6e69634e274
+> --- /dev/null
+> +++ b/Documentation/dev-tools/kunit/usage.rst
+> @@ -0,0 +1,576 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +===========
+> +Using KUnit
+> +===========
+> +
+> +The purpose of this document is to describe what KUnit is, how it works, how it
+> +is intended to be used, and all the concepts and terminology that are needed to
+> +understand it. This guide assumes a working knowledge of the Linux kernel and
+> +some basic knowledge of testing.
+> +
+> +For a high level introduction to KUnit, including setting up KUnit for your
+> +project, see :doc:`start`.
+> +
+> +Organization of this document
+> +=============================
+> +
+> +This document is organized into two main sections: Testing and Isolating
+> +Behavior. The first covers what a unit test is and how to use KUnit to write
 
-Signed-off-by: Avinash Kondareddy <akndr41@gmail.com>
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
-Reviewed-by: Stephen Boyd <sboyd@kernel.org>
----
- lib/kunit/test-test.c | 228 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 228 insertions(+)
+                              what unit tests are
+would agree with the following "them."
 
-diff --git a/lib/kunit/test-test.c b/lib/kunit/test-test.c
-index e0ab4bd546ea..5ebe059d16e2 100644
---- a/lib/kunit/test-test.c
-+++ b/lib/kunit/test-test.c
-@@ -101,3 +101,231 @@ static struct kunit_suite kunit_try_catch_test_suite = {
- 	.test_cases = kunit_try_catch_test_cases,
- };
- kunit_test_suite(kunit_try_catch_test_suite);
-+
-+/*
-+ * Context for testing test managed resources
-+ * is_resource_initialized is used to test arbitrary resources
-+ */
-+struct kunit_test_resource_context {
-+	struct kunit test;
-+	bool is_resource_initialized;
-+	int allocate_order[2];
-+	int free_order[2];
-+};
-+
-+static int fake_resource_init(struct kunit_resource *res, void *context)
-+{
-+	struct kunit_test_resource_context *ctx = context;
-+
-+	res->allocation = &ctx->is_resource_initialized;
-+	ctx->is_resource_initialized = true;
-+	return 0;
-+}
-+
-+static void fake_resource_free(struct kunit_resource *res)
-+{
-+	bool *is_resource_initialized = res->allocation;
-+
-+	*is_resource_initialized = false;
-+}
-+
-+static void kunit_resource_test_init_resources(struct kunit *test)
-+{
-+	struct kunit_test_resource_context *ctx = test->priv;
-+
-+	kunit_init_test(&ctx->test, "testing_test_init_test");
-+
-+	KUNIT_EXPECT_TRUE(test, list_empty(&ctx->test.resources));
-+}
-+
-+static void kunit_resource_test_alloc_resource(struct kunit *test)
-+{
-+	struct kunit_test_resource_context *ctx = test->priv;
-+	struct kunit_resource *res;
-+	kunit_resource_free_t free = fake_resource_free;
-+
-+	res = kunit_alloc_and_get_resource(&ctx->test,
-+					   fake_resource_init,
-+					   fake_resource_free,
-+					   GFP_KERNEL,
-+					   ctx);
-+
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, res);
-+	KUNIT_EXPECT_PTR_EQ(test,
-+			    &ctx->is_resource_initialized,
-+			    (bool *) res->allocation);
-+	KUNIT_EXPECT_TRUE(test, list_is_last(&res->node, &ctx->test.resources));
-+	KUNIT_EXPECT_PTR_EQ(test, free, res->free);
-+}
-+
-+static void kunit_resource_test_destroy_resource(struct kunit *test)
-+{
-+	struct kunit_test_resource_context *ctx = test->priv;
-+	struct kunit_resource *res = kunit_alloc_and_get_resource(
-+			&ctx->test,
-+			fake_resource_init,
-+			fake_resource_free,
-+			GFP_KERNEL,
-+			ctx);
-+
-+	KUNIT_ASSERT_FALSE(test,
-+			   kunit_resource_destroy(&ctx->test,
-+						  kunit_resource_instance_match,
-+						  res->free,
-+						  res->allocation));
-+
-+	KUNIT_EXPECT_FALSE(test, ctx->is_resource_initialized);
-+	KUNIT_EXPECT_TRUE(test, list_empty(&ctx->test.resources));
-+}
-+
-+static void kunit_resource_test_cleanup_resources(struct kunit *test)
-+{
-+	int i;
-+	struct kunit_test_resource_context *ctx = test->priv;
-+	struct kunit_resource *resources[5];
-+
-+	for (i = 0; i < ARRAY_SIZE(resources); i++) {
-+		resources[i] = kunit_alloc_and_get_resource(&ctx->test,
-+							    fake_resource_init,
-+							    fake_resource_free,
-+							    GFP_KERNEL,
-+							    ctx);
-+	}
-+
-+	kunit_cleanup(&ctx->test);
-+
-+	KUNIT_EXPECT_TRUE(test, list_empty(&ctx->test.resources));
-+}
-+
-+static void kunit_resource_test_mark_order(int order_array[],
-+					   size_t order_size,
-+					   int key)
-+{
-+	int i;
-+
-+	for (i = 0; i < order_size && order_array[i]; i++)
-+		;
-+
-+	order_array[i] = key;
-+}
-+
-+#define KUNIT_RESOURCE_TEST_MARK_ORDER(ctx, order_field, key)		       \
-+		kunit_resource_test_mark_order(ctx->order_field,	       \
-+					       ARRAY_SIZE(ctx->order_field),   \
-+					       key)
-+
-+static int fake_resource_2_init(struct kunit_resource *res, void *context)
-+{
-+	struct kunit_test_resource_context *ctx = context;
-+
-+	KUNIT_RESOURCE_TEST_MARK_ORDER(ctx, allocate_order, 2);
-+
-+	res->allocation = ctx;
-+
-+	return 0;
-+}
-+
-+static void fake_resource_2_free(struct kunit_resource *res)
-+{
-+	struct kunit_test_resource_context *ctx = res->allocation;
-+
-+	KUNIT_RESOURCE_TEST_MARK_ORDER(ctx, free_order, 2);
-+}
-+
-+static int fake_resource_1_init(struct kunit_resource *res, void *context)
-+{
-+	struct kunit_test_resource_context *ctx = context;
-+
-+	kunit_alloc_and_get_resource(&ctx->test,
-+				     fake_resource_2_init,
-+				     fake_resource_2_free,
-+				     GFP_KERNEL,
-+				     ctx);
-+
-+	KUNIT_RESOURCE_TEST_MARK_ORDER(ctx, allocate_order, 1);
-+
-+	res->allocation = ctx;
-+
-+	return 0;
-+}
-+
-+static void fake_resource_1_free(struct kunit_resource *res)
-+{
-+	struct kunit_test_resource_context *ctx = res->allocation;
-+
-+	KUNIT_RESOURCE_TEST_MARK_ORDER(ctx, free_order, 1);
-+}
-+
-+/*
-+ * TODO(brendanhiggins@google.com): replace the arrays that keep track of the
-+ * order of allocation and freeing with strict mocks using the IN_SEQUENCE macro
-+ * to assert allocation and freeing order when the feature becomes available.
-+ */
-+static void kunit_resource_test_proper_free_ordering(struct kunit *test)
-+{
-+	struct kunit_test_resource_context *ctx = test->priv;
-+
-+	/* fake_resource_1 allocates a fake_resource_2 in its init. */
-+	kunit_alloc_and_get_resource(&ctx->test,
-+				     fake_resource_1_init,
-+				     fake_resource_1_free,
-+				     GFP_KERNEL,
-+				     ctx);
-+
-+	/*
-+	 * Since fake_resource_2_init calls KUNIT_RESOURCE_TEST_MARK_ORDER
-+	 * before returning to fake_resource_1_init, it should be the first to
-+	 * put its key in the allocate_order array.
-+	 */
-+	KUNIT_EXPECT_EQ(test, ctx->allocate_order[0], 2);
-+	KUNIT_EXPECT_EQ(test, ctx->allocate_order[1], 1);
-+
-+	kunit_cleanup(&ctx->test);
-+
-+	/*
-+	 * Because fake_resource_2 finishes allocation before fake_resource_1,
-+	 * fake_resource_1 should be freed first since it could depend on
-+	 * fake_resource_2.
-+	 */
-+	KUNIT_EXPECT_EQ(test, ctx->free_order[0], 1);
-+	KUNIT_EXPECT_EQ(test, ctx->free_order[1], 2);
-+}
-+
-+static int kunit_resource_test_init(struct kunit *test)
-+{
-+	struct kunit_test_resource_context *ctx =
-+			kzalloc(sizeof(*ctx), GFP_KERNEL);
-+
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx);
-+
-+	test->priv = ctx;
-+
-+	kunit_init_test(&ctx->test, "test_test_context");
-+
-+	return 0;
-+}
-+
-+static void kunit_resource_test_exit(struct kunit *test)
-+{
-+	struct kunit_test_resource_context *ctx = test->priv;
-+
-+	kunit_cleanup(&ctx->test);
-+	kfree(ctx);
-+}
-+
-+static struct kunit_case kunit_resource_test_cases[] = {
-+	KUNIT_CASE(kunit_resource_test_init_resources),
-+	KUNIT_CASE(kunit_resource_test_alloc_resource),
-+	KUNIT_CASE(kunit_resource_test_destroy_resource),
-+	KUNIT_CASE(kunit_resource_test_cleanup_resources),
-+	KUNIT_CASE(kunit_resource_test_proper_free_ordering),
-+	{}
-+};
-+
-+static struct kunit_suite kunit_resource_test_suite = {
-+	.name = "kunit-resource-test",
-+	.init = kunit_resource_test_init,
-+	.exit = kunit_resource_test_exit,
-+	.test_cases = kunit_resource_test_cases,
-+};
-+kunit_test_suite(kunit_resource_test_suite);
+> +them. The second covers how to use KUnit to isolate code and make it possible
+> +to unit test code that was otherwise un-unit-testable.
+> +
+> +Testing
+> +=======
+> +
+
+[snip]
+
+
+> +
+> +Test Suites
+> +~~~~~~~~~~~
+> +
+> +Now obviously one unit test isn't very helpful; the power comes from having
+> +many test cases covering all of your behaviors. Consequently it is common to
+
+                   covering all of a unit's behaviors.
+
+> +have many *similar* tests; in order to reduce duplication in these closely
+> +related tests most unit testing frameworks provide the concept of a *test
+> +suite*, in KUnit we call it a *test suite*; all it is is just a collection of
+
+                                             . This is just a collection of
+
+> +test cases for a unit of code with a set up function that gets invoked before
+> +every test cases and then a tear down function that gets invoked after every
+
+   every test case
+
+> +test case completes.
+> +
+> +Example:
+> +
+> +.. code-block:: c
+> +
+> +	static struct kunit_case example_test_cases[] = {
+> +		KUNIT_CASE(example_test_foo),
+> +		KUNIT_CASE(example_test_bar),
+> +		KUNIT_CASE(example_test_baz),
+> +		{}
+> +	};
+> +
+> +	static struct kunit_suite example_test_suite = {
+> +		.name = "example",
+> +		.init = example_test_init,
+> +		.exit = example_test_exit,
+> +		.test_cases = example_test_cases,
+> +	};
+> +	kunit_test_suite(example_test_suite);
+> +
+> +In the above example the test suite, ``example_test_suite``, would run the test
+> +cases ``example_test_foo``, ``example_test_bar``, and ``example_test_baz``,
+> +each would have ``example_test_init`` called immediately before it and would
+> +have ``example_test_exit`` called immediately after it.
+> +``kunit_test_suite(example_test_suite)`` registers the test suite with the
+> +KUnit test framework.
+> +
+> +.. note::
+> +   A test case will only be run if it is associated with a test suite.
+> +
+> +For a more information on these types of things see the :doc:`api/test`.
+
+   For more
+
+> +
+> +Isolating Behavior
+> +==================
+> +
+
+[snip]
+
+> +
+> +.. _kunit-on-non-uml:
+> +
+> +KUnit on non-UML architectures
+> +==============================
+> +
+> +By default KUnit uses UML as a way to provide dependencies for code under test.
+> +Under most circumstances KUnit's usage of UML should be treated as an
+> +implementation detail of how KUnit works under the hood. Nevertheless, there
+> +are instances where being able to run architecture specific code, or test
+
+                           I would drop the comma above.
+
+> +against real hardware is desirable. For these reasons KUnit supports running on
+> +other architectures.
+> +
+> +Running existing KUnit tests on non-UML architectures
+> +-----------------------------------------------------
+> +
+
+[snip]
+
+> +Writing new tests for other architectures
+> +-----------------------------------------
+> +
+> +The first thing you must do is ask yourself whether it is necessary to write a
+> +KUnit test for a specific architecture, and then whether it is necessary to
+> +write that test for a particular piece of hardware. In general, writing a test
+> +that depends on having access to a particular piece of hardware or software (not
+> +included in the Linux source repo) should be avoided at all costs.
+> +
+> +Even if you only ever plan on running your KUnit test on your hardware
+> +configuration, other people may want to run your tests and may not have access
+> +to your hardware. If you write your test to run on UML, then anyone can run your
+> +tests without knowing anything about your particular setup, and you can still
+> +run your tests on your hardware setup just by compiling for your architecture.
+> +
+> +.. important::
+> +   Always prefer tests that run on UML to tests that only run under a particular
+> +   architecture, and always prefer tests that run under QEMU or another easy
+> +   (and monitarily free) to obtain software environment to a specific piece of
+
+           monetarily
+
+> +   hardware.
+> +
+> +Nevertheless, there are still valid reasons to write an architecture or hardware
+> +specific test: for example, you might want to test some code that really belongs
+> +in ``arch/some-arch/*``. Even so, try your best to write the test so that it
+> +does not depend on physical hardware: if some of your test cases don't need the
+> +hardware, only require the hardware for tests that actually need it.
+> +
+> +Now that you have narrowed down exactly what bits are hardware specific, the
+> +actual procedure for writing and running the tests is pretty much the same as
+> +writing normal KUnit tests. One special caveat is that you have to reset
+> +hardware state in between test cases; if this is not possible, you may only be
+> +able to run one test case per invocation.
+> +
+> +.. TODO(brendanhiggins@google.com): Add an actual example of an architecture
+> +   dependent KUnit test.
+
+
 -- 
-2.23.0.351.gc4317032e6-goog
-
+~Randy
 
 _______________________________________________
 linux-um mailing list
