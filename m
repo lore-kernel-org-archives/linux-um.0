@@ -2,16 +2,12 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iADYv-0003CY-FQ
- for linux-um@lists.infradead.org; Tue, 17 Sep 2019 13:30:36 +0000
-Received: by sipsolutions.net with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <johannes@sipsolutions.net>) id 1iADYr-0005GC-MV
- for linux-um@lists.infradead.org; Tue, 17 Sep 2019 15:30:29 +0200
+ id 1iCf8g-00012S-2f
+ for linux-um@lists.infradead.org; Tue, 24 Sep 2019 07:21:36 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [RFC v3 0/2] um: synchronized time-travel
-Date: Tue, 17 Sep 2019 15:29:42 +0200
-Message-Id: <20190917132943.20102-1-johannes@sipsolutions.net>
+Subject: [PATCH v2] um: virtio: keep reading on -EAGAIN
+Date: Tue, 24 Sep 2019 09:21:17 +0200
+Message-Id: <1569309677-I2734f0a83b4b28ea237050d5def17b4529b8b446@changeid>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -26,80 +22,96 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
 
-This seems to work now. On top of qemu, I have the following patches:
-https://lore.kernel.org/qemu-devel/20190903192505.10686-1-johannes@sipsolutions.net/
-https://lore.kernel.org/qemu-devel/20190827124909.16824-1-johannes@sipsolutions.net/
-https://lore.kernel.org/qemu-devel/20190917122512.15320-1-johannes@sipsolutions.net/
-https://lore.kernel.org/qemu-devel/20190917122559.15555-1-johannes@sipsolutions.net/
-https://lore.kernel.org/qemu-devel/20190917122625.15614-1-johannes@sipsolutions.net/
-https://lore.kernel.org/qemu-devel/20190917122625.15614-2-johannes@sipsolutions.net/
-https://lore.kernel.org/qemu-devel/20190917122644.15736-1-johannes@sipsolutions.net/
+From: Johannes Berg <johannes.berg@intel.com>
 
-And 'make vhost-user-sim' builds a program there that speaks the UML
-simulation time protocol and implements a virtual ethernet network.
+When we get an interrupt from the socket getting readable,
+and start reading, there's a possibility for a race. This
+depends on the implementation of the device, but e.g. with
+qemu's libvhost-user, we can see:
 
-With all the patches I sent to UML, I have a start script like this:
+ device                 virtio_uml
+---------------------------------------
+  write header
+                         get interrupt
+                         read header
+                         read body -> returns -EAGAIN
+  write body
 
--------------
-#!/bin/sh
+The -EAGAIN return is because the socket is non-blocking,
+and then this leads us to abandon this message.
 
-~/hwsim/qemu/vhost-user-sim -s /tmp/clock -n /tmp/net 2>&1 | tee /tmp/sim.log &
-(sleep 0.5 ; /path/to/linux mem=128M init=$(pwd)/test.sh root=none \
-                            hostfs=/ rootfstype=hostfs rootflags=/ \
-                            time-travel=ext:/tmp/clock \
-                            virtio_uml.device=/tmp/net:1 >/tmp/log1) &
-(sleep 1.5 ; /path/to/linux mem=128M init=$(pwd)/test2.sh root=none \
-                            hostfs=/ rootfstype=hostfs rootflags=/ \
-                            time-travel=ext:/tmp/clock \
-                            virtio_uml.device=/tmp/net:1 >/tmp/log1) &
-wait
-wait
-wait
--------------
+In fact, we've already read the header, so when the get
+another signal/interrupt for the body, we again read it
+as though it's a new message header, and also abandon it
+for the same reason (wrong size etc.)
 
+This essentially breaks things, and if that message was
+one that required a response, it leads to a deadlock as
+the device is waiting for the response but we'll never
+reply.
 
-where test.sh contains
--------------
-#!/bin/bash
+Fix this by spinning on -EAGAIN as well when we read the
+message body. We need to handle -EAGAIN as "no message"
+while reading the header, since we share an interrupt.
 
-start=$(date +%s)
-ip link set eth0 up
-ip addr add 10.0.0.1/24 dev eth0
-ping -D -n -i 10 -c 61 10.0.0.2
-end=$(date +%s)
-duration=$(($end - $start))
-min=$(($duration / 60))
-sec=$(($duration % 60))
-echo "================= runtime observed inside VM ${min}m ${sec}s ================="
-poweroff -f
--------------
+Note that this situation is highly unlikely to occur in
+normal usage, since there will be very few messages and
+only in the startup phase. With the inband call feature
+this does tend to happen (eventually) though.
 
-and test2.sh contains
--------------
-#!/bin/sh
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+---
+v2:
+ * spin on -EAGAIN only on the body, not the header,
+   otherwise we deadlock with shared interrupts
+---
+ arch/um/drivers/virtio_uml.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-ip link set eth0 up
-ip addr add 10.0.0.2/24 dev eth0
-tcpdump -n -e -i eth0 &
-sleep 660
-poweroff -f
--------------
-
-This then results in a network of two machines where one pings the other,
-and the virtual network currently implements exactly 50ms delay.
-
-
-There are some bugs in the userspace side, it doesn't handle nested requests
-correctly and can lock up, that's why I have the different sleeps in there.
-However, I'll need to pivot a bit and write integration to the simulation
-that I really need this to work with, so I still wanted to get this out. I
-may not fix those userspace bugs, but it's still a sample program for this.
-
-johannes
-
-
-
+diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
+index a2d9b3347945..31ffb27be172 100644
+--- a/arch/um/drivers/virtio_uml.c
++++ b/arch/um/drivers/virtio_uml.c
+@@ -87,7 +87,7 @@ static int full_sendmsg_fds(int fd, const void *buf, unsigned int len,
+ 	return 0;
+ }
+ 
+-static int full_read(int fd, void *buf, int len)
++static int full_read(int fd, void *buf, int len, bool abortable)
+ {
+ 	int rc;
+ 
+@@ -97,7 +97,7 @@ static int full_read(int fd, void *buf, int len)
+ 			buf += rc;
+ 			len -= rc;
+ 		}
+-	} while (len && (rc > 0 || rc == -EINTR));
++	} while (len && (rc > 0 || rc == -EINTR || (!abortable && rc == -EAGAIN)));
+ 
+ 	if (rc < 0)
+ 		return rc;
+@@ -108,7 +108,7 @@ static int full_read(int fd, void *buf, int len)
+ 
+ static int vhost_user_recv_header(int fd, struct vhost_user_msg *msg)
+ {
+-	return full_read(fd, msg, sizeof(msg->header));
++	return full_read(fd, msg, sizeof(msg->header), true);
+ }
+ 
+ static int vhost_user_recv(int fd, struct vhost_user_msg *msg,
+@@ -122,7 +122,7 @@ static int vhost_user_recv(int fd, struct vhost_user_msg *msg,
+ 	size = msg->header.size;
+ 	if (size > max_payload_size)
+ 		return -EPROTO;
+-	return full_read(fd, &msg->payload, size);
++	return full_read(fd, &msg->payload, size, false);
+ }
+ 
+ static int vhost_user_recv_resp(struct virtio_uml_device *vu_dev,
+-- 
+2.20.1
 
 
 _______________________________________________
