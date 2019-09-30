@@ -1,13 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
- by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1i5PkE-0005Jz-RK
- for linux-um@lists.infradead.org; Wed, 04 Sep 2019 07:30:26 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v2] um: drivers: Add virtio vhost-user driver
-Date: Wed,  4 Sep 2019 09:30:09 +0200
-Message-Id: <20190904073009.9122-1-johannes@sipsolutions.net>
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
+ by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
+ id 1iEvyj-0003kF-Qe
+ for linux-um@lists.infradead.org; Mon, 30 Sep 2019 13:44:44 +0000
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Subject: [PATCH] um: Loadable BPF "Firmware" for vector drivers
+Date: Mon, 30 Sep 2019 14:19:39 +0100
+Message-Id: <20190930131939.29354-1-anton.ivanov@cambridgegreys.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,1289 +22,430 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: Erel Geron <erelx.geron@intel.com>
+Cc: rrs@debian.org, richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 938962@bugs.debian.org
 
-From: Erel Geron <erelx.geron@intel.com>
+All vector drivers now allow a BPF program to be loaded and
+associated with the RX socket in the host kernel.
 
-This module allows virtio devices to be used over a vhost-user socket.
+1. The program can be loaded as an extra kernel command line
+option to any of the drivers.
 
-Signed-off-by: Erel Geron <erelx.geron@intel.com>
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+2. The program can also be loaded as "firmware", using the
+ethtool flash option. It is possible to turn this facility
+on or off using a command line option.
+
+A simplistic wrapper for generating the BPF firmware for the raw
+socket driver out of a tcpdump/libpcap filter expression can be
+found at: https://github.com/kot-begemot-uk/uml_vector_utilities/
+
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 ---
-v2:
- * remove most WARNings, replace by more precise error messages
- * handle short reads/writes on the socket
- * remove os_eventfd_read()/write(), eventfd_read()/write() are
-   just glibc helper functions and not really needed
- * fix various code style issues
- * add __uml_help()
- * fix infinite loop in vu_interrupt() on EOF
----
- arch/um/drivers/Kconfig      |   7 +
- arch/um/drivers/Makefile     |   1 +
- arch/um/drivers/vhost_user.h | 102 ++++
- arch/um/drivers/virtio_uml.c | 953 +++++++++++++++++++++++++++++++++++
- arch/um/include/asm/irq.h    |   5 +-
- arch/um/include/shared/os.h  |   5 +
- arch/um/kernel/ksyms.c       |   2 +
- arch/um/kernel/mem.c         |   1 +
- arch/um/kernel/physmem.c     |   1 +
- arch/um/kernel/um_arch.c     |   1 +
- arch/um/os-Linux/file.c      |  44 ++
- 11 files changed, 1120 insertions(+), 2 deletions(-)
- create mode 100644 arch/um/drivers/vhost_user.h
- create mode 100644 arch/um/drivers/virtio_uml.c
+ arch/um/drivers/vector_kern.c | 109 +++++++++++++++++++++++++++++++---
+ arch/um/drivers/vector_kern.h |   8 ++-
+ arch/um/drivers/vector_user.c |  94 +++++++++++++++++++++++------
+ arch/um/drivers/vector_user.h |   8 ++-
+ 4 files changed, 190 insertions(+), 29 deletions(-)
 
-diff --git a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
-index 2638e46f50cc..fea5a0d522dc 100644
---- a/arch/um/drivers/Kconfig
-+++ b/arch/um/drivers/Kconfig
-@@ -335,3 +335,10 @@ config UML_NET_SLIRP
- 	  Startup example: "eth0=slirp,FE:FD:01:02:03:04,/usr/local/bin/slirp"
- 
- endmenu
-+
-+config VIRTIO_UML
-+	tristate "UML driver for virtio devices"
-+	select VIRTIO
-+	help
-+	  This driver provides support for virtio based paravirtual device
-+	  drivers over vhost-user sockets.
-diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
-index 693319839f69..3edf0a7cfd25 100644
---- a/arch/um/drivers/Makefile
-+++ b/arch/um/drivers/Makefile
-@@ -61,6 +61,7 @@ obj-$(CONFIG_XTERM_CHAN) += xterm.o xterm_kern.o
- obj-$(CONFIG_UML_WATCHDOG) += harddog.o
- obj-$(CONFIG_BLK_DEV_COW_COMMON) += cow_user.o
- obj-$(CONFIG_UML_RANDOM) += random.o
-+obj-$(CONFIG_VIRTIO_UML) += virtio_uml.o
- 
- # pcap_user.o must be added explicitly.
- USER_OBJS := fd.o null.o pty.o tty.o xterm.o slip_common.o pcap_user.o vde_user.o vector_user.o
-diff --git a/arch/um/drivers/vhost_user.h b/arch/um/drivers/vhost_user.h
-new file mode 100644
-index 000000000000..2a9829b0782b
---- /dev/null
-+++ b/arch/um/drivers/vhost_user.h
-@@ -0,0 +1,102 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/* Vhost-user protocol */
-+
-+#ifndef __VHOST_USER_H__
-+#define __VHOST_USER_H__
-+
-+/* Message flags */
-+#define VHOST_USER_FLAG_REPLY		BIT(2)
-+/* Feature bits */
-+#define VHOST_USER_F_PROTOCOL_FEATURES	30
-+/* Protocol feature bits */
-+#define VHOST_USER_PROTOCOL_F_CONFIG	9
-+/* Vring state index masks */
-+#define VHOST_USER_VRING_INDEX_MASK	0xff
-+#define VHOST_USER_VRING_POLL_MASK	BIT(8)
-+
-+/* Supported version */
-+#define VHOST_USER_VERSION		1
-+/* Supported transport features */
-+#define VHOST_USER_SUPPORTED_F		BIT_ULL(VHOST_USER_F_PROTOCOL_FEATURES)
-+/* Supported protocol features */
-+#define VHOST_USER_SUPPORTED_PROTOCOL_F	BIT_ULL(VHOST_USER_PROTOCOL_F_CONFIG)
-+
-+enum vhost_user_request {
-+	VHOST_USER_GET_FEATURES = 1,
-+	VHOST_USER_SET_FEATURES = 2,
-+	VHOST_USER_SET_OWNER = 3,
-+	VHOST_USER_RESET_OWNER = 4,
-+	VHOST_USER_SET_MEM_TABLE = 5,
-+	VHOST_USER_SET_LOG_BASE = 6,
-+	VHOST_USER_SET_LOG_FD = 7,
-+	VHOST_USER_SET_VRING_NUM = 8,
-+	VHOST_USER_SET_VRING_ADDR = 9,
-+	VHOST_USER_SET_VRING_BASE = 10,
-+	VHOST_USER_GET_VRING_BASE = 11,
-+	VHOST_USER_SET_VRING_KICK = 12,
-+	VHOST_USER_SET_VRING_CALL = 13,
-+	VHOST_USER_SET_VRING_ERR = 14,
-+	VHOST_USER_GET_PROTOCOL_FEATURES = 15,
-+	VHOST_USER_SET_PROTOCOL_FEATURES = 16,
-+	VHOST_USER_GET_QUEUE_NUM = 17,
-+	VHOST_USER_SET_VRING_ENABLE = 18,
-+	VHOST_USER_SEND_RARP = 19,
-+	VHOST_USER_NET_SEND_MTU = 20,
-+	VHOST_USER_SET_SLAVE_REQ_FD = 21,
-+	VHOST_USER_IOTLB_MSG = 22,
-+	VHOST_USER_SET_VRING_ENDIAN = 23,
-+	VHOST_USER_GET_CONFIG = 24,
-+	VHOST_USER_SET_CONFIG = 25,
-+};
-+
-+struct vhost_user_header {
-+	u32 request; /* Use enum vhost_user_request */
-+	u32 flags;
-+	u32 size;
-+} __packed;
-+
-+struct vhost_user_config {
-+	u32 offset;
-+	u32 size;
-+	u32 flags;
-+	u8 payload[0]; /* Variable length */
-+} __packed;
-+
-+struct vhost_user_vring_state {
-+	u32 index;
-+	u32 num;
-+} __packed;
-+
-+struct vhost_user_vring_addr {
-+	u32 index;
-+	u32 flags;
-+	u64 desc, used, avail, log;
-+} __packed;
-+
-+struct vhost_user_mem_region {
-+	u64 guest_addr;
-+	u64 size;
-+	u64 user_addr;
-+	u64 mmap_offset;
-+} __packed;
-+
-+struct vhost_user_mem_regions {
-+	u32 num;
-+	u32 padding;
-+	struct vhost_user_mem_region regions[2]; /* Currently supporting 2 */
-+} __packed;
-+
-+union vhost_user_payload {
-+	u64 integer;
-+	struct vhost_user_config config;
-+	struct vhost_user_vring_state vring_state;
-+	struct vhost_user_vring_addr vring_addr;
-+	struct vhost_user_mem_regions mem_regions;
-+};
-+
-+struct vhost_user_msg {
-+	struct vhost_user_header header;
-+	union vhost_user_payload payload;
-+} __packed;
-+
-+#endif
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-new file mode 100644
-index 000000000000..b4737dfddde8
---- /dev/null
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -0,0 +1,953 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Virtio vhost-user driver
-+ *
-+ * Copyright(c) 2019 Intel Corporation
-+ *
-+ * This module allows virtio devices to be used over a vhost-user socket.
-+ *
-+ * Guest devices can be instantiated by kernel module or command line
-+ * parameters. One device will be created for each parameter. Syntax:
-+ *
-+ *		[virtio_uml.]device=<socket>:<virtio_id>[:<platform_id>]
-+ * where:
-+ *		<socket>	:= vhost-user socket path to connect
-+ *		<virtio_id>	:= virtio device id (as in virtio_ids.h)
-+ *		<platform_id>	:= (optional) platform device id
-+ *
-+ * example:
-+ *		virtio_uml.device=/var/uml.socket:1
-+ *
-+ * Based on Virtio MMIO driver by Pawel Moll, copyright 2011-2014, ARM Ltd.
-+ */
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+#include <linux/virtio.h>
-+#include <linux/virtio_config.h>
-+#include <linux/virtio_ring.h>
-+#include <irq_kern.h>
-+#include <init.h>
-+#include <os.h>
-+#include "vhost_user.h"
-+
-+/* Workaround due to a conflict between irq_user.h and irqreturn.h */
-+#ifdef IRQ_NONE
-+#undef IRQ_NONE
-+#endif
-+
-+#define MAX_SUPPORTED_QUEUE_SIZE	256
-+
-+#define to_virtio_uml_device(_vdev) \
-+	container_of(_vdev, struct virtio_uml_device, vdev)
-+
-+struct virtio_uml_device {
-+	struct virtio_device vdev;
-+	struct platform_device *pdev;
-+
-+	int sock;
-+	u64 features;
-+	u64 protocol_features;
-+	u8 status;
-+};
-+
-+struct virtio_uml_vq_info {
-+	int kick_fd, call_fd;
-+	char name[32];
-+};
-+
-+extern unsigned long long physmem_size, highmem;
-+
-+#define vu_err(vu_dev, ...)	dev_err(&(vu_dev)->pdev->dev, __VA_ARGS__)
-+
-+/* Vhost-user protocol */
-+
-+static int full_sendmsg_fds(int fd, const void *buf, unsigned int len,
-+			    const int *fds, unsigned int fds_num)
-+{
-+	int rc;
-+
-+	do {
-+		rc = os_sendmsg_fds(fd, buf, len, fds, fds_num);
-+		if (rc > 0) {
-+			buf += rc;
-+			len -= rc;
-+			fds = NULL;
-+			fds_num = 0;
-+		}
-+	} while (len && (rc >= 0 || rc == -EINTR));
-+
-+	if (rc < 0)
-+		return rc;
-+	return 0;
-+}
-+
-+static int full_read(int fd, void *buf, int len)
-+{
-+	int rc;
-+
-+	do {
-+		rc = os_read_file(fd, buf, len);
-+		if (rc > 0) {
-+			buf += rc;
-+			len -= rc;
-+		}
-+	} while (len && (rc > 0 || rc == -EINTR));
-+
-+	if (rc < 0)
-+		return rc;
-+	if (rc == 0)
-+		return -ECONNRESET;
-+	return 0;
-+}
-+
-+static int vhost_user_recv_header(struct virtio_uml_device *vu_dev,
-+				  struct vhost_user_msg *msg)
-+{
-+	size_t size = sizeof(msg->header);
-+	int rc;
-+
-+	rc = full_read(vu_dev->sock, (void *) msg, size);
-+	if (rc)
-+		return rc;
-+	if (msg->header.flags != (VHOST_USER_FLAG_REPLY | VHOST_USER_VERSION))
-+		return -EPROTO;
-+	return 0;
-+}
-+
-+static int vhost_user_recv(struct virtio_uml_device *vu_dev,
-+			   struct vhost_user_msg *msg,
-+			   size_t max_payload_size)
-+{
-+	size_t size;
-+	int rc = vhost_user_recv_header(vu_dev, msg);
-+
-+	if (rc)
-+		return rc;
-+	size = msg->header.size;
-+	if (size > max_payload_size)
-+		return -EPROTO;
-+	return full_read(vu_dev->sock, (void *) &msg->payload, size);
-+}
-+
-+static int vhost_user_recv_u64(struct virtio_uml_device *vu_dev,
-+			       u64 *value)
-+{
-+	struct vhost_user_msg msg;
-+	int rc = vhost_user_recv(vu_dev, &msg, sizeof(msg.payload.integer));
-+
-+	if (rc)
-+		return rc;
-+	if (msg.header.size != sizeof(msg.payload.integer))
-+		return -EPROTO;
-+	*value = msg.payload.integer;
-+	return 0;
-+}
-+
-+static int vhost_user_send(struct virtio_uml_device *vu_dev,
-+			   struct vhost_user_msg *msg,
-+			   int *fds, size_t num_fds)
-+{
-+	size_t size = sizeof(msg->header) + msg->header.size;
-+
-+	msg->header.flags |= VHOST_USER_VERSION;
-+	return full_sendmsg_fds(vu_dev->sock, msg, size, fds, num_fds);
-+}
-+
-+static int vhost_user_send_no_payload(struct virtio_uml_device *vu_dev,
-+				      u32 request)
-+{
-+	struct vhost_user_msg msg = {
-+		.header.request = request,
-+	};
-+
-+	return vhost_user_send(vu_dev, &msg, NULL, 0);
-+}
-+
-+static int vhost_user_send_u64(struct virtio_uml_device *vu_dev,
-+			       u32 request, u64 value)
-+{
-+	struct vhost_user_msg msg = {
-+		.header.request = request,
-+		.header.size = sizeof(msg.payload.integer),
-+		.payload.integer = value,
-+	};
-+
-+	return vhost_user_send(vu_dev, &msg, NULL, 0);
-+}
-+
-+static int vhost_user_set_owner(struct virtio_uml_device *vu_dev)
-+{
-+	return vhost_user_send_no_payload(vu_dev, VHOST_USER_SET_OWNER);
-+}
-+
-+static int vhost_user_get_features(struct virtio_uml_device *vu_dev,
-+				   u64 *features)
-+{
-+	int rc = vhost_user_send_no_payload(vu_dev, VHOST_USER_GET_FEATURES);
-+
-+	if (rc)
-+		return rc;
-+	return vhost_user_recv_u64(vu_dev, features);
-+}
-+
-+static int vhost_user_set_features(struct virtio_uml_device *vu_dev,
-+				   u64 features)
-+{
-+	return vhost_user_send_u64(vu_dev, VHOST_USER_SET_FEATURES, features);
-+}
-+
-+static int vhost_user_get_protocol_features(struct virtio_uml_device *vu_dev,
-+					    u64 *protocol_features)
-+{
-+	int rc = vhost_user_send_no_payload(vu_dev,
-+			VHOST_USER_GET_PROTOCOL_FEATURES);
-+
-+	if (rc)
-+		return rc;
-+	return vhost_user_recv_u64(vu_dev, protocol_features);
-+}
-+
-+static int vhost_user_set_protocol_features(struct virtio_uml_device *vu_dev,
-+					    u64 protocol_features)
-+{
-+	return vhost_user_send_u64(vu_dev, VHOST_USER_SET_PROTOCOL_FEATURES,
-+				   protocol_features);
-+}
-+
-+static int vhost_user_init(struct virtio_uml_device *vu_dev)
-+{
-+	int rc = vhost_user_set_owner(vu_dev);
-+
-+	if (rc)
-+		return rc;
-+	rc = vhost_user_get_features(vu_dev, &vu_dev->features);
-+	if (rc)
-+		return rc;
-+
-+	if (vu_dev->features & BIT_ULL(VHOST_USER_F_PROTOCOL_FEATURES)) {
-+		rc = vhost_user_get_protocol_features(vu_dev,
-+				&vu_dev->protocol_features);
-+		if (rc)
-+			return rc;
-+		vu_dev->protocol_features &= VHOST_USER_SUPPORTED_PROTOCOL_F;
-+		rc = vhost_user_set_protocol_features(vu_dev,
-+				vu_dev->protocol_features);
-+	}
-+	return rc;
-+}
-+
-+static void vhost_user_get_config(struct virtio_uml_device *vu_dev,
-+				  u32 offset, void *buf, u32 len)
-+{
-+	u32 cfg_size = offset + len;
-+	struct vhost_user_msg *msg;
-+	size_t payload_size = sizeof(msg->payload.config) + cfg_size;
-+	size_t msg_size = sizeof(msg->header) + payload_size;
-+	int rc;
-+
-+	if (!(vu_dev->protocol_features &
-+	      BIT_ULL(VHOST_USER_PROTOCOL_F_CONFIG)))
-+		return;
-+
-+	msg = kzalloc(msg_size, GFP_KERNEL);
-+	if (!msg)
-+		return;
-+	msg->header.request = VHOST_USER_GET_CONFIG;
-+	msg->header.size = payload_size;
-+	msg->payload.config.offset = 0;
-+	msg->payload.config.size = cfg_size;
-+
-+	rc = vhost_user_send(vu_dev, msg, NULL, 0);
-+	if (rc) {
-+		vu_err(vu_dev, "sending VHOST_USER_GET_CONFIG failed: %d\n",
-+		       rc);
-+		goto free;
-+	}
-+
-+	rc = vhost_user_recv(vu_dev, msg, msg_size);
-+	if (rc) {
-+		vu_err(vu_dev,
-+		       "receiving VHOST_USER_GET_CONFIG response failed: %d\n",
-+		       rc);
-+		goto free;
-+	}
-+
-+	if (msg->header.size != payload_size ||
-+	    msg->payload.config.size != cfg_size) {
-+		rc = -EPROTO;
-+		vu_err(vu_dev,
-+		       "Invalid VHOST_USER_GET_CONFIG sizes (payload %d expected %zu, config %u expected %u)\n",
-+		       msg->header.size, payload_size,
-+		       msg->payload.config.size, cfg_size);
-+		goto free;
-+	}
-+	memcpy(buf, msg->payload.config.payload + offset, len);
-+
-+free:
-+	kfree(msg);
-+}
-+
-+static void vhost_user_set_config(struct virtio_uml_device *vu_dev,
-+				  u32 offset, const void *buf, u32 len)
-+{
-+	struct vhost_user_msg *msg;
-+	size_t payload_size = sizeof(msg->payload.config) + len;
-+	size_t msg_size = sizeof(msg->header) + payload_size;
-+	int rc;
-+
-+	if (!(vu_dev->protocol_features &
-+	      BIT_ULL(VHOST_USER_PROTOCOL_F_CONFIG)))
-+		return;
-+
-+	msg = kzalloc(msg_size, GFP_KERNEL);
-+	if (!msg)
-+		return;
-+	msg->header.request = VHOST_USER_SET_CONFIG;
-+	msg->header.size = payload_size;
-+	msg->payload.config.offset = offset;
-+	msg->payload.config.size = len;
-+	memcpy(msg->payload.config.payload, buf, len);
-+
-+	rc = vhost_user_send(vu_dev, msg, NULL, 0);
-+	if (rc)
-+		vu_err(vu_dev, "sending VHOST_USER_SET_CONFIG failed: %d\n",
-+		       rc);
-+
-+	kfree(msg);
-+}
-+
-+static int vhost_user_init_mem_region(u64 addr, u64 size, int *fd_out,
-+				      struct vhost_user_mem_region *region_out)
-+{
-+	unsigned long long mem_offset;
-+	int rc = phys_mapping(addr, &mem_offset);
-+
-+	if (WARN(rc < 0, "phys_mapping of 0x%llx returned %d\n", addr, rc))
-+		return -EFAULT;
-+	*fd_out = rc;
-+	region_out->guest_addr = addr;
-+	region_out->user_addr = addr;
-+	region_out->size = size;
-+	region_out->mmap_offset = mem_offset;
-+
-+	/* Ensure mapping is valid for the entire region */
-+	rc = phys_mapping(addr + size - 1, &mem_offset);
-+	if (WARN(rc != *fd_out, "phys_mapping of 0x%llx failed: %d != %d\n",
-+		 addr + size - 1, rc, *fd_out))
-+		return -EFAULT;
-+	return 0;
-+}
-+
-+static int vhost_user_set_mem_table(struct virtio_uml_device *vu_dev)
-+{
-+	struct vhost_user_msg msg = {
-+		.header.request = VHOST_USER_SET_MEM_TABLE,
-+		.header.size = sizeof(msg.payload.mem_regions),
-+		.payload.mem_regions.num = 1,
-+	};
-+	int fds[2];
-+	int rc = vhost_user_init_mem_region(0, physmem_size, &fds[0],
-+			&msg.payload.mem_regions.regions[0]);
-+
-+	if (rc < 0)
-+		return rc;
-+	if (highmem) {
-+		msg.payload.mem_regions.num++;
-+		rc = vhost_user_init_mem_region(__pa(end_iomem), highmem,
-+				&fds[1], &msg.payload.mem_regions.regions[1]);
-+		if (rc < 0)
-+			return rc;
-+	}
-+
-+	return vhost_user_send(vu_dev, &msg, fds, msg.payload.mem_regions.num);
-+}
-+
-+static int vhost_user_set_vring_state(struct virtio_uml_device *vu_dev,
-+				      u32 request, u32 index, u32 num)
-+{
-+	struct vhost_user_msg msg = {
-+		.header.request = request,
-+		.header.size = sizeof(msg.payload.vring_state),
-+		.payload.vring_state.index = index,
-+		.payload.vring_state.num = num,
-+	};
-+
-+	return vhost_user_send(vu_dev, &msg, NULL, 0);
-+}
-+
-+static int vhost_user_set_vring_num(struct virtio_uml_device *vu_dev,
-+				    u32 index, u32 num)
-+{
-+	return vhost_user_set_vring_state(vu_dev, VHOST_USER_SET_VRING_NUM,
-+					  index, num);
-+}
-+
-+static int vhost_user_set_vring_base(struct virtio_uml_device *vu_dev,
-+				     u32 index, u32 offset)
-+{
-+	return vhost_user_set_vring_state(vu_dev, VHOST_USER_SET_VRING_BASE,
-+					  index, offset);
-+}
-+
-+static int vhost_user_set_vring_addr(struct virtio_uml_device *vu_dev,
-+				     u32 index, u64 desc, u64 used, u64 avail,
-+				     u64 log)
-+{
-+	struct vhost_user_msg msg = {
-+		.header.request = VHOST_USER_SET_VRING_ADDR,
-+		.header.size = sizeof(msg.payload.vring_addr),
-+		.payload.vring_addr.index = index,
-+		.payload.vring_addr.desc = desc,
-+		.payload.vring_addr.used = used,
-+		.payload.vring_addr.avail = avail,
-+		.payload.vring_addr.log = log,
-+	};
-+
-+	return vhost_user_send(vu_dev, &msg, NULL, 0);
-+}
-+
-+static int vhost_user_set_vring_fd(struct virtio_uml_device *vu_dev,
-+				   u32 request, int index, int fd)
-+{
-+	struct vhost_user_msg msg = {
-+		.header.request = request,
-+		.header.size = sizeof(msg.payload.integer),
-+		.payload.integer = index,
-+	};
-+
-+	if (index & ~VHOST_USER_VRING_INDEX_MASK)
-+		return -EINVAL;
-+	if (fd < 0) {
-+		msg.payload.integer |= VHOST_USER_VRING_POLL_MASK;
-+		return vhost_user_send(vu_dev, &msg, NULL, 0);
-+	}
-+	return vhost_user_send(vu_dev, &msg, &fd, 1);
-+}
-+
-+static int vhost_user_set_vring_call(struct virtio_uml_device *vu_dev,
-+				     int index, int fd)
-+{
-+	return vhost_user_set_vring_fd(vu_dev, VHOST_USER_SET_VRING_CALL,
-+				       index, fd);
-+}
-+
-+static int vhost_user_set_vring_kick(struct virtio_uml_device *vu_dev,
-+				     int index, int fd)
-+{
-+	return vhost_user_set_vring_fd(vu_dev, VHOST_USER_SET_VRING_KICK,
-+				       index, fd);
-+}
-+
-+static int vhost_user_set_vring_enable(struct virtio_uml_device *vu_dev,
-+				       u32 index, bool enable)
-+{
-+	if (!(vu_dev->features & BIT_ULL(VHOST_USER_F_PROTOCOL_FEATURES)))
-+		return 0;
-+
-+	return vhost_user_set_vring_state(vu_dev, VHOST_USER_SET_VRING_ENABLE,
-+					  index, enable);
-+}
-+
-+
-+/* Virtio interface */
-+
-+static bool vu_notify(struct virtqueue *vq)
-+{
-+	struct virtio_uml_vq_info *info = vq->priv;
-+	const uint64_t n = 1;
-+	int rc;
-+
-+	do {
-+		rc = os_write_file(info->kick_fd, &n, sizeof(n));
-+	} while (rc == -EINTR);
-+	return !WARN(rc != sizeof(n), "write returned %d\n", rc);
-+}
-+
-+static irqreturn_t vu_interrupt(int irq, void *opaque)
-+{
-+	struct virtqueue *vq = opaque;
-+	struct virtio_uml_vq_info *info = vq->priv;
-+	uint64_t n;
-+	int rc;
-+	irqreturn_t ret = IRQ_NONE;
-+
-+	do {
-+		rc = os_read_file(info->call_fd, &n, sizeof(n));
-+		if (rc == sizeof(n))
-+			ret |= vring_interrupt(irq, vq);
-+	} while (rc == sizeof(n) || rc == -EINTR);
-+	WARN(rc != -EAGAIN, "read returned %d\n", rc);
-+	return ret;
-+}
-+
-+
-+static void vu_get(struct virtio_device *vdev, unsigned offset,
-+		   void *buf, unsigned len)
-+{
-+	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
-+
-+	vhost_user_get_config(vu_dev, offset, buf, len);
-+}
-+
-+static void vu_set(struct virtio_device *vdev, unsigned offset,
-+		   const void *buf, unsigned len)
-+{
-+	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
-+
-+	vhost_user_set_config(vu_dev, offset, buf, len);
-+}
-+
-+static u8 vu_get_status(struct virtio_device *vdev)
-+{
-+	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
-+
-+	return vu_dev->status;
-+}
-+
-+static void vu_set_status(struct virtio_device *vdev, u8 status)
-+{
-+	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
-+
-+	vu_dev->status = status;
-+}
-+
-+static void vu_reset(struct virtio_device *vdev)
-+{
-+	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
-+
-+	vu_dev->status = 0;
-+}
-+
-+static void vu_del_vq(struct virtqueue *vq)
-+{
-+	struct virtio_uml_vq_info *info = vq->priv;
-+
-+	um_free_irq(VIRTIO_IRQ, vq);
-+
-+	os_close_file(info->call_fd);
-+	os_close_file(info->kick_fd);
-+
-+	vring_del_virtqueue(vq);
-+	kfree(info);
-+}
-+
-+static void vu_del_vqs(struct virtio_device *vdev)
-+{
-+	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
-+	struct virtqueue *vq, *n;
-+	u64 features;
-+
-+	/* Note: reverse order as a workaround to a decoding bug in snabb */
-+	list_for_each_entry_reverse(vq, &vdev->vqs, list)
-+		WARN_ON(vhost_user_set_vring_enable(vu_dev, vq->index, false));
-+
-+	/* Ensure previous messages have been processed */
-+	WARN_ON(vhost_user_get_features(vu_dev, &features));
-+
-+	list_for_each_entry_safe(vq, n, &vdev->vqs, list)
-+		vu_del_vq(vq);
-+}
-+
-+static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
-+				     unsigned index, vq_callback_t *callback,
-+				     const char *name, bool ctx)
-+{
-+	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
-+	struct platform_device *pdev = vu_dev->pdev;
-+	struct virtio_uml_vq_info *info;
-+	struct virtqueue *vq;
-+	int num = MAX_SUPPORTED_QUEUE_SIZE;
-+	int rc;
-+	int call_fds[2];
-+
-+	info = kzalloc(sizeof(*info), GFP_KERNEL);
-+	if (!info) {
-+		rc = -ENOMEM;
-+		goto error_kzalloc;
-+	}
-+	snprintf(info->name, sizeof(info->name), "%s.%d-%s", pdev->name,
-+		 pdev->id, name);
-+
-+	rc = os_eventfd(0, 0);
-+	if (rc < 0)
-+		goto error_kick;
-+	info->kick_fd = rc;
-+
-+	/* Use a pipe for call fd, since SIGIO is not supported for eventfd */
-+	rc = os_pipe(call_fds, true, true);
-+	if (rc < 0)
-+		goto error_call;
-+	info->call_fd = call_fds[0];
-+
-+	vq = vring_create_virtqueue(index, num, PAGE_SIZE, vdev, true, true,
-+				    ctx, vu_notify, callback, info->name);
-+	if (!vq) {
-+		rc = -ENOMEM;
-+		goto error_create;
-+	}
-+	vq->priv = info;
-+	num = virtqueue_get_vring_size(vq);
-+
-+	rc = um_request_irq(VIRTIO_IRQ, info->call_fd, IRQ_READ, vu_interrupt,
-+			    IRQF_SHARED, info->name, vq);
-+	if (rc)
-+		goto error_irq;
-+
-+	rc = vhost_user_set_vring_num(vu_dev, index, num);
-+	if (rc)
-+		goto error_setup;
-+
-+	rc = vhost_user_set_vring_base(vu_dev, index, 0);
-+	if (rc)
-+		goto error_setup;
-+
-+	rc = vhost_user_set_vring_call(vu_dev, index, call_fds[1]);
-+	if (rc)
-+		goto error_setup;
-+
-+	rc = vhost_user_set_vring_addr(vu_dev, index,
-+				       virtqueue_get_desc_addr(vq),
-+				       virtqueue_get_used_addr(vq),
-+				       virtqueue_get_avail_addr(vq),
-+				       (u64) -1);
-+	if (rc)
-+		goto error_setup;
-+
-+	/* Close unused write end of call fds */
-+	os_close_file(call_fds[1]);
-+
-+	return vq;
-+
-+error_setup:
-+	um_free_irq(VIRTIO_IRQ, vq);
-+error_irq:
-+	vring_del_virtqueue(vq);
-+error_create:
-+	os_close_file(call_fds[1]);
-+	os_close_file(info->call_fd);
-+error_call:
-+	os_close_file(info->kick_fd);
-+error_kick:
-+	kfree(info);
-+error_kzalloc:
-+	return ERR_PTR(rc);
-+}
-+
-+static int vu_find_vqs(struct virtio_device *vdev, unsigned nvqs,
-+		       struct virtqueue *vqs[], vq_callback_t *callbacks[],
-+		       const char * const names[], const bool *ctx,
-+		       struct irq_affinity *desc)
-+{
-+	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
-+	int i, queue_idx, rc;
-+	struct virtqueue *vq;
-+
-+	rc = vhost_user_set_mem_table(vu_dev);
-+	if (rc)
-+		return rc;
-+
-+	for (i = 0; i < nvqs; ++i) {
-+		if (!names[i]) {
-+			vqs[i] = NULL;
-+			continue;
-+		}
-+
-+		vqs[i] = vu_setup_vq(vdev, queue_idx++, callbacks[i], names[i],
-+				     ctx ? ctx[i] : false);
-+		if (IS_ERR(vqs[i])) {
-+			rc = PTR_ERR(vqs[i]);
-+			goto error_setup;
-+		}
-+	}
-+
-+	list_for_each_entry(vq, &vdev->vqs, list) {
-+		struct virtio_uml_vq_info *info = vq->priv;
-+
-+		rc = vhost_user_set_vring_kick(vu_dev, vq->index,
-+					       info->kick_fd);
-+		if (rc)
-+			goto error_setup;
-+
-+		rc = vhost_user_set_vring_enable(vu_dev, vq->index, true);
-+		if (rc)
-+			goto error_setup;
-+	}
-+
-+	return 0;
-+
-+error_setup:
-+	vu_del_vqs(vdev);
-+	return rc;
-+}
-+
-+static u64 vu_get_features(struct virtio_device *vdev)
-+{
-+	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
-+
-+	return vu_dev->features;
-+}
-+
-+static int vu_finalize_features(struct virtio_device *vdev)
-+{
-+	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
-+	u64 supported = vdev->features & VHOST_USER_SUPPORTED_F;
-+
-+	vring_transport_features(vdev);
-+	vu_dev->features = vdev->features | supported;
-+
-+	return vhost_user_set_features(vu_dev, vu_dev->features);
-+}
-+
-+static const char *vu_bus_name(struct virtio_device *vdev)
-+{
-+	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
-+
-+	return vu_dev->pdev->name;
-+}
-+
-+static const struct virtio_config_ops virtio_uml_config_ops = {
-+	.get = vu_get,
-+	.set = vu_set,
-+	.get_status = vu_get_status,
-+	.set_status = vu_set_status,
-+	.reset = vu_reset,
-+	.find_vqs = vu_find_vqs,
-+	.del_vqs = vu_del_vqs,
-+	.get_features = vu_get_features,
-+	.finalize_features = vu_finalize_features,
-+	.bus_name = vu_bus_name,
-+};
-+
-+
-+static void virtio_uml_release_dev(struct device *d)
-+{
-+	struct virtio_device *vdev =
-+			container_of(d, struct virtio_device, dev);
-+	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
-+
-+	os_close_file(vu_dev->sock);
-+}
-+
-+/* Platform device */
-+
-+struct virtio_uml_platform_data {
-+	u32 virtio_device_id;
-+	const char *socket_path;
-+};
-+
-+static int virtio_uml_probe(struct platform_device *pdev)
-+{
-+	struct virtio_uml_platform_data *pdata = pdev->dev.platform_data;
-+	struct virtio_uml_device *vu_dev;
-+	int rc;
-+
-+	if (!pdata)
-+		return -EINVAL;
-+
-+	vu_dev = devm_kzalloc(&pdev->dev, sizeof(*vu_dev), GFP_KERNEL);
-+	if (!vu_dev)
-+		return -ENOMEM;
-+
-+	vu_dev->vdev.dev.parent = &pdev->dev;
-+	vu_dev->vdev.dev.release = virtio_uml_release_dev;
-+	vu_dev->vdev.config = &virtio_uml_config_ops;
-+	vu_dev->vdev.id.device = pdata->virtio_device_id;
-+	vu_dev->vdev.id.vendor = VIRTIO_DEV_ANY_ID;
-+	vu_dev->pdev = pdev;
-+
-+	do {
-+		rc = os_connect_socket(pdata->socket_path);
-+	} while (rc == -EINTR);
-+	if (rc < 0)
-+		return rc;
-+	vu_dev->sock = rc;
-+
-+	rc = vhost_user_init(vu_dev);
-+	if (rc)
-+		goto error_init;
-+
-+	platform_set_drvdata(pdev, vu_dev);
-+
-+	rc = register_virtio_device(&vu_dev->vdev);
-+	if (rc)
-+		put_device(&vu_dev->vdev.dev);
-+	return rc;
-+
-+error_init:
-+	os_close_file(vu_dev->sock);
-+	return rc;
-+}
-+
-+static int virtio_uml_remove(struct platform_device *pdev)
-+{
-+	struct virtio_uml_device *vu_dev = platform_get_drvdata(pdev);
-+
-+	unregister_virtio_device(&vu_dev->vdev);
-+	return 0;
-+}
-+
-+/* Command line device list */
-+
-+static void vu_cmdline_release_dev(struct device *d)
-+{
-+}
-+
-+static struct device vu_cmdline_parent = {
-+	.init_name = "virtio-uml-cmdline",
-+	.release = vu_cmdline_release_dev,
-+};
-+
-+static bool vu_cmdline_parent_registered;
-+static int vu_cmdline_id;
-+
-+static int vu_cmdline_set(const char *device, const struct kernel_param *kp)
-+{
-+	const char *ids = strchr(device, ':');
-+	unsigned int virtio_device_id;
-+	int processed, consumed, err;
-+	char *socket_path;
-+	struct virtio_uml_platform_data *pdata;
-+	struct platform_device *pdev;
-+
-+	if (!ids || ids == device)
-+		return -EINVAL;
-+
-+	processed = sscanf(ids, ":%u%n:%d%n",
-+			   &virtio_device_id, &consumed,
-+			   &vu_cmdline_id, &consumed);
-+
-+	if (processed < 1 || ids[consumed])
-+		return -EINVAL;
-+
-+	if (!vu_cmdline_parent_registered) {
-+		err = device_register(&vu_cmdline_parent);
-+		if (err) {
-+			pr_err("Failed to register parent device!\n");
-+			put_device(&vu_cmdline_parent);
-+			return err;
-+		}
-+		vu_cmdline_parent_registered = true;
-+	}
-+
-+	socket_path = kmemdup_nul(device, ids - device, GFP_KERNEL);
-+	if (!socket_path)
-+		return -ENOMEM;
-+
-+	pdata = kzalloc(sizeof(*pdata), GFP_KERNEL);
-+	if (!pdata) {
-+		err = -ENOMEM;
-+		goto error_kzalloc;
-+	}
-+
-+	pdata->virtio_device_id = (u32) virtio_device_id;
-+	pdata->socket_path = socket_path;
-+
-+	pr_info("Registering device virtio-uml.%d id=%d at %s\n",
-+		vu_cmdline_id, virtio_device_id, socket_path);
-+
-+	pdev = platform_device_register_data(&vu_cmdline_parent, "virtio-uml",
-+					     vu_cmdline_id++, pdata,
-+					     sizeof(*pdata));
-+	err = PTR_ERR_OR_ZERO(pdev);
-+	if (err)
-+		goto error_register;
-+	return 0;
-+
-+error_register:
-+	kfree(pdata);
-+error_kzalloc:
-+	kfree(socket_path);
-+	return err;
-+}
-+
-+static int vu_cmdline_get_device(struct device *dev, void *data)
-+{
-+	struct platform_device *pdev = to_platform_device(dev);
-+	struct virtio_uml_platform_data *pdata = pdev->dev.platform_data;
-+	char *buffer = data;
-+	unsigned int len = strlen(buffer);
-+
-+	snprintf(buffer + len, PAGE_SIZE - len, "%s:%d:%d\n",
-+		 pdata->socket_path, pdata->virtio_device_id, pdev->id);
-+	return 0;
-+}
-+
-+static int vu_cmdline_get(char *buffer, const struct kernel_param *kp)
-+{
-+	buffer[0] = '\0';
-+	if (vu_cmdline_parent_registered)
-+		device_for_each_child(&vu_cmdline_parent, buffer,
-+				      vu_cmdline_get_device);
-+	return strlen(buffer) + 1;
-+}
-+
-+static const struct kernel_param_ops vu_cmdline_param_ops = {
-+	.set = vu_cmdline_set,
-+	.get = vu_cmdline_get,
-+};
-+
-+device_param_cb(device, &vu_cmdline_param_ops, NULL, S_IRUSR);
-+__uml_help(vu_cmdline_param_ops,
-+"virtio_uml.device=<socket>:<virtio_id>[:<platform_id>]\n"
-+"    Configure a virtio device over a vhost-user socket.\n"
-+"    See virtio_ids.h for a list of possible virtio device id values.\n"
-+"    Optionally use a specific platform_device id.\n\n"
-+);
-+
-+
-+static int vu_unregister_cmdline_device(struct device *dev, void *data)
-+{
-+	struct platform_device *pdev = to_platform_device(dev);
-+	struct virtio_uml_platform_data *pdata = pdev->dev.platform_data;
-+
-+	platform_device_unregister(pdev);
-+	kfree(pdata->socket_path);
-+	kfree(pdata);
-+	return 0;
-+}
-+
-+static void vu_unregister_cmdline_devices(void)
-+{
-+	if (vu_cmdline_parent_registered) {
-+		device_for_each_child(&vu_cmdline_parent, NULL,
-+				      vu_unregister_cmdline_device);
-+		device_unregister(&vu_cmdline_parent);
-+		vu_cmdline_parent_registered = false;
-+	}
-+}
-+
-+/* Platform driver */
-+
-+static const struct of_device_id virtio_uml_match[] = {
-+	{ .compatible = "virtio,uml", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, virtio_uml_match);
-+
-+static struct platform_driver virtio_uml_driver = {
-+	.probe = virtio_uml_probe,
-+	.remove = virtio_uml_remove,
-+	.driver = {
-+		.name = "virtio-uml",
-+		.of_match_table = virtio_uml_match,
-+	},
-+};
-+
-+static int __init virtio_uml_init(void)
-+{
-+	return platform_driver_register(&virtio_uml_driver);
-+}
-+
-+static void __exit virtio_uml_exit(void)
-+{
-+	platform_driver_unregister(&virtio_uml_driver);
-+	vu_unregister_cmdline_devices();
-+}
-+
-+module_init(virtio_uml_init);
-+module_exit(virtio_uml_exit);
-+__uml_exitcall(virtio_uml_exit);
-+
-+MODULE_DESCRIPTION("UML driver for vhost-user virtio devices");
-+MODULE_LICENSE("GPL");
-diff --git a/arch/um/include/asm/irq.h b/arch/um/include/asm/irq.h
-index ce7a78c3bcf2..42c6205e2dc4 100644
---- a/arch/um/include/asm/irq.h
-+++ b/arch/um/include/asm/irq.h
-@@ -17,17 +17,18 @@
- #define TELNETD_IRQ 		12
- #define XTERM_IRQ 		13
- #define RANDOM_IRQ 		14
-+#define VIRTIO_IRQ		15
- 
- #ifdef CONFIG_UML_NET_VECTOR
- 
--#define VECTOR_BASE_IRQ		15
-+#define VECTOR_BASE_IRQ		(VIRTIO_IRQ + 1)
- #define VECTOR_IRQ_SPACE	8
- 
- #define LAST_IRQ (VECTOR_IRQ_SPACE + VECTOR_BASE_IRQ - 1)
- 
- #else
- 
--#define LAST_IRQ RANDOM_IRQ
-+#define LAST_IRQ VIRTIO_IRQ
- 
- #endif
- 
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index 4a62ac4251a5..117fb62d7d1b 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -36,6 +36,8 @@
- #define OS_LIB_PATH	"/usr/lib/"
- #endif
- 
-+#define OS_SENDMSG_MAX_FDS 8
-+
+diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
+index af27d5c41776..7453b99ac1d2 100644
+--- a/arch/um/drivers/vector_kern.c
++++ b/arch/um/drivers/vector_kern.c
+@@ -1,5 +1,5 @@
  /*
-  * types taken from stat_file() in hostfs_user.c
-  * (if they are wrong here, they are wrong there...).
-@@ -176,6 +178,9 @@ extern unsigned os_major(unsigned long long dev);
- extern unsigned os_minor(unsigned long long dev);
- extern unsigned long long os_makedev(unsigned major, unsigned minor);
- extern int os_falloc_punch(int fd, unsigned long long offset, int count);
-+extern int os_eventfd(unsigned int initval, int flags);
-+extern int os_sendmsg_fds(int fd, const void *buf, unsigned int len,
-+			  const int *fds, unsigned int fds_num);
- 
- /* start_up.c */
- extern void os_early_checks(void);
-diff --git a/arch/um/kernel/ksyms.c b/arch/um/kernel/ksyms.c
-index 232b22307fdd..bdb90583f186 100644
---- a/arch/um/kernel/ksyms.c
-+++ b/arch/um/kernel/ksyms.c
-@@ -38,6 +38,8 @@ EXPORT_SYMBOL(run_helper);
- EXPORT_SYMBOL(os_major);
- EXPORT_SYMBOL(os_minor);
- EXPORT_SYMBOL(os_makedev);
-+EXPORT_SYMBOL(os_eventfd);
-+EXPORT_SYMBOL(os_sendmsg_fds);
- 
- EXPORT_SYMBOL(add_sigio_fd);
- EXPORT_SYMBOL(ignore_sigio_fd);
-diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
-index de58e976b9bc..f256be1d77bd 100644
---- a/arch/um/kernel/mem.c
-+++ b/arch/um/kernel/mem.c
-@@ -31,6 +31,7 @@ pgd_t swapper_pg_dir[PTRS_PER_PGD];
- 
- /* Initialized at boot time, and readonly after that */
- unsigned long long highmem;
-+EXPORT_SYMBOL(highmem);
- int kmalloc_ok = 0;
- 
- /* Used during early boot */
-diff --git a/arch/um/kernel/physmem.c b/arch/um/kernel/physmem.c
-index 5bf56af4d5b9..870c80c88a97 100644
---- a/arch/um/kernel/physmem.c
-+++ b/arch/um/kernel/physmem.c
-@@ -143,6 +143,7 @@ int phys_mapping(unsigned long phys, unsigned long long *offset_out)
- 
- 	return fd;
- }
-+EXPORT_SYMBOL(phys_mapping);
- 
- static int __init uml_mem_setup(char *line, int *add)
- {
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index a818ccef30ca..9de212bf4320 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -113,6 +113,7 @@ static int have_root __initdata = 0;
- 
- /* Set in uml_mem_setup and modified in linux_main */
- long long physmem_size = 32 * 1024 * 1024;
-+EXPORT_SYMBOL(physmem_size);
- 
- static const char *usage_string =
- "User Mode Linux v%s\n"
-diff --git a/arch/um/os-Linux/file.c b/arch/um/os-Linux/file.c
-index f25b110d4e70..91f23035be08 100644
---- a/arch/um/os-Linux/file.c
-+++ b/arch/um/os-Linux/file.c
-@@ -15,6 +15,7 @@
- #include <sys/sysmacros.h>
- #include <sys/un.h>
- #include <sys/types.h>
-+#include <sys/eventfd.h>
- #include <os.h>
- 
- static void copy_stat(struct uml_stat *dst, const struct stat64 *src)
-@@ -620,3 +621,46 @@ int os_falloc_punch(int fd, unsigned long long offset, int len)
- 	return n;
+- * Copyright (C) 2017 - Cambridge Greys Limited
++ * Copyright (C) 2017 - 2019 Cambridge Greys Limited
+  * Copyright (C) 2011 - 2014 Cisco Systems Inc
+  * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+  * Copyright (C) 2001 Lennert Buytenhek (buytenh@gnu.org) and
+@@ -21,6 +21,9 @@
+ #include <linux/skbuff.h>
+ #include <linux/slab.h>
+ #include <linux/interrupt.h>
++#include <linux/firmware.h>
++#include <linux/fs.h>
++#include <uapi/linux/filter.h>
+ #include <init.h>
+ #include <irq_kern.h>
+ #include <irq_user.h>
+@@ -128,6 +131,17 @@ static int get_mtu(struct arglist *def)
+ 	return ETH_MAX_PACKET;
  }
  
-+int os_eventfd(unsigned int initval, int flags)
++static char *get_bpf_file(struct arglist *def)
 +{
-+	int fd = eventfd(initval, flags);
-+
-+	if (fd < 0)
-+		return -errno;
-+	return fd;
++	return uml_vector_fetch_arg(def, "bpffile");
 +}
 +
-+int os_sendmsg_fds(int fd, const void *buf, unsigned int len, const int *fds,
-+		   unsigned int fds_num)
++static bool get_bpf_flash(struct arglist *def)
 +{
-+	struct iovec iov = {
-+		.iov_base = (void *) buf,
-+		.iov_len = len,
-+	};
-+	union {
-+		char control[CMSG_SPACE(sizeof(*fds) * OS_SENDMSG_MAX_FDS)];
-+		struct cmsghdr align;
-+	} u;
-+	unsigned int fds_size = sizeof(*fds) * fds_num;
-+	struct msghdr msg = {
-+		.msg_iov = &iov,
-+		.msg_iovlen = 1,
-+		.msg_control = u.control,
-+		.msg_controllen = CMSG_SPACE(fds_size),
-+	};
-+	struct cmsghdr *cmsg = CMSG_FIRSTHDR(&msg);
-+	int err;
++	return uml_vector_fetch_arg(def, "bpfflash") != NULL;
++}
 +
-+	if (fds_num > OS_SENDMSG_MAX_FDS)
-+		return -EINVAL;
-+	memset(u.control, 0, sizeof(u.control));
-+	cmsg->cmsg_level = SOL_SOCKET;
-+	cmsg->cmsg_type = SCM_RIGHTS;
-+	cmsg->cmsg_len = CMSG_LEN(fds_size);
-+	memcpy(CMSG_DATA(cmsg), fds, fds_size);
-+	err = sendmsg(fd, &msg, 0);
 +
+ static int get_depth(struct arglist *def)
+ {
+ 	char *mtu = uml_vector_fetch_arg(def, "depth");
+@@ -176,6 +190,7 @@ static int get_transport_options(struct arglist *def)
+ 	int vec_rx = VECTOR_RX;
+ 	int vec_tx = VECTOR_TX;
+ 	long parsed;
++	int result = 0;
+ 
+ 	if (vector != NULL) {
+ 		if (kstrtoul(vector, 10, &parsed) == 0) {
+@@ -186,14 +201,16 @@ static int get_transport_options(struct arglist *def)
+ 		}
+ 	}
+ 
++	if (get_bpf_flash(def))
++		result = VECTOR_BPF_FLASH;
+ 
+ 	if (strncmp(transport, TRANS_TAP, TRANS_TAP_LEN) == 0)
+-		return 0;
++		return result;
+ 	if (strncmp(transport, TRANS_HYBRID, TRANS_HYBRID_LEN) == 0)
+-		return (vec_rx | VECTOR_BPF);
++		return (result | vec_rx | VECTOR_BPF);
+ 	if (strncmp(transport, TRANS_RAW, TRANS_RAW_LEN) == 0)
+-		return (vec_rx | vec_tx | VECTOR_QDISC_BYPASS);
+-	return (vec_rx | vec_tx);
++		return (result | vec_rx | vec_tx | VECTOR_QDISC_BYPASS);
++	return (result | vec_rx | vec_tx);
+ }
+ 
+ 
+@@ -1125,6 +1142,7 @@ static int vector_net_close(struct net_device *dev)
+ 	netif_stop_queue(dev);
+ 	del_timer(&vp->tl);
+ 
++
+ 	if (vp->fds == NULL)
+ 		return 0;
+ 
+@@ -1139,6 +1157,8 @@ static int vector_net_close(struct net_device *dev)
+ 	}
+ 	tasklet_kill(&vp->tx_poll);
+ 	if (vp->fds->rx_fd > 0) {
++		if (vp->bpf)
++			uml_vector_detach_bpf(vp->fds->rx_fd, vp->bpf);
+ 		os_close_file(vp->fds->rx_fd);
+ 		vp->fds->rx_fd = -1;
+ 	}
+@@ -1146,7 +1166,10 @@ static int vector_net_close(struct net_device *dev)
+ 		os_close_file(vp->fds->tx_fd);
+ 		vp->fds->tx_fd = -1;
+ 	}
++	if (vp->bpf != NULL)
++		kfree(vp->bpf->filter);
+ 	kfree(vp->bpf);
++	vp->bpf = NULL;
+ 	kfree(vp->fds->remote_addr);
+ 	kfree(vp->transport_data);
+ 	kfree(vp->header_rxbuffer);
+@@ -1196,6 +1219,8 @@ static int vector_net_open(struct net_device *dev)
+ 	vp->opened = true;
+ 	spin_unlock_irqrestore(&vp->lock, flags);
+ 
++	vp->bpf = uml_vector_user_bpf(get_bpf_file(vp->parsed));
++
+ 	vp->fds = uml_vector_user_open(vp->unit, vp->parsed);
+ 
+ 	if (vp->fds == NULL)
+@@ -1267,8 +1292,11 @@ static int vector_net_open(struct net_device *dev)
+ 		if (!uml_raw_enable_qdisc_bypass(vp->fds->rx_fd))
+ 			vp->options |= VECTOR_BPF;
+ 	}
+-	if ((vp->options & VECTOR_BPF) != 0)
+-		vp->bpf = uml_vector_default_bpf(vp->fds->rx_fd, dev->dev_addr);
++	if (((vp->options & VECTOR_BPF) != 0) && (vp->bpf == NULL))
++		vp->bpf = uml_vector_default_bpf(dev->dev_addr);
++
++	if (vp->bpf != NULL)
++		uml_vector_attach_bpf(vp->fds->rx_fd, vp->bpf);
+ 
+ 	netif_start_queue(dev);
+ 
+@@ -1347,6 +1375,67 @@ static void vector_net_get_drvinfo(struct net_device *dev,
+ 	strlcpy(info->version, DRIVER_VERSION, sizeof(info->version));
+ }
+ 
++/*
++ * We cannot use the firmware.c loader API here because this is not a module
++ *  and we do not have a proper device structure to pass to it as required
++ *  by the firmware API
++ */
++
++static int vector_net_load_bpf_flash(struct net_device *dev,
++				struct ethtool_flash *efl)
++{
++	struct vector_private *vp = netdev_priv(dev);
++	void *buffer;
++	loff_t size;
++	enum kernel_read_file_id id = READING_FIRMWARE;
++	int rc, len;
++	char *path;
++
++	if (vp->options && VECTOR_BPF_FLASH == 0) {
++		netdev_err(dev, "loading firmware not permitted: %s\n", efl->data);
++		return -1;
++	}
++
++	path = __getname();
++
++	if (!path)
++		return -1;
++
++	len = snprintf(path, PATH_MAX, "%s/%s", "/lib/firmware", efl->data);
++
++	if (vp->bpf != NULL) {
++		uml_vector_detach_bpf(vp->fds->rx_fd, vp->bpf);
++		kfree(vp->bpf->filter);
++		vp->bpf->filter = NULL;
++	} else {
++		vp->bpf = kmalloc(sizeof(struct sock_fprog), GFP_KERNEL);
++		if (vp->bpf == NULL) {
++			netdev_err(dev, "failed to allocate memory for firmware\n");
++			goto flash_fail;
++		}
++	}
++	rc = kernel_read_file_from_path(path, &buffer, &size, INT_MAX, id);
++	if (rc) {
++		netdev_err(dev, "failed to load firmware: %s err: %d\n", path, rc);
++		goto flash_fail;
++	}
++	vp->bpf->filter = kmalloc(size, GFP_KERNEL);
++	if (!vp->bpf->filter)
++		goto free_buffer;
++
++	memcpy(vp->bpf->filter, buffer, size);
++	vp->bpf->len = size / sizeof(struct sock_filter);
++	return uml_vector_attach_bpf(vp->fds->rx_fd, vp->bpf);
++free_buffer:
++	vfree(buffer);
++flash_fail:
++	if (vp->bpf != NULL)
++		kfree(vp->bpf->filter);
++	kfree(vp->bpf);
++	vp->bpf = NULL;
++	return -1;
++}
++
+ static void vector_get_ringparam(struct net_device *netdev,
+ 				struct ethtool_ringparam *ring)
+ {
+@@ -1424,6 +1513,7 @@ static const struct ethtool_ops vector_net_ethtool_ops = {
+ 	.get_ethtool_stats = vector_get_ethtool_stats,
+ 	.get_coalesce	= vector_get_coalesce,
+ 	.set_coalesce	= vector_set_coalesce,
++	.flash_device	= vector_net_load_bpf_flash,
+ };
+ 
+ 
+@@ -1528,8 +1618,9 @@ static void vector_eth_configure(
+ 		.in_write_poll		= false,
+ 		.coalesce		= 2,
+ 		.req_size		= get_req_size(def),
+-		.in_error		= false
+-		});
++		.in_error		= false,
++		.bpf			= NULL
++	});
+ 
+ 	dev->features = dev->hw_features = (NETIF_F_SG | NETIF_F_FRAGLIST);
+ 	tasklet_init(&vp->tx_poll, vector_tx_poll, (unsigned long)vp);
+diff --git a/arch/um/drivers/vector_kern.h b/arch/um/drivers/vector_kern.h
+index 684d2e60ad86..e30003a54366 100644
+--- a/arch/um/drivers/vector_kern.h
++++ b/arch/um/drivers/vector_kern.h
+@@ -29,10 +29,13 @@
+ #define VECTOR_TX (1 << 1)
+ #define VECTOR_BPF (1 << 2)
+ #define VECTOR_QDISC_BYPASS (1 << 3)
++#define VECTOR_BPF_FLASH (1 << 4)
+ 
+ #define ETH_MAX_PACKET 1500
+ #define ETH_HEADER_OTHER 32 /* just in case someone decides to go mad on QnQ */
+ 
++#define MAX_FILTER_PROG (2 << 16)
++
+ struct vector_queue {
+ 	struct mmsghdr *mmsg_vector;
+ 	void **skbuff_vector;
+@@ -118,10 +121,13 @@ struct vector_private {
+ 	bool in_write_poll;
+ 	bool in_error;
+ 
++	/* guest allowed to use ethtool flash to load bpf */
++	bool bpf_via_flash;
++
+ 	/* ethtool stats */
+ 
+ 	struct vector_estats estats;
+-	void *bpf;
++	struct sock_fprog *bpf;
+ 
+ 	char user[0];
+ };
+diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
+index f92e05ad145f..63b46f29219c 100644
+--- a/arch/um/drivers/vector_user.c
++++ b/arch/um/drivers/vector_user.c
+@@ -46,7 +46,8 @@
+ #define TUN_GET_F_FAIL "tapraw: TUNGETFEATURES failed: %s"
+ #define L2TPV3_BIND_FAIL "l2tpv3_open : could not bind socket err=%i"
+ #define UNIX_BIND_FAIL "unix_open : could not bind socket err=%i"
+-#define BPF_ATTACH_FAIL "Failed to attach filter size %d to %d, err %d\n"
++#define BPF_ATTACH_FAIL "Failed to attach filter size %d prog %px to %d, err %d\n"
++#define BPF_DETACH_FAIL "Failed to detach filter size %d prog %px to %d, err %d\n"
+ 
+ #define MAX_UN_LEN 107
+ 
+@@ -660,31 +661,44 @@ int uml_vector_recvmmsg(
+ 	else
+ 		return -errno;
+ }
+-int uml_vector_attach_bpf(int fd, void *bpf, int bpf_len)
++int uml_vector_attach_bpf(int fd, void *bpf)
+ {
+-	int err = setsockopt(fd, SOL_SOCKET, SO_ATTACH_FILTER, bpf, bpf_len);
++	struct sock_fprog *prog = bpf;
++
++	int err = setsockopt(fd, SOL_SOCKET, SO_ATTACH_FILTER, bpf, sizeof(struct sock_fprog));
+ 
+ 	if (err < 0)
+-		printk(KERN_ERR BPF_ATTACH_FAIL, bpf_len, fd, -errno);
++		printk(KERN_ERR BPF_ATTACH_FAIL, prog->len, prog->filter, fd, -errno);
+ 	return err;
+ }
+ 
+-#define DEFAULT_BPF_LEN 6
++int uml_vector_detach_bpf(int fd, void *bpf)
++{
++	struct sock_fprog *prog = bpf;
++
++	int err = setsockopt(fd, SOL_SOCKET, SO_DETACH_FILTER, bpf, sizeof(struct sock_fprog));
+ 
+-void *uml_vector_default_bpf(int fd, void *mac)
 +	if (err < 0)
-+		return -errno;
++		printk(KERN_ERR BPF_DETACH_FAIL, prog->len, prog->filter, fd, -errno);
 +	return err;
 +}
++void *uml_vector_default_bpf(void *mac)
+ {
+ 	struct sock_filter *bpf;
+ 	uint32_t *mac1 = (uint32_t *)(mac + 2);
+ 	uint16_t *mac2 = (uint16_t *) mac;
+-	struct sock_fprog bpf_prog = {
+-		.len = 6,
+-		.filter = NULL,
+-	};
++	struct sock_fprog *bpf_prog;
+ 
++	bpf_prog = uml_kmalloc(sizeof(struct sock_fprog), UM_GFP_KERNEL);
++	if (bpf_prog != NULL) {
++		bpf_prog->len = DEFAULT_BPF_LEN;
++		bpf_prog->filter = NULL;
++	} else
++		return NULL;
+ 	bpf = uml_kmalloc(
+ 		sizeof(struct sock_filter) * DEFAULT_BPF_LEN, UM_GFP_KERNEL);
+ 	if (bpf != NULL) {
+-		bpf_prog.filter = bpf;
++		bpf_prog->filter = bpf;
+ 		/* ld	[8] */
+ 		bpf[0] = (struct sock_filter){ 0x20, 0, 0, 0x00000008 };
+ 		/* jeq	#0xMAC[2-6] jt 2 jf 5*/
+@@ -697,12 +711,58 @@ void *uml_vector_default_bpf(int fd, void *mac)
+ 		bpf[4] = (struct sock_filter){ 0x6, 0, 0, 0x00000000 };
+ 		/* ret	#0x40000 */
+ 		bpf[5] = (struct sock_filter){ 0x6, 0, 0, 0x00040000 };
+-		if (uml_vector_attach_bpf(
+-			fd, &bpf_prog, sizeof(struct sock_fprog)) < 0) {
+-			kfree(bpf);
+-			bpf = NULL;
+-		}
++	} else {
++		kfree(bpf_prog);
++		bpf_prog = NULL;
+ 	}
+-	return bpf;
++	printk(KERN_ERR "Using default bpf");
++	return bpf_prog;
+ }
+ 
++/* Note - this function requires a valid mac being passed as an arg */
++
++void *uml_vector_user_bpf(char *filename)
++{
++	struct sock_filter *bpf;
++	struct sock_fprog *bpf_prog;
++	struct stat statbuf;
++	int res, ffd = -1;
++
++	if (filename == NULL)
++		return NULL;
++
++	if (stat(filename, &statbuf) < 0) {
++		printk(KERN_ERR "Error %d reading bpf file", -errno);
++		return false;
++	}
++	bpf_prog = uml_kmalloc(sizeof(struct sock_fprog), UM_GFP_KERNEL);
++	if (bpf_prog != NULL) {
++		bpf_prog->len = statbuf.st_size / sizeof(struct sock_filter);
++		bpf_prog->filter = NULL;
++	}
++	ffd = os_open_file(filename, of_read(OPENFLAGS()), 0);
++	if (ffd < 0) {
++		printk(KERN_ERR "Error %d opening bpf file", -errno);
++		goto bpf_failed;
++	}
++	bpf = uml_kmalloc(statbuf.st_size, UM_GFP_KERNEL);
++	if (bpf == NULL) {
++		printk(KERN_ERR "Failed to allocate bpf buffer");
++		goto bpf_failed;
++	}
++	bpf_prog->filter = bpf;
++	res = os_read_file(ffd, bpf, statbuf.st_size);
++	if (res < statbuf.st_size) {
++		printk(KERN_ERR "Failed to read bpf program %s, error %d", filename, res);
++		kfree(bpf);
++		goto bpf_failed;
++	}
++	os_close_file(ffd);
++	printk(KERN_ERR "Successfully read bpf program %s, size %d", filename, res);
++	return bpf_prog;
++bpf_failed:
++	if (ffd > 0)
++		os_close_file(ffd);
++	kfree(bpf_prog);
++	return NULL;
++}
+diff --git a/arch/um/drivers/vector_user.h b/arch/um/drivers/vector_user.h
+index 0a13ca9592d1..18dafa59299f 100644
+--- a/arch/um/drivers/vector_user.h
++++ b/arch/um/drivers/vector_user.h
+@@ -28,6 +28,8 @@
+ #define TRANS_BESS "bess"
+ #define TRANS_BESS_LEN strlen(TRANS_BESS)
+ 
++#define DEFAULT_BPF_LEN 6
++
+ #ifndef IPPROTO_GRE
+ #define IPPROTO_GRE 0x2F
+ #endif
+@@ -95,8 +97,10 @@ extern int uml_vector_recvmmsg(
+ 	unsigned int vlen,
+ 	unsigned int flags
+ );
+-extern void *uml_vector_default_bpf(int fd, void *mac);
+-extern int uml_vector_attach_bpf(int fd, void *bpf, int bpf_len);
++extern void *uml_vector_default_bpf(void *mac);
++extern void *uml_vector_user_bpf(char *filename);
++extern int uml_vector_attach_bpf(int fd, void *bpf);
++extern int uml_vector_detach_bpf(int fd, void *bpf);
+ extern bool uml_raw_enable_qdisc_bypass(int fd);
+ extern bool uml_raw_enable_vnet_headers(int fd);
+ extern bool uml_tap_enable_vnet_headers(int fd);
 -- 
 2.20.1
 
