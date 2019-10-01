@@ -2,12 +2,12 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iFM2C-0006GZ-Np
- for linux-um@lists.infradead.org; Tue, 01 Oct 2019 17:34:01 +0000
-Message-ID: <0c6503e6b74ed1f25457d9919552fbfe48b68f37.camel@sipsolutions.net>
+ id 1iFM17-0006BC-OU
+ for linux-um@lists.infradead.org; Tue, 01 Oct 2019 17:32:55 +0000
+Message-ID: <6e5e87abcf0fa6453239678524be6049598dc080.camel@sipsolutions.net>
 Subject: Re: [PATCH v2] um: Loadable BPF "Firmware" for vector drivers
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Tue, 01 Oct 2019 19:33:58 +0200
+Date: Tue, 01 Oct 2019 19:32:48 +0200
 In-Reply-To: <20191001165537.3386-1-anton.ivanov@cambridgegreys.com>
 References: <20191001165537.3386-1-anton.ivanov@cambridgegreys.com>
 MIME-Version: 1.0
@@ -26,24 +26,23 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
 Cc: richard@nod.at
 
-On Tue, 2019-10-01 at 17:55 +0100, Anton Ivanov wrote:
-> 
-> +	vp->bpf->filter = kmalloc(fw->size, GFP_KERNEL);
-> +	if (!vp->bpf->filter)
-> +		goto free_buffer;
-> +
-> +	memcpy(vp->bpf->filter, fw->data, fw->size);
 
-Also, that's really just kmemdup().
+> +/*
+> + * We cannot use the firmware.c loader API here because this is not a module
+> + *  and we do not have a proper device structure to pass to it as required
+> + *  by the firmware API
+> + */
 
-> +	release_firmware(fw);
-> +
-> +	vp->bpf->len = fw->size / sizeof(struct sock_filter);
+I think you should delete the comment now :)
 
-and that's a use-after-free, afaict?
+[...]
+
+> +	if (request_firmware(&fw, efl->data, &vdevice->pdev.dev))
+> +		goto flash_fail;
+
+That is the standard firmware loader now after all.
 
 johannes
-
 
 
 _______________________________________________
