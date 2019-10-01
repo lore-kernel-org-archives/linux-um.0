@@ -2,16 +2,16 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab7.miniserver.com ([37.128.132.42]
  helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iFMnk-0007yl-QG
- for linux-um@lists.infradead.org; Tue, 01 Oct 2019 18:23:10 +0000
+ id 1iFMmM-0007uT-Dy
+ for linux-um@lists.infradead.org; Tue, 01 Oct 2019 18:21:44 +0000
 Subject: Re: [PATCH v2] um: Loadable BPF "Firmware" for vector drivers
 References: <20191001165537.3386-1-anton.ivanov@cambridgegreys.com>
- <0c6503e6b74ed1f25457d9919552fbfe48b68f37.camel@sipsolutions.net>
+ <6e5e87abcf0fa6453239678524be6049598dc080.camel@sipsolutions.net>
 From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Message-ID: <1a5ed73e-be91-5f0b-d061-213e90c48316@cambridgegreys.com>
-Date: Tue, 1 Oct 2019 19:23:05 +0100
+Message-ID: <539c878c-043b-defb-3545-39e233a5f007@cambridgegreys.com>
+Date: Tue, 1 Oct 2019 19:21:36 +0100
 MIME-Version: 1.0
-In-Reply-To: <0c6503e6b74ed1f25457d9919552fbfe48b68f37.camel@sipsolutions.net>
+In-Reply-To: <6e5e87abcf0fa6453239678524be6049598dc080.camel@sipsolutions.net>
 Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -28,28 +28,35 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
 Cc: richard@nod.at
 
-On 01/10/2019 18:33, Johannes Berg wrote:
-> On Tue, 2019-10-01 at 17:55 +0100, Anton Ivanov wrote:
->>
->> +	vp->bpf->filter = kmalloc(fw->size, GFP_KERNEL);
->> +	if (!vp->bpf->filter)
->> +		goto free_buffer;
->> +
->> +	memcpy(vp->bpf->filter, fw->data, fw->size);
+On 01/10/2019 18:32, Johannes Berg wrote:
 > 
-> Also, that's really just kmemdup().
+>> +/*
+>> + * We cannot use the firmware.c loader API here because this is not a module
+>> + *  and we do not have a proper device structure to pass to it as required
+>> + *  by the firmware API
+>> + */
 > 
->> +	release_firmware(fw);
->> +
->> +	vp->bpf->len = fw->size / sizeof(struct sock_filter);
+> I think you should delete the comment now :)
+
+Mea culpa.
+
+Will do that shortly.
+
+I started following your suggestion about platform device and realized 
+that we actually already have one :)
+
 > 
-> and that's a use-after-free, afaict?
+> [...]
+> 
+>> +	if (request_firmware(&fw, efl->data, &vdevice->pdev.dev))
+>> +		goto flash_fail;
+> 
+> That is the standard firmware loader now after all.
 > 
 > johannes
 > 
 > 
-> 
-Ughhh... well spotted. New version later today.
+
 
 -- 
 Anton R. Ivanov
