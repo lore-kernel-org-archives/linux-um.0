@@ -1,483 +1,292 @@
-Return-Path: <linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [RESEND TRIVIAL 2/3] treewide: Fix Kconfig indentation
-Date: Fri,  4 Oct 2019 16:55:43 +0200
-Message-Id: <20191004145544.5066-2-krzk@kernel.org>
-In-Reply-To: <20191004145544.5066-1-krzk@kernel.org>
-References: <20191004145544.5066-1-krzk@kernel.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
-List-Post: <mailto:linux-mtd@lists.infradead.org>
-List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Return-Path: <aford173@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-Errors-To: linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jiri Kosina <trivial@kernel.org>, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, linux-samsung-soc@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, keyrings@vger.kernel.org, linux-acpi@vger.kernel.org, linux-ide@vger.kernel.org, linux-block@vger.kernel.org, linux-crypto@vger.kernel.org, openipmi-developer@lists.sourceforge.net, linux-clk@vger.kernel.org, linux-pm@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, dmaengine@vger.kernel.org, linux-edac@vger.kernel.org, linux-efi@vger.kernel.org, linux-input@vger.kernel.org, linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org, linux-iio@vger.kernel.org, linux-rdma@vger.kernel.org, iommu@lists.linux-foundation.org, netdev@vger.kernel.org, dm-devel@redhat.com, linux-raid@vger.kernel.org, linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-pci@vger.kernel.org, linux-gpio@vger.kernel.org, linux-arm-msm@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-rtc@vger.kernel.org, linux-scsi@vger.kernel.org, esc.storagedev@microsemi.com, linux-rockchip@lists.infradead.org, linux-spi@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org, devel@driverdev.osuosl.org, ac100@lists.launchpad.net, linux-tegra@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, linux-rpi-kernel@lists.infradead.org, linux-serial@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-mm@kvack.org, linux-security-module@vger.kernel.org, linux-integrity@vger.kernel.org, linux-mediatek@lists.infradead.org
-Cc: Krzysztof Kozlowski <krzk@kernel.org>
+References: <CAHCN7x+Jv7yGPoB0Gm=TJ30ObLJduw2XomHkd++KqFEURYQcGg@mail.gmail.com>
+ <CAOMZO5A_U4aYC4XZXK1r9JaLg-eRdXy8m6z4GatQp62rK4HZ6A@mail.gmail.com>
+ <CAHCN7xJdzEppn8-74SvzACsA25bUHGdV7v=CfS08xzSi59Z2uw@mail.gmail.com>
+ <CAOMZO5D2uzR6Sz1QnX3G-Ce_juxU-0PO_vBZX+nR1mpQB8s8-w@mail.gmail.com>
+ <CAHCN7xJ32BYZu-DVTVLSzv222U50JDb8F0A_tLDERbb8kPdRxg@mail.gmail.com>
+ <20190926160433.GD32311@linux.ibm.com> <CAHCN7xL1sFXDhKUpj04d3eDZNgLA1yGAOqwEeCxedy1Qm-JOfQ@mail.gmail.com>
+ <20190928073331.GA5269@linux.ibm.com> <CAHCN7xJEvS2Si=M+BYtz+kY0M4NxmqDjiX9Nwq6_3GGBh3yg=w@mail.gmail.com>
+ <CAHCN7xKLhWw4P9-sZKXQcfSfh2r3J_+rLxuxACW0UVgimCzyVw@mail.gmail.com> <20191002073605.GA30433@linux.ibm.com>
+In-Reply-To: <20191002073605.GA30433@linux.ibm.com>
+From: Adam Ford <aford173@gmail.com>
+Date: Wed, 2 Oct 2019 06:14:11 -0500
+Message-ID: <CAHCN7xL1MkJh44N3W_1+08DHmX__SqnfH6dqUzYzr2Wpg0kQyQ@mail.gmail.com>
+Subject: Re: [PATCH v2 00/21] Refine memblock API
+Content-Type: text/plain; charset="UTF-8"
+To: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Fabio Estevam <festevam@gmail.com>, Rich Felker <dalias@libc.org>, linux-ia64@vger.kernel.org, Petr Mladek <pmladek@suse.com>, linux-sh@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Max Filippov <jcmvbkbc@gmail.com>, Guo Ren <guoren@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, sparclinux@vger.kernel.org, Christoph Hellwig <hch@lst.de>, linux-s390@vger.kernel.org, linux-c6x-dev@linux-c6x.org, Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Weinberger <richard@nod.at>, x86@kernel.org, Russell King <linux@armlinux.org.uk>, kasan-dev <kasan-dev@googlegroups.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Mark Salter <msalter@redhat.com>, Dennis Zhou <dennis@kernel.org>, Matt Turner <mattst88@gmail.com>, linux-snps-arc@lists.infradead.org, uclinux-h8-devel@lists.sourceforge.jp, devicetree <devicetree@vger.kernel.org>, linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, The etnaviv authors <etnaviv@lists.freedesktop.org>, linux-m68k@lists.linux-m68k.org, Rob Herring <robh+dt@kernel.org>, Greentime Hu <green.hu@gmail.com>, xen-devel@lists.xenproject.org, Stafford Horne <shorne@gmail.com>, Guan Xuetao <gxt@pku.edu.cn>, arm-soc <linux-arm-kernel@lists.infradead.org>, Michal Simek <monstr@monstr.eu>, Tony Luck <tony.luck@intel.com>, Linux Memory Management List <linux-mm@kvack.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, USB list <linux-usb@vger.kernel.org>, linux-mips@vger.kernel.org, Paul Burton <paul.burton@mips.com>, Vineet Gupta <vgupta@synopsys.com>, linux-alpha@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org, "David S. Miller" <davem@davemloft.net>, openrisc@lists.librecores.org, Chris Healy <cphealy@gmail.com>
 List-ID: <linux-um.lists.infradead.org>
 
-Adjust indentation from spaces to tab (+optional two spaces) as in
-coding style with command like:
-    $ sed -e 's/^        /\t/' -i */Kconfig
+On Wed, Oct 2, 2019 at 2:36 AM Mike Rapoport <rppt@linux.ibm.com> wrote:
+>
+> Hi Adam,
+>
+> On Tue, Oct 01, 2019 at 07:14:13PM -0500, Adam Ford wrote:
+> > On Sun, Sep 29, 2019 at 8:33 AM Adam Ford <aford173@gmail.com> wrote:
+> > >
+> > > I am attaching two logs.  I now the mailing lists will be unhappy, but
+> > >  don't want to try and spam a bunch of log through the mailing liast.
+> > > The two logs show the differences between the working and non-working
+> > > imx6q 3D accelerator when trying to run a simple glmark2-es2-drm demo.
+> > >
+> > > The only change between them is the 2 line code change you suggested.
+> > >
+> > > In both cases, I have cma=128M set in my bootargs.  Historically this
+> > > has been sufficient, but cma=256M has not made a difference.
+> > >
+> >
+> > Mike any suggestions on how to move forward?
+> > I was hoping to get the fixes tested and pushed before 5.4 is released
+> > if at all possible
+>
+> I have a fix (below) that kinda restores the original behaviour, but I
+> still would like to double check to make sure it's not a band aid and I
+> haven't missed the actual root cause.
+>
+> Can you please send me your device tree definition and the output of
+>
+> cat /sys/kernel/debug/memblock/memory
+>
+> and
+>
+> cat /sys/kernel/debug/memblock/reserved
+>
+> Thanks!
+>
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- certs/Kconfig                  | 14 ++++++-------
- init/Kconfig                   | 28 +++++++++++++-------------
- kernel/trace/Kconfig           |  8 ++++----
- lib/Kconfig                    |  2 +-
- lib/Kconfig.debug              | 36 +++++++++++++++++-----------------
- lib/Kconfig.kgdb               |  8 ++++----
- mm/Kconfig                     | 28 +++++++++++++-------------
- samples/Kconfig                |  2 +-
- security/apparmor/Kconfig      |  2 +-
- security/integrity/Kconfig     | 24 +++++++++++------------
- security/integrity/ima/Kconfig | 12 ++++++------
- security/safesetid/Kconfig     | 24 +++++++++++------------
- 12 files changed, 94 insertions(+), 94 deletions(-)
+Before the patch:
 
-diff --git a/certs/Kconfig b/certs/Kconfig
-index c94e93d8bccf..0358c66d3d7c 100644
---- a/certs/Kconfig
-+++ b/certs/Kconfig
-@@ -6,14 +6,14 @@ config MODULE_SIG_KEY
- 	default "certs/signing_key.pem"
- 	depends on MODULE_SIG
- 	help
--         Provide the file name of a private key/certificate in PEM format,
--         or a PKCS#11 URI according to RFC7512. The file should contain, or
--         the URI should identify, both the certificate and its corresponding
--         private key.
-+	 Provide the file name of a private key/certificate in PEM format,
-+	 or a PKCS#11 URI according to RFC7512. The file should contain, or
-+	 the URI should identify, both the certificate and its corresponding
-+	 private key.
- 
--         If this option is unchanged from its default "certs/signing_key.pem",
--         then the kernel will automatically generate the private key and
--         certificate as described in Documentation/admin-guide/module-signing.rst
-+	 If this option is unchanged from its default "certs/signing_key.pem",
-+	 then the kernel will automatically generate the private key and
-+	 certificate as described in Documentation/admin-guide/module-signing.rst
- 
- config SYSTEM_TRUSTED_KEYRING
- 	bool "Provide system-wide ring of trusted keys"
-diff --git a/init/Kconfig b/init/Kconfig
-index b4daad2bac23..e1a6f31da281 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -169,10 +169,10 @@ config BUILD_SALT
-        string "Build ID Salt"
-        default ""
-        help
--          The build ID is used to link binaries and their debug info. Setting
--          this option will use the value in the calculation of the build id.
--          This is mostly useful for distributions which want to ensure the
--          build is unique between builds. It's safe to leave the default.
-+	  The build ID is used to link binaries and their debug info. Setting
-+	  this option will use the value in the calculation of the build id.
-+	  This is mostly useful for distributions which want to ensure the
-+	  build is unique between builds. It's safe to leave the default.
- 
- config HAVE_KERNEL_GZIP
- 	bool
-@@ -1327,9 +1327,9 @@ menuconfig EXPERT
- 	select DEBUG_KERNEL
- 	help
- 	  This option allows certain base kernel options and settings
--          to be disabled or tweaked. This is for specialized
--          environments which can tolerate a "non-standard" kernel.
--          Only use this if you really know what you are doing.
-+	  to be disabled or tweaked. This is for specialized
-+	  environments which can tolerate a "non-standard" kernel.
-+	  Only use this if you really know what you are doing.
- 
- config UID16
- 	bool "Enable 16-bit UID system calls" if EXPERT
-@@ -1439,11 +1439,11 @@ config BUG
- 	bool "BUG() support" if EXPERT
- 	default y
- 	help
--          Disabling this option eliminates support for BUG and WARN, reducing
--          the size of your kernel image and potentially quietly ignoring
--          numerous fatal conditions. You should only consider disabling this
--          option for embedded systems with no facilities for reporting errors.
--          Just say Y.
-+	  Disabling this option eliminates support for BUG and WARN, reducing
-+	  the size of your kernel image and potentially quietly ignoring
-+	  numerous fatal conditions. You should only consider disabling this
-+	  option for embedded systems with no facilities for reporting errors.
-+	  Just say Y.
- 
- config ELF_CORE
- 	depends on COREDUMP
-@@ -1459,8 +1459,8 @@ config PCSPKR_PLATFORM
- 	select I8253_LOCK
- 	default y
- 	help
--          This option allows to disable the internal PC-Speaker
--          support, saving some memory.
-+	  This option allows to disable the internal PC-Speaker
-+	  support, saving some memory.
- 
- config BASE_FULL
- 	default y
-diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-index e08527f50d2a..0393003f102f 100644
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -76,7 +76,7 @@ config FTRACE_NMI_ENTER
- 
- config EVENT_TRACING
- 	select CONTEXT_SWITCH_TRACER
--        select GLOB
-+	select GLOB
- 	bool
- 
- config CONTEXT_SWITCH_TRACER
-@@ -308,7 +308,7 @@ config TRACER_SNAPSHOT
- 	      cat snapshot
- 
- config TRACER_SNAPSHOT_PER_CPU_SWAP
--        bool "Allow snapshot to swap per CPU"
-+	bool "Allow snapshot to swap per CPU"
- 	depends on TRACER_SNAPSHOT
- 	select RING_BUFFER_ALLOW_SWAP
- 	help
-@@ -675,7 +675,7 @@ config MMIOTRACE_TEST
- 	  Say N, unless you absolutely know what you are doing.
- 
- config TRACEPOINT_BENCHMARK
--        bool "Add tracepoint that benchmarks tracepoints"
-+	bool "Add tracepoint that benchmarks tracepoints"
- 	help
- 	 This option creates the tracepoint "benchmark:benchmark_event".
- 	 When the tracepoint is enabled, it kicks off a kernel thread that
-@@ -724,7 +724,7 @@ config RING_BUFFER_STARTUP_TEST
-        bool "Ring buffer startup self test"
-        depends on RING_BUFFER
-        help
--         Run a simple self test on the ring buffer on boot up. Late in the
-+	 Run a simple self test on the ring buffer on boot up. Late in the
- 	 kernel boot sequence, the test will start that kicks off
- 	 a thread per cpu. Each thread will write various size events
- 	 into the ring buffer. Another thread is created to send IPIs
-diff --git a/lib/Kconfig b/lib/Kconfig
-index 183f92a297ca..b7eb98342e39 100644
---- a/lib/Kconfig
-+++ b/lib/Kconfig
-@@ -573,7 +573,7 @@ config OID_REGISTRY
- 	  Enable fast lookup object identifier registry.
- 
- config UCS2_STRING
--        tristate
-+	tristate
- 
- #
- # generic vdso
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index a0250e53954a..f9833ea51389 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -128,8 +128,8 @@ config DYNAMIC_DEBUG
- 	  lineno : line number of the debug statement
- 	  module : module that contains the debug statement
- 	  function : function that contains the debug statement
--          flags : '=p' means the line is turned 'on' for printing
--          format : the format used for the debug statement
-+	  flags : '=p' means the line is turned 'on' for printing
-+	  format : the format used for the debug statement
- 
- 	  From a live system:
- 
-@@ -172,7 +172,7 @@ config DEBUG_INFO
- 	bool "Compile the kernel with debug info"
- 	depends on DEBUG_KERNEL && !COMPILE_TEST
- 	help
--          If you say Y here the resulting kernel image will include
-+	  If you say Y here the resulting kernel image will include
- 	  debugging info resulting in a larger kernel image.
- 	  This adds debug symbols to the kernel and modules (gcc -g), and
- 	  is needed if you intend to use kernel crashdump or binary object
-@@ -269,13 +269,13 @@ config STRIP_ASM_SYMS
- 	  get_wchan() and suchlike.
- 
- config READABLE_ASM
--        bool "Generate readable assembler code"
--        depends on DEBUG_KERNEL
--        help
--          Disable some compiler optimizations that tend to generate human unreadable
--          assembler output. This may make the kernel slightly slower, but it helps
--          to keep kernel developers who have to stare a lot at assembler listings
--          sane.
-+	bool "Generate readable assembler code"
-+	depends on DEBUG_KERNEL
-+	help
-+	  Disable some compiler optimizations that tend to generate human unreadable
-+	  assembler output. This may make the kernel slightly slower, but it helps
-+	  to keep kernel developers who have to stare a lot at assembler listings
-+	  sane.
- 
- config DEBUG_FS
- 	bool "Debug Filesystem"
-@@ -508,11 +508,11 @@ config DEBUG_OBJECTS_PERCPU_COUNTER
- 
- config DEBUG_OBJECTS_ENABLE_DEFAULT
- 	int "debug_objects bootup default value (0-1)"
--        range 0 1
--        default "1"
--        depends on DEBUG_OBJECTS
--        help
--          Debug objects boot parameter default value
-+	range 0 1
-+	default "1"
-+	depends on DEBUG_OBJECTS
-+	help
-+	  Debug objects boot parameter default value
- 
- config DEBUG_SLAB
- 	bool "Debug slab memory allocations"
-@@ -631,7 +631,7 @@ config DEBUG_VM
- 	depends on DEBUG_KERNEL
- 	help
- 	  Enable this to turn on extended checks in the virtual-memory system
--          that may impact performance.
-+	  that may impact performance.
- 
- 	  If unsure, say N.
- 
-@@ -1421,7 +1421,7 @@ config DEBUG_WQ_FORCE_RR_CPU
- 	  be impacted.
- 
- config DEBUG_BLOCK_EXT_DEVT
--        bool "Force extended block device numbers and spread them"
-+	bool "Force extended block device numbers and spread them"
- 	depends on DEBUG_KERNEL
- 	depends on BLOCK
- 	default n
-@@ -2142,7 +2142,7 @@ config DEBUG_AID_FOR_SYZBOT
-        bool "Additional debug code for syzbot"
-        default n
-        help
--         This option is intended for testing by syzbot.
-+	 This option is intended for testing by syzbot.
- 
- source "arch/$(SRCARCH)/Kconfig.debug"
- 
-diff --git a/lib/Kconfig.kgdb b/lib/Kconfig.kgdb
-index bbe397df04a3..933680b59e2d 100644
---- a/lib/Kconfig.kgdb
-+++ b/lib/Kconfig.kgdb
-@@ -64,9 +64,9 @@ config KGDB_LOW_LEVEL_TRAP
-        depends on X86 || MIPS
-        default n
-        help
--         This will add an extra call back to kgdb for the breakpoint
--         exception handler which will allow kgdb to step through a
--         notify handler.
-+	 This will add an extra call back to kgdb for the breakpoint
-+	 exception handler which will allow kgdb to step through a
-+	 notify handler.
- 
- config KGDB_KDB
- 	bool "KGDB_KDB: include kdb frontend for kgdb"
-@@ -96,7 +96,7 @@ config KDB_DEFAULT_ENABLE
- 
- 	  The config option merely sets the default at boot time. Both
- 	  issuing 'echo X > /sys/module/kdb/parameters/cmd_enable' or
--          setting with kdb.cmd_enable=X kernel command line option will
-+	  setting with kdb.cmd_enable=X kernel command line option will
- 	  override the default settings.
- 
- config KDB_KEYBOARD
-diff --git a/mm/Kconfig b/mm/Kconfig
-index a5dae9a7eb51..e6e16d0ef544 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -160,9 +160,9 @@ config MEMORY_HOTPLUG_SPARSE
- 	depends on SPARSEMEM && MEMORY_HOTPLUG
- 
- config MEMORY_HOTPLUG_DEFAULT_ONLINE
--        bool "Online the newly added memory blocks by default"
--        depends on MEMORY_HOTPLUG
--        help
-+	bool "Online the newly added memory blocks by default"
-+	depends on MEMORY_HOTPLUG
-+	help
- 	  This option sets the default policy setting for memory hotplug
- 	  onlining policy (/sys/devices/system/memory/auto_online_blocks) which
- 	  determines what happens to newly added memory regions. Policy setting
-@@ -227,14 +227,14 @@ config COMPACTION
- 	select MIGRATION
- 	depends on MMU
- 	help
--          Compaction is the only memory management component to form
--          high order (larger physically contiguous) memory blocks
--          reliably. The page allocator relies on compaction heavily and
--          the lack of the feature can lead to unexpected OOM killer
--          invocations for high order memory requests. You shouldn't
--          disable this option unless there really is a strong reason for
--          it and then we would be really interested to hear about that at
--          linux-mm@kvack.org.
-+	  Compaction is the only memory management component to form
-+	  high order (larger physically contiguous) memory blocks
-+	  reliably. The page allocator relies on compaction heavily and
-+	  the lack of the feature can lead to unexpected OOM killer
-+	  invocations for high order memory requests. You shouldn't
-+	  disable this option unless there really is a strong reason for
-+	  it and then we would be really interested to hear about that at
-+	  linux-mm@kvack.org.
- 
- #
- # support for page migration
-@@ -301,10 +301,10 @@ config KSM
- 	  root has set /sys/kernel/mm/ksm/run to 1 (if CONFIG_SYSFS is set).
- 
- config DEFAULT_MMAP_MIN_ADDR
--        int "Low address space to protect from user allocation"
-+	int "Low address space to protect from user allocation"
- 	depends on MMU
--        default 4096
--        help
-+	default 4096
-+	help
- 	  This is the portion of low virtual memory which should be protected
- 	  from userspace allocation.  Keeping a user from writing to low pages
- 	  can help reduce the impact of kernel NULL pointer bugs.
-diff --git a/samples/Kconfig b/samples/Kconfig
-index 2c3e07addd38..c5937c5175d2 100644
---- a/samples/Kconfig
-+++ b/samples/Kconfig
-@@ -13,7 +13,7 @@ config SAMPLE_TRACE_EVENTS
- 	  This build trace event example modules.
- 
- config SAMPLE_TRACE_PRINTK
--        tristate "Build trace_printk module - tests various trace_printk formats"
-+	tristate "Build trace_printk module - tests various trace_printk formats"
- 	depends on EVENT_TRACING && m
- 	help
- 	 This builds a module that calls trace_printk() and can be used to
-diff --git a/security/apparmor/Kconfig b/security/apparmor/Kconfig
-index a422a349f926..1f0e712c5e50 100644
---- a/security/apparmor/Kconfig
-+++ b/security/apparmor/Kconfig
-@@ -32,7 +32,7 @@ config SECURITY_APPARMOR_HASH_DEFAULT
-        depends on SECURITY_APPARMOR_HASH
-        default y
-        help
--         This option selects whether sha1 hashing of loaded policy
-+	 This option selects whether sha1 hashing of loaded policy
- 	 is enabled by default. The generation of sha1 hashes for
- 	 loaded policy provide system administrators a quick way
- 	 to verify that policy in the kernel matches what is expected,
-diff --git a/security/integrity/Kconfig b/security/integrity/Kconfig
-index 0bae6adb63a9..f7f2df082f51 100644
---- a/security/integrity/Kconfig
-+++ b/security/integrity/Kconfig
-@@ -34,10 +34,10 @@ config INTEGRITY_ASYMMETRIC_KEYS
- 	bool "Enable asymmetric keys support"
- 	depends on INTEGRITY_SIGNATURE
- 	default n
--        select ASYMMETRIC_KEY_TYPE
--        select ASYMMETRIC_PUBLIC_KEY_SUBTYPE
--        select CRYPTO_RSA
--        select X509_CERTIFICATE_PARSER
-+	select ASYMMETRIC_KEY_TYPE
-+	select ASYMMETRIC_PUBLIC_KEY_SUBTYPE
-+	select CRYPTO_RSA
-+	select X509_CERTIFICATE_PARSER
- 	help
- 	  This option enables digital signature verification using
- 	  asymmetric keys.
-@@ -53,14 +53,14 @@ config INTEGRITY_TRUSTED_KEYRING
- 	   keyring.
- 
- config INTEGRITY_PLATFORM_KEYRING
--        bool "Provide keyring for platform/firmware trusted keys"
--        depends on INTEGRITY_ASYMMETRIC_KEYS
--        depends on SYSTEM_BLACKLIST_KEYRING
--        help
--         Provide a separate, distinct keyring for platform trusted keys, which
--         the kernel automatically populates during initialization from values
--         provided by the platform for verifying the kexec'ed kerned image
--         and, possibly, the initramfs signature.
-+	bool "Provide keyring for platform/firmware trusted keys"
-+	depends on INTEGRITY_ASYMMETRIC_KEYS
-+	depends on SYSTEM_BLACKLIST_KEYRING
-+	help
-+	 Provide a separate, distinct keyring for platform trusted keys, which
-+	 the kernel automatically populates during initialization from values
-+	 provided by the platform for verifying the kexec'ed kerned image
-+	 and, possibly, the initramfs signature.
- 
- config LOAD_UEFI_KEYS
-        depends on INTEGRITY_PLATFORM_KEYRING
-diff --git a/security/integrity/ima/Kconfig b/security/integrity/ima/Kconfig
-index 838476d780e5..ec9259bd8115 100644
---- a/security/integrity/ima/Kconfig
-+++ b/security/integrity/ima/Kconfig
-@@ -159,13 +159,13 @@ config IMA_APPRAISE
- 	  If unsure, say N.
- 
- config IMA_ARCH_POLICY
--        bool "Enable loading an IMA architecture specific policy"
--        depends on (KEXEC_SIG && IMA) || IMA_APPRAISE \
-+	bool "Enable loading an IMA architecture specific policy"
-+	depends on (KEXEC_SIG && IMA) || IMA_APPRAISE \
- 		   && INTEGRITY_ASYMMETRIC_KEYS
--        default n
--        help
--          This option enables loading an IMA architecture specific policy
--          based on run time secure boot flags.
-+	default n
-+	help
-+	  This option enables loading an IMA architecture specific policy
-+	  based on run time secure boot flags.
- 
- config IMA_APPRAISE_BUILD_POLICY
- 	bool "IMA build time configured policy rules"
-diff --git a/security/safesetid/Kconfig b/security/safesetid/Kconfig
-index 18b5fb90417b..ab1a2c69b0b8 100644
---- a/security/safesetid/Kconfig
-+++ b/security/safesetid/Kconfig
-@@ -1,15 +1,15 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config SECURITY_SAFESETID
--        bool "Gate setid transitions to limit CAP_SET{U/G}ID capabilities"
--        depends on SECURITY
--        select SECURITYFS
--        default n
--        help
--          SafeSetID is an LSM module that gates the setid family of syscalls to
--          restrict UID/GID transitions from a given UID/GID to only those
--          approved by a system-wide whitelist. These restrictions also prohibit
--          the given UIDs/GIDs from obtaining auxiliary privileges associated
--          with CAP_SET{U/G}ID, such as allowing a user to set up user namespace
--          UID mappings.
-+	bool "Gate setid transitions to limit CAP_SET{U/G}ID capabilities"
-+	depends on SECURITY
-+	select SECURITYFS
-+	default n
-+	help
-+	  SafeSetID is an LSM module that gates the setid family of syscalls to
-+	  restrict UID/GID transitions from a given UID/GID to only those
-+	  approved by a system-wide whitelist. These restrictions also prohibit
-+	  the given UIDs/GIDs from obtaining auxiliary privileges associated
-+	  with CAP_SET{U/G}ID, such as allowing a user to set up user namespace
-+	  UID mappings.
- 
--          If you are unsure how to answer this question, answer N.
-+	  If you are unsure how to answer this question, answer N.
--- 
-2.17.1
+# cat /sys/kernel/debug/memblock/memory
+   0: 0x10000000..0x8fffffff
+# cat /sys/kernel/debug/memblock/reserved
+   0: 0x10004000..0x10007fff
+   1: 0x10100000..0x11ab141f
+   2: 0x1fff1000..0x1fffcfff
+   3: 0x2ee40000..0x2ef53fff
+   4: 0x2ef56940..0x2ef56c43
+   5: 0x2ef56c48..0x2fffefff
+   6: 0x2ffff0c0..0x2ffff4d8
+   7: 0x2ffff500..0x2ffff55f
+   8: 0x2ffff580..0x2ffff703
+   9: 0x2ffff740..0x2ffff918
+  10: 0x2ffff940..0x2ffff9cf
+  11: 0x2ffffa00..0x2ffffa0f
+  12: 0x2ffffa40..0x2ffffa43
+  13: 0x2ffffa80..0x2ffffad5
+  14: 0x2ffffb00..0x2ffffb55
+  15: 0x2ffffb80..0x2ffffbd5
+  16: 0x2ffffc00..0x2ffffc4e
+  17: 0x2ffffc50..0x2ffffc6a
+  18: 0x2ffffc6c..0x2ffffce6
+  19: 0x2ffffce8..0x2ffffd02
+  20: 0x2ffffd04..0x2ffffd1e
+  21: 0x2ffffd20..0x2ffffd3a
+  22: 0x2ffffd3c..0x2ffffd56
+  23: 0x2ffffd58..0x2ffffe30
+  24: 0x2ffffe34..0x2ffffe4c
+  25: 0x2ffffe50..0x2ffffe68
+  26: 0x2ffffe6c..0x2ffffe84
+  27: 0x2ffffe88..0x2ffffea0
+  28: 0x2ffffea4..0x2ffffebc
+  29: 0x2ffffec0..0x2ffffedf
+  30: 0x2ffffee4..0x2ffffefc
+  31: 0x2fffff00..0x2fffff13
+  32: 0x2fffff28..0x2fffff4b
+  33: 0x2fffff50..0x2fffff84
+  34: 0x2fffff88..0x3fffffff
 
 
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+After the patch:
+# cat /sys/kernel/debug/memblock/memory
+   0: 0x10000000..0x8fffffff
+# cat /sys/kernel/debug/memblock/reserved
+   0: 0x10004000..0x10007fff
+   1: 0x10100000..0x11ab141f
+   2: 0x1fff1000..0x1fffcfff
+   3: 0x3eec0000..0x3efd3fff
+   4: 0x3efd6940..0x3efd6c43
+   5: 0x3efd6c48..0x3fffbfff
+   6: 0x3fffc0c0..0x3fffc4d8
+   7: 0x3fffc500..0x3fffc55f
+   8: 0x3fffc580..0x3fffc703
+   9: 0x3fffc740..0x3fffc918
+  10: 0x3fffc940..0x3fffc9cf
+  11: 0x3fffca00..0x3fffca0f
+  12: 0x3fffca40..0x3fffca43
+  13: 0x3fffca80..0x3fffca83
+  14: 0x3fffcac0..0x3fffcb15
+  15: 0x3fffcb40..0x3fffcb95
+  16: 0x3fffcbc0..0x3fffcc15
+  17: 0x3fffcc28..0x3fffcc72
+  18: 0x3fffcc74..0x3fffcc8e
+  19: 0x3fffcc90..0x3fffcd0a
+  20: 0x3fffcd0c..0x3fffcd26
+  21: 0x3fffcd28..0x3fffcd42
+  22: 0x3fffcd44..0x3fffcd5e
+  23: 0x3fffcd60..0x3fffcd7a
+  24: 0x3fffcd7c..0x3fffce54
+  25: 0x3fffce58..0x3fffce70
+  26: 0x3fffce74..0x3fffce8c
+  27: 0x3fffce90..0x3fffcea8
+  28: 0x3fffceac..0x3fffcec4
+  29: 0x3fffcec8..0x3fffcee0
+  30: 0x3fffcee4..0x3fffcefc
+  31: 0x3fffcf00..0x3fffcf1f
+  32: 0x3fffcf28..0x3fffcf53
+  33: 0x3fffcf68..0x3fffcf8b
+  34: 0x3fffcf90..0x3fffcfac
+  35: 0x3fffcfb0..0x3fffffff
+  36: 0x80000000..0x8fffffff
+
+> From 06529f861772b7dea2912fc2245debe4690139b8 Mon Sep 17 00:00:00 2001
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> Date: Wed, 2 Oct 2019 10:14:17 +0300
+> Subject: [PATCH] mm: memblock: do not enforce current limit for memblock_phys*
+>  family
+>
+> Until commit 92d12f9544b7 ("memblock: refactor internal allocation
+> functions") the maximal address for memblock allocations was forced to
+> memblock.current_limit only for the allocation functions returning virtual
+> address. The changes introduced by that commit moved the limit enforcement
+> into the allocation core and as a result the allocation functions returning
+> physical address also started to limit allocations to
+> memblock.current_limit.
+>
+> This caused breakage of etnaviv GPU driver:
+>
+> [    3.682347] etnaviv etnaviv: bound 130000.gpu (ops gpu_ops)
+> [    3.688669] etnaviv etnaviv: bound 134000.gpu (ops gpu_ops)
+> [    3.695099] etnaviv etnaviv: bound 2204000.gpu (ops gpu_ops)
+> [    3.700800] etnaviv-gpu 130000.gpu: model: GC2000, revision: 5108
+> [    3.723013] etnaviv-gpu 130000.gpu: command buffer outside valid
+> memory window
+> [    3.731308] etnaviv-gpu 134000.gpu: model: GC320, revision: 5007
+> [    3.752437] etnaviv-gpu 134000.gpu: command buffer outside valid
+> memory window
+> [    3.760583] etnaviv-gpu 2204000.gpu: model: GC355, revision: 1215
+> [    3.766766] etnaviv-gpu 2204000.gpu: Ignoring GPU with VG and FE2.0
+>
+> Restore the behaviour of memblock_phys* family so that these functions will
+> not enforce memblock.current_limit.
+>
+
+This fixed the issue.  Thank you
+
+Tested-by: Adam Ford <aford173@gmail.com> #imx6q-logicpd
+
+> Fixes: 92d12f9544b7 ("memblock: refactor internal allocation functions")
+> Reported-by: Adam Ford <aford173@gmail.com>
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> ---
+>  mm/memblock.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/mm/memblock.c b/mm/memblock.c
+> index 7d4f61a..c4b16ca 100644
+> --- a/mm/memblock.c
+> +++ b/mm/memblock.c
+> @@ -1356,9 +1356,6 @@ static phys_addr_t __init memblock_alloc_range_nid(phys_addr_t size,
+>                 align = SMP_CACHE_BYTES;
+>         }
+>
+> -       if (end > memblock.current_limit)
+> -               end = memblock.current_limit;
+> -
+>  again:
+>         found = memblock_find_in_range_node(size, align, start, end, nid,
+>                                             flags);
+> @@ -1469,6 +1466,9 @@ static void * __init memblock_alloc_internal(
+>         if (WARN_ON_ONCE(slab_is_available()))
+>                 return kzalloc_node(size, GFP_NOWAIT, nid);
+>
+> +       if (max_addr > memblock.current_limit)
+> +               max_addr = memblock.current_limit;
+> +
+>         alloc = memblock_alloc_range_nid(size, align, min_addr, max_addr, nid);
+>
+>         /* retry allocation without lower limit */
+> --
+> 2.7.4
+>
+>
+> > > adam
+> > >
+> > > On Sat, Sep 28, 2019 at 2:33 AM Mike Rapoport <rppt@linux.ibm.com> wrote:
+> > > >
+> > > > On Thu, Sep 26, 2019 at 02:35:53PM -0500, Adam Ford wrote:
+> > > > > On Thu, Sep 26, 2019 at 11:04 AM Mike Rapoport <rppt@linux.ibm.com> wrote:
+> > > > > >
+> > > > > > Hi,
+> > > > > >
+> > > > > > On Thu, Sep 26, 2019 at 08:09:52AM -0500, Adam Ford wrote:
+> > > > > > > On Wed, Sep 25, 2019 at 10:17 AM Fabio Estevam <festevam@gmail.com> wrote:
+> > > > > > > >
+> > > > > > > > On Wed, Sep 25, 2019 at 9:17 AM Adam Ford <aford173@gmail.com> wrote:
+> > > > > > > >
+> > > > > > > > > I tried cma=256M and noticed the cma dump at the beginning didn't
+> > > > > > > > > change.  Do we need to setup a reserved-memory node like
+> > > > > > > > > imx6ul-ccimx6ulsom.dtsi did?
+> > > > > > > >
+> > > > > > > > I don't think so.
+> > > > > > > >
+> > > > > > > > Were you able to identify what was the exact commit that caused such regression?
+> > > > > > >
+> > > > > > > I was able to narrow it down the 92d12f9544b7 ("memblock: refactor
+> > > > > > > internal allocation functions") that caused the regression with
+> > > > > > > Etnaviv.
+> > > > > >
+> > > > > >
+> > > > > > Can you please test with this change:
+> > > > > >
+> > > > >
+> > > > > That appears to have fixed my issue.  I am not sure what the impact
+> > > > > is, but is this a safe option?
+> > > >
+> > > > It's not really a fix, I just wanted to see how exactly 92d12f9544b7 ("memblock:
+> > > > refactor internal allocation functions") broke your setup.
+> > > >
+> > > > Can you share the dts you are using and the full kernel log?
+> > > >
+> > > > > adam
+> > > > >
+> > > > > > diff --git a/mm/memblock.c b/mm/memblock.c
+> > > > > > index 7d4f61a..1f5a0eb 100644
+> > > > > > --- a/mm/memblock.c
+> > > > > > +++ b/mm/memblock.c
+> > > > > > @@ -1356,9 +1356,6 @@ static phys_addr_t __init memblock_alloc_range_nid(phys_addr_t size,
+> > > > > >                 align = SMP_CACHE_BYTES;
+> > > > > >         }
+> > > > > >
+> > > > > > -       if (end > memblock.current_limit)
+> > > > > > -               end = memblock.current_limit;
+> > > > > > -
+> > > > > >  again:
+> > > > > >         found = memblock_find_in_range_node(size, align, start, end, nid,
+> > > > > >                                             flags);
+> > > > > >
+> > > > > > > I also noticed that if I create a reserved memory node as was done one
+> > > > > > > imx6ul-ccimx6ulsom.dtsi the 3D seems to work again, but without it, I
+> > > > > > > was getting errors regardless of the 'cma=256M' or not.
+> > > > > > > I don't have a problem using the reserved memory, but I guess I am not
+> > > > > > > sure what the amount should be.  I know for the video decoding 1080p,
+> > > > > > > I have historically used cma=128M, but with the 3D also needing some
+> > > > > > > memory allocation, is that enough or should I use 256M?
+> > > > > > >
+> > > > > > > adam
+> > > > > >
+> > > > > > --
+> > > > > > Sincerely yours,
+> > > > > > Mike.
+> > > > > >
+> > > >
+> > > > --
+> > > > Sincerely yours,
+> > > > Mike.
+> > > >
+>
+> --
+> Sincerely yours,
+> Mike.
+>
 
