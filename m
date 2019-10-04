@@ -1,396 +1,483 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iN8ke-0001IR-U2
- for linux-um@lists.infradead.org; Wed, 23 Oct 2019 05:00:10 +0000
-Received: by mail-pf1-x441.google.com with SMTP id y5so12111974pfo.4
- for <linux-um@lists.infradead.org>; Tue, 22 Oct 2019 22:00:04 -0700 (PDT)
-From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC PATCH 45/47] um lkl: add CI tests
-Date: Wed, 23 Oct 2019 13:38:19 +0900
-Message-Id: <c23f6e539ab1473cae99c7563933e658b0e7ee4f.1571798507.git.thehajime@gmail.com>
-In-Reply-To: <cover.1571798507.git.thehajime@gmail.com>
-References: <cover.1571798507.git.thehajime@gmail.com>
+Return-Path: <linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [RESEND TRIVIAL 2/3] treewide: Fix Kconfig indentation
+Date: Fri,  4 Oct 2019 16:55:43 +0200
+Message-Id: <20191004145544.5066-2-krzk@kernel.org>
+In-Reply-To: <20191004145544.5066-1-krzk@kernel.org>
+References: <20191004145544.5066-1-krzk@kernel.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Octavian Purdila <tavi.purdila@gmail.com>, Hajime Tazaki <thehajime@gmail.com>, Akira Moroo <retrage01@gmail.com>
+Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
+Errors-To: linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Jiri Kosina <trivial@kernel.org>, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, linux-samsung-soc@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, keyrings@vger.kernel.org, linux-acpi@vger.kernel.org, linux-ide@vger.kernel.org, linux-block@vger.kernel.org, linux-crypto@vger.kernel.org, openipmi-developer@lists.sourceforge.net, linux-clk@vger.kernel.org, linux-pm@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, dmaengine@vger.kernel.org, linux-edac@vger.kernel.org, linux-efi@vger.kernel.org, linux-input@vger.kernel.org, linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org, linux-iio@vger.kernel.org, linux-rdma@vger.kernel.org, iommu@lists.linux-foundation.org, netdev@vger.kernel.org, dm-devel@redhat.com, linux-raid@vger.kernel.org, linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-pci@vger.kernel.org, linux-gpio@vger.kernel.org, linux-arm-msm@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-rtc@vger.kernel.org, linux-scsi@vger.kernel.org, esc.storagedev@microsemi.com, linux-rockchip@lists.infradead.org, linux-spi@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org, devel@driverdev.osuosl.org, ac100@lists.launchpad.net, linux-tegra@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, linux-rpi-kernel@lists.infradead.org, linux-serial@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-mm@kvack.org, linux-security-module@vger.kernel.org, linux-integrity@vger.kernel.org, linux-mediatek@lists.infradead.org
+Cc: Krzysztof Kozlowski <krzk@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-We use CircleCI for the tests, which should check regressions before
-merging.
+Adjust indentation from spaces to tab (+optional two spaces) as in
+coding style with command like:
+    $ sed -e 's/^        /\t/' -i */Kconfig
 
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- .circleci/config.yml             | 246 +++++++++++++++++++++++++++++++
- tools/lkl/scripts/checkpatch.sh  |  60 ++++++++
- tools/lkl/scripts/lkl-jenkins.sh |  21 +++
- 3 files changed, 327 insertions(+)
- create mode 100644 .circleci/config.yml
- create mode 100755 tools/lkl/scripts/checkpatch.sh
- create mode 100755 tools/lkl/scripts/lkl-jenkins.sh
+ certs/Kconfig                  | 14 ++++++-------
+ init/Kconfig                   | 28 +++++++++++++-------------
+ kernel/trace/Kconfig           |  8 ++++----
+ lib/Kconfig                    |  2 +-
+ lib/Kconfig.debug              | 36 +++++++++++++++++-----------------
+ lib/Kconfig.kgdb               |  8 ++++----
+ mm/Kconfig                     | 28 +++++++++++++-------------
+ samples/Kconfig                |  2 +-
+ security/apparmor/Kconfig      |  2 +-
+ security/integrity/Kconfig     | 24 +++++++++++------------
+ security/integrity/ima/Kconfig | 12 ++++++------
+ security/safesetid/Kconfig     | 24 +++++++++++------------
+ 12 files changed, 94 insertions(+), 94 deletions(-)
 
-diff --git a/.circleci/config.yml b/.circleci/config.yml
-new file mode 100644
-index 000000000000..7d140d9a2acb
---- /dev/null
-+++ b/.circleci/config.yml
-@@ -0,0 +1,246 @@
-+version: 2
-+general:
-+  artifacts:
-+
-+do_steps: &do_steps
-+ steps:
-+  - run: echo "$CROSS_COMPILE" > ~/_cross_compile
-+  - restore_cache:
-+      key: code-tree-shallow-{{ .Environment.CACHE_VERSION }}
-+  - run:
-+      name: checkout build tree
-+      command: |
-+        mkdir -p ~/.ssh/
-+        ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-+        if ! [ -d .git ]; then
-+          git clone --depth=1 $CIRCLE_REPOSITORY_URL .;
-+        fi
-+        if [[ $CIRCLE_BRANCH == pull/* ]]; then
-+           git fetch --depth=1 origin $CIRCLE_BRANCH/head;
-+        else
-+           git fetch --depth=1 origin $CIRCLE_BRANCH;
-+        fi
-+        git reset --hard $CIRCLE_SHA1
-+  - save_cache:
-+      key: code-tree-shallow-{{ .Environment.CACHE_VERSION }}-{{ epoch }}
-+      paths:
-+        - /home/ubuntu/project/.git
-+  - run:
-+      name: clean
-+      command: |
-+        make mrproper
-+        cd tools/lkl && make clean-conf
-+        rm -rf ~/junit
-+  - run: mkdir -p /home/ubuntu/.ccache
-+  - restore_cache:
-+      key: compiler-cache-{{ checksum "~/_cross_compile" }}-{{ .Environment.CACHE_VERSION }}
-+  - run:
-+      name: build DPDK
-+      command: |
-+        if [ "$MKARG" = "dpdk=yes" ]; then
-+          sudo apt-get update
-+          if ! sudo apt-get install -y linux-headers-$(uname -r) ; then
-+             cd /lib/modules && sudo ln -sf 4.4.0-97-generic `uname -r` && \
-+               cd /home/ubuntu/project
-+          fi
-+          cd tools/lkl && ./scripts/dpdk-sdk-build.sh;
-+        fi
-+  - run:
-+      name: copy mingw binutils
-+      command: |
-+        if [ "$CROSS_COMPILE" = "i686-w64-mingw32-" ]; then
-+          wget https://github.com/lkl/linux/raw/master/tools/lkl/bin/i686-w64-mingw32-as
-+          wget https://github.com/lkl/linux/raw/master/tools/lkl/bin/i686-w64-mingw32-ld
-+          wget https://github.com/lkl/linux/raw/master/tools/lkl/bin/i686-w64-mingw32-objcopy
-+          sudo cp i686-w64-mingw32-* /usr/bin;
-+        elif [ "$CROSS_COMPILE" = "arm-linux-androideabi-" ]; then
-+          wget https://github.com/lkl/linux/raw/master/tools/lkl/bin/arm-linux-androideabi-ld.gold
-+          sudo cp arm-linux-androideabi-ld.gold /usr/bin/arm-linux-androideabi-ld;
-+        fi
-+  - run:
-+      name: start emulator
-+      command: |
-+        if [[ $CROSS_COMPILE == *android* ]]; then
-+          emulator -avd Nexus5_API24 -no-window -no-audio -no-boot-anim;
-+        elif [[ $CROSS_COMPILE == *freebsd* ]]; then
-+          cd /home/ubuntu && $QEMU
-+        fi
-+      background: true
-+  - run: cd tools/lkl && make -j8 ${MKARG}
-+  - run: mkdir -p ~/destdir && cd tools/lkl && make DESTDIR=~/destdir
-+  - save_cache:
-+     paths:
-+       - /home/ubuntu/.ccache
-+     key: compiler-cache-{{ checksum "~/_cross_compile" }}-{{ .Environment.CACHE_VERSION }}-{{ epoch }}
-+  - run:
-+      name: wait emulator to boot
-+      command: |
-+        if [[ $CROSS_COMPILE == *android* ]]; then
-+          /home/ubuntu/circle-android.sh wait-for-boot;
-+        elif [[ $CROSS_COMPILE == *freebsd* ]]; then
-+          while ! $MYSSH -o ConnectTimeout=1 exit 2> /dev/null
-+          do
-+             sleep 5
-+          done
-+        fi
-+  - run:
-+      name: run tests
-+      command: |
-+        mkdir -p ~/junit
-+        make -C tools/lkl run-tests tests="--junit-dir ~/junit"
-+        find ./tools/lkl/ -type f -name "*.xml" -exec mv {} ~/junit/ \;
-+      no_output_timeout: "90m"
-+  - store_test_results:
-+      path: ~/junit
-+  - store_artifacts:
-+      path: ~/junit
-+
-+
-+do_uml_steps: &do_uml_steps
-+ steps:
-+  - run: echo "$CROSS_COMPILE" > ~/_cross_compile
-+  - restore_cache:
-+      key: code-tree-shallow-{{ .Environment.CACHE_VERSION }}
-+  - run:
-+      name: checkout build tree
-+      command: |
-+        mkdir -p ~/.ssh/
-+        ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-+        if ! [ -d .git ]; then
-+          git clone --depth=1 $CIRCLE_REPOSITORY_URL .;
-+        fi
-+        if [[ $CIRCLE_BRANCH == pull/* ]]; then
-+           git fetch --depth=1 origin $CIRCLE_BRANCH/head;
-+        else
-+           git fetch --depth=1 origin $CIRCLE_BRANCH;
-+        fi
-+        git reset --hard $CIRCLE_SHA1
-+  - save_cache:
-+      key: code-tree-shallow-{{ .Environment.CACHE_VERSION }}-{{ epoch }}
-+      paths:
-+        - /home/ubuntu/project/.git
-+  - run: mkdir -p /home/ubuntu/.ccache
-+  - restore_cache:
-+      key: compiler-cache-{{ checksum "~/_cross_compile" }}-{{ .Environment.CACHE_VERSION }}
-+  - run:
-+      name: build
-+      command: |
-+        make -C tools/lkl/
-+        make defconfig ARCH=um
-+        make ARCH=um
-+  - save_cache:
-+     paths:
-+       - /home/ubuntu/.ccache
-+     key: compiler-cache-{{ checksum "~/_cross_compile" }}-{{ .Environment.CACHE_VERSION }}-{{ epoch }}
-+  - run:
-+      name: test
-+      command: |
-+        ./linux rootfstype=hostfs ro mem=1g loglevel=10 init="/bin/bash -c exit" || export RETVAL=$?
-+        # SIGABRT=6 => 128+6
-+        if [ $RETVAL != "134" ]; then
-+          exit 1
-+        fi
-+
-+## Customize the test machine
-+jobs:
-+  x86_64:
-+   docker:
-+     - image: lkldocker/circleci-x86_64:0.7
-+   environment:
-+     CROSS_COMPILE: ""
-+     MKARG: "dpdk=no"
-+   <<: *do_steps
-+
-+  i386:
-+   docker:
-+     - image: lkldocker/circleci-i386:0.1
-+   environment:
-+     CROSS_COMPILE: ""
-+   <<: *do_steps
-+
-+  mingw32:
-+   docker:
-+     - image: lkldocker/circleci-mingw:0.6
-+   environment:
-+     CROSS_COMPILE: "i686-w64-mingw32-"
-+   <<: *do_steps
-+
-+  android-arm32:
-+   docker:
-+     - image: lkldocker/circleci-android-arm32:0.6
-+   environment:
-+     CROSS_COMPILE: "arm-linux-androideabi-"
-+     LKL_ANDROID_TEST: 1
-+     ANDROID_SDK_ROOT: /home/ubuntu/android-sdk
-+   <<: *do_steps
-+
-+  android-aarch64:
-+   docker:
-+     - image: lkldocker/circleci-android-arm64:0.6
-+   environment:
-+     CROSS_COMPILE: "aarch64-linux-android-"
-+     LKL_ANDROID_TEST: 1
-+     ANDROID_SDK_ROOT: /home/ubuntu/android-sdk
-+   <<: *do_steps
-+
-+  freebsd11_x86_64:
-+   docker:
-+     - image: lkldocker/circleci-freebsd11-x86_64:0.4
-+   environment:
-+     CROSS_COMPILE: "x86_64-pc-freebsd11-"
-+   <<: *do_steps
-+
-+  x86_64_valgrind:
-+   docker:
-+     - image: lkldocker/circleci-x86_64:0.7
-+   environment:
-+     CROSS_COMPILE: ""
-+     MKARG: "dpdk=no"
-+     VALGRIND: 1
-+   <<: *do_steps
-+
-+  x86_64_uml:
-+   docker:
-+     - image: lkldocker/circleci-x86_64:0.7
-+   environment:
-+     CROSS_COMPILE: ""
-+     TMPDIR: "/tmp" # required for not using /dev/shm
-+   <<: *do_uml_steps
-+
-+  checkpatch:
-+   docker:
-+     - image: lkldocker/circleci:0.5
-+   environment:
-+   steps:
-+     - restore_cache:
-+        key: code-tree-full-history-{{ .Environment.CACHE_VERSION }}
-+     - checkout
-+     - run: tools/lkl/scripts/checkpatch.sh
-+     - save_cache:
-+        key: code-tree-full-history-{{ .Environment.CACHE_VERSION }}-{{ epoch }}
-+        paths:
-+          - /home/ubuntu/project/.git
-+        when: always
-+
-+workflows:
-+  version: 2
-+  build:
-+    jobs:
-+     - x86_64
-+     - mingw32
-+     - android-arm32
-+     - android-aarch64
-+     - freebsd11_x86_64
-+     - checkpatch
-+     - i386
-+     - x86_64_uml
-+  nightly:
-+    triggers:
-+      - schedule:
-+          cron: "0 0 * * *"
-+          filters:
-+            branches:
-+              only:
-+                - master
-+    jobs:
-+      - x86_64_valgrind
-diff --git a/tools/lkl/scripts/checkpatch.sh b/tools/lkl/scripts/checkpatch.sh
-new file mode 100755
-index 000000000000..0c02ca6b21a2
---- /dev/null
-+++ b/tools/lkl/scripts/checkpatch.sh
-@@ -0,0 +1,60 @@
-+#!/bin/sh -ex
-+# SPDX-License-Identifier: GPL-2.0
-+
-+if [ -z "$origin_master" ]; then
-+    origin_master="origin/master"
-+fi
-+
-+UPSTREAM=git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-+LKL=github.com:lkl/linux.git
-+
-+upstream=`git remote -v | grep $UPSTREAM | cut -f1 | head -n1`
-+lkl=`git remote -v | grep $LKL | cut -f1 | head -n1`
-+
-+if [ -z "$upstream" ]; then
-+    git fetch --tags --progress git://$UPSTREAM
-+else
-+    git fetch --tags $upstream
-+fi
-+
-+if [ -z "$lkl" ]; then
-+    git remote add lkl-upstream git@$LKL || true
-+    lkl=`git remote -v | grep $LKL | cut -f1 | head -n1`
-+fi
-+
-+if [ -z "$lkl" ]; then
-+    echo "can't find lkl remote, quiting"
-+    exit 1
-+fi
-+
-+git fetch $lkl
-+git fetch --tags $upstream
-+
-+# find the last upstream tag to avoid checking upstream commits during
-+# upstream merges
-+tag=`git tag --sort='-*authordate' | grep ^v | head -n1`
-+tmp=`mktemp -d`
-+
-+commits=$(git log --no-merges --pretty=format:%h HEAD ^$lkl/master ^$tag)
-+for c in $commits; do
-+    git format-patch -1 -o $tmp $c
-+done
-+
-+if [ -z "$c" ]; then
-+    echo "there are not commits/patches to check, quiting."
-+    rmdir $tmp
-+    exit 0
-+fi
-+
-+./scripts/checkpatch.pl --ignore FILE_PATH_CHANGES $tmp/*.patch
-+rm $tmp/*.patch
-+
-+# checkpatch.pl does not know how to deal with 3 way diffs which would
-+# be useful to check the conflict resolutions during merges...
-+#for c in `git log --merges --pretty=format:%h HEAD ^$origin_master ^$tag`; do
-+#    git log --pretty=email $c -1 > $tmp/$c.patch
-+#    git diff $c $c^1 $c^2 >> $tmp/$c.patch
-+#done
-+
-+rmdir $tmp
-+
-diff --git a/tools/lkl/scripts/lkl-jenkins.sh b/tools/lkl/scripts/lkl-jenkins.sh
-new file mode 100755
-index 000000000000..eaadc6e90143
---- /dev/null
-+++ b/tools/lkl/scripts/lkl-jenkins.sh
-@@ -0,0 +1,21 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+
-+set -e
-+
-+script_dir=$(cd $(dirname ${BASH_SOURCE:-$0}); pwd)
-+basedir=$(cd $script_dir/../../..; pwd)
-+
-+export PATH=$PATH:/sbin
-+
-+build_and_test()
-+{
-+    cd $basedir
-+    make mrproper
-+    cd tools/lkl
-+    make clean-conf
-+    make -j4
-+    make run-tests
-+}
-+
-+build_and_test
+diff --git a/certs/Kconfig b/certs/Kconfig
+index c94e93d8bccf..0358c66d3d7c 100644
+--- a/certs/Kconfig
++++ b/certs/Kconfig
+@@ -6,14 +6,14 @@ config MODULE_SIG_KEY
+ 	default "certs/signing_key.pem"
+ 	depends on MODULE_SIG
+ 	help
+-         Provide the file name of a private key/certificate in PEM format,
+-         or a PKCS#11 URI according to RFC7512. The file should contain, or
+-         the URI should identify, both the certificate and its corresponding
+-         private key.
++	 Provide the file name of a private key/certificate in PEM format,
++	 or a PKCS#11 URI according to RFC7512. The file should contain, or
++	 the URI should identify, both the certificate and its corresponding
++	 private key.
+ 
+-         If this option is unchanged from its default "certs/signing_key.pem",
+-         then the kernel will automatically generate the private key and
+-         certificate as described in Documentation/admin-guide/module-signing.rst
++	 If this option is unchanged from its default "certs/signing_key.pem",
++	 then the kernel will automatically generate the private key and
++	 certificate as described in Documentation/admin-guide/module-signing.rst
+ 
+ config SYSTEM_TRUSTED_KEYRING
+ 	bool "Provide system-wide ring of trusted keys"
+diff --git a/init/Kconfig b/init/Kconfig
+index b4daad2bac23..e1a6f31da281 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -169,10 +169,10 @@ config BUILD_SALT
+        string "Build ID Salt"
+        default ""
+        help
+-          The build ID is used to link binaries and their debug info. Setting
+-          this option will use the value in the calculation of the build id.
+-          This is mostly useful for distributions which want to ensure the
+-          build is unique between builds. It's safe to leave the default.
++	  The build ID is used to link binaries and their debug info. Setting
++	  this option will use the value in the calculation of the build id.
++	  This is mostly useful for distributions which want to ensure the
++	  build is unique between builds. It's safe to leave the default.
+ 
+ config HAVE_KERNEL_GZIP
+ 	bool
+@@ -1327,9 +1327,9 @@ menuconfig EXPERT
+ 	select DEBUG_KERNEL
+ 	help
+ 	  This option allows certain base kernel options and settings
+-          to be disabled or tweaked. This is for specialized
+-          environments which can tolerate a "non-standard" kernel.
+-          Only use this if you really know what you are doing.
++	  to be disabled or tweaked. This is for specialized
++	  environments which can tolerate a "non-standard" kernel.
++	  Only use this if you really know what you are doing.
+ 
+ config UID16
+ 	bool "Enable 16-bit UID system calls" if EXPERT
+@@ -1439,11 +1439,11 @@ config BUG
+ 	bool "BUG() support" if EXPERT
+ 	default y
+ 	help
+-          Disabling this option eliminates support for BUG and WARN, reducing
+-          the size of your kernel image and potentially quietly ignoring
+-          numerous fatal conditions. You should only consider disabling this
+-          option for embedded systems with no facilities for reporting errors.
+-          Just say Y.
++	  Disabling this option eliminates support for BUG and WARN, reducing
++	  the size of your kernel image and potentially quietly ignoring
++	  numerous fatal conditions. You should only consider disabling this
++	  option for embedded systems with no facilities for reporting errors.
++	  Just say Y.
+ 
+ config ELF_CORE
+ 	depends on COREDUMP
+@@ -1459,8 +1459,8 @@ config PCSPKR_PLATFORM
+ 	select I8253_LOCK
+ 	default y
+ 	help
+-          This option allows to disable the internal PC-Speaker
+-          support, saving some memory.
++	  This option allows to disable the internal PC-Speaker
++	  support, saving some memory.
+ 
+ config BASE_FULL
+ 	default y
+diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
+index e08527f50d2a..0393003f102f 100644
+--- a/kernel/trace/Kconfig
++++ b/kernel/trace/Kconfig
+@@ -76,7 +76,7 @@ config FTRACE_NMI_ENTER
+ 
+ config EVENT_TRACING
+ 	select CONTEXT_SWITCH_TRACER
+-        select GLOB
++	select GLOB
+ 	bool
+ 
+ config CONTEXT_SWITCH_TRACER
+@@ -308,7 +308,7 @@ config TRACER_SNAPSHOT
+ 	      cat snapshot
+ 
+ config TRACER_SNAPSHOT_PER_CPU_SWAP
+-        bool "Allow snapshot to swap per CPU"
++	bool "Allow snapshot to swap per CPU"
+ 	depends on TRACER_SNAPSHOT
+ 	select RING_BUFFER_ALLOW_SWAP
+ 	help
+@@ -675,7 +675,7 @@ config MMIOTRACE_TEST
+ 	  Say N, unless you absolutely know what you are doing.
+ 
+ config TRACEPOINT_BENCHMARK
+-        bool "Add tracepoint that benchmarks tracepoints"
++	bool "Add tracepoint that benchmarks tracepoints"
+ 	help
+ 	 This option creates the tracepoint "benchmark:benchmark_event".
+ 	 When the tracepoint is enabled, it kicks off a kernel thread that
+@@ -724,7 +724,7 @@ config RING_BUFFER_STARTUP_TEST
+        bool "Ring buffer startup self test"
+        depends on RING_BUFFER
+        help
+-         Run a simple self test on the ring buffer on boot up. Late in the
++	 Run a simple self test on the ring buffer on boot up. Late in the
+ 	 kernel boot sequence, the test will start that kicks off
+ 	 a thread per cpu. Each thread will write various size events
+ 	 into the ring buffer. Another thread is created to send IPIs
+diff --git a/lib/Kconfig b/lib/Kconfig
+index 183f92a297ca..b7eb98342e39 100644
+--- a/lib/Kconfig
++++ b/lib/Kconfig
+@@ -573,7 +573,7 @@ config OID_REGISTRY
+ 	  Enable fast lookup object identifier registry.
+ 
+ config UCS2_STRING
+-        tristate
++	tristate
+ 
+ #
+ # generic vdso
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index a0250e53954a..f9833ea51389 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -128,8 +128,8 @@ config DYNAMIC_DEBUG
+ 	  lineno : line number of the debug statement
+ 	  module : module that contains the debug statement
+ 	  function : function that contains the debug statement
+-          flags : '=p' means the line is turned 'on' for printing
+-          format : the format used for the debug statement
++	  flags : '=p' means the line is turned 'on' for printing
++	  format : the format used for the debug statement
+ 
+ 	  From a live system:
+ 
+@@ -172,7 +172,7 @@ config DEBUG_INFO
+ 	bool "Compile the kernel with debug info"
+ 	depends on DEBUG_KERNEL && !COMPILE_TEST
+ 	help
+-          If you say Y here the resulting kernel image will include
++	  If you say Y here the resulting kernel image will include
+ 	  debugging info resulting in a larger kernel image.
+ 	  This adds debug symbols to the kernel and modules (gcc -g), and
+ 	  is needed if you intend to use kernel crashdump or binary object
+@@ -269,13 +269,13 @@ config STRIP_ASM_SYMS
+ 	  get_wchan() and suchlike.
+ 
+ config READABLE_ASM
+-        bool "Generate readable assembler code"
+-        depends on DEBUG_KERNEL
+-        help
+-          Disable some compiler optimizations that tend to generate human unreadable
+-          assembler output. This may make the kernel slightly slower, but it helps
+-          to keep kernel developers who have to stare a lot at assembler listings
+-          sane.
++	bool "Generate readable assembler code"
++	depends on DEBUG_KERNEL
++	help
++	  Disable some compiler optimizations that tend to generate human unreadable
++	  assembler output. This may make the kernel slightly slower, but it helps
++	  to keep kernel developers who have to stare a lot at assembler listings
++	  sane.
+ 
+ config DEBUG_FS
+ 	bool "Debug Filesystem"
+@@ -508,11 +508,11 @@ config DEBUG_OBJECTS_PERCPU_COUNTER
+ 
+ config DEBUG_OBJECTS_ENABLE_DEFAULT
+ 	int "debug_objects bootup default value (0-1)"
+-        range 0 1
+-        default "1"
+-        depends on DEBUG_OBJECTS
+-        help
+-          Debug objects boot parameter default value
++	range 0 1
++	default "1"
++	depends on DEBUG_OBJECTS
++	help
++	  Debug objects boot parameter default value
+ 
+ config DEBUG_SLAB
+ 	bool "Debug slab memory allocations"
+@@ -631,7 +631,7 @@ config DEBUG_VM
+ 	depends on DEBUG_KERNEL
+ 	help
+ 	  Enable this to turn on extended checks in the virtual-memory system
+-          that may impact performance.
++	  that may impact performance.
+ 
+ 	  If unsure, say N.
+ 
+@@ -1421,7 +1421,7 @@ config DEBUG_WQ_FORCE_RR_CPU
+ 	  be impacted.
+ 
+ config DEBUG_BLOCK_EXT_DEVT
+-        bool "Force extended block device numbers and spread them"
++	bool "Force extended block device numbers and spread them"
+ 	depends on DEBUG_KERNEL
+ 	depends on BLOCK
+ 	default n
+@@ -2142,7 +2142,7 @@ config DEBUG_AID_FOR_SYZBOT
+        bool "Additional debug code for syzbot"
+        default n
+        help
+-         This option is intended for testing by syzbot.
++	 This option is intended for testing by syzbot.
+ 
+ source "arch/$(SRCARCH)/Kconfig.debug"
+ 
+diff --git a/lib/Kconfig.kgdb b/lib/Kconfig.kgdb
+index bbe397df04a3..933680b59e2d 100644
+--- a/lib/Kconfig.kgdb
++++ b/lib/Kconfig.kgdb
+@@ -64,9 +64,9 @@ config KGDB_LOW_LEVEL_TRAP
+        depends on X86 || MIPS
+        default n
+        help
+-         This will add an extra call back to kgdb for the breakpoint
+-         exception handler which will allow kgdb to step through a
+-         notify handler.
++	 This will add an extra call back to kgdb for the breakpoint
++	 exception handler which will allow kgdb to step through a
++	 notify handler.
+ 
+ config KGDB_KDB
+ 	bool "KGDB_KDB: include kdb frontend for kgdb"
+@@ -96,7 +96,7 @@ config KDB_DEFAULT_ENABLE
+ 
+ 	  The config option merely sets the default at boot time. Both
+ 	  issuing 'echo X > /sys/module/kdb/parameters/cmd_enable' or
+-          setting with kdb.cmd_enable=X kernel command line option will
++	  setting with kdb.cmd_enable=X kernel command line option will
+ 	  override the default settings.
+ 
+ config KDB_KEYBOARD
+diff --git a/mm/Kconfig b/mm/Kconfig
+index a5dae9a7eb51..e6e16d0ef544 100644
+--- a/mm/Kconfig
++++ b/mm/Kconfig
+@@ -160,9 +160,9 @@ config MEMORY_HOTPLUG_SPARSE
+ 	depends on SPARSEMEM && MEMORY_HOTPLUG
+ 
+ config MEMORY_HOTPLUG_DEFAULT_ONLINE
+-        bool "Online the newly added memory blocks by default"
+-        depends on MEMORY_HOTPLUG
+-        help
++	bool "Online the newly added memory blocks by default"
++	depends on MEMORY_HOTPLUG
++	help
+ 	  This option sets the default policy setting for memory hotplug
+ 	  onlining policy (/sys/devices/system/memory/auto_online_blocks) which
+ 	  determines what happens to newly added memory regions. Policy setting
+@@ -227,14 +227,14 @@ config COMPACTION
+ 	select MIGRATION
+ 	depends on MMU
+ 	help
+-          Compaction is the only memory management component to form
+-          high order (larger physically contiguous) memory blocks
+-          reliably. The page allocator relies on compaction heavily and
+-          the lack of the feature can lead to unexpected OOM killer
+-          invocations for high order memory requests. You shouldn't
+-          disable this option unless there really is a strong reason for
+-          it and then we would be really interested to hear about that at
+-          linux-mm@kvack.org.
++	  Compaction is the only memory management component to form
++	  high order (larger physically contiguous) memory blocks
++	  reliably. The page allocator relies on compaction heavily and
++	  the lack of the feature can lead to unexpected OOM killer
++	  invocations for high order memory requests. You shouldn't
++	  disable this option unless there really is a strong reason for
++	  it and then we would be really interested to hear about that at
++	  linux-mm@kvack.org.
+ 
+ #
+ # support for page migration
+@@ -301,10 +301,10 @@ config KSM
+ 	  root has set /sys/kernel/mm/ksm/run to 1 (if CONFIG_SYSFS is set).
+ 
+ config DEFAULT_MMAP_MIN_ADDR
+-        int "Low address space to protect from user allocation"
++	int "Low address space to protect from user allocation"
+ 	depends on MMU
+-        default 4096
+-        help
++	default 4096
++	help
+ 	  This is the portion of low virtual memory which should be protected
+ 	  from userspace allocation.  Keeping a user from writing to low pages
+ 	  can help reduce the impact of kernel NULL pointer bugs.
+diff --git a/samples/Kconfig b/samples/Kconfig
+index 2c3e07addd38..c5937c5175d2 100644
+--- a/samples/Kconfig
++++ b/samples/Kconfig
+@@ -13,7 +13,7 @@ config SAMPLE_TRACE_EVENTS
+ 	  This build trace event example modules.
+ 
+ config SAMPLE_TRACE_PRINTK
+-        tristate "Build trace_printk module - tests various trace_printk formats"
++	tristate "Build trace_printk module - tests various trace_printk formats"
+ 	depends on EVENT_TRACING && m
+ 	help
+ 	 This builds a module that calls trace_printk() and can be used to
+diff --git a/security/apparmor/Kconfig b/security/apparmor/Kconfig
+index a422a349f926..1f0e712c5e50 100644
+--- a/security/apparmor/Kconfig
++++ b/security/apparmor/Kconfig
+@@ -32,7 +32,7 @@ config SECURITY_APPARMOR_HASH_DEFAULT
+        depends on SECURITY_APPARMOR_HASH
+        default y
+        help
+-         This option selects whether sha1 hashing of loaded policy
++	 This option selects whether sha1 hashing of loaded policy
+ 	 is enabled by default. The generation of sha1 hashes for
+ 	 loaded policy provide system administrators a quick way
+ 	 to verify that policy in the kernel matches what is expected,
+diff --git a/security/integrity/Kconfig b/security/integrity/Kconfig
+index 0bae6adb63a9..f7f2df082f51 100644
+--- a/security/integrity/Kconfig
++++ b/security/integrity/Kconfig
+@@ -34,10 +34,10 @@ config INTEGRITY_ASYMMETRIC_KEYS
+ 	bool "Enable asymmetric keys support"
+ 	depends on INTEGRITY_SIGNATURE
+ 	default n
+-        select ASYMMETRIC_KEY_TYPE
+-        select ASYMMETRIC_PUBLIC_KEY_SUBTYPE
+-        select CRYPTO_RSA
+-        select X509_CERTIFICATE_PARSER
++	select ASYMMETRIC_KEY_TYPE
++	select ASYMMETRIC_PUBLIC_KEY_SUBTYPE
++	select CRYPTO_RSA
++	select X509_CERTIFICATE_PARSER
+ 	help
+ 	  This option enables digital signature verification using
+ 	  asymmetric keys.
+@@ -53,14 +53,14 @@ config INTEGRITY_TRUSTED_KEYRING
+ 	   keyring.
+ 
+ config INTEGRITY_PLATFORM_KEYRING
+-        bool "Provide keyring for platform/firmware trusted keys"
+-        depends on INTEGRITY_ASYMMETRIC_KEYS
+-        depends on SYSTEM_BLACKLIST_KEYRING
+-        help
+-         Provide a separate, distinct keyring for platform trusted keys, which
+-         the kernel automatically populates during initialization from values
+-         provided by the platform for verifying the kexec'ed kerned image
+-         and, possibly, the initramfs signature.
++	bool "Provide keyring for platform/firmware trusted keys"
++	depends on INTEGRITY_ASYMMETRIC_KEYS
++	depends on SYSTEM_BLACKLIST_KEYRING
++	help
++	 Provide a separate, distinct keyring for platform trusted keys, which
++	 the kernel automatically populates during initialization from values
++	 provided by the platform for verifying the kexec'ed kerned image
++	 and, possibly, the initramfs signature.
+ 
+ config LOAD_UEFI_KEYS
+        depends on INTEGRITY_PLATFORM_KEYRING
+diff --git a/security/integrity/ima/Kconfig b/security/integrity/ima/Kconfig
+index 838476d780e5..ec9259bd8115 100644
+--- a/security/integrity/ima/Kconfig
++++ b/security/integrity/ima/Kconfig
+@@ -159,13 +159,13 @@ config IMA_APPRAISE
+ 	  If unsure, say N.
+ 
+ config IMA_ARCH_POLICY
+-        bool "Enable loading an IMA architecture specific policy"
+-        depends on (KEXEC_SIG && IMA) || IMA_APPRAISE \
++	bool "Enable loading an IMA architecture specific policy"
++	depends on (KEXEC_SIG && IMA) || IMA_APPRAISE \
+ 		   && INTEGRITY_ASYMMETRIC_KEYS
+-        default n
+-        help
+-          This option enables loading an IMA architecture specific policy
+-          based on run time secure boot flags.
++	default n
++	help
++	  This option enables loading an IMA architecture specific policy
++	  based on run time secure boot flags.
+ 
+ config IMA_APPRAISE_BUILD_POLICY
+ 	bool "IMA build time configured policy rules"
+diff --git a/security/safesetid/Kconfig b/security/safesetid/Kconfig
+index 18b5fb90417b..ab1a2c69b0b8 100644
+--- a/security/safesetid/Kconfig
++++ b/security/safesetid/Kconfig
+@@ -1,15 +1,15 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ config SECURITY_SAFESETID
+-        bool "Gate setid transitions to limit CAP_SET{U/G}ID capabilities"
+-        depends on SECURITY
+-        select SECURITYFS
+-        default n
+-        help
+-          SafeSetID is an LSM module that gates the setid family of syscalls to
+-          restrict UID/GID transitions from a given UID/GID to only those
+-          approved by a system-wide whitelist. These restrictions also prohibit
+-          the given UIDs/GIDs from obtaining auxiliary privileges associated
+-          with CAP_SET{U/G}ID, such as allowing a user to set up user namespace
+-          UID mappings.
++	bool "Gate setid transitions to limit CAP_SET{U/G}ID capabilities"
++	depends on SECURITY
++	select SECURITYFS
++	default n
++	help
++	  SafeSetID is an LSM module that gates the setid family of syscalls to
++	  restrict UID/GID transitions from a given UID/GID to only those
++	  approved by a system-wide whitelist. These restrictions also prohibit
++	  the given UIDs/GIDs from obtaining auxiliary privileges associated
++	  with CAP_SET{U/G}ID, such as allowing a user to set up user namespace
++	  UID mappings.
+ 
+-          If you are unsure how to answer this question, answer N.
++	  If you are unsure how to answer this question, answer N.
 -- 
-2.20.1 (Apple Git-117)
+2.17.1
 
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
