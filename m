@@ -1,96 +1,71 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iN8QF-0001jQ-Jb
- for linux-um@lists.infradead.org; Wed, 23 Oct 2019 04:39:00 +0000
-Received: by mail-pf1-x441.google.com with SMTP id y5so12081694pfo.4
- for <linux-um@lists.infradead.org>; Tue, 22 Oct 2019 21:38:59 -0700 (PDT)
-From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC PATCH 11/47] lkl: basic kernel console support
-Date: Wed, 23 Oct 2019 13:37:45 +0900
-Message-Id: <25feebc8e8e21081aec66a14114bb4ad1312118e.1571798507.git.thehajime@gmail.com>
-In-Reply-To: <cover.1571798507.git.thehajime@gmail.com>
-References: <cover.1571798507.git.thehajime@gmail.com>
+Return-Path: <linux-arch-owner@vger.kernel.org>
+Date: Fri, 18 Oct 2019 16:30:30 -0000
+From: "tip-bot2 for Jiri Slaby" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+Subject: [tip: x86/asm] x86/um: Annotate data appropriately
+In-Reply-To: <20191011115108.12392-14-jslaby@suse.cz>
+References: <20191011115108.12392-14-jslaby@suse.cz>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+Message-ID: <157141623074.29376.16125324643950283172.tip-bot2@tip-bot2>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Octavian Purdila <tavi.purdila@gmail.com>, Akira Moroo <retrage01@gmail.com>
+Sender: linux-arch-owner@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Cc: Jiri Slaby <jslaby@suse.cz>, Borislav Petkov <bp@suse.de>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>, linux-arch@vger.kernel.org, linux-um@lists.infradead.org, Thomas Gleixner <tglx@linutronix.de>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, x86-ml <x86@kernel.org>, Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-From: Octavian Purdila <tavi.purdila@gmail.com>
+The following commit has been merged into the x86/asm branch of tip:
 
-Write operations are deferred to the host print operation.
+Commit-ID:     773a37b182259f5e0cdb928112431b119a6e4500
+Gitweb:        https://git.kernel.org/tip/773a37b182259f5e0cdb928112431b119a6e4500
+Author:        Jiri Slaby <jslaby@suse.cz>
+AuthorDate:    Fri, 11 Oct 2019 13:50:53 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Fri, 18 Oct 2019 10:45:03 +02:00
 
-Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
+x86/um: Annotate data appropriately
+
+Use the new SYM_DATA_START and SYM_DATA_END_LABEL macros for vdso_start.
+
+Result is:
+  0000  2376 OBJECT  GLOBAL DEFAULT    4 vdso_start
+  0948     0 OBJECT  GLOBAL DEFAULT    4 vdso_end
+
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: linux-arch@vger.kernel.org
+Cc: linux-um@lists.infradead.org
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-user@lists.sourceforge.net
+Cc: x86-ml <x86@kernel.org>
+Link: https://lkml.kernel.org/r/20191011115108.12392-14-jslaby@suse.cz
 ---
- arch/um/lkl/kernel/console.c | 42 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
- create mode 100644 arch/um/lkl/kernel/console.c
+ arch/x86/um/vdso/vdso.S | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/um/lkl/kernel/console.c b/arch/um/lkl/kernel/console.c
-new file mode 100644
-index 000000000000..54d7f756c6da
---- /dev/null
-+++ b/arch/um/lkl/kernel/console.c
-@@ -0,0 +1,42 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/console.h>
-+#include <asm/host_ops.h>
-+
-+static void console_write(struct console *con, const char *str,
-+			  unsigned int len)
-+{
-+	if (lkl_ops->print)
-+		lkl_ops->print(str, len);
-+}
-+
-+#ifdef CONFIG_LKL_EARLY_CONSOLE
-+static struct console lkl_boot_console = {
-+	.name	= "lkl_boot_console",
-+	.write	= console_write,
-+	.flags	= CON_PRINTBUFFER | CON_BOOT,
-+	.index	= -1,
-+};
-+
-+int __init lkl_boot_console_init(void)
-+{
-+	register_console(&lkl_boot_console);
-+	return 0;
-+}
-+early_initcall(lkl_boot_console_init);
-+#endif
-+
-+static struct console lkl_console = {
-+	.name	= "lkl_console",
-+	.write	= console_write,
-+	.flags	= CON_PRINTBUFFER,
-+	.index	= -1,
-+};
-+
-+static int __init lkl_console_init(void)
-+{
-+	register_console(&lkl_console);
-+	return 0;
-+}
-+core_initcall(lkl_console_init);
--- 
-2.20.1 (Apple Git-117)
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+diff --git a/arch/x86/um/vdso/vdso.S b/arch/x86/um/vdso/vdso.S
+index a4a3870..a6eaf29 100644
+--- a/arch/x86/um/vdso/vdso.S
++++ b/arch/x86/um/vdso/vdso.S
+@@ -1,11 +1,11 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ #include <linux/init.h>
++#include <linux/linkage.h>
+ 
+ __INITDATA
+ 
+-	.globl vdso_start, vdso_end
+-vdso_start:
++SYM_DATA_START(vdso_start)
+ 	.incbin "arch/x86/um/vdso/vdso.so"
+-vdso_end:
++SYM_DATA_END_LABEL(vdso_start, SYM_L_GLOBAL, vdso_end)
+ 
+ __FINIT
 
