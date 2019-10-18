@@ -2,10 +2,9 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab7.miniserver.com ([37.128.132.42]
  helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iLOse-0006tZ-Sg
- for linux-um@lists.infradead.org; Fri, 18 Oct 2019 09:49:10 +0000
+ id 1iLOKK-0000VS-FJ
+ for linux-um@lists.infradead.org; Fri, 18 Oct 2019 09:13:42 +0000
 Subject: Re: uml segfault during I/O
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 References: <a1307b17bd3f51d84d9195760492d1ef284b6382.camel@researchut.com>
  <1ccf27d8-6b6a-7d08-acef-93077f07511b@cambridgegreys.com>
  <5dc5e0694d2fcf2f8bb083e3861fd1b39c768b8c.camel@researchut.com>
@@ -14,11 +13,11 @@ References: <a1307b17bd3f51d84d9195760492d1ef284b6382.camel@researchut.com>
  <4892b3ca-6b26-0b96-d21f-ac8b31fb2270@cambridgegreys.com>
  <b742bf38-9cf5-e62f-55df-915929fd526f@cambridgegreys.com>
  <7a2c14d38873a5c19f395cc7861fd9811589ca79.camel@sipsolutions.net>
- <362559a4-c52e-0084-7e11-79502015914f@cambridgegreys.com>
-Message-ID: <b8f331bc-fcdd-32aa-48b3-90b07b5302bc@cambridgegreys.com>
-Date: Fri, 18 Oct 2019 10:49:01 +0100
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <362559a4-c52e-0084-7e11-79502015914f@cambridgegreys.com>
+Date: Fri, 18 Oct 2019 10:13:34 +0100
 MIME-Version: 1.0
-In-Reply-To: <362559a4-c52e-0084-7e11-79502015914f@cambridgegreys.com>
+In-Reply-To: <7a2c14d38873a5c19f395cc7861fd9811589ca79.camel@sipsolutions.net>
 Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -28,46 +27,62 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: Johannes Berg <johannes@sipsolutions.net>, rrs@researchut.com, linux-um@lists.infradead.org
 
-CgpPbiAxOC8xMC8yMDE5IDEwOjEzLCBBbnRvbiBJdmFub3Ygd3JvdGU6Cj4gCj4gCj4gT24gMTgv
-MTAvMjAxOSAwOTo1NywgSm9oYW5uZXMgQmVyZyB3cm90ZToKPj4gT24gRnJpLCAyMDE5LTEwLTE4
-IGF0IDA4OjM1ICswMTAwLCBBbnRvbiBJdmFub3Ygd3JvdGU6Cj4+Pgo+Pj4gU3RpbGwgaGFwcGVu
-aW5nIHdpdGggNS4yLjIxLCBhbGJlaXQgYSBiaXQgbW9yZSBkaWZmaWN1bHQgdG8gcmVwcm9kdWNl
-Lgo+Pgo+PiBKdXN0IHJhbmRvbWx5IHJldmlld2luZyB0aGUgY29kZSwgaXNuJ3QgdGhlcmUgYSBi
-dWcgaW4gaW9fdGhyZWFkKCk/Cj4gCj4gSW5kZWVkLiBXZWxsIHNwb3R0ZWQuIEl0IGlzIGdvb2Qg
-dGhhdCBhIHNob3J0IHdyaXRlIHRvIGEgYmxvY2sgZGV2aWNlIGlzIAo+IHNvIHJhcmUgOikKPiAK
-Pj4KPj4gLS0tIGEvYXJjaC91bS9kcml2ZXJzL3ViZF9rZXJuLmMKPj4gKysrIGIvYXJjaC91bS9k
-cml2ZXJzL3ViZF9rZXJuLmMKPj4gQEAgLTE2MDIsNyArMTYwMiw4IEBAIGludCBpb190aHJlYWQo
-dm9pZCAqYXJnKQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB3cml0dGVuID0g
-MDsKPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZG8gewo+PiAtwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmVzID0gb3Nfd3JpdGVfZmlsZShr
-ZXJuZWxfZmQsICgoY2hhciAqKSAKPj4gaW9fcmVxX2J1ZmZlcikgKyB3cml0dGVuLCBuKTsKPj4g
-K8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJlcyA9IG9zX3dy
-aXRlX2ZpbGUoa2VybmVsX2ZkLCAoKGNoYXIgKikgCj4+IGlvX3JlcV9idWZmZXIpICsgd3JpdHRl
-biwKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBuIC0gd3JpdHRlbik7Cj4+IMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAocmVzID49IDAp
-IHsKPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCB3cml0dGVuICs9IHJlczsKPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIH0KPj4KPj4gam9oYW5uZXMKPj4KPj4KPj4gX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPj4gbGludXgtdW0gbWFp
-bGluZyBsaXN0Cj4+IGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKPj4gaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo+Pgo+IAo+IEkgaGF2ZSB2
-ZXJpZmllZCB0aGlzLgo+IAo+IEl0IGlzIGFsd2F5cyBpbiBhIHJlcXVldWUgYW5kIGFsd2F5cyBh
-ZnRlciB0aGUgaW8gdGhyZWFkIGhhcyByZXR1cm5lZCAKPiBFQUdBSU4gb24gdGhlIGF0dGVtcHQg
-dG8gc3VibWl0IGEgcmVxdWVzdC4KPiAKPiBUaGF0IHBhcnQgb2YgdGhlIGNvZGUgaGFzIGJlZW4g
-dGVzdGVkIHZlcnkgaGVhdmlseSBiZWZvcmUgYW5kIGl0IHdvcmtzIAo+IGZpbmUgaW4gNC4xOQo+
-IAoKQXBwbGllZCBhbmQgaXQgaXMgbm90IGl0LgoKVGhpcyBpcyBzb21ldGhpbmcgaW4gdGhlIGJs
-ay1tcSBjb2RlIGFuZCB3ZSBzaG91bGQgZm9yd2FyZCB0aGUgd2hvbGUgCnRocmVhZCB0byB0aGUg
-YmxrX21xIG1haW50YWluZXJzLgoKQQoKCgoKLS0gCkFudG9uIFIuIEl2YW5vdgpDYW1icmlkZ2Vn
-cmV5cyBMaW1pdGVkLiBSZWdpc3RlcmVkIGluIEVuZ2xhbmQuIENvbXBhbnkgTnVtYmVyIDEwMjcz
-NjYxCmh0dHBzOi8vd3d3LmNhbWJyaWRnZWdyZXlzLmNvbS8KCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11
-bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vbGludXgtdW0K
+
+
+On 18/10/2019 09:57, Johannes Berg wrote:
+> On Fri, 2019-10-18 at 08:35 +0100, Anton Ivanov wrote:
+>>
+>> Still happening with 5.2.21, albeit a bit more difficult to reproduce.
+> 
+> Just randomly reviewing the code, isn't there a bug in io_thread()?
+
+Indeed. Well spotted. It is good that a short write to a block device is 
+so rare :)
+
+> 
+> --- a/arch/um/drivers/ubd_kern.c
+> +++ b/arch/um/drivers/ubd_kern.c
+> @@ -1602,7 +1602,8 @@ int io_thread(void *arg)
+>                  written = 0;
+>   
+>                  do {
+> -                       res = os_write_file(kernel_fd, ((char *) io_req_buffer) + written, n);
+> +                       res = os_write_file(kernel_fd, ((char *) io_req_buffer) + written,
+> +                                           n - written);
+>                          if (res >= 0) {
+>                                  written += res;
+>                          }
+> 
+> johannes
+> 
+> 
+> _______________________________________________
+> linux-um mailing list
+> linux-um@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-um
+> 
+
+I have verified this.
+
+It is always in a requeue and always after the io thread has returned 
+EAGAIN on the attempt to submit a request.
+
+That part of the code has been tested very heavily before and it works 
+fine in 4.19
+
+-- 
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
