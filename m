@@ -1,113 +1,106 @@
-Return-Path: <rppt@kernel.org>
-From: Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH 00/12] mm: remove __ARCH_HAS_4LEVEL_HACK
-Date: Wed, 23 Oct 2019 12:28:49 +0300
-Message-Id: <1571822941-29776-1-git-send-email-rppt@kernel.org>
-To: linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jeff Dike <jdike@addtoit.com>, "Kirill A. Shutemov" <kirill@shutemov.name>, Linus Torvalds <torvalds@linux-foundation.org>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Michal Simek <monstr@monstr.eu>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, Vincent Chen <deanbo422@gmail.com>, Vineet Gupta <Vineet.Gupta1@synopsys.com>, Mike Rapoport <rppt@kernel.org>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org, linux-um@lists.infradead.org, sparclinux@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1iN8ke-0001Aw-Ca
+ for linux-um@lists.infradead.org; Wed, 23 Oct 2019 05:00:05 +0000
+Received: by mail-pg1-x544.google.com with SMTP id r1so11365399pgj.12
+ for <linux-um@lists.infradead.org>; Tue, 22 Oct 2019 22:00:04 -0700 (PDT)
+From: Hajime Tazaki <thehajime@gmail.com>
+Subject: [RFC PATCH 41/47] Revert "kbuild: remove
+ CONFIG_HAVE_UNDERSCORE_SYMBOL_PREFIX"
+Date: Wed, 23 Oct 2019 13:38:15 +0900
+Message-Id: <f979f24b032151ac63a5ba6f70172e32ed571448.1571798507.git.thehajime@gmail.com>
+In-Reply-To: <cover.1571798507.git.thehajime@gmail.com>
+References: <cover.1571798507.git.thehajime@gmail.com>
+MIME-Version: 1.0
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
+Cc: Octavian Purdila <tavi.purdila@gmail.com>, Hajime Tazaki <thehajime@gmail.com>, Akira Moroo <retrage01@gmail.com>
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+This reverts commit 704db5433fb43acbf1486303721bd0cbb65af251.
 
-Hi,
+for lkl, mingw32 requires underscore-ed symbols.
 
-These patches convert several architectures to use page table folding and
-remove __ARCH_HAS_4LEVEL_HACK along with include/asm-generic/4level-fixup.h.
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+---
+ arch/Kconfig                | 6 ++++++
+ scripts/Makefile.build      | 7 ++++++-
+ scripts/adjust_autoksyms.sh | 7 ++++++-
+ 3 files changed, 18 insertions(+), 2 deletions(-)
 
-For the nommu configurations the folding is already implemented by the
-generic code so the only change was to use the appropriate header file.
-
-As for the rest, the changes are mostly about mechanical replacement of
-pgd accessors with pud/pmd ones and the addition of higher levels to page
-table traversals.
-
-With Vineet's patches from "elide extraneous generated code for folded
-p4d/pud/pmd" series [1] there is a small shrink of the kernel size of about
--0.01% for the defconfig build. 
-
-The set is boot-tested on UML, qemu-{alpha,sparc} and aranym.
-
-[1] https://lore.kernel.org/lkml/20191016162400.14796-1-vgupta@synopsys.com
-
-Mike Rapoport (12):
-  alpha: use pgtable-nop4d instead of 4level-fixup
-  arm: nommu: use pgtable-nopud instead of 4level-fixup
-  c6x: use pgtable-nopud instead of 4level-fixup
-  m68k: nommu: use pgtable-nopud instead of 4level-fixup
-  m68k: mm: use pgtable-nopXd instead of 4level-fixup
-  microblaze: use pgtable-nopmd instead of 4level-fixup
-  nds32: use pgtable-nopmd instead of 4level-fixup
-  parisc: use pgtable-nopXd instead of 4level-fixup
-  sparc32: use pgtable-nopud instead of 4level-fixup
-  um: remove unused pxx_offset_proc() and addr_pte() functions
-  um: add support for folded p4d page tables
-  mm: remove __ARCH_HAS_4LEVEL_HACK and include/asm-generic/4level-fixup.h
-
- arch/alpha/include/asm/pgalloc.h         |  4 +-
- arch/alpha/include/asm/pgtable.h         | 24 ++++-----
- arch/alpha/mm/init.c                     | 12 +++--
- arch/arm/include/asm/pgtable.h           |  2 +-
- arch/c6x/include/asm/pgtable.h           |  2 +-
- arch/m68k/include/asm/mcf_pgalloc.h      |  7 ---
- arch/m68k/include/asm/mcf_pgtable.h      | 28 ++++-------
- arch/m68k/include/asm/mmu_context.h      | 12 ++++-
- arch/m68k/include/asm/motorola_pgalloc.h |  4 +-
- arch/m68k/include/asm/motorola_pgtable.h | 32 +++++++-----
- arch/m68k/include/asm/page.h             |  9 ++--
- arch/m68k/include/asm/pgtable_mm.h       | 11 +++--
- arch/m68k/include/asm/pgtable_no.h       |  2 +-
- arch/m68k/include/asm/sun3_pgalloc.h     |  5 --
- arch/m68k/include/asm/sun3_pgtable.h     | 18 -------
- arch/m68k/kernel/sys_m68k.c              | 10 +++-
- arch/m68k/mm/init.c                      |  6 ++-
- arch/m68k/mm/kmap.c                      | 36 ++++++++++----
- arch/m68k/mm/mcfmmu.c                    | 16 +++++-
- arch/m68k/mm/motorola.c                  | 17 ++++---
- arch/microblaze/include/asm/page.h       |  3 --
- arch/microblaze/include/asm/pgalloc.h    | 16 ------
- arch/microblaze/include/asm/pgtable.h    | 32 +-----------
- arch/microblaze/kernel/signal.c          | 10 ++--
- arch/microblaze/mm/init.c                |  7 ++-
- arch/microblaze/mm/pgtable.c             | 13 ++++-
- arch/nds32/include/asm/page.h            |  3 --
- arch/nds32/include/asm/pgalloc.h         |  3 --
- arch/nds32/include/asm/pgtable.h         | 12 +----
- arch/nds32/include/asm/tlb.h             |  1 -
- arch/nds32/kernel/pm.c                   |  4 +-
- arch/nds32/mm/fault.c                    | 16 ++++--
- arch/nds32/mm/init.c                     | 11 +++--
- arch/nds32/mm/mm-nds32.c                 |  6 ++-
- arch/nds32/mm/proc.c                     | 26 ++++++----
- arch/parisc/include/asm/page.h           | 30 ++++++-----
- arch/parisc/include/asm/pgalloc.h        | 41 ++++++---------
- arch/parisc/include/asm/pgtable.h        | 52 ++++++++++---------
- arch/parisc/include/asm/tlb.h            |  2 +
- arch/parisc/kernel/cache.c               | 13 +++--
- arch/parisc/kernel/pci-dma.c             |  9 +++-
- arch/parisc/mm/fixmap.c                  | 10 ++--
- arch/sparc/include/asm/pgalloc_32.h      |  6 +--
- arch/sparc/include/asm/pgtable_32.h      | 28 +++++------
- arch/sparc/mm/fault_32.c                 | 11 ++++-
- arch/sparc/mm/highmem.c                  |  6 ++-
- arch/sparc/mm/io-unit.c                  |  6 ++-
- arch/sparc/mm/iommu.c                    |  6 ++-
- arch/sparc/mm/srmmu.c                    | 51 ++++++++++++++-----
- arch/um/include/asm/pgtable-2level.h     |  1 -
- arch/um/include/asm/pgtable-3level.h     |  1 -
- arch/um/include/asm/pgtable.h            |  3 ++
- arch/um/kernel/mem.c                     | 25 +++++++++-
- arch/um/kernel/skas/mmu.c                | 12 ++++-
- arch/um/kernel/skas/uaccess.c            |  7 ++-
- arch/um/kernel/tlb.c                     | 85 +++++++++++++++++++-------------
- arch/um/kernel/trap.c                    |  4 +-
- include/asm-generic/4level-fixup.h       | 40 ---------------
- include/asm-generic/tlb.h                |  2 -
- include/linux/mm.h                       | 10 ++--
- mm/memory.c                              |  8 ---
- 61 files changed, 481 insertions(+), 408 deletions(-)
- delete mode 100644 include/asm-generic/4level-fixup.h
-
+diff --git a/arch/Kconfig b/arch/Kconfig
+index a7b57dd42c26..a01df2ae6a1b 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -594,6 +594,12 @@ config MODULES_USE_ELF_REL
+ 	  Modules only use ELF REL relocations.  Modules with ELF RELA
+ 	  relocations will give an error.
+ 
++config HAVE_UNDERSCORE_SYMBOL_PREFIX
++	bool
++	help
++	  Some architectures generate an _ in front of C symbols; things like
++	  module loading and assembly files need to know about this.
++
+ config HAVE_IRQ_EXIT_ON_IRQ_STACK
+ 	bool
+ 	help
+diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+index 2f66ed388d1c..c6fe3e092ae0 100644
+--- a/scripts/Makefile.build
++++ b/scripts/Makefile.build
+@@ -444,10 +444,15 @@ targets += $(lib-target)
+ 
+ dummy-object = $(obj)/.lib_exports.o
+ ksyms-lds = $(dot-target).lds
++ifdef CONFIG_HAVE_UNDERSCORE_SYMBOL_PREFIX
++ref_prefix = EXTERN(_
++else
++ref_prefix = EXTERN(
++endif
+ 
+ quiet_cmd_export_list = EXPORTS $@
+ cmd_export_list = $(OBJDUMP) -h $< | \
+-	sed -ne '/___ksymtab/s/.*+\([^ ]*\).*/EXTERN(\1)/p' >$(ksyms-lds);\
++	sed -ne '/___ksymtab/s/.*+\([^ ]*\).*/$(ref_prefix)\1)/p' >$(ksyms-lds);\
+ 	rm -f $(dummy-object);\
+ 	echo | $(CC) $(a_flags) -c -o $(dummy-object) -x assembler -;\
+ 	$(LD) $(ld_flags) -r -o $@ -T $(ksyms-lds) $(dummy-object);\
+diff --git a/scripts/adjust_autoksyms.sh b/scripts/adjust_autoksyms.sh
+index a904bf1f5e67..10e49e00a1f6 100755
+--- a/scripts/adjust_autoksyms.sh
++++ b/scripts/adjust_autoksyms.sh
+@@ -49,7 +49,12 @@ EOT
+ sed 's/ko$/mod/' modules.order |
+ xargs -n1 sed -n -e '2{s/ /\n/g;/^$/!p;}' -- |
+ sort -u |
+-sed -e 's/\(.*\)/#define __KSYM_\1 1/' >> "$new_ksyms_file"
++while read sym; do
++	if [ -n "$CONFIG_HAVE_UNDERSCORE_SYMBOL_PREFIX" ]; then
++		sym="${sym#_}"
++	fi
++	echo "#define __KSYM_${sym} 1"
++done >> "$new_ksyms_file"
+ 
+ # Special case for modversions (see modpost.c)
+ if [ -n "$CONFIG_MODVERSIONS" ]; then
 -- 
-2.7.4
+2.20.1 (Apple Git-117)
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
