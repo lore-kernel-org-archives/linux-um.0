@@ -1,41 +1,72 @@
-Return-Path: <rppt@kernel.org>
-From: Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH 04/12] m68k: nommu: use pgtable-nopud instead of 4level-fixup
-Date: Wed, 23 Oct 2019 12:28:53 +0300
-Message-Id: <1571822941-29776-5-git-send-email-rppt@kernel.org>
-In-Reply-To: <1571822941-29776-1-git-send-email-rppt@kernel.org>
-References: <1571822941-29776-1-git-send-email-rppt@kernel.org>
-To: linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jeff Dike <jdike@addtoit.com>, "Kirill A. Shutemov" <kirill@shutemov.name>, Linus Torvalds <torvalds@linux-foundation.org>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Michal Simek <monstr@monstr.eu>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, Vincent Chen <deanbo422@gmail.com>, Vineet Gupta <Vineet.Gupta1@synopsys.com>, Mike Rapoport <rppt@kernel.org>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org, linux-um@lists.infradead.org, sparclinux@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pf1-x442.google.com ([2607:f8b0:4864:20::442])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1iN8QL-0001pM-PJ
+ for linux-um@lists.infradead.org; Wed, 23 Oct 2019 04:39:10 +0000
+Received: by mail-pf1-x442.google.com with SMTP id q5so12072120pfg.13
+ for <linux-um@lists.infradead.org>; Tue, 22 Oct 2019 21:39:05 -0700 (PDT)
+From: Hajime Tazaki <thehajime@gmail.com>
+Subject: [RFC PATCH 27/47] lkl: Android ARM (arm/arm64) support
+Date: Wed, 23 Oct 2019 13:38:01 +0900
+Message-Id: <90e3c9dc2e9b24f2b94b634191e198b0340566b0.1571798507.git.thehajime@gmail.com>
+In-Reply-To: <cover.1571798507.git.thehajime@gmail.com>
+References: <cover.1571798507.git.thehajime@gmail.com>
+MIME-Version: 1.0
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
+Cc: Octavian Purdila <tavi.purdila@gmail.com>, Hajime Tazaki <thehajime@gmail.com>, Akira Moroo <retrage01@gmail.com>
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+Initial attempt to run an application with hijack library on Android
+platform.  Tested mostly on Android 6.x and 7.x.
 
-The generic nommu implementation of page table manipulation takes care of
-folding of the upper levels and does not require fixups.
+The build process assumes that the android ndk toolchain is installed in
+a host system as circle.yml does in its test.  arm32 build uses
+alternate linker, stored in tools/lkl/bin directory, in order to avoid
+the link issue (issue #59).
 
-Simply replace of include/asm-generic/4level-fixup.h with
-include/asm-generic/pgtable-nopud.h.
+The CircleCI test infrastructure requires to use ubuntu 14.04 for this
+test.
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+* Limitations
+- aarch64 isn't tested on circleci due to difficulties on aarch64
+emulator.
+- bionic libc on android-24 emulator (arm32) doesn't call destructor, so
+some of tests in hijack-test.sh fail.
+- net.sh doesn't properly test network related issue.
+
+Fixes #59.
+
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
 ---
- arch/m68k/include/asm/pgtable_no.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/lkl/bin/arm-linux-androideabi-ld | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 120000 tools/lkl/bin/arm-linux-androideabi-ld
 
-diff --git a/arch/m68k/include/asm/pgtable_no.h b/arch/m68k/include/asm/pgtable_no.h
-index c18165b..ccc4568 100644
---- a/arch/m68k/include/asm/pgtable_no.h
-+++ b/arch/m68k/include/asm/pgtable_no.h
-@@ -2,7 +2,7 @@
- #ifndef _M68KNOMMU_PGTABLE_H
- #define _M68KNOMMU_PGTABLE_H
- 
--#include <asm-generic/4level-fixup.h>
-+#include <asm-generic/pgtable-nopud.h>
- 
- /*
-  * (C) Copyright 2000-2002, Greg Ungerer <gerg@snapgear.com>
+diff --git a/tools/lkl/bin/arm-linux-androideabi-ld b/tools/lkl/bin/arm-linux-androideabi-ld
+new file mode 120000
+index 000000000000..4194d24c4b5c
+--- /dev/null
++++ b/tools/lkl/bin/arm-linux-androideabi-ld
+@@ -0,0 +1 @@
++arm-linux-androideabi-ld.gold
+\ No newline at end of file
 -- 
-2.7.4
+2.20.1 (Apple Git-117)
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
