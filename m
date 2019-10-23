@@ -1,71 +1,149 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
-Date: Fri, 18 Oct 2019 16:30:30 -0000
-From: "tip-bot2 for Jiri Slaby" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-Subject: [tip: x86/asm] x86/um: Annotate data appropriately
-In-Reply-To: <20191011115108.12392-14-jslaby@suse.cz>
-References: <20191011115108.12392-14-jslaby@suse.cz>
-MIME-Version: 1.0
-Message-ID: <157141623074.29376.16125324643950283172.tip-bot2@tip-bot2>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Sender: linux-arch-owner@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Cc: Jiri Slaby <jslaby@suse.cz>, Borislav Petkov <bp@suse.de>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>, linux-arch@vger.kernel.org, linux-um@lists.infradead.org, Thomas Gleixner <tglx@linutronix.de>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, x86-ml <x86@kernel.org>, Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org
+Return-Path: <rppt@kernel.org>
+From: Mike Rapoport <rppt@kernel.org>
+Subject: [PATCH 12/12] mm: remove __ARCH_HAS_4LEVEL_HACK and include/asm-generic/4level-fixup.h
+Date: Wed, 23 Oct 2019 12:29:01 +0300
+Message-Id: <1571822941-29776-13-git-send-email-rppt@kernel.org>
+In-Reply-To: <1571822941-29776-1-git-send-email-rppt@kernel.org>
+References: <1571822941-29776-1-git-send-email-rppt@kernel.org>
+To: linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jeff Dike <jdike@addtoit.com>, "Kirill A. Shutemov" <kirill@shutemov.name>, Linus Torvalds <torvalds@linux-foundation.org>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Michal Simek <monstr@monstr.eu>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, Vincent Chen <deanbo422@gmail.com>, Vineet Gupta <Vineet.Gupta1@synopsys.com>, Mike Rapoport <rppt@kernel.org>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org, linux-um@lists.infradead.org, sparclinux@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>
 List-ID: <linux-um.lists.infradead.org>
 
-The following commit has been merged into the x86/asm branch of tip:
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-Commit-ID:     773a37b182259f5e0cdb928112431b119a6e4500
-Gitweb:        https://git.kernel.org/tip/773a37b182259f5e0cdb928112431b119a6e4500
-Author:        Jiri Slaby <jslaby@suse.cz>
-AuthorDate:    Fri, 11 Oct 2019 13:50:53 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Fri, 18 Oct 2019 10:45:03 +02:00
+There are no architectures that use include/asm-generic/4level-fixup.h
+therefore it can be removed along with __ARCH_HAS_4LEVEL_HACK define.
 
-x86/um: Annotate data appropriately
-
-Use the new SYM_DATA_START and SYM_DATA_END_LABEL macros for vdso_start.
-
-Result is:
-  0000  2376 OBJECT  GLOBAL DEFAULT    4 vdso_start
-  0948     0 OBJECT  GLOBAL DEFAULT    4 vdso_end
-
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: linux-arch@vger.kernel.org
-Cc: linux-um@lists.infradead.org
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: user-mode-linux-devel@lists.sourceforge.net
-Cc: user-mode-linux-user@lists.sourceforge.net
-Cc: x86-ml <x86@kernel.org>
-Link: https://lkml.kernel.org/r/20191011115108.12392-14-jslaby@suse.cz
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
- arch/x86/um/vdso/vdso.S | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ include/asm-generic/4level-fixup.h | 40 --------------------------------------
+ include/asm-generic/tlb.h          |  2 --
+ include/linux/mm.h                 | 10 +++++-----
+ mm/memory.c                        |  8 --------
+ 4 files changed, 5 insertions(+), 55 deletions(-)
+ delete mode 100644 include/asm-generic/4level-fixup.h
 
-diff --git a/arch/x86/um/vdso/vdso.S b/arch/x86/um/vdso/vdso.S
-index a4a3870..a6eaf29 100644
---- a/arch/x86/um/vdso/vdso.S
-+++ b/arch/x86/um/vdso/vdso.S
-@@ -1,11 +1,11 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- #include <linux/init.h>
-+#include <linux/linkage.h>
+diff --git a/include/asm-generic/4level-fixup.h b/include/asm-generic/4level-fixup.h
+deleted file mode 100644
+index e3667c9..0000000
+--- a/include/asm-generic/4level-fixup.h
++++ /dev/null
+@@ -1,40 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _4LEVEL_FIXUP_H
+-#define _4LEVEL_FIXUP_H
+-
+-#define __ARCH_HAS_4LEVEL_HACK
+-#define __PAGETABLE_PUD_FOLDED 1
+-
+-#define PUD_SHIFT			PGDIR_SHIFT
+-#define PUD_SIZE			PGDIR_SIZE
+-#define PUD_MASK			PGDIR_MASK
+-#define PTRS_PER_PUD			1
+-
+-#define pud_t				pgd_t
+-
+-#define pmd_alloc(mm, pud, address) \
+-	((unlikely(pgd_none(*(pud))) && __pmd_alloc(mm, pud, address))? \
+- 		NULL: pmd_offset(pud, address))
+-
+-#define pud_offset(pgd, start)		(pgd)
+-#define pud_none(pud)			0
+-#define pud_bad(pud)			0
+-#define pud_present(pud)		1
+-#define pud_ERROR(pud)			do { } while (0)
+-#define pud_clear(pud)			pgd_clear(pud)
+-#define pud_val(pud)			pgd_val(pud)
+-#define pud_populate(mm, pud, pmd)	pgd_populate(mm, pud, pmd)
+-#define pud_page(pud)			pgd_page(pud)
+-#define pud_page_vaddr(pud)		pgd_page_vaddr(pud)
+-
+-#undef pud_free_tlb
+-#define pud_free_tlb(tlb, x, addr)	do { } while (0)
+-#define pud_free(mm, x)			do { } while (0)
+-#define __pud_free_tlb(tlb, x, addr)	do { } while (0)
+-
+-#undef  pud_addr_end
+-#define pud_addr_end(addr, end)		(end)
+-
+-#include <asm-generic/5level-fixup.h>
+-
+-#endif
+diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
+index 04c0644..5e0c2d0 100644
+--- a/include/asm-generic/tlb.h
++++ b/include/asm-generic/tlb.h
+@@ -584,7 +584,6 @@ static inline void tlb_end_vma(struct mmu_gather *tlb, struct vm_area_struct *vm
+ 	} while (0)
+ #endif
  
- __INITDATA
+-#ifndef __ARCH_HAS_4LEVEL_HACK
+ #ifndef pud_free_tlb
+ #define pud_free_tlb(tlb, pudp, address)			\
+ 	do {							\
+@@ -594,7 +593,6 @@ static inline void tlb_end_vma(struct mmu_gather *tlb, struct vm_area_struct *vm
+ 		__pud_free_tlb(tlb, pudp, address);		\
+ 	} while (0)
+ #endif
+-#endif
  
--	.globl vdso_start, vdso_end
--vdso_start:
-+SYM_DATA_START(vdso_start)
- 	.incbin "arch/x86/um/vdso/vdso.so"
--vdso_end:
-+SYM_DATA_END_LABEL(vdso_start, SYM_L_GLOBAL, vdso_end)
+ #ifndef __ARCH_HAS_5LEVEL_HACK
+ #ifndef p4d_free_tlb
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index cc29227..477b52a 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1850,12 +1850,12 @@ static inline void mm_dec_nr_ptes(struct mm_struct *mm) {}
+ int __pte_alloc(struct mm_struct *mm, pmd_t *pmd);
+ int __pte_alloc_kernel(pmd_t *pmd);
  
- __FINIT
++#if defined(CONFIG_MMU)
++
+ /*
+- * The following ifdef needed to get the 4level-fixup.h header to work.
+- * Remove it when 4level-fixup.h has been removed.
++ * The following ifdef needed to get the 5level-fixup.h header to work.
++ * Remove it when 5level-fixup.h has been removed.
+  */
+-#if defined(CONFIG_MMU) && !defined(__ARCH_HAS_4LEVEL_HACK)
+-
+ #ifndef __ARCH_HAS_5LEVEL_HACK
+ static inline p4d_t *p4d_alloc(struct mm_struct *mm, pgd_t *pgd,
+ 		unsigned long address)
+@@ -1877,7 +1877,7 @@ static inline pmd_t *pmd_alloc(struct mm_struct *mm, pud_t *pud, unsigned long a
+ 	return (unlikely(pud_none(*pud)) && __pmd_alloc(mm, pud, address))?
+ 		NULL: pmd_offset(pud, address);
+ }
+-#endif /* CONFIG_MMU && !__ARCH_HAS_4LEVEL_HACK */
++#endif /* CONFIG_MMU */
+ 
+ #if USE_SPLIT_PTE_PTLOCKS
+ #if ALLOC_SPLIT_PTLOCKS
+diff --git a/mm/memory.c b/mm/memory.c
+index b1ca51a..50300f0 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -4095,19 +4095,11 @@ int __pmd_alloc(struct mm_struct *mm, pud_t *pud, unsigned long address)
+ 	smp_wmb(); /* See comment in __pte_alloc */
+ 
+ 	ptl = pud_lock(mm, pud);
+-#ifndef __ARCH_HAS_4LEVEL_HACK
+ 	if (!pud_present(*pud)) {
+ 		mm_inc_nr_pmds(mm);
+ 		pud_populate(mm, pud, new);
+ 	} else	/* Another has populated it */
+ 		pmd_free(mm, new);
+-#else
+-	if (!pgd_present(*pud)) {
+-		mm_inc_nr_pmds(mm);
+-		pgd_populate(mm, pud, new);
+-	} else /* Another has populated it */
+-		pmd_free(mm, new);
+-#endif /* __ARCH_HAS_4LEVEL_HACK */
+ 	spin_unlock(ptl);
+ 	return 0;
+ }
+-- 
+2.7.4
+
 
