@@ -1,14 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x431.google.com ([2607:f8b0:4864:20::431])
+Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iL45r-0006tM-Pm
- for linux-um@lists.infradead.org; Thu, 17 Oct 2019 11:37:25 +0000
-Received: by mail-pf1-x431.google.com with SMTP id q12so1474506pff.9
- for <linux-um@lists.infradead.org>; Thu, 17 Oct 2019 04:37:23 -0700 (PDT)
-Message-ID: <a1307b17bd3f51d84d9195760492d1ef284b6382.camel@researchut.com>
-Subject: uml segfault during I/O
-From: Ritesh Raj Sarraf <rrs@researchut.com>
-Date: Thu, 17 Oct 2019 17:07:35 +0530
+ id 1iN8QG-0001k5-QK
+ for linux-um@lists.infradead.org; Wed, 23 Oct 2019 04:39:03 +0000
+Received: by mail-pf1-x444.google.com with SMTP id b4so3160751pfr.12
+ for <linux-um@lists.infradead.org>; Tue, 22 Oct 2019 21:39:00 -0700 (PDT)
+From: Hajime Tazaki <thehajime@gmail.com>
+Subject: [RFC PATCH 07/47] lkl: interrupt support
+Date: Wed, 23 Oct 2019 13:37:41 +0900
+Message-Id: <75e5d3a80edbe076626381be77d437ee1db8dba5.1571798507.git.thehajime@gmail.com>
+In-Reply-To: <cover.1571798507.git.thehajime@gmail.com>
+References: <cover.1571798507.git.thehajime@gmail.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -18,129 +20,336 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Reply-To: rrs@researchut.com
-Content-Type: multipart/mixed; boundary="===============1257918328470018330=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Octavian Purdila <tavi.purdila@gmail.com>, Michael Zimmermann <sigmaepsilon92@gmail.com>, Hajime Tazaki <thehajime@gmail.com>, Akira Moroo <retrage01@gmail.com>
 
+From: Octavian Purdila <tavi.purdila@gmail.com>
 
---===============1257918328470018330==
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="=-ylP8deJz/E12fhKOGN+a"
+Add APIs that allows the host to reserve and free and interrupt number
+and also to trigger an interrupt.
 
+The trigger operation will simply store the interrupt data in
+queue. The interrupt handler is run later, at the first opportunity it
+has to avoid races with any kernel threads.
 
---=-ylP8deJz/E12fhKOGN+a
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Currently, interrupts are run on the first interrupt enable operation
+if interrupts are disabled and if we are not already in interrupt
+context.
 
-This happens on the 5.2 Linux kernel with Debian patches on top.
-The configs details are:
+When triggering an interrupt the host can also send a void pointer
+that is going to be available to the handler routine via
+get_irq_regs()->irq_data. This allows to easly create host <-> kernel
+synchronous communication channels and is currently used by the system
+call interface.
 
-Linux Host: 5.2 (Debian)
-Linux UML: 5.2 (Debian)
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+Signed-off-by: Michael Zimmermann <sigmaepsilon92@gmail.com>
+Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
+---
+ arch/um/lkl/include/asm/irq.h             |  15 ++
+ arch/um/lkl/include/uapi/asm/irq.h        |  36 ++++
+ arch/um/lkl/include/uapi/asm/sigcontext.h |  16 ++
+ arch/um/lkl/kernel/irq.c                  | 193 ++++++++++++++++++++++
+ 4 files changed, 260 insertions(+)
+ create mode 100644 arch/um/lkl/include/asm/irq.h
+ create mode 100644 arch/um/lkl/include/uapi/asm/irq.h
+ create mode 100644 arch/um/lkl/include/uapi/asm/sigcontext.h
+ create mode 100644 arch/um/lkl/kernel/irq.c
 
-This tends to happen very easily when doing good amount of I/O, in this
-case, doing an `apt upgrade`
+diff --git a/arch/um/lkl/include/asm/irq.h b/arch/um/lkl/include/asm/irq.h
+new file mode 100644
+index 000000000000..36af9e36be1c
+--- /dev/null
++++ b/arch/um/lkl/include/asm/irq.h
+@@ -0,0 +1,15 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_LKL_IRQ_H
++#define _ASM_LKL_IRQ_H
++
++#ifndef __arch_um__
++#define IRQ_STATUS_BITS		(sizeof(long) * 8)
++#define NR_IRQS			((int)(IRQ_STATUS_BITS * IRQ_STATUS_BITS))
++#endif	/* __arch_um__ */
++
++void run_irqs(void);
++void set_irq_pending(int irq);
++
++#include <uapi/asm/irq.h>
++
++#endif
+diff --git a/arch/um/lkl/include/uapi/asm/irq.h b/arch/um/lkl/include/uapi/asm/irq.h
+new file mode 100644
+index 000000000000..666628b233eb
+--- /dev/null
++++ b/arch/um/lkl/include/uapi/asm/irq.h
+@@ -0,0 +1,36 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++#ifndef _ASM_UAPI_LKL_IRQ_H
++#define _ASM_UAPI_LKL_IRQ_H
++
++/**
++ * lkl_trigger_irq - generate an interrupt
++ *
++ * This function is used by the device host side to signal its Linux counterpart
++ * that some event happened.
++ *
++ * @irq - the irq number to signal
++ */
++int lkl_trigger_irq(int irq);
++
++/**
++ * lkl_get_free_irq - find and reserve a free IRQ number
++ *
++ * This function is called by the host device code to find an unused IRQ number
++ * and reserved it for its own use.
++ *
++ * @user - a string to identify the user
++ * @returns - and irq number that can be used by request_irq or an negative
++ * value in case of an error
++ */
++int lkl_get_free_irq(const char *user);
++
++/**
++ * lkl_put_irq - release an IRQ number previously obtained with lkl_get_free_irq
++ *
++ * @irq - irq number to release
++ * @user - string identifying the user; should be the same as the one passed to
++ * lkl_get_free_irq when the irq number was obtained
++ */
++void lkl_put_irq(int irq, const char *name);
++
++#endif
+diff --git a/arch/um/lkl/include/uapi/asm/sigcontext.h b/arch/um/lkl/include/uapi/asm/sigcontext.h
+new file mode 100644
+index 000000000000..2f4848843d1d
+--- /dev/null
++++ b/arch/um/lkl/include/uapi/asm/sigcontext.h
+@@ -0,0 +1,16 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++#ifndef _ASM_UAPI_LKL_SIGCONTEXT_H
++#define _ASM_UAPI_LKL_SIGCONTEXT_H
++
++#include <asm/ptrace.h>
++
++struct pt_regs {
++	void *irq_data;
++};
++
++struct sigcontext {
++	struct pt_regs regs;
++	unsigned long oldmask;
++};
++
++#endif
+diff --git a/arch/um/lkl/kernel/irq.c b/arch/um/lkl/kernel/irq.c
+new file mode 100644
+index 000000000000..e3b59e46ca50
+--- /dev/null
++++ b/arch/um/lkl/kernel/irq.c
+@@ -0,0 +1,193 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/irq.h>
++#include <linux/hardirq.h>
++#include <asm/irq_regs.h>
++#include <linux/sched.h>
++#include <linux/seq_file.h>
++#include <linux/tick.h>
++#include <asm/irqflags.h>
++#include <asm/host_ops.h>
++#include <asm/cpu.h>
++
++/*
++ * To avoid much overhead we use an indirect approach: the irqs are marked using
++ * a bitmap (array of longs) and a summary of the modified bits is kept in a
++ * separate "index" long - one bit for each sizeof(long). Thus we can support
++ * 4096 irqs on 64bit platforms and 1024 irqs on 32bit platforms.
++ *
++ * Whenever an irq is trigger both the array and the index is updated. To find
++ * which irqs were triggered we first search the index and then the
++ * corresponding part of the arrary.
++ */
++static unsigned long irq_status[NR_IRQS / IRQ_STATUS_BITS];
++static unsigned long irq_index_status;
++
++static inline unsigned long test_and_clear_irq_index_status(void)
++{
++	if (!irq_index_status)
++		return 0;
++	return __sync_fetch_and_and(&irq_index_status, 0);
++}
++
++static inline unsigned long test_and_clear_irq_status(int index)
++{
++	if (!&irq_status[index])
++		return 0;
++	return __sync_fetch_and_and(&irq_status[index], 0);
++}
++
++void set_irq_pending(int irq)
++{
++	int index = irq / IRQ_STATUS_BITS;
++	int bit = irq % IRQ_STATUS_BITS;
++
++	__sync_fetch_and_or(&irq_status[index], BIT(bit));
++	__sync_fetch_and_or(&irq_index_status, BIT(index));
++}
++
++static struct irq_info {
++	const char *user;
++} irqs[NR_IRQS];
++
++static bool irqs_enabled;
++
++static struct pt_regs dummy;
++
++static void run_irq(int irq)
++{
++	unsigned long flags;
++	struct pt_regs *old_regs = set_irq_regs((struct pt_regs *)&dummy);
++
++	/* interrupt handlers need to run with interrupts disabled */
++	local_irq_save(flags);
++	irq_enter();
++	generic_handle_irq(irq);
++	irq_exit();
++	set_irq_regs(old_regs);
++	local_irq_restore(flags);
++}
++
++/**
++ * This function can be called from arbitrary host threads, so do not
++ * issue any Linux calls (e.g. prink) if lkl_cpu_get() was not issued
++ * before.
++ */
++int lkl_trigger_irq(int irq)
++{
++	int ret;
++
++	if (!irq || irq > NR_IRQS)
++		return -EINVAL;
++
++	ret = lkl_cpu_try_run_irq(irq);
++	if (ret <= 0)
++		return ret;
++
++	/*
++	 * Since this can be called from Linux context (e.g. lkl_trigger_irq ->
++	 * IRQ -> softirq -> lkl_trigger_irq) make sure we are actually allowed
++	 * to run irqs at this point
++	 */
++	if (!irqs_enabled) {
++		set_irq_pending(irq);
++		lkl_cpu_put();
++		return 0;
++	}
++
++	run_irq(irq);
++
++	lkl_cpu_put();
++
++	return 0;
++}
++
++static inline void for_each_bit(unsigned long word, void (*f)(int, int), int j)
++{
++	int i = 0;
++
++	while (word) {
++		if (word & 1)
++			f(i, j);
++		word >>= 1;
++		i++;
++	}
++}
++
++static inline void deliver_irq(int bit, int index)
++{
++	run_irq(index * IRQ_STATUS_BITS + bit);
++}
++
++static inline void check_irq_status(int i, int unused)
++{
++	for_each_bit(test_and_clear_irq_status(i), deliver_irq, i);
++}
++
++void run_irqs(void)
++{
++	for_each_bit(test_and_clear_irq_index_status(), check_irq_status, 0);
++}
++
++int show_interrupts(struct seq_file *p, void *v)
++{
++	return 0;
++}
++
++int lkl_get_free_irq(const char *user)
++{
++	int i;
++	int ret = -EBUSY;
++
++	/* 0 is not a valid IRQ */
++	for (i = 1; i < NR_IRQS; i++) {
++		if (!irqs[i].user) {
++			irqs[i].user = user;
++			irq_set_chip_and_handler(i, &dummy_irq_chip,
++						 handle_simple_irq);
++			ret = i;
++			break;
++		}
++	}
++
++	return ret;
++}
++
++void lkl_put_irq(int i, const char *user)
++{
++	if (!irqs[i].user || strcmp(irqs[i].user, user) != 0) {
++		WARN("%s tried to release %s's irq %d", user, irqs[i].user, i);
++		return;
++	}
++
++	irqs[i].user = NULL;
++}
++
++unsigned long arch_local_save_flags(void)
++{
++	return irqs_enabled;
++}
++
++void arch_local_irq_restore(unsigned long flags)
++{
++	if (flags == ARCH_IRQ_ENABLED && irqs_enabled == ARCH_IRQ_DISABLED &&
++	    !in_interrupt())
++		run_irqs();
++	irqs_enabled = flags;
++}
++
++void init_IRQ(void)
++{
++	int i;
++
++	for (i = 0; i < NR_IRQS; i++)
++		irq_set_chip_and_handler(i, &dummy_irq_chip, handle_simple_irq);
++
++	pr_info("lkl: irqs initialized\n");
++}
++
++void cpu_yield_to_irqs(void)
++{
++	cpu_relax();
++}
+-- 
+2.20.1 (Apple Git-117)
 
-
-[  OK  ] Started Update UTMP about System Runlevel Changes.
-NET: Registered protocol family 10
-Segment Routing with IPv6
-random: crng init done
-
-Modules linked in: ipv6 crc_ccitt
-Pid: 870, comm: kworker/0:1H Not tainted 5.2.17
-RIP: 0033:[<00000000607e9c03>]
-RSP: 000000009d40fde0  EFLAGS: 00010297
-RAX: 0000000000000000 RBX: 0000000000004801 RCX: 000000009d40fe30
-RDX: 0000000000000001 RSI: 000000009dbc35c0 RDI: 0000000000000000
-RBP: 000000009d40fe30 R08: 0000000c00000204 R09: 8080808080808080
-R10: fefefefefefefeff R11: 0000000000000246 R12: 0000000000000000
-R13: 000000009dbc35c0 R14: 000000009dbc3608 R15: 000000009dbb9800
-Kernel panic - not syncing: Segfault with no mm
-CPU: 0 PID: 870 Comm: kworker/0:1H Not tainted 5.2.17 #2
-Workqueue: kblockd blk_mq_requeue_work
-Stack:
- 00000000 100000000000001 607d4425 00000001
- 9dbc35c0 00000000 00000000 00000000
- 9dbb9800 607d44e9 9d40fe30 9d40fe30
-Call Trace:
- [<607d4425>] ? blk_mq_sched_insert_request+0x0/0xff
- [<607d44e9>] ? blk_mq_sched_insert_request+0xc4/0xff
- [<607d4425>] ? blk_mq_sched_insert_request+0x0/0xff
- [<607d07c6>] ? blk_mq_requeue_work+0xd0/0x133
- [<60434285>] ? process_one_work+0x1e4/0x34c
- [<60431fd0>] ? move_linked_works+0x0/0x4f
- [<609791f0>] ? __schedule+0x0/0x41d
- [<6043569f>] ? wq_worker_running+0xd/0x2f
- [<60431fd0>] ? move_linked_works+0x0/0x4f
- [<60435362>] ? worker_thread+0x324/0x45e
- [<6043215f>] ? set_pf_worker+0x0/0x5e
- [<604167c7>] ? get_signals+0x0/0xa
- [<60439485>] ? __kthread_parkme+0x4a/0x94
- [<60421a53>] ? do_exit+0x0/0x948
- [<6043503e>] ? worker_thread+0x0/0x45e
- [<604399aa>] ? kthread+0x198/0x1a0
- [<603fea08>] ? new_thread_handler+0x82/0xb8
-
-/home/rrs/bin/uml-debian: line 8: 16743 Aborted                 (core dumpe=
-d) linux ubd0=3D~/rrs-home/Libvirt-Images/uml.img eth0=3Ddaemon mem=3D1024M=
- rw
- 16:58 =E2=99=92 =E0=A5=90   =E2=98=B9 =F0=9F=98=9F=3D> 134 =20
-
-
-And the linux process remains stray on the host machine.
-
-rrs      18159  0.0  0.0 1057692 11496 ?       Ss   16:57   0:00 linux ubd0=
-=3D/home/rrs/rrs-home/Libvirt-Images/uml.img eth0=3Ddaemon mem=3D1024M rw
-rrs      18187  0.0  0.0 1057704 11496 ?       Ss   16:57   0:00 linux ubd0=
-=3D/home/rrs/rrs-home/Libvirt-Images/uml.img eth0=3Ddaemon mem=3D1024M rw
-
---=20
-Ritesh Raj Sarraf
-RESEARCHUT - http://www.researchut.com
-"Necessity is the mother of invention."
-
---=-ylP8deJz/E12fhKOGN+a
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEQCVDstmIVAB/Yn02pjpYo/LhdWkFAl2oUn8ACgkQpjpYo/Lh
-dWmADA/9FzkMz7T8P4ZoSnDAD+YN6Uh2mDlUEVdISMidWhneOerg3Ib612Y7kjN+
-ZyFh7QxssAf2ZIkMIPgvjxK3/KhR4nwz7Z94S+2zZEOsL0eXUBD6E5Z6OSR3SrEu
-cngIACdb0Q7C8TQ84XUiaxGNwhn67Unn9GLRJpi5+RK5h75J6C8T15cVeGedEM53
-7c1Qt56Yytz+v5AAOzLdpJyBwKvurXuOnWoLAfFUMiXtwD0MxXkG45Rgivl0AsTk
-9Om8kOq04A+D2OYXYG0QzRimWNy1HHMXzm/gcum53DpLqLrkFni6afPy+6SzZwxk
-rzViZngKiobiWJpJtKS1/g+cer6v+Nuxpn8hCcM87gdGG1jQxu9Wy6BWJTsVS1O8
-L50huPj0OzR+8FH7LfYQfV/a3wJc0+FGRUJ3sp1wYl+nl/FI05ryz0EGoZ1BRni1
-SXhZIfH3q1GxC1/jDcnR1QT25yDCpoMg/QsYDehENVTpR6lfgjk+4bWBWM6aHupy
-6aaR3HEOEK8x+RVoRTMyoLREWdUmnXeme1N7H5ZTPg3S7QRIeu9LLtD1WsKCdzNk
-eMuXkhGjCpV5Rzg8PlddKFG4LC8pJQjTTtXhXbAPaYKsPVhXR/9RGAWOh9gn/VIG
-Msr7ZsE+tv3IVGj8UrACF46iekWPr+akAzT9wuLFGiRS+6MKu7A=
-=0DWO
------END PGP SIGNATURE-----
-
---=-ylP8deJz/E12fhKOGN+a--
-
-
-
---===============1257918328470018330==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 linux-um mailing list
 linux-um@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-um
-
---===============1257918328470018330==--
-
-
 
