@@ -1,25 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab7.miniserver.com ([37.128.132.42]
- helo=www.kot-begemot.co.uk)
- by bombadil.infradead.org with esmtps (Exim 4.92.2 #3 (Red Hat Linux))
- id 1iIC6w-0005GO-OU
- for linux-um@lists.infradead.org; Wed, 09 Oct 2019 13:34:40 +0000
-Received: from tun252.jain.kot-begemot.co.uk ([192.168.18.6]
- helo=jain.kot-begemot.co.uk)
- by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
- (Exim 4.92) (envelope-from <anton.ivanov@cambridgegreys.com>)
- id 1iIC6n-0008D0-R5
- for linux-um@lists.infradead.org; Wed, 09 Oct 2019 13:34:30 +0000
-Received: from jain.kot-begemot.co.uk ([192.168.3.3])
- by jain.kot-begemot.co.uk with esmtp (Exim 4.92)
- (envelope-from <anton.ivanov@cambridgegreys.com>) id 1iIC6l-0000aj-FC
- for linux-um@lists.infradead.org; Wed, 09 Oct 2019 14:34:29 +0100
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Subject: RFC - make it possible to add iomem at runtime.
-Message-ID: <841ebee1-8ef3-b4d8-ba60-925461ad6ee9@cambridgegreys.com>
-Date: Wed, 9 Oct 2019 14:34:27 +0100
+Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1iN8ki-0001in-Lc
+ for linux-um@lists.infradead.org; Wed, 23 Oct 2019 05:00:14 +0000
+Received: by mail-pg1-x544.google.com with SMTP id u23so697023pgo.0
+ for <linux-um@lists.infradead.org>; Tue, 22 Oct 2019 22:00:08 -0700 (PDT)
+From: Hajime Tazaki <thehajime@gmail.com>
+Subject: [RFC PATCH 43/47] kallsyms: Add a config option to select section for
+ kallsyms
+Date: Wed, 23 Oct 2019 13:38:17 +0900
+Message-Id: <b56063cbad6bc3c09d4c5edd6e34c3793ed4cb5d.1571798507.git.thehajime@gmail.com>
+In-Reply-To: <cover.1571798507.git.thehajime@gmail.com>
+References: <cover.1571798507.git.thehajime@gmail.com>
 MIME-Version: 1.0
-Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -28,33 +21,125 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
+Cc: Octavian Purdila <tavi.purdila@gmail.com>, Andreas Abel <aabel@google.com>, Akira Moroo <retrage01@gmail.com>
 
-Hi all,
+From: Andreas Abel <aabel@google.com>
 
-I am looking at adding an af_xdp network transport. As a part of its 
-initialization it needs to allocate a memory area to be shared for tx/rx 
-buffers. I would like to do that without dipping into the "normal" UML 
-memory pool if possible.
+This commit adds a kernel config option to select whether the
+kallsyms data should be in the .rodata section (the default for
+non-LKL builds), or in the .data section (the default for LKL).
 
-The only way to allocate this at present is to pass it as an iomem 
-"region". This, however, is a bit dated and limited - it assumes an 
-existing file on a block device which is added at boot and not changed 
-after that. I cannot for example allocate at runtime and map that as iomem.
+This is to avoid relocations in the text segment (TEXTRELs) that
+would otherwise occur with LKL when the .rodata and the .text
+section end up in the same segment.
 
-I was wondering if we can relax the "on-boot" only requirement and allow 
-allocations to happen during runtime as the drivers get initialized. 
-This will make implementing af_xdp and/or tpacket as well as various 
-memifs as network transports much easier.
+Having TEXTRELs can lead to a number of issues:
 
+1. If a shared library contains a TEXTREL, the corresponding memory
+pages cannot be shared.
+
+2. Android >=6 and SELinux do not support binaries with TEXTRELs
+(http://android-developers.blogspot.com/2016/06/android-changes-for-ndk-developers.html).
+
+3. If a program has a TEXTREL, uses an ifunc, and is compiled with
+early binding, this can lead to a segmentation fault when processing
+the relocation for the ifunc during dynamic linking because the text
+segment is made temporarily non-executable to process the TEXTREL
+(line 248 in dl_reloc.c).
+
+Signed-off-by: Andreas Abel <aabel@google.com>
+---
+ init/Kconfig            | 12 ++++++++++++
+ scripts/kallsyms.c      |  9 ++++++++-
+ scripts/link-vmlinux.sh |  4 ++++
+ 3 files changed, 24 insertions(+), 1 deletion(-)
+
+diff --git a/init/Kconfig b/init/Kconfig
+index 81293d78a6ad..bd1a846e0ee0 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1385,6 +1385,18 @@ config POSIX_TIMERS
+ 
+ 	  If unsure say y.
+ 
++config KALLSYMS_USE_DATA_SECTION
++	bool "Use .data instead of .rodata section for kallsyms"
++	depends on KALLSYMS
++	default n
++	help
++	  Enabling this option will put the kallsyms data in the .data section
++	  instead of the .rodata section.
++
++	  This is useful when building the kernel as a library, as it avoids
++	  relocations in the text segment that could otherwise occur if the
++	  .rodata section is in the same segment as the .text section.
++
+ config PRINTK
+ 	default y
+ 	bool "Enable support for printk" if EXPERT
+diff --git a/scripts/kallsyms.c b/scripts/kallsyms.c
+index 8a62e1b6cf22..11d01516e1c8 100644
+--- a/scripts/kallsyms.c
++++ b/scripts/kallsyms.c
+@@ -59,6 +59,7 @@ static struct addr_range percpu_range = {
+ static struct sym_entry *table;
+ static unsigned int table_size, table_cnt;
+ static int all_symbols = 0;
++static int use_data_section;
+ static int absolute_percpu = 0;
+ static char symbol_prefix_char = '\0';
+ static int base_relative = 0;
+@@ -73,6 +74,7 @@ static unsigned char best_table_len[256];
+ static void usage(void)
+ {
+ 	fprintf(stderr, "Usage: kallsyms [--all-symbols] "
++			"[--use-data-section] "
+ 			"[--symbol-prefix=<prefix char>] "
+ 			"[--base-relative] < in.map > out.S\n");
+ 	exit(1);
+@@ -362,7 +364,10 @@ static void write_src(void)
+ 	printf("#define ALGN .balign 4\n");
+ 	printf("#endif\n");
+ 
+-	printf("\t.section .rodata, \"a\"\n");
++	if (use_data_section)
++		printf("\t.section .data\n");
++	else
++		printf("\t.section .rodata, \"a\"\n");
+ 
+ 	/* Provide proper symbols relocatability by their relativeness
+ 	 * to a fixed anchor point in the runtime image, either '_text'
+@@ -768,6 +773,8 @@ int main(int argc, char **argv)
+ 				absolute_percpu = 1;
+ 			else if (strcmp(argv[i], "--base-relative") == 0)
+ 				base_relative = 1;
++			else if (strcmp(argv[i], "--use-data-section") == 0)
++				use_data_section = 1;
+ 			else if (strncmp(argv[i], "--symbol-prefix=", 16) == 0) {
+ 				char *p = &argv[i][16];
+ 				/* skip quote */
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index 553d966a1986..3fc1fc406b38 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -133,6 +133,10 @@ kallsyms()
+ 		kallsymopt="${kallsymopt} --base-relative"
+ 	fi
+ 
++	if [ -n "${CONFIG_KALLSYMS_USE_DATA_SECTION}" ]; then
++		kallsymopt="${kallsymopt} --use-data-section"
++	fi
++
+ 	local aflags="${KBUILD_AFLAGS} ${KBUILD_AFLAGS_KERNEL}               \
+ 		      ${NOSTDINC_FLAGS} ${LINUXINCLUDE} ${KBUILD_CPPFLAGS}"
+ 
 -- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
-https://www.cambridgegreys.com/
+2.20.1 (Apple Git-117)
 
 
 _______________________________________________
