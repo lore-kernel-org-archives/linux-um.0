@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x543.google.com ([2607:f8b0:4864:20::543])
+Received: from mail-pl1-x644.google.com ([2607:f8b0:4864:20::644])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iN8QI-0001l5-1J
- for linux-um@lists.infradead.org; Wed, 23 Oct 2019 04:39:05 +0000
-Received: by mail-pg1-x543.google.com with SMTP id l24so6417240pgh.10
- for <linux-um@lists.infradead.org>; Tue, 22 Oct 2019 21:39:01 -0700 (PDT)
+ id 1iN8kq-0002Cb-6U
+ for linux-um@lists.infradead.org; Wed, 23 Oct 2019 05:00:21 +0000
+Received: by mail-pl1-x644.google.com with SMTP id v5so4745760ply.10
+ for <linux-um@lists.infradead.org>; Tue, 22 Oct 2019 22:00:16 -0700 (PDT)
 From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC PATCH 09/47] lkl: timers, time and delay support
-Date: Wed, 23 Oct 2019 13:37:43 +0900
-Message-Id: <12db8a5bc917499ba44b8f120a2de8634ffce4e9.1571798507.git.thehajime@gmail.com>
+Subject: [RFC PATCH 34/47] arch: add __SYSCALL_DEFINE_ARCH
+Date: Wed, 23 Oct 2019 13:38:08 +0900
+Message-Id: <b194e2bc0599332deb753aec7949eee13e68dfb4.1571798507.git.thehajime@gmail.com>
 In-Reply-To: <cover.1571798507.git.thehajime@gmail.com>
 References: <cover.1571798507.git.thehajime@gmail.com>
 MIME-Version: 1.0
@@ -25,172 +25,46 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: Octavian Purdila <tavi.purdila@gmail.com>, Michael Zimmermann <sigmaepsilon92@gmail.com>, Hajime Tazaki <thehajime@gmail.com>, Akira Moroo <retrage01@gmail.com>
+Cc: Octavian Purdila <tavi.purdila@gmail.com>, Akira Moroo <retrage01@gmail.com>
 
 From: Octavian Purdila <tavi.purdila@gmail.com>
 
-Clockevent driver based on host timer operations and clocksource
-driver and udelay support based on host time operations.
+This allows the architecture code to process the system call
+definitions. It is used by LKL to create strong typed function
+definitions for system calls.
 
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
-Signed-off-by: Michael Zimmermann <sigmaepsilon92@gmail.com>
 Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
 ---
- arch/um/lkl/kernel/time.c | 145 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 145 insertions(+)
- create mode 100644 arch/um/lkl/kernel/time.c
+ include/linux/syscalls.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/arch/um/lkl/kernel/time.c b/arch/um/lkl/kernel/time.c
-new file mode 100644
-index 000000000000..b8320e1bfa53
---- /dev/null
-+++ b/arch/um/lkl/kernel/time.c
-@@ -0,0 +1,145 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/clocksource.h>
-+#include <linux/clockchips.h>
-+#include <linux/jiffies.h>
-+#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/interrupt.h>
-+#include <linux/irq.h>
-+#include <asm/host_ops.h>
+diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+index 88145da7d140..77e52fe19923 100644
+--- a/include/linux/syscalls.h
++++ b/include/linux/syscalls.h
+@@ -203,9 +203,14 @@ static inline int is_syscall_trace_event(struct trace_event_call *tp_event)
+ }
+ #endif
+ 
++#ifndef __SYSCALL_DEFINE_ARCH
++#define __SYSCALL_DEFINE_ARCH(x, sname, ...)
++#endif
 +
-+static unsigned long long boot_time;
-+
-+void __ndelay(unsigned long nsecs)
-+{
-+	unsigned long long start = lkl_ops->time();
-+
-+	while (lkl_ops->time() < start + nsecs)
-+		;
-+}
-+
-+void __udelay(unsigned long usecs)
-+{
-+	__ndelay(usecs * NSEC_PER_USEC);
-+}
-+
-+void __const_udelay(unsigned long xloops)
-+{
-+	__udelay(xloops / 0x10c7ul);
-+}
-+
-+void calibrate_delay(void)
-+{
-+}
-+
-+void read_persistent_clock(struct timespec *ts)
-+{
-+	*ts = ns_to_timespec(lkl_ops->time());
-+}
-+
-+/*
-+ * Scheduler clock - returns current time in nanosec units.
-+ *
-+ */
-+unsigned long long sched_clock(void)
-+{
-+	if (!boot_time)
-+		return 0;
-+
-+	return lkl_ops->time() - boot_time;
-+}
-+
-+static u64 clock_read(struct clocksource *cs)
-+{
-+	return lkl_ops->time();
-+}
-+
-+static struct clocksource clocksource = {
-+	.name	= "lkl",
-+	.rating = 499,
-+	.read	= clock_read,
-+	.flags	= CLOCK_SOURCE_IS_CONTINUOUS,
-+	.mask	= CLOCKSOURCE_MASK(64),
-+};
-+
-+static void *timer;
-+
-+static int timer_irq;
-+
-+static void timer_fn(void *arg)
-+{
-+	lkl_trigger_irq(timer_irq);
-+}
-+
-+static int clockevent_set_state_shutdown(struct clock_event_device *evt)
-+{
-+	if (timer) {
-+		lkl_ops->timer_free(timer);
-+		timer = NULL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int clockevent_set_state_oneshot(struct clock_event_device *evt)
-+{
-+	timer = lkl_ops->timer_alloc(timer_fn, NULL);
-+	if (!timer)
-+		return -ENOMEM;
-+
-+	return 0;
-+}
-+
-+static irqreturn_t timer_irq_handler(int irq, void *dev_id)
-+{
-+	struct clock_event_device *dev = (struct clock_event_device *)dev_id;
-+
-+	dev->event_handler(dev);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static int clockevent_next_event(unsigned long ns,
-+				 struct clock_event_device *evt)
-+{
-+	return lkl_ops->timer_set_oneshot(timer, ns);
-+}
-+
-+static struct clock_event_device clockevent = {
-+	.name			= "lkl",
-+	.features		= CLOCK_EVT_FEAT_ONESHOT,
-+	.set_state_oneshot	= clockevent_set_state_oneshot,
-+	.set_next_event		= clockevent_next_event,
-+	.set_state_shutdown	= clockevent_set_state_shutdown,
-+};
-+
-+static struct irqaction irq0  = {
-+	.handler	= timer_irq_handler,
-+	.flags		= IRQF_NOBALANCING | IRQF_TIMER,
-+	.dev_id		= &clockevent,
-+	.name		= "timer"
-+};
-+
-+void __init time_init(void)
-+{
-+	int ret;
-+
-+	if (!lkl_ops->timer_alloc || !lkl_ops->timer_free ||
-+	    !lkl_ops->timer_set_oneshot || !lkl_ops->time) {
-+		pr_err("lkl: no time or timer support provided by host\n");
-+		return;
-+	}
-+
-+	timer_irq = lkl_get_free_irq("timer");
-+	setup_irq(timer_irq, &irq0);
-+
-+	ret = clocksource_register_khz(&clocksource, 1000000);
-+	if (ret)
-+		pr_err("lkl: unable to register clocksource\n");
-+
-+	clockevents_config_and_register(&clockevent, NSEC_PER_SEC, 1,
-+					ULONG_MAX);
-+
-+	boot_time = lkl_ops->time();
-+	pr_info("lkl: time and timers initialized (irq%d)\n", timer_irq);
-+}
+ #ifndef SYSCALL_DEFINE0
+ #define SYSCALL_DEFINE0(sname)					\
+ 	SYSCALL_METADATA(_##sname, 0);				\
++	__SYSCALL_DEFINE_ARCH(0, _##sname);			\
+ 	asmlinkage long sys_##sname(void);			\
+ 	ALLOW_ERROR_INJECTION(sys_##sname, ERRNO);		\
+ 	asmlinkage long sys_##sname(void)
+@@ -222,6 +227,7 @@ static inline int is_syscall_trace_event(struct trace_event_call *tp_event)
+ 
+ #define SYSCALL_DEFINEx(x, sname, ...)				\
+ 	SYSCALL_METADATA(sname, x, __VA_ARGS__)			\
++	__SYSCALL_DEFINE_ARCH(x, sname, __VA_ARGS__)		\
+ 	__SYSCALL_DEFINEx(x, sname, __VA_ARGS__)
+ 
+ #define __PROTECT(...) asmlinkage_protect(__VA_ARGS__)
 -- 
 2.20.1 (Apple Git-117)
 
