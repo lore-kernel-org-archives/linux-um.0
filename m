@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x644.google.com ([2607:f8b0:4864:20::644])
+Received: from mail-pf1-x431.google.com ([2607:f8b0:4864:20::431])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iN8QJ-0001n7-5n
- for linux-um@lists.infradead.org; Wed, 23 Oct 2019 04:39:08 +0000
-Received: by mail-pl1-x644.google.com with SMTP id y8so940429plk.0
- for <linux-um@lists.infradead.org>; Tue, 22 Oct 2019 21:39:03 -0700 (PDT)
+ id 1iN8QM-0001rb-VP
+ for linux-um@lists.infradead.org; Wed, 23 Oct 2019 04:39:13 +0000
+Received: by mail-pf1-x431.google.com with SMTP id y5so12081867pfo.4
+ for <linux-um@lists.infradead.org>; Tue, 22 Oct 2019 21:39:06 -0700 (PDT)
 From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC PATCH 16/47] lkl tools: host lib: memory mapped I/O helpers
-Date: Wed, 23 Oct 2019 13:37:50 +0900
-Message-Id: <e96533a0d331dba6dd4a97f11b13d7d4c9f3cead.1571798507.git.thehajime@gmail.com>
+Subject: [RFC PATCH 26/47] lkl tools: add support for Windows host
+Date: Wed, 23 Oct 2019 13:38:00 +0900
+Message-Id: <4d188827dfe9116d597b53efba40729e964cd06f.1571798507.git.thehajime@gmail.com>
 In-Reply-To: <cover.1571798507.git.thehajime@gmail.com>
 References: <cover.1571798507.git.thehajime@gmail.com>
 MIME-Version: 1.0
@@ -25,143 +25,420 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: Octavian Purdila <tavi.purdila@gmail.com>, Akira Moroo <retrage01@gmail.com>
+Cc: Octavian Purdila <tavi.purdila@gmail.com>, Andreas Gnau <andreas.gnau@intel.com>, Hajime Tazaki <thehajime@gmail.com>, Patrick Collins <pscollins@google.com>, Akira Moroo <retrage01@gmail.com>, Yuan Liu <liuyuan@google.com>
 
 From: Octavian Purdila <tavi.purdila@gmail.com>
 
-This patch adds helpers for implementing the memory mapped I/O host
-operations that can be used by code that implements host
-devices. Generic host operations for lkl_ioremap and lkl_iomem_access
-are provided that allows multiplexing multiple I/O memory mapped
-regions.
+Add host operations for Windows host and virtio disk support.
 
-The host device code can create a new memory mapped I/O region with
-register_iomem(). Read and write access functions need to be provided
-by the caller.
+Trivial changes to the generic virtio host code are made since mingw %p
+format is different then what the MMIO virtion driver expects.
 
+The boot test is updated to support Window hosts as well.
+
+Signed-off-by: Andreas Gnau <andreas.gnau@intel.com>
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+Signed-off-by: Patrick Collins <pscollins@google.com>
+Signed-off-by: Yuan Liu <liuyuan@google.com>
 Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
 ---
- tools/lkl/lib/iomem.c | 88 +++++++++++++++++++++++++++++++++++++++++++
- tools/lkl/lib/iomem.h | 15 ++++++++
- 2 files changed, 103 insertions(+)
- create mode 100644 tools/lkl/lib/iomem.c
- create mode 100644 tools/lkl/lib/iomem.h
+ tools/lkl/include/mingw32/sys/socket.h |   4 +
+ tools/lkl/lib/nt-host.c                | 375 +++++++++++++++++++++++++
+ 2 files changed, 379 insertions(+)
+ create mode 100644 tools/lkl/include/mingw32/sys/socket.h
+ create mode 100644 tools/lkl/lib/nt-host.c
 
-diff --git a/tools/lkl/lib/iomem.c b/tools/lkl/lib/iomem.c
+diff --git a/tools/lkl/include/mingw32/sys/socket.h b/tools/lkl/include/mingw32/sys/socket.h
 new file mode 100644
-index 000000000000..2301fe4e5ad5
+index 000000000000..f9ede3170d03
 --- /dev/null
-+++ b/tools/lkl/lib/iomem.c
-@@ -0,0 +1,88 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <string.h>
-+#include <stdint.h>
-+#include <lkl_host.h>
-+
-+#include "iomem.h"
-+
-+#define IOMEM_OFFSET_BITS		24
-+#define MAX_IOMEM_REGIONS		256
-+
-+#define IOMEM_ADDR_TO_INDEX(addr) \
-+	(((uintptr_t)addr) >> IOMEM_OFFSET_BITS)
-+#define IOMEM_ADDR_TO_OFFSET(addr) \
-+	(((uintptr_t)addr) & ((1 << IOMEM_OFFSET_BITS) - 1))
-+#define IOMEM_INDEX_TO_ADDR(i) \
-+	(void *)(uintptr_t)(i << IOMEM_OFFSET_BITS)
-+
-+static struct iomem_region {
-+	void *data;
-+	int size;
-+	const struct lkl_iomem_ops *ops;
-+} iomem_regions[MAX_IOMEM_REGIONS];
-+
-+void *register_iomem(void *data, int size, const struct lkl_iomem_ops *ops)
-+{
-+	int i;
-+
-+	if (size > (1 << IOMEM_OFFSET_BITS) - 1)
-+		return NULL;
-+
-+	for (i = 1; i < MAX_IOMEM_REGIONS; i++)
-+		if (!iomem_regions[i].ops)
-+			break;
-+
-+	if (i >= MAX_IOMEM_REGIONS)
-+		return NULL;
-+
-+	iomem_regions[i].data = data;
-+	iomem_regions[i].size = size;
-+	iomem_regions[i].ops = ops;
-+	return IOMEM_INDEX_TO_ADDR(i);
-+}
-+
-+void unregister_iomem(void *base)
-+{
-+	unsigned int index = IOMEM_ADDR_TO_INDEX(base);
-+
-+	if (index >= MAX_IOMEM_REGIONS) {
-+		lkl_printf("%s: invalid iomem_addr %p\n", __func__, base);
-+		return;
-+	}
-+
-+	iomem_regions[index].size = 0;
-+	iomem_regions[index].ops = NULL;
-+}
-+
-+void *lkl_ioremap(long addr, int size)
-+{
-+	int index = IOMEM_ADDR_TO_INDEX(addr);
-+	struct iomem_region *iomem = &iomem_regions[index];
-+
-+	if (index >= MAX_IOMEM_REGIONS)
-+		return NULL;
-+
-+	if (iomem->ops && size <= iomem->size)
-+		return IOMEM_INDEX_TO_ADDR(index);
-+
-+	return NULL;
-+}
-+
-+int lkl_iomem_access(const volatile void *addr, void *res, int size, int write)
-+{
-+	int index = IOMEM_ADDR_TO_INDEX(addr);
-+	struct iomem_region *iomem = &iomem_regions[index];
-+	int offset = IOMEM_ADDR_TO_OFFSET(addr);
-+	int ret;
-+
-+	if (index > MAX_IOMEM_REGIONS || !iomem_regions[index].ops ||
-+	    offset + size > iomem_regions[index].size)
-+		return -1;
-+
-+	if (write)
-+		ret = iomem->ops->write(iomem->data, offset, res, size);
-+	else
-+		ret = iomem->ops->read(iomem->data, offset, res, size);
-+
-+	return ret;
-+}
-diff --git a/tools/lkl/lib/iomem.h b/tools/lkl/lib/iomem.h
-new file mode 100644
-index 000000000000..0ad80ccc2626
---- /dev/null
-+++ b/tools/lkl/lib/iomem.h
-@@ -0,0 +1,15 @@
++++ b/tools/lkl/include/mingw32/sys/socket.h
+@@ -0,0 +1,4 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LKL_LIB_IOMEM_H
-+#define _LKL_LIB_IOMEM_H
++/* fake file to avoid #include <sys/socket.h> error on non-posix
++ * host (e.g., mingw32)
++ */
+diff --git a/tools/lkl/lib/nt-host.c b/tools/lkl/lib/nt-host.c
+new file mode 100644
+index 000000000000..c7613272be3b
+--- /dev/null
++++ b/tools/lkl/lib/nt-host.c
+@@ -0,0 +1,375 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <windows.h>
++#include <assert.h>
++#include <unistd.h>
++#undef s_addr
++#include <lkl_host.h>
++#include "iomem.h"
++#include "jmp_buf.h"
 +
-+struct lkl_iomem_ops {
-+	int (*read)(void *data, int offset, void *res, int size);
-+	int (*write)(void *data, int offset, void *value, int size);
++#define DIFF_1601_TO_1970_IN_100NS (11644473600L * 10000000L)
++
++struct lkl_mutex {
++	int recursive;
++	HANDLE handle;
 +};
 +
-+void *register_iomem(void *data, int size, const struct lkl_iomem_ops *ops);
-+void unregister_iomem(void *iomem_base);
-+void *lkl_ioremap(long addr, int size);
-+int lkl_iomem_access(const volatile void *addr, void *res, int size, int write);
++struct lkl_sem {
++	HANDLE sem;
++};
 +
-+#endif /* _LKL_LIB_IOMEM_H */
++struct lkl_tls_key {
++	DWORD key;
++};
++
++static struct lkl_sem *sem_alloc(int count)
++{
++	struct lkl_sem *sem = malloc(sizeof(struct lkl_sem));
++
++	sem->sem = CreateSemaphore(NULL, count, 100, NULL);
++	return sem;
++}
++
++static void sem_up(struct lkl_sem *sem)
++{
++	ReleaseSemaphore(sem->sem, 1, NULL);
++}
++
++static void sem_down(struct lkl_sem *sem)
++{
++	WaitForSingleObject(sem->sem, INFINITE);
++}
++
++static void sem_free(struct lkl_sem *sem)
++{
++	CloseHandle(sem->sem);
++	free(sem);
++}
++
++static struct lkl_mutex *mutex_alloc(int recursive)
++{
++	struct lkl_mutex *_mutex = malloc(sizeof(struct lkl_mutex));
++
++	if (!_mutex)
++		return NULL;
++
++	if (recursive)
++		_mutex->handle = CreateMutex(0, FALSE, 0);
++	else
++		_mutex->handle = CreateSemaphore(NULL, 1, 100, NULL);
++	_mutex->recursive = recursive;
++	return _mutex;
++}
++
++static void mutex_lock(struct lkl_mutex *mutex)
++{
++	WaitForSingleObject(mutex->handle, INFINITE);
++}
++
++static void mutex_unlock(struct lkl_mutex *_mutex)
++{
++	if (_mutex->recursive)
++		ReleaseMutex(_mutex->handle);
++	else
++		ReleaseSemaphore(_mutex->handle, 1, NULL);
++}
++
++static void mutex_free(struct lkl_mutex *_mutex)
++{
++	CloseHandle(_mutex->handle);
++	free(_mutex);
++}
++
++static lkl_thread_t thread_create(void (*fn)(void *), void *arg)
++{
++	DWORD WINAPI(*win_fn)(LPVOID arg) = (DWORD WINAPI(*)(LPVOID))fn;
++	HANDLE h = CreateThread(NULL, 0, win_fn, arg, 0, NULL);
++
++	if (!h)
++		return 0;
++
++	return GetThreadId(h);
++}
++
++static void thread_detach(void)
++{
++}
++
++static void thread_exit(void)
++{
++	ExitThread(0);
++}
++
++static int thread_join(lkl_thread_t tid)
++{
++	int ret;
++	HANDLE *h;
++
++	h = OpenThread(SYNCHRONIZE, FALSE, tid);
++	if (!h)
++		lkl_printf("%s: can't get thread handle\n", __func__);
++
++	ret = WaitForSingleObject(h, INFINITE);
++	if (ret)
++		lkl_printf("%s: %d\n", __func__, ret);
++
++	CloseHandle(h);
++
++	return ret ? -1 : 0;
++}
++
++static lkl_thread_t thread_self(void)
++{
++	return GetThreadId(GetCurrentThread());
++}
++
++static int thread_equal(lkl_thread_t a, lkl_thread_t b)
++{
++	return a == b;
++}
++
++static struct lkl_tls_key *tls_alloc(void (*destructor)(void *))
++{
++	struct lkl_tls_key *ret = malloc(sizeof(struct lkl_tls_key));
++
++	ret->key = FlsAlloc((PFLS_CALLBACK_FUNCTION)destructor);
++	if (ret->key == TLS_OUT_OF_INDEXES) {
++		free(ret);
++		return NULL;
++	}
++	return ret;
++}
++
++static void tls_free(struct lkl_tls_key *key)
++{
++	/* setting to NULL first to prevent the callback from being called */
++	FlsSetValue(key->key, NULL);
++	FlsFree(key->key);
++	free(key);
++}
++
++static int tls_set(struct lkl_tls_key *key, void *data)
++{
++	return FlsSetValue(key->key, data) ? 0 : -1;
++}
++
++static void *tls_get(struct lkl_tls_key *key)
++{
++	return FlsGetValue(key->key);
++}
++
++
++/*
++ * With 64 bits, we can cover about 583 years at a nanosecond resolution.
++ * Windows counts time from 1601 so we do have about 100 years before we
++ * overflow.
++ */
++static unsigned long long time_ns(void)
++{
++	SYSTEMTIME st;
++	FILETIME ft;
++	ULARGE_INTEGER uli;
++
++	GetSystemTime(&st);
++	SystemTimeToFileTime(&st, &ft);
++	uli.LowPart = ft.dwLowDateTime;
++	uli.HighPart = ft.dwHighDateTime;
++
++	return (uli.QuadPart - DIFF_1601_TO_1970_IN_100NS) * 100;
++}
++
++struct timer {
++	HANDLE queue;
++	void (*callback)(void *arg);
++	void *arg;
++};
++
++static void *timer_alloc(void (*fn)(void *), void *arg)
++{
++	struct timer *t;
++
++	t = malloc(sizeof(*t));
++	if (!t)
++		return NULL;
++
++	t->queue = CreateTimerQueue();
++	if (!t->queue) {
++		free(t);
++		return NULL;
++	}
++
++	t->callback = fn;
++	t->arg = arg;
++
++	return t;
++}
++
++static void CALLBACK timer_callback(void *arg, BOOLEAN TimerOrWaitFired)
++{
++	struct timer *t = (struct timer *)arg;
++
++	if (TimerOrWaitFired)
++		t->callback(t->arg);
++}
++
++static int timer_set_oneshot(void *timer, unsigned long ns)
++{
++	struct timer *t = (struct timer *)timer;
++	HANDLE tmp;
++
++	return !CreateTimerQueueTimer(&tmp, t->queue, timer_callback, t,
++				      ns / 1000000, 0, 0);
++}
++
++static void timer_free(void *timer)
++{
++	struct timer *t = (struct timer *)timer;
++	HANDLE completion;
++
++	completion = CreateEvent(NULL, FALSE, FALSE, NULL);
++	DeleteTimerQueueEx(t->queue, completion);
++	WaitForSingleObject(completion, INFINITE);
++	free(t);
++}
++
++static void panic(void)
++{
++	int *x = NULL;
++
++	*x = 1;
++	assert(0);
++}
++
++static void print(const char *str, int len)
++{
++	write(1, str, len);
++}
++
++static long gettid(void)
++{
++	return GetCurrentThreadId();
++}
++
++static void *mem_alloc(unsigned long size)
++{
++	return malloc(size);
++}
++
++struct lkl_host_operations lkl_host_ops = {
++	.panic = panic,
++	.thread_create = thread_create,
++	.thread_detach = thread_detach,
++	.thread_exit = thread_exit,
++	.thread_join = thread_join,
++	.thread_self = thread_self,
++	.thread_equal = thread_equal,
++	.sem_alloc = sem_alloc,
++	.sem_free = sem_free,
++	.sem_up = sem_up,
++	.sem_down = sem_down,
++	.mutex_alloc = mutex_alloc,
++	.mutex_free = mutex_free,
++	.mutex_lock = mutex_lock,
++	.mutex_unlock = mutex_unlock,
++	.tls_alloc = tls_alloc,
++	.tls_free = tls_free,
++	.tls_set = tls_set,
++	.tls_get = tls_get,
++	.time = time_ns,
++	.timer_alloc = timer_alloc,
++	.timer_set_oneshot = timer_set_oneshot,
++	.timer_free = timer_free,
++	.print = print,
++	.mem_alloc = mem_alloc,
++	.mem_free = free,
++	.ioremap = lkl_ioremap,
++	.iomem_access = lkl_iomem_access,
++	.virtio_devices = lkl_virtio_devs,
++	.gettid = gettid,
++	.jmp_buf_set = jmp_buf_set,
++	.jmp_buf_longjmp = jmp_buf_longjmp,
++};
++
++int handle_get_capacity(struct lkl_disk disk, unsigned long long *res)
++{
++	LARGE_INTEGER tmp;
++
++	if (!GetFileSizeEx(disk.handle, &tmp))
++		return -1;
++
++	*res = tmp.QuadPart;
++	return 0;
++}
++
++static int blk_request(struct lkl_disk disk, struct lkl_blk_req *req)
++{
++	unsigned long long offset = req->sector * 512;
++	OVERLAPPED ov = { 0, };
++	int err = 0, ret;
++
++	switch (req->type) {
++	case LKL_DEV_BLK_TYPE_READ:
++	case LKL_DEV_BLK_TYPE_WRITE:
++	{
++		int i;
++
++		for (i = 0; i < req->count; i++) {
++			DWORD res;
++			struct iovec *buf = &req->buf[i];
++
++			ov.Offset = offset & 0xffffffff;
++			ov.OffsetHigh = offset >> 32;
++
++			if (req->type == LKL_DEV_BLK_TYPE_READ)
++				ret = ReadFile(disk.handle, buf->iov_base,
++					       buf->iov_len, &res, &ov);
++			else
++				ret = WriteFile(disk.handle, buf->iov_base,
++						buf->iov_len, &res, &ov);
++			if (!ret) {
++				lkl_printf("%s: I/O error: %d\n", __func__,
++					   GetLastError());
++				err = -1;
++				goto out;
++			}
++
++			if (res != buf->iov_len) {
++				lkl_printf("%s: I/O error: short: %d %d\n",
++					   res, buf->iov_len);
++				err = -1;
++				goto out;
++			}
++
++			offset += buf->iov_len;
++		}
++		break;
++	}
++	case LKL_DEV_BLK_TYPE_FLUSH:
++	case LKL_DEV_BLK_TYPE_FLUSH_OUT:
++		ret = FlushFileBuffers(disk.handle);
++		if (!ret)
++			err = 1;
++		break;
++	default:
++		return LKL_DEV_BLK_STATUS_UNSUP;
++	}
++
++out:
++	if (err < 0)
++		return LKL_DEV_BLK_STATUS_IOERR;
++
++	return LKL_DEV_BLK_STATUS_OK;
++}
++
++struct lkl_dev_blk_ops lkl_dev_blk_ops = {
++	.get_capacity = handle_get_capacity,
++	.request = blk_request,
++};
++
++/* Needed to resolve linker error on Win32. We don't really support
++ * any network IO on Windows, anyway, so there's no loss here.
++ */
++int lkl_netdevs_remove(void)
++{
++	return 0;
++}
 -- 
 2.20.1 (Apple Git-117)
 
