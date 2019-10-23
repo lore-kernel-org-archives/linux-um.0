@@ -1,15 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x543.google.com ([2607:f8b0:4864:20::543])
+Received: from mail-pf1-x443.google.com ([2607:f8b0:4864:20::443])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iN8ki-0001f3-7z
- for linux-um@lists.infradead.org; Wed, 23 Oct 2019 05:00:13 +0000
-Received: by mail-pg1-x543.google.com with SMTP id e15so11355977pgu.13
- for <linux-um@lists.infradead.org>; Tue, 22 Oct 2019 22:00:08 -0700 (PDT)
+ id 1iN8QP-0001u6-75
+ for linux-um@lists.infradead.org; Wed, 23 Oct 2019 04:39:17 +0000
+Received: by mail-pf1-x443.google.com with SMTP id c13so877847pfp.5
+ for <linux-um@lists.infradead.org>; Tue, 22 Oct 2019 21:39:08 -0700 (PDT)
 From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC PATCH 38/47] Revert "export.h: remove code for prefixing symbols
- with underscore"
-Date: Wed, 23 Oct 2019 13:38:12 +0900
-Message-Id: <4ad3005234a6ee5444f3e47201b66ae1d0d4266b.1571798507.git.thehajime@gmail.com>
+Subject: [RFC PATCH 35/47] xfs: support for non-mmu architectures
+Date: Wed, 23 Oct 2019 13:38:09 +0900
+Message-Id: <e52ac5600f91082a2b3e1acc263280e1b7379bed.1571798507.git.thehajime@gmail.com>
 In-Reply-To: <cover.1571798507.git.thehajime@gmail.com>
 References: <cover.1571798507.git.thehajime@gmail.com>
 MIME-Version: 1.0
@@ -26,142 +25,107 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: Octavian Purdila <tavi.purdila@gmail.com>, Hajime Tazaki <thehajime@gmail.com>, Akira Moroo <retrage01@gmail.com>
+Cc: Octavian Purdila <tavi.purdila@gmail.com>, Akira Moroo <retrage01@gmail.com>
 
-for lkl, mingw32 requires underscore-ed symbols.
+From: Octavian Purdila <tavi.purdila@gmail.com>
 
-This reverts commit 94e58e0ac31284fa26597c0e00a9b1d87a691d02.
+Naive implementation for non-mmu architectures: allocate physically
+contiguous xfs buffers with alloc_pages. Terribly inefficient with
+memory and fragmentation on high I/O loads but it may be good enough
+for basic usage (which most non-mmu architectures will need).
 
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
 ---
- include/asm-generic/export.h | 34 ++++++++++++++++++++++------------
- include/linux/export.h       | 23 ++++++++++++++++++-----
- 2 files changed, 40 insertions(+), 17 deletions(-)
+ fs/xfs/xfs_buf.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-diff --git a/include/asm-generic/export.h b/include/asm-generic/export.h
-index 294d6ae785d4..69ce0914b025 100644
---- a/include/asm-generic/export.h
-+++ b/include/asm-generic/export.h
-@@ -27,32 +27,42 @@
- #endif
- .endm
+diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
+index ca0849043f54..c4bb390cc9b0 100644
+--- a/fs/xfs/xfs_buf.c
++++ b/fs/xfs/xfs_buf.c
+@@ -313,6 +313,7 @@ xfs_buf_free(
+ 	ASSERT(list_empty(&bp->b_lru));
  
-+#ifdef CONFIG_HAVE_UNDERSCORE_SYMBOL_PREFIX
-+#define KSYM(name) _##name
+ 	if (bp->b_flags & _XBF_PAGES) {
++#ifdef CONFIG_MMU
+ 		uint		i;
+ 
+ 		if (xfs_buf_is_vmapped(bp))
+@@ -324,6 +325,10 @@ xfs_buf_free(
+ 
+ 			__free_page(page);
+ 		}
 +#else
-+#define KSYM(name) name
++		free_pages((unsigned long)page_to_virt(bp->b_pages[0]),
++			   order_base_2(bp->b_page_count));
 +#endif
-+
- /*
-  * note on .section use: @progbits vs %progbits nastiness doesn't matter,
-  * since we immediately emit into those sections anyway.
-  */
- .macro ___EXPORT_SYMBOL name,val,sec
- #ifdef CONFIG_MODULES
--	.globl __ksymtab_\name
-+	.globl KSYM(__ksymtab_\name)
- 	.section ___ksymtab\sec+\name,"a"
- 	.balign KSYM_ALIGN
--__ksymtab_\name:
--	__put \val, __kstrtab_\name
-+KSYM(__ksymtab_\name):
-+	__put \val, KSYM(__kstrtab_\name)
- 	.previous
- 	.section __ksymtab_strings,"a"
--__kstrtab_\name:
-+KSYM(__kstrtab_\name):
-+#ifdef CONFIG_HAVE_UNDERSCORE_SYMBOL_PREFIX
-+	.asciz "_\name"
+ 	} else if (bp->b_flags & _XBF_KMEM)
+ 		kmem_free(bp->b_addr);
+ 	_xfs_buf_free_pages(bp);
+@@ -390,7 +395,14 @@ xfs_buf_allocate_memory(
+ 		struct page	*page;
+ 		uint		retries = 0;
+ retry:
++#ifdef CONFIG_MMU
+ 		page = alloc_page(gfp_mask);
 +#else
- 	.asciz "\name"
++		if (i == 0)
++			page = alloc_pages(gfp_mask, order_base_2(page_count));
++		else
++			page = bp->b_pages[0] + i;
 +#endif
- 	.previous
- #ifdef CONFIG_MODVERSIONS
- 	.section ___kcrctab\sec+\name,"a"
- 	.balign KCRC_ALIGN
--__kcrctab_\name:
-+KSYM(__kcrctab_\name):
- #if defined(CONFIG_MODULE_REL_CRCS)
--	.long __crc_\name - .
-+	.long KSYM(__crc_\name) - .
- #else
--	.long __crc_\name
-+	.long KSYM(__crc_\name)
- #endif
--	.weak __crc_\name
-+	.weak KSYM(__crc_\name)
- 	.previous
- #endif
- #endif
-@@ -85,12 +95,12 @@ __ksym_marker_\sym:
- #endif
+ 		if (unlikely(page == NULL)) {
+ 			if (flags & XBF_READ_AHEAD) {
+ 				bp->b_page_count = i;
+@@ -425,8 +437,10 @@ xfs_buf_allocate_memory(
+ 	return 0;
  
- #define EXPORT_SYMBOL(name)					\
--	__EXPORT_SYMBOL(name, KSYM_FUNC(name),)
-+	__EXPORT_SYMBOL(name, KSYM_FUNC(KSYM(name)),)
- #define EXPORT_SYMBOL_GPL(name) 				\
--	__EXPORT_SYMBOL(name, KSYM_FUNC(name), _gpl)
-+	__EXPORT_SYMBOL(name, KSYM_FUNC(KSYM(name)), _gpl)
- #define EXPORT_DATA_SYMBOL(name)				\
--	__EXPORT_SYMBOL(name, name,)
-+	__EXPORT_SYMBOL(name, KSYM(name),)
- #define EXPORT_DATA_SYMBOL_GPL(name)				\
--	__EXPORT_SYMBOL(name, name,_gpl)
-+	__EXPORT_SYMBOL(name, KSYM(name),_gpl)
+ out_free_pages:
++#ifdef CONFIG_MMU
+ 	for (i = 0; i < bp->b_page_count; i++)
+ 		__free_page(bp->b_pages[i]);
++#endif
+ 	bp->b_flags &= ~_XBF_PAGES;
+ 	return error;
+ }
+@@ -446,6 +460,7 @@ _xfs_buf_map_pages(
+ 	} else if (flags & XBF_UNMAPPED) {
+ 		bp->b_addr = NULL;
+ 	} else {
++#ifdef CONFIG_MMU
+ 		int retried = 0;
+ 		unsigned nofs_flag;
  
- #endif
-diff --git a/include/linux/export.h b/include/linux/export.h
-index fd8711ed9ac4..34c34d09103c 100644
---- a/include/linux/export.h
-+++ b/include/linux/export.h
-@@ -10,6 +10,19 @@
-  * hackers place grumpy comments in header files.
-  */
- 
-+/* Some toolchains use a `_' prefix for all user symbols. */
-+#ifdef CONFIG_HAVE_UNDERSCORE_SYMBOL_PREFIX
-+#define __VMLINUX_SYMBOL(x) _##x
-+#define __VMLINUX_SYMBOL_STR(x) "_" #x
+@@ -466,6 +481,9 @@ _xfs_buf_map_pages(
+ 			vm_unmap_aliases();
+ 		} while (retried++ <= 1);
+ 		memalloc_nofs_restore(nofs_flag);
 +#else
-+#define __VMLINUX_SYMBOL(x) x
-+#define __VMLINUX_SYMBOL_STR(x) #x
++		bp->b_addr = page_to_virt(bp->b_pages[0]);
 +#endif
-+
-+/* Indirect, so macros are expanded before pasting. */
-+#define VMLINUX_SYMBOL(x) __VMLINUX_SYMBOL(x)
-+#define VMLINUX_SYMBOL_STR(x) __VMLINUX_SYMBOL_STR(x)
-+
- #ifndef __ASSEMBLY__
- #ifdef MODULE
- extern struct module __this_module;
-@@ -27,14 +40,14 @@ extern struct module __this_module;
- #if defined(CONFIG_MODULE_REL_CRCS)
- #define __CRC_SYMBOL(sym, sec)						\
- 	asm("	.section \"___kcrctab" sec "+" #sym "\", \"a\"	\n"	\
--	    "	.weak	__crc_" #sym "				\n"	\
--	    "	.long	__crc_" #sym " - .			\n"	\
-+	    "	.weak	" VMLINUX_SYMBOL_STR(__crc_##sym) "	\n"	\
-+	    "	.long	" VMLINUX_SYMBOL_STR(__crc_##sym) " - .	\n"	\
- 	    "	.previous					\n");
- #else
- #define __CRC_SYMBOL(sym, sec)						\
- 	asm("	.section \"___kcrctab" sec "+" #sym "\", \"a\"	\n"	\
--	    "	.weak	__crc_" #sym "				\n"	\
--	    "	.long	__crc_" #sym "				\n"	\
-+	    "	.weak	" VMLINUX_SYMBOL_STR(__crc_##sym) "	\n"	\
-+	    "	.long	" VMLINUX_SYMBOL_STR(__crc_##sym) "	\n"	\
- 	    "	.previous					\n");
- #endif
- #else
-@@ -80,7 +93,7 @@ struct kernel_symbol {
- 	__CRC_SYMBOL(sym, sec)						\
- 	static const char __kstrtab_##sym[]				\
- 	__attribute__((section("__ksymtab_strings"), used, aligned(1)))	\
--	= #sym;								\
-+	= VMLINUX_SYMBOL_STR(#sym);					\
- 	__KSYMTAB_ENTRY(sym, sec)
  
- #if defined(__DISABLE_EXPORTS)
+ 		if (!bp->b_addr)
+ 			return -ENOMEM;
+@@ -915,11 +933,19 @@ xfs_buf_get_uncached(
+ 	if (error)
+ 		goto fail_free_buf;
+ 
++#ifdef CONFIG_MMU
+ 	for (i = 0; i < page_count; i++) {
+ 		bp->b_pages[i] = alloc_page(xb_to_gfp(flags));
+ 		if (!bp->b_pages[i])
+ 			goto fail_free_mem;
+ 	}
++#else
++	bp->b_pages[0] = alloc_pages(flags, order_base_2(page_count));
++	if (!bp->b_pages[0])
++		goto fail_free_buf;
++	for (i = 1; i < page_count; i++)
++		bp->b_pages[i] = bp->b_pages[i-1] + 1;
++#endif
+ 	bp->b_flags |= _XBF_PAGES;
+ 
+ 	error = _xfs_buf_map_pages(bp, 0);
 -- 
 2.20.1 (Apple Git-117)
 
