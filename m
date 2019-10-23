@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x644.google.com ([2607:f8b0:4864:20::644])
+Received: from mail-pl1-x642.google.com ([2607:f8b0:4864:20::642])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iN8QL-0001pZ-RJ
- for linux-um@lists.infradead.org; Wed, 23 Oct 2019 04:39:14 +0000
-Received: by mail-pl1-x644.google.com with SMTP id c3so9460944plo.2
- for <linux-um@lists.infradead.org>; Tue, 22 Oct 2019 21:39:05 -0700 (PDT)
+ id 1iN8ko-0002BM-II
+ for linux-um@lists.infradead.org; Wed, 23 Oct 2019 05:00:23 +0000
+Received: by mail-pl1-x642.google.com with SMTP id q15so9467860pll.11
+ for <linux-um@lists.infradead.org>; Tue, 22 Oct 2019 22:00:14 -0700 (PDT)
 From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC PATCH 17/47] lkl tools: host lib: virtio devices
-Date: Wed, 23 Oct 2019 13:37:51 +0900
-Message-Id: <8be000fddc953430b61233ff29efcaa67f0ade35.1571798507.git.thehajime@gmail.com>
+Subject: [RFC PATCH 30/47] lkl: add documentation
+Date: Wed, 23 Oct 2019 13:38:04 +0900
+Message-Id: <fc572809de9f3127de73bbc96df993f3daa4fba7.1571798507.git.thehajime@gmail.com>
 In-Reply-To: <cover.1571798507.git.thehajime@gmail.com>
 References: <cover.1571798507.git.thehajime@gmail.com>
 MIME-Version: 1.0
@@ -25,769 +25,512 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: "H . K . Jerry Chu" <hkchu@google.com>, Conrad Meyer <cem@FreeBSD.org>, Octavian Purdila <tavi.purdila@gmail.com>, Akira Moroo <retrage01@gmail.com>, Yuan Liu <liuyuan@google.com>, Patrick Collins <pscollins@google.com>, Michael Zimmermann <sigmaepsilon92@gmail.com>, Hajime Tazaki <thehajime@gmail.com>
+Cc: "H . K . Jerry Chu" <hkchu@google.com>, Conrad Meyer <cem@FreeBSD.org>, Octavian Purdila <tavi.purdila@gmail.com>, Motomu Utsumi <motomuman@gmail.com>, Akira Moroo <retrage01@gmail.com>, Thomas Liebetraut <thomas@tommie-lie.de>, Patrick Collins <pscollins@google.com>, Chenyang Zhong <zhongcy95@gmail.com>, Yuan Liu <liuyuan@google.com>, Gustavo Bittencourt <gbitten@gmail.com>
 
 From: Octavian Purdila <tavi.purdila@gmail.com>
 
-Add helpers for implementing host virtio devices. It uses the memory
-mapped I/O helpers to interact with the Linux MMIO virtio transport
-driver and offers support to setup and add a new virtio device,
-dispatch requests from the incoming queues as well as support for
-completing requests.
+We also added a symlink to README.md to display at github.
 
-All added virtio devices are stored in lkl_virtio_devs as strings, per
-the Linux MMIO virtio transport driver command line specification.
-
+Signed-off-by: Chenyang Zhong <zhongcy95@gmail.com>
 Signed-off-by: Conrad Meyer <cem@FreeBSD.org>
+Signed-off-by: Gustavo Bittencourt <gbitten@gmail.com>
 Signed-off-by: H.K. Jerry Chu <hkchu@google.com>
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
-Signed-off-by: Michael Zimmermann <sigmaepsilon92@gmail.com>
+Signed-off-by: Motomu Utsumi <motomuman@gmail.com>
 Signed-off-by: Patrick Collins <pscollins@google.com>
+Signed-off-by: Thomas Liebetraut <thomas@tommie-lie.de>
 Signed-off-by: Yuan Liu <liuyuan@google.com>
 Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
 ---
- tools/lkl/lib/virtio.c | 631 +++++++++++++++++++++++++++++++++++++++++
- tools/lkl/lib/virtio.h |  93 ++++++
- 2 files changed, 724 insertions(+)
- create mode 100644 tools/lkl/lib/virtio.c
- create mode 100644 tools/lkl/lib/virtio.h
+ Documentation/lkl.txt | 470 ++++++++++++++++++++++++++++++++++++++++++
+ README.md             |   1 +
+ 2 files changed, 471 insertions(+)
+ create mode 100644 Documentation/lkl.txt
+ create mode 120000 README.md
 
-diff --git a/tools/lkl/lib/virtio.c b/tools/lkl/lib/virtio.c
+diff --git a/Documentation/lkl.txt b/Documentation/lkl.txt
 new file mode 100644
-index 000000000000..4b3dbba607c3
+index 000000000000..97fe407b0bc6
 --- /dev/null
-+++ b/tools/lkl/lib/virtio.c
-@@ -0,0 +1,631 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <string.h>
-+#include <stdio.h>
-+#include <stdbool.h>
-+#include <inttypes.h>
-+#include <lkl_host.h>
-+#include <lkl/linux/virtio_ring.h>
-+#include "iomem.h"
-+#include "virtio.h"
-+#include "endian.h"
-+
-+#define VIRTIO_DEV_MAGIC		0x74726976
-+#define VIRTIO_DEV_VERSION		2
-+
-+#define VIRTIO_MMIO_MAGIC_VALUE		0x000
-+#define VIRTIO_MMIO_VERSION		0x004
-+#define VIRTIO_MMIO_DEVICE_ID		0x008
-+#define VIRTIO_MMIO_VENDOR_ID		0x00c
-+#define VIRTIO_MMIO_DEVICE_FEATURES	0x010
-+#define VIRTIO_MMIO_DEVICE_FEATURES_SEL 0x014
-+#define VIRTIO_MMIO_DRIVER_FEATURES	0x020
-+#define VIRTIO_MMIO_DRIVER_FEATURES_SEL 0x024
-+#define VIRTIO_MMIO_QUEUE_SEL		0x030
-+#define VIRTIO_MMIO_QUEUE_NUM_MAX	0x034
-+#define VIRTIO_MMIO_QUEUE_NUM		0x038
-+#define VIRTIO_MMIO_QUEUE_READY		0x044
-+#define VIRTIO_MMIO_QUEUE_NOTIFY	0x050
-+#define VIRTIO_MMIO_INTERRUPT_STATUS	0x060
-+#define VIRTIO_MMIO_INTERRUPT_ACK	0x064
-+#define VIRTIO_MMIO_STATUS		0x070
-+#define VIRTIO_MMIO_QUEUE_DESC_LOW	0x080
-+#define VIRTIO_MMIO_QUEUE_DESC_HIGH	0x084
-+#define VIRTIO_MMIO_QUEUE_AVAIL_LOW	0x090
-+#define VIRTIO_MMIO_QUEUE_AVAIL_HIGH	0x094
-+#define VIRTIO_MMIO_QUEUE_USED_LOW	0x0a0
-+#define VIRTIO_MMIO_QUEUE_USED_HIGH	0x0a4
-+#define VIRTIO_MMIO_CONFIG_GENERATION	0x0fc
-+#define VIRTIO_MMIO_CONFIG		0x100
-+#define VIRTIO_MMIO_INT_VRING		0x01
-+#define VIRTIO_MMIO_INT_CONFIG		0x02
-+
-+#define BIT(x) (1ULL << x)
-+
-+#define virtio_panic(msg, ...) do {					\
-+		lkl_printf("LKL virtio error" msg, ##__VA_ARGS__);	\
-+		lkl_host_ops.panic();					\
-+	} while (0)
-+
-+struct virtio_queue {
-+	uint32_t num_max;
-+	uint32_t num;
-+	uint32_t ready;
-+	uint32_t max_merge_len;
-+
-+	struct lkl_vring_desc *desc;
-+	struct lkl_vring_avail *avail;
-+	struct lkl_vring_used *used;
-+	uint16_t last_avail_idx;
-+	uint16_t last_used_idx_signaled;
-+};
-+
-+struct _virtio_req {
-+	struct virtio_req req;
-+	struct virtio_dev *dev;
-+	struct virtio_queue *q;
-+	uint16_t idx;
-+};
-+
-+
-+static inline uint16_t virtio_get_used_event(struct virtio_queue *q)
-+{
-+	return q->avail->ring[q->num];
-+}
-+
-+static inline void virtio_set_avail_event(struct virtio_queue *q, uint16_t val)
-+{
-+	*((uint16_t *)&q->used->ring[q->num]) = val;
-+}
-+
-+static inline void virtio_deliver_irq(struct virtio_dev *dev)
-+{
-+	dev->int_status |= VIRTIO_MMIO_INT_VRING;
-+	/* Make sure all memory writes before are visible to the driver. */
-+	__sync_synchronize();
-+	lkl_trigger_irq(dev->irq);
-+}
-+
-+static inline uint16_t virtio_get_used_idx(struct virtio_queue *q)
-+{
-+	return le16toh(q->used->idx);
-+}
-+
-+static inline void virtio_add_used(struct virtio_queue *q, uint16_t used_idx,
-+				   uint16_t avail_idx, uint16_t len)
-+{
-+	uint16_t desc_idx = q->avail->ring[avail_idx & (q->num - 1)];
-+
-+	used_idx = used_idx & (q->num - 1);
-+	q->used->ring[used_idx].id = desc_idx;
-+	q->used->ring[used_idx].len = htole16(len);
-+}
-+
-+/*
-+ * Make sure all memory writes before are visible to the driver before updating
-+ * the idx.  We need it here even we already have one in virtio_deliver_irq()
-+ * because there might already be an driver thread reading the idx and dequeuing
-+ * used buffers.
-+ */
-+static inline void virtio_sync_used_idx(struct virtio_queue *q, uint16_t idx)
-+{
-+	__sync_synchronize();
-+	q->used->idx = htole16(idx);
-+}
-+
-+#define min_len(a, b) (a < b ? a : b)
-+
-+void virtio_req_complete(struct virtio_req *req, uint32_t len)
-+{
-+	int send_irq = 0;
-+	struct _virtio_req *_req = container_of(req, struct _virtio_req, req);
-+	struct virtio_queue *q = _req->q;
-+	uint16_t avail_idx = _req->idx;
-+	uint16_t used_idx = virtio_get_used_idx(_req->q);
-+	int i;
-+
-+	/*
-+	 * We've potentially used up multiple (non-chained) descriptors and have
-+	 * to create one "used" entry for each descriptor we've consumed.
-+	 */
-+	for (i = 0; i < req->buf_count; i++) {
-+		uint16_t used_len;
-+
-+		if (!q->max_merge_len)
-+			used_len = len;
-+		else
-+			used_len = min_len(len,  req->buf[i].iov_len);
-+
-+		virtio_add_used(q, used_idx++, avail_idx++, used_len);
-+
-+		len -= used_len;
-+		if (!len)
-+			break;
-+	}
-+	virtio_sync_used_idx(q, used_idx);
-+	q->last_avail_idx = avail_idx;
-+
-+	/*
-+	 * Triggers the irq whenever there is no available buffer.
-+	 */
-+	if (q->last_avail_idx == le16toh(q->avail->idx))
-+		send_irq = 1;
-+
-+	/*
-+	 * There are two rings: q->avail and q->used for each of the rx and tx
-+	 * queues that are used to pass buffers between kernel driver and the
-+	 * virtio device implementation.
-+	 *
-+	 * Kernel maitains the first one and appends buffers to it. In rx queue,
-+	 * it's empty buffers kernel offers to store received packets. In tx
-+	 * queue, it's buffers containing packets to transmit. Kernel notifies
-+	 * the device by mmio write (see VIRTIO_MMIO_QUEUE_NOTIFY below).
-+	 *
-+	 * The virtio device (here in this file) maintains the
-+	 * q->used and appends buffer to it after consuming it from q->avail.
-+	 *
-+	 * The device needs to notify the driver by triggering irq here. The
-+	 * LKL_VIRTIO_RING_F_EVENT_IDX is enabled in this implementation so
-+	 * kernel can set virtio_get_used_event(q) to tell the device to "only
-+	 * trigger the irq when this item in q->used ring is populated."
-+	 *
-+	 * Because driver and device are run in two different threads. When
-+	 * driver sets virtio_get_used_event(q), q->used->idx may already be
-+	 * increased to a larger one. So we need to trigger the irq when
-+	 * virtio_get_used_event(q) < q->used->idx.
-+	 *
-+	 * To avoid unnessary irqs for each packet after
-+	 * virtio_get_used_event(q) < q->used->idx, last_used_idx_signaled is
-+	 * stored and irq is only triggered if
-+	 * last_used_idx_signaled <= virtio_get_used_event(q) < q->used->idx
-+	 *
-+	 * This is what lkl_vring_need_event() checks and it evens covers the
-+	 * case when those numbers wrap up.
-+	 */
-+	if (send_irq || lkl_vring_need_event(le16toh(virtio_get_used_event(q)),
-+					     virtio_get_used_idx(q),
-+					     q->last_used_idx_signaled)) {
-+		q->last_used_idx_signaled = virtio_get_used_idx(q);
-+		virtio_deliver_irq(_req->dev);
-+	}
-+}
-+
-+/*
-+ * Grab the vring_desc from the queue at the appropriate index in the
-+ * queue's circular buffer, converting from little-endian to
-+ * the host's endianness.
-+ */
-+static inline
-+struct lkl_vring_desc *vring_desc_at_le_idx(struct virtio_queue *q,
-+					    __lkl__virtio16 le_idx)
-+{
-+	return &q->desc[le16toh(le_idx) & (q->num - 1)];
-+}
-+
-+static inline
-+struct lkl_vring_desc *vring_desc_at_avail_idx(struct virtio_queue *q,
-+					       uint16_t idx)
-+{
-+	uint16_t desc_idx = q->avail->ring[idx & (q->num - 1)];
-+
-+	return vring_desc_at_le_idx(q, desc_idx);
-+}
-+
-+/* Initialize buf to hold the same info as the vring_desc */
-+static void add_dev_buf_from_vring_desc(struct virtio_req *req,
-+					struct lkl_vring_desc *vring_desc)
-+{
-+	struct iovec *buf = &req->buf[req->buf_count++];
-+
-+	buf->iov_base = (void *)(uintptr_t)le64toh(vring_desc->addr);
-+	buf->iov_len = le32toh(vring_desc->len);
-+
-+	if (!(buf->iov_base && buf->iov_len))
-+		virtio_panic("bad vring_desc: %p %d\n",
-+			     buf->iov_base, buf->iov_len);
-+
-+	req->total_len += buf->iov_len;
-+}
-+
-+static struct lkl_vring_desc *get_next_desc(struct virtio_queue *q,
-+					    struct lkl_vring_desc *desc,
-+					    uint16_t *idx)
-+{
-+	uint16_t desc_idx;
-+
-+	if (q->max_merge_len) {
-+		if (++(*idx) == le16toh(q->avail->idx))
-+			return NULL;
-+		desc_idx = q->avail->ring[*idx & (q->num - 1)];
-+		return vring_desc_at_le_idx(q, desc_idx);
-+	}
-+
-+	if (!(le16toh(desc->flags) & LKL_VRING_DESC_F_NEXT))
-+		return NULL;
-+	return vring_desc_at_le_idx(q, desc->next);
-+}
-+
-+/*
-+ * Below there are two distinctly different (per packet) buffer allocation
-+ * schemes for us to deal with:
-+ *
-+ * 1. One or more descriptors chained through "next" as indicated by the
-+ *    LKL_VRING_DESC_F_NEXT flag,
-+ * 2. One or more descriptors from the ring sequentially, as many as are
-+ *    available and needed. This is the RX only "mergeable_rx_bufs" mode.
-+ *    The mode is entered when the VIRTIO_NET_F_MRG_RXBUF device feature
-+ *    is enabled.
-+ */
-+static int virtio_process_one(struct virtio_dev *dev, int qidx)
-+{
-+	struct virtio_queue *q = &dev->queue[qidx];
-+	uint16_t idx = q->last_avail_idx;
-+	struct _virtio_req _req = {
-+		.dev = dev,
-+		.q = q,
-+		.idx = idx,
-+	};
-+	struct virtio_req *req = &_req.req;
-+	struct lkl_vring_desc *desc = vring_desc_at_avail_idx(q, _req.idx);
-+
-+	do {
-+		add_dev_buf_from_vring_desc(req, desc);
-+		if (q->max_merge_len && req->total_len > q->max_merge_len)
-+			break;
-+		desc = get_next_desc(q, desc, &idx);
-+	} while (desc && req->buf_count < VIRTIO_REQ_MAX_BUFS);
-+
-+	if (desc && le16toh(desc->flags) & LKL_VRING_DESC_F_NEXT)
-+		virtio_panic("too many chained bufs");
-+
-+	return dev->ops->enqueue(dev, qidx, req);
-+}
-+
-+/* NB: we can enter this function two different ways in the case of
-+ * netdevs --- either through a tx/rx thread poll (which the LKL
-+ * scheduler knows nothing about) or through virtio_write called
-+ * inside an interrupt handler, so to be safe, it's not enough to
-+ * synchronize only the tx/rx polling threads.
-+ *
-+ * At the moment, it seems like only netdevs require the
-+ * synchronization we do here (i.e. locking around operations on a
-+ * particular virtqueue, with dev->ops->acquire_queue), since they
-+ * have these two different entry points, one of which isn't managed
-+ * by the LKL scheduler. So only devs corresponding to netdevs will
-+ * have non-NULL acquire/release_queue.
-+ *
-+ * In the future, this may change. If you see errors thrown in virtio
-+ * driver code by block/console devices, you should be suspicious of
-+ * the synchronization going on here.
-+ */
-+void virtio_process_queue(struct virtio_dev *dev, uint32_t qidx)
-+{
-+	struct virtio_queue *q = &dev->queue[qidx];
-+
-+	if (!q->ready)
-+		return;
-+
-+	if (dev->ops->acquire_queue)
-+		dev->ops->acquire_queue(dev, qidx);
-+
-+	while (q->last_avail_idx != le16toh(q->avail->idx)) {
-+		/*
-+		 * Make sure following loads happens after loading
-+		 * q->avail->idx.
-+		 */
-+		__sync_synchronize();
-+		if (virtio_process_one(dev, qidx) < 0)
-+			break;
-+		if (q->last_avail_idx == le16toh(q->avail->idx))
-+			virtio_set_avail_event(q, q->avail->idx);
-+	}
-+
-+	if (dev->ops->release_queue)
-+		dev->ops->release_queue(dev, qidx);
-+}
-+
-+static inline uint32_t virtio_read_device_features(struct virtio_dev *dev)
-+{
-+	if (dev->device_features_sel)
-+		return (uint32_t)(dev->device_features >> 32);
-+
-+	return (uint32_t)dev->device_features;
-+}
-+
-+static inline void virtio_write_driver_features(struct virtio_dev *dev,
-+						uint32_t val)
-+{
-+	uint64_t tmp;
-+
-+	if (dev->driver_features_sel) {
-+		tmp = dev->driver_features & 0xFFFFFFFF;
-+		dev->driver_features = tmp | (uint64_t)val << 32;
-+	} else {
-+		tmp = dev->driver_features & 0xFFFFFFFF00000000;
-+		dev->driver_features = tmp | val;
-+	}
-+}
-+
-+static int virtio_read(void *data, int offset, void *res, int size)
-+{
-+	uint32_t val;
-+	struct virtio_dev *dev = (struct virtio_dev *)data;
-+
-+	if (offset >= VIRTIO_MMIO_CONFIG) {
-+		offset -= VIRTIO_MMIO_CONFIG;
-+		if (offset + size > dev->config_len)
-+			return -LKL_EINVAL;
-+		memcpy(res, dev->config_data + offset, size);
-+		return 0;
-+	}
-+
-+	if (size != sizeof(uint32_t))
-+		return -LKL_EINVAL;
-+
-+	switch (offset) {
-+	case VIRTIO_MMIO_MAGIC_VALUE:
-+		val = VIRTIO_DEV_MAGIC;
-+		break;
-+	case VIRTIO_MMIO_VERSION:
-+		val = VIRTIO_DEV_VERSION;
-+		break;
-+	case VIRTIO_MMIO_DEVICE_ID:
-+		val = dev->device_id;
-+		break;
-+	case VIRTIO_MMIO_VENDOR_ID:
-+		val = dev->vendor_id;
-+		break;
-+	case VIRTIO_MMIO_DEVICE_FEATURES:
-+		val = virtio_read_device_features(dev);
-+		break;
-+	case VIRTIO_MMIO_QUEUE_NUM_MAX:
-+		val = dev->queue[dev->queue_sel].num_max;
-+		break;
-+	case VIRTIO_MMIO_QUEUE_READY:
-+		val = dev->queue[dev->queue_sel].ready;
-+		break;
-+	case VIRTIO_MMIO_INTERRUPT_STATUS:
-+		val = dev->int_status;
-+		break;
-+	case VIRTIO_MMIO_STATUS:
-+		val = dev->status;
-+		break;
-+	case VIRTIO_MMIO_CONFIG_GENERATION:
-+		val = dev->config_gen;
-+		break;
-+	default:
-+		return -1;
-+	}
-+
-+	*(uint32_t *)res = htole32(val);
-+
-+	return 0;
-+}
-+
-+static inline void set_ptr_low(void **ptr, uint32_t val)
-+{
-+	uint64_t tmp = (uintptr_t)*ptr;
-+
-+	tmp = (tmp & 0xFFFFFFFF00000000) | val;
-+	*ptr = (void *)(long)tmp;
-+}
-+
-+static inline void set_ptr_high(void **ptr, uint32_t val)
-+{
-+	uint64_t tmp = (uintptr_t)*ptr;
-+
-+	tmp = (tmp & 0x00000000FFFFFFFF) | ((uint64_t)val << 32);
-+	*ptr = (void *)(long)tmp;
-+}
-+
-+static inline void set_status(struct virtio_dev *dev, uint32_t val)
-+{
-+	if ((val & LKL_VIRTIO_CONFIG_S_FEATURES_OK) &&
-+	    (!(dev->driver_features & BIT(LKL_VIRTIO_F_VERSION_1)) ||
-+	     !(dev->driver_features & BIT(LKL_VIRTIO_RING_F_EVENT_IDX)) ||
-+	     dev->ops->check_features(dev)))
-+		val &= ~LKL_VIRTIO_CONFIG_S_FEATURES_OK;
-+	dev->status = val;
-+}
-+
-+static int virtio_write(void *data, int offset, void *res, int size)
-+{
-+	struct virtio_dev *dev = (struct virtio_dev *)data;
-+	struct virtio_queue *q = &dev->queue[dev->queue_sel];
-+	uint32_t val;
-+	int ret = 0;
-+
-+	if (offset >= VIRTIO_MMIO_CONFIG) {
-+		offset -= VIRTIO_MMIO_CONFIG;
-+
-+		if (offset + size >= dev->config_len)
-+			return -LKL_EINVAL;
-+		memcpy(dev->config_data + offset, res, size);
-+		return 0;
-+	}
-+
-+	if (size != sizeof(uint32_t))
-+		return -LKL_EINVAL;
-+
-+	val = le32toh(*(uint32_t *)res);
-+
-+	switch (offset) {
-+	case VIRTIO_MMIO_DEVICE_FEATURES_SEL:
-+		if (val > 1)
-+			return -LKL_EINVAL;
-+		dev->device_features_sel = val;
-+		break;
-+	case VIRTIO_MMIO_DRIVER_FEATURES_SEL:
-+		if (val > 1)
-+			return -LKL_EINVAL;
-+		dev->driver_features_sel = val;
-+		break;
-+	case VIRTIO_MMIO_DRIVER_FEATURES:
-+		virtio_write_driver_features(dev, val);
-+		break;
-+	case VIRTIO_MMIO_QUEUE_SEL:
-+		dev->queue_sel = val;
-+		break;
-+	case VIRTIO_MMIO_QUEUE_NUM:
-+		dev->queue[dev->queue_sel].num = val;
-+		break;
-+	case VIRTIO_MMIO_QUEUE_READY:
-+		dev->queue[dev->queue_sel].ready = val;
-+		break;
-+	case VIRTIO_MMIO_QUEUE_NOTIFY:
-+		virtio_process_queue(dev, val);
-+		break;
-+	case VIRTIO_MMIO_INTERRUPT_ACK:
-+		dev->int_status = 0;
-+		break;
-+	case VIRTIO_MMIO_STATUS:
-+		set_status(dev, val);
-+		break;
-+	case VIRTIO_MMIO_QUEUE_DESC_LOW:
-+		set_ptr_low((void **)&q->desc, val);
-+		break;
-+	case VIRTIO_MMIO_QUEUE_DESC_HIGH:
-+		set_ptr_high((void **)&q->desc, val);
-+		break;
-+	case VIRTIO_MMIO_QUEUE_AVAIL_LOW:
-+		set_ptr_low((void **)&q->avail, val);
-+		break;
-+	case VIRTIO_MMIO_QUEUE_AVAIL_HIGH:
-+		set_ptr_high((void **)&q->avail, val);
-+		break;
-+	case VIRTIO_MMIO_QUEUE_USED_LOW:
-+		set_ptr_low((void **)&q->used, val);
-+		break;
-+	case VIRTIO_MMIO_QUEUE_USED_HIGH:
-+		set_ptr_high((void **)&q->used, val);
-+		break;
-+	default:
-+		ret = -1;
-+	}
-+
-+	return ret;
-+}
-+
-+static const struct lkl_iomem_ops virtio_ops = {
-+	.read = virtio_read,
-+	.write = virtio_write,
-+};
-+
-+char lkl_virtio_devs[4096];
-+static char *devs = lkl_virtio_devs;
-+static uint32_t lkl_num_virtio_boot_devs;
-+
-+void virtio_set_queue_max_merge_len(struct virtio_dev *dev, int q, int len)
-+{
-+	dev->queue[q].max_merge_len = len;
-+}
-+
-+int virtio_dev_setup(struct virtio_dev *dev, int queues, int num_max)
-+{
-+	int qsize = queues * sizeof(*dev->queue);
-+	int avail, mmio_size;
-+	int i;
-+	int num_bytes;
-+	int ret;
-+
-+	dev->irq = lkl_get_free_irq("virtio");
-+	if (dev->irq < 0)
-+		return dev->irq;
-+
-+	dev->int_status = 0;
-+	dev->device_features |= BIT(LKL_VIRTIO_F_VERSION_1) |
-+		BIT(LKL_VIRTIO_RING_F_EVENT_IDX);
-+	dev->queue = lkl_host_ops.mem_alloc(qsize);
-+	if (!dev->queue)
-+		return -LKL_ENOMEM;
-+
-+	memset(dev->queue, 0, qsize);
-+	for (i = 0; i < queues; i++)
-+		dev->queue[i].num_max = num_max;
-+
-+	mmio_size = VIRTIO_MMIO_CONFIG + dev->config_len;
-+	dev->base = register_iomem(dev, mmio_size, &virtio_ops);
-+	if (!dev->base) {
-+		lkl_host_ops.mem_free(dev->queue);
-+		return -LKL_ENOMEM;
-+	}
-+
-+	if (!lkl_is_running()) {
-+		avail = sizeof(lkl_virtio_devs) - (devs - lkl_virtio_devs);
-+		num_bytes = snprintf(devs, avail,
-+				     " virtio_mmio.device=%d@0x%"PRIxPTR":%d",
-+				     mmio_size, (uintptr_t) dev->base,
-+				     dev->irq);
-+		if (num_bytes < 0 || num_bytes >= avail) {
-+			lkl_put_irq(dev->irq, "virtio");
-+			unregister_iomem(dev->base);
-+			lkl_host_ops.mem_free(dev->queue);
-+			return -LKL_ENOMEM;
-+		}
-+		devs += num_bytes;
-+		dev->virtio_mmio_id = lkl_num_virtio_boot_devs++;
-+	} else {
-+		ret =
-+		    lkl_sys_virtio_mmio_device_add((long)dev->base, mmio_size,
-+						   dev->irq);
-+		if (ret < 0) {
-+			lkl_printf("can't register mmio device\n");
-+			return -1;
-+		}
-+		dev->virtio_mmio_id = lkl_num_virtio_boot_devs + ret;
-+	}
-+
-+	return 0;
-+}
-+
-+int virtio_dev_cleanup(struct virtio_dev *dev)
-+{
-+	char devname[100];
-+	long fd, ret;
-+	long mount_ret;
-+
-+	if (!lkl_is_running())
-+		goto skip_unbind;
-+
-+	mount_ret = lkl_mount_fs("sysfs");
-+	if (mount_ret < 0)
-+		return mount_ret;
-+
-+	if (dev->virtio_mmio_id >= virtio_get_num_bootdevs())
-+		ret = snprintf(devname, sizeof(devname), "virtio-mmio.%d.auto",
-+			       dev->virtio_mmio_id - virtio_get_num_bootdevs());
-+	else
-+		ret = snprintf(devname, sizeof(devname), "virtio-mmio.%d",
-+			       dev->virtio_mmio_id);
-+	if (ret < 0 || (size_t) ret >= sizeof(devname))
-+		return -LKL_ENOMEM;
-+
-+	fd = lkl_sys_open("/sysfs/bus/platform/drivers/virtio-mmio/unbind",
-+			  LKL_O_WRONLY, 0);
-+	if (fd < 0)
-+		return fd;
-+
-+	ret = lkl_sys_write(fd, devname, strlen(devname));
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = lkl_sys_close(fd);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (mount_ret == 0) {
-+		ret = lkl_sys_umount("/sysfs", 0);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+skip_unbind:
-+	lkl_put_irq(dev->irq, "virtio");
-+	unregister_iomem(dev->base);
-+	lkl_host_ops.mem_free(dev->queue);
-+	return 0;
-+}
-+
-+uint32_t virtio_get_num_bootdevs(void)
-+{
-+	return lkl_num_virtio_boot_devs;
-+}
-diff --git a/tools/lkl/lib/virtio.h b/tools/lkl/lib/virtio.h
-new file mode 100644
-index 000000000000..7427aa8fad79
++++ b/Documentation/lkl.txt
+@@ -0,0 +1,470 @@
++
++Introduction
++============
++
++LKL (Linux Kernel Library) is aiming to allow reusing the Linux kernel code as
++extensively as possible with minimal effort and reduced maintenance overhead.
++
++Examples of how LKL can be used are: creating userspace applications (running on
++Linux and other operating systems) that can read or write Linux filesystems or
++can use the Linux networking stack, creating kernel drivers for other operating
++systems that can read Linux filesystems, bootloaders support for reading/writing
++Linux filesystems, etc.
++
++With LKL, the kernel code is compiled into an object file that can be directly
++linked by applications. The API offered by LKL is based on the Linux system call
++interface.
++
++LKL is implemented as an architecture port in arch/lkl. It uses host operations
++defined by the application or a host library (tools/lkl/lib).
++
++
++Supported hosts
++===============
++
++The supported hosts for now are POSIX and Windows userspace applications.
++
++
++Building LKL, the host library and LKL based tools
++==================================================
++
++    $ make -C tools/lkl
++
++will build LKL as a object file, it will install it in tools/lkl/lib together
++with the headers files in tools/lkl/include then will build the host library,
++tests and a few of application examples:
++
++* tests/boot - a simple applications that uses LKL and exercises the basic LKL
++APIs
++
++* fs2tar - a tool that converts a filesystem image to a tar archive
++
++* cptofs/cpfromfs - a tool that copies files to/from a filesystem image
++
++* lklfuse - a tool that can mount a filesystem image in userspace,
++  without root privileges, using FUSE
++
++
++Building LKL on FreeBSD
++-----------------------
++
++    $ pkg install binutils gcc gnubc gmake gsed coreutils bison flex python argp-standalone
++
++    #Prefer ports binutils and GNU bc(1):
++    $ export PATH=/sbin:/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/usr/lib64/ccache
++
++    $ gmake -C tools/lkl
++
++Building LKL on Ubuntu
++-----------------------
++
++    $ sudo apt-get install libfuse-dev libarchive-dev xfsprogs
++
++    # Optional, if you would like to be able to run tests
++    $ sudo apt-get install btrfs-tools
++    $ pip install yamlish junit_xml
++
++    $ make -C tools/lkl
++
++    # To check that everything works:
++    $ cd tools/lkl
++    $ make run-tests
++
++
++Building LKL for Windows
++------------------------
++
++In order to build LKL for Win32 the mingw cross compiler needs to be installed
++on the host (e.g. on Ubuntu the following packages are required:
++binutils-mingw-w64-i686, gcc-mingw-w64-base, gcc-mingw-w64-i686
++mingw-w64-common, mingw-w64-i686-dev).
++
++Due to a bug in mingw regarding weak symbols the following patches needs to be
++applied to mingw-binutils:
++
++https://sourceware.org/ml/binutils/2015-10/msg00234.html
++
++and i686-w64-mingw32-gas, i686-w64-mingw32-ld and i686-w64-mingw32-objcopy need
++to be recompiled.
++
++With that pre-requisites fullfilled you can now build LKL for Win32 with the
++following command:
++
++    $ make CROSS_COMPILE=i686-w64-mingw32- -C tools/lkl
++
++
++
++Building LKL on Windows
++------------------------
++
++To build on Windows, certain GNU tools need to be installed. These tools can come
++from several different projects, such as cygwin, unxutils, gnu-win32 or busybox-w32.
++Below is one minimal/modular set-up based on msys2.
++
++### Common build dependencies:
++* [MSYS2](https://sourceforge.net/projects/msys2/) (provides GNU bash and many other utilities)
++* Extra utilities from MSYS2/pacman: bc, base-devel
++
++### General considerations:
++* No spaces in pathnames (source, prefix, destination,...)!
++* Make sure that all utilities are in the PATH.
++* Win64 (and MinGW 64-bit crt) is LLP64, which causes conflicts in size of "long" in the
++Linux source. Linux (and lkl) can (currently) not
++be built on LLP64.
++* Cygwin (and msys2) are LP64, like linux.
++
++### For MSYS2 (and Cygwin):
++Msys2 will install a gcc tool chain as part of the base-devel bundle. Binutils (2.26) is already
++patched for NT weak externals. Using the msys2 shell, cd to the lkl sources and run:
++
++    $ make -C tools/lkl
++
++### For MinGW:
++Install mingw-w64-i686-toolchain via pacman, mingw-w64-i686-binutils (2.26) is already patched
++for NT weak externals. Start a MinGW Win32 shell (64-bit will not work, see above)
++and run:
++
++    $ make -C tools/lkl
++
++
++LKL hijack library
++==================
++
++LKL hijack library (liblkl-hijack.so) is used to replace system calls used by an
++application on the fly so that the application can use LKL instead of the kernel
++of host operating system. LD_PRELOAD is used to dynamically override system
++calls with this library when you execute a program.
++
++You can usually use this library via a wrapper script.
++
++    $ cd tools/lkl
++    $ ./bin/lkl-hijack.sh ip address show
++
++In order to configure the behavior of LKL, a json file can be used. You can
++specify json file with environmental variables (LKL_HIJACK_CONFIG_FILE). If
++there is nothing specified, LKL tries to find with the name 'lkl-hijack.json'
++for the configuration file.  You can also use the old-style configuration with
++environmental variables (e.g., LKL_HIJACK_NET_IFTYPE) but those are overridden
++if a json file is specified.
++
++```
++     $ cat conf.json
++     {
++       "gateway":"192.168.0.1",
++       "gateway6":"2001:db8:0:f101::1",
++       "debug":"1",
++       "singlecpu":"1",
++       "sysctl":"net.ipv4.tcp_wmem=4096 87380 2147483647",
++       "boot_cmdline":"ip=dhcp",
++       "interfaces":[
++               {
++                       "mac":"12:34:56:78:9a:bc",
++                       "type":"tap",
++                       "param":"tap7",
++                       "ip":"192.168.0.2",
++                       "masklen":"24",
++                       "ifgateway":"192.168.0.1",
++                       "ipv6":"2001:db8:0:f101::2",
++                       "masklen6":"64",
++                       "ifgateway6":"2001:db8:0:f101::1",
++                       "offload":"0xc803"
++               },
++               {
++                       "mac":"12:34:56:78:9a:bd",
++                       "type":"tap",
++                       "param":"tap77",
++                       "ip":"192.168.1.2",
++                       "masklen":"24",
++                       "ifgateway":"192.168.1.1",
++                       "ipv6":"2001:db8:0:f102::2",
++                       "masklen6":"64",
++                       "ifgateway6":"2001:db8:0:f102::1",
++                       "offload":"0xc803"
++               }
++       ]
++     }
++     $ LKL_HIJACK_CONFIG_FILE="conf.json" lkl-hijack.sh ip addr s
++```
++
++The following are the list of keys to describe a JSON file.
++
++* IPv4 gateway address
++
++  key: "gateway"
++  value type: string
++
++  the gateway IPv4 address of LKL network stack.
++```
++     "gateway":"192.168.0.1"
++```
++
++* IPv6 gateway address
++
++  key: "gateway6"
++  value type: string
++
++  the gateway IPv6 address of LKL network stack.
++```
++     "gateway6":"2001:db8:0:f101::1"
++```
++
++* Debug
++
++  key: "debug"
++  value type: string
++
++  Setting it causes some debug information (both from the kernel and the
++  LKL library) to be enabled.  If zero' is specified it is disabled.
++  It is also used as a bit mask to turn on specific debugging facilities.
++  E.g., setting it to "0x100" will cause the LKL kernel to pause after
++  the hijack'ed app exits. This allows one to debug or collect info from
++  the LKL kernel before it quits.
++```
++     "debug":"1"
++```
++
++* Single CPU pinning
++
++  key: "singlecpu"
++  value type: string
++
++  Pin LKL kernel threads on to a single host cpu. value "1" pins
++  only LKL kernel threads while value "2" also pins polling
++  threads.
++```
++     "singlecpu":"1"
++```
++
++* SYSCTL
++
++  key: "sysctl"
++  value type: string
++
++  Configure sysctl values of the booted kernel via the hijack library. Multiple
++  entries can be specified.
++```
++     "sysctl":"net.ipv4.tcp_wmem=4096 87380 2147483647"
++```
++
++* Boot command line
++
++  key: "boot_cmdline"
++  value type: string
++
++  Specify the command line to the kernel boot so that change the configuration
++  on a kernel instance.  For instance, you can change the memory size with
++  below.
++```
++     "boot_cmdline": "mem=1G"
++```
++
++* Mount
++
++  key: "mount"
++  value type: string
++
++```
++     "mount": "proc,sysfs"
++```
++
++* Network Interface Configuration
++
++  key: "interfaces"
++  value type: array of objects
++
++  This key takes a set of sub-keys to configure a single interface. Each key is defined as follows.
++  ```
++       "interfaces":[{....},{....}]
++  ```
++
++
++	* Interface type
++
++	  key: "type"
++	  value type: string
++
++	  The interface type in host operating system to connect to LKL.
++	  The following example specifies a tap interface.
++	```
++	     "type":"tap"
++	```
++
++	* Interface parameter
++
++	  key: "param"
++	  value type: string
++
++	  Additional configuration parameters for the interface specified by Interface type (type).
++	  The parameters depend on the interface type.
++	```
++	     "type":"tap",
++	     "param":"tap0"
++	```
++
++	* Interface MTU size
++
++	  key: "mtu"
++	  value type: string
++
++	  the MTU size of the interface.
++	```
++	     "mtu":"1280"
++	```
++
++	* Interface IPv4 address
++
++	  key: "ip"
++	  value type: string
++
++	  the IPv4 address of the interface.
++	  If you want to use DHCP for the IP address assignment,
++	  use "boot_cmdline" with "ip=dhcp" option.
++	```
++	     "ip":"192.168.0.2"
++	```
++	```
++	     "boot_cmdline":"ip=dhcp"
++	```
++
++	* Interface IPv4 netmask length
++
++	  key: "masklen"
++	  value type: string
++
++	  the network mask length of the interface.
++	```
++	     "ip":"192.168.0.2",
++	     "masklen":"24"
++	```
++
++	* Interface IPv4 gateway on routing policy table
++
++	  key: "ifgateway"
++	  value type: string
++
++	  If you specify this parameter, LKL adds routing policy table.
++	  And then LKL creates link local and gateway route on this table.
++	  Table SELECTOR is "from" and PREFIX is address you assigned to this interface.
++	  Table id is 2 * (interface index).
++	  This parameter could be used to configure LKL for mptcp, for example.
++
++	```
++	     "ip":"192.168.0.2",
++	     "masklen":"24",
++	     "ifgateway":"192.168.0.1"
++	```
++
++	* Interface IPv6 address
++
++	  key: "ipv6"
++	  value type: string
++
++	  the IPv6 address of the interface.
++	```
++	     "ipv6":"2001:db8:0:f101::2"
++	```
++
++	* Interface IPv6 netmask length
++
++	  key: "masklen6"
++	  value type: string
++
++	  the network mask length of the interface.
++	```
++	     "ipv6":"2001:db8:0:f101::2",
++	     "masklen":"64"
++	```
++
++	* Interface IPv6 gateway on routing policy table
++
++	  key: "ifgateway6"
++	  value type: string
++
++	  If you specify this parameter, LKL adds routing policy table.
++	  And then LKL creates link local and gateway route on this table.
++	  Table SELECTOR is "from" and PREFIX is address you assigned to this interface.
++	  Table id is 2 * (interface index) + 1.
++	  This parameter could be used to configure LKL for mptcp, for example.
++	```
++	     "ipv6":"2001:db8:0:f101::2",
++	     "masklen":"64"
++	     "ifgateway6":"2001:db8:0:f101::1",
++	```
++
++	* Interface MAC address
++
++	  key: "mac"
++	  value type: string
++
++	  the MAC address of the interface.
++	```
++	     "mac":"12:34:56:78:9a:bc"
++	```
++
++	* Interfac neighbor entries
++
++	  key: "neigh"
++	  value type: string
++
++	  Add a list of permanent neighbor entries in the form of "ip|mac;ip|mac;...". ipv6 are supported
++	```
++	     "neigh":"192.168.0.1|12:34:56:78:9a:bc;2001:db8:0:f101::1|12:34:56:78:9a:be"
++	```
++
++	* Interface qdisc entries
++
++	  key: "qdisc"
++	  value type: string
++
++	  Add a qdisc entry in the form of "root|type;root|type;...".
++	```
++	     "qdisc":"root|fq"
++	```
++
++	* Interface offload
++
++	  key: "offload"
++	  value type: string
++
++	  Work as a bit mask to enable selective device offload features. E.g.,
++	  to enable "mergeable RX buffer" (LKL_VIRTIO_NET_F_MRG_RXBUF) +
++	  "guest csum" (LKL_VIRTIO_NET_F_GUEST_CSUM) device features, simply set
++	  it to 0x8002.
++	  See virtio_net.h for a list of offload features and their bit masks.
++	```
++	     "offload":"0x8002"
++	```
++
++* Delay
++
++  key: "delay_main"
++  value type: string
++
++  The delay before calling main() function of the application after the
++  initialization of LKL.  Some subsystems in Linux tree require a certain
++  amount of time before accepting a request from application, such as
++  delivery of address assignment to an network interface.  This parameter
++  is used in such case.  The value is described as a microsecond value.
++```
++     "delay_main":"500000"
++```
++
++FAQ
++===
++
++Q: How is LKL different from UML?
++
++A: UML prodivides a full OS environment (e.g. user/kernel separation, user
++processes) and also has requirements (a filesystem, processes, etc.) that makes
++it hard to use it for standalone applications. UML also relies heavily on Linux
++hosts. On the other hand LKL is designed to be linked directly with the
++application and hence does not have user/kernel separation which makes it easier
++to use it in standalone applications.
++
++
++Q: How is LKL different from LibOS?
++
++A: LibOS re-implements high-level kernel APIs for timers, softirqs, scheduling,
++sysctl, SLAB/SLUB, etc. LKL behaves like any arch port, implementing the arch
++level operations requested by the Linux kernel. LKL also offers a host interface
++so that support for multiple hosts can be implemented.
+diff --git a/README.md b/README.md
+new file mode 120000
+index 000000000000..35c47a921f67
 --- /dev/null
-+++ b/tools/lkl/lib/virtio.h
-@@ -0,0 +1,93 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LKL_LIB_VIRTIO_H
-+#define _LKL_LIB_VIRTIO_H
-+
-+#include <stdint.h>
-+#include <lkl_host.h>
-+
-+#define PAGE_SIZE		4096
-+
-+/* The following are copied from skbuff.h */
-+#if (65536/PAGE_SIZE + 1) < 16
-+#define MAX_SKB_FRAGS 16UL
-+#else
-+#define MAX_SKB_FRAGS (65536/PAGE_SIZE + 1)
-+#endif
-+
-+#define VIRTIO_REQ_MAX_BUFS	(MAX_SKB_FRAGS + 2)
-+
-+struct virtio_req {
-+	uint16_t buf_count;
-+	struct iovec buf[VIRTIO_REQ_MAX_BUFS];
-+	uint32_t total_len;
-+};
-+
-+struct virtio_dev;
-+
-+struct virtio_dev_ops {
-+	int (*check_features)(struct virtio_dev *dev);
-+	/**
-+	 * enqueue - queues the request for processing
-+	 *
-+	 * Note that the curret implementation assumes that the requests are
-+	 * processed synchronous and, as such, @virtio_req_complete must be
-+	 * called by from this function.
-+	 *
-+	 * @dev - virtio device
-+	 * @q	- queue index
-+	 *
-+	 * @returns a negative value if the request has not been queued for
-+	 * processing in which case the virtio device is resposible for
-+	 * restaring the queue processing by calling @virtio_process_queue at a
-+	 * later time; 0 or a positive value means that the request has been
-+	 * queued for processing
-+	 */
-+	int (*enqueue)(struct virtio_dev *dev, int q, struct virtio_req *req);
-+	/*
-+	 * Acquire/release a lock on the specified queue. Only implemented by
-+	 * netdevs, all other devices have NULL acquire/release function
-+	 * pointers.
-+	 */
-+	void (*acquire_queue)(struct virtio_dev *dev, int queue_idx);
-+	void (*release_queue)(struct virtio_dev *dev, int queue_idx);
-+};
-+
-+struct virtio_dev {
-+	uint32_t device_id;
-+	uint32_t vendor_id;
-+	uint64_t device_features;
-+	uint32_t device_features_sel;
-+	uint64_t driver_features;
-+	uint32_t driver_features_sel;
-+	uint32_t queue_sel;
-+	struct virtio_queue *queue;
-+	uint32_t queue_notify;
-+	uint32_t int_status;
-+	uint32_t status;
-+	uint32_t config_gen;
-+
-+	struct virtio_dev_ops *ops;
-+	int irq;
-+	void *config_data;
-+	int config_len;
-+	void *base;
-+	uint32_t virtio_mmio_id;
-+};
-+
-+int virtio_dev_setup(struct virtio_dev *dev, int queues, int num_max);
-+int virtio_dev_cleanup(struct virtio_dev *dev);
-+uint32_t virtio_get_num_bootdevs(void);
-+/**
-+ * virtio_req_complete - complete a virtio request
-+ *
-+ * @req - the request to be completed
-+ * @len - the total size in bytes of the completed request
-+ */
-+void virtio_req_complete(struct virtio_req *req, uint32_t len);
-+void virtio_process_queue(struct virtio_dev *dev, uint32_t qidx);
-+void virtio_set_queue_max_merge_len(struct virtio_dev *dev, int q, int len);
-+
-+#define container_of(ptr, type, member) \
-+	(type *)((char *)(ptr) - __builtin_offsetof(type, member))
-+
-+#endif /* _LKL_LIB_VIRTIO_H */
++++ b/README.md
+@@ -0,0 +1 @@
++Documentation/lkl.txt
+\ No newline at end of file
 -- 
 2.20.1 (Apple Git-117)
 
