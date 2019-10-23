@@ -1,29 +1,15 @@
 Return-Path: <rppt@kernel.org>
-Date: Wed, 23 Oct 2019 22:59:00 +0300
 From: Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH v2 09/12] sparc32: use pgtable-nopud instead of 4level-fixup
-Message-ID: <20191023195859.GA24394@rapoport-lnx>
+Subject: [PATCH 09/12] sparc32: use pgtable-nopud instead of 4level-fixup
+Date: Wed, 23 Oct 2019 12:28:58 +0300
+Message-Id: <1571822941-29776-10-git-send-email-rppt@kernel.org>
+In-Reply-To: <1571822941-29776-1-git-send-email-rppt@kernel.org>
 References: <1571822941-29776-1-git-send-email-rppt@kernel.org>
- <1571822941-29776-10-git-send-email-rppt@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1571822941-29776-10-git-send-email-rppt@kernel.org>
 To: linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jeff Dike <jdike@addtoit.com>, "Kirill A. Shutemov" <kirill@shutemov.name>, Linus Torvalds <torvalds@linux-foundation.org>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Michal Simek <monstr@monstr.eu>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, Vincent Chen <deanbo422@gmail.com>, Vineet Gupta <Vineet.Gupta1@synopsys.com>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org, linux-um@lists.infradead.org, sparclinux@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jeff Dike <jdike@addtoit.com>, "Kirill A. Shutemov" <kirill@shutemov.name>, Linus Torvalds <torvalds@linux-foundation.org>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Michal Simek <monstr@monstr.eu>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, Vincent Chen <deanbo422@gmail.com>, Vineet Gupta <Vineet.Gupta1@synopsys.com>, Mike Rapoport <rppt@kernel.org>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org, linux-um@lists.infradead.org, sparclinux@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>
 List-ID: <linux-um.lists.infradead.org>
 
-I've just discovered that I've booted qemu-sparc with the wrong kernel and
-this patch crashes miserably :(
-
-The better version that does allow qemu-sparc to boot with folded page
-tables is below:
-
-
-From a90e1d157b7f8786a4276ffc8553f2167c8bc0e7 Mon Sep 17 00:00:00 2001
 From: Mike Rapoport <rppt@linux.ibm.com>
-Date: Tue, 1 Oct 2019 17:14:38 +0300
-Subject: [PATCH v2] sparc32: use pgtable-nopud instead of 4level-fixup
 
 32-bit version of sparc has three-level page tables and can use
 pgtable-nopud and folding of the upper layers.
@@ -235,7 +221,7 @@ index 71ac353..4d3c699 100644
  
  			set_pte(ptep, mk_pte(virt_to_page(page), dvma_prot));
 diff --git a/arch/sparc/mm/srmmu.c b/arch/sparc/mm/srmmu.c
-index cc3ad64..f56c3c9 100644
+index cc3ad64..eb95407 100644
 --- a/arch/sparc/mm/srmmu.c
 +++ b/arch/sparc/mm/srmmu.c
 @@ -296,6 +296,8 @@ static void __init srmmu_nocache_init(void)
@@ -305,8 +291,8 @@ index cc3ad64..f56c3c9 100644
  	while (start < end) {
  		pgdp = pgd_offset_k(start);
 -		if (pgd_none(*(pgd_t *)__nocache_fix(pgdp))) {
-+		p4dp = p4d_offset(pgdp, start);
-+		pudp = pud_offset(p4dp, start);
++		p4dp = p4d_offset(__nocache_fix(pgdp), start);
++		pudp = pud_offset(__nocache_fix(p4dp), start);
 +		if (pud_none(*(pud_t *)__nocache_fix(pudp))) {
  			pmdp = __srmmu_get_nocache(
  			    SRMMU_PMD_TABLE_SIZE, SRMMU_PMD_TABLE_SIZE);
@@ -361,8 +347,8 @@ index cc3ad64..f56c3c9 100644
  		}
  
  		pgdp = pgd_offset_k(start);
-+		p4dp = p4d_offset(pgdp, start);
-+		pudp = pud_offset(p4dp, start);
++		p4dp = p4d_offset(__nocache_fix(pgdp), start);
++		pudp = pud_offset(__nocache_fix(p4dp), start);
  		if (what == 2) {
  			*(pgd_t *)__nocache_fix(pgdp) = __pgd(probed);
  			start += SRMMU_PGDIR_SIZE;
