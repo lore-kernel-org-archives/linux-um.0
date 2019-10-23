@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x431.google.com ([2607:f8b0:4864:20::431])
+Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iN8QM-0001rb-VP
- for linux-um@lists.infradead.org; Wed, 23 Oct 2019 04:39:13 +0000
-Received: by mail-pf1-x431.google.com with SMTP id y5so12081867pfo.4
- for <linux-um@lists.infradead.org>; Tue, 22 Oct 2019 21:39:06 -0700 (PDT)
+ id 1iN8kk-0001uR-4j
+ for linux-um@lists.infradead.org; Wed, 23 Oct 2019 05:00:15 +0000
+Received: by mail-pg1-x544.google.com with SMTP id w3so11378167pgt.5
+ for <linux-um@lists.infradead.org>; Tue, 22 Oct 2019 22:00:09 -0700 (PDT)
 From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC PATCH 26/47] lkl tools: add support for Windows host
-Date: Wed, 23 Oct 2019 13:38:00 +0900
-Message-Id: <4d188827dfe9116d597b53efba40729e964cd06f.1571798507.git.thehajime@gmail.com>
+Subject: [RFC PATCH 20/47] lkl tools: host lib: posix host operations
+Date: Wed, 23 Oct 2019 13:37:54 +0900
+Message-Id: <1f14dd7627ee7898659831a4a0a46643b296c330.1571798507.git.thehajime@gmail.com>
 In-Reply-To: <cover.1571798507.git.thehajime@gmail.com>
 References: <cover.1571798507.git.thehajime@gmail.com>
 MIME-Version: 1.0
@@ -25,181 +25,282 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: Octavian Purdila <tavi.purdila@gmail.com>, Andreas Gnau <andreas.gnau@intel.com>, Hajime Tazaki <thehajime@gmail.com>, Patrick Collins <pscollins@google.com>, Akira Moroo <retrage01@gmail.com>, Yuan Liu <liuyuan@google.com>
+Cc: Conrad Meyer <cem@FreeBSD.org>, Octavian Purdila <tavi.purdila@gmail.com>, Akira Moroo <retrage01@gmail.com>, Yuan Liu <liuyuan@google.com>, Thomas Liebetraut <thomas@tommie-lie.de>, Mark Stillwell <mark@stillwell.me>, Patrick Collins <pscollins@google.com>, Pierre-Hugues Husson <phh@phh.me>, Hajime Tazaki <thehajime@gmail.com>
 
 From: Octavian Purdila <tavi.purdila@gmail.com>
 
-Add host operations for Windows host and virtio disk support.
+Implement LKL host operations for POSIX hosts.
 
-Trivial changes to the generic virtio host code are made since mingw %p
-format is different then what the MMIO virtion driver expects.
-
-The boot test is updated to support Window hosts as well.
-
-Signed-off-by: Andreas Gnau <andreas.gnau@intel.com>
+Signed-off-by: Conrad Meyer <cem@FreeBSD.org>
 Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+Signed-off-by: Mark Stillwell <mark@stillwell.me>
 Signed-off-by: Patrick Collins <pscollins@google.com>
+Signed-off-by: Pierre-Hugues Husson <phh@phh.me>
+Signed-off-by: Thomas Liebetraut <thomas@tommie-lie.de>
 Signed-off-by: Yuan Liu <liuyuan@google.com>
 Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
 ---
- tools/lkl/include/mingw32/sys/socket.h |   4 +
- tools/lkl/lib/nt-host.c                | 375 +++++++++++++++++++++++++
- 2 files changed, 379 insertions(+)
- create mode 100644 tools/lkl/include/mingw32/sys/socket.h
- create mode 100644 tools/lkl/lib/nt-host.c
+ Makefile                   |   2 +
+ tools/lkl/lib/posix-host.c | 439 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 441 insertions(+)
+ create mode 100644 tools/lkl/lib/posix-host.c
 
-diff --git a/tools/lkl/include/mingw32/sys/socket.h b/tools/lkl/include/mingw32/sys/socket.h
+diff --git a/Makefile b/Makefile
+index 8c1f7422d0bc..cf88c66fba2e 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1124,7 +1124,9 @@ archprepare: archheaders archscripts scripts prepare3 outputmakefile \
+ 	asm-generic $(version_h) $(autoksyms_h) include/generated/utsrelease.h
+ 
+ prepare0: archprepare
++ifeq ($(findstring elf,$(if $(CONFIG_OUTPUT_FORMAT),$(CONFIG_OUTPUT_FORMAT),elf)),elf)
+ 	$(Q)$(MAKE) $(build)=scripts/mod
++endif
+ 	$(Q)$(MAKE) $(build)=.
+ 
+ # All the preparing..
+diff --git a/tools/lkl/lib/posix-host.c b/tools/lkl/lib/posix-host.c
 new file mode 100644
-index 000000000000..f9ede3170d03
+index 000000000000..4d52b06c9944
 --- /dev/null
-+++ b/tools/lkl/include/mingw32/sys/socket.h
-@@ -0,0 +1,4 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* fake file to avoid #include <sys/socket.h> error on non-posix
-+ * host (e.g., mingw32)
-+ */
-diff --git a/tools/lkl/lib/nt-host.c b/tools/lkl/lib/nt-host.c
-new file mode 100644
-index 000000000000..c7613272be3b
---- /dev/null
-+++ b/tools/lkl/lib/nt-host.c
-@@ -0,0 +1,375 @@
++++ b/tools/lkl/lib/posix-host.c
+@@ -0,0 +1,439 @@
 +// SPDX-License-Identifier: GPL-2.0
-+#include <windows.h>
++#include <pthread.h>
++#include <stdlib.h>
++#include <sys/time.h>
++#include <time.h>
++#include <signal.h>
 +#include <assert.h>
 +#include <unistd.h>
-+#undef s_addr
++#include <errno.h>
++#include <string.h>
++#include <time.h>
++#include <stdint.h>
++#include <sys/uio.h>
++#include <sys/types.h>
++#include <sys/socket.h>
++#include <sys/syscall.h>
++#include <poll.h>
 +#include <lkl_host.h>
 +#include "iomem.h"
 +#include "jmp_buf.h"
 +
-+#define DIFF_1601_TO_1970_IN_100NS (11644473600L * 10000000L)
++/* Let's see if the host has semaphore.h */
++#include <unistd.h>
++
++#ifdef _POSIX_SEMAPHORES
++#include <semaphore.h>
++/* TODO(pscollins): We don't support fork() for now, but maybe one day
++ * we will?
++ */
++#define SHARE_SEM 0
++#endif /* _POSIX_SEMAPHORES */
++
++static void print(const char *str, int len)
++{
++	int ret __attribute__((unused));
++
++	ret = write(STDOUT_FILENO, str, len);
++}
 +
 +struct lkl_mutex {
-+	int recursive;
-+	HANDLE handle;
++	pthread_mutex_t mutex;
 +};
 +
 +struct lkl_sem {
-+	HANDLE sem;
++#ifdef _POSIX_SEMAPHORES
++	sem_t sem;
++#else
++	pthread_mutex_t lock;
++	int count;
++	pthread_cond_t cond;
++#endif /* _POSIX_SEMAPHORES */
 +};
 +
 +struct lkl_tls_key {
-+	DWORD key;
++	pthread_key_t key;
 +};
++
++#define WARN_UNLESS(exp) do {						\
++		if (exp < 0)						\
++			lkl_printf("%s: %s\n", #exp, strerror(errno));	\
++	} while (0)
++
++static int _warn_pthread(int ret, char *str_exp)
++{
++	if (ret > 0)
++		lkl_printf("%s: %s\n", str_exp, strerror(ret));
++
++	return ret;
++}
++
++
++/* pthread_* functions use the reverse convention */
++#define WARN_PTHREAD(exp) _warn_pthread(exp, #exp)
 +
 +static struct lkl_sem *sem_alloc(int count)
 +{
-+	struct lkl_sem *sem = malloc(sizeof(struct lkl_sem));
++	struct lkl_sem *sem;
 +
-+	sem->sem = CreateSemaphore(NULL, count, 100, NULL);
++	sem = malloc(sizeof(*sem));
++	if (!sem)
++		return NULL;
++
++#ifdef _POSIX_SEMAPHORES
++	if (sem_init(&sem->sem, SHARE_SEM, count) < 0) {
++		lkl_printf("sem_init: %s\n", strerror(errno));
++		free(sem);
++		return NULL;
++	}
++#else
++	pthread_mutex_init(&sem->lock, NULL);
++	sem->count = count;
++	WARN_PTHREAD(pthread_cond_init(&sem->cond, NULL));
++#endif /* _POSIX_SEMAPHORES */
++
 +	return sem;
-+}
-+
-+static void sem_up(struct lkl_sem *sem)
-+{
-+	ReleaseSemaphore(sem->sem, 1, NULL);
-+}
-+
-+static void sem_down(struct lkl_sem *sem)
-+{
-+	WaitForSingleObject(sem->sem, INFINITE);
 +}
 +
 +static void sem_free(struct lkl_sem *sem)
 +{
-+	CloseHandle(sem->sem);
++#ifdef _POSIX_SEMAPHORES
++	WARN_UNLESS(sem_destroy(&sem->sem));
++#else
++	WARN_PTHREAD(pthread_cond_destroy(&sem->cond));
++	WARN_PTHREAD(pthread_mutex_destroy(&sem->lock));
++#endif /* _POSIX_SEMAPHORES */
 +	free(sem);
++}
++
++static void sem_up(struct lkl_sem *sem)
++{
++#ifdef _POSIX_SEMAPHORES
++	WARN_UNLESS(sem_post(&sem->sem));
++#else
++	WARN_PTHREAD(pthread_mutex_lock(&sem->lock));
++	sem->count++;
++	if (sem->count > 0)
++		WARN_PTHREAD(pthread_cond_signal(&sem->cond));
++	WARN_PTHREAD(pthread_mutex_unlock(&sem->lock));
++#endif /* _POSIX_SEMAPHORES */
++
++}
++
++static void sem_down(struct lkl_sem *sem)
++{
++#ifdef _POSIX_SEMAPHORES
++	int err;
++
++	do {
++		err = sem_wait(&sem->sem);
++	} while (err < 0 && errno == EINTR);
++	if (err < 0 && errno != EINTR)
++		lkl_printf("sem_wait: %s\n", strerror(errno));
++#else
++	WARN_PTHREAD(pthread_mutex_lock(&sem->lock));
++	while (sem->count <= 0)
++		WARN_PTHREAD(pthread_cond_wait(&sem->cond, &sem->lock));
++	sem->count--;
++	WARN_PTHREAD(pthread_mutex_unlock(&sem->lock));
++#endif /* _POSIX_SEMAPHORES */
 +}
 +
 +static struct lkl_mutex *mutex_alloc(int recursive)
 +{
 +	struct lkl_mutex *_mutex = malloc(sizeof(struct lkl_mutex));
++	pthread_mutex_t *mutex = NULL;
++	pthread_mutexattr_t attr;
 +
 +	if (!_mutex)
 +		return NULL;
 +
++	mutex = &_mutex->mutex;
++	WARN_PTHREAD(pthread_mutexattr_init(&attr));
++
++	/* PTHREAD_MUTEX_ERRORCHECK is *very* useful for debugging,
++	 * but has some overhead, so we provide an option to turn it
++	 * off.
++	 */
++#ifdef DEBUG
++	if (!recursive)
++		WARN_PTHREAD(pthread_mutexattr_settype(
++				     &attr, PTHREAD_MUTEX_ERRORCHECK));
++#endif /* DEBUG */
++
 +	if (recursive)
-+		_mutex->handle = CreateMutex(0, FALSE, 0);
-+	else
-+		_mutex->handle = CreateSemaphore(NULL, 1, 100, NULL);
-+	_mutex->recursive = recursive;
++		WARN_PTHREAD(pthread_mutexattr_settype(
++				     &attr, PTHREAD_MUTEX_RECURSIVE));
++
++	WARN_PTHREAD(pthread_mutex_init(mutex, &attr));
++
 +	return _mutex;
 +}
 +
 +static void mutex_lock(struct lkl_mutex *mutex)
 +{
-+	WaitForSingleObject(mutex->handle, INFINITE);
++	WARN_PTHREAD(pthread_mutex_lock(&mutex->mutex));
 +}
 +
 +static void mutex_unlock(struct lkl_mutex *_mutex)
 +{
-+	if (_mutex->recursive)
-+		ReleaseMutex(_mutex->handle);
-+	else
-+		ReleaseSemaphore(_mutex->handle, 1, NULL);
++	pthread_mutex_t *mutex = &_mutex->mutex;
++
++	WARN_PTHREAD(pthread_mutex_unlock(mutex));
 +}
 +
 +static void mutex_free(struct lkl_mutex *_mutex)
 +{
-+	CloseHandle(_mutex->handle);
++	pthread_mutex_t *mutex = &_mutex->mutex;
++
++	WARN_PTHREAD(pthread_mutex_destroy(mutex));
 +	free(_mutex);
 +}
 +
 +static lkl_thread_t thread_create(void (*fn)(void *), void *arg)
 +{
-+	DWORD WINAPI(*win_fn)(LPVOID arg) = (DWORD WINAPI(*)(LPVOID))fn;
-+	HANDLE h = CreateThread(NULL, 0, win_fn, arg, 0, NULL);
++	pthread_t thread;
 +
-+	if (!h)
++	if (WARN_PTHREAD(pthread_create(&thread, NULL, (void* (*)(void *))fn,
++					arg)))
 +		return 0;
-+
-+	return GetThreadId(h);
++	else
++		return (lkl_thread_t) thread;
 +}
 +
 +static void thread_detach(void)
 +{
++	WARN_PTHREAD(pthread_detach(pthread_self()));
 +}
 +
 +static void thread_exit(void)
 +{
-+	ExitThread(0);
++	pthread_exit(NULL);
 +}
 +
 +static int thread_join(lkl_thread_t tid)
 +{
-+	int ret;
-+	HANDLE *h;
-+
-+	h = OpenThread(SYNCHRONIZE, FALSE, tid);
-+	if (!h)
-+		lkl_printf("%s: can't get thread handle\n", __func__);
-+
-+	ret = WaitForSingleObject(h, INFINITE);
-+	if (ret)
-+		lkl_printf("%s: %d\n", __func__, ret);
-+
-+	CloseHandle(h);
-+
-+	return ret ? -1 : 0;
++	if (WARN_PTHREAD(pthread_join((pthread_t)tid, NULL)))
++		return (-1);
++	else
++		return 0;
 +}
 +
 +static lkl_thread_t thread_self(void)
 +{
-+	return GetThreadId(GetCurrentThread());
++	return (lkl_thread_t)pthread_self();
 +}
 +
 +static int thread_equal(lkl_thread_t a, lkl_thread_t b)
 +{
-+	return a == b;
++	return pthread_equal((pthread_t)a, (pthread_t)b);
 +}
 +
 +static struct lkl_tls_key *tls_alloc(void (*destructor)(void *))
 +{
 +	struct lkl_tls_key *ret = malloc(sizeof(struct lkl_tls_key));
 +
-+	ret->key = FlsAlloc((PFLS_CALLBACK_FUNCTION)destructor);
-+	if (ret->key == TLS_OUT_OF_INDEXES) {
++	if (WARN_PTHREAD(pthread_key_create(&ret->key, destructor))) {
 +		free(ret);
 +		return NULL;
 +	}
@@ -208,121 +309,90 @@ index 000000000000..c7613272be3b
 +
 +static void tls_free(struct lkl_tls_key *key)
 +{
-+	/* setting to NULL first to prevent the callback from being called */
-+	FlsSetValue(key->key, NULL);
-+	FlsFree(key->key);
++	WARN_PTHREAD(pthread_key_delete(key->key));
 +	free(key);
 +}
 +
 +static int tls_set(struct lkl_tls_key *key, void *data)
 +{
-+	return FlsSetValue(key->key, data) ? 0 : -1;
++	if (WARN_PTHREAD(pthread_setspecific(key->key, data)))
++		return (-1);
++	return 0;
 +}
 +
 +static void *tls_get(struct lkl_tls_key *key)
 +{
-+	return FlsGetValue(key->key);
++	return pthread_getspecific(key->key);
 +}
 +
-+
-+/*
-+ * With 64 bits, we can cover about 583 years at a nanosecond resolution.
-+ * Windows counts time from 1601 so we do have about 100 years before we
-+ * overflow.
-+ */
 +static unsigned long long time_ns(void)
 +{
-+	SYSTEMTIME st;
-+	FILETIME ft;
-+	ULARGE_INTEGER uli;
++	struct timespec ts;
 +
-+	GetSystemTime(&st);
-+	SystemTimeToFileTime(&st, &ft);
-+	uli.LowPart = ft.dwLowDateTime;
-+	uli.HighPart = ft.dwHighDateTime;
++	clock_gettime(CLOCK_MONOTONIC, &ts);
 +
-+	return (uli.QuadPart - DIFF_1601_TO_1970_IN_100NS) * 100;
++	return 1e9*ts.tv_sec + ts.tv_nsec;
 +}
-+
-+struct timer {
-+	HANDLE queue;
-+	void (*callback)(void *arg);
-+	void *arg;
-+};
 +
 +static void *timer_alloc(void (*fn)(void *), void *arg)
 +{
-+	struct timer *t;
++	int err;
++	timer_t timer;
++	struct sigevent se =  {
++		.sigev_notify = SIGEV_THREAD,
++		.sigev_value = {
++			.sival_ptr = arg,
++		},
++		.sigev_notify_function = (void (*)(union sigval))fn,
++	};
 +
-+	t = malloc(sizeof(*t));
-+	if (!t)
++	err = timer_create(CLOCK_REALTIME, &se, &timer);
++	if (err)
 +		return NULL;
 +
-+	t->queue = CreateTimerQueue();
-+	if (!t->queue) {
-+		free(t);
-+		return NULL;
-+	}
-+
-+	t->callback = fn;
-+	t->arg = arg;
-+
-+	return t;
++	return (void *)(long)timer;
 +}
 +
-+static void CALLBACK timer_callback(void *arg, BOOLEAN TimerOrWaitFired)
++static int timer_set_oneshot(void *_timer, unsigned long ns)
 +{
-+	struct timer *t = (struct timer *)arg;
++	timer_t timer = (timer_t)(long)_timer;
++	struct itimerspec ts = {
++		.it_value = {
++			.tv_sec = ns / 1000000000,
++			.tv_nsec = ns % 1000000000,
++		},
++	};
 +
-+	if (TimerOrWaitFired)
-+		t->callback(t->arg);
++	return timer_settime(timer, 0, &ts, NULL);
 +}
 +
-+static int timer_set_oneshot(void *timer, unsigned long ns)
++static void timer_free(void *_timer)
 +{
-+	struct timer *t = (struct timer *)timer;
-+	HANDLE tmp;
++	timer_t timer = (timer_t)(long)_timer;
 +
-+	return !CreateTimerQueueTimer(&tmp, t->queue, timer_callback, t,
-+				      ns / 1000000, 0, 0);
++	timer_delete(timer);
 +}
 +
-+static void timer_free(void *timer)
-+{
-+	struct timer *t = (struct timer *)timer;
-+	HANDLE completion;
-+
-+	completion = CreateEvent(NULL, FALSE, FALSE, NULL);
-+	DeleteTimerQueueEx(t->queue, completion);
-+	WaitForSingleObject(completion, INFINITE);
-+	free(t);
-+}
-+
++#ifndef __arch_um__
 +static void panic(void)
 +{
-+	int *x = NULL;
-+
-+	*x = 1;
 +	assert(0);
 +}
++#endif
 +
-+static void print(const char *str, int len)
++static long _gettid(void)
 +{
-+	write(1, str, len);
-+}
-+
-+static long gettid(void)
-+{
-+	return GetCurrentThreadId();
-+}
-+
-+static void *mem_alloc(unsigned long size)
-+{
-+	return malloc(size);
++#ifdef	__FreeBSD__
++	return (long)pthread_self();
++#else
++	return syscall(SYS_gettid);
++#endif
 +}
 +
 +struct lkl_host_operations lkl_host_ops = {
++#ifndef __arch_um__
 +	.panic = panic,
++#endif
 +	.thread_create = thread_create,
 +	.thread_detach = thread_detach,
 +	.thread_exit = thread_exit,
@@ -346,81 +416,83 @@ index 000000000000..c7613272be3b
 +	.timer_set_oneshot = timer_set_oneshot,
 +	.timer_free = timer_free,
 +	.print = print,
-+	.mem_alloc = mem_alloc,
++	.mem_alloc = malloc,
 +	.mem_free = free,
 +	.ioremap = lkl_ioremap,
 +	.iomem_access = lkl_iomem_access,
 +	.virtio_devices = lkl_virtio_devs,
-+	.gettid = gettid,
++	.gettid = _gettid,
 +	.jmp_buf_set = jmp_buf_set,
 +	.jmp_buf_longjmp = jmp_buf_longjmp,
 +};
 +
-+int handle_get_capacity(struct lkl_disk disk, unsigned long long *res)
++static int fd_get_capacity(struct lkl_disk disk, unsigned long long *res)
 +{
-+	LARGE_INTEGER tmp;
++	off_t off;
 +
-+	if (!GetFileSizeEx(disk.handle, &tmp))
-+		return -1;
++	off = lseek(disk.fd, 0, SEEK_END);
++	if (off < 0)
++		return (-1);
 +
-+	*res = tmp.QuadPart;
++	*res = off;
 +	return 0;
++}
++
++static int do_rw(ssize_t (*fn)(), struct lkl_disk disk, struct lkl_blk_req *req)
++{
++	off_t off = req->sector * 512;
++	void *addr;
++	int len;
++	int i;
++	int ret = 0;
++
++	for (i = 0; i < req->count; i++) {
++
++		addr = req->buf[i].iov_base;
++		len = req->buf[i].iov_len;
++
++		do {
++			ret = fn(disk.fd, addr, len, off);
++
++			if (ret <= 0) {
++				ret = -1;
++				goto out;
++			}
++
++			addr += ret;
++			len -= ret;
++			off += ret;
++
++		} while (len);
++	}
++
++out:
++	return ret;
 +}
 +
 +static int blk_request(struct lkl_disk disk, struct lkl_blk_req *req)
 +{
-+	unsigned long long offset = req->sector * 512;
-+	OVERLAPPED ov = { 0, };
-+	int err = 0, ret;
++	int err = 0;
 +
 +	switch (req->type) {
 +	case LKL_DEV_BLK_TYPE_READ:
-+	case LKL_DEV_BLK_TYPE_WRITE:
-+	{
-+		int i;
-+
-+		for (i = 0; i < req->count; i++) {
-+			DWORD res;
-+			struct iovec *buf = &req->buf[i];
-+
-+			ov.Offset = offset & 0xffffffff;
-+			ov.OffsetHigh = offset >> 32;
-+
-+			if (req->type == LKL_DEV_BLK_TYPE_READ)
-+				ret = ReadFile(disk.handle, buf->iov_base,
-+					       buf->iov_len, &res, &ov);
-+			else
-+				ret = WriteFile(disk.handle, buf->iov_base,
-+						buf->iov_len, &res, &ov);
-+			if (!ret) {
-+				lkl_printf("%s: I/O error: %d\n", __func__,
-+					   GetLastError());
-+				err = -1;
-+				goto out;
-+			}
-+
-+			if (res != buf->iov_len) {
-+				lkl_printf("%s: I/O error: short: %d %d\n",
-+					   res, buf->iov_len);
-+				err = -1;
-+				goto out;
-+			}
-+
-+			offset += buf->iov_len;
-+		}
++		err = do_rw(pread, disk, req);
 +		break;
-+	}
++	case LKL_DEV_BLK_TYPE_WRITE:
++		err = do_rw(pwrite, disk, req);
++		break;
 +	case LKL_DEV_BLK_TYPE_FLUSH:
 +	case LKL_DEV_BLK_TYPE_FLUSH_OUT:
-+		ret = FlushFileBuffers(disk.handle);
-+		if (!ret)
-+			err = 1;
++#ifdef __linux__
++		err = fdatasync(disk.fd);
++#else
++		err = fsync(disk.fd);
++#endif
 +		break;
 +	default:
 +		return LKL_DEV_BLK_STATUS_UNSUP;
 +	}
 +
-+out:
 +	if (err < 0)
 +		return LKL_DEV_BLK_STATUS_IOERR;
 +
@@ -428,17 +500,10 @@ index 000000000000..c7613272be3b
 +}
 +
 +struct lkl_dev_blk_ops lkl_dev_blk_ops = {
-+	.get_capacity = handle_get_capacity,
++	.get_capacity = fd_get_capacity,
 +	.request = blk_request,
 +};
 +
-+/* Needed to resolve linker error on Win32. We don't really support
-+ * any network IO on Windows, anyway, so there's no loss here.
-+ */
-+int lkl_netdevs_remove(void)
-+{
-+	return 0;
-+}
 -- 
 2.20.1 (Apple Git-117)
 
