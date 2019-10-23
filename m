@@ -1,14 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
+Received: from mail-pg1-x542.google.com ([2607:f8b0:4864:20::542])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iN8km-00029V-I7
- for linux-um@lists.infradead.org; Wed, 23 Oct 2019 05:00:18 +0000
-Received: by mail-pf1-x444.google.com with SMTP id c184so2600998pfb.0
- for <linux-um@lists.infradead.org>; Tue, 22 Oct 2019 22:00:12 -0700 (PDT)
+ id 1iN8kp-0002C6-1H
+ for linux-um@lists.infradead.org; Wed, 23 Oct 2019 05:00:21 +0000
+Received: by mail-pg1-x542.google.com with SMTP id c8so6569214pgb.2
+ for <linux-um@lists.infradead.org>; Tue, 22 Oct 2019 22:00:14 -0700 (PDT)
 From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC PATCH 33/47] signal: use CONFIG_X86_32 instead of __i386__
-Date: Wed, 23 Oct 2019 13:38:07 +0900
-Message-Id: <119948eaca3e92c7bf92faf1a37722c1c21ecb88.1571798507.git.thehajime@gmail.com>
+Subject: [RFC PATCH 36/47] checkpatch: avoid showing BIT_ULL warnings for
+ tools/ files
+Date: Wed, 23 Oct 2019 13:38:10 +0900
+Message-Id: <02ea17cd16cbc76c2e025ff7964ff0321bcd121f.1571798507.git.thehajime@gmail.com>
 In-Reply-To: <cover.1571798507.git.thehajime@gmail.com>
 References: <cover.1571798507.git.thehajime@gmail.com>
 MIME-Version: 1.0
@@ -29,27 +30,29 @@ Cc: Octavian Purdila <tavi.purdila@gmail.com>, Akira Moroo <retrage01@gmail.com>
 
 From: Octavian Purdila <tavi.purdila@gmail.com>
 
-This allows um/lkl to build/run ?
-[XXX: need to check if this requires or not]
+Directly using shift operations in userspace compiled code should not
+trigger warnings as BIT_ULL macros are not available outside the
+kernel.
 
 Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
 ---
- kernel/signal.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ scripts/checkpatch.pl | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/signal.c b/kernel/signal.c
-index 534fec266a33..561de0e1e66a 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -1241,7 +1241,7 @@ static void print_fatal_signal(int signr)
- 	struct pt_regs *regs = signal_pt_regs();
- 	pr_info("potentially unexpected fatal signal %d.\n", signr);
- 
--#if defined(__i386__) && !defined(__arch_um__)
-+#ifdef CONFIG_X86_32
- 	pr_info("code at %08lx: ", regs->ip);
- 	{
- 		int i;
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 93a7edfe0f05..e739f565497e 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -6313,7 +6313,8 @@ sub process {
+ 		    $line =~ /#\s*define\s+\w+\s+\(?\s*1\s*([ulUL]*)\s*\<\<\s*(?:\d+|$Ident)\s*\)?/) {
+ 			my $ull = "";
+ 			$ull = "_ULL" if (defined($1) && $1 =~ /ll/i);
+-			if (CHK("BIT_MACRO",
++			if ($realfile !~ m@\btools/@ &&
++			    CHK("BIT_MACRO",
+ 				"Prefer using the BIT$ull macro\n" . $herecurr) &&
+ 			    $fix) {
+ 				$fixed[$fixlinenr] =~ s/\(?\s*1\s*[ulUL]*\s*<<\s*(\d+|$Ident)\s*\)?/BIT${ull}($1)/;
 -- 
 2.20.1 (Apple Git-117)
 
