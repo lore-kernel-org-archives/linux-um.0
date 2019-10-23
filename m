@@ -1,13 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab7.miniserver.com ([37.128.132.42]
- helo=www.kot-begemot.co.uk)
+Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iKe80-0003d7-5Z
- for linux-um@lists.infradead.org; Wed, 16 Oct 2019 07:53:53 +0000
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Subject: Build fix for VDE and PCAP drivers
-Date: Wed, 16 Oct 2019 08:53:42 +0100
-Message-Id: <20191016075343.28564-1-anton.ivanov@cambridgegreys.com>
+ id 1iN8km-00029V-I7
+ for linux-um@lists.infradead.org; Wed, 23 Oct 2019 05:00:18 +0000
+Received: by mail-pf1-x444.google.com with SMTP id c184so2600998pfb.0
+ for <linux-um@lists.infradead.org>; Tue, 22 Oct 2019 22:00:12 -0700 (PDT)
+From: Hajime Tazaki <thehajime@gmail.com>
+Subject: [RFC PATCH 33/47] signal: use CONFIG_X86_32 instead of __i386__
+Date: Wed, 23 Oct 2019 13:38:07 +0900
+Message-Id: <119948eaca3e92c7bf92faf1a37722c1c21ecb88.1571798507.git.thehajime@gmail.com>
+In-Reply-To: <cover.1571798507.git.thehajime@gmail.com>
+References: <cover.1571798507.git.thehajime@gmail.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,23 +25,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: richard@nod.at, 938962@bugs.debian.org
+Cc: Octavian Purdila <tavi.purdila@gmail.com>, Akira Moroo <retrage01@gmail.com>
 
-Hi all,
+From: Octavian Purdila <tavi.purdila@gmail.com>
 
-A patch to fix the build for these follows.
+This allows um/lkl to build/run ?
+[XXX: need to check if this requires or not]
 
-I will stick to my original suggestion - pcap should be obsoleted in favour of
-vector raw + BPF firmware load. The latter will work on interfaces where gso/gro
-is enabled. The original pcap will fail on that due to the 1500 bytes size limit
-in the legacy net code.
+Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
+---
+ kernel/signal.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I had to dig the root cause here and figure out what is going on while working
-on an AF_XDP transport as that had the same problem - it needed to pass -lbpf
--lelf -lz which could not be passed under the current build system.
-
-A.
-
+diff --git a/kernel/signal.c b/kernel/signal.c
+index 534fec266a33..561de0e1e66a 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -1241,7 +1241,7 @@ static void print_fatal_signal(int signr)
+ 	struct pt_regs *regs = signal_pt_regs();
+ 	pr_info("potentially unexpected fatal signal %d.\n", signr);
+ 
+-#if defined(__i386__) && !defined(__arch_um__)
++#ifdef CONFIG_X86_32
+ 	pr_info("code at %08lx: ", regs->ip);
+ 	{
+ 		int i;
+-- 
+2.20.1 (Apple Git-117)
 
 
 _______________________________________________
