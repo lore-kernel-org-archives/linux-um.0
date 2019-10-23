@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x442.google.com ([2607:f8b0:4864:20::442])
+Received: from mail-pg1-x541.google.com ([2607:f8b0:4864:20::541])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iN8kl-00025F-OB
- for linux-um@lists.infradead.org; Wed, 23 Oct 2019 05:00:19 +0000
-Received: by mail-pf1-x442.google.com with SMTP id q21so12098697pfn.11
- for <linux-um@lists.infradead.org>; Tue, 22 Oct 2019 22:00:11 -0700 (PDT)
+ id 1iN8kj-0001pn-NW
+ for linux-um@lists.infradead.org; Wed, 23 Oct 2019 05:00:16 +0000
+Received: by mail-pg1-x541.google.com with SMTP id f14so11362135pgi.9
+ for <linux-um@lists.infradead.org>; Tue, 22 Oct 2019 22:00:09 -0700 (PDT)
 From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC PATCH 46/47] um: use lkl virtio_net_tap device as UML device
-Date: Wed, 23 Oct 2019 13:38:20 +0900
-Message-Id: <0496cb2872ada0c05cc7a39bc8f2677d49b0623f.1571798507.git.thehajime@gmail.com>
+Subject: [RFC PATCH 28/47] lkl tools: add lklfuse
+Date: Wed, 23 Oct 2019 13:38:02 +0900
+Message-Id: <f94080deddb957a30481f20abdafd3817741c766.1571798507.git.thehajime@gmail.com>
 In-Reply-To: <cover.1571798507.git.thehajime@gmail.com>
 References: <cover.1571798507.git.thehajime@gmail.com>
 MIME-Version: 1.0
@@ -25,648 +25,805 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: Octavian Purdila <tavi.purdila@gmail.com>, Hajime Tazaki <thehajime@gmail.com>, Akira Moroo <retrage01@gmail.com>
+Cc: Rafael Gieschke <rafael.gieschke@rz.uni-freiburg.de>, Conrad Meyer <cem@FreeBSD.org>, Octavian Purdila <tavi.purdila@gmail.com>, Akira Moroo <retrage01@gmail.com>, Quentin Anglade <quentin.anglade@objectif-libre.com>, Hajime Tazaki <thehajime@gmail.com>
 
-This also expands supporting virtio-mmio driver, which involves multiple
-addition to Kconfig as well.
+From: Octavian Purdila <tavi.purdila@gmail.com>
 
+Add a simple fuse based program that can mount filesystem in userspace
+using LKL.
+
+Signed-off-by: Conrad Meyer <cem@FreeBSD.org>
 Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+Signed-off-by: Quentin Anglade <quentin.anglade@objectif-libre.com>
+Signed-off-by: Rafael Gieschke <rafael.gieschke@rz.uni-freiburg.de>
+Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
 ---
- .circleci/config.yml             |   2 +-
- arch/um/Kconfig                  |   6 --
- arch/um/Makefile.um              |   4 +
- arch/um/configs/x86_64_defconfig |   5 ++
- arch/um/include/asm/Kbuild       |   1 +
- arch/um/include/asm/io.h         |   4 +
- arch/um/os-Linux/Makefile        |   5 ++
- arch/um/os-Linux/lkl_dev.c       | 134 +++++++++++++++++++++++++++++++
- arch/x86/um/syscalls_64.c        |  53 ++++++++++++
- tools/lkl/lib/Makefile           |  32 ++++++++
- tools/lkl/lib/virtio.c           |  17 +++-
- tools/lkl/lib/virtio.h           |  22 +++++
- tools/lkl/lib/virtio_net.c       |  23 +++++-
- tools/lkl/lib/virtio_net_fd.c    |  22 -----
- tools/lkl/lib/virtio_net_fd.h    |  22 +++++
- 15 files changed, 320 insertions(+), 32 deletions(-)
- create mode 100644 arch/um/os-Linux/lkl_dev.c
- create mode 100644 tools/lkl/lib/Makefile
+ tools/lkl/lklfuse.c        | 658 +++++++++++++++++++++++++++++++++++++
+ tools/lkl/tests/lklfuse.sh | 110 +++++++
+ 2 files changed, 768 insertions(+)
+ create mode 100644 tools/lkl/lklfuse.c
+ create mode 100755 tools/lkl/tests/lklfuse.sh
 
-diff --git a/.circleci/config.yml b/.circleci/config.yml
-index 7d140d9a2acb..cec55ad93dc6 100644
---- a/.circleci/config.yml
-+++ b/.circleci/config.yml
-@@ -135,7 +135,7 @@ do_uml_steps: &do_uml_steps
-   - run:
-       name: test
-       command: |
--        ./linux rootfstype=hostfs ro mem=1g loglevel=10 init="/bin/bash -c exit" || export RETVAL=$?
-+        ./linux rootfstype=hostfs ro mem=1g loglevel=10 veth0=tap,tap0,0xc803 init="/bin/bash -c exit" || export RETVAL=$?
-         # SIGABRT=6 => 128+6
-         if [ $RETVAL != "134" ]; then
-           exit 1
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index d7e9af63cf8f..a32dd84f0bf2 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -23,9 +23,6 @@ config MMU
- 	bool
- 	default y if !UML_LKL
- 
--config NO_IOMEM
--	def_bool y
--
- config ISA
- 	bool
- 
-@@ -160,9 +157,6 @@ config MMAPPER
- 	  This driver allows a host file to be used as emulated IO memory inside
- 	  UML.
- 
--config NO_DMA
--	def_bool y
--
- config PGTABLE_LEVELS
- 	int
- 	default 3 if 3_LEVEL_PGTABLES
-diff --git a/arch/um/Makefile.um b/arch/um/Makefile.um
-index 24a088e5df04..65cfc4393e3d 100644
---- a/arch/um/Makefile.um
-+++ b/arch/um/Makefile.um
-@@ -11,6 +11,8 @@ core-y			+= $(ARCH_DIR)/kernel/		\
- 			 $(ARCH_DIR)/drivers/		\
- 			 $(ARCH_DIR)/os-$(OS)/
- 
-+core-y			+= $(srctree)/tools/lkl/lib/
-+
- ifdef CONFIG_64BIT
- 	KBUILD_CFLAGS += -mcmodel=large
- endif
-@@ -52,6 +54,8 @@ KBUILD_CPPFLAGS += -I$(srctree)/$(HOST_DIR)/include \
- 		   -I$(objtree)/$(HOST_DIR)/include/generated \
- 		   -I$(objtree)/$(HOST_DIR)/include/generated/uapi
- 
-+KBUILD_CPPFLAGS += -I$(srctree)/$(ARCH_DIR)/lkl/include -I$(srctree)/$(ARCH_DIR)/
-+
- # -Derrno=kernel_errno - This turns all kernel references to errno into
- # kernel_errno to separate them from the libc errno.  This allows -fno-common
- # in KBUILD_CFLAGS.  Otherwise, it would cause ld to complain about the two different
-diff --git a/arch/um/configs/x86_64_defconfig b/arch/um/configs/x86_64_defconfig
-index 3281d7600225..917982b6cd60 100644
---- a/arch/um/configs/x86_64_defconfig
-+++ b/arch/um/configs/x86_64_defconfig
-@@ -70,3 +70,8 @@ CONFIG_NLS=y
- CONFIG_DEBUG_INFO=y
- CONFIG_FRAME_WARN=1024
- CONFIG_DEBUG_KERNEL=y
-+CONFIG_VIRTIO=y
-+CONFIG_VIRTIO_MENU=y
-+CONFIG_VIRTIO_MMIO=y
-+CONFIG_VIRTIO_MMIO_CMDLINE_DEVICES=y
-+CONFIG_VIRTIO_NET=y
-diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
-index 6c2aa280f1d9..54037cdb320e 100644
---- a/arch/um/include/asm/Kbuild
-+++ b/arch/um/include/asm/Kbuild
-@@ -5,6 +5,7 @@ generic-y += compat.h
- generic-y += current.h
- generic-y += delay.h
- generic-y += device.h
-+generic-y += dma-mapping.h
- generic-y += emergency-restart.h
- generic-y += exec.h
- generic-y += extable.h
-diff --git a/arch/um/include/asm/io.h b/arch/um/include/asm/io.h
-index 96f77b5232aa..f23700d3c071 100644
---- a/arch/um/include/asm/io.h
-+++ b/arch/um/include/asm/io.h
-@@ -2,11 +2,15 @@
- #ifndef _ASM_UM_IO_H
- #define _ASM_UM_IO_H
- 
-+#ifndef CONFIG_HAS_IOMEM
- #define ioremap ioremap
- static inline void __iomem *ioremap(phys_addr_t offset, size_t size)
- {
- 	return (void __iomem *)(unsigned long)offset;
- }
-+#else
-+#include <lkl/include/asm/io.h>
-+#endif
- 
- #define iounmap iounmap
- static inline void iounmap(void __iomem *addr)
-diff --git a/arch/um/os-Linux/Makefile b/arch/um/os-Linux/Makefile
-index 839915b8c31c..d90d88a2f34e 100644
---- a/arch/um/os-Linux/Makefile
-+++ b/arch/um/os-Linux/Makefile
-@@ -11,9 +11,14 @@ obj-y = execvp.o file.o helper.o irq.o main.o mem.o process.o \
- 	umid.o user_syms.o util.o drivers/ skas/
- 
- obj-$(CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA) += elf_aux.o
-+obj-y += lkl_dev.o
-+
-+CFLAGS_lkl_dev.o:=-I$(srctree)/tools/lkl/include -Wno-undef
- 
- USER_OBJS := $(user-objs-y) elf_aux.o execvp.o file.o helper.o irq.o \
- 	main.o mem.o process.o registers.o sigio.o signal.o start_up.o time.o \
- 	tty.o umid.o util.o
- 
-+USER_OBJS += lkl_dev.o
-+
- include arch/um/scripts/Makefile.rules
-diff --git a/arch/um/os-Linux/lkl_dev.c b/arch/um/os-Linux/lkl_dev.c
+diff --git a/tools/lkl/lklfuse.c b/tools/lkl/lklfuse.c
 new file mode 100644
-index 000000000000..698062917ed5
+index 000000000000..4e6c8fe250d0
 --- /dev/null
-+++ b/arch/um/os-Linux/lkl_dev.c
-@@ -0,0 +1,134 @@
++++ b/tools/lkl/lklfuse.c
+@@ -0,0 +1,658 @@
 +// SPDX-License-Identifier: GPL-2.0
-+
-+#include <stdlib.h>
++#include <stdbool.h>
++#include <stddef.h>
++#include <stdio.h>
 +#include <string.h>
-+#include <init.h>
-+#include <os.h>
-+#include <kern_util.h>
++#include <stdlib.h>
++#include <sys/stat.h>
++#include <string.h>
 +#include <errno.h>
-+
++#include <unistd.h>
++#define FUSE_USE_VERSION 26
++#include <fuse.h>
++#include <fuse/fuse_opt.h>
++#include <fuse/fuse_lowlevel.h>
 +#include <lkl.h>
 +#include <lkl_host.h>
 +
-+extern struct lkl_host_operations lkl_host_ops;
-+struct lkl_host_operations *lkl_ops = &lkl_host_ops;
++#define LKLFUSE_VERSION "0.1"
 +
-+static struct lkl_netdev *nd;
++struct lklfuse {
++	const char *file;
++	const char *log;
++	const char *type;
++	const char *opts;
++	struct lkl_disk disk;
++	int disk_id;
++	int part;
++	int ro;
++	int mb;
++} lklfuse = {
++	.mb = 64,
++};
 +
-+int __init uml_netdev_prepare(char *iftype, char *ifparams, char *ifoffload)
++#define LKLFUSE_OPT(t, p, v) { t, offsetof(struct lklfuse, p), v }
++
++enum {
++	KEY_HELP,
++	KEY_VERSION,
++};
++
++static struct fuse_opt lklfuse_opts[] = {
++	LKLFUSE_OPT("log=%s", log, 0),
++	LKLFUSE_OPT("type=%s", type, 0),
++	LKLFUSE_OPT("mb=%d", mb, 0),
++	LKLFUSE_OPT("opts=%s", opts, 0),
++	LKLFUSE_OPT("part=%d", part, 0),
++	FUSE_OPT_KEY("-h", KEY_HELP),
++	FUSE_OPT_KEY("--help", KEY_HELP),
++	FUSE_OPT_KEY("-V",             KEY_VERSION),
++	FUSE_OPT_KEY("--version",      KEY_VERSION),
++	FUSE_OPT_END
++};
++
++static void usage(void)
 +{
-+	int offload = 0;
-+
-+	if (ifoffload)
-+		offload = strtol(ifoffload, NULL, 0);
-+
-+	if ((strcmp(iftype, "tap") == 0)) {
-+		nd = lkl_netdev_tap_create(ifparams, offload);
-+#ifdef notyet
-+	} else if ((strcmp(iftype, "macvtap") == 0)) {
-+		nd = lkl_netdev_macvtap_create(ifparams, offload);
-+#endif
-+	} else {
-+		if (offload) {
-+			lkl_printf("WARN: %s isn't supported on %s\n",
-+				   "LKL_HIJACK_OFFLOAD",
-+				   iftype);
-+			lkl_printf(
-+				"WARN: Disabling offload features.\n");
-+		}
-+		offload = 0;
-+	}
-+#ifdef notyet
-+	if (strcmp(iftype, "raw") == 0)
-+		nd = lkl_netdev_raw_create(ifparams);
-+#endif
-+
-+	return 0;
-+}
-+
-+
-+int __init uml_netdev_add(void)
-+{
-+	if (nd)
-+		lkl_netdev_add(nd, NULL);
-+
-+	return 0;
-+}
-+__initcall(uml_netdev_add);
-+
-+static int __init lkl_eth_setup(char *str, int *niu)
-+{
-+	char *end, *iftype, *ifparams, *ifoffload;
-+	int devid, err = -EINVAL;
-+
-+	/* veth */
-+	devid = strtoul(str, &end, 0);
-+	if (end == str) {
-+		os_warn("Bad device number\n");
-+		return err;
-+	}
-+
-+	/* = */
-+	str = end;
-+	if (*str != '=') {
-+		os_warn("Expected '=' after device number\n");
-+		return err;
-+	}
-+	str++;
-+
-+	/* <iftype> */
-+	iftype = str;
-+
-+	/* <ifparams> */
-+	ifparams = strchr(str, ',');
-+	if (ifparams == NULL) {
-+		os_warn("failed to parse ifparams\n");
-+		return -1;
-+	}
-+	*ifparams = '\0';
-+	ifparams++;
-+
-+	str = ifparams;
-+	/* <offload> */
-+	ifoffload = strchr(str, ',');
-+	*ifoffload = '\0';
-+	ifoffload++;
-+
-+	os_info("str=%s, iftype=%s, ifparams=%s, offload=%s\n",
-+		str, iftype, ifparams, ifoffload);
-+
-+	/* preparation */
-+	uml_netdev_prepare(iftype, ifparams, ifoffload);
-+
-+	return 1;
-+}
-+
-+__uml_setup("veth", lkl_eth_setup,
-+"veth[0-9]+=<iftype>,<ifparams>,<offload>\n"
-+"    Configure a network device.\n\n"
++	printf(
++"usage: lklfuse file mountpoint [options]\n"
++"\n"
++"general options:\n"
++"    -o opt,[opt...]        mount options\n"
++"    -h   --help            print help\n"
++"    -V   --version         print version\n"
++"\n"
++"lklfuse options:\n"
++"    -o log=FILE            log file\n"
++"    -o type=fstype         filesystem type\n"
++"    -o mb=memory in mb     ammount of memory to allocate\n"
++"    -o part=parition       partition to mount\n"
++"    -o ro                  open file read-only\n"
++"    -o opts=options        mount options (use \\ to escape , and =)\n"
 +);
-+
-+/* stub functions */
-+int lkl_is_running(void)
-+{
-+	return 1;
 +}
 +
-+
-+void lkl_put_irq(int i, const char *user)
++static int lklfuse_opt_proc(void *data, const char *arg, int key,
++			  struct fuse_args *args)
 +{
++	switch (key) {
++	case FUSE_OPT_KEY_OPT:
++		if (strcmp(arg, "ro") == 0)
++			lklfuse.ro = 1;
++		return 1;
++
++	case FUSE_OPT_KEY_NONOPT:
++		if (!lklfuse.file) {
++			lklfuse.file = strdup(arg);
++			return 0;
++		}
++		return 1;
++
++	case KEY_HELP:
++		usage();
++		fuse_opt_add_arg(args, "-ho");
++		fuse_main(args->argc, args->argv, NULL, NULL);
++		exit(1);
++
++	case KEY_VERSION:
++		printf("lklfuse version %s\n", LKLFUSE_VERSION);
++		fuse_opt_add_arg(args, "--version");
++		fuse_main(args->argc, args->argv, NULL, NULL);
++		exit(0);
++
++	default:
++		fprintf(stderr, "internal error\n");
++		abort();
++	}
 +}
 +
-+/* XXX */
-+static int free_irqs[2] = {5, 13};
-+int lkl_get_free_irq(const char *user)
++static void lklfuse_xlat_stat(const struct lkl_stat *in, struct stat *st)
 +{
-+	static int irq_idx;
-+	return free_irqs[irq_idx++];
++	st->st_dev = in->st_dev;
++	st->st_ino = in->st_ino;
++	st->st_mode = in->st_mode;
++	st->st_nlink = in->st_nlink;
++	st->st_uid = in->st_uid;
++	st->st_gid = in->st_gid;
++	st->st_rdev = in->st_rdev;
++	st->st_size = in->st_size;
++	st->st_blksize = in->st_blksize;
++	st->st_blocks = in->st_blocks;
++	st->st_atim.tv_sec = in->lkl_st_atime;
++	st->st_atim.tv_nsec = in->st_atime_nsec;
++	st->st_mtim.tv_sec = in->lkl_st_mtime;
++	st->st_mtim.tv_nsec = in->st_mtime_nsec;
++	st->st_ctim.tv_sec = in->lkl_st_ctime;
++	st->st_ctim.tv_nsec = in->st_ctime_nsec;
 +}
 +
-+int lkl_trigger_irq(int irq)
++static int lklfuse_fgetattr(const char *path, struct stat *st,
++			    struct fuse_file_info *fi)
 +{
-+	do_IRQ(irq, NULL);
++	long ret;
++	struct lkl_stat lkl_stat;
++
++	ret = lkl_sys_fstat(fi->fh, &lkl_stat);
++	if (ret)
++		return ret;
++
++	lklfuse_xlat_stat(&lkl_stat, st);
 +	return 0;
 +}
-diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
-index 58f51667e2e4..e70dc7f76b19 100644
---- a/arch/x86/um/syscalls_64.c
-+++ b/arch/x86/um/syscalls_64.c
-@@ -9,6 +9,7 @@
- #include <linux/sched/mm.h>
- #include <linux/syscalls.h>
- #include <linux/uaccess.h>
-+#include <linux/platform_device.h>
- #include <asm/prctl.h> /* XXX This should get the constants from libc */
- #include <os.h>
- 
-@@ -87,3 +88,55 @@ void arch_switch_to(struct task_struct *to)
- 
- 	arch_prctl(to, ARCH_SET_FS, (void __user *) to->thread.arch.fs);
- }
 +
-+SYSCALL_DEFINE3(virtio_mmio_device_add, long, base, long, size, unsigned int,
-+		irq)
++static int lklfuse_getattr(const char *path, struct stat *st)
 +{
-+	struct platform_device *pdev;
-+	int ret;
++	long ret;
++	struct lkl_stat lkl_stat;
 +
-+	struct resource res[] = {
-+		[0] = {
-+		       .start = base,
-+		       .end = base + size - 1,
-+		       .flags = IORESOURCE_MEM,
-+		       },
-+		[1] = {
-+		       .start = irq,
-+		       .end = irq,
-+		       .flags = IORESOURCE_IRQ,
-+		       },
-+	};
++	ret = lkl_sys_lstat(path, &lkl_stat);
++	if (ret)
++		return ret;
 +
-+	pdev = platform_device_alloc("virtio-mmio", PLATFORM_DEVID_AUTO);
-+	if (!pdev) {
-+		dev_err(&pdev->dev,
-+			"%s: Unable to device alloc for virtio-mmio\n",
-+			__func__);
-+		return -ENOMEM;
++	lklfuse_xlat_stat(&lkl_stat, st);
++	return 0;
++}
++
++static int lklfuse_readlink(const char *path, char *buf, size_t len)
++{
++	long ret;
++
++	ret = lkl_sys_readlink(path, buf, len);
++	if (ret < 0)
++		return ret;
++
++	if ((size_t)ret == len)
++		ret = len - 1;
++
++	buf[ret] = 0;
++
++	return 0;
++}
++
++static int lklfuse_mknod(const char *path, mode_t mode, dev_t dev)
++{
++	return lkl_sys_mknod(path, mode, dev);
++}
++
++static int lklfuse_mkdir(const char *path, mode_t mode)
++{
++	return lkl_sys_mkdir(path, mode);
++}
++
++static int lklfuse_unlink(const char *path)
++{
++	return lkl_sys_unlink(path);
++}
++
++static int lklfuse_rmdir(const char *path)
++{
++	return lkl_sys_rmdir(path);
++}
++
++static int lklfuse_symlink(const char *oldname, const char *newname)
++{
++	return lkl_sys_symlink(oldname, newname);
++}
++
++
++static int lklfuse_rename(const char *oldname, const char *newname)
++{
++	return lkl_sys_rename(oldname, newname);
++}
++
++static int lklfuse_link(const char *oldname, const char *newname)
++{
++	return lkl_sys_link(oldname, newname);
++}
++
++static int lklfuse_chmod(const char *path, mode_t mode)
++{
++	return lkl_sys_chmod(path, mode);
++}
++
++
++static int lklfuse_chown(const char *path, uid_t uid, gid_t gid)
++{
++	return lkl_sys_fchownat(LKL_AT_FDCWD, path, uid, gid,
++				LKL_AT_SYMLINK_NOFOLLOW);
++}
++
++static int lklfuse_truncate(const char *path, off_t off)
++{
++	return lkl_sys_truncate(path, off);
++}
++
++static int lklfuse_open3(const char *path, bool create, mode_t mode,
++			 struct fuse_file_info *fi)
++{
++	long ret;
++	int flags;
++
++	if ((fi->flags & O_ACCMODE) == O_RDONLY)
++		flags = LKL_O_RDONLY;
++	else if ((fi->flags & O_ACCMODE) == O_WRONLY)
++		flags = LKL_O_WRONLY;
++	else if ((fi->flags & O_ACCMODE) == O_RDWR)
++		flags = LKL_O_RDWR;
++	else
++		return -EINVAL;
++
++	if (create)
++		flags |= LKL_O_CREAT;
++
++	ret = lkl_sys_open(path, flags, mode);
++	if (ret < 0)
++		return ret;
++
++	fi->fh = ret;
++
++	return 0;
++}
++
++static int lklfuse_create(const char *path, mode_t mode,
++			  struct fuse_file_info *fi)
++{
++	return lklfuse_open3(path, true, mode, fi);
++}
++
++static int lklfuse_open(const char *path, struct fuse_file_info *fi)
++{
++	return lklfuse_open3(path, false, 0, fi);
++}
++
++static int lklfuse_read(const char *path, char *buf, size_t size, off_t offset,
++		      struct fuse_file_info *fi)
++{
++	long ret;
++	ssize_t orig_size = size;
++
++	do {
++		ret = lkl_sys_pread64(fi->fh, buf, size, offset);
++		if (ret <= 0)
++			break;
++		size -= ret;
++		offset += ret;
++		buf += ret;
++	} while (size > 0);
++
++	return ret < 0 ? ret : orig_size - (ssize_t)size;
++
++}
++
++static int lklfuse_write(const char *path, const char *buf, size_t size,
++		       off_t offset, struct fuse_file_info *fi)
++{
++	long ret;
++	ssize_t orig_size = size;
++
++	do {
++		ret = lkl_sys_pwrite64(fi->fh, buf, size, offset);
++		if (ret <= 0)
++			break;
++		size -= ret;
++		offset += ret;
++		buf += ret;
++	} while (size > 0);
++
++	return ret < 0 ? ret : orig_size - (ssize_t)size;
++}
++
++
++static int lklfuse_statfs(const char *path, struct statvfs *stat)
++{
++	long ret;
++	struct lkl_statfs lkl_statfs;
++
++	ret = lkl_sys_statfs(path, &lkl_statfs);
++	if (ret < 0)
++		return ret;
++
++	stat->f_bsize = lkl_statfs.f_bsize;
++	stat->f_frsize = lkl_statfs.f_frsize;
++	stat->f_blocks = lkl_statfs.f_blocks;
++	stat->f_bfree = lkl_statfs.f_bfree;
++	stat->f_bavail = lkl_statfs.f_bavail;
++	stat->f_files = lkl_statfs.f_files;
++	stat->f_ffree = lkl_statfs.f_ffree;
++	stat->f_favail = stat->f_ffree;
++	stat->f_fsid = *(unsigned long *)&lkl_statfs.f_fsid.val[0];
++	stat->f_flag = lkl_statfs.f_flags;
++	stat->f_namemax = lkl_statfs.f_namelen;
++
++	return 0;
++}
++
++static int lklfuse_flush(const char *path, struct fuse_file_info *fi)
++{
++	return 0;
++}
++
++static int lklfuse_release(const char *path, struct fuse_file_info *fi)
++{
++	return lkl_sys_close(fi->fh);
++}
++
++static int lklfuse_fsync(const char *path, int datasync,
++		       struct fuse_file_info *fi)
++{
++	if (datasync)
++		return lkl_sys_fdatasync(fi->fh);
++	else
++		return lkl_sys_fsync(fi->fh);
++}
++
++static int lklfuse_setxattr(const char *path, const char *name, const char *val,
++		   size_t size, int flags)
++{
++	return lkl_sys_setxattr(path, name, val, size, flags);
++}
++
++static int lklfuse_getxattr(const char *path, const char *name, char *val,
++			  size_t size)
++{
++	return lkl_sys_getxattr(path, name, val, size);
++}
++
++static int lklfuse_listxattr(const char *path, char *list, size_t size)
++{
++	return lkl_sys_listxattr(path, list, size);
++}
++
++static int lklfuse_removexattr(const char *path, const char *name)
++{
++	return lkl_sys_removexattr(path, name);
++}
++
++static int lklfuse_opendir(const char *path, struct fuse_file_info *fi)
++{
++	struct lkl_dir *dir;
++	int err;
++
++	dir = lkl_opendir(path, &err);
++	if (!dir)
++		return err;
++
++	fi->fh = (uintptr_t)dir;
++
++	return 0;
++}
++
++/** Read directory
++ *
++ * This supersedes the old getdir() interface.  New applications
++ * should use this.
++ *
++ * The filesystem may choose between two modes of operation:
++ *
++ * 1) The readdir implementation ignores the offset parameter, and
++ * passes zero to the filler function's offset.  The filler
++ * function will not return '1' (unless an error happens), so the
++ * whole directory is read in a single readdir operation.  This
++ * works just like the old getdir() method.
++ *
++ * 2) The readdir implementation keeps track of the offsets of the
++ * directory entries.  It uses the offset parameter and always
++ * passes non-zero offset to the filler function.  When the buffer
++ * is full (or an error happens) the filler function will return
++ * '1'.
++ *
++ * Introduced in version 2.3
++ */
++static int lklfuse_readdir(const char *path, void *buf, fuse_fill_dir_t fill,
++			 off_t off, struct fuse_file_info *fi)
++{
++	struct lkl_dir *dir = (struct lkl_dir *)(uintptr_t)fi->fh;
++	struct lkl_linux_dirent64 *de;
++
++	while ((de = lkl_readdir(dir))) {
++		struct stat st = { 0, };
++
++		st.st_ino = de->d_ino;
++		st.st_mode = de->d_type << 12;
++
++		if (fill(buf, de->d_name, &st, 0))
++			break;
 +	}
 +
-+	ret = platform_device_add_resources(pdev, res, ARRAY_SIZE(res));
++	if (!de)
++		return lkl_errdir(dir);
++
++	return 0;
++}
++
++static int lklfuse_releasedir(const char *path, struct fuse_file_info *fi)
++{
++	struct lkl_dir *dir = (struct lkl_dir *)(uintptr_t)fi->fh;
++
++	return lkl_closedir(dir);
++}
++
++static int lklfuse_fsyncdir(const char *path, int datasync,
++			  struct fuse_file_info *fi)
++{
++	struct lkl_dir *dir = (struct lkl_dir *)(uintptr_t)fi->fh;
++	int fd = lkl_dirfd(dir);
++
++	if (datasync)
++		return lkl_sys_fdatasync(fd);
++	else
++		return lkl_sys_fsync(fd);
++}
++
++static int lklfuse_access(const char *path, int mode)
++{
++	return lkl_sys_access(path, mode);
++}
++
++static int lklfuse_utimens(const char *path, const struct timespec tv[2])
++{
++	struct lkl_timespec ts[2];
++
++	ts[0].tv_sec = tv[0].tv_sec;
++	ts[0].tv_nsec = tv[0].tv_nsec;
++	ts[1].tv_sec = tv[0].tv_sec;
++	ts[1].tv_nsec = tv[0].tv_nsec;
++
++	return lkl_sys_utimensat(-1, path, (struct __lkl__kernel_timespec *)ts,
++				 LKL_AT_SYMLINK_NOFOLLOW);
++}
++
++static int lklfuse_fallocate(const char *path, int mode, off_t offset,
++			     off_t len, struct fuse_file_info *fi)
++{
++	return lkl_sys_fallocate(fi->fh, mode, offset, len);
++}
++
++const struct fuse_operations lklfuse_ops = {
++	.flag_nullpath_ok = 1,
++	.flag_nopath = 1,
++	.flag_utime_omit_ok = 1,
++
++	.getattr = lklfuse_getattr,
++	.readlink = lklfuse_readlink,
++	.mknod = lklfuse_mknod,
++	.mkdir = lklfuse_mkdir,
++	.unlink = lklfuse_unlink,
++	.rmdir = lklfuse_rmdir,
++	.symlink = lklfuse_symlink,
++	.rename = lklfuse_rename,
++	.link = lklfuse_link,
++	.chmod = lklfuse_chmod,
++	.chown = lklfuse_chown,
++	.truncate = lklfuse_truncate,
++	.open = lklfuse_open,
++	.read = lklfuse_read,
++	.write = lklfuse_write,
++	.statfs = lklfuse_statfs,
++	.flush = lklfuse_flush,
++	.release = lklfuse_release,
++	.fsync = lklfuse_fsync,
++	.setxattr = lklfuse_setxattr,
++	.getxattr = lklfuse_getxattr,
++	.listxattr = lklfuse_listxattr,
++	.removexattr = lklfuse_removexattr,
++	.opendir = lklfuse_opendir,
++	.readdir = lklfuse_readdir,
++	.releasedir = lklfuse_releasedir,
++	.fsyncdir = lklfuse_fsyncdir,
++	.access = lklfuse_access,
++	.create = lklfuse_create,
++	.fgetattr = lklfuse_fgetattr,
++	/* .lock, */
++	.utimens = lklfuse_utimens,
++	/* .bmap, */
++	/* .ioctl, */
++	/* .poll, */
++	/* .write_buf, (SG io) */
++	/* .read_buf, (SG io) */
++	/* .flock, */
++	.fallocate = lklfuse_fallocate,
++};
++
++static int start_lkl(void)
++{
++	long ret;
++	char mpoint[32], cmdline[16];
++
++	snprintf(cmdline, sizeof(cmdline), "mem=%dM", lklfuse.mb);
++	ret = lkl_start_kernel(&lkl_host_ops, cmdline);
 +	if (ret) {
-+		dev_err(&pdev->dev,
-+			"%s: Unable to add resources for %s%d\n", __func__,
-+			pdev->name, pdev->id);
-+		goto exit_device_put;
++		fprintf(stderr, "can't start kernel: %s\n", lkl_strerror(ret));
++		goto out;
 +	}
 +
-+	ret = platform_device_add(pdev);
-+	if (ret < 0) {
-+		dev_err(&pdev->dev, "%s: Unable to add %s%d\n", __func__,
-+			pdev->name, pdev->id);
-+		goto exit_release_pdev;
++	ret = lkl_mount_dev(lklfuse.disk_id, lklfuse.part, lklfuse.type,
++			    lklfuse.ro ? LKL_MS_RDONLY : 0, lklfuse.opts,
++			    mpoint, sizeof(mpoint));
++
++	if (ret) {
++		fprintf(stderr, "can't mount disk: %s\n", lkl_strerror(ret));
++		goto out_halt;
 +	}
 +
-+	return pdev->id;
++	ret = lkl_sys_chroot(mpoint);
++	if (ret) {
++		fprintf(stderr, "can't chdir to %s: %s\n", mpoint,
++			lkl_strerror(ret));
++		goto out_umount;
++	}
 +
-+exit_release_pdev:
-+	platform_device_del(pdev);
-+exit_device_put:
-+	platform_device_put(pdev);
++	return 0;
 +
++out_umount:
++	lkl_umount_dev(lklfuse.disk_id, lklfuse.part, 0, 1000);
++
++out_halt:
++	lkl_sys_halt();
++
++out:
 +	return ret;
 +}
-diff --git a/tools/lkl/lib/Makefile b/tools/lkl/lib/Makefile
-new file mode 100644
-index 000000000000..8dc0009c680e
---- /dev/null
-+++ b/tools/lkl/lib/Makefile
-@@ -0,0 +1,32 @@
 +
-+USER_CFLAGS += -I$(srctree)/tools/lkl/include \
-+		-Wno-strict-prototypes -Wno-undef \
-+		-Wframe-larger-than=20480 -O0 -g
-+
-+USER_OBJS += fs.o iomem.o net.o jmp_buf.o virtio.o virtio_net.o \
-+	 virtio_net_fd.o virtio_net_tap.o utils.o posix-host.o \
-+	../../perf/pmu-events/jsmn.o
-+
-+#obj-y += fs.o
-+obj-y += iomem.o
-+#obj-y += net.o
-+obj-y += jmp_buf.o
-+obj-y += posix-host.o
-+#obj-$(LKL_HOST_CONFIG_NT) += nt-host.o
-+obj-y += utils.o
-+#obj-y += virtio_blk.o
-+obj-y += virtio.o
-+#obj-y += dbg.o
-+#obj-y += dbg_handler.o
-+obj-y += virtio_net.o
-+obj-y += virtio_net_fd.o
-+obj-y += virtio_net_tap.o
-+#obj-$(LKL_HOST_CONFIG_VIRTIO_NET) += virtio_net_raw.o
-+#obj-$(LKL_HOST_CONFIG_VIRTIO_NET_MACVTAP) += virtio_net_macvtap.o
-+#obj-$(LKL_HOST_CONFIG_VIRTIO_NET_DPDK) += virtio_net_dpdk.o
-+#obj-$(LKL_HOST_CONFIG_VIRTIO_NET_VDE) += virtio_net_vde.o
-+#obj-$(LKL_HOST_CONFIG_VIRTIO_NET) += virtio_net_pipe.o
-+obj-y += ../../perf/pmu-events/jsmn.o
-+#obj-y += config.o
-+
-+include arch/um/scripts/Makefile.rules
-diff --git a/tools/lkl/lib/virtio.c b/tools/lkl/lib/virtio.c
-index 4b3dbba607c3..98539e270320 100644
---- a/tools/lkl/lib/virtio.c
-+++ b/tools/lkl/lib/virtio.c
-@@ -46,6 +46,12 @@
- 		lkl_host_ops.panic();					\
- 	} while (0)
- 
-+#ifdef __arch_um__
-+extern unsigned long uml_physmem;
-+#else
-+static unsigned long uml_physmem;
-+#endif
-+
- struct virtio_queue {
- 	uint32_t num_max;
- 	uint32_t num;
-@@ -216,7 +222,8 @@ static void add_dev_buf_from_vring_desc(struct virtio_req *req,
- {
- 	struct iovec *buf = &req->buf[req->buf_count++];
- 
--	buf->iov_base = (void *)(uintptr_t)le64toh(vring_desc->addr);
-+	buf->iov_base = (void *)(uintptr_t)le64toh(vring_desc->addr)
-+		+ uml_physmem;
- 	buf->iov_len = le32toh(vring_desc->len);
- 
- 	if (!(buf->iov_base && buf->iov_len))
-@@ -304,8 +311,10 @@ void virtio_process_queue(struct virtio_dev *dev, uint32_t qidx)
- 	if (!q->ready)
- 		return;
- 
-+#ifndef __arch_um__
- 	if (dev->ops->acquire_queue)
- 		dev->ops->acquire_queue(dev, qidx);
-+#endif
- 
- 	while (q->last_avail_idx != le16toh(q->avail->idx)) {
- 		/*
-@@ -319,8 +328,10 @@ void virtio_process_queue(struct virtio_dev *dev, uint32_t qidx)
- 			virtio_set_avail_event(q, q->avail->idx);
- 	}
- 
-+#ifndef __arch_um__
- 	if (dev->ops->release_queue)
- 		dev->ops->release_queue(dev, qidx);
-+#endif
- }
- 
- static inline uint32_t virtio_read_device_features(struct virtio_dev *dev)
-@@ -406,7 +417,7 @@ static inline void set_ptr_low(void **ptr, uint32_t val)
- 	uint64_t tmp = (uintptr_t)*ptr;
- 
- 	tmp = (tmp & 0xFFFFFFFF00000000) | val;
--	*ptr = (void *)(long)tmp;
-+	*ptr = (void *)(long)tmp + uml_physmem;
- }
- 
- static inline void set_ptr_high(void **ptr, uint32_t val)
-@@ -579,6 +590,7 @@ int virtio_dev_setup(struct virtio_dev *dev, int queues, int num_max)
- 
- int virtio_dev_cleanup(struct virtio_dev *dev)
- {
-+#ifndef __arch_um__
- 	char devname[100];
- 	long fd, ret;
- 	long mount_ret;
-@@ -622,6 +634,7 @@ int virtio_dev_cleanup(struct virtio_dev *dev)
- 	lkl_put_irq(dev->irq, "virtio");
- 	unregister_iomem(dev->base);
- 	lkl_host_ops.mem_free(dev->queue);
-+#endif
- 	return 0;
- }
- 
-diff --git a/tools/lkl/lib/virtio.h b/tools/lkl/lib/virtio.h
-index 7427aa8fad79..be06ef09f8b0 100644
---- a/tools/lkl/lib/virtio.h
-+++ b/tools/lkl/lib/virtio.h
-@@ -87,6 +87,28 @@ void virtio_req_complete(struct virtio_req *req, uint32_t len);
- void virtio_process_queue(struct virtio_dev *dev, uint32_t qidx);
- void virtio_set_queue_max_merge_len(struct virtio_dev *dev, int q, int len);
- 
-+#ifdef __arch_um__
-+//#include <irq_kern.h>
-+#include <irq_user.h>
-+enum irqreturn {
-+	IRQ_HANDLED		= (1 << 0),
-+	IRQ_WAKE_THREAD		= (1 << 1),
-+};
-+
-+typedef enum irqreturn irqreturn_t;
-+typedef irqreturn_t (*irq_handler_t)(int, void *);
-+
-+#define IRQF_SHARED		0x00000080
-+
-+extern int um_request_irq(unsigned int irq, int fd, int type,
-+			  irq_handler_t handler,
-+			  unsigned long irqflags,  const char *devname,
-+			  void *dev_id);
-+
-+long sys_virtio_mmio_device_add(long base, long size, unsigned int irq);
-+#define lkl_sys_virtio_mmio_device_add sys_virtio_mmio_device_add
-+#endif /* __arch_um__ */
-+
- #define container_of(ptr, type, member) \
- 	(type *)((char *)(ptr) - __builtin_offsetof(type, member))
- 
-diff --git a/tools/lkl/lib/virtio_net.c b/tools/lkl/lib/virtio_net.c
-index 60743109215b..224d7bf50702 100644
---- a/tools/lkl/lib/virtio_net.c
-+++ b/tools/lkl/lib/virtio_net.c
-@@ -2,6 +2,7 @@
- #include <string.h>
- #include <lkl_host.h>
- #include "virtio.h"
-+#include "virtio_net_fd.h"
- #include "endian.h"
- 
- #include <lkl/linux/virtio_net.h>
-@@ -211,9 +212,21 @@ static struct lkl_mutex **init_queue_locks(int num_queues)
- 	return ret;
- }
- 
-+#ifdef __arch_um__
-+static irqreturn_t um_virtio_intr(int irq, void *dev_id)
++static void stop_lkl(void)
 +{
-+	struct virtio_dev *dev = dev_id;
++	int ret;
 +
-+	virtio_process_queue(dev, 0);
-+	return 0;
++	ret = lkl_sys_chdir("/");
++	if (ret)
++		fprintf(stderr, "can't chdir to /: %s\n", lkl_strerror(ret));
++	ret = lkl_sys_umount("/", 0);
++	if (ret)
++		fprintf(stderr, "failed to umount disk: %d: %s\n",
++			lklfuse.disk_id, lkl_strerror(ret));
++	lkl_sys_halt();
 +}
-+#endif
 +
- int lkl_netdev_add(struct lkl_netdev *nd, struct lkl_netdev_args *args)
- {
- 	struct virtio_net_dev *dev;
-+	struct lkl_netdev_fd *nd_fd =
-+		container_of(nd, struct lkl_netdev_fd, dev);
- 	int ret = -LKL_ENOMEM;
- 
- 	dev = lkl_host_ops.mem_alloc(sizeof(*dev));
-@@ -251,16 +264,22 @@ int lkl_netdev_add(struct lkl_netdev *nd, struct lkl_netdev_args *args)
- 	if (ret)
- 		goto out_free;
- 
-+#ifdef __arch_um__
-+	um_request_irq(dev->dev.irq, nd_fd->fd_rx, IRQ_READ, um_virtio_intr,
-+		       IRQF_SHARED, "virtio", dev);
-+#endif
++int main(int argc, char **argv)
++{
++	struct fuse_args args = FUSE_ARGS_INIT(argc, argv);
++	struct fuse_chan *ch;
++	struct fuse *fuse;
++	struct stat st;
++	char *mnt;
++	int fg, mt, ret;
 +
- 	/*
- 	 * We may receive upto 64KB TSO packet so collect as many descriptors as
- 	 * there are available up to 64KB in total len.
- 	 */
- 	if (dev->dev.device_features & BIT(LKL_VIRTIO_NET_F_MRG_RXBUF))
- 		virtio_set_queue_max_merge_len(&dev->dev, RX_QUEUE_IDX, 65536);
--
-+#ifndef __arch_um__
- 	dev->poll_tid = lkl_host_ops.thread_create(poll_thread, dev);
- 	if (dev->poll_tid == 0)
- 		goto out_cleanup_dev;
-+#endif
- 
- 	ret = dev_register(dev);
- 	if (ret < 0)
-@@ -279,6 +298,7 @@ int lkl_netdev_add(struct lkl_netdev *nd, struct lkl_netdev_args *args)
- 	return ret;
- }
- 
-+#ifndef __arch_um__
- /* Return 0 for success, -1 for failure. */
- void lkl_netdev_remove(int id)
- {
-@@ -314,6 +334,7 @@ void lkl_netdev_remove(int id)
- 	free_queue_locks(dev->queue_locks, NUM_QUEUES);
- 	lkl_host_ops.mem_free(dev);
- }
-+#endif
- 
- void lkl_netdev_free(struct lkl_netdev *nd)
- {
-diff --git a/tools/lkl/lib/virtio_net_fd.c b/tools/lkl/lib/virtio_net_fd.c
-index f8664455e696..a19193cfeca9 100644
---- a/tools/lkl/lib/virtio_net_fd.c
-+++ b/tools/lkl/lib/virtio_net_fd.c
-@@ -25,28 +25,6 @@
- #include "virtio.h"
- #include "virtio_net_fd.h"
- 
--struct lkl_netdev_fd {
--	struct lkl_netdev dev;
--	/* file-descriptor based device */
--	int fd_rx;
--	int fd_tx;
--	/*
--	 * Controlls the poll mask for fd. Can be acccessed concurrently from
--	 * poll, tx, or rx routines but there is no need for syncronization
--	 * because:
--	 *
--	 * (a) TX and RX routines set different variables so even if they update
--	 * at the same time there is no race condition
--	 *
--	 * (b) Even if poll and TX / RX update at the same time poll cannot
--	 * stall: when poll resets the poll variable we know that TX / RX will
--	 * run which means that eventually the poll variable will be set.
--	 */
--	int poll_tx, poll_rx;
--	/* controle pipe */
--	int pipe[2];
--};
--
- static int fd_net_tx(struct lkl_netdev *nd, struct iovec *iov, int cnt)
- {
- 	int ret;
-diff --git a/tools/lkl/lib/virtio_net_fd.h b/tools/lkl/lib/virtio_net_fd.h
-index 713ba13cca7c..fe6d6d8e3ab4 100644
---- a/tools/lkl/lib/virtio_net_fd.h
-+++ b/tools/lkl/lib/virtio_net_fd.h
-@@ -4,6 +4,28 @@
- 
- struct ifreq;
- 
-+struct lkl_netdev_fd {
-+	struct lkl_netdev dev;
-+	/* file-descriptor based device */
-+	int fd_rx;
-+	int fd_tx;
-+	/*
-+	 * Controlls the poll mask for fd. Can be acccessed concurrently from
-+	 * poll, tx, or rx routines but there is no need for syncronization
-+	 * because:
-+	 *
-+	 * (a) TX and RX routines set different variables so even if they update
-+	 * at the same time there is no race condition
-+	 *
-+	 * (b) Even if poll and TX / RX update at the same time poll cannot
-+	 * stall: when poll resets the poll variable we know that TX / RX will
-+	 * run which means that eventually the poll variable will be set.
-+	 */
-+	int poll_tx, poll_rx;
-+	/* controle pipe */
-+	int pipe[2];
-+};
++	if (fuse_opt_parse(&args, &lklfuse, lklfuse_opts, lklfuse_opt_proc))
++		return 1;
 +
- /**
-  * lkl_register_netdev_linux_fdnet - register a file descriptor-based network
-  * device as a NIC
++	if (!lklfuse.file || !lklfuse.type) {
++		fprintf(stderr, "no file or filesystem type specified\n");
++		return 1;
++	}
++
++	if (fuse_parse_cmdline(&args, &mnt, &mt, &fg))
++		return 1;
++
++	ret = stat(mnt, &st);
++	if (ret) {
++		perror(mnt);
++		goto out_free;
++	}
++
++	ret = open(lklfuse.file, lklfuse.ro ? O_RDONLY : O_RDWR);
++	if (ret < 0) {
++		perror(lklfuse.file);
++		goto out_free;
++	}
++
++	lklfuse.disk.fd = ret;
++
++	ret = lkl_disk_add(&lklfuse.disk);
++	if (ret < 0) {
++		fprintf(stderr, "can't add disk: %s\n", lkl_strerror(ret));
++		goto out_close_disk;
++	}
++
++	lklfuse.disk_id = ret;
++
++	ch = fuse_mount(mnt, &args);
++	if (!ch) {
++		ret = -1;
++		goto out_close_disk;
++	}
++
++	fuse = fuse_new(ch, &args, &lklfuse_ops, sizeof(lklfuse_ops), NULL);
++	if (!fuse) {
++		ret = -1;
++		goto out_fuse_unmount;
++	}
++
++	fuse_opt_free_args(&args);
++
++	if (fuse_daemonize(fg) ||
++	    fuse_set_signal_handlers(fuse_get_session(fuse))) {
++		ret = -1;
++		goto out_fuse_destroy;
++	}
++
++	ret = start_lkl();
++	if (ret) {
++		ret = -1;
++		goto out_remove_signals;
++	}
++
++	if (mt)
++		fprintf(stderr, "warning: multithreaded mode not supported\n");
++
++	ret = fuse_loop(fuse);
++
++	stop_lkl();
++
++out_remove_signals:
++	fuse_remove_signal_handlers(fuse_get_session(fuse));
++
++out_fuse_unmount:
++	if (ch)
++		fuse_unmount(mnt, ch);
++
++out_fuse_destroy:
++	if (fuse)
++		fuse_destroy(fuse);
++
++out_close_disk:
++	close(lklfuse.disk.fd);
++
++out_free:
++	free(mnt);
++
++	return ret < 0 ? 1 : 0;
++}
+diff --git a/tools/lkl/tests/lklfuse.sh b/tools/lkl/tests/lklfuse.sh
+new file mode 100755
+index 000000000000..7f35dd53fc4e
+--- /dev/null
++++ b/tools/lkl/tests/lklfuse.sh
+@@ -0,0 +1,110 @@
++#!/usr/bin/env bash
++# SPDX-License-Identifier: GPL-2.0
++
++script_dir=$(cd $(dirname ${BASH_SOURCE:-$0}); pwd)
++
++source $script_dir/test.sh
++
++cleanup()
++{
++    set -e
++
++    sleep 1
++    fusermount -u $dir
++    rm $file
++    rmdir $dir
++}
++
++
++# $1 - disk image
++# $2 - fstype
++function prepfs()
++{
++    set -e
++
++    dd if=/dev/zero of=$1 bs=1024 count=102400
++
++    yes | mkfs.$2 $1
++}
++
++# $1 - disk image
++# $2 - mount point
++# $3 - filesystem type
++lklfuse_mount()
++{
++    ${script_dir}/../lklfuse $1 $2 -o type=$3
++}
++
++# $1 - mount point
++lklfuse_basic()
++{
++    set -e
++
++    cd $1
++    touch a
++    if ! [ -e ]; then exit 1; fi
++    rm a
++    mkdir a
++    if ! [ -d ]; then exit 1; fi
++    rmdir a
++}
++
++# $1 - dir
++# $2 - filesystem type
++lklfuse_stressng()
++{
++    set -e
++
++    if [ -z $(which stress-ng) ]; then
++        echo "missing stress-ng"
++        return $TEST_SKIP
++    fi
++
++    cd $1
++
++    if [ "$2" = "vfat" ]; then
++        exclude="chmod,filename,link,mknod,symlink,xattr"
++    fi
++
++    stress-ng --class filesystem --all 0 --timeout 10 \
++	      --exclude fiemap,$exclude --fallocate-bytes 10m \
++	      --sync-file-bytes 10m
++}
++
++if [ "$1" = "-t" ]; then
++    shift
++    fstype=$1
++    shift
++fi
++
++if [ -z "$fstype" ]; then
++    fstype="ext4"
++fi
++
++if ! [ -x $script_dir/../lklfuse ]; then
++    lkl_test_plan 0 "lklfuse.sh $fstype"
++    echo "lklfuse not available"
++    exit 0
++fi
++
++if ! [ -e /dev/fuse ]; then
++    lkl_test_plan 0 "lklfuse.sh $fstype"
++    echo "/dev/fuse not available"
++    exit 0
++fi
++
++
++file=`mktemp`
++dir=`mktemp -d`
++
++trap cleanup EXIT
++
++lkl_test_plan 4 "lklfuse $fstype"
++
++lkl_test_run 1 prepfs $file $fstype
++lkl_test_run 2 lklfuse_mount $file $dir $fstype
++lkl_test_run 3 lklfuse_basic $dir
++# stress-ng returns 2 with no apparent failures so skip it for now
++#lkl_test_run 4 lklfuse_stressng $dir $fstype
++trap : EXIT
++lkl_test_run 4 cleanup
 -- 
 2.20.1 (Apple Git-117)
 
