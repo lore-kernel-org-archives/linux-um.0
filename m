@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x641.google.com ([2607:f8b0:4864:20::641])
+Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iN8QI-0001lj-Qc
- for linux-um@lists.infradead.org; Wed, 23 Oct 2019 04:39:05 +0000
-Received: by mail-pl1-x641.google.com with SMTP id j11so9447515plk.3
- for <linux-um@lists.infradead.org>; Tue, 22 Oct 2019 21:39:02 -0700 (PDT)
+ id 1iN8ke-0001IR-U2
+ for linux-um@lists.infradead.org; Wed, 23 Oct 2019 05:00:10 +0000
+Received: by mail-pf1-x441.google.com with SMTP id y5so12111974pfo.4
+ for <linux-um@lists.infradead.org>; Tue, 22 Oct 2019 22:00:04 -0700 (PDT)
 From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC PATCH 13/47] lkl: plug in the build system
-Date: Wed, 23 Oct 2019 13:37:47 +0900
-Message-Id: <fbc2a747dbfe5520828aabc5d0a7f190455b9d9c.1571798507.git.thehajime@gmail.com>
+Subject: [RFC PATCH 45/47] um lkl: add CI tests
+Date: Wed, 23 Oct 2019 13:38:19 +0900
+Message-Id: <c23f6e539ab1473cae99c7563933e658b0e7ee4f.1571798507.git.thehajime@gmail.com>
 In-Reply-To: <cover.1571798507.git.thehajime@gmail.com>
 References: <cover.1571798507.git.thehajime@gmail.com>
 MIME-Version: 1.0
@@ -25,172 +25,366 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: Octavian Purdila <tavi.purdila@gmail.com>, Akira Moroo <retrage01@gmail.com>
+Cc: Octavian Purdila <tavi.purdila@gmail.com>, Hajime Tazaki <thehajime@gmail.com>, Akira Moroo <retrage01@gmail.com>
 
-From: Octavian Purdila <tavi.purdila@gmail.com>
+We use CircleCI for the tests, which should check regressions before
+merging.
 
-Basic Makefiles for building LKL. Add a new architecture specific
-target for installing the resulting library files and headers.
-
-Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
 ---
- arch/um/Makefile.um         | 117 ++++++++++++++++++++++++++++++++++++
- arch/um/lkl/auto.conf       |   1 +
- arch/um/lkl/kernel/Makefile |   4 ++
- arch/um/lkl/mm/Makefile     |   1 +
- 4 files changed, 123 insertions(+)
- create mode 100644 arch/um/Makefile.um
- create mode 100644 arch/um/lkl/auto.conf
- create mode 100644 arch/um/lkl/kernel/Makefile
- create mode 100644 arch/um/lkl/mm/Makefile
+ .circleci/config.yml             | 246 +++++++++++++++++++++++++++++++
+ tools/lkl/scripts/checkpatch.sh  |  60 ++++++++
+ tools/lkl/scripts/lkl-jenkins.sh |  21 +++
+ 3 files changed, 327 insertions(+)
+ create mode 100644 .circleci/config.yml
+ create mode 100755 tools/lkl/scripts/checkpatch.sh
+ create mode 100755 tools/lkl/scripts/lkl-jenkins.sh
 
-diff --git a/arch/um/Makefile.um b/arch/um/Makefile.um
+diff --git a/.circleci/config.yml b/.circleci/config.yml
 new file mode 100644
-index 000000000000..24a088e5df04
+index 000000000000..7d140d9a2acb
 --- /dev/null
-+++ b/arch/um/Makefile.um
-@@ -0,0 +1,117 @@
++++ b/.circleci/config.yml
+@@ -0,0 +1,246 @@
++version: 2
++general:
++  artifacts:
++
++do_steps: &do_steps
++ steps:
++  - run: echo "$CROSS_COMPILE" > ~/_cross_compile
++  - restore_cache:
++      key: code-tree-shallow-{{ .Environment.CACHE_VERSION }}
++  - run:
++      name: checkout build tree
++      command: |
++        mkdir -p ~/.ssh/
++        ssh-keyscan -H github.com >> ~/.ssh/known_hosts
++        if ! [ -d .git ]; then
++          git clone --depth=1 $CIRCLE_REPOSITORY_URL .;
++        fi
++        if [[ $CIRCLE_BRANCH == pull/* ]]; then
++           git fetch --depth=1 origin $CIRCLE_BRANCH/head;
++        else
++           git fetch --depth=1 origin $CIRCLE_BRANCH;
++        fi
++        git reset --hard $CIRCLE_SHA1
++  - save_cache:
++      key: code-tree-shallow-{{ .Environment.CACHE_VERSION }}-{{ epoch }}
++      paths:
++        - /home/ubuntu/project/.git
++  - run:
++      name: clean
++      command: |
++        make mrproper
++        cd tools/lkl && make clean-conf
++        rm -rf ~/junit
++  - run: mkdir -p /home/ubuntu/.ccache
++  - restore_cache:
++      key: compiler-cache-{{ checksum "~/_cross_compile" }}-{{ .Environment.CACHE_VERSION }}
++  - run:
++      name: build DPDK
++      command: |
++        if [ "$MKARG" = "dpdk=yes" ]; then
++          sudo apt-get update
++          if ! sudo apt-get install -y linux-headers-$(uname -r) ; then
++             cd /lib/modules && sudo ln -sf 4.4.0-97-generic `uname -r` && \
++               cd /home/ubuntu/project
++          fi
++          cd tools/lkl && ./scripts/dpdk-sdk-build.sh;
++        fi
++  - run:
++      name: copy mingw binutils
++      command: |
++        if [ "$CROSS_COMPILE" = "i686-w64-mingw32-" ]; then
++          wget https://github.com/lkl/linux/raw/master/tools/lkl/bin/i686-w64-mingw32-as
++          wget https://github.com/lkl/linux/raw/master/tools/lkl/bin/i686-w64-mingw32-ld
++          wget https://github.com/lkl/linux/raw/master/tools/lkl/bin/i686-w64-mingw32-objcopy
++          sudo cp i686-w64-mingw32-* /usr/bin;
++        elif [ "$CROSS_COMPILE" = "arm-linux-androideabi-" ]; then
++          wget https://github.com/lkl/linux/raw/master/tools/lkl/bin/arm-linux-androideabi-ld.gold
++          sudo cp arm-linux-androideabi-ld.gold /usr/bin/arm-linux-androideabi-ld;
++        fi
++  - run:
++      name: start emulator
++      command: |
++        if [[ $CROSS_COMPILE == *android* ]]; then
++          emulator -avd Nexus5_API24 -no-window -no-audio -no-boot-anim;
++        elif [[ $CROSS_COMPILE == *freebsd* ]]; then
++          cd /home/ubuntu && $QEMU
++        fi
++      background: true
++  - run: cd tools/lkl && make -j8 ${MKARG}
++  - run: mkdir -p ~/destdir && cd tools/lkl && make DESTDIR=~/destdir
++  - save_cache:
++     paths:
++       - /home/ubuntu/.ccache
++     key: compiler-cache-{{ checksum "~/_cross_compile" }}-{{ .Environment.CACHE_VERSION }}-{{ epoch }}
++  - run:
++      name: wait emulator to boot
++      command: |
++        if [[ $CROSS_COMPILE == *android* ]]; then
++          /home/ubuntu/circle-android.sh wait-for-boot;
++        elif [[ $CROSS_COMPILE == *freebsd* ]]; then
++          while ! $MYSSH -o ConnectTimeout=1 exit 2> /dev/null
++          do
++             sleep 5
++          done
++        fi
++  - run:
++      name: run tests
++      command: |
++        mkdir -p ~/junit
++        make -C tools/lkl run-tests tests="--junit-dir ~/junit"
++        find ./tools/lkl/ -type f -name "*.xml" -exec mv {} ~/junit/ \;
++      no_output_timeout: "90m"
++  - store_test_results:
++      path: ~/junit
++  - store_artifacts:
++      path: ~/junit
++
++
++do_uml_steps: &do_uml_steps
++ steps:
++  - run: echo "$CROSS_COMPILE" > ~/_cross_compile
++  - restore_cache:
++      key: code-tree-shallow-{{ .Environment.CACHE_VERSION }}
++  - run:
++      name: checkout build tree
++      command: |
++        mkdir -p ~/.ssh/
++        ssh-keyscan -H github.com >> ~/.ssh/known_hosts
++        if ! [ -d .git ]; then
++          git clone --depth=1 $CIRCLE_REPOSITORY_URL .;
++        fi
++        if [[ $CIRCLE_BRANCH == pull/* ]]; then
++           git fetch --depth=1 origin $CIRCLE_BRANCH/head;
++        else
++           git fetch --depth=1 origin $CIRCLE_BRANCH;
++        fi
++        git reset --hard $CIRCLE_SHA1
++  - save_cache:
++      key: code-tree-shallow-{{ .Environment.CACHE_VERSION }}-{{ epoch }}
++      paths:
++        - /home/ubuntu/project/.git
++  - run: mkdir -p /home/ubuntu/.ccache
++  - restore_cache:
++      key: compiler-cache-{{ checksum "~/_cross_compile" }}-{{ .Environment.CACHE_VERSION }}
++  - run:
++      name: build
++      command: |
++        make -C tools/lkl/
++        make defconfig ARCH=um
++        make ARCH=um
++  - save_cache:
++     paths:
++       - /home/ubuntu/.ccache
++     key: compiler-cache-{{ checksum "~/_cross_compile" }}-{{ .Environment.CACHE_VERSION }}-{{ epoch }}
++  - run:
++      name: test
++      command: |
++        ./linux rootfstype=hostfs ro mem=1g loglevel=10 init="/bin/bash -c exit" || export RETVAL=$?
++        # SIGABRT=6 => 128+6
++        if [ $RETVAL != "134" ]; then
++          exit 1
++        fi
++
++## Customize the test machine
++jobs:
++  x86_64:
++   docker:
++     - image: lkldocker/circleci-x86_64:0.7
++   environment:
++     CROSS_COMPILE: ""
++     MKARG: "dpdk=no"
++   <<: *do_steps
++
++  i386:
++   docker:
++     - image: lkldocker/circleci-i386:0.1
++   environment:
++     CROSS_COMPILE: ""
++   <<: *do_steps
++
++  mingw32:
++   docker:
++     - image: lkldocker/circleci-mingw:0.6
++   environment:
++     CROSS_COMPILE: "i686-w64-mingw32-"
++   <<: *do_steps
++
++  android-arm32:
++   docker:
++     - image: lkldocker/circleci-android-arm32:0.6
++   environment:
++     CROSS_COMPILE: "arm-linux-androideabi-"
++     LKL_ANDROID_TEST: 1
++     ANDROID_SDK_ROOT: /home/ubuntu/android-sdk
++   <<: *do_steps
++
++  android-aarch64:
++   docker:
++     - image: lkldocker/circleci-android-arm64:0.6
++   environment:
++     CROSS_COMPILE: "aarch64-linux-android-"
++     LKL_ANDROID_TEST: 1
++     ANDROID_SDK_ROOT: /home/ubuntu/android-sdk
++   <<: *do_steps
++
++  freebsd11_x86_64:
++   docker:
++     - image: lkldocker/circleci-freebsd11-x86_64:0.4
++   environment:
++     CROSS_COMPILE: "x86_64-pc-freebsd11-"
++   <<: *do_steps
++
++  x86_64_valgrind:
++   docker:
++     - image: lkldocker/circleci-x86_64:0.7
++   environment:
++     CROSS_COMPILE: ""
++     MKARG: "dpdk=no"
++     VALGRIND: 1
++   <<: *do_steps
++
++  x86_64_uml:
++   docker:
++     - image: lkldocker/circleci-x86_64:0.7
++   environment:
++     CROSS_COMPILE: ""
++     TMPDIR: "/tmp" # required for not using /dev/shm
++   <<: *do_uml_steps
++
++  checkpatch:
++   docker:
++     - image: lkldocker/circleci:0.5
++   environment:
++   steps:
++     - restore_cache:
++        key: code-tree-full-history-{{ .Environment.CACHE_VERSION }}
++     - checkout
++     - run: tools/lkl/scripts/checkpatch.sh
++     - save_cache:
++        key: code-tree-full-history-{{ .Environment.CACHE_VERSION }}-{{ epoch }}
++        paths:
++          - /home/ubuntu/project/.git
++        when: always
++
++workflows:
++  version: 2
++  build:
++    jobs:
++     - x86_64
++     - mingw32
++     - android-arm32
++     - android-aarch64
++     - freebsd11_x86_64
++     - checkpatch
++     - i386
++     - x86_64_uml
++  nightly:
++    triggers:
++      - schedule:
++          cron: "0 0 * * *"
++          filters:
++            branches:
++              only:
++                - master
++    jobs:
++      - x86_64_valgrind
+diff --git a/tools/lkl/scripts/checkpatch.sh b/tools/lkl/scripts/checkpatch.sh
+new file mode 100755
+index 000000000000..0c02ca6b21a2
+--- /dev/null
++++ b/tools/lkl/scripts/checkpatch.sh
+@@ -0,0 +1,60 @@
++#!/bin/sh -ex
 +# SPDX-License-Identifier: GPL-2.0
-+#
-+# This file is included by the global makefile so that you can add your own
-+# architecture-specific flags and dependencies.
-+#
-+# Copyright (C) 2002 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-+# Licensed under the GPL
-+#
 +
-+core-y			+= $(ARCH_DIR)/kernel/		\
-+			 $(ARCH_DIR)/drivers/		\
-+			 $(ARCH_DIR)/os-$(OS)/
++if [ -z "$origin_master" ]; then
++    origin_master="origin/master"
++fi
 +
-+ifdef CONFIG_64BIT
-+	KBUILD_CFLAGS += -mcmodel=large
-+endif
++UPSTREAM=git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
++LKL=github.com:lkl/linux.git
 +
-+SHARED_HEADERS	:= $(ARCH_DIR)/include/shared
-+ARCH_INCLUDE	:= -I$(srctree)/$(SHARED_HEADERS)
-+ARCH_INCLUDE	+= -I$(srctree)/$(HOST_DIR)/um/shared
-+KBUILD_CPPFLAGS += -I$(srctree)/$(HOST_DIR)/um
++upstream=`git remote -v | grep $UPSTREAM | cut -f1 | head -n1`
++lkl=`git remote -v | grep $LKL | cut -f1 | head -n1`
 +
-+# -Dvmap=kernel_vmap prevents anything from referencing the libpcap.o symbol so
-+# named - it's a common symbol in libpcap, so we get a binary which crashes.
-+#
-+# Same things for in6addr_loopback and mktime - found in libc. For these two we
-+# only get link-time error, luckily.
-+#
-+# -Dlongjmp=kernel_longjmp prevents anything from referencing the libpthread.a
-+# embedded copy of longjmp, same thing for setjmp.
-+#
-+# These apply to USER_CFLAGS to.
++if [ -z "$upstream" ]; then
++    git fetch --tags --progress git://$UPSTREAM
++else
++    git fetch --tags $upstream
++fi
 +
-+KBUILD_CFLAGS += $(CFLAGS) $(CFLAGS-y) -D__arch_um__ \
-+	$(ARCH_INCLUDE) $(MODE_INCLUDE) -Dvmap=kernel_vmap	\
-+	-Dlongjmp=kernel_longjmp -Dsetjmp=kernel_setjmp \
-+	-Din6addr_loopback=kernel_in6addr_loopback \
-+	-Din6addr_any=kernel_in6addr_any -Dstrrchr=kernel_strrchr
++if [ -z "$lkl" ]; then
++    git remote add lkl-upstream git@$LKL || true
++    lkl=`git remote -v | grep $LKL | cut -f1 | head -n1`
++fi
 +
-+KBUILD_AFLAGS += $(ARCH_INCLUDE)
++if [ -z "$lkl" ]; then
++    echo "can't find lkl remote, quiting"
++    exit 1
++fi
 +
-+USER_CFLAGS = $(patsubst $(KERNEL_DEFINES),,$(patsubst -I%,,$(KBUILD_CFLAGS))) \
-+		$(ARCH_INCLUDE) $(MODE_INCLUDE) $(filter -I%,$(CFLAGS)) \
-+		-D_FILE_OFFSET_BITS=64 -idirafter $(srctree)/include \
-+		-idirafter $(obj)/include -D__KERNEL__ -D__UM_HOST__
++git fetch $lkl
++git fetch --tags $upstream
 +
-+#This will adjust *FLAGS accordingly to the platform.
-+include $(ARCH_DIR)/Makefile-os-$(OS)
++# find the last upstream tag to avoid checking upstream commits during
++# upstream merges
++tag=`git tag --sort='-*authordate' | grep ^v | head -n1`
++tmp=`mktemp -d`
 +
-+KBUILD_CPPFLAGS += -I$(srctree)/$(HOST_DIR)/include \
-+		   -I$(srctree)/$(HOST_DIR)/include/uapi \
-+		   -I$(objtree)/$(HOST_DIR)/include/generated \
-+		   -I$(objtree)/$(HOST_DIR)/include/generated/uapi
++commits=$(git log --no-merges --pretty=format:%h HEAD ^$lkl/master ^$tag)
++for c in $commits; do
++    git format-patch -1 -o $tmp $c
++done
 +
-+# -Derrno=kernel_errno - This turns all kernel references to errno into
-+# kernel_errno to separate them from the libc errno.  This allows -fno-common
-+# in KBUILD_CFLAGS.  Otherwise, it would cause ld to complain about the two different
-+# errnos.
-+# These apply to kernelspace only.
-+#
-+# strip leading and trailing whitespace to make the USER_CFLAGS removal of these
-+# defines more robust
++if [ -z "$c" ]; then
++    echo "there are not commits/patches to check, quiting."
++    rmdir $tmp
++    exit 0
++fi
 +
-+KERNEL_DEFINES = $(strip -Derrno=kernel_errno -Dsigprocmask=kernel_sigprocmask \
-+			 -Dmktime=kernel_mktime $(ARCH_KERNEL_DEFINES))
-+KBUILD_CFLAGS += $(KERNEL_DEFINES)
++./scripts/checkpatch.pl --ignore FILE_PATH_CHANGES $tmp/*.patch
++rm $tmp/*.patch
 +
-+PHONY += linux
++# checkpatch.pl does not know how to deal with 3 way diffs which would
++# be useful to check the conflict resolutions during merges...
++#for c in `git log --merges --pretty=format:%h HEAD ^$origin_master ^$tag`; do
++#    git log --pretty=email $c -1 > $tmp/$c.patch
++#    git diff $c $c^1 $c^2 >> $tmp/$c.patch
++#done
 +
-+all: linux
++rmdir $tmp
 +
-+linux: vmlinux
-+	@echo '  LINK $@'
-+	$(Q)ln -f $< $@
-+
-+define archhelp
-+  echo '* linux		- Binary kernel image (./linux) - for backward'
-+  echo '		   compatibility only, this creates a hard link to the'
-+  echo '		   real kernel binary, the "vmlinux" binary you'
-+  echo '		   find in the kernel root.'
-+endef
-+
-+archheaders:
-+	$(Q)$(MAKE) -f $(srctree)/Makefile ARCH=$(HEADER_ARCH) asm-generic archheaders
-+
-+archprepare:
-+	$(Q)$(MAKE) $(build)=$(HOST_DIR)/um include/generated/user_constants.h
-+
-+LINK-$(CONFIG_LD_SCRIPT_STATIC) += -static
-+LINK-$(CONFIG_LD_SCRIPT_DYN) += -Wl,-rpath,/lib $(call cc-option, -no-pie)
-+
-+CFLAGS_NO_HARDENING := $(call cc-option, -fno-PIC,) $(call cc-option, -fno-pic,) \
-+	$(call cc-option, -fno-stack-protector,) \
-+	$(call cc-option, -fno-stack-protector-all,)
-+
-+# Options used by linker script
-+export LDS_START      := $(START)
-+export LDS_ELF_ARCH   := $(ELF_ARCH)
-+export LDS_ELF_FORMAT := $(ELF_FORMAT)
-+
-+# The wrappers will select whether using "malloc" or the kernel allocator.
-+LINK_WRAPS = -Wl,--wrap,malloc -Wl,--wrap,free -Wl,--wrap,calloc
-+
-+LD_FLAGS_CMDLINE = $(foreach opt,$(KBUILD_LDFLAGS),-Wl,$(opt))
-+
-+# Used by link-vmlinux.sh which has special support for um link
-+export CFLAGS_vmlinux := $(LINK-y) $(LINK_WRAPS) $(LD_FLAGS_CMDLINE)
-+
-+# When cleaning we don't include .config, so we don't include
-+# TT or skas makefiles and don't clean skas_ptregs.h.
-+CLEAN_FILES += linux x.i gmon.out
-+
-+archclean:
-+	@find . \( -name '*.bb' -o -name '*.bbg' -o -name '*.da' \
-+		-o -name '*.gcov' \) -type f -print | xargs rm -f
-+
-+export USER_CFLAGS CFLAGS_NO_HARDENING OS DEV_NULL_PATH
-diff --git a/arch/um/lkl/auto.conf b/arch/um/lkl/auto.conf
-new file mode 100644
-index 000000000000..4bfd65a02d73
+diff --git a/tools/lkl/scripts/lkl-jenkins.sh b/tools/lkl/scripts/lkl-jenkins.sh
+new file mode 100755
+index 000000000000..eaadc6e90143
 --- /dev/null
-+++ b/arch/um/lkl/auto.conf
-@@ -0,0 +1 @@
-+export OUTPUT_FORMAT=$(shell $(LD) -r -print-output-format)
-diff --git a/arch/um/lkl/kernel/Makefile b/arch/um/lkl/kernel/Makefile
-new file mode 100644
-index 000000000000..ef489f2f7176
---- /dev/null
-+++ b/arch/um/lkl/kernel/Makefile
-@@ -0,0 +1,4 @@
-+extra-y := vmlinux.lds
++++ b/tools/lkl/scripts/lkl-jenkins.sh
+@@ -0,0 +1,21 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
 +
-+obj-y = setup.o threads.o irq.o time.o syscalls.o misc.o console.o \
-+	syscalls_32.o cpu.o
-diff --git a/arch/um/lkl/mm/Makefile b/arch/um/lkl/mm/Makefile
-new file mode 100644
-index 000000000000..2af6e3051897
---- /dev/null
-+++ b/arch/um/lkl/mm/Makefile
-@@ -0,0 +1 @@
-+obj-y = bootmem.o
++set -e
++
++script_dir=$(cd $(dirname ${BASH_SOURCE:-$0}); pwd)
++basedir=$(cd $script_dir/../../..; pwd)
++
++export PATH=$PATH:/sbin
++
++build_and_test()
++{
++    cd $basedir
++    make mrproper
++    cd tools/lkl
++    make clean-conf
++    make -j4
++    make run-tests
++}
++
++build_and_test
 -- 
 2.20.1 (Apple Git-117)
 
