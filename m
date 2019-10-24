@@ -1,186 +1,36 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iN8km-00027z-9W
- for linux-um@lists.infradead.org; Wed, 23 Oct 2019 05:00:18 +0000
-Received: by mail-pf1-x441.google.com with SMTP id b128so12136770pfa.1
- for <linux-um@lists.infradead.org>; Tue, 22 Oct 2019 22:00:12 -0700 (PDT)
-From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC PATCH 47/47] um: add lkl virtio-blk device
-Date: Wed, 23 Oct 2019 13:38:21 +0900
-Message-Id: <d380ec02dd0cd97afe08706093b59329e6b09fe2.1571798507.git.thehajime@gmail.com>
-In-Reply-To: <cover.1571798507.git.thehajime@gmail.com>
-References: <cover.1571798507.git.thehajime@gmail.com>
+Return-Path: <rppt@kernel.org>
+Date: Thu, 24 Oct 2019 12:50:54 +0300
+From: Mike Rapoport <rppt@kernel.org>
+Subject: Re: [PATCH 08/12] parisc: use pgtable-nopXd instead of 4level-fixup
+Message-ID: <20191024095053.GC12281@rapoport-lnx>
+References: <1571822941-29776-9-git-send-email-rppt@kernel.org>
+ <20191024093451.15161-1-peda@axentia.se>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Octavian Purdila <tavi.purdila@gmail.com>, Hajime Tazaki <thehajime@gmail.com>, Akira Moroo <retrage01@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191024093451.15161-1-peda@axentia.se>
+To: Peter Rosin <peda@axentia.se>
+Cc: "James.Bottomley@HansenPartnership.com" <James.Bottomley@HansenPartnership.com>, "Vineet.Gupta1@synopsys.com" <Vineet.Gupta1@synopsys.com>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "anton.ivanov@cambridgegreys.com" <anton.ivanov@cambridgegreys.com>, "arnd@arndb.de" <arnd@arndb.de>, "davem@davemloft.net" <davem@davemloft.net>, "deanbo422@gmail.com" <deanbo422@gmail.com>, "deller@gmx.de" <deller@gmx.de>, "geert@linux-m68k.org" <geert@linux-m68k.org>, "gerg@linux-m68k.org" <gerg@linux-m68k.org>, "green.hu@gmail.com" <green.hu@gmail.com>, "jdike@addtoit.com" <jdike@addtoit.com>, "kirill@shutemov.name" <kirill@shutemov.name>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-c6x-dev@linux-c6x.org" <linux-c6x-dev@linux-c6x.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "linux@armlinux.org.uk" <linux@armlinux.org.uk>, "mattst88@gmail.com" <mattst88@gmail.com>, "monstr@monstr.eu" <monstr@monstr.eu>, "msalter@redhat.com" <msalter@redhat.com>, "richard@nod.at" <richard@nod.at>, "rppt@linux.ibm.com" <rppt@linux.ibm.com>, "sammy@sammy.net" <sammy@sammy.net>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>
+List-ID: <linux-um.lists.infradead.org>
 
-Now uml can use a virtio-blk device via 'vubd0=<filename>' over
-virtio-mmio driver.
+On Thu, Oct 24, 2019 at 09:35:12AM +0000, Peter Rosin wrote:
+> On 2019-10-23 12:28, Mike Rapoport <rppt@kernel.org> wrote:
+> > parisc has two or three levels of page tables and can use appropriate
+> > pgtable-nopXd and folding of the upper layers.
+> >
+> > Replace usage of include/asm-generic/4level-fixup.h and explicit
+> > definitions of __PAGETABLE_PxD_FOLDED in parisc with
+> > include/asm-generic/pgtable-nopmd.h for two-level configurations and with
+> > include/asm-generic/pgtable-nopmd.h for three-lelve configurations and
+> 
+> I think you mean .../pgtable-nopud.h in the latter case.
 
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
----
- .circleci/config.yml             |  4 ++-
- arch/um/configs/x86_64_defconfig |  1 +
- arch/um/os-Linux/lkl_dev.c       | 56 +++++++++++++++++++++++++++++++-
- tools/lkl/lib/Makefile           |  6 ++--
- 4 files changed, 62 insertions(+), 5 deletions(-)
+Right, thanks!
+ 
+> Cheers,
+> Peter
 
-diff --git a/.circleci/config.yml b/.circleci/config.yml
-index cec55ad93dc6..266ed58b6fd7 100644
---- a/.circleci/config.yml
-+++ b/.circleci/config.yml
-@@ -135,7 +135,9 @@ do_uml_steps: &do_uml_steps
-   - run:
-       name: test
-       command: |
--        ./linux rootfstype=hostfs ro mem=1g loglevel=10 veth0=tap,tap0,0xc803 init="/bin/bash -c exit" || export RETVAL=$?
-+        dd if=/dev/zero of=disk.img bs=1024 count=20480
-+        mkfs.ext4 disk.img
-+        ./linux rootfstype=hostfs ro mem=1g loglevel=10 veth0=tap,tap0,0xc803 vubd0=disk.img init='/bin/bash -x -c "mount -t ext4 /dev/vda /mnt ; ls -l /mnt/; ip addr ; exit"' || export RETVAL=$?
-         # SIGABRT=6 => 128+6
-         if [ $RETVAL != "134" ]; then
-           exit 1
-diff --git a/arch/um/configs/x86_64_defconfig b/arch/um/configs/x86_64_defconfig
-index 917982b6cd60..e5b7c048a701 100644
---- a/arch/um/configs/x86_64_defconfig
-+++ b/arch/um/configs/x86_64_defconfig
-@@ -75,3 +75,4 @@ CONFIG_VIRTIO_MENU=y
- CONFIG_VIRTIO_MMIO=y
- CONFIG_VIRTIO_MMIO_CMDLINE_DEVICES=y
- CONFIG_VIRTIO_NET=y
-+CONFIG_VIRTIO_BLK=y
-\ No newline at end of file
-diff --git a/arch/um/os-Linux/lkl_dev.c b/arch/um/os-Linux/lkl_dev.c
-index 698062917ed5..e08f113dfc0b 100644
---- a/arch/um/os-Linux/lkl_dev.c
-+++ b/arch/um/os-Linux/lkl_dev.c
-@@ -6,6 +6,7 @@
- #include <os.h>
- #include <kern_util.h>
- #include <errno.h>
-+#include <fcntl.h>
- 
- #include <lkl.h>
- #include <lkl_host.h>
-@@ -14,6 +15,7 @@ extern struct lkl_host_operations lkl_host_ops;
- struct lkl_host_operations *lkl_ops = &lkl_host_ops;
- 
- static struct lkl_netdev *nd;
-+static struct lkl_disk disk;
- 
- int __init uml_netdev_prepare(char *iftype, char *ifparams, char *ifoffload)
- {
-@@ -108,13 +110,65 @@ __uml_setup("veth", lkl_eth_setup,
- "    Configure a network device.\n\n"
- );
- 
-+int __init uml_blkdev_add(void)
-+{
-+	int disk_id = 0;
-+
-+	if (disk.fd)
-+		disk_id = lkl_disk_add(&disk);
-+
-+	if (disk_id < 0)
-+		return -1;
-+
-+	return 0;
-+}
-+__initcall(uml_blkdev_add);
-+
-+static int __init lkl_ubd_setup(char *str, int *niu)
-+{
-+	char *end, *fname;
-+	int devid, err = -EINVAL;
-+
-+	/* veth */
-+	devid = strtoul(str, &end, 0);
-+	if (end == str) {
-+		os_warn("Bad device number\n");
-+		return err;
-+	}
-+
-+	/* = */
-+	str = end;
-+	if (*str != '=') {
-+		os_warn("Expected '=' after device number\n");
-+		return err;
-+	}
-+	str++;
-+
-+	/* <filename> */
-+	fname = str;
-+
-+	os_info("fname=%s\n", fname);
-+	/* create */
-+	disk.fd = open(fname, O_RDWR);
-+	if (disk.fd < 0)
-+		return -1;
-+
-+	disk.ops = NULL;
-+
-+	return 1;
-+}
-+__uml_setup("vubd", lkl_ubd_setup,
-+"vubd<n>=<filename>\n"
-+"    Configure a block device.\n\n"
-+);
-+
-+
- /* stub functions */
- int lkl_is_running(void)
- {
- 	return 1;
- }
- 
--
- void lkl_put_irq(int i, const char *user)
- {
- }
-diff --git a/tools/lkl/lib/Makefile b/tools/lkl/lib/Makefile
-index 8dc0009c680e..3cee5b0133b1 100644
---- a/tools/lkl/lib/Makefile
-+++ b/tools/lkl/lib/Makefile
-@@ -3,9 +3,9 @@ USER_CFLAGS += -I$(srctree)/tools/lkl/include \
- 		-Wno-strict-prototypes -Wno-undef \
- 		-Wframe-larger-than=20480 -O0 -g
- 
--USER_OBJS += fs.o iomem.o net.o jmp_buf.o virtio.o virtio_net.o \
-+USER_OBJS += iomem.o jmp_buf.o virtio.o virtio_net.o \
- 	 virtio_net_fd.o virtio_net_tap.o utils.o posix-host.o \
--	../../perf/pmu-events/jsmn.o
-+	 virtio_blk.o ../../perf/pmu-events/jsmn.o
- 
- #obj-y += fs.o
- obj-y += iomem.o
-@@ -14,7 +14,7 @@ obj-y += jmp_buf.o
- obj-y += posix-host.o
- #obj-$(LKL_HOST_CONFIG_NT) += nt-host.o
- obj-y += utils.o
--#obj-y += virtio_blk.o
-+obj-y += virtio_blk.o
- obj-y += virtio.o
- #obj-y += dbg.o
- #obj-y += dbg_handler.o
 -- 
-2.20.1 (Apple Git-117)
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+Sincerely yours,
+Mike.
 
