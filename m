@@ -1,18 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-io1-xd43.google.com ([2607:f8b0:4864:20::d43])
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iP8ov-0004Q0-75
- for linux-um@lists.infradead.org; Mon, 28 Oct 2019 17:28:47 +0000
-Received: by mail-io1-xd43.google.com with SMTP id 1so11624172iou.4
- for <linux-um@lists.infradead.org>; Mon, 28 Oct 2019 10:28:43 -0700 (PDT)
-Subject: Re: [PATCH] um: Entrust re-queue to the upper layers
-References: <20191028170543.27591-1-anton.ivanov@cambridgegreys.com>
-From: Jens Axboe <axboe@kernel.dk>
-Message-ID: <cbf155ee-6dce-8895-dd09-95a5c0e0b16c@kernel.dk>
-Date: Mon, 28 Oct 2019 11:28:38 -0600
+ id 1iP8Sm-0004Vu-Cr
+ for linux-um@lists.infradead.org; Mon, 28 Oct 2019 17:05:54 +0000
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Subject: [PATCH] um: Entrust re-queue to the upper layers
+Date: Mon, 28 Oct 2019 17:05:43 +0000
+Message-Id: <20191028170543.27591-1-anton.ivanov@cambridgegreys.com>
 MIME-Version: 1.0
-In-Reply-To: <20191028170543.27591-1-anton.ivanov@cambridgegreys.com>
-Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +21,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
-Cc: richard@nod.at, rrs@researchut.com, hch@lst.de
+To: linux-um@lists.infradead.org
+Cc: axboe@kernel.dk, richard@nod.at, rrs@researchut.com, hch@lst.de, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-On 10/28/19 11:05 AM, Anton Ivanov wrote:
-> Fixes crashes due to ubd requeue logic conflicting with the block-mq
-> one.
+Fixes crashes due to ubd requeue logic conflicting with the block-mq
+one.
 
-First of all, great work getting this far! This is surely a bug.
-Probably needs a Fixes entry, and a CC stable.
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+---
+ arch/um/drivers/ubd_kern.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-There are actually two cases that'll return an error here, and one is
-global and the other is per-device. If the kmalloc() fails in
-ubd_queue_one_vec(), we should be returning BLK_STS_RESOURCE. Didn't
-look at the -EAGAIN part, but maybe that's a global resource as well
-when it fails? If so, then both should return BLK_STS_RESOURCE. If not,
-then that should return BLK_STS_DEV_RESOURCE, as your change did.
-
-Hence if both are global, just make it:
-
-if (ret < 0)
-	res = BLK_STS_DEV_RESOURCE;
-
-and if one is a per-device thing, then I'd make ubd_queue_one_vec()
-return the BLK_STS_* type and propagate that down to the caller.
-
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index 33c1cd6a12ac..3fe2a986f2c4 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -1404,7 +1404,7 @@ static blk_status_t ubd_queue_rq(struct blk_mq_hw_ctx *hctx,
+ 	spin_unlock_irq(&ubd_dev->lock);
+ 
+ 	if (ret < 0)
+-		blk_mq_requeue_request(req, true);
++		return BLK_STS_DEV_RESOURCE;
+ 
+ 	return res;
+ }
 -- 
-Jens Axboe
+2.20.1
 
 
 _______________________________________________
