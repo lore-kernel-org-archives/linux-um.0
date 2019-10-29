@@ -1,21 +1,21 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iPMfd-0007uJ-MT
- for linux-um@lists.infradead.org; Tue, 29 Oct 2019 08:16:07 +0000
-Date: Tue, 29 Oct 2019 09:15:52 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <1620515179.65384.1572336952500.JavaMail.zimbra@nod.at>
-In-Reply-To: <9df8075205912512a9a0ec7eb0393ff74d3c4bbb.camel@sipsolutions.net>
+ id 1iPMO2-0000nX-AV
+ for linux-um@lists.infradead.org; Tue, 29 Oct 2019 07:57:55 +0000
+Message-ID: <9df8075205912512a9a0ec7eb0393ff74d3c4bbb.camel@sipsolutions.net>
+Subject: Re: [RFC PATCH 03/47] lkl: architecture skeleton for Linux kernel
+ library
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Tue, 29 Oct 2019 08:57:43 +0100
+In-Reply-To: <m2a79k3tyf.wl-thehajime@gmail.com>
 References: <cover.1571798507.git.thehajime@gmail.com>
  <0b1464dd4904ee2b049fef624895ead3fe6aa555.1571798507.git.thehajime@gmail.com>
  <CAFLxGvzqPzZtUSzymWgnhGnr6qgcDe9ue6Q8ALMS-r_Y+KXVOw@mail.gmail.com>
  <m2a79mx6br.wl-thehajime@gmail.com>
  <CAJhGHyBy4ok+Sg7TyLaaksqEBDanmZgsk6ujRqXU1KFcu+DHZQ@mail.gmail.com>
  <m2a79k3tyf.wl-thehajime@gmail.com>
- <9df8075205912512a9a0ec7eb0393ff74d3c4bbb.camel@sipsolutions.net>
-Subject: Re: [RFC PATCH 03/47] lkl: architecture skeleton for Linux kernel
- library
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -25,62 +25,60 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: liuyuan@google.com, levex@linux.com, mattator@gmail.com, cem@freebsd.org, tavi purdila <tavi.purdila@gmail.com>, linux-um <linux-um@lists.infradead.org>, staal1978@gmail.com, motomuman@gmail.com, jiangshanlai@gmail.com, retrage01@gmail.com, petrosagg@gmail.com, edisonmcastro@hotmail.com, xiaoj@google.com, mark@stillwell.me, pscollins@google.com, phh@phh.me, sigmaepsilon92@gmail.com, luca dariz <luca.dariz@gmail.com>, Hajime Tazaki <thehajime@gmail.com>
+To: Hajime Tazaki <thehajime@gmail.com>, jiangshanlai@gmail.com
+Cc: levex@linux.com, mattator@gmail.com, cem@freebsd.org, richard.weinberger@gmail.com, liuyuan@google.com, staal1978@gmail.com, motomuman@gmail.com, linux-um@lists.infradead.org, retrage01@gmail.com, petrosagg@gmail.com, tavi.purdila@gmail.com, xiaoj@google.com, mark@stillwell.me, pscollins@google.com, phh@phh.me, sigmaepsilon92@gmail.com, luca.dariz@gmail.com, edisonmcastro@hotmail.com
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIkpvaGFubmVzIEJlcmciIDxq
-b2hhbm5lc0BzaXBzb2x1dGlvbnMubmV0Pgo+IEFuOiAiSGFqaW1lIFRhemFraSIgPHRoZWhhamlt
-ZUBnbWFpbC5jb20+LCBqaWFuZ3NoYW5sYWlAZ21haWwuY29tCj4gQ0M6IGxldmV4QGxpbnV4LmNv
-bSwgbWF0dGF0b3JAZ21haWwuY29tLCBjZW1AZnJlZWJzZC5vcmcsICJSaWNoYXJkIFdlaW5iZXJn
-ZXIiIDxyaWNoYXJkLndlaW5iZXJnZXJAZ21haWwuY29tPiwKPiBzdGFhbDE5NzhAZ21haWwuY29t
-LCBtb3RvbXVtYW5AZ21haWwuY29tLCAibGludXgtdW0iIDxsaW51eC11bUBsaXN0cy5pbmZyYWRl
-YWQub3JnPiwgcmV0cmFnZTAxQGdtYWlsLmNvbSwKPiBwZXRyb3NhZ2dAZ21haWwuY29tLCAidGF2
-aSBwdXJkaWxhIiA8dGF2aS5wdXJkaWxhQGdtYWlsLmNvbT4sIHhpYW9qQGdvb2dsZS5jb20sIG1h
-cmtAc3RpbGx3ZWxsLm1lLAo+IGVkaXNvbm1jYXN0cm9AaG90bWFpbC5jb20sIHBzY29sbGluc0Bn
-b29nbGUuY29tLCBwaGhAcGhoLm1lLCBzaWdtYWVwc2lsb245MkBnbWFpbC5jb20sICJsdWNhIGRh
-cml6Igo+IDxsdWNhLmRhcml6QGdtYWlsLmNvbT4sIGxpdXl1YW5AZ29vZ2xlLmNvbQo+IEdlc2Vu
-ZGV0OiBEaWVuc3RhZywgMjkuIE9rdG9iZXIgMjAxOSAwODo1Nzo0Mwo+IEJldHJlZmY6IFJlOiBb
-UkZDIFBBVENIIDAzLzQ3XSBsa2w6IGFyY2hpdGVjdHVyZSBza2VsZXRvbiBmb3IgTGludXgga2Vy
-bmVsIGxpYnJhcnkKCj4gSGksCj4gCj4+IFlvdSdyZSByaWdodDogY3VycmVudCBwYXRjaHNldCBv
-bmx5IHNoYXJlIE1ha2VmaWxlKHMpCj4+IGJldHdlZW4gVU1MIGFuZCBMS0wuICBUaGlzIGlzIHRo
-ZSBmaXJzdCBzdGVwIHRvd2FyZCB0aGUKPj4gdW5pZmljYXRpb24gaW4gbXkgcGxhbiwgZGVzY3Jp
-YmVkIGluIHRoZSBtaWxlc3RvbmUgb2YgdGhlCj4+IGNvdmVyIGxldHRlciAoY29weS1wYXN0ZWQg
-YmVsb3cpLgo+PiAKPj4gPiBNaWxlc3RvbmUKPj4gPiA9PT09PT09PT0KPj4gPiAoc25pcCkKPj4g
-PiAxLiBQdXQgTEtMIGNvZGUgdW5kZXIgYXJjaC91bSAoYXJjaC91bS9sa2wpLCBhbmQgYnVpbGQg
-aXQgaW4gYQo+PiA+IHNlcGFyYXRlIHdheSBmcm9tIFVNTC4KPj4gPiAyLiBTaGFyZSBjb21tb24g
-cGFydHMgb2YgaW1wbGVtZW50YXRpb24gYmV0d2VlbiBVTUwgYW5kIExLTC4KPj4gPiAzLiBSZWlt
-cGxlbWVudCBVTUwgZmVhdHVyZXMgd2l0aCBMS0wgQVBJIChpZiB3ZSB3aXNoKQo+PiAKPj4gRm9y
-IHRoZSBzdGVwIDIsIFtQQVRDSCA0Ni80N10gYW5kIFs0Ny80N10gYXJlIHRoZSBraW5kIG9mCj4+
-IGV4YW1wbGVzIGZvciB0aGlzIGxldmVsIG9mIHVuaWZpY2F0aW9uIChzb3JyeSBmb3IgdGhlIHZl
-cnkKPj4gZGlydHkgY29kZSkuCj4+IAo+PiBGb3IgdGhlIHN0ZXAgMywgSSBkb24ndCBoYXZlIGFu
-eSBXSVAgY29kZSBub3IgZGV0YWlsZWQgcGxhbi4KPj4gSW1wbGVtZW50aW5nIHB0cmFjZS1iYXNl
-ZCAob3Igc2ltaWxhcikgc3lzY2FsbCBpbnRlcmNlcHRpb24KPj4gd291bGQgYmUgb25lIG9mIHRo
-ZSBkZXZlbG9wbWVudCAoSSBiZWxpZXZlIHRoZXJlIGFyZSBtb3JlKS4KPj4gCj4+IE9mZmVyaW5n
-IFVNTCBmZWF0dXJlLXNldHMsIGtlZXBpbmcgY29tcGF0aWJpbGl0eSwgd2hpbGUKPj4gYmVuZWZp
-dGluZyBmcm9tIExLTCAoZS5nLiwgdmFyaW91cyB1bmRlcmx5aW5nIGVudmlyb25tZW50Cj4+IHN1
-cHBvcnQpIHdvdWxkIGJlIHZlcnkgaGlnaC1sZXZlbCBnb2FsIHNpbmNlIHRoZXJlIGFyZSBtYW55
-Cj4+IHVzZXJzIG9mIFVNTCAodmFyaW91cyB0ZXN0IHRvb2wgcHJvamVjdHMsIGluY2x1ZGluZyBj
-b21pbmcKPj4gS3VuaXQpLgo+IAo+IEFyZW4ndCB5b3UgZ29pbmcgYWJvdXQgdGhpcyB0aGUgd3Jv
-bmcgd2F5IGFyb3VuZD8KPiAKPiBJIG1lYW4sIHRoaXMgcmVhZHMgbGlrZSB5b3UncmUgcHJvcG9z
-aW5nIHRvIHN0YXJ0IGZyb20gTEtMIGFuZAo+IHJlaW1wbGVtZW50IFVNTCBvbiB0b3Agb2YgaXQs
-IGJ1dCB3ZSBjdXJyZW50bHkgaGF2ZSBVTUwgaW4gdGhlIHRyZWUgYW5kCj4gTEtMIGlzbid0LiBT
-ZWVtcyBiYWNrd2FyZCB0byBtZS4KClRoaXMgaXMgc3VyZWx5IG5vdCBpbnRlbmRlZC4gCiAKPiBB
-bHNvLCBsb29raW5nIGF0IHRoZSBwYXRjaGVzLCBJJ20gbm90IGEgaHVnZSBmYW4gb2YgdGhlIHdo
-b2xlICJkcm9wIExLTAo+IGludG8gVU1MIi4gVU1MIGlzIGFscmVhZHkgY29tcGxleCBlbm91Z2gg
-YXMgaXMsIHdpdGggaXRzIG1lbW9yeSBtb2RlbAo+IGFuZCBhbGwsIG1peGluZyBpbiBMS0wgbWFr
-ZXMgaXQgd2F5IG1vcmUgY29tcGxleC4KPiAKPiBJIGRvbid0IHRoaW5rICJkcm9wIExLTCB1bmRl
-ciBVTUwiIHdhcyB3aGF0IHBlb3BsZSBoYWQgaW4gbWluZCB3aGVuIHRoZXkKPiBzdWdnZXN0ZWQg
-dGhhdCB0aGUgdHdvIG1lcmdlIC4uLgoKWWVzLCBqdXN0IGhhdmluZyBhIGxrbCBmb2xkZXIgdW5k
-ZXIgYXJjaC91bS8gaXMgZm9yIHN1cmUgbm90IHRoZSBmaW5hbCBzb2x1dGlvbi4KVGhlIGdvYWwg
-aXMgbWVyZ2luZyBhcyBtdWNoIGFzIHBvc3NpYmxlLgpCdXQgaGF2aW5nIHB1cmVseSBsa2wgc3R1
-ZmYgaW4gYSBzdWJmb2xkZXIgbGlrZSBhcmNoL3VtL2xrbC8gaXMgbm90IGEgYmlnIGRlYWwuCiAK
-VGhpcyBwYXRjaCBzZXJpZXMgaXMganVzdCBhIHN0YXJ0IG5vdCB0aGUgZmluYWwgc29sdXRpb24g
-d2hpY2ggd2lsbCBnZXQgbWVyZ2VkLiA6LSkKClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxp
-c3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
+Hi,
+
+> You're right: current patchset only share Makefile(s)
+> between UML and LKL.  This is the first step toward the
+> unification in my plan, described in the milestone of the
+> cover letter (copy-pasted below).
+> 
+> > Milestone
+> > =========
+> > (snip)
+> > 1. Put LKL code under arch/um (arch/um/lkl), and build it in a
+> > separate way from UML.
+> > 2. Share common parts of implementation between UML and LKL.
+> > 3. Reimplement UML features with LKL API (if we wish)
+> 
+> For the step 2, [PATCH 46/47] and [47/47] are the kind of
+> examples for this level of unification (sorry for the very
+> dirty code).
+> 
+> For the step 3, I don't have any WIP code nor detailed plan.
+> Implementing ptrace-based (or similar) syscall interception
+> would be one of the development (I believe there are more).
+> 
+> Offering UML feature-sets, keeping compatibility, while
+> benefiting from LKL (e.g., various underlying environment
+> support) would be very high-level goal since there are many
+> users of UML (various test tool projects, including coming
+> Kunit).
+
+Aren't you going about this the wrong way around?
+
+I mean, this reads like you're proposing to start from LKL and
+reimplement UML on top of it, but we currently have UML in the tree and
+LKL isn't. Seems backward to me.
+
+Also, looking at the patches, I'm not a huge fan of the whole "drop LKL
+into UML". UML is already complex enough as is, with its memory model
+and all, mixing in LKL makes it way more complex.
+
+I don't think "drop LKL under UML" was what people had in mind when they
+suggested that the two merge ...
+
+johannes
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
