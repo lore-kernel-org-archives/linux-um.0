@@ -1,192 +1,42 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x542.google.com ([2607:f8b0:4864:20::542])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iSwQf-0003fe-CE
- for linux-um@lists.infradead.org; Fri, 08 Nov 2019 05:03:27 +0000
-Received: by mail-pg1-x542.google.com with SMTP id 15so3294284pgh.5
- for <linux-um@lists.infradead.org>; Thu, 07 Nov 2019 21:03:25 -0800 (PST)
-From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v2 10/37] lkl: memory mapped I/O support
-Date: Fri,  8 Nov 2019 14:02:25 +0900
-Message-Id: <9790d0a835b5f29c02caaaa5b82e2a2bfba74a9a.1573179553.git.thehajime@gmail.com>
-In-Reply-To: <cover.1573179553.git.thehajime@gmail.com>
-References: <cover.1573179553.git.thehajime@gmail.com>
-MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Octavian Purdila <tavi.purdila@gmail.com>, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Akira Moroo <retrage01@gmail.com>
+Return-Path: <rppt@kernel.org>
+From: Mike Rapoport <rppt@kernel.org>
+Subject: [PATCH v2 02/13] arm: nommu: use pgtable-nopud instead of 4level-fixup
+Date: Fri,  1 Nov 2019 10:39:33 +0200
+Message-Id: <1572597584-6390-3-git-send-email-rppt@kernel.org>
+In-Reply-To: <1572597584-6390-1-git-send-email-rppt@kernel.org>
+References: <1572597584-6390-1-git-send-email-rppt@kernel.org>
+To: linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jeff Dike <jdike@addtoit.com>, "Kirill A. Shutemov" <kirill@shutemov.name>, Linus Torvalds <torvalds@linux-foundation.org>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Michal Simek <monstr@monstr.eu>, Peter Rosin <peda@axentia.se>, Richard Weinberger <richard@nod.at>, Rolf Eike Beer <eike-kernel@sf-tec.de>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, Vincent Chen <deanbo422@gmail.com>, Vineet Gupta <Vineet.Gupta1@synopsys.com>, Mike Rapoport <rppt@kernel.org>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org, linux-um@lists.infradead.org, sparclinux@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>
+List-ID: <linux-um.lists.infradead.org>
 
-From: Octavian Purdila <tavi.purdila@gmail.com>
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-All memory mapped I/O access is redirected to the host via the
-iomem_access host operation. The host can setup the memory mapped I/O
-region via the ioremap operation.
+The generic nommu implementation of page table manipulation takes care of
+folding of the upper levels and does not require fixups.
 
-This allows the host to implement support for various devices, such as
-block or network devices.
+Simply replace of include/asm-generic/4level-fixup.h with
+include/asm-generic/pgtable-nopud.h.
 
-Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Acked-by: Russell King <rmk+kernel@armlinux.org.uk>
 ---
- arch/um/lkl/include/asm/io.h            | 104 ++++++++++++++++++++++++
- arch/um/lkl/include/uapi/asm/host_ops.h |  10 +++
- 2 files changed, 114 insertions(+)
- create mode 100644 arch/um/lkl/include/asm/io.h
+ arch/arm/include/asm/pgtable.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/um/lkl/include/asm/io.h b/arch/um/lkl/include/asm/io.h
-new file mode 100644
-index 000000000000..33d4e1a7feb2
---- /dev/null
-+++ b/arch/um/lkl/include/asm/io.h
-@@ -0,0 +1,104 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_LKL_IO_H
-+#define _ASM_LKL_IO_H
-+
-+#include <asm/bug.h>
-+#include <asm/host_ops.h>
-+
-+#define __raw_readb __raw_readb
-+static inline u8 __raw_readb(const volatile void __iomem *addr)
-+{
-+	int ret;
-+	u8 value;
-+
-+	ret = lkl_ops->iomem_access(addr, &value, sizeof(value), 0);
-+	WARN(ret, "error reading iomem %p", addr);
-+
-+	return value;
-+}
-+
-+#define __raw_readw __raw_readw
-+static inline u16 __raw_readw(const volatile void __iomem *addr)
-+{
-+	int ret;
-+	u16 value;
-+
-+	ret = lkl_ops->iomem_access(addr, &value, sizeof(value), 0);
-+	WARN(ret, "error reading iomem %p", addr);
-+
-+	return value;
-+}
-+
-+#define __raw_readl __raw_readl
-+static inline u32 __raw_readl(const volatile void __iomem *addr)
-+{
-+	int ret;
-+	u32 value;
-+
-+	ret = lkl_ops->iomem_access(addr, &value, sizeof(value), 0);
-+	WARN(ret, "error reading iomem %p", addr);
-+
-+	return value;
-+}
-+
-+#ifdef CONFIG_64BIT
-+#define __raw_readq __raw_readq
-+static inline u64 __raw_readq(const volatile void __iomem *addr)
-+{
-+	int ret;
-+	u64 value;
-+
-+	ret = lkl_ops->iomem_access(addr, &value, sizeof(value), 0);
-+	WARN(ret, "error reading iomem %p", addr);
-+
-+	return value;
-+}
-+#endif /* CONFIG_64BIT */
-+
-+#define __raw_writeb __raw_writeb
-+static inline void __raw_writeb(u8 value, volatile void __iomem *addr)
-+{
-+	int ret;
-+
-+	ret = lkl_ops->iomem_access(addr, &value, sizeof(value), 1);
-+	WARN(ret, "error writing iomem %p", addr);
-+}
-+
-+#define __raw_writew __raw_writew
-+static inline void __raw_writew(u16 value, volatile void __iomem *addr)
-+{
-+	int ret;
-+
-+	ret = lkl_ops->iomem_access(addr, &value, sizeof(value), 1);
-+	WARN(ret, "error writing iomem %p", addr);
-+}
-+
-+#define __raw_writel __raw_writel
-+static inline void __raw_writel(u32 value, volatile void __iomem *addr)
-+{
-+	int ret;
-+
-+	ret = lkl_ops->iomem_access(addr, &value, sizeof(value), 1);
-+	WARN(ret, "error writing iomem %p", addr);
-+}
-+
-+#ifdef CONFIG_64BIT
-+#define __raw_writeq __raw_writeq
-+static inline void __raw_writeq(u64 value, volatile void __iomem *addr)
-+{
-+	int ret;
-+
-+	ret = lkl_ops->iomem_access(addr, &value, sizeof(value), 1);
-+	WARN(ret, "error writing iomem %p", addr);
-+}
-+#endif /* CONFIG_64BIT */
-+
-+#define ioremap ioremap
-+static inline void __iomem *ioremap(phys_addr_t offset, size_t size)
-+{
-+	return (void __iomem *)lkl_ops->ioremap(offset, size);
-+}
-+
-+#include <asm-generic/io.h>
-+
-+#endif /* _ASM_LKL_IO_H */
-diff --git a/arch/um/lkl/include/uapi/asm/host_ops.h b/arch/um/lkl/include/uapi/asm/host_ops.h
-index c9f77dd7fbe7..7c0c0967c44a 100644
---- a/arch/um/lkl/include/uapi/asm/host_ops.h
-+++ b/arch/um/lkl/include/uapi/asm/host_ops.h
-@@ -55,6 +55,12 @@ struct lkl_jmp_buf {
-  * @timer_set_periodic - arm the timer to fire periodically, with a period of
-  * delta ns.
-  *
-+ * @ioremap - searches for an I/O memory region identified by addr and size and
-+ * returns a pointer to the start of the address range that can be used by
-+ * iomem_access
-+ * @iomem_access - reads or writes to and I/O memory region; addr must be in the
-+ * range returned by ioremap
-+ *
-  * @gettid - returns the host thread id of the caller, which need not
-  * be the same as the handle returned by thread_create
-  *
-@@ -101,6 +107,10 @@ struct lkl_host_operations {
- 	int (*timer_set_oneshot)(void *timer, unsigned long delta);
- 	void (*timer_free)(void *timer);
+diff --git a/arch/arm/include/asm/pgtable.h b/arch/arm/include/asm/pgtable.h
+index 3ae120c..eabcb48 100644
+--- a/arch/arm/include/asm/pgtable.h
++++ b/arch/arm/include/asm/pgtable.h
+@@ -12,7 +12,7 @@
  
-+	void *(*ioremap)(long addr, int size);
-+	int (*iomem_access)(const volatile void *addr, void *val, int size,
-+			    int write);
-+
- 	long (*gettid)(void);
+ #ifndef CONFIG_MMU
  
- 	void (*jmp_buf_set)(struct lkl_jmp_buf *jmpb, void (*f)(void));
+-#include <asm-generic/4level-fixup.h>
++#include <asm-generic/pgtable-nopud.h>
+ #include <asm/pgtable-nommu.h>
+ 
+ #else
 -- 
-2.20.1 (Apple Git-117)
+2.7.4
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
