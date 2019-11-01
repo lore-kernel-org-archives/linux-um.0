@@ -1,146 +1,149 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mout.kundenserver.de ([212.227.126.130])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iTBv5-0000zf-Hz
- for linux-um@lists.infradead.org; Fri, 08 Nov 2019 21:35:53 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 00/16] drivers: y2038 updates
-Date: Fri,  8 Nov 2019 22:32:38 +0100
-Message-Id: <20191108213257.3097633-1-arnd@arndb.de>
-MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: y2038@lists.linaro.org
-Cc: airlied@linux.ie, dri-devel@lists.freedesktop.org, jcmvbkbc@gmail.com, edumazet@google.com, netdev@vger.kernel.org, linux1394-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, richard@nod.at, kadlec@netfilter.org, cluster-devel@redhat.com, ccaulfie@redhat.com, coreteam@netfilter.org, linux+etnaviv@armlinux.org.uk, pablo@netfilter.org, Arnd Bergmann <arnd@arndb.de>, linux-arm-msm@vger.kernel.org, jdike@addtoit.com, linux-um@lists.infradead.org, etnaviv@lists.freedesktop.org, christian.gmeiner@gmail.com, teigland@redhat.com, viro@zeniv.linux.org.uk, tglx@linutronix.de, sean@poorly.run, hirofumi@mail.parknet.co.jp, willemb@google.com, valdis.kletnieks@vt.edu, rfontana@redhat.com, gregkh@linuxfoundation.org, fw@strlen.de, linux-kernel@vger.kernel.org, robdclark@gmail.com, stefanr@s5r6.in-berlin.de, netfilter-devel@vger.kernel.org, daniel@ffwll.ch, jack@suse.com, linux-fsdevel@vger.kernel.org, freedreno@lists.freedesktop.org, davem@davemloft.net, l.stach@pengutronix.de
+Return-Path: <rppt@kernel.org>
+From: Mike Rapoport <rppt@kernel.org>
+Subject: [PATCH v2 13/13] mm: remove __ARCH_HAS_4LEVEL_HACK and include/asm-generic/4level-fixup.h
+Date: Fri,  1 Nov 2019 10:39:44 +0200
+Message-Id: <1572597584-6390-14-git-send-email-rppt@kernel.org>
+In-Reply-To: <1572597584-6390-1-git-send-email-rppt@kernel.org>
+References: <1572597584-6390-1-git-send-email-rppt@kernel.org>
+To: linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jeff Dike <jdike@addtoit.com>, "Kirill A. Shutemov" <kirill@shutemov.name>, Linus Torvalds <torvalds@linux-foundation.org>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Michal Simek <monstr@monstr.eu>, Peter Rosin <peda@axentia.se>, Richard Weinberger <richard@nod.at>, Rolf Eike Beer <eike-kernel@sf-tec.de>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, Vincent Chen <deanbo422@gmail.com>, Vineet Gupta <Vineet.Gupta1@synopsys.com>, Mike Rapoport <rppt@kernel.org>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org, linux-um@lists.infradead.org, sparclinux@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>
+List-ID: <linux-um.lists.infradead.org>
 
-These are updates to devidce drivers and file systems that for some
-reason or another were not included in the kernel in the previous
-y2038 series.
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-I've gone through all users of time_t again to make sure the
-kernel is in a long-term maintainable state.
+There are no architectures that use include/asm-generic/4level-fixup.h
+therefore it can be removed along with __ARCH_HAS_4LEVEL_HACK define.
 
-Posting these as a series for better organization, but each change
-here is applicable standalone.
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+---
+ include/asm-generic/4level-fixup.h | 40 --------------------------------------
+ include/asm-generic/tlb.h          |  2 --
+ include/linux/mm.h                 | 10 +++++-----
+ mm/memory.c                        |  8 --------
+ 4 files changed, 5 insertions(+), 55 deletions(-)
+ delete mode 100644 include/asm-generic/4level-fixup.h
 
-Please merge, review, ack/nack etc as you see fit. My plan is to
-include any patches that don't get a reply this time around in
-a future pull request, probably for linux-5.6.
-
-As mentioned before, the full series of 90 patches is available at
-https://git.kernel.org/pub/scm/linux/kernel/git/arnd/playground.git/log/?h=y2038-endgame
-
-    Arnd
-
-Arnd Bergmann (16):
-  staging: exfat: use prandom_u32() for i_generation
-  fat: use prandom_u32() for i_generation
-  net: sock: use __kernel_old_timespec instead of timespec
-  dlm: use SO_SNDTIMEO_NEW instead of SO_SNDTIMEO_OLD
-  xtensa: ISS: avoid struct timeval
-  um: ubd: use 64-bit time_t where possible
-  acct: stop using get_seconds()
-  tsacct: add 64-bit btime field
-  netfilter: nft_meta: use 64-bit time arithmetic
-  packet: clarify timestamp overflow
-  quota: avoid time_t in v1_disk_dqblk definition
-  hostfs: pass 64-bit timestamps to/from user space
-  hfs/hfsplus: use 64-bit inode timestamps
-  drm/msm: avoid using 'timespec'
-  drm/etnaviv: use ktime_t for timeouts
-  firewire: ohci: stop using get_seconds() for BUS_TIME
-
- arch/um/drivers/cow.h                         |  2 +-
- arch/um/drivers/cow_user.c                    |  7 +++--
- arch/um/drivers/ubd_kern.c                    | 10 +++----
- arch/um/include/shared/os.h                   |  2 +-
- arch/um/os-Linux/file.c                       |  2 +-
- .../platforms/iss/include/platform/simcall.h  |  4 +--
- drivers/firewire/ohci.c                       |  2 +-
- drivers/gpu/drm/etnaviv/etnaviv_drv.c         | 19 ++++++-------
- drivers/gpu/drm/etnaviv/etnaviv_drv.h         | 21 ++++++--------
- drivers/gpu/drm/etnaviv/etnaviv_gem.c         |  5 ++--
- drivers/gpu/drm/etnaviv/etnaviv_gem.h         |  2 +-
- drivers/gpu/drm/etnaviv/etnaviv_gpu.c         |  4 +--
- drivers/gpu/drm/etnaviv/etnaviv_gpu.h         |  4 +--
- drivers/gpu/drm/msm/msm_drv.h                 |  3 +-
- drivers/staging/exfat/exfat_super.c           |  4 +--
- fs/dlm/lowcomms.c                             |  6 ++--
- fs/fat/inode.c                                |  3 +-
- fs/hfs/hfs_fs.h                               | 26 +++++++++++++----
- fs/hfs/inode.c                                |  4 +--
- fs/hfsplus/hfsplus_fs.h                       | 26 +++++++++++++----
- fs/hfsplus/inode.c                            | 12 ++++----
- fs/hostfs/hostfs.h                            | 22 +++++++++------
- fs/hostfs/hostfs_kern.c                       | 15 ++++++----
- fs/quota/quotaio_v1.h                         |  6 ++--
- include/linux/skbuff.h                        |  7 +++--
- include/uapi/linux/acct.h                     |  2 ++
- include/uapi/linux/taskstats.h                |  6 +++-
- kernel/acct.c                                 |  4 ++-
- kernel/tsacct.c                               |  9 ++++--
- net/compat.c                                  |  2 +-
- net/ipv4/tcp.c                                | 28 +++++++++++--------
- net/netfilter/nft_meta.c                      | 10 +++----
- net/packet/af_packet.c                        | 27 +++++++++++-------
- net/socket.c                                  |  2 +-
- 34 files changed, 184 insertions(+), 124 deletions(-)
-
+diff --git a/include/asm-generic/4level-fixup.h b/include/asm-generic/4level-fixup.h
+deleted file mode 100644
+index e3667c9..0000000
+--- a/include/asm-generic/4level-fixup.h
++++ /dev/null
+@@ -1,40 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _4LEVEL_FIXUP_H
+-#define _4LEVEL_FIXUP_H
+-
+-#define __ARCH_HAS_4LEVEL_HACK
+-#define __PAGETABLE_PUD_FOLDED 1
+-
+-#define PUD_SHIFT			PGDIR_SHIFT
+-#define PUD_SIZE			PGDIR_SIZE
+-#define PUD_MASK			PGDIR_MASK
+-#define PTRS_PER_PUD			1
+-
+-#define pud_t				pgd_t
+-
+-#define pmd_alloc(mm, pud, address) \
+-	((unlikely(pgd_none(*(pud))) && __pmd_alloc(mm, pud, address))? \
+- 		NULL: pmd_offset(pud, address))
+-
+-#define pud_offset(pgd, start)		(pgd)
+-#define pud_none(pud)			0
+-#define pud_bad(pud)			0
+-#define pud_present(pud)		1
+-#define pud_ERROR(pud)			do { } while (0)
+-#define pud_clear(pud)			pgd_clear(pud)
+-#define pud_val(pud)			pgd_val(pud)
+-#define pud_populate(mm, pud, pmd)	pgd_populate(mm, pud, pmd)
+-#define pud_page(pud)			pgd_page(pud)
+-#define pud_page_vaddr(pud)		pgd_page_vaddr(pud)
+-
+-#undef pud_free_tlb
+-#define pud_free_tlb(tlb, x, addr)	do { } while (0)
+-#define pud_free(mm, x)			do { } while (0)
+-#define __pud_free_tlb(tlb, x, addr)	do { } while (0)
+-
+-#undef  pud_addr_end
+-#define pud_addr_end(addr, end)		(end)
+-
+-#include <asm-generic/5level-fixup.h>
+-
+-#endif
+diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
+index 04c0644..5e0c2d0 100644
+--- a/include/asm-generic/tlb.h
++++ b/include/asm-generic/tlb.h
+@@ -584,7 +584,6 @@ static inline void tlb_end_vma(struct mmu_gather *tlb, struct vm_area_struct *vm
+ 	} while (0)
+ #endif
+ 
+-#ifndef __ARCH_HAS_4LEVEL_HACK
+ #ifndef pud_free_tlb
+ #define pud_free_tlb(tlb, pudp, address)			\
+ 	do {							\
+@@ -594,7 +593,6 @@ static inline void tlb_end_vma(struct mmu_gather *tlb, struct vm_area_struct *vm
+ 		__pud_free_tlb(tlb, pudp, address);		\
+ 	} while (0)
+ #endif
+-#endif
+ 
+ #ifndef __ARCH_HAS_5LEVEL_HACK
+ #ifndef p4d_free_tlb
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index cc29227..477b52a 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1850,12 +1850,12 @@ static inline void mm_dec_nr_ptes(struct mm_struct *mm) {}
+ int __pte_alloc(struct mm_struct *mm, pmd_t *pmd);
+ int __pte_alloc_kernel(pmd_t *pmd);
+ 
++#if defined(CONFIG_MMU)
++
+ /*
+- * The following ifdef needed to get the 4level-fixup.h header to work.
+- * Remove it when 4level-fixup.h has been removed.
++ * The following ifdef needed to get the 5level-fixup.h header to work.
++ * Remove it when 5level-fixup.h has been removed.
+  */
+-#if defined(CONFIG_MMU) && !defined(__ARCH_HAS_4LEVEL_HACK)
+-
+ #ifndef __ARCH_HAS_5LEVEL_HACK
+ static inline p4d_t *p4d_alloc(struct mm_struct *mm, pgd_t *pgd,
+ 		unsigned long address)
+@@ -1877,7 +1877,7 @@ static inline pmd_t *pmd_alloc(struct mm_struct *mm, pud_t *pud, unsigned long a
+ 	return (unlikely(pud_none(*pud)) && __pmd_alloc(mm, pud, address))?
+ 		NULL: pmd_offset(pud, address);
+ }
+-#endif /* CONFIG_MMU && !__ARCH_HAS_4LEVEL_HACK */
++#endif /* CONFIG_MMU */
+ 
+ #if USE_SPLIT_PTE_PTLOCKS
+ #if ALLOC_SPLIT_PTLOCKS
+diff --git a/mm/memory.c b/mm/memory.c
+index b1ca51a..50300f0 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -4095,19 +4095,11 @@ int __pmd_alloc(struct mm_struct *mm, pud_t *pud, unsigned long address)
+ 	smp_wmb(); /* See comment in __pte_alloc */
+ 
+ 	ptl = pud_lock(mm, pud);
+-#ifndef __ARCH_HAS_4LEVEL_HACK
+ 	if (!pud_present(*pud)) {
+ 		mm_inc_nr_pmds(mm);
+ 		pud_populate(mm, pud, new);
+ 	} else	/* Another has populated it */
+ 		pmd_free(mm, new);
+-#else
+-	if (!pgd_present(*pud)) {
+-		mm_inc_nr_pmds(mm);
+-		pgd_populate(mm, pud, new);
+-	} else /* Another has populated it */
+-		pmd_free(mm, new);
+-#endif /* __ARCH_HAS_4LEVEL_HACK */
+ 	spin_unlock(ptl);
+ 	return 0;
+ }
 -- 
-2.20.0
+2.7.4
 
-Cc: jdike@addtoit.com
-Cc: richard@nod.at
-Cc: jcmvbkbc@gmail.com
-Cc: stefanr@s5r6.in-berlin.de
-Cc: l.stach@pengutronix.de
-Cc: linux+etnaviv@armlinux.org.uk
-Cc: christian.gmeiner@gmail.com
-Cc: airlied@linux.ie
-Cc: daniel@ffwll.ch
-Cc: robdclark@gmail.com
-Cc: sean@poorly.run
-Cc: valdis.kletnieks@vt.edu
-Cc: gregkh@linuxfoundation.org
-Cc: ccaulfie@redhat.com
-Cc: teigland@redhat.com
-Cc: hirofumi@mail.parknet.co.jp
-Cc: jack@suse.com
-Cc: davem@davemloft.net
-Cc: edumazet@google.com
-Cc: pablo@netfilter.org
-Cc: kadlec@netfilter.org
-Cc: fw@strlen.de
-Cc: willemb@google.com
-Cc: viro@zeniv.linux.org.uk
-Cc: rfontana@redhat.com
-Cc: tglx@linutronix.de
-Cc: linux-um@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux1394-devel@lists.sourceforge.net
-Cc: etnaviv@lists.freedesktop.org
-Cc: dri-devel@lists.freedesktop.org>
-Cc: linux-arm-msm@vger.kernel.org>
-Cc: freedreno@lists.freedesktop.org>
-Cc: devel@driverdev.osuosl.org>
-Cc: cluster-devel@redhat.com>
-Cc: linux-fsdevel@vger.kernel.org>
-Cc: netdev@vger.kernel.org>
-Cc: netfilter-devel@vger.kernel.org>
-Cc: coreteam@netfilter.org>
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
