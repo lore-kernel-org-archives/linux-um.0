@@ -1,326 +1,393 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x543.google.com ([2607:f8b0:4864:20::543])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iSwR1-0003oo-5I
- for linux-um@lists.infradead.org; Fri, 08 Nov 2019 05:03:49 +0000
-Received: by mail-pg1-x543.google.com with SMTP id e4so3315769pgs.1
- for <linux-um@lists.infradead.org>; Thu, 07 Nov 2019 21:03:46 -0800 (PST)
-From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v2 18/37] lkl tools: host lib: virtio block device
-Date: Fri,  8 Nov 2019 14:02:33 +0900
-Message-Id: <73d0e15d1429a089442c932d1b3fddc724a43bb6.1573179553.git.thehajime@gmail.com>
-In-Reply-To: <cover.1573179553.git.thehajime@gmail.com>
-References: <cover.1573179553.git.thehajime@gmail.com>
-MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: linux-arch@vger.kernel.org, Octavian Purdila <tavi.purdila@gmail.com>, Akira Moroo <retrage01@gmail.com>, Petros Angelatos <petrosagg@gmail.com>, linux-kernel-library@freelists.org, Michael Zimmermann <sigmaepsilon92@gmail.com>
+Return-Path: <rppt@kernel.org>
+From: Mike Rapoport <rppt@kernel.org>
+Subject: [PATCH v2 10/13] sparc32: use pgtable-nopud instead of 4level-fixup
+Date: Fri,  1 Nov 2019 10:39:41 +0200
+Message-Id: <1572597584-6390-11-git-send-email-rppt@kernel.org>
+In-Reply-To: <1572597584-6390-1-git-send-email-rppt@kernel.org>
+References: <1572597584-6390-1-git-send-email-rppt@kernel.org>
+To: linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jeff Dike <jdike@addtoit.com>, "Kirill A. Shutemov" <kirill@shutemov.name>, Linus Torvalds <torvalds@linux-foundation.org>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Michal Simek <monstr@monstr.eu>, Peter Rosin <peda@axentia.se>, Richard Weinberger <richard@nod.at>, Rolf Eike Beer <eike-kernel@sf-tec.de>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, Vincent Chen <deanbo422@gmail.com>, Vineet Gupta <Vineet.Gupta1@synopsys.com>, Mike Rapoport <rppt@kernel.org>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org, linux-um@lists.infradead.org, sparclinux@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>
+List-ID: <linux-um.lists.infradead.org>
 
-From: Octavian Purdila <tavi.purdila@gmail.com>
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-Host independent implementation for virtio block devices. The host
-dependent part of the host library must provide an implementation for
-lkl_dev_block_ops.
+32-bit version of sparc has three-level page tables and can use
+pgtable-nopud and folding of the upper layers.
 
-Disks can be added to the LKL configuration via lkl_disk_add(), a new
-LKL application API.
+Replace usage of include/asm-generic/4level-fixup.h with
+include/asm-generic/pgtable-nopud.h and adjust page table manipulation
+macros and functions accordingly.
 
-Signed-off-by: Michael Zimmermann <sigmaepsilon92@gmail.com>
-Signed-off-by: Petros Angelatos <petrosagg@gmail.com>
-Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Acked-by: David S. Miller <davem@davemloft.net>
 ---
- tools/lkl/include/lkl.h      |  39 +++++++++++
- tools/lkl/include/lkl_host.h |  57 +++++++++++++++
- tools/lkl/lib/Build          |   1 +
- tools/lkl/lib/virtio_blk.c   | 132 +++++++++++++++++++++++++++++++++++
- 4 files changed, 229 insertions(+)
- create mode 100644 tools/lkl/lib/virtio_blk.c
+ arch/sparc/include/asm/pgalloc_32.h |  6 ++---
+ arch/sparc/include/asm/pgtable_32.h | 28 ++++++++++----------
+ arch/sparc/mm/fault_32.c            | 11 ++++++--
+ arch/sparc/mm/highmem.c             |  6 ++++-
+ arch/sparc/mm/io-unit.c             |  6 ++++-
+ arch/sparc/mm/iommu.c               |  6 ++++-
+ arch/sparc/mm/srmmu.c               | 51 +++++++++++++++++++++++++++++--------
+ 7 files changed, 81 insertions(+), 33 deletions(-)
 
-diff --git a/tools/lkl/include/lkl.h b/tools/lkl/include/lkl.h
-index 76da534a85f1..967fbe4dbc26 100644
---- a/tools/lkl/include/lkl.h
-+++ b/tools/lkl/include/lkl.h
-@@ -350,6 +350,45 @@ const char *lkl_strerror(int err);
-  */
- void lkl_perror(char *msg, int err);
+diff --git a/arch/sparc/include/asm/pgalloc_32.h b/arch/sparc/include/asm/pgalloc_32.h
+index 10538a4..eae0c92 100644
+--- a/arch/sparc/include/asm/pgalloc_32.h
++++ b/arch/sparc/include/asm/pgalloc_32.h
+@@ -26,14 +26,14 @@ static inline void free_pgd_fast(pgd_t *pgd)
+ #define pgd_free(mm, pgd)	free_pgd_fast(pgd)
+ #define pgd_alloc(mm)	get_pgd_fast()
  
-+/**
-+ * struct lkl_dev_blk_ops - block device host operations, defined in lkl_host.h.
-+ */
-+struct lkl_dev_blk_ops;
-+
-+/**
-+ * lkl_disk - host disk handle
-+ *
-+ * @dev - a pointer to 'virtio_blk_dev' structure for this disk
-+ * @fd - a POSIX file descriptor that can be used by preadv/pwritev
-+ * @handle - an NT file handle that can be used by ReadFile/WriteFile
-+ */
-+struct lkl_disk {
-+	void *dev;
-+	union {
-+		int fd;
-+		void *handle;
-+	};
-+	struct lkl_dev_blk_ops *ops;
-+};
-+
-+/**
-+ * lkl_disk_add - add a new disk
-+ *
-+ * @disk - the host disk handle
-+ * @returns a disk id (0 is valid) or a strictly negative value in case of error
-+ */
-+int lkl_disk_add(struct lkl_disk *disk);
-+
-+/**
-+ * lkl_disk_remove - remove a disk
-+ *
-+ * This function makes a cleanup of the @disk's virtio_dev structure
-+ * that was initialized by lkl_disk_add before.
-+ *
-+ * @disk - the host disk handle
-+ */
-+int lkl_disk_remove(struct lkl_disk disk);
-+
+-static inline void pgd_set(pgd_t * pgdp, pmd_t * pmdp)
++static inline void pud_set(pud_t * pudp, pmd_t * pmdp)
+ {
+ 	unsigned long pa = __nocache_pa(pmdp);
  
- #ifdef __cplusplus
+-	set_pte((pte_t *)pgdp, __pte((SRMMU_ET_PTD | (pa >> 4))));
++	set_pte((pte_t *)pudp, __pte((SRMMU_ET_PTD | (pa >> 4))));
  }
-diff --git a/tools/lkl/include/lkl_host.h b/tools/lkl/include/lkl_host.h
-index 81239e2b556f..a630efc95f0f 100644
---- a/tools/lkl/include/lkl_host.h
-+++ b/tools/lkl/include/lkl_host.h
-@@ -20,6 +20,63 @@ int lkl_printf(const char *fmt, ...);
  
- extern char lkl_virtio_devs[4096];
+-#define pgd_populate(MM, PGD, PMD)      pgd_set(PGD, PMD)
++#define pud_populate(MM, PGD, PMD)      pud_set(PGD, PMD)
  
-+#ifdef LKL_HOST_CONFIG_POSIX
-+#include <sys/uio.h>
-+#else
-+struct iovec {
-+	void *iov_base;
-+	size_t iov_len;
-+};
-+#endif
-+
-+extern struct lkl_dev_blk_ops lkl_dev_blk_ops;
-+
-+/**
-+ * struct lkl_blk_req - block device request
-+ *
-+ * @type: type of request
-+ * @prio: priority of request - currently unused
-+ * @sector: offset in units 512 bytes for read / write requests
-+ * @buf: an array of buffers to be used for read / write requests
-+ * @count: the number of buffers
-+ */
-+struct lkl_blk_req {
-+#define LKL_DEV_BLK_TYPE_READ		0
-+#define LKL_DEV_BLK_TYPE_WRITE		1
-+#define LKL_DEV_BLK_TYPE_FLUSH		4
-+#define LKL_DEV_BLK_TYPE_FLUSH_OUT	5
-+	unsigned int type;
-+	unsigned int prio;
-+	unsigned long long sector;
-+	struct iovec *buf;
-+	int count;
-+};
-+
-+/**
-+ * struct lkl_dev_blk_ops - block device host operations
-+ */
-+struct lkl_dev_blk_ops {
-+	/**
-+	 * @get_capacity: returns the disk capacity in bytes
-+	 *
-+	 * @disk - the disk for which the capacity is requested;
-+	 * @res - pointer to receive the capacity, in bytes;
-+	 * @returns - 0 in case of success, negative value in case of error
-+	 */
-+	int (*get_capacity)(struct lkl_disk disk, unsigned long long *res);
-+#define LKL_DEV_BLK_STATUS_OK		0
-+#define LKL_DEV_BLK_STATUS_IOERR	1
-+#define LKL_DEV_BLK_STATUS_UNSUP	2
-+	/**
-+	 * @request: issue a block request
-+	 *
-+	 * @disk - the disk the request is issued to;
-+	 * @req - a request described by &struct lkl_blk_req
-+	 */
-+	int (*request)(struct lkl_disk disk, struct lkl_blk_req *req);
-+};
-+
-+
- #ifdef __cplusplus
+ static inline pmd_t *pmd_alloc_one(struct mm_struct *mm,
+ 				   unsigned long address)
+diff --git a/arch/sparc/include/asm/pgtable_32.h b/arch/sparc/include/asm/pgtable_32.h
+index 31da448..6d6f44c 100644
+--- a/arch/sparc/include/asm/pgtable_32.h
++++ b/arch/sparc/include/asm/pgtable_32.h
+@@ -12,7 +12,7 @@
+ #include <linux/const.h>
+ 
+ #ifndef __ASSEMBLY__
+-#include <asm-generic/4level-fixup.h>
++#include <asm-generic/pgtable-nopud.h>
+ 
+ #include <linux/spinlock.h>
+ #include <linux/mm_types.h>
+@@ -132,12 +132,12 @@ static inline struct page *pmd_page(pmd_t pmd)
+ 	return pfn_to_page((pmd_val(pmd) & SRMMU_PTD_PMASK) >> (PAGE_SHIFT-4));
  }
- #endif
-diff --git a/tools/lkl/lib/Build b/tools/lkl/lib/Build
-index 5fd1843b51d1..d3154cfa4952 100644
---- a/tools/lkl/lib/Build
-+++ b/tools/lkl/lib/Build
-@@ -3,6 +3,7 @@ CFLAGS_config.o += -I$(srctree)/tools/perf/pmu-events
- liblkl-y += iomem.o
- liblkl-y += jmp_buf.o
- liblkl-y += utils.o
-+liblkl-y += virtio_blk.o
- liblkl-y += virtio.o
- liblkl-y += dbg.o
- liblkl-y += dbg_handler.o
-diff --git a/tools/lkl/lib/virtio_blk.c b/tools/lkl/lib/virtio_blk.c
-new file mode 100644
-index 000000000000..9e23316c5d99
---- /dev/null
-+++ b/tools/lkl/lib/virtio_blk.c
-@@ -0,0 +1,132 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <lkl_host.h>
-+#include "virtio.h"
-+#include "endian.h"
+ 
+-static inline unsigned long pgd_page_vaddr(pgd_t pgd)
++static inline unsigned long pud_page_vaddr(pud_t pud)
+ {
+-	if (srmmu_device_memory(pgd_val(pgd))) {
++	if (srmmu_device_memory(pud_val(pud))) {
+ 		return ~0;
+ 	} else {
+-		unsigned long v = pgd_val(pgd) & SRMMU_PTD_PMASK;
++		unsigned long v = pud_val(pud) & SRMMU_PTD_PMASK;
+ 		return (unsigned long)__nocache_va(v << 4);
+ 	}
+ }
+@@ -184,24 +184,24 @@ static inline void pmd_clear(pmd_t *pmdp)
+ 		set_pte((pte_t *)&pmdp->pmdv[i], __pte(0));
+ }
+ 
+-static inline int pgd_none(pgd_t pgd)          
++static inline int pud_none(pud_t pud)
+ {
+-	return !(pgd_val(pgd) & 0xFFFFFFF);
++	return !(pud_val(pud) & 0xFFFFFFF);
+ }
+ 
+-static inline int pgd_bad(pgd_t pgd)
++static inline int pud_bad(pud_t pud)
+ {
+-	return (pgd_val(pgd) & SRMMU_ET_MASK) != SRMMU_ET_PTD;
++	return (pud_val(pud) & SRMMU_ET_MASK) != SRMMU_ET_PTD;
+ }
+ 
+-static inline int pgd_present(pgd_t pgd)
++static inline int pud_present(pud_t pud)
+ {
+-	return ((pgd_val(pgd) & SRMMU_ET_MASK) == SRMMU_ET_PTD);
++	return ((pud_val(pud) & SRMMU_ET_MASK) == SRMMU_ET_PTD);
+ }
+ 
+-static inline void pgd_clear(pgd_t *pgdp)
++static inline void pud_clear(pud_t *pudp)
+ {
+-	set_pte((pte_t *)pgdp, __pte(0));
++	set_pte((pte_t *)pudp, __pte(0));
+ }
+ 
+ /*
+@@ -319,9 +319,9 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
+ #define pgd_offset_k(address) pgd_offset(&init_mm, address)
+ 
+ /* Find an entry in the second-level page table.. */
+-static inline pmd_t *pmd_offset(pgd_t * dir, unsigned long address)
++static inline pmd_t *pmd_offset(pud_t * dir, unsigned long address)
+ {
+-	return (pmd_t *) pgd_page_vaddr(*dir) +
++	return (pmd_t *) pud_page_vaddr(*dir) +
+ 		((address >> PMD_SHIFT) & (PTRS_PER_PMD - 1));
+ }
+ 
+diff --git a/arch/sparc/mm/fault_32.c b/arch/sparc/mm/fault_32.c
+index 8d69de1..89976c9 100644
+--- a/arch/sparc/mm/fault_32.c
++++ b/arch/sparc/mm/fault_32.c
+@@ -351,6 +351,8 @@ asmlinkage void do_sparc_fault(struct pt_regs *regs, int text_fault, int write,
+ 		 */
+ 		int offset = pgd_index(address);
+ 		pgd_t *pgd, *pgd_k;
++		p4d_t *p4d, *p4d_k;
++		pud_t *pud, *pud_k;
+ 		pmd_t *pmd, *pmd_k;
+ 
+ 		pgd = tsk->active_mm->pgd + offset;
+@@ -363,8 +365,13 @@ asmlinkage void do_sparc_fault(struct pt_regs *regs, int text_fault, int write,
+ 			return;
+ 		}
+ 
+-		pmd = pmd_offset(pgd, address);
+-		pmd_k = pmd_offset(pgd_k, address);
++		p4d = p4d_offset(pgd, address);
++		pud = pud_offset(p4d, address);
++		pmd = pmd_offset(pud, address);
 +
-+struct virtio_blk_dev {
-+	struct virtio_dev dev;
-+	struct lkl_virtio_blk_config config;
-+	struct lkl_dev_blk_ops *ops;
-+	struct lkl_disk disk;
-+};
++		p4d_k = p4d_offset(pgd_k, address);
++		pud_k = pud_offset(p4d_k, address);
++		pmd_k = pmd_offset(pud_k, address);
+ 
+ 		if (pmd_present(*pmd) || !pmd_present(*pmd_k))
+ 			goto bad_area_nosemaphore;
+diff --git a/arch/sparc/mm/highmem.c b/arch/sparc/mm/highmem.c
+index 86bc2a5..d4a80ad 100644
+--- a/arch/sparc/mm/highmem.c
++++ b/arch/sparc/mm/highmem.c
+@@ -39,10 +39,14 @@ static pte_t *kmap_pte;
+ void __init kmap_init(void)
+ {
+ 	unsigned long address;
++	p4d_t *p4d;
++	pud_t *pud;
+ 	pmd_t *dir;
+ 
+ 	address = __fix_to_virt(FIX_KMAP_BEGIN);
+-	dir = pmd_offset(pgd_offset_k(address), address);
++	p4d = p4d_offset(pgd_offset_k(address), address);
++	pud = pud_offset(p4d, address);
++	dir = pmd_offset(pud, address);
+ 
+         /* cache the first kmap pte */
+         kmap_pte = pte_offset_kernel(dir, address);
+diff --git a/arch/sparc/mm/io-unit.c b/arch/sparc/mm/io-unit.c
+index f770ee7..33a0fac 100644
+--- a/arch/sparc/mm/io-unit.c
++++ b/arch/sparc/mm/io-unit.c
+@@ -239,12 +239,16 @@ static void *iounit_alloc(struct device *dev, size_t len,
+ 		page = va;
+ 		{
+ 			pgd_t *pgdp;
++			p4d_t *p4dp;
++			pud_t *pudp;
+ 			pmd_t *pmdp;
+ 			pte_t *ptep;
+ 			long i;
+ 
+ 			pgdp = pgd_offset(&init_mm, addr);
+-			pmdp = pmd_offset(pgdp, addr);
++			p4dp = p4d_offset(pgdp, addr);
++			pudp = pud_offset(p4dp, addr);
++			pmdp = pmd_offset(pudp, addr);
+ 			ptep = pte_offset_map(pmdp, addr);
+ 
+ 			set_pte(ptep, mk_pte(virt_to_page(page), dvma_prot));
+diff --git a/arch/sparc/mm/iommu.c b/arch/sparc/mm/iommu.c
+index 71ac353..4d3c699 100644
+--- a/arch/sparc/mm/iommu.c
++++ b/arch/sparc/mm/iommu.c
+@@ -343,6 +343,8 @@ static void *sbus_iommu_alloc(struct device *dev, size_t len,
+ 		page = va;
+ 		{
+ 			pgd_t *pgdp;
++			p4d_t *p4dp;
++			pud_t *pudp;
+ 			pmd_t *pmdp;
+ 			pte_t *ptep;
+ 
+@@ -354,7 +356,9 @@ static void *sbus_iommu_alloc(struct device *dev, size_t len,
+ 				__flush_page_to_ram(page);
+ 
+ 			pgdp = pgd_offset(&init_mm, addr);
+-			pmdp = pmd_offset(pgdp, addr);
++			p4dp = p4d_offset(pgdp, addr);
++			pudp = pud_offset(p4dp, addr);
++			pmdp = pmd_offset(pudp, addr);
+ 			ptep = pte_offset_map(pmdp, addr);
+ 
+ 			set_pte(ptep, mk_pte(virt_to_page(page), dvma_prot));
+diff --git a/arch/sparc/mm/srmmu.c b/arch/sparc/mm/srmmu.c
+index cc3ad64..f56c3c9 100644
+--- a/arch/sparc/mm/srmmu.c
++++ b/arch/sparc/mm/srmmu.c
+@@ -296,6 +296,8 @@ static void __init srmmu_nocache_init(void)
+ 	void *srmmu_nocache_bitmap;
+ 	unsigned int bitmap_bits;
+ 	pgd_t *pgd;
++	p4d_t *p4d;
++	pud_t *pud;
+ 	pmd_t *pmd;
+ 	pte_t *pte;
+ 	unsigned long paddr, vaddr;
+@@ -329,6 +331,8 @@ static void __init srmmu_nocache_init(void)
+ 
+ 	while (vaddr < srmmu_nocache_end) {
+ 		pgd = pgd_offset_k(vaddr);
++		p4d = p4d_offset(__nocache_fix(pgd), vaddr);
++		pud = pud_offset(__nocache_fix(p4d), vaddr);
+ 		pmd = pmd_offset(__nocache_fix(pgd), vaddr);
+ 		pte = pte_offset_kernel(__nocache_fix(pmd), vaddr);
+ 
+@@ -516,13 +520,17 @@ static inline void srmmu_mapioaddr(unsigned long physaddr,
+ 				   unsigned long virt_addr, int bus_type)
+ {
+ 	pgd_t *pgdp;
++	p4d_t *p4dp;
++	pud_t *pudp;
+ 	pmd_t *pmdp;
+ 	pte_t *ptep;
+ 	unsigned long tmp;
+ 
+ 	physaddr &= PAGE_MASK;
+ 	pgdp = pgd_offset_k(virt_addr);
+-	pmdp = pmd_offset(pgdp, virt_addr);
++	p4dp = p4d_offset(pgdp, virt_addr);
++	pudp = pud_offset(p4dp, virt_addr);
++	pmdp = pmd_offset(pudp, virt_addr);
+ 	ptep = pte_offset_kernel(pmdp, virt_addr);
+ 	tmp = (physaddr >> 4) | SRMMU_ET_PTE;
+ 
+@@ -551,11 +559,16 @@ void srmmu_mapiorange(unsigned int bus, unsigned long xpa,
+ static inline void srmmu_unmapioaddr(unsigned long virt_addr)
+ {
+ 	pgd_t *pgdp;
++	p4d_t *p4dp;
++	pud_t *pudp;
+ 	pmd_t *pmdp;
+ 	pte_t *ptep;
+ 
 +
-+struct virtio_blk_req_trailer {
-+	uint8_t status;
-+};
-+
-+static int blk_check_features(struct virtio_dev *dev)
-+{
-+	if (dev->driver_features == dev->device_features)
-+		return 0;
-+
-+	return -LKL_EINVAL;
-+}
-+
-+static int blk_enqueue(struct virtio_dev *dev, int q, struct virtio_req *req)
-+{
-+	struct virtio_blk_dev *blk_dev;
-+	struct lkl_virtio_blk_outhdr *h;
-+	struct virtio_blk_req_trailer *t;
-+	struct lkl_blk_req lkl_req;
-+
-+	if (req->buf_count < 3) {
-+		lkl_printf("virtio_blk: no status buf\n");
-+		goto out;
-+	}
-+
-+	h = req->buf[0].iov_base;
-+	t = req->buf[req->buf_count - 1].iov_base;
-+	blk_dev = container_of(dev, struct virtio_blk_dev, dev);
-+
-+	t->status = LKL_DEV_BLK_STATUS_IOERR;
-+
-+	if (req->buf[0].iov_len != sizeof(*h)) {
-+		lkl_printf("virtio_blk: bad header buf\n");
-+		goto out;
-+	}
-+
-+	if (req->buf[req->buf_count - 1].iov_len != sizeof(*t)) {
-+		lkl_printf("virtio_blk: bad status buf\n");
-+		goto out;
-+	}
-+
-+	lkl_req.type = le32toh(h->type);
-+	lkl_req.prio = le32toh(h->ioprio);
-+	lkl_req.sector = le32toh(h->sector);
-+	lkl_req.buf = &req->buf[1];
-+	lkl_req.count = req->buf_count - 2;
-+
-+	t->status = blk_dev->ops->request(blk_dev->disk, &lkl_req);
-+
-+out:
-+	virtio_req_complete(req, 0);
-+	return 0;
-+}
-+
-+static struct virtio_dev_ops blk_ops = {
-+	.check_features = blk_check_features,
-+	.enqueue = blk_enqueue,
-+};
-+
-+
-+int lkl_disk_add(struct lkl_disk *disk)
-+{
-+	struct virtio_blk_dev *dev;
-+	unsigned long long capacity;
-+	int ret;
-+
-+	dev = lkl_host_ops.mem_alloc(sizeof(*dev));
-+	if (!dev)
-+		return -LKL_ENOMEM;
-+
-+	disk->dev = dev;
-+
-+	dev->dev.device_id = LKL_VIRTIO_ID_BLOCK;
-+	dev->dev.vendor_id = 0;
-+	dev->dev.device_features = 0;
-+	dev->dev.config_gen = 0;
-+	dev->dev.config_data = &dev->config;
-+	dev->dev.config_len = sizeof(dev->config);
-+	dev->dev.ops = &blk_ops;
-+	if (disk->ops)
-+		dev->ops = disk->ops;
-+	else
-+		dev->ops = &lkl_dev_blk_ops;
-+	dev->disk = *disk;
-+
-+	ret = dev->ops->get_capacity(*disk, &capacity);
-+	if (ret) {
-+		ret = -LKL_ENOMEM;
-+		goto out_free;
-+	}
-+	dev->config.capacity = capacity / 512;
-+
-+	ret = virtio_dev_setup(&dev->dev, 1, 32);
-+	if (ret)
-+		goto out_free;
-+
-+	return dev->dev.virtio_mmio_id;
-+
-+out_free:
-+	lkl_host_ops.mem_free(dev);
-+
-+	return ret;
-+}
-+
-+int lkl_disk_remove(struct lkl_disk disk)
-+{
-+	struct virtio_blk_dev *dev;
-+	int ret;
-+
-+	dev = (struct virtio_blk_dev *)disk.dev;
-+	if (!dev)
-+		return -LKL_EINVAL;
-+
-+	ret = virtio_dev_cleanup(&dev->dev);
-+	if (ret < 0)
-+		return ret;
-+
-+	lkl_host_ops.mem_free(dev);
-+
-+	return 0;
-+}
+ 	pgdp = pgd_offset_k(virt_addr);
+-	pmdp = pmd_offset(pgdp, virt_addr);
++	p4dp = p4d_offset(pgdp, virt_addr);
++	pudp = pud_offset(p4dp, virt_addr);
++	pmdp = pmd_offset(pudp, virt_addr);
+ 	ptep = pte_offset_kernel(pmdp, virt_addr);
+ 
+ 	/* No need to flush uncacheable page. */
+@@ -693,20 +706,24 @@ static void __init srmmu_early_allocate_ptable_skeleton(unsigned long start,
+ 							unsigned long end)
+ {
+ 	pgd_t *pgdp;
++	p4d_t *p4dp;
++	pud_t *pudp;
+ 	pmd_t *pmdp;
+ 	pte_t *ptep;
+ 
+ 	while (start < end) {
+ 		pgdp = pgd_offset_k(start);
+-		if (pgd_none(*(pgd_t *)__nocache_fix(pgdp))) {
++		p4dp = p4d_offset(pgdp, start);
++		pudp = pud_offset(p4dp, start);
++		if (pud_none(*(pud_t *)__nocache_fix(pudp))) {
+ 			pmdp = __srmmu_get_nocache(
+ 			    SRMMU_PMD_TABLE_SIZE, SRMMU_PMD_TABLE_SIZE);
+ 			if (pmdp == NULL)
+ 				early_pgtable_allocfail("pmd");
+ 			memset(__nocache_fix(pmdp), 0, SRMMU_PMD_TABLE_SIZE);
+-			pgd_set(__nocache_fix(pgdp), pmdp);
++			pud_set(__nocache_fix(pudp), pmdp);
+ 		}
+-		pmdp = pmd_offset(__nocache_fix(pgdp), start);
++		pmdp = pmd_offset(__nocache_fix(pudp), start);
+ 		if (srmmu_pmd_none(*(pmd_t *)__nocache_fix(pmdp))) {
+ 			ptep = __srmmu_get_nocache(PTE_SIZE, PTE_SIZE);
+ 			if (ptep == NULL)
+@@ -724,19 +741,23 @@ static void __init srmmu_allocate_ptable_skeleton(unsigned long start,
+ 						  unsigned long end)
+ {
+ 	pgd_t *pgdp;
++	p4d_t *p4dp;
++	pud_t *pudp;
+ 	pmd_t *pmdp;
+ 	pte_t *ptep;
+ 
+ 	while (start < end) {
+ 		pgdp = pgd_offset_k(start);
+-		if (pgd_none(*pgdp)) {
++		p4dp = p4d_offset(pgdp, start);
++		pudp = pud_offset(p4dp, start);
++		if (pud_none(*pudp)) {
+ 			pmdp = __srmmu_get_nocache(SRMMU_PMD_TABLE_SIZE, SRMMU_PMD_TABLE_SIZE);
+ 			if (pmdp == NULL)
+ 				early_pgtable_allocfail("pmd");
+ 			memset(pmdp, 0, SRMMU_PMD_TABLE_SIZE);
+-			pgd_set(pgdp, pmdp);
++			pud_set((pud_t *)pgdp, pmdp);
+ 		}
+-		pmdp = pmd_offset(pgdp, start);
++		pmdp = pmd_offset(pudp, start);
+ 		if (srmmu_pmd_none(*pmdp)) {
+ 			ptep = __srmmu_get_nocache(PTE_SIZE,
+ 							     PTE_SIZE);
+@@ -779,6 +800,8 @@ static void __init srmmu_inherit_prom_mappings(unsigned long start,
+ 	unsigned long probed;
+ 	unsigned long addr;
+ 	pgd_t *pgdp;
++	p4d_t *p4dp;
++	pud_t *pudp;
+ 	pmd_t *pmdp;
+ 	pte_t *ptep;
+ 	int what; /* 0 = normal-pte, 1 = pmd-level pte, 2 = pgd-level pte */
+@@ -810,18 +833,20 @@ static void __init srmmu_inherit_prom_mappings(unsigned long start,
+ 		}
+ 
+ 		pgdp = pgd_offset_k(start);
++		p4dp = p4d_offset(pgdp, start);
++		pudp = pud_offset(p4dp, start);
+ 		if (what == 2) {
+ 			*(pgd_t *)__nocache_fix(pgdp) = __pgd(probed);
+ 			start += SRMMU_PGDIR_SIZE;
+ 			continue;
+ 		}
+-		if (pgd_none(*(pgd_t *)__nocache_fix(pgdp))) {
++		if (pud_none(*(pud_t *)__nocache_fix(pudp))) {
+ 			pmdp = __srmmu_get_nocache(SRMMU_PMD_TABLE_SIZE,
+ 						   SRMMU_PMD_TABLE_SIZE);
+ 			if (pmdp == NULL)
+ 				early_pgtable_allocfail("pmd");
+ 			memset(__nocache_fix(pmdp), 0, SRMMU_PMD_TABLE_SIZE);
+-			pgd_set(__nocache_fix(pgdp), pmdp);
++			pud_set(__nocache_fix(pudp), pmdp);
+ 		}
+ 		pmdp = pmd_offset(__nocache_fix(pgdp), start);
+ 		if (srmmu_pmd_none(*(pmd_t *)__nocache_fix(pmdp))) {
+@@ -906,6 +931,8 @@ void __init srmmu_paging_init(void)
+ 	phandle cpunode;
+ 	char node_str[128];
+ 	pgd_t *pgd;
++	p4d_t *p4d;
++	pud_t *pud;
+ 	pmd_t *pmd;
+ 	pte_t *pte;
+ 	unsigned long pages_avail;
+@@ -967,7 +994,9 @@ void __init srmmu_paging_init(void)
+ 	srmmu_allocate_ptable_skeleton(PKMAP_BASE, PKMAP_END);
+ 
+ 	pgd = pgd_offset_k(PKMAP_BASE);
+-	pmd = pmd_offset(pgd, PKMAP_BASE);
++	p4d = p4d_offset(pgd, PKMAP_BASE);
++	pud = pud_offset(p4d, PKMAP_BASE);
++	pmd = pmd_offset(pud, PKMAP_BASE);
+ 	pte = pte_offset_kernel(pmd, PKMAP_BASE);
+ 	pkmap_page_table = pte;
+ 
 -- 
-2.20.1 (Apple Git-117)
+2.7.4
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
