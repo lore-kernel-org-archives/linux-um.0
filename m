@@ -1,206 +1,332 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mout.kundenserver.de ([212.227.126.135])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iTBRc-0007DN-2D
- for linux-um@lists.infradead.org; Fri, 08 Nov 2019 21:05:27 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 00/23] y2038 cleanups
-Date: Fri,  8 Nov 2019 22:02:21 +0100
-Message-Id: <20191108210236.1296047-1-arnd@arndb.de>
-MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: y2038@lists.linaro.org
-Cc: linux-aio@kvack.org, linux-ia64@vger.kernel.org, peterz@infradead.org, heiko.carstens@de.ibm.com, linux-mips@vger.kernel.org, netdev@vger.kernel.org, deepa.kernel@gmail.com, sparclinux@vger.kernel.org, vincenzo.frascino@arm.com, will@kernel.org, linux-arch@vger.kernel.org, paul@paul-moore.com, mpe@ellerman.id.au, deller@gmx.de, x86@kernel.org, sds@tycho.nsa.gov, Arnd Bergmann <arnd@arndb.de>, selinux@vger.kernel.org, jdike@addtoit.com, linux-alpha@vger.kernel.org, linux-um@lists.infradead.org, rostedt@goodmis.org, john.stultz@linaro.org, viro@zeniv.linux.org.uk, eparis@parisplace.org, tglx@linutronix.de, christian@brauner.io, rth@twiddle.net, christophe.leroy@c-s.fr, tony.luck@intel.com, linux-parisc@vger.kernel.org, sboyd@kernel.org, linux-api@vger.kernel.org, linux-kernel@vger.kernel.org, paul.burton@mips.com, bcrl@kvack.org, ebiederm@xmission.com, richard@nod.at, linux-fsdevel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, davem@davemloft.net, green.hu@gmail.com
+Return-Path: <rppt@kernel.org>
+From: Mike Rapoport <rppt@kernel.org>
+Subject: [PATCH v3 07/13] nds32: use pgtable-nopmd instead of 4level-fixup
+Date: Mon,  4 Nov 2019 08:56:21 +0200
+Message-Id: <1572850587-20314-8-git-send-email-rppt@kernel.org>
+In-Reply-To: <1572850587-20314-1-git-send-email-rppt@kernel.org>
+References: <1572850587-20314-1-git-send-email-rppt@kernel.org>
+To: linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jeff Dike <jdike@addtoit.com>, "Kirill A. Shutemov" <kirill@shutemov.name>, Linus Torvalds <torvalds@linux-foundation.org>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Michal Simek <monstr@monstr.eu>, Peter Rosin <peda@axentia.se>, Richard Weinberger <richard@nod.at>, Rolf Eike Beer <eike-kernel@sf-tec.de>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, Vincent Chen <deanbo422@gmail.com>, Vineet Gupta <Vineet.Gupta1@synopsys.com>, Mike Rapoport <rppt@kernel.org>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org, linux-um@lists.infradead.org, sparclinux@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>
+List-ID: <linux-um.lists.infradead.org>
 
-This is a series of cleanups for the y2038 work, mostly intended
-for namespace cleaning: the kernel defines the traditional
-time_t, timeval and timespec types that often lead to y2038-unsafe
-code. Even though the unsafe usage is mostly gone from the kernel,
-having the types and associated functions around means that we
-can still grow new users, and that we may be missing conversions
-to safe types that actually matter.
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-As there is no rush on any of these patches, I would either
-queue them up in linux-next through my y2038 branch, or
-Thomas could add them to the tip tree if he wants.
+nds32 has only two-level page tables and can use pgtable-nopmd and folding
+of the upper layers.
 
-As mentioned in another series, this is part of a larger
-effort to fix all the remaining bits and pieces that are
-not completed yet from the y2038 conversion, and the full
-set can be found at:
+Replace usage of include/asm-generic/4level-fixup.h and explicit definition
+of __PAGETABLE_PMD_FOLDED in nds32 with include/asm-generic/pgtable-nopmd.h
+and adjust page table manipulation macros and functions accordingly.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/arnd/playground.git/log/?h=y2038-endgame
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+---
+ arch/nds32/include/asm/page.h    |  3 ---
+ arch/nds32/include/asm/pgalloc.h |  3 ---
+ arch/nds32/include/asm/pgtable.h | 12 +-----------
+ arch/nds32/include/asm/tlb.h     |  1 -
+ arch/nds32/kernel/pm.c           |  4 +++-
+ arch/nds32/mm/fault.c            | 16 +++++++++++++---
+ arch/nds32/mm/init.c             | 11 ++++++++---
+ arch/nds32/mm/mm-nds32.c         |  6 +++++-
+ arch/nds32/mm/proc.c             | 26 +++++++++++++++++---------
+ 9 files changed, 47 insertions(+), 35 deletions(-)
 
-Maintainers, please review and provide Acks.
-
-Let me know if you have any opinion on whether we should do
-the include last two patches of this series or not.
-
-     Arnd
-
-Arnd Bergmann (23):
-  y2038: remove CONFIG_64BIT_TIME
-  y2038: add __kernel_old_timespec and __kernel_old_time_t
-  y2038: vdso: change timeval to __kernel_old_timeval
-  y2038: vdso: change timespec to __kernel_old_timespec
-  y2038: vdso: change time_t to __kernel_old_time_t
-  y2038: vdso: nds32: open-code timespec_add_ns()
-  y2038: vdso: powerpc: avoid timespec references
-  y2038: ipc: remove __kernel_time_t reference from headers
-  y2038: stat: avoid 'time_t' in 'struct stat'
-  y2038: uapi: change __kernel_time_t to __kernel_old_time_t
-  y2038: rusage: use __kernel_old_timeval
-  y2038: syscalls: change remaining timeval to __kernel_old_timeval
-  y2038: socket: remove timespec reference in timestamping
-  y2038: make ns_to_compat_timeval use __kernel_old_timeval
-  y2038: elfcore: Use __kernel_old_timeval for process times
-  y2038: timerfd: Use timespec64 internally
-  y2038: time: avoid timespec usage in settimeofday()
-  y2038: itimer: compat handling to itimer.c
-  y2038: use compat_{get,set}_itimer on alpha
-  y2038: move itimer reset into itimer.c
-  y2038: itimer: change implementation to timespec64
-  [RFC] y2038: itimer: use ktime_t internally
-  y2038: allow disabling time32 system calls
-
- arch/Kconfig                              |  11 +-
- arch/alpha/kernel/osf_sys.c               |  67 +-----
- arch/alpha/kernel/syscalls/syscall.tbl    |   4 +-
- arch/ia64/kernel/asm-offsets.c            |   2 +-
- arch/mips/include/uapi/asm/msgbuf.h       |   6 +-
- arch/mips/include/uapi/asm/sembuf.h       |   4 +-
- arch/mips/include/uapi/asm/shmbuf.h       |   6 +-
- arch/mips/include/uapi/asm/stat.h         |  16 +-
- arch/mips/kernel/binfmt_elfn32.c          |   4 +-
- arch/mips/kernel/binfmt_elfo32.c          |   4 +-
- arch/nds32/kernel/vdso/gettimeofday.c     |  61 +++--
- arch/parisc/include/uapi/asm/msgbuf.h     |   6 +-
- arch/parisc/include/uapi/asm/sembuf.h     |   4 +-
- arch/parisc/include/uapi/asm/shmbuf.h     |   6 +-
- arch/powerpc/include/asm/asm-prototypes.h |   3 +-
- arch/powerpc/include/asm/vdso_datapage.h  |   6 +-
- arch/powerpc/include/uapi/asm/msgbuf.h    |   6 +-
- arch/powerpc/include/uapi/asm/sembuf.h    |   4 +-
- arch/powerpc/include/uapi/asm/shmbuf.h    |   6 +-
- arch/powerpc/include/uapi/asm/stat.h      |   2 +-
- arch/powerpc/kernel/asm-offsets.c         |  18 +-
- arch/powerpc/kernel/syscalls.c            |   4 +-
- arch/powerpc/kernel/time.c                |   5 +-
- arch/powerpc/kernel/vdso32/gettimeofday.S |   6 +-
- arch/powerpc/kernel/vdso64/gettimeofday.S |   8 +-
- arch/sparc/include/uapi/asm/msgbuf.h      |   6 +-
- arch/sparc/include/uapi/asm/sembuf.h      |   4 +-
- arch/sparc/include/uapi/asm/shmbuf.h      |   6 +-
- arch/sparc/include/uapi/asm/stat.h        |  24 +-
- arch/sparc/vdso/vclock_gettime.c          |  36 +--
- arch/x86/entry/vdso/vclock_gettime.c      |   6 +-
- arch/x86/entry/vsyscall/vsyscall_64.c     |   4 +-
- arch/x86/include/uapi/asm/msgbuf.h        |   6 +-
- arch/x86/include/uapi/asm/sembuf.h        |   4 +-
- arch/x86/include/uapi/asm/shmbuf.h        |   6 +-
- arch/x86/um/vdso/um_vdso.c                |  12 +-
- fs/aio.c                                  |   2 +-
- fs/binfmt_elf.c                           |  12 +-
- fs/binfmt_elf_fdpic.c                     |  12 +-
- fs/compat_binfmt_elf.c                    |   4 +-
- fs/select.c                               |  10 +-
- fs/timerfd.c                              |  14 +-
- fs/utimes.c                               |   8 +-
- include/linux/compat.h                    |  19 +-
- include/linux/syscalls.h                  |  16 +-
- include/linux/time.h                      |   9 +-
- include/linux/time32.h                    |   2 +-
- include/linux/types.h                     |   2 +-
- include/trace/events/timer.h              |  29 +--
- include/uapi/asm-generic/msgbuf.h         |  12 +-
- include/uapi/asm-generic/posix_types.h    |   1 +
- include/uapi/asm-generic/sembuf.h         |   7 +-
- include/uapi/asm-generic/shmbuf.h         |  12 +-
- include/uapi/linux/cyclades.h             |   6 +-
- include/uapi/linux/elfcore.h              |   8 +-
- include/uapi/linux/errqueue.h             |   7 +
- include/uapi/linux/msg.h                  |   6 +-
- include/uapi/linux/ppp_defs.h             |   4 +-
- include/uapi/linux/resource.h             |   4 +-
- include/uapi/linux/sem.h                  |   4 +-
- include/uapi/linux/shm.h                  |   6 +-
- include/uapi/linux/time.h                 |   6 +-
- include/uapi/linux/time_types.h           |   5 +
- include/uapi/linux/utime.h                |   4 +-
- ipc/syscall.c                             |   2 +-
- kernel/compat.c                           |  24 --
- kernel/power/power.h                      |   2 +-
- kernel/sys.c                              |   4 +-
- kernel/sys_ni.c                           |  23 ++
- kernel/time/hrtimer.c                     |   2 +-
- kernel/time/itimer.c                      | 280 ++++++++++++++--------
- kernel/time/time.c                        |  32 ++-
- lib/vdso/gettimeofday.c                   |   4 +-
- net/core/scm.c                            |   6 +-
- net/socket.c                              |   2 +-
- security/selinux/hooks.c                  |  10 +-
- 76 files changed, 501 insertions(+), 504 deletions(-)
-
+diff --git a/arch/nds32/include/asm/page.h b/arch/nds32/include/asm/page.h
+index 8feb1fa..86b3201 100644
+--- a/arch/nds32/include/asm/page.h
++++ b/arch/nds32/include/asm/page.h
+@@ -41,17 +41,14 @@ void clear_page(void *page);
+ void copy_page(void *to, void *from);
+ 
+ typedef unsigned long pte_t;
+-typedef unsigned long pmd_t;
+ typedef unsigned long pgd_t;
+ typedef unsigned long pgprot_t;
+ 
+ #define pte_val(x)      (x)
+-#define pmd_val(x)      (x)
+ #define pgd_val(x)	(x)
+ #define pgprot_val(x)   (x)
+ 
+ #define __pte(x)        (x)
+-#define __pmd(x)        (x)
+ #define __pgd(x)        (x)
+ #define __pgprot(x)     (x)
+ 
+diff --git a/arch/nds32/include/asm/pgalloc.h b/arch/nds32/include/asm/pgalloc.h
+index 37125e6..85c1173 100644
+--- a/arch/nds32/include/asm/pgalloc.h
++++ b/arch/nds32/include/asm/pgalloc.h
+@@ -15,9 +15,6 @@
+ /*
+  * Since we have only two-level page tables, these are trivial
+  */
+-#define pmd_alloc_one(mm, addr)		({ BUG(); ((pmd_t *)2); })
+-#define pmd_free(mm, pmd)			do { } while (0)
+-#define pgd_populate(mm, pmd, pte)	BUG()
+ #define pmd_pgtable(pmd) pmd_page(pmd)
+ 
+ extern pgd_t *pgd_alloc(struct mm_struct *mm);
+diff --git a/arch/nds32/include/asm/pgtable.h b/arch/nds32/include/asm/pgtable.h
+index 0588ec9..a80b9c6 100644
+--- a/arch/nds32/include/asm/pgtable.h
++++ b/arch/nds32/include/asm/pgtable.h
+@@ -4,8 +4,7 @@
+ #ifndef _ASMNDS32_PGTABLE_H
+ #define _ASMNDS32_PGTABLE_H
+ 
+-#define __PAGETABLE_PMD_FOLDED 1
+-#include <asm-generic/4level-fixup.h>
++#include <asm-generic/pgtable-nopmd.h>
+ #include <linux/sizes.h>
+ 
+ #include <asm/memory.h>
+@@ -19,26 +18,20 @@
+ #ifdef CONFIG_ANDES_PAGE_SIZE_4KB
+ #define PGDIR_SHIFT      22
+ #define PTRS_PER_PGD     1024
+-#define PMD_SHIFT        22
+-#define PTRS_PER_PMD     1
+ #define PTRS_PER_PTE     1024
+ #endif
+ 
+ #ifdef CONFIG_ANDES_PAGE_SIZE_8KB
+ #define PGDIR_SHIFT      24
+ #define PTRS_PER_PGD     256
+-#define PMD_SHIFT        24
+-#define PTRS_PER_PMD     1
+ #define PTRS_PER_PTE     2048
+ #endif
+ 
+ #ifndef __ASSEMBLY__
+ extern void __pte_error(const char *file, int line, unsigned long val);
+-extern void __pmd_error(const char *file, int line, unsigned long val);
+ extern void __pgd_error(const char *file, int line, unsigned long val);
+ 
+ #define pte_ERROR(pte)		__pte_error(__FILE__, __LINE__, pte_val(pte))
+-#define pmd_ERROR(pmd)		__pmd_error(__FILE__, __LINE__, pmd_val(pmd))
+ #define pgd_ERROR(pgd)		__pgd_error(__FILE__, __LINE__, pgd_val(pgd))
+ #endif /* !__ASSEMBLY__ */
+ 
+@@ -366,9 +359,6 @@ static inline pmd_t __mk_pmd(pte_t * ptep, unsigned long prot)
+ /* to find an entry in a kernel page-table-directory */
+ #define pgd_offset_k(addr)      pgd_offset(&init_mm, addr)
+ 
+-/* Find an entry in the second-level page table.. */
+-#define pmd_offset(dir, addr)	((pmd_t *)(dir))
+-
+ static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
+ {
+ 	const unsigned long mask = 0xfff;
+diff --git a/arch/nds32/include/asm/tlb.h b/arch/nds32/include/asm/tlb.h
+index a8aff1c..6726038 100644
+--- a/arch/nds32/include/asm/tlb.h
++++ b/arch/nds32/include/asm/tlb.h
+@@ -7,6 +7,5 @@
+ #include <asm-generic/tlb.h>
+ 
+ #define __pte_free_tlb(tlb, pte, addr)	pte_free((tlb)->mm, pte)
+-#define __pmd_free_tlb(tlb, pmd, addr)	pmd_free((tln)->mm, pmd)
+ 
+ #endif
+diff --git a/arch/nds32/kernel/pm.c b/arch/nds32/kernel/pm.c
+index ffa8040..e25700e 100644
+--- a/arch/nds32/kernel/pm.c
++++ b/arch/nds32/kernel/pm.c
+@@ -14,6 +14,7 @@ unsigned int *phy_addr_sp_tmp;
+ static void nds32_suspend2ram(void)
+ {
+ 	pgd_t *pgdv;
++	p4d_t *p4dv;
+ 	pud_t *pudv;
+ 	pmd_t *pmdv;
+ 	pte_t *ptev;
+@@ -21,7 +22,8 @@ static void nds32_suspend2ram(void)
+ 	pgdv = (pgd_t *)__va((__nds32__mfsr(NDS32_SR_L1_PPTB) &
+ 		L1_PPTB_mskBASE)) + pgd_index((unsigned int)cpu_resume);
+ 
+-	pudv = pud_offset(pgdv, (unsigned int)cpu_resume);
++	p4dv = p4d_offset(pgdv, (unsigned int)cpu_resume);
++	pudv = pud_offset(p4dv, (unsigned int)cpu_resume);
+ 	pmdv = pmd_offset(pudv, (unsigned int)cpu_resume);
+ 	ptev = pte_offset_map(pmdv, (unsigned int)cpu_resume);
+ 
+diff --git a/arch/nds32/mm/fault.c b/arch/nds32/mm/fault.c
+index 064ae5d..906dfb2 100644
+--- a/arch/nds32/mm/fault.c
++++ b/arch/nds32/mm/fault.c
+@@ -31,6 +31,8 @@ void show_pte(struct mm_struct *mm, unsigned long addr)
+ 	pr_alert("[%08lx] *pgd=%08lx", addr, pgd_val(*pgd));
+ 
+ 	do {
++		p4d_t *p4d;
++		pud_t *pud;
+ 		pmd_t *pmd;
+ 
+ 		if (pgd_none(*pgd))
+@@ -41,7 +43,9 @@ void show_pte(struct mm_struct *mm, unsigned long addr)
+ 			break;
+ 		}
+ 
+-		pmd = pmd_offset(pgd, addr);
++		p4d = p4d_offset(pgd, addr);
++		pud = pud_offset(p4d, addr);
++		pmd = pmd_offset(pud, addr);
+ #if PTRS_PER_PMD != 1
+ 		pr_alert(", *pmd=%08lx", pmd_val(*pmd));
+ #endif
+@@ -359,6 +363,7 @@ void do_page_fault(unsigned long entry, unsigned long addr,
+ 
+ 		unsigned int index = pgd_index(addr);
+ 		pgd_t *pgd, *pgd_k;
++		p4d_t *p4d, *p4d_k;
+ 		pud_t *pud, *pud_k;
+ 		pmd_t *pmd, *pmd_k;
+ 		pte_t *pte_k;
+@@ -369,8 +374,13 @@ void do_page_fault(unsigned long entry, unsigned long addr,
+ 		if (!pgd_present(*pgd_k))
+ 			goto no_context;
+ 
+-		pud = pud_offset(pgd, addr);
+-		pud_k = pud_offset(pgd_k, addr);
++		p4d = p4d_offset(pgd, addr);
++		p4d_k = p4d_offset(pgd_k, addr);
++		if (!p4d_present(*p4d_k))
++			goto no_context;
++
++		pud = pud_offset(p4d, addr);
++		pud_k = pud_offset(p4d_k, addr);
+ 		if (!pud_present(*pud_k))
+ 			goto no_context;
+ 
+diff --git a/arch/nds32/mm/init.c b/arch/nds32/mm/init.c
+index 55703b0..0be3833f 100644
+--- a/arch/nds32/mm/init.c
++++ b/arch/nds32/mm/init.c
+@@ -54,6 +54,7 @@ static void __init map_ram(void)
+ {
+ 	unsigned long v, p, e;
+ 	pgd_t *pge;
++	p4d_t *p4e;
+ 	pud_t *pue;
+ 	pmd_t *pme;
+ 	pte_t *pte;
+@@ -69,7 +70,8 @@ static void __init map_ram(void)
+ 
+ 	while (p < e) {
+ 		int j;
+-		pue = pud_offset(pge, v);
++		p4e = p4d_offset(pge, v);
++		pue = pud_offset(p4e, v);
+ 		pme = pmd_offset(pue, v);
+ 
+ 		if ((u32) pue != (u32) pge || (u32) pme != (u32) pge) {
+@@ -100,6 +102,7 @@ static void __init fixedrange_init(void)
+ {
+ 	unsigned long vaddr;
+ 	pgd_t *pgd;
++	p4d_t *p4d;
+ 	pud_t *pud;
+ 	pmd_t *pmd;
+ #ifdef CONFIG_HIGHMEM
+@@ -111,7 +114,8 @@ static void __init fixedrange_init(void)
+ 	 */
+ 	vaddr = __fix_to_virt(__end_of_fixed_addresses - 1);
+ 	pgd = swapper_pg_dir + pgd_index(vaddr);
+-	pud = pud_offset(pgd, vaddr);
++	p4d = p4d_offset(pgd, vaddr);
++	pud = pud_offset(p4d, vaddr);
+ 	pmd = pmd_offset(pud, vaddr);
+ 	fixmap_pmd_p = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
+ 	if (!fixmap_pmd_p)
+@@ -126,7 +130,8 @@ static void __init fixedrange_init(void)
+ 	vaddr = PKMAP_BASE;
+ 
+ 	pgd = swapper_pg_dir + pgd_index(vaddr);
+-	pud = pud_offset(pgd, vaddr);
++	p4d = p4d_offset(pgd, vaddr);
++	pud = pud_offset(p4d, vaddr);
+ 	pmd = pmd_offset(pud, vaddr);
+ 	pte = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
+ 	if (!pte)
+diff --git a/arch/nds32/mm/mm-nds32.c b/arch/nds32/mm/mm-nds32.c
+index 3b43798..8503bee 100644
+--- a/arch/nds32/mm/mm-nds32.c
++++ b/arch/nds32/mm/mm-nds32.c
+@@ -74,6 +74,8 @@ void setup_mm_for_reboot(char mode)
+ {
+ 	unsigned long pmdval;
+ 	pgd_t *pgd;
++	p4d_t *p4d;
++	pud_t *pud;
+ 	pmd_t *pmd;
+ 	int i;
+ 
+@@ -84,7 +86,9 @@ void setup_mm_for_reboot(char mode)
+ 
+ 	for (i = 0; i < USER_PTRS_PER_PGD; i++) {
+ 		pmdval = (i << PGDIR_SHIFT);
+-		pmd = pmd_offset(pgd + i, i << PGDIR_SHIFT);
++		p4d = p4d_offset(pgd, i << PGDIR_SHIFT);
++		pud = pud_offset(p4d, i << PGDIR_SHIFT);
++		pmd = pmd_offset(pud + i, i << PGDIR_SHIFT);
+ 		set_pmd(pmd, __pmd(pmdval));
+ 	}
+ }
+diff --git a/arch/nds32/mm/proc.c b/arch/nds32/mm/proc.c
+index ba80992..837ae77 100644
+--- a/arch/nds32/mm/proc.c
++++ b/arch/nds32/mm/proc.c
+@@ -16,10 +16,14 @@ extern struct cache_info L1_cache_info[2];
+ 
+ int va_kernel_present(unsigned long addr)
+ {
++	p4d_t *p4d;
++	pud_t *pud;
+ 	pmd_t *pmd;
+ 	pte_t *ptep, pte;
+ 
+-	pmd = pmd_offset(pgd_offset_k(addr), addr);
++	p4d = p4d_offset(pgd_offset_k(addr), addr);
++	pud = pud_offset(p4d, addr);
++	pmd = pmd_offset(pud, addr);
+ 	if (!pmd_none(*pmd)) {
+ 		ptep = pte_offset_map(pmd, addr);
+ 		pte = *ptep;
+@@ -32,20 +36,24 @@ int va_kernel_present(unsigned long addr)
+ pte_t va_present(struct mm_struct * mm, unsigned long addr)
+ {
+ 	pgd_t *pgd;
++	p4d_t *p4d;
+ 	pud_t *pud;
+ 	pmd_t *pmd;
+ 	pte_t *ptep, pte;
+ 
+ 	pgd = pgd_offset(mm, addr);
+ 	if (!pgd_none(*pgd)) {
+-		pud = pud_offset(pgd, addr);
+-		if (!pud_none(*pud)) {
+-			pmd = pmd_offset(pud, addr);
+-			if (!pmd_none(*pmd)) {
+-				ptep = pte_offset_map(pmd, addr);
+-				pte = *ptep;
+-				if (pte_present(pte))
+-					return pte;
++		p4d = p4d_offset(pgd, addr);
++		if (!p4d_none(*p4d)) {
++			pud = pud_offset(p4d, addr);
++			if (!pud_none(*pud)) {
++				pmd = pmd_offset(pud, addr);
++				if (!pmd_none(*pmd)) {
++					ptep = pte_offset_map(pmd, addr);
++					pte = *ptep;
++					if (pte_present(pte))
++						return pte;
++				}
+ 			}
+ 		}
+ 	}
 -- 
-2.20.0
+2.7.4
 
-Cc: rth@twiddle.net
-Cc: tony.luck@intel.com
-Cc: paul.burton@mips.com
-Cc: green.hu@gmail.com
-Cc: deller@gmx.de
-Cc: mpe@ellerman.id.au
-Cc: davem@davemloft.net
-Cc: tglx@linutronix.de
-Cc: x86@kernel.org
-Cc: jdike@addtoit.com
-Cc: richard@nod.at
-Cc: viro@zeniv.linux.org.uk
-Cc: bcrl@kvack.org
-Cc: john.stultz@linaro.org
-Cc: sboyd@kernel.org
-Cc: rostedt@goodmis.org
-Cc: arnd@arndb.de
-Cc: vincenzo.frascino@arm.com
-Cc: paul@paul-moore.com
-Cc: sds@tycho.nsa.gov
-Cc: eparis@parisplace.org
-Cc: peterz@infradead.org
-Cc: will@kernel.org
-Cc: deepa.kernel@gmail.com
-Cc: christian@brauner.io
-Cc: heiko.carstens@de.ibm.com
-Cc: christophe.leroy@c-s.fr
-Cc: ebiederm@xmission.com
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-alpha@vger.kernel.org>
-Cc: linux-ia64@vger.kernel.org>
-Cc: linux-mips@vger.kernel.org>
-Cc: linux-parisc@vger.kernel.org>
-Cc: linuxppc-dev@lists.ozlabs.org>
-Cc: sparclinux@vger.kernel.org>
-Cc: linux-um@lists.infradead.org>
-Cc: linux-fsdevel@vger.kernel.org>
-Cc: linux-aio@kvack.org>
-Cc: linux-api@vger.kernel.org>
-Cc: linux-arch@vger.kernel.org>
-Cc: netdev@vger.kernel.org>
-Cc: selinux@vger.kernel.org>
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
