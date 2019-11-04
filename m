@@ -1,500 +1,163 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x433.google.com ([2607:f8b0:4864:20::433])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iSwRC-0003uC-Bv
- for linux-um@lists.infradead.org; Fri, 08 Nov 2019 05:04:00 +0000
-Received: by mail-pf1-x433.google.com with SMTP id p24so3872894pfn.4
- for <linux-um@lists.infradead.org>; Thu, 07 Nov 2019 21:03:57 -0800 (PST)
-From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v2 23/37] lkl tools: tool that converts a filesystem image to tar
-Date: Fri,  8 Nov 2019 14:02:38 +0900
-Message-Id: <66b398abf53f64340c309462b1a645f00f9ef8cf.1573179553.git.thehajime@gmail.com>
-In-Reply-To: <cover.1573179553.git.thehajime@gmail.com>
-References: <cover.1573179553.git.thehajime@gmail.com>
-MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: linux-arch@vger.kernel.org, Conrad Meyer <cem@FreeBSD.org>, Octavian Purdila <tavi.purdila@gmail.com>, Akira Moroo <retrage01@gmail.com>, Petros Angelatos <petrosagg@gmail.com>, linux-kernel-library@freelists.org, Hajime Tazaki <thehajime@gmail.com>
+Return-Path: <rppt@kernel.org>
+From: Mike Rapoport <rppt@kernel.org>
+Subject: [PATCH v3 01/13] alpha: use pgtable-nopud instead of 4level-fixup
+Date: Mon,  4 Nov 2019 08:56:15 +0200
+Message-Id: <1572850587-20314-2-git-send-email-rppt@kernel.org>
+In-Reply-To: <1572850587-20314-1-git-send-email-rppt@kernel.org>
+References: <1572850587-20314-1-git-send-email-rppt@kernel.org>
+To: linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jeff Dike <jdike@addtoit.com>, "Kirill A. Shutemov" <kirill@shutemov.name>, Linus Torvalds <torvalds@linux-foundation.org>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Michal Simek <monstr@monstr.eu>, Peter Rosin <peda@axentia.se>, Richard Weinberger <richard@nod.at>, Rolf Eike Beer <eike-kernel@sf-tec.de>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, Vincent Chen <deanbo422@gmail.com>, Vineet Gupta <Vineet.Gupta1@synopsys.com>, Mike Rapoport <rppt@kernel.org>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org, linux-um@lists.infradead.org, sparclinux@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>
+List-ID: <linux-um.lists.infradead.org>
 
-From: Octavian Purdila <tavi.purdila@gmail.com>
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-Simple utility that converts a filesystem image to a tar file,
-preserving file rights and extended attributes.
+It is not likely alpha will have 5-level page tables.
 
-Signed-off-by: Conrad Meyer <cem@FreeBSD.org>
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
-Signed-off-by: Petros Angelatos <petrosagg@gmail.com>
-Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
+Replace usage of include/asm-generic/4level-fixup.h and implied
+__ARCH_HAS_4LEVEL_HACK with include/asm-generic/pgtable-nopud.h and adjust
+page table manipulation macros and functions accordingly.
+
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
- tools/lkl/.gitignore |   1 +
- tools/lkl/Build      |   1 +
- tools/lkl/Targets    |   4 +
- tools/lkl/fs2tar.c   | 410 +++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 416 insertions(+)
- create mode 100644 tools/lkl/fs2tar.c
+ arch/alpha/include/asm/mmzone.h  |  1 -
+ arch/alpha/include/asm/pgalloc.h |  4 ++--
+ arch/alpha/include/asm/pgtable.h | 24 ++++++++++++------------
+ arch/alpha/mm/init.c             | 12 ++++++++----
+ 4 files changed, 22 insertions(+), 19 deletions(-)
 
-diff --git a/tools/lkl/.gitignore b/tools/lkl/.gitignore
-index 1a8210f4d9c4..138e65efcad2 100644
---- a/tools/lkl/.gitignore
-+++ b/tools/lkl/.gitignore
-@@ -9,3 +9,4 @@ tests/valgrind*.xml
- *.pyc
- cptofs
- cpfromfs
-+fs2tar
-diff --git a/tools/lkl/Build b/tools/lkl/Build
-index a9d12c5ca260..73b37363a6de 100644
---- a/tools/lkl/Build
-+++ b/tools/lkl/Build
-@@ -1,2 +1,3 @@
- cptofs-$(LKL_HOST_CONFIG_ARCHIVE) += cptofs.o
-+fs2tar-$(LKL_HOST_CONFIG_ARCHIVE) += fs2tar.o
+diff --git a/arch/alpha/include/asm/mmzone.h b/arch/alpha/include/asm/mmzone.h
+index 889b5d3..7ee144f 100644
+--- a/arch/alpha/include/asm/mmzone.h
++++ b/arch/alpha/include/asm/mmzone.h
+@@ -73,7 +73,6 @@ PLAT_NODE_DATA_LOCALNR(unsigned long p, int n)
+ #define virt_to_page(kaddr)	pfn_to_page(__pa(kaddr) >> PAGE_SHIFT)
  
-diff --git a/tools/lkl/Targets b/tools/lkl/Targets
-index e629b330e5aa..05f5bd1dddcc 100644
---- a/tools/lkl/Targets
-+++ b/tools/lkl/Targets
-@@ -7,3 +7,7 @@ progs-y += tests/net-test
- progs-$(LKL_HOST_CONFIG_ARCHIVE) += cptofs
- LDLIBS_cptofs-y := -larchive
- LDLIBS_cptofs-$(LKL_HOST_CONFIG_NEEDS_LARGP) += -largp
-+
-+progs-$(LKL_HOST_CONFIG_ARCHIVE) += fs2tar
-+LDLIBS_fs2tar-y := -larchive
-+LDLIBS_fs2tar-$(LKL_HOST_CONFIG_NEEDS_LARGP) += -largp
-diff --git a/tools/lkl/fs2tar.c b/tools/lkl/fs2tar.c
-new file mode 100644
-index 000000000000..d2834afcce93
---- /dev/null
-+++ b/tools/lkl/fs2tar.c
-@@ -0,0 +1,410 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#ifdef __FreeBSD__
-+#include <sys/param.h>
-+#endif
-+
-+#include <stdio.h>
-+#include <time.h>
-+#include <argp.h>
-+#include <unistd.h>
-+#include <string.h>
-+#include <stdlib.h>
-+#include <libgen.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
-+#include <archive.h>
-+#include <archive_entry.h>
-+#include <lkl.h>
-+#include <lkl_host.h>
-+
-+char doc[] = "";
-+char args_doc[] = "-t fstype fsimage_path tar_path";
-+static struct argp_option options[] = {
-+	{"enable-printk", 'p', 0, 0, "show Linux printks"},
-+	{"partition", 'P', "int", 0, "partition number"},
-+	{"filesystem-type", 't', "string", 0,
-+	 "select filesystem type - mandatory"},
-+	{"selinux-contexts", 's', "file", 0,
-+	 "export selinux contexts to file"},
-+	{0},
-+};
-+
-+static struct cl_args {
-+	int printk;
-+	int part;
-+	const char *fsimg_type;
-+	const char *fsimg_path;
-+	const char *tar_path;
-+	FILE *selinux;
-+} cla;
-+
-+static error_t parse_opt(int key, char *arg, struct argp_state *state)
-+{
-+	struct cl_args *cla = state->input;
-+
-+	switch (key) {
-+	case 'p':
-+		cla->printk = 1;
-+		break;
-+	case 'P':
-+		cla->part = atoi(arg);
-+		break;
-+	case 't':
-+		cla->fsimg_type = arg;
-+		break;
-+	case 's':
-+		cla->selinux = fopen(arg, "w");
-+		if (!cla->selinux) {
-+			fprintf(stderr,
-+				"failed to open selinux contexts file: %s\n",
-+				strerror(errno));
-+			return -1;
-+		}
-+		break;
-+	case ARGP_KEY_ARG:
-+		if (!cla->fsimg_path)
-+			cla->fsimg_path = arg;
-+		else if (!cla->tar_path)
-+			cla->tar_path = arg;
-+		else
-+			return -1;
-+		break;
-+	case ARGP_KEY_END:
-+		if (state->arg_num < 2 || !cla->fsimg_type)
-+			argp_usage(state);
-+	default:
-+		return ARGP_ERR_UNKNOWN;
-+	}
-+
-+	return 0;
-+}
-+
-+static struct argp argp = { options, parse_opt, args_doc, doc };
-+
-+static struct archive *tar;
-+
-+static int searchdir(const char *fsimg_path, const char *path);
-+
-+static int copy_file(const char *fsimg_path, const char *path)
-+{
-+	long fsimg_fd;
-+	char buff[4096];
-+	long len, wrote;
-+	int ret = 0;
-+
-+	fsimg_fd = lkl_sys_open(fsimg_path, LKL_O_RDONLY, 0);
-+	if (fsimg_fd < 0) {
-+		fprintf(stderr, "fsimg error opening %s: %s\n", fsimg_path,
-+			lkl_strerror(fsimg_fd));
-+		return fsimg_fd;
-+	}
-+
-+	do {
-+		len = lkl_sys_read(fsimg_fd, buff, sizeof(buff));
-+		if (len > 0) {
-+			wrote = archive_write_data(tar, buff, len);
-+			if (wrote != len) {
-+				fprintf(stderr,
-+					"error writing file %s to archive: %s [%d %ld]\n",
-+					path, archive_error_string(tar), ret,
-+					len);
-+				ret = -archive_errno(tar);
-+				break;
-+			}
-+		}
-+
-+		if (len < 0) {
-+			fprintf(stderr, "error reading fsimg file %s: %s\n",
-+				fsimg_path, lkl_strerror(len));
-+			ret = len;
-+		}
-+
-+	} while (len > 0);
-+
-+	lkl_sys_close(fsimg_fd);
-+
-+	return ret;
-+}
-+
-+static int add_link(const char *fsimg_path, const char *path,
-+		    struct archive_entry *entry)
-+{
-+	char buf[4096] = { 0, };
-+	long len;
-+
-+	len = lkl_sys_readlink(fsimg_path, buf, sizeof(buf));
-+	if (len < 0) {
-+		fprintf(stderr, "fsimg readlink error %s: %s\n",
-+			fsimg_path, lkl_strerror(len));
-+		return len;
-+	}
-+
-+	archive_entry_set_symlink(entry, buf);
-+
-+	return 0;
-+}
-+
-+static inline void fsimg_copy_stat(struct stat *st, struct lkl_stat *fst)
-+{
-+	st->st_dev = fst->st_dev;
-+	st->st_ino = fst->st_ino;
-+	st->st_mode = fst->st_mode;
-+	st->st_nlink = fst->st_nlink;
-+	st->st_uid = fst->st_uid;
-+	st->st_gid = fst->st_gid;
-+	st->st_rdev = fst->st_rdev;
-+	st->st_size = fst->st_size;
-+	st->st_blksize = fst->st_blksize;
-+	st->st_blocks = fst->st_blocks;
-+	st->st_atim.tv_sec = fst->lkl_st_atime;
-+	st->st_atim.tv_nsec = fst->st_atime_nsec;
-+	st->st_mtim.tv_sec = fst->lkl_st_mtime;
-+	st->st_mtim.tv_nsec = fst->st_mtime_nsec;
-+	st->st_ctim.tv_sec = fst->lkl_st_ctime;
-+	st->st_ctim.tv_nsec = fst->st_ctime_nsec;
-+}
-+
-+static int copy_xattr(const char *fsimg_path, const char *path,
-+		      struct archive_entry *entry)
-+{
-+	long ret;
-+	char *xattr_list, *i;
-+	long xattr_list_size;
-+
-+	ret = lkl_sys_llistxattr(fsimg_path, NULL, 0);
-+	if (ret < 0) {
-+		fprintf(stderr, "fsimg llistxattr(%s) error: %s\n",
-+			path, lkl_strerror(ret));
-+		return ret;
-+	}
-+
-+	if (!ret)
-+		return 0;
-+
-+	xattr_list = malloc(ret);
-+
-+	ret = lkl_sys_llistxattr(fsimg_path, xattr_list, ret);
-+	if (ret < 0) {
-+		fprintf(stderr, "fsimg llistxattr(%s) error: %s\n", path,
-+			lkl_strerror(ret));
-+		free(xattr_list);
-+		return ret;
-+	}
-+
-+	xattr_list_size = ret;
-+
-+	for (i = xattr_list; i - xattr_list < xattr_list_size;
-+	     i += strlen(i) + 1) {
-+		void *xattr_buf;
-+
-+		ret = lkl_sys_lgetxattr(fsimg_path, i, NULL, 0);
-+		if (ret < 0) {
-+			fprintf(stderr, "fsimg lgetxattr(%s) error: %s\n", path,
-+				lkl_strerror(ret));
-+			free(xattr_list);
-+			return ret;
-+		}
-+
-+		xattr_buf = malloc(ret);
-+
-+		ret = lkl_sys_lgetxattr(fsimg_path, i, xattr_buf, ret);
-+		if (ret < 0) {
-+			fprintf(stderr, "fsimg lgetxattr2(%s) error: %s\n",
-+				path, lkl_strerror(ret));
-+			free(xattr_list);
-+			free(xattr_buf);
-+			return ret;
-+		}
-+
-+		if (cla.selinux && strcmp(i, "security.selinux") == 0)
-+			fprintf(cla.selinux, "%s %s\n", path,
-+				(char *)xattr_buf);
-+
-+		archive_entry_xattr_clear(entry);
-+		archive_entry_xattr_add_entry(entry, i, xattr_buf, ret);
-+
-+		free(xattr_buf);
-+	}
-+
-+	free(xattr_list);
-+
-+	return 0;
-+}
-+
-+static int do_entry(const char *fsimg_path, const char *path,
-+		    const struct lkl_linux_dirent64 *de)
-+{
-+	char fsimg_new_path[PATH_MAX], new_path[PATH_MAX];
-+	struct lkl_stat fsimg_stat;
-+	struct stat stat;
-+	struct archive_entry *entry;
-+	int ftype;
-+	long ret;
-+
-+	snprintf(new_path, sizeof(new_path), "%s/%s", path, de->d_name);
-+	snprintf(fsimg_new_path, sizeof(fsimg_new_path), "%s/%s", fsimg_path,
-+		 de->d_name);
-+
-+	ret = lkl_sys_lstat(fsimg_new_path, &fsimg_stat);
-+	if (ret) {
-+		fprintf(stderr, "fsimg lstat(%s) error: %s\n",
-+			path, lkl_strerror(ret));
-+		return ret;
-+	}
-+
-+	entry = archive_entry_new();
-+
-+	archive_entry_set_pathname(entry, new_path);
-+	fsimg_copy_stat(&stat, &fsimg_stat);
-+	archive_entry_copy_stat(entry, &stat);
-+	ret = copy_xattr(fsimg_new_path, new_path, entry);
-+	if (ret)
-+		return ret;
-+	/* TODO: ACLs */
-+
-+	ftype = stat.st_mode & S_IFMT;
-+
-+	switch (ftype) {
-+	case S_IFREG:
-+		archive_write_header(tar, entry);
-+		ret = copy_file(fsimg_new_path, new_path);
-+		break;
-+	case S_IFDIR:
-+		archive_write_header(tar, entry);
-+		ret = searchdir(fsimg_new_path, new_path);
-+		break;
-+	case S_IFLNK:
-+		ret = add_link(fsimg_new_path, new_path, entry);
-+		/* fall through */
-+	case S_IFSOCK:
-+	case S_IFBLK:
-+	case S_IFCHR:
-+	case S_IFIFO:
-+		if (ret)
-+			break;
-+		archive_write_header(tar, entry);
-+		break;
-+	default:
-+		printf("skipping %s: unsupported entry type %d\n", new_path,
-+		       ftype);
-+	}
-+
-+	archive_entry_free(entry);
-+
-+	if (ret)
-+		printf("error processing entry %s, aborting\n", new_path);
-+
-+	return ret;
-+}
-+
-+static int searchdir(const char *fsimg_path, const char *path)
-+{
-+	long ret, fd;
-+	char buf[1024], *pos;
-+	long buf_len;
-+
-+	fd = lkl_sys_open(fsimg_path, LKL_O_RDONLY | LKL_O_DIRECTORY, 0);
-+	if (fd < 0) {
-+		fprintf(stderr, "failed to open dir %s: %s", fsimg_path,
-+			lkl_strerror(fd));
-+		return fd;
-+	}
-+
-+	do {
-+		struct lkl_linux_dirent64 *de;
-+
-+		de = (struct lkl_linux_dirent64 *) buf;
-+		buf_len = lkl_sys_getdents64(fd, de, sizeof(buf));
-+		if (buf_len < 0) {
-+			fprintf(stderr, "gentdents64 error: %s\n",
-+				lkl_strerror(buf_len));
-+			break;
-+		}
-+
-+		for (pos = buf; pos - buf < buf_len; pos += de->d_reclen) {
-+			de = (struct lkl_linux_dirent64 *)pos;
-+
-+			if (!strcmp(de->d_name, ".") ||
-+			    !strcmp(de->d_name, ".."))
-+				continue;
-+
-+			ret = do_entry(fsimg_path, path, de);
-+			if (ret)
-+				goto out;
-+		}
-+
-+	} while (buf_len > 0);
-+
-+out:
-+	lkl_sys_close(fd);
-+	return ret;
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	struct lkl_disk disk;
-+	long ret;
-+	char mpoint[32];
-+	unsigned int disk_id;
-+
-+	if (argp_parse(&argp, argc, argv, 0, 0, &cla) < 0)
-+		return -1;
-+
-+	if (!cla.printk)
-+		lkl_host_ops.print = NULL;
-+
-+	disk.fd = open(cla.fsimg_path, O_RDONLY);
-+	if (disk.fd < 0) {
-+		fprintf(stderr, "can't open fsimg %s: %s\n", cla.fsimg_path,
-+			strerror(errno));
-+		ret = 1;
-+		goto out;
-+	}
-+
-+	disk.ops = NULL;
-+
-+	ret = lkl_disk_add(&disk);
-+	if (ret < 0) {
-+		fprintf(stderr, "can't add disk: %s\n", lkl_strerror(ret));
-+		goto out_close;
-+	}
-+	disk_id = ret;
-+
-+	lkl_start_kernel(&lkl_host_ops, "mem=10M");
-+
-+	ret = lkl_mount_dev(disk_id, cla.part, cla.fsimg_type, LKL_MS_RDONLY,
-+			    NULL, mpoint, sizeof(mpoint));
-+	if (ret) {
-+		fprintf(stderr, "can't mount disk: %s\n", lkl_strerror(ret));
-+		goto out_close;
-+	}
-+
-+	ret = lkl_sys_chdir(mpoint);
-+	if (ret) {
-+		fprintf(stderr, "can't chdir to %s: %s\n", mpoint,
-+			lkl_strerror(ret));
-+		goto out_umount;
-+	}
-+
-+	tar = archive_write_new();
-+	archive_write_set_format_pax_restricted(tar);
-+	archive_write_open_filename(tar, cla.tar_path);
-+
-+	ret = searchdir(mpoint, "");
-+
-+	archive_write_free(tar);
-+
-+	if (cla.selinux)
-+		fclose(cla.selinux);
-+
-+out_umount:
-+	lkl_umount_dev(disk_id, cla.part, 0, 1000);
-+
-+out_close:
-+	close(disk.fd);
-+
-+out:
-+	lkl_sys_halt();
-+
-+	return ret;
-+}
+ #define pmd_page(pmd)		(pfn_to_page(pmd_val(pmd) >> 32))
+-#define pgd_page(pgd)		(pfn_to_page(pgd_val(pgd) >> 32))
+ #define pte_pfn(pte)		(pte_val(pte) >> 32)
+ 
+ #define mk_pte(page, pgprot)						     \
+diff --git a/arch/alpha/include/asm/pgalloc.h b/arch/alpha/include/asm/pgalloc.h
+index eb91f1e..a1a29f6 100644
+--- a/arch/alpha/include/asm/pgalloc.h
++++ b/arch/alpha/include/asm/pgalloc.h
+@@ -27,9 +27,9 @@ pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd, pte_t *pte)
+ }
+ 
+ static inline void
+-pgd_populate(struct mm_struct *mm, pgd_t *pgd, pmd_t *pmd)
++pud_populate(struct mm_struct *mm, pud_t *pud, pmd_t *pmd)
+ {
+-	pgd_set(pgd, pmd);
++	pud_set(pud, pmd);
+ }
+ 
+ extern pgd_t *pgd_alloc(struct mm_struct *mm);
+diff --git a/arch/alpha/include/asm/pgtable.h b/arch/alpha/include/asm/pgtable.h
+index 065b57f..299791c 100644
+--- a/arch/alpha/include/asm/pgtable.h
++++ b/arch/alpha/include/asm/pgtable.h
+@@ -2,7 +2,7 @@
+ #ifndef _ALPHA_PGTABLE_H
+ #define _ALPHA_PGTABLE_H
+ 
+-#include <asm-generic/4level-fixup.h>
++#include <asm-generic/pgtable-nopud.h>
+ 
+ /*
+  * This file contains the functions and defines necessary to modify and use
+@@ -226,8 +226,8 @@ extern inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
+ extern inline void pmd_set(pmd_t * pmdp, pte_t * ptep)
+ { pmd_val(*pmdp) = _PAGE_TABLE | ((((unsigned long) ptep) - PAGE_OFFSET) << (32-PAGE_SHIFT)); }
+ 
+-extern inline void pgd_set(pgd_t * pgdp, pmd_t * pmdp)
+-{ pgd_val(*pgdp) = _PAGE_TABLE | ((((unsigned long) pmdp) - PAGE_OFFSET) << (32-PAGE_SHIFT)); }
++extern inline void pud_set(pud_t * pudp, pmd_t * pmdp)
++{ pud_val(*pudp) = _PAGE_TABLE | ((((unsigned long) pmdp) - PAGE_OFFSET) << (32-PAGE_SHIFT)); }
+ 
+ 
+ extern inline unsigned long
+@@ -238,11 +238,11 @@ pmd_page_vaddr(pmd_t pmd)
+ 
+ #ifndef CONFIG_DISCONTIGMEM
+ #define pmd_page(pmd)	(mem_map + ((pmd_val(pmd) & _PFN_MASK) >> 32))
+-#define pgd_page(pgd)	(mem_map + ((pgd_val(pgd) & _PFN_MASK) >> 32))
++#define pud_page(pud)	(mem_map + ((pud_val(pud) & _PFN_MASK) >> 32))
+ #endif
+ 
+-extern inline unsigned long pgd_page_vaddr(pgd_t pgd)
+-{ return PAGE_OFFSET + ((pgd_val(pgd) & _PFN_MASK) >> (32-PAGE_SHIFT)); }
++extern inline unsigned long pud_page_vaddr(pud_t pgd)
++{ return PAGE_OFFSET + ((pud_val(pgd) & _PFN_MASK) >> (32-PAGE_SHIFT)); }
+ 
+ extern inline int pte_none(pte_t pte)		{ return !pte_val(pte); }
+ extern inline int pte_present(pte_t pte)	{ return pte_val(pte) & _PAGE_VALID; }
+@@ -256,10 +256,10 @@ extern inline int pmd_bad(pmd_t pmd)		{ return (pmd_val(pmd) & ~_PFN_MASK) != _P
+ extern inline int pmd_present(pmd_t pmd)	{ return pmd_val(pmd) & _PAGE_VALID; }
+ extern inline void pmd_clear(pmd_t * pmdp)	{ pmd_val(*pmdp) = 0; }
+ 
+-extern inline int pgd_none(pgd_t pgd)		{ return !pgd_val(pgd); }
+-extern inline int pgd_bad(pgd_t pgd)		{ return (pgd_val(pgd) & ~_PFN_MASK) != _PAGE_TABLE; }
+-extern inline int pgd_present(pgd_t pgd)	{ return pgd_val(pgd) & _PAGE_VALID; }
+-extern inline void pgd_clear(pgd_t * pgdp)	{ pgd_val(*pgdp) = 0; }
++extern inline int pud_none(pud_t pud)		{ return !pud_val(pud); }
++extern inline int pud_bad(pud_t pud)		{ return (pud_val(pud) & ~_PFN_MASK) != _PAGE_TABLE; }
++extern inline int pud_present(pud_t pud)	{ return pud_val(pud) & _PAGE_VALID; }
++extern inline void pud_clear(pud_t * pudp)	{ pud_val(*pudp) = 0; }
+ 
+ /*
+  * The following only work if pte_present() is true.
+@@ -301,9 +301,9 @@ extern inline pte_t pte_mkspecial(pte_t pte)	{ return pte; }
+  */
+ 
+ /* Find an entry in the second-level page table.. */
+-extern inline pmd_t * pmd_offset(pgd_t * dir, unsigned long address)
++extern inline pmd_t * pmd_offset(pud_t * dir, unsigned long address)
+ {
+-	pmd_t *ret = (pmd_t *) pgd_page_vaddr(*dir) + ((address >> PMD_SHIFT) & (PTRS_PER_PAGE - 1));
++	pmd_t *ret = (pmd_t *) pud_page_vaddr(*dir) + ((address >> PMD_SHIFT) & (PTRS_PER_PAGE - 1));
+ 	smp_read_barrier_depends(); /* see above */
+ 	return ret;
+ }
+diff --git a/arch/alpha/mm/init.c b/arch/alpha/mm/init.c
+index e2cbec3..12e218d 100644
+--- a/arch/alpha/mm/init.c
++++ b/arch/alpha/mm/init.c
+@@ -146,6 +146,8 @@ callback_init(void * kernel_end)
+ {
+ 	struct crb_struct * crb;
+ 	pgd_t *pgd;
++	p4d_t *p4d;
++	pud_t *pud;
+ 	pmd_t *pmd;
+ 	void *two_pages;
+ 
+@@ -184,8 +186,10 @@ callback_init(void * kernel_end)
+ 	memset(two_pages, 0, 2*PAGE_SIZE);
+ 
+ 	pgd = pgd_offset_k(VMALLOC_START);
+-	pgd_set(pgd, (pmd_t *)two_pages);
+-	pmd = pmd_offset(pgd, VMALLOC_START);
++	p4d = p4d_offset(pgd, VMALLOC_START);
++	pud = pud_offset(p4d, VMALLOC_START);
++	pud_set(pud, (pmd_t *)two_pages);
++	pmd = pmd_offset(pud, VMALLOC_START);
+ 	pmd_set(pmd, (pte_t *)(two_pages + PAGE_SIZE));
+ 
+ 	if (alpha_using_srm) {
+@@ -214,9 +218,9 @@ callback_init(void * kernel_end)
+ 				/* Newer consoles (especially on larger
+ 				   systems) may require more pages of
+ 				   PTEs. Grab additional pages as needed. */
+-				if (pmd != pmd_offset(pgd, vaddr)) {
++				if (pmd != pmd_offset(pud, vaddr)) {
+ 					memset(kernel_end, 0, PAGE_SIZE);
+-					pmd = pmd_offset(pgd, vaddr);
++					pmd = pmd_offset(pud, vaddr);
+ 					pmd_set(pmd, (pte_t *)kernel_end);
+ 					kernel_end += PAGE_SIZE;
+ 				}
 -- 
-2.20.1 (Apple Git-117)
+2.7.4
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
