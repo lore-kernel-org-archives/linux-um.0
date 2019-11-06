@@ -7,8 +7,8 @@ References: <1572850587-20314-1-git-send-email-rppt@kernel.org>
  <20191104094748.GB23288@rapoport-lnx>
  <CAMuHMdVHsNyLxhaxZcVdLvQ1PUnb=2_+ECPWVD0234V+qu+kOw@mail.gmail.com>
 From: Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <3d908bbf-0469-c53b-dd86-87df98f40ee7@gmail.com>
-Date: Fri, 8 Nov 2019 17:29:58 +1300
+Message-ID: <15fafca0-e4c4-1f46-4f19-9b2a177f7d6b@gmail.com>
+Date: Wed, 6 Nov 2019 20:28:59 +1300
 MIME-Version: 1.0
 In-Reply-To: <CAMuHMdVHsNyLxhaxZcVdLvQ1PUnb=2_+ECPWVD0234V+qu+kOw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
@@ -26,13 +26,21 @@ Am 04.11.2019 um 22:53 schrieb Geert Uytterhoeven:
 >> To be honest, I have no idea how to to that :)
 >
 > Sure. This was more a request for the fellow m68k users.
-> But don't worry too much about it.  If it breaks '020/'030, we can fix
-> that later.
 
-Boots fine on 030, too.
+I heard you :-) Still doing more regression testing on the latest SCSI 
+fix, but I can schedule this next.
 
 Cheers,
 
 	Michael
 
+> But don't worry too much about it.  If it breaks '020/'030, we can fix
+> that later.
+>
+> Thanks!
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
 
