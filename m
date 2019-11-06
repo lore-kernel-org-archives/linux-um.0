@@ -1,42 +1,121 @@
-Return-Path: <rppt@kernel.org>
-From: Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH v3 02/13] arm: nommu: use pgtable-nopud instead of 4level-fixup
-Date: Mon,  4 Nov 2019 08:56:16 +0200
-Message-Id: <1572850587-20314-3-git-send-email-rppt@kernel.org>
-In-Reply-To: <1572850587-20314-1-git-send-email-rppt@kernel.org>
-References: <1572850587-20314-1-git-send-email-rppt@kernel.org>
-To: linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jeff Dike <jdike@addtoit.com>, "Kirill A. Shutemov" <kirill@shutemov.name>, Linus Torvalds <torvalds@linux-foundation.org>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Michal Simek <monstr@monstr.eu>, Peter Rosin <peda@axentia.se>, Richard Weinberger <richard@nod.at>, Rolf Eike Beer <eike-kernel@sf-tec.de>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, Vincent Chen <deanbo422@gmail.com>, Vineet Gupta <Vineet.Gupta1@synopsys.com>, Mike Rapoport <rppt@kernel.org>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org, linux-um@lists.infradead.org, sparclinux@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pf1-x442.google.com ([2607:f8b0:4864:20::442])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1iSBgI-0003Zl-5B
+ for linux-um@lists.infradead.org; Wed, 06 Nov 2019 03:08:34 +0000
+Received: by mail-pf1-x442.google.com with SMTP id 3so17717512pfb.10
+ for <linux-um@lists.infradead.org>; Tue, 05 Nov 2019 19:08:26 -0800 (PST)
+From: Dmitry Safonov <dima@arista.com>
+Subject: [PATCH 36/50] um: Add show_stack_loglvl()
+Date: Wed,  6 Nov 2019 03:05:27 +0000
+Message-Id: <20191106030542.868541-37-dima@arista.com>
+In-Reply-To: <20191106030542.868541-1-dima@arista.com>
+References: <20191106030542.868541-1-dima@arista.com>
+MIME-Version: 1.0
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-kernel@vger.kernel.org
+Cc: Petr Mladek <pmladek@suse.com>, Richard Weinberger <richard@nod.at>, Dmitry Safonov <dima@arista.com>, Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jeff Dike <jdike@addtoit.com>, Dmitry Safonov <0x7f454c46@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, linux-um@lists.infradead.org, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, Jiri Slaby <jslaby@suse.com>, Andrew Morton <akpm@linux-foundation.org>, Ingo Molnar <mingo@kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+Currently, the log-level of show_stack() depends on a platform
+realization. It creates situations where the headers are printed with
+lower log level or higher than the stacktrace (depending on
+a platform or user).
 
-The generic nommu implementation of page table manipulation takes care of
-folding of the upper levels and does not require fixups.
+Furthermore, it forces the logic decision from user to an architecture
+side. In result, some users as sysrq/kdb/etc are doing tricks with
+temporary rising console_loglevel while printing their messages.
+And in result it not only may print unwanted messages from other CPUs,
+but also omit printing at all in the unlucky case where the printk()
+was deferred.
 
-Simply replace of include/asm-generic/4level-fixup.h with
-include/asm-generic/pgtable-nopud.h.
+Introducing log-level parameter and KERN_UNSUPPRESSED [1] seems
+an easier approach than introducing more printk buffers.
+Also, it will consolidate printings with headers.
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Acked-by: Russell King <rmk+kernel@armlinux.org.uk>
+Introduce show_stack_loglvl(), that eventually will substitute
+show_stack().
+
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: linux-um@lists.infradead.org
+[1]: https://lore.kernel.org/lkml/20190528002412.1625-1-dima@arista.com/T/#u
+Signed-off-by: Dmitry Safonov <dima@arista.com>
 ---
- arch/arm/include/asm/pgtable.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/um/kernel/sysrq.c | 24 ++++++++++++++++--------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm/include/asm/pgtable.h b/arch/arm/include/asm/pgtable.h
-index 3ae120c..eabcb48 100644
---- a/arch/arm/include/asm/pgtable.h
-+++ b/arch/arm/include/asm/pgtable.h
-@@ -12,7 +12,7 @@
+diff --git a/arch/um/kernel/sysrq.c b/arch/um/kernel/sysrq.c
+index c831a1c2eb94..1b54b6431499 100644
+--- a/arch/um/kernel/sysrq.c
++++ b/arch/um/kernel/sysrq.c
+@@ -17,7 +17,9 @@
  
- #ifndef CONFIG_MMU
+ static void _print_addr(void *data, unsigned long address, int reliable)
+ {
+-	pr_info(" [<%08lx>] %s%pS\n", address, reliable ? "" : "? ",
++	const char *loglvl = data;
++
++	printk("%s [<%08lx>] %s%pS\n", loglvl, address, reliable ? "" : "? ",
+ 		(void *)address);
+ }
  
--#include <asm-generic/4level-fixup.h>
-+#include <asm-generic/pgtable-nopud.h>
- #include <asm/pgtable-nommu.h>
+@@ -25,7 +27,8 @@ static const struct stacktrace_ops stackops = {
+ 	.address = _print_addr
+ };
  
- #else
+-void show_stack(struct task_struct *task, unsigned long *stack)
++void show_stack_loglvl(struct task_struct *task, unsigned long *stack,
++		       const char *loglvl)
+ {
+ 	struct pt_regs *segv_regs = current->thread.segv_regs;
+ 	int i;
+@@ -39,17 +42,22 @@ void show_stack(struct task_struct *task, unsigned long *stack)
+ 	if (!stack)
+ 		stack = get_stack_pointer(task, segv_regs);
+ 
+-	pr_info("Stack:\n");
++	printk("%sStack:\n", loglvl);
+ 	for (i = 0; i < 3 * STACKSLOTS_PER_LINE; i++) {
+ 		if (kstack_end(stack))
+ 			break;
+ 		if (i && ((i % STACKSLOTS_PER_LINE) == 0))
+-			pr_cont("\n");
++			printk("%s\n", loglvl);
+ 		pr_cont(" %08lx", *stack++);
+ 	}
+-	pr_cont("\n");
++	printk("%s\n", loglvl);
++
++	printk("%sCall Trace:\n", loglvl);
++	dump_trace(current, &stackops, (void *)loglvl);
++	printk("%s\n", loglvl);
++}
+ 
+-	pr_info("Call Trace:\n");
+-	dump_trace(current, &stackops, NULL);
+-	pr_info("\n");
++void show_stack(struct task_struct *task, unsigned long *stack)
++{
++	show_stack_loglvl(task, stack, KERN_INFO);
+ }
 -- 
-2.7.4
+2.23.0
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
