@@ -1,17 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x62a.google.com ([2607:f8b0:4864:20::62a])
+Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iSwRJ-0003xv-VQ
- for linux-um@lists.infradead.org; Fri, 08 Nov 2019 05:04:07 +0000
-Received: by mail-pl1-x62a.google.com with SMTP id s10so3258115plp.2
- for <linux-um@lists.infradead.org>; Thu, 07 Nov 2019 21:04:05 -0800 (PST)
-From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v2 25/37] checkpatch: avoid showing BIT_ULL warnings for tools/
- files
-Date: Fri,  8 Nov 2019 14:02:40 +0900
-Message-Id: <7150a514b3ebc50f65fc8ed328c31df0e999cdc2.1573179553.git.thehajime@gmail.com>
-In-Reply-To: <cover.1573179553.git.thehajime@gmail.com>
-References: <cover.1573179553.git.thehajime@gmail.com>
+ id 1iSBgE-0003WU-Gu
+ for linux-um@lists.infradead.org; Wed, 06 Nov 2019 03:08:26 +0000
+Received: by mail-pl1-x643.google.com with SMTP id d29so4377237plj.8
+ for <linux-um@lists.infradead.org>; Tue, 05 Nov 2019 19:08:22 -0800 (PST)
+From: Dmitry Safonov <dima@arista.com>
+Subject: [PATCH 35/50] um/sysrq: Remove needless variable sp
+Date: Wed,  6 Nov 2019 03:05:26 +0000
+Message-Id: <20191106030542.868541-36-dima@arista.com>
+In-Reply-To: <20191106030542.868541-1-dima@arista.com>
+References: <20191106030542.868541-1-dima@arista.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -25,36 +24,46 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Octavian Purdila <tavi.purdila@gmail.com>, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Akira Moroo <retrage01@gmail.com>
+To: linux-kernel@vger.kernel.org
+Cc: Petr Mladek <pmladek@suse.com>, Richard Weinberger <richard@nod.at>, Dmitry Safonov <dima@arista.com>, Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jeff Dike <jdike@addtoit.com>, Dmitry Safonov <0x7f454c46@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, linux-um@lists.infradead.org, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, Jiri Slaby <jslaby@suse.com>, Andrew Morton <akpm@linux-foundation.org>, Ingo Molnar <mingo@kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-From: Octavian Purdila <tavi.purdila@gmail.com>
+`sp' is a needless excercise here.
 
-Directly using shift operations in userspace compiled code should not
-trigger warnings as BIT_ULL macros are not available outside the
-kernel.
-
-Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: linux-um@lists.infradead.org
+Signed-off-by: Dmitry Safonov <dima@arista.com>
 ---
- scripts/checkpatch.pl | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/um/kernel/sysrq.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 93a7edfe0f05..e739f565497e 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -6313,7 +6313,8 @@ sub process {
- 		    $line =~ /#\s*define\s+\w+\s+\(?\s*1\s*([ulUL]*)\s*\<\<\s*(?:\d+|$Ident)\s*\)?/) {
- 			my $ull = "";
- 			$ull = "_ULL" if (defined($1) && $1 =~ /ll/i);
--			if (CHK("BIT_MACRO",
-+			if ($realfile !~ m@\btools/@ &&
-+			    CHK("BIT_MACRO",
- 				"Prefer using the BIT$ull macro\n" . $herecurr) &&
- 			    $fix) {
- 				$fixed[$fixlinenr] =~ s/\(?\s*1\s*[ulUL]*\s*<<\s*(\d+|$Ident)\s*\)?/BIT${ull}($1)/;
+diff --git a/arch/um/kernel/sysrq.c b/arch/um/kernel/sysrq.c
+index c71b5ef7ea8c..c831a1c2eb94 100644
+--- a/arch/um/kernel/sysrq.c
++++ b/arch/um/kernel/sysrq.c
+@@ -27,7 +27,6 @@ static const struct stacktrace_ops stackops = {
+ 
+ void show_stack(struct task_struct *task, unsigned long *stack)
+ {
+-	unsigned long *sp = stack;
+ 	struct pt_regs *segv_regs = current->thread.segv_regs;
+ 	int i;
+ 
+@@ -38,10 +37,9 @@ void show_stack(struct task_struct *task, unsigned long *stack)
+ 	}
+ 
+ 	if (!stack)
+-		sp = get_stack_pointer(task, segv_regs);
++		stack = get_stack_pointer(task, segv_regs);
+ 
+ 	pr_info("Stack:\n");
+-	stack = sp;
+ 	for (i = 0; i < 3 * STACKSLOTS_PER_LINE; i++) {
+ 		if (kstack_end(stack))
+ 			break;
 -- 
-2.20.1 (Apple Git-117)
+2.23.0
 
 
 _______________________________________________
