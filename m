@@ -1,14 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iY2CZ-0000Nh-Ab
- for linux-um@lists.infradead.org; Fri, 22 Nov 2019 06:13:56 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.4 47/68] um: Make GCOV depend on !KCOV
-Date: Fri, 22 Nov 2019 01:12:40 -0500
-Message-Id: <20191122061301.4947-46-sashal@kernel.org>
-In-Reply-To: <20191122061301.4947-1-sashal@kernel.org>
-References: <20191122061301.4947-1-sashal@kernel.org>
+ id 1iSwRf-00048C-5s
+ for linux-um@lists.infradead.org; Fri, 08 Nov 2019 05:04:29 +0000
+Received: by mail-pg1-x544.google.com with SMTP id l24so3273220pgh.10
+ for <linux-um@lists.infradead.org>; Thu, 07 Nov 2019 21:04:27 -0800 (PST)
+From: Hajime Tazaki <thehajime@gmail.com>
+Subject: [RFC v2 34/37] lkl: Android ARM (arm/arm64) support
+Date: Fri,  8 Nov 2019 14:02:49 +0900
+Message-Id: <ec1915b36d1e4de138bfad60862beaaef0b47274.1573179553.git.thehajime@gmail.com>
+In-Reply-To: <cover.1573179553.git.thehajime@gmail.com>
+References: <cover.1573179553.git.thehajime@gmail.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,37 +24,328 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org
+To: linux-um@lists.infradead.org
+Cc: Octavian Purdila <tavi.purdila@gmail.com>, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, Akira Moroo <retrage01@gmail.com>
 
-From: Richard Weinberger <richard@nod.at>
+Initial attempt to run an application with hijack library on Android
+platform.  Tested mostly on Android 6.x and 7.x.
 
-[ Upstream commit 550ed0e2036663b35cec12374b835444f9c60454 ]
+The build process assumes that the android ndk toolchain is installed in
+a host system. arm32 build is required to use alternate linker in order
+to avoid a link issue during the build (described in *1).
 
-Both do more or less the same thing and are mutually exclusive.
-If both are enabled the build will fail.
-Sooner or later we can kill UML's GCOV.
+*1
+https://github.com/lkl/linux/issues/59#issuecomment-308961122
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
 ---
- arch/um/Kconfig.debug | 1 +
- 1 file changed, 1 insertion(+)
+ arch/um/lkl/Kconfig            |  1 +
+ tools/lkl/Makefile.autoconf    |  7 +++-
+ tools/lkl/lib/hijack/hijack.c  | 13 ++++++++
+ tools/lkl/lib/hijack/init.c    | 11 ++++++
+ tools/lkl/tests/disk.sh        | 11 +++++-
+ tools/lkl/tests/hijack-test.sh | 43 ++++++++++++++++++------
+ tools/lkl/tests/test.sh        | 61 +++++++++++++++++++++++++++++++++-
+ 7 files changed, 134 insertions(+), 13 deletions(-)
 
-diff --git a/arch/um/Kconfig.debug b/arch/um/Kconfig.debug
-index 68205fd3b08c8..6ae7f0f434a9c 100644
---- a/arch/um/Kconfig.debug
-+++ b/arch/um/Kconfig.debug
-@@ -18,6 +18,7 @@ config GPROF
- config GCOV
- 	bool "Enable gcov support"
- 	depends on DEBUG_INFO
-+	depends on !KCOV
- 	help
- 	  This option allows developers to retrieve coverage data from a UML
- 	  session.
+diff --git a/arch/um/lkl/Kconfig b/arch/um/lkl/Kconfig
+index 1629e2679b75..fc501b64a2af 100644
+--- a/arch/um/lkl/Kconfig
++++ b/arch/um/lkl/Kconfig
+@@ -23,6 +23,7 @@ config LKL
+        select 64BIT if "$(OUTPUT_FORMAT)" = "pe-x86-64"
+        select HAVE_UNDERSCORE_SYMBOL_PREFIX if "$(OUTPUT_FORMAT)" = "pe-i386"
+        select 64BIT if "$(OUTPUT_FORMAT)" = "elf64-x86-64-freebsd"
++       select 64BIT if "$(OUTPUT_FORMAT)" = "elf64-littleaarch64"
+        select NET
+        select MULTIUSER
+        select INET
+diff --git a/tools/lkl/Makefile.autoconf b/tools/lkl/Makefile.autoconf
+index 1631f5cc25ac..7222a95c314f 100644
+--- a/tools/lkl/Makefile.autoconf
++++ b/tools/lkl/Makefile.autoconf
+@@ -1,4 +1,4 @@
+-POSIX_HOSTS=elf64-x86-64 elf32-i386 elf64-x86-64-freebsd
++POSIX_HOSTS=elf64-x86-64 elf32-i386 elf64-x86-64-freebsd elf32-littlearm elf64-littleaarch64
+ NT_HOSTS=pe-i386 pe-x86-64
+ 
+ define set_autoconf_var
+@@ -17,6 +17,10 @@ define is_defined
+ $(shell $(CC) -dM -E - </dev/null | grep $(1))
+ endef
+ 
++define android_host
++  $(call set_autoconf_var,ANDROID,y)
++endef
++
+ define bsd_host
+   $(call set_autoconf_var,BSD,y)
+ endef
+@@ -54,6 +58,7 @@ define posix_host
+   LDFLAGS += -pie
+   CFLAGS += -fPIC -pthread
+   SOSUF := .so
++  $(if $(call is_defined,__ANDROID__),$(call android_host),LDLIBS += -lrt -lpthread)
+   $(if $(filter $(1),elf64-x86-64-freebsd),$(call bsd_host))
+   $(if $(filter $(1),elf32-littlearm),$(call arm_host))
+   $(if $(filter $(1),elf64-littleaarch64),$(call aarch64_host))
+diff --git a/tools/lkl/lib/hijack/hijack.c b/tools/lkl/lib/hijack/hijack.c
+index 485c15d7c279..3a95b9dbe88b 100644
+--- a/tools/lkl/lib/hijack/hijack.c
++++ b/tools/lkl/lib/hijack/hijack.c
+@@ -204,7 +204,11 @@ int socket(int domain, int type, int protocol)
+ }
+ 
+ HOST_CALL(ioctl);
++#ifdef __ANDROID__
++int ioctl(int fd, int req, ...)
++#else
+ int ioctl(int fd, unsigned long req, ...)
++#endif
+ {
+ 	va_list vl;
+ 	long arg;
+@@ -586,6 +590,15 @@ void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset)
+ 	return lkl_sys_mmap(addr, length, prot, flags, fd, offset);
+ }
+ 
++#ifndef __ANDROID__
++HOST_CALL(__xstat64)
++int stat(const char *pathname, struct stat *buf)
++{
++	CHECK_HOST_CALL(__xstat64);
++	return host___xstat64(0, pathname, buf);
++}
++#endif
++
+ ssize_t send(int fd, const void *buf, size_t len, int flags)
+ {
+ 	return sendto(fd, buf, len, flags, 0, 0);
+diff --git a/tools/lkl/lib/hijack/init.c b/tools/lkl/lib/hijack/init.c
+index 2145fb7ec2cb..de00f2018e59 100644
+--- a/tools/lkl/lib/hijack/init.c
++++ b/tools/lkl/lib/hijack/init.c
+@@ -170,6 +170,17 @@ hijack_init(void)
+ 	if (single_cpu_mode == 1)
+ 		PinToFirstCpu(&ori_cpu);
+ 
++#ifdef __ANDROID__
++	struct sigaction sa;
++
++	sa.sa_handler = SIG_IGN;
++	sa.sa_flags = 0;
++	if (sigaction(32, &sa, 0) == -1) {
++		perror("sigaction");
++		exit(1);
++	}
++#endif
++
+ 	ret = lkl_start_kernel(&lkl_host_ops, cfg->boot_cmdline);
+ 	if (ret) {
+ 		fprintf(stderr, "can't start kernel: %s\n", lkl_strerror(ret));
+diff --git a/tools/lkl/tests/disk.sh b/tools/lkl/tests/disk.sh
+index 9bdcb16f2d5c..e2ec6cf69d4b 100755
+--- a/tools/lkl/tests/disk.sh
++++ b/tools/lkl/tests/disk.sh
+@@ -15,6 +15,12 @@ function prepfs()
+ 
+     yes | mkfs.$1 $file
+ 
++    if ! [ -z $ANDROID_WDIR ]; then
++        adb shell mkdir -p $ANDROID_WDIR
++        adb push $file $ANDROID_WDIR
++        rm $file
++        file=$ANDROID_WDIR/$(basename $file)
++    fi
+     if ! [ -z $BSD_WDIR ]; then
+         $MYSSH mkdir -p $BSD_WDIR
+         ssh_copy $file $BSD_WDIR
+@@ -29,7 +35,10 @@ function cleanfs()
+ {
+     set -e
+ 
+-    if ! [ -z $BSD_WDIR ]; then
++    if ! [ -z $ANDROID_WDIR ]; then
++        adb shell rm $1
++        adb shell rm $ANDROID_WDIR/disk
++    elif ! [ -z $BSD_WDIR ]; then
+         $MYSSH rm $1
+         $MYSSH rm $BSD_WDIR/disk
+     else
+diff --git a/tools/lkl/tests/hijack-test.sh b/tools/lkl/tests/hijack-test.sh
+index 097af6cff3ba..a62aa5b251e0 100755
+--- a/tools/lkl/tests/hijack-test.sh
++++ b/tools/lkl/tests/hijack-test.sh
+@@ -15,7 +15,11 @@ set_cfgjson()
+ {
+     cfgjson=${wdir}/hijack-test$1.conf
+ 
+-    cat > ${cfgjson}
++    if [ -n "$LKL_HOST_CONFIG_ANDROID" ]; then
++        adb shell cat \> ${cfgjson}
++    else
++        cat > ${cfgjson}
++    fi
+ 
+     export_vars cfgjson
+ }
+@@ -54,6 +58,11 @@ test_mount_and_dump()
+ {
+     set -e
+ 
++    if [ -n "$LKL_HOST_CONFIG_ANDROID" ]; then
++        echo "TODO: android-23 doesn't call destructor..."
++        return $TEST_SKIP
++    fi
++
+     set_cfgjson << EOF
+     {
+         "mount":"proc,sysfs",
+@@ -377,6 +386,10 @@ test_tap_qdisc()
+ {
+     set -e
+ 
++    if [ -n "$LKL_HOST_CONFIG_ANDROID" ]; then
++        return $TEST_SKIP
++    fi
++
+     set_cfgjson << EOF
+     {
+         "gateway":"$(ip_host)",
+@@ -655,15 +668,25 @@ if [[ ! -e ${basedir}/lib/hijack/liblkl-hijack.so ]]; then
+     exit 0
+ fi
+ 
+-# Make a temporary directory to run tests in, since we'll be copying
+-# things there.
+-wdir=$(mktemp -d)
+-cp `which ping` ${wdir}
+-cp `which ping6` ${wdir}
+-ping=${wdir}/ping
+-ping6=${wdir}/ping6
+-hijack=$basedir/bin/lkl-hijack.sh
+-netperf=$basedir/tests/run_netperf.sh
++if [ -n "$LKL_HOST_CONFIG_ANDROID" ]; then
++    wdir=$ANDROID_WDIR
++    adb_push lib/hijack/liblkl-hijack.so bin/lkl-hijack.sh tests/net-setup.sh \
++             tests/run_netperf.sh tests/hijack-test.sh
++    ping="ping"
++    ping6="ping6"
++    hijack="$wdir/bin/lkl-hijack.sh"
++    netperf="$wdir/tests/run_netperf.sh"
++else
++    # Make a temporary directory to run tests in, since we'll be copying
++    # things there.
++    wdir=$(mktemp -d)
++    cp `which ping` ${wdir}
++    cp `which ping6` ${wdir}
++    ping=${wdir}/ping
++    ping6=${wdir}/ping6
++    hijack=$basedir/bin/lkl-hijack.sh
++    netperf=$basedir/tests/run_netperf.sh
++fi
+ 
+ fifo1=${wdir}/fifo1
+ fifo2=${wdir}/fifo2
+diff --git a/tools/lkl/tests/test.sh b/tools/lkl/tests/test.sh
+index cda932b98058..a40d08fd6185 100644
+--- a/tools/lkl/tests/test.sh
++++ b/tools/lkl/tests/test.sh
+@@ -100,6 +100,19 @@ lkl_test_exec()
+ 
+     if file $file | grep PE32; then
+         WRAPPER="wine"
++    elif file $file | grep "interpreter /system/bin/linker" ; then
++        adb push "$file" $ANDROID_WDIR
++        if [ -n "$SUDO" ]; then
++            ANDROID_USER=root
++            SUDO=""
++        fi
++        if [ -n "$ANDROID_USER" ]; then
++            SU="su $ANDROID_USER"
++        else
++            SU=""
++        fi
++        WRAPPER="adb shell $SU"
++        file=$ANDROID_WDIR/$(basename $file)
+     elif file $file | grep ARM; then
+         WRAPPER="qemu-arm-static"
+     elif file $file | grep "FreeBSD" ; then
+@@ -134,13 +147,48 @@ lkl_test_cmd()
+         SHOPTS="-x"
+     fi
+ 
+-    if [ -n "$LKL_HOST_CONFIG_BSD" ]; then
++    if [ -n "$LKL_HOST_CONFIG_ANDROID" ]; then
++        if [ "$1" = "sudo" ]; then
++            ANDROID_USER=root
++            shift
++        fi
++        if [ -n "$ANDROID_USER" ]; then
++            SU="su $ANDROID_USER"
++        else
++            SU=""
++        fi
++        WRAPPER="adb shell $SU"
++    elif [ -n "$LKL_HOST_CONFIG_BSD" ]; then
+         WRAPPER="$MYSSH $SU"
+     fi
+ 
+     echo "$@" | $WRAPPER sh $SHOPTS
+ }
+ 
++adb_push()
++{
++    while [ -n "$1" ]; do
++        if [[ "$1" = *.sh ]]; then
++            type="script"
++        else
++            type="file"
++        fi
++
++        dir=$(dirname $1)
++        adb shell mkdir -p $ANDROID_WDIR/$dir
++
++        if [ "$type" = "script" ]; then
++            sed "s/\/usr\/bin\/env bash/\/system\/bin\/sh/" $basedir/$1 | \
++                adb shell cat \> $ANDROID_WDIR/$1
++            adb shell chmod a+x $ANDROID_WDIR/$1
++        else
++            adb push $basedir/$1 $ANDROID_WDIR/$dir
++        fi
++
++        shift
++    done
++}
++
+ # XXX: $MYSSH and $MYSCP are defined in a circleci docker image.
+ # see the definitions in lkl/lkl-docker:circleci/freebsd11/Dockerfile
+ ssh_push()
+@@ -169,11 +217,22 @@ ssh_copy()
+     $MYSCP -P 7722 -r $1 root@localhost:$2
+ }
+ 
++lkl_test_android_cleanup()
++{
++    adb shell rm -rf $ANDROID_WDIR
++}
++
+ lkl_test_bsd_cleanup()
+ {
+     $MYSSH rm -rf $BSD_WDIR
+ }
+ 
++if [ -n "$LKL_HOST_CONFIG_ANDROID" ]; then
++    trap lkl_test_android_cleanup EXIT
++    export ANDROID_WDIR=/data/local/tmp/lkl
++    adb shell mkdir -p $ANDROID_WDIR
++fi
++
+ if [ -n "$LKL_HOST_CONFIG_BSD" ]; then
+     trap lkl_test_bsd_cleanup EXIT
+     export BSD_WDIR=/root/lkl
 -- 
-2.20.1
+2.20.1 (Apple Git-117)
 
 
 _______________________________________________
