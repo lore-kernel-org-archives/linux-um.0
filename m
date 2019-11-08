@@ -1,393 +1,340 @@
-Return-Path: <rppt@kernel.org>
-From: Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH v4 10/13] sparc32: use pgtable-nopud instead of 4level-fixup
-Date: Tue,  5 Nov 2019 09:15:32 +0200
-Message-Id: <1572938135-31886-11-git-send-email-rppt@kernel.org>
-In-Reply-To: <1572938135-31886-1-git-send-email-rppt@kernel.org>
-References: <1572938135-31886-1-git-send-email-rppt@kernel.org>
-To: linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jeff Dike <jdike@addtoit.com>, "Kirill A. Shutemov" <kirill@shutemov.name>, Linus Torvalds <torvalds@linux-foundation.org>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Michal Simek <monstr@monstr.eu>, Peter Rosin <peda@axentia.se>, Richard Weinberger <richard@nod.at>, Rolf Eike Beer <eike-kernel@sf-tec.de>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, Vincent Chen <deanbo422@gmail.com>, Vineet Gupta <Vineet.Gupta1@synopsys.com>, Mike Rapoport <rppt@kernel.org>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org, linux-um@lists.infradead.org, sparclinux@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1iSwQo-0003ju-KL
+ for linux-um@lists.infradead.org; Fri, 08 Nov 2019 05:03:36 +0000
+Received: by mail-pl1-x643.google.com with SMTP id a18so3223989plm.10
+ for <linux-um@lists.infradead.org>; Thu, 07 Nov 2019 21:03:34 -0800 (PST)
+From: Hajime Tazaki <thehajime@gmail.com>
+Subject: [RFC v2 12/37] lkl: initialization and cleanup
+Date: Fri,  8 Nov 2019 14:02:27 +0900
+Message-Id: <ab5f51d9d2a427d25620010d498c47514dd90183.1573179553.git.thehajime@gmail.com>
+In-Reply-To: <cover.1573179553.git.thehajime@gmail.com>
+References: <cover.1573179553.git.thehajime@gmail.com>
+MIME-Version: 1.0
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
+Cc: linux-arch@vger.kernel.org, Octavian Purdila <tavi.purdila@gmail.com>, Akira Moroo <retrage01@gmail.com>, Yuan Liu <liuyuan@google.com>, Patrick Collins <pscollins@google.com>, linux-kernel-library@freelists.org, Michael Zimmermann <sigmaepsilon92@gmail.com>, Hajime Tazaki <thehajime@gmail.com>
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+From: Octavian Purdila <tavi.purdila@gmail.com>
 
-32-bit version of sparc has three-level page tables and can use
-pgtable-nopud and folding of the upper layers.
+Add the lkl_start_kernel and lkl_sys_halt APIs that start and
+respectively stops the Linux kernel.
 
-Replace usage of include/asm-generic/4level-fixup.h with
-include/asm-generic/pgtable-nopud.h and adjust page table manipulation
-macros and functions accordingly.
+lkl_start_kernel creates a separate threads that will run the initial
+and idle kernel thread. It waits for the kernel to complete
+initialization before returning, to avoid races with system calls
+issues by the host application.
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Acked-by: David S. Miller <davem@davemloft.net>
+During the setup phase, we create "/init" in initial ramfs root
+filesystem to avoid mounting the "real" rootfs since ramfs is good
+enough for now.
+
+lkl_stop_kernel will shutdown the kernel, terminate all threads and
+free all host resources used by the kernel before returning.
+
+This patch also introduces idle CPU handling since it is closely
+related to the shutdown process. A host semaphore is used to wait for
+new interrupts when the kernel switches the CPU to idle to avoid
+wasting host CPU cycles. When the kernel is shutdown we terminate the
+idle thread at the first CPU idle event.
+
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+Signed-off-by: Michael Zimmermann <sigmaepsilon92@gmail.com>
+Signed-off-by: Patrick Collins <pscollins@google.com>
+Signed-off-by: Yuan Liu <liuyuan@google.com>
+Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
 ---
- arch/sparc/include/asm/pgalloc_32.h |  6 ++---
- arch/sparc/include/asm/pgtable_32.h | 28 ++++++++++----------
- arch/sparc/mm/fault_32.c            | 11 ++++++--
- arch/sparc/mm/highmem.c             |  6 ++++-
- arch/sparc/mm/io-unit.c             |  6 ++++-
- arch/sparc/mm/iommu.c               |  6 ++++-
- arch/sparc/mm/srmmu.c               | 51 +++++++++++++++++++++++++++++--------
- 7 files changed, 81 insertions(+), 33 deletions(-)
+ arch/um/lkl/include/asm/setup.h         |   7 +
+ arch/um/lkl/include/uapi/asm/host_ops.h |  26 ++++
+ arch/um/lkl/kernel/setup.c              | 193 ++++++++++++++++++++++++
+ 3 files changed, 226 insertions(+)
+ create mode 100644 arch/um/lkl/include/asm/setup.h
+ create mode 100644 arch/um/lkl/kernel/setup.c
 
-diff --git a/arch/sparc/include/asm/pgalloc_32.h b/arch/sparc/include/asm/pgalloc_32.h
-index 10538a4..eae0c92 100644
---- a/arch/sparc/include/asm/pgalloc_32.h
-+++ b/arch/sparc/include/asm/pgalloc_32.h
-@@ -26,14 +26,14 @@ static inline void free_pgd_fast(pgd_t *pgd)
- #define pgd_free(mm, pgd)	free_pgd_fast(pgd)
- #define pgd_alloc(mm)	get_pgd_fast()
- 
--static inline void pgd_set(pgd_t * pgdp, pmd_t * pmdp)
-+static inline void pud_set(pud_t * pudp, pmd_t * pmdp)
- {
- 	unsigned long pa = __nocache_pa(pmdp);
- 
--	set_pte((pte_t *)pgdp, __pte((SRMMU_ET_PTD | (pa >> 4))));
-+	set_pte((pte_t *)pudp, __pte((SRMMU_ET_PTD | (pa >> 4))));
- }
- 
--#define pgd_populate(MM, PGD, PMD)      pgd_set(PGD, PMD)
-+#define pud_populate(MM, PGD, PMD)      pud_set(PGD, PMD)
- 
- static inline pmd_t *pmd_alloc_one(struct mm_struct *mm,
- 				   unsigned long address)
-diff --git a/arch/sparc/include/asm/pgtable_32.h b/arch/sparc/include/asm/pgtable_32.h
-index 31da448..6d6f44c 100644
---- a/arch/sparc/include/asm/pgtable_32.h
-+++ b/arch/sparc/include/asm/pgtable_32.h
-@@ -12,7 +12,7 @@
- #include <linux/const.h>
- 
- #ifndef __ASSEMBLY__
--#include <asm-generic/4level-fixup.h>
-+#include <asm-generic/pgtable-nopud.h>
- 
- #include <linux/spinlock.h>
- #include <linux/mm_types.h>
-@@ -132,12 +132,12 @@ static inline struct page *pmd_page(pmd_t pmd)
- 	return pfn_to_page((pmd_val(pmd) & SRMMU_PTD_PMASK) >> (PAGE_SHIFT-4));
- }
- 
--static inline unsigned long pgd_page_vaddr(pgd_t pgd)
-+static inline unsigned long pud_page_vaddr(pud_t pud)
- {
--	if (srmmu_device_memory(pgd_val(pgd))) {
-+	if (srmmu_device_memory(pud_val(pud))) {
- 		return ~0;
- 	} else {
--		unsigned long v = pgd_val(pgd) & SRMMU_PTD_PMASK;
-+		unsigned long v = pud_val(pud) & SRMMU_PTD_PMASK;
- 		return (unsigned long)__nocache_va(v << 4);
- 	}
- }
-@@ -184,24 +184,24 @@ static inline void pmd_clear(pmd_t *pmdp)
- 		set_pte((pte_t *)&pmdp->pmdv[i], __pte(0));
- }
- 
--static inline int pgd_none(pgd_t pgd)          
-+static inline int pud_none(pud_t pud)
- {
--	return !(pgd_val(pgd) & 0xFFFFFFF);
-+	return !(pud_val(pud) & 0xFFFFFFF);
- }
- 
--static inline int pgd_bad(pgd_t pgd)
-+static inline int pud_bad(pud_t pud)
- {
--	return (pgd_val(pgd) & SRMMU_ET_MASK) != SRMMU_ET_PTD;
-+	return (pud_val(pud) & SRMMU_ET_MASK) != SRMMU_ET_PTD;
- }
- 
--static inline int pgd_present(pgd_t pgd)
-+static inline int pud_present(pud_t pud)
- {
--	return ((pgd_val(pgd) & SRMMU_ET_MASK) == SRMMU_ET_PTD);
-+	return ((pud_val(pud) & SRMMU_ET_MASK) == SRMMU_ET_PTD);
- }
- 
--static inline void pgd_clear(pgd_t *pgdp)
-+static inline void pud_clear(pud_t *pudp)
- {
--	set_pte((pte_t *)pgdp, __pte(0));
-+	set_pte((pte_t *)pudp, __pte(0));
- }
- 
- /*
-@@ -319,9 +319,9 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
- #define pgd_offset_k(address) pgd_offset(&init_mm, address)
- 
- /* Find an entry in the second-level page table.. */
--static inline pmd_t *pmd_offset(pgd_t * dir, unsigned long address)
-+static inline pmd_t *pmd_offset(pud_t * dir, unsigned long address)
- {
--	return (pmd_t *) pgd_page_vaddr(*dir) +
-+	return (pmd_t *) pud_page_vaddr(*dir) +
- 		((address >> PMD_SHIFT) & (PTRS_PER_PMD - 1));
- }
- 
-diff --git a/arch/sparc/mm/fault_32.c b/arch/sparc/mm/fault_32.c
-index 8d69de1..89976c9 100644
---- a/arch/sparc/mm/fault_32.c
-+++ b/arch/sparc/mm/fault_32.c
-@@ -351,6 +351,8 @@ asmlinkage void do_sparc_fault(struct pt_regs *regs, int text_fault, int write,
- 		 */
- 		int offset = pgd_index(address);
- 		pgd_t *pgd, *pgd_k;
-+		p4d_t *p4d, *p4d_k;
-+		pud_t *pud, *pud_k;
- 		pmd_t *pmd, *pmd_k;
- 
- 		pgd = tsk->active_mm->pgd + offset;
-@@ -363,8 +365,13 @@ asmlinkage void do_sparc_fault(struct pt_regs *regs, int text_fault, int write,
- 			return;
- 		}
- 
--		pmd = pmd_offset(pgd, address);
--		pmd_k = pmd_offset(pgd_k, address);
-+		p4d = p4d_offset(pgd, address);
-+		pud = pud_offset(p4d, address);
-+		pmd = pmd_offset(pud, address);
+diff --git a/arch/um/lkl/include/asm/setup.h b/arch/um/lkl/include/asm/setup.h
+new file mode 100644
+index 000000000000..b40955208cc6
+--- /dev/null
++++ b/arch/um/lkl/include/asm/setup.h
+@@ -0,0 +1,7 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_LKL_SETUP_H
++#define _ASM_LKL_SETUP_H
 +
-+		p4d_k = p4d_offset(pgd_k, address);
-+		pud_k = pud_offset(p4d_k, address);
-+		pmd_k = pmd_offset(pud_k, address);
- 
- 		if (pmd_present(*pmd) || !pmd_present(*pmd_k))
- 			goto bad_area_nosemaphore;
-diff --git a/arch/sparc/mm/highmem.c b/arch/sparc/mm/highmem.c
-index 86bc2a5..d4a80ad 100644
---- a/arch/sparc/mm/highmem.c
-+++ b/arch/sparc/mm/highmem.c
-@@ -39,10 +39,14 @@ static pte_t *kmap_pte;
- void __init kmap_init(void)
- {
- 	unsigned long address;
-+	p4d_t *p4d;
-+	pud_t *pud;
- 	pmd_t *dir;
- 
- 	address = __fix_to_virt(FIX_KMAP_BEGIN);
--	dir = pmd_offset(pgd_offset_k(address), address);
-+	p4d = p4d_offset(pgd_offset_k(address), address);
-+	pud = pud_offset(p4d, address);
-+	dir = pmd_offset(pud, address);
- 
-         /* cache the first kmap pte */
-         kmap_pte = pte_offset_kernel(dir, address);
-diff --git a/arch/sparc/mm/io-unit.c b/arch/sparc/mm/io-unit.c
-index f770ee7..33a0fac 100644
---- a/arch/sparc/mm/io-unit.c
-+++ b/arch/sparc/mm/io-unit.c
-@@ -239,12 +239,16 @@ static void *iounit_alloc(struct device *dev, size_t len,
- 		page = va;
- 		{
- 			pgd_t *pgdp;
-+			p4d_t *p4dp;
-+			pud_t *pudp;
- 			pmd_t *pmdp;
- 			pte_t *ptep;
- 			long i;
- 
- 			pgdp = pgd_offset(&init_mm, addr);
--			pmdp = pmd_offset(pgdp, addr);
-+			p4dp = p4d_offset(pgdp, addr);
-+			pudp = pud_offset(p4dp, addr);
-+			pmdp = pmd_offset(pudp, addr);
- 			ptep = pte_offset_map(pmdp, addr);
- 
- 			set_pte(ptep, mk_pte(virt_to_page(page), dvma_prot));
-diff --git a/arch/sparc/mm/iommu.c b/arch/sparc/mm/iommu.c
-index 71ac353..4d3c699 100644
---- a/arch/sparc/mm/iommu.c
-+++ b/arch/sparc/mm/iommu.c
-@@ -343,6 +343,8 @@ static void *sbus_iommu_alloc(struct device *dev, size_t len,
- 		page = va;
- 		{
- 			pgd_t *pgdp;
-+			p4d_t *p4dp;
-+			pud_t *pudp;
- 			pmd_t *pmdp;
- 			pte_t *ptep;
- 
-@@ -354,7 +356,9 @@ static void *sbus_iommu_alloc(struct device *dev, size_t len,
- 				__flush_page_to_ram(page);
- 
- 			pgdp = pgd_offset(&init_mm, addr);
--			pmdp = pmd_offset(pgdp, addr);
-+			p4dp = p4d_offset(pgdp, addr);
-+			pudp = pud_offset(p4dp, addr);
-+			pmdp = pmd_offset(pudp, addr);
- 			ptep = pte_offset_map(pmdp, addr);
- 
- 			set_pte(ptep, mk_pte(virt_to_page(page), dvma_prot));
-diff --git a/arch/sparc/mm/srmmu.c b/arch/sparc/mm/srmmu.c
-index cc3ad64..f56c3c9 100644
---- a/arch/sparc/mm/srmmu.c
-+++ b/arch/sparc/mm/srmmu.c
-@@ -296,6 +296,8 @@ static void __init srmmu_nocache_init(void)
- 	void *srmmu_nocache_bitmap;
- 	unsigned int bitmap_bits;
- 	pgd_t *pgd;
-+	p4d_t *p4d;
-+	pud_t *pud;
- 	pmd_t *pmd;
- 	pte_t *pte;
- 	unsigned long paddr, vaddr;
-@@ -329,6 +331,8 @@ static void __init srmmu_nocache_init(void)
- 
- 	while (vaddr < srmmu_nocache_end) {
- 		pgd = pgd_offset_k(vaddr);
-+		p4d = p4d_offset(__nocache_fix(pgd), vaddr);
-+		pud = pud_offset(__nocache_fix(p4d), vaddr);
- 		pmd = pmd_offset(__nocache_fix(pgd), vaddr);
- 		pte = pte_offset_kernel(__nocache_fix(pmd), vaddr);
- 
-@@ -516,13 +520,17 @@ static inline void srmmu_mapioaddr(unsigned long physaddr,
- 				   unsigned long virt_addr, int bus_type)
- {
- 	pgd_t *pgdp;
-+	p4d_t *p4dp;
-+	pud_t *pudp;
- 	pmd_t *pmdp;
- 	pte_t *ptep;
- 	unsigned long tmp;
- 
- 	physaddr &= PAGE_MASK;
- 	pgdp = pgd_offset_k(virt_addr);
--	pmdp = pmd_offset(pgdp, virt_addr);
-+	p4dp = p4d_offset(pgdp, virt_addr);
-+	pudp = pud_offset(p4dp, virt_addr);
-+	pmdp = pmd_offset(pudp, virt_addr);
- 	ptep = pte_offset_kernel(pmdp, virt_addr);
- 	tmp = (physaddr >> 4) | SRMMU_ET_PTE;
- 
-@@ -551,11 +559,16 @@ void srmmu_mapiorange(unsigned int bus, unsigned long xpa,
- static inline void srmmu_unmapioaddr(unsigned long virt_addr)
- {
- 	pgd_t *pgdp;
-+	p4d_t *p4dp;
-+	pud_t *pudp;
- 	pmd_t *pmdp;
- 	pte_t *ptep;
- 
++#define COMMAND_LINE_SIZE 4096
 +
- 	pgdp = pgd_offset_k(virt_addr);
--	pmdp = pmd_offset(pgdp, virt_addr);
-+	p4dp = p4d_offset(pgdp, virt_addr);
-+	pudp = pud_offset(p4dp, virt_addr);
-+	pmdp = pmd_offset(pudp, virt_addr);
- 	ptep = pte_offset_kernel(pmdp, virt_addr);
++#endif
+diff --git a/arch/um/lkl/include/uapi/asm/host_ops.h b/arch/um/lkl/include/uapi/asm/host_ops.h
+index 6ae781419ce6..5f26e61f4b18 100644
+--- a/arch/um/lkl/include/uapi/asm/host_ops.h
++++ b/arch/um/lkl/include/uapi/asm/host_ops.h
+@@ -17,8 +17,14 @@ struct lkl_jmp_buf {
+  * These operations must be provided by a host library or by the application
+  * itself.
+  *
++ * @virtio_devices - string containg the list of virtio devices in virtio mmio
++ * command line format. This string is appended to the kernel command line and
++ * is provided here for convenience to be implemented by the host library.
++ *
+  * @print - optional operation that receives console messages
+  *
++ * @panic - called during a kernel panic
++ *
+  * @sem_alloc - allocate a host semaphore an initialize it to count
+  * @sem_free - free a host semaphore
+  * @sem_up - perform an up operation on the semaphore
+@@ -78,7 +84,10 @@ struct lkl_jmp_buf {
+  * @jmp_buf_longjmp - perform a jump back to the saved jump buffer
+  */
+ struct lkl_host_operations {
++	const char *virtio_devices;
++
+ 	void (*print)(const char *str, int len);
++	void (*panic)(void);
  
- 	/* No need to flush uncacheable page. */
-@@ -693,20 +706,24 @@ static void __init srmmu_early_allocate_ptable_skeleton(unsigned long start,
- 							unsigned long end)
- {
- 	pgd_t *pgdp;
-+	p4d_t *p4dp;
-+	pud_t *pudp;
- 	pmd_t *pmdp;
- 	pte_t *ptep;
+ 	struct lkl_sem *(*sem_alloc)(int count);
+ 	void (*sem_free)(struct lkl_sem *sem);
+@@ -121,6 +130,23 @@ struct lkl_host_operations {
+ 	void (*jmp_buf_longjmp)(struct lkl_jmp_buf *jmpb, int val);
+ };
  
- 	while (start < end) {
- 		pgdp = pgd_offset_k(start);
--		if (pgd_none(*(pgd_t *)__nocache_fix(pgdp))) {
-+		p4dp = p4d_offset(pgdp, start);
-+		pudp = pud_offset(p4dp, start);
-+		if (pud_none(*(pud_t *)__nocache_fix(pudp))) {
- 			pmdp = __srmmu_get_nocache(
- 			    SRMMU_PMD_TABLE_SIZE, SRMMU_PMD_TABLE_SIZE);
- 			if (pmdp == NULL)
- 				early_pgtable_allocfail("pmd");
- 			memset(__nocache_fix(pmdp), 0, SRMMU_PMD_TABLE_SIZE);
--			pgd_set(__nocache_fix(pgdp), pmdp);
-+			pud_set(__nocache_fix(pudp), pmdp);
- 		}
--		pmdp = pmd_offset(__nocache_fix(pgdp), start);
-+		pmdp = pmd_offset(__nocache_fix(pudp), start);
- 		if (srmmu_pmd_none(*(pmd_t *)__nocache_fix(pmdp))) {
- 			ptep = __srmmu_get_nocache(PTE_SIZE, PTE_SIZE);
- 			if (ptep == NULL)
-@@ -724,19 +741,23 @@ static void __init srmmu_allocate_ptable_skeleton(unsigned long start,
- 						  unsigned long end)
- {
- 	pgd_t *pgdp;
-+	p4d_t *p4dp;
-+	pud_t *pudp;
- 	pmd_t *pmdp;
- 	pte_t *ptep;
++/**
++ * lkl_start_kernel - registers the host operations and starts the kernel
++ *
++ * The function returns only after the kernel is shutdown with lkl_sys_halt.
++ *
++ * @lkl_ops - pointer to host operations
++ * @cmd_line - format for command line string that is going to be used to
++ * generate the Linux kernel command line
++ */
++int lkl_start_kernel(struct lkl_host_operations *lkl_ops, const char *cmd_line,
++		     ...);
++
++/**
++ * lkl_is_running - returns 1 if the kernel is currently running
++ */
++int lkl_is_running(void);
++
+ int lkl_printf(const char *fmt, ...);
+ void lkl_bug(const char *fmt, ...);
  
- 	while (start < end) {
- 		pgdp = pgd_offset_k(start);
--		if (pgd_none(*pgdp)) {
-+		p4dp = p4d_offset(pgdp, start);
-+		pudp = pud_offset(p4dp, start);
-+		if (pud_none(*pudp)) {
- 			pmdp = __srmmu_get_nocache(SRMMU_PMD_TABLE_SIZE, SRMMU_PMD_TABLE_SIZE);
- 			if (pmdp == NULL)
- 				early_pgtable_allocfail("pmd");
- 			memset(pmdp, 0, SRMMU_PMD_TABLE_SIZE);
--			pgd_set(pgdp, pmdp);
-+			pud_set((pud_t *)pgdp, pmdp);
- 		}
--		pmdp = pmd_offset(pgdp, start);
-+		pmdp = pmd_offset(pudp, start);
- 		if (srmmu_pmd_none(*pmdp)) {
- 			ptep = __srmmu_get_nocache(PTE_SIZE,
- 							     PTE_SIZE);
-@@ -779,6 +800,8 @@ static void __init srmmu_inherit_prom_mappings(unsigned long start,
- 	unsigned long probed;
- 	unsigned long addr;
- 	pgd_t *pgdp;
-+	p4d_t *p4dp;
-+	pud_t *pudp;
- 	pmd_t *pmdp;
- 	pte_t *ptep;
- 	int what; /* 0 = normal-pte, 1 = pmd-level pte, 2 = pgd-level pte */
-@@ -810,18 +833,20 @@ static void __init srmmu_inherit_prom_mappings(unsigned long start,
- 		}
- 
- 		pgdp = pgd_offset_k(start);
-+		p4dp = p4d_offset(pgdp, start);
-+		pudp = pud_offset(p4dp, start);
- 		if (what == 2) {
- 			*(pgd_t *)__nocache_fix(pgdp) = __pgd(probed);
- 			start += SRMMU_PGDIR_SIZE;
- 			continue;
- 		}
--		if (pgd_none(*(pgd_t *)__nocache_fix(pgdp))) {
-+		if (pud_none(*(pud_t *)__nocache_fix(pudp))) {
- 			pmdp = __srmmu_get_nocache(SRMMU_PMD_TABLE_SIZE,
- 						   SRMMU_PMD_TABLE_SIZE);
- 			if (pmdp == NULL)
- 				early_pgtable_allocfail("pmd");
- 			memset(__nocache_fix(pmdp), 0, SRMMU_PMD_TABLE_SIZE);
--			pgd_set(__nocache_fix(pgdp), pmdp);
-+			pud_set(__nocache_fix(pudp), pmdp);
- 		}
- 		pmdp = pmd_offset(__nocache_fix(pgdp), start);
- 		if (srmmu_pmd_none(*(pmd_t *)__nocache_fix(pmdp))) {
-@@ -906,6 +931,8 @@ void __init srmmu_paging_init(void)
- 	phandle cpunode;
- 	char node_str[128];
- 	pgd_t *pgd;
-+	p4d_t *p4d;
-+	pud_t *pud;
- 	pmd_t *pmd;
- 	pte_t *pte;
- 	unsigned long pages_avail;
-@@ -967,7 +994,9 @@ void __init srmmu_paging_init(void)
- 	srmmu_allocate_ptable_skeleton(PKMAP_BASE, PKMAP_END);
- 
- 	pgd = pgd_offset_k(PKMAP_BASE);
--	pmd = pmd_offset(pgd, PKMAP_BASE);
-+	p4d = p4d_offset(pgd, PKMAP_BASE);
-+	pud = pud_offset(p4d, PKMAP_BASE);
-+	pmd = pmd_offset(pud, PKMAP_BASE);
- 	pte = pte_offset_kernel(pmd, PKMAP_BASE);
- 	pkmap_page_table = pte;
- 
+diff --git a/arch/um/lkl/kernel/setup.c b/arch/um/lkl/kernel/setup.c
+new file mode 100644
+index 000000000000..1bf973d36307
+--- /dev/null
++++ b/arch/um/lkl/kernel/setup.c
+@@ -0,0 +1,193 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/binfmts.h>
++#include <linux/init.h>
++#include <linux/init_task.h>
++#include <linux/personality.h>
++#include <linux/reboot.h>
++#include <linux/fs.h>
++#include <linux/start_kernel.h>
++#include <linux/syscalls.h>
++#include <linux/tick.h>
++#include <asm/host_ops.h>
++#include <asm/irq.h>
++#include <asm/unistd.h>
++#include <asm/syscalls.h>
++#include <asm/cpu.h>
++
++struct lkl_host_operations *lkl_ops;
++static char cmd_line[COMMAND_LINE_SIZE];
++static void *init_sem;
++static int is_running;
++void (*pm_power_off)(void) = NULL;
++static unsigned long mem_size = 64 * 1024 * 1024;
++
++static long lkl_panic_blink(int state)
++{
++	lkl_ops->panic();
++	return 0;
++}
++
++static int __init setup_mem_size(char *str)
++{
++	mem_size = memparse(str, NULL);
++	return 0;
++}
++early_param("mem", setup_mem_size);
++
++void __init setup_arch(char **cl)
++{
++	*cl = cmd_line;
++	panic_blink = lkl_panic_blink;
++	parse_early_param();
++	bootmem_init(mem_size);
++}
++
++static void __init lkl_run_kernel(void *arg)
++{
++	threads_init();
++	lkl_cpu_get();
++	start_kernel();
++}
++
++int __init lkl_start_kernel(struct lkl_host_operations *ops, const char *fmt,
++			    ...)
++{
++	va_list ap;
++	int ret;
++
++	lkl_ops = ops;
++
++	va_start(ap, fmt);
++	ret = vsnprintf(boot_command_line, COMMAND_LINE_SIZE, fmt, ap);
++	va_end(ap);
++
++	if (ops->virtio_devices)
++		strscpy(boot_command_line + ret, ops->virtio_devices,
++			COMMAND_LINE_SIZE - ret);
++
++	memcpy(cmd_line, boot_command_line, COMMAND_LINE_SIZE);
++
++	init_sem = lkl_ops->sem_alloc(0);
++	if (!init_sem)
++		return -ENOMEM;
++
++	ret = lkl_cpu_init();
++	if (ret)
++		goto out_free_init_sem;
++
++	ret = lkl_ops->thread_create(lkl_run_kernel, NULL);
++	if (!ret) {
++		ret = -ENOMEM;
++		goto out_free_init_sem;
++	}
++
++	lkl_ops->sem_down(init_sem);
++	lkl_ops->sem_free(init_sem);
++	current_thread_info()->tid = lkl_ops->thread_self();
++	lkl_cpu_change_owner(current_thread_info()->tid);
++
++	lkl_cpu_put();
++	is_running = 1;
++
++	return 0;
++
++out_free_init_sem:
++	lkl_ops->sem_free(init_sem);
++
++	return ret;
++}
++
++int lkl_is_running(void)
++{
++	return is_running;
++}
++
++void machine_halt(void)
++{
++	lkl_cpu_shutdown();
++}
++
++void machine_power_off(void)
++{
++	machine_halt();
++}
++
++void machine_restart(char *unused)
++{
++	machine_halt();
++}
++
++long lkl_sys_halt(void)
++{
++	long err;
++	long params[6] = {
++		LINUX_REBOOT_MAGIC1,
++		LINUX_REBOOT_MAGIC2,
++		LINUX_REBOOT_CMD_RESTART,
++	};
++
++	err = lkl_syscall(__NR_reboot, params);
++	if (err < 0)
++		return err;
++
++	is_running = false;
++
++	lkl_cpu_wait_shutdown();
++
++	syscalls_cleanup();
++	threads_cleanup();
++	/* Shutdown the clockevents source. */
++	tick_suspend_local();
++	free_mem();
++	lkl_ops->thread_join(current_thread_info()->tid);
++
++	return 0;
++}
++
++static int lkl_run_init(struct linux_binprm *bprm);
++
++static struct linux_binfmt lkl_run_init_binfmt = {
++	.module		= THIS_MODULE,
++	.load_binary	= lkl_run_init,
++};
++
++static int lkl_run_init(struct linux_binprm *bprm)
++{
++	int ret;
++
++	if (strcmp("/init", bprm->filename) != 0)
++		return -EINVAL;
++
++	ret = flush_old_exec(bprm);
++	if (ret)
++		return ret;
++	set_personality(PER_LINUX);
++	setup_new_exec(bprm);
++	install_exec_creds(bprm);
++
++	set_binfmt(&lkl_run_init_binfmt);
++
++	init_pid_ns.child_reaper = NULL;
++
++	syscalls_init();
++
++	lkl_ops->sem_up(init_sem);
++	lkl_ops->thread_exit();
++
++	return 0;
++}
++
++/* skip mounting the "real" rootfs. ramfs is good enough. */
++static int __init fs_setup(void)
++{
++	int fd;
++
++	fd = sys_open("/init", O_CREAT, 0700);
++	WARN_ON(fd < 0);
++	sys_close(fd);
++
++	register_binfmt(&lkl_run_init_binfmt);
++
++	return 0;
++}
++late_initcall(fs_setup);
 -- 
-2.7.4
+2.20.1 (Apple Git-117)
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
