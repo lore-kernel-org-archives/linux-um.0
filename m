@@ -1,401 +1,538 @@
-Return-Path: <rppt@kernel.org>
-From: Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH v3 08/13] parisc: use pgtable-nopXd instead of 4level-fixup
-Date: Mon,  4 Nov 2019 08:56:22 +0200
-Message-Id: <1572850587-20314-9-git-send-email-rppt@kernel.org>
-In-Reply-To: <1572850587-20314-1-git-send-email-rppt@kernel.org>
-References: <1572850587-20314-1-git-send-email-rppt@kernel.org>
-To: linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jeff Dike <jdike@addtoit.com>, "Kirill A. Shutemov" <kirill@shutemov.name>, Linus Torvalds <torvalds@linux-foundation.org>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Michal Simek <monstr@monstr.eu>, Peter Rosin <peda@axentia.se>, Richard Weinberger <richard@nod.at>, Rolf Eike Beer <eike-kernel@sf-tec.de>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, Vincent Chen <deanbo422@gmail.com>, Vineet Gupta <Vineet.Gupta1@synopsys.com>, Mike Rapoport <rppt@kernel.org>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org, linux-um@lists.infradead.org, sparclinux@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pl1-x641.google.com ([2607:f8b0:4864:20::641])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1iSwRe-00047i-4A
+ for linux-um@lists.infradead.org; Fri, 08 Nov 2019 05:04:28 +0000
+Received: by mail-pl1-x641.google.com with SMTP id w8so3252721plq.5
+ for <linux-um@lists.infradead.org>; Thu, 07 Nov 2019 21:04:26 -0800 (PST)
+From: Hajime Tazaki <thehajime@gmail.com>
+Subject: [RFC v2 32/37] lkl tools: add support for Windows host
+Date: Fri,  8 Nov 2019 14:02:47 +0900
+Message-Id: <f514ae67963c9ec82c0cefdd72dce018045da051.1573179553.git.thehajime@gmail.com>
+In-Reply-To: <cover.1573179553.git.thehajime@gmail.com>
+References: <cover.1573179553.git.thehajime@gmail.com>
+MIME-Version: 1.0
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
+Cc: linux-arch@vger.kernel.org, Octavian Purdila <tavi.purdila@gmail.com>, Akira Moroo <retrage01@gmail.com>, Yuan Liu <liuyuan@google.com>, Patrick Collins <pscollins@google.com>, linux-kernel-library@freelists.org, Hajime Tazaki <thehajime@gmail.com>
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+From: Octavian Purdila <tavi.purdila@gmail.com>
 
-parisc has two or three levels of page tables and can use appropriate
-pgtable-nopXd and folding of the upper layers.
+Add host operations for Windows host and virtio disk support.
 
-Replace usage of include/asm-generic/4level-fixup.h and explicit
-definitions of __PAGETABLE_PxD_FOLDED in parisc with
-include/asm-generic/pgtable-nopmd.h for two-level configurations and with
-include/asm-generic/pgtable-nopud.h for three-lelve configurations and
-adjust page table manipulation macros and functions accordingly.
-
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Acked-by: Helge Deller <deller@gmx.de>
+Signed-off-by: Andreas Gnau <andreas.gnau@intel.com>
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+Signed-off-by: Patrick Collins <pscollins@google.com>
+Signed-off-by: Yuan Liu <liuyuan@google.com>
+Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
 ---
- arch/parisc/include/asm/page.h    | 30 +++++++++++++---------
- arch/parisc/include/asm/pgalloc.h | 41 +++++++++++-------------------
- arch/parisc/include/asm/pgtable.h | 52 +++++++++++++++++++--------------------
- arch/parisc/include/asm/tlb.h     |  2 ++
- arch/parisc/kernel/cache.c        | 13 ++++++----
- arch/parisc/kernel/pci-dma.c      |  9 +++++--
- arch/parisc/mm/fixmap.c           | 10 +++++---
- 7 files changed, 81 insertions(+), 76 deletions(-)
+ tools/lkl/.gitignore                   |   2 +
+ tools/lkl/Makefile.autoconf            |  22 ++
+ tools/lkl/include/mingw32/sys/socket.h |   4 +
+ tools/lkl/lib/Build                    |   2 +
+ tools/lkl/lib/nt-host.c                | 375 +++++++++++++++++++++++++
+ tools/lkl/tests/test.sh                |   4 +-
+ 6 files changed, 408 insertions(+), 1 deletion(-)
+ create mode 100644 tools/lkl/include/mingw32/sys/socket.h
+ create mode 100644 tools/lkl/lib/nt-host.c
 
-diff --git a/arch/parisc/include/asm/page.h b/arch/parisc/include/asm/page.h
-index 93caf17..796ae29 100644
---- a/arch/parisc/include/asm/page.h
-+++ b/arch/parisc/include/asm/page.h
-@@ -42,48 +42,54 @@ typedef struct { unsigned long pte; } pte_t; /* either 32 or 64bit */
+diff --git a/tools/lkl/.gitignore b/tools/lkl/.gitignore
+index c78ec268e4b0..48232402224d 100644
+--- a/tools/lkl/.gitignore
++++ b/tools/lkl/.gitignore
+@@ -1,3 +1,5 @@
++*.exe
++*.dll
+ Makefile.conf
+ include/lkl_autoconf.h
+ tests/autoconf.sh
+diff --git a/tools/lkl/Makefile.autoconf b/tools/lkl/Makefile.autoconf
+index fd63b8aa5c77..1631f5cc25ac 100644
+--- a/tools/lkl/Makefile.autoconf
++++ b/tools/lkl/Makefile.autoconf
+@@ -1,4 +1,5 @@
+ POSIX_HOSTS=elf64-x86-64 elf32-i386 elf64-x86-64-freebsd
++NT_HOSTS=pe-i386 pe-x86-64
  
- /* NOTE: even on 64 bits, these entries are __u32 because we allocate
-  * the pmd and pgd in ZONE_DMA (i.e. under 4GB) */
--typedef struct { __u32 pmd; } pmd_t;
- typedef struct { __u32 pgd; } pgd_t;
- typedef struct { unsigned long pgprot; } pgprot_t;
+ define set_autoconf_var
+   $(shell echo "#define LKL_HOST_CONFIG_$(1) $(2)" \
+@@ -65,6 +66,26 @@ define posix_host
+   $(if $(filter $(1),elf32-i386),$(call set_autoconf_var,I386,y))
+ endef
  
--#define pte_val(x)	((x).pte)
--/* These do not work lvalues, so make sure we don't use them as such. */
-+#if CONFIG_PGTABLE_LEVELS == 3
-+typedef struct { __u32 pmd; } pmd_t;
-+#define __pmd(x)	((pmd_t) { (x) } )
-+/* pXd_val() do not work as lvalues, so make sure we don't use them as such. */
- #define pmd_val(x)	((x).pmd + 0)
-+#endif
++define nt64_host
++  $(call set_autoconf_var,NEEDS_LARGP,y)
++  CFLAGS += -Wl,--enable-auto-image-base -Wl,--image-base -Wl,0x10000000 \
++	 -Wl,--out-implib=$(OUTPUT)liblkl.dll.a -Wl,--export-all-symbols \
++	 -Wl,--enable-auto-import
++  LDFLAGS +=-Wl,--image-base -Wl,0x10000000 -Wl,--enable-auto-image-base \
++	   -Wl,--out-implib=$(OUTPUT)liblkl.dll.a -Wl,--export-all-symbols \
++	   -Wl,--enable-auto-import
++endef
 +
-+#define pte_val(x)	((x).pte)
- #define pgd_val(x)	((x).pgd + 0)
- #define pgprot_val(x)	((x).pgprot)
- 
- #define __pte(x)	((pte_t) { (x) } )
--#define __pmd(x)	((pmd_t) { (x) } )
- #define __pgd(x)	((pgd_t) { (x) } )
- #define __pgprot(x)	((pgprot_t) { (x) } )
- 
--#define __pmd_val_set(x,n) (x).pmd = (n)
--#define __pgd_val_set(x,n) (x).pgd = (n)
--
- #else
- /*
-  * .. while these make it easier on the compiler
-  */
- typedef unsigned long pte_t;
++define nt_host
++  $(call set_autoconf_var,NT,y)
++  KOPT = "KALLSYMS_EXTRA_PASS=1"
++  LDLIBS += -lws2_32
++  EXESUF := .exe
++  SOSUF := .dll
++  CFLAGS += -Iinclude/mingw32
++  $(if $(filter $(1),pe-x86-64),$(call nt64_host))
++endef
 +
-+#if CONFIG_PGTABLE_LEVELS == 3
- typedef         __u32 pmd_t;
-+#define pmd_val(x)      (x)
-+#define __pmd(x)	(x)
-+#endif
+ define do_autoconf
+   export CROSS_COMPILE := $(CROSS_COMPILE)
+   export CC := $(CROSS_COMPILE)gcc
+@@ -74,6 +95,7 @@ define do_autoconf
+   $(eval CC := $(CROSS_COMPILE)gcc)
+   $(eval LD_FMT := $(shell $(LD) -r -print-output-format))
+   $(if $(filter $(LD_FMT),$(POSIX_HOSTS)),$(call posix_host,$(LD_FMT)))
++  $(if $(filter $(LD_FMT),$(NT_HOSTS)),$(call nt_host,$(LD_FMT)))
+ endef
+ 
+ export do_autoconf
+diff --git a/tools/lkl/include/mingw32/sys/socket.h b/tools/lkl/include/mingw32/sys/socket.h
+new file mode 100644
+index 000000000000..f9ede3170d03
+--- /dev/null
++++ b/tools/lkl/include/mingw32/sys/socket.h
+@@ -0,0 +1,4 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/* fake file to avoid #include <sys/socket.h> error on non-posix
++ * host (e.g., mingw32)
++ */
+diff --git a/tools/lkl/lib/Build b/tools/lkl/lib/Build
+index 1f1d55f259a3..76a1e62dfca8 100644
+--- a/tools/lkl/lib/Build
++++ b/tools/lkl/lib/Build
+@@ -1,12 +1,14 @@
+ CFLAGS_config.o += -I$(srctree)/tools/perf/pmu-events
+ CFLAGS_posix-host.o += -D_FILE_OFFSET_BITS=64
+ CFLAGS_virtio_net_vde.o += $(pkg-config --cflags vdeplug 2>/dev/null)
++CFLAGS_nt-host.o += -D_WIN32_WINNT=0x0600
+ 
+ liblkl-y += fs.o
+ liblkl-y += iomem.o
+ liblkl-y += net.o
+ liblkl-y += jmp_buf.o
+ liblkl-$(LKL_HOST_CONFIG_POSIX) += posix-host.o
++liblkl-$(LKL_HOST_CONFIG_NT) += nt-host.o
+ liblkl-y += utils.o
+ liblkl-y += virtio_blk.o
+ liblkl-y += virtio.o
+diff --git a/tools/lkl/lib/nt-host.c b/tools/lkl/lib/nt-host.c
+new file mode 100644
+index 000000000000..c7613272be3b
+--- /dev/null
++++ b/tools/lkl/lib/nt-host.c
+@@ -0,0 +1,375 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <windows.h>
++#include <assert.h>
++#include <unistd.h>
++#undef s_addr
++#include <lkl_host.h>
++#include "iomem.h"
++#include "jmp_buf.h"
 +
- typedef         __u32 pgd_t;
- typedef unsigned long pgprot_t;
- 
- #define pte_val(x)      (x)
--#define pmd_val(x)      (x)
- #define pgd_val(x)      (x)
- #define pgprot_val(x)   (x)
- 
- #define __pte(x)        (x)
--#define __pmd(x)	(x)
- #define __pgd(x)        (x)
- #define __pgprot(x)     (x)
- 
--#define __pmd_val_set(x,n) (x) = (n)
--#define __pgd_val_set(x,n) (x) = (n)
--
- #endif /* STRICT_MM_TYPECHECKS */
- 
-+#define set_pmd(pmdptr, pmdval) (*(pmdptr) = (pmdval))
-+#if CONFIG_PGTABLE_LEVELS == 3
-+#define set_pud(pudptr, pudval) (*(pudptr) = (pudval))
-+#endif
++#define DIFF_1601_TO_1970_IN_100NS (11644473600L * 10000000L)
 +
- typedef struct page *pgtable_t;
- 
- typedef struct __physmem_range {
-diff --git a/arch/parisc/include/asm/pgalloc.h b/arch/parisc/include/asm/pgalloc.h
-index d98647c..9ac74da 100644
---- a/arch/parisc/include/asm/pgalloc.h
-+++ b/arch/parisc/include/asm/pgalloc.h
-@@ -34,13 +34,13 @@ static inline pgd_t *pgd_alloc(struct mm_struct *mm)
- 		/* Populate first pmd with allocated memory.  We mark it
- 		 * with PxD_FLAG_ATTACHED as a signal to the system that this
- 		 * pmd entry may not be cleared. */
--		__pgd_val_set(*actual_pgd, (PxD_FLAG_PRESENT | 
--				        PxD_FLAG_VALID | 
--					PxD_FLAG_ATTACHED) 
--			+ (__u32)(__pa((unsigned long)pgd) >> PxD_VALUE_SHIFT));
-+		set_pgd(actual_pgd, __pgd((PxD_FLAG_PRESENT |
-+				        PxD_FLAG_VALID |
-+					PxD_FLAG_ATTACHED)
-+			+ (__u32)(__pa((unsigned long)pgd) >> PxD_VALUE_SHIFT)));
- 		/* The first pmd entry also is marked with PxD_FLAG_ATTACHED as
- 		 * a signal that this pmd may not be freed */
--		__pgd_val_set(*pgd, PxD_FLAG_ATTACHED);
-+		set_pgd(pgd, __pgd(PxD_FLAG_ATTACHED));
- #endif
- 	}
- 	spin_lock_init(pgd_spinlock(actual_pgd));
-@@ -59,10 +59,10 @@ static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
- 
- /* Three Level Page Table Support for pmd's */
- 
--static inline void pgd_populate(struct mm_struct *mm, pgd_t *pgd, pmd_t *pmd)
-+static inline void pud_populate(struct mm_struct *mm, pud_t *pud, pmd_t *pmd)
- {
--	__pgd_val_set(*pgd, (PxD_FLAG_PRESENT | PxD_FLAG_VALID) +
--		        (__u32)(__pa((unsigned long)pmd) >> PxD_VALUE_SHIFT));
-+	set_pud(pud, __pud((PxD_FLAG_PRESENT | PxD_FLAG_VALID) +
-+			(__u32)(__pa((unsigned long)pmd) >> PxD_VALUE_SHIFT)));
- }
- 
- static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
-@@ -88,19 +88,6 @@ static inline void pmd_free(struct mm_struct *mm, pmd_t *pmd)
- 	free_pages((unsigned long)pmd, PMD_ORDER);
- }
- 
--#else
--
--/* Two Level Page Table Support for pmd's */
--
--/*
-- * allocating and freeing a pmd is trivial: the 1-entry pmd is
-- * inside the pgd, so has no extra memory associated with it.
-- */
--
--#define pmd_alloc_one(mm, addr)		({ BUG(); ((pmd_t *)2); })
--#define pmd_free(mm, x)			do { } while (0)
--#define pgd_populate(mm, pmd, pte)	BUG()
--
- #endif
- 
- static inline void
-@@ -110,14 +97,14 @@ pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd, pte_t *pte)
- 	/* preserve the gateway marker if this is the beginning of
- 	 * the permanent pmd */
- 	if(pmd_flag(*pmd) & PxD_FLAG_ATTACHED)
--		__pmd_val_set(*pmd, (PxD_FLAG_PRESENT |
--				 PxD_FLAG_VALID |
--				 PxD_FLAG_ATTACHED) 
--			+ (__u32)(__pa((unsigned long)pte) >> PxD_VALUE_SHIFT));
-+		set_pmd(pmd, __pmd((PxD_FLAG_PRESENT |
-+				PxD_FLAG_VALID |
-+				PxD_FLAG_ATTACHED)
-+			+ (__u32)(__pa((unsigned long)pte) >> PxD_VALUE_SHIFT)));
- 	else
- #endif
--		__pmd_val_set(*pmd, (PxD_FLAG_PRESENT | PxD_FLAG_VALID) 
--			+ (__u32)(__pa((unsigned long)pte) >> PxD_VALUE_SHIFT));
-+		set_pmd(pmd, __pmd((PxD_FLAG_PRESENT | PxD_FLAG_VALID)
-+			+ (__u32)(__pa((unsigned long)pte) >> PxD_VALUE_SHIFT)));
- }
- 
- #define pmd_populate(mm, pmd, pte_page) \
-diff --git a/arch/parisc/include/asm/pgtable.h b/arch/parisc/include/asm/pgtable.h
-index 4ac374b..f0a3659 100644
---- a/arch/parisc/include/asm/pgtable.h
-+++ b/arch/parisc/include/asm/pgtable.h
-@@ -3,7 +3,12 @@
- #define _PARISC_PGTABLE_H
- 
- #include <asm/page.h>
--#include <asm-generic/4level-fixup.h>
++struct lkl_mutex {
++	int recursive;
++	HANDLE handle;
++};
 +
-+#if CONFIG_PGTABLE_LEVELS == 3
-+#include <asm-generic/pgtable-nopud.h>
-+#elif CONFIG_PGTABLE_LEVELS == 2
-+#include <asm-generic/pgtable-nopmd.h>
-+#endif
- 
- #include <asm/fixmap.h>
- 
-@@ -101,8 +106,10 @@ static inline void purge_tlb_entries(struct mm_struct *mm, unsigned long addr)
- 
- #define pte_ERROR(e) \
- 	printk("%s:%d: bad pte %08lx.\n", __FILE__, __LINE__, pte_val(e))
-+#if CONFIG_PGTABLE_LEVELS == 3
- #define pmd_ERROR(e) \
- 	printk("%s:%d: bad pmd %08lx.\n", __FILE__, __LINE__, (unsigned long)pmd_val(e))
-+#endif
- #define pgd_ERROR(e) \
- 	printk("%s:%d: bad pgd %08lx.\n", __FILE__, __LINE__, (unsigned long)pgd_val(e))
- 
-@@ -132,19 +139,18 @@ static inline void purge_tlb_entries(struct mm_struct *mm, unsigned long addr)
- #define PTRS_PER_PTE    (1UL << BITS_PER_PTE)
- 
- /* Definitions for 2nd level */
-+#if CONFIG_PGTABLE_LEVELS == 3
- #define PMD_SHIFT       (PLD_SHIFT + BITS_PER_PTE)
- #define PMD_SIZE	(1UL << PMD_SHIFT)
- #define PMD_MASK	(~(PMD_SIZE-1))
--#if CONFIG_PGTABLE_LEVELS == 3
- #define BITS_PER_PMD	(PAGE_SHIFT + PMD_ORDER - BITS_PER_PMD_ENTRY)
-+#define PTRS_PER_PMD    (1UL << BITS_PER_PMD)
- #else
--#define __PAGETABLE_PMD_FOLDED 1
- #define BITS_PER_PMD	0
- #endif
--#define PTRS_PER_PMD    (1UL << BITS_PER_PMD)
- 
- /* Definitions for 1st level */
--#define PGDIR_SHIFT	(PMD_SHIFT + BITS_PER_PMD)
-+#define PGDIR_SHIFT	(PLD_SHIFT + BITS_PER_PTE + BITS_PER_PMD)
- #if (PGDIR_SHIFT + PAGE_SHIFT + PGD_ORDER - BITS_PER_PGD_ENTRY) > BITS_PER_LONG
- #define BITS_PER_PGD	(BITS_PER_LONG - PGDIR_SHIFT)
- #else
-@@ -317,6 +323,8 @@ extern unsigned long *empty_zero_page;
- 
- #define pmd_flag(x)	(pmd_val(x) & PxD_FLAG_MASK)
- #define pmd_address(x)	((unsigned long)(pmd_val(x) &~ PxD_FLAG_MASK) << PxD_VALUE_SHIFT)
-+#define pud_flag(x)	(pud_val(x) & PxD_FLAG_MASK)
-+#define pud_address(x)	((unsigned long)(pud_val(x) &~ PxD_FLAG_MASK) << PxD_VALUE_SHIFT)
- #define pgd_flag(x)	(pgd_val(x) & PxD_FLAG_MASK)
- #define pgd_address(x)	((unsigned long)(pgd_val(x) &~ PxD_FLAG_MASK) << PxD_VALUE_SHIFT)
- 
-@@ -334,42 +342,32 @@ static inline void pmd_clear(pmd_t *pmd) {
- 	if (pmd_flag(*pmd) & PxD_FLAG_ATTACHED)
- 		/* This is the entry pointing to the permanent pmd
- 		 * attached to the pgd; cannot clear it */
--		__pmd_val_set(*pmd, PxD_FLAG_ATTACHED);
-+		set_pmd(pmd, __pmd(PxD_FLAG_ATTACHED));
- 	else
- #endif
--		__pmd_val_set(*pmd,  0);
-+		set_pmd(pmd,  __pmd(0));
- }
- 
- 
- 
- #if CONFIG_PGTABLE_LEVELS == 3
--#define pgd_page_vaddr(pgd) ((unsigned long) __va(pgd_address(pgd)))
--#define pgd_page(pgd)	virt_to_page((void *)pgd_page_vaddr(pgd))
-+#define pud_page_vaddr(pud) ((unsigned long) __va(pud_address(pud)))
-+#define pud_page(pud)	virt_to_page((void *)pud_page_vaddr(pud))
- 
- /* For 64 bit we have three level tables */
- 
--#define pgd_none(x)     (!pgd_val(x))
--#define pgd_bad(x)      (!(pgd_flag(x) & PxD_FLAG_VALID))
--#define pgd_present(x)  (pgd_flag(x) & PxD_FLAG_PRESENT)
--static inline void pgd_clear(pgd_t *pgd) {
-+#define pud_none(x)     (!pud_val(x))
-+#define pud_bad(x)      (!(pud_flag(x) & PxD_FLAG_VALID))
-+#define pud_present(x)  (pud_flag(x) & PxD_FLAG_PRESENT)
-+static inline void pud_clear(pud_t *pud) {
- #if CONFIG_PGTABLE_LEVELS == 3
--	if(pgd_flag(*pgd) & PxD_FLAG_ATTACHED)
--		/* This is the permanent pmd attached to the pgd; cannot
-+	if(pud_flag(*pud) & PxD_FLAG_ATTACHED)
-+		/* This is the permanent pmd attached to the pud; cannot
- 		 * free it */
- 		return;
- #endif
--	__pgd_val_set(*pgd, 0);
-+	set_pud(pud, __pud(0));
- }
--#else
--/*
-- * The "pgd_xxx()" functions here are trivial for a folded two-level
-- * setup: the pgd is never bad, and a pmd always exists (as it's folded
-- * into the pgd entry)
-- */
--static inline int pgd_none(pgd_t pgd)		{ return 0; }
--static inline int pgd_bad(pgd_t pgd)		{ return 0; }
--static inline int pgd_present(pgd_t pgd)	{ return 1; }
--static inline void pgd_clear(pgd_t * pgdp)	{ }
- #endif
- 
- /*
-@@ -452,7 +450,7 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
- #if CONFIG_PGTABLE_LEVELS == 3
- #define pmd_index(addr)         (((addr) >> PMD_SHIFT) & (PTRS_PER_PMD - 1))
- #define pmd_offset(dir,address) \
--((pmd_t *) pgd_page_vaddr(*(dir)) + pmd_index(address))
-+((pmd_t *) pud_page_vaddr(*(dir)) + pmd_index(address))
- #else
- #define pmd_offset(dir,addr) ((pmd_t *) dir)
- #endif
-diff --git a/arch/parisc/include/asm/tlb.h b/arch/parisc/include/asm/tlb.h
-index 8c0446b..44235f3 100644
---- a/arch/parisc/include/asm/tlb.h
-+++ b/arch/parisc/include/asm/tlb.h
-@@ -4,7 +4,9 @@
- 
- #include <asm-generic/tlb.h>
- 
-+#if CONFIG_PGTABLE_LEVELS == 3
- #define __pmd_free_tlb(tlb, pmd, addr)	pmd_free((tlb)->mm, pmd)
-+#endif
- #define __pte_free_tlb(tlb, pte, addr)	pte_free((tlb)->mm, pte)
- 
- #endif
-diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
-index a82b3ea..7b2e0ab 100644
---- a/arch/parisc/kernel/cache.c
-+++ b/arch/parisc/kernel/cache.c
-@@ -534,11 +534,14 @@ static inline pte_t *get_ptep(pgd_t *pgd, unsigned long addr)
- 	pte_t *ptep = NULL;
- 
- 	if (!pgd_none(*pgd)) {
--		pud_t *pud = pud_offset(pgd, addr);
--		if (!pud_none(*pud)) {
--			pmd_t *pmd = pmd_offset(pud, addr);
--			if (!pmd_none(*pmd))
--				ptep = pte_offset_map(pmd, addr);
-+		p4d_t *p4d = p4d_offset(pgd, addr);
-+		if (!p4d_none(*p4d)) {
-+			pud_t *pud = pud_offset(p4d, addr);
-+			if (!pud_none(*pud)) {
-+				pmd_t *pmd = pmd_offset(pud, addr);
-+				if (!pmd_none(*pmd))
-+					ptep = pte_offset_map(pmd, addr);
++struct lkl_sem {
++	HANDLE sem;
++};
++
++struct lkl_tls_key {
++	DWORD key;
++};
++
++static struct lkl_sem *sem_alloc(int count)
++{
++	struct lkl_sem *sem = malloc(sizeof(struct lkl_sem));
++
++	sem->sem = CreateSemaphore(NULL, count, 100, NULL);
++	return sem;
++}
++
++static void sem_up(struct lkl_sem *sem)
++{
++	ReleaseSemaphore(sem->sem, 1, NULL);
++}
++
++static void sem_down(struct lkl_sem *sem)
++{
++	WaitForSingleObject(sem->sem, INFINITE);
++}
++
++static void sem_free(struct lkl_sem *sem)
++{
++	CloseHandle(sem->sem);
++	free(sem);
++}
++
++static struct lkl_mutex *mutex_alloc(int recursive)
++{
++	struct lkl_mutex *_mutex = malloc(sizeof(struct lkl_mutex));
++
++	if (!_mutex)
++		return NULL;
++
++	if (recursive)
++		_mutex->handle = CreateMutex(0, FALSE, 0);
++	else
++		_mutex->handle = CreateSemaphore(NULL, 1, 100, NULL);
++	_mutex->recursive = recursive;
++	return _mutex;
++}
++
++static void mutex_lock(struct lkl_mutex *mutex)
++{
++	WaitForSingleObject(mutex->handle, INFINITE);
++}
++
++static void mutex_unlock(struct lkl_mutex *_mutex)
++{
++	if (_mutex->recursive)
++		ReleaseMutex(_mutex->handle);
++	else
++		ReleaseSemaphore(_mutex->handle, 1, NULL);
++}
++
++static void mutex_free(struct lkl_mutex *_mutex)
++{
++	CloseHandle(_mutex->handle);
++	free(_mutex);
++}
++
++static lkl_thread_t thread_create(void (*fn)(void *), void *arg)
++{
++	DWORD WINAPI(*win_fn)(LPVOID arg) = (DWORD WINAPI(*)(LPVOID))fn;
++	HANDLE h = CreateThread(NULL, 0, win_fn, arg, 0, NULL);
++
++	if (!h)
++		return 0;
++
++	return GetThreadId(h);
++}
++
++static void thread_detach(void)
++{
++}
++
++static void thread_exit(void)
++{
++	ExitThread(0);
++}
++
++static int thread_join(lkl_thread_t tid)
++{
++	int ret;
++	HANDLE *h;
++
++	h = OpenThread(SYNCHRONIZE, FALSE, tid);
++	if (!h)
++		lkl_printf("%s: can't get thread handle\n", __func__);
++
++	ret = WaitForSingleObject(h, INFINITE);
++	if (ret)
++		lkl_printf("%s: %d\n", __func__, ret);
++
++	CloseHandle(h);
++
++	return ret ? -1 : 0;
++}
++
++static lkl_thread_t thread_self(void)
++{
++	return GetThreadId(GetCurrentThread());
++}
++
++static int thread_equal(lkl_thread_t a, lkl_thread_t b)
++{
++	return a == b;
++}
++
++static struct lkl_tls_key *tls_alloc(void (*destructor)(void *))
++{
++	struct lkl_tls_key *ret = malloc(sizeof(struct lkl_tls_key));
++
++	ret->key = FlsAlloc((PFLS_CALLBACK_FUNCTION)destructor);
++	if (ret->key == TLS_OUT_OF_INDEXES) {
++		free(ret);
++		return NULL;
++	}
++	return ret;
++}
++
++static void tls_free(struct lkl_tls_key *key)
++{
++	/* setting to NULL first to prevent the callback from being called */
++	FlsSetValue(key->key, NULL);
++	FlsFree(key->key);
++	free(key);
++}
++
++static int tls_set(struct lkl_tls_key *key, void *data)
++{
++	return FlsSetValue(key->key, data) ? 0 : -1;
++}
++
++static void *tls_get(struct lkl_tls_key *key)
++{
++	return FlsGetValue(key->key);
++}
++
++
++/*
++ * With 64 bits, we can cover about 583 years at a nanosecond resolution.
++ * Windows counts time from 1601 so we do have about 100 years before we
++ * overflow.
++ */
++static unsigned long long time_ns(void)
++{
++	SYSTEMTIME st;
++	FILETIME ft;
++	ULARGE_INTEGER uli;
++
++	GetSystemTime(&st);
++	SystemTimeToFileTime(&st, &ft);
++	uli.LowPart = ft.dwLowDateTime;
++	uli.HighPart = ft.dwHighDateTime;
++
++	return (uli.QuadPart - DIFF_1601_TO_1970_IN_100NS) * 100;
++}
++
++struct timer {
++	HANDLE queue;
++	void (*callback)(void *arg);
++	void *arg;
++};
++
++static void *timer_alloc(void (*fn)(void *), void *arg)
++{
++	struct timer *t;
++
++	t = malloc(sizeof(*t));
++	if (!t)
++		return NULL;
++
++	t->queue = CreateTimerQueue();
++	if (!t->queue) {
++		free(t);
++		return NULL;
++	}
++
++	t->callback = fn;
++	t->arg = arg;
++
++	return t;
++}
++
++static void CALLBACK timer_callback(void *arg, BOOLEAN TimerOrWaitFired)
++{
++	struct timer *t = (struct timer *)arg;
++
++	if (TimerOrWaitFired)
++		t->callback(t->arg);
++}
++
++static int timer_set_oneshot(void *timer, unsigned long ns)
++{
++	struct timer *t = (struct timer *)timer;
++	HANDLE tmp;
++
++	return !CreateTimerQueueTimer(&tmp, t->queue, timer_callback, t,
++				      ns / 1000000, 0, 0);
++}
++
++static void timer_free(void *timer)
++{
++	struct timer *t = (struct timer *)timer;
++	HANDLE completion;
++
++	completion = CreateEvent(NULL, FALSE, FALSE, NULL);
++	DeleteTimerQueueEx(t->queue, completion);
++	WaitForSingleObject(completion, INFINITE);
++	free(t);
++}
++
++static void panic(void)
++{
++	int *x = NULL;
++
++	*x = 1;
++	assert(0);
++}
++
++static void print(const char *str, int len)
++{
++	write(1, str, len);
++}
++
++static long gettid(void)
++{
++	return GetCurrentThreadId();
++}
++
++static void *mem_alloc(unsigned long size)
++{
++	return malloc(size);
++}
++
++struct lkl_host_operations lkl_host_ops = {
++	.panic = panic,
++	.thread_create = thread_create,
++	.thread_detach = thread_detach,
++	.thread_exit = thread_exit,
++	.thread_join = thread_join,
++	.thread_self = thread_self,
++	.thread_equal = thread_equal,
++	.sem_alloc = sem_alloc,
++	.sem_free = sem_free,
++	.sem_up = sem_up,
++	.sem_down = sem_down,
++	.mutex_alloc = mutex_alloc,
++	.mutex_free = mutex_free,
++	.mutex_lock = mutex_lock,
++	.mutex_unlock = mutex_unlock,
++	.tls_alloc = tls_alloc,
++	.tls_free = tls_free,
++	.tls_set = tls_set,
++	.tls_get = tls_get,
++	.time = time_ns,
++	.timer_alloc = timer_alloc,
++	.timer_set_oneshot = timer_set_oneshot,
++	.timer_free = timer_free,
++	.print = print,
++	.mem_alloc = mem_alloc,
++	.mem_free = free,
++	.ioremap = lkl_ioremap,
++	.iomem_access = lkl_iomem_access,
++	.virtio_devices = lkl_virtio_devs,
++	.gettid = gettid,
++	.jmp_buf_set = jmp_buf_set,
++	.jmp_buf_longjmp = jmp_buf_longjmp,
++};
++
++int handle_get_capacity(struct lkl_disk disk, unsigned long long *res)
++{
++	LARGE_INTEGER tmp;
++
++	if (!GetFileSizeEx(disk.handle, &tmp))
++		return -1;
++
++	*res = tmp.QuadPart;
++	return 0;
++}
++
++static int blk_request(struct lkl_disk disk, struct lkl_blk_req *req)
++{
++	unsigned long long offset = req->sector * 512;
++	OVERLAPPED ov = { 0, };
++	int err = 0, ret;
++
++	switch (req->type) {
++	case LKL_DEV_BLK_TYPE_READ:
++	case LKL_DEV_BLK_TYPE_WRITE:
++	{
++		int i;
++
++		for (i = 0; i < req->count; i++) {
++			DWORD res;
++			struct iovec *buf = &req->buf[i];
++
++			ov.Offset = offset & 0xffffffff;
++			ov.OffsetHigh = offset >> 32;
++
++			if (req->type == LKL_DEV_BLK_TYPE_READ)
++				ret = ReadFile(disk.handle, buf->iov_base,
++					       buf->iov_len, &res, &ov);
++			else
++				ret = WriteFile(disk.handle, buf->iov_base,
++						buf->iov_len, &res, &ov);
++			if (!ret) {
++				lkl_printf("%s: I/O error: %d\n", __func__,
++					   GetLastError());
++				err = -1;
++				goto out;
 +			}
- 		}
- 	}
- 	return ptep;
-diff --git a/arch/parisc/kernel/pci-dma.c b/arch/parisc/kernel/pci-dma.c
-index ca35d9a..8859c71 100644
---- a/arch/parisc/kernel/pci-dma.c
-+++ b/arch/parisc/kernel/pci-dma.c
-@@ -133,9 +133,14 @@ static inline int map_uncached_pages(unsigned long vaddr, unsigned long size,
- 
- 	dir = pgd_offset_k(vaddr);
- 	do {
-+		p4d_t *p4d;
-+		pud_t *pud;
- 		pmd_t *pmd;
--		
--		pmd = pmd_alloc(NULL, dir, vaddr);
 +
-+		p4d = p4d_offset(dir, vaddr);
-+		pud = pud_offset(p4d, vaddr);
-+		pmd = pmd_alloc(NULL, pud, vaddr);
++			if (res != buf->iov_len) {
++				lkl_printf("%s: I/O error: short: %d %d\n",
++					   res, buf->iov_len);
++				err = -1;
++				goto out;
++			}
 +
- 		if (!pmd)
- 			return -ENOMEM;
- 		if (map_pmd_uncached(pmd, vaddr, end - vaddr, &paddr))
-diff --git a/arch/parisc/mm/fixmap.c b/arch/parisc/mm/fixmap.c
-index 474cd24..e2d8b0a 100644
---- a/arch/parisc/mm/fixmap.c
-+++ b/arch/parisc/mm/fixmap.c
-@@ -14,11 +14,13 @@ void notrace set_fixmap(enum fixed_addresses idx, phys_addr_t phys)
- {
- 	unsigned long vaddr = __fix_to_virt(idx);
- 	pgd_t *pgd = pgd_offset_k(vaddr);
--	pmd_t *pmd = pmd_offset(pgd, vaddr);
-+	p4d_t *p4d = p4d_offset(pgd, vaddr);
-+	pud_t *pud = pud_offset(p4d, vaddr);
-+	pmd_t *pmd = pmd_offset(pud, vaddr);
- 	pte_t *pte;
++			offset += buf->iov_len;
++		}
++		break;
++	}
++	case LKL_DEV_BLK_TYPE_FLUSH:
++	case LKL_DEV_BLK_TYPE_FLUSH_OUT:
++		ret = FlushFileBuffers(disk.handle);
++		if (!ret)
++			err = 1;
++		break;
++	default:
++		return LKL_DEV_BLK_STATUS_UNSUP;
++	}
++
++out:
++	if (err < 0)
++		return LKL_DEV_BLK_STATUS_IOERR;
++
++	return LKL_DEV_BLK_STATUS_OK;
++}
++
++struct lkl_dev_blk_ops lkl_dev_blk_ops = {
++	.get_capacity = handle_get_capacity,
++	.request = blk_request,
++};
++
++/* Needed to resolve linker error on Win32. We don't really support
++ * any network IO on Windows, anyway, so there's no loss here.
++ */
++int lkl_netdevs_remove(void)
++{
++	return 0;
++}
+diff --git a/tools/lkl/tests/test.sh b/tools/lkl/tests/test.sh
+index 1a5619aed735..cda932b98058 100644
+--- a/tools/lkl/tests/test.sh
++++ b/tools/lkl/tests/test.sh
+@@ -98,7 +98,9 @@ lkl_test_exec()
+         file=$file.exe
+     fi
  
- 	if (pmd_none(*pmd))
--		pmd = pmd_alloc(NULL, pgd, vaddr);
-+		pmd = pmd_alloc(NULL, pud, vaddr);
- 
- 	pte = pte_offset_kernel(pmd, vaddr);
- 	if (pte_none(*pte))
-@@ -32,7 +34,9 @@ void notrace clear_fixmap(enum fixed_addresses idx)
- {
- 	unsigned long vaddr = __fix_to_virt(idx);
- 	pgd_t *pgd = pgd_offset_k(vaddr);
--	pmd_t *pmd = pmd_offset(pgd, vaddr);
-+	p4d_t *p4d = p4d_offset(pgd, vaddr);
-+	pud_t *pud = pud_offset(p4d, vaddr);
-+	pmd_t *pmd = pmd_offset(pud, vaddr);
- 	pte_t *pte = pte_offset_kernel(pmd, vaddr);
- 
- 	if (WARN_ON(pte_none(*pte)))
+-    if file $file | grep ARM; then
++    if file $file | grep PE32; then
++        WRAPPER="wine"
++    elif file $file | grep ARM; then
+         WRAPPER="qemu-arm-static"
+     elif file $file | grep "FreeBSD" ; then
+         ssh_copy "$file" $BSD_WDIR
 -- 
-2.7.4
+2.20.1 (Apple Git-117)
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
