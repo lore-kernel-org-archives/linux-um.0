@@ -1,131 +1,287 @@
-Return-Path: <rppt@kernel.org>
-From: Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH v3 00/13] mm: remove __ARCH_HAS_4LEVEL_HACK
-Date: Mon,  4 Nov 2019 08:56:14 +0200
-Message-Id: <1572850587-20314-1-git-send-email-rppt@kernel.org>
-To: linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jeff Dike <jdike@addtoit.com>, "Kirill A. Shutemov" <kirill@shutemov.name>, Linus Torvalds <torvalds@linux-foundation.org>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Michal Simek <monstr@monstr.eu>, Peter Rosin <peda@axentia.se>, Richard Weinberger <richard@nod.at>, Rolf Eike Beer <eike-kernel@sf-tec.de>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, Vincent Chen <deanbo422@gmail.com>, Vineet Gupta <Vineet.Gupta1@synopsys.com>, Mike Rapoport <rppt@kernel.org>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org, linux-um@lists.infradead.org, sparclinux@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mout.kundenserver.de ([212.227.17.10])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1iTBWb-0000hu-Mf
+ for linux-um@lists.infradead.org; Fri, 08 Nov 2019 21:10:36 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 04/23] y2038: vdso: change timespec to __kernel_old_timespec
+Date: Fri,  8 Nov 2019 22:07:24 +0100
+Message-Id: <20191108210824.1534248-4-arnd@arndb.de>
+In-Reply-To: <20191108210236.1296047-1-arnd@arndb.de>
+References: <20191108210236.1296047-1-arnd@arndb.de>
+MIME-Version: 1.0
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: y2038@lists.linaro.org, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Greentime Hu <green.hu@gmail.com>, Vincent Chen <deanbo422@gmail.com>, "David S. Miller" <davem@davemloft.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, x86@kernel.org
+Cc: linux-ia64@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org, Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+In order to remove 'timespec' completely from the kernel, all
+internal uses should be converted to a y2038-safe type, while
+those that are only for compatibity with existing user space
+should be marked appropriately.
 
-Hi,
+Change vdso to use __kernel_old_timespec in order to avoid
+the deprecated type and mark these interfaces as outdated.
 
-These patches convert several architectures to use page table folding and
-remove __ARCH_HAS_4LEVEL_HACK along with include/asm-generic/4level-fixup.h.
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/ia64/kernel/asm-offsets.c        |  2 +-
+ arch/nds32/kernel/vdso/gettimeofday.c | 22 +++++++++++-----------
+ arch/sparc/vdso/vclock_gettime.c      | 24 ++++++++++++------------
+ arch/x86/um/vdso/um_vdso.c            |  4 ++--
+ 4 files changed, 26 insertions(+), 26 deletions(-)
 
-For the nommu configurations the folding is already implemented by the
-generic code so the only change was to use the appropriate header file.
-
-As for the rest, the changes are mostly about mechanical replacement of
-pgd accessors with pud/pmd ones and the addition of higher levels to page
-table traversals.
-
-With Vineet's patches from "elide extraneous generated code for folded
-p4d/pud/pmd" series [1] there is a small shrink of the kernel size of about
--0.01% for the defconfig builds. 
-
-The set is boot-tested on UML, qemu-{alpha,sparc} and aranym.
-
-v3 changes:
-* alpha: fix changelog to use pgtable-nopud.h rather than pgtable-nop4d.h
-* um: remove dead-code that was intended as provisioning for 4-level page
-  tables
-
-v2 changes:
-* m68k: fixed ifdefs around pmd_t defintion to work with nommu
-* parisc: added conversion of hugetlb (thanks, Helge!); lexical fixups in
-  comments and changelog
-* collected acks
-
-[1] https://lore.kernel.org/lkml/20191016162400.14796-1-vgupta@synopsys.com
-
-
-Helge Deller (1):
-  parisc/hugetlb: use pgtable-nopXd instead of 4level-fixup
-
-Mike Rapoport (12):
-  alpha: use pgtable-nopud instead of 4level-fixup
-  arm: nommu: use pgtable-nopud instead of 4level-fixup
-  c6x: use pgtable-nopud instead of 4level-fixup
-  m68k: nommu: use pgtable-nopud instead of 4level-fixup
-  m68k: mm: use pgtable-nopXd instead of 4level-fixup
-  microblaze: use pgtable-nopmd instead of 4level-fixup
-  nds32: use pgtable-nopmd instead of 4level-fixup
-  parisc: use pgtable-nopXd instead of 4level-fixup
-  sparc32: use pgtable-nopud instead of 4level-fixup
-  um: remove unused pxx_offset_proc() and addr_pte() functions
-  um: add support for folded p4d page tables
-  mm: remove __ARCH_HAS_4LEVEL_HACK and
-    include/asm-generic/4level-fixup.h
-
- arch/alpha/include/asm/mmzone.h          |  1 -
- arch/alpha/include/asm/pgalloc.h         |  4 +-
- arch/alpha/include/asm/pgtable.h         | 24 ++++-----
- arch/alpha/mm/init.c                     | 12 +++--
- arch/arm/include/asm/pgtable.h           |  2 +-
- arch/c6x/include/asm/pgtable.h           |  2 +-
- arch/m68k/include/asm/mcf_pgalloc.h      |  7 ---
- arch/m68k/include/asm/mcf_pgtable.h      | 28 ++++-------
- arch/m68k/include/asm/mmu_context.h      | 12 ++++-
- arch/m68k/include/asm/motorola_pgalloc.h |  4 +-
- arch/m68k/include/asm/motorola_pgtable.h | 32 +++++++-----
- arch/m68k/include/asm/page.h             |  9 ++--
- arch/m68k/include/asm/pgtable_mm.h       | 11 +++--
- arch/m68k/include/asm/pgtable_no.h       |  2 +-
- arch/m68k/include/asm/sun3_pgalloc.h     |  5 --
- arch/m68k/include/asm/sun3_pgtable.h     | 18 -------
- arch/m68k/kernel/sys_m68k.c              | 10 +++-
- arch/m68k/mm/init.c                      |  6 ++-
- arch/m68k/mm/kmap.c                      | 36 ++++++++++----
- arch/m68k/mm/mcfmmu.c                    | 16 +++++-
- arch/m68k/mm/motorola.c                  | 17 ++++---
- arch/microblaze/include/asm/page.h       |  3 --
- arch/microblaze/include/asm/pgalloc.h    | 16 ------
- arch/microblaze/include/asm/pgtable.h    | 32 +-----------
- arch/microblaze/kernel/signal.c          | 10 ++--
- arch/microblaze/mm/init.c                |  7 ++-
- arch/microblaze/mm/pgtable.c             | 13 ++++-
- arch/nds32/include/asm/page.h            |  3 --
- arch/nds32/include/asm/pgalloc.h         |  3 --
- arch/nds32/include/asm/pgtable.h         | 12 +----
- arch/nds32/include/asm/tlb.h             |  1 -
- arch/nds32/kernel/pm.c                   |  4 +-
- arch/nds32/mm/fault.c                    | 16 ++++--
- arch/nds32/mm/init.c                     | 11 +++--
- arch/nds32/mm/mm-nds32.c                 |  6 ++-
- arch/nds32/mm/proc.c                     | 26 ++++++----
- arch/parisc/include/asm/page.h           | 30 ++++++-----
- arch/parisc/include/asm/pgalloc.h        | 41 ++++++---------
- arch/parisc/include/asm/pgtable.h        | 52 ++++++++++---------
- arch/parisc/include/asm/tlb.h            |  2 +
- arch/parisc/kernel/cache.c               | 13 +++--
- arch/parisc/kernel/pci-dma.c             |  9 +++-
- arch/parisc/mm/fixmap.c                  | 10 ++--
- arch/parisc/mm/hugetlbpage.c             | 18 ++++---
- arch/sparc/include/asm/pgalloc_32.h      |  6 +--
- arch/sparc/include/asm/pgtable_32.h      | 28 +++++------
- arch/sparc/mm/fault_32.c                 | 11 ++++-
- arch/sparc/mm/highmem.c                  |  6 ++-
- arch/sparc/mm/io-unit.c                  |  6 ++-
- arch/sparc/mm/iommu.c                    |  6 ++-
- arch/sparc/mm/srmmu.c                    | 51 ++++++++++++++-----
- arch/um/include/asm/pgtable-2level.h     |  1 -
- arch/um/include/asm/pgtable-3level.h     |  1 -
- arch/um/include/asm/pgtable.h            |  3 ++
- arch/um/kernel/mem.c                     |  8 ++-
- arch/um/kernel/skas/mmu.c                | 12 ++++-
- arch/um/kernel/skas/uaccess.c            |  7 ++-
- arch/um/kernel/tlb.c                     | 85 +++++++++++++++++++-------------
- arch/um/kernel/trap.c                    |  4 +-
- include/asm-generic/4level-fixup.h       | 40 ---------------
- include/asm-generic/tlb.h                |  2 -
- include/linux/mm.h                       | 10 ++--
- mm/memory.c                              |  8 ---
- 63 files changed, 476 insertions(+), 415 deletions(-)
- delete mode 100644 include/asm-generic/4level-fixup.h
-
+diff --git a/arch/ia64/kernel/asm-offsets.c b/arch/ia64/kernel/asm-offsets.c
+index 00e8e2a1eb19..fb0deb8a4221 100644
+--- a/arch/ia64/kernel/asm-offsets.c
++++ b/arch/ia64/kernel/asm-offsets.c
+@@ -211,7 +211,7 @@ void foo(void)
+ 	       offsetof (struct cpuinfo_ia64, ptce_stride));
+ 	BLANK();
+ 	DEFINE(IA64_TIMESPEC_TV_NSEC_OFFSET,
+-	       offsetof (struct timespec, tv_nsec));
++	       offsetof (struct __kernel_old_timespec, tv_nsec));
+ 	DEFINE(IA64_TIME_SN_SPEC_SNSEC_OFFSET,
+ 	       offsetof (struct time_sn_spec, snsec));
+ 
+diff --git a/arch/nds32/kernel/vdso/gettimeofday.c b/arch/nds32/kernel/vdso/gettimeofday.c
+index 1e69fd5b067b..687abc7145f5 100644
+--- a/arch/nds32/kernel/vdso/gettimeofday.c
++++ b/arch/nds32/kernel/vdso/gettimeofday.c
+@@ -48,9 +48,9 @@ static notrace int vdso_read_retry(const struct vdso_data *vdata, u32 start)
+ }
+ 
+ static notrace long clock_gettime_fallback(clockid_t _clkid,
+-					   struct timespec *_ts)
++					   struct __kernel_old_timespec *_ts)
+ {
+-	register struct timespec *ts asm("$r1") = _ts;
++	register struct __kernel_old_timespec *ts asm("$r1") = _ts;
+ 	register clockid_t clkid asm("$r0") = _clkid;
+ 	register long ret asm("$r0");
+ 
+@@ -63,7 +63,7 @@ static notrace long clock_gettime_fallback(clockid_t _clkid,
+ 	return ret;
+ }
+ 
+-static notrace int do_realtime_coarse(struct timespec *ts,
++static notrace int do_realtime_coarse(struct __kernel_old_timespec *ts,
+ 				      struct vdso_data *vdata)
+ {
+ 	u32 seq;
+@@ -78,7 +78,7 @@ static notrace int do_realtime_coarse(struct timespec *ts,
+ 	return 0;
+ }
+ 
+-static notrace int do_monotonic_coarse(struct timespec *ts,
++static notrace int do_monotonic_coarse(struct __kernel_old_timespec *ts,
+ 				       struct vdso_data *vdata)
+ {
+ 	struct timespec tomono;
+@@ -115,7 +115,7 @@ static notrace inline u64 vgetsns(struct vdso_data *vdso)
+ 	return ((u64) cycle_delta & vdso->cs_mask) * vdso->cs_mult;
+ }
+ 
+-static notrace int do_realtime(struct timespec *ts, struct vdso_data *vdata)
++static notrace int do_realtime(struct __kernel_old_timespec *ts, struct vdso_data *vdata)
+ {
+ 	unsigned count;
+ 	u64 ns;
+@@ -133,7 +133,7 @@ static notrace int do_realtime(struct timespec *ts, struct vdso_data *vdata)
+ 	return 0;
+ }
+ 
+-static notrace int do_monotonic(struct timespec *ts, struct vdso_data *vdata)
++static notrace int do_monotonic(struct __kernel_old_timespec *ts, struct vdso_data *vdata)
+ {
+ 	struct timespec tomono;
+ 	u64 nsecs;
+@@ -158,7 +158,7 @@ static notrace int do_monotonic(struct timespec *ts, struct vdso_data *vdata)
+ 	return 0;
+ }
+ 
+-notrace int __vdso_clock_gettime(clockid_t clkid, struct timespec *ts)
++notrace int __vdso_clock_gettime(clockid_t clkid, struct __kernel_old_timespec *ts)
+ {
+ 	struct vdso_data *vdata;
+ 	int ret = -1;
+@@ -191,10 +191,10 @@ notrace int __vdso_clock_gettime(clockid_t clkid, struct timespec *ts)
+ }
+ 
+ static notrace int clock_getres_fallback(clockid_t _clk_id,
+-					  struct timespec *_res)
++					  struct __kernel_old_timespec *_res)
+ {
+ 	register clockid_t clk_id asm("$r0") = _clk_id;
+-	register struct timespec *res asm("$r1") = _res;
++	register struct __kernel_old_timespec *res asm("$r1") = _res;
+ 	register int ret asm("$r0");
+ 
+ 	asm volatile ("movi	$r15, %3\n"
+@@ -206,7 +206,7 @@ static notrace int clock_getres_fallback(clockid_t _clk_id,
+ 	return ret;
+ }
+ 
+-notrace int __vdso_clock_getres(clockid_t clk_id, struct timespec *res)
++notrace int __vdso_clock_getres(clockid_t clk_id, struct __kernel_old_timespec *res)
+ {
+ 	struct vdso_data *vdata = __get_datapage();
+ 
+@@ -248,7 +248,7 @@ static notrace inline int gettimeofday_fallback(struct __kernel_old_timeval *_tv
+ 
+ notrace int __vdso_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz)
+ {
+-	struct timespec ts;
++	struct __kernel_old_timespec ts;
+ 	struct vdso_data *vdata;
+ 	int ret;
+ 
+diff --git a/arch/sparc/vdso/vclock_gettime.c b/arch/sparc/vdso/vclock_gettime.c
+index a20c5030578d..e794edde6755 100644
+--- a/arch/sparc/vdso/vclock_gettime.c
++++ b/arch/sparc/vdso/vclock_gettime.c
+@@ -63,7 +63,7 @@ notrace static __always_inline struct vvar_data *get_vvar_data(void)
+ 	return (struct vvar_data *) ret;
+ }
+ 
+-notrace static long vdso_fallback_gettime(long clock, struct timespec *ts)
++notrace static long vdso_fallback_gettime(long clock, struct __kernel_old_timespec *ts)
+ {
+ 	register long num __asm__("g1") = __NR_clock_gettime;
+ 	register long o0 __asm__("o0") = clock;
+@@ -144,7 +144,7 @@ notrace static __always_inline u64 vgetsns_stick(struct vvar_data *vvar)
+ }
+ 
+ notrace static __always_inline int do_realtime(struct vvar_data *vvar,
+-					       struct timespec *ts)
++					       struct __kernel_old_timespec *ts)
+ {
+ 	unsigned long seq;
+ 	u64 ns;
+@@ -164,7 +164,7 @@ notrace static __always_inline int do_realtime(struct vvar_data *vvar,
+ }
+ 
+ notrace static __always_inline int do_realtime_stick(struct vvar_data *vvar,
+-						     struct timespec *ts)
++						     struct __kernel_old_timespec *ts)
+ {
+ 	unsigned long seq;
+ 	u64 ns;
+@@ -184,7 +184,7 @@ notrace static __always_inline int do_realtime_stick(struct vvar_data *vvar,
+ }
+ 
+ notrace static __always_inline int do_monotonic(struct vvar_data *vvar,
+-						struct timespec *ts)
++						struct __kernel_old_timespec *ts)
+ {
+ 	unsigned long seq;
+ 	u64 ns;
+@@ -204,7 +204,7 @@ notrace static __always_inline int do_monotonic(struct vvar_data *vvar,
+ }
+ 
+ notrace static __always_inline int do_monotonic_stick(struct vvar_data *vvar,
+-						      struct timespec *ts)
++						      struct __kernel_old_timespec *ts)
+ {
+ 	unsigned long seq;
+ 	u64 ns;
+@@ -224,7 +224,7 @@ notrace static __always_inline int do_monotonic_stick(struct vvar_data *vvar,
+ }
+ 
+ notrace static int do_realtime_coarse(struct vvar_data *vvar,
+-				      struct timespec *ts)
++				      struct __kernel_old_timespec *ts)
+ {
+ 	unsigned long seq;
+ 
+@@ -237,7 +237,7 @@ notrace static int do_realtime_coarse(struct vvar_data *vvar,
+ }
+ 
+ notrace static int do_monotonic_coarse(struct vvar_data *vvar,
+-				       struct timespec *ts)
++				       struct __kernel_old_timespec *ts)
+ {
+ 	unsigned long seq;
+ 
+@@ -251,7 +251,7 @@ notrace static int do_monotonic_coarse(struct vvar_data *vvar,
+ }
+ 
+ notrace int
+-__vdso_clock_gettime(clockid_t clock, struct timespec *ts)
++__vdso_clock_gettime(clockid_t clock, struct __kernel_old_timespec *ts)
+ {
+ 	struct vvar_data *vvd = get_vvar_data();
+ 
+@@ -275,11 +275,11 @@ __vdso_clock_gettime(clockid_t clock, struct timespec *ts)
+ 	return vdso_fallback_gettime(clock, ts);
+ }
+ int
+-clock_gettime(clockid_t, struct timespec *)
++clock_gettime(clockid_t, struct __kernel_old_timespec *)
+ 	__attribute__((weak, alias("__vdso_clock_gettime")));
+ 
+ notrace int
+-__vdso_clock_gettime_stick(clockid_t clock, struct timespec *ts)
++__vdso_clock_gettime_stick(clockid_t clock, struct __kernel_old_timespec *ts)
+ {
+ 	struct vvar_data *vvd = get_vvar_data();
+ 
+@@ -311,7 +311,7 @@ __vdso_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz)
+ 	if (likely(vvd->vclock_mode != VCLOCK_NONE)) {
+ 		if (likely(tv != NULL)) {
+ 			union tstv_t {
+-				struct timespec ts;
++				struct __kernel_old_timespec ts;
+ 				struct __kernel_old_timeval tv;
+ 			} *tstv = (union tstv_t *) tv;
+ 			do_realtime(vvd, &tstv->ts);
+@@ -347,7 +347,7 @@ __vdso_gettimeofday_stick(struct __kernel_old_timeval *tv, struct timezone *tz)
+ 	if (likely(vvd->vclock_mode != VCLOCK_NONE)) {
+ 		if (likely(tv != NULL)) {
+ 			union tstv_t {
+-				struct timespec ts;
++				struct __kernel_old_timespec ts;
+ 				struct __kernel_old_timeval tv;
+ 			} *tstv = (union tstv_t *) tv;
+ 			do_realtime_stick(vvd, &tstv->ts);
+diff --git a/arch/x86/um/vdso/um_vdso.c b/arch/x86/um/vdso/um_vdso.c
+index 845336c11364..371724cf70da 100644
+--- a/arch/x86/um/vdso/um_vdso.c
++++ b/arch/x86/um/vdso/um_vdso.c
+@@ -13,7 +13,7 @@
+ #include <linux/getcpu.h>
+ #include <asm/unistd.h>
+ 
+-int __vdso_clock_gettime(clockid_t clock, struct timespec *ts)
++int __vdso_clock_gettime(clockid_t clock, struct __kernel_old_timespec *ts)
+ {
+ 	long ret;
+ 
+@@ -22,7 +22,7 @@ int __vdso_clock_gettime(clockid_t clock, struct timespec *ts)
+ 
+ 	return ret;
+ }
+-int clock_gettime(clockid_t, struct timespec *)
++int clock_gettime(clockid_t, struct __kernel_old_timespec *)
+ 	__attribute__((weak, alias("__vdso_clock_gettime")));
+ 
+ int __vdso_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz)
 -- 
-2.7.4
+2.20.0
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
