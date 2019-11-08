@@ -1,25 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab7.miniserver.com ([37.128.132.42]
- helo=www.kot-begemot.co.uk)
+Received: from mail-pf1-x442.google.com ([2607:f8b0:4864:20::442])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iaNZg-0006UD-9Y
- for linux-um@lists.infradead.org; Thu, 28 Nov 2019 17:27:29 +0000
-Received: from tun252.jain.kot-begemot.co.uk ([192.168.18.6]
- helo=jain.kot-begemot.co.uk)
- by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
- (Exim 4.92) (envelope-from <anton.ivanov@cambridgegreys.com>)
- id 1iaNZd-0007VW-0R
- for linux-um@lists.infradead.org; Thu, 28 Nov 2019 17:27:25 +0000
-Received: from jain.kot-begemot.co.uk ([192.168.3.3])
- by jain.kot-begemot.co.uk with esmtp (Exim 4.92)
- (envelope-from <anton.ivanov@cambridgegreys.com>) id 1iaNZa-0000nA-Re
- for linux-um@lists.infradead.org; Thu, 28 Nov 2019 17:27:24 +0000
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Subject: I get 5.4 fail to start
-Message-ID: <973c61bb-d1c4-a3ef-fec4-d492fa513d15@cambridgegreys.com>
-Date: Thu, 28 Nov 2019 17:27:22 +0000
+ id 1iSwQy-0003oI-M2
+ for linux-um@lists.infradead.org; Fri, 08 Nov 2019 05:03:46 +0000
+Received: by mail-pf1-x442.google.com with SMTP id c13so3864013pfp.5
+ for <linux-um@lists.infradead.org>; Thu, 07 Nov 2019 21:03:44 -0800 (PST)
+From: Hajime Tazaki <thehajime@gmail.com>
+Subject: [RFC v2 16/37] lkl tools: host lib: memory mapped I/O helpers
+Date: Fri,  8 Nov 2019 14:02:31 +0900
+Message-Id: <a28bfc994d7a836817f99540115392256635e64f.1573179553.git.thehajime@gmail.com>
+In-Reply-To: <cover.1573179553.git.thehajime@gmail.com>
+References: <cover.1573179553.git.thehajime@gmail.com>
 MIME-Version: 1.0
-Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -28,32 +20,162 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um <linux-um@lists.infradead.org>
+To: linux-um@lists.infradead.org
+Cc: Octavian Purdila <tavi.purdila@gmail.com>, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Akira Moroo <retrage01@gmail.com>
 
-Hi all,
+From: Octavian Purdila <tavi.purdila@gmail.com>
 
-I get 5.4 fail to start. 5.4 gives:
+This patch adds helpers for implementing the memory mapped I/O host
+operations that can be used by code that implements host
+devices. Generic host operations for lkl_ioremap and lkl_iomem_access
+are provided that allows multiplexing multiple I/O memory mapped
+regions.
 
-Checking that ptrace can change system call numbers...check_ptrace : 
-child exited with exitcode 6, while expecting 0; status 0x67f
-Aborted
+The host device code can create a new memory mapped I/O region with
+register_iomem(). Read and write access functions need to be provided
+by the caller.
 
-And stops right at the very start.
+Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
+---
+ tools/lkl/lib/Build   |  1 +
+ tools/lkl/lib/iomem.c | 88 +++++++++++++++++++++++++++++++++++++++++++
+ tools/lkl/lib/iomem.h | 15 ++++++++
+ 3 files changed, 104 insertions(+)
+ create mode 100644 tools/lkl/lib/iomem.c
+ create mode 100644 tools/lkl/lib/iomem.h
 
-I do not recall anything there changing in the 5.2 - 5.4 timeframe so 
-this is weird.
-
-Ideas?
-
+diff --git a/tools/lkl/lib/Build b/tools/lkl/lib/Build
+index 658bfa865b9c..8d01982638f8 100644
+--- a/tools/lkl/lib/Build
++++ b/tools/lkl/lib/Build
+@@ -1,5 +1,6 @@
+ CFLAGS_config.o += -I$(srctree)/tools/perf/pmu-events
+ 
++liblkl-y += iomem.o
+ liblkl-y += jmp_buf.o
+ liblkl-y += utils.o
+ liblkl-y += dbg.o
+diff --git a/tools/lkl/lib/iomem.c b/tools/lkl/lib/iomem.c
+new file mode 100644
+index 000000000000..2301fe4e5ad5
+--- /dev/null
++++ b/tools/lkl/lib/iomem.c
+@@ -0,0 +1,88 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <string.h>
++#include <stdint.h>
++#include <lkl_host.h>
++
++#include "iomem.h"
++
++#define IOMEM_OFFSET_BITS		24
++#define MAX_IOMEM_REGIONS		256
++
++#define IOMEM_ADDR_TO_INDEX(addr) \
++	(((uintptr_t)addr) >> IOMEM_OFFSET_BITS)
++#define IOMEM_ADDR_TO_OFFSET(addr) \
++	(((uintptr_t)addr) & ((1 << IOMEM_OFFSET_BITS) - 1))
++#define IOMEM_INDEX_TO_ADDR(i) \
++	(void *)(uintptr_t)(i << IOMEM_OFFSET_BITS)
++
++static struct iomem_region {
++	void *data;
++	int size;
++	const struct lkl_iomem_ops *ops;
++} iomem_regions[MAX_IOMEM_REGIONS];
++
++void *register_iomem(void *data, int size, const struct lkl_iomem_ops *ops)
++{
++	int i;
++
++	if (size > (1 << IOMEM_OFFSET_BITS) - 1)
++		return NULL;
++
++	for (i = 1; i < MAX_IOMEM_REGIONS; i++)
++		if (!iomem_regions[i].ops)
++			break;
++
++	if (i >= MAX_IOMEM_REGIONS)
++		return NULL;
++
++	iomem_regions[i].data = data;
++	iomem_regions[i].size = size;
++	iomem_regions[i].ops = ops;
++	return IOMEM_INDEX_TO_ADDR(i);
++}
++
++void unregister_iomem(void *base)
++{
++	unsigned int index = IOMEM_ADDR_TO_INDEX(base);
++
++	if (index >= MAX_IOMEM_REGIONS) {
++		lkl_printf("%s: invalid iomem_addr %p\n", __func__, base);
++		return;
++	}
++
++	iomem_regions[index].size = 0;
++	iomem_regions[index].ops = NULL;
++}
++
++void *lkl_ioremap(long addr, int size)
++{
++	int index = IOMEM_ADDR_TO_INDEX(addr);
++	struct iomem_region *iomem = &iomem_regions[index];
++
++	if (index >= MAX_IOMEM_REGIONS)
++		return NULL;
++
++	if (iomem->ops && size <= iomem->size)
++		return IOMEM_INDEX_TO_ADDR(index);
++
++	return NULL;
++}
++
++int lkl_iomem_access(const volatile void *addr, void *res, int size, int write)
++{
++	int index = IOMEM_ADDR_TO_INDEX(addr);
++	struct iomem_region *iomem = &iomem_regions[index];
++	int offset = IOMEM_ADDR_TO_OFFSET(addr);
++	int ret;
++
++	if (index > MAX_IOMEM_REGIONS || !iomem_regions[index].ops ||
++	    offset + size > iomem_regions[index].size)
++		return -1;
++
++	if (write)
++		ret = iomem->ops->write(iomem->data, offset, res, size);
++	else
++		ret = iomem->ops->read(iomem->data, offset, res, size);
++
++	return ret;
++}
+diff --git a/tools/lkl/lib/iomem.h b/tools/lkl/lib/iomem.h
+new file mode 100644
+index 000000000000..0ad80ccc2626
+--- /dev/null
++++ b/tools/lkl/lib/iomem.h
+@@ -0,0 +1,15 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LKL_LIB_IOMEM_H
++#define _LKL_LIB_IOMEM_H
++
++struct lkl_iomem_ops {
++	int (*read)(void *data, int offset, void *res, int size);
++	int (*write)(void *data, int offset, void *value, int size);
++};
++
++void *register_iomem(void *data, int size, const struct lkl_iomem_ops *ops);
++void unregister_iomem(void *iomem_base);
++void *lkl_ioremap(long addr, int size);
++int lkl_iomem_access(const volatile void *addr, void *res, int size, int write);
++
++#endif /* _LKL_LIB_IOMEM_H */
 -- 
-
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
-https://www.cambridgegreys.com/
+2.20.1 (Apple Git-117)
 
 
 _______________________________________________
