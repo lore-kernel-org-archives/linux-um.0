@@ -1,14 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mout.kundenserver.de ([212.227.126.130])
+Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iTBw9-000169-R7
- for linux-um@lists.infradead.org; Fri, 08 Nov 2019 21:36:59 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 12/16] hostfs: pass 64-bit timestamps to/from user space
-Date: Fri,  8 Nov 2019 22:32:50 +0100
-Message-Id: <20191108213257.3097633-13-arnd@arndb.de>
-In-Reply-To: <20191108213257.3097633-1-arnd@arndb.de>
-References: <20191108213257.3097633-1-arnd@arndb.de>
+ id 1iSwRT-00042G-JC
+ for linux-um@lists.infradead.org; Fri, 08 Nov 2019 05:04:17 +0000
+Received: by mail-pl1-x643.google.com with SMTP id w8so3252413plq.5
+ for <linux-um@lists.infradead.org>; Thu, 07 Nov 2019 21:04:15 -0800 (PST)
+From: Hajime Tazaki <thehajime@gmail.com>
+Subject: [RFC v2 31/37] lkl: add support for Windows hosts
+Date: Fri,  8 Nov 2019 14:02:46 +0900
+Message-Id: <8562184b77c641a99cb80ff37fb3d3b405f5f6ec.1573179553.git.thehajime@gmail.com>
+In-Reply-To: <cover.1573179553.git.thehajime@gmail.com>
+References: <cover.1573179553.git.thehajime@gmail.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,112 +24,167 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: y2038@lists.linaro.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Colin Ian King <colin.king@canonical.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Al Viro <viro@zeniv.linux.org.uk>
+To: linux-um@lists.infradead.org
+Cc: linux-arch@vger.kernel.org, Octavian Purdila <tavi.purdila@gmail.com>, Jens Staal <staal1978@gmail.com>, Akira Moroo <retrage01@gmail.com>, linux-kernel-library@freelists.org, Hajime Tazaki <thehajime@gmail.com>
 
-The use of 'struct timespec' is deprecated in the kernel, so we
-want to avoid the conversions from/to the proper timespec64
-structure.
+From: Octavian Purdila <tavi.purdila@gmail.com>
 
-On the user space side, we have a 'struct timespec' that is defined
-by the C library and that will be incompatible with the kernel's
-view on 32-bit architectures once they move to a 64-bit time_t,
-breaking the shared binary layout of hostfs_iattr and hostfs_stat.
+This patch allows LKL to be compiled for windows hosts with the mingw
+toolchain. Note that patches [1] that fix weak symbols linking are
+required to successfully compile LKL with mingw.
 
-This changes the two structures to use a new hostfs_timespec structure
-with fixed 64-bit seconds/nanoseconds for passing the timestamps
-between hostfs_kern.c and hostfs_user.c. With a new enough user
-space side, this will allow timestamps beyond year 2038.
+The patch disables the modpost pass over vmlinux since modpost only
+works with ELF objects.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+It also adds and workaround to an #include_next <stdard.h> error which
+is apparently caused by using -nosdtinc.
+
+[1] https://sourceware.org/ml/binutils/2015-10/msg00234.html
+
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+Signed-off-by: Jens Staal <staal1978@gmail.com>
+Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
 ---
- fs/hostfs/hostfs.h      | 22 +++++++++++++---------
- fs/hostfs/hostfs_kern.c | 15 +++++++++------
- 2 files changed, 22 insertions(+), 15 deletions(-)
+ arch/um/lkl/Kconfig                 | 2 ++
+ arch/um/lkl/include/system/stdarg.h | 2 ++
+ include/linux/compiler_attributes.h | 4 ++++
+ lib/.gitignore                      | 2 ++
+ lib/raid6/.gitignore                | 1 +
+ scripts/.gitignore                  | 2 ++
+ scripts/basic/.gitignore            | 1 +
+ scripts/kconfig/.gitignore          | 1 +
+ scripts/link-vmlinux.sh             | 2 ++
+ scripts/mod/.gitignore              | 1 +
+ 10 files changed, 18 insertions(+)
+ create mode 100644 arch/um/lkl/include/system/stdarg.h
 
-diff --git a/fs/hostfs/hostfs.h b/fs/hostfs/hostfs.h
-index f4295aa19350..69cb796f6270 100644
---- a/fs/hostfs/hostfs.h
-+++ b/fs/hostfs/hostfs.h
-@@ -37,16 +37,20 @@
-  * is on, and remove the appropriate bits from attr->ia_mode (attr is a
-  * "struct iattr *"). -BlaisorBlade
+diff --git a/arch/um/lkl/Kconfig b/arch/um/lkl/Kconfig
+index 07b3699095ae..1629e2679b75 100644
+--- a/arch/um/lkl/Kconfig
++++ b/arch/um/lkl/Kconfig
+@@ -20,6 +20,8 @@ config LKL
+        select DMA_DIRECT_OPS
+        select PHYS_ADDR_T_64BIT if 64BIT
+        select 64BIT if "$(OUTPUT_FORMAT)" = "elf64-x86-64"
++       select 64BIT if "$(OUTPUT_FORMAT)" = "pe-x86-64"
++       select HAVE_UNDERSCORE_SYMBOL_PREFIX if "$(OUTPUT_FORMAT)" = "pe-i386"
+        select 64BIT if "$(OUTPUT_FORMAT)" = "elf64-x86-64-freebsd"
+        select NET
+        select MULTIUSER
+diff --git a/arch/um/lkl/include/system/stdarg.h b/arch/um/lkl/include/system/stdarg.h
+new file mode 100644
+index 000000000000..12077a36828c
+--- /dev/null
++++ b/arch/um/lkl/include/system/stdarg.h
+@@ -0,0 +1,2 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/* empty file to avoid #include_next<stdarg.h> error */
+diff --git a/include/linux/compiler_attributes.h b/include/linux/compiler_attributes.h
+index 6b318efd8a74..1981b1c323c1 100644
+--- a/include/linux/compiler_attributes.h
++++ b/include/linux/compiler_attributes.h
+@@ -154,7 +154,11 @@
+  *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-format-function-attribute
+  * clang: https://clang.llvm.org/docs/AttributeReference.html#format
   */
-+struct hostfs_timespec {
-+	long long tv_sec;
-+	long long tv_nsec;
-+};
++#ifdef __MINGW32__
++#define __printf(a, b)             __attribute__((__format__(gnu_printf, a, b)))
++#else
+ #define __printf(a, b)                  __attribute__((__format__(printf, a, b)))
++#endif
+ #define __scanf(a, b)                   __attribute__((__format__(scanf, a, b)))
  
- struct hostfs_iattr {
--	unsigned int	ia_valid;
--	unsigned short	ia_mode;
--	uid_t		ia_uid;
--	gid_t		ia_gid;
--	loff_t		ia_size;
--	struct timespec	ia_atime;
--	struct timespec	ia_mtime;
--	struct timespec	ia_ctime;
-+	unsigned int		ia_valid;
-+	unsigned short		ia_mode;
-+	uid_t			ia_uid;
-+	gid_t			ia_gid;
-+	loff_t			ia_size;
-+	struct hostfs_timespec	ia_atime;
-+	struct hostfs_timespec	ia_mtime;
-+	struct hostfs_timespec	ia_ctime;
- };
+ /*
+diff --git a/lib/.gitignore b/lib/.gitignore
+index f2a39c9e5485..eb9f11b81fe1 100644
+--- a/lib/.gitignore
++++ b/lib/.gitignore
+@@ -2,7 +2,9 @@
+ # Generated files
+ #
+ gen_crc32table
++gen_crc32table.exe
+ gen_crc64table
++gen_crc64table.exe
+ crc32table.h
+ crc64table.h
+ oid_registry_data.c
+diff --git a/lib/raid6/.gitignore b/lib/raid6/.gitignore
+index 3de0d8921286..80e3566535aa 100644
+--- a/lib/raid6/.gitignore
++++ b/lib/raid6/.gitignore
+@@ -1,4 +1,5 @@
+ mktables
++mktables.exe
+ altivec*.c
+ int*.c
+ tables.c
+diff --git a/scripts/.gitignore b/scripts/.gitignore
+index 17f8cef88fa8..ec9138a39b25 100644
+--- a/scripts/.gitignore
++++ b/scripts/.gitignore
+@@ -4,8 +4,10 @@
+ bin2c
+ conmakehash
+ kallsyms
++kallsyms.exe
+ pnmtologo
+ unifdef
++unifdef.exe
+ recordmcount
+ sortextable
+ asn1_compiler
+diff --git a/scripts/basic/.gitignore b/scripts/basic/.gitignore
+index a776371a3502..77ce153243fa 100644
+--- a/scripts/basic/.gitignore
++++ b/scripts/basic/.gitignore
+@@ -1 +1,2 @@
+ fixdep
++fixdep.exe
+diff --git a/scripts/kconfig/.gitignore b/scripts/kconfig/.gitignore
+index b5bf92f66d11..aa27000d896f 100644
+--- a/scripts/kconfig/.gitignore
++++ b/scripts/kconfig/.gitignore
+@@ -8,6 +8,7 @@
+ # configuration programs
+ #
+ conf
++conf.exe
+ mconf
+ nconf
+ qconf
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index c3c5758ed7d6..553d966a1986 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -209,6 +209,7 @@ fi;
+ # final build of init/
+ ${MAKE} -f "${srctree}/scripts/Makefile.build" obj=init
  
- struct hostfs_stat {
-@@ -56,7 +60,7 @@ struct hostfs_stat {
- 	unsigned int uid;
- 	unsigned int gid;
- 	unsigned long long size;
--	struct timespec atime, mtime, ctime;
-+	struct hostfs_timespec atime, mtime, ctime;
- 	unsigned int blksize;
- 	unsigned long long blocks;
- 	unsigned int maj;
-diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-index 5a7eb0c79839..e6b8c49076bb 100644
---- a/fs/hostfs/hostfs_kern.c
-+++ b/fs/hostfs/hostfs_kern.c
-@@ -549,9 +549,9 @@ static int read_name(struct inode *ino, char *name)
- 	set_nlink(ino, st.nlink);
- 	i_uid_write(ino, st.uid);
- 	i_gid_write(ino, st.gid);
--	ino->i_atime = timespec_to_timespec64(st.atime);
--	ino->i_mtime = timespec_to_timespec64(st.mtime);
--	ino->i_ctime = timespec_to_timespec64(st.ctime);
-+	ino->i_atime = (struct timespec64){ st.atime.tv_sec, st.atime.tv_nsec };
-+	ino->i_mtime = (struct timespec64){ st.mtime.tv_sec, st.mtime.tv_nsec };
-+	ino->i_ctime = (struct timespec64){ st.ctime.tv_sec, st.ctime.tv_nsec };
- 	ino->i_size = st.size;
- 	ino->i_blocks = st.blocks;
- 	return 0;
-@@ -820,15 +820,18 @@ static int hostfs_setattr(struct dentry *dentry, struct iattr *attr)
- 	}
- 	if (attr->ia_valid & ATTR_ATIME) {
- 		attrs.ia_valid |= HOSTFS_ATTR_ATIME;
--		attrs.ia_atime = timespec64_to_timespec(attr->ia_atime);
-+		attrs.ia_atime = (struct hostfs_timespec)
-+			{ attr->ia_atime.tv_sec, attr->ia_atime.tv_nsec };
- 	}
- 	if (attr->ia_valid & ATTR_MTIME) {
- 		attrs.ia_valid |= HOSTFS_ATTR_MTIME;
--		attrs.ia_mtime = timespec64_to_timespec(attr->ia_mtime);
-+		attrs.ia_mtime = (struct hostfs_timespec)
-+			{ attr->ia_mtime.tv_sec, attr->ia_mtime.tv_nsec };
- 	}
- 	if (attr->ia_valid & ATTR_CTIME) {
- 		attrs.ia_valid |= HOSTFS_ATTR_CTIME;
--		attrs.ia_ctime = timespec64_to_timespec(attr->ia_ctime);
-+		attrs.ia_ctime = (struct hostfs_timespec)
-+			{ attr->ia_ctime.tv_sec, attr->ia_ctime.tv_nsec };
- 	}
- 	if (attr->ia_valid & ATTR_ATIME_SET) {
- 		attrs.ia_valid |= HOSTFS_ATTR_ATIME_SET;
++if [ -e scripts/mod/modpost ]; then
+ #link vmlinux.o
+ info LD vmlinux.o
+ modpost_link vmlinux.o
+@@ -218,6 +219,7 @@ ${MAKE} -f "${srctree}/scripts/Makefile.modpost" MODPOST_VMLINUX=1
+ 
+ info MODINFO modules.builtin.modinfo
+ ${OBJCOPY} -j .modinfo -O binary vmlinux.o modules.builtin.modinfo
++fi
+ 
+ kallsymso=""
+ kallsyms_vmlinux=""
+diff --git a/scripts/mod/.gitignore b/scripts/mod/.gitignore
+index 3bd11b603173..cd67845e326d 100644
+--- a/scripts/mod/.gitignore
++++ b/scripts/mod/.gitignore
+@@ -1,4 +1,5 @@
+ elfconfig.h
+ mk_elfconfig
+ modpost
++modpost.exe
+ devicetable-offsets.h
 -- 
-2.20.0
+2.20.1 (Apple Git-117)
 
 
 _______________________________________________
