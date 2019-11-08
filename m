@@ -1,332 +1,658 @@
-Return-Path: <rppt@kernel.org>
-From: Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH v2 07/13] nds32: use pgtable-nopmd instead of 4level-fixup
-Date: Fri,  1 Nov 2019 10:39:38 +0200
-Message-Id: <1572597584-6390-8-git-send-email-rppt@kernel.org>
-In-Reply-To: <1572597584-6390-1-git-send-email-rppt@kernel.org>
-References: <1572597584-6390-1-git-send-email-rppt@kernel.org>
-To: linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jeff Dike <jdike@addtoit.com>, "Kirill A. Shutemov" <kirill@shutemov.name>, Linus Torvalds <torvalds@linux-foundation.org>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Michal Simek <monstr@monstr.eu>, Peter Rosin <peda@axentia.se>, Richard Weinberger <richard@nod.at>, Rolf Eike Beer <eike-kernel@sf-tec.de>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, Vincent Chen <deanbo422@gmail.com>, Vineet Gupta <Vineet.Gupta1@synopsys.com>, Mike Rapoport <rppt@kernel.org>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org, linux-um@lists.infradead.org, sparclinux@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pl1-x641.google.com ([2607:f8b0:4864:20::641])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1iSwR1-0003pJ-5w
+ for linux-um@lists.infradead.org; Fri, 08 Nov 2019 05:03:50 +0000
+Received: by mail-pl1-x641.google.com with SMTP id ay6so3270851plb.0
+ for <linux-um@lists.infradead.org>; Thu, 07 Nov 2019 21:03:47 -0800 (PST)
+From: Hajime Tazaki <thehajime@gmail.com>
+Subject: [RFC v2 19/37] lkl tools: host lib: filesystem helpers
+Date: Fri,  8 Nov 2019 14:02:34 +0900
+Message-Id: <22c7ac338058a74bb231622bbc116a66324c9172.1573179553.git.thehajime@gmail.com>
+In-Reply-To: <cover.1573179553.git.thehajime@gmail.com>
+References: <cover.1573179553.git.thehajime@gmail.com>
+MIME-Version: 1.0
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
+Cc: linux-arch@vger.kernel.org, Conrad Meyer <cem@FreeBSD.org>, Octavian Purdila <tavi.purdila@gmail.com>, Akira Moroo <retrage01@gmail.com>, Yuan Liu <liuyuan@google.com>, linux-kernel-library@freelists.org, Michael Zimmermann <sigmaepsilon92@gmail.com>, Hajime Tazaki <thehajime@gmail.com>
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+From: Octavian Purdila <tavi.purdila@gmail.com>
 
-nds32 has only two-level page tables and can use pgtable-nopmd and folding
-of the upper layers.
+Add LKL applications APIs to mount and unmount a filesystem from a
+disk added via lkl_disk_add().
 
-Replace usage of include/asm-generic/4level-fixup.h and explicit definition
-of __PAGETABLE_PMD_FOLDED in nds32 with include/asm-generic/pgtable-nopmd.h
-and adjust page table manipulation macros and functions accordingly.
+Also add open/close/read directory wrappers on top of
+lkl_sys_getdents64.
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Signed-off-by: Conrad Meyer <cem@FreeBSD.org>
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+Signed-off-by: Michael Zimmermann <sigmaepsilon92@gmail.com>
+Signed-off-by: Yuan Liu <liuyuan@google.com>
+Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
 ---
- arch/nds32/include/asm/page.h    |  3 ---
- arch/nds32/include/asm/pgalloc.h |  3 ---
- arch/nds32/include/asm/pgtable.h | 12 +-----------
- arch/nds32/include/asm/tlb.h     |  1 -
- arch/nds32/kernel/pm.c           |  4 +++-
- arch/nds32/mm/fault.c            | 16 +++++++++++++---
- arch/nds32/mm/init.c             | 11 ++++++++---
- arch/nds32/mm/mm-nds32.c         |  6 +++++-
- arch/nds32/mm/proc.c             | 26 +++++++++++++++++---------
- 9 files changed, 47 insertions(+), 35 deletions(-)
+ tools/lkl/include/lkl.h | 139 +++++++++++++
+ tools/lkl/lib/Build     |   1 +
+ tools/lkl/lib/fs.c      | 433 ++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 573 insertions(+)
+ create mode 100644 tools/lkl/lib/fs.c
 
-diff --git a/arch/nds32/include/asm/page.h b/arch/nds32/include/asm/page.h
-index 8feb1fa..86b3201 100644
---- a/arch/nds32/include/asm/page.h
-+++ b/arch/nds32/include/asm/page.h
-@@ -41,17 +41,14 @@ void clear_page(void *page);
- void copy_page(void *to, void *from);
- 
- typedef unsigned long pte_t;
--typedef unsigned long pmd_t;
- typedef unsigned long pgd_t;
- typedef unsigned long pgprot_t;
- 
- #define pte_val(x)      (x)
--#define pmd_val(x)      (x)
- #define pgd_val(x)	(x)
- #define pgprot_val(x)   (x)
- 
- #define __pte(x)        (x)
--#define __pmd(x)        (x)
- #define __pgd(x)        (x)
- #define __pgprot(x)     (x)
- 
-diff --git a/arch/nds32/include/asm/pgalloc.h b/arch/nds32/include/asm/pgalloc.h
-index 37125e6..85c1173 100644
---- a/arch/nds32/include/asm/pgalloc.h
-+++ b/arch/nds32/include/asm/pgalloc.h
-@@ -15,9 +15,6 @@
- /*
-  * Since we have only two-level page tables, these are trivial
+diff --git a/tools/lkl/include/lkl.h b/tools/lkl/include/lkl.h
+index 967fbe4dbc26..8bda12d4c6de 100644
+--- a/tools/lkl/include/lkl.h
++++ b/tools/lkl/include/lkl.h
+@@ -389,6 +389,145 @@ int lkl_disk_add(struct lkl_disk *disk);
   */
--#define pmd_alloc_one(mm, addr)		({ BUG(); ((pmd_t *)2); })
--#define pmd_free(mm, pmd)			do { } while (0)
--#define pgd_populate(mm, pmd, pte)	BUG()
- #define pmd_pgtable(pmd) pmd_page(pmd)
+ int lkl_disk_remove(struct lkl_disk disk);
  
- extern pgd_t *pgd_alloc(struct mm_struct *mm);
-diff --git a/arch/nds32/include/asm/pgtable.h b/arch/nds32/include/asm/pgtable.h
-index 0588ec9..a80b9c6 100644
---- a/arch/nds32/include/asm/pgtable.h
-+++ b/arch/nds32/include/asm/pgtable.h
-@@ -4,8 +4,7 @@
- #ifndef _ASMNDS32_PGTABLE_H
- #define _ASMNDS32_PGTABLE_H
- 
--#define __PAGETABLE_PMD_FOLDED 1
--#include <asm-generic/4level-fixup.h>
-+#include <asm-generic/pgtable-nopmd.h>
- #include <linux/sizes.h>
- 
- #include <asm/memory.h>
-@@ -19,26 +18,20 @@
- #ifdef CONFIG_ANDES_PAGE_SIZE_4KB
- #define PGDIR_SHIFT      22
- #define PTRS_PER_PGD     1024
--#define PMD_SHIFT        22
--#define PTRS_PER_PMD     1
- #define PTRS_PER_PTE     1024
- #endif
- 
- #ifdef CONFIG_ANDES_PAGE_SIZE_8KB
- #define PGDIR_SHIFT      24
- #define PTRS_PER_PGD     256
--#define PMD_SHIFT        24
--#define PTRS_PER_PMD     1
- #define PTRS_PER_PTE     2048
- #endif
- 
- #ifndef __ASSEMBLY__
- extern void __pte_error(const char *file, int line, unsigned long val);
--extern void __pmd_error(const char *file, int line, unsigned long val);
- extern void __pgd_error(const char *file, int line, unsigned long val);
- 
- #define pte_ERROR(pte)		__pte_error(__FILE__, __LINE__, pte_val(pte))
--#define pmd_ERROR(pmd)		__pmd_error(__FILE__, __LINE__, pmd_val(pmd))
- #define pgd_ERROR(pgd)		__pgd_error(__FILE__, __LINE__, pgd_val(pgd))
- #endif /* !__ASSEMBLY__ */
- 
-@@ -366,9 +359,6 @@ static inline pmd_t __mk_pmd(pte_t * ptep, unsigned long prot)
- /* to find an entry in a kernel page-table-directory */
- #define pgd_offset_k(addr)      pgd_offset(&init_mm, addr)
- 
--/* Find an entry in the second-level page table.. */
--#define pmd_offset(dir, addr)	((pmd_t *)(dir))
--
- static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
- {
- 	const unsigned long mask = 0xfff;
-diff --git a/arch/nds32/include/asm/tlb.h b/arch/nds32/include/asm/tlb.h
-index a8aff1c..6726038 100644
---- a/arch/nds32/include/asm/tlb.h
-+++ b/arch/nds32/include/asm/tlb.h
-@@ -7,6 +7,5 @@
- #include <asm-generic/tlb.h>
- 
- #define __pte_free_tlb(tlb, pte, addr)	pte_free((tlb)->mm, pte)
--#define __pmd_free_tlb(tlb, pmd, addr)	pmd_free((tln)->mm, pmd)
- 
- #endif
-diff --git a/arch/nds32/kernel/pm.c b/arch/nds32/kernel/pm.c
-index ffa8040..e25700e 100644
---- a/arch/nds32/kernel/pm.c
-+++ b/arch/nds32/kernel/pm.c
-@@ -14,6 +14,7 @@ unsigned int *phy_addr_sp_tmp;
- static void nds32_suspend2ram(void)
- {
- 	pgd_t *pgdv;
-+	p4d_t *p4dv;
- 	pud_t *pudv;
- 	pmd_t *pmdv;
- 	pte_t *ptev;
-@@ -21,7 +22,8 @@ static void nds32_suspend2ram(void)
- 	pgdv = (pgd_t *)__va((__nds32__mfsr(NDS32_SR_L1_PPTB) &
- 		L1_PPTB_mskBASE)) + pgd_index((unsigned int)cpu_resume);
- 
--	pudv = pud_offset(pgdv, (unsigned int)cpu_resume);
-+	p4dv = p4d_offset(pgdv, (unsigned int)cpu_resume);
-+	pudv = pud_offset(p4dv, (unsigned int)cpu_resume);
- 	pmdv = pmd_offset(pudv, (unsigned int)cpu_resume);
- 	ptev = pte_offset_map(pmdv, (unsigned int)cpu_resume);
- 
-diff --git a/arch/nds32/mm/fault.c b/arch/nds32/mm/fault.c
-index 064ae5d..906dfb2 100644
---- a/arch/nds32/mm/fault.c
-+++ b/arch/nds32/mm/fault.c
-@@ -31,6 +31,8 @@ void show_pte(struct mm_struct *mm, unsigned long addr)
- 	pr_alert("[%08lx] *pgd=%08lx", addr, pgd_val(*pgd));
- 
- 	do {
-+		p4d_t *p4d;
-+		pud_t *pud;
- 		pmd_t *pmd;
- 
- 		if (pgd_none(*pgd))
-@@ -41,7 +43,9 @@ void show_pte(struct mm_struct *mm, unsigned long addr)
- 			break;
- 		}
- 
--		pmd = pmd_offset(pgd, addr);
-+		p4d = p4d_offset(pgd, addr);
-+		pud = pud_offset(p4d, addr);
-+		pmd = pmd_offset(pud, addr);
- #if PTRS_PER_PMD != 1
- 		pr_alert(", *pmd=%08lx", pmd_val(*pmd));
- #endif
-@@ -359,6 +363,7 @@ void do_page_fault(unsigned long entry, unsigned long addr,
- 
- 		unsigned int index = pgd_index(addr);
- 		pgd_t *pgd, *pgd_k;
-+		p4d_t *p4d, *p4d_k;
- 		pud_t *pud, *pud_k;
- 		pmd_t *pmd, *pmd_k;
- 		pte_t *pte_k;
-@@ -369,8 +374,13 @@ void do_page_fault(unsigned long entry, unsigned long addr,
- 		if (!pgd_present(*pgd_k))
- 			goto no_context;
- 
--		pud = pud_offset(pgd, addr);
--		pud_k = pud_offset(pgd_k, addr);
-+		p4d = p4d_offset(pgd, addr);
-+		p4d_k = p4d_offset(pgd_k, addr);
-+		if (!p4d_present(*p4d_k))
-+			goto no_context;
++/**
++ * lkl_get_virtiolkl_encode_dev_from_sysfs_blkdev - extract device id from sysfs
++ *
++ * This function returns the device id for the given sysfs dev node.
++ * The content of the node has to be in the form 'MAJOR:MINOR'.
++ * Also, this function expects an absolute path which means that sysfs
++ * already has to be mounted at the given path
++ *
++ * @sysfs_path - absolute path to the sysfs dev node
++ * @pdevid - pointer to memory where dev id will be returned
++ * @returns - 0 on success, a negative value on error
++ */
++int lkl_encode_dev_from_sysfs(const char *sysfs_path, uint32_t *pdevid);
 +
-+		pud = pud_offset(p4d, addr);
-+		pud_k = pud_offset(p4d_k, addr);
- 		if (!pud_present(*pud_k))
- 			goto no_context;
++/**
++ * lkl_get_virtio_blkdev - get device id of a disk (partition)
++ *
++ * This function returns the device id for the given disk.
++ *
++ * @disk_id - the disk id identifying the disk
++ * @part - disk partition or zero for full disk
++ * @pdevid - pointer to memory where dev id will be returned
++ * @returns - 0 on success, a negative value on error
++ */
++int lkl_get_virtio_blkdev(int disk_id, unsigned int part, uint32_t *pdevid);
++
++
++/**
++ * lkl_mount_dev - mount a disk
++ *
++ * This functions creates a device file for the given disk, creates a mount
++ * point and mounts the device over the mount point.
++ *
++ * @disk_id - the disk id identifying the disk to be mounted
++ * @part - disk partition or zero for full disk
++ * @fs_type - filesystem type
++ * @flags - mount flags
++ * @opts - additional filesystem specific mount options
++ * @mnt_str - a string that will be filled by this function with the path where
++ * the filesystem has been mounted
++ * @mnt_str_len - size of mnt_str
++ * @returns - 0 on success, a negative value on error
++ */
++long lkl_mount_dev(unsigned int disk_id, unsigned int part, const char *fs_type,
++		   int flags, const char *opts,
++		   char *mnt_str, unsigned int mnt_str_len);
++
++/**
++ * lkl_umount_dev - umount a disk
++ *
++ * This functions umounts the given disks and removes the device file and the
++ * mount point.
++ *
++ * @disk_id - the disk id identifying the disk to be mounted
++ * @part - disk partition or zero for full disk
++ * @flags - umount flags
++ * @timeout_ms - timeout to wait for the kernel to flush closed files so that
++ * umount can succeed
++ * @returns - 0 on success, a negative value on error
++ */
++long lkl_umount_dev(unsigned int disk_id, unsigned int part, int flags,
++		    long timeout_ms);
++
++/**
++ * lkl_umount_timeout - umount filesystem with timeout
++ *
++ * @path - the path to unmount
++ * @flags - umount flags
++ * @timeout_ms - timeout to wait for the kernel to flush closed files so that
++ * umount can succeed
++ * @returns - 0 on success, a negative value on error
++ */
++long lkl_umount_timeout(char *path, int flags, long timeout_ms);
++
++/**
++ * lkl_opendir - open a directory
++ *
++ * @path - directory path
++ * @err - pointer to store the error in case of failure
++ * @returns - a handle to be used when calling lkl_readdir
++ */
++struct lkl_dir *lkl_opendir(const char *path, int *err);
++
++/**
++ * lkl_fdopendir - open a directory
++ *
++ * @fd - file descriptor
++ * @err - pointer to store the error in case of failure
++ * @returns - a handle to be used when calling lkl_readdir
++ */
++struct lkl_dir *lkl_fdopendir(int fd, int *err);
++
++/**
++ * lkl_rewinddir - reset directory stream
++ *
++ * @dir - the directory handler as returned by lkl_opendir
++ */
++void lkl_rewinddir(struct lkl_dir *dir);
++
++/**
++ * lkl_closedir - close the directory
++ *
++ * @dir - the directory handler as returned by lkl_opendir
++ */
++int lkl_closedir(struct lkl_dir *dir);
++
++/**
++ * lkl_readdir - get the next available entry of the directory
++ *
++ * @dir - the directory handler as returned by lkl_opendir
++ * @returns - a lkl_dirent64 entry or NULL if the end of the directory stream is
++ * reached or if an error occurred; check lkl_errdir() to distinguish between
++ * errors or end of the directory stream
++ */
++struct lkl_linux_dirent64 *lkl_readdir(struct lkl_dir *dir);
++
++/**
++ * lkl_errdir - checks if an error occurred during the last lkl_readdir call
++ *
++ * @dir - the directory handler as returned by lkl_opendir
++ * @returns - 0 if no error occurred, or a negative value otherwise
++ */
++int lkl_errdir(struct lkl_dir *dir);
++
++/**
++ * lkl_dirfd - gets the file descriptor associated with the directory handle
++ *
++ * @dir - the directory handle as returned by lkl_opendir
++ * @returns - a positive value,which is the LKL file descriptor associated with
++ * the directory handle, or a negative value otherwise
++ */
++int lkl_dirfd(struct lkl_dir *dir);
++
++/**
++ * lkl_mount_fs - mount a file system type like proc, sys
++ * @fstype - file system type. e.g. proc, sys
++ * @returns - 0 on success. 1 if it's already mounted. negative on failure.
++ */
++int lkl_mount_fs(char *fstype);
  
-diff --git a/arch/nds32/mm/init.c b/arch/nds32/mm/init.c
-index 55703b0..0be3833f 100644
---- a/arch/nds32/mm/init.c
-+++ b/arch/nds32/mm/init.c
-@@ -54,6 +54,7 @@ static void __init map_ram(void)
- {
- 	unsigned long v, p, e;
- 	pgd_t *pge;
-+	p4d_t *p4e;
- 	pud_t *pue;
- 	pmd_t *pme;
- 	pte_t *pte;
-@@ -69,7 +70,8 @@ static void __init map_ram(void)
- 
- 	while (p < e) {
- 		int j;
--		pue = pud_offset(pge, v);
-+		p4e = p4d_offset(pge, v);
-+		pue = pud_offset(p4e, v);
- 		pme = pmd_offset(pue, v);
- 
- 		if ((u32) pue != (u32) pge || (u32) pme != (u32) pge) {
-@@ -100,6 +102,7 @@ static void __init fixedrange_init(void)
- {
- 	unsigned long vaddr;
- 	pgd_t *pgd;
-+	p4d_t *p4d;
- 	pud_t *pud;
- 	pmd_t *pmd;
- #ifdef CONFIG_HIGHMEM
-@@ -111,7 +114,8 @@ static void __init fixedrange_init(void)
- 	 */
- 	vaddr = __fix_to_virt(__end_of_fixed_addresses - 1);
- 	pgd = swapper_pg_dir + pgd_index(vaddr);
--	pud = pud_offset(pgd, vaddr);
-+	p4d = p4d_offset(pgd, vaddr);
-+	pud = pud_offset(p4d, vaddr);
- 	pmd = pmd_offset(pud, vaddr);
- 	fixmap_pmd_p = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
- 	if (!fixmap_pmd_p)
-@@ -126,7 +130,8 @@ static void __init fixedrange_init(void)
- 	vaddr = PKMAP_BASE;
- 
- 	pgd = swapper_pg_dir + pgd_index(vaddr);
--	pud = pud_offset(pgd, vaddr);
-+	p4d = p4d_offset(pgd, vaddr);
-+	pud = pud_offset(p4d, vaddr);
- 	pmd = pmd_offset(pud, vaddr);
- 	pte = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
- 	if (!pte)
-diff --git a/arch/nds32/mm/mm-nds32.c b/arch/nds32/mm/mm-nds32.c
-index 3b43798..8503bee 100644
---- a/arch/nds32/mm/mm-nds32.c
-+++ b/arch/nds32/mm/mm-nds32.c
-@@ -74,6 +74,8 @@ void setup_mm_for_reboot(char mode)
- {
- 	unsigned long pmdval;
- 	pgd_t *pgd;
-+	p4d_t *p4d;
-+	pud_t *pud;
- 	pmd_t *pmd;
- 	int i;
- 
-@@ -84,7 +86,9 @@ void setup_mm_for_reboot(char mode)
- 
- 	for (i = 0; i < USER_PTRS_PER_PGD; i++) {
- 		pmdval = (i << PGDIR_SHIFT);
--		pmd = pmd_offset(pgd + i, i << PGDIR_SHIFT);
-+		p4d = p4d_offset(pgd, i << PGDIR_SHIFT);
-+		pud = pud_offset(p4d, i << PGDIR_SHIFT);
-+		pmd = pmd_offset(pud + i, i << PGDIR_SHIFT);
- 		set_pmd(pmd, __pmd(pmdval));
- 	}
+ #ifdef __cplusplus
  }
-diff --git a/arch/nds32/mm/proc.c b/arch/nds32/mm/proc.c
-index ba80992..837ae77 100644
---- a/arch/nds32/mm/proc.c
-+++ b/arch/nds32/mm/proc.c
-@@ -16,10 +16,14 @@ extern struct cache_info L1_cache_info[2];
+diff --git a/tools/lkl/lib/Build b/tools/lkl/lib/Build
+index d3154cfa4952..f2ee04366464 100644
+--- a/tools/lkl/lib/Build
++++ b/tools/lkl/lib/Build
+@@ -1,5 +1,6 @@
+ CFLAGS_config.o += -I$(srctree)/tools/perf/pmu-events
  
- int va_kernel_present(unsigned long addr)
- {
-+	p4d_t *p4d;
-+	pud_t *pud;
- 	pmd_t *pmd;
- 	pte_t *ptep, pte;
- 
--	pmd = pmd_offset(pgd_offset_k(addr), addr);
-+	p4d = p4d_offset(pgd_offset_k(addr), addr);
-+	pud = pud_offset(p4d, addr);
-+	pmd = pmd_offset(pud, addr);
- 	if (!pmd_none(*pmd)) {
- 		ptep = pte_offset_map(pmd, addr);
- 		pte = *ptep;
-@@ -32,20 +36,24 @@ int va_kernel_present(unsigned long addr)
- pte_t va_present(struct mm_struct * mm, unsigned long addr)
- {
- 	pgd_t *pgd;
-+	p4d_t *p4d;
- 	pud_t *pud;
- 	pmd_t *pmd;
- 	pte_t *ptep, pte;
- 
- 	pgd = pgd_offset(mm, addr);
- 	if (!pgd_none(*pgd)) {
--		pud = pud_offset(pgd, addr);
--		if (!pud_none(*pud)) {
--			pmd = pmd_offset(pud, addr);
--			if (!pmd_none(*pmd)) {
--				ptep = pte_offset_map(pmd, addr);
--				pte = *ptep;
--				if (pte_present(pte))
--					return pte;
-+		p4d = p4d_offset(pgd, addr);
-+		if (!p4d_none(*p4d)) {
-+			pud = pud_offset(p4d, addr);
-+			if (!pud_none(*pud)) {
-+				pmd = pmd_offset(pud, addr);
-+				if (!pmd_none(*pmd)) {
-+					ptep = pte_offset_map(pmd, addr);
-+					pte = *ptep;
-+					if (pte_present(pte))
-+						return pte;
-+				}
- 			}
- 		}
- 	}
++liblkl-y += fs.o
+ liblkl-y += iomem.o
+ liblkl-y += jmp_buf.o
+ liblkl-y += utils.o
+diff --git a/tools/lkl/lib/fs.c b/tools/lkl/lib/fs.c
+new file mode 100644
+index 000000000000..c6f197aec3fb
+--- /dev/null
++++ b/tools/lkl/lib/fs.c
+@@ -0,0 +1,433 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <stdarg.h>
++#include <stdio.h>
++#include <string.h>
++#include <stdlib.h>
++#include <lkl_host.h>
++
++#include "virtio.h"
++
++#define MAX_FSTYPE_LEN 50
++int lkl_mount_fs(char *fstype)
++{
++	char dir[MAX_FSTYPE_LEN+2] = "/";
++	int flags = 0, ret = 0;
++
++	strncat(dir, fstype, MAX_FSTYPE_LEN);
++
++	/* Create with regular umask */
++	ret = lkl_sys_mkdir(dir, 0xff);
++	if (ret && ret != -LKL_EEXIST) {
++		lkl_perror("mount_fs mkdir", ret);
++		return ret;
++	}
++
++	/* We have no use for nonzero flags right now */
++	ret = lkl_sys_mount("none", dir, fstype, flags, NULL);
++	if (ret && ret != -LKL_EBUSY) {
++		lkl_sys_rmdir(dir);
++		return ret;
++	}
++
++	if (ret == -LKL_EBUSY)
++		return 1;
++	return 0;
++}
++
++static uint32_t new_encode_dev(unsigned int major, unsigned int minor)
++{
++	return (minor & 0xff) | (major << 8) | ((minor & ~0xff) << 12);
++}
++
++static int startswith(const char *str, const char *pre)
++{
++	return strncmp(pre, str, strlen(pre)) == 0;
++}
++
++static int get_node_with_prefix(const char *path, const char *prefix,
++				char *result, unsigned int result_len)
++{
++	struct lkl_dir *dir = NULL;
++	struct lkl_linux_dirent64 *dirent;
++	int ret;
++
++	dir = lkl_opendir(path, &ret);
++	if (!dir)
++		return ret;
++
++	ret = -LKL_ENOENT;
++
++	while ((dirent = lkl_readdir(dir))) {
++		if (startswith(dirent->d_name, prefix)) {
++			if (strlen(dirent->d_name) + 1 > result_len) {
++				ret = -LKL_ENOMEM;
++				break;
++			}
++			memcpy(result, dirent->d_name, strlen(dirent->d_name));
++			result[strlen(dirent->d_name)] = '\0';
++			ret = 0;
++			break;
++		}
++	}
++
++	lkl_closedir(dir);
++
++	return ret;
++}
++
++int lkl_encode_dev_from_sysfs(const char *sysfs_path, uint32_t *pdevid)
++{
++	int ret;
++	long fd;
++	int major, minor;
++	char buf[16] = { 0, };
++	char *bufptr;
++
++	fd = lkl_sys_open(sysfs_path, LKL_O_RDONLY, 0);
++	if (fd < 0)
++		return fd;
++
++	ret = lkl_sys_read(fd, buf, sizeof(buf));
++	if (ret < 0)
++		goto out_close;
++
++	if (ret == sizeof(buf)) {
++		ret = -LKL_ENOBUFS;
++		goto out_close;
++	}
++
++	bufptr = strchr(buf, ':');
++	if (bufptr == NULL) {
++		ret = -LKL_EINVAL;
++		goto out_close;
++	}
++	bufptr[0] = '\0';
++	bufptr++;
++
++	major = atoi(buf);
++	minor = atoi(bufptr);
++
++	*pdevid = new_encode_dev(major, minor);
++	ret = 0;
++
++out_close:
++	lkl_sys_close(fd);
++
++	return ret;
++}
++
++#define SYSFS_DEV_VIRTIO_PLATFORM_PATH \
++	"/sysfs/devices/platform/virtio-mmio.%d.auto"
++#define SYSFS_DEV_VIRTIO_CMDLINE_PATH \
++	"/sysfs/devices/virtio-mmio-cmdline/virtio-mmio.%d"
++
++struct abuf {
++	char *mem, *ptr;
++	unsigned int len;
++};
++
++static int snprintf_append(struct abuf *buf, const char *fmt, ...)
++{
++	int ret;
++	va_list args;
++
++	if (!buf->ptr)
++		buf->ptr = buf->mem;
++
++	va_start(args, fmt);
++	ret = vsnprintf(buf->ptr, buf->len - (buf->ptr - buf->mem), fmt, args);
++	va_end(args);
++
++	if (ret < 0 || (ret >= (buf->len - (buf->ptr - buf->mem))))
++		return -LKL_ENOMEM;
++
++	buf->ptr += ret;
++
++	return 0;
++}
++
++int lkl_get_virtio_blkdev(int disk_id, unsigned int part, uint32_t *pdevid)
++{
++	char sysfs_path[LKL_PATH_MAX];
++	char virtio_name[LKL_PATH_MAX];
++	char disk_name[LKL_PATH_MAX];
++	struct abuf sysfs_path_buf = {
++		.mem = sysfs_path,
++		.len = sizeof(sysfs_path),
++	};
++	char *fmt;
++	int ret;
++
++	if (disk_id < 0)
++		return -LKL_EINVAL;
++
++	ret = lkl_mount_fs("sysfs");
++	if (ret < 0)
++		return ret;
++
++	if ((uint32_t) disk_id >= virtio_get_num_bootdevs()) {
++		fmt = SYSFS_DEV_VIRTIO_PLATFORM_PATH;
++		disk_id -= virtio_get_num_bootdevs();
++	} else {
++		fmt = SYSFS_DEV_VIRTIO_CMDLINE_PATH;
++	}
++
++	ret = snprintf_append(&sysfs_path_buf, fmt, disk_id);
++	if (ret)
++		return ret;
++
++	ret = get_node_with_prefix(sysfs_path, "virtio", virtio_name,
++				   sizeof(virtio_name));
++	if (ret)
++		return ret;
++
++	ret = snprintf_append(&sysfs_path_buf, "/%s/block", virtio_name);
++	if (ret)
++		return ret;
++
++	ret = get_node_with_prefix(sysfs_path, "vd", disk_name,
++				   sizeof(disk_name));
++	if (ret)
++		return ret;
++
++	if (!part)
++		ret = snprintf_append(&sysfs_path_buf, "/%s/dev", disk_name);
++	else
++		ret = snprintf_append(&sysfs_path_buf, "/%s/%s%d/dev",
++				      disk_name, disk_name, part);
++	if (ret)
++		return ret;
++
++	return lkl_encode_dev_from_sysfs(sysfs_path, pdevid);
++}
++
++long lkl_mount_dev(unsigned int disk_id, unsigned int part,
++		   const char *fs_type, int flags,
++		   const char *data, char *mnt_str, unsigned int mnt_str_len)
++{
++	char dev_str[] = { "/dev/xxxxxxxx" };
++	unsigned int dev;
++	int err;
++	char _data[4096]; /* FIXME: PAGE_SIZE is not exported by LKL */
++
++	if (mnt_str_len < sizeof(dev_str))
++		return -LKL_ENOMEM;
++
++	err = lkl_get_virtio_blkdev(disk_id, part, &dev);
++	if (err < 0)
++		return err;
++
++	snprintf(dev_str, sizeof(dev_str), "/dev/%08x", dev);
++	snprintf(mnt_str, mnt_str_len, "/mnt/%08x", dev);
++
++	err = lkl_sys_access("/dev", LKL_S_IRWXO);
++	if (err < 0) {
++		if (err == -LKL_ENOENT)
++			err = lkl_sys_mkdir("/dev", 0700);
++		if (err < 0)
++			return err;
++	}
++
++	err = lkl_sys_mknod(dev_str, LKL_S_IFBLK | 0600, dev);
++	if (err < 0)
++		return err;
++
++	err = lkl_sys_access("/mnt", LKL_S_IRWXO);
++	if (err < 0) {
++		if (err == -LKL_ENOENT)
++			err = lkl_sys_mkdir("/mnt", 0700);
++		if (err < 0)
++			return err;
++	}
++
++	err = lkl_sys_mkdir(mnt_str, 0700);
++	if (err < 0) {
++		lkl_sys_unlink(dev_str);
++		return err;
++	}
++
++	/* kernel always copies a full page */
++	if (data) {
++		strncpy(_data, data, sizeof(_data));
++		_data[sizeof(_data) - 1] = 0;
++	} else {
++		_data[0] = 0;
++	}
++
++	err = lkl_sys_mount(dev_str, mnt_str, (char *)fs_type, flags, _data);
++	if (err < 0) {
++		lkl_sys_unlink(dev_str);
++		lkl_sys_rmdir(mnt_str);
++		return err;
++	}
++
++	return 0;
++}
++
++long lkl_umount_timeout(char *path, int flags, long timeout_ms)
++{
++	long incr = 10000000; /* 10 ms */
++	struct lkl_timespec ts = {
++		.tv_sec = 0,
++		.tv_nsec = incr,
++	};
++	long err;
++
++	do {
++		err = lkl_sys_umount(path, flags);
++		if (err == -LKL_EBUSY) {
++			lkl_sys_nanosleep((struct __lkl__kernel_timespec *)&ts,
++					  NULL);
++			timeout_ms -= incr / 1000000;
++		}
++	} while (err == -LKL_EBUSY && timeout_ms > 0);
++
++	return err;
++}
++
++long lkl_umount_dev(unsigned int disk_id, unsigned int part, int flags,
++		    long timeout_ms)
++{
++	char dev_str[] = { "/dev/xxxxxxxx" };
++	char mnt_str[] = { "/mnt/xxxxxxxx" };
++	unsigned int dev;
++	int err;
++
++	err = lkl_get_virtio_blkdev(disk_id, part, &dev);
++	if (err < 0)
++		return err;
++
++	snprintf(dev_str, sizeof(dev_str), "/dev/%08x", dev);
++	snprintf(mnt_str, sizeof(mnt_str), "/mnt/%08x", dev);
++
++	err = lkl_umount_timeout(mnt_str, flags, timeout_ms);
++	if (err)
++		return err;
++
++	err = lkl_sys_unlink(dev_str);
++	if (err)
++		return err;
++
++	return lkl_sys_rmdir(mnt_str);
++}
++
++struct lkl_dir {
++	int fd;
++	char buf[1024];
++	char *pos;
++	int len;
++};
++
++static struct lkl_dir *lkl_dir_alloc(int *err)
++{
++	struct lkl_dir *dir = lkl_host_ops.mem_alloc(sizeof(struct lkl_dir));
++
++	if (!dir) {
++		*err = -LKL_ENOMEM;
++		return NULL;
++	}
++
++	dir->len = 0;
++	dir->pos = NULL;
++
++	return dir;
++}
++
++struct lkl_dir *lkl_opendir(const char *path, int *err)
++{
++	struct lkl_dir *dir = lkl_dir_alloc(err);
++
++	if (!dir) {
++		*err = -LKL_ENOMEM;
++		return NULL;
++	}
++
++	dir->fd = lkl_sys_open(path, LKL_O_RDONLY | LKL_O_DIRECTORY, 0);
++	if (dir->fd < 0) {
++		*err = dir->fd;
++		lkl_host_ops.mem_free(dir);
++		return NULL;
++	}
++
++	*err = 0;
++
++	return dir;
++}
++
++struct lkl_dir *lkl_fdopendir(int fd, int *err)
++{
++	struct lkl_dir *dir = lkl_dir_alloc(err);
++
++	if (!dir)
++		return NULL;
++
++	dir->fd = fd;
++
++	return dir;
++}
++
++void lkl_rewinddir(struct lkl_dir *dir)
++{
++	lkl_sys_lseek(dir->fd, 0, LKL_SEEK_SET);
++	dir->len = 0;
++	dir->pos = NULL;
++}
++
++int lkl_closedir(struct lkl_dir *dir)
++{
++	int ret;
++
++	ret = lkl_sys_close(dir->fd);
++	lkl_host_ops.mem_free(dir);
++
++	return ret;
++}
++
++struct lkl_linux_dirent64 *lkl_readdir(struct lkl_dir *dir)
++{
++	struct lkl_linux_dirent64 *de;
++
++	if (dir->len < 0)
++		return NULL;
++
++	if (!dir->pos || dir->pos - dir->buf >= dir->len)
++		goto read_buf;
++
++return_de:
++	de = (struct lkl_linux_dirent64 *)dir->pos;
++	dir->pos += de->d_reclen;
++
++	return de;
++
++read_buf:
++	dir->pos = NULL;
++	de = (struct lkl_linux_dirent64 *)dir->buf;
++	dir->len = lkl_sys_getdents64(dir->fd, de, sizeof(dir->buf));
++	if (dir->len <= 0)
++		return NULL;
++
++	dir->pos = dir->buf;
++	goto return_de;
++}
++
++int lkl_errdir(struct lkl_dir *dir)
++{
++	if (dir->len >= 0)
++		return 0;
++
++	return dir->len;
++}
++
++int lkl_dirfd(struct lkl_dir *dir)
++{
++	return dir->fd;
++}
++
++int lkl_set_fd_limit(unsigned int fd_limit)
++{
++	struct lkl_rlimit rlim = {
++		.rlim_cur = fd_limit,
++		.rlim_max = fd_limit,
++	};
++	return lkl_sys_setrlimit(LKL_RLIMIT_NOFILE, &rlim);
++}
 -- 
-2.7.4
+2.20.1 (Apple Git-117)
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
