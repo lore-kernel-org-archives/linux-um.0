@@ -1,313 +1,744 @@
-Return-Path: <rppt@kernel.org>
-From: Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH v3 12/13] um: add support for folded p4d page tables
-Date: Mon,  4 Nov 2019 08:56:26 +0200
-Message-Id: <1572850587-20314-13-git-send-email-rppt@kernel.org>
-In-Reply-To: <1572850587-20314-1-git-send-email-rppt@kernel.org>
-References: <1572850587-20314-1-git-send-email-rppt@kernel.org>
-To: linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jeff Dike <jdike@addtoit.com>, "Kirill A. Shutemov" <kirill@shutemov.name>, Linus Torvalds <torvalds@linux-foundation.org>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Michal Simek <monstr@monstr.eu>, Peter Rosin <peda@axentia.se>, Richard Weinberger <richard@nod.at>, Rolf Eike Beer <eike-kernel@sf-tec.de>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, Vincent Chen <deanbo422@gmail.com>, Vineet Gupta <Vineet.Gupta1@synopsys.com>, Mike Rapoport <rppt@kernel.org>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org, linux-um@lists.infradead.org, sparclinux@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pl1-x644.google.com ([2607:f8b0:4864:20::644])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1iSwRA-0003tW-4V
+ for linux-um@lists.infradead.org; Fri, 08 Nov 2019 05:03:58 +0000
+Received: by mail-pl1-x644.google.com with SMTP id j12so3226596plt.9
+ for <linux-um@lists.infradead.org>; Thu, 07 Nov 2019 21:03:55 -0800 (PST)
+From: Hajime Tazaki <thehajime@gmail.com>
+Subject: [RFC v2 22/37] lkl tools: tool that reads/writes to/from a filesystem
+ image
+Date: Fri,  8 Nov 2019 14:02:37 +0900
+Message-Id: <6e9de3ed3a255e42ab9203afba2a54bf3498bc50.1573179553.git.thehajime@gmail.com>
+In-Reply-To: <cover.1573179553.git.thehajime@gmail.com>
+References: <cover.1573179553.git.thehajime@gmail.com>
+MIME-Version: 1.0
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
+Cc: linux-arch@vger.kernel.org, Conrad Meyer <cem@FreeBSD.org>, Octavian Purdila <tavi.purdila@gmail.com>, Akira Moroo <retrage01@gmail.com>, Petros Angelatos <petrosagg@gmail.com>, Dan Peebles <pumpkin@me.com>, linux-kernel-library@freelists.org, Yuriy Taraday <yorik.sar@gmail.com>, Tuomas Tynkkynen <tuomas.tynkkynen@iki.fi>, Hajime Tazaki <thehajime@gmail.com>
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+From: Octavian Purdila <tavi.purdila@gmail.com>
 
-The UML port uses 4 and 5 level fixups to support higher level page table
-directories in the generic VM code.
+A tool to read/write to/from a filesystem image without mounting the
+file to host filesystem.  Thus there is no root priviledge to modify the
+contents.
 
-Implement primitives necessary for the 4th level folding, add walks of
-p4d level where appropriate and drop usage of __ARCH_USE_5LEVEL_HACK.
-
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Signed-off-by: Conrad Meyer <cem@FreeBSD.org>
+Signed-off-by: Dan Peebles <pumpkin@me.com>
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+Signed-off-by: Petros Angelatos <petrosagg@gmail.com>
+Signed-off-by: Tuomas Tynkkynen <tuomas.tynkkynen@iki.fi>
+Signed-off-by: Yuriy Taraday <yorik.sar@gmail.com>
+Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
 ---
- arch/um/include/asm/pgtable-2level.h |  1 -
- arch/um/include/asm/pgtable-3level.h |  1 -
- arch/um/include/asm/pgtable.h        |  3 ++
- arch/um/kernel/mem.c                 |  8 ++++--
- arch/um/kernel/skas/mmu.c            | 12 ++++++--
- arch/um/kernel/skas/uaccess.c        |  7 ++++-
- arch/um/kernel/tlb.c                 | 56 ++++++++++++++++++++++++++++++++----
- arch/um/kernel/trap.c                |  4 ++-
- 8 files changed, 78 insertions(+), 14 deletions(-)
+ tools/lkl/.gitignore |   2 +
+ tools/lkl/Build      |   2 +
+ tools/lkl/Makefile   |   3 +
+ tools/lkl/Targets    |   3 +
+ tools/lkl/cptofs.c   | 635 +++++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 645 insertions(+)
+ create mode 100644 tools/lkl/cptofs.c
 
-diff --git a/arch/um/include/asm/pgtable-2level.h b/arch/um/include/asm/pgtable-2level.h
-index 32b3d26..32106d3 100644
---- a/arch/um/include/asm/pgtable-2level.h
-+++ b/arch/um/include/asm/pgtable-2level.h
-@@ -8,7 +8,6 @@
- #ifndef __UM_PGTABLE_2LEVEL_H
- #define __UM_PGTABLE_2LEVEL_H
- 
--#define __ARCH_USE_5LEVEL_HACK
- #include <asm-generic/pgtable-nopmd.h>
- 
- /* PGDIR_SHIFT determines what a third-level page table entry can map */
-diff --git a/arch/um/include/asm/pgtable-3level.h b/arch/um/include/asm/pgtable-3level.h
-index 9812269..8a3b689 100644
---- a/arch/um/include/asm/pgtable-3level.h
-+++ b/arch/um/include/asm/pgtable-3level.h
-@@ -7,7 +7,6 @@
- #ifndef __UM_PGTABLE_3LEVEL_H
- #define __UM_PGTABLE_3LEVEL_H
- 
--#define __ARCH_USE_5LEVEL_HACK
- #include <asm-generic/pgtable-nopud.h>
- 
- /* PGDIR_SHIFT determines what a third-level page table entry can map */
-diff --git a/arch/um/include/asm/pgtable.h b/arch/um/include/asm/pgtable.h
-index 36a44d5..2daa58d 100644
---- a/arch/um/include/asm/pgtable.h
-+++ b/arch/um/include/asm/pgtable.h
-@@ -106,6 +106,9 @@ extern unsigned long end_iomem;
- #define pud_newpage(x)  (pud_val(x) & _PAGE_NEWPAGE)
- #define pud_mkuptodate(x) (pud_val(x) &= ~_PAGE_NEWPAGE)
- 
-+#define p4d_newpage(x)  (p4d_val(x) & _PAGE_NEWPAGE)
-+#define p4d_mkuptodate(x) (p4d_val(x) &= ~_PAGE_NEWPAGE)
+diff --git a/tools/lkl/.gitignore b/tools/lkl/.gitignore
+index 4e08254dbd46..1a8210f4d9c4 100644
+--- a/tools/lkl/.gitignore
++++ b/tools/lkl/.gitignore
+@@ -7,3 +7,5 @@ tests/disk
+ tests/boot
+ tests/valgrind*.xml
+ *.pyc
++cptofs
++cpfromfs
+diff --git a/tools/lkl/Build b/tools/lkl/Build
+index e69de29bb2d1..a9d12c5ca260 100644
+--- a/tools/lkl/Build
++++ b/tools/lkl/Build
+@@ -0,0 +1,2 @@
++cptofs-$(LKL_HOST_CONFIG_ARCHIVE) += cptofs.o
 +
- #define pmd_page(pmd) phys_to_page(pmd_val(pmd) & PAGE_MASK)
+diff --git a/tools/lkl/Makefile b/tools/lkl/Makefile
+index 9a55df5064e4..94f3ba09123d 100644
+--- a/tools/lkl/Makefile
++++ b/tools/lkl/Makefile
+@@ -85,6 +85,9 @@ $(OUTPUT)%$(EXESUF): $(OUTPUT)%-in.o $(OUTPUT)liblkl.a
+ $(OUTPUT)%-in.o: $(OUTPUT)lib/lkl.o FORCE
+ 	$(Q)$(MAKE) -f $(srctree)/tools/build/Makefile.build dir=$(patsubst %/,%,$(dir $*)) obj=$(notdir $*)
  
- #define pte_page(x) pfn_to_page(pte_pfn(x))
-diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
-index 417ff64..30885d0 100644
---- a/arch/um/kernel/mem.c
-+++ b/arch/um/kernel/mem.c
-@@ -96,6 +96,7 @@ static void __init fixrange_init(unsigned long start, unsigned long end,
- 				 pgd_t *pgd_base)
- {
- 	pgd_t *pgd;
-+	p4d_t *p4d;
- 	pud_t *pud;
- 	pmd_t *pmd;
- 	int i, j;
-@@ -107,7 +108,8 @@ static void __init fixrange_init(unsigned long start, unsigned long end,
- 	pgd = pgd_base + i;
- 
- 	for ( ; (i < PTRS_PER_PGD) && (vaddr < end); pgd++, i++) {
--		pud = pud_offset(pgd, vaddr);
-+		p4d = p4d_offset(pgd, vaddr);
-+		pud = pud_offset(p4d, vaddr);
- 		if (pud_none(*pud))
- 			one_md_table_init(pud);
- 		pmd = pmd_offset(pud, vaddr);
-@@ -124,6 +126,7 @@ static void __init fixaddr_user_init( void)
- #ifdef CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA
- 	long size = FIXADDR_USER_END - FIXADDR_USER_START;
- 	pgd_t *pgd;
-+	p4d_t *p4d;
- 	pud_t *pud;
- 	pmd_t *pmd;
- 	pte_t *pte;
-@@ -144,7 +147,8 @@ static void __init fixaddr_user_init( void)
- 	for ( ; size > 0; size -= PAGE_SIZE, vaddr += PAGE_SIZE,
- 		      p += PAGE_SIZE) {
- 		pgd = swapper_pg_dir + pgd_index(vaddr);
--		pud = pud_offset(pgd, vaddr);
-+		p4d = p4d_offset(pgd, vaddr);
-+		pud = pud_offset(p4d, vaddr);
- 		pmd = pmd_offset(pud, vaddr);
- 		pte = pte_offset_kernel(pmd, vaddr);
- 		pte_set_val(*pte, p, PAGE_READONLY);
-diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
-index b5e3d91..3f0d9a5 100644
---- a/arch/um/kernel/skas/mmu.c
-+++ b/arch/um/kernel/skas/mmu.c
-@@ -19,15 +19,21 @@ static int init_stub_pte(struct mm_struct *mm, unsigned long proc,
- 			 unsigned long kernel)
- {
- 	pgd_t *pgd;
-+	p4d_t *p4d;
- 	pud_t *pud;
- 	pmd_t *pmd;
- 	pte_t *pte;
- 
- 	pgd = pgd_offset(mm, proc);
--	pud = pud_alloc(mm, pgd, proc);
--	if (!pud)
++$(OUTPUT)cpfromfs$(EXESUF): cptofs$(EXESUF)
++	$(Q)if ! [ -e $@ ]; then ln -s $< $@; fi
 +
-+	p4d = p4d_alloc(mm, pgd, proc);
-+	if (!p4d)
- 		goto out;
  
-+	pud = pud_alloc(mm, p4d, proc);
-+	if (!pud)
-+		goto out_pud;
+ clean:
+ 	$(call QUIET_CLEAN, objects)find $(OUTPUT) -name '*.o' -delete -o -name '\.*.cmd'\
+diff --git a/tools/lkl/Targets b/tools/lkl/Targets
+index a9f74c3cc8fb..e629b330e5aa 100644
+--- a/tools/lkl/Targets
++++ b/tools/lkl/Targets
+@@ -4,3 +4,6 @@ progs-y += tests/boot
+ progs-y += tests/disk
+ progs-y += tests/net-test
+ 
++progs-$(LKL_HOST_CONFIG_ARCHIVE) += cptofs
++LDLIBS_cptofs-y := -larchive
++LDLIBS_cptofs-$(LKL_HOST_CONFIG_NEEDS_LARGP) += -largp
+diff --git a/tools/lkl/cptofs.c b/tools/lkl/cptofs.c
+new file mode 100644
+index 000000000000..dd490435d5b7
+--- /dev/null
++++ b/tools/lkl/cptofs.c
+@@ -0,0 +1,635 @@
++// SPDX-License-Identifier: GPL-2.0
++#ifdef __FreeBSD__
++#include <sys/param.h>
++#endif
 +
- 	pmd = pmd_alloc(mm, pud, proc);
- 	if (!pmd)
- 		goto out_pmd;
-@@ -44,6 +50,8 @@ static int init_stub_pte(struct mm_struct *mm, unsigned long proc,
- 	pmd_free(mm, pmd);
-  out_pmd:
- 	pud_free(mm, pud);
-+ out_pud:
-+	p4d_free(mm, p4d);
-  out:
- 	return -ENOMEM;
- }
-diff --git a/arch/um/kernel/skas/uaccess.c b/arch/um/kernel/skas/uaccess.c
-index 3236052..d617f8d 100644
---- a/arch/um/kernel/skas/uaccess.c
-+++ b/arch/um/kernel/skas/uaccess.c
-@@ -17,6 +17,7 @@
- pte_t *virt_to_pte(struct mm_struct *mm, unsigned long addr)
- {
- 	pgd_t *pgd;
-+	p4d_t *p4d;
- 	pud_t *pud;
- 	pmd_t *pmd;
- 
-@@ -27,7 +28,11 @@ pte_t *virt_to_pte(struct mm_struct *mm, unsigned long addr)
- 	if (!pgd_present(*pgd))
- 		return NULL;
- 
--	pud = pud_offset(pgd, addr);
-+	p4d = p4d_offset(pgd, addr);
-+	if (!p4d_present(*p4d))
-+		return NULL;
++#include <stdio.h>
++#include <time.h>
++#include <argp.h>
++#include <unistd.h>
++#include <string.h>
++#include <stdlib.h>
++#include <libgen.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++#include <fnmatch.h>
++#include <dirent.h>
++#include <lkl.h>
++#include <lkl_host.h>
 +
-+	pud = pud_offset(p4d, addr);
- 	if (!pud_present(*pud))
- 		return NULL;
- 
-diff --git a/arch/um/kernel/tlb.c b/arch/um/kernel/tlb.c
-index 8425a22..80a358c 100644
---- a/arch/um/kernel/tlb.c
-+++ b/arch/um/kernel/tlb.c
-@@ -277,7 +277,7 @@ static inline int update_pmd_range(pud_t *pud, unsigned long addr,
- 	return ret;
- }
- 
--static inline int update_pud_range(pgd_t *pgd, unsigned long addr,
-+static inline int update_pud_range(p4d_t *p4d, unsigned long addr,
- 				   unsigned long end,
- 				   struct host_vm_change *hvc)
- {
-@@ -285,7 +285,7 @@ static inline int update_pud_range(pgd_t *pgd, unsigned long addr,
- 	unsigned long next;
- 	int ret = 0;
- 
--	pud = pud_offset(pgd, addr);
-+	pud = pud_offset(p4d, addr);
- 	do {
- 		next = pud_addr_end(addr, end);
- 		if (!pud_present(*pud)) {
-@@ -299,6 +299,28 @@ static inline int update_pud_range(pgd_t *pgd, unsigned long addr,
- 	return ret;
- }
- 
-+static inline int update_p4d_range(pgd_t *pgd, unsigned long addr,
-+				   unsigned long end,
-+				   struct host_vm_change *hvc)
++static const char doc_cptofs[] = "Copy files to a filesystem image";
++static const char doc_cpfromfs[] = "Copy files from a filesystem image";
++static const char args_doc_cptofs[] = "-t fstype -i fsimage path... fs_path";
++static const char args_doc_cpfromfs[] = "-t fstype -i fsimage fs_path... path";
++
++static struct argp_option options[] = {
++	{"enable-printk", 'p', 0, 0, "show Linux printks"},
++	{"partition", 'P', "int", 0, "partition number"},
++	{"filesystem-type", 't', "string", 0,
++	 "select filesystem type - mandatory"},
++	{"filesystem-image", 'i', "string", 0,
++	 "path to the filesystem image - mandatory"},
++	{"selinux", 's', "string", 0, "selinux attributes for destination"},
++	{0},
++};
++
++static struct cl_args {
++	int printk;
++	int part;
++	const char *fsimg_type;
++	const char *fsimg_path;
++	int npaths;
++	char **paths;
++	const char *selinux;
++} cla;
++
++static int cptofs;
++
++static error_t parse_opt(int key, char *arg, struct argp_state *state)
 +{
-+	p4d_t *p4d;
-+	unsigned long next;
-+	int ret = 0;
++	struct cl_args *cla = state->input;
 +
-+	p4d = p4d_offset(pgd, addr);
-+	do {
-+		next = p4d_addr_end(addr, end);
-+		if (!p4d_present(*p4d)) {
-+			if (hvc->force || p4d_newpage(*p4d)) {
-+				ret = add_munmap(addr, next - addr, hvc);
-+				p4d_mkuptodate(*p4d);
-+			}
-+		} else
-+			ret = update_pud_range(p4d, addr, next, hvc);
-+	} while (p4d++, addr = next, ((addr < end) && !ret));
++	switch (key) {
++	case 'p':
++		cla->printk = 1;
++		break;
++	case 'P':
++		cla->part = atoi(arg);
++		break;
++	case 't':
++		cla->fsimg_type = arg;
++		break;
++	case 'i':
++		cla->fsimg_path = arg;
++		break;
++	case 's':
++		cla->selinux = arg;
++		break;
++	case ARGP_KEY_ARG:
++		// Capture all remaining arguments in our paths array and stop
++		// parsing here. We treat the last one as the destination and
++		// everything before it as sources, just like cp does.
++		cla->paths = &state->argv[state->next - 1];
++		cla->npaths = state->argc - state->next + 1;
++		state->next = state->argc;
++		break;
++	default:
++		return ARGP_ERR_UNKNOWN;
++	}
++
++	return 0;
++}
++
++static struct argp argp_cptofs = {
++	.options = options,
++	.parser = parse_opt,
++	.args_doc = args_doc_cptofs,
++	.doc = doc_cptofs,
++};
++
++static struct argp argp_cpfromfs = {
++	.options = options,
++	.parser = parse_opt,
++	.args_doc = args_doc_cpfromfs,
++	.doc = doc_cpfromfs,
++};
++
++static int searchdir(const char *fs_path, const char *path, const char *match);
++
++static int open_src(const char *path)
++{
++	int fd;
++
++	if (cptofs)
++		fd = open(path, O_RDONLY, 0);
++	else
++		fd = lkl_sys_open(path, LKL_O_RDONLY, 0);
++
++	if (fd < 0)
++		fprintf(stderr, "unable to open file %s for reading: %s\n",
++			path, cptofs ? strerror(errno) : lkl_strerror(fd));
++
++	return fd;
++}
++
++static int open_dst(const char *path, int mode)
++{
++	int fd;
++
++	if (cptofs)
++		fd = lkl_sys_open(path, LKL_O_RDWR | LKL_O_TRUNC | LKL_O_CREAT,
++				  mode);
++	else
++		fd = open(path, O_RDWR | O_TRUNC | O_CREAT, mode);
++
++	if (fd < 0)
++		fprintf(stderr, "unable to open file %s for writing: %s\n",
++			path, cptofs ? lkl_strerror(fd) : strerror(errno));
++
++	if (cla.selinux && cptofs) {
++		int ret = lkl_sys_fsetxattr(fd, "security.selinux", cla.selinux,
++					    strlen(cla.selinux), 0);
++		if (ret)
++			fprintf(stderr,
++				"unable to set selinux attribute on %s: %s\n",
++				path, lkl_strerror(ret));
++	}
++
++	return fd;
++}
++
++static int read_src(int fd, char *buf, int len)
++{
++	int ret;
++
++	if (cptofs)
++		ret = read(fd, buf, len);
++	else
++		ret = lkl_sys_read(fd, buf, len);
++
++	if (ret < 0)
++		fprintf(stderr, "error reading file: %s\n",
++			cptofs ? strerror(errno) : lkl_strerror(ret));
++
 +	return ret;
 +}
 +
- void fix_range_common(struct mm_struct *mm, unsigned long start_addr,
- 		      unsigned long end_addr, int force)
- {
-@@ -316,8 +338,8 @@ void fix_range_common(struct mm_struct *mm, unsigned long start_addr,
- 				ret = add_munmap(addr, next - addr, &hvc);
- 				pgd_mkuptodate(*pgd);
- 			}
--		}
--		else ret = update_pud_range(pgd, addr, next, &hvc);
-+		} else
-+			ret = update_p4d_range(pgd, addr, next, &hvc);
- 	} while (pgd++, addr = next, ((addr < end_addr) && !ret));
- 
- 	if (!ret)
-@@ -338,6 +360,7 @@ static int flush_tlb_kernel_range_common(unsigned long start, unsigned long end)
- {
- 	struct mm_struct *mm;
- 	pgd_t *pgd;
-+	p4d_t *p4d;
- 	pud_t *pud;
- 	pmd_t *pmd;
- 	pte_t *pte;
-@@ -364,7 +387,23 @@ static int flush_tlb_kernel_range_common(unsigned long start, unsigned long end)
- 			continue;
- 		}
- 
--		pud = pud_offset(pgd, addr);
-+		p4d = p4d_offset(pgd, addr);
-+		if (!p4d_present(*p4d)) {
-+			last = ADD_ROUND(addr, P4D_SIZE);
-+			if (last > end)
-+				last = end;
-+			if (p4d_newpage(*p4d)) {
-+				updated = 1;
-+				err = add_munmap(addr, last - addr, &hvc);
-+				if (err < 0)
-+					panic("munmap failed, errno = %d\n",
-+					      -err);
-+			}
-+			addr = last;
-+			continue;
++static int write_dst(int fd, char *buf, int len)
++{
++	int ret;
++
++	if (cptofs)
++		ret = lkl_sys_write(fd, buf, len);
++	else
++		ret = write(fd, buf, len);
++
++	if (ret < 0)
++		fprintf(stderr, "error writing file: %s\n",
++			cptofs ? lkl_strerror(ret) : strerror(errno));
++
++	return ret;
++}
++
++static void close_src(int fd)
++{
++	if (cptofs)
++		close(fd);
++	else
++		lkl_sys_close(fd);
++}
++
++static void close_dst(int fd)
++{
++	if (cptofs)
++		lkl_sys_close(fd);
++	else
++		close(fd);
++}
++
++static int copy_file(const char *src, const char *dst, int mode)
++{
++	long len, to_write, wrote;
++	char buf[4096], *ptr;
++	int ret = 0;
++	int fd_src, fd_dst;
++
++	fd_src = open_src(src);
++	if (fd_src < 0)
++		return fd_src;
++
++	fd_dst = open_dst(dst, mode);
++	if (fd_dst < 0)
++		return fd_dst;
++
++	do {
++		len = read_src(fd_src, buf, sizeof(buf));
++
++		if (len > 0) {
++			ptr = buf;
++			to_write = len;
++			do {
++				wrote = write_dst(fd_dst, ptr, to_write);
++
++				if (wrote < 0) {
++					ret = wrote;
++					goto out;
++				}
++
++				to_write -= wrote;
++				ptr += len;
++
++			} while (to_write > 0);
 +		}
 +
-+		pud = pud_offset(p4d, addr);
- 		if (!pud_present(*pud)) {
- 			last = ADD_ROUND(addr, PUD_SIZE);
- 			if (last > end)
-@@ -424,6 +463,7 @@ static int flush_tlb_kernel_range_common(unsigned long start, unsigned long end)
- void flush_tlb_page(struct vm_area_struct *vma, unsigned long address)
- {
- 	pgd_t *pgd;
-+	p4d_t *p4d;
- 	pud_t *pud;
- 	pmd_t *pmd;
- 	pte_t *pte;
-@@ -437,7 +477,11 @@ void flush_tlb_page(struct vm_area_struct *vma, unsigned long address)
- 	if (!pgd_present(*pgd))
- 		goto kill;
- 
--	pud = pud_offset(pgd, address);
-+	p4d = p4d_offset(pgd, address);
-+	if (!p4d_present(*p4d))
-+		goto kill;
++		if (len < 0)
++			ret = len;
 +
-+	pud = pud_offset(p4d, address);
- 	if (!pud_present(*pud))
- 		goto kill;
- 
-diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
-index e62296c..8185530 100644
---- a/arch/um/kernel/trap.c
-+++ b/arch/um/kernel/trap.c
-@@ -28,6 +28,7 @@ int handle_page_fault(unsigned long address, unsigned long ip,
- 	struct mm_struct *mm = current->mm;
- 	struct vm_area_struct *vma;
- 	pgd_t *pgd;
-+	p4d_t *p4d;
- 	pud_t *pud;
- 	pmd_t *pmd;
- 	pte_t *pte;
-@@ -104,7 +105,8 @@ int handle_page_fault(unsigned long address, unsigned long ip,
- 		}
- 
- 		pgd = pgd_offset(mm, address);
--		pud = pud_offset(pgd, address);
-+		p4d = p4d_offset(pgd, address);
-+		pud = pud_offset(p4d, address);
- 		pmd = pmd_offset(pud, address);
- 		pte = pte_offset_kernel(pmd, address);
- 	} while (!pte_present(*pte));
++	} while (len > 0);
++
++out:
++	close_src(fd_src);
++	close_dst(fd_dst);
++
++	return ret;
++}
++
++static int stat_src(const char *path, unsigned int *type, unsigned int *mode,
++		    long long *size, struct lkl_timespec *mtime,
++		    struct lkl_timespec *atime)
++{
++	struct stat stat;
++	struct lkl_stat lkl_stat;
++	int ret;
++
++	if (cptofs) {
++		ret = lstat(path, &stat);
++		if (type)
++			*type = stat.st_mode & S_IFMT;
++		if (mode)
++			*mode = stat.st_mode & ~S_IFMT;
++		if (size)
++			*size = stat.st_size;
++		if (mtime) {
++			mtime->tv_sec = stat.st_mtim.tv_sec;
++			mtime->tv_nsec = stat.st_mtim.tv_nsec;
++		}
++		if (atime) {
++			atime->tv_sec = stat.st_atim.tv_sec;
++			atime->tv_nsec = stat.st_atim.tv_nsec;
++		}
++	} else {
++		ret = lkl_sys_lstat(path, &lkl_stat);
++		if (type)
++			*type = lkl_stat.st_mode & S_IFMT;
++		if (mode)
++			*mode = lkl_stat.st_mode & ~S_IFMT;
++		if (size)
++			*size = lkl_stat.st_size;
++		if (mtime) {
++			mtime->tv_sec = lkl_stat.lkl_st_mtime;
++			mtime->tv_nsec = lkl_stat.st_mtime_nsec;
++		}
++		if (atime) {
++			atime->tv_sec = lkl_stat.lkl_st_atime;
++			atime->tv_nsec = lkl_stat.st_atime_nsec;
++		}
++	}
++
++	if (ret)
++		fprintf(stderr, "fsimg lstat(%s) error: %s\n",
++			path, cptofs ? strerror(errno) : lkl_strerror(ret));
++
++	return ret;
++}
++
++static int mkdir_dst(const char *path, unsigned int mode)
++{
++	int ret;
++
++	if (cptofs) {
++		ret = lkl_sys_mkdir(path, mode);
++		if (ret == -LKL_EEXIST)
++			ret = 0;
++	} else {
++		ret = mkdir(path, mode);
++		if (ret < 0 && errno == EEXIST)
++			ret = 0;
++	}
++
++	if (ret)
++		fprintf(stderr, "unable to create directory %s: %s\n",
++			path, cptofs ? strerror(errno) : lkl_strerror(ret));
++
++	return ret;
++}
++
++static int readlink_src(const char *src, char *out, int outsize)
++{
++	int ret;
++
++	if (cptofs)
++		ret = readlink(src, out, outsize);
++	else
++		ret = lkl_sys_readlink(src, out, outsize);
++
++	if (ret < 0)
++		fprintf(stderr, "unable to readlink '%s': %s\n", src,
++			cptofs ? strerror(errno) : lkl_strerror(ret));
++
++	return ret;
++}
++
++static int symlink_dst(const char *path, const char *target)
++{
++	int ret;
++
++	if (cptofs)
++		ret = lkl_sys_symlink(target, path);
++	else
++		ret = symlink(target, path);
++
++	if (ret)
++		fprintf(stderr, "unable to symlink '%s' with target '%s': %s\n",
++			path, target, cptofs ? lkl_strerror(ret) :
++			strerror(errno));
++
++	return ret;
++}
++
++static int copy_symlink(const char *src, const char *dst)
++{
++	int ret;
++	long long size, actual_size;
++	char *target = NULL;
++
++	ret = stat_src(src, NULL, NULL, &size, NULL, NULL);
++	if (ret) {
++		ret = -1;
++		goto out;
++	}
++
++	target = malloc(size + 1);
++	if (!target) {
++		fprintf(stderr, "Unable to allocate memory (%lld bytes)\n",
++			size + 1);
++		ret = -1;
++		goto out;
++	}
++
++	actual_size = readlink_src(src, target, size);
++	if (actual_size != size) {
++		fprintf(stderr,
++			"readlink(%s) bad size: got %lld, expected %lld\n",
++			src, actual_size, size);
++		ret = -1;
++		goto out;
++	}
++	target[size] = 0; // readlink doesn't append the trailing null byte
++
++	ret = symlink_dst(dst, target);
++	if (ret)
++		ret = -1;
++
++out:
++	if (target)
++		free(target);
++
++	return ret;
++}
++
++static int do_entry(const char *_src, const char *_dst, const char *name)
++{
++	char src[PATH_MAX], dst[PATH_MAX];
++	struct lkl_timespec mtime, atime;
++	unsigned int type, mode;
++	int ret;
++
++	snprintf(src, sizeof(src), "%s/%s", _src, name);
++	snprintf(dst, sizeof(dst), "%s/%s", _dst, name);
++
++	ret = stat_src(src, &type, &mode, NULL, &mtime, &atime);
++
++	switch (type) {
++	case S_IFREG:
++	{
++		ret = copy_file(src, dst, mode);
++		break;
++	}
++	case S_IFDIR:
++		ret = mkdir_dst(dst, mode);
++		if (ret)
++			break;
++		ret = searchdir(src, dst, NULL);
++		break;
++	case S_IFLNK:
++		ret = copy_symlink(src, dst);
++		break;
++	case S_IFSOCK:
++	case S_IFBLK:
++	case S_IFCHR:
++	case S_IFIFO:
++	default:
++		printf("skipping %s: unsupported entry type %d\n", src, type);
++	}
++
++	if (!ret) {
++		if (cptofs) {
++			struct lkl_timespec lkl_ts[] = { atime, mtime };
++
++			ret = lkl_sys_utimensat(-1, dst,
++						(struct __lkl__kernel_timespec
++						 *)lkl_ts,
++						LKL_AT_SYMLINK_NOFOLLOW);
++		} else {
++			struct timespec ts[] = {
++				{ .tv_sec = atime.tv_sec,
++				  .tv_nsec = atime.tv_nsec, },
++				{ .tv_sec = mtime.tv_sec,
++				  .tv_nsec = mtime.tv_nsec, },
++			};
++
++			ret = utimensat(-1, dst, ts, AT_SYMLINK_NOFOLLOW);
++		}
++	}
++
++	if (ret)
++		printf("error processing entry %s, aborting\n", src);
++
++	return ret;
++}
++
++static DIR *open_dir(const char *path)
++{
++	DIR *dir;
++	int err;
++
++	if (cptofs)
++		dir = opendir(path);
++	else
++		dir = (DIR *)lkl_opendir(path, &err);
++
++	if (!dir)
++		fprintf(stderr, "unable to open directory %s: %s\n",
++			path, cptofs ? strerror(errno) : lkl_strerror(err));
++	return dir;
++}
++
++static const char *read_dir(DIR *dir, const char *path)
++{
++	struct lkl_dir *lkl_dir = (struct lkl_dir *)dir;
++	const char *name = NULL;
++	const char *err = NULL;
++
++	if (cptofs) {
++		struct dirent *de = readdir(dir);
++
++		if (de)
++			name = de->d_name;
++	} else {
++		struct lkl_linux_dirent64 *de = lkl_readdir(lkl_dir);
++
++		if (de)
++			name = de->d_name;
++	}
++
++	if (!name) {
++		if (cptofs) {
++			if (errno)
++				err = strerror(errno);
++		} else {
++			if (lkl_errdir(lkl_dir))
++				err = lkl_strerror(lkl_errdir(lkl_dir));
++		}
++	}
++
++	if (err)
++		fprintf(stderr, "error while reading directory %s: %s\n",
++			path, err);
++	return name;
++}
++
++static void close_dir(DIR *dir)
++{
++	if (cptofs)
++		closedir(dir);
++	else
++		lkl_closedir((struct lkl_dir *)dir);
++}
++
++static int searchdir(const char *src, const char *dst, const char *match)
++{
++	DIR *dir;
++	const char *name;
++	int ret = 0;
++
++	dir = open_dir(src);
++	if (!dir)
++		return -1;
++
++	while ((name = read_dir(dir, src))) {
++		if (!strcmp(name, ".") || !strcmp(name, "..") ||
++		    (match && fnmatch(match, name, 0) != 0))
++			continue;
++
++		ret = do_entry(src, dst, name);
++		if (ret)
++			goto out;
++	}
++
++out:
++	close_dir(dir);
++
++	return ret;
++}
++
++static int match_root(const char *src)
++{
++	const char *c = src;
++
++	while (*c) {
++		switch (*c) {
++		case '.':
++			if (c > src && c[-1] == '.')
++				return 0;
++			break;
++		case '/':
++			break;
++		default:
++			return 0;
++		}
++		c++;
++	}
++
++	return 1;
++}
++
++int copy_one(const char *src, const char *mpoint, const char *dst)
++{
++	char *src_path_dir, *src_path_base;
++	char src_path[PATH_MAX], dst_path[PATH_MAX];
++
++	if (cptofs) {
++		snprintf(src_path, sizeof(src_path),  "%s", src);
++		snprintf(dst_path, sizeof(dst_path),  "%s/%s", mpoint, dst);
++	} else {
++		snprintf(src_path, sizeof(src_path),  "%s/%s", mpoint, src);
++		snprintf(dst_path, sizeof(dst_path),  "%s", dst);
++	}
++
++	if (match_root(src))
++		return searchdir(src_path, dst, NULL);
++
++	src_path_dir = dirname(strdup(src_path));
++	src_path_base = basename(strdup(src_path));
++
++	return searchdir(src_path_dir, dst_path, src_path_base);
++}
++
++int main(int argc, char **argv)
++{
++	struct lkl_disk disk;
++	long ret, umount_ret;
++	int i;
++	char mpoint[32];
++	unsigned int disk_id;
++
++	if (strstr(argv[0], "cptofs")) {
++		cptofs = 1;
++		ret = argp_parse(&argp_cptofs, argc, argv, 0, 0, &cla);
++	} else {
++		ret = argp_parse(&argp_cpfromfs, argc, argv, 0, 0, &cla);
++	}
++
++	if (ret < 0)
++		return -1;
++
++	if (!cla.printk)
++		lkl_host_ops.print = NULL;
++
++	disk.fd = open(cla.fsimg_path, cptofs ? O_RDWR : O_RDONLY);
++	if (disk.fd < 0) {
++		fprintf(stderr, "can't open fsimg %s: %s\n", cla.fsimg_path,
++			strerror(errno));
++		ret = 1;
++		goto out;
++	}
++
++	disk.ops = NULL;
++
++	ret = lkl_disk_add(&disk);
++	if (ret < 0) {
++		fprintf(stderr, "can't add disk: %s\n", lkl_strerror(ret));
++		goto out_close;
++	}
++	disk_id = ret;
++
++	lkl_start_kernel(&lkl_host_ops, "mem=100M");
++
++	ret = lkl_mount_dev(disk_id, cla.part, cla.fsimg_type,
++			    cptofs ? 0 : LKL_MS_RDONLY,
++			    NULL, mpoint, sizeof(mpoint));
++	if (ret) {
++		fprintf(stderr, "can't mount disk: %s\n", lkl_strerror(ret));
++		goto out_close;
++	}
++
++	lkl_sys_umask(0);
++
++	for (i = 0; i < cla.npaths - 1; i++) {
++		ret = copy_one(cla.paths[i], mpoint, cla.paths[cla.npaths - 1]);
++		if (ret)
++			break;
++	}
++
++	umount_ret = lkl_umount_dev(disk_id, cla.part, 0, 1000);
++	if (ret == 0)
++		ret = umount_ret;
++
++out_close:
++	close(disk.fd);
++
++out:
++	lkl_sys_halt();
++
++	return ret;
++}
 -- 
-2.7.4
+2.20.1 (Apple Git-117)
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
