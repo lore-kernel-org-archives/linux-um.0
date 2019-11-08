@@ -1,15 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
+Received: from mail-pf1-x435.google.com ([2607:f8b0:4864:20::435])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iSwRd-000475-GO
- for linux-um@lists.infradead.org; Fri, 08 Nov 2019 05:04:27 +0000
-Received: by mail-pf1-x441.google.com with SMTP id 3so3836849pfb.10
- for <linux-um@lists.infradead.org>; Thu, 07 Nov 2019 21:04:25 -0800 (PST)
+ id 1iSwRo-0004Ca-3F
+ for linux-um@lists.infradead.org; Fri, 08 Nov 2019 05:04:37 +0000
+Received: by mail-pf1-x435.google.com with SMTP id n13so3893327pff.1
+ for <linux-um@lists.infradead.org>; Thu, 07 Nov 2019 21:04:35 -0800 (PST)
 From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v2 33/37] kallsyms: Add a config option to select section for
- kallsyms
-Date: Fri,  8 Nov 2019 14:02:48 +0900
-Message-Id: <1f8a9e18edf808f2016899887a3110be63cbc3c1.1573179553.git.thehajime@gmail.com>
+Subject: [RFC v2 37/37] um: add lkl virtio-blk device
+Date: Fri,  8 Nov 2019 14:02:52 +0900
+Message-Id: <61b15bfb52c7f1f066685c90a1cfe8346b3faec9.1573179553.git.thehajime@gmail.com>
 In-Reply-To: <cover.1573179553.git.thehajime@gmail.com>
 References: <cover.1573179553.git.thehajime@gmail.com>
 MIME-Version: 1.0
@@ -26,120 +25,156 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: Octavian Purdila <tavi.purdila@gmail.com>, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Akira Moroo <retrage01@gmail.com>
+Cc: Octavian Purdila <tavi.purdila@gmail.com>, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, Akira Moroo <retrage01@gmail.com>
 
-From: Andreas Abel <aabel@google.com>
+Now uml can use a virtio-blk device via 'vubd0=<filename>' over
+virtio-mmio driver.
 
-This commit adds a kernel config option to select whether the
-kallsyms data should be in the .rodata section (the default for
-non-LKL builds), or in the .data section (the default for LKL).
-
-This is to avoid relocations in the text segment (TEXTRELs) that
-would otherwise occur with LKL when the .rodata and the .text
-section end up in the same segment.
-
-Having TEXTRELs can lead to a number of issues:
-
-1. If a shared library contains a TEXTREL, the corresponding memory
-pages cannot be shared.
-
-2. Android >=6 and SELinux do not support binaries with TEXTRELs
-(http://android-developers.blogspot.com/2016/06/android-changes-for-ndk-developers.html).
-
-3. If a program has a TEXTREL, uses an ifunc, and is compiled with
-early binding, this can lead to a segmentation fault when processing
-the relocation for the ifunc during dynamic linking because the text
-segment is made temporarily non-executable to process the TEXTREL
-(line 248 in dl_reloc.c).
-
-Signed-off-by: Andreas Abel <aabel@google.com>
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
 ---
- init/Kconfig            | 12 ++++++++++++
- scripts/kallsyms.c      | 11 +++++++++--
- scripts/link-vmlinux.sh |  4 ++++
- 3 files changed, 25 insertions(+), 2 deletions(-)
+ .circleci/config.yml             |  4 ++-
+ arch/um/configs/x86_64_defconfig |  1 +
+ arch/um/os-Linux/lkl_dev.c       | 56 +++++++++++++++++++++++++++++++-
+ tools/lkl/lib/Makefile           |  6 ++--
+ 4 files changed, 62 insertions(+), 5 deletions(-)
 
-diff --git a/init/Kconfig b/init/Kconfig
-index 81293d78a6ad..bd1a846e0ee0 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1385,6 +1385,18 @@ config POSIX_TIMERS
+diff --git a/.circleci/config.yml b/.circleci/config.yml
+index 9753543e8198..f2fe39fc2bee 100644
+--- a/.circleci/config.yml
++++ b/.circleci/config.yml
+@@ -141,7 +141,9 @@ do_uml_steps: &do_uml_steps
+         if [ $CIRCLE_STAGE = "i386_uml" ] || [ $CIRCLE_STAGE = "i386_uml_on_x86_64" ]; then
+           exit 0
+         fi
+-        ./linux rootfstype=hostfs ro mem=1g loglevel=10 veth0=tap,tap0,0xc803 init="/bin/bash -c exit" || export RETVAL=$?
++        dd if=/dev/zero of=disk.img bs=1024 count=20480
++        mkfs.ext4 disk.img
++        ./linux rootfstype=hostfs ro mem=1g loglevel=10 veth0=tap,tap0,0xc803 vubd0=disk.img init='/bin/bash -x -c "mount -t ext4 /dev/vda /mnt ; ls -l /mnt/; ip addr ; exit"' || export RETVAL=$?
+         # SIGABRT=6 => 128+6
+         if [ $RETVAL != "134" ]; then
+           exit 1
+diff --git a/arch/um/configs/x86_64_defconfig b/arch/um/configs/x86_64_defconfig
+index 917982b6cd60..e5b7c048a701 100644
+--- a/arch/um/configs/x86_64_defconfig
++++ b/arch/um/configs/x86_64_defconfig
+@@ -75,3 +75,4 @@ CONFIG_VIRTIO_MENU=y
+ CONFIG_VIRTIO_MMIO=y
+ CONFIG_VIRTIO_MMIO_CMDLINE_DEVICES=y
+ CONFIG_VIRTIO_NET=y
++CONFIG_VIRTIO_BLK=y
+\ No newline at end of file
+diff --git a/arch/um/os-Linux/lkl_dev.c b/arch/um/os-Linux/lkl_dev.c
+index 698062917ed5..e08f113dfc0b 100644
+--- a/arch/um/os-Linux/lkl_dev.c
++++ b/arch/um/os-Linux/lkl_dev.c
+@@ -6,6 +6,7 @@
+ #include <os.h>
+ #include <kern_util.h>
+ #include <errno.h>
++#include <fcntl.h>
  
- 	  If unsure say y.
+ #include <lkl.h>
+ #include <lkl_host.h>
+@@ -14,6 +15,7 @@ extern struct lkl_host_operations lkl_host_ops;
+ struct lkl_host_operations *lkl_ops = &lkl_host_ops;
  
-+config KALLSYMS_USE_DATA_SECTION
-+	bool "Use .data instead of .rodata section for kallsyms"
-+	depends on KALLSYMS
-+	default n
-+	help
-+	  Enabling this option will put the kallsyms data in the .data section
-+	  instead of the .rodata section.
-+
-+	  This is useful when building the kernel as a library, as it avoids
-+	  relocations in the text segment that could otherwise occur if the
-+	  .rodata section is in the same segment as the .text section.
-+
- config PRINTK
- 	default y
- 	bool "Enable support for printk" if EXPERT
-diff --git a/scripts/kallsyms.c b/scripts/kallsyms.c
-index 75ec25554111..5e4f270c3904 100644
---- a/scripts/kallsyms.c
-+++ b/scripts/kallsyms.c
-@@ -59,6 +59,7 @@ static struct addr_range percpu_range = {
- static struct sym_entry *table;
- static unsigned int table_size, table_cnt;
- static int all_symbols = 0;
-+static int use_data_section;
- static int absolute_percpu = 0;
- static char symbol_prefix_char = '\0';
- static int base_relative = 0;
-@@ -74,6 +75,7 @@ static void usage(void)
+ static struct lkl_netdev *nd;
++static struct lkl_disk disk;
+ 
+ int __init uml_netdev_prepare(char *iftype, char *ifparams, char *ifoffload)
  {
- 	fprintf(stderr, "Usage: kallsyms [--all-symbols] "
- 			"[--symbol-prefix=<prefix char>] "
-+			"[--use-data-section] "
- 			"[--base-relative] < in.map > out.S\n");
- 	exit(1);
- }
-@@ -362,7 +364,10 @@ static void write_src(void)
- 	printf("#define ALGN .balign 4\n");
- 	printf("#endif\n");
+@@ -108,13 +110,65 @@ __uml_setup("veth", lkl_eth_setup,
+ "    Configure a network device.\n\n"
+ );
  
--	printf("\t.section .rodata, \"a\"\n");
-+	if (use_data_section)
-+		printf("\t.section .data\n");
-+	else
-+		printf("\t.section .rodata, \"a\"\n");
- 
- 	/* Provide proper symbols relocatability by their relativeness
- 	 * to a fixed anchor point in the runtime image, either '_text'
-@@ -774,7 +779,9 @@ int main(int argc, char **argv)
- 				if ((*p == '"' && *(p+2) == '"') || (*p == '\'' && *(p+2) == '\''))
- 					p++;
- 				symbol_prefix_char = *p;
--			} else
-+			} else if (strcmp(argv[i], "--use-data-section") == 0)
-+				use_data_section = 1;
-+			else
- 				usage();
- 		}
- 	} else if (argc != 1)
-diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-index 553d966a1986..3fc1fc406b38 100755
---- a/scripts/link-vmlinux.sh
-+++ b/scripts/link-vmlinux.sh
-@@ -133,6 +133,10 @@ kallsyms()
- 		kallsymopt="${kallsymopt} --base-relative"
- 	fi
- 
-+	if [ -n "${CONFIG_KALLSYMS_USE_DATA_SECTION}" ]; then
-+		kallsymopt="${kallsymopt} --use-data-section"
-+	fi
++int __init uml_blkdev_add(void)
++{
++	int disk_id = 0;
 +
- 	local aflags="${KBUILD_AFLAGS} ${KBUILD_AFLAGS_KERNEL}               \
- 		      ${NOSTDINC_FLAGS} ${LINUXINCLUDE} ${KBUILD_CPPFLAGS}"
++	if (disk.fd)
++		disk_id = lkl_disk_add(&disk);
++
++	if (disk_id < 0)
++		return -1;
++
++	return 0;
++}
++__initcall(uml_blkdev_add);
++
++static int __init lkl_ubd_setup(char *str, int *niu)
++{
++	char *end, *fname;
++	int devid, err = -EINVAL;
++
++	/* veth */
++	devid = strtoul(str, &end, 0);
++	if (end == str) {
++		os_warn("Bad device number\n");
++		return err;
++	}
++
++	/* = */
++	str = end;
++	if (*str != '=') {
++		os_warn("Expected '=' after device number\n");
++		return err;
++	}
++	str++;
++
++	/* <filename> */
++	fname = str;
++
++	os_info("fname=%s\n", fname);
++	/* create */
++	disk.fd = open(fname, O_RDWR);
++	if (disk.fd < 0)
++		return -1;
++
++	disk.ops = NULL;
++
++	return 1;
++}
++__uml_setup("vubd", lkl_ubd_setup,
++"vubd<n>=<filename>\n"
++"    Configure a block device.\n\n"
++);
++
++
+ /* stub functions */
+ int lkl_is_running(void)
+ {
+ 	return 1;
+ }
  
+-
+ void lkl_put_irq(int i, const char *user)
+ {
+ }
+diff --git a/tools/lkl/lib/Makefile b/tools/lkl/lib/Makefile
+index 3c35d49843cd..be6cb4b8f4ec 100644
+--- a/tools/lkl/lib/Makefile
++++ b/tools/lkl/lib/Makefile
+@@ -4,9 +4,9 @@ USER_CFLAGS += -I$(srctree)/tools/lkl/include \
+ 		-Wno-strict-prototypes -Wno-undef \
+ 		-Wframe-larger-than=20480 -O0 -g
+ 
+-USER_OBJS += fs.o iomem.o net.o jmp_buf.o virtio.o virtio_net.o \
++USER_OBJS += iomem.o jmp_buf.o virtio.o virtio_net.o \
+ 	 virtio_net_fd.o virtio_net_tap.o utils.o posix-host.o \
+-	../../perf/pmu-events/jsmn.o
++	 virtio_blk.o ../../perf/pmu-events/jsmn.o
+ 
+ #obj-y += fs.o
+ obj-y += iomem.o
+@@ -15,7 +15,7 @@ obj-y += jmp_buf.o
+ obj-y += posix-host.o
+ #obj-$(LKL_HOST_CONFIG_NT) += nt-host.o
+ obj-y += utils.o
+-#obj-y += virtio_blk.o
++obj-y += virtio_blk.o
+ obj-y += virtio.o
+ #obj-y += dbg.o
+ #obj-y += dbg_handler.o
 -- 
 2.20.1 (Apple Git-117)
 
