@@ -1,66 +1,107 @@
-Return-Path: <rppt@kernel.org>
-From: Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH v4 11/13] um: remove unused pxx_offset_proc() and addr_pte() functions
-Date: Tue,  5 Nov 2019 09:15:33 +0200
-Message-Id: <1572938135-31886-12-git-send-email-rppt@kernel.org>
-In-Reply-To: <1572938135-31886-1-git-send-email-rppt@kernel.org>
-References: <1572938135-31886-1-git-send-email-rppt@kernel.org>
-To: linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jeff Dike <jdike@addtoit.com>, "Kirill A. Shutemov" <kirill@shutemov.name>, Linus Torvalds <torvalds@linux-foundation.org>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Michal Simek <monstr@monstr.eu>, Peter Rosin <peda@axentia.se>, Richard Weinberger <richard@nod.at>, Rolf Eike Beer <eike-kernel@sf-tec.de>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, Vincent Chen <deanbo422@gmail.com>, Vineet Gupta <Vineet.Gupta1@synopsys.com>, Mike Rapoport <rppt@kernel.org>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org, linux-um@lists.infradead.org, sparclinux@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mout.kundenserver.de ([212.227.126.187])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1iV0O4-0006Tc-G8
+ for linux-um@lists.infradead.org; Wed, 13 Nov 2019 21:41:18 +0000
+Received: from mail-qt1-f180.google.com ([209.85.160.180]) by
+ mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MmDAW-1i4i6m3XkG-00i9kJ for <linux-um@lists.infradead.org>; Wed, 13 Nov
+ 2019 22:41:09 +0100
+Received: by mail-qt1-f180.google.com with SMTP id p20so4326575qtq.5
+ for <linux-um@lists.infradead.org>; Wed, 13 Nov 2019 13:41:08 -0800 (PST)
+MIME-Version: 1.0
+References: <20191108210236.1296047-1-arnd@arndb.de>
+In-Reply-To: <20191108210236.1296047-1-arnd@arndb.de>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Wed, 13 Nov 2019 22:40:50 +0100
+Message-ID: <CAK8P3a1CbDaPqNsOVOuq2UDPSOwzd2U_WEmmXBMwCOhv1=iaSQ@mail.gmail.com>
+Subject: Re: [PATCH 00/23] y2038 cleanups
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: y2038 Mailman List <y2038@lists.linaro.org>
+Cc: linux-aio <linux-aio@kvack.org>, linux-ia64@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, linux-mips@vger.kernel.org, Networking <netdev@vger.kernel.org>, Deepa Dinamani <deepa.kernel@gmail.com>, sparclinux <sparclinux@vger.kernel.org>, Vincenzo Frascino <vincenzo.frascino@arm.com>, Will Deacon <will@kernel.org>, linux-arch <linux-arch@vger.kernel.org>, Paul Moore <paul@paul-moore.com>, Michael Ellerman <mpe@ellerman.id.au>, Helge Deller <deller@gmx.de>, the arch/x86 maintainers <x86@kernel.org>, Stephen Smalley <sds@tycho.nsa.gov>, SElinux list <selinux@vger.kernel.org>, Jeff Dike <jdike@addtoit.com>, alpha <linux-alpha@vger.kernel.org>, linux-um@lists.infradead.org, Steven Rostedt <rostedt@goodmis.org>, John Stultz <john.stultz@linaro.org>, Al Viro <viro@zeniv.linux.org.uk>, Eric Paris <eparis@parisplace.org>, Thomas Gleixner <tglx@linutronix.de>, Christian Brauner <christian@brauner.io>, Richard Henderson <rth@twiddle.net>, christophe leroy <christophe.leroy@c-s.fr>, Tony Luck <tony.luck@intel.com>, Parisc List <linux-parisc@vger.kernel.org>, Stephen Boyd <sboyd@kernel.org>, Linux API <linux-api@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Paul Burton <paul.burton@mips.com>, Benjamin LaHaise <bcrl@kvack.org>, "Eric W . Biederman" <ebiederm@xmission.com>, Richard Weinberger <richard@nod.at>, Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, David Miller <davem@davemloft.net>, Greentime Hu <green.hu@gmail.com>
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+On Fri, Nov 8, 2019 at 10:04 PM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> This is a series of cleanups for the y2038 work, mostly intended
+> for namespace cleaning: the kernel defines the traditional
+> time_t, timeval and timespec types that often lead to y2038-unsafe
+> code. Even though the unsafe usage is mostly gone from the kernel,
+> having the types and associated functions around means that we
+> can still grow new users, and that we may be missing conversions
+> to safe types that actually matter.
+>
+> As there is no rush on any of these patches, I would either
+> queue them up in linux-next through my y2038 branch, or
+> Thomas could add them to the tip tree if he wants.
+>
+> As mentioned in another series, this is part of a larger
+> effort to fix all the remaining bits and pieces that are
+> not completed yet from the y2038 conversion, and the full
+> set can be found at:
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/arnd/playground.git/log/?h=y2038-endgame
+>
+> Maintainers, please review and provide Acks.
+>
+> Let me know if you have any opinion on whether we should do
+> the include last two patches of this series or not.
+>
+>      Arnd
+>
+> Arnd Bergmann (23):
+>   y2038: remove CONFIG_64BIT_TIME
+>   y2038: add __kernel_old_timespec and __kernel_old_time_t
+>   y2038: vdso: change timeval to __kernel_old_timeval
+>   y2038: vdso: change timespec to __kernel_old_timespec
+>   y2038: vdso: change time_t to __kernel_old_time_t
+>   y2038: vdso: nds32: open-code timespec_add_ns()
+>   y2038: vdso: powerpc: avoid timespec references
+>   y2038: ipc: remove __kernel_time_t reference from headers
+>   y2038: stat: avoid 'time_t' in 'struct stat'
+>   y2038: uapi: change __kernel_time_t to __kernel_old_time_t
+>   y2038: rusage: use __kernel_old_timeval
+>   y2038: syscalls: change remaining timeval to __kernel_old_timeval
+>   y2038: socket: remove timespec reference in timestamping
+>   y2038: make ns_to_compat_timeval use __kernel_old_timeval
+>   y2038: elfcore: Use __kernel_old_timeval for process times
+>   y2038: timerfd: Use timespec64 internally
+>   y2038: time: avoid timespec usage in settimeofday()
+>   y2038: itimer: compat handling to itimer.c
+>   y2038: use compat_{get,set}_itimer on alpha
+>   y2038: move itimer reset into itimer.c
+>   y2038: itimer: change implementation to timespec64
+>   [RFC] y2038: itimer: use ktime_t internally
+>   y2038: allow disabling time32 system calls
 
-The pxx_offset_proc() and addr_pte() functions are never used.
-Remove them.
+I've dropped the "[RFC] y2038: itimer: use ktime_t internally" patch
+for the moment,
+and added two other patches from other series:
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Acked-by: Richard Weinberger <richard@nod.at>
----
- arch/um/kernel/tlb.c | 29 -----------------------------
- 1 file changed, 29 deletions(-)
+y2038: remove CONFIG_64BIT_TIME
+y2038: socket: use __kernel_old_timespec instead of timespec
 
-diff --git a/arch/um/kernel/tlb.c b/arch/um/kernel/tlb.c
-index b7eaf65..8425a22 100644
---- a/arch/um/kernel/tlb.c
-+++ b/arch/um/kernel/tlb.c
-@@ -490,35 +490,6 @@ void flush_tlb_page(struct vm_area_struct *vma, unsigned long address)
- 	force_sig(SIGKILL);
- }
- 
--pgd_t *pgd_offset_proc(struct mm_struct *mm, unsigned long address)
--{
--	return pgd_offset(mm, address);
--}
--
--pud_t *pud_offset_proc(pgd_t *pgd, unsigned long address)
--{
--	return pud_offset(pgd, address);
--}
--
--pmd_t *pmd_offset_proc(pud_t *pud, unsigned long address)
--{
--	return pmd_offset(pud, address);
--}
--
--pte_t *pte_offset_proc(pmd_t *pmd, unsigned long address)
--{
--	return pte_offset_kernel(pmd, address);
--}
--
--pte_t *addr_pte(struct task_struct *task, unsigned long addr)
--{
--	pgd_t *pgd = pgd_offset(task->mm, addr);
--	pud_t *pud = pud_offset(pgd, addr);
--	pmd_t *pmd = pmd_offset(pud, addr);
--
--	return pte_offset_map(pmd, addr);
--}
--
- void flush_tlb_all(void)
- {
- 	/*
--- 
-2.7.4
+Tentatively pushed out the patches with the Acks I have received so
+far to my y2038 branch on git.kernel.org so it gets included in linux-next.
 
+If I hear no complaints, I'll send a pull request for the merge window,
+along with the compat-ioctl series I have already queued up in the same
+branch.
+
+    Arnd
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
