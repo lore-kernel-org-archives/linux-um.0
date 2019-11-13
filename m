@@ -1,66 +1,44 @@
-Return-Path: <rppt@kernel.org>
-From: Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH v3 11/13] um: remove unused pxx_offset_proc() and addr_pte() functions
-Date: Mon,  4 Nov 2019 08:56:25 +0200
-Message-Id: <1572850587-20314-12-git-send-email-rppt@kernel.org>
-In-Reply-To: <1572850587-20314-1-git-send-email-rppt@kernel.org>
-References: <1572850587-20314-1-git-send-email-rppt@kernel.org>
-To: linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jeff Dike <jdike@addtoit.com>, "Kirill A. Shutemov" <kirill@shutemov.name>, Linus Torvalds <torvalds@linux-foundation.org>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Michal Simek <monstr@monstr.eu>, Peter Rosin <peda@axentia.se>, Richard Weinberger <richard@nod.at>, Rolf Eike Beer <eike-kernel@sf-tec.de>, Russell King <linux@armlinux.org.uk>, Sam Creasey <sammy@sammy.net>, Vincent Chen <deanbo422@gmail.com>, Vineet Gupta <Vineet.Gupta1@synopsys.com>, Mike Rapoport <rppt@kernel.org>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org, linux-um@lists.infradead.org, sparclinux@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1iV0eN-00031I-8W
+ for linux-um@lists.infradead.org; Wed, 13 Nov 2019 21:58:08 +0000
+Date: Wed, 13 Nov 2019 22:57:58 +0100 (CET)
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 05/23] y2038: vdso: change time_t to
+ __kernel_old_time_t
+In-Reply-To: <20191108210824.1534248-5-arnd@arndb.de>
+Message-ID: <alpine.DEB.2.21.1911132257450.2507@nanos.tec.linutronix.de>
+References: <20191108210236.1296047-1-arnd@arndb.de>
+ <20191108210824.1534248-5-arnd@arndb.de>
+MIME-Version: 1.0
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: y2038@lists.linaro.org, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, x86@kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Vincenzo Frascino <vincenzo.frascino@arm.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+On Fri, 8 Nov 2019, Arnd Bergmann wrote:
 
-The pxx_offset_proc() and addr_pte() functions are never used.
-Remove them.
+> Only x86 uses the 'time' syscall in vdso, so change that to
+> __kernel_old_time_t as a preparation for removing 'time_t' and
+> '__kernel_time_t' later.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Acked-by: Richard Weinberger <richard@nod.at>
----
- arch/um/kernel/tlb.c | 29 -----------------------------
- 1 file changed, 29 deletions(-)
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
 
-diff --git a/arch/um/kernel/tlb.c b/arch/um/kernel/tlb.c
-index b7eaf65..8425a22 100644
---- a/arch/um/kernel/tlb.c
-+++ b/arch/um/kernel/tlb.c
-@@ -490,35 +490,6 @@ void flush_tlb_page(struct vm_area_struct *vma, unsigned long address)
- 	force_sig(SIGKILL);
- }
- 
--pgd_t *pgd_offset_proc(struct mm_struct *mm, unsigned long address)
--{
--	return pgd_offset(mm, address);
--}
--
--pud_t *pud_offset_proc(pgd_t *pgd, unsigned long address)
--{
--	return pud_offset(pgd, address);
--}
--
--pmd_t *pmd_offset_proc(pud_t *pud, unsigned long address)
--{
--	return pmd_offset(pud, address);
--}
--
--pte_t *pte_offset_proc(pmd_t *pmd, unsigned long address)
--{
--	return pte_offset_kernel(pmd, address);
--}
--
--pte_t *addr_pte(struct task_struct *task, unsigned long addr)
--{
--	pgd_t *pgd = pgd_offset(task->mm, addr);
--	pud_t *pud = pud_offset(pgd, addr);
--	pmd_t *pmd = pmd_offset(pud, addr);
--
--	return pte_offset_map(pmd, addr);
--}
--
- void flush_tlb_all(void)
- {
- 	/*
--- 
-2.7.4
-
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
