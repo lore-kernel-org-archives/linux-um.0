@@ -1,15 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iW0FR-0008RF-3M
- for linux-um@lists.infradead.org; Sat, 16 Nov 2019 15:44:30 +0000
+ id 1iW0PE-0006RM-NV
+ for linux-um@lists.infradead.org; Sat, 16 Nov 2019 15:54:37 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 140/237] um: Make line/tty semantics use true
- write IRQ
-Date: Sat, 16 Nov 2019 10:39:35 -0500
-Message-Id: <20191116154113.7417-140-sashal@kernel.org>
-In-Reply-To: <20191116154113.7417-1-sashal@kernel.org>
-References: <20191116154113.7417-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 43/77] um: Make line/tty semantics use true write
+ IRQ
+Date: Sat, 16 Nov 2019 10:53:05 -0500
+Message-Id: <20191116155339.11909-43-sashal@kernel.org>
+In-Reply-To: <20191116155339.11909-1-sashal@kernel.org>
+References: <20191116155339.11909-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -43,14 +43,14 @@ Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/drivers/line.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/um/drivers/line.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
-index 8d80b27502e6a..7e524efed5848 100644
+index 62087028a9ce1..d2ad45c101137 100644
 --- a/arch/um/drivers/line.c
 +++ b/arch/um/drivers/line.c
-@@ -261,7 +261,7 @@ static irqreturn_t line_write_interrupt(int irq, void *data)
+@@ -260,7 +260,7 @@ static irqreturn_t line_write_interrupt(int irq, void *data)
  	if (err == 0) {
  		spin_unlock(&line->lock);
  		return IRQ_NONE;
@@ -59,15 +59,6 @@ index 8d80b27502e6a..7e524efed5848 100644
  		line->head = line->buffer;
  		line->tail = line->buffer;
  	}
-@@ -284,7 +284,7 @@ int line_setup_irq(int fd, int input, int output, struct line *line, void *data)
- 	if (err)
- 		return err;
- 	if (output)
--		err = um_request_irq(driver->write_irq, fd, IRQ_NONE,
-+		err = um_request_irq(driver->write_irq, fd, IRQ_WRITE,
- 				     line_write_interrupt, IRQF_SHARED,
- 				     driver->write_irq_name, data);
- 	return err;
 -- 
 2.20.1
 
