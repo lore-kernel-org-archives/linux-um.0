@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iY21d-0007sO-Qm
- for linux-um@lists.infradead.org; Fri, 22 Nov 2019 06:02:41 +0000
+ id 1iY1wW-000196-HH
+ for linux-um@lists.infradead.org; Fri, 22 Nov 2019 05:57:22 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.9 62/91] um: Make GCOV depend on !KCOV
-Date: Fri, 22 Nov 2019 01:01:00 -0500
-Message-Id: <20191122060129.4239-61-sashal@kernel.org>
-In-Reply-To: <20191122060129.4239-1-sashal@kernel.org>
-References: <20191122060129.4239-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 084/127] um: Make GCOV depend on !KCOV
+Date: Fri, 22 Nov 2019 00:55:02 -0500
+Message-Id: <20191122055544.3299-83-sashal@kernel.org>
+In-Reply-To: <20191122055544.3299-1-sashal@kernel.org>
+References: <20191122055544.3299-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -40,10 +40,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/arch/um/Kconfig.debug b/arch/um/Kconfig.debug
-index 68205fd3b08c8..6ae7f0f434a9c 100644
+index 967d3109689ff..39d44bfb241d5 100644
 --- a/arch/um/Kconfig.debug
 +++ b/arch/um/Kconfig.debug
-@@ -18,6 +18,7 @@ config GPROF
+@@ -19,6 +19,7 @@ config GPROF
  config GCOV
  	bool "Enable gcov support"
  	depends on DEBUG_INFO
