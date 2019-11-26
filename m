@@ -1,14 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iY1rH-0003MA-6F
- for linux-um@lists.infradead.org; Fri, 22 Nov 2019 05:51:57 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 144/219] um: Make GCOV depend on !KCOV
-Date: Fri, 22 Nov 2019 00:47:56 -0500
-Message-Id: <20191122054911.1750-137-sashal@kernel.org>
-In-Reply-To: <20191122054911.1750-1-sashal@kernel.org>
-References: <20191122054911.1750-1-sashal@kernel.org>
+ id 1iZdI9-0001rF-Hz
+ for linux-um@lists.infradead.org; Tue, 26 Nov 2019 16:02:19 +0000
+Date: Tue, 26 Nov 2019 17:02:12 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <907430042.98310.1574784132348.JavaMail.zimbra@nod.at>
+In-Reply-To: <m2v9r6iux5.wl-thehajime@gmail.com>
+References: <cover.1573179553.git.thehajime@gmail.com>
+ <64a5d6c94d331058331af7d191d2cdbe870d009b.1573179553.git.thehajime@gmail.com>
+ <CAFLxGvw+w+xmput3xMjKPXPn4hj9opbo+gtV6896hhzDUzQNiA@mail.gmail.com>
+ <m2v9r6iux5.wl-thehajime@gmail.com>
+Subject: Re: [RFC v2 03/37] lkl: architecture skeleton for Linux kernel library
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -18,45 +21,61 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org
+To: Hajime Tazaki <thehajime@gmail.com>
+Cc: linux-arch <linux-arch@vger.kernel.org>, levex <levex@linux.com>, mattator <mattator@gmail.com>, cem <cem@freebsd.org>, tavi purdila <tavi.purdila@gmail.com>, jiangshanlai <jiangshanlai@gmail.com>, staal1978 <staal1978@gmail.com>, motomuman <motomuman@gmail.com>, linux-um <linux-um@lists.infradead.org>, retrage01 <retrage01@gmail.com>, petrosagg <petrosagg@gmail.com>, edisonmcastro <edisonmcastro@hotmail.com>, xiaoj <xiaoj@google.com>, mark <mark@stillwell.me>, linux-kernel-library <linux-kernel-library@freelists.org>, pscollins <pscollins@google.com>, phh <phh@phh.me>, sigmaepsilon92 <sigmaepsilon92@gmail.com>, luca dariz <luca.dariz@gmail.com>, liuyuan <liuyuan@google.com>
 
-From: Richard Weinberger <richard@nod.at>
-
-[ Upstream commit 550ed0e2036663b35cec12374b835444f9c60454 ]
-
-Both do more or less the same thing and are mutually exclusive.
-If both are enabled the build will fail.
-Sooner or later we can kill UML's GCOV.
-
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/um/Kconfig.debug | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/um/Kconfig.debug b/arch/um/Kconfig.debug
-index 2014597605ea9..85726eeec3451 100644
---- a/arch/um/Kconfig.debug
-+++ b/arch/um/Kconfig.debug
-@@ -16,6 +16,7 @@ config GPROF
- config GCOV
- 	bool "Enable gcov support"
- 	depends on DEBUG_INFO
-+	depends on !KCOV
- 	help
- 	  This option allows developers to retrieve coverage data from a UML
- 	  session.
--- 
-2.20.1
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIkhhamltZSBUYXpha2kiIDx0
+aGVoYWppbWVAZ21haWwuY29tPgo+IEFuOiAiUmljaGFyZCBXZWluYmVyZ2VyIiA8cmljaGFyZC53
+ZWluYmVyZ2VyQGdtYWlsLmNvbT4KPiBDQzogImxpbnV4LXVtIiA8bGludXgtdW1AbGlzdHMuaW5m
+cmFkZWFkLm9yZz4sICJsaW51eC1hcmNoIiA8bGludXgtYXJjaEB2Z2VyLmtlcm5lbC5vcmc+LCAi
+cHNjb2xsaW5zIgo+IDxwc2NvbGxpbnNAZ29vZ2xlLmNvbT4sICJsZXZleCIgPGxldmV4QGxpbnV4
+LmNvbT4sICJtYXR0YXRvciIgPG1hdHRhdG9yQGdtYWlsLmNvbT4sICJjZW0iIDxjZW1AZnJlZWJz
+ZC5vcmc+LCAidGF2aQo+IHB1cmRpbGEiIDx0YXZpLnB1cmRpbGFAZ21haWwuY29tPiwgInN0YWFs
+MTk3OCIgPHN0YWFsMTk3OEBnbWFpbC5jb20+LCAibW90b211bWFuIiA8bW90b211bWFuQGdtYWls
+LmNvbT4sICJqaWFuZ3NoYW5sYWkiCj4gPGppYW5nc2hhbmxhaUBnbWFpbC5jb20+LCAicmV0cmFn
+ZTAxIiA8cmV0cmFnZTAxQGdtYWlsLmNvbT4sICJwZXRyb3NhZ2ciIDxwZXRyb3NhZ2dAZ21haWwu
+Y29tPiwgImxpdXl1YW4iCj4gPGxpdXl1YW5AZ29vZ2xlLmNvbT4sICJ4aWFvaiIgPHhpYW9qQGdv
+b2dsZS5jb20+LCAibWFyayIgPG1hcmtAc3RpbGx3ZWxsLm1lPiwgImxpbnV4LWtlcm5lbC1saWJy
+YXJ5Igo+IDxsaW51eC1rZXJuZWwtbGlicmFyeUBmcmVlbGlzdHMub3JnPiwgInBoaCIgPHBoaEBw
+aGgubWU+LCAic2lnbWFlcHNpbG9uOTIiIDxzaWdtYWVwc2lsb245MkBnbWFpbC5jb20+LCAibHVj
+YSBkYXJpeiIKPiA8bHVjYS5kYXJpekBnbWFpbC5jb20+LCAiZWRpc29ubWNhc3RybyIgPGVkaXNv
+bm1jYXN0cm9AaG90bWFpbC5jb20+Cj4gR2VzZW5kZXQ6IERpZW5zdGFnLCAyNi4gTm92ZW1iZXIg
+MjAxOSAxNToxNzoyNgo+IEJldHJlZmY6IFJlOiBbUkZDIHYyIDAzLzM3XSBsa2w6IGFyY2hpdGVj
+dHVyZSBza2VsZXRvbiBmb3IgTGludXgga2VybmVsIGxpYnJhcnkKCj4gT24gVHVlLCAyNiBOb3Yg
+MjAxOSAwNzowMDozMyArMDkwMCwKPiBSaWNoYXJkIFdlaW5iZXJnZXIgd3JvdGU6Cj4+IAo+IChz
+bmlwKQo+PiA+Cj4+ID4gU2lnbmVkLW9mZi1ieTogQW5kcmVhcyBBYmVsIDxhYWJlbEBnb29nbGUu
+Y29tPgo+PiA+IFNpZ25lZC1vZmYtYnk6IENvbnJhZCBNZXllciA8Y2VtQEZyZWVCU0Qub3JnPgo+
+PiA+IFNpZ25lZC1vZmYtYnk6IEVkaXNvbiBNLiBDYXN0cm8gPGVkaXNvbm1jYXN0cm9AaG90bWFp
+bC5jb20+Cj4+ID4gU2lnbmVkLW9mZi1ieTogSC5LLiBKZXJyeSBDaHUgPGhrY2h1QGdvb2dsZS5j
+b20+Cj4+ID4gU2lnbmVkLW9mZi1ieTogSGFqaW1lIFRhemFraSA8dGhlaGFqaW1lQGdtYWlsLmNv
+bT4KPj4gPiBTaWduZWQtb2ZmLWJ5OiBKZW5zIFN0YWFsIDxzdGFhbDE5NzhAZ21haWwuY29tPgo+
+PiA+IFNpZ25lZC1vZmYtYnk6IExhaSBKaWFuZ3NoYW4gPGppYW5nc2hhbmxhaUBnbWFpbC5jb20+
+Cj4+ID4gU2lnbmVkLW9mZi1ieTogTGV2ZW50ZSBLdXJ1c2EgPGxldmV4QGxpbnV4LmNvbT4KPj4g
+PiBTaWduZWQtb2ZmLWJ5OiBMdWNhIERhcml6IDxsdWNhLmRhcml6QGdtYWlsLmNvbT4KPj4gPiBT
+aWduZWQtb2ZmLWJ5OiBNYXJrIFN0aWxsd2VsbCA8bWFya0BzdGlsbHdlbGwubWU+Cj4+ID4gU2ln
+bmVkLW9mZi1ieTogTWF0dGhpZXUgQ291ZHJvbiA8bWF0dGF0b3JAZ21haWwuY29tPgo+PiA+IFNp
+Z25lZC1vZmYtYnk6IE1pY2hhZWwgWmltbWVybWFubiA8c2lnbWFlcHNpbG9uOTJAZ21haWwuY29t
+Pgo+PiA+IFNpZ25lZC1vZmYtYnk6IE1vdG9tdSBVdHN1bWkgPG1vdG9tdW1hbkBnbWFpbC5jb20+
+Cj4+ID4gU2lnbmVkLW9mZi1ieTogUGF0cmljayBDb2xsaW5zIDxwc2NvbGxpbnNAZ29vZ2xlLmNv
+bT4KPj4gPiBTaWduZWQtb2ZmLWJ5OiBQZXRyb3MgQW5nZWxhdG9zIDxwZXRyb3NhZ2dAZ21haWwu
+Y29tPgo+PiA+IFNpZ25lZC1vZmYtYnk6IFBpZXJyZS1IdWd1ZXMgSHVzc29uIDxwaGhAcGhoLm1l
+Pgo+PiA+IFNpZ25lZC1vZmYtYnk6IFhpYW8gSmlhIDx4aWFvakBnb29nbGUuY29tPgo+PiA+IFNp
+Z25lZC1vZmYtYnk6IFl1YW4gTGl1IDxsaXV5dWFuQGdvb2dsZS5jb20+Cj4+ID4gU2lnbmVkLW9m
+Zi1ieTogT2N0YXZpYW4gUHVyZGlsYSA8dGF2aS5wdXJkaWxhQGdtYWlsLmNvbT4KPj4gCj4+IENh
+biB3ZSBwbGVhc2UgaGF2ZSB0aGlzIGNoYWluIGNsZWFuZWQgdXA/Cj4+IFBsZWFzZSBzZWUgcHJv
+Y2Vzcy9zdWJtaXR0aW5nLXBhdGNoZXMucnN0Lgo+IAo+IERvIHlvdSBtZWFuICJ0aGlzIGNoYWlu
+IiBieSB0aGUgbG9uZyBsaXN0IG9mIFNpZ25lZC1vZmYtYnkgbGluZXMsIG9yCj4gc29tZXRoaW5n
+IGVsc2UgPwoKVGhlIGxvbmcgbGlzdCBpcyByYXRoZXIgdW51c3VhbC4KIAo+IFdlIHdlcmUgdHJ5
+aW5nIHRvIHB1dCBhbGwgb2YgY29udHJpYnV0b3JzIG9uIHRoZSBsaXN0LiAgSSB3YXMgZmFpbGVk
+IHRvCj4gaW50ZXJwcmV0IHByb2Nlc3Mvc3VibWl0dGluZy1wYXRjaGVzLnJzdCBvbiB3aGljaCBw
+YXJ0IGlzIG5vdCBhcHByb3ByaWF0ZS4KCklmIGV2ZXJ5IGNvbnRyaWJ1dG9yIGlzIGFsc28gYSBD
+by1BdXRob3IuIE9rYXkuIEJ1dCBoYXZpbmcgc3VjaCBhIGxvbmcKbGlzdCBvZiBhdXRob3JzIGlz
+IHN0aWxsIGEgbGl0dGxlIG9kZC4KClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGlu
+dXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
 
