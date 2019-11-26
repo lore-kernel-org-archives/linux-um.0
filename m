@@ -1,19 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iZWaP-0004lZ-Rs
- for linux-um@lists.infradead.org; Tue, 26 Nov 2019 08:52:43 +0000
-Message-ID: <4ebb14dc67ccb70543617ce1f7066f3f27cd11a8.camel@sipsolutions.net>
-Subject: Re: [RFC v2 17/37] lkl tools: host lib: virtio devices
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Tue, 26 Nov 2019 09:52:34 +0100
-In-Reply-To: <1662825264.98055.1574758225905.JavaMail.zimbra@nod.at>
+ id 1iZWYH-0004bu-At
+ for linux-um@lists.infradead.org; Tue, 26 Nov 2019 08:50:31 +0000
+Date: Tue, 26 Nov 2019 09:50:25 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <1662825264.98055.1574758225905.JavaMail.zimbra@nod.at>
+In-Reply-To: <de90b04151bafee083727c9769833932788cf428.camel@sipsolutions.net>
 References: <cover.1573179553.git.thehajime@gmail.com>
  <1531c5f16a00b608635c9a62fa3951807075f950.1573179553.git.thehajime@gmail.com>
  <CAFLxGvzCwCLbLMhcF6ZJ2afeo7PSd8xLQrU9hRH6YVaMakBSyw@mail.gmail.com>
  <de90b04151bafee083727c9769833932788cf428.camel@sipsolutions.net>
- <1662825264.98055.1574758225905.JavaMail.zimbra@nod.at>
+Subject: Re: [RFC v2 17/37] lkl tools: host lib: virtio devices
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -23,45 +21,48 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard@nod.at>
+To: Johannes Berg <johannes@sipsolutions.net>
 Cc: linux-arch <linux-arch@vger.kernel.org>, cem <cem@freebsd.org>, tavi purdila <tavi.purdila@gmail.com>, linux-um <linux-um@lists.infradead.org>, retrage01 <retrage01@gmail.com>, liuyuan <liuyuan@google.com>, pscollins <pscollins@google.com>, linux-kernel-library@freelists.org, sigmaepsilon92 <sigmaepsilon92@gmail.com>, Hajime Tazaki <thehajime@gmail.com>
 
-On Tue, 2019-11-26 at 09:50 +0100, Richard Weinberger wrote:
-
-> > This isn't really a driver, this is virtio *device-side* code. Our
-> > virtio_uml is *guest-side* code, and only speaks vhost-user.
-> 
-> Sorry, bad wording from my side. I meant with "driver" a kernel component.
-
-Yeah, though arguably this isn't a kernel component, this is a
-hypervisor component... We just link them both into the same binary due
-to the way UML/LKL work.
- 
-> > I'm not sure how MMIO devices could possibly work though, does LKL
-> > intercept MMIO somehow?
-> 
-> My point is that UML and LKL should try to do use the same concept/code
-> regarding virtio. At the end of day both use virtual devices which use
-> facilities from the host.
-> If this is really not possible it needs a good explanation.
-
-I think it isn't possible, unless you use vhost-user over a unix domain
-socket internally to talk between the kernel (virtio_uml) and hypervisor
-(device) components.
-
-In virtio_uml, the device implementation is assumed to be a separate
-process with a vhost-user connection. Here in LKL, the virtio device is
-part of the "hypervisor", i.e. in the same process.
-
-johannes
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIkpvaGFubmVzIEJlcmciIDxq
+b2hhbm5lc0BzaXBzb2x1dGlvbnMubmV0Pgo+IEFuOiAiUmljaGFyZCBXZWluYmVyZ2VyIiA8cmlj
+aGFyZC53ZWluYmVyZ2VyQGdtYWlsLmNvbT4sICJIYWppbWUgVGF6YWtpIiA8dGhlaGFqaW1lQGdt
+YWlsLmNvbT4KPiBDQzogImxpbnV4LWFyY2giIDxsaW51eC1hcmNoQHZnZXIua2VybmVsLm9yZz4s
+ICJjZW0iIDxjZW1AZnJlZWJzZC5vcmc+LCAidGF2aSBwdXJkaWxhIiA8dGF2aS5wdXJkaWxhQGdt
+YWlsLmNvbT4sCj4gImxpbnV4LXVtIiA8bGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZz4sICJy
+ZXRyYWdlMDEiIDxyZXRyYWdlMDFAZ21haWwuY29tPiwgbGludXgta2VybmVsLWxpYnJhcnlAZnJl
+ZWxpc3RzLm9yZywKPiAicHNjb2xsaW5zIiA8cHNjb2xsaW5zQGdvb2dsZS5jb20+LCAic2lnbWFl
+cHNpbG9uOTIiIDxzaWdtYWVwc2lsb245MkBnbWFpbC5jb20+LCAibGl1eXVhbiIgPGxpdXl1YW5A
+Z29vZ2xlLmNvbT4KPiBHZXNlbmRldDogRGllbnN0YWcsIDI2LiBOb3ZlbWJlciAyMDE5IDA5OjQz
+OjM2Cj4gQmV0cmVmZjogUmU6IFtSRkMgdjIgMTcvMzddIGxrbCB0b29sczogaG9zdCBsaWI6IHZp
+cnRpbyBkZXZpY2VzCgo+IE9uIE1vbiwgMjAxOS0xMS0yNSBhdCAyMzowNyArMDEwMCwgUmljaGFy
+ZCBXZWluYmVyZ2VyIHdyb3RlOgo+PiBPbiBGcmksIE5vdiA4LCAyMDE5IGF0IDY6MDMgQU0gSGFq
+aW1lIFRhemFraSA8dGhlaGFqaW1lQGdtYWlsLmNvbT4gd3JvdGU6Cj4+ID4gRnJvbTogT2N0YXZp
+YW4gUHVyZGlsYSA8dGF2aS5wdXJkaWxhQGdtYWlsLmNvbT4KPj4gPiAKPj4gPiBBZGQgaGVscGVy
+cyBmb3IgaW1wbGVtZW50aW5nIGhvc3QgdmlydGlvIGRldmljZXMuIEl0IHVzZXMgdGhlIG1lbW9y
+eQo+PiA+IG1hcHBlZCBJL08gaGVscGVycyB0byBpbnRlcmFjdCB3aXRoIHRoZSBMaW51eCBNTUlP
+IHZpcnRpbyB0cmFuc3BvcnQKPj4gPiBkcml2ZXIgYW5kIG9mZmVycyBzdXBwb3J0IHRvIHNldHVw
+IGFuZCBhZGQgYSBuZXcgdmlydGlvIGRldmljZSwKPj4gPiBkaXNwYXRjaCByZXF1ZXN0cyBmcm9t
+IHRoZSBpbmNvbWluZyBxdWV1ZXMgYXMgd2VsbCBhcyBzdXBwb3J0IGZvcgo+PiA+IGNvbXBsZXRp
+bmcgcmVxdWVzdHMuCj4+ID4gCj4+ID4gQWxsIGFkZGVkIHZpcnRpbyBkZXZpY2VzIGFyZSBzdG9y
+ZWQgaW4gbGtsX3ZpcnRpb19kZXZzIGFzIHN0cmluZ3MsIHBlcgo+PiA+IHRoZSBMaW51eCBNTUlP
+IHZpcnRpbyB0cmFuc3BvcnQgZHJpdmVyIGNvbW1hbmQgbGluZSBzcGVjaWZpY2F0aW9uLgo+PiAK
+Pj4gRGlkIHlvdSBjaGVja291dCBhcmNoL3VtL2RyaXZlcnMvdmlydGlvX3VtbC5jPwo+PiBXaHkg
+aXMgdGhpcyBkcml2ZXIgbmVlZGVkPwo+IAo+IFRoaXMgaXNuJ3QgcmVhbGx5IGEgZHJpdmVyLCB0
+aGlzIGlzIHZpcnRpbyAqZGV2aWNlLXNpZGUqIGNvZGUuIE91cgo+IHZpcnRpb191bWwgaXMgKmd1
+ZXN0LXNpZGUqIGNvZGUsIGFuZCBvbmx5IHNwZWFrcyB2aG9zdC11c2VyLgoKU29ycnksIGJhZCB3
+b3JkaW5nIGZyb20gbXkgc2lkZS4gSSBtZWFudCB3aXRoICJkcml2ZXIiIGEga2VybmVsIGNvbXBv
+bmVudC4KIAo+IEknbSBub3Qgc3VyZSBob3cgTU1JTyBkZXZpY2VzIGNvdWxkIHBvc3NpYmx5IHdv
+cmsgdGhvdWdoLCBkb2VzIExLTAo+IGludGVyY2VwdCBNTUlPIHNvbWVob3c/CgpNeSBwb2ludCBp
+cyB0aGF0IFVNTCBhbmQgTEtMIHNob3VsZCB0cnkgdG8gZG8gdXNlIHRoZSBzYW1lIGNvbmNlcHQv
+Y29kZQpyZWdhcmRpbmcgdmlydGlvLiBBdCB0aGUgZW5kIG9mIGRheSBib3RoIHVzZSB2aXJ0dWFs
+IGRldmljZXMgd2hpY2ggdXNlCmZhY2lsaXRpZXMgZnJvbSB0aGUgaG9zdC4KSWYgdGhpcyBpcyBy
+ZWFsbHkgbm90IHBvc3NpYmxlIGl0IG5lZWRzIGEgZ29vZCBleHBsYW5hdGlvbi4KClRoYW5rcywK
+Ly9yaWNoYXJkCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRw
+Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
 
