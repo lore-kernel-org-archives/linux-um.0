@@ -2,18 +2,18 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab7.miniserver.com ([37.128.132.42]
  helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iaG2C-00087e-D8
- for linux-um@lists.infradead.org; Thu, 28 Nov 2019 09:24:26 +0000
+ id 1iaG0w-00082y-F9
+ for linux-um@lists.infradead.org; Thu, 28 Nov 2019 09:23:08 +0000
 Subject: Re: [PATCH -next] um: vector: use GFP_ATOMIC under spin lock
 References: <20191128020147.191893-1-weiyongjun1@huawei.com>
  <20191128080641.GD1781@kadam>
  <5892ee7c-ff24-fb3c-6911-44e0b1d5895f@cambridgegreys.com>
- <1784077834.99875.1574930472125.JavaMail.zimbra@nod.at>
+ <20191128083735.GE1781@kadam>
 From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Message-ID: <ceedf42c-2dc0-df2e-cf3f-323c675dec78@cambridgegreys.com>
-Date: Thu, 28 Nov 2019 09:24:12 +0000
+Message-ID: <69f4767b-c095-571d-92cf-343bfb17bfc0@cambridgegreys.com>
+Date: Thu, 28 Nov 2019 09:22:59 +0000
 MIME-Version: 1.0
-In-Reply-To: <1784077834.99875.1574930472125.JavaMail.zimbra@nod.at>
+In-Reply-To: <20191128083735.GE1781@kadam>
 Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -23,65 +23,87 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard@nod.at>
-Cc: Song Liu <songliubraving@fb.com>, Daniel Borkmann <daniel@iogearbox.net>, linux-um <linux-um@lists.infradead.org>, Jeff Dike <jdike@addtoit.com>, kernel-janitors <kernel-janitors@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Wei Yongjun <weiyongjun1@huawei.com>, netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, Dan Carpenter <dan.carpenter@oracle.com>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Song Liu <songliubraving@fb.com>, Daniel Borkmann <daniel@iogearbox.net>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, kernel-janitors@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, linux-um@lists.infradead.org, Wei Yongjun <weiyongjun1@huawei.com>, netdev@vger.kernel.org, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>
 
-CgpPbiAyOC8xMS8yMDE5IDA4OjQxLCBSaWNoYXJkIFdlaW5iZXJnZXIgd3JvdGU6Cj4gLS0tLS0g
-VXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+PiBWb246ICJhbnRvbiBpdmFub3YiIDxhbnRvbi5p
-dmFub3ZAY2FtYnJpZGdlZ3JleXMuY29tPgo+PiBBbjogIkRhbiBDYXJwZW50ZXIiIDxkYW4uY2Fy
-cGVudGVyQG9yYWNsZS5jb20+LCAiV2VpIFlvbmdqdW4iIDx3ZWl5b25nanVuMUBodWF3ZWkuY29t
-Pgo+PiBDQzogIlNvbmcgTGl1IiA8c29uZ2xpdWJyYXZpbmdAZmIuY29tPiwgIkRhbmllbCBCb3Jr
-bWFubiIgPGRhbmllbEBpb2dlYXJib3gubmV0PiwgImtlcm5lbC1qYW5pdG9ycyIKPj4gPGtlcm5l
-bC1qYW5pdG9yc0B2Z2VyLmtlcm5lbC5vcmc+LCAicmljaGFyZCIgPHJpY2hhcmRAbm9kLmF0Piwg
-IkplZmYgRGlrZSIgPGpkaWtlQGFkZHRvaXQuY29tPiwgImxpbnV4LXVtIgo+PiA8bGludXgtdW1A
-bGlzdHMuaW5mcmFkZWFkLm9yZz4sICJBbGV4ZWkgU3Rhcm92b2l0b3YiIDxhc3RAa2VybmVsLm9y
-Zz4sICJuZXRkZXYiIDxuZXRkZXZAdmdlci5rZXJuZWwub3JnPiwKPj4gYnBmQHZnZXIua2VybmVs
-Lm9yZywgIk1hcnRpbiBLYUZhaSBMYXUiIDxrYWZhaUBmYi5jb20+Cj4+IEdlc2VuZGV0OiBEb25u
-ZXJzdGFnLCAyOC4gTm92ZW1iZXIgMjAxOSAwOToxODozMAo+PiBCZXRyZWZmOiBSZTogW1BBVENI
-IC1uZXh0XSB1bTogdmVjdG9yOiB1c2UgR0ZQX0FUT01JQyB1bmRlciBzcGluIGxvY2sKPiAKPj4g
-T24gMjgvMTEvMjAxOSAwODowNiwgRGFuIENhcnBlbnRlciB3cm90ZToKPj4+IE9uIFRodSwgTm92
-IDI4LCAyMDE5IGF0IDAyOjAxOjQ3QU0gKzAwMDAsIFdlaSBZb25nanVuIHdyb3RlOgo+Pj4+IEEg
-c3BpbiBsb2NrIGlzIHRha2VuIGhlcmUgc28gd2Ugc2hvdWxkIHVzZSBHRlBfQVRPTUlDLgo+Pj4+
-Cj4+Pj4gRml4ZXM6IDk4MDcwMTlhNjJkYyAoInVtOiBMb2FkYWJsZSBCUEYgIkZpcm13YXJlIiBm
-b3IgdmVjdG9yIGRyaXZlcnMiKQo+Pj4+IFNpZ25lZC1vZmYtYnk6IFdlaSBZb25nanVuIDx3ZWl5
-b25nanVuMUBodWF3ZWkuY29tPgo+Pj4+IC0tLQo+Pj4+ICAgIGFyY2gvdW0vZHJpdmVycy92ZWN0
-b3Jfa2Vybi5jIHwgNCArKy0tCj4+Pj4gICAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygr
-KSwgMiBkZWxldGlvbnMoLSkKPj4+Pgo+Pj4+IGRpZmYgLS1naXQgYS9hcmNoL3VtL2RyaXZlcnMv
-dmVjdG9yX2tlcm4uYyBiL2FyY2gvdW0vZHJpdmVycy92ZWN0b3Jfa2Vybi5jCj4+Pj4gaW5kZXgg
-OTI2MTdlMTY4MjllLi42ZmYwMDY1YTI3MWQgMTAwNjQ0Cj4+Pj4gLS0tIGEvYXJjaC91bS9kcml2
-ZXJzL3ZlY3Rvcl9rZXJuLmMKPj4+PiArKysgYi9hcmNoL3VtL2RyaXZlcnMvdmVjdG9yX2tlcm4u
-Ywo+Pj4+IEBAIC0xNDAyLDcgKzE0MDIsNyBAQCBzdGF0aWMgaW50IHZlY3Rvcl9uZXRfbG9hZF9i
-cGZfZmxhc2goc3RydWN0IG5ldF9kZXZpY2UKPj4+PiAqZGV2LAo+Pj4+ICAgIAkJa2ZyZWUodnAt
-PmJwZi0+ZmlsdGVyKTsKPj4+PiAgICAJCXZwLT5icGYtPmZpbHRlciA9IE5VTEw7Cj4+Pj4gICAg
-CX0gZWxzZSB7Cj4+Pj4gLQkJdnAtPmJwZiA9IGttYWxsb2Moc2l6ZW9mKHN0cnVjdCBzb2NrX2Zw
-cm9nKSwgR0ZQX0tFUk5FTCk7Cj4+Pj4gKwkJdnAtPmJwZiA9IGttYWxsb2Moc2l6ZW9mKHN0cnVj
-dCBzb2NrX2Zwcm9nKSwgR0ZQX0FUT01JQyk7Cj4+Pj4gICAgCQlpZiAodnAtPmJwZiA9PSBOVUxM
-KSB7Cj4+Pj4gICAgCQkJbmV0ZGV2X2VycihkZXYsICJmYWlsZWQgdG8gYWxsb2NhdGUgbWVtb3J5
-IGZvciBmaXJtd2FyZVxuIik7Cj4+Pj4gICAgCQkJZ290byBmbGFzaF9mYWlsOwo+Pj4+IEBAIC0x
-NDE0LDcgKzE0MTQsNyBAQCBzdGF0aWMgaW50IHZlY3Rvcl9uZXRfbG9hZF9icGZfZmxhc2goc3Ry
-dWN0IG5ldF9kZXZpY2UKPj4+PiAqZGV2LAo+Pj4+ICAgIAlpZiAocmVxdWVzdF9maXJtd2FyZSgm
-ZncsIGVmbC0+ZGF0YSwgJnZkZXZpY2UtPnBkZXYuZGV2KSkKPj4+ICAgICAgICAgICAgICAgXl5e
-Xl5eXl5eXl5eXl5eXgo+Pj4KPj4+IElzIGl0IHJlYWxseSBwb3NzaWJsZSB0byBjYWxsIHJlcXVl
-c3RfZmlybXdhcmUoKSB3aGlsZSBob2xkaW5nIGEKPj4+IHNwaW5fbG9jaz8gIEkgd2FzIHNvIHN1
-cmUgdGhhdCByZWFkIGZyb20gdGhlIGRpc2suCj4+Cj4+IFdvcmtzLCBJIHRlc3RlZCB0aGUgcGF0
-Y2ggcXVpdGUgYSBmZXcgdGltZXMuCj4gCj4gSXQgd29ya3MgYmVjYXVzZSBvZiB0aGUgbmF0dXJl
-IG9mIFVNTCAtPm5vICBTTVAgb3IgUFJFRU1QVC4KPiBCdXQgYmV0dGVyIHJlcXVlc3QgdGhlIGZp
-cm13YXJlIGJlZm9yZSB0YWtpbmcgdGhlIHNwaW5sb2NrLgo+IHJlcXVlc3RfZmlybXdhcmUoKSBj
-YW4gYmxvY2suCj4gU2FtZSBmb3IgdGhlIGttYWxsb2MoKSwganVzdCBhbGxvY2F0ZSB0aGUgYnVm
-ZmVyIGJlZm9yZSBhbmQgdGhlbiBhc3NpZ24KPiB0aGUgcG9pbnRlciB1bmRlciB0aGUgbG9jay4g
-VGhhdCB3YXkgeW91IGRvbid0IG5lZWQgR0ZQX0FUT01JQy4KCkFjay4KCkkgd2lsbCBtYWtlIGFu
-IGluY3JlbWVudGFsIG9uIHRvcCBvZiB0aGUgZXhpc3RpbmcgcGF0Y2ggKGFzIHRoYXQgaXMgCmFs
-cmVhZHkgaW4gLW5leHQKCkJyZ2RzLAoKPiAKPiBUaGFua3MsCj4gLy9yaWNoYXJkCj4gCj4gX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBsaW51eC11bSBt
-YWlsaW5nIGxpc3QKPiBsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo+IAoKLS0gCkFudG9uIFIu
-IEl2YW5vdgpDYW1icmlkZ2VncmV5cyBMaW1pdGVkLiBSZWdpc3RlcmVkIGluIEVuZ2xhbmQuIENv
-bXBhbnkgTnVtYmVyIDEwMjczNjYxCmh0dHBzOi8vd3d3LmNhbWJyaWRnZWdyZXlzLmNvbS8KCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1h
-aWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
+
+
+On 28/11/2019 08:37, Dan Carpenter wrote:
+> On Thu, Nov 28, 2019 at 08:18:30AM +0000, Anton Ivanov wrote:
+>>
+>>
+>> On 28/11/2019 08:06, Dan Carpenter wrote:
+>>> On Thu, Nov 28, 2019 at 02:01:47AM +0000, Wei Yongjun wrote:
+>>>> A spin lock is taken here so we should use GFP_ATOMIC.
+>>>>
+>>>> Fixes: 9807019a62dc ("um: Loadable BPF "Firmware" for vector drivers")
+>>>> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+>>>> ---
+>>>>    arch/um/drivers/vector_kern.c | 4 ++--
+>>>>    1 file changed, 2 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
+>>>> index 92617e16829e..6ff0065a271d 100644
+>>>> --- a/arch/um/drivers/vector_kern.c
+>>>> +++ b/arch/um/drivers/vector_kern.c
+>>>> @@ -1402,7 +1402,7 @@ static int vector_net_load_bpf_flash(struct net_device *dev,
+>>>>    		kfree(vp->bpf->filter);
+>>>>    		vp->bpf->filter = NULL;
+>>>>    	} else {
+>>>> -		vp->bpf = kmalloc(sizeof(struct sock_fprog), GFP_KERNEL);
+>>>> +		vp->bpf = kmalloc(sizeof(struct sock_fprog), GFP_ATOMIC);
+>>>>    		if (vp->bpf == NULL) {
+>>>>    			netdev_err(dev, "failed to allocate memory for firmware\n");
+>>>>    			goto flash_fail;
+>>>> @@ -1414,7 +1414,7 @@ static int vector_net_load_bpf_flash(struct net_device *dev,
+>>>>    	if (request_firmware(&fw, efl->data, &vdevice->pdev.dev))
+>>>               ^^^^^^^^^^^^^^^^
+>>>
+>>> Is it really possible to call request_firmware() while holding a
+>>> spin_lock?  I was so sure that read from the disk.
+>>
+>> Works, I tested the patch quite a few times.
+>>
+> 
+> Do you have CONFIG_DEBUG_ATOMIC_SLEEP enabled?  The GFP_KERNEL calls
+> should have triggered a warning if so.
+
+I do not think we can use that in um.
+
+config DEBUG_ATOMIC_SLEEP
+         bool "Sleep inside atomic section checking"
+         select PREEMPT_COUNT
+         depends on DEBUG_KERNEL
+         depends on !ARCH_NO_PREEMPT
+
+In arch/um/Kconfig
+
+         select ARCH_NO_PREEMPT
+
+Brgds,
+
+> 
+> regards,
+> dan carpenter
+> 
+> 
+> _______________________________________________
+> linux-um mailing list
+> linux-um@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-um
+> 
+
+-- 
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
