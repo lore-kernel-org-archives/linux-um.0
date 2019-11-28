@@ -1,17 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from userp2120.oracle.com ([156.151.31.85])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iaFMV-0007lC-Gn
- for linux-um@lists.infradead.org; Thu, 28 Nov 2019 08:41:21 +0000
-Date: Thu, 28 Nov 2019 09:41:12 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <1784077834.99875.1574930472125.JavaMail.zimbra@nod.at>
-In-Reply-To: <5892ee7c-ff24-fb3c-6911-44e0b1d5895f@cambridgegreys.com>
+ id 1iaFJg-0006MR-JF
+ for linux-um@lists.infradead.org; Thu, 28 Nov 2019 08:38:25 +0000
+Date: Thu, 28 Nov 2019 11:37:35 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH -next] um: vector: use GFP_ATOMIC under spin lock
+Message-ID: <20191128083735.GE1781@kadam>
 References: <20191128020147.191893-1-weiyongjun1@huawei.com>
  <20191128080641.GD1781@kadam>
  <5892ee7c-ff24-fb3c-6911-44e0b1d5895f@cambridgegreys.com>
-Subject: Re: [PATCH -next] um: vector: use GFP_ATOMIC under spin lock
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <5892ee7c-ff24-fb3c-6911-44e0b1d5895f@cambridgegreys.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,56 +21,58 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: anton ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Song Liu <songliubraving@fb.com>, Daniel Borkmann <daniel@iogearbox.net>, linux-um <linux-um@lists.infradead.org>, Jeff Dike <jdike@addtoit.com>, kernel-janitors <kernel-janitors@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Wei Yongjun <weiyongjun1@huawei.com>, netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, Dan Carpenter <dan.carpenter@oracle.com>
+To: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Song Liu <songliubraving@fb.com>, Daniel Borkmann <daniel@iogearbox.net>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, kernel-janitors@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, linux-um@lists.infradead.org, Wei Yongjun <weiyongjun1@huawei.com>, netdev@vger.kernel.org, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogImFudG9uIGl2YW5vdiIgPGFu
-dG9uLml2YW5vdkBjYW1icmlkZ2VncmV5cy5jb20+Cj4gQW46ICJEYW4gQ2FycGVudGVyIiA8ZGFu
-LmNhcnBlbnRlckBvcmFjbGUuY29tPiwgIldlaSBZb25nanVuIiA8d2VpeW9uZ2p1bjFAaHVhd2Vp
-LmNvbT4KPiBDQzogIlNvbmcgTGl1IiA8c29uZ2xpdWJyYXZpbmdAZmIuY29tPiwgIkRhbmllbCBC
-b3JrbWFubiIgPGRhbmllbEBpb2dlYXJib3gubmV0PiwgImtlcm5lbC1qYW5pdG9ycyIKPiA8a2Vy
-bmVsLWphbml0b3JzQHZnZXIua2VybmVsLm9yZz4sICJyaWNoYXJkIiA8cmljaGFyZEBub2QuYXQ+
-LCAiSmVmZiBEaWtlIiA8amRpa2VAYWRkdG9pdC5jb20+LCAibGludXgtdW0iCj4gPGxpbnV4LXVt
-QGxpc3RzLmluZnJhZGVhZC5vcmc+LCAiQWxleGVpIFN0YXJvdm9pdG92IiA8YXN0QGtlcm5lbC5v
-cmc+LCAibmV0ZGV2IiA8bmV0ZGV2QHZnZXIua2VybmVsLm9yZz4sCj4gYnBmQHZnZXIua2VybmVs
-Lm9yZywgIk1hcnRpbiBLYUZhaSBMYXUiIDxrYWZhaUBmYi5jb20+Cj4gR2VzZW5kZXQ6IERvbm5l
-cnN0YWcsIDI4LiBOb3ZlbWJlciAyMDE5IDA5OjE4OjMwCj4gQmV0cmVmZjogUmU6IFtQQVRDSCAt
-bmV4dF0gdW06IHZlY3RvcjogdXNlIEdGUF9BVE9NSUMgdW5kZXIgc3BpbiBsb2NrCgo+IE9uIDI4
-LzExLzIwMTkgMDg6MDYsIERhbiBDYXJwZW50ZXIgd3JvdGU6Cj4+IE9uIFRodSwgTm92IDI4LCAy
-MDE5IGF0IDAyOjAxOjQ3QU0gKzAwMDAsIFdlaSBZb25nanVuIHdyb3RlOgo+Pj4gQSBzcGluIGxv
-Y2sgaXMgdGFrZW4gaGVyZSBzbyB3ZSBzaG91bGQgdXNlIEdGUF9BVE9NSUMuCj4+Pgo+Pj4gRml4
-ZXM6IDk4MDcwMTlhNjJkYyAoInVtOiBMb2FkYWJsZSBCUEYgIkZpcm13YXJlIiBmb3IgdmVjdG9y
-IGRyaXZlcnMiKQo+Pj4gU2lnbmVkLW9mZi1ieTogV2VpIFlvbmdqdW4gPHdlaXlvbmdqdW4xQGh1
-YXdlaS5jb20+Cj4+PiAtLS0KPj4+ICAgYXJjaC91bS9kcml2ZXJzL3ZlY3Rvcl9rZXJuLmMgfCA0
-ICsrLS0KPj4+ICAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMo
-LSkKPj4+Cj4+PiBkaWZmIC0tZ2l0IGEvYXJjaC91bS9kcml2ZXJzL3ZlY3Rvcl9rZXJuLmMgYi9h
-cmNoL3VtL2RyaXZlcnMvdmVjdG9yX2tlcm4uYwo+Pj4gaW5kZXggOTI2MTdlMTY4MjllLi42ZmYw
-MDY1YTI3MWQgMTAwNjQ0Cj4+PiAtLS0gYS9hcmNoL3VtL2RyaXZlcnMvdmVjdG9yX2tlcm4uYwo+
-Pj4gKysrIGIvYXJjaC91bS9kcml2ZXJzL3ZlY3Rvcl9rZXJuLmMKPj4+IEBAIC0xNDAyLDcgKzE0
-MDIsNyBAQCBzdGF0aWMgaW50IHZlY3Rvcl9uZXRfbG9hZF9icGZfZmxhc2goc3RydWN0IG5ldF9k
-ZXZpY2UKPj4+ICpkZXYsCj4+PiAgIAkJa2ZyZWUodnAtPmJwZi0+ZmlsdGVyKTsKPj4+ICAgCQl2
-cC0+YnBmLT5maWx0ZXIgPSBOVUxMOwo+Pj4gICAJfSBlbHNlIHsKPj4+IC0JCXZwLT5icGYgPSBr
-bWFsbG9jKHNpemVvZihzdHJ1Y3Qgc29ja19mcHJvZyksIEdGUF9LRVJORUwpOwo+Pj4gKwkJdnAt
-PmJwZiA9IGttYWxsb2Moc2l6ZW9mKHN0cnVjdCBzb2NrX2Zwcm9nKSwgR0ZQX0FUT01JQyk7Cj4+
-PiAgIAkJaWYgKHZwLT5icGYgPT0gTlVMTCkgewo+Pj4gICAJCQluZXRkZXZfZXJyKGRldiwgImZh
-aWxlZCB0byBhbGxvY2F0ZSBtZW1vcnkgZm9yIGZpcm13YXJlXG4iKTsKPj4+ICAgCQkJZ290byBm
-bGFzaF9mYWlsOwo+Pj4gQEAgLTE0MTQsNyArMTQxNCw3IEBAIHN0YXRpYyBpbnQgdmVjdG9yX25l
-dF9sb2FkX2JwZl9mbGFzaChzdHJ1Y3QgbmV0X2RldmljZQo+Pj4gKmRldiwKPj4+ICAgCWlmIChy
-ZXF1ZXN0X2Zpcm13YXJlKCZmdywgZWZsLT5kYXRhLCAmdmRldmljZS0+cGRldi5kZXYpKQo+PiAg
-ICAgICAgICAgICAgXl5eXl5eXl5eXl5eXl5eXgo+PiAKPj4gSXMgaXQgcmVhbGx5IHBvc3NpYmxl
-IHRvIGNhbGwgcmVxdWVzdF9maXJtd2FyZSgpIHdoaWxlIGhvbGRpbmcgYQo+PiBzcGluX2xvY2s/
-ICBJIHdhcyBzbyBzdXJlIHRoYXQgcmVhZCBmcm9tIHRoZSBkaXNrLgo+IAo+IFdvcmtzLCBJIHRl
-c3RlZCB0aGUgcGF0Y2ggcXVpdGUgYSBmZXcgdGltZXMuCgpJdCB3b3JrcyBiZWNhdXNlIG9mIHRo
-ZSBuYXR1cmUgb2YgVU1MIC0+bm8gIFNNUCBvciBQUkVFTVBULgpCdXQgYmV0dGVyIHJlcXVlc3Qg
-dGhlIGZpcm13YXJlIGJlZm9yZSB0YWtpbmcgdGhlIHNwaW5sb2NrLgpyZXF1ZXN0X2Zpcm13YXJl
-KCkgY2FuIGJsb2NrLgpTYW1lIGZvciB0aGUga21hbGxvYygpLCBqdXN0IGFsbG9jYXRlIHRoZSBi
-dWZmZXIgYmVmb3JlIGFuZCB0aGVuIGFzc2lnbgp0aGUgcG9pbnRlciB1bmRlciB0aGUgbG9jay4g
-VGhhdCB3YXkgeW91IGRvbid0IG5lZWQgR0ZQX0FUT01JQy4KClRoYW5rcywKLy9yaWNoYXJkCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBt
-YWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
+On Thu, Nov 28, 2019 at 08:18:30AM +0000, Anton Ivanov wrote:
+> 
+> 
+> On 28/11/2019 08:06, Dan Carpenter wrote:
+> > On Thu, Nov 28, 2019 at 02:01:47AM +0000, Wei Yongjun wrote:
+> > > A spin lock is taken here so we should use GFP_ATOMIC.
+> > > 
+> > > Fixes: 9807019a62dc ("um: Loadable BPF "Firmware" for vector drivers")
+> > > Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+> > > ---
+> > >   arch/um/drivers/vector_kern.c | 4 ++--
+> > >   1 file changed, 2 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
+> > > index 92617e16829e..6ff0065a271d 100644
+> > > --- a/arch/um/drivers/vector_kern.c
+> > > +++ b/arch/um/drivers/vector_kern.c
+> > > @@ -1402,7 +1402,7 @@ static int vector_net_load_bpf_flash(struct net_device *dev,
+> > >   		kfree(vp->bpf->filter);
+> > >   		vp->bpf->filter = NULL;
+> > >   	} else {
+> > > -		vp->bpf = kmalloc(sizeof(struct sock_fprog), GFP_KERNEL);
+> > > +		vp->bpf = kmalloc(sizeof(struct sock_fprog), GFP_ATOMIC);
+> > >   		if (vp->bpf == NULL) {
+> > >   			netdev_err(dev, "failed to allocate memory for firmware\n");
+> > >   			goto flash_fail;
+> > > @@ -1414,7 +1414,7 @@ static int vector_net_load_bpf_flash(struct net_device *dev,
+> > >   	if (request_firmware(&fw, efl->data, &vdevice->pdev.dev))
+> >              ^^^^^^^^^^^^^^^^
+> > 
+> > Is it really possible to call request_firmware() while holding a
+> > spin_lock?  I was so sure that read from the disk.
+> 
+> Works, I tested the patch quite a few times.
+> 
+
+Do you have CONFIG_DEBUG_ATOMIC_SLEEP enabled?  The GFP_KERNEL calls
+should have triggered a warning if so.
+
+regards,
+dan carpenter
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
