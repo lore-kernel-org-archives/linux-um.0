@@ -1,17 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab7.miniserver.com ([37.128.132.42]
- helo=www.kot-begemot.co.uk)
+Received: from www62.your-server.de ([213.133.104.62])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iaerU-0003Qx-SY
- for linux-um@lists.infradead.org; Fri, 29 Nov 2019 11:55:03 +0000
+ id 1iacNH-0007P6-9h
+ for linux-um@lists.infradead.org; Fri, 29 Nov 2019 09:15:41 +0000
 Subject: Re: [PATCH] um: vector: fix BPF loading in vector drivers
 References: <20191128174405.4244-1-anton.ivanov@cambridgegreys.com>
- <1416753c-e966-e259-a84d-2a5f0a166660@iogearbox.net>
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Message-ID: <cccc22d6-ee0a-c219-2bf0-2b89ae07ac2b@cambridgegreys.com>
-Date: Fri, 29 Nov 2019 11:54:40 +0000
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <1416753c-e966-e259-a84d-2a5f0a166660@iogearbox.net>
+Date: Fri, 29 Nov 2019 10:15:29 +0100
 MIME-Version: 1.0
-In-Reply-To: <1416753c-e966-e259-a84d-2a5f0a166660@iogearbox.net>
+In-Reply-To: <20191128174405.4244-1-anton.ivanov@cambridgegreys.com>
 Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -21,127 +19,146 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Daniel Borkmann <daniel@iogearbox.net>, linux-um@lists.infradead.org
+To: anton.ivanov@cambridgegreys.com, linux-um@lists.infradead.org
 Cc: songliubraving@fb.com, richard@nod.at, kernel-janitors@vger.kernel.org, ast@kernel.org, weiyongjun1@huawei.com, netdev@vger.kernel.org, bpf@vger.kernel.org, kafai@fb.com, dan.carpenter@oracle.com
 
-CgpPbiAyOS8xMS8yMDE5IDA5OjE1LCBEYW5pZWwgQm9ya21hbm4gd3JvdGU6Cj4gT24gMTEvMjgv
-MTkgNjo0NCBQTSwgYW50b24uaXZhbm92QGNhbWJyaWRnZWdyZXlzLmNvbSB3cm90ZToKPj4gRnJv
-bTogQW50b24gSXZhbm92IDxhbnRvbi5pdmFub3ZAY2FtYnJpZGdlZ3JleXMuY29tPgo+Pgo+PiBU
-aGlzIGZpeGVzIGEgcG9zc2libGUgaGFuZyBpbiBicGYgZmlybXdhcmUgbG9hZGluZyBpbiB0aGUK
-Pj4gVU1MIHZlY3RvciBpbyBkcml2ZXJzIGR1ZSB0byB1c2Ugb2YgR0ZQX0tFUk5FTCB3aGlsZSBo
-b2xkaW5nCj4+IGEgc3BpbmxvY2suCj4+Cj4+IEJhc2VkIG9uIGEgcHJwb3NlZCBmaXggYnkgd2Vp
-eW9uZ2p1bjFAaHVhd2VpLmNvbSBhbmQgc3VnZ2VzdGlvbnMgZm9yCj4+IGltcHJvdmluZyBpdCBi
-eSBkYW4uY2FycGVudGVyQG9yYWNsZS5jb20KPj4KPj4gU2lnbmVkLW9mZi1ieTogQW50b24gSXZh
-bm92IDxhbnRvbi5pdmFub3ZAY2FtYnJpZGdlZ3JleXMuY29tPgo+IAo+IEFueSByZWFzb24gd2h5
-IHRoaXMgQlBGIGZpcm13YXJlIGxvYWRpbmcgbWVjaGFuaXNtIGluIFVNTCB2ZWN0b3IgZHJpdmVy
-IAo+IHRoYXQgd2FzCj4gcmVjZW50bHkgYWRkZWQgWzBdIGlzIHBsYWluIG9sZCBjbGFzc2ljIEJQ
-Rj8gUXVvdGluZyB5b3VyIGNvbW1pdCBsb2cgWzBdOgoKSXQgd2lsbCBhbGxvdyB3aGF0ZXZlciBp
-cyBhbGxvd2VkIGJ5IHNvY2tmaWx0ZXIuIExvb2tpbmcgYXQgdGhlIApzb2NrZmlsdGVyIGltcGxl
-bWVudGF0aW9uIGluIHRoZSBrZXJuZWwgaXQgdGFrZXMgZUJQRiwgaG93ZXZlciBldmVuIHRoZSAK
-a2VybmVsIGRvY3Mgc3RpbGwgc3RhdGUgQlBGLgoKPiAKPiAgwqAgQWxsIHZlY3RvciBkcml2ZXJz
-IG5vdyBhbGxvdyBhIEJQRiBwcm9ncmFtIHRvIGJlIGxvYWRlZCBhbmQKPiAgwqAgYXNzb2NpYXRl
-ZCB3aXRoIHRoZSBSWCBzb2NrZXQgaW4gdGhlIGhvc3Qga2VybmVsLgo+IAo+ICDCoCAxLiBUaGUg
-cHJvZ3JhbSBjYW4gYmUgbG9hZGVkIGFzIGFuIGV4dHJhIGtlcm5lbCBjb21tYW5kIGxpbmUKPiAg
-wqAgb3B0aW9uIHRvIGFueSBvZiB0aGUgdmVjdG9yIGRyaXZlcnMuCj4gCj4gIMKgIDIuIFRoZSBw
-cm9ncmFtIGNhbiBhbHNvIGJlIGxvYWRlZCBhcyAiZmlybXdhcmUiLCB1c2luZyB0aGUKPiAgwqAg
-ZXRodG9vbCBmbGFzaCBvcHRpb24uIEl0IGlzIHBvc3NpYmxlIHRvIHR1cm4gdGhpcyBmYWNpbGl0
-eQo+ICDCoCBvbiBvciBvZmYgdXNpbmcgYSBjb21tYW5kIGxpbmUgb3B0aW9uLgo+IAo+ICDCoCBB
-IHNpbXBsaXN0aWMgd3JhcHBlciBmb3IgZ2VuZXJhdGluZyB0aGUgQlBGIGZpcm13YXJlIGZvciB0
-aGUgcmF3Cj4gIMKgIHNvY2tldCBkcml2ZXIgb3V0IG9mIGEgdGNwZHVtcC9saWJwY2FwIGZpbHRl
-ciBleHByZXNzaW9uIGNhbiBiZQo+ICDCoCBmb3VuZCBhdDogaHR0cHM6Ly9naXRodWIuY29tL2tv
-dC1iZWdlbW90LXVrL3VtbF92ZWN0b3JfdXRpbGl0aWVzLwo+IAo+IC4uLiBpdCB0ZWxscyB3aGF0
-IGl0IGRvZXMgYnV0IC9ub3RoaW5nLyBhYm91dCB0aGUgb3JpZ2luYWwgcmF0aW9uYWxlIC8gCj4g
-dXNlIGNhc2UKPiB3aHkgaXQgaXMgbmVlZGVkLiBTbyB3aGF0IGlzIHRoZSB1c2UgY2FzZT8gQW5k
-IHdoeSBpcyB0aGlzIG9ubHkgY2xhc3NpYyAKPiBCUEY/IElzCj4gdGhlcmUgYW55IGRpc2N1c3Np
-b24gdG8gcmVhZCB1cCB0aGF0IGxlYWQgeW91IHRvIHRoaXMgZGVjaXNpb24gb2Ygb25seSAKPiBp
-bXBsZW1lbnRpbmcKPiBoYW5kbGluZyBmb3IgY2xhc3NpYyBCUEY/CgpNb3ZpbmcgcHJvY2Vzc2lu
-ZyBvdXQgb2YgdGhlIEdVRVNUIG9udG8gdGhlIEhPU1QgdXNpbmcgYSBzYWZlIGxhbmd1YWdlLiAK
-VGhlIGZpcm13YXJlIGxvYWQgaXMgb24gdGhlIEdVRVNUIGFuZCB5b3VyIEJQRiBpcyB5b3VyIHZp
-cnR1YWwgTklDIAoiZmlybXdhcmUiIHdoaWNoIHJ1bnMgb24gdGhlIEhPU1QgKGluIHRoZSBob3N0
-IGtlcm5lbCBpbiBmYWN0KS4KCkl0IGlzIGlkZW50aWNhbCBhcyBhbiBpZGVhIHRvIHdoYXQgTmV0
-cm9ub21lIGNhcmRzIGRvIGluIGhhcmR3YXJlLgoKPiAKPiBJJ20gYXNraW5nIGJlY2F1c2UgY2xh
-c3NpYyBCUEYgaXMgL2xlZ2FjeS8gc3R1ZmYgdGhhdCBpcyBvbiBmZWF0dXJlIAo+IGZyZWV6ZSBh
-bmQKPiBvbmx5IHZlcnkgbGltaXRlZCBpbiB0ZXJtcyBvZiBmdW5jdGlvbmFsaXR5IGNvbXBhcmVk
-IHRvIG5hdGl2ZSAoZSlCUEYgCj4gd2hpY2ggaXMKPiB3aHkgeW91IG5lZWQgdGhpcyB3ZWlyZCAn
-ZmlybXdhcmUnIGxvYWRlciBbMV0gd2hpY2ggd3JhcHMgYXJvdW5kIHRjcGR1bXAgdG8KPiBwYXJz
-ZSB0aGUgLWRkZCBvdXRwdXQgaW50byBCUEYgaW5zbnMgLi4uCgpCZWNhdXNlIHRoZXJlIGlzIG5v
-IG90aGVyIG1lY2hhbmlzbSBvZiByZXRyaWV2aW5nIGl0IGFmdGVyIGl0IGlzIApjb21waWxlZCBi
-eSBsaWJwY2FwIGluIGFueSBvZiB0aGUgY29tbW9uIHNjcmlwdGluZyBsYW5ndWFnZXMuCgpUaGUg
-cGNhcCBQZXJsLCBQeXRob24sIEdvIChvciB3aGF0ZXZlciBlbHNlKSB3cmFwcGVycyBkbyBub3Qg
-Z2l2ZSB5b3UgCmFjY2VzcyB0byB0aGUgY29tcGlsZWQgY29kZSBhZnRlciB0aGUgZmlsdGVyIGhh
-cyBiZWVuIGNvbXBpbGVkLgoKV2h5IGlzIHRoYXQgaW5nZW5pb3VzIGRlc2lnbiAtIHlvdSBoYXZl
-IHRvIHRha2UgaXQgd2l0aCB0aGVpciBtYWludGFpbmVycy4KClNvIGlmIHlvdSB3YW50IHRvIHN0
-YXJ0IHdpdGggcGNhcC90Y3BkdW1wIHN5bnRheCBhbmQgeW91IGRvIG5vdCB3YW50IHRvIApyZXdy
-aXRlIHRoYXQgcGFydCBvZiB0Y3BkdW1wIGFzIGEgZHVtcGVyIGluIEMgeW91IGhhdmUgbm8gb3Ro
-ZXIgY2hvaWNlLgoKVGhlIHN0YXJ0aW5nIHBvaW50IGlzIGNob3NlbiBiZWNhdXNlIHRoZSBpZGVh
-IGlzIGF0IHNvbWUgcG9pbnQgdG8gCnJlcGxhY2UgdGhlIGV4aXN0aW5nIGFuZCB2ZXJ5IGFnZWQg
-cGNhcCBuZXR3b3JrIHRyYW5zcG9ydCBpbiBVTUwuIFRoYXQgCnRha2VzIHBjYXAgc3ludGF4IG9u
-IHRoZSBrZXJuZWwgY29tbWFuZCBsaW5lLgoKSSBhZG1pdCBpdCBpcyBhIGtsdWRnZSwgSSB3aWxs
-IHByb2JhYmx5IGRvIHRoZSAiZG8gbm90IHdhbnQiIGJpdCBhbmQgCnJld3JpdGUgdGhhdCBpbiBD
-LgoKSW4gYW55IGNhc2UgLSB0aGUgImxvYWRlciIgaXMgb25seSBhbiBleGFtcGxlLCB5b3UgY2Fu
-IGNvbXBpbGUgQlBGIHVzaW5nIApMTFZNIG9yIHdoYXRldmVyIGVsc2UgeW91IGxpa2UuCgpBLgoK
-PiAKPiBUaGFua3MsCj4gRGFuaWVsCj4gCj4gIMKgIFswXSAKPiBodHRwczovL2dpdC5rZXJuZWwu
-b3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9ydy91bWwuZ2l0L2NvbW1pdC8/aD1saW51eC1u
-ZXh0JmlkPTk4MDcwMTlhNjJkYzY3MGM3M2NlOGU1OWUwOWI0MWFlNDU4YzM0YjMgCj4gCj4gIMKg
-IFsxXSAKPiBodHRwczovL2dpdGh1Yi5jb20va290LWJlZ2Vtb3QtdWsvdW1sX3ZlY3Rvcl91dGls
-aXRpZXMvYmxvYi9tYXN0ZXIvYnVpbGRfYnBmX2Zpcm13YXJlLnB5IAo+IAo+IAo+PiDCoCBhcmNo
-L3VtL2RyaXZlcnMvdmVjdG9yX2tlcm4uYyB8IDM4ICsrKysrKysrKysrKysrKysrKy0tLS0tLS0t
-LS0tLS0tLS0tCj4+IMKgIDEgZmlsZSBjaGFuZ2VkLCAyMCBpbnNlcnRpb25zKCspLCAxOCBkZWxl
-dGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdpdCBhL2FyY2gvdW0vZHJpdmVycy92ZWN0b3Jfa2Vybi5j
-IAo+PiBiL2FyY2gvdW0vZHJpdmVycy92ZWN0b3Jfa2Vybi5jCj4+IGluZGV4IDkyNjE3ZTE2ODI5
-ZS4uZGJiYzZlODUwZmRkIDEwMDY0NAo+PiAtLS0gYS9hcmNoL3VtL2RyaXZlcnMvdmVjdG9yX2tl
-cm4uYwo+PiArKysgYi9hcmNoL3VtL2RyaXZlcnMvdmVjdG9yX2tlcm4uYwo+PiBAQCAtMTM4Nyw2
-ICsxMzg3LDcgQEAgc3RhdGljIGludCB2ZWN0b3JfbmV0X2xvYWRfYnBmX2ZsYXNoKHN0cnVjdCAK
-Pj4gbmV0X2RldmljZSAqZGV2LAo+PiDCoMKgwqDCoMKgIHN0cnVjdCB2ZWN0b3JfcHJpdmF0ZSAq
-dnAgPSBuZXRkZXZfcHJpdihkZXYpOwo+PiDCoMKgwqDCoMKgIHN0cnVjdCB2ZWN0b3JfZGV2aWNl
-ICp2ZGV2aWNlOwo+PiDCoMKgwqDCoMKgIGNvbnN0IHN0cnVjdCBmaXJtd2FyZSAqZnc7Cj4+ICvC
-oMKgwqAgdm9pZCAqbmV3X2ZpbHRlcjsKPj4gwqDCoMKgwqDCoCBpbnQgcmVzdWx0ID0gMDsKPj4g
-wqDCoMKgwqDCoCBpZiAoISh2cC0+b3B0aW9ucyAmIFZFQ1RPUl9CUEZfRkxBU0gpKSB7Cj4+IEBA
-IC0xMzk0LDYgKzEzOTUsMTUgQEAgc3RhdGljIGludCB2ZWN0b3JfbmV0X2xvYWRfYnBmX2ZsYXNo
-KHN0cnVjdCAKPj4gbmV0X2RldmljZSAqZGV2LAo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJu
-IC0xOwo+PiDCoMKgwqDCoMKgIH0KPj4gK8KgwqDCoCB2ZGV2aWNlID0gZmluZF9kZXZpY2UodnAt
-PnVuaXQpOwo+PiArCj4+ICvCoMKgwqAgaWYgKHJlcXVlc3RfZmlybXdhcmUoJmZ3LCBlZmwtPmRh
-dGEsICZ2ZGV2aWNlLT5wZGV2LmRldikpCj4+ICvCoMKgwqDCoMKgwqDCoCByZXR1cm4gLTE7Cj4+
-ICsKPj4gK8KgwqDCoCBuZXdfZmlsdGVyID0ga21lbWR1cChmdy0+ZGF0YSwgZnctPnNpemUsIEdG
-UF9LRVJORUwpOwo+PiArwqDCoMKgIGlmICghbmV3X2ZpbHRlcikKPj4gK8KgwqDCoMKgwqDCoMKg
-IGdvdG8gZnJlZV9idWZmZXI7Cj4+ICsKPj4gwqDCoMKgwqDCoCBzcGluX2xvY2soJnZwLT5sb2Nr
-KTsKPj4gwqDCoMKgwqDCoCBpZiAodnAtPmJwZiAhPSBOVUxMKSB7Cj4+IEBAIC0xNDAyLDQxICsx
-NDEyLDMzIEBAIHN0YXRpYyBpbnQgdmVjdG9yX25ldF9sb2FkX2JwZl9mbGFzaChzdHJ1Y3QgCj4+
-IG5ldF9kZXZpY2UgKmRldiwKPj4gwqDCoMKgwqDCoMKgwqDCoMKgIGtmcmVlKHZwLT5icGYtPmZp
-bHRlcik7Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoCB2cC0+YnBmLT5maWx0ZXIgPSBOVUxMOwo+PiDC
-oMKgwqDCoMKgIH0gZWxzZSB7Cj4+IC3CoMKgwqDCoMKgwqDCoCB2cC0+YnBmID0ga21hbGxvYyhz
-aXplb2Yoc3RydWN0IHNvY2tfZnByb2cpLCBHRlBfS0VSTkVMKTsKPj4gK8KgwqDCoMKgwqDCoMKg
-IHZwLT5icGYgPSBrbWFsbG9jKHNpemVvZihzdHJ1Y3Qgc29ja19mcHJvZyksIEdGUF9BVE9NSUMp
-Owo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKHZwLT5icGYgPT0gTlVMTCkgewo+PiDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCBuZXRkZXZfZXJyKGRldiwgImZhaWxlZCB0byBhbGxvY2F0ZSBt
-ZW1vcnkgZm9yIAo+PiBmaXJtd2FyZVxuIik7Cj4+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGdv
-dG8gZmxhc2hfZmFpbDsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZ290byBhcHBseV9mbGFz
-aF9mYWlsOwo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgfQo+PiDCoMKgwqDCoMKgIH0KPj4gLcKgwqDC
-oCB2ZGV2aWNlID0gZmluZF9kZXZpY2UodnAtPnVuaXQpOwo+PiAtCj4+IC3CoMKgwqAgaWYgKHJl
-cXVlc3RfZmlybXdhcmUoJmZ3LCBlZmwtPmRhdGEsICZ2ZGV2aWNlLT5wZGV2LmRldikpCj4+IC3C
-oMKgwqDCoMKgwqDCoCBnb3RvIGZsYXNoX2ZhaWw7Cj4+IC0KPj4gLcKgwqDCoCB2cC0+YnBmLT5m
-aWx0ZXIgPSBrbWVtZHVwKGZ3LT5kYXRhLCBmdy0+c2l6ZSwgR0ZQX0tFUk5FTCk7Cj4+IC3CoMKg
-wqAgaWYgKCF2cC0+YnBmLT5maWx0ZXIpCj4+IC3CoMKgwqDCoMKgwqDCoCBnb3RvIGZyZWVfYnVm
-ZmVyOwo+PiAtCj4+ICvCoMKgwqAgdnAtPmJwZi0+ZmlsdGVyID0gbmV3X2ZpbHRlcjsKPj4gwqDC
-oMKgwqDCoCB2cC0+YnBmLT5sZW4gPSBmdy0+c2l6ZSAvIHNpemVvZihzdHJ1Y3Qgc29ja19maWx0
-ZXIpOwo+PiAtwqDCoMKgIHJlbGVhc2VfZmlybXdhcmUoZncpOwo+PiDCoMKgwqDCoMKgIGlmICh2
-cC0+b3BlbmVkKQo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgcmVzdWx0ID0gdW1sX3ZlY3Rvcl9hdHRh
-Y2hfYnBmKHZwLT5mZHMtPnJ4X2ZkLCB2cC0+YnBmKTsKPj4gwqDCoMKgwqDCoCBzcGluX3VubG9j
-aygmdnAtPmxvY2spOwo+PiAtwqDCoMKgIHJldHVybiByZXN1bHQ7Cj4+IC0KPj4gLWZyZWVfYnVm
-ZmVyOgo+PiDCoMKgwqDCoMKgIHJlbGVhc2VfZmlybXdhcmUoZncpOwo+PiAtZmxhc2hfZmFpbDoK
-Pj4gK8KgwqDCoCByZXR1cm4gcmVzdWx0Owo+PiArCj4+ICthcHBseV9mbGFzaF9mYWlsOgo+PiDC
-oMKgwqDCoMKgIHNwaW5fdW5sb2NrKCZ2cC0+bG9jayk7Cj4+IC3CoMKgwqAgaWYgKHZwLT5icGYg
-IT0gTlVMTCkKPj4gK8KgwqDCoCBpZiAodnAtPmJwZikKPj4gwqDCoMKgwqDCoMKgwqDCoMKgIGtm
-cmVlKHZwLT5icGYtPmZpbHRlcik7Cj4+IMKgwqDCoMKgwqAga2ZyZWUodnAtPmJwZik7Cj4+IC3C
-oMKgwqAgdnAtPmJwZiA9IE5VTEw7Cj4+ICsKPj4gK2ZyZWVfYnVmZmVyOgo+PiArwqDCoMKgIHJl
-bGVhc2VfZmlybXdhcmUoZncpOwo+PiDCoMKgwqDCoMKgIHJldHVybiAtMTsKPj4gwqAgfQo+Pgo+
-IAo+IAoKLS0gCkFudG9uIFIuIEl2YW5vdgpDYW1icmlkZ2VncmV5cyBMaW1pdGVkLiBSZWdpc3Rl
-cmVkIGluIEVuZ2xhbmQuIENvbXBhbnkgTnVtYmVyIDEwMjczNjYxCmh0dHBzOi8vd3d3LmNhbWJy
-aWRnZWdyZXlzLmNvbS8KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3Jn
-Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
+On 11/28/19 6:44 PM, anton.ivanov@cambridgegreys.com wrote:
+> From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> 
+> This fixes a possible hang in bpf firmware loading in the
+> UML vector io drivers due to use of GFP_KERNEL while holding
+> a spinlock.
+> 
+> Based on a prposed fix by weiyongjun1@huawei.com and suggestions for
+> improving it by dan.carpenter@oracle.com
+> 
+> Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+
+Any reason why this BPF firmware loading mechanism in UML vector driver that was
+recently added [0] is plain old classic BPF? Quoting your commit log [0]:
+
+   All vector drivers now allow a BPF program to be loaded and
+   associated with the RX socket in the host kernel.
+
+   1. The program can be loaded as an extra kernel command line
+   option to any of the vector drivers.
+
+   2. The program can also be loaded as "firmware", using the
+   ethtool flash option. It is possible to turn this facility
+   on or off using a command line option.
+
+   A simplistic wrapper for generating the BPF firmware for the raw
+   socket driver out of a tcpdump/libpcap filter expression can be
+   found at: https://github.com/kot-begemot-uk/uml_vector_utilities/
+
+... it tells what it does but /nothing/ about the original rationale / use case
+why it is needed. So what is the use case? And why is this only classic BPF? Is
+there any discussion to read up that lead you to this decision of only implementing
+handling for classic BPF?
+
+I'm asking because classic BPF is /legacy/ stuff that is on feature freeze and
+only very limited in terms of functionality compared to native (e)BPF which is
+why you need this weird 'firmware' loader [1] which wraps around tcpdump to
+parse the -ddd output into BPF insns ...
+
+Thanks,
+Daniel
+
+   [0] https://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git/commit/?h=linux-next&id=9807019a62dc670c73ce8e59e09b41ae458c34b3
+   [1] https://github.com/kot-begemot-uk/uml_vector_utilities/blob/master/build_bpf_firmware.py
+
+>   arch/um/drivers/vector_kern.c | 38 ++++++++++++++++++-----------------
+>   1 file changed, 20 insertions(+), 18 deletions(-)
+> 
+> diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
+> index 92617e16829e..dbbc6e850fdd 100644
+> --- a/arch/um/drivers/vector_kern.c
+> +++ b/arch/um/drivers/vector_kern.c
+> @@ -1387,6 +1387,7 @@ static int vector_net_load_bpf_flash(struct net_device *dev,
+>   	struct vector_private *vp = netdev_priv(dev);
+>   	struct vector_device *vdevice;
+>   	const struct firmware *fw;
+> +	void *new_filter;
+>   	int result = 0;
+>   
+>   	if (!(vp->options & VECTOR_BPF_FLASH)) {
+> @@ -1394,6 +1395,15 @@ static int vector_net_load_bpf_flash(struct net_device *dev,
+>   		return -1;
+>   	}
+>   
+> +	vdevice = find_device(vp->unit);
+> +
+> +	if (request_firmware(&fw, efl->data, &vdevice->pdev.dev))
+> +		return -1;
+> +
+> +	new_filter = kmemdup(fw->data, fw->size, GFP_KERNEL);
+> +	if (!new_filter)
+> +		goto free_buffer;
+> +
+>   	spin_lock(&vp->lock);
+>   
+>   	if (vp->bpf != NULL) {
+> @@ -1402,41 +1412,33 @@ static int vector_net_load_bpf_flash(struct net_device *dev,
+>   		kfree(vp->bpf->filter);
+>   		vp->bpf->filter = NULL;
+>   	} else {
+> -		vp->bpf = kmalloc(sizeof(struct sock_fprog), GFP_KERNEL);
+> +		vp->bpf = kmalloc(sizeof(struct sock_fprog), GFP_ATOMIC);
+>   		if (vp->bpf == NULL) {
+>   			netdev_err(dev, "failed to allocate memory for firmware\n");
+> -			goto flash_fail;
+> +			goto apply_flash_fail;
+>   		}
+>   	}
+>   
+> -	vdevice = find_device(vp->unit);
+> -
+> -	if (request_firmware(&fw, efl->data, &vdevice->pdev.dev))
+> -		goto flash_fail;
+> -
+> -	vp->bpf->filter = kmemdup(fw->data, fw->size, GFP_KERNEL);
+> -	if (!vp->bpf->filter)
+> -		goto free_buffer;
+> -
+> +	vp->bpf->filter = new_filter;
+>   	vp->bpf->len = fw->size / sizeof(struct sock_filter);
+> -	release_firmware(fw);
+>   
+>   	if (vp->opened)
+>   		result = uml_vector_attach_bpf(vp->fds->rx_fd, vp->bpf);
+>   
+>   	spin_unlock(&vp->lock);
+>   
+> -	return result;
+> -
+> -free_buffer:
+>   	release_firmware(fw);
+>   
+> -flash_fail:
+> +	return result;
+> +
+> +apply_flash_fail:
+>   	spin_unlock(&vp->lock);
+> -	if (vp->bpf != NULL)
+> +	if (vp->bpf)
+>   		kfree(vp->bpf->filter);
+>   	kfree(vp->bpf);
+> -	vp->bpf = NULL;
+> +
+> +free_buffer:
+> +	release_firmware(fw);
+>   	return -1;
+>   }
+>   
+> 
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
