@@ -1,17 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x54a.google.com ([2607:f8b0:4864:20::54a])
+Received: from mail-pl1-x644.google.com ([2607:f8b0:4864:20::644])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1igyW0-0001qs-HN
- for linux-um@lists.infradead.org; Mon, 16 Dec 2019 22:06:57 +0000
-Received: by mail-pg1-x54a.google.com with SMTP id d9so6005600pgd.10
- for <linux-um@lists.infradead.org>; Mon, 16 Dec 2019 14:06:55 -0800 (PST)
-Date: Mon, 16 Dec 2019 14:05:51 -0800
-In-Reply-To: <20191216220555.245089-1-brendanhiggins@google.com>
-Message-Id: <20191216220555.245089-3-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20191216220555.245089-1-brendanhiggins@google.com>
-Subject: [RFC v1 2/6] arch: um: add linker section for KUnit test suites
+ id 1idMQM-00064J-Rn
+ for linux-um@lists.infradead.org; Fri, 06 Dec 2019 22:50:12 +0000
+Received: by mail-pl1-x644.google.com with SMTP id w7so3315954plz.12
+ for <linux-um@lists.infradead.org>; Fri, 06 Dec 2019 14:50:07 -0800 (PST)
+MIME-Version: 1.0
+References: <20191206020153.228283-1-brendanhiggins@google.com>
+ <20191206020153.228283-3-brendanhiggins@google.com>
+ <aa7b77aa-bf3a-6919-ed66-37af00d856d2@cambridgegreys.com>
+In-Reply-To: <aa7b77aa-bf3a-6919-ed66-37af00d856d2@cambridgegreys.com>
 From: Brendan Higgins <brendanhiggins@google.com>
+Date: Fri, 6 Dec 2019 14:49:55 -0800
+Message-ID: <CAFd5g45_PaL_rSbhrUD1RJ1ZWasptG+z7TO9_B4-Qafs90L2KA@mail.gmail.com>
+Subject: Re: [RFC v1 2/2] uml: remove support for CONFIG_STATIC_LINK
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +26,46 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, arnd@arndb.de, keescook@chromium.org, skhan@linuxfoundation.org, alan.maguire@oracle.com, yzaikin@google.com, davidgow@google.com, akpm@linux-foundation.org, rppt@linux.ibm.com
-Cc: linux-arch@vger.kernel.org, sboyd@kernel.org, gregkh@linuxfoundation.org, knut.omang@oracle.com, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, mcgrof@kernel.org, linux-kselftest@vger.kernel.org, logang@deltatee.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
+To: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: johannes.berg@intel.com, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, David Gow <davidgow@google.com>
 
-Add a linker section to UML where KUnit can put references to its test
-suites. This patch is an early step in transitioning to dispatching all
-KUnit tests from a centralized executor rather than having each as its
-own separate late_initcall.
+On Thu, Dec 5, 2019 at 11:41 PM Anton Ivanov
+<anton.ivanov@cambridgegreys.com> wrote:
+>
+> On 06/12/2019 02:01, Brendan Higgins wrote:
+> > CONFIG_STATIC_LINK appears to have been broken since before v4.20. It
+> > doesn't play nice with CONFIG_UML_NET_VECTOR=y:
+> >
+> > /usr/bin/ld: arch/um/drivers/vector_user.o: in function
+> > `user_init_socket_fds': vector_user.c:(.text+0x430): warning: Using
+> > 'getaddrinfo' in statically linked applications requires at runtime the
+> > shared libraries from the glibc version used for linking
+> >
+> > And it seems to break the ptrace check:
+> >
+> > Checking that ptrace can change system call numbers...check_ptrace :
+> > child exited with exitcode 6, while expecting 0; status 0x67f
+> > [1]    126822 abort      ./linux mem=256M
+> >
+> > Given the importance of ptrace in UML, CONFIG_STATIC_LINK seems totally
+> > broken right now; remove it in order to fix allyesconfig for ARCH=um.
+> >
+> > Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+[...]
+> The ptrace check was discussed on the list this week - it is the enable
+> constructors commit in 5.3-rc1.
+>
+> A patch reverting it was submitted by Johannes yesterday.
+>
+> I did not try disabling/enabling static link - good catch.
+>
+> Otherwise, I agree - static link should probably go.
+>
+> Adding PCAP throws even more warnings and the AF_XDP work I have in
+> progress generates a whole page of them. Considering that the resulting
+> executable is not really static there is no point keeping the option.
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
----
- arch/um/include/asm/common.lds.S | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/arch/um/include/asm/common.lds.S b/arch/um/include/asm/common.lds.S
-index 7145ce6999822..eab9ceb450efd 100644
---- a/arch/um/include/asm/common.lds.S
-+++ b/arch/um/include/asm/common.lds.S
-@@ -52,6 +52,10 @@
- 	CON_INITCALL
-   }
- 
-+  .kunit_test_suites : {
-+	KUNIT_TEST_SUITES
-+  }
-+
-   .exitcall : {
- 	__exitcall_begin = .;
- 	*(.exitcall.exit)
--- 
-2.24.1.735.g03f4e72817-goog
-
+Sounds good. I will send this out again as a non-RFC patch.
 
 _______________________________________________
 linux-um mailing list
