@@ -1,15 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from mail-pj1-x1049.google.com ([2607:f8b0:4864:20::1049])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ieSFy-000720-Fg
- for linux-um@lists.infradead.org; Mon, 09 Dec 2019 23:16:00 +0000
-Date: Tue, 10 Dec 2019 00:15:46 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <1406826345.111805.1575933346955.JavaMail.zimbra@nod.at>
-In-Reply-To: <20191209230248.227508-1-brendanhiggins@google.com>
-References: <20191209230248.227508-1-brendanhiggins@google.com>
-Subject: Re: [PATCH v1] uml: remove support for CONFIG_STATIC_LINK
-MIME-Version: 1.0
+ id 1ieS3l-0001w4-Dd
+ for linux-um@lists.infradead.org; Mon, 09 Dec 2019 23:03:23 +0000
+Received: by mail-pj1-x1049.google.com with SMTP id n4so8744132pjb.1
+ for <linux-um@lists.infradead.org>; Mon, 09 Dec 2019 15:03:20 -0800 (PST)
+Date: Mon,  9 Dec 2019 15:02:48 -0800
+Message-Id: <20191209230248.227508-1-brendanhiggins@google.com>
+Mime-Version: 1.0
+Subject: [PATCH v1] uml: remove support for CONFIG_STATIC_LINK
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,43 +18,589 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Brendan Higgins <brendanhiggins@google.com>
-Cc: Johannes Berg <johannes.berg@intel.com>, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, davidgow@google.com, anton ivanov <anton.ivanov@cambridgegreys.com>
+To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
+Cc: davidgow@google.com, Brendan Higgins <brendanhiggins@google.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, johannes.berg@intel.com
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIkJyZW5kYW4gSGlnZ2lucyIg
-PGJyZW5kYW5oaWdnaW5zQGdvb2dsZS5jb20+Cj4gQW46ICJKZWZmIERpa2UiIDxqZGlrZUBhZGR0
-b2l0LmNvbT4sICJyaWNoYXJkIiA8cmljaGFyZEBub2QuYXQ+LCAiYW50b24gaXZhbm92IiA8YW50
-b24uaXZhbm92QGNhbWJyaWRnZWdyZXlzLmNvbT4KPiBDQzogIkpvaGFubmVzIEJlcmciIDxqb2hh
-bm5lcy5iZXJnQGludGVsLmNvbT4sICJsaW51eC11bSIgPGxpbnV4LXVtQGxpc3RzLmluZnJhZGVh
-ZC5vcmc+LCAibGludXgta2VybmVsIgo+IDxsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnPiwg
-ZGF2aWRnb3dAZ29vZ2xlLmNvbSwgIkJyZW5kYW4gSGlnZ2lucyIgPGJyZW5kYW5oaWdnaW5zQGdv
-b2dsZS5jb20+Cj4gR2VzZW5kZXQ6IERpZW5zdGFnLCAxMC4gRGV6ZW1iZXIgMjAxOSAwMDowMjo0
-OAo+IEJldHJlZmY6IFtQQVRDSCB2MV0gdW1sOiByZW1vdmUgc3VwcG9ydCBmb3IgQ09ORklHX1NU
-QVRJQ19MSU5LCgo+IENPTkZJR19TVEFUSUNfTElOSyBhcHBlYXJzIHRvIGhhdmUgYmVlbiBicm9r
-ZW4gc2luY2UgYmVmb3JlIHY0LjIwLiBJdAo+IGRvZXNuJ3QgcGxheSBuaWNlIHdpdGggQ09ORklH
-X1VNTF9ORVRfVkVDVE9SPXk6Cj4gCj4gL3Vzci9iaW4vbGQ6IGFyY2gvdW0vZHJpdmVycy92ZWN0
-b3JfdXNlci5vOiBpbiBmdW5jdGlvbgo+IGB1c2VyX2luaXRfc29ja2V0X2Zkcyc6IHZlY3Rvcl91
-c2VyLmM6KC50ZXh0KzB4NDMwKTogd2FybmluZzogVXNpbmcKPiAnZ2V0YWRkcmluZm8nIGluIHN0
-YXRpY2FsbHkgbGlua2VkIGFwcGxpY2F0aW9ucyByZXF1aXJlcyBhdCBydW50aW1lIHRoZQo+IHNo
-YXJlZCBsaWJyYXJpZXMgZnJvbSB0aGUgZ2xpYmMgdmVyc2lvbiB1c2VkIGZvciBsaW5raW5nCgpU
-aGlzIGlzIG5vdGhpbmcgc2VyaW91cy4KCj4gQW5kIGl0IHNlZW1zIHRvIGJyZWFrIHRoZSBwdHJh
-Y2UgY2hlY2s6Cj4gCj4gQ2hlY2tpbmcgdGhhdCBwdHJhY2UgY2FuIGNoYW5nZSBzeXN0ZW0gY2Fs
-bCBudW1iZXJzLi4uY2hlY2tfcHRyYWNlIDoKPiBjaGlsZCBleGl0ZWQgd2l0aCBleGl0Y29kZSA2
-LCB3aGlsZSBleHBlY3RpbmcgMDsgc3RhdHVzIDB4NjdmCj4gWzFdICAgIDEyNjgyMiBhYm9ydCAg
-ICAgIC4vbGludXggbWVtPTI1Nk0KCkRpZG4ndCB3ZSBmaXggdGhhdCBhbHJlYWR5PwoKPiAoQXBw
-YXJlbnRseSwgYSBwYXRjaCB3YXMgcmVjZW50bHkgZGlzY3Vzc2VkIHRoYXQgZml4ZXMgdGhpcyAt
-IGFyb3VuZAo+IHY1LjUtcmMxWzFdIC0gYnV0IHRoZSBmYWN0IHRoYXQgdGhpcyB3YXMgYnJva2Vu
-IGZvciBvdmVyIGEgeWVhcgo+IHJlbWFpbnMuKQo+IAo+IEFjY29yZGluZyB0byBBbnRvbiwgUENB
-UCB0aHJvd3MgZXZlbiBtb3JlIHdhcm5pbmdzLCBhbmQgdGhlIHJlc3VsdGluZwo+IGJpbmFyeSBp
-c24ndCByZWFsbHkgZXZlbiBzdGF0aWMgYW55d2F5LCBzbyB0aGVyZSBpcyByZWFsbHkgbm8gcG9p
-bnQgaW4KPiBrZWVwaW5nIHRoaXMgY29uZmlnIGFyb3VuZFsyXS4KCldoYXQ/CkFudG9uLCBwbGVh
-c2UgZXhwbGFpbi4gV2h5IGlzIGl0IG5vdCBzdGF0aWMgd2hlbiBidWlsZCB3aXRoIENPTkZJR19T
-VEFUSUNfTElOSz8KClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlz
-dHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2xpbnV4LXVtCg==
+CONFIG_STATIC_LINK appears to have been broken since before v4.20. It
+doesn't play nice with CONFIG_UML_NET_VECTOR=y:
+
+/usr/bin/ld: arch/um/drivers/vector_user.o: in function
+`user_init_socket_fds': vector_user.c:(.text+0x430): warning: Using
+'getaddrinfo' in statically linked applications requires at runtime the
+shared libraries from the glibc version used for linking
+
+And it seems to break the ptrace check:
+
+Checking that ptrace can change system call numbers...check_ptrace :
+child exited with exitcode 6, while expecting 0; status 0x67f
+[1]    126822 abort      ./linux mem=256M
+
+(Apparently, a patch was recently discussed that fixes this - around
+v5.5-rc1[1] - but the fact that this was broken for over a year
+remains.)
+
+According to Anton, PCAP throws even more warnings, and the resulting
+binary isn't really even static anyway, so there is really no point in
+keeping this config around[2].
+
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Link[1]: https://www.spinics.net/lists/stable/msg346933.html
+Link[2]: https://lkml.org/lkml/2019/12/6/46
+---
+ arch/um/Kconfig              |  23 +----
+ arch/um/Makefile             |   3 +-
+ arch/um/kernel/dyn.lds.S     | 170 ----------------------------------
+ arch/um/kernel/uml.lds.S     | 115 -----------------------
+ arch/um/kernel/vmlinux.lds.S | 175 ++++++++++++++++++++++++++++++++++-
+ 5 files changed, 172 insertions(+), 314 deletions(-)
+ delete mode 100644 arch/um/kernel/dyn.lds.S
+ delete mode 100644 arch/um/kernel/uml.lds.S
+
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index 2a6d04fcb3e91..00927fb7ce67a 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -19,6 +19,7 @@ config UML
+ 	select GENERIC_CLOCKEVENTS
+ 	select HAVE_GCC_PLUGINS
+ 	select TTY # Needed for line.c
++	select MODULE_REL_CRCS if MODVERSIONS
+ 
+ config MMU
+ 	bool
+@@ -61,28 +62,6 @@ config NR_CPUS
+ 
+ source "arch/$(HEADER_ARCH)/um/Kconfig"
+ 
+-config STATIC_LINK
+-	bool "Force a static link"
+-	default n
+-	help
+-	  This option gives you the ability to force a static link of UML.
+-	  Normally, UML is linked as a shared binary.  This is inconvenient for
+-	  use in a chroot jail.  So, if you intend to run UML inside a chroot,
+-	  you probably want to say Y here.
+-	  Additionally, this option enables using higher memory spaces (up to
+-	  2.75G) for UML.
+-
+-config LD_SCRIPT_STATIC
+-	bool
+-	default y
+-	depends on STATIC_LINK
+-
+-config LD_SCRIPT_DYN
+-	bool
+-	default y
+-	depends on !LD_SCRIPT_STATIC
+-	select MODULE_REL_CRCS if MODVERSIONS
+-
+ config HOSTFS
+ 	tristate "Host filesystem"
+ 	help
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index d2daa206872da..ec8af28daf051 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -117,8 +117,7 @@ archheaders:
+ archprepare:
+ 	$(Q)$(MAKE) $(build)=$(HOST_DIR)/um include/generated/user_constants.h
+ 
+-LINK-$(CONFIG_LD_SCRIPT_STATIC) += -static
+-LINK-$(CONFIG_LD_SCRIPT_DYN) += -Wl,-rpath,/lib $(call cc-option, -no-pie)
++LINK-y += -Wl,-rpath,/lib $(call cc-option, -no-pie)
+ 
+ CFLAGS_NO_HARDENING := $(call cc-option, -fno-PIC,) $(call cc-option, -fno-pic,) \
+ 	$(call cc-option, -fno-stack-protector,) \
+diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
+deleted file mode 100644
+index c69d69ee96beb..0000000000000
+--- a/arch/um/kernel/dyn.lds.S
++++ /dev/null
+@@ -1,170 +0,0 @@
+-#include <asm/vmlinux.lds.h>
+-#include <asm/page.h>
+-
+-OUTPUT_FORMAT(ELF_FORMAT)
+-OUTPUT_ARCH(ELF_ARCH)
+-ENTRY(_start)
+-jiffies = jiffies_64;
+-
+-SECTIONS
+-{
+-  PROVIDE (__executable_start = START);
+-  . = START + SIZEOF_HEADERS;
+-  .interp         : { *(.interp) }
+-  __binary_start = .;
+-  . = ALIGN(4096);		/* Init code and data */
+-  _text = .;
+-  INIT_TEXT_SECTION(PAGE_SIZE)
+-
+-  . = ALIGN(PAGE_SIZE);
+-
+-  /* Read-only sections, merged into text segment: */
+-  .hash           : { *(.hash) }
+-  .gnu.hash       : { *(.gnu.hash) }
+-  .dynsym         : { *(.dynsym) }
+-  .dynstr         : { *(.dynstr) }
+-  .gnu.version    : { *(.gnu.version) }
+-  .gnu.version_d  : { *(.gnu.version_d) }
+-  .gnu.version_r  : { *(.gnu.version_r) }
+-  .rel.init       : { *(.rel.init) }
+-  .rela.init      : { *(.rela.init) }
+-  .rel.text       : { *(.rel.text .rel.text.* .rel.gnu.linkonce.t.*) }
+-  .rela.text      : { *(.rela.text .rela.text.* .rela.gnu.linkonce.t.*) }
+-  .rel.fini       : { *(.rel.fini) }
+-  .rela.fini      : { *(.rela.fini) }
+-  .rel.rodata     : { *(.rel.rodata .rel.rodata.* .rel.gnu.linkonce.r.*) }
+-  .rela.rodata    : { *(.rela.rodata .rela.rodata.* .rela.gnu.linkonce.r.*) }
+-  .rel.data       : { *(.rel.data .rel.data.* .rel.gnu.linkonce.d.*) }
+-  .rela.data      : { *(.rela.data .rela.data.* .rela.gnu.linkonce.d.*) }
+-  .rel.tdata	  : { *(.rel.tdata .rel.tdata.* .rel.gnu.linkonce.td.*) }
+-  .rela.tdata	  : { *(.rela.tdata .rela.tdata.* .rela.gnu.linkonce.td.*) }
+-  .rel.tbss	  : { *(.rel.tbss .rel.tbss.* .rel.gnu.linkonce.tb.*) }
+-  .rela.tbss	  : { *(.rela.tbss .rela.tbss.* .rela.gnu.linkonce.tb.*) }
+-  .rel.ctors      : { *(.rel.ctors) }
+-  .rela.ctors     : { *(.rela.ctors) }
+-  .rel.dtors      : { *(.rel.dtors) }
+-  .rela.dtors     : { *(.rela.dtors) }
+-  .rel.got        : { *(.rel.got) }
+-  .rela.got       : { *(.rela.got) }
+-  .rel.bss        : { *(.rel.bss .rel.bss.* .rel.gnu.linkonce.b.*) }
+-  .rela.bss       : { *(.rela.bss .rela.bss.* .rela.gnu.linkonce.b.*) }
+-  .rel.plt : {
+-	*(.rel.plt)
+-	PROVIDE_HIDDEN(__rel_iplt_start = .);
+-	*(.rel.iplt)
+-	PROVIDE_HIDDEN(__rel_iplt_end = .);
+-  }
+-  .rela.plt : {
+-	*(.rela.plt)
+-	PROVIDE_HIDDEN(__rela_iplt_start = .);
+-	*(.rela.iplt)
+-	PROVIDE_HIDDEN(__rela_iplt_end = .);
+-  }
+-  .init           : {
+-    KEEP (*(.init))
+-  } =0x90909090
+-  .plt            : { *(.plt) }
+-  .text           : {
+-    _stext = .;
+-    TEXT_TEXT
+-    SCHED_TEXT
+-    CPUIDLE_TEXT
+-    LOCK_TEXT
+-    IRQENTRY_TEXT
+-    SOFTIRQENTRY_TEXT
+-    *(.fixup)
+-    *(.stub .text.* .gnu.linkonce.t.*)
+-    /* .gnu.warning sections are handled specially by elf32.em.  */
+-    *(.gnu.warning)
+-
+-    . = ALIGN(PAGE_SIZE);
+-  } =0x90909090
+-  . = ALIGN(PAGE_SIZE);
+-  .syscall_stub : {
+-	__syscall_stub_start = .;
+-	*(.__syscall_stub*)
+-	__syscall_stub_end = .;
+-  }
+-  .fini           : {
+-    KEEP (*(.fini))
+-  } =0x90909090
+-
+-  .kstrtab : { *(.kstrtab) }
+-
+-  #include <asm/common.lds.S>
+-
+-  __init_begin = .;
+-  init.data : { INIT_DATA }
+-  __init_end = .;
+-
+-  /* Ensure the __preinit_array_start label is properly aligned.  We
+-     could instead move the label definition inside the section, but
+-     the linker would then create the section even if it turns out to
+-     be empty, which isn't pretty.  */
+-  . = ALIGN(32 / 8);
+-  .preinit_array     : { *(.preinit_array) }
+-  .fini_array     : { *(.fini_array) }
+-  .data           : {
+-    INIT_TASK_DATA(KERNEL_STACK_SIZE)
+-    . = ALIGN(KERNEL_STACK_SIZE);
+-    *(.data..init_irqstack)
+-    DATA_DATA
+-    *(.data.* .gnu.linkonce.d.*)
+-    SORT(CONSTRUCTORS)
+-  }
+-  .data1          : { *(.data1) }
+-  .tdata	  : { *(.tdata .tdata.* .gnu.linkonce.td.*) }
+-  .tbss		  : { *(.tbss .tbss.* .gnu.linkonce.tb.*) *(.tcommon) }
+-  .eh_frame       : { KEEP (*(.eh_frame)) }
+-  .gcc_except_table   : { *(.gcc_except_table) }
+-  .dynamic        : { *(.dynamic) }
+-  .ctors          : {
+-    /* gcc uses crtbegin.o to find the start of
+-       the constructors, so we make sure it is
+-       first.  Because this is a wildcard, it
+-       doesn't matter if the user does not
+-       actually link against crtbegin.o; the
+-       linker won't look for a file to match a
+-       wildcard.  The wildcard also means that it
+-       doesn't matter which directory crtbegin.o
+-       is in.  */
+-    KEEP (*crtbegin.o(.ctors))
+-    /* We don't want to include the .ctor section from
+-       from the crtend.o file until after the sorted ctors.
+-       The .ctor section from the crtend file contains the
+-       end of ctors marker and it must be last */
+-    KEEP (*(EXCLUDE_FILE (*crtend.o ) .ctors))
+-    KEEP (*(SORT(.ctors.*)))
+-    KEEP (*(.ctors))
+-  }
+-  .dtors          : {
+-    KEEP (*crtbegin.o(.dtors))
+-    KEEP (*(EXCLUDE_FILE (*crtend.o ) .dtors))
+-    KEEP (*(SORT(.dtors.*)))
+-    KEEP (*(.dtors))
+-  }
+-  .jcr            : { KEEP (*(.jcr)) }
+-  .got            : { *(.got.plt) *(.got) }
+-  _edata = .;
+-  PROVIDE (edata = .);
+-  .bss            : {
+-   __bss_start = .;
+-   *(.dynbss)
+-   *(.bss .bss.* .gnu.linkonce.b.*)
+-   *(COMMON)
+-   /* Align here to ensure that the .bss section occupies space up to
+-      _end.  Align after .bss to ensure correct alignment even if the
+-      .bss section disappears because there are no input sections.  */
+-   . = ALIGN(32 / 8);
+-  . = ALIGN(32 / 8);
+-  }
+-   __bss_stop = .;
+-  _end = .;
+-  PROVIDE (end = .);
+-
+-  STABS_DEBUG
+-
+-  DWARF_DEBUG
+-
+-  DISCARDS
+-}
+diff --git a/arch/um/kernel/uml.lds.S b/arch/um/kernel/uml.lds.S
+deleted file mode 100644
+index 9f21443be2c9e..0000000000000
+--- a/arch/um/kernel/uml.lds.S
++++ /dev/null
+@@ -1,115 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#include <asm/vmlinux.lds.h>
+-#include <asm/page.h>
+-
+-OUTPUT_FORMAT(ELF_FORMAT)
+-OUTPUT_ARCH(ELF_ARCH)
+-ENTRY(_start)
+-jiffies = jiffies_64;
+-
+-SECTIONS
+-{
+-  /* This must contain the right address - not quite the default ELF one.*/
+-  PROVIDE (__executable_start = START);
+-  /* Static binaries stick stuff here, like the sigreturn trampoline,
+-   * invisibly to objdump.  So, just make __binary_start equal to the very
+-   * beginning of the executable, and if there are unmapped pages after this,
+-   * they are forever unusable.
+-   */
+-  __binary_start = START;
+-
+-  . = START + SIZEOF_HEADERS;
+-
+-  _text = .;
+-  INIT_TEXT_SECTION(0)
+-  . = ALIGN(PAGE_SIZE);
+-
+-  .text      :
+-  {
+-    _stext = .;
+-    TEXT_TEXT
+-    SCHED_TEXT
+-    CPUIDLE_TEXT
+-    LOCK_TEXT
+-    IRQENTRY_TEXT
+-    SOFTIRQENTRY_TEXT
+-    *(.fixup)
+-    /* .gnu.warning sections are handled specially by elf32.em.  */
+-    *(.gnu.warning)
+-    *(.gnu.linkonce.t*)
+-  }
+-
+-  . = ALIGN(PAGE_SIZE);
+-  .syscall_stub : {
+-	__syscall_stub_start = .;
+-	*(.__syscall_stub*)
+-	__syscall_stub_end = .;
+-  }
+-
+-  /*
+-   * These are needed even in a static link, even if they wind up being empty.
+-   * Newer glibc needs these __rel{,a}_iplt_{start,end} symbols.
+-   */
+-  .rel.plt : {
+-	*(.rel.plt)
+-	PROVIDE_HIDDEN(__rel_iplt_start = .);
+-	*(.rel.iplt)
+-	PROVIDE_HIDDEN(__rel_iplt_end = .);
+-  }
+-  .rela.plt : {
+-	*(.rela.plt)
+-	PROVIDE_HIDDEN(__rela_iplt_start = .);
+-	*(.rela.iplt)
+-	PROVIDE_HIDDEN(__rela_iplt_end = .);
+-  }
+-
+-  #include <asm/common.lds.S>
+-
+-  __init_begin = .;
+-  init.data : { INIT_DATA }
+-  __init_end = .;
+-
+-  .data    :
+-  {
+-    INIT_TASK_DATA(KERNEL_STACK_SIZE)
+-    . = ALIGN(KERNEL_STACK_SIZE);
+-    *(.data..init_irqstack)
+-    DATA_DATA
+-    *(.gnu.linkonce.d*)
+-    CONSTRUCTORS
+-  }
+-  .data1   : { *(.data1) }
+-  .ctors         :
+-  {
+-    *(.ctors)
+-  }
+-  .dtors         :
+-  {
+-    *(.dtors)
+-  }
+-
+-  .got           : { *(.got.plt) *(.got) }
+-  .dynamic       : { *(.dynamic) }
+-  .tdata	  : { *(.tdata .tdata.* .gnu.linkonce.td.*) }
+-  .tbss		  : { *(.tbss .tbss.* .gnu.linkonce.tb.*) *(.tcommon) }
+-  /* We want the small data sections together, so single-instruction offsets
+-     can access them all, and initialized data all before uninitialized, so
+-     we can shorten the on-disk segment size.  */
+-  .sdata     : { *(.sdata) }
+-  _edata  =  .;
+-  PROVIDE (edata = .);
+-  . = ALIGN(PAGE_SIZE);
+-  __bss_start = .;
+-  PROVIDE(_bss_start = .);
+-  SBSS(0)
+-  BSS(0)
+-   __bss_stop = .;
+-  _end = .;
+-  PROVIDE (end = .);
+-
+-  STABS_DEBUG
+-
+-  DWARF_DEBUG
+-
+-  DISCARDS
+-}
+diff --git a/arch/um/kernel/vmlinux.lds.S b/arch/um/kernel/vmlinux.lds.S
+index 16e49bfa2b426..f4b6114e54d62 100644
+--- a/arch/um/kernel/vmlinux.lds.S
++++ b/arch/um/kernel/vmlinux.lds.S
+@@ -1,8 +1,173 @@
+ 
+ KERNEL_STACK_SIZE = 4096 * (1 << CONFIG_KERNEL_STACK_ORDER);
+ 
+-#ifdef CONFIG_LD_SCRIPT_STATIC
+-#include "uml.lds.S"
+-#else
+-#include "dyn.lds.S"
+-#endif
++#include <asm/vmlinux.lds.h>
++#include <asm/page.h>
++
++OUTPUT_FORMAT(ELF_FORMAT)
++OUTPUT_ARCH(ELF_ARCH)
++ENTRY(_start)
++jiffies = jiffies_64;
++
++SECTIONS
++{
++  PROVIDE (__executable_start = START);
++  . = START + SIZEOF_HEADERS;
++  .interp         : { *(.interp) }
++  __binary_start = .;
++  . = ALIGN(4096);		/* Init code and data */
++  _text = .;
++  INIT_TEXT_SECTION(PAGE_SIZE)
++
++  . = ALIGN(PAGE_SIZE);
++
++  /* Read-only sections, merged into text segment: */
++  .hash           : { *(.hash) }
++  .gnu.hash       : { *(.gnu.hash) }
++  .dynsym         : { *(.dynsym) }
++  .dynstr         : { *(.dynstr) }
++  .gnu.version    : { *(.gnu.version) }
++  .gnu.version_d  : { *(.gnu.version_d) }
++  .gnu.version_r  : { *(.gnu.version_r) }
++  .rel.init       : { *(.rel.init) }
++  .rela.init      : { *(.rela.init) }
++  .rel.text       : { *(.rel.text .rel.text.* .rel.gnu.linkonce.t.*) }
++  .rela.text      : { *(.rela.text .rela.text.* .rela.gnu.linkonce.t.*) }
++  .rel.fini       : { *(.rel.fini) }
++  .rela.fini      : { *(.rela.fini) }
++  .rel.rodata     : { *(.rel.rodata .rel.rodata.* .rel.gnu.linkonce.r.*) }
++  .rela.rodata    : { *(.rela.rodata .rela.rodata.* .rela.gnu.linkonce.r.*) }
++  .rel.data       : { *(.rel.data .rel.data.* .rel.gnu.linkonce.d.*) }
++  .rela.data      : { *(.rela.data .rela.data.* .rela.gnu.linkonce.d.*) }
++  .rel.tdata	  : { *(.rel.tdata .rel.tdata.* .rel.gnu.linkonce.td.*) }
++  .rela.tdata	  : { *(.rela.tdata .rela.tdata.* .rela.gnu.linkonce.td.*) }
++  .rel.tbss	  : { *(.rel.tbss .rel.tbss.* .rel.gnu.linkonce.tb.*) }
++  .rela.tbss	  : { *(.rela.tbss .rela.tbss.* .rela.gnu.linkonce.tb.*) }
++  .rel.ctors      : { *(.rel.ctors) }
++  .rela.ctors     : { *(.rela.ctors) }
++  .rel.dtors      : { *(.rel.dtors) }
++  .rela.dtors     : { *(.rela.dtors) }
++  .rel.got        : { *(.rel.got) }
++  .rela.got       : { *(.rela.got) }
++  .rel.bss        : { *(.rel.bss .rel.bss.* .rel.gnu.linkonce.b.*) }
++  .rela.bss       : { *(.rela.bss .rela.bss.* .rela.gnu.linkonce.b.*) }
++  .rel.plt : {
++	*(.rel.plt)
++	PROVIDE_HIDDEN(__rel_iplt_start = .);
++	*(.rel.iplt)
++	PROVIDE_HIDDEN(__rel_iplt_end = .);
++  }
++  .rela.plt : {
++	*(.rela.plt)
++	PROVIDE_HIDDEN(__rela_iplt_start = .);
++	*(.rela.iplt)
++	PROVIDE_HIDDEN(__rela_iplt_end = .);
++  }
++  .init           : {
++    KEEP (*(.init))
++  } =0x90909090
++  .plt            : { *(.plt) }
++  .text           : {
++    _stext = .;
++    TEXT_TEXT
++    SCHED_TEXT
++    CPUIDLE_TEXT
++    LOCK_TEXT
++    IRQENTRY_TEXT
++    SOFTIRQENTRY_TEXT
++    *(.fixup)
++    *(.stub .text.* .gnu.linkonce.t.*)
++    /* .gnu.warning sections are handled specially by elf32.em.  */
++    *(.gnu.warning)
++
++    . = ALIGN(PAGE_SIZE);
++  } =0x90909090
++  . = ALIGN(PAGE_SIZE);
++  .syscall_stub : {
++	__syscall_stub_start = .;
++	*(.__syscall_stub*)
++	__syscall_stub_end = .;
++  }
++  .fini           : {
++    KEEP (*(.fini))
++  } =0x90909090
++
++  .kstrtab : { *(.kstrtab) }
++
++  #include <asm/common.lds.S>
++
++  __init_begin = .;
++  init.data : { INIT_DATA }
++  __init_end = .;
++
++  /* Ensure the __preinit_array_start label is properly aligned.  We
++     could instead move the label definition inside the section, but
++     the linker would then create the section even if it turns out to
++     be empty, which isn't pretty.  */
++  . = ALIGN(32 / 8);
++  .preinit_array     : { *(.preinit_array) }
++  .fini_array     : { *(.fini_array) }
++  .data           : {
++    INIT_TASK_DATA(KERNEL_STACK_SIZE)
++    . = ALIGN(KERNEL_STACK_SIZE);
++    *(.data..init_irqstack)
++    DATA_DATA
++    *(.data.* .gnu.linkonce.d.*)
++    SORT(CONSTRUCTORS)
++  }
++  .data1          : { *(.data1) }
++  .tdata	  : { *(.tdata .tdata.* .gnu.linkonce.td.*) }
++  .tbss		  : { *(.tbss .tbss.* .gnu.linkonce.tb.*) *(.tcommon) }
++  .eh_frame       : { KEEP (*(.eh_frame)) }
++  .gcc_except_table   : { *(.gcc_except_table) }
++  .dynamic        : { *(.dynamic) }
++  .ctors          : {
++    /* gcc uses crtbegin.o to find the start of
++       the constructors, so we make sure it is
++       first.  Because this is a wildcard, it
++       doesn't matter if the user does not
++       actually link against crtbegin.o; the
++       linker won't look for a file to match a
++       wildcard.  The wildcard also means that it
++       doesn't matter which directory crtbegin.o
++       is in.  */
++    KEEP (*crtbegin.o(.ctors))
++    /* We don't want to include the .ctor section from
++       from the crtend.o file until after the sorted ctors.
++       The .ctor section from the crtend file contains the
++       end of ctors marker and it must be last */
++    KEEP (*(EXCLUDE_FILE (*crtend.o ) .ctors))
++    KEEP (*(SORT(.ctors.*)))
++    KEEP (*(.ctors))
++  }
++  .dtors          : {
++    KEEP (*crtbegin.o(.dtors))
++    KEEP (*(EXCLUDE_FILE (*crtend.o ) .dtors))
++    KEEP (*(SORT(.dtors.*)))
++    KEEP (*(.dtors))
++  }
++  .jcr            : { KEEP (*(.jcr)) }
++  .got            : { *(.got.plt) *(.got) }
++  _edata = .;
++  PROVIDE (edata = .);
++  .bss            : {
++   __bss_start = .;
++   *(.dynbss)
++   *(.bss .bss.* .gnu.linkonce.b.*)
++   *(COMMON)
++   /* Align here to ensure that the .bss section occupies space up to
++      _end.  Align after .bss to ensure correct alignment even if the
++      .bss section disappears because there are no input sections.  */
++   . = ALIGN(32 / 8);
++  . = ALIGN(32 / 8);
++  }
++   __bss_stop = .;
++  _end = .;
++  PROVIDE (end = .);
++
++  STABS_DEBUG
++
++  DWARF_DEBUG
++
++  DISCARDS
++}
+-- 
+2.24.0.393.g34dc348eaf-goog
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
