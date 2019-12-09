@@ -2,15 +2,23 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab7.miniserver.com ([37.128.132.42]
  helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ih9nC-0002YK-TM
- for linux-um@lists.infradead.org; Tue, 17 Dec 2019 10:09:28 +0000
-From: anton.ivanov@cambridgegreys.com
-Subject: [PATCH v4 5/9] um: vector: Add dynamic tap interfaces and scripting
-Date: Tue, 17 Dec 2019 10:09:09 +0000
-Message-Id: <20191217100913.3422-5-anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20191217100913.3422-1-anton.ivanov@cambridgegreys.com>
-References: <20191217100913.3422-1-anton.ivanov@cambridgegreys.com>
+ id 1ieFv9-0001RN-Qr
+ for linux-um@lists.infradead.org; Mon, 09 Dec 2019 10:05:41 +0000
+Subject: Re: Invalid GSO - from 4.x (TBA) to 5.5-rc1. Was: Re: 64 bit time
+ regression in recvmmsg()
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+References: <3820d68b-1d97-8f41-d55d-237d1695458c@cambridgegreys.com>
+ <CAMuHMdWuiGC4ay=f6M2H=-PLiffavnFSu8CPXE26euAi6aoY0w@mail.gmail.com>
+ <CAK8P3a1mrFgRyh5Fgv-d8Szd2pq0T6Ac7wL3ogeYcf-Uyrg4ZQ@mail.gmail.com>
+ <a5b9709d-b93b-46e1-ab18-a94ab921ccf7@cambridgegreys.com>
+ <9dc1be66-5c55-8b3d-875b-4e1206914e78@cambridgegreys.com>
+ <CAK8P3a1KcRcpUB2PdA17tnHN_dDs2Y02zPtkgM22Z-JdugAkfQ@mail.gmail.com>
+ <e96aebcc-907a-d86f-ea8f-f5b10f74f39b@cambridgegreys.com>
+Message-ID: <5a4dc591-5fd9-063a-13e2-2dbcfe83b22b@cambridgegreys.com>
+Date: Mon, 9 Dec 2019 10:05:34 +0000
 MIME-Version: 1.0
+In-Reply-To: <e96aebcc-907a-d86f-ea8f-f5b10f74f39b@cambridgegreys.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -19,168 +27,61 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: richard@nod.at, brendanhiggins@google.com, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: netdev <netdev@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-
-In order to be compatible with the existing tap driver
-we need to be able to allocate a tap on the fly and tear it
-down once we are done with it.
-
-We also need to be able to add that interface to a bridge.
-Instead of backwards compatibility with the old UML options
-and net helper behaviour this patch introduces semantics
-identical to qemu ifup scripts.
-
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
----
- arch/um/drivers/vector_user.c | 57 +++++++++++++++++++++++++++++------
- 1 file changed, 48 insertions(+), 9 deletions(-)
-
-diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
-index 7f95318d88d2..ab01c194fba5 100644
---- a/arch/um/drivers/vector_user.c
-+++ b/arch/um/drivers/vector_user.c
-@@ -40,6 +40,7 @@
- #define ID_MAX 4
- 
- #define TOKEN_IFNAME "ifname"
-+#define TOKEN_SCRIPT "script"
- 
- #define TRANS_RAW "raw"
- #define TRANS_RAW_LEN strlen(TRANS_RAW)
-@@ -53,6 +54,9 @@
- 
- #define MAX_UN_LEN 107
- 
-+static const char padchar[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-+static const char *template = "tapXXXXXX";
-+
- /* This is very ugly and brute force lookup, but it is done
-  * only once at initialization so not worth doing hashes or
-  * anything more intelligent
-@@ -189,16 +193,21 @@ static int create_raw_fd(char *iface, int flags, int proto)
- 	return err;
- }
- 
-+
- static struct vector_fds *user_init_tap_fds(struct arglist *ifspec)
- {
--	int fd = -1;
-+	int fd = -1, i;
- 	char *iface;
- 	struct vector_fds *result = NULL;
-+	bool dynamic = false;
-+	char dynamic_ifname[IFNAMSIZ];
-+	char *argv[] = {"/bin/sh", NULL, NULL, NULL};
- 
- 	iface = uml_vector_fetch_arg(ifspec, TOKEN_IFNAME);
- 	if (iface == NULL) {
--		printk(UM_KERN_ERR "uml_tap: failed to parse interface spec\n");
--		goto tap_cleanup;
-+		dynamic = true;
-+		iface = dynamic_ifname;
-+		srand(getpid());
- 	}
- 
- 	result = uml_kmalloc(sizeof(struct vector_fds), UM_GFP_KERNEL);
-@@ -212,14 +221,30 @@ static struct vector_fds *user_init_tap_fds(struct arglist *ifspec)
- 	result->remote_addr_size = 0;
- 
- 	/* TAP */
-+	do {
-+		if (dynamic) {
-+			strcpy(iface, template);
-+			for (i = 0; i < strlen(iface); i++) {
-+				if (iface[i] == 'X') {
-+					iface[i] = padchar[rand() % strlen(padchar)];
-+				}
-+			}
-+		}
-+		fd = create_tap_fd(iface);
-+		if ((fd < 0) && (!dynamic)) {
-+			printk(UM_KERN_ERR "uml_tap: failed to create tun interface\n");
-+			goto tap_cleanup;
-+		}
-+		result->tx_fd = fd;
-+		result->rx_fd = fd;
-+	} while (fd < 0);
- 
--	fd = create_tap_fd(iface);
--	if (fd < 0) {
--		printk(UM_KERN_ERR "uml_tap: failed to create tun interface\n");
--		goto tap_cleanup;
-+	argv[1] = uml_vector_fetch_arg(ifspec, TOKEN_SCRIPT);
-+	if (argv[1]) {
-+		argv[2] = iface;
-+		run_helper(NULL, NULL, argv);
- 	}
--	result->tx_fd = fd;
--	result->rx_fd = fd;
-+
- 	return result;
- tap_cleanup:
- 	printk(UM_KERN_ERR "user_init_tap: init failed, error %d", fd);
-@@ -232,6 +257,7 @@ static struct vector_fds *user_init_hybrid_fds(struct arglist *ifspec)
- {
- 	char *iface;
- 	struct vector_fds *result = NULL;
-+	char *argv[2];
- 
- 	iface = uml_vector_fetch_arg(ifspec, TOKEN_IFNAME);
- 	if (iface == NULL) {
-@@ -265,6 +291,12 @@ static struct vector_fds *user_init_hybrid_fds(struct arglist *ifspec)
- 			"uml_tap: failed to create paired raw socket: %i\n", result->rx_fd);
- 		goto hybrid_cleanup;
- 	}
-+
-+	argv[0] = uml_vector_fetch_arg(ifspec, TOKEN_SCRIPT);
-+	if (argv[0]) {
-+		argv[1] = iface;
-+		run_helper(NULL, NULL, argv);
-+	}
- 	return result;
- hybrid_cleanup:
- 	printk(UM_KERN_ERR "user_init_hybrid: init failed");
-@@ -359,6 +391,7 @@ static struct vector_fds *user_init_raw_fds(struct arglist *ifspec)
- 	int err = -ENOMEM;
- 	char *iface;
- 	struct vector_fds *result = NULL;
-+	char *argv[2];
- 
- 	iface = uml_vector_fetch_arg(ifspec, TOKEN_IFNAME);
- 	if (iface == NULL)
-@@ -392,6 +425,11 @@ static struct vector_fds *user_init_raw_fds(struct arglist *ifspec)
- 		result->remote_addr = NULL;
- 		result->remote_addr_size = 0;
- 	}
-+	argv[0] = uml_vector_fetch_arg(ifspec, TOKEN_SCRIPT);
-+	if (argv[0]) {
-+		argv[1] = iface;
-+		run_helper(NULL, NULL, argv);
-+	}
- 	return result;
- raw_cleanup:
- 	printk(UM_KERN_ERR "user_init_raw: init failed, error %d", err);
-@@ -643,6 +681,7 @@ struct vector_fds *uml_vector_user_open(
- 		return user_init_socket_fds(parsed, ID_UCAST);
- 	if (strncmp(transport, TRANS_MCAST, TRANS_MCAST_LEN) == 0)
- 		return user_init_socket_fds(parsed, ID_MCAST);
-+
- 	return NULL;
- }
- 
--- 
-2.20.1
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+CgpPbiAwOS8xMi8yMDE5IDA5OjE5LCBBbnRvbiBJdmFub3Ygd3JvdGU6Cj4gCj4gCj4gT24gMDYv
+MTIvMjAxOSAyMDowNiwgQXJuZCBCZXJnbWFubiB3cm90ZToKPj4gT24gRnJpLCBEZWMgNiwgMjAx
+OSBhdCA2OjUwIFBNIEFudG9uIEl2YW5vdgo+PiA8YW50b24uaXZhbm92QGNhbWJyaWRnZWdyZXlz
+LmNvbT4gd3JvdGU6Cj4+PiBPbiAyOS8xMS8yMDE5IDE2OjM0LCBBbnRvbiBJdmFub3Ygd3JvdGU6
+Cj4+Pgo+Pj4gSSBhcG9sb2dpemUsIHByb2JsZW0gZWxzZXdoZXJlLiBJIGhhdmUgbmFycm93ZWQg
+aXQgZG93biwgaXQgaXMgYSBob3N0Cj4+PiByZWdyZXNzaW9uIGF0IHRoZSBlbmQsIG5vdCBhIHJl
+Y3ZtbXNnL3RpbWUgb25lLgo+Pj4KPj4+IFRoZSBFSU5WQUwgaXMgb2NjYXNpb25hbGx5IHJldHVy
+bmVkIGZyb20gdGhlIGd1dHMgb2YgcGFja2V0X3Jjdl92bmV0Cj4+Pgo+Pj4gaHR0cHM6Ly9lbGl4
+aXIuYm9vdGxpbi5jb20vbGludXgvbGF0ZXN0L2lkZW50L3BhY2tldF9yY3Zfdm5ldAo+Pj4KPj4+
+IGluIGFmX3BhY2tldC4gSSBhbSBnb2luZyB0byB0cnkgdG8gZmlndXJlIG91dCBleGFjdGx5IHdo
+ZW4gaXQgaGFwcGVucwo+Pj4gYW5kIHdoeS4KPj4+Cj4+PiBNeSBzaW5jZXJlIGFwb2xvZ2llcywK
+Pj4KPj4gTm8sIHdvcnJpZXMsIEknbSBnbGFkIGl0IHdhc24ndCBtZSB0aGlzIHRpbWUgOy0pCj4g
+Cj4gQXQgc29tZSBwb2ludCBpbiBsYXRlIDQueCAoSSBhbSBnb2luZyB0byB0cnkgbmFycm93aW5n
+IGRvd24gdGhlIAo+IHZlcnNpb24pLCBnc28gY29kZSBpbnRyb2R1Y2VkIGEgY29uZGl0aW9uIHdo
+aWNoIHNob3VsZCBub3Qgb2NjdXI6Cj4gCj4gV2UgaGF2ZQo+IAo+IHNpbmZvKHNrYiktPmdzb190
+eXBlID0gMAo+IAo+IHdoaWxlCj4gCj4gc2luZm8oc2tiKS0+Z3NvX3NpemUgPSA3NTIuCj4gc2ti
+LT5sZW4gPSA4MTgKPiBza2ItPmRhdGFfbGVuID0gMAo+IAo+IEFzIGEgcmVzdWx0IHdlIGdldCBh
+IHNrYiB3aGljaCBpcyBHU08sIGJ1dCBpdCBoYXMgYSBubyBHU08gdHlwZS4KPiAKPiBUaGlzIHNo
+b3dzIHVwIGluIHZpcnRpb19uZXRfaGRyX2Zyb21fc2tiKCkgd2hpY2ggZGV0ZWN0cyB0aGUgY29u
+ZGl0aW9uIAo+IGFzIGludmFsaWQgYW5kIHJldHVybnMgYW4gLUVJTlZBTAo+IAo+IEEgZmV3IGlu
+dGVyZXN0aW5nIHRoaW5ncy4KPiAKPiAxLiBTaXplIGlzIGFsd2F5cyA3NTIuCj4gCj4gMi4gSSBo
+YXZlIGZvdW5kIGl0IHdoaWxlIHRyYWNpbmcgYW4gLUVJTlZBTCB3aGVuIHVzaW5nIHJlY3ZtbXNn
+KCkgb24gcmF3IAo+IHNvY2tldHMuIE5vIGlkZWEgaWYgaXQgc2hvd3MgdXAgZWxzZXdoZXJlLgo+
+IAo+IDMuIFRoZSBlbnZpcm9ubWVudCB1bmRlciB0ZXN0IGlzIHJlYWRpbmcvd3JpdGluZyB0byBh
+IHJhdyBzb2NrZXQgb3BlbmVkIAo+IG9uIGEgdkV0aCBwYWlyIGNvbmZpZ3VyZWQgYXMgZm9sbG93
+czoKPiAKPiAKPiBpcCBsaW5rIGFkZCBsLXZldGgwIHR5cGUgdmV0aCBwZWVyIG5hbWUgcC12ZXRo
+MCAmJiBpZmNvbmZpZyBwLXZldGgwIHVwCj4gaWZjb25maWcgbC12ZXRoMCAxOTIuMTY4Ljk3LjEg
+bmV0bWFzayAyNTUuMjU1LjI1NS4yNTIKPiAKPiB0aGUgVU1MIGxpbnV4IGluc3RhbmNlIHVzZWQg
+YXMgYSByZWFkZXIvd3JpdGVyIHJlbGllcyBvbiAKPiByZWN2bW1zZy9zZW5kbW1lc2cgcmF3IHNv
+Y2tldCB3aXRoIHZuZXQgaGVhZGVycyBlbmFibGVkLgo+IAo+IHZpcnRpb19uZXRfaGRyX2Zyb21f
+c2tiKCkgaXMgY2FsbGVkIGZyb20gdGhlIGFmX3BhY2tldCBwYWNrZXRfcmVjdl92bmV0IAo+IGZ1
+bmN0aW9uLgo+IAo+IFRoaXMgY29uZGl0aW9uIHNpbXBseSBzaG91bGQgbm90IG9jY3VyLiBBIHNr
+YiB3aXRoIG5vIGRhdGEgaW4gdGhlIGZyYWdzLCAKPiBnc28gb24sIGdzbyBzaXplIGxlc3MgdGhh
+biBNVFUgYW5kIG5vIHR5cGUgbG9va3MgYm9ndXMuCgpXaGlsZSB0aGUgZ3NvIG1hcmtpbmcgb24g
+dGhlIGZyYW1lIGlzIGJvZ3VzLCB0aGUgZnJhbWUgaXRzZWxmIGFjdHVhbGx5IApsb29rcyBnb29k
+IChhcyBzZWVuIGZyb20gdGhlIFVNTCB1c2VkIGFzIGEgcmVhZGVyKS4KCkkgZ2V0IH4gMTAlIHRo
+cm91Z2hwdXQgaW5jcmVhc2UgYmVjYXVzZSByZWN2bW1zZyBkb2VzIG5vdCBnZXQgYnJva2VuIGFs
+bCAKdGhlIHRpbWUgaW50byBzbWFsbGVyIHZlY3RvciBzaXplcyBhbmQgbm8gZnJhbWVzIHJlcG9y
+dGVkIGFzIGRyb3BwZWQgZHVlIAp0byBjaGVja3N1bSBvciBvdGhlciBpc3N1ZXMuCgpJIHdpbGwg
+c2VuZCBhIHBhdGNoIHdpdGggYSBwcm9wb3NlZCBmaXggc2hvcnRseS4KCldlIHNob3VsZCBzdGls
+bCBmaW5kIHdobyBpcyBwcm9kdWNpbmcgdGhlc2UgZnJhbWVzIHRob3VnaC4KCj4gCj4gCj4+Cj4+
+IMKgwqDCoMKgwqAgQXJuZAo+Pgo+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwo+PiBsaW51eC11bSBtYWlsaW5nIGxpc3QKPj4gbGludXgtdW1AbGlzdHMu
+aW5mcmFkZWFkLm9yZwo+PiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2xpbnV4LXVtCj4+Cj4gCgotLSAKQW50b24gUi4gSXZhbm92CkNhbWJyaWRnZWdyZXlzIExp
+bWl0ZWQuIFJlZ2lzdGVyZWQgaW4gRW5nbGFuZC4gQ29tcGFueSBOdW1iZXIgMTAyNzM2NjEKaHR0
+cHM6Ly93d3cuY2FtYnJpZGdlZ3JleXMuY29tLwoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3Rz
+LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9saW51eC11bQo=
 
