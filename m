@@ -2,22 +2,21 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab7.miniserver.com ([37.128.132.42]
  helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ieFv9-0001RN-Qr
- for linux-um@lists.infradead.org; Mon, 09 Dec 2019 10:05:41 +0000
-Subject: Re: Invalid GSO - from 4.x (TBA) to 5.5-rc1. Was: Re: 64 bit time
+ id 1ieFCC-0000Ci-6c
+ for linux-um@lists.infradead.org; Mon, 09 Dec 2019 09:19:14 +0000
+Subject: Invalid GSO - from 4.x (TBA) to 5.5-rc1. Was: Re: 64 bit time
  regression in recvmmsg()
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 References: <3820d68b-1d97-8f41-d55d-237d1695458c@cambridgegreys.com>
  <CAMuHMdWuiGC4ay=f6M2H=-PLiffavnFSu8CPXE26euAi6aoY0w@mail.gmail.com>
  <CAK8P3a1mrFgRyh5Fgv-d8Szd2pq0T6Ac7wL3ogeYcf-Uyrg4ZQ@mail.gmail.com>
  <a5b9709d-b93b-46e1-ab18-a94ab921ccf7@cambridgegreys.com>
  <9dc1be66-5c55-8b3d-875b-4e1206914e78@cambridgegreys.com>
  <CAK8P3a1KcRcpUB2PdA17tnHN_dDs2Y02zPtkgM22Z-JdugAkfQ@mail.gmail.com>
- <e96aebcc-907a-d86f-ea8f-f5b10f74f39b@cambridgegreys.com>
-Message-ID: <5a4dc591-5fd9-063a-13e2-2dbcfe83b22b@cambridgegreys.com>
-Date: Mon, 9 Dec 2019 10:05:34 +0000
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <e96aebcc-907a-d86f-ea8f-f5b10f74f39b@cambridgegreys.com>
+Date: Mon, 9 Dec 2019 09:19:04 +0000
 MIME-Version: 1.0
-In-Reply-To: <e96aebcc-907a-d86f-ea8f-f5b10f74f39b@cambridgegreys.com>
+In-Reply-To: <CAK8P3a1KcRcpUB2PdA17tnHN_dDs2Y02zPtkgM22Z-JdugAkfQ@mail.gmail.com>
 Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -27,61 +26,92 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: Arnd Bergmann <arnd@arndb.de>
 Cc: netdev <netdev@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>
 
-CgpPbiAwOS8xMi8yMDE5IDA5OjE5LCBBbnRvbiBJdmFub3Ygd3JvdGU6Cj4gCj4gCj4gT24gMDYv
-MTIvMjAxOSAyMDowNiwgQXJuZCBCZXJnbWFubiB3cm90ZToKPj4gT24gRnJpLCBEZWMgNiwgMjAx
-OSBhdCA2OjUwIFBNIEFudG9uIEl2YW5vdgo+PiA8YW50b24uaXZhbm92QGNhbWJyaWRnZWdyZXlz
-LmNvbT4gd3JvdGU6Cj4+PiBPbiAyOS8xMS8yMDE5IDE2OjM0LCBBbnRvbiBJdmFub3Ygd3JvdGU6
-Cj4+Pgo+Pj4gSSBhcG9sb2dpemUsIHByb2JsZW0gZWxzZXdoZXJlLiBJIGhhdmUgbmFycm93ZWQg
-aXQgZG93biwgaXQgaXMgYSBob3N0Cj4+PiByZWdyZXNzaW9uIGF0IHRoZSBlbmQsIG5vdCBhIHJl
-Y3ZtbXNnL3RpbWUgb25lLgo+Pj4KPj4+IFRoZSBFSU5WQUwgaXMgb2NjYXNpb25hbGx5IHJldHVy
-bmVkIGZyb20gdGhlIGd1dHMgb2YgcGFja2V0X3Jjdl92bmV0Cj4+Pgo+Pj4gaHR0cHM6Ly9lbGl4
-aXIuYm9vdGxpbi5jb20vbGludXgvbGF0ZXN0L2lkZW50L3BhY2tldF9yY3Zfdm5ldAo+Pj4KPj4+
-IGluIGFmX3BhY2tldC4gSSBhbSBnb2luZyB0byB0cnkgdG8gZmlndXJlIG91dCBleGFjdGx5IHdo
-ZW4gaXQgaGFwcGVucwo+Pj4gYW5kIHdoeS4KPj4+Cj4+PiBNeSBzaW5jZXJlIGFwb2xvZ2llcywK
-Pj4KPj4gTm8sIHdvcnJpZXMsIEknbSBnbGFkIGl0IHdhc24ndCBtZSB0aGlzIHRpbWUgOy0pCj4g
-Cj4gQXQgc29tZSBwb2ludCBpbiBsYXRlIDQueCAoSSBhbSBnb2luZyB0byB0cnkgbmFycm93aW5n
-IGRvd24gdGhlIAo+IHZlcnNpb24pLCBnc28gY29kZSBpbnRyb2R1Y2VkIGEgY29uZGl0aW9uIHdo
-aWNoIHNob3VsZCBub3Qgb2NjdXI6Cj4gCj4gV2UgaGF2ZQo+IAo+IHNpbmZvKHNrYiktPmdzb190
-eXBlID0gMAo+IAo+IHdoaWxlCj4gCj4gc2luZm8oc2tiKS0+Z3NvX3NpemUgPSA3NTIuCj4gc2ti
-LT5sZW4gPSA4MTgKPiBza2ItPmRhdGFfbGVuID0gMAo+IAo+IEFzIGEgcmVzdWx0IHdlIGdldCBh
-IHNrYiB3aGljaCBpcyBHU08sIGJ1dCBpdCBoYXMgYSBubyBHU08gdHlwZS4KPiAKPiBUaGlzIHNo
-b3dzIHVwIGluIHZpcnRpb19uZXRfaGRyX2Zyb21fc2tiKCkgd2hpY2ggZGV0ZWN0cyB0aGUgY29u
-ZGl0aW9uIAo+IGFzIGludmFsaWQgYW5kIHJldHVybnMgYW4gLUVJTlZBTAo+IAo+IEEgZmV3IGlu
-dGVyZXN0aW5nIHRoaW5ncy4KPiAKPiAxLiBTaXplIGlzIGFsd2F5cyA3NTIuCj4gCj4gMi4gSSBo
-YXZlIGZvdW5kIGl0IHdoaWxlIHRyYWNpbmcgYW4gLUVJTlZBTCB3aGVuIHVzaW5nIHJlY3ZtbXNn
-KCkgb24gcmF3IAo+IHNvY2tldHMuIE5vIGlkZWEgaWYgaXQgc2hvd3MgdXAgZWxzZXdoZXJlLgo+
-IAo+IDMuIFRoZSBlbnZpcm9ubWVudCB1bmRlciB0ZXN0IGlzIHJlYWRpbmcvd3JpdGluZyB0byBh
-IHJhdyBzb2NrZXQgb3BlbmVkIAo+IG9uIGEgdkV0aCBwYWlyIGNvbmZpZ3VyZWQgYXMgZm9sbG93
-czoKPiAKPiAKPiBpcCBsaW5rIGFkZCBsLXZldGgwIHR5cGUgdmV0aCBwZWVyIG5hbWUgcC12ZXRo
-MCAmJiBpZmNvbmZpZyBwLXZldGgwIHVwCj4gaWZjb25maWcgbC12ZXRoMCAxOTIuMTY4Ljk3LjEg
-bmV0bWFzayAyNTUuMjU1LjI1NS4yNTIKPiAKPiB0aGUgVU1MIGxpbnV4IGluc3RhbmNlIHVzZWQg
-YXMgYSByZWFkZXIvd3JpdGVyIHJlbGllcyBvbiAKPiByZWN2bW1zZy9zZW5kbW1lc2cgcmF3IHNv
-Y2tldCB3aXRoIHZuZXQgaGVhZGVycyBlbmFibGVkLgo+IAo+IHZpcnRpb19uZXRfaGRyX2Zyb21f
-c2tiKCkgaXMgY2FsbGVkIGZyb20gdGhlIGFmX3BhY2tldCBwYWNrZXRfcmVjdl92bmV0IAo+IGZ1
-bmN0aW9uLgo+IAo+IFRoaXMgY29uZGl0aW9uIHNpbXBseSBzaG91bGQgbm90IG9jY3VyLiBBIHNr
-YiB3aXRoIG5vIGRhdGEgaW4gdGhlIGZyYWdzLCAKPiBnc28gb24sIGdzbyBzaXplIGxlc3MgdGhh
-biBNVFUgYW5kIG5vIHR5cGUgbG9va3MgYm9ndXMuCgpXaGlsZSB0aGUgZ3NvIG1hcmtpbmcgb24g
-dGhlIGZyYW1lIGlzIGJvZ3VzLCB0aGUgZnJhbWUgaXRzZWxmIGFjdHVhbGx5IApsb29rcyBnb29k
-IChhcyBzZWVuIGZyb20gdGhlIFVNTCB1c2VkIGFzIGEgcmVhZGVyKS4KCkkgZ2V0IH4gMTAlIHRo
-cm91Z2hwdXQgaW5jcmVhc2UgYmVjYXVzZSByZWN2bW1zZyBkb2VzIG5vdCBnZXQgYnJva2VuIGFs
-bCAKdGhlIHRpbWUgaW50byBzbWFsbGVyIHZlY3RvciBzaXplcyBhbmQgbm8gZnJhbWVzIHJlcG9y
-dGVkIGFzIGRyb3BwZWQgZHVlIAp0byBjaGVja3N1bSBvciBvdGhlciBpc3N1ZXMuCgpJIHdpbGwg
-c2VuZCBhIHBhdGNoIHdpdGggYSBwcm9wb3NlZCBmaXggc2hvcnRseS4KCldlIHNob3VsZCBzdGls
-bCBmaW5kIHdobyBpcyBwcm9kdWNpbmcgdGhlc2UgZnJhbWVzIHRob3VnaC4KCj4gCj4gCj4+Cj4+
-IMKgwqDCoMKgwqAgQXJuZAo+Pgo+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwo+PiBsaW51eC11bSBtYWlsaW5nIGxpc3QKPj4gbGludXgtdW1AbGlzdHMu
-aW5mcmFkZWFkLm9yZwo+PiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2xpbnV4LXVtCj4+Cj4gCgotLSAKQW50b24gUi4gSXZhbm92CkNhbWJyaWRnZWdyZXlzIExp
-bWl0ZWQuIFJlZ2lzdGVyZWQgaW4gRW5nbGFuZC4gQ29tcGFueSBOdW1iZXIgMTAyNzM2NjEKaHR0
-cHM6Ly93d3cuY2FtYnJpZGdlZ3JleXMuY29tLwoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3Rz
-LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9saW51eC11bQo=
+
+
+On 06/12/2019 20:06, Arnd Bergmann wrote:
+> On Fri, Dec 6, 2019 at 6:50 PM Anton Ivanov
+> <anton.ivanov@cambridgegreys.com> wrote:
+>> On 29/11/2019 16:34, Anton Ivanov wrote:
+>>
+>> I apologize, problem elsewhere. I have narrowed it down, it is a host
+>> regression at the end, not a recvmmsg/time one.
+>>
+>> The EINVAL is occasionally returned from the guts of packet_rcv_vnet
+>>
+>> https://elixir.bootlin.com/linux/latest/ident/packet_rcv_vnet
+>>
+>> in af_packet. I am going to try to figure out exactly when it happens
+>> and why.
+>>
+>> My sincere apologies,
+> 
+> No, worries, I'm glad it wasn't me this time ;-)
+
+At some point in late 4.x (I am going to try narrowing down the 
+version), gso code introduced a condition which should not occur:
+
+We have
+
+sinfo(skb)->gso_type = 0
+
+while
+
+sinfo(skb)->gso_size = 752.
+skb->len = 818
+skb->data_len = 0
+
+As a result we get a skb which is GSO, but it has a no GSO type.
+
+This shows up in virtio_net_hdr_from_skb() which detects the condition 
+as invalid and returns an -EINVAL
+
+A few interesting things.
+
+1. Size is always 752.
+
+2. I have found it while tracing an -EINVAL when using recvmmsg() on raw 
+sockets. No idea if it shows up elsewhere.
+
+3. The environment under test is reading/writing to a raw socket opened 
+on a vEth pair configured as follows:
+
+
+ip link add l-veth0 type veth peer name p-veth0 && ifconfig p-veth0 up
+ifconfig l-veth0 192.168.97.1 netmask 255.255.255.252
+
+the UML linux instance used as a reader/writer relies on 
+recvmmsg/sendmmesg raw socket with vnet headers enabled.
+
+virtio_net_hdr_from_skb() is called from the af_packet packet_recv_vnet 
+function.
+
+This condition simply should not occur. A skb with no data in the frags, 
+gso on, gso size less than MTU and no type looks bogus.
+
+
+> 
+>       Arnd
+> 
+> _______________________________________________
+> linux-um mailing list
+> linux-um@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-um
+> 
+
+-- 
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
