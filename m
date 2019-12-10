@@ -1,13 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mout.kundenserver.de ([217.72.192.74])
+Received: from mail-pj1-x1049.google.com ([2607:f8b0:4864:20::1049])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ifrub-0000Po-S7
- for linux-um@lists.infradead.org; Fri, 13 Dec 2019 20:51:48 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v2 00/24] drivers, fs: y2038 updates
-Date: Fri, 13 Dec 2019 21:49:09 +0100
-Message-Id: <20191213204936.3643476-1-arnd@arndb.de>
-MIME-Version: 1.0
+ id 1ieo5H-0005je-L4
+ for linux-um@lists.infradead.org; Tue, 10 Dec 2019 22:34:25 +0000
+Received: by mail-pj1-x1049.google.com with SMTP id gx23so1409562pjb.11
+ for <linux-um@lists.infradead.org>; Tue, 10 Dec 2019 14:34:22 -0800 (PST)
+Date: Tue, 10 Dec 2019 14:34:03 -0800
+Message-Id: <20191210223403.244842-1-brendanhiggins@google.com>
+Mime-Version: 1.0
+Subject: [PATCH v1] um: drivers: mark non-vector net transports as obsolete
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,164 +22,205 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: y2038@lists.linaro.org, linux-kernel@vger.kernel.org
-Cc: airlied@linux.ie, dri-devel@lists.freedesktop.org, jcmvbkbc@gmail.com, netdev@vger.kernel.org, sparclinux@vger.kernel.org, linux1394-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, darrick.wong@oracle.com, richard@nod.at, cluster-devel@redhat.com, ccaulfie@redhat.com, linux+etnaviv@armlinux.org.uk, Arnd Bergmann <arnd@arndb.de>, linux-arm-msm@vger.kernel.org, jdike@addtoit.com, linux-um@lists.infradead.org, etnaviv@lists.freedesktop.org, christian.gmeiner@gmail.com, teigland@redhat.com, viro@zeniv.linux.org.uk, tglx@linutronix.de, sean@poorly.run, trond.myklebust@hammerspace.com, hirofumi@mail.parknet.co.jp, linux-nfs@vger.kernel.org, valdis.kletnieks@vt.edu, rfontana@redhat.com, gregkh@linuxfoundation.org, fw@strlen.de, anna.schumaker@netapp.com, linux-xfs@vger.kernel.org, robdclark@gmail.com, stefanr@s5r6.in-berlin.de, daniel@ffwll.ch, jack@suse.com, linux-fsdevel@vger.kernel.org, freedreno@lists.freedesktop.org, davem@davemloft.net, l.stach@pengutronix.de
+To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
+Cc: davidgow@google.com, Brendan Higgins <brendanhiggins@google.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, johannes.berg@intel.com
 
-These are updates to devidce drivers and file systems that for some
-reason or another were not included in the kernel in the previous
-y2038 series.
+UML_NET_VECTOR now supports filters compiled with pcap outside of UML;
+it also supports: EoGRE, EoL2TPv3, RAW (+/- BPF), TAP and BESS.
 
-I've gone through all users of time_t again to make sure the
-kernel is in a long-term maintainable state.
+While vector drivers are not 1:1 replacements for the existing drivers,
+you can achieve the same topologies and the same connectivity at much
+higher performance (2.5 to 9 Gbit on mid-range Ryzen desktop) - the old
+drivers test out in the 500Mbit range on the same hardware.
 
-Posting these as a series for better organization, but each change
-here is applicable standalone.
+For all these reasons, the non-vector based transports are now
+unnecessary, and some, most notably pcap and vde are maintenance
+burdens. Thus, it makes sense to at least start thinking about removing
+the non-vector transports, so for now, mark them as obsolete.
 
-Please merge, review, ack/nack etc as you see fit. I will
-add these to my y2038 branch [1] for linux-next, but can keep
-rebasing for feedback and to remove any patches that get
-picked up by a maintainer.
+Link: https://lore.kernel.org/lkml/15f048d3-07ab-61c1-c6e0-0712e626dd33@cambridgegreys.com/T/#u
+Suggested-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+---
 
-Changes since v1 [2]:
+I pretty much stole the commit message from Anton's comments in the
+above link. Anton, if you would like me to credit you as a co-developer,
+feel free to respond with the tags and I will include them on the next
+revision.
 
-- Add Acks I received
-- Rebase to v5.5-rc1, droping patches that got merged already
-- Add NFS, XFS and the final three patches from another series
-- Rewrite etnaviv patches
+---
+ arch/um/drivers/Kconfig | 81 +++++++++++++++++++++--------------------
+ 1 file changed, 41 insertions(+), 40 deletions(-)
 
-      Arnd
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/arnd/playground.git/log/?h=y2038
-[2] https://lore.kernel.org/lkml/20191108213257.3097633-1-arnd@arndb.de/
-
-Arnd Bergmann (24):
-  Input: input_event: fix struct padding on sparc64
-  fat: use prandom_u32() for i_generation
-  dlm: use SO_SNDTIMEO_NEW instead of SO_SNDTIMEO_OLD
-  xtensa: ISS: avoid struct timeval
-  um: ubd: use 64-bit time_t where possible
-  acct: stop using get_seconds()
-  tsacct: add 64-bit btime field
-  packet: clarify timestamp overflow
-  quota: avoid time_t in v1_disk_dqblk definition
-  hostfs: pass 64-bit timestamps to/from user space
-  hfs/hfsplus: use 64-bit inode timestamps
-  drm/msm: avoid using 'timespec'
-  drm/etnaviv: reject timeouts with tv_nsec >= NSEC_PER_SEC
-  drm/etnaviv: avoid deprecated timespec
-  sunrpc: convert to time64_t for expiry
-  nfs: use time64_t internally
-  nfs: fix timstamp debug prints
-  nfs: fscache: use timespec64 in inode auxdata
-  xfs: rename compat_time_t to old_time32_t
-  xfs: disallow broken ioctls without compat-32-bit-time
-  xfs: quota: move to time64_t interfaces
-  y2038: remove obsolete jiffies conversion functions
-  y2038: rename itimerval to __kernel_old_itimerval
-  y2038: sparc: remove use of struct timex
-
- arch/sparc/kernel/sys_sparc_64.c              | 29 +++++-----
- arch/um/drivers/cow.h                         |  2 +-
- arch/um/drivers/cow_user.c                    |  7 ++-
- arch/um/drivers/ubd_kern.c                    | 10 ++--
- arch/um/include/shared/os.h                   |  2 +-
- arch/um/os-Linux/file.c                       |  2 +-
- .../platforms/iss/include/platform/simcall.h  |  4 +-
- drivers/gpu/drm/etnaviv/etnaviv_drv.c         | 20 ++++---
- drivers/gpu/drm/etnaviv/etnaviv_drv.h         | 11 ++--
- drivers/gpu/drm/etnaviv/etnaviv_gem.c         |  4 +-
- drivers/gpu/drm/etnaviv/etnaviv_gem.h         |  2 +-
- drivers/gpu/drm/etnaviv/etnaviv_gpu.c         |  5 +-
- drivers/gpu/drm/etnaviv/etnaviv_gpu.h         |  5 +-
- drivers/gpu/drm/msm/msm_drv.h                 |  3 +-
- drivers/input/evdev.c                         | 14 ++---
- drivers/input/misc/uinput.c                   | 14 +++--
- fs/dlm/lowcomms.c                             |  6 +-
- fs/fat/inode.c                                |  3 +-
- fs/hfs/hfs_fs.h                               | 28 +++++++--
- fs/hfs/inode.c                                |  4 +-
- fs/hfsplus/hfsplus_fs.h                       | 28 +++++++--
- fs/hfsplus/inode.c                            | 12 ++--
- fs/hostfs/hostfs.h                            | 22 ++++---
- fs/hostfs/hostfs_kern.c                       | 15 +++--
- fs/nfs/fscache-index.c                        |  6 +-
- fs/nfs/fscache.c                              | 18 ++++--
- fs/nfs/fscache.h                              |  8 ++-
- fs/nfs/nfs4xdr.c                              | 10 ++--
- fs/quota/quotaio_v1.h                         |  6 +-
- fs/xfs/xfs_dquot.c                            |  6 +-
- fs/xfs/xfs_ioctl.c                            | 26 +++++++++
- fs/xfs/xfs_ioctl32.c                          |  2 +-
- fs/xfs/xfs_ioctl32.h                          |  2 +-
- fs/xfs/xfs_qm.h                               |  6 +-
- fs/xfs/xfs_quotaops.c                         |  6 +-
- fs/xfs/xfs_trans_dquot.c                      |  8 ++-
- include/linux/jiffies.h                       | 20 -------
- include/linux/sunrpc/cache.h                  | 42 ++++++++------
- include/linux/sunrpc/gss_api.h                |  4 +-
- include/linux/sunrpc/gss_krb5.h               |  2 +-
- include/linux/syscalls.h                      |  9 ++-
- include/uapi/linux/acct.h                     |  2 +
- include/uapi/linux/input.h                    |  1 +
- include/uapi/linux/taskstats.h                |  6 +-
- include/uapi/linux/time_types.h               |  5 ++
- include/uapi/linux/timex.h                    |  2 +
- kernel/acct.c                                 |  4 +-
- kernel/time/itimer.c                          | 18 +++---
- kernel/time/time.c                            | 58 ++-----------------
- kernel/tsacct.c                               |  9 ++-
- net/packet/af_packet.c                        | 27 +++++----
- net/sunrpc/auth_gss/gss_krb5_mech.c           | 12 +++-
- net/sunrpc/auth_gss/gss_krb5_seal.c           |  8 +--
- net/sunrpc/auth_gss/gss_krb5_unseal.c         |  6 +-
- net/sunrpc/auth_gss/gss_krb5_wrap.c           | 16 ++---
- net/sunrpc/auth_gss/gss_mech_switch.c         |  2 +-
- net/sunrpc/auth_gss/svcauth_gss.c             |  6 +-
- net/sunrpc/cache.c                            | 16 ++---
- net/sunrpc/svcauth_unix.c                     | 10 ++--
- 59 files changed, 351 insertions(+), 290 deletions(-)
-
+diff --git a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
+index 388096fb45a25..72d4170557820 100644
+--- a/arch/um/drivers/Kconfig
++++ b/arch/um/drivers/Kconfig
+@@ -147,7 +147,7 @@ config UML_NET
+ 	  make use of UML networking.
+ 
+ config UML_NET_ETHERTAP
+-	bool "Ethertap transport"
++	bool "Ethertap transport (obsolete)"
+ 	depends on UML_NET
+ 	help
+ 	  The Ethertap User-Mode Linux network transport allows a single
+@@ -167,14 +167,13 @@ config UML_NET_ETHERTAP
+ 	  has examples of the UML command line to use to enable Ethertap
+ 	  networking.
+ 
+-	  If you'd like to set up an IP network with the host and/or the
+-	  outside world, say Y to this, the Daemon Transport and/or the
+-	  Slip Transport.  You'll need at least one of them, but may choose
+-	  more than one without conflict.  If you don't need UML networking,
+-	  say N.
++	  NOTE: THIS TRANSPORT IS DEPRECATED AND WILL BE REMOVED SOON!!! Please
++	  migrate to UML_NET_VECTOR.
++
++	  If unsure, say N.
+ 
+ config UML_NET_TUNTAP
+-	bool "TUN/TAP transport"
++	bool "TUN/TAP transport (obsolete)"
+ 	depends on UML_NET
+ 	help
+ 	  The UML TUN/TAP network transport allows a UML instance to exchange
+@@ -185,8 +184,13 @@ config UML_NET_TUNTAP
+ 	  To use this transport, your host kernel must have support for TUN/TAP
+ 	  devices, either built-in or as a module.
+ 
++	  NOTE: THIS TRANSPORT IS DEPRECATED AND WILL BE REMOVED SOON!!! Please
++	  migrate to UML_NET_VECTOR.
++
++	  If unsure, say N.
++
+ config UML_NET_SLIP
+-	bool "SLIP transport"
++	bool "SLIP transport (obsolete)"
+ 	depends on UML_NET
+ 	help
+ 	  The slip User-Mode Linux network transport allows a running UML to
+@@ -201,16 +205,13 @@ config UML_NET_SLIP
+ 	  has examples of the UML command line to use to enable slip
+ 	  networking, and details of a few quirks with it.
+ 
+-	  The Ethertap Transport is preferred over slip because of its
+-	  limitations.  If you prefer slip, however, say Y here.  Otherwise
+-	  choose the Multicast transport (to network multiple UMLs on
+-	  multiple hosts), Ethertap (to network with the host and the
+-	  outside world), and/or the Daemon transport (to network multiple
+-	  UMLs on a single host).  You may choose more than one without
+-	  conflict.  If you don't need UML networking, say N.
++	  NOTE: THIS TRANSPORT IS DEPRECATED AND WILL BE REMOVED SOON!!! Please
++	  migrate to UML_NET_VECTOR.
++
++	  If unsure, say N.
+ 
+ config UML_NET_DAEMON
+-	bool "Daemon transport"
++	bool "Daemon transport (obsolete)"
+ 	depends on UML_NET
+ 	help
+ 	  This User-Mode Linux network transport allows one or more running
+@@ -225,13 +226,10 @@ config UML_NET_DAEMON
+ 	  has examples of the UML command line to use to enable Daemon
+ 	  networking.
+ 
+-	  If you'd like to set up a network with other UMLs on a single host,
+-	  say Y.  If you need a network between UMLs on multiple physical
+-	  hosts, choose the Multicast Transport.  To set up a network with
+-	  the host and/or other IP machines, say Y to the Ethertap or Slip
+-	  transports.  You'll need at least one of them, but may choose
+-	  more than one without conflict.  If you don't need UML networking,
+-	  say N.
++	  NOTE: THIS TRANSPORT IS DEPRECATED AND WILL BE REMOVED SOON!!! Please
++	  migrate to UML_NET_VECTOR.
++
++	  If unsure, say N.
+ 
+ config UML_NET_VECTOR
+ 	bool "Vector I/O high performance network devices"
+@@ -245,7 +243,7 @@ config UML_NET_VECTOR
+ 	drivers.
+ 
+ config UML_NET_VDE
+-	bool "VDE transport"
++	bool "VDE transport (obsolete)"
+ 	depends on UML_NET
+ 	help
+ 	This User-Mode Linux network transport allows one or more running
+@@ -263,11 +261,13 @@ config UML_NET_VDE
+ 	That site has a good overview of what VDE is and also examples
+ 	of the UML command line to use to enable VDE networking.
+ 
+-	If you need UML networking with VDE,
+-	say Y.
++	NOTE: THIS TRANSPORT IS DEPRECATED AND WILL BE REMOVED SOON!!! Please
++	migrate to UML_NET_VECTOR.
++
++	If unsure, say N.
+ 
+ config UML_NET_MCAST
+-	bool "Multicast transport"
++	bool "Multicast transport (obsolete)"
+ 	depends on UML_NET
+ 	help
+ 	  This Multicast User-Mode Linux network transport allows multiple
+@@ -284,15 +284,13 @@ config UML_NET_MCAST
+ 	  has examples of the UML command line to use to enable Multicast
+ 	  networking, and notes about the security of this approach.
+ 
+-	  If you need UMLs on multiple physical hosts to communicate as if
+-	  they shared an Ethernet network, say Y.  If you need to communicate
+-	  with other IP machines, make sure you select one of the other
+-	  transports (possibly in addition to Multicast; they're not
+-	  exclusive).  If you don't need to network UMLs say N to each of
+-	  the transports.
++	  NOTE: THIS TRANSPORT IS DEPRECATED AND WILL BE REMOVED SOON!!! Please
++	  migrate to UML_NET_VECTOR.
++
++	  If unsure, say N.
+ 
+ config UML_NET_PCAP
+-	bool "pcap transport"
++	bool "pcap transport (obsolete)"
+ 	depends on UML_NET
+ 	help
+ 	The pcap transport makes a pcap packet stream on the host look
+@@ -304,11 +302,13 @@ config UML_NET_PCAP
+ 	  <http://user-mode-linux.sourceforge.net/old/networking.html>  That site
+ 	  has examples of the UML command line to use to enable this option.
+ 
+-	If you intend to use UML as a network monitor for the host, say
+-	Y here.  Otherwise, say N.
++	NOTE: THIS TRANSPORT IS DEPRECATED AND WILL BE REMOVED SOON!!! Please
++	migrate to UML_NET_VECTOR.
++
++	If unsure, say N.
+ 
+ config UML_NET_SLIRP
+-	bool "SLiRP transport"
++	bool "SLiRP transport (obsolete)"
+ 	depends on UML_NET
+ 	help
+ 	  The SLiRP User-Mode Linux network transport allows a running UML
+@@ -328,9 +328,10 @@ config UML_NET_SLIRP
+ 	  that of a host behind a firewall that masquerades all network
+ 	  connections passing through it (but is less secure).
+ 
+-	  To use this you should first have slirp compiled somewhere
+-	  accessible on the host, and have read its documentation.  If you
+-	  don't need UML networking, say N.
++	  NOTE: THIS TRANSPORT IS DEPRECATED AND WILL BE REMOVED SOON!!! Please
++	  migrate to UML_NET_VECTOR.
++
++	  If unsure, say N.
+ 
+ 	  Startup example: "eth0=slirp,FE:FD:01:02:03:04,/usr/local/bin/slirp"
+ 
 -- 
-2.20.0
+2.24.0.525.g8f36a354ae-goog
 
-Cc: jdike@addtoit.com
-Cc: richard@nod.at
-Cc: jcmvbkbc@gmail.com
-Cc: stefanr@s5r6.in-berlin.de
-Cc: l.stach@pengutronix.de
-Cc: linux+etnaviv@armlinux.org.uk
-Cc: christian.gmeiner@gmail.com
-Cc: airlied@linux.ie
-Cc: daniel@ffwll.ch
-Cc: robdclark@gmail.com
-Cc: sean@poorly.run
-Cc: valdis.kletnieks@vt.edu
-Cc: gregkh@linuxfoundation.org
-Cc: ccaulfie@redhat.com
-Cc: teigland@redhat.com
-Cc: hirofumi@mail.parknet.co.jp
-Cc: jack@suse.com
-Cc: davem@davemloft.net
-Cc: fw@strlen.de
-Cc: viro@zeniv.linux.org.uk
-Cc: rfontana@redhat.com
-Cc: tglx@linutronix.de
-Cc: linux-um@lists.infradead.org
-Cc: linux1394-devel@lists.sourceforge.net
-Cc: etnaviv@lists.freedesktop.org
-Cc: dri-devel@lists.freedesktop.org
-Cc: linux-arm-msm@vger.kernel.org
-Cc: freedreno@lists.freedesktop.org
-Cc: devel@driverdev.osuosl.org
-Cc: cluster-devel@redhat.com
-Cc: linux-fsdevel@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Cc: trond.myklebust@hammerspace.com
-Cc: anna.schumaker@netapp.com
-Cc: linux-nfs@vger.kernel.org
-Cc: linux-xfs@vger.kernel.org
-Cc: darrick.wong@oracle.com
-Cc: sparclinux@vger.kernel.org
 
 _______________________________________________
 linux-um mailing list
