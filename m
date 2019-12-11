@@ -1,76 +1,70 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x449.google.com ([2607:f8b0:4864:20::449])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1igyVx-0001q7-OX
- for linux-um@lists.infradead.org; Mon, 16 Dec 2019 22:06:55 +0000
-Received: by mail-pf1-x449.google.com with SMTP id j7so7758753pfa.19
- for <linux-um@lists.infradead.org>; Mon, 16 Dec 2019 14:06:53 -0800 (PST)
-Date: Mon, 16 Dec 2019 14:05:50 -0800
-In-Reply-To: <20191216220555.245089-1-brendanhiggins@google.com>
-Message-Id: <20191216220555.245089-2-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20191216220555.245089-1-brendanhiggins@google.com>
-Subject: [RFC v1 1/6] vmlinux.lds.h: add linker section for KUnit test suites
-From: Brendan Higgins <brendanhiggins@google.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, arnd@arndb.de, keescook@chromium.org, skhan@linuxfoundation.org, alan.maguire@oracle.com, yzaikin@google.com, davidgow@google.com, akpm@linux-foundation.org, rppt@linux.ibm.com
-Cc: linux-arch@vger.kernel.org, sboyd@kernel.org, gregkh@linuxfoundation.org, knut.omang@oracle.com, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, mcgrof@kernel.org, linux-kselftest@vger.kernel.org, logang@deltatee.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
+MIME-Version: 1.0
+Date: Wed, 11 Dec 2019 09:39:41 +0100
+References: <20191210212108.222514-1-brendanhiggins@google.com>
+In-Reply-To: <20191210212108.222514-1-brendanhiggins@google.com>
+Message-ID: <CAMuHMdVyjjZAoO3Q-Vr88fUGFwrn4EoiSxBmG_FV+o87BuBmwQ@mail.gmail.com>
+Subject: Re: [PATCH v1] uml: make CONFIG_STATIC_LINK actually static
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+To: Brendan Higgins <brendanhiggins@google.com>
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, davidgow@google.com, Brendan Higgins <brendanhiggins@google.com>, linux-um <linux-um@lists.infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Johannes Berg <johannes.berg@intel.com>
+List-ID: <linux-um.lists.infradead.org>
 
-Add a linker section where KUnit can put references to its test suites.
-This patch is the first step in transitioning to dispatching all KUnit
-tests from a centralized executor rather than having each as its own
-separate late_initcall.
+Hi Brendan,
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Co-developed-by: Iurii Zaikin <yzaikin@google.com>
-Signed-off-by: Iurii Zaikin <yzaikin@google.com>
----
- include/asm-generic/vmlinux.lds.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
+On Tue, Dec 10, 2019 at 10:21 PM Brendan Higgins
+<brendanhiggins@google.com> wrote:
+> Currently, CONFIG_STATIC_LINK can be enabled with options which cannot
+> be statically linked, namely UML_NET_VECTOR, UML_NET_VDE, and
+> UML_NET_PCAP; this is because glibc tries to load NSS which does not
+> support being statically linked. So make CONFIG_STATIC_LINK depend on
+> !UML_NET_VECTOR && !UML_NET_VDE && !UML_NET_PCAP.
+>
+> Link: https://lore.kernel.org/lkml/f658f317-be54-ed75-8296-c373c2dcc697@cambridgegreys.com/#t
+> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+> ---
+>  arch/um/Kconfig | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+> index 2a6d04fcb3e91..1ddc8745123f2 100644
+> --- a/arch/um/Kconfig
+> +++ b/arch/um/Kconfig
+> @@ -63,6 +63,7 @@ source "arch/$(HEADER_ARCH)/um/Kconfig"
+>
+>  config STATIC_LINK
+>         bool "Force a static link"
+> +       depends on !UML_NET_VECTOR && !UML_NET_VDE && !UML_NET_PCAP
 
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index e00f41aa8ec4f..99a866f49cb3d 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -856,6 +856,13 @@
- 		KEEP(*(.con_initcall.init))				\
- 		__con_initcall_end = .;
- 
-+/* Alignment must be consistent with (kunit_suite *) in include/kunit/test.h */
-+#define KUNIT_TEST_SUITES						\
-+		. = ALIGN(8);						\
-+		__kunit_suites_start = .;				\
-+		KEEP(*(.kunit_test_suites))				\
-+		__kunit_suites_end = .;
-+
- #ifdef CONFIG_BLK_DEV_INITRD
- #define INIT_RAM_FS							\
- 	. = ALIGN(4);							\
-@@ -1024,6 +1031,7 @@
- 		INIT_CALLS						\
- 		CON_INITCALL						\
- 		INIT_RAM_FS						\
-+		KUNIT_TEST_SUITES					\
- 	}
- 
- #define BSS_SECTION(sbss_align, bss_align, stop_align)			\
+"depends on !FORBID_STATIC_LINK"?
+
+Then all the drivers that are incompatible with static linking can just
+select FORBID_STATIC_LINK in their own Kconfig block.
+
+>         default n
+>         help
+>           This option gives you the ability to force a static link of UML.
+> @@ -72,6 +73,9 @@ config STATIC_LINK
+>           Additionally, this option enables using higher memory spaces (up to
+>           2.75G) for UML.
+>
+> +         NOTE: This option is incompatible with some networking features which
+> +         depend on features that require being dynamically loaded (like NSS).
+> +
+>  config LD_SCRIPT_STATIC
+>         bool
+>         default y
+> --
+> 2.24.0.525.g8f36a354ae-goog
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.24.1.735.g03f4e72817-goog
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
