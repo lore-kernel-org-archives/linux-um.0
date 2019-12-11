@@ -1,117 +1,104 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab7.miniserver.com ([37.128.132.42]
- helo=www.kot-begemot.co.uk)
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ieFCC-0000Ci-6c
- for linux-um@lists.infradead.org; Mon, 09 Dec 2019 09:19:14 +0000
-Subject: Invalid GSO - from 4.x (TBA) to 5.5-rc1. Was: Re: 64 bit time
- regression in recvmmsg()
-References: <3820d68b-1d97-8f41-d55d-237d1695458c@cambridgegreys.com>
- <CAMuHMdWuiGC4ay=f6M2H=-PLiffavnFSu8CPXE26euAi6aoY0w@mail.gmail.com>
- <CAK8P3a1mrFgRyh5Fgv-d8Szd2pq0T6Ac7wL3ogeYcf-Uyrg4ZQ@mail.gmail.com>
- <a5b9709d-b93b-46e1-ab18-a94ab921ccf7@cambridgegreys.com>
- <9dc1be66-5c55-8b3d-875b-4e1206914e78@cambridgegreys.com>
- <CAK8P3a1KcRcpUB2PdA17tnHN_dDs2Y02zPtkgM22Z-JdugAkfQ@mail.gmail.com>
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Message-ID: <e96aebcc-907a-d86f-ea8f-f5b10f74f39b@cambridgegreys.com>
-Date: Mon, 9 Dec 2019 09:19:04 +0000
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 114/134] um: virtio: Keep reading on -EAGAIN
+Date: Wed, 11 Dec 2019 10:11:30 -0500
+Message-Id: <20191211151150.19073-114-sashal@kernel.org>
+In-Reply-To: <20191211151150.19073-1-sashal@kernel.org>
+References: <20191211151150.19073-1-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a1KcRcpUB2PdA17tnHN_dDs2Y02zPtkgM22Z-JdugAkfQ@mail.gmail.com>
-Content-Language: en-US
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: netdev <netdev@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>
+Content-Transfer-Encoding: 8bit
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Johannes Berg <johannes.berg@intel.com>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
+From: Johannes Berg <johannes.berg@intel.com>
 
+[ Upstream commit 7e60746005573a06149cdee7acedf428906f3a59 ]
 
-On 06/12/2019 20:06, Arnd Bergmann wrote:
-> On Fri, Dec 6, 2019 at 6:50 PM Anton Ivanov
-> <anton.ivanov@cambridgegreys.com> wrote:
->> On 29/11/2019 16:34, Anton Ivanov wrote:
->>
->> I apologize, problem elsewhere. I have narrowed it down, it is a host
->> regression at the end, not a recvmmsg/time one.
->>
->> The EINVAL is occasionally returned from the guts of packet_rcv_vnet
->>
->> https://elixir.bootlin.com/linux/latest/ident/packet_rcv_vnet
->>
->> in af_packet. I am going to try to figure out exactly when it happens
->> and why.
->>
->> My sincere apologies,
-> 
-> No, worries, I'm glad it wasn't me this time ;-)
+When we get an interrupt from the socket getting readable,
+and start reading, there's a possibility for a race. This
+depends on the implementation of the device, but e.g. with
+qemu's libvhost-user, we can see:
 
-At some point in late 4.x (I am going to try narrowing down the 
-version), gso code introduced a condition which should not occur:
+ device                 virtio_uml
+---------------------------------------
+  write header
+                         get interrupt
+                         read header
+                         read body -> returns -EAGAIN
+  write body
 
-We have
+The -EAGAIN return is because the socket is non-blocking,
+and then this leads us to abandon this message.
 
-sinfo(skb)->gso_type = 0
+In fact, we've already read the header, so when the get
+another signal/interrupt for the body, we again read it
+as though it's a new message header, and also abandon it
+for the same reason (wrong size etc.)
 
-while
+This essentially breaks things, and if that message was
+one that required a response, it leads to a deadlock as
+the device is waiting for the response but we'll never
+reply.
 
-sinfo(skb)->gso_size = 752.
-skb->len = 818
-skb->data_len = 0
+Fix this by spinning on -EAGAIN as well when we read the
+message body. We need to handle -EAGAIN as "no message"
+while reading the header, since we share an interrupt.
 
-As a result we get a skb which is GSO, but it has a no GSO type.
+Note that this situation is highly unlikely to occur in
+normal usage, since there will be very few messages and
+only in the startup phase. With the inband call feature
+this does tend to happen (eventually) though.
 
-This shows up in virtio_net_hdr_from_skb() which detects the condition 
-as invalid and returns an -EINVAL
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/um/drivers/virtio_uml.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-A few interesting things.
-
-1. Size is always 752.
-
-2. I have found it while tracing an -EINVAL when using recvmmsg() on raw 
-sockets. No idea if it shows up elsewhere.
-
-3. The environment under test is reading/writing to a raw socket opened 
-on a vEth pair configured as follows:
-
-
-ip link add l-veth0 type veth peer name p-veth0 && ifconfig p-veth0 up
-ifconfig l-veth0 192.168.97.1 netmask 255.255.255.252
-
-the UML linux instance used as a reader/writer relies on 
-recvmmsg/sendmmesg raw socket with vnet headers enabled.
-
-virtio_net_hdr_from_skb() is called from the af_packet packet_recv_vnet 
-function.
-
-This condition simply should not occur. A skb with no data in the frags, 
-gso on, gso size less than MTU and no type looks bogus.
-
-
-> 
->       Arnd
-> 
-> _______________________________________________
-> linux-um mailing list
-> linux-um@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-um
-> 
-
+diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
+index fc8c52cff5aa8..c5643a59a8c76 100644
+--- a/arch/um/drivers/virtio_uml.c
++++ b/arch/um/drivers/virtio_uml.c
+@@ -83,7 +83,7 @@ static int full_sendmsg_fds(int fd, const void *buf, unsigned int len,
+ 	return 0;
+ }
+ 
+-static int full_read(int fd, void *buf, int len)
++static int full_read(int fd, void *buf, int len, bool abortable)
+ {
+ 	int rc;
+ 
+@@ -93,7 +93,7 @@ static int full_read(int fd, void *buf, int len)
+ 			buf += rc;
+ 			len -= rc;
+ 		}
+-	} while (len && (rc > 0 || rc == -EINTR));
++	} while (len && (rc > 0 || rc == -EINTR || (!abortable && rc == -EAGAIN)));
+ 
+ 	if (rc < 0)
+ 		return rc;
+@@ -104,7 +104,7 @@ static int full_read(int fd, void *buf, int len)
+ 
+ static int vhost_user_recv_header(int fd, struct vhost_user_msg *msg)
+ {
+-	return full_read(fd, msg, sizeof(msg->header));
++	return full_read(fd, msg, sizeof(msg->header), true);
+ }
+ 
+ static int vhost_user_recv(int fd, struct vhost_user_msg *msg,
+@@ -118,7 +118,7 @@ static int vhost_user_recv(int fd, struct vhost_user_msg *msg,
+ 	size = msg->header.size;
+ 	if (size > max_payload_size)
+ 		return -EPROTO;
+-	return full_read(fd, &msg->payload, size);
++	return full_read(fd, &msg->payload, size, false);
+ }
+ 
+ static int vhost_user_recv_resp(struct virtio_uml_device *vu_dev,
 -- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
-https://www.cambridgegreys.com/
+2.20.1
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
