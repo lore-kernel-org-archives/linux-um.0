@@ -1,601 +1,197 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-qv1-xf49.google.com ([2607:f8b0:4864:20::f49])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1id2wW-0007MN-Sp
- for linux-um@lists.infradead.org; Fri, 06 Dec 2019 02:02:07 +0000
-Received: by mail-qv1-xf49.google.com with SMTP id d12so3305952qvj.16
- for <linux-um@lists.infradead.org>; Thu, 05 Dec 2019 18:02:03 -0800 (PST)
-Date: Thu,  5 Dec 2019 18:01:53 -0800
-In-Reply-To: <20191206020153.228283-1-brendanhiggins@google.com>
-Message-Id: <20191206020153.228283-3-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20191206020153.228283-1-brendanhiggins@google.com>
-Subject: [RFC v1 2/2] uml: remove support for CONFIG_STATIC_LINK
-From: Brendan Higgins <brendanhiggins@google.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Return-Path: <linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 00/24] block, scsi: final compat_ioctl cleanup
+Date: Wed, 11 Dec 2019 21:42:34 +0100
+Message-Id: <20191211204306.1207817-1-arnd@arndb.de>
+MIME-Version: 1.0
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
-Cc: davidgow@google.com, Brendan Higgins <brendanhiggins@google.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, johannes.berg@intel.com
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org
+To: Jens Axboe <axboe@kernel.dk>, "James E.J. Bottomley" <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: justin@coraid.com, mst@redhat.com, catalin.marinas@arm.com, jasowang@redhat.com, Kai.Makisara@kolumbus.fi, linux-ide@vger.kernel.org, artur.paszkiewicz@intel.com, will@kernel.org, tim@cyberelk.net, anton.ivanov@cambridgegreys.com, hare@suse.com, sstabellini@kernel.org, linux-scsi@vger.kernel.org, corbet@lwn.net, y2038@lists.linaro.org, richard@nod.at, linux-doc@vger.kernel.org, dgilbert@interlog.com, xen-devel@lists.xenproject.org, jinpu.wang@cloud.ionos.com, intel-linux-scu@intel.com, Arnd Bergmann <arnd@arndb.de>, konrad.wilk@oracle.com, jdike@addtoit.com, john.garry@huawei.com, linux-um@lists.infradead.org, efremov@linux.com, linux-block@vger.kernel.org, brking@us.ibm.com, bp@alien8.de, stefanha@redhat.com, boris.ostrovsky@oracle.com, virtualization@lists.linux-foundation.org, linux-arm-kernel@lists.infradead.org, jgross@suse.com, linux-kernel@vger.kernel.org, fujita.tomonori@lab.ntt.co.jp, damien.lemoal@hgst.com, linux-fsdevel@vger.kernel.org, pbonzini@redhat.com, davem@davemloft.net, roger.pau@citrix.com
+List-ID: <linux-um.lists.infradead.org>
 
-CONFIG_STATIC_LINK appears to have been broken since before v4.20. It
-doesn't play nice with CONFIG_UML_NET_VECTOR=y:
+Hi Jens, James and Martin,
 
-/usr/bin/ld: arch/um/drivers/vector_user.o: in function
-`user_init_socket_fds': vector_user.c:(.text+0x430): warning: Using
-'getaddrinfo' in statically linked applications requires at runtime the
-shared libraries from the glibc version used for linking
+This series concludes the work I did for linux-5.5 on the compat_ioctl()
+cleanup, killing off fs/compat_ioctl.c and block/compat_ioctl.c by moving
+everything into drivers.
 
-And it seems to break the ptrace check:
+Overall this would be a reduction both in complexity and line count, but
+as I'm also adding documentation the overall number of lines increases
+in the end.
 
-Checking that ptrace can change system call numbers...check_ptrace :
-child exited with exitcode 6, while expecting 0; status 0x67f
-[1]    126822 abort      ./linux mem=256M
+My plan was originally to keep the SCSI and block parts separate.
+This did not work easily because of interdependencies: I cannot
+do the final SCSI cleanup in a good way without first addressing the
+CDROM ioctls, so this is one series that I hope could be merged through
+either the block or the scsi git trees, or possibly both if you can
+pull in the same branch.
 
-Given the importance of ptrace in UML, CONFIG_STATIC_LINK seems totally
-broken right now; remove it in order to fix allyesconfig for ARCH=um.
+The series comes in these steps:
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
----
- arch/um/Kconfig              |  23 +----
- arch/um/Makefile             |   3 +-
- arch/um/kernel/dyn.lds.S     | 170 ----------------------------------
- arch/um/kernel/uml.lds.S     | 115 -----------------------
- arch/um/kernel/vmlinux.lds.S | 175 ++++++++++++++++++++++++++++++++++-
- 5 files changed, 172 insertions(+), 314 deletions(-)
- delete mode 100644 arch/um/kernel/dyn.lds.S
- delete mode 100644 arch/um/kernel/uml.lds.S
+1. clean up the sg v3 interface as suggested by Linus. I have
+   talked about this with Doug Gilbert as well, and he would
+   rebase his sg v4 patches on top of "compat: scsi: sg: fix v3
+   compat read/write interface"
 
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index 2a6d04fcb3e91..00927fb7ce67a 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -19,6 +19,7 @@ config UML
- 	select GENERIC_CLOCKEVENTS
- 	select HAVE_GCC_PLUGINS
- 	select TTY # Needed for line.c
-+	select MODULE_REL_CRCS if MODVERSIONS
- 
- config MMU
- 	bool
-@@ -61,28 +62,6 @@ config NR_CPUS
- 
- source "arch/$(HEADER_ARCH)/um/Kconfig"
- 
--config STATIC_LINK
--	bool "Force a static link"
--	default n
--	help
--	  This option gives you the ability to force a static link of UML.
--	  Normally, UML is linked as a shared binary.  This is inconvenient for
--	  use in a chroot jail.  So, if you intend to run UML inside a chroot,
--	  you probably want to say Y here.
--	  Additionally, this option enables using higher memory spaces (up to
--	  2.75G) for UML.
--
--config LD_SCRIPT_STATIC
--	bool
--	default y
--	depends on STATIC_LINK
--
--config LD_SCRIPT_DYN
--	bool
--	default y
--	depends on !LD_SCRIPT_STATIC
--	select MODULE_REL_CRCS if MODVERSIONS
--
- config HOSTFS
- 	tristate "Host filesystem"
- 	help
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index d2daa206872da..ec8af28daf051 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -117,8 +117,7 @@ archheaders:
- archprepare:
- 	$(Q)$(MAKE) $(build)=$(HOST_DIR)/um include/generated/user_constants.h
- 
--LINK-$(CONFIG_LD_SCRIPT_STATIC) += -static
--LINK-$(CONFIG_LD_SCRIPT_DYN) += -Wl,-rpath,/lib $(call cc-option, -no-pie)
-+LINK-y += -Wl,-rpath,/lib $(call cc-option, -no-pie)
- 
- CFLAGS_NO_HARDENING := $(call cc-option, -fno-PIC,) $(call cc-option, -fno-pic,) \
- 	$(call cc-option, -fno-stack-protector,) \
-diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
-deleted file mode 100644
-index c69d69ee96beb..0000000000000
---- a/arch/um/kernel/dyn.lds.S
-+++ /dev/null
-@@ -1,170 +0,0 @@
--#include <asm/vmlinux.lds.h>
--#include <asm/page.h>
--
--OUTPUT_FORMAT(ELF_FORMAT)
--OUTPUT_ARCH(ELF_ARCH)
--ENTRY(_start)
--jiffies = jiffies_64;
--
--SECTIONS
--{
--  PROVIDE (__executable_start = START);
--  . = START + SIZEOF_HEADERS;
--  .interp         : { *(.interp) }
--  __binary_start = .;
--  . = ALIGN(4096);		/* Init code and data */
--  _text = .;
--  INIT_TEXT_SECTION(PAGE_SIZE)
--
--  . = ALIGN(PAGE_SIZE);
--
--  /* Read-only sections, merged into text segment: */
--  .hash           : { *(.hash) }
--  .gnu.hash       : { *(.gnu.hash) }
--  .dynsym         : { *(.dynsym) }
--  .dynstr         : { *(.dynstr) }
--  .gnu.version    : { *(.gnu.version) }
--  .gnu.version_d  : { *(.gnu.version_d) }
--  .gnu.version_r  : { *(.gnu.version_r) }
--  .rel.init       : { *(.rel.init) }
--  .rela.init      : { *(.rela.init) }
--  .rel.text       : { *(.rel.text .rel.text.* .rel.gnu.linkonce.t.*) }
--  .rela.text      : { *(.rela.text .rela.text.* .rela.gnu.linkonce.t.*) }
--  .rel.fini       : { *(.rel.fini) }
--  .rela.fini      : { *(.rela.fini) }
--  .rel.rodata     : { *(.rel.rodata .rel.rodata.* .rel.gnu.linkonce.r.*) }
--  .rela.rodata    : { *(.rela.rodata .rela.rodata.* .rela.gnu.linkonce.r.*) }
--  .rel.data       : { *(.rel.data .rel.data.* .rel.gnu.linkonce.d.*) }
--  .rela.data      : { *(.rela.data .rela.data.* .rela.gnu.linkonce.d.*) }
--  .rel.tdata	  : { *(.rel.tdata .rel.tdata.* .rel.gnu.linkonce.td.*) }
--  .rela.tdata	  : { *(.rela.tdata .rela.tdata.* .rela.gnu.linkonce.td.*) }
--  .rel.tbss	  : { *(.rel.tbss .rel.tbss.* .rel.gnu.linkonce.tb.*) }
--  .rela.tbss	  : { *(.rela.tbss .rela.tbss.* .rela.gnu.linkonce.tb.*) }
--  .rel.ctors      : { *(.rel.ctors) }
--  .rela.ctors     : { *(.rela.ctors) }
--  .rel.dtors      : { *(.rel.dtors) }
--  .rela.dtors     : { *(.rela.dtors) }
--  .rel.got        : { *(.rel.got) }
--  .rela.got       : { *(.rela.got) }
--  .rel.bss        : { *(.rel.bss .rel.bss.* .rel.gnu.linkonce.b.*) }
--  .rela.bss       : { *(.rela.bss .rela.bss.* .rela.gnu.linkonce.b.*) }
--  .rel.plt : {
--	*(.rel.plt)
--	PROVIDE_HIDDEN(__rel_iplt_start = .);
--	*(.rel.iplt)
--	PROVIDE_HIDDEN(__rel_iplt_end = .);
--  }
--  .rela.plt : {
--	*(.rela.plt)
--	PROVIDE_HIDDEN(__rela_iplt_start = .);
--	*(.rela.iplt)
--	PROVIDE_HIDDEN(__rela_iplt_end = .);
--  }
--  .init           : {
--    KEEP (*(.init))
--  } =0x90909090
--  .plt            : { *(.plt) }
--  .text           : {
--    _stext = .;
--    TEXT_TEXT
--    SCHED_TEXT
--    CPUIDLE_TEXT
--    LOCK_TEXT
--    IRQENTRY_TEXT
--    SOFTIRQENTRY_TEXT
--    *(.fixup)
--    *(.stub .text.* .gnu.linkonce.t.*)
--    /* .gnu.warning sections are handled specially by elf32.em.  */
--    *(.gnu.warning)
--
--    . = ALIGN(PAGE_SIZE);
--  } =0x90909090
--  . = ALIGN(PAGE_SIZE);
--  .syscall_stub : {
--	__syscall_stub_start = .;
--	*(.__syscall_stub*)
--	__syscall_stub_end = .;
--  }
--  .fini           : {
--    KEEP (*(.fini))
--  } =0x90909090
--
--  .kstrtab : { *(.kstrtab) }
--
--  #include <asm/common.lds.S>
--
--  __init_begin = .;
--  init.data : { INIT_DATA }
--  __init_end = .;
--
--  /* Ensure the __preinit_array_start label is properly aligned.  We
--     could instead move the label definition inside the section, but
--     the linker would then create the section even if it turns out to
--     be empty, which isn't pretty.  */
--  . = ALIGN(32 / 8);
--  .preinit_array     : { *(.preinit_array) }
--  .fini_array     : { *(.fini_array) }
--  .data           : {
--    INIT_TASK_DATA(KERNEL_STACK_SIZE)
--    . = ALIGN(KERNEL_STACK_SIZE);
--    *(.data..init_irqstack)
--    DATA_DATA
--    *(.data.* .gnu.linkonce.d.*)
--    SORT(CONSTRUCTORS)
--  }
--  .data1          : { *(.data1) }
--  .tdata	  : { *(.tdata .tdata.* .gnu.linkonce.td.*) }
--  .tbss		  : { *(.tbss .tbss.* .gnu.linkonce.tb.*) *(.tcommon) }
--  .eh_frame       : { KEEP (*(.eh_frame)) }
--  .gcc_except_table   : { *(.gcc_except_table) }
--  .dynamic        : { *(.dynamic) }
--  .ctors          : {
--    /* gcc uses crtbegin.o to find the start of
--       the constructors, so we make sure it is
--       first.  Because this is a wildcard, it
--       doesn't matter if the user does not
--       actually link against crtbegin.o; the
--       linker won't look for a file to match a
--       wildcard.  The wildcard also means that it
--       doesn't matter which directory crtbegin.o
--       is in.  */
--    KEEP (*crtbegin.o(.ctors))
--    /* We don't want to include the .ctor section from
--       from the crtend.o file until after the sorted ctors.
--       The .ctor section from the crtend file contains the
--       end of ctors marker and it must be last */
--    KEEP (*(EXCLUDE_FILE (*crtend.o ) .ctors))
--    KEEP (*(SORT(.ctors.*)))
--    KEEP (*(.ctors))
--  }
--  .dtors          : {
--    KEEP (*crtbegin.o(.dtors))
--    KEEP (*(EXCLUDE_FILE (*crtend.o ) .dtors))
--    KEEP (*(SORT(.dtors.*)))
--    KEEP (*(.dtors))
--  }
--  .jcr            : { KEEP (*(.jcr)) }
--  .got            : { *(.got.plt) *(.got) }
--  _edata = .;
--  PROVIDE (edata = .);
--  .bss            : {
--   __bss_start = .;
--   *(.dynbss)
--   *(.bss .bss.* .gnu.linkonce.b.*)
--   *(COMMON)
--   /* Align here to ensure that the .bss section occupies space up to
--      _end.  Align after .bss to ensure correct alignment even if the
--      .bss section disappears because there are no input sections.  */
--   . = ALIGN(32 / 8);
--  . = ALIGN(32 / 8);
--  }
--   __bss_stop = .;
--  _end = .;
--  PROVIDE (end = .);
--
--  STABS_DEBUG
--
--  DWARF_DEBUG
--
--  DISCARDS
--}
-diff --git a/arch/um/kernel/uml.lds.S b/arch/um/kernel/uml.lds.S
-deleted file mode 100644
-index 9f21443be2c9e..0000000000000
---- a/arch/um/kernel/uml.lds.S
-+++ /dev/null
-@@ -1,115 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#include <asm/vmlinux.lds.h>
--#include <asm/page.h>
--
--OUTPUT_FORMAT(ELF_FORMAT)
--OUTPUT_ARCH(ELF_ARCH)
--ENTRY(_start)
--jiffies = jiffies_64;
--
--SECTIONS
--{
--  /* This must contain the right address - not quite the default ELF one.*/
--  PROVIDE (__executable_start = START);
--  /* Static binaries stick stuff here, like the sigreturn trampoline,
--   * invisibly to objdump.  So, just make __binary_start equal to the very
--   * beginning of the executable, and if there are unmapped pages after this,
--   * they are forever unusable.
--   */
--  __binary_start = START;
--
--  . = START + SIZEOF_HEADERS;
--
--  _text = .;
--  INIT_TEXT_SECTION(0)
--  . = ALIGN(PAGE_SIZE);
--
--  .text      :
--  {
--    _stext = .;
--    TEXT_TEXT
--    SCHED_TEXT
--    CPUIDLE_TEXT
--    LOCK_TEXT
--    IRQENTRY_TEXT
--    SOFTIRQENTRY_TEXT
--    *(.fixup)
--    /* .gnu.warning sections are handled specially by elf32.em.  */
--    *(.gnu.warning)
--    *(.gnu.linkonce.t*)
--  }
--
--  . = ALIGN(PAGE_SIZE);
--  .syscall_stub : {
--	__syscall_stub_start = .;
--	*(.__syscall_stub*)
--	__syscall_stub_end = .;
--  }
--
--  /*
--   * These are needed even in a static link, even if they wind up being empty.
--   * Newer glibc needs these __rel{,a}_iplt_{start,end} symbols.
--   */
--  .rel.plt : {
--	*(.rel.plt)
--	PROVIDE_HIDDEN(__rel_iplt_start = .);
--	*(.rel.iplt)
--	PROVIDE_HIDDEN(__rel_iplt_end = .);
--  }
--  .rela.plt : {
--	*(.rela.plt)
--	PROVIDE_HIDDEN(__rela_iplt_start = .);
--	*(.rela.iplt)
--	PROVIDE_HIDDEN(__rela_iplt_end = .);
--  }
--
--  #include <asm/common.lds.S>
--
--  __init_begin = .;
--  init.data : { INIT_DATA }
--  __init_end = .;
--
--  .data    :
--  {
--    INIT_TASK_DATA(KERNEL_STACK_SIZE)
--    . = ALIGN(KERNEL_STACK_SIZE);
--    *(.data..init_irqstack)
--    DATA_DATA
--    *(.gnu.linkonce.d*)
--    CONSTRUCTORS
--  }
--  .data1   : { *(.data1) }
--  .ctors         :
--  {
--    *(.ctors)
--  }
--  .dtors         :
--  {
--    *(.dtors)
--  }
--
--  .got           : { *(.got.plt) *(.got) }
--  .dynamic       : { *(.dynamic) }
--  .tdata	  : { *(.tdata .tdata.* .gnu.linkonce.td.*) }
--  .tbss		  : { *(.tbss .tbss.* .gnu.linkonce.tb.*) *(.tcommon) }
--  /* We want the small data sections together, so single-instruction offsets
--     can access them all, and initialized data all before uninitialized, so
--     we can shorten the on-disk segment size.  */
--  .sdata     : { *(.sdata) }
--  _edata  =  .;
--  PROVIDE (edata = .);
--  . = ALIGN(PAGE_SIZE);
--  __bss_start = .;
--  PROVIDE(_bss_start = .);
--  SBSS(0)
--  BSS(0)
--   __bss_stop = .;
--  _end = .;
--  PROVIDE (end = .);
--
--  STABS_DEBUG
--
--  DWARF_DEBUG
--
--  DISCARDS
--}
-diff --git a/arch/um/kernel/vmlinux.lds.S b/arch/um/kernel/vmlinux.lds.S
-index 16e49bfa2b426..f4b6114e54d62 100644
---- a/arch/um/kernel/vmlinux.lds.S
-+++ b/arch/um/kernel/vmlinux.lds.S
-@@ -1,8 +1,173 @@
- 
- KERNEL_STACK_SIZE = 4096 * (1 << CONFIG_KERNEL_STACK_ORDER);
- 
--#ifdef CONFIG_LD_SCRIPT_STATIC
--#include "uml.lds.S"
--#else
--#include "dyn.lds.S"
--#endif
-+#include <asm/vmlinux.lds.h>
-+#include <asm/page.h>
-+
-+OUTPUT_FORMAT(ELF_FORMAT)
-+OUTPUT_ARCH(ELF_ARCH)
-+ENTRY(_start)
-+jiffies = jiffies_64;
-+
-+SECTIONS
-+{
-+  PROVIDE (__executable_start = START);
-+  . = START + SIZEOF_HEADERS;
-+  .interp         : { *(.interp) }
-+  __binary_start = .;
-+  . = ALIGN(4096);		/* Init code and data */
-+  _text = .;
-+  INIT_TEXT_SECTION(PAGE_SIZE)
-+
-+  . = ALIGN(PAGE_SIZE);
-+
-+  /* Read-only sections, merged into text segment: */
-+  .hash           : { *(.hash) }
-+  .gnu.hash       : { *(.gnu.hash) }
-+  .dynsym         : { *(.dynsym) }
-+  .dynstr         : { *(.dynstr) }
-+  .gnu.version    : { *(.gnu.version) }
-+  .gnu.version_d  : { *(.gnu.version_d) }
-+  .gnu.version_r  : { *(.gnu.version_r) }
-+  .rel.init       : { *(.rel.init) }
-+  .rela.init      : { *(.rela.init) }
-+  .rel.text       : { *(.rel.text .rel.text.* .rel.gnu.linkonce.t.*) }
-+  .rela.text      : { *(.rela.text .rela.text.* .rela.gnu.linkonce.t.*) }
-+  .rel.fini       : { *(.rel.fini) }
-+  .rela.fini      : { *(.rela.fini) }
-+  .rel.rodata     : { *(.rel.rodata .rel.rodata.* .rel.gnu.linkonce.r.*) }
-+  .rela.rodata    : { *(.rela.rodata .rela.rodata.* .rela.gnu.linkonce.r.*) }
-+  .rel.data       : { *(.rel.data .rel.data.* .rel.gnu.linkonce.d.*) }
-+  .rela.data      : { *(.rela.data .rela.data.* .rela.gnu.linkonce.d.*) }
-+  .rel.tdata	  : { *(.rel.tdata .rel.tdata.* .rel.gnu.linkonce.td.*) }
-+  .rela.tdata	  : { *(.rela.tdata .rela.tdata.* .rela.gnu.linkonce.td.*) }
-+  .rel.tbss	  : { *(.rel.tbss .rel.tbss.* .rel.gnu.linkonce.tb.*) }
-+  .rela.tbss	  : { *(.rela.tbss .rela.tbss.* .rela.gnu.linkonce.tb.*) }
-+  .rel.ctors      : { *(.rel.ctors) }
-+  .rela.ctors     : { *(.rela.ctors) }
-+  .rel.dtors      : { *(.rel.dtors) }
-+  .rela.dtors     : { *(.rela.dtors) }
-+  .rel.got        : { *(.rel.got) }
-+  .rela.got       : { *(.rela.got) }
-+  .rel.bss        : { *(.rel.bss .rel.bss.* .rel.gnu.linkonce.b.*) }
-+  .rela.bss       : { *(.rela.bss .rela.bss.* .rela.gnu.linkonce.b.*) }
-+  .rel.plt : {
-+	*(.rel.plt)
-+	PROVIDE_HIDDEN(__rel_iplt_start = .);
-+	*(.rel.iplt)
-+	PROVIDE_HIDDEN(__rel_iplt_end = .);
-+  }
-+  .rela.plt : {
-+	*(.rela.plt)
-+	PROVIDE_HIDDEN(__rela_iplt_start = .);
-+	*(.rela.iplt)
-+	PROVIDE_HIDDEN(__rela_iplt_end = .);
-+  }
-+  .init           : {
-+    KEEP (*(.init))
-+  } =0x90909090
-+  .plt            : { *(.plt) }
-+  .text           : {
-+    _stext = .;
-+    TEXT_TEXT
-+    SCHED_TEXT
-+    CPUIDLE_TEXT
-+    LOCK_TEXT
-+    IRQENTRY_TEXT
-+    SOFTIRQENTRY_TEXT
-+    *(.fixup)
-+    *(.stub .text.* .gnu.linkonce.t.*)
-+    /* .gnu.warning sections are handled specially by elf32.em.  */
-+    *(.gnu.warning)
-+
-+    . = ALIGN(PAGE_SIZE);
-+  } =0x90909090
-+  . = ALIGN(PAGE_SIZE);
-+  .syscall_stub : {
-+	__syscall_stub_start = .;
-+	*(.__syscall_stub*)
-+	__syscall_stub_end = .;
-+  }
-+  .fini           : {
-+    KEEP (*(.fini))
-+  } =0x90909090
-+
-+  .kstrtab : { *(.kstrtab) }
-+
-+  #include <asm/common.lds.S>
-+
-+  __init_begin = .;
-+  init.data : { INIT_DATA }
-+  __init_end = .;
-+
-+  /* Ensure the __preinit_array_start label is properly aligned.  We
-+     could instead move the label definition inside the section, but
-+     the linker would then create the section even if it turns out to
-+     be empty, which isn't pretty.  */
-+  . = ALIGN(32 / 8);
-+  .preinit_array     : { *(.preinit_array) }
-+  .fini_array     : { *(.fini_array) }
-+  .data           : {
-+    INIT_TASK_DATA(KERNEL_STACK_SIZE)
-+    . = ALIGN(KERNEL_STACK_SIZE);
-+    *(.data..init_irqstack)
-+    DATA_DATA
-+    *(.data.* .gnu.linkonce.d.*)
-+    SORT(CONSTRUCTORS)
-+  }
-+  .data1          : { *(.data1) }
-+  .tdata	  : { *(.tdata .tdata.* .gnu.linkonce.td.*) }
-+  .tbss		  : { *(.tbss .tbss.* .gnu.linkonce.tb.*) *(.tcommon) }
-+  .eh_frame       : { KEEP (*(.eh_frame)) }
-+  .gcc_except_table   : { *(.gcc_except_table) }
-+  .dynamic        : { *(.dynamic) }
-+  .ctors          : {
-+    /* gcc uses crtbegin.o to find the start of
-+       the constructors, so we make sure it is
-+       first.  Because this is a wildcard, it
-+       doesn't matter if the user does not
-+       actually link against crtbegin.o; the
-+       linker won't look for a file to match a
-+       wildcard.  The wildcard also means that it
-+       doesn't matter which directory crtbegin.o
-+       is in.  */
-+    KEEP (*crtbegin.o(.ctors))
-+    /* We don't want to include the .ctor section from
-+       from the crtend.o file until after the sorted ctors.
-+       The .ctor section from the crtend file contains the
-+       end of ctors marker and it must be last */
-+    KEEP (*(EXCLUDE_FILE (*crtend.o ) .ctors))
-+    KEEP (*(SORT(.ctors.*)))
-+    KEEP (*(.ctors))
-+  }
-+  .dtors          : {
-+    KEEP (*crtbegin.o(.dtors))
-+    KEEP (*(EXCLUDE_FILE (*crtend.o ) .dtors))
-+    KEEP (*(SORT(.dtors.*)))
-+    KEEP (*(.dtors))
-+  }
-+  .jcr            : { KEEP (*(.jcr)) }
-+  .got            : { *(.got.plt) *(.got) }
-+  _edata = .;
-+  PROVIDE (edata = .);
-+  .bss            : {
-+   __bss_start = .;
-+   *(.dynbss)
-+   *(.bss .bss.* .gnu.linkonce.b.*)
-+   *(COMMON)
-+   /* Align here to ensure that the .bss section occupies space up to
-+      _end.  Align after .bss to ensure correct alignment even if the
-+      .bss section disappears because there are no input sections.  */
-+   . = ALIGN(32 / 8);
-+  . = ALIGN(32 / 8);
-+  }
-+   __bss_stop = .;
-+  _end = .;
-+  PROVIDE (end = .);
-+
-+  STABS_DEBUG
-+
-+  DWARF_DEBUG
-+
-+  DISCARDS
-+}
+2. Four patches for missing block compat_ioctl handlers, to be
+   backported into stable kernels. Separate patches because they
+   are needed in different stable versions.
+
+3. Actually moving handlers out of block/compat_ioctl.c and
+   block/scsi_ioctl.c into drivers, mixed in with cleanup
+   patches
+
+4. Document how to do this right. I keep getting asked about this,
+   and it helps to point to some documentation file.
+
+The series is avaialable for testing at [1].
+
+       Arnd
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/arnd/playground.git/log/?h=compat-ioctl-endgame
+
+Arnd Bergmann (24):
+  compat: ARM64: always include asm-generic/compat.h
+  compat: scsi: sg: fix v3 compat read/write interface
+  compat_ioctl: block: handle BLKREPORTZONE/BLKRESETZONE
+  compat_ioctl: block: handle BLKGETZONESZ/BLKGETNRZONES
+  compat_ioctl: block: handle add zone open, close and finish ioctl
+  compat_ioctl: block: handle Persistent Reservations
+  compaT_ioctl: ubd, aoe: use blkdev_compat_ptr_ioctl
+  compat_ioctl: move CDROM_SEND_PACKET handling into scsi
+  compat_ioctl: move CDROMREADADIO to cdrom.c
+  compat_ioctl: cdrom: handle CDROM_LAST_WRITTEN
+  compat_ioctl: block: handle cdrom compat ioctl in non-cdrom drivers
+  compat_ioctl: add scsi_compat_ioctl
+  compat_ioctl: bsg: add handler
+  compat_ioctl: ide: floppy: add handler
+  compat_ioctl: scsi: move ioctl handling into drivers
+  compat_ioctl: move sys_compat_ioctl() to ioctl.c
+  compat_ioctl: simplify the implementation
+  compat_ioctl: move cdrom commands into cdrom.c
+  compat_ioctl: scsi: handle HDIO commands from drivers
+  compat_ioctl: move HDIO ioctl handling into drivers/ide
+  compat_ioctl: block: move blkdev_compat_ioctl() into ioctl.c
+  compat_ioctl: block: simplify compat_blkpg_ioctl()
+  compat_ioctl: simplify up block/ioctl.c
+  Documentation: document ioctl interfaces better
+
+ Documentation/core-api/index.rst       |   1 +
+ Documentation/core-api/ioctl.rst       | 250 +++++++++++++++
+ arch/arm64/include/asm/compat.h        |   5 +-
+ arch/um/drivers/ubd_kern.c             |   1 +
+ block/Makefile                         |   1 -
+ block/bsg.c                            |   1 +
+ block/compat_ioctl.c                   | 411 -------------------------
+ block/ioctl.c                          | 319 +++++++++++++++----
+ block/scsi_ioctl.c                     | 214 ++++++++-----
+ drivers/ata/libata-scsi.c              |   9 +
+ drivers/block/aoe/aoeblk.c             |   1 +
+ drivers/block/floppy.c                 |   3 +
+ drivers/block/paride/pcd.c             |   3 +
+ drivers/block/paride/pd.c              |   1 +
+ drivers/block/paride/pf.c              |   1 +
+ drivers/block/pktcdvd.c                |  26 +-
+ drivers/block/sunvdc.c                 |   1 +
+ drivers/block/virtio_blk.c             |   3 +
+ drivers/block/xen-blkfront.c           |   1 +
+ drivers/cdrom/cdrom.c                  |  35 ++-
+ drivers/cdrom/gdrom.c                  |   3 +
+ drivers/ide/ide-cd.c                   |  40 +++
+ drivers/ide/ide-disk.c                 |   3 +
+ drivers/ide/ide-floppy.c               |   4 +
+ drivers/ide/ide-floppy.h               |   2 +
+ drivers/ide/ide-floppy_ioctl.c         |  35 +++
+ drivers/ide/ide-gd.c                   |  14 +
+ drivers/ide/ide-ioctls.c               |  47 ++-
+ drivers/ide/ide-tape.c                 |  14 +
+ drivers/scsi/aic94xx/aic94xx_init.c    |   3 +
+ drivers/scsi/ch.c                      |   9 +-
+ drivers/scsi/hisi_sas/hisi_sas_v1_hw.c |   3 +
+ drivers/scsi/hisi_sas/hisi_sas_v2_hw.c |   3 +
+ drivers/scsi/hisi_sas/hisi_sas_v3_hw.c |   3 +
+ drivers/scsi/ipr.c                     |   3 +
+ drivers/scsi/isci/init.c               |   3 +
+ drivers/scsi/mvsas/mv_init.c           |   3 +
+ drivers/scsi/pm8001/pm8001_init.c      |   3 +
+ drivers/scsi/scsi_ioctl.c              |  54 +++-
+ drivers/scsi/sd.c                      |  50 ++-
+ drivers/scsi/sg.c                      | 169 +++++-----
+ drivers/scsi/sr.c                      |  53 +++-
+ drivers/scsi/st.c                      |  51 +--
+ fs/Makefile                            |   2 +-
+ fs/compat_ioctl.c                      | 261 ----------------
+ fs/internal.h                          |   6 -
+ fs/ioctl.c                             | 131 +++++---
+ include/linux/blkdev.h                 |   7 +
+ include/linux/falloc.h                 |   2 -
+ include/linux/fs.h                     |   4 -
+ include/linux/ide.h                    |   2 +
+ include/linux/libata.h                 |   6 +
+ include/scsi/scsi_ioctl.h              |   1 +
+ include/scsi/sg.h                      |  30 ++
+ 54 files changed, 1249 insertions(+), 1062 deletions(-)
+ create mode 100644 Documentation/core-api/ioctl.rst
+ delete mode 100644 block/compat_ioctl.c
+ delete mode 100644 fs/compat_ioctl.c
+
 -- 
-2.24.0.393.g34dc348eaf-goog
+2.20.0
 
+Cc: corbet@lwn.net
+Cc: catalin.marinas@arm.com
+Cc: will@kernel.org
+Cc: jdike@addtoit.com
+Cc: richard@nod.at
+Cc: anton.ivanov@cambridgegreys.com
+Cc: fujita.tomonori@lab.ntt.co.jp
+Cc: justin@coraid.com
+Cc: efremov@linux.com
+Cc: tim@cyberelk.net
+Cc: mst@redhat.com
+Cc: jasowang@redhat.com
+Cc: pbonzini@redhat.com
+Cc: stefanha@redhat.com
+Cc: boris.ostrovsky@oracle.com
+Cc: jgross@suse.com
+Cc: sstabellini@kernel.org
+Cc: konrad.wilk@oracle.com
+Cc: roger.pau@citrix.com
+Cc: bp@alien8.de
+Cc: davem@davemloft.net
+Cc: john.garry@huawei.com
+Cc: brking@us.ibm.com
+Cc: intel-linux-scu@intel.com
+Cc: artur.paszkiewicz@intel.com
+Cc: jinpu.wang@cloud.ionos.com
+Cc: dgilbert@interlog.com
+Cc: Kai.Makisara@kolumbus.fi
+Cc: arnd@arndb.de
+Cc: damien.lemoal@hgst.com
+Cc: hare@suse.com
+Cc: linux-doc@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-block@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-um@lists.infradead.org
+Cc: linux-scsi@vger.kernel.org
+Cc: linux-ide@vger.kernel.org
+Cc: virtualization@lists.linux-foundation.org
+Cc: xen-devel@lists.xenproject.org
+Cc: linux-fsdevel@vger.kernel.org
 
 _______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
