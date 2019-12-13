@@ -1,15 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pj1-x1049.google.com ([2607:f8b0:4864:20::1049])
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ieo5H-0005je-L4
- for linux-um@lists.infradead.org; Tue, 10 Dec 2019 22:34:25 +0000
-Received: by mail-pj1-x1049.google.com with SMTP id gx23so1409562pjb.11
- for <linux-um@lists.infradead.org>; Tue, 10 Dec 2019 14:34:22 -0800 (PST)
-Date: Tue, 10 Dec 2019 14:34:03 -0800
-Message-Id: <20191210223403.244842-1-brendanhiggins@google.com>
-Mime-Version: 1.0
-Subject: [PATCH v1] um: drivers: mark non-vector net transports as obsolete
-From: Brendan Higgins <brendanhiggins@google.com>
+ id 1ifiFW-0008Gi-Sw
+ for linux-um@lists.infradead.org; Fri, 13 Dec 2019 10:32:45 +0000
+Subject: Re: [PATCH] um: fix time-travel=inf-cpu with xor/raid6
+References: <20191213100128.04075cf409e9.Id772dc879535c85524c32b81fd392bbbfd515741@changeid>
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Message-ID: <5bec5e3f-ad17-e60f-eb9f-7b2d7a08ed27@kot-begemot.co.uk>
+Date: Fri, 13 Dec 2019 10:32:36 +0000
+MIME-Version: 1.0
+In-Reply-To: <20191213100128.04075cf409e9.Id772dc879535c85524c32b81fd392bbbfd515741@changeid>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,209 +20,82 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
-Cc: davidgow@google.com, Brendan Higgins <brendanhiggins@google.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, johannes.berg@intel.com
+To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
 
-UML_NET_VECTOR now supports filters compiled with pcap outside of UML;
-it also supports: EoGRE, EoL2TPv3, RAW (+/- BPF), TAP and BESS.
 
-While vector drivers are not 1:1 replacements for the existing drivers,
-you can achieve the same topologies and the same connectivity at much
-higher performance (2.5 to 9 Gbit on mid-range Ryzen desktop) - the old
-drivers test out in the 500Mbit range on the same hardware.
 
-For all these reasons, the non-vector based transports are now
-unnecessary, and some, most notably pcap and vde are maintenance
-burdens. Thus, it makes sense to at least start thinking about removing
-the non-vector transports, so for now, mark them as obsolete.
+On 13/12/2019 09:01, Johannes Berg wrote:
+> From: Johannes Berg <johannes.berg@intel.com>
+> 
+> Today, I erroneously built a time-travel configuration with btrfs
+> enabled, and noticed it cannot boot in time-travel=inf-cpu mode,
+> both xor and raid6 speed measurement gets stuck.
+> 
+> For xor, work around it by picking the first algorithm if inf-cpu
+> mode is enabled.
+> 
+> For raid6, I didn't find such a workaround, so disallow enabling
+> time-travel mode if RAID6_PQ_BENCHMARK is enabled.
+> 
+> With this, and RAID6_PQ_BENCHMARK disabled, I can boot a kernel
+> that has btrfs enabled in time-travel=inf-cpu mode.
+> 
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+> ---
+>   arch/um/Kconfig            | 2 ++
+>   arch/um/include/asm/Kbuild | 1 -
+>   arch/um/include/asm/xor.h  | 7 +++++++
+>   3 files changed, 9 insertions(+), 1 deletion(-)
+>   create mode 100644 arch/um/include/asm/xor.h
+> 
+> diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+> index 2a6d04fcb3e9..a8bf60b5c208 100644
+> --- a/arch/um/Kconfig
+> +++ b/arch/um/Kconfig
+> @@ -188,6 +188,8 @@ config SECCOMP
+>   config UML_TIME_TRAVEL_SUPPORT
+>   	bool
+>   	prompt "Support time-travel mode (e.g. for test execution)"
+> +	# inf-cpu mode is incompatible with the benchmarking
+> +	depends on !RAID6_PQ_BENCHMARK
+>   	help
+>   	  Enable this option to support time travel inside the UML instance.
+>   
+> diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
+> index 398006d27e40..db7d9d4e30d8 100644
+> --- a/arch/um/include/asm/Kbuild
+> +++ b/arch/um/include/asm/Kbuild
+> @@ -25,5 +25,4 @@ generic-y += switch_to.h
+>   generic-y += topology.h
+>   generic-y += trace_clock.h
+>   generic-y += word-at-a-time.h
+> -generic-y += xor.h
+>   generic-y += kprobes.h
+> diff --git a/arch/um/include/asm/xor.h b/arch/um/include/asm/xor.h
+> new file mode 100644
+> index 000000000000..7a3208c47cfc
+> --- /dev/null
+> +++ b/arch/um/include/asm/xor.h
+> @@ -0,0 +1,7 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#include <asm-generic/xor.h>
+> +#include <shared/timer-internal.h>
+> +
+> +/* pick an arbitrary one - measuring isn't possible with inf-cpu */
+> +#define XOR_SELECT_TEMPLATE(x)	\
+> +	(time_travel_mode == TT_MODE_INFCPU ? &xor_block_8regs : NULL)
+> 
 
-Link: https://lore.kernel.org/lkml/15f048d3-07ab-61c1-c6e0-0712e626dd33@cambridgegreys.com/T/#u
-Suggested-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
----
+Acked-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-I pretty much stole the commit message from Anton's comments in the
-above link. Anton, if you would like me to credit you as a co-developer,
-feel free to respond with the tags and I will include them on the next
-revision.
-
----
- arch/um/drivers/Kconfig | 81 +++++++++++++++++++++--------------------
- 1 file changed, 41 insertions(+), 40 deletions(-)
-
-diff --git a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
-index 388096fb45a25..72d4170557820 100644
---- a/arch/um/drivers/Kconfig
-+++ b/arch/um/drivers/Kconfig
-@@ -147,7 +147,7 @@ config UML_NET
- 	  make use of UML networking.
- 
- config UML_NET_ETHERTAP
--	bool "Ethertap transport"
-+	bool "Ethertap transport (obsolete)"
- 	depends on UML_NET
- 	help
- 	  The Ethertap User-Mode Linux network transport allows a single
-@@ -167,14 +167,13 @@ config UML_NET_ETHERTAP
- 	  has examples of the UML command line to use to enable Ethertap
- 	  networking.
- 
--	  If you'd like to set up an IP network with the host and/or the
--	  outside world, say Y to this, the Daemon Transport and/or the
--	  Slip Transport.  You'll need at least one of them, but may choose
--	  more than one without conflict.  If you don't need UML networking,
--	  say N.
-+	  NOTE: THIS TRANSPORT IS DEPRECATED AND WILL BE REMOVED SOON!!! Please
-+	  migrate to UML_NET_VECTOR.
-+
-+	  If unsure, say N.
- 
- config UML_NET_TUNTAP
--	bool "TUN/TAP transport"
-+	bool "TUN/TAP transport (obsolete)"
- 	depends on UML_NET
- 	help
- 	  The UML TUN/TAP network transport allows a UML instance to exchange
-@@ -185,8 +184,13 @@ config UML_NET_TUNTAP
- 	  To use this transport, your host kernel must have support for TUN/TAP
- 	  devices, either built-in or as a module.
- 
-+	  NOTE: THIS TRANSPORT IS DEPRECATED AND WILL BE REMOVED SOON!!! Please
-+	  migrate to UML_NET_VECTOR.
-+
-+	  If unsure, say N.
-+
- config UML_NET_SLIP
--	bool "SLIP transport"
-+	bool "SLIP transport (obsolete)"
- 	depends on UML_NET
- 	help
- 	  The slip User-Mode Linux network transport allows a running UML to
-@@ -201,16 +205,13 @@ config UML_NET_SLIP
- 	  has examples of the UML command line to use to enable slip
- 	  networking, and details of a few quirks with it.
- 
--	  The Ethertap Transport is preferred over slip because of its
--	  limitations.  If you prefer slip, however, say Y here.  Otherwise
--	  choose the Multicast transport (to network multiple UMLs on
--	  multiple hosts), Ethertap (to network with the host and the
--	  outside world), and/or the Daemon transport (to network multiple
--	  UMLs on a single host).  You may choose more than one without
--	  conflict.  If you don't need UML networking, say N.
-+	  NOTE: THIS TRANSPORT IS DEPRECATED AND WILL BE REMOVED SOON!!! Please
-+	  migrate to UML_NET_VECTOR.
-+
-+	  If unsure, say N.
- 
- config UML_NET_DAEMON
--	bool "Daemon transport"
-+	bool "Daemon transport (obsolete)"
- 	depends on UML_NET
- 	help
- 	  This User-Mode Linux network transport allows one or more running
-@@ -225,13 +226,10 @@ config UML_NET_DAEMON
- 	  has examples of the UML command line to use to enable Daemon
- 	  networking.
- 
--	  If you'd like to set up a network with other UMLs on a single host,
--	  say Y.  If you need a network between UMLs on multiple physical
--	  hosts, choose the Multicast Transport.  To set up a network with
--	  the host and/or other IP machines, say Y to the Ethertap or Slip
--	  transports.  You'll need at least one of them, but may choose
--	  more than one without conflict.  If you don't need UML networking,
--	  say N.
-+	  NOTE: THIS TRANSPORT IS DEPRECATED AND WILL BE REMOVED SOON!!! Please
-+	  migrate to UML_NET_VECTOR.
-+
-+	  If unsure, say N.
- 
- config UML_NET_VECTOR
- 	bool "Vector I/O high performance network devices"
-@@ -245,7 +243,7 @@ config UML_NET_VECTOR
- 	drivers.
- 
- config UML_NET_VDE
--	bool "VDE transport"
-+	bool "VDE transport (obsolete)"
- 	depends on UML_NET
- 	help
- 	This User-Mode Linux network transport allows one or more running
-@@ -263,11 +261,13 @@ config UML_NET_VDE
- 	That site has a good overview of what VDE is and also examples
- 	of the UML command line to use to enable VDE networking.
- 
--	If you need UML networking with VDE,
--	say Y.
-+	NOTE: THIS TRANSPORT IS DEPRECATED AND WILL BE REMOVED SOON!!! Please
-+	migrate to UML_NET_VECTOR.
-+
-+	If unsure, say N.
- 
- config UML_NET_MCAST
--	bool "Multicast transport"
-+	bool "Multicast transport (obsolete)"
- 	depends on UML_NET
- 	help
- 	  This Multicast User-Mode Linux network transport allows multiple
-@@ -284,15 +284,13 @@ config UML_NET_MCAST
- 	  has examples of the UML command line to use to enable Multicast
- 	  networking, and notes about the security of this approach.
- 
--	  If you need UMLs on multiple physical hosts to communicate as if
--	  they shared an Ethernet network, say Y.  If you need to communicate
--	  with other IP machines, make sure you select one of the other
--	  transports (possibly in addition to Multicast; they're not
--	  exclusive).  If you don't need to network UMLs say N to each of
--	  the transports.
-+	  NOTE: THIS TRANSPORT IS DEPRECATED AND WILL BE REMOVED SOON!!! Please
-+	  migrate to UML_NET_VECTOR.
-+
-+	  If unsure, say N.
- 
- config UML_NET_PCAP
--	bool "pcap transport"
-+	bool "pcap transport (obsolete)"
- 	depends on UML_NET
- 	help
- 	The pcap transport makes a pcap packet stream on the host look
-@@ -304,11 +302,13 @@ config UML_NET_PCAP
- 	  <http://user-mode-linux.sourceforge.net/old/networking.html>  That site
- 	  has examples of the UML command line to use to enable this option.
- 
--	If you intend to use UML as a network monitor for the host, say
--	Y here.  Otherwise, say N.
-+	NOTE: THIS TRANSPORT IS DEPRECATED AND WILL BE REMOVED SOON!!! Please
-+	migrate to UML_NET_VECTOR.
-+
-+	If unsure, say N.
- 
- config UML_NET_SLIRP
--	bool "SLiRP transport"
-+	bool "SLiRP transport (obsolete)"
- 	depends on UML_NET
- 	help
- 	  The SLiRP User-Mode Linux network transport allows a running UML
-@@ -328,9 +328,10 @@ config UML_NET_SLIRP
- 	  that of a host behind a firewall that masquerades all network
- 	  connections passing through it (but is less secure).
- 
--	  To use this you should first have slirp compiled somewhere
--	  accessible on the host, and have read its documentation.  If you
--	  don't need UML networking, say N.
-+	  NOTE: THIS TRANSPORT IS DEPRECATED AND WILL BE REMOVED SOON!!! Please
-+	  migrate to UML_NET_VECTOR.
-+
-+	  If unsure, say N.
- 
- 	  Startup example: "eth0=slirp,FE:FD:01:02:03:04,/usr/local/bin/slirp"
- 
 -- 
-2.24.0.525.g8f36a354ae-goog
-
+Anton R. Ivanov
+https://www.kot-begemot.co.uk/
 
 _______________________________________________
 linux-um mailing list
