@@ -1,17 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pj1-x1049.google.com ([2607:f8b0:4864:20::1049])
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1igyW5-0001tS-Lc
- for linux-um@lists.infradead.org; Mon, 16 Dec 2019 22:07:02 +0000
-Received: by mail-pj1-x1049.google.com with SMTP id k93so5278755pjh.5
- for <linux-um@lists.infradead.org>; Mon, 16 Dec 2019 14:07:00 -0800 (PST)
-Date: Mon, 16 Dec 2019 14:05:53 -0800
-In-Reply-To: <20191216220555.245089-1-brendanhiggins@google.com>
-Message-Id: <20191216220555.245089-5-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20191216220555.245089-1-brendanhiggins@google.com>
-Subject: [RFC v1 4/6] init: main: add KUnit to kernel init
-From: Brendan Higgins <brendanhiggins@google.com>
+ id 1igtmR-0001bs-CG
+ for linux-um@lists.infradead.org; Mon, 16 Dec 2019 17:03:36 +0000
+From: anton.ivanov@cambridgegreys.com
+Subject: [PATCH v3 5/6] um: vector: Add dynamic tap interfaces and scripting
+Date: Mon, 16 Dec 2019 17:03:20 +0000
+Message-Id: <20191216170321.14056-5-anton.ivanov@cambridgegreys.com>
+In-Reply-To: <20191216170321.14056-1-anton.ivanov@cambridgegreys.com>
+References: <20191216170321.14056-1-anton.ivanov@cambridgegreys.com>
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,81 +23,160 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, arnd@arndb.de, keescook@chromium.org, skhan@linuxfoundation.org, alan.maguire@oracle.com, yzaikin@google.com, davidgow@google.com, akpm@linux-foundation.org, rppt@linux.ibm.com
-Cc: linux-arch@vger.kernel.org, sboyd@kernel.org, gregkh@linuxfoundation.org, knut.omang@oracle.com, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, mcgrof@kernel.org, linux-kselftest@vger.kernel.org, logang@deltatee.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
+To: linux-um@lists.infradead.org
+Cc: richard@nod.at, brendanhiggins@google.com, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Remove KUnit from init calls entirely, instead call directly from
-kernel_init().
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+In order to be compatible with the existing tap driver
+we need to be able to allocate a tap on the fly and tear it
+down once we are done with it.
+
+We also need to be able to add that interface to a bridge.
+Instead of backwards compatibility with the old UML options
+and net helper behaviour this patch introduces semantics
+identical to qemu ifup scripts.
+
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 ---
- include/kunit/test.h | 9 +++++++++
- init/main.c          | 4 ++++
- lib/kunit/executor.c | 4 +---
- 3 files changed, 14 insertions(+), 3 deletions(-)
+ arch/um/drivers/vector_user.c | 57 +++++++++++++++++++++++++++++------
+ 1 file changed, 48 insertions(+), 9 deletions(-)
 
-diff --git a/include/kunit/test.h b/include/kunit/test.h
-index c070798ebb765..9da4f2cc1a3fc 100644
---- a/include/kunit/test.h
-+++ b/include/kunit/test.h
-@@ -196,6 +196,15 @@ void kunit_init_test(struct kunit *test, const char *name);
+diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
+index 59e756df9af9..ea79887f1c9b 100644
+--- a/arch/um/drivers/vector_user.c
++++ b/arch/um/drivers/vector_user.c
+@@ -40,6 +40,7 @@
+ #define ID_MAX 4 
  
- int kunit_run_tests(struct kunit_suite *suite);
+ #define TOKEN_IFNAME "ifname"
++#define TOKEN_SCRIPT "script"
  
-+#if IS_ENABLED(CONFIG_KUNIT)
-+int kunit_executor_init(void);
-+#else
-+static inline int kunit_executor_init(void)
-+{
-+	return 0;
-+}
-+#endif /* IS_ENABLED(CONFIG_KUNIT) */
+ #define TRANS_RAW "raw"
+ #define TRANS_RAW_LEN strlen(TRANS_RAW)
+@@ -53,6 +54,9 @@
+ 
+ #define MAX_UN_LEN 107
+ 
++static const char padchar[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
++static const char *template = "tapXXXXXX";
 +
- /**
-  * kunit_test_suite() - used to register a &struct kunit_suite with KUnit.
-  *
-diff --git a/init/main.c b/init/main.c
-index 91f6ebb30ef04..b299396a5466b 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -103,6 +103,8 @@
- #define CREATE_TRACE_POINTS
- #include <trace/events/initcall.h>
- 
-+#include <kunit/test.h>
-+
- static int kernel_init(void *);
- 
- extern void init_IRQ(void);
-@@ -1190,6 +1192,8 @@ static noinline void __init kernel_init_freeable(void)
- 
- 	do_basic_setup();
- 
-+	kunit_executor_init();
-+
- 	/* Open the /dev/console on the rootfs, this should never fail */
- 	if (ksys_open((const char __user *) "/dev/console", O_RDWR, 0) < 0)
- 		pr_err("Warning: unable to open an initial console.\n");
-diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
-index 978086cfd257d..ca880224c0bab 100644
---- a/lib/kunit/executor.c
-+++ b/lib/kunit/executor.c
-@@ -32,12 +32,10 @@ static bool kunit_run_all_tests(void)
- 	return !has_test_failed;
+ /* This is very ugly and brute force lookup, but it is done
+  * only once at initialization so not worth doing hashes or
+  * anything more intelligent
+@@ -189,16 +193,21 @@ static int create_raw_fd(char *iface, int flags, int proto)
+ 	return err;
  }
  
--static int kunit_executor_init(void)
-+int kunit_executor_init(void)
++
+ static struct vector_fds *user_init_tap_fds(struct arglist *ifspec)
  {
- 	if (kunit_run_all_tests())
- 		return 0;
- 	else
- 		return -EFAULT;
+-	int fd = -1;
++	int fd = -1, i;
+ 	char *iface;
+ 	struct vector_fds *result = NULL;
++	bool dynamic = false;
++	char dynamic_ifname[IFNAMSIZ];
++	char *argv[] = {"/bin/sh", NULL, NULL, NULL};
+ 
+ 	iface = uml_vector_fetch_arg(ifspec, TOKEN_IFNAME);
+ 	if (iface == NULL) {
+-		printk(UM_KERN_ERR "uml_tap: failed to parse interface spec\n");
+-		goto tap_cleanup;
++		dynamic = true;
++		iface = dynamic_ifname;
++		srand(getpid());
+ 	}
+ 
+ 	result = uml_kmalloc(sizeof(struct vector_fds), UM_GFP_KERNEL);
+@@ -212,14 +221,30 @@ static struct vector_fds *user_init_tap_fds(struct arglist *ifspec)
+ 	result->remote_addr_size = 0;
+ 
+ 	/* TAP */
++	do {
++		if (dynamic) {
++			strcpy(iface, template);
++			for (i = 0; i < strlen(iface); i++) {
++				if (iface[i] == 'X') {
++					iface[i] = padchar[rand() % strlen(padchar)];
++				}
++			}
++		}
++		fd = create_tap_fd(iface);
++		if ((fd < 0) && (!dynamic)) {
++			printk(UM_KERN_ERR "uml_tap: failed to create tun interface\n");
++			goto tap_cleanup;
++		}
++		result->tx_fd = fd;
++		result->rx_fd = fd;
++	} while (fd < 0);
+ 
+-	fd = create_tap_fd(iface);
+-	if (fd < 0) {
+-		printk(UM_KERN_ERR "uml_tap: failed to create tun interface\n");
+-		goto tap_cleanup;
++	argv[1] = uml_vector_fetch_arg(ifspec, TOKEN_SCRIPT);
++	if (argv[1]) {
++		argv[2] = iface;
++		run_helper(NULL, NULL, argv);
+ 	}
+-	result->tx_fd = fd;
+-	result->rx_fd = fd;
++
+ 	return result;
+ tap_cleanup:
+ 	printk(UM_KERN_ERR "user_init_tap: init failed, error %d", fd);
+@@ -232,6 +257,7 @@ static struct vector_fds *user_init_hybrid_fds(struct arglist *ifspec)
+ {
+ 	char *iface;
+ 	struct vector_fds *result = NULL;
++	char *argv[2];
+ 
+ 	iface = uml_vector_fetch_arg(ifspec, TOKEN_IFNAME);
+ 	if (iface == NULL) {
+@@ -265,6 +291,12 @@ static struct vector_fds *user_init_hybrid_fds(struct arglist *ifspec)
+ 			"uml_tap: failed to create paired raw socket: %i\n", result->rx_fd);
+ 		goto hybrid_cleanup;
+ 	}
++
++	argv[0] = uml_vector_fetch_arg(ifspec, TOKEN_SCRIPT);
++	if (argv[0]) {
++		argv[1] = iface;
++		run_helper(NULL, NULL, argv);
++	}
+ 	return result;
+ hybrid_cleanup:
+ 	printk(UM_KERN_ERR "user_init_hybrid: init failed");
+@@ -359,6 +391,7 @@ static struct vector_fds *user_init_raw_fds(struct arglist *ifspec)
+ 	int err = -ENOMEM;
+ 	char *iface;
+ 	struct vector_fds *result = NULL;
++	char *argv[2];
+ 
+ 	iface = uml_vector_fetch_arg(ifspec, TOKEN_IFNAME);
+ 	if (iface == NULL)
+@@ -392,6 +425,11 @@ static struct vector_fds *user_init_raw_fds(struct arglist *ifspec)
+ 		result->remote_addr = NULL;
+ 		result->remote_addr_size = 0;
+ 	}
++	argv[0] = uml_vector_fetch_arg(ifspec, TOKEN_SCRIPT);
++	if (argv[0]) {
++		argv[1] = iface;
++		run_helper(NULL, NULL, argv);
++	}
+ 	return result;
+ raw_cleanup:
+ 	printk(UM_KERN_ERR "user_init_raw: init failed, error %d", err);
+@@ -643,6 +681,7 @@ struct vector_fds *uml_vector_user_open(
+ 		return user_init_socket_fds(parsed, ID_UCAST);
+ 	if (strncmp(transport, TRANS_MCAST, TRANS_MCAST_LEN) == 0)
+ 		return user_init_socket_fds(parsed, ID_MCAST);
++
+ 	return NULL;
  }
--
--late_initcall(kunit_executor_init);
+ 
 -- 
-2.24.1.735.g03f4e72817-goog
+2.20.1
 
 
 _______________________________________________
