@@ -1,194 +1,106 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iSwRT-00042G-JC
- for linux-um@lists.infradead.org; Fri, 08 Nov 2019 05:04:17 +0000
-Received: by mail-pl1-x643.google.com with SMTP id w8so3252413plq.5
- for <linux-um@lists.infradead.org>; Thu, 07 Nov 2019 21:04:15 -0800 (PST)
-From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v2 31/37] lkl: add support for Windows hosts
-Date: Fri,  8 Nov 2019 14:02:46 +0900
-Message-Id: <8562184b77c641a99cb80ff37fb3d3b405f5f6ec.1573179553.git.thehajime@gmail.com>
-In-Reply-To: <cover.1573179553.git.thehajime@gmail.com>
-References: <cover.1573179553.git.thehajime@gmail.com>
+Return-Path: <linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+References: <20191211192742.95699-1-brendanhiggins@google.com>
+ <20191211192742.95699-8-brendanhiggins@google.com>
+ <CACPK8XctCb9Q2RaFVHEDuWxKDXpCWMWs-+vnKZ=SeTa3xRnT_g@mail.gmail.com>
+ <CAFd5g45MFYMK-eZWPC5fhm2OkynUXKfArUVhbanYVH+qKRUwPg@mail.gmail.com>
+In-Reply-To: <CAFd5g45MFYMK-eZWPC5fhm2OkynUXKfArUVhbanYVH+qKRUwPg@mail.gmail.com>
+From: Joel Stanley <joel@jms.id.au>
+Date: Mon, 16 Dec 2019 06:01:09 +0000
+Message-ID: <CACPK8XdgGLLT=RprY8zVW6kKJ6fjJdm4Oxs0uHBv-W5StMyGPQ@mail.gmail.com>
+Subject: Re: [PATCH v1 7/7] fsi: aspeed: add unspecified HAS_IOMEM dependency
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: linux-arch@vger.kernel.org, Octavian Purdila <tavi.purdila@gmail.com>, Jens Staal <staal1978@gmail.com>, Akira Moroo <retrage01@gmail.com>, linux-kernel-library@freelists.org, Hajime Tazaki <thehajime@gmail.com>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org
+To: Brendan Higgins <brendanhiggins@google.com>
+Cc: Andrew Jeffery <andrew@aj.id.au>, linux-aspeed <linux-aspeed@lists.ozlabs.org>, linux-um <linux-um@lists.infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>
+List-ID: <linux-um.lists.infradead.org>
 
-From: Octavian Purdila <tavi.purdila@gmail.com>
+On Thu, 12 Dec 2019 at 00:30, Brendan Higgins <brendanhiggins@google.com> wrote:
+>
+> On Wed, Dec 11, 2019 at 4:12 PM Joel Stanley <joel@jms.id.au> wrote:
+> >
+> > Nice. I hit this when attempting to force on CONFIG_COMPILE_TEST in
+> > order to build some ARM drivers under UM. Do you have plans to fix
+> > that too?
+>
+> The only broken configs I found for UML are all listed on the cover
+> letter of this patch. I think fixing COMPILE_TEST on UM could be
+> worthwhile. Did you see any brokenness other than what I mentioned on
+> the cover letter?
 
-This patch allows LKL to be compiled for windows hosts with the mingw
-toolchain. Note that patches [1] that fix weak symbols linking are
-required to successfully compile LKL with mingw.
+There's a few more in drivers/char/hw_random that you would need.
+These were HW_RANDOM_MESON , HW_RANDOM_MTK, HW_RANDOM_EXYNOS,
+HW_RANDOM_NPCM, HW_RANDOM_KEYSTONE.
 
-The patch disables the modpost pass over vmlinux since modpost only
-works with ELF objects.
+The only one from your series I needed was PINCTRL_EQUILIBRIUM.
 
-It also adds and workaround to an #include_next <stdard.h> error which
-is apparently caused by using -nosdtinc.
+I applied this:
 
-[1] https://sourceware.org/ml/binutils/2015-10/msg00234.html
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -91,7 +91,6 @@ config INIT_ENV_ARG_LIMIT
 
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
-Signed-off-by: Jens Staal <staal1978@gmail.com>
-Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
----
- arch/um/lkl/Kconfig                 | 2 ++
- arch/um/lkl/include/system/stdarg.h | 2 ++
- include/linux/compiler_attributes.h | 4 ++++
- lib/.gitignore                      | 2 ++
- lib/raid6/.gitignore                | 1 +
- scripts/.gitignore                  | 2 ++
- scripts/basic/.gitignore            | 1 +
- scripts/kconfig/.gitignore          | 1 +
- scripts/link-vmlinux.sh             | 2 ++
- scripts/mod/.gitignore              | 1 +
- 10 files changed, 18 insertions(+)
- create mode 100644 arch/um/lkl/include/system/stdarg.h
+ config COMPILE_TEST
+        bool "Compile also drivers which will not load"
+-       depends on !UML
+        default n
+        help
 
-diff --git a/arch/um/lkl/Kconfig b/arch/um/lkl/Kconfig
-index 07b3699095ae..1629e2679b75 100644
---- a/arch/um/lkl/Kconfig
-+++ b/arch/um/lkl/Kconfig
-@@ -20,6 +20,8 @@ config LKL
-        select DMA_DIRECT_OPS
-        select PHYS_ADDR_T_64BIT if 64BIT
-        select 64BIT if "$(OUTPUT_FORMAT)" = "elf64-x86-64"
-+       select 64BIT if "$(OUTPUT_FORMAT)" = "pe-x86-64"
-+       select HAVE_UNDERSCORE_SYMBOL_PREFIX if "$(OUTPUT_FORMAT)" = "pe-i386"
-        select 64BIT if "$(OUTPUT_FORMAT)" = "elf64-x86-64-freebsd"
-        select NET
-        select MULTIUSER
-diff --git a/arch/um/lkl/include/system/stdarg.h b/arch/um/lkl/include/system/stdarg.h
-new file mode 100644
-index 000000000000..12077a36828c
---- /dev/null
-+++ b/arch/um/lkl/include/system/stdarg.h
-@@ -0,0 +1,2 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* empty file to avoid #include_next<stdarg.h> error */
-diff --git a/include/linux/compiler_attributes.h b/include/linux/compiler_attributes.h
-index 6b318efd8a74..1981b1c323c1 100644
---- a/include/linux/compiler_attributes.h
-+++ b/include/linux/compiler_attributes.h
-@@ -154,7 +154,11 @@
-  *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-format-function-attribute
-  * clang: https://clang.llvm.org/docs/AttributeReference.html#format
-  */
-+#ifdef __MINGW32__
-+#define __printf(a, b)             __attribute__((__format__(gnu_printf, a, b)))
-+#else
- #define __printf(a, b)                  __attribute__((__format__(printf, a, b)))
-+#endif
- #define __scanf(a, b)                   __attribute__((__format__(scanf, a, b)))
- 
- /*
-diff --git a/lib/.gitignore b/lib/.gitignore
-index f2a39c9e5485..eb9f11b81fe1 100644
---- a/lib/.gitignore
-+++ b/lib/.gitignore
-@@ -2,7 +2,9 @@
- # Generated files
- #
- gen_crc32table
-+gen_crc32table.exe
- gen_crc64table
-+gen_crc64table.exe
- crc32table.h
- crc64table.h
- oid_registry_data.c
-diff --git a/lib/raid6/.gitignore b/lib/raid6/.gitignore
-index 3de0d8921286..80e3566535aa 100644
---- a/lib/raid6/.gitignore
-+++ b/lib/raid6/.gitignore
-@@ -1,4 +1,5 @@
- mktables
-+mktables.exe
- altivec*.c
- int*.c
- tables.c
-diff --git a/scripts/.gitignore b/scripts/.gitignore
-index 17f8cef88fa8..ec9138a39b25 100644
---- a/scripts/.gitignore
-+++ b/scripts/.gitignore
-@@ -4,8 +4,10 @@
- bin2c
- conmakehash
- kallsyms
-+kallsyms.exe
- pnmtologo
- unifdef
-+unifdef.exe
- recordmcount
- sortextable
- asn1_compiler
-diff --git a/scripts/basic/.gitignore b/scripts/basic/.gitignore
-index a776371a3502..77ce153243fa 100644
---- a/scripts/basic/.gitignore
-+++ b/scripts/basic/.gitignore
-@@ -1 +1,2 @@
- fixdep
-+fixdep.exe
-diff --git a/scripts/kconfig/.gitignore b/scripts/kconfig/.gitignore
-index b5bf92f66d11..aa27000d896f 100644
---- a/scripts/kconfig/.gitignore
-+++ b/scripts/kconfig/.gitignore
-@@ -8,6 +8,7 @@
- # configuration programs
- #
- conf
-+conf.exe
- mconf
- nconf
- qconf
-diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-index c3c5758ed7d6..553d966a1986 100755
---- a/scripts/link-vmlinux.sh
-+++ b/scripts/link-vmlinux.sh
-@@ -209,6 +209,7 @@ fi;
- # final build of init/
- ${MAKE} -f "${srctree}/scripts/Makefile.build" obj=init
- 
-+if [ -e scripts/mod/modpost ]; then
- #link vmlinux.o
- info LD vmlinux.o
- modpost_link vmlinux.o
-@@ -218,6 +219,7 @@ ${MAKE} -f "${srctree}/scripts/Makefile.modpost" MODPOST_VMLINUX=1
- 
- info MODINFO modules.builtin.modinfo
- ${OBJCOPY} -j .modinfo -O binary vmlinux.o modules.builtin.modinfo
-+fi
- 
- kallsymso=""
- kallsyms_vmlinux=""
-diff --git a/scripts/mod/.gitignore b/scripts/mod/.gitignore
-index 3bd11b603173..cd67845e326d 100644
---- a/scripts/mod/.gitignore
-+++ b/scripts/mod/.gitignore
-@@ -1,4 +1,5 @@
- elfconfig.h
- mk_elfconfig
- modpost
-+modpost.exe
- devicetable-offsets.h
--- 
-2.20.1 (Apple Git-117)
+That lets me build. However, the code I was attempting to enable
+depends on REGMAP, which needs IOMEM too, so I hit that dead end.
 
+Another issue I had was debugging my kunitconfig. This patch helped a bit:
+
+--- a/tools/testing/kunit/kunit_config.py
++++ b/tools/testing/kunit/kunit_config.py
+@@ -40,6 +40,9 @@ class Kconfig(object):
+        def is_subset_of(self, other: 'Kconfig') -> bool:
+                return self.entries().issubset(other.entries())
+
++       def difference(self, other: 'Kconfig') -> list:
++               return self.entries().difference(other.entries())
++
+        def write_to_file(self, path: str) -> None:
+                with open(path, 'w') as f:
+                        for entry in self.entries():
+diff --git a/tools/testing/kunit/kunit_kernel.py
+b/tools/testing/kunit/kunit_kernel.py
+index bf3876835331..0f261bc087e4 100644
+--- a/tools/testing/kunit/kunit_kernel.py
++++ b/tools/testing/kunit/kunit_kernel.py
+@@ -107,6 +107,7 @@ class LinuxSourceTree(object):
+                validated_kconfig.read_from_file(kconfig_path)
+                if not self._kconfig.is_subset_of(validated_kconfig):
+                        logging.error('Provided Kconfig is not
+contained in validated .config!')
++
+logging.error(self._kconfig.difference(validated_kconfig))
+                        return False
+                return True
+
+Which would need some tidying up before applying, but helped a lot in
+working out what was going wrong.
+
+>
+> > Do you want to get this in a fix for 5.5?
+>
+> Preferably, yes.
+>
+> > Acked-by: Joel Stanley <joel@jms.id.au>
+>
+> Thanks!
 
 _______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
