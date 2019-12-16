@@ -1,71 +1,115 @@
-Return-Path: <arnd@arndb.de>
-MIME-Version: 1.0
-References: <3820d68b-1d97-8f41-d55d-237d1695458c@cambridgegreys.com>
- <CAMuHMdWuiGC4ay=f6M2H=-PLiffavnFSu8CPXE26euAi6aoY0w@mail.gmail.com>
- <CAK8P3a1mrFgRyh5Fgv-d8Szd2pq0T6Ac7wL3ogeYcf-Uyrg4ZQ@mail.gmail.com> <a5b9709d-b93b-46e1-ab18-a94ab921ccf7@cambridgegreys.com>
-In-Reply-To: <a5b9709d-b93b-46e1-ab18-a94ab921ccf7@cambridgegreys.com>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Wed, 4 Dec 2019 22:08:43 +0100
-Message-ID: <CAK8P3a2A13pfvRRvpamx1woUz0CZTR3gvt_P1-ERqH+QtRATig@mail.gmail.com>
-Subject: Re: 64 bit time regression in recvmmsg()
-Content-Type: text/plain; charset="UTF-8"
-To: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-um <linux-um@lists.infradead.org>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-yw1-xc4a.google.com ([2607:f8b0:4864:20::c4a])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1igyVv-0001pe-TV
+ for linux-um@lists.infradead.org; Mon, 16 Dec 2019 22:06:53 +0000
+Received: by mail-yw1-xc4a.google.com with SMTP id q130so6545772ywh.11
+ for <linux-um@lists.infradead.org>; Mon, 16 Dec 2019 14:06:50 -0800 (PST)
+Date: Mon, 16 Dec 2019 14:05:49 -0800
+Message-Id: <20191216220555.245089-1-brendanhiggins@google.com>
+Mime-Version: 1.0
+Subject: [RFC v1 0/6] kunit: create a centralized executor to dispatch all
+ KUnit tests
+From: Brendan Higgins <brendanhiggins@google.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, arnd@arndb.de, keescook@chromium.org, skhan@linuxfoundation.org, alan.maguire@oracle.com, yzaikin@google.com, davidgow@google.com, akpm@linux-foundation.org, rppt@linux.ibm.com
+Cc: linux-arch@vger.kernel.org, sboyd@kernel.org, gregkh@linuxfoundation.org, knut.omang@oracle.com, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, mcgrof@kernel.org, linux-kselftest@vger.kernel.org, logang@deltatee.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
 
-On Fri, Nov 29, 2019 at 5:34 PM Anton Ivanov
-<anton.ivanov@cambridgegreys.com> wrote:
->
->
->
-> On 29/11/2019 15:17, Arnd Bergmann wrote:
-> > On Fri, Nov 29, 2019 at 4:05 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> >> On Fri, Nov 29, 2019 at 3:34 PM Anton Ivanov
-> >> <anton.ivanov@cambridgegreys.com> wrote:
-> >>> Unfortunately, it looks like the recent year 2038 have broken
-> >>> compatibility for one particular syscall interface we use - recvmmsg.
-> >>>
-> >>> The host now occasionally returns -22 (EINVAL) and the only way I see
-> >>> for this to happen looking at the source is if when it gets something
-> >>> bogus as a timeout.
-> >>>
-> >>> I think I have eliminated all other possible sources for this error.
-> >>>
-> >>> The picture can be observed when using a 64 bit host 5.2 kernel on a
-> >>> Debian 64 bit buster userspace (glibc compiled vs 4.19 headers).
-> >>>
-> >>> The code as it is written at present retries and by sheer luck and
-> >>> perseverance it manages to work, but this needs to be fixed.
-> >
-> > I only see a single call to recvmmsg() in arch/um, in uml_vector_recvmmsg(),
-> > and this passes a NULL timeout pointer, is this the one that broke or
-> > should I be looking at something else?
-> >
-> > Do I understand you right that the regression is on a pure 64-bit system?
->
-> Yes.
->
-> 64 bit host, Debian Buster with the stock 4.19 replaced by a 5.2.17
-> kernel upgrade, 5.2 and 5.3 64 bit UML also running Debian Buster inside.
->
-> It sporadically produces -EINVAL (-22) from the recvmmsg.
->
-> I went through the allocation and deallocation of the actual mmsg
-> several times to ensure it is not that.
->
-> IMHO it is the timespec conversion somewhere, but I cannot pinpoint the
-> actual cause.
->
+## TL;DR
 
-I've looked at the changes again as well now without finding anything
-suspicious. The only commit of mine that significantly changes recvmmsg
-is e11d4284e2f4 ("y2038: socket: Add compat_sys_recvmmsg_time64").
-I tried reverting it on top of  5.2.17, but that causes a lot of conflicts.
+This patchset adds a centralized executor to dispatch tests rather than
+relying on late_initcall to schedule each test suite separately along
+with a couple of new features that depend on it.
 
-The best suggestion I still have would be to check out the kernel before
-and after this commit, to see if it is the root cause. This one was part
-of the linux-5.0 merge window, so right in the middle of the range
-you have identified.
+## What am I trying to do?
 
-     Arnd
+Conceptually, I am trying to provide a mechanism by which test suites
+can be grouped together so that they can be reasoned about collectively.
+The last two patches in this series add features which depend on this:
+
+RFC 5/6 Prints out a test plan right before KUnit tests are run[1]; this
+        is valuable because it makes it possible for a test harness to
+        detect whether the number of tests run matches the number of
+        tests expected to be run, ensuring that no tests silently
+        failed.
+
+RFC 6/6 Add a new kernel command-line option which allows the user to
+        specify that the kernel poweroff, halt, or reboot after
+        completing all KUnit tests; this is very handy for running KUnit
+        tests on UML or a VM so that the UML/VM process exits cleanly
+        immediately after running all tests without needing a special
+        initramfs.
+
+In addition, by dispatching tests from a single location, we can
+guarantee that all KUnit tests run after late_init is complete, which
+was a concern during the initial KUnit patchset review (this has not
+been a problem in practice, but resolving with certainty is nevertheless
+desirable).
+
+Other use cases for this exist, but the above features should provide an
+idea of the value that this could provide.
+
+## What work remains to be done?
+
+These patches were based on patches in our non-upstream branch[2], so we
+have a pretty good idea that they are useable as presented;
+nevertheless, some of the changes done in this patchset could
+*definitely* use some review by subsystem experts (linker scripts, init,
+etc), and will likely change a lot after getting feedback.
+
+The biggest thing that I know will require additional attention is
+integrating this patchset with the KUnit module support patchset[3]. I
+have not even attempted to build these patches on top of the module
+support patches as I would like to get people's initial thoughts first
+(especially Alan's :-) ). I think that making these patches work with
+module support should be fairly straight forward, nevertheless.
+
+Brendan Higgins (5):
+  vmlinux.lds.h: add linker section for KUnit test suites
+  arch: um: add linker section for KUnit test suites
+  kunit: test: create a single centralized executor for all tests
+  init: main: add KUnit to kernel init
+  kunit: test: add test plan to KUnit TAP format
+
+David Gow (1):
+  kunit: Add 'kunit_shutdown' option
+
+ arch/um/include/asm/common.lds.S              |  4 +
+ include/asm-generic/vmlinux.lds.h             |  8 ++
+ include/kunit/test.h                          | 16 ++--
+ init/main.c                                   |  4 +
+ lib/kunit/Makefile                            |  3 +-
+ lib/kunit/executor.c                          | 74 ++++++++++++++++++
+ lib/kunit/test.c                              | 11 ---
+ tools/testing/kunit/kunit_kernel.py           |  2 +-
+ tools/testing/kunit/kunit_parser.py           | 76 +++++++++++++++----
+ .../test_is_test_passed-all_passed.log        |  1 +
+ .../test_data/test_is_test_passed-crash.log   |  1 +
+ .../test_data/test_is_test_passed-failure.log |  1 +
+ 12 files changed, 170 insertions(+), 31 deletions(-)
+ create mode 100644 lib/kunit/executor.c
+
+[1]: https://github.com/isaacs/testanything.github.io/blob/tap14/tap-version-14-specification.md#the-plan
+[2]: https://kunit-review.googlesource.com/c/linux/+/1037
+[3]: https://patchwork.kernel.org/project/linux-kselftest/list/?series=211727
+
+-- 
+2.24.1.735.g03f4e72817-goog
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
