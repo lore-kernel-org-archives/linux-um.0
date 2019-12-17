@@ -1,13 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ibVgG-0007Pb-AI
- for linux-um@lists.infradead.org; Sun, 01 Dec 2019 20:18:57 +0000
-Date: Sun, 1 Dec 2019 21:18:54 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <1468911323.103246.1575231534725.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] UML changes for v5.5-rc1
+ id 1ih7pw-0004J5-Ep
+ for linux-um@lists.infradead.org; Tue, 17 Dec 2019 08:04:09 +0000
 MIME-Version: 1.0
+In-Reply-To: <20191216220555.245089-4-brendanhiggins@google.com>
+References: <20191216220555.245089-1-brendanhiggins@google.com>
+ <20191216220555.245089-4-brendanhiggins@google.com>
+From: Stephen Boyd <sboyd@kernel.org>
+Subject: Re: [RFC v1 3/6] kunit: test: create a single centralized executor
+ for all tests
+Date: Tue, 17 Dec 2019 00:04:07 -0800
+Message-Id: <20191217080408.0E805207FF@mail.kernel.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,53 +24,94 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: torvalds <torvalds@linux-foundation.org>
-Cc: linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
+To: Brendan Higgins <brendanhiggins@google.com>, akpm@linux-foundation.org, alan.maguire@oracle.com, anton.ivanov@cambridgegreys.com, arnd@arndb.de, davidgow@google.com, jdike@addtoit.com, keescook@chromium.org, richard@nod.at, rppt@linux.ibm.com, skhan@linuxfoundation.org, yzaikin@google.com
+Cc: linux-arch@vger.kernel.org, knut.omang@oracle.com, gregkh@linuxfoundation.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, mcgrof@kernel.org, linux-kselftest@vger.kernel.org, logang@deltatee.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
 
-Linus,
+Quoting Brendan Higgins (2019-12-16 14:05:52)
+> diff --git a/include/kunit/test.h b/include/kunit/test.h
+> index dba48304b3bd3..c070798ebb765 100644
+> --- a/include/kunit/test.h
+> +++ b/include/kunit/test.h
+> @@ -217,11 +217,8 @@ int kunit_run_tests(struct kunit_suite *suite);
+>   * everything else is definitely initialized.
+>   */
+>  #define kunit_test_suite(suite)                                                       \
+> -       static int kunit_suite_init##suite(void)                               \
 
-The following changes since commit e472c64aa4fa6150c6076fd36d101d667d71c30a:
+Oh this should have been __init before.
 
-  Merge tag 'dmaengine-fix-5.4-rc6' of git://git.infradead.org/users/vkoul/slave-dma (2019-10-31 07:34:09 +0000)
+> -       {                                                                      \
+> -               return kunit_run_tests(&suite);                                \
+> -       }                                                                      \
+> -       late_initcall(kunit_suite_init##suite)
+> +       static struct kunit_suite *__kunit_suite_##suite                       \
+> +       __used __aligned(8) __section(.kunit_test_suites) = &suite
+>  
+>  /*
+>   * Like kunit_alloc_resource() below, but returns the struct kunit_resource
+> diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
+> new file mode 100644
+> index 0000000000000..978086cfd257d
+> --- /dev/null
+> +++ b/lib/kunit/executor.c
+> @@ -0,0 +1,43 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Base unit test (KUnit) API.
+> + *
+> + * Copyright (C) 2019, Google LLC.
+> + * Author: Brendan Higgins <brendanhiggins@google.com>
+> + */
+> +
+> +#include <linux/init.h>
+> +#include <linux/printk.h>
+> +#include <kunit/test.h>
+> +
+> +/*
+> + * These symbols point to the .kunit_test_suites section and are defined in
+> + * include/asm-generic/vmlinux.lds.h, and consequently must be extern.
+> + */
+> +extern struct kunit_suite *__kunit_suites_start[];
+> +extern struct kunit_suite *__kunit_suites_end[];
+> +
+> +static bool kunit_run_all_tests(void)
 
-are available in the Git repository at:
+Should be __init?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.5-rc1
+> +{
+> +       struct kunit_suite **suite;
 
-for you to fetch changes up to 9807019a62dc670c73ce8e59e09b41ae458c34b3:
+Can this be const? And the linker references above too?
 
-  um: Loadable BPF "Firmware" for vector drivers (2019-11-25 22:43:31 +0100)
+> +       bool has_test_failed = false;
+> +
+> +       for (suite = __kunit_suites_start;
+> +            suite < __kunit_suites_end;
+> +            ++suite) {
+> +               if (kunit_run_tests(*suite))
+> +                       has_test_failed = true;
+> +       }
+> +
+> +       return !has_test_failed;
+> +}
+> +
+> +static int kunit_executor_init(void)
 
-----------------------------------------------------------------
-This pull request contains the following changes for UML:
+Should be __init?
 
-- Fixes for our new virtio code
-- Fix for the irqflags tracer
-- Kconfig coding style fixes
-- Allow BPF firmware loading in our vector driver
+> +{
+> +       if (kunit_run_all_tests())
+> +               return 0;
+> +       else
+> +               return -EFAULT;
 
-----------------------------------------------------------------
-Anton Ivanov (1):
-      um: Loadable BPF "Firmware" for vector drivers
+Why two functions instead of just one that is the target of the
+late_initcall? Nitpick: deindent that last return and take it out of the
+else.
 
-Johannes Berg (4):
-      um: Don't trace irqflags during shutdown
-      um: virtio: Remove device on disconnect
-      um: virtio: Keep reading on -EAGAIN
-      um: virtio_uml: Disallow modular build
-
-Krzysztof Kozlowski (1):
-      um: Fix Kconfig indentation
-
- arch/um/Kconfig               |   2 +-
- arch/um/drivers/Kconfig       |   2 +-
- arch/um/drivers/vector_kern.c | 113 ++++++++++++++++++++++++++++++++++++++----
- arch/um/drivers/vector_kern.h |   8 ++-
- arch/um/drivers/vector_user.c |  94 ++++++++++++++++++++++++++++-------
- arch/um/drivers/vector_user.h |   8 ++-
- arch/um/drivers/virtio_uml.c  |  76 ++++++++++++++++++----------
- arch/um/os-Linux/main.c       |   2 +-
- 8 files changed, 247 insertions(+), 58 deletions(-)
+> +}
+> +
+> +late_initcall(kunit_executor_init);
 
 _______________________________________________
 linux-um mailing list
