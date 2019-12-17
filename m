@@ -1,47 +1,64 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Wed, 11 Dec 2019 11:27:38 -0800
-In-Reply-To: <20191211192742.95699-1-brendanhiggins@google.com>
-Message-Id: <20191211192742.95699-4-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20191211192742.95699-1-brendanhiggins@google.com>
-Subject: [PATCH v1 3/7] net: axienet: add unspecified HAS_IOMEM dependency
-From: Brendan Higgins <brendanhiggins@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Sender: linux-kernel-owner@vger.kernel.org
-To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, "David S. Miller" <davem@davemloft.net>, Michal Simek <michal.simek@xilinx.com>, Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, davidgow@google.com, Brendan Higgins <brendanhiggins@google.com>, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1ih9nB-0002Xb-1q
+ for linux-um@lists.infradead.org; Tue, 17 Dec 2019 10:09:26 +0000
+From: anton.ivanov@cambridgegreys.com
+Subject: [PATCH v4 4/9] um: Enable GRO by default when using raw in pcap
+ compat mode
+Date: Tue, 17 Dec 2019 10:09:08 +0000
+Message-Id: <20191217100913.3422-4-anton.ivanov@cambridgegreys.com>
+In-Reply-To: <20191217100913.3422-1-anton.ivanov@cambridgegreys.com>
+References: <20191217100913.3422-1-anton.ivanov@cambridgegreys.com>
+MIME-Version: 1.0
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
+Cc: richard@nod.at, brendanhiggins@google.com, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Currently CONFIG_XILINX_AXI_EMAC=y implicitly depends on
-CONFIG_HAS_IOMEM=y; consequently, on architectures without IOMEM we get
-the following build error:
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-ld: drivers/net/ethernet/xilinx/xilinx_axienet_main.o: in function `axienet_probe':
-drivers/net/ethernet/xilinx/xilinx_axienet_main.c:1680: undefined reference to `devm_ioremap_resource'
-ld: drivers/net/ethernet/xilinx/xilinx_axienet_main.c:1779: undefined reference to `devm_ioremap_resource'
-ld: drivers/net/ethernet/xilinx/xilinx_axienet_main.c:1789: undefined reference to `devm_ioremap_resource'
+GRO is enabled nearly everywhere in Linux nowdays, not having
+it on by default results in packet drops across the board.
 
-Fix the build error by adding the unspecified dependency.
-
-Reported-by: Brendan Higgins <brendanhiggins@google.com>
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 ---
- drivers/net/ethernet/xilinx/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ arch/um/drivers/vector_kern.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/xilinx/Kconfig b/drivers/net/ethernet/xilinx/Kconfig
-index 6304ebd8b5c69..b1a285e693756 100644
---- a/drivers/net/ethernet/xilinx/Kconfig
-+++ b/drivers/net/ethernet/xilinx/Kconfig
-@@ -25,6 +25,7 @@ config XILINX_EMACLITE
+diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
+index 234081ad4f02..d52c24874f2a 100644
+--- a/arch/um/drivers/vector_kern.c
++++ b/arch/um/drivers/vector_kern.c
+@@ -1717,9 +1717,9 @@ int vector_compat_eth_configure(char *str, int index)
+ 			       &options[0], &options[1], &mac, NULL);
  
- config XILINX_AXI_EMAC
- 	tristate "Xilinx 10/100/1000 AXI Ethernet support"
-+	depends on HAS_IOMEM
- 	select PHYLINK
- 	---help---
- 	  This driver supports the 10/100/1000 Ethernet from Xilinx for the
+ 		if ((mac != NULL) && strlen(mac) > 0)
+-			snprintf(tempargs, MAX_COMPAT_ARG, "transport=raw,ifname=%s,mac=%s", ifname, mac);
++			snprintf(tempargs, MAX_COMPAT_ARG, "transport=raw,gro=1,ifname=%s,mac=%s", ifname, mac);
+ 		else
+-			snprintf(tempargs, MAX_COMPAT_ARG, "transport=raw,ifname=%s", ifname);
++			snprintf(tempargs, MAX_COMPAT_ARG, "transport=raw,gro=1,ifname=%s", ifname);
+ 
+ 		strcpy(newargs, tempargs);
+ 
 -- 
-2.24.0.525.g8f36a354ae-goog
+2.20.1
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
