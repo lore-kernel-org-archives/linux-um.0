@@ -2,14 +2,14 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab7.miniserver.com ([37.128.132.42]
  helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1igtmP-0001an-Mv
- for linux-um@lists.infradead.org; Mon, 16 Dec 2019 17:03:37 +0000
+ id 1ih9nA-0002Xa-PL
+ for linux-um@lists.infradead.org; Tue, 17 Dec 2019 10:09:27 +0000
 From: anton.ivanov@cambridgegreys.com
-Subject: [PATCH v3 3/6] um: Migrate socket transport to Vector backend
-Date: Mon, 16 Dec 2019 17:03:18 +0000
-Message-Id: <20191216170321.14056-3-anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20191216170321.14056-1-anton.ivanov@cambridgegreys.com>
-References: <20191216170321.14056-1-anton.ivanov@cambridgegreys.com>
+Subject: [PATCH v4 3/9] um: Migrate socket transport to Vector backend
+Date: Tue, 17 Dec 2019 10:09:07 +0000
+Message-Id: <20191217100913.3422-3-anton.ivanov@cambridgegreys.com>
+In-Reply-To: <20191217100913.3422-1-anton.ivanov@cambridgegreys.com>
+References: <20191217100913.3422-1-anton.ivanov@cambridgegreys.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -33,11 +33,12 @@ Moves legacy socket transport to the vector IO backend
 Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 ---
  arch/um/drivers/Makefile      |   2 -
+ arch/um/drivers/net_kern.c    |   4 +-
  arch/um/drivers/umcast.h      |  27 -----
  arch/um/drivers/umcast_kern.c | 188 ----------------------------------
  arch/um/drivers/umcast_user.c | 184 ---------------------------------
  arch/um/drivers/vector_kern.c |  31 ++++++
- 5 files changed, 31 insertions(+), 401 deletions(-)
+ 6 files changed, 33 insertions(+), 403 deletions(-)
  delete mode 100644 arch/um/drivers/umcast.h
  delete mode 100644 arch/um/drivers/umcast_kern.c
  delete mode 100644 arch/um/drivers/umcast_user.c
@@ -62,6 +63,21 @@ index ea449dc72236..a283b395b4da 100644
  obj-$(CONFIG_UML_NET_PCAP) += pcap.o
  obj-$(CONFIG_UML_NET) += net.o 
  obj-$(CONFIG_MCONSOLE) += mconsole.o
+diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
+index 821107c75582..597c38d517fc 100644
+--- a/arch/um/drivers/net_kern.c
++++ b/arch/um/drivers/net_kern.c
+@@ -42,8 +42,8 @@ static DEFINE_SPINLOCK(drop_lock);
+ static struct sk_buff *drop_skb;
+ static int drop_max;
+ 
+-static const char *migrated_to_vector[] = {"pcap"};
+-#define MAX_MIGRATED 1
++static const char *migrated_to_vector[] = {"pcap", "ucast", "mcast"};
++#define MAX_MIGRATED 3
+ 
+ static int update_drop_skb(int max)
+ {
 diff --git a/arch/um/drivers/umcast.h b/arch/um/drivers/umcast.h
 deleted file mode 100644
 index fe39bee1e3bd..000000000000
