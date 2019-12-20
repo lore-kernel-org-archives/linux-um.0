@@ -1,15 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-qv1-xf4a.google.com ([2607:f8b0:4864:20::f4a])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1id2wR-0007Kq-AP
- for linux-um@lists.infradead.org; Fri, 06 Dec 2019 02:02:00 +0000
-Received: by mail-qv1-xf4a.google.com with SMTP id g15so3305824qvq.20
- for <linux-um@lists.infradead.org>; Thu, 05 Dec 2019 18:01:58 -0800 (PST)
-Date: Thu,  5 Dec 2019 18:01:51 -0800
-Message-Id: <20191206020153.228283-1-brendanhiggins@google.com>
-Mime-Version: 1.0
-Subject: [RFC v1 0/2] um: drop broken features to fix allyesconfig
-From: Brendan Higgins <brendanhiggins@google.com>
+Date: Fri, 20 Dec 2019 15:07:28 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+Subject: Re: [PATCH v1 5/7] crypto: amlogic: add unspecified HAS_IOMEM
+ dependency
+Message-ID: <20191220070728.h27vroaumpbzupdr@gondor.apana.org.au>
+References: <20191211192742.95699-1-brendanhiggins@google.com>
+ <20191211192742.95699-6-brendanhiggins@google.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20191211192742.95699-6-brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,128 +21,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
-Cc: davidgow@google.com, Brendan Higgins <brendanhiggins@google.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, johannes.berg@intel.com
+To: Brendan Higgins <brendanhiggins@google.com>
+Cc: richard@nod.at, jdike@addtoit.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>, davidgow@google.com, linux-amlogic@lists.infradead.org, "David S. Miller" <davem@davemloft.net>, anton.ivanov@cambridgegreys.com
 
-# TL;DR
+On Wed, Dec 11, 2019 at 11:27:40AM -0800, Brendan Higgins wrote:
+> Currently CONFIG_CRYPTO_DEV_AMLOGIC_GXL=y implicitly depends on
+> CONFIG_HAS_IOMEM=y; consequently, on architectures without IOMEM we get
+> the following build error:
+> 
+> ld: drivers/crypto/amlogic/amlogic-gxl-core.o: in function `meson_crypto_probe':
+> drivers/crypto/amlogic/amlogic-gxl-core.c:240: undefined reference to `devm_platform_ioremap_resource'
+> 
+> Fix the build error by adding the unspecified dependency.
+> 
+> Reported-by: Brendan Higgins <brendanhiggins@google.com>
+> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+> ---
+>  drivers/crypto/amlogic/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 
-This patchset drops two broken features in an attempt to get
-allyesconfig closer to working for ARCH=um.
-
-# What am I trying to do?
-
-This patchset is part of my attempt to get `make ARCH=um allyesconfig`
-to produce a config that will build *and* boot to init, so that I can
-use it as a mechanism to run tests[1].
-
-# How far away are we from an allyesconfig UML kernel?
-
-I have identified 33 Kconfigs that are selected by allyesconfig, but
-will either not build on UML, or prevent it from booting. They are:
-
-CONFIG_STATIC_LINK=y
-CONFIG_UML_NET_PCAP=y
-CONFIG_NET_PTP_CLASSIFY=y
-CONFIG_IP_VS=y
-CONFIG_BRIDGE_EBT_BROUTE=y
-CONFIG_BRIDGE_EBT_T_FILTER=y
-CONFIG_BRIDGE_EBT_T_NAT=y
-CONFIG_MTD_NAND_CADENCE=y
-CONFIG_MTD_NAND_NANDSIM=y
-CONFIG_BLK_DEV_NULL_BLK=y
-CONFIG_BLK_DEV_RAM=y
-CONFIG_SCSI_DEBUG=y
-CONFIG_NET_VENDOR_XILINX=y
-CONFIG_NULL_TTY=y
-CONFIG_PTP_1588_CLOCK=y
-CONFIG_PINCTRL_EQUILIBRIUM=y
-CONFIG_DMABUF_SELFTESTS=y
-CONFIG_COMEDI=y
-CONFIG_XIL_AXIS_FIFO=y
-CONFIG_EXFAT_FS=y
-CONFIG_STM_DUMMY=y
-CONFIG_FSI_MASTER_ASPEED=y
-CONFIG_JFS_FS=y
-CONFIG_UBIFS_FS=y
-CONFIG_CRAMFS=y
-CONFIG_CRYPTO_DEV_SAFEXCEL=y
-CONFIG_CRYPTO_DEV_AMLOGIC_GXL=y
-CONFIG_KCOV=y
-CONFIG_LKDTM=y
-CONFIG_REED_SOLOMON_TEST=y
-CONFIG_TEST_RHASHTABLE=y
-CONFIG_TEST_MEMINIT=y
-CONFIG_NETWORK_PHY_TIMESTAMPING=y
-
-This patchset attempts to deal with CONFIG_STATIC_LINK=y and
-CONFIG_UML_NET_PCAP=y by just removing them since they are broken and
-appear to have been broken for some time. (I am aware of the taboo of
-dropping configs, but given the amount of time they have been broken, I
-figured that I might be able to get away with it in this case, which is
-easier than trying to actually fix them.)
-
-I also have a patch out to fix CONFIG_EXFAT_FS=y[2].
-
-After this I plan on going after
-
-CONFIG_PINCTRL_EQUILIBRIUM=y
-CONFIG_MTD_NAND_CADENCE=y
-CONFIG_FSI_MASTER_ASPEED=y
-CONFIG_CRYPTO_DEV_SAFEXCEL=y
-CONFIG_XIL_AXIS_FIFO=y
-CONFIG_CRYPTO_DEV_AMLOGIC_GXL=y
-CONFIG_XILINX_AXI_EMAC=y
-
-the problem with these is that they depend on
-devm_platform_ioremap_resource without explicitly depending on
-CONFIG_HAS_IOMEM=y.
-
-Also note that I don't think that CONFIG_NULL_TTY=y is actually broken
-on UML; however, console seems to get assigned to the null TTY by
-default when it is enabled, so I added it to the list for the sake of
-completeness.
-
-The other broken configs require more investigation (I would welcome
-help, if anyone is interested ;-) ).
-
-# Why won't allyesconfig break again after this series of fixes?
-
-As I mentioned above, I am using UML for testing the kernel, and I am
-currently working on getting my tests to run on KernelCI. As part of our
-testing procedure for KernelCI, we are planning on building a UML kernel
-using allyesconfig and running our tests on it. Thus, we will find out
-very quickly once someone breaks allyesconfig again once we get this all
-working.
-
-Brendan Higgins (2):
-  um: drivers: remove support for UML_NET_PCAP
-  uml: remove support for CONFIG_STATIC_LINK
-
- arch/um/Kconfig              |  23 +----
- arch/um/Makefile             |   3 +-
- arch/um/drivers/Kconfig      |  16 ----
- arch/um/drivers/Makefile     |  17 +---
- arch/um/drivers/pcap_kern.c  | 113 ----------------------
- arch/um/drivers/pcap_user.c  | 137 ---------------------------
- arch/um/drivers/pcap_user.h  |  21 -----
- arch/um/kernel/dyn.lds.S     | 170 ----------------------------------
- arch/um/kernel/uml.lds.S     | 115 -----------------------
- arch/um/kernel/vmlinux.lds.S | 175 ++++++++++++++++++++++++++++++++++-
- 10 files changed, 174 insertions(+), 616 deletions(-)
- delete mode 100644 arch/um/drivers/pcap_kern.c
- delete mode 100644 arch/um/drivers/pcap_user.c
- delete mode 100644 arch/um/drivers/pcap_user.h
- delete mode 100644 arch/um/kernel/dyn.lds.S
- delete mode 100644 arch/um/kernel/uml.lds.S
-
-Looking forward to hearing people's thoughts!
-
-[1] https://bugzilla.kernel.org/show_bug.cgi?id=205223
-[2] https://patchwork.kernel.org/patch/11273771/
-
+Patch applied.  Thanks.
 -- 
-2.24.0.393.g34dc348eaf-goog
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
 _______________________________________________
 linux-um mailing list
