@@ -1,12 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ixFOa-0002bl-8u
- for linux-um@lists.infradead.org; Thu, 30 Jan 2020 19:22:34 +0000
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH] um: configs: Cleanup CONFIG_IOSCHED_CFQ
-Date: Thu, 30 Jan 2020 20:22:26 +0100
-Message-Id: <20200130192226.2776-1-krzk@kernel.org>
+ id 1inXBK-0007XM-Go
+ for linux-um@lists.infradead.org; Sat, 04 Jan 2020 00:20:44 +0000
+Subject: Re: Linux UM 5.4 FTBFS: uml_reserved undefined
+References: <188c72613ff8b15454670dd9de68fefcaa130c74.camel@researchut.com>
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Message-ID: <cbf4ce06-d3a1-6931-44e4-7b0c737221ed@kot-begemot.co.uk>
+Date: Sat, 4 Jan 2020 00:04:00 +0000
+MIME-Version: 1.0
+In-Reply-To: <188c72613ff8b15454670dd9de68fefcaa130c74.camel@researchut.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -15,55 +20,65 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzk@kernel.org>
+To: rrs@researchut.com, linux-um@lists.infradead.org
 
-CONFIG_IOSCHED_CFQ is since commit f382fb0bcef4 ("block: remove legacy
-IO schedulers").
 
-The IOSCHED_BFQ seems to replace IOSCHED_CFQ so select it in configs
-previously choosing the latter.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- arch/um/configs/i386_defconfig   | 2 +-
- arch/um/configs/x86_64_defconfig | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+On 02/01/2020 16:04, Ritesh Raj Sarraf wrote:
+> Hi,
+> 
+> Happy New Year 2020.
+> 
+> When trying to prepare the 5.4 version of User Mode Linux for Debian, I
+> have run into the following build failure on both the architectures.
+> 
+> For now, I have disabled VIRTIO_UML to get the new UML into Debian.
+> 
+> 
+>    KSYM    .tmp_kallsyms2.o
+>    LD      vmlinux
+>    SYSMAP  System.map
+>    LINK linux
+>    Building modules, stage 2.
+>    MODPOST 939 modules
+> ERROR: "uml_reserved" [arch/um/drivers/virtio_uml.ko] undefined!
+> make[2]: *** [scripts/Makefile.modpost:94: __modpost] Error 1
+> make[1]: *** [Makefile:1298: modules] Error 2
+> make[1]: Leaving directory '/build/user-mode-linux-5.4-1um/linux-source-5.4'
+> make: *** [debian/rules:75: build-stamp] Error 2
+> dpkg-buildpackage: error: debian/rules binary subprocess returned exit status 2
+> I: copying local configuration
+> E: Failed autobuilding of package
+> I: unmounting dev/pts filesystem
+> I: unmounting dev/shm filesystem
+> I: unmounting proc filesystem
+> I: unmounting sys filesystem
+> I: cleaning the build env
 
-diff --git a/arch/um/configs/i386_defconfig b/arch/um/configs/i386_defconfig
-index 73e98bb57bf5..fb51bd206dbe 100644
---- a/arch/um/configs/i386_defconfig
-+++ b/arch/um/configs/i386_defconfig
-@@ -26,7 +26,7 @@ CONFIG_SLAB=y
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
- # CONFIG_BLK_DEV_BSG is not set
--CONFIG_IOSCHED_CFQ=m
-+CONFIG_IOSCHED_BFQ=m
- CONFIG_SSL=y
- CONFIG_NULL_CHAN=y
- CONFIG_PORT_CHAN=y
-diff --git a/arch/um/configs/x86_64_defconfig b/arch/um/configs/x86_64_defconfig
-index 3281d7600225..477b87317424 100644
---- a/arch/um/configs/x86_64_defconfig
-+++ b/arch/um/configs/x86_64_defconfig
-@@ -24,7 +24,7 @@ CONFIG_SLAB=y
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
- # CONFIG_BLK_DEV_BSG is not set
--CONFIG_IOSCHED_CFQ=m
-+CONFIG_IOSCHED_BFQ=m
- CONFIG_SSL=y
- CONFIG_NULL_CHAN=y
- CONFIG_PORT_CHAN=y
+I think we disabled virtio as module because of other reasons as well 
+later on. The patch is in the mailing list archive.
+
+Brgds,
+
+A.
+
+> 
+> 
+> 
+> _______________________________________________
+> linux-um mailing list
+> linux-um@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-um
+> 
+
 -- 
-2.17.1
+Anton R Ivanov
 
+http://www.kot-begemot.co.uk
 
 _______________________________________________
 linux-um mailing list
