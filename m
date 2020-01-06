@@ -1,13 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from target.luon.net ([2a00:8240:5:10::21])
+Received: from mail-pg1-x541.google.com ([2607:f8b0:4864:20::541])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ipUaY-0008Hw-N8
- for linux-um@lists.infradead.org; Thu, 09 Jan 2020 09:58:52 +0000
-Message-ID: <5caba454fee6e04443a8b51c63c50a39b9b932d8.camel@debian.org>
+ id 1ioWDI-0006Qm-9Z
+ for linux-um@lists.infradead.org; Mon, 06 Jan 2020 17:30:49 +0000
+Received: by mail-pg1-x541.google.com with SMTP id l24so27182571pgk.2
+ for <linux-um@lists.infradead.org>; Mon, 06 Jan 2020 09:30:47 -0800 (PST)
+Message-ID: <77154e8f71433fc0411b65b996a80641380fb717.camel@debian.org>
 Subject: Re: Bug#928924: user-mode-linux: xterm functionality broken due to
  wrong path to port-helper
-From: Sjoerd Simons <sjoerd@debian.org>
-Date: Thu, 09 Jan 2020 10:58:39 +0100
+From: Ritesh Raj Sarraf <rrs@debian.org>
+Date: Mon, 06 Jan 2020 23:00:38 +0530
 In-Reply-To: <4d26aa36-d2ab-b7f1-6cd6-abf1b158fe0a@kot-begemot.co.uk>
 References: <451d491044af46fe1d87d10196e24e8e7b076f26.camel@debian.org>
  <157830351172.48768.9073767232890169518.reportbug@beast>
@@ -22,134 +24,94 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: rrs@debian.org
+Content-Type: multipart/mixed; boundary="===============1357763793479660287=="
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, rrs@debian.org, 928924@bugs.debian.org
+To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, 928924@bugs.debian.org
 Cc: linux-um@lists.infradead.org
 
+
+--===============1357763793479660287==
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="=-v7d0Msxfwow0H1jV38pK"
+
+
+--=-v7d0Msxfwow0H1jV38pK
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
 On Mon, 2020-01-06 at 16:58 +0000, Anton Ivanov wrote:
-> 
 > On 06/01/2020 16:21, Ritesh Raj Sarraf wrote:
 > > Control: tag -1 +help
-> > 
+> >=20
 > > On Mon, 2020-01-06 at 10:38 +0100, Sjoerd Simons wrote:
 > > > On my sid system:
 > > > ```
 > > > $ strings /usr/bin/linux.uml | grep port-helper
 > > > /usr/lib//uml/port-helper
 > > > ```
-> > > 
+> > >=20
 > > > So the path is still incorrect even with newer upstream kernels.
-> > 
+> >=20
 > > I spent some time today looking at the new build but I haven't been
 > > able to ascertain why this isn't setting the correct path.
-> 
+>=20
 > It is used in a "user" side file - xterm.c
-> 
+>=20
 > None of these sees "CONFIG_" so it considers it undef-ed which
-> defaults 
+> defaults=20
 > to 32 bit.
-
-Is there any reason why the port helper is in the weird `/usr/lib64`
-that seems more like a redhat-ism; On Debian if it's proper multi arch
-under `/usr/lib/x86_64-linux-gnu/`..
-
-However uml-utilities can't be installed for multiple architectures on
-one system anyway (as it ships binaries). So there is little point in
-try to being multi-arch-like (or just awkward :p)...
-
-So to me the most practical and straight-forward solution would
-probably be to revert the broken kernel patch and change the uml-
-utilities package instead to always install in a single spot.
-
+>=20
 > You need to use some other way to figure out what is the build or to
-> set 
+> set=20
 > OS_LIB_PATH for this case.
-> 
-> > ```
-> > $ strings `which  linux.uml` | grep port-helper
-> > /usr/lib/uml/port-helper
-> > ```
-> > 
-> > First, for context to the readers here, the port-helper binary is
-> > shipped with uml-utilities package. This package, depending on the
-> > architecture, installs the binary to a architecture specific
-> > location.
-> > 
-> > https://sources.debian.org/src/uml-utilities/20070815.2-1/Makefile/#L10
-> > 
-> > Which on an amd64 machine is: /usr/lib64/uml/port-helper
-> > 
-> > ```
-> > $ dpkg  -S /usr/lib64/uml/port-helper
-> > uml-utilities: /usr/lib64/uml/port-helper
-> > ```
-> > 
-> > The UML setup on my box always worked because long back, when I
-> > first
-> > encountered this problem, I had created a symlink of the path to
-> > /usr/lib/ too. And had completely forgotten about it. My apologies.
-> > 
-> > 
-> > But that said, the current problem is with the UML binary built by
-> > the
-> > kernel sources.
-> > Problem is that, as mentioned above and other reports too on this
-> > bug
-> > report thread, the path resolved at build time is always
-> > "/usr/lib/uml/".
-> > 
-> > The build configuration and the code are all correct.
-> > 
-> > ```
-> > $ grep 64BIT .config
-> > CONFIG_64BIT=y
-> > CONFIG_64BIT_TIME=y
-> > CONFIG_PHYS_ADDR_T_64BIT=y
-> > CONFIG_ARCH_DMA_ADDR_T_64BIT=y
-> > ```
-> > 
-> > 
-> > Snipped from: arch/um/include/shared/os.h
-> > 
-> > ```
-> > #ifdef CONFIG_64BIT
-> > #define OS_LIB_PATH     "/usr/lib64/"
-> > #else
-> > #define OS_LIB_PATH     "/usr/lib/"
-> > #endif
-> > ```
-> > 
-> > I also checked the generated include headers and they are correct
-> > for
-> > the amd64 .config file.
-> > 
-> > ```
-> > linux-source-5.4/include/generated$ grep 64BIT autoconf.h
-> > #define CONFIG_64BIT_TIME 1
-> > #define CONFIG_PHYS_ADDR_T_64BIT 1
-> > #define CONFIG_64BIT 1
-> > #define CONFIG_ARCH_DMA_ADDR_T_64BIT 1
-> > ```
-> > 
-> > I'll keep looking as time permits but if anyone else has ideas on
-> > what
-> > I may be doing wrong, please do mention.
-> > 
-> > Thanks,
-> > Ritesh
-> > 
-> > 
-> > _______________________________________________
-> > linux-um mailing list
-> > linux-um@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-um
-> > 
+
+Thank you for the quick reply Anton.
+
+
+--=20
+Ritesh Raj Sarraf | http://people.debian.org/~rrs
+Debian - The Universal Operating System
+
+--=-v7d0Msxfwow0H1jV38pK
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEQCVDstmIVAB/Yn02pjpYo/LhdWkFAl4Tbr4ACgkQpjpYo/Lh
+dWn2eQ/+MslVAUODrH9HmbXbhg+KlmrAtTQd46H7ettMFR1JEyNeMvG6Qi/gm0yZ
+vWh5o9XbDvqSr7xAvYbb4B6P4S0r64MVdTGpvGF/UngVTd/4r4nNqRZZTe9C+/jQ
+R+QjHgw7RS6oLjHkW3iOcejdGD+ZJUksEtds2FDF5pnS+rXj9Ore3V8LkCwcIGCE
++hOqrzZbJw5pC101vqrIHk8FZm20vCW+dTrFn4RsV00ESSfqawd2SeOuilUPtwes
+om6OiWSSwrUyPMo2Uays2HoBNbpg22L2+LJCZZidWo8n2uHrd486B2Zeo5d0j12g
+VpMmB6DGZD0cB7GqqHHRy9n+SaJ2N9IC4zg0MXd+Ch+iy0TzxZpbIt362sZbnAK3
+5aAZi2u/qVtSRkWyTGXwFlAHVD7OUJvaKiFx6+L9qnzWK7NfowPdrfT8Jw9Sg0u+
+h/dEazCRCnJa0wllNESTc1atdzfUGmdqgD07m0nQH2UOsxn51/04HZpAI7AXofVW
+q/T84GE+fAJWLC6zmoQ8fqfAlRadBNFsea6gvEior0o9bEt9SvqyJGCdr4nP2+g5
+wsUDJkW6emKFYE9Fwe1wWfe2EmU9T6ImofM9xCIh640maUif+m+jrQjTYGUUgMtU
+Xz8GeSq/diF4IrS9zIskN9Z99MW+f0q/4Dm8zs7HUYgHAQX+JZA=
+=Soqs
+-----END PGP SIGNATURE-----
+
+--=-v7d0Msxfwow0H1jV38pK--
+
+
+
+--===============1357763793479660287==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 linux-um mailing list
 linux-um@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-um
+
+--===============1357763793479660287==--
+
+
 
