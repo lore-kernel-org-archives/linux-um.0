@@ -1,20 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
+Received: from youngberry.canonical.com ([91.189.89.112])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1isFFk-00077y-Gt
- for linux-um@lists.infradead.org; Fri, 17 Jan 2020 00:12:46 +0000
-Received: by mail-wr1-x441.google.com with SMTP id y11so20989840wrt.6
- for <linux-um@lists.infradead.org>; Thu, 16 Jan 2020 16:12:43 -0800 (PST)
-MIME-Version: 1.0
+ id 1ioo5W-0007lV-8C
+ for linux-um@lists.infradead.org; Tue, 07 Jan 2020 12:36:00 +0000
+Date: Tue, 7 Jan 2020 13:35:49 +0100
+From: Christian Brauner <christian.brauner@ubuntu.com>
+Subject: Re: [PATCH] um: Implement copy_thread_tls
+Message-ID: <20200107123548.5fzu4v6czrlhrhmh@wittgenstein>
 References: <20200102172413.654385-1-amanieu@gmail.com>
  <20200104123928.1048822-1-amanieu@gmail.com>
  <20200105151928.qrmhnwer3r5ffc77@wittgenstein>
- <20200107123548.5fzu4v6czrlhrhmh@wittgenstein>
-In-Reply-To: <20200107123548.5fzu4v6czrlhrhmh@wittgenstein>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Fri, 17 Jan 2020 01:12:31 +0100
-Message-ID: <CAFLxGvzG4DJH5a7cAV6U+wPBqHUOJ6XQmy-u2ibawM3jsQXQBw@mail.gmail.com>
-Subject: Re: [PATCH] um: Implement copy_thread_tls
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20200105151928.qrmhnwer3r5ffc77@wittgenstein>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -27,45 +25,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Christian Brauner <christian.brauner@ubuntu.com>
-Cc: Amanieu d'Antras <amanieu@gmail.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, stable <stable@vger.kernel.org>, Christian Brauner <christian@brauner.io>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: Amanieu d'Antras <amanieu@gmail.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: stable@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Christian Brauner <christian@brauner.io>
 
-On Tue, Jan 7, 2020 at 1:36 PM Christian Brauner
-<christian.brauner@ubuntu.com> wrote:
->
-> On Sun, Jan 05, 2020 at 04:19:28PM +0100, Christian Brauner wrote:
-> > On Sat, Jan 04, 2020 at 01:39:30PM +0100, Amanieu d'Antras wrote:
-> > > This is required for clone3 which passes the TLS value through a
-> > > struct rather than a register.
-> > >
-> > > Signed-off-by: Amanieu d'Antras <amanieu@gmail.com>
-> > > Cc: linux-um@lists.infradead.org
-> > > Cc: <stable@vger.kernel.org> # 5.3.x
-> >
-> > Thanks. I'm picking this up as part of the copy_thread_tls() series.
-> > (Leaving the patch in tact so people can Ack right here if they want to.)
-> > If I could get an Ack from one of the maintainers that would be great;
-> > see
-> > https://lore.kernel.org/lkml/20200102172413.654385-1-amanieu@gmail.com
-> > for more context.
-> >
-> > Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
->
-> I've this up as part of the series link in above ^^ and moved it into
-> https://git.kernel.org/pub/scm/linux/kernel/git/brauner/linux.git/log/?h=clone3_tls
->
-> If I hear no objections I'll merge into into my fixes tree today or
-> tomorrow.
->
-> An Ack from one of the maintainers would still be appreciated.
+On Sun, Jan 05, 2020 at 04:19:28PM +0100, Christian Brauner wrote:
+> On Sat, Jan 04, 2020 at 01:39:30PM +0100, Amanieu d'Antras wrote:
+> > This is required for clone3 which passes the TLS value through a
+> > struct rather than a register.
+> > 
+> > Signed-off-by: Amanieu d'Antras <amanieu@gmail.com>
+> > Cc: linux-um@lists.infradead.org
+> > Cc: <stable@vger.kernel.org> # 5.3.x
+> 
+> Thanks. I'm picking this up as part of the copy_thread_tls() series.
+> (Leaving the patch in tact so people can Ack right here if they want to.)
+> If I could get an Ack from one of the maintainers that would be great;
+> see
+> https://lore.kernel.org/lkml/20200102172413.654385-1-amanieu@gmail.com
+> for more context.
+> 
+> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
 
-For sure too late, but better than nothing? ;-)
+I've this up as part of the series link in above ^^ and moved it into
+https://git.kernel.org/pub/scm/linux/kernel/git/brauner/linux.git/log/?h=clone3_tls
 
-Acked-by: Richard Weinberger <richard@nod.at>
+If I hear no objections I'll merge into into my fixes tree today or
+tomorrow.
 
--- 
-Thanks,
-//richard
+An Ack from one of the maintainers would still be appreciated.
+
+Thanks!
+Christian
 
 _______________________________________________
 linux-um mailing list
