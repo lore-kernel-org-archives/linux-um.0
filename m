@@ -1,17 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-qt1-x849.google.com ([2607:f8b0:4864:20::849])
+Received: from target.luon.net ([2a00:8240:5:10::21])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iwLAh-0004sB-Hl
- for linux-um@lists.infradead.org; Tue, 28 Jan 2020 07:20:28 +0000
-Received: by mail-qt1-x849.google.com with SMTP id n4so2753599qtv.5
- for <linux-um@lists.infradead.org>; Mon, 27 Jan 2020 23:20:26 -0800 (PST)
-Date: Mon, 27 Jan 2020 23:19:59 -0800
-In-Reply-To: <20200128072002.79250-1-brendanhiggins@google.com>
-Message-Id: <20200128072002.79250-5-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20200128072002.79250-1-brendanhiggins@google.com>
-Subject: [PATCH v1 4/7] init: main: add KUnit to kernel init
-From: Brendan Higgins <brendanhiggins@google.com>
+ id 1ipUaY-0008Hw-N8
+ for linux-um@lists.infradead.org; Thu, 09 Jan 2020 09:58:52 +0000
+Message-ID: <5caba454fee6e04443a8b51c63c50a39b9b932d8.camel@debian.org>
+Subject: Re: Bug#928924: user-mode-linux: xterm functionality broken due to
+ wrong path to port-helper
+From: Sjoerd Simons <sjoerd@debian.org>
+Date: Thu, 09 Jan 2020 10:58:39 +0100
+In-Reply-To: <4d26aa36-d2ab-b7f1-6cd6-abf1b158fe0a@kot-begemot.co.uk>
+References: <451d491044af46fe1d87d10196e24e8e7b076f26.camel@debian.org>
+ <157830351172.48768.9073767232890169518.reportbug@beast>
+ <95a2a1cdb323633a0779acaeb0377ed60e7e3afc.camel@debian.org>
+ <4d26aa36-d2ab-b7f1-6cd6-abf1b158fe0a@kot-begemot.co.uk>
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,86 +26,127 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, arnd@arndb.de, keescook@chromium.org, skhan@linuxfoundation.org, alan.maguire@oracle.com, yzaikin@google.com, davidgow@google.com, akpm@linux-foundation.org, rppt@linux.ibm.com, frowand.list@gmail.com
-Cc: linux-arch@vger.kernel.org, linux-doc@vger.kernel.org, sboyd@kernel.org, gregkh@linuxfoundation.org, knut.omang@oracle.com, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, mcgrof@kernel.org, linux-kselftest@vger.kernel.org, logang@deltatee.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
+To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, rrs@debian.org, 928924@bugs.debian.org
+Cc: linux-um@lists.infradead.org
 
-Remove KUnit from init calls entirely, instead call directly from
-kernel_init().
+On Mon, 2020-01-06 at 16:58 +0000, Anton Ivanov wrote:
+> 
+> On 06/01/2020 16:21, Ritesh Raj Sarraf wrote:
+> > Control: tag -1 +help
+> > 
+> > On Mon, 2020-01-06 at 10:38 +0100, Sjoerd Simons wrote:
+> > > On my sid system:
+> > > ```
+> > > $ strings /usr/bin/linux.uml | grep port-helper
+> > > /usr/lib//uml/port-helper
+> > > ```
+> > > 
+> > > So the path is still incorrect even with newer upstream kernels.
+> > 
+> > I spent some time today looking at the new build but I haven't been
+> > able to ascertain why this isn't setting the correct path.
+> 
+> It is used in a "user" side file - xterm.c
+> 
+> None of these sees "CONFIG_" so it considers it undef-ed which
+> defaults 
+> to 32 bit.
 
-Co-developed-by: Alan Maguire <alan.maguire@oracle.com>
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
----
- include/kunit/test.h | 9 +++++++++
- init/main.c          | 4 ++++
- lib/kunit/executor.c | 4 +---
- 3 files changed, 14 insertions(+), 3 deletions(-)
+Is there any reason why the port helper is in the weird `/usr/lib64`
+that seems more like a redhat-ism; On Debian if it's proper multi arch
+under `/usr/lib/x86_64-linux-gnu/`..
 
-diff --git a/include/kunit/test.h b/include/kunit/test.h
-index 8a02f93a6b505..8689dd1459844 100644
---- a/include/kunit/test.h
-+++ b/include/kunit/test.h
-@@ -197,6 +197,15 @@ void kunit_init_test(struct kunit *test, const char *name);
- 
- int kunit_run_tests(struct kunit_suite *suite);
- 
-+#if IS_BUILTIN(CONFIG_KUNIT)
-+int kunit_run_all_tests(void);
-+#else
-+static inline int kunit_run_all_tests(void)
-+{
-+	return 0;
-+}
-+#endif /* IS_BUILTIN(CONFIG_KUNIT) */
-+
- /*
-  * If a test suite is built-in, module_init() gets translated into
-  * an initcall which we don't want as the idea is that for builtins
-diff --git a/init/main.c b/init/main.c
-index 2cd736059416f..90301d4fbd1bb 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -103,6 +103,8 @@
- #define CREATE_TRACE_POINTS
- #include <trace/events/initcall.h>
- 
-+#include <kunit/test.h>
-+
- static int kernel_init(void *);
- 
- extern void init_IRQ(void);
-@@ -1201,6 +1203,8 @@ static noinline void __init kernel_init_freeable(void)
- 
- 	do_basic_setup();
- 
-+	kunit_run_all_tests();
-+
- 	console_on_rootfs();
- 
- 	/*
-diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
-index 6429927d598a5..b75a46c560847 100644
---- a/lib/kunit/executor.c
-+++ b/lib/kunit/executor.c
-@@ -11,7 +11,7 @@ extern struct kunit_suite * const * const __kunit_suites_end[];
- 
- #if IS_BUILTIN(CONFIG_KUNIT)
- 
--static int kunit_run_all_tests(void)
-+int kunit_run_all_tests(void)
- {
- 	struct kunit_suite * const * const *suites, * const *subsuite;
- 	bool has_test_failed = false;
-@@ -31,6 +31,4 @@ static int kunit_run_all_tests(void)
- 	return 0;
- }
- 
--late_initcall(kunit_run_all_tests);
--
- #endif /* IS_BUILTIN(CONFIG_KUNIT) */
--- 
-2.25.0.341.g760bfbb309-goog
+However uml-utilities can't be installed for multiple architectures on
+one system anyway (as it ships binaries). So there is little point in
+try to being multi-arch-like (or just awkward :p)...
 
+So to me the most practical and straight-forward solution would
+probably be to revert the broken kernel patch and change the uml-
+utilities package instead to always install in a single spot.
+
+> You need to use some other way to figure out what is the build or to
+> set 
+> OS_LIB_PATH for this case.
+> 
+> > ```
+> > $ strings `which  linux.uml` | grep port-helper
+> > /usr/lib/uml/port-helper
+> > ```
+> > 
+> > First, for context to the readers here, the port-helper binary is
+> > shipped with uml-utilities package. This package, depending on the
+> > architecture, installs the binary to a architecture specific
+> > location.
+> > 
+> > https://sources.debian.org/src/uml-utilities/20070815.2-1/Makefile/#L10
+> > 
+> > Which on an amd64 machine is: /usr/lib64/uml/port-helper
+> > 
+> > ```
+> > $ dpkg  -S /usr/lib64/uml/port-helper
+> > uml-utilities: /usr/lib64/uml/port-helper
+> > ```
+> > 
+> > The UML setup on my box always worked because long back, when I
+> > first
+> > encountered this problem, I had created a symlink of the path to
+> > /usr/lib/ too. And had completely forgotten about it. My apologies.
+> > 
+> > 
+> > But that said, the current problem is with the UML binary built by
+> > the
+> > kernel sources.
+> > Problem is that, as mentioned above and other reports too on this
+> > bug
+> > report thread, the path resolved at build time is always
+> > "/usr/lib/uml/".
+> > 
+> > The build configuration and the code are all correct.
+> > 
+> > ```
+> > $ grep 64BIT .config
+> > CONFIG_64BIT=y
+> > CONFIG_64BIT_TIME=y
+> > CONFIG_PHYS_ADDR_T_64BIT=y
+> > CONFIG_ARCH_DMA_ADDR_T_64BIT=y
+> > ```
+> > 
+> > 
+> > Snipped from: arch/um/include/shared/os.h
+> > 
+> > ```
+> > #ifdef CONFIG_64BIT
+> > #define OS_LIB_PATH     "/usr/lib64/"
+> > #else
+> > #define OS_LIB_PATH     "/usr/lib/"
+> > #endif
+> > ```
+> > 
+> > I also checked the generated include headers and they are correct
+> > for
+> > the amd64 .config file.
+> > 
+> > ```
+> > linux-source-5.4/include/generated$ grep 64BIT autoconf.h
+> > #define CONFIG_64BIT_TIME 1
+> > #define CONFIG_PHYS_ADDR_T_64BIT 1
+> > #define CONFIG_64BIT 1
+> > #define CONFIG_ARCH_DMA_ADDR_T_64BIT 1
+> > ```
+> > 
+> > I'll keep looking as time permits but if anyone else has ideas on
+> > what
+> > I may be doing wrong, please do mention.
+> > 
+> > Thanks,
+> > Ritesh
+> > 
+> > 
+> > _______________________________________________
+> > linux-um mailing list
+> > linux-um@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-um
+> > 
 
 _______________________________________________
 linux-um mailing list
