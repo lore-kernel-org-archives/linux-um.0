@@ -1,18 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pj1-x104a.google.com ([2607:f8b0:4864:20::104a])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ixIvO-0006Ba-FB
- for linux-um@lists.infradead.org; Thu, 30 Jan 2020 23:08:40 +0000
-Received: by mail-pj1-x104a.google.com with SMTP id d7so665880pjx.6
- for <linux-um@lists.infradead.org>; Thu, 30 Jan 2020 15:08:37 -0800 (PST)
-Date: Thu, 30 Jan 2020 15:08:08 -0800
-In-Reply-To: <20200130230812.142642-1-brendanhiggins@google.com>
-Message-Id: <20200130230812.142642-4-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20200130230812.142642-1-brendanhiggins@google.com>
-Subject: [PATCH v2 3/7] kunit: test: create a single centralized executor for
- all tests
-From: Brendan Higgins <brendanhiggins@google.com>
+ id 1is8e8-000221-IY
+ for linux-um@lists.infradead.org; Thu, 16 Jan 2020 17:09:43 +0000
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 446/671] um: Fix IRQ controller regression on
+ console read
+Date: Thu, 16 Jan 2020 12:01:24 -0500
+Message-Id: <20200116170509.12787-183-sashal@kernel.org>
+In-Reply-To: <20200116170509.12787-1-sashal@kernel.org>
+References: <20200116170509.12787-1-sashal@kernel.org>
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -25,183 +23,124 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, arnd@arndb.de, keescook@chromium.org, skhan@linuxfoundation.org, alan.maguire@oracle.com, yzaikin@google.com, davidgow@google.com, akpm@linux-foundation.org, rppt@linux.ibm.com, frowand.list@gmail.com
-Cc: linux-arch@vger.kernel.org, linux-doc@vger.kernel.org, sboyd@kernel.org, gregkh@linuxfoundation.org, knut.omang@oracle.com, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, mcgrof@kernel.org, linux-kselftest@vger.kernel.org, logang@deltatee.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Jouni Malinen <j@w1.fi>, Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org, Johannes Berg <johannes.berg@intel.com>, Sasha Levin <sashal@kernel.org>
 
-From: Alan Maguire <alan.maguire@oracle.com>
+From: Jouni Malinen <j@w1.fi>
 
-Add a centralized executor to dispatch tests rather than relying on
-late_initcall to schedule each test suite separately.  Centralized
-execution is for built-in tests only; modules will execute tests
-when loaded.
+[ Upstream commit bebe4681d0e7e1be2608282dc86645728bc7f623 ]
 
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-Co-developed-by: Iurii Zaikin <yzaikin@google.com>
-Signed-off-by: Iurii Zaikin <yzaikin@google.com>
-Co-developed-by: Brendan Higgins <brendanhiggins@google.com>
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+The conversion of UML to use epoll based IRQ controller claimed that
+clone_one_chan() can safely call um_free_irq() while starting to ignore
+the delay_free_irq parameter that explicitly noted that the IRQ cannot
+be freed because this is being called from chan_interrupt(). This
+resulted in free_irq() getting called in interrupt context ("Trying to
+free IRQ 6 from IRQ context!").
+
+Fix this by restoring previously used delay_free_irq processing.
+
+Fixes: ff6a17989c08 ("Epoll based IRQ controller")
+Signed-off-by: Jouni Malinen <j@w1.fi>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/kunit/test.h | 73 +++++++++++++++++++++++++++-----------------
- lib/kunit/Makefile   |  3 +-
- lib/kunit/executor.c | 36 ++++++++++++++++++++++
- 3 files changed, 83 insertions(+), 29 deletions(-)
- create mode 100644 lib/kunit/executor.c
+ arch/um/drivers/chan_kern.c | 52 +++++++++++++++++++++++++++++++------
+ arch/um/kernel/irq.c        |  4 +++
+ 2 files changed, 48 insertions(+), 8 deletions(-)
 
-diff --git a/include/kunit/test.h b/include/kunit/test.h
-index 2dfb550c6723a..8a02f93a6b505 100644
---- a/include/kunit/test.h
-+++ b/include/kunit/test.h
-@@ -197,46 +197,63 @@ void kunit_init_test(struct kunit *test, const char *name);
+diff --git a/arch/um/drivers/chan_kern.c b/arch/um/drivers/chan_kern.c
+index 05588f9466c7..13ba195f9c9c 100644
+--- a/arch/um/drivers/chan_kern.c
++++ b/arch/um/drivers/chan_kern.c
+@@ -171,19 +171,55 @@ int enable_chan(struct line *line)
+ 	return err;
+ }
  
- int kunit_run_tests(struct kunit_suite *suite);
- 
--/**
-- * kunit_test_suites() - used to register one or more &struct kunit_suite
-- *			 with KUnit.
-- *
-- * @suites: a statically allocated list of &struct kunit_suite.
-- *
-- * Registers @suites with the test framework. See &struct kunit_suite for
-- * more information.
-- *
-- * When builtin,  KUnit tests are all run as late_initcalls; this means
-- * that they cannot test anything where tests must run at a different init
-- * phase. One significant restriction resulting from this is that KUnit
-- * cannot reliably test anything that is initialize in the late_init phase;
-- * another is that KUnit is useless to test things that need to be run in
-- * an earlier init phase.
-- *
-- * An alternative is to build the tests as a module.  Because modules
-- * do not support multiple late_initcall()s, we need to initialize an
-- * array of suites for a module.
-- *
-- * TODO(brendanhiggins@google.com): Don't run all KUnit tests as
-- * late_initcalls.  I have some future work planned to dispatch all KUnit
-- * tests from the same place, and at the very least to do so after
-- * everything else is definitely initialized.
-+/*
-+ * If a test suite is built-in, module_init() gets translated into
-+ * an initcall which we don't want as the idea is that for builtins
-+ * the executor will manage execution.  So ensure we do not define
-+ * module_{init|exit} functions for the builtin case when registering
-+ * suites via kunit_test_suites() below.
-  */
--#define kunit_test_suites(...)						\
--	static struct kunit_suite *suites[] = { __VA_ARGS__, NULL};	\
--	static int kunit_test_suites_init(void)				\
-+#ifdef MODULE
-+#define kunit_test_suites_for_module(__suites)				\
-+	static int __init kunit_test_suites_init(void)			\
- 	{								\
-+		struct kunit_suite *suites[] = (__suites);		\
- 		unsigned int i;						\
-+									\
- 		for (i = 0; suites[i] != NULL; i++)			\
- 			kunit_run_tests(suites[i]);			\
- 		return 0;						\
- 	}								\
--	late_initcall(kunit_test_suites_init);				\
-+	module_init(kunit_test_suites_init);				\
-+									\
- 	static void __exit kunit_test_suites_exit(void)			\
- 	{								\
- 		return;							\
- 	}								\
- 	module_exit(kunit_test_suites_exit)
-+#else
-+#define kunit_test_suites_for_module(__suites)
-+#endif /* MODULE */
-+
-+#define __kunit_test_suites(unique_array, unique_suites, ...)		       \
-+	static struct kunit_suite *unique_array[] = { __VA_ARGS__, NULL };     \
-+	kunit_test_suites_for_module(unique_array);			       \
-+	static struct kunit_suite **unique_suites			       \
-+	__used __aligned(8) __section(.kunit_test_suites) = unique_array
-+
-+/**
-+ * kunit_test_suites() - used to register one or more &struct kunit_suite
-+ *			 with KUnit.
-+ *
-+ * @suites: a statically allocated list of &struct kunit_suite.
-+ *
-+ * Registers @suites with the test framework. See &struct kunit_suite for
-+ * more information.
-+ *
-+ * When builtin,  KUnit tests are all run via executor; this is done
-+ * by placing the array of struct kunit_suite * in the .kunit_test_suites
-+ * ELF section.
-+ *
-+ * An alternative is to build the tests as a module.  Because modules do not
-+ * support multiple initcall()s, we need to initialize an array of suites for a
-+ * module.
-+ *
++/* Items are added in IRQ context, when free_irq can't be called, and
++ * removed in process context, when it can.
++ * This handles interrupt sources which disappear, and which need to
++ * be permanently disabled.  This is discovered in IRQ context, but
++ * the freeing of the IRQ must be done later.
 + */
-+#define kunit_test_suites(...)						\
-+	__kunit_test_suites(__UNIQUE_ID(array),				\
-+			    __UNIQUE_ID(suites),			\
-+			    __VA_ARGS__)
- 
- #define kunit_test_suite(suite)	kunit_test_suites(&suite)
- 
-diff --git a/lib/kunit/Makefile b/lib/kunit/Makefile
-index fab55649b69a5..c282f02ca066b 100644
---- a/lib/kunit/Makefile
-+++ b/lib/kunit/Makefile
-@@ -3,7 +3,8 @@ obj-$(CONFIG_KUNIT) +=			kunit.o
- kunit-objs +=				test.o \
- 					string-stream.o \
- 					assert.o \
--					try-catch.o
-+					try-catch.o \
-+					executor.o
- 
- obj-$(CONFIG_KUNIT_TEST) +=		kunit-test.o
- 
-diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
-new file mode 100644
-index 0000000000000..6429927d598a5
---- /dev/null
-+++ b/lib/kunit/executor.c
-@@ -0,0 +1,36 @@
-+// SPDX-License-Identifier: GPL-2.0
++static DEFINE_SPINLOCK(irqs_to_free_lock);
++static LIST_HEAD(irqs_to_free);
 +
-+#include <kunit/test.h>
-+
-+/*
-+ * These symbols point to the .kunit_test_suites section and are defined in
-+ * include/asm-generic/vmlinux.lds.h, and consequently must be extern.
-+ */
-+extern struct kunit_suite * const * const __kunit_suites_start[];
-+extern struct kunit_suite * const * const __kunit_suites_end[];
-+
-+#if IS_BUILTIN(CONFIG_KUNIT)
-+
-+static int kunit_run_all_tests(void)
++void free_irqs(void)
 +{
-+	struct kunit_suite * const * const *suites, * const *subsuite;
-+	bool has_test_failed = false;
++	struct chan *chan;
++	LIST_HEAD(list);
++	struct list_head *ele;
++	unsigned long flags;
 +
-+	for (suites = __kunit_suites_start;
-+	     suites < __kunit_suites_end;
-+	     suites++) {
-+		for (subsuite = *suites; *subsuite != NULL; subsuite++) {
-+			if (kunit_run_tests(*subsuite))
-+				has_test_failed = true;
-+		}
++	spin_lock_irqsave(&irqs_to_free_lock, flags);
++	list_splice_init(&irqs_to_free, &list);
++	spin_unlock_irqrestore(&irqs_to_free_lock, flags);
++
++	list_for_each(ele, &list) {
++		chan = list_entry(ele, struct chan, free_list);
++
++		if (chan->input && chan->enabled)
++			um_free_irq(chan->line->driver->read_irq, chan);
++		if (chan->output && chan->enabled)
++			um_free_irq(chan->line->driver->write_irq, chan);
++		chan->enabled = 0;
 +	}
-+
-+	if (has_test_failed)
-+		return -EFAULT;
-+
-+	return 0;
 +}
 +
-+late_initcall(kunit_run_all_tests);
+ static void close_one_chan(struct chan *chan, int delay_free_irq)
+ {
++	unsigned long flags;
 +
-+#endif /* IS_BUILTIN(CONFIG_KUNIT) */
+ 	if (!chan->opened)
+ 		return;
+ 
+-    /* we can safely call free now - it will be marked
+-     *  as free and freed once the IRQ stopped processing
+-     */
+-	if (chan->input && chan->enabled)
+-		um_free_irq(chan->line->driver->read_irq, chan);
+-	if (chan->output && chan->enabled)
+-		um_free_irq(chan->line->driver->write_irq, chan);
+-	chan->enabled = 0;
++	if (delay_free_irq) {
++		spin_lock_irqsave(&irqs_to_free_lock, flags);
++		list_add(&chan->free_list, &irqs_to_free);
++		spin_unlock_irqrestore(&irqs_to_free_lock, flags);
++	} else {
++		if (chan->input && chan->enabled)
++			um_free_irq(chan->line->driver->read_irq, chan);
++		if (chan->output && chan->enabled)
++			um_free_irq(chan->line->driver->write_irq, chan);
++		chan->enabled = 0;
++	}
+ 	if (chan->ops->close != NULL)
+ 		(*chan->ops->close)(chan->fd, chan->data);
+ 
+diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
+index 6b7f3827d6e4..2753718d31b9 100644
+--- a/arch/um/kernel/irq.c
++++ b/arch/um/kernel/irq.c
+@@ -21,6 +21,8 @@
+ #include <irq_user.h>
+ 
+ 
++extern void free_irqs(void);
++
+ /* When epoll triggers we do not know why it did so
+  * we can also have different IRQs for read and write.
+  * This is why we keep a small irq_fd array for each fd -
+@@ -100,6 +102,8 @@ void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
+ 			}
+ 		}
+ 	}
++
++	free_irqs();
+ }
+ 
+ static int assign_epoll_events_to_irq(struct irq_entry *irq_entry)
 -- 
-2.25.0.341.g760bfbb309-goog
+2.20.1
 
 
 _______________________________________________
