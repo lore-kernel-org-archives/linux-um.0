@@ -1,19 +1,26 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pj1-f66.google.com ([209.85.216.66])
+Received: from mail-qk1-x741.google.com ([2607:f8b0:4864:20::741])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iob2w-0008OA-3k
- for linux-um@lists.infradead.org; Mon, 06 Jan 2020 22:40:27 +0000
-Received: by mail-pj1-f66.google.com with SMTP id m13so8354700pjb.2
- for <linux-um@lists.infradead.org>; Mon, 06 Jan 2020 14:40:25 -0800 (PST)
-Date: Mon, 6 Jan 2020 22:40:22 +0000
-From: Luis Chamberlain <mcgrof@kernel.org>
-Subject: Re: [RFC v1 0/6] kunit: create a centralized executor to dispatch
- all KUnit tests
-Message-ID: <20200106224022.GX11244@42.do-not-panic.com>
-References: <20191216220555.245089-1-brendanhiggins@google.com>
+ id 1isOVN-0004AY-K9
+ for linux-um@lists.infradead.org; Fri, 17 Jan 2020 10:05:34 +0000
+Received: by mail-qk1-x741.google.com with SMTP id z14so22121905qkg.9
+ for <linux-um@lists.infradead.org>; Fri, 17 Jan 2020 02:05:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20191216220555.245089-1-brendanhiggins@google.com>
+References: <20200115182816.33892-1-trishalfonso@google.com>
+ <dce24e66d89940c8998ccc2916e57877ccc9f6ae.camel@sipsolutions.net>
+ <CAKFsvU+sUdGC9TXK6vkg5ZM9=f7ePe7+rh29DO+kHDzFXacx2w@mail.gmail.com>
+ <4f382794416c023b6711ed2ca645abe4fb17d6da.camel@sipsolutions.net>
+ <b55720804de8e56febf48c7c3c11b578d06a8c9f.camel@sipsolutions.net>
+ <CACT4Y+brqD-o-u3Vt=C-PBiS2Wz+wXN3Q3RqBhf3XyRYaRoZJw@mail.gmail.com>
+ <2092169e6dd1f8d15f1db4b3787cc9fe596097b7.camel@sipsolutions.net>
+ <CACT4Y+b6C+y9sDfMYPDy-nh=WTt5+u2kLcWx2LQmHc1A5L7y0A@mail.gmail.com>
+ <CACT4Y+atPME1RYvusmr2EQpv_mNkKJ2_LjMeANv0HxF=+Uu5hw@mail.gmail.com>
+ <CACT4Y+bsaZoPC1Q7_rV-e_aO=LVPA-cE3btT_VARStWYk6dcPA@mail.gmail.com>
+In-Reply-To: <CACT4Y+bsaZoPC1Q7_rV-e_aO=LVPA-cE3btT_VARStWYk6dcPA@mail.gmail.com>
+From: Dmitry Vyukov <dvyukov@google.com>
+Date: Fri, 17 Jan 2020 11:05:15 +0100
+Message-ID: <CACT4Y+Z6_CwVyJhr3SdDejFsrXcM11LVY+gh4oKP6k03Pn95AA@mail.gmail.com>
+Subject: Re: [RFC PATCH] UML: add support for KASAN under x86_64
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -26,107 +33,79 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Brendan Higgins <brendanhiggins@google.com>
-Cc: linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org, keescook@chromium.org, arnd@arndb.de, gregkh@linuxfoundation.org, sboyd@kernel.org, richard@nod.at, jdike@addtoit.com, knut.omang@oracle.com, linux-kernel@vger.kernel.org, rppt@linux.ibm.com, linux-um@lists.infradead.org, logang@deltatee.com, kunit-dev@googlegroups.com, davidgow@google.com, skhan@linuxfoundation.org, akpm@linux-foundation.org, yzaikin@google.com, alan.maguire@oracle.com, anton.ivanov@cambridgegreys.com
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Patricia Alfonso <trishalfonso@google.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, Brendan Higgins <brendanhiggins@google.com>, LKML <linux-kernel@vger.kernel.org>, kasan-dev <kasan-dev@googlegroups.com>, linux-um@lists.infradead.org, David Gow <davidgow@google.com>, Andrey Ryabinin <aryabinin@virtuozzo.com>, anton.ivanov@cambridgegreys.com
 
-On Mon, Dec 16, 2019 at 02:05:49PM -0800, Brendan Higgins wrote:
-> ## TL;DR
-> 
-> This patchset adds a centralized executor to dispatch tests rather than
-> relying on late_initcall to schedule each test suite separately along
-> with a couple of new features that depend on it.
-> 
-> ## What am I trying to do?
-> 
-> Conceptually, I am trying to provide a mechanism by which test suites
-> can be grouped together so that they can be reasoned about collectively.
-> The last two patches in this series add features which depend on this:
-> 
-> RFC 5/6 Prints out a test plan right before KUnit tests are run[1]; this
->         is valuable because it makes it possible for a test harness to
->         detect whether the number of tests run matches the number of
->         tests expected to be run, ensuring that no tests silently
->         failed.
-> 
-> RFC 6/6 Add a new kernel command-line option which allows the user to
->         specify that the kernel poweroff, halt, or reboot after
->         completing all KUnit tests; this is very handy for running KUnit
->         tests on UML or a VM so that the UML/VM process exits cleanly
->         immediately after running all tests without needing a special
->         initramfs.
+On Fri, Jan 17, 2020 at 11:03 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Fri, Jan 17, 2020 at 10:59 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+> >
+> > On Thu, Jan 16, 2020 at 10:39 PM Patricia Alfonso
+> > <trishalfonso@google.com> wrote:
+> > >
+> > > On Thu, Jan 16, 2020 at 1:23 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+> > > >
+> > > > On Thu, Jan 16, 2020 at 10:20 AM Johannes Berg
+> > > > <johannes@sipsolutions.net> wrote:
+> > > > >
+> > > > > On Thu, 2020-01-16 at 10:18 +0100, Dmitry Vyukov wrote:
+> > > > > >
+> > > > > > Looking at this problem and at the number of KASAN_SANITIZE := n in
+> > > > > > Makefiles (some of which are pretty sad, e.g. ignoring string.c,
+> > > > > > kstrtox.c, vsprintf.c -- that's where the bugs are!), I think we
+> > > > > > initialize KASAN too late. I think we need to do roughly what we do in
+> > > > > > user-space asan (because it is user-space asan!). Constructors run
+> > > > > > before main and it's really good, we need to initialize KASAN from
+> > > > > > these constructors. Or if that's not enough in all cases, also add own
+> > > > > > constructor/.preinit array entry to initialize as early as possible.
+> > > > >
+> > >
+> > > I am not too happy with the number of KASAN_SANITIZE := n's either.
+> > > This sounds like a good idea. Let me look into it; I am not familiar
+> > > with constructors or .preint array.
+> > >
+> > > > > We even control the linker in this case, so we can put something into
+> > > > > the .preinit array *first*.
+> > > >
+> > > > Even better! If we can reliably put something before constructors, we
+> > > > don't even need lazy init in constructors.
+> > > >
+> > > > > > All we need to do is to call mmap syscall, there is really no
+> > > > > > dependencies on anything kernel-related.
+> > > > >
+> > > > > OK. I wasn't really familiar with those details.
+> > > > >
+> > > > > > This should resolve the problem with constructors (after they
+> > > > > > initialize KASAN, they can proceed to do anything they need) and it
+> > > > > > should get rid of most KASAN_SANITIZE (in particular, all of
+> > > > > > lib/Makefile and kernel/Makefile) and should fix stack instrumentation
+> > > > > > (in case it does not work now). The only tiny bit we should not
+> > > > > > instrument is the path from constructor up to mmap call.
+> > >
+> > > This sounds like a great solution. I am getting this KASAN report:
+> > > "BUG: KASAN: stack-out-of-bounds in syscall_stub_data+0x2a5/0x2c7",
+> > > which is probably because of this stack instrumentation problem you
+> > > point out.
+> >
+> > [reposting to the list]
+> >
+> > If that part of the code I mentioned is instrumented, manifestation
+> > would be different -- stack instrumentation will try to access shadow,
+> > shadow is not mapped yet, so it would crash on the shadow access.
+> >
+> > What you are seeing looks like, well, a kernel bug where it does a bad
+> > stack access. Maybe it's KASAN actually _working_? :)
+>
+> Though, stack instrumentation may have issues with longjmp-like things.
+> I would suggest first turning off stack instrumentation and getting
+> that work. Solving problems one-by-one is always easier.
+> If you need help debugging this, please post more info: patch, what
+> you are doing, full kernel output (preferably from start, if it's not
+> too lengthy).
 
-The approach seems sensible to me given that it separates from a
-semantics perspective kernel subsystem init work from *testing*, and
-so we are sure we'd run the *test* stuff *after* all subsystem init
-stuff.
-
-Dispatching, however is still immediate, and with a bit of work, this
-dispatcher could be configurable to run at an arbirary time after boot.
-If there are not immediate use cases for that though, then I suppose
-this is not a requirement for the dispatcher. But since there exists
-another modular test framework with its own dispatcher and it seems the
-goal is to merge the work long term, this might preempt the requirement
-to define how and when we can dispatch tests post boot.
-
-And, if we're going to do that, I can suggest that a data structure
-instead of just a function init call be used to describe tests to be
-placed into an ELF section. With my linker table work this would be
-easy, I define section ranges for code describing only executable
-routines, but it defines linker tables for when a component in the
-kernel would define a data structure, part of which can be a callback.
-Such data structure stuffed into an ELF section could allow dynamic
-configuration of the dipsatching, even post boot.
-
-I think this is a good stepping stone forward then, and to allow
-dynamic configuration of the dispatcher could mean eventual extensions
-to kunit's init stuff to stuff init calls into a data structure which
-can then allow configuration of the dispatching. One benefit that the
-linker table work *may* be able to help here with is that it allows
-an easy way to create kunit specific ordering, at linker time.
-There is also an example of addressing / generalizing dynamic / run time
-changes of ordering, by using the x86 IOMMU initialization as an
-example case. We don't have an easy way to do this today, but if kunit
-could benefit from such framework, it'd be another use case for
-the linker table work. That is, the ability to easilly allow
-dynamically modifying run time ordering of code through ELF sections.
-
-> In addition, by dispatching tests from a single location, we can
-> guarantee that all KUnit tests run after late_init is complete, which
-> was a concern during the initial KUnit patchset review (this has not
-> been a problem in practice, but resolving with certainty is nevertheless
-> desirable).
-
-Indeed, the concern is just a real semantics limitations. With the tests
-*always* running after all subsystem init stuff, we know we'd have a
-real full kernel ready.
-
-It does beg the question if this means kunit is happy to not be a tool
-to test pre basic setup stuff (terminology used in init.c, meaning prior
-to running all init levels). I suspect this is the case.
-
-> Other use cases for this exist, but the above features should provide an
-> idea of the value that this could provide.
-> 
-> ## What work remains to be done?
-> 
-> These patches were based on patches in our non-upstream branch[2], so we
-> have a pretty good idea that they are useable as presented;
-> nevertheless, some of the changes done in this patchset could
-> *definitely* use some review by subsystem experts (linker scripts, init,
-> etc), and will likely change a lot after getting feedback.
-> 
-> The biggest thing that I know will require additional attention is
-> integrating this patchset with the KUnit module support patchset[3]. I
-> have not even attempted to build these patches on top of the module
-> support patches as I would like to get people's initial thoughts first
-> (especially Alan's :-) ). I think that making these patches work with
-> module support should be fairly straight forward, nevertheless.
-
-Modules just have their own sections too. That's all. So it'd be a
-matter of extending the linker script for modules too. But a module's
-init is different than the core kernel's for vmlinux.
-
-  Luis
+I see syscall_stub_data does some weird things with stack (stack
+copy?). Maybe we just need to ignore accesses there: individual
+accesses, or whole function/file.
 
 _______________________________________________
 linux-um mailing list
