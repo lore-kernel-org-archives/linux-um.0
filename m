@@ -1,18 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pj1-x1049.google.com ([2607:f8b0:4864:20::1049])
+Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iwEDc-0006Kd-Nl
- for linux-um@lists.infradead.org; Mon, 27 Jan 2020 23:55:04 +0000
-Received: by mail-pj1-x1049.google.com with SMTP id d3so306312pjl.0
- for <linux-um@lists.infradead.org>; Mon, 27 Jan 2020 15:54:58 -0800 (PST)
-Date: Mon, 27 Jan 2020 15:53:53 -0800
-In-Reply-To: <20200127235356.122031-1-brendanhiggins@google.com>
-Message-Id: <20200127235356.122031-3-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20200127235356.122031-1-brendanhiggins@google.com>
-Subject: [PATCH v1 2/5] reset: brcmstb-rescal: add unspecified HAS_IOMEM
- dependency
-From: Brendan Higgins <brendanhiggins@google.com>
+ id 1itI6h-0007Bp-MC
+ for linux-um@lists.infradead.org; Sun, 19 Jan 2020 21:27:45 +0000
+Received: by mail-wr1-x444.google.com with SMTP id d16so27581117wre.10
+ for <linux-um@lists.infradead.org>; Sun, 19 Jan 2020 13:27:43 -0800 (PST)
+MIME-Version: 1.0
+References: <20190524220843.27623-1-johannes@sipsolutions.net>
+In-Reply-To: <20190524220843.27623-1-johannes@sipsolutions.net>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Sun, 19 Jan 2020 22:27:31 +0100
+Message-ID: <CAFLxGvxFfa8QNh3_6-EcVFCvkV4Huqf2=bRMiCQdtU+F7Ocq1A@mail.gmail.com>
+Subject: Re: [PATCH v2] arch: um: add an option to make serial driver non-raw
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +24,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Brendan Higgins <brendanhiggins@google.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, davidgow@google.com, heidifahim@google.com
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Johannes Berg <johannes.berg@intel.com>, j@w1.fi, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Currently CONFIG_RESET_BRCMSTB_RESCAL=y implicitly depends on
-CONFIG_HAS_IOMEM=y; consequently, on architectures without IOMEM we get
-the following build error:
+On Sat, May 25, 2019 at 12:08 AM Johannes Berg
+<johannes@sipsolutions.net> wrote:
+>
+> From: Johannes Berg <johannes.berg@intel.com>
+>
+> In some cases, for example when the program(s) running inside UML
+> isn't/aren't interactive (like the hwsim tests for wpa_supplicant)
+> there's really no value in having the serial lines configured to
+> be raw as they are now by default. Setting them to non-raw lets
+> one abort the whole UML with Ctrl-C, which is really the right
+> thing to do in these cases, basically the whole UML instance is
+> more like a single (testing) program.
+>
+> Add a "ssl-non-raw" option to UML to support such a mode.
+>
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+> ---
+>  arch/um/drivers/chan_user.h | 2 +-
+>  arch/um/drivers/ssl.c       | 8 ++++++++
 
-/usr/bin/ld: drivers/reset/reset-brcmstb-rescal.o: in function `brcm_rescal_reset_probe':
-drivers/reset/reset-brcmstb-rescal.c:76: undefined reference to `devm_ioremap_resource'
+Applied. Thanks,
+//richard
 
-Fix the build error by adding the unspecified dependency.
-
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
----
- drivers/reset/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-index 461b0e506a26f..a19bd303f31a9 100644
---- a/drivers/reset/Kconfig
-+++ b/drivers/reset/Kconfig
-@@ -51,6 +51,7 @@ config RESET_BRCMSTB
- 
- config RESET_BRCMSTB_RESCAL
- 	bool "Broadcom STB RESCAL reset controller"
-+	depends on HAS_IOMEM
- 	default ARCH_BRCMSTB || COMPILE_TEST
- 	help
- 	  This enables the RESCAL reset controller for SATA, PCIe0, or PCIe1 on
 -- 
-2.25.0.341.g760bfbb309-goog
-
+Thanks,
+//richard
 
 _______________________________________________
 linux-um mailing list
