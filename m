@@ -1,18 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x44a.google.com ([2607:f8b0:4864:20::44a])
+Received: from mail-wr1-x442.google.com ([2a00:1450:4864:20::442])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ixIvX-0006IQ-TW
- for linux-um@lists.infradead.org; Thu, 30 Jan 2020 23:08:49 +0000
-Received: by mail-pf1-x44a.google.com with SMTP id z19so2757654pfn.18
- for <linux-um@lists.infradead.org>; Thu, 30 Jan 2020 15:08:47 -0800 (PST)
-Date: Thu, 30 Jan 2020 15:08:12 -0800
-In-Reply-To: <20200130230812.142642-1-brendanhiggins@google.com>
-Message-Id: <20200130230812.142642-8-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20200130230812.142642-1-brendanhiggins@google.com>
-Subject: [PATCH v2 7/7] Documentation: Add kunit_shutdown to
- kernel-parameters.txt
-From: Brendan Higgins <brendanhiggins@google.com>
+ id 1itIG9-00022A-Pn
+ for linux-um@lists.infradead.org; Sun, 19 Jan 2020 21:37:31 +0000
+Received: by mail-wr1-x442.google.com with SMTP id d16so27595659wre.10
+ for <linux-um@lists.infradead.org>; Sun, 19 Jan 2020 13:37:29 -0800 (PST)
+MIME-Version: 1.0
+References: <20191210223403.244842-1-brendanhiggins@google.com>
+In-Reply-To: <20191210223403.244842-1-brendanhiggins@google.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Sun, 19 Jan 2020 22:37:17 +0100
+Message-ID: <CAFLxGvwHALbhE8XVWCijx25n-LpysYR=fH6WnHADn_=c_BZqow@mail.gmail.com>
+Subject: Re: [PATCH v1] um: drivers: mark non-vector net transports as obsolete
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -25,39 +24,44 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, arnd@arndb.de, keescook@chromium.org, skhan@linuxfoundation.org, alan.maguire@oracle.com, yzaikin@google.com, davidgow@google.com, akpm@linux-foundation.org, rppt@linux.ibm.com, frowand.list@gmail.com
-Cc: linux-arch@vger.kernel.org, linux-doc@vger.kernel.org, sboyd@kernel.org, gregkh@linuxfoundation.org, knut.omang@oracle.com, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, mcgrof@kernel.org, linux-kselftest@vger.kernel.org, logang@deltatee.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
+To: Brendan Higgins <brendanhiggins@google.com>
+Cc: "Berg, Johannes" <johannes.berg@intel.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, davidgow@google.com, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Add kunit_shutdown, an option to specify that the kernel shutsdown after
-running KUnit tests, to the kernel-parameters.txt documentation.
+On Tue, Dec 10, 2019 at 11:34 PM Brendan Higgins
+<brendanhiggins@google.com> wrote:
+>
+> UML_NET_VECTOR now supports filters compiled with pcap outside of UML;
+> it also supports: EoGRE, EoL2TPv3, RAW (+/- BPF), TAP and BESS.
+>
+> While vector drivers are not 1:1 replacements for the existing drivers,
+> you can achieve the same topologies and the same connectivity at much
+> higher performance (2.5 to 9 Gbit on mid-range Ryzen desktop) - the old
+> drivers test out in the 500Mbit range on the same hardware.
+>
+> For all these reasons, the non-vector based transports are now
+> unnecessary, and some, most notably pcap and vde are maintenance
+> burdens. Thus, it makes sense to at least start thinking about removing
+> the non-vector transports, so for now, mark them as obsolete.
+>
+> Link: https://lore.kernel.org/lkml/15f048d3-07ab-61c1-c6e0-0712e626dd33@cambridgegreys.com/T/#u
+> Suggested-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+> ---
+>
+> I pretty much stole the commit message from Anton's comments in the
+> above link. Anton, if you would like me to credit you as a co-developer,
+> feel free to respond with the tags and I will include them on the next
+> revision.
+>
+> ---
+>  arch/um/drivers/Kconfig | 81 +++++++++++++++++++++--------------------
+>  1 file changed, 41 insertions(+), 40 deletions(-)
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Reviewed-by: Stephen Boyd <sboyd@kernel.org>
----
- Documentation/admin-guide/kernel-parameters.txt | 7 +++++++
- 1 file changed, 7 insertions(+)
+Applied. Thanks.
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index ade4e6ec23e03..522fd8bdec949 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -2054,6 +2054,13 @@
- 			0: force disabled
- 			1: force enabled
- 
-+	kunit_shutdown	[KERNEL UNIT TESTING FRAMEWORK] Shutdown kernel after
-+			running tests.
-+			Default:	(flag not present) don't shutdown
-+			poweroff:	poweroff the kernel after running tests
-+			halt:		halt the kernel after running tests
-+			reboot:		reboot the kernel after running tests
-+
- 	kvm.ignore_msrs=[KVM] Ignore guest accesses to unhandled MSRs.
- 			Default is 0 (don't ignore, but inject #GP)
- 
 -- 
-2.25.0.341.g760bfbb309-goog
-
+Thanks,
+//richard
 
 _______________________________________________
 linux-um mailing list
