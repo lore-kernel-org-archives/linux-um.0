@@ -1,14 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mout.kundenserver.de ([212.227.126.134])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1in1vx-0003VY-Ug
- for linux-um@lists.infradead.org; Thu, 02 Jan 2020 14:58:47 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v3 05/22] compat_ioctl: ubd, aoe: use blkdev_compat_ptr_ioctl
-Date: Thu,  2 Jan 2020 15:55:23 +0100
-Message-Id: <20200102145552.1853992-6-arnd@arndb.de>
-In-Reply-To: <20200102145552.1853992-1-arnd@arndb.de>
-References: <20200102145552.1853992-1-arnd@arndb.de>
+ id 1iuAoK-0002NV-3o
+ for linux-um@lists.infradead.org; Wed, 22 Jan 2020 07:52:25 +0000
+Message-ID: <946dd98f6597cdc9e75cce1929991ca3c6d6b12d.camel@sipsolutions.net>
+Subject: Re: [PATCH] overlayfs: print format optimization
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Wed, 22 Jan 2020 08:51:54 +0100
+In-Reply-To: <9e77421d905f0eda08753cf7a7b40f51b5b8c688.1579676323.git.liuyang34@xiaomi.com>
+References: <cover.1579676323.git.liuyang34@xiaomi.com>
+ <9e77421d905f0eda08753cf7a7b40f51b5b8c688.1579676323.git.liuyang34@xiaomi.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,48 +24,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "James E.J. Bottomley" <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: Jens Axboe <axboe@kernel.dk>, Justin Sanders <justin@coraid.com>, Arnd Bergmann <arnd@arndb.de>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-block@vger.kernel.org, Daniel Walter <dwalter@google.com>, Alex Dewar <alex.dewar@gmx.co.uk>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: liuyang34 <yangliuxm34@gmail.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Miklos Szeredi <miklos@szeredi.hu>, Bartosz Golaszewski <bgolaszewski@baylibre.com>, Alex Dewar <alex.dewar@gmx.co.uk>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org
+Cc: liuyang34 <liuyang34@xiaomi.com>
 
-These drivers implement the HDIO_GET_IDENTITY and CDROMVOLREAD ioctl
-commands, which are compatible between 32-bit and 64-bit user space and
-traditionally handled by compat_blkdev_driver_ioctl().
 
-As a prerequisite to removing that function, make both drivers use
-blkdev_compat_ptr_ioctl() as their .compat_ioctl callback.
+> diff --git a/arch/um/os-Linux/umid.c b/arch/um/os-Linux/umid.c
+> index 44def53..54246b7 100644
+> --- a/arch/um/os-Linux/umid.c
+> +++ b/arch/um/os-Linux/umid.c
+> @@ -349,7 +349,7 @@ int __init umid_file_name(char *name, char *buf, int len)
+>  	if (err)
+>  		return err;
+>  
+> -	n = snprintf(buf, len, "%s%s/%s", uml_dir, umid, name);
+> +	n = snddprintf(buf, len, "%s%s/%s", uml_dir, umid, name);
+>  	if (n >= len) {
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/um/drivers/ubd_kern.c | 1 +
- drivers/block/aoe/aoeblk.c | 1 +
- 2 files changed, 2 insertions(+)
+Huh, what's this?
 
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 6627d7c30f37..582eb5b1f09b 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -113,6 +113,7 @@ static const struct block_device_operations ubd_blops = {
-         .open		= ubd_open,
-         .release	= ubd_release,
-         .ioctl		= ubd_ioctl,
-+        .compat_ioctl	= blkdev_compat_ptr_ioctl,
- 	.getgeo		= ubd_getgeo,
- };
- 
-diff --git a/drivers/block/aoe/aoeblk.c b/drivers/block/aoe/aoeblk.c
-index bd19f8af950b..7b32fb673375 100644
---- a/drivers/block/aoe/aoeblk.c
-+++ b/drivers/block/aoe/aoeblk.c
-@@ -329,6 +329,7 @@ static const struct block_device_operations aoe_bdops = {
- 	.open = aoeblk_open,
- 	.release = aoeblk_release,
- 	.ioctl = aoeblk_ioctl,
-+	.compat_ioctl = blkdev_compat_ptr_ioctl,
- 	.getgeo = aoeblk_getgeo,
- 	.owner = THIS_MODULE,
- };
--- 
-2.20.0
+johannes
 
 
 _______________________________________________
