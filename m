@@ -1,89 +1,40 @@
-Return-Path: <3VzMqXg4KBV47NAJ96JDECCEJOCKKCHA.8KICAANPHEJQT-IceG.KNC@flex--brendanhiggins.bounces.google.com>
-Date: Thu, 23 Jan 2020 15:59:14 -0800
-Message-Id: <20200123235914.223178-1-brendanhiggins@google.com>
-Mime-Version: 1.0
-Subject: [PATCH v2] uml: make CONFIG_STATIC_LINK actually static
+Return-Path: <brendanhiggins@google.com>
+MIME-Version: 1.0
+References: <20191210212108.222514-1-brendanhiggins@google.com>
+ <CAMuHMdVyjjZAoO3Q-Vr88fUGFwrn4EoiSxBmG_FV+o87BuBmwQ@mail.gmail.com>
+ <CAFLxGvzMf1Fni4va1EM1ta_o7zDjkM8iAr=j+t74+G79wq=XOA@mail.gmail.com> <c80a1c56a5a543d2a7174e598919164aSN6PR10MB3039E2FB633AC95CF4279B04E2320@SN6PR10MB3039.namprd10.prod.outlook.com>
+In-Reply-To: <c80a1c56a5a543d2a7174e598919164aSN6PR10MB3039E2FB633AC95CF4279B04E2320@SN6PR10MB3039.namprd10.prod.outlook.com>
 From: Brendan Higgins <brendanhiggins@google.com>
+Date: Thu, 23 Jan 2020 15:25:49 -0800
+Message-ID: <CAFd5g45oZrj4MRQzJhujr1pVbOjjcqukAxm3NWTRPwO78UaidA@mail.gmail.com>
+Subject: Re: [PATCH v1] uml: make CONFIG_STATIC_LINK actually static
 Content-Type: text/plain; charset="UTF-8"
-To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, geert@linux-m68k.org, james_mcmechan@hotmail.com
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, davidgow@google.com, Brendan Higgins <brendanhiggins@google.com>
+To: James McMechan <james_mcmechan@hotmail.com>
+Cc: Richard Weinberger <richard.weinberger@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Johannes Berg <johannes.berg@intel.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "davidgow@google.com" <davidgow@google.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 List-ID: <linux-um.lists.infradead.org>
 
-Currently, CONFIG_STATIC_LINK can be enabled with options which cannot
-be statically linked, namely UML_NET_VECTOR, UML_NET_VDE, and
-UML_NET_PCAP; this is because glibc tries to load NSS which does not
-support being statically linked. So make CONFIG_STATIC_LINK depend on
-!UML_NET_VECTOR && !UML_NET_VDE && !UML_NET_PCAP.
+On Sun, Jan 19, 2020 at 4:30 PM James McMechan
+<james_mcmechan@hotmail.com> wrote:
+>
+> Resent for the mailing list since my webmail decided to try to send html...
+>
+> I agree that at least the UML_NET_VECTOR is not compatible with static linking at the moment,
+> but I was running a statically linked UML with PCAP back in December.
+> I was having no problems, but I don't remember if I was using PCAP itself...
 
-Link: https://lore.kernel.org/lkml/f658f317-be54-ed75-8296-c373c2dcc697@cambridgegreys.com/#t
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
----
-Changes since last revision:
+I was just going off of what Anton and Johannes said in regard to
+PCAP; it seems to have deviated from the libpcap library, so I have
+been unable to test it:
 
-Incorporated Geert Uytterhoeven's suggestion of using a separate
-FORBID_STATIC_LINK config option that each driver incompatible with
-static linking selects.
----
- arch/um/Kconfig         | 7 +++++++
- arch/um/drivers/Kconfig | 3 +++
- 2 files changed, 10 insertions(+)
+http://lists.infradead.org/pipermail/linux-um/2019-December/002548.html
 
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index 0917f8443c285..27a51e7dd59c6 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -62,8 +62,12 @@ config NR_CPUS
- 
- source "arch/$(HEADER_ARCH)/um/Kconfig"
- 
-+config FORBID_STATIC_LINK
-+	def_bool n
-+
- config STATIC_LINK
- 	bool "Force a static link"
-+	depends on !FORBID_STATIC_LINK
- 	default n
- 	help
- 	  This option gives you the ability to force a static link of UML.
-@@ -73,6 +77,9 @@ config STATIC_LINK
- 	  Additionally, this option enables using higher memory spaces (up to
- 	  2.75G) for UML.
- 
-+	  NOTE: This option is incompatible with some networking features which
-+	  depend on features that require being dynamically loaded (like NSS).
-+
- config LD_SCRIPT_STATIC
- 	bool
- 	default y
-diff --git a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
-index 72d4170557820..9160ead56e33c 100644
---- a/arch/um/drivers/Kconfig
-+++ b/arch/um/drivers/Kconfig
-@@ -234,6 +234,7 @@ config UML_NET_DAEMON
- config UML_NET_VECTOR
- 	bool "Vector I/O high performance network devices"
- 	depends on UML_NET
-+	select FORBID_STATIC_LINK
- 	help
- 	This User-Mode Linux network driver uses multi-message send
- 	and receive functions. The host running the UML guest must have
-@@ -245,6 +246,7 @@ config UML_NET_VECTOR
- config UML_NET_VDE
- 	bool "VDE transport (obsolete)"
- 	depends on UML_NET
-+	select FORBID_STATIC_LINK
- 	help
- 	This User-Mode Linux network transport allows one or more running
- 	UMLs on a single host to communicate with each other and also
-@@ -292,6 +294,7 @@ config UML_NET_MCAST
- config UML_NET_PCAP
- 	bool "pcap transport (obsolete)"
- 	depends on UML_NET
-+	select FORBID_STATIC_LINK
- 	help
- 	The pcap transport makes a pcap packet stream on the host look
- 	like an ethernet device inside UML.  This is useful for making
--- 
-2.25.0.341.g760bfbb309-goog
+Anton, do you have the fix for PCAP out yet?
 
+> I seem to remember a minor patch I did to fix a symbol conflict but nothing of note.
+> I have not played around with UML_NET_VECTOR since I run the normal networking.
+> And I did not find any config info with a quick googling the vector version so I just ignored it.
+
+Nevertheless, VDE still causes the linker to complain.
+
+Cheers
 
