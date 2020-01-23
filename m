@@ -1,20 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x644.google.com ([2607:f8b0:4864:20::644])
+Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iukm3-0005Nf-Sv
- for linux-um@lists.infradead.org; Thu, 23 Jan 2020 22:16:29 +0000
-Received: by mail-pl1-x644.google.com with SMTP id q13so1241623pls.1
- for <linux-um@lists.infradead.org>; Thu, 23 Jan 2020 14:16:27 -0800 (PST)
+ id 1iulPD-0000vX-Ab
+ for linux-um@lists.infradead.org; Thu, 23 Jan 2020 22:56:56 +0000
+Received: by mail-pg1-x544.google.com with SMTP id l24so2153122pgk.2
+ for <linux-um@lists.infradead.org>; Thu, 23 Jan 2020 14:56:55 -0800 (PST)
 MIME-Version: 1.0
-References: <20191211192742.95699-1-brendanhiggins@google.com>
- <20191211192742.95699-7-brendanhiggins@google.com>
- <20191214112815.GA3335535@kroah.com>
-In-Reply-To: <20191214112815.GA3335535@kroah.com>
+References: <20191216220555.245089-1-brendanhiggins@google.com>
+ <20191216220555.245089-7-brendanhiggins@google.com>
+ <20191217080653.B672B2082E@mail.kernel.org>
+In-Reply-To: <20191217080653.B672B2082E@mail.kernel.org>
 From: Brendan Higgins <brendanhiggins@google.com>
-Date: Thu, 23 Jan 2020 14:16:15 -0800
-Message-ID: <CAFd5g44Eg7DjBYWfKZ-s860X+GW65k-RtwjfEbeGXkKQ99h8WA@mail.gmail.com>
-Subject: Re: [PATCH v1 6/7] staging: axis-fifo: add unspecified HAS_IOMEM
- dependency
+Date: Thu, 23 Jan 2020 14:56:43 -0800
+Message-ID: <CAFd5g45YJrrOu=kvSF9LhkCy_gxrAa3Sa6UJLRFGQtDtepe9xg@mail.gmail.com>
+Subject: Re: [RFC v1 6/6] kunit: Add 'kunit_shutdown' option
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -27,35 +26,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Moses Christopher <moseschristopherb@gmail.com>, devel@driverdev.osuosl.org, Arnd Bergmann <arnd@arndb.de>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, David Gow <davidgow@google.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: Stephen Boyd <sboyd@kernel.org>
+Cc: linux-arch@vger.kernel.org, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>, Greg KH <gregkh@linuxfoundation.org>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, Knut Omang <knut.omang@oracle.com>, Luis Chamberlain <mcgrof@kernel.org>, rppt@linux.ibm.com, linux-um <linux-um@lists.infradead.org>, Logan Gunthorpe <logang@deltatee.com>, KUnit Development <kunit-dev@googlegroups.com>, David Gow <davidgow@google.com>, Shuah Khan <skhan@linuxfoundation.org>, Andrew Morton <akpm@linux-foundation.org>, Iurii Zaikin <yzaikin@google.com>, Alan Maguire <alan.maguire@oracle.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-On Sat, Dec 14, 2019 at 3:28 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Tue, Dec 17, 2019 at 12:06 AM Stephen Boyd <sboyd@kernel.org> wrote:
 >
-> On Wed, Dec 11, 2019 at 11:27:41AM -0800, Brendan Higgins wrote:
-> > Currently CONFIG_XIL_AXIS_FIFO=y implicitly depends on
-> > CONFIG_HAS_IOMEM=y; consequently, on architectures without IOMEM we get
-> > the following build error:
+> Quoting Brendan Higgins (2019-12-16 14:05:55)
+> > From: David Gow <davidgow@google.com>
 > >
-> > ld: drivers/staging/axis-fifo/axis-fifo.o: in function `axis_fifo_probe':
-> > drivers/staging/axis-fifo/axis-fifo.c:809: undefined reference to `devm_ioremap_resource'
+> > Add a new kernel command-line option, 'kunit_shutdown', which allows the
+> > user to specify that the kernel poweroff, halt, or reboot after
+> > completing all KUnit tests; this is very handy for running KUnit tests
+> > on UML or a VM so that the UML/VM process exits cleanly immediately
+> > after running all tests without needing a special initramfs.
 > >
-> > Fix the build error by adding the unspecified dependency.
-> >
-> > Reported-by: Brendan Higgins <brendanhiggins@google.com>
+> > Signed-off-by: David Gow <davidgow@google.com>
 > > Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+> > ---
+> >  lib/kunit/executor.c                | 18 ++++++++++++++++++
+> >  tools/testing/kunit/kunit_kernel.py |  2 +-
+> >  tools/testing/kunit/kunit_parser.py |  2 +-
+> >  3 files changed, 20 insertions(+), 2 deletions(-)
 >
-> Saying you reported a problem and then fixed it kind of does a bit of
-> disservice to the "reported-by:" tag which we normally use only to
-> credit the people that do not actually fix the problem.
->
-> So in the future, no need for this to be there for patches that you
-> write yourself.
+> Can you document it in Documentation/admin-guide/kernel-parameters.txt ?
 
-Alright, thanks for spelling that out. I will remember that in the future.
-
-Cheers!
+Ah, yes. That would be a good idea. Sorry, I just expected to be
+shouted at loudly for doing this, and didn't want to expend the effort
+until some people told me that they didn't hate the idea.
 
 _______________________________________________
 linux-um mailing list
