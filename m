@@ -1,15 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from mail-pj1-x1041.google.com ([2607:f8b0:4864:20::1041])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1irJ5i-0005xk-8S
- for linux-um@lists.infradead.org; Tue, 14 Jan 2020 10:06:34 +0000
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 5.4 64/78] um: Implement copy_thread_tls
-Date: Tue, 14 Jan 2020 11:01:38 +0100
-Message-Id: <20200114094402.012253565@linuxfoundation.org>
-In-Reply-To: <20200114094352.428808181@linuxfoundation.org>
-References: <20200114094352.428808181@linuxfoundation.org>
+ id 1iulNY-0000aT-D4
+ for linux-um@lists.infradead.org; Thu, 23 Jan 2020 22:55:13 +0000
+Received: by mail-pj1-x1041.google.com with SMTP id s7so166156pjc.0
+ for <linux-um@lists.infradead.org>; Thu, 23 Jan 2020 14:55:07 -0800 (PST)
 MIME-Version: 1.0
+References: <20191216220555.245089-1-brendanhiggins@google.com>
+ <20191216220555.245089-4-brendanhiggins@google.com>
+ <20191217080408.0E805207FF@mail.kernel.org>
+In-Reply-To: <20191217080408.0E805207FF@mail.kernel.org>
+From: Brendan Higgins <brendanhiggins@google.com>
+Date: Thu, 23 Jan 2020 14:54:55 -0800
+Message-ID: <CAFd5g44Wh9kwXsY_M4GfMp0+wzN_3HhVfa360J-tF48aQ_KADg@mail.gmail.com>
+Subject: Re: [RFC v1 3/6] kunit: test: create a single centralized executor
+ for all tests
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,115 +27,110 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: linux-um@lists.infradead.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Christian Brauner <christian.brauner@ubuntu.com>, Amanieu dAntras <amanieu@gmail.com>, stable@vger.kernel.org
+To: Stephen Boyd <sboyd@kernel.org>
+Cc: linux-arch@vger.kernel.org, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>, Greg KH <gregkh@linuxfoundation.org>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, Knut Omang <knut.omang@oracle.com>, Luis Chamberlain <mcgrof@kernel.org>, rppt@linux.ibm.com, linux-um <linux-um@lists.infradead.org>, Logan Gunthorpe <logang@deltatee.com>, KUnit Development <kunit-dev@googlegroups.com>, David Gow <davidgow@google.com>, Shuah Khan <skhan@linuxfoundation.org>, Andrew Morton <akpm@linux-foundation.org>, Iurii Zaikin <yzaikin@google.com>, Alan Maguire <alan.maguire@oracle.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-From: Amanieu d'Antras <amanieu@gmail.com>
+On Tue, Dec 17, 2019 at 12:04 AM Stephen Boyd <sboyd@kernel.org> wrote:
+>
+> Quoting Brendan Higgins (2019-12-16 14:05:52)
+> > diff --git a/include/kunit/test.h b/include/kunit/test.h
+> > index dba48304b3bd3..c070798ebb765 100644
+> > --- a/include/kunit/test.h
+> > +++ b/include/kunit/test.h
+> > @@ -217,11 +217,8 @@ int kunit_run_tests(struct kunit_suite *suite);
+> >   * everything else is definitely initialized.
+> >   */
+> >  #define kunit_test_suite(suite)                                                       \
+> > -       static int kunit_suite_init##suite(void)                               \
+>
+> Oh this should have been __init before.
 
-commit 457677c70c7672a4586b0b8abc396cc1ecdd376d upstream.
+No, the stuff in this patch shouldn't be init. With the work that Alan
+has been doing (adding support for modules, debugfs); the test code
+can run after booting, so init in any of this code is incorrect.
 
-This is required for clone3 which passes the TLS value through a
-struct rather than a register.
+> > -       {                                                                      \
+> > -               return kunit_run_tests(&suite);                                \
+> > -       }                                                                      \
+> > -       late_initcall(kunit_suite_init##suite)
+> > +       static struct kunit_suite *__kunit_suite_##suite                       \
+> > +       __used __aligned(8) __section(.kunit_test_suites) = &suite
+> >
+> >  /*
+> >   * Like kunit_alloc_resource() below, but returns the struct kunit_resource
+> > diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
+> > new file mode 100644
+> > index 0000000000000..978086cfd257d
+> > --- /dev/null
+> > +++ b/lib/kunit/executor.c
+> > @@ -0,0 +1,43 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Base unit test (KUnit) API.
+> > + *
+> > + * Copyright (C) 2019, Google LLC.
+> > + * Author: Brendan Higgins <brendanhiggins@google.com>
+> > + */
+> > +
+> > +#include <linux/init.h>
+> > +#include <linux/printk.h>
+> > +#include <kunit/test.h>
+> > +
+> > +/*
+> > + * These symbols point to the .kunit_test_suites section and are defined in
+> > + * include/asm-generic/vmlinux.lds.h, and consequently must be extern.
+> > + */
+> > +extern struct kunit_suite *__kunit_suites_start[];
+> > +extern struct kunit_suite *__kunit_suites_end[];
+> > +
+> > +static bool kunit_run_all_tests(void)
+>
+> Should be __init?
 
-Signed-off-by: Amanieu d'Antras <amanieu@gmail.com>
-Cc: linux-um@lists.infradead.org
-Cc: <stable@vger.kernel.org> # 5.3.x
-Link: https://lore.kernel.org/r/20200104123928.1048822-1-amanieu@gmail.com
-Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+It could be, I think. Alan's code doesn't call this, so for now we
+might as well make it __init.
 
----
- arch/um/Kconfig                      |    1 +
- arch/um/include/asm/ptrace-generic.h |    2 +-
- arch/um/kernel/process.c             |    6 +++---
- arch/x86/um/tls_32.c                 |    6 ++----
- arch/x86/um/tls_64.c                 |    7 +++----
- 5 files changed, 10 insertions(+), 12 deletions(-)
+> > +{
+> > +       struct kunit_suite **suite;
+>
+> Can this be const? And the linker references above too?
 
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -14,6 +14,7 @@ config UML
- 	select HAVE_FUTEX_CMPXCHG if FUTEX
- 	select HAVE_DEBUG_KMEMLEAK
- 	select HAVE_DEBUG_BUGVERBOSE
-+	select HAVE_COPY_THREAD_TLS
- 	select GENERIC_IRQ_SHOW
- 	select GENERIC_CPU_DEVICES
- 	select GENERIC_CLOCKEVENTS
---- a/arch/um/include/asm/ptrace-generic.h
-+++ b/arch/um/include/asm/ptrace-generic.h
-@@ -36,7 +36,7 @@ extern long subarch_ptrace(struct task_s
- extern unsigned long getreg(struct task_struct *child, int regno);
- extern int putreg(struct task_struct *child, int regno, unsigned long value);
- 
--extern int arch_copy_tls(struct task_struct *new);
-+extern int arch_set_tls(struct task_struct *new, unsigned long tls);
- extern void clear_flushed_tls(struct task_struct *task);
- extern int syscall_trace_enter(struct pt_regs *regs);
- extern void syscall_trace_leave(struct pt_regs *regs);
---- a/arch/um/kernel/process.c
-+++ b/arch/um/kernel/process.c
-@@ -153,8 +153,8 @@ void fork_handler(void)
- 	userspace(&current->thread.regs.regs, current_thread_info()->aux_fp_regs);
- }
- 
--int copy_thread(unsigned long clone_flags, unsigned long sp,
--		unsigned long arg, struct task_struct * p)
-+int copy_thread_tls(unsigned long clone_flags, unsigned long sp,
-+		unsigned long arg, struct task_struct * p, unsigned long tls)
- {
- 	void (*handler)(void);
- 	int kthread = current->flags & PF_KTHREAD;
-@@ -188,7 +188,7 @@ int copy_thread(unsigned long clone_flag
- 		 * Set a new TLS for the child thread?
- 		 */
- 		if (clone_flags & CLONE_SETTLS)
--			ret = arch_copy_tls(p);
-+			ret = arch_set_tls(p, tls);
- 	}
- 
- 	return ret;
---- a/arch/x86/um/tls_32.c
-+++ b/arch/x86/um/tls_32.c
-@@ -215,14 +215,12 @@ static int set_tls_entry(struct task_str
- 	return 0;
- }
- 
--int arch_copy_tls(struct task_struct *new)
-+int arch_set_tls(struct task_struct *new, unsigned long tls)
- {
- 	struct user_desc info;
- 	int idx, ret = -EFAULT;
- 
--	if (copy_from_user(&info,
--			   (void __user *) UPT_SI(&new->thread.regs.regs),
--			   sizeof(info)))
-+	if (copy_from_user(&info, (void __user *) tls, sizeof(info)))
- 		goto out;
- 
- 	ret = -EINVAL;
---- a/arch/x86/um/tls_64.c
-+++ b/arch/x86/um/tls_64.c
-@@ -6,14 +6,13 @@ void clear_flushed_tls(struct task_struc
- {
- }
- 
--int arch_copy_tls(struct task_struct *t)
-+int arch_set_tls(struct task_struct *t, unsigned long tls)
- {
- 	/*
- 	 * If CLONE_SETTLS is set, we need to save the thread id
--	 * (which is argument 5, child_tid, of clone) so it can be set
--	 * during context switches.
-+	 * so it can be set during context switches.
- 	 */
--	t->thread.arch.fs = t->thread.regs.regs.gp[R8 / sizeof(long)];
-+	t->thread.arch.fs = tls;
- 
- 	return 0;
- }
+Good catch. Will fix.
 
+> > +       bool has_test_failed = false;
+> > +
+> > +       for (suite = __kunit_suites_start;
+> > +            suite < __kunit_suites_end;
+> > +            ++suite) {
+> > +               if (kunit_run_tests(*suite))
+> > +                       has_test_failed = true;
+> > +       }
+> > +
+> > +       return !has_test_failed;
+> > +}
+> > +
+> > +static int kunit_executor_init(void)
+>
+> Should be __init?
 
+Will do.
+
+> > +{
+> > +       if (kunit_run_all_tests())
+> > +               return 0;
+> > +       else
+> > +               return -EFAULT;
+>
+> Why two functions instead of just one that is the target of the
+> late_initcall? Nitpick: deindent that last return and take it out of the
+> else.
+
+Yeah, it probably makes more sense to just call kunit_run_all_tests
+and have it return an int.
+
+> > +}
+> > +
+> > +late_initcall(kunit_executor_init);
 
 _______________________________________________
 linux-um mailing list
