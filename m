@@ -1,15 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from aserp2120.oracle.com ([141.146.126.78])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1is8PF-0000go-No
- for linux-um@lists.infradead.org; Thu, 16 Jan 2020 16:54:07 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 176/205] um: virtio_uml: Disallow modular build
-Date: Thu, 16 Jan 2020 11:42:31 -0500
-Message-Id: <20200116164300.6705-176-sashal@kernel.org>
-In-Reply-To: <20200116164300.6705-1-sashal@kernel.org>
-References: <20200116164300.6705-1-sashal@kernel.org>
+ id 1ivEX1-0001qL-B1
+ for linux-um@lists.infradead.org; Sat, 25 Jan 2020 06:02:56 +0000
+Date: Sat, 25 Jan 2020 09:01:52 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH] um: Fix some error handling in uml_vector_user_bpf()
+Message-ID: <20200125060152.GN1847@kadam>
+References: <20200124101450.jxfzsh6sz7v324hv@kili.mountain>
+ <36070c96-8e75-7d06-d945-87a9d366d0b9@cambridgegreys.com>
+ <20200124164427.GF1870@kadam>
+ <de3bdae8-2dcd-490f-cdf2-67bf92a552e8@cambridgegreys.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <de3bdae8-2dcd-490f-cdf2-67bf92a552e8@cambridgegreys.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,62 +26,70 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org, Anton Ivanov <anton.ivanov@cambridgegreys.co.uk>, Johannes Berg <johannes.berg@intel.com>
+To: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: kernel-janitors@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, Song Liu <songliubraving@fb.com>, Alexei Starovoitov <ast@kernel.org>, Alex Dewar <alex.dewar@gmx.co.uk>, Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>, Martin KaFai Lau <kafai@fb.com>
 
-From: Johannes Berg <johannes.berg@intel.com>
+On Fri, Jan 24, 2020 at 04:48:03PM +0000, Anton Ivanov wrote:
+> 
+> 
+> On 24/01/2020 16:44, Dan Carpenter wrote:
+> > On Fri, Jan 24, 2020 at 12:52:18PM +0000, Anton Ivanov wrote:
+> > > 
+> > > 
+> > > On 24/01/2020 10:14, Dan Carpenter wrote:
+> > > > 1) The uml_vector_user_bpf() returns pointers so it should return NULL
+> > > >      instead of false.
+> > > > 2) If the "bpf_prog" allocation failed, it would have eventually lead to
+> > > >      a crash.  We can't succeed after the error happens so it should just
+> > > >      return.
+> > > > 
+> > > > Fixes: 9807019a62dc ("um: Loadable BPF "Firmware" for vector drivers")
+> > > > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > > > ---
+> > > >    arch/um/drivers/vector_user.c | 10 +++++-----
+> > > >    1 file changed, 5 insertions(+), 5 deletions(-)
+> > > > 
+> > > > diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
+> > > > index ddcd917be0af..88483f5b034c 100644
+> > > > --- a/arch/um/drivers/vector_user.c
+> > > > +++ b/arch/um/drivers/vector_user.c
+> > > > @@ -732,13 +732,13 @@ void *uml_vector_user_bpf(char *filename)
+> > > >    	if (stat(filename, &statbuf) < 0) {
+> > > >    		printk(KERN_ERR "Error %d reading bpf file", -errno);
+> > > > -		return false;
+> > > > +		return NULL;
+> > > 
+> > > I will sort this one out, thanks for noticing.
+> > > 
+> > > >    	}
+> > > >    	bpf_prog = uml_kmalloc(sizeof(struct sock_fprog), UM_GFP_KERNEL);
+> > > > -	if (bpf_prog != NULL) {
+> > > > -		bpf_prog->len = statbuf.st_size / sizeof(struct sock_filter);
+> > > > -		bpf_prog->filter = NULL;
+> > > > -	}
+> > > > +	if (!pfg_prog)
+> > > 
+> > > ^^^^^ ?
+> > 
+> > If we don't return here it leads to a NULL dereference.
+> 
+> It says pfg_prog
+> 
+> I cannot find this identifier :)
+> 
 
-[ Upstream commit bf9f80cf0ccab5f346f7d3cdc445da8fcfe6ce34 ]
+Oh wow...  That's very embarrassing.  My QC scripts do compile these
+as part of the process.  But this wasn't a in of my allmodconfig
+and when I do "make arch/um/drivers/vector_user.o", it just silently
+returns without printing anything.  I didn't notice that it hadn't
+built.
 
-This driver *can* be a module, but then its parameters (socket path)
-are untrusted data from inside the VM, and that isn't allowed. Allow
-the code to only be built-in to avoid that.
+Even "make V=2 arch/um/drivers/vector_user.o" doesn't generate output.
 
-Fixes: 5d38f324993f ("um: drivers: Add virtio vhost-user driver")
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Acked-by: Anton Ivanov <anton.ivanov@cambridgegreys.co.uk>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/um/drivers/Kconfig      | 2 +-
- arch/um/drivers/virtio_uml.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+I will resend the patch (on Monday though).
 
-diff --git a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
-index fea5a0d522dc..388096fb45a2 100644
---- a/arch/um/drivers/Kconfig
-+++ b/arch/um/drivers/Kconfig
-@@ -337,7 +337,7 @@ config UML_NET_SLIRP
- endmenu
- 
- config VIRTIO_UML
--	tristate "UML driver for virtio devices"
-+	bool "UML driver for virtio devices"
- 	select VIRTIO
- 	help
- 	  This driver provides support for virtio based paravirtual device
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index c5643a59a8c7..179b41ad63ba 100644
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -4,12 +4,12 @@
-  *
-  * Copyright(c) 2019 Intel Corporation
-  *
-- * This module allows virtio devices to be used over a vhost-user socket.
-+ * This driver allows virtio devices to be used over a vhost-user socket.
-  *
-  * Guest devices can be instantiated by kernel module or command line
-  * parameters. One device will be created for each parameter. Syntax:
-  *
-- *		[virtio_uml.]device=<socket>:<virtio_id>[:<platform_id>]
-+ *		virtio_uml.device=<socket>:<virtio_id>[:<platform_id>]
-  * where:
-  *		<socket>	:= vhost-user socket path to connect
-  *		<virtio_id>	:= virtio device id (as in virtio_ids.h)
--- 
-2.20.1
-
+regards,
+dan carpenter
 
 _______________________________________________
 linux-um mailing list
