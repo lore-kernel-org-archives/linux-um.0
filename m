@@ -1,77 +1,70 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pj1-x1049.google.com ([2607:f8b0:4864:20::1049])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1ixIvJ-00068u-Ra
- for linux-um@lists.infradead.org; Thu, 30 Jan 2020 23:08:35 +0000
-Received: by mail-pj1-x1049.google.com with SMTP id m61so3116317pjb.1
- for <linux-um@lists.infradead.org>; Thu, 30 Jan 2020 15:08:32 -0800 (PST)
-Date: Thu, 30 Jan 2020 15:08:06 -0800
-In-Reply-To: <20200130230812.142642-1-brendanhiggins@google.com>
-Message-Id: <20200130230812.142642-2-brendanhiggins@google.com>
+Return-Path: <linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org>
+Date: Mon, 27 Jan 2020 15:53:51 -0800
+Message-Id: <20200127235356.122031-1-brendanhiggins@google.com>
 Mime-Version: 1.0
-References: <20200130230812.142642-1-brendanhiggins@google.com>
-Subject: [PATCH v2 1/7] vmlinux.lds.h: add linker section for KUnit test suites
+Subject: [PATCH v1 0/5] uml: add more unspecified HAS_IOMEM dependencies
 From: Brendan Higgins <brendanhiggins@google.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, arnd@arndb.de, keescook@chromium.org, skhan@linuxfoundation.org, alan.maguire@oracle.com, yzaikin@google.com, davidgow@google.com, akpm@linux-foundation.org, rppt@linux.ibm.com, frowand.list@gmail.com
-Cc: linux-arch@vger.kernel.org, linux-doc@vger.kernel.org, sboyd@kernel.org, gregkh@linuxfoundation.org, knut.omang@oracle.com, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, mcgrof@kernel.org, linux-kselftest@vger.kernel.org, logang@deltatee.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org
+To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, Kevin Hilman <khilman@kernel.org>, Nishanth Menon <nm@ti.com>, Richard Cochran <richardcochran@gmail.com>, Philipp Zabel <p.zabel@pengutronix.de>, "David S . Miller" <davem@davemloft.net>, Michal Simek <michal.simek@xilinx.com>, Andrew Lunn <andrew@lunn.ch>, Robert Hancock <hancock@sedsystems.ca>, Esben Haabendal <esben@geanix.com>, Thomas Gleixner <tglx@linutronix.de>, Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+Cc: heidifahim@google.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-pm@vger.kernel.org, Brendan Higgins <brendanhiggins@google.com>, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, davidgow@google.com, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+List-ID: <linux-um.lists.infradead.org>
 
-Add a linker section where KUnit can put references to its test suites.
-This patch is the first step in transitioning to dispatching all KUnit
-tests from a centralized executor rather than having each as its own
-separate late_initcall.
+# TL;DR
 
-Co-developed-by: Iurii Zaikin <yzaikin@google.com>
-Signed-off-by: Iurii Zaikin <yzaikin@google.com>
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Reviewed-by: Stephen Boyd <sboyd@kernel.org>
----
- include/asm-generic/vmlinux.lds.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
+This patchset adds a missing HAS_IOMEM dependency to several drivers in
+an attempt to get allyesconfig closer to working for ARCH=um. Although I
+had caught all the broken ones in early 5.5[1], some new ones have
+broken since then.
 
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index e00f41aa8ec4f..99a866f49cb3d 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -856,6 +856,13 @@
- 		KEEP(*(.con_initcall.init))				\
- 		__con_initcall_end = .;
- 
-+/* Alignment must be consistent with (kunit_suite *) in include/kunit/test.h */
-+#define KUNIT_TEST_SUITES						\
-+		. = ALIGN(8);						\
-+		__kunit_suites_start = .;				\
-+		KEEP(*(.kunit_test_suites))				\
-+		__kunit_suites_end = .;
-+
- #ifdef CONFIG_BLK_DEV_INITRD
- #define INIT_RAM_FS							\
- 	. = ALIGN(4);							\
-@@ -1024,6 +1031,7 @@
- 		INIT_CALLS						\
- 		CON_INITCALL						\
- 		INIT_RAM_FS						\
-+		KUNIT_TEST_SUITES					\
- 	}
- 
- #define BSS_SECTION(sbss_align, bss_align, stop_align)			\
+# What am I trying to do?
+
+This patchset is part of my attempt to get `make ARCH=um allyesconfig`
+to produce a config that will build *and* boot to init, so that I can
+use it as a mechanism to run tests[2].
+
+# Why won't allyesconfig break again after this series of fixes?
+
+Well, in short, it will break again; however, as I mentioned above, I am
+using UML for testing the kernel, and I am currently working on getting
+my tests to run on KernelCI. As part of our testing procedure for
+KernelCI, we are planning on building a UML kernel using allyesconfig
+and running our tests on it. Thus, we will find out very quickly once
+someone breaks allyesconfig again once we get this all working. So this
+will keep breaking until we have a build test on KernelCI running, but
+we will need to send out these fixes anyway.
+
+Brendan Higgins (5):
+  net: axienet: add unspecified HAS_IOMEM dependency
+  reset: brcmstb-rescal: add unspecified HAS_IOMEM dependency
+  reset: intel: add unspecified HAS_IOMEM dependency
+  ptp: 1588_clock_ines: add unspecified HAS_IOMEM dependency
+  power: avs: qcom-cpr: add unspecified HAS_IOMEM dependency
+
+ drivers/net/ethernet/xilinx/Kconfig | 1 +
+ drivers/power/avs/Kconfig           | 2 +-
+ drivers/ptp/Kconfig                 | 1 +
+ drivers/reset/Kconfig               | 3 ++-
+ 4 files changed, 5 insertions(+), 2 deletions(-)
+
+[1] https://lore.kernel.org/lkml/20191211192742.95699-1-brendanhiggins@google.com/
+[2] https://bugzilla.kernel.org/show_bug.cgi?id=205223
+
 -- 
 2.25.0.341.g760bfbb309-goog
 
 
 _______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
