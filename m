@@ -1,18 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-wm1-x342.google.com ([2a00:1450:4864:20::342])
+Received: from mail-pf1-x449.google.com ([2607:f8b0:4864:20::449])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1itIEi-0001z9-H0
- for linux-um@lists.infradead.org; Sun, 19 Jan 2020 21:36:01 +0000
-Received: by mail-wm1-x342.google.com with SMTP id q9so12527496wmj.5
- for <linux-um@lists.infradead.org>; Sun, 19 Jan 2020 13:35:58 -0800 (PST)
-MIME-Version: 1.0
-References: <20191213100128.04075cf409e9.Id772dc879535c85524c32b81fd392bbbfd515741@changeid>
- <5bec5e3f-ad17-e60f-eb9f-7b2d7a08ed27@kot-begemot.co.uk>
-In-Reply-To: <5bec5e3f-ad17-e60f-eb9f-7b2d7a08ed27@kot-begemot.co.uk>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Sun, 19 Jan 2020 22:35:46 +0100
-Message-ID: <CAFLxGvxsATuz=-weO3MKBTzJOdoSoEhXusyK+114Xc0ma-HD_w@mail.gmail.com>
-Subject: Re: [PATCH] um: fix time-travel=inf-cpu with xor/raid6
+ id 1iwEDs-0007ki-Su
+ for linux-um@lists.infradead.org; Mon, 27 Jan 2020 23:55:18 +0000
+Received: by mail-pf1-x449.google.com with SMTP id k26so7459595pfp.20
+ for <linux-um@lists.infradead.org>; Mon, 27 Jan 2020 15:55:15 -0800 (PST)
+Date: Mon, 27 Jan 2020 15:53:56 -0800
+In-Reply-To: <20200127235356.122031-1-brendanhiggins@google.com>
+Message-Id: <20200127235356.122031-6-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20200127235356.122031-1-brendanhiggins@google.com>
+Subject: [PATCH v1 5/5] power: avs: qcom-cpr: add unspecified HAS_IOMEM
+ dependency
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -25,83 +25,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Cc: Johannes Berg <johannes@sipsolutions.net>, linux-um <linux-um@lists.infradead.org>, Johannes Berg <johannes.berg@intel.com>
+To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, Kevin Hilman <khilman@kernel.org>, Nishanth Menon <nm@ti.com>
+Cc: linux-pm@vger.kernel.org, linux-um@lists.infradead.org, heidifahim@google.com, Brendan Higgins <brendanhiggins@google.com>, linux-kernel@vger.kernel.org, davidgow@google.com
 
-On Fri, Dec 13, 2019 at 11:32 AM Anton Ivanov
-<anton.ivanov@kot-begemot.co.uk> wrote:
->
->
->
-> On 13/12/2019 09:01, Johannes Berg wrote:
-> > From: Johannes Berg <johannes.berg@intel.com>
-> >
-> > Today, I erroneously built a time-travel configuration with btrfs
-> > enabled, and noticed it cannot boot in time-travel=inf-cpu mode,
-> > both xor and raid6 speed measurement gets stuck.
-> >
-> > For xor, work around it by picking the first algorithm if inf-cpu
-> > mode is enabled.
-> >
-> > For raid6, I didn't find such a workaround, so disallow enabling
-> > time-travel mode if RAID6_PQ_BENCHMARK is enabled.
-> >
-> > With this, and RAID6_PQ_BENCHMARK disabled, I can boot a kernel
-> > that has btrfs enabled in time-travel=inf-cpu mode.
-> >
-> > Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-> > ---
-> >   arch/um/Kconfig            | 2 ++
-> >   arch/um/include/asm/Kbuild | 1 -
-> >   arch/um/include/asm/xor.h  | 7 +++++++
-> >   3 files changed, 9 insertions(+), 1 deletion(-)
-> >   create mode 100644 arch/um/include/asm/xor.h
-> >
-> > diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-> > index 2a6d04fcb3e9..a8bf60b5c208 100644
-> > --- a/arch/um/Kconfig
-> > +++ b/arch/um/Kconfig
-> > @@ -188,6 +188,8 @@ config SECCOMP
-> >   config UML_TIME_TRAVEL_SUPPORT
-> >       bool
-> >       prompt "Support time-travel mode (e.g. for test execution)"
-> > +     # inf-cpu mode is incompatible with the benchmarking
-> > +     depends on !RAID6_PQ_BENCHMARK
-> >       help
-> >         Enable this option to support time travel inside the UML instance.
-> >
-> > diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
-> > index 398006d27e40..db7d9d4e30d8 100644
-> > --- a/arch/um/include/asm/Kbuild
-> > +++ b/arch/um/include/asm/Kbuild
-> > @@ -25,5 +25,4 @@ generic-y += switch_to.h
-> >   generic-y += topology.h
-> >   generic-y += trace_clock.h
-> >   generic-y += word-at-a-time.h
-> > -generic-y += xor.h
-> >   generic-y += kprobes.h
-> > diff --git a/arch/um/include/asm/xor.h b/arch/um/include/asm/xor.h
-> > new file mode 100644
-> > index 000000000000..7a3208c47cfc
-> > --- /dev/null
-> > +++ b/arch/um/include/asm/xor.h
-> > @@ -0,0 +1,7 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +#include <asm-generic/xor.h>
-> > +#include <shared/timer-internal.h>
-> > +
-> > +/* pick an arbitrary one - measuring isn't possible with inf-cpu */
-> > +#define XOR_SELECT_TEMPLATE(x)       \
-> > +     (time_travel_mode == TT_MODE_INFCPU ? &xor_block_8regs : NULL)
-> >
->
-> Acked-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Currently CONFIG_QCOM_CPR=y implicitly depends on CONFIG_HAS_IOMEM=y;
+consequently, on architectures without IOMEM we get the following build
+error:
 
-Applied. Thanks!
+/usr/bin/ld: drivers/power/avs/qcom-cpr.o: in function `cpr_probe':
+drivers/power/avs/qcom-cpr.c:1690: undefined reference to `devm_ioremap_resource'
 
+Fix the build error by adding the unspecified dependency.
+
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+---
+ drivers/power/avs/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/power/avs/Kconfig b/drivers/power/avs/Kconfig
+index b8fe166cd0d9f..cdb4237bfd02e 100644
+--- a/drivers/power/avs/Kconfig
++++ b/drivers/power/avs/Kconfig
+@@ -14,7 +14,7 @@ menuconfig POWER_AVS
+ 
+ config QCOM_CPR
+ 	tristate "QCOM Core Power Reduction (CPR) support"
+-	depends on POWER_AVS
++	depends on POWER_AVS && HAS_IOMEM
+ 	select PM_OPP
+ 	select REGMAP
+ 	help
 -- 
-Thanks,
-//richard
+2.25.0.341.g760bfbb309-goog
+
 
 _______________________________________________
 linux-um mailing list
