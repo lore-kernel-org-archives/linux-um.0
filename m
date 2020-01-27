@@ -1,40 +1,60 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Sun, 19 Jan 2020 23:33:29 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <1224347843.24297.1579473209765.JavaMail.zimbra@nod.at>
-Subject: Upcomming UBI/UBIFS/UML pull requests
-MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Return-Path: <linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org>
+Date: Mon, 27 Jan 2020 15:53:52 -0800
+In-Reply-To: <20200127235356.122031-1-brendanhiggins@google.com>
+Message-Id: <20200127235356.122031-2-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20200127235356.122031-1-brendanhiggins@google.com>
+Subject: [PATCH v1 1/5] net: axienet: add unspecified HAS_IOMEM dependency
+From: Brendan Higgins <brendanhiggins@google.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: torvalds <torvalds@linux-foundation.org>
-Cc: linux-um <linux-um@lists.infradead.org>, Johannes Berg <johannes@sipsolutions.net>, anton ivanov <anton.ivanov@cambridgegreys.com>, linux-mtd <linux-mtd@lists.infradead.org>, Miquel Raynal <miquel.raynal@bootlin.com>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org
+To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, "David S . Miller" <davem@davemloft.net>, Michal Simek <michal.simek@xilinx.com>, Andrew Lunn <andrew@lunn.ch>, Robert Hancock <hancock@sedsystems.ca>, Esben Haabendal <esben@geanix.com>, Thomas Gleixner <tglx@linutronix.de>, Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+Cc: heidifahim@google.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Brendan Higgins <brendanhiggins@google.com>, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, davidgow@google.com, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+List-ID: <linux-um.lists.infradead.org>
 
-Linus,
+Currently CONFIG_XILINX_AXI_EMAC=y implicitly depends on
+CONFIG_HAS_IOMEM=y; consequently, on architectures without IOMEM we get
+the following build error:
 
-due to traveling I won't be able to send you pull requests
-for UBI/UBIFS and UML this time.
+/usr/bin/ld: drivers/net/ethernet/xilinx/xilinx_axienet_main.o: in function `axienet_probe':
+drivers/net/ethernet/xilinx/xilinx_axienet_main.c:1680: undefined reference to `devm_ioremap_resource'
+/usr/bin/ld: drivers/net/ethernet/xilinx/xilinx_axienet_main.c:1779: undefined reference to `devm_ioremap_resource'
+/usr/bin/ld: drivers/net/ethernet/xilinx/xilinx_axienet_main.c:1789: undefined reference to `devm_ioremap_resource'
 
-Therefore I've already prepared my next branches and one of my colleges will
-send you an PR as soon as the merge window opens.
+Fix the build error by adding the unspecified dependency.
 
-Miquel: UBI/UBIFS
-Anton or Johannes: UML
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+---
+ drivers/net/ethernet/xilinx/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks,
-//richard
+diff --git a/drivers/net/ethernet/xilinx/Kconfig b/drivers/net/ethernet/xilinx/Kconfig
+index 6304ebd8b5c69..b1a285e693756 100644
+--- a/drivers/net/ethernet/xilinx/Kconfig
++++ b/drivers/net/ethernet/xilinx/Kconfig
+@@ -25,6 +25,7 @@ config XILINX_EMACLITE
+ 
+ config XILINX_AXI_EMAC
+ 	tristate "Xilinx 10/100/1000 AXI Ethernet support"
++	depends on HAS_IOMEM
+ 	select PHYLINK
+ 	---help---
+ 	  This driver supports the 10/100/1000 Ethernet from Xilinx for the
+-- 
+2.25.0.341.g760bfbb309-goog
+
 
 _______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
