@@ -1,19 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
+Received: from mail-pj1-x104a.google.com ([2607:f8b0:4864:20::104a])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iulPD-0000vX-Ab
- for linux-um@lists.infradead.org; Thu, 23 Jan 2020 22:56:56 +0000
-Received: by mail-pg1-x544.google.com with SMTP id l24so2153122pgk.2
- for <linux-um@lists.infradead.org>; Thu, 23 Jan 2020 14:56:55 -0800 (PST)
-MIME-Version: 1.0
-References: <20191216220555.245089-1-brendanhiggins@google.com>
- <20191216220555.245089-7-brendanhiggins@google.com>
- <20191217080653.B672B2082E@mail.kernel.org>
-In-Reply-To: <20191217080653.B672B2082E@mail.kernel.org>
+ id 1iwEDh-0006Wc-7y
+ for linux-um@lists.infradead.org; Mon, 27 Jan 2020 23:55:06 +0000
+Received: by mail-pj1-x104a.google.com with SMTP id d22so300903pjz.0
+ for <linux-um@lists.infradead.org>; Mon, 27 Jan 2020 15:55:04 -0800 (PST)
+Date: Mon, 27 Jan 2020 15:53:54 -0800
+In-Reply-To: <20200127235356.122031-1-brendanhiggins@google.com>
+Message-Id: <20200127235356.122031-4-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20200127235356.122031-1-brendanhiggins@google.com>
+Subject: [PATCH v1 3/5] reset: intel: add unspecified HAS_IOMEM dependency
 From: Brendan Higgins <brendanhiggins@google.com>
-Date: Thu, 23 Jan 2020 14:56:43 -0800
-Message-ID: <CAFd5g45YJrrOu=kvSF9LhkCy_gxrAa3Sa6UJLRFGQtDtepe9xg@mail.gmail.com>
-Subject: Re: [RFC v1 6/6] kunit: Add 'kunit_shutdown' option
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -26,33 +24,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Stephen Boyd <sboyd@kernel.org>
-Cc: linux-arch@vger.kernel.org, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>, Greg KH <gregkh@linuxfoundation.org>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, Knut Omang <knut.omang@oracle.com>, Luis Chamberlain <mcgrof@kernel.org>, rppt@linux.ibm.com, linux-um <linux-um@lists.infradead.org>, Logan Gunthorpe <logang@deltatee.com>, KUnit Development <kunit-dev@googlegroups.com>, David Gow <davidgow@google.com>, Shuah Khan <skhan@linuxfoundation.org>, Andrew Morton <akpm@linux-foundation.org>, Iurii Zaikin <yzaikin@google.com>, Alan Maguire <alan.maguire@oracle.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Brendan Higgins <brendanhiggins@google.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, davidgow@google.com, heidifahim@google.com
 
-On Tue, Dec 17, 2019 at 12:06 AM Stephen Boyd <sboyd@kernel.org> wrote:
->
-> Quoting Brendan Higgins (2019-12-16 14:05:55)
-> > From: David Gow <davidgow@google.com>
-> >
-> > Add a new kernel command-line option, 'kunit_shutdown', which allows the
-> > user to specify that the kernel poweroff, halt, or reboot after
-> > completing all KUnit tests; this is very handy for running KUnit tests
-> > on UML or a VM so that the UML/VM process exits cleanly immediately
-> > after running all tests without needing a special initramfs.
-> >
-> > Signed-off-by: David Gow <davidgow@google.com>
-> > Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-> > ---
-> >  lib/kunit/executor.c                | 18 ++++++++++++++++++
-> >  tools/testing/kunit/kunit_kernel.py |  2 +-
-> >  tools/testing/kunit/kunit_parser.py |  2 +-
-> >  3 files changed, 20 insertions(+), 2 deletions(-)
->
-> Can you document it in Documentation/admin-guide/kernel-parameters.txt ?
+Currently CONFIG_RESET_INTEL_GW=y implicitly depends on
+CONFIG_HAS_IOMEM=y; consequently, on architectures without IOMEM we get
+the following build error:
 
-Ah, yes. That would be a good idea. Sorry, I just expected to be
-shouted at loudly for doing this, and didn't want to expend the effort
-until some people told me that they didn't hate the idea.
+/usr/bin/ld: drivers/reset/reset-intel-gw.o: in function `intel_reset_probe':
+drivers/reset/reset-intel-gw.c:185: undefined reference to `devm_platform_ioremap_resource'
+
+Fix the build error by adding the unspecified dependency.
+
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+---
+ drivers/reset/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
+index a19bd303f31a9..d9efbfd296463 100644
+--- a/drivers/reset/Kconfig
++++ b/drivers/reset/Kconfig
+@@ -74,7 +74,7 @@ config RESET_IMX7
+ 
+ config RESET_INTEL_GW
+ 	bool "Intel Reset Controller Driver"
+-	depends on OF
++	depends on OF && HAS_IOMEM
+ 	select REGMAP_MMIO
+ 	help
+ 	  This enables the reset controller driver for Intel Gateway SoCs.
+-- 
+2.25.0.341.g760bfbb309-goog
+
 
 _______________________________________________
 linux-um mailing list
