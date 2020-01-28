@@ -1,72 +1,152 @@
-Return-Path: <linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 03/27] docs: virt: user_mode_linux.rst: update compiling
+ instructions
+Date: Tue, 28 Jan 2020 15:00:04 +0100
+Message-Id: <ea87ca5eef3b32e8caa2057d34909bb5aebf1cb4.1580219586.git.mchehab+huawei@kernel.org>
+In-Reply-To: <cover.1580219586.git.mchehab+huawei@kernel.org>
+References: <cover.1580219586.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-References: <20191211192742.95699-1-brendanhiggins@google.com>
- <20191211192742.95699-8-brendanhiggins@google.com>
- <CACPK8XctCb9Q2RaFVHEDuWxKDXpCWMWs-+vnKZ=SeTa3xRnT_g@mail.gmail.com>
- <CAFd5g45MFYMK-eZWPC5fhm2OkynUXKfArUVhbanYVH+qKRUwPg@mail.gmail.com>
-In-Reply-To: <CAFd5g45MFYMK-eZWPC5fhm2OkynUXKfArUVhbanYVH+qKRUwPg@mail.gmail.com>
-From: Brendan Higgins <brendanhiggins@google.com>
-Date: Mon, 27 Jan 2020 01:46:25 -0800
-Message-ID: <CAFd5g454tX9zxRAq5T_pDGzcWt7u5r119wjo-BCGVq+=Ej4bGQ@mail.gmail.com>
-Subject: Re: [PATCH v1 7/7] fsi: aspeed: add unspecified HAS_IOMEM dependency
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org
-To: Joel Stanley <joel@jms.id.au>
-Cc: linux-aspeed <linux-aspeed@lists.ozlabs.org>, Andrew Jeffery <andrew@aj.id.au>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, Eddie James <eajames@linux.ibm.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>, Jeremy Kerr <jk@ozlabs.org>, David Gow <davidgow@google.com>, Alistar Popple <alistair@popple.id.au>, linux-fsi@lists.ozlabs.org, Linux ARM <linux-arm-kernel@lists.infradead.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
-List-ID: <linux-um.lists.infradead.org>
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Linux Media Mailing List <linux-media@vger.kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>, Mauro Carvalho Chehab <mchehab+huawei@kernel.org>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-doc@vger.kernel.org, linux-um@lists.infradead.org, Mauro Carvalho Chehab <mchehab@infradead.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-On Wed, Dec 11, 2019 at 4:30 PM Brendan Higgins
-<brendanhiggins@google.com> wrote:
->
-> On Wed, Dec 11, 2019 at 4:12 PM Joel Stanley <joel@jms.id.au> wrote:
-> >
-> > On Wed, 11 Dec 2019 at 19:28, Brendan Higgins <brendanhiggins@google.com> wrote:
-> > >
-> > > Currently CONFIG_FSI_MASTER_ASPEED=y implicitly depends on
-> > > CONFIG_HAS_IOMEM=y; consequently, on architectures without IOMEM we get
-> > > the following build error:
-> > >
-> > > ld: drivers/fsi/fsi-master-aspeed.o: in function `fsi_master_aspeed_probe':
-> > > drivers/fsi/fsi-master-aspeed.c:436: undefined reference to `devm_ioremap_resource'
-> > >
-> > > Fix the build error by adding the unspecified dependency.
-> > >
-> > > Reported-by: Brendan Higgins <brendanhiggins@google.com>
-> > > Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-> >
-> > Nice. I hit this when attempting to force on CONFIG_COMPILE_TEST in
-> > order to build some ARM drivers under UM. Do you have plans to fix
-> > that too?
->
-> The only broken configs I found for UML are all listed on the cover
-> letter of this patch. I think fixing COMPILE_TEST on UM could be
-> worthwhile. Did you see any brokenness other than what I mentioned on
-> the cover letter?
->
-> > Do you want to get this in a fix for 5.5?
->
-> Preferably, yes.
->
-> > Acked-by: Joel Stanley <joel@jms.id.au>
+Instead of pointing for a pre-2.4 and a seaparate patch,
+update it to match current upstream, as UML was merged
+a long time ago.
 
-Hey, I know I owe you a reply about debugging your kunitconfig (I'll
-try to get to that this week); nevertheless, it looks like this patch
-didn't make it into 5.5. Can you make sure it gets into 5.6? It
-shouldn't depend on anything else.
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ Documentation/virt/uml/user_mode_linux.rst | 62 ++++------------------
+ 1 file changed, 9 insertions(+), 53 deletions(-)
 
-Cheers
+diff --git a/Documentation/virt/uml/user_mode_linux.rst b/Documentation/virt/uml/user_mode_linux.rst
+index 98922008be23..a96d29243964 100644
+--- a/Documentation/virt/uml/user_mode_linux.rst
++++ b/Documentation/virt/uml/user_mode_linux.rst
+@@ -3,7 +3,7 @@ User Mode Linux HOWTO
+ =====================
+ 
+ :Author:  User Mode Linux Core Team
+-:Last-updated: Mon Nov 18 14:16:16 EST 2002
++:Last-updated: Sat Jan 25 16:07:55 CET 2020
+ 
+ This document describes the use and abuse of Jeff Dike's User Mode
+ Linux: a port of the Linux kernel as a normal Intel Linux process.
+@@ -221,23 +221,15 @@ Linux: a port of the Linux kernel as a normal Intel Linux process.
+ 
+ 
+   Compiling the user mode kernel is just like compiling any other
+-  kernel.  Let's go through the steps, using 2.4.0-prerelease (current
+-  as of this writing) as an example:
++  kernel.
+ 
+ 
+-  1. Download the latest UML patch from
+-     the download page <http://user-mode-linux.sourceforge.net/
+-
+-     In this example, the file is uml-patch-2.4.0-prerelease.bz2.
+-
+-
+-  2. Download the matching kernel from your favourite kernel mirror,
++  1. Download the latest kernel from your favourite kernel mirror,
+      such as:
+ 
+-     ftp://ftp.ca.kernel.org/pub/kernel/v2.4/linux-2.4.0-prerelease.tar.bz2
++     https://mirrors.edge.kernel.org/pub/linux/kernel/v5.x/linux-5.4.14.tar.xz
+ 
+-
+-  3. Make a directory and unpack the kernel into it::
++  2. Make a directory and unpack the kernel into it::
+ 
+        host%
+        mkdir ~/uml
+@@ -246,21 +238,10 @@ Linux: a port of the Linux kernel as a normal Intel Linux process.
+        cd ~/uml
+ 
+        host%
+-       tar -xzvf linux-2.4.0-prerelease.tar.bz2
++       tar xvf linux-5.4.14.tar.xz
+ 
+ 
+-
+-  4. Apply the patch using::
+-
+-       host%
+-       cd ~/uml/linux
+-
+-       host%
+-       bzcat uml-patch-2.4.0-prerelease.bz2 | patch -p1
+-
+-
+-
+-  5. Run your favorite config; ``make xconfig ARCH=um`` is the most
++  3. Run your favorite config; ``make xconfig ARCH=um`` is the most
+      convenient.  ``make config ARCH=um`` and ``make menuconfig ARCH=um``
+      will work as well.  The defaults will give you a useful kernel.  If
+      you want to change something, go ahead, it probably won't hurt
+@@ -274,34 +255,9 @@ Linux: a port of the Linux kernel as a normal Intel Linux process.
+ 
+ 
+ 
+-  6. Finish with ``make linux ARCH=um``: the result is a file called
++  4. Finish with ``make linux ARCH=um``: the result is a file called
+      ``linux`` in the top directory of your source tree.
+ 
+-  Make sure that you don't build this kernel in /usr/src/linux.  On some
+-  distributions, /usr/include/asm is a link into this pool.  The user-
+-  mode build changes the other end of that link, and things that include
+-  <asm/anything.h> stop compiling.
+-
+-  The sources are also available from cvs at the project's cvs page,
+-  which has directions on getting the sources. You can also browse the
+-  CVS pool from there.
+-
+-  If you get the CVS sources, you will have to check them out into an
+-  empty directory. You will then have to copy each file into the
+-  corresponding directory in the appropriate kernel pool.
+-
+-  If you don't have the latest kernel pool, you can get the
+-  corresponding user-mode sources with::
+-
+-
+-       host% cvs co -r v_2_3_x linux
+-
+-
+-
+-
+-  where 'x' is the version in your pool. Note that you will not get the
+-  bug fixes and enhancements that have gone into subsequent releases.
+-
+ 
+ 2.2.  Compiling and installing kernel modules
+ ---------------------------------------------
+@@ -414,7 +370,7 @@ Linux: a port of the Linux kernel as a normal Intel Linux process.
+ 3.1.  Running UML
+ -----------------
+ 
+-  It runs on 2.2.15 or later, and all 2.4 kernels.
++  It runs on 2.2.15 or later, and all kernel versions since 2.4.
+ 
+ 
+   Booting UML is straightforward.  Simply run 'linux': it will try to
+-- 
+2.24.1
+
 
 _______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
