@@ -1,23 +1,23 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-mw2nam10on2096.outbound.protection.outlook.com
- ([40.107.94.96] helo=NAM10-MW2-obe.outbound.protection.outlook.com)
+Received: from mail-yw1-xc43.google.com ([2607:f8b0:4864:20::c43])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iwWeJ-00040E-1F
- for linux-um@lists.infradead.org; Tue, 28 Jan 2020 19:35:48 +0000
-From: <Tim.Bird@sony.com>
-Subject: RE: [RFC v1 0/6] kunit: create a centralized executor to dispatch
- all KUnit tests
-Date: Tue, 28 Jan 2020 19:35:36 +0000
-Message-ID: <ECADFF3FD767C149AD96A924E7EA6EAF982C9840@USCULXMSG17.am.sony.com>
+ id 1iwVjI-0003mZ-Aa
+ for linux-um@lists.infradead.org; Tue, 28 Jan 2020 18:36:53 +0000
+Received: by mail-yw1-xc43.google.com with SMTP id l22so6969694ywc.8
+ for <linux-um@lists.infradead.org>; Tue, 28 Jan 2020 10:36:51 -0800 (PST)
+Subject: Re: [RFC v1 0/6] kunit: create a centralized executor to dispatch all
+ KUnit tests
 References: <20191216220555.245089-1-brendanhiggins@google.com>
  <20200106224022.GX11244@42.do-not-panic.com>
  <CAFd5g456c2Zs7rCvRPgio83G=SrtPGi25zbqAUyTBHspHwtu4w@mail.gmail.com>
  <594b7815-0611-34ea-beb5-0642114b5d82@gmail.com>
  <CAFd5g469TWzrLKmQNR2i0HACJ3FEu-=4-Rk005g9szB5UsZAcw@mail.gmail.com>
- <e801e4ac-b7c2-3d0a-71e7-f8153a3dfbc8@gmail.com>
-In-Reply-To: <e801e4ac-b7c2-3d0a-71e7-f8153a3dfbc8@gmail.com>
-Content-Language: en-US
+From: Frank Rowand <frowand.list@gmail.com>
+Message-ID: <e801e4ac-b7c2-3d0a-71e7-f8153a3dfbc8@gmail.com>
+Date: Tue, 28 Jan 2020 12:36:49 -0600
 MIME-Version: 1.0
+In-Reply-To: <CAFd5g469TWzrLKmQNR2i0HACJ3FEu-=4-Rk005g9szB5UsZAcw@mail.gmail.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -30,36 +30,71 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: frowand.list@gmail.com, brendanhiggins@google.com
-Cc: logang@deltatee.com, linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org, keescook@chromium.org, arnd@arndb.de, gregkh@linuxfoundation.org, sboyd@kernel.org, richard@nod.at, jdike@addtoit.com, knut.omang@oracle.com, linux-kernel@vger.kernel.org, rppt@linux.ibm.com, linux-um@lists.infradead.org, mcgrof@kernel.org, kunit-dev@googlegroups.com, davidgow@google.com, skhan@linuxfoundation.org, akpm@linux-foundation.org, yzaikin@google.com, alan.maguire@oracle.com, anton.ivanov@cambridgegreys.com
+To: Brendan Higgins <brendanhiggins@google.com>
+Cc: Logan Gunthorpe <logang@deltatee.com>, linux-arch@vger.kernel.org, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>, Greg KH <gregkh@linuxfoundation.org>, Stephen Boyd <sboyd@kernel.org>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, Knut Omang <knut.omang@oracle.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, rppt@linux.ibm.com, linux-um <linux-um@lists.infradead.org>, Luis Chamberlain <mcgrof@kernel.org>, KUnit Development <kunit-dev@googlegroups.com>, David Gow <davidgow@google.com>, Shuah Khan <skhan@linuxfoundation.org>, Andrew Morton <akpm@linux-foundation.org>, Iurii Zaikin <yzaikin@google.com>, Alan Maguire <alan.maguire@oracle.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-
-
-> -----Original Message-----
-> From:  Frank Rowand on January 28, 2020 11:37 AM
+On 1/28/20 1:19 AM, Brendan Higgins wrote:
+> On Mon, Jan 27, 2020 at 9:40 AM Frank Rowand <frowand.list@gmail.com> wrote:
+>>
+>> On 1/23/20 4:40 PM, Brendan Higgins wrote:
+>>> Sorry for the late reply. I am still catching up from being on vacation.
+>>>>> On Mon, Jan 6, 2020 at 2:40 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
+>>>> It does beg the question if this means kunit is happy to not be a tool
+>>>> to test pre basic setup stuff (terminology used in init.c, meaning prior
+>>>> to running all init levels). I suspect this is the case.
+>>>
+>>> Not sure. I still haven't seen any cases where this is necessary, so I
+>>> am not super worried about it. Regardless, I don't think this patchset
+>>> really changes anything in that regard, we are moving from late_init
+>>> to after late_init, so it isn't that big of a change for most use
+>>> cases.
+>>>
+>>> Please share if you can think of some things that need to be tested in
+>>> early init.
+>>
+>> I don't have a specific need for this right now.  I had not thought about
+>> how the current kunit implementation forces all kunit tests to run at a
+>> specific initcall level before reading this email thread.
+>>
+>> I can see the value of being able to have some tests run at different
+>> initcall levels to verify what functionality is available and working
+>> at different points in the boot sequence.
 > 
-> On 1/28/20 1:19 AM, Brendan Higgins wrote:
-> > On Mon, Jan 27, 2020 at 9:40 AM Frank Rowand <frowand.list@gmail.com> wrote:
-...
-> > we could add Kconfigs to control this, but the compiler nevertheless
-> > complains because it doesn't know what phase KUnit runs in.
-> >
-> > Is there any way to tell the compiler that it is okay for non __init
-> > code to call __init code? I would prefer not to have a duplicate
-> > version of all the KUnit libraries with all the symbols marked __init.
-> 
-> I'm not sure.  The build messages have always been useful and valid in
-> my context, so I never thought to consider that possibility.
-> 
-> > Thoughts?
+> Let's cross that bridge when we get there. It should be fairly easy to
+> add that functionality.
 
-I'm not sure there's a restriction on non __init code calling __init
-code.  In init/main.c arch_call_reset_init() is in __init, and it calls
-rest_init which is non __init, without any special handling.
+Yes. I just wanted to add the thought to the back of your mind so that
+it does not get precluded by future changes to the kunit architecture.
 
-Is the compiler complaint mentioned above related to  calling
-into __init code, or with some other issue?
- -- Tim
+> 
+>> But more important than early initcall levels, I do not want the
+>> framework to prevent using or testing code and data that are marked
+>> as '__init'.  So it is important to retain a way to invoke the tests
+>> while __init code and data are available, if there is also a change
+>> to generally invoke the tests later.
+> 
+> Definitely. For now that still works as long as you don't build KUnit
+> as a module, but I think Alan's new patches which allow KUnit to be
+> run at runtime via debugfs could cause some difficulty there. Again,
+
+Yes, Alan's patches are part of what triggered me thinking about the
+issues I raised.
+
+
+> we could add Kconfigs to control this, but the compiler nevertheless
+> complains because it doesn't know what phase KUnit runs in.
+> 
+> Is there any way to tell the compiler that it is okay for non __init
+> code to call __init code? I would prefer not to have a duplicate
+> version of all the KUnit libraries with all the symbols marked __init.
+
+I'm not sure.  The build messages have always been useful and valid in
+my context, so I never thought to consider that possibility.
+
+> Thoughts?
+> .
+> 
+
 
 _______________________________________________
 linux-um mailing list
