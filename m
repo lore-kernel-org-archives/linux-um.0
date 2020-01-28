@@ -1,14 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from userp2120.oracle.com ([156.151.31.85])
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iuw28-0002vE-DA
- for linux-um@lists.infradead.org; Fri, 24 Jan 2020 10:17:49 +0000
-Date: Fri, 24 Jan 2020 13:14:50 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH] um: Fix some error handling in uml_vector_user_bpf()
-Message-ID: <20200124101450.jxfzsh6sz7v324hv@kili.mountain>
+ id 1iwLzD-0006gQ-J3
+ for linux-um@lists.infradead.org; Tue, 28 Jan 2020 08:12:41 +0000
+Subject: Re: [RFC v1 2/2] arch: um: turn BTF_TYPEINFO support off
+References: <20200127193549.187419-1-brendanhiggins@google.com>
+ <20200127193549.187419-3-brendanhiggins@google.com>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <b49a0bf2-eaf7-b2b3-a7f2-db0f280d42ff@cambridgegreys.com>
+Date: Tue, 28 Jan 2020 08:12:28 +0000
 MIME-Version: 1.0
-Content-Disposition: inline
+In-Reply-To: <20200127193549.187419-3-brendanhiggins@google.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -17,51 +21,53 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jeff Dike <jdike@addtoit.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Song Liu <songliubraving@fb.com>, Daniel Borkmann <daniel@iogearbox.net>, kernel-janitors@vger.kernel.org, Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org, Alexei Starovoitov <ast@kernel.org>, Alex Dewar <alex.dewar@gmx.co.uk>, Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>, Martin KaFai Lau <kafai@fb.com>
+To: Brendan Higgins <brendanhiggins@google.com>, jdike@addtoit.com, richard@nod.at, akpm@linux-foundation.org, changbin.du@intel.com, yamada.masahiro@socionext.com, rdunlap@infradead.org, keescook@chromium.org, andriy.shevchenko@linux.intel.com
+Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, davidgow@google.com, heidifahim@google.com
 
-1) The uml_vector_user_bpf() returns pointers so it should return NULL
-   instead of false.
-2) If the "bpf_prog" allocation failed, it would have eventually lead to
-   a crash.  We can't succeed after the error happens so it should just
-   return.
 
-Fixes: 9807019a62dc ("um: Loadable BPF "Firmware" for vector drivers")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- arch/um/drivers/vector_user.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
-index ddcd917be0af..88483f5b034c 100644
---- a/arch/um/drivers/vector_user.c
-+++ b/arch/um/drivers/vector_user.c
-@@ -732,13 +732,13 @@ void *uml_vector_user_bpf(char *filename)
- 
- 	if (stat(filename, &statbuf) < 0) {
- 		printk(KERN_ERR "Error %d reading bpf file", -errno);
--		return false;
-+		return NULL;
- 	}
- 	bpf_prog = uml_kmalloc(sizeof(struct sock_fprog), UM_GFP_KERNEL);
--	if (bpf_prog != NULL) {
--		bpf_prog->len = statbuf.st_size / sizeof(struct sock_filter);
--		bpf_prog->filter = NULL;
--	}
-+	if (!pfg_prog)
-+		return NULL;
-+	bpf_prog->len = statbuf.st_size / sizeof(struct sock_filter);
-+	bpf_prog->filter = NULL;
- 	ffd = os_open_file(filename, of_read(OPENFLAGS()), 0);
- 	if (ffd < 0) {
- 		printk(KERN_ERR "Error %d opening bpf file", -errno);
+On 27/01/2020 19:35, Brendan Higgins wrote:
+> Currently CONFIG_DEBUG_INFO_BTF=y doesn't work on UML:
+> 
+> scripts/link-vmlinux.sh: line 106: 17463 Segmentation fault      LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1}
+> objcopy: --change-section-vma .BTF=0x0000000000000000 never used
+> objcopy: --change-section-lma .BTF=0x0000000000000000 never used
+> objcopy: error: the input file '.btf.vmlinux.bin' is empty
+> Failed to generate BTF for vmlinux
+> Try to disable CONFIG_DEBUG_INFO_BTF
+> make: *** [Makefile:1078: vmlinux] Error 1
+> 
+> So turn off ARCH_HAS_BTF_TYPEINFO support off for the UM architecture.
+> 
+> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+> ---
+>   arch/um/Kconfig | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+> index 0917f8443c285..53e13d8b210e0 100644
+> --- a/arch/um/Kconfig
+> +++ b/arch/um/Kconfig
+> @@ -6,6 +6,7 @@ config UML
+>   	bool
+>   	default y
+>   	select ARCH_HAS_KCOV
+> +	select ARCH_NO_BTF_TYPEINFO
+>   	select ARCH_NO_PREEMPT
+>   	select HAVE_ARCH_AUDITSYSCALL
+>   	select HAVE_ARCH_SECCOMP_FILTER
+> 
+
+Acked-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+
 -- 
-2.11.0
-
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
 _______________________________________________
 linux-um mailing list
