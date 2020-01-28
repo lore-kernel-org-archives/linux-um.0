@@ -1,23 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-yw1-xc43.google.com ([2607:f8b0:4864:20::c43])
+Received: from mail-pg1-x54a.google.com ([2607:f8b0:4864:20::54a])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1iwVjI-0003mZ-Aa
- for linux-um@lists.infradead.org; Tue, 28 Jan 2020 18:36:53 +0000
-Received: by mail-yw1-xc43.google.com with SMTP id l22so6969694ywc.8
- for <linux-um@lists.infradead.org>; Tue, 28 Jan 2020 10:36:51 -0800 (PST)
-Subject: Re: [RFC v1 0/6] kunit: create a centralized executor to dispatch all
+ id 1iwLAW-0004mt-RW
+ for linux-um@lists.infradead.org; Tue, 28 Jan 2020 07:20:18 +0000
+Received: by mail-pg1-x54a.google.com with SMTP id o21so8116336pgm.11
+ for <linux-um@lists.infradead.org>; Mon, 27 Jan 2020 23:20:16 -0800 (PST)
+Date: Mon, 27 Jan 2020 23:19:55 -0800
+Message-Id: <20200128072002.79250-1-brendanhiggins@google.com>
+Mime-Version: 1.0
+Subject: [PATCH v1 0/7] kunit: create a centralized executor to dispatch all
  KUnit tests
-References: <20191216220555.245089-1-brendanhiggins@google.com>
- <20200106224022.GX11244@42.do-not-panic.com>
- <CAFd5g456c2Zs7rCvRPgio83G=SrtPGi25zbqAUyTBHspHwtu4w@mail.gmail.com>
- <594b7815-0611-34ea-beb5-0642114b5d82@gmail.com>
- <CAFd5g469TWzrLKmQNR2i0HACJ3FEu-=4-Rk005g9szB5UsZAcw@mail.gmail.com>
-From: Frank Rowand <frowand.list@gmail.com>
-Message-ID: <e801e4ac-b7c2-3d0a-71e7-f8153a3dfbc8@gmail.com>
-Date: Tue, 28 Jan 2020 12:36:49 -0600
-MIME-Version: 1.0
-In-Reply-To: <CAFd5g469TWzrLKmQNR2i0HACJ3FEu-=4-Rk005g9szB5UsZAcw@mail.gmail.com>
-Content-Language: en-US
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -30,70 +23,75 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Brendan Higgins <brendanhiggins@google.com>
-Cc: Logan Gunthorpe <logang@deltatee.com>, linux-arch@vger.kernel.org, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>, Greg KH <gregkh@linuxfoundation.org>, Stephen Boyd <sboyd@kernel.org>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, Knut Omang <knut.omang@oracle.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, rppt@linux.ibm.com, linux-um <linux-um@lists.infradead.org>, Luis Chamberlain <mcgrof@kernel.org>, KUnit Development <kunit-dev@googlegroups.com>, David Gow <davidgow@google.com>, Shuah Khan <skhan@linuxfoundation.org>, Andrew Morton <akpm@linux-foundation.org>, Iurii Zaikin <yzaikin@google.com>, Alan Maguire <alan.maguire@oracle.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, arnd@arndb.de, keescook@chromium.org, skhan@linuxfoundation.org, alan.maguire@oracle.com, yzaikin@google.com, davidgow@google.com, akpm@linux-foundation.org, rppt@linux.ibm.com, frowand.list@gmail.com
+Cc: linux-arch@vger.kernel.org, linux-doc@vger.kernel.org, sboyd@kernel.org, gregkh@linuxfoundation.org, knut.omang@oracle.com, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, mcgrof@kernel.org, linux-kselftest@vger.kernel.org, logang@deltatee.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
 
-On 1/28/20 1:19 AM, Brendan Higgins wrote:
-> On Mon, Jan 27, 2020 at 9:40 AM Frank Rowand <frowand.list@gmail.com> wrote:
->>
->> On 1/23/20 4:40 PM, Brendan Higgins wrote:
->>> Sorry for the late reply. I am still catching up from being on vacation.
->>>>> On Mon, Jan 6, 2020 at 2:40 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
->>>> It does beg the question if this means kunit is happy to not be a tool
->>>> to test pre basic setup stuff (terminology used in init.c, meaning prior
->>>> to running all init levels). I suspect this is the case.
->>>
->>> Not sure. I still haven't seen any cases where this is necessary, so I
->>> am not super worried about it. Regardless, I don't think this patchset
->>> really changes anything in that regard, we are moving from late_init
->>> to after late_init, so it isn't that big of a change for most use
->>> cases.
->>>
->>> Please share if you can think of some things that need to be tested in
->>> early init.
->>
->> I don't have a specific need for this right now.  I had not thought about
->> how the current kunit implementation forces all kunit tests to run at a
->> specific initcall level before reading this email thread.
->>
->> I can see the value of being able to have some tests run at different
->> initcall levels to verify what functionality is available and working
->> at different points in the boot sequence.
-> 
-> Let's cross that bridge when we get there. It should be fairly easy to
-> add that functionality.
+## TL;DR
 
-Yes. I just wanted to add the thought to the back of your mind so that
-it does not get precluded by future changes to the kunit architecture.
+This patchset adds a centralized executor to dispatch tests rather than
+relying on late_initcall to schedule each test suite separately along
+with a couple of new features that depend on it.
 
-> 
->> But more important than early initcall levels, I do not want the
->> framework to prevent using or testing code and data that are marked
->> as '__init'.  So it is important to retain a way to invoke the tests
->> while __init code and data are available, if there is also a change
->> to generally invoke the tests later.
-> 
-> Definitely. For now that still works as long as you don't build KUnit
-> as a module, but I think Alan's new patches which allow KUnit to be
-> run at runtime via debugfs could cause some difficulty there. Again,
+## What am I trying to do?
 
-Yes, Alan's patches are part of what triggered me thinking about the
-issues I raised.
+Conceptually, I am trying to provide a mechanism by which test suites
+can be grouped together so that they can be reasoned about collectively.
+The last two of three patches in this series add features which depend
+on this:
 
+PATCH 5/7 Prints out a test plan right before KUnit tests are run[1];
+          this is valuable because it makes it possible for a test
+          harness to detect whether the number of tests run matches the
+          number of tests expected to be run, ensuring that no tests
+          silently failed.
 
-> we could add Kconfigs to control this, but the compiler nevertheless
-> complains because it doesn't know what phase KUnit runs in.
-> 
-> Is there any way to tell the compiler that it is okay for non __init
-> code to call __init code? I would prefer not to have a duplicate
-> version of all the KUnit libraries with all the symbols marked __init.
+PATCH 6/7 Add a new kernel command-line option which allows the user to
+          specify that the kernel poweroff, halt, or reboot after
+          completing all KUnit tests; this is very handy for running
+          KUnit tests on UML or a VM so that the UML/VM process exits
+          cleanly immediately after running all tests without needing a
+          special initramfs.
 
-I'm not sure.  The build messages have always been useful and valid in
-my context, so I never thought to consider that possibility.
+In addition, by dispatching tests from a single location, we can
+guarantee that all KUnit tests run after late_init is complete, which
+was a concern during the initial KUnit patchset review (this has not
+been a problem in practice, but resolving with certainty is nevertheless
+desirable).
 
-> Thoughts?
-> .
-> 
+Other use cases for this exist, but the above features should provide an
+idea of the value that this could provide.
+
+Alan Maguire (1):
+  kunit: test: create a single centralized executor for all tests
+
+Brendan Higgins (5):
+  vmlinux.lds.h: add linker section for KUnit test suites
+  arch: um: add linker section for KUnit test suites
+  init: main: add KUnit to kernel init
+  kunit: test: add test plan to KUnit TAP format
+  Documentation: Add kunit_shutdown to kernel-parameters.txt
+
+David Gow (1):
+  kunit: Add 'kunit_shutdown' option
+
+ .../admin-guide/kernel-parameters.txt         |  7 ++
+ arch/um/include/asm/common.lds.S              |  4 +
+ include/asm-generic/vmlinux.lds.h             |  8 ++
+ include/kunit/test.h                          | 82 ++++++++++++-------
+ init/main.c                                   |  4 +
+ lib/kunit/Makefile                            |  3 +-
+ lib/kunit/executor.c                          | 71 ++++++++++++++++
+ lib/kunit/test.c                              | 11 ---
+ tools/testing/kunit/kunit_kernel.py           |  2 +-
+ tools/testing/kunit/kunit_parser.py           | 76 ++++++++++++++---
+ .../test_is_test_passed-all_passed.log        |  1 +
+ .../test_data/test_is_test_passed-crash.log   |  1 +
+ .../test_data/test_is_test_passed-failure.log |  1 +
+ 13 files changed, 217 insertions(+), 54 deletions(-)
+ create mode 100644 lib/kunit/executor.c
+
+-- 
+2.25.0.341.g760bfbb309-goog
 
 
 _______________________________________________
