@@ -1,70 +1,56 @@
-Return-Path: <linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org>
-Date: Mon, 27 Jan 2020 15:53:51 -0800
-Message-Id: <20200127235356.122031-1-brendanhiggins@google.com>
-Mime-Version: 1.0
-Subject: [PATCH v1 0/5] uml: add more unspecified HAS_IOMEM dependencies
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pg1-x542.google.com ([2607:f8b0:4864:20::542])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1ixIeO-00008M-8q
+ for linux-um@lists.infradead.org; Thu, 30 Jan 2020 22:51:06 +0000
+Received: by mail-pg1-x542.google.com with SMTP id x8so2402167pgk.8
+ for <linux-um@lists.infradead.org>; Thu, 30 Jan 2020 14:51:00 -0800 (PST)
+MIME-Version: 1.0
+References: <20200128072002.79250-1-brendanhiggins@google.com>
+ <20200128072002.79250-5-brendanhiggins@google.com>
+ <20200129063836.6C2A62064C@mail.kernel.org>
+In-Reply-To: <20200129063836.6C2A62064C@mail.kernel.org>
 From: Brendan Higgins <brendanhiggins@google.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Date: Thu, 30 Jan 2020 14:50:48 -0800
+Message-ID: <CAFd5g440ENddSAGA=CQhE-RZQAC8Hh1_+EOmfx2oDueB-EZXLw@mail.gmail.com>
+Subject: Re: [PATCH v1 4/7] init: main: add KUnit to kernel init
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org
-To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, Kevin Hilman <khilman@kernel.org>, Nishanth Menon <nm@ti.com>, Richard Cochran <richardcochran@gmail.com>, Philipp Zabel <p.zabel@pengutronix.de>, "David S . Miller" <davem@davemloft.net>, Michal Simek <michal.simek@xilinx.com>, Andrew Lunn <andrew@lunn.ch>, Robert Hancock <hancock@sedsystems.ca>, Esben Haabendal <esben@geanix.com>, Thomas Gleixner <tglx@linutronix.de>, Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
-Cc: heidifahim@google.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-pm@vger.kernel.org, Brendan Higgins <brendanhiggins@google.com>, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, davidgow@google.com, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-List-ID: <linux-um.lists.infradead.org>
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Stephen Boyd <sboyd@kernel.org>
+Cc: "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Frank Rowand <frowand.list@gmail.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-arch@vger.kernel.org, Logan Gunthorpe <logang@deltatee.com>, Knut Omang <knut.omang@oracle.com>, rppt@linux.ibm.com, Iurii Zaikin <yzaikin@google.com>, Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, David Gow <davidgow@google.com>, Shuah Khan <skhan@linuxfoundation.org>, KUnit Development <kunit-dev@googlegroups.com>, Greg KH <gregkh@linuxfoundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Richard Weinberger <richard@nod.at>, Andrew Morton <akpm@linux-foundation.org>, Alan Maguire <alan.maguire@oracle.com>
 
-# TL;DR
+On Tue, Jan 28, 2020 at 10:38 PM Stephen Boyd <sboyd@kernel.org> wrote:
+>
+> Quoting Brendan Higgins (2020-01-27 23:19:59)
+> > Remove KUnit from init calls entirely, instead call directly from
+> > kernel_init().
+> >
+> > Co-developed-by: Alan Maguire <alan.maguire@oracle.com>
+> > Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> > Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+> > ---
+>
+> Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+>
+> Although, why can't it be squashed with the previous patch?
 
-This patchset adds a missing HAS_IOMEM dependency to several drivers in
-an attempt to get allyesconfig closer to working for ARCH=um. Although I
-had caught all the broken ones in early 5.5[1], some new ones have
-broken since then.
-
-# What am I trying to do?
-
-This patchset is part of my attempt to get `make ARCH=um allyesconfig`
-to produce a config that will build *and* boot to init, so that I can
-use it as a mechanism to run tests[2].
-
-# Why won't allyesconfig break again after this series of fixes?
-
-Well, in short, it will break again; however, as I mentioned above, I am
-using UML for testing the kernel, and I am currently working on getting
-my tests to run on KernelCI. As part of our testing procedure for
-KernelCI, we are planning on building a UML kernel using allyesconfig
-and running our tests on it. Thus, we will find out very quickly once
-someone breaks allyesconfig again once we get this all working. So this
-will keep breaking until we have a build test on KernelCI running, but
-we will need to send out these fixes anyway.
-
-Brendan Higgins (5):
-  net: axienet: add unspecified HAS_IOMEM dependency
-  reset: brcmstb-rescal: add unspecified HAS_IOMEM dependency
-  reset: intel: add unspecified HAS_IOMEM dependency
-  ptp: 1588_clock_ines: add unspecified HAS_IOMEM dependency
-  power: avs: qcom-cpr: add unspecified HAS_IOMEM dependency
-
- drivers/net/ethernet/xilinx/Kconfig | 1 +
- drivers/power/avs/Kconfig           | 2 +-
- drivers/ptp/Kconfig                 | 1 +
- drivers/reset/Kconfig               | 3 ++-
- 4 files changed, 5 insertions(+), 2 deletions(-)
-
-[1] https://lore.kernel.org/lkml/20191211192742.95699-1-brendanhiggins@google.com/
-[2] https://bugzilla.kernel.org/show_bug.cgi?id=205223
-
--- 
-2.25.0.341.g760bfbb309-goog
-
+I think that this is pretty much the smallest logical change that
+doesn't touch just KUnit. I figured it might make it easier for people
+not interested in KUnit what changes I am making to init. I assume
+that people don't touch init willy-nilly, right?
 
 _______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
