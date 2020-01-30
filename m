@@ -1,17 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-wr1-x442.google.com ([2a00:1450:4864:20::442])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1inj5J-0005Yr-FG
- for linux-um@lists.infradead.org; Sat, 04 Jan 2020 13:03:18 +0000
-Received: by mail-wr1-x442.google.com with SMTP id q10so5869378wrm.11
- for <linux-um@lists.infradead.org>; Sat, 04 Jan 2020 05:03:16 -0800 (PST)
-From: Amanieu d'Antras <amanieu@gmail.com>
-Subject: [PATCH] um: Implement copy_thread_tls
-Date: Sat,  4 Jan 2020 13:39:30 +0100
-Message-Id: <20200104123928.1048822-1-amanieu@gmail.com>
-In-Reply-To: <20200102172413.654385-1-amanieu@gmail.com>
-References: <20200102172413.654385-1-amanieu@gmail.com>
-MIME-Version: 1.0
+ id 1ixFOa-0002bl-8u
+ for linux-um@lists.infradead.org; Thu, 30 Jan 2020 19:22:34 +0000
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH] um: configs: Cleanup CONFIG_IOSCHED_CFQ
+Date: Thu, 30 Jan 2020 20:22:26 +0100
+Message-Id: <20200130192226.2776-1-krzk@kernel.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,121 +15,54 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: linux-um@lists.infradead.org, Amanieu d'Antras <amanieu@gmail.com>, stable@vger.kernel.org, Christian Brauner <christian@brauner.io>
+To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzk@kernel.org>
 
-This is required for clone3 which passes the TLS value through a
-struct rather than a register.
+CONFIG_IOSCHED_CFQ is since commit f382fb0bcef4 ("block: remove legacy
+IO schedulers").
 
-Signed-off-by: Amanieu d'Antras <amanieu@gmail.com>
-Cc: linux-um@lists.infradead.org
-Cc: <stable@vger.kernel.org> # 5.3.x
+The IOSCHED_BFQ seems to replace IOSCHED_CFQ so select it in configs
+previously choosing the latter.
+
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/um/Kconfig                      | 1 +
- arch/um/include/asm/ptrace-generic.h | 2 +-
- arch/um/kernel/process.c             | 6 +++---
- arch/x86/um/tls_32.c                 | 6 ++----
- arch/x86/um/tls_64.c                 | 7 +++----
- 5 files changed, 10 insertions(+), 12 deletions(-)
+ arch/um/configs/i386_defconfig   | 2 +-
+ arch/um/configs/x86_64_defconfig | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index 2a6d04fcb3e9..6f0edd0c0220 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -14,6 +14,7 @@ config UML
- 	select HAVE_FUTEX_CMPXCHG if FUTEX
- 	select HAVE_DEBUG_KMEMLEAK
- 	select HAVE_DEBUG_BUGVERBOSE
-+	select HAVE_COPY_THREAD_TLS
- 	select GENERIC_IRQ_SHOW
- 	select GENERIC_CPU_DEVICES
- 	select GENERIC_CLOCKEVENTS
-diff --git a/arch/um/include/asm/ptrace-generic.h b/arch/um/include/asm/ptrace-generic.h
-index 81c647ef9c6c..adf91ef553ae 100644
---- a/arch/um/include/asm/ptrace-generic.h
-+++ b/arch/um/include/asm/ptrace-generic.h
-@@ -36,7 +36,7 @@ extern long subarch_ptrace(struct task_struct *child, long request,
- extern unsigned long getreg(struct task_struct *child, int regno);
- extern int putreg(struct task_struct *child, int regno, unsigned long value);
- 
--extern int arch_copy_tls(struct task_struct *new);
-+extern int arch_set_tls(struct task_struct *new, unsigned long tls);
- extern void clear_flushed_tls(struct task_struct *task);
- extern int syscall_trace_enter(struct pt_regs *regs);
- extern void syscall_trace_leave(struct pt_regs *regs);
-diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index 263a8f069133..17045e7211bf 100644
---- a/arch/um/kernel/process.c
-+++ b/arch/um/kernel/process.c
-@@ -153,8 +153,8 @@ void fork_handler(void)
- 	userspace(&current->thread.regs.regs, current_thread_info()->aux_fp_regs);
- }
- 
--int copy_thread(unsigned long clone_flags, unsigned long sp,
--		unsigned long arg, struct task_struct * p)
-+int copy_thread_tls(unsigned long clone_flags, unsigned long sp,
-+		unsigned long arg, struct task_struct * p, unsigned long tls)
- {
- 	void (*handler)(void);
- 	int kthread = current->flags & PF_KTHREAD;
-@@ -188,7 +188,7 @@ int copy_thread(unsigned long clone_flags, unsigned long sp,
- 		 * Set a new TLS for the child thread?
- 		 */
- 		if (clone_flags & CLONE_SETTLS)
--			ret = arch_copy_tls(p);
-+			ret = arch_set_tls(p, tls);
- 	}
- 
- 	return ret;
-diff --git a/arch/x86/um/tls_32.c b/arch/x86/um/tls_32.c
-index 5bd949da7a4a..ac8eee093f9c 100644
---- a/arch/x86/um/tls_32.c
-+++ b/arch/x86/um/tls_32.c
-@@ -215,14 +215,12 @@ static int set_tls_entry(struct task_struct* task, struct user_desc *info,
- 	return 0;
- }
- 
--int arch_copy_tls(struct task_struct *new)
-+int arch_set_tls(struct task_struct *new, unsigned long tls)
- {
- 	struct user_desc info;
- 	int idx, ret = -EFAULT;
- 
--	if (copy_from_user(&info,
--			   (void __user *) UPT_SI(&new->thread.regs.regs),
--			   sizeof(info)))
-+	if (copy_from_user(&info, (void __user *) tls, sizeof(info)))
- 		goto out;
- 
- 	ret = -EINVAL;
-diff --git a/arch/x86/um/tls_64.c b/arch/x86/um/tls_64.c
-index 3a621e0d3925..ebd3855d9b13 100644
---- a/arch/x86/um/tls_64.c
-+++ b/arch/x86/um/tls_64.c
-@@ -6,14 +6,13 @@ void clear_flushed_tls(struct task_struct *task)
- {
- }
- 
--int arch_copy_tls(struct task_struct *t)
-+int arch_set_tls(struct task_struct *t, unsigned long tls)
- {
- 	/*
- 	 * If CLONE_SETTLS is set, we need to save the thread id
--	 * (which is argument 5, child_tid, of clone) so it can be set
--	 * during context switches.
-+	 * so it can be set during context switches.
- 	 */
--	t->thread.arch.fs = t->thread.regs.regs.gp[R8 / sizeof(long)];
-+	t->thread.arch.fs = tls;
- 
- 	return 0;
- }
+diff --git a/arch/um/configs/i386_defconfig b/arch/um/configs/i386_defconfig
+index 73e98bb57bf5..fb51bd206dbe 100644
+--- a/arch/um/configs/i386_defconfig
++++ b/arch/um/configs/i386_defconfig
+@@ -26,7 +26,7 @@ CONFIG_SLAB=y
+ CONFIG_MODULES=y
+ CONFIG_MODULE_UNLOAD=y
+ # CONFIG_BLK_DEV_BSG is not set
+-CONFIG_IOSCHED_CFQ=m
++CONFIG_IOSCHED_BFQ=m
+ CONFIG_SSL=y
+ CONFIG_NULL_CHAN=y
+ CONFIG_PORT_CHAN=y
+diff --git a/arch/um/configs/x86_64_defconfig b/arch/um/configs/x86_64_defconfig
+index 3281d7600225..477b87317424 100644
+--- a/arch/um/configs/x86_64_defconfig
++++ b/arch/um/configs/x86_64_defconfig
+@@ -24,7 +24,7 @@ CONFIG_SLAB=y
+ CONFIG_MODULES=y
+ CONFIG_MODULE_UNLOAD=y
+ # CONFIG_BLK_DEV_BSG is not set
+-CONFIG_IOSCHED_CFQ=m
++CONFIG_IOSCHED_BFQ=m
+ CONFIG_SSL=y
+ CONFIG_NULL_CHAN=y
+ CONFIG_PORT_CHAN=y
 -- 
-2.24.1
+2.17.1
 
 
 _______________________________________________
