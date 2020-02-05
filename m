@@ -1,327 +1,327 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1izF9P-00088X-9i
+ for linux-um@lists.infradead.org; Wed, 05 Feb 2020 07:31:09 +0000
+Received: by mail-pl1-x643.google.com with SMTP id b22so503314pls.12
+ for <linux-um@lists.infradead.org>; Tue, 04 Feb 2020 23:31:07 -0800 (PST)
 From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v3 23/26] um lkl: add CI scripts to conduct regression tests
-Date: Wed,  5 Feb 2020 16:30:32 +0900
-Message-Id: <1a518410ecf1b5efe341841931f7d6a913638786.1580882335.git.thehajime@gmail.com>
+Subject: [RFC v3 11/26] um lkl: initialization and cleanup
+Date: Wed,  5 Feb 2020 16:30:20 +0900
+Message-Id: <611a8d177f33e1cf7832e15c72448eb9d87c8f03.1580882335.git.thehajime@gmail.com>
 In-Reply-To: <cover.1580882335.git.thehajime@gmail.com>
 References: <cover.1580882335.git.thehajime@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: linux-arch-owner@vger.kernel.org
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: Octavian Purdila <tavi.purdila@gmail.com>, Akira Moroo <retrage01@gmail.com>, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>
-List-ID: <linux-um.lists.infradead.org>
+Cc: linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, Octavian Purdila <tavi.purdila@gmail.com>, Akira Moroo <retrage01@gmail.com>, Patrick Collins <pscollins@google.com>, linux-kernel-library@freelists.org, Michael Zimmermann <sigmaepsilon92@gmail.com>, Yuan Liu <liuyuan@google.com>
 
-For the continuous integration (CI), we use CircleCI with multiple test
-targets triggered with a single commit.  The test also conducts memory
-checks using valgrind in order to prevent enbug.
+From: Octavian Purdila <tavi.purdila@gmail.com>
 
+Add the lkl_start_kernel and lkl_sys_halt APIs that start and
+respectively stops the Linux kernel.
+
+lkl_start_kernel creates a separate threads that will run the initial
+and idle kernel thread. It waits for the kernel to complete
+initialization before returning, to avoid races with system calls
+issues by the host application.
+
+During the setup phase, we create "/init" in initial ramfs root
+filesystem to avoid mounting the "real" rootfs since ramfs is good
+enough for now.
+
+lkl_sys_halt will shutdown the kernel, terminate all threads and
+free all host resources used by the kernel before returning.
+
+This patch also introduces idle CPU handling since it is closely
+related to the shutdown process. A host semaphore is used to wait for
+new interrupts when the kernel switches the CPU to idle to avoid
+wasting host CPU cycles. When the kernel is shutdown we terminate the
+idle thread at the first CPU idle event.
+
+Cc: Michael Zimmermann <sigmaepsilon92@gmail.com>
+Cc: Patrick Collins <pscollins@google.com>
+Cc: Yuan Liu <liuyuan@google.com>
 Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
 ---
- .circleci/config.yml             | 196 +++++++++++++++++++++++++++++++
- tools/lkl/scripts/checkpatch.sh  |  60 ++++++++++
- tools/lkl/scripts/lkl-jenkins.sh |  21 ++++
- 3 files changed, 277 insertions(+)
- create mode 100644 .circleci/config.yml
- create mode 100755 tools/lkl/scripts/checkpatch.sh
- create mode 100755 tools/lkl/scripts/lkl-jenkins.sh
+ arch/um/lkl/include/asm/setup.h         |   7 +
+ arch/um/lkl/include/uapi/asm/host_ops.h |  20 +++
+ arch/um/lkl/kernel/setup.c              | 189 ++++++++++++++++++++++++
+ 3 files changed, 216 insertions(+)
+ create mode 100644 arch/um/lkl/include/asm/setup.h
+ create mode 100644 arch/um/lkl/kernel/setup.c
 
-diff --git a/.circleci/config.yml b/.circleci/config.yml
+diff --git a/arch/um/lkl/include/asm/setup.h b/arch/um/lkl/include/asm/setup.h
 new file mode 100644
-index 000000000000..5bdf059014c0
+index 000000000000..b40955208cc6
 --- /dev/null
-+++ b/.circleci/config.yml
-@@ -0,0 +1,196 @@
-+version: 2
-+general:
-+  artifacts:
++++ b/arch/um/lkl/include/asm/setup.h
+@@ -0,0 +1,7 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_LKL_SETUP_H
++#define _ASM_LKL_SETUP_H
 +
-+do_steps: &do_steps
-+ steps:
-+  - run: echo "$CROSS_COMPILE" > ~/_cross_compile
-+  - restore_cache:
-+      key: code-tree-shallow-{{ .Environment.CACHE_VERSION }}
-+  - run:
-+      name: checkout build tree
-+      command: |
-+        mkdir -p ~/.ssh/
-+        ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-+        if ! [ -d .git ]; then
-+          git clone --depth=1 $CIRCLE_REPOSITORY_URL .;
-+        fi
-+        if [[ $CIRCLE_BRANCH == pull/* ]]; then
-+           git fetch --depth=1 origin $CIRCLE_BRANCH/head;
-+        else
-+           git fetch --depth=1 origin $CIRCLE_BRANCH;
-+        fi
-+        git reset --hard $CIRCLE_SHA1
-+  - save_cache:
-+      key: code-tree-shallow-{{ .Environment.CACHE_VERSION }}-{{ epoch }}
-+      paths:
-+        - /home/ubuntu/project/.git
-+  - run:
-+      name: clean
-+      command: |
-+        make mrproper
-+        cd tools/lkl && make clean-conf
-+        rm -rf ~/junit
-+  - run: mkdir -p /home/ubuntu/.ccache
-+  - restore_cache:
-+      key: compiler-cache-{{ checksum "~/_cross_compile" }}-{{ .Environment.CACHE_VERSION }}
-+  - run: cd tools/lkl && make -j8 ${MKARG}
-+  - run: mkdir -p ~/destdir && cd tools/lkl && make DESTDIR=~/destdir
-+  - save_cache:
-+     paths:
-+       - /home/ubuntu/.ccache
-+     key: compiler-cache-{{ checksum "~/_cross_compile" }}-{{ .Environment.CACHE_VERSION }}-{{ epoch }}
-+  - run:
-+      name: run tests
-+      command: |
-+        mkdir -p ~/junit
-+        make -C tools/lkl run-tests tests="--junit-dir ~/junit"
-+      no_output_timeout: "90m"
-+  - run:
-+      name: collecting test results
-+      command: |
-+        find ./tools/lkl/ -type f -name "*.xml" -exec mv {} ~/junit/ \;
-+  - store_test_results:
-+      path: ~/junit
-+  - store_artifacts:
-+      path: ~/junit
++#define COMMAND_LINE_SIZE 4096
 +
++#endif
+diff --git a/arch/um/lkl/include/uapi/asm/host_ops.h b/arch/um/lkl/include/uapi/asm/host_ops.h
+index 986340ba9d8d..fe4382c3050a 100644
+--- a/arch/um/lkl/include/uapi/asm/host_ops.h
++++ b/arch/um/lkl/include/uapi/asm/host_ops.h
+@@ -19,6 +19,8 @@ struct lkl_jmp_buf {
+  *
+  * @print - optional operation that receives console messages
+  *
++ * @panic - called during a kernel panic
++ *
+  * @sem_alloc - allocate a host semaphore an initialize it to count
+  * @sem_free - free a host semaphore
+  * @sem_up - perform an up operation on the semaphore
+@@ -73,6 +75,7 @@ struct lkl_jmp_buf {
+  */
+ struct lkl_host_operations {
+ 	void (*print)(const char *str, int len);
++	void (*panic)(void);
+ 
+ 	struct lkl_sem *(*sem_alloc)(int count);
+ 	void (*sem_free)(struct lkl_sem *sem);
+@@ -111,6 +114,23 @@ struct lkl_host_operations {
+ 	void (*jmp_buf_longjmp)(struct lkl_jmp_buf *jmpb, int val);
+ };
+ 
++/**
++ * lkl_start_kernel - registers the host operations and starts the kernel
++ *
++ * The function returns only after the kernel is shutdown with lkl_sys_halt.
++ *
++ * @lkl_ops - pointer to host operations
++ * @cmd_line - format for command line string that is going to be used to
++ * generate the Linux kernel command line
++ */
++int lkl_start_kernel(struct lkl_host_operations *lkl_ops, const char *cmd_line,
++		     ...);
 +
-+do_uml_steps: &do_uml_steps
-+ steps:
-+  - run: echo "$CROSS_COMPILE" > ~/_cross_compile
-+  - restore_cache:
-+      key: code-tree-shallow-{{ .Environment.CACHE_VERSION }}
-+  - run:
-+      name: checkout build tree
-+      command: |
-+        mkdir -p ~/.ssh/
-+        ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-+        if ! [ -d .git ]; then
-+          git clone --depth=1 $CIRCLE_REPOSITORY_URL .;
-+        fi
-+        if [[ $CIRCLE_BRANCH == pull/* ]]; then
-+           git fetch --depth=1 origin $CIRCLE_BRANCH/head;
-+        else
-+           git fetch --depth=1 origin $CIRCLE_BRANCH;
-+        fi
-+        git reset --hard $CIRCLE_SHA1
-+  - save_cache:
-+      key: code-tree-shallow-{{ .Environment.CACHE_VERSION }}-{{ epoch }}
-+      paths:
-+        - /home/ubuntu/project/.git
-+  - run: mkdir -p /home/ubuntu/.ccache
-+  - restore_cache:
-+      key: compiler-cache-{{ checksum "~/_cross_compile" }}-{{ .Environment.CACHE_VERSION }}
-+  - run:
-+      name: build
-+      command: |
-+        sudo apt-get update
-+        sudo apt-get install -y gcc-multilib g++-multilib
-+        make defconfig ARCH=um SUBARCH=$SUBARCH
-+        make ARCH=um SUBARCH=$SUBARCH
-+  - save_cache:
-+     paths:
-+       - /home/ubuntu/.ccache
-+     key: compiler-cache-{{ checksum "~/_cross_compile" }}-{{ .Environment.CACHE_VERSION }}-{{ epoch }}
-+  - run:
-+      name: test
-+      command: |
-+        # XXX: i386 build doesn't work with the test
-+        if [ $CIRCLE_STAGE = "i386_uml" ] || [ $CIRCLE_STAGE = "i386_uml_on_x86_64" ]; then
-+          exit 0
-+        fi
-+        ./linux rootfstype=hostfs ro mem=1g loglevel=10 init="/bin/bash -c exit" || export RETVAL=$?
-+        # SIGABRT=6 => 128+6
-+        if [ $RETVAL != "134" ]; then
-+          exit 1
-+        fi
++/**
++ * lkl_is_running - returns 1 if the kernel is currently running
++ */
++int lkl_is_running(void);
 +
-+## Customize the test machine
-+jobs:
-+  x86_64:
-+   docker:
-+     - image: lkldocker/circleci-x86_64:0.7
-+   environment:
-+     CROSS_COMPILE: ""
-+   <<: *do_steps
-+
-+  i386:
-+   docker:
-+     - image: lkldocker/circleci-i386:0.1
-+   environment:
-+     CROSS_COMPILE: ""
-+   <<: *do_steps
-+
-+  x86_64_valgrind:
-+   docker:
-+     - image: lkldocker/circleci-x86_64:0.7
-+   environment:
-+     CROSS_COMPILE: ""
-+     VALGRIND: 1
-+   <<: *do_steps
-+
-+  x86_64_uml:
-+   docker:
-+     - image: lkldocker/circleci-x86_64:0.7
-+   environment:
-+     CROSS_COMPILE: ""
-+     TMPDIR: "/tmp" # required for not using /dev/shm
-+     SUBARCH: "x86_64"
-+   <<: *do_uml_steps
-+
-+  i386_uml:
-+   docker:
-+     - image: lkldocker/circleci-i386:0.1
-+   environment:
-+     CROSS_COMPILE: ""
-+     SUBARCH: "i386"
-+     TMPDIR: "/tmp" # required for not using /dev/shm
-+   <<: *do_uml_steps
-+
-+  i386_uml_on_x86_64:
-+   docker:
-+     - image: lkldocker/circleci-x86_64:0.7
-+   environment:
-+     CROSS_COMPILE: ""
-+     TMPDIR: "/tmp" # required for not using /dev/shm
-+     SUBARCH: "i386"
-+   <<: *do_uml_steps
-+
-+  checkpatch:
-+   docker:
-+     - image: lkldocker/circleci:0.5
-+   environment:
-+   steps:
-+     - restore_cache:
-+        key: code-tree-full-history-{{ .Environment.CACHE_VERSION }}
-+     - checkout
-+     - run: sudo pip install ply
-+     - run: tools/lkl/scripts/checkpatch.sh
-+     - save_cache:
-+        key: code-tree-full-history-{{ .Environment.CACHE_VERSION }}-{{ epoch }}
-+        paths:
-+          - /home/ubuntu/project/.git
-+        when: always
-+
-+workflows:
-+  version: 2
-+  build:
-+    jobs:
-+     - x86_64
-+     - x86_64_valgrind
-+     - checkpatch
-+     - i386
-+     - x86_64_uml
-+     - i386_uml
-+     - i386_uml_on_x86_64
-+  nightly:
-+    triggers:
-+      - schedule:
-+          cron: "0 0 * * *"
-+          filters:
-+            branches:
-+              only:
-+                - master
-+    jobs:
-+      - x86_64_valgrind
-diff --git a/tools/lkl/scripts/checkpatch.sh b/tools/lkl/scripts/checkpatch.sh
-new file mode 100755
-index 000000000000..0c02ca6b21a2
+ int lkl_printf(const char *fmt, ...);
+ void lkl_bug(const char *fmt, ...);
+ 
+diff --git a/arch/um/lkl/kernel/setup.c b/arch/um/lkl/kernel/setup.c
+new file mode 100644
+index 000000000000..36c199d3aa22
 --- /dev/null
-+++ b/tools/lkl/scripts/checkpatch.sh
-@@ -0,0 +1,60 @@
-+#!/bin/sh -ex
-+# SPDX-License-Identifier: GPL-2.0
++++ b/arch/um/lkl/kernel/setup.c
+@@ -0,0 +1,189 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/binfmts.h>
++#include <linux/init.h>
++#include <linux/init_task.h>
++#include <linux/personality.h>
++#include <linux/reboot.h>
++#include <linux/fs.h>
++#include <linux/start_kernel.h>
++#include <linux/syscalls.h>
++#include <linux/tick.h>
++#include <asm/host_ops.h>
++#include <asm/irq.h>
++#include <asm/unistd.h>
++#include <asm/syscalls.h>
++#include <asm/cpu.h>
 +
-+if [ -z "$origin_master" ]; then
-+    origin_master="origin/master"
-+fi
++struct lkl_host_operations *lkl_ops;
++static char cmd_line[COMMAND_LINE_SIZE];
++static void *init_sem;
++static int is_running;
++void (*pm_power_off)(void) = NULL;
++static unsigned long mem_size = 64 * 1024 * 1024;
 +
-+UPSTREAM=git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-+LKL=github.com:lkl/linux.git
-+
-+upstream=`git remote -v | grep $UPSTREAM | cut -f1 | head -n1`
-+lkl=`git remote -v | grep $LKL | cut -f1 | head -n1`
-+
-+if [ -z "$upstream" ]; then
-+    git fetch --tags --progress git://$UPSTREAM
-+else
-+    git fetch --tags $upstream
-+fi
-+
-+if [ -z "$lkl" ]; then
-+    git remote add lkl-upstream git@$LKL || true
-+    lkl=`git remote -v | grep $LKL | cut -f1 | head -n1`
-+fi
-+
-+if [ -z "$lkl" ]; then
-+    echo "can't find lkl remote, quiting"
-+    exit 1
-+fi
-+
-+git fetch $lkl
-+git fetch --tags $upstream
-+
-+# find the last upstream tag to avoid checking upstream commits during
-+# upstream merges
-+tag=`git tag --sort='-*authordate' | grep ^v | head -n1`
-+tmp=`mktemp -d`
-+
-+commits=$(git log --no-merges --pretty=format:%h HEAD ^$lkl/master ^$tag)
-+for c in $commits; do
-+    git format-patch -1 -o $tmp $c
-+done
-+
-+if [ -z "$c" ]; then
-+    echo "there are not commits/patches to check, quiting."
-+    rmdir $tmp
-+    exit 0
-+fi
-+
-+./scripts/checkpatch.pl --ignore FILE_PATH_CHANGES $tmp/*.patch
-+rm $tmp/*.patch
-+
-+# checkpatch.pl does not know how to deal with 3 way diffs which would
-+# be useful to check the conflict resolutions during merges...
-+#for c in `git log --merges --pretty=format:%h HEAD ^$origin_master ^$tag`; do
-+#    git log --pretty=email $c -1 > $tmp/$c.patch
-+#    git diff $c $c^1 $c^2 >> $tmp/$c.patch
-+#done
-+
-+rmdir $tmp
-+
-diff --git a/tools/lkl/scripts/lkl-jenkins.sh b/tools/lkl/scripts/lkl-jenkins.sh
-new file mode 100755
-index 000000000000..eaadc6e90143
---- /dev/null
-+++ b/tools/lkl/scripts/lkl-jenkins.sh
-@@ -0,0 +1,21 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+
-+set -e
-+
-+script_dir=$(cd $(dirname ${BASH_SOURCE:-$0}); pwd)
-+basedir=$(cd $script_dir/../../..; pwd)
-+
-+export PATH=$PATH:/sbin
-+
-+build_and_test()
++static long lkl_panic_blink(int state)
 +{
-+    cd $basedir
-+    make mrproper
-+    cd tools/lkl
-+    make clean-conf
-+    make -j4
-+    make run-tests
++	lkl_ops->panic();
++	return 0;
 +}
 +
-+build_and_test
++static int __init setup_mem_size(char *str)
++{
++	mem_size = memparse(str, NULL);
++	return 0;
++}
++early_param("mem", setup_mem_size);
++
++void __init setup_arch(char **cl)
++{
++	*cl = cmd_line;
++	panic_blink = lkl_panic_blink;
++	parse_early_param();
++	bootmem_init(mem_size);
++}
++
++static void __init lkl_run_kernel(void *arg)
++{
++	threads_init();
++	lkl_cpu_get();
++	start_kernel();
++}
++
++int __init lkl_start_kernel(struct lkl_host_operations *ops, const char *fmt,
++			    ...)
++{
++	va_list ap;
++	int ret;
++
++	lkl_ops = ops;
++
++	va_start(ap, fmt);
++	ret = vsnprintf(boot_command_line, COMMAND_LINE_SIZE, fmt, ap);
++	va_end(ap);
++
++	memcpy(cmd_line, boot_command_line, COMMAND_LINE_SIZE);
++
++	init_sem = lkl_ops->sem_alloc(0);
++	if (!init_sem)
++		return -ENOMEM;
++
++	ret = lkl_cpu_init();
++	if (ret)
++		goto out_free_init_sem;
++
++	ret = lkl_ops->thread_create(lkl_run_kernel, NULL);
++	if (!ret) {
++		ret = -ENOMEM;
++		goto out_free_init_sem;
++	}
++
++	lkl_ops->sem_down(init_sem);
++	lkl_ops->sem_free(init_sem);
++	current_thread_info()->tid = lkl_ops->thread_self();
++	lkl_cpu_change_owner(current_thread_info()->tid);
++
++	lkl_cpu_put();
++	is_running = 1;
++
++	return 0;
++
++out_free_init_sem:
++	lkl_ops->sem_free(init_sem);
++
++	return ret;
++}
++
++int lkl_is_running(void)
++{
++	return is_running;
++}
++
++void machine_halt(void)
++{
++	lkl_cpu_shutdown();
++}
++
++void machine_power_off(void)
++{
++	machine_halt();
++}
++
++void machine_restart(char *unused)
++{
++	machine_halt();
++}
++
++long lkl_sys_halt(void)
++{
++	long err;
++	long params[6] = {
++		LINUX_REBOOT_MAGIC1,
++		LINUX_REBOOT_MAGIC2,
++		LINUX_REBOOT_CMD_RESTART,
++	};
++
++	err = lkl_syscall(__NR_reboot, params);
++	if (err < 0)
++		return err;
++
++	is_running = false;
++
++	lkl_cpu_wait_shutdown();
++
++	syscalls_cleanup();
++	threads_cleanup();
++	/* Shutdown the clockevents source. */
++	tick_suspend_local();
++	free_mem();
++	lkl_ops->thread_join(current_thread_info()->tid);
++
++	return 0;
++}
++
++static int lkl_run_init(struct linux_binprm *bprm);
++
++static struct linux_binfmt lkl_run_init_binfmt = {
++	.module		= THIS_MODULE,
++	.load_binary	= lkl_run_init,
++};
++
++static int lkl_run_init(struct linux_binprm *bprm)
++{
++	int ret;
++
++	if (strcmp("/init", bprm->filename) != 0)
++		return -EINVAL;
++
++	ret = flush_old_exec(bprm);
++	if (ret)
++		return ret;
++	set_personality(PER_LINUX);
++	setup_new_exec(bprm);
++	install_exec_creds(bprm);
++
++	set_binfmt(&lkl_run_init_binfmt);
++
++	init_pid_ns.child_reaper = NULL;
++
++	syscalls_init();
++
++	lkl_ops->sem_up(init_sem);
++	lkl_ops->thread_exit();
++
++	return 0;
++}
++
++/* skip mounting the "real" rootfs. ramfs is good enough. */
++static int __init fs_setup(void)
++{
++	int fd;
++
++	fd = sys_open("/init", O_CREAT, 0700);
++	WARN_ON(fd < 0);
++	sys_close(fd);
++
++	register_binfmt(&lkl_run_init_binfmt);
++
++	return 0;
++}
++late_initcall(fs_setup);
 -- 
 2.21.0 (Apple Git-122.2)
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
