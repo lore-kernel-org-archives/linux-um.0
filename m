@@ -1,14 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x543.google.com ([2607:f8b0:4864:20::543])
+Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j5YRd-0004uA-TG
- for linux-um@lists.infradead.org; Sat, 22 Feb 2020 17:20:03 +0000
-Received: by mail-pg1-x543.google.com with SMTP id 70so2675783pgf.8
- for <linux-um@lists.infradead.org>; Sat, 22 Feb 2020 09:20:00 -0800 (PST)
-From: Manbing <manbing3@gmail.com>
-Subject: [PATCH] Documentation: update UserModeLinux-HOWTO.txt
-Date: Sun, 23 Feb 2020 01:19:27 +0800
-Message-Id: <1582391968-3960-1-git-send-email-manbing3@gmail.com>
+ id 1izF9k-0008I5-Cc
+ for linux-um@lists.infradead.org; Wed, 05 Feb 2020 07:31:31 +0000
+Received: by mail-pl1-x643.google.com with SMTP id p11so505473plq.10
+ for <linux-um@lists.infradead.org>; Tue, 04 Feb 2020 23:31:28 -0800 (PST)
+From: Hajime Tazaki <thehajime@gmail.com>
+Subject: [RFC v3 17/26] lkl tools: host lib: posix host operations
+Date: Wed,  5 Feb 2020 16:30:26 +0900
+Message-Id: <dfac3acf5ddc3d4d2352d2210377c0f4290fdbd6.1580882335.git.thehajime@gmail.com>
+In-Reply-To: <cover.1580882335.git.thehajime@gmail.com>
+References: <cover.1580882335.git.thehajime@gmail.com>
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -17,110 +20,407 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Jonathan Corbet <corbet@lwn.net>
-Cc: linux-um@lists.infradead.org, Manbing <manbing3@gmail.com>, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+To: linux-um@lists.infradead.org
+Cc: linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, Conrad Meyer <cem@FreeBSD.org>, Octavian Purdila <tavi.purdila@gmail.com>, Akira Moroo <retrage01@gmail.com>, Thomas Liebetraut <thomas@tommie-lie.de>, Mark Stillwell <mark@stillwell.me>, Patrick Collins <pscollins@google.com>, linux-kernel-library@freelists.org, Pierre-Hugues Husson <phh@phh.me>, Yuan Liu <liuyuan@google.com>
 
-Original content is obsolete. Which is based on kernel 2.4.0-prerelease.
-Updating content according to kernel 5.5.1.
+From: Octavian Purdila <tavi.purdila@gmail.com>
 
-Signed-off-by: Manbing <manbing3@gmail.com>
+Implement LKL host operations for POSIX hosts.
+
+Cc: Conrad Meyer <cem@FreeBSD.org>
+Cc: Mark Stillwell <mark@stillwell.me>
+Cc: Patrick Collins <pscollins@google.com>
+Cc: Pierre-Hugues Husson <phh@phh.me>
+Cc: Thomas Liebetraut <thomas@tommie-lie.de>
+Cc: Yuan Liu <liuyuan@google.com>
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
 ---
- Documentation/virt/uml/UserModeLinux-HOWTO.txt | 42 +++++---------------------
- 1 file changed, 8 insertions(+), 34 deletions(-)
+ tools/lkl/lib/Build        |   2 +
+ tools/lkl/lib/posix-host.c | 353 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 355 insertions(+)
+ create mode 100644 tools/lkl/lib/posix-host.c
 
-diff --git a/Documentation/virt/uml/UserModeLinux-HOWTO.txt b/Documentation/virt/uml/UserModeLinux-HOWTO.txt
-index 87b80f5..08ee28d 100644
---- a/Documentation/virt/uml/UserModeLinux-HOWTO.txt
-+++ b/Documentation/virt/uml/UserModeLinux-HOWTO.txt
-@@ -1,6 +1,6 @@
-   User Mode Linux HOWTO
-   User Mode Linux Core Team
--  Mon Nov 18 14:16:16 EST 2002
-+  Mon Feb 10 08:27:24 EST 2020
+diff --git a/tools/lkl/lib/Build b/tools/lkl/lib/Build
+index dba530424e4a..0e711e260a3a 100644
+--- a/tools/lkl/lib/Build
++++ b/tools/lkl/lib/Build
+@@ -1,8 +1,10 @@
+ CFLAGS_config.o += -I$(srctree)/tools/perf/pmu-events
++CFLAGS_posix-host.o += -D_FILE_OFFSET_BITS=64
  
-   This document describes the use and abuse of Jeff Dike's User Mode
-   Linux: a port of the Linux kernel as a normal Intel Linux process.
-@@ -215,26 +215,17 @@
- 
- 
-   Compiling the user mode kernel is just like compiling any other
--  kernel.  Let's go through the steps, using 2.4.0-prerelease (current
-+  kernel.  Let's go through the steps, using 5.5.1 (current
-   as of this writing) as an example:
- 
- 
--  1. Download the latest UML patch from
--
--     the download page <http://user-mode-linux.sourceforge.net/
--
--     In this example, the file is uml-patch-2.4.0-prerelease.bz2.
--
--
--  2. Download the matching kernel from your favourite kernel mirror,
-+  1. Download the matching kernel from your favourite kernel mirror,
-      such as:
- 
--     ftp://ftp.ca.kernel.org/pub/kernel/v2.4/linux-2.4.0-prerelease.tar.bz2
--     <ftp://ftp.ca.kernel.org/pub/kernel/v2.4/linux-2.4.0-prerelease.tar.bz2>
--     .
-+     wget https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.5.1.tar.xz
- 
- 
--  3. Make a directory and unpack the kernel into it.
-+  2. Make a directory and unpack the kernel into it.
- 
- 
- 
-@@ -255,31 +246,14 @@
- 
- 
-        host%
--       tar -xzvf linux-2.4.0-prerelease.tar.bz2
--
--
--
--
--
--
--  4. Apply the patch using
--
--
--
--       host%
--       cd ~/uml/linux
--
--
--
--       host%
--       bzcat uml-patch-2.4.0-prerelease.bz2 | patch -p1
-+       tar xvf linux-5.5.1.tar.xz
- 
- 
- 
- 
- 
- 
--  5. Run your favorite config; `make xconfig ARCH=um' is the most
-+  3. Run your favorite config; `make xconfig ARCH=um' is the most
-      convenient.  `make config ARCH=um' and 'make menuconfig ARCH=um'
-      will work as well.  The defaults will give you a useful kernel.  If
-      you want to change something, go ahead, it probably won't hurt
-@@ -293,7 +267,7 @@
- 
- 
- 
--  6. Finish with `make linux ARCH=um': the result is a file called
-+  4. Finish with `make linux ARCH=um': the result is a file called
-      `linux' in the top directory of your source tree.
- 
-   Make sure that you don't build this kernel in /usr/src/linux.  On some
+ liblkl-y += fs.o
+ liblkl-y += net.o
+ liblkl-y += jmp_buf.o
++liblkl-$(LKL_HOST_CONFIG_POSIX) += posix-host.o
+ liblkl-y += utils.o
+ liblkl-y += dbg.o
+ liblkl-y += dbg_handler.o
+diff --git a/tools/lkl/lib/posix-host.c b/tools/lkl/lib/posix-host.c
+new file mode 100644
+index 000000000000..4be1611a8942
+--- /dev/null
++++ b/tools/lkl/lib/posix-host.c
+@@ -0,0 +1,353 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <pthread.h>
++#include <stdlib.h>
++#include <sys/time.h>
++#include <time.h>
++#include <signal.h>
++#include <assert.h>
++#include <unistd.h>
++#include <errno.h>
++#include <string.h>
++#include <time.h>
++#include <stdint.h>
++#include <sys/uio.h>
++#include <sys/types.h>
++#include <sys/socket.h>
++#include <sys/syscall.h>
++#include <poll.h>
++#include <lkl_host.h>
++#include "jmp_buf.h"
++
++/* Let's see if the host has semaphore.h */
++#include <unistd.h>
++
++#ifdef _POSIX_SEMAPHORES
++#include <semaphore.h>
++/* TODO(pscollins): We don't support fork() for now, but maybe one day
++ * we will?
++ */
++#define SHARE_SEM 0
++#endif /* _POSIX_SEMAPHORES */
++
++static void print(const char *str, int len)
++{
++	int ret __attribute__((unused));
++
++	ret = write(STDOUT_FILENO, str, len);
++}
++
++struct lkl_mutex {
++	pthread_mutex_t mutex;
++};
++
++struct lkl_sem {
++#ifdef _POSIX_SEMAPHORES
++	sem_t sem;
++#else
++	pthread_mutex_t lock;
++	int count;
++	pthread_cond_t cond;
++#endif /* _POSIX_SEMAPHORES */
++};
++
++struct lkl_tls_key {
++	pthread_key_t key;
++};
++
++#define WARN_UNLESS(exp) do {						\
++		if (exp < 0)						\
++			lkl_printf("%s: %s\n", #exp, strerror(errno));	\
++	} while (0)
++
++static int _warn_pthread(int ret, char *str_exp)
++{
++	if (ret > 0)
++		lkl_printf("%s: %s\n", str_exp, strerror(ret));
++
++	return ret;
++}
++
++
++/* pthread_* functions use the reverse convention */
++#define WARN_PTHREAD(exp) _warn_pthread(exp, #exp)
++
++static struct lkl_sem *sem_alloc(int count)
++{
++	struct lkl_sem *sem;
++
++	sem = malloc(sizeof(*sem));
++	if (!sem)
++		return NULL;
++
++#ifdef _POSIX_SEMAPHORES
++	if (sem_init(&sem->sem, SHARE_SEM, count) < 0) {
++		lkl_printf("sem_init: %s\n", strerror(errno));
++		free(sem);
++		return NULL;
++	}
++#else
++	pthread_mutex_init(&sem->lock, NULL);
++	sem->count = count;
++	WARN_PTHREAD(pthread_cond_init(&sem->cond, NULL));
++#endif /* _POSIX_SEMAPHORES */
++
++	return sem;
++}
++
++static void sem_free(struct lkl_sem *sem)
++{
++#ifdef _POSIX_SEMAPHORES
++	WARN_UNLESS(sem_destroy(&sem->sem));
++#else
++	WARN_PTHREAD(pthread_cond_destroy(&sem->cond));
++	WARN_PTHREAD(pthread_mutex_destroy(&sem->lock));
++#endif /* _POSIX_SEMAPHORES */
++	free(sem);
++}
++
++static void sem_up(struct lkl_sem *sem)
++{
++#ifdef _POSIX_SEMAPHORES
++	WARN_UNLESS(sem_post(&sem->sem));
++#else
++	WARN_PTHREAD(pthread_mutex_lock(&sem->lock));
++	sem->count++;
++	if (sem->count > 0)
++		WARN_PTHREAD(pthread_cond_signal(&sem->cond));
++	WARN_PTHREAD(pthread_mutex_unlock(&sem->lock));
++#endif /* _POSIX_SEMAPHORES */
++
++}
++
++static void sem_down(struct lkl_sem *sem)
++{
++#ifdef _POSIX_SEMAPHORES
++	int err;
++
++	do {
++		err = sem_wait(&sem->sem);
++	} while (err < 0 && errno == EINTR);
++	if (err < 0 && errno != EINTR)
++		lkl_printf("sem_wait: %s\n", strerror(errno));
++#else
++	WARN_PTHREAD(pthread_mutex_lock(&sem->lock));
++	while (sem->count <= 0)
++		WARN_PTHREAD(pthread_cond_wait(&sem->cond, &sem->lock));
++	sem->count--;
++	WARN_PTHREAD(pthread_mutex_unlock(&sem->lock));
++#endif /* _POSIX_SEMAPHORES */
++}
++
++static struct lkl_mutex *mutex_alloc(int recursive)
++{
++	struct lkl_mutex *_mutex = malloc(sizeof(struct lkl_mutex));
++	pthread_mutex_t *mutex = NULL;
++	pthread_mutexattr_t attr;
++
++	if (!_mutex)
++		return NULL;
++
++	mutex = &_mutex->mutex;
++	WARN_PTHREAD(pthread_mutexattr_init(&attr));
++
++	/* PTHREAD_MUTEX_ERRORCHECK is *very* useful for debugging,
++	 * but has some overhead, so we provide an option to turn it
++	 * off.
++	 */
++#ifdef DEBUG
++	if (!recursive)
++		WARN_PTHREAD(pthread_mutexattr_settype(
++				     &attr, PTHREAD_MUTEX_ERRORCHECK));
++#endif /* DEBUG */
++
++	if (recursive)
++		WARN_PTHREAD(pthread_mutexattr_settype(
++				     &attr, PTHREAD_MUTEX_RECURSIVE));
++
++	WARN_PTHREAD(pthread_mutex_init(mutex, &attr));
++
++	return _mutex;
++}
++
++static void mutex_lock(struct lkl_mutex *mutex)
++{
++	WARN_PTHREAD(pthread_mutex_lock(&mutex->mutex));
++}
++
++static void mutex_unlock(struct lkl_mutex *_mutex)
++{
++	pthread_mutex_t *mutex = &_mutex->mutex;
++
++	WARN_PTHREAD(pthread_mutex_unlock(mutex));
++}
++
++static void mutex_free(struct lkl_mutex *_mutex)
++{
++	pthread_mutex_t *mutex = &_mutex->mutex;
++
++	WARN_PTHREAD(pthread_mutex_destroy(mutex));
++	free(_mutex);
++}
++
++static lkl_thread_t thread_create(void (*fn)(void *), void *arg)
++{
++	pthread_t thread;
++
++	if (WARN_PTHREAD(pthread_create(&thread, NULL, (void *)fn,
++					arg)))
++		return 0;
++	else
++		return (lkl_thread_t) thread;
++}
++
++static void thread_detach(void)
++{
++	WARN_PTHREAD(pthread_detach(pthread_self()));
++}
++
++static void thread_exit(void)
++{
++	pthread_exit(NULL);
++}
++
++static int thread_join(lkl_thread_t tid)
++{
++	if (WARN_PTHREAD(pthread_join((pthread_t)tid, NULL)))
++		return (-1);
++	else
++		return 0;
++}
++
++static lkl_thread_t thread_self(void)
++{
++	return (lkl_thread_t)pthread_self();
++}
++
++static int thread_equal(lkl_thread_t a, lkl_thread_t b)
++{
++	return pthread_equal((pthread_t)a, (pthread_t)b);
++}
++
++static struct lkl_tls_key *tls_alloc(void (*destructor)(void *))
++{
++	struct lkl_tls_key *ret = malloc(sizeof(struct lkl_tls_key));
++
++	if (WARN_PTHREAD(pthread_key_create(&ret->key, destructor))) {
++		free(ret);
++		return NULL;
++	}
++	return ret;
++}
++
++static void tls_free(struct lkl_tls_key *key)
++{
++	WARN_PTHREAD(pthread_key_delete(key->key));
++	free(key);
++}
++
++static int tls_set(struct lkl_tls_key *key, void *data)
++{
++	if (WARN_PTHREAD(pthread_setspecific(key->key, data)))
++		return (-1);
++	return 0;
++}
++
++static void *tls_get(struct lkl_tls_key *key)
++{
++	return pthread_getspecific(key->key);
++}
++
++static unsigned long long time_ns(void)
++{
++	struct timespec ts;
++
++	clock_gettime(CLOCK_MONOTONIC, &ts);
++
++	return 1e9*ts.tv_sec + ts.tv_nsec;
++}
++
++static void *timer_alloc(void (*fn)(void *), void *arg)
++{
++	int err;
++	timer_t timer;
++	struct sigevent se =  {
++		.sigev_notify = SIGEV_THREAD,
++		.sigev_value = {
++			.sival_ptr = arg,
++		},
++		.sigev_notify_function = (void *)fn,
++	};
++
++	err = timer_create(CLOCK_REALTIME, &se, &timer);
++	if (err)
++		return NULL;
++
++	return (void *)(long)timer;
++}
++
++static int timer_set_oneshot(void *_timer, unsigned long ns)
++{
++	timer_t timer = (timer_t)(long)_timer;
++	struct itimerspec ts = {
++		.it_value = {
++			.tv_sec = ns / 1000000000,
++			.tv_nsec = ns % 1000000000,
++		},
++	};
++
++	return timer_settime(timer, 0, &ts, NULL);
++}
++
++static void timer_free(void *_timer)
++{
++	timer_t timer = (timer_t)(long)_timer;
++
++	timer_delete(timer);
++}
++
++static void panic(void)
++{
++	assert(0);
++}
++
++static long _gettid(void)
++{
++#ifdef	__FreeBSD__
++	return (long)pthread_self();
++#else
++	return syscall(SYS_gettid);
++#endif
++}
++
++struct lkl_host_operations lkl_host_ops = {
++	.panic = panic,
++	.thread_create = thread_create,
++	.thread_detach = thread_detach,
++	.thread_exit = thread_exit,
++	.thread_join = thread_join,
++	.thread_self = thread_self,
++	.thread_equal = thread_equal,
++	.sem_alloc = sem_alloc,
++	.sem_free = sem_free,
++	.sem_up = sem_up,
++	.sem_down = sem_down,
++	.mutex_alloc = mutex_alloc,
++	.mutex_free = mutex_free,
++	.mutex_lock = mutex_lock,
++	.mutex_unlock = mutex_unlock,
++	.tls_alloc = tls_alloc,
++	.tls_free = tls_free,
++	.tls_set = tls_set,
++	.tls_get = tls_get,
++	.time = time_ns,
++	.timer_alloc = timer_alloc,
++	.timer_set_oneshot = timer_set_oneshot,
++	.timer_free = timer_free,
++	.print = print,
++	.mem_alloc = (void *)malloc,
++	.mem_free = free,
++	.gettid = _gettid,
++	.jmp_buf_set = jmp_buf_set,
++	.jmp_buf_longjmp = jmp_buf_longjmp,
++};
++
 -- 
-2.7.4
+2.21.0 (Apple Git-122.2)
 
 
 _______________________________________________
