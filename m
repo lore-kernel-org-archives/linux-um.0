@@ -1,8 +1,8 @@
 Return-Path: <linux-arch-owner@vger.kernel.org>
 From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v3 16/26] lkl tools: host lib: networking helpers
-Date: Wed,  5 Feb 2020 16:30:25 +0900
-Message-Id: <e88c1f3df48b35b795ee31eb247a71f074d3d12d.1580882335.git.thehajime@gmail.com>
+Subject: [RFC v3 24/26] um lkl: add UML network driver for lkl
+Date: Wed,  5 Feb 2020 16:30:33 +0900
+Message-Id: <5caf8fee4ed563f2fc074d9a1f2bc43d7d1492bd.1580882335.git.thehajime@gmail.com>
 In-Reply-To: <cover.1580882335.git.thehajime@gmail.com>
 References: <cover.1580882335.git.thehajime@gmail.com>
 MIME-Version: 1.0
@@ -12,1202 +12,610 @@ To: linux-um@lists.infradead.org
 Cc: Octavian Purdila <tavi.purdila@gmail.com>, Akira Moroo <retrage01@gmail.com>, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>
 List-ID: <linux-um.lists.infradead.org>
 
-This commit adds LKL application APIs to control network related
-resources of kernel via LKL syscall, ioctl, and via netlink messages.
+This commit adds the use of the UML drivers of network interfaces which
+should be able to use any backend configured by boot command line
+parameters.  Currently slirp and tuntap backends are tested.
+
+Since the UML drivers use LKL irq infrastructure, the build system only
+picks required object files of UML, and LKL adds trivial glue code and
+ifdefs into UML code so that existing driver codes can be used for LKL
+as-is.
 
 Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
 ---
- tools/lkl/include/lkl.h      | 241 +++++++++++
- tools/lkl/include/lkl_host.h |  85 ++++
- tools/lkl/lib/Build          |   1 +
- tools/lkl/lib/net.c          | 818 +++++++++++++++++++++++++++++++++++
- 4 files changed, 1145 insertions(+)
- create mode 100644 tools/lkl/lib/net.c
+ .circleci/config.yml                    |  2 ++
+ arch/um/drivers/Makefile                |  2 ++
+ arch/um/kernel/Makefile                 |  4 +++
+ arch/um/kernel/irq.c                    |  4 +++
+ arch/um/lkl/Kconfig                     |  2 ++
+ arch/um/lkl/Makefile                    |  2 ++
+ arch/um/lkl/include/uapi/asm/host_ops.h |  6 +++++
+ arch/um/lkl/kernel/asm-offsets.c        |  1 +
+ arch/um/lkl/kernel/irq.c                | 16 ++++++++++++
+ arch/um/lkl/kernel/setup.c              |  4 +++
+ arch/um/lkl/mm/bootmem.c                | 33 +++++++++++++++++++++++++
+ arch/um/os-Linux/Makefile               |  5 ++++
+ arch/um/os-Linux/file.c                 |  9 +++++++
+ tools/lkl/Makefile.autoconf             |  2 ++
+ tools/lkl/include/lkl.h                 |  9 +++++++
+ tools/lkl/include/lkl_host.h            |  1 +
+ tools/lkl/lib/Build                     |  1 +
+ tools/lkl/lib/config.c                  |  6 +++++
+ tools/lkl/lib/posix-host.c              |  3 +++
+ tools/lkl/lib/um/Build                  |  2 ++
+ tools/lkl/lib/um/um_glue.c              | 33 +++++++++++++++++++++++++
+ tools/lkl/lib/um/um_net.c               | 25 +++++++++++++++++++
+ tools/lkl/tests/net-setup.sh            |  1 +
+ tools/lkl/tests/net-test.c              | 14 +++++++----
+ tools/lkl/tests/net.sh                  | 18 ++++++++++++++
+ tools/lkl/tests/run.py                  |  1 +
+ 26 files changed, 201 insertions(+), 5 deletions(-)
+ create mode 100644 tools/lkl/lib/um/Build
+ create mode 100644 tools/lkl/lib/um/um_glue.c
+ create mode 100644 tools/lkl/lib/um/um_net.c
 
+diff --git a/.circleci/config.yml b/.circleci/config.yml
+index 5bdf059014c0..df1554078a4b 100644
+--- a/.circleci/config.yml
++++ b/.circleci/config.yml
+@@ -43,6 +43,8 @@ do_steps: &do_steps
+   - run:
+       name: run tests
+       command: |
++        sudo apt-get update
++        sudo apt-get install -y slirp
+         mkdir -p ~/junit
+         make -C tools/lkl run-tests tests="--junit-dir ~/junit"
+       no_output_timeout: "90m"
+diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
+index a290821e355c..3cce6c81079e 100644
+--- a/arch/um/drivers/Makefile
++++ b/arch/um/drivers/Makefile
+@@ -37,7 +37,9 @@ $(obj)/vde.o: $(obj)/vde_kern.o $(obj)/vde_user.o
+ # When the above is fixed, don't forget to add this too!
+ #targets += $(obj)/pcap.o
+ 
++ifeq ($(UMMODE),kernel)
+ obj-y := stdio_console.o fd.o chan_kern.o chan_user.o line.o
++endif
+ obj-$(CONFIG_SSL) += ssl.o
+ obj-$(CONFIG_STDERR_CONSOLE) += stderr_console.o
+ 
+diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
+index 5aa882011e04..78b49eb9bf81 100644
+--- a/arch/um/kernel/Makefile
++++ b/arch/um/kernel/Makefile
+@@ -12,12 +12,16 @@ CPPFLAGS_vmlinux.lds := -DSTART=$(LDS_START)		\
+                         -DELF_ARCH=$(LDS_ELF_ARCH)	\
+                         -DELF_FORMAT=$(LDS_ELF_FORMAT)	\
+ 			$(LDS_EXTRA)
++ifeq ($(UMMODE),kernel)
+ extra-y := vmlinux.lds
+ 
+ obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
+ 	physmem.o process.o ptrace.o reboot.o sigio.o \
+ 	signal.o syscall.o sysrq.o time.o tlb.o trap.o \
+ 	um_arch.o umid.o maccess.o kmsg_dump.o skas/
++else ifeq ($(UMMODE),library)
++obj-y = irq.o
++endif
+ 
+ obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
+ obj-$(CONFIG_GPROF)	+= gprof_syms.o
+diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
+index 3577118bb4a5..580a889c2277 100644
+--- a/arch/um/kernel/irq.c
++++ b/arch/um/kernel/irq.c
+@@ -406,6 +406,7 @@ int deactivate_all_fds(void)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_UMMODE_KERN
+ /*
+  * do_IRQ handles all normal device IRQs (the special
+  * SMP cross-CPU interrupts have their own specific
+@@ -420,6 +421,7 @@ unsigned int do_IRQ(int irq, struct uml_pt_regs *regs)
+ 	set_irq_regs(old_regs);
+ 	return 1;
+ }
++#endif /* !CONFIG_UMMODE_KERN */
+ 
+ void um_free_irq(unsigned int irq, void *dev)
+ {
+@@ -446,6 +448,7 @@ int um_request_irq(unsigned int irq, int fd, int type,
+ 
+ EXPORT_SYMBOL(um_request_irq);
+ 
++#ifdef CONFIG_UMMODE_KERN
+ /*
+  * irq_chip must define at least enable/disable and ack when
+  * the edge handler is used.
+@@ -597,3 +600,4 @@ unsigned long from_irq_stack(int nested)
+ 	return mask & ~1;
+ }
+ 
++#endif /* !CONFIG_UMMODE_KERN */
+diff --git a/arch/um/lkl/Kconfig b/arch/um/lkl/Kconfig
+index f72b423fad5b..3568f33d5ccf 100644
+--- a/arch/um/lkl/Kconfig
++++ b/arch/um/lkl/Kconfig
+@@ -81,3 +81,5 @@ config HZ
+         default 100
+ 
+ endmenu
++
++source "arch/um/drivers/Kconfig"
+diff --git a/arch/um/lkl/Makefile b/arch/um/lkl/Makefile
+index e1161fa3fb63..17ff6d00d1db 100644
+--- a/arch/um/lkl/Makefile
++++ b/arch/um/lkl/Makefile
+@@ -4,6 +4,8 @@ include $(LKL_DIR)/auto.conf
+ 
+ # fixup CFLAGS of um build
+ KBUILD_CFLAGS := $(subst $(CFLAGS),,$(KBUILD_CFLAGS))
++# XXX
++KBUILD_CFLAGS	+= -DTIMER_IRQ=0 -DUM_ETH_IRQ=5 -DLAST_IRQ=15
+ 
+ SRCARCH := um/lkl
+ ARCH_INCLUDE += -I$(srctree)/$(LKL_DIR)/um/include
+diff --git a/arch/um/lkl/include/uapi/asm/host_ops.h b/arch/um/lkl/include/uapi/asm/host_ops.h
+index fe4382c3050a..0230885f4f64 100644
+--- a/arch/um/lkl/include/uapi/asm/host_ops.h
++++ b/arch/um/lkl/include/uapi/asm/host_ops.h
+@@ -17,6 +17,10 @@ struct lkl_jmp_buf {
+  * These operations must be provided by a host library or by the application
+  * itself.
+  *
++ * @um_devices - string containg the list of UML devices in command line
++ * format. This string is appended to the kernel command line and
++ * is provided here for convenience to be implemented by the host library.
++ *
+  * @print - optional operation that receives console messages
+  *
+  * @panic - called during a kernel panic
+@@ -74,6 +78,8 @@ struct lkl_jmp_buf {
+  * @jmp_buf_longjmp - perform a jump back to the saved jump buffer
+  */
+ struct lkl_host_operations {
++	const char *um_devices;
++
+ 	void (*print)(const char *str, int len);
+ 	void (*panic)(void);
+ 
+diff --git a/arch/um/lkl/kernel/asm-offsets.c b/arch/um/lkl/kernel/asm-offsets.c
+index 6be0763698dc..6fdca6df21a2 100644
+--- a/arch/um/lkl/kernel/asm-offsets.c
++++ b/arch/um/lkl/kernel/asm-offsets.c
+@@ -1,2 +1,3 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Dummy asm-offsets.c file. Required by kbuild and ready to be used - hint! */
++#include <sysdep/kernel-offsets.h>
+diff --git a/arch/um/lkl/kernel/irq.c b/arch/um/lkl/kernel/irq.c
+index e3b59e46ca50..7de65b8f699d 100644
+--- a/arch/um/lkl/kernel/irq.c
++++ b/arch/um/lkl/kernel/irq.c
+@@ -11,6 +11,10 @@
+ #include <asm/host_ops.h>
+ #include <asm/cpu.h>
+ 
++#if defined(__linux) && (defined(__i386) || defined(__x86_64))
++#include <os.h>
++#endif
++
+ /*
+  * To avoid much overhead we use an indirect approach: the irqs are marked using
+  * a bitmap (array of longs) and a summary of the modified bits is kept in a
+@@ -184,6 +188,10 @@ void init_IRQ(void)
+ 	for (i = 0; i < NR_IRQS; i++)
+ 		irq_set_chip_and_handler(i, &dummy_irq_chip, handle_simple_irq);
+ 
++#if defined(__linux) && (defined(__i386) || defined(__x86_64))
++	/* Initialize EPOLL Loop */
++	os_setup_epoll();
++#endif
+ 	pr_info("lkl: irqs initialized\n");
+ }
+ 
+@@ -191,3 +199,11 @@ void cpu_yield_to_irqs(void)
+ {
+ 	cpu_relax();
+ }
++
++#if defined(__linux) && (defined(__i386) || defined(__x86_64))
++unsigned int do_IRQ(int irq, struct uml_pt_regs *regs)
++{
++	lkl_trigger_irq(irq);
++	return 1;
++}
++#endif
+diff --git a/arch/um/lkl/kernel/setup.c b/arch/um/lkl/kernel/setup.c
+index 36c199d3aa22..39b7b7c79581 100644
+--- a/arch/um/lkl/kernel/setup.c
++++ b/arch/um/lkl/kernel/setup.c
+@@ -61,6 +61,10 @@ int __init lkl_start_kernel(struct lkl_host_operations *ops, const char *fmt,
+ 	ret = vsnprintf(boot_command_line, COMMAND_LINE_SIZE, fmt, ap);
+ 	va_end(ap);
+ 
++	if (ops->um_devices)
++		strscpy(boot_command_line + ret, ops->um_devices,
++			COMMAND_LINE_SIZE - ret);
++
+ 	memcpy(cmd_line, boot_command_line, COMMAND_LINE_SIZE);
+ 
+ 	init_sem = lkl_ops->sem_alloc(0);
+diff --git a/arch/um/lkl/mm/bootmem.c b/arch/um/lkl/mm/bootmem.c
+index 39dd0d22b44e..3175dadee13f 100644
+--- a/arch/um/lkl/mm/bootmem.c
++++ b/arch/um/lkl/mm/bootmem.c
+@@ -64,3 +64,36 @@ void free_mem(void)
+ {
+ 	lkl_ops->mem_free((void *)_memory_start);
+ }
++
++void *uml_kmalloc(int size, int flags)
++{
++	return kmalloc(size, flags);
++}
++
++char *uml_strdup(const char *string)
++{
++	return kstrdup(string, GFP_KERNEL);
++}
++
++void free_stack(unsigned long stack, int order)
++{
++	free_pages(stack, order);
++}
++
++unsigned long alloc_stack(int order, int atomic)
++{
++	unsigned long page;
++	gfp_t flags = GFP_KERNEL;
++
++	if (atomic)
++		flags = GFP_ATOMIC;
++	page = __get_free_pages(flags, order);
++
++	return page;
++}
++
++int __cant_sleep(void)
++{
++	return in_atomic() || irqs_disabled() || in_interrupt();
++	/* Is in_interrupt() really needed? */
++}
+diff --git a/arch/um/os-Linux/Makefile b/arch/um/os-Linux/Makefile
+index 839915b8c31c..a74a2486e178 100644
+--- a/arch/um/os-Linux/Makefile
++++ b/arch/um/os-Linux/Makefile
+@@ -6,9 +6,14 @@
+ # Don't instrument UML-specific code
+ KCOV_INSTRUMENT                := n
+ 
++ifeq ($(UMMODE),kernel)
+ obj-y = execvp.o file.o helper.o irq.o main.o mem.o process.o \
+ 	registers.o sigio.o signal.o start_up.o time.o tty.o \
+ 	umid.o user_syms.o util.o drivers/ skas/
++else
++obj-y = execvp.o file.o helper.o irq.o drivers/
++endif
++
+ 
+ obj-$(CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA) += elf_aux.o
+ 
+diff --git a/arch/um/os-Linux/file.c b/arch/um/os-Linux/file.c
+index 5133e3afb96f..6656a2ec418a 100644
+--- a/arch/um/os-Linux/file.c
++++ b/arch/um/os-Linux/file.c
+@@ -397,6 +397,14 @@ int os_pipe(int *fds, int stream, int close_on_exec)
+ 	return err;
+ }
+ 
++static void sig_handler(int sig)
++{
++	if (sig != SIGIO)
++		return;
++
++	sigio_handler(sig, NULL, NULL);
++}
++
+ int os_set_fd_async(int fd)
+ {
+ 	int err, flags;
+@@ -413,6 +421,7 @@ int os_set_fd_async(int fd)
+ 		return err;
+ 	}
+ 
++	signal(SIGIO, sig_handler);
+ 	if ((fcntl(fd, F_SETSIG, SIGIO) < 0) ||
+ 	    (fcntl(fd, F_SETOWN, os_getpid()) < 0)) {
+ 		err = -errno;
+diff --git a/tools/lkl/Makefile.autoconf b/tools/lkl/Makefile.autoconf
+index 268c367d9962..d2dcaa3b85f2 100644
+--- a/tools/lkl/Makefile.autoconf
++++ b/tools/lkl/Makefile.autoconf
+@@ -41,6 +41,8 @@ define posix_host
+   $(if $(strip $(call find_include,archive.h)),$(call set_autoconf_var,ARCHIVE,y))
+   $(if $(filter $(1),elf64-x86-64-freebsd),$(call set_autoconf_var,NEEDS_LARGP,y))
+   $(if $(filter $(1),elf32-i386),$(call set_autoconf_var,I386,y))
++  $(if $(filter $(1),elf64-x86-64),$(call set_autoconf_var,UML_DEV,y))
++  $(if $(filter $(1),elf32-i386),$(call set_autoconf_var,UML_DEV,y))
+ endef
+ 
+ define do_autoconf
 diff --git a/tools/lkl/include/lkl.h b/tools/lkl/include/lkl.h
-index cdae92300320..1f4291ad9455 100644
+index 1f4291ad9455..952d11e30868 100644
 --- a/tools/lkl/include/lkl.h
 +++ b/tools/lkl/include/lkl.h
-@@ -516,6 +516,247 @@ int lkl_dirfd(struct lkl_dir *dir);
-  */
- int lkl_mount_fs(char *fstype);
+@@ -731,6 +731,15 @@ struct lkl_netdev_args {
+ 	unsigned int offload;
+ };
  
-+/**
-+ * lkl_if_up - activate network interface
-+ *
-+ * @ifindex - the ifindex of the interface
-+ * @returns - return 0 if no error: otherwise negative value returns
-+ */
-+int lkl_if_up(int ifindex);
++#ifdef LKL_HOST_CONFIG_UML_DEV
++struct lkl_netdev *lkl_um_netdev_create(const char *ifparams);
++#else
++static inline struct lkl_netdev *lkl_um_netdev_create(const char *ifparams)
++{
++	return NULL;
++}
++#endif
 +
-+/**
-+ * lkl_if_down - deactivate network interface
-+ *
-+ * @ifindex - the ifindex of the interface
-+ * @returns - return 0 if no error: otherwise negative value returns
-+ */
-+int lkl_if_down(int ifindex);
-+
-+/**
-+ * lkl_if_set_mtu - set MTU on interface
-+ *
-+ * @ifindex - the ifindex of the interface
-+ * @mtu - the requested MTU size
-+ * @returns - return 0 if no error: otherwise negative value returns
-+ */
-+int lkl_if_set_mtu(int ifindex, int mtu);
-+
-+/**
-+ * lkl_if_set_ipv4 - set IPv4 address on interface
-+ *
-+ * @ifindex - the ifindex of the interface
-+ * @addr - 4-byte IP address (i.e., struct in_addr)
-+ * @netmask_len - prefix length of the @addr
-+ * @returns - return 0 if no error: otherwise negative value returns
-+ */
-+int lkl_if_set_ipv4(int ifindex, unsigned int addr, unsigned int netmask_len);
-+
-+/**
-+ * lkl_set_ipv4_gateway - add an IPv4 default route
-+ *
-+ * @addr - 4-byte IP address of the gateway (i.e., struct in_addr)
-+ * @returns - return 0 if no error: otherwise negative value returns
-+ */
-+int lkl_set_ipv4_gateway(unsigned int addr);
-+
-+/**
-+ * lkl_if_set_ipv4_gateway - add an IPv4 default route in rule table
-+ *
-+ * @ifindex - the ifindex of the interface, used for tableid calculation
-+ * @addr - 4-byte IP address of the interface
-+ * @netmask_len - prefix length of the @addr
-+ * @gw_addr - 4-byte IP address of the gateway
-+ * @returns - return 0 if no error: otherwise negative value returns
-+ */
-+int lkl_if_set_ipv4_gateway(int ifindex, unsigned int addr,
-+		unsigned int netmask_len, unsigned int gw_addr);
-+
-+/**
-+ * lkl_if_set_ipv6 - set IPv6 address on interface
-+ * must be called after interface is up.
-+ *
-+ * @ifindex - the ifindex of the interface
-+ * @addr - 16-byte IPv6 address (i.e., struct in6_addr)
-+ * @netprefix_len - prefix length of the @addr
-+ * @returns - return 0 if no error: otherwise negative value returns
-+ */
-+int lkl_if_set_ipv6(int ifindex, void *addr, unsigned int netprefix_len);
-+
-+/**
-+ * lkl_set_ipv6_gateway - add an IPv6 default route
-+ *
-+ * @addr - 16-byte IPv6 address of the gateway (i.e., struct in6_addr)
-+ * @returns - return 0 if no error: otherwise negative value returns
-+ */
-+int lkl_set_ipv6_gateway(void *addr);
-+
-+/**
-+ * lkl_if_set_ipv6_gateway - add an IPv6 default route in rule table
-+ *
-+ * @ifindex - the ifindex of the interface, used for tableid calculation
-+ * @addr - 16-byte IP address of the interface
-+ * @netmask_len - prefix length of the @addr
-+ * @gw_addr - 16-byte IP address of the gateway (i.e., struct in_addr)
-+ * @returns - return 0 if no error: otherwise negative value returns
-+ */
-+int lkl_if_set_ipv6_gateway(int ifindex, void *addr,
-+		unsigned int netmask_len, void *gw_addr);
-+
-+/**
-+ * lkl_ifname_to_ifindex - obtain ifindex of an interface by name
-+ *
-+ * @name - string of an interface
-+ * @returns - return an integer of ifindex if no error
-+ */
-+int lkl_ifname_to_ifindex(const char *name);
-+
-+/**
-+ * lkl_netdev_get_ifindex - retrieve the interface index for a given network
-+ * device id
-+ *
-+ * @id - the network device id
-+ * @returns the interface index or a stricly negative value in case of error
-+ */
-+int lkl_netdev_get_ifindex(int id);
-+
-+/**
-+ * lkl_add_neighbor - add a permanent arp entry
-+ * @ifindex - the ifindex of the interface
-+ * @af - address family of the ip address. Must be LKL_AF_INET or LKL_AF_INET6
-+ * @ip - ip address of the entry in network byte order
-+ * @mac - mac address of the entry
-+ */
-+int lkl_add_neighbor(int ifindex, int af, void *addr, void *mac);
-+
-+/**
-+ * lkl_if_add_ip - add an ip address
-+ * @ifindex - the ifindex of the interface
-+ * @af - address family of the ip address. Must be LKL_AF_INET or LKL_AF_INET6
-+ * @addr - ip address of the entry in network byte order
-+ * @netprefix_len - prefix length of the @addr
-+ */
-+int lkl_if_add_ip(int ifindex, int af, void *addr, unsigned int netprefix_len);
-+
-+/**
-+ * lkl_if_del_ip - add an ip address
-+ * @ifindex - the ifindex of the interface
-+ * @af - address family of the ip address. Must be LKL_AF_INET or LKL_AF_INET6
-+ * @addr - ip address of the entry in network byte order
-+ * @netprefix_len - prefix length of the @addr
-+ */
-+int lkl_if_del_ip(int ifindex, int af, void *addr, unsigned int netprefix_len);
-+
-+/**
-+ * lkl_add_gateway - add a gateway
-+ * @af - address family of the ip address. Must be LKL_AF_INET or LKL_AF_INET6
-+ * @gwaddr - 4-byte IP address of the gateway (i.e., struct in_addr)
-+ */
-+int lkl_add_gateway(int af, void *gwaddr);
-+
-+/**
-+ * XXX Should I use OIF selector?
-+ * temporary table idx = ifindex * 2 + 0 <- ipv4
-+ * temporary table idx = ifindex * 2 + 1 <- ipv6
-+ */
-+/**
-+ * lkl_if_add_rule_from_addr - create an ip rule table with "from" selector
-+ * @ifindex - the ifindex of the interface, used for table id calculation
-+ * @af - address family of the ip address. Must be LKL_AF_INET or LKL_AF_INET6
-+ * @saddr - network byte order ip address, "from" selector address of this rule
-+ */
-+int lkl_if_add_rule_from_saddr(int ifindex, int af, void *saddr);
-+
-+/**
-+ * lkl_if_add_gateway - add gateway to rule table
-+ * @ifindex - the ifindex of the interface, used for table id calculation
-+ * @af - address family of the ip address. Must be LKL_AF_INET or LKL_AF_INET6
-+ * @gwaddr - 4-byte IP address of the gateway (i.e., struct in_addr)
-+ */
-+int lkl_if_add_gateway(int ifindex, int af, void *gwaddr);
-+
-+/**
-+ * lkl_if_add_linklocal - add linklocal route to rule table
-+ * @ifindex - the ifindex of the interface, used for table id calculation
-+ * @af - address family of the ip address. Must be LKL_AF_INET or LKL_AF_INET6
-+ * @addr - ip address of the entry in network byte order
-+ * @netprefix_len - prefix length of the @addr
-+ */
-+int lkl_if_add_linklocal(int ifindex, int af,  void *addr, int netprefix_len);
-+
-+/**
-+ * lkl_if_wait_ipv6_dad - wait for DAD to be done for a ipv6 address
-+ * must be called after interface is up
-+ *
-+ * @ifindex - the ifindex of the interface
-+ * @addr - ip address of the entry in network byte order
-+ */
-+int lkl_if_wait_ipv6_dad(int ifindex, void *addr);
-+
-+/**
-+ * lkl_set_fd_limit - set the maximum number of file descriptors allowed
-+ * @fd_limit - fd max limit
-+ */
-+int lkl_set_fd_limit(unsigned int fd_limit);
-+
-+/**
-+ * lkl_qdisc_add - set qdisc rule onto an interface
-+ *
-+ * @ifindex - the ifindex of the interface
-+ * @root - the name of root class (e.g., "root");
-+ * @type - the type of qdisc (e.g., "fq")
-+ */
-+int lkl_qdisc_add(int ifindex, const char *root, const char *type);
-+
-+/**
-+ * lkl_qdisc_parse_add - Add a qdisc entry for an interface with strings
-+ *
-+ * @ifindex - the ifindex of the interface
-+ * @entries - strings of qdisc configurations in the form of
-+ *            "root|type;root|type;..."
-+ */
-+void lkl_qdisc_parse_add(int ifindex, const char *entries);
-+
-+/**
-+ * lkl_netdev - host network device handle, defined in lkl_host.h.
-+ */
-+struct lkl_netdev;
-+
-+/**
-+ * lkl_netdev_args - arguments to lkl_netdev_add
-+ * @mac - optional MAC address for the device
-+ * @offload - offload bits for the device
-+ */
-+struct lkl_netdev_args {
-+	void *mac;
-+	unsigned int offload;
-+};
-+
-+/*
-+ * lkl_register_dbg_handler- register a signal handler that loads a debug lib.
-+ *
-+ * The signal handler is triggered by Ctrl-Z. It creates a new pthread which
-+ * call dbg_entrance().
-+ *
-+ * If you run the program from shell script, make sure you ignore SIGTSTP by
-+ * "trap '' TSTP" in the shell script.
-+ */
-+void lkl_register_dbg_handler(void);
-+
-+/**
-+ * lkl_sysctl - write a sysctl value
-+ *
-+ * @path - the path to an sysctl entry (e.g., "net.ipv4.tcp_wmem");
-+ * @value - the value of the sysctl (e.g., "4096 87380 2147483647")
-+ */
-+int lkl_sysctl(const char *path, const char *value);
-+
-+/**
-+ * lkl_sysctl_parse_write - Configure sysctl parameters with strings
-+ *
-+ * @sysctls - Configure sysctl parameters as the form of "key=value;..."
-+ */
-+void lkl_sysctl_parse_write(const char *sysctls);
-+
- #ifdef __cplusplus
- }
- #endif
+ /*
+  * lkl_register_dbg_handler- register a signal handler that loads a debug lib.
+  *
 diff --git a/tools/lkl/include/lkl_host.h b/tools/lkl/include/lkl_host.h
-index 85e80eb4ad0d..4e6d6e031498 100644
+index 4e6d6e031498..7ac30bdcaf0a 100644
 --- a/tools/lkl/include/lkl_host.h
 +++ b/tools/lkl/include/lkl_host.h
-@@ -18,6 +18,91 @@ extern struct lkl_host_operations lkl_host_ops;
-  */
- int lkl_printf(const char *fmt, ...);
+@@ -10,6 +10,7 @@ extern "C" {
+ #include <lkl.h>
  
-+#ifdef LKL_HOST_CONFIG_POSIX
-+#include <sys/uio.h>
-+#else
-+struct iovec {
-+	void *iov_base;
-+	size_t iov_len;
-+};
-+#endif
-+
-+struct lkl_netdev {
-+	struct lkl_dev_net_ops *ops;
-+	int id;
-+	uint8_t has_vnet_hdr: 1;
-+};
-+
-+/**
-+ * struct lkl_dev_net_ops - network device host operations
-+ */
-+struct lkl_dev_net_ops {
-+	/**
-+	 * @tx: writes a L2 packet into the net device
-+	 *
-+	 * The data buffer can only hold 0 or 1 complete packets.
-+	 *
-+	 * @nd - pointer to the network device;
-+	 * @iov - pointer to the buffer vector;
-+	 * @cnt - # of vectors in iov.
-+	 *
-+	 * @returns number of bytes transmitted
-+	 */
-+	int (*tx)(struct lkl_netdev *nd, struct iovec *iov, int cnt);
-+
-+	/**
-+	 * @rx: reads a packet from the net device.
-+	 *
-+	 * It must only read one complete packet if present.
-+	 *
-+	 * If the buffer is too small for the packet, the implementation may
-+	 * decide to drop it or trim it.
-+	 *
-+	 * @nd - pointer to the network device
-+	 * @iov - pointer to the buffer vector to store the packet
-+	 * @cnt - # of vectors in iov.
-+	 *
-+	 * @returns number of bytes read for success or < 0 if error
-+	 */
-+	int (*rx)(struct lkl_netdev *nd, struct iovec *iov, int cnt);
-+
-+#define LKL_DEV_NET_POLL_RX		1
-+#define LKL_DEV_NET_POLL_TX		2
-+#define LKL_DEV_NET_POLL_HUP		4
-+
-+	/**
-+	 * @poll: polls a net device
-+	 *
-+	 * Supports the following events: LKL_DEV_NET_POLL_RX
-+	 * (readable), LKL_DEV_NET_POLL_TX (writable) or
-+	 * LKL_DEV_NET_POLL_HUP (the close operations has been issued
-+	 * and we need to clean up). Blocks until one event is
-+	 * available.
-+	 *
-+	 * @nd - pointer to the network device
-+	 *
-+	 * @returns - LKL_DEV_NET_POLL_RX, LKL_DEV_NET_POLL_TX,
-+	 * LKL_DEV_NET_POLL_HUP or a negative value for errors
-+	 */
-+	int (*poll)(struct lkl_netdev *nd);
-+
-+	/**
-+	 * @poll_hup: make poll wakeup and return LKL_DEV_NET_POLL_HUP
-+	 *
-+	 * @nd - pointer to the network device
-+	 */
-+	void (*poll_hup)(struct lkl_netdev *nd);
-+
-+	/**
-+	 * @free: frees a network device
-+	 *
-+	 * Implementation must release its resources and free the network device
-+	 * structure.
-+	 *
-+	 * @nd - pointer to the network device
-+	 */
-+	void (*free)(struct lkl_netdev *nd);
-+};
+ extern struct lkl_host_operations lkl_host_ops;
++extern char lkl_um_devs[4096];
  
- #ifdef __cplusplus
- }
+ /**
+  * lkl_printf - print a message via the host print operation
 diff --git a/tools/lkl/lib/Build b/tools/lkl/lib/Build
-index 4a444337b0e7..dba530424e4a 100644
+index 0e711e260a3a..ad8a4b806375 100644
 --- a/tools/lkl/lib/Build
 +++ b/tools/lkl/lib/Build
-@@ -1,6 +1,7 @@
- CFLAGS_config.o += -I$(srctree)/tools/perf/pmu-events
+@@ -10,3 +10,4 @@ liblkl-y += dbg.o
+ liblkl-y += dbg_handler.o
+ liblkl-y += ../../perf/pmu-events/jsmn.o
+ liblkl-y += config.o
++liblkl-$(LKL_HOST_CONFIG_UML_DEV) += um/
+diff --git a/tools/lkl/lib/config.c b/tools/lkl/lib/config.c
+index 37f8ac4d942a..db3af68446d3 100644
+--- a/tools/lkl/lib/config.c
++++ b/tools/lkl/lib/config.c
+@@ -470,6 +470,12 @@ static int lkl_config_netdev_create(struct lkl_config *cfg,
+ 	memset(&nd_args, 0, sizeof(struct lkl_netdev_args));
  
- liblkl-y += fs.o
-+liblkl-y += net.o
- liblkl-y += jmp_buf.o
- liblkl-y += utils.o
- liblkl-y += dbg.o
-diff --git a/tools/lkl/lib/net.c b/tools/lkl/lib/net.c
+ 	if (!nd && iface->iftype && iface->ifparams) {
++		if ((strcmp(iface->iftype, "um") == 0)) {
++			nd = lkl_um_netdev_create(iface->ifparams);
++			iface->nd = nd;
++			/* um_netdev doesn't use virtio device */
++			return 0;
++		}
+ 	}
+ 
+ 	if (nd) {
+diff --git a/tools/lkl/lib/posix-host.c b/tools/lkl/lib/posix-host.c
+index 4be1611a8942..d6394d41e125 100644
+--- a/tools/lkl/lib/posix-host.c
++++ b/tools/lkl/lib/posix-host.c
+@@ -346,6 +346,9 @@ struct lkl_host_operations lkl_host_ops = {
+ 	.print = print,
+ 	.mem_alloc = (void *)malloc,
+ 	.mem_free = free,
++#ifdef LKL_HOST_CONFIG_UML_DEV
++	.um_devices = lkl_um_devs,
++#endif
+ 	.gettid = _gettid,
+ 	.jmp_buf_set = jmp_buf_set,
+ 	.jmp_buf_longjmp = jmp_buf_longjmp,
+diff --git a/tools/lkl/lib/um/Build b/tools/lkl/lib/um/Build
 new file mode 100644
-index 000000000000..316965ffd21e
+index 000000000000..09a60975ecd6
 --- /dev/null
-+++ b/tools/lkl/lib/net.c
-@@ -0,0 +1,818 @@
++++ b/tools/lkl/lib/um/Build
+@@ -0,0 +1,2 @@
++liblkl-y += um_glue.o
++liblkl-y += um_net.o
+diff --git a/tools/lkl/lib/um/um_glue.c b/tools/lkl/lib/um/um_glue.c
+new file mode 100644
+index 000000000000..10ca8524e682
+--- /dev/null
++++ b/tools/lkl/lib/um/um_glue.c
+@@ -0,0 +1,33 @@
 +// SPDX-License-Identifier: GPL-2.0
-+#include <string.h>
 +#include <stdio.h>
-+#include "endian.h"
++#include <stdlib.h>
++#include <string.h>
++#include <unistd.h>
++#include <errno.h>
++
++
++
++char lkl_um_devs[4096];
++
++/* from sigio.c */
++void maybe_sigio_broken(int fd, int read)
++{
++}
++
++/* from process.c */
++int os_getpid(void)
++{
++	return getpid();
++}
++
++
++/* from chan_kern.c */
++void free_irqs(void)
++{
++}
++
++/* from sigio.c */
++int ignore_sigio_fd(int fd)
++{
++	return 0;
++}
+diff --git a/tools/lkl/lib/um/um_net.c b/tools/lkl/lib/um/um_net.c
+new file mode 100644
+index 000000000000..edd0c65fc08e
+--- /dev/null
++++ b/tools/lkl/lib/um/um_net.c
+@@ -0,0 +1,25 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
 +#include <lkl_host.h>
 +
-+#ifdef __MINGW32__
-+#include <ws2tcpip.h>
++static int registered_net_dev_idx;
 +
-+int lkl_inet_pton(int af, const char *src, void *dst)
++struct lkl_netdev *lkl_um_netdev_create(const char *ifparams)
 +{
-+	struct addrinfo hint, *res = NULL;
-+	int err;
++	struct lkl_netdev *nd;
 +
-+	memset(&hint, 0, sizeof(struct addrinfo));
++	nd = lkl_host_ops.mem_alloc(sizeof(struct lkl_netdev));
++	if (!nd)
++		return NULL;
 +
-+	hint.ai_family = af;
-+	hint.ai_flags = AI_NUMERICHOST;
++	memset(nd, 0, sizeof(struct lkl_netdev));
 +
-+	err = getaddrinfo(src, NULL, &hint, &res);
-+	if (err)
-+		return 0;
++	nd->id = registered_net_dev_idx++;
++	/* concat strings */
++	snprintf(lkl_um_devs + strlen(lkl_um_devs), sizeof(lkl_um_devs),
++		 " eth%d=%s", nd->id, ifparams);
 +
-+	switch (af) {
-+	case AF_INET:
-+		*(struct in_addr *)dst =
-+			((struct sockaddr_in *)&res->ai_addr)->sin_addr;
++	return nd;
++}
+diff --git a/tools/lkl/tests/net-setup.sh b/tools/lkl/tests/net-setup.sh
+index 0cfc42a30a54..fa390fb904b5 100644
+--- a/tools/lkl/tests/net-setup.sh
++++ b/tools/lkl/tests/net-setup.sh
+@@ -8,6 +8,7 @@ TEST_IP6_NETMASK=64
+ TEST_MAC0="aa:bb:cc:dd:ee:ff"
+ TEST_MAC1="aa:bb:cc:dd:ee:aa"
+ TEST_NETSERVER_PORT=11223
++TEST_UM_SLIRP_PARMS="slirp,,`which slirp`"
+ 
+ # $1 - count
+ # $2 - netcount
+diff --git a/tools/lkl/tests/net-test.c b/tools/lkl/tests/net-test.c
+index edc37150270b..c3f818742263 100644
+--- a/tools/lkl/tests/net-test.c
++++ b/tools/lkl/tests/net-test.c
+@@ -22,9 +22,10 @@
+ 
+ enum {
+ 	BACKEND_NONE,
++	BACKEND_UM,
+ };
+ 
+-const char *backends[] = { "loopback", NULL };
++const char *backends[] = { "loopback", "um", NULL };
+ static struct {
+ 	int backend;
+ 	const char *ifname;
+@@ -164,12 +165,17 @@ static int lkl_test_icmp(void)
+ }
+ 
+ static struct lkl_netdev *nd;
++static int nd_id;
+ 
+ static int lkl_test_nd_create(void)
+ {
+ 	switch (cla.backend) {
+ 	case BACKEND_NONE:
+ 		return TEST_SKIP;
++	case BACKEND_UM:
++		nd = lkl_um_netdev_create(cla.ifname);
++		nd_id = nd->id;
 +		break;
-+	case AF_INET6:
-+		*(struct in6_addr *)dst =
-+			((struct sockaddr_in6 *)&res->ai_addr)->sin6_addr;
-+		break;
-+	default:
-+		freeaddrinfo(res);
-+		return 0;
-+	}
-+
-+	freeaddrinfo(res);
-+	return 1;
-+}
-+#endif
-+
-+static inline void set_sockaddr(struct lkl_sockaddr_in *sin, unsigned int addr,
-+				unsigned short port)
-+{
-+	sin->sin_family = LKL_AF_INET;
-+	sin->sin_addr.lkl_s_addr = addr;
-+	sin->sin_port = port;
-+}
-+
-+static inline int ifindex_to_name(int sock, struct lkl_ifreq *ifr, int ifindex)
-+{
-+	ifr->lkl_ifr_ifindex = ifindex;
-+	return lkl_sys_ioctl(sock, LKL_SIOCGIFNAME, (long)ifr);
-+}
-+
-+int lkl_ifname_to_ifindex(const char *name)
-+{
-+	struct lkl_ifreq ifr;
-+	int fd, ret;
-+
-+	fd = lkl_sys_socket(LKL_AF_INET, LKL_SOCK_DGRAM, 0);
-+	if (fd < 0)
-+		return fd;
-+
-+	strcpy(ifr.lkl_ifr_name, name);
-+
-+	ret = lkl_sys_ioctl(fd, LKL_SIOCGIFINDEX, (long)&ifr);
-+	if (ret < 0)
-+		return ret;
-+
-+	return ifr.lkl_ifr_ifindex;
-+}
-+
-+int lkl_if_up(int ifindex)
-+{
-+	struct lkl_ifreq ifr;
-+	int err, sock = lkl_sys_socket(LKL_AF_INET, LKL_SOCK_DGRAM, 0);
-+
-+	if (sock < 0)
-+		return sock;
-+	err = ifindex_to_name(sock, &ifr, ifindex);
-+	if (err < 0)
-+		return err;
-+
-+	err = lkl_sys_ioctl(sock, LKL_SIOCGIFFLAGS, (long)&ifr);
-+	if (!err) {
-+		ifr.lkl_ifr_flags |= LKL_IFF_UP;
-+		err = lkl_sys_ioctl(sock, LKL_SIOCSIFFLAGS, (long)&ifr);
-+	}
-+
-+	lkl_sys_close(sock);
-+
-+	return err;
-+}
-+
-+int lkl_if_down(int ifindex)
-+{
-+	struct lkl_ifreq ifr;
-+	int err, sock;
-+
-+	sock = lkl_sys_socket(LKL_AF_INET, LKL_SOCK_DGRAM, 0);
-+	if (sock < 0)
-+		return sock;
-+
-+	err = ifindex_to_name(sock, &ifr, ifindex);
-+	if (err < 0)
-+		return err;
-+
-+	err = lkl_sys_ioctl(sock, LKL_SIOCGIFFLAGS, (long)&ifr);
-+	if (!err) {
-+		ifr.lkl_ifr_flags &= ~LKL_IFF_UP;
-+		err = lkl_sys_ioctl(sock, LKL_SIOCSIFFLAGS, (long)&ifr);
-+	}
-+
-+	lkl_sys_close(sock);
-+
-+	return err;
-+}
-+
-+int lkl_if_set_mtu(int ifindex, int mtu)
-+{
-+	struct lkl_ifreq ifr;
-+	int err, sock;
-+
-+	sock = lkl_sys_socket(LKL_AF_INET, LKL_SOCK_DGRAM, 0);
-+	if (sock < 0)
-+		return sock;
-+
-+	err = ifindex_to_name(sock, &ifr, ifindex);
-+	if (err < 0)
-+		return err;
-+
-+	ifr.lkl_ifr_mtu = mtu;
-+
-+	err = lkl_sys_ioctl(sock, LKL_SIOCSIFMTU, (long)&ifr);
-+
-+	lkl_sys_close(sock);
-+
-+	return err;
-+}
-+
-+int lkl_if_set_ipv4(int ifindex, unsigned int addr, unsigned int netmask_len)
-+{
-+	return lkl_if_add_ip(ifindex, LKL_AF_INET, &addr, netmask_len);
-+}
-+
-+int lkl_if_set_ipv4_gateway(int ifindex, unsigned int src_addr,
-+		unsigned int src_masklen, unsigned int via_addr)
-+{
-+	int err;
-+
-+	err = lkl_if_add_rule_from_saddr(ifindex, LKL_AF_INET, &src_addr);
-+	if (err)
-+		return err;
-+	err = lkl_if_add_linklocal(ifindex, LKL_AF_INET,
-+					&src_addr, src_masklen);
-+	if (err)
-+		return err;
-+	return lkl_if_add_gateway(ifindex, LKL_AF_INET, &via_addr);
-+}
-+
-+int lkl_set_ipv4_gateway(unsigned int addr)
-+{
-+	return lkl_add_gateway(LKL_AF_INET, &addr);
-+}
-+
-+int lkl_netdev_get_ifindex(int id)
-+{
-+	struct lkl_ifreq ifr;
-+	int sock, ret;
-+
-+	sock = lkl_sys_socket(LKL_AF_INET, LKL_SOCK_DGRAM, 0);
-+	if (sock < 0)
-+		return sock;
-+
-+	snprintf(ifr.lkl_ifr_name, sizeof(ifr.lkl_ifr_name), "eth%d", id);
-+	ret = lkl_sys_ioctl(sock, LKL_SIOCGIFINDEX, (long)&ifr);
-+	lkl_sys_close(sock);
-+
-+	return ret < 0 ? ret : ifr.lkl_ifr_ifindex;
-+}
-+
-+static int netlink_sock(unsigned int groups)
-+{
-+	struct lkl_sockaddr_nl la;
-+	int fd, err;
-+
-+	fd = lkl_sys_socket(LKL_AF_NETLINK, LKL_SOCK_DGRAM, LKL_NETLINK_ROUTE);
-+	if (fd < 0)
-+		return fd;
-+
-+	memset(&la, 0, sizeof(la));
-+	la.nl_family = LKL_AF_NETLINK;
-+	la.nl_groups = groups;
-+	err = lkl_sys_bind(fd, (struct lkl_sockaddr *)&la, sizeof(la));
-+	if (err < 0)
-+		return err;
-+
-+	return fd;
-+}
-+
-+static int parse_rtattr(struct lkl_rtattr *tb[], int max,
-+			struct lkl_rtattr *rta, int len)
-+{
-+	unsigned short type;
-+
-+	memset(tb, 0, sizeof(struct lkl_rtattr *) * (max + 1));
-+	while (LKL_RTA_OK(rta, len)) {
-+		type = rta->rta_type;
-+		if ((type <= max) && (!tb[type]))
-+			tb[type] = rta;
-+		rta = LKL_RTA_NEXT(rta, len);
-+	}
-+	if (len)
-+		lkl_printf("!!!Deficit %d, rta_len=%d\n", len,
-+			rta->rta_len);
-+	return 0;
-+}
-+
-+struct addr_filter {
-+	unsigned int ifindex;
-+	void *addr;
-+};
-+
-+static unsigned int get_ifa_flags(struct lkl_ifaddrmsg *ifa,
-+				  struct lkl_rtattr *ifa_flags_attr)
-+{
-+	return ifa_flags_attr ? *(unsigned int *)LKL_RTA_DATA(ifa_flags_attr) :
-+				ifa->ifa_flags;
-+}
-+
-+/* returns:
-+ * 0 - dad succeed.
-+ * -1 - dad failed or other error.
-+ * 1 - should wait for new msg.
-+ */
-+static int check_ipv6_dad(struct lkl_sockaddr_nl *nladdr,
-+			  struct lkl_nlmsghdr *n, void *arg)
-+{
-+	struct addr_filter *filter = arg;
-+	struct lkl_ifaddrmsg *ifa = LKL_NLMSG_DATA(n);
-+	struct lkl_rtattr *rta_tb[LKL_IFA_MAX+1];
-+	unsigned int ifa_flags;
-+	int len = n->nlmsg_len;
-+
-+	if (n->nlmsg_type != LKL_RTM_NEWADDR)
-+		return 1;
-+
-+	len -= LKL_NLMSG_LENGTH(sizeof(*ifa));
-+	if (len < 0) {
-+		lkl_printf("BUG: wrong nlmsg len %d\n", len);
-+		return -1;
-+	}
-+
-+	parse_rtattr(rta_tb, LKL_IFA_MAX, LKL_IFA_RTA(ifa),
-+		     n->nlmsg_len - LKL_NLMSG_LENGTH(sizeof(*ifa)));
-+
-+	ifa_flags = get_ifa_flags(ifa, rta_tb[LKL_IFA_FLAGS]);
-+
-+	if (ifa->ifa_index != filter->ifindex)
-+		return 1;
-+	if (ifa->ifa_family != LKL_AF_INET6)
-+		return 1;
-+
-+	if (!rta_tb[LKL_IFA_LOCAL])
-+		rta_tb[LKL_IFA_LOCAL] = rta_tb[LKL_IFA_ADDRESS];
-+
-+	if (!rta_tb[LKL_IFA_LOCAL] ||
-+	    (filter->addr && memcmp(LKL_RTA_DATA(rta_tb[LKL_IFA_LOCAL]),
-+				    filter->addr, 16))) {
-+		return 1;
-+	}
-+	if (ifa_flags & LKL_IFA_F_DADFAILED) {
-+		lkl_printf("IPV6 DAD failed.\n");
-+		return -1;
-+	}
-+	if (!(ifa_flags & LKL_IFA_F_TENTATIVE))
-+		return 0;
-+	return 1;
-+}
-+
-+/* Copied from iproute2/lib/ */
-+static int rtnl_listen(int fd, int (*handler)(struct lkl_sockaddr_nl *nladdr,
-+					      struct lkl_nlmsghdr *, void *),
-+		       void *arg)
-+{
-+	int status;
-+	struct lkl_nlmsghdr *h;
-+	struct lkl_sockaddr_nl nladdr = { .nl_family = LKL_AF_NETLINK };
-+	struct lkl_iovec iov;
-+	struct lkl_user_msghdr msg = {
-+		.msg_name = &nladdr,
-+		.msg_namelen = sizeof(nladdr),
-+		.msg_iov = &iov,
-+		.msg_iovlen = 1,
-+	};
-+	char   buf[16384];
-+
-+	iov.iov_base = buf;
-+	while (1) {
-+		iov.iov_len = sizeof(buf);
-+		status = lkl_sys_recvmsg(fd, &msg, 0);
-+
-+		if (status < 0) {
-+			if (status == -LKL_EINTR || status == -LKL_EAGAIN)
-+				continue;
-+			lkl_printf("netlink receive error %s (%d)\n",
-+				lkl_strerror(status), status);
-+			if (status == -LKL_ENOBUFS)
-+				continue;
-+			return status;
-+		}
-+		if (status == 0) {
-+			lkl_printf("EOF on netlink\n");
-+			return -1;
-+		}
-+		if (msg.msg_namelen != sizeof(nladdr)) {
-+			lkl_printf("Sender address length == %d\n",
-+				msg.msg_namelen);
-+			return -1;
-+		}
-+
-+		for (h = (struct lkl_nlmsghdr *)buf;
-+		     (unsigned int)status >= sizeof(*h);) {
-+			int err;
-+			int len = h->nlmsg_len;
-+			int l = len - sizeof(*h);
-+
-+			if (l < 0 || len > status) {
-+				if (msg.msg_flags & LKL_MSG_TRUNC) {
-+					lkl_printf("Truncated message\n");
-+					return -1;
-+				}
-+				lkl_printf("!!!malformed message: len=%d\n",
-+					len);
-+				return -1;
-+			}
-+
-+			err = handler(&nladdr, h, arg);
-+			if (err <= 0)
-+				return err;
-+
-+			status -= LKL_NLMSG_ALIGN(len);
-+			h = (struct lkl_nlmsghdr *)((char *)h +
-+						    LKL_NLMSG_ALIGN(len));
-+		}
-+		if (msg.msg_flags & LKL_MSG_TRUNC) {
-+			lkl_printf("Message truncated\n");
-+			continue;
-+		}
-+		if (status) {
-+			lkl_printf("!!!Remnant of size %d\n", status);
-+			return -1;
-+		}
-+	}
-+}
-+
-+int lkl_if_wait_ipv6_dad(int ifindex, void *addr)
-+{
-+	struct addr_filter filter = {.ifindex = ifindex, .addr = addr};
-+	int fd, ret;
-+	struct {
-+		struct lkl_nlmsghdr		nlmsg_info;
-+		struct lkl_ifaddrmsg	ifaddrmsg_info;
-+	} req;
-+
-+	fd = netlink_sock(1 << (LKL_RTNLGRP_IPV6_IFADDR - 1));
-+	if (fd < 0)
-+		return fd;
-+
-+	memset(&req, 0, sizeof(req));
-+	req.nlmsg_info.nlmsg_len =
-+			LKL_NLMSG_LENGTH(sizeof(struct lkl_ifaddrmsg));
-+	req.nlmsg_info.nlmsg_flags = LKL_NLM_F_REQUEST | LKL_NLM_F_DUMP;
-+	req.nlmsg_info.nlmsg_type = LKL_RTM_GETADDR;
-+	req.ifaddrmsg_info.ifa_family = LKL_AF_INET6;
-+	req.ifaddrmsg_info.ifa_index = ifindex;
-+	ret = lkl_sys_send(fd, &req, req.nlmsg_info.nlmsg_len, 0);
-+	if (ret < 0) {
-+		lkl_perror("lkl_sys_send", ret);
-+		return ret;
-+	}
-+	ret = rtnl_listen(fd, check_ipv6_dad, (void *)&filter);
-+	lkl_sys_close(fd);
-+	return ret;
-+}
-+
-+int lkl_if_set_ipv6(int ifindex, void *addr, unsigned int netprefix_len)
-+{
-+	int err = lkl_if_add_ip(ifindex, LKL_AF_INET6, addr, netprefix_len);
-+
-+	if (err)
-+		return err;
-+	return lkl_if_wait_ipv6_dad(ifindex, addr);
-+}
-+
-+int lkl_if_set_ipv6_gateway(int ifindex, void *src_addr,
-+		unsigned int src_masklen, void *via_addr)
-+{
-+	int err;
-+
-+	err = lkl_if_add_rule_from_saddr(ifindex, LKL_AF_INET6, src_addr);
-+	if (err)
-+		return err;
-+	err = lkl_if_add_linklocal(ifindex, LKL_AF_INET6,
-+					src_addr, src_masklen);
-+	if (err)
-+		return err;
-+	return lkl_if_add_gateway(ifindex, LKL_AF_INET6, via_addr);
-+}
-+
-+int lkl_set_ipv6_gateway(void *addr)
-+{
-+	return lkl_add_gateway(LKL_AF_INET6, addr);
-+}
-+
-+/* returns:
-+ * 0 - succeed.
-+ * < 0 - error number.
-+ * 1 - should wait for new msg.
-+ */
-+static int check_error(struct lkl_sockaddr_nl *nladdr, struct lkl_nlmsghdr *n,
-+		       void *arg)
-+{
-+	unsigned int s = *(unsigned int *)arg;
-+
-+	if (nladdr->nl_pid != 0 || n->nlmsg_seq != s) {
-+		/* Don't forget to skip that message. */
-+		return 1;
-+	}
-+
-+	if (n->nlmsg_type == LKL_NLMSG_ERROR) {
-+		struct lkl_nlmsgerr *err =
-+			(struct lkl_nlmsgerr *)LKL_NLMSG_DATA(n);
-+		int l = n->nlmsg_len - sizeof(*n);
-+
-+		if (l < (int)sizeof(struct lkl_nlmsgerr))
-+			lkl_printf("ERROR truncated\n");
-+		else if (!err->error)
-+			return 0;
-+
-+		lkl_printf("RTNETLINK answers: %s\n",
-+			lkl_strerror(-err->error));
-+		return err->error;
-+	}
-+	lkl_printf("Unexpected reply!!!\n");
-+	return -1;
-+}
-+
-+static unsigned int seq;
-+static int rtnl_talk(int fd, struct lkl_nlmsghdr *n)
-+{
-+	int status;
-+	struct lkl_sockaddr_nl nladdr = {.nl_family = LKL_AF_NETLINK};
-+	struct lkl_iovec iov = {.iov_base = (void *)n, .iov_len = n->nlmsg_len};
-+	struct lkl_user_msghdr msg = {
-+			.msg_name = &nladdr,
-+			.msg_namelen = sizeof(nladdr),
-+			.msg_iov = &iov,
-+			.msg_iovlen = 1,
-+	};
-+
-+	n->nlmsg_seq = seq;
-+	n->nlmsg_flags |= LKL_NLM_F_ACK;
-+
-+	status = lkl_sys_sendmsg(fd, &msg, 0);
-+	if (status < 0) {
-+		lkl_perror("Cannot talk to rtnetlink", status);
-+		return status;
-+	}
-+
-+	status = rtnl_listen(fd, check_error, (void *)&seq);
-+	seq++;
-+	return status;
-+}
-+
-+static int addattr_l(struct lkl_nlmsghdr *n, unsigned int maxlen,
-+		     int type, const void *data, int alen)
-+{
-+	int len = LKL_RTA_LENGTH(alen);
-+	struct lkl_rtattr *rta;
-+
-+	if (LKL_NLMSG_ALIGN(n->nlmsg_len) + LKL_RTA_ALIGN(len) > maxlen) {
-+		lkl_printf("%s ERROR: message exceeded bound of %d\n", __func__,
-+			   maxlen);
-+		return -1;
-+	}
-+	rta = ((struct lkl_rtattr *) (((void *) (n)) +
-+				      LKL_NLMSG_ALIGN(n->nlmsg_len)));
-+	rta->rta_type = type;
-+	rta->rta_len = len;
-+	memcpy(LKL_RTA_DATA(rta), data, alen);
-+	n->nlmsg_len = LKL_NLMSG_ALIGN(n->nlmsg_len) + LKL_RTA_ALIGN(len);
-+	return 0;
-+}
-+
-+int lkl_add_neighbor(int ifindex, int af, void *ip, void *mac)
-+{
-+	struct {
-+		struct lkl_nlmsghdr n;
-+		struct lkl_ndmsg r;
-+		char buf[1024];
-+	} req = {
-+		.n.nlmsg_len = LKL_NLMSG_LENGTH(sizeof(struct lkl_ndmsg)),
-+		.n.nlmsg_type = LKL_RTM_NEWNEIGH,
-+		.n.nlmsg_flags = LKL_NLM_F_REQUEST |
-+				 LKL_NLM_F_CREATE | LKL_NLM_F_REPLACE,
-+		.r.ndm_family = af,
-+		.r.ndm_ifindex = ifindex,
-+		.r.ndm_state = LKL_NUD_PERMANENT,
-+
-+	};
-+	int err, addr_sz;
-+	int fd;
-+
-+	if (af == LKL_AF_INET)
-+		addr_sz = 4;
-+	else if (af == LKL_AF_INET6)
-+		addr_sz = 16;
-+	else {
-+		lkl_printf("Bad address family: %d\n", af);
-+		return -1;
-+	}
-+
-+	fd = netlink_sock(0);
-+	if (fd < 0)
-+		return fd;
-+
-+	// create the IP attribute
-+	addattr_l(&req.n, sizeof(req), LKL_NDA_DST, ip, addr_sz);
-+
-+	// create the MAC attribute
-+	addattr_l(&req.n, sizeof(req), LKL_NDA_LLADDR, mac, 6);
-+
-+	err = rtnl_talk(fd, &req.n);
-+	lkl_sys_close(fd);
-+	return err;
-+}
-+
-+static int ipaddr_modify(int cmd, int flags, int ifindex, int af, void *addr,
-+			 unsigned int netprefix_len)
-+{
-+	struct {
-+		struct lkl_nlmsghdr n;
-+		struct lkl_ifaddrmsg ifa;
-+		char buf[256];
-+	} req = {
-+		.n.nlmsg_len = LKL_NLMSG_LENGTH(sizeof(struct lkl_ifaddrmsg)),
-+		.n.nlmsg_flags = LKL_NLM_F_REQUEST | flags,
-+		.n.nlmsg_type = cmd,
-+		.ifa.ifa_family = af,
-+		.ifa.ifa_prefixlen = netprefix_len,
-+		.ifa.ifa_index = ifindex,
-+	};
-+	int err, addr_sz;
-+	int fd;
-+
-+	if (af == LKL_AF_INET)
-+		addr_sz = 4;
-+	else if (af == LKL_AF_INET6)
-+		addr_sz = 16;
-+	else {
-+		lkl_printf("Bad address family: %d\n", af);
-+		return -1;
-+	}
-+
-+	fd = netlink_sock(0);
-+	if (fd < 0)
-+		return fd;
-+
-+	// create the IP attribute
-+	addattr_l(&req.n, sizeof(req), LKL_IFA_LOCAL, addr, addr_sz);
-+
-+	err = rtnl_talk(fd, &req.n);
-+
-+	lkl_sys_close(fd);
-+	return err;
-+}
-+
-+int lkl_if_add_ip(int ifindex, int af, void *addr, unsigned int netprefix_len)
-+{
-+	return ipaddr_modify(LKL_RTM_NEWADDR, LKL_NLM_F_CREATE | LKL_NLM_F_EXCL,
-+			     ifindex, af, addr, netprefix_len);
-+}
-+
-+int lkl_if_del_ip(int ifindex, int af, void *addr, unsigned int netprefix_len)
-+{
-+	return ipaddr_modify(LKL_RTM_DELADDR, 0, ifindex, af,
-+			     addr, netprefix_len);
-+}
-+
-+static int iproute_modify(int cmd, unsigned int flags, int ifindex, int af,
-+		void *route_addr, int route_masklen, void *gwaddr)
-+{
-+	struct {
-+		struct lkl_nlmsghdr	n;
-+		struct lkl_rtmsg	r;
-+		char			buf[1024];
-+	} req = {
-+		.n.nlmsg_len = LKL_NLMSG_LENGTH(sizeof(struct lkl_rtmsg)),
-+		.n.nlmsg_flags = LKL_NLM_F_REQUEST | flags,
-+		.n.nlmsg_type = cmd,
-+		.r.rtm_family = af,
-+		.r.rtm_table = LKL_RT_TABLE_MAIN,
-+		.r.rtm_scope = LKL_RT_SCOPE_UNIVERSE,
-+	};
-+	int err, addr_sz;
-+	int i, fd;
-+
-+	fd = netlink_sock(0);
-+	if (fd < 0) {
-+		lkl_printf("netlink_sock error: %d\n", fd);
-+		return fd;
-+	}
-+
-+	if (af == LKL_AF_INET)
-+		addr_sz = 4;
-+	else if (af == LKL_AF_INET6)
-+		addr_sz = 16;
-+	else {
-+		lkl_printf("Bad address family: %d\n", af);
-+		return -1;
-+	}
-+
-+	if (cmd != LKL_RTM_DELROUTE) {
-+		req.r.rtm_protocol = LKL_RTPROT_BOOT;
-+		req.r.rtm_scope = LKL_RT_SCOPE_UNIVERSE;
-+		req.r.rtm_type = LKL_RTN_UNICAST;
-+	}
-+
-+	if (gwaddr)
-+		addattr_l(&req.n, sizeof(req),
-+				LKL_RTA_GATEWAY, gwaddr, addr_sz);
-+
-+	if (af == LKL_AF_INET && route_addr) {
-+		unsigned int netaddr = *(unsigned int *)route_addr;
-+
-+		netaddr = ntohl(netaddr);
-+		netaddr = (netaddr >> (32 - route_masklen));
-+		netaddr = (netaddr << (32 - route_masklen));
-+		netaddr =  htonl(netaddr);
-+		*(unsigned int *)route_addr = netaddr;
-+		req.r.rtm_dst_len = route_masklen;
-+		addattr_l(&req.n, sizeof(req), LKL_RTA_DST,
-+					route_addr, addr_sz);
-+	}
-+
-+	if (af == LKL_AF_INET6 && route_addr) {
-+		struct lkl_in6_addr netaddr =
-+			*(struct lkl_in6_addr *)route_addr;
-+		int rmbyte = route_masklen/8;
-+		int rmbit = route_masklen%8;
-+
-+		for (i = 0; i < rmbyte; i++)
-+			netaddr.in6_u.u6_addr8[15-i] = 0;
-+		netaddr.in6_u.u6_addr8[15-rmbyte] =
-+			(netaddr.in6_u.u6_addr8[15-rmbyte] >> rmbit);
-+		netaddr.in6_u.u6_addr8[15-rmbyte] =
-+			(netaddr.in6_u.u6_addr8[15-rmbyte] << rmbit);
-+		*(struct lkl_in6_addr *)route_addr = netaddr;
-+		req.r.rtm_dst_len = route_masklen;
-+		addattr_l(&req.n, sizeof(req), LKL_RTA_DST,
-+					route_addr, addr_sz);
-+	}
-+
-+	if (ifindex != LKL_RT_TABLE_MAIN) {
-+		if (af == LKL_AF_INET)
-+			req.r.rtm_table = ifindex * 2;
-+		else if (af == LKL_AF_INET6)
-+			req.r.rtm_table = ifindex * 2 + 1;
-+		addattr_l(&req.n, sizeof(req), LKL_RTA_OIF, &ifindex, addr_sz);
-+	}
-+	err = rtnl_talk(fd, &req.n);
-+	lkl_sys_close(fd);
-+	return err;
-+}
-+
-+int lkl_if_add_linklocal(int ifindex, int af,  void *addr, int netprefix_len)
-+{
-+	return iproute_modify(LKL_RTM_NEWROUTE, LKL_NLM_F_CREATE|LKL_NLM_F_EXCL,
-+			ifindex, af, addr, netprefix_len, NULL);
-+}
-+
-+int lkl_if_add_gateway(int ifindex, int af, void *gwaddr)
-+{
-+	return iproute_modify(LKL_RTM_NEWROUTE, LKL_NLM_F_CREATE|LKL_NLM_F_EXCL,
-+			ifindex, af, NULL, 0, gwaddr);
-+}
-+
-+int lkl_add_gateway(int af, void *gwaddr)
-+{
-+	return iproute_modify(LKL_RTM_NEWROUTE, LKL_NLM_F_CREATE|LKL_NLM_F_EXCL,
-+			LKL_RT_TABLE_MAIN, af, NULL, 0, gwaddr);
-+}
-+
-+static int iprule_modify(int cmd, int ifindex, int af, void *saddr)
-+{
-+	struct {
-+		struct lkl_nlmsghdr	n;
-+		struct lkl_rtmsg		r;
-+		char			buf[1024];
-+	} req = {
-+		.n.nlmsg_type = cmd,
-+		.n.nlmsg_len = LKL_NLMSG_LENGTH(sizeof(struct lkl_rtmsg)),
-+		.n.nlmsg_flags = LKL_NLM_F_REQUEST,
-+		.r.rtm_protocol = LKL_RTPROT_BOOT,
-+		.r.rtm_scope = LKL_RT_SCOPE_UNIVERSE,
-+		.r.rtm_family = af,
-+		.r.rtm_type = LKL_RTN_UNSPEC,
-+	};
-+	int fd, err;
-+	int addr_sz;
-+
-+	if (af == LKL_AF_INET)
-+		addr_sz = 4;
-+	else if (af == LKL_AF_INET6)
-+		addr_sz = 16;
-+	else {
-+		lkl_printf("Bad address family: %d\n", af);
-+		return -1;
-+	}
-+
-+	fd = netlink_sock(0);
-+	if (fd < 0)
-+		return fd;
-+
-+	if (cmd == LKL_RTM_NEWRULE) {
-+		req.n.nlmsg_flags |= LKL_NLM_F_CREATE|LKL_NLM_F_EXCL;
-+		req.r.rtm_type = LKL_RTN_UNICAST;
-+	}
-+
-+	//set from address
-+	req.r.rtm_src_len = 8 * addr_sz;
-+	addattr_l(&req.n, sizeof(req), LKL_FRA_SRC, saddr, addr_sz);
-+
-+	//use ifindex as table id
-+	if (af == LKL_AF_INET)
-+		req.r.rtm_table = ifindex * 2;
-+	else if (af == LKL_AF_INET6)
-+		req.r.rtm_table = ifindex * 2 + 1;
-+	err = rtnl_talk(fd, &req.n);
-+
-+	lkl_sys_close(fd);
-+	return err;
-+}
-+
-+int lkl_if_add_rule_from_saddr(int ifindex, int af, void *saddr)
-+{
-+	return iprule_modify(LKL_RTM_NEWRULE, ifindex, af, saddr);
-+}
-+
-+static int qdisc_add(int cmd, int flags, int ifindex,
-+		     const char *root, const char *type)
-+{
-+	struct {
-+		struct lkl_nlmsghdr n;
-+		struct lkl_tcmsg tc;
-+		char buf[2*1024];
-+	} req = {
-+		.n.nlmsg_len = LKL_NLMSG_LENGTH(sizeof(struct lkl_tcmsg)),
-+		.n.nlmsg_flags = LKL_NLM_F_REQUEST|flags,
-+		.n.nlmsg_type = cmd,
-+		.tc.tcm_family = LKL_AF_UNSPEC,
-+	};
-+	int err, fd;
-+
-+	if (!root || !type) {
-+		lkl_printf("root and type arguments\n");
-+		return -1;
-+	}
-+
-+	if (strcmp(root, "root") == 0)
-+		req.tc.tcm_parent = LKL_TC_H_ROOT;
-+	req.tc.tcm_ifindex = ifindex;
-+
-+	fd = netlink_sock(0);
-+	if (fd < 0)
-+		return fd;
-+
-+	// create the qdisc attribute
-+	addattr_l(&req.n, sizeof(req), LKL_TCA_KIND, type, strlen(type)+1);
-+
-+	err = rtnl_talk(fd, &req.n);
-+	lkl_sys_close(fd);
-+	return err;
-+}
-+
-+int lkl_qdisc_add(int ifindex, const char *root, const char *type)
-+{
-+	return qdisc_add(LKL_RTM_NEWQDISC, LKL_NLM_F_CREATE | LKL_NLM_F_EXCL,
-+			 ifindex, root, type);
-+}
-+
-+/* Add a qdisc entry for an interface in the form of
-+ * "root|type;root|type;..."
-+ */
-+void lkl_qdisc_parse_add(int ifindex, const char *entries)
-+{
-+	char *saveptr = NULL, *token = NULL;
-+	char *root = NULL, *type = NULL;
-+	char strings[256];
-+	int ret = 0;
-+
-+	strcpy(strings, entries);
-+
-+	for (token = strtok_r(strings, ";", &saveptr); token;
-+	     token = strtok_r(NULL, ";", &saveptr)) {
-+		root = strtok(token, "|");
-+		type = strtok(NULL, "|");
-+		ret = lkl_qdisc_add(ifindex, root, type);
-+		if (ret) {
-+			lkl_printf("Failed to add qdisc entry: %s\n",
-+				   lkl_strerror(ret));
-+			return;
-+		}
-+	}
-+}
+ 	}
+ 
+ 	if (!nd) {
+@@ -180,11 +186,9 @@ static int lkl_test_nd_create(void)
+ 	return TEST_SUCCESS;
+ }
+ 
+-static int nd_id;
+-
+ static int lkl_test_nd_add(void)
+ {
+-	if (cla.backend == BACKEND_NONE)
++	if (cla.backend == BACKEND_NONE || cla.backend == BACKEND_UM)
+ 		return TEST_SKIP;
+ 
+ 	return TEST_SUCCESS;
+@@ -192,7 +196,7 @@ static int lkl_test_nd_add(void)
+ 
+ static int lkl_test_nd_remove(void)
+ {
+-	if (cla.backend == BACKEND_NONE)
++	if (cla.backend == BACKEND_NONE || cla.backend == BACKEND_UM)
+ 		return TEST_SKIP;
+ 
+ 	return TEST_SUCCESS;
+diff --git a/tools/lkl/tests/net.sh b/tools/lkl/tests/net.sh
+index 32e8452b0406..089ebfb332da 100755
+--- a/tools/lkl/tests/net.sh
++++ b/tools/lkl/tests/net.sh
+@@ -13,6 +13,8 @@ cleanup_backend()
+     case "$1" in
+     "loopback")
+         ;;
++    "um")
++        ;;
+     esac
+ }
+ 
+@@ -47,6 +49,16 @@ setup_backend()
+     case "$1" in
+     "loopback")
+         ;;
++    "um")
++	# only intel arch is capable with um-net backent
++	if [ -z "$LKL_HOST_CONFIG_UML_DEV" ]; then
++            return $TEST_SKIP
++	fi
++	# slirp's helper process doesn't work with valgrind
++	if [ -n "$VALGRIND" ]; then
++            return $TEST_SKIP
++	fi
++        ;;
+     *)
+         echo "don't know how to setup backend $1"
+         return $TEST_FAILED
+@@ -60,6 +72,12 @@ run_tests()
+     "loopback")
+         lkl_test_exec $script_dir/net-test --dst 127.0.0.1
+         ;;
++    "um")
++        lkl_test_exec $script_dir/net-test --backend um \
++                      --ifname $TEST_UM_SLIRP_PARMS \
++                      --ip 10.0.2.15 --netmask-len 8 \
++                      --dst 10.0.2.2
++        ;;
+     esac
+ }
+ 
+diff --git a/tools/lkl/tests/run.py b/tools/lkl/tests/run.py
+index b72299aaabee..23d5c5489e2c 100755
+--- a/tools/lkl/tests/run.py
++++ b/tools/lkl/tests/run.py
+@@ -54,6 +54,7 @@ tests = [
+     'disk.sh -t vfat',
+     'disk.sh -t btrfs',
+     'net.sh -b loopback',
++    'net.sh -b um',
+     'lklfuse.sh -t ext4',
+     'lklfuse.sh -t vfat',
+     'lklfuse.sh -t btrfs',
 -- 
 2.21.0 (Apple Git-122.2)
 
