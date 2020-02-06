@@ -1,16 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j2EWI-0001vI-3K
- for linux-um@lists.infradead.org; Thu, 13 Feb 2020 13:27:09 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH 6/6] um: implement cpu_relax() as ndelay(1) for time-travel
-Date: Thu, 13 Feb 2020 14:26:49 +0100
-Message-Id: <20200213132651.20506-7-johannes@sipsolutions.net>
-In-Reply-To: <20200213132651.20506-1-johannes@sipsolutions.net>
-References: <20200213132651.20506-1-johannes@sipsolutions.net>
+ id 1izmBk-0006ZH-7o
+ for linux-um@lists.infradead.org; Thu, 06 Feb 2020 18:47:45 +0000
+Received: by mail-pl1-x643.google.com with SMTP id ay11so2698579plb.0
+ for <linux-um@lists.infradead.org>; Thu, 06 Feb 2020 10:47:40 -0800 (PST)
 MIME-Version: 1.0
+References: <20200130230812.142642-1-brendanhiggins@google.com>
+ <20200130230812.142642-6-brendanhiggins@google.com>
+ <69582db9-d379-7d2a-1342-6de9a5d79141@gmail.com>
+In-Reply-To: <69582db9-d379-7d2a-1342-6de9a5d79141@gmail.com>
+From: Brendan Higgins <brendanhiggins@google.com>
+Date: Thu, 6 Feb 2020 10:47:28 -0800
+Message-ID: <CAFd5g45jHKXoMU4k103cqfeTAtUpaZh7ZK2ALpzHkRZTuVYa-g@mail.gmail.com>
+Subject: Re: [PATCH v2 5/7] kunit: test: add test plan to KUnit TAP format
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -23,65 +26,109 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+To: Frank Rowand <frowand.list@gmail.com>
+Cc: "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-arch@vger.kernel.org, Richard Weinberger <richard@nod.at>, Knut Omang <knut.omang@oracle.com>, rppt@linux.ibm.com, Iurii Zaikin <yzaikin@google.com>, Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, David Gow <davidgow@google.com>, Shuah Khan <skhan@linuxfoundation.org>, KUnit Development <kunit-dev@googlegroups.com>, Alan Maguire <alan.maguire@oracle.com>, Stephen Boyd <sboyd@kernel.org>, Greg KH <gregkh@linuxfoundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Logan Gunthorpe <logang@deltatee.com>
 
-From: Johannes Berg <johannes.berg@intel.com>
+On Tue, Feb 4, 2020 at 3:01 PM Frank Rowand <frowand.list@gmail.com> wrote:
+>
+> On 1/30/20 5:08 PM, Brendan Higgins wrote:
+> > TAP 14 allows an optional test plan to be emitted before the start of
+> > the start of testing[1]; this is valuable because it makes it possible
+> > for a test harness to detect whether the number of tests run matches the
+> > number of tests expected to be run, ensuring that no tests silently
+> > failed.
+> >
+> > Link[1]: https://github.com/isaacs/testanything.github.io/blob/tap14/tap-version-14-specification.md#the-plan
+> > Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+> > Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+> > ---
+> >  lib/kunit/executor.c                          | 17 +++++
+> >  lib/kunit/test.c                              | 11 ---
+> >  tools/testing/kunit/kunit_parser.py           | 74 ++++++++++++++++---
+> >  .../test_is_test_passed-all_passed.log        |  1 +
+> >  .../test_data/test_is_test_passed-crash.log   |  1 +
+> >  .../test_data/test_is_test_passed-failure.log |  1 +
+> >  6 files changed, 82 insertions(+), 23 deletions(-)
+> >
+> > diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
+> > index b75a46c560847..7fd16feff157e 100644
+> > --- a/lib/kunit/executor.c
+> > +++ b/lib/kunit/executor.c
+> > @@ -11,11 +11,28 @@ extern struct kunit_suite * const * const __kunit_suites_end[];
+> >
+> >  #if IS_BUILTIN(CONFIG_KUNIT)
+> >
+> > +static void kunit_print_tap_header(void)
+> > +{
+> > +     struct kunit_suite * const * const *suites, * const *subsuite;
+> > +     int num_of_suites = 0;
+> > +
+> > +     for (suites = __kunit_suites_start;
+> > +          suites < __kunit_suites_end;
+> > +          suites++)
+> > +             for (subsuite = *suites; *subsuite != NULL; subsuite++)
+> > +                     num_of_suites++;
+> > +
+> > +     pr_info("TAP version 14\n");
+> > +     pr_info("1..%d\n", num_of_suites);
+> > +}
+> > +
+>
+> Subsuites are not in Linux 5.5, as far as I can tell, so it is hard to review
+> this.
+>
+> But I think this observation will still be valid even though I am not up
+> to speed on subsuites.
 
-In time-travel mode, cpu_relax() currently does actual CPU relax,
-but that doesn't affect the simulation. Ideally, we wouldn't run
-anything that uses it in simulation, but if we actually have virtio
-devices combined with the same simulation it's possible. Implement
-cpu_relax() as ndelay(1) in this case, using time_travel_ndelay(1)
-directly to catch errors if this is used erroneously in builds that
-don't set CONFIG_UML_TIME_TRAVEL_SUPPORT.
+"substitutes" are just an artifact from having to group together all
+suites that occur in a module. It should be mostly immaterial to most
+users, but we have to have all the suites that occur in a module
+grouped together in order to support KUnit tests as loadable modules.
 
-While at it, convert it to an __always_inline and also add that to
-rep_nop() like the original does now.
+I just call them subsuites here because I didn't know what else to
+call them. Still, the relationship between them should be mostly
+ignored by users as you seem to recognize below.
 
-Change-Id: I9c86c5c488c1cb2f7eabf4e8b8d1da9e24163ca9
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- arch/x86/um/asm/processor.h | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+Also, module support for KUnit was just recently accepted into torvalds/master:
 
-diff --git a/arch/x86/um/asm/processor.h b/arch/x86/um/asm/processor.h
-index 593d5f3902bd..478710384b34 100644
---- a/arch/x86/um/asm/processor.h
-+++ b/arch/x86/um/asm/processor.h
-@@ -1,6 +1,7 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- #ifndef __UM_PROCESSOR_H
- #define __UM_PROCESSOR_H
-+#include <linux/time-internal.h>
- 
- /* include faultinfo structure */
- #include <sysdep/faultinfo.h>
-@@ -21,12 +22,19 @@
- #include <asm/user.h>
- 
- /* REP NOP (PAUSE) is a good thing to insert into busy-wait loops. */
--static inline void rep_nop(void)
-+static __always_inline void rep_nop(void)
- {
- 	__asm__ __volatile__("rep;nop": : :"memory");
- }
- 
--#define cpu_relax()		rep_nop()
-+static __always_inline void cpu_relax(void)
-+{
-+	if (time_travel_mode == TT_MODE_INFCPU ||
-+	    time_travel_mode == TT_MODE_EXTERNAL)
-+		time_travel_ndelay(1);
-+	else
-+		rep_nop();
-+}
- 
- #define task_pt_regs(t) (&(t)->thread.regs)
- 
--- 
-2.24.1
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=08a3ef8f6b0b1341c670caba35f782c9a452d488
 
+You should be able to apply this change to torvalds/master now.
+
+> num_of_suites is all test suites declared (as built in).  In Linux 5.5,
+> each kunit_suite contains one or more test cases.  Each test case leads
+> to either "ok" or "not ok".  So instead of counting number of tests
+> suites, the number of test cases needs to be counted.
+
+Nope, but I think you understand correctly below...
+
+> Ahhh, I think my lack of visibility of what tree this series is against
+> is about to lead me astray!  Are the test cases in the subsuite
+> implemented as what TAP 14 calls "subtests"?  If so, then the above
+> code that counts suites instead of test cases would be correct.
+
+Yep! You got it! Test cases are "subtests" in TAP 14. So there is a
+ok/not ok line for each suite, and nested as subtests above that are
+indented ok/not ok lines for each test case. KUnit already does this
+today. We are just moving some of the printing logic out so we can
+count the suites and print a test plan.
+
+Technically, what we print today (before this change) is legal TAP 14.
+The test plan is not required. However, the test plan is very helpful
+as it makes it possible to know if some tests just never ran for some
+reason.
+
+> I'm spinning my wheels now, since I don't know what I am
+> reviewing against, so I'm going to stop reviewing, other
+> than maybe a quick scan.
+
+I just applied this patch series against torvalds/master which I
+pulled this morning, and it applied cleanly. I will specify in any
+subsequent revisions that this is based on linux-kselftest/kunit since
+that's where these patches will be applied, but they should apply
+against any rc of 5.6 just fine once they are cut.
+
+Cheers!
 
 _______________________________________________
 linux-um mailing list
