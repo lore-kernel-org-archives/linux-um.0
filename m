@@ -1,18 +1,23 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j1fGb-0005tL-G3
- for linux-um@lists.infradead.org; Tue, 11 Feb 2020 23:48:34 +0000
-Received: by mail-wr1-x444.google.com with SMTP id t2so14760704wrr.1
- for <linux-um@lists.infradead.org>; Tue, 11 Feb 2020 15:48:32 -0800 (PST)
-MIME-Version: 1.0
-References: <20200115182816.33892-1-trishalfonso@google.com>
- <CACT4Y+bPzRbWw-dPQkLVENPKy_DBdjrbSce0f6XE3=W7RhfhBA@mail.gmail.com>
-In-Reply-To: <CACT4Y+bPzRbWw-dPQkLVENPKy_DBdjrbSce0f6XE3=W7RhfhBA@mail.gmail.com>
-From: Patricia Alfonso <trishalfonso@google.com>
-Date: Tue, 11 Feb 2020 15:48:18 -0800
-Message-ID: <CAKFsvUKhwAOV9O+LWBr=-zLEJCFJvKOH-ePsXMMVJzHotqd3Ug@mail.gmail.com>
+ id 1izmbr-0006RV-2W
+ for linux-um@lists.infradead.org; Thu, 06 Feb 2020 19:14:44 +0000
+Message-ID: <c264bc73e22be04c5e8422858b8eac97f006f16a.camel@sipsolutions.net>
 Subject: Re: [RFC PATCH] UML: add support for KASAN under x86_64
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Thu, 06 Feb 2020 20:14:31 +0100
+In-Reply-To: <CAKFsvUJu7NZpM0ER45zhSzte3ovkAvXBKx3Tppxci7O=0TwJMg@mail.gmail.com>
+ (sfid-20200206_192212_045280_EBE78060)
+References: <20200115182816.33892-1-trishalfonso@google.com>
+ <dce24e66d89940c8998ccc2916e57877ccc9f6ae.camel@sipsolutions.net>
+ <CAKFsvU+sUdGC9TXK6vkg5ZM9=f7ePe7+rh29DO+kHDzFXacx2w@mail.gmail.com>
+ <4f382794416c023b6711ed2ca645abe4fb17d6da.camel@sipsolutions.net>
+ <b55720804de8e56febf48c7c3c11b578d06a8c9f.camel@sipsolutions.net>
+ <CAKFsvUJu7NZpM0ER45zhSzte3ovkAvXBKx3Tppxci7O=0TwJMg@mail.gmail.com>
+ (sfid-20200206_192212_045280_EBE78060)
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -25,39 +30,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Dmitry Vyukov <dvyukov@google.com>
-Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, Brendan Higgins <brendanhiggins@google.com>, LKML <linux-kernel@vger.kernel.org>, kasan-dev <kasan-dev@googlegroups.com>, linux-um@lists.infradead.org, David Gow <davidgow@google.com>, Andrey Ryabinin <aryabinin@virtuozzo.com>, anton.ivanov@cambridgegreys.com
+To: Patricia Alfonso <trishalfonso@google.com>
+Cc: richard@nod.at, jdike@addtoit.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com, Dmitry Vyukov <dvyukov@google.com>, David Gow <davidgow@google.com>, aryabinin@virtuozzo.com, Brendan Higgins <brendanhiggins@google.com>, anton.ivanov@cambridgegreys.com
 
-On Thu, Jan 16, 2020 at 12:44 AM Dmitry Vyukov <dvyukov@google.com> wrote:
->
-> On Wed, Jan 15, 2020 at 7:28 PM Patricia Alfonso
-> <trishalfonso@google.com> wrote:
-> > +config KASAN_SHADOW_OFFSET
-> > +       hex
-> > +       depends on KASAN
-> > +       default 0x100000000000
-> > +       help
-> > +         This is the offset at which the ~2.25TB of shadow memory is
-> > +         initialized and used by KASAN for memory debugging. The default
-> > +         is 0x100000000000.
->
-> What are restrictions on this value?
-The only restriction is that there is enough space there to map all of
-the KASAN shadow memory without conflicting with anything else.
+Hi Patricia,
 
-> In user-space we use 0x7fff8000 as a base (just below 2GB) and it's
-> extremely profitable wrt codegen since it fits into immediate of most
-> instructions.
-> We can load and add the base with a short instruction:
->     2d8c: 48 81 c2 00 80 ff 7f    add    $0x7fff8000,%rdx
-> Or even add base, load shadow and check it with a single 7-byte instruction:
->      1e4: 80 b8 00 80 ff 7f 00    cmpb   $0x0,0x7fff8000(%rax)
->
-I just tested with 0x7fff8000 as the KASAN_SHADOW_OFFSET and it worked
-so I can make that the default if it will be more efficient.
+> I've looked at this quite extensively over the past week or so. I was
+> able to initialize KASAN as one of the first things that gets executed
+> in main(), but constructors are, in fact, needed before main().
 
--- 
-Patricia Alfonso
+They're called before main, by the dynamic loader, or libc, or whatever
+magic is built into the binary, right? But what do you mean by "needed"?
+
+> I
+> think it might be best to reintroduce constructors in a limited way to
+> allow KASAN to work in UML.
+
+I guess I'd have to see that.
+
+>  I have done as much testing as I can on my
+> machine and this limited version seems to work, except when
+> STATIC_LINK is set. I will send some patches of what I have done so
+> far and we can talk more about it there. I would like to add your
+> name, Johannes, as a co-developed-by on that patch. If there is a
+> better way to give you credit for this, please let me know.
+
+I think you give me way too much credit, but I'm not going to complain
+either way :-)
+
+I'll post in a minute what I had in mind.
+
+johannes
+
 
 _______________________________________________
 linux-um mailing list
