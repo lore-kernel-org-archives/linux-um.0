@@ -1,17 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]
- helo=us-smtp-delivery-1.mimecast.com)
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j1LfK-00038m-Rx
- for linux-um@lists.infradead.org; Tue, 11 Feb 2020 02:52:47 +0000
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1j1CLg-0004oJ-T8
+ for linux-um@lists.infradead.org; Mon, 10 Feb 2020 16:55:54 +0000
 Subject: Re: [PATCH] virtio: Work around frames incorrectly marked as gso
 References: <20191209104824.17059-1-anton.ivanov@cambridgegreys.com>
- <57230228-7030-c65f-a24f-910ca52bbe9e@cambridgegreys.com>
-From: Jason Wang <jasowang@redhat.com>
-Message-ID: <f78bfe6e-2ffc-3734-9618-470f1afea0c6@redhat.com>
-Date: Tue, 11 Feb 2020 10:51:54 +0800
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <57230228-7030-c65f-a24f-910ca52bbe9e@cambridgegreys.com>
+Date: Mon, 10 Feb 2020 16:55:44 +0000
 MIME-Version: 1.0
-In-Reply-To: <57230228-7030-c65f-a24f-910ca52bbe9e@cambridgegreys.com>
+In-Reply-To: <20191209104824.17059-1-anton.ivanov@cambridgegreys.com>
 Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -21,48 +20,67 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Anton Ivanov <anton.ivanov@cambridgegreys.com>, netdev@vger.kernel.org
-Cc: virtualization@lists.linux-foundation.org, linux-um@lists.infradead.org, mst@redhat.com
+To: netdev@vger.kernel.org
+Cc: jasowang@redhat.com, virtualization@lists.linux-foundation.org, linux-um@lists.infradead.org, mst@redhat.com
 
-Ck9uIDIwMjAvMi8xMSDkuIrljYgxMjo1NSwgQW50b24gSXZhbm92IHdyb3RlOgo+Cj4KPiBPbiAw
-OS8xMi8yMDE5IDEwOjQ4LCBhbnRvbi5pdmFub3ZAY2FtYnJpZGdlZ3JleXMuY29tIHdyb3RlOgo+
-PiBGcm9tOiBBbnRvbiBJdmFub3YgPGFudG9uLml2YW5vdkBjYW1icmlkZ2VncmV5cy5jb20+Cj4+
-Cj4+IFNvbWUgb2YgdGhlIGZyYW1lcyBtYXJrZWQgYXMgR1NPIHdoaWNoIGFycml2ZSBhdAo+PiB2
-aXJ0aW9fbmV0X2hkcl9mcm9tX3NrYigpIGhhdmUgbm8gR1NPX1RZUEUsIG5vCj4+IGZyYWdtZW50
-cyAoZGF0YV9sZW4gPSAwKSBhbmQgbGVuZ3RoIHNpZ25pZmljYW50bHkgc2hvcnRlcgo+PiB0aGFu
-IHRoZSBNVFUgKDc1MiBpbiBteSBleHBlcmltZW50cykuCj4+Cj4+IFRoaXMgaXMgb2JzZXJ2ZWQg
-b24gcmF3IHNvY2tldHMgcmVhZGluZyBvZmYgdkV0aCBpbnRlcmZhY2VzCj4+IGluIGFsbCA0Lngg
-YW5kIDUueCBrZXJuZWxzIEkgdGVzdGVkLgo+Pgo+PiBUaGVzZSBmcmFtZXMgYXJlIHJlcG9ydGVk
-IGFzIGludmFsaWQgd2hpbGUgdGhleSBhcmUgaW4gZmFjdAo+PiBnc28tbGVzcyBmcmFtZXMuCj4+
-Cj4+IFRoaXMgcGF0Y2ggbWFya3MgdGhlIHZuZXQgaGVhZGVyIGFzIG5vLUdTTyBmb3IgdGhlbSBp
-bnN0ZWFkCj4+IG9mIHJlcG9ydGluZyBpdCBhcyBpbnZhbGlkLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5
-OiBBbnRvbiBJdmFub3YgPGFudG9uLml2YW5vdkBjYW1icmlkZ2VncmV5cy5jb20+Cj4+IC0tLQo+
-PiDCoCBpbmNsdWRlL2xpbnV4L3ZpcnRpb19uZXQuaCB8IDggKysrKysrLS0KPj4gwqAgMSBmaWxl
-IGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdp
-dCBhL2luY2x1ZGUvbGludXgvdmlydGlvX25ldC5oIGIvaW5jbHVkZS9saW51eC92aXJ0aW9fbmV0
-LmgKPj4gaW5kZXggMGQxZmU5Mjk3YWM2Li5kOTBkNWNmZjFiOWEgMTAwNjQ0Cj4+IC0tLSBhL2lu
-Y2x1ZGUvbGludXgvdmlydGlvX25ldC5oCj4+ICsrKyBiL2luY2x1ZGUvbGludXgvdmlydGlvX25l
-dC5oCj4+IEBAIC0xMTIsOCArMTEyLDEyIEBAIHN0YXRpYyBpbmxpbmUgaW50IHZpcnRpb19uZXRf
-aGRyX2Zyb21fc2tiKGNvbnN0IAo+PiBzdHJ1Y3Qgc2tfYnVmZiAqc2tiLAo+PiDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCBoZHItPmdzb190eXBlID0gVklSVElPX05FVF9IRFJfR1NPX1RDUFY0
-Owo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgZWxzZSBpZiAoc2luZm8tPmdzb190eXBlICYgU0tCX0dT
-T19UQ1BWNikKPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaGRyLT5nc29fdHlwZSA9IFZJ
-UlRJT19ORVRfSERSX0dTT19UQ1BWNjsKPj4gLcKgwqDCoMKgwqDCoMKgIGVsc2UKPj4gLcKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIC1FSU5WQUw7Cj4+ICvCoMKgwqDCoMKgwqDCoCBlbHNl
-IHsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKHNrYi0+ZGF0YV9sZW4gPT0gMCkKPj4g
-K8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBoZHItPmdzb190eXBlID0gVklSVElPX05F
-VF9IRFJfR1NPX05PTkU7Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGVsc2UKPj4gK8KgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gLUVJTlZBTDsKPj4gK8KgwqDCoMKgwqDC
-oMKgIH0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgIGlmIChzaW5mby0+Z3NvX3R5cGUgJiBTS0JfR1NP
-X1RDUF9FQ04pCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGhkci0+Z3NvX3R5cGUgfD0g
-VklSVElPX05FVF9IRFJfR1NPX0VDTjsKPj4gwqDCoMKgwqDCoCB9IGVsc2UKPj4KPgo+IHBpbmcu
-Cj4KCkRvIHlvdSBtZWFuIGdzb19zaXplIGlzIHNldCBidXQgZ3NvX3R5cGUgaXMgbm90PyBMb29r
-cyBsaWtlIGEgYnVnIGVsc2V3aGVyZS4KClRoYW5rcwoKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBs
-aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vbGludXgtdW0K
+
+
+On 09/12/2019 10:48, anton.ivanov@cambridgegreys.com wrote:
+> From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> 
+> Some of the frames marked as GSO which arrive at
+> virtio_net_hdr_from_skb() have no GSO_TYPE, no
+> fragments (data_len = 0) and length significantly shorter
+> than the MTU (752 in my experiments).
+> 
+> This is observed on raw sockets reading off vEth interfaces
+> in all 4.x and 5.x kernels I tested.
+> 
+> These frames are reported as invalid while they are in fact
+> gso-less frames.
+> 
+> This patch marks the vnet header as no-GSO for them instead
+> of reporting it as invalid.
+> 
+> Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> ---
+>   include/linux/virtio_net.h | 8 ++++++--
+>   1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/virtio_net.h b/include/linux/virtio_net.h
+> index 0d1fe9297ac6..d90d5cff1b9a 100644
+> --- a/include/linux/virtio_net.h
+> +++ b/include/linux/virtio_net.h
+> @@ -112,8 +112,12 @@ static inline int virtio_net_hdr_from_skb(const struct sk_buff *skb,
+>   			hdr->gso_type = VIRTIO_NET_HDR_GSO_TCPV4;
+>   		else if (sinfo->gso_type & SKB_GSO_TCPV6)
+>   			hdr->gso_type = VIRTIO_NET_HDR_GSO_TCPV6;
+> -		else
+> -			return -EINVAL;
+> +		else {
+> +			if (skb->data_len == 0)
+> +				hdr->gso_type = VIRTIO_NET_HDR_GSO_NONE;
+> +			else
+> +				return -EINVAL;
+> +		}
+>   		if (sinfo->gso_type & SKB_GSO_TCP_ECN)
+>   			hdr->gso_type |= VIRTIO_NET_HDR_GSO_ECN;
+>   	} else
+> 
+
+ping.
+
+-- 
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
