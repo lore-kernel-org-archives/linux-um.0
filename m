@@ -2,14 +2,18 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j2EWI-0001v6-3I
- for linux-um@lists.infradead.org; Thu, 13 Feb 2020 13:27:08 +0000
+ id 1j1EfN-0002NF-0H
+ for linux-um@lists.infradead.org; Mon, 10 Feb 2020 19:24:22 +0000
+Message-ID: <245eb08f8ecca1435c882f0be4f1543e22501694.camel@sipsolutions.net>
+Subject: Re: [DEMO] um: demonstrate super early constructors
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH 1/6] um: move timer-internal.h to non-shared
-Date: Thu, 13 Feb 2020 14:26:44 +0100
-Message-Id: <20200213132651.20506-2-johannes@sipsolutions.net>
-In-Reply-To: <20200213132651.20506-1-johannes@sipsolutions.net>
-References: <20200213132651.20506-1-johannes@sipsolutions.net>
+Date: Mon, 10 Feb 2020 20:24:15 +0100
+In-Reply-To: <CAKFsvUJzj-DXe9sDumyYmSr2WqrBCK6Xiuon+G1w8Jeycsc7tA@mail.gmail.com>
+ (sfid-20200207_013125_010309_E966A98D)
+References: <20200206204937.db680692f366.Ie05fc2ad440c8db59c1519194aeac356469efa72@changeid>
+ <51a008bc836a2630ee59e8d521cd3d1cc475a96d.camel@sipsolutions.net>
+ <CAKFsvUJzj-DXe9sDumyYmSr2WqrBCK6Xiuon+G1w8Jeycsc7tA@mail.gmail.com>
+ (sfid-20200207_013125_010309_E966A98D)
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -23,87 +27,17 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+To: Patricia Alfonso <trishalfonso@google.com>
+Cc: linux-um@lists.infradead.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+Hi,
 
-This file isn't really shared, it's only used on the kernel side,
-not on the user side. Remove the include from the user-side and
-move the file to a better place.
+> Thank you so much for this patch!! I have been trying to find an
+> elegant fix all week and this is perfect!
 
-While at it, rename it to time-internal.h, it's not really just
-timers but all kinds of things related to timekeeping.
+Glad it helped :-)
 
-Change-Id: Iae380466e34ef64cede349e6bd6eeb7854230d1a
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Reviewed-on: https://git-ger-8.devtools.intel.com/gerrit/96864
----
- .../include/{shared/timer-internal.h => linux/time-internal.h}  | 0
- arch/um/kernel/process.c                                        | 2 +-
- arch/um/kernel/skas/syscall.c                                   | 2 +-
- arch/um/kernel/time.c                                           | 2 +-
- arch/um/os-Linux/time.c                                         | 1 -
- 5 files changed, 3 insertions(+), 4 deletions(-)
- rename arch/um/include/{shared/timer-internal.h => linux/time-internal.h} (100%)
-
-diff --git a/arch/um/include/shared/timer-internal.h b/arch/um/include/linux/time-internal.h
-similarity index 100%
-rename from arch/um/include/shared/timer-internal.h
-rename to arch/um/include/linux/time-internal.h
-diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index 17045e7211bf..04f99b3b2acd 100644
---- a/arch/um/kernel/process.c
-+++ b/arch/um/kernel/process.c
-@@ -32,7 +32,7 @@
- #include <kern_util.h>
- #include <os.h>
- #include <skas.h>
--#include <timer-internal.h>
-+#include <linux/time-internal.h>
- 
- /*
-  * This is a per-cpu array.  A processor only modifies its entry and it only
-diff --git a/arch/um/kernel/skas/syscall.c b/arch/um/kernel/skas/syscall.c
-index 40d90dddf3f1..2e82820f7d29 100644
---- a/arch/um/kernel/skas/syscall.c
-+++ b/arch/um/kernel/skas/syscall.c
-@@ -10,7 +10,7 @@
- #include <sysdep/ptrace.h>
- #include <sysdep/ptrace_user.h>
- #include <sysdep/syscalls.h>
--#include <shared/timer-internal.h>
-+#include <linux/time-internal.h>
- 
- void handle_syscall(struct uml_pt_regs *r)
- {
-diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
-index 94ea87bd231c..a849d391e909 100644
---- a/arch/um/kernel/time.c
-+++ b/arch/um/kernel/time.c
-@@ -18,7 +18,7 @@
- #include <asm/param.h>
- #include <kern_util.h>
- #include <os.h>
--#include <timer-internal.h>
-+#include <linux/time-internal.h>
- #include <shared/init.h>
- 
- #ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
-diff --git a/arch/um/os-Linux/time.c b/arch/um/os-Linux/time.c
-index 432f8e1f55c2..90f6de224c70 100644
---- a/arch/um/os-Linux/time.c
-+++ b/arch/um/os-Linux/time.c
-@@ -14,7 +14,6 @@
- #include <kern_util.h>
- #include <os.h>
- #include <string.h>
--#include <timer-internal.h>
- 
- static timer_t event_high_res_timer = 0;
- 
--- 
-2.24.1
+johannes
 
 
 _______________________________________________
