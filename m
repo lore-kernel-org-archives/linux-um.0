@@ -1,17 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-wr1-x442.google.com ([2a00:1450:4864:20::442])
+Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j22WD-0002XI-Co
- for linux-um@lists.infradead.org; Thu, 13 Feb 2020 00:38:15 +0000
-Received: by mail-wr1-x442.google.com with SMTP id z7so4555174wrl.13
- for <linux-um@lists.infradead.org>; Wed, 12 Feb 2020 16:38:12 -0800 (PST)
+ id 1j1Zcx-0006qs-3o
+ for linux-um@lists.infradead.org; Tue, 11 Feb 2020 17:47:16 +0000
+Received: by mail-wr1-x444.google.com with SMTP id c9so13539734wrw.8
+ for <linux-um@lists.infradead.org>; Tue, 11 Feb 2020 09:47:11 -0800 (PST)
 MIME-Version: 1.0
 References: <20200210225806.249297-1-trishalfonso@google.com>
- <13b0ea0caff576e7944e4f9b91560bf46ac9caf0.camel@sipsolutions.net>
-In-Reply-To: <13b0ea0caff576e7944e4f9b91560bf46ac9caf0.camel@sipsolutions.net>
+ <CACT4Y+Y=Qj6coWpY107Dj+TsUJK1nruWAC=QMZBDC5snNZRTOw@mail.gmail.com>
+In-Reply-To: <CACT4Y+Y=Qj6coWpY107Dj+TsUJK1nruWAC=QMZBDC5snNZRTOw@mail.gmail.com>
 From: Patricia Alfonso <trishalfonso@google.com>
-Date: Wed, 12 Feb 2020 16:37:59 -0800
-Message-ID: <CAKFsvUKaixKXbUqvVvjzjkty26GS+Ckshg2t7-+erqiN2LVS-g@mail.gmail.com>
+Date: Tue, 11 Feb 2020 09:46:59 -0800
+Message-ID: <CAKFsvUL=maBVZ7v_N6W1skZRkYm4GacRGn-ohbf-o84p598XNQ@mail.gmail.com>
 Subject: Re: [RFC PATCH v2] UML: add support for KASAN under x86_64
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -25,148 +25,16 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, Brendan Higgins <brendanhiggins@google.com>, LKML <linux-kernel@vger.kernel.org>, kasan-dev <kasan-dev@googlegroups.com>, linux-um@lists.infradead.org, David Gow <davidgow@google.com>, Andrey Ryabinin <aryabinin@virtuozzo.com>, Dmitry Vyukov <dvyukov@google.com>, anton.ivanov@cambridgegreys.com
+To: Dmitry Vyukov <dvyukov@google.com>
+Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, Brendan Higgins <brendanhiggins@google.com>, LKML <linux-kernel@vger.kernel.org>, kasan-dev <kasan-dev@googlegroups.com>, linux-um@lists.infradead.org, David Gow <davidgow@google.com>, Andrey Ryabinin <aryabinin@virtuozzo.com>, Johannes Berg <johannes@sipsolutions.net>, anton.ivanov@cambridgegreys.com
 
-On Tue, Feb 11, 2020 at 12:21 AM Johannes Berg
-<johannes@sipsolutions.net> wrote:
->
-> Hi,
->
-> Looks very nice! Some questions/comments below:
->
-> > Depends on Constructor support in UML and is based off of
-> > "[RFC PATCH] um: implement CONFIG_CONSTRUCTORS for modules"
-> > (https://patchwork.ozlabs.org/patch/1234551/)
->
-> I guess I should resend this as a proper patch then. Did you test
-> modules? I can try (later) too.
->
-I have not tested modules - you might want to test modules before
-sending it at a proper patch. I just know that it works for the
-purposes of this KASAN project.
+> I started reviewing this, but I am spotting things that I already
+> commented on, like shadow start and about shadow size const. Please
+> either address them, or answer why they are not addressed, or add some
+> kind of TODOs so that I don't write the same comment again.
 
-> > The location of the KASAN shadow memory, starting at
-> > KASAN_SHADOW_OFFSET, can be configured using the
-> > KASAN_SHADOW_OFFSET option. UML uses roughly 18TB of address
-> > space, and KASAN requires 1/8th of this.
->
-> That also means if I have say 512MB memory allocated for UML, KASAN will
-> use an *additional* 64, unlike on a "real" system, where KASAN will take
-> about 1/8th of the available physical memory, right?
->
-Currently, the amount of shadow memory allocated is a constant based
-on the amount of user space address space in x86_64 since this is the
-host architecture I have focused on.
-
-> > +     help
-> > +       This is the offset at which the ~2.25TB of shadow memory is
-> > +       initialized
->
-> Maybe that should say "mapped" instead of "initialized", since there are
-> relatively few machines on which it could actually all all be used?
->
-Valid point!
-
-> > +// used in kasan_mem_to_shadow to divide by 8
-> > +#define KASAN_SHADOW_SCALE_SHIFT 3
->
-> nit: use /* */ style comments
->
-Will do
-
-> > +#define KASAN_SHADOW_START (KASAN_SHADOW_OFFSET)
-> > +#define KASAN_SHADOW_END (KASAN_SHADOW_START + KASAN_SHADOW_SIZE)
-> > +
-> > +#ifdef CONFIG_KASAN
-> > +void kasan_init(void);
-> > +#else
-> > +static inline void kasan_init(void) { }
-> > +#endif /* CONFIG_KASAN */
-> > +
-> > +void kasan_map_memory(void *start, unsigned long len);
-> > +void kasan_unpoison_shadow(const void *address, size_t size);
-> > +
-> > +#endif /* __ASM_UM_KASAN_H */
-> > diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
-> > index 5aa882011e04..875e1827588b 100644
-> > --- a/arch/um/kernel/Makefile
-> > +++ b/arch/um/kernel/Makefile
-> > @@ -8,6 +8,28 @@
-> >  # kernel.
-> >  KCOV_INSTRUMENT                := n
-> >
-> > +# The way UMl deals with the stack causes seemingly false positive KASAN
-> > +# reports such as:
-> > +# BUG: KASAN: stack-out-of-bounds in show_stack+0x15e/0x1fb
-> > +# Read of size 8 at addr 000000006184bbb0 by task swapper/1
-> > +# ==================================================================
-> > +# BUG: KASAN: stack-out-of-bounds in dump_trace+0x141/0x1c5
-> > +# Read of size 8 at addr 0000000071057eb8 by task swapper/1
-> > +# ==================================================================
-> > +# BUG: KASAN: stack-out-of-bounds in get_wchan+0xd7/0x138
-> > +# Read of size 8 at addr 0000000070e8fc80 by task systemd/1
-> > +#
-> > +# With these files removed from instrumentation, those reports are
-> > +# eliminated, but KASAN still repeatedly reports a bug on syscall_stub_data:
-> > +# ==================================================================
-> > +# BUG: KASAN: stack-out-of-bounds in syscall_stub_data+0x299/0x2bf
-> > +# Read of size 128 at addr 0000000071457c50 by task swapper/1
->
-> So that's actually something to fix still? Just trying to understand,
-> I'll test it later.
->
-Yes, I have not found a fix for these issues yet and even with these
-few files excluded from instrumentation, the syscall_stub_data error
-occurs(unless CONFIG_STACK is disabled, but CONFIG_STACK is enabled by
-default when using gcc to compile). It is unclear whether this is a
-bug that KASAN has found in UML or it is a mismatch of KASAN error
-detection on UML.
-
-> > -extern int printf(const char *msg, ...);
-> > -static void early_print(void)
-> > +#ifdef CONFIG_KASAN
-> > +void kasan_init(void)
-> >  {
-> > -     printf("I'm super early, before constructors\n");
-> > +     kasan_map_memory((void *)KASAN_SHADOW_START, KASAN_SHADOW_SIZE);
->
-> Heh, you *actually* based it on my patch, in git terms, not just in code
-> terms. I think you should just pick up the few lines that you need from
-> that patch and squash them into this one, I just posted that to
-> demonstrate more clearly what I meant :-)
->
-I did base this on your patch. I figured it was more likely to get
-merged before this patch anyway. To clarify, do you want me to include
-your constructors patch with this one as a patchset?
-
-> > +/**
-> > + * kasan_map_memory() - maps memory from @start with a size of @len.
->
-> I think the () shouldn't be there?
->
-Okay!
-
-> > +void kasan_map_memory(void *start, size_t len)
-> > +{
-> > +     if (mmap(start,
-> > +              len,
-> > +              PROT_READ|PROT_WRITE,
-> > +              MAP_FIXED|MAP_ANONYMOUS|MAP_PRIVATE|MAP_NORESERVE,
-> > +              -1,
-> > +              0) == MAP_FAILED)
-> > +             os_info("Couldn't allocate shadow memory %s", strerror(errno));
->
-> If that fails, can we even continue?
->
-Probably not, but with this executing before main(), what is the best
-way to have an error occur? Or maybe there's a way we can just
-continue without KASAN enabled and print to the console that KASAN
-failed to initialize?
-
-> johannes
->
-
+I'm sorry; They must have gotten lost in all the emails. I'll go
+through them all again.
 -- 
 Patricia Alfonso
 
