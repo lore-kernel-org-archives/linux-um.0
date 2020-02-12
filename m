@@ -1,18 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-qt1-x842.google.com ([2607:f8b0:4864:20::842])
+Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j1lQo-0004vn-PH
- for linux-um@lists.infradead.org; Wed, 12 Feb 2020 06:23:32 +0000
-Received: by mail-qt1-x842.google.com with SMTP id h12so822394qtu.1
- for <linux-um@lists.infradead.org>; Tue, 11 Feb 2020 22:23:29 -0800 (PST)
+ id 1j1fkj-0008SH-3O
+ for linux-um@lists.infradead.org; Wed, 12 Feb 2020 00:19:42 +0000
+Received: by mail-wr1-x441.google.com with SMTP id u6so59603wrt.0
+ for <linux-um@lists.infradead.org>; Tue, 11 Feb 2020 16:19:40 -0800 (PST)
 MIME-Version: 1.0
 References: <20200115182816.33892-1-trishalfonso@google.com>
- <CACT4Y+bPzRbWw-dPQkLVENPKy_DBdjrbSce0f6XE3=W7RhfhBA@mail.gmail.com>
- <CAKFsvUKhwAOV9O+LWBr=-zLEJCFJvKOH-ePsXMMVJzHotqd3Ug@mail.gmail.com>
-In-Reply-To: <CAKFsvUKhwAOV9O+LWBr=-zLEJCFJvKOH-ePsXMMVJzHotqd3Ug@mail.gmail.com>
-From: Dmitry Vyukov <dvyukov@google.com>
-Date: Wed, 12 Feb 2020 07:23:16 +0100
-Message-ID: <CACT4Y+aRq9j=3GODWBcnDnW=Pgp4e=N2++FTYEuq-00OmfXpbw@mail.gmail.com>
+ <CACT4Y+b4+5PQvUeeHi=3g0my0WbaRaNEWY3P-MOVJXYSO7U5aA@mail.gmail.com>
+In-Reply-To: <CACT4Y+b4+5PQvUeeHi=3g0my0WbaRaNEWY3P-MOVJXYSO7U5aA@mail.gmail.com>
+From: Patricia Alfonso <trishalfonso@google.com>
+Date: Tue, 11 Feb 2020 16:19:27 -0800
+Message-ID: <CAKFsvU+zaY6B_+g=UTpOddKXXgVaKWxH3c8nw6GSLceb1Mg2qA@mail.gmail.com>
 Subject: Re: [RFC PATCH] UML: add support for KASAN under x86_64
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -26,41 +25,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Patricia Alfonso <trishalfonso@google.com>
+To: Dmitry Vyukov <dvyukov@google.com>
 Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, Brendan Higgins <brendanhiggins@google.com>, LKML <linux-kernel@vger.kernel.org>, kasan-dev <kasan-dev@googlegroups.com>, linux-um@lists.infradead.org, David Gow <davidgow@google.com>, Andrey Ryabinin <aryabinin@virtuozzo.com>, anton.ivanov@cambridgegreys.com
 
-On Wed, Feb 12, 2020 at 12:48 AM Patricia Alfonso
-<trishalfonso@google.com> wrote:
+On Thu, Jan 16, 2020 at 12:53 AM Dmitry Vyukov <dvyukov@google.com> wrote:
 >
-> On Thu, Jan 16, 2020 at 12:44 AM Dmitry Vyukov <dvyukov@google.com> wrote:
-> >
-> > On Wed, Jan 15, 2020 at 7:28 PM Patricia Alfonso
-> > <trishalfonso@google.com> wrote:
-> > > +config KASAN_SHADOW_OFFSET
-> > > +       hex
-> > > +       depends on KASAN
-> > > +       default 0x100000000000
-> > > +       help
-> > > +         This is the offset at which the ~2.25TB of shadow memory is
-> > > +         initialized and used by KASAN for memory debugging. The default
-> > > +         is 0x100000000000.
-> >
-> > What are restrictions on this value?
-> The only restriction is that there is enough space there to map all of
-> the KASAN shadow memory without conflicting with anything else.
+> > +void kasan_init(void)
+> > +{
+> > +       kasan_map_memory((void *)KASAN_SHADOW_START, KASAN_SHADOW_SIZE);
+> > +
+> > +       // unpoison the kernel text which is form uml_physmem -> uml_reserved
+> > +       kasan_unpoison_shadow((void *)uml_physmem, physmem_size);
+> > +
+> > +       // unpoison the vmalloc region, which is start_vm -> end_vm
+> > +       kasan_unpoison_shadow((void *)start_vm, (end_vm - start_vm + 1));
+> > +
+> > +       init_task.kasan_depth = 0;
+> > +       pr_info("KernelAddressSanitizer initialized\n");
+> > +}
 >
-> > In user-space we use 0x7fff8000 as a base (just below 2GB) and it's
-> > extremely profitable wrt codegen since it fits into immediate of most
-> > instructions.
-> > We can load and add the base with a short instruction:
-> >     2d8c: 48 81 c2 00 80 ff 7f    add    $0x7fff8000,%rdx
-> > Or even add base, load shadow and check it with a single 7-byte instruction:
-> >      1e4: 80 b8 00 80 ff 7f 00    cmpb   $0x0,0x7fff8000(%rax)
-> >
-> I just tested with 0x7fff8000 as the KASAN_SHADOW_OFFSET and it worked
-> so I can make that the default if it will be more efficient.
+> Was this tested with stack instrumentation? Stack instrumentation
+> changes what shadow is being read/written and when. We don't need to
+> get it working right now, but if it does not work it would be nice to
+> restrict the setting and leave some comment traces for future
+> generations.
+If you are referring to KASAN_STACK_ENABLE, I just tested it and it
+seems to work fine.
 
-I think it's the right thing to do if it works.
+-- 
+Patricia Alfonso
 
 _______________________________________________
 linux-um mailing list
