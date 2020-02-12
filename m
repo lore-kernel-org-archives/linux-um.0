@@ -1,13 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+Received: from mga01.intel.com ([192.55.52.88])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j3Rad-00066k-Dt
- for linux-um@lists.infradead.org; Sun, 16 Feb 2020 21:36:36 +0000
-From: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
-Subject: [PATCH] um: vector: Avoid NULL ptr deference if transport is unset
-Date: Sun, 16 Feb 2020 22:36:24 +0100
-Message-Id: <20200216213624.800463-1-sjoerd.simons@collabora.co.uk>
+ id 1j1osL-00060W-8m
+ for linux-um@lists.infradead.org; Wed, 12 Feb 2020 10:04:10 +0000
+Date: Wed, 12 Feb 2020 12:03:32 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v1] um: Don't use console_drivers directly
+Message-ID: <20200212100332.GO10400@smile.fi.intel.com>
+References: <20200212095919.80295-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20200212095919.80295-1-andriy.shevchenko@linux.intel.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,35 +23,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
+Cc: Thomas Meyer <thomas@m3y3r.de>
 
-When the transport option of a vec isn't set strncmp ends up being
-called on a NULL pointer. Better not do that.
+On Wed, Feb 12, 2020 at 11:59:19AM +0200, Andy Shevchenko wrote:
+> console_drivers is kind of (semi-)private variable to the console code.
+> Direct use of it make us stuck with it being exported here and there.
+> Reduce use of console_drivers by replacing it with for_each_console().
 
-Signed-off-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Oops, this one is wrong, v2 has been sent.
 
----
-
- arch/um/drivers/vector_kern.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-index 0ff86391f77d..ca90666c0b61 100644
---- a/arch/um/drivers/vector_kern.c
-+++ b/arch/um/drivers/vector_kern.c
-@@ -198,6 +198,9 @@ static int get_transport_options(struct arglist *def)
- 	long parsed;
- 	int result = 0;
- 
-+	if (transport == NULL)
-+		return -EINVAL;
-+
- 	if (vector != NULL) {
- 		if (kstrtoul(vector, 10, &parsed) == 0) {
- 			if (parsed == 0) {
 -- 
-2.25.0
+With Best Regards,
+Andy Shevchenko
+
 
 
 _______________________________________________
