@@ -1,17 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x641.google.com ([2607:f8b0:4864:20::641])
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]
+ helo=us-smtp-delivery-1.mimecast.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1izF9E-00083Z-HH
- for linux-um@lists.infradead.org; Wed, 05 Feb 2020 07:30:58 +0000
-Received: by mail-pl1-x641.google.com with SMTP id e8so509328plt.9
- for <linux-um@lists.infradead.org>; Tue, 04 Feb 2020 23:30:56 -0800 (PST)
-From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v3 07/26] um lkl: interrupt support
-Date: Wed,  5 Feb 2020 16:30:16 +0900
-Message-Id: <9d6f93f061b2b248c0fa0a7f1530792936f8e7be.1580882335.git.thehajime@gmail.com>
-In-Reply-To: <cover.1580882335.git.thehajime@gmail.com>
-References: <cover.1580882335.git.thehajime@gmail.com>
+ id 1j1sWN-0004EM-NG
+ for linux-um@lists.infradead.org; Wed, 12 Feb 2020 13:57:45 +0000
+Received: by mail-wr1-f70.google.com with SMTP id w17so847102wrr.9
+ for <linux-um@lists.infradead.org>; Wed, 12 Feb 2020 05:57:38 -0800 (PST)
+Subject: Re: [PATCH 00/28] docs: virt: manually convert text documents to ReST
+ format
+References: <cover.1581314316.git.mchehab+huawei@kernel.org>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <f624c644-56e5-9f74-61b4-de6165145d10@redhat.com>
+Date: Wed, 12 Feb 2020 14:57:42 +0100
 MIME-Version: 1.0
+In-Reply-To: <cover.1581314316.git.mchehab+huawei@kernel.org>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,323 +27,125 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: linux-arch@vger.kernel.org, Octavian Purdila <tavi.purdila@gmail.com>, Akira Moroo <retrage01@gmail.com>, linux-kernel-library@freelists.org, Michael Zimmermann <sigmaepsilon92@gmail.com>, Hajime Tazaki <thehajime@gmail.com>
+To: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>, Linux Media Mailing List <linux-media@vger.kernel.org>
+Cc: kvm@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-doc@vger.kernel.org, linux-um@lists.infradead.org, Mauro Carvalho Chehab <mchehab@infradead.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-From: Octavian Purdila <tavi.purdila@gmail.com>
+On 10/02/20 07:02, Mauro Carvalho Chehab wrote:
+> Manually convert the documentation under Documentation/virt to ReST,
+> minimizing the usage of uneeded markups and preserving the documentation
+> writer's style.
+> 
+> PS.: Patches are against linux-next tree (20200204).
+> 
+> v3:
+> 
+> - locking.rst now uses tables for the two concurrency examples;
+> - The file guest-halt-polling.txt was still under Documentation/virtual.
+>   Converted to ReST and moved to Documentaion/virt;
+> - Addressed the issues pointed by Cornelia and Paolo.
+> 
+> v2:
+> 
+> - Solved a conflict with linux-next;
+> - Added SPDX headers.
+> 
+> 
+> Mauro Carvalho Chehab (28):
+>   docs: kvm: add arm/pvtime.rst to index.rst
+>   docs: virt: convert UML documentation to ReST
+>   docs: virt: user_mode_linux.rst: update compiling instructions
+>   docs: virt: user_mode_linux.rst: fix URL references
+>   docs: virt: convert halt-polling.txt to ReST format
+>   docs: virt: Convert msr.txt to ReST format
+>   docs: kvm: devices/arm-vgic-its.txt to ReST format
+>   docs: kvm: devices/arm-vgit-v3.txt to ReST
+>   docs: kvm: convert devices/arm-vgit.txt to ReST
+>   docs: kvm: convert devices/mpic.txt to ReST
+>   docs: kvm: convert devices/s390_flic.txt to ReST
+>   docs: kvm: convert devices/vcpu.txt to ReST
+>   docs: kvm: convert devices/vfio.txt to ReST
+>   docs: kvm: convert devices/vm.txt to ReST
+>   docs: kvm: convert devices/xics.txt to ReST
+>   docs: kvm: convert devices/xive.txt to ReST
+>   docs: kvm: Convert api.txt to ReST format
+>   docs: kvm: convert arm/hyp-abi.txt to ReST
+>   docs: kvm: arm/psci.txt: convert to ReST
+>   docs: kvm: Convert hypercalls.txt to ReST format
+>   docs: kvm: Convert locking.txt to ReST format
+>   docs: kvm: Convert mmu.txt to ReST format
+>   docs: kvm: Convert nested-vmx.txt to ReST format
+>   docs: kvm: Convert ppc-pv.txt to ReST format
+>   docs: kvm: Convert s390-diag.txt to ReST format
+>   docs: kvm: Convert timekeeping.txt to ReST format
+>   docs: kvm: review-checklist.txt: rename to ReST
+>   docs: virt: guest-halt-polling.txt convert to ReST
+> 
+>  .../guest-halt-polling.rst}                   |   12 +-
+>  Documentation/virt/index.rst                  |    2 +
+>  Documentation/virt/kvm/{api.txt => api.rst}   | 3348 ++++++++++-------
+>  .../virt/kvm/arm/{hyp-abi.txt => hyp-abi.rst} |   28 +-
+>  Documentation/virt/kvm/arm/index.rst          |   12 +
+>  .../virt/kvm/arm/{psci.txt => psci.rst}       |   46 +-
+>  .../{arm-vgic-its.txt => arm-vgic-its.rst}    |  106 +-
+>  .../{arm-vgic-v3.txt => arm-vgic-v3.rst}      |  132 +-
+>  .../devices/{arm-vgic.txt => arm-vgic.rst}    |   89 +-
+>  Documentation/virt/kvm/devices/index.rst      |   19 +
+>  .../virt/kvm/devices/{mpic.txt => mpic.rst}   |   11 +-
+>  .../devices/{s390_flic.txt => s390_flic.rst}  |   70 +-
+>  Documentation/virt/kvm/devices/vcpu.rst       |  114 +
+>  Documentation/virt/kvm/devices/vcpu.txt       |   76 -
+>  .../virt/kvm/devices/{vfio.txt => vfio.rst}   |   25 +-
+>  .../virt/kvm/devices/{vm.txt => vm.rst}       |  206 +-
+>  .../virt/kvm/devices/{xics.txt => xics.rst}   |   28 +-
+>  .../virt/kvm/devices/{xive.txt => xive.rst}   |  148 +-
+>  .../{halt-polling.txt => halt-polling.rst}    |   86 +-
+>  .../kvm/{hypercalls.txt => hypercalls.rst}    |  129 +-
+>  Documentation/virt/kvm/index.rst              |   16 +
+>  Documentation/virt/kvm/locking.rst            |  243 ++
+>  Documentation/virt/kvm/locking.txt            |  215 --
+>  Documentation/virt/kvm/{mmu.txt => mmu.rst}   |   62 +-
+>  Documentation/virt/kvm/{msr.txt => msr.rst}   |  147 +-
+>  .../kvm/{nested-vmx.txt => nested-vmx.rst}    |   37 +-
+>  .../virt/kvm/{ppc-pv.txt => ppc-pv.rst}       |   26 +-
+>  ...iew-checklist.txt => review-checklist.rst} |    3 +
+>  .../virt/kvm/{s390-diag.txt => s390-diag.rst} |   13 +-
+>  .../kvm/{timekeeping.txt => timekeeping.rst}  |  221 +-
+>  ...odeLinux-HOWTO.txt => user_mode_linux.rst} | 1814 ++++-----
+>  31 files changed, 4194 insertions(+), 3290 deletions(-)
+>  rename Documentation/{virtual/guest-halt-polling.txt => virt/guest-halt-polling.rst} (91%)
+>  rename Documentation/virt/kvm/{api.txt => api.rst} (71%)
+>  rename Documentation/virt/kvm/arm/{hyp-abi.txt => hyp-abi.rst} (79%)
+>  create mode 100644 Documentation/virt/kvm/arm/index.rst
+>  rename Documentation/virt/kvm/arm/{psci.txt => psci.rst} (60%)
+>  rename Documentation/virt/kvm/devices/{arm-vgic-its.txt => arm-vgic-its.rst} (71%)
+>  rename Documentation/virt/kvm/devices/{arm-vgic-v3.txt => arm-vgic-v3.rst} (77%)
+>  rename Documentation/virt/kvm/devices/{arm-vgic.txt => arm-vgic.rst} (66%)
+>  create mode 100644 Documentation/virt/kvm/devices/index.rst
+>  rename Documentation/virt/kvm/devices/{mpic.txt => mpic.rst} (91%)
+>  rename Documentation/virt/kvm/devices/{s390_flic.txt => s390_flic.rst} (87%)
+>  create mode 100644 Documentation/virt/kvm/devices/vcpu.rst
+>  delete mode 100644 Documentation/virt/kvm/devices/vcpu.txt
+>  rename Documentation/virt/kvm/devices/{vfio.txt => vfio.rst} (72%)
+>  rename Documentation/virt/kvm/devices/{vm.txt => vm.rst} (61%)
+>  rename Documentation/virt/kvm/devices/{xics.txt => xics.rst} (84%)
+>  rename Documentation/virt/kvm/devices/{xive.txt => xive.rst} (62%)
+>  rename Documentation/virt/kvm/{halt-polling.txt => halt-polling.rst} (64%)
+>  rename Documentation/virt/kvm/{hypercalls.txt => hypercalls.rst} (55%)
+>  create mode 100644 Documentation/virt/kvm/locking.rst
+>  delete mode 100644 Documentation/virt/kvm/locking.txt
+>  rename Documentation/virt/kvm/{mmu.txt => mmu.rst} (94%)
+>  rename Documentation/virt/kvm/{msr.txt => msr.rst} (74%)
+>  rename Documentation/virt/kvm/{nested-vmx.txt => nested-vmx.rst} (90%)
+>  rename Documentation/virt/kvm/{ppc-pv.txt => ppc-pv.rst} (91%)
+>  rename Documentation/virt/kvm/{review-checklist.txt => review-checklist.rst} (95%)
+>  rename Documentation/virt/kvm/{s390-diag.txt => s390-diag.rst} (90%)
+>  rename Documentation/virt/kvm/{timekeeping.txt => timekeeping.rst} (85%)
+>  rename Documentation/virt/uml/{UserModeLinux-HOWTO.txt => user_mode_linux.rst} (74%)
+> 
 
-Add APIs that allows the host to reserve and free and interrupt number
-and also to trigger an interrupt.
+Queued, thanks very much for this.
 
-The trigger operation will simply store the interrupt data in
-queue. The interrupt handler is run later, at the first opportunity it
-has to avoid races with any kernel threads.
-
-Currently, interrupts are run on the first interrupt enable operation
-if interrupts are disabled and if we are not already in interrupt
-context.
-
-When triggering an interrupt, it uses GCC's built-in functions for
-atomic memory access to synchronize and simple boolean flags.
-
-Cc: Michael Zimmermann <sigmaepsilon92@gmail.com>
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
-Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
----
- arch/um/lkl/include/asm/irq.h             |  13 ++
- arch/um/lkl/include/uapi/asm/irq.h        |  36 ++++
- arch/um/lkl/include/uapi/asm/sigcontext.h |  16 ++
- arch/um/lkl/kernel/irq.c                  | 193 ++++++++++++++++++++++
- 4 files changed, 258 insertions(+)
- create mode 100644 arch/um/lkl/include/asm/irq.h
- create mode 100644 arch/um/lkl/include/uapi/asm/irq.h
- create mode 100644 arch/um/lkl/include/uapi/asm/sigcontext.h
- create mode 100644 arch/um/lkl/kernel/irq.c
-
-diff --git a/arch/um/lkl/include/asm/irq.h b/arch/um/lkl/include/asm/irq.h
-new file mode 100644
-index 000000000000..948fc54cb76c
---- /dev/null
-+++ b/arch/um/lkl/include/asm/irq.h
-@@ -0,0 +1,13 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_LKL_IRQ_H
-+#define _ASM_LKL_IRQ_H
-+
-+#define IRQ_STATUS_BITS		(sizeof(long) * 8)
-+#define NR_IRQS			((int)(IRQ_STATUS_BITS * IRQ_STATUS_BITS))
-+
-+void run_irqs(void);
-+void set_irq_pending(int irq);
-+
-+#include <uapi/asm/irq.h>
-+
-+#endif
-diff --git a/arch/um/lkl/include/uapi/asm/irq.h b/arch/um/lkl/include/uapi/asm/irq.h
-new file mode 100644
-index 000000000000..666628b233eb
---- /dev/null
-+++ b/arch/um/lkl/include/uapi/asm/irq.h
-@@ -0,0 +1,36 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+#ifndef _ASM_UAPI_LKL_IRQ_H
-+#define _ASM_UAPI_LKL_IRQ_H
-+
-+/**
-+ * lkl_trigger_irq - generate an interrupt
-+ *
-+ * This function is used by the device host side to signal its Linux counterpart
-+ * that some event happened.
-+ *
-+ * @irq - the irq number to signal
-+ */
-+int lkl_trigger_irq(int irq);
-+
-+/**
-+ * lkl_get_free_irq - find and reserve a free IRQ number
-+ *
-+ * This function is called by the host device code to find an unused IRQ number
-+ * and reserved it for its own use.
-+ *
-+ * @user - a string to identify the user
-+ * @returns - and irq number that can be used by request_irq or an negative
-+ * value in case of an error
-+ */
-+int lkl_get_free_irq(const char *user);
-+
-+/**
-+ * lkl_put_irq - release an IRQ number previously obtained with lkl_get_free_irq
-+ *
-+ * @irq - irq number to release
-+ * @user - string identifying the user; should be the same as the one passed to
-+ * lkl_get_free_irq when the irq number was obtained
-+ */
-+void lkl_put_irq(int irq, const char *name);
-+
-+#endif
-diff --git a/arch/um/lkl/include/uapi/asm/sigcontext.h b/arch/um/lkl/include/uapi/asm/sigcontext.h
-new file mode 100644
-index 000000000000..2f4848843d1d
---- /dev/null
-+++ b/arch/um/lkl/include/uapi/asm/sigcontext.h
-@@ -0,0 +1,16 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+#ifndef _ASM_UAPI_LKL_SIGCONTEXT_H
-+#define _ASM_UAPI_LKL_SIGCONTEXT_H
-+
-+#include <asm/ptrace.h>
-+
-+struct pt_regs {
-+	void *irq_data;
-+};
-+
-+struct sigcontext {
-+	struct pt_regs regs;
-+	unsigned long oldmask;
-+};
-+
-+#endif
-diff --git a/arch/um/lkl/kernel/irq.c b/arch/um/lkl/kernel/irq.c
-new file mode 100644
-index 000000000000..e3b59e46ca50
---- /dev/null
-+++ b/arch/um/lkl/kernel/irq.c
-@@ -0,0 +1,193 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/kernel.h>
-+#include <linux/init.h>
-+#include <linux/irq.h>
-+#include <linux/hardirq.h>
-+#include <asm/irq_regs.h>
-+#include <linux/sched.h>
-+#include <linux/seq_file.h>
-+#include <linux/tick.h>
-+#include <asm/irqflags.h>
-+#include <asm/host_ops.h>
-+#include <asm/cpu.h>
-+
-+/*
-+ * To avoid much overhead we use an indirect approach: the irqs are marked using
-+ * a bitmap (array of longs) and a summary of the modified bits is kept in a
-+ * separate "index" long - one bit for each sizeof(long). Thus we can support
-+ * 4096 irqs on 64bit platforms and 1024 irqs on 32bit platforms.
-+ *
-+ * Whenever an irq is trigger both the array and the index is updated. To find
-+ * which irqs were triggered we first search the index and then the
-+ * corresponding part of the arrary.
-+ */
-+static unsigned long irq_status[NR_IRQS / IRQ_STATUS_BITS];
-+static unsigned long irq_index_status;
-+
-+static inline unsigned long test_and_clear_irq_index_status(void)
-+{
-+	if (!irq_index_status)
-+		return 0;
-+	return __sync_fetch_and_and(&irq_index_status, 0);
-+}
-+
-+static inline unsigned long test_and_clear_irq_status(int index)
-+{
-+	if (!&irq_status[index])
-+		return 0;
-+	return __sync_fetch_and_and(&irq_status[index], 0);
-+}
-+
-+void set_irq_pending(int irq)
-+{
-+	int index = irq / IRQ_STATUS_BITS;
-+	int bit = irq % IRQ_STATUS_BITS;
-+
-+	__sync_fetch_and_or(&irq_status[index], BIT(bit));
-+	__sync_fetch_and_or(&irq_index_status, BIT(index));
-+}
-+
-+static struct irq_info {
-+	const char *user;
-+} irqs[NR_IRQS];
-+
-+static bool irqs_enabled;
-+
-+static struct pt_regs dummy;
-+
-+static void run_irq(int irq)
-+{
-+	unsigned long flags;
-+	struct pt_regs *old_regs = set_irq_regs((struct pt_regs *)&dummy);
-+
-+	/* interrupt handlers need to run with interrupts disabled */
-+	local_irq_save(flags);
-+	irq_enter();
-+	generic_handle_irq(irq);
-+	irq_exit();
-+	set_irq_regs(old_regs);
-+	local_irq_restore(flags);
-+}
-+
-+/**
-+ * This function can be called from arbitrary host threads, so do not
-+ * issue any Linux calls (e.g. prink) if lkl_cpu_get() was not issued
-+ * before.
-+ */
-+int lkl_trigger_irq(int irq)
-+{
-+	int ret;
-+
-+	if (!irq || irq > NR_IRQS)
-+		return -EINVAL;
-+
-+	ret = lkl_cpu_try_run_irq(irq);
-+	if (ret <= 0)
-+		return ret;
-+
-+	/*
-+	 * Since this can be called from Linux context (e.g. lkl_trigger_irq ->
-+	 * IRQ -> softirq -> lkl_trigger_irq) make sure we are actually allowed
-+	 * to run irqs at this point
-+	 */
-+	if (!irqs_enabled) {
-+		set_irq_pending(irq);
-+		lkl_cpu_put();
-+		return 0;
-+	}
-+
-+	run_irq(irq);
-+
-+	lkl_cpu_put();
-+
-+	return 0;
-+}
-+
-+static inline void for_each_bit(unsigned long word, void (*f)(int, int), int j)
-+{
-+	int i = 0;
-+
-+	while (word) {
-+		if (word & 1)
-+			f(i, j);
-+		word >>= 1;
-+		i++;
-+	}
-+}
-+
-+static inline void deliver_irq(int bit, int index)
-+{
-+	run_irq(index * IRQ_STATUS_BITS + bit);
-+}
-+
-+static inline void check_irq_status(int i, int unused)
-+{
-+	for_each_bit(test_and_clear_irq_status(i), deliver_irq, i);
-+}
-+
-+void run_irqs(void)
-+{
-+	for_each_bit(test_and_clear_irq_index_status(), check_irq_status, 0);
-+}
-+
-+int show_interrupts(struct seq_file *p, void *v)
-+{
-+	return 0;
-+}
-+
-+int lkl_get_free_irq(const char *user)
-+{
-+	int i;
-+	int ret = -EBUSY;
-+
-+	/* 0 is not a valid IRQ */
-+	for (i = 1; i < NR_IRQS; i++) {
-+		if (!irqs[i].user) {
-+			irqs[i].user = user;
-+			irq_set_chip_and_handler(i, &dummy_irq_chip,
-+						 handle_simple_irq);
-+			ret = i;
-+			break;
-+		}
-+	}
-+
-+	return ret;
-+}
-+
-+void lkl_put_irq(int i, const char *user)
-+{
-+	if (!irqs[i].user || strcmp(irqs[i].user, user) != 0) {
-+		WARN("%s tried to release %s's irq %d", user, irqs[i].user, i);
-+		return;
-+	}
-+
-+	irqs[i].user = NULL;
-+}
-+
-+unsigned long arch_local_save_flags(void)
-+{
-+	return irqs_enabled;
-+}
-+
-+void arch_local_irq_restore(unsigned long flags)
-+{
-+	if (flags == ARCH_IRQ_ENABLED && irqs_enabled == ARCH_IRQ_DISABLED &&
-+	    !in_interrupt())
-+		run_irqs();
-+	irqs_enabled = flags;
-+}
-+
-+void init_IRQ(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < NR_IRQS; i++)
-+		irq_set_chip_and_handler(i, &dummy_irq_chip, handle_simple_irq);
-+
-+	pr_info("lkl: irqs initialized\n");
-+}
-+
-+void cpu_yield_to_irqs(void)
-+{
-+	cpu_relax();
-+}
--- 
-2.21.0 (Apple Git-122.2)
+Paolo
 
 
 _______________________________________________
