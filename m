@@ -1,12 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mga04.intel.com ([192.55.52.120])
+Received: from mga18.intel.com ([134.134.136.126])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j1orI-0005ui-T5
- for linux-um@lists.infradead.org; Wed, 12 Feb 2020 10:03:06 +0000
+ id 1j1onk-0004AE-Ci
+ for linux-um@lists.infradead.org; Wed, 12 Feb 2020 09:59:25 +0000
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v2] um: Don't use console_drivers directly
-Date: Wed, 12 Feb 2020 12:02:59 +0200
-Message-Id: <20200212100259.80438-1-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1] um: Don't use console_drivers directly
+Date: Wed, 12 Feb 2020 11:59:19 +0200
+Message-Id: <20200212095919.80295-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -30,15 +30,14 @@ Reduce use of console_drivers by replacing it with for_each_console().
 Cc: Thomas Meyer <thomas@m3y3r.de>
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
-v2: fix condition (we do NOT want to have a console), remove confusing comment
- arch/um/kernel/kmsg_dump.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ arch/um/kernel/kmsg_dump.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/arch/um/kernel/kmsg_dump.c b/arch/um/kernel/kmsg_dump.c
-index 98bdf69e4c2e..e4abac6c9727 100644
+index 98bdf69e4c2e..a8683b717f94 100644
 --- a/arch/um/kernel/kmsg_dump.c
 +++ b/arch/um/kernel/kmsg_dump.c
-@@ -9,20 +9,19 @@ static void kmsg_dumper_stdout(struct kmsg_dumper *dumper,
+@@ -9,20 +9,20 @@ static void kmsg_dumper_stdout(struct kmsg_dumper *dumper,
  				enum kmsg_dump_reason reason)
  {
  	static char line[1024];
@@ -53,13 +52,14 @@ index 98bdf69e4c2e..e4abac6c9727 100644
  
 -	if (console_drivers != NULL)
 -		con_available = true;
++	/* Any registered console is fine to us */
 +	for_each_console(con)
 +		break;
  
  	console_unlock();
  
 -	if (con_available == true)
-+	if (con)
++	if (con == NULL)
  		return;
  
  	printf("kmsg_dump:\n");
