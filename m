@@ -2,14 +2,14 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]
  helo=us-smtp-1.mimecast.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j4gjj-00087F-1u
- for linux-um@lists.infradead.org; Thu, 20 Feb 2020 07:59:09 +0000
-Received: by mail-qk1-f200.google.com with SMTP id z124so2094285qkd.20
- for <linux-um@lists.infradead.org>; Wed, 19 Feb 2020 23:58:50 -0800 (PST)
-Date: Thu, 20 Feb 2020 02:58:44 -0500
+ id 1j2HUa-0007Y0-6M
+ for linux-um@lists.infradead.org; Thu, 13 Feb 2020 16:37:34 +0000
+Received: by mail-qt1-f200.google.com with SMTP id k20so4010343qtm.11
+ for <linux-um@lists.infradead.org>; Thu, 13 Feb 2020 08:37:21 -0800 (PST)
+Date: Thu, 13 Feb 2020 11:37:16 -0500
 From: "Michael S. Tsirkin" <mst@redhat.com>
 Subject: Re: [PATCH] virtio: Work around frames incorrectly marked as gso
-Message-ID: <20200220025506-mutt-send-email-mst@kernel.org>
+Message-ID: <20200213113654-mutt-send-email-mst@kernel.org>
 References: <20191209104824.17059-1-anton.ivanov@cambridgegreys.com>
  <57230228-7030-c65f-a24f-910ca52bbe9e@cambridgegreys.com>
  <f78bfe6e-2ffc-3734-9618-470f1afea0c6@redhat.com>
@@ -133,14 +133,15 @@ byhza2IpICYmIHNpbmZvLT5nc29fdHlwZSkgewo+ID4gCj4gWWVzLCBwcm92aWRlZCB0aGF0IHNr
 Yl9pc19nc28oc2tiKSBhbmQgc2luZm8tPmdzb190eXBlID09IDAgaXMgYSB2YWxpZCBzdGF0ZS4K
 PiAKPiBJIGFncmVlIHdpdGggSmFzb24sIHRoZXJlIG1heSBiZSBzb21ldGhpbmcgd3JvbmcgZ29p
 bmcgb24gaGVyZSBhbmQgd2UgbmVlZCB0byBmaW5kIHRoZSBzb3VyY2Ugd2hpY2ggY3JlYXRlcyB0
-aGVzZSBwYWNrZXRzLgo+IAo+IEEuCgoKV2FudCB0byBzdWJtaXQgYSBwYXRjaCB0byBhZGRyZXNz
-IHRoaXMgZm9yIG5vdz8KCj4gPiAKPiA+ID8KPiA+IAo+ID4gCj4gPiBfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+ID4gbGludXgtdW0gbWFpbGluZyBsaXN0
-Cj4gPiBsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCj4gPiBodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCj4gCj4gLS0gCj4gQW50b24gUi4gSXZh
-bm92Cj4gQ2FtYnJpZGdlZ3JleXMgTGltaXRlZC4gUmVnaXN0ZXJlZCBpbiBFbmdsYW5kLiBDb21w
-YW55IE51bWJlciAxMDI3MzY2MQo+IGh0dHBzOi8vd3d3LmNhbWJyaWRnZWdyZXlzLmNvbS8KCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBt
-YWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
+aGVzZSBwYWNrZXRzLgo+IAo+IEEuCgpXZWxsIEVyaWMgd2lsbCBrbm93IGZvciBzdXJlLiBFcmlj
+IGlzIHNrYl9pc19nc28oc2tiKSBhbmQKc2luZm8tPmdzb190eXBlID09IDAgYSB2YWxpZCBzdGF0
+ZT8KCj4gPiAKPiA+ID8KPiA+IAo+ID4gCj4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwo+ID4gbGludXgtdW0gbWFpbGluZyBsaXN0Cj4gPiBsaW51eC11
+bUBsaXN0cy5pbmZyYWRlYWQub3JnCj4gPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2xpbnV4LXVtCj4gCj4gLS0gCj4gQW50b24gUi4gSXZhbm92Cj4gQ2FtYnJp
+ZGdlZ3JleXMgTGltaXRlZC4gUmVnaXN0ZXJlZCBpbiBFbmdsYW5kLiBDb21wYW55IE51bWJlciAx
+MDI3MzY2MQo+IGh0dHBzOi8vd3d3LmNhbWJyaWRnZWdyZXlzLmNvbS8KCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QK
+bGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
 
