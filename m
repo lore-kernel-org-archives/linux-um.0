@@ -1,136 +1,160 @@
-Return-Path: <linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org>
-Subject: Re: [PATCH] kbuild: use KBUILD_DEFCONFIG as the fallback for
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH] kbuild: use KBUILD_DEFCONFIG as the fallback for
  DEFCONFIG_LIST
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <e0212512-bc44-fc3a-a647-47eff86983b7@samsung.com>
-Date: Fri, 21 Feb 2020 09:50:35 +0100
+Date: Mon, 17 Feb 2020 00:45:02 +0900
+Message-Id: <20200216154502.26478-1-masahiroy@kernel.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 MIME-Version: 1.0
-In-Reply-To: <20200216154502.26478-1-masahiroy@kernel.org>
-Content-Language: en-US
-References: <20200216154502.26478-1-masahiroy@kernel.org>
- <CGME20200221085039eucas1p2b439c37eb04870cc020f452b7ad31929@eucas1p2.samsung.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org
-To: Masahiro Yamada <masahiroy@kernel.org>, linux-kbuild@vger.kernel.org
-Cc: Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>, Guo Ren <guoren@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, Vincent Chen <deanbo422@gmail.com>, Will Deacon <will@kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Weinberger <richard@nod.at>, x86@kernel.org, Ingo Molnar <mingo@redhat.com>, Albert Ou <aou@eecs.berkeley.edu>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, Borislav Petkov <bp@alien8.de>, Greentime Hu <green.hu@gmail.com>, Paul Walmsley <paul.walmsley@sifive.com>, Thomas Gleixner <tglx@linutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Nick Hu <nickhu@andestech.com>, linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@dabbelt.com>, "David S. Miller" <davem@davemloft.net>
-List-ID: <linux-um.lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-kbuild@vger.kernel.org
+Cc: Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org, Guo Ren <guoren@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, Vincent Chen <deanbo422@gmail.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Weinberger <richard@nod.at>, Masahiro Yamada <masahiroy@kernel.org>, x86@kernel.org, Ingo Molnar <mingo@redhat.com>, Albert Ou <aou@eecs.berkeley.edu>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, Borislav Petkov <bp@alien8.de>, Greentime Hu <green.hu@gmail.com>, Paul Walmsley <paul.walmsley@sifive.com>, Thomas Gleixner <tglx@linutronix.de>, Nick Hu <nickhu@andestech.com>, linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@dabbelt.com>, "David S. Miller" <davem@davemloft.net>
 
-RGVhciBBbGwsCgpPbiAxNi4wMi4yMDIwIDE2OjQ1LCBNYXNhaGlybyBZYW1hZGEgd3JvdGU6Cj4g
-TW9zdCBvZiB0aGUgS2NvbmZpZyBjb21tYW5kcyAoZXhjZXB0IGRlZmNvbmZpZyBhbmQgYWxsKmNv
-bmZpZykgcmVhZCB0aGUKPiAuY29uZmlnIGZpbGUgYXMgYSBiYXNlIHNldCBvZiBDT05GSUcgb3B0
-aW9ucy4KPgo+IFdoZW4gaXQgZG9lcyBub3QgZXhpc3QsIHRoZSBmaWxlcyBpbiBERUZDT05GSUdf
-TElTVCBhcmUgc2VhcmNoZWQgaW4gdGhpcwo+IG9yZGVyIGFuZCBsb2FkZWQgaWYgZm91bmQuCj4K
-PiBJIGRvIG5vdCBzZWUgbXVjaCBzZW5zZSBpbiB0aGUgbGFzdCB0d28gZW50cmllcyBpbiBERUZD
-T05GSUdfTElTVC4KPgo+IFsxXSBBUkNIX0RFRkNPTkZJRwo+Cj4gVGhlIGVudHJ5IGZvciBERUZD
-T05GSUdfTElTVCBpcyBndWFyZGVkIGJ5ICdkZXBlbmRzIG9uICFVTUwnLiBTbywgdGhlCj4gQVJD
-SF9ERUZDT05GSUcgZGVmaW5pdGlvbiBpbiBhcmNoL3g4Ni91bS9LY29uZmlnIGlzIG1lYW5pbmds
-ZXNzLgo+Cj4gYXJjaC97c2gsc3BhcmMseDg2fS9LY29uZmlnIGRlZmluZSBBUkNIX0RFRkNPTkZJ
-RyBkZXBlbmRpbmcgb24gMzIgb3IgNjQKPiBiaXQgdmFyaWFudCBzeW1ib2xzLiBUaGlzIGlzIGEg
-bGl0dGxlIGJpdCBzdHJhbmdlOyBBUkNIX0RFRkNPTkZJRyBzaG91bGQKPiBiZSBhIGZpeGVkIHN0
-cmluZyBiZWNhdXNlIHRoZSBiYXNlIGNvbmZpZyBmaWxlIGlzIGxvYWRlZCBiZWZvcmUgdGhlIHN5
-bWJvbAo+IGV2YWx1YXRpb24gc3RhZ2UuCj4KPiBVc2luZyBLQlVJTERfREVGQ09ORklHIGlzIHNh
-bmVyIGJlY2F1c2UgaXQgaXMgZml4ZWQgYmVmb3JlIEtjb25maWcgaXMKPiBpbnZva2VkLiBGb3J0
-dW5hdGVseSwgYXJjaC97c2gsc3BhcmMseDg2fS9NYWtlZmlsZSBkZWZpbmUgaXQgaW4gdGhlCj4g
-c2FtZSB3YXksIGFuZCBpdCB3b3JrcyBhcyBleHBlY3RlZC4gSGVuY2UsIHJlcGxhY2UgQVJDSF9E
-RUZDT05GSUcgd2l0aAo+ICJhcmNoLyQoU1JDQVJDSCkvY29uZmlncy8kKEtCVUlMRF9ERUZDT05G
-SUcpIi4KPgo+IFsyXSBhcmNoLyQoQVJDSCkvZGVmY29uZmlnCj4KPiBUaGlzIGZpbGUgcGF0aCBp
-cyBubyBsb25nZXIgdmFsaWQuIFRoZSBkZWZjb25maWcgZmlsZXMgYXJlIGFsd2F5cyBsb2NhdGVk
-Cj4gaW4gdGhlIGFyY2ggY29uZmlncy8gZGlyZWN0b3JpZXMuCj4KPiAgICAkIGZpbmQgYXJjaCAt
-bmFtZSBkZWZjb25maWcgfCBzb3J0Cj4gICAgYXJjaC9hbHBoYS9jb25maWdzL2RlZmNvbmZpZwo+
-ICAgIGFyY2gvYXJtNjQvY29uZmlncy9kZWZjb25maWcKPiAgICBhcmNoL2Nza3kvY29uZmlncy9k
-ZWZjb25maWcKPiAgICBhcmNoL25kczMyL2NvbmZpZ3MvZGVmY29uZmlnCj4gICAgYXJjaC9yaXNj
-di9jb25maWdzL2RlZmNvbmZpZwo+ICAgIGFyY2gvczM5MC9jb25maWdzL2RlZmNvbmZpZwo+ICAg
-IGFyY2gvdW5pY29yZTMyL2NvbmZpZ3MvZGVmY29uZmlnCj4KPiBUaGUgcGF0aCBhcmNoLyovY29u
-Zmlncy9kZWZjb25maWcgaXMgYWxyZWFkeSBjb3ZlcmVkIGJ5Cj4gImFyY2gvJChTUkNBUkNIKS9j
-b25maWdzLyQoS0JVSUxEX0RFRkNPTkZJRykiLiBTbywgdGhpcyBmaWxlIHBhdGggaXMKPiBub3Qg
-bmVjZXNzYXJ5Lgo+Cj4gU2lnbmVkLW9mZi1ieTogTWFzYWhpcm8gWWFtYWRhIDxtYXNhaGlyb3lA
-a2VybmVsLm9yZz4KClRoaXMgcGF0Y2ggbGFuZGVkIGluIHRvZGF5J3MgbGludXgtbmV4dCAobmV4
-dC0yMDIwMDIyMSkgYW5kIGJyb2tlIGFybTY0IApidWlsZHM6CgotLS0+OC0tLQoKJCBtYWtlIEFS
-Q0g9YXJtNjQgQ1JPU1NfQ09NUElMRT1hYXJjaDY0LWxpbnV4LWdudS0gZGVmY29uZmlnCioqKiBE
-ZWZhdWx0IGNvbmZpZ3VyYXRpb24gaXMgYmFzZWQgb24gJ2RlZmNvbmZpZycKIwojIGNvbmZpZ3Vy
-YXRpb24gd3JpdHRlbiB0byAuY29uZmlnCiMKJCBtYWtlIEFSQ0g9YXJtNjQgQ1JPU1NfQ09NUElM
-RT1hYXJjaDY0LWxpbnV4LWdudS0gSW1hZ2UuZ3oKc2NyaXB0cy9rY29uZmlnL2NvbmbCoCAtLXN5
-bmNjb25maWcgS2NvbmZpZwpzY3JpcHRzL2tjb25maWcvY29uZsKgIC0tc3luY2NvbmZpZyBLY29u
-ZmlnCnNjcmlwdHMva2NvbmZpZy9jb25mwqAgLS1zeW5jY29uZmlnIEtjb25maWcKc2NyaXB0cy9r
-Y29uZmlnL2NvbmbCoCAtLXN5bmNjb25maWcgS2NvbmZpZwpzY3JpcHRzL2tjb25maWcvY29uZsKg
-IC0tc3luY2NvbmZpZyBLY29uZmlnCi4uLgoKKGVuZGxlc3MgbG9vcCkKCi0tLT44LS0tCgpSZXZl
-cnRpbmcgaXQgZml4ZXMgdGhlIGlzc3VlOgoKLS0tPjgtLS0KCiQgZ2l0IHJldmVydCBjZGQ1ZDFh
-MjA3ZDZhM2EwNmM5ZTYyN2EwMjM0ZDlhNmFmNmFkMzQ3CltkZXRhY2hlZCBIRUFEIDEwODBkNmEx
-M2I2ZF0gUmV2ZXJ0ICJrYnVpbGQ6IHVzZSBLQlVJTERfREVGQ09ORklHIGFzIHRoZSAKZmFsbGJh
-Y2sgZm9yIERFRkNPTkZJR19MSVNUIgogwqA1IGZpbGVzIGNoYW5nZWQsIDIyIGluc2VydGlvbnMo
-KyksIDEgZGVsZXRpb24oLSkKJCBtYWtlIEFSQ0g9YXJtNjQgQ1JPU1NfQ09NUElMRT1hYXJjaDY0
-LWxpbnV4LWdudS0gZGVmY29uZmlnCioqKiBEZWZhdWx0IGNvbmZpZ3VyYXRpb24gaXMgYmFzZWQg
-b24gJ2RlZmNvbmZpZycKIwojIE5vIGNoYW5nZSB0byAuY29uZmlnCiMKJCBtYWtlIEFSQ0g9YXJt
-NjQgQ1JPU1NfQ09NUElMRT1hYXJjaDY0LWxpbnV4LWdudS0gSW1hZ2UuZ3oKc2NyaXB0cy9rY29u
-ZmlnL2NvbmbCoCAtLXN5bmNjb25maWcgS2NvbmZpZwogwqAgVVBEwqDCoMKgwqAgaW5jbHVkZS9j
-b25maWcva2VybmVsLnJlbGVhc2UKIMKgIFVQRMKgwqDCoMKgIGluY2x1ZGUvZ2VuZXJhdGVkL3V0
-c3JlbGVhc2UuaAogwqAgQ0PCoMKgwqDCoMKgIHNjcmlwdHMvbW9kL2VtcHR5Lm8KLi4uCgokIGFh
-cmNoNjQtbGludXgtZ251LWdjYyAtLXZlcnNpb24KYWFyY2g2NC1saW51eC1nbnUtZ2NjIChVYnVu
-dHUvTGluYXJvIDcuNC4wLTF1YnVudHUxfjE4LjA0LjEpIDcuNC4wCkNvcHlyaWdodCAoQykgMjAx
-NyBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb24sIEluYy4KVGhpcyBpcyBmcmVlIHNvZnR3YXJlOyBz
-ZWUgdGhlIHNvdXJjZSBmb3IgY29weWluZyBjb25kaXRpb25zLiBUaGVyZSBpcyBOTwp3YXJyYW50
-eTsgbm90IGV2ZW4gZm9yIE1FUkNIQU5UQUJJTElUWSBvciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VM
-QVIgUFVSUE9TRS4KLS0tPjgtLS0KCkl0IGxvb2tzIHRoYXQgdGhlIGlzc3VlIGlzIHNpbWlsYXIg
-dG8gdGhlIG9uZSBkZXNjcmliZWQgaGVyZToKCmh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcv
-cGF0Y2gvMTA0NTM2ODUvCgpJIGhvcGUgdGhpcyByZXBvcnQgaGVscHMgZml4aW5nIHRoZSBpc3N1
-ZS4KCj4gLS0tCj4KPiAgIGFyY2gvc2gvS2NvbmZpZyAgICAgfCA1IC0tLS0tCj4gICBhcmNoL3Nw
-YXJjL0tjb25maWcgIHwgNSAtLS0tLQo+ICAgYXJjaC94ODYvS2NvbmZpZyAgICB8IDUgLS0tLS0K
-PiAgIGFyY2gveDg2L3VtL0tjb25maWcgfCA1IC0tLS0tCj4gICBpbml0L0tjb25maWcgICAgICAg
-IHwgMyArLS0KPiAgIDUgZmlsZXMgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDIyIGRlbGV0aW9u
-cygtKQo+Cj4gZGlmZiAtLWdpdCBhL2FyY2gvc2gvS2NvbmZpZyBiL2FyY2gvc2gvS2NvbmZpZwo+
-IGluZGV4IDllY2UxMTFiMDI1NC4uYjRmMGUzN2I4M2ViIDEwMDY0NAo+IC0tLSBhL2FyY2gvc2gv
-S2NvbmZpZwo+ICsrKyBiL2FyY2gvc2gvS2NvbmZpZwo+IEBAIC04NywxMSArODcsNiBAQCBjb25m
-aWcgU1VQRVJINjQKPiAgIAlzZWxlY3QgSEFWRV9FWElUX1RIUkVBRAo+ICAgCXNlbGVjdCBLQUxM
-U1lNUwo+ICAgCj4gLWNvbmZpZyBBUkNIX0RFRkNPTkZJRwo+IC0Jc3RyaW5nCj4gLQlkZWZhdWx0
-ICJhcmNoL3NoL2NvbmZpZ3Mvc2h4M19kZWZjb25maWciIGlmIFNVUEVSSDMyCj4gLQlkZWZhdWx0
-ICJhcmNoL3NoL2NvbmZpZ3MvY2F5bWFuX2RlZmNvbmZpZyIgaWYgU1VQRVJINjQKPiAtCj4gICBj
-b25maWcgR0VORVJJQ19CVUcKPiAgIAlkZWZfYm9vbCB5Cj4gICAJZGVwZW5kcyBvbiBCVUcgJiYg
-U1VQRVJIMzIKPiBkaWZmIC0tZ2l0IGEvYXJjaC9zcGFyYy9LY29uZmlnIGIvYXJjaC9zcGFyYy9L
-Y29uZmlnCj4gaW5kZXggYzFkZDZkZDY0MmY0Li4wZGUxNTM4MGQxZmMgMTAwNjQ0Cj4gLS0tIGEv
-YXJjaC9zcGFyYy9LY29uZmlnCj4gKysrIGIvYXJjaC9zcGFyYy9LY29uZmlnCj4gQEAgLTk1LDEx
-ICs5NSw2IEBAIGNvbmZpZyBTUEFSQzY0Cj4gICAJc2VsZWN0IFBDSV9ET01BSU5TIGlmIFBDSQo+
-ICAgCXNlbGVjdCBBUkNIX0hBU19HSUdBTlRJQ19QQUdFCj4gICAKPiAtY29uZmlnIEFSQ0hfREVG
-Q09ORklHCj4gLQlzdHJpbmcKPiAtCWRlZmF1bHQgImFyY2gvc3BhcmMvY29uZmlncy9zcGFyYzMy
-X2RlZmNvbmZpZyIgaWYgU1BBUkMzMgo+IC0JZGVmYXVsdCAiYXJjaC9zcGFyYy9jb25maWdzL3Nw
-YXJjNjRfZGVmY29uZmlnIiBpZiBTUEFSQzY0Cj4gLQo+ICAgY29uZmlnIEFSQ0hfUFJPQ19LQ09S
-RV9URVhUCj4gICAJZGVmX2Jvb2wgeQo+ICAgCj4gZGlmZiAtLWdpdCBhL2FyY2gveDg2L0tjb25m
-aWcgYi9hcmNoL3g4Ni9LY29uZmlnCj4gaW5kZXggYmVlYTc3MDQ2ZjliLi45ODkzNWY0Mzg3Zjkg
-MTAwNjQ0Cj4gLS0tIGEvYXJjaC94ODYvS2NvbmZpZwo+ICsrKyBiL2FyY2gveDg2L0tjb25maWcK
-PiBAQCAtMjQwLDExICsyNDAsNiBAQCBjb25maWcgT1VUUFVUX0ZPUk1BVAo+ICAgCWRlZmF1bHQg
-ImVsZjMyLWkzODYiIGlmIFg4Nl8zMgo+ICAgCWRlZmF1bHQgImVsZjY0LXg4Ni02NCIgaWYgWDg2
-XzY0Cj4gICAKPiAtY29uZmlnIEFSQ0hfREVGQ09ORklHCj4gLQlzdHJpbmcKPiAtCWRlZmF1bHQg
-ImFyY2gveDg2L2NvbmZpZ3MvaTM4Nl9kZWZjb25maWciIGlmIFg4Nl8zMgo+IC0JZGVmYXVsdCAi
-YXJjaC94ODYvY29uZmlncy94ODZfNjRfZGVmY29uZmlnIiBpZiBYODZfNjQKPiAtCj4gICBjb25m
-aWcgTE9DS0RFUF9TVVBQT1JUCj4gICAJZGVmX2Jvb2wgeQo+ICAgCj4gZGlmZiAtLWdpdCBhL2Fy
-Y2gveDg2L3VtL0tjb25maWcgYi9hcmNoL3g4Ni91bS9LY29uZmlnCj4gaW5kZXggYTg5ODVlMWY3
-NDMyLi45NWQyNmE2OTA4OGIgMTAwNjQ0Cj4gLS0tIGEvYXJjaC94ODYvdW0vS2NvbmZpZwo+ICsr
-KyBiL2FyY2gveDg2L3VtL0tjb25maWcKPiBAQCAtMjcsMTEgKzI3LDYgQEAgY29uZmlnIFg4Nl82
-NAo+ICAgCWRlZl9ib29sIDY0QklUCj4gICAJc2VsZWN0IE1PRFVMRVNfVVNFX0VMRl9SRUxBCj4g
-ICAKPiAtY29uZmlnIEFSQ0hfREVGQ09ORklHCj4gLQlzdHJpbmcKPiAtCWRlZmF1bHQgImFyY2gv
-dW0vY29uZmlncy9pMzg2X2RlZmNvbmZpZyIgaWYgWDg2XzMyCj4gLQlkZWZhdWx0ICJhcmNoL3Vt
-L2NvbmZpZ3MveDg2XzY0X2RlZmNvbmZpZyIgaWYgWDg2XzY0Cj4gLQo+ICAgY29uZmlnIDNfTEVW
-RUxfUEdUQUJMRVMKPiAgIAlib29sICJUaHJlZS1sZXZlbCBwYWdldGFibGVzIiBpZiAhNjRCSVQK
-PiAgIAlkZWZhdWx0IDY0QklUCj4gZGlmZiAtLWdpdCBhL2luaXQvS2NvbmZpZyBiL2luaXQvS2Nv
-bmZpZwo+IGluZGV4IDQ1MmJjMTgzNWNkNC4uNmNjZGIxNjhkZWU1IDEwMDY0NAo+IC0tLSBhL2lu
-aXQvS2NvbmZpZwo+ICsrKyBiL2luaXQvS2NvbmZpZwo+IEBAIC02LDggKzYsNyBAQCBjb25maWcg
-REVGQ09ORklHX0xJU1QKPiAgIAlkZWZhdWx0ICIvbGliL21vZHVsZXMvJChzaGVsbCx1bmFtZSAt
-cikvLmNvbmZpZyIKPiAgIAlkZWZhdWx0ICIvZXRjL2tlcm5lbC1jb25maWciCj4gICAJZGVmYXVs
-dCAiL2Jvb3QvY29uZmlnLSQoc2hlbGwsdW5hbWUgLXIpIgo+IC0JZGVmYXVsdCBBUkNIX0RFRkNP
-TkZJRwo+IC0JZGVmYXVsdCAiYXJjaC8kKEFSQ0gpL2RlZmNvbmZpZyIKPiArCWRlZmF1bHQgImFy
-Y2gvJChTUkNBUkNIKS9jb25maWdzLyQoS0JVSUxEX0RFRkNPTkZJRykiCj4gICAKPiAgIGNvbmZp
-ZyBDQ19JU19HQ0MKPiAgIAlkZWZfYm9vbCAkKHN1Y2Nlc3MsJChDQykgLS12ZXJzaW9uIHwgaGVh
-ZCAtbiAxIHwgZ3JlcCAtcSBnY2MpCgpCZXN0IHJlZ2FyZHMKLS0gCk1hcmVrIFN6eXByb3dza2ks
-IFBoRApTYW1zdW5nIFImRCBJbnN0aXR1dGUgUG9sYW5kCgoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtYXJtLWtlcm5lbCBtYWlsaW5nIGxpc3QK
-bGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtYXJtLWtlcm5lbAo=
+Most of the Kconfig commands (except defconfig and all*config) read the
+.config file as a base set of CONFIG options.
+
+When it does not exist, the files in DEFCONFIG_LIST are searched in this
+order and loaded if found.
+
+I do not see much sense in the last two entries in DEFCONFIG_LIST.
+
+[1] ARCH_DEFCONFIG
+
+The entry for DEFCONFIG_LIST is guarded by 'depends on !UML'. So, the
+ARCH_DEFCONFIG definition in arch/x86/um/Kconfig is meaningless.
+
+arch/{sh,sparc,x86}/Kconfig define ARCH_DEFCONFIG depending on 32 or 64
+bit variant symbols. This is a little bit strange; ARCH_DEFCONFIG should
+be a fixed string because the base config file is loaded before the symbol
+evaluation stage.
+
+Using KBUILD_DEFCONFIG is saner because it is fixed before Kconfig is
+invoked. Fortunately, arch/{sh,sparc,x86}/Makefile define it in the
+same way, and it works as expected. Hence, replace ARCH_DEFCONFIG with
+"arch/$(SRCARCH)/configs/$(KBUILD_DEFCONFIG)".
+
+[2] arch/$(ARCH)/defconfig
+
+This file path is no longer valid. The defconfig files are always located
+in the arch configs/ directories.
+
+  $ find arch -name defconfig | sort
+  arch/alpha/configs/defconfig
+  arch/arm64/configs/defconfig
+  arch/csky/configs/defconfig
+  arch/nds32/configs/defconfig
+  arch/riscv/configs/defconfig
+  arch/s390/configs/defconfig
+  arch/unicore32/configs/defconfig
+
+The path arch/*/configs/defconfig is already covered by
+"arch/$(SRCARCH)/configs/$(KBUILD_DEFCONFIG)". So, this file path is
+not necessary.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ arch/sh/Kconfig     | 5 -----
+ arch/sparc/Kconfig  | 5 -----
+ arch/x86/Kconfig    | 5 -----
+ arch/x86/um/Kconfig | 5 -----
+ init/Kconfig        | 3 +--
+ 5 files changed, 1 insertion(+), 22 deletions(-)
+
+diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
+index 9ece111b0254..b4f0e37b83eb 100644
+--- a/arch/sh/Kconfig
++++ b/arch/sh/Kconfig
+@@ -87,11 +87,6 @@ config SUPERH64
+ 	select HAVE_EXIT_THREAD
+ 	select KALLSYMS
+ 
+-config ARCH_DEFCONFIG
+-	string
+-	default "arch/sh/configs/shx3_defconfig" if SUPERH32
+-	default "arch/sh/configs/cayman_defconfig" if SUPERH64
+-
+ config GENERIC_BUG
+ 	def_bool y
+ 	depends on BUG && SUPERH32
+diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
+index c1dd6dd642f4..0de15380d1fc 100644
+--- a/arch/sparc/Kconfig
++++ b/arch/sparc/Kconfig
+@@ -95,11 +95,6 @@ config SPARC64
+ 	select PCI_DOMAINS if PCI
+ 	select ARCH_HAS_GIGANTIC_PAGE
+ 
+-config ARCH_DEFCONFIG
+-	string
+-	default "arch/sparc/configs/sparc32_defconfig" if SPARC32
+-	default "arch/sparc/configs/sparc64_defconfig" if SPARC64
+-
+ config ARCH_PROC_KCORE_TEXT
+ 	def_bool y
+ 
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index beea77046f9b..98935f4387f9 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -240,11 +240,6 @@ config OUTPUT_FORMAT
+ 	default "elf32-i386" if X86_32
+ 	default "elf64-x86-64" if X86_64
+ 
+-config ARCH_DEFCONFIG
+-	string
+-	default "arch/x86/configs/i386_defconfig" if X86_32
+-	default "arch/x86/configs/x86_64_defconfig" if X86_64
+-
+ config LOCKDEP_SUPPORT
+ 	def_bool y
+ 
+diff --git a/arch/x86/um/Kconfig b/arch/x86/um/Kconfig
+index a8985e1f7432..95d26a69088b 100644
+--- a/arch/x86/um/Kconfig
++++ b/arch/x86/um/Kconfig
+@@ -27,11 +27,6 @@ config X86_64
+ 	def_bool 64BIT
+ 	select MODULES_USE_ELF_RELA
+ 
+-config ARCH_DEFCONFIG
+-	string
+-	default "arch/um/configs/i386_defconfig" if X86_32
+-	default "arch/um/configs/x86_64_defconfig" if X86_64
+-
+ config 3_LEVEL_PGTABLES
+ 	bool "Three-level pagetables" if !64BIT
+ 	default 64BIT
+diff --git a/init/Kconfig b/init/Kconfig
+index 452bc1835cd4..6ccdb168dee5 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -6,8 +6,7 @@ config DEFCONFIG_LIST
+ 	default "/lib/modules/$(shell,uname -r)/.config"
+ 	default "/etc/kernel-config"
+ 	default "/boot/config-$(shell,uname -r)"
+-	default ARCH_DEFCONFIG
+-	default "arch/$(ARCH)/defconfig"
++	default "arch/$(SRCARCH)/configs/$(KBUILD_DEFCONFIG)"
+ 
+ config CC_IS_GCC
+ 	def_bool $(success,$(CC) --version | head -n 1 | grep -q gcc)
+-- 
+2.17.1
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
