@@ -1,14 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j4hNr-0003Rm-30
- for linux-um@lists.infradead.org; Thu, 20 Feb 2020 08:40:36 +0000
-From: Leon Romanovsky <leon@kernel.org>
-Subject: [PATCH 2/2] um: Delete never executed timer
-Date: Thu, 20 Feb 2020 10:40:14 +0200
-Message-Id: <20200220084014.238768-3-leon@kernel.org>
-In-Reply-To: <20200220084014.238768-1-leon@kernel.org>
-References: <20200220084014.238768-1-leon@kernel.org>
+ id 1j4Pf2-00010R-C3
+ for linux-um@lists.infradead.org; Wed, 19 Feb 2020 13:45:10 +0000
+From: Wen Yang <wenyang@linux.alibaba.com>
+Subject: [PATCH] um: fix len of file in create_pid_file
+Date: Wed, 19 Feb 2020 21:44:42 +0800
+Message-Id: <20200219134442.68744-1-wenyang@linux.alibaba.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -23,51 +21,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Leon Romanovsky <leonro@mellanox.com>, linux-um <linux-um@lists.infradead.org>
+Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>, linux-um@lists.infradead.org, Wen Yang <wenyang@linux.alibaba.com>, Alex Dewar <alex.dewar@gmx.co.uk>
 
-From: Leon Romanovsky <leonro@mellanox.com>
+sizeof gives us the size of the pointer variable, not of the
+area it points to. So the number of bytes copied by umid_file_name()
+is 8.
+We should pass in the correct length of the file buffer.
 
-
-The "#ifdef undef" construction effectively disabled the timer.
-It causes to the fact that this timer did nothing, so delete it.
-
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Signed-off-by: Wen Yang <wenyang@linux.alibaba.com>
+Cc: Jeff Dike <jdike@addtoit.com> (maintainer:USER-MODE LINUX (UML))
+Cc: Richard Weinberger <richard@nod.at> (maintainer:USER-MODE LINUX (UML),commit_signer:2/2=100%)
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com> (maintainer:USER-MODE LINUX (UML))
+Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com> (commit_signer:1/2=50%,authored:1/2=50%,added_lines:27/28=96%,removed_lines:9/10=90%)
+Cc: Alex Dewar <alex.dewar@gmx.co.uk> (commit_signer:1/2=50%,authored:1/2=50%,removed_lines:1/10=10%)
+Cc: linux-um@lists.infradead.org (open list:USER-MODE LINUX (UML))
 ---
- arch/um/drivers/net_kern.c | 12 ------------
- 1 file changed, 12 deletions(-)
+ arch/um/os-Linux/umid.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
-index af07733c2dc8..1802cf4ef5a5 100644
---- a/arch/um/drivers/net_kern.c
-+++ b/arch/um/drivers/net_kern.c
-@@ -274,17 +274,6 @@ static const struct ethtool_ops uml_net_ethtool_ops = {
- 	.get_ts_info	= ethtool_op_get_ts_info,
- };
-
--static void uml_net_user_timer_expire(struct timer_list *t)
--{
--#ifdef undef
--	struct uml_net_private *lp = from_timer(lp, t, tl);
--	struct connection *conn = &lp->user;
--
--	dprintk(KERN_INFO "uml_net_user_timer_expire [%p]\n", conn);
--	do_connect(conn);
--#endif
--}
--
- void uml_net_setup_etheraddr(struct net_device *dev, char *str)
- {
- 	unsigned char *addr = dev->dev_addr;
-@@ -455,7 +444,6 @@ static void eth_configure(int n, void *init, char *mac,
- 		  .add_address 		= transport->user->add_address,
- 		  .delete_address  	= transport->user->delete_address });
-
--	timer_setup(&lp->tl, uml_net_user_timer_expire, 0);
- 	spin_lock_init(&lp->lock);
- 	memcpy(lp->mac, dev->dev_addr, sizeof(lp->mac));
-
---
-2.24.1
+diff --git a/arch/um/os-Linux/umid.c b/arch/um/os-Linux/umid.c
+index 44def53a11cd..9e16078a4bf8 100644
+--- a/arch/um/os-Linux/umid.c
++++ b/arch/um/os-Linux/umid.c
+@@ -220,11 +220,12 @@ static void __init create_pid_file(void)
+ 	char pid[sizeof("nnnnn\0")], *file;
+ 	int fd, n;
+ 
+-	file = malloc(strlen(uml_dir) + UMID_LEN + sizeof("/pid\0"));
++	n = strlen(uml_dir) + UMID_LEN + sizeof("/pid\0");
++	file = malloc(n);
+ 	if (!file)
+ 		return;
+ 
+-	if (umid_file_name("pid", file, sizeof(file)))
++	if (umid_file_name("pid", file, n))
+ 		goto out;
+ 
+ 	fd = open(file, O_RDWR | O_CREAT | O_EXCL, 0644);
+-- 
+2.23.0
 
 
 _______________________________________________
