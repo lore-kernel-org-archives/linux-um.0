@@ -1,14 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1izn9i-0002Yo-OF
- for linux-um@lists.infradead.org; Thu, 06 Feb 2020 19:49:44 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [DEMO] um: demonstrate super early constructors
-Date: Thu,  6 Feb 2020 20:49:39 +0100
-Message-Id: <20200206204937.db680692f366.Ie05fc2ad440c8db59c1519194aeac356469efa72@changeid>
+ id 1j4rcR-00017M-SH
+ for linux-um@lists.infradead.org; Thu, 20 Feb 2020 19:36:21 +0000
+Subject: Re: [PATCH 2/2] um: Delete never executed timer
+References: <20200220084014.238768-1-leon@kernel.org>
+ <20200220084014.238768-3-leon@kernel.org>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <1b9d7916-92b6-c438-274a-4198e97827b2@cambridgegreys.com>
+Date: Thu, 20 Feb 2020 19:36:13 +0000
 MIME-Version: 1.0
+In-Reply-To: <20200220084014.238768-3-leon@kernel.org>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -17,87 +21,69 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>, Patricia Alfonso <trishalfonso@google.com>
+To: Leon Romanovsky <leon@kernel.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
+Cc: Leon Romanovsky <leonro@mellanox.com>, linux-um <linux-um@lists.infradead.org>
 
-From: Johannes Berg <johannes.berg@intel.com>
 
-For KASAN, we need super early constructors, demonstrate
-how we could perhaps do that.
 
-I'm not sure why we have two places with .init_array in the
-linker scripts, the common one does get included, but then
-the dyn one seems to override it, perhaps for alignment? but
-it seems it would be harmless to do the alignment in the
-common one ... not sure.
+On 20/02/2020 08:40, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
+> 
+> 
+> The "#ifdef undef" construction effectively disabled the timer.
+> It causes to the fact that this timer did nothing, so delete it.
+> 
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> ---
+>   arch/um/drivers/net_kern.c | 12 ------------
+>   1 file changed, 12 deletions(-)
+> 
+> diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
+> index af07733c2dc8..1802cf4ef5a5 100644
+> --- a/arch/um/drivers/net_kern.c
+> +++ b/arch/um/drivers/net_kern.c
+> @@ -274,17 +274,6 @@ static const struct ethtool_ops uml_net_ethtool_ops = {
+>   	.get_ts_info	= ethtool_op_get_ts_info,
+>   };
+> 
+> -static void uml_net_user_timer_expire(struct timer_list *t)
+> -{
+> -#ifdef undef
+> -	struct uml_net_private *lp = from_timer(lp, t, tl);
+> -	struct connection *conn = &lp->user;
+> -
+> -	dprintk(KERN_INFO "uml_net_user_timer_expire [%p]\n", conn);
+> -	do_connect(conn);
+> -#endif
+> -}
+> -
+>   void uml_net_setup_etheraddr(struct net_device *dev, char *str)
+>   {
+>   	unsigned char *addr = dev->dev_addr;
+> @@ -455,7 +444,6 @@ static void eth_configure(int n, void *init, char *mac,
+>   		  .add_address 		= transport->user->add_address,
+>   		  .delete_address  	= transport->user->delete_address });
+> 
+> -	timer_setup(&lp->tl, uml_net_user_timer_expire, 0);
+>   	spin_lock_init(&lp->lock);
+>   	memcpy(lp->mac, dev->dev_addr, sizeof(lp->mac));
+> 
+> --
+> 2.24.1
+> 
+> 
 
----
- arch/um/include/asm/common.lds.S |  1 +
- arch/um/kernel/dyn.lds.S         |  5 ++++-
- arch/um/kernel/mem.c             | 15 +++++++++++++++
- 3 files changed, 20 insertions(+), 1 deletion(-)
+Acked-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-diff --git a/arch/um/include/asm/common.lds.S b/arch/um/include/asm/common.lds.S
-index eca6c452a41b..731f8c8422a2 100644
---- a/arch/um/include/asm/common.lds.S
-+++ b/arch/um/include/asm/common.lds.S
-@@ -83,6 +83,7 @@
-   }
-   .init_array : {
- 	__init_array_start = .;
-+	*(.kasan_init)
- 	*(.init_array)
- 	__init_array_end = .;
-   }
-diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
-index f5001481010c..4f0447cd9e38 100644
---- a/arch/um/kernel/dyn.lds.S
-+++ b/arch/um/kernel/dyn.lds.S
-@@ -103,7 +103,10 @@ SECTIONS
-      be empty, which isn't pretty.  */
-   . = ALIGN(32 / 8);
-   .preinit_array     : { *(.preinit_array) }
--  .init_array     : { *(.init_array) }
-+  .init_array     : {
-+	*(.kasan_init)
-+	*(.init_array)
-+  }
-   .fini_array     : { *(.fini_array) }
-   .data           : {
-     INIT_TASK_DATA(KERNEL_STACK_SIZE)
-diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
-index 30885d0b94ac..32fc941c80f7 100644
---- a/arch/um/kernel/mem.c
-+++ b/arch/um/kernel/mem.c
-@@ -19,6 +19,21 @@
- #include <mem_user.h>
- #include <os.h>
- 
-+extern int printf(const char *msg, ...);
-+static void early_print(void)
-+{
-+	printf("I'm super early, before constructors\n");
-+}
-+
-+static void __attribute__((constructor)) constructor_test(void)
-+{
-+	printf("yes, you can see it\n");
-+}
-+
-+static void (*early_print_ptr)(void)
-+__attribute__((section(".kasan_init"), used))
-+ = early_print;
-+
- /* allocated in paging_init, zeroed in mem_init, and unchanged thereafter */
- unsigned long *empty_zero_page = NULL;
- EXPORT_SYMBOL(empty_zero_page);
 -- 
-2.24.1
+Anton R. Ivanov
 
+Cambridge Greys Limited, England and Wales company No 10273661
+http://www.cambridgegreys.com/
 
 _______________________________________________
 linux-um mailing list
