@@ -1,25 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-yb1-xb43.google.com ([2607:f8b0:4864:20::b43])
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]
+ helo=us-smtp-1.mimecast.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j6JOx-0007rG-Ff
- for linux-um@lists.infradead.org; Mon, 24 Feb 2020 19:28:24 +0000
-Received: by mail-yb1-xb43.google.com with SMTP id x9so3082640ybl.5
- for <linux-um@lists.infradead.org>; Mon, 24 Feb 2020 11:28:22 -0800 (PST)
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com.
- [209.85.219.173])
- by smtp.gmail.com with ESMTPSA id l191sm31634ywb.12.2020.02.24.11.28.20
- for <linux-um@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 24 Feb 2020 11:28:20 -0800 (PST)
-Received: by mail-yb1-f173.google.com with SMTP id f130so5169431ybc.7
- for <linux-um@lists.infradead.org>; Mon, 24 Feb 2020 11:28:20 -0800 (PST)
-MIME-Version: 1.0
-References: <20200224132550.2083-1-anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20200224132550.2083-1-anton.ivanov@cambridgegreys.com>
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date: Mon, 24 Feb 2020 14:27:42 -0500
-Message-ID: <CA+FuTSd8P6uQnwisZEh7+nfowW9qKLBEvA4GPg+xUkjBa-6TDA@mail.gmail.com>
+ id 1j6Eg1-0005Yy-MB
+ for linux-um@lists.infradead.org; Mon, 24 Feb 2020 14:25:43 +0000
+Received: by mail-qk1-f197.google.com with SMTP id a10so5819562qkg.11
+ for <linux-um@lists.infradead.org>; Mon, 24 Feb 2020 06:25:37 -0800 (PST)
+Date: Mon, 24 Feb 2020 09:25:32 -0500
+From: "Michael S. Tsirkin" <mst@redhat.com>
 Subject: Re: [PATCH v3] virtio: Work around frames incorrectly marked as gso
+Message-ID: <20200224092526-mutt-send-email-mst@kernel.org>
+References: <20200224132550.2083-1-anton.ivanov@cambridgegreys.com>
+MIME-Version: 1.0
+In-Reply-To: <20200224132550.2083-1-anton.ivanov@cambridgegreys.com>
+Content-Disposition: inline
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -33,29 +27,59 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: anton.ivanov@cambridgegreys.com
-Cc: Eric Dumazet <eric.dumazet@gmail.com>, "Michael S. Tsirkin" <mst@redhat.com>, Network Development <netdev@vger.kernel.org>, Jason Wang <jasowang@redhat.com>, linux-um@lists.infradead.org, virtualization@lists.linux-foundation.org
+Cc: netdev@vger.kernel.org, jasowang@redhat.com, linux-um@lists.infradead.org, eric.dumazet@gmail.com, virtualization@lists.linux-foundation.org
 
-On Mon, Feb 24, 2020 at 8:26 AM <anton.ivanov@cambridgegreys.com> wrote:
->
+On Mon, Feb 24, 2020 at 01:25:50PM +0000, anton.ivanov@cambridgegreys.com wrote:
 > From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
->
+> 
 > Some of the locally generated frames marked as GSO which
 > arrive at virtio_net_hdr_from_skb() have no GSO_TYPE, no
 > fragments (data_len = 0) and length significantly shorter
 > than the MTU (752 in my experiments).
+> 
+> This is observed on raw sockets reading off vEth interfaces
+> in all 4.x and 5.x kernels. The frames are reported as
+> invalid, while they are in fact gso-less frames.
+> 
+> The easiest way to reproduce is to connect a User Mode
+> Linux instance to the host using the vector raw transport
+> and a vEth interface. Vector raw uses recvmmsg/sendmmsg
+> with virtio headers on af_packet sockets. When running iperf
+> between the UML and the host, UML regularly complains about
+> EINVAL return from recvmmsg.
+> 
+> This patch marks the vnet header as non-GSO instead of
+> reporting it as invalid.
+> 
+> Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Do we understand how these packets are generated? Else it seems this
-might be papering over a deeper problem.
+Reviewed-by: Michael S. Tsirkin <mst@redhat.com>
 
-The stack should not create GSO packets less than or equal to
-skb_shinfo(skb)->gso_size. See for instance the check in
-tcp_gso_segment after pulling the tcp header:
+> ---
+>  include/linux/virtio_net.h | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/virtio_net.h b/include/linux/virtio_net.h
+> index 0d1fe9297ac6..2c99c752cb20 100644
+> --- a/include/linux/virtio_net.h
+> +++ b/include/linux/virtio_net.h
+> @@ -98,10 +98,11 @@ static inline int virtio_net_hdr_from_skb(const struct sk_buff *skb,
+>  					  bool has_data_valid,
+>  					  int vlan_hlen)
+>  {
+> +	struct skb_shared_info *sinfo = skb_shinfo(skb);
+> +
+>  	memset(hdr, 0, sizeof(*hdr));   /* no info leak */
+>  
+> -	if (skb_is_gso(skb)) {
+> -		struct skb_shared_info *sinfo = skb_shinfo(skb);
+> +	if (skb_is_gso(skb) && sinfo->gso_type) {
+>  
+>  		/* This is a hint as to how much should be linear. */
+>  		hdr->hdr_len = __cpu_to_virtio16(little_endian,
+> -- 
+> 2.20.1
 
-        mss = skb_shinfo(skb)->gso_size;
-        if (unlikely(skb->len <= mss))
-                goto out;
-
-What is the gso_type, and does it include SKB_GSO_DODGY?
 
 _______________________________________________
 linux-um mailing list
