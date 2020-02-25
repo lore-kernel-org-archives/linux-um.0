@@ -1,10 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab7.miniserver.com ([37.128.132.42]
- helo=www.kot-begemot.co.uk)
+Received: from mail-yw1-xc34.google.com ([2607:f8b0:4864:20::c34])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j6rVQ-0002dS-TS
- for linux-um@lists.infradead.org; Wed, 26 Feb 2020 07:53:22 +0000
-Subject: Re: [PATCH v3] virtio: Work around frames incorrectly marked as gso
+ id 1j6d2h-0005sm-ME
+ for linux-um@lists.infradead.org; Tue, 25 Feb 2020 16:26:45 +0000
+Received: by mail-yw1-xc34.google.com with SMTP id f204so8382737ywc.10
+ for <linux-um@lists.infradead.org>; Tue, 25 Feb 2020 08:26:43 -0800 (PST)
+Received: from mail-yw1-f43.google.com (mail-yw1-f43.google.com.
+ [209.85.161.43])
+ by smtp.gmail.com with ESMTPSA id q8sm6878987ywa.79.2020.02.25.08.26.39
+ for <linux-um@lists.infradead.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 25 Feb 2020 08:26:39 -0800 (PST)
+Received: by mail-yw1-f43.google.com with SMTP id n184so8404521ywc.3
+ for <linux-um@lists.infradead.org>; Tue, 25 Feb 2020 08:26:39 -0800 (PST)
+MIME-Version: 1.0
 References: <20200224132550.2083-1-anton.ivanov@cambridgegreys.com>
  <CA+FuTSd8P6uQnwisZEh7+nfowW9qKLBEvA4GPg+xUkjBa-6TDA@mail.gmail.com>
  <4e7757cf-148e-4585-b358-3b38f391275d@cambridgegreys.com>
@@ -13,13 +22,11 @@ References: <20200224132550.2083-1-anton.ivanov@cambridgegreys.com>
  <CA+FuTScEXRwYtFzn-jtFhV0dNKNQqKPBwCWaNORJW=ERU=izMA@mail.gmail.com>
  <6b83116c-2cca-fb03-1c13-bb436dccf1b3@cambridgegreys.com>
  <cd1b4084-af6b-7fd9-f182-8b32a3c8d837@cambridgegreys.com>
- <CA+FuTSebC064cZXTz_n7jXLrtAcuXxp2N_jiAdi3v2=A6fBBJw@mail.gmail.com>
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Message-ID: <f7983902-6f53-fe5f-263b-6555b5a1e883@cambridgegreys.com>
-Date: Wed, 26 Feb 2020 07:53:11 +0000
-MIME-Version: 1.0
-In-Reply-To: <CA+FuTSebC064cZXTz_n7jXLrtAcuXxp2N_jiAdi3v2=A6fBBJw@mail.gmail.com>
-Content-Language: en-US
+In-Reply-To: <cd1b4084-af6b-7fd9-f182-8b32a3c8d837@cambridgegreys.com>
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date: Tue, 25 Feb 2020 11:26:01 -0500
+Message-ID: <CA+FuTSebC064cZXTz_n7jXLrtAcuXxp2N_jiAdi3v2=A6fBBJw@mail.gmail.com>
+Subject: Re: [PATCH v3] virtio: Work around frames incorrectly marked as gso
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -28,125 +35,91 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: Eric Dumazet <eric.dumazet@gmail.com>, "Michael S. Tsirkin" <mst@redhat.com>, Network Development <netdev@vger.kernel.org>, Jason Wang <jasowang@redhat.com>, linux-um@lists.infradead.org, virtualization@lists.linux-foundation.org
+To: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Eric Dumazet <eric.dumazet@gmail.com>, "Michael S. Tsirkin" <mst@redhat.com>, Network Development <netdev@vger.kernel.org>, Jason Wang <jasowang@redhat.com>, linux-um@lists.infradead.org, virtualization@lists.linux-foundation.org
 
-On 25/02/2020 16:26, Willem de Bruijn wrote:
->>>>>> An skb_dump() + dump_stack() when the packet socket gets such a
->>>>>> packet may point us to the root cause and fix that.
->>>>>
->>>>> We tried dump stack, it was not informative - it was just the recvmmsg
->>>>> call stack coming from the UML until it hits the relevant recv bit in
->>>>> af_packet - it does not tell us where the packet is coming from.
->>>>>
->>>>> Quoting from the message earlier in the thread:
->>>>>
->>>>> [ 2334.180854] Call Trace:
->>>>> [ 2334.181947]  dump_stack+0x5c/0x80
->>>>> [ 2334.183021]  packet_recvmsg.cold+0x23/0x49
->>>>> [ 2334.184063]  ___sys_recvmsg+0xe1/0x1f0
->>>>> [ 2334.185034]  ? packet_poll+0xca/0x130
->>>>> [ 2334.186014]  ? sock_poll+0x77/0xb0
->>>>> [ 2334.186977]  ? ep_item_poll.isra.0+0x3f/0xb0
->>>>> [ 2334.187936]  ? ep_send_events_proc+0xf1/0x240
->>>>> [ 2334.188901]  ? dequeue_signal+0xdb/0x180
->>>>> [ 2334.189848]  do_recvmmsg+0xc8/0x2d0
->>>>> [ 2334.190728]  ? ep_poll+0x8c/0x470
->>>>> [ 2334.191581]  __sys_recvmmsg+0x108/0x150
->>>>> [ 2334.192441]  __x64_sys_recvmmsg+0x25/0x30
->>>>> [ 2334.193346]  do_syscall_64+0x53/0x140
->>>>> [ 2334.194262]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
->>>>
->>>> That makes sense. skb_dump might show more interesting details about
->>>> the packet.
->>>
->>> I will add that and retest later today.
->>
->>
->> skb len=818 headroom=2 headlen=818 tailroom=908
->> mac=(2,14) net=(16,0) trans=16
->> shinfo(txflags=0 nr_frags=0 gso(size=752 type=0 segs=1))
->> csum(0x100024 ip_summed=3 complete_sw=0 valid=0 level=0)
->> hash(0x0 sw=0 l4=0) proto=0x0800 pkttype=4 iif=0
->> sk family=17 type=3 proto=0
->>
->> Deciphering the actual packet data gives a
->>
->> TCP packet, ACK and PSH set.
->>
->> The PSH flag looks like the only "interesting" thing about it in first read.
-> 
-> Thanks.
-> 
-> TCP always sets the PSH bit on a GSO packet as of commit commit
-> 051ba67447de  ("tcp: force a PSH flag on TSO packets"), so that is
-> definitely informative.
-> 
-> The lower gso size might come from a path mtu probing depending on
-> tcp_base_mss, but that's definitely wild speculation. Increasing that
-> value to, say, 1024, could tell us.
-> 
-> In this case it may indeed not be a GSO packet. As 752 is the MSS + 28
-> B TCP header including timestamp + 20 B IPv4 header + 14B Eth header.
-> Which adds up to 814 already.
-> 
-> Not sure what those 2 B between skb->data and mac_header are. Was this
-> captured inside packet_rcv? 
+> >>>> An skb_dump() + dump_stack() when the packet socket gets such a
+> >>>> packet may point us to the root cause and fix that.
+> >>>
+> >>> We tried dump stack, it was not informative - it was just the recvmmsg
+> >>> call stack coming from the UML until it hits the relevant recv bit in
+> >>> af_packet - it does not tell us where the packet is coming from.
+> >>>
+> >>> Quoting from the message earlier in the thread:
+> >>>
+> >>> [ 2334.180854] Call Trace:
+> >>> [ 2334.181947]  dump_stack+0x5c/0x80
+> >>> [ 2334.183021]  packet_recvmsg.cold+0x23/0x49
+> >>> [ 2334.184063]  ___sys_recvmsg+0xe1/0x1f0
+> >>> [ 2334.185034]  ? packet_poll+0xca/0x130
+> >>> [ 2334.186014]  ? sock_poll+0x77/0xb0
+> >>> [ 2334.186977]  ? ep_item_poll.isra.0+0x3f/0xb0
+> >>> [ 2334.187936]  ? ep_send_events_proc+0xf1/0x240
+> >>> [ 2334.188901]  ? dequeue_signal+0xdb/0x180
+> >>> [ 2334.189848]  do_recvmmsg+0xc8/0x2d0
+> >>> [ 2334.190728]  ? ep_poll+0x8c/0x470
+> >>> [ 2334.191581]  __sys_recvmmsg+0x108/0x150
+> >>> [ 2334.192441]  __x64_sys_recvmmsg+0x25/0x30
+> >>> [ 2334.193346]  do_syscall_64+0x53/0x140
+> >>> [ 2334.194262]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> >>
+> >> That makes sense. skb_dump might show more interesting details about
+> >> the packet.
+> >
+> > I will add that and retest later today.
+>
+>
+> skb len=818 headroom=2 headlen=818 tailroom=908
+> mac=(2,14) net=(16,0) trans=16
+> shinfo(txflags=0 nr_frags=0 gso(size=752 type=0 segs=1))
+> csum(0x100024 ip_summed=3 complete_sw=0 valid=0 level=0)
+> hash(0x0 sw=0 l4=0) proto=0x0800 pkttype=4 iif=0
+> sk family=17 type=3 proto=0
+>
+> Deciphering the actual packet data gives a
+>
+> TCP packet, ACK and PSH set.
+>
+> The PSH flag looks like the only "interesting" thing about it in first read.
 
-af_packet, packet_rcv
+Thanks.
 
-https://elixir.bootlin.com/linux/latest/source/net/packet/af_packet.c#L2026
+TCP always sets the PSH bit on a GSO packet as of commit commit
+051ba67447de  ("tcp: force a PSH flag on TSO packets"), so that is
+definitely informative.
 
-> network_header and transport_header both
-> at 16B offset is also sketchy, but again may be an artifact of where
-> exactly this is being read.
-> 
-> Perhaps this is a segment of a larger GSO packet that is retransmitted
-> in part. Like an mtu probe or loss probe. See for instance this in
-> tcp_send_loss_probe for  how a single MSS is extracted:
-> 
->         if ((pcount > 1) && (skb->len > (pcount - 1) * mss)) {
->                  if (unlikely(tcp_fragment(sk, TCP_FRAG_IN_RTX_QUEUE, skb,
->                                            (pcount - 1) * mss, mss,
->                                            GFP_ATOMIC)))
->                          goto rearm_timer;
->                  skb = skb_rb_next(skb);
->          }
-> 
-> Note that I'm not implicating this specific code. I don't see anything
-> wrong with it. Just an indication that a trace would be very
-> informative, as it could tell if any of these edge cases is being hit.
+The lower gso size might come from a path mtu probing depending on
+tcp_base_mss, but that's definitely wild speculation. Increasing that
+value to, say, 1024, could tell us.
 
-I will be honest, I have found it a bit difficult to trace.
+In this case it may indeed not be a GSO packet. As 752 is the MSS + 28
+B TCP header including timestamp + 20 B IPv4 header + 14B Eth header.
+Which adds up to 814 already.
 
-At the point where this is detected, the packet is already in the vEth 
-interface queue and is being read by recvmmsg on a raw socket.
+Not sure what those 2 B between skb->data and mac_header are. Was this
+captured inside packet_rcv? network_header and transport_header both
+at 16B offset is also sketchy, but again may be an artifact of where
+exactly this is being read.
 
-The flags + gso size combination happened long before that - even before 
-it was being placed in the queue.
+Perhaps this is a segment of a larger GSO packet that is retransmitted
+in part. Like an mtu probe or loss probe. See for instance this in
+tcp_send_loss_probe for  how a single MSS is extracted:
 
-What is clear so far is that while the packet has invalid 
-gso_size/gso_type combination, it is an otherwise valid tcp frame.
+       if ((pcount > 1) && (skb->len > (pcount - 1) * mss)) {
+                if (unlikely(tcp_fragment(sk, TCP_FRAG_IN_RTX_QUEUE, skb,
+                                          (pcount - 1) * mss, mss,
+                                          GFP_ATOMIC)))
+                        goto rearm_timer;
+                skb = skb_rb_next(skb);
+        }
 
-I will stick the debug into is_gso (with a backtrace) instead and re-run 
-it later today to see if this can pick it up elsewhere in the stack.
-
-> 
-> _______________________________________________
-> linux-um mailing list
-> linux-um@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-um
-> 
-
-
--- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
-https://www.cambridgegreys.com/
+Note that I'm not implicating this specific code. I don't see anything
+wrong with it. Just an indication that a trace would be very
+informative, as it could tell if any of these edge cases is being hit.
 
 _______________________________________________
 linux-um mailing list
