@@ -1,92 +1,113 @@
-Return-Path: <brendanhiggins@google.com>
-MIME-Version: 1.0
-References: <20200124221401.210449-1-brendanhiggins@google.com>
-In-Reply-To: <20200124221401.210449-1-brendanhiggins@google.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pj1-x104a.google.com ([2607:f8b0:4864:20::104a])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1j7UKx-0006bd-F9
+ for linux-um@lists.infradead.org; Fri, 28 Feb 2020 01:21:08 +0000
+Received: by mail-pj1-x104a.google.com with SMTP id kx17so741047pjb.4
+ for <linux-um@lists.infradead.org>; Thu, 27 Feb 2020 17:21:06 -0800 (PST)
+Date: Thu, 27 Feb 2020 17:20:33 -0800
+In-Reply-To: <20200228012036.15682-1-brendanhiggins@google.com>
+Message-Id: <20200228012036.15682-5-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20200228012036.15682-1-brendanhiggins@google.com>
+Subject: [PATCH v3 4/7] init: main: add KUnit to kernel init
 From: Brendan Higgins <brendanhiggins@google.com>
-Date: Fri, 7 Feb 2020 17:07:54 -0800
-Message-ID: <CAFd5g44eznV-9cPf4JVpsJo93+R8YCqUwBqRf+PbjaRMizy1aQ@mail.gmail.com>
-Subject: Re: [PATCH v3] uml: make CONFIG_STATIC_LINK actually static
-Content-Type: text/plain; charset="UTF-8"
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Geert Uytterhoeven <geert@linux-m68k.org>, James McMechan <james_mcmechan@hotmail.com>
-Cc: linux-um <linux-um@lists.infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, David Gow <davidgow@google.com>
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, arnd@arndb.de, keescook@chromium.org, skhan@linuxfoundation.org, alan.maguire@oracle.com, yzaikin@google.com, davidgow@google.com, akpm@linux-foundation.org, rppt@linux.ibm.com, frowand.list@gmail.com
+Cc: linux-arch@vger.kernel.org, linux-doc@vger.kernel.org, sboyd@kernel.org, gregkh@linuxfoundation.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, mcgrof@kernel.org, linux-kselftest@vger.kernel.org, logang@deltatee.com, Brendan Higgins <brendanhiggins@google.com>, kunit-dev@googlegroups.com
 
-On Fri, Jan 24, 2020 at 2:14 PM Brendan Higgins
-<brendanhiggins@google.com> wrote:
->
-> Currently, CONFIG_STATIC_LINK can be enabled with options which cannot
-> be statically linked, namely UML_NET_VECTOR, UML_NET_VDE, and
-> UML_NET_PCAP; this is because glibc tries to load NSS which does not
-> support being statically linked. So make CONFIG_STATIC_LINK depend on
-> !UML_NET_VECTOR && !UML_NET_VDE && !UML_NET_PCAP.
->
-> Link: https://lore.kernel.org/lkml/f658f317-be54-ed75-8296-c373c2dcc697@cambridgegreys.com/#t
-> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-> ---
+Remove KUnit from init calls entirely, instead call directly from
+kernel_init().
 
-Ping.
+Co-developed-by: Alan Maguire <alan.maguire@oracle.com>
+Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+---
+ include/kunit/test.h | 9 +++++++++
+ init/main.c          | 4 ++++
+ lib/kunit/executor.c | 4 +---
+ 3 files changed, 14 insertions(+), 3 deletions(-)
 
->  arch/um/Kconfig         | 8 +++++++-
->  arch/um/drivers/Kconfig | 3 +++
->  2 files changed, 10 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-> index 0917f8443c285..28d62151fb2ed 100644
-> --- a/arch/um/Kconfig
-> +++ b/arch/um/Kconfig
-> @@ -62,9 +62,12 @@ config NR_CPUS
->
->  source "arch/$(HEADER_ARCH)/um/Kconfig"
->
-> +config FORBID_STATIC_LINK
-> +       bool
-> +
->  config STATIC_LINK
->         bool "Force a static link"
-> -       default n
-> +       depends on !FORBID_STATIC_LINK
->         help
->           This option gives you the ability to force a static link of UML.
->           Normally, UML is linked as a shared binary.  This is inconvenient for
-> @@ -73,6 +76,9 @@ config STATIC_LINK
->           Additionally, this option enables using higher memory spaces (up to
->           2.75G) for UML.
->
-> +         NOTE: This option is incompatible with some networking features which
-> +         depend on features that require being dynamically loaded (like NSS).
-> +
->  config LD_SCRIPT_STATIC
->         bool
->         default y
-> diff --git a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
-> index 72d4170557820..9160ead56e33c 100644
-> --- a/arch/um/drivers/Kconfig
-> +++ b/arch/um/drivers/Kconfig
-> @@ -234,6 +234,7 @@ config UML_NET_DAEMON
->  config UML_NET_VECTOR
->         bool "Vector I/O high performance network devices"
->         depends on UML_NET
-> +       select FORBID_STATIC_LINK
->         help
->         This User-Mode Linux network driver uses multi-message send
->         and receive functions. The host running the UML guest must have
-> @@ -245,6 +246,7 @@ config UML_NET_VECTOR
->  config UML_NET_VDE
->         bool "VDE transport (obsolete)"
->         depends on UML_NET
-> +       select FORBID_STATIC_LINK
->         help
->         This User-Mode Linux network transport allows one or more running
->         UMLs on a single host to communicate with each other and also
-> @@ -292,6 +294,7 @@ config UML_NET_MCAST
->  config UML_NET_PCAP
->         bool "pcap transport (obsolete)"
->         depends on UML_NET
-> +       select FORBID_STATIC_LINK
->         help
->         The pcap transport makes a pcap packet stream on the host look
->         like an ethernet device inside UML.  This is useful for making
-> --
-> 2.25.0.341.g760bfbb309-goog
->
+diff --git a/include/kunit/test.h b/include/kunit/test.h
+index 8a02f93a6b505..8689dd1459844 100644
+--- a/include/kunit/test.h
++++ b/include/kunit/test.h
+@@ -197,6 +197,15 @@ void kunit_init_test(struct kunit *test, const char *name);
+ 
+ int kunit_run_tests(struct kunit_suite *suite);
+ 
++#if IS_BUILTIN(CONFIG_KUNIT)
++int kunit_run_all_tests(void);
++#else
++static inline int kunit_run_all_tests(void)
++{
++	return 0;
++}
++#endif /* IS_BUILTIN(CONFIG_KUNIT) */
++
+ /*
+  * If a test suite is built-in, module_init() gets translated into
+  * an initcall which we don't want as the idea is that for builtins
+diff --git a/init/main.c b/init/main.c
+index ee4947af823f3..7875a5c486dc4 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -104,6 +104,8 @@
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/initcall.h>
+ 
++#include <kunit/test.h>
++
+ static int kernel_init(void *);
+ 
+ extern void init_IRQ(void);
+@@ -1444,6 +1446,8 @@ static noinline void __init kernel_init_freeable(void)
+ 
+ 	do_basic_setup();
+ 
++	kunit_run_all_tests();
++
+ 	console_on_rootfs();
+ 
+ 	/*
+diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
+index 6429927d598a5..b75a46c560847 100644
+--- a/lib/kunit/executor.c
++++ b/lib/kunit/executor.c
+@@ -11,7 +11,7 @@ extern struct kunit_suite * const * const __kunit_suites_end[];
+ 
+ #if IS_BUILTIN(CONFIG_KUNIT)
+ 
+-static int kunit_run_all_tests(void)
++int kunit_run_all_tests(void)
+ {
+ 	struct kunit_suite * const * const *suites, * const *subsuite;
+ 	bool has_test_failed = false;
+@@ -31,6 +31,4 @@ static int kunit_run_all_tests(void)
+ 	return 0;
+ }
+ 
+-late_initcall(kunit_run_all_tests);
+-
+ #endif /* IS_BUILTIN(CONFIG_KUNIT) */
+-- 
+2.25.1.481.gfbce0eb801-goog
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
