@@ -1,17 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
+Received: from mail-pj1-x1044.google.com ([2607:f8b0:4864:20::1044])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jIfc5-0008FP-Qp
- for linux-um@lists.infradead.org; Sun, 29 Mar 2020 21:37:03 +0000
-Received: by mail-wr1-x441.google.com with SMTP id t7so18808481wrw.12
- for <linux-um@lists.infradead.org>; Sun, 29 Mar 2020 14:37:01 -0700 (PDT)
+ id 1j8tQ5-0001XY-U9
+ for linux-um@lists.infradead.org; Mon, 02 Mar 2020 22:20:15 +0000
+Received: by mail-pj1-x1044.google.com with SMTP id f2so359273pjq.1
+ for <linux-um@lists.infradead.org>; Mon, 02 Mar 2020 14:20:09 -0800 (PST)
 MIME-Version: 1.0
-References: <20200219134442.68744-1-wenyang@linux.alibaba.com>
-In-Reply-To: <20200219134442.68744-1-wenyang@linux.alibaba.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Sun, 29 Mar 2020 23:36:48 +0200
-Message-ID: <CAFLxGvyZ3k=v0KWNn6GR9gqDsW5dz0F5CHo_4R11G+bUNaB2+Q@mail.gmail.com>
-Subject: Re: [PATCH] um: fix len of file in create_pid_file
+References: <20200228012036.15682-1-brendanhiggins@google.com>
+ <20200302200337.GH11244@42.do-not-panic.com>
+ <20200302211640.GA8364@roeck-us.net>
+In-Reply-To: <20200302211640.GA8364@roeck-us.net>
+From: Brendan Higgins <brendanhiggins@google.com>
+Date: Mon, 2 Mar 2020 14:19:57 -0800
+Message-ID: <CAFd5g452oaKojBZfvTYw-L14wTFqsjDeX4mtYDM=kv6xhcTnig@mail.gmail.com>
+Subject: Re: [PATCH v3 0/7] kunit: create a centralized executor to dispatch
+ all KUnit tests
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,51 +27,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Wen Yang <wenyang@linux.alibaba.com>
-Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, Bartosz Golaszewski <bgolaszewski@baylibre.com>, Alex Dewar <alex.dewar@gmx.co.uk>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: Guenter Roeck <linux@roeck-us.net>, Luis Chamberlain <mcgrof@kernel.org>
+Cc: linux-arch@vger.kernel.org, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>, Greg KH <gregkh@linuxfoundation.org>, Stephen Boyd <sboyd@kernel.org>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>, Frank Rowand <frowand.list@gmail.com>, rppt@linux.ibm.com, Logan Gunthorpe <logang@deltatee.com>, KUnit Development <kunit-dev@googlegroups.com>, David Gow <davidgow@google.com>, Shuah Khan <skhan@linuxfoundation.org>, Andrew Morton <akpm@linux-foundation.org>, Iurii Zaikin <yzaikin@google.com>, Alan Maguire <alan.maguire@oracle.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-On Wed, Feb 19, 2020 at 2:45 PM Wen Yang <wenyang@linux.alibaba.com> wrote:
+On Mon, Mar 2, 2020 at 1:16 PM Guenter Roeck <linux@roeck-us.net> wrote:
 >
-> sizeof gives us the size of the pointer variable, not of the
-> area it points to. So the number of bytes copied by umid_file_name()
-> is 8.
-> We should pass in the correct length of the file buffer.
+> On Mon, Mar 02, 2020 at 08:03:37PM +0000, Luis Chamberlain wrote:
+> > Guenter,
+> >
+> > are you still running your cross-architecture tests? If so any chance
 >
-> Signed-off-by: Wen Yang <wenyang@linux.alibaba.com>
-> Cc: Jeff Dike <jdike@addtoit.com> (maintainer:USER-MODE LINUX (UML))
-> Cc: Richard Weinberger <richard@nod.at> (maintainer:USER-MODE LINUX (UML),commit_signer:2/2=100%)
-> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com> (maintainer:USER-MODE LINUX (UML))
-> Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com> (commit_signer:1/2=50%,authored:1/2=50%,added_lines:27/28=96%,removed_lines:9/10=90%)
-> Cc: Alex Dewar <alex.dewar@gmx.co.uk> (commit_signer:1/2=50%,authored:1/2=50%,removed_lines:1/10=10%)
-> Cc: linux-um@lists.infradead.org (open list:USER-MODE LINUX (UML))
-> ---
->  arch/um/os-Linux/umid.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+> Yes
 >
-> diff --git a/arch/um/os-Linux/umid.c b/arch/um/os-Linux/umid.c
-> index 44def53a11cd..9e16078a4bf8 100644
-> --- a/arch/um/os-Linux/umid.c
-> +++ b/arch/um/os-Linux/umid.c
-> @@ -220,11 +220,12 @@ static void __init create_pid_file(void)
->         char pid[sizeof("nnnnn\0")], *file;
->         int fd, n;
+> > you can try this for your build tests?
+> >
 >
-> -       file = malloc(strlen(uml_dir) + UMID_LEN + sizeof("/pid\0"));
-> +       n = strlen(uml_dir) + UMID_LEN + sizeof("/pid\0");
-> +       file = malloc(n);
->         if (!file)
->                 return;
->
-> -       if (umid_file_name("pid", file, sizeof(file)))
-> +       if (umid_file_name("pid", file, n))
->                 goto out;
->
+> I didn't have KUNIT_TEST enabled to start with. I did that now, and
+> started a test run on mainline a minute ago. We'll see how that goes.
 
-Good catch, applied.
+FYI, kbuild already found some architectures for which this change doesn't work.
 
--- 
-Thanks,
-//richard
+So far, I need to fix:
+- arm64 (32 bit seems to work fine)
+- i386 in some cases.
+
+> Afterwards, sure, I can run the series in a test branch. It would be great
+> if I can pick it up from a repository somewhere.
+
+Cool, I will post my next revision to a branch somewhere.
+
+Thanks!
 
 _______________________________________________
 linux-um mailing list
