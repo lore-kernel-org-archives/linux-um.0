@@ -1,190 +1,152 @@
-Return-Path: <dima@arista.com>
-From: Dmitry Safonov <dima@arista.com>
-Subject: [PATCHv2 00/50] Add log level to show_stack()
-Date: Mon, 16 Mar 2020 14:38:26 +0000
-Message-Id: <20200316143916.195608-1-dima@arista.com>
+Return-Path: <linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [RFC 0/3] mm/vma: some new flags and helpers
+Date: Mon,  2 Mar 2020 12:17:43 +0530
+Message-Id: <1583131666-15531-1-git-send-email-anshuman.khandual@arm.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-To: linux-kernel@vger.kernel.org
-Cc: Dmitry Safonov <0x7f454c46@gmail.com>, Dmitry Safonov <dima@arista.com>, Andrew Morton <akpm@linux-foundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Ingo Molnar <mingo@kernel.org>, Jiri Slaby <jslaby@suse.com>, Petr Mladek <pmladek@suse.com>, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>, Albert Ou <aou@eecs.berkeley.edu>, Ben Segall <bsegall@google.com>, Dietmar Eggemann <dietmar.eggemann@arm.com>, Greentime Hu <green.hu@gmail.com>, Ingo Molnar <mingo@redhat.com>, James Hogan <jhogan@kernel.org>, Juri Lelli <juri.lelli@redhat.com>, Mel Gorman <mgorman@suse.de>, Michal Simek <monstr@monstr.eu>, Palmer Dabbelt <palmer@dabbelt.com>, Paul Burton <paulburton@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, Peter Zijlstra <peterz@infradead.org>, Ralf Baechle <ralf@linux-mips.org>, Thomas Gleixner <tglx@linutronix.de>, Vincent Chen <deanbo422@gmail.com>, Vincent Guittot <vincent.guittot@linaro.org>, Will Deacon <will@kernel.org>, linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Richard Henderson <rth@twiddle.net>, linux-alpha@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>, linux-snps-arc@lists.infradead.org, Russell King <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org, clang-built-linux@googlegroups.com, Catalin Marinas <catalin.marinas@arm.com>, Aurelien Jacquiot <jacquiot.aurelien@gmail.com>, Mark Salter <msalter@redhat.com>, linux-c6x-dev@linux-c6x.org, Guo Ren <guoren@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, uclinux-h8-devel@lists.sourceforge.jp, Brian Cain <bcain@codeaurora.org>, linux-hexagon@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, Ley Foon Tan <lftan@altera.com>, nios2-dev@lists.rocketboards.org, Jonas Bonn <jonas@southpole.se>, Stafford Horne <shorne@gmail.com>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, openrisc@lists.librecores.org, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, linux-parisc@vger.kernel.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Michael Ellerman <mpe@ellerman.id.au>, Paul Mackerras <paulus@samba.org>, linuxppc-dev@lists.ozlabs.org, Christian Borntraeger <borntraeger@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org, Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org, Guan Xuetao <gxt@pku.edu.cn>, Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org, Daniel Thompson <daniel.thompson@linaro.org>, Douglas Anderson <dianders@chromium.org>, Jason Wessel <jason.wessel@windriver.com>, kgdb-bugreport@lists.sourceforge.net
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org
+To: linux-mm@kvack.org
+Cc: uclinux-h8-devel@lists.sourceforge.jp, linux-s390@vger.kernel.org, linux-ia64@vger.kernel.org, linux-c6x-dev@linux-c6x.org, linux-parisc@vger.kernel.org, Anshuman Khandual <anshuman.khandual@arm.com>, linux-hexagon@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, nios2-dev@lists.rocketboards.org, linux-riscv@lists.infradead.org, linux-snps-arc@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
 List-ID: <linux-um.lists.infradead.org>
 
-Changes to v2:
-- Removed excessive pr_cont("\n") (nits by Senozhatsky)
-- Leave backtrace debugging messages with pr_debug()
-  (noted by Russell King and Will Deacon)
-- Correct microblaze_unwind_inner() declaration
-  (Thanks to Michal Simek and kbuild test robot)
-- Fix copy'n'paste typo in show_stack_loglvl() for sparc
-  (kbuild robot)
-- Fix backtrace output on xtensa
-  (Thanks Max Filippov)
-- Add loglevel to show_stack() on s390 (kbuild robot)
-- Collected all Reviewed-by and Acked-by (thanks!)
+The motivation here is to consolidate VMA flag combinations commonly used
+across platforms and reduce code duplication while making it uncluttered
+in general.
 
-Add log level argument to show_stack().
-Done in three stages:
-1. Introducing show_stack_loglvl() for every architecture
-2. Migrating old users with an explicit log level
-3. Renaming show_stack_loglvl() into show_stack()
+This first introduces a default VM_DATA_DEFAULT_FLAGS which platforms can
+easily fall back on without requiring to define any similar data flag
+combinations as they currently do. This also adds some more common data
+flag combinations which are generally used when the platforms decide to
+override the default.
 
-Justification:
-o It's a design mistake to move a business-logic decision
-  into platform realization detail.
-o I have currently two patches sets that would benefit from this work:
-  Removing console_loglevel jumps in sysrq driver [1]
-  Hung task warning before panic [2] - suggested by Tetsuo (but he
-  probably didn't realise what it would involve).
-o While doing (1), (2) the backtraces were adjusted to headers
-  and other messages for each situation - so there won't be a situation
-  when the backtrace is printed, but the headers are missing because
-  they have lesser log level (or the reverse).
+The second patch consolidates VM_READ, VM_WRITE, VM_EXEC as VM_ACCESS_FLAGS
+extending the existing VMA accessibility concept via vma_is_accessibility().
+VM_ACCESS_FLAGS replaces many other instances which used check all three
+VMA access flags simultaneously.
 
-The least important for upstream, but maybe still worth to note that
-every company I've worked in so far had an off-list patch to print
-backtrace with the needed log level (but only for the architecture they
-cared about).
-If you have other ideas how you will benefit from show_stack() with
-a log level - please, reply to this cover letter.
+While here, this also adds some more special VMA flag based helpers which
+wraps around similar checks at various places thus improving readability.
+This series intentionally limits these new helpers which are applicable 
+only for special purpose VM flags than the more common ones like VM_READ,
+VM_WRITE, VM_EXEC, VM_SHARED etc just to limit code churn. But if there is
+common agreement that every flag should have it's own wrapper here, we can
+do that as well. Otherwise if this patch seems really unnecessary with much
+code churn, will be happy to drop it.
 
-See also discussion on v1:
-https://lore.kernel.org/linux-riscv/20191106083538.z5nlpuf64cigxigh@pathway.suse.cz/
+Reviews, comments, suggestions and concerns welcome. Thank you.
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Jiri Slaby <jslaby@suse.com>
-Cc: Petr Mladek <pmladek@suse.com>
-Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+This series is based on v5.6-r4 after applying these patches.
 
-Thanks,
-Dmitry
+1. https://patchwork.kernel.org/cover/11399319/
+2. https://patchwork.kernel.org/patch/11399379/
 
-[1]: https://lore.kernel.org/lkml/20190528002412.1625-1-dima@arista.com/T/#u
-[2]: https://lkml.kernel.org/r/41fd7652-df1f-26f6-aba0-b87ebae07db6@i-love.sakura.ne.jp
+This series is build tested across multiple architectures but boot tested
+only on arm64 and x86 platforms.
 
-Dmitry Safonov (50):
-  kallsyms/printk: Add loglvl to print_ip_sym()
-  alpha: Add show_stack_loglvl()
-  arc: Add show_stack_loglvl()
-  arm/asm: Add loglvl to c_backtrace()
-  arm: Add loglvl to unwind_backtrace()
-  arm: Add loglvl to dump_backtrace()
-  arm: Wire up dump_backtrace_{entry,stm}
-  arm: Add show_stack_loglvl()
-  arm64: Add loglvl to dump_backtrace()
-  arm64: Add show_stack_loglvl()
-  c6x: Add show_stack_loglvl()
-  csky: Add show_stack_loglvl()
-  h8300: Add show_stack_loglvl()
-  hexagon: Add show_stack_loglvl()
-  ia64: Pass log level as arg into ia64_do_show_stack()
-  ia64: Add show_stack_loglvl()
-  m68k: Add show_stack_loglvl()
-  microblaze: Add loglvl to microblaze_unwind_inner()
-  microblaze: Add loglvl to microblaze_unwind()
-  microblaze: Add show_stack_loglvl()
-  mips: Add show_stack_loglvl()
-  nds32: Add show_stack_loglvl()
-  nios2: Add show_stack_loglvl()
-  openrisc: Add show_stack_loglvl()
-  parisc: Add show_stack_loglvl()
-  powerpc: Add show_stack_loglvl()
-  riscv: Add show_stack_loglvl()
-  s390: Add show_stack_loglvl()
-  sh: Add loglvl to dump_mem()
-  sh: Remove needless printk()
-  sh: Add loglvl to printk_address()
-  sh: Add loglvl to show_trace()
-  sh: Add show_stack_loglvl()
-  sparc: Add show_stack_loglvl()
-  um/sysrq: Remove needless variable sp
-  um: Add show_stack_loglvl()
-  unicore32: Remove unused pmode argument in c_backtrace()
-  unicore32: Add loglvl to c_backtrace()
-  unicore32: Add show_stack_loglvl()
-  x86: Add missing const qualifiers for log_lvl
-  x86: Add show_stack_loglvl()
-  xtensa: Add loglvl to show_trace()
-  xtensa: Add show_stack_loglvl()
-  sysrq: Use show_stack_loglvl()
-  x86/amd_gart: Print stacktrace for a leak with KERN_ERR
-  power: Use show_stack_loglvl()
-  kdb: Don't play with console_loglevel
-  sched: Print stack trace with KERN_INFO
-  kernel: Use show_stack_loglvl()
-  kernel: Rename show_stack_loglvl() => show_stack()
+Cc: linux-alpha@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-snps-arc@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-c6x-dev@linux-c6x.org
+Cc: uclinux-h8-devel@lists.sourceforge.jp
+Cc: linux-hexagon@vger.kernel.org
+Cc: linux-ia64@vger.kernel.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-mips@vger.kernel.org
+Cc: nios2-dev@lists.rocketboards.org
+Cc: openrisc@lists.librecores.org
+Cc: linux-parisc@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-riscv@lists.infradead.org
+Cc: linux-s390@vger.kernel.org
+Cc: linux-sh@vger.kernel.org
+Cc: sparclinux@vger.kernel.org
+Cc: linux-um@lists.infradead.org
+Cc: linux-xtensa@linux-xtensa.org
+Cc: linux-mm@kvack.org
 
- arch/alpha/kernel/traps.c            | 22 +++++++--------
- arch/arc/include/asm/bug.h           |  3 ++-
- arch/arc/kernel/stacktrace.c         | 17 +++++++-----
- arch/arc/kernel/troubleshoot.c       |  2 +-
- arch/arm/include/asm/bug.h           |  3 ++-
- arch/arm/include/asm/traps.h         |  3 ++-
- arch/arm/include/asm/unwind.h        |  3 ++-
- arch/arm/kernel/traps.c              | 40 ++++++++++++++++------------
- arch/arm/kernel/unwind.c             |  7 ++---
- arch/arm/lib/backtrace-clang.S       |  9 +++++--
- arch/arm/lib/backtrace.S             | 14 +++++++---
- arch/arm64/include/asm/stacktrace.h  |  3 ++-
- arch/arm64/kernel/process.c          |  2 +-
- arch/arm64/kernel/traps.c            | 19 ++++++-------
- arch/c6x/kernel/traps.c              | 18 +++++++------
- arch/csky/kernel/dumpstack.c         |  9 ++++---
- arch/csky/kernel/ptrace.c            |  4 +--
- arch/h8300/kernel/traps.c            | 12 ++++-----
- arch/hexagon/kernel/traps.c          | 25 ++++++++---------
- arch/ia64/include/asm/ptrace.h       |  1 -
- arch/ia64/kernel/mca.c               |  2 +-
- arch/ia64/kernel/process.c           | 17 ++++++------
- arch/m68k/kernel/traps.c             | 13 ++++-----
- arch/microblaze/include/asm/unwind.h |  3 ++-
- arch/microblaze/kernel/stacktrace.c  |  4 +--
- arch/microblaze/kernel/traps.c       | 12 ++++-----
- arch/microblaze/kernel/unwind.c      | 37 ++++++++++++++-----------
- arch/mips/kernel/traps.c             | 35 ++++++++++++------------
- arch/nds32/kernel/traps.c            | 15 ++++++-----
- arch/nios2/kernel/traps.c            | 17 ++++++------
- arch/openrisc/kernel/traps.c         | 12 +++++----
- arch/parisc/kernel/traps.c           | 24 ++++++++---------
- arch/powerpc/kernel/process.c        | 15 ++++++-----
- arch/powerpc/kernel/stacktrace.c     |  2 +-
- arch/riscv/kernel/stacktrace.c       |  9 ++++---
- arch/s390/kernel/dumpstack.c         | 11 ++++----
- arch/sh/include/asm/kdebug.h         |  6 +++--
- arch/sh/include/asm/processor_32.h   |  2 +-
- arch/sh/kernel/dumpstack.c           | 36 ++++++++++++-------------
- arch/sh/kernel/process_32.c          |  2 +-
- arch/sh/kernel/process_64.c          |  3 +--
- arch/sh/kernel/traps.c               |  4 +--
- arch/sh/mm/fault.c                   |  2 +-
- arch/sparc/kernel/process_32.c       | 10 +++----
- arch/sparc/kernel/process_64.c       |  2 +-
- arch/um/drivers/mconsole_kern.c      |  2 +-
- arch/um/kernel/sysrq.c               | 23 ++++++++--------
- arch/unicore32/kernel/setup.h        |  2 +-
- arch/unicore32/kernel/traps.c        | 34 +++++++++++------------
- arch/unicore32/lib/backtrace.S       | 24 +++++++++++------
- arch/x86/include/asm/stacktrace.h    |  2 +-
- arch/x86/kernel/amd_gart_64.c        |  2 +-
- arch/x86/kernel/dumpstack.c          |  9 ++++---
- arch/xtensa/kernel/traps.c           | 26 ++++++++++--------
- drivers/base/power/main.c            |  2 +-
- drivers/tty/sysrq.c                  |  2 +-
- include/linux/kallsyms.h             |  4 +--
- include/linux/sched/debug.h          |  3 ++-
- kernel/debug/kdb/kdb_bt.c            | 11 +++-----
- kernel/locking/lockdep.c             |  4 +--
- kernel/locking/rtmutex-debug.c       |  2 +-
- kernel/sched/core.c                  |  6 ++---
- kernel/trace/ftrace.c                |  8 +++---
- lib/dump_stack.c                     |  2 +-
- 64 files changed, 368 insertions(+), 311 deletions(-)
+Anshuman Khandual (3):
+  mm/vma: Define a default value for VM_DATA_DEFAULT_FLAGS
+  mm/vma: Introduce VM_ACCESS_FLAGS
+  mm/vma: Introduce some more VMA flag wrappers
+
+ arch/alpha/include/asm/page.h        |  3 --
+ arch/arc/include/asm/page.h          |  2 +-
+ arch/arm/include/asm/page.h          |  4 +-
+ arch/arm/mm/fault.c                  |  2 +-
+ arch/arm64/include/asm/page.h        |  4 +-
+ arch/arm64/mm/fault.c                |  2 +-
+ arch/c6x/include/asm/page.h          |  5 +--
+ arch/c6x/include/asm/processor.h     |  2 +-
+ arch/csky/include/asm/page.h         |  3 --
+ arch/h8300/include/asm/page.h        |  2 -
+ arch/hexagon/include/asm/page.h      |  3 +-
+ arch/ia64/include/asm/page.h         |  5 +--
+ arch/m68k/include/asm/page.h         |  3 --
+ arch/microblaze/include/asm/page.h   |  2 -
+ arch/mips/include/asm/page.h         |  5 +--
+ arch/nds32/include/asm/page.h        |  3 --
+ arch/nds32/mm/fault.c                |  2 +-
+ arch/nios2/include/asm/page.h        |  3 +-
+ arch/nios2/include/asm/processor.h   |  2 +-
+ arch/openrisc/include/asm/page.h     |  5 ---
+ arch/parisc/include/asm/page.h       |  3 --
+ arch/powerpc/include/asm/page.h      |  9 +----
+ arch/powerpc/include/asm/page_64.h   |  7 +---
+ arch/powerpc/mm/book3s64/pkeys.c     |  2 +-
+ arch/riscv/include/asm/page.h        |  3 +-
+ arch/s390/include/asm/page.h         |  3 +-
+ arch/s390/mm/fault.c                 |  2 +-
+ arch/sh/include/asm/page.h           |  3 --
+ arch/sh/include/asm/processor_64.h   |  2 +-
+ arch/sparc/include/asm/mman.h        |  2 +-
+ arch/sparc/include/asm/page_32.h     |  3 --
+ arch/sparc/include/asm/page_64.h     |  3 --
+ arch/unicore32/include/asm/page.h    |  3 --
+ arch/unicore32/mm/fault.c            |  2 +-
+ arch/x86/include/asm/page_types.h    |  4 +-
+ arch/x86/mm/pkeys.c                  |  2 +-
+ arch/x86/um/asm/vm-flags.h           | 10 +----
+ arch/xtensa/include/asm/page.h       |  3 --
+ drivers/staging/gasket/gasket_core.c |  2 +-
+ fs/binfmt_elf.c                      |  2 +-
+ fs/proc/task_mmu.c                   | 14 +++----
+ include/linux/huge_mm.h              |  4 +-
+ include/linux/mm.h                   | 58 +++++++++++++++++++++++++++-
+ kernel/events/core.c                 |  2 +-
+ kernel/events/uprobes.c              |  2 +-
+ mm/gup.c                             |  2 +-
+ mm/huge_memory.c                     |  6 +--
+ mm/hugetlb.c                         |  4 +-
+ mm/ksm.c                             |  8 ++--
+ mm/madvise.c                         |  4 +-
+ mm/memory.c                          |  4 +-
+ mm/migrate.c                         |  4 +-
+ mm/mlock.c                           |  4 +-
+ mm/mmap.c                            | 20 +++++-----
+ mm/mprotect.c                        |  9 ++---
+ mm/mremap.c                          |  4 +-
+ mm/msync.c                           |  3 +-
+ mm/rmap.c                            |  6 +--
+ mm/shmem.c                           |  8 ++--
+ 59 files changed, 140 insertions(+), 158 deletions(-)
 
 -- 
-2.23.0
+2.20.1
 
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
