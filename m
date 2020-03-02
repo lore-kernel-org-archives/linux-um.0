@@ -1,20 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pj1-x1044.google.com ([2607:f8b0:4864:20::1044])
+Received: from mail-pj1-f67.google.com ([209.85.216.67])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j8sQd-0000fA-Jz
- for linux-um@lists.infradead.org; Mon, 02 Mar 2020 21:16:44 +0000
-Received: by mail-pj1-x1044.google.com with SMTP id 12so328154pjb.5
- for <linux-um@lists.infradead.org>; Mon, 02 Mar 2020 13:16:42 -0800 (PST)
-Date: Mon, 2 Mar 2020 13:16:40 -0800
-From: Guenter Roeck <linux@roeck-us.net>
+ id 1j8rHx-0007wN-5O
+ for linux-um@lists.infradead.org; Mon, 02 Mar 2020 20:03:42 +0000
+Received: by mail-pj1-f67.google.com with SMTP id m7so259293pjs.0
+ for <linux-um@lists.infradead.org>; Mon, 02 Mar 2020 12:03:40 -0800 (PST)
+Date: Mon, 2 Mar 2020 20:03:37 +0000
+From: Luis Chamberlain <mcgrof@kernel.org>
 Subject: Re: [PATCH v3 0/7] kunit: create a centralized executor to dispatch
  all KUnit tests
-Message-ID: <20200302211640.GA8364@roeck-us.net>
+Message-ID: <20200302200337.GH11244@42.do-not-panic.com>
 References: <20200228012036.15682-1-brendanhiggins@google.com>
- <20200302200337.GH11244@42.do-not-panic.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20200302200337.GH11244@42.do-not-panic.com>
+In-Reply-To: <20200228012036.15682-1-brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +26,18 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Luis Chamberlain <mcgrof@kernel.org>
-Cc: linux-doc@vger.kernel.org, Brendan Higgins <brendanhiggins@google.com>, linux-kselftest@vger.kernel.org, frowand.list@gmail.com, anton.ivanov@cambridgegreys.com, linux-arch@vger.kernel.org, richard@nod.at, rppt@linux.ibm.com, yzaikin@google.com, keescook@chromium.org, arnd@arndb.de, jdike@addtoit.com, linux-um@lists.infradead.org, davidgow@google.com, skhan@linuxfoundation.org, kunit-dev@googlegroups.com, alan.maguire@oracle.com, sboyd@kernel.org, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, akpm@linux-foundation.org, logang@deltatee.com
+To: Brendan Higgins <brendanhiggins@google.com>, Guenter Roeck <linux@roeck-us.net>
+Cc: linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org, keescook@chromium.org, arnd@arndb.de, gregkh@linuxfoundation.org, sboyd@kernel.org, richard@nod.at, jdike@addtoit.com, linux-doc@vger.kernel.org, linux-um@lists.infradead.org, frowand.list@gmail.com, rppt@linux.ibm.com, logang@deltatee.com, kunit-dev@googlegroups.com, davidgow@google.com, skhan@linuxfoundation.org, akpm@linux-foundation.org, yzaikin@google.com, alan.maguire@oracle.com, linux-kernel@vger.kernel.org, anton.ivanov@cambridgegreys.com
 
-On Mon, Mar 02, 2020 at 08:03:37PM +0000, Luis Chamberlain wrote:
-> Guenter,
-> 
-> are you still running your cross-architecture tests? If so any chance
+Guenter,
 
-Yes
+are you still running your cross-architecture tests? If so any chance
+you can try this for your build tests?
 
-> you can try this for your build tests?
-> 
+Brendan, do you have this code in a branch which can be merged into
+linux-next by any chance?
 
-I didn't have KUNIT_TEST enabled to start with. I did that now, and
-started a test run on mainline a minute ago. We'll see how that goes.
-
-Afterwards, sure, I can run the series in a test branch. It would be great
-if I can pick it up from a repository somewhere.
-
-Guenter
+  Luis
 
 _______________________________________________
 linux-um mailing list
