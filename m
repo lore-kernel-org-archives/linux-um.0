@@ -1,17 +1,26 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x541.google.com ([2607:f8b0:4864:20::541])
+Received: from mail-pf1-f194.google.com ([209.85.210.194])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jIvjT-0005AZ-HW
- for linux-um@lists.infradead.org; Mon, 30 Mar 2020 14:49:45 +0000
-Received: by mail-pg1-x541.google.com with SMTP id b1so8750287pgm.8
- for <linux-um@lists.infradead.org>; Mon, 30 Mar 2020 07:49:43 -0700 (PDT)
-From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v4 24/25] um lkl: add UML block device driver (ubd) for lkl
-Date: Mon, 30 Mar 2020 23:45:56 +0900
-Message-Id: <5f1d48e40c4daf4ef3ddca3ca3207f11ef29739f.1585579244.git.thehajime@gmail.com>
-In-Reply-To: <cover.1585579244.git.thehajime@gmail.com>
-References: <cover.1585579244.git.thehajime@gmail.com>
+ id 1j8r05-0000Fr-Op
+ for linux-um@lists.infradead.org; Mon, 02 Mar 2020 19:45:15 +0000
+Received: by mail-pf1-f194.google.com with SMTP id s1so204736pfh.10
+ for <linux-um@lists.infradead.org>; Mon, 02 Mar 2020 11:45:13 -0800 (PST)
+Date: Mon, 2 Mar 2020 19:45:09 +0000
+From: Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: [RFC v1 0/6] kunit: create a centralized executor to dispatch
+ all KUnit tests
+Message-ID: <20200302194509.GD11244@42.do-not-panic.com>
+References: <20191216220555.245089-1-brendanhiggins@google.com>
+ <20200106224022.GX11244@42.do-not-panic.com>
+ <CAFd5g456c2Zs7rCvRPgio83G=SrtPGi25zbqAUyTBHspHwtu4w@mail.gmail.com>
+ <594b7815-0611-34ea-beb5-0642114b5d82@gmail.com>
+ <CAFd5g469TWzrLKmQNR2i0HACJ3FEu-=4-Rk005g9szB5UsZAcw@mail.gmail.com>
+ <e801e4ac-b7c2-3d0a-71e7-f8153a3dfbc8@gmail.com>
+ <alpine.LRH.2.20.2001291006570.13921@dhcp-10-175-173-43.vpn.oracle.com>
+ <CAFd5g477pGY7vkYK7qTtstxpCv0NG9=11Nig=kSo1JX8vczRVA@mail.gmail.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CAFd5g477pGY7vkYK7qTtstxpCv0NG9=11Nig=kSo1JX8vczRVA@mail.gmail.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,266 +33,122 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Octavian Purdila <tavi.purdila@gmail.com>, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, Akira Moroo <retrage01@gmail.com>
+To: Brendan Higgins <brendanhiggins@google.com>, g@42.do-not-panic.com
+Cc: linux-arch@vger.kernel.org, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>, Greg KH <gregkh@linuxfoundation.org>, Stephen Boyd <sboyd@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, Jeff Dike <jdike@addtoit.com>, Shuah Khan <skhan@linuxfoundation.org>, Knut Omang <knut.omang@oracle.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, rppt@linux.ibm.com, linux-um <linux-um@lists.infradead.org>, Logan Gunthorpe <logang@deltatee.com>, KUnit Development <kunit-dev@googlegroups.com>, David Gow <davidgow@google.com>, Richard Weinberger <richard@nod.at>, Andrew Morton <akpm@linux-foundation.org>, Iurii Zaikin <yzaikin@google.com>, Frank Rowand <frowand.list@gmail.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-This commit adds a support to utilize exising UML drivers of block
-devices for LKL.  The goal is similar to networking drivers, add minimum
-amount of code and use drivers code as-is.
+On Wed, Jan 29, 2020 at 01:28:19PM -0800, Brendan Higgins wrote:
+> On Wed, Jan 29, 2020 at 5:07 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+> >
+> > On Tue, 28 Jan 2020, Frank Rowand wrote:
+> >
+> > > On 1/28/20 1:19 AM, Brendan Higgins wrote:
+> > > > On Mon, Jan 27, 2020 at 9:40 AM Frank Rowand <frowand.list@gmail.com> wrote:
+> > > >>
+> > > >> On 1/23/20 4:40 PM, Brendan Higgins wrote:
+> > > >>> Sorry for the late reply. I am still catching up from being on vacation.
+> > > >>>>> On Mon, Jan 6, 2020 at 2:40 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
+> > > >>>> It does beg the question if this means kunit is happy to not be a tool
+> > > >>>> to test pre basic setup stuff (terminology used in init.c, meaning prior
+> > > >>>> to running all init levels). I suspect this is the case.
+> > > >>>
+> > > >>> Not sure. I still haven't seen any cases where this is necessary, so I
+> > > >>> am not super worried about it. Regardless, I don't think this patchset
+> > > >>> really changes anything in that regard, we are moving from late_init
+> > > >>> to after late_init, so it isn't that big of a change for most use
+> > > >>> cases.
+> > > >>>
+> > > >>> Please share if you can think of some things that need to be tested in
+> > > >>> early init.
+> > > >>
+> > > >> I don't have a specific need for this right now.  I had not thought about
+> > > >> how the current kunit implementation forces all kunit tests to run at a
+> > > >> specific initcall level before reading this email thread.
+> > > >>
+> > > >> I can see the value of being able to have some tests run at different
+> > > >> initcall levels to verify what functionality is available and working
+> > > >> at different points in the boot sequence.
+> > > >
+> > > > Let's cross that bridge when we get there. It should be fairly easy to
+> > > > add that functionality.
+> > >
+> > > Yes. I just wanted to add the thought to the back of your mind so that
+> > > it does not get precluded by future changes to the kunit architecture.
+> > >
+> > > >
+> > > >> But more important than early initcall levels, I do not want the
+> > > >> framework to prevent using or testing code and data that are marked
+> > > >> as '__init'.  So it is important to retain a way to invoke the tests
+> > > >> while __init code and data are available, if there is also a change
+> > > >> to generally invoke the tests later.
+> > > >
+> > > > Definitely. For now that still works as long as you don't build KUnit
+> > > > as a module, but I think Alan's new patches which allow KUnit to be
+> > > > run at runtime via debugfs could cause some difficulty there. Again,
+> > >
+> > > Yes, Alan's patches are part of what triggered me thinking about the
+> > > issues I raised.
+> > >
+> > >
+> >
+> > As Brendan says, any such tests probably shouldn't be buildable
+> > as modules, but I wonder if we need to add some sort of way
+> > to ensure execution from debugfs is not allowed for such cases?
 
-This commit also adds a test code with several filesystems (ext4, vfat,
-btrfs at the moment) to exercise the basic operations of disk.
+The kernel's linker will ensure this doesn't happen by default, ie
+__init data called from non __init code gets a complaint at linker
+time today.
 
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
----
- arch/um/drivers/ubd_kern.c              |  6 +++++-
- arch/um/lkl/Kconfig                     |  3 +++
- arch/um/lkl/include/uapi/asm/syscalls.h |  1 +
- arch/um/lkl/kernel/setup.c              |  5 +++++
- tools/lkl/include/lkl.h                 | 15 +++++++++++++++
- tools/lkl/lib/um/Build                  |  1 +
- tools/lkl/lib/um/um_block.c             | 17 +++++++++++++++++
- tools/lkl/lib/um/um_glue.c              | 24 +++++++++++++++++++++++-
- tools/lkl/tests/disk.c                  | 14 ++++++++++++++
- 9 files changed, 84 insertions(+), 2 deletions(-)
- create mode 100644 tools/lkl/lib/um/um_block.c
+*Iff* you are sure the code is proper, you *whitelist* it by adding the
+__ref tag to it.
 
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index eae8c83364f7..248bac8e36b8 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -545,7 +545,7 @@ static irqreturn_t ubd_intr(int irq, void *dev)
- /* Only changed by ubd_init, which is an initcall. */
- static int io_pid = -1;
- 
--static void kill_io_thread(void)
-+void kill_io_thread(void)
- {
- 	if(io_pid != -1)
- 		os_kill_process(io_pid, 1);
-@@ -819,6 +819,7 @@ static int ubd_open_dev(struct ubd *ubd_dev)
- 	}
- 	ubd_dev->fd = fd;
- 
-+#ifdef CONFIG_UMMODE_KERN
- 	if(ubd_dev->cow.file != NULL){
- 		blk_queue_max_hw_sectors(ubd_dev->queue, 8 * sizeof(long));
- 
-@@ -843,6 +844,7 @@ static int ubd_open_dev(struct ubd *ubd_dev)
- 		if(err < 0) goto error;
- 		ubd_dev->cow.fd = err;
- 	}
-+#endif	/* CONFIG_UMMODE_KERN */
- 	if (ubd_dev->no_trim == 0) {
- 		ubd_dev->queue->limits.discard_granularity = SECTOR_SIZE;
- 		ubd_dev->queue->limits.discard_alignment = SECTOR_SIZE;
-@@ -852,9 +854,11 @@ static int ubd_open_dev(struct ubd *ubd_dev)
- 	}
- 	blk_queue_flag_set(QUEUE_FLAG_NONROT, ubd_dev->queue);
- 	return 0;
-+#ifdef CONFIG_UMMODE_KERN
-  error:
- 	os_close_file(ubd_dev->fd);
- 	return err;
-+#endif
- }
- 
- static void ubd_device_release(struct device *dev)
-diff --git a/arch/um/lkl/Kconfig b/arch/um/lkl/Kconfig
-index 2b6b4063045c..8e4e0a465fc8 100644
---- a/arch/um/lkl/Kconfig
-+++ b/arch/um/lkl/Kconfig
-@@ -48,6 +48,9 @@ config OUTPUT_FORMAT
- config ARCH_DMA_ADDR_T_64BIT
-        def_bool 64BIT
- 
-+config BLK_DEV_UBD
-+       def_bool y if "$(OUTPUT_FORMAT)" = "elf32-i386" || "$(OUTPUT_FORMAT)" = "elf64-x86-64"
-+
- config X86_64
-        def_bool y if "$(OUTPUT_FORMAT)" = "elf64-x86-64"
- 
-diff --git a/arch/um/lkl/include/uapi/asm/syscalls.h b/arch/um/lkl/include/uapi/asm/syscalls.h
-index a81534ffccb7..1384c34137d6 100644
---- a/arch/um/lkl/include/uapi/asm/syscalls.h
-+++ b/arch/um/lkl/include/uapi/asm/syscalls.h
-@@ -164,6 +164,7 @@ struct sockaddr {
- #include <linux/virtio_ring.h>
- #include <linux/pkt_sched.h>
- #include <linux/io_uring.h>
-+#include <linux/major.h>
- 
- struct user_msghdr {
- 	void		__user *msg_name;
-diff --git a/arch/um/lkl/kernel/setup.c b/arch/um/lkl/kernel/setup.c
-index 39b7b7c79581..daf55c216db9 100644
---- a/arch/um/lkl/kernel/setup.c
-+++ b/arch/um/lkl/kernel/setup.c
-@@ -126,6 +126,11 @@ long lkl_sys_halt(void)
- 		LINUX_REBOOT_CMD_RESTART,
- 	};
- 
-+#ifdef CONFIG_BLK_DEV_UBD
-+void kill_io_thread(void);
-+	kill_io_thread();
-+#endif
-+
- 	err = lkl_syscall(__NR_reboot, params);
- 	if (err < 0)
- 		return err;
-diff --git a/tools/lkl/include/lkl.h b/tools/lkl/include/lkl.h
-index 952d11e30868..7d164e4dcad1 100644
---- a/tools/lkl/include/lkl.h
-+++ b/tools/lkl/include/lkl.h
-@@ -355,6 +355,10 @@ void lkl_perror(char *msg, int err);
-  */
- struct lkl_dev_blk_ops;
- 
-+enum {
-+	BLK_BACKEND_UM,
-+};
-+
- /**
-  * lkl_disk - host disk handle
-  *
-@@ -368,6 +372,7 @@ struct lkl_disk {
- 		int fd;
- 		void *handle;
- 	};
-+	int backend;
- 	struct lkl_dev_blk_ops *ops;
- };
- 
-@@ -403,6 +408,16 @@ int lkl_disk_remove(struct lkl_disk disk);
-  */
- int lkl_encode_dev_from_sysfs(const char *sysfs_path, uint32_t *pdevid);
- 
-+
-+#ifdef LKL_HOST_CONFIG_UML_DEV
-+int lkl_disk_um_add(struct lkl_disk *disk, const char *blkparams);
-+#else
-+static inline int lkl_disk_um_add(struct lkl_disk *disk, const char *blkparams)
-+{
-+	return -LKL_ENOSYS;
-+}
-+#endif
-+
- /**
-  * lkl_mount_dev - mount a disk
-  *
-diff --git a/tools/lkl/lib/um/Build b/tools/lkl/lib/um/Build
-index 09a60975ecd6..52573c05a797 100644
---- a/tools/lkl/lib/um/Build
-+++ b/tools/lkl/lib/um/Build
-@@ -1,2 +1,3 @@
- liblkl-y += um_glue.o
- liblkl-y += um_net.o
-+liblkl-y += um_block.o
-diff --git a/tools/lkl/lib/um/um_block.c b/tools/lkl/lib/um/um_block.c
-new file mode 100644
-index 000000000000..70dc624ec43c
---- /dev/null
-+++ b/tools/lkl/lib/um/um_block.c
-@@ -0,0 +1,17 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <lkl_host.h>
-+
-+
-+static int registered_blk_dev_idx;
-+
-+int lkl_disk_um_add(struct lkl_disk *disk, const char *blkparams)
-+{
-+	/* concat strings */
-+	snprintf(lkl_um_devs + strlen(lkl_um_devs), sizeof(lkl_um_devs),
-+		 " ubd%d=%s", registered_blk_dev_idx, blkparams);
-+
-+	return registered_blk_dev_idx++;
-+}
-diff --git a/tools/lkl/lib/um/um_glue.c b/tools/lkl/lib/um/um_glue.c
-index f59e31a706de..fd5a338bcb9f 100644
---- a/tools/lkl/lib/um/um_glue.c
-+++ b/tools/lkl/lib/um/um_glue.c
-@@ -2,9 +2,10 @@
- #include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
-+#include <signal.h>
- #include <unistd.h>
- #include <errno.h>
--
-+#include <sys/wait.h>
- 
- 
- char lkl_um_devs[4096];
-@@ -37,3 +38,24 @@ void *um_os_signal(int signum, void *handler)
- {
- 	return signal(signum, handler);
- }
-+
-+/* from util.c */
-+/*
-+ * UML helper threads must not handle SIGWINCH/INT/TERM
-+ */
-+void os_fix_helper_signals(void)
-+{
-+	signal(SIGWINCH, SIG_IGN);
-+	signal(SIGINT, SIG_DFL);
-+	signal(SIGTERM, SIG_DFL);
-+}
-+
-+void os_kill_process(int pid, int reap_child)
-+{
-+	kill(pid, SIGKILL);
-+	if (reap_child) {
-+		while ((errno = 0, ((waitpid(pid, NULL, __WALL)) < 0))
-+		       && (errno == EINTR))
-+			;
-+	}
-+}
-diff --git a/tools/lkl/tests/disk.c b/tools/lkl/tests/disk.c
-index 0aa039876b54..f7801014d054 100644
---- a/tools/lkl/tests/disk.c
-+++ b/tools/lkl/tests/disk.c
-@@ -23,12 +23,17 @@ static struct {
- 	const char *disk;
- 	const char *fstype;
- 	int partition;
-+	int backend;
- } cla;
- 
-+const char *backends[] = { "um", NULL };
-+
- struct cl_arg args[] = {
- 	{"disk", 'd', "disk file to use", 1, CL_ARG_STR, &cla.disk},
- 	{"partition", 'P', "partition to mount", 1, CL_ARG_INT, &cla.partition},
- 	{"type", 't', "filesystem type", 1, CL_ARG_STR, &cla.fstype},
-+	{"backend", 'b', "blockd evice backend type", 1, CL_ARG_STR_SET,
-+	 &cla.backend, backends},
- 	{0},
- };
- 
-@@ -50,6 +55,15 @@ int lkl_test_disk_add(void)
- 
- 	disk.ops = NULL;
- 
-+	disk.backend = cla.backend;
-+
-+	switch (disk.backend) {
-+	case BLK_BACKEND_UM:
-+		disk.dev = (char *)cla.disk;
-+	default:
-+		break;
-+	}
-+
- 	disk_id = lkl_disk_add(&disk);
- 	if (disk_id < 0)
- 		goto out_close;
--- 
-2.21.0 (Apple Git-122.2)
+> > Even if a test suite is builtin, it can be executed via debugfs
+> > in the patches I sent out, allowing suites to be re-run.  Sounds
+> > like we need a way to control that behaviour based on the
+> > desired test suite execution environment.
+> 
+> I think that's true.
+> 
+> > Say, for example, the "struct kunit_suite" definitions associated
+> > with the tests was marked as __initdata; are there any handy macros to
+> > identify it as being in the __init section? If so, we could simply
+> > avoid adding a "run" file to the debugfs representation for such
+> > suites.
 
+> > Failing that, perhaps we need some sort of flags field
+> > in "struct kunit_suite" to specify execution environment constraints?
+> 
+> I think the former would be ideal, but the latter is acceptable as
+> well, assuming neither results in complaints from the compiler (I
+> guess we will find out for sure once we get a hold of the device tree
+> KUnit test).
+
+I'd split out tests in two different arrays, one with __init or
+__initdata  one without. Likewise two dispatches, one for init and
+one for non-init data.
+
+> Luis, you mentioned your linker table work might be applicable for
+> dynamic post boot configuring of dispatching. Do you think this work
+> could help solve this problem?
+
+The Linux kernel table / section ranges code helps aggregate data into
+ELF sections in a generic way, that is, hacks we have been doing over
+years into a generic way.
+
+So it would be easier to read and implement. For instance see how in
+this commit the intent/goal of kprobe blacklists is a bit easier to
+read:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/commit/?h=20170620-linker-tables-v8&id=b2662efa7c6a3c436961c07fa3082e8640f0e352
+
+In particular DEFINE_LINKTABLE_INIT_DATA() use. I think Youd' want to
+use DEFINE_LINKTABLE_INIT_DATA() for code which you want to use to
+dispatch on init and and a DEFINE_LINKTABLE_DATA() for non-init code.
+
+If a dynamic dispatcher is used you'd opt out of the using for instance
+linktable_for_each() and instead use the data structure defined for
+however you want to disaptch your run time.
+
+  Luis
 
 _______________________________________________
 linux-um mailing list
