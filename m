@@ -1,17 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x543.google.com ([2607:f8b0:4864:20::543])
+Received: from mail-yw1-xc42.google.com ([2607:f8b0:4864:20::c42])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j8toc-0002Aj-3H
- for linux-um@lists.infradead.org; Mon, 02 Mar 2020 22:45:35 +0000
-Received: by mail-pg1-x543.google.com with SMTP id t24so526600pgj.7
- for <linux-um@lists.infradead.org>; Mon, 02 Mar 2020 14:45:33 -0800 (PST)
-Date: Mon, 2 Mar 2020 14:45:30 -0800
-From: Kees Cook <keescook@chromium.org>
+ id 1j8qV0-0006BQ-8j
+ for linux-um@lists.infradead.org; Mon, 02 Mar 2020 19:13:07 +0000
+Received: by mail-yw1-xc42.google.com with SMTP id j186so922331ywe.0
+ for <linux-um@lists.infradead.org>; Mon, 02 Mar 2020 11:13:05 -0800 (PST)
 Subject: Re: [PATCH v3 4/7] init: main: add KUnit to kernel init
-Message-ID: <202003021439.A6B6FD8@keescook>
+References: <20200228012036.15682-1-brendanhiggins@google.com>
+ <20200228012036.15682-5-brendanhiggins@google.com>
+From: Frank Rowand <frowand.list@gmail.com>
+Message-ID: <e5de96ed-fb76-d322-fa40-c6e870e76c36@gmail.com>
+Date: Mon, 2 Mar 2020 13:13:03 -0600
 MIME-Version: 1.0
-Content-Disposition: inline
 In-Reply-To: <20200228012036.15682-5-brendanhiggins@google.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,8 +26,8 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Brendan Higgins <brendanhiggins@google.com>
-Cc: linux-arch@vger.kernel.org, alan.maguire@oracle.com, linux-kselftest@vger.kernel.org, arnd@arndb.de, gregkh@linuxfoundation.org, sboyd@kernel.org, richard@nod.at, jdike@addtoit.com, linux-doc@vger.kernel.org, linux-um@lists.infradead.org, mcgrof@kernel.org, rppt@linux.ibm.com, logang@deltatee.com, kunit-dev@googlegroups.com, davidgow@google.com, skhan@linuxfoundation.org, akpm@linux-foundation.org, yzaikin@google.com, Frank Rowand <frowand.list@gmail.com>, linux-kernel@vger.kernel.org, anton.ivanov@cambridgegreys.com
+To: Brendan Higgins <brendanhiggins@google.com>, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, arnd@arndb.de, keescook@chromium.org, skhan@linuxfoundation.org, alan.maguire@oracle.com, yzaikin@google.com, davidgow@google.com, akpm@linux-foundation.org, rppt@linux.ibm.com
+Cc: linux-arch@vger.kernel.org, linux-doc@vger.kernel.org, sboyd@kernel.org, gregkh@linuxfoundation.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, mcgrof@kernel.org, linux-kselftest@vger.kernel.org, logang@deltatee.com, kunit-dev@googlegroups.com
 
 On 2/27/20 7:20 PM, Brendan Higgins wrote:
 > Remove KUnit from init calls entirely, instead call directly from
@@ -35,7 +37,49 @@ On 2/27/20 7:20 PM, Brendan Higgins wrote:
 > Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 > Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
 > Reviewed-by: Stephen Boyd <sboyd@kernel.org>
-> [...]
+> ---
+>  include/kunit/test.h | 9 +++++++++
+>  init/main.c          | 4 ++++
+>  lib/kunit/executor.c | 4 +---
+>  3 files changed, 14 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/kunit/test.h b/include/kunit/test.h
+> index 8a02f93a6b505..8689dd1459844 100644
+> --- a/include/kunit/test.h
+> +++ b/include/kunit/test.h
+> @@ -197,6 +197,15 @@ void kunit_init_test(struct kunit *test, const char *name);
+>  
+>  int kunit_run_tests(struct kunit_suite *suite);
+>  
+> +#if IS_BUILTIN(CONFIG_KUNIT)
+
+I suspected this would not work if a unittest was builtin but CONFIG_KUNIT
+was set to module.
+
+So I decided to experiment a bit to verify my assumptions (before applying
+this patch series).  I tried to set CONFIG_KUNIT to module, then set
+CONFIG_KUNIT_EXAMPLE_TEST to built in.  Kconfig does not let me do this
+because KUNIT_EXAMPLE_TEST is inside a 'if KUNIT' in lib/kunit/Kconfig,
+but instead switches KUNIT_EXAMPLE_TEST to a module, and warns that it
+has done so.  This was a bit of a surprise, but seems reasonable.
+
+So my next assumption is that the architecture of KUnit expects
+each individual unit test config option to depend upon CONFIG_KUNIT.
+If this is the case, please clearly document that requirement in
+the KUnit documentation.
+
+
+> +int kunit_run_all_tests(void);
+> +#else
+> +static inline int kunit_run_all_tests(void)
+> +{
+> +	return 0;
+> +}
+> +#endif /* IS_BUILTIN(CONFIG_KUNIT) */
+> +
+>  /*
+>   * If a test suite is built-in, module_init() gets translated into
+>   * an initcall which we don't want as the idea is that for builtins
 > diff --git a/init/main.c b/init/main.c
 > index ee4947af823f3..7875a5c486dc4 100644
 > --- a/init/main.c
@@ -58,19 +102,28 @@ On 2/27/20 7:20 PM, Brendan Higgins wrote:
 >  	console_on_rootfs();
 >  
 >  	/*
+> diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
+> index 6429927d598a5..b75a46c560847 100644
+> --- a/lib/kunit/executor.c
+> +++ b/lib/kunit/executor.c
+> @@ -11,7 +11,7 @@ extern struct kunit_suite * const * const __kunit_suites_end[];
+>  
+>  #if IS_BUILTIN(CONFIG_KUNIT)
+>  
+> -static int kunit_run_all_tests(void)
+> +int kunit_run_all_tests(void)
+>  {
+>  	struct kunit_suite * const * const *suites, * const *subsuite;
+>  	bool has_test_failed = false;
+> @@ -31,6 +31,4 @@ static int kunit_run_all_tests(void)
+>  	return 0;
+>  }
+>  
+> -late_initcall(kunit_run_all_tests);
+> -
+>  #endif /* IS_BUILTIN(CONFIG_KUNIT) */
+> 
 
-I'm nervous about this happening before two key pieces of the kernel
-setup, which might lead to weird timing-sensitive bugs or false
-positives:
-	async_synchronize_full()
-	mark_readonly()
-
-Now, I realize kunit tests _should_ be self-contained, but this seems
-like a possible robustness problem. Is there any reason this can't be
-moved after rcu_end_inkernel_boot() in kernel_init() instead?
-
--- 
-Kees Cook
 
 _______________________________________________
 linux-um mailing list
