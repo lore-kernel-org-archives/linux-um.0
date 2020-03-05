@@ -1,431 +1,534 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pj1-x1030.google.com ([2607:f8b0:4864:20::1030])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jIvg2-0004PP-My
- for linux-um@lists.infradead.org; Mon, 30 Mar 2020 14:46:14 +0000
-Received: by mail-pj1-x1030.google.com with SMTP id nu11so7422997pjb.1
- for <linux-um@lists.infradead.org>; Mon, 30 Mar 2020 07:46:10 -0700 (PDT)
-From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v4 00/25] Unifying LKL into UML
-Date: Mon, 30 Mar 2020 23:45:32 +0900
-Message-Id: <cover.1585579244.git.thehajime@gmail.com>
-In-Reply-To: <cover.1580882335.git.thehajime@gmail.com>
-References: <cover.1580882335.git.thehajime@gmail.com>
-MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Octavian Purdila <tavi.purdila@gmail.com>, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, Akira Moroo <retrage01@gmail.com>
+Return-Path: <anshuman.khandual@arm.com>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH 1/2] mm/vma: Define a default value for VM_DATA_DEFAULT_FLAGS
+Date: Thu,  5 Mar 2020 12:20:13 +0530
+Message-Id: <1583391014-8170-2-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <1583391014-8170-1-git-send-email-anshuman.khandual@arm.com>
+References: <1583391014-8170-1-git-send-email-anshuman.khandual@arm.com>
+To: linux-mm@kvack.org
+Cc: hughd@google.com, vbabka@suse.cz, Anshuman Khandual <anshuman.khandual@arm.com>, Richard Henderson <rth@twiddle.net>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Mark Salter <msalter@redhat.com>, Guo Ren <guoren@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, Brian Cain <bcain@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paulburton@kernel.org>, Nick Hu <nickhu@andestech.com>, Ley Foon Tan <ley.foon.tan@intel.com>, Jonas Bonn <jonas@southpole.se>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Michael Ellerman <mpe@ellerman.id.au>, Paul Walmsley <paul.walmsley@sifive.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Rich Felker <dalias@libc.org>, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Jeff Dike <jdike@addtoit.com>, Chris Zankel <chris@zankel.net>, Andrew Morton <akpm@linux-foundation.org>, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
+List-ID: <linux-um.lists.infradead.org>
 
-This is another spin of the unification of LKL into UML.  I've updated
-the patchset by addressing comments received so far.
+There are many platforms with exact same value for VM_DATA_DEFAULT_FLAGS
+This creates a default value for VM_DATA_DEFAULT_FLAGS in line with the
+existing VM_STACK_DEFAULT_FLAGS. While here, also define some more macros
+with standard VMA access flag combinations that are used frequently across
+many platforms. Apart from simplification, this reduces code duplication
+as well.
 
+Cc: Richard Henderson <rth@twiddle.net>
+Cc: Vineet Gupta <vgupta@synopsys.com>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Mark Salter <msalter@redhat.com>
+Cc: Guo Ren <guoren@kernel.org>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: Brian Cain <bcain@codeaurora.org>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Michal Simek <monstr@monstr.eu>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Paul Burton <paulburton@kernel.org>
+Cc: Nick Hu <nickhu@andestech.com>
+Cc: Ley Foon Tan <ley.foon.tan@intel.com>
+Cc: Jonas Bonn <jonas@southpole.se>
+Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+Cc: Rich Felker <dalias@libc.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Guan Xuetao <gxt@pku.edu.cn>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Chris Zankel <chris@zankel.net>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-alpha@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-snps-arc@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-c6x-dev@linux-c6x.org
+Cc: uclinux-h8-devel@lists.sourceforge.jp
+Cc: linux-hexagon@vger.kernel.org
+Cc: linux-ia64@vger.kernel.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-mips@vger.kernel.org
+Cc: nios2-dev@lists.rocketboards.org
+Cc: openrisc@lists.librecores.org
+Cc: linux-parisc@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-riscv@lists.infradead.org
+Cc: linux-s390@vger.kernel.org
+Cc: linux-sh@vger.kernel.org
+Cc: sparclinux@vger.kernel.org
+Cc: linux-um@lists.infradead.org
+Cc: linux-xtensa@linux-xtensa.org
+Cc: linux-mm@kvack.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+---
+ arch/alpha/include/asm/page.h      |  3 ---
+ arch/arc/include/asm/page.h        |  2 +-
+ arch/arm/include/asm/page.h        |  4 +---
+ arch/arm64/include/asm/page.h      |  4 +---
+ arch/c6x/include/asm/page.h        |  5 +----
+ arch/csky/include/asm/page.h       |  3 ---
+ arch/h8300/include/asm/page.h      |  2 --
+ arch/hexagon/include/asm/page.h    |  3 +--
+ arch/ia64/include/asm/page.h       |  5 +----
+ arch/m68k/include/asm/page.h       |  3 ---
+ arch/microblaze/include/asm/page.h |  2 --
+ arch/mips/include/asm/page.h       |  5 +----
+ arch/nds32/include/asm/page.h      |  3 ---
+ arch/nios2/include/asm/page.h      |  3 +--
+ arch/openrisc/include/asm/page.h   |  5 -----
+ arch/parisc/include/asm/page.h     |  3 ---
+ arch/powerpc/include/asm/page.h    |  9 ++-------
+ arch/powerpc/include/asm/page_64.h |  7 ++-----
+ arch/riscv/include/asm/page.h      |  3 +--
+ arch/s390/include/asm/page.h       |  3 +--
+ arch/sh/include/asm/page.h         |  3 ---
+ arch/sparc/include/asm/page_32.h   |  3 ---
+ arch/sparc/include/asm/page_64.h   |  3 ---
+ arch/unicore32/include/asm/page.h  |  3 ---
+ arch/x86/include/asm/page_types.h  |  4 +---
+ arch/x86/um/asm/vm-flags.h         | 10 ++--------
+ arch/xtensa/include/asm/page.h     |  3 ---
+ include/linux/mm.h                 | 14 ++++++++++++++
+ 28 files changed, 31 insertions(+), 89 deletions(-)
 
-Changes in rfc v4:
-- Rebase on the current uml/master branch
-- Fix IRQ handling (bug fix)
-- drop a patch for CONFIG_GENERIC_ATOMIC64 support (comment by Peter Zijlstra)
-- implement vector net driver for UMMODE_LIB (comment by Anton)
-- clean up uapi headers to avoid duplicates
-- clean up IRQ handling code (comment by Anton)
-- fix error handling in test code (comments by David Disseldorp)
-
-Changes in rfc v3:
-- use UML drivers (net, block) from LKL programs
-- drop virtio device implementations
-- drop mingw32 (Windows) host
-- drop android (arm/aarch64) host
-- drop FreeBSD (x86_64) host
-- drop LD_PRELOAD (hijack) support
-- update milestone
-
-rfc v2:
-- use UMMODE instead of SUBARCH to switch UML or LKL
-- tools/lkl directory is still there. I confirmed we can move under arch/um
-  (e.g., arch/um/lkl/hosts).  I will move it IF this is preferable.
-- drop several patches involved non-uml directory
-- drop several patches which are not required
-- refine commit logs
-- document updated
-
-
-
-
-LKL (Linux Kernel Library) is aiming to allow reusing the Linux kernel code
-as extensively as possible with minimal effort and reduced maintenance
-overhead.
-
-Examples of how LKL can be used are: creating userspace applications
-(running on Linux and other operating systems) that can read or write Linux
-filesystems or can use the Linux networking stack, creating kernel drivers
-for other operating systems that can read Linux filesystems, bootloaders
-support for reading/writing Linux filesystems, etc.
-
-With LKL, the kernel code is compiled into an object file that can be
-directly linked by applications. The API offered by LKL is based on the
-Linux system call interface.
-
-LKL is originally implemented as an architecture port in arch/lkl, but this
-series of commits tries to integrate this into arch/um as one of the mode
-of UML.  This was discussed during RFC email of LKL (*1).
-
-The latest LKL version can be found at https://github.com/lkl/linux
-
-Milestone
-=========
-This patches is a first step toward upstreaming *library mode* of Linux kernel,
-but we think we need to have several steps toward our goal, describing in the
-below.
-
-1. Put LKL code under arch/um (arch/um/lkl), and build it in a separate way
-from UML.
-2. Use UML driver implementations in LKL as a minimum set of patches
--  Only support x86 sub architecture (dependency to UML drivers)
-3. Support broader host supports
-- add virtio device features
-
-For the step 1, we put LKL as one of UMMODE in order to make less effort to
-integrate (make ARCH=um UMMODE=library).  The modification to existing UML
-code is trying to be minimized.
-
-
-
-Building LKL the host library and LKL applications
-==================================================
-
-% cd tools/lkl
-% make
-
-will build LKL as a object file, it will install it in tools/lkl/lib together
-with the headers files in tools/lkl/include then will build the host library,
-tests and a few of application examples:
-
-* tests/boot - a simple applications that uses LKL and exercises the basic
-  LKL APIs
-
-* tests/net-test - a simple applications that uses network feature of
-  LKL and exercises the basic network-related APIs
-
-* fs2tar - a tool that converts a filesystem image to a tar archive
-
-* cptofs/cpfromfs - a tool that copies files to/from a filesystem image
-
-* lklfuse - a tool that can mount a filesystem image in userspace,
-  without root priviledges, using FUSE
-
-% make run-tests
-
-should run the above `tests/boot` and `tests/net-test` and report errors if
-there are any.
-
-Supported hosts
-===============
-
-Currently LKL supports Linux userspace applications. New hosts can be added
-relatively easy if the host supports gcc and GNU ld. Previous versions of
-LKL supported Windows kernel and Haiku kernel hosts, and we also have WIP
-patches with rump-hypercall interface, used in UEFI, as well as macOS
-userspace (part of POSIX).
-
-There is also musl-libc port for LKL, which might be interested in for some
-folks.
-
-
-Further readings about LKL
-=========================
-
-- Discussion in github LKL issue
-https://github.com/lkl/linux/issues/304
-
-- LKL (an article)
-https://www.researchgate.net/profile/Nicolae_Tapus2/publication/224164682_LKL_The_Linux_kernel_library/links/02bfe50fd921ab4f7c000000.pdf
-
-*1 RFC email to LKML (back in 2015)
-https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1012277.html
-
-
-
-Please review the following changes for suitability for inclusion. If you have
-any objections or suggestions for improvement, please respond to the patches. If
-you agree with the changes, please provide your Acked-by.
-
-The following changes since commit 4a7c46247f9c620c0390a15cb00b6ef9576b9c23:
-
-  um: Remove some unnecessary NULL checks in vector_user.c (2020-03-29 23:56:47 +0200)
-
-are available in the Git repository at:
-
-  git://github.com/thehajime/linux 59ed4e23efa7abc9c7d52e6b5fb31fb8ce795c5c
-  https://github.com/thehajime/linux/tree/upstream-to-uml-5.6-rc7-v4
-
-Hajime Tazaki (6):
-  lkl tools: host lib: filesystem helpers
-  lkl tools: host lib: networking helpers
-  um lkl: add CI scripts to conduct regression tests
-  um lkl: add UML network driver for lkl
-  um lkl: add UML block device driver (ubd) for lkl
-  um: fix clone flags to be familiar with valgrind
-
-Octavian Purdila (19):
-  arch: add __SYSCALL_DEFINE_ARCH
-  um lkl: architecture skeleton for Linux kernel library
-  um lkl: host interface
-  um lkl: memory handling
-  um lkl: kernel threads support
-  um lkl: interrupt support
-  um lkl: system call interface and application API
-  um lkl: timers, time and delay support
-  um lkl: basic kernel console support
-  um lkl: initialization and cleanup
-  um lkl: plug in the build system
-  lkl tools: skeleton for host side library
-  lkl tools: host lib: add utilities functions
-  lkl tools: host lib: posix host operations
-  lkl tools: add test programs
-  lkl tools: cptofs that reads/writes to/from a filesystem image
-  lkl tools: fs2tar that converts a filesystem image to tar
-  lkl tools: add lklfuse
-  um lkl: add documentation
-
- .circleci/config.yml                       |  198 ++++
- Documentation/virt/uml/lkl.txt             |   64 ++
- MAINTAINERS                                |    8 +
- arch/um/Kconfig                            |   13 +
- arch/um/Makefile                           |   19 +-
- arch/um/Makefile.um                        |   10 +
- arch/um/drivers/Makefile                   |    2 +
- arch/um/drivers/ubd_kern.c                 |    6 +-
- arch/um/drivers/ubd_user.c                 |    3 +-
- arch/um/include/asm/irq.h                  |    2 +
- arch/um/kernel/Makefile                    |    4 +
- arch/um/kernel/irq.c                       |    4 +
- arch/um/lkl/.gitignore                     |    2 +
- arch/um/lkl/Kconfig                        |   88 ++
- arch/um/lkl/Kconfig.debug                  |    0
- arch/um/lkl/Makefile                       |   67 ++
- arch/um/lkl/auto.conf                      |    1 +
- arch/um/lkl/configs/lkl_defconfig          | 1052 ++++++++++++++++++++
- arch/um/lkl/include/asm/Kbuild             |   79 ++
- arch/um/lkl/include/asm/atomic.h           |   11 +
- arch/um/lkl/include/asm/atomic64.h         |  114 +++
- arch/um/lkl/include/asm/bitsperlong.h      |   11 +
- arch/um/lkl/include/asm/byteorder.h        |    7 +
- arch/um/lkl/include/asm/cpu.h              |   14 +
- arch/um/lkl/include/asm/elf.h              |   15 +
- arch/um/lkl/include/asm/host_ops.h         |   10 +
- arch/um/lkl/include/asm/irq.h              |   16 +
- arch/um/lkl/include/asm/page.h             |   14 +
- arch/um/lkl/include/asm/pgtable.h          |   57 ++
- arch/um/lkl/include/asm/processor.h        |   60 ++
- arch/um/lkl/include/asm/ptrace.h           |   25 +
- arch/um/lkl/include/asm/sched.h            |   23 +
- arch/um/lkl/include/asm/setup.h            |    7 +
- arch/um/lkl/include/asm/syscalls.h         |   18 +
- arch/um/lkl/include/asm/syscalls_32.h      |   43 +
- arch/um/lkl/include/asm/thread_info.h      |   70 ++
- arch/um/lkl/include/asm/tlb.h              |   12 +
- arch/um/lkl/include/asm/uaccess.h          |   64 ++
- arch/um/lkl/include/asm/unistd.h           |   27 +
- arch/um/lkl/include/asm/unistd_32.h        |   31 +
- arch/um/lkl/include/asm/vmalloc.h          |    5 +
- arch/um/lkl/include/asm/vmlinux.lds.h      |   14 +
- arch/um/lkl/include/asm/xor.h              |    9 +
- arch/um/lkl/include/uapi/asm/Kbuild        |   11 +
- arch/um/lkl/include/uapi/asm/bitsperlong.h |   13 +
- arch/um/lkl/include/uapi/asm/byteorder.h   |   11 +
- arch/um/lkl/include/uapi/asm/host_ops.h    |  143 +++
- arch/um/lkl/include/uapi/asm/irq.h         |   36 +
- arch/um/lkl/include/uapi/asm/sigcontext.h  |   16 +
- arch/um/lkl/include/uapi/asm/syscalls.h    |  349 +++++++
- arch/um/lkl/include/uapi/asm/unistd.h      |   13 +
- arch/um/lkl/kernel/Makefile                |    4 +
- arch/um/lkl/kernel/asm-offsets.c           |    3 +
- arch/um/lkl/kernel/console.c               |   42 +
- arch/um/lkl/kernel/cpu.c                   |  223 +++++
- arch/um/lkl/kernel/irq.c                   |  223 +++++
- arch/um/lkl/kernel/misc.c                  |   60 ++
- arch/um/lkl/kernel/setup.c                 |  198 ++++
- arch/um/lkl/kernel/syscalls.c              |  192 ++++
- arch/um/lkl/kernel/syscalls_32.c           |  159 +++
- arch/um/lkl/kernel/threads.c               |  227 +++++
- arch/um/lkl/kernel/time.c                  |  145 +++
- arch/um/lkl/kernel/vmlinux.lds.S           |   51 +
- arch/um/lkl/mm/Makefile                    |    1 +
- arch/um/lkl/mm/bootmem.c                   |   99 ++
- arch/um/lkl/scripts/headers_install.py     |  196 ++++
- arch/um/os-Linux/Makefile                  |    5 +
- include/linux/syscalls.h                   |    6 +
- tools/lkl/.gitignore                       |   13 +
- tools/lkl/Build                            |    6 +
- tools/lkl/Makefile                         |  131 +++
- tools/lkl/Makefile.autoconf                |   67 ++
- tools/lkl/Targets                          |   17 +
- tools/lkl/cptofs.c                         |  636 ++++++++++++
- tools/lkl/fs2tar.c                         |  412 ++++++++
- tools/lkl/include/.gitignore               |    1 +
- tools/lkl/include/lkl.h                    |  788 +++++++++++++++
- tools/lkl/include/lkl_config.h             |   61 ++
- tools/lkl/include/lkl_host.h               |  112 +++
- tools/lkl/lib/.gitignore                   |    3 +
- tools/lkl/lib/Build                        |   13 +
- tools/lkl/lib/config.c                     |  750 ++++++++++++++
- tools/lkl/lib/dbg.c                        |  300 ++++++
- tools/lkl/lib/dbg_handler.c                |   44 +
- tools/lkl/lib/endian.h                     |   31 +
- tools/lkl/lib/fs.c                         |  471 +++++++++
- tools/lkl/lib/jmp_buf.c                    |   14 +
- tools/lkl/lib/jmp_buf.h                    |    8 +
- tools/lkl/lib/net.c                        |  834 ++++++++++++++++
- tools/lkl/lib/posix-host.c                 |  356 +++++++
- tools/lkl/lib/um/Build                     |    3 +
- tools/lkl/lib/um/um_block.c                |   17 +
- tools/lkl/lib/um/um_glue.c                 |   61 ++
- tools/lkl/lib/um/um_net.c                  |   30 +
- tools/lkl/lib/utils.c                      |  266 +++++
- tools/lkl/lklfuse.c                        |  659 ++++++++++++
- tools/lkl/scripts/checkpatch.sh            |   60 ++
- tools/lkl/scripts/lkl-jenkins.sh           |   21 +
- tools/lkl/tests/Build                      |    3 +
- tools/lkl/tests/boot.c                     |  562 +++++++++++
- tools/lkl/tests/boot.sh                    |    9 +
- tools/lkl/tests/cla.c                      |  159 +++
- tools/lkl/tests/cla.h                      |   33 +
- tools/lkl/tests/disk.c                     |  203 ++++
- tools/lkl/tests/disk.sh                    |   61 ++
- tools/lkl/tests/lklfuse.sh                 |  110 ++
- tools/lkl/tests/net-setup.sh               |  136 +++
- tools/lkl/tests/net-test.c                 |  307 ++++++
- tools/lkl/tests/net.sh                     |  135 +++
- tools/lkl/tests/run.py                     |  181 ++++
- tools/lkl/tests/tap13.py                   |  209 ++++
- tools/lkl/tests/test.c                     |  126 +++
- tools/lkl/tests/test.h                     |   72 ++
- tools/lkl/tests/test.sh                    |  182 ++++
- tools/lkl/tests/valgrind.supp              |  105 ++
- tools/lkl/tests/valgrind2xunit.py          |   69 ++
- 116 files changed, 13569 insertions(+), 3 deletions(-)
- create mode 100644 .circleci/config.yml
- create mode 100644 Documentation/virt/uml/lkl.txt
- create mode 100644 arch/um/Makefile.um
- create mode 100644 arch/um/lkl/.gitignore
- create mode 100644 arch/um/lkl/Kconfig
- create mode 100644 arch/um/lkl/Kconfig.debug
- create mode 100644 arch/um/lkl/Makefile
- create mode 100644 arch/um/lkl/auto.conf
- create mode 100644 arch/um/lkl/configs/lkl_defconfig
- create mode 100644 arch/um/lkl/include/asm/Kbuild
- create mode 100644 arch/um/lkl/include/asm/atomic.h
- create mode 100644 arch/um/lkl/include/asm/atomic64.h
- create mode 100644 arch/um/lkl/include/asm/bitsperlong.h
- create mode 100644 arch/um/lkl/include/asm/byteorder.h
- create mode 100644 arch/um/lkl/include/asm/cpu.h
- create mode 100644 arch/um/lkl/include/asm/elf.h
- create mode 100644 arch/um/lkl/include/asm/host_ops.h
- create mode 100644 arch/um/lkl/include/asm/irq.h
- create mode 100644 arch/um/lkl/include/asm/page.h
- create mode 100644 arch/um/lkl/include/asm/pgtable.h
- create mode 100644 arch/um/lkl/include/asm/processor.h
- create mode 100644 arch/um/lkl/include/asm/ptrace.h
- create mode 100644 arch/um/lkl/include/asm/sched.h
- create mode 100644 arch/um/lkl/include/asm/setup.h
- create mode 100644 arch/um/lkl/include/asm/syscalls.h
- create mode 100644 arch/um/lkl/include/asm/syscalls_32.h
- create mode 100644 arch/um/lkl/include/asm/thread_info.h
- create mode 100644 arch/um/lkl/include/asm/tlb.h
- create mode 100644 arch/um/lkl/include/asm/uaccess.h
- create mode 100644 arch/um/lkl/include/asm/unistd.h
- create mode 100644 arch/um/lkl/include/asm/unistd_32.h
- create mode 100644 arch/um/lkl/include/asm/vmalloc.h
- create mode 100644 arch/um/lkl/include/asm/vmlinux.lds.h
- create mode 100644 arch/um/lkl/include/asm/xor.h
- create mode 100644 arch/um/lkl/include/uapi/asm/Kbuild
- create mode 100644 arch/um/lkl/include/uapi/asm/bitsperlong.h
- create mode 100644 arch/um/lkl/include/uapi/asm/byteorder.h
- create mode 100644 arch/um/lkl/include/uapi/asm/host_ops.h
- create mode 100644 arch/um/lkl/include/uapi/asm/irq.h
- create mode 100644 arch/um/lkl/include/uapi/asm/sigcontext.h
- create mode 100644 arch/um/lkl/include/uapi/asm/syscalls.h
- create mode 100644 arch/um/lkl/include/uapi/asm/unistd.h
- create mode 100644 arch/um/lkl/kernel/Makefile
- create mode 100644 arch/um/lkl/kernel/asm-offsets.c
- create mode 100644 arch/um/lkl/kernel/console.c
- create mode 100644 arch/um/lkl/kernel/cpu.c
- create mode 100644 arch/um/lkl/kernel/irq.c
- create mode 100644 arch/um/lkl/kernel/misc.c
- create mode 100644 arch/um/lkl/kernel/setup.c
- create mode 100644 arch/um/lkl/kernel/syscalls.c
- create mode 100644 arch/um/lkl/kernel/syscalls_32.c
- create mode 100644 arch/um/lkl/kernel/threads.c
- create mode 100644 arch/um/lkl/kernel/time.c
- create mode 100644 arch/um/lkl/kernel/vmlinux.lds.S
- create mode 100644 arch/um/lkl/mm/Makefile
- create mode 100644 arch/um/lkl/mm/bootmem.c
- create mode 100755 arch/um/lkl/scripts/headers_install.py
- create mode 100644 tools/lkl/.gitignore
- create mode 100644 tools/lkl/Build
- create mode 100644 tools/lkl/Makefile
- create mode 100644 tools/lkl/Makefile.autoconf
- create mode 100644 tools/lkl/Targets
- create mode 100644 tools/lkl/cptofs.c
- create mode 100644 tools/lkl/fs2tar.c
- create mode 100644 tools/lkl/include/.gitignore
- create mode 100644 tools/lkl/include/lkl.h
- create mode 100644 tools/lkl/include/lkl_config.h
- create mode 100644 tools/lkl/include/lkl_host.h
- create mode 100644 tools/lkl/lib/.gitignore
- create mode 100644 tools/lkl/lib/Build
- create mode 100644 tools/lkl/lib/config.c
- create mode 100644 tools/lkl/lib/dbg.c
- create mode 100644 tools/lkl/lib/dbg_handler.c
- create mode 100644 tools/lkl/lib/endian.h
- create mode 100644 tools/lkl/lib/fs.c
- create mode 100644 tools/lkl/lib/jmp_buf.c
- create mode 100644 tools/lkl/lib/jmp_buf.h
- create mode 100644 tools/lkl/lib/net.c
- create mode 100644 tools/lkl/lib/posix-host.c
- create mode 100644 tools/lkl/lib/um/Build
- create mode 100644 tools/lkl/lib/um/um_block.c
- create mode 100644 tools/lkl/lib/um/um_glue.c
- create mode 100644 tools/lkl/lib/um/um_net.c
- create mode 100644 tools/lkl/lib/utils.c
- create mode 100644 tools/lkl/lklfuse.c
- create mode 100755 tools/lkl/scripts/checkpatch.sh
- create mode 100755 tools/lkl/scripts/lkl-jenkins.sh
- create mode 100644 tools/lkl/tests/Build
- create mode 100644 tools/lkl/tests/boot.c
- create mode 100755 tools/lkl/tests/boot.sh
- create mode 100644 tools/lkl/tests/cla.c
- create mode 100644 tools/lkl/tests/cla.h
- create mode 100644 tools/lkl/tests/disk.c
- create mode 100755 tools/lkl/tests/disk.sh
- create mode 100755 tools/lkl/tests/lklfuse.sh
- create mode 100644 tools/lkl/tests/net-setup.sh
- create mode 100644 tools/lkl/tests/net-test.c
- create mode 100755 tools/lkl/tests/net.sh
- create mode 100755 tools/lkl/tests/run.py
- create mode 100644 tools/lkl/tests/tap13.py
- create mode 100644 tools/lkl/tests/test.c
- create mode 100644 tools/lkl/tests/test.h
- create mode 100644 tools/lkl/tests/test.sh
- create mode 100644 tools/lkl/tests/valgrind.supp
- create mode 100755 tools/lkl/tests/valgrind2xunit.py
-
+diff --git a/arch/alpha/include/asm/page.h b/arch/alpha/include/asm/page.h
+index f3fb2848470a..e241bd88880f 100644
+--- a/arch/alpha/include/asm/page.h
++++ b/arch/alpha/include/asm/page.h
+@@ -90,9 +90,6 @@ typedef struct page *pgtable_t;
+ #define virt_addr_valid(kaddr)	pfn_valid(__pa(kaddr) >> PAGE_SHIFT)
+ #endif /* CONFIG_DISCONTIGMEM */
+ 
+-#define VM_DATA_DEFAULT_FLAGS		(VM_READ | VM_WRITE | VM_EXEC | \
+-					 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
+-
+ #include <asm-generic/memory_model.h>
+ #include <asm-generic/getorder.h>
+ 
+diff --git a/arch/arc/include/asm/page.h b/arch/arc/include/asm/page.h
+index 0a32e8cfd074..b0dfed0f12be 100644
+--- a/arch/arc/include/asm/page.h
++++ b/arch/arc/include/asm/page.h
+@@ -102,7 +102,7 @@ typedef pte_t * pgtable_t;
+ #define virt_addr_valid(kaddr)  pfn_valid(virt_to_pfn(kaddr))
+ 
+ /* Default Permissions for stack/heaps pages (Non Executable) */
+-#define VM_DATA_DEFAULT_FLAGS   (VM_READ | VM_WRITE | VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
++#define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_NON_EXEC
+ 
+ #define WANT_PAGE_VIRTUAL   1
+ 
+diff --git a/arch/arm/include/asm/page.h b/arch/arm/include/asm/page.h
+index c2b75cba26df..11b058a72a5b 100644
+--- a/arch/arm/include/asm/page.h
++++ b/arch/arm/include/asm/page.h
+@@ -161,9 +161,7 @@ extern int pfn_valid(unsigned long);
+ 
+ #endif /* !__ASSEMBLY__ */
+ 
+-#define VM_DATA_DEFAULT_FLAGS \
+-	(((current->personality & READ_IMPLIES_EXEC) ? VM_EXEC : 0) | \
+-	 VM_READ | VM_WRITE | VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
++#define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_TSK_EXEC
+ 
+ #include <asm-generic/getorder.h>
+ 
+diff --git a/arch/arm64/include/asm/page.h b/arch/arm64/include/asm/page.h
+index d39ddb258a04..cb4e1e6ca385 100644
+--- a/arch/arm64/include/asm/page.h
++++ b/arch/arm64/include/asm/page.h
+@@ -32,9 +32,7 @@ extern int pfn_valid(unsigned long);
+ 
+ #endif /* !__ASSEMBLY__ */
+ 
+-#define VM_DATA_DEFAULT_FLAGS \
+-	(((current->personality & READ_IMPLIES_EXEC) ? VM_EXEC : 0) | \
+-	 VM_READ | VM_WRITE | VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
++#define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_TSK_EXEC
+ 
+ #include <asm-generic/getorder.h>
+ 
+diff --git a/arch/c6x/include/asm/page.h b/arch/c6x/include/asm/page.h
+index 70db1e7632bc..40079899084d 100644
+--- a/arch/c6x/include/asm/page.h
++++ b/arch/c6x/include/asm/page.h
+@@ -2,10 +2,7 @@
+ #ifndef _ASM_C6X_PAGE_H
+ #define _ASM_C6X_PAGE_H
+ 
+-#define VM_DATA_DEFAULT_FLAGS \
+-	(VM_READ | VM_WRITE | \
+-	((current->personality & READ_IMPLIES_EXEC) ? VM_EXEC : 0) | \
+-		 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
++#define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_TSK_EXEC
+ 
+ #include <asm-generic/page.h>
+ 
+diff --git a/arch/csky/include/asm/page.h b/arch/csky/include/asm/page.h
+index 9738eacefdc7..9b98bf31d57c 100644
+--- a/arch/csky/include/asm/page.h
++++ b/arch/csky/include/asm/page.h
+@@ -85,9 +85,6 @@ extern unsigned long va_pa_offset;
+ 				 PHYS_OFFSET_OFFSET)
+ #define virt_to_page(x)	(mem_map + MAP_NR(x))
+ 
+-#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
+-				VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
+-
+ #define pfn_to_kaddr(x)	__va(PFN_PHYS(x))
+ 
+ #include <asm-generic/memory_model.h>
+diff --git a/arch/h8300/include/asm/page.h b/arch/h8300/include/asm/page.h
+index 8da5124ad344..53e037544239 100644
+--- a/arch/h8300/include/asm/page.h
++++ b/arch/h8300/include/asm/page.h
+@@ -6,8 +6,6 @@
+ #include <linux/types.h>
+ 
+ #define MAP_NR(addr) (((uintptr_t)(addr)-PAGE_OFFSET) >> PAGE_SHIFT)
+-#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
+-				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
+ 
+ #ifndef __ASSEMBLY__
+ extern unsigned long rom_length;
+diff --git a/arch/hexagon/include/asm/page.h b/arch/hexagon/include/asm/page.h
+index ee31f36f48f3..7cbf719c578e 100644
+--- a/arch/hexagon/include/asm/page.h
++++ b/arch/hexagon/include/asm/page.h
+@@ -93,8 +93,7 @@ struct page;
+ #define virt_to_page(kaddr) pfn_to_page(PFN_DOWN(__pa(kaddr)))
+ 
+ /* Default vm area behavior is non-executable.  */
+-#define VM_DATA_DEFAULT_FLAGS (VM_READ | VM_WRITE | \
+-				VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
++#define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_NON_EXEC
+ 
+ #define pfn_valid(pfn) ((pfn) < max_mapnr)
+ #define virt_addr_valid(kaddr) pfn_valid(__pa(kaddr) >> PAGE_SHIFT)
+diff --git a/arch/ia64/include/asm/page.h b/arch/ia64/include/asm/page.h
+index 5798bd2b462c..b69a5499d75b 100644
+--- a/arch/ia64/include/asm/page.h
++++ b/arch/ia64/include/asm/page.h
+@@ -218,10 +218,7 @@ get_order (unsigned long size)
+ 
+ #define PAGE_OFFSET			RGN_BASE(RGN_KERNEL)
+ 
+-#define VM_DATA_DEFAULT_FLAGS		(VM_READ | VM_WRITE |					\
+-					 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC |		\
+-					 (((current->personality & READ_IMPLIES_EXEC) != 0)	\
+-					  ? VM_EXEC : 0))
++#define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_TSK_EXEC
+ 
+ #define GATE_ADDR		RGN_BASE(RGN_GATE)
+ 
+diff --git a/arch/m68k/include/asm/page.h b/arch/m68k/include/asm/page.h
+index 05e1e1e77a9a..9d2ef0a51720 100644
+--- a/arch/m68k/include/asm/page.h
++++ b/arch/m68k/include/asm/page.h
+@@ -55,9 +55,6 @@ extern unsigned long _ramend;
+ #define __phys_to_pfn(paddr)	((unsigned long)((paddr) >> PAGE_SHIFT))
+ #define __pfn_to_phys(pfn)	PFN_PHYS(pfn)
+ 
+-#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
+-				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
+-
+ #include <asm-generic/getorder.h>
+ 
+ #endif /* _M68K_PAGE_H */
+diff --git a/arch/microblaze/include/asm/page.h b/arch/microblaze/include/asm/page.h
+index f4b44b24b02e..43bd560b7b67 100644
+--- a/arch/microblaze/include/asm/page.h
++++ b/arch/microblaze/include/asm/page.h
+@@ -197,8 +197,6 @@ extern int page_is_ram(unsigned long pfn);
+ 
+ #ifdef CONFIG_MMU
+ 
+-#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
+-				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
+ #endif /* CONFIG_MMU */
+ 
+ #endif /* __KERNEL__ */
+diff --git a/arch/mips/include/asm/page.h b/arch/mips/include/asm/page.h
+index 0ba4ce6e2bf3..e2f503fc7a84 100644
+--- a/arch/mips/include/asm/page.h
++++ b/arch/mips/include/asm/page.h
+@@ -253,10 +253,7 @@ extern bool __virt_addr_valid(const volatile void *kaddr);
+ #define virt_addr_valid(kaddr)						\
+ 	__virt_addr_valid((const volatile void *) (kaddr))
+ 
+-#define VM_DATA_DEFAULT_FLAGS \
+-	(VM_READ | VM_WRITE | \
+-	 ((current->personality & READ_IMPLIES_EXEC) ? VM_EXEC : 0) | \
+-	 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
++#define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_TSK_EXEC
+ 
+ #include <asm-generic/memory_model.h>
+ #include <asm-generic/getorder.h>
+diff --git a/arch/nds32/include/asm/page.h b/arch/nds32/include/asm/page.h
+index 86b32014c5f9..add33a7f02c8 100644
+--- a/arch/nds32/include/asm/page.h
++++ b/arch/nds32/include/asm/page.h
+@@ -59,9 +59,6 @@ typedef struct page *pgtable_t;
+ 
+ #endif /* !__ASSEMBLY__ */
+ 
+-#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
+-				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
+-
+ #endif /* __KERNEL__ */
+ 
+ #endif
+diff --git a/arch/nios2/include/asm/page.h b/arch/nios2/include/asm/page.h
+index 79fcac61f6ef..6a989819a7c1 100644
+--- a/arch/nios2/include/asm/page.h
++++ b/arch/nios2/include/asm/page.h
+@@ -98,8 +98,7 @@ static inline bool pfn_valid(unsigned long pfn)
+ # define virt_to_page(vaddr)	pfn_to_page(PFN_DOWN(virt_to_phys(vaddr)))
+ # define virt_addr_valid(vaddr)	pfn_valid(PFN_DOWN(virt_to_phys(vaddr)))
+ 
+-# define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | \
+-				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
++# define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_NON_EXEC
+ 
+ #include <asm-generic/memory_model.h>
+ 
+diff --git a/arch/openrisc/include/asm/page.h b/arch/openrisc/include/asm/page.h
+index 01069db59454..aab6e64d6db4 100644
+--- a/arch/openrisc/include/asm/page.h
++++ b/arch/openrisc/include/asm/page.h
+@@ -86,11 +86,6 @@ typedef struct page *pgtable_t;
+ 
+ #endif /* __ASSEMBLY__ */
+ 
+-
+-#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
+-				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
+-
+-
+ #include <asm-generic/memory_model.h>
+ #include <asm-generic/getorder.h>
+ 
+diff --git a/arch/parisc/include/asm/page.h b/arch/parisc/include/asm/page.h
+index 796ae29e9b9a..6b3f6740a6a6 100644
+--- a/arch/parisc/include/asm/page.h
++++ b/arch/parisc/include/asm/page.h
+@@ -180,9 +180,6 @@ extern int npmem_ranges;
+ #define page_to_phys(page)	(page_to_pfn(page) << PAGE_SHIFT)
+ #define virt_to_page(kaddr)     pfn_to_page(__pa(kaddr) >> PAGE_SHIFT)
+ 
+-#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
+-				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
+-
+ #include <asm-generic/memory_model.h>
+ #include <asm-generic/getorder.h>
+ #include <asm/pdc.h>
+diff --git a/arch/powerpc/include/asm/page.h b/arch/powerpc/include/asm/page.h
+index 080a0bf8e54b..3ee8df0f66e0 100644
+--- a/arch/powerpc/include/asm/page.h
++++ b/arch/powerpc/include/asm/page.h
+@@ -240,13 +240,8 @@ static inline bool pfn_valid(unsigned long pfn)
+  * and needs to be executable.  This means the whole heap ends
+  * up being executable.
+  */
+-#define VM_DATA_DEFAULT_FLAGS32 \
+-	(((current->personality & READ_IMPLIES_EXEC) ? VM_EXEC : 0) | \
+-				 VM_READ | VM_WRITE | \
+-				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
+-
+-#define VM_DATA_DEFAULT_FLAGS64	(VM_READ | VM_WRITE | \
+-				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
++#define VM_DATA_DEFAULT_FLAGS32	VM_DATA_FLAGS_TSK_EXEC
++#define VM_DATA_DEFAULT_FLAGS64	VM_DATA_FLAGS_NON_EXEC
+ 
+ #ifdef __powerpc64__
+ #include <asm/page_64.h>
+diff --git a/arch/powerpc/include/asm/page_64.h b/arch/powerpc/include/asm/page_64.h
+index 5962797f784a..79a9b7c6a132 100644
+--- a/arch/powerpc/include/asm/page_64.h
++++ b/arch/powerpc/include/asm/page_64.h
+@@ -94,11 +94,8 @@ extern u64 ppc64_pft_size;
+  * stack by default, so in the absence of a PT_GNU_STACK program header
+  * we turn execute permission off.
+  */
+-#define VM_STACK_DEFAULT_FLAGS32	(VM_READ | VM_WRITE | VM_EXEC | \
+-					 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
+-
+-#define VM_STACK_DEFAULT_FLAGS64	(VM_READ | VM_WRITE | \
+-					 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
++#define VM_STACK_DEFAULT_FLAGS32	VM_DATA_FLAGS_EXEC
++#define VM_STACK_DEFAULT_FLAGS64	VM_DATA_FLAGS_NON_EXEC
+ 
+ #define VM_STACK_DEFAULT_FLAGS \
+ 	(is_32bit_task() ? \
+diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
+index 8ca1930caa44..2d50f76efe48 100644
+--- a/arch/riscv/include/asm/page.h
++++ b/arch/riscv/include/asm/page.h
+@@ -137,8 +137,7 @@ extern phys_addr_t __phys_addr_symbol(unsigned long x);
+ 
+ #define virt_addr_valid(vaddr)	(pfn_valid(virt_to_pfn(vaddr)))
+ 
+-#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | \
+-				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
++#define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_NON_EXEC
+ 
+ #include <asm-generic/memory_model.h>
+ #include <asm-generic/getorder.h>
+diff --git a/arch/s390/include/asm/page.h b/arch/s390/include/asm/page.h
+index 1019efd85b9d..089f49230966 100644
+--- a/arch/s390/include/asm/page.h
++++ b/arch/s390/include/asm/page.h
+@@ -176,8 +176,7 @@ static inline int devmem_is_allowed(unsigned long pfn)
+ 
+ #define virt_addr_valid(kaddr)	pfn_valid(__pa(kaddr) >> PAGE_SHIFT)
+ 
+-#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | \
+-				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
++#define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_NON_EXEC
+ 
+ #include <asm-generic/memory_model.h>
+ #include <asm-generic/getorder.h>
+diff --git a/arch/sh/include/asm/page.h b/arch/sh/include/asm/page.h
+index 5eef8be3e59f..ea8d68f58e39 100644
+--- a/arch/sh/include/asm/page.h
++++ b/arch/sh/include/asm/page.h
+@@ -182,9 +182,6 @@ typedef struct page *pgtable_t;
+ #endif
+ #define virt_addr_valid(kaddr)	pfn_valid(__pa(kaddr) >> PAGE_SHIFT)
+ 
+-#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
+-				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
+-
+ #include <asm-generic/memory_model.h>
+ #include <asm-generic/getorder.h>
+ 
+diff --git a/arch/sparc/include/asm/page_32.h b/arch/sparc/include/asm/page_32.h
+index b76d59edec8c..478260002836 100644
+--- a/arch/sparc/include/asm/page_32.h
++++ b/arch/sparc/include/asm/page_32.h
+@@ -133,9 +133,6 @@ extern unsigned long pfn_base;
+ #define pfn_valid(pfn)		(((pfn) >= (pfn_base)) && (((pfn)-(pfn_base)) < max_mapnr))
+ #define virt_addr_valid(kaddr)	((((unsigned long)(kaddr)-PAGE_OFFSET)>>PAGE_SHIFT) < max_mapnr)
+ 
+-#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
+-				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
+-
+ #include <asm-generic/memory_model.h>
+ #include <asm-generic/getorder.h>
+ 
+diff --git a/arch/sparc/include/asm/page_64.h b/arch/sparc/include/asm/page_64.h
+index e80f2d5bf62f..254dffd85fb1 100644
+--- a/arch/sparc/include/asm/page_64.h
++++ b/arch/sparc/include/asm/page_64.h
+@@ -158,9 +158,6 @@ extern unsigned long PAGE_OFFSET;
+ 
+ #endif /* !(__ASSEMBLY__) */
+ 
+-#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
+-				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
+-
+ #include <asm-generic/getorder.h>
+ 
+ #endif /* _SPARC64_PAGE_H */
+diff --git a/arch/unicore32/include/asm/page.h b/arch/unicore32/include/asm/page.h
+index 8a89335673f9..96d6bdf180bd 100644
+--- a/arch/unicore32/include/asm/page.h
++++ b/arch/unicore32/include/asm/page.h
+@@ -69,9 +69,6 @@ extern int pfn_valid(unsigned long);
+ 
+ #endif /* !__ASSEMBLY__ */
+ 
+-#define VM_DATA_DEFAULT_FLAGS \
+-	(VM_READ | VM_WRITE | VM_EXEC | VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
+-
+ #include <asm-generic/getorder.h>
+ 
+ #endif
+diff --git a/arch/x86/include/asm/page_types.h b/arch/x86/include/asm/page_types.h
+index c85e15010f48..e27aa6be6320 100644
+--- a/arch/x86/include/asm/page_types.h
++++ b/arch/x86/include/asm/page_types.h
+@@ -35,9 +35,7 @@
+ 
+ #define PAGE_OFFSET		((unsigned long)__PAGE_OFFSET)
+ 
+-#define VM_DATA_DEFAULT_FLAGS \
+-	(((current->personality & READ_IMPLIES_EXEC) ? VM_EXEC : 0 ) | \
+-	 VM_READ | VM_WRITE | VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
++#define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_TSK_EXEC
+ 
+ #define __PHYSICAL_START	ALIGN(CONFIG_PHYSICAL_START, \
+ 				      CONFIG_PHYSICAL_ALIGN)
+diff --git a/arch/x86/um/asm/vm-flags.h b/arch/x86/um/asm/vm-flags.h
+index 7c297e9e2413..df7a3896f5dd 100644
+--- a/arch/x86/um/asm/vm-flags.h
++++ b/arch/x86/um/asm/vm-flags.h
+@@ -9,17 +9,11 @@
+ 
+ #ifdef CONFIG_X86_32
+ 
+-#define VM_DATA_DEFAULT_FLAGS \
+-	(VM_READ | VM_WRITE | \
+-	((current->personality & READ_IMPLIES_EXEC) ? VM_EXEC : 0 ) | \
+-		 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
++#define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_TSK_EXEC
+ 
+ #else
+ 
+-#define VM_DATA_DEFAULT_FLAGS (VM_READ | VM_WRITE | VM_EXEC | \
+-	VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
+-#define VM_STACK_DEFAULT_FLAGS (VM_GROWSDOWN | VM_READ | VM_WRITE | \
+-	VM_EXEC | VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
++#define VM_STACK_DEFAULT_FLAGS (VM_GROWSDOWN | VM_DATA_FLAGS_EXEC)
+ 
+ #endif
+ #endif
+diff --git a/arch/xtensa/include/asm/page.h b/arch/xtensa/include/asm/page.h
+index f4771c29c7e9..37ce25ef92d6 100644
+--- a/arch/xtensa/include/asm/page.h
++++ b/arch/xtensa/include/asm/page.h
+@@ -203,8 +203,5 @@ static inline unsigned long ___pa(unsigned long va)
+ 
+ #endif /* __ASSEMBLY__ */
+ 
+-#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
+-				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
+-
+ #include <asm-generic/memory_model.h>
+ #endif /* _XTENSA_PAGE_H */
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index b0e53ef13ff1..3861524368a4 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -342,6 +342,20 @@ extern unsigned int kobjsize(const void *objp);
+ /* Bits set in the VMA until the stack is in its final location */
+ #define VM_STACK_INCOMPLETE_SETUP	(VM_RAND_READ | VM_SEQ_READ)
+ 
++#define TASK_EXEC ((current->personality & READ_IMPLIES_EXEC) ? VM_EXEC : 0)
++
++/* Common data flag combinations */
++#define VM_DATA_FLAGS_TSK_EXEC	(VM_READ | VM_WRITE | TASK_EXEC | \
++				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
++#define VM_DATA_FLAGS_NON_EXEC	(VM_READ | VM_WRITE | VM_MAYREAD | \
++				 VM_MAYWRITE | VM_MAYEXEC)
++#define VM_DATA_FLAGS_EXEC	(VM_READ | VM_WRITE | VM_EXEC | \
++				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
++
++#ifndef VM_DATA_DEFAULT_FLAGS		/* arch can override this */
++#define VM_DATA_DEFAULT_FLAGS  VM_DATA_FLAGS_EXEC
++#endif
++
+ #ifndef VM_STACK_DEFAULT_FLAGS		/* arch can override this */
+ #define VM_STACK_DEFAULT_FLAGS VM_DATA_DEFAULT_FLAGS
+ #endif
 -- 
-2.21.0 (Apple Git-122.2)
+2.20.1
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
