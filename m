@@ -1,38 +1,124 @@
+Return-Path: <linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH 0/2]  mm/vma: some new flags
+Date: Thu,  5 Mar 2020 12:20:12 +0530
+Message-Id: <1583391014-8170-1-git-send-email-anshuman.khandual@arm.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 MIME-Version: 1.0
-Date: Mon, 9 Mar 2020 10:33:47 +0100
-References: <20200309092950.3042-1-geert@linux-m68k.org>
-In-Reply-To: <20200309092950.3042-1-geert@linux-m68k.org>
-Message-ID: <CAMuHMdVtNjtuxJYtE9npQheDe58iWwKihkz6xUB3iuzgV8hEWg@mail.gmail.com>
-Subject: Re: Build regressions/improvements in v5.6-rc5
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc: linux-um <linux-um@lists.infradead.org>, netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org
+To: linux-mm@kvack.org
+Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-mips@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, hughd@google.com, vbabka@suse.cz, linux-snps-arc@lists.infradead.org, uclinux-h8-devel@lists.sourceforge.jp, linux-xtensa@linux-xtensa.org, Anshuman Khandual <anshuman.khandual@arm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, nios2-dev@lists.rocketboards.org, linuxppc-dev@lists.ozlabs.org
 List-ID: <linux-um.lists.infradead.org>
 
-On Mon, Mar 9, 2020 at 10:31 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> JFYI, when comparing v5.6-rc5[1] to v5.6-rc4[3], the summaries are:
->   - build errors: +2/-0
+The motivation here is to consolidate VMA flag combinations commonly used
+across platforms and reduce code duplication while making it uncluttered
+in general.
 
-  + error: "devm_ioremap_resource"
-[drivers/net/ethernet/xilinx/xilinx_emac.ko] undefined!:  => N/A
-  + error: "devm_ioremap_resource" [drivers/ptp/ptp_ines.ko] undefined!:  => N/A
+This first introduces a default VM_DATA_DEFAULT_FLAGS which platforms can
+easily fall back on without requiring to define any similar data flag
+combinations as they currently do. This also adds some more common data
+flag combinations which are generally used when the platforms decide to
+override the default.
 
-um-all{mod,yes}config
+The second patch consolidates VM_READ, VM_WRITE, VM_EXEC as VM_ACCESS_FLAGS
+extending the existing VMA accessibility concept via vma_is_accessibility().
+VM_ACCESS_FLAGS replaces many other instances which used check all three
+VMA access flags simultaneously.
 
-> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/2c523b344dfa65a3738e7039832044aa133c75fb/ (all 239 configs)
-> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/98d54f81e36ba3bf92172791eba5ca5bd813989b/ (all 239 configs)
+This series is based on v5.6-rc4 after applying these.
 
->   + error: "devm_ioremap_resource" [drivers/net/ethernet/xilinx/xilinx_emac.ko] undefined!:  => N/A
->   + error: "devm_ioremap_resource" [drivers/ptp/ptp_ines.ko] undefined!:  => N/A
-Gr{oetje,eeting}s,
+1. https://patchwork.kernel.org/cover/11399319/
+2. https://patchwork.kernel.org/patch/11399379/
 
-                        Geert
+Changes in V1:
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+- Dropped the [PATCH 3/3] which was adding more vma_is_* wrappers
+- Used VM_DATA_FLAGS_EXEC for VM_DATA_DEFAULT_FLAGS instead per Vlastimil
+- Dropped init use cases for VM_ACCESS_FLAGS as suggested by Vlastimil
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Changes in RFC: (https://patchwork.kernel.org/project/linux-mm/list/?series=249733)
+
+Cc: linux-alpha@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-snps-arc@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-c6x-dev@linux-c6x.org
+Cc: uclinux-h8-devel@lists.sourceforge.jp
+Cc: linux-hexagon@vger.kernel.org
+Cc: linux-ia64@vger.kernel.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-mips@vger.kernel.org
+Cc: nios2-dev@lists.rocketboards.org
+Cc: openrisc@lists.librecores.org
+Cc: linux-parisc@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-riscv@lists.infradead.org
+Cc: linux-s390@vger.kernel.org
+Cc: linux-sh@vger.kernel.org
+Cc: sparclinux@vger.kernel.org
+Cc: linux-um@lists.infradead.org
+Cc: linux-xtensa@linux-xtensa.org
+Cc: linux-mm@kvack.org
+
+Anshuman Khandual (2):
+  mm/vma: Define a default value for VM_DATA_DEFAULT_FLAGS
+  mm/vma: Introduce VM_ACCESS_FLAGS
+
+ arch/alpha/include/asm/page.h        |  3 ---
+ arch/arc/include/asm/page.h          |  2 +-
+ arch/arm/include/asm/page.h          |  4 +---
+ arch/arm/mm/fault.c                  |  2 +-
+ arch/arm64/include/asm/page.h        |  4 +---
+ arch/arm64/mm/fault.c                |  2 +-
+ arch/c6x/include/asm/page.h          |  5 +----
+ arch/csky/include/asm/page.h         |  3 ---
+ arch/h8300/include/asm/page.h        |  2 --
+ arch/hexagon/include/asm/page.h      |  3 +--
+ arch/ia64/include/asm/page.h         |  5 +----
+ arch/m68k/include/asm/page.h         |  3 ---
+ arch/microblaze/include/asm/page.h   |  2 --
+ arch/mips/include/asm/page.h         |  5 +----
+ arch/nds32/include/asm/page.h        |  3 ---
+ arch/nds32/mm/fault.c                |  2 +-
+ arch/nios2/include/asm/page.h        |  3 +--
+ arch/openrisc/include/asm/page.h     |  5 -----
+ arch/parisc/include/asm/page.h       |  3 ---
+ arch/powerpc/include/asm/page.h      |  9 ++-------
+ arch/powerpc/include/asm/page_64.h   |  7 ++-----
+ arch/powerpc/mm/book3s64/pkeys.c     |  2 +-
+ arch/riscv/include/asm/page.h        |  3 +--
+ arch/s390/include/asm/page.h         |  3 +--
+ arch/s390/mm/fault.c                 |  2 +-
+ arch/sh/include/asm/page.h           |  3 ---
+ arch/sparc/include/asm/page_32.h     |  3 ---
+ arch/sparc/include/asm/page_64.h     |  3 ---
+ arch/unicore32/include/asm/page.h    |  3 ---
+ arch/unicore32/mm/fault.c            |  2 +-
+ arch/x86/include/asm/page_types.h    |  4 +---
+ arch/x86/mm/pkeys.c                  |  2 +-
+ arch/x86/um/asm/vm-flags.h           | 10 ++--------
+ arch/xtensa/include/asm/page.h       |  3 ---
+ drivers/staging/gasket/gasket_core.c |  2 +-
+ include/linux/mm.h                   | 20 +++++++++++++++++++-
+ mm/mmap.c                            |  2 +-
+ mm/mprotect.c                        |  4 ++--
+ 38 files changed, 47 insertions(+), 101 deletions(-)
+
+-- 
+2.20.1
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
