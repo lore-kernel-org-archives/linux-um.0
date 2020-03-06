@@ -1,12 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from userp2120.oracle.com ([156.151.31.85])
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jEGAU-0004R9-UQ
- for linux-um@lists.infradead.org; Tue, 17 Mar 2020 17:38:20 +0000
-From: Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH] arch/um: falloc.h needs to be directly included for older libc
-Date: Tue, 17 Mar 2020 17:35:34 +0000
-Message-Id: <1584466534-13248-1-git-send-email-alan.maguire@oracle.com>
+ id 1jA7Hn-0001eZ-Vc
+ for linux-um@lists.infradead.org; Fri, 06 Mar 2020 07:20:45 +0000
+Subject: Re: [PATCH net-next 1/7] um: reject unsupported coalescing params
+References: <20200306010602.1620354-1-kuba@kernel.org>
+ <20200306010602.1620354-2-kuba@kernel.org>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <fd59e667-38cb-6b16-8a27-311c7da523d0@cambridgegreys.com>
+Date: Fri, 6 Mar 2020 06:58:07 +0000
+MIME-Version: 1.0
+In-Reply-To: <20200306010602.1620354-2-kuba@kernel.org>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -15,48 +21,44 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, alex.dewar@gmx.co.uk, erelx.geron@intel.com, johannes.berg@intel.com, arnd@arndb.de, linux-um@lists.infradead.org
-Cc: Alan Maguire <alan.maguire@oracle.com>, brendanhiggins@google.com, linux-kernel@vger.kernel.org
+To: Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net
+Cc: mkubecek@suse.cz, merez@codeaurora.org, pv-drivers@vmware.com, GR-Linux-NIC-Dev@marvell.com, doshir@vmware.com, leon@kernel.org, linux-rdma@vger.kernel.org, richard@nod.at, jdike@addtoit.com, linux-um@lists.infradead.org, edumazet@google.com, jgg@ziepe.ca, dledford@redhat.com, netdev@vger.kernel.org, gregkh@linuxfoundation.org, linux-wireless@vger.kernel.org, manishc@marvell.com, jasowang@redhat.com, kvalo@codeaurora.org, hayeswang@realtek.com
 
-When building UML with glibc 2.17 installed, compilation
-of arch/um/os-Linux/file.c fails due to failure to find
-FALLOC_FL_PUNCH_HOLE and FALLOC_FL_KEEP_SIZE definitions.
+On 06/03/2020 01:05, Jakub Kicinski wrote:
+> Set ethtool_ops->supported_coalesce_params to let
+> the core reject unsupported coalescing parameters.
+> 
+> This driver did not previously reject unsupported parameters.
+> 
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> ---
+>   arch/um/drivers/vector_kern.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
+> index 0ff86391f77d..e98304d0219e 100644
+> --- a/arch/um/drivers/vector_kern.c
+> +++ b/arch/um/drivers/vector_kern.c
+> @@ -1508,6 +1508,7 @@ static int vector_set_coalesce(struct net_device *netdev,
+>   }
+>   
+>   static const struct ethtool_ops vector_net_ethtool_ops = {
+> +	.supported_coalesce_params = ETHTOOL_COALESCE_TX_USECS,
+>   	.get_drvinfo	= vector_net_get_drvinfo,
+>   	.get_link	= ethtool_op_get_link,
+>   	.get_ts_info	= ethtool_op_get_ts_info,
+> 
 
-It appears that /usr/include/bits/fcntl-linux.h (indirectly
-included by /usr/include/fcntl.h) does not include falloc.h
-with an older glibc, whereas a more up-to-date version
-does.
+Acked-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Adding the direct include to file.c resolves the issue
-and does not cause problems for more recent glibc.
-
-Fixes: 50109b5a03b4 ("um: Add support for DISCARD in the UBD Driver")
-Cc: Brendan Higgins <brendanhiggins@google.com>
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
----
- arch/um/os-Linux/file.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/um/os-Linux/file.c b/arch/um/os-Linux/file.c
-index fbda105..5c819f8 100644
---- a/arch/um/os-Linux/file.c
-+++ b/arch/um/os-Linux/file.c
-@@ -8,6 +8,7 @@
- #include <errno.h>
- #include <fcntl.h>
- #include <signal.h>
-+#include <linux/falloc.h>
- #include <sys/ioctl.h>
- #include <sys/mount.h>
- #include <sys/socket.h>
 -- 
-1.8.3.1
-
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
 _______________________________________________
 linux-um mailing list
