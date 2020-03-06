@@ -1,18 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]
- helo=us-smtp-1.mimecast.com)
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jA9Me-0002dA-PT
- for linux-um@lists.infradead.org; Fri, 06 Mar 2020 09:33:53 +0000
-Subject: Re: [PATCH net-next 3/7] tun: reject unsupported coalescing params
+Received: from mail.kernel.org ([198.145.29.99])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jA1Rz-0008Nl-4g
+ for linux-um@lists.infradead.org; Fri, 06 Mar 2020 01:06:52 +0000
+From: Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH net-next 3/7] tun: reject unsupported coalescing params
+Date: Thu,  5 Mar 2020 17:05:58 -0800
+Message-Id: <20200306010602.1620354-4-kuba@kernel.org>
+In-Reply-To: <20200306010602.1620354-1-kuba@kernel.org>
 References: <20200306010602.1620354-1-kuba@kernel.org>
- <20200306010602.1620354-4-kuba@kernel.org>
-From: Jason Wang <jasowang@redhat.com>
-Message-ID: <36c409f7-a8b4-50f6-4933-1c8105755d11@redhat.com>
-Date: Fri, 6 Mar 2020 17:33:16 +0800
 MIME-Version: 1.0
-In-Reply-To: <20200306010602.1620354-4-kuba@kernel.org>
-Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -21,29 +18,41 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net
-Cc: mkubecek@suse.cz, merez@codeaurora.org, pv-drivers@vmware.com, GR-Linux-NIC-Dev@marvell.com, doshir@vmware.com, leon@kernel.org, manishc@marvell.com, linux-rdma@vger.kernel.org, richard@nod.at, jdike@addtoit.com, linux-um@lists.infradead.org, edumazet@google.com, jgg@ziepe.ca, dledford@redhat.com, netdev@vger.kernel.org, gregkh@linuxfoundation.org, linux-wireless@vger.kernel.org, hayeswang@realtek.com, kvalo@codeaurora.org, anton.ivanov@cambridgegreys.com
+To: davem@davemloft.net
+Cc: mkubecek@suse.cz, doshir@vmware.com, pv-drivers@vmware.com, jasowang@redhat.com, edumazet@google.com, anton.ivanov@cambridgegreys.com, merez@codeaurora.org, leon@kernel.org, linux-rdma@vger.kernel.org, richard@nod.at, jgg@ziepe.ca, dledford@redhat.com, Jakub Kicinski <kuba@kernel.org>, hayeswang@realtek.com, jdike@addtoit.com, linux-um@lists.infradead.org, kvalo@codeaurora.org, GR-Linux-NIC-Dev@marvell.com, manishc@marvell.com, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, gregkh@linuxfoundation.org
 
-Ck9uIDIwMjAvMy82IOS4iuWNiDk6MDUsIEpha3ViIEtpY2luc2tpIHdyb3RlOgo+IFNldCBldGh0
-b29sX29wcy0+c3VwcG9ydGVkX2NvYWxlc2NlX3BhcmFtcyB0byBsZXQKPiB0aGUgY29yZSByZWpl
-Y3QgdW5zdXBwb3J0ZWQgY29hbGVzY2luZyBwYXJhbWV0ZXJzLgo+Cj4gVGhpcyBkcml2ZXIgZGlk
-IG5vdCBwcmV2aW91c2x5IHJlamVjdCB1bnN1cHBvcnRlZCBwYXJhbWV0ZXJzLgo+Cj4gU2lnbmVk
-LW9mZi1ieTogSmFrdWIgS2ljaW5za2kgPGt1YmFAa2VybmVsLm9yZz4KPiAtLS0KPiAgIGRyaXZl
-cnMvbmV0L3R1bi5jIHwgMSArCj4gICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykKPgo+
-IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC90dW4uYyBiL2RyaXZlcnMvbmV0L3R1bi5jCj4gaW5k
-ZXggNzlmMjQ4Y2IyODJkLi45ZThmMjM1MTllODIgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9uZXQv
-dHVuLmMKPiArKysgYi9kcml2ZXJzL25ldC90dW4uYwo+IEBAIC0zNTk3LDYgKzM1OTcsNyBAQCBz
-dGF0aWMgaW50IHR1bl9zZXRfY29hbGVzY2Uoc3RydWN0IG5ldF9kZXZpY2UgKmRldiwKPiAgIH0K
-PiAgIAo+ICAgc3RhdGljIGNvbnN0IHN0cnVjdCBldGh0b29sX29wcyB0dW5fZXRodG9vbF9vcHMg
-PSB7Cj4gKwkuc3VwcG9ydGVkX2NvYWxlc2NlX3BhcmFtcyA9IEVUSFRPT0xfQ09BTEVTQ0VfUlhf
-TUFYX0ZSQU1FUywKPiAgIAkuZ2V0X2RydmluZm8JPSB0dW5fZ2V0X2RydmluZm8sCj4gICAJLmdl
-dF9tc2dsZXZlbAk9IHR1bl9nZXRfbXNnbGV2ZWwsCj4gICAJLnNldF9tc2dsZXZlbAk9IHR1bl9z
-ZXRfbXNnbGV2ZWwsCgoKQWNrZWQtYnk6IEphc29uIFdhbmcgPGphc293YW5nQHJlZGhhdC5jb20+
-CgoKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51
-eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlz
-dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
+Set ethtool_ops->supported_coalesce_params to let
+the core reject unsupported coalescing parameters.
+
+This driver did not previously reject unsupported parameters.
+
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+---
+ drivers/net/tun.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+index 79f248cb282d..9e8f23519e82 100644
+--- a/drivers/net/tun.c
++++ b/drivers/net/tun.c
+@@ -3597,6 +3597,7 @@ static int tun_set_coalesce(struct net_device *dev,
+ }
+ 
+ static const struct ethtool_ops tun_ethtool_ops = {
++	.supported_coalesce_params = ETHTOOL_COALESCE_RX_MAX_FRAMES,
+ 	.get_drvinfo	= tun_get_drvinfo,
+ 	.get_msglevel	= tun_get_msglevel,
+ 	.set_msglevel	= tun_set_msglevel,
+-- 
+2.24.1
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
