@@ -1,21 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pj1-f65.google.com ([209.85.216.65])
+Received: from mail-pj1-x1043.google.com ([2607:f8b0:4864:20::1043])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1j8qNo-0003pq-OP
- for linux-um@lists.infradead.org; Mon, 02 Mar 2020 19:05:42 +0000
-Received: by mail-pj1-f65.google.com with SMTP id lt1so201438pjb.2
- for <linux-um@lists.infradead.org>; Mon, 02 Mar 2020 11:05:39 -0800 (PST)
-Date: Mon, 2 Mar 2020 19:05:37 +0000
-From: Luis Chamberlain <mcgrof@kernel.org>
-Subject: Re: [RFC v1 0/6] kunit: create a centralized executor to dispatch
- all KUnit tests
-Message-ID: <20200302190537.GC11244@42.do-not-panic.com>
-References: <20191216220555.245089-1-brendanhiggins@google.com>
- <20200106224022.GX11244@42.do-not-panic.com>
- <CAFd5g456c2Zs7rCvRPgio83G=SrtPGi25zbqAUyTBHspHwtu4w@mail.gmail.com>
+ id 1jDqwc-0003yW-Qk
+ for linux-um@lists.infradead.org; Mon, 16 Mar 2020 14:42:20 +0000
+Received: by mail-pj1-x1043.google.com with SMTP id mq3so8826152pjb.0
+ for <linux-um@lists.infradead.org>; Mon, 16 Mar 2020 07:42:18 -0700 (PDT)
+From: Dmitry Safonov <dima@arista.com>
+Subject: [PATCHv2 35/50] um/sysrq: Remove needless variable sp
+Date: Mon, 16 Mar 2020 14:39:01 +0000
+Message-Id: <20200316143916.195608-36-dima@arista.com>
+In-Reply-To: <20200316143916.195608-1-dima@arista.com>
+References: <20200316143916.195608-1-dima@arista.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAFd5g456c2Zs7rCvRPgio83G=SrtPGi25zbqAUyTBHspHwtu4w@mail.gmail.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -28,103 +24,47 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Brendan Higgins <brendanhiggins@google.com>
-Cc: linux-arch@vger.kernel.org, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>, Greg KH <gregkh@linuxfoundation.org>, Stephen Boyd <sboyd@kernel.org>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, Knut Omang <knut.omang@oracle.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, rppt@linux.ibm.com, linux-um <linux-um@lists.infradead.org>, Logan Gunthorpe <logang@deltatee.com>, KUnit Development <kunit-dev@googlegroups.com>, David Gow <davidgow@google.com>, Shuah Khan <skhan@linuxfoundation.org>, Andrew Morton <akpm@linux-foundation.org>, Iurii Zaikin <yzaikin@google.com>, Alan Maguire <alan.maguire@oracle.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: linux-kernel@vger.kernel.org
+Cc: Petr Mladek <pmladek@suse.com>, Richard Weinberger <richard@nod.at>, Dmitry Safonov <dima@arista.com>, Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jeff Dike <jdike@addtoit.com>, Dmitry Safonov <0x7f454c46@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, linux-um@lists.infradead.org, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, Jiri Slaby <jslaby@suse.com>, Andrew Morton <akpm@linux-foundation.org>, Ingo Molnar <mingo@kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-On Thu, Jan 23, 2020 at 02:40:31PM -0800, Brendan Higgins wrote:
-> On Mon, Jan 6, 2020 at 2:40 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
-> > On Mon, Dec 16, 2019 at 02:05:49PM -0800, Brendan Higgins wrote:
-> > dispatcher could be configurable to run at an arbirary time after boot.
-> > If there are not immediate use cases for that though, then I suppose
-> > this is not a requirement for the dispatcher. But since there exists
-> > another modular test framework with its own dispatcher and it seems the
-> > goal is to merge the work long term, this might preempt the requirement
-> > to define how and when we can dispatch tests post boot.
-> >
-> > And, if we're going to do that, I can suggest that a data structure
-> > instead of just a function init call be used to describe tests to be
-> > placed into an ELF section. With my linker table work this would be
-> > easy, I define section ranges for code describing only executable
-> > routines, but it defines linker tables for when a component in the
-> > kernel would define a data structure, part of which can be a callback.
-> > Such data structure stuffed into an ELF section could allow dynamic
-> > configuration of the dipsatching, even post boot.
-> 
-> The linker table work does sound interesting. Do you have a link?
+`sp' is a needless excercise here.
 
-Sure
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: linux-um@lists.infradead.org
+Signed-off-by: Dmitry Safonov <dima@arista.com>
+---
+ arch/um/kernel/sysrq.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/log/?h=20170620-linker-tables-v8
+diff --git a/arch/um/kernel/sysrq.c b/arch/um/kernel/sysrq.c
+index c71b5ef7ea8c..c831a1c2eb94 100644
+--- a/arch/um/kernel/sysrq.c
++++ b/arch/um/kernel/sysrq.c
+@@ -27,7 +27,6 @@ static const struct stacktrace_ops stackops = {
+ 
+ void show_stack(struct task_struct *task, unsigned long *stack)
+ {
+-	unsigned long *sp = stack;
+ 	struct pt_regs *segv_regs = current->thread.segv_regs;
+ 	int i;
+ 
+@@ -38,10 +37,9 @@ void show_stack(struct task_struct *task, unsigned long *stack)
+ 	}
+ 
+ 	if (!stack)
+-		sp = get_stack_pointer(task, segv_regs);
++		stack = get_stack_pointer(task, segv_regs);
+ 
+ 	pr_info("Stack:\n");
+-	stack = sp;
+ 	for (i = 0; i < 3 * STACKSLOTS_PER_LINE; i++) {
+ 		if (kstack_end(stack))
+ 			break;
+-- 
+2.25.1
 
-I had dropped this long ago mostly due to the fact that my use case
-(removal of dead code) was more long term, and not immediate so the
-use case wasn't there yet.
-
-I have been meaning to pick this work up again.
-
-> I was thinking about dynamic dispatching, actually. I thought it would
-> be handy to be able to build all tests into a single kernel and then
-> run different tests on different invocations.
-
-For built-in code it would be up to it to manage that. The linker table
-stuff would just allow a way for you to systematically aggregate
-data into an ELF section in a generic way. It does have a built in
-light weight sort mechanism, if you opt out of that and say wanted
-to do your own order it'd be up to how you program it in on the data
-structure and dispatching after that.
-
-> Also, for post boot dynamic dispatching, you should check out Alan's
-> debugfs patches:
-> 
-> https://lore.kernel.org/linux-kselftest/CAFd5g46657gZ36PaP8Pi999hPPgBU2Kz94nrMspS-AzGwdBF+g@mail.gmail.com/T/#m210cadbeee267e5c5a9253d83b7b7ca723d1f871
-> 
-> They look pretty handy!
-
-Sure.
-
-> > I think this is a good stepping stone forward then, and to allow
-> > dynamic configuration of the dispatcher could mean eventual extensions
-> > to kunit's init stuff to stuff init calls into a data structure which
-> > can then allow configuration of the dispatching. One benefit that the
-> > linker table work *may* be able to help here with is that it allows
-> > an easy way to create kunit specific ordering, at linker time.
-> > There is also an example of addressing / generalizing dynamic / run time
-> > changes of ordering, by using the x86 IOMMU initialization as an
-> > example case. We don't have an easy way to do this today, but if kunit
-> > could benefit from such framework, it'd be another use case for
-> > the linker table work. That is, the ability to easilly allow
-> > dynamically modifying run time ordering of code through ELF sections.
-> >
-> > > In addition, by dispatching tests from a single location, we can
-> > > guarantee that all KUnit tests run after late_init is complete, which
-> > > was a concern during the initial KUnit patchset review (this has not
-> > > been a problem in practice, but resolving with certainty is nevertheless
-> > > desirable).
-> >
-> > Indeed, the concern is just a real semantics limitations. With the tests
-> > *always* running after all subsystem init stuff, we know we'd have a
-> > real full kernel ready.
-> 
-> Yep.
-> 
-> > It does beg the question if this means kunit is happy to not be a tool
-> > to test pre basic setup stuff (terminology used in init.c, meaning prior
-> > to running all init levels). I suspect this is the case.
-> 
-> Not sure. I still haven't seen any cases where this is necessary, so I
-> am not super worried about it. Regardless, I don't think this patchset
-> really changes anything in that regard, we are moving from late_init
-> to after late_init, so it isn't that big of a change for most use
-> cases.
-> 
-> Please share if you can think of some things that need to be tested in
-> early init.
-
-If and when we get to that point we can deal with it then. My instincts
-tell me that for early init code we should probably be specially crafted
-tests and have they should have their own hand crafted dispatchers.
-
-  Luis
 
 _______________________________________________
 linux-um mailing list
