@@ -1,100 +1,55 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-wr1-x442.google.com ([2a00:1450:4864:20::442])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jIfdP-0008Mo-1Z
- for linux-um@lists.infradead.org; Sun, 29 Mar 2020 21:38:24 +0000
-Received: by mail-wr1-x442.google.com with SMTP id a25so18903755wrd.0
- for <linux-um@lists.infradead.org>; Sun, 29 Mar 2020 14:38:22 -0700 (PDT)
+Return-Path: <richard@nod.at>
+Date: Sun, 29 Mar 2020 23:54:07 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <606921391.56755.1585518847045.JavaMail.zimbra@nod.at>
+In-Reply-To: <7f8b86f1-3759-c9ff-6216-a7104edb8030@cambridgegreys.com>
+References: <20200124221401.210449-1-brendanhiggins@google.com> <CAFd5g44eznV-9cPf4JVpsJo93+R8YCqUwBqRf+PbjaRMizy1aQ@mail.gmail.com> <7f8b86f1-3759-c9ff-6216-a7104edb8030@cambridgegreys.com>
+Subject: Re: [PATCH v3] uml: make CONFIG_STATIC_LINK actually static
 MIME-Version: 1.0
-References: <20200220084014.238768-1-leon@kernel.org>
- <20200220084014.238768-2-leon@kernel.org>
- <3857ae89-3cfc-a409-e0d6-ce2dab008d9b@cambridgegreys.com>
-In-Reply-To: <3857ae89-3cfc-a409-e0d6-ce2dab008d9b@cambridgegreys.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Sun, 29 Mar 2020 23:38:10 +0200
-Message-ID: <CAFLxGvxem_z-0sX4THYzqZnEW0xXjsXW1zP99VZeDRJXvZYjvQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] um: Don't overwrite ethtool driver version
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, Leon Romanovsky <leon@kernel.org>, Leon Romanovsky <leonro@mellanox.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+To: anton ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Brendan Higgins <brendanhiggins@google.com>, Jeff Dike <jdike@addtoit.com>, Geert Uytterhoeven <geert@linux-m68k.org>, James McMechan <james_mcmechan@hotmail.com>, linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, davidgow <davidgow@google.com>
+List-ID: <linux-um.lists.infradead.org>
 
-On Thu, Feb 20, 2020 at 8:35 PM Anton Ivanov
-<anton.ivanov@cambridgegreys.com> wrote:
->
->
->
-> On 20/02/2020 08:40, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@mellanox.com>
-> >
-> >
-> > In-tree drivers don't need to manage internal version because
-> > they are aligned to the global Linux kernel version, which is
-> > reported by default with "ethtool -i".
-> >
-> > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> > ---
-> >   arch/um/drivers/net_kern.c    | 1 -
-> >   arch/um/drivers/vector_kern.c | 2 --
-> >   2 files changed, 3 deletions(-)
-> >
-> > diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
-> > index 35ebeebfc1a8..af07733c2dc8 100644
-> > --- a/arch/um/drivers/net_kern.c
-> > +++ b/arch/um/drivers/net_kern.c
-> > @@ -266,7 +266,6 @@ static void uml_net_get_drvinfo(struct net_device *dev,
-> >                               struct ethtool_drvinfo *info)
-> >   {
-> >       strlcpy(info->driver, DRIVER_NAME, sizeof(info->driver));
-> > -     strlcpy(info->version, "42", sizeof(info->version));
-> >   }
-> >
-> >   static const struct ethtool_ops uml_net_ethtool_ops = {
-> > diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-> > index 0ff86391f77d..9693dfca7651 100644
-> > --- a/arch/um/drivers/vector_kern.c
-> > +++ b/arch/um/drivers/vector_kern.c
-> > @@ -46,7 +46,6 @@
-> >
-> >
-> >   #define DRIVER_NAME "uml-vector"
-> > -#define DRIVER_VERSION "01"
-> >   struct vector_cmd_line_arg {
-> >       struct list_head list;
-> >       int unit;
-> > @@ -1378,7 +1377,6 @@ static void vector_net_get_drvinfo(struct net_device *dev,
-> >                               struct ethtool_drvinfo *info)
-> >   {
-> >       strlcpy(info->driver, DRIVER_NAME, sizeof(info->driver));
-> > -     strlcpy(info->version, DRIVER_VERSION, sizeof(info->version));
-> >   }
-> >
-> >   static int vector_net_load_bpf_flash(struct net_device *dev,
-> > --
-> > 2.24.1
-> >
-> >
->
-> Acked-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+----- Urspr=C3=BCngliche Mail -----
+> Von: "anton ivanov" <anton.ivanov@cambridgegreys.com>
+> An: "Brendan Higgins" <brendanhiggins@google.com>, "Jeff Dike" <jdike@add=
+toit.com>, "richard" <richard@nod.at>, "Geert
+> Uytterhoeven" <geert@linux-m68k.org>, "James McMechan" <james_mcmechan@ho=
+tmail.com>
+> CC: "linux-um" <linux-um@lists.infradead.org>, "linux-kernel" <linux-kern=
+el@vger.kernel.org>, "davidgow"
+> <davidgow@google.com>
+> Gesendet: Samstag, 8. Februar 2020 08:56:58
+> Betreff: Re: [PATCH v3] uml: make CONFIG_STATIC_LINK actually static
 
-Both patches applied, thanks!
+> On 08/02/2020 01:07, Brendan Higgins wrote:
+>> On Fri, Jan 24, 2020 at 2:14 PM Brendan Higgins
+>> <brendanhiggins@google.com> wrote:
+>>>
+>>> Currently, CONFIG_STATIC_LINK can be enabled with options which cannot
+>>> be statically linked, namely UML_NET_VECTOR, UML_NET_VDE, and
+>>> UML_NET_PCAP; this is because glibc tries to load NSS which does not
+>>> support being statically linked. So make CONFIG_STATIC_LINK depend on
+>>> !UML_NET_VECTOR && !UML_NET_VDE && !UML_NET_PCAP.
+>>>
+>>> Link:
+>>> https://lore.kernel.org/lkml/f658f317-be54-ed75-8296-c373c2dcc697@cambr=
+idgegreys.com/#t
+>>> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+>>> ---
+>>=20
+>> Ping.
+>=20
+> ICMP echo reply,
+>=20
+> I thought I acked it :)
+>=20
+> If not - apologies.
 
--- 
+Applied, thanks!
+
 Thanks,
 //richard
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
