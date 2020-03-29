@@ -1,19 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-wm1-x341.google.com ([2a00:1450:4864:20::341])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jIdjh-0006xm-K5
- for linux-um@lists.infradead.org; Sun, 29 Mar 2020 19:36:46 +0000
-Received: by mail-wm1-x341.google.com with SMTP id f74so7913928wmf.0
- for <linux-um@lists.infradead.org>; Sun, 29 Mar 2020 12:36:43 -0700 (PDT)
-MIME-Version: 1.0
+ id 1jIdfp-0005QK-M6
+ for linux-um@lists.infradead.org; Sun, 29 Mar 2020 19:32:47 +0000
+Message-ID: <738a7f3393e1b161521777e3422513f9b6ac7c7b.camel@sipsolutions.net>
+Subject: Re: [RFC PATCH] um: implement CONFIG_CONSTRUCTORS for modules
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Sun, 29 Mar 2020 21:32:41 +0200
+In-Reply-To: <CAFLxGvz+vs+zD8=Y+eE1RA=QhkWYPea5R9o5vrhLs3jz4G-wGg@mail.gmail.com>
+ (sfid-20200329_213137_517787_49D6A01C)
 References: <20200206204018.98f745aed1a1.I986f68ddedf1cb4ef59abf4fbcb5931ce99bc2e8@changeid>
  <CAFLxGvz+vs+zD8=Y+eE1RA=QhkWYPea5R9o5vrhLs3jz4G-wGg@mail.gmail.com>
- <738a7f3393e1b161521777e3422513f9b6ac7c7b.camel@sipsolutions.net>
-In-Reply-To: <738a7f3393e1b161521777e3422513f9b6ac7c7b.camel@sipsolutions.net>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Sun, 29 Mar 2020 21:36:31 +0200
-Message-ID: <CAFLxGvw7ucjGr0xv2_KRg3G7jBmL+bv+H3jMqFShFbWpP-xxbg@mail.gmail.com>
-Subject: Re: [RFC PATCH] um: implement CONFIG_CONSTRUCTORS for modules
+ (sfid-20200329_213137_517787_49D6A01C)
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -26,47 +26,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
+To: Richard Weinberger <richard.weinberger@gmail.com>
 Cc: linux-um <linux-um@lists.infradead.org>, Patricia Alfonso <trishalfonso@google.com>
 
-On Sun, Mar 29, 2020 at 9:32 PM Johannes Berg <johannes@sipsolutions.net> wrote:
->
-> On Sun, 2020-03-29 at 21:31 +0200, Richard Weinberger wrote:
-> > On Thu, Feb 6, 2020 at 8:40 PM Johannes Berg <johannes@sipsolutions.net> wrote:
-> > > From: Johannes Berg <johannes.berg@intel.com>
-> > >
-> > > My previous attempt at implementing CONFIG_CONSTRUCTORS failed,
-> > > in part because it was badly done, but also because we just need
-> > > the gcc/libc constructors to run really early for what is really
-> > > a relatively normal userspace program. For some more details, see
-> > > commit 87c9366e1725 ("Revert "um: Enable CONFIG_CONSTRUCTORS"").
-> > >
-> > > On the other hand, we *do* need constructors for modules, if we
-> > > want GCOV_KERNEL (and eventually KASAN) to work there, since the
-> > > constructors that gcc emits will need to be run.
-> > >
-> > > So here's another attempt to implement CONFIG_CONSTRUCTORS: don't
-> > > touch the ones in the main binary, and don't do anything in the
-> > > main init code (do_ctors()), but still allow enabling the symbol
-> > > and associated code for modules.
-> >
-> > I have to admit I don't know all details about constructors.
-> > Do I understand this correctly that constructor code is never code which
-> > depends on kernel internals? So it will always be gcc internal stuff?
->
-> Yeah, more or less. You *can* mark something as
-> __attribute__((constructor)) and the compiler will emit it properly, but
-> that's not really something we do in the kernel.
+On Sun, 2020-03-29 at 21:31 +0200, Richard Weinberger wrote:
+> On Thu, Feb 6, 2020 at 8:40 PM Johannes Berg <johannes@sipsolutions.net> wrote:
+> > From: Johannes Berg <johannes.berg@intel.com>
+> > 
+> > My previous attempt at implementing CONFIG_CONSTRUCTORS failed,
+> > in part because it was badly done, but also because we just need
+> > the gcc/libc constructors to run really early for what is really
+> > a relatively normal userspace program. For some more details, see
+> > commit 87c9366e1725 ("Revert "um: Enable CONFIG_CONSTRUCTORS"").
+> > 
+> > On the other hand, we *do* need constructors for modules, if we
+> > want GCOV_KERNEL (and eventually KASAN) to work there, since the
+> > constructors that gcc emits will need to be run.
+> > 
+> > So here's another attempt to implement CONFIG_CONSTRUCTORS: don't
+> > touch the ones in the main binary, and don't do anything in the
+> > main init code (do_ctors()), but still allow enabling the symbol
+> > and associated code for modules.
+> 
+> I have to admit I don't know all details about constructors.
+> Do I understand this correctly that constructor code is never code which
+> depends on kernel internals? So it will always be gcc internal stuff?
 
-Yeah, I grepped for that gcc attribute and didn't find anything because first
-I thought the main use cause of CONFIG_CONSTRUCTORS is supporting
-such things.
-As soon this is the case, UML will fail badly. But this can always happen. ;-)
+Yeah, more or less. You *can* mark something as
+__attribute__((constructor)) and the compiler will emit it properly, but
+that's not really something we do in the kernel.
 
+johannes
 
--- 
-Thanks,
-//richard
 
 _______________________________________________
 linux-um mailing list
