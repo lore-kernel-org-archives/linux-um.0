@@ -1,17 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-wm1-x343.google.com ([2a00:1450:4864:20::343])
+Received: from mail-wr1-x442.google.com ([2a00:1450:4864:20::442])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jIfnn-0003aj-JX
- for linux-um@lists.infradead.org; Sun, 29 Mar 2020 21:49:08 +0000
-Received: by mail-wm1-x343.google.com with SMTP id c81so17718999wmd.4
- for <linux-um@lists.infradead.org>; Sun, 29 Mar 2020 14:49:07 -0700 (PDT)
+ id 1jIffT-0001f6-LV
+ for linux-um@lists.infradead.org; Sun, 29 Mar 2020 21:40:32 +0000
+Received: by mail-wr1-x442.google.com with SMTP id s1so18854724wrv.5
+ for <linux-um@lists.infradead.org>; Sun, 29 Mar 2020 14:40:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200213132651.20506-1-johannes@sipsolutions.net>
-In-Reply-To: <20200213132651.20506-1-johannes@sipsolutions.net>
+References: <20200317004507.1513370-1-krisman@collabora.com>
+In-Reply-To: <20200317004507.1513370-1-krisman@collabora.com>
 From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Sun, 29 Mar 2020 23:48:54 +0200
-Message-ID: <CAFLxGvx_BvBYNDqxCfBBvciGFCxs8Fw00iDz6RNLVw9GF-eomw@mail.gmail.com>
-Subject: Re: [PATCH 0/6] um: external time travel
+Date: Sun, 29 Mar 2020 23:40:19 +0200
+Message-ID: <CAFLxGvzGo8CPbH1NAo_d2NYHaJDZjYEELz=dufKtTwcBkZif_A@mail.gmail.com>
+Subject: Re: [PATCH 0/2] fixes to the hypervisor ubd thread
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,22 +24,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-um <linux-um@lists.infradead.org>
+To: Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, kernel@collabora.com, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-On Thu, Feb 13, 2020 at 2:27 PM Johannes Berg <johannes@sipsolutions.net> wrote:
+On Tue, Mar 17, 2020 at 1:45 AM Gabriel Krisman Bertazi
+<krisman@collabora.com> wrote:
 >
 > Hi,
 >
-> Here's a respin of this - I've been testing this for a few weeks
-> (and some of it months) now and things are working really well,
-> so I think it's *almost* ready to go.
+> While debugging a somewhat related issue, I ran into two issues I
+> believe can cause the hypervisor to write garbage to the pipe.
 >
-> The only problem is patch 3 - the vhost-user spec changes *still*
-> haven't gotten merged :-(
+> This was find by visual inspection and is only slightly tested.  It
+> seems to partially some the problems my test case shows.
+>
+> Please, let me know what you think
 
-Since the vhost-user spec is now merged in qemu we can also merge this. :-)
-I removed all internal commit tags.
+Both patches make sense. Thanks for fixing, applied.
 
 -- 
 Thanks,
