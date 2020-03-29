@@ -1,23 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jIp5h-0007SJ-Jg
- for linux-um@lists.infradead.org; Mon, 30 Mar 2020 07:44:15 +0000
-Message-ID: <2cee72779294550a3ad143146283745b5cccb5fc.camel@sipsolutions.net>
-Subject: Re: [PATCH] UML: add support for KASAN under x86_64
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Mon, 30 Mar 2020 09:43:58 +0200
-In-Reply-To: <CACT4Y+YzM5bwvJ=yryrz1_y=uh=NX+2PNu4pLFaqQ2BMS39Fdg@mail.gmail.com>
- (sfid-20200320_161845_514535_9A0BEF71)
+ id 1jIdG9-0005sv-6R
+ for linux-um@lists.infradead.org; Sun, 29 Mar 2020 19:06:14 +0000
+Date: Sun, 29 Mar 2020 21:06:05 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <1606942453.56384.1585508765254.JavaMail.zimbra@nod.at>
+In-Reply-To: <4b8c1696f658b4c6c393956734d580593b55c4c0.camel@sipsolutions.net>
 References: <20200226004608.8128-1-trishalfonso@google.com>
  <CAKFsvULd7w21T_nEn8QiofQGMovFBmi94dq2W_-DOjxf5oD-=w@mail.gmail.com>
  <4b8c1696f658b4c6c393956734d580593b55c4c0.camel@sipsolutions.net>
- <674ad16d7de34db7b562a08b971bdde179158902.camel@sipsolutions.net>
- <CACT4Y+bdxmRmr57JO_k0whhnT2BqcSA=Jwa5M6=9wdyOryv6Ug@mail.gmail.com>
- <ded22d68e623d2663c96a0e1c81d660b9da747bc.camel@sipsolutions.net>
- <CACT4Y+YzM5bwvJ=yryrz1_y=uh=NX+2PNu4pLFaqQ2BMS39Fdg@mail.gmail.com>
- (sfid-20200320_161845_514535_9A0BEF71)
+Subject: Re: [PATCH] UML: add support for KASAN under x86_64
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -27,44 +20,37 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Dmitry Vyukov <dvyukov@google.com>
-Cc: Patricia Alfonso <trishalfonso@google.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, Brendan Higgins <brendanhiggins@google.com>, LKML <linux-kernel@vger.kernel.org>, kasan-dev <kasan-dev@googlegroups.com>, linux-um@lists.infradead.org, David Gow <davidgow@google.com>, Andrey Ryabinin <aryabinin@virtuozzo.com>, anton.ivanov@cambridgegreys.com
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Patricia Alfonso <trishalfonso@google.com>, linux-um <linux-um@lists.infradead.org>, Jeff Dike <jdike@addtoit.com>, Brendan Higgins <brendanhiggins@google.com>, linux-kernel <linux-kernel@vger.kernel.org>, kasan-dev <kasan-dev@googlegroups.com>, davidgow <davidgow@google.com>, Andrey Ryabinin <aryabinin@virtuozzo.com>, Dmitry Vyukov <dvyukov@google.com>, anton ivanov <anton.ivanov@cambridgegreys.com>
 
-On Fri, 2020-03-20 at 16:18 +0100, Dmitry Vyukov wrote:
-> 
-> > Wait ... Now you say 0x7fbfffc000, but that is almost fine? I think you
-> > confused the values - because I see, on userspace, the following:
-> 
-> Oh, sorry, I copy-pasted wrong number. I meant 0x7fff8000. 
-
-Right, ok.
-
-> Then I would expect 0x1000 0000 0000 to work, but you say it doesn't...
-
-So it just occurred to me - as I was mentioning this whole thing to
-Richard - that there's probably somewhere some check about whether some
-space is userspace or not.
-
-I'm beginning to think that we shouldn't just map this outside of the
-kernel memory system, but properly treat it as part of the memory that's
-inside. And also use KASAN_VMALLOC.
-
-We can probably still have it at 0x7fff8000, just need to make sure we
-actually map it? I tried with vm_area_add_early() but it didn't really
-work once you have vmalloc() stuff...
-
-I dunno.
-
-johannes
-
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIkpvaGFubmVzIEJlcmciIDxq
+b2hhbm5lc0BzaXBzb2x1dGlvbnMubmV0Pgo+IEFuOiAiUGF0cmljaWEgQWxmb25zbyIgPHRyaXNo
+YWxmb25zb0Bnb29nbGUuY29tPiwgIkplZmYgRGlrZSIgPGpkaWtlQGFkZHRvaXQuY29tPiwgInJp
+Y2hhcmQiIDxyaWNoYXJkQG5vZC5hdD4sICJhbnRvbgo+IGl2YW5vdiIgPGFudG9uLml2YW5vdkBj
+YW1icmlkZ2VncmV5cy5jb20+LCAiQW5kcmV5IFJ5YWJpbmluIiA8YXJ5YWJpbmluQHZpcnR1b3p6
+by5jb20+LCAiRG1pdHJ5IFZ5dWtvdiIKPiA8ZHZ5dWtvdkBnb29nbGUuY29tPiwgIkJyZW5kYW4g
+SGlnZ2lucyIgPGJyZW5kYW5oaWdnaW5zQGdvb2dsZS5jb20+LCAiZGF2aWRnb3ciIDxkYXZpZGdv
+d0Bnb29nbGUuY29tPgo+IENDOiAia2FzYW4tZGV2IiA8a2FzYW4tZGV2QGdvb2dsZWdyb3Vwcy5j
+b20+LCAibGludXgta2VybmVsIiA8bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZz4sICJsaW51
+eC11bSIKPiA8bGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZz4KPiBHZXNlbmRldDogTWl0dHdv
+Y2gsIDExLiBNw6RyeiAyMDIwIDExOjMyOjAwCj4gQmV0cmVmZjogUmU6IFtQQVRDSF0gVU1MOiBh
+ZGQgc3VwcG9ydCBmb3IgS0FTQU4gdW5kZXIgeDg2XzY0Cgo+IEhpLAo+IAo+PiBIaSBhbGwsIEkg
+anVzdCB3YW50IHRvIGJ1bXAgdGhpcyBzbyB3ZSBjYW4gZ2V0IGFsbCB0aGUgY29tbWVudHMgd2hp
+bGUKPj4gdGhpcyBpcyBzdGlsbCBmcmVzaCBpbiBldmVyeW9uZSdzIG1pbmRzLiBJIHdvdWxkIGxv
+dmUgaWYgc29tZSBVTUwKPj4gbWFpbnRhaW5lcnMgY291bGQgZ2l2ZSB0aGVpciB0aG91Z2h0cyEK
+PiAKPiBJJ20gbm90IHRoZSBtYWludGFpbmVyLCBhbmQgSSBkb24ndCBrbm93IHdoZXJlIFJpY2hh
+cmQgaXMsIGJ1dCBJIGp1c3QKPiB0cmllZCB3aXRoIHRoZSB0ZXN0X2thc2FuLmtvIG1vZHVsZSwg
+YW5kIHRoYXQgc2VlbXMgdG8gd29yay4gRGlkIHlvdQo+IHRlc3QgdGhhdCB0b28/IEkgd2FzIHN1
+cnByaXNlZCB0byBzZWUgdGhpcyBiZWNhdXNlIHlvdSBzYWlkIHlvdSBkaWRuJ3QKPiB0ZXN0IG1v
+ZHVsZXMsIGJ1dCBzdXJlbHkgdGhpcyB3b3VsZCd2ZSBiZWVuIHRoZSBlYXNpZXN0IHdheT8KClNv
+cnJ5IGZvciB2YW5pc2hpbmcuCgpJIHJlYWQgdGhvdWdodCB0aGUgZGlzY3Vzc2lvbiBhbmQgaXQg
+c2VlbXMgbGlrZSB0aGUgcGF0Y2ggaXMgbm90IHJlYWR5LApyaWdodD8KCkpvaGFubmVzLCB0aGFu
+a3MgYSBsb3QgZm9yIHBvaW50aW5nIG91dCBhbGwgdGhlc2UgaXNzdWVzLgoKVGhhbmtzLAovL3Jp
+Y2hhcmQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxp
+bnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9s
+aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
 
