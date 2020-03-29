@@ -1,17 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x642.google.com ([2607:f8b0:4864:20::642])
+Received: from mail-wm1-x344.google.com ([2a00:1450:4864:20::344])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jIvhe-0004nw-Po
- for linux-um@lists.infradead.org; Mon, 30 Mar 2020 14:47:52 +0000
-Received: by mail-pl1-x642.google.com with SMTP id x1so6813080plm.4
- for <linux-um@lists.infradead.org>; Mon, 30 Mar 2020 07:47:50 -0700 (PDT)
-From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v4 09/25] um lkl: basic kernel console support
-Date: Mon, 30 Mar 2020 23:45:41 +0900
-Message-Id: <0c8b9f122563372acea307b738f833a211ef28c5.1585579244.git.thehajime@gmail.com>
-In-Reply-To: <cover.1585579244.git.thehajime@gmail.com>
-References: <cover.1585579244.git.thehajime@gmail.com>
+ id 1jIfuS-0006Xu-55
+ for linux-um@lists.infradead.org; Sun, 29 Mar 2020 21:56:01 +0000
+Received: by mail-wm1-x344.google.com with SMTP id c187so17787045wme.1
+ for <linux-um@lists.infradead.org>; Sun, 29 Mar 2020 14:55:59 -0700 (PDT)
 MIME-Version: 1.0
+References: <20200216213624.800463-1-sjoerd.simons@collabora.co.uk>
+ <74c04f11-4b67-d1a7-7d05-197a229b245c@cambridgegreys.com>
+In-Reply-To: <74c04f11-4b67-d1a7-7d05-197a229b245c@cambridgegreys.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Sun, 29 Mar 2020 23:55:47 +0200
+Message-ID: <CAFLxGvzuDJs7B7w6eF+dC634pVrK6BJPyfUOvXoACL7toYwoPg@mail.gmail.com>
+Subject: Re: [PATCH] um: vector: Avoid NULL ptr deference if transport is unset
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,94 +25,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Octavian Purdila <tavi.purdila@gmail.com>, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Akira Moroo <retrage01@gmail.com>
+To: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Richard Weinberger <richard@nod.at>, Sjoerd Simons <sjoerd.simons@collabora.co.uk>, linux-um <linux-um@lists.infradead.org>, Jeff Dike <jdike@addtoit.com>, LKML <linux-kernel@vger.kernel.org>
 
-From: Octavian Purdila <tavi.purdila@gmail.com>
+On Mon, Feb 17, 2020 at 8:54 AM Anton Ivanov
+<anton.ivanov@cambridgegreys.com> wrote:
+>
+> On 16/02/2020 21:36, Sjoerd Simons wrote:
+> > When the transport option of a vec isn't set strncmp ends up being
+> > called on a NULL pointer. Better not do that.
+> >
+> > Signed-off-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+> >
+> > ---
+> >
+> >   arch/um/drivers/vector_kern.c | 3 +++
+> >   1 file changed, 3 insertions(+)
+> >
+> > diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
+> > index 0ff86391f77d..ca90666c0b61 100644
+> > --- a/arch/um/drivers/vector_kern.c
+> > +++ b/arch/um/drivers/vector_kern.c
+> > @@ -198,6 +198,9 @@ static int get_transport_options(struct arglist *def)
+> >       long parsed;
+> >       int result = 0;
+> >
+> > +     if (transport == NULL)
+> > +             return -EINVAL;
+> > +
+> >       if (vector != NULL) {
+> >               if (kstrtoul(vector, 10, &parsed) == 0) {
+> >                       if (parsed == 0) {
+> >
+> Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-This patch adds a basic structure of console support in kernel.  Write
-operations are deferred to the host print operation.
+Applied, thanks!
 
-Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
----
- arch/um/lkl/include/uapi/asm/host_ops.h |  4 +++
- arch/um/lkl/kernel/console.c            | 42 +++++++++++++++++++++++++
- 2 files changed, 46 insertions(+)
- create mode 100644 arch/um/lkl/kernel/console.c
-
-diff --git a/arch/um/lkl/include/uapi/asm/host_ops.h b/arch/um/lkl/include/uapi/asm/host_ops.h
-index c9f77dd7fbe7..986340ba9d8d 100644
---- a/arch/um/lkl/include/uapi/asm/host_ops.h
-+++ b/arch/um/lkl/include/uapi/asm/host_ops.h
-@@ -17,6 +17,8 @@ struct lkl_jmp_buf {
-  * These operations must be provided by a host library or by the application
-  * itself.
-  *
-+ * @print - optional operation that receives console messages
-+ *
-  * @sem_alloc - allocate a host semaphore an initialize it to count
-  * @sem_free - free a host semaphore
-  * @sem_up - perform an up operation on the semaphore
-@@ -70,6 +72,8 @@ struct lkl_jmp_buf {
-  * @jmp_buf_longjmp - perform a jump back to the saved jump buffer
-  */
- struct lkl_host_operations {
-+	void (*print)(const char *str, int len);
-+
- 	struct lkl_sem *(*sem_alloc)(int count);
- 	void (*sem_free)(struct lkl_sem *sem);
- 	void (*sem_up)(struct lkl_sem *sem);
-diff --git a/arch/um/lkl/kernel/console.c b/arch/um/lkl/kernel/console.c
-new file mode 100644
-index 000000000000..54d7f756c6da
---- /dev/null
-+++ b/arch/um/lkl/kernel/console.c
-@@ -0,0 +1,42 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/console.h>
-+#include <asm/host_ops.h>
-+
-+static void console_write(struct console *con, const char *str,
-+			  unsigned int len)
-+{
-+	if (lkl_ops->print)
-+		lkl_ops->print(str, len);
-+}
-+
-+#ifdef CONFIG_LKL_EARLY_CONSOLE
-+static struct console lkl_boot_console = {
-+	.name	= "lkl_boot_console",
-+	.write	= console_write,
-+	.flags	= CON_PRINTBUFFER | CON_BOOT,
-+	.index	= -1,
-+};
-+
-+int __init lkl_boot_console_init(void)
-+{
-+	register_console(&lkl_boot_console);
-+	return 0;
-+}
-+early_initcall(lkl_boot_console_init);
-+#endif
-+
-+static struct console lkl_console = {
-+	.name	= "lkl_console",
-+	.write	= console_write,
-+	.flags	= CON_PRINTBUFFER,
-+	.index	= -1,
-+};
-+
-+static int __init lkl_console_init(void)
-+{
-+	register_console(&lkl_console);
-+	return 0;
-+}
-+core_initcall(lkl_console_init);
 -- 
-2.21.0 (Apple Git-122.2)
-
+Thanks,
+//richard
 
 _______________________________________________
 linux-um mailing list
