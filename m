@@ -1,534 +1,690 @@
-Return-Path: <anshuman.khandual@arm.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH 1/2] mm/vma: Define a default value for VM_DATA_DEFAULT_FLAGS
-Date: Thu,  5 Mar 2020 12:20:13 +0530
-Message-Id: <1583391014-8170-2-git-send-email-anshuman.khandual@arm.com>
-In-Reply-To: <1583391014-8170-1-git-send-email-anshuman.khandual@arm.com>
-References: <1583391014-8170-1-git-send-email-anshuman.khandual@arm.com>
-To: linux-mm@kvack.org
-Cc: hughd@google.com, vbabka@suse.cz, Anshuman Khandual <anshuman.khandual@arm.com>, Richard Henderson <rth@twiddle.net>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Mark Salter <msalter@redhat.com>, Guo Ren <guoren@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, Brian Cain <bcain@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paulburton@kernel.org>, Nick Hu <nickhu@andestech.com>, Ley Foon Tan <ley.foon.tan@intel.com>, Jonas Bonn <jonas@southpole.se>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Michael Ellerman <mpe@ellerman.id.au>, Paul Walmsley <paul.walmsley@sifive.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Rich Felker <dalias@libc.org>, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Jeff Dike <jdike@addtoit.com>, Chris Zankel <chris@zankel.net>, Andrew Morton <akpm@linux-foundation.org>, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pj1-x1042.google.com ([2607:f8b0:4864:20::1042])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jIvh1-0004gi-Is
+ for linux-um@lists.infradead.org; Mon, 30 Mar 2020 14:47:14 +0000
+Received: by mail-pj1-x1042.google.com with SMTP id w9so7681112pjh.1
+ for <linux-um@lists.infradead.org>; Mon, 30 Mar 2020 07:47:11 -0700 (PDT)
+From: Hajime Tazaki <thehajime@gmail.com>
+Subject: [RFC v4 05/25] um lkl: kernel threads support
+Date: Mon, 30 Mar 2020 23:45:37 +0900
+Message-Id: <bc1bc204aa5182b587cd1fb7bc0258a6613ed763.1585579244.git.thehajime@gmail.com>
+In-Reply-To: <cover.1585579244.git.thehajime@gmail.com>
+References: <cover.1585579244.git.thehajime@gmail.com>
+MIME-Version: 1.0
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
+Cc: linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, Octavian Purdila <tavi.purdila@gmail.com>, Lai Jiangshan <jiangshanlai@gmail.com>, Akira Moroo <retrage01@gmail.com>, Patrick Collins <pscollins@google.com>, linux-kernel-library@freelists.org, Yuan Liu <liuyuan@google.com>
 
-There are many platforms with exact same value for VM_DATA_DEFAULT_FLAGS
-This creates a default value for VM_DATA_DEFAULT_FLAGS in line with the
-existing VM_STACK_DEFAULT_FLAGS. While here, also define some more macros
-with standard VMA access flag combinations that are used frequently across
-many platforms. Apart from simplification, this reduces code duplication
-as well.
+From: Octavian Purdila <tavi.purdila@gmail.com>
 
-Cc: Richard Henderson <rth@twiddle.net>
-Cc: Vineet Gupta <vgupta@synopsys.com>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Mark Salter <msalter@redhat.com>
-Cc: Guo Ren <guoren@kernel.org>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Brian Cain <bcain@codeaurora.org>
-Cc: Tony Luck <tony.luck@intel.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Michal Simek <monstr@monstr.eu>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Paul Burton <paulburton@kernel.org>
-Cc: Nick Hu <nickhu@andestech.com>
-Cc: Ley Foon Tan <ley.foon.tan@intel.com>
-Cc: Jonas Bonn <jonas@southpole.se>
-Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
-Cc: Rich Felker <dalias@libc.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Guan Xuetao <gxt@pku.edu.cn>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Chris Zankel <chris@zankel.net>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-alpha@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-snps-arc@lists.infradead.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-c6x-dev@linux-c6x.org
-Cc: uclinux-h8-devel@lists.sourceforge.jp
-Cc: linux-hexagon@vger.kernel.org
-Cc: linux-ia64@vger.kernel.org
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: linux-mips@vger.kernel.org
-Cc: nios2-dev@lists.rocketboards.org
-Cc: openrisc@lists.librecores.org
-Cc: linux-parisc@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-riscv@lists.infradead.org
-Cc: linux-s390@vger.kernel.org
-Cc: linux-sh@vger.kernel.org
-Cc: sparclinux@vger.kernel.org
-Cc: linux-um@lists.infradead.org
-Cc: linux-xtensa@linux-xtensa.org
-Cc: linux-mm@kvack.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+LKL does not support user processes but it must support kernel threads
+as part as the normal kernel work-flow. It uses host operations to
+create and terminate host threads that are going to run the kernel
+threads. It also uses semaphores to synchronize those threads and to
+allow the Linux kernel scheduler to control how the kernel threads
+run.
+
+Each kernel thread runs in a host threads and has a host semaphore
+associated with it - the thread's scheduling semaphore. The semaphore
+counter is initialized to 0. The first thing a kernel thread does
+after getting spawned, before running any kernel code, is to perform a
+down operation to block the thread.
+
+The kernel controls host threads scheduling by performing up and down
+operations on the scheduling semaphore. In __switch_context an up
+operation on the next thread is performed to wake up a blocked thread,
+and a down operation is performed on the prev thread to block it.
+
+A thread is terminated by marking it in free_thread_info and
+performing an up operation on the scheduling semaphore at which point
+the marked thread will terminate itself.
+
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: Patrick Collins <pscollins@google.com>
+Cc: Yuan Liu <liuyuan@google.com>
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
 ---
- arch/alpha/include/asm/page.h      |  3 ---
- arch/arc/include/asm/page.h        |  2 +-
- arch/arm/include/asm/page.h        |  4 +---
- arch/arm64/include/asm/page.h      |  4 +---
- arch/c6x/include/asm/page.h        |  5 +----
- arch/csky/include/asm/page.h       |  3 ---
- arch/h8300/include/asm/page.h      |  2 --
- arch/hexagon/include/asm/page.h    |  3 +--
- arch/ia64/include/asm/page.h       |  5 +----
- arch/m68k/include/asm/page.h       |  3 ---
- arch/microblaze/include/asm/page.h |  2 --
- arch/mips/include/asm/page.h       |  5 +----
- arch/nds32/include/asm/page.h      |  3 ---
- arch/nios2/include/asm/page.h      |  3 +--
- arch/openrisc/include/asm/page.h   |  5 -----
- arch/parisc/include/asm/page.h     |  3 ---
- arch/powerpc/include/asm/page.h    |  9 ++-------
- arch/powerpc/include/asm/page_64.h |  7 ++-----
- arch/riscv/include/asm/page.h      |  3 +--
- arch/s390/include/asm/page.h       |  3 +--
- arch/sh/include/asm/page.h         |  3 ---
- arch/sparc/include/asm/page_32.h   |  3 ---
- arch/sparc/include/asm/page_64.h   |  3 ---
- arch/unicore32/include/asm/page.h  |  3 ---
- arch/x86/include/asm/page_types.h  |  4 +---
- arch/x86/um/asm/vm-flags.h         | 10 ++--------
- arch/xtensa/include/asm/page.h     |  3 ---
- include/linux/mm.h                 | 14 ++++++++++++++
- 28 files changed, 31 insertions(+), 89 deletions(-)
+ arch/um/lkl/include/asm/thread_info.h   |  70 ++++++++
+ arch/um/lkl/include/uapi/asm/host_ops.h |  55 ++++++
+ arch/um/lkl/kernel/cpu.c                | 223 +++++++++++++++++++++++
+ arch/um/lkl/kernel/threads.c            | 227 ++++++++++++++++++++++++
+ 4 files changed, 575 insertions(+)
+ create mode 100644 arch/um/lkl/include/asm/thread_info.h
+ create mode 100644 arch/um/lkl/kernel/cpu.c
+ create mode 100644 arch/um/lkl/kernel/threads.c
 
-diff --git a/arch/alpha/include/asm/page.h b/arch/alpha/include/asm/page.h
-index f3fb2848470a..e241bd88880f 100644
---- a/arch/alpha/include/asm/page.h
-+++ b/arch/alpha/include/asm/page.h
-@@ -90,9 +90,6 @@ typedef struct page *pgtable_t;
- #define virt_addr_valid(kaddr)	pfn_valid(__pa(kaddr) >> PAGE_SHIFT)
- #endif /* CONFIG_DISCONTIGMEM */
- 
--#define VM_DATA_DEFAULT_FLAGS		(VM_READ | VM_WRITE | VM_EXEC | \
--					 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
--
- #include <asm-generic/memory_model.h>
- #include <asm-generic/getorder.h>
- 
-diff --git a/arch/arc/include/asm/page.h b/arch/arc/include/asm/page.h
-index 0a32e8cfd074..b0dfed0f12be 100644
---- a/arch/arc/include/asm/page.h
-+++ b/arch/arc/include/asm/page.h
-@@ -102,7 +102,7 @@ typedef pte_t * pgtable_t;
- #define virt_addr_valid(kaddr)  pfn_valid(virt_to_pfn(kaddr))
- 
- /* Default Permissions for stack/heaps pages (Non Executable) */
--#define VM_DATA_DEFAULT_FLAGS   (VM_READ | VM_WRITE | VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
-+#define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_NON_EXEC
- 
- #define WANT_PAGE_VIRTUAL   1
- 
-diff --git a/arch/arm/include/asm/page.h b/arch/arm/include/asm/page.h
-index c2b75cba26df..11b058a72a5b 100644
---- a/arch/arm/include/asm/page.h
-+++ b/arch/arm/include/asm/page.h
-@@ -161,9 +161,7 @@ extern int pfn_valid(unsigned long);
- 
- #endif /* !__ASSEMBLY__ */
- 
--#define VM_DATA_DEFAULT_FLAGS \
--	(((current->personality & READ_IMPLIES_EXEC) ? VM_EXEC : 0) | \
--	 VM_READ | VM_WRITE | VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
-+#define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_TSK_EXEC
- 
- #include <asm-generic/getorder.h>
- 
-diff --git a/arch/arm64/include/asm/page.h b/arch/arm64/include/asm/page.h
-index d39ddb258a04..cb4e1e6ca385 100644
---- a/arch/arm64/include/asm/page.h
-+++ b/arch/arm64/include/asm/page.h
-@@ -32,9 +32,7 @@ extern int pfn_valid(unsigned long);
- 
- #endif /* !__ASSEMBLY__ */
- 
--#define VM_DATA_DEFAULT_FLAGS \
--	(((current->personality & READ_IMPLIES_EXEC) ? VM_EXEC : 0) | \
--	 VM_READ | VM_WRITE | VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
-+#define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_TSK_EXEC
- 
- #include <asm-generic/getorder.h>
- 
-diff --git a/arch/c6x/include/asm/page.h b/arch/c6x/include/asm/page.h
-index 70db1e7632bc..40079899084d 100644
---- a/arch/c6x/include/asm/page.h
-+++ b/arch/c6x/include/asm/page.h
-@@ -2,10 +2,7 @@
- #ifndef _ASM_C6X_PAGE_H
- #define _ASM_C6X_PAGE_H
- 
--#define VM_DATA_DEFAULT_FLAGS \
--	(VM_READ | VM_WRITE | \
--	((current->personality & READ_IMPLIES_EXEC) ? VM_EXEC : 0) | \
--		 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
-+#define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_TSK_EXEC
- 
- #include <asm-generic/page.h>
- 
-diff --git a/arch/csky/include/asm/page.h b/arch/csky/include/asm/page.h
-index 9738eacefdc7..9b98bf31d57c 100644
---- a/arch/csky/include/asm/page.h
-+++ b/arch/csky/include/asm/page.h
-@@ -85,9 +85,6 @@ extern unsigned long va_pa_offset;
- 				 PHYS_OFFSET_OFFSET)
- #define virt_to_page(x)	(mem_map + MAP_NR(x))
- 
--#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
--				VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
--
- #define pfn_to_kaddr(x)	__va(PFN_PHYS(x))
- 
- #include <asm-generic/memory_model.h>
-diff --git a/arch/h8300/include/asm/page.h b/arch/h8300/include/asm/page.h
-index 8da5124ad344..53e037544239 100644
---- a/arch/h8300/include/asm/page.h
-+++ b/arch/h8300/include/asm/page.h
-@@ -6,8 +6,6 @@
- #include <linux/types.h>
- 
- #define MAP_NR(addr) (((uintptr_t)(addr)-PAGE_OFFSET) >> PAGE_SHIFT)
--#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
--				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
- 
- #ifndef __ASSEMBLY__
- extern unsigned long rom_length;
-diff --git a/arch/hexagon/include/asm/page.h b/arch/hexagon/include/asm/page.h
-index ee31f36f48f3..7cbf719c578e 100644
---- a/arch/hexagon/include/asm/page.h
-+++ b/arch/hexagon/include/asm/page.h
-@@ -93,8 +93,7 @@ struct page;
- #define virt_to_page(kaddr) pfn_to_page(PFN_DOWN(__pa(kaddr)))
- 
- /* Default vm area behavior is non-executable.  */
--#define VM_DATA_DEFAULT_FLAGS (VM_READ | VM_WRITE | \
--				VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
-+#define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_NON_EXEC
- 
- #define pfn_valid(pfn) ((pfn) < max_mapnr)
- #define virt_addr_valid(kaddr) pfn_valid(__pa(kaddr) >> PAGE_SHIFT)
-diff --git a/arch/ia64/include/asm/page.h b/arch/ia64/include/asm/page.h
-index 5798bd2b462c..b69a5499d75b 100644
---- a/arch/ia64/include/asm/page.h
-+++ b/arch/ia64/include/asm/page.h
-@@ -218,10 +218,7 @@ get_order (unsigned long size)
- 
- #define PAGE_OFFSET			RGN_BASE(RGN_KERNEL)
- 
--#define VM_DATA_DEFAULT_FLAGS		(VM_READ | VM_WRITE |					\
--					 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC |		\
--					 (((current->personality & READ_IMPLIES_EXEC) != 0)	\
--					  ? VM_EXEC : 0))
-+#define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_TSK_EXEC
- 
- #define GATE_ADDR		RGN_BASE(RGN_GATE)
- 
-diff --git a/arch/m68k/include/asm/page.h b/arch/m68k/include/asm/page.h
-index 05e1e1e77a9a..9d2ef0a51720 100644
---- a/arch/m68k/include/asm/page.h
-+++ b/arch/m68k/include/asm/page.h
-@@ -55,9 +55,6 @@ extern unsigned long _ramend;
- #define __phys_to_pfn(paddr)	((unsigned long)((paddr) >> PAGE_SHIFT))
- #define __pfn_to_phys(pfn)	PFN_PHYS(pfn)
- 
--#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
--				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
--
- #include <asm-generic/getorder.h>
- 
- #endif /* _M68K_PAGE_H */
-diff --git a/arch/microblaze/include/asm/page.h b/arch/microblaze/include/asm/page.h
-index f4b44b24b02e..43bd560b7b67 100644
---- a/arch/microblaze/include/asm/page.h
-+++ b/arch/microblaze/include/asm/page.h
-@@ -197,8 +197,6 @@ extern int page_is_ram(unsigned long pfn);
- 
- #ifdef CONFIG_MMU
- 
--#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
--				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
- #endif /* CONFIG_MMU */
- 
- #endif /* __KERNEL__ */
-diff --git a/arch/mips/include/asm/page.h b/arch/mips/include/asm/page.h
-index 0ba4ce6e2bf3..e2f503fc7a84 100644
---- a/arch/mips/include/asm/page.h
-+++ b/arch/mips/include/asm/page.h
-@@ -253,10 +253,7 @@ extern bool __virt_addr_valid(const volatile void *kaddr);
- #define virt_addr_valid(kaddr)						\
- 	__virt_addr_valid((const volatile void *) (kaddr))
- 
--#define VM_DATA_DEFAULT_FLAGS \
--	(VM_READ | VM_WRITE | \
--	 ((current->personality & READ_IMPLIES_EXEC) ? VM_EXEC : 0) | \
--	 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
-+#define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_TSK_EXEC
- 
- #include <asm-generic/memory_model.h>
- #include <asm-generic/getorder.h>
-diff --git a/arch/nds32/include/asm/page.h b/arch/nds32/include/asm/page.h
-index 86b32014c5f9..add33a7f02c8 100644
---- a/arch/nds32/include/asm/page.h
-+++ b/arch/nds32/include/asm/page.h
-@@ -59,9 +59,6 @@ typedef struct page *pgtable_t;
- 
- #endif /* !__ASSEMBLY__ */
- 
--#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
--				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
--
- #endif /* __KERNEL__ */
- 
- #endif
-diff --git a/arch/nios2/include/asm/page.h b/arch/nios2/include/asm/page.h
-index 79fcac61f6ef..6a989819a7c1 100644
---- a/arch/nios2/include/asm/page.h
-+++ b/arch/nios2/include/asm/page.h
-@@ -98,8 +98,7 @@ static inline bool pfn_valid(unsigned long pfn)
- # define virt_to_page(vaddr)	pfn_to_page(PFN_DOWN(virt_to_phys(vaddr)))
- # define virt_addr_valid(vaddr)	pfn_valid(PFN_DOWN(virt_to_phys(vaddr)))
- 
--# define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | \
--				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
-+# define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_NON_EXEC
- 
- #include <asm-generic/memory_model.h>
- 
-diff --git a/arch/openrisc/include/asm/page.h b/arch/openrisc/include/asm/page.h
-index 01069db59454..aab6e64d6db4 100644
---- a/arch/openrisc/include/asm/page.h
-+++ b/arch/openrisc/include/asm/page.h
-@@ -86,11 +86,6 @@ typedef struct page *pgtable_t;
- 
- #endif /* __ASSEMBLY__ */
- 
--
--#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
--				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
--
--
- #include <asm-generic/memory_model.h>
- #include <asm-generic/getorder.h>
- 
-diff --git a/arch/parisc/include/asm/page.h b/arch/parisc/include/asm/page.h
-index 796ae29e9b9a..6b3f6740a6a6 100644
---- a/arch/parisc/include/asm/page.h
-+++ b/arch/parisc/include/asm/page.h
-@@ -180,9 +180,6 @@ extern int npmem_ranges;
- #define page_to_phys(page)	(page_to_pfn(page) << PAGE_SHIFT)
- #define virt_to_page(kaddr)     pfn_to_page(__pa(kaddr) >> PAGE_SHIFT)
- 
--#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
--				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
--
- #include <asm-generic/memory_model.h>
- #include <asm-generic/getorder.h>
- #include <asm/pdc.h>
-diff --git a/arch/powerpc/include/asm/page.h b/arch/powerpc/include/asm/page.h
-index 080a0bf8e54b..3ee8df0f66e0 100644
---- a/arch/powerpc/include/asm/page.h
-+++ b/arch/powerpc/include/asm/page.h
-@@ -240,13 +240,8 @@ static inline bool pfn_valid(unsigned long pfn)
-  * and needs to be executable.  This means the whole heap ends
-  * up being executable.
-  */
--#define VM_DATA_DEFAULT_FLAGS32 \
--	(((current->personality & READ_IMPLIES_EXEC) ? VM_EXEC : 0) | \
--				 VM_READ | VM_WRITE | \
--				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
--
--#define VM_DATA_DEFAULT_FLAGS64	(VM_READ | VM_WRITE | \
--				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
-+#define VM_DATA_DEFAULT_FLAGS32	VM_DATA_FLAGS_TSK_EXEC
-+#define VM_DATA_DEFAULT_FLAGS64	VM_DATA_FLAGS_NON_EXEC
- 
- #ifdef __powerpc64__
- #include <asm/page_64.h>
-diff --git a/arch/powerpc/include/asm/page_64.h b/arch/powerpc/include/asm/page_64.h
-index 5962797f784a..79a9b7c6a132 100644
---- a/arch/powerpc/include/asm/page_64.h
-+++ b/arch/powerpc/include/asm/page_64.h
-@@ -94,11 +94,8 @@ extern u64 ppc64_pft_size;
-  * stack by default, so in the absence of a PT_GNU_STACK program header
-  * we turn execute permission off.
-  */
--#define VM_STACK_DEFAULT_FLAGS32	(VM_READ | VM_WRITE | VM_EXEC | \
--					 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
--
--#define VM_STACK_DEFAULT_FLAGS64	(VM_READ | VM_WRITE | \
--					 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
-+#define VM_STACK_DEFAULT_FLAGS32	VM_DATA_FLAGS_EXEC
-+#define VM_STACK_DEFAULT_FLAGS64	VM_DATA_FLAGS_NON_EXEC
- 
- #define VM_STACK_DEFAULT_FLAGS \
- 	(is_32bit_task() ? \
-diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
-index 8ca1930caa44..2d50f76efe48 100644
---- a/arch/riscv/include/asm/page.h
-+++ b/arch/riscv/include/asm/page.h
-@@ -137,8 +137,7 @@ extern phys_addr_t __phys_addr_symbol(unsigned long x);
- 
- #define virt_addr_valid(vaddr)	(pfn_valid(virt_to_pfn(vaddr)))
- 
--#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | \
--				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
-+#define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_NON_EXEC
- 
- #include <asm-generic/memory_model.h>
- #include <asm-generic/getorder.h>
-diff --git a/arch/s390/include/asm/page.h b/arch/s390/include/asm/page.h
-index 1019efd85b9d..089f49230966 100644
---- a/arch/s390/include/asm/page.h
-+++ b/arch/s390/include/asm/page.h
-@@ -176,8 +176,7 @@ static inline int devmem_is_allowed(unsigned long pfn)
- 
- #define virt_addr_valid(kaddr)	pfn_valid(__pa(kaddr) >> PAGE_SHIFT)
- 
--#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | \
--				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
-+#define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_NON_EXEC
- 
- #include <asm-generic/memory_model.h>
- #include <asm-generic/getorder.h>
-diff --git a/arch/sh/include/asm/page.h b/arch/sh/include/asm/page.h
-index 5eef8be3e59f..ea8d68f58e39 100644
---- a/arch/sh/include/asm/page.h
-+++ b/arch/sh/include/asm/page.h
-@@ -182,9 +182,6 @@ typedef struct page *pgtable_t;
- #endif
- #define virt_addr_valid(kaddr)	pfn_valid(__pa(kaddr) >> PAGE_SHIFT)
- 
--#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
--				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
--
- #include <asm-generic/memory_model.h>
- #include <asm-generic/getorder.h>
- 
-diff --git a/arch/sparc/include/asm/page_32.h b/arch/sparc/include/asm/page_32.h
-index b76d59edec8c..478260002836 100644
---- a/arch/sparc/include/asm/page_32.h
-+++ b/arch/sparc/include/asm/page_32.h
-@@ -133,9 +133,6 @@ extern unsigned long pfn_base;
- #define pfn_valid(pfn)		(((pfn) >= (pfn_base)) && (((pfn)-(pfn_base)) < max_mapnr))
- #define virt_addr_valid(kaddr)	((((unsigned long)(kaddr)-PAGE_OFFSET)>>PAGE_SHIFT) < max_mapnr)
- 
--#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
--				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
--
- #include <asm-generic/memory_model.h>
- #include <asm-generic/getorder.h>
- 
-diff --git a/arch/sparc/include/asm/page_64.h b/arch/sparc/include/asm/page_64.h
-index e80f2d5bf62f..254dffd85fb1 100644
---- a/arch/sparc/include/asm/page_64.h
-+++ b/arch/sparc/include/asm/page_64.h
-@@ -158,9 +158,6 @@ extern unsigned long PAGE_OFFSET;
- 
- #endif /* !(__ASSEMBLY__) */
- 
--#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
--				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
--
- #include <asm-generic/getorder.h>
- 
- #endif /* _SPARC64_PAGE_H */
-diff --git a/arch/unicore32/include/asm/page.h b/arch/unicore32/include/asm/page.h
-index 8a89335673f9..96d6bdf180bd 100644
---- a/arch/unicore32/include/asm/page.h
-+++ b/arch/unicore32/include/asm/page.h
-@@ -69,9 +69,6 @@ extern int pfn_valid(unsigned long);
- 
- #endif /* !__ASSEMBLY__ */
- 
--#define VM_DATA_DEFAULT_FLAGS \
--	(VM_READ | VM_WRITE | VM_EXEC | VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
--
- #include <asm-generic/getorder.h>
- 
- #endif
-diff --git a/arch/x86/include/asm/page_types.h b/arch/x86/include/asm/page_types.h
-index c85e15010f48..e27aa6be6320 100644
---- a/arch/x86/include/asm/page_types.h
-+++ b/arch/x86/include/asm/page_types.h
-@@ -35,9 +35,7 @@
- 
- #define PAGE_OFFSET		((unsigned long)__PAGE_OFFSET)
- 
--#define VM_DATA_DEFAULT_FLAGS \
--	(((current->personality & READ_IMPLIES_EXEC) ? VM_EXEC : 0 ) | \
--	 VM_READ | VM_WRITE | VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
-+#define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_TSK_EXEC
- 
- #define __PHYSICAL_START	ALIGN(CONFIG_PHYSICAL_START, \
- 				      CONFIG_PHYSICAL_ALIGN)
-diff --git a/arch/x86/um/asm/vm-flags.h b/arch/x86/um/asm/vm-flags.h
-index 7c297e9e2413..df7a3896f5dd 100644
---- a/arch/x86/um/asm/vm-flags.h
-+++ b/arch/x86/um/asm/vm-flags.h
-@@ -9,17 +9,11 @@
- 
- #ifdef CONFIG_X86_32
- 
--#define VM_DATA_DEFAULT_FLAGS \
--	(VM_READ | VM_WRITE | \
--	((current->personality & READ_IMPLIES_EXEC) ? VM_EXEC : 0 ) | \
--		 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
-+#define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_TSK_EXEC
- 
- #else
- 
--#define VM_DATA_DEFAULT_FLAGS (VM_READ | VM_WRITE | VM_EXEC | \
--	VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
--#define VM_STACK_DEFAULT_FLAGS (VM_GROWSDOWN | VM_READ | VM_WRITE | \
--	VM_EXEC | VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
-+#define VM_STACK_DEFAULT_FLAGS (VM_GROWSDOWN | VM_DATA_FLAGS_EXEC)
- 
- #endif
- #endif
-diff --git a/arch/xtensa/include/asm/page.h b/arch/xtensa/include/asm/page.h
-index f4771c29c7e9..37ce25ef92d6 100644
---- a/arch/xtensa/include/asm/page.h
-+++ b/arch/xtensa/include/asm/page.h
-@@ -203,8 +203,5 @@ static inline unsigned long ___pa(unsigned long va)
- 
- #endif /* __ASSEMBLY__ */
- 
--#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
--				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
--
- #include <asm-generic/memory_model.h>
- #endif /* _XTENSA_PAGE_H */
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index b0e53ef13ff1..3861524368a4 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -342,6 +342,20 @@ extern unsigned int kobjsize(const void *objp);
- /* Bits set in the VMA until the stack is in its final location */
- #define VM_STACK_INCOMPLETE_SETUP	(VM_RAND_READ | VM_SEQ_READ)
- 
-+#define TASK_EXEC ((current->personality & READ_IMPLIES_EXEC) ? VM_EXEC : 0)
+diff --git a/arch/um/lkl/include/asm/thread_info.h b/arch/um/lkl/include/asm/thread_info.h
+new file mode 100644
+index 000000000000..da4e75fc7b10
+--- /dev/null
++++ b/arch/um/lkl/include/asm/thread_info.h
+@@ -0,0 +1,70 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_LKL_THREAD_INFO_H
++#define _ASM_LKL_THREAD_INFO_H
 +
-+/* Common data flag combinations */
-+#define VM_DATA_FLAGS_TSK_EXEC	(VM_READ | VM_WRITE | TASK_EXEC | \
-+				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
-+#define VM_DATA_FLAGS_NON_EXEC	(VM_READ | VM_WRITE | VM_MAYREAD | \
-+				 VM_MAYWRITE | VM_MAYEXEC)
-+#define VM_DATA_FLAGS_EXEC	(VM_READ | VM_WRITE | VM_EXEC | \
-+				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
++#define THREAD_SIZE	       (4096)
 +
-+#ifndef VM_DATA_DEFAULT_FLAGS		/* arch can override this */
-+#define VM_DATA_DEFAULT_FLAGS  VM_DATA_FLAGS_EXEC
++#ifndef __ASSEMBLY__
++#include <asm/types.h>
++#include <asm/processor.h>
++#include <asm/host_ops.h>
++
++typedef struct {
++	unsigned long seg;
++} mm_segment_t;
++
++struct thread_info {
++	struct task_struct *task;
++	unsigned long flags;
++	int preempt_count;
++	mm_segment_t addr_limit;
++	struct lkl_sem *sched_sem;
++	struct lkl_jmp_buf sched_jb;
++	bool dead;
++	lkl_thread_t tid;
++	struct task_struct *prev_sched;
++	unsigned long stackend;
++};
++
++#define INIT_THREAD_INFO(tsk)				\
++{							\
++	.task		= &tsk,				\
++	.preempt_count	= INIT_PREEMPT_COUNT,		\
++	.flags		= 0,				\
++	.addr_limit	= KERNEL_DS,			\
++}
++
++/* how to get the thread information struct from C */
++extern struct thread_info *_current_thread_info;
++static inline struct thread_info *current_thread_info(void)
++{
++	return _current_thread_info;
++}
++
++/* thread information allocation */
++unsigned long *alloc_thread_stack_node(struct task_struct *, int node);
++void free_thread_stack(struct task_struct *tsk);
++
++void threads_init(void);
++void threads_cleanup(void);
++
++#define TIF_SYSCALL_TRACE		0
++#define TIF_NOTIFY_RESUME		1
++#define TIF_SIGPENDING			2
++#define TIF_NEED_RESCHED		3
++#define TIF_RESTORE_SIGMASK		4
++#define TIF_MEMDIE			5
++#define TIF_NOHZ			6
++#define TIF_SCHED_JB			7
++#define TIF_HOST_THREAD			8
++
++#define __HAVE_THREAD_FUNCTIONS
++
++#define task_thread_info(task)	((struct thread_info *)(task)->stack)
++#define task_stack_page(task)	((task)->stack)
++void setup_thread_stack(struct task_struct *p, struct task_struct *org);
++#define end_of_stack(p) (&task_thread_info(p)->stackend)
++
++#endif /* __ASSEMBLY__ */
++
 +#endif
+diff --git a/arch/um/lkl/include/uapi/asm/host_ops.h b/arch/um/lkl/include/uapi/asm/host_ops.h
+index 6bbc94c120be..19924fc7c718 100644
+--- a/arch/um/lkl/include/uapi/asm/host_ops.h
++++ b/arch/um/lkl/include/uapi/asm/host_ops.h
+@@ -17,15 +17,70 @@ struct lkl_jmp_buf {
+  * These operations must be provided by a host library or by the application
+  * itself.
+  *
++ * @sem_alloc - allocate a host semaphore an initialize it to count
++ * @sem_free - free a host semaphore
++ * @sem_up - perform an up operation on the semaphore
++ * @sem_down - perform a down operation on the semaphore
++ *
++ * @mutex_alloc - allocate and initialize a host mutex; the recursive parameter
++ * determines if the mutex is recursive or not
++ * @mutex_free - free a host mutex
++ * @mutex_lock - acquire the mutex
++ * @mutex_unlock - release the mutex
++ *
++ * @thread_create - create a new thread and run f(arg) in its context; returns a
++ * thread handle or 0 if the thread could not be created
++ * @thread_detach - on POSIX systems, free up resources held by
++ * pthreads. Noop on Win32.
++ * @thread_exit - terminates the current thread
++ * @thread_join - wait for the given thread to terminate. Returns 0
++ * for success, -1 otherwise
++ *
+  * @mem_alloc - allocate memory
+  * @mem_free - free memory
+  *
++ * @gettid - returns the host thread id of the caller, which need not
++ * be the same as the handle returned by thread_create
++ *
++ * @jmp_buf_set - runs the give function and setups a jump back point by saving
++ * the context in the jump buffer; jmp_buf_longjmp can be called from the give
++ * function or any callee in that function to return back to the jump back
++ * point
++ *
++ * NOTE: we can't return from jmp_buf_set before calling jmp_buf_longjmp or
++ * otherwise the saved context (stack) is not going to be valid, so we must pass
++ * the function that will eventually call longjmp here
++ *
++ * @jmp_buf_longjmp - perform a jump back to the saved jump buffer
+  */
+ struct lkl_host_operations {
++	struct lkl_sem *(*sem_alloc)(int count);
++	void (*sem_free)(struct lkl_sem *sem);
++	void (*sem_up)(struct lkl_sem *sem);
++	void (*sem_down)(struct lkl_sem *sem);
 +
- #ifndef VM_STACK_DEFAULT_FLAGS		/* arch can override this */
- #define VM_STACK_DEFAULT_FLAGS VM_DATA_DEFAULT_FLAGS
++	struct lkl_mutex *(*mutex_alloc)(int recursive);
++	void (*mutex_free)(struct lkl_mutex *mutex);
++	void (*mutex_lock)(struct lkl_mutex *mutex);
++	void (*mutex_unlock)(struct lkl_mutex *mutex);
++
++	lkl_thread_t (*thread_create)(void (*f)(void *), void *arg);
++	void (*thread_detach)(void);
++	void (*thread_exit)(void);
++	int (*thread_join)(lkl_thread_t tid);
++	lkl_thread_t (*thread_self)(void);
++	int (*thread_equal)(lkl_thread_t a, lkl_thread_t b);
++
+ 	void *(*mem_alloc)(unsigned long mem);
+ 	void (*mem_free)(void *mem);
++
++	long (*gettid)(void);
++
++	void (*jmp_buf_set)(struct lkl_jmp_buf *jmpb, void (*f)(void));
++	void (*jmp_buf_longjmp)(struct lkl_jmp_buf *jmpb, int val);
+ };
+ 
++int lkl_printf(const char *fmt, ...);
+ void lkl_bug(const char *fmt, ...);
+ 
  #endif
+diff --git a/arch/um/lkl/kernel/cpu.c b/arch/um/lkl/kernel/cpu.c
+new file mode 100644
+index 000000000000..125af3b2d5dd
+--- /dev/null
++++ b/arch/um/lkl/kernel/cpu.c
+@@ -0,0 +1,223 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/kernel.h>
++#include <linux/sched/stat.h>
++#include <asm/host_ops.h>
++#include <asm/cpu.h>
++#include <asm/thread_info.h>
++#include <asm/unistd.h>
++#include <asm/sched.h>
++#include <asm/syscalls.h>
++
++/*
++ * This structure is used to get access to the "LKL CPU" that allows us to run
++ * Linux code. Because we have to deal with various synchronization requirements
++ * between idle thread, system calls, interrupts, "reentrancy", CPU shutdown,
++ * imbalance wake up (i.e. acquire the CPU from one thread and release it from
++ * another), we can't use a simple synchronization mechanism such as (recursive)
++ * mutex or semaphore. Instead, we use a mutex and a bunch of status data plus a
++ * semaphore.
++ */
++static struct lkl_cpu {
++	/* lock that protects the CPU status data */
++	struct lkl_mutex *lock;
++	/*
++	 * Since we must free the cpu lock during shutdown we need a
++	 * synchronization algorithm between lkl_cpu_shutdown() and the CPU
++	 * access functions since lkl_cpu_get() gets called from thread
++	 * destructor callback functions which may be scheduled after
++	 * lkl_cpu_shutdown() has freed the cpu lock.
++	 *
++	 * An atomic counter is used to keep track of the number of running
++	 * CPU access functions and allow the shutdown function to wait for
++	 * them.
++	 *
++	 * The shutdown functions adds MAX_THREADS to this counter which allows
++	 * the CPU access functions to check if the shutdown process has
++	 * started.
++	 *
++	 * This algorithm assumes that we never have more the MAX_THREADS
++	 * requesting CPU access.
++	 */
++	#define MAX_THREADS 1000000
++	unsigned int shutdown_gate;
++	bool irqs_pending;
++	/* no of threads waiting the CPU */
++	unsigned int sleepers;
++	/* no of times the current thread got the CPU */
++	unsigned int count;
++	/* current thread that owns the CPU */
++	lkl_thread_t owner;
++	/* semaphore for threads waiting the CPU */
++	struct lkl_sem *sem;
++	/* semaphore used for shutdown */
++	struct lkl_sem *shutdown_sem;
++} cpu;
++
++static int __cpu_try_get_lock(int n)
++{
++	lkl_thread_t self;
++
++	if (__sync_fetch_and_add(&cpu.shutdown_gate, n) >= MAX_THREADS)
++		return -2;
++
++	lkl_ops->mutex_lock(cpu.lock);
++
++	if (cpu.shutdown_gate >= MAX_THREADS)
++		return -1;
++
++	self = lkl_ops->thread_self();
++
++	if (cpu.owner && !lkl_ops->thread_equal(cpu.owner, self))
++		return 0;
++
++	cpu.owner = self;
++	cpu.count++;
++
++	return 1;
++}
++
++static void __cpu_try_get_unlock(int lock_ret, int n)
++{
++	if (lock_ret >= -1)
++		lkl_ops->mutex_unlock(cpu.lock);
++	__sync_fetch_and_sub(&cpu.shutdown_gate, n);
++}
++
++void lkl_cpu_change_owner(lkl_thread_t owner)
++{
++	lkl_ops->mutex_lock(cpu.lock);
++	if (cpu.count > 1)
++		lkl_bug("bad count while changing owner\n");
++	cpu.owner = owner;
++	lkl_ops->mutex_unlock(cpu.lock);
++}
++
++int lkl_cpu_get(void)
++{
++	int ret;
++
++	ret = __cpu_try_get_lock(1);
++
++	while (ret == 0) {
++		cpu.sleepers++;
++		__cpu_try_get_unlock(ret, 0);
++		lkl_ops->sem_down(cpu.sem);
++		ret = __cpu_try_get_lock(0);
++	}
++
++	__cpu_try_get_unlock(ret, 1);
++
++	return ret;
++}
++
++void lkl_cpu_put(void)
++{
++	lkl_ops->mutex_lock(cpu.lock);
++
++	if (!cpu.count || !cpu.owner ||
++	    !lkl_ops->thread_equal(cpu.owner, lkl_ops->thread_self()))
++		lkl_bug("%s: unbalanced put\n", __func__);
++
++	while (cpu.irqs_pending && !irqs_disabled()) {
++		cpu.irqs_pending = false;
++		lkl_ops->mutex_unlock(cpu.lock);
++		run_irqs();
++		lkl_ops->mutex_lock(cpu.lock);
++	}
++
++	if (test_ti_thread_flag(current_thread_info(), TIF_HOST_THREAD) &&
++	    !single_task_running() && cpu.count == 1) {
++		if (in_interrupt())
++			lkl_bug("%s: in interrupt\n", __func__);
++		lkl_ops->mutex_unlock(cpu.lock);
++		thread_sched_jb();
++		return;
++	}
++
++	if (--cpu.count > 0) {
++		lkl_ops->mutex_unlock(cpu.lock);
++		return;
++	}
++
++	if (cpu.sleepers) {
++		cpu.sleepers--;
++		lkl_ops->sem_up(cpu.sem);
++	}
++
++	cpu.owner = 0;
++
++	lkl_ops->mutex_unlock(cpu.lock);
++}
++
++int lkl_cpu_try_run_irq(int irq)
++{
++	int ret;
++
++	ret = __cpu_try_get_lock(1);
++	if (!ret) {
++		set_irq_pending(irq);
++		cpu.irqs_pending = true;
++	}
++	__cpu_try_get_unlock(ret, 1);
++
++	return ret;
++}
++
++void lkl_cpu_shutdown(void)
++{
++	__sync_fetch_and_add(&cpu.shutdown_gate, MAX_THREADS);
++}
++
++void lkl_cpu_wait_shutdown(void)
++{
++	lkl_ops->sem_down(cpu.shutdown_sem);
++	lkl_ops->sem_free(cpu.shutdown_sem);
++}
++
++static void lkl_cpu_cleanup(bool shutdown)
++{
++	while (__sync_fetch_and_add(&cpu.shutdown_gate, 0) > MAX_THREADS)
++		;
++
++	if (shutdown)
++		lkl_ops->sem_up(cpu.shutdown_sem);
++	else if (cpu.shutdown_sem)
++		lkl_ops->sem_free(cpu.shutdown_sem);
++	if (cpu.sem)
++		lkl_ops->sem_free(cpu.sem);
++	if (cpu.lock)
++		lkl_ops->mutex_free(cpu.lock);
++}
++
++void arch_cpu_idle(void)
++{
++	if (cpu.shutdown_gate >= MAX_THREADS) {
++		lkl_ops->mutex_lock(cpu.lock);
++		while (cpu.sleepers--)
++			lkl_ops->sem_up(cpu.sem);
++		lkl_ops->mutex_unlock(cpu.lock);
++
++		lkl_cpu_cleanup(true);
++
++		lkl_ops->thread_exit();
++	}
++	/* enable irqs now to allow direct irqs to run */
++	local_irq_enable();
++
++	/* switch to idle_host_task */
++	wakeup_idle_host_task();
++}
++
++int lkl_cpu_init(void)
++{
++	cpu.lock = lkl_ops->mutex_alloc(0);
++	cpu.sem = lkl_ops->sem_alloc(0);
++	cpu.shutdown_sem = lkl_ops->sem_alloc(0);
++
++	if (!cpu.lock || !cpu.sem || !cpu.shutdown_sem) {
++		lkl_cpu_cleanup(false);
++		return -ENOMEM;
++	}
++
++	return 0;
++}
+diff --git a/arch/um/lkl/kernel/threads.c b/arch/um/lkl/kernel/threads.c
+new file mode 100644
+index 000000000000..4fe8c56ae5e0
+--- /dev/null
++++ b/arch/um/lkl/kernel/threads.c
+@@ -0,0 +1,227 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/module.h>
++#include <linux/slab.h>
++#include <linux/sched/task.h>
++#include <linux/sched/signal.h>
++#include <asm/host_ops.h>
++#include <asm/cpu.h>
++#include <asm/sched.h>
++
++static int init_ti(struct thread_info *ti)
++{
++	ti->sched_sem = lkl_ops->sem_alloc(0);
++	if (!ti->sched_sem)
++		return -ENOMEM;
++
++	ti->dead = false;
++	ti->prev_sched = NULL;
++	ti->tid = 0;
++
++	return 0;
++}
++
++unsigned long *alloc_thread_stack_node(struct task_struct *task, int node)
++{
++	struct thread_info *ti;
++
++	ti = kmalloc(sizeof(*ti), GFP_KERNEL);
++	if (!ti)
++		return NULL;
++
++	if (init_ti(ti)) {
++		kfree(ti);
++		return NULL;
++	}
++	ti->task = task;
++
++	return (unsigned long *)ti;
++}
++
++/*
++ * The only new tasks created are kernel threads that have a predefined starting
++ * point thus no stack copy is required.
++ */
++void setup_thread_stack(struct task_struct *p, struct task_struct *org)
++{
++	struct thread_info *ti = task_thread_info(p);
++	struct thread_info *org_ti = task_thread_info(org);
++
++	ti->flags = org_ti->flags;
++	ti->preempt_count = org_ti->preempt_count;
++	ti->addr_limit = org_ti->addr_limit;
++}
++
++static void kill_thread(struct thread_info *ti)
++{
++	if (!test_ti_thread_flag(ti, TIF_HOST_THREAD)) {
++		ti->dead = true;
++		lkl_ops->sem_up(ti->sched_sem);
++		lkl_ops->thread_join(ti->tid);
++	}
++	lkl_ops->sem_free(ti->sched_sem);
++}
++
++void free_thread_stack(struct task_struct *tsk)
++{
++	struct thread_info *ti = task_thread_info(tsk);
++
++	kill_thread(ti);
++	kfree(ti);
++}
++
++struct thread_info *_current_thread_info = &init_thread_union.thread_info;
++
++/*
++ * schedule() expects the return of this function to be the task that we
++ * switched away from. Returning prev is not going to work because we are
++ * actually going to return the previous taks that was scheduled before the
++ * task we are going to wake up, and not the current task, e.g.:
++ *
++ * swapper -> init: saved prev on swapper stack is swapper
++ * init -> ksoftirqd0: saved prev on init stack is init
++ * ksoftirqd0 -> swapper: returned prev is swapper
++ */
++static struct task_struct *abs_prev = &init_task;
++
++struct task_struct *__switch_to(struct task_struct *prev,
++				struct task_struct *next)
++{
++	struct thread_info *_prev = task_thread_info(prev);
++	struct thread_info *_next = task_thread_info(next);
++	unsigned long _prev_flags = _prev->flags;
++	struct lkl_jmp_buf _prev_jb;
++
++	_current_thread_info = task_thread_info(next);
++	_next->prev_sched = prev;
++	abs_prev = prev;
++
++	BUG_ON(!_next->tid);
++	lkl_cpu_change_owner(_next->tid);
++
++	if (test_bit(TIF_SCHED_JB, &_prev_flags)) {
++		/* Atomic. Must be done before wakeup next */
++		clear_ti_thread_flag(_prev, TIF_SCHED_JB);
++		_prev_jb = _prev->sched_jb;
++	}
++
++	lkl_ops->sem_up(_next->sched_sem);
++	if (test_bit(TIF_SCHED_JB, &_prev_flags))
++		lkl_ops->jmp_buf_longjmp(&_prev_jb, 1);
++	else
++		lkl_ops->sem_down(_prev->sched_sem);
++
++	if (_prev->dead)
++		lkl_ops->thread_exit();
++
++	return abs_prev;
++}
++
++int host_task_stub(void *unused)
++{
++	return 0;
++}
++
++void switch_to_host_task(struct task_struct *task)
++{
++	if (WARN_ON(!test_tsk_thread_flag(task, TIF_HOST_THREAD)))
++		return;
++
++	task_thread_info(task)->tid = lkl_ops->thread_self();
++
++	if (current == task)
++		return;
++
++	wake_up_process(task);
++	thread_sched_jb();
++	lkl_ops->sem_down(task_thread_info(task)->sched_sem);
++	schedule_tail(abs_prev);
++}
++
++struct thread_bootstrap_arg {
++	struct thread_info *ti;
++	int (*f)(void *arg);
++	void *arg;
++};
++
++static void thread_bootstrap(void *_tba)
++{
++	struct thread_bootstrap_arg *tba = (struct thread_bootstrap_arg *)_tba;
++	struct thread_info *ti = tba->ti;
++	int (*f)(void *) = tba->f;
++	void *arg = tba->arg;
++
++	lkl_ops->sem_down(ti->sched_sem);
++	kfree(tba);
++	if (ti->prev_sched)
++		schedule_tail(ti->prev_sched);
++
++	f(arg);
++	do_exit(0);
++}
++
++int copy_thread(unsigned long clone_flags, unsigned long esp,
++		unsigned long unused, struct task_struct *p)
++{
++	struct thread_info *ti = task_thread_info(p);
++	struct thread_bootstrap_arg *tba;
++
++	if ((int (*)(void *))esp == host_task_stub) {
++		set_ti_thread_flag(ti, TIF_HOST_THREAD);
++		return 0;
++	}
++
++	tba = kmalloc(sizeof(*tba), GFP_KERNEL);
++	if (!tba)
++		return -ENOMEM;
++
++	tba->f = (int (*)(void *))esp;
++	tba->arg = (void *)unused;
++	tba->ti = ti;
++
++	ti->tid = lkl_ops->thread_create(thread_bootstrap, tba);
++	if (!ti->tid) {
++		kfree(tba);
++		return -ENOMEM;
++	}
++
++	return 0;
++}
++
++void show_stack(struct task_struct *task, unsigned long *esp)
++{
++}
++
++/**
++ * This is called before the kernel initializes, so no kernel calls (including
++ * printk) can't be made yet.
++ */
++void threads_init(void)
++{
++	int ret;
++	struct thread_info *ti = &init_thread_union.thread_info;
++
++	ret = init_ti(ti);
++	if (ret < 0)
++		lkl_printf("lkl: failed to allocate init schedule semaphore\n");
++
++	ti->tid = lkl_ops->thread_self();
++}
++
++void threads_cleanup(void)
++{
++	struct task_struct *p, *t;
++
++	for_each_process_thread(p, t) {
++		struct thread_info *ti = task_thread_info(t);
++
++		if (t->pid != 1 && !test_ti_thread_flag(ti, TIF_HOST_THREAD))
++			WARN(!(t->flags & PF_KTHREAD),
++			     "non kernel thread task %s\n", t->comm);
++		WARN(t->state == TASK_RUNNING,
++		     "thread %s still running while halting\n", t->comm);
++
++		kill_thread(ti);
++	}
++
++	lkl_ops->sem_free(init_thread_union.thread_info.sched_sem);
++}
 -- 
-2.20.1
+2.21.0 (Apple Git-122.2)
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
