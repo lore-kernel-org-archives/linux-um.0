@@ -1,15 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from mail-pj1-x1043.google.com ([2607:f8b0:4864:20::1043])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jA1S1-0008Ov-Aj
- for linux-um@lists.infradead.org; Fri, 06 Mar 2020 01:06:54 +0000
-From: Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH net-next 5/7] vmxnet3: let core reject the unsupported
- coalescing parameters
-Date: Thu,  5 Mar 2020 17:06:00 -0800
-Message-Id: <20200306010602.1620354-6-kuba@kernel.org>
-In-Reply-To: <20200306010602.1620354-1-kuba@kernel.org>
-References: <20200306010602.1620354-1-kuba@kernel.org>
+ id 1jIvj1-00056R-CK
+ for linux-um@lists.infradead.org; Mon, 30 Mar 2020 14:49:16 +0000
+Received: by mail-pj1-x1043.google.com with SMTP id jz1so6431062pjb.0
+ for <linux-um@lists.infradead.org>; Mon, 30 Mar 2020 07:49:15 -0700 (PDT)
+From: Hajime Tazaki <thehajime@gmail.com>
+Subject: [RFC v4 21/25] um lkl: add documentation
+Date: Mon, 30 Mar 2020 23:45:53 +0900
+Message-Id: <b5752382991a21a338d098276eb1d3e764fdf937.1585579244.git.thehajime@gmail.com>
+In-Reply-To: <cover.1585579244.git.thehajime@gmail.com>
+References: <cover.1585579244.git.thehajime@gmail.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -23,65 +24,100 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: davem@davemloft.net
-Cc: mkubecek@suse.cz, doshir@vmware.com, pv-drivers@vmware.com, jasowang@redhat.com, edumazet@google.com, anton.ivanov@cambridgegreys.com, merez@codeaurora.org, leon@kernel.org, linux-rdma@vger.kernel.org, richard@nod.at, jgg@ziepe.ca, dledford@redhat.com, Jakub Kicinski <kuba@kernel.org>, hayeswang@realtek.com, jdike@addtoit.com, linux-um@lists.infradead.org, kvalo@codeaurora.org, GR-Linux-NIC-Dev@marvell.com, manishc@marvell.com, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, gregkh@linuxfoundation.org
+To: linux-um@lists.infradead.org
+Cc: linux-arch@vger.kernel.org, Conrad Meyer <cem@FreeBSD.org>, Octavian Purdila <tavi.purdila@gmail.com>, Motomu Utsumi <motomuman@gmail.com>, Akira Moroo <retrage01@gmail.com>, Thomas Liebetraut <thomas@tommie-lie.de>, Patrick Collins <pscollins@google.com>, linux-kernel-library@freelists.org, Chenyang Zhong <zhongcy95@gmail.com>, Yuan Liu <liuyuan@google.com>, Gustavo Bittencourt <gbitten@gmail.com>
 
-Set ethtool_ops->supported_coalesce_params to let
-the core reject unsupported coalescing parameters.
+From: Octavian Purdila <tavi.purdila@gmail.com>
 
-This driver correctly rejects all unsupported parameters.
-As a side effect of these changes the error code for
-unsupported params changes from EINVAL to EOPNOTSUPP.
+A document describing brief introduction of LKL, why it is needed, and
+how it is used is added.  The document is located under uml/ directory.
 
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Cc: Chenyang Zhong <zhongcy95@gmail.com>
+Cc: Conrad Meyer <cem@FreeBSD.org>
+Cc: Gustavo Bittencourt <gbitten@gmail.com>
+Cc: H.K. Jerry Chu <hkchu@google.com>
+Cc: Motomu Utsumi <motomuman@gmail.com>
+Cc: Patrick Collins <pscollins@google.com>
+Cc: Thomas Liebetraut <thomas@tommie-lie.de>
+Cc: Yuan Liu <liuyuan@google.com>
+Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
 ---
- drivers/net/vmxnet3/vmxnet3_ethtool.c | 24 +++---------------------
- 1 file changed, 3 insertions(+), 21 deletions(-)
+ Documentation/virt/uml/lkl.txt | 64 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 64 insertions(+)
+ create mode 100644 Documentation/virt/uml/lkl.txt
 
-diff --git a/drivers/net/vmxnet3/vmxnet3_ethtool.c b/drivers/net/vmxnet3/vmxnet3_ethtool.c
-index 1e4b9ba70983..6528940ce5f3 100644
---- a/drivers/net/vmxnet3/vmxnet3_ethtool.c
-+++ b/drivers/net/vmxnet3/vmxnet3_ethtool.c
-@@ -780,27 +780,6 @@ vmxnet3_set_coalesce(struct net_device *netdev, struct ethtool_coalesce *ec)
- 	if (!VMXNET3_VERSION_GE_3(adapter))
- 		return -EOPNOTSUPP;
- 
--	if (ec->rx_coalesce_usecs_irq ||
--	    ec->rx_max_coalesced_frames_irq ||
--	    ec->tx_coalesce_usecs ||
--	    ec->tx_coalesce_usecs_irq ||
--	    ec->tx_max_coalesced_frames_irq ||
--	    ec->stats_block_coalesce_usecs ||
--	    ec->use_adaptive_tx_coalesce ||
--	    ec->pkt_rate_low ||
--	    ec->rx_coalesce_usecs_low ||
--	    ec->rx_max_coalesced_frames_low ||
--	    ec->tx_coalesce_usecs_low ||
--	    ec->tx_max_coalesced_frames_low ||
--	    ec->pkt_rate_high ||
--	    ec->rx_coalesce_usecs_high ||
--	    ec->rx_max_coalesced_frames_high ||
--	    ec->tx_coalesce_usecs_high ||
--	    ec->tx_max_coalesced_frames_high ||
--	    ec->rate_sample_interval) {
--		return -EINVAL;
--	}
--
- 	if ((ec->rx_coalesce_usecs == 0) &&
- 	    (ec->use_adaptive_rx_coalesce == 0) &&
- 	    (ec->tx_max_coalesced_frames == 0) &&
-@@ -891,6 +870,9 @@ vmxnet3_set_coalesce(struct net_device *netdev, struct ethtool_coalesce *ec)
- }
- 
- static const struct ethtool_ops vmxnet3_ethtool_ops = {
-+	.supported_coalesce_params = ETHTOOL_COALESCE_RX_USECS |
-+				     ETHTOOL_COALESCE_MAX_FRAMES |
-+				     ETHTOOL_COALESCE_USE_ADAPTIVE_RX,
- 	.get_drvinfo       = vmxnet3_get_drvinfo,
- 	.get_regs_len      = vmxnet3_get_regs_len,
- 	.get_regs          = vmxnet3_get_regs,
+diff --git a/Documentation/virt/uml/lkl.txt b/Documentation/virt/uml/lkl.txt
+new file mode 100644
+index 000000000000..f6d581092331
+--- /dev/null
++++ b/Documentation/virt/uml/lkl.txt
+@@ -0,0 +1,64 @@
++
++Introduction
++============
++
++LKL (Linux Kernel Library) is aiming to allow reusing the Linux kernel code as
++extensively as possible with minimal effort and reduced maintenance overhead.
++
++Examples of how LKL can be used are: creating userspace applications (running on
++Linux and other operating systems) that can read or write Linux filesystems or
++can use the Linux networking stack, creating kernel drivers for other operating
++systems that can read Linux filesystems, bootloaders support for reading/writing
++Linux filesystems, etc.
++
++With LKL, the kernel code is compiled into an object file that can be directly
++linked by applications. The API offered by LKL is based on the Linux system call
++interface.
++
++LKL is implemented as one of the mode of UML (arch/um). It uses host operations
++defined by the application or a host library (tools/lkl/lib).
++
++
++Supported hosts
++===============
++
++The supported host for now is Linux (x86 architecture) userspace applications.
++
++
++Building LKL the host library and LKL applications
++==================================================
++
++    $ make -C tools/lkl
++
++will build LKL as a object file, it will install it in tools/lkl/lib together
++with the headers files in tools/lkl/include then will build the host library,
++tests and a few of application examples:
++
++* tests/boot - a simple applications that uses LKL and exercises the basic LKL
++  APIs
++
++* tests/net-test - a simple applications that uses network feature of LKL and
++  exercises the basic network-related APIs
++
++* fs2tar - a tool that converts a filesystem image to a tar archive
++
++* cptofs/cpfromfs - a tool that copies files to/from a filesystem image
++
++* lklfuse - a tool that can mount a filesystem image in userspace,
++  without root privileges, using FUSE
++
++
++Building LKL on Ubuntu
++-----------------------
++
++    $ sudo apt-get install libfuse-dev libarchive-dev xfsprogs
++
++    # Optional, if you would like to be able to run tests
++    $ sudo apt-get install btrfs-tools
++    $ pip install yamlish junit_xml
++
++    $ make -C tools/lkl
++
++    # To check that everything works:
++    $ cd tools/lkl
++    $ make run-tests
 -- 
-2.24.1
+2.21.0 (Apple Git-122.2)
 
 
 _______________________________________________
