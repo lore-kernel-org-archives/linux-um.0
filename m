@@ -1,12 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from www.jmendeth.com ([46.101.38.223] helo=apollo.alba.sh)
+Received: from mail-pl1-x642.google.com ([2607:f8b0:4864:20::642])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jIFi1-0001zf-2T
- for linux-um@lists.infradead.org; Sat, 28 Mar 2020 17:57:26 +0000
-Message-ID: <21b6c95a288df7db77e5f9757040162fa5c4cd40.camel@alba.sh>
-Subject: use-after-free warning on ubd driver
-From: Alba Mendez <me@alba.sh>
-Date: Sat, 28 Mar 2020 18:57:14 +0100
+ id 1jIvhe-0004nw-Po
+ for linux-um@lists.infradead.org; Mon, 30 Mar 2020 14:47:52 +0000
+Received: by mail-pl1-x642.google.com with SMTP id x1so6813080plm.4
+ for <linux-um@lists.infradead.org>; Mon, 30 Mar 2020 07:47:50 -0700 (PDT)
+From: Hajime Tazaki <thehajime@gmail.com>
+Subject: [RFC v4 09/25] um lkl: basic kernel console support
+Date: Mon, 30 Mar 2020 23:45:41 +0900
+Message-Id: <0c8b9f122563372acea307b738f833a211ef28c5.1585579244.git.thehajime@gmail.com>
+In-Reply-To: <cover.1585579244.git.thehajime@gmail.com>
+References: <cover.1585579244.git.thehajime@gmail.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -21,101 +25,92 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
+Cc: Octavian Purdila <tavi.purdila@gmail.com>, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Akira Moroo <retrage01@gmail.com>
 
-Hello! I'm new to kernel development, so apologies if this is a known
-issue / silly question.
+From: Octavian Purdila <tavi.purdila@gmail.com>
 
-I'm playing around with UML and I keep getting a use-after-free on
-(apparently?) ubd, see trace below. I can reproduce by starting up the
-kernel with a 100MB device:
+This patch adds a basic structure of console support in kernel.  Write
+operations are deferred to the host print operation.
 
-$ fallocate -l 100M blk
-$ ./linux mem=150M ubdb=blk rootfstype=hostfs init=/sbin/bash
+Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
+---
+ arch/um/lkl/include/uapi/asm/host_ops.h |  4 +++
+ arch/um/lkl/kernel/console.c            | 42 +++++++++++++++++++++++++
+ 2 files changed, 46 insertions(+)
+ create mode 100644 arch/um/lkl/kernel/console.c
 
-And then, inside:
-$ dd if=/dev/zero of=/dev/ubdb
-
-Before dd finishes, most of the time I get this trace.
-Is this normal? Kernel is unmodified & built with x86_64_defconfig.
-
-This seems to have been introduced at ecb0a83e319, but the trace was a
-bit different at that time.
-
-Kind regards,
-Alba
-
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 0 at lib/refcount.c:28
-refcount_warn_saturate+0x13f/0x141
-refcount_t: underflow; use-after-free.
-Modules linked in:
-CPU: 0 PID: 0 Comm: swapper Not tainted 5.6.0-rc7-01120-g83fd69c93340
-#1
-Stack:
- 603eeef0 602dcddc 00000009 603eef60
- 00000000 6a140380 603eef00 602dce21
- 603eef40 60038105 603eef68 603eef70
-Call Trace:
- [<60068389>] ? printk+0x0/0x94
- [<601dfa85>] ? blk_queue_max_discard_sectors+0x0/0xd
- [<6001d2e6>] show_stack+0x13b/0x155
- [<602dcddc>] ? dump_stack_print_info+0xdf/0xe8
- [<602dce21>] dump_stack+0x2a/0x2c
- [<60038105>] __warn+0xf4/0x11d
- [<600385bd>] warn_slowpath_fmt+0xd1/0xdf
- [<601f16e8>] ? __rq_qos_done_bio+0x0/0x2f
- [<600384ec>] ? warn_slowpath_fmt+0x0/0xdf
- [<600d1f9b>] ? kmem_cache_free+0x60/0x67
- [<6007203c>] ? raw_read_seqcount_begin.constprop.0+0x0/0x15
- [<6002f5aa>] ? os_nsecs+0x1d/0x2b
- [<601ff8e0>] refcount_warn_saturate+0x13f/0x141
- [<601e3df1>] refcount_sub_and_test.constprop.0+0x32/0x3a
- [<601e4a45>] blk_mq_free_request+0xf6/0x112
- [<601e4b6d>] __blk_mq_end_request+0x10c/0x114
- [<60028e4e>] ubd_intr+0xb5/0x169
- [<60069168>] __handle_irq_event_percpu+0x34/0x10c
- [<6001d3a5>] ? timer_read+0x10/0x1c
- [<60069266>] handle_irq_event_percpu+0x26/0x69
- [<600692cf>] handle_irq_event+0x26/0x34
- [<600692a9>] ? handle_irq_event+0x0/0x34
- [<6006c783>] ? unmask_irq+0x0/0x37
- [<6006cde3>] handle_edge_irq+0xbc/0xd6
- [<60068a87>] generic_handle_irq+0x21/0x29
- [<6001ba4c>] do_IRQ+0x39/0x54
- [<6001bb0e>] sigio_handler+0xa7/0x111
- [<6002ea30>] sig_handler_common+0xa6/0xbc
- [<6001d40c>] ? timer_handler+0x0/0x48
- [<6002edb2>] ? block_signals+0x0/0x11
- [<6002eaa2>] ? timer_real_alarm_handler+0x5c/0x5e
- [<601fc982>] ? find_next_bit+0x1b/0x1d
- [<6006fc37>] ? __next_timer_interrupt+0x78/0xd0
- [<60070b65>] ? arch_local_irq_save+0x22/0x29
- [<60071422>] ? hrtimer_get_next_event+0x59/0x61
- [<6002edb2>] ? block_signals+0x0/0x11
- [<6002ee3f>] unblock_signals+0x7c/0xd7
- [<600376cd>] ? kernel_thread+0x0/0x4e
- [<6001c594>] arch_cpu_idle+0x54/0x5b
- [<6002edb2>] ? block_signals+0x0/0x11
- [<602ef012>] default_idle_call+0x32/0x34
- [<6005a29c>] do_idle+0xaa/0x127
- [<602ec910>] ? schedule+0x99/0xdd
- [<6005a1f2>] ? do_idle+0x0/0x127
- [<6005a56d>] cpu_startup_entry+0x1e/0x20
- [<6005a54f>] ? cpu_startup_entry+0x0/0x20
- [<6005005f>] ? find_task_by_pid_ns+0x0/0x2d
- [<602ebe05>] rest_init+0xc2/0xc7
- [<6002ee9a>] ? get_signals+0x0/0xa
- [<602e5904>] ? strlen+0x0/0x11
- [<600016bc>] arch_call_rest_init+0x10/0x12
- [<60001c7a>] start_kernel+0x5b7/0x5c6
- [<600035e6>] start_kernel_proc+0x49/0x4d
- [<60065c27>] ? kmsg_dump_register+0x70/0x78
- [<6001c05c>] new_thread_handler+0x81/0xb2
- [<6000359b>] ? kmsg_dumper_stdout_init+0x1a/0x1c
- [<6001ecb5>] uml_finishsetup+0x54/0x59
-
----[ end trace 521c0be003ad0a13 ]---
+diff --git a/arch/um/lkl/include/uapi/asm/host_ops.h b/arch/um/lkl/include/uapi/asm/host_ops.h
+index c9f77dd7fbe7..986340ba9d8d 100644
+--- a/arch/um/lkl/include/uapi/asm/host_ops.h
++++ b/arch/um/lkl/include/uapi/asm/host_ops.h
+@@ -17,6 +17,8 @@ struct lkl_jmp_buf {
+  * These operations must be provided by a host library or by the application
+  * itself.
+  *
++ * @print - optional operation that receives console messages
++ *
+  * @sem_alloc - allocate a host semaphore an initialize it to count
+  * @sem_free - free a host semaphore
+  * @sem_up - perform an up operation on the semaphore
+@@ -70,6 +72,8 @@ struct lkl_jmp_buf {
+  * @jmp_buf_longjmp - perform a jump back to the saved jump buffer
+  */
+ struct lkl_host_operations {
++	void (*print)(const char *str, int len);
++
+ 	struct lkl_sem *(*sem_alloc)(int count);
+ 	void (*sem_free)(struct lkl_sem *sem);
+ 	void (*sem_up)(struct lkl_sem *sem);
+diff --git a/arch/um/lkl/kernel/console.c b/arch/um/lkl/kernel/console.c
+new file mode 100644
+index 000000000000..54d7f756c6da
+--- /dev/null
++++ b/arch/um/lkl/kernel/console.c
+@@ -0,0 +1,42 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/console.h>
++#include <asm/host_ops.h>
++
++static void console_write(struct console *con, const char *str,
++			  unsigned int len)
++{
++	if (lkl_ops->print)
++		lkl_ops->print(str, len);
++}
++
++#ifdef CONFIG_LKL_EARLY_CONSOLE
++static struct console lkl_boot_console = {
++	.name	= "lkl_boot_console",
++	.write	= console_write,
++	.flags	= CON_PRINTBUFFER | CON_BOOT,
++	.index	= -1,
++};
++
++int __init lkl_boot_console_init(void)
++{
++	register_console(&lkl_boot_console);
++	return 0;
++}
++early_initcall(lkl_boot_console_init);
++#endif
++
++static struct console lkl_console = {
++	.name	= "lkl_console",
++	.write	= console_write,
++	.flags	= CON_PRINTBUFFER,
++	.index	= -1,
++};
++
++static int __init lkl_console_init(void)
++{
++	register_console(&lkl_console);
++	return 0;
++}
++core_initcall(lkl_console_init);
+-- 
+2.21.0 (Apple Git-122.2)
 
 
 _______________________________________________
