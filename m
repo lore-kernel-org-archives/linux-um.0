@@ -1,16 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x641.google.com ([2607:f8b0:4864:20::641])
+Received: from mail-pj1-x1030.google.com ([2607:f8b0:4864:20::1030])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jIviU-00050e-I9
- for linux-um@lists.infradead.org; Mon, 30 Mar 2020 14:48:44 +0000
-Received: by mail-pl1-x641.google.com with SMTP id t4so852679plq.12
- for <linux-um@lists.infradead.org>; Mon, 30 Mar 2020 07:48:42 -0700 (PDT)
+ id 1jIvg2-0004PP-My
+ for linux-um@lists.infradead.org; Mon, 30 Mar 2020 14:46:14 +0000
+Received: by mail-pj1-x1030.google.com with SMTP id nu11so7422997pjb.1
+ for <linux-um@lists.infradead.org>; Mon, 30 Mar 2020 07:46:10 -0700 (PDT)
 From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v4 16/25] lkl tools: host lib: posix host operations
-Date: Mon, 30 Mar 2020 23:45:48 +0900
-Message-Id: <3fabf7fce74f62cfdace9dbdc26d6e787ba618b8.1585579244.git.thehajime@gmail.com>
-In-Reply-To: <cover.1585579244.git.thehajime@gmail.com>
-References: <cover.1585579244.git.thehajime@gmail.com>
+Subject: [RFC v4 00/25] Unifying LKL into UML
+Date: Mon, 30 Mar 2020 23:45:32 +0900
+Message-Id: <cover.1585579244.git.thehajime@gmail.com>
+In-Reply-To: <cover.1580882335.git.thehajime@gmail.com>
+References: <cover.1580882335.git.thehajime@gmail.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -25,401 +25,401 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, Conrad Meyer <cem@FreeBSD.org>, Octavian Purdila <tavi.purdila@gmail.com>, Akira Moroo <retrage01@gmail.com>, Thomas Liebetraut <thomas@tommie-lie.de>, Mark Stillwell <mark@stillwell.me>, Patrick Collins <pscollins@google.com>, linux-kernel-library@freelists.org, Pierre-Hugues Husson <phh@phh.me>, Yuan Liu <liuyuan@google.com>
+Cc: Octavian Purdila <tavi.purdila@gmail.com>, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, Akira Moroo <retrage01@gmail.com>
 
-From: Octavian Purdila <tavi.purdila@gmail.com>
+This is another spin of the unification of LKL into UML.  I've updated
+the patchset by addressing comments received so far.
 
-This commit implements LKL host operations for POSIX hosts.  The
-operations are implemented to be portable in various POSIX OSs.
 
-Cc: Conrad Meyer <cem@FreeBSD.org>
-Cc: Mark Stillwell <mark@stillwell.me>
-Cc: Patrick Collins <pscollins@google.com>
-Cc: Pierre-Hugues Husson <phh@phh.me>
-Cc: Thomas Liebetraut <thomas@tommie-lie.de>
-Cc: Yuan Liu <liuyuan@google.com>
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
-Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
----
- tools/lkl/lib/Build        |   2 +
- tools/lkl/lib/posix-host.c | 353 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 355 insertions(+)
+Changes in rfc v4:
+- Rebase on the current uml/master branch
+- Fix IRQ handling (bug fix)
+- drop a patch for CONFIG_GENERIC_ATOMIC64 support (comment by Peter Zijlstra)
+- implement vector net driver for UMMODE_LIB (comment by Anton)
+- clean up uapi headers to avoid duplicates
+- clean up IRQ handling code (comment by Anton)
+- fix error handling in test code (comments by David Disseldorp)
+
+Changes in rfc v3:
+- use UML drivers (net, block) from LKL programs
+- drop virtio device implementations
+- drop mingw32 (Windows) host
+- drop android (arm/aarch64) host
+- drop FreeBSD (x86_64) host
+- drop LD_PRELOAD (hijack) support
+- update milestone
+
+rfc v2:
+- use UMMODE instead of SUBARCH to switch UML or LKL
+- tools/lkl directory is still there. I confirmed we can move under arch/um
+  (e.g., arch/um/lkl/hosts).  I will move it IF this is preferable.
+- drop several patches involved non-uml directory
+- drop several patches which are not required
+- refine commit logs
+- document updated
+
+
+
+
+LKL (Linux Kernel Library) is aiming to allow reusing the Linux kernel code
+as extensively as possible with minimal effort and reduced maintenance
+overhead.
+
+Examples of how LKL can be used are: creating userspace applications
+(running on Linux and other operating systems) that can read or write Linux
+filesystems or can use the Linux networking stack, creating kernel drivers
+for other operating systems that can read Linux filesystems, bootloaders
+support for reading/writing Linux filesystems, etc.
+
+With LKL, the kernel code is compiled into an object file that can be
+directly linked by applications. The API offered by LKL is based on the
+Linux system call interface.
+
+LKL is originally implemented as an architecture port in arch/lkl, but this
+series of commits tries to integrate this into arch/um as one of the mode
+of UML.  This was discussed during RFC email of LKL (*1).
+
+The latest LKL version can be found at https://github.com/lkl/linux
+
+Milestone
+=========
+This patches is a first step toward upstreaming *library mode* of Linux kernel,
+but we think we need to have several steps toward our goal, describing in the
+below.
+
+1. Put LKL code under arch/um (arch/um/lkl), and build it in a separate way
+from UML.
+2. Use UML driver implementations in LKL as a minimum set of patches
+-  Only support x86 sub architecture (dependency to UML drivers)
+3. Support broader host supports
+- add virtio device features
+
+For the step 1, we put LKL as one of UMMODE in order to make less effort to
+integrate (make ARCH=um UMMODE=library).  The modification to existing UML
+code is trying to be minimized.
+
+
+
+Building LKL the host library and LKL applications
+==================================================
+
+% cd tools/lkl
+% make
+
+will build LKL as a object file, it will install it in tools/lkl/lib together
+with the headers files in tools/lkl/include then will build the host library,
+tests and a few of application examples:
+
+* tests/boot - a simple applications that uses LKL and exercises the basic
+  LKL APIs
+
+* tests/net-test - a simple applications that uses network feature of
+  LKL and exercises the basic network-related APIs
+
+* fs2tar - a tool that converts a filesystem image to a tar archive
+
+* cptofs/cpfromfs - a tool that copies files to/from a filesystem image
+
+* lklfuse - a tool that can mount a filesystem image in userspace,
+  without root priviledges, using FUSE
+
+% make run-tests
+
+should run the above `tests/boot` and `tests/net-test` and report errors if
+there are any.
+
+Supported hosts
+===============
+
+Currently LKL supports Linux userspace applications. New hosts can be added
+relatively easy if the host supports gcc and GNU ld. Previous versions of
+LKL supported Windows kernel and Haiku kernel hosts, and we also have WIP
+patches with rump-hypercall interface, used in UEFI, as well as macOS
+userspace (part of POSIX).
+
+There is also musl-libc port for LKL, which might be interested in for some
+folks.
+
+
+Further readings about LKL
+=========================
+
+- Discussion in github LKL issue
+https://github.com/lkl/linux/issues/304
+
+- LKL (an article)
+https://www.researchgate.net/profile/Nicolae_Tapus2/publication/224164682_LKL_The_Linux_kernel_library/links/02bfe50fd921ab4f7c000000.pdf
+
+*1 RFC email to LKML (back in 2015)
+https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1012277.html
+
+
+
+Please review the following changes for suitability for inclusion. If you have
+any objections or suggestions for improvement, please respond to the patches. If
+you agree with the changes, please provide your Acked-by.
+
+The following changes since commit 4a7c46247f9c620c0390a15cb00b6ef9576b9c23:
+
+  um: Remove some unnecessary NULL checks in vector_user.c (2020-03-29 23:56:47 +0200)
+
+are available in the Git repository at:
+
+  git://github.com/thehajime/linux 59ed4e23efa7abc9c7d52e6b5fb31fb8ce795c5c
+  https://github.com/thehajime/linux/tree/upstream-to-uml-5.6-rc7-v4
+
+Hajime Tazaki (6):
+  lkl tools: host lib: filesystem helpers
+  lkl tools: host lib: networking helpers
+  um lkl: add CI scripts to conduct regression tests
+  um lkl: add UML network driver for lkl
+  um lkl: add UML block device driver (ubd) for lkl
+  um: fix clone flags to be familiar with valgrind
+
+Octavian Purdila (19):
+  arch: add __SYSCALL_DEFINE_ARCH
+  um lkl: architecture skeleton for Linux kernel library
+  um lkl: host interface
+  um lkl: memory handling
+  um lkl: kernel threads support
+  um lkl: interrupt support
+  um lkl: system call interface and application API
+  um lkl: timers, time and delay support
+  um lkl: basic kernel console support
+  um lkl: initialization and cleanup
+  um lkl: plug in the build system
+  lkl tools: skeleton for host side library
+  lkl tools: host lib: add utilities functions
+  lkl tools: host lib: posix host operations
+  lkl tools: add test programs
+  lkl tools: cptofs that reads/writes to/from a filesystem image
+  lkl tools: fs2tar that converts a filesystem image to tar
+  lkl tools: add lklfuse
+  um lkl: add documentation
+
+ .circleci/config.yml                       |  198 ++++
+ Documentation/virt/uml/lkl.txt             |   64 ++
+ MAINTAINERS                                |    8 +
+ arch/um/Kconfig                            |   13 +
+ arch/um/Makefile                           |   19 +-
+ arch/um/Makefile.um                        |   10 +
+ arch/um/drivers/Makefile                   |    2 +
+ arch/um/drivers/ubd_kern.c                 |    6 +-
+ arch/um/drivers/ubd_user.c                 |    3 +-
+ arch/um/include/asm/irq.h                  |    2 +
+ arch/um/kernel/Makefile                    |    4 +
+ arch/um/kernel/irq.c                       |    4 +
+ arch/um/lkl/.gitignore                     |    2 +
+ arch/um/lkl/Kconfig                        |   88 ++
+ arch/um/lkl/Kconfig.debug                  |    0
+ arch/um/lkl/Makefile                       |   67 ++
+ arch/um/lkl/auto.conf                      |    1 +
+ arch/um/lkl/configs/lkl_defconfig          | 1052 ++++++++++++++++++++
+ arch/um/lkl/include/asm/Kbuild             |   79 ++
+ arch/um/lkl/include/asm/atomic.h           |   11 +
+ arch/um/lkl/include/asm/atomic64.h         |  114 +++
+ arch/um/lkl/include/asm/bitsperlong.h      |   11 +
+ arch/um/lkl/include/asm/byteorder.h        |    7 +
+ arch/um/lkl/include/asm/cpu.h              |   14 +
+ arch/um/lkl/include/asm/elf.h              |   15 +
+ arch/um/lkl/include/asm/host_ops.h         |   10 +
+ arch/um/lkl/include/asm/irq.h              |   16 +
+ arch/um/lkl/include/asm/page.h             |   14 +
+ arch/um/lkl/include/asm/pgtable.h          |   57 ++
+ arch/um/lkl/include/asm/processor.h        |   60 ++
+ arch/um/lkl/include/asm/ptrace.h           |   25 +
+ arch/um/lkl/include/asm/sched.h            |   23 +
+ arch/um/lkl/include/asm/setup.h            |    7 +
+ arch/um/lkl/include/asm/syscalls.h         |   18 +
+ arch/um/lkl/include/asm/syscalls_32.h      |   43 +
+ arch/um/lkl/include/asm/thread_info.h      |   70 ++
+ arch/um/lkl/include/asm/tlb.h              |   12 +
+ arch/um/lkl/include/asm/uaccess.h          |   64 ++
+ arch/um/lkl/include/asm/unistd.h           |   27 +
+ arch/um/lkl/include/asm/unistd_32.h        |   31 +
+ arch/um/lkl/include/asm/vmalloc.h          |    5 +
+ arch/um/lkl/include/asm/vmlinux.lds.h      |   14 +
+ arch/um/lkl/include/asm/xor.h              |    9 +
+ arch/um/lkl/include/uapi/asm/Kbuild        |   11 +
+ arch/um/lkl/include/uapi/asm/bitsperlong.h |   13 +
+ arch/um/lkl/include/uapi/asm/byteorder.h   |   11 +
+ arch/um/lkl/include/uapi/asm/host_ops.h    |  143 +++
+ arch/um/lkl/include/uapi/asm/irq.h         |   36 +
+ arch/um/lkl/include/uapi/asm/sigcontext.h  |   16 +
+ arch/um/lkl/include/uapi/asm/syscalls.h    |  349 +++++++
+ arch/um/lkl/include/uapi/asm/unistd.h      |   13 +
+ arch/um/lkl/kernel/Makefile                |    4 +
+ arch/um/lkl/kernel/asm-offsets.c           |    3 +
+ arch/um/lkl/kernel/console.c               |   42 +
+ arch/um/lkl/kernel/cpu.c                   |  223 +++++
+ arch/um/lkl/kernel/irq.c                   |  223 +++++
+ arch/um/lkl/kernel/misc.c                  |   60 ++
+ arch/um/lkl/kernel/setup.c                 |  198 ++++
+ arch/um/lkl/kernel/syscalls.c              |  192 ++++
+ arch/um/lkl/kernel/syscalls_32.c           |  159 +++
+ arch/um/lkl/kernel/threads.c               |  227 +++++
+ arch/um/lkl/kernel/time.c                  |  145 +++
+ arch/um/lkl/kernel/vmlinux.lds.S           |   51 +
+ arch/um/lkl/mm/Makefile                    |    1 +
+ arch/um/lkl/mm/bootmem.c                   |   99 ++
+ arch/um/lkl/scripts/headers_install.py     |  196 ++++
+ arch/um/os-Linux/Makefile                  |    5 +
+ include/linux/syscalls.h                   |    6 +
+ tools/lkl/.gitignore                       |   13 +
+ tools/lkl/Build                            |    6 +
+ tools/lkl/Makefile                         |  131 +++
+ tools/lkl/Makefile.autoconf                |   67 ++
+ tools/lkl/Targets                          |   17 +
+ tools/lkl/cptofs.c                         |  636 ++++++++++++
+ tools/lkl/fs2tar.c                         |  412 ++++++++
+ tools/lkl/include/.gitignore               |    1 +
+ tools/lkl/include/lkl.h                    |  788 +++++++++++++++
+ tools/lkl/include/lkl_config.h             |   61 ++
+ tools/lkl/include/lkl_host.h               |  112 +++
+ tools/lkl/lib/.gitignore                   |    3 +
+ tools/lkl/lib/Build                        |   13 +
+ tools/lkl/lib/config.c                     |  750 ++++++++++++++
+ tools/lkl/lib/dbg.c                        |  300 ++++++
+ tools/lkl/lib/dbg_handler.c                |   44 +
+ tools/lkl/lib/endian.h                     |   31 +
+ tools/lkl/lib/fs.c                         |  471 +++++++++
+ tools/lkl/lib/jmp_buf.c                    |   14 +
+ tools/lkl/lib/jmp_buf.h                    |    8 +
+ tools/lkl/lib/net.c                        |  834 ++++++++++++++++
+ tools/lkl/lib/posix-host.c                 |  356 +++++++
+ tools/lkl/lib/um/Build                     |    3 +
+ tools/lkl/lib/um/um_block.c                |   17 +
+ tools/lkl/lib/um/um_glue.c                 |   61 ++
+ tools/lkl/lib/um/um_net.c                  |   30 +
+ tools/lkl/lib/utils.c                      |  266 +++++
+ tools/lkl/lklfuse.c                        |  659 ++++++++++++
+ tools/lkl/scripts/checkpatch.sh            |   60 ++
+ tools/lkl/scripts/lkl-jenkins.sh           |   21 +
+ tools/lkl/tests/Build                      |    3 +
+ tools/lkl/tests/boot.c                     |  562 +++++++++++
+ tools/lkl/tests/boot.sh                    |    9 +
+ tools/lkl/tests/cla.c                      |  159 +++
+ tools/lkl/tests/cla.h                      |   33 +
+ tools/lkl/tests/disk.c                     |  203 ++++
+ tools/lkl/tests/disk.sh                    |   61 ++
+ tools/lkl/tests/lklfuse.sh                 |  110 ++
+ tools/lkl/tests/net-setup.sh               |  136 +++
+ tools/lkl/tests/net-test.c                 |  307 ++++++
+ tools/lkl/tests/net.sh                     |  135 +++
+ tools/lkl/tests/run.py                     |  181 ++++
+ tools/lkl/tests/tap13.py                   |  209 ++++
+ tools/lkl/tests/test.c                     |  126 +++
+ tools/lkl/tests/test.h                     |   72 ++
+ tools/lkl/tests/test.sh                    |  182 ++++
+ tools/lkl/tests/valgrind.supp              |  105 ++
+ tools/lkl/tests/valgrind2xunit.py          |   69 ++
+ 116 files changed, 13569 insertions(+), 3 deletions(-)
+ create mode 100644 .circleci/config.yml
+ create mode 100644 Documentation/virt/uml/lkl.txt
+ create mode 100644 arch/um/Makefile.um
+ create mode 100644 arch/um/lkl/.gitignore
+ create mode 100644 arch/um/lkl/Kconfig
+ create mode 100644 arch/um/lkl/Kconfig.debug
+ create mode 100644 arch/um/lkl/Makefile
+ create mode 100644 arch/um/lkl/auto.conf
+ create mode 100644 arch/um/lkl/configs/lkl_defconfig
+ create mode 100644 arch/um/lkl/include/asm/Kbuild
+ create mode 100644 arch/um/lkl/include/asm/atomic.h
+ create mode 100644 arch/um/lkl/include/asm/atomic64.h
+ create mode 100644 arch/um/lkl/include/asm/bitsperlong.h
+ create mode 100644 arch/um/lkl/include/asm/byteorder.h
+ create mode 100644 arch/um/lkl/include/asm/cpu.h
+ create mode 100644 arch/um/lkl/include/asm/elf.h
+ create mode 100644 arch/um/lkl/include/asm/host_ops.h
+ create mode 100644 arch/um/lkl/include/asm/irq.h
+ create mode 100644 arch/um/lkl/include/asm/page.h
+ create mode 100644 arch/um/lkl/include/asm/pgtable.h
+ create mode 100644 arch/um/lkl/include/asm/processor.h
+ create mode 100644 arch/um/lkl/include/asm/ptrace.h
+ create mode 100644 arch/um/lkl/include/asm/sched.h
+ create mode 100644 arch/um/lkl/include/asm/setup.h
+ create mode 100644 arch/um/lkl/include/asm/syscalls.h
+ create mode 100644 arch/um/lkl/include/asm/syscalls_32.h
+ create mode 100644 arch/um/lkl/include/asm/thread_info.h
+ create mode 100644 arch/um/lkl/include/asm/tlb.h
+ create mode 100644 arch/um/lkl/include/asm/uaccess.h
+ create mode 100644 arch/um/lkl/include/asm/unistd.h
+ create mode 100644 arch/um/lkl/include/asm/unistd_32.h
+ create mode 100644 arch/um/lkl/include/asm/vmalloc.h
+ create mode 100644 arch/um/lkl/include/asm/vmlinux.lds.h
+ create mode 100644 arch/um/lkl/include/asm/xor.h
+ create mode 100644 arch/um/lkl/include/uapi/asm/Kbuild
+ create mode 100644 arch/um/lkl/include/uapi/asm/bitsperlong.h
+ create mode 100644 arch/um/lkl/include/uapi/asm/byteorder.h
+ create mode 100644 arch/um/lkl/include/uapi/asm/host_ops.h
+ create mode 100644 arch/um/lkl/include/uapi/asm/irq.h
+ create mode 100644 arch/um/lkl/include/uapi/asm/sigcontext.h
+ create mode 100644 arch/um/lkl/include/uapi/asm/syscalls.h
+ create mode 100644 arch/um/lkl/include/uapi/asm/unistd.h
+ create mode 100644 arch/um/lkl/kernel/Makefile
+ create mode 100644 arch/um/lkl/kernel/asm-offsets.c
+ create mode 100644 arch/um/lkl/kernel/console.c
+ create mode 100644 arch/um/lkl/kernel/cpu.c
+ create mode 100644 arch/um/lkl/kernel/irq.c
+ create mode 100644 arch/um/lkl/kernel/misc.c
+ create mode 100644 arch/um/lkl/kernel/setup.c
+ create mode 100644 arch/um/lkl/kernel/syscalls.c
+ create mode 100644 arch/um/lkl/kernel/syscalls_32.c
+ create mode 100644 arch/um/lkl/kernel/threads.c
+ create mode 100644 arch/um/lkl/kernel/time.c
+ create mode 100644 arch/um/lkl/kernel/vmlinux.lds.S
+ create mode 100644 arch/um/lkl/mm/Makefile
+ create mode 100644 arch/um/lkl/mm/bootmem.c
+ create mode 100755 arch/um/lkl/scripts/headers_install.py
+ create mode 100644 tools/lkl/.gitignore
+ create mode 100644 tools/lkl/Build
+ create mode 100644 tools/lkl/Makefile
+ create mode 100644 tools/lkl/Makefile.autoconf
+ create mode 100644 tools/lkl/Targets
+ create mode 100644 tools/lkl/cptofs.c
+ create mode 100644 tools/lkl/fs2tar.c
+ create mode 100644 tools/lkl/include/.gitignore
+ create mode 100644 tools/lkl/include/lkl.h
+ create mode 100644 tools/lkl/include/lkl_config.h
+ create mode 100644 tools/lkl/include/lkl_host.h
+ create mode 100644 tools/lkl/lib/.gitignore
+ create mode 100644 tools/lkl/lib/Build
+ create mode 100644 tools/lkl/lib/config.c
+ create mode 100644 tools/lkl/lib/dbg.c
+ create mode 100644 tools/lkl/lib/dbg_handler.c
+ create mode 100644 tools/lkl/lib/endian.h
+ create mode 100644 tools/lkl/lib/fs.c
+ create mode 100644 tools/lkl/lib/jmp_buf.c
+ create mode 100644 tools/lkl/lib/jmp_buf.h
+ create mode 100644 tools/lkl/lib/net.c
  create mode 100644 tools/lkl/lib/posix-host.c
+ create mode 100644 tools/lkl/lib/um/Build
+ create mode 100644 tools/lkl/lib/um/um_block.c
+ create mode 100644 tools/lkl/lib/um/um_glue.c
+ create mode 100644 tools/lkl/lib/um/um_net.c
+ create mode 100644 tools/lkl/lib/utils.c
+ create mode 100644 tools/lkl/lklfuse.c
+ create mode 100755 tools/lkl/scripts/checkpatch.sh
+ create mode 100755 tools/lkl/scripts/lkl-jenkins.sh
+ create mode 100644 tools/lkl/tests/Build
+ create mode 100644 tools/lkl/tests/boot.c
+ create mode 100755 tools/lkl/tests/boot.sh
+ create mode 100644 tools/lkl/tests/cla.c
+ create mode 100644 tools/lkl/tests/cla.h
+ create mode 100644 tools/lkl/tests/disk.c
+ create mode 100755 tools/lkl/tests/disk.sh
+ create mode 100755 tools/lkl/tests/lklfuse.sh
+ create mode 100644 tools/lkl/tests/net-setup.sh
+ create mode 100644 tools/lkl/tests/net-test.c
+ create mode 100755 tools/lkl/tests/net.sh
+ create mode 100755 tools/lkl/tests/run.py
+ create mode 100644 tools/lkl/tests/tap13.py
+ create mode 100644 tools/lkl/tests/test.c
+ create mode 100644 tools/lkl/tests/test.h
+ create mode 100644 tools/lkl/tests/test.sh
+ create mode 100644 tools/lkl/tests/valgrind.supp
+ create mode 100755 tools/lkl/tests/valgrind2xunit.py
 
-diff --git a/tools/lkl/lib/Build b/tools/lkl/lib/Build
-index dba530424e4a..0e711e260a3a 100644
---- a/tools/lkl/lib/Build
-+++ b/tools/lkl/lib/Build
-@@ -1,8 +1,10 @@
- CFLAGS_config.o += -I$(srctree)/tools/perf/pmu-events
-+CFLAGS_posix-host.o += -D_FILE_OFFSET_BITS=64
- 
- liblkl-y += fs.o
- liblkl-y += net.o
- liblkl-y += jmp_buf.o
-+liblkl-$(LKL_HOST_CONFIG_POSIX) += posix-host.o
- liblkl-y += utils.o
- liblkl-y += dbg.o
- liblkl-y += dbg_handler.o
-diff --git a/tools/lkl/lib/posix-host.c b/tools/lkl/lib/posix-host.c
-new file mode 100644
-index 000000000000..4be1611a8942
---- /dev/null
-+++ b/tools/lkl/lib/posix-host.c
-@@ -0,0 +1,353 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <pthread.h>
-+#include <stdlib.h>
-+#include <sys/time.h>
-+#include <time.h>
-+#include <signal.h>
-+#include <assert.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include <string.h>
-+#include <time.h>
-+#include <stdint.h>
-+#include <sys/uio.h>
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+#include <sys/syscall.h>
-+#include <poll.h>
-+#include <lkl_host.h>
-+#include "jmp_buf.h"
-+
-+/* Let's see if the host has semaphore.h */
-+#include <unistd.h>
-+
-+#ifdef _POSIX_SEMAPHORES
-+#include <semaphore.h>
-+/* TODO(pscollins): We don't support fork() for now, but maybe one day
-+ * we will?
-+ */
-+#define SHARE_SEM 0
-+#endif /* _POSIX_SEMAPHORES */
-+
-+static void print(const char *str, int len)
-+{
-+	int ret __attribute__((unused));
-+
-+	ret = write(STDOUT_FILENO, str, len);
-+}
-+
-+struct lkl_mutex {
-+	pthread_mutex_t mutex;
-+};
-+
-+struct lkl_sem {
-+#ifdef _POSIX_SEMAPHORES
-+	sem_t sem;
-+#else
-+	pthread_mutex_t lock;
-+	int count;
-+	pthread_cond_t cond;
-+#endif /* _POSIX_SEMAPHORES */
-+};
-+
-+struct lkl_tls_key {
-+	pthread_key_t key;
-+};
-+
-+#define WARN_UNLESS(exp) do {						\
-+		if (exp < 0)						\
-+			lkl_printf("%s: %s\n", #exp, strerror(errno));	\
-+	} while (0)
-+
-+static int _warn_pthread(int ret, char *str_exp)
-+{
-+	if (ret > 0)
-+		lkl_printf("%s: %s\n", str_exp, strerror(ret));
-+
-+	return ret;
-+}
-+
-+
-+/* pthread_* functions use the reverse convention */
-+#define WARN_PTHREAD(exp) _warn_pthread(exp, #exp)
-+
-+static struct lkl_sem *sem_alloc(int count)
-+{
-+	struct lkl_sem *sem;
-+
-+	sem = malloc(sizeof(*sem));
-+	if (!sem)
-+		return NULL;
-+
-+#ifdef _POSIX_SEMAPHORES
-+	if (sem_init(&sem->sem, SHARE_SEM, count) < 0) {
-+		lkl_printf("sem_init: %s\n", strerror(errno));
-+		free(sem);
-+		return NULL;
-+	}
-+#else
-+	pthread_mutex_init(&sem->lock, NULL);
-+	sem->count = count;
-+	WARN_PTHREAD(pthread_cond_init(&sem->cond, NULL));
-+#endif /* _POSIX_SEMAPHORES */
-+
-+	return sem;
-+}
-+
-+static void sem_free(struct lkl_sem *sem)
-+{
-+#ifdef _POSIX_SEMAPHORES
-+	WARN_UNLESS(sem_destroy(&sem->sem));
-+#else
-+	WARN_PTHREAD(pthread_cond_destroy(&sem->cond));
-+	WARN_PTHREAD(pthread_mutex_destroy(&sem->lock));
-+#endif /* _POSIX_SEMAPHORES */
-+	free(sem);
-+}
-+
-+static void sem_up(struct lkl_sem *sem)
-+{
-+#ifdef _POSIX_SEMAPHORES
-+	WARN_UNLESS(sem_post(&sem->sem));
-+#else
-+	WARN_PTHREAD(pthread_mutex_lock(&sem->lock));
-+	sem->count++;
-+	if (sem->count > 0)
-+		WARN_PTHREAD(pthread_cond_signal(&sem->cond));
-+	WARN_PTHREAD(pthread_mutex_unlock(&sem->lock));
-+#endif /* _POSIX_SEMAPHORES */
-+
-+}
-+
-+static void sem_down(struct lkl_sem *sem)
-+{
-+#ifdef _POSIX_SEMAPHORES
-+	int err;
-+
-+	do {
-+		err = sem_wait(&sem->sem);
-+	} while (err < 0 && errno == EINTR);
-+	if (err < 0 && errno != EINTR)
-+		lkl_printf("sem_wait: %s\n", strerror(errno));
-+#else
-+	WARN_PTHREAD(pthread_mutex_lock(&sem->lock));
-+	while (sem->count <= 0)
-+		WARN_PTHREAD(pthread_cond_wait(&sem->cond, &sem->lock));
-+	sem->count--;
-+	WARN_PTHREAD(pthread_mutex_unlock(&sem->lock));
-+#endif /* _POSIX_SEMAPHORES */
-+}
-+
-+static struct lkl_mutex *mutex_alloc(int recursive)
-+{
-+	struct lkl_mutex *_mutex = malloc(sizeof(struct lkl_mutex));
-+	pthread_mutex_t *mutex = NULL;
-+	pthread_mutexattr_t attr;
-+
-+	if (!_mutex)
-+		return NULL;
-+
-+	mutex = &_mutex->mutex;
-+	WARN_PTHREAD(pthread_mutexattr_init(&attr));
-+
-+	/* PTHREAD_MUTEX_ERRORCHECK is *very* useful for debugging,
-+	 * but has some overhead, so we provide an option to turn it
-+	 * off.
-+	 */
-+#ifdef DEBUG
-+	if (!recursive)
-+		WARN_PTHREAD(pthread_mutexattr_settype(
-+				     &attr, PTHREAD_MUTEX_ERRORCHECK));
-+#endif /* DEBUG */
-+
-+	if (recursive)
-+		WARN_PTHREAD(pthread_mutexattr_settype(
-+				     &attr, PTHREAD_MUTEX_RECURSIVE));
-+
-+	WARN_PTHREAD(pthread_mutex_init(mutex, &attr));
-+
-+	return _mutex;
-+}
-+
-+static void mutex_lock(struct lkl_mutex *mutex)
-+{
-+	WARN_PTHREAD(pthread_mutex_lock(&mutex->mutex));
-+}
-+
-+static void mutex_unlock(struct lkl_mutex *_mutex)
-+{
-+	pthread_mutex_t *mutex = &_mutex->mutex;
-+
-+	WARN_PTHREAD(pthread_mutex_unlock(mutex));
-+}
-+
-+static void mutex_free(struct lkl_mutex *_mutex)
-+{
-+	pthread_mutex_t *mutex = &_mutex->mutex;
-+
-+	WARN_PTHREAD(pthread_mutex_destroy(mutex));
-+	free(_mutex);
-+}
-+
-+static lkl_thread_t thread_create(void (*fn)(void *), void *arg)
-+{
-+	pthread_t thread;
-+
-+	if (WARN_PTHREAD(pthread_create(&thread, NULL, (void *)fn,
-+					arg)))
-+		return 0;
-+	else
-+		return (lkl_thread_t) thread;
-+}
-+
-+static void thread_detach(void)
-+{
-+	WARN_PTHREAD(pthread_detach(pthread_self()));
-+}
-+
-+static void thread_exit(void)
-+{
-+	pthread_exit(NULL);
-+}
-+
-+static int thread_join(lkl_thread_t tid)
-+{
-+	if (WARN_PTHREAD(pthread_join((pthread_t)tid, NULL)))
-+		return (-1);
-+	else
-+		return 0;
-+}
-+
-+static lkl_thread_t thread_self(void)
-+{
-+	return (lkl_thread_t)pthread_self();
-+}
-+
-+static int thread_equal(lkl_thread_t a, lkl_thread_t b)
-+{
-+	return pthread_equal((pthread_t)a, (pthread_t)b);
-+}
-+
-+static struct lkl_tls_key *tls_alloc(void (*destructor)(void *))
-+{
-+	struct lkl_tls_key *ret = malloc(sizeof(struct lkl_tls_key));
-+
-+	if (WARN_PTHREAD(pthread_key_create(&ret->key, destructor))) {
-+		free(ret);
-+		return NULL;
-+	}
-+	return ret;
-+}
-+
-+static void tls_free(struct lkl_tls_key *key)
-+{
-+	WARN_PTHREAD(pthread_key_delete(key->key));
-+	free(key);
-+}
-+
-+static int tls_set(struct lkl_tls_key *key, void *data)
-+{
-+	if (WARN_PTHREAD(pthread_setspecific(key->key, data)))
-+		return (-1);
-+	return 0;
-+}
-+
-+static void *tls_get(struct lkl_tls_key *key)
-+{
-+	return pthread_getspecific(key->key);
-+}
-+
-+static unsigned long long time_ns(void)
-+{
-+	struct timespec ts;
-+
-+	clock_gettime(CLOCK_MONOTONIC, &ts);
-+
-+	return 1e9*ts.tv_sec + ts.tv_nsec;
-+}
-+
-+static void *timer_alloc(void (*fn)(void *), void *arg)
-+{
-+	int err;
-+	timer_t timer;
-+	struct sigevent se =  {
-+		.sigev_notify = SIGEV_THREAD,
-+		.sigev_value = {
-+			.sival_ptr = arg,
-+		},
-+		.sigev_notify_function = (void *)fn,
-+	};
-+
-+	err = timer_create(CLOCK_REALTIME, &se, &timer);
-+	if (err)
-+		return NULL;
-+
-+	return (void *)(long)timer;
-+}
-+
-+static int timer_set_oneshot(void *_timer, unsigned long ns)
-+{
-+	timer_t timer = (timer_t)(long)_timer;
-+	struct itimerspec ts = {
-+		.it_value = {
-+			.tv_sec = ns / 1000000000,
-+			.tv_nsec = ns % 1000000000,
-+		},
-+	};
-+
-+	return timer_settime(timer, 0, &ts, NULL);
-+}
-+
-+static void timer_free(void *_timer)
-+{
-+	timer_t timer = (timer_t)(long)_timer;
-+
-+	timer_delete(timer);
-+}
-+
-+static void panic(void)
-+{
-+	assert(0);
-+}
-+
-+static long _gettid(void)
-+{
-+#ifdef	__FreeBSD__
-+	return (long)pthread_self();
-+#else
-+	return syscall(SYS_gettid);
-+#endif
-+}
-+
-+struct lkl_host_operations lkl_host_ops = {
-+	.panic = panic,
-+	.thread_create = thread_create,
-+	.thread_detach = thread_detach,
-+	.thread_exit = thread_exit,
-+	.thread_join = thread_join,
-+	.thread_self = thread_self,
-+	.thread_equal = thread_equal,
-+	.sem_alloc = sem_alloc,
-+	.sem_free = sem_free,
-+	.sem_up = sem_up,
-+	.sem_down = sem_down,
-+	.mutex_alloc = mutex_alloc,
-+	.mutex_free = mutex_free,
-+	.mutex_lock = mutex_lock,
-+	.mutex_unlock = mutex_unlock,
-+	.tls_alloc = tls_alloc,
-+	.tls_free = tls_free,
-+	.tls_set = tls_set,
-+	.tls_get = tls_get,
-+	.time = time_ns,
-+	.timer_alloc = timer_alloc,
-+	.timer_set_oneshot = timer_set_oneshot,
-+	.timer_free = timer_free,
-+	.print = print,
-+	.mem_alloc = (void *)malloc,
-+	.mem_free = free,
-+	.gettid = _gettid,
-+	.jmp_buf_set = jmp_buf_set,
-+	.jmp_buf_longjmp = jmp_buf_longjmp,
-+};
-+
 -- 
 2.21.0 (Apple Git-122.2)
 
