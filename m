@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pj1-x1042.google.com ([2607:f8b0:4864:20::1042])
+Received: from mail-pj1-x1044.google.com ([2607:f8b0:4864:20::1044])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jIvj4-000576-BY
- for linux-um@lists.infradead.org; Mon, 30 Mar 2020 14:49:20 +0000
-Received: by mail-pj1-x1042.google.com with SMTP id ng8so7681047pjb.2
- for <linux-um@lists.infradead.org>; Mon, 30 Mar 2020 07:49:18 -0700 (PDT)
+ id 1jIvh9-0004kL-RA
+ for linux-um@lists.infradead.org; Mon, 30 Mar 2020 14:47:21 +0000
+Received: by mail-pj1-x1044.google.com with SMTP id kx8so7414092pjb.5
+ for <linux-um@lists.infradead.org>; Mon, 30 Mar 2020 07:47:19 -0700 (PDT)
 From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v4 22/25] um lkl: add CI scripts to conduct regression tests
-Date: Mon, 30 Mar 2020 23:45:54 +0900
-Message-Id: <49a31f01759ea22e9331afd22c48e22cf9ae24d4.1585579244.git.thehajime@gmail.com>
+Subject: [RFC v4 04/25] um lkl: memory handling
+Date: Mon, 30 Mar 2020 23:45:36 +0900
+Message-Id: <39950bf12f6b4380f95e227c9373102ac76acc18.1585579244.git.thehajime@gmail.com>
 In-Reply-To: <cover.1585579244.git.thehajime@gmail.com>
 References: <cover.1585579244.git.thehajime@gmail.com>
 MIME-Version: 1.0
@@ -25,317 +25,206 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: Octavian Purdila <tavi.purdila@gmail.com>, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, Akira Moroo <retrage01@gmail.com>
+Cc: linux-arch@vger.kernel.org, Levente Kurusa <levex@linux.com>, Octavian Purdila <tavi.purdila@gmail.com>, Akira Moroo <retrage01@gmail.com>, Hajime Tazaki <thehajime@gmail.com>, linux-kernel-library@freelists.org, Yuan Liu <liuyuan@google.com>
 
-For the continuous integration (CI), we use CircleCI with multiple test
-targets triggered with a single commit.  The test also conducts memory
-checks using valgrind in order to prevent enbug.
+From: Octavian Purdila <tavi.purdila@gmail.com>
 
+LKL is a non MMU architecture and hence there is not much work left to
+do other than initializing the boot allocator and providing the page
+and page table definitions.
+
+The backstore memory is allocated via a host operation and the memory
+size to be used is specified when the kernel is started, in the
+lkl_start_kernel call.
+
+Cc: H.K. Jerry Chu <hkchu@google.com>
+Cc: Levente Kurusa <levex@linux.com>
+Cc: Yuan Liu <liuyuan@google.com>
 Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
 ---
- .circleci/config.yml             | 196 +++++++++++++++++++++++++++++++
- tools/lkl/scripts/checkpatch.sh  |  60 ++++++++++
- tools/lkl/scripts/lkl-jenkins.sh |  21 ++++
- 3 files changed, 277 insertions(+)
- create mode 100644 .circleci/config.yml
- create mode 100755 tools/lkl/scripts/checkpatch.sh
- create mode 100755 tools/lkl/scripts/lkl-jenkins.sh
+ arch/um/lkl/include/asm/page.h          | 14 ++++++
+ arch/um/lkl/include/asm/pgtable.h       | 57 +++++++++++++++++++++
+ arch/um/lkl/include/uapi/asm/host_ops.h |  5 ++
+ arch/um/lkl/mm/bootmem.c                | 66 +++++++++++++++++++++++++
+ 4 files changed, 142 insertions(+)
+ create mode 100644 arch/um/lkl/include/asm/page.h
+ create mode 100644 arch/um/lkl/include/asm/pgtable.h
+ create mode 100644 arch/um/lkl/mm/bootmem.c
 
-diff --git a/.circleci/config.yml b/.circleci/config.yml
+diff --git a/arch/um/lkl/include/asm/page.h b/arch/um/lkl/include/asm/page.h
 new file mode 100644
-index 000000000000..5bdf059014c0
+index 000000000000..e77f3da22031
 --- /dev/null
-+++ b/.circleci/config.yml
-@@ -0,0 +1,196 @@
-+version: 2
-+general:
-+  artifacts:
++++ b/arch/um/lkl/include/asm/page.h
+@@ -0,0 +1,14 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_LKL_PAGE_H
++#define _ASM_LKL_PAGE_H
 +
-+do_steps: &do_steps
-+ steps:
-+  - run: echo "$CROSS_COMPILE" > ~/_cross_compile
-+  - restore_cache:
-+      key: code-tree-shallow-{{ .Environment.CACHE_VERSION }}
-+  - run:
-+      name: checkout build tree
-+      command: |
-+        mkdir -p ~/.ssh/
-+        ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-+        if ! [ -d .git ]; then
-+          git clone --depth=1 $CIRCLE_REPOSITORY_URL .;
-+        fi
-+        if [[ $CIRCLE_BRANCH == pull/* ]]; then
-+           git fetch --depth=1 origin $CIRCLE_BRANCH/head;
-+        else
-+           git fetch --depth=1 origin $CIRCLE_BRANCH;
-+        fi
-+        git reset --hard $CIRCLE_SHA1
-+  - save_cache:
-+      key: code-tree-shallow-{{ .Environment.CACHE_VERSION }}-{{ epoch }}
-+      paths:
-+        - /home/ubuntu/project/.git
-+  - run:
-+      name: clean
-+      command: |
-+        make mrproper
-+        cd tools/lkl && make clean-conf
-+        rm -rf ~/junit
-+  - run: mkdir -p /home/ubuntu/.ccache
-+  - restore_cache:
-+      key: compiler-cache-{{ checksum "~/_cross_compile" }}-{{ .Environment.CACHE_VERSION }}
-+  - run: cd tools/lkl && make -j8 ${MKARG}
-+  - run: mkdir -p ~/destdir && cd tools/lkl && make DESTDIR=~/destdir
-+  - save_cache:
-+     paths:
-+       - /home/ubuntu/.ccache
-+     key: compiler-cache-{{ checksum "~/_cross_compile" }}-{{ .Environment.CACHE_VERSION }}-{{ epoch }}
-+  - run:
-+      name: run tests
-+      command: |
-+        mkdir -p ~/junit
-+        make -C tools/lkl run-tests tests="--junit-dir ~/junit"
-+      no_output_timeout: "90m"
-+  - run:
-+      name: collecting test results
-+      command: |
-+        find ./tools/lkl/ -type f -name "*.xml" -exec mv {} ~/junit/ \;
-+  - store_test_results:
-+      path: ~/junit
-+  - store_artifacts:
-+      path: ~/junit
++#define CONFIG_KERNEL_RAM_BASE_ADDRESS memory_start
 +
++#ifndef __ASSEMBLY__
++void free_mem(void);
++void bootmem_init(unsigned long mem_size);
++#endif
 +
-+do_uml_steps: &do_uml_steps
-+ steps:
-+  - run: echo "$CROSS_COMPILE" > ~/_cross_compile
-+  - restore_cache:
-+      key: code-tree-shallow-{{ .Environment.CACHE_VERSION }}
-+  - run:
-+      name: checkout build tree
-+      command: |
-+        mkdir -p ~/.ssh/
-+        ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-+        if ! [ -d .git ]; then
-+          git clone --depth=1 $CIRCLE_REPOSITORY_URL .;
-+        fi
-+        if [[ $CIRCLE_BRANCH == pull/* ]]; then
-+           git fetch --depth=1 origin $CIRCLE_BRANCH/head;
-+        else
-+           git fetch --depth=1 origin $CIRCLE_BRANCH;
-+        fi
-+        git reset --hard $CIRCLE_SHA1
-+  - save_cache:
-+      key: code-tree-shallow-{{ .Environment.CACHE_VERSION }}-{{ epoch }}
-+      paths:
-+        - /home/ubuntu/project/.git
-+  - run: mkdir -p /home/ubuntu/.ccache
-+  - restore_cache:
-+      key: compiler-cache-{{ checksum "~/_cross_compile" }}-{{ .Environment.CACHE_VERSION }}
-+  - run:
-+      name: build
-+      command: |
-+        sudo apt-get update
-+        sudo apt-get install -y gcc-multilib g++-multilib
-+        make defconfig ARCH=um SUBARCH=$SUBARCH
-+        make ARCH=um SUBARCH=$SUBARCH
-+  - save_cache:
-+     paths:
-+       - /home/ubuntu/.ccache
-+     key: compiler-cache-{{ checksum "~/_cross_compile" }}-{{ .Environment.CACHE_VERSION }}-{{ epoch }}
-+  - run:
-+      name: test
-+      command: |
-+        # XXX: i386 build doesn't work with the test
-+        if [ $CIRCLE_STAGE = "i386_uml" ] || [ $CIRCLE_STAGE = "i386_uml_on_x86_64" ]; then
-+          exit 0
-+        fi
-+        ./linux rootfstype=hostfs ro mem=1g loglevel=10 init="/bin/bash -c exit" || export RETVAL=$?
-+        # SIGABRT=6 => 128+6
-+        if [ $RETVAL != "134" ]; then
-+          exit 1
-+        fi
++#include <asm-generic/page.h>
 +
-+## Customize the test machine
-+jobs:
-+  x86_64:
-+   docker:
-+     - image: lkldocker/circleci-x86_64:0.7
-+   environment:
-+     CROSS_COMPILE: ""
-+   <<: *do_steps
-+
-+  i386:
-+   docker:
-+     - image: lkldocker/circleci-i386:0.1
-+   environment:
-+     CROSS_COMPILE: ""
-+   <<: *do_steps
-+
-+  x86_64_valgrind:
-+   docker:
-+     - image: lkldocker/circleci-x86_64:0.7
-+   environment:
-+     CROSS_COMPILE: ""
-+     VALGRIND: 1
-+   <<: *do_steps
-+
-+  x86_64_uml:
-+   docker:
-+     - image: lkldocker/circleci-x86_64:0.7
-+   environment:
-+     CROSS_COMPILE: ""
-+     TMPDIR: "/tmp" # required for not using /dev/shm
-+     SUBARCH: "x86_64"
-+   <<: *do_uml_steps
-+
-+  i386_uml:
-+   docker:
-+     - image: lkldocker/circleci-i386:0.1
-+   environment:
-+     CROSS_COMPILE: ""
-+     SUBARCH: "i386"
-+     TMPDIR: "/tmp" # required for not using /dev/shm
-+   <<: *do_uml_steps
-+
-+  i386_uml_on_x86_64:
-+   docker:
-+     - image: lkldocker/circleci-x86_64:0.7
-+   environment:
-+     CROSS_COMPILE: ""
-+     TMPDIR: "/tmp" # required for not using /dev/shm
-+     SUBARCH: "i386"
-+   <<: *do_uml_steps
-+
-+  checkpatch:
-+   docker:
-+     - image: lkldocker/circleci:0.5
-+   environment:
-+   steps:
-+     - restore_cache:
-+        key: code-tree-full-history-{{ .Environment.CACHE_VERSION }}
-+     - checkout
-+     - run: sudo pip install ply
-+     - run: tools/lkl/scripts/checkpatch.sh
-+     - save_cache:
-+        key: code-tree-full-history-{{ .Environment.CACHE_VERSION }}-{{ epoch }}
-+        paths:
-+          - /home/ubuntu/project/.git
-+        when: always
-+
-+workflows:
-+  version: 2
-+  build:
-+    jobs:
-+     - x86_64
-+     - x86_64_valgrind
-+     - checkpatch
-+     - i386
-+     - x86_64_uml
-+     - i386_uml
-+     - i386_uml_on_x86_64
-+  nightly:
-+    triggers:
-+      - schedule:
-+          cron: "0 0 * * *"
-+          filters:
-+            branches:
-+              only:
-+                - master
-+    jobs:
-+      - x86_64_valgrind
-diff --git a/tools/lkl/scripts/checkpatch.sh b/tools/lkl/scripts/checkpatch.sh
-new file mode 100755
-index 000000000000..0c02ca6b21a2
++#endif /* _ASM_LKL_PAGE_H */
+diff --git a/arch/um/lkl/include/asm/pgtable.h b/arch/um/lkl/include/asm/pgtable.h
+new file mode 100644
+index 000000000000..733beb6d53f6
 --- /dev/null
-+++ b/tools/lkl/scripts/checkpatch.sh
-@@ -0,0 +1,60 @@
-+#!/bin/sh -ex
-+# SPDX-License-Identifier: GPL-2.0
++++ b/arch/um/lkl/include/asm/pgtable.h
+@@ -0,0 +1,57 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LKL_PGTABLE_H
++#define _LKL_PGTABLE_H
 +
-+if [ -z "$origin_master" ]; then
-+    origin_master="origin/master"
-+fi
++#include <asm-generic/pgtable-nopud.h>
 +
-+UPSTREAM=git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-+LKL=github.com:lkl/linux.git
++/*
++ * (C) Copyright 2000-2002, Greg Ungerer <gerg@snapgear.com>
++ */
 +
-+upstream=`git remote -v | grep $UPSTREAM | cut -f1 | head -n1`
-+lkl=`git remote -v | grep $LKL | cut -f1 | head -n1`
++#include <linux/slab.h>
++#include <asm/processor.h>
++#include <asm/io.h>
 +
-+if [ -z "$upstream" ]; then
-+    git fetch --tags --progress git://$UPSTREAM
-+else
-+    git fetch --tags $upstream
-+fi
++#define pgd_present(pgd)	(1)
++#define pgd_none(pgd)		(0)
++#define pgd_bad(pgd)		(0)
++#define pgd_clear(pgdp)
++#define kern_addr_valid(addr)	(1)
++#define	pmd_offset(a, b)	((void *)0)
 +
-+if [ -z "$lkl" ]; then
-+    git remote add lkl-upstream git@$LKL || true
-+    lkl=`git remote -v | grep $LKL | cut -f1 | head -n1`
-+fi
++#define PAGE_NONE		__pgprot(0)
++#define PAGE_SHARED		__pgprot(0)
++#define PAGE_COPY		__pgprot(0)
++#define PAGE_READONLY		__pgprot(0)
++#define PAGE_KERNEL		__pgprot(0)
 +
-+if [ -z "$lkl" ]; then
-+    echo "can't find lkl remote, quiting"
-+    exit 1
-+fi
++void paging_init(void);
++#define swapper_pg_dir		((pgd_t *)0)
 +
-+git fetch $lkl
-+git fetch --tags $upstream
++#define __swp_type(x)		(0)
++#define __swp_offset(x)		(0)
++#define __swp_entry(typ, off)	((swp_entry_t) { ((typ) | ((off) << 7)) })
++#define __pte_to_swp_entry(pte)	((swp_entry_t) { pte_val(pte) })
++#define __swp_entry_to_pte(x)	((pte_t) { (x).val })
 +
-+# find the last upstream tag to avoid checking upstream commits during
-+# upstream merges
-+tag=`git tag --sort='-*authordate' | grep ^v | head -n1`
-+tmp=`mktemp -d`
++/*
++ * ZERO_PAGE is a global shared page that is always zero: used
++ * for zero-mapped memory areas etc..
++ */
++extern void *empty_zero_page;
++#define ZERO_PAGE(vaddr)	(virt_to_page(empty_zero_page))
 +
-+commits=$(git log --no-merges --pretty=format:%h HEAD ^$lkl/master ^$tag)
-+for c in $commits; do
-+    git format-patch -1 -o $tmp $c
-+done
++/*
++ * All 32bit addresses are effectively valid for vmalloc...
++ * Sort of meaningless for non-VM targets.
++ */
++#define	VMALLOC_START		0
++#define	VMALLOC_END		0xffffffff
++#define	KMAP_START		0
++#define	KMAP_END		0xffffffff
 +
-+if [ -z "$c" ]; then
-+    echo "there are not commits/patches to check, quiting."
-+    rmdir $tmp
-+    exit 0
-+fi
++#include <asm-generic/pgtable.h>
 +
-+./scripts/checkpatch.pl --ignore FILE_PATH_CHANGES $tmp/*.patch
-+rm $tmp/*.patch
++#define check_pgt_cache()	do { } while (0)
 +
-+# checkpatch.pl does not know how to deal with 3 way diffs which would
-+# be useful to check the conflict resolutions during merges...
-+#for c in `git log --merges --pretty=format:%h HEAD ^$origin_master ^$tag`; do
-+#    git log --pretty=email $c -1 > $tmp/$c.patch
-+#    git diff $c $c^1 $c^2 >> $tmp/$c.patch
-+#done
-+
-+rmdir $tmp
-+
-diff --git a/tools/lkl/scripts/lkl-jenkins.sh b/tools/lkl/scripts/lkl-jenkins.sh
-new file mode 100755
-index 000000000000..eaadc6e90143
++#endif
+diff --git a/arch/um/lkl/include/uapi/asm/host_ops.h b/arch/um/lkl/include/uapi/asm/host_ops.h
+index 7cfb0a93e6a6..6bbc94c120be 100644
+--- a/arch/um/lkl/include/uapi/asm/host_ops.h
++++ b/arch/um/lkl/include/uapi/asm/host_ops.h
+@@ -17,8 +17,13 @@ struct lkl_jmp_buf {
+  * These operations must be provided by a host library or by the application
+  * itself.
+  *
++ * @mem_alloc - allocate memory
++ * @mem_free - free memory
++ *
+  */
+ struct lkl_host_operations {
++	void *(*mem_alloc)(unsigned long mem);
++	void (*mem_free)(void *mem);
+ };
+ 
+ void lkl_bug(const char *fmt, ...);
+diff --git a/arch/um/lkl/mm/bootmem.c b/arch/um/lkl/mm/bootmem.c
+new file mode 100644
+index 000000000000..39dd0d22b44e
 --- /dev/null
-+++ b/tools/lkl/scripts/lkl-jenkins.sh
-@@ -0,0 +1,21 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
++++ b/arch/um/lkl/mm/bootmem.c
+@@ -0,0 +1,66 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/memblock.h>
++#include <linux/mm.h>
++#include <linux/swap.h>
 +
-+set -e
++unsigned long memory_start, memory_end;
++static unsigned long _memory_start, mem_size;
 +
-+script_dir=$(cd $(dirname ${BASH_SOURCE:-$0}); pwd)
-+basedir=$(cd $script_dir/../../..; pwd)
++void *empty_zero_page;
 +
-+export PATH=$PATH:/sbin
-+
-+build_and_test()
++void __init bootmem_init(unsigned long mem_sz)
 +{
-+    cd $basedir
-+    make mrproper
-+    cd tools/lkl
-+    make clean-conf
-+    make -j4
-+    make run-tests
++	mem_size = mem_sz;
++
++	_memory_start = (unsigned long)lkl_ops->mem_alloc(mem_size);
++	memory_start = _memory_start;
++	WARN_ON(!memory_start);
++	memory_end = memory_start + mem_size;
++
++	if (PAGE_ALIGN(memory_start) != memory_start) {
++		mem_size -= PAGE_ALIGN(memory_start) - memory_start;
++		memory_start = PAGE_ALIGN(memory_start);
++		mem_size = (mem_size / PAGE_SIZE) * PAGE_SIZE;
++	}
++	pr_info("memblock address range: 0x%lx - 0x%lx\n", memory_start,
++		memory_start + mem_size);
++	/*
++	 * Give all the memory to the bootmap allocator, tell it to put the
++	 * boot mem_map at the start of memory.
++	 */
++	max_low_pfn = virt_to_pfn(memory_end);
++	min_low_pfn = virt_to_pfn(memory_start);
++	memblock_add(memory_start, mem_size);
++
++	empty_zero_page = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
++	memset((void *)empty_zero_page, 0, PAGE_SIZE);
++
++	{
++		unsigned long zones_size[MAX_NR_ZONES] = {0, };
++
++		zones_size[ZONE_NORMAL] = (mem_size) >> PAGE_SHIFT;
++		free_area_init(zones_size);
++	}
 +}
 +
-+build_and_test
++void __init mem_init(void)
++{
++	max_mapnr = (((unsigned long)high_memory) - PAGE_OFFSET) >> PAGE_SHIFT;
++	/* this will put all memory onto the freelists */
++	totalram_pages_add(memblock_free_all());
++	pr_info("Memory available: %luk/%luk RAM\n",
++		(nr_free_pages() << PAGE_SHIFT) >> 10, mem_size >> 10);
++}
++
++/*
++ * In our case __init memory is not part of the page allocator so there is
++ * nothing to free.
++ */
++void free_initmem(void)
++{
++}
++
++void free_mem(void)
++{
++	lkl_ops->mem_free((void *)_memory_start);
++}
 -- 
 2.21.0 (Apple Git-122.2)
 
