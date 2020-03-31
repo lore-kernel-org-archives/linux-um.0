@@ -1,14 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jA1S3-0008Qu-HY
- for linux-um@lists.infradead.org; Fri, 06 Mar 2020 01:06:56 +0000
-From: Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH net-next 7/7] wil6210: reject unsupported coalescing params
-Date: Thu,  5 Mar 2020 17:06:02 -0800
-Message-Id: <20200306010602.1620354-8-kuba@kernel.org>
-In-Reply-To: <20200306010602.1620354-1-kuba@kernel.org>
-References: <20200306010602.1620354-1-kuba@kernel.org>
+ id 1jJMwM-00062O-MX
+ for linux-um@lists.infradead.org; Tue, 31 Mar 2020 19:52:52 +0000
+Message-ID: <3fca96c19ca1e56fa36ee0c428c95ab82883a4fd.camel@sipsolutions.net>
+Subject: Re: [RFC v4 23/25] um lkl: add UML network driver for lkl
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Tue, 31 Mar 2020 21:52:46 +0200
+In-Reply-To: <m25zelxn8w.wl-thehajime@gmail.com>
+ (sfid-20200331_043814_756678_0201C8CF)
+References: <cover.1585579244.git.thehajime@gmail.com>
+ <0f087b36ad579eeb8062b12e9e61566d9b5b18ac.1585579244.git.thehajime@gmail.com>
+ <b2a730a4bcafb13cb1b29a637f8f8449cf3521d6.camel@sipsolutions.net>
+ <m25zelxn8w.wl-thehajime@gmail.com> (sfid-20200331_043814_756678_0201C8CF)
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,33 +27,60 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: davem@davemloft.net
-Cc: mkubecek@suse.cz, doshir@vmware.com, pv-drivers@vmware.com, jasowang@redhat.com, edumazet@google.com, anton.ivanov@cambridgegreys.com, merez@codeaurora.org, leon@kernel.org, linux-rdma@vger.kernel.org, richard@nod.at, jgg@ziepe.ca, dledford@redhat.com, Jakub Kicinski <kuba@kernel.org>, hayeswang@realtek.com, jdike@addtoit.com, linux-um@lists.infradead.org, kvalo@codeaurora.org, GR-Linux-NIC-Dev@marvell.com, manishc@marvell.com, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, gregkh@linuxfoundation.org
+To: Hajime Tazaki <thehajime@gmail.com>
+Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, retrage01@gmail.com, linux-um@lists.infradead.org, linux-arch@vger.kernel.org
 
-Set ethtool_ops->supported_coalesce_params to let
-the core reject unsupported coalescing parameters.
+On Tue, 2020-03-31 at 11:38 +0900, Hajime Tazaki wrote:
+> Thanks for the comments, Johannes.
+> 
+> On Tue, 31 Mar 2020 06:31:15 +0900,
+> Johannes Berg wrote:
+> > 
+> > > +++ b/arch/um/lkl/include/asm/irq.h
+> > > @@ -2,6 +2,9 @@
+> > >  #ifndef _ASM_LKL_IRQ_H
+> > >  #define _ASM_LKL_IRQ_H
+> > >  
+> > > +/* pull UML's definitions */
+> > > +#include "../../../include/asm/irq.h"
+> > 
+> > This is _really_ ugly.
+> 
+> Hmm, in previous patchset (until v3), I was using the worse approach
+> (I thought) to avoid this include.
+> 
+> +KBUILD_CFLAGS  += -DTIMER_IRQ=0 -DUBD_IRQ=4 -DUM_ETH_IRQ=5 -DLAST_IRQ=15
+> 
+> And I thought the current way is better than before.
 
-This driver did not previously reject unsupported parameters.
+Yeah, ok, that's worse :)
 
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
----
- drivers/net/wireless/ath/wil6210/ethtool.c | 1 +
- 1 file changed, 1 insertion(+)
+But why is it even needed? It kinda seems to me that this means we're
+not splitting the code well.
 
-diff --git a/drivers/net/wireless/ath/wil6210/ethtool.c b/drivers/net/wireless/ath/wil6210/ethtool.c
-index fef10886ca4a..e481674485c2 100644
---- a/drivers/net/wireless/ath/wil6210/ethtool.c
-+++ b/drivers/net/wireless/ath/wil6210/ethtool.c
-@@ -95,6 +95,7 @@ static int wil_ethtoolops_set_coalesce(struct net_device *ndev,
- }
- 
- static const struct ethtool_ops wil_ethtool_ops = {
-+	.supported_coalesce_params = ETHTOOL_COALESCE_USECS,
- 	.get_drvinfo	= cfg80211_get_drvinfo,
- 	.get_coalesce	= wil_ethtoolops_get_coalesce,
- 	.set_coalesce	= wil_ethtoolops_set_coalesce,
--- 
-2.24.1
+IMHO, if we even want to treat LKL/UML as sub-arches, then we should
+still split the driver code off in a cleaner way, rather than linking
+half here half there?
+
+And maybe reorg the code... but I'll reply over in your other email
+more.
+
+> > > @@ -181,6 +196,11 @@ void init_IRQ(void)
+> > >  	for (i = 0; i < NR_IRQS; i++)
+> > >  		irq_set_chip_and_handler(i, &dummy_irq_chip, handle_simple_irq);
+> > >  
+> > > +#if defined(__linux) && (defined(__i386) || defined(__x86_64))
+> > 
+> > What's with all those ifdefs with this condition?
+> 
+> Same as above.
+> but I agree that the ifdefs are cryptic; I'll try to make it more
+> understandable if I use ifdefs.
+
+I'm also generally not convinced that it's a good idea to sprinkle these
+kinds of ifdefs over the place.
+
+johannes
 
 
 _______________________________________________
