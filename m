@@ -1,17 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab7.miniserver.com ([37.128.132.42]
- helo=www.kot-begemot.co.uk)
+Received: from mail-oln040092003021.outbound.protection.outlook.com
+ ([40.92.3.21] helo=NAM02-BL2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jJYGs-0003n7-RI
- for linux-um@lists.infradead.org; Wed, 01 Apr 2020 07:58:48 +0000
-Subject: Re: Patch to remove symbol conflicts in pcap transport
-References: <SN6PR10MB30394F0158533B8AE1151F81E2C90@SN6PR10MB3039.namprd10.prod.outlook.com>
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Message-ID: <e7f5fc79-5ec2-d1f9-fa53-5d8fafdd8f13@kot-begemot.co.uk>
-Date: Wed, 1 Apr 2020 08:58:38 +0100
-MIME-Version: 1.0
-In-Reply-To: <SN6PR10MB30394F0158533B8AE1151F81E2C90@SN6PR10MB3039.namprd10.prod.outlook.com>
+ id 1jJXmi-000085-LK
+ for linux-um@lists.infradead.org; Wed, 01 Apr 2020 07:27:38 +0000
+From: James McMechan <james_mcmechan@hotmail.com>
+Subject: Patch to remove symbol conflicts in pcap transport
+Date: Wed, 1 Apr 2020 07:27:32 +0000
+Message-ID: <SN6PR10MB30394F0158533B8AE1151F81E2C90@SN6PR10MB3039.namprd10.prod.outlook.com>
 Content-Language: en-US
+Content-Type: multipart/mixed;
+ boundary="_002_SN6PR10MB30394F0158533B8AE1151F81E2C90SN6PR10MB3039namp_"
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,67 +20,147 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: James McMechan <james_mcmechan@hotmail.com>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>
+To: "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>
 
-On 01/04/2020 08:27, James McMechan wrote:
-> Hi,
-> 
-> I had fixed up the pcap transport back in December,
-> Attached is the patch I was using (with a couple clean ups) I just prefixed likely collisions with /um_/
-> It has been working since 5.4.2 up thru 5.6.0 so far
-> I noticed that the standard transports are now marked (obsolete) in 5.6.0
-> Does this version of the new transport work correctly when statically linked? It nolonger errors out at startup.
+--_002_SN6PR10MB30394F0158533B8AE1151F81E2C90SN6PR10MB3039namp_
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Sorta. Neither pcap nor vector can be truly statically linked. PCAP library internally and vector explicitly
-invoke name resolution functions which will fail in static executables if you try to run on a system with
-different libc.
+Hi,=0A=
+=0A=
+I had fixed up the pcap transport back in December,=0A=
+Attached is the patch I was using (with a couple clean ups) I just prefixed=
+ likely collisions with /um_/=0A=
+It has been working since 5.4.2 up thru 5.6.0 so far=0A=
+I noticed that the standard transports are now marked (obsolete) in 5.6.0=
+=0A=
+Does this version of the new transport work correctly when statically linke=
+d? It nolonger errors out at startup.=0A=
+I have not found any documentation on how to configure the new experimental=
+ vector transport.=0A=
+Since the classic transports are between 10-100 times faster than my networ=
+k anyway I have not felt a need to upgrade.=0A=
+More I was using UML to deal with some very old systems that were not easil=
+y upgraded. e.g. 2.6 kernels and I think even a 2.0.32?=0A=
+The vector Kconfig help says it wants a >=3D3.0 kernel for example.=0A=
+=0A=
+Enjoy,=0A=
+=0A=
+Jim McMechan=
 
-This cannot be fixed. Vector cannot be static and the same is valid for pcap.
+--_002_SN6PR10MB30394F0158533B8AE1151F81E2C90SN6PR10MB3039namp_
+Content-Type: text/plain; name="pcap-patch.txt"
+Content-Description: pcap-patch.txt
+Content-Disposition: attachment; filename="pcap-patch.txt"; size=5181;
+	creation-date="Wed, 01 Apr 2020 06:29:56 GMT";
+	modification-date="Wed, 01 Apr 2020 06:30:39 GMT"
+Content-Transfer-Encoding: base64
 
-Both will be prohibited from static linking in the future because the resulting executable is NOT static and
-there is absolutely nothing we can do about it. This is a core glibc issue which we can neither fix, nor work
-around.
+ZGlmZiAtTnVyIGxpbnV4LTUuNC4yL2FyY2gvdW0vZHJpdmVycy9wY2FwX2tlcm4uYyB1bWwtNS40
+LjIvYXJjaC91bS9kcml2ZXJzL3BjYXBfa2Vybi5jCi0tLSBsaW51eC01LjQuMi9hcmNoL3VtL2Ry
+aXZlcnMvcGNhcF9rZXJuLmMJMjAxOS0xMS0yNCAxNjozMjowMS4wMDAwMDAwMDAgLTA4MDAKKysr
+IHVtbC01LjQuMi9hcmNoL3VtL2RyaXZlcnMvcGNhcF9rZXJuLmMJMjAxOS0xMi0wNiAyMjowNDo1
+OS43ODMyNTU2NTMgLTA4MDAKQEAgLTgsMTggKzgsMTggQEAKICNpbmNsdWRlIDxuZXRfa2Vybi5o
+PgogI2luY2x1ZGUgInBjYXBfdXNlci5oIgogCi1zdHJ1Y3QgcGNhcF9pbml0IHsKK3N0cnVjdCB1
+bV9wY2FwX2luaXQgewogCWNoYXIgKmhvc3RfaWY7CiAJaW50IHByb21pc2M7CiAJaW50IG9wdGlt
+aXplOwogCWNoYXIgKmZpbHRlcjsKIH07CiAKLXZvaWQgcGNhcF9pbml0KHN0cnVjdCBuZXRfZGV2
+aWNlICpkZXYsIHZvaWQgKmRhdGEpCit2b2lkIHVtX3BjYXBfaW5pdChzdHJ1Y3QgbmV0X2Rldmlj
+ZSAqZGV2LCB2b2lkICpkYXRhKQogewogCXN0cnVjdCB1bWxfbmV0X3ByaXZhdGUgKnByaTsKIAlz
+dHJ1Y3QgcGNhcF9kYXRhICpwcHJpOwotCXN0cnVjdCBwY2FwX2luaXQgKmluaXQgPSBkYXRhOwor
+CXN0cnVjdCB1bV9wY2FwX2luaXQgKmluaXQgPSBkYXRhOwogCiAJcHJpID0gbmV0ZGV2X3ByaXYo
+ZGV2KTsKIAlwcHJpID0gKHN0cnVjdCBwY2FwX2RhdGEgKikgcHJpLT51c2VyOwpAQCAtMzEsMzIg
+KzMxLDMyIEBACiAJcHJpbnRrKCJwY2FwIGJhY2tlbmQsIGhvc3QgaW50ZXJmYWNlICVzXG4iLCBw
+cHJpLT5ob3N0X2lmKTsKIH0KIAotc3RhdGljIGludCBwY2FwX3JlYWQoaW50IGZkLCBzdHJ1Y3Qg
+c2tfYnVmZiAqc2tiLCBzdHJ1Y3QgdW1sX25ldF9wcml2YXRlICpscCkKK3N0YXRpYyBpbnQgdW1f
+cGNhcF9yZWFkKGludCBmZCwgc3RydWN0IHNrX2J1ZmYgKnNrYiwgc3RydWN0IHVtbF9uZXRfcHJp
+dmF0ZSAqbHApCiB7CiAJcmV0dXJuIHBjYXBfdXNlcl9yZWFkKGZkLCBza2JfbWFjX2hlYWRlcihz
+a2IpLAogCQkJICAgICAgc2tiLT5kZXYtPm10dSArIEVUSF9IRUFERVJfT1RIRVIsCiAJCQkgICAg
+ICAoc3RydWN0IHBjYXBfZGF0YSAqKSAmbHAtPnVzZXIpOwogfQogCi1zdGF0aWMgaW50IHBjYXBf
+d3JpdGUoaW50IGZkLCBzdHJ1Y3Qgc2tfYnVmZiAqc2tiLCBzdHJ1Y3QgdW1sX25ldF9wcml2YXRl
+ICpscCkKK3N0YXRpYyBpbnQgdW1fcGNhcF93cml0ZShpbnQgZmQsIHN0cnVjdCBza19idWZmICpz
+a2IsIHN0cnVjdCB1bWxfbmV0X3ByaXZhdGUgKmxwKQogewogCXJldHVybiAtRVBFUk07CiB9CiAK
+IHN0YXRpYyBjb25zdCBzdHJ1Y3QgbmV0X2tlcm5faW5mbyBwY2FwX2tlcm5faW5mbyA9IHsKLQku
+aW5pdAkJCT0gcGNhcF9pbml0LAorCS5pbml0CQkJPSB1bV9wY2FwX2luaXQsCiAJLnByb3RvY29s
+CQk9IGV0aF9wcm90b2NvbCwKLQkucmVhZAkJCT0gcGNhcF9yZWFkLAotCS53cml0ZQkJCT0gcGNh
+cF93cml0ZSwKKwkucmVhZAkJCT0gdW1fcGNhcF9yZWFkLAorCS53cml0ZQkJCT0gdW1fcGNhcF93
+cml0ZSwKIH07CiAKLWludCBwY2FwX3NldHVwKGNoYXIgKnN0ciwgY2hhciAqKm1hY19vdXQsIHZv
+aWQgKmRhdGEpCitpbnQgdW1fcGNhcF9zZXR1cChjaGFyICpzdHIsIGNoYXIgKiptYWNfb3V0LCB2
+b2lkICpkYXRhKQogewotCXN0cnVjdCBwY2FwX2luaXQgKmluaXQgPSBkYXRhOworCXN0cnVjdCB1
+bV9wY2FwX2luaXQgKmluaXQgPSBkYXRhOwogCWNoYXIgKnJlbWFpbiwgKmhvc3RfaWYgPSBOVUxM
+LCAqb3B0aW9uc1syXSA9IHsgTlVMTCwgTlVMTCB9OwogCWludCBpOwogCi0JKmluaXQgPSAoKHN0
+cnVjdCBwY2FwX2luaXQpCisJKmluaXQgPSAoKHN0cnVjdCB1bV9wY2FwX2luaXQpCiAJCXsgLmhv
+c3RfaWYgCT0gImV0aDAiLAogCQkgIC5wcm9taXNjIAk9IDEsCiAJCSAgLm9wdGltaXplIAk9IDAs
+CkBAIC02NSw3ICs2NSw3IEBACiAJcmVtYWluID0gc3BsaXRfaWZfc3BlYyhzdHIsICZob3N0X2lm
+LCAmaW5pdC0+ZmlsdGVyLAogCQkJICAgICAgICZvcHRpb25zWzBdLCAmb3B0aW9uc1sxXSwgbWFj
+X291dCwgTlVMTCk7CiAJaWYgKHJlbWFpbiAhPSBOVUxMKSB7Ci0JCXByaW50ayhLRVJOX0VSUiAi
+cGNhcF9zZXR1cCAtIEV4dHJhIGdhcmJhZ2Ugb24gIgorCQlwcmludGsoS0VSTl9FUlIgInVtX3Bj
+YXBfc2V0dXAgLSBFeHRyYSBnYXJiYWdlIG9uICIKIAkJICAgICAgICJzcGVjaWZpY2F0aW9uIDog
+JyVzJ1xuIiwgcmVtYWluKTsKIAkJcmV0dXJuIDA7CiAJfQpAQCAtODUsNyArODUsNyBAQAogCQll
+bHNlIGlmICghc3RyY21wKG9wdGlvbnNbaV0sICJub29wdGltaXplIikpCiAJCQlpbml0LT5vcHRp
+bWl6ZSA9IDA7CiAJCWVsc2UgewotCQkJcHJpbnRrKEtFUk5fRVJSICJwY2FwX3NldHVwIDogYmFk
+IG9wdGlvbiAtICclcydcbiIsCisJCQlwcmludGsoS0VSTl9FUlIgInVtX3BjYXBfc2V0dXAgOiBi
+YWQgb3B0aW9uIC0gJyVzJ1xuIiwKIAkJCSAgICAgICBvcHRpb25zW2ldKTsKIAkJCXJldHVybiAw
+OwogCQl9CkBAIC05NCwyMCArOTQsMjAgQEAKIAlyZXR1cm4gMTsKIH0KIAotc3RhdGljIHN0cnVj
+dCB0cmFuc3BvcnQgcGNhcF90cmFuc3BvcnQgPSB7Ci0JLmxpc3QgCQk9IExJU1RfSEVBRF9JTklU
+KHBjYXBfdHJhbnNwb3J0Lmxpc3QpLAorc3RhdGljIHN0cnVjdCB0cmFuc3BvcnQgdW1fcGNhcF90
+cmFuc3BvcnQgPSB7CisJLmxpc3QgCQk9IExJU1RfSEVBRF9JTklUKHVtX3BjYXBfdHJhbnNwb3J0
+Lmxpc3QpLAogCS5uYW1lIAkJPSAicGNhcCIsCi0JLnNldHVwICAJPSBwY2FwX3NldHVwLAorCS5z
+ZXR1cCAgCT0gdW1fcGNhcF9zZXR1cCwKIAkudXNlciAJCT0gJnBjYXBfdXNlcl9pbmZvLAogCS5r
+ZXJuIAkJPSAmcGNhcF9rZXJuX2luZm8sCiAJLnByaXZhdGVfc2l6ZSAJPSBzaXplb2Yoc3RydWN0
+IHBjYXBfZGF0YSksCi0JLnNldHVwX3NpemUgCT0gc2l6ZW9mKHN0cnVjdCBwY2FwX2luaXQpLAor
+CS5zZXR1cF9zaXplIAk9IHNpemVvZihzdHJ1Y3QgdW1fcGNhcF9pbml0KSwKIH07CiAKLXN0YXRp
+YyBpbnQgcmVnaXN0ZXJfcGNhcCh2b2lkKQorc3RhdGljIGludCB1bV9yZWdpc3Rlcl9wY2FwKHZv
+aWQpCiB7Ci0JcmVnaXN0ZXJfdHJhbnNwb3J0KCZwY2FwX3RyYW5zcG9ydCk7CisJcmVnaXN0ZXJf
+dHJhbnNwb3J0KCZ1bV9wY2FwX3RyYW5zcG9ydCk7CiAJcmV0dXJuIDA7CiB9CiAKLWxhdGVfaW5p
+dGNhbGwocmVnaXN0ZXJfcGNhcCk7CitsYXRlX2luaXRjYWxsKHVtX3JlZ2lzdGVyX3BjYXApOwpk
+aWZmIC1OdXIgbGludXgtNS40LjIvYXJjaC91bS9kcml2ZXJzL3BjYXBfdXNlci5jIHVtbC01LjQu
+Mi9hcmNoL3VtL2RyaXZlcnMvcGNhcF91c2VyLmMKLS0tIGxpbnV4LTUuNC4yL2FyY2gvdW0vZHJp
+dmVycy9wY2FwX3VzZXIuYwkyMDE5LTExLTI0IDE2OjMyOjAxLjAwMDAwMDAwMCAtMDgwMAorKysg
+dW1sLTUuNC4yL2FyY2gvdW0vZHJpdmVycy9wY2FwX3VzZXIuYwkyMDE5LTEyLTA2IDIxOjU5OjE4
+LjcwOTU4MzA4NyAtMDgwMApAQCAtMzIsNyArMzIsNyBAQAogCXJldHVybiAwOwogfQogCi1zdGF0
+aWMgaW50IHBjYXBfb3Blbih2b2lkICpkYXRhKQorc3RhdGljIGludCB1bV9wY2FwX29wZW4odm9p
+ZCAqZGF0YSkKIHsKIAlzdHJ1Y3QgcGNhcF9kYXRhICpwcmkgPSBkYXRhOwogCV9fdTMyIG5ldG1h
+c2s7CkBAIC00NCwxNCArNDQsMTQgQEAKIAlpZiAocHJpLT5maWx0ZXIgIT0gTlVMTCkgewogCQll
+cnIgPSBkZXZfbmV0bWFzayhwcmktPmRldiwgJm5ldG1hc2spOwogCQlpZiAoZXJyIDwgMCkgewot
+CQkJcHJpbnRrKFVNX0tFUk5fRVJSICJwY2FwX29wZW4gOiBkZXZfbmV0bWFzayBmYWlsZWRcbiIp
+OworCQkJcHJpbnRrKFVNX0tFUk5fRVJSICJ1bV9wY2FwX29wZW4gOiBkZXZfbmV0bWFzayBmYWls
+ZWRcbiIpOwogCQkJcmV0dXJuIC1FSU87CiAJCX0KIAogCQlwcmktPmNvbXBpbGVkID0gdW1sX2tt
+YWxsb2Moc2l6ZW9mKHN0cnVjdCBicGZfcHJvZ3JhbSksCiAJCQkJCVVNX0dGUF9LRVJORUwpOwog
+CQlpZiAocHJpLT5jb21waWxlZCA9PSBOVUxMKSB7Ci0JCQlwcmludGsoVU1fS0VSTl9FUlIgInBj
+YXBfb3BlbiA6IGttYWxsb2MgZmFpbGVkXG4iKTsKKwkJCXByaW50ayhVTV9LRVJOX0VSUiAidW1f
+cGNhcF9vcGVuIDoga21hbGxvYyBmYWlsZWRcbiIpOwogCQkJcmV0dXJuIC1FTk9NRU07CiAJCX0K
+IApAQCAtNTksMTQgKzU5LDE0IEBACiAJCQkJICAgKHN0cnVjdCBicGZfcHJvZ3JhbSAqKSBwcmkt
+PmNvbXBpbGVkLAogCQkJCSAgIHByaS0+ZmlsdGVyLCBwcmktPm9wdGltaXplLCBuZXRtYXNrKTsK
+IAkJaWYgKGVyciA8IDApIHsKLQkJCXByaW50ayhVTV9LRVJOX0VSUiAicGNhcF9vcGVuIDogcGNh
+cF9jb21waWxlIGZhaWxlZCAtICIKKwkJCXByaW50ayhVTV9LRVJOX0VSUiAidW1fcGNhcF9vcGVu
+IDogcGNhcF9jb21waWxlIGZhaWxlZCAtICIKIAkJCSAgICAgICAiJyVzJ1xuIiwgcGNhcF9nZXRl
+cnIocHJpLT5wY2FwKSk7CiAJCQlnb3RvIG91dDsKIAkJfQogCiAJCWVyciA9IHBjYXBfc2V0Zmls
+dGVyKHByaS0+cGNhcCwgcHJpLT5jb21waWxlZCk7CiAJCWlmIChlcnIgPCAwKSB7Ci0JCQlwcmlu
+dGsoVU1fS0VSTl9FUlIgInBjYXBfb3BlbiA6IHBjYXBfc2V0ZmlsdGVyICIKKwkJCXByaW50ayhV
+TV9LRVJOX0VSUiAidW1fcGNhcF9vcGVuIDogcGNhcF9zZXRmaWx0ZXIgIgogCQkJICAgICAgICJm
+YWlsZWQgLSAnJXMnXG4iLCBwY2FwX2dldGVycihwcmktPnBjYXApKTsKIAkJCWdvdG8gb3V0Owog
+CQl9CkBAIC03OSw3ICs3OSw3IEBACiAJcmV0dXJuIC1FSU87CiB9CiAKLXN0YXRpYyB2b2lkIHBj
+YXBfcmVtb3ZlKHZvaWQgKmRhdGEpCitzdGF0aWMgdm9pZCB1bV9wY2FwX3JlbW92ZSh2b2lkICpk
+YXRhKQogewogCXN0cnVjdCBwY2FwX2RhdGEgKnByaSA9IGRhdGE7CiAKQEAgLTEyNyw5ICsxMjcs
+OSBAQAogCiBjb25zdCBzdHJ1Y3QgbmV0X3VzZXJfaW5mbyBwY2FwX3VzZXJfaW5mbyA9IHsKIAku
+aW5pdAkJPSBwY2FwX3VzZXJfaW5pdCwKLQkub3BlbgkJPSBwY2FwX29wZW4sCisJLm9wZW4JCT0g
+dW1fcGNhcF9vcGVuLAogCS5jbG9zZQkgCT0gTlVMTCwKLQkucmVtb3ZlCSAJPSBwY2FwX3JlbW92
+ZSwKKwkucmVtb3ZlCSAJPSB1bV9wY2FwX3JlbW92ZSwKIAkuYWRkX2FkZHJlc3MJPSBOVUxMLAog
+CS5kZWxldGVfYWRkcmVzcyA9IE5VTEwsCiAJLm10dQkJPSBFVEhfTUFYX1BBQ0tFVCwK
 
-> I have not found any documentation on how to configure the new experimental vector transport.
-
-1. In the works. I was snowed under OVS (in fact I still am) so the rewrite of the UML howto had to be parked.
-
-2. There is a patch in the queue which maps pcap, tap, daemon and socket onto vector using the old syntax leaving
-only the virtual ethernet and slirp on the old net subsystem.
-
-> Since the classic transports are between 10-100 times faster than my network anyway I have not felt a need to upgrade.
-> More I was using UML to deal with some very old systems that were not easily upgraded. e.g. 2.6 kernels and I think even a 2.0.32?
-> The vector Kconfig help says it wants a >=3.0 kernel for example.
-
-3.0 and a reasonably recent glibc.
-
-That is not an unreasonable requirement. 3.0 was released on 22 July 2011. That is 19 years.
-
-As an example the Arm guys cut-off at ~5 years. I have a whole desk drawer with Lemaker and other 5+ years old
-Arm SoC boards which are all going out of support now.
-
-> 
-> Enjoy,
-> 
-> Jim McMechan
-> 
-> 
-> _______________________________________________
-> linux-um mailing list
-> linux-um@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-um
-> 
-
--- 
-Anton R. Ivanov
-https://www.kot-begemot.co.uk/
+--_002_SN6PR10MB30394F0158533B8AE1151F81E2C90SN6PR10MB3039namp_
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 linux-um mailing list
 linux-um@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-um
+
+--_002_SN6PR10MB30394F0158533B8AE1151F81E2C90SN6PR10MB3039namp_--
+
 
