@@ -1,106 +1,55 @@
-Return-Path: <rppt@kernel.org>
-From: Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH 08/21] arm64: simplify detection of memory zone boundaries for UMA configs
-Date: Sun, 12 Apr 2020 22:48:46 +0300
-Message-Id: <20200412194859.12663-9-rppt@kernel.org>
-In-Reply-To: <20200412194859.12663-1-rppt@kernel.org>
-References: <20200412194859.12663-1-rppt@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-wr1-x42a.google.com ([2a00:1450:4864:20::42a])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jLAoE-0002pa-3j
+ for linux-um@lists.infradead.org; Sun, 05 Apr 2020 19:19:55 +0000
+Received: by mail-wr1-x42a.google.com with SMTP id 65so14878060wrl.1
+ for <linux-um@lists.infradead.org>; Sun, 05 Apr 2020 12:19:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-kernel@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Baoquan He <bhe@redhat.com>, Brian Cain <bcain@codeaurora.org>, Catalin Marinas <catalin.marinas@arm.com>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, Hoan Tran <Hoan@os.amperecomputing.com>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jonathan Corbet <corbet@lwn.net>, Ley Foon Tan <ley.foon.tan@intel.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@kernel.org>, Michal Simek <monstr@monstr.eu>, Mike Rapoport <rppt@kernel.org>, Nick Hu <nickhu@andestech.com>, Paul Walmsley <paul.walmsley@sifive.com>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, x86@kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-csky@vger.kernel.org, linux-doc@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, Mike Rapoport <rppt@linux.ibm.com>
-List-ID: <linux-um.lists.infradead.org>
+References: <20200405045030.sslbedviyt7zqwhi@lynus-laptop>
+In-Reply-To: <20200405045030.sslbedviyt7zqwhi@lynus-laptop>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Sun, 5 Apr 2020 21:19:40 +0200
+Message-ID: <CAFLxGvx0STbGdxevzJZJmtaOirednP=yDeCynoM1KXSWYcy78Q@mail.gmail.com>
+Subject: Re: Clean up scripts/tags.sh
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Lingyu Zhu <lynuszhu@gmail.com>
+Cc: linux-um <linux-um@lists.infradead.org>
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+Hi!
 
-The free_area_init() function only requires the definition of maximal PFN
-for each of the supported zone rater than calculation of actual zone sizes
-and the sizes of the holes between the zones.
+On Sun, Apr 5, 2020 at 6:50 AM Lingyu Zhu <lynuszhu@gmail.com> wrote:
+>
+> Hello. Yesterday I asked on #kernelnewbies IRC channel whether um supports arch
+> other than x86, and I got the answer that um right now only works on x86.
+> I consider scripts/tags.sh needs a little cleaning up. First, this script fails
+> to collect files under arch/x86/um to produce tags. Second, it collect the
+> extra files from the arch/$SUBARCH, which I considered pointless. Since
+> um only works on x86, it's better to collect arch/x86/um for x86 um build,
+> and output error message for other cases.
+> Also, I wonder is it proper to send the scripts/tags.sh patch to this list?
 
-After removal of CONFIG_HAVE_MEMBLOCK_NODE_MAP the free_area_init() is
-available to all architectures.
+Did you test your assumptions?
+UML shares code with $SUBARCH. And not just arch/$SUBARCH/um.
+See arch/x86/um/Makefile as example.
 
-Using this function instead of free_area_init_node() simplifies the zone
-detection.
-
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- arch/arm64/mm/init.c | 54 --------------------------------------------
- 1 file changed, 54 deletions(-)
-
-diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index a650adb358ee..d54ad2250dce 100644
---- a/arch/arm64/mm/init.c
-+++ b/arch/arm64/mm/init.c
-@@ -192,8 +192,6 @@ static phys_addr_t __init max_zone_phys(unsigned int zone_bits)
- 	return min(offset + (1ULL << zone_bits), memblock_end_of_DRAM());
- }
- 
--#ifdef CONFIG_NUMA
--
- static void __init zone_sizes_init(unsigned long min, unsigned long max)
- {
- 	unsigned long max_zone_pfns[MAX_NR_ZONES]  = {0};
-@@ -209,58 +207,6 @@ static void __init zone_sizes_init(unsigned long min, unsigned long max)
- 	free_area_init(max_zone_pfns);
- }
- 
--#else
--
--static void __init zone_sizes_init(unsigned long min, unsigned long max)
--{
--	struct memblock_region *reg;
--	unsigned long zone_size[MAX_NR_ZONES], zhole_size[MAX_NR_ZONES];
--	unsigned long __maybe_unused max_dma, max_dma32;
--
--	memset(zone_size, 0, sizeof(zone_size));
--
--	max_dma = max_dma32 = min;
--#ifdef CONFIG_ZONE_DMA
--	max_dma = max_dma32 = PFN_DOWN(arm64_dma_phys_limit);
--	zone_size[ZONE_DMA] = max_dma - min;
--#endif
--#ifdef CONFIG_ZONE_DMA32
--	max_dma32 = PFN_DOWN(arm64_dma32_phys_limit);
--	zone_size[ZONE_DMA32] = max_dma32 - max_dma;
--#endif
--	zone_size[ZONE_NORMAL] = max - max_dma32;
--
--	memcpy(zhole_size, zone_size, sizeof(zhole_size));
--
--	for_each_memblock(memory, reg) {
--		unsigned long start = memblock_region_memory_base_pfn(reg);
--		unsigned long end = memblock_region_memory_end_pfn(reg);
--
--#ifdef CONFIG_ZONE_DMA
--		if (start >= min && start < max_dma) {
--			unsigned long dma_end = min(end, max_dma);
--			zhole_size[ZONE_DMA] -= dma_end - start;
--			start = dma_end;
--		}
--#endif
--#ifdef CONFIG_ZONE_DMA32
--		if (start >= max_dma && start < max_dma32) {
--			unsigned long dma32_end = min(end, max_dma32);
--			zhole_size[ZONE_DMA32] -= dma32_end - start;
--			start = dma32_end;
--		}
--#endif
--		if (start >= max_dma32 && start < max) {
--			unsigned long normal_end = min(end, max);
--			zhole_size[ZONE_NORMAL] -= normal_end - start;
--		}
--	}
--
--	free_area_init_node(0, zone_size, min, zhole_size);
--}
--
--#endif /* CONFIG_NUMA */
--
- int pfn_valid(unsigned long pfn)
- {
- 	phys_addr_t addr = pfn << PAGE_SHIFT;
 -- 
-2.25.1
+Thanks,
+//richard
 
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
