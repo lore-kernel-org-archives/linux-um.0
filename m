@@ -1,16 +1,24 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from mail-lj1-x232.google.com ([2a00:1450:4864:20::232])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jOgTt-0004CV-2E
- for linux-um@lists.infradead.org; Wed, 15 Apr 2020 11:45:27 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 37/84] um: ubd: Prevent buffer overrun on command
- completion
-Date: Wed, 15 Apr 2020 07:43:54 -0400
-Message-Id: <20200415114442.14166-37-sashal@kernel.org>
-In-Reply-To: <20200415114442.14166-1-sashal@kernel.org>
-References: <20200415114442.14166-1-sashal@kernel.org>
+ id 1jLtqw-000840-OD
+ for linux-um@lists.infradead.org; Tue, 07 Apr 2020 19:25:44 +0000
+Received: by mail-lj1-x232.google.com with SMTP id t17so4998849ljc.12
+ for <linux-um@lists.infradead.org>; Tue, 07 Apr 2020 12:25:40 -0700 (PDT)
 MIME-Version: 1.0
+References: <cover.1585579244.git.thehajime@gmail.com>
+ <dca6ea7260830a03c060f57e6ab9961f16ad55ed.1585579244.git.thehajime@gmail.com>
+ <a84f3d7bcddbaa6125349c4bcdec6e3e07d6b783.camel@sipsolutions.net>
+ <CAFLxGvyFqXZSmMcD_=o81AHLzdM_u2iH8h412w7VZrxON7Ohig@mail.gmail.com>
+ <m21rp9xaqt.wl-thehajime@gmail.com>
+ <ba2199bd17b6457c97305f6688b13ed36e7feac3.camel@sipsolutions.net>
+ <m2tv22wfmr.wl-thehajime@gmail.com>
+In-Reply-To: <m2tv22wfmr.wl-thehajime@gmail.com>
+From: Octavian Purdila <tavi.purdila@gmail.com>
+Date: Tue, 7 Apr 2020 22:25:27 +0300
+Message-ID: <CAMoF9u11mUvOO6NZoEq9Hu=ndOz_2he3Mjb2dEpCEAT6fk_CjQ@mail.gmail.com>
+Subject: Re: [RFC v4 02/25] um lkl: architecture skeleton for Linux kernel
+ library
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -19,52 +27,59 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Martyn Welch <martyn.welch@collabora.com>, Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org, Gabriel Krisman Bertazi <krisman@collabora.com>, Sasha Levin <sashal@kernel.org>
+To: Hajime Tazaki <thehajime@gmail.com>
+Cc: linux-arch <linux-arch@vger.kernel.org>, Levente Kurusa <levex@linux.com>, Matthieu Coudron <mattator@gmail.com>, cem <cem@freebsd.org>, Richard Weinberger <richard.weinberger@gmail.com>, linux-um <linux-um@lists.infradead.org>, Jens Staal <staal1978@gmail.com>, Motomu Utsumi <motomuman@gmail.com>, Lai Jiangshan <jiangshanlai@gmail.com>, Akira Moroo <retrage01@gmail.com>, Petros Angelatos <petrosagg@gmail.com>, "Edison M . Castro" <edisonmcastro@hotmail.com>, Pierre-Hugues Husson <phh@phh.me>, Mark Stillwell <mark@stillwell.me>, linux-kernel-library <linux-kernel-library@freelists.org>, pscollins <pscollins@google.com>, Johannes Berg <johannes@sipsolutions.net>, sigmaepsilon92 <sigmaepsilon92@gmail.com>, Luca Dariz <luca.dariz@gmail.com>, Yuan Liu <liuyuan@google.com>
 
-From: Gabriel Krisman Bertazi <krisman@collabora.com>
-
-[ Upstream commit 6e682d53fc1ef73a169e2a5300326cb23abb32ee ]
-
-On the hypervisor side, when completing commands and the pipe is full,
-we retry writing only the entries that failed, by offsetting
-io_req_buffer, but we don't reduce the number of bytes written, which
-can cause a buffer overrun of io_req_buffer, and write garbage to the
-pipe.
-
-Cc: Martyn Welch <martyn.welch@collabora.com>
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/um/drivers/ubd_kern.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 6627d7c30f370..0f5d0a699a49b 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -1606,7 +1606,9 @@ int io_thread(void *arg)
- 		written = 0;
- 
- 		do {
--			res = os_write_file(kernel_fd, ((char *) io_req_buffer) + written, n);
-+			res = os_write_file(kernel_fd,
-+					    ((char *) io_req_buffer) + written,
-+					    n - written);
- 			if (res >= 0) {
- 				written += res;
- 			}
--- 
-2.20.1
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+PHNuaXA+CgoKPiA+IEFuZCBsaWtlIEkgc2FpZCBiZWZvcmUsIHRoYXQgZGVjaXNpb24gd2lsbCBm
+cmFtZSBldmVyeXRoaW5nIGVsc2UuIEkKPiA+IHJlYWxseSBkb24ndCB0aGluayB3ZSBjYW4gbWFr
+ZSBzaWduaWZpY2FudCBwcm9ncmVzcyBoZXJlIHdpdGhvdXQgaGF2aW5nCj4gPiBkZWNpZGVkIHdo
+ZXRoZXIgdGhpcyBpcyBwb3NzaWJsZS4KPiA+Cj4gPiBQZXJoYXBzIFVNTCAqY2FuKiBiZWNvbWUg
+YSAic3BlY2lhbCBjYXNlIiBvZiBMS0wsIHdpdGggYSBzcGVjaWFsIEFQSQo+ID4gZnVuY3Rpb24g
+KHRoYXQncyBub3QgcGFydCBvZiB0aGUgc3lzY2FsbCBzdXJmYWNlKSB0byAiYm9vdChjbWRsaW5l
+KSIgb3IKPiA+IHNvbWV0aGluZy4gQnV0IGlmIGl0IGNhbid0LCBhbmQgaGFzIHRvIHJlbWFpbiBh
+cyBzZXBhcmF0ZWQgYXMgdGhlIHR3bwo+ID4gYXJlIHRvZGF5LCBJIHdvdWxkIGFyZ3VlIHdlJ3Jl
+IGJldHRlciBvZmYganVzdCBub3QgY2FsbGluZyB0aGVtIHRoZSBzYW1lCj4gPiBhcmNoaXRlY3R1
+cmUuCj4KPiBJIGFncmVlIHdpdGggdGhpcyBpZiB0aGUgdW5pZmljYXRpb24gaGFzIGFsbCBjb21w
+bGV0ZWQuCj4KCkkgdG91Z2h0IGEgbG90IGFib3V0IHRoaXMgYW5kIEkgYWdyZWUgd2l0aCBKb2hh
+bm5lcyB0aGF0IGlmIHdlIHdhbnQgdG8KdW5pdHkgVU1MIGFuZCBMS0wgd2Ugc2hvdWxkIHN0YXJ0
+IHdpdGggdGhlIGhhcmQgcGFydHMuCgpJIGFtIGFsc28gc3RhcnRpbmcgdG8gdGhpbmsgdGhhdCBp
+dCBpcyB1bmxpa2VseSB0byBiZSBhYmxlIHRvIG1lcmdlIHRoZQp0d28gIm5pY2VseSIgYW5kIHRo
+YXQgd2Ugc2hvdWxkIHByb2JhYmx5IHR1cm4gdGhpcyBvbiBpdHMgaGVhZCBhbmQgc3RhcnQKd2l0
+aCByZXdvcmtpbmcgVU1MIHRvd2FyZHMgdGhlIExLTCBmZWF0dXJlcy4gV2Ugd2lsbCBlbmQgdXAK
+cmUtaW1wbGVtZW50aW5nICpzb21lKiBvZiB0aGUgTEtMIGNvbmNlcHRzIGZyb20gc2NyYXRjaCBp
+biBVTUwgYnV0IEkKdGhpbmsgYXQgdGhpcyBwb2ludCB0aGlzIGlzIHVuYXZvaWRhYmxlLgoKSGVy
+ZSBhcmUgbXkgdGhvdWdodHMgb24gYSB2ZXJ5IHJvdWdoIHBsYW4gZm9yIGRvaW5nIHRoYXQ6CgpN
+aWxlc3RvbmUgMTogTEtMIGxpYiBvbiB0b3Agb2YgVU1MCiAqIEtlcm5lbCAtIEhvc3QgYnVpbGQg
+c3BsaXQKICAgQnVpbGQgVU1MIGFzIGEgcmVsb2NhdGFibGUgb2JqZWN0IHVzaW5nIHRoZSBVTUzi
+gJlzIGtlcm5lbCBsaW5rZXIKICAgc2NyaXB0LgogICBNb3ZlIHRoZSBwdHJhY2UgYW5kIG90aGVy
+IHdlbGwgaXNvbGF0ZWQgb3MgY29kZSBvdXQgb2YgYXJjaC91bSB0bwogICB0b29scy91bSAob3Ig
+bWF5YmUgc3RhcnQgZGlyZWN0bHkgd2l0aCB0b29scy9sa2w/KQogICBVc2Ugc3RhbmRhcmQgaG9z
+dCB0b29sY2hhaW4gdG8gY3JlYXRlIGEgc3RhdGljIGxpYnJhcnkgc3RyaXBwZWQgb2YKICAgdGhl
+IHB0cmFjZSBjb2RlLiBVc2Ugc3RhbmRhcmQgaG9zdCB0b29sY2hhaW4gdG8gYnVpbGQgdGhlIG1h
+aW4gVU1MCiAgIGV4ZWN1dGFibGUuCiAgIEFkZCBsaWJyYXJ5IGluaXQgQVBJIHRoYXQgY3JlYXRl
+cyB0aGUgVU1MIGtlcm5lbCBwcm9jZXNzIGFuZCBzdGFydHMKICAgVU1MLgoqIFN5c3RlbSBjYWxs
+cyBBUElzCiAgIEFkZCBuZXcgc3lzdGVtIGNhbGwgaW50ZXJmYWNlIGRiYXNlZCBvbiBmZCBpcnEu
+CiAgIFVzZSB0aGUgTEtMIHNjcmlwdHMgdG8gZXhwb3J0IHRoZSByZXF1aXJlZCBoZWFkZXJzIHRv
+IGNyZWF0ZSBzeXN0ZW0KICAgY2FsbHMgQVBJcyB0aGF0IHVzZSB0aGUgVU1MIHN5c3RlbSBjYWxs
+cyBpbmZyYXN0cnVjdHVyZS4KICAgS2VlcCB0aGUgdW5kZXJseWluZyBob3N0IGFuZCBkcml2ZXIg
+b3BlcmF0aW9ucyAodGhyZWFkcywgaXJxcywgZXRjLikKICAgYXMgdGhleSBhcmUgbm93IGluIFVN
+TC4KICogQm9vdCB0ZXN0CiAgIFBvcnQgdGhlIExLTCBib290IHRlc3QgdG8gdmVyaWZ5IHRoYXQg
+d2UgYXJlIGFibGUgdG8gcHJvZ3JhbWF0aWNhbGx5CiAgIGlzc3VlIHN5c3RlbSBjYWxscy4KCk1p
+bGVzdG9uZSAyOiBhZGQgdmlydGlvIGRpc2sgc3VwcG9ydAogKiBFeHBvcnQgYXNtL2lvLmggb3Bl
+cmF0aW9ucyB0byBob3N0L29zLiBDcmVhdGUgSU8gYWNjZXNzIG9wZXJhdGlvbnMKICAgYW5kIHJl
+ZGlyZWN0IHRoZW0gdG8gd2VhayBvc18gdmFyaWFudHMgdGhhdCB1c2UgdGhlIGN1cnJlbnQgVU1M
+CiAgIGltcGxlbWVudGF0aW9uLgogKiBBZGQgdGhlIExLTCBJTyBhY2Nlc3MgbGF5ZXIgaW5jbHVk
+aW5nIGdlbmVyaWMgdmlydGlvIGhhbmRsaW5nIGFuZCB0aGUKICAgdmlydGlvIGJsb2NrIGRldmlj
+ZSBjb2RlLgogKiBQb3J0IExLTCBkaXNrIHRlc3QgYW5kIGRpc2sgYXBwcyAobGtsZnVzZSwgZnMy
+dGFyLCBjcHRvZnMpCgpNaWxlc3RvbmUgMzogbmV3IGFyY2ggcG9ydHMKICAqIEFic3RyYWMgdGhl
+IHN5c3RlbSBjYWxsIC8gSVJRIG1vZGUgdGhlIG1vdmUgdGhlIGltcGxlbWVudGF0aW9uIHRvIGhv
+c3QKICAqIEFic3RyYWN0IHRoZSB0aHJlYWQgbW9kZWwgYW5kIG1vdmUgdGhlIGltcGxlbWVudGF0
+aW9uIHRvIGhvc3QKICAqIEFkZCBMS0wgdGhyZWFkIG1vZGVsIGFuZCBMS0wgcG9ydHMKClRoYW5r
+cywKVGF2aQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+bGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
+L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
 
