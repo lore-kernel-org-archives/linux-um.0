@@ -1,92 +1,122 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab7.miniserver.com ([37.128.132.42]
- helo=www.kot-begemot.co.uk)
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jLvMU-0003uC-OU
- for linux-um@lists.infradead.org; Tue, 07 Apr 2020 21:02:24 +0000
-Subject: Re: [PATCH] um: add a generic "fd" vector transport
-References: <20200407202853.1791218-1-marcandre.lureau@redhat.com>
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Message-ID: <8a6dced2-886f-f8bd-aff9-3793f418cb0e@cambridgegreys.com>
-Date: Tue, 7 Apr 2020 22:02:12 +0100
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: =?UTF-8?q?Marc-Andr=C3=A9=20Lureau?= <marcandre.lureau@redhat.com>
+Subject: [PATCH] um: add a generic "fd" vector transport
+Date: Tue,  7 Apr 2020 22:28:53 +0200
+Message-Id: <20200407202853.1791218-1-marcandre.lureau@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200407202853.1791218-1-marcandre.lureau@redhat.com>
-Content-Language: en-US
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: =?UTF-8?Q?Marc-Andr=c3=a9_Lureau?= <marcandre.lureau@redhat.com>, linux-um@lists.infradead.org
-Cc: joerd.simons@collabora.co.uk, richard@nod.at, jdike@addtoit.com, linux-kernel@vger.kernel.org, alex.dewar@gmx.co.uk
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-um@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, joerd.simons@collabora.co.uk, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, alex.dewar@gmx.co.uk, =?UTF-8?q?Marc-Andr=C3=A9=20Lureau?= <marcandre.lureau@redhat.com>
+List-ID: <linux-um.lists.infradead.org>
 
-T24gMDcvMDQvMjAyMCAyMToyOCwgTWFyYy1BbmRyw6kgTHVyZWF1IHdyb3RlOgo+IExlYXJuIHRv
-IHRha2UgYSBwcmUtb3BlbmVkIGZpbGUtZGVzY3JpcHRvciBmb3IgdmVjdG9yIElPLgo+IAo+IElu
-c3RlYWQgb2YgdGVhY2hpbmcgdGhlIGRyaXZlciB0byBvcGVuIGEgRkQgaW4gbXVsdGlwbGUgd2F5
-cywgaXQgY2FuCj4gcmVseSBvbiBtYW5hZ2VtZW50IGxheWVyIHRvIGRvIGl0IG9uIGl0cyBiZWhh
-bGYuIEZvciBleGFtcGxlLCB0aGlzCj4gYWxsb3dzIGluaGVyaXRpbmcgYSBwcmVjb25maWd1cmVk
-IGRldmljZSBmZCBvciBhIHNpbXBsZSBzb2NrZXRwYWlyKCkKPiBzZXR1cCwgd2l0aG91dCBmdXJ0
-aGVyIGFyZ3VtZW50cywgcHJpdmlsZWdlcyBvciBzeXN0ZW0gYWNjZXNzIGJ5IFVNTC4KPiAKPiBT
-aWduZWQtb2ZmLWJ5OiBNYXJjLUFuZHLDqSBMdXJlYXUgPG1hcmNhbmRyZS5sdXJlYXVAcmVkaGF0
-LmNvbT4KPiAtLS0KPiAgIGFyY2gvdW0vZHJpdmVycy92ZWN0b3JfdXNlci5jIHwgNTkgKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysKPiAgIDEgZmlsZSBjaGFuZ2VkLCA1OSBpbnNl
-cnRpb25zKCspCj4gCj4gZGlmZiAtLWdpdCBhL2FyY2gvdW0vZHJpdmVycy92ZWN0b3JfdXNlci5j
-IGIvYXJjaC91bS9kcml2ZXJzL3ZlY3Rvcl91c2VyLmMKPiBpbmRleCAyOWZhZTA0NTZhZGUuLjQ1
-YzE1NTBkYmIzNyAxMDA2NDQKPiAtLS0gYS9hcmNoL3VtL2RyaXZlcnMvdmVjdG9yX3VzZXIuYwo+
-ICsrKyBiL2FyY2gvdW0vZHJpdmVycy92ZWN0b3JfdXNlci5jCj4gQEAgLTI5LDYgKzI5LDcgQEAK
-PiAgICNpbmNsdWRlIDxuZXRkYi5oPgo+ICAgI2luY2x1ZGUgPHN0ZGxpYi5oPgo+ICAgI2luY2x1
-ZGUgPG9zLmg+Cj4gKyNpbmNsdWRlIDxsaW1pdHMuaD4KPiAgICNpbmNsdWRlIDx1bV9tYWxsb2Mu
-aD4KPiAgICNpbmNsdWRlICJ2ZWN0b3JfdXNlci5oIgo+ICAgCj4gQEAgLTQyLDYgKzQzLDkgQEAK
-PiAgICNkZWZpbmUgVFJBTlNfUkFXICJyYXciCj4gICAjZGVmaW5lIFRSQU5TX1JBV19MRU4gc3Ry
-bGVuKFRSQU5TX1JBVykKPiAgIAo+ICsjZGVmaW5lIFRSQU5TX0ZEICJmZCIKPiArI2RlZmluZSBU
-UkFOU19GRF9MRU4gc3RybGVuKFRSQU5TX0ZEKQo+ICsKPiAgICNkZWZpbmUgVk5FVF9IRFJfRkFJ
-TCAiY291bGQgbm90IGVuYWJsZSB2bmV0IGhlYWRlcnMgb24gZmQgJWQiCj4gICAjZGVmaW5lIFRV
-Tl9HRVRfRl9GQUlMICJ0YXByYXc6IFRVTkdFVEZFQVRVUkVTIGZhaWxlZDogJXMiCj4gICAjZGVm
-aW5lIEwyVFBWM19CSU5EX0ZBSUwgImwydHB2M19vcGVuIDogY291bGQgbm90IGJpbmQgc29ja2V0
-IGVycj0laSIKPiBAQCAtMzQ3LDYgKzM1MSw1OSBAQCBzdGF0aWMgc3RydWN0IHZlY3Rvcl9mZHMg
-KnVzZXJfaW5pdF91bml4X2ZkcyhzdHJ1Y3QgYXJnbGlzdCAqaWZzcGVjLCBpbnQgaWQpCj4gICAJ
-cmV0dXJuIE5VTEw7Cj4gICB9Cj4gICAKPiArc3RhdGljIGludCBzdHJ0b2ZkKGNvbnN0IGNoYXIg
-Km5wdHIpCj4gK3sKPiArCWxvbmcgZmQ7Cj4gKwljaGFyICplbmRwdHI7Cj4gKwo+ICsJaWYgKG5w
-dHIgPT0gTlVMTCkKPiArCQlyZXR1cm4gLTE7Cj4gKwo+ICsJZXJybm8gPSAwOwo+ICsJZmQgPSBz
-dHJ0b2wobnB0ciwgJmVuZHB0ciwgMTApOwo+ICsJaWYgKG5wdHIgPT0gZW5kcHRyIHx8Cj4gKwkJ
-ZXJybm8gIT0gMCB8fAo+ICsJCSplbmRwdHIgIT0gJ1wwJyB8fAo+ICsJCWZkIDwgMCB8fAo+ICsJ
-CWZkID4gSU5UX01BWCkgewo+ICsJCXJldHVybiAtMTsKPiArCX0KPiArCXJldHVybiBmZDsKPiAr
-fQo+ICsKPiArc3RhdGljIHN0cnVjdCB2ZWN0b3JfZmRzICp1c2VyX2luaXRfZmRfZmRzKHN0cnVj
-dCBhcmdsaXN0ICppZnNwZWMpCj4gK3sKPiArCWludCBmZCA9IC0xOwo+ICsJY2hhciAqZmRhcmcg
-PSBOVUxMOwo+ICsJc3RydWN0IHZlY3Rvcl9mZHMgKnJlc3VsdCA9IE5VTEw7Cj4gKwo+ICsJZmRh
-cmcgPSB1bWxfdmVjdG9yX2ZldGNoX2FyZyhpZnNwZWMsICJmZCIpOwo+ICsJZmQgPSBzdHJ0b2Zk
-KGZkYXJnKTsKPiArCWlmIChmZCA9PSAtMSkgewo+ICsJCXByaW50ayhVTV9LRVJOX0VSUiAiZmQg
-b3BlbjogYmFkIG9yIG1pc3NpbmcgZmQgYXJndW1lbnQiKTsKPiArCQlnb3RvIGZkX2NsZWFudXA7
-Cj4gKwl9Cj4gKwo+ICsJcmVzdWx0ID0gdW1sX2ttYWxsb2Moc2l6ZW9mKHN0cnVjdCB2ZWN0b3Jf
-ZmRzKSwgVU1fR0ZQX0tFUk5FTCk7Cj4gKwlpZiAocmVzdWx0ID09IE5VTEwpIHsKPiArCQlwcmlu
-dGsoVU1fS0VSTl9FUlIgImZkIG9wZW46IGFsbG9jYXRpb24gZmFpbGVkIik7Cj4gKwkJZ290byBm
-ZF9jbGVhbnVwOwo+ICsJfQo+ICsKPiArCXJlc3VsdC0+cnhfZmQgPSBmZDsKPiArCXJlc3VsdC0+
-dHhfZmQgPSBmZDsKPiArCXJlc3VsdC0+cmVtb3RlX2FkZHJfc2l6ZSA9IDA7Cj4gKwlyZXN1bHQt
-PnJlbW90ZV9hZGRyID0gTlVMTDsKPiArCXJldHVybiByZXN1bHQ7Cj4gKwo+ICtmZF9jbGVhbnVw
-Ogo+ICsJaWYgKGZkID49IDApCj4gKwkJb3NfY2xvc2VfZmlsZShmZCk7Cj4gKwlpZiAocmVzdWx0
-ICE9IE5VTEwpCj4gKwkJa2ZyZWUocmVzdWx0KTsKPiArCXJldHVybiBOVUxMOwo+ICt9Cj4gKwo+
-ICAgc3RhdGljIHN0cnVjdCB2ZWN0b3JfZmRzICp1c2VyX2luaXRfcmF3X2ZkcyhzdHJ1Y3QgYXJn
-bGlzdCAqaWZzcGVjKQo+ICAgewo+ICAgCWludCByeGZkID0gLTEsIHR4ZmQgPSAtMTsKPiBAQCAt
-NTc4LDYgKzYzNSw4IEBAIHN0cnVjdCB2ZWN0b3JfZmRzICp1bWxfdmVjdG9yX3VzZXJfb3BlbigK
-PiAgIAkJcmV0dXJuIHVzZXJfaW5pdF9zb2NrZXRfZmRzKHBhcnNlZCwgSURfTDJUUFYzKTsKPiAg
-IAlpZiAoc3RybmNtcCh0cmFuc3BvcnQsIFRSQU5TX0JFU1MsIFRSQU5TX0JFU1NfTEVOKSA9PSAw
-KQo+ICAgCQlyZXR1cm4gdXNlcl9pbml0X3VuaXhfZmRzKHBhcnNlZCwgSURfQkVTUyk7Cj4gKwlp
-ZiAoc3RybmNtcCh0cmFuc3BvcnQsIFRSQU5TX0ZELCBUUkFOU19GRF9MRU4pID09IDApCj4gKwkJ
-cmV0dXJuIHVzZXJfaW5pdF9mZF9mZHMocGFyc2VkKTsKPiAgIAlyZXR1cm4gTlVMTDsKPiAgIH0K
-PiAgIAo+IAoKV2Ugc2hvdWxkIGFsc28gY29udHJvbCBlbmFibGUvZGlzYWJsZSBvZiByZWN2L3Nl
-bmRtbXNnIGFzIGFuIG9wdGlvbiBoZXJlLgoKSXQgY2FuIGJlIG1hZGUgZ2VuZXJpYyBhbmQgYmUg
-ZmVkIGludG8gZ2V0X3RyYW5zcG9ydF9vcHRpb25zKCkgaW4gCnZlY3Rvcl9rZXJuLmMgYXMgYW4g
-b3ZlcnJpZGUuCgotLSAKQW50b24gUi4gSXZhbm92CkNhbWJyaWRnZWdyZXlzIExpbWl0ZWQuIFJl
-Z2lzdGVyZWQgaW4gRW5nbGFuZC4gQ29tcGFueSBOdW1iZXIgMTAyNzM2NjEKaHR0cHM6Ly93d3cu
-Y2FtYnJpZGdlZ3JleXMuY29tLwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVh
-ZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11
-bQo=
+Learn to take a pre-opened file-descriptor for vector IO.
+
+Instead of teaching the driver to open a FD in multiple ways, it can
+rely on management layer to do it on its behalf. For example, this
+allows inheriting a preconfigured device fd or a simple socketpair()
+setup, without further arguments, privileges or system access by UML.
+
+Signed-off-by: Marc-Andr=C3=A9 Lureau <marcandre.lureau@redhat.com>
+---
+ arch/um/drivers/vector_user.c | 59 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 59 insertions(+)
+
+diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.=
+c
+index 29fae0456ade..45c1550dbb37 100644
+--- a/arch/um/drivers/vector_user.c
++++ b/arch/um/drivers/vector_user.c
+@@ -29,6 +29,7 @@
+ #include <netdb.h>
+ #include <stdlib.h>
+ #include <os.h>
++#include <limits.h>
+ #include <um_malloc.h>
+ #include "vector_user.h"
+=20
+@@ -42,6 +43,9 @@
+ #define TRANS_RAW "raw"
+ #define TRANS_RAW_LEN strlen(TRANS_RAW)
+=20
++#define TRANS_FD "fd"
++#define TRANS_FD_LEN strlen(TRANS_FD)
++
+ #define VNET_HDR_FAIL "could not enable vnet headers on fd %d"
+ #define TUN_GET_F_FAIL "tapraw: TUNGETFEATURES failed: %s"
+ #define L2TPV3_BIND_FAIL "l2tpv3_open : could not bind socket err=3D%i"
+@@ -347,6 +351,59 @@ static struct vector_fds *user_init_unix_fds(struct =
+arglist *ifspec, int id)
+ 	return NULL;
+ }
+=20
++static int strtofd(const char *nptr)
++{
++	long fd;
++	char *endptr;
++
++	if (nptr =3D=3D NULL)
++		return -1;
++
++	errno =3D 0;
++	fd =3D strtol(nptr, &endptr, 10);
++	if (nptr =3D=3D endptr ||
++		errno !=3D 0 ||
++		*endptr !=3D '\0' ||
++		fd < 0 ||
++		fd > INT_MAX) {
++		return -1;
++	}
++	return fd;
++}
++
++static struct vector_fds *user_init_fd_fds(struct arglist *ifspec)
++{
++	int fd =3D -1;
++	char *fdarg =3D NULL;
++	struct vector_fds *result =3D NULL;
++
++	fdarg =3D uml_vector_fetch_arg(ifspec, "fd");
++	fd =3D strtofd(fdarg);
++	if (fd =3D=3D -1) {
++		printk(UM_KERN_ERR "fd open: bad or missing fd argument");
++		goto fd_cleanup;
++	}
++
++	result =3D uml_kmalloc(sizeof(struct vector_fds), UM_GFP_KERNEL);
++	if (result =3D=3D NULL) {
++		printk(UM_KERN_ERR "fd open: allocation failed");
++		goto fd_cleanup;
++	}
++
++	result->rx_fd =3D fd;
++	result->tx_fd =3D fd;
++	result->remote_addr_size =3D 0;
++	result->remote_addr =3D NULL;
++	return result;
++
++fd_cleanup:
++	if (fd >=3D 0)
++		os_close_file(fd);
++	if (result !=3D NULL)
++		kfree(result);
++	return NULL;
++}
++
+ static struct vector_fds *user_init_raw_fds(struct arglist *ifspec)
+ {
+ 	int rxfd =3D -1, txfd =3D -1;
+@@ -578,6 +635,8 @@ struct vector_fds *uml_vector_user_open(
+ 		return user_init_socket_fds(parsed, ID_L2TPV3);
+ 	if (strncmp(transport, TRANS_BESS, TRANS_BESS_LEN) =3D=3D 0)
+ 		return user_init_unix_fds(parsed, ID_BESS);
++	if (strncmp(transport, TRANS_FD, TRANS_FD_LEN) =3D=3D 0)
++		return user_init_fd_fds(parsed);
+ 	return NULL;
+ }
+=20
+--=20
+2.26.0.106.g9fadedd637
+
 
