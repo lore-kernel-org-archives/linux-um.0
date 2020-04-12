@@ -1,55 +1,129 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from sender4-of-o51.zoho.com ([136.143.188.51])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jJkwq-0001HR-Nt
- for linux-um@lists.infradead.org; Wed, 01 Apr 2020 21:30:58 +0000
-Message-ID: <a1f6271e7c72e49fd863efc4b7126be6598fd4f6.camel@zv.io>
-Subject: [PATCH] um: add include: memset() and memcpy() are in <string.h>
-From: Zach van Rijn <me@zv.io>
-Date: Wed, 01 Apr 2020 16:30:48 -0500
-Mime-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Return-Path: <rppt@kernel.org>
+From: Mike Rapoport <rppt@kernel.org>
+Subject: [PATCH 07/21] arm: simplify detection of memory zone boundaries
+Date: Sun, 12 Apr 2020 22:48:45 +0300
+Message-Id: <20200412194859.12663-8-rppt@kernel.org>
+In-Reply-To: <20200412194859.12663-1-rppt@kernel.org>
+References: <20200412194859.12663-1-rppt@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To: linux-kernel@vger.kernel.org
+Cc: Andrew Morton <akpm@linux-foundation.org>, Baoquan He <bhe@redhat.com>, Brian Cain <bcain@codeaurora.org>, Catalin Marinas <catalin.marinas@arm.com>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, Hoan Tran <Hoan@os.amperecomputing.com>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jonathan Corbet <corbet@lwn.net>, Ley Foon Tan <ley.foon.tan@intel.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@kernel.org>, Michal Simek <monstr@monstr.eu>, Mike Rapoport <rppt@kernel.org>, Nick Hu <nickhu@andestech.com>, Paul Walmsley <paul.walmsley@sifive.com>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, x86@kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-csky@vger.kernel.org, linux-doc@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, Mike Rapoport <rppt@linux.ibm.com>
+List-ID: <linux-um.lists.infradead.org>
 
-These two functions are otherwise unknown to the pedantic compiler.
-Include the correct header to enable the build to succeed.
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-Signed-off-by: Zach van Rijn <me@zv.io>
+The free_area_init() function only requires the definition of maximal PFN
+for each of the supported zone rater than calculation of actual zone sizes
+and the sizes of the holes between the zones.
+
+After removal of CONFIG_HAVE_MEMBLOCK_NODE_MAP the free_area_init() is
+available to all architectures.
+
+Using this function instead of free_area_init_node() simplifies the zone
+detection.
+
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
- arch/um/os-Linux/file.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/mm/init.c | 66 +++++-----------------------------------------
+ 1 file changed, 7 insertions(+), 59 deletions(-)
 
-diff --git a/arch/um/os-Linux/file.c b/arch/um/os-Linux/file.c
-index 26ecbd64c409..044836ad7392 100644
---- a/arch/um/os-Linux/file.c
-+++ b/arch/um/os-Linux/file.c
-@@ -6,6 +6,7 @@
- #include <stdio.h>
- #include <unistd.h>
- #include <stdlib.h>
-+#include <string.h>
- #include <errno.h>
- #include <fcntl.h>
- #include <signal.h>
+diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
+index 054be44d1cdb..4e43455fab84 100644
+--- a/arch/arm/mm/init.c
++++ b/arch/arm/mm/init.c
+@@ -92,18 +92,6 @@ EXPORT_SYMBOL(arm_dma_zone_size);
+  */
+ phys_addr_t arm_dma_limit;
+ unsigned long arm_dma_pfn_limit;
+-
+-static void __init arm_adjust_dma_zone(unsigned long *size, unsigned long *hole,
+-	unsigned long dma_size)
+-{
+-	if (size[0] <= dma_size)
+-		return;
+-
+-	size[ZONE_NORMAL] = size[0] - dma_size;
+-	size[ZONE_DMA] = dma_size;
+-	hole[ZONE_NORMAL] = hole[0];
+-	hole[ZONE_DMA] = 0;
+-}
+ #endif
+ 
+ void __init setup_dma_zone(const struct machine_desc *mdesc)
+@@ -121,56 +109,16 @@ void __init setup_dma_zone(const struct machine_desc *mdesc)
+ static void __init zone_sizes_init(unsigned long min, unsigned long max_low,
+ 	unsigned long max_high)
+ {
+-	unsigned long zone_size[MAX_NR_ZONES], zhole_size[MAX_NR_ZONES];
+-	struct memblock_region *reg;
+-
+-	/*
+-	 * initialise the zones.
+-	 */
+-	memset(zone_size, 0, sizeof(zone_size));
++	unsigned long max_zone_pfn[MAX_NR_ZONES] = { 0 };
+ 
+-	/*
+-	 * The memory size has already been determined.  If we need
+-	 * to do anything fancy with the allocation of this memory
+-	 * to the zones, now is the time to do it.
+-	 */
+-	zone_size[0] = max_low - min;
+-#ifdef CONFIG_HIGHMEM
+-	zone_size[ZONE_HIGHMEM] = max_high - max_low;
++#ifdef CONFIG_ZONE_DMA
++	max_zone_pfn[ZONE_DMA] = min(arm_dma_pfn_limit, max_low);
+ #endif
+-
+-	/*
+-	 * Calculate the size of the holes.
+-	 *  holes = node_size - sum(bank_sizes)
+-	 */
+-	memcpy(zhole_size, zone_size, sizeof(zhole_size));
+-	for_each_memblock(memory, reg) {
+-		unsigned long start = memblock_region_memory_base_pfn(reg);
+-		unsigned long end = memblock_region_memory_end_pfn(reg);
+-
+-		if (start < max_low) {
+-			unsigned long low_end = min(end, max_low);
+-			zhole_size[0] -= low_end - start;
+-		}
++	max_zone_pfn[ZONE_NORMAL] = max_low;
+ #ifdef CONFIG_HIGHMEM
+-		if (end > max_low) {
+-			unsigned long high_start = max(start, max_low);
+-			zhole_size[ZONE_HIGHMEM] -= end - high_start;
+-		}
++	max_zone_pfn[ZONE_HIGHMEM] = max_high;
+ #endif
+-	}
+-
+-#ifdef CONFIG_ZONE_DMA
+-	/*
+-	 * Adjust the sizes according to any special requirements for
+-	 * this machine type.
+-	 */
+-	if (arm_dma_zone_size)
+-		arm_adjust_dma_zone(zone_size, zhole_size,
+-			arm_dma_zone_size >> PAGE_SHIFT);
+-#endif
+-
+-	free_area_init_node(0, zone_size, min, zhole_size);
++	free_area_init(max_zone_pfn);
+ }
+ 
+ #ifdef CONFIG_HAVE_ARCH_PFN_VALID
+@@ -306,7 +254,7 @@ void __init bootmem_init(void)
+ 	sparse_init();
+ 
+ 	/*
+-	 * Now free the memory - free_area_init_node needs
++	 * Now free the memory - free_area_init needs
+ 	 * the sparse mem_map arrays initialized by sparse_init()
+ 	 * for memmap_init_zone(), otherwise all PFNs are invalid.
+ 	 */
 -- 
 2.25.1
 
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
