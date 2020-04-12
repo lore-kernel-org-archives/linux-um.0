@@ -1,10 +1,8 @@
 Return-Path: <rppt@kernel.org>
 From: Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH 16/21] mm: remove early_pfn_in_nid() and CONFIG_NODES_SPAN_OTHER_NODES
-Date: Sun, 12 Apr 2020 22:48:54 +0300
-Message-Id: <20200412194859.12663-17-rppt@kernel.org>
-In-Reply-To: <20200412194859.12663-1-rppt@kernel.org>
-References: <20200412194859.12663-1-rppt@kernel.org>
+Subject: [PATCH 00/21] mm: rework free_area_init*() funcitons
+Date: Sun, 12 Apr 2020 22:48:38 +0300
+Message-Id: <20200412194859.12663-1-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 To: linux-kernel@vger.kernel.org
@@ -13,114 +11,117 @@ List-ID: <linux-um.lists.infradead.org>
 
 From: Mike Rapoport <rppt@linux.ibm.com>
 
-The commit f47ac088c406 ("mm: memmap_init: iterate over memblock regions
-rather that check each PFN") made early_pfn_in_nid() obsolete and since
-CONFIG_NODES_SPAN_OTHER_NODES is only used to pick a stub or a real
-implementation of early_pfn_in_nid() it is also not needed anymore.
+Hi,
 
-Remove both early_pfn_in_nid() and the CONFIG_NODES_SPAN_OTHER_NODES.
+After the discussion [1] about removal of CONFIG_NODES_SPAN_OTHER_NODES and
+CONFIG_HAVE_MEMBLOCK_NODE_MAP options, I took it a bit further and updated
+the node/zone initialization. 
 
-Co-developed-by: Hoan Tran <Hoan@os.amperecomputing.com>
-Signed-off-by: Hoan Tran <Hoan@os.amperecomputing.com>
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- arch/powerpc/Kconfig |  9 ---------
- arch/sparc/Kconfig   |  9 ---------
- arch/x86/Kconfig     |  9 ---------
- mm/page_alloc.c      | 20 --------------------
- 4 files changed, 47 deletions(-)
+Since all architectures have memblock, it is possible to use only the newer
+version of free_area_init_node() that calculates the zone and node
+boundaries based on memblock node mapping and architectural limits on
+possible zone PFNs. 
 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 5f86b22b7d2c..74f316deeae1 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -685,15 +685,6 @@ config ARCH_MEMORY_PROBE
- 	def_bool y
- 	depends on MEMORY_HOTPLUG
- 
--# Some NUMA nodes have memory ranges that span
--# other nodes.  Even though a pfn is valid and
--# between a node's start and end pfns, it may not
--# reside on that node.  See memmap_init_zone()
--# for details.
--config NODES_SPAN_OTHER_NODES
--	def_bool y
--	depends on NEED_MULTIPLE_NODES
--
- config STDBINUTILS
- 	bool "Using standard binutils settings"
- 	depends on 44x
-diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
-index 795206b7b552..0e4f3891b904 100644
---- a/arch/sparc/Kconfig
-+++ b/arch/sparc/Kconfig
-@@ -286,15 +286,6 @@ config NODES_SHIFT
- 	  Specify the maximum number of NUMA Nodes available on the target
- 	  system.  Increases memory reserved to accommodate various tables.
- 
--# Some NUMA nodes have memory ranges that span
--# other nodes.  Even though a pfn is valid and
--# between a node's start and end pfns, it may not
--# reside on that node.  See memmap_init_zone()
--# for details.
--config NODES_SPAN_OTHER_NODES
--	def_bool y
--	depends on NEED_MULTIPLE_NODES
--
- config ARCH_SPARSEMEM_ENABLE
- 	def_bool y if SPARC64
- 	select SPARSEMEM_VMEMMAP_ENABLE
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 9d3e95b4fb85..37dac095659e 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -1581,15 +1581,6 @@ config X86_64_ACPI_NUMA
- 	---help---
- 	  Enable ACPI SRAT based node topology detection.
- 
--# Some NUMA nodes have memory ranges that span
--# other nodes.  Even though a pfn is valid and
--# between a node's start and end pfns, it may not
--# reside on that node.  See memmap_init_zone()
--# for details.
--config NODES_SPAN_OTHER_NODES
--	def_bool y
--	depends on X86_64_ACPI_NUMA
--
- config NUMA_EMU
- 	bool "NUMA emulation"
- 	depends on NUMA
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index c43ce8709457..343d87b8697d 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1541,26 +1541,6 @@ int __meminit early_pfn_to_nid(unsigned long pfn)
- }
- #endif /* CONFIG_NEED_MULTIPLE_NODES */
- 
--#ifdef CONFIG_NODES_SPAN_OTHER_NODES
--/* Only safe to use early in boot when initialisation is single-threaded */
--static inline bool __meminit early_pfn_in_nid(unsigned long pfn, int node)
--{
--	int nid;
--
--	nid = __early_pfn_to_nid(pfn, &early_pfnnid_cache);
--	if (nid >= 0 && nid != node)
--		return false;
--	return true;
--}
--
--#else
--static inline bool __meminit early_pfn_in_nid(unsigned long pfn, int node)
--{
--	return true;
--}
--#endif
--
--
- void __init memblock_free_pages(struct page *page, unsigned long pfn,
- 							unsigned int order)
- {
+The architectures that still determined zone and hole sizes can be switched
+to the generic code and the old code that took those zone and hole sizes
+can be simply removed.
+
+And, since it all started from the removal of
+CONFIG_NODES_SPAN_OTHER_NODES, the memmap_init() is now updated to iterate
+over memblocks and so it does not need to perform early_pfn_to_nid() query
+for every PFN.
+
+--
+Sincerely yours,
+Mike.
+
+[1] https://lore.kernel.org/lkml/1585420282-25630-1-git-send-email-Hoan@os.amperecomputing.com
+
+Baoquan He (1):
+  mm: memmap_init: iterate over memblock regions rather that check each PFN
+
+Mike Rapoport (20):
+  mm: memblock: replace dereferences of memblock_region.nid with API calls
+  mm: make early_pfn_to_nid() and related defintions close to each other
+  mm: remove CONFIG_HAVE_MEMBLOCK_NODE_MAP option
+  mm: free_area_init: use maximal zone PFNs rather than zone sizes
+  mm: use free_area_init() instead of free_area_init_nodes()
+  alpha: simplify detection of memory zone boundaries
+  arm: simplify detection of memory zone boundaries
+  arm64: simplify detection of memory zone boundaries for UMA configs
+  csky: simplify detection of memory zone boundaries
+  m68k: mm: simplify detection of memory zone boundaries
+  parisc: simplify detection of memory zone boundaries
+  sparc32: simplify detection of memory zone boundaries
+  unicore32: simplify detection of memory zone boundaries
+  xtensa: simplify detection of memory zone boundaries
+  mm: remove early_pfn_in_nid() and CONFIG_NODES_SPAN_OTHER_NODES
+  mm: free_area_init: allow defining max_zone_pfn in descending order
+  mm: rename free_area_init_node() to free_area_init_memoryless_node()
+  mm: clean up free_area_init_node() and its helpers
+  mm: simplify find_min_pfn_with_active_regions()
+  docs/vm: update memory-models documentation
+
+ .../vm/numa-memblock/arch-support.txt         |  34 ---
+ Documentation/vm/memory-model.rst             |   9 +-
+ arch/alpha/mm/init.c                          |  16 +-
+ arch/alpha/mm/numa.c                          |  22 +-
+ arch/arc/mm/init.c                            |  36 +--
+ arch/arm/mm/init.c                            |  66 +----
+ arch/arm64/Kconfig                            |   1 -
+ arch/arm64/mm/init.c                          |  56 +---
+ arch/arm64/mm/numa.c                          |   9 +-
+ arch/c6x/mm/init.c                            |   8 +-
+ arch/csky/kernel/setup.c                      |  26 +-
+ arch/h8300/mm/init.c                          |   6 +-
+ arch/hexagon/mm/init.c                        |   6 +-
+ arch/ia64/Kconfig                             |   1 -
+ arch/ia64/mm/contig.c                         |   2 +-
+ arch/ia64/mm/discontig.c                      |   2 +-
+ arch/m68k/mm/init.c                           |   6 +-
+ arch/m68k/mm/mcfmmu.c                         |   9 +-
+ arch/m68k/mm/motorola.c                       |  15 +-
+ arch/m68k/mm/sun3mmu.c                        |  10 +-
+ arch/microblaze/Kconfig                       |   1 -
+ arch/microblaze/mm/init.c                     |   2 +-
+ arch/mips/Kconfig                             |   1 -
+ arch/mips/loongson64/numa.c                   |   2 +-
+ arch/mips/mm/init.c                           |   2 +-
+ arch/mips/sgi-ip27/ip27-memory.c              |   2 +-
+ arch/nds32/mm/init.c                          |  11 +-
+ arch/nios2/mm/init.c                          |   8 +-
+ arch/openrisc/mm/init.c                       |   9 +-
+ arch/parisc/mm/init.c                         |  22 +-
+ arch/powerpc/Kconfig                          |  10 -
+ arch/powerpc/mm/mem.c                         |   2 +-
+ arch/riscv/Kconfig                            |   1 -
+ arch/riscv/mm/init.c                          |   2 +-
+ arch/s390/Kconfig                             |   1 -
+ arch/s390/mm/init.c                           |   2 +-
+ arch/sh/Kconfig                               |   1 -
+ arch/sh/mm/init.c                             |   2 +-
+ arch/sparc/Kconfig                            |  10 -
+ arch/sparc/mm/init_64.c                       |   2 +-
+ arch/sparc/mm/srmmu.c                         |  21 +-
+ arch/um/kernel/mem.c                          |  12 +-
+ arch/unicore32/include/asm/memory.h           |   2 +-
+ arch/unicore32/include/mach/memory.h          |   6 +-
+ arch/unicore32/kernel/pci.c                   |  14 +-
+ arch/unicore32/mm/init.c                      |  43 +--
+ arch/x86/Kconfig                              |  10 -
+ arch/x86/mm/init.c                            |   2 +-
+ arch/x86/mm/numa.c                            |  11 +-
+ arch/xtensa/mm/init.c                         |   8 +-
+ include/linux/memblock.h                      |   8 +-
+ include/linux/mm.h                            |  30 +-
+ include/linux/mmzone.h                        |  11 +-
+ mm/Kconfig                                    |   3 -
+ mm/memblock.c                                 |  19 +-
+ mm/memory_hotplug.c                           |   4 -
+ mm/page_alloc.c                               | 262 +++++++-----------
+ 57 files changed, 249 insertions(+), 650 deletions(-)
+ delete mode 100644 Documentation/features/vm/numa-memblock/arch-support.txt
+
 -- 
 2.25.1
 
