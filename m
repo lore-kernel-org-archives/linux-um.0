@@ -1,14 +1,14 @@
 Return-Path: <rppt@kernel.org>
 From: Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH v2 06/20] alpha: simplify detection of memory zone boundaries
-Date: Wed, 29 Apr 2020 15:11:12 +0300
-Message-Id: <20200429121126.17989-7-rppt@kernel.org>
-In-Reply-To: <20200429121126.17989-1-rppt@kernel.org>
-References: <20200429121126.17989-1-rppt@kernel.org>
+Subject: [PATCH 08/21] arm64: simplify detection of memory zone boundaries for UMA configs
+Date: Sun, 12 Apr 2020 22:48:46 +0300
+Message-Id: <20200412194859.12663-9-rppt@kernel.org>
+In-Reply-To: <20200412194859.12663-1-rppt@kernel.org>
+References: <20200412194859.12663-1-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 To: linux-kernel@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Baoquan He <bhe@redhat.com>, Brian Cain <bcain@codeaurora.org>, Catalin Marinas <catalin.marinas@arm.com>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, Hoan Tran <Hoan@os.amperecomputing.com>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jonathan Corbet <corbet@lwn.net>, Ley Foon Tan <ley.foon.tan@intel.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@kernel.org>, Michal Simek <monstr@monstr.eu>, Nick Hu <nickhu@andestech.com>, Paul Walmsley <paul.walmsley@sifive.com>, Qian Cai <cai@lca.pw>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, x86@kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-csky@vger.kernel.org, linux-doc@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, Mike Rapoport <rppt@linux.ibm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Baoquan He <bhe@redhat.com>, Brian Cain <bcain@codeaurora.org>, Catalin Marinas <catalin.marinas@arm.com>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, Hoan Tran <Hoan@os.amperecomputing.com>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jonathan Corbet <corbet@lwn.net>, Ley Foon Tan <ley.foon.tan@intel.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@kernel.org>, Michal Simek <monstr@monstr.eu>, Mike Rapoport <rppt@kernel.org>, Nick Hu <nickhu@andestech.com>, Paul Walmsley <paul.walmsley@sifive.com>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, x86@kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-csky@vger.kernel.org, linux-doc@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, Mike Rapoport <rppt@linux.ibm.com>
 List-ID: <linux-um.lists.infradead.org>
 
 From: Mike Rapoport <rppt@linux.ibm.com>
@@ -25,47 +25,82 @@ detection.
 
 Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
- arch/alpha/mm/numa.c | 18 ++++--------------
- 1 file changed, 4 insertions(+), 14 deletions(-)
+ arch/arm64/mm/init.c | 54 --------------------------------------------
+ 1 file changed, 54 deletions(-)
 
-diff --git a/arch/alpha/mm/numa.c b/arch/alpha/mm/numa.c
-index a24cd13e71cb..5ad6087de1d6 100644
---- a/arch/alpha/mm/numa.c
-+++ b/arch/alpha/mm/numa.c
-@@ -202,8 +202,7 @@ setup_memory(void *kernel_end)
+diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+index a650adb358ee..d54ad2250dce 100644
+--- a/arch/arm64/mm/init.c
++++ b/arch/arm64/mm/init.c
+@@ -192,8 +192,6 @@ static phys_addr_t __init max_zone_phys(unsigned int zone_bits)
+ 	return min(offset + (1ULL << zone_bits), memblock_end_of_DRAM());
+ }
  
- void __init paging_init(void)
+-#ifdef CONFIG_NUMA
+-
+ static void __init zone_sizes_init(unsigned long min, unsigned long max)
  {
--	unsigned int    nid;
--	unsigned long   zones_size[MAX_NR_ZONES] = {0, };
-+	unsigned long   max_zone_pfn[MAX_NR_ZONES] = {0, };
- 	unsigned long	dma_local_pfn;
+ 	unsigned long max_zone_pfns[MAX_NR_ZONES]  = {0};
+@@ -209,58 +207,6 @@ static void __init zone_sizes_init(unsigned long min, unsigned long max)
+ 	free_area_init(max_zone_pfns);
+ }
  
- 	/*
-@@ -215,19 +214,10 @@ void __init paging_init(void)
- 	 */
- 	dma_local_pfn = virt_to_phys((char *)MAX_DMA_ADDRESS) >> PAGE_SHIFT;
- 
--	for_each_online_node(nid) {
--		unsigned long start_pfn = NODE_DATA(nid)->node_start_pfn;
--		unsigned long end_pfn = start_pfn + NODE_DATA(nid)->node_present_pages;
-+	max_zone_pfn[ZONE_DMA] = dma_local_pfn;
-+	max_zone_pfn[ZONE_NORMAL] = max_pfn;
- 
--		if (dma_local_pfn >= end_pfn - start_pfn)
--			zones_size[ZONE_DMA] = end_pfn - start_pfn;
--		else {
--			zones_size[ZONE_DMA] = dma_local_pfn;
--			zones_size[ZONE_NORMAL] = (end_pfn - start_pfn) - dma_local_pfn;
+-#else
+-
+-static void __init zone_sizes_init(unsigned long min, unsigned long max)
+-{
+-	struct memblock_region *reg;
+-	unsigned long zone_size[MAX_NR_ZONES], zhole_size[MAX_NR_ZONES];
+-	unsigned long __maybe_unused max_dma, max_dma32;
+-
+-	memset(zone_size, 0, sizeof(zone_size));
+-
+-	max_dma = max_dma32 = min;
+-#ifdef CONFIG_ZONE_DMA
+-	max_dma = max_dma32 = PFN_DOWN(arm64_dma_phys_limit);
+-	zone_size[ZONE_DMA] = max_dma - min;
+-#endif
+-#ifdef CONFIG_ZONE_DMA32
+-	max_dma32 = PFN_DOWN(arm64_dma32_phys_limit);
+-	zone_size[ZONE_DMA32] = max_dma32 - max_dma;
+-#endif
+-	zone_size[ZONE_NORMAL] = max - max_dma32;
+-
+-	memcpy(zhole_size, zone_size, sizeof(zhole_size));
+-
+-	for_each_memblock(memory, reg) {
+-		unsigned long start = memblock_region_memory_base_pfn(reg);
+-		unsigned long end = memblock_region_memory_end_pfn(reg);
+-
+-#ifdef CONFIG_ZONE_DMA
+-		if (start >= min && start < max_dma) {
+-			unsigned long dma_end = min(end, max_dma);
+-			zhole_size[ZONE_DMA] -= dma_end - start;
+-			start = dma_end;
 -		}
--		node_set_state(nid, N_NORMAL_MEMORY);
--		free_area_init_node(nid, zones_size, start_pfn, NULL);
+-#endif
+-#ifdef CONFIG_ZONE_DMA32
+-		if (start >= max_dma && start < max_dma32) {
+-			unsigned long dma32_end = min(end, max_dma32);
+-			zhole_size[ZONE_DMA32] -= dma32_end - start;
+-			start = dma32_end;
+-		}
+-#endif
+-		if (start >= max_dma32 && start < max) {
+-			unsigned long normal_end = min(end, max);
+-			zhole_size[ZONE_NORMAL] -= normal_end - start;
+-		}
 -	}
-+	free_area_init(max_zone_pfn);
- 
- 	/* Initialize the kernel's ZERO_PGE. */
- 	memset((void *)ZERO_PGE, 0, PAGE_SIZE);
+-
+-	free_area_init_node(0, zone_size, min, zhole_size);
+-}
+-
+-#endif /* CONFIG_NUMA */
+-
+ int pfn_valid(unsigned long pfn)
+ {
+ 	phys_addr_t addr = pfn << PAGE_SHIFT;
 -- 
-2.26.1
+2.25.1
 
 
