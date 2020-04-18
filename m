@@ -1,94 +1,101 @@
-Return-Path: <rppt@kernel.org>
-From: Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH 10/21] m68k: mm: simplify detection of memory zone boundaries
-Date: Sun, 12 Apr 2020 22:48:48 +0300
-Message-Id: <20200412194859.12663-11-rppt@kernel.org>
-In-Reply-To: <20200412194859.12663-1-rppt@kernel.org>
-References: <20200412194859.12663-1-rppt@kernel.org>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Dmitry Safonov <dima@arista.com>
+Subject: [PATCHv3 36/50] um: Add show_stack_loglvl()
+Date: Sat, 18 Apr 2020 21:19:30 +0100
+Message-Id: <20200418201944.482088-37-dima@arista.com>
+In-Reply-To: <20200418201944.482088-1-dima@arista.com>
+References: <20200418201944.482088-1-dima@arista.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Baoquan He <bhe@redhat.com>, Brian Cain <bcain@codeaurora.org>, Catalin Marinas <catalin.marinas@arm.com>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, Hoan Tran <Hoan@os.amperecomputing.com>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jonathan Corbet <corbet@lwn.net>, Ley Foon Tan <ley.foon.tan@intel.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@kernel.org>, Michal Simek <monstr@monstr.eu>, Mike Rapoport <rppt@kernel.org>, Nick Hu <nickhu@andestech.com>, Paul Walmsley <paul.walmsley@sifive.com>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, x86@kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-csky@vger.kernel.org, linux-doc@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, Mike Rapoport <rppt@linux.ibm.com>
+Cc: Dmitry Safonov <0x7f454c46@gmail.com>, Dmitry Safonov <dima@arista.com>, Andrew Morton <akpm@linux-foundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Ingo Molnar <mingo@kernel.org>, Jiri Slaby <jslaby@suse.com>, Petr Mladek <pmladek@suse.com>, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org
 List-ID: <linux-um.lists.infradead.org>
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+Currently, the log-level of show_stack() depends on a platform
+realization. It creates situations where the headers are printed with
+lower log level or higher than the stacktrace (depending on
+a platform or user).
 
-The free_area_init() function only requires the definition of maximal PFN
-for each of the supported zone rater than calculation of actual zone sizes
-and the sizes of the holes between the zones.
+Furthermore, it forces the logic decision from user to an architecture
+side. In result, some users as sysrq/kdb/etc are doing tricks with
+temporary rising console_loglevel while printing their messages.
+And in result it not only may print unwanted messages from other CPUs,
+but also omit printing at all in the unlucky case where the printk()
+was deferred.
 
-After removal of CONFIG_HAVE_MEMBLOCK_NODE_MAP the free_area_init() is
-available to all architectures.
+Introducing log-level parameter and KERN_UNSUPPRESSED [1] seems
+an easier approach than introducing more printk buffers.
+Also, it will consolidate printings with headers.
 
-Using this function instead of free_area_init_node() simplifies the zone
-detection.
+Introduce show_stack_loglvl(), that eventually will substitute
+show_stack().
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: linux-um@lists.infradead.org
+[1]: https://lore.kernel.org/lkml/20190528002412.1625-1-dima@arista.com/T/#u
+Signed-off-by: Dmitry Safonov <dima@arista.com>
 ---
- arch/m68k/mm/motorola.c | 11 +++++------
- arch/m68k/mm/sun3mmu.c  | 10 +++-------
- 2 files changed, 8 insertions(+), 13 deletions(-)
+ arch/um/kernel/sysrq.c | 24 ++++++++++++++++--------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
 
-diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
-index 84ab5963cabb..904c2a663977 100644
---- a/arch/m68k/mm/motorola.c
-+++ b/arch/m68k/mm/motorola.c
-@@ -365,7 +365,7 @@ static void __init map_node(int node)
-  */
- void __init paging_init(void)
+diff --git a/arch/um/kernel/sysrq.c b/arch/um/kernel/sysrq.c
+index c831a1c2eb94..1b54b6431499 100644
+--- a/arch/um/kernel/sysrq.c
++++ b/arch/um/kernel/sysrq.c
+@@ -17,7 +17,9 @@
+ 
+ static void _print_addr(void *data, unsigned long address, int reliable)
  {
--	unsigned long zones_size[MAX_NR_ZONES] = { 0, };
-+	unsigned long max_zone_pfn[MAX_NR_ZONES] = { 0, };
- 	unsigned long min_addr, max_addr;
- 	unsigned long addr;
- 	int i;
-@@ -448,11 +448,10 @@ void __init paging_init(void)
- #ifdef DEBUG
- 	printk ("before free_area_init\n");
- #endif
--	for (i = 0; i < m68k_num_memory; i++) {
--		zones_size[ZONE_DMA] = m68k_memory[i].size >> PAGE_SHIFT;
--		free_area_init_node(i, zones_size,
--				    m68k_memory[i].addr >> PAGE_SHIFT, NULL);
-+	for (i = 0; i < m68k_num_memory; i++)
- 		if (node_present_pages(i))
- 			node_set_state(i, N_NORMAL_MEMORY);
--	}
+-	pr_info(" [<%08lx>] %s%pS\n", address, reliable ? "" : "? ",
++	const char *loglvl = data;
 +
-+	max_zone_pfn[ZONE_DMA] = memblock_end_of_DRAM();
-+	free_area_init(max_zone_pfn);
++	printk("%s [<%08lx>] %s%pS\n", loglvl, address, reliable ? "" : "? ",
+ 		(void *)address);
  }
-diff --git a/arch/m68k/mm/sun3mmu.c b/arch/m68k/mm/sun3mmu.c
-index eca1c46bb90a..5d8d956d9329 100644
---- a/arch/m68k/mm/sun3mmu.c
-+++ b/arch/m68k/mm/sun3mmu.c
-@@ -42,7 +42,7 @@ void __init paging_init(void)
- 	unsigned long address;
- 	unsigned long next_pgtable;
- 	unsigned long bootmem_end;
--	unsigned long zones_size[MAX_NR_ZONES] = { 0, };
-+	unsigned long max_zone_pfn[MAX_NR_ZONES] = { 0, };
- 	unsigned long size;
  
- 	empty_zero_page = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
-@@ -89,14 +89,10 @@ void __init paging_init(void)
- 	current->mm = NULL;
+@@ -25,7 +27,8 @@ static const struct stacktrace_ops stackops = {
+ 	.address = _print_addr
+ };
  
- 	/* memory sizing is a hack stolen from motorola.c..  hope it works for us */
--	zones_size[ZONE_DMA] = ((unsigned long)high_memory - PAGE_OFFSET) >> PAGE_SHIFT;
-+	max_zone_pfn[ZONE_DMA] = ((unsigned long)high_memory) >> PAGE_SHIFT;
+-void show_stack(struct task_struct *task, unsigned long *stack)
++void show_stack_loglvl(struct task_struct *task, unsigned long *stack,
++		       const char *loglvl)
+ {
+ 	struct pt_regs *segv_regs = current->thread.segv_regs;
+ 	int i;
+@@ -39,17 +42,22 @@ void show_stack(struct task_struct *task, unsigned long *stack)
+ 	if (!stack)
+ 		stack = get_stack_pointer(task, segv_regs);
  
- 	/* I really wish I knew why the following change made things better...  -- Sam */
--/*	free_area_init(zones_size); */
--	free_area_init_node(0, zones_size,
--			    (__pa(PAGE_OFFSET) >> PAGE_SHIFT) + 1, NULL);
-+	free_area_init(max_zone_pfn);
+-	pr_info("Stack:\n");
++	printk("%sStack:\n", loglvl);
+ 	for (i = 0; i < 3 * STACKSLOTS_PER_LINE; i++) {
+ 		if (kstack_end(stack))
+ 			break;
+ 		if (i && ((i % STACKSLOTS_PER_LINE) == 0))
+-			pr_cont("\n");
++			printk("%s\n", loglvl);
+ 		pr_cont(" %08lx", *stack++);
+ 	}
+-	pr_cont("\n");
++	printk("%s\n", loglvl);
++
++	printk("%sCall Trace:\n", loglvl);
++	dump_trace(current, &stackops, (void *)loglvl);
++	printk("%s\n", loglvl);
++}
  
- 
+-	pr_info("Call Trace:\n");
+-	dump_trace(current, &stackops, NULL);
+-	pr_info("\n");
++void show_stack(struct task_struct *task, unsigned long *stack)
++{
++	show_stack_loglvl(task, stack, KERN_INFO);
  }
--
--
 -- 
-2.25.1
+2.26.0
 
 
