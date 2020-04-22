@@ -1,82 +1,99 @@
-Return-Path: <rppt@kernel.org>
-From: Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH 15/21] mm: memmap_init: iterate over memblock regions rather that check each PFN
-Date: Sun, 12 Apr 2020 22:48:53 +0300
-Message-Id: <20200412194859.12663-16-rppt@kernel.org>
-In-Reply-To: <20200412194859.12663-1-rppt@kernel.org>
-References: <20200412194859.12663-1-rppt@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jRFp3-0001Qn-Lw
+ for linux-um@lists.infradead.org; Wed, 22 Apr 2020 13:53:55 +0000
+Subject: Re: UML HowTo rewrite
+References: <7fbb1a33-5fed-6c61-6c2a-ca47932669a7@cambridgegreys.com>
+ <6d00f01fa378b5cb9273e05ab90adc58f6c6ab8f.camel@sipsolutions.net>
+ <1a7a4aa7-aa01-9747-202a-b93ffb5c657a@cambridgegreys.com>
+ <cbf1b59a-e6d5-5870-76dc-60455fb179fa@cambridgegreys.com>
+ <28e23bdd281be6368ed75883ca73ea57de4faaad.camel@sipsolutions.net>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <6fd55233-8fd0-4ec3-7481-b303f79bda8d@cambridgegreys.com>
+Date: Wed, 22 Apr 2020 14:53:49 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-kernel@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Baoquan He <bhe@redhat.com>, Brian Cain <bcain@codeaurora.org>, Catalin Marinas <catalin.marinas@arm.com>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, Hoan Tran <Hoan@os.amperecomputing.com>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jonathan Corbet <corbet@lwn.net>, Ley Foon Tan <ley.foon.tan@intel.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@kernel.org>, Michal Simek <monstr@monstr.eu>, Mike Rapoport <rppt@kernel.org>, Nick Hu <nickhu@andestech.com>, Paul Walmsley <paul.walmsley@sifive.com>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, x86@kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-csky@vger.kernel.org, linux-doc@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, Mike Rapoport <rppt@linux.ibm.com>
-List-ID: <linux-um.lists.infradead.org>
+In-Reply-To: <28e23bdd281be6368ed75883ca73ea57de4faaad.camel@sipsolutions.net>
+Content-Language: en-US
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-um@lists.infradead.org
 
-From: Baoquan He <bhe@redhat.com>
+On 22/04/2020 14:47, Johannes Berg wrote:
+> On Wed, 2020-04-22 at 14:30 +0100, Anton Ivanov wrote:
+>> The initial content is more or less in place.
+> Great. I actually saw it (you posted a link to a PR before) and pointed
+> a colleague who was interested in what I'm doing with all my time-travel
+> simulation and UML to it. I told him feedback would surely be welcome :)
+>
+>> Comments and PRs to change/add things are welcome.
+>>
+>> https://github.com/kot-begemot-uk/uml-howto-v2
+> Are you going to submit it to the Documentation/ folder in the kernel?
 
-When called during boot the memmap_init_zone() function checks if each PFN
-is valid and actually belongs to the node being initialized using
-early_pfn_valid() and early_pfn_in_nid().
+Yes. A couple of revisions, reviews and PRs first though :)
 
-Each such check may cost up to O(log(n)) where n is the number of memory
-banks, so for large amount of memory overall time spent in early_pfn*()
-becomes substantial.
+>
+> I'd much prefer to contribute changes to the kernel after it lands
+> there, otherwise I'd have to jump through (legal) approval hoops ...
 
-Since the information is anyway present in memblock, we can iterate over
-memblock memory regions in memmap_init() and only call memmap_init_zone()
-for PFN ranges that are know to be valid and in the appropriate node.
+Easier to deal with the early "high flux" change rate when it is out of 
+tree.
 
-Signed-off-by: Baoquan He <bhe@redhat.com>
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- mm/page_alloc.c | 26 ++++++++++++++++----------
- 1 file changed, 16 insertions(+), 10 deletions(-)
+>
+>
+> Btw, one thing that I think is useful to document is how to run
+> *without* an image - you don't need a full OS inside. Most of my use
+> cases just run something like
+>
+> ./linux mem=256M root=none hostfs=/ rootfstype=hostfs rootflags=/ init=/some/script.sh
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 7f6a3081edb8..c43ce8709457 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -5995,14 +5995,6 @@ void __meminit memmap_init_zone(unsigned long size, int nid, unsigned long zone,
- 		 * function.  They do not exist on hotplugged memory.
- 		 */
- 		if (context == MEMMAP_EARLY) {
--			if (!early_pfn_valid(pfn)) {
--				pfn = next_pfn(pfn);
--				continue;
--			}
--			if (!early_pfn_in_nid(pfn, nid)) {
--				pfn++;
--				continue;
--			}
- 			if (overlap_memmap_init(zone, &pfn))
- 				continue;
- 			if (defer_init(nid, pfn, end_pfn))
-@@ -6118,9 +6110,23 @@ static void __meminit zone_init_free_lists(struct zone *zone)
- }
- 
- void __meminit __weak memmap_init(unsigned long size, int nid,
--				  unsigned long zone, unsigned long start_pfn)
-+				  unsigned long zone,
-+				  unsigned long range_start_pfn)
- {
--	memmap_init_zone(size, nid, zone, start_pfn, MEMMAP_EARLY, NULL);
-+	unsigned long start_pfn, end_pfn;
-+	unsigned long range_end_pfn = range_start_pfn + size;
-+	int i;
-+
-+	for_each_mem_pfn_range(i, nid, &start_pfn, &end_pfn, NULL) {
-+		start_pfn = clamp(start_pfn, range_start_pfn, range_end_pfn);
-+		end_pfn = clamp(end_pfn, range_start_pfn, range_end_pfn);
-+
-+		if (end_pfn > start_pfn) {
-+			size = end_pfn - start_pfn;
-+			memmap_init_zone(size, nid, zone, start_pfn,
-+					 MEMMAP_EARLY, NULL);
-+		}
-+	}
- }
- 
- static int zone_batchsize(struct zone *zone)
+hostfs and hostfs use as root is in the Advanced section.
+
+As I do not use it, can you review it (it is mostly copied from the old 
+howto).
+
+IMHO hostfs can be significantly improved by using inotify. It has been 
+on my TODO list for a while now.
+
+>
+> Would be a worthwhile addition, I think?
+>
+> Anyway, like I said above, I'm happy to contribute to this but would
+> prefer if it's in the kernel first.
+
+I have a little bit more content to add to the Developing section, but as I said - I am happy to do it after we add it to the tree if everyone thinks that this is better.
+
+>
+> johannes
+>
+>
+> _______________________________________________
+> linux-um mailing list
+> linux-um@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-um
+>
+
 -- 
-2.25.1
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
