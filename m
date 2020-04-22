@@ -1,19 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jRFj5-0006Ah-FI
- for linux-um@lists.infradead.org; Wed, 22 Apr 2020 13:47:45 +0000
-Message-ID: <28e23bdd281be6368ed75883ca73ea57de4faaad.camel@sipsolutions.net>
+ id 1jRFSS-0002N3-9N
+ for linux-um@lists.infradead.org; Wed, 22 Apr 2020 13:30:35 +0000
 Subject: Re: UML HowTo rewrite
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Wed, 22 Apr 2020 15:47:38 +0200
-In-Reply-To: <cbf1b59a-e6d5-5870-76dc-60455fb179fa@cambridgegreys.com>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 References: <7fbb1a33-5fed-6c61-6c2a-ca47932669a7@cambridgegreys.com>
  <6d00f01fa378b5cb9273e05ab90adc58f6c6ab8f.camel@sipsolutions.net>
  <1a7a4aa7-aa01-9747-202a-b93ffb5c657a@cambridgegreys.com>
- <cbf1b59a-e6d5-5870-76dc-60455fb179fa@cambridgegreys.com>
+Message-ID: <cbf1b59a-e6d5-5870-76dc-60455fb179fa@cambridgegreys.com>
+Date: Wed, 22 Apr 2020 14:30:23 +0100
 MIME-Version: 1.0
+In-Reply-To: <1a7a4aa7-aa01-9747-202a-b93ffb5c657a@cambridgegreys.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,43 +22,53 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: Johannes Berg <johannes@sipsolutions.net>
 Cc: linux-um@lists.infradead.org
 
-On Wed, 2020-04-22 at 14:30 +0100, Anton Ivanov wrote:
-> 
-> The initial content is more or less in place.
 
-Great. I actually saw it (you posted a link to a PR before) and pointed
-a colleague who was interested in what I'm doing with all my time-travel 
-simulation and UML to it. I told him feedback would surely be welcome :)
+On 20/04/2020 09:33, Anton Ivanov wrote:
+>
+>
+> On 20/04/2020 09:30, Johannes Berg wrote:
+>> Hi Anton,
+>>
+>>> Can we have a couple of sections on how to use time travel, virtio,
+>>> etc so I can add the to the new howtos?
+>>
+>> Yeah, I guess that makes sense, at least for the parts that are actually
+>> done :)
+>>
+>> Want to merge it, and I'll add something as patches later? Seems easier
+>> (especially for new content)?
+>
+> Sure. I hope to finish cleaning up the base content today and we can handle
+> everything as PRs/Patches from there onward.
 
-> Comments and PRs to change/add things are welcome.
-> 
-> https://github.com/kot-begemot-uk/uml-howto-v2
+The initial content is more or less in place.
 
-Are you going to submit it to the Documentation/ folder in the kernel?
+Comments and PRs to change/add things are welcome.
 
-I'd much prefer to contribute changes to the kernel after it lands
-there, otherwise I'd have to jump through (legal) approval hoops ...
+https://github.com/kot-begemot-uk/uml-howto-v2
 
-
-Btw, one thing that I think is useful to document is how to run
-*without* an image - you don't need a full OS inside. Most of my use
-cases just run something like
-
-./linux mem=256M root=none hostfs=/ rootfstype=hostfs rootflags=/ init=/some/script.sh
-
-Would be a worthwhile addition, I think?
-
-Anyway, like I said above, I'm happy to contribute to this but would
-prefer if it's in the kernel first.
-
-johannes
+>
+>>
+>> johannes
+>>
+>>
+>> _______________________________________________
+>> linux-um mailing list
+>> linux-um@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-um
+>>
+>
+-- 
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
 
 _______________________________________________
