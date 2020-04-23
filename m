@@ -1,68 +1,155 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pj1-x1044.google.com ([2607:f8b0:4864:20::1044])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jIvjV-0005B2-Sw
- for linux-um@lists.infradead.org; Mon, 30 Mar 2020 14:49:47 +0000
-Received: by mail-pj1-x1044.google.com with SMTP id fh8so2570152pjb.5
- for <linux-um@lists.infradead.org>; Mon, 30 Mar 2020 07:49:45 -0700 (PDT)
-From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v4 25/25] um: fix clone flags to be familiar with valgrind
-Date: Mon, 30 Mar 2020 23:45:57 +0900
-Message-Id: <59ed4e23efa7abc9c7d52e6b5fb31fb8ce795c5c.1585579244.git.thehajime@gmail.com>
-In-Reply-To: <cover.1585579244.git.thehajime@gmail.com>
-References: <cover.1585579244.git.thehajime@gmail.com>
+Return-Path: <rppt@kernel.org>
+Date: Thu, 23 Apr 2020 08:50:22 +0300
+From: Mike Rapoport <rppt@kernel.org>
+Subject: Re: [PATCH 16/21] mm: remove early_pfn_in_nid() and
+ CONFIG_NODES_SPAN_OTHER_NODES
+Message-ID: <20200423055022.GE14260@kernel.org>
+References: <20200412194859.12663-1-rppt@kernel.org>
+ <20200412194859.12663-17-rppt@kernel.org>
+ <20200423011312.GY4247@MiWiFi-R3L-srv>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Octavian Purdila <tavi.purdila@gmail.com>, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, Akira Moroo <retrage01@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200423011312.GY4247@MiWiFi-R3L-srv>
+To: Baoquan He <bhe@redhat.com>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, Brian Cain <bcain@codeaurora.org>, Catalin Marinas <catalin.marinas@arm.com>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, Hoan Tran <Hoan@os.amperecomputing.com>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Jonathan Corbet <corbet@lwn.net>, Ley Foon Tan <ley.foon.tan@intel.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@kernel.org>, Michal Simek <monstr@monstr.eu>, Nick Hu <nickhu@andestech.com>, Paul Walmsley <paul.walmsley@sifive.com>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, x86@kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-csky@vger.kernel.org, linux-doc@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, Mike Rapoport <rppt@linux.ibm.com>
+List-ID: <linux-um.lists.infradead.org>
 
-Valgrind reports the following error with UML when ubd driver is
-compiled in.
+On Thu, Apr 23, 2020 at 09:13:12AM +0800, Baoquan He wrote:
+> On 04/12/20 at 10:48pm, Mike Rapoport wrote:
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> > 
+> > The commit f47ac088c406 ("mm: memmap_init: iterate over memblock regions
+> 
+> This commit id should be a temporary one, will be changed when merged
+> into maintainer's tree and linus's tree. Only saying last patch plus the
+> patch subject is OK?
 
-==29588== Unsupported clone() flags: 0x500
-==29588==
-==29588== The only supported clone() uses are:
-==29588==  - via a threads library (LinuxThreads or NPTL)
-==29588==  - via the implementation of fork or vfork
-
-Adding CLONE_FS flags silences this issue.
-
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
----
- arch/um/drivers/ubd_user.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/um/drivers/ubd_user.c b/arch/um/drivers/ubd_user.c
-index a1afe414ce48..fabb50e91c37 100644
---- a/arch/um/drivers/ubd_user.c
-+++ b/arch/um/drivers/ubd_user.c
-@@ -47,7 +47,8 @@ int start_io_thread(unsigned long sp, int *fd_out)
- 		goto out_close;
- 	}
+Right, the commit id here is not stable. I'll update the changelog.
  
--	pid = clone(io_thread, (void *) sp, CLONE_FILES | CLONE_VM, NULL);
-+	pid = clone(io_thread, (void *) sp,
-+		    CLONE_FILES | CLONE_VM | CLONE_FS, NULL);
- 	if(pid < 0){
- 		err = -errno;
- 		printk("start_io_thread - clone failed : errno = %d\n", errno);
+> > rather that check each PFN") made early_pfn_in_nid() obsolete and since
+> > CONFIG_NODES_SPAN_OTHER_NODES is only used to pick a stub or a real
+> > implementation of early_pfn_in_nid() it is also not needed anymore.
+> > 
+> > Remove both early_pfn_in_nid() and the CONFIG_NODES_SPAN_OTHER_NODES.
+> > 
+> > Co-developed-by: Hoan Tran <Hoan@os.amperecomputing.com>
+> > Signed-off-by: Hoan Tran <Hoan@os.amperecomputing.com>
+> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> > ---
+> >  arch/powerpc/Kconfig |  9 ---------
+> >  arch/sparc/Kconfig   |  9 ---------
+> >  arch/x86/Kconfig     |  9 ---------
+> >  mm/page_alloc.c      | 20 --------------------
+> >  4 files changed, 47 deletions(-)
+> > 
+> > diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+> > index 5f86b22b7d2c..74f316deeae1 100644
+> > --- a/arch/powerpc/Kconfig
+> > +++ b/arch/powerpc/Kconfig
+> > @@ -685,15 +685,6 @@ config ARCH_MEMORY_PROBE
+> >  	def_bool y
+> >  	depends on MEMORY_HOTPLUG
+> >  
+> > -# Some NUMA nodes have memory ranges that span
+> > -# other nodes.  Even though a pfn is valid and
+> > -# between a node's start and end pfns, it may not
+> > -# reside on that node.  See memmap_init_zone()
+> > -# for details.
+> > -config NODES_SPAN_OTHER_NODES
+> > -	def_bool y
+> > -	depends on NEED_MULTIPLE_NODES
+> > -
+> >  config STDBINUTILS
+> >  	bool "Using standard binutils settings"
+> >  	depends on 44x
+> > diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
+> > index 795206b7b552..0e4f3891b904 100644
+> > --- a/arch/sparc/Kconfig
+> > +++ b/arch/sparc/Kconfig
+> > @@ -286,15 +286,6 @@ config NODES_SHIFT
+> >  	  Specify the maximum number of NUMA Nodes available on the target
+> >  	  system.  Increases memory reserved to accommodate various tables.
+> >  
+> > -# Some NUMA nodes have memory ranges that span
+> > -# other nodes.  Even though a pfn is valid and
+> > -# between a node's start and end pfns, it may not
+> > -# reside on that node.  See memmap_init_zone()
+> > -# for details.
+> > -config NODES_SPAN_OTHER_NODES
+> > -	def_bool y
+> > -	depends on NEED_MULTIPLE_NODES
+> > -
+> >  config ARCH_SPARSEMEM_ENABLE
+> >  	def_bool y if SPARC64
+> >  	select SPARSEMEM_VMEMMAP_ENABLE
+> > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> > index 9d3e95b4fb85..37dac095659e 100644
+> > --- a/arch/x86/Kconfig
+> > +++ b/arch/x86/Kconfig
+> > @@ -1581,15 +1581,6 @@ config X86_64_ACPI_NUMA
+> >  	---help---
+> >  	  Enable ACPI SRAT based node topology detection.
+> >  
+> > -# Some NUMA nodes have memory ranges that span
+> > -# other nodes.  Even though a pfn is valid and
+> > -# between a node's start and end pfns, it may not
+> > -# reside on that node.  See memmap_init_zone()
+> > -# for details.
+> > -config NODES_SPAN_OTHER_NODES
+> > -	def_bool y
+> > -	depends on X86_64_ACPI_NUMA
+> > -
+> >  config NUMA_EMU
+> >  	bool "NUMA emulation"
+> >  	depends on NUMA
+> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > index c43ce8709457..343d87b8697d 100644
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -1541,26 +1541,6 @@ int __meminit early_pfn_to_nid(unsigned long pfn)
+> >  }
+> >  #endif /* CONFIG_NEED_MULTIPLE_NODES */
+> >  
+> > -#ifdef CONFIG_NODES_SPAN_OTHER_NODES
+> > -/* Only safe to use early in boot when initialisation is single-threaded */
+> > -static inline bool __meminit early_pfn_in_nid(unsigned long pfn, int node)
+> > -{
+> > -	int nid;
+> > -
+> > -	nid = __early_pfn_to_nid(pfn, &early_pfnnid_cache);
+> > -	if (nid >= 0 && nid != node)
+> > -		return false;
+> > -	return true;
+> > -}
+> > -
+> > -#else
+> > -static inline bool __meminit early_pfn_in_nid(unsigned long pfn, int node)
+> > -{
+> > -	return true;
+> > -}
+> > -#endif
+> 
+> And macro early_pfn_valid() is not needed either, we may need remove it
+> too. 
+
+Ok.
+
+> Otherwise, removing NODES_SPAN_OTHER_NODES in this patch looks good.
+> 
+> Reviewed-by: Baoquan He <bhe@redhat.com>
+> 
+> > -
+> > -
+> >  void __init memblock_free_pages(struct page *page, unsigned long pfn,
+> >  							unsigned int order)
+> >  {
+> > -- 
+> > 2.25.1
+> > 
+> 
+
 -- 
-2.21.0 (Apple Git-122.2)
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+Sincerely yours,
+Mike.
 
