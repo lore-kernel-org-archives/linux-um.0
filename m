@@ -1,95 +1,129 @@
 Return-Path: <rppt@kernel.org>
 From: Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH 18/21] mm: rename free_area_init_node() to free_area_init_memoryless_node()
-Date: Sun, 12 Apr 2020 22:48:56 +0300
-Message-Id: <20200412194859.12663-19-rppt@kernel.org>
-In-Reply-To: <20200412194859.12663-1-rppt@kernel.org>
-References: <20200412194859.12663-1-rppt@kernel.org>
+Subject: [PATCH v2 07/20] arm: simplify detection of memory zone boundaries
+Date: Wed, 29 Apr 2020 15:11:13 +0300
+Message-Id: <20200429121126.17989-8-rppt@kernel.org>
+In-Reply-To: <20200429121126.17989-1-rppt@kernel.org>
+References: <20200429121126.17989-1-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 To: linux-kernel@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Baoquan He <bhe@redhat.com>, Brian Cain <bcain@codeaurora.org>, Catalin Marinas <catalin.marinas@arm.com>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, Hoan Tran <Hoan@os.amperecomputing.com>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jonathan Corbet <corbet@lwn.net>, Ley Foon Tan <ley.foon.tan@intel.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@kernel.org>, Michal Simek <monstr@monstr.eu>, Mike Rapoport <rppt@kernel.org>, Nick Hu <nickhu@andestech.com>, Paul Walmsley <paul.walmsley@sifive.com>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, x86@kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-csky@vger.kernel.org, linux-doc@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, Mike Rapoport <rppt@linux.ibm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Baoquan He <bhe@redhat.com>, Brian Cain <bcain@codeaurora.org>, Catalin Marinas <catalin.marinas@arm.com>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, Hoan Tran <Hoan@os.amperecomputing.com>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jonathan Corbet <corbet@lwn.net>, Ley Foon Tan <ley.foon.tan@intel.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@kernel.org>, Michal Simek <monstr@monstr.eu>, Nick Hu <nickhu@andestech.com>, Paul Walmsley <paul.walmsley@sifive.com>, Qian Cai <cai@lca.pw>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, x86@kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-csky@vger.kernel.org, linux-doc@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, Mike Rapoport <rppt@linux.ibm.com>
 List-ID: <linux-um.lists.infradead.org>
 
 From: Mike Rapoport <rppt@linux.ibm.com>
 
-The free_area_init_node() is only used by x86 to initialize a memory-less
-nodes.
-Make its name reflect this and drop all the function parameters except node
-ID as they are anyway zero.
+The free_area_init() function only requires the definition of maximal PFN
+for each of the supported zone rater than calculation of actual zone sizes
+and the sizes of the holes between the zones.
+
+After removal of CONFIG_HAVE_MEMBLOCK_NODE_MAP the free_area_init() is
+available to all architectures.
+
+Using this function instead of free_area_init_node() simplifies the zone
+detection.
 
 Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
- arch/x86/mm/numa.c | 5 +----
- include/linux/mm.h | 9 +++------
- mm/page_alloc.c    | 7 ++-----
- 3 files changed, 6 insertions(+), 15 deletions(-)
+ arch/arm/mm/init.c | 66 +++++-----------------------------------------
+ 1 file changed, 7 insertions(+), 59 deletions(-)
 
-diff --git a/arch/x86/mm/numa.c b/arch/x86/mm/numa.c
-index fe024b2ac796..8ee952038c80 100644
---- a/arch/x86/mm/numa.c
-+++ b/arch/x86/mm/numa.c
-@@ -737,12 +737,9 @@ void __init x86_numa_init(void)
- 
- static void __init init_memory_less_node(int nid)
- {
--	unsigned long zones_size[MAX_NR_ZONES] = {0};
--	unsigned long zholes_size[MAX_NR_ZONES] = {0};
+diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
+index 054be44d1cdb..4e43455fab84 100644
+--- a/arch/arm/mm/init.c
++++ b/arch/arm/mm/init.c
+@@ -92,18 +92,6 @@ EXPORT_SYMBOL(arm_dma_zone_size);
+  */
+ phys_addr_t arm_dma_limit;
+ unsigned long arm_dma_pfn_limit;
 -
- 	/* Allocate and initialize node data. Memory-less node is now online.*/
- 	alloc_node_data(nid);
--	free_area_init_node(nid, zones_size, 0, zholes_size);
-+	free_area_init_memoryless_node(nid);
+-static void __init arm_adjust_dma_zone(unsigned long *size, unsigned long *hole,
+-	unsigned long dma_size)
+-{
+-	if (size[0] <= dma_size)
+-		return;
+-
+-	size[ZONE_NORMAL] = size[0] - dma_size;
+-	size[ZONE_DMA] = dma_size;
+-	hole[ZONE_NORMAL] = hole[0];
+-	hole[ZONE_DMA] = 0;
+-}
+ #endif
+ 
+ void __init setup_dma_zone(const struct machine_desc *mdesc)
+@@ -121,56 +109,16 @@ void __init setup_dma_zone(const struct machine_desc *mdesc)
+ static void __init zone_sizes_init(unsigned long min, unsigned long max_low,
+ 	unsigned long max_high)
+ {
+-	unsigned long zone_size[MAX_NR_ZONES], zhole_size[MAX_NR_ZONES];
+-	struct memblock_region *reg;
+-
+-	/*
+-	 * initialise the zones.
+-	 */
+-	memset(zone_size, 0, sizeof(zone_size));
++	unsigned long max_zone_pfn[MAX_NR_ZONES] = { 0 };
+ 
+-	/*
+-	 * The memory size has already been determined.  If we need
+-	 * to do anything fancy with the allocation of this memory
+-	 * to the zones, now is the time to do it.
+-	 */
+-	zone_size[0] = max_low - min;
+-#ifdef CONFIG_HIGHMEM
+-	zone_size[ZONE_HIGHMEM] = max_high - max_low;
++#ifdef CONFIG_ZONE_DMA
++	max_zone_pfn[ZONE_DMA] = min(arm_dma_pfn_limit, max_low);
+ #endif
+-
+-	/*
+-	 * Calculate the size of the holes.
+-	 *  holes = node_size - sum(bank_sizes)
+-	 */
+-	memcpy(zhole_size, zone_size, sizeof(zhole_size));
+-	for_each_memblock(memory, reg) {
+-		unsigned long start = memblock_region_memory_base_pfn(reg);
+-		unsigned long end = memblock_region_memory_end_pfn(reg);
+-
+-		if (start < max_low) {
+-			unsigned long low_end = min(end, max_low);
+-			zhole_size[0] -= low_end - start;
+-		}
++	max_zone_pfn[ZONE_NORMAL] = max_low;
+ #ifdef CONFIG_HIGHMEM
+-		if (end > max_low) {
+-			unsigned long high_start = max(start, max_low);
+-			zhole_size[ZONE_HIGHMEM] -= end - high_start;
+-		}
++	max_zone_pfn[ZONE_HIGHMEM] = max_high;
+ #endif
+-	}
+-
+-#ifdef CONFIG_ZONE_DMA
+-	/*
+-	 * Adjust the sizes according to any special requirements for
+-	 * this machine type.
+-	 */
+-	if (arm_dma_zone_size)
+-		arm_adjust_dma_zone(zone_size, zhole_size,
+-			arm_dma_zone_size >> PAGE_SHIFT);
+-#endif
+-
+-	free_area_init_node(0, zone_size, min, zhole_size);
++	free_area_init(max_zone_pfn);
+ }
+ 
+ #ifdef CONFIG_HAVE_ARCH_PFN_VALID
+@@ -306,7 +254,7 @@ void __init bootmem_init(void)
+ 	sparse_init();
  
  	/*
- 	 * All zonelists will be built later in start_kernel() after per cpu
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 1c2ecb42e043..27660f6cf26e 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2272,8 +2272,7 @@ static inline spinlock_t *pud_lock(struct mm_struct *mm, pud_t *pud)
- }
- 
- extern void __init pagecache_init(void);
--extern void __init free_area_init_node(int nid, unsigned long * zones_size,
--		unsigned long zone_start_pfn, unsigned long *zholes_size);
-+extern void __init free_area_init_memoryless_node(int nid);
- extern void free_initmem(void);
- 
- /*
-@@ -2345,10 +2344,8 @@ static inline unsigned long get_num_physpages(void)
- 
- /*
-  * Using memblock node mappings, an architecture may initialise its
-- * zones, allocate the backing mem_map and account for memory holes in a more
-- * architecture independent manner. This is a substitute for creating the
-- * zone_sizes[] and zholes_size[] arrays and passing them to
-- * free_area_init_node()
-+ * zones, allocate the backing mem_map and account for memory holes in an
-+ * architecture independent manner.
-  *
-  * An architecture is expected to register range of page frames backed by
-  * physical memory with memblock_add[_node]() before calling
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 376434c7a78b..e46232ec4849 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -6979,12 +6979,9 @@ static void __init __free_area_init_node(int nid, unsigned long *zones_size,
- 	free_area_init_core(pgdat);
- }
- 
--void __init free_area_init_node(int nid, unsigned long *zones_size,
--				unsigned long node_start_pfn,
--				unsigned long *zholes_size)
-+void __init free_area_init_memoryless_node(int nid)
- {
--	__free_area_init_node(nid, zones_size, node_start_pfn, zholes_size,
--			      true);
-+	__free_area_init_node(nid, NULL, 0, NULL, false);
- }
- 
- #if !defined(CONFIG_FLAT_NODE_MEM_MAP)
+-	 * Now free the memory - free_area_init_node needs
++	 * Now free the memory - free_area_init needs
+ 	 * the sparse mem_map arrays initialized by sparse_init()
+ 	 * for memmap_init_zone(), otherwise all PFNs are invalid.
+ 	 */
 -- 
-2.25.1
+2.26.1
 
 
