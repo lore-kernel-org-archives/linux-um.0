@@ -1,66 +1,68 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x449.google.com ([2607:f8b0:4864:20::449])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jSCQT-0007zT-0m
- for linux-um@lists.infradead.org; Sat, 25 Apr 2020 04:28:26 +0000
-Received: by mail-pf1-x449.google.com with SMTP id r198so11151443pfc.8
- for <linux-um@lists.infradead.org>; Fri, 24 Apr 2020 21:28:20 -0700 (PDT)
-Date: Fri, 24 Apr 2020 21:28:14 -0700
-Message-Id: <20200425042814.132920-1-davidgow@google.com>
-Mime-Version: 1.0
-Subject: [PATCH] um: Fix "time-internal.h" include in xor.h
-From: David Gow <davidgow@google.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Johannes Berg <johannes.berg@intel.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Richard Weinberger <richard@nod.at>
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, David Gow <davidgow@google.com>
+Return-Path: <rppt@kernel.org>
+From: Mike Rapoport <rppt@kernel.org>
+Subject: [PATCH v2 12/20] sparc32: simplify detection of memory zone boundaries
+Date: Wed, 29 Apr 2020 15:11:18 +0300
+Message-Id: <20200429121126.17989-13-rppt@kernel.org>
+In-Reply-To: <20200429121126.17989-1-rppt@kernel.org>
+References: <20200429121126.17989-1-rppt@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To: linux-kernel@vger.kernel.org
+Cc: Andrew Morton <akpm@linux-foundation.org>, Baoquan He <bhe@redhat.com>, Brian Cain <bcain@codeaurora.org>, Catalin Marinas <catalin.marinas@arm.com>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, Hoan Tran <Hoan@os.amperecomputing.com>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jonathan Corbet <corbet@lwn.net>, Ley Foon Tan <ley.foon.tan@intel.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@kernel.org>, Michal Simek <monstr@monstr.eu>, Nick Hu <nickhu@andestech.com>, Paul Walmsley <paul.walmsley@sifive.com>, Qian Cai <cai@lca.pw>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, x86@kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-csky@vger.kernel.org, linux-doc@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, Mike Rapoport <rppt@linux.ibm.com>
+List-ID: <linux-um.lists.infradead.org>
 
-It looks like the wrong header was included in xor.h, breaking make
-allyesconfig on UML (or, more specifically, kunit.py run --alltests).
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-----------------------
-In file included from crypto/xor.c:17:
-./arch/um/include/asm/xor.h:3:10: fatal error: shared/timer-internal.h: No such file or directory
-    3 | #include <shared/timer-internal.h>
-      |          ^~~~~~~~~~~~~~~~~~~~~~~~~
-----------------------
+The free_area_init() function only requires the definition of maximal PFN
+for each of the supported zone rater than calculation of actual zone sizes
+and the sizes of the holes between the zones.
 
-Replacing this with "linux/time-internal.h" builds fine.
+After removal of CONFIG_HAVE_MEMBLOCK_NODE_MAP the free_area_init() is
+available to all architectures.
 
-Fixes: d65197ad5249 ("um: fix time-travel=inf-cpu with xor/raid6")
-Signed-off-by: David Gow <davidgow@google.com>
+Using this function instead of free_area_init_node() simplifies the zone
+detection.
+
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
- arch/um/include/asm/xor.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/sparc/mm/srmmu.c | 21 +++++----------------
+ 1 file changed, 5 insertions(+), 16 deletions(-)
 
-diff --git a/arch/um/include/asm/xor.h b/arch/um/include/asm/xor.h
-index 7a3208c47cfc..36b33d62a35d 100644
---- a/arch/um/include/asm/xor.h
-+++ b/arch/um/include/asm/xor.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- #include <asm-generic/xor.h>
--#include <shared/timer-internal.h>
-+#include <linux/time-internal.h>
+diff --git a/arch/sparc/mm/srmmu.c b/arch/sparc/mm/srmmu.c
+index b7c94de70cca..cc071dd7d8da 100644
+--- a/arch/sparc/mm/srmmu.c
++++ b/arch/sparc/mm/srmmu.c
+@@ -1008,24 +1008,13 @@ void __init srmmu_paging_init(void)
+ 	kmap_init();
  
- /* pick an arbitrary one - measuring isn't possible with inf-cpu */
- #define XOR_SELECT_TEMPLATE(x)	\
+ 	{
+-		unsigned long zones_size[MAX_NR_ZONES];
+-		unsigned long zholes_size[MAX_NR_ZONES];
+-		unsigned long npages;
+-		int znum;
++		unsigned long max_zone_pfn[MAX_NR_ZONES] = { 0 };
+ 
+-		for (znum = 0; znum < MAX_NR_ZONES; znum++)
+-			zones_size[znum] = zholes_size[znum] = 0;
++		max_zone_pfn[ZONE_DMA] = max_low_pfn;
++		max_zone_pfn[ZONE_NORMAL] = max_low_pfn;
++		max_zone_pfn[ZONE_HIGHMEM] = highend_pfn;
+ 
+-		npages = max_low_pfn - pfn_base;
+-
+-		zones_size[ZONE_DMA] = npages;
+-		zholes_size[ZONE_DMA] = npages - pages_avail;
+-
+-		npages = highend_pfn - max_low_pfn;
+-		zones_size[ZONE_HIGHMEM] = npages;
+-		zholes_size[ZONE_HIGHMEM] = npages - calc_highpages();
+-
+-		free_area_init_node(0, zones_size, pfn_base, zholes_size);
++		free_area_init(max_zone_pfn);
+ 	}
+ }
+ 
 -- 
-2.26.2.303.gf8c07b1a785-goog
+2.26.1
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
