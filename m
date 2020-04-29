@@ -1,72 +1,148 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from conuserg-07.nifty.com ([210.131.2.74])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jPVNH-0006NW-94
- for linux-um@lists.infradead.org; Fri, 17 Apr 2020 18:06:00 +0000
-From: Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH] um: do not evaluate compiler's library path when cleaning
-Date: Sat, 18 Apr 2020 03:04:55 +0900
-Message-Id: <20200417180455.1174340-1-masahiroy@kernel.org>
+Return-Path: <linux-riscv-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org>
+From: Mike Rapoport <rppt@kernel.org>
+Subject: [PATCH v2 01/20] mm: memblock: replace dereferences of
+ memblock_region.nid with API calls
+Date: Wed, 29 Apr 2020 15:11:07 +0300
+Message-Id: <20200429121126.17989-2-rppt@kernel.org>
+In-Reply-To: <20200429121126.17989-1-rppt@kernel.org>
+References: <20200429121126.17989-1-rppt@kernel.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>, linux-kbuild@vger.kernel.org, Erel Geron <erelx.geron@intel.com>, Masahiro Yamada <masahiroy@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, linux-kernel@vger.kernel.org, Alex Dewar <alex.dewar@gmx.co.uk>, Nathan Chancellor <natechancellor@gmail.com>
+Content-Transfer-Encoding: 8bit
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-riscv>,
+ <mailto:linux-riscv-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-riscv/>
+List-Post: <mailto:linux-riscv@lists.infradead.org>
+List-Help: <mailto:linux-riscv-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-riscv>,
+ <mailto:linux-riscv-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-riscv" <linux-riscv-bounces@lists.infradead.org>
+Errors-To: linux-riscv-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org
+To: linux-kernel@vger.kernel.org
+Cc: Rich Felker <dalias@libc.org>, linux-ia64@vger.kernel.org, linux-doc@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Michal Hocko <mhocko@kernel.org>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Max Filippov <jcmvbkbc@gmail.com>, Guo Ren <guoren@kernel.org>, linux-csky@vger.kernel.org, linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-riscv@lists.infradead.org, Mike Rapoport <rppt@linux.ibm.com>, Greg Ungerer <gerg@linux-m68k.org>, linux-arch@vger.kernel.org, linux-s390@vger.kernel.org, linux-c6x-dev@linux-c6x.org, Baoquan He <bhe@redhat.com>, Jonathan Corbet <corbet@lwn.net>, linux-sh@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>, Helge Deller <deller@gmx.de>, x86@kernel.org, Russell King <linux@armlinux.org.uk>, Ley Foon Tan <ley.foon.tan@intel.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-arm-kernel@lists.infradead.org, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, linux-snps-arc@lists.infradead.org, uclinux-h8-devel@lists.sourceforge.jp, linux-xtensa@linux-xtensa.org, linux-alpha@vger.kernel.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, Tony Luck <tony.luck@intel.com>, Qian Cai <cai@lca.pw>, Greentime Hu <green.hu@gmail.com>, Paul Walmsley <paul.walmsley@sifive.com>, Stafford Horne <shorne@gmail.com>, Guan Xuetao <gxt@pku.edu.cn>, Hoan Tran <Hoan@os.amperecomputing.com>, Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Brian Cain <bcain@codeaurora.org>, Nick Hu <nickhu@andestech.com>, linux-mm@kvack.org, Vineet Gupta <vgupta@synopsys.com>, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, Richard Weinberger <richard@nod.at>, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org, "David S. Miller" <davem@davemloft.net>
+List-ID: <linux-um.lists.infradead.org>
 
-Since commit a83e4ca26af8 ("kbuild: remove cc-option switch from
--Wframe-larger-than="), 'make ARCH=um clean' emits an error message
-as follows:
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-  $ make ARCH=um clean
-  gcc: error: missing argument to '-Wframe-larger-than='
+There are several places in the code that directly dereference
+memblock_region.nid despite this field being defined only when
+CONFIG_HAVE_MEMBLOCK_NODE_MAP=y.
 
-We do not care compiler flags when cleaning.
+Replace these with calls to memblock_get_region_nid() to improve code
+robustness and to avoid possible breakage when
+CONFIG_HAVE_MEMBLOCK_NODE_MAP will be removed.
 
-Use the '=' operator for lazy expansion because we do not use
-LDFLAGS_pcap.o or LDFLAGS_vde.o when cleaning.
-
-While I was here, I removed the redundant -r option because it
-already exists in the recipe.
-
-Fixes: a83e4ca26af8 ("kbuild: remove cc-option switch from -Wframe-larger-than=")
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
+ arch/arm64/mm/numa.c | 9 ++++++---
+ arch/x86/mm/numa.c   | 6 ++++--
+ mm/memblock.c        | 8 +++++---
+ mm/page_alloc.c      | 4 ++--
+ 4 files changed, 17 insertions(+), 10 deletions(-)
 
- arch/um/drivers/Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
-index a290821e355c..2a249f619467 100644
---- a/arch/um/drivers/Makefile
-+++ b/arch/um/drivers/Makefile
-@@ -18,9 +18,9 @@ ubd-objs := ubd_kern.o ubd_user.o
- port-objs := port_kern.o port_user.o
- harddog-objs := harddog_kern.o harddog_user.o
+diff --git a/arch/arm64/mm/numa.c b/arch/arm64/mm/numa.c
+index 4decf1659700..aafcee3e3f7e 100644
+--- a/arch/arm64/mm/numa.c
++++ b/arch/arm64/mm/numa.c
+@@ -350,13 +350,16 @@ static int __init numa_register_nodes(void)
+ 	struct memblock_region *mblk;
  
--LDFLAGS_pcap.o := -r $(shell $(CC) $(KBUILD_CFLAGS) -print-file-name=libpcap.a)
-+LDFLAGS_pcap.o = $(shell $(CC) $(KBUILD_CFLAGS) -print-file-name=libpcap.a)
+ 	/* Check that valid nid is set to memblks */
+-	for_each_memblock(memory, mblk)
+-		if (mblk->nid == NUMA_NO_NODE || mblk->nid >= MAX_NUMNODES) {
++	for_each_memblock(memory, mblk) {
++		int mblk_nid = memblock_get_region_node(mblk);
++
++		if (mblk_nid == NUMA_NO_NODE || mblk_nid >= MAX_NUMNODES) {
+ 			pr_warn("Warning: invalid memblk node %d [mem %#010Lx-%#010Lx]\n",
+-				mblk->nid, mblk->base,
++				mblk_nid, mblk->base,
+ 				mblk->base + mblk->size - 1);
+ 			return -EINVAL;
+ 		}
++	}
  
--LDFLAGS_vde.o := -r $(shell $(CC) $(CFLAGS) -print-file-name=libvdeplug.a)
-+LDFLAGS_vde.o = $(shell $(CC) $(CFLAGS) -print-file-name=libvdeplug.a)
+ 	/* Finally register nodes. */
+ 	for_each_node_mask(nid, numa_nodes_parsed) {
+diff --git a/arch/x86/mm/numa.c b/arch/x86/mm/numa.c
+index 59ba008504dc..fe024b2ac796 100644
+--- a/arch/x86/mm/numa.c
++++ b/arch/x86/mm/numa.c
+@@ -517,8 +517,10 @@ static void __init numa_clear_kernel_node_hotplug(void)
+ 	 *   reserve specific pages for Sandy Bridge graphics. ]
+ 	 */
+ 	for_each_memblock(reserved, mb_region) {
+-		if (mb_region->nid != MAX_NUMNODES)
+-			node_set(mb_region->nid, reserved_nodemask);
++		int nid = memblock_get_region_node(mb_region);
++
++		if (nid != MAX_NUMNODES)
++			node_set(nid, reserved_nodemask);
+ 	}
  
- targets := pcap_kern.o pcap_user.o vde_kern.o vde_user.o
+ 	/*
+diff --git a/mm/memblock.c b/mm/memblock.c
+index c79ba6f9920c..43e2fd3006c1 100644
+--- a/mm/memblock.c
++++ b/mm/memblock.c
+@@ -1207,13 +1207,15 @@ void __init_memblock __next_mem_pfn_range(int *idx, int nid,
+ {
+ 	struct memblock_type *type = &memblock.memory;
+ 	struct memblock_region *r;
++	int r_nid;
+ 
+ 	while (++*idx < type->cnt) {
+ 		r = &type->regions[*idx];
++		r_nid = memblock_get_region_node(r);
+ 
+ 		if (PFN_UP(r->base) >= PFN_DOWN(r->base + r->size))
+ 			continue;
+-		if (nid == MAX_NUMNODES || nid == r->nid)
++		if (nid == MAX_NUMNODES || nid == r_nid)
+ 			break;
+ 	}
+ 	if (*idx >= type->cnt) {
+@@ -1226,7 +1228,7 @@ void __init_memblock __next_mem_pfn_range(int *idx, int nid,
+ 	if (out_end_pfn)
+ 		*out_end_pfn = PFN_DOWN(r->base + r->size);
+ 	if (out_nid)
+-		*out_nid = r->nid;
++		*out_nid = r_nid;
+ }
+ 
+ /**
+@@ -1810,7 +1812,7 @@ int __init_memblock memblock_search_pfn_nid(unsigned long pfn,
+ 	*start_pfn = PFN_DOWN(type->regions[mid].base);
+ 	*end_pfn = PFN_DOWN(type->regions[mid].base + type->regions[mid].size);
+ 
+-	return type->regions[mid].nid;
++	return memblock_get_region_node(&type->regions[mid]);
+ }
+ #endif
+ 
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 69827d4fa052..0d012eda1694 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -7208,7 +7208,7 @@ static void __init find_zone_movable_pfns_for_nodes(void)
+ 			if (!memblock_is_hotpluggable(r))
+ 				continue;
+ 
+-			nid = r->nid;
++			nid = memblock_get_region_node(r);
+ 
+ 			usable_startpfn = PFN_DOWN(r->base);
+ 			zone_movable_pfn[nid] = zone_movable_pfn[nid] ?
+@@ -7229,7 +7229,7 @@ static void __init find_zone_movable_pfns_for_nodes(void)
+ 			if (memblock_is_mirror(r))
+ 				continue;
+ 
+-			nid = r->nid;
++			nid = memblock_get_region_node(r);
+ 
+ 			usable_startpfn = memblock_region_memory_base_pfn(r);
  
 -- 
-2.25.1
+2.26.1
 
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
