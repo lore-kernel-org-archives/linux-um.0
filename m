@@ -1,137 +1,84 @@
-Return-Path: <rppt@kernel.org>
-From: Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH 01/21] mm: memblock: replace dereferences of memblock_region.nid with API calls
-Date: Sun, 12 Apr 2020 22:48:39 +0300
-Message-Id: <20200412194859.12663-2-rppt@kernel.org>
-In-Reply-To: <20200412194859.12663-1-rppt@kernel.org>
-References: <20200412194859.12663-1-rppt@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-qt1-x844.google.com ([2607:f8b0:4864:20::844])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jTsK5-0005aN-G9
+ for linux-um@lists.infradead.org; Wed, 29 Apr 2020 19:24:46 +0000
+Received: by mail-qt1-x844.google.com with SMTP id x12so2892220qts.9
+ for <linux-um@lists.infradead.org>; Wed, 29 Apr 2020 12:24:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-kernel@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Baoquan He <bhe@redhat.com>, Brian Cain <bcain@codeaurora.org>, Catalin Marinas <catalin.marinas@arm.com>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, Hoan Tran <Hoan@os.amperecomputing.com>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jonathan Corbet <corbet@lwn.net>, Ley Foon Tan <ley.foon.tan@intel.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@kernel.org>, Michal Simek <monstr@monstr.eu>, Mike Rapoport <rppt@kernel.org>, Nick Hu <nickhu@andestech.com>, Paul Walmsley <paul.walmsley@sifive.com>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, x86@kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-csky@vger.kernel.org, linux-doc@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, Mike Rapoport <rppt@linux.ibm.com>
-List-ID: <linux-um.lists.infradead.org>
+References: <20200415095152.85794f817f97.I289cb72f130c19e850d70eacca9e68eb84832600@changeid>
+ <b7157cb3-ee7d-ac91-c755-ace63d617460@kot-begemot.co.uk>
+In-Reply-To: <b7157cb3-ee7d-ac91-c755-ace63d617460@kot-begemot.co.uk>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Wed, 29 Apr 2020 21:24:31 +0200
+Message-ID: <CAFLxGvyY22Pt8gfsujOTi=aLv1L8=kEOGo_18Hscs_rowKmSGw@mail.gmail.com>
+Subject: Re: [PATCH] um: syscall.c: include <asm/unistd.h>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Cc: Johannes Berg <johannes@sipsolutions.net>, linux-um <linux-um@lists.infradead.org>, Johannes Berg <johannes.berg@intel.com>
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+On Wed, Apr 15, 2020 at 11:39 AM Anton Ivanov
+<anton.ivanov@kot-begemot.co.uk> wrote:
+>
+>
+>
+> On 15/04/2020 08:51, Johannes Berg wrote:
+> > From: Johannes Berg <johannes.berg@intel.com>
+> >
+> > Without CONFIG_SECCOMP, we don't get this include recursively
+> > through the existing includes, thus failing the build on not
+> > having __NR_syscall_max defined. Add the necessary include to
+> > fix this.
+> >
+> > Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+> > ---
+> >   arch/um/kernel/skas/syscall.c | 1 +
+> >   1 file changed, 1 insertion(+)
+> >
+> > diff --git a/arch/um/kernel/skas/syscall.c b/arch/um/kernel/skas/syscall.c
+> > index 0a12d5a09217..3d91f89fd852 100644
+> > --- a/arch/um/kernel/skas/syscall.c
+> > +++ b/arch/um/kernel/skas/syscall.c
+> > @@ -11,6 +11,7 @@
+> >   #include <sysdep/ptrace_user.h>
+> >   #include <sysdep/syscalls.h>
+> >   #include <linux/time-internal.h>
+> > +#include <asm/unistd.h>
+> >
+> >   void handle_syscall(struct uml_pt_regs *r)
+> >   {
+> >
+>
+> Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+>
+> --
+> Anton R. Ivanov
+> https://www.kot-begemot.co.uk/
+>
+> _______________________________________________
+> linux-um mailing list
+> linux-um@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-um
 
-There are several places in the code that directly dereference
-memblock_region.nid despite this field being defined only when
-CONFIG_HAVE_MEMBLOCK_NODE_MAP=y.
+Applied, thanks!
 
-Replace these with calls to memblock_get_region_nid() to improve code
-robustness and to avoid possible breakage when
-CONFIG_HAVE_MEMBLOCK_NODE_MAP will be removed.
-
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- arch/arm64/mm/numa.c | 9 ++++++---
- arch/x86/mm/numa.c   | 6 ++++--
- mm/memblock.c        | 8 +++++---
- mm/page_alloc.c      | 4 ++--
- 4 files changed, 17 insertions(+), 10 deletions(-)
-
-diff --git a/arch/arm64/mm/numa.c b/arch/arm64/mm/numa.c
-index 4decf1659700..aafcee3e3f7e 100644
---- a/arch/arm64/mm/numa.c
-+++ b/arch/arm64/mm/numa.c
-@@ -350,13 +350,16 @@ static int __init numa_register_nodes(void)
- 	struct memblock_region *mblk;
- 
- 	/* Check that valid nid is set to memblks */
--	for_each_memblock(memory, mblk)
--		if (mblk->nid == NUMA_NO_NODE || mblk->nid >= MAX_NUMNODES) {
-+	for_each_memblock(memory, mblk) {
-+		int mblk_nid = memblock_get_region_node(mblk);
-+
-+		if (mblk_nid == NUMA_NO_NODE || mblk_nid >= MAX_NUMNODES) {
- 			pr_warn("Warning: invalid memblk node %d [mem %#010Lx-%#010Lx]\n",
--				mblk->nid, mblk->base,
-+				mblk_nid, mblk->base,
- 				mblk->base + mblk->size - 1);
- 			return -EINVAL;
- 		}
-+	}
- 
- 	/* Finally register nodes. */
- 	for_each_node_mask(nid, numa_nodes_parsed) {
-diff --git a/arch/x86/mm/numa.c b/arch/x86/mm/numa.c
-index 59ba008504dc..fe024b2ac796 100644
---- a/arch/x86/mm/numa.c
-+++ b/arch/x86/mm/numa.c
-@@ -517,8 +517,10 @@ static void __init numa_clear_kernel_node_hotplug(void)
- 	 *   reserve specific pages for Sandy Bridge graphics. ]
- 	 */
- 	for_each_memblock(reserved, mb_region) {
--		if (mb_region->nid != MAX_NUMNODES)
--			node_set(mb_region->nid, reserved_nodemask);
-+		int nid = memblock_get_region_node(mb_region);
-+
-+		if (nid != MAX_NUMNODES)
-+			node_set(nid, reserved_nodemask);
- 	}
- 
- 	/*
-diff --git a/mm/memblock.c b/mm/memblock.c
-index c79ba6f9920c..43e2fd3006c1 100644
---- a/mm/memblock.c
-+++ b/mm/memblock.c
-@@ -1207,13 +1207,15 @@ void __init_memblock __next_mem_pfn_range(int *idx, int nid,
- {
- 	struct memblock_type *type = &memblock.memory;
- 	struct memblock_region *r;
-+	int r_nid;
- 
- 	while (++*idx < type->cnt) {
- 		r = &type->regions[*idx];
-+		r_nid = memblock_get_region_node(r);
- 
- 		if (PFN_UP(r->base) >= PFN_DOWN(r->base + r->size))
- 			continue;
--		if (nid == MAX_NUMNODES || nid == r->nid)
-+		if (nid == MAX_NUMNODES || nid == r_nid)
- 			break;
- 	}
- 	if (*idx >= type->cnt) {
-@@ -1226,7 +1228,7 @@ void __init_memblock __next_mem_pfn_range(int *idx, int nid,
- 	if (out_end_pfn)
- 		*out_end_pfn = PFN_DOWN(r->base + r->size);
- 	if (out_nid)
--		*out_nid = r->nid;
-+		*out_nid = r_nid;
- }
- 
- /**
-@@ -1810,7 +1812,7 @@ int __init_memblock memblock_search_pfn_nid(unsigned long pfn,
- 	*start_pfn = PFN_DOWN(type->regions[mid].base);
- 	*end_pfn = PFN_DOWN(type->regions[mid].base + type->regions[mid].size);
- 
--	return type->regions[mid].nid;
-+	return memblock_get_region_node(&type->regions[mid]);
- }
- #endif
- 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 69827d4fa052..0d012eda1694 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -7208,7 +7208,7 @@ static void __init find_zone_movable_pfns_for_nodes(void)
- 			if (!memblock_is_hotpluggable(r))
- 				continue;
- 
--			nid = r->nid;
-+			nid = memblock_get_region_node(r);
- 
- 			usable_startpfn = PFN_DOWN(r->base);
- 			zone_movable_pfn[nid] = zone_movable_pfn[nid] ?
-@@ -7229,7 +7229,7 @@ static void __init find_zone_movable_pfns_for_nodes(void)
- 			if (memblock_is_mirror(r))
- 				continue;
- 
--			nid = r->nid;
-+			nid = memblock_get_region_node(r);
- 
- 			usable_startpfn = memblock_region_memory_base_pfn(r);
- 
 -- 
-2.25.1
+Thanks,
+//richard
 
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
