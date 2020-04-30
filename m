@@ -1,10 +1,10 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 48/57] um: ensure `make ARCH=um mrproper` removes arch/$(SUBARCH)/include/generated/
-Date: Thu, 30 Apr 2020 09:52:09 -0400
-Message-Id: <20200430135218.20372-48-sashal@kernel.org>
-In-Reply-To: <20200430135218.20372-1-sashal@kernel.org>
-References: <20200430135218.20372-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.6 65/79] um: ensure `make ARCH=um mrproper` removes arch/$(SUBARCH)/include/generated/
+Date: Thu, 30 Apr 2020 09:50:29 -0400
+Message-Id: <20200430135043.19851-65-sashal@kernel.org>
+In-Reply-To: <20200430135043.19851-1-sashal@kernel.org>
+References: <20200430135043.19851-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
