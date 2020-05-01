@@ -1,13 +1,21 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from conssluserg-04.nifty.com ([210.131.2.83])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jLnUV-00079S-9C
- for linux-um@lists.infradead.org; Tue, 07 Apr 2020 12:38:09 +0000
-Date: Tue, 7 Apr 2020 14:37:54 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <1397520880.91813.1586263074756.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] UML changes for v5.7-rc1
+ id 1jUOTy-0007FY-Ez
+ for linux-um@lists.infradead.org; Fri, 01 May 2020 05:45:08 +0000
+Received: from mail-vs1-f49.google.com (mail-vs1-f49.google.com
+ [209.85.217.49]) (authenticated)
+ by conssluserg-04.nifty.com with ESMTP id 0415iglV011355
+ for <linux-um@lists.infradead.org>; Fri, 1 May 2020 14:44:43 +0900
+Received: by mail-vs1-f49.google.com with SMTP id x136so5755652vsx.2
+ for <linux-um@lists.infradead.org>; Thu, 30 Apr 2020 22:44:43 -0700 (PDT)
 MIME-Version: 1.0
+References: <20200417180455.1174340-1-masahiroy@kernel.org>
+In-Reply-To: <20200417180455.1174340-1-masahiroy@kernel.org>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Fri, 1 May 2020 14:44:06 +0900
+Message-ID: <CAK7LNAQNwHW8=UQPCs7D=bEx2qKwfoNxVVMmHiOwmPy3j4aaGQ@mail.gmail.com>
+Subject: Re: [PATCH] um: do not evaluate compiler's library path when cleaning
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,105 +28,60 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: torvalds <torvalds@linux-foundation.org>
-Cc: linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
+To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, Erel Geron <erelx.geron@intel.com>, Nick Desaulniers <ndesaulniers@google.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Alex Dewar <alex.dewar@gmx.co.uk>, Nathan Chancellor <natechancellor@gmail.com>
 
-Linus,
+On Sat, Apr 18, 2020 at 3:06 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> Since commit a83e4ca26af8 ("kbuild: remove cc-option switch from
+> -Wframe-larger-than="), 'make ARCH=um clean' emits an error message
+> as follows:
+>
+>   $ make ARCH=um clean
+>   gcc: error: missing argument to '-Wframe-larger-than='
+>
+> We do not care compiler flags when cleaning.
+>
+> Use the '=' operator for lazy expansion because we do not use
+> LDFLAGS_pcap.o or LDFLAGS_vde.o when cleaning.
+>
+> While I was here, I removed the redundant -r option because it
+> already exists in the recipe.
+>
+> Fixes: a83e4ca26af8 ("kbuild: remove cc-option switch from -Wframe-larger-than=")
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+>
+>  arch/um/drivers/Makefile | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
+> index a290821e355c..2a249f619467 100644
+> --- a/arch/um/drivers/Makefile
+> +++ b/arch/um/drivers/Makefile
+> @@ -18,9 +18,9 @@ ubd-objs := ubd_kern.o ubd_user.o
+>  port-objs := port_kern.o port_user.o
+>  harddog-objs := harddog_kern.o harddog_user.o
+>
+> -LDFLAGS_pcap.o := -r $(shell $(CC) $(KBUILD_CFLAGS) -print-file-name=libpcap.a)
+> +LDFLAGS_pcap.o = $(shell $(CC) $(KBUILD_CFLAGS) -print-file-name=libpcap.a)
+>
+> -LDFLAGS_vde.o := -r $(shell $(CC) $(CFLAGS) -print-file-name=libvdeplug.a)
+> +LDFLAGS_vde.o = $(shell $(CC) $(CFLAGS) -print-file-name=libvdeplug.a)
+>
+>  targets := pcap_kern.o pcap_user.o vde_kern.o vde_user.o
+>
+> --
+> 2.25.1
+>
 
-The following changes since commit 16fbf79b0f83bc752cee8589279f1ebfe57b3b6e:
 
-  Linux 5.6-rc7 (2020-03-22 18:31:56 -0700)
+Applied to linux-kbuild.
 
-are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.7-rc1
-
-for you to fetch changes up to 4a7c46247f9c620c0390a15cb00b6ef9576b9c23:
-
-  um: Remove some unnecessary NULL checks in vector_user.c (2020-03-29 23:56:47 +0200)
-
-----------------------------------------------------------------
-This pull request contains the following changes for UML:
-
-- New mode for time travel, external via virtio
-- Fixes for ubd to make sure no requests can get lost
-- Fixes for vector networking
-- Allow CONFIG_STATIC_LINK only when possible
-- Minor cleanups and fixes
-
-----------------------------------------------------------------
-Alan Maguire (1):
-      um: falloc.h needs to be directly included for older libc
-
-Alex Dewar (1):
-      um: Remove some unnecessary NULL checks in vector_user.c
-
-Andy Shevchenko (2):
-      um: Don't use console_drivers directly
-      hostfs: Use kasprintf() instead of fixed buffer formatting
-
-Brendan Higgins (1):
-      um: Make CONFIG_STATIC_LINK actually static
-
-David Gow (1):
-      um: Fix overlapping ELF segments when statically linked
-
-Gabriel Krisman Bertazi (2):
-      um: ubd: Prevent buffer overrun on command completion
-      um: ubd: Retry buffer read on any kind of error
-
-Johannes Berg (6):
-      um: Move timer-internal.h to non-shared
-      um: time-travel: Rewrite as an event scheduler
-      um: virtio: Implement VHOST_USER_PROTOCOL_F_INBAND_NOTIFICATIONS
-      um: Implement time-travel=ext
-      um: Implement ndelay/udelay in time-travel mode
-      um: Implement cpu_relax() as ndelay(1) for time-travel
-
-Krzysztof Kozlowski (1):
-      um: Cleanup CONFIG_IOSCHED_CFQ
-
-Leon Romanovsky (2):
-      um: Don't overwrite ethtool driver version
-      um: Delete never executed timer
-
-Sjoerd Simons (1):
-      um: vector: Avoid NULL ptr deference if transport is unset
-
-Wen Yang (1):
-      um: Fix len of file in create_pid_file
-
- arch/um/Kconfig                         |   9 +-
- arch/um/configs/i386_defconfig          |   2 +-
- arch/um/configs/x86_64_defconfig        |   2 +-
- arch/um/drivers/Kconfig                 |   3 +
- arch/um/drivers/net_kern.c              |  13 -
- arch/um/drivers/ubd_kern.c              |  12 +-
- arch/um/drivers/vector_kern.c           |   5 +-
- arch/um/drivers/vector_user.c           |  15 +-
- arch/um/drivers/vhost_user.h            |  12 +-
- arch/um/drivers/virtio_uml.c            | 153 +++++++--
- arch/um/include/asm/Kbuild              |   1 -
- arch/um/include/asm/delay.h             |  30 ++
- arch/um/include/linux/time-internal.h   |  84 +++++
- arch/um/include/shared/os.h             |   1 +
- arch/um/include/shared/timer-internal.h |  76 -----
- arch/um/kernel/kmsg_dump.c              |   9 +-
- arch/um/kernel/process.c                |  39 +--
- arch/um/kernel/skas/syscall.c           |   5 +-
- arch/um/kernel/time.c                   | 538 ++++++++++++++++++++++++++++++--
- arch/um/kernel/uml.lds.S                |   2 +-
- arch/um/os-Linux/file.c                 |  31 ++
- arch/um/os-Linux/time.c                 |   1 -
- arch/um/os-Linux/umid.c                 |   5 +-
- arch/x86/um/asm/processor.h             |  12 +-
- fs/hostfs/hostfs_kern.c                 |  12 +-
- include/uapi/linux/um_timetravel.h      | 128 ++++++++
- 26 files changed, 986 insertions(+), 214 deletions(-)
- create mode 100644 arch/um/include/asm/delay.h
- create mode 100644 arch/um/include/linux/time-internal.h
- delete mode 100644 arch/um/include/shared/timer-internal.h
- create mode 100644 include/uapi/linux/um_timetravel.h
+-- 
+Best Regards
+Masahiro Yamada
 
 _______________________________________________
 linux-um mailing list
