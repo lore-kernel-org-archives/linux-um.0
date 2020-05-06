@@ -1,10 +1,10 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 17/23] maccess: move user access routines together
-Date: Thu, 21 May 2020 17:22:55 +0200
-Message-Id: <20200521152301.2587579-18-hch@lst.de>
-In-Reply-To: <20200521152301.2587579-1-hch@lst.de>
-References: <20200521152301.2587579-1-hch@lst.de>
+Subject: [PATCH 13/15] maccess: move user access routines together
+Date: Wed,  6 May 2020 08:22:21 +0200
+Message-Id: <20200506062223.30032-14-hch@lst.de>
+In-Reply-To: <20200506062223.30032-1-hch@lst.de>
+References: <20200506062223.30032-1-hch@lst.de>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -30,10 +30,10 @@ Signed-off-by: Christoph Hellwig <hch@lst.de>
  1 file changed, 55 insertions(+), 55 deletions(-)
 
 diff --git a/mm/maccess.c b/mm/maccess.c
-index 81a85c1e71165..ffde1ae86ec51 100644
+index 811f49e8de113..aa59967d9b658 100644
 --- a/mm/maccess.c
 +++ b/mm/maccess.c
-@@ -46,34 +46,6 @@ long probe_kernel_read(void *dst, const void *src, size_t size)
+@@ -47,34 +47,6 @@ long probe_kernel_read(void *dst, const void *src, size_t size)
  }
  EXPORT_SYMBOL_GPL(probe_kernel_read);
  
@@ -68,7 +68,7 @@ index 81a85c1e71165..ffde1ae86ec51 100644
  /**
   * probe_kernel_write(): safely attempt to write to a location
   * @dst: address to write to
-@@ -99,33 +71,6 @@ long probe_kernel_write(void *dst, const void *src, size_t size)
+@@ -100,33 +72,6 @@ long probe_kernel_write(void *dst, const void *src, size_t size)
  	return 0;
  }
  
@@ -100,9 +100,9 @@ index 81a85c1e71165..ffde1ae86ec51 100644
 -}
 -
  /**
-  * strncpy_from_kernel_nofault: - Copy a NUL terminated string from unsafe
+  * strncpy_from_kernel_unsafe: - Copy a NUL terminated string from unsafe
   *				 address.
-@@ -169,6 +114,61 @@ long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
+@@ -170,6 +115,61 @@ long strncpy_from_kernel_unsafe(char *dst, const void *unsafe_addr, long count)
  	return ret ? -EFAULT : src - unsafe_addr;
  }
  
@@ -162,7 +162,7 @@ index 81a85c1e71165..ffde1ae86ec51 100644
 +}
 +
  /**
-  * strncpy_from_user_nofault: - Copy a NUL terminated string from unsafe user
+  * strncpy_from_user_unsafe: - Copy a NUL terminated string from unsafe user
   *				address.
 -- 
 2.26.2
