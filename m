@@ -1,11 +1,29 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 02/15] maccess: remove various unused weak aliases
-Date: Wed,  6 May 2020 08:22:10 +0200
-Message-Id: <20200506062223.30032-3-hch@lst.de>
-In-Reply-To: <20200506062223.30032-1-hch@lst.de>
-References: <20200506062223.30032-1-hch@lst.de>
+Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jWOJH-00089u-6X
+ for linux-um@lists.infradead.org; Wed, 06 May 2020 17:58:20 +0000
+Received: by mail-lj1-x244.google.com with SMTP id l19so3338661lje.10
+ for <linux-um@lists.infradead.org>; Wed, 06 May 2020 10:58:18 -0700 (PDT)
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com.
+ [209.85.167.42])
+ by smtp.gmail.com with ESMTPSA id v4sm1717962ljj.104.2020.05.06.10.58.14
+ for <linux-um@lists.infradead.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 06 May 2020 10:58:14 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id t2so2127289lfc.3
+ for <linux-um@lists.infradead.org>; Wed, 06 May 2020 10:58:14 -0700 (PDT)
 MIME-Version: 1.0
+References: <20200506062223.30032-1-hch@lst.de>
+ <20200506062223.30032-9-hch@lst.de>
+ <CAHk-=wj3T6u_kj8r9f3aGXCjuyN210_gJC=AXPFm9=wL-dGALA@mail.gmail.com>
+ <20200506174747.GA7549@lst.de>
+In-Reply-To: <20200506174747.GA7549@lst.de>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 6 May 2020 10:57:57 -0700
+Message-ID: <CAHk-=wh_tQpDnrODW0U1kd3+BzuGtan4353fu9AfWdrpMcv3Jw@mail.gmail.com>
+Subject: Re: [PATCH 08/15] maccess: rename strnlen_unsafe_user to
+ strnlen_user_unsafe
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,101 +36,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: x86@kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-parisc@vger.kernel.org, netdev@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
+To: Christoph Hellwig <hch@lst.de>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, linux-parisc@vger.kernel.org, Netdev <netdev@vger.kernel.org>, the arch/x86 maintainers <x86@kernel.org>, linux-um <linux-um@lists.infradead.org>, Alexei Starovoitov <ast@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>, Masami Hiramatsu <mhiramat@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, bpf@vger.kernel.org
 
-maccess tends to define lots of underscore prefixed symbols that then
-have other weak aliases.  But except for two cases they are never
-actually used, so remove them.
+On Wed, May 6, 2020 at 10:47 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> > The fact that we have "probe_kernel_read()" but then
+> > "strncpy_from_user_unsafe()" for the _same_ conceptual difference
+> > really tells me how inconsistent the naming for these kinds of "we
+> > can't take page faults" is. No?
+>
+> True.  If we wanted to do _nofaul, what would the basic read/write
+> versions be?
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- include/linux/uaccess.h |  3 ---
- mm/maccess.c            | 19 +++----------------
- 2 files changed, 3 insertions(+), 19 deletions(-)
+I think "copy_to/from_kernel_nofault()" might be the most consistent
+model, if we are looking to be kind of consistent with the user access
+functions..
 
-diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
-index 67f016010aad5..a2c606a403745 100644
---- a/include/linux/uaccess.h
-+++ b/include/linux/uaccess.h
-@@ -324,7 +324,6 @@ extern long __probe_kernel_read(void *dst, const void *src, size_t size);
-  * happens, handle that and return -EFAULT.
-  */
- extern long probe_user_read(void *dst, const void __user *src, size_t size);
--extern long __probe_user_read(void *dst, const void __user *src, size_t size);
- 
- /*
-  * probe_kernel_write(): safely attempt to write to a location
-@@ -336,7 +335,6 @@ extern long __probe_user_read(void *dst, const void __user *src, size_t size);
-  * happens, handle that and return -EFAULT.
-  */
- extern long notrace probe_kernel_write(void *dst, const void *src, size_t size);
--extern long notrace __probe_kernel_write(void *dst, const void *src, size_t size);
- 
- /*
-  * probe_user_write(): safely attempt to write to a location in user space
-@@ -348,7 +346,6 @@ extern long notrace __probe_kernel_write(void *dst, const void *src, size_t size
-  * happens, handle that and return -EFAULT.
-  */
- extern long notrace probe_user_write(void __user *dst, const void *src, size_t size);
--extern long notrace __probe_user_write(void __user *dst, const void *src, size_t size);
- 
- extern long strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count);
- extern long strncpy_from_unsafe_strict(char *dst, const void *unsafe_addr,
-diff --git a/mm/maccess.c b/mm/maccess.c
-index cf21e604f78cb..4e7f3b6eb05ae 100644
---- a/mm/maccess.c
-+++ b/mm/maccess.c
-@@ -79,11 +79,7 @@ EXPORT_SYMBOL_GPL(probe_kernel_read);
-  * Safely read from user address @src to the buffer at @dst. If a kernel fault
-  * happens, handle that and return -EFAULT.
-  */
--
--long __weak probe_user_read(void *dst, const void __user *src, size_t size)
--    __attribute__((alias("__probe_user_read")));
--
--long __probe_user_read(void *dst, const void __user *src, size_t size)
-+long probe_user_read(void *dst, const void __user *src, size_t size)
- {
- 	long ret = -EFAULT;
- 	mm_segment_t old_fs = get_fs();
-@@ -106,11 +102,7 @@ EXPORT_SYMBOL_GPL(probe_user_read);
-  * Safely write to address @dst from the buffer at @src.  If a kernel fault
-  * happens, handle that and return -EFAULT.
-  */
--
--long __weak probe_kernel_write(void *dst, const void *src, size_t size)
--    __attribute__((alias("__probe_kernel_write")));
--
--long __probe_kernel_write(void *dst, const void *src, size_t size)
-+long probe_kernel_write(void *dst, const void *src, size_t size)
- {
- 	long ret;
- 	mm_segment_t old_fs = get_fs();
-@@ -131,11 +123,7 @@ long __probe_kernel_write(void *dst, const void *src, size_t size)
-  * Safely write to address @dst from the buffer at @src.  If a kernel fault
-  * happens, handle that and return -EFAULT.
-  */
--
--long __weak probe_user_write(void __user *dst, const void *src, size_t size)
--    __attribute__((alias("__probe_user_write")));
--
--long __probe_user_write(void __user *dst, const void *src, size_t size)
-+long probe_user_write(void __user *dst, const void *src, size_t size)
- {
- 	long ret = -EFAULT;
- 	mm_segment_t old_fs = get_fs();
-@@ -171,7 +159,6 @@ long __probe_user_write(void __user *dst, const void *src, size_t size)
-  * probing memory on a user address range where strncpy_from_unsafe_user() is
-  * supposed to be used instead.
-  */
--
- long __weak strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
-     __attribute__((alias("__strncpy_from_unsafe")));
- 
--- 
-2.26.2
+Unless we want to make "memcpy" be part of the name, but I think that
+we really want to have that 'from/to' part anyway, which forces the
+"copy_from/to_xyz" kind of naming.
 
+I dunno. I don't want to be too nit-picky, I just would like us to be
+more consistent and have the naming say what's up without having
+multiple different versions of the same thing.
+
+We've had this same discussion with the nvdimm case, but there the
+issues are somewhat different (faulting is ok on user addresses - you
+can sleep - but kernel address faults aren't about the _context_ any
+more, they are about the data not being safe to access any more)
+
+Anybody else?
+
+             Linus
 
 _______________________________________________
 linux-um mailing list
