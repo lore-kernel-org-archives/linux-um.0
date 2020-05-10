@@ -1,36 +1,83 @@
-Return-Path: <cmarinas@kernel.org>
-Date: Tue, 26 May 2020 18:15:17 +0100
-From: Catalin Marinas <catalin.marinas@arm.com>
-Subject: Re: [PATCH v2 08/20] arm64: simplify detection of memory zone
- boundaries for UMA configs
-Message-ID: <20200526171516.GL17051@gaia>
-References: <20200429121126.17989-1-rppt@kernel.org>
- <20200429121126.17989-9-rppt@kernel.org>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 20/31] arm,sparc,unicore32: remove flush_icache_user_range
+Date: Sun, 10 May 2020 09:54:59 +0200
+Message-Id: <20200510075510.987823-21-hch@lst.de>
+In-Reply-To: <20200510075510.987823-1-hch@lst.de>
+References: <20200510075510.987823-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200429121126.17989-9-rppt@kernel.org>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, Baoquan He <bhe@redhat.com>, Brian Cain <bcain@codeaurora.org>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, Hoan Tran <Hoan@os.amperecomputing.com>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jonathan Corbet <corbet@lwn.net>, Ley Foon Tan <ley.foon.tan@intel.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@kernel.org>, Michal Simek <monstr@monstr.eu>, Nick Hu <nickhu@andestech.com>, Paul Walmsley <paul.walmsley@sifive.com>, Qian Cai <cai@lca.pw>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, x86@kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-csky@vger.kernel.org, linux-doc@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, Mike Rapoport <rppt@linux.ibm.com>
+Content-Transfer-Encoding: 8bit
+Sender: linux-kernel-owner@vger.kernel.org
+To: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Roman Zippel <zippel@linux-m68k.org>
+Cc: Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linux-fsdevel@vger.kernel.org
 List-ID: <linux-um.lists.infradead.org>
 
-On Wed, Apr 29, 2020 at 03:11:14PM +0300, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> The free_area_init() function only requires the definition of maximal PFN
-> for each of the supported zone rater than calculation of actual zone sizes
-> and the sizes of the holes between the zones.
-> 
-> After removal of CONFIG_HAVE_MEMBLOCK_NODE_MAP the free_area_init() is
-> available to all architectures.
-> 
-> Using this function instead of free_area_init_node() simplifies the zone
-> detection.
-> 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+flush_icache_user_range is only used by <asm-generic/cacheflush.h>, so
+remove it from the architectures that implement it, but don't use
+<asm-generic/cacheflush.h>.
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ arch/arm/include/asm/cacheflush.h       | 3 ---
+ arch/sparc/include/asm/cacheflush_32.h  | 2 --
+ arch/sparc/include/asm/cacheflush_64.h  | 1 -
+ arch/unicore32/include/asm/cacheflush.h | 3 ---
+ 4 files changed, 9 deletions(-)
 
-(BTW, none of my acks so far made it to the linux-arm-kernel list
-because of the large number of people on cc)
+diff --git a/arch/arm/include/asm/cacheflush.h b/arch/arm/include/asm/cacheflush.h
+index 7114b9aa46b87..c78e14fcfb5df 100644
+--- a/arch/arm/include/asm/cacheflush.h
++++ b/arch/arm/include/asm/cacheflush.h
+@@ -318,9 +318,6 @@ extern void flush_kernel_dcache_page(struct page *);
+ #define flush_dcache_mmap_lock(mapping)		xa_lock_irq(&mapping->i_pages)
+ #define flush_dcache_mmap_unlock(mapping)	xa_unlock_irq(&mapping->i_pages)
+ 
+-#define flush_icache_user_range(vma,page,addr,len) \
+-	flush_dcache_page(page)
+-
+ /*
+  * We don't appear to need to do anything here.  In fact, if we did, we'd
+  * duplicate cache flushing elsewhere performed by flush_dcache_page().
+diff --git a/arch/sparc/include/asm/cacheflush_32.h b/arch/sparc/include/asm/cacheflush_32.h
+index fb66094a2c30c..41c6d734a4741 100644
+--- a/arch/sparc/include/asm/cacheflush_32.h
++++ b/arch/sparc/include/asm/cacheflush_32.h
+@@ -17,8 +17,6 @@
+ #define flush_icache_range(start, end)		do { } while (0)
+ #define flush_icache_page(vma, pg)		do { } while (0)
+ 
+-#define flush_icache_user_range(vma,pg,adr,len)	do { } while (0)
+-
+ #define copy_to_user_page(vma, page, vaddr, dst, src, len) \
+ 	do {							\
+ 		flush_cache_page(vma, vaddr, page_to_pfn(page));\
+diff --git a/arch/sparc/include/asm/cacheflush_64.h b/arch/sparc/include/asm/cacheflush_64.h
+index e7517434d1fa6..b9341836597ec 100644
+--- a/arch/sparc/include/asm/cacheflush_64.h
++++ b/arch/sparc/include/asm/cacheflush_64.h
+@@ -49,7 +49,6 @@ void __flush_dcache_range(unsigned long start, unsigned long end);
+ void flush_dcache_page(struct page *page);
+ 
+ #define flush_icache_page(vma, pg)	do { } while(0)
+-#define flush_icache_user_range(vma,pg,adr,len)	do { } while (0)
+ 
+ void flush_ptrace_access(struct vm_area_struct *, struct page *,
+ 			 unsigned long uaddr, void *kaddr,
+diff --git a/arch/unicore32/include/asm/cacheflush.h b/arch/unicore32/include/asm/cacheflush.h
+index 9393ca4047e93..ff0be92ebc320 100644
+--- a/arch/unicore32/include/asm/cacheflush.h
++++ b/arch/unicore32/include/asm/cacheflush.h
+@@ -162,9 +162,6 @@ extern void flush_dcache_page(struct page *);
+ #define flush_dcache_mmap_lock(mapping)		do { } while (0)
+ #define flush_dcache_mmap_unlock(mapping)	do { } while (0)
+ 
+-#define flush_icache_user_range(vma, page, addr, len)	\
+-	flush_dcache_page(page)
+-
+ /*
+  * We don't appear to need to do anything here.  In fact, if we did, we'd
+  * duplicate cache flushing elsewhere performed by flush_dcache_page().
+-- 
+2.26.2
+
 
