@@ -1,82 +1,68 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Return-Path: <linux-sh-owner@vger.kernel.org>
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 20/20] maccess: return -ERANGE when
- copy_from_kernel_nofault_allowed fails
-Date: Tue, 19 May 2020 15:44:49 +0200
-Message-Id: <20200519134449.1466624-21-hch@lst.de>
-In-Reply-To: <20200519134449.1466624-1-hch@lst.de>
-References: <20200519134449.1466624-1-hch@lst.de>
+Subject: [PATCH 17/31] openrisc: use asm-generic/cacheflush.h
+Date: Sun, 10 May 2020 09:54:56 +0200
+Message-Id: <20200510075510.987823-18-hch@lst.de>
+In-Reply-To: <20200510075510.987823-1-hch@lst.de>
+References: <20200510075510.987823-1-hch@lst.de>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: x86@kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-parisc@vger.kernel.org, netdev@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Sender: linux-sh-owner@vger.kernel.org
+To: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Roman Zippel <zippel@linux-m68k.org>
+Cc: Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linux-fsdevel@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-Allow the callers to distinguish a real unmapped address vs a range
-that can't be probed.
+OpenRISC needs almost no cache flushing routines of its own.  Rely on
+asm-generic/cacheflush.h for the defaults.
 
-Suggested-by: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- mm/maccess.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/openrisc/include/asm/cacheflush.h | 31 +++++---------------------
+ 1 file changed, 6 insertions(+), 25 deletions(-)
 
-diff --git a/mm/maccess.c b/mm/maccess.c
-index 1e7d77656c596..4010d64189d21 100644
---- a/mm/maccess.c
-+++ b/mm/maccess.c
-@@ -25,7 +25,7 @@ bool __weak copy_from_kernel_nofault_allowed(void *dst, const void *unsafe_src,
- long copy_from_kernel_nofault(void *dst, const void *src, size_t size)
- {
- 	if (!copy_from_kernel_nofault_allowed(dst, src, size))
--		return -EFAULT;
-+		return -ERANGE;
+diff --git a/arch/openrisc/include/asm/cacheflush.h b/arch/openrisc/include/asm/cacheflush.h
+index 79d5d7753fe4b..74d1fce4e8839 100644
+--- a/arch/openrisc/include/asm/cacheflush.h
++++ b/arch/openrisc/include/asm/cacheflush.h
+@@ -62,31 +62,12 @@ static inline void flush_dcache_page(struct page *page)
+ 	clear_bit(PG_dc_clean, &page->flags);
+ }
  
- 	pagefault_disable();
- 	copy_from_kernel_nofault_loop(dst, src, size, u64, Efault);
-@@ -69,7 +69,7 @@ long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
- 	if (unlikely(count <= 0))
- 		return 0;
- 	if (!copy_from_kernel_nofault_allowed(dst, unsafe_addr, count))
--		return -EFAULT;
-+		return -ERANGE;
+-/*
+- * Other interfaces are not required since we do not have virtually
+- * indexed or tagged caches. So we can use the default here.
+- */
+-#define flush_cache_all()				do { } while (0)
+-#define flush_cache_mm(mm)				do { } while (0)
+-#define flush_cache_dup_mm(mm)				do { } while (0)
+-#define flush_cache_range(vma, start, end)		do { } while (0)
+-#define flush_cache_page(vma, vmaddr, pfn)		do { } while (0)
+-#define flush_dcache_mmap_lock(mapping)			do { } while (0)
+-#define flush_dcache_mmap_unlock(mapping)		do { } while (0)
+-#define flush_icache_range(start, end)			do { } while (0)
+-#define flush_icache_page(vma, pg)			do { } while (0)
+-#define flush_icache_user_range(vma, pg, adr, len)	do { } while (0)
+-#define flush_cache_vmap(start, end)			do { } while (0)
+-#define flush_cache_vunmap(start, end)			do { } while (0)
+-
+-#define copy_to_user_page(vma, page, vaddr, dst, src, len)           \
+-	do {                                                         \
+-		memcpy(dst, src, len);                               \
+-		if (vma->vm_flags & VM_EXEC)                         \
+-			sync_icache_dcache(page);                    \
+-	} while (0)
++#define flush_icache_user_range(vma, page, addr, len)	\
++do {							\
++	if (vma->vm_flags & VM_EXEC)			\
++		sync_icache_dcache(page);		\
++} while (0)
  
- 	pagefault_disable();
- 	do {
-@@ -107,7 +107,7 @@ long copy_from_kernel_nofault(void *dst, const void *src, size_t size)
- 	mm_segment_t old_fs = get_fs();
+-#define copy_from_user_page(vma, page, vaddr, dst, src, len)         \
+-	memcpy(dst, src, len)
++#include <asm-generic/cacheflush.h>
  
- 	if (!copy_from_kernel_nofault_allowed(dst, src, size))
--		return -EFAULT;
-+		return -ERANGE;
- 
- 	set_fs(KERNEL_DS);
- 	pagefault_disable();
-@@ -174,7 +174,7 @@ long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
- 	if (unlikely(count <= 0))
- 		return 0;
- 	if (!copy_from_kernel_nofault_allowed(dst, unsafe_addr, count))
--		return -EFAULT;
-+		return -ERANGE;
- 
- 	set_fs(KERNEL_DS);
- 	pagefault_disable();
+ #endif /* __ASM_CACHEFLUSH_H */
 -- 
 2.26.2
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
