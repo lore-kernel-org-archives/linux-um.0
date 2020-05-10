@@ -1,239 +1,45 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Return-Path: <linux-sh-owner@vger.kernel.org>
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 16/23] maccess: always use strict semantics for
- probe_kernel_read
-Date: Thu, 21 May 2020 17:22:54 +0200
-Message-Id: <20200521152301.2587579-17-hch@lst.de>
-In-Reply-To: <20200521152301.2587579-1-hch@lst.de>
-References: <20200521152301.2587579-1-hch@lst.de>
+Subject: [PATCH 07/31] asm-generic: fix the inclusion guards for cacheflush.h
+Date: Sun, 10 May 2020 09:54:46 +0200
+Message-Id: <20200510075510.987823-8-hch@lst.de>
+In-Reply-To: <20200510075510.987823-1-hch@lst.de>
+References: <20200510075510.987823-1-hch@lst.de>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: x86@kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-parisc@vger.kernel.org, netdev@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Sender: linux-sh-owner@vger.kernel.org
+To: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Roman Zippel <zippel@linux-m68k.org>
+Cc: Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linux-fsdevel@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-Except for historical confusion in the kprobes/uprobes and bpf tracers,
-which has been fixed now, there is no good reason to ever allow user
-memory accesses from probe_kernel_read.  Switch probe_kernel_read to only
-read from kernel memory.
+cacheflush.h uses a somewhat to generic include guard name that clashes
+with various arch files.  Use a more specific one.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/parisc/lib/memcpy.c    |  2 +-
- arch/um/kernel/maccess.c    |  2 +-
- arch/x86/mm/maccess.c       |  9 ++-------
- include/linux/uaccess.h     |  4 +---
- kernel/trace/bpf_trace.c    |  2 +-
- kernel/trace/trace_kprobe.c |  4 ++--
- mm/maccess.c                | 40 ++++++-------------------------------
- 7 files changed, 14 insertions(+), 49 deletions(-)
+ include/asm-generic/cacheflush.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/parisc/lib/memcpy.c b/arch/parisc/lib/memcpy.c
-index 5b75c35d1da0d..94a9fe2702c2f 100644
---- a/arch/parisc/lib/memcpy.c
-+++ b/arch/parisc/lib/memcpy.c
-@@ -57,7 +57,7 @@ void * memcpy(void * dst,const void *src, size_t count)
- EXPORT_SYMBOL(raw_copy_in_user);
- EXPORT_SYMBOL(memcpy);
+diff --git a/include/asm-generic/cacheflush.h b/include/asm-generic/cacheflush.h
+index cac7404b2bdd2..906277492ec59 100644
+--- a/include/asm-generic/cacheflush.h
++++ b/include/asm-generic/cacheflush.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef __ASM_CACHEFLUSH_H
+-#define __ASM_CACHEFLUSH_H
++#ifndef _ASM_GENERIC_CACHEFLUSH_H
++#define _ASM_GENERIC_CACHEFLUSH_H
  
--bool probe_kernel_read_allowed(const void *unsafe_src, size_t size, bool strict)
-+bool probe_kernel_read_allowed(const void *unsafe_src, size_t size)
- {
- 	if ((unsigned long)unsafe_src < PAGE_SIZE)
- 		return false;
-diff --git a/arch/um/kernel/maccess.c b/arch/um/kernel/maccess.c
-index ad2c538ce497c..e929c0966696c 100644
---- a/arch/um/kernel/maccess.c
-+++ b/arch/um/kernel/maccess.c
-@@ -7,7 +7,7 @@
- #include <linux/kernel.h>
- #include <os.h>
- 
--bool probe_kernel_read_allowed(const void *src, size_t size, bool strict)
-+bool probe_kernel_read_allowed(const void *src, size_t size)
- {
- 	void *psrc = (void *)rounddown((unsigned long)src, PAGE_SIZE);
- 
-diff --git a/arch/x86/mm/maccess.c b/arch/x86/mm/maccess.c
-index a96a56ff16109..a5ed03ac9b10f 100644
---- a/arch/x86/mm/maccess.c
-+++ b/arch/x86/mm/maccess.c
-@@ -9,13 +9,10 @@ static __always_inline u64 canonical_address(u64 vaddr, u8 vaddr_bits)
- 	return ((s64)vaddr << (64 - vaddr_bits)) >> (64 - vaddr_bits);
- }
- 
--bool probe_kernel_read_allowed(const void *unsafe_src, size_t size, bool strict)
-+bool probe_kernel_read_allowed(const void *unsafe_src, size_t size)
- {
- 	unsigned long vaddr = (unsigned long)unsafe_src;
- 
--	if (!strict)
--		return true;
--
- 	/*
- 	 * Range covering the highest possible canonical userspace address
- 	 * as well as non-canonical address range. For the canonical range
-@@ -25,10 +22,8 @@ bool probe_kernel_read_allowed(const void *unsafe_src, size_t size, bool strict)
- 	       canonical_address(vaddr, boot_cpu_data.x86_virt_bits) == vaddr;
- }
- #else
--bool probe_kernel_read_allowed(const void *unsafe_src, size_t size, bool strict)
-+bool probe_kernel_read_allowed(const void *unsafe_src, size_t size)
- {
--	if (!strict)
--		return true;
- 	return (unsigned long)vaddr >= TASK_SIZE_MAX;
- }
- #endif
-diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
-index d7d98ff345b3d..58e9f3dc1cf13 100644
---- a/include/linux/uaccess.h
-+++ b/include/linux/uaccess.h
-@@ -301,11 +301,9 @@ copy_struct_from_user(void *dst, size_t ksize, const void __user *src,
- 	return 0;
- }
- 
--bool probe_kernel_read_allowed(const void *unsafe_src, size_t size,
--		bool strict);
-+bool probe_kernel_read_allowed(const void *unsafe_src, size_t size);
- 
- extern long probe_kernel_read(void *dst, const void *src, size_t size);
--extern long probe_kernel_read_strict(void *dst, const void *src, size_t size);
- extern long probe_user_read(void *dst, const void __user *src, size_t size);
- 
- extern long notrace probe_kernel_write(void *dst, const void *src, size_t size);
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 43566cd2a8180..d9781c894c38b 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -196,7 +196,7 @@ bpf_probe_read_kernel_common(void *dst, u32 size, const void *unsafe_ptr)
- 
- 	if (unlikely(ret < 0))
- 		goto fail;
--	ret = probe_kernel_read_strict(dst, unsafe_ptr, size);
-+	ret = probe_kernel_read(dst, unsafe_ptr, size);
- 	if (unlikely(ret < 0))
- 		goto fail;
- 	return ret;
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index 4aeaef53ba970..b1f21d558e454 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -1222,7 +1222,7 @@ fetch_store_strlen(unsigned long addr)
- #endif
- 
- 	do {
--		ret = probe_kernel_read_strict(&c, (u8 *)addr + len, 1);
-+		ret = probe_kernel_read(&c, (u8 *)addr + len, 1);
- 		len++;
- 	} while (c && ret == 0 && len < MAX_STRING_SIZE);
- 
-@@ -1300,7 +1300,7 @@ probe_mem_read(void *dest, void *src, size_t size)
- 	if ((unsigned long)src < TASK_SIZE)
- 		return probe_mem_read_user(dest, src, size);
- #endif
--	return probe_kernel_read_strict(dest, src, size);
-+	return probe_kernel_read(dest, src, size);
- }
- 
- /* Note that we don't verify it, since the code does not come from user space */
-diff --git a/mm/maccess.c b/mm/maccess.c
-index df82fde34307f..81a85c1e71165 100644
---- a/mm/maccess.c
-+++ b/mm/maccess.c
-@@ -6,36 +6,13 @@
+ /* Keep includes the same across arches.  */
  #include <linux/mm.h>
- #include <linux/uaccess.h>
+@@ -109,4 +109,4 @@ static inline void flush_cache_vunmap(unsigned long start, unsigned long end)
+ 	memcpy(dst, src, len)
+ #endif
  
--static long __probe_kernel_read(void *dst, const void *src, size_t size,
--		bool strict);
--
--bool __weak probe_kernel_read_allowed(const void *unsafe_src, size_t size,
--		bool strict)
-+bool __weak probe_kernel_read_allowed(const void *unsafe_src, size_t size)
- {
- 	return true;
- }
- 
- /**
-- * probe_kernel_read(): safely attempt to read from any location
-- * @dst: pointer to the buffer that shall take the data
-- * @src: address to read from
-- * @size: size of the data chunk
-- *
-- * Same as probe_kernel_read_strict() except that for architectures with
-- * not fully separated user and kernel address spaces this function also works
-- * for user address tanges.
-- *
-- * DO NOT USE THIS FUNCTION - it is broken on architectures with entirely
-- * separate kernel and user address spaces, and also a bad idea otherwise.
-- */
--long probe_kernel_read(void *dst, const void *src, size_t size)
--{
--	return __probe_kernel_read(dst, src, size, false);
--}
--EXPORT_SYMBOL_GPL(probe_kernel_read);
--
--/**
-- * probe_kernel_read_strict(): safely attempt to read from kernel-space
-+ * probe_kernel_read(): safely attempt to read from kernel-space
-  * @dst: pointer to the buffer that shall take the data
-  * @src: address to read from
-  * @size: size of the data chunk
-@@ -48,18 +25,12 @@ EXPORT_SYMBOL_GPL(probe_kernel_read);
-  * probe_kernel_read() suitable for use within regions where the caller
-  * already holds mmap_sem, or other locks which nest inside mmap_sem.
-  */
--long probe_kernel_read_strict(void *dst, const void *src, size_t size)
--{
--	return __probe_kernel_read(dst, src, size, true);
--}
--
--static long __probe_kernel_read(void *dst, const void *src, size_t size,
--		bool strict)
-+long probe_kernel_read(void *dst, const void *src, size_t size)
- {
- 	long ret;
- 	mm_segment_t old_fs = get_fs();
- 
--	if (!probe_kernel_read_allowed(src, size, strict))
-+	if (!probe_kernel_read_allowed(src, size))
- 		return -EFAULT;
- 
- 	set_fs(KERNEL_DS);
-@@ -73,6 +44,7 @@ static long __probe_kernel_read(void *dst, const void *src, size_t size,
- 		return -EFAULT;
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(probe_kernel_read);
- 
- /**
-  * probe_user_read(): safely attempt to read from a user-space location
-@@ -180,7 +152,7 @@ long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
- 
- 	if (unlikely(count <= 0))
- 		return 0;
--	if (!probe_kernel_read_allowed(unsafe_addr, count, true))
-+	if (!probe_kernel_read_allowed(unsafe_addr, count))
- 		return -EFAULT;
- 
- 	set_fs(KERNEL_DS);
+-#endif /* __ASM_CACHEFLUSH_H */
++#endif /* _ASM_GENERIC_CACHEFLUSH_H */
 -- 
 2.26.2
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
