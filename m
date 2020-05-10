@@ -1,76 +1,102 @@
-Return-Path: <linux-riscv-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org>
-From: Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH 05/12] m68k/mm/motorola: move comment about page table
- allocation funcitons
-Date: Tue, 12 May 2020 21:44:15 +0300
-Message-Id: <20200512184422.12418-6-rppt@kernel.org>
-In-Reply-To: <20200512184422.12418-1-rppt@kernel.org>
-References: <20200512184422.12418-1-rppt@kernel.org>
+Return-Path: <linux-m68k-owner@vger.kernel.org>
+From: Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 18/31] powerpc: use asm-generic/cacheflush.h
+Date: Sun, 10 May 2020 09:54:57 +0200
+Message-Id: <20200510075510.987823-19-hch@lst.de>
+In-Reply-To: <20200510075510.987823-1-hch@lst.de>
+References: <20200510075510.987823-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-riscv>,
- <mailto:linux-riscv-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-riscv/>
-List-Post: <mailto:linux-riscv@lists.infradead.org>
-List-Help: <mailto:linux-riscv-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-riscv>,
- <mailto:linux-riscv-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-riscv" <linux-riscv-bounces@lists.infradead.org>
-Errors-To: linux-riscv-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: Rich Felker <dalias@libc.org>, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Max Filippov <jcmvbkbc@gmail.com>, Guo Ren <guoren@kernel.org>, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-riscv@lists.infradead.org, Vincent Chen <deanbo422@gmail.com>, Will Deacon <will@kernel.org>, Greg Ungerer <gerg@linux-m68k.org>, linux-arch@vger.kernel.org, linux-s390@vger.kernel.org, linux-c6x-dev@linux-c6x.org, Brian Cain <bcain@codeaurora.org>, Michael Ellerman <mpe@ellerman.id.au>, Helge Deller <deller@gmx.de>, x86@kernel.org, Russell King <linux@armlinux.org.uk>, Ley Foon Tan <ley.foon.tan@intel.com>, Mike Rapoport <rppt@linux.ibm.com>, Ingo Molnar <mingo@redhat.com>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-parisc@vger.kernel.org, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Arnd Bergmann <arnd@arndb.de>, linux-alpha@vger.kernel.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>, Greentime Hu <green.hu@gmail.com>, Paul Walmsley <paul.walmsley@sifive.com>, Stafford Horne <shorne@gmail.com>, Guan Xuetao <gxt@pku.edu.cn>, linux-arm-kernel@lists.infradead.org, Chris Zankel <chris@zankel.net>, Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Yoshinori Sato <ysato@users.sourceforge.jp>, Nick Hu <nickhu@andestech.com>, linux-mm@kvack.org, Vineet Gupta <vgupta@synopsys.com>, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, Thomas Gleixner <tglx@linutronix.de>, Richard Weinberger <richard@nod.at>, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org, "David S. Miller" <davem@davemloft.net>, Mike Rapoport <rppt@kernel.org>
+Sender: linux-m68k-owner@vger.kernel.org
+To: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Roman Zippel <zippel@linux-m68k.org>
+Cc: Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linux-fsdevel@vger.kernel.org
 List-ID: <linux-um.lists.infradead.org>
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+Power needs almost no cache flushing routines of its own.  Rely on
+asm-generic/cacheflush.h for the defaults.
 
-The comment about page table allocation functions resides in
-include/asm/motorola_pgtable.h while the functions live in
-include/asm/motorola_pgaloc.h.
+Also remove the pointless __KERNEL__ ifdef while we're at it.
 
-Move the comment close to the code.
-
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/m68k/include/asm/motorola_pgalloc.h | 6 ++++++
- arch/m68k/include/asm/motorola_pgtable.h | 6 ------
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ arch/powerpc/include/asm/cacheflush.h | 42 +++++++--------------------
+ 1 file changed, 10 insertions(+), 32 deletions(-)
 
-diff --git a/arch/m68k/include/asm/motorola_pgalloc.h b/arch/m68k/include/asm/motorola_pgalloc.h
-index c66e42917912..f3cb453a07b7 100644
---- a/arch/m68k/include/asm/motorola_pgalloc.h
-+++ b/arch/m68k/include/asm/motorola_pgalloc.h
-@@ -18,6 +18,12 @@ extern void init_pointer_table(void *table, int type);
- extern void *get_pointer_table(int type);
- extern int free_pointer_table(void *table, int type);
+diff --git a/arch/powerpc/include/asm/cacheflush.h b/arch/powerpc/include/asm/cacheflush.h
+index e92191b390f31..e682c8e10e903 100644
+--- a/arch/powerpc/include/asm/cacheflush.h
++++ b/arch/powerpc/include/asm/cacheflush.h
+@@ -4,23 +4,9 @@
+ #ifndef _ASM_POWERPC_CACHEFLUSH_H
+ #define _ASM_POWERPC_CACHEFLUSH_H
  
-+/*
-+ * Allocate and free page tables. The xxx_kernel() versions are
-+ * used to allocate a kernel page table - this turns on ASN bits
-+ * if any.
-+ */
-+
- static inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm)
- {
- 	return get_pointer_table(TABLE_PTE);
-diff --git a/arch/m68k/include/asm/motorola_pgtable.h b/arch/m68k/include/asm/motorola_pgtable.h
-index 48f19f0ab1e7..9e5a3de21e15 100644
---- a/arch/m68k/include/asm/motorola_pgtable.h
-+++ b/arch/m68k/include/asm/motorola_pgtable.h
-@@ -227,12 +227,6 @@ static inline pte_t *pte_offset_kernel(pmd_t *pmdp, unsigned long address)
- #define pte_offset_map(pmdp,address) ((pte_t *)__pmd_page(*pmdp) + (((address) >> PAGE_SHIFT) & (PTRS_PER_PTE - 1)))
- #define pte_unmap(pte)		((void)0)
+-#ifdef __KERNEL__
+-
+ #include <linux/mm.h>
+ #include <asm/cputable.h>
  
 -/*
-- * Allocate and free page tables. The xxx_kernel() versions are
-- * used to allocate a kernel page table - this turns on ASN bits
-- * if any.
+- * No cache flushing is required when address mappings are changed,
+- * because the caches on PowerPCs are physically addressed.
 - */
+-#define flush_cache_all()			do { } while (0)
+-#define flush_cache_mm(mm)			do { } while (0)
+-#define flush_cache_dup_mm(mm)			do { } while (0)
+-#define flush_cache_range(vma, start, end)	do { } while (0)
+-#define flush_cache_page(vma, vmaddr, pfn)	do { } while (0)
+-#define flush_icache_page(vma, page)		do { } while (0)
+-#define flush_cache_vunmap(start, end)		do { } while (0)
 -
- /* Prior to calling these routines, the page should have been flushed
-  * from both the cache and ATC, or the CPU might not notice that the
-  * cache setting for the page has been changed. -jskov
+ #ifdef CONFIG_PPC_BOOK3S_64
+ /*
+  * Book3s has no ptesync after setting a pte, so without this ptesync it's
+@@ -33,20 +19,20 @@ static inline void flush_cache_vmap(unsigned long start, unsigned long end)
+ {
+ 	asm volatile("ptesync" ::: "memory");
+ }
+-#else
+-static inline void flush_cache_vmap(unsigned long start, unsigned long end) { }
+-#endif
++#define flush_cache_vmap flush_cache_vmap
++#endif /* CONFIG_PPC_BOOK3S_64 */
+ 
+ #define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
+ extern void flush_dcache_page(struct page *page);
+-#define flush_dcache_mmap_lock(mapping)		do { } while (0)
+-#define flush_dcache_mmap_unlock(mapping)	do { } while (0)
+ 
+ void flush_icache_range(unsigned long start, unsigned long stop);
+-extern void flush_icache_user_range(struct vm_area_struct *vma,
+-				    struct page *page, unsigned long addr,
+-				    int len);
+-extern void flush_dcache_icache_page(struct page *page);
++#define flush_icache_range flush_icache_range
++
++void flush_icache_user_range(struct vm_area_struct *vma, struct page *page,
++		unsigned long addr, int len);
++#define flush_icache_user_range flush_icache_user_range
++
++void flush_dcache_icache_page(struct page *page);
+ void __flush_dcache_icache(void *page);
+ 
+ /**
+@@ -111,14 +97,6 @@ static inline void invalidate_dcache_range(unsigned long start,
+ 	mb();	/* sync */
+ }
+ 
+-#define copy_to_user_page(vma, page, vaddr, dst, src, len) \
+-	do { \
+-		memcpy(dst, src, len); \
+-		flush_icache_user_range(vma, page, vaddr, len); \
+-	} while (0)
+-#define copy_from_user_page(vma, page, vaddr, dst, src, len) \
+-	memcpy(dst, src, len)
+-
+-#endif /* __KERNEL__ */
++#include <asm-generic/cacheflush.h>
+ 
+ #endif /* _ASM_POWERPC_CACHEFLUSH_H */
 -- 
-2.26.1
-
+2.26.2
 
 
