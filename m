@@ -1,59 +1,41 @@
-Return-Path: <linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: sort out the flush_icache_range mess
-Date: Sun, 10 May 2020 09:54:39 +0200
-Message-Id: <20200510075510.987823-1-hch@lst.de>
+Return-Path: <linux-riscv-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org>
+Date: Mon, 11 May 2020 18:01:35 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: Re: [PATCH 03/31] MIPS: unexport __flush_icache_user_range
+Message-ID: <20200511160135.GA17079@alpha.franken.de>
+References: <20200510075510.987823-1-hch@lst.de>
+ <20200510075510.987823-4-hch@lst.de>
 MIME-Version: 1.0
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org
-To: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Roman Zippel <zippel@linux-m68k.org>
-Cc: linux-arch@vger.kernel.org, linux-xtensa@linux-xtensa.org, Michal Simek <monstr@monstr.eu>, Jessica Yu <jeyu@kernel.org>, linux-ia64@vger.kernel.org, linux-c6x-dev@linux-c6x.org, linux-sh@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200510075510.987823-4-hch@lst.de>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-riscv>,
+ <mailto:linux-riscv-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-riscv/>
+List-Post: <mailto:linux-riscv@lists.infradead.org>
+List-Help: <mailto:linux-riscv-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-riscv>,
+ <mailto:linux-riscv-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-riscv" <linux-riscv-bounces@lists.infradead.org>
+Errors-To: linux-riscv-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org
+To: Christoph Hellwig <hch@lst.de>
+Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, Roman Zippel <zippel@linux-m68k.org>, linux-mips@vger.kernel.org, linux-mm@kvack.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-arch@vger.kernel.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, x86@kernel.org, linux-xtensa@linux-xtensa.org, Arnd Bergmann <arnd@arndb.de>, Jessica Yu <jeyu@kernel.org>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, Michal Simek <monstr@monstr.eu>, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-fsdevel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org
 List-ID: <linux-um.lists.infradead.org>
 
-Hi all,
+On Sun, May 10, 2020 at 09:54:42AM +0200, Christoph Hellwig wrote:
+> __flush_icache_user_range is not used in modular code, so unexport it.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  arch/mips/mm/cache.c | 1 -
+>  1 file changed, 1 deletion(-)
 
-flush_icache_range is mostly used for kernel address, except for the following
-cases:
+applied to mips-next.
 
- - the nommu brk and mmap implementations,
- - the read_code helper that is only used for binfmt_flat, binfmt_elf_fdpic,
-   and binfmt_aout including the broken ia32 compat version
- - binfmt_flat itself,
+Thomas.
 
-none of which really are used by a typical MMU enabled kernel, as a.out can
-only be build for alpha and m68k to start with.
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
 
-But strangely enough commit ae92ef8a4424 ("PATCH] flush icache in correct
-context") added a "set_fs(KERNEL_DS)" around the flush_icache_range call
-in the module loader, because apparently m68k assumed user pointers.
-
-This series first cleans up the cacheflush implementations, largely by
-switching as much as possible to the asm-generic version after a few
-preparations, then moves the misnamed current flush_icache_user_range to
-a new name, to finally introduce a real flush_icache_user_range to be used
-for the above use cases to flush the instruction cache for a userspace
-address range.  The last patch then drops the set_fs in the module code
-and moves it into the m68k implementation.
-
-A git tree is available here:
-
-    git://git.infradead.org/users/hch/misc.git flush_icache_range
-
-Gitweb:
-
-    http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/flush_icache_range
-
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
