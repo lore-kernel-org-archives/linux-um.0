@@ -1,15 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from laurent.telenet-ops.be ([2a02:1800:110:4::f00:19])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jd9VX-0002xb-0n
- for linux-um@lists.infradead.org; Mon, 25 May 2020 09:34:56 +0000
-Date: Mon, 25 May 2020 11:34:29 +0200 (CEST)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Build regressions/improvements in v5.7-rc7
-In-Reply-To: <20200525075924.23960-1-geert@linux-m68k.org>
-Message-ID: <alpine.DEB.2.21.2005251132020.9189@ramsan.of.borg>
-References: <20200525075924.23960-1-geert@linux-m68k.org>
-MIME-Version: 1.0
+ id 1jY156-0006ID-P7
+ for linux-um@lists.infradead.org; Mon, 11 May 2020 05:34:26 +0000
+Date: Mon, 11 May 2020 14:34:19 +0900
+From: Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [PATCH 11/15] maccess: remove strncpy_from_unsafe
+Message-Id: <20200511143419.7511026ba60cbf9f6843a153@kernel.org>
+In-Reply-To: <20200506062223.30032-12-hch@lst.de>
+References: <20200506062223.30032-1-hch@lst.de>
+ <20200506062223.30032-12-hch@lst.de>
+Mime-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,42 +19,222 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: linux-um@lists.infradead.org
+To: Christoph Hellwig <hch@lst.de>
+Cc: linux-parisc@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org, x86@kernel.org, linux-um@lists.infradead.org, Alexei Starovoitov <ast@kernel.org>, linux-kernel@vger.kernel.org, linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, bpf@vger.kernel.org
 
-On Mon, 25 May 2020, Geert Uytterhoeven wrote:
-> Below is the list of build error/warning regressions/improvements in
-> JFYI, when comparing v5.7-rc7[1] to v5.7-rc6[3], the summaries are:
->  - build errors: +4/-0
->  - build warnings: +0/-0
+On Wed,  6 May 2020 08:22:19 +0200
+Christoph Hellwig <hch@lst.de> wrote:
 
-   + error: modpost: "devm_ioremap" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!:  => N/A
-   + error: modpost: "devm_ioremap_resource" [drivers/net/ethernet/xilinx/xilinx_emac.ko] undefined!:  => N/A
-   + error: modpost: "devm_ioremap_resource" [drivers/ptp/ptp_ines.ko] undefined!:  => N/A
-   + error: modpost: "devm_of_iomap" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!:  => N/A
+> All three callers really should try the explicit kernel and user
+> copies instead.  One has already deprecated the somewhat dangerous
+> either kernel or user address concept, the other two still need to
+> follow up eventually.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-um-x86_64/um-all*config
+This looks good to me.
 
-Most of these are not new, but were somehow hidden in the previous
-builds.
+Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/9cb1fd0efd195590b828b9b865421ad345a4a145/ (194 out of 239 configs)
-> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/b9bbe6ed63b2b9f2c9ee5cbd0f2c946a2723f4ce/ (194 out of 239 configs)
+Thank you,
 
-Gr{oetje,eeting}s,
+> ---
+>  include/linux/uaccess.h     |  1 -
+>  kernel/trace/bpf_trace.c    | 40 ++++++++++++++++++++++++++-----------
+>  kernel/trace/trace_kprobe.c |  5 ++++-
+>  mm/maccess.c                | 39 +-----------------------------------
+>  4 files changed, 33 insertions(+), 52 deletions(-)
+> 
+> diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
+> index f8c47395a92df..09d6e358883cc 100644
+> --- a/include/linux/uaccess.h
+> +++ b/include/linux/uaccess.h
+> @@ -311,7 +311,6 @@ extern long probe_user_read(void *dst, const void __user *src, size_t size);
+>  extern long notrace probe_kernel_write(void *dst, const void *src, size_t size);
+>  extern long notrace probe_user_write(void __user *dst, const void *src, size_t size);
+>  
+> -extern long strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count);
+>  extern long strncpy_from_kernel_unsafe(char *dst, const void *unsafe_addr,
+>  				       long count);
+>  extern long strncpy_from_user_unsafe(char *dst, const void __user *unsafe_addr,
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index e4e202f433903..ffe841433caa1 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -229,9 +229,10 @@ bpf_probe_read_kernel_str_common(void *dst, u32 size, const void *unsafe_ptr,
+>  	int ret = security_locked_down(LOCKDOWN_BPF_READ);
+>  
+>  	if (unlikely(ret < 0))
+> -		goto out;
+> +		goto fail;
+> +
+>  	/*
+> -	 * The strncpy_from_unsafe_*() call will likely not fill the entire
+> +	 * The strncpy_from_*_unsafe() call will likely not fill the entire
+>  	 * buffer, but that's okay in this circumstance as we're probing
+>  	 * arbitrary memory anyway similar to bpf_probe_read_*() and might
+>  	 * as well probe the stack. Thus, memory is explicitly cleared
+> @@ -239,11 +240,18 @@ bpf_probe_read_kernel_str_common(void *dst, u32 size, const void *unsafe_ptr,
+>  	 * code altogether don't copy garbage; otherwise length of string
+>  	 * is returned that can be used for bpf_perf_event_output() et al.
+>  	 */
+> -	ret = compat ? strncpy_from_unsafe(dst, unsafe_ptr, size) :
+> -	      strncpy_from_kernel_unsafe(dst, unsafe_ptr, size);
+> -	if (unlikely(ret < 0))
+> -out:
+> -		memset(dst, 0, size);
+> +	ret = strncpy_from_kernel_unsafe(dst, unsafe_ptr, size);
+> +	if (unlikely(ret < 0)) {
+> +		if (compat)
+> +			ret = strncpy_from_user_unsafe(dst,
+> +					(__force const void __user *)unsafe_ptr,
+> +					size);
+> +		if (ret < 0)
+> +			goto fail;
+> +	}
+> +	return 0;
+> +fail:
+> +	memset(dst, 0, size);
+>  	return ret;
+>  }
+>  
+> @@ -321,6 +329,17 @@ static const struct bpf_func_proto *bpf_get_probe_write_proto(void)
+>  	return &bpf_probe_write_user_proto;
+>  }
+>  
+> +#define BPF_STRNCPY_LEN 64
+> +
+> +static void bpf_strncpy(char *buf, long unsafe_addr)
+> +{
+> +	buf[0] = 0;
+> +	if (strncpy_from_kernel_unsafe(buf, (void *)unsafe_addr,
+> +			BPF_STRNCPY_LEN))
+> +		strncpy_from_user_unsafe(buf, (void __user *)unsafe_addr,
+> +				BPF_STRNCPY_LEN);
+> +}
+> +
+>  /*
+>   * Only limited trace_printk() conversion specifiers allowed:
+>   * %d %i %u %x %ld %li %lu %lx %lld %lli %llu %llx %p %s
+> @@ -332,7 +351,7 @@ BPF_CALL_5(bpf_trace_printk, char *, fmt, u32, fmt_size, u64, arg1,
+>  	int mod[3] = {};
+>  	int fmt_cnt = 0;
+>  	u64 unsafe_addr;
+> -	char buf[64];
+> +	char buf[BPF_STRNCPY_LEN];
+>  	int i;
+>  
+>  	/*
+> @@ -387,10 +406,7 @@ BPF_CALL_5(bpf_trace_printk, char *, fmt, u32, fmt_size, u64, arg1,
+>  					arg3 = (long) buf;
+>  					break;
+>  				}
+> -				buf[0] = 0;
+> -				strncpy_from_unsafe(buf,
+> -						    (void *) (long) unsafe_addr,
+> -						    sizeof(buf));
+> +				bpf_strncpy(buf, unsafe_addr);
+>  			}
+>  			continue;
+>  		}
+> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+> index a7f43c7ec9880..525d12137325c 100644
+> --- a/kernel/trace/trace_kprobe.c
+> +++ b/kernel/trace/trace_kprobe.c
+> @@ -1238,7 +1238,10 @@ fetch_store_string(unsigned long addr, void *dest, void *base)
+>  	 * Try to get string again, since the string can be changed while
+>  	 * probing.
+>  	 */
+> -	ret = strncpy_from_unsafe(__dest, (void *)addr, maxlen);
+> +	ret = strncpy_from_kernel_unsafe(__dest, (void *)addr, maxlen);
+> +	if (ret < 0)
+> +		ret = strncpy_from_user_unsafe(__dest, (void __user *)addr,
+> +				maxlen);
+>  	if (ret >= 0)
+>  		*(u32 *)dest = make_data_loc(ret, __dest - base);
+>  
+> diff --git a/mm/maccess.c b/mm/maccess.c
+> index 11563129cd490..cbd9d668aa46e 100644
+> --- a/mm/maccess.c
+> +++ b/mm/maccess.c
+> @@ -8,8 +8,6 @@
+>  
+>  static long __probe_kernel_read(void *dst, const void *src, size_t size,
+>  		bool strict);
+> -static long __strncpy_from_unsafe(char *dst, const void *unsafe_addr,
+> -		long count, bool strict);
+>  
+>  bool __weak probe_kernel_read_allowed(void *dst, const void *unsafe_src,
+>  		size_t size, bool strict)
+> @@ -156,35 +154,6 @@ long probe_user_write(void __user *dst, const void *src, size_t size)
+>  	return 0;
+>  }
+>  
+> -/**
+> - * strncpy_from_unsafe: - Copy a NUL terminated string from unsafe address.
+> - * @dst:   Destination address, in kernel space.  This buffer must be at
+> - *         least @count bytes long.
+> - * @unsafe_addr: Unsafe address.
+> - * @count: Maximum number of bytes to copy, including the trailing NUL.
+> - *
+> - * Copies a NUL-terminated string from unsafe address to kernel buffer.
+> - *
+> - * On success, returns the length of the string INCLUDING the trailing NUL.
+> - *
+> - * If access fails, returns -EFAULT (some data may have been copied
+> - * and the trailing NUL added).
+> - *
+> - * If @count is smaller than the length of the string, copies @count-1 bytes,
+> - * sets the last byte of @dst buffer to NUL and returns @count.
+> - *
+> - * Same as strncpy_from_kernel_unsafe() except that for architectures with
+> - * not fully separated user and kernel address spaces this function also works
+> - * for user address tanges.
+> - *
+> - * DO NOT USE THIS FUNCTION - it is broken on architectures with entirely
+> - * separate kernel and user address spaces, and also a bad idea otherwise.
+> - */
+> -long strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
+> -{
+> -	return __strncpy_from_unsafe(dst, unsafe_addr, count, false);
+> -}
+> -
+>  /**
+>   * strncpy_from_kernel_unsafe: - Copy a NUL terminated string from unsafe
+>   *				 address.
+> @@ -204,12 +173,6 @@ long strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
+>   * sets the last byte of @dst buffer to NUL and returns @count.
+>   */
+>  long strncpy_from_kernel_unsafe(char *dst, const void *unsafe_addr, long count)
+> -{
+> -	return __strncpy_from_unsafe(dst, unsafe_addr, count, true);
+> -}
+> -
+> -static long __strncpy_from_unsafe(char *dst, const void *unsafe_addr,
+> -		long count, bool strict)
+>  {
+>  	mm_segment_t old_fs = get_fs();
+>  	const void *src = unsafe_addr;
+> @@ -217,7 +180,7 @@ static long __strncpy_from_unsafe(char *dst, const void *unsafe_addr,
+>  
+>  	if (unlikely(count <= 0))
+>  		return 0;
+> -	if (!probe_kernel_read_allowed(dst, unsafe_addr, count, strict))
+> +	if (!probe_kernel_read_allowed(dst, unsafe_addr, count, true))
+>  		return -EFAULT;
+>  
+>  	set_fs(KERNEL_DS);
+> -- 
+> 2.26.2
+> 
 
- 						Geert
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
- 							    -- Linus Torvalds
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
 
 _______________________________________________
 linux-um mailing list
