@@ -1,151 +1,32 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Return-Path: <linux-m68k-owner@vger.kernel.org>
+Date: Mon, 11 May 2020 17:15:35 +0200
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 09/18] maccess: remove probe_read_common and probe_write_common
-Date: Wed, 13 May 2020 18:00:29 +0200
-Message-Id: <20200513160038.2482415-10-hch@lst.de>
-In-Reply-To: <20200513160038.2482415-1-hch@lst.de>
-References: <20200513160038.2482415-1-hch@lst.de>
+Subject: Re: [PATCH 02/31] arm64: fix the flush_icache_range arguments in
+ machine_kexec
+Message-ID: <20200511151535.GC28634@lst.de>
+References: <20200510075510.987823-1-hch@lst.de> <20200510075510.987823-3-hch@lst.de> <20200511075115.GA16134@willie-the-truck> <20200511110014.GA19176@gaia>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: x86@kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-parisc@vger.kernel.org, netdev@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200511110014.GA19176@gaia>
+Sender: linux-m68k-owner@vger.kernel.org
+To: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>, Christoph Hellwig <hch@lst.de>, james.morse@arm.com, Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Roman Zippel <zippel@linux-m68k.org>, Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linux-fsdevel@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-Each of the helpers has just two callers, which also different in
-dealing with kernel or userspace pointers.  Just open code the logic
-in the callers.
+On Mon, May 11, 2020 at 12:00:14PM +0100, Catalin Marinas wrote:
+> Anyway, I think Christoph's patch needs to go in with a fixes tag:
+> 
+> Fixes: d28f6df1305a ("arm64/kexec: Add core kexec support")
+> Cc: <stable@vger.kernel.org> # 4.8.x-
+> 
+> and we'll change these functions/helpers going forward for arm64.
+> 
+> Happy to pick this up via the arm64 for-next/fixes branch.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- mm/maccess.c | 63 ++++++++++++++++++++++++----------------------------
- 1 file changed, 29 insertions(+), 34 deletions(-)
-
-diff --git a/mm/maccess.c b/mm/maccess.c
-index e783ebfccd542..31cf6604e7fff 100644
---- a/mm/maccess.c
-+++ b/mm/maccess.c
-@@ -6,30 +6,6 @@
- #include <linux/mm.h>
- #include <linux/uaccess.h>
- 
--static __always_inline long
--probe_read_common(void *dst, const void __user *src, size_t size)
--{
--	long ret;
--
--	pagefault_disable();
--	ret = __copy_from_user_inatomic(dst, src, size);
--	pagefault_enable();
--
--	return ret ? -EFAULT : 0;
--}
--
--static __always_inline long
--probe_write_common(void __user *dst, const void *src, size_t size)
--{
--	long ret;
--
--	pagefault_disable();
--	ret = __copy_to_user_inatomic(dst, src, size);
--	pagefault_enable();
--
--	return ret ? -EFAULT : 0;
--}
--
- /**
-  * probe_kernel_read(): safely attempt to read from any location
-  * @dst: pointer to the buffer that shall take the data
-@@ -69,10 +45,15 @@ long __probe_kernel_read(void *dst, const void *src, size_t size)
- 	mm_segment_t old_fs = get_fs();
- 
- 	set_fs(KERNEL_DS);
--	ret = probe_read_common(dst, (__force const void __user *)src, size);
-+	pagefault_disable();
-+	ret = __copy_from_user_inatomic(dst, (__force const void __user *)src,
-+			size);
-+	pagefault_enable();
- 	set_fs(old_fs);
- 
--	return ret;
-+	if (ret)
-+		return -EFAULT;
-+	return 0;
- }
- EXPORT_SYMBOL_GPL(probe_kernel_read);
- 
-@@ -91,11 +72,16 @@ long probe_user_read(void *dst, const void __user *src, size_t size)
- 	mm_segment_t old_fs = get_fs();
- 
- 	set_fs(USER_DS);
--	if (access_ok(src, size))
--		ret = probe_read_common(dst, src, size);
-+	if (access_ok(src, size)) {
-+		pagefault_disable();
-+		ret = __copy_from_user_inatomic(dst, src, size);
-+		pagefault_enable();
-+	}
- 	set_fs(old_fs);
- 
--	return ret;
-+	if (ret)
-+		return -EFAULT;
-+	return 0;
- }
- EXPORT_SYMBOL_GPL(probe_user_read);
- 
-@@ -114,10 +100,14 @@ long probe_kernel_write(void *dst, const void *src, size_t size)
- 	mm_segment_t old_fs = get_fs();
- 
- 	set_fs(KERNEL_DS);
--	ret = probe_write_common((__force void __user *)dst, src, size);
-+	pagefault_disable();
-+	ret = __copy_to_user_inatomic((__force void __user *)dst, src, size);
-+	pagefault_enable();
- 	set_fs(old_fs);
- 
--	return ret;
-+	if (ret)
-+		return -EFAULT;
-+	return 0;
- }
- 
- /**
-@@ -135,11 +125,16 @@ long probe_user_write(void __user *dst, const void *src, size_t size)
- 	mm_segment_t old_fs = get_fs();
- 
- 	set_fs(USER_DS);
--	if (access_ok(dst, size))
--		ret = probe_write_common(dst, src, size);
-+	if (access_ok(dst, size)) {
-+		pagefault_disable();
-+		ret = __copy_to_user_inatomic(dst, src, size);
-+		pagefault_enable();
-+	}
- 	set_fs(old_fs);
- 
--	return ret;
-+	if (ret)
-+		return -EFAULT;
-+	return 0;
- }
- 
- /**
--- 
-2.26.2
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+Please do, there are no dependencies on it in this series (I originally
+planned to switch flush_icache_range to pass a kernel pointer + len
+instead of the strange unsigned long start and end.  That still looks
+very useful, but the series already is way too large, so I'm going to
+defer that change for another merge window).
 
