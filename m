@@ -1,182 +1,87 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 14/23] tracing/kprobes: handle mixed kernel/userspace probes
- better
-Date: Thu, 21 May 2020 17:22:52 +0200
-Message-Id: <20200521152301.2587579-15-hch@lst.de>
-In-Reply-To: <20200521152301.2587579-1-hch@lst.de>
-References: <20200521152301.2587579-1-hch@lst.de>
+Return-Path: <linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org>
+Subject: Re: [PATCH 16/31] m68knommu: use asm-generic/cacheflush.h
+References: <20200510075510.987823-1-hch@lst.de>
+ <20200510075510.987823-17-hch@lst.de>
+From: Greg Ungerer <gerg@linux-m68k.org>
+Message-ID: <fb98853b-c02a-a682-443e-2ae62d0502d9@linux-m68k.org>
+Date: Wed, 13 May 2020 00:44:59 +1000
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20200510075510.987823-17-hch@lst.de>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: x86@kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-parisc@vger.kernel.org, netdev@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org
+To: Christoph Hellwig <hch@lst.de>, Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Roman Zippel <zippel@linux-m68k.org>
+Cc: linux-arch@vger.kernel.org, linux-xtensa@linux-xtensa.org, Michal Simek <monstr@monstr.eu>, Jessica Yu <jeyu@kernel.org>, linux-ia64@vger.kernel.org, linux-c6x-dev@linux-c6x.org, linux-sh@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+List-ID: <linux-um.lists.infradead.org>
 
-Instead of using the dangerous probe_kernel_read and strncpy_from_unsafe
-helpers, rework probes to try a user probe based on the address if the
-architecture has a common address space for kernel and userspace.
+Hi Christoph,
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- kernel/trace/trace_kprobe.c | 72 ++++++++++++++++++++++---------------
- 1 file changed, 43 insertions(+), 29 deletions(-)
+On 10/5/20 5:54 pm, Christoph Hellwig wrote:
+> m68knommu needs almost no cache flushing routines of its own.  Rely on
+> asm-generic/cacheflush.h for the defaults.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index 4325f9e7fadaa..4aeaef53ba970 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -1200,6 +1200,15 @@ static const struct file_operations kprobe_profile_ops = {
- 
- /* Kprobe specific fetch functions */
- 
-+/* Return the length of string -- including null terminal byte */
-+static nokprobe_inline int
-+fetch_store_strlen_user(unsigned long addr)
-+{
-+	const void __user *uaddr =  (__force const void __user *)addr;
-+
-+	return strnlen_user_nofault(uaddr, MAX_STRING_SIZE);
-+}
-+
- /* Return the length of string -- including null terminal byte */
- static nokprobe_inline int
- fetch_store_strlen(unsigned long addr)
-@@ -1207,30 +1216,27 @@ fetch_store_strlen(unsigned long addr)
- 	int ret, len = 0;
- 	u8 c;
- 
-+#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
-+	if (addr < TASK_SIZE)
-+		return fetch_store_strlen_user(addr);
-+#endif
-+
- 	do {
--		ret = probe_kernel_read(&c, (u8 *)addr + len, 1);
-+		ret = probe_kernel_read_strict(&c, (u8 *)addr + len, 1);
- 		len++;
- 	} while (c && ret == 0 && len < MAX_STRING_SIZE);
- 
- 	return (ret < 0) ? ret : len;
- }
- 
--/* Return the length of string -- including null terminal byte */
--static nokprobe_inline int
--fetch_store_strlen_user(unsigned long addr)
--{
--	const void __user *uaddr =  (__force const void __user *)addr;
--
--	return strnlen_user_nofault(uaddr, MAX_STRING_SIZE);
--}
--
- /*
-- * Fetch a null-terminated string. Caller MUST set *(u32 *)buf with max
-- * length and relative data location.
-+ * Fetch a null-terminated string from user. Caller MUST set *(u32 *)buf
-+ * with max length and relative data location.
-  */
- static nokprobe_inline int
--fetch_store_string(unsigned long addr, void *dest, void *base)
-+fetch_store_string_user(unsigned long addr, void *dest, void *base)
- {
-+	const void __user *uaddr =  (__force const void __user *)addr;
- 	int maxlen = get_loc_len(*(u32 *)dest);
- 	void *__dest;
- 	long ret;
-@@ -1240,11 +1246,7 @@ fetch_store_string(unsigned long addr, void *dest, void *base)
- 
- 	__dest = get_loc_data(dest, base);
- 
--	/*
--	 * Try to get string again, since the string can be changed while
--	 * probing.
--	 */
--	ret = strncpy_from_unsafe(__dest, (void *)addr, maxlen);
-+	ret = strncpy_from_user_nofault(__dest, uaddr, maxlen);
- 	if (ret >= 0)
- 		*(u32 *)dest = make_data_loc(ret, __dest - base);
- 
-@@ -1252,35 +1254,37 @@ fetch_store_string(unsigned long addr, void *dest, void *base)
- }
- 
- /*
-- * Fetch a null-terminated string from user. Caller MUST set *(u32 *)buf
-- * with max length and relative data location.
-+ * Fetch a null-terminated string. Caller MUST set *(u32 *)buf with max
-+ * length and relative data location.
-  */
- static nokprobe_inline int
--fetch_store_string_user(unsigned long addr, void *dest, void *base)
-+fetch_store_string(unsigned long addr, void *dest, void *base)
- {
--	const void __user *uaddr =  (__force const void __user *)addr;
- 	int maxlen = get_loc_len(*(u32 *)dest);
- 	void *__dest;
- 	long ret;
- 
-+#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
-+	if ((unsigned long)addr < TASK_SIZE)
-+		return fetch_store_string_user(addr, dest, base);
-+#endif
-+
- 	if (unlikely(!maxlen))
- 		return -ENOMEM;
- 
- 	__dest = get_loc_data(dest, base);
- 
--	ret = strncpy_from_user_nofault(__dest, uaddr, maxlen);
-+	/*
-+	 * Try to get string again, since the string can be changed while
-+	 * probing.
-+	 */
-+	ret = strncpy_from_user_nofault(__dest, (void *)addr, maxlen);
- 	if (ret >= 0)
- 		*(u32 *)dest = make_data_loc(ret, __dest - base);
- 
- 	return ret;
- }
- 
--static nokprobe_inline int
--probe_mem_read(void *dest, void *src, size_t size)
--{
--	return probe_kernel_read(dest, src, size);
--}
--
- static nokprobe_inline int
- probe_mem_read_user(void *dest, void *src, size_t size)
- {
-@@ -1289,6 +1293,16 @@ probe_mem_read_user(void *dest, void *src, size_t size)
- 	return probe_user_read(dest, uaddr, size);
- }
- 
-+static nokprobe_inline int
-+probe_mem_read(void *dest, void *src, size_t size)
-+{
-+#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
-+	if ((unsigned long)src < TASK_SIZE)
-+		return probe_mem_read_user(dest, src, size);
-+#endif
-+	return probe_kernel_read_strict(dest, src, size);
-+}
-+
- /* Note that we don't verify it, since the code does not come from user space */
- static int
- process_fetch_insn(struct fetch_insn *code, struct pt_regs *regs, void *dest,
--- 
-2.26.2
+Acked-by: Greg Ungerer <gerg@linux-m68k.org>
 
+Regards
+Greg
+
+
+> ---
+>   arch/m68k/include/asm/cacheflush_no.h | 19 ++-----------------
+>   1 file changed, 2 insertions(+), 17 deletions(-)
+> 
+> diff --git a/arch/m68k/include/asm/cacheflush_no.h b/arch/m68k/include/asm/cacheflush_no.h
+> index 11e9a9dcbfb24..2731f07e7be8c 100644
+> --- a/arch/m68k/include/asm/cacheflush_no.h
+> +++ b/arch/m68k/include/asm/cacheflush_no.h
+> @@ -9,25 +9,8 @@
+>   #include <asm/mcfsim.h>
+>   
+>   #define flush_cache_all()			__flush_cache_all()
+> -#define flush_cache_mm(mm)			do { } while (0)
+> -#define flush_cache_dup_mm(mm)			do { } while (0)
+> -#define flush_cache_range(vma, start, end)	do { } while (0)
+> -#define flush_cache_page(vma, vmaddr)		do { } while (0)
+>   #define flush_dcache_range(start, len)		__flush_dcache_all()
+> -#define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
+> -#define flush_dcache_page(page)			do { } while (0)
+> -#define flush_dcache_mmap_lock(mapping)		do { } while (0)
+> -#define flush_dcache_mmap_unlock(mapping)	do { } while (0)
+>   #define flush_icache_range(start, len)		__flush_icache_all()
+> -#define flush_icache_page(vma,pg)		do { } while (0)
+> -#define flush_icache_user_range(vma,pg,adr,len)	do { } while (0)
+> -#define flush_cache_vmap(start, end)		do { } while (0)
+> -#define flush_cache_vunmap(start, end)		do { } while (0)
+> -
+> -#define copy_to_user_page(vma, page, vaddr, dst, src, len) \
+> -	memcpy(dst, src, len)
+> -#define copy_from_user_page(vma, page, vaddr, dst, src, len) \
+> -	memcpy(dst, src, len)
+>   
+>   void mcf_cache_push(void);
+>   
+> @@ -98,4 +81,6 @@ static inline void cache_clear(unsigned long paddr, int len)
+>   	__clear_cache_all();
+>   }
+>   
+> +#include <asm-generic/cacheflush.h>
+> +
+>   #endif /* _M68KNOMMU_CACHEFLUSH_H */
+> 
 
 _______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
