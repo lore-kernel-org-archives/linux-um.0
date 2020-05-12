@@ -1,63 +1,166 @@
-Return-Path: <linux-m68k-owner@vger.kernel.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 16/31] m68knommu: use asm-generic/cacheflush.h
-Date: Sun, 10 May 2020 09:54:55 +0200
-Message-Id: <20200510075510.987823-17-hch@lst.de>
-In-Reply-To: <20200510075510.987823-1-hch@lst.de>
-References: <20200510075510.987823-1-hch@lst.de>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from conssluserg-05.nifty.com ([210.131.2.90])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jYMpI-0000tc-5a
+ for linux-um@lists.infradead.org; Tue, 12 May 2020 04:47:33 +0000
+Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com
+ [209.85.221.171]) (authenticated)
+ by conssluserg-05.nifty.com with ESMTP id 04C4lBnl027144
+ for <linux-um@lists.infradead.org>; Tue, 12 May 2020 13:47:11 +0900
+Received: by mail-vk1-f171.google.com with SMTP id 134so1973716vky.2
+ for <linux-um@lists.infradead.org>; Mon, 11 May 2020 21:47:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: linux-m68k-owner@vger.kernel.org
-To: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Roman Zippel <zippel@linux-m68k.org>
-Cc: Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linux-fsdevel@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+References: <20200504080807.126396-1-masahiroy@kernel.org>
+ <20200504080807.126396-2-masahiroy@kernel.org>
+In-Reply-To: <20200504080807.126396-2-masahiroy@kernel.org>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Tue, 12 May 2020 13:46:34 +0900
+Message-ID: <CAK7LNAQmcUZtyYXiwPc8qet9harwtsFWUVXbznLHuYAO=VCG9w@mail.gmail.com>
+Subject: Re: [PATCH 2/2] kbuild: remove {CLEAN,MRPROPER,DISTCLEAN}_DIRS
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Cc: Michal Marek <michal.lkml@markovi.net>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-m68knommu needs almost no cache flushing routines of its own.  Rely on
-asm-generic/cacheflush.h for the defaults.
+On Mon, May 4, 2020 at 5:08 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> Merge {CLEAN,MRPROPER,DISTCLEAN}_DIRS into {CLEAN,MRPROPER,DISTCLEAN}_FILES
+> because the difference is just the -r option passed to the 'rm' command.
+>
+> Do likewise as commit 1634f2bfdb84 ("kbuild: remove clean-dirs syntax").
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- arch/m68k/include/asm/cacheflush_no.h | 19 ++-----------------
- 1 file changed, 2 insertions(+), 17 deletions(-)
+Applied to linux-kbuild.
 
-diff --git a/arch/m68k/include/asm/cacheflush_no.h b/arch/m68k/include/asm/cacheflush_no.h
-index 11e9a9dcbfb24..2731f07e7be8c 100644
---- a/arch/m68k/include/asm/cacheflush_no.h
-+++ b/arch/m68k/include/asm/cacheflush_no.h
-@@ -9,25 +9,8 @@
- #include <asm/mcfsim.h>
- 
- #define flush_cache_all()			__flush_cache_all()
--#define flush_cache_mm(mm)			do { } while (0)
--#define flush_cache_dup_mm(mm)			do { } while (0)
--#define flush_cache_range(vma, start, end)	do { } while (0)
--#define flush_cache_page(vma, vmaddr)		do { } while (0)
- #define flush_dcache_range(start, len)		__flush_dcache_all()
--#define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
--#define flush_dcache_page(page)			do { } while (0)
--#define flush_dcache_mmap_lock(mapping)		do { } while (0)
--#define flush_dcache_mmap_unlock(mapping)	do { } while (0)
- #define flush_icache_range(start, len)		__flush_icache_all()
--#define flush_icache_page(vma,pg)		do { } while (0)
--#define flush_icache_user_range(vma,pg,adr,len)	do { } while (0)
--#define flush_cache_vmap(start, end)		do { } while (0)
--#define flush_cache_vunmap(start, end)		do { } while (0)
--
--#define copy_to_user_page(vma, page, vaddr, dst, src, len) \
--	memcpy(dst, src, len)
--#define copy_from_user_page(vma, page, vaddr, dst, src, len) \
--	memcpy(dst, src, len)
- 
- void mcf_cache_push(void);
- 
-@@ -98,4 +81,6 @@ static inline void cache_clear(unsigned long paddr, int len)
- 	__clear_cache_all();
- }
- 
-+#include <asm-generic/cacheflush.h>
-+
- #endif /* _M68KNOMMU_CACHEFLUSH_H */
+
+
+
+> ---
+>
+>  Makefile         | 22 ++++++----------------
+>  arch/um/Makefile |  2 +-
+>  2 files changed, 7 insertions(+), 17 deletions(-)
+>
+> diff --git a/Makefile b/Makefile
+> index ffd80afcd0bb..8a7c931cc0d9 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -1389,14 +1389,14 @@ endif # CONFIG_MODULES
+>  # make distclean Remove editor backup files, patch leftover files and the like
+>
+>  # Directories & files removed with 'make clean'
+> -CLEAN_DIRS  += include/ksym
+> -CLEAN_FILES += modules.builtin modules.builtin.modinfo modules.nsdeps
+> +CLEAN_FILES += include/ksym \
+> +              modules.builtin modules.builtin.modinfo modules.nsdeps
+>
+>  # Directories & files removed with 'make mrproper'
+> -MRPROPER_DIRS  += include/config include/generated          \
+> +MRPROPER_FILES += include/config include/generated          \
+>                   arch/$(SRCARCH)/include/generated .tmp_objdiff \
+> -                 debian/ snap/ tar-install/
+> -MRPROPER_FILES += .config .config.old .version \
+> +                 debian snap tar-install \
+> +                 .config .config.old .version \
+>                   Module.symvers \
+>                   signing_key.pem signing_key.priv signing_key.x509     \
+>                   x509.genkey extra_certificates signing_key.x509.keyid \
+> @@ -1404,12 +1404,10 @@ MRPROPER_FILES += .config .config.old .version \
+>                   *.spec
+>
+>  # Directories & files removed with 'make distclean'
+> -DISTCLEAN_DIRS  +=
+>  DISTCLEAN_FILES += tags TAGS cscope* GPATH GTAGS GRTAGS GSYMS
+>
+>  # clean - Delete most, but leave enough to build external modules
+>  #
+> -clean: rm-dirs  := $(CLEAN_DIRS)
+>  clean: rm-files := $(CLEAN_FILES)
+>
+>  PHONY += archclean vmlinuxclean
+> @@ -1422,7 +1420,6 @@ clean: archclean vmlinuxclean
+>
+>  # mrproper - Delete all generated files, including .config
+>  #
+> -mrproper: rm-dirs  := $(wildcard $(MRPROPER_DIRS))
+>  mrproper: rm-files := $(wildcard $(MRPROPER_FILES))
+>  mrproper-dirs      := $(addprefix _mrproper_,scripts)
+>
+> @@ -1431,18 +1428,15 @@ $(mrproper-dirs):
+>         $(Q)$(MAKE) $(clean)=$(patsubst _mrproper_%,%,$@)
+>
+>  mrproper: clean $(mrproper-dirs)
+> -       $(call cmd,rmdirs)
+>         $(call cmd,rmfiles)
+>
+>  # distclean
+>  #
+> -distclean: rm-dirs  := $(wildcard $(DISTCLEAN_DIRS))
+>  distclean: rm-files := $(wildcard $(DISTCLEAN_FILES))
+>
+>  PHONY += distclean
+>
+>  distclean: mrproper
+> -       $(call cmd,rmdirs)
+>         $(call cmd,rmfiles)
+>         @find $(srctree) $(RCS_FIND_IGNORE) \
+>                 \( -name '*.orig' -o -name '*.rej' -o -name '*~' \
+> @@ -1732,7 +1726,6 @@ $(clean-dirs):
+>         $(Q)$(MAKE) $(clean)=$(patsubst _clean_%,%,$@)
+>
+>  clean: $(clean-dirs)
+> -       $(call cmd,rmdirs)
+>         $(call cmd,rmfiles)
+>         @find $(if $(KBUILD_EXTMOD), $(KBUILD_EXTMOD), .) $(RCS_FIND_IGNORE) \
+>                 \( -name '*.[aios]' -o -name '*.ko' -o -name '.*.cmd' \
+> @@ -1827,11 +1820,8 @@ tools/%: FORCE
+>         $(Q)mkdir -p $(objtree)/tools
+>         $(Q)$(MAKE) LDFLAGS= MAKEFLAGS="$(tools_silent) $(filter --j% -j,$(MAKEFLAGS))" O=$(abspath $(objtree)) subdir=tools -C $(srctree)/tools/ $*
+>
+> -quiet_cmd_rmdirs = $(if $(wildcard $(rm-dirs)),CLEAN   $(wildcard $(rm-dirs)))
+> -      cmd_rmdirs = rm -rf $(rm-dirs)
+> -
+>  quiet_cmd_rmfiles = $(if $(wildcard $(rm-files)),CLEAN   $(wildcard $(rm-files)))
+> -      cmd_rmfiles = rm -f $(rm-files)
+> +      cmd_rmfiles = rm -rf $(rm-files)
+>
+>  # Run depmod only if we have System.map and depmod is executable
+>  quiet_cmd_depmod = DEPMOD  $(KERNELRELEASE)
+> diff --git a/arch/um/Makefile b/arch/um/Makefile
+> index 275f5ffdf6f0..3f27aa3ec0a6 100644
+> --- a/arch/um/Makefile
+> +++ b/arch/um/Makefile
+> @@ -140,7 +140,7 @@ export CFLAGS_vmlinux := $(LINK-y) $(LINK_WRAPS) $(LD_FLAGS_CMDLINE)
+>  # When cleaning we don't include .config, so we don't include
+>  # TT or skas makefiles and don't clean skas_ptregs.h.
+>  CLEAN_FILES += linux x.i gmon.out
+> -MRPROPER_DIRS += arch/$(SUBARCH)/include/generated
+> +MRPROPER_FILES += arch/$(SUBARCH)/include/generated
+>
+>  archclean:
+>         @find . \( -name '*.bb' -o -name '*.bbg' -o -name '*.da' \
+> --
+> 2.25.1
+>
+
+
 -- 
-2.26.2
+Best Regards
+Masahiro Yamada
 
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
