@@ -1,134 +1,91 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 04/15] maccess: clarify kerneldoc comments
-Date: Wed,  6 May 2020 08:22:12 +0200
-Message-Id: <20200506062223.30032-5-hch@lst.de>
-In-Reply-To: <20200506062223.30032-1-hch@lst.de>
-References: <20200506062223.30032-1-hch@lst.de>
+Return-Path: <rppt@kernel.org>
+From: Mike Rapoport <rppt@kernel.org>
+Subject: [PATCH 04/12] csky: replace definitions of __pXd_offset() with pXd_index()
+Date: Tue, 12 May 2020 21:44:14 +0300
+Message-Id: <20200512184422.12418-5-rppt@kernel.org>
+In-Reply-To: <20200512184422.12418-1-rppt@kernel.org>
+References: <20200512184422.12418-1-rppt@kernel.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: x86@kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-parisc@vger.kernel.org, netdev@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+To: linux-kernel@vger.kernel.org
+Cc: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@codeaurora.org>, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@redhat.com>, Ley Foon Tan <ley.foon.tan@intel.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, Mike Rapoport <rppt@kernel.org>, Nick Hu <nickhu@andestech.com>, Paul Walmsley <paul.walmsley@sifive.com>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, Vincent Chen <deanbo422@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Will Deacon <will@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, x86@kernel.org, Mike Rapoport <rppt@linux.ibm.com>
+List-ID: <linux-um.lists.infradead.org>
 
-Add proper kerneldoc comments for probe_kernel_read_strict and
-probe_kernel_read strncpy_from_unsafe_strict and explain the different
-versus the non-strict version.
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+All architectures use pXd_index() to get an entry in the page table page
+corresponding to a virtual address.
+
+Align csky with other architectures.
+
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
- mm/maccess.c | 61 ++++++++++++++++++++++++++++++++++++----------------
- 1 file changed, 43 insertions(+), 18 deletions(-)
+ arch/csky/include/asm/pgtable.h | 5 ++---
+ arch/csky/mm/fault.c            | 2 +-
+ arch/csky/mm/highmem.c          | 2 +-
+ arch/csky/mm/init.c             | 6 +++---
+ 4 files changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/mm/maccess.c b/mm/maccess.c
-index 4e7f3b6eb05ae..747581ac50dc9 100644
---- a/mm/maccess.c
-+++ b/mm/maccess.c
-@@ -31,29 +31,35 @@ probe_write_common(void __user *dst, const void *src, size_t size)
+diff --git a/arch/csky/include/asm/pgtable.h b/arch/csky/include/asm/pgtable.h
+index 9d2d16db237d..2eff4aea51b3 100644
+--- a/arch/csky/include/asm/pgtable.h
++++ b/arch/csky/include/asm/pgtable.h
+@@ -229,9 +229,8 @@ static inline pte_t pte_mkyoung(pte_t pte)
+ 	return pte;
  }
  
- /**
-- * probe_kernel_read(): safely attempt to read from a kernel-space location
-+ * probe_kernel_read(): safely attempt to read from any location
-  * @dst: pointer to the buffer that shall take the data
-  * @src: address to read from
-  * @size: size of the data chunk
-  *
-- * Safely read from address @src to the buffer at @dst.  If a kernel fault
-- * happens, handle that and return -EFAULT.
-+ * Same as probe_kernel_read_strict() except that for architectures with
-+ * not fully separated user and kernel address spaces this function also works
-+ * for user address tanges.
-+ *
-+ * DO NOT USE THIS FUNCTION - it is broken on architectures with entirely
-+ * separate kernel and user address spaces, and also a bad idea otherwise.
-+ */
-+long __weak probe_kernel_read(void *dst, const void *src, size_t size)
-+    __attribute__((alias("__probe_kernel_read")));
-+
-+/**
-+ * probe_kernel_read_strict(): safely attempt to read from kernel-space
-+ * @dst: pointer to the buffer that shall take the data
-+ * @src: address to read from
-+ * @size: size of the data chunk
-+ *
-+ * Safely read from kernel address @src to the buffer at @dst.  If a kernel
-+ * fault happens, handle that and return -EFAULT.
-  *
-  * We ensure that the copy_from_user is executed in atomic context so that
-  * do_page_fault() doesn't attempt to take mmap_sem.  This makes
-  * probe_kernel_read() suitable for use within regions where the caller
-  * already holds mmap_sem, or other locks which nest inside mmap_sem.
-- *
-- * probe_kernel_read_strict() is the same as probe_kernel_read() except for
-- * the case where architectures have non-overlapping user and kernel address
-- * ranges: probe_kernel_read_strict() will additionally return -EFAULT for
-- * probing memory on a user address range where probe_user_read() is supposed
-- * to be used instead.
-  */
--
--long __weak probe_kernel_read(void *dst, const void *src, size_t size)
--    __attribute__((alias("__probe_kernel_read")));
--
- long __weak probe_kernel_read_strict(void *dst, const void *src, size_t size)
-     __attribute__((alias("__probe_kernel_read")));
+-#define __pgd_offset(address)	pgd_index(address)
+-#define __pud_offset(address)	(((address) >> PUD_SHIFT) & (PTRS_PER_PUD-1))
+-#define __pmd_offset(address)	(((address) >> PMD_SHIFT) & (PTRS_PER_PMD-1))
++#define pud_index(address)	(((address) >> PUD_SHIFT) & (PTRS_PER_PUD-1))
++#define pmd_index(address)	(((address) >> PMD_SHIFT) & (PTRS_PER_PMD-1))
  
-@@ -153,15 +159,34 @@ long probe_user_write(void __user *dst, const void *src, size_t size)
-  * If @count is smaller than the length of the string, copies @count-1 bytes,
-  * sets the last byte of @dst buffer to NUL and returns @count.
-  *
-- * strncpy_from_unsafe_strict() is the same as strncpy_from_unsafe() except
-- * for the case where architectures have non-overlapping user and kernel address
-- * ranges: strncpy_from_unsafe_strict() will additionally return -EFAULT for
-- * probing memory on a user address range where strncpy_from_unsafe_user() is
-- * supposed to be used instead.
-+ * Same as strncpy_from_unsafe_strict() except that for architectures with
-+ * not fully separated user and kernel address spaces this function also works
-+ * for user address tanges.
-+ *
-+ * DO NOT USE THIS FUNCTION - it is broken on architectures with entirely
-+ * separate kernel and user address spaces, and also a bad idea otherwise.
-  */
- long __weak strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
-     __attribute__((alias("__strncpy_from_unsafe")));
+ /* to find an entry in a kernel page-table-directory */
+ #define pgd_offset_k(address)	pgd_offset(&init_mm, address)
+diff --git a/arch/csky/mm/fault.c b/arch/csky/mm/fault.c
+index 4e6dc68f3258..4055d430c0c8 100644
+--- a/arch/csky/mm/fault.c
++++ b/arch/csky/mm/fault.c
+@@ -78,7 +78,7 @@ asmlinkage void do_page_fault(struct pt_regs *regs, unsigned long write,
+ 		 * Do _not_ use "tsk" here. We might be inside
+ 		 * an interrupt in the middle of a task switch..
+ 		 */
+-		int offset = __pgd_offset(address);
++		int offset = pgd_index(address);
+ 		pgd_t *pgd, *pgd_k;
+ 		pud_t *pud, *pud_k;
+ 		pmd_t *pmd, *pmd_k;
+diff --git a/arch/csky/mm/highmem.c b/arch/csky/mm/highmem.c
+index 3b3f622f5ae9..89ec32e602a1 100644
+--- a/arch/csky/mm/highmem.c
++++ b/arch/csky/mm/highmem.c
+@@ -92,7 +92,7 @@ static void __init kmap_pages_init(void)
+ 	vaddr = PKMAP_BASE;
+ 	fixrange_init(vaddr, vaddr + PAGE_SIZE*LAST_PKMAP, swapper_pg_dir);
  
-+/**
-+ * strncpy_from_unsafe_strict: - Copy a NUL terminated string from unsafe
-+ *				 address.
-+ * @dst:   Destination address, in kernel space.  This buffer must be at
-+ *         least @count bytes long.
-+ * @unsafe_addr: Unsafe address.
-+ * @count: Maximum number of bytes to copy, including the trailing NUL.
-+ *
-+ * Copies a NUL-terminated string from unsafe address to kernel buffer.
-+ *
-+ * On success, returns the length of the string INCLUDING the trailing NUL.
-+ *
-+ * If access fails, returns -EFAULT (some data may have been copied
-+ * and the trailing NUL added).
-+ *
-+ * If @count is smaller than the length of the string, copies @count-1 bytes,
-+ * sets the last byte of @dst buffer to NUL and returns @count.
-+ */
- long __weak strncpy_from_unsafe_strict(char *dst, const void *unsafe_addr,
- 				       long count)
-     __attribute__((alias("__strncpy_from_unsafe")));
+-	pgd = swapper_pg_dir + __pgd_offset(vaddr);
++	pgd = swapper_pg_dir + pgd_index(vaddr);
+ 	pud = (pud_t *)pgd;
+ 	pmd = pmd_offset(pud, vaddr);
+ 	pte = pte_offset_kernel(pmd, vaddr);
+diff --git a/arch/csky/mm/init.c b/arch/csky/mm/init.c
+index eda2b4291485..af627128314f 100644
+--- a/arch/csky/mm/init.c
++++ b/arch/csky/mm/init.c
+@@ -157,9 +157,9 @@ void __init fixrange_init(unsigned long start, unsigned long end,
+ 	unsigned long vaddr;
+ 
+ 	vaddr = start;
+-	i = __pgd_offset(vaddr);
+-	j = __pud_offset(vaddr);
+-	k = __pmd_offset(vaddr);
++	i = pgd_index(vaddr);
++	j = pud_index(vaddr);
++	k = pmd_index(vaddr);
+ 	pgd = pgd_base + i;
+ 
+ 	for ( ; (i < PTRS_PER_PGD) && (vaddr != end); pgd++, i++) {
 -- 
-2.26.2
+2.26.1
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
