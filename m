@@ -1,27 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-lj1-x242.google.com ([2a00:1450:4864:20::242])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jYxBH-0002Dg-Jd
- for linux-um@lists.infradead.org; Wed, 13 May 2020 19:36:40 +0000
-Received: by mail-lj1-x242.google.com with SMTP id u15so916583ljd.3
- for <linux-um@lists.infradead.org>; Wed, 13 May 2020 12:36:38 -0700 (PDT)
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com.
- [209.85.208.175])
- by smtp.gmail.com with ESMTPSA id z8sm315253lfb.44.2020.05.13.12.36.34
- for <linux-um@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 13 May 2020 12:36:35 -0700 (PDT)
-Received: by mail-lj1-f175.google.com with SMTP id u15so916372ljd.3
- for <linux-um@lists.infradead.org>; Wed, 13 May 2020 12:36:34 -0700 (PDT)
-MIME-Version: 1.0
+From: Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 14/18] maccess: allow architectures to provide kernel probing
+ directly
+Date: Wed, 13 May 2020 18:00:34 +0200
+Message-Id: <20200513160038.2482415-15-hch@lst.de>
+In-Reply-To: <20200513160038.2482415-1-hch@lst.de>
 References: <20200513160038.2482415-1-hch@lst.de>
- <20200513160038.2482415-15-hch@lst.de>
-In-Reply-To: <20200513160038.2482415-15-hch@lst.de>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Wed, 13 May 2020 12:36:18 -0700
-Message-ID: <CAHk-=wgzXqgYQQt2NCdZTtxLmV1FV1nbZ_gKw0O_mRkXZj57zg@mail.gmail.com>
-Subject: Re: [PATCH 14/18] maccess: allow architectures to provide kernel
- probing directly
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -34,56 +19,116 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Christoph Hellwig <hch@lst.de>
-Cc: Daniel Borkmann <daniel@iogearbox.net>, linux-parisc@vger.kernel.org, Netdev <netdev@vger.kernel.org>, the arch/x86 maintainers <x86@kernel.org>, linux-um <linux-um@lists.infradead.org>, Alexei Starovoitov <ast@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>, Masami Hiramatsu <mhiramat@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, bpf@vger.kernel.org
+To: x86@kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-parisc@vger.kernel.org, netdev@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
 
-On Wed, May 13, 2020 at 9:01 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> +               arch_kernel_read(dst, src, type, err_label);            \
+Provide alternative versions of probe_kernel_read, probe_kernel_write
+and strncpy_from_kernel_unsafe that don't need set_fs magic, but instead
+use arch hooks that are modelled after unsafe_{get,put}_user to access
+kernel memory in an exception safe way.
 
-I'm wondering if
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ mm/maccess.c | 76 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 76 insertions(+)
 
- (a) we shouldn't expose this as an interface in general
+diff --git a/mm/maccess.c b/mm/maccess.c
+index 9773e2253b495..e9efe2f98e34a 100644
+--- a/mm/maccess.c
++++ b/mm/maccess.c
+@@ -12,6 +12,81 @@ bool __weak probe_kernel_read_allowed(void *dst, const void *unsafe_src,
+ 	return true;
+ }
+ 
++#ifdef HAVE_ARCH_PROBE_KERNEL
++
++#define probe_kernel_read_loop(dst, src, len, type, err_label)		\
++	while (len >= sizeof(type)) {					\
++		arch_kernel_read(dst, src, type, err_label);		\
++		dst += sizeof(type);					\
++		src += sizeof(type);					\
++		len -= sizeof(type);					\
++	}
++
++long probe_kernel_read(void *dst, const void *src, size_t size)
++{
++	if (!probe_kernel_read_allowed(dst, src, size))
++		return -EFAULT;
++
++	pagefault_disable();
++	probe_kernel_read_loop(dst, src, size, u64, Efault);
++	probe_kernel_read_loop(dst, src, size, u32, Efault);
++	probe_kernel_read_loop(dst, src, size, u16, Efault);
++	probe_kernel_read_loop(dst, src, size, u8, Efault);
++	pagefault_enable();
++	return 0;
++Efault:
++	pagefault_enable();
++	return -EFAULT;
++}
++EXPORT_SYMBOL_GPL(probe_kernel_read);
++
++#define probe_kernel_write_loop(dst, src, len, type, err_label)		\
++	while (len >= sizeof(type)) {					\
++		arch_kernel_write(dst, src, type, err_label);		\
++		dst += sizeof(type);					\
++		src += sizeof(type);					\
++		len -= sizeof(type);					\
++	}
++
++long probe_kernel_write(void *dst, const void *src, size_t size)
++{
++	pagefault_disable();
++	probe_kernel_write_loop(dst, src, size, u64, Efault);
++	probe_kernel_write_loop(dst, src, size, u32, Efault);
++	probe_kernel_write_loop(dst, src, size, u16, Efault);
++	probe_kernel_write_loop(dst, src, size, u8, Efault);
++	pagefault_enable();
++	return 0;
++Efault:
++	pagefault_enable();
++	return -EFAULT;
++}
++
++long strncpy_from_kernel_unsafe(char *dst, const void *unsafe_addr, long count)
++{
++	const void *src = unsafe_addr;
++
++	if (unlikely(count <= 0))
++		return 0;
++	if (!probe_kernel_read_allowed(dst, unsafe_addr, count))
++		return -EFAULT;
++
++	pagefault_disable();
++	do {
++		arch_kernel_read(dst, src, u8, Efault);
++		dst++;
++		src++;
++	} while (dst[-1] && src - unsafe_addr < count);
++	pagefault_enable();
++
++	dst[-1] = '\0';
++	return src - unsafe_addr;
++Efault:
++	pagefault_enable();
++	dst[-1] = '\0';
++	return -EFAULT;
++}
++#else /* HAVE_ARCH_PROBE_KERNEL */
+ /**
+  * probe_kernel_read(): safely attempt to read from kernel-space
+  * @dst: pointer to the buffer that shall take the data
+@@ -114,6 +189,7 @@ long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
+ 
+ 	return ret ? -EFAULT : src - unsafe_addr;
+ }
++#endif /* HAVE_ARCH_PROBE_KERNEL */
+ 
+ /**
+  * probe_user_read(): safely attempt to read from a user-space location
+-- 
+2.26.2
 
- (b) it wouldn't be named differently..
-
-The reason for (a) is that several users of the
-"copy_from_kernel_nofault()" interfaces just seem to want a single
-access from kernel mode.
-
-The reason for (b) is that if we do expose this as a normal interface,
-it shouldn't be called "arch_kernel_read", and it should have the same
-semantics as "get_user_unsafe()".
-
-IOW, maybe we should simply do exactly that: have a
-"get_kernel_nofault()" thing that looks exactly like
-unsafe_get_user().
-
-On x86, it would basically be identical to unsafe_get_user().
-
-And on architectures that only have the copy function, you'd just have
-a fallback something like this:
-
-  #define get_kernel_nofault(dst, src, err_label) do {  \
-        typeof (*src) __gkn_result;                     \
-        if (probe_kernel_read(&__gkn_result, src) < 0)  \
-                goto err_label;                         \
-        (dst) = __gkn_result;                           \
-  } while (0)
-
-and now the people who want to read a single kernel word can just do
-
-        get_kernel_nofault(n, untrusted_pointer, error);
-
-and they're done.
-
-And some day - when we get reliably "asm goto" wiith outputs - that
-"get_kernel_fault()" will literally be a single instruction asm with
-the proper exception handler marker, the way "put_user_unsafe()"
-already works (and the way "put_kernel_nofault()" would already work
-if it does the above).
-
-             Linus
 
 _______________________________________________
 linux-um mailing list
