@@ -1,25 +1,9 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-lj1-x243.google.com ([2a00:1450:4864:20::243])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jYxC8-0002Jh-P1
- for linux-um@lists.infradead.org; Wed, 13 May 2020 19:37:34 +0000
-Received: by mail-lj1-x243.google.com with SMTP id b6so940157ljj.1
- for <linux-um@lists.infradead.org>; Wed, 13 May 2020 12:37:32 -0700 (PDT)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com.
- [209.85.167.47])
- by smtp.gmail.com with ESMTPSA id b4sm318245lfo.33.2020.05.13.12.37.28
- for <linux-um@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 13 May 2020 12:37:29 -0700 (PDT)
-Received: by mail-lf1-f47.google.com with SMTP id d22so506917lfm.11
- for <linux-um@lists.infradead.org>; Wed, 13 May 2020 12:37:28 -0700 (PDT)
+From: Christoph Hellwig <hch@lst.de>
+Subject: clean up and streamline probe_kernel_* and friends v2
+Date: Wed, 13 May 2020 18:00:20 +0200
+Message-Id: <20200513160038.2482415-1-hch@lst.de>
 MIME-Version: 1.0
-References: <20200513160038.2482415-1-hch@lst.de>
-In-Reply-To: <20200513160038.2482415-1-hch@lst.de>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Wed, 13 May 2020 12:37:12 -0700
-Message-ID: <CAHk-=wghd2efrE_DoJaC7nTkpCC1gPGp+xbNY7KWOE-7sa4h0Q@mail.gmail.com>
-Subject: Re: clean up and streamline probe_kernel_* and friends v2
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -32,21 +16,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Christoph Hellwig <hch@lst.de>
-Cc: Daniel Borkmann <daniel@iogearbox.net>, linux-parisc@vger.kernel.org, Netdev <netdev@vger.kernel.org>, the arch/x86 maintainers <x86@kernel.org>, linux-um <linux-um@lists.infradead.org>, Alexei Starovoitov <ast@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>, Masami Hiramatsu <mhiramat@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, bpf@vger.kernel.org
+To: x86@kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-parisc@vger.kernel.org, netdev@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
 
-On Wed, May 13, 2020 at 9:00 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> this series start cleaning up the safe kernel and user memory probing
-> helpers in mm/maccess.c, and then allows architectures to implement
-> the kernel probing without overriding the address space limit and
-> temporarily allowing access to user memory.  It then switches x86
-> over to this new mechanism by reusing the unsafe_* uaccess logic.
+Hi all,
 
-Ok, I think I found a bug, and I had one more suggestion, but other
-than the two emails I sent this all looks like an improvement to me.
+this series start cleaning up the safe kernel and user memory probing
+helpers in mm/maccess.c, and then allows architectures to implement
+the kernel probing without overriding the address space limit and
+temporarily allowing access to user memory.  It then switches x86
+over to this new mechanism by reusing the unsafe_* uaccess logic.
 
-                 Linus
+This version also switches to the saner copy_{from,to}_kernel_nofault
+naming suggested by Linus.
+
+I kept the x86 helprs as-is without calling unsage_{get,put}_user as
+that avoids a number of hard to trace casts, and it will still work
+with the asm-goto based version easily.
 
 _______________________________________________
 linux-um mailing list
