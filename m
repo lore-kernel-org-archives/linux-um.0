@@ -1,311 +1,134 @@
-Return-Path: <rppt@kernel.org>
-From: Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH v2 11/12] mm: consolidate pud_index() and pud_offset() definitions
-Date: Thu, 14 May 2020 20:03:26 +0300
-Message-Id: <20200514170327.31389-12-rppt@kernel.org>
-In-Reply-To: <20200514170327.31389-1-rppt@kernel.org>
-References: <20200514170327.31389-1-rppt@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+From: Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 04/18] maccess: clarify kerneldoc comments
+Date: Wed, 13 May 2020 18:00:24 +0200
+Message-Id: <20200513160038.2482415-5-hch@lst.de>
+In-Reply-To: <20200513160038.2482415-1-hch@lst.de>
+References: <20200513160038.2482415-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-kernel@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@codeaurora.org>, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@redhat.com>, Ley Foon Tan <ley.foon.tan@intel.com>, Mark Salter <msalter@redhat.com>, Matthew Wilcox <willy@infradead.org>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, Mike Rapoport <rppt@kernel.org>, Nick Hu <nickhu@andestech.com>, Paul Walmsley <paul.walmsley@sifive.com>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, Vincent Chen <deanbo422@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Will Deacon <will@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, x86@kernel.org, Mike Rapoport <rppt@linux.ibm.com>
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: x86@kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-parisc@vger.kernel.org, netdev@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+Add proper kerneldoc comments for probe_kernel_read_strict and
+probe_kernel_read strncpy_from_unsafe_strict and explain the different
+versus the non-strict version.
 
-All architectures that have at least four-level page tables define
-pud_offset() as an entry in the array of PUDs indexed by the pud_index(),
-where pud_index() is
-
-	(address >> PUD_SHIFT) & (PTRS_PER_PUD - 1)
-
-For the most architectures the pud_offset() implementation relies on
-the availability of pud_page_vaddr() that converts a PUD entry value to the
-virtual address of the page containing PUD array.
-
-Let's use such implementation as a generic and drop most of the definitions
-of pud_index() and pud_offset() in <asm/pgtable.h> files.
-
-The architectures that didn't provide pud_page_vaddr() are updated to
-have that defined.
-
-The generic implementation can be overridden by an architecture and this
-ability is currently in use by there architectures:
-* s390 has custom definitions of all page table accessors
-
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/arm64/include/asm/pgtable.h                |  8 +++++---
- arch/csky/include/asm/pgtable.h                 |  2 --
- arch/ia64/include/asm/pgtable.h                 |  6 ------
- arch/mips/include/asm/pgtable-32.h              |  1 -
- arch/mips/include/asm/pgtable-64.h              |  7 -------
- arch/powerpc/include/asm/book3s/64/pgtable.h    |  4 ----
- arch/powerpc/include/asm/nohash/64/pgtable-4k.h |  4 ----
- arch/s390/include/asm/pgtable.h                 |  1 +
- arch/sh/include/asm/pgtable_32.h                |  2 --
- arch/sh/include/asm/pgtable_64.h                |  2 --
- arch/sparc/include/asm/pgtable_64.h             |  5 -----
- arch/x86/include/asm/pgtable.h                  | 11 -----------
- include/asm-generic/pgtable-nopud.h             |  1 +
- include/linux/pgtable.h                         | 16 ++++++++++++++++
- 14 files changed, 23 insertions(+), 47 deletions(-)
+ mm/maccess.c | 61 ++++++++++++++++++++++++++++++++++++----------------
+ 1 file changed, 43 insertions(+), 18 deletions(-)
 
-diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index d0175335a2f2..c0155814b374 100644
---- a/arch/arm64/include/asm/pgtable.h
-+++ b/arch/arm64/include/asm/pgtable.h
-@@ -626,11 +626,13 @@ static inline phys_addr_t p4d_page_paddr(p4d_t p4d)
- 	return __p4d_to_phys(p4d);
+diff --git a/mm/maccess.c b/mm/maccess.c
+index 4e7f3b6eb05ae..747581ac50dc9 100644
+--- a/mm/maccess.c
++++ b/mm/maccess.c
+@@ -31,29 +31,35 @@ probe_write_common(void __user *dst, const void *src, size_t size)
  }
  
--/* Find an entry in the frst-level page table. */
--#define pud_index(addr)		(((addr) >> PUD_SHIFT) & (PTRS_PER_PUD - 1))
-+static inline unsigned long p4d_page_vaddr(p4d_t p4d)
-+{
-+	return (unsigned long)__va(p4d_page_paddr(p4d));
-+}
- 
-+/* Find an entry in the frst-level page table. */
- #define pud_offset_phys(dir, addr)	(p4d_page_paddr(READ_ONCE(*(dir))) + pud_index(addr) * sizeof(pud_t))
--#define pud_offset(dir, addr)		((pud_t *)__va(pud_offset_phys((dir), (addr))))
- 
- #define pud_set_fixmap(addr)		((pud_t *)set_fixmap_offset(FIX_PUD, addr))
- #define pud_set_fixmap_offset(p4d, addr)	pud_set_fixmap(pud_offset_phys(p4d, addr))
-diff --git a/arch/csky/include/asm/pgtable.h b/arch/csky/include/asm/pgtable.h
-index dc613f20e2e1..c5ab20970857 100644
---- a/arch/csky/include/asm/pgtable.h
-+++ b/arch/csky/include/asm/pgtable.h
-@@ -220,8 +220,6 @@ static inline pte_t pte_mkyoung(pte_t pte)
- 	return pte;
- }
- 
--#define pud_index(address)	(((address) >> PUD_SHIFT) & (PTRS_PER_PUD-1))
--
- /* to find an entry in a kernel page-table-directory */
- #define pgd_offset_k(address)	pgd_offset(&init_mm, address)
- 
-diff --git a/arch/ia64/include/asm/pgtable.h b/arch/ia64/include/asm/pgtable.h
-index d75d981e6ee1..4c24e5e18bff 100644
---- a/arch/ia64/include/asm/pgtable.h
-+++ b/arch/ia64/include/asm/pgtable.h
-@@ -383,12 +383,6 @@ pgd_offset (const struct mm_struct *mm, unsigned long address)
-    here.  */
- #define pgd_offset_gate(mm, addr)	pgd_offset_k(addr)
- 
--#if CONFIG_PGTABLE_LEVELS == 4
--/* Find an entry in the second-level page table.. */
--#define pud_offset(dir,addr) \
--	((pud_t *) p4d_page_vaddr(*(dir)) + (((addr) >> PUD_SHIFT) & (PTRS_PER_PUD - 1)))
--#endif
--
- /* atomic versions of the some PTE manipulations: */
- 
- static inline int
-diff --git a/arch/mips/include/asm/pgtable-32.h b/arch/mips/include/asm/pgtable-32.h
-index 05b51c344939..9c0e7a5ffc75 100644
---- a/arch/mips/include/asm/pgtable-32.h
-+++ b/arch/mips/include/asm/pgtable-32.h
-@@ -199,7 +199,6 @@ static inline pte_t pfn_pte(unsigned long pfn, pgprot_t prot)
- #define pgd_offset_k(address) pgd_offset(&init_mm, address)
- 
- #define pgd_index(address)	(((address) >> PGDIR_SHIFT) & (PTRS_PER_PGD-1))
--#define pud_index(address)	(((address) >> PUD_SHIFT) & (PTRS_PER_PUD-1))
- 
- /* to find an entry in a page-table-directory */
- #define pgd_offset(mm, addr)	((mm)->pgd + pgd_index(addr))
-diff --git a/arch/mips/include/asm/pgtable-64.h b/arch/mips/include/asm/pgtable-64.h
-index 21fb55510d35..38170fdac5bf 100644
---- a/arch/mips/include/asm/pgtable-64.h
-+++ b/arch/mips/include/asm/pgtable-64.h
-@@ -172,8 +172,6 @@
- 
- extern pte_t invalid_pte_table[PTRS_PER_PTE];
- 
--#define pud_index(address)	(((address) >> PUD_SHIFT) & (PTRS_PER_PUD - 1))
--
- #ifndef __PAGETABLE_PUD_FOLDED
- /*
-  * For 4-level pagetables we defines these ourselves, for 3-level the
-@@ -222,11 +220,6 @@ static inline unsigned long p4d_page_vaddr(p4d_t p4d)
- 
- #define p4d_index(address)	(((address) >> P4D_SHIFT) & (PTRS_PER_P4D - 1))
- 
--static inline pud_t *pud_offset(p4d_t *p4d, unsigned long address)
--{
--	return (pud_t *)p4d_page_vaddr(*p4d) + pud_index(address);
--}
--
- static inline void set_p4d(p4d_t *p4d, p4d_t p4dval)
- {
- 	*p4d = p4dval;
-diff --git a/arch/powerpc/include/asm/book3s/64/pgtable.h b/arch/powerpc/include/asm/book3s/64/pgtable.h
-index fbb5d12c6214..fffe28d52c02 100644
---- a/arch/powerpc/include/asm/book3s/64/pgtable.h
-+++ b/arch/powerpc/include/asm/book3s/64/pgtable.h
-@@ -1009,7 +1009,6 @@ extern struct page *p4d_page(p4d_t p4d);
- #define p4d_page_vaddr(p4d)	__va(p4d_val(p4d) & ~P4D_MASKED_BITS)
- 
- #define pgd_index(address) (((address) >> (PGDIR_SHIFT)) & (PTRS_PER_PGD - 1))
--#define pud_index(address) (((address) >> (PUD_SHIFT)) & (PTRS_PER_PUD - 1))
- 
- /*
-  * Find an entry in a page-table-directory.  We combine the address region
-@@ -1018,9 +1017,6 @@ extern struct page *p4d_page(p4d_t p4d);
- 
- #define pgd_offset(mm, address)	 ((mm)->pgd + pgd_index(address))
- 
--#define pud_offset(p4dp, addr)	\
--	(((pud_t *) p4d_page_vaddr(*(p4dp))) + pud_index(addr))
--
- /* to find an entry in a kernel page-table-directory */
- /* This now only contains the vmalloc pages */
- #define pgd_offset_k(address) pgd_offset(&init_mm, address)
-diff --git a/arch/powerpc/include/asm/nohash/64/pgtable-4k.h b/arch/powerpc/include/asm/nohash/64/pgtable-4k.h
-index 81b1c54e3cf1..fe2f4c9acd9e 100644
---- a/arch/powerpc/include/asm/nohash/64/pgtable-4k.h
-+++ b/arch/powerpc/include/asm/nohash/64/pgtable-4k.h
-@@ -78,10 +78,6 @@ extern struct page *p4d_page(p4d_t p4d);
- 
- #endif /* !__ASSEMBLY__ */
- 
--#define pud_offset(p4dp, addr)	\
--  (((pud_t *) p4d_page_vaddr(*(p4dp))) + \
--    (((addr) >> PUD_SHIFT) & (PTRS_PER_PUD - 1)))
--
- #define pud_ERROR(e) \
- 	pr_err("%s:%d: bad pud %08lx.\n", __FILE__, __LINE__, pud_val(e))
- 
-diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
-index c162e50c7689..e1eef67a0877 100644
---- a/arch/s390/include/asm/pgtable.h
-+++ b/arch/s390/include/asm/pgtable.h
-@@ -1274,6 +1274,7 @@ static inline pud_t *pud_offset(p4d_t *p4d, unsigned long address)
- 		return (pud_t *) p4d_deref(*p4d) + pud_index(address);
- 	return (pud_t *) p4d;
- }
-+#define pud_offset pud_offset
- 
- static inline pmd_t *pmd_offset(pud_t *pud, unsigned long address)
- {
-diff --git a/arch/sh/include/asm/pgtable_32.h b/arch/sh/include/asm/pgtable_32.h
-index 3023943ce731..ccc032e89f75 100644
---- a/arch/sh/include/asm/pgtable_32.h
-+++ b/arch/sh/include/asm/pgtable_32.h
-@@ -415,8 +415,6 @@ static inline unsigned long pmd_page_vaddr(pmd_t pmd)
- /* to find an entry in a kernel page-table-directory */
- #define pgd_offset_k(address)	pgd_offset(&init_mm, address)
- 
--#define pud_index(address)	(((address) >> PUD_SHIFT) & (PTRS_PER_PUD-1))
--
- #ifdef CONFIG_X2TLB
- #define pte_ERROR(e) \
- 	printk("%s:%d: bad pte %p(%08lx%08lx).\n", __FILE__, __LINE__, \
-diff --git a/arch/sh/include/asm/pgtable_64.h b/arch/sh/include/asm/pgtable_64.h
-index 8d5948f92caf..60aef1191784 100644
---- a/arch/sh/include/asm/pgtable_64.h
-+++ b/arch/sh/include/asm/pgtable_64.h
-@@ -51,8 +51,6 @@ static __inline__ void set_pte(pte_t *pteptr, pte_t pteval)
- /* To find an entry in a kernel PGD. */
- #define pgd_offset_k(address) pgd_offset(&init_mm, address)
- 
--#define pud_index(address)	(((address) >> PUD_SHIFT) & (PTRS_PER_PUD-1))
--
- /*
-  * PMD level access routines. Same notes as above.
-  */
-diff --git a/arch/sparc/include/asm/pgtable_64.h b/arch/sparc/include/asm/pgtable_64.h
-index 2da1cec60f4e..f546ea46d41b 100644
---- a/arch/sparc/include/asm/pgtable_64.h
-+++ b/arch/sparc/include/asm/pgtable_64.h
-@@ -896,11 +896,6 @@ static inline unsigned long pud_pfn(pud_t pud)
- /* to find an entry in a kernel page-table-directory */
- #define pgd_offset_k(address) pgd_offset(&init_mm, address)
- 
--/* Find an entry in the third-level page table.. */
--#define pud_index(address)	(((address) >> PUD_SHIFT) & (PTRS_PER_PUD - 1))
--#define pud_offset(p4dp, address)	\
--	((pud_t *) p4d_page_vaddr(*(p4dp)) + pud_index(address))
--
- /* We cannot include <linux/mm_types.h> at this point yet: */
- extern struct mm_struct init_mm;
- 
-diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
-index 35e3bf86df20..97efdc62e740 100644
---- a/arch/x86/include/asm/pgtable.h
-+++ b/arch/x86/include/asm/pgtable.h
-@@ -895,11 +895,6 @@ static inline int pud_large(pud_t pud)
- }
- #endif	/* CONFIG_PGTABLE_LEVELS > 2 */
- 
--static inline unsigned long pud_index(unsigned long address)
--{
--	return (address >> PUD_SHIFT) & (PTRS_PER_PUD - 1);
--}
--
- #if CONFIG_PGTABLE_LEVELS > 3
- static inline int p4d_none(p4d_t p4d)
- {
-@@ -922,12 +917,6 @@ static inline unsigned long p4d_page_vaddr(p4d_t p4d)
-  */
- #define p4d_page(p4d)	pfn_to_page(p4d_pfn(p4d))
- 
--/* Find an entry in the third-level page table.. */
--static inline pud_t *pud_offset(p4d_t *p4d, unsigned long address)
--{
--	return (pud_t *)p4d_page_vaddr(*p4d) + pud_index(address);
--}
--
- static inline int p4d_bad(p4d_t p4d)
- {
- 	unsigned long ignore_flags = _KERNPG_TABLE | _PAGE_USER;
-diff --git a/include/asm-generic/pgtable-nopud.h b/include/asm-generic/pgtable-nopud.h
-index ad05c1684bfc..a9d751fbda9e 100644
---- a/include/asm-generic/pgtable-nopud.h
-+++ b/include/asm-generic/pgtable-nopud.h
-@@ -43,6 +43,7 @@ static inline pud_t *pud_offset(p4d_t *p4d, unsigned long address)
- {
- 	return (pud_t *)p4d;
- }
-+#define pud_offset pud_offset
- 
- #define pud_val(x)				(p4d_val((x).p4d))
- #define __pud(x)				((pud_t) { __p4d(x) })
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index f114b51bef18..09b86ce20a65 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -53,6 +53,14 @@ static inline unsigned long pmd_index(unsigned long address)
- #define pmd_index pmd_index
- #endif
- 
-+#ifndef pud_index
-+static inline unsigned long pud_index(unsigned long address)
-+{
-+	return (address >> PUD_SHIFT) & (PTRS_PER_PUD - 1);
-+}
-+#define pud_index pud_index
-+#endif
+ /**
+- * probe_kernel_read(): safely attempt to read from a kernel-space location
++ * probe_kernel_read(): safely attempt to read from any location
+  * @dst: pointer to the buffer that shall take the data
+  * @src: address to read from
+  * @size: size of the data chunk
+  *
+- * Safely read from address @src to the buffer at @dst.  If a kernel fault
+- * happens, handle that and return -EFAULT.
++ * Same as probe_kernel_read_strict() except that for architectures with
++ * not fully separated user and kernel address spaces this function also works
++ * for user address tanges.
++ *
++ * DO NOT USE THIS FUNCTION - it is broken on architectures with entirely
++ * separate kernel and user address spaces, and also a bad idea otherwise.
++ */
++long __weak probe_kernel_read(void *dst, const void *src, size_t size)
++    __attribute__((alias("__probe_kernel_read")));
 +
- #ifndef pte_offset_kernel
- static inline pte_t *pte_offset_kernel(pmd_t *pmd, unsigned long address)
- {
-@@ -80,6 +88,14 @@ static inline pmd_t *pmd_offset(pud_t *pud, unsigned long address)
- #define pmd_offset pmd_offset
- #endif
++/**
++ * probe_kernel_read_strict(): safely attempt to read from kernel-space
++ * @dst: pointer to the buffer that shall take the data
++ * @src: address to read from
++ * @size: size of the data chunk
++ *
++ * Safely read from kernel address @src to the buffer at @dst.  If a kernel
++ * fault happens, handle that and return -EFAULT.
+  *
+  * We ensure that the copy_from_user is executed in atomic context so that
+  * do_page_fault() doesn't attempt to take mmap_sem.  This makes
+  * probe_kernel_read() suitable for use within regions where the caller
+  * already holds mmap_sem, or other locks which nest inside mmap_sem.
+- *
+- * probe_kernel_read_strict() is the same as probe_kernel_read() except for
+- * the case where architectures have non-overlapping user and kernel address
+- * ranges: probe_kernel_read_strict() will additionally return -EFAULT for
+- * probing memory on a user address range where probe_user_read() is supposed
+- * to be used instead.
+  */
+-
+-long __weak probe_kernel_read(void *dst, const void *src, size_t size)
+-    __attribute__((alias("__probe_kernel_read")));
+-
+ long __weak probe_kernel_read_strict(void *dst, const void *src, size_t size)
+     __attribute__((alias("__probe_kernel_read")));
  
-+#ifndef pud_offset
-+static inline pud_t *pud_offset(p4d_t *p4d, unsigned long address)
-+{
-+	return (pud_t *)p4d_page_vaddr(*p4d) + pud_index(address);
-+}
-+#define pud_offset pud_offset
-+#endif
-+
- /*
-  * In many cases it is known that a virtual address is mapped at PMD or PTE
-  * level, so instead of traversing all the page table levels, we can get a
+@@ -153,15 +159,34 @@ long probe_user_write(void __user *dst, const void *src, size_t size)
+  * If @count is smaller than the length of the string, copies @count-1 bytes,
+  * sets the last byte of @dst buffer to NUL and returns @count.
+  *
+- * strncpy_from_unsafe_strict() is the same as strncpy_from_unsafe() except
+- * for the case where architectures have non-overlapping user and kernel address
+- * ranges: strncpy_from_unsafe_strict() will additionally return -EFAULT for
+- * probing memory on a user address range where strncpy_from_unsafe_user() is
+- * supposed to be used instead.
++ * Same as strncpy_from_unsafe_strict() except that for architectures with
++ * not fully separated user and kernel address spaces this function also works
++ * for user address tanges.
++ *
++ * DO NOT USE THIS FUNCTION - it is broken on architectures with entirely
++ * separate kernel and user address spaces, and also a bad idea otherwise.
+  */
+ long __weak strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
+     __attribute__((alias("__strncpy_from_unsafe")));
+ 
++/**
++ * strncpy_from_unsafe_strict: - Copy a NUL terminated string from unsafe
++ *				 address.
++ * @dst:   Destination address, in kernel space.  This buffer must be at
++ *         least @count bytes long.
++ * @unsafe_addr: Unsafe address.
++ * @count: Maximum number of bytes to copy, including the trailing NUL.
++ *
++ * Copies a NUL-terminated string from unsafe address to kernel buffer.
++ *
++ * On success, returns the length of the string INCLUDING the trailing NUL.
++ *
++ * If access fails, returns -EFAULT (some data may have been copied
++ * and the trailing NUL added).
++ *
++ * If @count is smaller than the length of the string, copies @count-1 bytes,
++ * sets the last byte of @dst buffer to NUL and returns @count.
++ */
+ long __weak strncpy_from_unsafe_strict(char *dst, const void *unsafe_addr,
+ 				       long count)
+     __attribute__((alias("__strncpy_from_unsafe")));
 -- 
 2.26.2
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
