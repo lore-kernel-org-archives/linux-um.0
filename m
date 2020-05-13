@@ -1,77 +1,121 @@
-Return-Path: <linux-sh-owner@vger.kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 10/31] alpha: use asm-generic/cacheflush.h
-Date: Sun, 10 May 2020 09:54:49 +0200
-Message-Id: <20200510075510.987823-11-hch@lst.de>
-In-Reply-To: <20200510075510.987823-1-hch@lst.de>
-References: <20200510075510.987823-1-hch@lst.de>
+Subject: [PATCH 02/18] maccess: remove various unused weak aliases
+Date: Wed, 13 May 2020 18:00:22 +0200
+Message-Id: <20200513160038.2482415-3-hch@lst.de>
+In-Reply-To: <20200513160038.2482415-1-hch@lst.de>
+References: <20200513160038.2482415-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: linux-sh-owner@vger.kernel.org
-To: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Roman Zippel <zippel@linux-m68k.org>
-Cc: Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linux-fsdevel@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: x86@kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-parisc@vger.kernel.org, netdev@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
 
-Alpha needs almost no cache flushing routines of its own.  Rely on
-asm-generic/cacheflush.h for the defaults.
+maccess tends to define lots of underscore prefixed symbols that then
+have other weak aliases.  But except for two cases they are never
+actually used, so remove them.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/alpha/include/asm/cacheflush.h | 28 ++++++----------------------
- 1 file changed, 6 insertions(+), 22 deletions(-)
+ include/linux/uaccess.h |  3 ---
+ mm/maccess.c            | 19 +++----------------
+ 2 files changed, 3 insertions(+), 19 deletions(-)
 
-diff --git a/arch/alpha/include/asm/cacheflush.h b/arch/alpha/include/asm/cacheflush.h
-index 89128489cb598..636d7ca0d05f6 100644
---- a/arch/alpha/include/asm/cacheflush.h
-+++ b/arch/alpha/include/asm/cacheflush.h
-@@ -4,19 +4,6 @@
+diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
+index 67f016010aad5..a2c606a403745 100644
+--- a/include/linux/uaccess.h
++++ b/include/linux/uaccess.h
+@@ -324,7 +324,6 @@ extern long __probe_kernel_read(void *dst, const void *src, size_t size);
+  * happens, handle that and return -EFAULT.
+  */
+ extern long probe_user_read(void *dst, const void __user *src, size_t size);
+-extern long __probe_user_read(void *dst, const void __user *src, size_t size);
  
- #include <linux/mm.h>
+ /*
+  * probe_kernel_write(): safely attempt to write to a location
+@@ -336,7 +335,6 @@ extern long __probe_user_read(void *dst, const void __user *src, size_t size);
+  * happens, handle that and return -EFAULT.
+  */
+ extern long notrace probe_kernel_write(void *dst, const void *src, size_t size);
+-extern long notrace __probe_kernel_write(void *dst, const void *src, size_t size);
  
--/* Caches aren't brain-dead on the Alpha. */
--#define flush_cache_all()			do { } while (0)
--#define flush_cache_mm(mm)			do { } while (0)
--#define flush_cache_dup_mm(mm)			do { } while (0)
--#define flush_cache_range(vma, start, end)	do { } while (0)
--#define flush_cache_page(vma, vmaddr, pfn)	do { } while (0)
--#define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
--#define flush_dcache_page(page)			do { } while (0)
--#define flush_dcache_mmap_lock(mapping)		do { } while (0)
--#define flush_dcache_mmap_unlock(mapping)	do { } while (0)
--#define flush_cache_vmap(start, end)		do { } while (0)
--#define flush_cache_vunmap(start, end)		do { } while (0)
+ /*
+  * probe_user_write(): safely attempt to write to a location in user space
+@@ -348,7 +346,6 @@ extern long notrace __probe_kernel_write(void *dst, const void *src, size_t size
+  * happens, handle that and return -EFAULT.
+  */
+ extern long notrace probe_user_write(void __user *dst, const void *src, size_t size);
+-extern long notrace __probe_user_write(void __user *dst, const void *src, size_t size);
+ 
+ extern long strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count);
+ extern long strncpy_from_unsafe_strict(char *dst, const void *unsafe_addr,
+diff --git a/mm/maccess.c b/mm/maccess.c
+index cf21e604f78cb..4e7f3b6eb05ae 100644
+--- a/mm/maccess.c
++++ b/mm/maccess.c
+@@ -79,11 +79,7 @@ EXPORT_SYMBOL_GPL(probe_kernel_read);
+  * Safely read from user address @src to the buffer at @dst. If a kernel fault
+  * happens, handle that and return -EFAULT.
+  */
 -
- /* Note that the following two definitions are _highly_ dependent
-    on the contexts in which they are used in the kernel.  I personally
-    think it is criminal how loosely defined these macros are.  */
-@@ -59,20 +46,17 @@ flush_icache_user_range(struct vm_area_struct *vma, struct page *page,
- 			mm->context[smp_processor_id()] = 0;
- 	}
- }
--#else
-+#define flush_icache_user_range flush_icache_user_range
-+#else /* CONFIG_SMP */
- extern void flush_icache_user_range(struct vm_area_struct *vma,
- 		struct page *page, unsigned long addr, int len);
--#endif
-+#define flush_icache_user_range flush_icache_user_range
-+#endif /* CONFIG_SMP */
+-long __weak probe_user_read(void *dst, const void __user *src, size_t size)
+-    __attribute__((alias("__probe_user_read")));
+-
+-long __probe_user_read(void *dst, const void __user *src, size_t size)
++long probe_user_read(void *dst, const void __user *src, size_t size)
+ {
+ 	long ret = -EFAULT;
+ 	mm_segment_t old_fs = get_fs();
+@@ -106,11 +102,7 @@ EXPORT_SYMBOL_GPL(probe_user_read);
+  * Safely write to address @dst from the buffer at @src.  If a kernel fault
+  * happens, handle that and return -EFAULT.
+  */
+-
+-long __weak probe_kernel_write(void *dst, const void *src, size_t size)
+-    __attribute__((alias("__probe_kernel_write")));
+-
+-long __probe_kernel_write(void *dst, const void *src, size_t size)
++long probe_kernel_write(void *dst, const void *src, size_t size)
+ {
+ 	long ret;
+ 	mm_segment_t old_fs = get_fs();
+@@ -131,11 +123,7 @@ long __probe_kernel_write(void *dst, const void *src, size_t size)
+  * Safely write to address @dst from the buffer at @src.  If a kernel fault
+  * happens, handle that and return -EFAULT.
+  */
+-
+-long __weak probe_user_write(void __user *dst, const void *src, size_t size)
+-    __attribute__((alias("__probe_user_write")));
+-
+-long __probe_user_write(void __user *dst, const void *src, size_t size)
++long probe_user_write(void __user *dst, const void *src, size_t size)
+ {
+ 	long ret = -EFAULT;
+ 	mm_segment_t old_fs = get_fs();
+@@ -171,7 +159,6 @@ long __probe_user_write(void __user *dst, const void *src, size_t size)
+  * probing memory on a user address range where strncpy_from_unsafe_user() is
+  * supposed to be used instead.
+  */
+-
+ long __weak strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
+     __attribute__((alias("__strncpy_from_unsafe")));
  
- /* This is used only in __do_fault and do_swap_page.  */
- #define flush_icache_page(vma, page) \
--  flush_icache_user_range((vma), (page), 0, 0)
-+	flush_icache_user_range((vma), (page), 0, 0)
- 
--#define copy_to_user_page(vma, page, vaddr, dst, src, len) \
--do { memcpy(dst, src, len); \
--     flush_icache_user_range(vma, page, vaddr, len); \
--} while (0)
--#define copy_from_user_page(vma, page, vaddr, dst, src, len) \
--	memcpy(dst, src, len)
-+#include <asm-generic/cacheflush.h>
- 
- #endif /* _ALPHA_CACHEFLUSH_H */
 -- 
 2.26.2
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
