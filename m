@@ -1,31 +1,96 @@
-Return-Path: <cmarinas@kernel.org>
-Date: Tue, 26 May 2020 18:13:34 +0100
-From: Catalin Marinas <catalin.marinas@arm.com>
-Subject: Re: [PATCH v2 05/20] mm: use free_area_init() instead of
- free_area_init_nodes()
-Message-ID: <20200526171334.GK17051@gaia>
-References: <20200429121126.17989-1-rppt@kernel.org>
- <20200429121126.17989-6-rppt@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+From: Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 03/18] maccess: remove duplicate kerneldoc comments
+Date: Wed, 13 May 2020 18:00:23 +0200
+Message-Id: <20200513160038.2482415-4-hch@lst.de>
+In-Reply-To: <20200513160038.2482415-1-hch@lst.de>
+References: <20200513160038.2482415-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200429121126.17989-6-rppt@kernel.org>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, Baoquan He <bhe@redhat.com>, Brian Cain <bcain@codeaurora.org>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, Hoan Tran <Hoan@os.amperecomputing.com>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Jonathan Corbet <corbet@lwn.net>, Ley Foon Tan <ley.foon.tan@intel.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@kernel.org>, Michal Simek <monstr@monstr.eu>, Nick Hu <nickhu@andestech.com>, Paul Walmsley <paul.walmsley@sifive.com>, Qian Cai <cai@lca.pw>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Tony Luck <tony.luck@intel.com>, Vineet Gupta <vgupta@synopsys.com>, x86@kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-csky@vger.kernel.org, linux-doc@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, Mike Rapoport <rppt@linux.ibm.com>
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: x86@kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-parisc@vger.kernel.org, netdev@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 03:11:11PM +0300, Mike Rapoport wrote:
-> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-> index e42727e3568e..a650adb358ee 100644
-> --- a/arch/arm64/mm/init.c
-> +++ b/arch/arm64/mm/init.c
-> @@ -206,7 +206,7 @@ static void __init zone_sizes_init(unsigned long min, unsigned long max)
->  #endif
->  	max_zone_pfns[ZONE_NORMAL] = max;
->  
-> -	free_area_init_nodes(max_zone_pfns);
-> +	free_area_init(max_zone_pfns);
->  }
+Many of the maccess routines have a copy of the kerneldoc comment
+in the header.  Remove it as it is not useful and will get out of
+sync sooner or later.
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ include/linux/uaccess.h | 38 --------------------------------------
+ 1 file changed, 38 deletions(-)
+
+diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
+index a2c606a403745..5a36a298a85f8 100644
+--- a/include/linux/uaccess.h
++++ b/include/linux/uaccess.h
+@@ -301,50 +301,12 @@ copy_struct_from_user(void *dst, size_t ksize, const void __user *src,
+ 	return 0;
+ }
+ 
+-/*
+- * probe_kernel_read(): safely attempt to read from a location
+- * @dst: pointer to the buffer that shall take the data
+- * @src: address to read from
+- * @size: size of the data chunk
+- *
+- * Safely read from address @src to the buffer at @dst.  If a kernel fault
+- * happens, handle that and return -EFAULT.
+- */
+ extern long probe_kernel_read(void *dst, const void *src, size_t size);
+ extern long probe_kernel_read_strict(void *dst, const void *src, size_t size);
+ extern long __probe_kernel_read(void *dst, const void *src, size_t size);
+-
+-/*
+- * probe_user_read(): safely attempt to read from a location in user space
+- * @dst: pointer to the buffer that shall take the data
+- * @src: address to read from
+- * @size: size of the data chunk
+- *
+- * Safely read from address @src to the buffer at @dst.  If a kernel fault
+- * happens, handle that and return -EFAULT.
+- */
+ extern long probe_user_read(void *dst, const void __user *src, size_t size);
+ 
+-/*
+- * probe_kernel_write(): safely attempt to write to a location
+- * @dst: address to write to
+- * @src: pointer to the data that shall be written
+- * @size: size of the data chunk
+- *
+- * Safely write to address @dst from the buffer at @src.  If a kernel fault
+- * happens, handle that and return -EFAULT.
+- */
+ extern long notrace probe_kernel_write(void *dst, const void *src, size_t size);
+-
+-/*
+- * probe_user_write(): safely attempt to write to a location in user space
+- * @dst: address to write to
+- * @src: pointer to the data that shall be written
+- * @size: size of the data chunk
+- *
+- * Safely write to address @dst from the buffer at @src.  If a kernel fault
+- * happens, handle that and return -EFAULT.
+- */
+ extern long notrace probe_user_write(void __user *dst, const void *src, size_t size);
+ 
+ extern long strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count);
+-- 
+2.26.2
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
