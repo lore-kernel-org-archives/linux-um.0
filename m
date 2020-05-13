@@ -1,20 +1,21 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from [2002:c35c:fd02::1] (helo=ZenIV.linux.org.uk)
+Received: from www62.your-server.de ([213.133.104.62])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jZ0nc-0002dG-Nt
- for linux-um@lists.infradead.org; Wed, 13 May 2020 23:28:30 +0000
-Date: Thu, 14 May 2020 00:28:16 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
+ id 1jZ0jf-0008R7-40
+ for linux-um@lists.infradead.org; Wed, 13 May 2020 23:24:24 +0000
 Subject: Re: [PATCH 11/18] maccess: remove strncpy_from_unsafe
-Message-ID: <20200513232816.GZ23230@ZenIV.linux.org.uk>
 References: <20200513160038.2482415-1-hch@lst.de>
  <20200513160038.2482415-12-hch@lst.de>
  <CAHk-=wj=u+nttmd1huNES2U=9nePtmk7WgR8cMLCYS8wc=rhdA@mail.gmail.com>
  <20200513192804.GA30751@lst.de>
  <0c1a7066-b269-9695-b94a-bb5f4f20ebd8@iogearbox.net>
+ <CAHk-=wiivWJ70PotzCK-j7K4Y612NJBA2d+iN6Rz-bfMxCpwjQ@mail.gmail.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <2a03633b-419d-643f-b787-ca1520e2229b@iogearbox.net>
+Date: Thu, 14 May 2020 01:24:18 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <0c1a7066-b269-9695-b94a-bb5f4f20ebd8@iogearbox.net>
+In-Reply-To: <CAHk-=wiivWJ70PotzCK-j7K4Y612NJBA2d+iN6Rz-bfMxCpwjQ@mail.gmail.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +24,52 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: bpf@vger.kernel.org, linux-parisc@vger.kernel.org, Netdev <netdev@vger.kernel.org>, the arch/x86 maintainers <x86@kernel.org>, linux-um <linux-um@lists.infradead.org>, Alexei Starovoitov <ast@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>, Masami Hiramatsu <mhiramat@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, Christoph Hellwig <hch@lst.de>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: bpf@vger.kernel.org, linux-parisc@vger.kernel.org, Netdev <netdev@vger.kernel.org>, the arch/x86 maintainers <x86@kernel.org>, linux-um <linux-um@lists.infradead.org>, Alexei Starovoitov <ast@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>, Masami Hiramatsu <mhiramat@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, bgregg@netflix.com, Christoph Hellwig <hch@lst.de>
 
-On Thu, May 14, 2020 at 12:36:28AM +0200, Daniel Borkmann wrote:
-
-> > So on say s390 TASK_SIZE_USUALLy is (-PAGE_SIZE), which means we'd alway
-> > try the user copy first, which seems odd.
-> > 
-> > I'd really like to here from the bpf folks what the expected use case
-> > is here, and if the typical argument is kernel or user memory.
+On 5/14/20 1:03 AM, Linus Torvalds wrote:
+> On Wed, May 13, 2020 at 3:36 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>
+>> It's used for both.
 > 
-> It's used for both. Given this is enabled on pretty much all program types, my
-> assumption would be that usage is still more often on kernel memory than user one.
+> Daniel, BPF real;ly needs to make up its mind about that.
+> 
+> You *cannot* use ti for both.
+> 
+> Yes, it happens to work on x86 and some other architectures.
+> 
+> But on other architectures, the exact same pointer value can be a
+> kernel pointer or a user pointer.
 
-Then it needs an argument telling it which one to use.  Look at sparc64.
-Or s390.  Or parisc.  Et sodding cetera.
+Right, it has the same issue as with the old probe helper. I was merely stating that
+there are existing users (on x86) out there that use it this way, even though broken
+generally.
 
-The underlying model is that the kernel lives in a separate address space.
-Yes, on x86 it's actually sharing the page tables with userland, but that's
-not universal.  The same address can be both a valid userland one _and_
-a valid kernel one.  You need to tell which one do you want.
+>> Given this is enabled on pretty much all program types, my
+>> assumption would be that usage is still more often on kernel memory than user one.
+> 
+> You need to pick one.
+> 
+> If you know it is a user pointer, use strncpy_from_user() (possibly
+> with disable_pagefault() aka strncpy_from_user_nofault()).
+> 
+> And if you know it is a kernel pointer, use strncpy_from_unsafe() (aka
+> strncpy_from_kernel_nofault()).
+> 
+> You really can't pick the "randomly one or the other guess what I mean " option.
+
+My preference would be to have %s, %sK, %sU for bpf_trace_printk() where the latter two
+result in an explicit strncpy_from_kernel_nofault() or strncpy_from_user_nofault()
+choice while the %s is converted as per your suggestion and it would still allow for a
+grace period to convert existing users to the new variants, similar with what we did on
+the bpf_probe_read_kernel() and bpf_probe_read_user() helpers to get this sorted out.
+
+Thanks,
+Daniel
 
 _______________________________________________
 linux-um mailing list
