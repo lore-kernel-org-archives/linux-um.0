@@ -1,14 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jWm6E-000435-Ll
- for linux-um@lists.infradead.org; Thu, 07 May 2020 19:22:28 +0000
-Date: Thu, 7 May 2020 14:26:52 -0500
-From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH] um: virtio: Replace zero-length array with flexible-array
-Message-ID: <20200507192652.GA16743@embeddedor>
+From: Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 08/18] maccess: rename strnlen_unsafe_user to
+ strnlen_user_nofault
+Date: Wed, 13 May 2020 18:00:28 +0200
+Message-Id: <20200513160038.2482415-9-hch@lst.de>
+In-Reply-To: <20200513160038.2482415-1-hch@lst.de>
+References: <20200513160038.2482415-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Disposition: inline
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -21,76 +19,69 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+To: x86@kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-parisc@vger.kernel.org, netdev@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
 
-The current codebase makes use of the zero-length array language
-extension to the C90 standard, but the preferred mechanism to declare
-variable-length types such as these ones is a flexible array member[1][2],
-introduced in C99:
+This matches the naming of strnlen_user, and also makes it more clear
+what the function is supposed to do.
 
-struct foo {
-        int stuff;
-        struct boo array[];
-};
-
-By making use of the mechanism above, we will get a compiler warning
-in case the flexible array does not occur last in the structure, which
-will help us prevent some kind of undefined behavior bugs from being
-inadvertently introduced[3] to the codebase from now on.
-
-Also, notice that, dynamic memory allocations won't be affected by
-this change:
-
-"Flexible array members have incomplete type, and so the sizeof operator
-may not be applied. As a quirk of the original implementation of
-zero-length arrays, sizeof evaluates to zero."[1]
-
-sizeof(flexible-array-member) triggers a warning because flexible array
-members have incomplete type[1]. There are some instances of code in
-which the sizeof operator is being incorrectly/erroneously applied to
-zero-length arrays and the result is zero. Such instances may be hiding
-some bugs. So, this work (flexible-array member conversions) will also
-help to get completely rid of those sorts of issues.
-
-This issue was found with the help of Coccinelle.
-
-[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-[2] https://github.com/KSPP/linux/issues/21
-[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/um/drivers/vector_kern.h |    2 +-
- arch/um/drivers/vhost_user.h  |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ include/linux/uaccess.h     | 2 +-
+ kernel/trace/trace_kprobe.c | 2 +-
+ mm/maccess.c                | 4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/um/drivers/vector_kern.h b/arch/um/drivers/vector_kern.h
-index d0159082faf0..8fff93a75a92 100644
---- a/arch/um/drivers/vector_kern.h
-+++ b/arch/um/drivers/vector_kern.h
-@@ -129,7 +129,7 @@ struct vector_private {
- 	struct vector_estats estats;
- 	struct sock_fprog *bpf;
+diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
+index 134ff9c1c151b..d8366f8468664 100644
+--- a/include/linux/uaccess.h
++++ b/include/linux/uaccess.h
+@@ -315,7 +315,7 @@ long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr,
+ extern long __strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count);
+ long strncpy_from_user_nofault(char *dst, const void __user *unsafe_addr,
+ 		long count);
+-extern long strnlen_unsafe_user(const void __user *unsafe_addr, long count);
++long strnlen_user_nofault(const void __user *unsafe_addr, long count);
  
--	char user[0];
-+	char user[];
- };
+ /**
+  * probe_kernel_address(): safely attempt to read from a location
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index d600f41fda1ca..4325f9e7fadaa 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -1221,7 +1221,7 @@ fetch_store_strlen_user(unsigned long addr)
+ {
+ 	const void __user *uaddr =  (__force const void __user *)addr;
  
- extern int build_transport_data(struct vector_private *vp);
-diff --git a/arch/um/drivers/vhost_user.h b/arch/um/drivers/vhost_user.h
-index 6c71b6005177..6f147cd3c9f7 100644
---- a/arch/um/drivers/vhost_user.h
-+++ b/arch/um/drivers/vhost_user.h
-@@ -78,7 +78,7 @@ struct vhost_user_config {
- 	u32 offset;
- 	u32 size;
- 	u32 flags;
--	u8 payload[0]; /* Variable length */
-+	u8 payload[]; /* Variable length */
- } __packed;
+-	return strnlen_unsafe_user(uaddr, MAX_STRING_SIZE);
++	return strnlen_user_nofault(uaddr, MAX_STRING_SIZE);
+ }
  
- struct vhost_user_vring_state {
+ /*
+diff --git a/mm/maccess.c b/mm/maccess.c
+index c8748c2809096..e783ebfccd542 100644
+--- a/mm/maccess.c
++++ b/mm/maccess.c
+@@ -258,7 +258,7 @@ long strncpy_from_user_nofault(char *dst, const void __user *unsafe_addr,
+ }
+ 
+ /**
+- * strnlen_unsafe_user: - Get the size of a user string INCLUDING final NUL.
++ * strnlen_user_nofault: - Get the size of a user string INCLUDING final NUL.
+  * @unsafe_addr: The string to measure.
+  * @count: Maximum count (including NUL)
+  *
+@@ -273,7 +273,7 @@ long strncpy_from_user_nofault(char *dst, const void __user *unsafe_addr,
+  * Unlike strnlen_user, this can be used from IRQ handler etc. because
+  * it disables pagefaults.
+  */
+-long strnlen_unsafe_user(const void __user *unsafe_addr, long count)
++long strnlen_user_nofault(const void __user *unsafe_addr, long count)
+ {
+ 	mm_segment_t old_fs = get_fs();
+ 	int ret;
+-- 
+2.26.2
 
 
 _______________________________________________
