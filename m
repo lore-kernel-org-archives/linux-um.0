@@ -1,12 +1,25 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 07/20] maccess: rename strncpy_from_unsafe_strict to
- strncpy_from_kernel_nofault
-Date: Tue, 19 May 2020 15:44:36 +0200
-Message-Id: <20200519134449.1466624-8-hch@lst.de>
-In-Reply-To: <20200519134449.1466624-1-hch@lst.de>
-References: <20200519134449.1466624-1-hch@lst.de>
+Received: from www62.your-server.de ([213.133.104.62])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jZB5f-0008R0-8q
+ for linux-um@lists.infradead.org; Thu, 14 May 2020 10:27:48 +0000
+Subject: Re: [PATCH 11/18] maccess: remove strncpy_from_unsafe
+References: <20200513160038.2482415-1-hch@lst.de>
+ <20200513160038.2482415-12-hch@lst.de>
+ <CAHk-=wj=u+nttmd1huNES2U=9nePtmk7WgR8cMLCYS8wc=rhdA@mail.gmail.com>
+ <20200513192804.GA30751@lst.de>
+ <0c1a7066-b269-9695-b94a-bb5f4f20ebd8@iogearbox.net>
+ <20200514082054.f817721ce196f134e6820644@kernel.org>
+ <CAHk-=wjBKGLyf1d53GwfUTZiK_XPdujwh+u2XSpD2HWRV01Afw@mail.gmail.com>
+ <20200514100009.a8e6aa001f0ace5553c7904f@kernel.org>
+ <CAHk-=wjP8ysEZnNFi_+E1ZEFGpcbAN8kbYHrCnC93TX6XX+jEQ@mail.gmail.com>
+ <20200514184419.0fbf548ccf883c097d94573a@kernel.org>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <9c2f90fd-9cac-67c3-4d96-4f873c7649e7@iogearbox.net>
+Date: Thu, 14 May 2020 12:27:42 +0200
 MIME-Version: 1.0
+In-Reply-To: <20200514184419.0fbf548ccf883c097d94573a@kernel.org>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -15,108 +28,50 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: x86@kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-parisc@vger.kernel.org, netdev@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
+To: Masami Hiramatsu <mhiramat@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>
+Cc: bpf@vger.kernel.org, linux-parisc@vger.kernel.org, Netdev <netdev@vger.kernel.org>, the arch/x86 maintainers <x86@kernel.org>, linux-um <linux-um@lists.infradead.org>, Alexei Starovoitov <ast@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>, Christoph Hellwig <hch@lst.de>
 
-This matches the naming of strncpy_from_user_nofault, and also makes it
-more clear what the function is supposed to do.
+On 5/14/20 11:44 AM, Masami Hiramatsu wrote:
+> On Wed, 13 May 2020 19:43:24 -0700
+> Linus Torvalds <torvalds@linux-foundation.org> wrote:
+>> On Wed, May 13, 2020 at 6:00 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+>>>
+>>>> But we should likely at least disallow it entirely on platforms where
+>>>> we really can't - or pick one hardcoded choice. On sparc, you really
+>>>> _have_ to specify one or the other.
+>>>
+>>> OK. BTW, is there any way to detect the kernel/user space overlap on
+>>> memory layout statically? If there, I can do it. (I don't like
+>>> "if (CONFIG_X86)" thing....)
+>>> Or, maybe we need CONFIG_ARCH_OVERLAP_ADDRESS_SPACE?
+>>
+>> I think it would be better to have a CONFIG variable that
+>> architectures can just 'select' to show that they are ok with separate
+>> kernel and user addresses.
+>>
+>> Because I don't think we have any way to say that right now as-is. You
+>> can probably come up with hacky ways to approximate it, ie something
+>> like
+>>
+>>      if (TASK_SIZE_MAX > PAGE_OFFSET)
+>>          .... they overlap ..
+>>
+>> which would almost work, but..
+> 
+> It seems TASK_SIZE_MAX is defined only on x86 and s390, what about
+> comparing STACK_TOP_MAX with PAGE_OFFSET ?
+> Anyway, I agree that the best way is introducing a CONFIG.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- arch/x86/mm/maccess.c    | 2 +-
- include/linux/uaccess.h  | 4 ++--
- kernel/trace/bpf_trace.c | 4 ++--
- mm/maccess.c             | 6 +++---
- 4 files changed, 8 insertions(+), 8 deletions(-)
+Agree, CONFIG knob that archs can select feels cleanest. Fwiw, I've cooked
+up fixes for bpf side locally here and finishing up testing, will push out
+later today.
 
-diff --git a/arch/x86/mm/maccess.c b/arch/x86/mm/maccess.c
-index f5b85bdc0535c..62c4017a2473d 100644
---- a/arch/x86/mm/maccess.c
-+++ b/arch/x86/mm/maccess.c
-@@ -34,7 +34,7 @@ long probe_kernel_read_strict(void *dst, const void *src, size_t size)
- 	return __probe_kernel_read(dst, src, size);
- }
- 
--long strncpy_from_unsafe_strict(char *dst, const void *unsafe_addr, long count)
-+long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
- {
- 	if (unlikely(invalid_probe_range((unsigned long)unsafe_addr)))
- 		return -EFAULT;
-diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
-index b983cb1c1216a..134ff9c1c151b 100644
---- a/include/linux/uaccess.h
-+++ b/include/linux/uaccess.h
-@@ -310,8 +310,8 @@ extern long notrace probe_kernel_write(void *dst, const void *src, size_t size);
- extern long notrace probe_user_write(void __user *dst, const void *src, size_t size);
- 
- extern long strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count);
--extern long strncpy_from_unsafe_strict(char *dst, const void *unsafe_addr,
--				       long count);
-+long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr,
-+		long count);
- extern long __strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count);
- long strncpy_from_user_nofault(char *dst, const void __user *unsafe_addr,
- 		long count);
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 4e20bf1d95832..f5231ffea85b9 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -240,7 +240,7 @@ bpf_probe_read_kernel_str_common(void *dst, u32 size, const void *unsafe_ptr,
- 	 * is returned that can be used for bpf_perf_event_output() et al.
- 	 */
- 	ret = compat ? strncpy_from_unsafe(dst, unsafe_ptr, size) :
--	      strncpy_from_unsafe_strict(dst, unsafe_ptr, size);
-+	      strncpy_from_kernel_nofault(dst, unsafe_ptr, size);
- 	if (unlikely(ret < 0))
- out:
- 		memset(dst, 0, size);
-@@ -412,7 +412,7 @@ BPF_CALL_5(bpf_trace_printk, char *, fmt, u32, fmt_size, u64, arg1,
- 				break;
- #endif
- 			case 'k':
--				strncpy_from_unsafe_strict(buf, unsafe_ptr,
-+				strncpy_from_kernel_nofault(buf, unsafe_ptr,
- 							   sizeof(buf));
- 				break;
- 			case 'u':
-diff --git a/mm/maccess.c b/mm/maccess.c
-index 457d8f9bf714f..c8748c2809096 100644
---- a/mm/maccess.c
-+++ b/mm/maccess.c
-@@ -159,7 +159,7 @@ long probe_user_write(void __user *dst, const void *src, size_t size)
-  * If @count is smaller than the length of the string, copies @count-1 bytes,
-  * sets the last byte of @dst buffer to NUL and returns @count.
-  *
-- * Same as strncpy_from_unsafe_strict() except that for architectures with
-+ * Same as strncpy_from_kernel_nofault() except that for architectures with
-  * not fully separated user and kernel address spaces this function also works
-  * for user address tanges.
-  *
-@@ -170,7 +170,7 @@ long __weak strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
-     __attribute__((alias("__strncpy_from_unsafe")));
- 
- /**
-- * strncpy_from_unsafe_strict: - Copy a NUL terminated string from unsafe
-+ * strncpy_from_kernel_nofault: - Copy a NUL terminated string from unsafe
-  *				 address.
-  * @dst:   Destination address, in kernel space.  This buffer must be at
-  *         least @count bytes long.
-@@ -187,7 +187,7 @@ long __weak strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
-  * If @count is smaller than the length of the string, copies @count-1 bytes,
-  * sets the last byte of @dst buffer to NUL and returns @count.
-  */
--long __weak strncpy_from_unsafe_strict(char *dst, const void *unsafe_addr,
-+long __weak strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr,
- 				       long count)
-     __attribute__((alias("__strncpy_from_unsafe")));
- 
--- 
-2.26.2
-
+Thanks,
+Daniel
 
 _______________________________________________
 linux-um mailing list
