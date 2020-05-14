@@ -1,24 +1,22 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from www62.your-server.de ([213.133.104.62])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jZB5f-0008R0-8q
- for linux-um@lists.infradead.org; Thu, 14 May 2020 10:27:48 +0000
+ id 1jZB0E-00041u-MF
+ for linux-um@lists.infradead.org; Thu, 14 May 2020 10:22:12 +0000
 Subject: Re: [PATCH 11/18] maccess: remove strncpy_from_unsafe
 References: <20200513160038.2482415-1-hch@lst.de>
  <20200513160038.2482415-12-hch@lst.de>
  <CAHk-=wj=u+nttmd1huNES2U=9nePtmk7WgR8cMLCYS8wc=rhdA@mail.gmail.com>
  <20200513192804.GA30751@lst.de>
  <0c1a7066-b269-9695-b94a-bb5f4f20ebd8@iogearbox.net>
- <20200514082054.f817721ce196f134e6820644@kernel.org>
- <CAHk-=wjBKGLyf1d53GwfUTZiK_XPdujwh+u2XSpD2HWRV01Afw@mail.gmail.com>
- <20200514100009.a8e6aa001f0ace5553c7904f@kernel.org>
- <CAHk-=wjP8ysEZnNFi_+E1ZEFGpcbAN8kbYHrCnC93TX6XX+jEQ@mail.gmail.com>
- <20200514184419.0fbf548ccf883c097d94573a@kernel.org>
+ <20200513232816.GZ23230@ZenIV.linux.org.uk>
+ <866cbe54-a027-04eb-65db-c6423d16b924@iogearbox.net>
+ <6ca8d8499bf644aba0b242d194df5a60@AcuMS.aculab.com>
 From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <9c2f90fd-9cac-67c3-4d96-4f873c7649e7@iogearbox.net>
-Date: Thu, 14 May 2020 12:27:42 +0200
+Message-ID: <2cc83197-3ecc-b8c2-742d-e953c1f7bf8c@iogearbox.net>
+Date: Thu, 14 May 2020 12:21:52 +0200
 MIME-Version: 1.0
-In-Reply-To: <20200514184419.0fbf548ccf883c097d94573a@kernel.org>
+In-Reply-To: <6ca8d8499bf644aba0b242d194df5a60@AcuMS.aculab.com>
 Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -32,46 +30,23 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Masami Hiramatsu <mhiramat@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>
-Cc: bpf@vger.kernel.org, linux-parisc@vger.kernel.org, Netdev <netdev@vger.kernel.org>, the arch/x86 maintainers <x86@kernel.org>, linux-um <linux-um@lists.infradead.org>, Alexei Starovoitov <ast@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>, Christoph Hellwig <hch@lst.de>
+To: David Laight <David.Laight@ACULAB.COM>, Al Viro <viro@zeniv.linux.org.uk>
+Cc: "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, Netdev <netdev@vger.kernel.org>, the arch/x86 maintainers <x86@kernel.org>, linux-um <linux-um@lists.infradead.org>, Alexei Starovoitov <ast@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>, Masami Hiramatsu <mhiramat@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, "bgregg@netflix.com" <bgregg@netflix.com>, Linus Torvalds <torvalds@linux-foundation.org>, Christoph Hellwig <hch@lst.de>
 
-On 5/14/20 11:44 AM, Masami Hiramatsu wrote:
-> On Wed, 13 May 2020 19:43:24 -0700
-> Linus Torvalds <torvalds@linux-foundation.org> wrote:
->> On Wed, May 13, 2020 at 6:00 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
->>>
->>>> But we should likely at least disallow it entirely on platforms where
->>>> we really can't - or pick one hardcoded choice. On sparc, you really
->>>> _have_ to specify one or the other.
->>>
->>> OK. BTW, is there any way to detect the kernel/user space overlap on
->>> memory layout statically? If there, I can do it. (I don't like
->>> "if (CONFIG_X86)" thing....)
->>> Or, maybe we need CONFIG_ARCH_OVERLAP_ADDRESS_SPACE?
->>
->> I think it would be better to have a CONFIG variable that
->> architectures can just 'select' to show that they are ok with separate
->> kernel and user addresses.
->>
->> Because I don't think we have any way to say that right now as-is. You
->> can probably come up with hacky ways to approximate it, ie something
->> like
->>
->>      if (TASK_SIZE_MAX > PAGE_OFFSET)
->>          .... they overlap ..
->>
->> which would almost work, but..
+On 5/14/20 12:01 PM, David Laight wrote:
+[...]
+> If it's not a stupid question why is a BPF program allowed to get
+> into a situation where it might have an invalid kernel address.
 > 
-> It seems TASK_SIZE_MAX is defined only on x86 and s390, what about
-> comparing STACK_TOP_MAX with PAGE_OFFSET ?
-> Anyway, I agree that the best way is introducing a CONFIG.
+> It all stinks of a hole that allows all of kernel memory to be read
+> and copied to userspace.
+> 
+> Now you might want to something special so that BPF programs just
+> abort on OOPS instead of possibly paniking the kernel.
+> But that is different from a copy that expects to be passed garbage.
 
-Agree, CONFIG knob that archs can select feels cleanest. Fwiw, I've cooked
-up fixes for bpf side locally here and finishing up testing, will push out
-later today.
-
-Thanks,
-Daniel
+I suggest you read up on probe_kernel_read() and its uses in tracing in
+general, looks like you haven't done that.
 
 _______________________________________________
 linux-um mailing list
