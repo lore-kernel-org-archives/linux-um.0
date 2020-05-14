@@ -1,98 +1,197 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 11/31] arm64: use asm-generic/cacheflush.h
-Date: Sun, 10 May 2020 09:54:50 +0200
-Message-Id: <20200510075510.987823-12-hch@lst.de>
-In-Reply-To: <20200510075510.987823-1-hch@lst.de>
-References: <20200510075510.987823-1-hch@lst.de>
+Return-Path: <rppt@kernel.org>
+From: Mike Rapoport <rppt@kernel.org>
+Subject: [PATCH v2 07/12] x86/mm: simplify init_trampoline() and surrounding logic
+Date: Thu, 14 May 2020 20:03:22 +0300
+Message-Id: <20200514170327.31389-8-rppt@kernel.org>
+In-Reply-To: <20200514170327.31389-1-rppt@kernel.org>
+References: <20200514170327.31389-1-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Sender: linux-kernel-owner@vger.kernel.org
-To: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Roman Zippel <zippel@linux-m68k.org>
-Cc: Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linux-fsdevel@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@codeaurora.org>, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@redhat.com>, Ley Foon Tan <ley.foon.tan@intel.com>, Mark Salter <msalter@redhat.com>, Matthew Wilcox <willy@infradead.org>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, Mike Rapoport <rppt@kernel.org>, Nick Hu <nickhu@andestech.com>, Paul Walmsley <paul.walmsley@sifive.com>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, Vincent Chen <deanbo422@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Will Deacon <will@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, x86@kernel.org, Mike Rapoport <rppt@linux.ibm.com>
 List-ID: <linux-um.lists.infradead.org>
 
-ARM64 needs almost no cache flushing routines of its own.  Rely on
-asm-generic/cacheflush.h for the defaults.
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+There are three cases for the trampoline initialization:
+* 32-bit does nothing
+* 64-bit with kaslr disabled simply copies a PGD entry from the direct map
+  to the trampoline PGD
+* 64-bit with kaslr enabled maps the real mode trampoline at PUD level
+
+These cases are currently differentiated by a bunch of ifdefs inside
+asm/include/pgtable.h and the case of 64-bits with kaslr on uses
+pgd_index() helper.
+
+Replacing the ifdefs with a static function in arch/x86/mm/init.c gives
+clearer code and allows moving pgd_index() to the generic implementation in
+include/linux/pgtable.h
+
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
- arch/arm64/include/asm/cacheflush.h | 46 ++++-------------------------
- 1 file changed, 5 insertions(+), 41 deletions(-)
+ arch/x86/include/asm/kaslr.h   |  2 ++
+ arch/x86/include/asm/pgtable.h | 15 +--------------
+ arch/x86/include/asm/setup.h   |  9 +++++++++
+ arch/x86/mm/init.c             | 22 ++++++++++++++++++++++
+ arch/x86/mm/kaslr.c            | 33 +--------------------------------
+ 5 files changed, 35 insertions(+), 46 deletions(-)
 
-diff --git a/arch/arm64/include/asm/cacheflush.h b/arch/arm64/include/asm/cacheflush.h
-index e6cca3d4acf70..03a5a187163ab 100644
---- a/arch/arm64/include/asm/cacheflush.h
-+++ b/arch/arm64/include/asm/cacheflush.h
-@@ -94,20 +94,7 @@ static inline void flush_icache_range(unsigned long start, unsigned long end)
+diff --git a/arch/x86/include/asm/kaslr.h b/arch/x86/include/asm/kaslr.h
+index db7ba2feb947..0648190467ba 100644
+--- a/arch/x86/include/asm/kaslr.h
++++ b/arch/x86/include/asm/kaslr.h
+@@ -6,8 +6,10 @@ unsigned long kaslr_get_random_long(const char *purpose);
+ 
+ #ifdef CONFIG_RANDOMIZE_MEMORY
+ void kernel_randomize_memory(void);
++void init_trampoline_kaslr(void);
+ #else
+ static inline void kernel_randomize_memory(void) { }
++static inline void init_trampoline_kaslr(void) {}
+ #endif /* CONFIG_RANDOMIZE_MEMORY */
+ 
  #endif
- 	kick_all_cpus_sync();
- }
--
--static inline void flush_cache_mm(struct mm_struct *mm)
--{
--}
--
--static inline void flush_cache_page(struct vm_area_struct *vma,
--				    unsigned long user_addr, unsigned long pfn)
--{
--}
--
--static inline void flush_cache_range(struct vm_area_struct *vma,
--				     unsigned long start, unsigned long end)
--{
--}
-+#define flush_icache_range flush_icache_range
+diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+index d24f8e1f7250..6366136b0e46 100644
+--- a/arch/x86/include/asm/pgtable.h
++++ b/arch/x86/include/asm/pgtable.h
+@@ -1070,27 +1070,14 @@ void init_mem_mapping(void);
+ void early_alloc_pgt_buf(void);
+ extern void memblock_find_dma_reserve(void);
  
- /*
-  * Cache maintenance functions used by the DMA API. No to be used directly.
-@@ -123,12 +110,7 @@ extern void __dma_flush_area(const void *, size_t);
-  */
- extern void copy_to_user_page(struct vm_area_struct *, struct page *,
- 	unsigned long, void *, const void *, unsigned long);
--#define copy_from_user_page(vma, page, vaddr, dst, src, len) \
--	do {							\
--		memcpy(dst, src, len);				\
--	} while (0)
--
--#define flush_cache_dup_mm(mm) flush_cache_mm(mm)
-+#define copy_to_user_page copy_to_user_page
- 
- /*
-  * flush_dcache_page is used when the kernel has written to the page
-@@ -154,29 +136,11 @@ static __always_inline void __flush_icache_all(void)
- 	dsb(ish);
- }
- 
--#define flush_dcache_mmap_lock(mapping)		do { } while (0)
--#define flush_dcache_mmap_unlock(mapping)	do { } while (0)
--
--/*
-- * We don't appear to need to do anything here.  In fact, if we did, we'd
-- * duplicate cache flushing elsewhere performed by flush_dcache_page().
-- */
--#define flush_icache_page(vma,page)	do { } while (0)
--
--/*
-- * Not required on AArch64 (PIPT or VIPT non-aliasing D-cache).
-- */
--static inline void flush_cache_vmap(unsigned long start, unsigned long end)
--{
--}
--
--static inline void flush_cache_vunmap(unsigned long start, unsigned long end)
--{
--}
--
- int set_memory_valid(unsigned long addr, int numpages, int enable);
- 
- int set_direct_map_invalid_noflush(struct page *page);
- int set_direct_map_default_noflush(struct page *page);
- 
--#endif
-+#include <asm-generic/cacheflush.h>
 +
-+#endif /* __ASM_CACHEFLUSH_H */
+ #ifdef CONFIG_X86_64
+-/* Realmode trampoline initialization. */
+ extern pgd_t trampoline_pgd_entry;
+-static inline void __meminit init_trampoline_default(void)
+-{
+-	/* Default trampoline pgd value */
+-	trampoline_pgd_entry = init_top_pgt[pgd_index(__PAGE_OFFSET)];
+-}
+ 
+ void __init poking_init(void);
+ 
+ unsigned long init_memory_mapping(unsigned long start,
+ 				  unsigned long end, pgprot_t prot);
+-
+-# ifdef CONFIG_RANDOMIZE_MEMORY
+-void __meminit init_trampoline(void);
+-# else
+-#  define init_trampoline init_trampoline_default
+-# endif
+-#else
+-static inline void init_trampoline(void) { }
+ #endif
+ 
+ /* local pte updates need not use xchg for locking */
+diff --git a/arch/x86/include/asm/setup.h b/arch/x86/include/asm/setup.h
+index ed8ec011a9fd..d95cacf210bb 100644
+--- a/arch/x86/include/asm/setup.h
++++ b/arch/x86/include/asm/setup.h
+@@ -78,6 +78,15 @@ static inline bool kaslr_enabled(void)
+ 	return !!(boot_params.hdr.loadflags & KASLR_FLAG);
+ }
+ 
++/*
++ * Apply no randomization if KASLR was disabled at boot or if KASAN
++ * is enabled. KASAN shadow mappings rely on regions being PGD aligned.
++ */
++static inline bool kaslr_memory_enabled(void)
++{
++	return kaslr_enabled() && !IS_ENABLED(CONFIG_KASAN);
++}
++
+ static inline unsigned long kaslr_offset(void)
+ {
+ 	return (unsigned long)&_text - __START_KERNEL;
+diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
+index 235dd0e35741..e225ebb25197 100644
+--- a/arch/x86/mm/init.c
++++ b/arch/x86/mm/init.c
+@@ -682,6 +682,28 @@ static void __init memory_map_bottom_up(unsigned long map_start,
+ 	}
+ }
+ 
++/*
++ * The real mode trampoline, which is required for bootstrapping CPUs
++ * occupies only a small area under the low 1MB.  See reserve_real_mode()
++ * for details.
++ *
++ * If KASLR is disabled the first PGD entry of the direct mapping is copied
++ * to map the real mode trampoline.
++ *
++ * If KASLR is enabled, copy only the PUD which covers the low 1MB
++ * area. This limits the randomization granularity to 1GB for both 4-level
++ * and 5-level paging.
++ */
++static void __init init_trampoline(void)
++{
++#ifdef CONFIG_X86_64
++	if (!kaslr_memory_enabled())
++		trampoline_pgd_entry = init_top_pgt[pgd_index(__PAGE_OFFSET)];
++	else
++		init_trampoline_kaslr();
++#endif
++}
++
+ void __init init_mem_mapping(void)
+ {
+ 	unsigned long end;
+diff --git a/arch/x86/mm/kaslr.c b/arch/x86/mm/kaslr.c
+index faf02e1e1517..fb620fd9dae9 100644
+--- a/arch/x86/mm/kaslr.c
++++ b/arch/x86/mm/kaslr.c
+@@ -61,15 +61,6 @@ static inline unsigned long get_padding(struct kaslr_memory_region *region)
+ 	return (region->size_tb << TB_SHIFT);
+ }
+ 
+-/*
+- * Apply no randomization if KASLR was disabled at boot or if KASAN
+- * is enabled. KASAN shadow mappings rely on regions being PGD aligned.
+- */
+-static inline bool kaslr_memory_enabled(void)
+-{
+-	return kaslr_enabled() && !IS_ENABLED(CONFIG_KASAN);
+-}
+-
+ /* Initialize base and padding for each memory region randomized with KASLR */
+ void __init kernel_randomize_memory(void)
+ {
+@@ -148,7 +139,7 @@ void __init kernel_randomize_memory(void)
+ 	}
+ }
+ 
+-static void __meminit init_trampoline_pud(void)
++void __meminit init_trampoline_kaslr(void)
+ {
+ 	pud_t *pud_page_tramp, *pud, *pud_tramp;
+ 	p4d_t *p4d_page_tramp, *p4d, *p4d_tramp;
+@@ -189,25 +180,3 @@ static void __meminit init_trampoline_pud(void)
+ 			__pgd(_KERNPG_TABLE | __pa(pud_page_tramp)));
+ 	}
+ }
+-
+-/*
+- * The real mode trampoline, which is required for bootstrapping CPUs
+- * occupies only a small area under the low 1MB.  See reserve_real_mode()
+- * for details.
+- *
+- * If KASLR is disabled the first PGD entry of the direct mapping is copied
+- * to map the real mode trampoline.
+- *
+- * If KASLR is enabled, copy only the PUD which covers the low 1MB
+- * area. This limits the randomization granularity to 1GB for both 4-level
+- * and 5-level paging.
+- */
+-void __meminit init_trampoline(void)
+-{
+-	if (!kaslr_memory_enabled()) {
+-		init_trampoline_default();
+-		return;
+-	}
+-
+-	init_trampoline_pud();
+-}
 -- 
 2.26.2
 
