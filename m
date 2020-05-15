@@ -1,134 +1,68 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Return-Path: <linux-m68k-owner@vger.kernel.org>
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 04/23] maccess: clarify kerneldoc comments
-Date: Thu, 21 May 2020 17:22:42 +0200
-Message-Id: <20200521152301.2587579-5-hch@lst.de>
-In-Reply-To: <20200521152301.2587579-1-hch@lst.de>
-References: <20200521152301.2587579-1-hch@lst.de>
+Subject: [PATCH 15/29] openrisc: use asm-generic/cacheflush.h
+Date: Fri, 15 May 2020 16:36:32 +0200
+Message-Id: <20200515143646.3857579-16-hch@lst.de>
+In-Reply-To: <20200515143646.3857579-1-hch@lst.de>
+References: <20200515143646.3857579-1-hch@lst.de>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: x86@kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-parisc@vger.kernel.org, netdev@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Sender: linux-m68k-owner@vger.kernel.org
+To: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Roman Zippel <zippel@linux-m68k.org>
+Cc: Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linux-fsdevel@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-Add proper kerneldoc comments for probe_kernel_read_strict and
-probe_kernel_read strncpy_from_unsafe_strict and explain the different
-versus the non-strict version.
+OpenRISC needs almost no cache flushing routines of its own.  Rely on
+asm-generic/cacheflush.h for the defaults.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- mm/maccess.c | 61 ++++++++++++++++++++++++++++++++++++----------------
- 1 file changed, 43 insertions(+), 18 deletions(-)
+ arch/openrisc/include/asm/cacheflush.h | 31 +++++---------------------
+ 1 file changed, 6 insertions(+), 25 deletions(-)
 
-diff --git a/mm/maccess.c b/mm/maccess.c
-index 4e7f3b6eb05ae..747581ac50dc9 100644
---- a/mm/maccess.c
-+++ b/mm/maccess.c
-@@ -31,29 +31,35 @@ probe_write_common(void __user *dst, const void *src, size_t size)
+diff --git a/arch/openrisc/include/asm/cacheflush.h b/arch/openrisc/include/asm/cacheflush.h
+index 79d5d7753fe4b..74d1fce4e8839 100644
+--- a/arch/openrisc/include/asm/cacheflush.h
++++ b/arch/openrisc/include/asm/cacheflush.h
+@@ -62,31 +62,12 @@ static inline void flush_dcache_page(struct page *page)
+ 	clear_bit(PG_dc_clean, &page->flags);
  }
  
- /**
-- * probe_kernel_read(): safely attempt to read from a kernel-space location
-+ * probe_kernel_read(): safely attempt to read from any location
-  * @dst: pointer to the buffer that shall take the data
-  * @src: address to read from
-  * @size: size of the data chunk
-  *
-- * Safely read from address @src to the buffer at @dst.  If a kernel fault
-- * happens, handle that and return -EFAULT.
-+ * Same as probe_kernel_read_strict() except that for architectures with
-+ * not fully separated user and kernel address spaces this function also works
-+ * for user address tanges.
-+ *
-+ * DO NOT USE THIS FUNCTION - it is broken on architectures with entirely
-+ * separate kernel and user address spaces, and also a bad idea otherwise.
-+ */
-+long __weak probe_kernel_read(void *dst, const void *src, size_t size)
-+    __attribute__((alias("__probe_kernel_read")));
-+
-+/**
-+ * probe_kernel_read_strict(): safely attempt to read from kernel-space
-+ * @dst: pointer to the buffer that shall take the data
-+ * @src: address to read from
-+ * @size: size of the data chunk
-+ *
-+ * Safely read from kernel address @src to the buffer at @dst.  If a kernel
-+ * fault happens, handle that and return -EFAULT.
-  *
-  * We ensure that the copy_from_user is executed in atomic context so that
-  * do_page_fault() doesn't attempt to take mmap_sem.  This makes
-  * probe_kernel_read() suitable for use within regions where the caller
-  * already holds mmap_sem, or other locks which nest inside mmap_sem.
-- *
-- * probe_kernel_read_strict() is the same as probe_kernel_read() except for
-- * the case where architectures have non-overlapping user and kernel address
-- * ranges: probe_kernel_read_strict() will additionally return -EFAULT for
-- * probing memory on a user address range where probe_user_read() is supposed
-- * to be used instead.
-  */
+-/*
+- * Other interfaces are not required since we do not have virtually
+- * indexed or tagged caches. So we can use the default here.
+- */
+-#define flush_cache_all()				do { } while (0)
+-#define flush_cache_mm(mm)				do { } while (0)
+-#define flush_cache_dup_mm(mm)				do { } while (0)
+-#define flush_cache_range(vma, start, end)		do { } while (0)
+-#define flush_cache_page(vma, vmaddr, pfn)		do { } while (0)
+-#define flush_dcache_mmap_lock(mapping)			do { } while (0)
+-#define flush_dcache_mmap_unlock(mapping)		do { } while (0)
+-#define flush_icache_range(start, end)			do { } while (0)
+-#define flush_icache_page(vma, pg)			do { } while (0)
+-#define flush_icache_user_range(vma, pg, adr, len)	do { } while (0)
+-#define flush_cache_vmap(start, end)			do { } while (0)
+-#define flush_cache_vunmap(start, end)			do { } while (0)
 -
--long __weak probe_kernel_read(void *dst, const void *src, size_t size)
--    __attribute__((alias("__probe_kernel_read")));
--
- long __weak probe_kernel_read_strict(void *dst, const void *src, size_t size)
-     __attribute__((alias("__probe_kernel_read")));
+-#define copy_to_user_page(vma, page, vaddr, dst, src, len)           \
+-	do {                                                         \
+-		memcpy(dst, src, len);                               \
+-		if (vma->vm_flags & VM_EXEC)                         \
+-			sync_icache_dcache(page);                    \
+-	} while (0)
++#define flush_icache_user_range(vma, page, addr, len)	\
++do {							\
++	if (vma->vm_flags & VM_EXEC)			\
++		sync_icache_dcache(page);		\
++} while (0)
  
-@@ -153,15 +159,34 @@ long probe_user_write(void __user *dst, const void *src, size_t size)
-  * If @count is smaller than the length of the string, copies @count-1 bytes,
-  * sets the last byte of @dst buffer to NUL and returns @count.
-  *
-- * strncpy_from_unsafe_strict() is the same as strncpy_from_unsafe() except
-- * for the case where architectures have non-overlapping user and kernel address
-- * ranges: strncpy_from_unsafe_strict() will additionally return -EFAULT for
-- * probing memory on a user address range where strncpy_from_unsafe_user() is
-- * supposed to be used instead.
-+ * Same as strncpy_from_unsafe_strict() except that for architectures with
-+ * not fully separated user and kernel address spaces this function also works
-+ * for user address tanges.
-+ *
-+ * DO NOT USE THIS FUNCTION - it is broken on architectures with entirely
-+ * separate kernel and user address spaces, and also a bad idea otherwise.
-  */
- long __weak strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
-     __attribute__((alias("__strncpy_from_unsafe")));
+-#define copy_from_user_page(vma, page, vaddr, dst, src, len)         \
+-	memcpy(dst, src, len)
++#include <asm-generic/cacheflush.h>
  
-+/**
-+ * strncpy_from_unsafe_strict: - Copy a NUL terminated string from unsafe
-+ *				 address.
-+ * @dst:   Destination address, in kernel space.  This buffer must be at
-+ *         least @count bytes long.
-+ * @unsafe_addr: Unsafe address.
-+ * @count: Maximum number of bytes to copy, including the trailing NUL.
-+ *
-+ * Copies a NUL-terminated string from unsafe address to kernel buffer.
-+ *
-+ * On success, returns the length of the string INCLUDING the trailing NUL.
-+ *
-+ * If access fails, returns -EFAULT (some data may have been copied
-+ * and the trailing NUL added).
-+ *
-+ * If @count is smaller than the length of the string, copies @count-1 bytes,
-+ * sets the last byte of @dst buffer to NUL and returns @count.
-+ */
- long __weak strncpy_from_unsafe_strict(char *dst, const void *unsafe_addr,
- 				       long count)
-     __attribute__((alias("__strncpy_from_unsafe")));
+ #endif /* __ASM_CACHEFLUSH_H */
 -- 
 2.26.2
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
