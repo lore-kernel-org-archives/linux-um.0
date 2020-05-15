@@ -1,137 +1,78 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Return-Path: <linux-m68k-owner@vger.kernel.org>
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 14/18] maccess: allow architectures to provide kernel probing
- directly
-Date: Wed, 13 May 2020 18:00:34 +0200
-Message-Id: <20200513160038.2482415-15-hch@lst.de>
-In-Reply-To: <20200513160038.2482415-1-hch@lst.de>
-References: <20200513160038.2482415-1-hch@lst.de>
+Subject: [PATCH 12/29] ia64: use asm-generic/cacheflush.h
+Date: Fri, 15 May 2020 16:36:29 +0200
+Message-Id: <20200515143646.3857579-13-hch@lst.de>
+In-Reply-To: <20200515143646.3857579-1-hch@lst.de>
+References: <20200515143646.3857579-1-hch@lst.de>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: x86@kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-parisc@vger.kernel.org, netdev@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Sender: linux-m68k-owner@vger.kernel.org
+To: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Roman Zippel <zippel@linux-m68k.org>
+Cc: Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linux-fsdevel@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-Provide alternative versions of probe_kernel_read, probe_kernel_write
-and strncpy_from_kernel_unsafe that don't need set_fs magic, but instead
-use arch hooks that are modelled after unsafe_{get,put}_user to access
-kernel memory in an exception safe way.
+IA64 needs almost no cache flushing routines of its own.  Rely on
+asm-generic/cacheflush.h for the defaults.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- mm/maccess.c | 76 ++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 76 insertions(+)
+ arch/ia64/include/asm/cacheflush.h | 28 +++-------------------------
+ 1 file changed, 3 insertions(+), 25 deletions(-)
 
-diff --git a/mm/maccess.c b/mm/maccess.c
-index 9773e2253b495..e9efe2f98e34a 100644
---- a/mm/maccess.c
-+++ b/mm/maccess.c
-@@ -12,6 +12,81 @@ bool __weak probe_kernel_read_allowed(void *dst, const void *unsafe_src,
- 	return true;
- }
+diff --git a/arch/ia64/include/asm/cacheflush.h b/arch/ia64/include/asm/cacheflush.h
+index 6d3478f8abc89..a8f1c86ac242a 100644
+--- a/arch/ia64/include/asm/cacheflush.h
++++ b/arch/ia64/include/asm/cacheflush.h
+@@ -12,44 +12,22 @@
  
-+#ifdef HAVE_ARCH_PROBE_KERNEL
-+
-+#define probe_kernel_read_loop(dst, src, len, type, err_label)		\
-+	while (len >= sizeof(type)) {					\
-+		arch_kernel_read(dst, src, type, err_label);		\
-+		dst += sizeof(type);					\
-+		src += sizeof(type);					\
-+		len -= sizeof(type);					\
-+	}
-+
-+long probe_kernel_read(void *dst, const void *src, size_t size)
-+{
-+	if (!probe_kernel_read_allowed(dst, src, size))
-+		return -EFAULT;
-+
-+	pagefault_disable();
-+	probe_kernel_read_loop(dst, src, size, u64, Efault);
-+	probe_kernel_read_loop(dst, src, size, u32, Efault);
-+	probe_kernel_read_loop(dst, src, size, u16, Efault);
-+	probe_kernel_read_loop(dst, src, size, u8, Efault);
-+	pagefault_enable();
-+	return 0;
-+Efault:
-+	pagefault_enable();
-+	return -EFAULT;
-+}
-+EXPORT_SYMBOL_GPL(probe_kernel_read);
-+
-+#define probe_kernel_write_loop(dst, src, len, type, err_label)		\
-+	while (len >= sizeof(type)) {					\
-+		arch_kernel_write(dst, src, type, err_label);		\
-+		dst += sizeof(type);					\
-+		src += sizeof(type);					\
-+		len -= sizeof(type);					\
-+	}
-+
-+long probe_kernel_write(void *dst, const void *src, size_t size)
-+{
-+	pagefault_disable();
-+	probe_kernel_write_loop(dst, src, size, u64, Efault);
-+	probe_kernel_write_loop(dst, src, size, u32, Efault);
-+	probe_kernel_write_loop(dst, src, size, u16, Efault);
-+	probe_kernel_write_loop(dst, src, size, u8, Efault);
-+	pagefault_enable();
-+	return 0;
-+Efault:
-+	pagefault_enable();
-+	return -EFAULT;
-+}
-+
-+long strncpy_from_kernel_unsafe(char *dst, const void *unsafe_addr, long count)
-+{
-+	const void *src = unsafe_addr;
-+
-+	if (unlikely(count <= 0))
-+		return 0;
-+	if (!probe_kernel_read_allowed(dst, unsafe_addr, count))
-+		return -EFAULT;
-+
-+	pagefault_disable();
-+	do {
-+		arch_kernel_read(dst, src, u8, Efault);
-+		dst++;
-+		src++;
-+	} while (dst[-1] && src - unsafe_addr < count);
-+	pagefault_enable();
-+
-+	dst[-1] = '\0';
-+	return src - unsafe_addr;
-+Efault:
-+	pagefault_enable();
-+	dst[-1] = '\0';
-+	return -EFAULT;
-+}
-+#else /* HAVE_ARCH_PROBE_KERNEL */
- /**
-  * probe_kernel_read(): safely attempt to read from kernel-space
-  * @dst: pointer to the buffer that shall take the data
-@@ -114,6 +189,7 @@ long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
+ #include <asm/page.h>
  
- 	return ret ? -EFAULT : src - unsafe_addr;
- }
-+#endif /* HAVE_ARCH_PROBE_KERNEL */
+-/*
+- * Cache flushing routines.  This is the kind of stuff that can be very expensive, so try
+- * to avoid them whenever possible.
+- */
+-
+-#define flush_cache_all()			do { } while (0)
+-#define flush_cache_mm(mm)			do { } while (0)
+-#define flush_cache_dup_mm(mm)			do { } while (0)
+-#define flush_cache_range(vma, start, end)	do { } while (0)
+-#define flush_cache_page(vma, vmaddr, pfn)	do { } while (0)
+-#define flush_icache_page(vma,page)		do { } while (0)
+-#define flush_cache_vmap(start, end)		do { } while (0)
+-#define flush_cache_vunmap(start, end)		do { } while (0)
+-
+ #define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
+ #define flush_dcache_page(page)			\
+ do {						\
+ 	clear_bit(PG_arch_1, &(page)->flags);	\
+ } while (0)
  
- /**
-  * probe_user_read(): safely attempt to read from a user-space location
+-#define flush_dcache_mmap_lock(mapping)		do { } while (0)
+-#define flush_dcache_mmap_unlock(mapping)	do { } while (0)
+-
+-extern void flush_icache_range (unsigned long start, unsigned long end);
++extern void flush_icache_range(unsigned long start, unsigned long end);
++#define flush_icache_range flush_icache_range
+ extern void clflush_cache_range(void *addr, int size);
+ 
+-
+ #define flush_icache_user_range(vma, page, user_addr, len)					\
+ do {												\
+ 	unsigned long _addr = (unsigned long) page_address(page) + ((user_addr) & ~PAGE_MASK);	\
+ 	flush_icache_range(_addr, _addr + (len));						\
+ } while (0)
+ 
+-#define copy_to_user_page(vma, page, vaddr, dst, src, len) \
+-do { memcpy(dst, src, len); \
+-     flush_icache_user_range(vma, page, vaddr, len); \
+-} while (0)
+-#define copy_from_user_page(vma, page, vaddr, dst, src, len) \
+-	memcpy(dst, src, len)
++#include <asm-generic/cacheflush.h>
+ 
+ #endif /* _ASM_IA64_CACHEFLUSH_H */
 -- 
 2.26.2
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
