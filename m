@@ -1,10 +1,10 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 20/31] arm,sparc,unicore32: remove flush_icache_user_range
-Date: Sun, 10 May 2020 09:54:59 +0200
-Message-Id: <20200510075510.987823-21-hch@lst.de>
-In-Reply-To: <20200510075510.987823-1-hch@lst.de>
-References: <20200510075510.987823-1-hch@lst.de>
+Subject: [PATCH 18/29] arm,sparc,unicore32: remove flush_icache_user_range
+Date: Fri, 15 May 2020 16:36:35 +0200
+Message-Id: <20200515143646.3857579-19-hch@lst.de>
+In-Reply-To: <20200515143646.3857579-1-hch@lst.de>
+References: <20200515143646.3857579-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
