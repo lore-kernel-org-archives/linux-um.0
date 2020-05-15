@@ -1,116 +1,40 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Return-Path: <linux-sh-owner@vger.kernel.org>
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 07/18] maccess: rename strncpy_from_unsafe_strict to
- strncpy_from_kernel_nofault
-Date: Wed, 13 May 2020 18:00:27 +0200
-Message-Id: <20200513160038.2482415-8-hch@lst.de>
-In-Reply-To: <20200513160038.2482415-1-hch@lst.de>
-References: <20200513160038.2482415-1-hch@lst.de>
+Subject: [PATCH 22/29] xtensa: implement flush_icache_user_range
+Date: Fri, 15 May 2020 16:36:39 +0200
+Message-Id: <20200515143646.3857579-23-hch@lst.de>
+In-Reply-To: <20200515143646.3857579-1-hch@lst.de>
+References: <20200515143646.3857579-1-hch@lst.de>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: x86@kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-parisc@vger.kernel.org, netdev@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Sender: linux-sh-owner@vger.kernel.org
+To: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Roman Zippel <zippel@linux-m68k.org>
+Cc: Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linux-fsdevel@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-This matches the naming of strncpy_from_user_nofault, and also makes it
-more clear what the function is supposed to do.
+The Xtensa implementation of flush_icache_range seems to be able to
+cope with user addresses.  Just define flush_icache_user_range to
+flush_icache_range.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/x86/mm/maccess.c    | 2 +-
- include/linux/uaccess.h  | 4 ++--
- kernel/trace/bpf_trace.c | 2 +-
- mm/maccess.c             | 6 +++---
- 4 files changed, 7 insertions(+), 7 deletions(-)
+ arch/xtensa/include/asm/cacheflush.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/x86/mm/maccess.c b/arch/x86/mm/maccess.c
-index f5b85bdc0535c..62c4017a2473d 100644
---- a/arch/x86/mm/maccess.c
-+++ b/arch/x86/mm/maccess.c
-@@ -34,7 +34,7 @@ long probe_kernel_read_strict(void *dst, const void *src, size_t size)
- 	return __probe_kernel_read(dst, src, size);
- }
+diff --git a/arch/xtensa/include/asm/cacheflush.h b/arch/xtensa/include/asm/cacheflush.h
+index a0d50be5a8cb1..460e666ad0761 100644
+--- a/arch/xtensa/include/asm/cacheflush.h
++++ b/arch/xtensa/include/asm/cacheflush.h
+@@ -107,6 +107,8 @@ void flush_cache_page(struct vm_area_struct*,
+ #define flush_cache_page  local_flush_cache_page
+ #endif
  
--long strncpy_from_unsafe_strict(char *dst, const void *unsafe_addr, long count)
-+long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
- {
- 	if (unlikely(invalid_probe_range((unsigned long)unsafe_addr)))
- 		return -EFAULT;
-diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
-index b983cb1c1216a..134ff9c1c151b 100644
---- a/include/linux/uaccess.h
-+++ b/include/linux/uaccess.h
-@@ -310,8 +310,8 @@ extern long notrace probe_kernel_write(void *dst, const void *src, size_t size);
- extern long notrace probe_user_write(void __user *dst, const void *src, size_t size);
- 
- extern long strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count);
--extern long strncpy_from_unsafe_strict(char *dst, const void *unsafe_addr,
--				       long count);
-+long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr,
-+		long count);
- extern long __strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count);
- long strncpy_from_user_nofault(char *dst, const void __user *unsafe_addr,
- 		long count);
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index fcbc11040d956..3dd4763c195bb 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -240,7 +240,7 @@ bpf_probe_read_kernel_str_common(void *dst, u32 size, const void *unsafe_ptr,
- 	 * is returned that can be used for bpf_perf_event_output() et al.
- 	 */
- 	ret = compat ? strncpy_from_unsafe(dst, unsafe_ptr, size) :
--	      strncpy_from_unsafe_strict(dst, unsafe_ptr, size);
-+	      strncpy_from_kernel_nofault(dst, unsafe_ptr, size);
- 	if (unlikely(ret < 0))
- out:
- 		memset(dst, 0, size);
-diff --git a/mm/maccess.c b/mm/maccess.c
-index 457d8f9bf714f..c8748c2809096 100644
---- a/mm/maccess.c
-+++ b/mm/maccess.c
-@@ -159,7 +159,7 @@ long probe_user_write(void __user *dst, const void *src, size_t size)
-  * If @count is smaller than the length of the string, copies @count-1 bytes,
-  * sets the last byte of @dst buffer to NUL and returns @count.
-  *
-- * Same as strncpy_from_unsafe_strict() except that for architectures with
-+ * Same as strncpy_from_kernel_nofault() except that for architectures with
-  * not fully separated user and kernel address spaces this function also works
-  * for user address tanges.
-  *
-@@ -170,7 +170,7 @@ long __weak strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
-     __attribute__((alias("__strncpy_from_unsafe")));
- 
- /**
-- * strncpy_from_unsafe_strict: - Copy a NUL terminated string from unsafe
-+ * strncpy_from_kernel_nofault: - Copy a NUL terminated string from unsafe
-  *				 address.
-  * @dst:   Destination address, in kernel space.  This buffer must be at
-  *         least @count bytes long.
-@@ -187,7 +187,7 @@ long __weak strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
-  * If @count is smaller than the length of the string, copies @count-1 bytes,
-  * sets the last byte of @dst buffer to NUL and returns @count.
-  */
--long __weak strncpy_from_unsafe_strict(char *dst, const void *unsafe_addr,
-+long __weak strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr,
- 				       long count)
-     __attribute__((alias("__strncpy_from_unsafe")));
- 
++#define flush_icache_user_range flush_icache_range
++
+ #define local_flush_cache_all()						\
+ 	do {								\
+ 		__flush_invalidate_dcache_all();			\
 -- 
 2.26.2
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
