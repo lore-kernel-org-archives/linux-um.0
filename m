@@ -1,45 +1,63 @@
-Return-Path: <linux-sh-owner@vger.kernel.org>
+Return-Path: <linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org>
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 04/29] unicore32: remove flush_cache_user_range
-Date: Fri, 15 May 2020 16:36:21 +0200
-Message-Id: <20200515143646.3857579-5-hch@lst.de>
-In-Reply-To: <20200515143646.3857579-1-hch@lst.de>
-References: <20200515143646.3857579-1-hch@lst.de>
+Subject: sort out the flush_icache_range mess v2
+Date: Fri, 15 May 2020 16:36:17 +0200
+Message-Id: <20200515143646.3857579-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: linux-sh-owner@vger.kernel.org
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org
 To: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Roman Zippel <zippel@linux-m68k.org>
-Cc: Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linux-fsdevel@vger.kernel.org
+Cc: linux-arch@vger.kernel.org, linux-xtensa@linux-xtensa.org, Michal Simek <monstr@monstr.eu>, Jessica Yu <jeyu@kernel.org>, linux-ia64@vger.kernel.org, linux-c6x-dev@linux-c6x.org, linux-sh@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
 List-ID: <linux-um.lists.infradead.org>
 
-flush_cache_user_range is an ARMism not used by any generic or unicore32
-specific code.
+Hi all,
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- arch/unicore32/include/asm/cacheflush.h | 8 --------
- 1 file changed, 8 deletions(-)
+flush_icache_range is mostly used for kernel address, except for the following
+cases:
 
-diff --git a/arch/unicore32/include/asm/cacheflush.h b/arch/unicore32/include/asm/cacheflush.h
-index dc8c0b41538f8..9393ca4047e93 100644
---- a/arch/unicore32/include/asm/cacheflush.h
-+++ b/arch/unicore32/include/asm/cacheflush.h
-@@ -132,14 +132,6 @@ extern void flush_cache_page(struct vm_area_struct *vma,
- 
- #define flush_cache_dup_mm(mm) flush_cache_mm(mm)
- 
--/*
-- * flush_cache_user_range is used when we want to ensure that the
-- * Harvard caches are synchronised for the user space address range.
-- * This is used for the UniCore private sys_cacheflush system call.
-- */
--#define flush_cache_user_range(vma, start, end) \
--	__cpuc_coherent_user_range((start) & PAGE_MASK, PAGE_ALIGN(end))
--
- /*
-  * Perform necessary cache operations to ensure that data previously
-  * stored within this range of addresses can be executed by the CPU.
--- 
-2.26.2
+ - the nommu brk and mmap implementations,
+ - the read_code helper that is only used for binfmt_flat, binfmt_elf_fdpic,
+   and binfmt_aout including the broken ia32 compat version
+ - binfmt_flat itself,
 
+none of which really are used by a typical MMU enabled kernel, as a.out can
+only be build for alpha and m68k to start with.
+
+But strangely enough commit ae92ef8a4424 ("PATCH] flush icache in correct
+context") added a "set_fs(KERNEL_DS)" around the flush_icache_range call
+in the module loader, because apparently m68k assumed user pointers.
+
+This series first cleans up the cacheflush implementations, largely by
+switching as much as possible to the asm-generic version after a few
+preparations, then moves the misnamed current flush_icache_user_range to
+a new name, to finally introduce a real flush_icache_user_range to be used
+for the above use cases to flush the instruction cache for a userspace
+address range.  The last patch then drops the set_fs in the module code
+and moves it into the m68k implementation.
+
+A git tree is available here:
+
+    git://git.infradead.org/users/hch/misc.git flush_icache_range.2
+
+Gitweb:
+
+    http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/flush_icache_range.2
+
+Changes since v1:
+ - fix pmem.c compilation on some s390 configs
+ - drop two patches picked up by the arch maintainers
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
