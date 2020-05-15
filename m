@@ -1,8 +1,8 @@
 Return-Path: <linux-m68k-owner@vger.kernel.org>
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 07/29] asm-generic: improve the flush_dcache_page stub
-Date: Fri, 15 May 2020 16:36:24 +0200
-Message-Id: <20200515143646.3857579-8-hch@lst.de>
+Subject: [PATCH 02/29] nds32: unexport flush_icache_page
+Date: Fri, 15 May 2020 16:36:19 +0200
+Message-Id: <20200515143646.3857579-3-hch@lst.de>
 In-Reply-To: <20200515143646.3857579-1-hch@lst.de>
 References: <20200515143646.3857579-1-hch@lst.de>
 MIME-Version: 1.0
@@ -12,44 +12,25 @@ To: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Ro
 Cc: Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linux-fsdevel@vger.kernel.org
 List-ID: <linux-um.lists.infradead.org>
 
-There is a magic ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE cpp symbol that
-guards non-stub availability of flush_dcache_pagge.  Use that to
-check if flush_dcache_pagg is implemented.
+flush_icache_page is only used by mm/memory.c.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- include/asm-generic/cacheflush.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/nds32/mm/cacheflush.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/include/asm-generic/cacheflush.h b/include/asm-generic/cacheflush.h
-index bf9bb83e9fc8d..bbbb4d4ef6516 100644
---- a/include/asm-generic/cacheflush.h
-+++ b/include/asm-generic/cacheflush.h
-@@ -2,8 +2,6 @@
- #ifndef _ASM_GENERIC_CACHEFLUSH_H
- #define _ASM_GENERIC_CACHEFLUSH_H
- 
--#define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
--
- /*
-  * The cache doesn't need to be flushed when TLB entries change when
-  * the cache is mapped to physical memory, not virtual memory
-@@ -42,12 +40,14 @@ static inline void flush_cache_page(struct vm_area_struct *vma,
+diff --git a/arch/nds32/mm/cacheflush.c b/arch/nds32/mm/cacheflush.c
+index 254703653b6f5..8f168b33065fa 100644
+--- a/arch/nds32/mm/cacheflush.c
++++ b/arch/nds32/mm/cacheflush.c
+@@ -35,7 +35,6 @@ void flush_icache_page(struct vm_area_struct *vma, struct page *page)
+ 	kunmap_atomic((void *)kaddr);
+ 	local_irq_restore(flags);
  }
- #endif
+-EXPORT_SYMBOL(flush_icache_page);
  
--#ifndef flush_dcache_page
-+#ifndef ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
- static inline void flush_dcache_page(struct page *page)
- {
- }
-+#define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
- #endif
- 
-+
- #ifndef flush_dcache_mmap_lock
- static inline void flush_dcache_mmap_lock(struct address_space *mapping)
- {
+ void flush_icache_user_range(struct vm_area_struct *vma, struct page *page,
+ 	                     unsigned long addr, int len)
 -- 
 2.26.2
 
