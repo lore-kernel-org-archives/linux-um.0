@@ -1,91 +1,38 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Return-Path: <linux-m68k-owner@vger.kernel.org>
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 08/23] maccess: rename strnlen_unsafe_user to
- strnlen_user_nofault
-Date: Thu, 21 May 2020 17:22:46 +0200
-Message-Id: <20200521152301.2587579-9-hch@lst.de>
-In-Reply-To: <20200521152301.2587579-1-hch@lst.de>
-References: <20200521152301.2587579-1-hch@lst.de>
+Subject: [PATCH 03/29] powerpc: unexport flush_icache_user_range
+Date: Fri, 15 May 2020 16:36:20 +0200
+Message-Id: <20200515143646.3857579-4-hch@lst.de>
+In-Reply-To: <20200515143646.3857579-1-hch@lst.de>
+References: <20200515143646.3857579-1-hch@lst.de>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: x86@kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-parisc@vger.kernel.org, netdev@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Sender: linux-m68k-owner@vger.kernel.org
+To: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Roman Zippel <zippel@linux-m68k.org>
+Cc: Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linux-fsdevel@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-This matches the naming of strnlen_user, and also makes it more clear
-what the function is supposed to do.
+flush_icache_user_range is only used by copy_to_user_page, which is
+only used by core VM code.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- include/linux/uaccess.h     | 2 +-
- kernel/trace/trace_kprobe.c | 2 +-
- mm/maccess.c                | 4 ++--
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ arch/powerpc/mm/mem.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
-index 134ff9c1c151b..d8366f8468664 100644
---- a/include/linux/uaccess.h
-+++ b/include/linux/uaccess.h
-@@ -315,7 +315,7 @@ long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr,
- extern long __strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count);
- long strncpy_from_user_nofault(char *dst, const void __user *unsafe_addr,
- 		long count);
--extern long strnlen_unsafe_user(const void __user *unsafe_addr, long count);
-+long strnlen_user_nofault(const void __user *unsafe_addr, long count);
- 
- /**
-  * probe_kernel_address(): safely attempt to read from a location
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index d600f41fda1ca..4325f9e7fadaa 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -1221,7 +1221,7 @@ fetch_store_strlen_user(unsigned long addr)
- {
- 	const void __user *uaddr =  (__force const void __user *)addr;
- 
--	return strnlen_unsafe_user(uaddr, MAX_STRING_SIZE);
-+	return strnlen_user_nofault(uaddr, MAX_STRING_SIZE);
+diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
+index 041ed7cfd341a..f0d1bf0a8e14f 100644
+--- a/arch/powerpc/mm/mem.c
++++ b/arch/powerpc/mm/mem.c
+@@ -587,7 +587,6 @@ void flush_icache_user_range(struct vm_area_struct *vma, struct page *page,
+ 	flush_icache_range(maddr, maddr + len);
+ 	kunmap(page);
  }
+-EXPORT_SYMBOL(flush_icache_user_range);
  
  /*
-diff --git a/mm/maccess.c b/mm/maccess.c
-index c8748c2809096..e783ebfccd542 100644
---- a/mm/maccess.c
-+++ b/mm/maccess.c
-@@ -258,7 +258,7 @@ long strncpy_from_user_nofault(char *dst, const void __user *unsafe_addr,
- }
- 
- /**
-- * strnlen_unsafe_user: - Get the size of a user string INCLUDING final NUL.
-+ * strnlen_user_nofault: - Get the size of a user string INCLUDING final NUL.
-  * @unsafe_addr: The string to measure.
-  * @count: Maximum count (including NUL)
-  *
-@@ -273,7 +273,7 @@ long strncpy_from_user_nofault(char *dst, const void __user *unsafe_addr,
-  * Unlike strnlen_user, this can be used from IRQ handler etc. because
-  * it disables pagefaults.
-  */
--long strnlen_unsafe_user(const void __user *unsafe_addr, long count)
-+long strnlen_user_nofault(const void __user *unsafe_addr, long count)
- {
- 	mm_segment_t old_fs = get_fs();
- 	int ret;
+  * System memory should not be in /proc/iomem but various tools expect it
 -- 
 2.26.2
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
