@@ -1,175 +1,67 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Return-Path: <BATV+e5f7f93d3739a79b60a3+6109+infradead.org+hch@bombadil.srs.infradead.org>
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 14/20] maccess: move user access routines together
-Date: Tue, 19 May 2020 15:44:43 +0200
-Message-Id: <20200519134449.1466624-15-hch@lst.de>
-In-Reply-To: <20200519134449.1466624-1-hch@lst.de>
-References: <20200519134449.1466624-1-hch@lst.de>
+Subject: [PATCH 24/29] m68k: implement flush_icache_user_range
+Date: Fri, 15 May 2020 16:36:41 +0200
+Message-Id: <20200515143646.3857579-25-hch@lst.de>
+In-Reply-To: <20200515143646.3857579-1-hch@lst.de>
+References: <20200515143646.3857579-1-hch@lst.de>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: x86@kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-parisc@vger.kernel.org, netdev@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+To: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Roman Zippel <zippel@linux-m68k.org>
+Cc: Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linux-fsdevel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+List-ID: <linux-um.lists.infradead.org>
 
-Move kernel access vs user access routines together to ease upcoming
-ifdefs.
+Rename the current flush_icache_range to flush_icache_user_range as
+per commit ae92ef8a4424 ("PATCH] flush icache in correct context") there
+seems to be an assumption that it operates on user addresses.  Add a
+flush_icache_range around it that for now is a no-op.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- mm/maccess.c | 110 +++++++++++++++++++++++++--------------------------
- 1 file changed, 55 insertions(+), 55 deletions(-)
+ arch/m68k/include/asm/cacheflush_mm.h | 2 ++
+ arch/m68k/mm/cache.c                  | 7 ++++++-
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/mm/maccess.c b/mm/maccess.c
-index 05c44d490b4e3..9773e2253b495 100644
---- a/mm/maccess.c
-+++ b/mm/maccess.c
-@@ -47,34 +47,6 @@ long probe_kernel_read(void *dst, const void *src, size_t size)
- }
- EXPORT_SYMBOL_GPL(probe_kernel_read);
+diff --git a/arch/m68k/include/asm/cacheflush_mm.h b/arch/m68k/include/asm/cacheflush_mm.h
+index 95376bf84faa5..1ac55e7b47f01 100644
+--- a/arch/m68k/include/asm/cacheflush_mm.h
++++ b/arch/m68k/include/asm/cacheflush_mm.h
+@@ -257,6 +257,8 @@ static inline void __flush_page_to_ram(void *vaddr)
+ extern void flush_icache_user_page(struct vm_area_struct *vma, struct page *page,
+ 				    unsigned long addr, int len);
+ extern void flush_icache_range(unsigned long address, unsigned long endaddr);
++extern void flush_icache_user_range(unsigned long address,
++		unsigned long endaddr);
  
--/**
-- * probe_user_read(): safely attempt to read from a user-space location
-- * @dst: pointer to the buffer that shall take the data
-- * @src: address to read from. This must be a user address.
-- * @size: size of the data chunk
-- *
-- * Safely read from user address @src to the buffer at @dst. If a kernel fault
-- * happens, handle that and return -EFAULT.
-- */
--long probe_user_read(void *dst, const void __user *src, size_t size)
--{
--	long ret = -EFAULT;
--	mm_segment_t old_fs = get_fs();
--
--	set_fs(USER_DS);
--	if (access_ok(src, size)) {
--		pagefault_disable();
--		ret = __copy_from_user_inatomic(dst, src, size);
--		pagefault_enable();
--	}
--	set_fs(old_fs);
--
--	if (ret)
--		return -EFAULT;
--	return 0;
--}
--EXPORT_SYMBOL_GPL(probe_user_read);
--
- /**
-  * probe_kernel_write(): safely attempt to write to a location
-  * @dst: address to write to
-@@ -100,33 +72,6 @@ long probe_kernel_write(void *dst, const void *src, size_t size)
- 	return 0;
- }
+ static inline void copy_to_user_page(struct vm_area_struct *vma,
+ 				     struct page *page, unsigned long vaddr,
+diff --git a/arch/m68k/mm/cache.c b/arch/m68k/mm/cache.c
+index 99057cd5ff7f1..7915be3a09712 100644
+--- a/arch/m68k/mm/cache.c
++++ b/arch/m68k/mm/cache.c
+@@ -73,7 +73,7 @@ static unsigned long virt_to_phys_slow(unsigned long vaddr)
  
--/**
-- * probe_user_write(): safely attempt to write to a user-space location
-- * @dst: address to write to
-- * @src: pointer to the data that shall be written
-- * @size: size of the data chunk
-- *
-- * Safely write to address @dst from the buffer at @src.  If a kernel fault
-- * happens, handle that and return -EFAULT.
-- */
--long probe_user_write(void __user *dst, const void *src, size_t size)
--{
--	long ret = -EFAULT;
--	mm_segment_t old_fs = get_fs();
--
--	set_fs(USER_DS);
--	if (access_ok(dst, size)) {
--		pagefault_disable();
--		ret = __copy_to_user_inatomic(dst, src, size);
--		pagefault_enable();
--	}
--	set_fs(old_fs);
--
--	if (ret)
--		return -EFAULT;
--	return 0;
--}
--
- /**
-  * strncpy_from_kernel_nofault: - Copy a NUL terminated string from unsafe
-  *				 address.
-@@ -170,6 +115,61 @@ long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
- 	return ret ? -EFAULT : src - unsafe_addr;
+ /* Push n pages at kernel virtual address and clear the icache */
+ /* RZ: use cpush %bc instead of cpush %dc, cinv %ic */
+-void flush_icache_range(unsigned long address, unsigned long endaddr)
++void flush_icache_user_range(unsigned long address, unsigned long endaddr)
+ {
+ 	if (CPU_IS_COLDFIRE) {
+ 		unsigned long start, end;
+@@ -104,6 +104,11 @@ void flush_icache_range(unsigned long address, unsigned long endaddr)
+ 			      : "di" (FLUSH_I));
+ 	}
  }
- 
-+/**
-+ * probe_user_read(): safely attempt to read from a user-space location
-+ * @dst: pointer to the buffer that shall take the data
-+ * @src: address to read from. This must be a user address.
-+ * @size: size of the data chunk
-+ *
-+ * Safely read from user address @src to the buffer at @dst. If a kernel fault
-+ * happens, handle that and return -EFAULT.
-+ */
-+long probe_user_read(void *dst, const void __user *src, size_t size)
++
++void flush_icache_range(unsigned long address, unsigned long endaddr)
 +{
-+	long ret = -EFAULT;
-+	mm_segment_t old_fs = get_fs();
-+
-+	set_fs(USER_DS);
-+	if (access_ok(src, size)) {
-+		pagefault_disable();
-+		ret = __copy_from_user_inatomic(dst, src, size);
-+		pagefault_enable();
-+	}
-+	set_fs(old_fs);
-+
-+	if (ret)
-+		return -EFAULT;
-+	return 0;
++	flush_icache_user_range(address, endaddr);
 +}
-+EXPORT_SYMBOL_GPL(probe_user_read);
-+
-+/**
-+ * probe_user_write(): safely attempt to write to a user-space location
-+ * @dst: address to write to
-+ * @src: pointer to the data that shall be written
-+ * @size: size of the data chunk
-+ *
-+ * Safely write to address @dst from the buffer at @src.  If a kernel fault
-+ * happens, handle that and return -EFAULT.
-+ */
-+long probe_user_write(void __user *dst, const void *src, size_t size)
-+{
-+	long ret = -EFAULT;
-+	mm_segment_t old_fs = get_fs();
-+
-+	set_fs(USER_DS);
-+	if (access_ok(dst, size)) {
-+		pagefault_disable();
-+		ret = __copy_to_user_inatomic(dst, src, size);
-+		pagefault_enable();
-+	}
-+	set_fs(old_fs);
-+
-+	if (ret)
-+		return -EFAULT;
-+	return 0;
-+}
-+
- /**
-  * strncpy_from_user_nofault: - Copy a NUL terminated string from unsafe user
-  *				address.
+ EXPORT_SYMBOL(flush_icache_range);
+ 
+ void flush_icache_user_page(struct vm_area_struct *vma, struct page *page,
 -- 
 2.26.2
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
