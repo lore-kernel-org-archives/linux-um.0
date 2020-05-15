@@ -1,60 +1,58 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Return-Path: <linux-m68k-owner@vger.kernel.org>
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 01/18] maccess: unexport probe_kernel_write and
- probe_user_write
-Date: Wed, 13 May 2020 18:00:21 +0200
-Message-Id: <20200513160038.2482415-2-hch@lst.de>
-In-Reply-To: <20200513160038.2482415-1-hch@lst.de>
-References: <20200513160038.2482415-1-hch@lst.de>
+Subject: [PATCH 23/29] arm: rename flush_cache_user_range to flush_icache_user_range
+Date: Fri, 15 May 2020 16:36:40 +0200
+Message-Id: <20200515143646.3857579-24-hch@lst.de>
+In-Reply-To: <20200515143646.3857579-1-hch@lst.de>
+References: <20200515143646.3857579-1-hch@lst.de>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: x86@kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-parisc@vger.kernel.org, netdev@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Sender: linux-m68k-owner@vger.kernel.org
+To: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Roman Zippel <zippel@linux-m68k.org>
+Cc: Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linux-fsdevel@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-These two functions are not used by any modular code.
+flush_icache_user_range will be the name for a generic primitive.
+Move the arm name so that arm already has an implementation.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- mm/maccess.c | 2 --
- 1 file changed, 2 deletions(-)
+ arch/arm/include/asm/cacheflush.h | 4 ++--
+ arch/arm/kernel/traps.c           | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/mm/maccess.c b/mm/maccess.c
-index 3ca8d97e50106..cf21e604f78cb 100644
---- a/mm/maccess.c
-+++ b/mm/maccess.c
-@@ -121,7 +121,6 @@ long __probe_kernel_write(void *dst, const void *src, size_t size)
+diff --git a/arch/arm/include/asm/cacheflush.h b/arch/arm/include/asm/cacheflush.h
+index c78e14fcfb5df..2e24e765e6d3a 100644
+--- a/arch/arm/include/asm/cacheflush.h
++++ b/arch/arm/include/asm/cacheflush.h
+@@ -258,11 +258,11 @@ extern void flush_cache_page(struct vm_area_struct *vma, unsigned long user_addr
+ #define flush_cache_dup_mm(mm) flush_cache_mm(mm)
  
- 	return ret;
- }
--EXPORT_SYMBOL_GPL(probe_kernel_write);
+ /*
+- * flush_cache_user_range is used when we want to ensure that the
++ * flush_icache_user_range is used when we want to ensure that the
+  * Harvard caches are synchronised for the user space address range.
+  * This is used for the ARM private sys_cacheflush system call.
+  */
+-#define flush_cache_user_range(s,e)	__cpuc_coherent_user_range(s,e)
++#define flush_icache_user_range(s,e)	__cpuc_coherent_user_range(s,e)
  
- /**
-  * probe_user_write(): safely attempt to write to a user-space location
-@@ -148,7 +147,6 @@ long __probe_user_write(void __user *dst, const void *src, size_t size)
+ /*
+  * Perform necessary cache operations to ensure that data previously
+diff --git a/arch/arm/kernel/traps.c b/arch/arm/kernel/traps.c
+index 1e70e7227f0ff..316a7687f8133 100644
+--- a/arch/arm/kernel/traps.c
++++ b/arch/arm/kernel/traps.c
+@@ -566,7 +566,7 @@ __do_cache_op(unsigned long start, unsigned long end)
+ 		if (fatal_signal_pending(current))
+ 			return 0;
  
- 	return ret;
- }
--EXPORT_SYMBOL_GPL(probe_user_write);
+-		ret = flush_cache_user_range(start, start + chunk);
++		ret = flush_icache_user_range(start, start + chunk);
+ 		if (ret)
+ 			return ret;
  
- /**
-  * strncpy_from_unsafe: - Copy a NUL terminated string from unsafe address.
 -- 
 2.26.2
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
