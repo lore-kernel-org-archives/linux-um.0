@@ -1,25 +1,9 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-lj1-x22b.google.com ([2a00:1450:4864:20::22b])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jb5Cy-0004J0-Pt
- for linux-um@lists.infradead.org; Tue, 19 May 2020 16:35:13 +0000
-Received: by mail-lj1-x22b.google.com with SMTP id g1so406482ljk.7
- for <linux-um@lists.infradead.org>; Tue, 19 May 2020 09:35:10 -0700 (PDT)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com.
- [209.85.167.44])
- by smtp.gmail.com with ESMTPSA id y20sm70889lji.31.2020.05.19.09.35.06
- for <linux-um@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 19 May 2020 09:35:06 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id x22so76396lfd.4
- for <linux-um@lists.infradead.org>; Tue, 19 May 2020 09:35:06 -0700 (PDT)
+From: Christoph Hellwig <hch@lst.de>
+Subject: clean up and streamline probe_kernel_* and friends v3
+Date: Tue, 19 May 2020 15:44:29 +0200
+Message-Id: <20200519134449.1466624-1-hch@lst.de>
 MIME-Version: 1.0
-References: <20200519134449.1466624-1-hch@lst.de>
-In-Reply-To: <20200519134449.1466624-1-hch@lst.de>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 19 May 2020 09:34:49 -0700
-Message-ID: <CAHk-=whj0zVP-ErHcqGNrM0-bZ+TvSFAwpEd+pKFadZeFXj5PA@mail.gmail.com>
-Subject: Re: clean up and streamline probe_kernel_* and friends v3
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -32,17 +16,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Christoph Hellwig <hch@lst.de>
-Cc: Daniel Borkmann <daniel@iogearbox.net>, linux-parisc@vger.kernel.org, Netdev <netdev@vger.kernel.org>, the arch/x86 maintainers <x86@kernel.org>, linux-um <linux-um@lists.infradead.org>, Alexei Starovoitov <ast@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>, Masami Hiramatsu <mhiramat@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, bpf@vger.kernel.org
+To: x86@kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-parisc@vger.kernel.org, netdev@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
 
-On Tue, May 19, 2020 at 6:44 AM Christoph Hellwig <hch@lst.de> wrote:
->
->  - rebased on 5.7-rc6 with the bpf trace format string changes
+Hi all,
 
-Other than the critique about illegible conditionals in the result
-when doing that bpf/trace conversion, I like it.
+this series start cleaning up the safe kernel and user memory probing
+helpers in mm/maccess.c, and then allows architectures to implement
+the kernel probing without overriding the address space limit and
+temporarily allowing access to user memory.  It then switches x86
+over to this new mechanism by reusing the unsafe_* uaccess logic.
 
-                  Linus
+This version also switches to the saner copy_{from,to}_kernel_nofault
+naming suggested by Linus.
+
+I kept the x86 helprs as-is without calling unsage_{get,put}_user as
+that avoids a number of hard to trace casts, and it will still work
+with the asm-goto based version easily.
+
+Changes since v2:
+ - rebased on 5.7-rc6 with the bpf trace format string changes
+ - rename arch_kernel_read to __get_kernel_nofault and arch_kernel_write
+   to __put_kernel_nofault
+ - clean up the tracers to only allowd "mixed" reads when the kernel
+   has non-overlapping address spaces
 
 _______________________________________________
 linux-um mailing list
