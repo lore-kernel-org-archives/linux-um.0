@@ -1,40 +1,52 @@
-Return-Path: <linux-sh-owner@vger.kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from verein.lst.de ([213.95.11.211])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jav8m-00031x-Eu
+ for linux-um@lists.infradead.org; Tue, 19 May 2020 05:50:13 +0000
+Date: Tue, 19 May 2020 07:50:09 +0200
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 22/29] xtensa: implement flush_icache_user_range
-Date: Fri, 15 May 2020 16:36:39 +0200
-Message-Id: <20200515143646.3857579-23-hch@lst.de>
-In-Reply-To: <20200515143646.3857579-1-hch@lst.de>
-References: <20200515143646.3857579-1-hch@lst.de>
+Subject: Re: clean up and streamline probe_kernel_* and friends v2
+Message-ID: <20200519055009.GB23853@lst.de>
+References: <20200513160038.2482415-1-hch@lst.de>
+ <10c58b09-5ece-e49f-a7c8-2aa6dfd22fb4@iogearbox.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: linux-sh-owner@vger.kernel.org
-To: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Roman Zippel <zippel@linux-m68k.org>
-Cc: Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linux-fsdevel@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <10c58b09-5ece-e49f-a7c8-2aa6dfd22fb4@iogearbox.net>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: bpf@vger.kernel.org, linux-parisc@vger.kernel.org, netdev@vger.kernel.org, x86@kernel.org, linux-um@lists.infradead.org, Alexei Starovoitov <ast@kernel.org>, linux-kernel@vger.kernel.org, linux-mm@kvack.org, Masami Hiramatsu <mhiramat@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, Christoph Hellwig <hch@lst.de>
 
-The Xtensa implementation of flush_icache_range seems to be able to
-cope with user addresses.  Just define flush_icache_user_range to
-flush_icache_range.
+On Thu, May 14, 2020 at 01:04:38AM +0200, Daniel Borkmann wrote:
+> Aside from comments on list, the series looks reasonable to me. For BPF
+> the bpf_probe_read() helper would be slightly penalized for probing user
+> memory given we now test on copy_from_kernel_nofault() first and if that
+> fails only then fall back to copy_from_user_nofault(), but it seems
+> small enough that it shouldn't matter too much and aside from that we have
+> the newer bpf_probe_read_kernel() and bpf_probe_read_user() anyway that
+> BPF progs should use instead, so I think it's okay.
+>
+> For patch 14 and patch 15, do you roughly know the performance gain with
+> the new probe_kernel_read_loop() + arch_kernel_read() approach?
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- arch/xtensa/include/asm/cacheflush.h | 2 ++
- 1 file changed, 2 insertions(+)
+I don't think there should be any measurable difference in performance
+for typical use cases.  We'll save the stac/clac pair, but that's it.
+The real eason is to avoid that stac/clac pair that opens up a window
+for explots, and as a significant enabler for killing of set_fs based 
+address limit overrides entirely.
 
-diff --git a/arch/xtensa/include/asm/cacheflush.h b/arch/xtensa/include/asm/cacheflush.h
-index a0d50be5a8cb1..460e666ad0761 100644
---- a/arch/xtensa/include/asm/cacheflush.h
-+++ b/arch/xtensa/include/asm/cacheflush.h
-@@ -107,6 +107,8 @@ void flush_cache_page(struct vm_area_struct*,
- #define flush_cache_page  local_flush_cache_page
- #endif
- 
-+#define flush_icache_user_range flush_icache_range
-+
- #define local_flush_cache_all()						\
- 	do {								\
- 		__flush_invalidate_dcache_all();			\
--- 
-2.26.2
-
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
