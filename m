@@ -1,17 +1,27 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from mail-lj1-x242.google.com ([2a00:1450:4864:20::242])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jbMdI-0003mp-Hw
- for linux-um@lists.infradead.org; Wed, 20 May 2020 11:11:34 +0000
-Date: Wed, 20 May 2020 20:11:26 +0900
-From: Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCH 13/20] maccess: always use strict semantics for
- probe_kernel_read
-Message-Id: <20200520201126.f37d3b1e46355199216404e2@kernel.org>
-In-Reply-To: <20200519134449.1466624-14-hch@lst.de>
+ id 1jb5BH-0001WY-Mf
+ for linux-um@lists.infradead.org; Tue, 19 May 2020 16:33:29 +0000
+Received: by mail-lj1-x242.google.com with SMTP id k5so371985lji.11
+ for <linux-um@lists.infradead.org>; Tue, 19 May 2020 09:33:27 -0700 (PDT)
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com.
+ [209.85.208.179])
+ by smtp.gmail.com with ESMTPSA id z16sm10558492lfq.18.2020.05.19.09.33.22
+ for <linux-um@lists.infradead.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 19 May 2020 09:33:22 -0700 (PDT)
+Received: by mail-lj1-f179.google.com with SMTP id k5so371784lji.11
+ for <linux-um@lists.infradead.org>; Tue, 19 May 2020 09:33:22 -0700 (PDT)
+MIME-Version: 1.0
 References: <20200519134449.1466624-1-hch@lst.de>
  <20200519134449.1466624-14-hch@lst.de>
-Mime-Version: 1.0
+In-Reply-To: <20200519134449.1466624-14-hch@lst.de>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 19 May 2020 09:33:06 -0700
+Message-ID: <CAHk-=wjg6v1NU31ku2aAMfX7Yu0oDKRvKeBJVGZFQB7AjcwhAA@mail.gmail.com>
+Subject: Re: [PATCH 13/20] maccess: always use strict semantics for
+ probe_kernel_read
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,37 +30,52 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: Christoph Hellwig <hch@lst.de>
-Cc: linux-parisc@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org, x86@kernel.org, linux-um@lists.infradead.org, Alexei Starovoitov <ast@kernel.org>, linux-kernel@vger.kernel.org, linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, bpf@vger.kernel.org
+Cc: Daniel Borkmann <daniel@iogearbox.net>, linux-parisc@vger.kernel.org, Netdev <netdev@vger.kernel.org>, the arch/x86 maintainers <x86@kernel.org>, linux-um <linux-um@lists.infradead.org>, Alexei Starovoitov <ast@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>, Masami Hiramatsu <mhiramat@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, bpf@vger.kernel.org
 
-T24gVHVlLCAxOSBNYXkgMjAyMCAxNTo0NDo0MiArMDIwMApDaHJpc3RvcGggSGVsbHdpZyA8aGNo
-QGxzdC5kZT4gd3JvdGU6Cgo+IGRpZmYgLS1naXQgYS9rZXJuZWwvdHJhY2UvdHJhY2Vfa3Byb2Jl
-LmMgYi9rZXJuZWwvdHJhY2UvdHJhY2Vfa3Byb2JlLmMKPiBpbmRleCAyZjY3MzdjYzUzZTZjLi44
-MmRhMjBlNzEyNTA3IDEwMDY0NAo+IC0tLSBhL2tlcm5lbC90cmFjZS90cmFjZV9rcHJvYmUuYwo+
-ICsrKyBiL2tlcm5lbC90cmFjZS90cmFjZV9rcHJvYmUuYwo+IEBAIC0xMjA4LDcgKzEyMDgsMTMg
-QEAgZmV0Y2hfc3RvcmVfc3RybGVuKHVuc2lnbmVkIGxvbmcgYWRkcikKPiAgCXU4IGM7Cj4gIAo+
-ICAJZG8gewo+IC0JCXJldCA9IHByb2JlX2tlcm5lbF9yZWFkKCZjLCAodTggKilhZGRyICsgbGVu
-LCAxKTsKPiArCQlpZiAoSVNfRU5BQkxFRChDT05GSUdfQVJDSF9IQVNfTk9OX09WRVJMQVBQSU5H
-X0FERFJFU1NfU1BBQ0UpICYmCj4gKwkJICAgICh1bnNpZ25lZCBsb25nKWFkZHIgPCBUQVNLX1NJ
-WkUpIHsKPiArCQkJcmV0ID0gcHJvYmVfdXNlcl9yZWFkKCZjLAo+ICsJCQkJKF9fZm9yY2UgdTgg
-X191c2VyICopYWRkciArIGxlbiwgMSk7Cj4gKwkJfSBlbHNlIHsKPiArCQkJcmV0ID0gcHJvYmVf
-a2VybmVsX3JlYWQoJmMsICh1OCAqKWFkZHIgKyBsZW4sIDEpOwo+ICsJCX0KPiAgCQlsZW4rKzsK
-PiAgCX0gd2hpbGUgKGMgJiYgcmV0ID09IDAgJiYgbGVuIDwgTUFYX1NUUklOR19TSVpFKTsKClRv
-IGF2b2lkIHJlZHVuZGFudCBjaGVjayBpbiB0aGUgbG9vcCwgd2UgY2FuIHVzZSBzdHJubGVuX3Vz
-ZXJfbm9mYXVsdCgpIG91dCBvZgp0aGUgbG9vcC4gU29tZXRoaW5nIGxpa2UgYmVsb3cuCgouLi4K
-CXU4IGM7CgoJaWYgKElTX0VOQUJMRUQoQ09ORklHX0FSQ0hfSEFTX05PTl9PVkVSTEFQUElOR19B
-RERSRVNTX1NQQUNFKSAmJgoJICAgICh1bnNpZ25lZCBsb25nKWFkZHIgPCBUQVNLX1NJWkUpIHsK
-CQlyZXR1cm4gc3Rybmxlbl91c2VyX25vZmF1bHQoKF9fZm9yY2UgdTggX191c2VyICopYWRkciwg
-TUFYX1NUUklOR19TSVpFKTsKCglkbyB7CgkJcmV0ID0gcHJvYmVfa2VybmVsX3JlYWQoJmMsICh1
-OCAqKWFkZHIgKyBsZW4sIDEpOwoJCWxlbisrOwoJfSB3aGlsZSAoYyAmJiByZXQgPT0gMCAmJiBs
-ZW4gPCBNQVhfU1RSSU5HX1NJWkUpOwouLi4KClRoaXMgbXVzdCB3b3JrIGJlY2F1c2Ugd2UgbXVz
-dCBub3QgaGF2ZSBhIHN0cmluZyB0aGF0IGNvbnRpbnVlcyBhY3Jvc3MKa2VybmVs44CAc3BhY2Ug
-YW5kIHVzZXIgc3BhY2UuCgpUaGFuayB5b3UsCgoKLS0gCk1hc2FtaSBIaXJhbWF0c3UgPG1oaXJh
-bWF0QGtlcm5lbC5vcmc+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9y
-ZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
+On Tue, May 19, 2020 at 6:45 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> +
+> +       if (IS_ENABLED(CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE) &&
+> +           compat && (unsigned long)unsafe_ptr < TASK_SIZE)
+> +               ret = probe_user_read(dst, user_ptr, size);
+> +       else
+> +               ret = probe_kernel_read(dst, unsafe_ptr, size);
+...
+> -               ret = probe_kernel_read(&c, (u8 *)addr + len, 1);
+> +               if (IS_ENABLED(CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE) &&
+> +                   (unsigned long)addr < TASK_SIZE) {
+> +                       ret = probe_user_read(&c,
+> +                               (__force u8 __user *)addr + len, 1);
+> +               } else {
+> +                       ret = probe_kernel_read(&c, (u8 *)addr + len, 1);
+> +               }
+...
+> +       if (IS_ENABLED(CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE) &&
+> +           (unsigned long)src < TASK_SIZE) {
+> +               return probe_user_read(dest, (__force const void __user *)src,
+> +                               size);
+
+If you can't make the conditional legible and fit on a single line and
+make it obvious _why_ you have that conditional, just use a helper
+function.
+
+Either for just the conditional itself, or for the whole operation.
+And at least for the bpf case, since you want the whole operation for
+that error handling and clearing of the result buffer anyway, I
+suspect it would be cleaner to have that kind of
+"bpf_copy_legacy_nofault()" function or whatever.
+
+(And see previous email why I dislike that "compat" naming in the bpf case)
+
+                    Linus
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
