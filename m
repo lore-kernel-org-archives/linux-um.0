@@ -1,28 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-lf1-x141.google.com ([2a00:1450:4864:20::141])
+Received: from verein.lst.de ([213.95.11.211])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jb5EK-0004pr-SC
- for linux-um@lists.infradead.org; Tue, 19 May 2020 16:36:38 +0000
-Received: by mail-lf1-x141.google.com with SMTP id h26so68950lfg.6
- for <linux-um@lists.infradead.org>; Tue, 19 May 2020 09:36:36 -0700 (PDT)
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com.
- [209.85.208.173])
- by smtp.gmail.com with ESMTPSA id a15sm72247ljn.72.2020.05.19.09.36.32
- for <linux-um@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 19 May 2020 09:36:32 -0700 (PDT)
-Received: by mail-lj1-f173.google.com with SMTP id g1so411112ljk.7
- for <linux-um@lists.infradead.org>; Tue, 19 May 2020 09:36:32 -0700 (PDT)
-MIME-Version: 1.0
+ id 1jb4sp-0007mf-WA
+ for linux-um@lists.infradead.org; Tue, 19 May 2020 16:14:25 +0000
+Date: Tue, 19 May 2020 18:14:18 +0200
+From: Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 11/20] bpf: factor out a bpf_trace_copy_string helper
+Message-ID: <20200519161418.GA26545@lst.de>
 References: <20200519134449.1466624-1-hch@lst.de>
  <20200519134449.1466624-12-hch@lst.de>
  <CAHk-=wjm3HQy_awVX-WyF6KrSuE1pcFRaNX_XhiLKkBUFUZBtQ@mail.gmail.com>
- <20200519161418.GA26545@lst.de>
-In-Reply-To: <20200519161418.GA26545@lst.de>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 19 May 2020 09:36:15 -0700
-Message-ID: <CAHk-=wjcmfe__pphtjGzLMJ2kFN0ZTRZQJQVunRxL+9E2Xki=Q@mail.gmail.com>
-Subject: Re: [PATCH 11/20] bpf: factor out a bpf_trace_copy_string helper
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjm3HQy_awVX-WyF6KrSuE1pcFRaNX_XhiLKkBUFUZBtQ@mail.gmail.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -35,28 +25,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Christoph Hellwig <hch@lst.de>
-Cc: Daniel Borkmann <daniel@iogearbox.net>, linux-parisc@vger.kernel.org, Netdev <netdev@vger.kernel.org>, the arch/x86 maintainers <x86@kernel.org>, linux-um <linux-um@lists.infradead.org>, Alexei Starovoitov <ast@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>, Masami Hiramatsu <mhiramat@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, bpf@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-parisc@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>, Netdev <netdev@vger.kernel.org>, the arch/x86 maintainers <x86@kernel.org>, linux-um <linux-um@lists.infradead.org>, Alexei Starovoitov <ast@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>, bpf@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Christoph Hellwig <hch@lst.de>
 
-On Tue, May 19, 2020 at 9:14 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> I don't think we need it as the case of
->
->         case 'a':
->         case 'b':
->                 do_stuff();
->                 break;
->
-> has always been fine even with the fallthough warnings.  And the
-> rest of the stuff gets removed by cpp..
+On Tue, May 19, 2020 at 09:07:55AM -0700, Linus Torvalds wrote:
+> On Tue, May 19, 2020 at 6:45 AM Christoph Hellwig <hch@lst.de> wrote:
+> >
+> > +       switch (fmt_ptype) {
+> > +       case 's':
+> > +#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+> > +               strncpy_from_unsafe(buf, unsafe_ptr, bufsz);
+> > +               break;
+> > +#endif
+> > +       case 'k':
+> > +               strncpy_from_kernel_nofault(buf, unsafe_ptr, bufsz);
+> > +               break;
+> 
+> That 's' case needs a "fallthrough;" for the overlapping case,
+> methinks. Otherwise you'll get warnings.
 
-You're right. I read it as a fallthrough because as a human it looks
-like there's code in there between, but yeah, the compiler won't
-actually ever see it.
+I don't think we need it as the case of
 
-So scratch that objection.
+	case 'a':
+	case 'b':
+		do_stuff();
+		break;
 
-              Linus
+has always been fine even with the fallthough warnings.  And the
+rest of the stuff gets removed by cpp..
 
 _______________________________________________
 linux-um mailing list
