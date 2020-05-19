@@ -1,198 +1,137 @@
-Return-Path: <rppt@kernel.org>
-From: Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH 07/12] x86/mm: simplify init_trampoline() and surrounding logic
-Date: Tue, 12 May 2020 21:44:17 +0300
-Message-Id: <20200512184422.12418-8-rppt@kernel.org>
-In-Reply-To: <20200512184422.12418-1-rppt@kernel.org>
-References: <20200512184422.12418-1-rppt@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+From: Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 15/20] maccess: allow architectures to provide kernel probing
+ directly
+Date: Tue, 19 May 2020 15:44:44 +0200
+Message-Id: <20200519134449.1466624-16-hch@lst.de>
+In-Reply-To: <20200519134449.1466624-1-hch@lst.de>
+References: <20200519134449.1466624-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-kernel@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@codeaurora.org>, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greentime Hu <green.hu@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Guo Ren <guoren@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@redhat.com>, Ley Foon Tan <ley.foon.tan@intel.com>, Mark Salter <msalter@redhat.com>, Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, Mike Rapoport <rppt@kernel.org>, Nick Hu <nickhu@andestech.com>, Paul Walmsley <paul.walmsley@sifive.com>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, Vincent Chen <deanbo422@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Will Deacon <will@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, x86@kernel.org, Mike Rapoport <rppt@linux.ibm.com>
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: x86@kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-parisc@vger.kernel.org, netdev@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+Provide alternative versions of probe_kernel_read, probe_kernel_write
+and strncpy_from_kernel_unsafe that don't need set_fs magic, but instead
+use arch hooks that are modelled after unsafe_{get,put}_user to access
+kernel memory in an exception safe way.
 
-There are three cases for the trampoline initialization:
-* 32-bit does nothing
-* 64-bit with kaslr disabled simply copies a PGD entry from the direct map
-  to the trampoline PGD
-* 64-bit with kaslr enabled maps the real mode trampoline at PUD level
-
-These cases are currently differentiated by a bunch of ifdefs inside
-asm/include/pgtable.h and the case of 64-bits with kaslr on uses
-pgd_index() helper.
-
-Replacing the ifdefs with a static function in arch/x86/mm/init.c gives
-clearer code and allows moving pgd_index() to the generic implementation in
-include/linux/pgtable.h
-
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/x86/include/asm/kaslr.h   |  2 ++
- arch/x86/include/asm/pgtable.h | 15 +--------------
- arch/x86/include/asm/setup.h   |  9 +++++++++
- arch/x86/mm/init.c             | 22 ++++++++++++++++++++++
- arch/x86/mm/kaslr.c            | 33 +--------------------------------
- 5 files changed, 35 insertions(+), 46 deletions(-)
+ mm/maccess.c | 76 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 76 insertions(+)
 
-diff --git a/arch/x86/include/asm/kaslr.h b/arch/x86/include/asm/kaslr.h
-index db7ba2feb947..0648190467ba 100644
---- a/arch/x86/include/asm/kaslr.h
-+++ b/arch/x86/include/asm/kaslr.h
-@@ -6,8 +6,10 @@ unsigned long kaslr_get_random_long(const char *purpose);
- 
- #ifdef CONFIG_RANDOMIZE_MEMORY
- void kernel_randomize_memory(void);
-+void init_trampoline_kaslr(void);
- #else
- static inline void kernel_randomize_memory(void) { }
-+static inline void init_trampoline_kaslr(void) {}
- #endif /* CONFIG_RANDOMIZE_MEMORY */
- 
- #endif
-diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
-index d24f8e1f7250..6366136b0e46 100644
---- a/arch/x86/include/asm/pgtable.h
-+++ b/arch/x86/include/asm/pgtable.h
-@@ -1070,27 +1070,14 @@ void init_mem_mapping(void);
- void early_alloc_pgt_buf(void);
- extern void memblock_find_dma_reserve(void);
- 
-+
- #ifdef CONFIG_X86_64
--/* Realmode trampoline initialization. */
- extern pgd_t trampoline_pgd_entry;
--static inline void __meminit init_trampoline_default(void)
--{
--	/* Default trampoline pgd value */
--	trampoline_pgd_entry = init_top_pgt[pgd_index(__PAGE_OFFSET)];
--}
- 
- void __init poking_init(void);
- 
- unsigned long init_memory_mapping(unsigned long start,
- 				  unsigned long end, pgprot_t prot);
--
--# ifdef CONFIG_RANDOMIZE_MEMORY
--void __meminit init_trampoline(void);
--# else
--#  define init_trampoline init_trampoline_default
--# endif
--#else
--static inline void init_trampoline(void) { }
- #endif
- 
- /* local pte updates need not use xchg for locking */
-diff --git a/arch/x86/include/asm/setup.h b/arch/x86/include/asm/setup.h
-index ed8ec011a9fd..d95cacf210bb 100644
---- a/arch/x86/include/asm/setup.h
-+++ b/arch/x86/include/asm/setup.h
-@@ -78,6 +78,15 @@ static inline bool kaslr_enabled(void)
- 	return !!(boot_params.hdr.loadflags & KASLR_FLAG);
+diff --git a/mm/maccess.c b/mm/maccess.c
+index 9773e2253b495..01129cbdf4484 100644
+--- a/mm/maccess.c
++++ b/mm/maccess.c
+@@ -12,6 +12,81 @@ bool __weak probe_kernel_read_allowed(void *dst, const void *unsafe_src,
+ 	return true;
  }
  
-+/*
-+ * Apply no randomization if KASLR was disabled at boot or if KASAN
-+ * is enabled. KASAN shadow mappings rely on regions being PGD aligned.
-+ */
-+static inline bool kaslr_memory_enabled(void)
++#ifdef HAVE_GET_KERNEL_NOFAULT
++
++#define probe_kernel_read_loop(dst, src, len, type, err_label)		\
++	while (len >= sizeof(type)) {					\
++		__get_kernel_nofault(dst, src, type, err_label);		\
++		dst += sizeof(type);					\
++		src += sizeof(type);					\
++		len -= sizeof(type);					\
++	}
++
++long probe_kernel_read(void *dst, const void *src, size_t size)
 +{
-+	return kaslr_enabled() && !IS_ENABLED(CONFIG_KASAN);
++	if (!probe_kernel_read_allowed(dst, src, size))
++		return -EFAULT;
++
++	pagefault_disable();
++	probe_kernel_read_loop(dst, src, size, u64, Efault);
++	probe_kernel_read_loop(dst, src, size, u32, Efault);
++	probe_kernel_read_loop(dst, src, size, u16, Efault);
++	probe_kernel_read_loop(dst, src, size, u8, Efault);
++	pagefault_enable();
++	return 0;
++Efault:
++	pagefault_enable();
++	return -EFAULT;
++}
++EXPORT_SYMBOL_GPL(probe_kernel_read);
++
++#define probe_kernel_write_loop(dst, src, len, type, err_label)		\
++	while (len >= sizeof(type)) {					\
++		__put_kernel_nofault(dst, src, type, err_label);		\
++		dst += sizeof(type);					\
++		src += sizeof(type);					\
++		len -= sizeof(type);					\
++	}
++
++long probe_kernel_write(void *dst, const void *src, size_t size)
++{
++	pagefault_disable();
++	probe_kernel_write_loop(dst, src, size, u64, Efault);
++	probe_kernel_write_loop(dst, src, size, u32, Efault);
++	probe_kernel_write_loop(dst, src, size, u16, Efault);
++	probe_kernel_write_loop(dst, src, size, u8, Efault);
++	pagefault_enable();
++	return 0;
++Efault:
++	pagefault_enable();
++	return -EFAULT;
 +}
 +
- static inline unsigned long kaslr_offset(void)
- {
- 	return (unsigned long)&_text - __START_KERNEL;
-diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
-index 235dd0e35741..e225ebb25197 100644
---- a/arch/x86/mm/init.c
-+++ b/arch/x86/mm/init.c
-@@ -682,6 +682,28 @@ static void __init memory_map_bottom_up(unsigned long map_start,
- 	}
- }
- 
-+/*
-+ * The real mode trampoline, which is required for bootstrapping CPUs
-+ * occupies only a small area under the low 1MB.  See reserve_real_mode()
-+ * for details.
-+ *
-+ * If KASLR is disabled the first PGD entry of the direct mapping is copied
-+ * to map the real mode trampoline.
-+ *
-+ * If KASLR is enabled, copy only the PUD which covers the low 1MB
-+ * area. This limits the randomization granularity to 1GB for both 4-level
-+ * and 5-level paging.
-+ */
-+static void __init init_trampoline(void)
++long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
 +{
-+#ifdef CONFIG_X86_64
-+	if (!kaslr_memory_enabled())
-+		trampoline_pgd_entry = init_top_pgt[pgd_index(__PAGE_OFFSET)];
-+	else
-+		init_trampoline_kaslr();
-+#endif
-+}
++	const void *src = unsafe_addr;
 +
- void __init init_mem_mapping(void)
- {
- 	unsigned long end;
-diff --git a/arch/x86/mm/kaslr.c b/arch/x86/mm/kaslr.c
-index faf02e1e1517..fb620fd9dae9 100644
---- a/arch/x86/mm/kaslr.c
-+++ b/arch/x86/mm/kaslr.c
-@@ -61,15 +61,6 @@ static inline unsigned long get_padding(struct kaslr_memory_region *region)
- 	return (region->size_tb << TB_SHIFT);
- }
++	if (unlikely(count <= 0))
++		return 0;
++	if (!probe_kernel_read_allowed(dst, unsafe_addr, count))
++		return -EFAULT;
++
++	pagefault_disable();
++	do {
++		__get_kernel_nofault(dst, src, u8, Efault);
++		dst++;
++		src++;
++	} while (dst[-1] && src - unsafe_addr < count);
++	pagefault_enable();
++
++	dst[-1] = '\0';
++	return src - unsafe_addr;
++Efault:
++	pagefault_enable();
++	dst[-1] = '\0';
++	return -EFAULT;
++}
++#else /* HAVE_GET_KERNEL_NOFAULT */
+ /**
+  * probe_kernel_read(): safely attempt to read from kernel-space
+  * @dst: pointer to the buffer that shall take the data
+@@ -114,6 +189,7 @@ long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
  
--/*
-- * Apply no randomization if KASLR was disabled at boot or if KASAN
-- * is enabled. KASAN shadow mappings rely on regions being PGD aligned.
-- */
--static inline bool kaslr_memory_enabled(void)
--{
--	return kaslr_enabled() && !IS_ENABLED(CONFIG_KASAN);
--}
--
- /* Initialize base and padding for each memory region randomized with KASLR */
- void __init kernel_randomize_memory(void)
- {
-@@ -148,7 +139,7 @@ void __init kernel_randomize_memory(void)
- 	}
+ 	return ret ? -EFAULT : src - unsafe_addr;
  }
++#endif /* HAVE_GET_KERNEL_NOFAULT */
  
--static void __meminit init_trampoline_pud(void)
-+void __meminit init_trampoline_kaslr(void)
- {
- 	pud_t *pud_page_tramp, *pud, *pud_tramp;
- 	p4d_t *p4d_page_tramp, *p4d, *p4d_tramp;
-@@ -189,25 +180,3 @@ static void __meminit init_trampoline_pud(void)
- 			__pgd(_KERNPG_TABLE | __pa(pud_page_tramp)));
- 	}
- }
--
--/*
-- * The real mode trampoline, which is required for bootstrapping CPUs
-- * occupies only a small area under the low 1MB.  See reserve_real_mode()
-- * for details.
-- *
-- * If KASLR is disabled the first PGD entry of the direct mapping is copied
-- * to map the real mode trampoline.
-- *
-- * If KASLR is enabled, copy only the PUD which covers the low 1MB
-- * area. This limits the randomization granularity to 1GB for both 4-level
-- * and 5-level paging.
-- */
--void __meminit init_trampoline(void)
--{
--	if (!kaslr_memory_enabled()) {
--		init_trampoline_default();
--		return;
--	}
--
--	init_trampoline_pud();
--}
+ /**
+  * probe_user_read(): safely attempt to read from a user-space location
 -- 
-2.26.1
+2.26.2
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
