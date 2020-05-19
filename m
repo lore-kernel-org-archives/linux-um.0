@@ -1,58 +1,257 @@
-Return-Path: <linux-m68k-owner@vger.kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 25/31] arm: rename flush_cache_user_range to flush_icache_user_range
-Date: Sun, 10 May 2020 09:55:04 +0200
-Message-Id: <20200510075510.987823-26-hch@lst.de>
-In-Reply-To: <20200510075510.987823-1-hch@lst.de>
-References: <20200510075510.987823-1-hch@lst.de>
+Subject: [PATCH 10/20] maccess: unify the probe kernel arch hooks
+Date: Tue, 19 May 2020 15:44:39 +0200
+Message-Id: <20200519134449.1466624-11-hch@lst.de>
+In-Reply-To: <20200519134449.1466624-1-hch@lst.de>
+References: <20200519134449.1466624-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: linux-m68k-owner@vger.kernel.org
-To: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Roman Zippel <zippel@linux-m68k.org>
-Cc: Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linux-fsdevel@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: x86@kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-parisc@vger.kernel.org, netdev@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
 
-flush_icache_user_range will be the name for a generic primitive.
-Move the arm name so that arm already has an implementation.
+Currently architectures have to override every routine that probes
+kernel memory, which includes a pure read and strcpy, both in strict
+and not strict variants.  Just provide a single arch hooks instead to
+make sure all architectures cover all the cases.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/arm/include/asm/cacheflush.h | 4 ++--
- arch/arm/kernel/traps.c           | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ arch/parisc/lib/memcpy.c | 13 ++++-------
+ arch/um/kernel/maccess.c | 11 ++++-----
+ arch/x86/mm/maccess.c    | 18 ++++-----------
+ include/linux/uaccess.h  |  6 +++--
+ mm/maccess.c             | 49 ++++++++++++++++++++++++++++++----------
+ 5 files changed, 56 insertions(+), 41 deletions(-)
 
-diff --git a/arch/arm/include/asm/cacheflush.h b/arch/arm/include/asm/cacheflush.h
-index c78e14fcfb5df..2e24e765e6d3a 100644
---- a/arch/arm/include/asm/cacheflush.h
-+++ b/arch/arm/include/asm/cacheflush.h
-@@ -258,11 +258,11 @@ extern void flush_cache_page(struct vm_area_struct *vma, unsigned long user_addr
- #define flush_cache_dup_mm(mm) flush_cache_mm(mm)
+diff --git a/arch/parisc/lib/memcpy.c b/arch/parisc/lib/memcpy.c
+index beceaab34ecb7..5ef648bd33119 100644
+--- a/arch/parisc/lib/memcpy.c
++++ b/arch/parisc/lib/memcpy.c
+@@ -57,14 +57,11 @@ void * memcpy(void * dst,const void *src, size_t count)
+ EXPORT_SYMBOL(raw_copy_in_user);
+ EXPORT_SYMBOL(memcpy);
  
- /*
-- * flush_cache_user_range is used when we want to ensure that the
-+ * flush_icache_user_range is used when we want to ensure that the
-  * Harvard caches are synchronised for the user space address range.
-  * This is used for the ARM private sys_cacheflush system call.
+-long probe_kernel_read(void *dst, const void *src, size_t size)
++bool probe_kernel_read_allowed(void *dst, const void *unsafe_src, size_t size,
++		bool strict)
+ {
+-	unsigned long addr = (unsigned long)src;
+-
+-	if (addr < PAGE_SIZE)
+-		return -EFAULT;
+-
++	if ((unsigned long)unsafe_src < PAGE_SIZE)
++		return false;
+ 	/* check for I/O space F_EXTEND(0xfff00000) access as well? */
+-
+-	return __probe_kernel_read(dst, src, size);
++	return true;
+ }
+diff --git a/arch/um/kernel/maccess.c b/arch/um/kernel/maccess.c
+index 67b2e0fa92bba..90a1bec923158 100644
+--- a/arch/um/kernel/maccess.c
++++ b/arch/um/kernel/maccess.c
+@@ -7,15 +7,14 @@
+ #include <linux/kernel.h>
+ #include <os.h>
+ 
+-long probe_kernel_read(void *dst, const void *src, size_t size)
++bool probe_kernel_read_allowed(void *dst, const void *src, size_t size,
++		bool strict)
+ {
+ 	void *psrc = (void *)rounddown((unsigned long)src, PAGE_SIZE);
+ 
+ 	if ((unsigned long)src < PAGE_SIZE || size <= 0)
+-		return -EFAULT;
+-
++		return false;
+ 	if (os_mincore(psrc, size + src - psrc) <= 0)
+-		return -EFAULT;
+-
+-	return __probe_kernel_read(dst, src, size);
++		return false;
++	return true;
+ }
+diff --git a/arch/x86/mm/maccess.c b/arch/x86/mm/maccess.c
+index 62c4017a2473d..5c323ab187b27 100644
+--- a/arch/x86/mm/maccess.c
++++ b/arch/x86/mm/maccess.c
+@@ -26,18 +26,10 @@ static __always_inline bool invalid_probe_range(u64 vaddr)
+ }
+ #endif
+ 
+-long probe_kernel_read_strict(void *dst, const void *src, size_t size)
++bool probe_kernel_read_allowed(void *dst, const void *unsafe_src, size_t size,
++		bool strict)
+ {
+-	if (unlikely(invalid_probe_range((unsigned long)src)))
+-		return -EFAULT;
+-
+-	return __probe_kernel_read(dst, src, size);
+-}
+-
+-long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
+-{
+-	if (unlikely(invalid_probe_range((unsigned long)unsafe_addr)))
+-		return -EFAULT;
+-
+-	return __strncpy_from_unsafe(dst, unsafe_addr, count);
++	if (!strict)
++		return true;
++	return !invalid_probe_range((unsigned long)unsafe_src);
+ }
+diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
+index d8366f8468664..7cfc10eb09c60 100644
+--- a/include/linux/uaccess.h
++++ b/include/linux/uaccess.h
+@@ -301,9 +301,11 @@ copy_struct_from_user(void *dst, size_t ksize, const void __user *src,
+ 	return 0;
+ }
+ 
++bool probe_kernel_read_allowed(void *dst, const void *unsafe_src,
++		size_t size, bool strict);
++
+ extern long probe_kernel_read(void *dst, const void *src, size_t size);
+ extern long probe_kernel_read_strict(void *dst, const void *src, size_t size);
+-extern long __probe_kernel_read(void *dst, const void *src, size_t size);
+ extern long probe_user_read(void *dst, const void __user *src, size_t size);
+ 
+ extern long notrace probe_kernel_write(void *dst, const void *src, size_t size);
+@@ -312,7 +314,7 @@ extern long notrace probe_user_write(void __user *dst, const void *src, size_t s
+ extern long strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count);
+ long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr,
+ 		long count);
+-extern long __strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count);
++
+ long strncpy_from_user_nofault(char *dst, const void __user *unsafe_addr,
+ 		long count);
+ long strnlen_user_nofault(const void __user *unsafe_addr, long count);
+diff --git a/mm/maccess.c b/mm/maccess.c
+index 31cf6604e7fff..483a933b7d241 100644
+--- a/mm/maccess.c
++++ b/mm/maccess.c
+@@ -6,6 +6,17 @@
+ #include <linux/mm.h>
+ #include <linux/uaccess.h>
+ 
++static long __probe_kernel_read(void *dst, const void *src, size_t size,
++		bool strict);
++static long __strncpy_from_unsafe(char *dst, const void *unsafe_addr,
++		long count, bool strict);
++
++bool __weak probe_kernel_read_allowed(void *dst, const void *unsafe_src,
++		size_t size, bool strict)
++{
++	return true;
++}
++
+ /**
+  * probe_kernel_read(): safely attempt to read from any location
+  * @dst: pointer to the buffer that shall take the data
+@@ -19,8 +30,11 @@
+  * DO NOT USE THIS FUNCTION - it is broken on architectures with entirely
+  * separate kernel and user address spaces, and also a bad idea otherwise.
   */
--#define flush_cache_user_range(s,e)	__cpuc_coherent_user_range(s,e)
-+#define flush_icache_user_range(s,e)	__cpuc_coherent_user_range(s,e)
+-long __weak probe_kernel_read(void *dst, const void *src, size_t size)
+-    __attribute__((alias("__probe_kernel_read")));
++long probe_kernel_read(void *dst, const void *src, size_t size)
++{
++	return __probe_kernel_read(dst, src, size, false);
++}
++EXPORT_SYMBOL_GPL(probe_kernel_read);
  
- /*
-  * Perform necessary cache operations to ensure that data previously
-diff --git a/arch/arm/kernel/traps.c b/arch/arm/kernel/traps.c
-index 1e70e7227f0ff..316a7687f8133 100644
---- a/arch/arm/kernel/traps.c
-+++ b/arch/arm/kernel/traps.c
-@@ -566,7 +566,7 @@ __do_cache_op(unsigned long start, unsigned long end)
- 		if (fatal_signal_pending(current))
- 			return 0;
+ /**
+  * probe_kernel_read_strict(): safely attempt to read from kernel-space
+@@ -36,14 +50,20 @@ long __weak probe_kernel_read(void *dst, const void *src, size_t size)
+  * probe_kernel_read() suitable for use within regions where the caller
+  * already holds mmap_sem, or other locks which nest inside mmap_sem.
+  */
+-long __weak probe_kernel_read_strict(void *dst, const void *src, size_t size)
+-    __attribute__((alias("__probe_kernel_read")));
++long probe_kernel_read_strict(void *dst, const void *src, size_t size)
++{
++	return __probe_kernel_read(dst, src, size, true);
++}
  
--		ret = flush_cache_user_range(start, start + chunk);
-+		ret = flush_icache_user_range(start, start + chunk);
- 		if (ret)
- 			return ret;
+-long __probe_kernel_read(void *dst, const void *src, size_t size)
++static long __probe_kernel_read(void *dst, const void *src, size_t size,
++		bool strict)
+ {
+ 	long ret;
+ 	mm_segment_t old_fs = get_fs();
  
++	if (!probe_kernel_read_allowed(dst, src, size, strict))
++		return -EFAULT;
++
+ 	set_fs(KERNEL_DS);
+ 	pagefault_disable();
+ 	ret = __copy_from_user_inatomic(dst, (__force const void __user *)src,
+@@ -55,7 +75,6 @@ long __probe_kernel_read(void *dst, const void *src, size_t size)
+ 		return -EFAULT;
+ 	return 0;
+ }
+-EXPORT_SYMBOL_GPL(probe_kernel_read);
+ 
+ /**
+  * probe_user_read(): safely attempt to read from a user-space location
+@@ -161,8 +180,10 @@ long probe_user_write(void __user *dst, const void *src, size_t size)
+  * DO NOT USE THIS FUNCTION - it is broken on architectures with entirely
+  * separate kernel and user address spaces, and also a bad idea otherwise.
+  */
+-long __weak strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
+-    __attribute__((alias("__strncpy_from_unsafe")));
++long strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
++{
++	return __strncpy_from_unsafe(dst, unsafe_addr, count, false);
++}
+ 
+ /**
+  * strncpy_from_kernel_nofault: - Copy a NUL terminated string from unsafe
+@@ -182,11 +203,13 @@ long __weak strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
+  * If @count is smaller than the length of the string, copies @count-1 bytes,
+  * sets the last byte of @dst buffer to NUL and returns @count.
+  */
+-long __weak strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr,
+-				       long count)
+-    __attribute__((alias("__strncpy_from_unsafe")));
++long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
++{
++	return __strncpy_from_unsafe(dst, unsafe_addr, count, true);
++}
+ 
+-long __strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
++static long __strncpy_from_unsafe(char *dst, const void *unsafe_addr,
++		long count, bool strict)
+ {
+ 	mm_segment_t old_fs = get_fs();
+ 	const void *src = unsafe_addr;
+@@ -194,6 +217,8 @@ long __strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
+ 
+ 	if (unlikely(count <= 0))
+ 		return 0;
++	if (!probe_kernel_read_allowed(dst, unsafe_addr, count, strict))
++		return -EFAULT;
+ 
+ 	set_fs(KERNEL_DS);
+ 	pagefault_disable();
 -- 
 2.26.2
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
