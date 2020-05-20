@@ -1,38 +1,41 @@
-Return-Path: <linux-m68k-owner@vger.kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from verein.lst.de ([213.95.11.211])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jbROV-0001pD-4z
+ for linux-um@lists.infradead.org; Wed, 20 May 2020 16:16:36 +0000
+Date: Wed, 20 May 2020 18:16:30 +0200
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 26/29] exec: use flush_icache_user_range in read_code
-Date: Fri, 15 May 2020 16:36:43 +0200
-Message-Id: <20200515143646.3857579-27-hch@lst.de>
-In-Reply-To: <20200515143646.3857579-1-hch@lst.de>
-References: <20200515143646.3857579-1-hch@lst.de>
+Subject: Re: [PATCH 20/20] maccess: return -ERANGE when
+ copy_from_kernel_nofault_allowed fails
+Message-ID: <20200520161630.GA4432@lst.de>
+References: <20200519134449.1466624-1-hch@lst.de>
+ <20200519134449.1466624-21-hch@lst.de>
+ <20200520200255.3db6d27304f0b4c29c52ebcc@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: linux-m68k-owner@vger.kernel.org
-To: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Roman Zippel <zippel@linux-m68k.org>
-Cc: Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linux-fsdevel@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <20200520200255.3db6d27304f0b4c29c52ebcc@kernel.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: linux-parisc@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org, x86@kernel.org, linux-um@lists.infradead.org, Alexei Starovoitov <ast@kernel.org>, linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, Christoph Hellwig <hch@lst.de>
 
-read_code operates on user addresses.
+On Wed, May 20, 2020 at 08:02:55PM +0900, Masami Hiramatsu wrote:
+> Can you also update the kerneldoc comment too?
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/exec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Sure, done.
 
-diff --git a/fs/exec.c b/fs/exec.c
-index a4f766f296f8f..c541867316a63 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -1033,7 +1033,7 @@ ssize_t read_code(struct file *file, unsigned long addr, loff_t pos, size_t len)
- {
- 	ssize_t res = vfs_read(file, (void __user *)addr, len, &pos);
- 	if (res > 0)
--		flush_icache_range(addr, addr + len);
-+		flush_icache_user_range(addr, addr + len);
- 	return res;
- }
- EXPORT_SYMBOL(read_code);
--- 
-2.26.2
-
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
