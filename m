@@ -1,72 +1,54 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.6 65/79] um: ensure `make ARCH=um mrproper` removes arch/$(SUBARCH)/include/generated/
-Date: Thu, 30 Apr 2020 09:50:29 -0400
-Message-Id: <20200430135043.19851-65-sashal@kernel.org>
-In-Reply-To: <20200430135043.19851-1-sashal@kernel.org>
-References: <20200430135043.19851-1-sashal@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from verein.lst.de ([213.95.11.211])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jbMfD-0004pc-HJ
+ for linux-um@lists.infradead.org; Wed, 20 May 2020 11:13:33 +0000
+Date: Wed, 20 May 2020 13:13:24 +0200
+From: Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 13/20] maccess: always use strict semantics for
+ probe_kernel_read
+Message-ID: <20200520111324.GA16488@lst.de>
+References: <20200519134449.1466624-1-hch@lst.de>
+ <20200519134449.1466624-14-hch@lst.de>
+ <20200520201126.f37d3b1e46355199216404e2@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Vitor Massaru Iha <vitor@massaru.org>, Theodore Ts'o <tytso@mit.edu>, Masahiro Yamada <masahiroy@kernel.org>, Brendan Higgins <brendanhiggins@google.com>, Sasha Levin <sashal@kernel.org>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <20200520201126.f37d3b1e46355199216404e2@kernel.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: linux-parisc@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org, x86@kernel.org, linux-um@lists.infradead.org, Alexei Starovoitov <ast@kernel.org>, linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, Christoph Hellwig <hch@lst.de>
 
-From: Vitor Massaru Iha <vitor@massaru.org>
+On Wed, May 20, 2020 at 08:11:26PM +0900, Masami Hiramatsu wrote:
+> > -		ret = probe_kernel_read(&c, (u8 *)addr + len, 1);
+> > +		if (IS_ENABLED(CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE) &&
+> > +		    (unsigned long)addr < TASK_SIZE) {
+> > +			ret = probe_user_read(&c,
+> > +				(__force u8 __user *)addr + len, 1);
+> > +		} else {
+> > +			ret = probe_kernel_read(&c, (u8 *)addr + len, 1);
+> > +		}
+> >  		len++;
+> >  	} while (c && ret == 0 && len < MAX_STRING_SIZE);
+> 
+> To avoid redundant check in the loop, we can use strnlen_user_nofault() out of
+> the loop. Something like below.
 
-[ Upstream commit 63ec90f18204f2fe072df108de8a021b28b1b173 ]
+Yes, I've done something very similar in response to Linus' comment (just
+using an ifdef instead).
 
-In this workflow:
-
-$ make ARCH=um defconfig && make ARCH=um -j8
-  [snip]
-$ make ARCH=um mrproper
-  [snip]
-$ make ARCH=um defconfig O=./build_um && make ARCH=um -j8 O=./build_um
-  [snip]
-  CC      scripts/mod/empty.o
-In file included from ../include/linux/types.h:6,
-                 from ../include/linux/mod_devicetable.h:12,
-                 from ../scripts/mod/devicetable-offsets.c:3:
-../include/uapi/linux/types.h:5:10: fatal error: asm/types.h: No such file or directory
-    5 | #include <asm/types.h>
-      |          ^~~~~~~~~~~~~
-compilation terminated.
-make[2]: *** [../scripts/Makefile.build:100: scripts/mod/devicetable-offsets.s] Error 1
-make[2]: *** Waiting for unfinished jobs....
-make[1]: *** [/home/iha/sdb/opensource/lkmp/linux-kselftest.git/Makefile:1140: prepare0] Error 2
-make[1]: Leaving directory '/home/iha/sdb/opensource/lkmp/linux-kselftest.git/build_um'
-make: *** [Makefile:180: sub-make] Error 2
-
-The cause of the error was because arch/$(SUBARCH)/include/generated files
-weren't properly cleaned by `make ARCH=um mrproper`.
-
-Fixes: a788b2ed81ab ("kbuild: check arch/$(SRCARCH)/include/generated before out-of-tree build")
-Reported-by: Theodore Ts'o <tytso@mit.edu>
-Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
-Tested-by: Brendan Higgins <brendanhiggins@google.com>
-Link: https://groups.google.com/forum/#!msg/kunit-dev/QmA27YEgEgI/hvS1kiz2CwAJ
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/um/Makefile | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index d2daa206872da..275f5ffdf6f0a 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -140,6 +140,7 @@ export CFLAGS_vmlinux := $(LINK-y) $(LINK_WRAPS) $(LD_FLAGS_CMDLINE)
- # When cleaning we don't include .config, so we don't include
- # TT or skas makefiles and don't clean skas_ptregs.h.
- CLEAN_FILES += linux x.i gmon.out
-+MRPROPER_DIRS += arch/$(SUBARCH)/include/generated
- 
- archclean:
- 	@find . \( -name '*.bb' -o -name '*.bbg' -o -name '*.da' \
--- 
-2.20.1
-
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
