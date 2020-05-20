@@ -1,12 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 01/20] maccess: unexport probe_kernel_write and
- probe_user_write
-Date: Tue, 19 May 2020 15:44:30 +0200
-Message-Id: <20200519134449.1466624-2-hch@lst.de>
-In-Reply-To: <20200519134449.1466624-1-hch@lst.de>
-References: <20200519134449.1466624-1-hch@lst.de>
-MIME-Version: 1.0
+Received: from mail.kernel.org ([198.145.29.99])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jbVLn-0003C4-Ta
+ for linux-um@lists.infradead.org; Wed, 20 May 2020 20:30:05 +0000
+Subject: Re: [GIT PULL] UML fixes for 5.7 final
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <1547930539.249342.1590004176796.JavaMail.zimbra@nod.at>
+References: <1547930539.249342.1590004176796.JavaMail.zimbra@nod.at>
+Message-Id: <159000660310.10849.13116492422203668761.pr-tracker-bot@kernel.org>
+Date: Wed, 20 May 2020 20:30:03 +0000
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -15,43 +17,26 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: x86@kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-parisc@vger.kernel.org, netdev@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-um <linux-um@lists.infradead.org>, torvalds <torvalds@linux-foundation.org>, linux-kernel <linux-kernel@vger.kernel.org>
 
-These two functions are not used by any modular code.
+The pull request you sent on Wed, 20 May 2020 21:49:36 +0200 (CEST):
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- mm/maccess.c | 2 --
- 1 file changed, 2 deletions(-)
+> git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.7-rc6
 
-diff --git a/mm/maccess.c b/mm/maccess.c
-index 3ca8d97e50106..cf21e604f78cb 100644
---- a/mm/maccess.c
-+++ b/mm/maccess.c
-@@ -121,7 +121,6 @@ long __probe_kernel_write(void *dst, const void *src, size_t size)
- 
- 	return ret;
- }
--EXPORT_SYMBOL_GPL(probe_kernel_write);
- 
- /**
-  * probe_user_write(): safely attempt to write to a user-space location
-@@ -148,7 +147,6 @@ long __probe_user_write(void __user *dst, const void *src, size_t size)
- 
- 	return ret;
- }
--EXPORT_SYMBOL_GPL(probe_user_write);
- 
- /**
-  * strncpy_from_unsafe: - Copy a NUL terminated string from unsafe address.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/d303402c288340f9094fa0ba697600335a41bc3e
+
+Thank you!
+
 -- 
-2.26.2
-
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
 
 _______________________________________________
 linux-um mailing list
