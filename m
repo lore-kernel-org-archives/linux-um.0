@@ -1,11 +1,11 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 14/15] maccess: allow architectures to provide kernel probing
+Subject: [PATCH 18/23] maccess: allow architectures to provide kernel probing
  directly
-Date: Wed,  6 May 2020 08:22:22 +0200
-Message-Id: <20200506062223.30032-15-hch@lst.de>
-In-Reply-To: <20200506062223.30032-1-hch@lst.de>
-References: <20200506062223.30032-1-hch@lst.de>
+Date: Thu, 21 May 2020 17:22:56 +0200
+Message-Id: <20200521152301.2587579-19-hch@lst.de>
+In-Reply-To: <20200521152301.2587579-1-hch@lst.de>
+References: <20200521152301.2587579-1-hch@lst.de>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -33,18 +33,18 @@ Signed-off-by: Christoph Hellwig <hch@lst.de>
  1 file changed, 76 insertions(+)
 
 diff --git a/mm/maccess.c b/mm/maccess.c
-index aa59967d9b658..d99a5a67fa9b3 100644
+index ffde1ae86ec51..e19d19cd5382c 100644
 --- a/mm/maccess.c
 +++ b/mm/maccess.c
-@@ -12,6 +12,81 @@ bool __weak probe_kernel_read_allowed(void *dst, const void *unsafe_src,
+@@ -11,6 +11,81 @@ bool __weak probe_kernel_read_allowed(const void *unsafe_src, size_t size)
  	return true;
  }
  
-+#ifdef HAVE_ARCH_PROBE_KERNEL
++#ifdef HAVE_GET_KERNEL_NOFAULT
 +
 +#define probe_kernel_read_loop(dst, src, len, type, err_label)		\
 +	while (len >= sizeof(type)) {					\
-+		arch_kernel_read(dst, src, type, err_label);		\
++		__get_kernel_nofault(dst, src, type, err_label);		\
 +		dst += sizeof(type);					\
 +		src += sizeof(type);					\
 +		len -= sizeof(type);					\
@@ -52,7 +52,7 @@ index aa59967d9b658..d99a5a67fa9b3 100644
 +
 +long probe_kernel_read(void *dst, const void *src, size_t size)
 +{
-+	if (!probe_kernel_read_allowed(dst, src, size))
++	if (!probe_kernel_read_allowed(src, size))
 +		return -EFAULT;
 +
 +	pagefault_disable();
@@ -70,7 +70,7 @@ index aa59967d9b658..d99a5a67fa9b3 100644
 +
 +#define probe_kernel_write_loop(dst, src, len, type, err_label)		\
 +	while (len >= sizeof(type)) {					\
-+		arch_kernel_write(dst, src, type, err_label);		\
++		__put_kernel_nofault(dst, src, type, err_label);		\
 +		dst += sizeof(type);					\
 +		src += sizeof(type);					\
 +		len -= sizeof(type);					\
@@ -90,18 +90,18 @@ index aa59967d9b658..d99a5a67fa9b3 100644
 +	return -EFAULT;
 +}
 +
-+long strncpy_from_kernel_unsafe(char *dst, const void *unsafe_addr, long count)
++long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
 +{
 +	const void *src = unsafe_addr;
 +
 +	if (unlikely(count <= 0))
 +		return 0;
-+	if (!probe_kernel_read_allowed(dst, unsafe_addr, count))
++	if (!probe_kernel_read_allowed(unsafe_addr, count))
 +		return -EFAULT;
 +
 +	pagefault_disable();
 +	do {
-+		arch_kernel_read(dst, src, u8, Efault);
++		__get_kernel_nofault(dst, src, u8, Efault);
 +		dst++;
 +		src++;
 +	} while (dst[-1] && src - unsafe_addr < count);
@@ -114,15 +114,15 @@ index aa59967d9b658..d99a5a67fa9b3 100644
 +	dst[-1] = '\0';
 +	return -EFAULT;
 +}
-+#else /* HAVE_ARCH_PROBE_KERNEL */
++#else /* HAVE_GET_KERNEL_NOFAULT */
  /**
   * probe_kernel_read(): safely attempt to read from kernel-space
   * @dst: pointer to the buffer that shall take the data
-@@ -114,6 +189,7 @@ long strncpy_from_kernel_unsafe(char *dst, const void *unsafe_addr, long count)
+@@ -113,6 +188,7 @@ long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
  
  	return ret ? -EFAULT : src - unsafe_addr;
  }
-+#endif /* HAVE_ARCH_PROBE_KERNEL */
++#endif /* HAVE_GET_KERNEL_NOFAULT */
  
  /**
   * probe_user_read(): safely attempt to read from a user-space location
