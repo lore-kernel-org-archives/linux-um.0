@@ -1,8 +1,8 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 15/23] maccess: remove strncpy_from_unsafe
-Date: Thu, 21 May 2020 17:22:53 +0200
-Message-Id: <20200521152301.2587579-16-hch@lst.de>
+Subject: [PATCH 02/23] maccess: remove various unused weak aliases
+Date: Thu, 21 May 2020 17:22:40 +0200
+Message-Id: <20200521152301.2587579-3-hch@lst.de>
 In-Reply-To: <20200521152301.2587579-1-hch@lst.de>
 References: <20200521152301.2587579-1-hch@lst.de>
 MIME-Version: 1.0
@@ -21,97 +21,95 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: x86@kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
 Cc: linux-parisc@vger.kernel.org, netdev@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
 
-All users are gone now.
+maccess tends to define lots of underscore prefixed symbols that then
+have other weak aliases.  But except for two cases they are never
+actually used, so remove them.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- include/linux/uaccess.h |  1 -
- mm/maccess.c            | 39 +--------------------------------------
- 2 files changed, 1 insertion(+), 39 deletions(-)
+ include/linux/uaccess.h |  3 ---
+ mm/maccess.c            | 19 +++----------------
+ 2 files changed, 3 insertions(+), 19 deletions(-)
 
 diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
-index 65a37ae3b8871..d7d98ff345b3d 100644
+index 67f016010aad5..a2c606a403745 100644
 --- a/include/linux/uaccess.h
 +++ b/include/linux/uaccess.h
-@@ -311,7 +311,6 @@ extern long probe_user_read(void *dst, const void __user *src, size_t size);
+@@ -324,7 +324,6 @@ extern long __probe_kernel_read(void *dst, const void *src, size_t size);
+  * happens, handle that and return -EFAULT.
+  */
+ extern long probe_user_read(void *dst, const void __user *src, size_t size);
+-extern long __probe_user_read(void *dst, const void __user *src, size_t size);
+ 
+ /*
+  * probe_kernel_write(): safely attempt to write to a location
+@@ -336,7 +335,6 @@ extern long __probe_user_read(void *dst, const void __user *src, size_t size);
+  * happens, handle that and return -EFAULT.
+  */
  extern long notrace probe_kernel_write(void *dst, const void *src, size_t size);
+-extern long notrace __probe_kernel_write(void *dst, const void *src, size_t size);
+ 
+ /*
+  * probe_user_write(): safely attempt to write to a location in user space
+@@ -348,7 +346,6 @@ extern long notrace __probe_kernel_write(void *dst, const void *src, size_t size
+  * happens, handle that and return -EFAULT.
+  */
  extern long notrace probe_user_write(void __user *dst, const void *src, size_t size);
+-extern long notrace __probe_user_write(void __user *dst, const void *src, size_t size);
  
--extern long strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count);
- long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr,
- 		long count);
- 
+ extern long strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count);
+ extern long strncpy_from_unsafe_strict(char *dst, const void *unsafe_addr,
 diff --git a/mm/maccess.c b/mm/maccess.c
-index 6116742608217..df82fde34307f 100644
+index cf21e604f78cb..4e7f3b6eb05ae 100644
 --- a/mm/maccess.c
 +++ b/mm/maccess.c
-@@ -8,8 +8,6 @@
- 
- static long __probe_kernel_read(void *dst, const void *src, size_t size,
- 		bool strict);
--static long __strncpy_from_unsafe(char *dst, const void *unsafe_addr,
--		long count, bool strict);
- 
- bool __weak probe_kernel_read_allowed(const void *unsafe_src, size_t size,
- 		bool strict)
-@@ -156,35 +154,6 @@ long probe_user_write(void __user *dst, const void *src, size_t size)
- 	return 0;
- }
- 
--/**
-- * strncpy_from_unsafe: - Copy a NUL terminated string from unsafe address.
-- * @dst:   Destination address, in kernel space.  This buffer must be at
-- *         least @count bytes long.
-- * @unsafe_addr: Unsafe address.
-- * @count: Maximum number of bytes to copy, including the trailing NUL.
-- *
-- * Copies a NUL-terminated string from unsafe address to kernel buffer.
-- *
-- * On success, returns the length of the string INCLUDING the trailing NUL.
-- *
-- * If access fails, returns -EFAULT (some data may have been copied
-- * and the trailing NUL added).
-- *
-- * If @count is smaller than the length of the string, copies @count-1 bytes,
-- * sets the last byte of @dst buffer to NUL and returns @count.
-- *
-- * Same as strncpy_from_kernel_nofault() except that for architectures with
-- * not fully separated user and kernel address spaces this function also works
-- * for user address tanges.
-- *
-- * DO NOT USE THIS FUNCTION - it is broken on architectures with entirely
-- * separate kernel and user address spaces, and also a bad idea otherwise.
-- */
--long strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
--{
--	return __strncpy_from_unsafe(dst, unsafe_addr, count, false);
--}
--
- /**
-  * strncpy_from_kernel_nofault: - Copy a NUL terminated string from unsafe
-  *				 address.
-@@ -204,12 +173,6 @@ long strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
-  * sets the last byte of @dst buffer to NUL and returns @count.
+@@ -79,11 +79,7 @@ EXPORT_SYMBOL_GPL(probe_kernel_read);
+  * Safely read from user address @src to the buffer at @dst. If a kernel fault
+  * happens, handle that and return -EFAULT.
   */
- long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
--{
--	return __strncpy_from_unsafe(dst, unsafe_addr, count, true);
--}
 -
--static long __strncpy_from_unsafe(char *dst, const void *unsafe_addr,
--		long count, bool strict)
+-long __weak probe_user_read(void *dst, const void __user *src, size_t size)
+-    __attribute__((alias("__probe_user_read")));
+-
+-long __probe_user_read(void *dst, const void __user *src, size_t size)
++long probe_user_read(void *dst, const void __user *src, size_t size)
  {
+ 	long ret = -EFAULT;
  	mm_segment_t old_fs = get_fs();
- 	const void *src = unsafe_addr;
-@@ -217,7 +180,7 @@ static long __strncpy_from_unsafe(char *dst, const void *unsafe_addr,
+@@ -106,11 +102,7 @@ EXPORT_SYMBOL_GPL(probe_user_read);
+  * Safely write to address @dst from the buffer at @src.  If a kernel fault
+  * happens, handle that and return -EFAULT.
+  */
+-
+-long __weak probe_kernel_write(void *dst, const void *src, size_t size)
+-    __attribute__((alias("__probe_kernel_write")));
+-
+-long __probe_kernel_write(void *dst, const void *src, size_t size)
++long probe_kernel_write(void *dst, const void *src, size_t size)
+ {
+ 	long ret;
+ 	mm_segment_t old_fs = get_fs();
+@@ -131,11 +123,7 @@ long __probe_kernel_write(void *dst, const void *src, size_t size)
+  * Safely write to address @dst from the buffer at @src.  If a kernel fault
+  * happens, handle that and return -EFAULT.
+  */
+-
+-long __weak probe_user_write(void __user *dst, const void *src, size_t size)
+-    __attribute__((alias("__probe_user_write")));
+-
+-long __probe_user_write(void __user *dst, const void *src, size_t size)
++long probe_user_write(void __user *dst, const void *src, size_t size)
+ {
+ 	long ret = -EFAULT;
+ 	mm_segment_t old_fs = get_fs();
+@@ -171,7 +159,6 @@ long __probe_user_write(void __user *dst, const void *src, size_t size)
+  * probing memory on a user address range where strncpy_from_unsafe_user() is
+  * supposed to be used instead.
+  */
+-
+ long __weak strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
+     __attribute__((alias("__strncpy_from_unsafe")));
  
- 	if (unlikely(count <= 0))
- 		return 0;
--	if (!probe_kernel_read_allowed(unsafe_addr, count, strict))
-+	if (!probe_kernel_read_allowed(unsafe_addr, count, true))
- 		return -EFAULT;
- 
- 	set_fs(KERNEL_DS);
 -- 
 2.26.2
 
