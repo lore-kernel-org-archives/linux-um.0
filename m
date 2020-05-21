@@ -1,10 +1,11 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 03/18] maccess: remove duplicate kerneldoc comments
-Date: Wed, 13 May 2020 18:00:23 +0200
-Message-Id: <20200513160038.2482415-4-hch@lst.de>
-In-Reply-To: <20200513160038.2482415-1-hch@lst.de>
-References: <20200513160038.2482415-1-hch@lst.de>
+Subject: [PATCH 01/23] maccess: unexport probe_kernel_write and
+ probe_user_write
+Date: Thu, 21 May 2020 17:22:39 +0200
+Message-Id: <20200521152301.2587579-2-hch@lst.de>
+In-Reply-To: <20200521152301.2587579-1-hch@lst.de>
+References: <20200521152301.2587579-1-hch@lst.de>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -21,70 +22,33 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: x86@kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
 Cc: linux-parisc@vger.kernel.org, netdev@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
 
-Many of the maccess routines have a copy of the kerneldoc comment
-in the header.  Remove it as it is not useful and will get out of
-sync sooner or later.
+These two functions are not used by any modular code.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- include/linux/uaccess.h | 38 --------------------------------------
- 1 file changed, 38 deletions(-)
+ mm/maccess.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
-index a2c606a403745..5a36a298a85f8 100644
---- a/include/linux/uaccess.h
-+++ b/include/linux/uaccess.h
-@@ -301,50 +301,12 @@ copy_struct_from_user(void *dst, size_t ksize, const void __user *src,
- 	return 0;
+diff --git a/mm/maccess.c b/mm/maccess.c
+index 3ca8d97e50106..cf21e604f78cb 100644
+--- a/mm/maccess.c
++++ b/mm/maccess.c
+@@ -121,7 +121,6 @@ long __probe_kernel_write(void *dst, const void *src, size_t size)
+ 
+ 	return ret;
  }
+-EXPORT_SYMBOL_GPL(probe_kernel_write);
  
--/*
-- * probe_kernel_read(): safely attempt to read from a location
-- * @dst: pointer to the buffer that shall take the data
-- * @src: address to read from
-- * @size: size of the data chunk
-- *
-- * Safely read from address @src to the buffer at @dst.  If a kernel fault
-- * happens, handle that and return -EFAULT.
-- */
- extern long probe_kernel_read(void *dst, const void *src, size_t size);
- extern long probe_kernel_read_strict(void *dst, const void *src, size_t size);
- extern long __probe_kernel_read(void *dst, const void *src, size_t size);
--
--/*
-- * probe_user_read(): safely attempt to read from a location in user space
-- * @dst: pointer to the buffer that shall take the data
-- * @src: address to read from
-- * @size: size of the data chunk
-- *
-- * Safely read from address @src to the buffer at @dst.  If a kernel fault
-- * happens, handle that and return -EFAULT.
-- */
- extern long probe_user_read(void *dst, const void __user *src, size_t size);
+ /**
+  * probe_user_write(): safely attempt to write to a user-space location
+@@ -148,7 +147,6 @@ long __probe_user_write(void __user *dst, const void *src, size_t size)
  
--/*
-- * probe_kernel_write(): safely attempt to write to a location
-- * @dst: address to write to
-- * @src: pointer to the data that shall be written
-- * @size: size of the data chunk
-- *
-- * Safely write to address @dst from the buffer at @src.  If a kernel fault
-- * happens, handle that and return -EFAULT.
-- */
- extern long notrace probe_kernel_write(void *dst, const void *src, size_t size);
--
--/*
-- * probe_user_write(): safely attempt to write to a location in user space
-- * @dst: address to write to
-- * @src: pointer to the data that shall be written
-- * @size: size of the data chunk
-- *
-- * Safely write to address @dst from the buffer at @src.  If a kernel fault
-- * happens, handle that and return -EFAULT.
-- */
- extern long notrace probe_user_write(void __user *dst, const void *src, size_t size);
+ 	return ret;
+ }
+-EXPORT_SYMBOL_GPL(probe_user_write);
  
- extern long strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count);
+ /**
+  * strncpy_from_unsafe: - Copy a NUL terminated string from unsafe address.
 -- 
 2.26.2
 
