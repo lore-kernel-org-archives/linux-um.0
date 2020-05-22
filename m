@@ -1,45 +1,201 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 06/31] unicore32: remove flush_cache_user_range
-Date: Sun, 10 May 2020 09:54:45 +0200
-Message-Id: <20200510075510.987823-7-hch@lst.de>
-In-Reply-To: <20200510075510.987823-1-hch@lst.de>
-References: <20200510075510.987823-1-hch@lst.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: linux-arch-owner@vger.kernel.org
-To: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Roman Zippel <zippel@linux-m68k.org>
-Cc: Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linux-fsdevel@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail.kernel.org ([198.145.29.99])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jbvBK-0002U3-Oh
+ for linux-um@lists.infradead.org; Fri, 22 May 2020 00:05:00 +0000
+Date: Fri, 22 May 2020 09:04:50 +0900
+From: Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [PATCH 14/23] tracing/kprobes: handle mixed kernel/userspace
+ probes better
+Message-Id: <20200522090450.a6ef7a53878c61d10340949a@kernel.org>
+In-Reply-To: <20200521152301.2587579-15-hch@lst.de>
+References: <20200521152301.2587579-1-hch@lst.de>
+ <20200521152301.2587579-15-hch@lst.de>
+Mime-Version: 1.0
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Christoph Hellwig <hch@lst.de>
+Cc: linux-parisc@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org, x86@kernel.org, linux-um@lists.infradead.org, Alexei Starovoitov <ast@kernel.org>, linux-kernel@vger.kernel.org, linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, bpf@vger.kernel.org
 
-flush_cache_user_range is an ARMism not used by any generic or unicore32
-specific code.
+On Thu, 21 May 2020 17:22:52 +0200
+Christoph Hellwig <hch@lst.de> wrote:
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- arch/unicore32/include/asm/cacheflush.h | 8 --------
- 1 file changed, 8 deletions(-)
+> Instead of using the dangerous probe_kernel_read and strncpy_from_unsafe
+> helpers, rework probes to try a user probe based on the address if the
+> architecture has a common address space for kernel and userspace.
+> 
 
-diff --git a/arch/unicore32/include/asm/cacheflush.h b/arch/unicore32/include/asm/cacheflush.h
-index dc8c0b41538f8..9393ca4047e93 100644
---- a/arch/unicore32/include/asm/cacheflush.h
-+++ b/arch/unicore32/include/asm/cacheflush.h
-@@ -132,14 +132,6 @@ extern void flush_cache_page(struct vm_area_struct *vma,
- 
- #define flush_cache_dup_mm(mm) flush_cache_mm(mm)
- 
--/*
-- * flush_cache_user_range is used when we want to ensure that the
-- * Harvard caches are synchronised for the user space address range.
-- * This is used for the UniCore private sys_cacheflush system call.
-- */
--#define flush_cache_user_range(vma, start, end) \
--	__cpuc_coherent_user_range((start) & PAGE_MASK, PAGE_ALIGN(end))
--
- /*
-  * Perform necessary cache operations to ensure that data previously
-  * stored within this range of addresses can be executed by the CPU.
+This looks good to me.
+
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thank you!
+
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  kernel/trace/trace_kprobe.c | 72 ++++++++++++++++++++++---------------
+>  1 file changed, 43 insertions(+), 29 deletions(-)
+> 
+> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+> index 4325f9e7fadaa..4aeaef53ba970 100644
+> --- a/kernel/trace/trace_kprobe.c
+> +++ b/kernel/trace/trace_kprobe.c
+> @@ -1200,6 +1200,15 @@ static const struct file_operations kprobe_profile_ops = {
+>  
+>  /* Kprobe specific fetch functions */
+>  
+> +/* Return the length of string -- including null terminal byte */
+> +static nokprobe_inline int
+> +fetch_store_strlen_user(unsigned long addr)
+> +{
+> +	const void __user *uaddr =  (__force const void __user *)addr;
+> +
+> +	return strnlen_user_nofault(uaddr, MAX_STRING_SIZE);
+> +}
+> +
+>  /* Return the length of string -- including null terminal byte */
+>  static nokprobe_inline int
+>  fetch_store_strlen(unsigned long addr)
+> @@ -1207,30 +1216,27 @@ fetch_store_strlen(unsigned long addr)
+>  	int ret, len = 0;
+>  	u8 c;
+>  
+> +#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+> +	if (addr < TASK_SIZE)
+> +		return fetch_store_strlen_user(addr);
+> +#endif
+> +
+>  	do {
+> -		ret = probe_kernel_read(&c, (u8 *)addr + len, 1);
+> +		ret = probe_kernel_read_strict(&c, (u8 *)addr + len, 1);
+>  		len++;
+>  	} while (c && ret == 0 && len < MAX_STRING_SIZE);
+>  
+>  	return (ret < 0) ? ret : len;
+>  }
+>  
+> -/* Return the length of string -- including null terminal byte */
+> -static nokprobe_inline int
+> -fetch_store_strlen_user(unsigned long addr)
+> -{
+> -	const void __user *uaddr =  (__force const void __user *)addr;
+> -
+> -	return strnlen_user_nofault(uaddr, MAX_STRING_SIZE);
+> -}
+> -
+>  /*
+> - * Fetch a null-terminated string. Caller MUST set *(u32 *)buf with max
+> - * length and relative data location.
+> + * Fetch a null-terminated string from user. Caller MUST set *(u32 *)buf
+> + * with max length and relative data location.
+>   */
+>  static nokprobe_inline int
+> -fetch_store_string(unsigned long addr, void *dest, void *base)
+> +fetch_store_string_user(unsigned long addr, void *dest, void *base)
+>  {
+> +	const void __user *uaddr =  (__force const void __user *)addr;
+>  	int maxlen = get_loc_len(*(u32 *)dest);
+>  	void *__dest;
+>  	long ret;
+> @@ -1240,11 +1246,7 @@ fetch_store_string(unsigned long addr, void *dest, void *base)
+>  
+>  	__dest = get_loc_data(dest, base);
+>  
+> -	/*
+> -	 * Try to get string again, since the string can be changed while
+> -	 * probing.
+> -	 */
+> -	ret = strncpy_from_unsafe(__dest, (void *)addr, maxlen);
+> +	ret = strncpy_from_user_nofault(__dest, uaddr, maxlen);
+>  	if (ret >= 0)
+>  		*(u32 *)dest = make_data_loc(ret, __dest - base);
+>  
+> @@ -1252,35 +1254,37 @@ fetch_store_string(unsigned long addr, void *dest, void *base)
+>  }
+>  
+>  /*
+> - * Fetch a null-terminated string from user. Caller MUST set *(u32 *)buf
+> - * with max length and relative data location.
+> + * Fetch a null-terminated string. Caller MUST set *(u32 *)buf with max
+> + * length and relative data location.
+>   */
+>  static nokprobe_inline int
+> -fetch_store_string_user(unsigned long addr, void *dest, void *base)
+> +fetch_store_string(unsigned long addr, void *dest, void *base)
+>  {
+> -	const void __user *uaddr =  (__force const void __user *)addr;
+>  	int maxlen = get_loc_len(*(u32 *)dest);
+>  	void *__dest;
+>  	long ret;
+>  
+> +#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+> +	if ((unsigned long)addr < TASK_SIZE)
+> +		return fetch_store_string_user(addr, dest, base);
+> +#endif
+> +
+>  	if (unlikely(!maxlen))
+>  		return -ENOMEM;
+>  
+>  	__dest = get_loc_data(dest, base);
+>  
+> -	ret = strncpy_from_user_nofault(__dest, uaddr, maxlen);
+> +	/*
+> +	 * Try to get string again, since the string can be changed while
+> +	 * probing.
+> +	 */
+> +	ret = strncpy_from_user_nofault(__dest, (void *)addr, maxlen);
+>  	if (ret >= 0)
+>  		*(u32 *)dest = make_data_loc(ret, __dest - base);
+>  
+>  	return ret;
+>  }
+>  
+> -static nokprobe_inline int
+> -probe_mem_read(void *dest, void *src, size_t size)
+> -{
+> -	return probe_kernel_read(dest, src, size);
+> -}
+> -
+>  static nokprobe_inline int
+>  probe_mem_read_user(void *dest, void *src, size_t size)
+>  {
+> @@ -1289,6 +1293,16 @@ probe_mem_read_user(void *dest, void *src, size_t size)
+>  	return probe_user_read(dest, uaddr, size);
+>  }
+>  
+> +static nokprobe_inline int
+> +probe_mem_read(void *dest, void *src, size_t size)
+> +{
+> +#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+> +	if ((unsigned long)src < TASK_SIZE)
+> +		return probe_mem_read_user(dest, src, size);
+> +#endif
+> +	return probe_kernel_read_strict(dest, src, size);
+> +}
+> +
+>  /* Note that we don't verify it, since the code does not come from user space */
+>  static int
+>  process_fetch_insn(struct fetch_insn *code, struct pt_regs *regs, void *dest,
+> -- 
+> 2.26.2
+> 
+
+
 -- 
-2.26.2
+Masami Hiramatsu <mhiramat@kernel.org>
 
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
