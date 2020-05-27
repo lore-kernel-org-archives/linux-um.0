@@ -1,104 +1,40 @@
-MIME-Version: 1.0
-Date: Wed, 27 May 2020 09:02:51 +0200
-References: <20200515143646.3857579-7-hch@lst.de>
-	<20200527043426.3242439-1-natechancellor@gmail.com>
-In-Reply-To: <20200527043426.3242439-1-natechancellor@gmail.com>
-Message-ID: <CAMuHMdVSduTOi5bUgF9sLQdGADwyL1+qALWsKgin1TeOLGhAKQ@mail.gmail.com>
+Return-Path: <linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org>
+Date: Wed, 27 May 2020 07:10:11 +0200
+From: Christoph Hellwig <hch@lst.de>
 Subject: Re: [PATCH] media: omap3isp: Shuffle cacheflush.h and include mm.h
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <20200527051011.GB16317@lst.de>
+References: <20200515143646.3857579-7-hch@lst.de>
+ <20200527043426.3242439-1-natechancellor@gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20200527043426.3242439-1-natechancellor@gmail.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org
 To: Nathan Chancellor <natechancellor@gmail.com>
-Cc: Christoph Hellwig <hch@lst.de>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, Roman Zippel <zippel@linux-m68k.org>, "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>, Linux MM <linux-mm@kvack.org>, sparclinux <sparclinux@vger.kernel.org>, linux-riscv@lists.infradead.org, Linux-Arch <linux-arch@vger.kernel.org>, linux-c6x-dev@linux-c6x.org, "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>, the arch/x86 maintainers <x86@kernel.org>, "open list:TENSILICA XTENSA PORT (xtensa)" <linux-xtensa@linux-xtensa.org>, Arnd Bergmann <arnd@arndb.de>, alpha <linux-alpha@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Openrisc <openrisc@lists.librecores.org>, Nathan Chancellor <natechancellor@gmail.com>, Linux ARM <linux-arm-kernel@lists.infradead.org>, Michal Simek <monstr@monstr.eu>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Jessica Yu <jeyu@kernel.org>, Linux FS Devel <linux-fsdevel@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, zippel@linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, hch@lst.de, linux-arch@vger.kernel.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, x86@kernel.org, linux-xtensa@linux-xtensa.org, arnd@arndb.de, linux-alpha@vger.kernel.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, monstr@monstr.eu, linux-kernel@vger.kernel.org, jeyu@kernel.org, linux-fsdevel@vger.kernel.org, akpm@linux-foundation.org, linuxppc-dev@lists.ozlabs.org
 List-ID: <linux-um.lists.infradead.org>
 
-Hi Nathan,
-
-CC Laurent
-
-On Wed, May 27, 2020 at 6:37 AM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
+On Tue, May 26, 2020 at 09:34:27PM -0700, Nathan Chancellor wrote:
 > After mm.h was removed from the asm-generic version of cacheflush.h,
 > s390 allyesconfig shows several warnings of the following nature:
->
-> In file included from ./arch/s390/include/generated/asm/cacheflush.h:1,
->                  from drivers/media/platform/omap3isp/isp.c:42:
-> ./include/asm-generic/cacheflush.h:16:42: warning: 'struct mm_struct'
-> declared inside parameter list will not be visible outside of this
-> definition or declaration
->
-> cacheflush.h does not include mm.h nor does it include any forward
-> declaration of these structures hence the warning. To avoid this,
-> include mm.h explicitly in this file and shuffle cacheflush.h below it.
->
-> Fixes: 19c0054597a0 ("asm-generic: don't include <linux/mm.h> in cacheflush.h")
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 
-Thanks for your patch!
+Hmm, I'm pretty sure I sent the same fix a few days ago in response to
+a build bot report.  But if that didn't get picked up I'm fine with
+your version of it as well of course:
 
-> I am aware the fixes tag is kind of irrelevant because that SHA will
-> change in the next linux-next revision and this will probably get folded
-> into the original patch anyways but still.
->
-> The other solution would be to add forward declarations of these structs
-> to the top of cacheflush.h, I just chose to do what Christoph did in the
-> original patch. I am happy to do that instead if you all feel that is
-> better.
+Acked-by: Christoph Hellwig <hch@lst.de>
 
-That actually looks like a better solution to me, as it would address the
-problem for all users.
-
->  drivers/media/platform/omap3isp/isp.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/media/platform/omap3isp/isp.c b/drivers/media/platform/omap3isp/isp.c
-> index a4ee6b86663e..54106a768e54 100644
-> --- a/drivers/media/platform/omap3isp/isp.c
-> +++ b/drivers/media/platform/omap3isp/isp.c
-> @@ -39,8 +39,6 @@
->   *     Troy Laramy <t-laramy@ti.com>
->   */
->
-> -#include <asm/cacheflush.h>
-> -
->  #include <linux/clk.h>
->  #include <linux/clkdev.h>
->  #include <linux/delay.h>
-> @@ -49,6 +47,7 @@
->  #include <linux/i2c.h>
->  #include <linux/interrupt.h>
->  #include <linux/mfd/syscon.h>
-> +#include <linux/mm.h>
->  #include <linux/module.h>
->  #include <linux/omap-iommu.h>
->  #include <linux/platform_device.h>
-> @@ -58,6 +57,8 @@
->  #include <linux/sched.h>
->  #include <linux/vmalloc.h>
->
-> +#include <asm/cacheflush.h>
-> +
->  #ifdef CONFIG_ARM_DMA_USE_IOMMU
->  #include <asm/dma-iommu.h>
->  #endif
-
-Why does this file need <asm/cacheflush.h> at all?
-It doesn't call any of the flush_*() functions, and seems to compile fine
-without (on arm32).
-
-Perhaps it was included at the top intentionally, to override the definitions
-of copy_{to,from}_user_page()? Fortunately that doesn't seem to be the
-case, from a quick look at the assembler output.
-
-So let's just remove the #include instead?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
