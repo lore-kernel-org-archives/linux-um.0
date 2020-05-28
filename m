@@ -1,12 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 15/20] maccess: allow architectures to provide kernel probing
- directly
-Date: Tue, 19 May 2020 15:44:44 +0200
-Message-Id: <20200519134449.1466624-16-hch@lst.de>
-In-Reply-To: <20200519134449.1466624-1-hch@lst.de>
-References: <20200519134449.1466624-1-hch@lst.de>
-MIME-Version: 1.0
+Received: from mail.kernel.org ([198.145.29.99])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1je6XI-0007L3-L1
+ for linux-um@lists.infradead.org; Thu, 28 May 2020 00:36:41 +0000
+Date: Wed, 27 May 2020 17:36:38 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: clean up and streamline probe_kernel_* and friends v4
+Message-Id: <20200527173638.156eccece443d8e98c646310@linux-foundation.org>
+In-Reply-To: <20200526061309.GA15549@lst.de>
+References: <20200521152301.2587579-1-hch@lst.de>
+ <20200525151912.34b20b978617e2893e484fa3@linux-foundation.org>
+ <20200526061309.GA15549@lst.de>
+Mime-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -19,115 +24,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: x86@kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-parisc@vger.kernel.org, netdev@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
+To: Christoph Hellwig <hch@lst.de>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, linux-parisc@vger.kernel.org, netdev@vger.kernel.org, x86@kernel.org, linux-um@lists.infradead.org, Alexei Starovoitov <ast@kernel.org>, linux-kernel@vger.kernel.org, linux-mm@kvack.org, Masami Hiramatsu <mhiramat@kernel.org>, bpf@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>
 
-Provide alternative versions of probe_kernel_read, probe_kernel_write
-and strncpy_from_kernel_unsafe that don't need set_fs magic, but instead
-use arch hooks that are modelled after unsafe_{get,put}_user to access
-kernel memory in an exception safe way.
+On Tue, 26 May 2020 08:13:09 +0200 Christoph Hellwig <hch@lst.de> wrote:
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- mm/maccess.c | 76 ++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 76 insertions(+)
+> On Mon, May 25, 2020 at 03:19:12PM -0700, Andrew Morton wrote:
+> > hm.  Applying linux-next to this series generates a lot of rejects against
+> > powerpc:
+> > 
+> > -rw-rw-r-- 1 akpm akpm  493 May 25 15:06 arch/powerpc/kernel/kgdb.c.rej
+> > -rw-rw-r-- 1 akpm akpm 6461 May 25 15:06 arch/powerpc/kernel/trace/ftrace.c.rej
+> > -rw-rw-r-- 1 akpm akpm  447 May 25 15:06 arch/powerpc/mm/fault.c.rej
+> > -rw-rw-r-- 1 akpm akpm  623 May 25 15:06 arch/powerpc/perf/core-book3s.c.rej
+> > -rw-rw-r-- 1 akpm akpm 1408 May 25 15:06 arch/riscv/kernel/patch.c.rej
+> > 
+> > the arch/powerpc/kernel/trace/ftrace.c ones aren't very trivial.
+> > 
+> > It's -rc7.  Perhaps we should park all this until 5.8-rc1?
+> 
+> As this is a pre-condition for the set_fs removal I'd really like to
+> get the actual changes in.  All these conflicts seem to be about the
+> last three cleanup patches just doing renaming, so can we just skip
+> those three for now?  Then we can do the rename right after 5.8-rc1
+> when we have the least chances for conflicts.
 
-diff --git a/mm/maccess.c b/mm/maccess.c
-index 9773e2253b495..01129cbdf4484 100644
---- a/mm/maccess.c
-+++ b/mm/maccess.c
-@@ -12,6 +12,81 @@ bool __weak probe_kernel_read_allowed(void *dst, const void *unsafe_src,
- 	return true;
- }
- 
-+#ifdef HAVE_GET_KERNEL_NOFAULT
-+
-+#define probe_kernel_read_loop(dst, src, len, type, err_label)		\
-+	while (len >= sizeof(type)) {					\
-+		__get_kernel_nofault(dst, src, type, err_label);		\
-+		dst += sizeof(type);					\
-+		src += sizeof(type);					\
-+		len -= sizeof(type);					\
-+	}
-+
-+long probe_kernel_read(void *dst, const void *src, size_t size)
-+{
-+	if (!probe_kernel_read_allowed(dst, src, size))
-+		return -EFAULT;
-+
-+	pagefault_disable();
-+	probe_kernel_read_loop(dst, src, size, u64, Efault);
-+	probe_kernel_read_loop(dst, src, size, u32, Efault);
-+	probe_kernel_read_loop(dst, src, size, u16, Efault);
-+	probe_kernel_read_loop(dst, src, size, u8, Efault);
-+	pagefault_enable();
-+	return 0;
-+Efault:
-+	pagefault_enable();
-+	return -EFAULT;
-+}
-+EXPORT_SYMBOL_GPL(probe_kernel_read);
-+
-+#define probe_kernel_write_loop(dst, src, len, type, err_label)		\
-+	while (len >= sizeof(type)) {					\
-+		__put_kernel_nofault(dst, src, type, err_label);		\
-+		dst += sizeof(type);					\
-+		src += sizeof(type);					\
-+		len -= sizeof(type);					\
-+	}
-+
-+long probe_kernel_write(void *dst, const void *src, size_t size)
-+{
-+	pagefault_disable();
-+	probe_kernel_write_loop(dst, src, size, u64, Efault);
-+	probe_kernel_write_loop(dst, src, size, u32, Efault);
-+	probe_kernel_write_loop(dst, src, size, u16, Efault);
-+	probe_kernel_write_loop(dst, src, size, u8, Efault);
-+	pagefault_enable();
-+	return 0;
-+Efault:
-+	pagefault_enable();
-+	return -EFAULT;
-+}
-+
-+long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
-+{
-+	const void *src = unsafe_addr;
-+
-+	if (unlikely(count <= 0))
-+		return 0;
-+	if (!probe_kernel_read_allowed(dst, unsafe_addr, count))
-+		return -EFAULT;
-+
-+	pagefault_disable();
-+	do {
-+		__get_kernel_nofault(dst, src, u8, Efault);
-+		dst++;
-+		src++;
-+	} while (dst[-1] && src - unsafe_addr < count);
-+	pagefault_enable();
-+
-+	dst[-1] = '\0';
-+	return src - unsafe_addr;
-+Efault:
-+	pagefault_enable();
-+	dst[-1] = '\0';
-+	return -EFAULT;
-+}
-+#else /* HAVE_GET_KERNEL_NOFAULT */
- /**
-  * probe_kernel_read(): safely attempt to read from kernel-space
-  * @dst: pointer to the buffer that shall take the data
-@@ -114,6 +189,7 @@ long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
- 
- 	return ret ? -EFAULT : src - unsafe_addr;
- }
-+#endif /* HAVE_GET_KERNEL_NOFAULT */
- 
- /**
-  * probe_user_read(): safely attempt to read from a user-space location
--- 
-2.26.2
+That seems to have worked.  "[PATCH 23/23] maccess: return -ERANGE when
+copy_from_kernel_nofault_allowed fails" needed a bit of massaging to both
+the patch and to the patch title.
 
 
 _______________________________________________
