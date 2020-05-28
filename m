@@ -1,91 +1,84 @@
-Return-Path: <linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org>
-From: Nathan Chancellor <natechancellor@gmail.com>
-Subject: [PATCH] media: omap3isp: Shuffle cacheflush.h and include mm.h
-Date: Tue, 26 May 2020 21:34:27 -0700
-Message-Id: <20200527043426.3242439-1-natechancellor@gmail.com>
-In-Reply-To: <20200515143646.3857579-7-hch@lst.de>
-References: <20200515143646.3857579-7-hch@lst.de>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jeM05-0001sK-IT
+ for linux-um@lists.infradead.org; Thu, 28 May 2020 17:07:27 +0000
+Subject: Re: [PATCH 12/23] bpf: handle the compat string in
+ bpf_trace_copy_string better
+References: <20200521152301.2587579-1-hch@lst.de>
+ <20200521152301.2587579-13-hch@lst.de>
+ <20200527190432.e4af1fba00c13cb1421f5a37@linux-foundation.org>
+ <2b64fae6-394c-c1e5-8963-c256f4284065@fb.com> <20200528043957.GA28494@lst.de>
+From: Yonghong Song <yhs@fb.com>
+Message-ID: <a1aa26f4-8c0a-5f8a-8460-6d61f167702d@fb.com>
+Date: Thu, 28 May 2020 10:06:17 -0700
+In-Reply-To: <20200528043957.GA28494@lst.de>
+Content-Language: en-US
 MIME-Version: 1.0
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Content-Transfer-Encoding: 7bit
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org
-To: hch@lst.de
-Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, zippel@linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-arch@vger.kernel.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, x86@kernel.org, linux-xtensa@linux-xtensa.org, arnd@arndb.de, linux-alpha@vger.kernel.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, Nathan Chancellor <natechancellor@gmail.com>, linux-arm-kernel@lists.infradead.org, monstr@monstr.eu, linux-kernel@vger.kernel.org, jeyu@kernel.org, linux-fsdevel@vger.kernel.org, akpm@linux-foundation.org, linuxppc-dev@lists.ozlabs.org
-List-ID: <linux-um.lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Christoph Hellwig <hch@lst.de>
+Cc: linux-parisc@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org, x86@kernel.org, linux-um@lists.infradead.org, Alexei Starovoitov <ast@kernel.org>, linux-kernel@vger.kernel.org, linux-mm@kvack.org, Masami Hiramatsu <mhiramat@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, bpf@vger.kernel.org
 
-After mm.h was removed from the asm-generic version of cacheflush.h,
-s390 allyesconfig shows several warnings of the following nature:
 
-In file included from ./arch/s390/include/generated/asm/cacheflush.h:1,
-                 from drivers/media/platform/omap3isp/isp.c:42:
-./include/asm-generic/cacheflush.h:16:42: warning: 'struct mm_struct'
-declared inside parameter list will not be visible outside of this
-definition or declaration
 
-cacheflush.h does not include mm.h nor does it include any forward
-declaration of these structures hence the warning. To avoid this,
-include mm.h explicitly in this file and shuffle cacheflush.h below it.
+On 5/27/20 9:39 PM, Christoph Hellwig wrote:
+> On Wed, May 27, 2020 at 07:26:30PM -0700, Yonghong Song wrote:
+>>> --- a/kernel/trace/bpf_trace.c~xxx
+>>> +++ a/kernel/trace/bpf_trace.c
+>>> @@ -588,15 +588,22 @@ BPF_CALL_5(bpf_seq_printf, struct seq_fi
+>>>    		}
+>>>      		if (fmt[i] == 's') {
+>>> +			void *unsafe_ptr;
+>>> +
+>>>    			/* try our best to copy */
+>>>    			if (memcpy_cnt >= MAX_SEQ_PRINTF_MAX_MEMCPY) {
+>>>    				err = -E2BIG;
+>>>    				goto out;
+>>>    			}
+>>>    -			err = strncpy_from_unsafe(bufs->buf[memcpy_cnt],
+>>> -						  (void *) (long) args[fmt_cnt],
+>>> -						  MAX_SEQ_PRINTF_STR_LEN);
+>>> +			unsafe_ptr = (void *)(long)args[fmt_cnt];
+>>> +			if ((unsigned long)unsafe_ptr < TASK_SIZE) {
+>>> +				err = strncpy_from_user_nofault(
+>>> +					bufs->buf[memcpy_cnt], unsafe_ptr,
+>>> +					MAX_SEQ_PRINTF_STR_LEN);
+>>> +			} else {
+>>> +				err = -EFAULT;
+>>> +			}
+>>
+>> This probably not right.
+>> The pointer stored at args[fmt_cnt] is a kernel pointer,
+>> but it could be an invalid address and we do not want to fault.
+>> Not sure whether it exists or not, we should use
+>> strncpy_from_kernel_nofault()?
+> 
+> If you know it is a kernel pointer with this series it should be
+> strncpy_from_kernel_nofault.  But even before the series it should have
+> been strncpy_from_unsafe_strict.
 
-Fixes: 19c0054597a0 ("asm-generic: don't include <linux/mm.h> in cacheflush.h")
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
----
+The use of strncpy_from_unsafe() mimics old bpf_trace_printk() 
+implementation which just changed to _strict version:
+https://lkml.org/lkml/2020/5/18/1309
 
-I am aware the fixes tag is kind of irrelevant because that SHA will
-change in the next linux-next revision and this will probably get folded
-into the original patch anyways but still.
+Agreed that we should change to strncpy_from_unsafe_strict().
+I can submit a patch for this.
 
-The other solution would be to add forward declarations of these structs
-to the top of cacheflush.h, I just chose to do what Christoph did in the
-original patch. I am happy to do that instead if you all feel that is
-better.
-
- drivers/media/platform/omap3isp/isp.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/media/platform/omap3isp/isp.c b/drivers/media/platform/omap3isp/isp.c
-index a4ee6b86663e..54106a768e54 100644
---- a/drivers/media/platform/omap3isp/isp.c
-+++ b/drivers/media/platform/omap3isp/isp.c
-@@ -39,8 +39,6 @@
-  *	Troy Laramy <t-laramy@ti.com>
-  */
- 
--#include <asm/cacheflush.h>
--
- #include <linux/clk.h>
- #include <linux/clkdev.h>
- #include <linux/delay.h>
-@@ -49,6 +47,7 @@
- #include <linux/i2c.h>
- #include <linux/interrupt.h>
- #include <linux/mfd/syscon.h>
-+#include <linux/mm.h>
- #include <linux/module.h>
- #include <linux/omap-iommu.h>
- #include <linux/platform_device.h>
-@@ -58,6 +57,8 @@
- #include <linux/sched.h>
- #include <linux/vmalloc.h>
- 
-+#include <asm/cacheflush.h>
-+
- #ifdef CONFIG_ARM_DMA_USE_IOMMU
- #include <asm/dma-iommu.h>
- #endif
--- 
-2.27.0.rc0
-
+Thanks!
 
 _______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
