@@ -1,363 +1,76 @@
-Return-Path: <linux-sh-owner@vger.kernel.org>
-From: Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH 6/8] asm-generic: pgalloc: provide generic pgd_free()
-Date: Sat, 27 Jun 2020 17:34:51 +0300
-Message-Id: <20200627143453.31835-7-rppt@kernel.org>
-In-Reply-To: <20200627143453.31835-1-rppt@kernel.org>
-References: <20200627143453.31835-1-rppt@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail.cn.fujitsu.com ([183.91.158.132] helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jg3Db-00077z-WB
+ for linux-um@lists.infradead.org; Tue, 02 Jun 2020 09:28:25 +0000
+Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
+ by cn.fujitsu.com (Postfix) with ESMTP id 05E134BCC8A5
+ for <linux-um@lists.infradead.org>; Tue,  2 Jun 2020 17:28:12 +0800 (CST)
+Message-ID: <5ED61BAA.5080203@cn.fujitsu.com>
+Date: Tue, 2 Jun 2020 17:28:10 +0800
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: linux-sh-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Abdul Haleem <abdhalee@linux.vnet.ibm.com>, Andrew Morton <akpm@linux-foundation.org>, Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Christophe Leroy <christophe.leroy@csgroup.eu>, Joerg Roedel <joro@8bytes.org>, Max Filippov <jcmvbkbc@gmail.com>, Mike Rapoport <rppt@kernel.org>, Mike Rapoport <rppt@linux.ibm.com>, Peter Zijlstra <peterz@infradead.org>, Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>, Stafford Horne <shorne@gmail.com>, Stephen Rothwell <sfr@canb.auug.org.au>, Steven Rostedt <rostedt@goodmis.org>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+Subject: Fwd: How to avoid a lot of './arch/um/include/uapi: No such file
+ or directory' warnings
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
-
-Most architectures define pgd_free() as a wrapper for free_page().
-
-Provide a generic version in asm-generic/pgalloc.h and enable its use for
-most architectures.
-
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- arch/alpha/include/asm/pgalloc.h      | 6 ------
- arch/arm/include/asm/pgalloc.h        | 1 +
- arch/arm64/include/asm/pgalloc.h      | 1 +
- arch/csky/include/asm/pgalloc.h       | 7 +------
- arch/hexagon/include/asm/pgalloc.h    | 7 +------
- arch/ia64/include/asm/pgalloc.h       | 5 -----
- arch/m68k/include/asm/sun3_pgalloc.h  | 7 +------
- arch/microblaze/include/asm/pgalloc.h | 6 ------
- arch/mips/include/asm/pgalloc.h       | 5 -----
- arch/nds32/mm/mm-nds32.c              | 2 ++
- arch/nios2/include/asm/pgalloc.h      | 7 +------
- arch/parisc/include/asm/pgalloc.h     | 1 +
- arch/riscv/include/asm/pgalloc.h      | 5 -----
- arch/sh/include/asm/pgalloc.h         | 1 +
- arch/um/include/asm/pgalloc.h         | 1 -
- arch/um/kernel/mem.c                  | 5 -----
- arch/x86/include/asm/pgalloc.h        | 1 +
- arch/xtensa/include/asm/pgalloc.h     | 5 -----
- include/asm-generic/pgalloc.h         | 7 +++++++
- 19 files changed, 18 insertions(+), 62 deletions(-)
-
-diff --git a/arch/alpha/include/asm/pgalloc.h b/arch/alpha/include/asm/pgalloc.h
-index 4834cd52e9d0..9c6a24fe493d 100644
---- a/arch/alpha/include/asm/pgalloc.h
-+++ b/arch/alpha/include/asm/pgalloc.h
-@@ -34,10 +34,4 @@ pud_populate(struct mm_struct *mm, pud_t *pud, pmd_t *pmd)
- 
- extern pgd_t *pgd_alloc(struct mm_struct *mm);
- 
--static inline void
--pgd_free(struct mm_struct *mm, pgd_t *pgd)
--{
--	free_page((unsigned long)pgd);
--}
--
- #endif /* _ALPHA_PGALLOC_H */
-diff --git a/arch/arm/include/asm/pgalloc.h b/arch/arm/include/asm/pgalloc.h
-index c5bdfd404ea5..15f4674715f8 100644
---- a/arch/arm/include/asm/pgalloc.h
-+++ b/arch/arm/include/asm/pgalloc.h
-@@ -65,6 +65,7 @@ static inline void clean_pte_table(pte_t *pte)
- 
- #define __HAVE_ARCH_PTE_ALLOC_ONE_KERNEL
- #define __HAVE_ARCH_PTE_ALLOC_ONE
-+#define __HAVE_ARCH_PGD_FREE
- #include <asm-generic/pgalloc.h>
- 
- static inline pte_t *
-diff --git a/arch/arm64/include/asm/pgalloc.h b/arch/arm64/include/asm/pgalloc.h
-index 0965945b595d..3c6a7f5988b1 100644
---- a/arch/arm64/include/asm/pgalloc.h
-+++ b/arch/arm64/include/asm/pgalloc.h
-@@ -13,6 +13,7 @@
- #include <asm/cacheflush.h>
- #include <asm/tlbflush.h>
- 
-+#define __HAVE_ARCH_PGD_FREE
- #include <asm-generic/pgalloc.h>
- 
- #define PGD_SIZE	(PTRS_PER_PGD * sizeof(pgd_t))
-diff --git a/arch/csky/include/asm/pgalloc.h b/arch/csky/include/asm/pgalloc.h
-index c7c1ed27e348..d58d8146b729 100644
---- a/arch/csky/include/asm/pgalloc.h
-+++ b/arch/csky/include/asm/pgalloc.h
-@@ -9,7 +9,7 @@
- #include <linux/sched.h>
- 
- #define __HAVE_ARCH_PTE_ALLOC_ONE_KERNEL
--#include <asm-generic/pgalloc.h>	/* for pte_{alloc,free}_one */
-+#include <asm-generic/pgalloc.h>
- 
- static inline void pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd,
- 					pte_t *pte)
-@@ -42,11 +42,6 @@ static inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm)
- 	return pte;
- }
- 
--static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
--{
--	free_pages((unsigned long)pgd, PGD_ORDER);
--}
--
- static inline pgd_t *pgd_alloc(struct mm_struct *mm)
- {
- 	pgd_t *ret;
-diff --git a/arch/hexagon/include/asm/pgalloc.h b/arch/hexagon/include/asm/pgalloc.h
-index cc9be514a676..f0c47e6a7427 100644
---- a/arch/hexagon/include/asm/pgalloc.h
-+++ b/arch/hexagon/include/asm/pgalloc.h
-@@ -11,7 +11,7 @@
- #include <asm/mem-layout.h>
- #include <asm/atomic.h>
- 
--#include <asm-generic/pgalloc.h>	/* for pte_{alloc,free}_one */
-+#include <asm-generic/pgalloc.h>
- 
- extern unsigned long long kmap_generation;
- 
-@@ -41,11 +41,6 @@ static inline pgd_t *pgd_alloc(struct mm_struct *mm)
- 	return pgd;
- }
- 
--static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
--{
--	free_page((unsigned long) pgd);
--}
--
- static inline void pmd_populate(struct mm_struct *mm, pmd_t *pmd,
- 				pgtable_t pte)
- {
-diff --git a/arch/ia64/include/asm/pgalloc.h b/arch/ia64/include/asm/pgalloc.h
-index 06f80358e20f..9601cfe83c94 100644
---- a/arch/ia64/include/asm/pgalloc.h
-+++ b/arch/ia64/include/asm/pgalloc.h
-@@ -29,11 +29,6 @@ static inline pgd_t *pgd_alloc(struct mm_struct *mm)
- 	return (pgd_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
- }
- 
--static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
--{
--	free_page((unsigned long)pgd);
--}
--
- #if CONFIG_PGTABLE_LEVELS == 4
- static inline void
- p4d_populate(struct mm_struct *mm, p4d_t * p4d_entry, pud_t * pud)
-diff --git a/arch/m68k/include/asm/sun3_pgalloc.h b/arch/m68k/include/asm/sun3_pgalloc.h
-index 11b95dadf7c0..000f64869b91 100644
---- a/arch/m68k/include/asm/sun3_pgalloc.h
-+++ b/arch/m68k/include/asm/sun3_pgalloc.h
-@@ -13,7 +13,7 @@
- 
- #include <asm/tlb.h>
- 
--#include <asm-generic/pgalloc.h>	/* for pte_{alloc,free}_one */
-+#include <asm-generic/pgalloc.h>
- 
- extern const char bad_pmd_string[];
- 
-@@ -40,11 +40,6 @@ static inline void pmd_populate(struct mm_struct *mm, pmd_t *pmd, pgtable_t page
-  */
- #define pmd_free(mm, x)			do { } while (0)
- 
--static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
--{
--        free_page((unsigned long) pgd);
--}
--
- static inline pgd_t * pgd_alloc(struct mm_struct *mm)
- {
-      pgd_t *new_pgd;
-diff --git a/arch/microblaze/include/asm/pgalloc.h b/arch/microblaze/include/asm/pgalloc.h
-index ebb6b7939bb8..8839ce00ea05 100644
---- a/arch/microblaze/include/asm/pgalloc.h
-+++ b/arch/microblaze/include/asm/pgalloc.h
-@@ -28,12 +28,6 @@ static inline pgd_t *get_pgd(void)
- 	return (pgd_t *)__get_free_pages(GFP_KERNEL|__GFP_ZERO, 0);
- }
- 
--static inline void free_pgd(pgd_t *pgd)
--{
--	free_page((unsigned long)pgd);
--}
--
--#define pgd_free(mm, pgd)	free_pgd(pgd)
- #define pgd_alloc(mm)		get_pgd()
- 
- #define pmd_pgtable(pmd)	pmd_page(pmd)
-diff --git a/arch/mips/include/asm/pgalloc.h b/arch/mips/include/asm/pgalloc.h
-index e5a840910ce0..8b18424b3120 100644
---- a/arch/mips/include/asm/pgalloc.h
-+++ b/arch/mips/include/asm/pgalloc.h
-@@ -49,11 +49,6 @@ static inline void pud_populate(struct mm_struct *mm, pud_t *pud, pmd_t *pmd)
- extern void pgd_init(unsigned long page);
- extern pgd_t *pgd_alloc(struct mm_struct *mm);
- 
--static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
--{
--	free_pages((unsigned long)pgd, PGD_ORDER);
--}
--
- #define __pte_free_tlb(tlb,pte,address)			\
- do {							\
- 	pgtable_pte_page_dtor(pte);			\
-diff --git a/arch/nds32/mm/mm-nds32.c b/arch/nds32/mm/mm-nds32.c
-index 8503bee882d1..55bec50ccc03 100644
---- a/arch/nds32/mm/mm-nds32.c
-+++ b/arch/nds32/mm/mm-nds32.c
-@@ -2,6 +2,8 @@
- // Copyright (C) 2005-2017 Andes Technology Corporation
- 
- #include <linux/init_task.h>
-+
-+#define __HAVE_ARCH_PGD_FREE
- #include <asm/pgalloc.h>
- 
- #define FIRST_KERNEL_PGD_NR	(USER_PTRS_PER_PGD)
-diff --git a/arch/nios2/include/asm/pgalloc.h b/arch/nios2/include/asm/pgalloc.h
-index 0b146d773c85..e6600d2a5ae0 100644
---- a/arch/nios2/include/asm/pgalloc.h
-+++ b/arch/nios2/include/asm/pgalloc.h
-@@ -12,7 +12,7 @@
- 
- #include <linux/mm.h>
- 
--#include <asm-generic/pgalloc.h>	/* for pte_{alloc,free}_one */
-+#include <asm-generic/pgalloc.h>
- 
- static inline void pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd,
- 	pte_t *pte)
-@@ -34,11 +34,6 @@ extern void pmd_init(unsigned long page, unsigned long pagetable);
- 
- extern pgd_t *pgd_alloc(struct mm_struct *mm);
- 
--static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
--{
--	free_pages((unsigned long)pgd, PGD_ORDER);
--}
--
- #define __pte_free_tlb(tlb, pte, addr)				\
- 	do {							\
- 		pgtable_pte_page_dtor(pte);			\
-diff --git a/arch/parisc/include/asm/pgalloc.h b/arch/parisc/include/asm/pgalloc.h
-index 689766b914ed..cc7ecc2ef55d 100644
---- a/arch/parisc/include/asm/pgalloc.h
-+++ b/arch/parisc/include/asm/pgalloc.h
-@@ -11,6 +11,7 @@
- #include <asm/cache.h>
- 
- #define __HAVE_ARCH_PMD_FREE
-+#define __HAVE_ARCH_PGD_FREE
- #include <asm-generic/pgalloc.h>
- 
- /* Allocate the top level pgd (page directory)
-diff --git a/arch/riscv/include/asm/pgalloc.h b/arch/riscv/include/asm/pgalloc.h
-index 8d3135f05b8e..23b1544e0ca5 100644
---- a/arch/riscv/include/asm/pgalloc.h
-+++ b/arch/riscv/include/asm/pgalloc.h
-@@ -55,11 +55,6 @@ static inline pgd_t *pgd_alloc(struct mm_struct *mm)
- 	return pgd;
- }
- 
--static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
--{
--	free_page((unsigned long)pgd);
--}
--
- #ifndef __PAGETABLE_PMD_FOLDED
- 
- #define __pmd_free_tlb(tlb, pmd, addr)  pmd_free((tlb)->mm, pmd)
-diff --git a/arch/sh/include/asm/pgalloc.h b/arch/sh/include/asm/pgalloc.h
-index 59263df76f51..3d832472cbab 100644
---- a/arch/sh/include/asm/pgalloc.h
-+++ b/arch/sh/include/asm/pgalloc.h
-@@ -6,6 +6,7 @@
- 
- #define __HAVE_ARCH_PMD_ALLOC_ONE
- #define __HAVE_ARCH_PMD_FREE
-+#define __HAVE_ARCH_PGD_FREE
- #include <asm-generic/pgalloc.h>
- 
- extern pgd_t *pgd_alloc(struct mm_struct *);
-diff --git a/arch/um/include/asm/pgalloc.h b/arch/um/include/asm/pgalloc.h
-index bdde433dbdec..5393e13e07e0 100644
---- a/arch/um/include/asm/pgalloc.h
-+++ b/arch/um/include/asm/pgalloc.h
-@@ -25,7 +25,6 @@
-  * Allocate and free page tables.
-  */
- extern pgd_t *pgd_alloc(struct mm_struct *);
--extern void pgd_free(struct mm_struct *mm, pgd_t *pgd);
- 
- #define __pte_free_tlb(tlb,pte, address)		\
- do {							\
-diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
-index a4accb14cbd5..9242dc91d751 100644
---- a/arch/um/kernel/mem.c
-+++ b/arch/um/kernel/mem.c
-@@ -196,11 +196,6 @@ pgd_t *pgd_alloc(struct mm_struct *mm)
- 	return pgd;
- }
- 
--void pgd_free(struct mm_struct *mm, pgd_t *pgd)
--{
--	free_page((unsigned long) pgd);
--}
--
- void *uml_kmalloc(int size, int flags)
- {
- 	return kmalloc(size, flags);
-diff --git a/arch/x86/include/asm/pgalloc.h b/arch/x86/include/asm/pgalloc.h
-index 3d1085a14347..62ad61d6fefc 100644
---- a/arch/x86/include/asm/pgalloc.h
-+++ b/arch/x86/include/asm/pgalloc.h
-@@ -7,6 +7,7 @@
- #include <linux/pagemap.h>
- 
- #define __HAVE_ARCH_PTE_ALLOC_ONE
-+#define __HAVE_ARCH_PGD_FREE
- #include <asm-generic/pgalloc.h>
- 
- static inline int  __paravirt_pgd_alloc(struct mm_struct *mm) { return 0; }
-diff --git a/arch/xtensa/include/asm/pgalloc.h b/arch/xtensa/include/asm/pgalloc.h
-index 60ee94b42850..699a8fdf9005 100644
---- a/arch/xtensa/include/asm/pgalloc.h
-+++ b/arch/xtensa/include/asm/pgalloc.h
-@@ -33,11 +33,6 @@ pgd_alloc(struct mm_struct *mm)
- 	return (pgd_t*) __get_free_pages(GFP_KERNEL | __GFP_ZERO, PGD_ORDER);
- }
- 
--static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
--{
--	free_page((unsigned long)pgd);
--}
--
- static inline void ptes_clear(pte_t *ptep)
- {
- 	int i;
-diff --git a/include/asm-generic/pgalloc.h b/include/asm-generic/pgalloc.h
-index d361574aaadf..6f44810921aa 100644
---- a/include/asm-generic/pgalloc.h
-+++ b/include/asm-generic/pgalloc.h
-@@ -175,6 +175,13 @@ static inline void pud_free(struct mm_struct *mm, pud_t *pud)
- 
- #endif /* CONFIG_PGTABLE_LEVELS > 3 */
- 
-+#ifndef __HAVE_ARCH_PGD_FREE
-+static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
-+{
-+	free_page((unsigned long)pgd);
-+}
-+#endif
-+
- #endif /* CONFIG_MMU */
- 
- #endif /* __ASM_GENERIC_PGALLOC_H */
--- 
-2.26.2
-
+Q2M6IGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKCkhpLAoKSSBnb3QgYSBsb3Qgb2YgJy4v
+YXJjaC91bS9pbmNsdWRlL3VhcGk6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnknCndhcm5pbmdz
+IHdoZW4gYnVpbGRpbmcga2VybmVsIHdpdGggdW0gYXJjaDoKLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpyb290QHVidW50dTE4On4vbGludXgtbmV4dCMgbWFrZSBX
+PTEgQVJDSD11bSBhbGxtb2Rjb25maWcKLi4uCnJvb3RAdWJ1bnR1MTg6fi9saW51eC1uZXh0IyBt
+YWtlIFc9MSBBUkNIPXVtIHByZXBhcmUKLi4uCiAgVVBEICAgICBpbmNsdWRlL2dlbmVyYXRlZC9h
+c20tb2Zmc2V0cy5oCiAgQ0FMTCAgICBzY3JpcHRzL2NoZWNrc3lzY2FsbHMuc2gKY2MxOiB3YXJu
+aW5nOiAuL2FyY2gvdW0vaW5jbHVkZS91YXBpOiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5Clst
+V21pc3NpbmctaW5jbHVkZS1kaXJzXQogIENBTEwgICAgc2NyaXB0cy9hdG9taWMvY2hlY2stYXRv
+bWljcy5zaAouLi4Kcm9vdEB1YnVudHUxODp+L2xpbnV4LW5leHQjIG1ha2UgVz0xIEFSQ0g9dW0g
+bW9kdWxlc19wcmVwYXJlCi4uLgogIENDICAgICAgc2NyaXB0cy9tb2QvZW1wdHkubwpjYzE6IHdh
+cm5pbmc6IC4vYXJjaC91bS9pbmNsdWRlL3VhcGk6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkK
+Wy1XbWlzc2luZy1pbmNsdWRlLWRpcnNdCiAgTUtFTEYgICBzY3JpcHRzL21vZC9lbGZjb25maWcu
+aAogIEhPU1RDQyAgc2NyaXB0cy9tb2QvbW9kcG9zdC5vCiAgQ0MgICAgICBzY3JpcHRzL21vZC9k
+ZXZpY2V0YWJsZS1vZmZzZXRzLnMKY2MxOiB3YXJuaW5nOiAuL2FyY2gvdW0vaW5jbHVkZS91YXBp
+OiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5ClstV21pc3NpbmctaW5jbHVkZS1kaXJzXQogIEhP
+U1RDQyAgc2NyaXB0cy9tb2QvZmlsZTJhbGlhcy5vCiAgSE9TVENDICBzY3JpcHRzL21vZC9zdW12
+ZXJzaW9uLm8KICBIT1NUTEQgIHNjcmlwdHMvbW9kL21vZHBvc3QKICBDQyAgICAgIGtlcm5lbC9i
+b3VuZHMucwpjYzE6IHdhcm5pbmc6IC4vYXJjaC91bS9pbmNsdWRlL3VhcGk6IE5vIHN1Y2ggZmls
+ZSBvciBkaXJlY3RvcnkKWy1XbWlzc2luZy1pbmNsdWRlLWRpcnNdCiAgQ0MgICAgICBhcmNoL3Vt
+L2tlcm5lbC9hc20tb2Zmc2V0cy5zCmNjMTogd2FybmluZzogLi9hcmNoL3VtL2luY2x1ZGUvdWFw
+aTogTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeQpbLVdtaXNzaW5nLWluY2x1ZGUtZGlyc10KSW4g
+ZmlsZSBpbmNsdWRlZCBmcm9tIC4vaW5jbHVkZS9saW51eC91YWNjZXNzLmg6MTE6MCwKICAgICAg
+ICAgICAgICAgICBmcm9tIC4vaW5jbHVkZS9saW51eC9jcnlwdG8uaDoyMSwKICAgICAgICAgICAg
+ICAgICBmcm9tIC4vYXJjaC94ODYvdW0vc2hhcmVkL3N5c2RlcC9rZXJuZWwtb2Zmc2V0cy5oOjUs
+CiAgICAgICAgICAgICAgICAgZnJvbSBhcmNoL3VtL2tlcm5lbC9hc20tb2Zmc2V0cy5jOjE6Ci4v
+YXJjaC91bS9pbmNsdWRlL2FzbS91YWNjZXNzLmg6IEluIGZ1bmN0aW9uIKGuX19hY2Nlc3Nfb2uh
+rzoKLi9hcmNoL3VtL2luY2x1ZGUvYXNtL3VhY2Nlc3MuaDoxNzoyOTogd2FybmluZzogY29tcGFy
+aXNvbiBvZiB1bnNpZ25lZApleHByZXNzaW9uID49IDAgaXMgYWx3YXlzIHRydWUgWy1XdHlwZS1s
+aW1pdHNdCiAgICAoKCh1bnNpZ25lZCBsb25nKSAoYWRkcikgPj0gRklYQUREUl9VU0VSX1NUQVJU
+KSAmJiBcCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXgouL2FyY2gvdW0vaW5jbHVkZS9h
+c20vdWFjY2Vzcy5oOjQ1OjM6IG5vdGU6IGluIGV4cGFuc2lvbiBvZiBtYWNybwqhrl9fYWNjZXNz
+X29rX3ZzeXNjYWxsoa8KICAgX19hY2Nlc3Nfb2tfdnN5c2NhbGwoYWRkciwgc2l6ZSkgfHwKICAg
+Xn5+fn5+fn5+fn5+fn5+fn5+fn4KSW4gZmlsZSBpbmNsdWRlZCBmcm9tIGFyY2gvdW0va2VybmVs
+L2FzbS1vZmZzZXRzLmM6MTowOgouL2FyY2gveDg2L3VtL3NoYXJlZC9zeXNkZXAva2VybmVsLW9m
+ZnNldHMuaDogQXQgdG9wIGxldmVsOgouL2FyY2gveDg2L3VtL3NoYXJlZC9zeXNkZXAva2VybmVs
+LW9mZnNldHMuaDo5OjY6IHdhcm5pbmc6IG5vIHByZXZpb3VzCnByb3RvdHlwZSBmb3Igoa5mb2+h
+ryBbLVdtaXNzaW5nLXByb3RvdHlwZXNdCiB2b2lkIGZvbyh2b2lkKQogICAgICBefn4KICBDQUxM
+ICAgIHNjcmlwdHMvY2hlY2tzeXNjYWxscy5zaApjYzE6IHdhcm5pbmc6IC4vYXJjaC91bS9pbmNs
+dWRlL3VhcGk6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKWy1XbWlzc2luZy1pbmNsdWRlLWRp
+cnNdCi4uLgpyb290QHVidW50dTE4On4vbGludXgtbmV4dCMgbWFrZSBXPTEgQVJDSD11bQouLi4K
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKSXMgdGhlcmUgYW55
+IHdheSB0byBhdm9pZCB0aGUgc2FtZSB3YXJuaW5ncz8gU29ycnksIEkgYW0gbm90IGZhbWlsaWFy
+CndpdGggdGhlIGtidWlsZCBvZiB1bSBhcmNoLgoKQmVzdCBSZWdhcmRzLApYaWFvIFlhbmcKCgoK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0g
+bWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmlu
+ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
 
