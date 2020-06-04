@@ -1,72 +1,101 @@
-Return-Path: <linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Fri, 26 Jun 2020 14:09:06 -0700
-In-Reply-To: <20200626210917.358969-1-brendanhiggins@google.com>
-Message-Id: <20200626210917.358969-2-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20200626210917.358969-1-brendanhiggins@google.com>
-Subject: [PATCH v5 01/12] vmlinux.lds.h: add linker section for KUnit test
- suites
-From: Brendan Higgins <brendanhiggins@google.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jgny5-0002Yj-5c
+ for linux-um@lists.infradead.org; Thu, 04 Jun 2020 11:23:30 +0000
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [PATCH] um: change sigio_spinlock to a mutex
+Date: Thu,  4 Jun 2020 13:23:17 +0200
+Message-Id: <20200604132317.75a2f85a7e52.Ifa9c62fa63625d4685383003e6a5d6c27d7b4e45@changeid>
+MIME-Version: 1.0
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org
-To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, arnd@arndb.de, keescook@chromium.org, skhan@linuxfoundation.org, alan.maguire@oracle.com, yzaikin@google.com, davidgow@google.com, akpm@linux-foundation.org, rppt@linux.ibm.com, frowand.list@gmail.com, catalin.marinas@arm.com, will@kernel.org, monstr@monstr.eu, mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org, chris@zankel.net, jcmvbkbc@gmail.com
-Cc: linux-arch@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-doc@vger.kernel.org, sboyd@kernel.org, gregkh@linuxfoundation.org, linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Brendan Higgins <brendanhiggins@google.com>, mcgrof@kernel.org, linux-kselftest@vger.kernel.org, logang@deltatee.com, linux-arm-kernel@lists.infradead.org, kunit-dev@googlegroups.com
-List-ID: <linux-um.lists.infradead.org>
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
 
-Add a linker section where KUnit can put references to its test suites.
-This patch is the first step in transitioning to dispatching all KUnit
-tests from a centralized executor rather than having each as its own
-separate late_initcall.
+From: Johannes Berg <johannes.berg@intel.com>
 
-Co-developed-by: Iurii Zaikin <yzaikin@google.com>
-Signed-off-by: Iurii Zaikin <yzaikin@google.com>
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+Lockdep complains at boot:
+
+=============================
+[ BUG: Invalid wait context ]
+5.7.0-05093-g46d91ecd597b #98 Not tainted
+-----------------------------
+swapper/1 is trying to lock:
+0000000060931b98 (&desc[i].request_mutex){+.+.}-{3:3}, at: __setup_irq+0x11d/0x623
+other info that might help us debug this:
+context-{4:4}
+1 lock held by swapper/1:
+ #0: 000000006074fed8 (sigio_spinlock){+.+.}-{2:2}, at: sigio_lock+0x1a/0x1c
+stack backtrace:
+CPU: 0 PID: 1 Comm: swapper Not tainted 5.7.0-05093-g46d91ecd597b #98
+Stack:
+ 7fa4fab0 6028dfd1 0000002a 6008bea5
+ 7fa50700 7fa50040 7fa4fac0 6028e016
+ 7fa4fb50 6007f6da 60959c18 00000000
+Call Trace:
+ [<60023a0e>] show_stack+0x13b/0x155
+ [<6028e016>] dump_stack+0x2a/0x2c
+ [<6007f6da>] __lock_acquire+0x515/0x15f2
+ [<6007eb50>] lock_acquire+0x245/0x273
+ [<6050d9f1>] __mutex_lock+0xbd/0x325
+ [<6050dc76>] mutex_lock_nested+0x1d/0x1f
+ [<6008e27e>] __setup_irq+0x11d/0x623
+ [<6008e8ed>] request_threaded_irq+0x169/0x1a6
+ [<60021eb0>] um_request_irq+0x1ee/0x24b
+ [<600234ee>] write_sigio_irq+0x3b/0x76
+ [<600383ca>] sigio_broken+0x146/0x2e4
+ [<60020bd8>] do_one_initcall+0xde/0x281
+
+Because we hold sigio_spinlock and then get into requesting
+an interrupt with a mutex.
+
+Change the spinlock to a mutex to avoid that.
+
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- include/asm-generic/vmlinux.lds.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/um/kernel/sigio.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index db600ef218d7d..4f9b036fc9616 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -881,6 +881,13 @@
- 		KEEP(*(.con_initcall.init))				\
- 		__con_initcall_end = .;
+diff --git a/arch/um/kernel/sigio.c b/arch/um/kernel/sigio.c
+index 10c99e058fca..d1cffc2a7f21 100644
+--- a/arch/um/kernel/sigio.c
++++ b/arch/um/kernel/sigio.c
+@@ -35,14 +35,14 @@ int write_sigio_irq(int fd)
+ }
  
-+/* Alignment must be consistent with (kunit_suite *) in include/kunit/test.h */
-+#define KUNIT_TEST_SUITES						\
-+		. = ALIGN(8);						\
-+		__kunit_suites_start = .;				\
-+		KEEP(*(.kunit_test_suites))				\
-+		__kunit_suites_end = .;
-+
- #ifdef CONFIG_BLK_DEV_INITRD
- #define INIT_RAM_FS							\
- 	. = ALIGN(4);							\
-@@ -1056,6 +1063,7 @@
- 		INIT_CALLS						\
- 		CON_INITCALL						\
- 		INIT_RAM_FS						\
-+		KUNIT_TEST_SUITES					\
- 	}
+ /* These are called from os-Linux/sigio.c to protect its pollfds arrays. */
+-static DEFINE_SPINLOCK(sigio_spinlock);
++static DEFINE_MUTEX(sigio_mutex);
  
- #define BSS_SECTION(sbss_align, bss_align, stop_align)			\
+ void sigio_lock(void)
+ {
+-	spin_lock(&sigio_spinlock);
++	mutex_lock(&sigio_mutex);
+ }
+ 
+ void sigio_unlock(void)
+ {
+-	spin_unlock(&sigio_spinlock);
++	mutex_unlock(&sigio_mutex);
+ }
 -- 
-2.27.0.212.ge8ba1cc988-goog
+2.26.2
 
 
 _______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
