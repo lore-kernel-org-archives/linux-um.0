@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-qt1-x844.google.com ([2607:f8b0:4864:20::844])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jjD9N-0008Dw-P1
- for linux-um@lists.infradead.org; Thu, 11 Jun 2020 02:41:07 +0000
-Received: by mail-qt1-x844.google.com with SMTP id i16so3540289qtr.7
- for <linux-um@lists.infradead.org>; Wed, 10 Jun 2020 19:41:04 -0700 (PDT)
-From: Gaurav Singh <gaurav1086@gmail.com>
-Subject: [PATCH] Fix null pointer dereference in vector_user_bpf
-Date: Wed, 10 Jun 2020 22:40:36 -0400
-Message-Id: <20200611024053.10429-1-gaurav1086@gmail.com>
+ id 1jj7Me-0007v0-H1
+ for linux-um@lists.infradead.org; Wed, 10 Jun 2020 20:30:25 +0000
+Subject: Re: [GIT PULL] UML changes for v5.8
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <1858220125.350.1591736510906.JavaMail.zimbra@nod.at>
+References: <1858220125.350.1591736510906.JavaMail.zimbra@nod.at>
+Message-Id: <159182102423.16227.12145075205238240772.pr-tracker-bot@kernel.org>
+Date: Wed, 10 Jun 2020 20:30:24 +0000
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,41 +22,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: gaurav1086@gmail.com, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, Alex Dewar <alex.dewar@gmx.co.uk>, "open list:USER-MODE LINUX UML" <linux-um@lists.infradead.org>, open list <linux-kernel@vger.kernel.org>, "open list:BPF Safe dynamic programs and tools" <netdev@vger.kernel.org>, "open list:BPF Safe dynamic programs and tools" <bpf@vger.kernel.org>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-um <linux-um@lists.infradead.org>, torvalds <torvalds@linux-foundation.org>, linux-kernel <linux-kernel@vger.kernel.org>
 
-The bpf_prog is being checked for !NULL after uml_kmalloc but
-later its used directly for example:
-bpf_prog->filter = bpf and is also later returned upon success.
-Fix this, do a NULL check and return right away.
+The pull request you sent on Tue, 9 Jun 2020 23:01:50 +0200 (CEST):
 
-Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
----
- arch/um/drivers/vector_user.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+> git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.8-rc1
 
-diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
-index aa28e9eecb7b..71d043ae306f 100644
---- a/arch/um/drivers/vector_user.c
-+++ b/arch/um/drivers/vector_user.c
-@@ -730,10 +730,12 @@ void *uml_vector_user_bpf(char *filename)
- 		return false;
- 	}
- 	bpf_prog = uml_kmalloc(sizeof(struct sock_fprog), UM_GFP_KERNEL);
--	if (bpf_prog != NULL) {
--		bpf_prog->len = statbuf.st_size / sizeof(struct sock_filter);
--		bpf_prog->filter = NULL;
-+	if (bpf_prog == NULL) {
-+		printk(KERN_ERR "Failed to allocate bpf prog buffer");
-+		return NULL;
- 	}
-+	bpf_prog->len = statbuf.st_size / sizeof(struct sock_filter);
-+	bpf_prog->filter = NULL;
- 	ffd = os_open_file(filename, of_read(OPENFLAGS()), 0);
- 	if (ffd < 0) {
- 		printk(KERN_ERR "Error %d opening bpf file", -errno);
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/84fc461db99b2dc19e019c0a97725a3653687981
+
+Thank you!
+
 -- 
-2.17.1
-
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
 
 _______________________________________________
 linux-um mailing list
