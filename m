@@ -1,64 +1,65 @@
-Return-Path: <linux-m68k-owner@vger.kernel.org>
-From: Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH 7/8] mm: move lib/ioremap.c to mm/
-Date: Sat, 27 Jun 2020 17:34:52 +0300
-Message-Id: <20200627143453.31835-8-rppt@kernel.org>
-In-Reply-To: <20200627143453.31835-1-rppt@kernel.org>
-References: <20200627143453.31835-1-rppt@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-qt1-x844.google.com ([2607:f8b0:4864:20::844])
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jjD9N-0008Dw-P1
+ for linux-um@lists.infradead.org; Thu, 11 Jun 2020 02:41:07 +0000
+Received: by mail-qt1-x844.google.com with SMTP id i16so3540289qtr.7
+ for <linux-um@lists.infradead.org>; Wed, 10 Jun 2020 19:41:04 -0700 (PDT)
+From: Gaurav Singh <gaurav1086@gmail.com>
+Subject: [PATCH] Fix null pointer dereference in vector_user_bpf
+Date: Wed, 10 Jun 2020 22:40:36 -0400
+Message-Id: <20200611024053.10429-1-gaurav1086@gmail.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: linux-m68k-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Abdul Haleem <abdhalee@linux.vnet.ibm.com>, Andrew Morton <akpm@linux-foundation.org>, Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Christophe Leroy <christophe.leroy@csgroup.eu>, Joerg Roedel <joro@8bytes.org>, Max Filippov <jcmvbkbc@gmail.com>, Mike Rapoport <rppt@kernel.org>, Mike Rapoport <rppt@linux.ibm.com>, Peter Zijlstra <peterz@infradead.org>, Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>, Stafford Horne <shorne@gmail.com>, Stephen Rothwell <sfr@canb.auug.org.au>, Steven Rostedt <rostedt@goodmis.org>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: gaurav1086@gmail.com, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, Alex Dewar <alex.dewar@gmx.co.uk>, "open list:USER-MODE LINUX UML" <linux-um@lists.infradead.org>, open list <linux-kernel@vger.kernel.org>, "open list:BPF Safe dynamic programs and tools" <netdev@vger.kernel.org>, "open list:BPF Safe dynamic programs and tools" <bpf@vger.kernel.org>
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+The bpf_prog is being checked for !NULL after uml_kmalloc but
+later its used directly for example:
+bpf_prog->filter = bpf and is also later returned upon success.
+Fix this, do a NULL check and return right away.
 
-The functionality in lib/ioremap.c deals with pagetables, vmalloc and
-caches, so it naturally belongs to mm/
-Moving it there will also allow declaring p?d_alloc_track functions in an
-header file inside mm/ rather than having those declarations in
-include/linux/mm.h
-
-Suggested-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
 ---
- lib/Makefile          | 1 -
- mm/Makefile           | 2 +-
- {lib => mm}/ioremap.c | 0
- 3 files changed, 1 insertion(+), 2 deletions(-)
- rename {lib => mm}/ioremap.c (100%)
+ arch/um/drivers/vector_user.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/lib/Makefile b/lib/Makefile
-index b1c42c10073b..5f9384adde9c 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -37,7 +37,6 @@ lib-y := ctype.o string.o vsprintf.o cmdline.o \
- 	 nmi_backtrace.o nodemask.o win_minmax.o memcat_p.o
- 
- lib-$(CONFIG_PRINTK) += dump_stack.o
--lib-$(CONFIG_MMU) += ioremap.o
- lib-$(CONFIG_SMP) += cpumask.o
- 
- lib-y	+= kobject.o klist.o
-diff --git a/mm/Makefile b/mm/Makefile
-index 6e9d46b2efc9..d5649f1c12c0 100644
---- a/mm/Makefile
-+++ b/mm/Makefile
-@@ -38,7 +38,7 @@ mmu-y			:= nommu.o
- mmu-$(CONFIG_MMU)	:= highmem.o memory.o mincore.o \
- 			   mlock.o mmap.o mmu_gather.o mprotect.o mremap.o \
- 			   msync.o page_vma_mapped.o pagewalk.o \
--			   pgtable-generic.o rmap.o vmalloc.o
-+			   pgtable-generic.o rmap.o vmalloc.o ioremap.o
- 
- 
- ifdef CONFIG_CROSS_MEMORY_ATTACH
-diff --git a/lib/ioremap.c b/mm/ioremap.c
-similarity index 100%
-rename from lib/ioremap.c
-rename to mm/ioremap.c
+diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
+index aa28e9eecb7b..71d043ae306f 100644
+--- a/arch/um/drivers/vector_user.c
++++ b/arch/um/drivers/vector_user.c
+@@ -730,10 +730,12 @@ void *uml_vector_user_bpf(char *filename)
+ 		return false;
+ 	}
+ 	bpf_prog = uml_kmalloc(sizeof(struct sock_fprog), UM_GFP_KERNEL);
+-	if (bpf_prog != NULL) {
+-		bpf_prog->len = statbuf.st_size / sizeof(struct sock_filter);
+-		bpf_prog->filter = NULL;
++	if (bpf_prog == NULL) {
++		printk(KERN_ERR "Failed to allocate bpf prog buffer");
++		return NULL;
+ 	}
++	bpf_prog->len = statbuf.st_size / sizeof(struct sock_filter);
++	bpf_prog->filter = NULL;
+ 	ffd = os_open_file(filename, of_read(OPENFLAGS()), 0);
+ 	if (ffd < 0) {
+ 		printk(KERN_ERR "Error %d opening bpf file", -errno);
 -- 
-2.26.2
+2.17.1
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
