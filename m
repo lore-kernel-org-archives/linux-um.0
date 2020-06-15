@@ -1,14 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-qv1-xf42.google.com ([2607:f8b0:4864:20::f42])
+Received: from mx2.suse.de ([195.135.220.15])
  by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jireE-0006HR-C7
- for linux-um@lists.infradead.org; Wed, 10 Jun 2020 03:43:31 +0000
-Received: by mail-qv1-xf42.google.com with SMTP id p15so426331qvr.9
- for <linux-um@lists.infradead.org>; Tue, 09 Jun 2020 20:43:26 -0700 (PDT)
-From: Gaurav Singh <gaurav1086@gmail.com>
-Subject: [PATCH] Fix null pointer dereference in vector_user_bpf
-Date: Tue,  9 Jun 2020 23:43:00 -0400
-Message-Id: <20200610034314.9290-1-gaurav1086@gmail.com>
+ id 1jkjha-0007lG-0a
+ for linux-um@lists.infradead.org; Mon, 15 Jun 2020 07:38:43 +0000
+Date: Mon, 15 Jun 2020 09:38:36 +0200
+From: Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH] proc: Use new_inode not new_inode_pseudo
+Message-ID: <20200615073836.GD9449@quack2.suse.cz>
+References: <000000000000d788c905a7dfa3f4@google.com>
+ <87mu58p02g.fsf@x220.int.ebiederm.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <87mu58p02g.fsf@x220.int.ebiederm.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -17,47 +20,107 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: gaurav1086@gmail.com, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, Alex Dewar <alex.dewar@gmx.co.uk>, "open list:USER-MODE LINUX UML" <linux-um@lists.infradead.org>, open list <linux-kernel@vger.kernel.org>, "open list:BPF Safe dynamic programs and tools" <netdev@vger.kernel.org>, "open list:BPF Safe dynamic programs and tools" <bpf@vger.kernel.org>
+To: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: jack@suse.cz, mareklindner@neomailbox.ch, amir73il@gmail.com, a@unstable.cc, sven@narfation.org, anton.ivanov@cambridgegreys.com, sfr@canb.auug.org.au, syzbot <syzbot+7d2debdcdb3cb93c1e5e@syzkaller.appspotmail.com>, kuba@kernel.org, adobriyan@gmail.com, syzkaller-bugs@googlegroups.com, jdike@addtoit.com, linux-um@lists.infradead.org, sw@simonwunderlich.de, netdev@vger.kernel.org, b.a.t.m.a.n@lists.open-mesh.org, linux-kernel@vger.kernel.org, richard@nod.at, linux-fsdevel@vger.kernel.org, alex.dewar@gmx.co.uk, akpm@linux-foundation.org, davem@davemloft.net
 
-Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
+On Fri 12-06-20 14:15:51, Eric W. Biederman wrote:
+> 
+> Recently syzbot reported that unmounting proc when there is an ongoing
+> inotify watch on the root directory of proc could result in a use
+> after free when the watch is removed after the unmount of proc
+> when the watcher exits.
+> 
+> Commit 69879c01a0c3 ("proc: Remove the now unnecessary internal mount
+> of proc") made it easier to unmount proc and allowed syzbot to see the
+> problem, but looking at the code it has been around for a long time.
+> 
+> Looking at the code the fsnotify watch should have been removed by
+> fsnotify_sb_delete in generic_shutdown_super.  Unfortunately the inode
+> was allocated with new_inode_pseudo instead of new_inode so the inode
+> was not on the sb->s_inodes list.  Which prevented
+> fsnotify_unmount_inodes from finding the inode and removing the watch
+> as well as made it so the "VFS: Busy inodes after unmount" warning
+> could not find the inodes to warn about them.
+> 
+> Make all of the inodes in proc visible to generic_shutdown_super,
+> and fsnotify_sb_delete by using new_inode instead of new_inode_pseudo.
+> The only functional difference is that new_inode places the inodes
+> on the sb->s_inodes list.
+> 
+> I wrote a small test program and I can verify that without changes it
+> can trigger this issue, and by replacing new_inode_pseudo with
+> new_inode the issues goes away.
+> 
+> Cc: stable@vger.kernel.org
+> Link: https://lkml.kernel.org/r/000000000000d788c905a7dfa3f4@google.com
+> Reported-by: syzbot+7d2debdcdb3cb93c1e5e@syzkaller.appspotmail.com
+> Fixes: 0097875bd415 ("proc: Implement /proc/thread-self to point at the directory of the current thread")
+> Fixes: 021ada7dff22 ("procfs: switch /proc/self away from proc_dir_entry")
+> Fixes: 51f0885e5415 ("vfs,proc: guarantee unique inodes in /proc")
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 
-The bpf_prog is being checked for !NULL after uml_kmalloc but
-later its used directly for example: 
-bpf_prog->filter = bpf and is also later returned upon success.
-Fix this, do a NULL check and return right away.
+Thanks for analysing this! I agree with the analysis and the patch looks
+good to me. You can add:
 
----
- arch/um/drivers/vector_user.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
-index aa28e9eecb7b..71d043ae306f 100644
---- a/arch/um/drivers/vector_user.c
-+++ b/arch/um/drivers/vector_user.c
-@@ -730,10 +730,12 @@ void *uml_vector_user_bpf(char *filename)
- 		return false;
- 	}
- 	bpf_prog = uml_kmalloc(sizeof(struct sock_fprog), UM_GFP_KERNEL);
--	if (bpf_prog != NULL) {
--		bpf_prog->len = statbuf.st_size / sizeof(struct sock_filter);
--		bpf_prog->filter = NULL;
-+	if (bpf_prog == NULL) {
-+		printk(KERN_ERR "Failed to allocate bpf prog buffer");
-+		return NULL;
- 	}
-+	bpf_prog->len = statbuf.st_size / sizeof(struct sock_filter);
-+	bpf_prog->filter = NULL;
- 	ffd = os_open_file(filename, of_read(OPENFLAGS()), 0);
- 	if (ffd < 0) {
- 		printk(KERN_ERR "Error %d opening bpf file", -errno);
+								Honza
+
+> ---
+>  fs/proc/inode.c       | 2 +-
+>  fs/proc/self.c        | 2 +-
+>  fs/proc/thread_self.c | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/proc/inode.c b/fs/proc/inode.c
+> index f40c2532c057..28d6105e908e 100644
+> --- a/fs/proc/inode.c
+> +++ b/fs/proc/inode.c
+> @@ -617,7 +617,7 @@ const struct inode_operations proc_link_inode_operations = {
+>  
+>  struct inode *proc_get_inode(struct super_block *sb, struct proc_dir_entry *de)
+>  {
+> -	struct inode *inode = new_inode_pseudo(sb);
+> +	struct inode *inode = new_inode(sb);
+>  
+>  	if (inode) {
+>  		inode->i_ino = de->low_ino;
+> diff --git a/fs/proc/self.c b/fs/proc/self.c
+> index ca5158fa561c..72cd69bcaf4a 100644
+> --- a/fs/proc/self.c
+> +++ b/fs/proc/self.c
+> @@ -43,7 +43,7 @@ int proc_setup_self(struct super_block *s)
+>  	inode_lock(root_inode);
+>  	self = d_alloc_name(s->s_root, "self");
+>  	if (self) {
+> -		struct inode *inode = new_inode_pseudo(s);
+> +		struct inode *inode = new_inode(s);
+>  		if (inode) {
+>  			inode->i_ino = self_inum;
+>  			inode->i_mtime = inode->i_atime = inode->i_ctime = current_time(inode);
+> diff --git a/fs/proc/thread_self.c b/fs/proc/thread_self.c
+> index ac284f409568..a553273fbd41 100644
+> --- a/fs/proc/thread_self.c
+> +++ b/fs/proc/thread_self.c
+> @@ -43,7 +43,7 @@ int proc_setup_thread_self(struct super_block *s)
+>  	inode_lock(root_inode);
+>  	thread_self = d_alloc_name(s->s_root, "thread-self");
+>  	if (thread_self) {
+> -		struct inode *inode = new_inode_pseudo(s);
+> +		struct inode *inode = new_inode(s);
+>  		if (inode) {
+>  			inode->i_ino = thread_self_inum;
+>  			inode->i_mtime = inode->i_atime = inode->i_ctime = current_time(inode);
+> -- 
+> 2.20.1
+> 
 -- 
-2.17.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
 _______________________________________________
 linux-um mailing list
