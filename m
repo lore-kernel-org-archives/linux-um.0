@@ -1,152 +1,97 @@
-Return-Path: <SRS0=XIm4=74=linux-m68k.org=gerg@kernel.org>
-References: <20200412194859.12663-5-rppt@kernel.org>
-Subject: Re: [PATCH 04/21] mm: free_area_init: use maximal zone PFNs rather
- than zone sizes
-From: Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <f53e68db-ed81-6ef6-5087-c7246d010ea2@linux-m68k.org>
-Date: Mon, 15 Jun 2020 13:53:42 +1000
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]
+ helo=us-smtp-1.mimecast.com)
+ by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jkxOr-0008El-Gq
+ for linux-um@lists.infradead.org; Mon, 15 Jun 2020 22:16:18 +0000
+Received: by mail-qk1-f197.google.com with SMTP id d187so15408361qke.4
+ for <linux-um@lists.infradead.org>; Mon, 15 Jun 2020 15:16:11 -0700 (PDT)
+From: Peter Xu <peterx@redhat.com>
+Subject: [PATCH 01/25] mm/um: Fix extra accounting for page fault retries
+Date: Mon, 15 Jun 2020 18:15:43 -0400
+Message-Id: <20200615221607.7764-2-peterx@redhat.com>
+In-Reply-To: <20200615221607.7764-1-peterx@redhat.com>
+References: <20200615221607.7764-1-peterx@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200412194859.12663-5-rppt@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: rppt@kernel.org
-Cc: Hoan@os.amperecomputing.com, James.Bottomley@HansenPartnership.com, akpm@linux-foundation.org, bcain@codeaurora.org, bhe@redhat.com, catalin.marinas@arm.com, corbet@lwn.net, dalias@libc.org, davem@davemloft.net, deller@gmx.de, geert@linux-m68k.org, green.hu@gmail.com, guoren@kernel.org, gxt@pku.edu.cn, heiko.carstens@de.ibm.com, jcmvbkbc@gmail.com, ley.foon.tan@intel.com, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-csky@vger.kernel.org, linux-doc@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linux@armlinux.org.uk, linuxppc-dev@lists.ozlabs.org, mattst88@gmail.com, mhocko@kernel.org, monstr@monstr.eu, mpe@ellerman.id.au, msalter@redhat.com, nickhu@andestech.com, openrisc@lists.librecores.org, paul.walmsley@sifive.com, richard@nod.at, rppt@linux.ibm.com, shorne@gmail.com, sparclinux@vger.kernel.org, tony.luck@intel.com, tsbogend@alpha.franken.de, uclinux-h8-devel@lists.sourceforge.jp, vgupta@synopsys.com, x86@kernel.org, ysato@users.sourceforge.jp
-List-ID: <linux-um.lists.infradead.org>
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-kernel@vger.kernel.org
+Cc: Andrea Arcangeli <aarcange@redhat.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, peterx@redhat.com, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, Gerald Schaefer <gerald.schaefer@de.ibm.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Hi Mike,
+When page fault retried, we should only do the accounting once rather than once
+for each page fault retry.
 
-From: Mike Rapoport <rppt@linux.ibm.com>
-> Currently, architectures that use free_area_init() to initialize memory map
-> and node and zone structures need to calculate zone and hole sizes. We can
-> use free_area_init_nodes() instead and let it detect the zone boundaries
-> while the architectures will only have to supply the possible limits for
-> the zones.
-> 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+CC: Jeff Dike <jdike@addtoit.com>
+CC: Richard Weinberger <richard@nod.at>
+CC: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+CC: linux-um@lists.infradead.org
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ arch/um/kernel/trap.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-This is causing some new warnings for me on boot on at least one non-MMU m68k target:
-
-...
-NET: Registered protocol family 17
-BUG: Bad page state in process swapper  pfn:20165
-page:41fe0ca0 refcount:0 mapcount:1 mapping:00000000 index:0x0
-flags: 0x0()
-raw: 00000000 00000100 00000122 00000000 00000000 00000000 00000000 00000000
-page dumped because: nonzero mapcount
-CPU: 0 PID: 1 Comm: swapper Not tainted 5.8.0-rc1-00001-g3a38f8a60c65-dirty #1
-Stack from 404c9ebc:
-         404c9ebc 4029ab28 4029ab28 40088470 41fe0ca0 40299e21 40299df1 404ba2a4
-         00020165 00000000 41fd2c10 402c7ba0 41fd2c04 40088504 41fe0ca0 40299e21
-         00000000 40088a12 41fe0ca0 41fe0ca4 0000020a 00000000 00000001 402ca000
-         00000000 41fe0ca0 41fd2c10 41fd2c10 00000000 00000000 402b2388 00000001
-         400a0934 40091056 404c9f44 404c9f44 40088db4 402c7ba0 00000001 41fd2c04
-         41fe0ca0 41fd2000 41fe0ca0 40089e02 4026ecf4 40089e4e 41fe0ca0 ffffffff
-Call Trace:
-         [<40088470>] 0x40088470
-  [<40088504>] 0x40088504
-  [<40088a12>] 0x40088a12
-  [<402ca000>] 0x402ca000
-  [<400a0934>] 0x400a0934
-
-         [<40091056>] 0x40091056
-  [<40088db4>] 0x40088db4
-  [<40089e02>] 0x40089e02
-  [<4026ecf4>] 0x4026ecf4
-  [<40089e4e>] 0x40089e4e
-
-         [<4008ca26>] 0x4008ca26
-  [<4004adf8>] 0x4004adf8
-  [<402701ec>] 0x402701ec
-  [<4008f25e>] 0x4008f25e
-  [<400516f4>] 0x400516f4
-
-         [<4026eec0>] 0x4026eec0
-  [<400224f0>] 0x400224f0
-  [<402ca000>] 0x402ca000
-  [<4026eeda>] 0x4026eeda
-  [<40020b00>] 0x40020b00
-...
-
-Lots more of them.
-
-...
-BUG: Bad page state in process swapper  pfn:201a0
-page:41fe1400 refcount:0 mapcount:1 mapping:00000000 index:0x0
-flags: 0x0()
-raw: 00000000 00000100 00000122 00000000 00000000 00000000 00000000 00000000
-page dumped because: nonzero mapcount
-CPU: 0 PID: 1 Comm: swapper Tainted: G    B             5.8.0-rc1-00001-g3a38f8a60c65-dirty #1
-Stack from 404c9ebc:
-         404c9ebc 4029ab28 4029ab28 40088470 41fe1400 40299e21 40299df1 404ba2a4
-         000201a0 00000000 41fd2c10 402c7ba0 41fd2c04 40088504 41fe1400 40299e21
-         00000000 40088a12 41fe1400 41fe1404 0000020a 0000003b 00000001 40340000
-         00000000 41fe1400 41fd2c10 41fd2c10 00000000 00000000 41fe13e0 40022826
-         00000044 404c9f44 404c9f44 404c9f44 40088db4 402c7ba0 00000001 41fd2c04
-         41fe1400 41fd2000 41fe1400 40089e02 4026ecf4 40089e4e 41fe1400 ffffffff
-Call Trace:
-         [<40088470>] 0x40088470
-  [<40088504>] 0x40088504
-  [<40088a12>] 0x40088a12
-  [<40022826>] 0x40022826
-  [<40088db4>] 0x40088db4
-
-         [<40089e02>] 0x40089e02
-  [<4026ecf4>] 0x4026ecf4
-  [<40089e4e>] 0x40089e4e
-  [<4008ca26>] 0x4008ca26
-  [<4004adf8>] 0x4004adf8
-
-         [<402701ec>] 0x402701ec
-  [<4008f25e>] 0x4008f25e
-  [<400516f4>] 0x400516f4
-  [<4026eec0>] 0x4026eec0
-  [<400224f0>] 0x400224f0
-
-         [<402ca000>] 0x402ca000
-  [<4026eeda>] 0x4026eeda
-  [<40020b00>] 0x40020b00
-Freeing unused kernel memory: 648K
-This architecture does not have kernel memory protection.
-Run /init as init process
-...
-
-System boots pretty much as normal through user space after this.
-Seems to be fully operational despite all those BUGONs.
-
-Specifically this is a M5208EVB target (arch/m68k/configs/m5208evb).
+diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
+index 8f18cf56b3dd..d162168490d1 100644
+--- a/arch/um/kernel/trap.c
++++ b/arch/um/kernel/trap.c
+@@ -34,6 +34,7 @@ int handle_page_fault(unsigned long address, unsigned long ip,
+ 	pte_t *pte;
+ 	int err = -EFAULT;
+ 	unsigned int flags = FAULT_FLAG_DEFAULT;
++	vm_fault_t fault, major = 0;
+ 
+ 	*code_out = SEGV_MAPERR;
+ 
+@@ -73,9 +74,8 @@ int handle_page_fault(unsigned long address, unsigned long ip,
+ 	}
+ 
+ 	do {
+-		vm_fault_t fault;
+-
+ 		fault = handle_mm_fault(vma, address, flags);
++		major |= fault & VM_FAULT_MAJOR;
+ 
+ 		if ((fault & VM_FAULT_RETRY) && fatal_signal_pending(current))
+ 			goto out_nosemaphore;
+@@ -92,10 +92,6 @@ int handle_page_fault(unsigned long address, unsigned long ip,
+ 			BUG();
+ 		}
+ 		if (flags & FAULT_FLAG_ALLOW_RETRY) {
+-			if (fault & VM_FAULT_MAJOR)
+-				current->maj_flt++;
+-			else
+-				current->min_flt++;
+ 			if (fault & VM_FAULT_RETRY) {
+ 				flags |= FAULT_FLAG_TRIED;
+ 
+@@ -103,6 +99,11 @@ int handle_page_fault(unsigned long address, unsigned long ip,
+ 			}
+ 		}
+ 
++		if (major)
++			current->maj_flt++;
++		else
++			current->min_flt++;
++
+ 		pgd = pgd_offset(mm, address);
+ 		p4d = p4d_offset(pgd, address);
+ 		pud = pud_offset(p4d, address);
+-- 
+2.26.2
 
 
-[snip]
-> diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
-> index b88d510d4fe3..6d3147662ff2 100644
-> --- a/arch/m68k/mm/init.c
-> +++ b/arch/m68k/mm/init.c
-> @@ -84,7 +84,7 @@ void __init paging_init(void)
->  	 * page_alloc get different views of the world.
->  	 */
->  	unsigned long end_mem = memory_end & PAGE_MASK;
-> -	unsigned long zones_size[MAX_NR_ZONES] = { 0, };
-> +	unsigned long max_zone_pfn[MAX_NR_ZONES] = { 0, };
->  
->  	high_memory = (void *) end_mem;
->  
-> @@ -98,8 +98,8 @@ void __init paging_init(void)
->  	 */
->  	set_fs (USER_DS);
->  
-> -	zones_size[ZONE_DMA] = (end_mem - PAGE_OFFSET) >> PAGE_SHIFT;
-> -	free_area_init(zones_size);
-> +	max_zone_pfn[ZONE_DMA] = end_mem >> PAGE_SHIFT;
-> +	free_area_init(max_zone_pfn);
-
-This worries me a little. On this target PAGE_OFFSET will be non-0.
-
-Thoughts?
-
-Regards
-Greg
-
-
-
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
