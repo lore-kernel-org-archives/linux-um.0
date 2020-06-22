@@ -1,76 +1,61 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.cn.fujitsu.com ([183.91.158.132] helo=heian.cn.fujitsu.com)
- by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jg3Db-00077z-WB
- for linux-um@lists.infradead.org; Tue, 02 Jun 2020 09:28:25 +0000
-Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
- by cn.fujitsu.com (Postfix) with ESMTP id 05E134BCC8A5
- for <linux-um@lists.infradead.org>; Tue,  2 Jun 2020 17:28:12 +0800 (CST)
-Message-ID: <5ED61BAA.5080203@cn.fujitsu.com>
-Date: Tue, 2 Jun 2020 17:28:10 +0800
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Fwd: How to avoid a lot of './arch/um/include/uapi: No such file
- or directory' warnings
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
+References: <20200621043737.pb6JV%akpm@linux-foundation.org>
+ <20a39fd4-622d-693c-c8d6-1fbab12af62a@gmail.com> <202006221445.36E03CCBE9@keescook>
+In-Reply-To: <202006221445.36E03CCBE9@keescook>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Tue, 23 Jun 2020 00:00:39 +0200
+Message-ID: <CAFLxGvw4NeBw3tDEnvL4USxgp--=vT1iXc6-tzAd_NkWCmUNFA@mail.gmail.com>
+Subject: Re: mmotm 2020-06-20-21-36 uploaded (lkdtm/bugs.c)
+Content-Type: text/plain; charset="UTF-8"
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kees Cook <keescook@chromium.org>
+Cc: Randy Dunlap <rd.dunlab@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Mark Brown <broonie@kernel.org>, Michal Hocko <mhocko@suse.cz>, Stephen Rothwell <sfr@canb.auug.org.au>, Linux Next Mailing List <linux-next@vger.kernel.org>, linux-fsdevel <linux-fsdevel@vger.kernel.org>, linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>, mm-commits@vger.kernel.org, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>
+List-ID: <linux-um.lists.infradead.org>
 
-Q2M6IGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKCkhpLAoKSSBnb3QgYSBsb3Qgb2YgJy4v
-YXJjaC91bS9pbmNsdWRlL3VhcGk6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnknCndhcm5pbmdz
-IHdoZW4gYnVpbGRpbmcga2VybmVsIHdpdGggdW0gYXJjaDoKLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpyb290QHVidW50dTE4On4vbGludXgtbmV4dCMgbWFrZSBX
-PTEgQVJDSD11bSBhbGxtb2Rjb25maWcKLi4uCnJvb3RAdWJ1bnR1MTg6fi9saW51eC1uZXh0IyBt
-YWtlIFc9MSBBUkNIPXVtIHByZXBhcmUKLi4uCiAgVVBEICAgICBpbmNsdWRlL2dlbmVyYXRlZC9h
-c20tb2Zmc2V0cy5oCiAgQ0FMTCAgICBzY3JpcHRzL2NoZWNrc3lzY2FsbHMuc2gKY2MxOiB3YXJu
-aW5nOiAuL2FyY2gvdW0vaW5jbHVkZS91YXBpOiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5Clst
-V21pc3NpbmctaW5jbHVkZS1kaXJzXQogIENBTEwgICAgc2NyaXB0cy9hdG9taWMvY2hlY2stYXRv
-bWljcy5zaAouLi4Kcm9vdEB1YnVudHUxODp+L2xpbnV4LW5leHQjIG1ha2UgVz0xIEFSQ0g9dW0g
-bW9kdWxlc19wcmVwYXJlCi4uLgogIENDICAgICAgc2NyaXB0cy9tb2QvZW1wdHkubwpjYzE6IHdh
-cm5pbmc6IC4vYXJjaC91bS9pbmNsdWRlL3VhcGk6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkK
-Wy1XbWlzc2luZy1pbmNsdWRlLWRpcnNdCiAgTUtFTEYgICBzY3JpcHRzL21vZC9lbGZjb25maWcu
-aAogIEhPU1RDQyAgc2NyaXB0cy9tb2QvbW9kcG9zdC5vCiAgQ0MgICAgICBzY3JpcHRzL21vZC9k
-ZXZpY2V0YWJsZS1vZmZzZXRzLnMKY2MxOiB3YXJuaW5nOiAuL2FyY2gvdW0vaW5jbHVkZS91YXBp
-OiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5ClstV21pc3NpbmctaW5jbHVkZS1kaXJzXQogIEhP
-U1RDQyAgc2NyaXB0cy9tb2QvZmlsZTJhbGlhcy5vCiAgSE9TVENDICBzY3JpcHRzL21vZC9zdW12
-ZXJzaW9uLm8KICBIT1NUTEQgIHNjcmlwdHMvbW9kL21vZHBvc3QKICBDQyAgICAgIGtlcm5lbC9i
-b3VuZHMucwpjYzE6IHdhcm5pbmc6IC4vYXJjaC91bS9pbmNsdWRlL3VhcGk6IE5vIHN1Y2ggZmls
-ZSBvciBkaXJlY3RvcnkKWy1XbWlzc2luZy1pbmNsdWRlLWRpcnNdCiAgQ0MgICAgICBhcmNoL3Vt
-L2tlcm5lbC9hc20tb2Zmc2V0cy5zCmNjMTogd2FybmluZzogLi9hcmNoL3VtL2luY2x1ZGUvdWFw
-aTogTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeQpbLVdtaXNzaW5nLWluY2x1ZGUtZGlyc10KSW4g
-ZmlsZSBpbmNsdWRlZCBmcm9tIC4vaW5jbHVkZS9saW51eC91YWNjZXNzLmg6MTE6MCwKICAgICAg
-ICAgICAgICAgICBmcm9tIC4vaW5jbHVkZS9saW51eC9jcnlwdG8uaDoyMSwKICAgICAgICAgICAg
-ICAgICBmcm9tIC4vYXJjaC94ODYvdW0vc2hhcmVkL3N5c2RlcC9rZXJuZWwtb2Zmc2V0cy5oOjUs
-CiAgICAgICAgICAgICAgICAgZnJvbSBhcmNoL3VtL2tlcm5lbC9hc20tb2Zmc2V0cy5jOjE6Ci4v
-YXJjaC91bS9pbmNsdWRlL2FzbS91YWNjZXNzLmg6IEluIGZ1bmN0aW9uIKGuX19hY2Nlc3Nfb2uh
-rzoKLi9hcmNoL3VtL2luY2x1ZGUvYXNtL3VhY2Nlc3MuaDoxNzoyOTogd2FybmluZzogY29tcGFy
-aXNvbiBvZiB1bnNpZ25lZApleHByZXNzaW9uID49IDAgaXMgYWx3YXlzIHRydWUgWy1XdHlwZS1s
-aW1pdHNdCiAgICAoKCh1bnNpZ25lZCBsb25nKSAoYWRkcikgPj0gRklYQUREUl9VU0VSX1NUQVJU
-KSAmJiBcCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXgouL2FyY2gvdW0vaW5jbHVkZS9h
-c20vdWFjY2Vzcy5oOjQ1OjM6IG5vdGU6IGluIGV4cGFuc2lvbiBvZiBtYWNybwqhrl9fYWNjZXNz
-X29rX3ZzeXNjYWxsoa8KICAgX19hY2Nlc3Nfb2tfdnN5c2NhbGwoYWRkciwgc2l6ZSkgfHwKICAg
-Xn5+fn5+fn5+fn5+fn5+fn5+fn4KSW4gZmlsZSBpbmNsdWRlZCBmcm9tIGFyY2gvdW0va2VybmVs
-L2FzbS1vZmZzZXRzLmM6MTowOgouL2FyY2gveDg2L3VtL3NoYXJlZC9zeXNkZXAva2VybmVsLW9m
-ZnNldHMuaDogQXQgdG9wIGxldmVsOgouL2FyY2gveDg2L3VtL3NoYXJlZC9zeXNkZXAva2VybmVs
-LW9mZnNldHMuaDo5OjY6IHdhcm5pbmc6IG5vIHByZXZpb3VzCnByb3RvdHlwZSBmb3Igoa5mb2+h
-ryBbLVdtaXNzaW5nLXByb3RvdHlwZXNdCiB2b2lkIGZvbyh2b2lkKQogICAgICBefn4KICBDQUxM
-ICAgIHNjcmlwdHMvY2hlY2tzeXNjYWxscy5zaApjYzE6IHdhcm5pbmc6IC4vYXJjaC91bS9pbmNs
-dWRlL3VhcGk6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKWy1XbWlzc2luZy1pbmNsdWRlLWRp
-cnNdCi4uLgpyb290QHVidW50dTE4On4vbGludXgtbmV4dCMgbWFrZSBXPTEgQVJDSD11bQouLi4K
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKSXMgdGhlcmUgYW55
-IHdheSB0byBhdm9pZCB0aGUgc2FtZSB3YXJuaW5ncz8gU29ycnksIEkgYW0gbm90IGZhbWlsaWFy
-CndpdGggdGhlIGtidWlsZCBvZiB1bSBhcmNoLgoKQmVzdCBSZWdhcmRzLApYaWFvIFlhbmcKCgoK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0g
-bWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmlu
-ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
+On Mon, Jun 22, 2020 at 11:51 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Mon, Jun 22, 2020 at 08:37:17AM -0700, Randy Dunlap wrote:
+> > On 6/20/20 9:37 PM, akpm@linux-foundation.org wrote:
+> > > The mm-of-the-moment snapshot 2020-06-20-21-36 has been uploaded to
+> > >
+> > >    http://www.ozlabs.org/~akpm/mmotm/
+> > >
+> > > mmotm-readme.txt says
+> > >
+> > > README for mm-of-the-moment:
+> > >
+> > > http://www.ozlabs.org/~akpm/mmotm/
+> > >
+> > > This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+> > > more than once a week.
+> >
+> > drivers/misc/lkdtm/bugs.c has build errors when building UML for i386
+> > (allmodconfig or allyesconfig):
+> >
+> >
+> > In file included from ../drivers/misc/lkdtm/bugs.c:17:0:
+> > ../arch/x86/um/asm/desc.h:7:0: warning: "LDT_empty" redefined
+> >  #define LDT_empty(info) (\
+> >
+> > In file included from ../arch/um/include/asm/mmu.h:10:0,
+> >                  from ../include/linux/mm_types.h:18,
+> >                  from ../include/linux/sched/signal.h:13,
+> >                  from ../drivers/misc/lkdtm/bugs.c:11:
+> > ../arch/x86/um/asm/mm_context.h:65:0: note: this is the location of the previous definition
+> >  #define LDT_empty(info) (_LDT_empty(info))
+>
+> The LKDTM test landed a while ago:
+> b09511c253e5 ("lkdtm: Add a DOUBLE_FAULT crash type on x86")
+>
+> and nothing has touched arch/x86/um/asm/desc.h nor
+> arch/x86/um/asm/mm_context.h in a while either.
+>
+> Regardless, it seems arch/x86/um/asm/desc.h is not needed any more?
+
+True that, we can rip the file.
+
+-- 
+Thanks,
+//richard
 
