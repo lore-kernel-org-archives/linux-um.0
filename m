@@ -1,101 +1,31 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jgny5-0002Yj-5c
- for linux-um@lists.infradead.org; Thu, 04 Jun 2020 11:23:30 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH] um: change sigio_spinlock to a mutex
-Date: Thu,  4 Jun 2020 13:23:17 +0200
-Message-Id: <20200604132317.75a2f85a7e52.Ifa9c62fa63625d4685383003e6a5d6c27d7b4e45@changeid>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Subject: Your message to linux-um awaits moderator approval
+From: linux-um-owner@lists.infradead.org
+Message-ID: <mailman.52.1592897937.951.linux-um@lists.infradead.org>
+Date: Tue, 23 Jun 2020 03:38:57 -0400
+List-Id: <linux-um.lists.infradead.org>
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+To: geert@linux-m68k.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+Your mail to 'linux-um' with the subject
 
-Lockdep complains at boot:
+    Re: [PATCH 17/17] arch: rename copy_thread_tls() back to
+copy_thread()
 
-=============================
-[ BUG: Invalid wait context ]
-5.7.0-05093-g46d91ecd597b #98 Not tainted
------------------------------
-swapper/1 is trying to lock:
-0000000060931b98 (&desc[i].request_mutex){+.+.}-{3:3}, at: __setup_irq+0x11d/0x623
-other info that might help us debug this:
-context-{4:4}
-1 lock held by swapper/1:
- #0: 000000006074fed8 (sigio_spinlock){+.+.}-{2:2}, at: sigio_lock+0x1a/0x1c
-stack backtrace:
-CPU: 0 PID: 1 Comm: swapper Not tainted 5.7.0-05093-g46d91ecd597b #98
-Stack:
- 7fa4fab0 6028dfd1 0000002a 6008bea5
- 7fa50700 7fa50040 7fa4fac0 6028e016
- 7fa4fb50 6007f6da 60959c18 00000000
-Call Trace:
- [<60023a0e>] show_stack+0x13b/0x155
- [<6028e016>] dump_stack+0x2a/0x2c
- [<6007f6da>] __lock_acquire+0x515/0x15f2
- [<6007eb50>] lock_acquire+0x245/0x273
- [<6050d9f1>] __mutex_lock+0xbd/0x325
- [<6050dc76>] mutex_lock_nested+0x1d/0x1f
- [<6008e27e>] __setup_irq+0x11d/0x623
- [<6008e8ed>] request_threaded_irq+0x169/0x1a6
- [<60021eb0>] um_request_irq+0x1ee/0x24b
- [<600234ee>] write_sigio_irq+0x3b/0x76
- [<600383ca>] sigio_broken+0x146/0x2e4
- [<60020bd8>] do_one_initcall+0xde/0x281
+Is being held until the list moderator can review it for approval.
 
-Because we hold sigio_spinlock and then get into requesting
-an interrupt with a mutex.
+The reason it is being held:
 
-Change the spinlock to a mutex to avoid that.
+    Too many recipients to the message
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- arch/um/kernel/sigio.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Either the message will get posted to the list, or you will receive
+notification of the moderator's decision.  If you would like to cancel
+this posting, please visit the following URL:
 
-diff --git a/arch/um/kernel/sigio.c b/arch/um/kernel/sigio.c
-index 10c99e058fca..d1cffc2a7f21 100644
---- a/arch/um/kernel/sigio.c
-+++ b/arch/um/kernel/sigio.c
-@@ -35,14 +35,14 @@ int write_sigio_irq(int fd)
- }
- 
- /* These are called from os-Linux/sigio.c to protect its pollfds arrays. */
--static DEFINE_SPINLOCK(sigio_spinlock);
-+static DEFINE_MUTEX(sigio_mutex);
- 
- void sigio_lock(void)
- {
--	spin_lock(&sigio_spinlock);
-+	mutex_lock(&sigio_mutex);
- }
- 
- void sigio_unlock(void)
- {
--	spin_unlock(&sigio_spinlock);
-+	mutex_unlock(&sigio_mutex);
- }
--- 
-2.26.2
+    http://lists.infradead.org/mailman/confirm/linux-um/9fa9ccbe182461cfcd43eb93663c480ffda80ee7
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
