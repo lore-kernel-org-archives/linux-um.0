@@ -1,10 +1,11 @@
-Return-Path: <linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org>
-Date: Wed, 10 Jun 2020 17:48:11 +0200
-From: Gerald Schaefer <gerald.schaefer@de.ibm.com>
-Subject: Possible duplicate page fault accounting on some archs after commit
- 4064b9827063
-Message-ID: <20200610174811.44b94525@thinkpad>
-MIME-Version: 1.0
+Return-Path: <linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org>
+Date: Wed, 24 Jun 2020 13:55:41 -0700
+In-Reply-To: <20200624205550.215599-1-brendanhiggins@google.com>
+Message-Id: <20200624205550.215599-3-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20200624205550.215599-1-brendanhiggins@google.com>
+Subject: [PATCH v4 02/11] arch: arm64: add linker section for KUnit test suites
+From: Brendan Higgins <brendanhiggins@google.com>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -15,35 +16,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+geert.uytterhoeven=gmail.com@lists.infradead.org
-To: Peter Xu <peterx@redhat.com>, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Andrea Arcangeli <aarcange@redhat.com>, linux-xtensa@linux-xtensa.org, Michal Simek <monstr@monstr.eu>, linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org, Nick Hu <nickhu@andestech.com>, linux-sh@vger.kernel.org, linux-hexagon@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>, linux-um@lists.infradead.org, linux-mips@vger.kernel.org, Ley Foon Tan <ley.foon.tan@intel.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, Guan Xuetao <gxt@pku.edu.cn>, linux-arm-kernel@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org
+To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, arnd@arndb.de, keescook@chromium.org, skhan@linuxfoundation.org, alan.maguire@oracle.com, yzaikin@google.com, davidgow@google.com, akpm@linux-foundation.org, rppt@linux.ibm.com, frowand.list@gmail.com, catalin.marinas@arm.com, will@kernel.org, monstr@monstr.eu, mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org, chris@zankel.net, jcmvbkbc@gmail.com
+Cc: linux-arch@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-doc@vger.kernel.org, sboyd@kernel.org, gregkh@linuxfoundation.org, linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Brendan Higgins <brendanhiggins@google.com>, mcgrof@kernel.org, linux-kselftest@vger.kernel.org, logang@deltatee.com, linux-arm-kernel@lists.infradead.org, kunit-dev@googlegroups.com
 List-ID: <linux-um.lists.infradead.org>
 
-Hi,
+Add a linker section to arm64 where KUnit can put references to its test
+suites. This patch is an early step in transitioning to dispatching all
+KUnit tests from a centralized executor rather than having each as its
+own separate late_initcall.
 
-Some architectures have their page fault accounting code inside the fault
-retry loop, and rely on only going through that code once. Before commit
-4064b9827063 ("mm: allow VM_FAULT_RETRY for multiple times"), that was
-ensured by testing for and clearing FAULT_FLAG_ALLOW_RETRY.
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+---
+ arch/arm64/kernel/vmlinux.lds.S | 3 +++
+ 1 file changed, 3 insertions(+)
 
-That commit had to remove the clearing of FAULT_FLAG_ALLOW_RETRY for all
-architectures, and introduced a subtle change to page fault accounting
-logic in the affected archs. It is now possible to go through the retry
-loop multiple times, and the affected archs would then account multiple
-page faults instead of just one.
+diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
+index 6827da7f3aa54..a1cae9cc655d7 100644
+--- a/arch/arm64/kernel/vmlinux.lds.S
++++ b/arch/arm64/kernel/vmlinux.lds.S
+@@ -181,6 +181,9 @@ SECTIONS
+ 		INIT_RAM_FS
+ 		*(.init.rodata.* .init.bss)	/* from the EFI stub */
+ 	}
++	.kunit_test_suites : {
++		KUNIT_TEST_SUITES
++	}
+ 	.exit.data : {
+ 		EXIT_DATA
+ 	}
+-- 
+2.27.0.212.ge8ba1cc988-goog
 
-This was found by coincidence in s390 code, and a quick check showed that
-there are quite a lot of other architectures that seem to be affected in a
-similar way. I'm preparing a fix for s390, by moving the accounting behind
-the retry loop, similar to x86. It is not completely straight-forward, so
-I leave the fix for other archs to the respective maintainers.
-
-Added the lists for possibly affected archs on cc, but no guarantee for
-completeness.
-
-Regards,
-Gerald
 
 _______________________________________________
 linux-arm-kernel mailing list
