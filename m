@@ -1,61 +1,58 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-MIME-Version: 1.0
-References: <20200621043737.pb6JV%akpm@linux-foundation.org>
- <20a39fd4-622d-693c-c8d6-1fbab12af62a@gmail.com> <202006221445.36E03CCBE9@keescook>
-In-Reply-To: <202006221445.36E03CCBE9@keescook>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Tue, 23 Jun 2020 00:00:39 +0200
-Message-ID: <CAFLxGvw4NeBw3tDEnvL4USxgp--=vT1iXc6-tzAd_NkWCmUNFA@mail.gmail.com>
-Subject: Re: mmotm 2020-06-20-21-36 uploaded (lkdtm/bugs.c)
-Content-Type: text/plain; charset="UTF-8"
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kees Cook <keescook@chromium.org>
-Cc: Randy Dunlap <rd.dunlab@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Mark Brown <broonie@kernel.org>, Michal Hocko <mhocko@suse.cz>, Stephen Rothwell <sfr@canb.auug.org.au>, Linux Next Mailing List <linux-next@vger.kernel.org>, linux-fsdevel <linux-fsdevel@vger.kernel.org>, linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>, mm-commits@vger.kernel.org, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>
+Return-Path: <linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org>
+Date: Wed, 24 Jun 2020 13:55:44 -0700
+In-Reply-To: <20200624205550.215599-1-brendanhiggins@google.com>
+Message-Id: <20200624205550.215599-6-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20200624205550.215599-1-brendanhiggins@google.com>
+Subject: [PATCH v4 05/11] arch: um: add linker section for KUnit test suites
+From: Brendan Higgins <brendanhiggins@google.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org
+To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, arnd@arndb.de, keescook@chromium.org, skhan@linuxfoundation.org, alan.maguire@oracle.com, yzaikin@google.com, davidgow@google.com, akpm@linux-foundation.org, rppt@linux.ibm.com, frowand.list@gmail.com, catalin.marinas@arm.com, will@kernel.org, monstr@monstr.eu, mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org, chris@zankel.net, jcmvbkbc@gmail.com
+Cc: linux-arch@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-doc@vger.kernel.org, sboyd@kernel.org, gregkh@linuxfoundation.org, linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Brendan Higgins <brendanhiggins@google.com>, mcgrof@kernel.org, linux-kselftest@vger.kernel.org, logang@deltatee.com, linux-arm-kernel@lists.infradead.org, kunit-dev@googlegroups.com
 List-ID: <linux-um.lists.infradead.org>
 
-On Mon, Jun 22, 2020 at 11:51 PM Kees Cook <keescook@chromium.org> wrote:
->
-> On Mon, Jun 22, 2020 at 08:37:17AM -0700, Randy Dunlap wrote:
-> > On 6/20/20 9:37 PM, akpm@linux-foundation.org wrote:
-> > > The mm-of-the-moment snapshot 2020-06-20-21-36 has been uploaded to
-> > >
-> > >    http://www.ozlabs.org/~akpm/mmotm/
-> > >
-> > > mmotm-readme.txt says
-> > >
-> > > README for mm-of-the-moment:
-> > >
-> > > http://www.ozlabs.org/~akpm/mmotm/
-> > >
-> > > This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
-> > > more than once a week.
-> >
-> > drivers/misc/lkdtm/bugs.c has build errors when building UML for i386
-> > (allmodconfig or allyesconfig):
-> >
-> >
-> > In file included from ../drivers/misc/lkdtm/bugs.c:17:0:
-> > ../arch/x86/um/asm/desc.h:7:0: warning: "LDT_empty" redefined
-> >  #define LDT_empty(info) (\
-> >
-> > In file included from ../arch/um/include/asm/mmu.h:10:0,
-> >                  from ../include/linux/mm_types.h:18,
-> >                  from ../include/linux/sched/signal.h:13,
-> >                  from ../drivers/misc/lkdtm/bugs.c:11:
-> > ../arch/x86/um/asm/mm_context.h:65:0: note: this is the location of the previous definition
-> >  #define LDT_empty(info) (_LDT_empty(info))
->
-> The LKDTM test landed a while ago:
-> b09511c253e5 ("lkdtm: Add a DOUBLE_FAULT crash type on x86")
->
-> and nothing has touched arch/x86/um/asm/desc.h nor
-> arch/x86/um/asm/mm_context.h in a while either.
->
-> Regardless, it seems arch/x86/um/asm/desc.h is not needed any more?
+Add a linker section to UML where KUnit can put references to its test
+suites. This patch is an early step in transitioning to dispatching all
+KUnit tests from a centralized executor rather than having each as its
+own separate late_initcall.
 
-True that, we can rip the file.
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+---
+ arch/um/include/asm/common.lds.S | 4 ++++
+ 1 file changed, 4 insertions(+)
 
+diff --git a/arch/um/include/asm/common.lds.S b/arch/um/include/asm/common.lds.S
+index eca6c452a41bd..9a9c97f45694c 100644
+--- a/arch/um/include/asm/common.lds.S
++++ b/arch/um/include/asm/common.lds.S
+@@ -52,6 +52,10 @@
+ 	CON_INITCALL
+   }
+ 
++  .kunit_test_suites : {
++	KUNIT_TEST_SUITES
++  }
++
+   .exitcall : {
+ 	__exitcall_begin = .;
+ 	*(.exitcall.exit)
 -- 
-Thanks,
-//richard
+2.27.0.212.ge8ba1cc988-goog
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
