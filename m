@@ -1,65 +1,57 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.loongson.cn ([114.242.206.163] helo=loongson.cn)
- by bombadil.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jm9SB-0006b1-5l
- for linux-um@lists.infradead.org; Fri, 19 Jun 2020 05:20:41 +0000
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: [PATCH] um: vector: Use GFP_ATOMIC under spin lock
-Date: Fri, 19 Jun 2020 13:20:07 +0800
-Message-Id: <1592544007-2751-1-git-send-email-yangtiezhu@loongson.cn>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
+Return-Path: <linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org>
+Date: Wed, 24 Jun 2020 13:55:50 -0700
+In-Reply-To: <20200624205550.215599-1-brendanhiggins@google.com>
+Message-Id: <20200624205550.215599-12-brendanhiggins@google.com>
+Mime-Version: 1.0
+References: <20200624205550.215599-1-brendanhiggins@google.com>
+Subject: [PATCH v4 11/11] Documentation: kunit: add a brief blurb about
+ kunit_test_suite
+From: Brendan Higgins <brendanhiggins@google.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Xuefeng Li <lixuefeng@loongson.cn>, Tiezhu Yang <yangtiezhu@loongson.cn>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org
+To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, arnd@arndb.de, keescook@chromium.org, skhan@linuxfoundation.org, alan.maguire@oracle.com, yzaikin@google.com, davidgow@google.com, akpm@linux-foundation.org, rppt@linux.ibm.com, frowand.list@gmail.com, catalin.marinas@arm.com, will@kernel.org, monstr@monstr.eu, mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org, chris@zankel.net, jcmvbkbc@gmail.com
+Cc: linux-arch@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-doc@vger.kernel.org, sboyd@kernel.org, gregkh@linuxfoundation.org, linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Brendan Higgins <brendanhiggins@google.com>, mcgrof@kernel.org, linux-kselftest@vger.kernel.org, logang@deltatee.com, linux-arm-kernel@lists.infradead.org, kunit-dev@googlegroups.com
+List-ID: <linux-um.lists.infradead.org>
 
-Use GFP_ATOMIC instead of GFP_KERNEL under spin lock to fix possible
-sleep-in-atomic-context bugs.
+Add a brief blurb saying how and when the kunit_test_suite() macro
+works to the usage documentation.
 
-Fixes: 9807019a62dc ("um: Loadable BPF "Firmware" for vector drivers")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
 ---
- arch/um/drivers/vector_kern.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ Documentation/dev-tools/kunit/usage.rst | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-index 8735c46..555203e 100644
---- a/arch/um/drivers/vector_kern.c
-+++ b/arch/um/drivers/vector_kern.c
-@@ -1403,7 +1403,7 @@ static int vector_net_load_bpf_flash(struct net_device *dev,
- 		kfree(vp->bpf->filter);
- 		vp->bpf->filter = NULL;
- 	} else {
--		vp->bpf = kmalloc(sizeof(struct sock_fprog), GFP_KERNEL);
-+		vp->bpf = kmalloc(sizeof(struct sock_fprog), GFP_ATOMIC);
- 		if (vp->bpf == NULL) {
- 			netdev_err(dev, "failed to allocate memory for firmware\n");
- 			goto flash_fail;
-@@ -1415,7 +1415,7 @@ static int vector_net_load_bpf_flash(struct net_device *dev,
- 	if (request_firmware(&fw, efl->data, &vdevice->pdev.dev))
- 		goto flash_fail;
+diff --git a/Documentation/dev-tools/kunit/usage.rst b/Documentation/dev-tools/kunit/usage.rst
+index 3c3fe8b5feccf..961d3ea3ca19a 100644
+--- a/Documentation/dev-tools/kunit/usage.rst
++++ b/Documentation/dev-tools/kunit/usage.rst
+@@ -211,6 +211,11 @@ KUnit test framework.
+ .. note::
+    A test case will only be run if it is associated with a test suite.
  
--	vp->bpf->filter = kmemdup(fw->data, fw->size, GFP_KERNEL);
-+	vp->bpf->filter = kmemdup(fw->data, fw->size, GFP_ATOMIC);
- 	if (!vp->bpf->filter)
- 		goto free_buffer;
++``kunit_test_suite(...)`` is a macro which tells the linker to put the specified
++test suite in a special linker section so that it can be run by KUnit either
++after late_init, or when the test module is loaded (depending on whether the
++test was built in or not).
++
+ For more information on these types of things see the :doc:`api/test`.
  
+ Isolating Behavior
 -- 
-2.1.0
+2.27.0.212.ge8ba1cc988-goog
 
 
 _______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
