@@ -1,196 +1,54 @@
-Return-Path: <linux-sh-owner@vger.kernel.org>
-From: Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH 8/8] mm: move p?d_alloc_track to separate header file
-Date: Sat, 27 Jun 2020 17:34:53 +0300
-Message-Id: <20200627143453.31835-9-rppt@kernel.org>
-In-Reply-To: <20200627143453.31835-1-rppt@kernel.org>
-References: <20200627143453.31835-1-rppt@kernel.org>
+Return-Path: <linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org>
+Date: Fri, 26 Jun 2020 14:52:37 -0700
+From: Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH v5 00/12] kunit: create a centralized executor to
+ dispatch all KUnit tests
+Message-ID: <202006261442.5C245709@keescook>
+References: <20200626210917.358969-1-brendanhiggins@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: linux-sh-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Abdul Haleem <abdhalee@linux.vnet.ibm.com>, Andrew Morton <akpm@linux-foundation.org>, Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Christophe Leroy <christophe.leroy@csgroup.eu>, Joerg Roedel <joro@8bytes.org>, Max Filippov <jcmvbkbc@gmail.com>, Mike Rapoport <rppt@kernel.org>, Mike Rapoport <rppt@linux.ibm.com>, Peter Zijlstra <peterz@infradead.org>, Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>, Stafford Horne <shorne@gmail.com>, Stephen Rothwell <sfr@canb.auug.org.au>, Steven Rostedt <rostedt@goodmis.org>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, Joerg Roedel <jroedel@suse.de>
+Content-Disposition: inline
+In-Reply-To: <20200626210917.358969-1-brendanhiggins@google.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Brendan Higgins <brendanhiggins@google.com>
+Cc: linux-doc@vger.kernel.org, catalin.marinas@arm.com, jcmvbkbc@gmail.com, will@kernel.org, paulus@samba.org, linux-kselftest@vger.kernel.org, frowand.list@gmail.com, anton.ivanov@cambridgegreys.com, linux-arch@vger.kernel.org, richard@nod.at, rppt@linux.ibm.com, benh@kernel.crashing.org, yzaikin@google.com, linux-xtensa@linux-xtensa.org, arnd@arndb.de, jdike@addtoit.com, linux-um@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, davidgow@google.com, skhan@linuxfoundation.org, linux-arm-kernel@lists.infradead.org, kunit-dev@googlegroups.com, chris@zankel.net, monstr@monstr.eu, sboyd@kernel.org, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, mcgrof@kernel.org, alan.maguire@oracle.com, mpe@ellerman.id.au, akpm@linux-foundation.org, logang@deltatee.com
 List-ID: <linux-um.lists.infradead.org>
 
-From: Joerg Roedel <jroedel@suse.de>
+On Fri, Jun 26, 2020 at 02:09:05PM -0700, Brendan Higgins wrote:
+> This patchset adds a centralized executor to dispatch tests rather than
+> relying on late_initcall to schedule each test suite separately along
+> with a couple of new features that depend on it.
 
-The functions are only used in two source files, both residing in mm/
-subdirectory, so there is no need for them to be in the global <linux/mm.h>
-header.  Move them to the new mm/pgalloc-track.h header and include it only
-where needed.
+So, the new section looks fine to me (modulo the INIT_DATA change). The
+plumbing to start the tests, though, I think is redundant. Why not just
+add a sysctl that starts all known tests?
 
-[rppt: mv include/linux/pgalloc-track.h mm/]
+That way you don't need the plumbing into init/main.c, and you can have
+a mode where builtin tests can be started on a fully booted system too.
 
-Link: http://lkml.kernel.org/r/20200609120533.25867-1-joro@8bytes.org
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Abdul Haleem <abdhalee@linux.vnet.ibm.com>
-Cc: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Cc: Mike Rapoport <rppt@linux.ibm.com>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- include/linux/mm.h | 45 ----------------------------------------
- mm/ioremap.c       |  2 ++
- mm/pgalloc-track.h | 51 ++++++++++++++++++++++++++++++++++++++++++++++
- mm/vmalloc.c       |  1 +
- 4 files changed, 54 insertions(+), 45 deletions(-)
- create mode 100644 mm/pgalloc-track.h
+i.e. boot with "sysctl.kernel.kunit=start" or when fully booted with
+"echo start > /proc/sys/kernel/kunit"
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index dc7b87310c10..5e878a3c7c57 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2093,51 +2093,11 @@ static inline pud_t *pud_alloc(struct mm_struct *mm, p4d_t *p4d,
- 		NULL : pud_offset(p4d, address);
- }
- 
--static inline p4d_t *p4d_alloc_track(struct mm_struct *mm, pgd_t *pgd,
--				     unsigned long address,
--				     pgtbl_mod_mask *mod_mask)
--
--{
--	if (unlikely(pgd_none(*pgd))) {
--		if (__p4d_alloc(mm, pgd, address))
--			return NULL;
--		*mod_mask |= PGTBL_PGD_MODIFIED;
--	}
--
--	return p4d_offset(pgd, address);
--}
--
--static inline pud_t *pud_alloc_track(struct mm_struct *mm, p4d_t *p4d,
--				     unsigned long address,
--				     pgtbl_mod_mask *mod_mask)
--{
--	if (unlikely(p4d_none(*p4d))) {
--		if (__pud_alloc(mm, p4d, address))
--			return NULL;
--		*mod_mask |= PGTBL_P4D_MODIFIED;
--	}
--
--	return pud_offset(p4d, address);
--}
--
- static inline pmd_t *pmd_alloc(struct mm_struct *mm, pud_t *pud, unsigned long address)
- {
- 	return (unlikely(pud_none(*pud)) && __pmd_alloc(mm, pud, address))?
- 		NULL: pmd_offset(pud, address);
- }
--
--static inline pmd_t *pmd_alloc_track(struct mm_struct *mm, pud_t *pud,
--				     unsigned long address,
--				     pgtbl_mod_mask *mod_mask)
--{
--	if (unlikely(pud_none(*pud))) {
--		if (__pmd_alloc(mm, pud, address))
--			return NULL;
--		*mod_mask |= PGTBL_PUD_MODIFIED;
--	}
--
--	return pmd_offset(pud, address);
--}
- #endif /* CONFIG_MMU */
- 
- #if USE_SPLIT_PTE_PTLOCKS
-@@ -2253,11 +2213,6 @@ static inline void pgtable_pte_page_dtor(struct page *page)
- 	((unlikely(pmd_none(*(pmd))) && __pte_alloc_kernel(pmd))? \
- 		NULL: pte_offset_kernel(pmd, address))
- 
--#define pte_alloc_kernel_track(pmd, address, mask)			\
--	((unlikely(pmd_none(*(pmd))) &&					\
--	  (__pte_alloc_kernel(pmd) || ({*(mask)|=PGTBL_PMD_MODIFIED;0;})))?\
--		NULL: pte_offset_kernel(pmd, address))
--
- #if USE_SPLIT_PMD_PTLOCKS
- 
- static struct page *pmd_to_page(pmd_t *pmd)
-diff --git a/mm/ioremap.c b/mm/ioremap.c
-index 5ee3526f71b8..5fa1ab41d152 100644
---- a/mm/ioremap.c
-+++ b/mm/ioremap.c
-@@ -13,6 +13,8 @@
- #include <linux/export.h>
- #include <asm/cacheflush.h>
- 
-+#include "pgalloc-track.h"
-+
- #ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
- static int __read_mostly ioremap_p4d_capable;
- static int __read_mostly ioremap_pud_capable;
-diff --git a/mm/pgalloc-track.h b/mm/pgalloc-track.h
-new file mode 100644
-index 000000000000..1dcc865029a2
---- /dev/null
-+++ b/mm/pgalloc-track.h
-@@ -0,0 +1,51 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_PGALLLC_TRACK_H
-+#define _LINUX_PGALLLC_TRACK_H
-+
-+#if defined(CONFIG_MMU)
-+static inline p4d_t *p4d_alloc_track(struct mm_struct *mm, pgd_t *pgd,
-+				     unsigned long address,
-+				     pgtbl_mod_mask *mod_mask)
-+{
-+	if (unlikely(pgd_none(*pgd))) {
-+		if (__p4d_alloc(mm, pgd, address))
-+			return NULL;
-+		*mod_mask |= PGTBL_PGD_MODIFIED;
-+	}
-+
-+	return p4d_offset(pgd, address);
-+}
-+
-+static inline pud_t *pud_alloc_track(struct mm_struct *mm, p4d_t *p4d,
-+				     unsigned long address,
-+				     pgtbl_mod_mask *mod_mask)
-+{
-+	if (unlikely(p4d_none(*p4d))) {
-+		if (__pud_alloc(mm, p4d, address))
-+			return NULL;
-+		*mod_mask |= PGTBL_P4D_MODIFIED;
-+	}
-+
-+	return pud_offset(p4d, address);
-+}
-+
-+static inline pmd_t *pmd_alloc_track(struct mm_struct *mm, pud_t *pud,
-+				     unsigned long address,
-+				     pgtbl_mod_mask *mod_mask)
-+{
-+	if (unlikely(pud_none(*pud))) {
-+		if (__pmd_alloc(mm, pud, address))
-+			return NULL;
-+		*mod_mask |= PGTBL_PUD_MODIFIED;
-+	}
-+
-+	return pmd_offset(pud, address);
-+}
-+#endif /* CONFIG_MMU */
-+
-+#define pte_alloc_kernel_track(pmd, address, mask)			\
-+	((unlikely(pmd_none(*(pmd))) &&					\
-+	  (__pte_alloc_kernel(pmd) || ({*(mask)|=PGTBL_PMD_MODIFIED;0;})))?\
-+		NULL: pte_offset_kernel(pmd, address))
-+
-+#endif /* _LINUX_PGALLLC_TRACK_H */
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 5a2b55c8dd9a..5be3cf3b59de 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -41,6 +41,7 @@
- #include <asm/shmparam.h>
- 
- #include "internal.h"
-+#include "pgalloc-track.h"
- 
- bool is_vmalloc_addr(const void *x)
- {
+And instead of the kunit-specific halt/reboot stuff, how about moving
+/proc/sysrq-trigger into /proc/sys instead? Then you (or anything) could
+do:
+
+sysctl.kernel.kunit=start sysctl.kernel.sysrq-trigger=b
+
 -- 
-2.26.2
+Kees Cook
 
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
