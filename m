@@ -1,30 +1,79 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Return-Path: <linux-arch-owner@vger.kernel.org>
+Date: Fri, 26 Jun 2020 14:40:32 -0700
+From: Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH v5 10/12] kunit: Add 'kunit_shutdown' option
+Message-ID: <202006261436.DEF4906A5@keescook>
+References: <20200626210917.358969-1-brendanhiggins@google.com>
+ <20200626210917.358969-11-brendanhiggins@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Subject: Your message to linux-um awaits moderator approval
-From: linux-um-owner@lists.infradead.org
-Message-ID: <mailman.46.1592897875.951.linux-um@lists.infradead.org>
-Date: Tue, 23 Jun 2020 03:37:55 -0400
-List-Id: <linux-um.lists.infradead.org>
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: geert@linux-m68k.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200626210917.358969-11-brendanhiggins@google.com>
+Sender: linux-arch-owner@vger.kernel.org
+To: Brendan Higgins <brendanhiggins@google.com>
+Cc: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, arnd@arndb.de, skhan@linuxfoundation.org, alan.maguire@oracle.com, yzaikin@google.com, davidgow@google.com, akpm@linux-foundation.org, rppt@linux.ibm.com, frowand.list@gmail.com, catalin.marinas@arm.com, will@kernel.org, monstr@monstr.eu, mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org, chris@zankel.net, jcmvbkbc@gmail.com, gregkh@linuxfoundation.org, sboyd@kernel.org, logang@deltatee.com, mcgrof@kernel.org, linux-um@lists.infradead.org, linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, linux-xtensa@linux-xtensa.org
+List-ID: <linux-um.lists.infradead.org>
 
-Your mail to 'linux-um' with the subject
+On Fri, Jun 26, 2020 at 02:09:15PM -0700, Brendan Higgins wrote:
+> From: David Gow <davidgow@google.com>
+> 
+> Add a new kernel command-line option, 'kunit_shutdown', which allows the
+> user to specify that the kernel poweroff, halt, or reboot after
+> completing all KUnit tests; this is very handy for running KUnit tests
+> on UML or a VM so that the UML/VM process exits cleanly immediately
+> after running all tests without needing a special initramfs.
+> 
+> Signed-off-by: David Gow <davidgow@google.com>
+> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+> Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+> ---
+>  lib/kunit/executor.c                | 20 ++++++++++++++++++++
+>  tools/testing/kunit/kunit_kernel.py |  2 +-
+>  tools/testing/kunit/kunit_parser.py |  2 +-
+>  3 files changed, 22 insertions(+), 2 deletions(-)
+> 
+> diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
+> index a95742a4ece73..38061d456afb2 100644
+> --- a/lib/kunit/executor.c
+> +++ b/lib/kunit/executor.c
+> @@ -1,5 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  
+> +#include <linux/reboot.h>
+>  #include <kunit/test.h>
+>  
+>  /*
+> @@ -11,6 +12,23 @@ extern struct kunit_suite * const * const __kunit_suites_end[];
+>  
+>  #if IS_BUILTIN(CONFIG_KUNIT)
+>  
+> +static char *kunit_shutdown;
+> +core_param(kunit_shutdown, kunit_shutdown, charp, 0644);
+> +
+> +static void kunit_handle_shutdown(void)
+> +{
+> +	if (!kunit_shutdown)
+> +		return;
+> +
+> +	if (!strcmp(kunit_shutdown, "poweroff"))
+> +		kernel_power_off();
+> +	else if (!strcmp(kunit_shutdown, "halt"))
+> +		kernel_halt();
+> +	else if (!strcmp(kunit_shutdown, "reboot"))
+> +		kernel_restart(NULL);
+> +
+> +}
 
-    Re: [PATCH 16/17] arch: remove HAVE_COPY_THREAD_TLS
+If you have patches that do something just before the initrd, and then
+you add more patches to shut down immediately after an initrd, people
+may ask you to just use an initrd instead of filling the kernel with
+these changes...
 
-Is being held until the list moderator can review it for approval.
+I mean, I get it, but it's not hard to make an initrd that poke a sysctl
+to start the tests...
 
-The reason it is being held:
+In fact, you don't even need a initrd to poke sysctls these days.
 
-    Too many recipients to the message
-
-Either the message will get posted to the list, or you will receive
-notification of the moderator's decision.  If you would like to cancel
-this posting, please visit the following URL:
-
-    http://lists.infradead.org/mailman/confirm/linux-um/e166048cc1e72410e0bad839c3e6643916380a46
-
+-- 
+Kees Cook
 
