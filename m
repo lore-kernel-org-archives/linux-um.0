@@ -1,11 +1,10 @@
 Return-Path: <linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Fri, 26 Jun 2020 14:09:11 -0700
+Date: Fri, 26 Jun 2020 14:09:10 -0700
 In-Reply-To: <20200626210917.358969-1-brendanhiggins@google.com>
-Message-Id: <20200626210917.358969-7-brendanhiggins@google.com>
+Message-Id: <20200626210917.358969-6-brendanhiggins@google.com>
 Mime-Version: 1.0
 References: <20200626210917.358969-1-brendanhiggins@google.com>
-Subject: [PATCH v5 06/12] arch: xtensa: add linker section for KUnit test
- suites
+Subject: [PATCH v5 05/12] arch: um: add linker section for KUnit test suites
 From: Brendan Higgins <brendanhiggins@google.com>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
@@ -22,31 +21,32 @@ To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, arnd@arn
 Cc: linux-arch@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-doc@vger.kernel.org, sboyd@kernel.org, gregkh@linuxfoundation.org, linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Brendan Higgins <brendanhiggins@google.com>, mcgrof@kernel.org, linux-kselftest@vger.kernel.org, logang@deltatee.com, linux-arm-kernel@lists.infradead.org, kunit-dev@googlegroups.com
 List-ID: <linux-um.lists.infradead.org>
 
-Add a linker section to xtensa where KUnit can put references to its
-test suites. This patch is an early step in transitioning to dispatching
-all KUnit tests from a centralized executor rather than having each as
-its own separate late_initcall.
+Add a linker section to UML where KUnit can put references to its test
+suites. This patch is an early step in transitioning to dispatching all
+KUnit tests from a centralized executor rather than having each as its
+own separate late_initcall.
 
 Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Reviewed-by: Stephen Boyd <sboyd@kernel.org>
 ---
- arch/xtensa/kernel/vmlinux.lds.S | 4 ++++
+ arch/um/include/asm/common.lds.S | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/arch/xtensa/kernel/vmlinux.lds.S b/arch/xtensa/kernel/vmlinux.lds.S
-index d23a6e38f0625..9aec4ef67d0b0 100644
---- a/arch/xtensa/kernel/vmlinux.lds.S
-+++ b/arch/xtensa/kernel/vmlinux.lds.S
-@@ -216,6 +216,10 @@ SECTIONS
-     INIT_RAM_FS
+diff --git a/arch/um/include/asm/common.lds.S b/arch/um/include/asm/common.lds.S
+index eca6c452a41bd..9a9c97f45694c 100644
+--- a/arch/um/include/asm/common.lds.S
++++ b/arch/um/include/asm/common.lds.S
+@@ -52,6 +52,10 @@
+ 	CON_INITCALL
    }
  
 +  .kunit_test_suites : {
-+  	KUNIT_TEST_SUITES
++	KUNIT_TEST_SUITES
 +  }
 +
-   PERCPU_SECTION(XCHAL_ICACHE_LINESIZE)
- 
-   /* We need this dummy segment here */
+   .exitcall : {
+ 	__exitcall_begin = .;
+ 	*(.exitcall.exit)
 -- 
 2.27.0.212.ge8ba1cc988-goog
 
