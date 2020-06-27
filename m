@@ -1,227 +1,196 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 11/18] maccess: remove strncpy_from_unsafe
-Date: Wed, 13 May 2020 18:00:31 +0200
-Message-Id: <20200513160038.2482415-12-hch@lst.de>
-In-Reply-To: <20200513160038.2482415-1-hch@lst.de>
-References: <20200513160038.2482415-1-hch@lst.de>
+Return-Path: <linux-sh-owner@vger.kernel.org>
+From: Mike Rapoport <rppt@kernel.org>
+Subject: [PATCH 8/8] mm: move p?d_alloc_track to separate header file
+Date: Sat, 27 Jun 2020 17:34:53 +0300
+Message-Id: <20200627143453.31835-9-rppt@kernel.org>
+In-Reply-To: <20200627143453.31835-1-rppt@kernel.org>
+References: <20200627143453.31835-1-rppt@kernel.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: x86@kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-parisc@vger.kernel.org, netdev@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Sender: linux-sh-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Abdul Haleem <abdhalee@linux.vnet.ibm.com>, Andrew Morton <akpm@linux-foundation.org>, Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Christophe Leroy <christophe.leroy@csgroup.eu>, Joerg Roedel <joro@8bytes.org>, Max Filippov <jcmvbkbc@gmail.com>, Mike Rapoport <rppt@kernel.org>, Mike Rapoport <rppt@linux.ibm.com>, Peter Zijlstra <peterz@infradead.org>, Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>, Stafford Horne <shorne@gmail.com>, Stephen Rothwell <sfr@canb.auug.org.au>, Steven Rostedt <rostedt@goodmis.org>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, Joerg Roedel <jroedel@suse.de>
+List-ID: <linux-um.lists.infradead.org>
 
-All three callers really should try the explicit kernel and user
-copies instead.  One has already deprecated the somewhat dangerous
-either kernel or user address concept, the other two still need to
-follow up eventually.
+From: Joerg Roedel <jroedel@suse.de>
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
+The functions are only used in two source files, both residing in mm/
+subdirectory, so there is no need for them to be in the global <linux/mm.h>
+header.  Move them to the new mm/pgalloc-track.h header and include it only
+where needed.
+
+[rppt: mv include/linux/pgalloc-track.h mm/]
+
+Link: http://lkml.kernel.org/r/20200609120533.25867-1-joro@8bytes.org
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Abdul Haleem <abdhalee@linux.vnet.ibm.com>
+Cc: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Cc: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
- include/linux/uaccess.h     |  1 -
- kernel/trace/bpf_trace.c    | 39 +++++++++++++++++++++++++------------
- kernel/trace/trace_kprobe.c |  5 ++++-
- mm/maccess.c                | 39 +------------------------------------
- 4 files changed, 32 insertions(+), 52 deletions(-)
+ include/linux/mm.h | 45 ----------------------------------------
+ mm/ioremap.c       |  2 ++
+ mm/pgalloc-track.h | 51 ++++++++++++++++++++++++++++++++++++++++++++++
+ mm/vmalloc.c       |  1 +
+ 4 files changed, 54 insertions(+), 45 deletions(-)
+ create mode 100644 mm/pgalloc-track.h
 
-diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
-index 7cfc10eb09c60..28944a14e0534 100644
---- a/include/linux/uaccess.h
-+++ b/include/linux/uaccess.h
-@@ -311,7 +311,6 @@ extern long probe_user_read(void *dst, const void __user *src, size_t size);
- extern long notrace probe_kernel_write(void *dst, const void *src, size_t size);
- extern long notrace probe_user_write(void __user *dst, const void *src, size_t size);
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index dc7b87310c10..5e878a3c7c57 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -2093,51 +2093,11 @@ static inline pud_t *pud_alloc(struct mm_struct *mm, p4d_t *p4d,
+ 		NULL : pud_offset(p4d, address);
+ }
  
--extern long strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count);
- long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr,
- 		long count);
- 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 3dd4763c195bb..0d849acc9de38 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -226,12 +226,14 @@ static __always_inline int
- bpf_probe_read_kernel_str_common(void *dst, u32 size, const void *unsafe_ptr,
- 				 const bool compat)
+-static inline p4d_t *p4d_alloc_track(struct mm_struct *mm, pgd_t *pgd,
+-				     unsigned long address,
+-				     pgtbl_mod_mask *mod_mask)
+-
+-{
+-	if (unlikely(pgd_none(*pgd))) {
+-		if (__p4d_alloc(mm, pgd, address))
+-			return NULL;
+-		*mod_mask |= PGTBL_PGD_MODIFIED;
+-	}
+-
+-	return p4d_offset(pgd, address);
+-}
+-
+-static inline pud_t *pud_alloc_track(struct mm_struct *mm, p4d_t *p4d,
+-				     unsigned long address,
+-				     pgtbl_mod_mask *mod_mask)
+-{
+-	if (unlikely(p4d_none(*p4d))) {
+-		if (__pud_alloc(mm, p4d, address))
+-			return NULL;
+-		*mod_mask |= PGTBL_P4D_MODIFIED;
+-	}
+-
+-	return pud_offset(p4d, address);
+-}
+-
+ static inline pmd_t *pmd_alloc(struct mm_struct *mm, pud_t *pud, unsigned long address)
  {
-+	const void __user *user_ptr = (__force const void __user *)unsafe_ptr;
- 	int ret = security_locked_down(LOCKDOWN_BPF_READ);
- 
- 	if (unlikely(ret < 0))
--		goto out;
-+		goto fail;
-+
- 	/*
--	 * The strncpy_from_unsafe_*() call will likely not fill the entire
-+	 * The strncpy_from_*_nofault() calls will likely not fill the entire
- 	 * buffer, but that's okay in this circumstance as we're probing
- 	 * arbitrary memory anyway similar to bpf_probe_read_*() and might
- 	 * as well probe the stack. Thus, memory is explicitly cleared
-@@ -239,11 +241,16 @@ bpf_probe_read_kernel_str_common(void *dst, u32 size, const void *unsafe_ptr,
- 	 * code altogether don't copy garbage; otherwise length of string
- 	 * is returned that can be used for bpf_perf_event_output() et al.
- 	 */
--	ret = compat ? strncpy_from_unsafe(dst, unsafe_ptr, size) :
--	      strncpy_from_kernel_nofault(dst, unsafe_ptr, size);
--	if (unlikely(ret < 0))
--out:
--		memset(dst, 0, size);
-+	ret = strncpy_from_kernel_nofault(dst, unsafe_ptr, size);
-+	if (unlikely(ret < 0)) {
-+		if (compat)
-+			ret = strncpy_from_user_nofault(dst, user_ptr, size);
-+		if (unlikely(ret < 0))
-+			goto fail;
-+	}
-+	return 0;
-+fail:
-+	memset(dst, 0, size);
- 	return ret;
+ 	return (unlikely(pud_none(*pud)) && __pmd_alloc(mm, pud, address))?
+ 		NULL: pmd_offset(pud, address);
  }
+-
+-static inline pmd_t *pmd_alloc_track(struct mm_struct *mm, pud_t *pud,
+-				     unsigned long address,
+-				     pgtbl_mod_mask *mod_mask)
+-{
+-	if (unlikely(pud_none(*pud))) {
+-		if (__pmd_alloc(mm, pud, address))
+-			return NULL;
+-		*mod_mask |= PGTBL_PUD_MODIFIED;
+-	}
+-
+-	return pmd_offset(pud, address);
+-}
+ #endif /* CONFIG_MMU */
  
-@@ -321,6 +328,17 @@ static const struct bpf_func_proto *bpf_get_probe_write_proto(void)
- 	return &bpf_probe_write_user_proto;
- }
+ #if USE_SPLIT_PTE_PTLOCKS
+@@ -2253,11 +2213,6 @@ static inline void pgtable_pte_page_dtor(struct page *page)
+ 	((unlikely(pmd_none(*(pmd))) && __pte_alloc_kernel(pmd))? \
+ 		NULL: pte_offset_kernel(pmd, address))
  
-+#define BPF_STRNCPY_LEN 64
+-#define pte_alloc_kernel_track(pmd, address, mask)			\
+-	((unlikely(pmd_none(*(pmd))) &&					\
+-	  (__pte_alloc_kernel(pmd) || ({*(mask)|=PGTBL_PMD_MODIFIED;0;})))?\
+-		NULL: pte_offset_kernel(pmd, address))
+-
+ #if USE_SPLIT_PMD_PTLOCKS
+ 
+ static struct page *pmd_to_page(pmd_t *pmd)
+diff --git a/mm/ioremap.c b/mm/ioremap.c
+index 5ee3526f71b8..5fa1ab41d152 100644
+--- a/mm/ioremap.c
++++ b/mm/ioremap.c
+@@ -13,6 +13,8 @@
+ #include <linux/export.h>
+ #include <asm/cacheflush.h>
+ 
++#include "pgalloc-track.h"
 +
-+static void bpf_strncpy(char *buf, long unsafe_addr)
+ #ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
+ static int __read_mostly ioremap_p4d_capable;
+ static int __read_mostly ioremap_pud_capable;
+diff --git a/mm/pgalloc-track.h b/mm/pgalloc-track.h
+new file mode 100644
+index 000000000000..1dcc865029a2
+--- /dev/null
++++ b/mm/pgalloc-track.h
+@@ -0,0 +1,51 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LINUX_PGALLLC_TRACK_H
++#define _LINUX_PGALLLC_TRACK_H
++
++#if defined(CONFIG_MMU)
++static inline p4d_t *p4d_alloc_track(struct mm_struct *mm, pgd_t *pgd,
++				     unsigned long address,
++				     pgtbl_mod_mask *mod_mask)
 +{
-+	buf[0] = 0;
-+	if (strncpy_from_kernel_nofault(buf, (void *)unsafe_addr,
-+			BPF_STRNCPY_LEN))
-+		strncpy_from_user_nofault(buf, (void __user *)unsafe_addr,
-+				BPF_STRNCPY_LEN);
++	if (unlikely(pgd_none(*pgd))) {
++		if (__p4d_alloc(mm, pgd, address))
++			return NULL;
++		*mod_mask |= PGTBL_PGD_MODIFIED;
++	}
++
++	return p4d_offset(pgd, address);
 +}
 +
- /*
-  * Only limited trace_printk() conversion specifiers allowed:
-  * %d %i %u %x %ld %li %lu %lx %lld %lli %llu %llx %p %s
-@@ -332,7 +350,7 @@ BPF_CALL_5(bpf_trace_printk, char *, fmt, u32, fmt_size, u64, arg1,
- 	int mod[3] = {};
- 	int fmt_cnt = 0;
- 	u64 unsafe_addr;
--	char buf[64];
-+	char buf[BPF_STRNCPY_LEN];
- 	int i;
++static inline pud_t *pud_alloc_track(struct mm_struct *mm, p4d_t *p4d,
++				     unsigned long address,
++				     pgtbl_mod_mask *mod_mask)
++{
++	if (unlikely(p4d_none(*p4d))) {
++		if (__pud_alloc(mm, p4d, address))
++			return NULL;
++		*mod_mask |= PGTBL_P4D_MODIFIED;
++	}
++
++	return pud_offset(p4d, address);
++}
++
++static inline pmd_t *pmd_alloc_track(struct mm_struct *mm, pud_t *pud,
++				     unsigned long address,
++				     pgtbl_mod_mask *mod_mask)
++{
++	if (unlikely(pud_none(*pud))) {
++		if (__pmd_alloc(mm, pud, address))
++			return NULL;
++		*mod_mask |= PGTBL_PUD_MODIFIED;
++	}
++
++	return pmd_offset(pud, address);
++}
++#endif /* CONFIG_MMU */
++
++#define pte_alloc_kernel_track(pmd, address, mask)			\
++	((unlikely(pmd_none(*(pmd))) &&					\
++	  (__pte_alloc_kernel(pmd) || ({*(mask)|=PGTBL_PMD_MODIFIED;0;})))?\
++		NULL: pte_offset_kernel(pmd, address))
++
++#endif /* _LINUX_PGALLLC_TRACK_H */
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index 5a2b55c8dd9a..5be3cf3b59de 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -41,6 +41,7 @@
+ #include <asm/shmparam.h>
  
- 	/*
-@@ -387,10 +405,7 @@ BPF_CALL_5(bpf_trace_printk, char *, fmt, u32, fmt_size, u64, arg1,
- 					arg3 = (long) buf;
- 					break;
- 				}
--				buf[0] = 0;
--				strncpy_from_unsafe(buf,
--						    (void *) (long) unsafe_addr,
--						    sizeof(buf));
-+				bpf_strncpy(buf, unsafe_addr);
- 			}
- 			continue;
- 		}
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index 4325f9e7fadaa..8c456e30933d3 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -1244,7 +1244,10 @@ fetch_store_string(unsigned long addr, void *dest, void *base)
- 	 * Try to get string again, since the string can be changed while
- 	 * probing.
- 	 */
--	ret = strncpy_from_unsafe(__dest, (void *)addr, maxlen);
-+	ret = strncpy_from_kernel_nofault(__dest, (void *)addr, maxlen);
-+	if (ret < 0)
-+		ret = strncpy_from_user_nofault(__dest, (void __user *)addr,
-+				maxlen);
- 	if (ret >= 0)
- 		*(u32 *)dest = make_data_loc(ret, __dest - base);
+ #include "internal.h"
++#include "pgalloc-track.h"
  
-diff --git a/mm/maccess.c b/mm/maccess.c
-index 483a933b7d241..3d85e48013e6b 100644
---- a/mm/maccess.c
-+++ b/mm/maccess.c
-@@ -8,8 +8,6 @@
- 
- static long __probe_kernel_read(void *dst, const void *src, size_t size,
- 		bool strict);
--static long __strncpy_from_unsafe(char *dst, const void *unsafe_addr,
--		long count, bool strict);
- 
- bool __weak probe_kernel_read_allowed(void *dst, const void *unsafe_src,
- 		size_t size, bool strict)
-@@ -156,35 +154,6 @@ long probe_user_write(void __user *dst, const void *src, size_t size)
- 	return 0;
- }
- 
--/**
-- * strncpy_from_unsafe: - Copy a NUL terminated string from unsafe address.
-- * @dst:   Destination address, in kernel space.  This buffer must be at
-- *         least @count bytes long.
-- * @unsafe_addr: Unsafe address.
-- * @count: Maximum number of bytes to copy, including the trailing NUL.
-- *
-- * Copies a NUL-terminated string from unsafe address to kernel buffer.
-- *
-- * On success, returns the length of the string INCLUDING the trailing NUL.
-- *
-- * If access fails, returns -EFAULT (some data may have been copied
-- * and the trailing NUL added).
-- *
-- * If @count is smaller than the length of the string, copies @count-1 bytes,
-- * sets the last byte of @dst buffer to NUL and returns @count.
-- *
-- * Same as strncpy_from_kernel_nofault() except that for architectures with
-- * not fully separated user and kernel address spaces this function also works
-- * for user address tanges.
-- *
-- * DO NOT USE THIS FUNCTION - it is broken on architectures with entirely
-- * separate kernel and user address spaces, and also a bad idea otherwise.
-- */
--long strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
--{
--	return __strncpy_from_unsafe(dst, unsafe_addr, count, false);
--}
--
- /**
-  * strncpy_from_kernel_nofault: - Copy a NUL terminated string from unsafe
-  *				 address.
-@@ -204,12 +173,6 @@ long strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
-  * sets the last byte of @dst buffer to NUL and returns @count.
-  */
- long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
--{
--	return __strncpy_from_unsafe(dst, unsafe_addr, count, true);
--}
--
--static long __strncpy_from_unsafe(char *dst, const void *unsafe_addr,
--		long count, bool strict)
+ bool is_vmalloc_addr(const void *x)
  {
- 	mm_segment_t old_fs = get_fs();
- 	const void *src = unsafe_addr;
-@@ -217,7 +180,7 @@ static long __strncpy_from_unsafe(char *dst, const void *unsafe_addr,
- 
- 	if (unlikely(count <= 0))
- 		return 0;
--	if (!probe_kernel_read_allowed(dst, unsafe_addr, count, strict))
-+	if (!probe_kernel_read_allowed(dst, unsafe_addr, count, true))
- 		return -EFAULT;
- 
- 	set_fs(KERNEL_DS);
 -- 
 2.26.2
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
