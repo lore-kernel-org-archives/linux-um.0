@@ -1,112 +1,168 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1joCrr-0005qj-AY
- for linux-um@lists.infradead.org; Wed, 24 Jun 2020 21:23:40 +0000
-Received: by mail-wr1-x441.google.com with SMTP id j4so1216944wrp.10
- for <linux-um@lists.infradead.org>; Wed, 24 Jun 2020 14:23:37 -0700 (PDT)
-From: Ignat Korchagin <ignat@cloudflare.com>
-Subject: [RFC PATCH] Revert "um: Make CONFIG_STATIC_LINK actually static"
-Date: Wed, 24 Jun 2020 22:23:19 +0100
-Message-Id: <20200624212319.403689-1-ignat@cloudflare.com>
+Return-Path: <linux-m68k-owner@vger.kernel.org>
+From: Mike Rapoport <rppt@kernel.org>
+Subject: [PATCH 5/8] asm-generic: pgalloc: provide generic pud_alloc_one() and pud_free_one()
+Date: Sat, 27 Jun 2020 17:34:50 +0300
+Message-Id: <20200627143453.31835-6-rppt@kernel.org>
+In-Reply-To: <20200627143453.31835-1-rppt@kernel.org>
+References: <20200627143453.31835-1-rppt@kernel.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, brendanhiggins@google.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: Ignat Korchagin <ignat@cloudflare.com>
+Content-Transfer-Encoding: 8bit
+Sender: linux-m68k-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Abdul Haleem <abdhalee@linux.vnet.ibm.com>, Andrew Morton <akpm@linux-foundation.org>, Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Christophe Leroy <christophe.leroy@csgroup.eu>, Joerg Roedel <joro@8bytes.org>, Max Filippov <jcmvbkbc@gmail.com>, Mike Rapoport <rppt@kernel.org>, Mike Rapoport <rppt@linux.ibm.com>, Peter Zijlstra <peterz@infradead.org>, Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>, Stafford Horne <shorne@gmail.com>, Stephen Rothwell <sfr@canb.auug.org.au>, Steven Rostedt <rostedt@goodmis.org>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-This reverts commit 3363179385629c1804ea846f4e72608c2201a81e.
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-This change is too restrictive. I've been running UML statically linked kernel
- with UML_NET_VECTOR networking in a docker "FROM: scratch" container just fine.
-As long as we don't reference network peers by hostname and use only IP
-addresses, NSS is not needed, so not used. In other words, it is possible to
-have statically linked UML and UML_NET_VECTOR (and other networking types) and
-use it, although with some restrictions, so let's not disable it.
+Several architectures define pud_alloc_one() as a wrapper for
+__get_free_page() and pud_free() as a wrapper for free_page().
 
-Additionally, it should be at least theoretically possible to use another libc
-(like musl, bionic etc) for static linking. I was able with some hacks to
-compile UML against musl, although the executable segfaults for now. But this
-option prevents even the research to be done.
+Provide a generic implementation in asm-generic/pgalloc.h and use it where
+appropriate.
 
-Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
- arch/um/Kconfig         | 8 +-------
- arch/um/drivers/Kconfig | 3 ---
- 2 files changed, 1 insertion(+), 10 deletions(-)
+ arch/arm64/include/asm/pgalloc.h | 11 -----------
+ arch/ia64/include/asm/pgalloc.h  |  9 ---------
+ arch/mips/include/asm/pgalloc.h  |  6 +-----
+ arch/x86/include/asm/pgalloc.h   | 15 ---------------
+ include/asm-generic/pgalloc.h    | 30 ++++++++++++++++++++++++++++++
+ 5 files changed, 31 insertions(+), 40 deletions(-)
 
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index 96ab7026b037..817a4c838a06 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -62,12 +62,9 @@ config NR_CPUS
+diff --git a/arch/arm64/include/asm/pgalloc.h b/arch/arm64/include/asm/pgalloc.h
+index 7246d0a662e1..0965945b595d 100644
+--- a/arch/arm64/include/asm/pgalloc.h
++++ b/arch/arm64/include/asm/pgalloc.h
+@@ -37,17 +37,6 @@ static inline void __pud_populate(pud_t *pudp, phys_addr_t pmdp, pudval_t prot)
  
- source "arch/$(HEADER_ARCH)/um/Kconfig"
+ #if CONFIG_PGTABLE_LEVELS > 3
  
--config FORBID_STATIC_LINK
--	bool
+-static inline pud_t *pud_alloc_one(struct mm_struct *mm, unsigned long addr)
+-{
+-	return (pud_t *)__get_free_page(GFP_PGTABLE_USER);
+-}
 -
- config STATIC_LINK
- 	bool "Force a static link"
--	depends on !FORBID_STATIC_LINK
-+	default n
- 	help
- 	  This option gives you the ability to force a static link of UML.
- 	  Normally, UML is linked as a shared binary.  This is inconvenient for
-@@ -76,9 +73,6 @@ config STATIC_LINK
- 	  Additionally, this option enables using higher memory spaces (up to
- 	  2.75G) for UML.
- 
--	  NOTE: This option is incompatible with some networking features which
--	  depend on features that require being dynamically loaded (like NSS).
+-static inline void pud_free(struct mm_struct *mm, pud_t *pudp)
+-{
+-	BUG_ON((unsigned long)pudp & (PAGE_SIZE-1));
+-	free_page((unsigned long)pudp);
+-}
 -
- config LD_SCRIPT_STATIC
- 	bool
- 	default y
-diff --git a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
-index 9160ead56e33..72d417055782 100644
---- a/arch/um/drivers/Kconfig
-+++ b/arch/um/drivers/Kconfig
-@@ -234,7 +234,6 @@ config UML_NET_DAEMON
- config UML_NET_VECTOR
- 	bool "Vector I/O high performance network devices"
- 	depends on UML_NET
--	select FORBID_STATIC_LINK
- 	help
- 	This User-Mode Linux network driver uses multi-message send
- 	and receive functions. The host running the UML guest must have
-@@ -246,7 +245,6 @@ config UML_NET_VECTOR
- config UML_NET_VDE
- 	bool "VDE transport (obsolete)"
- 	depends on UML_NET
--	select FORBID_STATIC_LINK
- 	help
- 	This User-Mode Linux network transport allows one or more running
- 	UMLs on a single host to communicate with each other and also
-@@ -294,7 +292,6 @@ config UML_NET_MCAST
- config UML_NET_PCAP
- 	bool "pcap transport (obsolete)"
- 	depends on UML_NET
--	select FORBID_STATIC_LINK
- 	help
- 	The pcap transport makes a pcap packet stream on the host look
- 	like an ethernet device inside UML.  This is useful for making
+ static inline void __p4d_populate(p4d_t *p4dp, phys_addr_t pudp, p4dval_t prot)
+ {
+ 	set_p4d(p4dp, __p4d(__phys_to_p4d_val(pudp) | prot));
+diff --git a/arch/ia64/include/asm/pgalloc.h b/arch/ia64/include/asm/pgalloc.h
+index 5da1fc76477b..06f80358e20f 100644
+--- a/arch/ia64/include/asm/pgalloc.h
++++ b/arch/ia64/include/asm/pgalloc.h
+@@ -41,15 +41,6 @@ p4d_populate(struct mm_struct *mm, p4d_t * p4d_entry, pud_t * pud)
+ 	p4d_val(*p4d_entry) = __pa(pud);
+ }
+ 
+-static inline pud_t *pud_alloc_one(struct mm_struct *mm, unsigned long addr)
+-{
+-	return (pud_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
+-}
+-
+-static inline void pud_free(struct mm_struct *mm, pud_t *pud)
+-{
+-	free_page((unsigned long)pud);
+-}
+ #define __pud_free_tlb(tlb, pud, address)	pud_free((tlb)->mm, pud)
+ #endif /* CONFIG_PGTABLE_LEVELS == 4 */
+ 
+diff --git a/arch/mips/include/asm/pgalloc.h b/arch/mips/include/asm/pgalloc.h
+index eed1b3e8c642..e5a840910ce0 100644
+--- a/arch/mips/include/asm/pgalloc.h
++++ b/arch/mips/include/asm/pgalloc.h
+@@ -14,6 +14,7 @@
+ #include <linux/sched.h>
+ 
+ #define __HAVE_ARCH_PMD_ALLOC_ONE
++#define __HAVE_ARCH_PUD_ALLOC_ONE
+ #include <asm-generic/pgalloc.h>
+ 
+ static inline void pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd,
+@@ -87,11 +88,6 @@ static inline pud_t *pud_alloc_one(struct mm_struct *mm, unsigned long address)
+ 	return pud;
+ }
+ 
+-static inline void pud_free(struct mm_struct *mm, pud_t *pud)
+-{
+-	free_pages((unsigned long)pud, PUD_ORDER);
+-}
+-
+ static inline void p4d_populate(struct mm_struct *mm, p4d_t *p4d, pud_t *pud)
+ {
+ 	set_p4d(p4d, __p4d((unsigned long)pud));
+diff --git a/arch/x86/include/asm/pgalloc.h b/arch/x86/include/asm/pgalloc.h
+index 25feaa117c40..3d1085a14347 100644
+--- a/arch/x86/include/asm/pgalloc.h
++++ b/arch/x86/include/asm/pgalloc.h
+@@ -123,21 +123,6 @@ static inline void p4d_populate_safe(struct mm_struct *mm, p4d_t *p4d, pud_t *pu
+ 	set_p4d_safe(p4d, __p4d(_PAGE_TABLE | __pa(pud)));
+ }
+ 
+-static inline pud_t *pud_alloc_one(struct mm_struct *mm, unsigned long addr)
+-{
+-	gfp_t gfp = GFP_KERNEL_ACCOUNT;
+-
+-	if (mm == &init_mm)
+-		gfp &= ~__GFP_ACCOUNT;
+-	return (pud_t *)get_zeroed_page(gfp);
+-}
+-
+-static inline void pud_free(struct mm_struct *mm, pud_t *pud)
+-{
+-	BUG_ON((unsigned long)pud & (PAGE_SIZE-1));
+-	free_page((unsigned long)pud);
+-}
+-
+ extern void ___pud_free_tlb(struct mmu_gather *tlb, pud_t *pud);
+ 
+ static inline void __pud_free_tlb(struct mmu_gather *tlb, pud_t *pud,
+diff --git a/include/asm-generic/pgalloc.h b/include/asm-generic/pgalloc.h
+index 1bc027891a00..d361574aaadf 100644
+--- a/include/asm-generic/pgalloc.h
++++ b/include/asm-generic/pgalloc.h
+@@ -145,6 +145,36 @@ static inline void pmd_free(struct mm_struct *mm, pmd_t *pmd)
+ 
+ #endif /* CONFIG_PGTABLE_LEVELS > 2 */
+ 
++#if CONFIG_PGTABLE_LEVELS > 3
++
++#ifndef __HAVE_ARCH_PUD_FREE
++/**
++ * pud_alloc_one - allocate a page for PUD-level page table
++ * @mm: the mm_struct of the current context
++ *
++ * Allocates a page using %GFP_PGTABLE_USER for user context and
++ * %GFP_PGTABLE_KERNEL for kernel context.
++ *
++ * Return: pointer to the allocated memory or %NULL on error
++ */
++static inline pud_t *pud_alloc_one(struct mm_struct *mm, unsigned long addr)
++{
++	gfp_t gfp = GFP_PGTABLE_USER;
++
++	if (mm == &init_mm)
++		gfp = GFP_PGTABLE_KERNEL;
++	return (pud_t *)get_zeroed_page(gfp);
++}
++#endif
++
++static inline void pud_free(struct mm_struct *mm, pud_t *pud)
++{
++	BUG_ON((unsigned long)pud & (PAGE_SIZE-1));
++	free_page((unsigned long)pud);
++}
++
++#endif /* CONFIG_PGTABLE_LEVELS > 3 */
++
+ #endif /* CONFIG_MMU */
+ 
+ #endif /* __ASM_GENERIC_PGALLOC_H */
 -- 
-2.20.1
+2.26.2
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
