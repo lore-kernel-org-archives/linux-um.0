@@ -1,55 +1,49 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from lithops.sigma-star.at ([195.201.40.130])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jilNY-00031J-Ov
- for linux-um@lists.infradead.org; Tue, 09 Jun 2020 21:01:54 +0000
-Date: Tue, 9 Jun 2020 23:01:50 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <1858220125.350.1591736510906.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] UML changes for v5.8
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: torvalds <torvalds@linux-foundation.org>
-Cc: linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
+Date: Mon, 29 Jun 2020 17:41:43 +0200
+References: <20200627143453.31835-1-rppt@kernel.org>
+	<20200627143453.31835-2-rppt@kernel.org>
+In-Reply-To: <20200627143453.31835-2-rppt@kernel.org>
+Message-ID: <CAMuHMdUOrrrtKuhtWJvzKNNLXY1fx+Ym1oXGN2J_CZ7RqByGHQ@mail.gmail.com>
+Subject: Re: [PATCH 1/8] mm: remove unneeded includes of <asm/pgalloc.h>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Abdul Haleem <abdhalee@linux.vnet.ibm.com>, Andrew Morton <akpm@linux-foundation.org>, Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Christophe Leroy <christophe.leroy@csgroup.eu>, Joerg Roedel <joro@8bytes.org>, Max Filippov <jcmvbkbc@gmail.com>, Mike Rapoport <rppt@kernel.org>, Mike Rapoport <rppt@linux.ibm.com>, Peter Zijlstra <peterz@infradead.org>, Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>, Stafford Horne <shorne@gmail.com>, Stephen Rothwell <sfr@canb.auug.org.au>, Steven Rostedt <rostedt@goodmis.org>, alpha <linux-alpha@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-csky@vger.kernel.org, "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>, Linux MM <linux-mm@kvack.org>, Parisc List <linux-parisc@vger.kernel.org>, linux-riscv <linux-riscv@lists.infradead.org>, linux-s390 <linux-s390@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, arcml <linux-snps-arc@lists.infradead.org>, linux-um <linux-um@lists.infradead.org>, "open list:TENSILICA XTENSA PORT (xtensa)" <linux-xtensa@linux-xtensa.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, Openrisc <openrisc@lists.librecores.org>, sparclinux <sparclinux@vger.kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-TGludXMsCgpUaGUgZm9sbG93aW5nIGNoYW5nZXMgc2luY2UgY29tbWl0IDNkNzdlNmE4ODA0YWJj
-YzA1MDRjOTA0YmQ2ZTVjZGYzYTVjZjgxNjI6CgogIExpbnV4IDUuNyAoMjAyMC0wNS0zMSAxNjo0
-OToxNSAtMDcwMCkKCmFyZSBhdmFpbGFibGUgaW4gdGhlIEdpdCByZXBvc2l0b3J5IGF0OgoKICBn
-aXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvcncvdW1sLmdpdCB0
-YWdzL2Zvci1saW51cy01LjgtcmMxCgpmb3IgeW91IHRvIGZldGNoIGNoYW5nZXMgdXAgdG8gZjZl
-OGM0NzQzOTBiZTJlNmY1YmQwYjg5NjZlMTk5NTgyMTQ2MDlmZjoKCiAgdW06IHZpcnRpbzogUmVw
-bGFjZSB6ZXJvLWxlbmd0aCBhcnJheSB3aXRoIGZsZXhpYmxlLWFycmF5ICgyMDIwLTA2LTAyIDIy
-OjM4OjAwICswMjAwKQoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGlzIHB1bGwgcmVxdWVzdCBjb250YWlucyB0aGUgZm9s
-bG93aW5nIGNoYW5nZXMgZm9yIFVNTDoKCi0gVXNlIGZkYXRhc3luYygpIGluIHViZAotIEFkZCBh
-IGdlbmVyaWMgImZkIiB2ZWN0b3IgdHJhbnNwb3J0Ci0gTWlub3IgY2xlYW51cHMgYW5kIGZpeGVz
-CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tCkFudG9uIEl2YW5vdiAoMSk6CiAgICAgIHVtOiBVc2UgZmRhdGFzeW5jKCkgd2hl
-biBtYXBwaW5nIHRoZSBVQkQgRlNZTkMgY29tbWFuZAoKR3VzdGF2byBBLiBSLiBTaWx2YSAoMSk6
-CiAgICAgIHVtOiB2aXJ0aW86IFJlcGxhY2UgemVyby1sZW5ndGggYXJyYXkgd2l0aCBmbGV4aWJs
-ZS1hcnJheQoKSm9lIFBlcmNoZXMgKDEpOgogICAgICB1bTogTmVhdGVuIHZ1X2VyciBtYWNybyBk
-ZWZpbml0aW9uCgpNYXJjLUFuZHLDqSBMdXJlYXUgKDEpOgogICAgICB1bTogQWRkIGEgZ2VuZXJp
-YyAiZmQiIHZlY3RvciB0cmFuc3BvcnQKCk1hc2FoaXJvIFlhbWFkYSAoMSk6CiAgICAgIHVtOiBE
-byBub3QgZXZhbHVhdGUgY29tcGlsZXIncyBsaWJyYXJ5IHBhdGggd2hlbiBjbGVhbmluZwoKWmFj
-aCB2YW4gUmlqbiAoMSk6CiAgICAgIHVtOiBBZGQgaW5jbHVkZTogbWVtc2V0KCkgYW5kIG1lbWNw
-eSgpIGFyZSBpbiA8c3RyaW5nLmg+CgogYXJjaC91bS9kcml2ZXJzL01ha2VmaWxlICAgICAgfCAg
-NCArLS0KIGFyY2gvdW0vZHJpdmVycy92ZWN0b3Jfa2Vybi5oIHwgIDIgKy0KIGFyY2gvdW0vZHJp
-dmVycy92ZWN0b3JfdXNlci5jIHwgNTkgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKwogYXJjaC91bS9kcml2ZXJzL3Zob3N0X3VzZXIuaCAgfCAgMiArLQogYXJjaC91
-bS9kcml2ZXJzL3ZpcnRpb191bWwuYyAgfCAgMiArLQogYXJjaC91bS9vcy1MaW51eC9maWxlLmMg
-ICAgICAgfCAgMyArKy0KIDYgZmlsZXMgY2hhbmdlZCwgNjYgaW5zZXJ0aW9ucygrKSwgNiBkZWxl
-dGlvbnMoLSkKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6
-Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
+On Sat, Jun 27, 2020 at 4:35 PM Mike Rapoport <rppt@kernel.org> wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+>
+> In the most cases <asm/pgalloc.h> header is required only for allocations
+> of page table memory. Most of the .c files that include that header do not
+> use symbols declared in <asm/pgalloc.h> and do not require that header.
+>
+> As for the other header files that used to include <asm/pgalloc.h>, it is
+> possible to move that include into the .c file that actually uses symbols
+> from <asm/pgalloc.h> and drop the include from the header file.
+>
+> The process was somewhat automated using
+>
+>         sed -i -E '/[<"]asm\/pgalloc\.h/d' \
+>                 $(grep -L -w -f /tmp/xx \
+>                         $(git grep -E -l '[<"]asm/pgalloc\.h'))
+>
+> where /tmp/xx contains all the symbols defined in
+> arch/*/include/asm/pgalloc.h.
+>
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+
+For the m68k part:
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
