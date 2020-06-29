@@ -1,14 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-qk1-x742.google.com ([2607:f8b0:4864:20::742])
- by bombadil.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jkHJu-0006l7-5P
- for linux-um@lists.infradead.org; Sun, 14 Jun 2020 01:20:23 +0000
-Received: by mail-qk1-x742.google.com with SMTP id n11so12605871qkn.8
- for <linux-um@lists.infradead.org>; Sat, 13 Jun 2020 18:20:18 -0700 (PDT)
-From: Gaurav Singh <gaurav1086@gmail.com>
-Subject: [PATCH] Fix null pointer dereference in vector_user_bpf
-Date: Sat, 13 Jun 2020 21:19:40 -0400
-Message-Id: <20200614012001.18468-1-gaurav1086@gmail.com>
+Date: Mon, 29 Jun 2020 18:59:20 +0300
+From: Mike Rapoport <rppt@kernel.org>
+Subject: Re: [PATCH 4/8] asm-generic: pgalloc: provide generic
+ pmd_alloc_one() and pmd_free_one()
+Message-ID: <20200629155920.GD1492837@kernel.org>
+References: <20200627143453.31835-1-rppt@kernel.org>
+ <20200627143453.31835-5-rppt@kernel.org>
+ <20200627190304.GG25039@casper.infradead.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20200627190304.GG25039@casper.infradead.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -17,46 +18,44 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: gaurav1086@gmail.com, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, Alex Dewar <alex.dewar@gmx.co.uk>, =?UTF-8?q?Marc-Andr=C3=A9=20Lureau?= <marcandre.lureau@redhat.com>, "open list:USER-MODE LINUX UML" <linux-um@lists.infradead.org>, open list <linux-kernel@vger.kernel.org>, "open list:BPF Safe dynamic programs and tools" <netdev@vger.kernel.org>, "open list:BPF Safe dynamic programs and tools" <bpf@vger.kernel.org>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, linux-mips@vger.kernel.org, Max Filippov <jcmvbkbc@gmail.com>, Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-arch@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>, linux-hexagon@vger.kernel.org, Joerg Roedel <joro@8bytes.org>, Christophe Leroy <christophe.leroy@csgroup.eu>, Mike Rapoport <rppt@linux.ibm.com>, Abdul Haleem <abdhalee@linux.vnet.ibm.com>, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Arnd Bergmann <arnd@arndb.de>, linux-s390@vger.kernel.org, linux-um@lists.infradead.org, Steven Rostedt <rostedt@goodmis.org>, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, Andy Lutomirski <luto@kernel.org>, Stafford Horne <shorne@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org
 
-The bpf_prog is being checked for !NULL after uml_kmalloc
-but later its used directly for example: 
-bpf_prog->filter = bpf and is also later returned upon
-success. Fix this, do a NULL check and return right away.
+On Sat, Jun 27, 2020 at 08:03:04PM +0100, Matthew Wilcox wrote:
+> On Sat, Jun 27, 2020 at 05:34:49PM +0300, Mike Rapoport wrote:
+> > More elaborate versions on arm64 and x86 account memory for the user page
+> > tables and call to pgtable_pmd_page_ctor() as the part of PMD page
+> > initialization.
+> > 
+> > Move the arm64 version to include/asm-generic/pgalloc.h and use the generic
+> > version on several architectures.
+> > 
+> > The pgtable_pmd_page_ctor() is a NOP when ARCH_ENABLE_SPLIT_PMD_PTLOCK is
+> > not enabled, so there is no functional change for most architectures except
+> > of the addition of __GFP_ACCOUNT for allocation of user page tables.
+> 
+> Thanks for including this line; it reminded me that we're not setting
+> the PageTable flag on the page, nor accounting it to the zone page stats.
+> Hope you don't mind me tagging a patch to do that on as 9/8.
 
-Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
----
- arch/um/drivers/vector_user.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+We also never set PageTable flag for early page tables and for the page
+tables allocated directly with get_free_page(), e.g PTI, KASAN.
 
-diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
-index c4a0f26b2824..0e6d6717bf73 100644
---- a/arch/um/drivers/vector_user.c
-+++ b/arch/um/drivers/vector_user.c
-@@ -789,10 +789,12 @@ void *uml_vector_user_bpf(char *filename)
- 		return false;
- 	}
- 	bpf_prog = uml_kmalloc(sizeof(struct sock_fprog), UM_GFP_KERNEL);
--	if (bpf_prog != NULL) {
--		bpf_prog->len = statbuf.st_size / sizeof(struct sock_filter);
--		bpf_prog->filter = NULL;
-+	if (bpf_prog == NULL) {
-+		printk(KERN_ERR "Failed to allocate bpf prog buffer");
-+		return NULL;
- 	}
-+	bpf_prog->len = statbuf.st_size / sizeof(struct sock_filter);
-+	bpf_prog->filter = NULL;
- 	ffd = os_open_file(filename, of_read(OPENFLAGS()), 0);
- 	if (ffd < 0) {
- 		printk(KERN_ERR "Error %d opening bpf file", -errno);
+> We could also do with a pud_page_[cd]tor and maybe even p4d/pgd versions.
+> But that brings me to the next question -- could/should some of this
+> be moved over to asm-generic/pgalloc.h?  The ctor/dtor aren't called
+> from anywhere else, and there's value to reducing the total amount of
+> code in mm.h, but then there's also value to keeping all the ifdef
+> ARCH_ENABLE_SPLIT_PMD_PTLOCK code together too.  So I'm a bit torn.
+> What do you think?
+
 -- 
-2.17.1
-
+Sincerely yours,
+Mike.
 
 _______________________________________________
 linux-um mailing list
