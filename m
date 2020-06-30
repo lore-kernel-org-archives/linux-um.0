@@ -1,145 +1,99 @@
-Return-Path: <linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Wed, 24 Jun 2020 13:55:39 -0700
-Message-Id: <20200624205550.215599-1-brendanhiggins@google.com>
-Mime-Version: 1.0
-Subject: [PATCH v4 00/11] kunit: create a centralized executor to dispatch all
- KUnit tests
-From: Brendan Higgins <brendanhiggins@google.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jqPPl-0000fw-Tq
+ for linux-um@lists.infradead.org; Tue, 30 Jun 2020 23:11:46 +0000
+Received: by mail-wr1-x441.google.com with SMTP id b6so21788186wrs.11
+ for <linux-um@lists.infradead.org>; Tue, 30 Jun 2020 16:11:43 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200624212319.403689-1-ignat@cloudflare.com>
+ <CAFd5g47asdiBPdkQjTQ3-+Rwn+cE-pp1CcB41aV=bvvBZw2ePg@mail.gmail.com>
+In-Reply-To: <CAFd5g47asdiBPdkQjTQ3-+Rwn+cE-pp1CcB41aV=bvvBZw2ePg@mail.gmail.com>
+From: Ignat Korchagin <ignat@cloudflare.com>
+Date: Wed, 1 Jul 2020 00:11:31 +0100
+Message-ID: <CALrw=nGOnz0St1j6fyMJWeZicdBjsbXA54A==3XUigN7kMAXQA@mail.gmail.com>
+Subject: Re: [RFC PATCH] Revert "um: Make CONFIG_STATIC_LINK actually static"
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org
-To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, arnd@arndb.de, keescook@chromium.org, skhan@linuxfoundation.org, alan.maguire@oracle.com, yzaikin@google.com, davidgow@google.com, akpm@linux-foundation.org, rppt@linux.ibm.com, frowand.list@gmail.com, catalin.marinas@arm.com, will@kernel.org, monstr@monstr.eu, mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org, chris@zankel.net, jcmvbkbc@gmail.com
-Cc: linux-arch@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-doc@vger.kernel.org, sboyd@kernel.org, gregkh@linuxfoundation.org, linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Brendan Higgins <brendanhiggins@google.com>, mcgrof@kernel.org, linux-kselftest@vger.kernel.org, logang@deltatee.com, linux-arm-kernel@lists.infradead.org, kunit-dev@googlegroups.com
-List-ID: <linux-um.lists.infradead.org>
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Brendan Higgins <brendanhiggins@google.com>
+Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-## TL;DR
+On Tue, Jun 30, 2020 at 11:47 PM Brendan Higgins
+<brendanhiggins@google.com> wrote:
+>
+> On Wed, Jun 24, 2020 at 2:23 PM Ignat Korchagin <ignat@cloudflare.com> wrote:
+> >
+> > This reverts commit 3363179385629c1804ea846f4e72608c2201a81e.
+> >
+> > This change is too restrictive. I've been running UML statically linked kernel
+> >  with UML_NET_VECTOR networking in a docker "FROM: scratch" container just fine.
+> > As long as we don't reference network peers by hostname and use only IP
+> > addresses, NSS is not needed, so not used. In other words, it is possible to
+> > have statically linked UML and UML_NET_VECTOR (and other networking types) and
+> > use it, although with some restrictions, so let's not disable it.
+> >
+> > Additionally, it should be at least theoretically possible to use another libc
+> > (like musl, bionic etc) for static linking. I was able with some hacks to
+> > compile UML against musl, although the executable segfaults for now. But this
+> > option prevents even the research to be done.
+>
+> The reason that we removed support for static linking when these
+> networking options are enabled is because gcc doesn't support loading
+> NSS when statically linked, which consequently breaks allyesconfig for
+> UML under gcc. That is still the case with your revert.
 
-This patchset adds a centralized executor to dispatch tests rather than
-relying on late_initcall to schedule each test suite separately along
-with a couple of new features that depend on it.
+Yes, sure. But I'm not only "researching", but using UML as a "router"
+in one of my dev setups. 3363179385629c1804ea846f4e72608c2201a81e
+mentions UML_NET_VECTOR incompatibility (and some other networking
+options), which I had enabled and actually my whole dev networking is
+based around UML_NET_VECTOR: I have two interfaces - one in raw mode
+and one doing ipsec. All this was running in an empty "FROM: scratch"
+container and obviously linked statically.
 
-Also, sorry for the extreme delay in getting this out. Part of the delay
-came from finding that there were actually several architectures that
-the previous revision of this patchset didn't work on, so I went through
-and attempted to test this patchset on every architecture - more on that
-later.
+If the static linking breaks some other config options in allyesconfig
+- that's another story, but I wanted to point out that config options
+mentioned in the commit message worked just fine (if not trying to
+resolve hostnames). In other words: if you don't resolve - glibc will
+not try to load NSS. glibc-nss is a known problem and I would assume
+most people trying to do static linking are aware of this - that is,
+if they choose this path they are willing to live with the
+consequences. That's why completely disabling the possibility sounds
+too restrictive for me.
 
-## What am I trying to do?
+> I fully support the goal behind what you are trying to do. However, I
+> do not want to see this patch accepted unless it is accompanied by an
+> alternative change that still allows UML to compile under
+> allyesconfig.
 
-Conceptually, I am trying to provide a mechanism by which test suites
-can be grouped together so that they can be reasoned about collectively.
-The last two of three patches in this series add features which depend
-on this:
+If I succeed linking it to musl (or other non-glibc lib), would that be enough?
 
-PATCH 8/11 Prints out a test plan[1] right before KUnit tests are run;
-           this is valuable because it makes it possible for a test
-           harness to detect whether the number of tests run matches the
-           number of tests expected to be run, ensuring that no tests
-           silently failed. The test plan includes a count of tests that
-           will run. With the centralized executor, the tests are
-           located in a single data structure and thus can be counted.
-
-PATCH 9/11 Add a new kernel command-line option which allows the user to
-           specify that the kernel poweroff, halt, or reboot after
-           completing all KUnit tests; this is very handy for running
-           KUnit tests on UML or a VM so that the UML/VM process exits
-           cleanly immediately after running all tests without needing a
-           special initramfs. The centralized executor provides a
-           definitive point when all tests have completed and the
-           poweroff, halt, or reboot could occur.
-
-In addition, by dispatching tests from a single location, we can
-guarantee that all KUnit tests run after late_init is complete, which
-was a concern during the initial KUnit patchset review (this has not
-been a problem in practice, but resolving with certainty is nevertheless
-desirable).
-
-Other use cases for this exist, but the above features should provide an
-idea of the value that this could provide.
-
-## Changes since last revision:
- - On the last revision I got some messages from 0day that showed that
-   this patchset didn't work on several architectures, one issue that
-   this patchset addresses is that we were aligning both memory segments
-   as well as structures in the segments to specific byte boundaries
-   which was incorrect.
- - The issue mentioned above also caused me to test on additional
-   architectures which revealed that some architectures other than UML
-   do not use the default init linker section macro that most
-   architectures use. There are now several new patches (2, 3, 4, and
-   6).
- - Fixed a formatting consistency issue in the kernel params
-   documentation patch (9/9).
- - Add a brief blurb on how and when the kunit_test_suite macro works.
-
-## Remaining work to be done:
-
-The only architecture for which I was able to get a compiler, but was
-apparently unable to get KUnit into a section that the executor to see
-was m68k - not sure why.
-
-Alan Maguire (1):
-  kunit: test: create a single centralized executor for all tests
-
-Brendan Higgins (10):
-  vmlinux.lds.h: add linker section for KUnit test suites
-  arch: arm64: add linker section for KUnit test suites
-  arch: microblaze: add linker section for KUnit test suites
-  arch: powerpc: add linker section for KUnit test suites
-  arch: um: add linker section for KUnit test suites
-  arch: xtensa: add linker section for KUnit test suites
-  init: main: add KUnit to kernel init
-  kunit: test: add test plan to KUnit TAP format
-  Documentation: Add kunit_shutdown to kernel-parameters.txt
-  Documentation: kunit: add a brief blurb about kunit_test_suite
-
- .../admin-guide/kernel-parameters.txt         |   8 ++
- Documentation/dev-tools/kunit/usage.rst       |   5 ++
- arch/arm64/kernel/vmlinux.lds.S               |   3 +
- arch/microblaze/kernel/vmlinux.lds.S          |   4 +
- arch/powerpc/kernel/vmlinux.lds.S             |   4 +
- arch/um/include/asm/common.lds.S              |   4 +
- arch/xtensa/kernel/vmlinux.lds.S              |   4 +
- include/asm-generic/vmlinux.lds.h             |   8 ++
- include/kunit/test.h                          |  73 ++++++++++++-----
- init/main.c                                   |   4 +
- lib/kunit/Makefile                            |   3 +-
- lib/kunit/executor.c                          |  63 +++++++++++++++
- lib/kunit/test.c                              |  13 +--
- tools/testing/kunit/kunit_kernel.py           |   2 +-
- tools/testing/kunit/kunit_parser.py           |  74 +++++++++++++++---
- .../test_is_test_passed-all_passed.log        | Bin 1562 -> 1567 bytes
- .../test_data/test_is_test_passed-crash.log   | Bin 3016 -> 3021 bytes
- .../test_data/test_is_test_passed-failure.log | Bin 1700 -> 1705 bytes
- 18 files changed, 226 insertions(+), 46 deletions(-)
- create mode 100644 lib/kunit/executor.c
+> You said that in the current state, researching a solution is
+> possible? Can you not research a solution with your patch applied to
+> your own branch?
 
 
-base-commit: 4333a9b0b67bb4e8bcd91bdd80da80b0ec151162
-prerequisite-patch-id: 2d4b5aa9fa8ada9ae04c8584b47c299a822b9455
-prerequisite-patch-id: 582b6d9d28ce4b71628890ec832df6522ca68de0
+As a side note: I tried to revert this patch and statically link 5.7
+UML with glibc, but the binary still segfaults on start, so I would
+assume it is not related to my previous attempts linking with musl.
 
-These patches are available for download with dependencies here:
+Regards,
+Ignat
 
-https://kunit-review.googlesource.com/c/linux/+/3829
-
-[1] https://github.com/isaacs/testanything.github.io/blob/tap14/tap-version-14-specification.md#the-plan
-[2] https://patchwork.kernel.org/patch/11383635/
-
--- 
-2.27.0.212.ge8ba1cc988-goog
-
+>
+> Cheers
 
 _______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
