@@ -1,12 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from szxga07-in.huawei.com ([45.249.212.35] helo=huawei.com)
+Received: from mail-pj1-x1042.google.com ([2607:f8b0:4864:20::1042])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jyRgC-0004mZ-FM
- for linux-um@lists.infradead.org; Thu, 23 Jul 2020 03:13:57 +0000
-From: Li Heng <liheng40@huawei.com>
-Subject: [PATCH -next] um: Remove redundant NULL check
-Date: Thu, 23 Jul 2020 11:15:16 +0800
-Message-ID: <1595474116-3305-1-git-send-email-liheng40@huawei.com>
+ id 1jqzt8-00055f-Rp
+ for linux-um@lists.infradead.org; Thu, 02 Jul 2020 14:08:31 +0000
+Received: by mail-pj1-x1042.google.com with SMTP id o22so7530648pjw.2
+ for <linux-um@lists.infradead.org>; Thu, 02 Jul 2020 07:08:30 -0700 (PDT)
+From: Hajime Tazaki <thehajime@gmail.com>
+Subject: [RFC v5 05/21] um: move arch/x86/um/os-Linux to tools/um/uml/
+Date: Thu,  2 Jul 2020 23:06:59 +0900
+Message-Id: <92ac407875bfb718371ef95c40610ec1ed50ff32.1593697069.git.thehajime@gmail.com>
+In-Reply-To: <cover.1593697069.git.thehajime@gmail.com>
+References: <cover.1593697069.git.thehajime@gmail.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -20,34 +24,132 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: jdike@addtoit.com, richard@nod.at
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+To: linux-um@lists.infradead.org
+Cc: Octavian Purdila <tavi.purdila@gmail.com>, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, Akira Moroo <retrage01@gmail.com>
 
-Fix below warnings reported by coccicheck:
-./arch/um/drivers/vector_user.c:403:2-7: WARNING: NULL check before some freeing functions is not needed.
+Similar to arch/um/os-Linux code, arch/x86 also contains OS dependent
+part as well.  This patch moves underlying OS dependent part to tools/um
+directory so that arch/x86 code does not need to build host build
+facilities (e.g., libc).
 
-Fixes: bc8f8e4e6e7a ("um: Add a generic "fd" vector transport")
-Signed-off-by: Li Heng <liheng40@huawei.com>
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
 ---
- arch/um/drivers/vector_user.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/x86/um/Makefile                                |  2 +-
+ arch/x86/um/os-Linux/Makefile                       | 13 -------------
+ tools/um/Makefile                                   |  2 +-
+ tools/um/uml/Build                                  |  2 ++
+ tools/um/uml/x86/Build                              | 11 +++++++++++
+ .../x86/um/os-Linux => tools/um/uml/x86}/mcontext.c |  0
+ {arch/x86/um/os-Linux => tools/um/uml/x86}/prctl.c  |  0
+ .../um/os-Linux => tools/um/uml/x86}/registers.c    |  0
+ .../um/os-Linux => tools/um/uml/x86}/task_size.c    |  0
+ {arch/x86/um/os-Linux => tools/um/uml/x86}/tls.c    |  0
+ 10 files changed, 15 insertions(+), 15 deletions(-)
+ delete mode 100644 arch/x86/um/os-Linux/Makefile
+ create mode 100644 tools/um/uml/x86/Build
+ rename {arch/x86/um/os-Linux => tools/um/uml/x86}/mcontext.c (100%)
+ rename {arch/x86/um/os-Linux => tools/um/uml/x86}/prctl.c (100%)
+ rename {arch/x86/um/os-Linux => tools/um/uml/x86}/registers.c (100%)
+ rename {arch/x86/um/os-Linux => tools/um/uml/x86}/task_size.c (100%)
+ rename {arch/x86/um/os-Linux => tools/um/uml/x86}/tls.c (100%)
 
-diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
-index c4a0f26..e836d49 100644
---- a/arch/um/drivers/vector_user.c
-+++ b/arch/um/drivers/vector_user.c
-@@ -399,8 +399,7 @@ static struct vector_fds *user_init_fd_fds(struct arglist *ifspec)
- fd_cleanup:
- 	if (fd >= 0)
- 		os_close_file(fd);
--	if (result != NULL)
--		kfree(result);
-+	kfree(result);
- 	return NULL;
- }
+diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
+index 77f70b969d14..25e9846b36a2 100644
+--- a/arch/x86/um/Makefile
++++ b/arch/x86/um/Makefile
+@@ -13,7 +13,7 @@ obj-y = bugs_$(BITS).o delay.o fault.o ldt.o \
+ 	ptrace_$(BITS).o ptrace_user.o setjmp_$(BITS).o signal.o \
+ 	stub_$(BITS).o stub_segv.o \
+ 	sys_call_table_$(BITS).o sysrq_$(BITS).o tls_$(BITS).o \
+-	mem_$(BITS).o subarch.o os-$(OS)/
++	mem_$(BITS).o subarch.o
  
+ ifeq ($(CONFIG_X86_32),y)
+ 
+diff --git a/arch/x86/um/os-Linux/Makefile b/arch/x86/um/os-Linux/Makefile
+deleted file mode 100644
+index 253bfb8cb702..000000000000
+--- a/arch/x86/um/os-Linux/Makefile
++++ /dev/null
+@@ -1,13 +0,0 @@
+-#
+-# Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+-# Licensed under the GPL
+-#
+-
+-obj-y = registers.o task_size.o mcontext.o
+-
+-obj-$(CONFIG_X86_32) += tls.o
+-obj-$(CONFIG_64BIT) += prctl.o
+-
+-USER_OBJS := $(obj-y)
+-
+-include arch/um/scripts/Makefile.rules
+diff --git a/tools/um/Makefile b/tools/um/Makefile
+index 07b9b93ed817..552ed5f1edae 100644
+--- a/tools/um/Makefile
++++ b/tools/um/Makefile
+@@ -61,7 +61,7 @@ $(OUTPUT)%-in.o: FORCE
+ 	$(Q)$(MAKE) -f $(srctree)/tools/build/Makefile.build dir=$(patsubst %/,%,$(dir $*)) obj=$(notdir $*)
+ 
+ # rule to build objects
+-$(OUTPUT)%-in.o: $(OUTPUT)lib/linux.o
++$(OUTPUT)%-in.o: $(OUTPUT)lib/linux.o FORCE
+ 	$(Q)$(MAKE) -f $(srctree)/tools/build/Makefile.build dir=$(patsubst %/,%,$(dir $*)) obj=$(notdir $*)
+ 
+ clean:
+diff --git a/tools/um/uml/Build b/tools/um/uml/Build
+index 8e0607ee8b0a..435a9670d3ff 100644
+--- a/tools/um/uml/Build
++++ b/tools/um/uml/Build
+@@ -12,6 +12,8 @@ liblinux-y += execvp.o file.o helper.o irq.o main.o mem.o process.o \
+ 	registers.o sigio.o signal.o start_up.o time.o tty.o \
+ 	umid.o user_syms.o util.o drivers/ skas/
+ 
++liblinux-y += x86/
++
+ liblinux-$(CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA) += elf_aux.o
+ 
+ export O = $(srctree)
+diff --git a/tools/um/uml/x86/Build b/tools/um/uml/x86/Build
+new file mode 100644
+index 000000000000..16bbc7eb19d1
+--- /dev/null
++++ b/tools/um/uml/x86/Build
+@@ -0,0 +1,11 @@
++#
++# Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
++# Licensed under the GPL
++#
++
++include $(objtree)/include/config/auto.conf
++
++liblinux-y = registers.o task_size.o mcontext.o
++
++liblinux-$(CONFIG_X86_32) += tls.o
++liblinux-$(CONFIG_64BIT) += prctl.o
+diff --git a/arch/x86/um/os-Linux/mcontext.c b/tools/um/uml/x86/mcontext.c
+similarity index 100%
+rename from arch/x86/um/os-Linux/mcontext.c
+rename to tools/um/uml/x86/mcontext.c
+diff --git a/arch/x86/um/os-Linux/prctl.c b/tools/um/uml/x86/prctl.c
+similarity index 100%
+rename from arch/x86/um/os-Linux/prctl.c
+rename to tools/um/uml/x86/prctl.c
+diff --git a/arch/x86/um/os-Linux/registers.c b/tools/um/uml/x86/registers.c
+similarity index 100%
+rename from arch/x86/um/os-Linux/registers.c
+rename to tools/um/uml/x86/registers.c
+diff --git a/arch/x86/um/os-Linux/task_size.c b/tools/um/uml/x86/task_size.c
+similarity index 100%
+rename from arch/x86/um/os-Linux/task_size.c
+rename to tools/um/uml/x86/task_size.c
+diff --git a/arch/x86/um/os-Linux/tls.c b/tools/um/uml/x86/tls.c
+similarity index 100%
+rename from arch/x86/um/os-Linux/tls.c
+rename to tools/um/uml/x86/tls.c
 -- 
-2.7.4
+2.21.0 (Apple Git-122.2)
 
 
 _______________________________________________
