@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pj1-x1041.google.com ([2607:f8b0:4864:20::1041])
+Received: from mail-pf1-x443.google.com ([2607:f8b0:4864:20::443])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jqzut-0005Z8-8S
- for linux-um@lists.infradead.org; Thu, 02 Jul 2020 14:10:20 +0000
-Received: by mail-pj1-x1041.google.com with SMTP id u8so12199744pje.4
- for <linux-um@lists.infradead.org>; Thu, 02 Jul 2020 07:10:18 -0700 (PDT)
+ id 1jqzse-0004xt-AU
+ for linux-um@lists.infradead.org; Thu, 02 Jul 2020 14:08:01 +0000
+Received: by mail-pf1-x443.google.com with SMTP id j12so12584715pfn.10
+ for <linux-um@lists.infradead.org>; Thu, 02 Jul 2020 07:07:59 -0700 (PDT)
 From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v5 19/21] um: host: posix host operations
-Date: Thu,  2 Jul 2020 23:07:13 +0900
-Message-Id: <4bfa3679f685f3c0d731f7d95e826f4c7d6bddb6.1593697069.git.thehajime@gmail.com>
+Subject: [RFC v5 02/21] um: add os init and exit calls
+Date: Thu,  2 Jul 2020 23:06:56 +0900
+Message-Id: <6dfffa1f31b783b0ca9e0ef3d42ef48cfa25d233.1593697069.git.thehajime@gmail.com>
 In-Reply-To: <cover.1593697069.git.thehajime@gmail.com>
 References: <cover.1593697069.git.thehajime@gmail.com>
 MIME-Version: 1.0
@@ -25,328 +25,87 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: Octavian Purdila <tavi.purdila@gmail.com>, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, Akira Moroo <retrage01@gmail.com>
+Cc: Octavian Purdila <tavi.purdila@gmail.com>, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Octavian Purdila <tavi@cs.pub.ro>, Akira Moroo <retrage01@gmail.com>
 
-This commit implements LKL host operations for POSIX hosts.  The
-operations are implemented to be portable in various POSIX OSs.
+From: Octavian Purdila <tavi@cs.pub.ro>
 
-Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+These calls are added in preparation for moving some of the code from
+the kernel to the host build.
+
+Signed-off-by: Octavian Purdila <tavi@cs.pub.ro>
 ---
- tools/um/lib/Build        |   2 +
- tools/um/lib/posix-host.c | 292 ++++++++++++++++++++++++++++++++++++++
- 2 files changed, 294 insertions(+)
- create mode 100644 tools/um/lib/posix-host.c
+ arch/um/include/shared/init.h | 14 ++++----------
+ arch/um/kernel/reboot.c       |  5 +++++
+ arch/um/kernel/um_arch.c      | 11 +++++++++++
+ 3 files changed, 20 insertions(+), 10 deletions(-)
 
-diff --git a/tools/um/lib/Build b/tools/um/lib/Build
-index fc967af4104a..dddff26a3b4e 100644
---- a/tools/um/lib/Build
-+++ b/tools/um/lib/Build
-@@ -1,4 +1,6 @@
- include $(objtree)/include/config/auto.conf
-+CFLAGS_posix-host.o += -D_FILE_OFFSET_BITS=64
+diff --git a/arch/um/include/shared/init.h b/arch/um/include/shared/init.h
+index c66de434a983..d09308330ca5 100644
+--- a/arch/um/include/shared/init.h
++++ b/arch/um/include/shared/init.h
+@@ -109,19 +109,13 @@ extern struct uml_param __uml_setup_start, __uml_setup_end;
  
- liblinux-$(CONFIG_UMMODE_LIB) += utils.o
-+liblinux-$(CONFIG_UMMODE_LIB) += posix-host.o
- liblinux-$(CONFIG_UMMODE_LIB) += jmp_buf.o
-diff --git a/tools/um/lib/posix-host.c b/tools/um/lib/posix-host.c
-new file mode 100644
-index 000000000000..b6b5b2902254
---- /dev/null
-+++ b/tools/um/lib/posix-host.c
-@@ -0,0 +1,292 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <pthread.h>
-+#include <limits.h>
-+#include <errno.h>
-+#include <string.h>
-+#include <stdlib.h>
-+#include <assert.h>
-+#include <sys/syscall.h>
-+#include <lkl_host.h>
-+#include "jmp_buf.h"
-+
-+/* Let's see if the host has semaphore.h */
-+#include <unistd.h>
-+
-+#ifdef _POSIX_SEMAPHORES
-+#include <semaphore.h>
-+/* TODO(pscollins): We don't support fork() for now, but maybe one day
-+ * we will?
-+ */
-+#define SHARE_SEM 0
-+#endif /* _POSIX_SEMAPHORES */
-+
-+
-+struct lkl_mutex {
-+	pthread_mutex_t mutex;
-+};
-+
-+struct lkl_sem {
-+#ifdef _POSIX_SEMAPHORES
-+	sem_t sem;
-+#else
-+	pthread_mutex_t lock;
-+	int count;
-+	pthread_cond_t cond;
-+#endif /* _POSIX_SEMAPHORES */
-+};
-+
-+struct lkl_tls_key {
-+	pthread_key_t key;
-+};
-+
-+static void print(const char *str, int len)
+ #ifdef __UM_HOST__
+ 
+-#define __define_initcall(level,fn) \
+-	static initcall_t __initcall_##fn __used \
+-	__attribute__((__section__(".initcall" level ".init"))) = fn
+-
+-/* Userspace initcalls shouldn't depend on anything in the kernel, so we'll
+- * make them run first.
+- */
+-#define __initcall(fn) __define_initcall("1", fn)
++#undef __uml_exit_call
++#define __uml_exit_call		__used __section(os_exitcalls)
++#define __init_call		__used __section(os_initcalls)
+ 
++#define __initcall(fn) static initcall_t __initcall_##fn __init_call = fn
+ #define __exitcall(fn) static exitcall_t __exitcall_##fn __exit_call = fn
+ 
+-#define __init_call	__used __section(.initcall.init)
+-
+ #endif
+ 
+ #endif /* _LINUX_UML_INIT_H */
+diff --git a/arch/um/kernel/reboot.c b/arch/um/kernel/reboot.c
+index 48c0610d506e..5420aec411f4 100644
+--- a/arch/um/kernel/reboot.c
++++ b/arch/um/kernel/reboot.c
+@@ -35,10 +35,15 @@ static void kill_off_processes(void)
+ 	read_unlock(&tasklist_lock);
+ }
+ 
++void __weak os_exitcalls(void)
 +{
-+	int ret __attribute__((unused));
-+
-+	ret = write(STDOUT_FILENO, str, len);
 +}
 +
-+static void panic(void)
+ void uml_cleanup(void)
+ {
+ 	kmalloc_ok = 0;
+ 	do_uml_exitcalls();
++	os_exitcalls();
+ 	kill_off_processes();
+ }
+ 
+diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
+index 0f40eccbd759..78d6042fd2e6 100644
+--- a/arch/um/kernel/um_arch.c
++++ b/arch/um/kernel/um_arch.c
+@@ -362,3 +362,14 @@ void __init check_bugs(void)
+ void apply_alternatives(struct alt_instr *start, struct alt_instr *end)
+ {
+ }
++
++int __weak os_initcalls(void)
 +{
-+	assert(0);
-+}
-+
-+#define WARN_UNLESS(exp) do {						\
-+		if (exp < 0)						\
-+			lkl_printf("%s: %s\n", #exp, strerror(errno));	\
-+	} while (0)
-+
-+static int _warn_pthread(int ret, char *str_exp)
-+{
-+	if (ret > 0)
-+		lkl_printf("%s: %s\n", str_exp, strerror(ret));
-+
-+	return ret;
-+}
-+
-+
-+/* pthread_* functions use the reverse convention */
-+#define WARN_PTHREAD(exp) _warn_pthread(exp, #exp)
-+
-+static struct lkl_sem *sem_alloc(int count)
-+{
-+	struct lkl_sem *sem;
-+
-+	sem = malloc(sizeof(*sem));
-+	if (!sem)
-+		return NULL;
-+
-+#ifdef _POSIX_SEMAPHORES
-+	if (sem_init(&sem->sem, SHARE_SEM, count) < 0) {
-+		lkl_printf("sem_init: %s\n", strerror(errno));
-+		free(sem);
-+		return NULL;
-+	}
-+#else
-+	pthread_mutex_init(&sem->lock, NULL);
-+	sem->count = count;
-+	WARN_PTHREAD(pthread_cond_init(&sem->cond, NULL));
-+#endif /* _POSIX_SEMAPHORES */
-+
-+	return sem;
-+}
-+
-+static void sem_free(struct lkl_sem *sem)
-+{
-+#ifdef _POSIX_SEMAPHORES
-+	WARN_UNLESS(sem_destroy(&sem->sem));
-+#else
-+	WARN_PTHREAD(pthread_cond_destroy(&sem->cond));
-+	WARN_PTHREAD(pthread_mutex_destroy(&sem->lock));
-+#endif /* _POSIX_SEMAPHORES */
-+	free(sem);
-+}
-+
-+static void sem_up(struct lkl_sem *sem)
-+{
-+#ifdef _POSIX_SEMAPHORES
-+	WARN_UNLESS(sem_post(&sem->sem));
-+#else
-+	WARN_PTHREAD(pthread_mutex_lock(&sem->lock));
-+	sem->count++;
-+	if (sem->count > 0)
-+		WARN_PTHREAD(pthread_cond_signal(&sem->cond));
-+	WARN_PTHREAD(pthread_mutex_unlock(&sem->lock));
-+#endif /* _POSIX_SEMAPHORES */
-+
-+}
-+
-+static void sem_down(struct lkl_sem *sem)
-+{
-+#ifdef _POSIX_SEMAPHORES
-+	int err;
-+
-+	do {
-+		err = sem_wait(&sem->sem);
-+	} while (err < 0 && errno == EINTR);
-+	if (err < 0 && errno != EINTR)
-+		lkl_printf("sem_wait: %s\n", strerror(errno));
-+#else
-+	WARN_PTHREAD(pthread_mutex_lock(&sem->lock));
-+	while (sem->count <= 0)
-+		WARN_PTHREAD(pthread_cond_wait(&sem->cond, &sem->lock));
-+	sem->count--;
-+	WARN_PTHREAD(pthread_mutex_unlock(&sem->lock));
-+#endif /* _POSIX_SEMAPHORES */
-+}
-+
-+static struct lkl_mutex *mutex_alloc(int recursive)
-+{
-+	struct lkl_mutex *_mutex = malloc(sizeof(struct lkl_mutex));
-+	pthread_mutex_t *mutex = NULL;
-+	pthread_mutexattr_t attr;
-+
-+	if (!_mutex)
-+		return NULL;
-+
-+	mutex = &_mutex->mutex;
-+	WARN_PTHREAD(pthread_mutexattr_init(&attr));
-+
-+	/* PTHREAD_MUTEX_ERRORCHECK is *very* useful for debugging,
-+	 * but has some overhead, so we provide an option to turn it
-+	 * off.
-+	 */
-+#ifdef DEBUG
-+	if (!recursive)
-+		WARN_PTHREAD(pthread_mutexattr_settype(
-+				     &attr, PTHREAD_MUTEX_ERRORCHECK));
-+#endif /* DEBUG */
-+
-+	if (recursive)
-+		WARN_PTHREAD(pthread_mutexattr_settype(
-+				     &attr, PTHREAD_MUTEX_RECURSIVE));
-+
-+	WARN_PTHREAD(pthread_mutex_init(mutex, &attr));
-+
-+	return _mutex;
-+}
-+
-+static void mutex_lock(struct lkl_mutex *mutex)
-+{
-+	WARN_PTHREAD(pthread_mutex_lock(&mutex->mutex));
-+}
-+
-+static void mutex_unlock(struct lkl_mutex *_mutex)
-+{
-+	pthread_mutex_t *mutex = &_mutex->mutex;
-+
-+	WARN_PTHREAD(pthread_mutex_unlock(mutex));
-+}
-+
-+static void mutex_free(struct lkl_mutex *_mutex)
-+{
-+	pthread_mutex_t *mutex = &_mutex->mutex;
-+
-+	WARN_PTHREAD(pthread_mutex_destroy(mutex));
-+	free(_mutex);
-+}
-+
-+static lkl_thread_t thread_create(void* (*fn)(void *), void *arg)
-+{
-+	pthread_t thread;
-+
-+	if (WARN_PTHREAD(pthread_create(&thread, NULL, fn, arg)))
-+		return 0;
-+	else
-+		return (lkl_thread_t) thread;
-+}
-+
-+static void thread_detach(void)
-+{
-+	WARN_PTHREAD(pthread_detach(pthread_self()));
-+}
-+
-+static void thread_exit(void)
-+{
-+	pthread_exit(NULL);
-+}
-+
-+static int thread_join(lkl_thread_t tid)
-+{
-+	if (WARN_PTHREAD(pthread_join((pthread_t)tid, NULL)))
-+		return (-1);
-+	else
-+		return 0;
-+}
-+
-+static lkl_thread_t thread_self(void)
-+{
-+	return (lkl_thread_t)pthread_self();
-+}
-+
-+static int thread_equal(lkl_thread_t a, lkl_thread_t b)
-+{
-+	return pthread_equal((pthread_t)a, (pthread_t)b);
-+}
-+
-+static long _gettid(void)
-+{
-+#ifdef	__FreeBSD__
-+	return (long)pthread_self();
-+#else
-+	return syscall(SYS_gettid);
-+#endif
-+}
-+
-+static struct lkl_tls_key *tls_alloc(void (*destructor)(void *))
-+{
-+	struct lkl_tls_key *ret = malloc(sizeof(struct lkl_tls_key));
-+
-+	if (WARN_PTHREAD(pthread_key_create(&ret->key, destructor))) {
-+		free(ret);
-+		return NULL;
-+	}
-+	return ret;
-+}
-+
-+static void tls_free(struct lkl_tls_key *key)
-+{
-+	WARN_PTHREAD(pthread_key_delete(key->key));
-+	free(key);
-+}
-+
-+static int tls_set(struct lkl_tls_key *key, void *data)
-+{
-+	if (WARN_PTHREAD(pthread_setspecific(key->key, data)))
-+		return (-1);
 +	return 0;
 +}
 +
-+static void *tls_get(struct lkl_tls_key *key)
++int __init run_os_initcalls(void)
 +{
-+	return pthread_getspecific(key->key);
++	return os_initcalls();
 +}
-+
-+struct lkl_host_operations lkl_host_ops = {
-+	.panic = panic,
-+	.print = print,
-+	.mem_alloc = (void *)malloc,
-+	.mem_free = free,
-+	.thread_create = thread_create,
-+	.thread_detach = thread_detach,
-+	.thread_exit = thread_exit,
-+	.thread_join = thread_join,
-+	.thread_self = thread_self,
-+	.thread_equal = thread_equal,
-+	.sem_alloc = sem_alloc,
-+	.sem_free = sem_free,
-+	.sem_up = sem_up,
-+	.sem_down = sem_down,
-+	.mutex_alloc = mutex_alloc,
-+	.mutex_free = mutex_free,
-+	.mutex_lock = mutex_lock,
-+	.mutex_unlock = mutex_unlock,
-+	.gettid = _gettid,
-+	.tls_alloc = tls_alloc,
-+	.tls_free = tls_free,
-+	.tls_set = tls_set,
-+	.tls_get = tls_get,
-+	.jmp_buf_set = jmp_buf_set,
-+	.jmp_buf_longjmp = jmp_buf_longjmp,
-+};
-+
++__initcall(run_os_initcalls);
 -- 
 2.21.0 (Apple Git-122.2)
 
