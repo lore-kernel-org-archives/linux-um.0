@@ -1,16 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pj1-x102f.google.com ([2607:f8b0:4864:20::102f])
+Received: from mail-pl1-x642.google.com ([2607:f8b0:4864:20::642])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jqzsI-0004tg-Fj
- for linux-um@lists.infradead.org; Thu, 02 Jul 2020 14:07:42 +0000
-Received: by mail-pj1-x102f.google.com with SMTP id k5so3015838pjg.3
- for <linux-um@lists.infradead.org>; Thu, 02 Jul 2020 07:07:36 -0700 (PDT)
+ id 1jqztX-0005B9-RE
+ for linux-um@lists.infradead.org; Thu, 02 Jul 2020 14:08:57 +0000
+Received: by mail-pl1-x642.google.com with SMTP id x8so10467722plm.10
+ for <linux-um@lists.infradead.org>; Thu, 02 Jul 2020 07:08:55 -0700 (PDT)
 From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v5 00/21] Unifying LKL into UML
-Date: Thu,  2 Jul 2020 23:06:54 +0900
-Message-Id: <cover.1593697069.git.thehajime@gmail.com>
-In-Reply-To: <cover.1585579244.git.thehajime@gmail.com>
-References: <cover.1585579244.git.thehajime@gmail.com>
+Subject: [RFC v5 08/21] um: add nommu mode for UML library mode
+Date: Thu,  2 Jul 2020 23:07:02 +0900
+Message-Id: <f7367307fceb30622620959a99caa24c3ad6231a.1593697069.git.thehajime@gmail.com>
+In-Reply-To: <cover.1593697069.git.thehajime@gmail.com>
+References: <cover.1593697069.git.thehajime@gmail.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -27,348 +27,76 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
 Cc: Octavian Purdila <tavi.purdila@gmail.com>, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, Akira Moroo <retrage01@gmail.com>
 
-This is another spin of the unification of LKL into UML.  Based on the
-discussion of v4 patchset, we have tried to address issue raised and
-rewrote the patchset from scratch.  The summary is listed in the
-changelog below.
+This patch introduces the nommu operation with UML code so that host
+interface can be shrineked for broader environments support.
 
-Although there are still bugs in the patchset, we'd like to ask your
-opinions on the design we changed.
+The nommu mode is implemneted as SUBARCH of arch/um, which places at
+arch/um/nommu. This SUBARCH defines mode-specific code of memory
+management as well as thread implementation, along with the uapi headers
+to be exported to users.
 
-The milestone section is also updated: this patchset is for the
-milestone 1, though the common init API is still not implemented yet.
+The headers we introduce in this patch are simple wrappers to the
+asm-generic headers or stubs for things we don't support, such as
+ptrace, DMA, signals, ELF handling and low level processor operations.
 
+nommu mode shares most of arch/um code (irq, thread_info, process
+scheduling) but implements its own facilities, which are memory
+management (nommu), thread primitives (struct arch_thread), system call
+interface, and console.
 
-Changes in rfc v5:
-- rewrite whole patchset from scratch
-- move arch-dependent code of arch/um and arch/x86/um to tools/um
- - mainly code under os-Linux/ involved
- - introduce 2-stage build (kernel, and host-dependent parts)
- - clean up vmlinux.lds.S
-- put LKL-specific implementations as a SUBARCH under arch/um/nommu
-- introduce !CONFIG_MMU in arch/um
-- use struct arch_thread and arch_switch_to() for subarch-specific
-  thread implementation
-- integrate with the IRQ infrastructure of UML
-- tested with block device drivers (ubd) for the proof
+The outlook of updated directory structure is as follows:
 
-Changes in rfc v4: (https://lwn.net/Articles/816276/)
-- Rebase on the current uml/master branch
-- Fix IRQ handling (bug fix)
-- drop a patch for CONFIG_GENERIC_ATOMIC64 (comment by Peter Zijlstra)
-- implement vector net driver for UMMODE_LIB (comment by Anton)
-- clean up uapi headers to avoid duplicates
-- clean up IRQ handling code (comment by Anton)
-- fix error handling in test code (comments by David Disseldorp)
+   arch/um
+   |-- configs         (untouched)
+   |-- drivers         unuse stdio_console.c for !MMU
+   |-- include
+   |   |-- asm         updated with !CONFIG_MMU
+   |   |-- linux       (untouched)
+   |   `-- shareda     updated with new functions
+   |       `-- skas    (untouched)
+   |   `-- uapi        added for upai header installation
+   |-- kernel          updated to integrate with !MMU
+   |   `-- skas        (untouched, don't use for !MMU)
+   |-- nommu           SUBARCH dir (internally =um/nommu)
+   |   |-- include
+   |   |   |-- asm     headers for subarch specific info
+   |   |   `-- uapi    headers for user-visible APIs
+   |   `-- um
+   |       `-- shared  headers for subarch specific info
+   `-- scripts         added a script for header installation
 
-Changes in rfc v3:
-- use UML drivers (net, block) from LKL programs
-- drop virtio device implementations
-- drop mingw32 (Windows) host
-- drop android (arm/aarch64) host
-- drop FreeBSD (x86_64) host
-- drop LD_PRELOAD (hijack) support
-- update milestone
-
-rfc v2:
-- use UMMODE instead of SUBARCH to switch UML or LKL
-- tools/lkl directory is still there. I confirmed we can move under arch/um
-  (e.g., arch/um/lkl/hosts).  I will move it IF this is preferable.
-- drop several patches involved non-uml directory
-- drop several patches which are not required
-- refine commit logs
-- document updated
-
-
-
-
-LKL (Linux Kernel Library) is aiming to allow reusing the Linux kernel code
-as extensively as possible with minimal effort and reduced maintenance
-overhead.
-
-Examples of how LKL can be used are: creating userspace applications
-(running on Linux and other operating systems) that can read or write Linux
-filesystems or can use the Linux networking stack, creating kernel drivers
-for other operating systems that can read Linux filesystems, bootloaders
-support for reading/writing Linux filesystems, etc.
-
-With LKL, the kernel code is compiled into an object file that can be
-directly linked by applications. The API offered by LKL is based on the
-Linux system call interface.
-
-LKL is originally implemented as an architecture port in arch/lkl, but this
-series of commits tries to integrate this into arch/um as one of the mode
-of UML.  This was discussed during RFC email of LKL (*1).
-
-The latest LKL version can be found at https://github.com/lkl/linux
-
-Milestone
-=========
-This patches is a first step toward upstreaming *library mode* of Linux kernel,
-but we think we need to have several steps toward our goal, describing in the
-below.
-
-
-Milestone 1: LKL lib on top of UML
- * Kernel - Host build split
- -  Build UML as a relocatable object using the UML's kernel linker script.
- -  Move the ptrace and other well isolated os code out of arch/um to
-    tools/um
- -  Use standard host toolchain to create a static library stripped of
-    the ptrace code. Use standard host toolchain to build the main UML
-    executable.
- -  Add library init API that creates the UML kernel process and starts
-    UML.
- * System calls APIs
- -  Add new system call interface based on UML's irq facility.
- -  Use the LKL scripts to export the required headers to create system
-    calls APIs that use the UML system calls infrastructure.
- -  Keep the underlying host and driver operations (threads, irqs, etc.)
-    as they are now in UML.
- * Boot test
- -  Port the LKL boot test to verify that we are able to programatically
-    issue system calls.
-
-Milestone 2: add virtio disk support
- * Export asm/io.h operations to host/os. Create IO access operations
-   and redirect them to weak os_ variants that use the current UML
-   implementation.
- * Add the LKL IO access layer including generic virtio handling and the
-   virtio block device code.
- * Port LKL disk test and disk apps (lklfuse, fs2tar, cptofs)
-
-Milestone 3: new arch ports
-  * Abstract the system call / IRQ mode the move the implementation to host
-  * Abstract the thread model and move the implementation to host
-  * Add LKL thread model and LKL ports
-
-
-Building LKL the host library and LKL applications
-==================================================
-
-% cd tools/um
-% make
-
-will build LKL as a object file, it will install it in tools/um/lib together
-with the headers files in tools/um/include then will build the host library,
-tests and a few of application examples:
-
-* tests/boot - a simple applications that uses LKL and exercises the basic
-  LKL APIs
-
-% make run-tests
-
-should run the above `tests/boot` and `tests/net-test` and report errors if
-there are any.
-
-Supported hosts
-===============
-
-Currently LKL supports Linux userspace applications. New hosts can be added
-relatively easy if the host supports gcc and GNU ld. Previous versions of
-LKL supported Windows kernel and Haiku kernel hosts, and we also have WIP
-patches with rump-hypercall interface, used in UEFI, as well as macOS
-userspace (part of POSIX).
-
-There is also musl-libc port for LKL, which might be interested in for some
-folks.
-
-
-Further readings about LKL
-=========================
-
-- Discussion in github LKL issue
-https://github.com/lkl/linux/issues/304
-
-- LKL (an article)
-https://www.researchgate.net/profile/Nicolae_Tapus2/publication/224164682_LKL_The_Linux_kernel_library/links/02bfe50fd921ab4f7c000000.pdf
-
-*1 RFC email to LKML (back in 2015)
-https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1012277.html
-
-
-Please review the following changes for suitability for inclusion. If you have
-any objections or suggestions for improvement, please respond to the patches. If
-you agree with the changes, please provide your Acked-by.
-
-The following changes since commit f6e8c474390be2e6f5bd0b8966e19958214609ff:
-
-  um: virtio: Replace zero-length array with flexible-array (2020-06-02 22:38:00 +0200)
-
-are available in the Git repository at:
-
-  git://github.com/thehajime/linux b6eab5512a8168bbb46a485e9386e8cbd812b511
-  https://github.com/thehajime/linux/tree/uml-lkl-5.8rc1-v5
-
-Hajime Tazaki (18):
-  um: move arch/um/os-Linux dir to tools/um/uml
-  um: move arch/x86/um/os-Linux to tools/um/uml/
-  scritps: um: suppress warnings if SRCARCH=um
-  um: extend arch_switch_to for alternate SUBARCH
-  um: add nommu mode for UML library mode
-  um: nommu: host interface
-  um: nommu: memory handling
-  um: nommu: kernel thread support
-  um: nommu: system call interface and application API
-  um: nommu: basic console support
-  um: nommu: initialization and cleanup
-  um: nommu: integrate with irq infrastructure of UML
-  um: nommu: plug in the build system
-  um: host: add nommu build for ARCH=um
-  um: host: add utilities functions
-  um: host: posix host operations
-  um: host: add test programs
-  um: nommu: add block device support of UML
-
-Octavian Purdila (3):
-  um: split build in kernel and host parts
-  um: add os init and exit calls
-  um: host: implement os_initcalls and os_exitcalls
-
- arch/um/Kconfig                               |  29 +-
- arch/um/Makefile                              |  25 +-
- arch/um/drivers/Makefile                      |  10 +-
- .../um/{os-Linux => }/drivers/ethertap_kern.c |   0
- arch/um/{os-Linux => }/drivers/tuntap_kern.c  |   0
- arch/um/include/asm/common.lds.S              |  99 ----
- arch/um/include/asm/host_ops.h                |   9 +
- arch/um/include/asm/mmu.h                     |   3 +
- arch/um/include/asm/mmu_context.h             |   8 +
- arch/um/include/asm/page.h                    |  15 +
- arch/um/include/asm/pgtable.h                 |  27 +
- arch/um/include/asm/thread_info.h             |  24 +
- arch/um/include/asm/uaccess.h                 |   6 +
- arch/um/include/asm/xor.h                     |   3 +-
- arch/um/include/shared/as-layout.h            |   1 +
- .../drivers => include/shared}/etap.h         |   0
- arch/um/include/shared/init.h                 |  18 +-
- arch/um/include/shared/os.h                   |   1 +
- .../drivers => include/shared}/tuntap.h       |   0
- arch/um/include/uapi/asm/Kbuild               |   2 +
- arch/um/kernel/Makefile                       |  12 +-
- arch/um/kernel/dyn.lds.S                      | 171 -------
- arch/um/kernel/irq.c                          |  13 +
- arch/um/kernel/process.c                      |  14 +-
- arch/um/kernel/reboot.c                       |   5 +
- arch/um/kernel/time.c                         |   2 +
- arch/um/kernel/um_arch.c                      |  16 +
- arch/um/kernel/uml.lds.S                      | 115 -----
- arch/um/kernel/vmlinux.lds.S                  |  91 +++-
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
+---
  arch/um/nommu/Makefile                        |   1 +
- arch/um/nommu/Makefile.um                     |  18 +
+ arch/um/nommu/Makefile.um                     |  18 +++
  arch/um/nommu/include/asm/Kbuild              |   6 +
  arch/um/nommu/include/asm/archparam.h         |   1 +
- arch/um/nommu/include/asm/atomic.h            |  11 +
- arch/um/nommu/include/asm/atomic64.h          | 114 +++++
- arch/um/nommu/include/asm/bitsperlong.h       |  12 +
- arch/um/nommu/include/asm/byteorder.h         |   7 +
- arch/um/nommu/include/asm/cpu.h               |  16 +
- arch/um/nommu/include/asm/elf.h               |  15 +
- arch/um/nommu/include/asm/mm_context.h        |   8 +
- arch/um/nommu/include/asm/processor.h         |  46 ++
- arch/um/nommu/include/asm/ptrace.h            |  21 +
- arch/um/nommu/include/asm/sched.h             |  23 +
- arch/um/nommu/include/asm/segment.h           |   9 +
- arch/um/nommu/include/asm/syscall_wrapper.h   |  57 +++
- arch/um/nommu/include/asm/syscalls.h          |  15 +
+ arch/um/nommu/include/asm/atomic.h            |  11 ++
+ arch/um/nommu/include/asm/atomic64.h          | 114 ++++++++++++++++++
+ arch/um/nommu/include/asm/bitsperlong.h       |  12 ++
+ arch/um/nommu/include/asm/byteorder.h         |   7 ++
+ arch/um/nommu/include/asm/cpu.h               |  13 ++
+ arch/um/nommu/include/asm/elf.h               |  15 +++
+ arch/um/nommu/include/asm/mm_context.h        |   8 ++
+ arch/um/nommu/include/asm/processor.h         |  46 +++++++
+ arch/um/nommu/include/asm/ptrace.h            |  21 ++++
+ arch/um/nommu/include/asm/sched.h             |  23 ++++
+ arch/um/nommu/include/asm/segment.h           |   9 ++
  arch/um/nommu/include/uapi/asm/Kbuild         |   4 +
- arch/um/nommu/include/uapi/asm/bitsperlong.h  |  11 +
- arch/um/nommu/include/uapi/asm/byteorder.h    |  11 +
- arch/um/nommu/include/uapi/asm/host_ops.h     | 122 +++++
- arch/um/nommu/include/uapi/asm/sigcontext.h   |  12 +
- arch/um/nommu/include/uapi/asm/syscalls.h     | 287 +++++++++++
- arch/um/nommu/include/uapi/asm/unistd.h       |  17 +
- arch/um/nommu/um/Kconfig                      |  45 ++
- arch/um/nommu/um/Makefile                     |   4 +
- arch/um/nommu/um/bootmem.c                    |  86 ++++
- arch/um/nommu/um/console.c                    |  42 ++
- arch/um/nommu/um/cpu.c                        | 247 ++++++++++
- arch/um/nommu/um/delay.c                      |  31 ++
- arch/um/nommu/um/setup.c                      | 178 +++++++
- arch/um/nommu/um/shared/sysdep/archsetjmp.h   |  13 +
- arch/um/nommu/um/shared/sysdep/faultinfo.h    |   8 +
- .../nommu/um/shared/sysdep/kernel-offsets.h   |  12 +
- arch/um/nommu/um/shared/sysdep/mcontext.h     |   9 +
- arch/um/nommu/um/shared/sysdep/ptrace.h       |  42 ++
- arch/um/nommu/um/shared/sysdep/ptrace_user.h  |   7 +
- arch/um/nommu/um/syscalls.c                   | 199 ++++++++
- arch/um/nommu/um/threads.c                    | 261 ++++++++++
- arch/um/nommu/um/unimplemented.c              |  70 +++
- arch/um/nommu/um/user_constants.h             |  13 +
- arch/um/os-Linux/Makefile                     |  19 -
- arch/um/os-Linux/drivers/Makefile             |  13 -
- arch/um/scripts/headers_install.py            | 197 ++++++++
- arch/x86/um/Makefile                          |   2 +-
- arch/x86/um/os-Linux/Makefile                 |  13 -
- arch/x86/um/ptrace_32.c                       |   2 +-
- arch/x86/um/syscalls_64.c                     |   2 +-
- scripts/headers_install.sh                    |   3 +
- scripts/link-vmlinux.sh                       |  42 +-
- tools/um/Makefile                             |  82 ++++
- tools/um/Targets                              |  13 +
- tools/um/include/lkl.h                        | 357 ++++++++++++++
- tools/um/include/lkl_host.h                   |  27 +
- tools/um/lib/Build                            |   7 +
- tools/um/lib/fs.c                             | 461 ++++++++++++++++++
- tools/um/lib/jmp_buf.c                        |  14 +
- tools/um/lib/jmp_buf.h                        |   8 +
- tools/um/lib/posix-host.c                     | 293 +++++++++++
- tools/um/lib/utils.c                          | 213 ++++++++
- tools/um/tests/Build                          |   2 +
- tools/um/tests/boot.c                         | 393 +++++++++++++++
- tools/um/tests/boot.sh                        |   9 +
- tools/um/tests/cla.c                          | 159 ++++++
- tools/um/tests/cla.h                          |  33 ++
- tools/um/tests/disk.c                         | 168 +++++++
- tools/um/tests/disk.sh                        |  70 +++
- tools/um/tests/run.py                         | 174 +++++++
- tools/um/tests/tap13.py                       | 209 ++++++++
- tools/um/tests/test.c                         | 126 +++++
- tools/um/tests/test.h                         |  72 +++
- tools/um/tests/test.sh                        | 181 +++++++
- tools/um/uml/Build                            |  57 +++
- tools/um/uml/drivers/Build                    |  10 +
- .../um/uml}/drivers/ethertap_user.c           |   0
- .../um/uml}/drivers/tuntap_user.c             |   0
- {arch/um/os-Linux => tools/um/uml}/elf_aux.c  |   0
- {arch/um/os-Linux => tools/um/uml}/execvp.c   |   4 -
- {arch/um/os-Linux => tools/um/uml}/file.c     |   0
- {arch/um/os-Linux => tools/um/uml}/helper.c   |   0
- {arch/um/os-Linux => tools/um/uml}/irq.c      |   0
- {arch/um/os-Linux => tools/um/uml}/main.c     |   0
- {arch/um/os-Linux => tools/um/uml}/mem.c      |   0
- tools/um/uml/nommu/Build                      |   1 +
- tools/um/uml/nommu/registers.c                |  21 +
- tools/um/uml/nommu/unimplemented.c            |  21 +
- {arch/um/os-Linux => tools/um/uml}/process.c  |   2 +
- .../um/os-Linux => tools/um/uml}/registers.c  |   0
- {arch/um/os-Linux => tools/um/uml}/sigio.c    |   0
- {arch/um/os-Linux => tools/um/uml}/signal.c   |  12 +-
- .../skas/Makefile => tools/um/uml/skas/Build  |   6 +-
- {arch/um/os-Linux => tools/um/uml}/skas/mem.c |   0
- .../os-Linux => tools/um/uml}/skas/process.c  |   3 +-
- {arch/um/os-Linux => tools/um/uml}/start_up.c |   0
- {arch/um/os-Linux => tools/um/uml}/time.c     |   0
- {arch/um/os-Linux => tools/um/uml}/tty.c      |   0
- {arch/um/os-Linux => tools/um/uml}/umid.c     |   0
- .../um/os-Linux => tools/um/uml}/user_syms.c  |   1 +
- {arch/um/os-Linux => tools/um/uml}/util.c     |  26 +
- tools/um/uml/x86/Build                        |  11 +
- .../os-Linux => tools/um/uml/x86}/mcontext.c  |   0
- .../um/os-Linux => tools/um/uml/x86}/prctl.c  |   0
- .../os-Linux => tools/um/uml/x86}/registers.c |   0
- .../os-Linux => tools/um/uml/x86}/task_size.c |   0
- .../um/os-Linux => tools/um/uml/x86}/tls.c    |   0
- 134 files changed, 5846 insertions(+), 523 deletions(-)
- rename arch/um/{os-Linux => }/drivers/ethertap_kern.c (100%)
- rename arch/um/{os-Linux => }/drivers/tuntap_kern.c (100%)
- delete mode 100644 arch/um/include/asm/common.lds.S
- create mode 100644 arch/um/include/asm/host_ops.h
- rename arch/um/{os-Linux/drivers => include/shared}/etap.h (100%)
- rename arch/um/{os-Linux/drivers => include/shared}/tuntap.h (100%)
- create mode 100644 arch/um/include/uapi/asm/Kbuild
- delete mode 100644 arch/um/kernel/dyn.lds.S
- delete mode 100644 arch/um/kernel/uml.lds.S
+ arch/um/nommu/include/uapi/asm/bitsperlong.h  |  11 ++
+ arch/um/nommu/include/uapi/asm/byteorder.h    |  11 ++
+ arch/um/nommu/include/uapi/asm/sigcontext.h   |  12 ++
+ arch/um/nommu/um/delay.c                      |  31 +++++
+ arch/um/nommu/um/shared/sysdep/archsetjmp.h   |  13 ++
+ arch/um/nommu/um/shared/sysdep/faultinfo.h    |   8 ++
+ .../nommu/um/shared/sysdep/kernel-offsets.h   |  12 ++
+ arch/um/nommu/um/shared/sysdep/mcontext.h     |   9 ++
+ arch/um/nommu/um/shared/sysdep/ptrace.h       |  42 +++++++
+ arch/um/nommu/um/shared/sysdep/ptrace_user.h  |   7 ++
+ arch/um/nommu/um/unimplemented.c              |  70 +++++++++++
+ arch/um/nommu/um/user_constants.h             |  13 ++
+ 28 files changed, 548 insertions(+)
  create mode 100644 arch/um/nommu/Makefile
  create mode 100644 arch/um/nommu/Makefile.um
  create mode 100644 arch/um/nommu/include/asm/Kbuild
@@ -384,92 +112,736 @@ Octavian Purdila (3):
  create mode 100644 arch/um/nommu/include/asm/ptrace.h
  create mode 100644 arch/um/nommu/include/asm/sched.h
  create mode 100644 arch/um/nommu/include/asm/segment.h
- create mode 100644 arch/um/nommu/include/asm/syscall_wrapper.h
- create mode 100644 arch/um/nommu/include/asm/syscalls.h
  create mode 100644 arch/um/nommu/include/uapi/asm/Kbuild
  create mode 100644 arch/um/nommu/include/uapi/asm/bitsperlong.h
  create mode 100644 arch/um/nommu/include/uapi/asm/byteorder.h
- create mode 100644 arch/um/nommu/include/uapi/asm/host_ops.h
  create mode 100644 arch/um/nommu/include/uapi/asm/sigcontext.h
- create mode 100644 arch/um/nommu/include/uapi/asm/syscalls.h
- create mode 100644 arch/um/nommu/include/uapi/asm/unistd.h
- create mode 100644 arch/um/nommu/um/Kconfig
- create mode 100644 arch/um/nommu/um/Makefile
- create mode 100644 arch/um/nommu/um/bootmem.c
- create mode 100644 arch/um/nommu/um/console.c
- create mode 100644 arch/um/nommu/um/cpu.c
  create mode 100644 arch/um/nommu/um/delay.c
- create mode 100644 arch/um/nommu/um/setup.c
  create mode 100644 arch/um/nommu/um/shared/sysdep/archsetjmp.h
  create mode 100644 arch/um/nommu/um/shared/sysdep/faultinfo.h
  create mode 100644 arch/um/nommu/um/shared/sysdep/kernel-offsets.h
  create mode 100644 arch/um/nommu/um/shared/sysdep/mcontext.h
  create mode 100644 arch/um/nommu/um/shared/sysdep/ptrace.h
  create mode 100644 arch/um/nommu/um/shared/sysdep/ptrace_user.h
- create mode 100644 arch/um/nommu/um/syscalls.c
- create mode 100644 arch/um/nommu/um/threads.c
  create mode 100644 arch/um/nommu/um/unimplemented.c
  create mode 100644 arch/um/nommu/um/user_constants.h
- delete mode 100644 arch/um/os-Linux/Makefile
- delete mode 100644 arch/um/os-Linux/drivers/Makefile
- create mode 100755 arch/um/scripts/headers_install.py
- delete mode 100644 arch/x86/um/os-Linux/Makefile
- create mode 100644 tools/um/Makefile
- create mode 100644 tools/um/Targets
- create mode 100644 tools/um/include/lkl.h
- create mode 100644 tools/um/include/lkl_host.h
- create mode 100644 tools/um/lib/Build
- create mode 100644 tools/um/lib/fs.c
- create mode 100644 tools/um/lib/jmp_buf.c
- create mode 100644 tools/um/lib/jmp_buf.h
- create mode 100644 tools/um/lib/posix-host.c
- create mode 100644 tools/um/lib/utils.c
- create mode 100644 tools/um/tests/Build
- create mode 100644 tools/um/tests/boot.c
- create mode 100755 tools/um/tests/boot.sh
- create mode 100644 tools/um/tests/cla.c
- create mode 100644 tools/um/tests/cla.h
- create mode 100644 tools/um/tests/disk.c
- create mode 100755 tools/um/tests/disk.sh
- create mode 100755 tools/um/tests/run.py
- create mode 100644 tools/um/tests/tap13.py
- create mode 100644 tools/um/tests/test.c
- create mode 100644 tools/um/tests/test.h
- create mode 100644 tools/um/tests/test.sh
- create mode 100644 tools/um/uml/Build
- create mode 100644 tools/um/uml/drivers/Build
- rename {arch/um/os-Linux => tools/um/uml}/drivers/ethertap_user.c (100%)
- rename {arch/um/os-Linux => tools/um/uml}/drivers/tuntap_user.c (100%)
- rename {arch/um/os-Linux => tools/um/uml}/elf_aux.c (100%)
- rename {arch/um/os-Linux => tools/um/uml}/execvp.c (98%)
- rename {arch/um/os-Linux => tools/um/uml}/file.c (100%)
- rename {arch/um/os-Linux => tools/um/uml}/helper.c (100%)
- rename {arch/um/os-Linux => tools/um/uml}/irq.c (100%)
- rename {arch/um/os-Linux => tools/um/uml}/main.c (100%)
- rename {arch/um/os-Linux => tools/um/uml}/mem.c (100%)
- create mode 100644 tools/um/uml/nommu/Build
- create mode 100644 tools/um/uml/nommu/registers.c
- create mode 100644 tools/um/uml/nommu/unimplemented.c
- rename {arch/um/os-Linux => tools/um/uml}/process.c (99%)
- rename {arch/um/os-Linux => tools/um/uml}/registers.c (100%)
- rename {arch/um/os-Linux => tools/um/uml}/sigio.c (100%)
- rename {arch/um/os-Linux => tools/um/uml}/signal.c (96%)
- rename arch/um/os-Linux/skas/Makefile => tools/um/uml/skas/Build (56%)
- rename {arch/um/os-Linux => tools/um/uml}/skas/mem.c (100%)
- rename {arch/um/os-Linux => tools/um/uml}/skas/process.c (99%)
- rename {arch/um/os-Linux => tools/um/uml}/start_up.c (100%)
- rename {arch/um/os-Linux => tools/um/uml}/time.c (100%)
- rename {arch/um/os-Linux => tools/um/uml}/tty.c (100%)
- rename {arch/um/os-Linux => tools/um/uml}/umid.c (100%)
- rename {arch/um/os-Linux => tools/um/uml}/user_syms.c (99%)
- rename {arch/um/os-Linux => tools/um/uml}/util.c (89%)
- create mode 100644 tools/um/uml/x86/Build
- rename {arch/x86/um/os-Linux => tools/um/uml/x86}/mcontext.c (100%)
- rename {arch/x86/um/os-Linux => tools/um/uml/x86}/prctl.c (100%)
- rename {arch/x86/um/os-Linux => tools/um/uml/x86}/registers.c (100%)
- rename {arch/x86/um/os-Linux => tools/um/uml/x86}/task_size.c (100%)
- rename {arch/x86/um/os-Linux => tools/um/uml/x86}/tls.c (100%)
 
+diff --git a/arch/um/nommu/Makefile b/arch/um/nommu/Makefile
+new file mode 100644
+index 000000000000..792d6005489e
+--- /dev/null
++++ b/arch/um/nommu/Makefile
+@@ -0,0 +1 @@
++#
+diff --git a/arch/um/nommu/Makefile.um b/arch/um/nommu/Makefile.um
+new file mode 100644
+index 000000000000..6cb0e9494d05
+--- /dev/null
++++ b/arch/um/nommu/Makefile.um
+@@ -0,0 +1,18 @@
++KBUILD_CFLAGS += -fno-builtin -fPIC
++ELF_FORMAT=$(shell $(LD) -r -print-output-format)
++
++ifeq ($(shell uname -s), Linux)
++NPROC=$(shell nproc)
++else # e.g., FreeBSD
++NPROC=$(shell sysctl -n hw.ncpu)
++endif
++
++um_headers_install: $(objtree)/$(HOST_DIR)/include/generated/uapi/asm/syscall_defs.h headers
++	$(Q)$(srctree)/$(ARCH_DIR)/scripts/headers_install.py \
++		$(subst -j,-j$(NPROC),$(findstring -j,$(MAKEFLAGS))) \
++		$(INSTALL_PATH)/include
++
++$(objtree)/$(HOST_DIR)/include/generated/uapi/asm/syscall_defs.h: vmlinux
++	$(Q)$(OBJCOPY) -j .syscall_defs -O binary --set-section-flags .syscall_defs=alloc $< $@
++	$(Q) export tmpfile=$(shell mktemp); \
++	sed 's/\x0//g' $@ > $$tmpfile; mv $$tmpfile $@ ; rm -f $$tmpfile
+diff --git a/arch/um/nommu/include/asm/Kbuild b/arch/um/nommu/include/asm/Kbuild
+new file mode 100644
+index 000000000000..2532e1a0a0d1
+--- /dev/null
++++ b/arch/um/nommu/include/asm/Kbuild
+@@ -0,0 +1,6 @@
++generic-y += cmpxchg.h
++generic-y += local64.h
++generic-y += seccomp.h
++generic-y += string.h
++generic-y += syscall.h
++generic-y += user.h
+diff --git a/arch/um/nommu/include/asm/archparam.h b/arch/um/nommu/include/asm/archparam.h
+new file mode 100644
+index 000000000000..ea32a7d3cf1b
+--- /dev/null
++++ b/arch/um/nommu/include/asm/archparam.h
+@@ -0,0 +1 @@
++/* SPDX-License-Identifier: GPL-2.0 */
+diff --git a/arch/um/nommu/include/asm/atomic.h b/arch/um/nommu/include/asm/atomic.h
+new file mode 100644
+index 000000000000..63e2e16bda92
+--- /dev/null
++++ b/arch/um/nommu/include/asm/atomic.h
+@@ -0,0 +1,11 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __UM_NOMMU_ATOMIC_H
++#define __UM_NOMMU_ATOMIC_H
++
++#include <asm-generic/atomic.h>
++
++#ifndef CONFIG_GENERIC_ATOMIC64
++#include "atomic64.h"
++#endif /* !CONFIG_GENERIC_ATOMIC64 */
++
++#endif
+diff --git a/arch/um/nommu/include/asm/atomic64.h b/arch/um/nommu/include/asm/atomic64.h
+new file mode 100644
+index 000000000000..949360dea7af
+--- /dev/null
++++ b/arch/um/nommu/include/asm/atomic64.h
+@@ -0,0 +1,114 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __UM_NOMMU_ATOMIC64_H
++#define __UM_NOMMU_ATOMIC64_H
++
++#include <linux/types.h>
++
++#ifdef CONFIG_SMP
++#error "SMP is not supported on this platform"
++#else
++#define ATOMIC64_OP(op, c_op)					\
++	static inline void atomic64_##op(s64 i, atomic64_t *v)	\
++	{							\
++		unsigned long flags;				\
++								\
++		raw_local_irq_save(flags);			\
++		v->counter = v->counter c_op i;			\
++		raw_local_irq_restore(flags);			\
++	}
++
++#define ATOMIC64_OP_RETURN(op, c_op)					\
++	static inline s64 atomic64_##op##_return(s64 i, atomic64_t *v)	\
++	{								\
++		unsigned long flags;					\
++		s64 ret;						\
++									\
++		raw_local_irq_save(flags);				\
++		ret = (v->counter = v->counter c_op i);			\
++		raw_local_irq_restore(flags);				\
++									\
++		return ret;						\
++	}
++
++#define ATOMIC64_FETCH_OP(op, c_op)					\
++	static inline s64 atomic64_fetch_##op(s64 i, atomic64_t *v)	\
++	{								\
++		unsigned long flags;					\
++		s64 ret;						\
++									\
++		raw_local_irq_save(flags);				\
++		ret = v->counter;					\
++		v->counter = v->counter c_op i;				\
++		raw_local_irq_restore(flags);				\
++									\
++		return ret;						\
++	}
++#endif /* CONFIG_SMP */
++
++#ifndef atomic64_add_return
++ATOMIC64_OP_RETURN(add, +)
++#endif
++
++#ifndef atomic64_sub_return
++	ATOMIC64_OP_RETURN(sub, -)
++#endif
++
++#ifndef atomic64_fetch_add
++	ATOMIC64_FETCH_OP(add, +)
++#endif
++
++#ifndef atomic64_fetch_sub
++	ATOMIC64_FETCH_OP(sub, -)
++#endif
++
++#ifndef atomic64_fetch_and
++	ATOMIC64_FETCH_OP(and, &)
++#endif
++
++#ifndef atomic64_fetch_or
++	ATOMIC64_FETCH_OP(or, |)
++#endif
++
++#ifndef atomic64_fetch_xor
++	ATOMIC64_FETCH_OP(xor, ^)
++#endif
++
++#ifndef atomic64_and
++	ATOMIC64_OP(and, &)
++#endif
++
++#ifndef atomic64_or
++	ATOMIC64_OP(or, |)
++#endif
++
++#ifndef atomic64_xor
++	ATOMIC64_OP(xor, ^)
++#endif
++
++#undef ATOMIC64_FETCH_OP
++#undef ATOMIC64_OP_RETURN
++#undef ATOMIC64_OP
++
++
++#define ATOMIC64_INIT(i)       { (i) }
++
++	static inline void atomic64_add(s64 i, atomic64_t *v)
++{
++	atomic64_add_return(i, v);
++}
++
++static inline void atomic64_sub(s64 i, atomic64_t *v)
++{
++	atomic64_sub_return(i, v);
++}
++
++#ifndef atomic64_read
++#define atomic64_read(v)       READ_ONCE((v)->counter)
++#endif
++
++#define atomic64_set(v, i) WRITE_ONCE(((v)->counter), (i))
++
++#define atomic64_xchg(ptr, v)          (xchg(&(ptr)->counter, (v)))
++#define atomic64_cmpxchg(v, old, new)  (cmpxchg(&((v)->counter), (old), (new)))
++
++#endif /* __LKL_ATOMIC64_H */
+diff --git a/arch/um/nommu/include/asm/bitsperlong.h b/arch/um/nommu/include/asm/bitsperlong.h
+new file mode 100644
+index 000000000000..a150cee41e75
+--- /dev/null
++++ b/arch/um/nommu/include/asm/bitsperlong.h
+@@ -0,0 +1,12 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __UM_NOMMU_BITSPERLONG_H
++#define __UM_NOMMU_BITSPERLONG_H
++
++#include <uapi/asm/bitsperlong.h>
++
++#define BITS_PER_LONG __BITS_PER_LONG
++
++#define BITS_PER_LONG_LONG 64
++
++#endif
++
+diff --git a/arch/um/nommu/include/asm/byteorder.h b/arch/um/nommu/include/asm/byteorder.h
+new file mode 100644
+index 000000000000..920a5fd26cad
+--- /dev/null
++++ b/arch/um/nommu/include/asm/byteorder.h
+@@ -0,0 +1,7 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __UM_NOMMU_BYTEORDER_H
++#define __UM_NOMMU_BYTEORDER_H
++
++#include <uapi/asm/byteorder.h>
++
++#endif
+diff --git a/arch/um/nommu/include/asm/cpu.h b/arch/um/nommu/include/asm/cpu.h
+new file mode 100644
+index 000000000000..c101c078ef21
+--- /dev/null
++++ b/arch/um/nommu/include/asm/cpu.h
+@@ -0,0 +1,13 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __UM_NOMMU_CPU_H
++#define __UM_NOMMU_CPU_H
++
++int lkl_cpu_get(void);
++void lkl_cpu_put(void);
++int lkl_cpu_try_run_irq(int irq);
++int lkl_cpu_init(void);
++void lkl_cpu_wait_shutdown(void);
++void lkl_cpu_change_owner(lkl_thread_t owner);
++void lkl_cpu_set_irqs_pending(void);
++
++#endif
+diff --git a/arch/um/nommu/include/asm/elf.h b/arch/um/nommu/include/asm/elf.h
+new file mode 100644
+index 000000000000..edcf63edeed1
+--- /dev/null
++++ b/arch/um/nommu/include/asm/elf.h
+@@ -0,0 +1,15 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __UM_NOMMU_ELF_H
++#define __UM_NOMMU_ELF_H
++
++#define elf_check_arch(x) 0
++
++#ifdef CONFIG_64BIT
++#define ELF_CLASS ELFCLASS64
++#else
++#define ELF_CLASS ELFCLASS32
++#endif
++
++#define elf_gregset_t long
++#define elf_fpregset_t double
++#endif
+diff --git a/arch/um/nommu/include/asm/mm_context.h b/arch/um/nommu/include/asm/mm_context.h
+new file mode 100644
+index 000000000000..a2e53984aabd
+--- /dev/null
++++ b/arch/um/nommu/include/asm/mm_context.h
+@@ -0,0 +1,8 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __UM_NOMMU_MM_CONTEXT_H
++#define __UM_NOMMU_MM_CONTEXT_H
++
++struct uml_arch_mm_context {
++};
++
++#endif
+diff --git a/arch/um/nommu/include/asm/processor.h b/arch/um/nommu/include/asm/processor.h
+new file mode 100644
+index 000000000000..3e8ba870caaf
+--- /dev/null
++++ b/arch/um/nommu/include/asm/processor.h
+@@ -0,0 +1,46 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __UM_NOMMU_PROCESSOR_H
++#define __UM_NOMMU_PROCESSOR_H
++
++#include <asm/host_ops.h>
++
++struct arch_thread {
++	struct lkl_sem *sched_sem;
++	bool dead;
++	lkl_thread_t tid;
++	struct lkl_jmp_buf sched_jb;
++	unsigned long stackend;
++};
++
++#include <asm/ptrace-generic.h>
++#include <asm/processor-generic.h>
++
++#define INIT_ARCH_THREAD {}
++#define task_pt_regs(tsk) (struct pt_regs *)(NULL)
++
++static inline void cpu_relax(void)
++{
++	unsigned long flags;
++
++	/* since this is usually called in a tight loop waiting for some
++	 * external condition (e.g. jiffies) lets run interrupts now to allow
++	 * the external condition to propagate
++	 */
++	local_irq_save(flags);
++	local_irq_restore(flags);
++}
++
++#define KSTK_EIP(tsk)	(0)
++#define KSTK_ESP(tsk)	(0)
++
++static inline void trap_init(void)
++{
++}
++
++static inline void arch_copy_thread(struct arch_thread *from,
++				    struct arch_thread *to)
++{
++	panic("unimplemented %s: fork isn't supported yet", __func__);
++}
++
++#endif
+diff --git a/arch/um/nommu/include/asm/ptrace.h b/arch/um/nommu/include/asm/ptrace.h
+new file mode 100644
+index 000000000000..b214410e9825
+--- /dev/null
++++ b/arch/um/nommu/include/asm/ptrace.h
+@@ -0,0 +1,21 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __UM_NOMMU_PTRACE_H
++#define __UM_NOMMU_PTRACE_H
++
++#include <linux/errno.h>
++
++static int reg_dummy __attribute__((unused));
++
++#define PT_REGS_ORIG_SYSCALL(r) (reg_dummy)
++#define PT_REGS_SYSCALL_RET(r) (reg_dummy)
++#define PT_REGS_SET_SYSCALL_RETURN(r, res) (reg_dummy = (res))
++#define REGS_SP(r) (reg_dummy)
++
++#define user_mode(regs) 0
++#define kernel_mode(regs) 1
++#define profile_pc(regs) 0
++#define user_stack_pointer(regs) 0
++
++extern void new_thread_handler(void);
++
++#endif
+diff --git a/arch/um/nommu/include/asm/sched.h b/arch/um/nommu/include/asm/sched.h
+new file mode 100644
+index 000000000000..a4496f482633
+--- /dev/null
++++ b/arch/um/nommu/include/asm/sched.h
+@@ -0,0 +1,23 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __UM_NOMMU_SCHED_H
++#define __UM_NOMMU_SCHED_H
++
++#include <linux/sched.h>
++#include <uapi/asm/host_ops.h>
++
++static inline void thread_sched_jb(void)
++{
++	if (test_ti_thread_flag(current_thread_info(), TIF_HOST_THREAD)) {
++		set_ti_thread_flag(current_thread_info(), TIF_SCHED_JB);
++		set_current_state(TASK_UNINTERRUPTIBLE);
++		lkl_ops->jmp_buf_set(&current_thread_info()->task->thread.arch.sched_jb,
++				     schedule);
++	} else {
++		lkl_bug("%s can be used only for host task", __func__);
++	}
++}
++
++void switch_to_host_task(struct task_struct *);
++int host_task_stub(void *unused);
++
++#endif
+diff --git a/arch/um/nommu/include/asm/segment.h b/arch/um/nommu/include/asm/segment.h
+new file mode 100644
+index 000000000000..5608da95cb60
+--- /dev/null
++++ b/arch/um/nommu/include/asm/segment.h
+@@ -0,0 +1,9 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __UM_NOMMU_SEGMENT_H
++#define __UM_NOMMU_SEGMENT_H
++
++typedef struct {
++	unsigned long seg;
++} mm_segment_t;
++
++#endif /* _ASM_LKL_SEGMENT_H */
+diff --git a/arch/um/nommu/include/uapi/asm/Kbuild b/arch/um/nommu/include/uapi/asm/Kbuild
+new file mode 100644
+index 000000000000..4f79e5c4846d
+--- /dev/null
++++ b/arch/um/nommu/include/uapi/asm/Kbuild
+@@ -0,0 +1,4 @@
++# UAPI Header export list
++
++# no generated-y since we need special user headers handling
++# see arch/um/script/headers_install.py
+diff --git a/arch/um/nommu/include/uapi/asm/bitsperlong.h b/arch/um/nommu/include/uapi/asm/bitsperlong.h
+new file mode 100644
+index 000000000000..852566ac2e52
+--- /dev/null
++++ b/arch/um/nommu/include/uapi/asm/bitsperlong.h
+@@ -0,0 +1,11 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++#ifndef __UM_NOMMU_UAPI_BITSPERLONG_H
++#define __UM_NOMMU_UAPI_BITSPERLONG_H
++
++#ifdef CONFIG_64BIT
++#define __BITS_PER_LONG 64
++#else
++#define __BITS_PER_LONG 32
++#endif
++
++#endif
+diff --git a/arch/um/nommu/include/uapi/asm/byteorder.h b/arch/um/nommu/include/uapi/asm/byteorder.h
+new file mode 100644
+index 000000000000..e7ad11a751cf
+--- /dev/null
++++ b/arch/um/nommu/include/uapi/asm/byteorder.h
+@@ -0,0 +1,11 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++#ifndef __UM_NOMMU_UAPI_BYTEORDER_H
++#define __UM_NOMMU_UAPI_BYTEORDER_H
++
++#if defined(CONFIG_BIG_ENDIAN)
++#include <linux/byteorder/big_endian.h>
++#else
++#include <linux/byteorder/little_endian.h>
++#endif
++
++#endif
+diff --git a/arch/um/nommu/include/uapi/asm/sigcontext.h b/arch/um/nommu/include/uapi/asm/sigcontext.h
+new file mode 100644
+index 000000000000..b934ae7f5550
+--- /dev/null
++++ b/arch/um/nommu/include/uapi/asm/sigcontext.h
+@@ -0,0 +1,12 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++#ifndef __UM_NOMMU_UAPI_SIGCONTEXT_H
++#define __UM_NOMMU_UAPI_SIGCONTEXT_H
++
++#include <asm/ptrace-generic.h>
++
++struct sigcontext {
++	struct pt_regs regs;
++	unsigned long oldmask;
++};
++
++#endif
+diff --git a/arch/um/nommu/um/delay.c b/arch/um/nommu/um/delay.c
+new file mode 100644
+index 000000000000..58a366d9b5f0
+--- /dev/null
++++ b/arch/um/nommu/um/delay.c
+@@ -0,0 +1,31 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/jiffies.h>
++#include <linux/delay.h>
++#include <os.h>
++
++void __ndelay(unsigned long nsecs)
++{
++	long long start = os_nsecs();
++
++	while (os_nsecs() < start + nsecs)
++		;
++}
++
++void __udelay(unsigned long usecs)
++{
++	__ndelay(usecs * NSEC_PER_USEC);
++}
++
++void __const_udelay(unsigned long xloops)
++{
++	__udelay(xloops / 0x10c7ul);
++}
++
++void __delay(unsigned long loops)
++{
++	__ndelay(loops / 5);
++}
++
++void calibrate_delay(void)
++{
++}
+diff --git a/arch/um/nommu/um/shared/sysdep/archsetjmp.h b/arch/um/nommu/um/shared/sysdep/archsetjmp.h
+new file mode 100644
+index 000000000000..4a5c10d7521b
+--- /dev/null
++++ b/arch/um/nommu/um/shared/sysdep/archsetjmp.h
+@@ -0,0 +1,13 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __ARCH_UM_SETJMP_H
++#define __ARCH_UM_SETJMP_H
++
++struct __jmp_buf {
++	unsigned long __dummy;
++};
++#define JB_IP __dummy
++#define JB_SP __dummy
++
++typedef struct __jmp_buf jmp_buf[1];
++
++#endif /* __ARCH_UM_SETJMP_H */
+diff --git a/arch/um/nommu/um/shared/sysdep/faultinfo.h b/arch/um/nommu/um/shared/sysdep/faultinfo.h
+new file mode 100644
+index 000000000000..49210742212d
+--- /dev/null
++++ b/arch/um/nommu/um/shared/sysdep/faultinfo.h
+@@ -0,0 +1,8 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __ARCH_UM_FAULTINFO_H
++#define __ARCH_UM_FAULTINFO_H
++
++struct faultinfo {
++};
++
++#endif /* __ARCH_UM_FAULTINFO_H */
+diff --git a/arch/um/nommu/um/shared/sysdep/kernel-offsets.h b/arch/um/nommu/um/shared/sysdep/kernel-offsets.h
+new file mode 100644
+index 000000000000..a004bffb7b8d
+--- /dev/null
++++ b/arch/um/nommu/um/shared/sysdep/kernel-offsets.h
+@@ -0,0 +1,12 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#include <linux/stddef.h>
++#include <linux/sched.h>
++#include <linux/elf.h>
++#include <linux/crypto.h>
++#include <linux/kbuild.h>
++#include <asm/mman.h>
++
++void foo(void)
++{
++#include <common-offsets.h>
++}
+diff --git a/arch/um/nommu/um/shared/sysdep/mcontext.h b/arch/um/nommu/um/shared/sysdep/mcontext.h
+new file mode 100644
+index 000000000000..b734012a74da
+--- /dev/null
++++ b/arch/um/nommu/um/shared/sysdep/mcontext.h
+@@ -0,0 +1,9 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __ARCH_UM_MCONTEXT_H
++#define __ARCH_UM_MCONTEXT_H
++
++extern void get_regs_from_mc(struct uml_pt_regs *regs, mcontext_t *mc);
++
++#define GET_FAULTINFO_FROM_MC(fi, mc) (fi = fi)
++
++#endif /* __ARCH_UM_MCONTEXT_H */
+diff --git a/arch/um/nommu/um/shared/sysdep/ptrace.h b/arch/um/nommu/um/shared/sysdep/ptrace.h
+new file mode 100644
+index 000000000000..bfdfb520a21d
+--- /dev/null
++++ b/arch/um/nommu/um/shared/sysdep/ptrace.h
+@@ -0,0 +1,42 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __ARCH_UM_PTRACE_H
++#define __ARCH_UM_PTRACE_H
++
++#include <generated/user_constants.h>
++#include <linux/errno.h>
++
++struct task_struct;
++
++#define UPT_SYSCALL_NR(r) ((r)->syscall)
++#define UPT_RESTART_SYSCALL(r) ((r)->syscall--) /* XXX */
++
++#define UPT_SP(r) 0
++#define UPT_IP(r) 0
++#define EMPTY_UML_PT_REGS { }
++
++#define MAX_REG_OFFSET (UM_FRAME_SIZE)
++#define MAX_REG_NR ((MAX_REG_OFFSET) / sizeof(unsigned long))
++
++/* unused */
++struct uml_pt_regs {
++	unsigned long gp[1];
++	unsigned long fp[1];
++	long faultinfo;
++	long syscall;
++	int is_user;
++};
++
++extern void arch_init_registers(int pid);
++
++static inline long arch_ptrace(struct task_struct *child,
++			       long request, unsigned long addr,
++			       unsigned long data)
++{
++	return -EINVAL;
++}
++
++static inline void ptrace_disable(struct task_struct *child) {}
++static inline void user_enable_single_step(struct task_struct *child) {}
++static inline void user_disable_single_step(struct task_struct *child) {}
++
++#endif /* __ARCH_UM_PTRACE_H */
+diff --git a/arch/um/nommu/um/shared/sysdep/ptrace_user.h b/arch/um/nommu/um/shared/sysdep/ptrace_user.h
+new file mode 100644
+index 000000000000..86d5cb20fb9f
+--- /dev/null
++++ b/arch/um/nommu/um/shared/sysdep/ptrace_user.h
+@@ -0,0 +1,7 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __ARCH_UM_PTRACE_USER_H
++#define __ARCH_UM_PTRACE_USER_H
++
++#define FP_SIZE 1
++
++#endif
+diff --git a/arch/um/nommu/um/unimplemented.c b/arch/um/nommu/um/unimplemented.c
+new file mode 100644
+index 000000000000..fe33e02e39e5
+--- /dev/null
++++ b/arch/um/nommu/um/unimplemented.c
+@@ -0,0 +1,70 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/signal.h>
++#include <sysdep/ptrace.h>
++#include <asm/ptrace.h>
++
++/* physmem.c  */
++unsigned long high_physmem;
++
++/* x86/um/setjmp*.S  */
++void kernel_longjmp(void)
++{}
++void kernel_setjmp(void)
++{}
++
++/* trap.c */
++void relay_signal(int sig, struct siginfo *si, struct uml_pt_regs *regs)
++{}
++void bus_handler(int sig, struct siginfo *si, struct uml_pt_regs *regs)
++{}
++void segv_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
++{}
++void winch(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
++{}
++
++/* tlb.c */
++void flush_tlb_kernel_vm(void)
++{}
++void force_flush_all(void)
++{}
++
++/* skas/process.c */
++void halt_skas(void)
++{}
++int is_skas_winch(int pid, int fd, void *data)
++{
++	return 0;
++}
++void reboot_skas(void)
++{}
++
++int __init start_uml(void)
++{
++	return 0;
++}
++
++/* exec.c */
++void flush_thread(void)
++{}
++
++/* x86/ptrace_64.c */
++int is_syscall(unsigned long addr)
++{
++	return 0;
++}
++
++
++/* x86/sysrq.c */
++void show_regs(struct pt_regs *regs)
++{}
++
++/* x86/signal.c */
++int setup_signal_stack_si(unsigned long stack_top, struct ksignal *ksig,
++			  struct pt_regs *regs, sigset_t *mask)
++{
++	return 0;
++}
++
++/* x86/bugs.c */
++void arch_check_bugs(void)
++{}
+diff --git a/arch/um/nommu/um/user_constants.h b/arch/um/nommu/um/user_constants.h
+new file mode 100644
+index 000000000000..2245d3d24120
+--- /dev/null
++++ b/arch/um/nommu/um/user_constants.h
+@@ -0,0 +1,13 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __UM_NOMMU_USER_CONSTANTS_H
++#define __UM_NOMMU_USER_CONSTANTS_H
++
++/* XXX: put dummy values */
++#define UM_FRAME_SIZE 4
++#define HOST_FP_SIZE 1
++#define HOST_IP 1
++#define HOST_SP 2
++#define HOST_BP 3
++#define UM_NR_CPUS 1
++
++#endif
 -- 
 2.21.0 (Apple Git-122.2)
 
