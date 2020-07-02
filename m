@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pj1-x1042.google.com ([2607:f8b0:4864:20::1042])
+Received: from mail-pf1-x442.google.com ([2607:f8b0:4864:20::442])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jqzt8-00055f-Rp
- for linux-um@lists.infradead.org; Thu, 02 Jul 2020 14:08:31 +0000
-Received: by mail-pj1-x1042.google.com with SMTP id o22so7530648pjw.2
- for <linux-um@lists.infradead.org>; Thu, 02 Jul 2020 07:08:30 -0700 (PDT)
+ id 1jqztK-00058r-TP
+ for linux-um@lists.infradead.org; Thu, 02 Jul 2020 14:08:43 +0000
+Received: by mail-pf1-x442.google.com with SMTP id u5so12599233pfn.7
+ for <linux-um@lists.infradead.org>; Thu, 02 Jul 2020 07:08:42 -0700 (PDT)
 From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v5 05/21] um: move arch/x86/um/os-Linux to tools/um/uml/
-Date: Thu,  2 Jul 2020 23:06:59 +0900
-Message-Id: <92ac407875bfb718371ef95c40610ec1ed50ff32.1593697069.git.thehajime@gmail.com>
+Subject: [RFC v5 07/21] um: extend arch_switch_to for alternate SUBARCH
+Date: Thu,  2 Jul 2020 23:07:01 +0900
+Message-Id: <fa68d878ff34be60075693cd19ad2bec63dec788.1593697069.git.thehajime@gmail.com>
 In-Reply-To: <cover.1593697069.git.thehajime@gmail.com>
 References: <cover.1593697069.git.thehajime@gmail.com>
 MIME-Version: 1.0
@@ -27,127 +27,77 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
 Cc: Octavian Purdila <tavi.purdila@gmail.com>, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, Akira Moroo <retrage01@gmail.com>
 
-Similar to arch/um/os-Linux code, arch/x86 also contains OS dependent
-part as well.  This patch moves underlying OS dependent part to tools/um
-directory so that arch/x86 code does not need to build host build
-facilities (e.g., libc).
+This commit introduces additional argument of previous task when
+context switch happens.  New SUBARCH can use the new information to
+switch tasks in a subarch-specific manner.
+
+The patch is particularly required by nommu mode implemented as a
+SUBARCH of UML.
 
 Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
 ---
- arch/x86/um/Makefile                                |  2 +-
- arch/x86/um/os-Linux/Makefile                       | 13 -------------
- tools/um/Makefile                                   |  2 +-
- tools/um/uml/Build                                  |  2 ++
- tools/um/uml/x86/Build                              | 11 +++++++++++
- .../x86/um/os-Linux => tools/um/uml/x86}/mcontext.c |  0
- {arch/x86/um/os-Linux => tools/um/uml/x86}/prctl.c  |  0
- .../um/os-Linux => tools/um/uml/x86}/registers.c    |  0
- .../um/os-Linux => tools/um/uml/x86}/task_size.c    |  0
- {arch/x86/um/os-Linux => tools/um/uml/x86}/tls.c    |  0
- 10 files changed, 15 insertions(+), 15 deletions(-)
- delete mode 100644 arch/x86/um/os-Linux/Makefile
- create mode 100644 tools/um/uml/x86/Build
- rename {arch/x86/um/os-Linux => tools/um/uml/x86}/mcontext.c (100%)
- rename {arch/x86/um/os-Linux => tools/um/uml/x86}/prctl.c (100%)
- rename {arch/x86/um/os-Linux => tools/um/uml/x86}/registers.c (100%)
- rename {arch/x86/um/os-Linux => tools/um/uml/x86}/task_size.c (100%)
- rename {arch/x86/um/os-Linux => tools/um/uml/x86}/tls.c (100%)
+ arch/um/kernel/process.c  | 6 +++---
+ arch/x86/um/ptrace_32.c   | 2 +-
+ arch/x86/um/syscalls_64.c | 2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
-index 77f70b969d14..25e9846b36a2 100644
---- a/arch/x86/um/Makefile
-+++ b/arch/x86/um/Makefile
-@@ -13,7 +13,7 @@ obj-y = bugs_$(BITS).o delay.o fault.o ldt.o \
- 	ptrace_$(BITS).o ptrace_user.o setjmp_$(BITS).o signal.o \
- 	stub_$(BITS).o stub_segv.o \
- 	sys_call_table_$(BITS).o sysrq_$(BITS).o tls_$(BITS).o \
--	mem_$(BITS).o subarch.o os-$(OS)/
-+	mem_$(BITS).o subarch.o
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index cbe33af2a880..e5238a42ea17 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -81,7 +81,7 @@ static inline void set_current(struct task_struct *task)
+ 		{ external_pid(), task });
+ }
  
- ifeq ($(CONFIG_X86_32),y)
+-extern void arch_switch_to(struct task_struct *to);
++extern void arch_switch_to(struct task_struct *from, struct task_struct *to);
  
-diff --git a/arch/x86/um/os-Linux/Makefile b/arch/x86/um/os-Linux/Makefile
-deleted file mode 100644
-index 253bfb8cb702..000000000000
---- a/arch/x86/um/os-Linux/Makefile
-+++ /dev/null
-@@ -1,13 +0,0 @@
--#
--# Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
--# Licensed under the GPL
--#
--
--obj-y = registers.o task_size.o mcontext.o
--
--obj-$(CONFIG_X86_32) += tls.o
--obj-$(CONFIG_64BIT) += prctl.o
--
--USER_OBJS := $(obj-y)
--
--include arch/um/scripts/Makefile.rules
-diff --git a/tools/um/Makefile b/tools/um/Makefile
-index 07b9b93ed817..552ed5f1edae 100644
---- a/tools/um/Makefile
-+++ b/tools/um/Makefile
-@@ -61,7 +61,7 @@ $(OUTPUT)%-in.o: FORCE
- 	$(Q)$(MAKE) -f $(srctree)/tools/build/Makefile.build dir=$(patsubst %/,%,$(dir $*)) obj=$(notdir $*)
+ void *__switch_to(struct task_struct *from, struct task_struct *to)
+ {
+@@ -89,7 +89,7 @@ void *__switch_to(struct task_struct *from, struct task_struct *to)
+ 	set_current(to);
  
- # rule to build objects
--$(OUTPUT)%-in.o: $(OUTPUT)lib/linux.o
-+$(OUTPUT)%-in.o: $(OUTPUT)lib/linux.o FORCE
- 	$(Q)$(MAKE) -f $(srctree)/tools/build/Makefile.build dir=$(patsubst %/,%,$(dir $*)) obj=$(notdir $*)
+ 	switch_threads(&from->thread.switch_buf, &to->thread.switch_buf);
+-	arch_switch_to(current);
++	arch_switch_to(from, to);
  
- clean:
-diff --git a/tools/um/uml/Build b/tools/um/uml/Build
-index 8e0607ee8b0a..435a9670d3ff 100644
---- a/tools/um/uml/Build
-+++ b/tools/um/uml/Build
-@@ -12,6 +12,8 @@ liblinux-y += execvp.o file.o helper.o irq.o main.o mem.o process.o \
- 	registers.o sigio.o signal.o start_up.o time.o tty.o \
- 	umid.o user_syms.o util.o drivers/ skas/
+ 	return current->thread.prev_sched;
+ }
+@@ -146,7 +146,7 @@ void fork_handler(void)
+ 	 * arch_switch_to isn't needed. We could want to apply this to
+ 	 * improve performance. -bb
+ 	 */
+-	arch_switch_to(current);
++	arch_switch_to(NULL, current);
  
-+liblinux-y += x86/
-+
- liblinux-$(CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA) += elf_aux.o
+ 	current->thread.prev_sched = NULL;
  
- export O = $(srctree)
-diff --git a/tools/um/uml/x86/Build b/tools/um/uml/x86/Build
-new file mode 100644
-index 000000000000..16bbc7eb19d1
---- /dev/null
-+++ b/tools/um/uml/x86/Build
-@@ -0,0 +1,11 @@
-+#
-+# Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-+# Licensed under the GPL
-+#
-+
-+include $(objtree)/include/config/auto.conf
-+
-+liblinux-y = registers.o task_size.o mcontext.o
-+
-+liblinux-$(CONFIG_X86_32) += tls.o
-+liblinux-$(CONFIG_64BIT) += prctl.o
-diff --git a/arch/x86/um/os-Linux/mcontext.c b/tools/um/uml/x86/mcontext.c
-similarity index 100%
-rename from arch/x86/um/os-Linux/mcontext.c
-rename to tools/um/uml/x86/mcontext.c
-diff --git a/arch/x86/um/os-Linux/prctl.c b/tools/um/uml/x86/prctl.c
-similarity index 100%
-rename from arch/x86/um/os-Linux/prctl.c
-rename to tools/um/uml/x86/prctl.c
-diff --git a/arch/x86/um/os-Linux/registers.c b/tools/um/uml/x86/registers.c
-similarity index 100%
-rename from arch/x86/um/os-Linux/registers.c
-rename to tools/um/uml/x86/registers.c
-diff --git a/arch/x86/um/os-Linux/task_size.c b/tools/um/uml/x86/task_size.c
-similarity index 100%
-rename from arch/x86/um/os-Linux/task_size.c
-rename to tools/um/uml/x86/task_size.c
-diff --git a/arch/x86/um/os-Linux/tls.c b/tools/um/uml/x86/tls.c
-similarity index 100%
-rename from arch/x86/um/os-Linux/tls.c
-rename to tools/um/uml/x86/tls.c
+diff --git a/arch/x86/um/ptrace_32.c b/arch/x86/um/ptrace_32.c
+index 2497bac56066..0f184710d4ca 100644
+--- a/arch/x86/um/ptrace_32.c
++++ b/arch/x86/um/ptrace_32.c
+@@ -11,7 +11,7 @@
+ 
+ extern int arch_switch_tls(struct task_struct *to);
+ 
+-void arch_switch_to(struct task_struct *to)
++void arch_switch_to(struct task_struct *from, struct task_struct *to)
+ {
+ 	int err = arch_switch_tls(to);
+ 	if (!err)
+diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
+index 58f51667e2e4..2ef9474d2bd2 100644
+--- a/arch/x86/um/syscalls_64.c
++++ b/arch/x86/um/syscalls_64.c
+@@ -80,7 +80,7 @@ SYSCALL_DEFINE2(arch_prctl, int, option, unsigned long, arg2)
+ 	return arch_prctl(current, option, (unsigned long __user *) arg2);
+ }
+ 
+-void arch_switch_to(struct task_struct *to)
++void arch_switch_to(struct task_struct *from, struct task_struct *to)
+ {
+ 	if ((to->thread.arch.fs == 0) || (to->mm == NULL))
+ 		return;
 -- 
 2.21.0 (Apple Git-122.2)
 
