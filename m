@@ -1,19 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x641.google.com ([2607:f8b0:4864:20::641])
+Received: from mail-wm1-x344.google.com ([2a00:1450:4864:20::344])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jvcvp-0000GK-A7
- for linux-um@lists.infradead.org; Wed, 15 Jul 2020 08:38:25 +0000
-Received: by mail-pl1-x641.google.com with SMTP id x8so2092340plm.10
- for <linux-um@lists.infradead.org>; Wed, 15 Jul 2020 01:38:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200704085213.444645-1-ignat@cloudflare.com>
- <20200704085213.444645-2-ignat@cloudflare.com>
-In-Reply-To: <20200704085213.444645-2-ignat@cloudflare.com>
-From: Brendan Higgins <brendanhiggins@google.com>
-Date: Wed, 15 Jul 2020 01:38:12 -0700
-Message-ID: <CAFd5g45jR3tRfWhGiX931xh4=aScrfp0buHyRSWWH78NdTHSVA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] um/kconfig: introduce
+ id 1jrduV-000581-H5
+ for linux-um@lists.infradead.org; Sat, 04 Jul 2020 08:52:36 +0000
+Received: by mail-wm1-x344.google.com with SMTP id f18so36406298wml.3
+ for <linux-um@lists.infradead.org>; Sat, 04 Jul 2020 01:52:33 -0700 (PDT)
+From: Ignat Korchagin <ignat@cloudflare.com>
+Subject: [PATCH v2 1/3] um/kconfig: introduce
  CC_CAN_LINK_STATIC_NO_RUNTIME_DEPS
+Date: Sat,  4 Jul 2020 09:52:11 +0100
+Message-Id: <20200704085213.444645-2-ignat@cloudflare.com>
+In-Reply-To: <20200704085213.444645-1-ignat@cloudflare.com>
+References: <20200704085213.444645-1-ignat@cloudflare.com>
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -26,39 +25,76 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Ignat Korchagin <ignat@cloudflare.com>
-Cc: kernel-team@cloudflare.com, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, brendanhiggins@google.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: kernel-team@cloudflare.com, Ignat Korchagin <ignat@cloudflare.com>
 
-On Sat, Jul 4, 2020 at 1:52 AM Ignat Korchagin <ignat@cloudflare.com> wrote:
->
-> For statically linked UML build it is important to take into account the
-> standard C-library implementation. Some implementations, notably glibc have
-> caveats: even when linked statically, the final program might require some
-> runtime dependencies, if certain functions are used within the code.
->
-> Consider the following program:
-> int main(void)
-> {
->         getpwent();
->         return 0;
-> }
->
-> Compiling this program and linking statically with glibc produces the following
-> warning from the linker:
-> /usr/sbin/ld: /tmp/ccuthw1o.o: in function `main':
-> test.c:(.text+0x5): warning: Using 'getpwent' in statically linked
-> applications requires at runtime the shared libraries from the glibc version
-> used for linking
->
-> We will use the flag to detect such C-library implementation build time and
-> possibly disable static linking for UML to avoid producing a binary with
-> unexpected behaviour and dependencies.
->
-> Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>
+For statically linked UML build it is important to take into account the
+standard C-library implementation. Some implementations, notably glibc have
+caveats: even when linked statically, the final program might require some
+runtime dependencies, if certain functions are used within the code.
 
-Nice.
+Consider the following program:
+int main(void)
+{
+	getpwent();
+	return 0;
+}
 
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+Compiling this program and linking statically with glibc produces the following
+warning from the linker:
+/usr/sbin/ld: /tmp/ccuthw1o.o: in function `main':
+test.c:(.text+0x5): warning: Using 'getpwent' in statically linked
+applications requires at runtime the shared libraries from the glibc version
+used for linking
+
+We will use the flag to detect such C-library implementation build time and
+possibly disable static linking for UML to avoid producing a binary with
+unexpected behaviour and dependencies.
+
+Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>
+---
+ init/Kconfig           | 6 ++++++
+ scripts/cc-can-link.sh | 5 +++--
+ 2 files changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/init/Kconfig b/init/Kconfig
+index a46aa8f3174d..717a3ada765e 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -57,6 +57,12 @@ config CC_CAN_LINK_STATIC
+ 	default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) -static $(m64-flag)) if 64BIT
+ 	default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) -static $(m32-flag))
+ 
++config CC_CAN_LINK_STATIC_NO_RUNTIME_DEPS
++	bool
++	depends on UML && CC_CAN_LINK_STATIC
++	default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) -static -Xlinker --fatal-warnings $(m64-flag)) if 64BIT
++	default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) -static -Xlinker --fatal-warnings $(m32-flag))
++
+ config CC_HAS_ASM_GOTO
+ 	def_bool $(success,$(srctree)/scripts/gcc-goto.sh $(CC))
+ 
+diff --git a/scripts/cc-can-link.sh b/scripts/cc-can-link.sh
+index 6efcead31989..e5011a46103e 100755
+--- a/scripts/cc-can-link.sh
++++ b/scripts/cc-can-link.sh
+@@ -2,10 +2,11 @@
+ # SPDX-License-Identifier: GPL-2.0
+ 
+ cat << "END" | $@ -x c - -o /dev/null >/dev/null 2>&1
+-#include <stdio.h>
++#include <sys/types.h>
++#include <pwd.h>
+ int main(void)
+ {
+-	printf("");
++	getpwent();
+ 	return 0;
+ }
+ END
+-- 
+2.20.1
+
 
 _______________________________________________
 linux-um mailing list
