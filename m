@@ -1,18 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-wr1-x442.google.com ([2a00:1450:4864:20::442])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jvnlN-0005qY-0z
- for linux-um@lists.infradead.org; Wed, 15 Jul 2020 20:12:21 +0000
-Received: by mail-wr1-x442.google.com with SMTP id a6so4203065wrm.4
- for <linux-um@lists.infradead.org>; Wed, 15 Jul 2020 13:12:19 -0700 (PDT)
-From: Ignat Korchagin <ignat@cloudflare.com>
-Subject: [PATCH v3 1/3] um/kconfig: introduce
- CC_CAN_LINK_STATIC_NO_RUNTIME_DEPS
-Date: Wed, 15 Jul 2020 21:11:57 +0100
-Message-Id: <20200715201159.54166-2-ignat@cloudflare.com>
-In-Reply-To: <20200715201159.54166-1-ignat@cloudflare.com>
-References: <20200715201159.54166-1-ignat@cloudflare.com>
+Date: Wed, 8 Jul 2020 04:38:23 +0000
+From: Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: [PATCH v5 08/12] init: main: add KUnit to kernel init
+Message-ID: <20200708043823.GZ4332@42.do-not-panic.com>
+References: <20200626210917.358969-1-brendanhiggins@google.com>
+ <20200626210917.358969-9-brendanhiggins@google.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20200626210917.358969-9-brendanhiggins@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -25,78 +20,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, brendanhiggins@google.com, masahiroy@kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: kernel-team@cloudflare.com, Ignat Korchagin <ignat@cloudflare.com>
+To: Brendan Higgins <brendanhiggins@google.com>
+Cc: linux-doc@vger.kernel.org, catalin.marinas@arm.com, jcmvbkbc@gmail.com, will@kernel.org, paulus@samba.org, linux-kselftest@vger.kernel.org, frowand.list@gmail.com, anton.ivanov@cambridgegreys.com, linux-arch@vger.kernel.org, richard@nod.at, rppt@linux.ibm.com, benh@kernel.crashing.org, yzaikin@google.com, linux-xtensa@linux-xtensa.org, keescook@chromium.org, arnd@arndb.de, jdike@addtoit.com, linux-um@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, davidgow@google.com, skhan@linuxfoundation.org, linux-arm-kernel@lists.infradead.org, kunit-dev@googlegroups.com, chris@zankel.net, monstr@monstr.eu, sboyd@kernel.org, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, logang@deltatee.com, mpe@ellerman.id.au, akpm@linux-foundation.org, alan.maguire@oracle.com
 
-For statically linked UML build it is important to take into account the
-standard C-library implementation. Some implementations, notably glibc have
-caveats: even when linked statically, the final program might require some
-runtime dependencies, if certain functions are used within the code.
+On Fri, Jun 26, 2020 at 02:09:13PM -0700, Brendan Higgins wrote:
+> Remove KUnit from init calls entirely, instead call directly from
+> kernel_init().
 
-Consider the following program:
-int main(void)
-{
-	getpwent();
-	return 0;
-}
+The commit log does not explain *why*.
 
-Compiling this program and linking statically with glibc produces the following
-warning from the linker:
-/usr/sbin/ld: /tmp/ccuthw1o.o: in function `main':
-test.c:(.text+0x5): warning: Using 'getpwent' in statically linked
-applications requires at runtime the shared libraries from the glibc version
-used for linking
+> Co-developed-by: Alan Maguire <alan.maguire@oracle.com>
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+> Reviewed-by: Stephen Boyd <sboyd@kernel.org>
 
-We will use the flag to detect such C-library implementation build time and
-possibly disable static linking for UML to avoid producing a binary with
-unexpected behaviour and dependencies.
+Other than that:
 
-Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
-Tested-by: Brendan Higgins <brendanhiggins@google.com>
----
- init/Kconfig           | 6 ++++++
- scripts/cc-can-link.sh | 5 +++--
- 2 files changed, 9 insertions(+), 2 deletions(-)
+Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
 
-diff --git a/init/Kconfig b/init/Kconfig
-index 0498af567f70..0a1ec56c9f33 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -57,6 +57,12 @@ config CC_CAN_LINK_STATIC
- 	default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m64-flag) -static) if 64BIT
- 	default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m32-flag) -static)
- 
-+config CC_CAN_LINK_STATIC_NO_RUNTIME_DEPS
-+	bool
-+	depends on UML && CC_CAN_LINK_STATIC
-+	default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m64-flag) -static -Xlinker --fatal-warnings) if 64BIT
-+	default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m32-flag) -static -Xlinker --fatal-warnings)
-+
- config CC_HAS_ASM_GOTO
- 	def_bool $(success,$(srctree)/scripts/gcc-goto.sh $(CC))
- 
-diff --git a/scripts/cc-can-link.sh b/scripts/cc-can-link.sh
-index 6efcead31989..e5011a46103e 100755
---- a/scripts/cc-can-link.sh
-+++ b/scripts/cc-can-link.sh
-@@ -2,10 +2,11 @@
- # SPDX-License-Identifier: GPL-2.0
- 
- cat << "END" | $@ -x c - -o /dev/null >/dev/null 2>&1
--#include <stdio.h>
-+#include <sys/types.h>
-+#include <pwd.h>
- int main(void)
- {
--	printf("");
-+	getpwent();
- 	return 0;
- }
- END
--- 
-2.20.1
-
+  Luis
 
 _______________________________________________
 linux-um mailing list
