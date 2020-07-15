@@ -1,54 +1,71 @@
-Return-Path: <christian.brauner@ubuntu.com>
-Date: Sat, 4 Jul 2020 18:10:31 +0200
-From: Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: [PATCH 17/17] arch: rename copy_thread_tls() back to
- copy_thread()
-Message-ID: <20200704161031.lcln4ez6yehgffgq@wittgenstein>
-References: <20200622234326.906346-1-christian.brauner@ubuntu.com>
- <20200622234326.906346-18-christian.brauner@ubuntu.com>
- <20200625211749.GH1401039@lianli.shorne-pla.net>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-wr1-x443.google.com ([2a00:1450:4864:20::443])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1jvnlL-0005qI-TD
+ for linux-um@lists.infradead.org; Wed, 15 Jul 2020 20:12:20 +0000
+Received: by mail-wr1-x443.google.com with SMTP id z15so4166745wrl.8
+ for <linux-um@lists.infradead.org>; Wed, 15 Jul 2020 13:12:18 -0700 (PDT)
+From: Ignat Korchagin <ignat@cloudflare.com>
+Subject: [PATCH v3 0/3] um: allow static linking for non-glibc libc
+ implementations
+Date: Wed, 15 Jul 2020 21:11:56 +0100
+Message-Id: <20200715201159.54166-1-ignat@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200625211749.GH1401039@lianli.shorne-pla.net>
-To: Stafford Horne <shorne@gmail.com>, Kees Cook <keescook@chromium.org>
-Cc: linux-kernel@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Mark Salter <msalter@redhat.com>, Aurelien Jacquiot <jacquiot.aurelien@gmail.com>, Guo Ren <guoren@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, Brian Cain <bcain@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Nick Hu <nickhu@andestech.com>, Greentime Hu <green.hu@gmail.com>, Vincent Chen <deanbo422@gmail.com>, Ley Foon Tan <ley.foon.tan@intel.com>, Jonas Bonn <jonas@southpole.se>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Christian Borntraeger <borntraeger@de.ibm.com>, Rich Felker <dalias@libc.org>, "David S. Miller" <davem@davemloft.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Guan Xuetao <gxt@pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, "Peter Zijlstra (Intel)" <peterz@infradead.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, Al Viro <viro@zeniv.linux.org.uk>, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-csky@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, brendanhiggins@google.com, masahiroy@kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: kernel-team@cloudflare.com, Ignat Korchagin <ignat@cloudflare.com>
 
-On Fri, Jun 26, 2020 at 06:17:49AM +0900, Stafford Horne wrote:
-> On Tue, Jun 23, 2020 at 01:43:26AM +0200, Christian Brauner wrote:
-> 
-> > diff --git a/arch/openrisc/kernel/process.c b/arch/openrisc/kernel/process.c
-> > index d7010e72450c..19045a3efb8a 100644
-> > --- a/arch/openrisc/kernel/process.c
-> > +++ b/arch/openrisc/kernel/process.c
-> > @@ -116,7 +116,7 @@ void release_thread(struct task_struct *dead_task)
-> >  extern asmlinkage void ret_from_fork(void);
-> >  
-> >  /*
-> > - * copy_thread_tls
-> > + * copy_thread
-> >   * @clone_flags: flags
-> >   * @usp: user stack pointer or fn for kernel thread
-> >   * @arg: arg to fn for kernel thread; always NULL for userspace thread
-> > @@ -147,7 +147,7 @@ extern asmlinkage void ret_from_fork(void);
-> >   */
-> >  
-> >  int
-> > -copy_thread_tls(unsigned long clone_flags, unsigned long usp,
-> > +copy_thread(unsigned long clone_flags, unsigned long usp,
-> >  		unsigned long arg, struct task_struct *p, unsigned long tls)
-> >  {
-> 
-> For the OpenRISC bit.
-> 
-> Acked-by: Stafford Horne <shorne@gmail.com>
-> 
-> Also, I would agree with what Kees mentioned about aligning the parameters.
-> Sure that would be more work but it would be appreciated.
+Changes from v2:
+  * rebased to accomodate b816b3db15f68690ee72a4a414624f8e82942b25 ("kbuild: fix CONFIG_CC_CAN_LINK(_STATIC) for cross-compilation with Clang")
+  * removed unused FORBID_STATIC_LINK config option
+  * cc-ed Masahiro Yamada <masahiroy@kernel.org> for can-link.sh approve
 
-Sure, this is a mechanical change. I'll update the individual patches to account for that.
+This is a continuation of [1]. Since I was able to produce a working UML binary
+with UML_NET_VECTOR linked with musl with the changes included in the patches
+here. I was compiling on Arch Linux, so hopefully all the latest versions of
+the compiler, libraries and binutils.
 
-Thanks!
-Christian
+I also tested allyesconfig with both musl and glibc. The compilation succeeds
+with both, however both binaries (glibc one being dynamically linked) segfault
+on start. This is probably of some incompatible config option/module being
+included and not related to musl/glibc.
+
+[1]: https://patchwork.ozlabs.org/project/linux-um/patch/20200624212319.403689-1-ignat@cloudflare.com/
+
+Ignat Korchagin (3):
+  um/kconfig: introduce CC_CAN_LINK_STATIC_NO_RUNTIME_DEPS
+  um: some fixes to build UML with musl
+  um: allow static linking for non-glibc implementations
+
+ arch/um/Kconfig               |  5 +----
+ arch/um/drivers/Kconfig       |  3 ---
+ arch/um/drivers/daemon_user.c |  1 +
+ arch/um/drivers/pcap_user.c   | 12 ++++++------
+ arch/um/drivers/slip_user.c   |  2 +-
+ arch/um/drivers/vector_user.c |  4 +---
+ arch/um/os-Linux/util.c       |  2 +-
+ arch/x86/um/user-offsets.c    |  2 +-
+ init/Kconfig                  |  6 ++++++
+ scripts/cc-can-link.sh        |  5 +++--
+ 10 files changed, 21 insertions(+), 21 deletions(-)
+
+-- 
+2.20.1
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
