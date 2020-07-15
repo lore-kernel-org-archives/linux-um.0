@@ -1,17 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x443.google.com ([2607:f8b0:4864:20::443])
+Received: from mail-pj1-x1042.google.com ([2607:f8b0:4864:20::1042])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jqzse-0004xt-AU
- for linux-um@lists.infradead.org; Thu, 02 Jul 2020 14:08:01 +0000
-Received: by mail-pf1-x443.google.com with SMTP id j12so12584715pfn.10
- for <linux-um@lists.infradead.org>; Thu, 02 Jul 2020 07:07:59 -0700 (PDT)
-From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v5 02/21] um: add os init and exit calls
-Date: Thu,  2 Jul 2020 23:06:56 +0900
-Message-Id: <6dfffa1f31b783b0ca9e0ef3d42ef48cfa25d233.1593697069.git.thehajime@gmail.com>
-In-Reply-To: <cover.1593697069.git.thehajime@gmail.com>
-References: <cover.1593697069.git.thehajime@gmail.com>
+ id 1jvcuV-0008Ra-VV
+ for linux-um@lists.infradead.org; Wed, 15 Jul 2020 08:37:05 +0000
+Received: by mail-pj1-x1042.google.com with SMTP id ls15so2740768pjb.1
+ for <linux-um@lists.infradead.org>; Wed, 15 Jul 2020 01:37:02 -0700 (PDT)
 MIME-Version: 1.0
+References: <20200704085213.444645-1-ignat@cloudflare.com>
+In-Reply-To: <20200704085213.444645-1-ignat@cloudflare.com>
+From: Brendan Higgins <brendanhiggins@google.com>
+Date: Wed, 15 Jul 2020 01:36:49 -0700
+Message-ID: <CAFd5g44QK2L+Zkri9=mTFoLXTqdjORn-QATPomiKXkgZfA+wqw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] um: allow static linking for non-glibc libc
+ implementations
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,91 +25,48 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Octavian Purdila <tavi.purdila@gmail.com>, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Octavian Purdila <tavi@cs.pub.ro>, Akira Moroo <retrage01@gmail.com>
+To: Ignat Korchagin <ignat@cloudflare.com>
+Cc: kernel-team@cloudflare.com, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-From: Octavian Purdila <tavi@cs.pub.ro>
+On Sat, Jul 4, 2020 at 1:52 AM Ignat Korchagin <ignat@cloudflare.com> wrote:
+>
+> This is a continuation of [1]. Since I was able to produce a working UML binary
+> with UML_NET_VECTOR linked with musl with the changes included in the patches
+> here. I was compiling on Arch Linux, so hopefully all the latest versions of
+> the compiler, libraries and binutils.
+>
+> I also tested allyesconfig with both musl and glibc. The compilation succeeds
+> with both, however both binaries (glibc one being dynamically linked) segfault
+> on start. This is probably of some incompatible config option/module being
+> included and not related to musl/glibc.
+>
+> [1]: https://patchwork.ozlabs.org/project/linux-um/patch/20200624212319.403689-1-ignat@cloudflare.com/
+>
+> Ignat Korchagin (3):
+>   um/kconfig: introduce CC_CAN_LINK_STATIC_NO_RUNTIME_DEPS
+>   um: some fixes to build UML with musl
+>   um: allow static linking for non-glibc implementations
+>
+>  arch/um/Kconfig               |  2 +-
+>  arch/um/drivers/Kconfig       |  3 ---
+>  arch/um/drivers/daemon_user.c |  1 +
+>  arch/um/drivers/pcap_user.c   | 12 ++++++------
+>  arch/um/drivers/slip_user.c   |  2 +-
+>  arch/um/drivers/vector_user.c |  4 +---
+>  arch/um/os-Linux/util.c       |  2 +-
+>  arch/x86/um/user-offsets.c    |  2 +-
+>  init/Kconfig                  |  6 ++++++
+>  scripts/cc-can-link.sh        |  5 +++--
+>  10 files changed, 21 insertions(+), 18 deletions(-)
 
-These calls are added in preparation for moving some of the code from
-the kernel to the host build.
+Sorry for taking so long to get to this. I saw this last week or
+whenever and then forgot, saw the comments yesterday and remembered.
 
-Signed-off-by: Octavian Purdila <tavi@cs.pub.ro>
----
- arch/um/include/shared/init.h | 14 ++++----------
- arch/um/kernel/reboot.c       |  5 +++++
- arch/um/kernel/um_arch.c      | 11 +++++++++++
- 3 files changed, 20 insertions(+), 10 deletions(-)
+Looks pretty good overall. I will put my reviewed-by on each
+individual patch. Nevertheless, I tested them all together, so being
+lazy:
 
-diff --git a/arch/um/include/shared/init.h b/arch/um/include/shared/init.h
-index c66de434a983..d09308330ca5 100644
---- a/arch/um/include/shared/init.h
-+++ b/arch/um/include/shared/init.h
-@@ -109,19 +109,13 @@ extern struct uml_param __uml_setup_start, __uml_setup_end;
- 
- #ifdef __UM_HOST__
- 
--#define __define_initcall(level,fn) \
--	static initcall_t __initcall_##fn __used \
--	__attribute__((__section__(".initcall" level ".init"))) = fn
--
--/* Userspace initcalls shouldn't depend on anything in the kernel, so we'll
-- * make them run first.
-- */
--#define __initcall(fn) __define_initcall("1", fn)
-+#undef __uml_exit_call
-+#define __uml_exit_call		__used __section(os_exitcalls)
-+#define __init_call		__used __section(os_initcalls)
- 
-+#define __initcall(fn) static initcall_t __initcall_##fn __init_call = fn
- #define __exitcall(fn) static exitcall_t __exitcall_##fn __exit_call = fn
- 
--#define __init_call	__used __section(.initcall.init)
--
- #endif
- 
- #endif /* _LINUX_UML_INIT_H */
-diff --git a/arch/um/kernel/reboot.c b/arch/um/kernel/reboot.c
-index 48c0610d506e..5420aec411f4 100644
---- a/arch/um/kernel/reboot.c
-+++ b/arch/um/kernel/reboot.c
-@@ -35,10 +35,15 @@ static void kill_off_processes(void)
- 	read_unlock(&tasklist_lock);
- }
- 
-+void __weak os_exitcalls(void)
-+{
-+}
-+
- void uml_cleanup(void)
- {
- 	kmalloc_ok = 0;
- 	do_uml_exitcalls();
-+	os_exitcalls();
- 	kill_off_processes();
- }
- 
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index 0f40eccbd759..78d6042fd2e6 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -362,3 +362,14 @@ void __init check_bugs(void)
- void apply_alternatives(struct alt_instr *start, struct alt_instr *end)
- {
- }
-+
-+int __weak os_initcalls(void)
-+{
-+	return 0;
-+}
-+
-+int __init run_os_initcalls(void)
-+{
-+	return os_initcalls();
-+}
-+__initcall(run_os_initcalls);
--- 
-2.21.0 (Apple Git-122.2)
-
+Tested-by: Brendan Higgins <brendanhiggins@google.com>
 
 _______________________________________________
 linux-um mailing list
