@@ -1,18 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pj1-x1043.google.com ([2607:f8b0:4864:20::1043])
+Received: from mail-wm1-x342.google.com ([2a00:1450:4864:20::342])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k0GP0-0003wf-Sj
- for linux-um@lists.infradead.org; Tue, 28 Jul 2020 03:35:43 +0000
-Received: by mail-pj1-x1043.google.com with SMTP id o22so10710699pjw.2
- for <linux-um@lists.infradead.org>; Mon, 27 Jul 2020 20:35:42 -0700 (PDT)
-From: Nicholas Piggin <npiggin@gmail.com>
-Subject: [PATCH 21/24] um: use asm-generic/mmu_context.h for no-op
- implementations
-Date: Tue, 28 Jul 2020 13:34:02 +1000
-Message-Id: <20200728033405.78469-22-npiggin@gmail.com>
-In-Reply-To: <20200728033405.78469-1-npiggin@gmail.com>
-References: <20200728033405.78469-1-npiggin@gmail.com>
+ id 1jxGTd-00079M-Cu
+ for linux-um@lists.infradead.org; Sun, 19 Jul 2020 21:04:06 +0000
+Received: by mail-wm1-x342.google.com with SMTP id j18so20417107wmi.3
+ for <linux-um@lists.infradead.org>; Sun, 19 Jul 2020 14:04:04 -0700 (PDT)
 MIME-Version: 1.0
+References: <20200715201159.54166-1-ignat@cloudflare.com>
+ <20200715201159.54166-4-ignat@cloudflare.com>
+ <159691324719ca79fbb8c206da527fc1f2bbc1ed.camel@sipsolutions.net>
+In-Reply-To: <159691324719ca79fbb8c206da527fc1f2bbc1ed.camel@sipsolutions.net>
+From: Ignat Korchagin <ignat@cloudflare.com>
+Date: Sun, 19 Jul 2020 22:03:53 +0100
+Message-ID: <CALrw=nEB-ohdc-RCA=Ncv40TFg457m7gm5qWg5ahjNrpE9bDCA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] um: allow static linking for non-glibc
+ implementations
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -25,55 +27,68 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-arch@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>, linux-mm@kvack.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: kernel-team <kernel-team@cloudflare.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, masahiroy@kernel.org, Brendan Higgins <brendanhiggins@google.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: linux-um@lists.infradead.org
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
----
- arch/um/include/asm/mmu_context.h | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+On Thu, Jul 16, 2020 at 10:10 AM Johannes Berg
+<johannes@sipsolutions.net> wrote:
+>
+> On Wed, 2020-07-15 at 21:11 +0100, Ignat Korchagin wrote:
+> > It is possible to produce a statically linked UML binary with UML_NET_VECTOR,
+> > UML_NET_VDE and UML_NET_PCAP options enabled using alternative libc
+> > implementations, which do not rely on NSS, such as musl.
+> >
+> > Allow static linking in this case.
+> >
+> > Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>
+> > Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+> > Tested-by: Brendan Higgins <brendanhiggins@google.com>
+> > ---
+> >  arch/um/Kconfig         | 5 +----
+> >  arch/um/drivers/Kconfig | 3 ---
+> >  2 files changed, 1 insertion(+), 7 deletions(-)
+> >
+> > diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+> > index 9318dc6d1a0c..beb98b3b9f75 100644
+> > --- a/arch/um/Kconfig
+> > +++ b/arch/um/Kconfig
+> > @@ -62,12 +62,9 @@ config NR_CPUS
+> >
+> >  source "arch/$(HEADER_ARCH)/um/Kconfig"
+> >
+> > -config FORBID_STATIC_LINK
+> > -     bool
+> > -
+> >  config STATIC_LINK
+> >       bool "Force a static link"
+> > -     depends on !FORBID_STATIC_LINK
+> > +     depends on CC_CAN_LINK_STATIC_NO_RUNTIME_DEPS || (!UML_NET_VECTOR && !UML_NET_VDE && !UML_NET_PCAP)
+>
+> Come to think of it, in a way "FORBID_STATIC_LINK" was nicer because
+> there didn't need to be a single list of "what has dynamic dependencies"
+> like here the list of UML_NET_VECTOR, UML_NET_VDE, UML_NET_PCAP.
+>
+> Maybe it could be
+>
+> config MAY_HAVE_NON_STATIC_RUNTIME_DEPS
+>         bool
+>
+> config STATIC_LINK
+>         ...
+>         depends on !MAY_HAVE_NON_STATIC_RUNTIME_DEPS || CC_CAN_LINK_STATIC_NO_RUNTIME_DEPS
+>
+>
+> and then UML_NET_VECTOR et al can
+>
+>         select MAY_HAVE_NON_STATIC_RUNTIME_DEPS
+>
+> so that the knowledge is still distributed to the corresponding options?
 
-diff --git a/arch/um/include/asm/mmu_context.h b/arch/um/include/asm/mmu_context.h
-index 17ddd4edf875..f8a100770691 100644
---- a/arch/um/include/asm/mmu_context.h
-+++ b/arch/um/include/asm/mmu_context.h
-@@ -37,10 +37,9 @@ static inline bool arch_vma_access_permitted(struct vm_area_struct *vma,
-  * end asm-generic/mm_hooks.h functions
-  */
- 
--#define deactivate_mm(tsk,mm)	do { } while (0)
--
- extern void force_flush_all(void);
- 
-+#define activate_mm activate_mm
- static inline void activate_mm(struct mm_struct *old, struct mm_struct *new)
- {
- 	/*
-@@ -66,13 +65,12 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
- 	}
- }
- 
--static inline void enter_lazy_tlb(struct mm_struct *mm, 
--				  struct task_struct *tsk)
--{
--}
--
-+#define init_new_context init_new_context
- extern int init_new_context(struct task_struct *task, struct mm_struct *mm);
- 
-+#define destroy_context destroy_context
- extern void destroy_context(struct mm_struct *mm);
- 
-+#include <asm-generic/mmu_context.h>
-+
- #endif
--- 
-2.23.0
+Yes, makes sense. I've shortened it to MAY_HAVE_RUNTIME_DEPS and
+reposted the series.
 
+> johannes
+>
 
 _______________________________________________
 linux-um mailing list
