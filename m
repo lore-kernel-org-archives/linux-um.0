@@ -1,16 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-wr1-x42c.google.com ([2a00:1450:4864:20::42c])
+Received: from lhrrgout.huawei.com ([185.176.76.210] helo=huawei.com)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1jrduY-000595-D8
- for linux-um@lists.infradead.org; Sat, 04 Jul 2020 08:52:39 +0000
-Received: by mail-wr1-x42c.google.com with SMTP id s10so35118151wrw.12
- for <linux-um@lists.infradead.org>; Sat, 04 Jul 2020 01:52:38 -0700 (PDT)
-From: Ignat Korchagin <ignat@cloudflare.com>
-Subject: [PATCH v2 3/3] um: allow static linking for non-glibc implementations
-Date: Sat,  4 Jul 2020 09:52:13 +0100
-Message-Id: <20200704085213.444645-4-ignat@cloudflare.com>
-In-Reply-To: <20200704085213.444645-1-ignat@cloudflare.com>
-References: <20200704085213.444645-1-ignat@cloudflare.com>
+ id 1jyWpE-0005qO-Pb
+ for linux-um@lists.infradead.org; Thu, 23 Jul 2020 08:43:37 +0000
+Date: Thu, 23 Jul 2020 09:41:34 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Subject: Re: [RFC PATCH] platform: ioremap: Build iomap functions even
+ without HAS_IOMEM
+Message-ID: <20200723094134.0000432d@Huawei.com>
+In-Reply-To: <20200721054528.2556267-1-davidgow@google.com>
+References: <20200721054528.2556267-1-davidgow@google.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -24,64 +23,83 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, brendanhiggins@google.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: kernel-team@cloudflare.com, Ignat Korchagin <ignat@cloudflare.com>
+To: David Gow <davidgow@google.com>
+Cc: rafael@kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jeff Dike <jdike@addtoit.com>, Brendan Higgins <brendanhiggins@google.com>, linux-kernel@vger.kernel.org, linux-um <linux-um@lists.infradead.org>, Richard Weinberger <richard@nod.at>, Logan Gunthorpe <logang@deltatee.com>, kunit-dev@googlegroups.com
 
-It is possible to produce a statically linked UML binary with UML_NET_VECTOR,
-UML_NET_VDE and UML_NET_PCAP options enabled using alternative libc
-implementations, which do not rely on NSS, such as musl.
+On Mon, 20 Jul 2020 22:45:28 -0700
+David Gow <davidgow@google.com> wrote:
 
-Allow static linking in this case.
+> A number of drivers use devm_platform_ioremap_resource(), but do not (or
+> did not) explicitly depend on IOMEM[1,2]. Given that the only platform
+> without HAS_IOMEM seems to be UML, and it has sufficient stubs for
+> devm_platform_ioremap_resource() and its dependencies to build, we can
+> remove the HAS_IOMEM requirement here, rather than playing whack-a-mole
+> with different drivers which don't try to build against ARCH=um.
+> 
+> The reason this works at the moment is that stub ioremap and iounmap
+> functions were added to UML to support this sort-of thing[3]. This
+> particular change doesn't require adding any additional stubs, but there
+> is possibly room in the future to stub out the remaining iomem functions
+> (or to provide mock implementations for testing), and get rid of
+> HAS_IOMEM entirely.
+> 
+> [1]: https://lkml.org/lkml/2020/6/30/176
+> [2]:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1e7468bd9d30a21e059af477106dc5588ae52dff
+> [3]:
+> https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1405627.html
 
-Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>
----
- arch/um/Kconfig         | 2 +-
- arch/um/drivers/Kconfig | 3 ---
- 2 files changed, 1 insertion(+), 4 deletions(-)
+Hi David,
 
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index 9318dc6d1a0c..af7ed63f9c74 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -67,7 +67,7 @@ config FORBID_STATIC_LINK
- 
- config STATIC_LINK
- 	bool "Force a static link"
--	depends on !FORBID_STATIC_LINK
-+	depends on CC_CAN_LINK_STATIC_NO_RUNTIME_DEPS || (!UML_NET_VECTOR && !UML_NET_VDE && !UML_NET_PCAP)
- 	help
- 	  This option gives you the ability to force a static link of UML.
- 	  Normally, UML is linked as a shared binary.  This is inconvenient for
-diff --git a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
-index 9160ead56e33..72d417055782 100644
---- a/arch/um/drivers/Kconfig
-+++ b/arch/um/drivers/Kconfig
-@@ -234,7 +234,6 @@ config UML_NET_DAEMON
- config UML_NET_VECTOR
- 	bool "Vector I/O high performance network devices"
- 	depends on UML_NET
--	select FORBID_STATIC_LINK
- 	help
- 	This User-Mode Linux network driver uses multi-message send
- 	and receive functions. The host running the UML guest must have
-@@ -246,7 +245,6 @@ config UML_NET_VECTOR
- config UML_NET_VDE
- 	bool "VDE transport (obsolete)"
- 	depends on UML_NET
--	select FORBID_STATIC_LINK
- 	help
- 	This User-Mode Linux network transport allows one or more running
- 	UMLs on a single host to communicate with each other and also
-@@ -294,7 +292,6 @@ config UML_NET_MCAST
- config UML_NET_PCAP
- 	bool "pcap transport (obsolete)"
- 	depends on UML_NET
--	select FORBID_STATIC_LINK
- 	help
- 	The pcap transport makes a pcap packet stream on the host look
- 	like an ethernet device inside UML.  This is useful for making
--- 
-2.20.1
+I don't quite follow why we change when iomap_copy.c is built.
+Was this just a case of there not seeming to be any reason to protect it
+or is there a direct dependency on something in there that I'm missing?
+
+Otherwise looks good to me.
+
+Jonathan
+
+> 
+> Signed-off-by: David Gow <davidgow@google.com>
+> ---
+>  drivers/base/platform.c | 2 --
+>  lib/Makefile            | 2 +-
+>  2 files changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+> index c0d0a5490ac6..628dde6675cf 100644
+> --- a/drivers/base/platform.c
+> +++ b/drivers/base/platform.c
+> @@ -61,7 +61,6 @@ struct resource *platform_get_resource(struct platform_device *dev,
+>  }
+>  EXPORT_SYMBOL_GPL(platform_get_resource);
+>  
+> -#ifdef CONFIG_HAS_IOMEM
+>  /**
+>   * devm_platform_get_and_ioremap_resource - call devm_ioremap_resource() for a
+>   *					    platform device and get resource
+> @@ -135,7 +134,6 @@ devm_platform_ioremap_resource_byname(struct platform_device *pdev,
+>  	return devm_ioremap_resource(&pdev->dev, res);
+>  }
+>  EXPORT_SYMBOL_GPL(devm_platform_ioremap_resource_byname);
+> -#endif /* CONFIG_HAS_IOMEM */
+>  
+>  /**
+>   * platform_get_irq_optional - get an optional IRQ for a device
+> diff --git a/lib/Makefile b/lib/Makefile
+> index b1c42c10073b..35c21af33b93 100644
+> --- a/lib/Makefile
+> +++ b/lib/Makefile
+> @@ -115,7 +115,7 @@ obj-y += math/ crypto/
+>  
+>  obj-$(CONFIG_GENERIC_IOMAP) += iomap.o
+>  obj-$(CONFIG_GENERIC_PCI_IOMAP) += pci_iomap.o
+> -obj-$(CONFIG_HAS_IOMEM) += iomap_copy.o devres.o
+> +obj-y += iomap_copy.o devres.o
+>  obj-$(CONFIG_CHECK_SIGNATURE) += check_signature.o
+>  obj-$(CONFIG_DEBUG_LOCKING_API_SELFTESTS) += locking-selftest.o
+>  
+
 
 
 _______________________________________________
