@@ -1,60 +1,73 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Allen Pais <allen.cryptic@gmail.com>
-Subject: [PATCH] drivers: vme: convert tasklets to use new tasklet_setup() API
-Date: Mon, 17 Aug 2020 14:46:03 +0530
-Message-Id: <20200817091617.28119-9-allen.cryptic@gmail.com>
-In-Reply-To: <20200817091617.28119-1-allen.cryptic@gmail.com>
-References: <20200817091617.28119-1-allen.cryptic@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, 3chas3@gmail.com, axboe@kernel.dk, stefanr@s5r6.in-berlin.de, airlied@linux.ie, daniel@ffwll.ch, sre@kernel.org, James.Bottomley@HansenPartnership.com, kys@microsoft.com, deller@gmx.de, dmitry.torokhov@gmail.com, jassisinghbrar@gmail.com, shawnguo@kernel.org, s.hauer@pengutronix.de, maximlevitsky@gmail.com, oakad@yahoo.com, ulf.hansson@linaro.org, mporter@kernel.crashing.org, alex.bou9@gmail.com, broonie@kernel.org, martyn@welchs.me.uk, manohar.vanga@gmail.com, mitch@sfgoth.com, davem@davemloft.net, kuba@kernel.org
-Cc: keescook@chromium.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org, linux-block@vger.kernel.org, linux-arm-kernel@lists.infradead.org, openipmi-developer@lists.sourceforge.net, linux1394-devel@lists.sourceforge.net, intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, linux-hyperv@vger.kernel.org, linux-parisc@vger.kernel.org, linux-input@vger.kernel.org, linux-mmc@vger.kernel.org, linux-ntb@googlegroups.com, linux-s390@vger.kernel.org, linux-spi@vger.kernel.org, devel@driverdev.osuosl.org, Allen Pais <allen.lkml@gmail.com>, Romain Perier <romain.perier@gmail.com>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pf1-x443.google.com ([2607:f8b0:4864:20::443])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1k3386-0007yf-F6
+ for linux-um@lists.infradead.org; Tue, 04 Aug 2020 20:01:47 +0000
+Received: by mail-pf1-x443.google.com with SMTP id l2so14904723pff.0
+ for <linux-um@lists.infradead.org>; Tue, 04 Aug 2020 13:01:44 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200626210917.358969-1-brendanhiggins@google.com>
+ <202006261442.5C245709@keescook>
+In-Reply-To: <202006261442.5C245709@keescook>
+From: Brendan Higgins <brendanhiggins@google.com>
+Date: Tue, 4 Aug 2020 13:01:30 -0700
+Message-ID: <CAFd5g46auR=OgQ4j=P=KH7GDerW-SkB8aFGehuYkmgJ2Z+jGCA@mail.gmail.com>
+Subject: Re: [PATCH v5 00/12] kunit: create a centralized executor to dispatch
+ all KUnit tests
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Kees Cook <keescook@chromium.org>
+Cc: "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, catalin.marinas@arm.com, jcmvbkbc@gmail.com, will@kernel.org, Paul Mackerras <paulus@samba.org>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Frank Rowand <frowand.list@gmail.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-arch@vger.kernel.org, Richard Weinberger <richard@nod.at>, rppt@linux.ibm.com, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Iurii Zaikin <yzaikin@google.com>, linux-xtensa@linux-xtensa.org, Arnd Bergmann <arnd@arndb.de>, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, linuxppc-dev@lists.ozlabs.org, David Gow <davidgow@google.com>, Shuah Khan <skhan@linuxfoundation.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>, KUnit Development <kunit-dev@googlegroups.com>, Chris Zankel <chris@zankel.net>, Michal Simek <monstr@monstr.eu>, Stephen Boyd <sboyd@kernel.org>, Greg KH <gregkh@linuxfoundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, Michael Ellerman <mpe@ellerman.id.au>, Andrew Morton <akpm@linux-foundation.org>, Logan Gunthorpe <logang@deltatee.com>
 
-From: Allen Pais <allen.lkml@gmail.com>
+On Fri, Jun 26, 2020 at 2:52 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Fri, Jun 26, 2020 at 02:09:05PM -0700, Brendan Higgins wrote:
+> > This patchset adds a centralized executor to dispatch tests rather than
+> > relying on late_initcall to schedule each test suite separately along
+> > with a couple of new features that depend on it.
 
-In preparation for unconditionally passing the
-struct tasklet_struct pointer to all tasklet
-callbacks, switch to using the new tasklet_setup()
-and from_tasklet() to pass the tasklet pointer explicitly.
+Sorry it took so long to reply. I got sucked into some other stuff again.
 
-Signed-off-by: Romain Perier <romain.perier@gmail.com>
-Signed-off-by: Allen Pais <allen.lkml@gmail.com>
----
- drivers/vme/bridges/vme_fake.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+> So, the new section looks fine to me (modulo the INIT_DATA change). The
+> plumbing to start the tests, though, I think is redundant. Why not just
+> add a sysctl that starts all known tests?
 
-diff --git a/drivers/vme/bridges/vme_fake.c b/drivers/vme/bridges/vme_fake.c
-index 6a1bc284f297..38dd5f949cd0 100644
---- a/drivers/vme/bridges/vme_fake.c
-+++ b/drivers/vme/bridges/vme_fake.c
-@@ -90,13 +90,13 @@ static struct device *vme_root;
- /*
-  * Calling VME bus interrupt callback if provided.
-  */
--static void fake_VIRQ_tasklet(unsigned long data)
-+static void fake_VIRQ_tasklet(struct tasklet_struct *t)
- {
- 	struct vme_bridge *fake_bridge;
- 	struct fake_driver *bridge;
- 
--	fake_bridge = (struct vme_bridge *) data;
--	bridge = fake_bridge->driver_priv;
-+	bridge = from_tasklet(bridge, t, int_tasklet);
-+	fake_bridge = bridge->parent;
- 
- 	vme_irq_handler(fake_bridge, bridge->int_level, bridge->int_statid);
- }
-@@ -1098,8 +1098,7 @@ static int __init fake_init(void)
- 	/* Initialize wait queues & mutual exclusion flags */
- 	mutex_init(&fake_device->vme_int);
- 	mutex_init(&fake_bridge->irq_mtx);
--	tasklet_init(&fake_device->int_tasklet, fake_VIRQ_tasklet,
--			(unsigned long) fake_bridge);
-+	tasklet_setup(&fake_device->int_tasklet, fake_VIRQ_tasklet);
- 
- 	strcpy(fake_bridge->name, driver_name);
- 
--- 
-2.17.1
+We already have that; however, we use debugfs to start the tests -
+same difference. I just find it convenient to not have to build and
+then maintain a userland for each architecture. It's also really nice
+that KUnit "just works out of the box" - you don't have to download
+anything other than the kernel source, and you don't need to do any
+steps outside of just run "kuit.py run". That seems like a big
+advantage to me.
 
+> That way you don't need the plumbing into init/main.c, and you can have
+> a mode where builtin tests can be started on a fully booted system too.
+>
+> i.e. boot with "sysctl.kernel.kunit=start" or when fully booted with
+> "echo start > /proc/sys/kernel/kunit"
+>
+> And instead of the kunit-specific halt/reboot stuff, how about moving
+> /proc/sysrq-trigger into /proc/sys instead? Then you (or anything) could
+> do:
+>
+> sysctl.kernel.kunit=start sysctl.kernel.sysrq-trigger=b
+
+I think it might be harder to make a case for the reboot stuff without
+the stuff I am working on outside of this patchset. I think I will
+probably drop that patch from this patchset and reintroduce it later.
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
