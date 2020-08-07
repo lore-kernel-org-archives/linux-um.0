@@ -1,152 +1,62 @@
-Return-Path: <linux-spi-owner@vger.kernel.org>
-From: Allen Pais <allen.cryptic@gmail.com>
-Subject: [PATCH] drm: i915: convert tasklets to use new tasklet_setup() API
-Date: Mon, 17 Aug 2020 14:46:04 +0530
-Message-Id: <20200817091617.28119-10-allen.cryptic@gmail.com>
-In-Reply-To: <20200817091617.28119-1-allen.cryptic@gmail.com>
-References: <20200817091617.28119-1-allen.cryptic@gmail.com>
-Sender: linux-spi-owner@vger.kernel.org
-To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, 3chas3@gmail.com, axboe@kernel.dk, stefanr@s5r6.in-berlin.de, airlied@linux.ie, daniel@ffwll.ch, sre@kernel.org, James.Bottomley@HansenPartnership.com, kys@microsoft.com, deller@gmx.de, dmitry.torokhov@gmail.com, jassisinghbrar@gmail.com, shawnguo@kernel.org, s.hauer@pengutronix.de, maximlevitsky@gmail.com, oakad@yahoo.com, ulf.hansson@linaro.org, mporter@kernel.crashing.org, alex.bou9@gmail.com, broonie@kernel.org, martyn@welchs.me.uk, manohar.vanga@gmail.com, mitch@sfgoth.com, davem@davemloft.net, kuba@kernel.org
-Cc: keescook@chromium.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org, linux-block@vger.kernel.org, linux-arm-kernel@lists.infradead.org, openipmi-developer@lists.sourceforge.net, linux1394-devel@lists.sourceforge.net, intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, linux-hyperv@vger.kernel.org, linux-parisc@vger.kernel.org, linux-input@vger.kernel.org, linux-mmc@vger.kernel.org, linux-ntb@googlegroups.com, linux-s390@vger.kernel.org, linux-spi@vger.kernel.org, devel@driverdev.osuosl.org, Allen Pais <allen.lkml@gmail.com>, Romain Perier <romain.perier@gmail.com>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pj1-x1042.google.com ([2607:f8b0:4864:20::1042])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1k486X-0004vH-PZ
+ for linux-um@lists.infradead.org; Fri, 07 Aug 2020 19:32:38 +0000
+Received: by mail-pj1-x1042.google.com with SMTP id e4so1413930pjd.0
+ for <linux-um@lists.infradead.org>; Fri, 07 Aug 2020 12:32:35 -0700 (PDT)
+From: =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <zenczykowski@gmail.com>
+Subject: [PATCH] uml - fix incorrect assumptions about max pid length
+Date: Fri,  7 Aug 2020 12:32:26 -0700
+Message-Id: <20200807193226.921195-1-zenczykowski@gmail.com>
+MIME-Version: 1.0
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>
+Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, Linux UM Mailing List <linux-um@lists.infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-From: Allen Pais <allen.lkml@gmail.com>
-
-In preparation for unconditionally passing the
-struct tasklet_struct pointer to all tasklet
-callbacks, switch to using the new tasklet_setup()
-and from_tasklet() to pass the tasklet pointer explicitly
-and remove the .data field.
-
-Signed-off-by: Romain Perier <romain.perier@gmail.com>
-Signed-off-by: Allen Pais <allen.lkml@gmail.com>
----
- drivers/gpu/drm/i915/gt/intel_lrc.c           | 31 ++++++++++---------
- .../gpu/drm/i915/gt/uc/intel_guc_submission.c |  8 +++--
- 2 files changed, 22 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/gpu/drm/i915/gt/intel_lrc.c b/drivers/gpu/drm/i915/gt/intel_lrc.c
-index 24322ef08aa4..c45e42b9f239 100644
---- a/drivers/gpu/drm/i915/gt/intel_lrc.c
-+++ b/drivers/gpu/drm/i915/gt/intel_lrc.c
-@@ -3130,9 +3130,10 @@ static bool preempt_timeout(const struct intel_engine_cs *const engine)
-  * Check the unread Context Status Buffers and manage the submission of new
-  * contexts to the ELSP accordingly.
-  */
--static void execlists_submission_tasklet(unsigned long data)
-+static void execlists_submission_tasklet(struct tasklet_struct *t)
- {
--	struct intel_engine_cs * const engine = (struct intel_engine_cs *)data;
-+	struct intel_engine_cs * const engine = from_tasklet(engine, t,
-+						     execlists.tasklet);
- 	bool timeout = preempt_timeout(engine);
- 
- 	process_csb(engine);
-@@ -4306,9 +4307,10 @@ static void execlists_reset_rewind(struct intel_engine_cs *engine, bool stalled)
- 	spin_unlock_irqrestore(&engine->active.lock, flags);
- }
- 
--static void nop_submission_tasklet(unsigned long data)
-+static void nop_submission_tasklet(struct tasklet_struct *t)
- {
--	struct intel_engine_cs * const engine = (struct intel_engine_cs *)data;
-+	struct intel_engine_cs * const engine = from_tasklet(engine, t,
-+						     execlists.tasklet);
- 
- 	/* The driver is wedged; don't process any more events. */
- 	WRITE_ONCE(engine->execlists.queue_priority_hint, INT_MIN);
-@@ -4391,7 +4393,8 @@ static void execlists_reset_cancel(struct intel_engine_cs *engine)
- 	execlists->queue = RB_ROOT_CACHED;
- 
- 	GEM_BUG_ON(__tasklet_is_enabled(&execlists->tasklet));
--	execlists->tasklet.func = nop_submission_tasklet;
-+	execlists->tasklet.func = (void (*)(unsigned long))
-+				  nop_submission_tasklet;
- 
- 	spin_unlock_irqrestore(&engine->active.lock, flags);
- }
-@@ -4986,7 +4989,8 @@ void intel_execlists_set_default_submission(struct intel_engine_cs *engine)
- {
- 	engine->submit_request = execlists_submit_request;
- 	engine->schedule = i915_schedule;
--	engine->execlists.tasklet.func = execlists_submission_tasklet;
-+	engine->execlists.tasklet.func = (void (*)(unsigned long))
-+		execlists_submission_tasklet;
- 
- 	engine->reset.prepare = execlists_reset_prepare;
- 	engine->reset.rewind = execlists_reset_rewind;
-@@ -5113,8 +5117,7 @@ int intel_execlists_submission_setup(struct intel_engine_cs *engine)
- 	struct intel_uncore *uncore = engine->uncore;
- 	u32 base = engine->mmio_base;
- 
--	tasklet_init(&engine->execlists.tasklet,
--		     execlists_submission_tasklet, (unsigned long)engine);
-+	tasklet_setup(&engine->execlists.tasklet, execlists_submission_tasklet);
- 	timer_setup(&engine->execlists.timer, execlists_timeslice, 0);
- 	timer_setup(&engine->execlists.preempt, execlists_preempt, 0);
- 
-@@ -5509,9 +5512,10 @@ static intel_engine_mask_t virtual_submission_mask(struct virtual_engine *ve)
- 	return mask;
- }
- 
--static void virtual_submission_tasklet(unsigned long data)
-+static void virtual_submission_tasklet(struct tasklet_struct *t)
- {
--	struct virtual_engine * const ve = (struct virtual_engine *)data;
-+	struct virtual_engine *  ve = from_tasklet(ve, t,
-+						   base.execlists.tasklet);
- 	const int prio = READ_ONCE(ve->base.execlists.queue_priority_hint);
- 	intel_engine_mask_t mask;
- 	unsigned int n;
-@@ -5724,9 +5728,8 @@ intel_execlists_create_virtual(struct intel_engine_cs **siblings,
- 
- 	INIT_LIST_HEAD(virtual_queue(ve));
- 	ve->base.execlists.queue_priority_hint = INT_MIN;
--	tasklet_init(&ve->base.execlists.tasklet,
--		     virtual_submission_tasklet,
--		     (unsigned long)ve);
-+	tasklet_setup(&ve->base.execlists.tasklet,
-+		     virtual_submission_tasklet);
- 
- 	intel_context_init(&ve->context, &ve->base);
- 
-@@ -5748,7 +5751,7 @@ intel_execlists_create_virtual(struct intel_engine_cs **siblings,
- 		 * layering if we handle cloning of the requests and
- 		 * submitting a copy into each backend.
- 		 */
--		if (sibling->execlists.tasklet.func !=
-+		if (sibling->execlists.tasklet.func != (void (*)(unsigned long))
- 		    execlists_submission_tasklet) {
- 			err = -ENODEV;
- 			goto err_put;
-diff --git a/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c b/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c
-index fdfeb4b9b0f5..3013ff54431c 100644
---- a/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c
-+++ b/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c
-@@ -344,9 +344,10 @@ static void __guc_dequeue(struct intel_engine_cs *engine)
- 	execlists->active = execlists->inflight;
- }
- 
--static void guc_submission_tasklet(unsigned long data)
-+static void guc_submission_tasklet(struct tasklet_struct *t)
- {
--	struct intel_engine_cs * const engine = (struct intel_engine_cs *)data;
-+	struct intel_engine_cs * const engine = from_tasklet(engine, t,
-+							     execlists.tasklet);
- 	struct intel_engine_execlists * const execlists = &engine->execlists;
- 	struct i915_request **port, *rq;
- 	unsigned long flags;
-@@ -591,7 +592,8 @@ static void guc_set_default_submission(struct intel_engine_cs *engine)
- 	 */
- 	intel_execlists_set_default_submission(engine);
- 
--	engine->execlists.tasklet.func = guc_submission_tasklet;
-+	engine->execlists.tasklet.func =
-+				(void (*)(unsigned long))guc_submission_tasklet;
- 
- 	/* do not use execlists park/unpark */
- 	engine->park = engine->unpark = NULL;
--- 
-2.17.1
-
+RnJvbTogTWFjaWVqIMW7ZW5jenlrb3dza2kgPG1hemVAZ29vZ2xlLmNvbT4KCkZpeGVzOiBpc191
+bWRpcl91c2VkIC0gcGlkIGZpbGVuYW1lIHRvbyBsb25nCgpwaWRzIGFyZSBubyBsb25nZXIgbGlt
+aXRlZCB0byAxNi1iaXRzLCBidW1wIHRvIDMyLWJpdHMsCmllLiA5IGRlY2ltYWwgY2hhcmFjdGVy
+cy4gIEFkZGl0aW9uYWxseSBzaXplb2YoIi8iKSBhbHJlYWR5CnJldHVybnMgMiAtIGllLiBpdCBh
+bHJlYWR5IGFjY291bnRzIGZvciB0cmFpbGluZyB6ZXJvLgoKQ2M6IEplZmYgRGlrZSA8amRpa2VA
+YWRkdG9pdC5jb20+CkNjOiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0PgpDYzog
+QW50b24gSXZhbm92IDxhbnRvbi5pdmFub3ZAY2FtYnJpZGdlZ3JleXMuY29tPgpDYzogTGludXgg
+VU0gTWFpbGluZyBMaXN0IDxsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnPgpTaWduZWQtb2Zm
+LWJ5OiBNYWNpZWogxbtlbmN6eWtvd3NraSA8bWF6ZUBnb29nbGUuY29tPgotLS0KIGFyY2gvdW0v
+b3MtTGludXgvdW1pZC5jIHwgOCArKysrLS0tLQogMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9u
+cygrKSwgNCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9hcmNoL3VtL29zLUxpbnV4L3VtaWQu
+YyBiL2FyY2gvdW0vb3MtTGludXgvdW1pZC5jCmluZGV4IDllMTYwNzhhNGJmOC4uMWQ3NTU4ZGFj
+NzVmIDEwMDY0NAotLS0gYS9hcmNoL3VtL29zLUxpbnV4L3VtaWQuYworKysgYi9hcmNoL3VtL29z
+LUxpbnV4L3VtaWQuYwpAQCAtOTcsNyArOTcsNyBAQCBzdGF0aWMgaW50IHJlbW92ZV9maWxlc19h
+bmRfZGlyKGNoYXIgKmRpcikKIAl3aGlsZSAoKGVudCA9IHJlYWRkaXIoZGlyZWN0b3J5KSkgIT0g
+TlVMTCkgewogCQlpZiAoIXN0cmNtcChlbnQtPmRfbmFtZSwgIi4iKSB8fCAhc3RyY21wKGVudC0+
+ZF9uYW1lLCAiLi4iKSkKIAkJCWNvbnRpbnVlOwotCQlsZW4gPSBzdHJsZW4oZGlyKSArIHNpemVv
+ZigiLyIpICsgc3RybGVuKGVudC0+ZF9uYW1lKSArIDE7CisJCWxlbiA9IHN0cmxlbihkaXIpICsg
+c3RybGVuKCIvIikgKyBzdHJsZW4oZW50LT5kX25hbWUpICsgMTsKIAkJaWYgKGxlbiA+IHNpemVv
+ZihmaWxlKSkgewogCQkJcmV0ID0gLUUyQklHOwogCQkJZ290byBvdXQ7CkBAIC0xMzUsNyArMTM1
+LDcgQEAgc3RhdGljIGludCByZW1vdmVfZmlsZXNfYW5kX2RpcihjaGFyICpkaXIpCiAgKi8KIHN0
+YXRpYyBpbmxpbmUgaW50IGlzX3VtZGlyX3VzZWQoY2hhciAqZGlyKQogewotCWNoYXIgcGlkW3Np
+emVvZigibm5ubm5cMCIpXSwgKmVuZCwgKmZpbGU7CisJY2hhciBwaWRbc2l6ZW9mKCJubm5ubm5u
+bm4iKV0sICplbmQsICpmaWxlOwogCWludCBkZWFkLCBmZCwgcCwgbiwgZXJyOwogCXNpemVfdCBm
+aWxlbGVuOwogCkBAIC0yMTcsMTAgKzIxNywxMCBAQCBzdGF0aWMgaW50IHVtZGlyX3Rha2VfaWZf
+ZGVhZChjaGFyICpkaXIpCiAKIHN0YXRpYyB2b2lkIF9faW5pdCBjcmVhdGVfcGlkX2ZpbGUodm9p
+ZCkKIHsKLQljaGFyIHBpZFtzaXplb2YoIm5ubm5uXDAiKV0sICpmaWxlOworCWNoYXIgcGlkW3Np
+emVvZigibm5ubm5ubm5uIildLCAqZmlsZTsKIAlpbnQgZmQsIG47CiAKLQluID0gc3RybGVuKHVt
+bF9kaXIpICsgVU1JRF9MRU4gKyBzaXplb2YoIi9waWRcMCIpOworCW4gPSBzdHJsZW4odW1sX2Rp
+cikgKyBVTUlEX0xFTiArIHNpemVvZigiL3BpZCIpOwogCWZpbGUgPSBtYWxsb2Mobik7CiAJaWYg
+KCFmaWxlKQogCQlyZXR1cm47Ci0tIAoyLjI4LjAuMjM2LmdiMTBjYzc5OTY2LWdvb2cKCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWls
+aW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
 
