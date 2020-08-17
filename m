@@ -1,8 +1,8 @@
 Return-Path: <linux-spi-owner@vger.kernel.org>
 From: Allen Pais <allen.cryptic@gmail.com>
-Subject: [PATCH] driver: hv: convert tasklets to use new tasklet_setup() API
-Date: Mon, 17 Aug 2020 14:45:58 +0530
-Message-Id: <20200817091617.28119-4-allen.cryptic@gmail.com>
+Subject: [PATCH 1/2] hsi: nokia-modem: convert tasklets to use new tasklet_setup() API
+Date: Mon, 17 Aug 2020 14:46:06 +0530
+Message-Id: <20200817091617.28119-12-allen.cryptic@gmail.com>
 In-Reply-To: <20200817091617.28119-1-allen.cryptic@gmail.com>
 References: <20200817091617.28119-1-allen.cryptic@gmail.com>
 Sender: linux-spi-owner@vger.kernel.org
@@ -20,88 +20,37 @@ and from_tasklet() to pass the tasklet pointer explicitly.
 Signed-off-by: Romain Perier <romain.perier@gmail.com>
 Signed-off-by: Allen Pais <allen.lkml@gmail.com>
 ---
- drivers/hv/channel_mgmt.c | 3 +--
- drivers/hv/connection.c   | 4 ++--
- drivers/hv/hv.c           | 3 +--
- drivers/hv/hyperv_vmbus.h | 4 ++--
- drivers/hv/vmbus_drv.c    | 4 ++--
- 5 files changed, 8 insertions(+), 10 deletions(-)
+ drivers/hsi/clients/nokia-modem.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/hv/channel_mgmt.c b/drivers/hv/channel_mgmt.c
-index 591106cf58fc..640fc1688d49 100644
---- a/drivers/hv/channel_mgmt.c
-+++ b/drivers/hv/channel_mgmt.c
-@@ -321,8 +321,7 @@ static struct vmbus_channel *alloc_channel(void)
+diff --git a/drivers/hsi/clients/nokia-modem.c b/drivers/hsi/clients/nokia-modem.c
+index cd7ebf4c2e2f..36d373f089ce 100644
+--- a/drivers/hsi/clients/nokia-modem.c
++++ b/drivers/hsi/clients/nokia-modem.c
+@@ -36,9 +36,10 @@ struct nokia_modem_device {
+ 	struct hsi_client	*cmt_speech;
+ };
  
- 	INIT_LIST_HEAD(&channel->sc_list);
- 
--	tasklet_init(&channel->callback_event,
--		     vmbus_on_event, (unsigned long)channel);
-+	tasklet_setup(&channel->callback_event, vmbus_on_event);
- 
- 	hv_ringbuffer_pre_init(channel);
- 
-diff --git a/drivers/hv/connection.c b/drivers/hv/connection.c
-index 11170d9a2e1a..23e10ebecf5c 100644
---- a/drivers/hv/connection.c
-+++ b/drivers/hv/connection.c
-@@ -322,9 +322,9 @@ struct vmbus_channel *relid2channel(u32 relid)
-  *    If this tasklet has been running for a long time
-  *    then reschedule ourselves.
-  */
--void vmbus_on_event(unsigned long data)
-+void vmbus_on_event(struct tasklet_struct *t)
+-static void do_nokia_modem_rst_ind_tasklet(unsigned long data)
++static void do_nokia_modem_rst_ind_tasklet(struct tasklet_struct *t)
  {
--	struct vmbus_channel *channel = (void *) data;
-+	struct vmbus_channel *channel = from_tasklet(channel, t, callback_event);
- 	unsigned long time_limit = jiffies + 2;
+-	struct nokia_modem_device *modem = (struct nokia_modem_device *)data;
++	struct nokia_modem_device *modem = from_tasklet(modem, t,
++						nokia_modem_rst_ind_tasklet);
  
- 	trace_vmbus_on_event(channel);
-diff --git a/drivers/hv/hv.c b/drivers/hv/hv.c
-index da69338f92f5..91a0582387d6 100644
---- a/drivers/hv/hv.c
-+++ b/drivers/hv/hv.c
-@@ -96,8 +96,7 @@ int hv_synic_alloc(void)
- 	for_each_present_cpu(cpu) {
- 		hv_cpu = per_cpu_ptr(hv_context.cpu_context, cpu);
+ 	if (!modem)
+ 		return;
+@@ -155,8 +156,8 @@ static int nokia_modem_probe(struct device *dev)
+ 	modem->nokia_modem_rst_ind_irq = irq;
+ 	pflags = irq_get_trigger_type(irq);
  
--		tasklet_init(&hv_cpu->msg_dpc,
--			     vmbus_on_msg_dpc, (unsigned long) hv_cpu);
-+		tasklet_setup(&hv_cpu->msg_dpc, vmbus_on_msg_dpc);
- 
- 		hv_cpu->synic_message_page =
- 			(void *)get_zeroed_page(GFP_ATOMIC);
-diff --git a/drivers/hv/hyperv_vmbus.h b/drivers/hv/hyperv_vmbus.h
-index 40e2b9f91163..36199d8ea8c3 100644
---- a/drivers/hv/hyperv_vmbus.h
-+++ b/drivers/hv/hyperv_vmbus.h
-@@ -351,8 +351,8 @@ void vmbus_disconnect(void);
- 
- int vmbus_post_msg(void *buffer, size_t buflen, bool can_sleep);
- 
--void vmbus_on_event(unsigned long data);
--void vmbus_on_msg_dpc(unsigned long data);
-+void vmbus_on_event(struct tasklet_struct *t);
-+void vmbus_on_msg_dpc(struct tasklet_struct *t);
- 
- int hv_kvp_init(struct hv_util_service *srv);
- void hv_kvp_deinit(void);
-diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
-index 910b6e90866c..6b7987dac97a 100644
---- a/drivers/hv/vmbus_drv.c
-+++ b/drivers/hv/vmbus_drv.c
-@@ -1043,9 +1043,9 @@ static void vmbus_onmessage_work(struct work_struct *work)
- 	kfree(ctx);
- }
- 
--void vmbus_on_msg_dpc(unsigned long data)
-+void vmbus_on_msg_dpc(struct tasklet_struct *t)
- {
--	struct hv_per_cpu_context *hv_cpu = (void *)data;
-+	struct hv_per_cpu_context *hv_cpu = from_tasklet(hv_cpu, t, msg_dpc);
- 	void *page_addr = hv_cpu->synic_message_page;
- 	struct hv_message *msg = (struct hv_message *)page_addr +
- 				  VMBUS_MESSAGE_SINT;
+-	tasklet_init(&modem->nokia_modem_rst_ind_tasklet,
+-			do_nokia_modem_rst_ind_tasklet, (unsigned long)modem);
++	tasklet_setup(&modem->nokia_modem_rst_ind_tasklet,
++			do_nokia_modem_rst_ind_tasklet);
+ 	err = devm_request_irq(dev, irq, nokia_modem_rst_ind_isr,
+ 				pflags, "modem_rst_ind", modem);
+ 	if (err < 0) {
 -- 
 2.17.1
 
