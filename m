@@ -1,8 +1,8 @@
 Return-Path: <linux-spi-owner@vger.kernel.org>
 From: Allen Pais <allen.cryptic@gmail.com>
-Subject: [PATCH 1/2] memstick: jmb38x: convert tasklets to use new tasklet_setup() API
-Date: Mon, 17 Aug 2020 14:46:09 +0530
-Message-Id: <20200817091617.28119-15-allen.cryptic@gmail.com>
+Subject: [PATCH] input: serio: convert tasklets to use new tasklet_setup() API
+Date: Mon, 17 Aug 2020 14:46:07 +0530
+Message-Id: <20200817091617.28119-13-allen.cryptic@gmail.com>
 In-Reply-To: <20200817091617.28119-1-allen.cryptic@gmail.com>
 References: <20200817091617.28119-1-allen.cryptic@gmail.com>
 Sender: linux-spi-owner@vger.kernel.org
@@ -20,36 +20,31 @@ and from_tasklet() to pass the tasklet pointer explicitly.
 Signed-off-by: Romain Perier <romain.perier@gmail.com>
 Signed-off-by: Allen Pais <allen.lkml@gmail.com>
 ---
- drivers/memstick/host/jmb38x_ms.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/input/serio/hp_sdc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/memstick/host/jmb38x_ms.c b/drivers/memstick/host/jmb38x_ms.c
-index 4a6b866b0291..2bcf5ce113bd 100644
---- a/drivers/memstick/host/jmb38x_ms.c
-+++ b/drivers/memstick/host/jmb38x_ms.c
-@@ -603,10 +603,10 @@ static void jmb38x_ms_abort(struct timer_list *t)
- 	spin_unlock_irqrestore(&host->lock, flags);
- }
+diff --git a/drivers/input/serio/hp_sdc.c b/drivers/input/serio/hp_sdc.c
+index 13eacf6ab431..91f8253ac66a 100644
+--- a/drivers/input/serio/hp_sdc.c
++++ b/drivers/input/serio/hp_sdc.c
+@@ -301,7 +301,7 @@ static irqreturn_t hp_sdc_nmisr(int irq, void *dev_id)
  
--static void jmb38x_ms_req_tasklet(unsigned long data)
-+static void jmb38x_ms_req_tasklet(struct tasklet_struct *t)
+ unsigned long hp_sdc_put(void);
+ 
+-static void hp_sdc_tasklet(unsigned long foo)
++static void hp_sdc_tasklet(struct tasklet_struct *unused)
  {
--	struct memstick_host *msh = (struct memstick_host *)data;
--	struct jmb38x_ms_host *host = memstick_priv(msh);
-+	struct jmb38x_ms_host *host = from_tasklet(host, t, notify);
-+	struct memstick_host *msh = host->msh;
- 	unsigned long flags;
- 	int rc;
+ 	write_lock_irq(&hp_sdc.rtq_lock);
  
-@@ -868,7 +868,7 @@ static struct memstick_host *jmb38x_ms_alloc_host(struct jmb38x_ms *jm, int cnt)
- 	host->irq = jm->pdev->irq;
- 	host->timeout_jiffies = msecs_to_jiffies(1000);
+@@ -890,7 +890,7 @@ static int __init hp_sdc_init(void)
+ 	hp_sdc_status_in8();
+ 	hp_sdc_data_in8();
  
--	tasklet_init(&host->notify, jmb38x_ms_req_tasklet, (unsigned long)msh);
-+	tasklet_setup(&host->notify, jmb38x_ms_req_tasklet);
- 	msh->request = jmb38x_ms_submit_req;
- 	msh->set_param = jmb38x_ms_set_param;
+-	tasklet_init(&hp_sdc.task, hp_sdc_tasklet, 0);
++	tasklet_setup(&hp_sdc.task, hp_sdc_tasklet, 0);
  
+ 	/* Sync the output buffer registers, thus scheduling hp_sdc_tasklet. */
+ 	t_sync.actidx	= 0;
 -- 
 2.17.1
 
