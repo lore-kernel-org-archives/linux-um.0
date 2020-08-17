@@ -1,8 +1,8 @@
 Return-Path: <linux-spi-owner@vger.kernel.org>
 From: Allen Pais <allen.cryptic@gmail.com>
-Subject: [PATCH] drivers: rapidio: convert tasklets to use new tasklet_setup() API
-Date: Mon, 17 Aug 2020 14:46:01 +0530
-Message-Id: <20200817091617.28119-7-allen.cryptic@gmail.com>
+Subject: [PATCH] drivers: atm: convert tasklets to use new tasklet_setup() API
+Date: Mon, 17 Aug 2020 14:45:59 +0530
+Message-Id: <20200817091617.28119-5-allen.cryptic@gmail.com>
 In-Reply-To: <20200817091617.28119-1-allen.cryptic@gmail.com>
 References: <20200817091617.28119-1-allen.cryptic@gmail.com>
 Sender: linux-spi-owner@vger.kernel.org
@@ -20,35 +20,155 @@ and from_tasklet() to pass the tasklet pointer explicitly.
 Signed-off-by: Romain Perier <romain.perier@gmail.com>
 Signed-off-by: Allen Pais <allen.lkml@gmail.com>
 ---
- drivers/rapidio/devices/tsi721_dma.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/atm/eni.c       |  9 +++++----
+ drivers/atm/fore200e.c  | 14 +++++++-------
+ drivers/atm/he.c        |  8 ++++----
+ drivers/atm/solos-pci.c |  8 ++++----
+ 4 files changed, 20 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/rapidio/devices/tsi721_dma.c b/drivers/rapidio/devices/tsi721_dma.c
-index d375c02059f3..4a2bb6d7c692 100644
---- a/drivers/rapidio/devices/tsi721_dma.c
-+++ b/drivers/rapidio/devices/tsi721_dma.c
-@@ -566,9 +566,9 @@ static void tsi721_advance_work(struct tsi721_bdma_chan *bdma_chan,
- 		  bdma_chan->id);
+diff --git a/drivers/atm/eni.c b/drivers/atm/eni.c
+index 39be444534d0..540edea0ad7a 100644
+--- a/drivers/atm/eni.c
++++ b/drivers/atm/eni.c
+@@ -1521,10 +1521,11 @@ static irqreturn_t eni_int(int irq,void *dev_id)
  }
  
--static void tsi721_dma_tasklet(unsigned long data)
-+static void tsi721_dma_tasklet(struct tasklet_struct *t)
+ 
+-static void eni_tasklet(unsigned long data)
++static void eni_tasklet(struct tasklet_struct *t)
  {
--	struct tsi721_bdma_chan *bdma_chan = (struct tsi721_bdma_chan *)data;
-+	struct tsi721_bdma_chan *bdma_chan = from_tasklet(bdma_chan, t, tasklet);
- 	u32 dmac_int, dmac_sts;
+-	struct atm_dev *dev = (struct atm_dev *) data;
+-	struct eni_dev *eni_dev = ENI_DEV(dev);
++	struct eni_dev *eni_dev = from_tasklet(eni_dev, t, task);
++	struct atm_dev *dev = container_of((void *)eni_dev, typeof(*dev),
++					  dev_data);
+ 	unsigned long flags;
+ 	u32 events;
  
- 	dmac_int = ioread32(bdma_chan->regs + TSI721_DMAC_INT);
-@@ -988,8 +988,7 @@ int tsi721_register_dma(struct tsi721_device *priv)
- 		INIT_LIST_HEAD(&bdma_chan->queue);
- 		INIT_LIST_HEAD(&bdma_chan->free_list);
+@@ -1838,7 +1839,7 @@ static int eni_start(struct atm_dev *dev)
+ 	     eni_dev->vci,eni_dev->rx_dma,eni_dev->tx_dma,
+ 	     eni_dev->service,buf);
+ 	spin_lock_init(&eni_dev->lock);
+-	tasklet_init(&eni_dev->task,eni_tasklet,(unsigned long) dev);
++	tasklet_setup(&eni_dev->task,eni_tasklet);
+ 	eni_dev->events = 0;
+ 	/* initialize memory management */
+ 	buffer_mem = eni_dev->mem - (buf - eni_dev->ram);
+diff --git a/drivers/atm/fore200e.c b/drivers/atm/fore200e.c
+index a81bc49c14ac..8c6226b50e4d 100644
+--- a/drivers/atm/fore200e.c
++++ b/drivers/atm/fore200e.c
+@@ -1180,9 +1180,9 @@ fore200e_interrupt(int irq, void* dev)
  
--		tasklet_init(&bdma_chan->tasklet, tsi721_dma_tasklet,
--			     (unsigned long)bdma_chan);
-+		tasklet_setup(&bdma_chan->tasklet, tsi721_dma_tasklet);
- 		list_add_tail(&bdma_chan->dchan.device_node,
- 			      &mport->dma.channels);
- 		nr_channels++;
+ #ifdef FORE200E_USE_TASKLET
+ static void
+-fore200e_tx_tasklet(unsigned long data)
++fore200e_tx_tasklet(struct tasklet_struct *t)
+ {
+-    struct fore200e* fore200e = (struct fore200e*) data;
++    struct fore200e* fore200e = from_tasklet(fore200e, t, tx_tasklet);
+     unsigned long flags;
+ 
+     DPRINTK(3, "tx tasklet scheduled for device %d\n", fore200e->atm_dev->number);
+@@ -1194,15 +1194,15 @@ fore200e_tx_tasklet(unsigned long data)
+ 
+ 
+ static void
+-fore200e_rx_tasklet(unsigned long data)
++fore200e_rx_tasklet(struct tasklet_struct *t)
+ {
+-    struct fore200e* fore200e = (struct fore200e*) data;
++    struct fore200e* fore200e = from_tasklet(fore200e, t, rx_tasklet);
+     unsigned long    flags;
+ 
+     DPRINTK(3, "rx tasklet scheduled for device %d\n", fore200e->atm_dev->number);
+ 
+     spin_lock_irqsave(&fore200e->q_lock, flags);
+-    fore200e_rx_irq((struct fore200e*) data);
++    fore200e_rx_irq(fore200e);
+     spin_unlock_irqrestore(&fore200e->q_lock, flags);
+ }
+ #endif
+@@ -1943,8 +1943,8 @@ static int fore200e_irq_request(struct fore200e *fore200e)
+ 	   fore200e_irq_itoa(fore200e->irq), fore200e->name);
+ 
+ #ifdef FORE200E_USE_TASKLET
+-    tasklet_init(&fore200e->tx_tasklet, fore200e_tx_tasklet, (unsigned long)fore200e);
+-    tasklet_init(&fore200e->rx_tasklet, fore200e_rx_tasklet, (unsigned long)fore200e);
++    tasklet_setup(&fore200e->tx_tasklet, fore200e_tx_tasklet);
++    tasklet_setup(&fore200e->rx_tasklet, fore200e_rx_tasklet);
+ #endif
+ 
+     fore200e->state = FORE200E_STATE_IRQ;
+diff --git a/drivers/atm/he.c b/drivers/atm/he.c
+index 8af793f5e811..9c36fea4336f 100644
+--- a/drivers/atm/he.c
++++ b/drivers/atm/he.c
+@@ -100,7 +100,7 @@ static void he_close(struct atm_vcc *vcc);
+ static int he_send(struct atm_vcc *vcc, struct sk_buff *skb);
+ static int he_ioctl(struct atm_dev *dev, unsigned int cmd, void __user *arg);
+ static irqreturn_t he_irq_handler(int irq, void *dev_id);
+-static void he_tasklet(unsigned long data);
++static void he_tasklet(struct tasklet_struct *t);
+ static int he_proc_read(struct atm_dev *dev,loff_t *pos,char *page);
+ static int he_start(struct atm_dev *dev);
+ static void he_stop(struct he_dev *dev);
+@@ -383,7 +383,7 @@ static int he_init_one(struct pci_dev *pci_dev,
+ 	he_dev->atm_dev->dev_data = he_dev;
+ 	atm_dev->dev_data = he_dev;
+ 	he_dev->number = atm_dev->number;
+-	tasklet_init(&he_dev->tasklet, he_tasklet, (unsigned long) he_dev);
++	tasklet_setup(&he_dev->tasklet, he_tasklet);
+ 	spin_lock_init(&he_dev->global_lock);
+ 
+ 	if (he_start(atm_dev)) {
+@@ -1925,10 +1925,10 @@ he_service_rbpl(struct he_dev *he_dev, int group)
+ }
+ 
+ static void
+-he_tasklet(unsigned long data)
++he_tasklet(struct tasklet_struct *t)
+ {
+ 	unsigned long flags;
+-	struct he_dev *he_dev = (struct he_dev *) data;
++	struct he_dev *he_dev = from_tasklet(he_dev, t, tasklet);
+ 	int group, type;
+ 	int updated = 0;
+ 
+diff --git a/drivers/atm/solos-pci.c b/drivers/atm/solos-pci.c
+index 94fbc3abe60e..f44e1880cb74 100644
+--- a/drivers/atm/solos-pci.c
++++ b/drivers/atm/solos-pci.c
+@@ -167,7 +167,7 @@ static struct atm_vcc* find_vcc(struct atm_dev *dev, short vpi, int vci);
+ static int atm_init(struct solos_card *, struct device *);
+ static void atm_remove(struct solos_card *);
+ static int send_command(struct solos_card *card, int dev, const char *buf, size_t size);
+-static void solos_bh(unsigned long);
++static void solos_bh(struct tasklet_struct *t);
+ static int print_buffer(struct sk_buff *buf);
+ 
+ static inline void solos_pop(struct atm_vcc *vcc, struct sk_buff *skb)
+@@ -754,9 +754,9 @@ static irqreturn_t solos_irq(int irq, void *dev_id)
+ 	return IRQ_RETVAL(handled);
+ }
+ 
+-static void solos_bh(unsigned long card_arg)
++static void solos_bh(struct tasklet_struct *t)
+ {
+-	struct solos_card *card = (void *)card_arg;
++	struct solos_card *card = from_tasklet(card, t, tlet);
+ 	uint32_t card_flags;
+ 	uint32_t rx_done = 0;
+ 	int port;
+@@ -1294,7 +1294,7 @@ static int fpga_probe(struct pci_dev *dev, const struct pci_device_id *id)
+ 
+ 	pci_set_drvdata(dev, card);
+ 
+-	tasklet_init(&card->tlet, solos_bh, (unsigned long)card);
++	tasklet_setup(&card->tlet, solos_bh);
+ 	spin_lock_init(&card->tx_lock);
+ 	spin_lock_init(&card->tx_queue_lock);
+ 	spin_lock_init(&card->cli_queue_lock);
 -- 
 2.17.1
 
