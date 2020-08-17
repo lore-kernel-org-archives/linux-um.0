@@ -1,86 +1,56 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pj1-x1042.google.com ([2607:f8b0:4864:20::1042])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1k33HF-0000wl-Ew
- for linux-um@lists.infradead.org; Tue, 04 Aug 2020 20:11:14 +0000
-Received: by mail-pj1-x1042.google.com with SMTP id l60so3155674pjb.3
- for <linux-um@lists.infradead.org>; Tue, 04 Aug 2020 13:11:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200626210917.358969-1-brendanhiggins@google.com>
- <20200626210917.358969-10-brendanhiggins@google.com>
- <202006261434.119AE33DBB@keescook>
-In-Reply-To: <202006261434.119AE33DBB@keescook>
-From: Brendan Higgins <brendanhiggins@google.com>
-Date: Tue, 4 Aug 2020 13:10:59 -0700
-Message-ID: <CAFd5g45HeXUBVNW31ZYgpqhYOOu=1jwK_LKZQUOO_6mGaqtSUA@mail.gmail.com>
-Subject: Re: [PATCH v5 09/12] kunit: test: add test plan to KUnit TAP format
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Kees Cook <keescook@chromium.org>
-Cc: "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, catalin.marinas@arm.com, jcmvbkbc@gmail.com, will@kernel.org, Paul Mackerras <paulus@samba.org>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Frank Rowand <frowand.list@gmail.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-arch@vger.kernel.org, Richard Weinberger <richard@nod.at>, rppt@linux.ibm.com, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Iurii Zaikin <yzaikin@google.com>, linux-xtensa@linux-xtensa.org, Arnd Bergmann <arnd@arndb.de>, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, linuxppc-dev@lists.ozlabs.org, David Gow <davidgow@google.com>, Shuah Khan <skhan@linuxfoundation.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>, KUnit Development <kunit-dev@googlegroups.com>, Chris Zankel <chris@zankel.net>, Michal Simek <monstr@monstr.eu>, Stephen Boyd <sboyd@kernel.org>, Greg KH <gregkh@linuxfoundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, Michael Ellerman <mpe@ellerman.id.au>, Andrew Morton <akpm@linux-foundation.org>, Logan Gunthorpe <logang@deltatee.com>
+Return-Path: <linux-spi-owner@vger.kernel.org>
+From: Allen Pais <allen.cryptic@gmail.com>
+Subject: [PATCH 1/2] misc: ibmvmc: convert tasklets to use new tasklet_setup() API
+Date: Mon, 17 Aug 2020 14:46:10 +0530
+Message-Id: <20200817091617.28119-16-allen.cryptic@gmail.com>
+In-Reply-To: <20200817091617.28119-1-allen.cryptic@gmail.com>
+References: <20200817091617.28119-1-allen.cryptic@gmail.com>
+Sender: linux-spi-owner@vger.kernel.org
+To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, 3chas3@gmail.com, axboe@kernel.dk, stefanr@s5r6.in-berlin.de, airlied@linux.ie, daniel@ffwll.ch, sre@kernel.org, James.Bottomley@HansenPartnership.com, kys@microsoft.com, deller@gmx.de, dmitry.torokhov@gmail.com, jassisinghbrar@gmail.com, shawnguo@kernel.org, s.hauer@pengutronix.de, maximlevitsky@gmail.com, oakad@yahoo.com, ulf.hansson@linaro.org, mporter@kernel.crashing.org, alex.bou9@gmail.com, broonie@kernel.org, martyn@welchs.me.uk, manohar.vanga@gmail.com, mitch@sfgoth.com, davem@davemloft.net, kuba@kernel.org
+Cc: keescook@chromium.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org, linux-block@vger.kernel.org, linux-arm-kernel@lists.infradead.org, openipmi-developer@lists.sourceforge.net, linux1394-devel@lists.sourceforge.net, intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, linux-hyperv@vger.kernel.org, linux-parisc@vger.kernel.org, linux-input@vger.kernel.org, linux-mmc@vger.kernel.org, linux-ntb@googlegroups.com, linux-s390@vger.kernel.org, linux-spi@vger.kernel.org, devel@driverdev.osuosl.org, Allen Pais <allen.lkml@gmail.com>, Romain Perier <romain.perier@gmail.com>
+List-ID: <linux-um.lists.infradead.org>
 
-On Fri, Jun 26, 2020 at 2:35 PM Kees Cook <keescook@chromium.org> wrote:
->
-> On Fri, Jun 26, 2020 at 02:09:14PM -0700, Brendan Higgins wrote:
-> > TAP 14 allows an optional test plan to be emitted before the start of
-> > the start of testing[1]; this is valuable because it makes it possible
-> > for a test harness to detect whether the number of tests run matches the
-> > number of tests expected to be run, ensuring that no tests silently
-> > failed.
-> >
-> > Link[1]: https://github.com/isaacs/testanything.github.io/blob/tap14/tap-version-14-specification.md#the-plan
-> > Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-> > Reviewed-by: Stephen Boyd <sboyd@kernel.org>
->
-> Look good, except...
->
-> > diff --git a/tools/testing/kunit/test_data/test_is_test_passed-all_passed.log b/tools/testing/kunit/test_data/test_is_test_passed-all_passed.log
-> > index 62ebc0288355c4b122ccc18ae2505f971efa57bc..bc0dc8fe35b760b1feb74ec419818dbfae1adb5c 100644
-> > GIT binary patch
-> > delta 28
-> > jcmbQmGoME|#4$jjEVZaOGe1wk(1goSPtRy09}gP<dC~`u
-> >
-> > delta 23
-> > ecmbQwGmD2W#4$jjEVZaOGe1wk&}5@94;uhhkp{*9
-> >
-> > diff --git a/tools/testing/kunit/test_data/test_is_test_passed-crash.log b/tools/testing/kunit/test_data/test_is_test_passed-crash.log
-> > index 0b249870c8be417a5865bd40a24c8597bb7f5ab1..4d97f6708c4a5ad5bb2ac879e12afca6e816d83d 100644
-> > GIT binary patch
-> > delta 15
-> > WcmX>hepY;fFN>j`p3z318g2k9Uj*m?
-> >
-> > delta 10
-> > RcmX>renNbL@5Z2NZU7lr1S$Xk
-> >
-> > diff --git a/tools/testing/kunit/test_data/test_is_test_passed-failure.log b/tools/testing/kunit/test_data/test_is_test_passed-failure.log
-> > index 9e89d32d5667a59d137f8adacf3a88fdb7f88baf..7a416497e3bec044eefc1535f7d84ee85703ba97 100644
-> > GIT binary patch
-> > delta 28
-> > jcmZ3&yOLKp#4$jjEVZaOGe1wk(1goSPtRy0-!wJ=eKrU$
-> >
-> > delta 23
-> > ecmZ3<yM&i7#4$jjEVZaOGe1wk&}5_VG&TTPhX-Z=
->
-> What is happening here?? Those logs appear as text to me. Why did git
-> freak out?
+From: Allen Pais <allen.lkml@gmail.com>
 
-That's because this is all test data; it's all plaintext, but out of
-necessity some of the test data is kind of munged up and causes
-checkpatch to complain, so Shuah asked us to mark it as binary since
-it isn't actually code and so checkpatch will stop flagging it.
+In preparation for unconditionally passing the
+struct tasklet_struct pointer to all tasklet
+callbacks, switch to using the new tasklet_setup()
+and from_tasklet() to pass the tasklet pointer explicitly.
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+Signed-off-by: Romain Perier <romain.perier@gmail.com>
+Signed-off-by: Allen Pais <allen.lkml@gmail.com>
+---
+ drivers/misc/ibmvmc.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/misc/ibmvmc.c b/drivers/misc/ibmvmc.c
+index 2d778d0f011e..347278c1a5e4 100644
+--- a/drivers/misc/ibmvmc.c
++++ b/drivers/misc/ibmvmc.c
+@@ -2064,10 +2064,10 @@ static void ibmvmc_handle_crq(struct ibmvmc_crq_msg *crq,
+ 	}
+ }
+ 
+-static void ibmvmc_task(unsigned long data)
++static void ibmvmc_task(struct tasklet_struct *t)
+ {
+-	struct crq_server_adapter *adapter =
+-		(struct crq_server_adapter *)data;
++	struct crq_server_adapter *adapter = from_tasklet(adapter, t,
++							  work_task);
+ 	struct vio_dev *vdev = to_vio_dev(adapter->dev);
+ 	struct ibmvmc_crq_msg *crq;
+ 	int done = 0;
+@@ -2150,7 +2150,7 @@ static int ibmvmc_init_crq_queue(struct crq_server_adapter *adapter)
+ 	queue->cur = 0;
+ 	spin_lock_init(&queue->lock);
+ 
+-	tasklet_init(&adapter->work_task, ibmvmc_task, (unsigned long)adapter);
++	tasklet_setup(&adapter->work_task, ibmvmc_task);
+ 
+ 	if (request_irq(vdev->irq,
+ 			ibmvmc_handle_event,
+-- 
+2.17.1
+
 
