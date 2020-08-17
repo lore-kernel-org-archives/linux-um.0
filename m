@@ -1,8 +1,8 @@
 Return-Path: <linux-spi-owner@vger.kernel.org>
 From: Allen Pais <allen.cryptic@gmail.com>
-Subject: [PATCH] drivers: ntb: convert tasklets to use new tasklet_setup() API
-Date: Mon, 17 Aug 2020 14:46:00 +0530
-Message-Id: <20200817091617.28119-6-allen.cryptic@gmail.com>
+Subject: [PATCH] net: atm: convert tasklets callbacks to use from_tasklet()
+Date: Mon, 17 Aug 2020 14:46:11 +0530
+Message-Id: <20200817091617.28119-17-allen.cryptic@gmail.com>
 In-Reply-To: <20200817091617.28119-1-allen.cryptic@gmail.com>
 References: <20200817091617.28119-1-allen.cryptic@gmail.com>
 Sender: linux-spi-owner@vger.kernel.org
@@ -12,52 +12,27 @@ List-ID: <linux-um.lists.infradead.org>
 
 From: Allen Pais <allen.lkml@gmail.com>
 
-In preparation for unconditionally passing the
-struct tasklet_struct pointer to all tasklet
-callbacks, switch to using the new tasklet_setup()
-and from_tasklet() to pass the tasklet pointer explicitly.
+Update all the callbacks of all tasklets by using
+from_tasklet() and remove .data field.
 
 Signed-off-by: Romain Perier <romain.perier@gmail.com>
 Signed-off-by: Allen Pais <allen.lkml@gmail.com>
 ---
- drivers/ntb/ntb_transport.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ net/atm/pppoatm.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/ntb/ntb_transport.c b/drivers/ntb/ntb_transport.c
-index e6d1f5b298f3..ab3bee2fc803 100644
---- a/drivers/ntb/ntb_transport.c
-+++ b/drivers/ntb/ntb_transport.c
-@@ -273,7 +273,7 @@ enum {
- #define NTB_QP_DEF_NUM_ENTRIES	100
- #define NTB_LINK_DOWN_TIMEOUT	10
- 
--static void ntb_transport_rxc_db(unsigned long data);
-+static void ntb_transport_rxc_db(struct tasklet_struct *t);
- static const struct ntb_ctx_ops ntb_transport_ops;
- static struct ntb_client ntb_transport_client;
- static int ntb_async_tx_submit(struct ntb_transport_qp *qp,
-@@ -1234,8 +1234,7 @@ static int ntb_transport_init_queue(struct ntb_transport_ctx *nt,
- 	INIT_LIST_HEAD(&qp->rx_free_q);
- 	INIT_LIST_HEAD(&qp->tx_free_q);
- 
--	tasklet_init(&qp->rxc_db_work, ntb_transport_rxc_db,
--		     (unsigned long)qp);
-+	tasklet_setup(&qp->rxc_db_work, ntb_transport_rxc_db);
- 
- 	return 0;
- }
-@@ -1685,9 +1684,9 @@ static int ntb_process_rxc(struct ntb_transport_qp *qp)
- 	return 0;
- }
- 
--static void ntb_transport_rxc_db(unsigned long data)
-+static void ntb_transport_rxc_db(struct tasklet_struct *t)
- {
--	struct ntb_transport_qp *qp = (void *)data;
-+	struct ntb_transport_qp *qp = from_tasklet(qp, t, rxc_db_work);
- 	int rc, i;
- 
- 	dev_dbg(&qp->ndev->pdev->dev, "%s: doorbell %d received\n",
+diff --git a/net/atm/pppoatm.c b/net/atm/pppoatm.c
+index 579b66da1d95..3803be8470f7 100644
+--- a/net/atm/pppoatm.c
++++ b/net/atm/pppoatm.c
+@@ -416,7 +416,6 @@ static int pppoatm_assign_vcc(struct atm_vcc *atmvcc, void __user *arg)
+ 	pvcc->chan.mtu = atmvcc->qos.txtp.max_sdu - PPP_HDRLEN -
+ 	    (be.encaps == e_vc ? 0 : LLC_LEN);
+ 	pvcc->wakeup_tasklet = tasklet_proto;
+-	pvcc->wakeup_tasklet.data = (unsigned long) &pvcc->chan;
+ 	err = ppp_register_channel(&pvcc->chan);
+ 	if (err != 0) {
+ 		kfree(pvcc);
 -- 
 2.17.1
 
