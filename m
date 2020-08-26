@@ -1,56 +1,61 @@
-Return-Path: <linux-spi-owner@vger.kernel.org>
-From: Allen Pais <allen.cryptic@gmail.com>
-Subject: [PATCH 1/2] misc: ibmvmc: convert tasklets to use new tasklet_setup() API
-Date: Mon, 17 Aug 2020 14:46:10 +0530
-Message-Id: <20200817091617.28119-16-allen.cryptic@gmail.com>
-In-Reply-To: <20200817091617.28119-1-allen.cryptic@gmail.com>
-References: <20200817091617.28119-1-allen.cryptic@gmail.com>
-Sender: linux-spi-owner@vger.kernel.org
-To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, 3chas3@gmail.com, axboe@kernel.dk, stefanr@s5r6.in-berlin.de, airlied@linux.ie, daniel@ffwll.ch, sre@kernel.org, James.Bottomley@HansenPartnership.com, kys@microsoft.com, deller@gmx.de, dmitry.torokhov@gmail.com, jassisinghbrar@gmail.com, shawnguo@kernel.org, s.hauer@pengutronix.de, maximlevitsky@gmail.com, oakad@yahoo.com, ulf.hansson@linaro.org, mporter@kernel.crashing.org, alex.bou9@gmail.com, broonie@kernel.org, martyn@welchs.me.uk, manohar.vanga@gmail.com, mitch@sfgoth.com, davem@davemloft.net, kuba@kernel.org
-Cc: keescook@chromium.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org, linux-block@vger.kernel.org, linux-arm-kernel@lists.infradead.org, openipmi-developer@lists.sourceforge.net, linux1394-devel@lists.sourceforge.net, intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, linux-hyperv@vger.kernel.org, linux-parisc@vger.kernel.org, linux-input@vger.kernel.org, linux-mmc@vger.kernel.org, linux-ntb@googlegroups.com, linux-s390@vger.kernel.org, linux-spi@vger.kernel.org, devel@driverdev.osuosl.org, Allen Pais <allen.lkml@gmail.com>, Romain Perier <romain.perier@gmail.com>
+Return-Path: <linux-arch-owner@vger.kernel.org>
+From: Nicholas Piggin <npiggin@gmail.com>
+Subject: [PATCH v2 21/23] um: use asm-generic/mmu_context.h for no-op implementations
+Date: Thu, 27 Aug 2020 00:52:47 +1000
+Message-Id: <20200826145249.745432-22-npiggin@gmail.com>
+In-Reply-To: <20200826145249.745432-1-npiggin@gmail.com>
+References: <20200826145249.745432-1-npiggin@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Sender: linux-arch-owner@vger.kernel.org
+To: linux-arch@vger.kernel.org
+Cc: Nicholas Piggin <npiggin@gmail.com>, linux-kernel@vger.kernel.org, linux-mm@kvack.org, Arnd Bergmann <arnd@arndb.de>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
 List-ID: <linux-um.lists.infradead.org>
 
-From: Allen Pais <allen.lkml@gmail.com>
-
-In preparation for unconditionally passing the
-struct tasklet_struct pointer to all tasklet
-callbacks, switch to using the new tasklet_setup()
-and from_tasklet() to pass the tasklet pointer explicitly.
-
-Signed-off-by: Romain Perier <romain.perier@gmail.com>
-Signed-off-by: Allen Pais <allen.lkml@gmail.com>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: linux-um@lists.infradead.org
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
 ---
- drivers/misc/ibmvmc.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/um/include/asm/mmu_context.h | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/misc/ibmvmc.c b/drivers/misc/ibmvmc.c
-index 2d778d0f011e..347278c1a5e4 100644
---- a/drivers/misc/ibmvmc.c
-+++ b/drivers/misc/ibmvmc.c
-@@ -2064,10 +2064,10 @@ static void ibmvmc_handle_crq(struct ibmvmc_crq_msg *crq,
+diff --git a/arch/um/include/asm/mmu_context.h b/arch/um/include/asm/mmu_context.h
+index 17ddd4edf875..f8a100770691 100644
+--- a/arch/um/include/asm/mmu_context.h
++++ b/arch/um/include/asm/mmu_context.h
+@@ -37,10 +37,9 @@ static inline bool arch_vma_access_permitted(struct vm_area_struct *vma,
+  * end asm-generic/mm_hooks.h functions
+  */
+ 
+-#define deactivate_mm(tsk,mm)	do { } while (0)
+-
+ extern void force_flush_all(void);
+ 
++#define activate_mm activate_mm
+ static inline void activate_mm(struct mm_struct *old, struct mm_struct *new)
+ {
+ 	/*
+@@ -66,13 +65,12 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
  	}
  }
  
--static void ibmvmc_task(unsigned long data)
-+static void ibmvmc_task(struct tasklet_struct *t)
- {
--	struct crq_server_adapter *adapter =
--		(struct crq_server_adapter *)data;
-+	struct crq_server_adapter *adapter = from_tasklet(adapter, t,
-+							  work_task);
- 	struct vio_dev *vdev = to_vio_dev(adapter->dev);
- 	struct ibmvmc_crq_msg *crq;
- 	int done = 0;
-@@ -2150,7 +2150,7 @@ static int ibmvmc_init_crq_queue(struct crq_server_adapter *adapter)
- 	queue->cur = 0;
- 	spin_lock_init(&queue->lock);
+-static inline void enter_lazy_tlb(struct mm_struct *mm, 
+-				  struct task_struct *tsk)
+-{
+-}
+-
++#define init_new_context init_new_context
+ extern int init_new_context(struct task_struct *task, struct mm_struct *mm);
  
--	tasklet_init(&adapter->work_task, ibmvmc_task, (unsigned long)adapter);
-+	tasklet_setup(&adapter->work_task, ibmvmc_task);
++#define destroy_context destroy_context
+ extern void destroy_context(struct mm_struct *mm);
  
- 	if (request_irq(vdev->irq,
- 			ibmvmc_handle_event,
++#include <asm-generic/mmu_context.h>
++
+ #endif
 -- 
-2.17.1
+2.23.0
 
 
