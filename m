@@ -1,57 +1,118 @@
-Return-Path: <linux-spi-owner@vger.kernel.org>
-From: Allen Pais <allen.cryptic@gmail.com>
-Subject: [PATCH 1/2] hsi: nokia-modem: convert tasklets to use new tasklet_setup() API
-Date: Mon, 17 Aug 2020 14:46:06 +0530
-Message-Id: <20200817091617.28119-12-allen.cryptic@gmail.com>
-In-Reply-To: <20200817091617.28119-1-allen.cryptic@gmail.com>
-References: <20200817091617.28119-1-allen.cryptic@gmail.com>
-Sender: linux-spi-owner@vger.kernel.org
-To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, 3chas3@gmail.com, axboe@kernel.dk, stefanr@s5r6.in-berlin.de, airlied@linux.ie, daniel@ffwll.ch, sre@kernel.org, James.Bottomley@HansenPartnership.com, kys@microsoft.com, deller@gmx.de, dmitry.torokhov@gmail.com, jassisinghbrar@gmail.com, shawnguo@kernel.org, s.hauer@pengutronix.de, maximlevitsky@gmail.com, oakad@yahoo.com, ulf.hansson@linaro.org, mporter@kernel.crashing.org, alex.bou9@gmail.com, broonie@kernel.org, martyn@welchs.me.uk, manohar.vanga@gmail.com, mitch@sfgoth.com, davem@davemloft.net, kuba@kernel.org
-Cc: keescook@chromium.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org, linux-block@vger.kernel.org, linux-arm-kernel@lists.infradead.org, openipmi-developer@lists.sourceforge.net, linux1394-devel@lists.sourceforge.net, intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, linux-hyperv@vger.kernel.org, linux-parisc@vger.kernel.org, linux-input@vger.kernel.org, linux-mmc@vger.kernel.org, linux-ntb@googlegroups.com, linux-s390@vger.kernel.org, linux-spi@vger.kernel.org, devel@driverdev.osuosl.org, Allen Pais <allen.lkml@gmail.com>, Romain Perier <romain.perier@gmail.com>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+MIME-Version: 1.0
+References: <161b75f1-4e88-dcdf-42e8-b22504d7525c@kernel.dk>
+ <202008171246.80287CDCA@keescook>
+ <df645c06-c30b-eafa-4d23-826b84f2ff48@kernel.dk>
+ <1597780833.3978.3.camel@HansenPartnership.com>
+ <f3312928-430c-25f3-7112-76f2754df080@kernel.dk>
+ <1597849185.3875.7.camel@HansenPartnership.com>
+ <CAOMdWSJRR0BhjJK1FxD7UKxNd5sk4ycmEX6TYtJjRNR6UFAj6Q@mail.gmail.com>
+ <1597873172.4030.2.camel@HansenPartnership.com>
+ <CAEogwTCH8qqjAnSpT0GDn+NuAps8dNbfcPVQ9h8kfOWNbzrD0w@mail.gmail.com>
+ <20200826095528.GX1793@kadam> <202008260811.1CE425B5C2@keescook>
+In-Reply-To: <202008260811.1CE425B5C2@keescook>
+From: Allen <allen.lkml@gmail.com>
+Date: Thu, 27 Aug 2020 07:07:47 +0530
+Message-ID: <CAOMdWSLyacdeoqnZBuLu6z1B6cY-WbtUJQm6+8=WHyE49tVaEg@mail.gmail.com>
+Subject: Re: [PATCH] block: convert tasklets to use new tasklet_setup() API
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Kees Cook <keescook@chromium.org>
+Cc: Ulf Hansson <ulf.hansson@linaro.org>, linux-atm-general@lists.sourceforge.net, s.hauer@pengutronix.de, manohar.vanga@gmail.com, airlied@linux.ie, linux-hyperv@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, James Bottomley <James.Bottomley@hansenpartnership.com>, linux1394-devel@lists.sourceforge.net, anton.ivanov@cambridgegreys.com, devel@driverdev.osuosl.org, linux-s390@vger.kernel.org, maximlevitsky@gmail.com, richard@nod.at, deller@gmx.de, jassisinghbrar@gmail.com, 3chas3@gmail.com, linux-input@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>, mporter@kernel.crashing.org, jdike@addtoit.com, Dan Carpenter <dan.carpenter@oracle.com>, oakad@yahoo.com, intel-gfx@lists.freedesktop.org, linux-um@lists.infradead.org, linux-block@vger.kernel.org, Mark Brown <broonie@kernel.org>, openipmi-developer@lists.sourceforge.net, mitch@sfgoth.com, linux-arm-kernel@lists.infradead.org, Jens Axboe <axboe@kernel.dk>, linux-parisc@vger.kernel.org, netdev@vger.kernel.org, martyn@welchs.me.uk, dmitry.torokhov@gmail.com, linux-mmc@vger.kernel.org, sre@kernel.org, linux-spi@vger.kernel.org, alex.bou9@gmail.com, Allen Pais <allen.cryptic@gmail.com>, stefanr@s5r6.in-berlin.de, Daniel Vetter <daniel@ffwll.ch>, linux-ntb@googlegroups.com, Romain Perier <romain.perier@gmail.com>, shawnguo@kernel.org, David Miller <davem@davemloft.net>
 
-From: Allen Pais <allen.lkml@gmail.com>
+On Wed, Aug 26, 2020 at 8:43 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Wed, Aug 26, 2020 at 12:55:28PM +0300, Dan Carpenter wrote:
+> > On Wed, Aug 26, 2020 at 07:21:35AM +0530, Allen Pais wrote:
+> > > On Thu, Aug 20, 2020 at 3:09 AM James Bottomley
+> > > <James.Bottomley@hansenpartnership.com> wrote:
+> > > >
+> > > > On Wed, 2020-08-19 at 21:54 +0530, Allen wrote:
+> > > > > > [...]
+> > > > > > > > Since both threads seem to have petered out, let me suggest in
+> > > > > > > > kernel.h:
+> > > > > > > >
+> > > > > > > > #define cast_out(ptr, container, member) \
+> > > > > > > >     container_of(ptr, typeof(*container), member)
+> > > > > > > >
+> > > > > > > > It does what you want, the argument order is the same as
+> > > > > > > > container_of with the only difference being you name the
+> > > > > > > > containing structure instead of having to specify its type.
+> > > > > > >
+> > > > > > > Not to incessantly bike shed on the naming, but I don't like
+> > > > > > > cast_out, it's not very descriptive. And it has connotations of
+> > > > > > > getting rid of something, which isn't really true.
+> > > > > >
+> > > > > > Um, I thought it was exactly descriptive: you're casting to the
+> > > > > > outer container.  I thought about following the C++ dynamic casting
+> > > > > > style, so out_cast(), but that seemed a bit pejorative.  What about
+> > > > > > outer_cast()?
+> > > > > >
+> > > > > > > FWIW, I like the from_ part of the original naming, as it has
+> > > > > > > some clues as to what is being done here. Why not just
+> > > > > > > from_container()? That should immediately tell people what it
+> > > > > > > does without having to look up the implementation, even before
+> > > > > > > this becomes a part of the accepted coding norm.
+> > > > > >
+> > > > > > I'm not opposed to container_from() but it seems a little less
+> > > > > > descriptive than outer_cast() but I don't really care.  I always
+> > > > > > have to look up container_of() when I'm using it so this would just
+> > > > > > be another macro of that type ...
+> > > > > >
+> > > > >
+> > > > >  So far we have a few which have been suggested as replacement
+> > > > > for from_tasklet()
+> > > > >
+> > > > > - out_cast() or outer_cast()
+> > > > > - from_member().
+> > > > > - container_from() or from_container()
+> > > > >
+> > > > > from_container() sounds fine, would trimming it a bit work? like
+> > > > > from_cont().
+> > > >
+> > > > I'm fine with container_from().  It's the same form as container_of()
+> > > > and I think we need urgent agreement to not stall everything else so
+> > > > the most innocuous name is likely to get the widest acceptance.
+> > >
+> > > Kees,
+> > >
+> > >   Will you be  sending the newly proposed API to Linus? I have V2
+> > > which uses container_from()
+> > > ready to be sent out.
+> >
+> > I liked that James swapped the first two arguments so that it matches
+> > container_of().  Plus it's nice that when you have:
+> >
+> >       struct whatever *foo = container_from(ptr, foo, member);
+> >
+> > Then it means that "ptr == &foo->member".
+>
+> I'm a bit stalled right now -- the merge window was keeping me busy, and
+> this week is the Linux Plumbers Conference. This is on my list, but I
+> haven't gotten back around to it. If you want, feel free to send the
+> container_from() patch; you might be able to unblock this faster than me
+> right now. :)
+>
 
-In preparation for unconditionally passing the
-struct tasklet_struct pointer to all tasklet
-callbacks, switch to using the new tasklet_setup()
-and from_tasklet() to pass the tasklet pointer explicitly.
+Sure, Thanks.
 
-Signed-off-by: Romain Perier <romain.perier@gmail.com>
-Signed-off-by: Allen Pais <allen.lkml@gmail.com>
----
- drivers/hsi/clients/nokia-modem.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/hsi/clients/nokia-modem.c b/drivers/hsi/clients/nokia-modem.c
-index cd7ebf4c2e2f..36d373f089ce 100644
---- a/drivers/hsi/clients/nokia-modem.c
-+++ b/drivers/hsi/clients/nokia-modem.c
-@@ -36,9 +36,10 @@ struct nokia_modem_device {
- 	struct hsi_client	*cmt_speech;
- };
- 
--static void do_nokia_modem_rst_ind_tasklet(unsigned long data)
-+static void do_nokia_modem_rst_ind_tasklet(struct tasklet_struct *t)
- {
--	struct nokia_modem_device *modem = (struct nokia_modem_device *)data;
-+	struct nokia_modem_device *modem = from_tasklet(modem, t,
-+						nokia_modem_rst_ind_tasklet);
- 
- 	if (!modem)
- 		return;
-@@ -155,8 +156,8 @@ static int nokia_modem_probe(struct device *dev)
- 	modem->nokia_modem_rst_ind_irq = irq;
- 	pflags = irq_get_trigger_type(irq);
- 
--	tasklet_init(&modem->nokia_modem_rst_ind_tasklet,
--			do_nokia_modem_rst_ind_tasklet, (unsigned long)modem);
-+	tasklet_setup(&modem->nokia_modem_rst_ind_tasklet,
-+			do_nokia_modem_rst_ind_tasklet);
- 	err = devm_request_irq(dev, irq, nokia_modem_rst_ind_isr,
- 				pflags, "modem_rst_ind", modem);
- 	if (err < 0) {
+
 -- 
-2.17.1
+       - Allen
 
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
