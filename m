@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Date: Mon, 7 Sep 2020 23:15:47 +0300
+From: Mike Rapoport <rppt@kernel.org>
 Subject: Re: [RFC PATCH v2 3/3] mm: make generic pXd_addr_end() macros inline
  functions
+Message-ID: <20200907201547.GD1976319@kernel.org>
 References: <20200907180058.64880-1-gerald.schaefer@linux.ibm.com>
  <20200907180058.64880-4-gerald.schaefer@linux.ibm.com>
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <4c101685-5b29-dace-9dd2-b6f0ae193a9c@csgroup.eu>
-Date: Tue, 8 Sep 2020 07:19:38 +0200
 MIME-Version: 1.0
+Content-Disposition: inline
 In-Reply-To: <20200907180058.64880-4-gerald.schaefer@linux.ibm.com>
-Content-Language: fr
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -17,70 +17,104 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Gerald Schaefer <gerald.schaefer@linux.ibm.com>, Jason Gunthorpe <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Catalin Marinas <catalin.marinas@arm.com>, Dave Hansen <dave.hansen@linux.intel.com>, linux-mm <linux-mm@kvack.org>, Paul Mackerras <paulus@samba.org>, linux-sparc <sparclinux@vger.kernel.org>, Alexander Gordeev <agordeev@linux.ibm.com>, Claudio Imbrenda <imbrenda@linux.ibm.com>, Will Deacon <will@kernel.org>, linux-arch <linux-arch@vger.kernel.org>, linux-s390 <linux-s390@vger.kernel.org>, Vasily Gorbik <gor@linux.ibm.com>, Richard Weinberger <richard@nod.at>, linux-x86 <x86@kernel.org>, Russell King <linux@armlinux.org.uk>, Christian Borntraeger <borntraeger@de.ibm.com>, Ingo Molnar <mingo@redhat.com>, Andrey Ryabinin <aryabinin@virtuozzo.com>, Jeff Dike <jdike@addtoit.com>, Arnd Bergmann <arnd@arndb.de>, Heiko Carstens <hca@linux.ibm.com>, linux-um <linux-um@lists.infradead.org>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, linux-arm <linux-arm-kernel@lists.infradead.org>, Linus Torvalds <torvalds@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>, linux-power <linuxppc-dev@lists.ozlabs.org>, Mike Rapoport <rppt@kernel.org>
+To: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Dave Hansen <dave.hansen@linux.intel.com>, linux-mm <linux-mm@kvack.org>, Paul Mackerras <paulus@samba.org>, linux-sparc <sparclinux@vger.kernel.org>, Alexander Gordeev <agordeev@linux.ibm.com>, Claudio Imbrenda <imbrenda@linux.ibm.com>, Will Deacon <will@kernel.org>, linux-arch <linux-arch@vger.kernel.org>, linux-s390 <linux-s390@vger.kernel.org>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@de.ibm.com>, Richard Weinberger <richard@nod.at>, linux-x86 <x86@kernel.org>, Russell King <linux@armlinux.org.uk>, Jason Gunthorpe <jgg@ziepe.ca>, Ingo Molnar <mingo@redhat.com>, Catalin Marinas <catalin.marinas@arm.com>, Andrey Ryabinin <aryabinin@virtuozzo.com>, Heiko Carstens <hca@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>, John Hubbard <jhubbard@nvidia.com>, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, linux-arm <linux-arm-kernel@lists.infradead.org>, linux-power <linuxppc-dev@lists.ozlabs.org>, LKML <linux-kernel@vger.kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>
 
-CgpMZSAwNy8wOS8yMDIwIMOgIDIwOjAwLCBHZXJhbGQgU2NoYWVmZXIgYSDDqWNyaXTCoDoKPiBG
-cm9tOiBBbGV4YW5kZXIgR29yZGVldiA8YWdvcmRlZXZAbGludXguaWJtLmNvbT4KPiAKPiBTaW5j
-ZSBwWGRfYWRkcl9lbmQoKSBtYWNyb3MgdGFrZSBwWGQgcGFnZS10YWJsZSBlbnRyeSBhcyBhCj4g
-cGFyYW1ldGVyIGl0IG1ha2VzIHNlbnNlIHRvIGNoZWNrIHRoZSBlbnRyeSB0eXBlIG9uIGNvbXBp
-bGUuCj4gRXZlbiB0aG91Z2ggbW9zdCBhcmNocyBkbyBub3QgbWFrZSB1c2Ugb2YgcGFnZS10YWJs
-ZSBlbnRyaWVzCj4gaW4gcFhkX2FkZHJfZW5kKCkgY2FsbHMsIGNoZWNraW5nIHRoZSB0eXBlIGlu
-IHRyYXZlcnNhbCBjb2RlCj4gcGF0aHMgY291bGQgaGVscCB0byBhdm9pZCBzdWJ0bGUgYnVncy4K
-PiAKPiBTaWduZWQtb2ZmLWJ5OiBBbGV4YW5kZXIgR29yZGVldiA8YWdvcmRlZXZAbGludXguaWJt
-LmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBHZXJhbGQgU2NoYWVmZXIgPGdlcmFsZC5zY2hhZWZlckBs
-aW51eC5pYm0uY29tPgo+IC0tLQo+ICAgaW5jbHVkZS9saW51eC9wZ3RhYmxlLmggfCAzNiArKysr
-KysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0KPiAgIDEgZmlsZSBjaGFuZ2VkLCAyMCBp
-bnNlcnRpb25zKCspLCAxNiBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9s
-aW51eC9wZ3RhYmxlLmggYi9pbmNsdWRlL2xpbnV4L3BndGFibGUuaAo+IGluZGV4IDY3ZWJjMjJj
-ZjgzZC4uZDllN2QxNmMyMjYzIDEwMDY0NAo+IC0tLSBhL2luY2x1ZGUvbGludXgvcGd0YWJsZS5o
-Cj4gKysrIGIvaW5jbHVkZS9saW51eC9wZ3RhYmxlLmgKPiBAQCAtNjU2LDMxICs2NTYsMzUgQEAg
-c3RhdGljIGlubGluZSBpbnQgYXJjaF91bm1hcF9vbmUoc3RydWN0IG1tX3N0cnVjdCAqbW0sCj4g
-ICAgKi8KPiAgIAo+ICAgI2lmbmRlZiBwZ2RfYWRkcl9lbmQKPiAtI2RlZmluZSBwZ2RfYWRkcl9l
-bmQocGdkLCBhZGRyLCBlbmQpCQkJCQlcCj4gLSh7CXVuc2lnbmVkIGxvbmcgX19ib3VuZGFyeSA9
-ICgoYWRkcikgKyBQR0RJUl9TSVpFKSAmIFBHRElSX01BU0s7CVwKPiAtCShfX2JvdW5kYXJ5IC0g
-MSA8IChlbmQpIC0gMSk/IF9fYm91bmRhcnk6IChlbmQpOwkJXAo+IC19KQo+ICsjZGVmaW5lIHBn
-ZF9hZGRyX2VuZCBwZ2RfYWRkcl9lbmQKCkkgdGhpbmsgdGhhdCAjZGVmaW5lIGlzIHBvaW50bGVz
-cywgdXN1YWxseSB0aGVyZSBpcyBubyBzdWNoICNkZWZpbmUgZm9yIAp0aGUgZGVmYXVsdCBjYXNl
-LgoKPiArc3RhdGljIGlubGluZSB1bnNpZ25lZCBsb25nIHBnZF9hZGRyX2VuZChwZ2RfdCBwZ2Qs
-IHVuc2lnbmVkIGxvbmcgYWRkciwgdW5zaWduZWQgbG9uZyBlbmQpCj4gK3sJdW5zaWduZWQgbG9u
-ZyBfX2JvdW5kYXJ5ID0gKGFkZHIgKyBQR0RJUl9TSVpFKSAmIFBHRElSX01BU0s7Cj4gKwlyZXR1
-cm4gKF9fYm91bmRhcnkgLSAxIDwgZW5kIC0gMSkgPyBfX2JvdW5kYXJ5IDogZW5kOwo+ICt9CgpQ
-bGVhc2UgdXNlIHRoZSBzdGFuZGFyZCBsYXlvdXQsIGllIGVudHJ5IHsgYW5kIGV4aXQgfSBhbG9u
-ZSBvbiB0aGVpciAKbGluZSwgYW5kIHNwYWNlIGJldHdlZW4gbG9jYWwgdmFycyBkZWNsYXJhdGlv
-biBhbmQgdGhlIHJlc3QuCgpBbHNvIHJlbW92ZSB0aGUgbGVhZGluZyBfXyBpbiBmcm9udCBvZiB2
-YXIgbmFtZXMgYXMgaXQncyBub3QgbmVlZGVkIG9uY2UgCml0IGlzIG5vdCBtYWNyb3MgYW55bW9y
-ZS4KCmZfbmFtZSgpCnsKCXNvbWVfbG9jYWxfdmFyOwoKCWRvX3NvbWV0aGluZygpOwp9Cgo+ICAg
-I2VuZGlmCj4gICAKPiAgICNpZm5kZWYgcDRkX2FkZHJfZW5kCj4gLSNkZWZpbmUgcDRkX2FkZHJf
-ZW5kKHA0ZCwgYWRkciwgZW5kKQkJCQkJXAo+IC0oewl1bnNpZ25lZCBsb25nIF9fYm91bmRhcnkg
-PSAoKGFkZHIpICsgUDREX1NJWkUpICYgUDREX01BU0s7CVwKPiAtCShfX2JvdW5kYXJ5IC0gMSA8
-IChlbmQpIC0gMSk/IF9fYm91bmRhcnk6IChlbmQpOwkJXAo+IC19KQo+ICsjZGVmaW5lIHA0ZF9h
-ZGRyX2VuZCBwNGRfYWRkcl9lbmQKPiArc3RhdGljIGlubGluZSB1bnNpZ25lZCBsb25nIHA0ZF9h
-ZGRyX2VuZChwNGRfdCBwNGQsIHVuc2lnbmVkIGxvbmcgYWRkciwgdW5zaWduZWQgbG9uZyBlbmQp
-Cj4gK3sJdW5zaWduZWQgbG9uZyBfX2JvdW5kYXJ5ID0gKGFkZHIgKyBQNERfU0laRSkgJiBQNERf
-TUFTSzsKPiArCXJldHVybiAoX19ib3VuZGFyeSAtIDEgPCBlbmQgLSAxKSA/IF9fYm91bmRhcnkg
-OiBlbmQ7Cj4gK30KPiAgICNlbmRpZgo+ICAgCj4gICAjaWZuZGVmIHB1ZF9hZGRyX2VuZAo+IC0j
-ZGVmaW5lIHB1ZF9hZGRyX2VuZChwdWQsIGFkZHIsIGVuZCkJCQkJCVwKPiAtKHsJdW5zaWduZWQg
-bG9uZyBfX2JvdW5kYXJ5ID0gKChhZGRyKSArIFBVRF9TSVpFKSAmIFBVRF9NQVNLOwlcCj4gLQko
-X19ib3VuZGFyeSAtIDEgPCAoZW5kKSAtIDEpPyBfX2JvdW5kYXJ5OiAoZW5kKTsJCVwKPiAtfSkK
-PiArI2RlZmluZSBwdWRfYWRkcl9lbmQgcHVkX2FkZHJfZW5kCj4gK3N0YXRpYyBpbmxpbmUgdW5z
-aWduZWQgbG9uZyBwdWRfYWRkcl9lbmQocHVkX3QgcHVkLCB1bnNpZ25lZCBsb25nIGFkZHIsIHVu
-c2lnbmVkIGxvbmcgZW5kKQo+ICt7CXVuc2lnbmVkIGxvbmcgX19ib3VuZGFyeSA9IChhZGRyICsg
-UFVEX1NJWkUpICYgUFVEX01BU0s7Cj4gKwlyZXR1cm4gKF9fYm91bmRhcnkgLSAxIDwgZW5kIC0g
-MSkgPyBfX2JvdW5kYXJ5IDogZW5kOwo+ICt9Cj4gICAjZW5kaWYKPiAgIAo+ICAgI2lmbmRlZiBw
-bWRfYWRkcl9lbmQKPiAtI2RlZmluZSBwbWRfYWRkcl9lbmQocG1kLCBhZGRyLCBlbmQpCQkJCQlc
-Cj4gLSh7CXVuc2lnbmVkIGxvbmcgX19ib3VuZGFyeSA9ICgoYWRkcikgKyBQTURfU0laRSkgJiBQ
-TURfTUFTSzsJXAo+IC0JKF9fYm91bmRhcnkgLSAxIDwgKGVuZCkgLSAxKT8gX19ib3VuZGFyeTog
-KGVuZCk7CQlcCj4gLX0pCj4gKyNkZWZpbmUgcG1kX2FkZHJfZW5kIHBtZF9hZGRyX2VuZAo+ICtz
-dGF0aWMgaW5saW5lIHVuc2lnbmVkIGxvbmcgcG1kX2FkZHJfZW5kKHBtZF90IHBtZCwgdW5zaWdu
-ZWQgbG9uZyBhZGRyLCB1bnNpZ25lZCBsb25nIGVuZCkKPiArewl1bnNpZ25lZCBsb25nIF9fYm91
-bmRhcnkgPSAoYWRkciArIFBNRF9TSVpFKSAmIFBNRF9NQVNLOwo+ICsJcmV0dXJuIChfX2JvdW5k
-YXJ5IC0gMSA8IGVuZCAtIDEpID8gX19ib3VuZGFyeSA6IGVuZDsKPiArfQo+ICAgI2VuZGlmCj4g
-ICAKPiAgIC8qCj4gCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpo
-dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
+Hi,
+
+Some style comments below.
+
+On Mon, Sep 07, 2020 at 08:00:58PM +0200, Gerald Schaefer wrote:
+> From: Alexander Gordeev <agordeev@linux.ibm.com>
+> 
+> Since pXd_addr_end() macros take pXd page-table entry as a
+> parameter it makes sense to check the entry type on compile.
+> Even though most archs do not make use of page-table entries
+> in pXd_addr_end() calls, checking the type in traversal code
+> paths could help to avoid subtle bugs.
+> 
+> Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
+> Signed-off-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+> ---
+>  include/linux/pgtable.h | 36 ++++++++++++++++++++----------------
+>  1 file changed, 20 insertions(+), 16 deletions(-)
+> 
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index 67ebc22cf83d..d9e7d16c2263 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -656,31 +656,35 @@ static inline int arch_unmap_one(struct mm_struct *mm,
+>   */
+>  
+>  #ifndef pgd_addr_end
+> -#define pgd_addr_end(pgd, addr, end)					\
+> -({	unsigned long __boundary = ((addr) + PGDIR_SIZE) & PGDIR_MASK;	\
+> -	(__boundary - 1 < (end) - 1)? __boundary: (end);		\
+> -})
+> +#define pgd_addr_end pgd_addr_end
+> +static inline unsigned long pgd_addr_end(pgd_t pgd, unsigned long addr, unsigned long end)
+> +{	unsigned long __boundary = (addr + PGDIR_SIZE) & PGDIR_MASK;
+
+The code should be on a separate line from the curly brace.
+Besides, since this is not a macro anymore, I think it would be nicer to
+use 'boundary' without underscores.
+This applies to the changes below as well.
+
+> +	return (__boundary - 1 < end - 1) ? __boundary : end;
+> +}
+>  #endif
+>  
+>  #ifndef p4d_addr_end
+> -#define p4d_addr_end(p4d, addr, end)					\
+> -({	unsigned long __boundary = ((addr) + P4D_SIZE) & P4D_MASK;	\
+> -	(__boundary - 1 < (end) - 1)? __boundary: (end);		\
+> -})
+> +#define p4d_addr_end p4d_addr_end
+> +static inline unsigned long p4d_addr_end(p4d_t p4d, unsigned long addr, unsigned long end)
+> +{	unsigned long __boundary = (addr + P4D_SIZE) & P4D_MASK;
+> +	return (__boundary - 1 < end - 1) ? __boundary : end;
+> +}
+>  #endif
+>  
+>  #ifndef pud_addr_end
+> -#define pud_addr_end(pud, addr, end)					\
+> -({	unsigned long __boundary = ((addr) + PUD_SIZE) & PUD_MASK;	\
+> -	(__boundary - 1 < (end) - 1)? __boundary: (end);		\
+> -})
+> +#define pud_addr_end pud_addr_end
+> +static inline unsigned long pud_addr_end(pud_t pud, unsigned long addr, unsigned long end)
+> +{	unsigned long __boundary = (addr + PUD_SIZE) & PUD_MASK;
+> +	return (__boundary - 1 < end - 1) ? __boundary : end;
+> +}
+>  #endif
+>  
+>  #ifndef pmd_addr_end
+> -#define pmd_addr_end(pmd, addr, end)					\
+> -({	unsigned long __boundary = ((addr) + PMD_SIZE) & PMD_MASK;	\
+> -	(__boundary - 1 < (end) - 1)? __boundary: (end);		\
+> -})
+> +#define pmd_addr_end pmd_addr_end
+> +static inline unsigned long pmd_addr_end(pmd_t pmd, unsigned long addr, unsigned long end)
+> +{	unsigned long __boundary = (addr + PMD_SIZE) & PMD_MASK;
+> +	return (__boundary - 1 < end - 1) ? __boundary : end;
+> +}
+>  #endif
+>  
+>  /*
+> -- 
+> 2.17.1
+> 
+
+-- 
+Sincerely yours,
+Mike.
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
