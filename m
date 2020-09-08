@@ -1,17 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Subject: Re: [RFC PATCH v2 2/3] mm: make pXd_addr_end() functions
- page-table entry aware
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-In-Reply-To: <20200908141554.GA20558@oc3871087118.ibm.com>
+Subject: Re: [RFC PATCH v2 2/3] mm: make pXd_addr_end() functions page-table
+ entry aware
 References: <20200907180058.64880-1-gerald.schaefer@linux.ibm.com>
  <20200907180058.64880-3-gerald.schaefer@linux.ibm.com>
- <31dfb3ed-a0cc-3024-d389-ab9bd19e881f@csgroup.eu>
- <20200908074638.GA19099@oc3871087118.ibm.com>
- <5d4f5546-afd0-0b8f-664d-700ae346b9ec@csgroup.eu>
- <20200908141554.GA20558@oc3871087118.ibm.com>
-Date: Wed, 09 Sep 2020 08:38:31 +0000
-Message-ID: <1599640711.14692.1.camel@po17688vm.idsi0.si.c-s.fr>
-Mime-Version: 1.0
+From: Dave Hansen <dave.hansen@intel.com>
+Message-ID: <8e28858d-e6a4-1c4f-4087-5f4a9719db94@intel.com>
+Date: Tue, 8 Sep 2020 07:33:24 -0700
+MIME-Version: 1.0
+In-Reply-To: <20200907180058.64880-3-gerald.schaefer@linux.ibm.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,125 +21,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Alexander Gordeev <agordeev@linux.ibm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Catalin Marinas <catalin.marinas@arm.com>, Dave Hansen <dave.hansen@linux.intel.com>, linux-mm <linux-mm@kvack.org>, Paul Mackerras <paulus@samba.org>, linux-sparc <sparclinux@vger.kernel.org>, Claudio Imbrenda <imbrenda@linux.ibm.com>, Will Deacon <will@kernel.org>, linux-arch <linux-arch@vger.kernel.org>, linux-s390 <linux-s390@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, Christian Borntraeger <borntraeger@de.ibm.com>, Richard Weinberger <richard@nod.at>, linux-x86 <x86@kernel.org>, Russell King <linux@armlinux.org.uk>, Jason Gunthorpe <jgg@ziepe.ca>, Ingo Molnar <mingo@redhat.com>, Andrey Ryabinin <aryabinin@virtuozzo.com>, Gerald Schaefer <gerald.schaefer@linux.ibm.com>, Jeff Dike <jdike@addtoit.com>, Vasily Gorbik <gor@linux.ibm.com>, John Hubbard <jhubbard@nvidia.com>, Heiko Carstens <hca@linux.ibm.com>, linux-um <linux-um@lists.infradead.org>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, linux-arm <linux-arm-kernel@lists.infradead.org>, Linus Torvalds <torvalds@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, Andrew Morton <akpm@linux-foundation.org>, linux-power <linuxppc-dev@lists.ozlabs.org>, Mike Rapoport <rppt@kernel.org>
+To: Gerald Schaefer <gerald.schaefer@linux.ibm.com>, Jason Gunthorpe <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Dave Hansen <dave.hansen@linux.intel.com>, linux-mm <linux-mm@kvack.org>, Paul Mackerras <paulus@samba.org>, linux-sparc <sparclinux@vger.kernel.org>, Alexander Gordeev <agordeev@linux.ibm.com>, Claudio Imbrenda <imbrenda@linux.ibm.com>, Will Deacon <will@kernel.org>, linux-arch <linux-arch@vger.kernel.org>, linux-s390 <linux-s390@vger.kernel.org>, Vasily Gorbik <gor@linux.ibm.com>, Richard Weinberger <richard@nod.at>, linux-x86 <x86@kernel.org>, Russell King <linux@armlinux.org.uk>, Christian Borntraeger <borntraeger@de.ibm.com>, Ingo Molnar <mingo@redhat.com>, Catalin Marinas <catalin.marinas@arm.com>, Andrey Ryabinin <aryabinin@virtuozzo.com>, Heiko Carstens <hca@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, linux-arm <linux-arm-kernel@lists.infradead.org>, linux-power <linuxppc-dev@lists.ozlabs.org>, LKML <linux-kernel@vger.kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, Mike Rapoport <rppt@kernel.org>
 
-On Tue, 2020-09-08 at 16:15 +0200, Alexander Gordeev wrote:
-> On Tue, Sep 08, 2020 at 10:16:49AM +0200, Christophe Leroy wrote:
-> > >Yes, and also two more sources :/
-> > >	arch/powerpc/mm/kasan/8xx.c
-> > >	arch/powerpc/mm/kasan/kasan_init_32.c
-> > >
-> > >But these two are not quite obvious wrt pgd_addr_end() used
-> > >while traversing pmds. Could you please clarify a bit?
-> > >
-> > >
-> > >diff --git a/arch/powerpc/mm/kasan/8xx.c b/arch/powerpc/mm/kasan/8xx.c
-> > >index 2784224..89c5053 100644
-> > >--- a/arch/powerpc/mm/kasan/8xx.c
-> > >+++ b/arch/powerpc/mm/kasan/8xx.c
-> > >@@ -15,8 +15,8 @@
-> > >  	for (k_cur = k_start; k_cur != k_end; k_cur = k_next, pmd += 2, block += SZ_8M) {
-> > >  		pte_basic_t *new;
-> > >-		k_next = pgd_addr_end(k_cur, k_end);
-> > >-		k_next = pgd_addr_end(k_next, k_end);
-> > >+		k_next = pmd_addr_end(k_cur, k_end);
-> > >+		k_next = pmd_addr_end(k_next, k_end);
-> > 
-> > No, I don't think so.
-> > On powerpc32 we have only two levels, so pgd and pmd are more or
-> > less the same.
-> > But pmd_addr_end() as defined in include/asm-generic/pgtable-nopmd.h
-> > is a no-op, so I don't think it will work.
-> > 
-> > It is likely that this function should iterate on pgd, then you get
-> > pmd = pmd_offset(pud_offset(p4d_offset(pgd)));
-> 
-> It looks like the code iterates over single pmd table while using
-> pgd_addr_end() only to skip all the middle levels and bail out
-> from the loop.
-> 
-> I would be wary for switching from pmds to pgds, since we are
-> trying to minimize impact (especially functional) and the
-> rework does not seem that obvious.
-> 
+On 9/7/20 11:00 AM, Gerald Schaefer wrote:
+> x86:
+> add/remove: 0/0 grow/shrink: 2/0 up/down: 10/0 (10)
+> Function                                     old     new   delta
+> vmemmap_populate                             587     592      +5
+> munlock_vma_pages_range                      556     561      +5
+> Total: Before=15534694, After=15534704, chg +0.00%
+...
+>  arch/x86/mm/init_64.c                    | 15 ++++-----
+>  arch/x86/mm/kasan_init_64.c              | 16 +++++-----
 
-I've just tested the following change, it works and should fix the
-oddity:
-
-diff --git a/arch/powerpc/mm/kasan/8xx.c b/arch/powerpc/mm/kasan/8xx.c
-index 2784224054f8..8e53ddf57b84 100644
---- a/arch/powerpc/mm/kasan/8xx.c
-+++ b/arch/powerpc/mm/kasan/8xx.c
-@@ -9,11 +9,12 @@
- static int __init
- kasan_init_shadow_8M(unsigned long k_start, unsigned long k_end, void
-*block)
- {
--	pmd_t *pmd = pmd_off_k(k_start);
-+	pgd_t *pgd = pgd_offset_k(k_start);
- 	unsigned long k_cur, k_next;
- 
--	for (k_cur = k_start; k_cur != k_end; k_cur = k_next, pmd += 2, block
-+= SZ_8M) {
-+	for (k_cur = k_start; k_cur != k_end; k_cur = k_next, pgd += 2, block
-+= SZ_8M) {
- 		pte_basic_t *new;
-+		pmd_t *pmd = pmd_offset(pud_offset(p4d_offset(pgd, k_cur), k_cur),
-k_cur);
- 
- 		k_next = pgd_addr_end(k_cur, k_end);
- 		k_next = pgd_addr_end(k_next, k_end);
-diff --git a/arch/powerpc/mm/kasan/kasan_init_32.c
-b/arch/powerpc/mm/kasan/kasan_init_32.c
-index fb294046e00e..e5f524fa71a7 100644
---- a/arch/powerpc/mm/kasan/kasan_init_32.c
-+++ b/arch/powerpc/mm/kasan/kasan_init_32.c
-@@ -30,13 +30,12 @@ static void __init kasan_populate_pte(pte_t *ptep,
-pgprot_t prot)
- 
- int __init kasan_init_shadow_page_tables(unsigned long k_start,
-unsigned long k_end)
- {
--	pmd_t *pmd;
-+	pgd_t *pgd = pgd_offset_k(k_start);
- 	unsigned long k_cur, k_next;
- 
--	pmd = pmd_off_k(k_start);
--
--	for (k_cur = k_start; k_cur != k_end; k_cur = k_next, pmd++) {
-+	for (k_cur = k_start; k_cur != k_end; k_cur = k_next, pgd++) {
- 		pte_t *new;
-+		pmd_t *pmd = pmd_offset(pud_offset(p4d_offset(pgd, k_cur), k_cur),
-k_cur);
- 
- 		k_next = pgd_addr_end(k_cur, k_end);
- 		if ((void *)pmd_page_vaddr(*pmd) != kasan_early_shadow_pte)
-@@ -189,16 +188,18 @@ void __init kasan_early_init(void)
- 	unsigned long addr = KASAN_SHADOW_START;
- 	unsigned long end = KASAN_SHADOW_END;
- 	unsigned long next;
--	pmd_t *pmd = pmd_off_k(addr);
-+	pgd_t *pgd = pgd_offset_k(addr);
- 
- 	BUILD_BUG_ON(KASAN_SHADOW_START & ~PGDIR_MASK);
- 
- 	kasan_populate_pte(kasan_early_shadow_pte, PAGE_KERNEL);
- 
- 	do {
-+		pmd_t *pmd = pmd_offset(pud_offset(p4d_offset(pgd, addr), addr),
-addr);
-+
- 		next = pgd_addr_end(addr, end);
- 		pmd_populate_kernel(&init_mm, pmd, kasan_early_shadow_pte);
--	} while (pmd++, addr = next, addr != end);
-+	} while (pgd++, addr = next, addr != end);
- 
- 	if (early_mmu_has_feature(MMU_FTR_HPTE_TABLE))
- 		kasan_early_hash_table();
----
-Christophe
-
+I didn't do a super thorough review on this, but it generally looks OK
+and the benefits of sharing more code between arches certainly outweigh
+a few bytes of binary growth.  For the x86 bits at least, feel free to
+add my ack.
 
 _______________________________________________
 linux-um mailing list
