@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Tue, 8 Sep 2020 19:36:50 +0200
-From: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-Subject: Re: [RFC PATCH v2 0/3] mm/gup: fix gup_fast with dynamic page table
+Subject: Re: [RFC PATCH v2 1/3] mm/gup: fix gup_fast with dynamic page table
  folding
-Message-ID: <20200908193650.1c1511d0@thinkpad>
-In-Reply-To: <9bde9857-fdfd-e384-ea27-a14e5a06f1e6@csgroup.eu>
 References: <20200907180058.64880-1-gerald.schaefer@linux.ibm.com>
- <20200907201256.GC1976319@kernel.org>
- <9bde9857-fdfd-e384-ea27-a14e5a06f1e6@csgroup.eu>
+ <20200907180058.64880-2-gerald.schaefer@linux.ibm.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Message-ID: <0dbc6ec8-45ea-0853-4856-2bc1e661a5a5@intel.com>
+Date: Tue, 8 Sep 2020 07:30:50 -0700
 MIME-Version: 1.0
+In-Reply-To: <20200907180058.64880-2-gerald.schaefer@linux.ibm.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -17,71 +17,39 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Peter Zijlstra <peterz@infradead.org>, Catalin Marinas <catalin.marinas@arm.com>, Dave Hansen <dave.hansen@linux.intel.com>, linux-mm <linux-mm@kvack.org>, Paul Mackerras <paulus@samba.org>, linux-sparc <sparclinux@vger.kernel.org>, Alexander Gordeev <agordeev@linux.ibm.com>, Claudio Imbrenda <imbrenda@linux.ibm.com>, Will Deacon <will@kernel.org>, linux-arch <linux-arch@vger.kernel.org>, linux-s390 <linux-s390@vger.kernel.org>, Vasily Gorbik <gor@linux.ibm.com>, Jason Gunthorpe <jgg@ziepe.ca>, Richard Weinberger <richard@nod.at>, linux-x86 <x86@kernel.org>, Russell King <linux@armlinux.org.uk>, Christian Borntraeger <borntraeger@de.ibm.com>, Ingo Molnar <mingo@redhat.com>, Andrey Ryabinin <aryabinin@virtuozzo.com>, Jeff Dike <jdike@addtoit.com>, Arnd Bergmann <arnd@arndb.de>, John Hubbard <jhubbard@nvidia.com>, Heiko Carstens <hca@linux.ibm.com>, linux-um <linux-um@lists.infradead.org>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, linux-arm <linux-arm-kernel@lists.infradead.org>, Linus Torvalds <torvalds@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>, linux-power <linuxppc-dev@lists.ozlabs.org>, Mike Rapoport <rppt@kernel.org>
+To: Gerald Schaefer <gerald.schaefer@linux.ibm.com>, Jason Gunthorpe <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Dave Hansen <dave.hansen@linux.intel.com>, linux-mm <linux-mm@kvack.org>, Paul Mackerras <paulus@samba.org>, linux-sparc <sparclinux@vger.kernel.org>, Alexander Gordeev <agordeev@linux.ibm.com>, Claudio Imbrenda <imbrenda@linux.ibm.com>, Will Deacon <will@kernel.org>, linux-arch <linux-arch@vger.kernel.org>, linux-s390 <linux-s390@vger.kernel.org>, Vasily Gorbik <gor@linux.ibm.com>, Richard Weinberger <richard@nod.at>, linux-x86 <x86@kernel.org>, Russell King <linux@armlinux.org.uk>, Christian Borntraeger <borntraeger@de.ibm.com>, Ingo Molnar <mingo@redhat.com>, Catalin Marinas <catalin.marinas@arm.com>, Andrey Ryabinin <aryabinin@virtuozzo.com>, Heiko Carstens <hca@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, linux-arm <linux-arm-kernel@lists.infradead.org>, linux-power <linuxppc-dev@lists.ozlabs.org>, LKML <linux-kernel@vger.kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, Mike Rapoport <rppt@kernel.org>
 
-T24gVHVlLCA4IFNlcCAyMDIwIDA3OjIyOjM5ICswMjAwCkNocmlzdG9waGUgTGVyb3kgPGNocmlz
-dG9waGUubGVyb3lAY3Nncm91cC5ldT4gd3JvdGU6Cgo+IAo+IAo+IExlIDA3LzA5LzIwMjAgw6Ag
-MjI6MTIsIE1pa2UgUmFwb3BvcnQgYSDDqWNyaXTCoDoKPiA+IE9uIE1vbiwgU2VwIDA3LCAyMDIw
-IGF0IDA4OjAwOjU1UE0gKzAyMDAsIEdlcmFsZCBTY2hhZWZlciB3cm90ZToKPiA+PiBUaGlzIGlz
-IHYyIG9mIGFuIFJGQyBwcmV2aW91c2x5IGRpc2N1c3NlZCBoZXJlOgo+ID4+IGh0dHBzOi8vbG9y
-ZS5rZXJuZWwub3JnL2xrbWwvMjAyMDA4MjgxNDAzMTQuODU1Ni0xLWdlcmFsZC5zY2hhZWZlckBs
-aW51eC5pYm0uY29tLwo+ID4+Cj4gPj4gUGF0Y2ggMSBpcyBhIGZpeCBmb3IgYSByZWdyZXNzaW9u
-IGluIGd1cF9mYXN0IG9uIHMzOTAsIGFmdGVyIG91ciBjb252ZXJzaW9uCj4gPj4gdG8gY29tbW9u
-IGd1cF9mYXN0IGNvZGUuIEl0IHdpbGwgaW50cm9kdWNlIHNwZWNpYWwgaGVscGVyIGZ1bmN0aW9u
-cwo+ID4+IHBYZF9hZGRyX2VuZF9mb2xkZWQoKSwgd2hpY2ggaGF2ZSB0byBiZSB1c2VkIGluIHBs
-YWNlcyB3aGVyZSBwYWdldGFibGUgd2Fsawo+ID4+IGlzIGRvbmUgdy9vIGxvY2sgYW5kIHdpdGgg
-UkVBRF9PTkNFLCBzbyBjdXJyZW50bHkgb25seSBpbiBndXBfZmFzdC4KPiA+Pgo+ID4+IFBhdGNo
-IDIgaXMgYW4gYXR0ZW1wdCB0byBtYWtlIHRoYXQgbW9yZSBnZW5lcmljLCBpLmUuIGNoYW5nZSBw
-WGRfYWRkcl9lbmQoKQo+ID4+IHRoZW1zZWx2ZXMgYnkgYWRkaW5nIGFuIGV4dHJhIHBYZCB2YWx1
-ZSBwYXJhbWV0ZXIuIFRoYXQgd2FzIHN1Z2dlc3RlZCBieQo+ID4+IEphc29uIGR1cmluZyB2MSBk
-aXNjdXNzaW9uLCBiZWNhdXNlIGhlIGlzIGFscmVhZHkgdGhpbmtpbmcgb2Ygc29tZSBvdGhlcgo+
-ID4+IHBsYWNlcyB3aGVyZSBoZSBtaWdodCB3YW50IHRvIHN3aXRjaCB0byB0aGUgUkVBRF9PTkNF
-IGxvZ2ljIGZvciBwYWdldGFibGUKPiA+PiB3YWxrcy4gSW4gZ2VuZXJhbCwgdGhhdCB3b3VsZCBi
-ZSB0aGUgY2xlYW5lc3QgLyBzYWZlc3Qgc29sdXRpb24sIGJ1dCB0aGVyZQo+ID4+IGlzIHNvbWUg
-aW1wYWN0IG9uIG90aGVyIGFyY2hpdGVjdHVyZXMgYW5kIGNvbW1vbiBjb2RlLCBoZW5jZSB0aGUg
-bmV3IGFuZAo+ID4+IGdyZWF0bHkgZW5sYXJnZWQgcmVjaXBpZW50IGxpc3QuCj4gPj4KPiA+PiBQ
-YXRjaCAzIGlzIGEgIm5pY2UgdG8gaGF2ZSIgYWRkLW9uLCB3aGljaCBtYWtlcyBwWGRfYWRkcl9l
-bmQoKSBpbmxpbmUKPiA+PiBmdW5jdGlvbnMgaW5zdGVhZCBvZiAjZGVmaW5lcywgc28gdGhhdCB3
-ZSBnZXQgc29tZSB0eXBlIGNoZWNraW5nIGZvciB0aGUKPiA+PiBuZXcgcFhkIHZhbHVlIHBhcmFt
-ZXRlci4KPiA+Pgo+ID4+IE5vdCBzdXJlIGFib3V0IEZpeGVzL3N0YWJsZSB0YWdzIGZvciB0aGUg
-Z2VuZXJpYyBzb2x1dGlvbi4gT25seSBwYXRjaCAxCj4gPj4gZml4ZXMgYSByZWFsIGJ1ZyBvbiBz
-MzkwLCBhbmQgaGFzIEZpeGVzL3N0YWJsZSB0YWdzLiBQYXRjaGVzIDIgKyAzIG1pZ2h0Cj4gPj4g
-c3RpbGwgYmUgbmljZSB0byBoYXZlIGluIHN0YWJsZSwgdG8gZWFzZSBmdXR1cmUgYmFja3BvcnRz
-LCBidXQgSSBndWVzcwo+ID4+ICJuaWNlIHRvIGhhdmUiIGRvZXMgbm90IHJlYWxseSBxdWFsaWZ5
-IGZvciBzdGFibGUgYmFja3BvcnRzLgo+ID4gCj4gPiBJIGFsc28gdGhpbmsgdGhhdCBhZGRpbmcg
-cFhkIHBhcmFtZXRlciB0byBwWGRfYWRkcl9lbmQoKSBpcyBhIGNsZWFuZXIKPiA+IHdheSBhbmQg
-d2l0aCB0aGlzIHBhdGNoIDEgaXMgbm90IHJlYWxseSByZXF1aXJlZC4gSSB3b3VsZCBldmVuIG1l
-cmdlCj4gPiBwYXRjaGVzIDIgYW5kIDMgaW50byBhIHNpbmdsZSBwYXRjaCBhbmQgdXNlIG9ubHkg
-aXQgYXMgdGhlIGZpeC4KPiAKPiBXaHkgbm90IG1lcmdpbmcgcGF0Y2hlcyAyIGFuZCAzLCBidXQg
-SSB3b3VsZCBrZWVwIHBhdGNoIDEgc2VwYXJhdGUgYnV0IAo+IGFmdGVyIHRoZSBnZW5lcmljIGNo
-YW5nZXMsIHNvIHRoYXQgd2UgZmlyc3QgZG8gdGhlIGdlbmVyaWMgY2hhbmdlcywgdGhlbiAKPiB3
-ZSBkbyB0aGUgc3BlY2lmaWMgUzM5MCB1c2Ugb2YgaXQuCgpZZXMsIHdlIHRob3VnaHQgYWJvdXQg
-dGhhdCBhcHByb2FjaCB0b28uIEl0IHdvdWxkIGF0IGxlYXN0IGFsbG93IHRvCmdldCBhbGwgaW50
-byBzdGFibGUsIG1vcmUgb3IgbGVzcyBuaWNlbHksIGFzIHByZXJlcXVpc2l0ZSBmb3IgdGhlIHMz
-OTAKZml4LgoKVHdvIGNvbmNlcm5zIGtlcHQgdXMgZnJvbSBnb2luZyB0aGF0IHdheS4gRm9yIG9u
-Y2UsIGl0IG1pZ2h0IG5vdCBiZQp0aGUgbmljZXN0IHdheSB0byBnZXQgaXQgYWxsIGluIHN0YWJs
-ZSwgYW5kIHdlIHdvdWxkIG5vdCB3YW50IHRvIHJpc2sKZnVydGhlciBvYmplY3Rpb25zIGR1ZSB0
-byB0aGUgaW1taW5lbnQgYW5kIHJhdGhlciBzY2FyeSBkYXRhIGNvcnJ1cHRpb24KaXNzdWUgdGhh
-dCB3ZSB3YW50IHRvIGZpeCBhc2FwLgoKRm9yIHRoZSBzYW1lIHJlYXNvbiwgd2UgdGhvdWdodCB0
-aGF0IHRoZSBnZW5lcmFsaXphdGlvbiBwYXJ0IG1pZ2h0Cm5lZWQgbW9yZSB0aW1lIGFuZCBhZ3Jl
-ZW1lbnQgZnJvbSB2YXJpb3VzIHBlb3BsZSwgc28gdGhhdCB3ZSBjb3VsZCBhdApsZWFzdCBnZXQg
-dGhlIGZpcnN0IHBhdGNoIGFzIHNob3J0LXRlcm0gc29sdXRpb24uCgpJdCBzZWVtcyBub3cgdGhh
-dCB0aGUgZ2VuZXJhbGl6YXRpb24gaXMgdmVyeSB3ZWxsIGFjY2VwdGVkIHNvIGZhciwKYXBhcnQg
-ZnJvbSBzb21lIGFwcGFyZW50IGlzc3VlcyBvbiBhcm0uIEFsc28sIG1lcmdpbmcgMiArIDMgYW5k
-CnB1dHRpbmcgdGhlbSBmaXJzdCBzZWVtcyB0byBiZSBhY2NlcHRhYmxlLCBzbyB3ZSBjb3VsZCBk
-byB0aGF0IGZvcgp2MywgaWYgdGhlcmUgYXJlIG5vIG9iamVjdGlvbnMuCgpPZiBjb3Vyc2UsIHdl
-IGZpcnN0IG5lZWQgdG8gYWRkcmVzcyB0aGUgZmV3IHJlbWFpbmluZyBpc3N1ZXMgZm9yCmFybSgz
-Mj8pLCB3aGljaCBkbyBsb29rIHF1aXRlIGNvbmZ1c2luZyB0byBtZSBzbyBmYXIuIEJUVywgc29y
-cnkgZm9yCnRoZSBjb21waWxlIGVycm9yIHdpdGggcGF0Y2ggMywgSSBndWVzcyB3ZSBkaWQgdGhl
-IGNyb3NzLWNvbXBpbGUgb25seQpmb3IgMSArIDIgYXBwbGllZCwgdG8gc2VlIHRoZSBibG9hdC1v
-LW1ldGVyIGNoYW5nZXMuIEJ1dCBJIGd1ZXNzCnBhdGNoIDMgYWxyZWFkeSBwcm92ZWQgaXRzIHVz
-ZWZ1bG5lc3MgYnkgdGhhdCA6LSkKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRl
-YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
-dW0K
+On 9/7/20 11:00 AM, Gerald Schaefer wrote:
+> Commit 1a42010cdc26 ("s390/mm: convert to the generic get_user_pages_fast
+> code") introduced a subtle but severe bug on s390 with gup_fast, due to
+> dynamic page table folding.
+
+Would it be fair to say that the "fake" page table entries s390
+allocates on the stack are what's causing the trouble here?  That might
+be a nice thing to open up with here.  "Dynamic page table folding"
+really means nothing to me.
+
+> @@ -2521,7 +2521,7 @@ static int gup_pmd_range(pud_t pud, unsigned long addr, unsigned long end,
+>  	do {
+>  		pmd_t pmd = READ_ONCE(*pmdp);
+>  
+> -		next = pmd_addr_end(addr, end);
+> +		next = pmd_addr_end_folded(pmd, addr, end);
+>  		if (!pmd_present(pmd))
+>  			return 0;
+
+It looks like you fix this up later, but this would be a problem if left
+this way.  There's no documentation for whether I use
+pmd_addr_end_folded() or pmd_addr_end() when writing a page table walker.
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
