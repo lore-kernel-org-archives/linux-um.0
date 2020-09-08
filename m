@@ -1,15 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Tue, 8 Sep 2020 09:46:38 +0200
-From: Alexander Gordeev <agordeev@linux.ibm.com>
 Subject: Re: [RFC PATCH v2 2/3] mm: make pXd_addr_end() functions page-table
  entry aware
-Message-ID: <20200908074638.GA19099@oc3871087118.ibm.com>
 References: <20200907180058.64880-1-gerald.schaefer@linux.ibm.com>
  <20200907180058.64880-3-gerald.schaefer@linux.ibm.com>
- <31dfb3ed-a0cc-3024-d389-ab9bd19e881f@csgroup.eu>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <31dfb3ed-a0cc-3024-d389-ab9bd19e881f@csgroup.eu>
+Date: Tue, 8 Sep 2020 07:14:38 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <31dfb3ed-a0cc-3024-d389-ab9bd19e881f@csgroup.eu>
+In-Reply-To: <20200907180058.64880-3-gerald.schaefer@linux.ibm.com>
+Content-Language: fr
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,66 +17,69 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Christophe Leroy <christophe.leroy@csgroup.eu>, Michael Ellerman <mpe@ellerman.id.au>
-Cc: Peter Zijlstra <peterz@infradead.org>, Catalin Marinas <catalin.marinas@arm.com>, Dave Hansen <dave.hansen@linux.intel.com>, linux-mm <linux-mm@kvack.org>, Paul Mackerras <paulus@samba.org>, linux-sparc <sparclinux@vger.kernel.org>, Claudio Imbrenda <imbrenda@linux.ibm.com>, Will Deacon <will@kernel.org>, linux-arch <linux-arch@vger.kernel.org>, linux-s390 <linux-s390@vger.kernel.org>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@de.ibm.com>, Richard Weinberger <richard@nod.at>, linux-x86 <x86@kernel.org>, Russell King <linux@armlinux.org.uk>, Jason Gunthorpe <jgg@ziepe.ca>, Ingo Molnar <mingo@redhat.com>, Andrey Ryabinin <aryabinin@virtuozzo.com>, Gerald Schaefer <gerald.schaefer@linux.ibm.com>, Jeff Dike <jdike@addtoit.com>, Arnd Bergmann <arnd@arndb.de>, John Hubbard <jhubbard@nvidia.com>, Heiko Carstens <hca@linux.ibm.com>, linux-um <linux-um@lists.infradead.org>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, linux-arm <linux-arm-kernel@lists.infradead.org>, Linus Torvalds <torvalds@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>, linux-power <linuxppc-dev@lists.ozlabs.org>, Mike Rapoport <rppt@kernel.org>
+To: Gerald Schaefer <gerald.schaefer@linux.ibm.com>, Jason Gunthorpe <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Catalin Marinas <catalin.marinas@arm.com>, Dave Hansen <dave.hansen@linux.intel.com>, linux-mm <linux-mm@kvack.org>, Paul Mackerras <paulus@samba.org>, linux-sparc <sparclinux@vger.kernel.org>, Alexander Gordeev <agordeev@linux.ibm.com>, Claudio Imbrenda <imbrenda@linux.ibm.com>, Will Deacon <will@kernel.org>, linux-arch <linux-arch@vger.kernel.org>, linux-s390 <linux-s390@vger.kernel.org>, Vasily Gorbik <gor@linux.ibm.com>, Richard Weinberger <richard@nod.at>, linux-x86 <x86@kernel.org>, Russell King <linux@armlinux.org.uk>, Christian Borntraeger <borntraeger@de.ibm.com>, Ingo Molnar <mingo@redhat.com>, Andrey Ryabinin <aryabinin@virtuozzo.com>, Jeff Dike <jdike@addtoit.com>, Arnd Bergmann <arnd@arndb.de>, Heiko Carstens <hca@linux.ibm.com>, linux-um <linux-um@lists.infradead.org>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, linux-arm <linux-arm-kernel@lists.infradead.org>, Linus Torvalds <torvalds@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>, linux-power <linuxppc-dev@lists.ozlabs.org>, Mike Rapoport <rppt@kernel.org>
 
-On Tue, Sep 08, 2020 at 07:14:38AM +0200, Christophe Leroy wrote:
-> You forgot arch/powerpc/mm/book3s64/subpage_prot.c it seems.
-
-Yes, and also two more sources :/
-	arch/powerpc/mm/kasan/8xx.c
-	arch/powerpc/mm/kasan/kasan_init_32.c
-
-But these two are not quite obvious wrt pgd_addr_end() used
-while traversing pmds. Could you please clarify a bit?
-
-
-diff --git a/arch/powerpc/mm/kasan/8xx.c b/arch/powerpc/mm/kasan/8xx.c
-index 2784224..89c5053 100644
---- a/arch/powerpc/mm/kasan/8xx.c
-+++ b/arch/powerpc/mm/kasan/8xx.c
-@@ -15,8 +15,8 @@
- 	for (k_cur = k_start; k_cur != k_end; k_cur = k_next, pmd += 2, block += SZ_8M) {
- 		pte_basic_t *new;
- 
--		k_next = pgd_addr_end(k_cur, k_end);
--		k_next = pgd_addr_end(k_next, k_end);
-+		k_next = pmd_addr_end(k_cur, k_end);
-+		k_next = pmd_addr_end(k_next, k_end);
- 		if ((void *)pmd_page_vaddr(*pmd) != kasan_early_shadow_pte)
- 			continue;
- 
-diff --git a/arch/powerpc/mm/kasan/kasan_init_32.c b/arch/powerpc/mm/kasan/kasan_init_32.c
-index fb29404..3f7d6dc6 100644
---- a/arch/powerpc/mm/kasan/kasan_init_32.c
-+++ b/arch/powerpc/mm/kasan/kasan_init_32.c
-@@ -38,7 +38,7 @@ int __init kasan_init_shadow_page_tables(unsigned long k_start, unsigned long k_
- 	for (k_cur = k_start; k_cur != k_end; k_cur = k_next, pmd++) {
- 		pte_t *new;
- 
--		k_next = pgd_addr_end(k_cur, k_end);
-+		k_next = pmd_addr_end(k_cur, k_end);
- 		if ((void *)pmd_page_vaddr(*pmd) != kasan_early_shadow_pte)
- 			continue;
- 
-@@ -196,7 +196,7 @@ void __init kasan_early_init(void)
- 	kasan_populate_pte(kasan_early_shadow_pte, PAGE_KERNEL);
- 
- 	do {
--		next = pgd_addr_end(addr, end);
-+		next = pmd_addr_end(addr, end);
- 		pmd_populate_kernel(&init_mm, pmd, kasan_early_shadow_pte);
- 	} while (pmd++, addr = next, addr != end);
- 
-
-> Christophe
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+CgpMZSAwNy8wOS8yMDIwIMOgIDIwOjAwLCBHZXJhbGQgU2NoYWVmZXIgYSDDqWNyaXTCoDoKPiBG
+cm9tOiBBbGV4YW5kZXIgR29yZGVldiA8YWdvcmRlZXZAbGludXguaWJtLmNvbT4KPiAKPiBVbmxp
+a2UgYWxsIG90aGVyIHBhZ2UtdGFibGUgYWJzdHJhY3Rpb25zIHBYZF9hZGRyX2VuZCgpIGRvIG5v
+dCB0YWtlCj4gaW50byBhY2NvdW50IGEgcGFydGljdWxhciB0YWJsZSBlbnRyeSBpbiB3aGljaCBj
+b250ZXh0IHRoZSBmdW5jdGlvbnMKPiBhcmUgY2FsbGVkLiBPbiBhcmNoaXRlY3R1cmVzIHdpdGgg
+ZHluYW1pYyBwYWdlLXRhYmxlcyBmb2xkaW5nIHRoYXQKPiBtaWdodCBsZWFkIHRvIGxhY2sgb2Yg
+bmVjZXNzYXJ5IGluZm9ybWF0aW9uIHRoYXQgaXMgZGlmZmljdWx0IHRvCj4gb2J0YWluIG90aGVy
+IHRoYW4gZnJvbSB0aGUgdGFibGUgZW50cnkgaXRzZWxmLiBUaGF0IGFscmVhZHkgbGVkIHRvCj4g
+YSBzdWJ0bGUgbWVtb3J5IGNvcnJ1cHRpb24gaXNzdWUgb24gczM5MC4KPiAKPiBCeSBsZXR0aW5n
+IHBYZF9hZGRyX2VuZCgpIGZ1bmN0aW9ucyBrbm93IGFib3V0IHRoZSBwYWdlLXRhYmxlIGVudHJ5
+Cj4gd2UgYWxsb3cgYXJjaHMgbm90IG9ubHkgbWFrZSBleHRyYSBjaGVja3MsIGJ1dCBhbHNvIG9w
+dGltaXphdGlvbnMuCj4gCj4gQXMgcmVzdWx0IG9mIHRoaXMgY2hhbmdlIHRoZSBwWGRfYWRkcl9l
+bmRfZm9sZGVkKCkgZnVuY3Rpb25zIHVzZWQKPiBpbiBndXBfZmFzdCB0cmF2ZXJzYWwgY29kZSBi
+ZWNvbWUgdW5uZWNlc3NhcnkgYW5kIGdldCByZXBsYWNlZCB3aXRoCj4gdW5pdmVyc2FsIHBYZF9h
+ZGRyX2VuZCgpIHZhcmlhbnRzLgo+IAo+IFRoZSBhcmNoLXNwZWNpZmljIHVwZGF0ZXMgbm90IG9u
+bHkgYWRkIGRlcmVmZXJlbmNpbmcgb2YgcGFnZS10YWJsZQo+IGVudHJ5IHBvaW50ZXJzLCBidXQg
+YWxzbyBzbWFsbCBjaGFuZ2VzIHRvIHRoZSBjb2RlIGZsb3cgdG8gbWFrZSB0aG9zZQo+IGRlcmVm
+ZXJlbmNlcyBwb3NzaWJsZSwgYXQgbGVhc3QgZm9yIHg4NiBhbmQgcG93ZXJwYy4gQWxzbyBmb3Ig
+YXJtNjQsCj4gYnV0IGluIHdheSB0aGF0IHNob3VsZCBub3QgaGF2ZSBhbnkgaW1wYWN0Lgo+IAoK
+Wy4uLl0KCj4gCj4gU2lnbmVkLW9mZi1ieTogQWxleGFuZGVyIEdvcmRlZXYgPGFnb3JkZWV2QGxp
+bnV4LmlibS5jb20+Cj4gU2lnbmVkLW9mZi1ieTogR2VyYWxkIFNjaGFlZmVyIDxnZXJhbGQuc2No
+YWVmZXJAbGludXguaWJtLmNvbT4KPiAtLS0KPiAgIGFyY2gvYXJtL2luY2x1ZGUvYXNtL3BndGFi
+bGUtMmxldmVsLmggICAgfCAgMiArLQo+ICAgYXJjaC9hcm0vbW0vaWRtYXAuYyAgICAgICAgICAg
+ICAgICAgICAgICB8ICA2ICsrLS0KPiAgIGFyY2gvYXJtL21tL21tdS5jICAgICAgICAgICAgICAg
+ICAgICAgICAgfCAgOCArKy0tLQo+ICAgYXJjaC9hcm02NC9rZXJuZWwvaGliZXJuYXRlLmMgICAg
+ICAgICAgICB8IDE2ICsrKysrKy0tLS0KPiAgIGFyY2gvYXJtNjQva3ZtL21tdS5jICAgICAgICAg
+ICAgICAgICAgICAgfCAxNiArKysrKy0tLS0tCj4gICBhcmNoL2FybTY0L21tL2thc2FuX2luaXQu
+YyAgICAgICAgICAgICAgIHwgIDggKystLS0KPiAgIGFyY2gvYXJtNjQvbW0vbW11LmMgICAgICAg
+ICAgICAgICAgICAgICAgfCAyNSArKysrKysrLS0tLS0tLS0KPiAgIGFyY2gvcG93ZXJwYy9tbS9i
+b29rM3M2NC9yYWRpeF9wZ3RhYmxlLmMgfCAgNyArKy0tLQo+ICAgYXJjaC9wb3dlcnBjL21tL2h1
+Z2V0bGJwYWdlLmMgICAgICAgICAgICB8ICA2ICsrLS0KCllvdSBmb3Jnb3QgYXJjaC9wb3dlcnBj
+L21tL2Jvb2szczY0L3N1YnBhZ2VfcHJvdC5jIGl0IHNlZW1zLgoKPiAgIGFyY2gvczM5MC9pbmNs
+dWRlL2FzbS9wZ3RhYmxlLmggICAgICAgICAgfCAgOCArKy0tLQo+ICAgYXJjaC9zMzkwL21tL3Bh
+Z2Utc3RhdGVzLmMgICAgICAgICAgICAgICB8ICA4ICsrLS0tCj4gICBhcmNoL3MzOTAvbW0vcGFn
+ZWF0dHIuYyAgICAgICAgICAgICAgICAgIHwgIDggKystLS0KPiAgIGFyY2gvczM5MC9tbS92bWVt
+LmMgICAgICAgICAgICAgICAgICAgICAgfCAgOCArKy0tLQo+ICAgYXJjaC9zcGFyYy9tbS9odWdl
+dGxicGFnZS5jICAgICAgICAgICAgICB8ICA2ICsrLS0KPiAgIGFyY2gvdW0va2VybmVsL3RsYi5j
+ICAgICAgICAgICAgICAgICAgICAgfCAgOCArKy0tLQo+ICAgYXJjaC94ODYvbW0vaW5pdF82NC5j
+ICAgICAgICAgICAgICAgICAgICB8IDE1ICsrKystLS0tLQo+ICAgYXJjaC94ODYvbW0va2FzYW5f
+aW5pdF82NC5jICAgICAgICAgICAgICB8IDE2ICsrKysrLS0tLS0KPiAgIGluY2x1ZGUvYXNtLWdl
+bmVyaWMvcGd0YWJsZS1ub3A0ZC5oICAgICAgfCAgMiArLQo+ICAgaW5jbHVkZS9hc20tZ2VuZXJp
+Yy9wZ3RhYmxlLW5vcG1kLmggICAgICB8ICAyICstCj4gICBpbmNsdWRlL2FzbS1nZW5lcmljL3Bn
+dGFibGUtbm9wdWQuaCAgICAgIHwgIDIgKy0KPiAgIGluY2x1ZGUvbGludXgvcGd0YWJsZS5oICAg
+ICAgICAgICAgICAgICAgfCAyNiArKysrLS0tLS0tLS0tLS0KPiAgIG1tL2d1cC5jICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgfCAgOCArKy0tLQo+ICAgbW0vaW9yZW1hcC5jICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICB8ICA4ICsrLS0tCj4gICBtbS9rYXNhbi9pbml0LmMgICAg
+ICAgICAgICAgICAgICAgICAgICAgIHwgMTcgKysrKystLS0tLQo+ICAgbW0vbWFkdmlzZS5jICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICB8ICA0ICstLQo+ICAgbW0vbWVtb3J5LmMgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICB8IDQwICsrKysrKysrKysrKy0tLS0tLS0tLS0tLQo+ICAg
+bW0vbWxvY2suYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IDE4ICsrKysrKysrLS0t
+Cj4gICBtbS9tcHJvdGVjdC5jICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDggKystLS0K
+PiAgIG1tL3BhZ2V3YWxrLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgOCArKy0tLQo+
+ICAgbW0vc3dhcGZpbGUuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICA4ICsrLS0tCj4g
+ICBtbS92bWFsbG9jLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgMTYgKysrKystLS0t
+LQo+ICAgMzEgZmlsZXMgY2hhbmdlZCwgMTY1IGluc2VydGlvbnMoKyksIDE3MyBkZWxldGlvbnMo
+LSkKCkNocmlzdG9waGUKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3Jn
+Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
 
