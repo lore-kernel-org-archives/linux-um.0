@@ -1,53 +1,74 @@
-Return-Path: <tglx@linutronix.de>
-Message-Id: <20200914204442.098732980@linutronix.de>
-Date: Mon, 14 Sep 2020 22:42:20 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: [patch 11/13] drm/i915: Clenaup PREEMPT_COUNT leftovers
-References: <20200914204209.256266093@linutronix.de>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kG5Hg-0002X4-NG
+ for linux-um@lists.infradead.org; Wed, 09 Sep 2020 18:57:33 +0000
+Subject: Re: [PATCH v2] docs: add a new User Mode Linux HowTo
+References: <20200907092124.17599-1-anton.ivanov@cambridgegreys.com>
+ <20200909115532.42a96ddc@lwn.net>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <9f512b92-c75d-995f-a75d-33d2cc560749@cambridgegreys.com>
+Date: Wed, 9 Sep 2020 19:57:22 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: linux-arch@vger.kernel.org, Linus Torvalds <torvalds@linuxfoundation.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Valentin Schneider <valentin.schneider@arm.com>, Jani Nikula <jani.nikula@linux.intel.com>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>, intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Brian Cain <bcain@codeaurora.org>, linux-hexagon@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, Will Deacon <will@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, Ingo Molnar <mingo@redhat.com>, Russell King <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, "Paul E. McKenney" <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+In-Reply-To: <20200909115532.42a96ddc@lwn.net>
+Content-Language: en-US
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Jonathan Corbet <corbet@lwn.net>
+Cc: richard@nod.at, linux-um@lists.infradead.org, linux-doc@vger.kernel.org
 
-CONFIG_PREEMPT_COUNT is now unconditionally enabled and will be
-removed. Cleanup the leftovers before doing so.
+On 09/09/2020 18:55, Jonathan Corbet wrote:
+> On Mon,  7 Sep 2020 10:21:24 +0100
+> anton.ivanov@cambridgegreys.com wrote:
+> 
+> Sorry, I'd missed the fact that there's a v2; my comments from v1 still
+> apply, though, it seems.
+> 
+>> diff --git a/Documentation/virt/uml/user_mode_linux.rst b/Documentation/virt/uml/user_mode_linux-2.4.rst
+>> similarity index 99%
+>> rename from Documentation/virt/uml/user_mode_linux.rst
+>> rename to Documentation/virt/uml/user_mode_linux-2.4.rst
+>> index de0f0b2c9d5b..ed5a698cd710 100644
+>> --- a/Documentation/virt/uml/user_mode_linux.rst
+>> +++ b/Documentation/virt/uml/user_mode_linux-2.4.rst
+>> @@ -10,6 +10,10 @@ User Mode Linux HOWTO
+>>   This document describes the use and abuse of Jeff Dike's User Mode
+>>   Linux: a port of the Linux kernel as a normal Intel Linux process.
+>>   
+>> +*Note: - this howto is historic and correct as of kernel versions
+>> +~ 2.4. For more up-to-date information please refer to the newer
+>> +user_mode_linux_howto_v2.*
+> 
+> So why are we keeping this version around?  The 5.x kernel doesn't need to
+> document what was happening in 2.4... ?
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Jani Nikula <jani.nikula@linux.intel.com>
-Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: intel-gfx@lists.freedesktop.org
-Cc: dri-devel@lists.freedesktop.org
----
- drivers/gpu/drm/i915/Kconfig.debug |    1 -
- drivers/gpu/drm/i915/i915_utils.h  |    3 +--
- 2 files changed, 1 insertion(+), 3 deletions(-)
+I am OK for it to be removed if everyone agrees to switch to the new one.
 
---- a/drivers/gpu/drm/i915/Kconfig.debug
-+++ b/drivers/gpu/drm/i915/Kconfig.debug
-@@ -20,7 +20,6 @@ config DRM_I915_DEBUG
- 	bool "Enable additional driver debugging"
- 	depends on DRM_I915
- 	select DEBUG_FS
--	select PREEMPT_COUNT
- 	select I2C_CHARDEV
- 	select STACKDEPOT
- 	select DRM_DP_AUX_CHARDEV
---- a/drivers/gpu/drm/i915/i915_utils.h
-+++ b/drivers/gpu/drm/i915/i915_utils.h
-@@ -337,8 +337,7 @@ wait_remaining_ms_from_jiffies(unsigned
- 						   (Wmax))
- #define wait_for(COND, MS)		_wait_for((COND), (MS) * 1000, 10, 1000)
- 
--/* If CONFIG_PREEMPT_COUNT is disabled, in_atomic() always reports false. */
--#if defined(CONFIG_DRM_I915_DEBUG) && defined(CONFIG_PREEMPT_COUNT)
-+#ifdef CONFIG_DRM_I915_DEBUG
- # define _WAIT_FOR_ATOMIC_CHECK(ATOMIC) WARN_ON_ONCE((ATOMIC) && !in_atomic())
- #else
- # define _WAIT_FOR_ATOMIC_CHECK(ATOMIC) do { } while (0)
+> 
+> Thanks,
+> 
+> jon
+> 
 
+
+-- 
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
