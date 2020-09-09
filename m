@@ -1,106 +1,151 @@
-Return-Path: <tglx@linutronix.de>
-Message-Id: <20200914204209.256266093@linutronix.de>
-Date: Mon, 14 Sep 2020 22:42:09 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: [patch 00/13] preempt: Make preempt count unconditional
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: linux-arch@vger.kernel.org, Linus Torvalds <torvalds@linuxfoundation.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Valentin Schneider <valentin.schneider@arm.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Brian Cain <bcain@codeaurora.org>, linux-hexagon@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, Will Deacon <will@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, Ingo Molnar <mingo@redhat.com>, Russell King <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Jani Nikula <jani.nikula@linux.intel.com>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>, intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, "Paul E. McKenney" <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Subject: Re: [RFC PATCH v2 2/3] mm: make pXd_addr_end() functions
+ page-table entry aware
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+In-Reply-To: <20200908141554.GA20558@oc3871087118.ibm.com>
+References: <20200907180058.64880-1-gerald.schaefer@linux.ibm.com>
+ <20200907180058.64880-3-gerald.schaefer@linux.ibm.com>
+ <31dfb3ed-a0cc-3024-d389-ab9bd19e881f@csgroup.eu>
+ <20200908074638.GA19099@oc3871087118.ibm.com>
+ <5d4f5546-afd0-0b8f-664d-700ae346b9ec@csgroup.eu>
+ <20200908141554.GA20558@oc3871087118.ibm.com>
+Date: Wed, 09 Sep 2020 08:38:31 +0000
+Message-ID: <1599640711.14692.1.camel@po17688vm.idsi0.si.c-s.fr>
+Mime-Version: 1.0
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Alexander Gordeev <agordeev@linux.ibm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Catalin Marinas <catalin.marinas@arm.com>, Dave Hansen <dave.hansen@linux.intel.com>, linux-mm <linux-mm@kvack.org>, Paul Mackerras <paulus@samba.org>, linux-sparc <sparclinux@vger.kernel.org>, Claudio Imbrenda <imbrenda@linux.ibm.com>, Will Deacon <will@kernel.org>, linux-arch <linux-arch@vger.kernel.org>, linux-s390 <linux-s390@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, Christian Borntraeger <borntraeger@de.ibm.com>, Richard Weinberger <richard@nod.at>, linux-x86 <x86@kernel.org>, Russell King <linux@armlinux.org.uk>, Jason Gunthorpe <jgg@ziepe.ca>, Ingo Molnar <mingo@redhat.com>, Andrey Ryabinin <aryabinin@virtuozzo.com>, Gerald Schaefer <gerald.schaefer@linux.ibm.com>, Jeff Dike <jdike@addtoit.com>, Vasily Gorbik <gor@linux.ibm.com>, John Hubbard <jhubbard@nvidia.com>, Heiko Carstens <hca@linux.ibm.com>, linux-um <linux-um@lists.infradead.org>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, linux-arm <linux-arm-kernel@lists.infradead.org>, Linus Torvalds <torvalds@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, Andrew Morton <akpm@linux-foundation.org>, linux-power <linuxppc-dev@lists.ozlabs.org>, Mike Rapoport <rppt@kernel.org>
 
-Rm9sa3MhCgpXaGlsZSB3b3JraW5nIG9uIHZhcmlvdXMgcHJlZW1wdCBjb3VudCByZWxhdGVkIHRo
-aW5ncywgSSBzdHVtYmxlZCAoYWdhaW4pCm92ZXIgdGhlIGluY29uc2lzdGVuY3kgb2Ygb3VyIHBy
-ZWVtcHQgY291bnQgaGFuZGxpbmcuCgpUaGUgaGFuZGxpbmcgb2YgcHJlZW1wdF9jb3VudCgpIGlz
-IGluY29uc2lzdGVudCBhY2Nyb3NzIGtlcm5lbApjb25maWd1cmF0aW9ucy4gT24ga2VybmVscyB3
-aGljaCBoYXZlIFBSRUVNUFRfQ09VTlQ9bgpwcmVlbXB0X2Rpc2FibGUvZW5hYmxlKCkgYW5kIHRo
-ZSBsb2NrL3VubG9jayBmdW5jdGlvbnMgYXJlIG5vdCBhZmZlY3RpbmcKdGhlIHByZWVtcHQgY291
-bnQsIG9ubHkgbG9jYWxfYmhfZGlzYWJsZS9lbmFibGUoKSBhbmQgX2JoIHZhcmlhbnRzIG9mCmxv
-Y2tpbmcsIHNvZnQgaW50ZXJydXB0IGRlbGl2ZXJ5LCBoYXJkIGludGVycnVwdCBhbmQgTk1JIGNv
-bnRleHQgYWZmZWN0IGl0LgoKSXQncyB0aGVyZWZvcmUgaW1wb3NzaWJsZSB0byBoYXZlIGEgY29u
-c2lzdGVudCBzZXQgb2YgY2hlY2tzIHdoaWNoIHByb3ZpZGUKaW5mb3JtYXRpb24gYWJvdXQgdGhl
-IGNvbnRleHQgaW4gd2hpY2ggYSBmdW5jdGlvbiBpcyBjYWxsZWQuIEluIG1hbnkgY2FzZXMKaXQg
-bWFrZXMgc2Vuc2UgdG8gaGF2ZSBzZXBlcmF0ZSBmdW5jdGlvbnMgZm9yIHNlcGVyYXRlIGNvbnRl
-eHRzLCBidXQgdGhlcmUKYXJlIHZhbGlkIHJlYXNvbnMgdG8gYXZvaWQgdGhhdCBhbmQgaGFuZGxl
-IGRpZmZlcmVudCBjYWxsaW5nIGNvbnRleHRzCmNvbmRpdGlvbmFsbHkuCgpUaGUgbGFjayBvZiBz
-dWNoIGluZGljYXRvcnMgd2hpY2ggd29yayBvbiBhbGwga2VybmVsIGNvbmZpZ3VyYXRpb3MgaXMg
-YQpjb25zdGFudCBzb3VyY2Ugb2YgdHJvdWJsZSBiZWNhdXNlIGRldmVsb3BlcnMgZWl0aGVyIGRv
-IG5vdCB1bmRlcnN0YW5kIHRoZQppbXBsaWNhdGlvbnMgb3IgdHJ5IHRvIHdvcmsgYXJvdW5kIHRo
-aXMgaW5jb25zaXN0ZW5jeSBpbiB3ZWlyZAp3YXlzLiBOZWl0aGVyIHNlZW0gdGhlc2UgaXNzdWVz
-IGJlIGNhdGNoZWQgYnkgcmV2aWV3ZXJzIGFuZCB0ZXN0aW5nLgoKUmVjZW50bHkgbWVyZ2VkIGNv
-ZGUgZG9lczoKCgkgZ2ZwID0gcHJlZW1wdGlibGUoKSA/IEdGUF9LRVJORUwgOiBHRlBfQVRPTUlD
-OwoKTG9va3Mgb2J2aW91c2x5IGNvcnJlY3QsIGV4Y2VwdCBmb3IgdGhlIGZhY3QgdGhhdCBwcmVl
-bXB0aWJsZSgpIGlzCnVuY29uZGl0aW9uYWxseSBmYWxzZSBmb3IgQ09ORklGX1BSRUVNUFRfQ09V
-TlQ9biwgaS5lLiBhbGwgYWxsb2NhdGlvbnMgaW4KdGhhdCBjb2RlIHVzZSBHRlBfQVRPTUlDIG9u
-IHN1Y2gga2VybmVscy4KCkF0dGVtcHRzIHRvIG1ha2UgcHJlZW1wdCBjb3VudCB1bmNvbmRpdGlv
-bmFsIGFuZCBjb25zaXN0ZW50IGhhdmUgYmVlbgpyZWplY3RlZCBpbiB0aGUgcGFzdCB3aXRoIGhh
-bmR3YXZpbmcgcGVyZm9ybWFuY2UgYXJndW1lbnRzLgoKRnJlc2hseSBjb25kdWN0ZWQgYmVuY2ht
-YXJrcyBkaWQgbm90IHJldmVhbCBhbnkgbWVhc3VyYWJsZSBpbXBhY3QgZnJvbQplbmFibGluZyBw
-cmVlbXB0IGNvdW50IHVuY29uZGl0aW9uYWxseS4gT24ga2VybmVscyB3aXRoIENPTkZJR19QUkVF
-TVBUX05PTkUKb3IgQ09ORklHX1BSRUVNUFRfVk9MVU5UQVJZIHRoZSBwcmVlbXB0IGNvdW50IGlz
-IG9ubHkgaW5jcmVtZW50ZWQgYW5kCmRlY3JlbWVudGVkIGJ1dCB0aGUgcmVzdWx0IG9mIHRoZSBk
-ZWNyZW1lbnQgaXMgbm90IHRlc3RlZC4gQ29udHJhcnkgdG8gdGhhdAplbmFibGluZyBDT05GSUdf
-UFJFRU1QVCB3aGljaCB0ZXN0cyB0aGUgcmVzdWx0IGhhcyBhIHNtYWxsIGJ1dCBtZWFzdXJhYmxl
-CmltcGFjdCBkdWUgdG8gdGhlIGNvbmRpdGlvbmFsIGJyYW5jaC9jYWxsLgoKSXQncyBhYm91dCB0
-aW1lIHRvIG1ha2UgZXNzZW50aWFsIGZ1bmN0aW9uYWxpdHkgb2YgdGhlIGtlcm5lbCBjb25zaXN0
-ZW50CmFjY3Jvc3MgdGhlIHZhcmlvdXMgcHJlZW1wdGlvbiBtb2RlbHMuCgpUaGUgc2VyaWVzIGlz
-IGFsc28gYXZhaWxhYmxlIGZyb20gZ2l0OgoKICAgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3Nj
-bS9saW51eC9rZXJuZWwvZ2l0L3RnbHgvZGV2ZWwuZ2l0IHByZWVtcHQKClRoYXQncyB0aGUgZmly
-c3QgcGFydCBvZiBhIGxhcmdlciBlZmZvcnQgcmVsYXRlZCB0byBwcmVlbXB0IGNvdW50OgoKIDEp
-IFRoZSBhbmFseXNpcyBvZiB0aGUgdXNhZ2Ugc2l0ZXMgb2YgaW5faW50ZXJydXB0KCksIGluX2F0
-b21pYygpLAogICAgaW5fc29mdGlycSgpIGlzIHN0aWxsIG9uZ29pbmcsIGJ1dCBzbyBmYXIgdGhl
-IG51bWJlciBvZiBidWdneSB1c2VycyBpcwogICAgY2xlYXJseSB0aGUgdmFzdCBtYWpvcml0eS4g
-VGhlcmUgd2lsbCBiZSBzZXBlcmF0ZSBwYXRjaCBzZXJpZXMKICAgIChjdXJyZW50bHkgNDYgYW5k
-IGNvdW50aW5nKSB0byBhZGRyZXNzIHRoZXNlIGlzc3VlcyBvbmNlIHRoZSBhbmFseXNpcwogICAg
-aXMgY29tcGxldGUgaW4gdGhlIG5leHQgZGF5cy4KCiAyKSBUaGUgbG9uZyBkaXNjdXNzZWQgc3Rh
-dGUgdHJhY2tpbmcgb2YgbG9jYWwgaXJxIGRpc2FibGUgaW4gcHJlZW1wdCBjb3VudAogICAgd2hp
-Y2ggYWNjb3VudHMgaW50ZXJydXB0IGRpc2FibGVkIHNlY3Rpb25zIGFzIGF0b21pYyBhbmQgYXZv
-aWRzIGlzc3VpbmcKICAgIGNvc3RseSBpbnN0cnVjdGlvbnMgKHN0aSwgY2xpLCBwb3BmIG9yIHRo
-ZWlyIG5vbiBYODYgY291bnRlcnBhcnRzKSB3aGVuCiAgICB0aGUgc3RhdGUgZG9lcyBub3QgY2hh
-bmdlLCBpLmUuIG5lc3RlZCBpcnFfc2F2ZSgpIG9yIGlycV9yZXN0b3JlKCkuIEkKICAgIGhhdmUg
-dGhpcyB3b3JraW5nIG9uIFg4NiBhbHJlYWR5IGFuZCBjb250cmFyeSB0byBteSBlYXJsaWVyIGF0
-dGVtcHRzCiAgICB0aGlzIHdhcyByZWFzb25hYmx5IHN0cmFpZ2h0IGZvcndhcmQgZHVlIHRvIHRo
-ZSByZWNlbnQgZW50cnkvZXhpdCBjb2RlCiAgICBjb25zb2xpZGF0aW9uLgoKICAgIFdoYXQgSSd2
-ZSBub3QgZG9uZSB5ZXQgaXMgdG8gb3B0aW1pemUgdGhlIHByZWVtcHQgY291bnQgaGFuZGxpbmcK
-ICAgIG9mIHRoZSBbdW5dbG9ja19pcnEqIG9wZXJhdGlvbnMgc28gdGhleSBoYW5kbGUgdGhlIGlu
-dGVycnVwdCBkaXNhYmxlZAogICAgc3RhdGUgYW5kIHRoZSBwcmVlbXB0IGNvdW50IG1vZGlmaWNh
-dGlvbiBpbiBvbmUgZ28uIFRoYXQncyBhbiBvYnZpb3VzCiAgICBhZGQgb24sIGJ1dCBjb3JyZWN0
-bmVzcyBmaXJzdCAuLi4KCiAzKSBMYXp5IGludGVycnVwdCBkaXNhYmxpbmcgYXMgYSBzdHJhaWdo
-dCBmb3J3YXJkIGV4dGVuc2lvbiB0byAjMi4gVGhpcwogICAgYXZvaWRzIHRoZSBhY3R1YWwgZGlz
-YWJsaW5nIGF0IHRoZSBDUFUgbGV2ZWwgY29tcGxldGVseSBhbmQgY2F0Y2hlcyBhbgogICAgaW5j
-b21pbmcgaW50ZXJydXB0IGluIHRoZSBsb3cgbGV2ZWwgZW50cnkgY29kZSwgbW9kaWZpZXMgdGhl
-IGludGVycnVwdAogICAgZGlzYWJsZWQgc3RhdGUgb24gdGhlIHJldHVybiBzdGFjaywgbm90ZXMg
-dGhlIGludGVycnVwdCBhcyBwZW5kaW5nIGluCiAgICBzb2Z0d2FyZSBhbmQgcmFpc2VzIGl0IGFn
-YWluIHdoZW4gaW50ZXJydXB0cyBhcmUgcmVlbmFibGVkLiBUaGlzIGhhcwogICAgc3RpbGwgYSBm
-ZXcgaXNzdWVzIHdoaWNoIEknbSBodW50aW5nIGRvd24gKGNwdWlkbGUgaXMgdW5oYXBweSAuLi4p
-CgpUaGFua3MsCgoJdGdseAotLS0KIGFyY2gvYXJtL2luY2x1ZGUvYXNtL2Fzc2VtYmxlci5oICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDExIC0tCiBhcmNoL2FybS9rZXJuZWwv
-aXdtbXh0LlMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgMiAK
-IGFyY2gvYXJtL21hY2gtZXA5M3h4L2NydW5jaC1iaXRzLlMgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgfCAgICAyIAogYXJjaC94dGVuc2Eva2VybmVsL2VudHJ5LlMgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDIgCiBkcml2ZXJzL2dwdS9kcm0vaTkxNS9L
-Y29uZmlnLmRlYnVnICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgMSAKIGRyaXZl
-cnMvZ3B1L2RybS9pOTE1L2k5MTVfdXRpbHMuaCAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgfCAgICAzIAogaW5jbHVkZS9saW51eC9iaXRfc3BpbmxvY2suaCAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICB8ICAgIDQgLQogaW5jbHVkZS9saW51eC9sb2NrZGVwLmggICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDYgLQogaW5jbHVkZS9s
-aW51eC9wYWdlbWFwLmggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8
-ICAgIDQgLQogaW5jbHVkZS9saW51eC9wcmVlbXB0LmggICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICB8ICAgMzcgKy0tLS0tLS0tLQogaW5jbHVkZS9saW51eC91YWNjZXNz
-LmggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDYgLQoga2Vy
-bmVsL0tjb25maWcucHJlZW1wdCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICB8ICAgIDQgLQoga2VybmVsL3NjaGVkL2NvcmUuYyAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDYgLQogbGliL0tjb25maWcuZGVidWcgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDMgCiBsaWIvS2Nv
-bmZpZy5kZWJ1Zy5yZWogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgICAxNCArLS0KIHRvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL3JjdXRvcnR1cmUvY29uZmlncy9y
-Y3UvU1JDVS10ICAgICAgICAgICAgfCAgICAxIAogdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvcmN1
-dG9ydHVyZS9jb25maWdzL3JjdS9TUkNVLXUgICAgICAgICAgICB8ICAgIDEgCiB0b29scy90ZXN0
-aW5nL3NlbGZ0ZXN0cy9yY3V0b3J0dXJlL2NvbmZpZ3MvcmN1L1RJTlkwMSAgICAgICAgICAgIHwg
-ICAgMSAKIHRvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL3JjdXRvcnR1cmUvZG9jL1RJTllfUkNVLnR4
-dCAgICAgICAgICAgICAgfCAgICA1IC0KIHRvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL3JjdXRvcnR1
-cmUvZG9jL1RSRUVfUkNVLWtjb25maWcudHh0ICAgICAgfCAgICAxIAogdG9vbHMvdGVzdGluZy9z
-ZWxmdGVzdHMvcmN1dG9ydHVyZS9mb3JtYWwvc3JjdS1jYm1jL3NyYy9jb25maWcuaCB8ICAgIDEg
-CiAyMSBmaWxlcyBjaGFuZ2VkLCAyMyBpbnNlcnRpb25zKCspLCA5MiBkZWxldGlvbnMoLSkKCgo=
+On Tue, 2020-09-08 at 16:15 +0200, Alexander Gordeev wrote:
+> On Tue, Sep 08, 2020 at 10:16:49AM +0200, Christophe Leroy wrote:
+> > >Yes, and also two more sources :/
+> > >	arch/powerpc/mm/kasan/8xx.c
+> > >	arch/powerpc/mm/kasan/kasan_init_32.c
+> > >
+> > >But these two are not quite obvious wrt pgd_addr_end() used
+> > >while traversing pmds. Could you please clarify a bit?
+> > >
+> > >
+> > >diff --git a/arch/powerpc/mm/kasan/8xx.c b/arch/powerpc/mm/kasan/8xx.c
+> > >index 2784224..89c5053 100644
+> > >--- a/arch/powerpc/mm/kasan/8xx.c
+> > >+++ b/arch/powerpc/mm/kasan/8xx.c
+> > >@@ -15,8 +15,8 @@
+> > >  	for (k_cur = k_start; k_cur != k_end; k_cur = k_next, pmd += 2, block += SZ_8M) {
+> > >  		pte_basic_t *new;
+> > >-		k_next = pgd_addr_end(k_cur, k_end);
+> > >-		k_next = pgd_addr_end(k_next, k_end);
+> > >+		k_next = pmd_addr_end(k_cur, k_end);
+> > >+		k_next = pmd_addr_end(k_next, k_end);
+> > 
+> > No, I don't think so.
+> > On powerpc32 we have only two levels, so pgd and pmd are more or
+> > less the same.
+> > But pmd_addr_end() as defined in include/asm-generic/pgtable-nopmd.h
+> > is a no-op, so I don't think it will work.
+> > 
+> > It is likely that this function should iterate on pgd, then you get
+> > pmd = pmd_offset(pud_offset(p4d_offset(pgd)));
+> 
+> It looks like the code iterates over single pmd table while using
+> pgd_addr_end() only to skip all the middle levels and bail out
+> from the loop.
+> 
+> I would be wary for switching from pmds to pgds, since we are
+> trying to minimize impact (especially functional) and the
+> rework does not seem that obvious.
+> 
+
+I've just tested the following change, it works and should fix the
+oddity:
+
+diff --git a/arch/powerpc/mm/kasan/8xx.c b/arch/powerpc/mm/kasan/8xx.c
+index 2784224054f8..8e53ddf57b84 100644
+--- a/arch/powerpc/mm/kasan/8xx.c
++++ b/arch/powerpc/mm/kasan/8xx.c
+@@ -9,11 +9,12 @@
+ static int __init
+ kasan_init_shadow_8M(unsigned long k_start, unsigned long k_end, void
+*block)
+ {
+-	pmd_t *pmd = pmd_off_k(k_start);
++	pgd_t *pgd = pgd_offset_k(k_start);
+ 	unsigned long k_cur, k_next;
+ 
+-	for (k_cur = k_start; k_cur != k_end; k_cur = k_next, pmd += 2, block
++= SZ_8M) {
++	for (k_cur = k_start; k_cur != k_end; k_cur = k_next, pgd += 2, block
++= SZ_8M) {
+ 		pte_basic_t *new;
++		pmd_t *pmd = pmd_offset(pud_offset(p4d_offset(pgd, k_cur), k_cur),
+k_cur);
+ 
+ 		k_next = pgd_addr_end(k_cur, k_end);
+ 		k_next = pgd_addr_end(k_next, k_end);
+diff --git a/arch/powerpc/mm/kasan/kasan_init_32.c
+b/arch/powerpc/mm/kasan/kasan_init_32.c
+index fb294046e00e..e5f524fa71a7 100644
+--- a/arch/powerpc/mm/kasan/kasan_init_32.c
++++ b/arch/powerpc/mm/kasan/kasan_init_32.c
+@@ -30,13 +30,12 @@ static void __init kasan_populate_pte(pte_t *ptep,
+pgprot_t prot)
+ 
+ int __init kasan_init_shadow_page_tables(unsigned long k_start,
+unsigned long k_end)
+ {
+-	pmd_t *pmd;
++	pgd_t *pgd = pgd_offset_k(k_start);
+ 	unsigned long k_cur, k_next;
+ 
+-	pmd = pmd_off_k(k_start);
+-
+-	for (k_cur = k_start; k_cur != k_end; k_cur = k_next, pmd++) {
++	for (k_cur = k_start; k_cur != k_end; k_cur = k_next, pgd++) {
+ 		pte_t *new;
++		pmd_t *pmd = pmd_offset(pud_offset(p4d_offset(pgd, k_cur), k_cur),
+k_cur);
+ 
+ 		k_next = pgd_addr_end(k_cur, k_end);
+ 		if ((void *)pmd_page_vaddr(*pmd) != kasan_early_shadow_pte)
+@@ -189,16 +188,18 @@ void __init kasan_early_init(void)
+ 	unsigned long addr = KASAN_SHADOW_START;
+ 	unsigned long end = KASAN_SHADOW_END;
+ 	unsigned long next;
+-	pmd_t *pmd = pmd_off_k(addr);
++	pgd_t *pgd = pgd_offset_k(addr);
+ 
+ 	BUILD_BUG_ON(KASAN_SHADOW_START & ~PGDIR_MASK);
+ 
+ 	kasan_populate_pte(kasan_early_shadow_pte, PAGE_KERNEL);
+ 
+ 	do {
++		pmd_t *pmd = pmd_offset(pud_offset(p4d_offset(pgd, addr), addr),
+addr);
++
+ 		next = pgd_addr_end(addr, end);
+ 		pmd_populate_kernel(&init_mm, pmd, kasan_early_shadow_pte);
+-	} while (pmd++, addr = next, addr != end);
++	} while (pgd++, addr = next, addr != end);
+ 
+ 	if (early_mmu_has_feature(MMU_FTR_HPTE_TABLE))
+ 		kasan_early_hash_table();
+---
+Christophe
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
