@@ -1,10 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: [PATCH 10/13] jffs2: Tell the VFS that readpage was synchronous
-Date: Thu, 17 Sep 2020 16:10:47 +0100
-Message-Id: <20200917151050.5363-11-willy@infradead.org>
-In-Reply-To: <20200917151050.5363-1-willy@infradead.org>
-References: <20200917151050.5363-1-willy@infradead.org>
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kGItv-0008DR-7R
+ for linux-um@lists.infradead.org; Thu, 10 Sep 2020 09:29:55 +0000
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [PATCH 2/2] um: time-travel: return the sequence number in ACK
+ messages
+Date: Thu, 10 Sep 2020 11:29:45 +0200
+Message-Id: <20200910092945.88677-3-johannes@sipsolutions.net>
+In-Reply-To: <20200910092945.88677-1-johannes@sipsolutions.net>
+References: <20200910092945.88677-1-johannes@sipsolutions.net>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -18,43 +24,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-fsdevel@vger.kernel.org
-Cc: linux-cifs@vger.kernel.org, Richard Weinberger <richard@nod.at>, ecryptfs@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>, linux-mm@kvack.org, linux-mtd@lists.infradead.org, v9fs-developer@lists.sourceforge.net, ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org
+To: linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
 
-The jffs2 readpage implementation was already synchronous, so use
-AOP_UPDATED_PAGE to avoid cycling the page lock.
+From: Johannes Berg <johannes.berg@intel.com>
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+For external time travel, the protocol says to return the
+incoming sequence number in the ACK message to aid debugging,
+so do that.
+
+Change-Id: Ib2bcca1371247b2f8643f35fb85ca5051addd8cc
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- fs/jffs2/file.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/um/kernel/time.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
-index f8fb89b10227..959a74027041 100644
---- a/fs/jffs2/file.c
-+++ b/fs/jffs2/file.c
-@@ -116,15 +116,17 @@ int jffs2_do_readpage_unlock(void *data, struct page *pg)
- 	return ret;
- }
+diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
+index c07436e89e59..3d109ff3309b 100644
+--- a/arch/um/kernel/time.c
++++ b/arch/um/kernel/time.c
+@@ -106,6 +106,7 @@ static void time_travel_handle_message(struct um_timetravel_msg *msg,
+ 		break;
+ 	}
  
--
- static int jffs2_readpage (struct file *filp, struct page *pg)
- {
- 	struct jffs2_inode_info *f = JFFS2_INODE_INFO(pg->mapping->host);
- 	int ret;
- 
- 	mutex_lock(&f->sem);
--	ret = jffs2_do_readpage_unlock(pg->mapping->host, pg);
-+	ret = jffs2_do_readpage_nolock(pg->mapping->host, pg);
- 	mutex_unlock(&f->sem);
-+	if (!ret)
-+		return AOP_UPDATED_PAGE;
-+	unlock_page(pg);
- 	return ret;
++	resp.seq = msg->seq;
+ 	os_write_file(time_travel_ext_fd, &resp, sizeof(resp));
  }
  
 -- 
-2.28.0
+2.26.2
 
 
 _______________________________________________
