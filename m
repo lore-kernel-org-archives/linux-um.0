@@ -1,103 +1,62 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-Subject: [RFC PATCH v2 3/3] mm: make generic pXd_addr_end() macros inline
- functions
-Date: Mon,  7 Sep 2020 20:00:58 +0200
-Message-Id: <20200907180058.64880-4-gerald.schaefer@linux.ibm.com>
-In-Reply-To: <20200907180058.64880-1-gerald.schaefer@linux.ibm.com>
-References: <20200907180058.64880-1-gerald.schaefer@linux.ibm.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Return-Path: <tglx@linutronix.de>
+Message-Id: <20200914204440.969090025@linutronix.de>
+Date: Mon, 14 Sep 2020 22:42:10 +0200
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: 
+ [patch 01/13] lib/debug: Remove pointless ARCH_NO_PREEMPT dependencies
+References: <20200914204209.256266093@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jason Gunthorpe <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Dave Hansen <dave.hansen@linux.intel.com>, linux-mm <linux-mm@kvack.org>, Paul Mackerras <paulus@samba.org>, linux-sparc <sparclinux@vger.kernel.org>, Alexander Gordeev <agordeev@linux.ibm.com>, Claudio Imbrenda <imbrenda@linux.ibm.com>, Will Deacon <will@kernel.org>, linux-arch <linux-arch@vger.kernel.org>, linux-s390 <linux-s390@vger.kernel.org>, Vasily Gorbik <gor@linux.ibm.com>, Richard Weinberger <richard@nod.at>, linux-x86 <x86@kernel.org>, Russell King <linux@armlinux.org.uk>, Christian Borntraeger <borntraeger@de.ibm.com>, Ingo Molnar <mingo@redhat.com>, Catalin Marinas <catalin.marinas@arm.com>, Andrey Ryabinin <aryabinin@virtuozzo.com>, Heiko Carstens <hca@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, linux-arm <linux-arm-kernel@lists.infradead.org>, linux-power <linuxppc-dev@lists.ozlabs.org>, LKML <linux-kernel@vger.kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, Mike Rapoport <rppt@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8-bit
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: linux-arch@vger.kernel.org, Linus Torvalds <torvalds@linuxfoundation.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Valentin Schneider <valentin.schneider@arm.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Brian Cain <bcain@codeaurora.org>, linux-hexagon@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, Will Deacon <will@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, Ingo Molnar <mingo@redhat.com>, Russell King <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Jani Nikula <jani.nikula@linux.intel.com>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>, intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, "Paul E. McKenney" <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-From: Alexander Gordeev <agordeev@linux.ibm.com>
+ARCH_NO_PREEMPT disables the selection of CONFIG_PREEMPT_VOLUNTARY and
+CONFIG_PREEMPT, but architectures which set this config option still
+support preempt count for hard and softirq accounting.
 
-Since pXd_addr_end() macros take pXd page-table entry as a
-parameter it makes sense to check the entry type on compile.
-Even though most archs do not make use of page-table entries
-in pXd_addr_end() calls, checking the type in traversal code
-paths could help to avoid subtle bugs.
+There is absolutely no reason to prevent lockdep from using the preempt
+counter nor is there a reason to prevent the enablement of
+CONFIG_DEBUG_ATOMIC_SLEEP on such architectures.
 
-Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
-Signed-off-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Remove the dependencies, which affects ALPHA, HEXAGON, M68K and UM.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Richard Henderson <rth@twiddle.net>
+Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+Cc: Matt Turner <mattst88@gmail.com>
+Cc: linux-alpha@vger.kernel.org
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: linux-um@lists.infradead.org
+Cc: Brian Cain <bcain@codeaurora.org>
+Cc: linux-hexagon@vger.kernel.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
 ---
- include/linux/pgtable.h | 36 ++++++++++++++++++++----------------
- 1 file changed, 20 insertions(+), 16 deletions(-)
+ lib/Kconfig.debug |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index 67ebc22cf83d..d9e7d16c2263 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -656,31 +656,35 @@ static inline int arch_unmap_one(struct mm_struct *mm,
-  */
- 
- #ifndef pgd_addr_end
--#define pgd_addr_end(pgd, addr, end)					\
--({	unsigned long __boundary = ((addr) + PGDIR_SIZE) & PGDIR_MASK;	\
--	(__boundary - 1 < (end) - 1)? __boundary: (end);		\
--})
-+#define pgd_addr_end pgd_addr_end
-+static inline unsigned long pgd_addr_end(pgd_t pgd, unsigned long addr, unsigned long end)
-+{	unsigned long __boundary = (addr + PGDIR_SIZE) & PGDIR_MASK;
-+	return (__boundary - 1 < end - 1) ? __boundary : end;
-+}
- #endif
- 
- #ifndef p4d_addr_end
--#define p4d_addr_end(p4d, addr, end)					\
--({	unsigned long __boundary = ((addr) + P4D_SIZE) & P4D_MASK;	\
--	(__boundary - 1 < (end) - 1)? __boundary: (end);		\
--})
-+#define p4d_addr_end p4d_addr_end
-+static inline unsigned long p4d_addr_end(p4d_t p4d, unsigned long addr, unsigned long end)
-+{	unsigned long __boundary = (addr + P4D_SIZE) & P4D_MASK;
-+	return (__boundary - 1 < end - 1) ? __boundary : end;
-+}
- #endif
- 
- #ifndef pud_addr_end
--#define pud_addr_end(pud, addr, end)					\
--({	unsigned long __boundary = ((addr) + PUD_SIZE) & PUD_MASK;	\
--	(__boundary - 1 < (end) - 1)? __boundary: (end);		\
--})
-+#define pud_addr_end pud_addr_end
-+static inline unsigned long pud_addr_end(pud_t pud, unsigned long addr, unsigned long end)
-+{	unsigned long __boundary = (addr + PUD_SIZE) & PUD_MASK;
-+	return (__boundary - 1 < end - 1) ? __boundary : end;
-+}
- #endif
- 
- #ifndef pmd_addr_end
--#define pmd_addr_end(pmd, addr, end)					\
--({	unsigned long __boundary = ((addr) + PMD_SIZE) & PMD_MASK;	\
--	(__boundary - 1 < (end) - 1)? __boundary: (end);		\
--})
-+#define pmd_addr_end pmd_addr_end
-+static inline unsigned long pmd_addr_end(pmd_t pmd, unsigned long addr, unsigned long end)
-+{	unsigned long __boundary = (addr + PMD_SIZE) & PMD_MASK;
-+	return (__boundary - 1 < end - 1) ? __boundary : end;
-+}
- #endif
- 
- /*
--- 
-2.17.1
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1161,7 +1161,7 @@ config PROVE_LOCKING
+ 	select DEBUG_RWSEMS
+ 	select DEBUG_WW_MUTEX_SLOWPATH
+ 	select DEBUG_LOCK_ALLOC
+-	select PREEMPT_COUNT if !ARCH_NO_PREEMPT
++	select PREEMPT_COUNT
+ 	select TRACE_IRQFLAGS
+ 	default n
+ 	help
+@@ -1323,7 +1323,6 @@ config DEBUG_ATOMIC_SLEEP
+ 	bool "Sleep inside atomic section checking"
+ 	select PREEMPT_COUNT
+ 	depends on DEBUG_KERNEL
+-	depends on !ARCH_NO_PREEMPT
+ 	help
+ 	  If you say Y here, various routines which may sleep will become very
+ 	  noisy if they are called inside atomic sections: when a spinlock is
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
