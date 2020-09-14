@@ -1,73 +1,106 @@
 Return-Path: <tglx@linutronix.de>
-Message-Id: <20200914204441.115488215@linutronix.de>
-Date: Mon, 14 Sep 2020 22:42:11 +0200
+Message-Id: <20200914204209.256266093@linutronix.de>
+Date: Mon, 14 Sep 2020 22:42:09 +0200
 From: Thomas Gleixner <tglx@linutronix.de>
-Subject: [patch 02/13] preempt: Make preempt count unconditional
-References: <20200914204209.256266093@linutronix.de>
+Subject: [patch 00/13] preempt: Make preempt count unconditional
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: linux-arch@vger.kernel.org, Linus Torvalds <torvalds@linuxfoundation.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Valentin Schneider <valentin.schneider@arm.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Brian Cain <bcain@codeaurora.org>, linux-hexagon@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, Will Deacon <will@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, Ingo Molnar <mingo@redhat.com>, Russell King <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Jani Nikula <jani.nikula@linux.intel.com>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>, intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, "Paul E. McKenney" <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
 List-ID: <linux-um.lists.infradead.org>
 
-The handling of preempt_count() is inconsistent accross kernel
-configurations. On kernels which have PREEMPT_COUNT=n
-preempt_disable/enable() and the lock/unlock functions are not affecting
-the preempt count, only local_bh_disable/enable() and _bh variants of
-locking, soft interrupt delivery, hard interrupt and NMI context affect it.
-
-It's therefore impossible to have a consistent set of checks which provide
-information about the context in which a function is called. In many cases
-it makes sense to have seperate functions for seperate contexts, but there
-are valid reasons to avoid that and handle different calling contexts
-conditionally.
-
-The lack of such indicators which work on all kernel configuratios is a
-constant source of trouble because developers either do not understand the
-implications or try to work around this inconsistency in weird
-ways. Neither seem these issues be catched by reviewers and testing.
-
-Recently merged code does:
-
-	 gfp = preemptible() ? GFP_KERNEL : GFP_ATOMIC;
-
-Looks obviously correct, except for the fact that preemptible() is
-unconditionally false for CONFIF_PREEMPT_COUNT=n, i.e. all allocations in
-that code use GFP_ATOMIC on such kernels.
-
-Attempts to make preempt count unconditional and consistent have been
-rejected in the past with handwaving performance arguments.
-
-Freshly conducted benchmarks did not reveal any measurable impact from
-enabling preempt count unconditionally. On kernels with CONFIG_PREEMPT_NONE
-or CONFIG_PREEMPT_VOLUNTARY the preempt count is only incremented and
-decremented but the result of the decrement is not tested. Contrary to that
-enabling CONFIG_PREEMPT which tests the result has a small but measurable
-impact due to the conditional branch/call.
-
-It's about time to make essential functionality of the kernel consistent
-accross the various preemption models.
-
-Enable CONFIG_PREEMPT_COUNT unconditionally. Follow up changes will remove
-the #ifdeffery and remove the config option at the end.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- kernel/Kconfig.preempt |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
---- a/kernel/Kconfig.preempt
-+++ b/kernel/Kconfig.preempt
-@@ -75,8 +75,7 @@ config PREEMPT_RT
- endchoice
- 
- config PREEMPT_COUNT
--       bool
-+       def_bool y
- 
- config PREEMPTION
-        bool
--       select PREEMPT_COUNT
-
+Rm9sa3MhCgpXaGlsZSB3b3JraW5nIG9uIHZhcmlvdXMgcHJlZW1wdCBjb3VudCByZWxhdGVkIHRo
+aW5ncywgSSBzdHVtYmxlZCAoYWdhaW4pCm92ZXIgdGhlIGluY29uc2lzdGVuY3kgb2Ygb3VyIHBy
+ZWVtcHQgY291bnQgaGFuZGxpbmcuCgpUaGUgaGFuZGxpbmcgb2YgcHJlZW1wdF9jb3VudCgpIGlz
+IGluY29uc2lzdGVudCBhY2Nyb3NzIGtlcm5lbApjb25maWd1cmF0aW9ucy4gT24ga2VybmVscyB3
+aGljaCBoYXZlIFBSRUVNUFRfQ09VTlQ9bgpwcmVlbXB0X2Rpc2FibGUvZW5hYmxlKCkgYW5kIHRo
+ZSBsb2NrL3VubG9jayBmdW5jdGlvbnMgYXJlIG5vdCBhZmZlY3RpbmcKdGhlIHByZWVtcHQgY291
+bnQsIG9ubHkgbG9jYWxfYmhfZGlzYWJsZS9lbmFibGUoKSBhbmQgX2JoIHZhcmlhbnRzIG9mCmxv
+Y2tpbmcsIHNvZnQgaW50ZXJydXB0IGRlbGl2ZXJ5LCBoYXJkIGludGVycnVwdCBhbmQgTk1JIGNv
+bnRleHQgYWZmZWN0IGl0LgoKSXQncyB0aGVyZWZvcmUgaW1wb3NzaWJsZSB0byBoYXZlIGEgY29u
+c2lzdGVudCBzZXQgb2YgY2hlY2tzIHdoaWNoIHByb3ZpZGUKaW5mb3JtYXRpb24gYWJvdXQgdGhl
+IGNvbnRleHQgaW4gd2hpY2ggYSBmdW5jdGlvbiBpcyBjYWxsZWQuIEluIG1hbnkgY2FzZXMKaXQg
+bWFrZXMgc2Vuc2UgdG8gaGF2ZSBzZXBlcmF0ZSBmdW5jdGlvbnMgZm9yIHNlcGVyYXRlIGNvbnRl
+eHRzLCBidXQgdGhlcmUKYXJlIHZhbGlkIHJlYXNvbnMgdG8gYXZvaWQgdGhhdCBhbmQgaGFuZGxl
+IGRpZmZlcmVudCBjYWxsaW5nIGNvbnRleHRzCmNvbmRpdGlvbmFsbHkuCgpUaGUgbGFjayBvZiBz
+dWNoIGluZGljYXRvcnMgd2hpY2ggd29yayBvbiBhbGwga2VybmVsIGNvbmZpZ3VyYXRpb3MgaXMg
+YQpjb25zdGFudCBzb3VyY2Ugb2YgdHJvdWJsZSBiZWNhdXNlIGRldmVsb3BlcnMgZWl0aGVyIGRv
+IG5vdCB1bmRlcnN0YW5kIHRoZQppbXBsaWNhdGlvbnMgb3IgdHJ5IHRvIHdvcmsgYXJvdW5kIHRo
+aXMgaW5jb25zaXN0ZW5jeSBpbiB3ZWlyZAp3YXlzLiBOZWl0aGVyIHNlZW0gdGhlc2UgaXNzdWVz
+IGJlIGNhdGNoZWQgYnkgcmV2aWV3ZXJzIGFuZCB0ZXN0aW5nLgoKUmVjZW50bHkgbWVyZ2VkIGNv
+ZGUgZG9lczoKCgkgZ2ZwID0gcHJlZW1wdGlibGUoKSA/IEdGUF9LRVJORUwgOiBHRlBfQVRPTUlD
+OwoKTG9va3Mgb2J2aW91c2x5IGNvcnJlY3QsIGV4Y2VwdCBmb3IgdGhlIGZhY3QgdGhhdCBwcmVl
+bXB0aWJsZSgpIGlzCnVuY29uZGl0aW9uYWxseSBmYWxzZSBmb3IgQ09ORklGX1BSRUVNUFRfQ09V
+TlQ9biwgaS5lLiBhbGwgYWxsb2NhdGlvbnMgaW4KdGhhdCBjb2RlIHVzZSBHRlBfQVRPTUlDIG9u
+IHN1Y2gga2VybmVscy4KCkF0dGVtcHRzIHRvIG1ha2UgcHJlZW1wdCBjb3VudCB1bmNvbmRpdGlv
+bmFsIGFuZCBjb25zaXN0ZW50IGhhdmUgYmVlbgpyZWplY3RlZCBpbiB0aGUgcGFzdCB3aXRoIGhh
+bmR3YXZpbmcgcGVyZm9ybWFuY2UgYXJndW1lbnRzLgoKRnJlc2hseSBjb25kdWN0ZWQgYmVuY2ht
+YXJrcyBkaWQgbm90IHJldmVhbCBhbnkgbWVhc3VyYWJsZSBpbXBhY3QgZnJvbQplbmFibGluZyBw
+cmVlbXB0IGNvdW50IHVuY29uZGl0aW9uYWxseS4gT24ga2VybmVscyB3aXRoIENPTkZJR19QUkVF
+TVBUX05PTkUKb3IgQ09ORklHX1BSRUVNUFRfVk9MVU5UQVJZIHRoZSBwcmVlbXB0IGNvdW50IGlz
+IG9ubHkgaW5jcmVtZW50ZWQgYW5kCmRlY3JlbWVudGVkIGJ1dCB0aGUgcmVzdWx0IG9mIHRoZSBk
+ZWNyZW1lbnQgaXMgbm90IHRlc3RlZC4gQ29udHJhcnkgdG8gdGhhdAplbmFibGluZyBDT05GSUdf
+UFJFRU1QVCB3aGljaCB0ZXN0cyB0aGUgcmVzdWx0IGhhcyBhIHNtYWxsIGJ1dCBtZWFzdXJhYmxl
+CmltcGFjdCBkdWUgdG8gdGhlIGNvbmRpdGlvbmFsIGJyYW5jaC9jYWxsLgoKSXQncyBhYm91dCB0
+aW1lIHRvIG1ha2UgZXNzZW50aWFsIGZ1bmN0aW9uYWxpdHkgb2YgdGhlIGtlcm5lbCBjb25zaXN0
+ZW50CmFjY3Jvc3MgdGhlIHZhcmlvdXMgcHJlZW1wdGlvbiBtb2RlbHMuCgpUaGUgc2VyaWVzIGlz
+IGFsc28gYXZhaWxhYmxlIGZyb20gZ2l0OgoKICAgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3Nj
+bS9saW51eC9rZXJuZWwvZ2l0L3RnbHgvZGV2ZWwuZ2l0IHByZWVtcHQKClRoYXQncyB0aGUgZmly
+c3QgcGFydCBvZiBhIGxhcmdlciBlZmZvcnQgcmVsYXRlZCB0byBwcmVlbXB0IGNvdW50OgoKIDEp
+IFRoZSBhbmFseXNpcyBvZiB0aGUgdXNhZ2Ugc2l0ZXMgb2YgaW5faW50ZXJydXB0KCksIGluX2F0
+b21pYygpLAogICAgaW5fc29mdGlycSgpIGlzIHN0aWxsIG9uZ29pbmcsIGJ1dCBzbyBmYXIgdGhl
+IG51bWJlciBvZiBidWdneSB1c2VycyBpcwogICAgY2xlYXJseSB0aGUgdmFzdCBtYWpvcml0eS4g
+VGhlcmUgd2lsbCBiZSBzZXBlcmF0ZSBwYXRjaCBzZXJpZXMKICAgIChjdXJyZW50bHkgNDYgYW5k
+IGNvdW50aW5nKSB0byBhZGRyZXNzIHRoZXNlIGlzc3VlcyBvbmNlIHRoZSBhbmFseXNpcwogICAg
+aXMgY29tcGxldGUgaW4gdGhlIG5leHQgZGF5cy4KCiAyKSBUaGUgbG9uZyBkaXNjdXNzZWQgc3Rh
+dGUgdHJhY2tpbmcgb2YgbG9jYWwgaXJxIGRpc2FibGUgaW4gcHJlZW1wdCBjb3VudAogICAgd2hp
+Y2ggYWNjb3VudHMgaW50ZXJydXB0IGRpc2FibGVkIHNlY3Rpb25zIGFzIGF0b21pYyBhbmQgYXZv
+aWRzIGlzc3VpbmcKICAgIGNvc3RseSBpbnN0cnVjdGlvbnMgKHN0aSwgY2xpLCBwb3BmIG9yIHRo
+ZWlyIG5vbiBYODYgY291bnRlcnBhcnRzKSB3aGVuCiAgICB0aGUgc3RhdGUgZG9lcyBub3QgY2hh
+bmdlLCBpLmUuIG5lc3RlZCBpcnFfc2F2ZSgpIG9yIGlycV9yZXN0b3JlKCkuIEkKICAgIGhhdmUg
+dGhpcyB3b3JraW5nIG9uIFg4NiBhbHJlYWR5IGFuZCBjb250cmFyeSB0byBteSBlYXJsaWVyIGF0
+dGVtcHRzCiAgICB0aGlzIHdhcyByZWFzb25hYmx5IHN0cmFpZ2h0IGZvcndhcmQgZHVlIHRvIHRo
+ZSByZWNlbnQgZW50cnkvZXhpdCBjb2RlCiAgICBjb25zb2xpZGF0aW9uLgoKICAgIFdoYXQgSSd2
+ZSBub3QgZG9uZSB5ZXQgaXMgdG8gb3B0aW1pemUgdGhlIHByZWVtcHQgY291bnQgaGFuZGxpbmcK
+ICAgIG9mIHRoZSBbdW5dbG9ja19pcnEqIG9wZXJhdGlvbnMgc28gdGhleSBoYW5kbGUgdGhlIGlu
+dGVycnVwdCBkaXNhYmxlZAogICAgc3RhdGUgYW5kIHRoZSBwcmVlbXB0IGNvdW50IG1vZGlmaWNh
+dGlvbiBpbiBvbmUgZ28uIFRoYXQncyBhbiBvYnZpb3VzCiAgICBhZGQgb24sIGJ1dCBjb3JyZWN0
+bmVzcyBmaXJzdCAuLi4KCiAzKSBMYXp5IGludGVycnVwdCBkaXNhYmxpbmcgYXMgYSBzdHJhaWdo
+dCBmb3J3YXJkIGV4dGVuc2lvbiB0byAjMi4gVGhpcwogICAgYXZvaWRzIHRoZSBhY3R1YWwgZGlz
+YWJsaW5nIGF0IHRoZSBDUFUgbGV2ZWwgY29tcGxldGVseSBhbmQgY2F0Y2hlcyBhbgogICAgaW5j
+b21pbmcgaW50ZXJydXB0IGluIHRoZSBsb3cgbGV2ZWwgZW50cnkgY29kZSwgbW9kaWZpZXMgdGhl
+IGludGVycnVwdAogICAgZGlzYWJsZWQgc3RhdGUgb24gdGhlIHJldHVybiBzdGFjaywgbm90ZXMg
+dGhlIGludGVycnVwdCBhcyBwZW5kaW5nIGluCiAgICBzb2Z0d2FyZSBhbmQgcmFpc2VzIGl0IGFn
+YWluIHdoZW4gaW50ZXJydXB0cyBhcmUgcmVlbmFibGVkLiBUaGlzIGhhcwogICAgc3RpbGwgYSBm
+ZXcgaXNzdWVzIHdoaWNoIEknbSBodW50aW5nIGRvd24gKGNwdWlkbGUgaXMgdW5oYXBweSAuLi4p
+CgpUaGFua3MsCgoJdGdseAotLS0KIGFyY2gvYXJtL2luY2x1ZGUvYXNtL2Fzc2VtYmxlci5oICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDExIC0tCiBhcmNoL2FybS9rZXJuZWwv
+aXdtbXh0LlMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgMiAK
+IGFyY2gvYXJtL21hY2gtZXA5M3h4L2NydW5jaC1iaXRzLlMgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgfCAgICAyIAogYXJjaC94dGVuc2Eva2VybmVsL2VudHJ5LlMgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDIgCiBkcml2ZXJzL2dwdS9kcm0vaTkxNS9L
+Y29uZmlnLmRlYnVnICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgMSAKIGRyaXZl
+cnMvZ3B1L2RybS9pOTE1L2k5MTVfdXRpbHMuaCAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgfCAgICAzIAogaW5jbHVkZS9saW51eC9iaXRfc3BpbmxvY2suaCAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICB8ICAgIDQgLQogaW5jbHVkZS9saW51eC9sb2NrZGVwLmggICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDYgLQogaW5jbHVkZS9s
+aW51eC9wYWdlbWFwLmggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8
+ICAgIDQgLQogaW5jbHVkZS9saW51eC9wcmVlbXB0LmggICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICB8ICAgMzcgKy0tLS0tLS0tLQogaW5jbHVkZS9saW51eC91YWNjZXNz
+LmggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDYgLQoga2Vy
+bmVsL0tjb25maWcucHJlZW1wdCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICB8ICAgIDQgLQoga2VybmVsL3NjaGVkL2NvcmUuYyAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDYgLQogbGliL0tjb25maWcuZGVidWcgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDMgCiBsaWIvS2Nv
+bmZpZy5kZWJ1Zy5yZWogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IHwgICAxNCArLS0KIHRvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL3JjdXRvcnR1cmUvY29uZmlncy9y
+Y3UvU1JDVS10ICAgICAgICAgICAgfCAgICAxIAogdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvcmN1
+dG9ydHVyZS9jb25maWdzL3JjdS9TUkNVLXUgICAgICAgICAgICB8ICAgIDEgCiB0b29scy90ZXN0
+aW5nL3NlbGZ0ZXN0cy9yY3V0b3J0dXJlL2NvbmZpZ3MvcmN1L1RJTlkwMSAgICAgICAgICAgIHwg
+ICAgMSAKIHRvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL3JjdXRvcnR1cmUvZG9jL1RJTllfUkNVLnR4
+dCAgICAgICAgICAgICAgfCAgICA1IC0KIHRvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL3JjdXRvcnR1
+cmUvZG9jL1RSRUVfUkNVLWtjb25maWcudHh0ICAgICAgfCAgICAxIAogdG9vbHMvdGVzdGluZy9z
+ZWxmdGVzdHMvcmN1dG9ydHVyZS9mb3JtYWwvc3JjdS1jYm1jL3NyYy9jb25maWcuaCB8ICAgIDEg
+CiAyMSBmaWxlcyBjaGFuZ2VkLCAyMyBpbnNlcnRpb25zKCspLCA5MiBkZWxldGlvbnMoLSkKCgo=
 
