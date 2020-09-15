@@ -1,8 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Tue, 15 Sep 2020 20:18:23 +0300
-From: Mike Rapoport <rppt@kernel.org>
+Received: from mail-io1-xd42.google.com ([2607:f8b0:4864:20::d42])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kIEXB-0008RF-E3
+ for linux-um@lists.infradead.org; Tue, 15 Sep 2020 17:14:27 +0000
+Received: by mail-io1-xd42.google.com with SMTP id z13so4920490iom.8
+ for <linux-um@lists.infradead.org>; Tue, 15 Sep 2020 10:14:23 -0700 (PDT)
+Date: Tue, 15 Sep 2020 14:14:20 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
 Subject: Re: [PATCH v2] mm/gup: fix gup_fast with dynamic page table folding
-Message-ID: <20200915171823.GJ2142832@kernel.org>
+Message-ID: <20200915171420.GK1221970@ziepe.ca>
 References: <20200911200511.GC1221970@ziepe.ca>
  <patch.git-943f1e5dcff2.your-ad-here.call-01599856292-ext-8676@work.hours>
 MIME-Version: 1.0
@@ -16,188 +22,89 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Dave Hansen <dave.hansen@linux.intel.com>, Dave Hansen <dave.hansen@intel.com>, Paul Mackerras <paulus@samba.org>, linux-sparc <sparclinux@vger.kernel.org>, Alexander Gordeev <agordeev@linux.ibm.com>, Claudio Imbrenda <imbrenda@linux.ibm.com>, Will Deacon <will@kernel.org>, linux-arch <linux-arch@vger.kernel.org>, linux-s390 <linux-s390@vger.kernel.org>, Christian Borntraeger <borntraeger@de.ibm.com>, Richard Weinberger <richard@nod.at>, linux-x86 <x86@kernel.org>, Russell King <linux@armlinux.org.uk>, Jason Gunthorpe <jgg@ziepe.ca>, Ingo Molnar <mingo@redhat.com>, Catalin Marinas <catalin.marinas@arm.com>, Andrey Ryabinin <aryabinin@virtuozzo.com>, Gerald Schaefer <gerald.schaefer@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>, John Hubbard <jhubbard@nvidia.com>, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, linux-arm <linux-arm-kernel@lists.infradead.org>, linux-mm <linux-mm@kvack.org>, linux-power <linuxppc-dev@lists.ozlabs.org>, LKML <linux-kernel@vger.kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Dave Hansen <dave.hansen@linux.intel.com>, linux-mm <linux-mm@kvack.org>, Paul Mackerras <paulus@samba.org>, linux-sparc <sparclinux@vger.kernel.org>, Alexander Gordeev <agordeev@linux.ibm.com>, Claudio Imbrenda <imbrenda@linux.ibm.com>, Will Deacon <will@kernel.org>, linux-arch <linux-arch@vger.kernel.org>, linux-s390 <linux-s390@vger.kernel.org>, Richard Weinberger <richard@nod.at>, linux-x86 <x86@kernel.org>, Russell King <linux@armlinux.org.uk>, Christian Borntraeger <borntraeger@de.ibm.com>, Ingo Molnar <mingo@redhat.com>, Catalin Marinas <catalin.marinas@arm.com>, Andrey Ryabinin <aryabinin@virtuozzo.com>, Gerald Schaefer <gerald.schaefer@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>, John Hubbard <jhubbard@nvidia.com>, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, linux-arm <linux-arm-kernel@lists.infradead.org>, Dave Hansen <dave.hansen@intel.com>, linux-power <linuxppc-dev@lists.ozlabs.org>, LKML <linux-kernel@vger.kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, Mike Rapoport <rppt@kernel.org>
 
-T24gRnJpLCBTZXAgMTEsIDIwMjAgYXQgMTA6MzY6NDNQTSArMDIwMCwgVmFzaWx5IEdvcmJpayB3
-cm90ZToKPiBDdXJyZW50bHkgdG8gbWFrZSBzdXJlIHRoYXQgZXZlcnkgcGFnZSB0YWJsZSBlbnRy
-eSBpcyByZWFkIGp1c3Qgb25jZQo+IGd1cF9mYXN0IHdhbGtzIHBlcmZvcm0gUkVBRF9PTkNFIGFu
-ZCBwYXNzIHBYZCB2YWx1ZSBkb3duIHRvIHRoZSBuZXh0Cj4gZ3VwX3BYZF9yYW5nZSBmdW5jdGlv
-biBieSB2YWx1ZSBlLmcuOgo+IAo+IHN0YXRpYyBpbnQgZ3VwX3B1ZF9yYW5nZShwNGRfdCBwNGQs
-IHVuc2lnbmVkIGxvbmcgYWRkciwgdW5zaWduZWQgbG9uZyBlbmQsCj4gICAgICAgICAgICAgICAg
-ICAgICAgICAgIHVuc2lnbmVkIGludCBmbGFncywgc3RydWN0IHBhZ2UgKipwYWdlcywgaW50ICpu
-cikKPiAuLi4KPiAgICAgICAgIHB1ZHAgPSBwdWRfb2Zmc2V0KCZwNGQsIGFkZHIpOwo+IAo+IFRo
-aXMgZnVuY3Rpb24gcGFzc2VzIGEgcmVmZXJlbmNlIG9uIHRoYXQgbG9jYWwgdmFsdWUgY29weSB0
-byBwWGRfb2Zmc2V0LAo+IGFuZCBtaWdodCBnZXQgdGhlIHZlcnkgc2FtZSBwb2ludGVyIGluIHJl
-dHVybi4gVGhpcyBoYXBwZW5zIHdoZW4gdGhlCj4gbGV2ZWwgaXMgZm9sZGVkIChvbiBtb3N0IGFy
-Y2hlcyksIGFuZCB0aGF0IHBvaW50ZXIgc2hvdWxkIG5vdCBiZSBpdGVyYXRlZC4KPiAKPiBPbiBz
-MzkwIGR1ZSB0byB0aGUgZmFjdCB0aGF0IGVhY2ggdGFzayBtaWdodCBoYXZlIGRpZmZlcmVudCA1
-LDQgb3IKPiAzLWxldmVsIGFkZHJlc3MgdHJhbnNsYXRpb24gYW5kIGhlbmNlIGRpZmZlcmVudCBs
-ZXZlbHMgZm9sZGVkIHRoZSBsb2dpYwo+IGlzIG1vcmUgY29tcGxleCBhbmQgbm9uLWl0ZXJhdGFi
-bGUgcG9pbnRlciB0byBhIGxvY2FsIGNvcHkgbGVhZHMgdG8KPiBzZXZlcmUgcHJvYmxlbXMuCj4g
-Cj4gSGVyZSBpcyBhbiBleGFtcGxlIG9mIHdoYXQgaGFwcGVucyB3aXRoIGd1cF9mYXN0IG9uIHMz
-OTAsIGZvciBhIHRhc2sKPiB3aXRoIDMtbGV2ZWxzIHBhZ2luZywgY3Jvc3NpbmcgYSAyIEdCIHB1
-ZCBib3VuZGFyeToKPiAKPiAvLyBhZGRyID0gMHgxMDA3ZmZmZjAwMCwgZW5kID0gMHgxMDA4MDAw
-MTAwMAo+IHN0YXRpYyBpbnQgZ3VwX3B1ZF9yYW5nZShwNGRfdCBwNGQsIHVuc2lnbmVkIGxvbmcg
-YWRkciwgdW5zaWduZWQgbG9uZyBlbmQsCj4gICAgICAgICAgICAgICAgICAgICAgICAgIHVuc2ln
-bmVkIGludCBmbGFncywgc3RydWN0IHBhZ2UgKipwYWdlcywgaW50ICpucikKPiB7Cj4gICAgICAg
-ICB1bnNpZ25lZCBsb25nIG5leHQ7Cj4gICAgICAgICBwdWRfdCAqcHVkcDsKPiAKPiAgICAgICAg
-IC8vIHB1ZF9vZmZzZXQgcmV0dXJucyAmcDRkIGl0c2VsZiAoYSBwb2ludGVyIHRvIGEgdmFsdWUg
-b24gc3RhY2spCj4gICAgICAgICBwdWRwID0gcHVkX29mZnNldCgmcDRkLCBhZGRyKTsKPiAgICAg
-ICAgIGRvIHsKPiAgICAgICAgICAgICAgICAgLy8gb24gc2Vjb25kIGl0ZXJhdGF0aW9uIHJlYWRp
-bmcgInJhbmRvbSIgc3RhY2sgdmFsdWUKPiAgICAgICAgICAgICAgICAgcHVkX3QgcHVkID0gUkVB
-RF9PTkNFKCpwdWRwKTsKPiAKPiAgICAgICAgICAgICAgICAgLy8gbmV4dCA9IDB4MTAwODAwMDAw
-MDAsIGR1ZSB0byBQVURfU0laRS9NQVNLICE9IFBHRElSX1NJWkUvTUFTSyBvbiBzMzkwCj4gICAg
-ICAgICAgICAgICAgIG5leHQgPSBwdWRfYWRkcl9lbmQoYWRkciwgZW5kKTsKPiAgICAgICAgICAg
-ICAgICAgLi4uCj4gICAgICAgICB9IHdoaWxlIChwdWRwKyssIGFkZHIgPSBuZXh0LCBhZGRyICE9
-IGVuZCk7IC8vIHB1ZHArKyBpdGVyYXRpbmcgb3ZlciBzdGFjawo+IAo+ICAgICAgICAgcmV0dXJu
-IDE7Cj4gfQo+IAo+IFRoaXMgaGFwcGVucyBzaW5jZSBzMzkwIG1vdmVkIHRvIGNvbW1vbiBndXAg
-Y29kZSB3aXRoCj4gY29tbWl0IGQxODc0YTBjMjgwNSAoInMzOTAvbW06IG1ha2UgdGhlIHB4ZF9v
-ZmZzZXQgZnVuY3Rpb25zIG1vcmUgcm9idXN0IikKPiBhbmQgY29tbWl0IDFhNDIwMTBjZGMyNiAo
-InMzOTAvbW06IGNvbnZlcnQgdG8gdGhlIGdlbmVyaWMKPiBnZXRfdXNlcl9wYWdlc19mYXN0IGNv
-ZGUiKS4gczM5MCB0cmllZCB0byBtaW1pYyBzdGF0aWMgbGV2ZWwgZm9sZGluZyBieQo+IGNoYW5n
-aW5nIHBYZF9vZmZzZXQgcHJpbWl0aXZlcyB0byBhbHdheXMgY2FsY3VsYXRlIHRvcCBsZXZlbCBw
-YWdlIHRhYmxlCj4gb2Zmc2V0IGluIHBnZF9vZmZzZXQgYW5kIGp1c3QgcmV0dXJuIHRoZSB2YWx1
-ZSBwYXNzZWQgd2hlbiBwWGRfb2Zmc2V0Cj4gaGFzIHRvIGFjdCBhcyBmb2xkZWQuCj4gCj4gV2hh
-dCBpcyBjcnVjaWFsIGZvciBndXBfZmFzdCBhbmQgd2hhdCBoYXMgYmVlbiBvdmVybG9va2VkIGlz
-Cj4gdGhhdCBQeERfU0laRS9NQVNLIGFuZCB0aHVzIHBYZF9hZGRyX2VuZCBzaG91bGQgYWxzbyBj
-aGFuZ2UKPiBjb3JyZXNwb25kaW5nbHkuIEFuZCB0aGUgbGF0dGVyIGlzIG5vdCBwb3NzaWJsZSB3
-aXRoIGR5bmFtaWMgZm9sZGluZy4KPiAKPiBUbyBmaXggdGhlIGlzc3VlIGluIGFkZGl0aW9uIHRv
-IHBYZCB2YWx1ZXMgcGFzcyBvcmlnaW5hbAo+IHBYZHAgcG9pbnRlcnMgZG93biB0byBndXBfcFhk
-X3JhbmdlIGZ1bmN0aW9ucy4gQW5kIGludHJvZHVjZQo+IHBYZF9vZmZzZXRfbG9ja2xlc3MgaGVs
-cGVycywgd2hpY2ggdGFrZSBhbiBhZGRpdGlvbmFsIHBYZAo+IGVudHJ5IHZhbHVlIHBhcmFtZXRl
-ci4gVGhpcyBoYXMgYWxyZWFkeSBiZWVuIGRpc2N1c3NlZCBpbgo+IGh0dHBzOi8vbGttbC5rZXJu
-ZWwub3JnL3IvMjAxOTA0MTgxMDAyMTguMGE0YWZkNTFAbXNjaHdpZGVYMQo+IAo+IENjOiA8c3Rh
-YmxlQHZnZXIua2VybmVsLm9yZz4gIyA1LjIrCj4gRml4ZXM6IDFhNDIwMTBjZGMyNiAoInMzOTAv
-bW06IGNvbnZlcnQgdG8gdGhlIGdlbmVyaWMgZ2V0X3VzZXJfcGFnZXNfZmFzdCBjb2RlIikKPiBS
-ZXZpZXdlZC1ieTogR2VyYWxkIFNjaGFlZmVyIDxnZXJhbGQuc2NoYWVmZXJAbGludXguaWJtLmNv
-bT4KPiBSZXZpZXdlZC1ieTogQWxleGFuZGVyIEdvcmRlZXYgPGFnb3JkZWV2QGxpbnV4LmlibS5j
-b20+Cj4gU2lnbmVkLW9mZi1ieTogVmFzaWx5IEdvcmJpayA8Z29yQGxpbnV4LmlibS5jb20+CgpS
-ZXZpZXdlZC1ieTogTWlrZSBSYXBvcG9ydCA8cnBwdEBsaW51eC5pYm0uY29tPgoKPiAtLS0KPiB2
-MjogYWRkZWQgYnJhY2tldHMgJnBnZCAtPiAmKHBnZCkKPiAKPiAgYXJjaC9zMzkwL2luY2x1ZGUv
-YXNtL3BndGFibGUuaCB8IDQyICsrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLQo+ICBp
-bmNsdWRlL2xpbnV4L3BndGFibGUuaCAgICAgICAgIHwgMTAgKysrKysrKysKPiAgbW0vZ3VwLmMg
-ICAgICAgICAgICAgICAgICAgICAgICB8IDE4ICsrKysrKystLS0tLS0tCj4gIDMgZmlsZXMgY2hh
-bmdlZCwgNDkgaW5zZXJ0aW9ucygrKSwgMjEgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBh
-L2FyY2gvczM5MC9pbmNsdWRlL2FzbS9wZ3RhYmxlLmggYi9hcmNoL3MzOTAvaW5jbHVkZS9hc20v
-cGd0YWJsZS5oCj4gaW5kZXggN2ViMDFhNTQ1OWNkLi5iNTU1NjFjYzg3ODYgMTAwNjQ0Cj4gLS0t
-IGEvYXJjaC9zMzkwL2luY2x1ZGUvYXNtL3BndGFibGUuaAo+ICsrKyBiL2FyY2gvczM5MC9pbmNs
-dWRlL2FzbS9wZ3RhYmxlLmgKPiBAQCAtMTI2MCwyNiArMTI2MCw0NCBAQCBzdGF0aWMgaW5saW5l
-IHBnZF90ICpwZ2Rfb2Zmc2V0X3JhdyhwZ2RfdCAqcGdkLCB1bnNpZ25lZCBsb25nIGFkZHJlc3Mp
-Cj4gIAo+ICAjZGVmaW5lIHBnZF9vZmZzZXQobW0sIGFkZHJlc3MpIHBnZF9vZmZzZXRfcmF3KFJF
-QURfT05DRSgobW0pLT5wZ2QpLCBhZGRyZXNzKQo+ICAKPiAtc3RhdGljIGlubGluZSBwNGRfdCAq
-cDRkX29mZnNldChwZ2RfdCAqcGdkLCB1bnNpZ25lZCBsb25nIGFkZHJlc3MpCj4gK3N0YXRpYyBp
-bmxpbmUgcDRkX3QgKnA0ZF9vZmZzZXRfbG9ja2xlc3MocGdkX3QgKnBnZHAsIHBnZF90IHBnZCwg
-dW5zaWduZWQgbG9uZyBhZGRyZXNzKQo+ICB7Cj4gLQlpZiAoKHBnZF92YWwoKnBnZCkgJiBfUkVH
-SU9OX0VOVFJZX1RZUEVfTUFTSykgPj0gX1JFR0lPTl9FTlRSWV9UWVBFX1IxKQo+IC0JCXJldHVy
-biAocDRkX3QgKikgcGdkX2RlcmVmKCpwZ2QpICsgcDRkX2luZGV4KGFkZHJlc3MpOwo+IC0JcmV0
-dXJuIChwNGRfdCAqKSBwZ2Q7Cj4gKwlpZiAoKHBnZF92YWwocGdkKSAmIF9SRUdJT05fRU5UUllf
-VFlQRV9NQVNLKSA+PSBfUkVHSU9OX0VOVFJZX1RZUEVfUjEpCj4gKwkJcmV0dXJuIChwNGRfdCAq
-KSBwZ2RfZGVyZWYocGdkKSArIHA0ZF9pbmRleChhZGRyZXNzKTsKPiArCXJldHVybiAocDRkX3Qg
-KikgcGdkcDsKPiAgfQo+ICsjZGVmaW5lIHA0ZF9vZmZzZXRfbG9ja2xlc3MgcDRkX29mZnNldF9s
-b2NrbGVzcwo+ICAKPiAtc3RhdGljIGlubGluZSBwdWRfdCAqcHVkX29mZnNldChwNGRfdCAqcDRk
-LCB1bnNpZ25lZCBsb25nIGFkZHJlc3MpCj4gK3N0YXRpYyBpbmxpbmUgcDRkX3QgKnA0ZF9vZmZz
-ZXQocGdkX3QgKnBnZHAsIHVuc2lnbmVkIGxvbmcgYWRkcmVzcykKPiAgewo+IC0JaWYgKChwNGRf
-dmFsKCpwNGQpICYgX1JFR0lPTl9FTlRSWV9UWVBFX01BU0spID49IF9SRUdJT05fRU5UUllfVFlQ
-RV9SMikKPiAtCQlyZXR1cm4gKHB1ZF90ICopIHA0ZF9kZXJlZigqcDRkKSArIHB1ZF9pbmRleChh
-ZGRyZXNzKTsKPiAtCXJldHVybiAocHVkX3QgKikgcDRkOwo+ICsJcmV0dXJuIHA0ZF9vZmZzZXRf
-bG9ja2xlc3MocGdkcCwgKnBnZHAsIGFkZHJlc3MpOwo+ICt9Cj4gKwo+ICtzdGF0aWMgaW5saW5l
-IHB1ZF90ICpwdWRfb2Zmc2V0X2xvY2tsZXNzKHA0ZF90ICpwNGRwLCBwNGRfdCBwNGQsIHVuc2ln
-bmVkIGxvbmcgYWRkcmVzcykKPiArewo+ICsJaWYgKChwNGRfdmFsKHA0ZCkgJiBfUkVHSU9OX0VO
-VFJZX1RZUEVfTUFTSykgPj0gX1JFR0lPTl9FTlRSWV9UWVBFX1IyKQo+ICsJCXJldHVybiAocHVk
-X3QgKikgcDRkX2RlcmVmKHA0ZCkgKyBwdWRfaW5kZXgoYWRkcmVzcyk7Cj4gKwlyZXR1cm4gKHB1
-ZF90ICopIHA0ZHA7Cj4gK30KPiArI2RlZmluZSBwdWRfb2Zmc2V0X2xvY2tsZXNzIHB1ZF9vZmZz
-ZXRfbG9ja2xlc3MKPiArCj4gK3N0YXRpYyBpbmxpbmUgcHVkX3QgKnB1ZF9vZmZzZXQocDRkX3Qg
-KnA0ZHAsIHVuc2lnbmVkIGxvbmcgYWRkcmVzcykKPiArewo+ICsJcmV0dXJuIHB1ZF9vZmZzZXRf
-bG9ja2xlc3MocDRkcCwgKnA0ZHAsIGFkZHJlc3MpOwo+ICB9Cj4gICNkZWZpbmUgcHVkX29mZnNl
-dCBwdWRfb2Zmc2V0Cj4gIAo+IC1zdGF0aWMgaW5saW5lIHBtZF90ICpwbWRfb2Zmc2V0KHB1ZF90
-ICpwdWQsIHVuc2lnbmVkIGxvbmcgYWRkcmVzcykKPiArc3RhdGljIGlubGluZSBwbWRfdCAqcG1k
-X29mZnNldF9sb2NrbGVzcyhwdWRfdCAqcHVkcCwgcHVkX3QgcHVkLCB1bnNpZ25lZCBsb25nIGFk
-ZHJlc3MpCj4gK3sKPiArCWlmICgocHVkX3ZhbChwdWQpICYgX1JFR0lPTl9FTlRSWV9UWVBFX01B
-U0spID49IF9SRUdJT05fRU5UUllfVFlQRV9SMykKPiArCQlyZXR1cm4gKHBtZF90ICopIHB1ZF9k
-ZXJlZihwdWQpICsgcG1kX2luZGV4KGFkZHJlc3MpOwo+ICsJcmV0dXJuIChwbWRfdCAqKSBwdWRw
-Owo+ICt9Cj4gKyNkZWZpbmUgcG1kX29mZnNldF9sb2NrbGVzcyBwbWRfb2Zmc2V0X2xvY2tsZXNz
-Cj4gKwo+ICtzdGF0aWMgaW5saW5lIHBtZF90ICpwbWRfb2Zmc2V0KHB1ZF90ICpwdWRwLCB1bnNp
-Z25lZCBsb25nIGFkZHJlc3MpCj4gIHsKPiAtCWlmICgocHVkX3ZhbCgqcHVkKSAmIF9SRUdJT05f
-RU5UUllfVFlQRV9NQVNLKSA+PSBfUkVHSU9OX0VOVFJZX1RZUEVfUjMpCj4gLQkJcmV0dXJuIChw
-bWRfdCAqKSBwdWRfZGVyZWYoKnB1ZCkgKyBwbWRfaW5kZXgoYWRkcmVzcyk7Cj4gLQlyZXR1cm4g
-KHBtZF90ICopIHB1ZDsKPiArCXJldHVybiBwbWRfb2Zmc2V0X2xvY2tsZXNzKHB1ZHAsICpwdWRw
-LCBhZGRyZXNzKTsKPiAgfQo+ICAjZGVmaW5lIHBtZF9vZmZzZXQgcG1kX29mZnNldAo+ICAKPiBk
-aWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9wZ3RhYmxlLmggYi9pbmNsdWRlL2xpbnV4L3BndGFi
-bGUuaAo+IGluZGV4IGU4Y2JjMmU3OTVkNS4uOTA2NTRjYjYzZTllIDEwMDY0NAo+IC0tLSBhL2lu
-Y2x1ZGUvbGludXgvcGd0YWJsZS5oCj4gKysrIGIvaW5jbHVkZS9saW51eC9wZ3RhYmxlLmgKPiBA
-QCAtMTQyNyw2ICsxNDI3LDE2IEBAIHR5cGVkZWYgdW5zaWduZWQgaW50IHBndGJsX21vZF9tYXNr
-Owo+ICAjZGVmaW5lIG1tX3BtZF9mb2xkZWQobW0pCV9faXNfZGVmaW5lZChfX1BBR0VUQUJMRV9Q
-TURfRk9MREVEKQo+ICAjZW5kaWYKPiAgCj4gKyNpZm5kZWYgcDRkX29mZnNldF9sb2NrbGVzcwo+
-ICsjZGVmaW5lIHA0ZF9vZmZzZXRfbG9ja2xlc3MocGdkcCwgcGdkLCBhZGRyZXNzKSBwNGRfb2Zm
-c2V0KCYocGdkKSwgYWRkcmVzcykKPiArI2VuZGlmCj4gKyNpZm5kZWYgcHVkX29mZnNldF9sb2Nr
-bGVzcwo+ICsjZGVmaW5lIHB1ZF9vZmZzZXRfbG9ja2xlc3MocDRkcCwgcDRkLCBhZGRyZXNzKSBw
-dWRfb2Zmc2V0KCYocDRkKSwgYWRkcmVzcykKPiArI2VuZGlmCj4gKyNpZm5kZWYgcG1kX29mZnNl
-dF9sb2NrbGVzcwo+ICsjZGVmaW5lIHBtZF9vZmZzZXRfbG9ja2xlc3MocHVkcCwgcHVkLCBhZGRy
-ZXNzKSBwbWRfb2Zmc2V0KCYocHVkKSwgYWRkcmVzcykKPiArI2VuZGlmCj4gKwo+ICAvKgo+ICAg
-KiBwP2RfbGVhZigpIC0gdHJ1ZSBpZiB0aGlzIGVudHJ5IGlzIGEgZmluYWwgbWFwcGluZyB0byBh
-IHBoeXNpY2FsIGFkZHJlc3MuCj4gICAqIFRoaXMgZGlmZmVycyBmcm9tIHA/ZF9odWdlKCkgYnkg
-dGhlIGZhY3QgdGhhdCB0aGV5IGFyZSBhbHdheXMgYXZhaWxhYmxlIChpZgo+IGRpZmYgLS1naXQg
-YS9tbS9ndXAuYyBiL21tL2d1cC5jCj4gaW5kZXggZTU3MzlhMTk3NGQ1Li41NzhiZjViZDhiZjgg
-MTAwNjQ0Cj4gLS0tIGEvbW0vZ3VwLmMKPiArKysgYi9tbS9ndXAuYwo+IEBAIC0yNDg1LDEzICsy
-NDg1LDEzIEBAIHN0YXRpYyBpbnQgZ3VwX2h1Z2VfcGdkKHBnZF90IG9yaWcsIHBnZF90ICpwZ2Rw
-LCB1bnNpZ25lZCBsb25nIGFkZHIsCj4gIAlyZXR1cm4gMTsKPiAgfQo+ICAKPiAtc3RhdGljIGlu
-dCBndXBfcG1kX3JhbmdlKHB1ZF90IHB1ZCwgdW5zaWduZWQgbG9uZyBhZGRyLCB1bnNpZ25lZCBs
-b25nIGVuZCwKPiArc3RhdGljIGludCBndXBfcG1kX3JhbmdlKHB1ZF90ICpwdWRwLCBwdWRfdCBw
-dWQsIHVuc2lnbmVkIGxvbmcgYWRkciwgdW5zaWduZWQgbG9uZyBlbmQsCj4gIAkJdW5zaWduZWQg
-aW50IGZsYWdzLCBzdHJ1Y3QgcGFnZSAqKnBhZ2VzLCBpbnQgKm5yKQo+ICB7Cj4gIAl1bnNpZ25l
-ZCBsb25nIG5leHQ7Cj4gIAlwbWRfdCAqcG1kcDsKPiAgCj4gLQlwbWRwID0gcG1kX29mZnNldCgm
-cHVkLCBhZGRyKTsKPiArCXBtZHAgPSBwbWRfb2Zmc2V0X2xvY2tsZXNzKHB1ZHAsIHB1ZCwgYWRk
-cik7Cj4gIAlkbyB7Cj4gIAkJcG1kX3QgcG1kID0gUkVBRF9PTkNFKCpwbWRwKTsKPiAgCj4gQEAg
-LTI1MjgsMTMgKzI1MjgsMTMgQEAgc3RhdGljIGludCBndXBfcG1kX3JhbmdlKHB1ZF90IHB1ZCwg
-dW5zaWduZWQgbG9uZyBhZGRyLCB1bnNpZ25lZCBsb25nIGVuZCwKPiAgCXJldHVybiAxOwo+ICB9
-Cj4gIAo+IC1zdGF0aWMgaW50IGd1cF9wdWRfcmFuZ2UocDRkX3QgcDRkLCB1bnNpZ25lZCBsb25n
-IGFkZHIsIHVuc2lnbmVkIGxvbmcgZW5kLAo+ICtzdGF0aWMgaW50IGd1cF9wdWRfcmFuZ2UocDRk
-X3QgKnA0ZHAsIHA0ZF90IHA0ZCwgdW5zaWduZWQgbG9uZyBhZGRyLCB1bnNpZ25lZCBsb25nIGVu
-ZCwKPiAgCQkJIHVuc2lnbmVkIGludCBmbGFncywgc3RydWN0IHBhZ2UgKipwYWdlcywgaW50ICpu
-cikKPiAgewo+ICAJdW5zaWduZWQgbG9uZyBuZXh0Owo+ICAJcHVkX3QgKnB1ZHA7Cj4gIAo+IC0J
-cHVkcCA9IHB1ZF9vZmZzZXQoJnA0ZCwgYWRkcik7Cj4gKwlwdWRwID0gcHVkX29mZnNldF9sb2Nr
-bGVzcyhwNGRwLCBwNGQsIGFkZHIpOwo+ICAJZG8gewo+ICAJCXB1ZF90IHB1ZCA9IFJFQURfT05D
-RSgqcHVkcCk7Cj4gIAo+IEBAIC0yNTQ5LDIwICsyNTQ5LDIwIEBAIHN0YXRpYyBpbnQgZ3VwX3B1
-ZF9yYW5nZShwNGRfdCBwNGQsIHVuc2lnbmVkIGxvbmcgYWRkciwgdW5zaWduZWQgbG9uZyBlbmQs
-Cj4gIAkJCWlmICghZ3VwX2h1Z2VfcGQoX19odWdlcGQocHVkX3ZhbChwdWQpKSwgYWRkciwKPiAg
-CQkJCQkgUFVEX1NISUZULCBuZXh0LCBmbGFncywgcGFnZXMsIG5yKSkKPiAgCQkJCXJldHVybiAw
-Owo+IC0JCX0gZWxzZSBpZiAoIWd1cF9wbWRfcmFuZ2UocHVkLCBhZGRyLCBuZXh0LCBmbGFncywg
-cGFnZXMsIG5yKSkKPiArCQl9IGVsc2UgaWYgKCFndXBfcG1kX3JhbmdlKHB1ZHAsIHB1ZCwgYWRk
-ciwgbmV4dCwgZmxhZ3MsIHBhZ2VzLCBucikpCj4gIAkJCXJldHVybiAwOwo+ICAJfSB3aGlsZSAo
-cHVkcCsrLCBhZGRyID0gbmV4dCwgYWRkciAhPSBlbmQpOwo+ICAKPiAgCXJldHVybiAxOwo+ICB9
-Cj4gIAo+IC1zdGF0aWMgaW50IGd1cF9wNGRfcmFuZ2UocGdkX3QgcGdkLCB1bnNpZ25lZCBsb25n
-IGFkZHIsIHVuc2lnbmVkIGxvbmcgZW5kLAo+ICtzdGF0aWMgaW50IGd1cF9wNGRfcmFuZ2UocGdk
-X3QgKnBnZHAsIHBnZF90IHBnZCwgdW5zaWduZWQgbG9uZyBhZGRyLCB1bnNpZ25lZCBsb25nIGVu
-ZCwKPiAgCQkJIHVuc2lnbmVkIGludCBmbGFncywgc3RydWN0IHBhZ2UgKipwYWdlcywgaW50ICpu
-cikKPiAgewo+ICAJdW5zaWduZWQgbG9uZyBuZXh0Owo+ICAJcDRkX3QgKnA0ZHA7Cj4gIAo+IC0J
-cDRkcCA9IHA0ZF9vZmZzZXQoJnBnZCwgYWRkcik7Cj4gKwlwNGRwID0gcDRkX29mZnNldF9sb2Nr
-bGVzcyhwZ2RwLCBwZ2QsIGFkZHIpOwo+ICAJZG8gewo+ICAJCXA0ZF90IHA0ZCA9IFJFQURfT05D
-RSgqcDRkcCk7Cj4gIAo+IEBAIC0yNTc0LDcgKzI1NzQsNyBAQCBzdGF0aWMgaW50IGd1cF9wNGRf
-cmFuZ2UocGdkX3QgcGdkLCB1bnNpZ25lZCBsb25nIGFkZHIsIHVuc2lnbmVkIGxvbmcgZW5kLAo+
-ICAJCQlpZiAoIWd1cF9odWdlX3BkKF9faHVnZXBkKHA0ZF92YWwocDRkKSksIGFkZHIsCj4gIAkJ
-CQkJIFA0RF9TSElGVCwgbmV4dCwgZmxhZ3MsIHBhZ2VzLCBucikpCj4gIAkJCQlyZXR1cm4gMDsK
-PiAtCQl9IGVsc2UgaWYgKCFndXBfcHVkX3JhbmdlKHA0ZCwgYWRkciwgbmV4dCwgZmxhZ3MsIHBh
-Z2VzLCBucikpCj4gKwkJfSBlbHNlIGlmICghZ3VwX3B1ZF9yYW5nZShwNGRwLCBwNGQsIGFkZHIs
-IG5leHQsIGZsYWdzLCBwYWdlcywgbnIpKQo+ICAJCQlyZXR1cm4gMDsKPiAgCX0gd2hpbGUgKHA0
-ZHArKywgYWRkciA9IG5leHQsIGFkZHIgIT0gZW5kKTsKPiAgCj4gQEAgLTI2MDIsNyArMjYwMiw3
-IEBAIHN0YXRpYyB2b2lkIGd1cF9wZ2RfcmFuZ2UodW5zaWduZWQgbG9uZyBhZGRyLCB1bnNpZ25l
-ZCBsb25nIGVuZCwKPiAgCQkJaWYgKCFndXBfaHVnZV9wZChfX2h1Z2VwZChwZ2RfdmFsKHBnZCkp
-LCBhZGRyLAo+ICAJCQkJCSBQR0RJUl9TSElGVCwgbmV4dCwgZmxhZ3MsIHBhZ2VzLCBucikpCj4g
-IAkJCQlyZXR1cm47Cj4gLQkJfSBlbHNlIGlmICghZ3VwX3A0ZF9yYW5nZShwZ2QsIGFkZHIsIG5l
-eHQsIGZsYWdzLCBwYWdlcywgbnIpKQo+ICsJCX0gZWxzZSBpZiAoIWd1cF9wNGRfcmFuZ2UocGdk
-cCwgcGdkLCBhZGRyLCBuZXh0LCBmbGFncywgcGFnZXMsIG5yKSkKPiAgCQkJcmV0dXJuOwo+ICAJ
-fSB3aGlsZSAocGdkcCsrLCBhZGRyID0gbmV4dCwgYWRkciAhPSBlbmQpOwo+ICB9Cj4gLS0gCj4g
-4qO/4qO/4qO/4qO/4qKL4qGA4qOA4qC54qO/4qO/4qO/4qO/Cj4g4qO/4qO/4qO/4qO/4qCg4qO2
-4qGm4qCA4qO/4qO/4qO/4qO/Cj4g4qO/4qO/4qO/4qCP4qO04qOu4qO04qOn4qCI4qK/4qO/4qO/
-Cj4g4qO/4qO/4qGP4qKw4qO/4qCW4qOg4qO/4qGG4qCI4qO/4qO/Cj4g4qO/4qKb4qO14qOE4qCZ
-4qO24qO24qGf4qOF4qOg4qC54qO/Cj4g4qO/4qOc4qOb4qC74qKO4qOJ4qOJ4qOA4qC/4qOr4qO1
-4qO/CgotLSAKU2luY2VyZWx5IHlvdXJzLApNaWtlLgoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxp
-c3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9saW51eC11bQo=
+On Fri, Sep 11, 2020 at 10:36:43PM +0200, Vasily Gorbik wrote:
+> Currently to make sure that every page table entry is read just once
+> gup_fast walks perform READ_ONCE and pass pXd value down to the next
+> gup_pXd_range function by value e.g.:
+> 
+> static int gup_pud_range(p4d_t p4d, unsigned long addr, unsigned long end,
+>                          unsigned int flags, struct page **pages, int *nr)
+> ...
+>         pudp = pud_offset(&p4d, addr);
+> 
+> This function passes a reference on that local value copy to pXd_offset,
+> and might get the very same pointer in return. This happens when the
+> level is folded (on most arches), and that pointer should not be iterated.
+> 
+> On s390 due to the fact that each task might have different 5,4 or
+> 3-level address translation and hence different levels folded the logic
+> is more complex and non-iteratable pointer to a local copy leads to
+> severe problems.
+> 
+> Here is an example of what happens with gup_fast on s390, for a task
+> with 3-levels paging, crossing a 2 GB pud boundary:
+> 
+> // addr = 0x1007ffff000, end = 0x10080001000
+> static int gup_pud_range(p4d_t p4d, unsigned long addr, unsigned long end,
+>                          unsigned int flags, struct page **pages, int *nr)
+> {
+>         unsigned long next;
+>         pud_t *pudp;
+> 
+>         // pud_offset returns &p4d itself (a pointer to a value on stack)
+>         pudp = pud_offset(&p4d, addr);
+>         do {
+>                 // on second iteratation reading "random" stack value
+>                 pud_t pud = READ_ONCE(*pudp);
+> 
+>                 // next = 0x10080000000, due to PUD_SIZE/MASK != PGDIR_SIZE/MASK on s390
+>                 next = pud_addr_end(addr, end);
+>                 ...
+>         } while (pudp++, addr = next, addr != end); // pudp++ iterating over stack
+> 
+>         return 1;
+> }
+> 
+> This happens since s390 moved to common gup code with
+> commit d1874a0c2805 ("s390/mm: make the pxd_offset functions more robust")
+> and commit 1a42010cdc26 ("s390/mm: convert to the generic
+> get_user_pages_fast code"). s390 tried to mimic static level folding by
+> changing pXd_offset primitives to always calculate top level page table
+> offset in pgd_offset and just return the value passed when pXd_offset
+> has to act as folded.
+> 
+> What is crucial for gup_fast and what has been overlooked is
+> that PxD_SIZE/MASK and thus pXd_addr_end should also change
+> correspondingly. And the latter is not possible with dynamic folding.
+> 
+> To fix the issue in addition to pXd values pass original
+> pXdp pointers down to gup_pXd_range functions. And introduce
+> pXd_offset_lockless helpers, which take an additional pXd
+> entry value parameter. This has already been discussed in
+> https://lkml.kernel.org/r/20190418100218.0a4afd51@mschwideX1
+> 
+> Cc: <stable@vger.kernel.org> # 5.2+
+> Fixes: 1a42010cdc26 ("s390/mm: convert to the generic get_user_pages_fast code")
+> Reviewed-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+> Reviewed-by: Alexander Gordeev <agordeev@linux.ibm.com>
+> Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+> ---
+> v2: added brackets &pgd -> &(pgd)
+
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+
+Regards,
+Jason
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
