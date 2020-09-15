@@ -1,43 +1,69 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
-MIME-Version: 1.0
-References: <20200914204209.256266093@linutronix.de> <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
- <871rj4owfn.fsf@nanos.tec.linutronix.de> <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
- <CAHk-=wjOV6f_ddg+QVCF6RUe+pXPhSR2WevnNyOs9oT+q2ihEA@mail.gmail.com>
- <CAMj1kXHrDU50D08TwLfzz2hCK+8+C7KGPF99PphXtsOYZ-ff1g@mail.gmail.com>
- <20200915062253.GA26275@gondor.apana.org.au> <CAHk-=wir6LZ=4gHt8VDdASv=TmEMjEUONuzbt=s+DyXPCvxaBA@mail.gmail.com>
- <87een35woz.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87een35woz.fsf@nanos.tec.linutronix.de>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 15 Sep 2020 10:29:50 -0700
-Message-ID: <CAHk-=wg_koVS=8bYurGCZ8zs=zDH5cOKVzFdoj4AkUWEW9mKjA@mail.gmail.com>
+Return-Path: <SRS0=NXcF=CY=paulmck-ThinkPad-P72.home=paulmck@kernel.org>
+Date: Tue, 15 Sep 2020 10:25:50 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
 Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
-Content-Type: text/plain; charset="UTF-8"
-Sender: linux-arch-owner@vger.kernel.org
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>, Ard Biesheuvel <ardb@kernel.org>, LKML <linux-kernel@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Valentin Schneider <valentin.schneider@arm.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, alpha <linux-alpha@vger.kernel.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um <linux-um@lists.infradead.org>, Brian Cain <bcain@codeaurora.org>, linux-hexagon@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, Will Deacon <will@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Linux-MM <linux-mm@kvack.org>, Ingo Molnar <mingo@redhat.com>, Russell King <linux@armlinux.org.uk>, Linux ARM <linux-arm-kernel@lists.infradead.org>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Jani Nikula <jani.nikula@linux.intel.com>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>, intel-gfx <intel-gfx@lists.freedesktop.org>, dri-devel <dri-devel@lists.freedesktop.org>, "Paul E. McKenney" <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org
+Message-ID: <20200915172550.GO29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200914204209.256266093@linutronix.de>
+ <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>, LKML <linux-kernel@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Valentin Schneider <valentin.schneider@arm.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, alpha <linux-alpha@vger.kernel.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um <linux-um@lists.infradead.org>, Brian Cain <bcain@codeaurora.org>, linux-hexagon@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, Will Deacon <will@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Linux-MM <linux-mm@kvack.org>, Ingo Molnar <mingo@redhat.com>, Russell King <linux@armlinux.org.uk>, Linux ARM <linux-arm-kernel@lists.infradead.org>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Jani Nikula <jani.nikula@linux.intel.com>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>, intel-gfx <intel-gfx@lists.freedesktop.org>, dri-devel <dri-devel@lists.freedesktop.org>, Josh Triplett <josh@joshtriplett.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
 List-ID: <linux-um.lists.infradead.org>
 
-On Tue, Sep 15, 2020 at 12:24 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> Alternatively we just make highmem a bit more expensive by making these
-> maps preemptible. RT is doing this for a long time and it's not that
-> horrible.
+On Mon, Sep 14, 2020 at 01:59:15PM -0700, Linus Torvalds wrote:
+> On Mon, Sep 14, 2020 at 1:45 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+> >
+> > Recently merged code does:
+> >
+> >          gfp = preemptible() ? GFP_KERNEL : GFP_ATOMIC;
+> >
+> > Looks obviously correct, except for the fact that preemptible() is
+> > unconditionally false for CONFIF_PREEMPT_COUNT=n, i.e. all allocations in
+> > that code use GFP_ATOMIC on such kernels.
+> 
+> I don't think this is a good reason to entirely get rid of the no-preempt thing.
+> 
+> The above is just garbage. It's bogus. You can't do it.
+> 
+> Blaming the no-preempt code for this bug is extremely unfair, imho.
+> 
+> And the no-preempt code does help make for much better code generation
+> for simple spinlocks.
+> 
+> Where is that horribly buggy recent code? It's not in that exact
+> format, certainly, since 'grep' doesn't find it.
 
-Ack.
+It would be convenient for that "gfp =" code to work, as this would
+allow better cache locality while invoking RCU callbacks, and would
+further provide better robustness to callback floods.  The full story
+is quite long, but here are alternatives have not yet been proven to be
+abject failures:
 
-In fact, I've wanted to start just removing kmap support entirely. At
-some point it's not so much about "I have an old machine that wants
-HIGHMEM" but about "I have an old CPU, and I'll just run an old
-kernel".
+1.	Use workqueues to do the allocations in a clean context.
+	While waiting for the allocations, the callbacks are queued
+	in the old cache-busting manner.  This functions correctly,
+	but in the meantime (which on busy systems can be some time)
+	the cache locality and robustness are lost.
 
-It's not that 32-bit is irrelevant, it's that 32-bit with large
-amounts of memory is irrelevant.
+2.	Provide the ability to allocate memory in raw atomic context.
+	This is extremely effective, especially when used in combination
+	with #1 above, but as you might suspect, the MM guys don't like
+	it much.
 
-Last time this was discussed, iirc the main issue was some
-questionable old ARM chips that were still very common in embedded
-environments, even with large memory.
+In contrast, with Thomas's patch series, call_rcu() and kvfree_rcu()
+could just look at preemptible() to see whether or not it was safe to
+allocate memory, even in !PREEMPT kernels -- and in the common case,
+it almost always would be safe.  It is quite possible that this approach
+would work in isolation, or failing that, that adding #1 above would do
+the trick.
 
-But we could definitely start de-emphasizing HIGHMEM.
+I understand that this is all very hand-wavy, and I do apologize for that.
+If you really want the full sad story with performance numbers and the
+works, let me know!
 
-                     Linus
+							Thanx, Paul
 
