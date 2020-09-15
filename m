@@ -1,54 +1,42 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: [PATCH 03/13] afs: Tell the VFS that readpage was synchronous
-Date: Thu, 17 Sep 2020 16:10:40 +0100
-Message-Id: <20200917151050.5363-4-willy@infradead.org>
-In-Reply-To: <20200917151050.5363-1-willy@infradead.org>
-References: <20200917151050.5363-1-willy@infradead.org>
+Return-Path: <will@kernel.org>
+Date: Tue, 15 Sep 2020 17:10:48 +0100
+From: Will Deacon <will@kernel.org>
+Subject: Re: [patch 06/13] locking/bitspinlock: Clenaup PREEMPT_COUNT
+ leftovers
+Message-ID: <20200915161047.GA26745@willie-the-truck>
+References: <20200914204209.256266093@linutronix.de>
+ <20200914204441.579902354@linutronix.de>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-fsdevel@vger.kernel.org
-Cc: linux-cifs@vger.kernel.org, Richard Weinberger <richard@nod.at>, ecryptfs@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>, linux-mm@kvack.org, linux-mtd@lists.infradead.org, v9fs-developer@lists.sourceforge.net, ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200914204441.579902354@linutronix.de>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, linux-arch@vger.kernel.org, Linus Torvalds <torvalds@linuxfoundation.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Valentin Schneider <valentin.schneider@arm.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Brian Cain <bcain@codeaurora.org>, linux-hexagon@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, Ingo Molnar <mingo@redhat.com>, Russell King <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Jani Nikula <jani.nikula@linux.intel.com>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>, intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, "Paul E. McKenney" <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-The afs readpage implementation was already synchronous, so use
-AOP_UPDATED_PAGE to avoid cycling the page lock.
+On Mon, Sep 14, 2020 at 10:42:15PM +0200, Thomas Gleixner wrote:
+> CONFIG_PREEMPT_COUNT is now unconditionally enabled and will be
+> removed. Cleanup the leftovers before doing so.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  include/linux/bit_spinlock.h |    4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> --- a/include/linux/bit_spinlock.h
+> +++ b/include/linux/bit_spinlock.h
+> @@ -90,10 +90,8 @@ static inline int bit_spin_is_locked(int
+>  {
+>  #if defined(CONFIG_SMP) || defined(CONFIG_DEBUG_SPINLOCK)
+>  	return test_bit(bitnum, addr);
+> -#elif defined CONFIG_PREEMPT_COUNT
+> -	return preempt_count();
+>  #else
+> -	return 1;
+> +	return preempt_count();
+>  #endif
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- fs/afs/file.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Acked-by: Will Deacon <will@kernel.org>
 
-diff --git a/fs/afs/file.c b/fs/afs/file.c
-index 6f6ed1605cfe..8f15305b6574 100644
---- a/fs/afs/file.c
-+++ b/fs/afs/file.c
-@@ -367,7 +367,8 @@ int afs_page_filler(void *data, struct page *page)
- 			BUG_ON(PageFsCache(page));
- 		}
- #endif
--		unlock_page(page);
-+		_leave(" = AOP_UPDATED_PAGE");
-+		return AOP_UPDATED_PAGE;
- 	}
- 
- 	_leave(" = 0");
--- 
-2.28.0
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+Will
 
