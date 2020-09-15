@@ -1,69 +1,278 @@
-Return-Path: <herbert@gondor.apana.org.au>
-Date: Tue, 15 Sep 2020 13:21:37 +1000
-From: Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH] crypto: lib/chacha20poly1305 - Set SG_MITER_ATOMIC
- unconditionally
-Message-ID: <20200915032137.GA25655@gondor.apana.org.au>
-References: <20200914204209.256266093@linutronix.de>
- <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
- <871rj4owfn.fsf@nanos.tec.linutronix.de>
- <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
- <CAHk-=wjOV6f_ddg+QVCF6RUe+pXPhSR2WevnNyOs9oT+q2ihEA@mail.gmail.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Subject: Re: [PATCH v2] mm/gup: fix gup_fast with dynamic page table folding
+References: <20200911200511.GC1221970@ziepe.ca>
+ <patch.git-943f1e5dcff2.your-ad-here.call-01599856292-ext-8676@work.hours>
+From: John Hubbard <jhubbard@nvidia.com>
+Message-ID: <9daa9203-d164-ec78-8a8d-30b8b22cb1da@nvidia.com>
+Date: Tue, 15 Sep 2020 10:31:28 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjOV6f_ddg+QVCF6RUe+pXPhSR2WevnNyOs9oT+q2ihEA@mail.gmail.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ard Biesheuvel <ardb@kernel.org>, LKML <linux-kernel@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Valentin Schneider <valentin.schneider@arm.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, alpha <linux-alpha@vger.kernel.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um <linux-um@lists.infradead.org>, Brian Cain <bcain@codeaurora.org>, linux-hexagon@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, Will Deacon <will@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Linux-MM <linux-mm@kvack.org>, Ingo Molnar <mingo@redhat.com>, Russell King <linux@armlinux.org.uk>, Linux ARM <linux-arm-kernel@lists.infradead.org>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Jani Nikula <jani.nikula@linux.intel.com>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>, intel-gfx <intel-gfx@lists.freedesktop.org>, dri-devel <dri-devel@lists.freedesktop.org>, "Paul E. McKenney" <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.k>
-List-ID: <linux-um.lists.infradead.org>
+In-Reply-To: <patch.git-943f1e5dcff2.your-ad-here.call-01599856292-ext-8676@work.hours>
+Content-Language: en-US
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Vasily Gorbik <gor@linux.ibm.com>, Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Peter Zijlstra <peterz@infradead.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Dave Hansen <dave.hansen@linux.intel.com>, linux-mm <linux-mm@kvack.org>, Paul Mackerras <paulus@samba.org>, linux-sparc <sparclinux@vger.kernel.org>, Alexander Gordeev <agordeev@linux.ibm.com>, Claudio Imbrenda <imbrenda@linux.ibm.com>, Will Deacon <will@kernel.org>, linux-arch <linux-arch@vger.kernel.org>, linux-s390 <linux-s390@vger.kernel.org>, Richard Weinberger <richard@nod.at>, linux-x86 <x86@kernel.org>, Russell King <linux@armlinux.org.uk>, Christian Borntraeger <borntraeger@de.ibm.com>, Ingo Molnar <mingo@redhat.com>, Catalin Marinas <catalin.marinas@arm.com>, Andrey Ryabinin <aryabinin@virtuozzo.com>, Gerald Schaefer <gerald.schaefer@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, linux-arm <linux-arm-kernel@lists.infradead.org>, Dave Hansen <dave.hansen@intel.com>, linux-power <linuxppc-dev@lists.ozlabs.org>, LKML <linux-kernel@vger.kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, Mike Rapoport <rppt@kernel.org>
 
-On Mon, Sep 14, 2020 at 03:37:49PM -0700, Linus Torvalds wrote:
->
-> So it _looks_ like this code started using kmap() - probably back when
-> kmap_atomic() was so cumbersome to use - and was then converted
-> (conditionally) to kmap_atomic() rather than just changed whole-sale.
-> Is there actually something that wants to use those sg_miter functions
-> and sleep?
+On 9/11/20 1:36 PM, Vasily Gorbik wrote:
+> Currently to make sure that every page table entry is read just once
+> gup_fast walks perform READ_ONCE and pass pXd value down to the next
+> gup_pXd_range function by value e.g.:
+> 
+> static int gup_pud_range(p4d_t p4d, unsigned long addr, unsigned long end,
+>                           unsigned int flags, struct page **pages, int *nr)
+> ...
+>          pudp = pud_offset(&p4d, addr);
+> 
+> This function passes a reference on that local value copy to pXd_offset,
+> and might get the very same pointer in return. This happens when the
+> level is folded (on most arches), and that pointer should not be iterated.
+> 
+> On s390 due to the fact that each task might have different 5,4 or
+> 3-level address translation and hence different levels folded the logic
+> is more complex and non-iteratable pointer to a local copy leads to
+> severe problems.
+> 
+> Here is an example of what happens with gup_fast on s390, for a task
+> with 3-levels paging, crossing a 2 GB pud boundary:
+> 
+> // addr = 0x1007ffff000, end = 0x10080001000
+> static int gup_pud_range(p4d_t p4d, unsigned long addr, unsigned long end,
+>                           unsigned int flags, struct page **pages, int *nr)
+> {
+>          unsigned long next;
+>          pud_t *pudp;
+> 
+>          // pud_offset returns &p4d itself (a pointer to a value on stack)
+>          pudp = pud_offset(&p4d, addr);
+>          do {
+>                  // on second iteratation reading "random" stack value
+>                  pud_t pud = READ_ONCE(*pudp);
+> 
+>                  // next = 0x10080000000, due to PUD_SIZE/MASK != PGDIR_SIZE/MASK on s390
+>                  next = pud_addr_end(addr, end);
+>                  ...
+>          } while (pudp++, addr = next, addr != end); // pudp++ iterating over stack
+> 
+>          return 1;
+> }
+> 
+> This happens since s390 moved to common gup code with
+> commit d1874a0c2805 ("s390/mm: make the pxd_offset functions more robust")
+> and commit 1a42010cdc26 ("s390/mm: convert to the generic
+> get_user_pages_fast code"). s390 tried to mimic static level folding by
+> changing pXd_offset primitives to always calculate top level page table
+> offset in pgd_offset and just return the value passed when pXd_offset
+> has to act as folded.
+> 
+> What is crucial for gup_fast and what has been overlooked is
+> that PxD_SIZE/MASK and thus pXd_addr_end should also change
+> correspondingly. And the latter is not possible with dynamic folding.
+> 
+> To fix the issue in addition to pXd values pass original
+> pXdp pointers down to gup_pXd_range functions. And introduce
+> pXd_offset_lockless helpers, which take an additional pXd
+> entry value parameter. This has already been discussed in
+> https://lkml.kernel.org/r/20190418100218.0a4afd51@mschwideX1
+> 
+> Cc: <stable@vger.kernel.org> # 5.2+
+> Fixes: 1a42010cdc26 ("s390/mm: convert to the generic get_user_pages_fast code")
+> Reviewed-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+> Reviewed-by: Alexander Gordeev <agordeev@linux.ibm.com>
+> Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+> ---
 
-I dug up the old zinc patch submissions and this wasn't present at
-all in the original.  The original zinc code used blkcipher_walk
-which unconditinoally does kmap_atomic.
+Looks cleaner than I'd dared hope for. :)
 
-So it's only the SG miter conversion that introduced this change,
-which appears to be a simple oversight (I think Ard was working on
-latency issues at that time, perhaps he was worried about keeping
-preemption off unnecessarily).
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
 
----8<---
-There is no reason for the chacha20poly1305 SG miter code to use
-kmap instead of kmap_atomic as the critical section doesn't sleep
-anyway.  So we can simply get rid of the preemptible check and
-set SG_MITER_ATOMIC unconditionally.
 
-Even if we need to reenable preemption to lower latency we should
-be doing that by interrupting the SG miter walk rather than using
-kmap.
-
-Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-
-diff --git a/lib/crypto/chacha20poly1305.c b/lib/crypto/chacha20poly1305.c
-index 431e04280332..5850f3b87359 100644
---- a/lib/crypto/chacha20poly1305.c
-+++ b/lib/crypto/chacha20poly1305.c
-@@ -251,9 +251,7 @@ bool chacha20poly1305_crypt_sg_inplace(struct scatterlist *src,
- 			poly1305_update(&poly1305_state, pad0, 0x10 - (ad_len & 0xf));
- 	}
- 
--	flags = SG_MITER_TO_SG;
--	if (!preemptible())
--		flags |= SG_MITER_ATOMIC;
-+	flags = SG_MITER_TO_SG | SG_MITER_ATOMIC;
- 
- 	sg_miter_start(&miter, src, sg_nents(src), flags);
- 
+thanks,
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+John Hubbard
+NVIDIA
+
+> v2: added brackets &pgd -> &(pgd)
+> 
+>   arch/s390/include/asm/pgtable.h | 42 +++++++++++++++++++++++----------
+>   include/linux/pgtable.h         | 10 ++++++++
+>   mm/gup.c                        | 18 +++++++-------
+>   3 files changed, 49 insertions(+), 21 deletions(-)
+> 
+> diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
+> index 7eb01a5459cd..b55561cc8786 100644
+> --- a/arch/s390/include/asm/pgtable.h
+> +++ b/arch/s390/include/asm/pgtable.h
+> @@ -1260,26 +1260,44 @@ static inline pgd_t *pgd_offset_raw(pgd_t *pgd, unsigned long address)
+>   
+>   #define pgd_offset(mm, address) pgd_offset_raw(READ_ONCE((mm)->pgd), address)
+>   
+> -static inline p4d_t *p4d_offset(pgd_t *pgd, unsigned long address)
+> +static inline p4d_t *p4d_offset_lockless(pgd_t *pgdp, pgd_t pgd, unsigned long address)
+>   {
+> -	if ((pgd_val(*pgd) & _REGION_ENTRY_TYPE_MASK) >= _REGION_ENTRY_TYPE_R1)
+> -		return (p4d_t *) pgd_deref(*pgd) + p4d_index(address);
+> -	return (p4d_t *) pgd;
+> +	if ((pgd_val(pgd) & _REGION_ENTRY_TYPE_MASK) >= _REGION_ENTRY_TYPE_R1)
+> +		return (p4d_t *) pgd_deref(pgd) + p4d_index(address);
+> +	return (p4d_t *) pgdp;
+>   }
+> +#define p4d_offset_lockless p4d_offset_lockless
+>   
+> -static inline pud_t *pud_offset(p4d_t *p4d, unsigned long address)
+> +static inline p4d_t *p4d_offset(pgd_t *pgdp, unsigned long address)
+>   {
+> -	if ((p4d_val(*p4d) & _REGION_ENTRY_TYPE_MASK) >= _REGION_ENTRY_TYPE_R2)
+> -		return (pud_t *) p4d_deref(*p4d) + pud_index(address);
+> -	return (pud_t *) p4d;
+> +	return p4d_offset_lockless(pgdp, *pgdp, address);
+> +}
+> +
+> +static inline pud_t *pud_offset_lockless(p4d_t *p4dp, p4d_t p4d, unsigned long address)
+> +{
+> +	if ((p4d_val(p4d) & _REGION_ENTRY_TYPE_MASK) >= _REGION_ENTRY_TYPE_R2)
+> +		return (pud_t *) p4d_deref(p4d) + pud_index(address);
+> +	return (pud_t *) p4dp;
+> +}
+> +#define pud_offset_lockless pud_offset_lockless
+> +
+> +static inline pud_t *pud_offset(p4d_t *p4dp, unsigned long address)
+> +{
+> +	return pud_offset_lockless(p4dp, *p4dp, address);
+>   }
+>   #define pud_offset pud_offset
+>   
+> -static inline pmd_t *pmd_offset(pud_t *pud, unsigned long address)
+> +static inline pmd_t *pmd_offset_lockless(pud_t *pudp, pud_t pud, unsigned long address)
+> +{
+> +	if ((pud_val(pud) & _REGION_ENTRY_TYPE_MASK) >= _REGION_ENTRY_TYPE_R3)
+> +		return (pmd_t *) pud_deref(pud) + pmd_index(address);
+> +	return (pmd_t *) pudp;
+> +}
+> +#define pmd_offset_lockless pmd_offset_lockless
+> +
+> +static inline pmd_t *pmd_offset(pud_t *pudp, unsigned long address)
+>   {
+> -	if ((pud_val(*pud) & _REGION_ENTRY_TYPE_MASK) >= _REGION_ENTRY_TYPE_R3)
+> -		return (pmd_t *) pud_deref(*pud) + pmd_index(address);
+> -	return (pmd_t *) pud;
+> +	return pmd_offset_lockless(pudp, *pudp, address);
+>   }
+>   #define pmd_offset pmd_offset
+>   
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index e8cbc2e795d5..90654cb63e9e 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -1427,6 +1427,16 @@ typedef unsigned int pgtbl_mod_mask;
+>   #define mm_pmd_folded(mm)	__is_defined(__PAGETABLE_PMD_FOLDED)
+>   #endif
+>   
+> +#ifndef p4d_offset_lockless
+> +#define p4d_offset_lockless(pgdp, pgd, address) p4d_offset(&(pgd), address)
+> +#endif
+> +#ifndef pud_offset_lockless
+> +#define pud_offset_lockless(p4dp, p4d, address) pud_offset(&(p4d), address)
+> +#endif
+> +#ifndef pmd_offset_lockless
+> +#define pmd_offset_lockless(pudp, pud, address) pmd_offset(&(pud), address)
+> +#endif
+> +
+>   /*
+>    * p?d_leaf() - true if this entry is a final mapping to a physical address.
+>    * This differs from p?d_huge() by the fact that they are always available (if
+> diff --git a/mm/gup.c b/mm/gup.c
+> index e5739a1974d5..578bf5bd8bf8 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -2485,13 +2485,13 @@ static int gup_huge_pgd(pgd_t orig, pgd_t *pgdp, unsigned long addr,
+>   	return 1;
+>   }
+>   
+> -static int gup_pmd_range(pud_t pud, unsigned long addr, unsigned long end,
+> +static int gup_pmd_range(pud_t *pudp, pud_t pud, unsigned long addr, unsigned long end,
+>   		unsigned int flags, struct page **pages, int *nr)
+>   {
+>   	unsigned long next;
+>   	pmd_t *pmdp;
+>   
+> -	pmdp = pmd_offset(&pud, addr);
+> +	pmdp = pmd_offset_lockless(pudp, pud, addr);
+>   	do {
+>   		pmd_t pmd = READ_ONCE(*pmdp);
+>   
+> @@ -2528,13 +2528,13 @@ static int gup_pmd_range(pud_t pud, unsigned long addr, unsigned long end,
+>   	return 1;
+>   }
+>   
+> -static int gup_pud_range(p4d_t p4d, unsigned long addr, unsigned long end,
+> +static int gup_pud_range(p4d_t *p4dp, p4d_t p4d, unsigned long addr, unsigned long end,
+>   			 unsigned int flags, struct page **pages, int *nr)
+>   {
+>   	unsigned long next;
+>   	pud_t *pudp;
+>   
+> -	pudp = pud_offset(&p4d, addr);
+> +	pudp = pud_offset_lockless(p4dp, p4d, addr);
+>   	do {
+>   		pud_t pud = READ_ONCE(*pudp);
+>   
+> @@ -2549,20 +2549,20 @@ static int gup_pud_range(p4d_t p4d, unsigned long addr, unsigned long end,
+>   			if (!gup_huge_pd(__hugepd(pud_val(pud)), addr,
+>   					 PUD_SHIFT, next, flags, pages, nr))
+>   				return 0;
+> -		} else if (!gup_pmd_range(pud, addr, next, flags, pages, nr))
+> +		} else if (!gup_pmd_range(pudp, pud, addr, next, flags, pages, nr))
+>   			return 0;
+>   	} while (pudp++, addr = next, addr != end);
+>   
+>   	return 1;
+>   }
+>   
+> -static int gup_p4d_range(pgd_t pgd, unsigned long addr, unsigned long end,
+> +static int gup_p4d_range(pgd_t *pgdp, pgd_t pgd, unsigned long addr, unsigned long end,
+>   			 unsigned int flags, struct page **pages, int *nr)
+>   {
+>   	unsigned long next;
+>   	p4d_t *p4dp;
+>   
+> -	p4dp = p4d_offset(&pgd, addr);
+> +	p4dp = p4d_offset_lockless(pgdp, pgd, addr);
+>   	do {
+>   		p4d_t p4d = READ_ONCE(*p4dp);
+>   
+> @@ -2574,7 +2574,7 @@ static int gup_p4d_range(pgd_t pgd, unsigned long addr, unsigned long end,
+>   			if (!gup_huge_pd(__hugepd(p4d_val(p4d)), addr,
+>   					 P4D_SHIFT, next, flags, pages, nr))
+>   				return 0;
+> -		} else if (!gup_pud_range(p4d, addr, next, flags, pages, nr))
+> +		} else if (!gup_pud_range(p4dp, p4d, addr, next, flags, pages, nr))
+>   			return 0;
+>   	} while (p4dp++, addr = next, addr != end);
+>   
+> @@ -2602,7 +2602,7 @@ static void gup_pgd_range(unsigned long addr, unsigned long end,
+>   			if (!gup_huge_pd(__hugepd(pgd_val(pgd)), addr,
+>   					 PGDIR_SHIFT, next, flags, pages, nr))
+>   				return;
+> -		} else if (!gup_p4d_range(pgd, addr, next, flags, pages, nr))
+> +		} else if (!gup_p4d_range(pgdp, pgd, addr, next, flags, pages, nr))
+>   			return;
+>   	} while (pgdp++, addr = next, addr != end);
+>   }
+> 
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
