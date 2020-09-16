@@ -1,16 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x543.google.com ([2607:f8b0:4864:20::543])
+Received: from ms.lwn.net ([45.79.88.28])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kLLTx-0003hK-9S
- for linux-um@lists.infradead.org; Thu, 24 Sep 2020 07:15:58 +0000
-Received: by mail-pg1-x543.google.com with SMTP id 5so1354795pgf.5
- for <linux-um@lists.infradead.org>; Thu, 24 Sep 2020 00:15:57 -0700 (PDT)
-From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v6 16/21] um: nommu: plug in the build system
-Date: Thu, 24 Sep 2020 16:12:56 +0900
-Message-Id: <8e8af2d046852b7ddedf36e36e522261ebd2350e.1600922529.git.thehajime@gmail.com>
-In-Reply-To: <cover.1600922528.git.thehajime@gmail.com>
-References: <cover.1600922528.git.thehajime@gmail.com>
+ id 1kIcWm-0002fI-PL
+ for linux-um@lists.infradead.org; Wed, 16 Sep 2020 18:51:37 +0000
+Date: Wed, 16 Sep 2020 12:51:34 -0600
+From: Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH v3] docs: add a new User Mode Linux HowTo
+Message-ID: <20200916125134.0d515516@lwn.net>
+In-Reply-To: <20200916084741.6250-1-anton.ivanov@cambridgegreys.com>
+References: <20200916084741.6250-1-anton.ivanov@cambridgegreys.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -24,183 +22,118 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
-Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, retrage01@gmail.com
+To: anton.ivanov@cambridgegreys.com
+Cc: richard@nod.at, linux-um@lists.infradead.org, linux-doc@vger.kernel.org
 
-Basic Makefiles for building library of nommu mode. Add a new architecture
-specific target for installing the resulting library files and headers.
+On Wed, 16 Sep 2020 09:47:41 +0100
+anton.ivanov@cambridgegreys.com wrote:
 
-To make nommu binaries build, UML introduced an additional option, UMMODE
-variable, to switch the output file of build: kernel (default), or
-library (nommu).  Those modes are not able to be ON at the same time.
+> From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> 
+> The new howto migrates the portions of the old howto which
+> are still relevant to a new document, updates them to linux 5.x
+> and adds documentation for vector transports and other new
+> features.
 
-To build on library mode, users do the following:
+OK, we're getting closer...
 
-  make defconfig ARCH=um UMMODE=library
-  make ARCH=um UMMODE=library
+> This version addresses comments from Mike Rapoport and Jonathan
+> Corbet.
 
-Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
----
- arch/um/Kconfig           | 17 ++++++++++++++---
- arch/um/Makefile          | 10 +++++++++-
- arch/um/kernel/Makefile   | 12 ++++++++----
- arch/um/nommu/um/Kconfig  | 37 +++++++++++++++++++++++++++++++++++++
- arch/um/nommu/um/Makefile |  4 ++++
- 5 files changed, 72 insertions(+), 8 deletions(-)
- create mode 100644 arch/um/nommu/um/Kconfig
- create mode 100644 arch/um/nommu/um/Makefile
+This sort of information is good to have, but it should be put after the
+"---" line.
 
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index e41d31d0d875..df7daceb095c 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -22,9 +22,20 @@ config UML
- 	select TTY # Needed for line.c
- 	select MODULE_REL_CRCS if MODVERSIONS
- 
-+config UMMODE_LIB
-+	bool "UML mode: library mode"
-+	default y if "$(UMMODE)" = "library"
-+	help
-+	 This mode switches a mode to build a library of UML (Linux
-+	 Kernel Library/LKL).  This switch is exclusive to "kernel mode"
-+	 of UML, which is traditional mode of UML.
-+
-+	 For more detail about LKL, see
-+	 <file:Documentation/virt/uml/lkl.txt>.
-+
- config MMU
- 	bool
--	default y
-+	default y if !UMMODE_LIB
- 
- config NO_IOMEM
- 	def_bool y
-@@ -45,12 +56,12 @@ config LOCKDEP_SUPPORT
- 
- config STACKTRACE_SUPPORT
- 	bool
--	default y
-+	default y if MMU
- 	select STACKTRACE
- 
- config GENERIC_CALIBRATE_DELAY
- 	bool
--	default y
-+	default y if MMU
- 
- config HZ
- 	int
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index 1f958a9280fe..73d3ac061b77 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -17,6 +17,10 @@ else
-         KBUILD_DEFCONFIG := $(SUBARCH)_defconfig
- endif
- 
-+ifeq ($(UMMODE),library)
-+  SUBARCH := um/nommu
-+endif
-+
- ARCH_DIR := arch/um
- OS := $(shell uname -s)
- # We require bash because the vmlinux link and loader script cpp use bash
-@@ -102,9 +106,13 @@ all: linux.o
- 
- linux.o: vmlinux
- 	@echo '  LINK $@'
--	$(Q)$(OBJCOPY) -R .eh_frame $< $@
-+	$(Q)$(OBJCOPY) -R .eh_frame -L sem_init -L sem_post -L sem_wait -L sem_destroy $< $@
- 
-+ifeq ($(UMMODE),library)
-+install: linux.o um_headers_install
-+else
- install: linux.o
-+endif
- 	@echo "  INSTALL $(INSTALL_PATH)/lib/$<"
- 	@mkdir -p $(INSTALL_PATH)/lib/
- 	@cp $< $(INSTALL_PATH)/lib/
-diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
-index 5aa882011e04..bdc4108bc52e 100644
---- a/arch/um/kernel/Makefile
-+++ b/arch/um/kernel/Makefile
-@@ -14,10 +14,14 @@ CPPFLAGS_vmlinux.lds := -DSTART=$(LDS_START)		\
- 			$(LDS_EXTRA)
- extra-y := vmlinux.lds
- 
--obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
--	physmem.o process.o ptrace.o reboot.o sigio.o \
--	signal.o syscall.o sysrq.o time.o tlb.o trap.o \
--	um_arch.o umid.o maccess.o kmsg_dump.o skas/
-+obj-y = config.o exitcode.o irq.o ksyms.o \
-+	process.o reboot.o sigio.o \
-+	signal.o syscall.o time.o \
-+	um_arch.o umid.o maccess.o kmsg_dump.o
-+
-+ifdef CONFIG_MMU
-+obj-y += exec.o mem.o physmem.o ptrace.o sysrq.o tlb.o trap.o skas/
-+endif
- 
- obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
- obj-$(CONFIG_GPROF)	+= gprof_syms.o
-diff --git a/arch/um/nommu/um/Kconfig b/arch/um/nommu/um/Kconfig
-new file mode 100644
-index 000000000000..20b3eaccb6f0
---- /dev/null
-+++ b/arch/um/nommu/um/Kconfig
-@@ -0,0 +1,37 @@
-+config UML_NOMMU
-+	def_bool y
-+	depends on !SMP && !MMU
-+	select UACCESS_MEMCPY
-+	select ARCH_THREAD_STACK_ALLOCATOR
-+	select ARCH_HAS_SYSCALL_WRAPPER
-+
-+config 64BIT
-+	bool
-+	default y
-+
-+config GENERIC_CSUM
-+	def_bool y
-+
-+config GENERIC_ATOMIC64
-+	bool
-+	default y if !64BIT
-+
-+config SECCOMP
-+	bool
-+	default n
-+
-+config GENERIC_HWEIGHT
-+	def_bool y
-+
-+config GENERIC_CALIBRATE_DELAY
-+	bool
-+	default n
-+
-+config STACKTRACE_SUPPORT
-+	bool
-+	default n
-+
-+# XXX: need this to work well with tap13.py
-+config PRINTK_TIME
-+	bool
-+	default y
-diff --git a/arch/um/nommu/um/Makefile b/arch/um/nommu/um/Makefile
-new file mode 100644
-index 000000000000..b580e0fe97b5
---- /dev/null
-+++ b/arch/um/nommu/um/Makefile
-@@ -0,0 +1,4 @@
-+include/generated/user_constants.h: $(srctree)/arch/um/nommu/um/user_constants.h
-+	$(Q)cp -f $^ $@
-+
-+obj-y = bootmem.o console.o cpu.o delay.o setup.o syscalls.o threads.o unimplemented.o
--- 
-2.21.0 (Apple Git-122.2)
+> Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> ---
+>  Documentation/virt/index.rst                  |    2 +-
+>  ...mode_linux.rst => user_mode_linux-2.4.rst} |    4 +
+>  .../virt/uml/user_mode_linux_howto_v2.rst     | 1325 +++++++++++++++++
+>  3 files changed, 1330 insertions(+), 1 deletion(-)
+>  rename Documentation/virt/uml/{user_mode_linux.rst => user_mode_linux-2.4.rst} (99%)
+>  create mode 100644 Documentation/virt/uml/user_mode_linux_howto_v2.rst
+> 
+> diff --git a/Documentation/virt/index.rst b/Documentation/virt/index.rst
+> index de1ab81df958..d20490292642 100644
+> --- a/Documentation/virt/index.rst
+> +++ b/Documentation/virt/index.rst
+> @@ -8,7 +8,7 @@ Linux Virtualization Support
+>     :maxdepth: 2
+>  
+>     kvm/index
+> -   uml/user_mode_linux
+> +   uml/user_mode_linux_howto_v2
+>     paravirt_ops
+>     guest-halt-polling
+>  
+> diff --git a/Documentation/virt/uml/user_mode_linux.rst b/Documentation/virt/uml/user_mode_linux-2.4.rst
+> similarity index 99%
+> rename from Documentation/virt/uml/user_mode_linux.rst
+> rename to Documentation/virt/uml/user_mode_linux-2.4.rst
+> index de0f0b2c9d5b..ed5a698cd710 100644
+> --- a/Documentation/virt/uml/user_mode_linux.rst
+> +++ b/Documentation/virt/uml/user_mode_linux-2.4.rst
+> @@ -10,6 +10,10 @@ User Mode Linux HOWTO
+>  This document describes the use and abuse of Jeff Dike's User Mode
+>  Linux: a port of the Linux kernel as a normal Intel Linux process.
+>  
+> +*Note: - this howto is historic and correct as of kernel versions
+> +~ 2.4. For more up-to-date information please refer to the newer
+> +user_mode_linux_howto_v2.*
+> +
 
+Kernel documentation should describe the current kernel.  If there is
+information in this file that is still useful, please incorporate it into
+your new document.  Then just call it user_mode_linux.rst and delete the
+old one entirely.
+
+[...]
+
+> +Creating an image
+> +=================
+> +
+> +Create a sparse raw disk image:
+> +
+> +::
+> +
+> +    # dd if=/dev/zero of=disk_image_name bs=1 count=1 seek=16G
+
+You can do this a bit more concisely:
+
+	Create a sparse raw disk image::
+
+	  # dd if=/dev/zero of=disk_image_name bs=1 count=1 seek=16G
+
+Please use that idiom throughout.
+
+> +will create a 16G disk image. The OS will initially allocate only one
+> +block and will allocate more as they are written by UML. As of kernel
+> +version 4.19 UML fully supports TRIM (as usually used by flash drives).
+> +Using TRIM inside the UML image by specifying discard as a mount option
+> +or by running ``tune2fs -o discard /dev/ubdXX`` will request UML to
+> +return any unused blocks to the OS.
+> +
+> +Create a filesystem on the disk image and mount it:
+> +---------------------------------------------------
+
+As part of getting these, these subsubsubsection headings could really just
+be ordinary paragraphs.
+
+> +::
+> +
+> +* The xterm channel - this is the default - bring up an xterm on this channel and
+> +  direct IO to it. Note, that in order for xterm to work, the host must have the
+> +  UML distribution package installed. This usually contains the port-helper and
+> +  other utilities needed for UML to communicate with the xterm. Alternatively,
+> +  these need to be complied and installed from source.  All options applicable
+> +  to consoles also apply to UML serial lines which are presented as ttyS inside UML.
+
+Please stick to the 80-character limit; it really does make a difference
+for readable text.
+
+With those small tweaks I think this will be ready to go; it can still
+happen for 5.10.  Thanks for working on this.
+
+jon
 
 _______________________________________________
 linux-um mailing list
