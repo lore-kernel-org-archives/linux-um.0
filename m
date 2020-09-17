@@ -1,10 +1,11 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: [PATCH 04/13] ceph: Tell the VFS that readpage was synchronous
-Date: Thu, 17 Sep 2020 16:10:41 +0100
-Message-Id: <20200917151050.5363-5-willy@infradead.org>
-In-Reply-To: <20200917151050.5363-1-willy@infradead.org>
+Date: Thu, 17 Sep 2020 22:46:52 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <482280458.101023.1600375612958.JavaMail.zimbra@nod.at>
+In-Reply-To: <20200917151050.5363-12-willy@infradead.org>
 References: <20200917151050.5363-1-willy@infradead.org>
+ <20200917151050.5363-12-willy@infradead.org>
+Subject: Re: [PATCH 11/13] ubifs: Tell the VFS that readpage was synchronous
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -14,47 +15,33 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-fsdevel@vger.kernel.org
-Cc: linux-cifs@vger.kernel.org, Richard Weinberger <richard@nod.at>, ecryptfs@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>, linux-mm@kvack.org, linux-mtd@lists.infradead.org, v9fs-developer@lists.sourceforge.net, ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org
+To: Matthew Wilcox <willy@infradead.org>
+Cc: linux-cifs@vger.kernel.org, ecryptfs@vger.kernel.org, linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, linux-mtd <linux-mtd@lists.infradead.org>, linux-fsdevel <linux-fsdevel@vger.kernel.org>, v9fs-developer@lists.sourceforge.net, ceph-devel <ceph-devel@vger.kernel.org>, linux-afs@lists.infradead.org
 
-The ceph readpage implementation was already synchronous, so use
-AOP_UPDATED_PAGE to avoid cycling the page lock.
-
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- fs/ceph/addr.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
-index 6ea761c84494..b2bf8bf7a312 100644
---- a/fs/ceph/addr.c
-+++ b/fs/ceph/addr.c
-@@ -291,10 +291,11 @@ static int ceph_do_readpage(struct file *filp, struct page *page)
- static int ceph_readpage(struct file *filp, struct page *page)
- {
- 	int r = ceph_do_readpage(filp, page);
--	if (r != -EINPROGRESS)
--		unlock_page(page);
--	else
--		r = 0;
-+	if (r == -EINPROGRESS)
-+		return 0;
-+	if (r == 0)
-+		return AOP_UPDATED_PAGE;
-+	unlock_page(page);
- 	return r;
- }
- 
--- 
-2.28.0
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIk1hdHRoZXcgV2lsY294IiA8
+d2lsbHlAaW5mcmFkZWFkLm9yZz4KPiBBbjogImxpbnV4LWZzZGV2ZWwiIDxsaW51eC1mc2RldmVs
+QHZnZXIua2VybmVsLm9yZz4KPiBDQzogIk1hdHRoZXcgV2lsY294IiA8d2lsbHlAaW5mcmFkZWFk
+Lm9yZz4sICJsaW51eC1tbSIgPGxpbnV4LW1tQGt2YWNrLm9yZz4sIHY5ZnMtZGV2ZWxvcGVyQGxp
+c3RzLnNvdXJjZWZvcmdlLm5ldCwKPiAibGludXgta2VybmVsIiA8bGludXgta2VybmVsQHZnZXIu
+a2VybmVsLm9yZz4sIGxpbnV4LWFmc0BsaXN0cy5pbmZyYWRlYWQub3JnLCAiY2VwaC1kZXZlbCIK
+PiA8Y2VwaC1kZXZlbEB2Z2VyLmtlcm5lbC5vcmc+LCBsaW51eC1jaWZzQHZnZXIua2VybmVsLm9y
+ZywgZWNyeXB0ZnNAdmdlci5rZXJuZWwub3JnLCAibGludXgtdW0iCj4gPGxpbnV4LXVtQGxpc3Rz
+LmluZnJhZGVhZC5vcmc+LCAibGludXgtbXRkIiA8bGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5v
+cmc+LCAicmljaGFyZCIgPHJpY2hhcmRAbm9kLmF0Pgo+IEdlc2VuZGV0OiBEb25uZXJzdGFnLCAx
+Ny4gU2VwdGVtYmVyIDIwMjAgMTc6MTA6NDgKPiBCZXRyZWZmOiBbUEFUQ0ggMTEvMTNdIHViaWZz
+OiBUZWxsIHRoZSBWRlMgdGhhdCByZWFkcGFnZSB3YXMgc3luY2hyb25vdXMKCj4gVGhlIHViaWZz
+IHJlYWRwYWdlIGltcGxlbWVudGF0aW9uIHdhcyBhbHJlYWR5IHN5bmNocm9ub3VzLCBzbyB1c2UK
+PiBBT1BfVVBEQVRFRF9QQUdFIHRvIGF2b2lkIGN5Y2xpbmcgdGhlIHBhZ2UgbG9jay4KPiAKPiBT
+aWduZWQtb2ZmLWJ5OiBNYXR0aGV3IFdpbGNveCAoT3JhY2xlKSA8d2lsbHlAaW5mcmFkZWFkLm9y
+Zz4KPiAtLS0KPiBmcy91Ymlmcy9maWxlLmMgfCAxNiArKysrKysrKysrLS0tLS0tCj4gMSBmaWxl
+IGNoYW5nZWQsIDEwIGluc2VydGlvbnMoKyksIDYgZGVsZXRpb25zKC0pCgpGb3IgdWJpZnMsIGpm
+ZnMyIGFuZCBob3N0ZnM6CgpBY2tlZC1ieTogUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNoYXJkQG5v
+ZC5hdD4KClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5m
+cmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
+bnV4LXVtCg==
 
