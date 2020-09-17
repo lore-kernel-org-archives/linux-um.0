@@ -1,14 +1,11 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Fri, 18 Sep 2020 07:59:19 +0200
-From: Dominique Martinet <asmadeus@codewreck.org>
-Subject: Re: [V9fs-developer] [PATCH 02/13] 9p: Tell the VFS that readpage
- was synchronous
-Message-ID: <20200918055919.GA30929@nautica>
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: [PATCH 02/13] 9p: Tell the VFS that readpage was synchronous
+Date: Thu, 17 Sep 2020 16:10:39 +0100
+Message-Id: <20200917151050.5363-3-willy@infradead.org>
+In-Reply-To: <20200917151050.5363-1-willy@infradead.org>
 References: <20200917151050.5363-1-willy@infradead.org>
- <20200917151050.5363-3-willy@infradead.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20200917151050.5363-3-willy@infradead.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -21,44 +18,44 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc: linux-cifs@vger.kernel.org, Richard Weinberger <richard@nod.at>, ecryptfs@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org, v9fs-developer@lists.sourceforge.net, ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org
+To: linux-fsdevel@vger.kernel.org
+Cc: linux-cifs@vger.kernel.org, Richard Weinberger <richard@nod.at>, ecryptfs@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>, linux-mm@kvack.org, linux-mtd@lists.infradead.org, v9fs-developer@lists.sourceforge.net, ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org
 
-Matthew Wilcox (Oracle) wrote on Thu, Sep 17, 2020:
-> diff --git a/fs/9p/vfs_addr.c b/fs/9p/vfs_addr.c
-> index cce9ace651a2..506ca0ba2ec7 100644
-> --- a/fs/9p/vfs_addr.c
-> +++ b/fs/9p/vfs_addr.c
-> @@ -280,6 +280,10 @@ static int v9fs_write_begin(struct file *filp, struct address_space *mapping,
->  		goto out;
->  
->  	retval = v9fs_fid_readpage(v9inode->writeback_fid, page);
-> +	if (retval == AOP_UPDATED_PAGE) {
-> +		retval = 0;
-> +		goto out;
-> +	}
+The 9p readpage implementation was already synchronous, so use
+AOP_UPDATED_PAGE to avoid cycling the page lock.
 
-FWIW this is a change of behaviour; for some reason the code used to
-loop back to grab_cache_page_write_begin() and bail out on
-PageUptodate() I suppose; some sort of race check?
-The whole pattern is a bit weird to me and 9p has no guarantee on
-concurrent writes to a file with cache enabled (except that it will
-corrupt something), so this part is fine with me.
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ fs/9p/vfs_addr.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-What I'm curious about is the page used to be both unlocked and put, but
-now isn't either and the return value hasn't changed for the caller to
-make a difference on write_begin / I don't see any code change in the
-vfs  to handle that.
-What did I miss?
-
-
-(FWIW at least cifs in the series has the same pattern change; didn't
-check all of them)
-
-
-Thanks,
+diff --git a/fs/9p/vfs_addr.c b/fs/9p/vfs_addr.c
+index cce9ace651a2..506ca0ba2ec7 100644
+--- a/fs/9p/vfs_addr.c
++++ b/fs/9p/vfs_addr.c
+@@ -65,7 +65,7 @@ static int v9fs_fid_readpage(void *data, struct page *page)
+ 	SetPageUptodate(page);
+ 
+ 	v9fs_readpage_to_fscache(inode, page);
+-	retval = 0;
++	return AOP_UPDATED_PAGE;
+ 
+ done:
+ 	unlock_page(page);
+@@ -280,6 +280,10 @@ static int v9fs_write_begin(struct file *filp, struct address_space *mapping,
+ 		goto out;
+ 
+ 	retval = v9fs_fid_readpage(v9inode->writeback_fid, page);
++	if (retval == AOP_UPDATED_PAGE) {
++		retval = 0;
++		goto out;
++	}
+ 	put_page(page);
+ 	if (!retval)
+ 		goto start;
 -- 
-Dominique
+2.28.0
+
 
 _______________________________________________
 linux-um mailing list
