@@ -1,8 +1,8 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: [PATCH 07/13] ecryptfs: Tell the VFS that readpage was synchronous
-Date: Thu, 17 Sep 2020 16:10:44 +0100
-Message-Id: <20200917151050.5363-8-willy@infradead.org>
+Subject: [PATCH 08/13] fuse: Tell the VFS that readpage was synchronous
+Date: Thu, 17 Sep 2020 16:10:45 +0100
+Message-Id: <20200917151050.5363-9-willy@infradead.org>
 In-Reply-To: <20200917151050.5363-1-willy@infradead.org>
 References: <20200917151050.5363-1-willy@infradead.org>
 MIME-Version: 1.0
@@ -21,37 +21,27 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-fsdevel@vger.kernel.org
 Cc: linux-cifs@vger.kernel.org, Richard Weinberger <richard@nod.at>, ecryptfs@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>, linux-mm@kvack.org, linux-mtd@lists.infradead.org, v9fs-developer@lists.sourceforge.net, ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org
 
-The ecryptfs readpage implementation was already synchronous, so use
+The fuse readpage implementation was already synchronous, so use
 AOP_UPDATED_PAGE to avoid cycling the page lock.
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- fs/ecryptfs/mmap.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ fs/fuse/file.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/ecryptfs/mmap.c b/fs/ecryptfs/mmap.c
-index 019572c6b39a..dee35181d789 100644
---- a/fs/ecryptfs/mmap.c
-+++ b/fs/ecryptfs/mmap.c
-@@ -219,12 +219,13 @@ static int ecryptfs_readpage(struct file *file, struct page *page)
- 		}
- 	}
- out:
--	if (rc)
--		ClearPageUptodate(page);
--	else
--		SetPageUptodate(page);
--	ecryptfs_printk(KERN_DEBUG, "Unlocking page with index = [0x%.16lx]\n",
-+	ecryptfs_printk(KERN_DEBUG, "Returning page with index = [0x%.16lx]\n",
- 			page->index);
-+	if (!rc) {
-+		SetPageUptodate(page);
+diff --git a/fs/fuse/file.c b/fs/fuse/file.c
+index 6611ef3269a8..7aa5626bc582 100644
+--- a/fs/fuse/file.c
++++ b/fs/fuse/file.c
+@@ -850,6 +850,8 @@ static int fuse_readpage(struct file *file, struct page *page)
+ 
+ 	err = fuse_do_readpage(file, page);
+ 	fuse_invalidate_atime(inode);
++	if (!err)
 +		return AOP_UPDATED_PAGE;
-+	}
-+	ClearPageUptodate(page);
+  out:
  	unlock_page(page);
- 	return rc;
- }
+ 	return err;
 -- 
 2.28.0
 
