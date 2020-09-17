@@ -1,16 +1,10 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kLLSj-0003K5-Hc
- for linux-um@lists.infradead.org; Thu, 24 Sep 2020 07:14:42 +0000
-Received: by mail-pf1-x441.google.com with SMTP id x123so1329499pfc.7
- for <linux-um@lists.infradead.org>; Thu, 24 Sep 2020 00:14:41 -0700 (PDT)
-From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v6 06/21] scritps: um: suppress warnings if SRCARCH=um
-Date: Thu, 24 Sep 2020 16:12:46 +0900
-Message-Id: <de27555d492b9797b41a4a98c278b8421cd643d2.1600922528.git.thehajime@gmail.com>
-In-Reply-To: <cover.1600922528.git.thehajime@gmail.com>
-References: <cover.1600922528.git.thehajime@gmail.com>
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: [PATCH 06/13] cramfs: Tell the VFS that readpage was synchronous
+Date: Thu, 17 Sep 2020 16:10:43 +0100
+Message-Id: <20200917151050.5363-7-willy@infradead.org>
+In-Reply-To: <20200917151050.5363-1-willy@infradead.org>
+References: <20200917151050.5363-1-willy@infradead.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -24,36 +18,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
-Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, retrage01@gmail.com
+To: linux-fsdevel@vger.kernel.org
+Cc: linux-cifs@vger.kernel.org, Richard Weinberger <richard@nod.at>, ecryptfs@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>, linux-mm@kvack.org, linux-mtd@lists.infradead.org, v9fs-developer@lists.sourceforge.net, ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org
 
-This commit fixes numbers of warning messages about leaked CONFIG
-options.  nommu mode of UML requires copies of kernel headers to offer
-syscall-like API for the library users.  Thus, the warnings are to be
-avoided to function this exposure of API.
+The cramfs readpage implementation was already synchronous, so use
+AOP_UPDATED_PAGE to avoid cycling the page lock.
 
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- scripts/headers_install.sh | 4 ++++
- 1 file changed, 4 insertions(+)
+ fs/cramfs/inode.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/scripts/headers_install.sh b/scripts/headers_install.sh
-index dd554bd436cc..8890a0147012 100755
---- a/scripts/headers_install.sh
-+++ b/scripts/headers_install.sh
-@@ -93,6 +93,10 @@ include/uapi/linux/pktcdvd.h:CONFIG_CDROM_PKTCDVD_WCACHE
+diff --git a/fs/cramfs/inode.c b/fs/cramfs/inode.c
+index 912308600d39..7a642146c074 100644
+--- a/fs/cramfs/inode.c
++++ b/fs/cramfs/inode.c
+@@ -916,15 +916,14 @@ static int cramfs_readpage(struct file *file, struct page *page)
+ 	flush_dcache_page(page);
+ 	kunmap(page);
+ 	SetPageUptodate(page);
+-	unlock_page(page);
+-	return 0;
++	return AOP_UPDATED_PAGE;
  
- for c in $configs
- do
-+	if [ "$SRCARCH" = "um" ] ; then
-+		break
-+	fi
-+
- 	leak_error=1
+ err:
+ 	kunmap(page);
+ 	ClearPageUptodate(page);
+ 	SetPageError(page);
+ 	unlock_page(page);
+-	return 0;
++	return -EIO;
+ }
  
- 	for ignore in $config_leak_ignores
+ static const struct address_space_operations cramfs_aops = {
 -- 
-2.21.0 (Apple Git-122.2)
+2.28.0
 
 
 _______________________________________________
