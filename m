@@ -1,16 +1,10 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x642.google.com ([2607:f8b0:4864:20::642])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kLLSp-0003Lq-Ea
- for linux-um@lists.infradead.org; Thu, 24 Sep 2020 07:14:48 +0000
-Received: by mail-pl1-x642.google.com with SMTP id d19so1214826pld.0
- for <linux-um@lists.infradead.org>; Thu, 24 Sep 2020 00:14:47 -0700 (PDT)
-From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v6 07/21] um: extend arch_switch_to for alternate SUBARCH
-Date: Thu, 24 Sep 2020 16:12:47 +0900
-Message-Id: <4a3090dbb622a5892739573441bbc12a1a849330.1600922528.git.thehajime@gmail.com>
-In-Reply-To: <cover.1600922528.git.thehajime@gmail.com>
-References: <cover.1600922528.git.thehajime@gmail.com>
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: [PATCH 03/13] afs: Tell the VFS that readpage was synchronous
+Date: Thu, 17 Sep 2020 16:10:40 +0100
+Message-Id: <20200917151050.5363-4-willy@infradead.org>
+In-Reply-To: <20200917151050.5363-1-willy@infradead.org>
+References: <20200917151050.5363-1-willy@infradead.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -24,82 +18,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
-Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, retrage01@gmail.com
+To: linux-fsdevel@vger.kernel.org
+Cc: linux-cifs@vger.kernel.org, Richard Weinberger <richard@nod.at>, ecryptfs@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>, linux-mm@kvack.org, linux-mtd@lists.infradead.org, v9fs-developer@lists.sourceforge.net, ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org
 
-This commit introduces additional argument of previous task when
-context switch happens.  New SUBARCH can use the new information to
-switch tasks in a subarch-specific manner.
+The afs readpage implementation was already synchronous, so use
+AOP_UPDATED_PAGE to avoid cycling the page lock.
 
-The patch is particularly required by nommu mode implemented as a
-SUBARCH of UML.
-
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- arch/um/kernel/process.c  | 6 +++---
- arch/x86/um/ptrace_32.c   | 2 +-
- arch/x86/um/syscalls_64.c | 2 +-
- 3 files changed, 5 insertions(+), 5 deletions(-)
+ fs/afs/file.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index 26b5e243d3fc..87a8cfa228ca 100644
---- a/arch/um/kernel/process.c
-+++ b/arch/um/kernel/process.c
-@@ -80,7 +80,7 @@ static inline void set_current(struct task_struct *task)
- 		{ external_pid(), task });
- }
+diff --git a/fs/afs/file.c b/fs/afs/file.c
+index 6f6ed1605cfe..8f15305b6574 100644
+--- a/fs/afs/file.c
++++ b/fs/afs/file.c
+@@ -367,7 +367,8 @@ int afs_page_filler(void *data, struct page *page)
+ 			BUG_ON(PageFsCache(page));
+ 		}
+ #endif
+-		unlock_page(page);
++		_leave(" = AOP_UPDATED_PAGE");
++		return AOP_UPDATED_PAGE;
+ 	}
  
--extern void arch_switch_to(struct task_struct *to);
-+extern void arch_switch_to(struct task_struct *from, struct task_struct *to);
- 
- void *__switch_to(struct task_struct *from, struct task_struct *to)
- {
-@@ -88,7 +88,7 @@ void *__switch_to(struct task_struct *from, struct task_struct *to)
- 	set_current(to);
- 
- 	switch_threads(&from->thread.switch_buf, &to->thread.switch_buf);
--	arch_switch_to(current);
-+	arch_switch_to(from, to);
- 
- 	return current->thread.prev_sched;
- }
-@@ -145,7 +145,7 @@ void fork_handler(void)
- 	 * arch_switch_to isn't needed. We could want to apply this to
- 	 * improve performance. -bb
- 	 */
--	arch_switch_to(current);
-+	arch_switch_to(NULL, current);
- 
- 	current->thread.prev_sched = NULL;
- 
-diff --git a/arch/x86/um/ptrace_32.c b/arch/x86/um/ptrace_32.c
-index 2497bac56066..0f184710d4ca 100644
---- a/arch/x86/um/ptrace_32.c
-+++ b/arch/x86/um/ptrace_32.c
-@@ -11,7 +11,7 @@
- 
- extern int arch_switch_tls(struct task_struct *to);
- 
--void arch_switch_to(struct task_struct *to)
-+void arch_switch_to(struct task_struct *from, struct task_struct *to)
- {
- 	int err = arch_switch_tls(to);
- 	if (!err)
-diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
-index 58f51667e2e4..2ef9474d2bd2 100644
---- a/arch/x86/um/syscalls_64.c
-+++ b/arch/x86/um/syscalls_64.c
-@@ -80,7 +80,7 @@ SYSCALL_DEFINE2(arch_prctl, int, option, unsigned long, arg2)
- 	return arch_prctl(current, option, (unsigned long __user *) arg2);
- }
- 
--void arch_switch_to(struct task_struct *to)
-+void arch_switch_to(struct task_struct *from, struct task_struct *to)
- {
- 	if ((to->thread.arch.fs == 0) || (to->mm == NULL))
- 		return;
+ 	_leave(" = 0");
 -- 
-2.21.0 (Apple Git-122.2)
+2.28.0
 
 
 _______________________________________________
