@@ -1,62 +1,66 @@
-Return-Path: <tglx@linutronix.de>
-Message-Id: <20200914204440.969090025@linutronix.de>
-Date: Mon, 14 Sep 2020 22:42:10 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: 
- [patch 01/13] lib/debug: Remove pointless ARCH_NO_PREEMPT dependencies
-References: <20200914204209.256266093@linutronix.de>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: [PATCH 05/13] cifs: Tell the VFS that readpage was synchronous
+Date: Thu, 17 Sep 2020 16:10:42 +0100
+Message-Id: <20200917151050.5363-6-willy@infradead.org>
+In-Reply-To: <20200917151050.5363-1-willy@infradead.org>
+References: <20200917151050.5363-1-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: linux-arch@vger.kernel.org, Linus Torvalds <torvalds@linuxfoundation.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Valentin Schneider <valentin.schneider@arm.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Brian Cain <bcain@codeaurora.org>, linux-hexagon@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, Will Deacon <will@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, Ingo Molnar <mingo@redhat.com>, Russell King <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Jani Nikula <jani.nikula@linux.intel.com>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>, intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, "Paul E. McKenney" <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-fsdevel@vger.kernel.org
+Cc: linux-cifs@vger.kernel.org, Richard Weinberger <richard@nod.at>, ecryptfs@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>, linux-mm@kvack.org, linux-mtd@lists.infradead.org, v9fs-developer@lists.sourceforge.net, ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org
 
-ARCH_NO_PREEMPT disables the selection of CONFIG_PREEMPT_VOLUNTARY and
-CONFIG_PREEMPT, but architectures which set this config option still
-support preempt count for hard and softirq accounting.
+The cifs readpage implementation was already synchronous, so use
+AOP_UPDATED_PAGE to avoid cycling the page lock.
 
-There is absolutely no reason to prevent lockdep from using the preempt
-counter nor is there a reason to prevent the enablement of
-CONFIG_DEBUG_ATOMIC_SLEEP on such architectures.
-
-Remove the dependencies, which affects ALPHA, HEXAGON, M68K and UM.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Richard Henderson <rth@twiddle.net>
-Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-Cc: Matt Turner <mattst88@gmail.com>
-Cc: linux-alpha@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: linux-um@lists.infradead.org
-Cc: Brian Cain <bcain@codeaurora.org>
-Cc: linux-hexagon@vger.kernel.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- lib/Kconfig.debug |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/cifs/file.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -1161,7 +1161,7 @@ config PROVE_LOCKING
- 	select DEBUG_RWSEMS
- 	select DEBUG_WW_MUTEX_SLOWPATH
- 	select DEBUG_LOCK_ALLOC
--	select PREEMPT_COUNT if !ARCH_NO_PREEMPT
-+	select PREEMPT_COUNT
- 	select TRACE_IRQFLAGS
- 	default n
- 	help
-@@ -1323,7 +1323,6 @@ config DEBUG_ATOMIC_SLEEP
- 	bool "Sleep inside atomic section checking"
- 	select PREEMPT_COUNT
- 	depends on DEBUG_KERNEL
--	depends on !ARCH_NO_PREEMPT
- 	help
- 	  If you say Y here, various routines which may sleep will become very
- 	  noisy if they are called inside atomic sections: when a spinlock is
+diff --git a/fs/cifs/file.c b/fs/cifs/file.c
+index be46fab4c96d..533b151a9143 100644
+--- a/fs/cifs/file.c
++++ b/fs/cifs/file.c
+@@ -4537,7 +4537,8 @@ static int cifs_readpage_worker(struct file *file, struct page *page,
+ 	/* send this page to the cache */
+ 	cifs_readpage_to_fscache(file_inode(file), page);
+ 
+-	rc = 0;
++	kunmap(page);
++	return AOP_UPDATED_PAGE;
+ 
+ io_error:
+ 	kunmap(page);
+@@ -4677,7 +4678,10 @@ static int cifs_write_begin(struct file *file, struct address_space *mapping,
+ 		 * an error, we don't need to return it. cifs_write_end will
+ 		 * do a sync write instead since PG_uptodate isn't set.
+ 		 */
+-		cifs_readpage_worker(file, page, &page_start);
++		int err = cifs_readpage_worker(file, page, &page_start);
++
++		if (err == AOP_UPDATED_PAGE)
++			goto out;
+ 		put_page(page);
+ 		oncethru = 1;
+ 		goto start;
+-- 
+2.28.0
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
