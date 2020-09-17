@@ -1,13 +1,10 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab7.miniserver.com ([37.128.132.42]
- helo=www.kot-begemot.co.uk)
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kKML1-0006Pa-K3
- for linux-um@lists.infradead.org; Mon, 21 Sep 2020 13:58:40 +0000
-From: anton.ivanov@cambridgegreys.com
-Subject: [PATCH] um: vector: Add dynamic tap interfaces and scripting
-Date: Mon, 21 Sep 2020 14:58:27 +0100
-Message-Id: <20200921135827.27776-1-anton.ivanov@cambridgegreys.com>
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: [PATCH 07/13] ecryptfs: Tell the VFS that readpage was synchronous
+Date: Thu, 17 Sep 2020 16:10:44 +0100
+Message-Id: <20200917151050.5363-8-willy@infradead.org>
+In-Reply-To: <20200917151050.5363-1-willy@infradead.org>
+References: <20200917151050.5363-1-willy@infradead.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -21,150 +18,42 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: linux-fsdevel@vger.kernel.org
+Cc: linux-cifs@vger.kernel.org, Richard Weinberger <richard@nod.at>, ecryptfs@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>, linux-mm@kvack.org, linux-mtd@lists.infradead.org, v9fs-developer@lists.sourceforge.net, ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+The ecryptfs readpage implementation was already synchronous, so use
+AOP_UPDATED_PAGE to avoid cycling the page lock.
 
-Provide functionality roughly compatible with the existing qemu
-ifup scripting:
-* invocation of an ifup script. The interface name is passed as the
-  first and only argument
-* allocating tap interfaces on the fly if they are not explicitly
-  specified
-
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- arch/um/drivers/vector_user.c | 56 +++++++++++++++++++++++++++++------
- 1 file changed, 47 insertions(+), 9 deletions(-)
+ fs/ecryptfs/mmap.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
-index c4a0f26b2824..67f53636c633 100644
---- a/arch/um/drivers/vector_user.c
-+++ b/arch/um/drivers/vector_user.c
-@@ -39,6 +39,7 @@
- #define ID_MAX 2
- 
- #define TOKEN_IFNAME "ifname"
-+#define TOKEN_SCRIPT "ifup"
- 
- #define TRANS_RAW "raw"
- #define TRANS_RAW_LEN strlen(TRANS_RAW)
-@@ -55,6 +56,9 @@
- 
- #define MAX_UN_LEN 107
- 
-+static const char padchar[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-+static const char *template = "tapXXXXXX";
-+
- /* This is very ugly and brute force lookup, but it is done
-  * only once at initialization so not worth doing hashes or
-  * anything more intelligent
-@@ -191,16 +195,21 @@ static int create_raw_fd(char *iface, int flags, int proto)
- 	return err;
+diff --git a/fs/ecryptfs/mmap.c b/fs/ecryptfs/mmap.c
+index 019572c6b39a..dee35181d789 100644
+--- a/fs/ecryptfs/mmap.c
++++ b/fs/ecryptfs/mmap.c
+@@ -219,12 +219,13 @@ static int ecryptfs_readpage(struct file *file, struct page *page)
+ 		}
+ 	}
+ out:
+-	if (rc)
+-		ClearPageUptodate(page);
+-	else
+-		SetPageUptodate(page);
+-	ecryptfs_printk(KERN_DEBUG, "Unlocking page with index = [0x%.16lx]\n",
++	ecryptfs_printk(KERN_DEBUG, "Returning page with index = [0x%.16lx]\n",
+ 			page->index);
++	if (!rc) {
++		SetPageUptodate(page);
++		return AOP_UPDATED_PAGE;
++	}
++	ClearPageUptodate(page);
+ 	unlock_page(page);
+ 	return rc;
  }
- 
-+
- static struct vector_fds *user_init_tap_fds(struct arglist *ifspec)
- {
--	int fd = -1;
-+	int fd = -1, i;
- 	char *iface;
- 	struct vector_fds *result = NULL;
-+	bool dynamic = false;
-+	char dynamic_ifname[IFNAMSIZ];
-+	char *argv[] = {NULL, NULL, NULL, NULL};
- 
- 	iface = uml_vector_fetch_arg(ifspec, TOKEN_IFNAME);
- 	if (iface == NULL) {
--		printk(UM_KERN_ERR "uml_tap: failed to parse interface spec\n");
--		goto tap_cleanup;
-+		dynamic = true;
-+		iface = dynamic_ifname;
-+		srand(getpid());
- 	}
- 
- 	result = uml_kmalloc(sizeof(struct vector_fds), UM_GFP_KERNEL);
-@@ -214,14 +223,30 @@ static struct vector_fds *user_init_tap_fds(struct arglist *ifspec)
- 	result->remote_addr_size = 0;
- 
- 	/* TAP */
-+	do {
-+		if (dynamic) {
-+			strcpy(iface, template);
-+			for (i = 0; i < strlen(iface); i++) {
-+				if (iface[i] == 'X') {
-+					iface[i] = padchar[rand() % strlen(padchar)];
-+				}
-+			}
-+		}
-+		fd = create_tap_fd(iface);
-+		if ((fd < 0) && (!dynamic)) {
-+			printk(UM_KERN_ERR "uml_tap: failed to create tun interface\n");
-+			goto tap_cleanup;
-+		}
-+		result->tx_fd = fd;
-+		result->rx_fd = fd;
-+	} while (fd < 0);
- 
--	fd = create_tap_fd(iface);
--	if (fd < 0) {
--		printk(UM_KERN_ERR "uml_tap: failed to create tun interface\n");
--		goto tap_cleanup;
-+	argv[0] = uml_vector_fetch_arg(ifspec, TOKEN_SCRIPT);
-+	if (argv[0]) {
-+		argv[1] = iface;
-+		run_helper(NULL, NULL, argv);
- 	}
--	result->tx_fd = fd;
--	result->rx_fd = fd;
-+
- 	return result;
- tap_cleanup:
- 	printk(UM_KERN_ERR "user_init_tap: init failed, error %d", fd);
-@@ -233,6 +258,7 @@ static struct vector_fds *user_init_hybrid_fds(struct arglist *ifspec)
- {
- 	char *iface;
- 	struct vector_fds *result = NULL;
-+	char *argv[] = {NULL, NULL, NULL, NULL};
- 
- 	iface = uml_vector_fetch_arg(ifspec, TOKEN_IFNAME);
- 	if (iface == NULL) {
-@@ -266,6 +292,12 @@ static struct vector_fds *user_init_hybrid_fds(struct arglist *ifspec)
- 			"uml_tap: failed to create paired raw socket: %i\n", result->rx_fd);
- 		goto hybrid_cleanup;
- 	}
-+
-+	argv[0] = uml_vector_fetch_arg(ifspec, TOKEN_SCRIPT);
-+	if (argv[0]) {
-+		argv[1] = iface;
-+		run_helper(NULL, NULL, argv);
-+	}
- 	return result;
- hybrid_cleanup:
- 	printk(UM_KERN_ERR "user_init_hybrid: init failed");
-@@ -410,6 +442,7 @@ static struct vector_fds *user_init_raw_fds(struct arglist *ifspec)
- 	int err = -ENOMEM;
- 	char *iface;
- 	struct vector_fds *result = NULL;
-+	char *argv[] = {NULL, NULL, NULL, NULL};
- 
- 	iface = uml_vector_fetch_arg(ifspec, TOKEN_IFNAME);
- 	if (iface == NULL)
-@@ -432,6 +465,11 @@ static struct vector_fds *user_init_raw_fds(struct arglist *ifspec)
- 		result->remote_addr = NULL;
- 		result->remote_addr_size = 0;
- 	}
-+	argv[0] = uml_vector_fetch_arg(ifspec, TOKEN_SCRIPT);
-+	if (argv[0]) {
-+		argv[1] = iface;
-+		run_helper(NULL, NULL, argv);
-+	}
- 	return result;
- raw_cleanup:
- 	printk(UM_KERN_ERR "user_init_raw: init failed, error %d", err);
 -- 
-2.20.1
+2.28.0
 
 
 _______________________________________________
