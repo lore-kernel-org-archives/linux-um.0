@@ -1,58 +1,63 @@
-Return-Path: <tglx@linutronix.de>
-Message-Id: <20200914204441.375753691@linutronix.de>
-Date: Mon, 14 Sep 2020 22:42:13 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: [patch 04/13] lockdep: Clenaup PREEMPT_COUNT leftovers
-References: <20200914204209.256266093@linutronix.de>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kLLSj-0003K5-Hc
+ for linux-um@lists.infradead.org; Thu, 24 Sep 2020 07:14:42 +0000
+Received: by mail-pf1-x441.google.com with SMTP id x123so1329499pfc.7
+ for <linux-um@lists.infradead.org>; Thu, 24 Sep 2020 00:14:41 -0700 (PDT)
+From: Hajime Tazaki <thehajime@gmail.com>
+Subject: [RFC v6 06/21] scritps: um: suppress warnings if SRCARCH=um
+Date: Thu, 24 Sep 2020 16:12:46 +0900
+Message-Id: <de27555d492b9797b41a4a98c278b8421cd643d2.1600922528.git.thehajime@gmail.com>
+In-Reply-To: <cover.1600922528.git.thehajime@gmail.com>
+References: <cover.1600922528.git.thehajime@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: linux-arch@vger.kernel.org, Linus Torvalds <torvalds@linuxfoundation.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Valentin Schneider <valentin.schneider@arm.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Brian Cain <bcain@codeaurora.org>, linux-hexagon@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, Ingo Molnar <mingo@redhat.com>, Russell King <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Jani Nikula <jani.nikula@linux.intel.com>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>, intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, "Paul E. McKenney" <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
+Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, retrage01@gmail.com
 
-CONFIG_PREEMPT_COUNT is now unconditionally enabled and will be
-removed. Cleanup the leftovers before doing so.
+This commit fixes numbers of warning messages about leaked CONFIG
+options.  nommu mode of UML requires copies of kernel headers to offer
+syscall-like API for the library users.  Thus, the warnings are to be
+avoided to function this exposure of API.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Will Deacon <will@kernel.org>
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
 ---
- include/linux/lockdep.h |    6 ++----
- lib/Kconfig.debug       |    1 -
- 2 files changed, 2 insertions(+), 5 deletions(-)
+ scripts/headers_install.sh | 4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/include/linux/lockdep.h
-+++ b/include/linux/lockdep.h
-@@ -585,16 +585,14 @@ do {									\
+diff --git a/scripts/headers_install.sh b/scripts/headers_install.sh
+index dd554bd436cc..8890a0147012 100755
+--- a/scripts/headers_install.sh
++++ b/scripts/headers_install.sh
+@@ -93,6 +93,10 @@ include/uapi/linux/pktcdvd.h:CONFIG_CDROM_PKTCDVD_WCACHE
  
- #define lockdep_assert_preemption_enabled()				\
- do {									\
--	WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_COUNT)	&&		\
--		     debug_locks			&&		\
-+	WARN_ON_ONCE(debug_locks			&&		\
- 		     (preempt_count() != 0		||		\
- 		      !raw_cpu_read(hardirqs_enabled)));		\
- } while (0)
+ for c in $configs
+ do
++	if [ "$SRCARCH" = "um" ] ; then
++		break
++	fi
++
+ 	leak_error=1
  
- #define lockdep_assert_preemption_disabled()				\
- do {									\
--	WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_COUNT)	&&		\
--		     debug_locks			&&		\
-+	WARN_ON_ONCE(debug_locks			&&		\
- 		     (preempt_count() == 0		&&		\
- 		      raw_cpu_read(hardirqs_enabled)));			\
- } while (0)
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -1161,7 +1161,6 @@ config PROVE_LOCKING
- 	select DEBUG_RWSEMS
- 	select DEBUG_WW_MUTEX_SLOWPATH
- 	select DEBUG_LOCK_ALLOC
--	select PREEMPT_COUNT
- 	select TRACE_IRQFLAGS
- 	default n
- 	help
+ 	for ignore in $config_leak_ignores
+-- 
+2.21.0 (Apple Git-122.2)
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
