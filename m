@@ -1,18 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pj1-x1044.google.com ([2607:f8b0:4864:20::1044])
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kD761-0002H6-HS
- for linux-um@lists.infradead.org; Tue, 01 Sep 2020 14:17:14 +0000
-Received: by mail-pj1-x1044.google.com with SMTP id ds1so696637pjb.1
- for <linux-um@lists.infradead.org>; Tue, 01 Sep 2020 07:17:12 -0700 (PDT)
-From: Nicholas Piggin <npiggin@gmail.com>
-Subject: [PATCH v3 21/23] um: use asm-generic/mmu_context.h for no-op
- implementations
-Date: Wed,  2 Sep 2020 00:15:37 +1000
-Message-Id: <20200901141539.1757549-22-npiggin@gmail.com>
-In-Reply-To: <20200901141539.1757549-1-npiggin@gmail.com>
-References: <20200901141539.1757549-1-npiggin@gmail.com>
+ id 1kLMlN-0005ND-CJ
+ for linux-um@lists.infradead.org; Thu, 24 Sep 2020 08:38:02 +0000
+Subject: Re: [RFC v6 01/21] um: split build in kernel and host parts
+References: <cover.1600922528.git.thehajime@gmail.com>
+ <034e4235086fceb43659c679770b7088e974f5d7.1600922528.git.thehajime@gmail.com>
+ <738c23cc-7c19-90b8-c0d3-1a56ad3fb3e3@cambridgegreys.com>
+ <m2h7rn7f8k.wl-thehajime@gmail.com>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <15b3793a-25c2-27ad-443d-28201790eee6@cambridgegreys.com>
+Date: Thu, 24 Sep 2020 09:37:55 +0100
 MIME-Version: 1.0
+In-Reply-To: <m2h7rn7f8k.wl-thehajime@gmail.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -21,63 +23,56 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-arch@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>, linux-mm@kvack.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: Hajime Tazaki <thehajime@gmail.com>
+Cc: linux-arch@vger.kernel.org, tavi.purdila@gmail.com, richard@nod.at, jdike@addtoit.com, linux-um@lists.infradead.org, retrage01@gmail.com, tavi@cs.pub.ro, linux-kernel-library@freelists.org
 
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: linux-um@lists.infradead.org
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
----
 
-Please ack or nack if you object to this being mered via
-Arnd's tree.
 
- arch/um/include/asm/mmu_context.h | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+On 24/09/2020 09:26, Hajime Tazaki wrote:
+> 
+> On Thu, 24 Sep 2020 16:33:49 +0900,
+> Anton Ivanov wrote:
+> 
+>>> The host build part has been implemented in tools/um so that we can
+>>> reuse the available host build infrastructure.
+>>>
+>>> The patch also changes the UML build invocation, if before
+>>>
+>>>    $ make ARCH=um defconfig
+>>>    $ make ARCH=um
+>>>
+>>> was generating the executable now this only generates the relocatable
+>>> object.
+>>
+>> This will break packaging in all distributions. We need to figure out an alternative way which is backward compatible with their builds.
+> 
+> Hmm, I understand the situation.
+> We may have to put additional steps after generating the relocatable
+> object in arch/um/Makefile.
 
-diff --git a/arch/um/include/asm/mmu_context.h b/arch/um/include/asm/mmu_context.h
-index 17ddd4edf875..f8a100770691 100644
---- a/arch/um/include/asm/mmu_context.h
-+++ b/arch/um/include/asm/mmu_context.h
-@@ -37,10 +37,9 @@ static inline bool arch_vma_access_permitted(struct vm_area_struct *vma,
-  * end asm-generic/mm_hooks.h functions
-  */
- 
--#define deactivate_mm(tsk,mm)	do { } while (0)
--
- extern void force_flush_all(void);
- 
-+#define activate_mm activate_mm
- static inline void activate_mm(struct mm_struct *old, struct mm_struct *new)
- {
- 	/*
-@@ -66,13 +65,12 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
- 	}
- }
- 
--static inline void enter_lazy_tlb(struct mm_struct *mm, 
--				  struct task_struct *tsk)
--{
--}
--
-+#define init_new_context init_new_context
- extern int init_new_context(struct task_struct *task, struct mm_struct *mm);
- 
-+#define destroy_context destroy_context
- extern void destroy_context(struct mm_struct *mm);
- 
-+#include <asm-generic/mmu_context.h>
-+
- #endif
+Cool.
+
+I will go through the rest of the patches and if I notice something I will comment on specific ones.
+
+Brgds,
+
+> 
+> -- Hajime
+> 
+> _______________________________________________
+> linux-um mailing list
+> linux-um@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-um
+> 
+
 -- 
-2.23.0
-
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
 _______________________________________________
 linux-um mailing list
