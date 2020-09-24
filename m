@@ -2,14 +2,14 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab7.miniserver.com ([37.128.132.42]
  helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kLLoR-0006xZ-7N
- for linux-um@lists.infradead.org; Thu, 24 Sep 2020 07:37:08 +0000
+ id 1kLLlS-0006jm-FW
+ for linux-um@lists.infradead.org; Thu, 24 Sep 2020 07:34:04 +0000
 Subject: Re: [RFC v6 01/21] um: split build in kernel and host parts
 References: <cover.1600922528.git.thehajime@gmail.com>
  <034e4235086fceb43659c679770b7088e974f5d7.1600922528.git.thehajime@gmail.com>
 From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Message-ID: <db162a9f-f9b0-dde3-4bda-b2993f5dc7c9@cambridgegreys.com>
-Date: Thu, 24 Sep 2020 08:36:59 +0100
+Message-ID: <738c23cc-7c19-90b8-c0d3-1a56ad3fb3e3@cambridgegreys.com>
+Date: Thu, 24 Sep 2020 08:33:49 +0100
 MIME-Version: 1.0
 In-Reply-To: <034e4235086fceb43659c679770b7088e974f5d7.1600922528.git.thehajime@gmail.com>
 Content-Language: en-US
@@ -53,22 +53,7 @@ On 24/09/2020 08:12, Hajime Tazaki wrote:
 > was generating the executable now this only generates the relocatable
 > object.
 
-It also fails now.
-
-
-ERROR: modpost: "memmove" [drivers/net/slip/slhc.ko] undefined!
-ERROR: modpost: "memset" [drivers/net/ppp/ppp_generic.ko] undefined!
-ERROR: modpost: "memset" [drivers/net/tun.ko] undefined!
-ERROR: modpost: "memmove" [drivers/block/loop.ko] undefined!
-ERROR: modpost: "memset" [drivers/block/loop.ko] undefined!
-ERROR: modpost: "memset" [fs/autofs/autofs4.ko] undefined!
-ERROR: modpost: "memset" [fs/isofs/isofs.ko] undefined!
-ERROR: modpost: "memset" [fs/binfmt_misc.ko] undefined!
-make[1]: *** [scripts/Makefile.modpost:111: Module.symvers] Error 1
-make[1]: *** Deleting file 'Module.symvers'
-make: *** [Makefile:1388: modules] Error 2
-make: *** Waiting for unfinished jobs....
-
+This will break packaging in all distributions. We need to figure out an alternative way which is backward compatible with their builds.
 
 > 
 > To fully build UML use:
