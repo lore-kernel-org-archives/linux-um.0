@@ -1,113 +1,96 @@
-Return-Path: <tglx@linutronix.de>
-Message-Id: <20200914204441.268144917@linutronix.de>
-Date: Mon, 14 Sep 2020 22:42:12 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: [patch 03/13] preempt: Clenaup PREEMPT_COUNT leftovers
-References: <20200914204209.256266093@linutronix.de>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pj1-x1044.google.com ([2607:f8b0:4864:20::1044])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kLLT7-0003PV-Pc
+ for linux-um@lists.infradead.org; Thu, 24 Sep 2020 07:15:06 +0000
+Received: by mail-pj1-x1044.google.com with SMTP id kk9so1126733pjb.2
+ for <linux-um@lists.infradead.org>; Thu, 24 Sep 2020 00:15:05 -0700 (PDT)
+From: Hajime Tazaki <thehajime@gmail.com>
+Subject: [RFC v6 09/21] um: nommu: host interface
+Date: Thu, 24 Sep 2020 16:12:49 +0900
+Message-Id: <8ee5307216dda4f695e84eb1dcc2dab166e08ee7.1600922528.git.thehajime@gmail.com>
+In-Reply-To: <cover.1600922528.git.thehajime@gmail.com>
+References: <cover.1600922528.git.thehajime@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: linux-arch@vger.kernel.org, Linus Torvalds <torvalds@linuxfoundation.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Valentin Schneider <valentin.schneider@arm.com>, Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Brian Cain <bcain@codeaurora.org>, linux-hexagon@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, Will Deacon <will@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, Ingo Molnar <mingo@redhat.com>, Russell King <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Jani Nikula <jani.nikula@linux.intel.com>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>, intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, "Paul E. McKenney" <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
+Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, retrage01@gmail.com
 
-CONFIG_PREEMPT_COUNT is now unconditionally enabled and will be
-removed. Cleanup the leftovers before doing so.
+This patch introduces the host operations that define the interface
+between the LKL and the host. These operations must be provided either
+by a host library or by the application itself.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ben Segall <bsegall@google.com>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
 ---
- include/linux/preempt.h |   37 ++++---------------------------------
- 1 file changed, 4 insertions(+), 33 deletions(-)
+ arch/um/include/asm/host_ops.h            |  9 ++++++++
+ arch/um/nommu/include/uapi/asm/host_ops.h | 25 +++++++++++++++++++++++
+ 2 files changed, 34 insertions(+)
+ create mode 100644 arch/um/include/asm/host_ops.h
+ create mode 100644 arch/um/nommu/include/uapi/asm/host_ops.h
 
---- a/include/linux/preempt.h
-+++ b/include/linux/preempt.h
-@@ -56,8 +56,7 @@
- #define PREEMPT_DISABLED	(PREEMPT_DISABLE_OFFSET + PREEMPT_ENABLED)
- 
- /*
-- * Disable preemption until the scheduler is running -- use an unconditional
-- * value so that it also works on !PREEMPT_COUNT kernels.
-+ * Disable preemption until the scheduler is running.
-  *
-  * Reset by start_kernel()->sched_init()->init_idle()->init_idle_preempt_count().
-  */
-@@ -69,7 +68,6 @@
-  *
-  *    preempt_count() == 2*PREEMPT_DISABLE_OFFSET
-  *
-- * Note: PREEMPT_DISABLE_OFFSET is 0 for !PREEMPT_COUNT kernels.
-  * Note: See finish_task_switch().
-  */
- #define FORK_PREEMPT_COUNT	(2*PREEMPT_DISABLE_OFFSET + PREEMPT_ENABLED)
-@@ -106,11 +104,7 @@
- /*
-  * The preempt_count offset after preempt_disable();
-  */
--#if defined(CONFIG_PREEMPT_COUNT)
--# define PREEMPT_DISABLE_OFFSET	PREEMPT_OFFSET
--#else
--# define PREEMPT_DISABLE_OFFSET	0
--#endif
-+#define PREEMPT_DISABLE_OFFSET	PREEMPT_OFFSET
- 
- /*
-  * The preempt_count offset after spin_lock()
-@@ -122,8 +116,8 @@
-  *
-  *  spin_lock_bh()
-  *
-- * Which need to disable both preemption (CONFIG_PREEMPT_COUNT) and
-- * softirqs, such that unlock sequences of:
-+ * Which need to disable both preemption and softirqs, such that unlock
-+ * sequences of:
-  *
-  *  spin_unlock();
-  *  local_bh_enable();
-@@ -164,8 +158,6 @@ extern void preempt_count_sub(int val);
- #define preempt_count_inc() preempt_count_add(1)
- #define preempt_count_dec() preempt_count_sub(1)
- 
--#ifdef CONFIG_PREEMPT_COUNT
--
- #define preempt_disable() \
- do { \
- 	preempt_count_inc(); \
-@@ -231,27 +223,6 @@ do { \
- 	__preempt_count_dec(); \
- } while (0)
- 
--#else /* !CONFIG_PREEMPT_COUNT */
--
--/*
-- * Even if we don't have any preemption, we need preempt disable/enable
-- * to be barriers, so that we don't have things like get_user/put_user
-- * that can cause faults and scheduling migrate into our preempt-protected
-- * region.
-- */
--#define preempt_disable()			barrier()
--#define sched_preempt_enable_no_resched()	barrier()
--#define preempt_enable_no_resched()		barrier()
--#define preempt_enable()			barrier()
--#define preempt_check_resched()			do { } while (0)
--
--#define preempt_disable_notrace()		barrier()
--#define preempt_enable_no_resched_notrace()	barrier()
--#define preempt_enable_notrace()		barrier()
--#define preemptible()				0
--
--#endif /* CONFIG_PREEMPT_COUNT */
--
- #ifdef MODULE
- /*
-  * Modules have no business playing preemption tricks.
+diff --git a/arch/um/include/asm/host_ops.h b/arch/um/include/asm/host_ops.h
+new file mode 100644
+index 000000000000..f52423cc4ced
+--- /dev/null
++++ b/arch/um/include/asm/host_ops.h
+@@ -0,0 +1,9 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_LKL_HOST_OPS_H
++#define _ASM_LKL_HOST_OPS_H
++
++#include <uapi/asm/host_ops.h>
++
++extern struct lkl_host_operations *lkl_ops;
++
++#endif
+diff --git a/arch/um/nommu/include/uapi/asm/host_ops.h b/arch/um/nommu/include/uapi/asm/host_ops.h
+new file mode 100644
+index 000000000000..d3dad11b459e
+--- /dev/null
++++ b/arch/um/nommu/include/uapi/asm/host_ops.h
+@@ -0,0 +1,25 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++#ifndef __UM_NOMMU_UAPI_HOST_OPS_H
++#define __UM_NOMMU_UAPI_HOST_OPS_H
++
++/* Defined in {posix,nt}-host.c */
++struct lkl_mutex;
++struct lkl_sem;
++typedef unsigned long lkl_thread_t;
++struct lkl_jmp_buf {
++	unsigned long buf[128];
++};
++
++/**
++ * lkl_host_operations - host operations used by the Linux kernel
++ *
++ * These operations must be provided by a host library or by the application
++ * itself.
++ *
++ */
++struct lkl_host_operations {
++};
++
++void lkl_bug(const char *fmt, ...);
++
++#endif
+-- 
+2.21.0 (Apple Git-122.2)
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
