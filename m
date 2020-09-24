@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
+Received: from mail-pg1-x543.google.com ([2607:f8b0:4864:20::543])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kLLUE-0003nT-G6
- for linux-um@lists.infradead.org; Thu, 24 Sep 2020 07:16:16 +0000
-Received: by mail-pg1-x544.google.com with SMTP id k133so1345398pgc.7
- for <linux-um@lists.infradead.org>; Thu, 24 Sep 2020 00:16:14 -0700 (PDT)
+ id 1kLLTx-0003hK-9S
+ for linux-um@lists.infradead.org; Thu, 24 Sep 2020 07:15:58 +0000
+Received: by mail-pg1-x543.google.com with SMTP id 5so1354795pgf.5
+ for <linux-um@lists.infradead.org>; Thu, 24 Sep 2020 00:15:57 -0700 (PDT)
 From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v6 19/21] um: host: posix host operations
-Date: Thu, 24 Sep 2020 16:12:59 +0900
-Message-Id: <1d47038718e449c24670bfc81406c792c14a6212.1600922529.git.thehajime@gmail.com>
+Subject: [RFC v6 16/21] um: nommu: plug in the build system
+Date: Thu, 24 Sep 2020 16:12:56 +0900
+Message-Id: <8e8af2d046852b7ddedf36e36e522261ebd2350e.1600922529.git.thehajime@gmail.com>
 In-Reply-To: <cover.1600922528.git.thehajime@gmail.com>
 References: <cover.1600922528.git.thehajime@gmail.com>
 MIME-Version: 1.0
@@ -27,326 +27,177 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
 Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, retrage01@gmail.com
 
-This commit implements LKL host operations for POSIX hosts.  The
-operations are implemented to be portable in various POSIX OSs.
+Basic Makefiles for building library of nommu mode. Add a new architecture
+specific target for installing the resulting library files and headers.
+
+To make nommu binaries build, UML introduced an additional option, UMMODE
+variable, to switch the output file of build: kernel (default), or
+library (nommu).  Those modes are not able to be ON at the same time.
+
+To build on library mode, users do the following:
+
+  make defconfig ARCH=um UMMODE=library
+  make ARCH=um UMMODE=library
 
 Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
 Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
 ---
- tools/um/lib/Build        |   2 +
- tools/um/lib/posix-host.c | 292 ++++++++++++++++++++++++++++++++++++++
- 2 files changed, 294 insertions(+)
- create mode 100644 tools/um/lib/posix-host.c
+ arch/um/Kconfig           | 17 ++++++++++++++---
+ arch/um/Makefile          | 10 +++++++++-
+ arch/um/kernel/Makefile   | 12 ++++++++----
+ arch/um/nommu/um/Kconfig  | 37 +++++++++++++++++++++++++++++++++++++
+ arch/um/nommu/um/Makefile |  4 ++++
+ 5 files changed, 72 insertions(+), 8 deletions(-)
+ create mode 100644 arch/um/nommu/um/Kconfig
+ create mode 100644 arch/um/nommu/um/Makefile
 
-diff --git a/tools/um/lib/Build b/tools/um/lib/Build
-index fc967af4104a..dddff26a3b4e 100644
---- a/tools/um/lib/Build
-+++ b/tools/um/lib/Build
-@@ -1,4 +1,6 @@
- include $(objtree)/include/config/auto.conf
-+CFLAGS_posix-host.o += -D_FILE_OFFSET_BITS=64
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index e41d31d0d875..df7daceb095c 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -22,9 +22,20 @@ config UML
+ 	select TTY # Needed for line.c
+ 	select MODULE_REL_CRCS if MODVERSIONS
  
- liblinux-$(CONFIG_UMMODE_LIB) += utils.o
-+liblinux-$(CONFIG_UMMODE_LIB) += posix-host.o
- liblinux-$(CONFIG_UMMODE_LIB) += jmp_buf.o
-diff --git a/tools/um/lib/posix-host.c b/tools/um/lib/posix-host.c
++config UMMODE_LIB
++	bool "UML mode: library mode"
++	default y if "$(UMMODE)" = "library"
++	help
++	 This mode switches a mode to build a library of UML (Linux
++	 Kernel Library/LKL).  This switch is exclusive to "kernel mode"
++	 of UML, which is traditional mode of UML.
++
++	 For more detail about LKL, see
++	 <file:Documentation/virt/uml/lkl.txt>.
++
+ config MMU
+ 	bool
+-	default y
++	default y if !UMMODE_LIB
+ 
+ config NO_IOMEM
+ 	def_bool y
+@@ -45,12 +56,12 @@ config LOCKDEP_SUPPORT
+ 
+ config STACKTRACE_SUPPORT
+ 	bool
+-	default y
++	default y if MMU
+ 	select STACKTRACE
+ 
+ config GENERIC_CALIBRATE_DELAY
+ 	bool
+-	default y
++	default y if MMU
+ 
+ config HZ
+ 	int
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index 1f958a9280fe..73d3ac061b77 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -17,6 +17,10 @@ else
+         KBUILD_DEFCONFIG := $(SUBARCH)_defconfig
+ endif
+ 
++ifeq ($(UMMODE),library)
++  SUBARCH := um/nommu
++endif
++
+ ARCH_DIR := arch/um
+ OS := $(shell uname -s)
+ # We require bash because the vmlinux link and loader script cpp use bash
+@@ -102,9 +106,13 @@ all: linux.o
+ 
+ linux.o: vmlinux
+ 	@echo '  LINK $@'
+-	$(Q)$(OBJCOPY) -R .eh_frame $< $@
++	$(Q)$(OBJCOPY) -R .eh_frame -L sem_init -L sem_post -L sem_wait -L sem_destroy $< $@
+ 
++ifeq ($(UMMODE),library)
++install: linux.o um_headers_install
++else
+ install: linux.o
++endif
+ 	@echo "  INSTALL $(INSTALL_PATH)/lib/$<"
+ 	@mkdir -p $(INSTALL_PATH)/lib/
+ 	@cp $< $(INSTALL_PATH)/lib/
+diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
+index 5aa882011e04..bdc4108bc52e 100644
+--- a/arch/um/kernel/Makefile
++++ b/arch/um/kernel/Makefile
+@@ -14,10 +14,14 @@ CPPFLAGS_vmlinux.lds := -DSTART=$(LDS_START)		\
+ 			$(LDS_EXTRA)
+ extra-y := vmlinux.lds
+ 
+-obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
+-	physmem.o process.o ptrace.o reboot.o sigio.o \
+-	signal.o syscall.o sysrq.o time.o tlb.o trap.o \
+-	um_arch.o umid.o maccess.o kmsg_dump.o skas/
++obj-y = config.o exitcode.o irq.o ksyms.o \
++	process.o reboot.o sigio.o \
++	signal.o syscall.o time.o \
++	um_arch.o umid.o maccess.o kmsg_dump.o
++
++ifdef CONFIG_MMU
++obj-y += exec.o mem.o physmem.o ptrace.o sysrq.o tlb.o trap.o skas/
++endif
+ 
+ obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
+ obj-$(CONFIG_GPROF)	+= gprof_syms.o
+diff --git a/arch/um/nommu/um/Kconfig b/arch/um/nommu/um/Kconfig
 new file mode 100644
-index 000000000000..b6b5b2902254
+index 000000000000..20b3eaccb6f0
 --- /dev/null
-+++ b/tools/um/lib/posix-host.c
-@@ -0,0 +1,292 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <pthread.h>
-+#include <limits.h>
-+#include <errno.h>
-+#include <string.h>
-+#include <stdlib.h>
-+#include <assert.h>
-+#include <sys/syscall.h>
-+#include <lkl_host.h>
-+#include "jmp_buf.h"
++++ b/arch/um/nommu/um/Kconfig
+@@ -0,0 +1,37 @@
++config UML_NOMMU
++	def_bool y
++	depends on !SMP && !MMU
++	select UACCESS_MEMCPY
++	select ARCH_THREAD_STACK_ALLOCATOR
++	select ARCH_HAS_SYSCALL_WRAPPER
 +
-+/* Let's see if the host has semaphore.h */
-+#include <unistd.h>
++config 64BIT
++	bool
++	default y
 +
-+#ifdef _POSIX_SEMAPHORES
-+#include <semaphore.h>
-+/* TODO(pscollins): We don't support fork() for now, but maybe one day
-+ * we will?
-+ */
-+#define SHARE_SEM 0
-+#endif /* _POSIX_SEMAPHORES */
++config GENERIC_CSUM
++	def_bool y
 +
++config GENERIC_ATOMIC64
++	bool
++	default y if !64BIT
 +
-+struct lkl_mutex {
-+	pthread_mutex_t mutex;
-+};
++config SECCOMP
++	bool
++	default n
 +
-+struct lkl_sem {
-+#ifdef _POSIX_SEMAPHORES
-+	sem_t sem;
-+#else
-+	pthread_mutex_t lock;
-+	int count;
-+	pthread_cond_t cond;
-+#endif /* _POSIX_SEMAPHORES */
-+};
++config GENERIC_HWEIGHT
++	def_bool y
 +
-+struct lkl_tls_key {
-+	pthread_key_t key;
-+};
++config GENERIC_CALIBRATE_DELAY
++	bool
++	default n
 +
-+static void print(const char *str, int len)
-+{
-+	int ret __attribute__((unused));
++config STACKTRACE_SUPPORT
++	bool
++	default n
 +
-+	ret = write(STDOUT_FILENO, str, len);
-+}
++# XXX: need this to work well with tap13.py
++config PRINTK_TIME
++	bool
++	default y
+diff --git a/arch/um/nommu/um/Makefile b/arch/um/nommu/um/Makefile
+new file mode 100644
+index 000000000000..b580e0fe97b5
+--- /dev/null
++++ b/arch/um/nommu/um/Makefile
+@@ -0,0 +1,4 @@
++include/generated/user_constants.h: $(srctree)/arch/um/nommu/um/user_constants.h
++	$(Q)cp -f $^ $@
 +
-+static void panic(void)
-+{
-+	assert(0);
-+}
-+
-+#define WARN_UNLESS(exp) do {						\
-+		if (exp < 0)						\
-+			lkl_printf("%s: %s\n", #exp, strerror(errno));	\
-+	} while (0)
-+
-+static int _warn_pthread(int ret, char *str_exp)
-+{
-+	if (ret > 0)
-+		lkl_printf("%s: %s\n", str_exp, strerror(ret));
-+
-+	return ret;
-+}
-+
-+
-+/* pthread_* functions use the reverse convention */
-+#define WARN_PTHREAD(exp) _warn_pthread(exp, #exp)
-+
-+static struct lkl_sem *sem_alloc(int count)
-+{
-+	struct lkl_sem *sem;
-+
-+	sem = malloc(sizeof(*sem));
-+	if (!sem)
-+		return NULL;
-+
-+#ifdef _POSIX_SEMAPHORES
-+	if (sem_init(&sem->sem, SHARE_SEM, count) < 0) {
-+		lkl_printf("sem_init: %s\n", strerror(errno));
-+		free(sem);
-+		return NULL;
-+	}
-+#else
-+	pthread_mutex_init(&sem->lock, NULL);
-+	sem->count = count;
-+	WARN_PTHREAD(pthread_cond_init(&sem->cond, NULL));
-+#endif /* _POSIX_SEMAPHORES */
-+
-+	return sem;
-+}
-+
-+static void sem_free(struct lkl_sem *sem)
-+{
-+#ifdef _POSIX_SEMAPHORES
-+	WARN_UNLESS(sem_destroy(&sem->sem));
-+#else
-+	WARN_PTHREAD(pthread_cond_destroy(&sem->cond));
-+	WARN_PTHREAD(pthread_mutex_destroy(&sem->lock));
-+#endif /* _POSIX_SEMAPHORES */
-+	free(sem);
-+}
-+
-+static void sem_up(struct lkl_sem *sem)
-+{
-+#ifdef _POSIX_SEMAPHORES
-+	WARN_UNLESS(sem_post(&sem->sem));
-+#else
-+	WARN_PTHREAD(pthread_mutex_lock(&sem->lock));
-+	sem->count++;
-+	if (sem->count > 0)
-+		WARN_PTHREAD(pthread_cond_signal(&sem->cond));
-+	WARN_PTHREAD(pthread_mutex_unlock(&sem->lock));
-+#endif /* _POSIX_SEMAPHORES */
-+
-+}
-+
-+static void sem_down(struct lkl_sem *sem)
-+{
-+#ifdef _POSIX_SEMAPHORES
-+	int err;
-+
-+	do {
-+		err = sem_wait(&sem->sem);
-+	} while (err < 0 && errno == EINTR);
-+	if (err < 0 && errno != EINTR)
-+		lkl_printf("sem_wait: %s\n", strerror(errno));
-+#else
-+	WARN_PTHREAD(pthread_mutex_lock(&sem->lock));
-+	while (sem->count <= 0)
-+		WARN_PTHREAD(pthread_cond_wait(&sem->cond, &sem->lock));
-+	sem->count--;
-+	WARN_PTHREAD(pthread_mutex_unlock(&sem->lock));
-+#endif /* _POSIX_SEMAPHORES */
-+}
-+
-+static struct lkl_mutex *mutex_alloc(int recursive)
-+{
-+	struct lkl_mutex *_mutex = malloc(sizeof(struct lkl_mutex));
-+	pthread_mutex_t *mutex = NULL;
-+	pthread_mutexattr_t attr;
-+
-+	if (!_mutex)
-+		return NULL;
-+
-+	mutex = &_mutex->mutex;
-+	WARN_PTHREAD(pthread_mutexattr_init(&attr));
-+
-+	/* PTHREAD_MUTEX_ERRORCHECK is *very* useful for debugging,
-+	 * but has some overhead, so we provide an option to turn it
-+	 * off.
-+	 */
-+#ifdef DEBUG
-+	if (!recursive)
-+		WARN_PTHREAD(pthread_mutexattr_settype(
-+				     &attr, PTHREAD_MUTEX_ERRORCHECK));
-+#endif /* DEBUG */
-+
-+	if (recursive)
-+		WARN_PTHREAD(pthread_mutexattr_settype(
-+				     &attr, PTHREAD_MUTEX_RECURSIVE));
-+
-+	WARN_PTHREAD(pthread_mutex_init(mutex, &attr));
-+
-+	return _mutex;
-+}
-+
-+static void mutex_lock(struct lkl_mutex *mutex)
-+{
-+	WARN_PTHREAD(pthread_mutex_lock(&mutex->mutex));
-+}
-+
-+static void mutex_unlock(struct lkl_mutex *_mutex)
-+{
-+	pthread_mutex_t *mutex = &_mutex->mutex;
-+
-+	WARN_PTHREAD(pthread_mutex_unlock(mutex));
-+}
-+
-+static void mutex_free(struct lkl_mutex *_mutex)
-+{
-+	pthread_mutex_t *mutex = &_mutex->mutex;
-+
-+	WARN_PTHREAD(pthread_mutex_destroy(mutex));
-+	free(_mutex);
-+}
-+
-+static lkl_thread_t thread_create(void* (*fn)(void *), void *arg)
-+{
-+	pthread_t thread;
-+
-+	if (WARN_PTHREAD(pthread_create(&thread, NULL, fn, arg)))
-+		return 0;
-+	else
-+		return (lkl_thread_t) thread;
-+}
-+
-+static void thread_detach(void)
-+{
-+	WARN_PTHREAD(pthread_detach(pthread_self()));
-+}
-+
-+static void thread_exit(void)
-+{
-+	pthread_exit(NULL);
-+}
-+
-+static int thread_join(lkl_thread_t tid)
-+{
-+	if (WARN_PTHREAD(pthread_join((pthread_t)tid, NULL)))
-+		return (-1);
-+	else
-+		return 0;
-+}
-+
-+static lkl_thread_t thread_self(void)
-+{
-+	return (lkl_thread_t)pthread_self();
-+}
-+
-+static int thread_equal(lkl_thread_t a, lkl_thread_t b)
-+{
-+	return pthread_equal((pthread_t)a, (pthread_t)b);
-+}
-+
-+static long _gettid(void)
-+{
-+#ifdef	__FreeBSD__
-+	return (long)pthread_self();
-+#else
-+	return syscall(SYS_gettid);
-+#endif
-+}
-+
-+static struct lkl_tls_key *tls_alloc(void (*destructor)(void *))
-+{
-+	struct lkl_tls_key *ret = malloc(sizeof(struct lkl_tls_key));
-+
-+	if (WARN_PTHREAD(pthread_key_create(&ret->key, destructor))) {
-+		free(ret);
-+		return NULL;
-+	}
-+	return ret;
-+}
-+
-+static void tls_free(struct lkl_tls_key *key)
-+{
-+	WARN_PTHREAD(pthread_key_delete(key->key));
-+	free(key);
-+}
-+
-+static int tls_set(struct lkl_tls_key *key, void *data)
-+{
-+	if (WARN_PTHREAD(pthread_setspecific(key->key, data)))
-+		return (-1);
-+	return 0;
-+}
-+
-+static void *tls_get(struct lkl_tls_key *key)
-+{
-+	return pthread_getspecific(key->key);
-+}
-+
-+struct lkl_host_operations lkl_host_ops = {
-+	.panic = panic,
-+	.print = print,
-+	.mem_alloc = (void *)malloc,
-+	.mem_free = free,
-+	.thread_create = thread_create,
-+	.thread_detach = thread_detach,
-+	.thread_exit = thread_exit,
-+	.thread_join = thread_join,
-+	.thread_self = thread_self,
-+	.thread_equal = thread_equal,
-+	.sem_alloc = sem_alloc,
-+	.sem_free = sem_free,
-+	.sem_up = sem_up,
-+	.sem_down = sem_down,
-+	.mutex_alloc = mutex_alloc,
-+	.mutex_free = mutex_free,
-+	.mutex_lock = mutex_lock,
-+	.mutex_unlock = mutex_unlock,
-+	.gettid = _gettid,
-+	.tls_alloc = tls_alloc,
-+	.tls_free = tls_free,
-+	.tls_set = tls_set,
-+	.tls_get = tls_get,
-+	.jmp_buf_set = jmp_buf_set,
-+	.jmp_buf_longjmp = jmp_buf_longjmp,
-+};
-+
++obj-y = bootmem.o console.o cpu.o delay.o setup.o syscalls.o threads.o unimplemented.o
 -- 
 2.21.0 (Apple Git-122.2)
 
