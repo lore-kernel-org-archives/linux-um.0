@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pj1-x1041.google.com ([2607:f8b0:4864:20::1041])
+Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kLLTB-0003RG-Mg
- for linux-um@lists.infradead.org; Thu, 24 Sep 2020 07:15:10 +0000
-Received: by mail-pj1-x1041.google.com with SMTP id mm21so1189171pjb.4
- for <linux-um@lists.infradead.org>; Thu, 24 Sep 2020 00:15:09 -0700 (PDT)
+ id 1kLLTl-0003dJ-Dm
+ for linux-um@lists.infradead.org; Thu, 24 Sep 2020 07:15:46 +0000
+Received: by mail-pf1-x444.google.com with SMTP id o20so1317855pfp.11
+ for <linux-um@lists.infradead.org>; Thu, 24 Sep 2020 00:15:45 -0700 (PDT)
 From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v6 10/21] um: nommu: memory handling
-Date: Thu, 24 Sep 2020 16:12:50 +0900
-Message-Id: <ad65a74ddbae13b87d87cb8927ddfdbaa906fec6.1600922528.git.thehajime@gmail.com>
+Subject: [RFC v6 15/21] um: nommu: integrate with irq infrastructure of UML
+Date: Thu, 24 Sep 2020 16:12:55 +0900
+Message-Id: <7ec39a8cb91902ff2cdb22f9143f3449f9f9d009.1600922529.git.thehajime@gmail.com>
 In-Reply-To: <cover.1600922528.git.thehajime@gmail.com>
 References: <cover.1600922528.git.thehajime@gmail.com>
 MIME-Version: 1.0
@@ -27,270 +27,221 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
 Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, retrage01@gmail.com
 
-nommu mode follows the way !CONFIG_MMU architecture of other linux
-archs.  Ther is not much work left to do other than initializing the
-boot allocator and providing the page and page table definitions.
+In order to cooperate with UML's irq infrastructure and nommu threads
+based on host threads, irq handlers shall synchronize the our
+scheduler which is controlled by struct lkl_cpu.  To do that, the irq
+infra notifies its entry of handlers by obtaining cpu access of thread
+scheduler (lkl_cpu_try_run_irq) and its release (lkl_cpu_put).
 
-The backstore memory is allocated via a host operation and the memory
-size to be used is specified when the kernel is started, in the
-lkl_start_kernel call.
+In additon to that, in order to stick the signal handler's thread to the
+one of the idle thread, several required configurations of (thread's)
+signal mask are added: otherwise handlers running on arbitrary thread
+cannot obtain cpu access and immediately fall into pending interrupt
+which may slow down the delivery of signals.
 
 Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
-Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
 ---
- arch/um/include/asm/mmu.h                 |  3 +
- arch/um/include/asm/mmu_context.h         |  8 +++
- arch/um/include/asm/page.h                | 15 ++++
- arch/um/include/asm/pgtable.h             | 27 +++++++
- arch/um/include/asm/uaccess.h             |  6 ++
- arch/um/nommu/include/uapi/asm/host_ops.h |  5 ++
- arch/um/nommu/um/bootmem.c                | 86 +++++++++++++++++++++++
- 7 files changed, 150 insertions(+)
- create mode 100644 arch/um/nommu/um/bootmem.c
+ arch/um/include/shared/os.h     |  1 +
+ arch/um/kernel/irq.c            | 13 +++++++++++++
+ arch/um/kernel/time.c           |  2 ++
+ arch/um/nommu/include/asm/cpu.h |  3 +++
+ arch/um/nommu/um/cpu.c          | 17 ++++++++++++++---
+ arch/um/nommu/um/setup.c        |  5 +++++
+ arch/um/nommu/um/threads.c      |  3 +++
+ tools/um/uml/signal.c           | 12 ++++++++++--
+ 8 files changed, 51 insertions(+), 5 deletions(-)
 
-diff --git a/arch/um/include/asm/mmu.h b/arch/um/include/asm/mmu.h
-index 5b072aba5b65..c06d6cb67dd7 100644
---- a/arch/um/include/asm/mmu.h
-+++ b/arch/um/include/asm/mmu.h
-@@ -13,6 +13,9 @@ typedef struct mm_context {
- 	struct mm_id id;
- 	struct uml_arch_mm_context arch;
- 	struct page *stub_pages[2];
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index f467d28fc0b4..0da3ce22e16f 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -241,6 +241,7 @@ extern int set_signals(int enable);
+ extern int set_signals_trace(int enable);
+ extern int os_is_signal_stack(void);
+ extern void deliver_alarm(void);
++extern void set_pending_signals(int sig);
+ 
+ /* util.c */
+ extern void stack_protections(unsigned long address);
+diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
+index 3577118bb4a5..4ce7f5fef7f8 100644
+--- a/arch/um/kernel/irq.c
++++ b/arch/um/kernel/irq.c
+@@ -19,6 +19,7 @@
+ #include <kern_util.h>
+ #include <os.h>
+ #include <irq_user.h>
++#include <asm/cpu.h>
+ 
+ 
+ extern void free_irqs(void);
+@@ -541,6 +542,11 @@ unsigned long to_irq_stack(unsigned long *mask_out)
+ 	unsigned long mask, old;
+ 	int nested;
+ 
 +#ifndef CONFIG_MMU
-+	unsigned long		end_brk;
-+#endif
- } mm_context_t;
- 
- extern void __switch_mm(struct mm_id * mm_idp);
-diff --git a/arch/um/include/asm/mmu_context.h b/arch/um/include/asm/mmu_context.h
-index 17ddd4edf875..4b06c29ae830 100644
---- a/arch/um/include/asm/mmu_context.h
-+++ b/arch/um/include/asm/mmu_context.h
-@@ -6,6 +6,7 @@
- #ifndef __UM_MMU_CONTEXT_H
- #define __UM_MMU_CONTEXT_H
- 
-+#ifdef CONFIG_MMU
- #include <linux/sched.h>
- #include <linux/mm_types.h>
- #include <linux/mmap_lock.h>
-@@ -75,4 +76,11 @@ extern int init_new_context(struct task_struct *task, struct mm_struct *mm);
- 
- extern void destroy_context(struct mm_struct *mm);
- 
-+#else
-+#include <asm-generic/mmu_context.h>
-+
-+extern void force_flush_all(void);
-+
-+#endif /* CONFIG_MMU */
-+
- #endif
-diff --git a/arch/um/include/asm/page.h b/arch/um/include/asm/page.h
-index 95af12e82a32..c9d5e487ac6b 100644
---- a/arch/um/include/asm/page.h
-+++ b/arch/um/include/asm/page.h
-@@ -7,6 +7,8 @@
- #ifndef __UM_PAGE_H
- #define __UM_PAGE_H
- 
-+#ifdef CONFIG_MMU
-+
- #include <linux/const.h>
- 
- /* PAGE_SHIFT determines the page size */
-@@ -120,4 +122,17 @@ extern unsigned long uml_physmem;
- #define __HAVE_ARCH_GATE_AREA 1
- #endif
- 
-+#else  /* CONFIG_MMU */
-+#define CONFIG_KERNEL_RAM_BASE_ADDRESS memory_start
-+#include <asm-generic/page.h>
-+
-+#define __va_space (8*1024*1024)
-+
-+#ifndef __ASSEMBLY__
-+#include <mem.h>
-+void free_mem(void);
++	if (!nommu_irq_enter(ffs(*mask_out) - 1))
++		return 1;
 +#endif
 +
-+#endif /* !CONFIG_MMU  */
+ 	mask = xchg(&pending_mask, *mask_out);
+ 	if (mask != 0) {
+ 		/*
+@@ -557,6 +563,10 @@ unsigned long to_irq_stack(unsigned long *mask_out)
+ 			old |= mask;
+ 			mask = xchg(&pending_mask, old);
+ 		} while (mask != old);
 +
- #endif	/* __UM_PAGE_H */
-diff --git a/arch/um/include/asm/pgtable.h b/arch/um/include/asm/pgtable.h
-index def376194dce..7e506d5406e3 100644
---- a/arch/um/include/asm/pgtable.h
-+++ b/arch/um/include/asm/pgtable.h
-@@ -21,6 +21,8 @@
- #define _PAGE_PROTNONE	0x010	/* if the user mapped it with PROT_NONE;
- 				   pte_present gives true */
++#ifndef CONFIG_MMU
++		nommu_irq_exit();
++#endif
+ 		return 1;
+ 	}
  
-+#ifdef CONFIG_MMU
-+
- #ifdef CONFIG_3_LEVEL_PGTABLES
- #include <asm/pgtable-3level.h>
- #else
-@@ -323,4 +325,29 @@ do {						\
- 	__flush_tlb_one((vaddr));		\
- } while (0)
+@@ -594,6 +604,9 @@ unsigned long from_irq_stack(int nested)
+ 	*to = *ti;
  
-+#else  /* CONFIG_MMU */
-+
-+#include <asm-generic/pgtable-nopud.h>
-+
-+#define swapper_pg_dir		((pgd_t *)0)
-+#define PAGE_KERNEL             __pgprot(0)
-+#define PGDIR_SHIFT		21
-+#define PGDIR_SIZE		(1UL << PGDIR_SHIFT)
-+#define PGDIR_MASK		(~(PGDIR_SIZE-1))
-+
-+#define VMALLOC_START	0
-+#define VMALLOC_END	0xffffffff
-+
-+/*
-+ * ZERO_PAGE is a global shared page that is always zero: used
-+ * for zero-mapped memory areas etc..
-+ */
-+extern unsigned long *empty_zero_page;
-+#define ZERO_PAGE(vaddr)	(virt_to_page(empty_zero_page))
-+
-+extern unsigned long end_iomem;
-+
-+#endif /* !CONFIG_MMU */
-+
-+
- #endif
-diff --git a/arch/um/include/asm/uaccess.h b/arch/um/include/asm/uaccess.h
-index fe66d659acad..95db8f06d295 100644
---- a/arch/um/include/asm/uaccess.h
-+++ b/arch/um/include/asm/uaccess.h
-@@ -21,6 +21,7 @@
- #define __addr_range_nowrap(addr, size) \
- 	((unsigned long) (addr) <= ((unsigned long) (addr) + (size)))
- 
-+#ifdef CONFIG_MMU
- extern unsigned long raw_copy_from_user(void *to, const void __user *from, unsigned long n);
- extern unsigned long raw_copy_to_user(void __user *to, const void *from, unsigned long n);
- extern long __strncpy_from_user(char *dst, const char __user *src, long count);
-@@ -46,4 +47,9 @@ static inline int __access_ok(unsigned long addr, unsigned long size)
- 		uaccess_kernel());
+ 	mask = xchg(&pending_mask, 0);
++#ifndef CONFIG_MMU
++	nommu_irq_exit();
++#endif
+ 	return mask & ~1;
  }
  
-+#else
-+#include <asm-generic/uaccess.h>
-+#endif /* CONFIG_MMU */
-+
+diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
+index 25eaa6a0c658..9e141fe8fe27 100644
+--- a/arch/um/kernel/time.c
++++ b/arch/um/kernel/time.c
+@@ -597,11 +597,13 @@ static struct clock_event_device timer_clockevent = {
+ 
+ static irqreturn_t um_timer(int irq, void *dev)
+ {
++#ifdef CONFIG_MMU
+ 	if (get_current()->mm != NULL)
+ 	{
+         /* userspace - relay signal, results in correct userspace timers */
+ 		os_alarm_process(get_current()->mm->context.id.u.pid);
+ 	}
++#endif
+ 
+ 	(*timer_clockevent.event_handler)(&timer_clockevent);
+ 
+diff --git a/arch/um/nommu/include/asm/cpu.h b/arch/um/nommu/include/asm/cpu.h
+index c101c078ef21..c52a78c77bea 100644
+--- a/arch/um/nommu/include/asm/cpu.h
++++ b/arch/um/nommu/include/asm/cpu.h
+@@ -10,4 +10,7 @@ void lkl_cpu_wait_shutdown(void);
+ void lkl_cpu_change_owner(lkl_thread_t owner);
+ void lkl_cpu_set_irqs_pending(void);
+ 
++void nommu_irq_exit(void);
++int nommu_irq_enter(int sig);
 +
  #endif
-diff --git a/arch/um/nommu/include/uapi/asm/host_ops.h b/arch/um/nommu/include/uapi/asm/host_ops.h
-index d3dad11b459e..5253c3f8de0e 100644
---- a/arch/um/nommu/include/uapi/asm/host_ops.h
-+++ b/arch/um/nommu/include/uapi/asm/host_ops.h
-@@ -16,8 +16,13 @@ struct lkl_jmp_buf {
-  * These operations must be provided by a host library or by the application
-  * itself.
-  *
-+ * @mem_alloc - allocate memory
-+ * @mem_free - free memory
-+ *
-  */
- struct lkl_host_operations {
-+	void *(*mem_alloc)(unsigned long mem);
-+	void (*mem_free)(void *mem);
- };
+diff --git a/arch/um/nommu/um/cpu.c b/arch/um/nommu/um/cpu.c
+index 9986a3f8c5dd..75d8bdc1847e 100644
+--- a/arch/um/nommu/um/cpu.c
++++ b/arch/um/nommu/um/cpu.c
+@@ -8,15 +8,16 @@
+ #include <asm/sched.h>
+ #include <asm/syscalls.h>
+ #include <init.h>
++#include <os.h>
  
- void lkl_bug(const char *fmt, ...);
-diff --git a/arch/um/nommu/um/bootmem.c b/arch/um/nommu/um/bootmem.c
-new file mode 100644
-index 000000000000..6ae4c26e2b74
---- /dev/null
-+++ b/arch/um/nommu/um/bootmem.c
-@@ -0,0 +1,86 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/memblock.h>
-+#include <linux/mm.h>
-+#include <linux/swap.h>
-+
-+unsigned long memory_start, memory_end;
-+static unsigned long _memory_start, mem_size;
-+
-+unsigned long *empty_zero_page;
-+
-+/* XXX: unused */
-+unsigned long long highmem;
-+int iomem_size;
-+int kmalloc_ok = 1;
-+
-+void __init setup_physmem(unsigned long start, unsigned long reserve_end,
-+			  unsigned long mem_sz, unsigned long long _highmem)
+ void run_irqs(void)
+ {
+-	panic("unimplemented %s", __func__);
++	unblock_signals();
+ }
+ 
+-int set_irq_pending(int irq)
++void set_irq_pending(int sig)
+ {
+-	panic("unimplemented %s", __func__);
++	set_pending_signals(sig);
+ }
+ 
+ /*
+@@ -174,6 +175,16 @@ int lkl_cpu_try_run_irq(int irq)
+ 	return ret;
+ }
+ 
++int nommu_irq_enter(int sig)
 +{
-+	mem_size = mem_sz;
-+
-+	_memory_start = (unsigned long)lkl_ops->mem_alloc(mem_size);
-+	memory_start = _memory_start;
-+	WARN_ON(!memory_start);
-+	memory_end = memory_start + mem_size;
-+
-+	if (PAGE_ALIGN(memory_start) != memory_start) {
-+		mem_size -= PAGE_ALIGN(memory_start) - memory_start;
-+		memory_start = PAGE_ALIGN(memory_start);
-+		mem_size = (mem_size / PAGE_SIZE) * PAGE_SIZE;
-+	}
-+	pr_info("memblock address range: 0x%lx - 0x%lx\n", memory_start,
-+		memory_start+mem_size);
-+	/*
-+	 * Give all the memory to the bootmap allocator, tell it to put the
-+	 * boot mem_map at the start of memory.
-+	 */
-+	max_low_pfn = virt_to_pfn(memory_end);
-+	min_low_pfn = virt_to_pfn(memory_start);
-+	memblock_add(memory_start, mem_size);
-+
-+	empty_zero_page = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
-+	memset((void *)empty_zero_page, 0, PAGE_SIZE);
-+
-+	{
-+		unsigned long zones_size[MAX_NR_ZONES] = {0, };
-+
-+		zones_size[ZONE_NORMAL] = max_low_pfn;
-+		free_area_init(zones_size);
-+	}
++	return lkl_cpu_try_run_irq(sig);
 +}
 +
-+void __init mem_init(void)
++void nommu_irq_exit(void)
 +{
-+	max_mapnr = (((unsigned long)high_memory) - PAGE_OFFSET) >> PAGE_SHIFT;
-+	/* this will put all memory onto the freelists */
-+	totalram_pages_add(memblock_free_all());
-+	pr_info("Memory available: %luk/%luk RAM\n",
-+		(nr_free_pages() << PAGE_SHIFT) >> 10, mem_size >> 10);
++	return lkl_cpu_put();
 +}
 +
-+/*
-+ * In our case __init memory is not part of the page allocator so there is
-+ * nothing to free.
-+ */
-+void free_initmem(void)
-+{
-+}
+ static void lkl_cpu_shutdown(void)
+ {
+ 	__sync_fetch_and_add(&cpu.shutdown_gate, MAX_THREADS);
+diff --git a/arch/um/nommu/um/setup.c b/arch/um/nommu/um/setup.c
+index eaa74d771f73..922188690139 100644
+--- a/arch/um/nommu/um/setup.c
++++ b/arch/um/nommu/um/setup.c
+@@ -36,6 +36,8 @@ static void __init *lkl_run_kernel(void *arg)
+ 
+ 	panic_blink = lkl_panic_blink;
+ 
++	/* signal should be received at this thread (main and idle threads) */
++	init_new_thread_signals();
+ 	threads_init();
+ 	lkl_cpu_get();
+ 	start_kernel();
+@@ -58,6 +60,9 @@ int __init lkl_start_kernel(struct lkl_host_operations *ops,
+ 	if (ret)
+ 		goto out_free_init_sem;
+ 
++	change_sig(SIGALRM, 0);
++	change_sig(SIGIO, 0);
 +
-+void free_mem(void)
-+{
-+	lkl_ops->mem_free((void *)_memory_start);
-+}
+ 	ret = lkl_ops->thread_create(lkl_run_kernel, NULL);
+ 	if (!ret) {
+ 		ret = -ENOMEM;
+diff --git a/arch/um/nommu/um/threads.c b/arch/um/nommu/um/threads.c
+index 3e70eccc191a..df96057100fd 100644
+--- a/arch/um/nommu/um/threads.c
++++ b/arch/um/nommu/um/threads.c
+@@ -151,6 +151,9 @@ static void *thread_bootstrap(void *_tba)
+ 	int (*f)(void *) = tba->f;
+ 	void *arg = tba->arg;
+ 
++	change_sig(SIGALRM, 0);
++	change_sig(SIGIO, 0);
 +
-+void *uml_kmalloc(int size, int flags)
-+{
-+	return kmalloc(size, flags);
-+}
+ 	lkl_ops->sem_down(ti->task->thread.arch.sched_sem);
+ 	kfree(tba);
+ 	if (ti->task->thread.prev_sched)
+diff --git a/tools/um/uml/signal.c b/tools/um/uml/signal.c
+index b58bc68cbe64..2b5c98de21cd 100644
+--- a/tools/um/uml/signal.c
++++ b/tools/um/uml/signal.c
+@@ -218,8 +218,8 @@ void set_handler(int sig)
+ 
+ 	sigemptyset(&sig_mask);
+ 	sigaddset(&sig_mask, sig);
+-	if (sigprocmask(SIG_UNBLOCK, &sig_mask, NULL) < 0)
+-		panic("sigprocmask failed - errno = %d\n", errno);
++	if (pthread_sigmask(SIG_UNBLOCK, &sig_mask, NULL) < 0)
++		panic("pthread_sigmask failed - errno = %d\n", errno);
+ }
+ 
+ int change_sig(int signal, int on)
+@@ -355,3 +355,11 @@ int os_is_signal_stack(void)
+ 
+ 	return ss.ss_flags & SS_ONSTACK;
+ }
 +
-+void __init mem_total_pages(unsigned long physmem, unsigned long iomem,
-+		     unsigned long _highmem)
++void set_pending_signals(int sig)
 +{
-+}
-+
-+void __init paging_init(void)
-+{
++	if (sig == SIGIO)
++		signals_pending |= SIGIO_MASK;
++	else if (sig == SIGALRM)
++		signals_pending |= SIGALRM_MASK;
 +}
 -- 
 2.21.0 (Apple Git-122.2)
