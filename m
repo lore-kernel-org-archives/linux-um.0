@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x543.google.com ([2607:f8b0:4864:20::543])
+Received: from mail-pl1-x641.google.com ([2607:f8b0:4864:20::641])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kLLSK-0003De-TE
- for linux-um@lists.infradead.org; Thu, 24 Sep 2020 07:14:17 +0000
-Received: by mail-pg1-x543.google.com with SMTP id y14so1328499pgf.12
- for <linux-um@lists.infradead.org>; Thu, 24 Sep 2020 00:14:16 -0700 (PDT)
+ id 1kLLRx-00034u-U0
+ for linux-um@lists.infradead.org; Thu, 24 Sep 2020 07:13:55 +0000
+Received: by mail-pl1-x641.google.com with SMTP id q12so1171265plr.12
+ for <linux-um@lists.infradead.org>; Thu, 24 Sep 2020 00:13:53 -0700 (PDT)
 From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v6 04/21] um: host: implement os_initcalls and os_exitcalls
-Date: Thu, 24 Sep 2020 16:12:44 +0900
-Message-Id: <278b23a9e7f1cb0de260f2c6fe9f5919fb51cce9.1600922528.git.thehajime@gmail.com>
+Subject: [RFC v6 02/21] um: add os init and exit calls
+Date: Thu, 24 Sep 2020 16:12:42 +0900
+Message-Id: <0479e4453fbc20abc3a9a7fbd892bb258440712a.1600922528.git.thehajime@gmail.com>
 In-Reply-To: <cover.1600922528.git.thehajime@gmail.com>
 References: <cover.1600922528.git.thehajime@gmail.com>
 MIME-Version: 1.0
@@ -29,52 +29,83 @@ Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.
 
 From: Octavian Purdila <tavi@cs.pub.ro>
 
-This patch implements the init and exit calls for host code. It uses
-the automatic __start_<section> and __stop_<section> variables that
-are defined by gcc / ld when using custom sections.
-
-Note that this patch should be merged with "um: move arch/um/os-Linux
-dir to tools/um" but for now it is separate to make the review easier.
+These calls are added in preparation for moving some of the code from
+the kernel to the host build.
 
 Signed-off-by: Octavian Purdila <tavi@cs.pub.ro>
 ---
- tools/um/uml/util.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ arch/um/include/shared/init.h | 14 ++++----------
+ arch/um/kernel/reboot.c       |  5 +++++
+ arch/um/kernel/um_arch.c      | 11 +++++++++++
+ 3 files changed, 20 insertions(+), 10 deletions(-)
 
-diff --git a/tools/um/uml/util.c b/tools/um/uml/util.c
-index ecf2f390fad2..4011b36fee7e 100644
---- a/tools/um/uml/util.c
-+++ b/tools/um/uml/util.c
-@@ -186,3 +186,29 @@ void os_warn(const char *fmt, ...)
- 	vfprintf(stderr, fmt, list);
- 	va_end(list);
+diff --git a/arch/um/include/shared/init.h b/arch/um/include/shared/init.h
+index c66de434a983..d09308330ca5 100644
+--- a/arch/um/include/shared/init.h
++++ b/arch/um/include/shared/init.h
+@@ -109,19 +109,13 @@ extern struct uml_param __uml_setup_start, __uml_setup_end;
+ 
+ #ifdef __UM_HOST__
+ 
+-#define __define_initcall(level,fn) \
+-	static initcall_t __initcall_##fn __used \
+-	__attribute__((__section__(".initcall" level ".init"))) = fn
+-
+-/* Userspace initcalls shouldn't depend on anything in the kernel, so we'll
+- * make them run first.
+- */
+-#define __initcall(fn) __define_initcall("1", fn)
++#undef __uml_exit_call
++#define __uml_exit_call		__used __section(os_exitcalls)
++#define __init_call		__used __section(os_initcalls)
+ 
++#define __initcall(fn) static initcall_t __initcall_##fn __init_call = fn
+ #define __exitcall(fn) static exitcall_t __exitcall_##fn __exit_call = fn
+ 
+-#define __init_call	__used __section(.initcall.init)
+-
+ #endif
+ 
+ #endif /* _LINUX_UML_INIT_H */
+diff --git a/arch/um/kernel/reboot.c b/arch/um/kernel/reboot.c
+index 48c0610d506e..5420aec411f4 100644
+--- a/arch/um/kernel/reboot.c
++++ b/arch/um/kernel/reboot.c
+@@ -35,10 +35,15 @@ static void kill_off_processes(void)
+ 	read_unlock(&tasklist_lock);
+ }
+ 
++void __weak os_exitcalls(void)
++{
++}
++
+ void uml_cleanup(void)
+ {
+ 	kmalloc_ok = 0;
+ 	do_uml_exitcalls();
++	os_exitcalls();
+ 	kill_off_processes();
+ }
+ 
+diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
+index 00141e70de56..e2cb76c03b25 100644
+--- a/arch/um/kernel/um_arch.c
++++ b/arch/um/kernel/um_arch.c
+@@ -377,3 +377,14 @@ void *text_poke(void *addr, const void *opcode, size_t len)
+ void text_poke_sync(void)
+ {
  }
 +
-+extern void (*__start_os_exitcalls)(void);
-+extern void (*__stop_os_exitcalls)(void);
-+
-+void os_exitcalls(void)
++int __weak os_initcalls(void)
 +{
-+	exitcall_t *call;
-+
-+	call = &__stop_os_exitcalls;
-+	while (--call >= &__start_os_exitcalls)
-+		(*call)();
-+}
-+
-+extern int (*__start_os_initcalls)(void);
-+extern int (*__stop_os_initcalls)(void);
-+
-+int os_initcalls(void)
-+{
-+	initcall_t *call;
-+
-+	call = &__stop_os_initcalls;
-+	while (--call >= &__start_os_initcalls)
-+		(*call)();
-+
 +	return 0;
 +}
++
++int __init run_os_initcalls(void)
++{
++	return os_initcalls();
++}
++early_initcall(run_os_initcalls);
 -- 
 2.21.0 (Apple Git-122.2)
 
