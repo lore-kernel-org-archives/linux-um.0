@@ -1,65 +1,159 @@
-Return-Path: <tglx@linutronix.de>
-Message-Id: <20200914204441.794954043@linutronix.de>
-Date: Mon, 14 Sep 2020 22:42:17 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: [patch 08/13] sched: Clenaup PREEMPT_COUNT leftovers
-References: <20200914204209.256266093@linutronix.de>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kLLSR-0003FG-Ep
+ for linux-um@lists.infradead.org; Thu, 24 Sep 2020 07:14:24 +0000
+Received: by mail-pg1-x544.google.com with SMTP id u24so1368033pgi.1
+ for <linux-um@lists.infradead.org>; Thu, 24 Sep 2020 00:14:23 -0700 (PDT)
+From: Hajime Tazaki <thehajime@gmail.com>
+Subject: [RFC v6 05/21] um: move arch/x86/um/os-Linux to tools/um/uml/
+Date: Thu, 24 Sep 2020 16:12:45 +0900
+Message-Id: <3e7c2da8fc1ad973d4b1df0a770e8ccfc75e45a6.1600922528.git.thehajime@gmail.com>
+In-Reply-To: <cover.1600922528.git.thehajime@gmail.com>
+References: <cover.1600922528.git.thehajime@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: linux-arch@vger.kernel.org, Linus Torvalds <torvalds@linuxfoundation.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Valentin Schneider <valentin.schneider@arm.com>, Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Brian Cain <bcain@codeaurora.org>, linux-hexagon@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, Russell King <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Jani Nikula <jani.nikula@linux.intel.com>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>, intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, "Paul E. McKenney" <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
+Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, retrage01@gmail.com
 
-CONFIG_PREEMPT_COUNT is now unconditionally enabled and will be
-removed. Cleanup the leftovers before doing so.
+Similar to arch/um/os-Linux code, arch/x86 also contains OS dependent
+part as well.  This patch moves underlying OS dependent part to tools/um
+directory so that arch/x86 code does not need to build host build
+facilities (e.g., libc).
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ben Segall <bsegall@google.com>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
 ---
- kernel/sched/core.c |    6 +-----
- lib/Kconfig.debug   |    1 -
- 2 files changed, 1 insertion(+), 6 deletions(-)
+ arch/x86/um/Makefile                                |  2 +-
+ arch/x86/um/os-Linux/Makefile                       | 13 -------------
+ tools/um/Makefile                                   |  2 +-
+ tools/um/uml/Build                                  |  2 ++
+ tools/um/uml/x86/Build                              | 11 +++++++++++
+ .../x86/um/os-Linux => tools/um/uml/x86}/mcontext.c |  0
+ {arch/x86/um/os-Linux => tools/um/uml/x86}/prctl.c  |  0
+ .../um/os-Linux => tools/um/uml/x86}/registers.c    |  0
+ .../um/os-Linux => tools/um/uml/x86}/task_size.c    |  0
+ {arch/x86/um/os-Linux => tools/um/uml/x86}/tls.c    |  0
+ 10 files changed, 15 insertions(+), 15 deletions(-)
+ delete mode 100644 arch/x86/um/os-Linux/Makefile
+ create mode 100644 tools/um/uml/x86/Build
+ rename {arch/x86/um/os-Linux => tools/um/uml/x86}/mcontext.c (100%)
+ rename {arch/x86/um/os-Linux => tools/um/uml/x86}/prctl.c (100%)
+ rename {arch/x86/um/os-Linux => tools/um/uml/x86}/registers.c (100%)
+ rename {arch/x86/um/os-Linux => tools/um/uml/x86}/task_size.c (100%)
+ rename {arch/x86/um/os-Linux => tools/um/uml/x86}/tls.c (100%)
 
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -3706,8 +3706,7 @@ asmlinkage __visible void schedule_tail(
- 	 * finish_task_switch() for details.
- 	 *
- 	 * finish_task_switch() will drop rq->lock() and lower preempt_count
--	 * and the preempt_enable() will end up enabling preemption (on
--	 * PREEMPT_COUNT kernels).
-+	 * and the preempt_enable() will end up enabling preemption.
- 	 */
+diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
+index 77f70b969d14..25e9846b36a2 100644
+--- a/arch/x86/um/Makefile
++++ b/arch/x86/um/Makefile
+@@ -13,7 +13,7 @@ obj-y = bugs_$(BITS).o delay.o fault.o ldt.o \
+ 	ptrace_$(BITS).o ptrace_user.o setjmp_$(BITS).o signal.o \
+ 	stub_$(BITS).o stub_segv.o \
+ 	sys_call_table_$(BITS).o sysrq_$(BITS).o tls_$(BITS).o \
+-	mem_$(BITS).o subarch.o os-$(OS)/
++	mem_$(BITS).o subarch.o
  
- 	rq = finish_task_switch(prev);
-@@ -7311,9 +7310,6 @@ void __cant_sleep(const char *file, int
- 	if (irqs_disabled())
- 		return;
+ ifeq ($(CONFIG_X86_32),y)
  
--	if (!IS_ENABLED(CONFIG_PREEMPT_COUNT))
--		return;
+diff --git a/arch/x86/um/os-Linux/Makefile b/arch/x86/um/os-Linux/Makefile
+deleted file mode 100644
+index 253bfb8cb702..000000000000
+--- a/arch/x86/um/os-Linux/Makefile
++++ /dev/null
+@@ -1,13 +0,0 @@
+-#
+-# Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+-# Licensed under the GPL
+-#
 -
- 	if (preempt_count() > preempt_offset)
- 		return;
+-obj-y = registers.o task_size.o mcontext.o
+-
+-obj-$(CONFIG_X86_32) += tls.o
+-obj-$(CONFIG_64BIT) += prctl.o
+-
+-USER_OBJS := $(obj-y)
+-
+-include arch/um/scripts/Makefile.rules
+diff --git a/tools/um/Makefile b/tools/um/Makefile
+index 07b9b93ed817..552ed5f1edae 100644
+--- a/tools/um/Makefile
++++ b/tools/um/Makefile
+@@ -61,7 +61,7 @@ $(OUTPUT)%-in.o: FORCE
+ 	$(Q)$(MAKE) -f $(srctree)/tools/build/Makefile.build dir=$(patsubst %/,%,$(dir $*)) obj=$(notdir $*)
  
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -1320,7 +1320,6 @@ config DEBUG_LOCKDEP
+ # rule to build objects
+-$(OUTPUT)%-in.o: $(OUTPUT)lib/linux.o
++$(OUTPUT)%-in.o: $(OUTPUT)lib/linux.o FORCE
+ 	$(Q)$(MAKE) -f $(srctree)/tools/build/Makefile.build dir=$(patsubst %/,%,$(dir $*)) obj=$(notdir $*)
  
- config DEBUG_ATOMIC_SLEEP
- 	bool "Sleep inside atomic section checking"
--	select PREEMPT_COUNT
- 	depends on DEBUG_KERNEL
- 	help
- 	  If you say Y here, various routines which may sleep will become very
+ clean:
+diff --git a/tools/um/uml/Build b/tools/um/uml/Build
+index 8e0607ee8b0a..435a9670d3ff 100644
+--- a/tools/um/uml/Build
++++ b/tools/um/uml/Build
+@@ -12,6 +12,8 @@ liblinux-y += execvp.o file.o helper.o irq.o main.o mem.o process.o \
+ 	registers.o sigio.o signal.o start_up.o time.o tty.o \
+ 	umid.o user_syms.o util.o drivers/ skas/
+ 
++liblinux-y += x86/
++
+ liblinux-$(CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA) += elf_aux.o
+ 
+ export O = $(srctree)
+diff --git a/tools/um/uml/x86/Build b/tools/um/uml/x86/Build
+new file mode 100644
+index 000000000000..16bbc7eb19d1
+--- /dev/null
++++ b/tools/um/uml/x86/Build
+@@ -0,0 +1,11 @@
++#
++# Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
++# Licensed under the GPL
++#
++
++include $(objtree)/include/config/auto.conf
++
++liblinux-y = registers.o task_size.o mcontext.o
++
++liblinux-$(CONFIG_X86_32) += tls.o
++liblinux-$(CONFIG_64BIT) += prctl.o
+diff --git a/arch/x86/um/os-Linux/mcontext.c b/tools/um/uml/x86/mcontext.c
+similarity index 100%
+rename from arch/x86/um/os-Linux/mcontext.c
+rename to tools/um/uml/x86/mcontext.c
+diff --git a/arch/x86/um/os-Linux/prctl.c b/tools/um/uml/x86/prctl.c
+similarity index 100%
+rename from arch/x86/um/os-Linux/prctl.c
+rename to tools/um/uml/x86/prctl.c
+diff --git a/arch/x86/um/os-Linux/registers.c b/tools/um/uml/x86/registers.c
+similarity index 100%
+rename from arch/x86/um/os-Linux/registers.c
+rename to tools/um/uml/x86/registers.c
+diff --git a/arch/x86/um/os-Linux/task_size.c b/tools/um/uml/x86/task_size.c
+similarity index 100%
+rename from arch/x86/um/os-Linux/task_size.c
+rename to tools/um/uml/x86/task_size.c
+diff --git a/arch/x86/um/os-Linux/tls.c b/tools/um/uml/x86/tls.c
+similarity index 100%
+rename from arch/x86/um/os-Linux/tls.c
+rename to tools/um/uml/x86/tls.c
+-- 
+2.21.0 (Apple Git-122.2)
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
