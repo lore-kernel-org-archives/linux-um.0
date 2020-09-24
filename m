@@ -1,16 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pj1-x1044.google.com ([2607:f8b0:4864:20::1044])
+Received: from ms.lwn.net ([2600:3c01:e000:3a1::42])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kLLT7-0003PV-Pc
- for linux-um@lists.infradead.org; Thu, 24 Sep 2020 07:15:06 +0000
-Received: by mail-pj1-x1044.google.com with SMTP id kk9so1126733pjb.2
- for <linux-um@lists.infradead.org>; Thu, 24 Sep 2020 00:15:05 -0700 (PDT)
-From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v6 09/21] um: nommu: host interface
-Date: Thu, 24 Sep 2020 16:12:49 +0900
-Message-Id: <8ee5307216dda4f695e84eb1dcc2dab166e08ee7.1600922528.git.thehajime@gmail.com>
-In-Reply-To: <cover.1600922528.git.thehajime@gmail.com>
-References: <cover.1600922528.git.thehajime@gmail.com>
+ id 1kLUVS-0007GH-Qe
+ for linux-um@lists.infradead.org; Thu, 24 Sep 2020 16:54:07 +0000
+Date: Thu, 24 Sep 2020 10:54:02 -0600
+From: Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH v4] docs: replace the old User Mode Linux HowTo with a
+ new one
+Message-ID: <20200924105402.5615d626@lwn.net>
+In-Reply-To: <20200917103557.26063-1-anton.ivanov@cambridgegreys.com>
+References: <20200917103557.26063-1-anton.ivanov@cambridgegreys.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -24,70 +23,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
-Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, retrage01@gmail.com
+To: anton.ivanov@cambridgegreys.com
+Cc: richard@nod.at, linux-um@lists.infradead.org, linux-doc@vger.kernel.org
 
-This patch introduces the host operations that define the interface
-between the LKL and the host. These operations must be provided either
-by a host library or by the application itself.
+On Thu, 17 Sep 2020 11:35:57 +0100
+anton.ivanov@cambridgegreys.com wrote:
 
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
----
- arch/um/include/asm/host_ops.h            |  9 ++++++++
- arch/um/nommu/include/uapi/asm/host_ops.h | 25 +++++++++++++++++++++++
- 2 files changed, 34 insertions(+)
- create mode 100644 arch/um/include/asm/host_ops.h
- create mode 100644 arch/um/nommu/include/uapi/asm/host_ops.h
+> From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> 
+> The new HowTo migrates the portions of the old howto which
+> are still relevant to a new document, updates them to linux 5.x
+> and adds documentation for vector transports and other new
+> features.
+> 
+> Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> ---
+>  Documentation/virt/index.rst                  |    2 +-
+>  Documentation/virt/uml/user_mode_linux.rst    | 4403 -----------------
+>  .../virt/uml/user_mode_linux_howto_v2.rst     | 1208 +++++
+>  3 files changed, 1209 insertions(+), 4404 deletions(-)
+>  delete mode 100644 Documentation/virt/uml/user_mode_linux.rst
+>  create mode 100644 Documentation/virt/uml/user_mode_linux_howto_v2.rst
 
-diff --git a/arch/um/include/asm/host_ops.h b/arch/um/include/asm/host_ops.h
-new file mode 100644
-index 000000000000..f52423cc4ced
---- /dev/null
-+++ b/arch/um/include/asm/host_ops.h
-@@ -0,0 +1,9 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_LKL_HOST_OPS_H
-+#define _ASM_LKL_HOST_OPS_H
-+
-+#include <uapi/asm/host_ops.h>
-+
-+extern struct lkl_host_operations *lkl_ops;
-+
-+#endif
-diff --git a/arch/um/nommu/include/uapi/asm/host_ops.h b/arch/um/nommu/include/uapi/asm/host_ops.h
-new file mode 100644
-index 000000000000..d3dad11b459e
---- /dev/null
-+++ b/arch/um/nommu/include/uapi/asm/host_ops.h
-@@ -0,0 +1,25 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+#ifndef __UM_NOMMU_UAPI_HOST_OPS_H
-+#define __UM_NOMMU_UAPI_HOST_OPS_H
-+
-+/* Defined in {posix,nt}-host.c */
-+struct lkl_mutex;
-+struct lkl_sem;
-+typedef unsigned long lkl_thread_t;
-+struct lkl_jmp_buf {
-+	unsigned long buf[128];
-+};
-+
-+/**
-+ * lkl_host_operations - host operations used by the Linux kernel
-+ *
-+ * These operations must be provided by a host library or by the application
-+ * itself.
-+ *
-+ */
-+struct lkl_host_operations {
-+};
-+
-+void lkl_bug(const char *fmt, ...);
-+
-+#endif
--- 
-2.21.0 (Apple Git-122.2)
+Applied, thanks.
 
+jon
 
 _______________________________________________
 linux-um mailing list
