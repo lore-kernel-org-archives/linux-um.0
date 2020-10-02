@@ -1,19 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-yb1-xb41.google.com ([2607:f8b0:4864:20::b41])
+Received: from mail-ej1-x643.google.com ([2a00:1450:4864:20::643])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kOHCX-0004j8-GV
- for linux-um@lists.infradead.org; Fri, 02 Oct 2020 09:18:06 +0000
-Received: by mail-yb1-xb41.google.com with SMTP id j76so695855ybg.3
- for <linux-um@lists.infradead.org>; Fri, 02 Oct 2020 02:18:03 -0700 (PDT)
-MIME-Version: 1.0
+ id 1kO9oi-0000px-Gr
+ for linux-um@lists.infradead.org; Fri, 02 Oct 2020 01:25:01 +0000
+Received: by mail-ej1-x643.google.com with SMTP id ce10so559446ejc.5
+ for <linux-um@lists.infradead.org>; Thu, 01 Oct 2020 18:25:00 -0700 (PDT)
+From: Jann Horn <jannh@google.com>
+In-Reply-To: <CAG48ez1+ok5c5PK4DjA6-rYkg9qPeKoRrJmc5jsGf=TZZbShJg@mail.gmail.com>
 References: <CAG48ez1+ok5c5PK4DjA6-rYkg9qPeKoRrJmc5jsGf=TZZbShJg@mail.gmail.com>
- <CAG48ez1kMuPUW8VKp=9=KDLVisa-zuqp+DbYjc=A-kGUi_ik3A@mail.gmail.com>
-In-Reply-To: <CAG48ez1kMuPUW8VKp=9=KDLVisa-zuqp+DbYjc=A-kGUi_ik3A@mail.gmail.com>
-From: Michel Lespinasse <walken@google.com>
-Date: Fri, 2 Oct 2020 02:17:49 -0700
-Message-ID: <CANN689H9hXzaV0_vpFfrvjQD6xAEaPnjok_17zWGHumRNs-ZWg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mmap locking API: Order lock of nascent mm outside
- lock of live mm
+MIME-Version: 1.0
+Date: Thu, 1 Oct 2020 21:24:58 -0400
+Message-ID: <CAG48ez1kMuPUW8VKp=9=KDLVisa-zuqp+DbYjc=A-kGUi_ik3A@mail.gmail.com>
+Subject: [PATCH 1/2] mmap locking API: Order lock of nascent mm outside lock
+ of live mm
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -26,36 +25,158 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jann Horn <jannh@google.com>
-Cc: Jason Gunthorpe <jgg@nvidia.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, "Eric W . Biederman" <ebiederm@xmission.com>, Sakari Ailus <sakari.ailus@linux.intel.com>, John Hubbard <jhubbard@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>, Mauro Carvalho Chehab <mchehab@kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Cc: Michel Lespinasse <walken@google.com>, Jason Gunthorpe <jgg@nvidia.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, "Eric W . Biederman" <ebiederm@xmission.com>, Sakari Ailus <sakari.ailus@linux.intel.com>, John Hubbard <jhubbard@nvidia.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-On Thu, Oct 1, 2020 at 6:25 PM Jann Horn <jannh@google.com> wrote:
-> Until now, the mmap lock of the nascent mm was ordered inside the mmap lock
-> of the old mm (in dup_mmap() and in UML's activate_mm()).
-> A following patch will change the exec path to very broadly lock the
-> nascent mm, but fine-grained locking should still work at the same time for
-> the new mm.
-> To do this in a way that lockdep is happy about, let's turn around the lock
-> ordering in both places that currently nest the locks.
-> Since SINGLE_DEPTH_NESTING is normally used for the inner nesting layer,
-> make up our own lock subclass MMAP_LOCK_SUBCLASS_NASCENT and use that
-> instead.
->
-> The added locking calls in exec_mmap() are temporary; the following patch
-> will move the locking out of exec_mmap().
+Until now, the mmap lock of the nascent mm was ordered inside the mmap lock
+of the old mm (in dup_mmap() and in UML's activate_mm()).
+A following patch will change the exec path to very broadly lock the
+nascent mm, but fine-grained locking should still work at the same time for
+the new mm.
+To do this in a way that lockdep is happy about, let's turn around the lock
+ordering in both places that currently nest the locks.
+Since SINGLE_DEPTH_NESTING is normally used for the inner nesting layer,
+make up our own lock subclass MMAP_LOCK_SUBCLASS_NASCENT and use that
+instead.
 
-Thanks for doing this.
+The added locking calls in exec_mmap() are temporary; the following patch
+will move the locking out of exec_mmap().
 
-This is probably a silly question, but I am not sure exactly where we
-lock the old MM while bprm is creating the new MM ? I am guessing this
-would be only in setup_arg_pages(), copying the args and environment
-from the old the the new MM ? If that is correct, then wouldn't it be
-sufficient to use mmap_write_lock_nested in setup_arg_pages() ? Or, is
-the issue that we'd prefer to have a killable version of it there ?
+Signed-off-by: Jann Horn <jannh@google.com>
+---
+ arch/um/include/asm/mmu_context.h |  3 +--
+ fs/exec.c                         |  4 ++++
+ include/linux/mmap_lock.h         | 23 +++++++++++++++++++++--
+ kernel/fork.c                     |  7 ++-----
+ 4 files changed, 28 insertions(+), 9 deletions(-)
 
-Also FYI I was going to play with these patches a bit to help answer
-these questions on my own, but wasn't able to easily apply them as
-they came lightly mangled (whitespace issues) when I saved them.
+diff --git a/arch/um/include/asm/mmu_context.h
+b/arch/um/include/asm/mmu_context.h
+index 17ddd4edf875..c13bc5150607 100644
+--- a/arch/um/include/asm/mmu_context.h
++++ b/arch/um/include/asm/mmu_context.h
+@@ -48,9 +48,8 @@ static inline void activate_mm(struct mm_struct
+*old, struct mm_struct *new)
+ 	 * when the new ->mm is used for the first time.
+ 	 */
+ 	__switch_mm(&new->context.id);
+-	mmap_write_lock_nested(new, SINGLE_DEPTH_NESTING);
++	mmap_assert_write_locked(new);
+ 	uml_setup_stubs(new);
+-	mmap_write_unlock(new);
+ }
+
+ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
+diff --git a/fs/exec.c b/fs/exec.c
+index a91003e28eaa..229dbc7aa61a 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -1114,6 +1114,8 @@ static int exec_mmap(struct mm_struct *mm)
+ 	if (ret)
+ 		return ret;
+
++	mmap_write_lock_nascent(mm);
++
+ 	if (old_mm) {
+ 		/*
+ 		 * Make sure that if there is a core dump in progress
+@@ -1125,6 +1127,7 @@ static int exec_mmap(struct mm_struct *mm)
+ 		if (unlikely(old_mm->core_state)) {
+ 			mmap_read_unlock(old_mm);
+ 			mutex_unlock(&tsk->signal->exec_update_mutex);
++			mmap_write_unlock(mm);
+ 			return -EINTR;
+ 		}
+ 	}
+@@ -1138,6 +1141,7 @@ static int exec_mmap(struct mm_struct *mm)
+ 	tsk->mm->vmacache_seqnum = 0;
+ 	vmacache_flush(tsk);
+ 	task_unlock(tsk);
++	mmap_write_unlock(mm);
+ 	if (old_mm) {
+ 		mmap_read_unlock(old_mm);
+ 		BUG_ON(active_mm != old_mm);
+diff --git a/include/linux/mmap_lock.h b/include/linux/mmap_lock.h
+index 0707671851a8..24de1fe99ee4 100644
+--- a/include/linux/mmap_lock.h
++++ b/include/linux/mmap_lock.h
+@@ -3,6 +3,18 @@
+
+ #include <linux/mmdebug.h>
+
++/*
++ * Lock subclasses for the mmap_lock.
++ *
++ * MMAP_LOCK_SUBCLASS_NASCENT is for core kernel code that wants to lock an mm
++ * that is still being constructed and wants to be able to access the active mm
++ * normally at the same time. It nests outside MMAP_LOCK_SUBCLASS_NORMAL.
++ */
++enum {
++	MMAP_LOCK_SUBCLASS_NORMAL = 0,
++	MMAP_LOCK_SUBCLASS_NASCENT
++};
++
+ #define MMAP_LOCK_INITIALIZER(name) \
+ 	.mmap_lock = __RWSEM_INITIALIZER((name).mmap_lock),
+
+@@ -16,9 +28,16 @@ static inline void mmap_write_lock(struct mm_struct *mm)
+ 	down_write(&mm->mmap_lock);
+ }
+
+-static inline void mmap_write_lock_nested(struct mm_struct *mm, int subclass)
++/*
++ * Lock an mm_struct that is still being set up (during fork or exec).
++ * This nests outside the mmap locks of live mm_struct instances.
++ * No interruptible/killable versions exist because at the points where you're
++ * supposed to use this helper, the mm isn't visible to anything else, so we
++ * expect the mmap_lock to be uncontended.
++ */
++static inline void mmap_write_lock_nascent(struct mm_struct *mm)
+ {
+-	down_write_nested(&mm->mmap_lock, subclass);
++	down_write_nested(&mm->mmap_lock, MMAP_LOCK_SUBCLASS_NASCENT);
+ }
+
+ static inline int mmap_write_lock_killable(struct mm_struct *mm)
+diff --git a/kernel/fork.c b/kernel/fork.c
+index da8d360fb032..db67eb4ac7bd 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -474,6 +474,7 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+ 	unsigned long charge;
+ 	LIST_HEAD(uf);
+
++	mmap_write_lock_nascent(mm);
+ 	uprobe_start_dup_mmap();
+ 	if (mmap_write_lock_killable(oldmm)) {
+ 		retval = -EINTR;
+@@ -481,10 +482,6 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+ 	}
+ 	flush_cache_dup_mm(oldmm);
+ 	uprobe_dup_mmap(oldmm, mm);
+-	/*
+-	 * Not linked in yet - no deadlock potential:
+-	 */
+-	mmap_write_lock_nested(mm, SINGLE_DEPTH_NESTING);
+
+ 	/* No ordering required: file already has been exposed. */
+ 	RCU_INIT_POINTER(mm->exe_file, get_mm_exe_file(oldmm));
+@@ -600,12 +597,12 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+ 	/* a new mm has just been created */
+ 	retval = arch_dup_mmap(oldmm, mm);
+ out:
+-	mmap_write_unlock(mm);
+ 	flush_tlb_mm(oldmm);
+ 	mmap_write_unlock(oldmm);
+ 	dup_userfaultfd_complete(&uf);
+ fail_uprobe_end:
+ 	uprobe_end_dup_mmap();
++	mmap_write_unlock(mm);
+ 	return retval;
+ fail_nomem_anon_vma_fork:
+ 	mpol_put(vma_policy(tmp));
+-- 
+2.28.0.806.g8561365e88-goog
 
 _______________________________________________
 linux-um mailing list
