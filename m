@@ -1,39 +1,65 @@
-Return-Path: <maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-Subject: Re: [PATCH 0/6] Fix new html build warnings from next-20201001
-Date: Fri,  2 Oct 2020 09:19:59 +0100
-Message-Id: <160162675379.1930042.15447480570555160964.b4-ty@kernel.org>
-In-Reply-To: <cover.1601616399.git.mchehab+huawei@kernel.org>
-References: <cover.1601616399.git.mchehab+huawei@kernel.org>
+Return-Path: <mchehab@kernel.org>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 0/6] Fix new html build warnings from next-20201001
+Date: Fri,  2 Oct 2020 07:49:44 +0200
+Message-Id: <cover.1601616399.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-To: kvmarm@lists.cs.columbia.edu, David Brazdil <dbrazdil@google.com>, Linux Doc Mailing List <linux-doc@vger.kernel.org>, Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Dennis Zhou <dennis@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Tejun Heo <tj@kernel.org>, kernel-team@android.com, Christoph Lameter <cl@linux.com>, Paolo Bonzini <pbonzini@redhat.com>, Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>, kvm@vger.kernel.org, linux-i2c@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>, linux-gpio@vger.kernel.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "David S. Miller" <davem@davemloft.net>, Bartosz Golaszewski <bgolaszewski@baylibre.com>, Jeff Dike <jdike@addtoit.com>, Taehee Yoo <ap420073@gmail.com>, Eugeniu Rosca <erosca@de.adit-jv.com>, Richard Weinberger <richard@nod.at>, Andrew Jones <drjones@redhat.com>, Wolfram Sang <wsa@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, Thomas Gleixner <tglx@linutronix.de>, linux-um@lists.infradead.org, Alexandru Elisei <alexandru.elisei@arm.com>, Balbir Singh <sblbir@amazon.com>, Jonathan Corbet <corbet@lwn.net>, Mathieu Poirier <mathieu.poirier@linaro.org>, Ulrich Hecht <uli+renesas@fpond.eu>
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>, linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>, "David S. Miller" <davem@davemloft.net>, Alexandru Elisei <alexandru.elisei@arm.com>, Andrew Jones <drjones@redhat.com>, Andrew Lunn <andrew@lunn.ch>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Balbir Singh <sblbir@amazon.com>, Bartosz Golaszewski <bgolaszewski@baylibre.com>, Eugeniu Rosca <erosca@de.adit-jv.com>, Geert Uytterhoeven <geert+renesas@glider.be>, Jakub Kicinski <kuba@kernel.org>, Jeff Dike <jdike@addtoit.com>, Linus Walleij <linus.walleij@linaro.org>, Marc Zyngier <maz@kernel.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Paolo Bonzini <pbonzini@redhat.com>, Richard Weinberger <richard@nod.at>, Taehee Yoo <ap420073@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Ulrich Hecht <uli+renesas@fpond.eu>, Wolfram Sang <wsa@kernel.org>, kvm@vger.kernel.org, linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org, linux-um@lists.infradead.org, netdev@vger.kernel.org
 List-ID: <linux-um.lists.infradead.org>
 
-On Fri, 2 Oct 2020 07:49:44 +0200, Mauro Carvalho Chehab wrote:
-> There are some new warnings when building the documentation from
-> yesterday's linux next. This small series fix them.
-> 
-> - patch 1 documents two new kernel-doc parameters on a net core file.
->   I used the commit log in order to help documenting them;
-> - patch 2 fixes some tags at UMLv2 howto;
-> - patches 3 and 5 add some new documents at the corresponding
->   index file.
-> - patch 4 changes kernel-doc script for it to recognize typedef enums.
-> 
-> [...]
+There are some new warnings when building the documentation from
+yesterday's linux next. This small series fix them.
 
-Applied to next, thanks!
+- patch 1 documents two new kernel-doc parameters on a net core file.
+  I used the commit log in order to help documenting them;
+- patch 2 fixes some tags at UMLv2 howto;
+- patches 3 and 5 add some new documents at the corresponding
+  index file.
+- patch 4 changes kernel-doc script for it to recognize typedef enums.
 
-[2/6] KVM: arm64: Fix some documentation build warnings
-      commit: 030bdf3698b7c3af190dd1fe714f0545f23441d0
+Patch 4 should probably be merged via docs tree, but the others
+are against stuff recently added at linux-next. So, the better is to
+merge them directly at the trees which introduced the issue.
 
-Cheers,
+-
 
-	M.
+As a reference, the patches fixing all html build warnings are at:
+
+	https://git.linuxtv.org/mchehab/experimental.git/log/?h=sphinx3-fixes-v3
+
+Such series also adds support for Sphinx versions 3.1 and above.
+
+It should be noticed that, with Sphinx version 3 and above, there
+are a few new warnings, because currently Sphinx assumes a
+that names are unique for all C symbols. There are a few cases
+where we have the same name for a function and for a struct at
+the Kernel. Upstream is already working on a solution for that.
+
+So, for now, I recomend doing html builds with version < 3.
+
+
+Mauro Carvalho Chehab (6):
+  net: core: document two new elements of struct net_device
+  docs: vcpu.rst: fix some build warnings
+  docs: virt: user_mode_linux_howto_v2.rst: fix a literal block markup
+  docs: i2c: index.rst: add slave-testunit-backend.rst
+  scripts: kernel-doc: add support for typedef enum
+  docs: gpio: add a new document to its index.rst
+
+ Documentation/admin-guide/gpio/index.rst      |  1 +
+ .../admin-guide/hw-vuln/l1d_flush.rst         |  3 +--
+ Documentation/i2c/index.rst                   |  1 +
+ Documentation/virt/kvm/devices/vcpu.rst       | 26 +++++++++----------
+ .../virt/uml/user_mode_linux_howto_v2.rst     |  1 +
+ include/linux/netdevice.h                     |  5 ++++
+ scripts/kernel-doc                            | 15 ++++++++---
+ 7 files changed, 33 insertions(+), 19 deletions(-)
+
 -- 
-Without deviation from the norm, progress is not possible.
+2.26.2
 
 
 
