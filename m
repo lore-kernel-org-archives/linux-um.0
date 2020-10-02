@@ -1,64 +1,72 @@
-Return-Path: <linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: ira.weiny@intel.com
-Subject: [PATCH RFC PKS/PMEM 29/58] fs/ntfs: Utilize new kmap_thread()
-Date: Fri,  9 Oct 2020 12:50:04 -0700
-Message-Id: <20201009195033.3208459-30-ira.weiny@intel.com>
-In-Reply-To: <20201009195033.3208459-1-ira.weiny@intel.com>
-References: <20201009195033.3208459-1-ira.weiny@intel.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-ej1-x643.google.com ([2a00:1450:4864:20::643])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kO9nm-0000mP-H3
+ for linux-um@lists.infradead.org; Fri, 02 Oct 2020 01:24:03 +0000
+Received: by mail-ej1-x643.google.com with SMTP id a3so519826ejy.11
+ for <linux-um@lists.infradead.org>; Thu, 01 Oct 2020 18:23:59 -0700 (PDT)
+From: Jann Horn <jannh@google.com>
 MIME-Version: 1.0
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
-List-Post: <mailto:linux-mtd@lists.infradead.org>
-List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Date: Thu, 1 Oct 2020 21:23:58 -0400
+Message-ID: <CAG48ez1+ok5c5PK4DjA6-rYkg9qPeKoRrJmc5jsGf=TZZbShJg@mail.gmail.com>
+Subject: [PATCH 0/2] Broad write-locking of nascent mm in execve
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-Errors-To: linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Andrew Morton <akpm@linux-foundation.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>
-Cc: linux-aio@kvack.org, linux-efi@vger.kernel.org, kvm@vger.kernel.org, linux-doc@vger.kernel.org, linux-mmc@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>, dri-devel@lists.freedesktop.org, linux-mm@kvack.org, target-devel@vger.kernel.org, linux-mtd@lists.infradead.org, linux-kselftest@vger.kernel.org, samba-technical@lists.samba.org, Ira Weiny <ira.weiny@intel.com>, ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com, devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org, linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org, linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org, x86@kernel.org, amd-gfx@lists.freedesktop.org, linux-afs@lists.infradead.org, cluster-devel@redhat.com, linux-cachefs@redhat.com, intel-wired-lan@lists.osuosl.org, xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>, linux-um@lists.infradead.org, intel-gfx@lists.freedesktop.org, ecryptfs@vger.kernel.org, linux-erofs@lists.ozlabs.org, reiserfs-devel@vger.kernel.org, linux-block@vger.kernel.org, linux-bcache@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>, io-uring@vger.kernel.org, Anton Altaparmakov <anton@tuxera.com>, linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Cc: Michel Lespinasse <walken@google.com>, Jason Gunthorpe <jgg@nvidia.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, "Eric W . Biederman" <ebiederm@xmission.com>, Sakari Ailus <sakari.ailus@linux.intel.com>, John Hubbard <jhubbard@nvidia.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-From: Ira Weiny <ira.weiny@intel.com>
+These two patches replace "mmap locking API: don't check locking
+if the mm isn't live yet"[1], which is currently in the mmotm tree,
+and should be placed in the same spot where the old patch was.
 
-The kmap() calls in this FS are localized to a single thread.  To avoid
-the over head of global PKRS updates use the new kmap_thread() call.
+While I originally said that this would be an alternative
+patch (meaning that the existing patch would have worked just
+as well), the new patches actually address an additional issue
+that the old patch missed (bprm->vma is used after the switch
+to the new mm).
 
-Cc: Anton Altaparmakov <anton@tuxera.com>
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
----
- fs/ntfs/aops.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I have boot-tested these patches on x64-64 (with lockdep) and
+!MMU arm (the latter with both FLAT and ELF).
 
-diff --git a/fs/ntfs/aops.c b/fs/ntfs/aops.c
-index bb0a43860ad2..11633d732809 100644
---- a/fs/ntfs/aops.c
-+++ b/fs/ntfs/aops.c
-@@ -1099,7 +1099,7 @@ static int ntfs_write_mst_block(struct page *page,
- 	if (!nr_bhs)
- 		goto done;
- 	/* Map the page so we can access its contents. */
--	kaddr = kmap(page);
-+	kaddr = kmap_thread(page);
- 	/* Clear the page uptodate flag whilst the mst fixups are applied. */
- 	BUG_ON(!PageUptodate(page));
- 	ClearPageUptodate(page);
-@@ -1276,7 +1276,7 @@ static int ntfs_write_mst_block(struct page *page,
- 		iput(VFS_I(base_tni));
- 	}
- 	SetPageUptodate(page);
--	kunmap(page);
-+	kunmap_thread(page);
- done:
- 	if (unlikely(err && err != -ENOMEM)) {
- 		/*
+[1] https://lkml.kernel.org/r/CAG48ez03YJG9JU_6tGiMcaVjuTyRE_o4LEQ7901b5ZoCnNAjcg@mail.gmail.com
+
+Jann Horn (2):
+  mmap locking API: Order lock of nascent mm outside lock of live mm
+  exec: Broadly lock nascent mm until setup_arg_pages()
+
+ arch/um/include/asm/mmu_context.h |  3 +-
+ fs/exec.c                         | 64 ++++++++++++++++---------------
+ include/linux/binfmts.h           |  2 +-
+ include/linux/mmap_lock.h         | 23 ++++++++++-
+ kernel/fork.c                     |  7 +---
+ 5 files changed, 59 insertions(+), 40 deletions(-)
+
+
+base-commit: fb0155a09b0224a7147cb07a4ce6034c8d29667f
+prerequisite-patch-id: 08f97130a51898a5f6efddeeb5b42638577398c7
+prerequisite-patch-id: 577664d761cd23fe9031ffdb1d3c9ac313572c67
+prerequisite-patch-id: dc29a39716aa8689f80ba2767803d9df3709beaa
+prerequisite-patch-id: 42b1b546d33391ead2753621f541bcc408af1769
+prerequisite-patch-id: 2cbb839f57006f32e21f4229e099ae1bd782be24
+prerequisite-patch-id: 1b4daf01cf61654a5ec54b5c3f7c7508be7244ee
+prerequisite-patch-id: f46cc8c99f1909fe2a65fbc3cf1f6bc57489a086
+prerequisite-patch-id: 2b0caed97223241d5008898dde995d02fda544e4
+prerequisite-patch-id: 6b7adcb54989e1ec3370f256ff2c35d19cf785aa
 -- 
-2.28.0.rc0.12.gb6a658bd00c9
+2.28.0.806.g8561365e88-goog
 
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
