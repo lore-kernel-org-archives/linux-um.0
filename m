@@ -1,304 +1,39 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x642.google.com ([2607:f8b0:4864:20::642])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kPjXO-0008RF-1g
- for linux-um@lists.infradead.org; Tue, 06 Oct 2020 09:45:39 +0000
-Received: by mail-pl1-x642.google.com with SMTP id bb1so953105plb.2
- for <linux-um@lists.infradead.org>; Tue, 06 Oct 2020 02:45:37 -0700 (PDT)
-From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v7 10/21] um: nommu: memory handling
-Date: Tue,  6 Oct 2020 18:44:19 +0900
-Message-Id: <de40a235d95ad582dae11741e272a5cf300384f2.1601960644.git.thehajime@gmail.com>
-In-Reply-To: <cover.1601960644.git.thehajime@gmail.com>
-References: <cover.1601960644.git.thehajime@gmail.com>
+Return-Path: <maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+Subject: Re: [PATCH 0/6] Fix new html build warnings from next-20201001
+Date: Fri,  2 Oct 2020 09:19:59 +0100
+Message-Id: <160162675379.1930042.15447480570555160964.b4-ty@kernel.org>
+In-Reply-To: <cover.1601616399.git.mchehab+huawei@kernel.org>
+References: <cover.1601616399.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
-Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, retrage01@gmail.com
+Content-Transfer-Encoding: 8bit
+To: kvmarm@lists.cs.columbia.edu, David Brazdil <dbrazdil@google.com>, Linux Doc Mailing List <linux-doc@vger.kernel.org>, Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Dennis Zhou <dennis@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Tejun Heo <tj@kernel.org>, kernel-team@android.com, Christoph Lameter <cl@linux.com>, Paolo Bonzini <pbonzini@redhat.com>, Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>, kvm@vger.kernel.org, linux-i2c@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>, linux-gpio@vger.kernel.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "David S. Miller" <davem@davemloft.net>, Bartosz Golaszewski <bgolaszewski@baylibre.com>, Jeff Dike <jdike@addtoit.com>, Taehee Yoo <ap420073@gmail.com>, Eugeniu Rosca <erosca@de.adit-jv.com>, Richard Weinberger <richard@nod.at>, Andrew Jones <drjones@redhat.com>, Wolfram Sang <wsa@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, Thomas Gleixner <tglx@linutronix.de>, linux-um@lists.infradead.org, Alexandru Elisei <alexandru.elisei@arm.com>, Balbir Singh <sblbir@amazon.com>, Jonathan Corbet <corbet@lwn.net>, Mathieu Poirier <mathieu.poirier@linaro.org>, Ulrich Hecht <uli+renesas@fpond.eu>
+List-ID: <linux-um.lists.infradead.org>
 
-nommu mode follows the way !CONFIG_MMU architecture of other linux
-archs.  Ther is not much work left to do other than initializing the
-boot allocator and providing the page and page table definitions.
+On Fri, 2 Oct 2020 07:49:44 +0200, Mauro Carvalho Chehab wrote:
+> There are some new warnings when building the documentation from
+> yesterday's linux next. This small series fix them.
+> 
+> - patch 1 documents two new kernel-doc parameters on a net core file.
+>   I used the commit log in order to help documenting them;
+> - patch 2 fixes some tags at UMLv2 howto;
+> - patches 3 and 5 add some new documents at the corresponding
+>   index file.
+> - patch 4 changes kernel-doc script for it to recognize typedef enums.
+> 
+> [...]
 
-The backstore memory is allocated via a host operation and the memory
-size to be used is specified when the kernel is started, in the
-lkl_start_kernel call.
+Applied to next, thanks!
 
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
-Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
----
- arch/um/include/asm/mmu.h                 |  3 +
- arch/um/include/asm/mmu_context.h         |  8 +++
- arch/um/include/asm/page.h                | 15 ++++
- arch/um/include/asm/pgtable.h             | 27 +++++++
- arch/um/include/asm/uaccess.h             |  6 ++
- arch/um/nommu/include/uapi/asm/host_ops.h |  5 ++
- arch/um/nommu/um/bootmem.c                | 87 +++++++++++++++++++++++
- 7 files changed, 151 insertions(+)
- create mode 100644 arch/um/nommu/um/bootmem.c
+[2/6] KVM: arm64: Fix some documentation build warnings
+      commit: 030bdf3698b7c3af190dd1fe714f0545f23441d0
 
-diff --git a/arch/um/include/asm/mmu.h b/arch/um/include/asm/mmu.h
-index 5b072aba5b65..c06d6cb67dd7 100644
---- a/arch/um/include/asm/mmu.h
-+++ b/arch/um/include/asm/mmu.h
-@@ -13,6 +13,9 @@ typedef struct mm_context {
- 	struct mm_id id;
- 	struct uml_arch_mm_context arch;
- 	struct page *stub_pages[2];
-+#ifndef CONFIG_MMU
-+	unsigned long		end_brk;
-+#endif
- } mm_context_t;
- 
- extern void __switch_mm(struct mm_id * mm_idp);
-diff --git a/arch/um/include/asm/mmu_context.h b/arch/um/include/asm/mmu_context.h
-index 17ddd4edf875..4b06c29ae830 100644
---- a/arch/um/include/asm/mmu_context.h
-+++ b/arch/um/include/asm/mmu_context.h
-@@ -6,6 +6,7 @@
- #ifndef __UM_MMU_CONTEXT_H
- #define __UM_MMU_CONTEXT_H
- 
-+#ifdef CONFIG_MMU
- #include <linux/sched.h>
- #include <linux/mm_types.h>
- #include <linux/mmap_lock.h>
-@@ -75,4 +76,11 @@ extern int init_new_context(struct task_struct *task, struct mm_struct *mm);
- 
- extern void destroy_context(struct mm_struct *mm);
- 
-+#else
-+#include <asm-generic/mmu_context.h>
-+
-+extern void force_flush_all(void);
-+
-+#endif /* CONFIG_MMU */
-+
- #endif
-diff --git a/arch/um/include/asm/page.h b/arch/um/include/asm/page.h
-index 95af12e82a32..c9d5e487ac6b 100644
---- a/arch/um/include/asm/page.h
-+++ b/arch/um/include/asm/page.h
-@@ -7,6 +7,8 @@
- #ifndef __UM_PAGE_H
- #define __UM_PAGE_H
- 
-+#ifdef CONFIG_MMU
-+
- #include <linux/const.h>
- 
- /* PAGE_SHIFT determines the page size */
-@@ -120,4 +122,17 @@ extern unsigned long uml_physmem;
- #define __HAVE_ARCH_GATE_AREA 1
- #endif
- 
-+#else  /* CONFIG_MMU */
-+#define CONFIG_KERNEL_RAM_BASE_ADDRESS memory_start
-+#include <asm-generic/page.h>
-+
-+#define __va_space (8*1024*1024)
-+
-+#ifndef __ASSEMBLY__
-+#include <mem.h>
-+void free_mem(void);
-+#endif
-+
-+#endif /* !CONFIG_MMU  */
-+
- #endif	/* __UM_PAGE_H */
-diff --git a/arch/um/include/asm/pgtable.h b/arch/um/include/asm/pgtable.h
-index def376194dce..7e506d5406e3 100644
---- a/arch/um/include/asm/pgtable.h
-+++ b/arch/um/include/asm/pgtable.h
-@@ -21,6 +21,8 @@
- #define _PAGE_PROTNONE	0x010	/* if the user mapped it with PROT_NONE;
- 				   pte_present gives true */
- 
-+#ifdef CONFIG_MMU
-+
- #ifdef CONFIG_3_LEVEL_PGTABLES
- #include <asm/pgtable-3level.h>
- #else
-@@ -323,4 +325,29 @@ do {						\
- 	__flush_tlb_one((vaddr));		\
- } while (0)
- 
-+#else  /* CONFIG_MMU */
-+
-+#include <asm-generic/pgtable-nopud.h>
-+
-+#define swapper_pg_dir		((pgd_t *)0)
-+#define PAGE_KERNEL             __pgprot(0)
-+#define PGDIR_SHIFT		21
-+#define PGDIR_SIZE		(1UL << PGDIR_SHIFT)
-+#define PGDIR_MASK		(~(PGDIR_SIZE-1))
-+
-+#define VMALLOC_START	0
-+#define VMALLOC_END	0xffffffff
-+
-+/*
-+ * ZERO_PAGE is a global shared page that is always zero: used
-+ * for zero-mapped memory areas etc..
-+ */
-+extern unsigned long *empty_zero_page;
-+#define ZERO_PAGE(vaddr)	(virt_to_page(empty_zero_page))
-+
-+extern unsigned long end_iomem;
-+
-+#endif /* !CONFIG_MMU */
-+
-+
- #endif
-diff --git a/arch/um/include/asm/uaccess.h b/arch/um/include/asm/uaccess.h
-index fe66d659acad..95db8f06d295 100644
---- a/arch/um/include/asm/uaccess.h
-+++ b/arch/um/include/asm/uaccess.h
-@@ -21,6 +21,7 @@
- #define __addr_range_nowrap(addr, size) \
- 	((unsigned long) (addr) <= ((unsigned long) (addr) + (size)))
- 
-+#ifdef CONFIG_MMU
- extern unsigned long raw_copy_from_user(void *to, const void __user *from, unsigned long n);
- extern unsigned long raw_copy_to_user(void __user *to, const void *from, unsigned long n);
- extern long __strncpy_from_user(char *dst, const char __user *src, long count);
-@@ -46,4 +47,9 @@ static inline int __access_ok(unsigned long addr, unsigned long size)
- 		uaccess_kernel());
- }
- 
-+#else
-+#include <asm-generic/uaccess.h>
-+#endif /* CONFIG_MMU */
-+
-+
- #endif
-diff --git a/arch/um/nommu/include/uapi/asm/host_ops.h b/arch/um/nommu/include/uapi/asm/host_ops.h
-index d3dad11b459e..5253c3f8de0e 100644
---- a/arch/um/nommu/include/uapi/asm/host_ops.h
-+++ b/arch/um/nommu/include/uapi/asm/host_ops.h
-@@ -16,8 +16,13 @@ struct lkl_jmp_buf {
-  * These operations must be provided by a host library or by the application
-  * itself.
-  *
-+ * @mem_alloc - allocate memory
-+ * @mem_free - free memory
-+ *
-  */
- struct lkl_host_operations {
-+	void *(*mem_alloc)(unsigned long mem);
-+	void (*mem_free)(void *mem);
- };
- 
- void lkl_bug(const char *fmt, ...);
-diff --git a/arch/um/nommu/um/bootmem.c b/arch/um/nommu/um/bootmem.c
-new file mode 100644
-index 000000000000..7398a48c05d4
---- /dev/null
-+++ b/arch/um/nommu/um/bootmem.c
-@@ -0,0 +1,87 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/memblock.h>
-+#include <linux/mm.h>
-+#include <linux/swap.h>
-+
-+unsigned long memory_start, memory_end;
-+EXPORT_SYMBOL(memory_start);
-+static unsigned long _memory_start, mem_size;
-+
-+unsigned long *empty_zero_page;
-+
-+/* XXX: unused */
-+unsigned long long highmem;
-+int iomem_size;
-+int kmalloc_ok = 1;
-+
-+void __init setup_physmem(unsigned long start, unsigned long reserve_end,
-+			  unsigned long mem_sz, unsigned long long _highmem)
-+{
-+	mem_size = mem_sz;
-+
-+	_memory_start = (unsigned long)lkl_ops->mem_alloc(mem_size);
-+	memory_start = _memory_start;
-+	WARN_ON(!memory_start);
-+	memory_end = memory_start + mem_size;
-+
-+	if (PAGE_ALIGN(memory_start) != memory_start) {
-+		mem_size -= PAGE_ALIGN(memory_start) - memory_start;
-+		memory_start = PAGE_ALIGN(memory_start);
-+		mem_size = (mem_size / PAGE_SIZE) * PAGE_SIZE;
-+	}
-+	pr_info("memblock address range: 0x%lx - 0x%lx\n", memory_start,
-+		memory_start+mem_size);
-+	/*
-+	 * Give all the memory to the bootmap allocator, tell it to put the
-+	 * boot mem_map at the start of memory.
-+	 */
-+	max_low_pfn = virt_to_pfn(memory_end);
-+	min_low_pfn = virt_to_pfn(memory_start);
-+	memblock_add(memory_start, mem_size);
-+
-+	empty_zero_page = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
-+	memset((void *)empty_zero_page, 0, PAGE_SIZE);
-+
-+	{
-+		unsigned long zones_size[MAX_NR_ZONES] = {0, };
-+
-+		zones_size[ZONE_NORMAL] = max_low_pfn;
-+		free_area_init(zones_size);
-+	}
-+}
-+
-+void __init mem_init(void)
-+{
-+	max_mapnr = (((unsigned long)high_memory) - PAGE_OFFSET) >> PAGE_SHIFT;
-+	/* this will put all memory onto the freelists */
-+	totalram_pages_add(memblock_free_all());
-+	pr_info("Memory available: %luk/%luk RAM\n",
-+		(nr_free_pages() << PAGE_SHIFT) >> 10, mem_size >> 10);
-+}
-+
-+/*
-+ * In our case __init memory is not part of the page allocator so there is
-+ * nothing to free.
-+ */
-+void free_initmem(void)
-+{
-+}
-+
-+void free_mem(void)
-+{
-+	lkl_ops->mem_free((void *)_memory_start);
-+}
-+
-+void *uml_kmalloc(int size, int flags)
-+{
-+	return kmalloc(size, flags);
-+}
-+
-+void __init mem_total_pages(unsigned long physmem, unsigned long iomem,
-+		     unsigned long _highmem)
-+{
-+}
-+
-+void __init paging_init(void)
-+{
-+}
+Cheers,
+
+	M.
 -- 
-2.21.0 (Apple Git-122.2)
+Without deviation from the norm, progress is not possible.
 
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
