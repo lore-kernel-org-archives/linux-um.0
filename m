@@ -1,63 +1,74 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-ej1-x643.google.com ([2a00:1450:4864:20::643])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kPFLO-0004bI-7Y
- for linux-um@lists.infradead.org; Mon, 05 Oct 2020 01:31:15 +0000
-Received: by mail-ej1-x643.google.com with SMTP id cb21so2810303ejb.13
- for <linux-um@lists.infradead.org>; Sun, 04 Oct 2020 18:31:11 -0700 (PDT)
+Return-Path: <linux-kernel-owner@vger.kernel.org>
 MIME-Version: 1.0
 References: <CAG48ez1+ok5c5PK4DjA6-rYkg9qPeKoRrJmc5jsGf=TZZbShJg@mail.gmail.com>
  <CAG48ez1kMuPUW8VKp=9=KDLVisa-zuqp+DbYjc=A-kGUi_ik3A@mail.gmail.com>
- <CANN689H9hXzaV0_vpFfrvjQD6xAEaPnjok_17zWGHumRNs-ZWg@mail.gmail.com>
- <CAG48ez2LdreJtHcZBL=t010PghjVECcsat2e2kzgakDvR0ue5w@mail.gmail.com>
- <CANN689H6fQkSXL8U0M-MoSrw8b8cQFMDaTRKr2v8oacZJ_FhKA@mail.gmail.com>
-In-Reply-To: <CANN689H6fQkSXL8U0M-MoSrw8b8cQFMDaTRKr2v8oacZJ_FhKA@mail.gmail.com>
-From: Jann Horn <jannh@google.com>
-Date: Mon, 5 Oct 2020 03:30:43 +0200
-Message-ID: <CAG48ez0LuG9nULaBF_3ofE--u=TBgbxVdACthpb8wtJhADO02w@mail.gmail.com>
+ <CANN689H9hXzaV0_vpFfrvjQD6xAEaPnjok_17zWGHumRNs-ZWg@mail.gmail.com> <CAG48ez2LdreJtHcZBL=t010PghjVECcsat2e2kzgakDvR0ue5w@mail.gmail.com>
+In-Reply-To: <CAG48ez2LdreJtHcZBL=t010PghjVECcsat2e2kzgakDvR0ue5w@mail.gmail.com>
+From: Michel Lespinasse <walken@google.com>
+Date: Sat, 3 Oct 2020 14:30:28 -0700
+Message-ID: <CANN689H6fQkSXL8U0M-MoSrw8b8cQFMDaTRKr2v8oacZJ_FhKA@mail.gmail.com>
 Subject: Re: [PATCH 1/2] mmap locking API: Order lock of nascent mm outside
  lock of live mm
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Michel Lespinasse <walken@google.com>
-Cc: Jason Gunthorpe <jgg@nvidia.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, "Eric W . Biederman" <ebiederm@xmission.com>, Sakari Ailus <sakari.ailus@linux.intel.com>, John Hubbard <jhubbard@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>, Mauro Carvalho Chehab <mchehab@kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Content-Type: text/plain; charset="UTF-8"
+To: Jann Horn <jannh@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>, "Eric W . Biederman" <ebiederm@xmission.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Sakari Ailus <sakari.ailus@linux.intel.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Jason Gunthorpe <jgg@nvidia.com>, John Hubbard <jhubbard@nvidia.com>
+List-ID: <linux-um.lists.infradead.org>
 
-On Sat, Oct 3, 2020 at 11:30 PM Michel Lespinasse <walken@google.com> wrote:
-> Unrelated to the above: copy_from_user and copy_to_user should not be
-> called with mmap_lock held; it may be worth adding these assertions
-> too (probably in separate patches) ?
+On Fri, Oct 2, 2020 at 9:33 AM Jann Horn <jannh@google.com> wrote:
+> On Fri, Oct 2, 2020 at 11:18 AM Michel Lespinasse <walken@google.com> wrote:
+> > On Thu, Oct 1, 2020 at 6:25 PM Jann Horn <jannh@google.com> wrote:
+> > > Until now, the mmap lock of the nascent mm was ordered inside the mmap lock
+> > > of the old mm (in dup_mmap() and in UML's activate_mm()).
+> > > A following patch will change the exec path to very broadly lock the
+> > > nascent mm, but fine-grained locking should still work at the same time for
+> > > the new mm.
+> > > To do this in a way that lockdep is happy about, let's turn around the lock
+> > > ordering in both places that currently nest the locks.
+> > > Since SINGLE_DEPTH_NESTING is normally used for the inner nesting layer,
+> > > make up our own lock subclass MMAP_LOCK_SUBCLASS_NASCENT and use that
+> > > instead.
+> > >
+> > > The added locking calls in exec_mmap() are temporary; the following patch
+> > > will move the locking out of exec_mmap().
+> >
+> > Thanks for doing this.
+> >
+> > This is probably a silly question, but I am not sure exactly where we
+> > lock the old MM while bprm is creating the new MM ? I am guessing this
+> > would be only in setup_arg_pages(), copying the args and environment
+> > from the old the the new MM ? If that is correct, then wouldn't it be
+> > sufficient to use mmap_write_lock_nested in setup_arg_pages() ? Or, is
+> > the issue that we'd prefer to have a killable version of it there ?
+>
+> We're also implicitly locking the old MM anytime we take page faults
+> before exec_mmap(), which basically means the various userspace memory
+> accesses in do_execveat_common(). This happens after bprm_mm_init(),
+> so we've already set bprm->vma at that point.
 
-We already have that: All (hopefully?) the userspace accessors call
-might_fault(), and that does might_lock_read(&current->mm->mmap_lock)
-(if we're not running in a lazytlb kernel thread or KERNEL_DS is on or
-we're in IRQ context or page faults have explicitly been disabled).
+Ah yes, I see the issue now. It would be much nicer if copy_strings
+could coax copy_from_user into taking a nested lock, but of course
+there is no way to do that.
+
+I'm not sure if it'd be reasonable to kmap the source pages like we do
+for the destination pages ?
+
+Adding a nascent lock instead of a nested lock, as you propose, seems
+to work, but it also looks quite unusual. Not that I have anything
+better to propose at this point though...
 
 
-But another place where lockdep asserts should be added is find_vma();
-there are currently several architectures that sometimes improperly
-call that with no lock held:
+Unrelated to the above: copy_from_user and copy_to_user should not be
+called with mmap_lock held; it may be worth adding these assertions
+too (probably in separate patches) ?
 
-SPARC's arch_validate_prot():
-https://lore.kernel.org/linux-mm/CAG48ez3YsfTfOFKa-Po58e4PNp7FK54MFbkK3aUPSRt3LWtxQA@mail.gmail.com/
 
-nios2 sys_cacheflush():
-https://lore.kernel.org/linux-mm/CAG48ez3hxeXU29UGWRH-gRXX2jb5Lc==npbXFt8UDrWO4eHZdQ@mail.gmail.com/
+> Uuugh, dammit, I see what happened. Sorry about the trouble. Thanks
+> for telling me, guess I'll go back to sending patches the way I did it
+> before. :/
 
-nds32 sys_cacheflush():
-https://lore.kernel.org/linux-mm/CAG48ez1UnQEMok9rqFQC4XHBaMmBe=eaedu8Z_RXdjFHTna_LA@mail.gmail.com/
+Yeah, I've hit such issues with gmail before too :/
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+-- 
+Michel "Walken" Lespinasse
+A program is never fully debugged until the last user dies.
 
