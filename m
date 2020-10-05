@@ -1,16 +1,21 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x542.google.com ([2607:f8b0:4864:20::542])
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kPjXe-0008VS-Fx
- for linux-um@lists.infradead.org; Tue, 06 Oct 2020 09:45:56 +0000
-Received: by mail-pg1-x542.google.com with SMTP id x16so7705336pgj.3
- for <linux-um@lists.infradead.org>; Tue, 06 Oct 2020 02:45:54 -0700 (PDT)
-From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v7 13/21] um: nommu: basic console support
-Date: Tue,  6 Oct 2020 18:44:22 +0900
-Message-Id: <50557e259c25a5fea82e687665ab611ea54f599f.1601960644.git.thehajime@gmail.com>
-In-Reply-To: <cover.1601960644.git.thehajime@gmail.com>
-References: <cover.1601960644.git.thehajime@gmail.com>
+ id 1kPPzx-0005KK-Gv
+ for linux-um@lists.infradead.org; Mon, 05 Oct 2020 12:53:51 +0000
+Date: Mon, 5 Oct 2020 09:52:16 -0300
+From: Jason Gunthorpe <jgg@nvidia.com>
+Subject: Re: [PATCH 1/2] mmap locking API: Order lock of nascent mm outside
+ lock of live mm
+Message-ID: <20201005125216.GV816047@nvidia.com>
+References: <CAG48ez1+ok5c5PK4DjA6-rYkg9qPeKoRrJmc5jsGf=TZZbShJg@mail.gmail.com>
+ <CAG48ez1kMuPUW8VKp=9=KDLVisa-zuqp+DbYjc=A-kGUi_ik3A@mail.gmail.com>
+ <CANN689H9hXzaV0_vpFfrvjQD6xAEaPnjok_17zWGHumRNs-ZWg@mail.gmail.com>
+ <CAG48ez2LdreJtHcZBL=t010PghjVECcsat2e2kzgakDvR0ue5w@mail.gmail.com>
+ <CANN689H6fQkSXL8U0M-MoSrw8b8cQFMDaTRKr2v8oacZJ_FhKA@mail.gmail.com>
+ <CAG48ez0LuG9nULaBF_3ofE--u=TBgbxVdACthpb8wtJhADO02w@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <CAG48ez0LuG9nULaBF_3ofE--u=TBgbxVdACthpb8wtJhADO02w@mail.gmail.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -24,111 +29,17 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
-Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, retrage01@gmail.com
+To: Jann Horn <jannh@google.com>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, "Eric W . Biederman" <ebiederm@xmission.com>, Sakari Ailus <sakari.ailus@linux.intel.com>, John Hubbard <jhubbard@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>, Michel Lespinasse <walken@google.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-This commit also disables stdio-console of UM if !CONFIG_MMU to avoid
-conflicts between multiple consoles.
+On Mon, Oct 05, 2020 at 03:30:43AM +0200, Jann Horn wrote:
+> But another place where lockdep asserts should be added is find_vma();
+> there are currently several architectures that sometimes improperly
+> call that with no lock held:
 
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
----
- arch/um/drivers/Makefile                  |  8 ++++-
- arch/um/nommu/include/uapi/asm/host_ops.h |  3 ++
- arch/um/nommu/um/console.c                | 42 +++++++++++++++++++++++
- 3 files changed, 52 insertions(+), 1 deletion(-)
- create mode 100644 arch/um/nommu/um/console.c
+Yes, I've seen several cases of this mis-use in drivers too
 
-diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
-index ae96c83e312d..694da4aa550d 100644
---- a/arch/um/drivers/Makefile
-+++ b/arch/um/drivers/Makefile
-@@ -37,7 +37,13 @@ $(obj)/vde.o: $(obj)/vde_kern.o $(obj)/vde_user.o
- # When the above is fixed, don't forget to add this too!
- #targets += $(obj)/pcap.o
- 
--obj-y := stdio_console.o fd.o chan_kern.o chan_user.o line.o
-+ifdef CONFIG_MMU
-+obj-y := stdio_console.o
-+else
-+obj-y :=
-+endif
-+obj-y += fd.o chan_kern.o chan_user.o line.o
-+
- obj-$(CONFIG_SSL) += ssl.o
- obj-$(CONFIG_STDERR_CONSOLE) += stderr_console.o
- 
-diff --git a/arch/um/nommu/include/uapi/asm/host_ops.h b/arch/um/nommu/include/uapi/asm/host_ops.h
-index 6ee9489fc47e..133877c857a1 100644
---- a/arch/um/nommu/include/uapi/asm/host_ops.h
-+++ b/arch/um/nommu/include/uapi/asm/host_ops.h
-@@ -15,6 +15,7 @@ struct lkl_jmp_buf {
-  *
-  * These operations must be provided by a host library or by the application
-  * itself.
-+ * @print - optional operation that receives console messages
-  *
-  * @sem_alloc - allocate a host semaphore an initialize it to count
-  * @sem_free - free a host semaphore
-@@ -63,6 +64,8 @@ struct lkl_jmp_buf {
-  *
-  */
- struct lkl_host_operations {
-+	void (*print)(const char *str, int len);
-+
- 	struct lkl_sem *(*sem_alloc)(int count);
- 	void (*sem_free)(struct lkl_sem *sem);
- 	void (*sem_up)(struct lkl_sem *sem);
-diff --git a/arch/um/nommu/um/console.c b/arch/um/nommu/um/console.c
-new file mode 100644
-index 000000000000..e3194f7bb0dd
---- /dev/null
-+++ b/arch/um/nommu/um/console.c
-@@ -0,0 +1,42 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/console.h>
-+#include <asm/host_ops.h>
-+
-+static void console_write(struct console *con, const char *str, unsigned len)
-+{
-+	if (lkl_ops->print)
-+		lkl_ops->print(str, len);
-+}
-+
-+#ifdef CONFIG_LKL_EARLY_CONSOLE
-+static struct console lkl_boot_console = {
-+	.name	= "lkl_boot_console",
-+	.write	= console_write,
-+	.flags	= CON_PRINTBUFFER | CON_BOOT,
-+	.index	= -1,
-+};
-+
-+int __init lkl_boot_console_init(void)
-+{
-+	register_console(&lkl_boot_console);
-+	return 0;
-+}
-+early_initcall(lkl_boot_console_init);
-+#endif
-+
-+static struct console lkl_console = {
-+	.name	= "lkl_console",
-+	.write	= console_write,
-+	.flags	= CON_PRINTBUFFER,
-+	.index	= -1,
-+};
-+
-+int __init lkl_console_init(void)
-+{
-+	register_console(&lkl_console);
-+	return 0;
-+}
-+core_initcall(lkl_console_init);
-+
--- 
-2.21.0 (Apple Git-122.2)
-
+Jason
 
 _______________________________________________
 linux-um mailing list
