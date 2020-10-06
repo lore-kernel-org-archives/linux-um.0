@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pj1-x1044.google.com ([2607:f8b0:4864:20::1044])
+Received: from mail-pl1-x642.google.com ([2607:f8b0:4864:20::642])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kPjXi-000059-E4
- for linux-um@lists.infradead.org; Tue, 06 Oct 2020 09:45:59 +0000
-Received: by mail-pj1-x1044.google.com with SMTP id p21so1303631pju.0
- for <linux-um@lists.infradead.org>; Tue, 06 Oct 2020 02:45:57 -0700 (PDT)
+ id 1kPjY6-0000B7-Aa
+ for linux-um@lists.infradead.org; Tue, 06 Oct 2020 09:46:23 +0000
+Received: by mail-pl1-x642.google.com with SMTP id h2so951555pll.11
+ for <linux-um@lists.infradead.org>; Tue, 06 Oct 2020 02:46:22 -0700 (PDT)
 From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v7 15/21] um: nommu: integrate with irq infrastructure of UML
-Date: Tue,  6 Oct 2020 18:44:24 +0900
-Message-Id: <68b53edd5ec17510626ae19546752cde198ecc3e.1601960644.git.thehajime@gmail.com>
+Subject: [RFC v7 19/21] um: host: posix host operations
+Date: Tue,  6 Oct 2020 18:44:28 +0900
+Message-Id: <63a3d215a0e430152020b3ef2d1f850fa8bb23c4.1601960644.git.thehajime@gmail.com>
 In-Reply-To: <cover.1601960644.git.thehajime@gmail.com>
 References: <cover.1601960644.git.thehajime@gmail.com>
 MIME-Version: 1.0
@@ -27,222 +27,326 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
 Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, retrage01@gmail.com
 
-In order to cooperate with UML's irq infrastructure and nommu threads
-based on host threads, irq handlers shall synchronize the our
-scheduler which is controlled by struct lkl_cpu.  To do that, the irq
-infra notifies its entry of handlers by obtaining cpu access of thread
-scheduler (lkl_cpu_try_run_irq) and its release (lkl_cpu_put).
+This commit implements LKL host operations for POSIX hosts.  The
+operations are implemented to be portable in various POSIX OSs.
 
-In additon to that, in order to stick the signal handler's thread to the
-one of the idle thread, several required configurations of (thread's)
-signal mask are added: otherwise handlers running on arbitrary thread
-cannot obtain cpu access and immediately fall into pending interrupt
-which may slow down the delivery of signals.
-
+Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
 Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
 ---
- arch/um/include/shared/os.h     |  1 +
- arch/um/kernel/irq.c            | 13 +++++++++++++
- arch/um/kernel/time.c           |  2 ++
- arch/um/nommu/include/asm/cpu.h |  3 +++
- arch/um/nommu/um/cpu.c          | 17 ++++++++++++++---
- arch/um/nommu/um/setup.c        |  5 +++++
- arch/um/nommu/um/threads.c      |  3 +++
- tools/um/uml/signal.c           | 12 ++++++++++--
- 8 files changed, 51 insertions(+), 5 deletions(-)
+ tools/um/lib/Build        |   2 +
+ tools/um/lib/posix-host.c | 292 ++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 294 insertions(+)
+ create mode 100644 tools/um/lib/posix-host.c
 
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index f467d28fc0b4..0da3ce22e16f 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -241,6 +241,7 @@ extern int set_signals(int enable);
- extern int set_signals_trace(int enable);
- extern int os_is_signal_stack(void);
- extern void deliver_alarm(void);
-+extern void set_pending_signals(int sig);
+diff --git a/tools/um/lib/Build b/tools/um/lib/Build
+index fc967af4104a..dddff26a3b4e 100644
+--- a/tools/um/lib/Build
++++ b/tools/um/lib/Build
+@@ -1,4 +1,6 @@
+ include $(objtree)/include/config/auto.conf
++CFLAGS_posix-host.o += -D_FILE_OFFSET_BITS=64
  
- /* util.c */
- extern void stack_protections(unsigned long address);
-diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-index 3577118bb4a5..4ce7f5fef7f8 100644
---- a/arch/um/kernel/irq.c
-+++ b/arch/um/kernel/irq.c
-@@ -19,6 +19,7 @@
- #include <kern_util.h>
- #include <os.h>
- #include <irq_user.h>
-+#include <asm/cpu.h>
- 
- 
- extern void free_irqs(void);
-@@ -541,6 +542,11 @@ unsigned long to_irq_stack(unsigned long *mask_out)
- 	unsigned long mask, old;
- 	int nested;
- 
-+#ifndef CONFIG_MMU
-+	if (!nommu_irq_enter(ffs(*mask_out) - 1))
-+		return 1;
-+#endif
+ liblinux-$(CONFIG_UMMODE_LIB) += utils.o
++liblinux-$(CONFIG_UMMODE_LIB) += posix-host.o
+ liblinux-$(CONFIG_UMMODE_LIB) += jmp_buf.o
+diff --git a/tools/um/lib/posix-host.c b/tools/um/lib/posix-host.c
+new file mode 100644
+index 000000000000..b6b5b2902254
+--- /dev/null
++++ b/tools/um/lib/posix-host.c
+@@ -0,0 +1,292 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <pthread.h>
++#include <limits.h>
++#include <errno.h>
++#include <string.h>
++#include <stdlib.h>
++#include <assert.h>
++#include <sys/syscall.h>
++#include <lkl_host.h>
++#include "jmp_buf.h"
 +
- 	mask = xchg(&pending_mask, *mask_out);
- 	if (mask != 0) {
- 		/*
-@@ -557,6 +563,10 @@ unsigned long to_irq_stack(unsigned long *mask_out)
- 			old |= mask;
- 			mask = xchg(&pending_mask, old);
- 		} while (mask != old);
++/* Let's see if the host has semaphore.h */
++#include <unistd.h>
 +
-+#ifndef CONFIG_MMU
-+		nommu_irq_exit();
-+#endif
- 		return 1;
- 	}
- 
-@@ -594,6 +604,9 @@ unsigned long from_irq_stack(int nested)
- 	*to = *ti;
- 
- 	mask = xchg(&pending_mask, 0);
-+#ifndef CONFIG_MMU
-+	nommu_irq_exit();
-+#endif
- 	return mask & ~1;
- }
- 
-diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
-index 25eaa6a0c658..9e141fe8fe27 100644
---- a/arch/um/kernel/time.c
-+++ b/arch/um/kernel/time.c
-@@ -597,11 +597,13 @@ static struct clock_event_device timer_clockevent = {
- 
- static irqreturn_t um_timer(int irq, void *dev)
- {
-+#ifdef CONFIG_MMU
- 	if (get_current()->mm != NULL)
- 	{
-         /* userspace - relay signal, results in correct userspace timers */
- 		os_alarm_process(get_current()->mm->context.id.u.pid);
- 	}
-+#endif
- 
- 	(*timer_clockevent.event_handler)(&timer_clockevent);
- 
-diff --git a/arch/um/nommu/include/asm/cpu.h b/arch/um/nommu/include/asm/cpu.h
-index c101c078ef21..c52a78c77bea 100644
---- a/arch/um/nommu/include/asm/cpu.h
-+++ b/arch/um/nommu/include/asm/cpu.h
-@@ -10,4 +10,7 @@ void lkl_cpu_wait_shutdown(void);
- void lkl_cpu_change_owner(lkl_thread_t owner);
- void lkl_cpu_set_irqs_pending(void);
- 
-+void nommu_irq_exit(void);
-+int nommu_irq_enter(int sig);
++#ifdef _POSIX_SEMAPHORES
++#include <semaphore.h>
++/* TODO(pscollins): We don't support fork() for now, but maybe one day
++ * we will?
++ */
++#define SHARE_SEM 0
++#endif /* _POSIX_SEMAPHORES */
 +
- #endif
-diff --git a/arch/um/nommu/um/cpu.c b/arch/um/nommu/um/cpu.c
-index 9986a3f8c5dd..75d8bdc1847e 100644
---- a/arch/um/nommu/um/cpu.c
-+++ b/arch/um/nommu/um/cpu.c
-@@ -8,15 +8,16 @@
- #include <asm/sched.h>
- #include <asm/syscalls.h>
- #include <init.h>
-+#include <os.h>
- 
- void run_irqs(void)
- {
--	panic("unimplemented %s", __func__);
-+	unblock_signals();
- }
- 
--int set_irq_pending(int irq)
-+void set_irq_pending(int sig)
- {
--	panic("unimplemented %s", __func__);
-+	set_pending_signals(sig);
- }
- 
- /*
-@@ -174,6 +175,16 @@ int lkl_cpu_try_run_irq(int irq)
- 	return ret;
- }
- 
-+int nommu_irq_enter(int sig)
++
++struct lkl_mutex {
++	pthread_mutex_t mutex;
++};
++
++struct lkl_sem {
++#ifdef _POSIX_SEMAPHORES
++	sem_t sem;
++#else
++	pthread_mutex_t lock;
++	int count;
++	pthread_cond_t cond;
++#endif /* _POSIX_SEMAPHORES */
++};
++
++struct lkl_tls_key {
++	pthread_key_t key;
++};
++
++static void print(const char *str, int len)
 +{
-+	return lkl_cpu_try_run_irq(sig);
++	int ret __attribute__((unused));
++
++	ret = write(STDOUT_FILENO, str, len);
 +}
 +
-+void nommu_irq_exit(void)
++static void panic(void)
 +{
-+	return lkl_cpu_put();
++	assert(0);
 +}
 +
- static void lkl_cpu_shutdown(void)
- {
- 	__sync_fetch_and_add(&cpu.shutdown_gate, MAX_THREADS);
-diff --git a/arch/um/nommu/um/setup.c b/arch/um/nommu/um/setup.c
-index eaa74d771f73..922188690139 100644
---- a/arch/um/nommu/um/setup.c
-+++ b/arch/um/nommu/um/setup.c
-@@ -36,6 +36,8 @@ static void __init *lkl_run_kernel(void *arg)
- 
- 	panic_blink = lkl_panic_blink;
- 
-+	/* signal should be received at this thread (main and idle threads) */
-+	init_new_thread_signals();
- 	threads_init();
- 	lkl_cpu_get();
- 	start_kernel();
-@@ -58,6 +60,9 @@ int __init lkl_start_kernel(struct lkl_host_operations *ops,
- 	if (ret)
- 		goto out_free_init_sem;
- 
-+	change_sig(SIGALRM, 0);
-+	change_sig(SIGIO, 0);
++#define WARN_UNLESS(exp) do {						\
++		if (exp < 0)						\
++			lkl_printf("%s: %s\n", #exp, strerror(errno));	\
++	} while (0)
 +
- 	ret = lkl_ops->thread_create(lkl_run_kernel, NULL);
- 	if (!ret) {
- 		ret = -ENOMEM;
-diff --git a/arch/um/nommu/um/threads.c b/arch/um/nommu/um/threads.c
-index e9a49100d40e..fe2fa3e688fd 100644
---- a/arch/um/nommu/um/threads.c
-+++ b/arch/um/nommu/um/threads.c
-@@ -152,6 +152,9 @@ static void *thread_bootstrap(void *_tba)
- 	int (*f)(void *) = tba->f;
- 	void *arg = tba->arg;
- 
-+	change_sig(SIGALRM, 0);
-+	change_sig(SIGIO, 0);
-+
- 	lkl_ops->sem_down(ti->task->thread.arch.sched_sem);
- 	kfree(tba);
- 	if (ti->task->thread.prev_sched)
-diff --git a/tools/um/uml/signal.c b/tools/um/uml/signal.c
-index b58bc68cbe64..2b5c98de21cd 100644
---- a/tools/um/uml/signal.c
-+++ b/tools/um/uml/signal.c
-@@ -218,8 +218,8 @@ void set_handler(int sig)
- 
- 	sigemptyset(&sig_mask);
- 	sigaddset(&sig_mask, sig);
--	if (sigprocmask(SIG_UNBLOCK, &sig_mask, NULL) < 0)
--		panic("sigprocmask failed - errno = %d\n", errno);
-+	if (pthread_sigmask(SIG_UNBLOCK, &sig_mask, NULL) < 0)
-+		panic("pthread_sigmask failed - errno = %d\n", errno);
- }
- 
- int change_sig(int signal, int on)
-@@ -355,3 +355,11 @@ int os_is_signal_stack(void)
- 
- 	return ss.ss_flags & SS_ONSTACK;
- }
-+
-+void set_pending_signals(int sig)
++static int _warn_pthread(int ret, char *str_exp)
 +{
-+	if (sig == SIGIO)
-+		signals_pending |= SIGIO_MASK;
-+	else if (sig == SIGALRM)
-+		signals_pending |= SIGALRM_MASK;
++	if (ret > 0)
++		lkl_printf("%s: %s\n", str_exp, strerror(ret));
++
++	return ret;
 +}
++
++
++/* pthread_* functions use the reverse convention */
++#define WARN_PTHREAD(exp) _warn_pthread(exp, #exp)
++
++static struct lkl_sem *sem_alloc(int count)
++{
++	struct lkl_sem *sem;
++
++	sem = malloc(sizeof(*sem));
++	if (!sem)
++		return NULL;
++
++#ifdef _POSIX_SEMAPHORES
++	if (sem_init(&sem->sem, SHARE_SEM, count) < 0) {
++		lkl_printf("sem_init: %s\n", strerror(errno));
++		free(sem);
++		return NULL;
++	}
++#else
++	pthread_mutex_init(&sem->lock, NULL);
++	sem->count = count;
++	WARN_PTHREAD(pthread_cond_init(&sem->cond, NULL));
++#endif /* _POSIX_SEMAPHORES */
++
++	return sem;
++}
++
++static void sem_free(struct lkl_sem *sem)
++{
++#ifdef _POSIX_SEMAPHORES
++	WARN_UNLESS(sem_destroy(&sem->sem));
++#else
++	WARN_PTHREAD(pthread_cond_destroy(&sem->cond));
++	WARN_PTHREAD(pthread_mutex_destroy(&sem->lock));
++#endif /* _POSIX_SEMAPHORES */
++	free(sem);
++}
++
++static void sem_up(struct lkl_sem *sem)
++{
++#ifdef _POSIX_SEMAPHORES
++	WARN_UNLESS(sem_post(&sem->sem));
++#else
++	WARN_PTHREAD(pthread_mutex_lock(&sem->lock));
++	sem->count++;
++	if (sem->count > 0)
++		WARN_PTHREAD(pthread_cond_signal(&sem->cond));
++	WARN_PTHREAD(pthread_mutex_unlock(&sem->lock));
++#endif /* _POSIX_SEMAPHORES */
++
++}
++
++static void sem_down(struct lkl_sem *sem)
++{
++#ifdef _POSIX_SEMAPHORES
++	int err;
++
++	do {
++		err = sem_wait(&sem->sem);
++	} while (err < 0 && errno == EINTR);
++	if (err < 0 && errno != EINTR)
++		lkl_printf("sem_wait: %s\n", strerror(errno));
++#else
++	WARN_PTHREAD(pthread_mutex_lock(&sem->lock));
++	while (sem->count <= 0)
++		WARN_PTHREAD(pthread_cond_wait(&sem->cond, &sem->lock));
++	sem->count--;
++	WARN_PTHREAD(pthread_mutex_unlock(&sem->lock));
++#endif /* _POSIX_SEMAPHORES */
++}
++
++static struct lkl_mutex *mutex_alloc(int recursive)
++{
++	struct lkl_mutex *_mutex = malloc(sizeof(struct lkl_mutex));
++	pthread_mutex_t *mutex = NULL;
++	pthread_mutexattr_t attr;
++
++	if (!_mutex)
++		return NULL;
++
++	mutex = &_mutex->mutex;
++	WARN_PTHREAD(pthread_mutexattr_init(&attr));
++
++	/* PTHREAD_MUTEX_ERRORCHECK is *very* useful for debugging,
++	 * but has some overhead, so we provide an option to turn it
++	 * off.
++	 */
++#ifdef DEBUG
++	if (!recursive)
++		WARN_PTHREAD(pthread_mutexattr_settype(
++				     &attr, PTHREAD_MUTEX_ERRORCHECK));
++#endif /* DEBUG */
++
++	if (recursive)
++		WARN_PTHREAD(pthread_mutexattr_settype(
++				     &attr, PTHREAD_MUTEX_RECURSIVE));
++
++	WARN_PTHREAD(pthread_mutex_init(mutex, &attr));
++
++	return _mutex;
++}
++
++static void mutex_lock(struct lkl_mutex *mutex)
++{
++	WARN_PTHREAD(pthread_mutex_lock(&mutex->mutex));
++}
++
++static void mutex_unlock(struct lkl_mutex *_mutex)
++{
++	pthread_mutex_t *mutex = &_mutex->mutex;
++
++	WARN_PTHREAD(pthread_mutex_unlock(mutex));
++}
++
++static void mutex_free(struct lkl_mutex *_mutex)
++{
++	pthread_mutex_t *mutex = &_mutex->mutex;
++
++	WARN_PTHREAD(pthread_mutex_destroy(mutex));
++	free(_mutex);
++}
++
++static lkl_thread_t thread_create(void* (*fn)(void *), void *arg)
++{
++	pthread_t thread;
++
++	if (WARN_PTHREAD(pthread_create(&thread, NULL, fn, arg)))
++		return 0;
++	else
++		return (lkl_thread_t) thread;
++}
++
++static void thread_detach(void)
++{
++	WARN_PTHREAD(pthread_detach(pthread_self()));
++}
++
++static void thread_exit(void)
++{
++	pthread_exit(NULL);
++}
++
++static int thread_join(lkl_thread_t tid)
++{
++	if (WARN_PTHREAD(pthread_join((pthread_t)tid, NULL)))
++		return (-1);
++	else
++		return 0;
++}
++
++static lkl_thread_t thread_self(void)
++{
++	return (lkl_thread_t)pthread_self();
++}
++
++static int thread_equal(lkl_thread_t a, lkl_thread_t b)
++{
++	return pthread_equal((pthread_t)a, (pthread_t)b);
++}
++
++static long _gettid(void)
++{
++#ifdef	__FreeBSD__
++	return (long)pthread_self();
++#else
++	return syscall(SYS_gettid);
++#endif
++}
++
++static struct lkl_tls_key *tls_alloc(void (*destructor)(void *))
++{
++	struct lkl_tls_key *ret = malloc(sizeof(struct lkl_tls_key));
++
++	if (WARN_PTHREAD(pthread_key_create(&ret->key, destructor))) {
++		free(ret);
++		return NULL;
++	}
++	return ret;
++}
++
++static void tls_free(struct lkl_tls_key *key)
++{
++	WARN_PTHREAD(pthread_key_delete(key->key));
++	free(key);
++}
++
++static int tls_set(struct lkl_tls_key *key, void *data)
++{
++	if (WARN_PTHREAD(pthread_setspecific(key->key, data)))
++		return (-1);
++	return 0;
++}
++
++static void *tls_get(struct lkl_tls_key *key)
++{
++	return pthread_getspecific(key->key);
++}
++
++struct lkl_host_operations lkl_host_ops = {
++	.panic = panic,
++	.print = print,
++	.mem_alloc = (void *)malloc,
++	.mem_free = free,
++	.thread_create = thread_create,
++	.thread_detach = thread_detach,
++	.thread_exit = thread_exit,
++	.thread_join = thread_join,
++	.thread_self = thread_self,
++	.thread_equal = thread_equal,
++	.sem_alloc = sem_alloc,
++	.sem_free = sem_free,
++	.sem_up = sem_up,
++	.sem_down = sem_down,
++	.mutex_alloc = mutex_alloc,
++	.mutex_free = mutex_free,
++	.mutex_lock = mutex_lock,
++	.mutex_unlock = mutex_unlock,
++	.gettid = _gettid,
++	.tls_alloc = tls_alloc,
++	.tls_free = tls_free,
++	.tls_set = tls_set,
++	.tls_get = tls_get,
++	.jmp_buf_set = jmp_buf_set,
++	.jmp_buf_longjmp = jmp_buf_longjmp,
++};
++
 -- 
 2.21.0 (Apple Git-122.2)
 
