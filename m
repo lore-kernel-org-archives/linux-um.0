@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
+Received: from mail-pg1-x542.google.com ([2607:f8b0:4864:20::542])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kPjWt-0008M5-Eh
- for linux-um@lists.infradead.org; Tue, 06 Oct 2020 09:45:08 +0000
-Received: by mail-pf1-x441.google.com with SMTP id e10so8132873pfj.1
- for <linux-um@lists.infradead.org>; Tue, 06 Oct 2020 02:45:05 -0700 (PDT)
+ id 1kPjXe-0008VS-Fx
+ for linux-um@lists.infradead.org; Tue, 06 Oct 2020 09:45:56 +0000
+Received: by mail-pg1-x542.google.com with SMTP id x16so7705336pgj.3
+ for <linux-um@lists.infradead.org>; Tue, 06 Oct 2020 02:45:54 -0700 (PDT)
 From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v7 04/21] um: host: implement os_initcalls and os_exitcalls
-Date: Tue,  6 Oct 2020 18:44:13 +0900
-Message-Id: <d3bfb0e0e4300bb5191ae51918dd0795de343dc2.1601960644.git.thehajime@gmail.com>
+Subject: [RFC v7 13/21] um: nommu: basic console support
+Date: Tue,  6 Oct 2020 18:44:22 +0900
+Message-Id: <50557e259c25a5fea82e687665ab611ea54f599f.1601960644.git.thehajime@gmail.com>
 In-Reply-To: <cover.1601960644.git.thehajime@gmail.com>
 References: <cover.1601960644.git.thehajime@gmail.com>
 MIME-Version: 1.0
@@ -25,56 +25,107 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
-Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Octavian Purdila <tavi@cs.pub.ro>, retrage01@gmail.com
+Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, retrage01@gmail.com
 
-From: Octavian Purdila <tavi@cs.pub.ro>
+This commit also disables stdio-console of UM if !CONFIG_MMU to avoid
+conflicts between multiple consoles.
 
-This patch implements the init and exit calls for host code. It uses
-the automatic __start_<section> and __stop_<section> variables that
-are defined by gcc / ld when using custom sections.
-
-Note that this patch should be merged with "um: move arch/um/os-Linux
-dir to tools/um" but for now it is separate to make the review easier.
-
-Signed-off-by: Octavian Purdila <tavi@cs.pub.ro>
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
 ---
- tools/um/uml/util.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ arch/um/drivers/Makefile                  |  8 ++++-
+ arch/um/nommu/include/uapi/asm/host_ops.h |  3 ++
+ arch/um/nommu/um/console.c                | 42 +++++++++++++++++++++++
+ 3 files changed, 52 insertions(+), 1 deletion(-)
+ create mode 100644 arch/um/nommu/um/console.c
 
-diff --git a/tools/um/uml/util.c b/tools/um/uml/util.c
-index ecf2f390fad2..4011b36fee7e 100644
---- a/tools/um/uml/util.c
-+++ b/tools/um/uml/util.c
-@@ -186,3 +186,29 @@ void os_warn(const char *fmt, ...)
- 	vfprintf(stderr, fmt, list);
- 	va_end(list);
- }
+diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
+index ae96c83e312d..694da4aa550d 100644
+--- a/arch/um/drivers/Makefile
++++ b/arch/um/drivers/Makefile
+@@ -37,7 +37,13 @@ $(obj)/vde.o: $(obj)/vde_kern.o $(obj)/vde_user.o
+ # When the above is fixed, don't forget to add this too!
+ #targets += $(obj)/pcap.o
+ 
+-obj-y := stdio_console.o fd.o chan_kern.o chan_user.o line.o
++ifdef CONFIG_MMU
++obj-y := stdio_console.o
++else
++obj-y :=
++endif
++obj-y += fd.o chan_kern.o chan_user.o line.o
 +
-+extern void (*__start_os_exitcalls)(void);
-+extern void (*__stop_os_exitcalls)(void);
+ obj-$(CONFIG_SSL) += ssl.o
+ obj-$(CONFIG_STDERR_CONSOLE) += stderr_console.o
+ 
+diff --git a/arch/um/nommu/include/uapi/asm/host_ops.h b/arch/um/nommu/include/uapi/asm/host_ops.h
+index 6ee9489fc47e..133877c857a1 100644
+--- a/arch/um/nommu/include/uapi/asm/host_ops.h
++++ b/arch/um/nommu/include/uapi/asm/host_ops.h
+@@ -15,6 +15,7 @@ struct lkl_jmp_buf {
+  *
+  * These operations must be provided by a host library or by the application
+  * itself.
++ * @print - optional operation that receives console messages
+  *
+  * @sem_alloc - allocate a host semaphore an initialize it to count
+  * @sem_free - free a host semaphore
+@@ -63,6 +64,8 @@ struct lkl_jmp_buf {
+  *
+  */
+ struct lkl_host_operations {
++	void (*print)(const char *str, int len);
 +
-+void os_exitcalls(void)
+ 	struct lkl_sem *(*sem_alloc)(int count);
+ 	void (*sem_free)(struct lkl_sem *sem);
+ 	void (*sem_up)(struct lkl_sem *sem);
+diff --git a/arch/um/nommu/um/console.c b/arch/um/nommu/um/console.c
+new file mode 100644
+index 000000000000..e3194f7bb0dd
+--- /dev/null
++++ b/arch/um/nommu/um/console.c
+@@ -0,0 +1,42 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/console.h>
++#include <asm/host_ops.h>
++
++static void console_write(struct console *con, const char *str, unsigned len)
 +{
-+	exitcall_t *call;
-+
-+	call = &__stop_os_exitcalls;
-+	while (--call >= &__start_os_exitcalls)
-+		(*call)();
++	if (lkl_ops->print)
++		lkl_ops->print(str, len);
 +}
 +
-+extern int (*__start_os_initcalls)(void);
-+extern int (*__stop_os_initcalls)(void);
++#ifdef CONFIG_LKL_EARLY_CONSOLE
++static struct console lkl_boot_console = {
++	.name	= "lkl_boot_console",
++	.write	= console_write,
++	.flags	= CON_PRINTBUFFER | CON_BOOT,
++	.index	= -1,
++};
 +
-+int os_initcalls(void)
++int __init lkl_boot_console_init(void)
 +{
-+	initcall_t *call;
-+
-+	call = &__stop_os_initcalls;
-+	while (--call >= &__start_os_initcalls)
-+		(*call)();
-+
++	register_console(&lkl_boot_console);
 +	return 0;
 +}
++early_initcall(lkl_boot_console_init);
++#endif
++
++static struct console lkl_console = {
++	.name	= "lkl_console",
++	.write	= console_write,
++	.flags	= CON_PRINTBUFFER,
++	.index	= -1,
++};
++
++int __init lkl_console_init(void)
++{
++	register_console(&lkl_console);
++	return 0;
++}
++core_initcall(lkl_console_init);
++
 -- 
 2.21.0 (Apple Git-122.2)
 
