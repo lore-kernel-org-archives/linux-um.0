@@ -1,65 +1,53 @@
-Return-Path: <mchehab@kernel.org>
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 0/6] Fix new html build warnings from next-20201001
-Date: Fri,  2 Oct 2020 07:49:44 +0200
-Message-Id: <cover.1601616399.git.mchehab+huawei@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kQEoe-0002DX-JE
+ for linux-um@lists.infradead.org; Wed, 07 Oct 2020 19:09:33 +0000
+Message-ID: <661d5a2f715b1c65809ae81f1d56deb2fccb653c.camel@sipsolutions.net>
+Subject: Re: [RFC v7 15/21] um: nommu: integrate with irq infrastructure of UML
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Wed, 07 Oct 2020 21:09:29 +0200
+In-Reply-To: <68b53edd5ec17510626ae19546752cde198ecc3e.1601960644.git.thehajime@gmail.com>
+References: <cover.1601960644.git.thehajime@gmail.com>
+ <68b53edd5ec17510626ae19546752cde198ecc3e.1601960644.git.thehajime@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
-To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>, linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>, "David S. Miller" <davem@davemloft.net>, Alexandru Elisei <alexandru.elisei@arm.com>, Andrew Jones <drjones@redhat.com>, Andrew Lunn <andrew@lunn.ch>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Balbir Singh <sblbir@amazon.com>, Bartosz Golaszewski <bgolaszewski@baylibre.com>, Eugeniu Rosca <erosca@de.adit-jv.com>, Geert Uytterhoeven <geert+renesas@glider.be>, Jakub Kicinski <kuba@kernel.org>, Jeff Dike <jdike@addtoit.com>, Linus Walleij <linus.walleij@linaro.org>, Marc Zyngier <maz@kernel.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Paolo Bonzini <pbonzini@redhat.com>, Richard Weinberger <richard@nod.at>, Taehee Yoo <ap420073@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Ulrich Hecht <uli+renesas@fpond.eu>, Wolfram Sang <wsa@kernel.org>, kvm@vger.kernel.org, linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org, linux-um@lists.infradead.org, netdev@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
-
-There are some new warnings when building the documentation from
-yesterday's linux next. This small series fix them.
-
-- patch 1 documents two new kernel-doc parameters on a net core file.
-  I used the commit log in order to help documenting them;
-- patch 2 fixes some tags at UMLv2 howto;
-- patches 3 and 5 add some new documents at the corresponding
-  index file.
-- patch 4 changes kernel-doc script for it to recognize typedef enums.
-
-Patch 4 should probably be merged via docs tree, but the others
-are against stuff recently added at linux-next. So, the better is to
-merge them directly at the trees which introduced the issue.
-
--
-
-As a reference, the patches fixing all html build warnings are at:
-
-	https://git.linuxtv.org/mchehab/experimental.git/log/?h=sphinx3-fixes-v3
-
-Such series also adds support for Sphinx versions 3.1 and above.
-
-It should be noticed that, with Sphinx version 3 and above, there
-are a few new warnings, because currently Sphinx assumes a
-that names are unique for all C symbols. There are a few cases
-where we have the same name for a function and for a struct at
-the Kernel. Upstream is already working on a solution for that.
-
-So, for now, I recomend doing html builds with version < 3.
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Hajime Tazaki <thehajime@gmail.com>, linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
+Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, retrage01@gmail.com, linux-arch@vger.kernel.org
 
 
-Mauro Carvalho Chehab (6):
-  net: core: document two new elements of struct net_device
-  docs: vcpu.rst: fix some build warnings
-  docs: virt: user_mode_linux_howto_v2.rst: fix a literal block markup
-  docs: i2c: index.rst: add slave-testunit-backend.rst
-  scripts: kernel-doc: add support for typedef enum
-  docs: gpio: add a new document to its index.rst
+> @@ -541,6 +542,11 @@ unsigned long to_irq_stack(unsigned long *mask_out)
+>  	unsigned long mask, old;
+>  	int nested;
+>  
+> +#ifndef CONFIG_MMU
 
- Documentation/admin-guide/gpio/index.rst      |  1 +
- .../admin-guide/hw-vuln/l1d_flush.rst         |  3 +--
- Documentation/i2c/index.rst                   |  1 +
- Documentation/virt/kvm/devices/vcpu.rst       | 26 +++++++++----------
- .../virt/uml/user_mode_linux_howto_v2.rst     |  1 +
- include/linux/netdevice.h                     |  5 ++++
- scripts/kernel-doc                            | 15 ++++++++---
- 7 files changed, 33 insertions(+), 19 deletions(-)
+Also here and throughout, not sure I like (and it makes sense) to have
+the equation of !CONFIG_MMU == LKL.
 
--- 
-2.26.2
+I mean, sure, that may actually be _true_ (at least right now), but it
+doesn't feel like all of this really is a consequence of *NOMMU*, it's
+more a consequence of LKL.
+
+At least I think it is?
+
+johannes
 
 
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
