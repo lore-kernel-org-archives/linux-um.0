@@ -1,10 +1,21 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: [PATCH v2 03/16] 9p: Tell the VFS that readpage was synchronous
-Date: Fri,  9 Oct 2020 15:30:51 +0100
-Message-Id: <20201009143104.22673-4-willy@infradead.org>
-In-Reply-To: <20201009143104.22673-1-willy@infradead.org>
-References: <20201009143104.22673-1-willy@infradead.org>
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kQ7jZ-0004Le-TK
+ for linux-um@lists.infradead.org; Wed, 07 Oct 2020 11:35:51 +0000
+Message-ID: <7b7d6954b74e109e653539d880173fa9cb5c5ddf.camel@sipsolutions.net>
+Subject: Re: [PATCH v2 1/2] mmap locking API: Order lock of nascent mm
+ outside lock of live mm
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Wed, 07 Oct 2020 13:35:39 +0200
+In-Reply-To: <CAG48ez2cW0mrSPihrtX6Kus2AYc0hKX8izpzvOMYrnk0eLOAoA@mail.gmail.com>
+ (sfid-20201007_102849_013033_175305AA)
+References: <20201006225450.751742-1-jannh@google.com>
+ <20201006225450.751742-2-jannh@google.com>
+ <115d17aa221b73a479e26ffee52899ddb18b1f53.camel@sipsolutions.net>
+ <CAG48ez2cW0mrSPihrtX6Kus2AYc0hKX8izpzvOMYrnk0eLOAoA@mail.gmail.com>
+ (sfid-20201007_102849_013033_175305AA)
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -18,44 +29,107 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-fsdevel@vger.kernel.org
-Cc: linux-cifs@vger.kernel.org, Richard Weinberger <richard@nod.at>, Dominique Martinet <asmadeus@codewreck.org>, ecryptfs@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>, linux-xfs@vger.kernel.org, linux-mm@kvack.org, linux-mtd@lists.infradead.org, v9fs-developer@lists.sourceforge.net, ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org
+To: Jann Horn <jannh@google.com>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>, Sakari Ailus <sakari.ailus@linux.intel.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, kernel list <linux-kernel@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>, "Eric W . Biederman" <ebiederm@xmission.com>, Jason Gunthorpe <jgg@nvidia.com>, John Hubbard <jhubbard@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>, Michel Lespinasse <walken@google.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-The 9p readpage implementation was already synchronous, so use
-AOP_UPDATED_PAGE to avoid cycling the page lock.
+Hi Jann,
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Acked-by: Dominique Martinet <asmadeus@codewreck.org>
----
- fs/9p/vfs_addr.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+> > > +++ b/arch/um/include/asm/mmu_context.h
+> > > @@ -48,9 +48,8 @@ static inline void activate_mm(struct mm_struct *old, struct mm_struct *new)
+> > >        * when the new ->mm is used for the first time.
+> > >        */
+> > >       __switch_mm(&new->context.id);
+> > > -     mmap_write_lock_nested(new, SINGLE_DEPTH_NESTING);
+> > > +     mmap_assert_write_locked(new);
+> > >       uml_setup_stubs(new);
+> > > -     mmap_write_unlock(new);
+> > >  }
+> > 
+> > FWIW, this was I believe causing lockdep issues.
+> > 
+> > I think I had previously determined that this was pointless, since it's
+> > still nascent and cannot be used yet?
+> 
+> Well.. the thing is that with patch 2/2, I'm not just protecting the
+> mm while it hasn't been installed yet, but also after it's been
+> installed, until setup_arg_pages() is done (which still uses a VMA
+> pointer that we obtained really early in the nascent phase). 
 
-diff --git a/fs/9p/vfs_addr.c b/fs/9p/vfs_addr.c
-index cce9ace651a2..506ca0ba2ec7 100644
---- a/fs/9p/vfs_addr.c
-+++ b/fs/9p/vfs_addr.c
-@@ -65,7 +65,7 @@ static int v9fs_fid_readpage(void *data, struct page *page)
- 	SetPageUptodate(page);
- 
- 	v9fs_readpage_to_fscache(inode, page);
--	retval = 0;
-+	return AOP_UPDATED_PAGE;
- 
- done:
- 	unlock_page(page);
-@@ -280,6 +280,10 @@ static int v9fs_write_begin(struct file *filp, struct address_space *mapping,
- 		goto out;
- 
- 	retval = v9fs_fid_readpage(v9inode->writeback_fid, page);
-+	if (retval == AOP_UPDATED_PAGE) {
-+		retval = 0;
-+		goto out;
-+	}
- 	put_page(page);
- 	if (!retval)
- 		goto start;
--- 
-2.28.0
+Oh, sure. I was referring only to the locking in UML's activate_mm(),
+quoted above. Sorry for not making that clear.
+
+> So in summary, I think the code currently is not (visibly) buggy in
+> the sense that you can make it do something bad, but it's extremely
+> fragile and probably only safe by chance. This patchset is partly my
+> attempt to make this a bit more future-proof before someone comes
+> along and turns it into an actual memory corruption bug with some
+> innocuous little change. (Because I've had a situation before where I
+> thought "oh, this looks really fragile and only works by chance, but
+> eh, it's not really worth changing that code" and then the next time I
+> looked, it had turned into a security bug that had already made its
+> way into kernel releases people were using.)
+
+Right.
+
+> > But I didn't really know for sure,
+> > and this patch was never applied:
+> > 
+> > https://patchwork.ozlabs.org/project/linux-um/patch/20200604133752.397dedea0758.I7a24aaa26794eb3fa432003c1bf55cbb816489e2@changeid/
+> 
+> Eeeh... with all the kernel debugging infrastructure *disabled*,
+
+but I didn't have it disabled, I had lockdep enabled, and lockdep was
+complaining (now granted, I was still on 5.8 for that patch):
+
+=============================
+[ BUG: Invalid wait context ]
+5.8.0-00006-gef4b340c886a #23 Not tainted
+-----------------------------
+swapper/1 is trying to lock:
+000000006e54c160 (&mm->mmap_lock/1){....}-{3:3}, at: begin_new_exec+0x6c5/0xb26
+other info that might help us debug this:
+context-{4:4}
+3 locks held by swapper/1:
+ #0: 00000000705f4548 (&sig->cred_guard_mutex){+.+.}-{3:3}, at: __do_execve_file+0x12c/0x7ea
+ #1: 00000000705f45e0 (&sig->exec_update_mutex){+.+.}-{3:3}, at: begin_new_exec+0x5db/0xb26
+ #2: 00000000705e05a8 (&p->alloc_lock){+.+.}-{2:2}, at: begin_new_exec+0x66b/0xb26
+stack backtrace:
+CPU: 0 PID: 1 Comm: swapper Not tainted 5.8.0-00006-gef4b340c886a #23
+Stack:
+ 6057fa2d 705e0760 705ebbb0 00000133
+ 6008d289 705e0760 705e0040 00000003
+ 705ebbc0 6028e02f 705ebc50 60080b29
+Call Trace:
+ [<6008d289>] ? printk+0x0/0x94
+ [<60024a1a>] show_stack+0x153/0x174
+ [<6008d289>] ? printk+0x0/0x94
+ [<6028e02f>] dump_stack+0x34/0x36
+ [<60080b29>] __lock_acquire+0x515/0x15f5
+ [<6007c593>] ? hlock_class+0x0/0xa1
+ [<6007fd90>] lock_acquire+0x347/0x42d
+ [<6013def5>] ? begin_new_exec+0x6c5/0xb26
+ [<60039b51>] ? set_signals+0x29/0x3f
+ [<600835c1>] ? lock_acquired+0x310/0x320
+ [<6013b5ce>] ? would_dump+0x0/0x8a
+ [<600798fd>] down_write_nested+0x2f/0x83
+ [<6013def5>] ? begin_new_exec+0x6c5/0xb26
+ [<600798ce>] ? down_write_nested+0x0/0x83
+ [<6013def5>] begin_new_exec+0x6c5/0xb26
+ [<6019593b>] ? load_elf_phdrs+0x6f/0x9d
+ [<60298d55>] ? memcmp+0x0/0x20
+ [<60196612>] load_elf_binary+0x2cb/0xc49
+ [...]
+
+but it really looks just about the same on v5.9-rc8.
+
+> > I guess your patches will also fix the lockdep complaints in UML in this
+> > area, I hope I'll be able to test it soon.
+> 
+> That would be a nice side effect. :)
+
+It does indeed fix it :)
+
+johannes
 
 
 _______________________________________________
