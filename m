@@ -1,22 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from mail-ed1-x542.google.com ([2a00:1450:4864:20::542])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kQ7jZ-0004Le-TK
- for linux-um@lists.infradead.org; Wed, 07 Oct 2020 11:35:51 +0000
-Message-ID: <7b7d6954b74e109e653539d880173fa9cb5c5ddf.camel@sipsolutions.net>
-Subject: Re: [PATCH v2 1/2] mmap locking API: Order lock of nascent mm
- outside lock of live mm
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Wed, 07 Oct 2020 13:35:39 +0200
-In-Reply-To: <CAG48ez2cW0mrSPihrtX6Kus2AYc0hKX8izpzvOMYrnk0eLOAoA@mail.gmail.com>
- (sfid-20201007_102849_013033_175305AA)
+ id 1kQ4ob-0002va-1u
+ for linux-um@lists.infradead.org; Wed, 07 Oct 2020 08:28:50 +0000
+Received: by mail-ed1-x542.google.com with SMTP id o18so1264772edq.4
+ for <linux-um@lists.infradead.org>; Wed, 07 Oct 2020 01:28:48 -0700 (PDT)
+MIME-Version: 1.0
 References: <20201006225450.751742-1-jannh@google.com>
  <20201006225450.751742-2-jannh@google.com>
  <115d17aa221b73a479e26ffee52899ddb18b1f53.camel@sipsolutions.net>
- <CAG48ez2cW0mrSPihrtX6Kus2AYc0hKX8izpzvOMYrnk0eLOAoA@mail.gmail.com>
- (sfid-20201007_102849_013033_175305AA)
-MIME-Version: 1.0
+In-Reply-To: <115d17aa221b73a479e26ffee52899ddb18b1f53.camel@sipsolutions.net>
+From: Jann Horn <jannh@google.com>
+Date: Wed, 7 Oct 2020 10:28:21 +0200
+Message-ID: <CAG48ez2cW0mrSPihrtX6Kus2AYc0hKX8izpzvOMYrnk0eLOAoA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] mmap locking API: Order lock of nascent mm outside
+ lock of live mm
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -29,108 +27,134 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jann Horn <jannh@google.com>
+To: Johannes Berg <johannes@sipsolutions.net>
 Cc: Mauro Carvalho Chehab <mchehab@kernel.org>, Sakari Ailus <sakari.ailus@linux.intel.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, kernel list <linux-kernel@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>, "Eric W . Biederman" <ebiederm@xmission.com>, Jason Gunthorpe <jgg@nvidia.com>, John Hubbard <jhubbard@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>, Michel Lespinasse <walken@google.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Hi Jann,
+On Wed, Oct 7, 2020 at 9:42 AM Johannes Berg <johannes@sipsolutions.net> wrote:
+> On Wed, 2020-10-07 at 00:54 +0200, Jann Horn wrote:
+> > Until now, the mmap lock of the nascent mm was ordered inside the mmap lock
+> > of the old mm (in dup_mmap() and in UML's activate_mm()).
+> > A following patch will change the exec path to very broadly lock the
+> > nascent mm, but fine-grained locking should still work at the same time for
+> > the old mm.
+> >
+> > In particular, mmap locking calls are hidden behind the copy_from_user()
+> > calls and such that are reached through functions like copy_strings() -
+> > when a page fault occurs on a userspace memory access, the mmap lock
+> > will be taken.
+> >
+> > To do this in a way that lockdep is happy about, let's turn around the lock
+> > ordering in both places that currently nest the locks.
+> > Since SINGLE_DEPTH_NESTING is normally used for the inner nesting layer,
+> > make up our own lock subclass MMAP_LOCK_SUBCLASS_NASCENT and use that
+> > instead.
+> >
+> > The added locking calls in exec_mmap() are temporary; the following patch
+> > will move the locking out of exec_mmap().
+> >
+> > Signed-off-by: Jann Horn <jannh@google.com>
+> > ---
+> >  arch/um/include/asm/mmu_context.h |  3 +--
+> >  fs/exec.c                         |  4 ++++
+> >  include/linux/mmap_lock.h         | 23 +++++++++++++++++++++--
+> >  kernel/fork.c                     |  7 ++-----
+> >  4 files changed, 28 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/arch/um/include/asm/mmu_context.h b/arch/um/include/asm/mmu_context.h
+> > index 17ddd4edf875..c13bc5150607 100644
+> > --- a/arch/um/include/asm/mmu_context.h
+> > +++ b/arch/um/include/asm/mmu_context.h
+> > @@ -48,9 +48,8 @@ static inline void activate_mm(struct mm_struct *old, struct mm_struct *new)
+> >        * when the new ->mm is used for the first time.
+> >        */
+> >       __switch_mm(&new->context.id);
+> > -     mmap_write_lock_nested(new, SINGLE_DEPTH_NESTING);
+> > +     mmap_assert_write_locked(new);
+> >       uml_setup_stubs(new);
+> > -     mmap_write_unlock(new);
+> >  }
+>
+> FWIW, this was I believe causing lockdep issues.
+>
+> I think I had previously determined that this was pointless, since it's
+> still nascent and cannot be used yet?
 
-> > > +++ b/arch/um/include/asm/mmu_context.h
-> > > @@ -48,9 +48,8 @@ static inline void activate_mm(struct mm_struct *old, struct mm_struct *new)
-> > >        * when the new ->mm is used for the first time.
-> > >        */
-> > >       __switch_mm(&new->context.id);
-> > > -     mmap_write_lock_nested(new, SINGLE_DEPTH_NESTING);
-> > > +     mmap_assert_write_locked(new);
-> > >       uml_setup_stubs(new);
-> > > -     mmap_write_unlock(new);
-> > >  }
-> > 
-> > FWIW, this was I believe causing lockdep issues.
-> > 
-> > I think I had previously determined that this was pointless, since it's
-> > still nascent and cannot be used yet?
-> 
-> Well.. the thing is that with patch 2/2, I'm not just protecting the
-> mm while it hasn't been installed yet, but also after it's been
-> installed, until setup_arg_pages() is done (which still uses a VMA
-> pointer that we obtained really early in the nascent phase). 
+Well.. the thing is that with patch 2/2, I'm not just protecting the
+mm while it hasn't been installed yet, but also after it's been
+installed, until setup_arg_pages() is done (which still uses a VMA
+pointer that we obtained really early in the nascent phase). With the
+recent rework Eric Biederman has done to clean up the locking around
+execve, operations like process_vm_writev() and (currently only in the
+MM tree, not mainline yet) process_madvise() can remotely occur on our
+new mm after setup_new_exec(), before we've reached setup_arg_pages().
+While AFAIK all those operations *currently* only read the VMA tree,
+that would change as soon as someone e.g. changes the list of allowed
+operations for process_madvise() to include something like
+MADV_MERGEABLE. In that case, we'd get a UAF if the madvise code
+merges away our VMA while we still hold and use a dangling pointer to
+it.
 
-Oh, sure. I was referring only to the locking in UML's activate_mm(),
-quoted above. Sorry for not making that clear.
+So in summary, I think the code currently is not (visibly) buggy in
+the sense that you can make it do something bad, but it's extremely
+fragile and probably only safe by chance. This patchset is partly my
+attempt to make this a bit more future-proof before someone comes
+along and turns it into an actual memory corruption bug with some
+innocuous little change. (Because I've had a situation before where I
+thought "oh, this looks really fragile and only works by chance, but
+eh, it's not really worth changing that code" and then the next time I
+looked, it had turned into a security bug that had already made its
+way into kernel releases people were using.)
 
-> So in summary, I think the code currently is not (visibly) buggy in
-> the sense that you can make it do something bad, but it's extremely
-> fragile and probably only safe by chance. This patchset is partly my
-> attempt to make this a bit more future-proof before someone comes
-> along and turns it into an actual memory corruption bug with some
-> innocuous little change. (Because I've had a situation before where I
-> thought "oh, this looks really fragile and only works by chance, but
-> eh, it's not really worth changing that code" and then the next time I
-> looked, it had turned into a security bug that had already made its
-> way into kernel releases people were using.)
+> But I didn't really know for sure,
+> and this patch was never applied:
+>
+> https://patchwork.ozlabs.org/project/linux-um/patch/20200604133752.397dedea0758.I7a24aaa26794eb3fa432003c1bf55cbb816489e2@changeid/
 
-Right.
+Eeeh... with all the kernel debugging infrastructure *disabled*,
+down_write_nested() is defined as:
 
-> > But I didn't really know for sure,
-> > and this patch was never applied:
-> > 
-> > https://patchwork.ozlabs.org/project/linux-um/patch/20200604133752.397dedea0758.I7a24aaa26794eb3fa432003c1bf55cbb816489e2@changeid/
-> 
-> Eeeh... with all the kernel debugging infrastructure *disabled*,
+# define down_write_nested(sem, subclass) down_write(sem)
 
-but I didn't have it disabled, I had lockdep enabled, and lockdep was
-complaining (now granted, I was still on 5.8 for that patch):
+and then down_write() is:
 
-=============================
-[ BUG: Invalid wait context ]
-5.8.0-00006-gef4b340c886a #23 Not tainted
------------------------------
-swapper/1 is trying to lock:
-000000006e54c160 (&mm->mmap_lock/1){....}-{3:3}, at: begin_new_exec+0x6c5/0xb26
-other info that might help us debug this:
-context-{4:4}
-3 locks held by swapper/1:
- #0: 00000000705f4548 (&sig->cred_guard_mutex){+.+.}-{3:3}, at: __do_execve_file+0x12c/0x7ea
- #1: 00000000705f45e0 (&sig->exec_update_mutex){+.+.}-{3:3}, at: begin_new_exec+0x5db/0xb26
- #2: 00000000705e05a8 (&p->alloc_lock){+.+.}-{2:2}, at: begin_new_exec+0x66b/0xb26
-stack backtrace:
-CPU: 0 PID: 1 Comm: swapper Not tainted 5.8.0-00006-gef4b340c886a #23
-Stack:
- 6057fa2d 705e0760 705ebbb0 00000133
- 6008d289 705e0760 705e0040 00000003
- 705ebbc0 6028e02f 705ebc50 60080b29
-Call Trace:
- [<6008d289>] ? printk+0x0/0x94
- [<60024a1a>] show_stack+0x153/0x174
- [<6008d289>] ? printk+0x0/0x94
- [<6028e02f>] dump_stack+0x34/0x36
- [<60080b29>] __lock_acquire+0x515/0x15f5
- [<6007c593>] ? hlock_class+0x0/0xa1
- [<6007fd90>] lock_acquire+0x347/0x42d
- [<6013def5>] ? begin_new_exec+0x6c5/0xb26
- [<60039b51>] ? set_signals+0x29/0x3f
- [<600835c1>] ? lock_acquired+0x310/0x320
- [<6013b5ce>] ? would_dump+0x0/0x8a
- [<600798fd>] down_write_nested+0x2f/0x83
- [<6013def5>] ? begin_new_exec+0x6c5/0xb26
- [<600798ce>] ? down_write_nested+0x0/0x83
- [<6013def5>] begin_new_exec+0x6c5/0xb26
- [<6019593b>] ? load_elf_phdrs+0x6f/0x9d
- [<60298d55>] ? memcmp+0x0/0x20
- [<60196612>] load_elf_binary+0x2cb/0xc49
- [...]
+void __sched down_write(struct rw_semaphore *sem)
+{
+  might_sleep();
+  rwsem_acquire(&sem->dep_map, 0, 0, _RET_IP_);
+  LOCK_CONTENDED(sem, __down_write_trylock, __down_write);
+}
 
-but it really looks just about the same on v5.9-rc8.
+and that might_sleep() there is not just used for atomic sleep
+debugging, but actually also creates an explicit preemption point
+(independent of CONFIG_DEBUG_ATOMIC_SLEEP; here's the version with
+atomic sleep debugging *disabled*):
 
-> > I guess your patches will also fix the lockdep complaints in UML in this
-> > area, I hope I'll be able to test it soon.
-> 
-> That would be a nice side effect. :)
+# define might_sleep() do { might_resched(); } while (0)
 
-It does indeed fix it :)
+where might_resched() is:
 
-johannes
+#ifdef CONFIG_PREEMPT_VOLUNTARY
+extern int _cond_resched(void);
+# define might_resched() _cond_resched()
+#else
+# define might_resched() do { } while (0)
+#endif
 
+_cond_resched() has a check for preempt_count before triggering the
+scheduler, but on PREEMPT_VOLUNTARY without debugging, taking a
+spinlock currently won't increment that, I think. And even if
+preempt_count was active for PREEMPT_VOLUNTARY (which I think the x86
+folks were discussing?), you'd still hit a call into the RCU core,
+which probably shouldn't be happening under a spinlock either.
+
+Now, arch/um/ sets ARCH_NO_PREEMPT, so we can't actually be configured
+with PREEMPT_VOLUNTARY, so this can't actually happen. But it feels
+like we're on pretty thin ice here.
+
+> I guess your patches will also fix the lockdep complaints in UML in this
+> area, I hope I'll be able to test it soon.
+
+That would be a nice side effect. :)
 
 _______________________________________________
 linux-um mailing list
