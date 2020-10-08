@@ -1,6 +1,6 @@
 Return-Path: <linux-arch-owner@vger.kernel.org>
-Date: Thu, 08 Oct 2020 21:53:00 +0900
-Message-ID: <m2y2kg5177.wl-thehajime@gmail.com>
+Date: Thu, 08 Oct 2020 21:52:51 +0900
+Message-ID: <m2zh4w517g.wl-thehajime@gmail.com>
 From: Hajime Tazaki <thehajime@gmail.com>
 Subject: Re: [RFC v7 18/21] um: host: add utilities functions
 In-Reply-To: <2f3c3a54-7d68-6dc9-a65a-37fb4599b194@cambridgegreys.com>
