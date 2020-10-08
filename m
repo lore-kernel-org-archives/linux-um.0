@@ -1,82 +1,54 @@
-Return-Path: <linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: ira.weiny@intel.com
-Subject: [PATCH RFC PKS/PMEM 33/58] fs/cramfs: Utilize new kmap_thread()
-Date: Fri,  9 Oct 2020 12:50:08 -0700
-Message-Id: <20201009195033.3208459-34-ira.weiny@intel.com>
-In-Reply-To: <20201009195033.3208459-1-ira.weiny@intel.com>
-References: <20201009195033.3208459-1-ira.weiny@intel.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-lj1-x243.google.com ([2a00:1450:4864:20::243])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kQaNf-0004HP-85
+ for linux-um@lists.infradead.org; Thu, 08 Oct 2020 18:11:08 +0000
+Received: by mail-lj1-x243.google.com with SMTP id a15so6770617ljk.2
+ for <linux-um@lists.infradead.org>; Thu, 08 Oct 2020 11:11:06 -0700 (PDT)
 MIME-Version: 1.0
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
-List-Post: <mailto:linux-mtd@lists.infradead.org>
-List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+References: <cover.1601960644.git.thehajime@gmail.com>
+ <9494c2558406a8fd2938fef0c470dd640b7835ed.1601960644.git.thehajime@gmail.com>
+ <0563db2b81f44028515e19b8edeb50e1cf29d922.camel@sipsolutions.net>
+In-Reply-To: <0563db2b81f44028515e19b8edeb50e1cf29d922.camel@sipsolutions.net>
+From: Octavian Purdila <tavi.purdila@gmail.com>
+Date: Thu, 8 Oct 2020 21:10:55 +0300
+Message-ID: <CAMoF9u2zohNEtqYxEPNZBkW_XJvnAWo3OHtVo3jva8+c94Lksg@mail.gmail.com>
+Subject: Re: [RFC v7 09/21] um: nommu: host interface
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-Errors-To: linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Andrew Morton <akpm@linux-foundation.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>
-Cc: linux-aio@kvack.org, linux-efi@vger.kernel.org, kvm@vger.kernel.org, linux-doc@vger.kernel.org, linux-mmc@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>, dri-devel@lists.freedesktop.org, linux-mm@kvack.org, target-devel@vger.kernel.org, linux-mtd@lists.infradead.org, linux-kselftest@vger.kernel.org, samba-technical@lists.samba.org, Ira Weiny <ira.weiny@intel.com>, ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com, devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org, linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org, linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org, x86@kernel.org, amd-gfx@lists.freedesktop.org, linux-afs@lists.infradead.org, cluster-devel@redhat.com, linux-cachefs@redhat.com, intel-wired-lan@lists.osuosl.org, xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>, linux-um@lists.infradead.org, intel-gfx@lists.freedesktop.org, ecryptfs@vger.kernel.org, linux-erofs@lists.ozlabs.org, reiserfs-devel@vger.kernel.org, linux-block@vger.kernel.org, linux-bcache@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>, io-uring@vger.kernel.org, linux-nfs@vger.kernel.org, Nicolas Pitre <nico@fluxnic.net>, linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-arch <linux-arch@vger.kernel.org>, Richard Weinberger <richard@nod.at>, jdike@addtoit.com, linux-um <linux-um@lists.infradead.org>, Akira Moroo <retrage01@gmail.com>, linux-kernel-library <linux-kernel-library@freelists.org>, Hajime Tazaki <thehajime@gmail.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-From: Ira Weiny <ira.weiny@intel.com>
+On Wed, Oct 7, 2020 at 6:45 PM Johannes Berg <johannes@sipsolutions.net> wrote:
+>
+> On Tue, 2020-10-06 at 18:44 +0900, Hajime Tazaki wrote:
+> > This patch introduces the host operations that define the interface
+> > between the LKL and the host. These operations must be provided either
+> > by a host library or by the application itself.
+> >
+>
+> I kinda find patches like this very pointless ... you see nothing, and
+> can't really say anything. Maybe add the infra with the first user?
+>
+> > +/* Defined in {posix,nt}-host.c */
+>
+> That doesn't exist either yet ...
+>
 
-The kmap() calls in this FS are localized to a single thread.  To avoid
-the over head of global PKRS updates use the new kmap_thread() call.
+Noted, we will fix it in the next patch series.
 
-Cc: Nicolas Pitre <nico@fluxnic.net>
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
----
- fs/cramfs/inode.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/fs/cramfs/inode.c b/fs/cramfs/inode.c
-index 912308600d39..003c014a42ed 100644
---- a/fs/cramfs/inode.c
-+++ b/fs/cramfs/inode.c
-@@ -247,8 +247,8 @@ static void *cramfs_blkdev_read(struct super_block *sb, unsigned int offset,
- 		struct page *page = pages[i];
- 
- 		if (page) {
--			memcpy(data, kmap(page), PAGE_SIZE);
--			kunmap(page);
-+			memcpy(data, kmap_thread(page), PAGE_SIZE);
-+			kunmap_thread(page);
- 			put_page(page);
- 		} else
- 			memset(data, 0, PAGE_SIZE);
-@@ -826,7 +826,7 @@ static int cramfs_readpage(struct file *file, struct page *page)
- 
- 	maxblock = (inode->i_size + PAGE_SIZE - 1) >> PAGE_SHIFT;
- 	bytes_filled = 0;
--	pgdata = kmap(page);
-+	pgdata = kmap_thread(page);
- 
- 	if (page->index < maxblock) {
- 		struct super_block *sb = inode->i_sb;
-@@ -914,13 +914,13 @@ static int cramfs_readpage(struct file *file, struct page *page)
- 
- 	memset(pgdata + bytes_filled, 0, PAGE_SIZE - bytes_filled);
- 	flush_dcache_page(page);
--	kunmap(page);
-+	kunmap_thread(page);
- 	SetPageUptodate(page);
- 	unlock_page(page);
- 	return 0;
- 
- err:
--	kunmap(page);
-+	kunmap_thread(page);
- 	ClearPageUptodate(page);
- 	SetPageError(page);
- 	unlock_page(page);
--- 
-2.28.0.rc0.12.gb6a658bd00c9
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
