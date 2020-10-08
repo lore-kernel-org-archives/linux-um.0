@@ -1,358 +1,61 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x642.google.com ([2607:f8b0:4864:20::642])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kPjY6-0000B7-Aa
- for linux-um@lists.infradead.org; Tue, 06 Oct 2020 09:46:23 +0000
-Received: by mail-pl1-x642.google.com with SMTP id h2so951555pll.11
- for <linux-um@lists.infradead.org>; Tue, 06 Oct 2020 02:46:22 -0700 (PDT)
+Return-Path: <linux-arch-owner@vger.kernel.org>
+Date: Thu, 08 Oct 2020 21:13:43 +0900
+Message-ID: <m21ri86hl4.wl-thehajime@gmail.com>
 From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v7 19/21] um: host: posix host operations
-Date: Tue,  6 Oct 2020 18:44:28 +0900
-Message-Id: <63a3d215a0e430152020b3ef2d1f850fa8bb23c4.1601960644.git.thehajime@gmail.com>
-In-Reply-To: <cover.1601960644.git.thehajime@gmail.com>
+Subject: Re: [RFC v7 21/21] um: nommu: add block device support of UML
+In-Reply-To: <ac66cd8b-3bb1-5846-aa75-fc91c1149e91@cambridgegreys.com>
 References: <cover.1601960644.git.thehajime@gmail.com>
-MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
-Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, retrage01@gmail.com
-
-This commit implements LKL host operations for POSIX hosts.  The
-operations are implemented to be portable in various POSIX OSs.
-
-Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
----
- tools/um/lib/Build        |   2 +
- tools/um/lib/posix-host.c | 292 ++++++++++++++++++++++++++++++++++++++
- 2 files changed, 294 insertions(+)
- create mode 100644 tools/um/lib/posix-host.c
-
-diff --git a/tools/um/lib/Build b/tools/um/lib/Build
-index fc967af4104a..dddff26a3b4e 100644
---- a/tools/um/lib/Build
-+++ b/tools/um/lib/Build
-@@ -1,4 +1,6 @@
- include $(objtree)/include/config/auto.conf
-+CFLAGS_posix-host.o += -D_FILE_OFFSET_BITS=64
- 
- liblinux-$(CONFIG_UMMODE_LIB) += utils.o
-+liblinux-$(CONFIG_UMMODE_LIB) += posix-host.o
- liblinux-$(CONFIG_UMMODE_LIB) += jmp_buf.o
-diff --git a/tools/um/lib/posix-host.c b/tools/um/lib/posix-host.c
-new file mode 100644
-index 000000000000..b6b5b2902254
---- /dev/null
-+++ b/tools/um/lib/posix-host.c
-@@ -0,0 +1,292 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <pthread.h>
-+#include <limits.h>
-+#include <errno.h>
-+#include <string.h>
-+#include <stdlib.h>
-+#include <assert.h>
-+#include <sys/syscall.h>
-+#include <lkl_host.h>
-+#include "jmp_buf.h"
-+
-+/* Let's see if the host has semaphore.h */
-+#include <unistd.h>
-+
-+#ifdef _POSIX_SEMAPHORES
-+#include <semaphore.h>
-+/* TODO(pscollins): We don't support fork() for now, but maybe one day
-+ * we will?
-+ */
-+#define SHARE_SEM 0
-+#endif /* _POSIX_SEMAPHORES */
-+
-+
-+struct lkl_mutex {
-+	pthread_mutex_t mutex;
-+};
-+
-+struct lkl_sem {
-+#ifdef _POSIX_SEMAPHORES
-+	sem_t sem;
-+#else
-+	pthread_mutex_t lock;
-+	int count;
-+	pthread_cond_t cond;
-+#endif /* _POSIX_SEMAPHORES */
-+};
-+
-+struct lkl_tls_key {
-+	pthread_key_t key;
-+};
-+
-+static void print(const char *str, int len)
-+{
-+	int ret __attribute__((unused));
-+
-+	ret = write(STDOUT_FILENO, str, len);
-+}
-+
-+static void panic(void)
-+{
-+	assert(0);
-+}
-+
-+#define WARN_UNLESS(exp) do {						\
-+		if (exp < 0)						\
-+			lkl_printf("%s: %s\n", #exp, strerror(errno));	\
-+	} while (0)
-+
-+static int _warn_pthread(int ret, char *str_exp)
-+{
-+	if (ret > 0)
-+		lkl_printf("%s: %s\n", str_exp, strerror(ret));
-+
-+	return ret;
-+}
-+
-+
-+/* pthread_* functions use the reverse convention */
-+#define WARN_PTHREAD(exp) _warn_pthread(exp, #exp)
-+
-+static struct lkl_sem *sem_alloc(int count)
-+{
-+	struct lkl_sem *sem;
-+
-+	sem = malloc(sizeof(*sem));
-+	if (!sem)
-+		return NULL;
-+
-+#ifdef _POSIX_SEMAPHORES
-+	if (sem_init(&sem->sem, SHARE_SEM, count) < 0) {
-+		lkl_printf("sem_init: %s\n", strerror(errno));
-+		free(sem);
-+		return NULL;
-+	}
-+#else
-+	pthread_mutex_init(&sem->lock, NULL);
-+	sem->count = count;
-+	WARN_PTHREAD(pthread_cond_init(&sem->cond, NULL));
-+#endif /* _POSIX_SEMAPHORES */
-+
-+	return sem;
-+}
-+
-+static void sem_free(struct lkl_sem *sem)
-+{
-+#ifdef _POSIX_SEMAPHORES
-+	WARN_UNLESS(sem_destroy(&sem->sem));
-+#else
-+	WARN_PTHREAD(pthread_cond_destroy(&sem->cond));
-+	WARN_PTHREAD(pthread_mutex_destroy(&sem->lock));
-+#endif /* _POSIX_SEMAPHORES */
-+	free(sem);
-+}
-+
-+static void sem_up(struct lkl_sem *sem)
-+{
-+#ifdef _POSIX_SEMAPHORES
-+	WARN_UNLESS(sem_post(&sem->sem));
-+#else
-+	WARN_PTHREAD(pthread_mutex_lock(&sem->lock));
-+	sem->count++;
-+	if (sem->count > 0)
-+		WARN_PTHREAD(pthread_cond_signal(&sem->cond));
-+	WARN_PTHREAD(pthread_mutex_unlock(&sem->lock));
-+#endif /* _POSIX_SEMAPHORES */
-+
-+}
-+
-+static void sem_down(struct lkl_sem *sem)
-+{
-+#ifdef _POSIX_SEMAPHORES
-+	int err;
-+
-+	do {
-+		err = sem_wait(&sem->sem);
-+	} while (err < 0 && errno == EINTR);
-+	if (err < 0 && errno != EINTR)
-+		lkl_printf("sem_wait: %s\n", strerror(errno));
-+#else
-+	WARN_PTHREAD(pthread_mutex_lock(&sem->lock));
-+	while (sem->count <= 0)
-+		WARN_PTHREAD(pthread_cond_wait(&sem->cond, &sem->lock));
-+	sem->count--;
-+	WARN_PTHREAD(pthread_mutex_unlock(&sem->lock));
-+#endif /* _POSIX_SEMAPHORES */
-+}
-+
-+static struct lkl_mutex *mutex_alloc(int recursive)
-+{
-+	struct lkl_mutex *_mutex = malloc(sizeof(struct lkl_mutex));
-+	pthread_mutex_t *mutex = NULL;
-+	pthread_mutexattr_t attr;
-+
-+	if (!_mutex)
-+		return NULL;
-+
-+	mutex = &_mutex->mutex;
-+	WARN_PTHREAD(pthread_mutexattr_init(&attr));
-+
-+	/* PTHREAD_MUTEX_ERRORCHECK is *very* useful for debugging,
-+	 * but has some overhead, so we provide an option to turn it
-+	 * off.
-+	 */
-+#ifdef DEBUG
-+	if (!recursive)
-+		WARN_PTHREAD(pthread_mutexattr_settype(
-+				     &attr, PTHREAD_MUTEX_ERRORCHECK));
-+#endif /* DEBUG */
-+
-+	if (recursive)
-+		WARN_PTHREAD(pthread_mutexattr_settype(
-+				     &attr, PTHREAD_MUTEX_RECURSIVE));
-+
-+	WARN_PTHREAD(pthread_mutex_init(mutex, &attr));
-+
-+	return _mutex;
-+}
-+
-+static void mutex_lock(struct lkl_mutex *mutex)
-+{
-+	WARN_PTHREAD(pthread_mutex_lock(&mutex->mutex));
-+}
-+
-+static void mutex_unlock(struct lkl_mutex *_mutex)
-+{
-+	pthread_mutex_t *mutex = &_mutex->mutex;
-+
-+	WARN_PTHREAD(pthread_mutex_unlock(mutex));
-+}
-+
-+static void mutex_free(struct lkl_mutex *_mutex)
-+{
-+	pthread_mutex_t *mutex = &_mutex->mutex;
-+
-+	WARN_PTHREAD(pthread_mutex_destroy(mutex));
-+	free(_mutex);
-+}
-+
-+static lkl_thread_t thread_create(void* (*fn)(void *), void *arg)
-+{
-+	pthread_t thread;
-+
-+	if (WARN_PTHREAD(pthread_create(&thread, NULL, fn, arg)))
-+		return 0;
-+	else
-+		return (lkl_thread_t) thread;
-+}
-+
-+static void thread_detach(void)
-+{
-+	WARN_PTHREAD(pthread_detach(pthread_self()));
-+}
-+
-+static void thread_exit(void)
-+{
-+	pthread_exit(NULL);
-+}
-+
-+static int thread_join(lkl_thread_t tid)
-+{
-+	if (WARN_PTHREAD(pthread_join((pthread_t)tid, NULL)))
-+		return (-1);
-+	else
-+		return 0;
-+}
-+
-+static lkl_thread_t thread_self(void)
-+{
-+	return (lkl_thread_t)pthread_self();
-+}
-+
-+static int thread_equal(lkl_thread_t a, lkl_thread_t b)
-+{
-+	return pthread_equal((pthread_t)a, (pthread_t)b);
-+}
-+
-+static long _gettid(void)
-+{
-+#ifdef	__FreeBSD__
-+	return (long)pthread_self();
-+#else
-+	return syscall(SYS_gettid);
-+#endif
-+}
-+
-+static struct lkl_tls_key *tls_alloc(void (*destructor)(void *))
-+{
-+	struct lkl_tls_key *ret = malloc(sizeof(struct lkl_tls_key));
-+
-+	if (WARN_PTHREAD(pthread_key_create(&ret->key, destructor))) {
-+		free(ret);
-+		return NULL;
-+	}
-+	return ret;
-+}
-+
-+static void tls_free(struct lkl_tls_key *key)
-+{
-+	WARN_PTHREAD(pthread_key_delete(key->key));
-+	free(key);
-+}
-+
-+static int tls_set(struct lkl_tls_key *key, void *data)
-+{
-+	if (WARN_PTHREAD(pthread_setspecific(key->key, data)))
-+		return (-1);
-+	return 0;
-+}
-+
-+static void *tls_get(struct lkl_tls_key *key)
-+{
-+	return pthread_getspecific(key->key);
-+}
-+
-+struct lkl_host_operations lkl_host_ops = {
-+	.panic = panic,
-+	.print = print,
-+	.mem_alloc = (void *)malloc,
-+	.mem_free = free,
-+	.thread_create = thread_create,
-+	.thread_detach = thread_detach,
-+	.thread_exit = thread_exit,
-+	.thread_join = thread_join,
-+	.thread_self = thread_self,
-+	.thread_equal = thread_equal,
-+	.sem_alloc = sem_alloc,
-+	.sem_free = sem_free,
-+	.sem_up = sem_up,
-+	.sem_down = sem_down,
-+	.mutex_alloc = mutex_alloc,
-+	.mutex_free = mutex_free,
-+	.mutex_lock = mutex_lock,
-+	.mutex_unlock = mutex_unlock,
-+	.gettid = _gettid,
-+	.tls_alloc = tls_alloc,
-+	.tls_free = tls_free,
-+	.tls_set = tls_set,
-+	.tls_get = tls_get,
-+	.jmp_buf_set = jmp_buf_set,
-+	.jmp_buf_longjmp = jmp_buf_longjmp,
-+};
-+
--- 
-2.21.0 (Apple Git-122.2)
+        <a8686efcbad3c445d3e5bde054c04a58877915f1.1601960644.git.thehajime@gmail.com>
+        <ac66cd8b-3bb1-5846-aa75-fc91c1149e91@cambridgegreys.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+To: anton.ivanov@cambridgegreys.com
+Cc: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, retrage01@gmail.com
+List-ID: <linux-um.lists.infradead.org>
 
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+On Wed, 07 Oct 2020 23:17:31 +0900,
+Anton Ivanov wrote:
+
+> > diff --git a/arch/um/nommu/um/Kconfig b/arch/um/nommu/um/Kconfig
+> > index 20b3eaccb6f0..c6a3f472fe75 100644
+> > --- a/arch/um/nommu/um/Kconfig
+> > +++ b/arch/um/nommu/um/Kconfig
+> > @@ -4,6 +4,10 @@ config UML_NOMMU
+> >   	select UACCESS_MEMCPY
+> >   	select ARCH_THREAD_STACK_ALLOCATOR
+> >   	select ARCH_HAS_SYSCALL_WRAPPER
+> > +	select VFAT_FS
+> > +	select NLS_CODEPAGE_437
+> > +	select NLS_ISO8859_1
+> > +	select BTRFS_FS
+> >     config 64BIT
+> >   	bool
+> > @@ -35,3 +39,7 @@ config STACKTRACE_SUPPORT
+> >   config PRINTK_TIME
+> >   	bool
+> >   	default y
+> > +
+> > +config RAID6_PQ_BENCHMARK
+> > +	bool
+> > +	default n
+> 
+> Why are we touching this? I thought this is already defined in lib/Kconfig?
+
+With the scheduler which LKL implements, it has the same issue with
+what time-travel=inf-cpu has when CONFIG_BTRFS_FS is enable.  I tried
+to follow the way of the commit d65197a (below), but if I added
+"depends on !RAID6_PQ_BENCHMARK" to config UMMODE_LIB, I got "error:
+recursive dependency detected!".
+
+https://github.com/thehajime/linux/commit/d65197ad52494bed3b5e64708281b8295f76c391#diff-c170aa964ad412630a2b5addf306ff14
+
+Thus, to avoid this situation, I did the above additional config
+RAID6_PQ_BENCHMARK just for UMMODE_LIB.
+
+I plan to rework on Kconfig (UMMODE_LIB and !MMU) and will figure out
+more appropriate way.
+
+-- Hajime
+
 
