@@ -1,69 +1,63 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from lithops.sigma-star.at ([195.201.40.130])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kTPGk-0003TI-Ms
- for linux-um@lists.infradead.org; Fri, 16 Oct 2020 12:55:39 +0000
-Date: Fri, 16 Oct 2020 14:55:34 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <1686303327.201886.1602852934891.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] uml updates for 5.10
+Return-Path: <linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org>
+From: ira.weiny@intel.com
+Subject: [PATCH RFC PKS/PMEM 25/58] fs/reiserfs: Utilize new kmap_thread()
+Date: Fri,  9 Oct 2020 12:50:00 -0700
+Message-Id: <20201009195033.3208459-26-ira.weiny@intel.com>
+In-Reply-To: <20201009195033.3208459-1-ira.weiny@intel.com>
+References: <20201009195033.3208459-1-ira.weiny@intel.com>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um <linux-um@lists.infradead.org>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
+Errors-To: linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Andrew Morton <akpm@linux-foundation.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>
+Cc: linux-aio@kvack.org, linux-efi@vger.kernel.org, Jan Kara <jack@suse.cz>, kvm@vger.kernel.org, linux-doc@vger.kernel.org, linux-mmc@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>, dri-devel@lists.freedesktop.org, linux-mm@kvack.org, target-devel@vger.kernel.org, linux-mtd@lists.infradead.org, linux-kselftest@vger.kernel.org, samba-technical@lists.samba.org, Alex Shi <alex.shi@linux.alibaba.com>, Ira Weiny <ira.weiny@intel.com>, ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com, devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org, linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org, linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org, x86@kernel.org, amd-gfx@lists.freedesktop.org, linux-afs@lists.infradead.org, cluster-devel@redhat.com, linux-cachefs@redhat.com, intel-wired-lan@lists.osuosl.org, xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>, linux-um@lists.infradead.org, intel-gfx@lists.freedesktop.org, ecryptfs@vger.kernel.org, linux-erofs@lists.ozlabs.org, reiserfs-devel@vger.kernel.org, linux-block@vger.kernel.org, linux-bcache@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>, io-uring@vger.kernel.org, linux-nfs@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>, linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-TGludXMsCgpUaGUgZm9sbG93aW5nIGNoYW5nZXMgc2luY2UgY29tbWl0IGJhNGYxODRlMTI2Yjc1
-MWQxYmZmYWQ1ODk3ZjI2MzEwOGJlZmM3ODA6CgogIExpbnV4IDUuOS1yYzYgKDIwMjAtMDktMjAg
-MTY6MzM6NTUgLTA3MDApCgphcmUgYXZhaWxhYmxlIGluIHRoZSBHaXQgcmVwb3NpdG9yeSBhdDoK
-CiAgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3J3L3VtbC5n
-aXQgdGFncy9mb3ItbGludXMtNS4xMC1yYzEKCmZvciB5b3UgdG8gZmV0Y2ggY2hhbmdlcyB1cCB0
-byBmMDY4ODViM2YzZTM4ODRmOTgzNTFkN2I3MmE0ZmM4NDAwOTExY2RlOgoKICB1bTogdmVjdG9y
-OiBBZGQgZHluYW1pYyB0YXAgaW50ZXJmYWNlcyBhbmQgc2NyaXB0aW5nICgyMDIwLTEwLTExIDIz
-OjI2OjM3ICswMjAwKQoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGlzIHB1bGwgcmVxdWVzdCBjb250YWlucyB0aGUgZm9s
-bG93aW5nIGNoYW5nZXMgZm9yIFVNTDoKCi0gSW1wcm92ZSBzdXBwb3J0IGZvciBub24tZ2xpYmMg
-c3lzdGVtcwotIFZlY3RvcjogQWRkIHN1cHBvcnQgZm9yIHNjcmlwdGluZyBhbmQgZHluYW1pYyB0
-YXAgZGV2aWNlcwotIFZhcmlvdXMgZml4ZXMgZm9yIHRoZSB2ZWN0b3IgbmV0d29ya2luZyBkcml2
-ZXIKLSBWYXJpb3VzIGZpeGVzIGZvciB0aW1lIHRyYXZlbCBtb2RlCgotLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkFudG9uIEl2
-YW5vdiAoMSk6CiAgICAgIHVtOiB2ZWN0b3I6IEFkZCBkeW5hbWljIHRhcCBpbnRlcmZhY2VzIGFu
-ZCBzY3JpcHRpbmcKCkdhYnJpZWwgS3Jpc21hbiBCZXJ0YXppICgxKToKICAgICAgdW06IFJlbW92
-ZSBkZWFkIHVzYWdlIG9mIFRJRl9JQTMyCgpHYXVyYXYgU2luZ2ggKDEpOgogICAgICB1bTogRml4
-IG51bGwgcG9pbnRlciBkZXJlZmVyZW5jZSBpbiB2ZWN0b3JfdXNlcl9icGYKCklnbmF0IEtvcmNo
-YWdpbiAoMik6CiAgICAgIHVtOiBTb21lIGZpeGVzIHRvIGJ1aWxkIFVNTCB3aXRoIG11c2wKICAg
-ICAgdW06IEFsbG93IHN0YXRpYyBsaW5raW5nIGZvciBub24tZ2xpYmMgaW1wbGVtZW50YXRpb25z
-CgpKb2hhbm5lcyBCZXJnICg0KToKICAgICAgdW06IHRpbWUtdHJhdmVsOiBGaXggSVJRIGhhbmRs
-aW5nIGluIHRpbWVfdHJhdmVsX2hhbmRsZV9tZXNzYWdlKCkKICAgICAgdW06IHRpbWUtdHJhdmVs
-OiBSZXR1cm4gdGhlIHNlcXVlbmNlIG51bWJlciBpbiBBQ0sgbWVzc2FnZXMKICAgICAgdW06IGNo
-YW5nZSBzaWdpb19zcGlubG9jayB0byBhIG11dGV4CiAgICAgIHVtOiBDbGVhbiB1cCBzdGFja3Ry
-YWNlIGR1bXAKCkxpIEhlbmcgKDEpOgogICAgICB1bTogUmVtb3ZlIHJlZHVuZGFudCBOVUxMIGNo
-ZWNrCgpNYWNpZWogxbtlbmN6eWtvd3NraSAoMSk6CiAgICAgIHVtOiBGaXggaW5jb3JyZWN0IGFz
-c3VtcHRpb25zIGFib3V0IG1heCBwaWQgbGVuZ3RoCgpUaWV6aHUgWWFuZyAoMSk6CiAgICAgIHVt
-OiB2ZWN0b3I6IFVzZSBHRlBfQVRPTUlDIHVuZGVyIHNwaW4gbG9jawoKIGFyY2gvdW0vS2NvbmZp
-ZyAgICAgICAgICAgICAgIHwgIDYgKystLQogYXJjaC91bS9kcml2ZXJzL0tjb25maWcgICAgICAg
-fCAgNiArKy0tCiBhcmNoL3VtL2RyaXZlcnMvZGFlbW9uX3VzZXIuYyB8ICAxICsKIGFyY2gvdW0v
-ZHJpdmVycy9wY2FwX3VzZXIuYyAgIHwgMTIgKysrKy0tLS0KIGFyY2gvdW0vZHJpdmVycy9zbGlw
-X3VzZXIuYyAgIHwgIDIgKy0KIGFyY2gvdW0vZHJpdmVycy92ZWN0b3Jfa2Vybi5jIHwgIDQgKy0t
-CiBhcmNoL3VtL2RyaXZlcnMvdmVjdG9yX3VzZXIuYyB8IDcxICsrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrLS0tLS0tLS0tLS0KIGFyY2gvdW0va2VybmVsL3NpZ2lvLmMgICAgICAgIHwg
-IDYgKystLQogYXJjaC91bS9rZXJuZWwvc3lzcnEuYyAgICAgICAgfCAgNCArLS0KIGFyY2gvdW0v
-a2VybmVsL3RpbWUuYyAgICAgICAgIHwgMTUgKysrKysrLS0tCiBhcmNoL3VtL29zLUxpbnV4L3Vt
-aWQuYyAgICAgICB8ICA4ICsrLS0tCiBhcmNoL3VtL29zLUxpbnV4L3V0aWwuYyAgICAgICB8ICAy
-ICstCiBhcmNoL3g4Ni91bS9wdHJhY2VfNjQuYyAgICAgICB8IDEzICstLS0tLS0tCiBhcmNoL3g4
-Ni91bS91c2VyLW9mZnNldHMuYyAgICB8ICAyICstCiAxNCBmaWxlcyBjaGFuZ2VkLCA5MSBpbnNl
-cnRpb25zKCspLCA2MSBkZWxldGlvbnMoLSkKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5p
-bmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
-bGludXgtdW0K
+From: Ira Weiny <ira.weiny@intel.com>
+
+The kmap() calls in this FS are localized to a single thread.  To avoid
+the over head of global PKRS updates use the new kmap_thread() call.
+
+Cc: Jan Kara <jack@suse.cz>
+Cc: "Theodore Ts'o" <tytso@mit.edu>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: Alex Shi <alex.shi@linux.alibaba.com>
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+---
+ fs/reiserfs/journal.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/reiserfs/journal.c b/fs/reiserfs/journal.c
+index e98f99338f8f..be8f56261e8c 100644
+--- a/fs/reiserfs/journal.c
++++ b/fs/reiserfs/journal.c
+@@ -4194,11 +4194,11 @@ static int do_journal_end(struct reiserfs_transaction_handle *th, int flags)
+ 					    SB_ONDISK_JOURNAL_SIZE(sb)));
+ 			set_buffer_uptodate(tmp_bh);
+ 			page = cn->bh->b_page;
+-			addr = kmap(page);
++			addr = kmap_thread(page);
+ 			memcpy(tmp_bh->b_data,
+ 			       addr + offset_in_page(cn->bh->b_data),
+ 			       cn->bh->b_size);
+-			kunmap(page);
++			kunmap_thread(page);
+ 			mark_buffer_dirty(tmp_bh);
+ 			jindex++;
+ 			set_buffer_journal_dirty(cn->bh);
+-- 
+2.28.0.rc0.12.gb6a658bd00c9
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
