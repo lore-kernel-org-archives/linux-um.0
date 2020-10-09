@@ -1,80 +1,69 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Thu, 15 Oct 2020 10:42:03 +0100
-From: Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH v2 16/16] iomap: Make readpage synchronous
-Message-ID: <20201015094203.GA21420@infradead.org>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: [PATCH v2 16/16] iomap: Make readpage synchronous
+Date: Fri,  9 Oct 2020 15:31:04 +0100
+Message-Id: <20201009143104.22673-17-willy@infradead.org>
+In-Reply-To: <20201009143104.22673-1-willy@infradead.org>
 References: <20201009143104.22673-1-willy@infradead.org>
- <20201009143104.22673-17-willy@infradead.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20201009143104.22673-17-willy@infradead.org>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc: linux-cifs@vger.kernel.org, Richard Weinberger <richard@nod.at>, ecryptfs@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, linux-mm@kvack.org, linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org, v9fs-developer@lists.sourceforge.net, ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+To: linux-fsdevel@vger.kernel.org
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>, linux-mm@kvack.org, v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org, ecryptfs@vger.kernel.org, linux-um@lists.infradead.org, linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>, linux-xfs@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-> +static void iomap_read_page_end_io(struct bio_vec *bvec,
-> +		struct completion *done, bool error)
+A synchronous readpage lets us report the actual errno instead of
+ineffectively setting PageError.
 
-I really don't like the parameters here.  Part of the problem is
-that ctx is only assigned to bi_private conditionally, which can
-easily be fixed.  The other part is the strange bool error when
-we can just pass on bi_stats.  See the patch at the end of what
-I'd do intead.
-
-> @@ -318,15 +325,17 @@ iomap_readpage(struct page *page, const struct iomap_ops *ops)
->  
->  	trace_iomap_readpage(page->mapping->host, 1);
->  
-> +	ctx.status = BLK_STS_OK;
-
-This should move into the initializer for ctx.  Or we could just drop
-it given that BLK_STS_OK is and must always be 0.
-
->  	} else {
->  		WARN_ON_ONCE(ctx.cur_page_in_bio);
-> -		unlock_page(page);
-> +		complete(&ctx.done);
->  	}
->  
-> +	wait_for_completion(&ctx.done);
-
-I don't think we need the complete / wait_for_completion dance in
-this case.
-
-> +	if (ret >= 0)
-> +		ret = blk_status_to_errno(ctx.status);
-> +	if (ret == 0)
-> +		return AOP_UPDATED_PAGE;
-> +	unlock_page(page);
-> +	return ret;
-
-Nipick, but I'd rather have a goto out_unlock for both error case
-and have the AOP_UPDATED_PAGE for the normal path straight in line.
-
-Here is an untested patch with my suggestions:
-
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ fs/iomap/buffered-io.c | 74 ++++++++++++++++++++++++------------------
+ 1 file changed, 42 insertions(+), 32 deletions(-)
 
 diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index 887bf871ca9bba..81d34725565d7e 100644
+index e60f572e1590..887bf871ca9b 100644
 --- a/fs/iomap/buffered-io.c
 +++ b/fs/iomap/buffered-io.c
-@@ -162,33 +162,34 @@ static void iomap_set_range_uptodate(struct page *page, unsigned off,
+@@ -150,9 +150,6 @@ static void iomap_set_range_uptodate(struct page *page, unsigned off,
+ 	unsigned last = (off + len - 1) >> inode->i_blkbits;
+ 	unsigned long flags;
+ 
+-	if (PageError(page))
+-		return;
+-
+ 	if (!iop) {
+ 		SetPageUptodate(page);
+ 		return;
+@@ -165,42 +162,50 @@ static void iomap_set_range_uptodate(struct page *page, unsigned off,
  	spin_unlock_irqrestore(&iop->uptodate_lock, flags);
  }
  
--static void iomap_read_page_end_io(struct bio_vec *bvec,
--		struct completion *done, bool error)
+-static void
+-iomap_read_page_end_io(struct bio_vec *bvec, int error)
++static void iomap_read_page_end_io(struct bio_vec *bvec,
++		struct completion *done, bool error)
+ {
+ 	struct page *page = bvec->bv_page;
+ 	struct iomap_page *iop = to_iomap_page(page);
+ 
+-	if (unlikely(error)) {
+-		ClearPageUptodate(page);
+-		SetPageError(page);
+-	} else {
++	if (!error)
+ 		iomap_set_range_uptodate(page, bvec->bv_offset, bvec->bv_len);
+-	}
+ 
+-	if (!iop || atomic_sub_and_test(bvec->bv_len, &iop->read_bytes_pending))
+-		unlock_page(page);
++	if (!iop ||
++	    atomic_sub_and_test(bvec->bv_len, &iop->read_bytes_pending)) {
++		if (done)
++			complete(done);
++		else
++			unlock_page(page);
++	}
+ }
+ 
 +struct iomap_readpage_ctx {
 +	struct page		*cur_page;
 +	bool			cur_page_in_bio;
@@ -84,114 +73,91 @@ index 887bf871ca9bba..81d34725565d7e 100644
 +	struct completion	done;
 +};
 +
-+static void
-+iomap_read_page_end_io(struct iomap_readpage_ctx *ctx, struct bio_vec *bvec,
-+		blk_status_t status)
+ static void
+ iomap_read_end_io(struct bio *bio)
  {
- 	struct page *page = bvec->bv_page;
- 	struct iomap_page *iop = to_iomap_page(page);
+-	int error = blk_status_to_errno(bio->bi_status);
++	struct iomap_readpage_ctx *ctx = bio->bi_private;
+ 	struct bio_vec *bvec;
+ 	struct bvec_iter_all iter_all;
  
--	if (!error)
-+	if (status == BLK_STS_OK)
- 		iomap_set_range_uptodate(page, bvec->bv_offset, bvec->bv_len);
- 
- 	if (!iop ||
- 	    atomic_sub_and_test(bvec->bv_len, &iop->read_bytes_pending)) {
--		if (done)
--			complete(done);
--		else
-+		if (ctx->rac)
- 			unlock_page(page);
-+		else
-+			complete(&ctx->done);
- 	}
++	/* Capture the first error */
++	if (ctx && ctx->status == BLK_STS_OK)
++		ctx->status = bio->bi_status;
++
+ 	bio_for_each_segment_all(bvec, bio, iter_all)
+-		iomap_read_page_end_io(bvec, error);
++		iomap_read_page_end_io(bvec, ctx ? &ctx->done : NULL,
++				bio->bi_status != BLK_STS_OK);
+ 	bio_put(bio);
  }
  
 -struct iomap_readpage_ctx {
 -	struct page		*cur_page;
 -	bool			cur_page_in_bio;
--	blk_status_t		status;
 -	struct bio		*bio;
 -	struct readahead_control *rac;
--	struct completion	done;
 -};
 -
  static void
- iomap_read_end_io(struct bio *bio)
- {
-@@ -197,12 +198,11 @@ iomap_read_end_io(struct bio *bio)
- 	struct bvec_iter_all iter_all;
- 
- 	/* Capture the first error */
--	if (ctx && ctx->status == BLK_STS_OK)
-+	if (ctx->status == BLK_STS_OK)
- 		ctx->status = bio->bi_status;
- 
- 	bio_for_each_segment_all(bvec, bio, iter_all)
--		iomap_read_page_end_io(bvec, ctx ? &ctx->done : NULL,
--				bio->bi_status != BLK_STS_OK);
-+		iomap_read_page_end_io(ctx, bvec, bio->bi_status);
- 	bio_put(bio);
- }
- 
-@@ -297,8 +297,7 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
+ iomap_read_inline_data(struct inode *inode, struct page *page,
+ 		struct iomap *iomap)
+@@ -292,6 +297,8 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
  		ctx->bio->bi_opf = REQ_OP_READ;
  		if (ctx->rac)
  			ctx->bio->bi_opf |= REQ_RAHEAD;
--		else
--			ctx->bio->bi_private = ctx;
-+		ctx->bio->bi_private = ctx;
++		else
++			ctx->bio->bi_private = ctx;
  		ctx->bio->bi_iter.bi_sector = sector;
  		bio_set_dev(ctx->bio, iomap->bdev);
  		ctx->bio->bi_end_io = iomap_read_end_io;
-@@ -318,14 +317,16 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
- int
- iomap_readpage(struct page *page, const struct iomap_ops *ops)
- {
--	struct iomap_readpage_ctx ctx = { .cur_page = page };
-+	struct iomap_readpage_ctx ctx = {
-+		.cur_page	= page,
-+		.status		= BLK_STS_OK,
-+	};
- 	struct inode *inode = page->mapping->host;
- 	unsigned poff;
- 	loff_t ret;
+@@ -318,15 +325,17 @@ iomap_readpage(struct page *page, const struct iomap_ops *ops)
  
  	trace_iomap_readpage(page->mapping->host, 1);
  
--	ctx.status = BLK_STS_OK;
- 	init_completion(&ctx.done);
- 
++	ctx.status = BLK_STS_OK;
++	init_completion(&ctx.done);
++
  	for (poff = 0; poff < PAGE_SIZE; poff += ret) {
-@@ -340,17 +341,16 @@ iomap_readpage(struct page *page, const struct iomap_ops *ops)
- 
- 	if (ctx.bio) {
- 		submit_bio(ctx.bio);
--		WARN_ON_ONCE(!ctx.cur_page_in_bio);
--	} else {
--		WARN_ON_ONCE(ctx.cur_page_in_bio);
--		complete(&ctx.done);
-+		wait_for_completion(&ctx.done);
+ 		ret = iomap_apply(inode, page_offset(page) + poff,
+ 				PAGE_SIZE - poff, 0, ops, &ctx,
+ 				iomap_readpage_actor);
+-		if (ret <= 0) {
+-			WARN_ON_ONCE(ret == 0);
+-			SetPageError(page);
++		if (WARN_ON_ONCE(ret == 0))
++			ret = -EIO;
++		if (ret < 0)
+ 			break;
+-		}
  	}
  
--	wait_for_completion(&ctx.done);
--	if (ret >= 0)
--		ret = blk_status_to_errno(ctx.status);
--	if (ret == 0)
--		return AOP_UPDATED_PAGE;
-+	if (ret < 0)
-+		goto out_unlock;
-+	ret = blk_status_to_errno(ctx.status);
-+	if (ret < 0)
-+		goto out_unlock;
-+	return AOP_UPDATED_PAGE;
-+out_unlock:
- 	unlock_page(page);
- 	return ret;
+ 	if (ctx.bio) {
+@@ -334,15 +343,16 @@ iomap_readpage(struct page *page, const struct iomap_ops *ops)
+ 		WARN_ON_ONCE(!ctx.cur_page_in_bio);
+ 	} else {
+ 		WARN_ON_ONCE(ctx.cur_page_in_bio);
+-		unlock_page(page);
++		complete(&ctx.done);
+ 	}
+ 
+-	/*
+-	 * Just like mpage_readahead and block_read_full_page we always
+-	 * return 0 and just mark the page as PageError on errors.  This
+-	 * should be cleaned up all through the stack eventually.
+-	 */
+-	return 0;
++	wait_for_completion(&ctx.done);
++	if (ret >= 0)
++		ret = blk_status_to_errno(ctx.status);
++	if (ret == 0)
++		return AOP_UPDATED_PAGE;
++	unlock_page(page);
++	return ret;
  }
+ EXPORT_SYMBOL_GPL(iomap_readpage);
+ 
+-- 
+2.28.0
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
