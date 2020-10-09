@@ -1,76 +1,65 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: ira.weiny@intel.com
-Subject: [PATCH RFC PKS/PMEM 31/58] fs/vboxsf: Utilize new kmap_thread()
-Date: Fri,  9 Oct 2020 12:50:06 -0700
-Message-Id: <20201009195033.3208459-32-ira.weiny@intel.com>
-In-Reply-To: <20201009195033.3208459-1-ira.weiny@intel.com>
-References: <20201009195033.3208459-1-ira.weiny@intel.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: [PATCH v2 11/16] jffs2: Tell the VFS that readpage was synchronous
+Date: Fri,  9 Oct 2020 15:30:59 +0100
+Message-Id: <20201009143104.22673-12-willy@infradead.org>
+In-Reply-To: <20201009143104.22673-1-willy@infradead.org>
+References: <20201009143104.22673-1-willy@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: Andrew Morton <akpm@linux-foundation.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>
-Cc: Ira Weiny <ira.weiny@intel.com>, Hans de Goede <hdegoede@redhat.com>, x86@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>, Dan Williams <dan.j.williams@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org, kexec@lists.infradead.org, linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org, linux-efi@vger.kernel.org, linux-mmc@vger.kernel.org, linux-scsi@vger.kernel.org, target-devel@vger.kernel.org, linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org, linux-aio@kvack.org, io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org, linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net, reiserfs-devel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-nilfs@vger.kernel.org, cluster-devel@redhat.com, ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-afs@lists.infradead.org, linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, xen-devel@lists.xenproject.org, linux-cachefs@redhat.com, samba-technical@lists.samba.org, intel-wired-lan@lists.osuosl.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-fsdevel@vger.kernel.org
+Cc: linux-cifs@vger.kernel.org, Richard Weinberger <richard@nod.at>, ecryptfs@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>, linux-xfs@vger.kernel.org, linux-mm@kvack.org, linux-mtd@lists.infradead.org, v9fs-developer@lists.sourceforge.net, ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org
 
-From: Ira Weiny <ira.weiny@intel.com>
+The jffs2 readpage implementation was already synchronous, so use
+AOP_UPDATED_PAGE to avoid cycling the page lock.
 
-The kmap() calls in this FS are localized to a single thread.  To avoid
-the over head of global PKRS updates use the new kmap_thread() call.
-
-Cc: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Acked-by: Richard Weinberger <richard@nod.at>
 ---
- fs/vboxsf/file.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ fs/jffs2/file.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/fs/vboxsf/file.c b/fs/vboxsf/file.c
-index c4ab5996d97a..d9c7e6b7b4cc 100644
---- a/fs/vboxsf/file.c
-+++ b/fs/vboxsf/file.c
-@@ -216,7 +216,7 @@ static int vboxsf_readpage(struct file *file, struct page *page)
- 	u8 *buf;
- 	int err;
- 
--	buf = kmap(page);
-+	buf = kmap_thread(page);
- 
- 	err = vboxsf_read(sf_handle->root, sf_handle->handle, off, &nread, buf);
- 	if (err == 0) {
-@@ -227,7 +227,7 @@ static int vboxsf_readpage(struct file *file, struct page *page)
- 		SetPageError(page);
- 	}
- 
--	kunmap(page);
-+	kunmap_thread(page);
- 	unlock_page(page);
- 	return err;
+diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
+index f8fb89b10227..959a74027041 100644
+--- a/fs/jffs2/file.c
++++ b/fs/jffs2/file.c
+@@ -116,15 +116,17 @@ int jffs2_do_readpage_unlock(void *data, struct page *pg)
+ 	return ret;
  }
-@@ -268,10 +268,10 @@ static int vboxsf_writepage(struct page *page, struct writeback_control *wbc)
- 	if (!sf_handle)
- 		return -EBADF;
  
--	buf = kmap(page);
-+	buf = kmap_thread(page);
- 	err = vboxsf_write(sf_handle->root, sf_handle->handle,
- 			   off, &nwrite, buf);
--	kunmap(page);
-+	kunmap_thread(page);
+-
+ static int jffs2_readpage (struct file *filp, struct page *pg)
+ {
+ 	struct jffs2_inode_info *f = JFFS2_INODE_INFO(pg->mapping->host);
+ 	int ret;
  
- 	kref_put(&sf_handle->refcount, vboxsf_handle_release);
+ 	mutex_lock(&f->sem);
+-	ret = jffs2_do_readpage_unlock(pg->mapping->host, pg);
++	ret = jffs2_do_readpage_nolock(pg->mapping->host, pg);
+ 	mutex_unlock(&f->sem);
++	if (!ret)
++		return AOP_UPDATED_PAGE;
++	unlock_page(pg);
+ 	return ret;
+ }
  
-@@ -302,10 +302,10 @@ static int vboxsf_write_end(struct file *file, struct address_space *mapping,
- 	if (!PageUptodate(page) && copied < len)
- 		zero_user(page, from + copied, len - copied);
- 
--	buf = kmap(page);
-+	buf = kmap_thread(page);
- 	err = vboxsf_write(sf_handle->root, sf_handle->handle,
- 			   pos, &nwritten, buf + from);
--	kunmap(page);
-+	kunmap_thread(page);
- 
- 	if (err) {
- 		nwritten = 0;
 -- 
-2.28.0.rc0.12.gb6a658bd00c9
+2.28.0
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
