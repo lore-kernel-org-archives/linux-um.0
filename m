@@ -1,49 +1,58 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
+Return-Path: <linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org>
 From: ira.weiny@intel.com
-Subject: [PATCH RFC PKS/PMEM 38/58] fs/isofs: Utilize new kmap_thread()
-Date: Fri,  9 Oct 2020 12:50:13 -0700
-Message-Id: <20201009195033.3208459-39-ira.weiny@intel.com>
+Subject: [PATCH RFC PKS/PMEM 50/58] drivers/android: Utilize new kmap_thread()
+Date: Fri,  9 Oct 2020 12:50:25 -0700
+Message-Id: <20201009195033.3208459-51-ira.weiny@intel.com>
 In-Reply-To: <20201009195033.3208459-1-ira.weiny@intel.com>
 References: <20201009195033.3208459-1-ira.weiny@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
+Errors-To: linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org
 To: Andrew Morton <akpm@linux-foundation.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>
-Cc: Ira Weiny <ira.weiny@intel.com>, x86@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>, Dan Williams <dan.j.williams@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org, kexec@lists.infradead.org, linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org, linux-efi@vger.kernel.org, linux-mmc@vger.kernel.org, linux-scsi@vger.kernel.org, target-devel@vger.kernel.org, linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org, linux-aio@kvack.org, io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org, linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net, reiserfs-devel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-nilfs@vger.kernel.org, cluster-devel@redhat.com, ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-afs@lists.infradead.org, linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, xen-devel@lists.xenproject.org, linux-cachefs@redhat.com, samba-technical@lists.samba.org, intel-wired-lan@lists.osuosl.org
+Cc: linux-aio@kvack.org, linux-efi@vger.kernel.org, kvm@vger.kernel.org, linux-doc@vger.kernel.org, linux-mmc@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>, dri-devel@lists.freedesktop.org, linux-mm@kvack.org, target-devel@vger.kernel.org, linux-mtd@lists.infradead.org, linux-kselftest@vger.kernel.org, samba-technical@lists.samba.org, Ira Weiny <ira.weiny@intel.com>, ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com, devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org, linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org, linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org, x86@kernel.org, amd-gfx@lists.freedesktop.org, linux-afs@lists.infradead.org, cluster-devel@redhat.com, linux-cachefs@redhat.com, intel-wired-lan@lists.osuosl.org, xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>, linux-um@lists.infradead.org, intel-gfx@lists.freedesktop.org, ecryptfs@vger.kernel.org, linux-erofs@lists.ozlabs.org, reiserfs-devel@vger.kernel.org, linux-block@vger.kernel.org, linux-bcache@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>, io-uring@vger.kernel.org, linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, netdev@vger.kernel.org, linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
 List-ID: <linux-um.lists.infradead.org>
 
 From: Ira Weiny <ira.weiny@intel.com>
 
-These kmap() calls are localized to a single thread.  To avoid the over head of
-global PKRS updates use the new kmap_thread() call.
+These kmap() calls are localized to a single thread.  To avoid the over
+head of global PKRS updates use the new kmap_thread() call.
 
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 ---
- fs/isofs/compress.c | 4 ++--
+ drivers/android/binder_alloc.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/isofs/compress.c b/fs/isofs/compress.c
-index bc12ac7e2312..ddd3fd99d2e1 100644
---- a/fs/isofs/compress.c
-+++ b/fs/isofs/compress.c
-@@ -344,7 +344,7 @@ static int zisofs_readpage(struct file *file, struct page *page)
- 			pages[i] = grab_cache_page_nowait(mapping, index);
- 		if (pages[i]) {
- 			ClearPageError(pages[i]);
--			kmap(pages[i]);
-+			kmap_thread(pages[i]);
- 		}
- 	}
- 
-@@ -356,7 +356,7 @@ static int zisofs_readpage(struct file *file, struct page *page)
- 			flush_dcache_page(pages[i]);
- 			if (i == full_page && err)
- 				SetPageError(pages[i]);
--			kunmap(pages[i]);
-+			kunmap_thread(pages[i]);
- 			unlock_page(pages[i]);
- 			if (i != full_page)
- 				put_page(pages[i]);
+diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
+index 69609696a843..5f50856caad7 100644
+--- a/drivers/android/binder_alloc.c
++++ b/drivers/android/binder_alloc.c
+@@ -1118,9 +1118,9 @@ binder_alloc_copy_user_to_buffer(struct binder_alloc *alloc,
+ 		page = binder_alloc_get_page(alloc, buffer,
+ 					     buffer_offset, &pgoff);
+ 		size = min_t(size_t, bytes, PAGE_SIZE - pgoff);
+-		kptr = kmap(page) + pgoff;
++		kptr = kmap_thread(page) + pgoff;
+ 		ret = copy_from_user(kptr, from, size);
+-		kunmap(page);
++		kunmap_thread(page);
+ 		if (ret)
+ 			return bytes - size + ret;
+ 		bytes -= size;
 -- 
 2.28.0.rc0.12.gb6a658bd00c9
 
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
