@@ -1,57 +1,122 @@
-Return-Path: <mhocko@suse.com>
-Date: Fri, 9 Oct 2020 12:37:30 +0200
-From: Michal Hocko <mhocko@suse.com>
-Subject: Re: [RFC PATCH] kernel: allow to configure PREEMPT_NONE,
- PREEMPT_VOLUNTARY on kernel command line
-Message-ID: <20201009103730.GJ4967@dhcp22.suse.cz>
-References: <20201007120401.11200-1-mhocko@kernel.org>
- <20201009091218.GF4967@dhcp22.suse.cz>
- <20201009094245.GG2628@hirez.programming.kicks-ass.net>
- <20201009101044.GH4967@dhcp22.suse.cz>
- <20201009101431.GJ2628@hirez.programming.kicks-ass.net>
+Return-Path: <linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org>
+From: ira.weiny@intel.com
+Subject: [PATCH RFC PKS/PMEM 52/58] mm: Utilize new kmap_thread()
+Date: Fri,  9 Oct 2020 12:50:27 -0700
+Message-Id: <20201009195033.3208459-53-ira.weiny@intel.com>
+In-Reply-To: <20201009195033.3208459-1-ira.weiny@intel.com>
+References: <20201009195033.3208459-1-ira.weiny@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201009101431.GJ2628@hirez.programming.kicks-ass.net>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Frederic Weisbecker <fweisbecker@suse.de>, LKML <linux-kernel@vger.kernel.org>, Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org, Brian Cain <bcain@codeaurora.org>, linux-hexagon@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
+Errors-To: linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Andrew Morton <akpm@linux-foundation.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>
+Cc: linux-aio@kvack.org, linux-efi@vger.kernel.org, kvm@vger.kernel.org, linux-doc@vger.kernel.org, linux-mmc@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>, dri-devel@lists.freedesktop.org, linux-mm@kvack.org, target-devel@vger.kernel.org, linux-mtd@lists.infradead.org, linux-kselftest@vger.kernel.org, samba-technical@lists.samba.org, Ira Weiny <ira.weiny@intel.com>, ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com, devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org, linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org, linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org, x86@kernel.org, amd-gfx@lists.freedesktop.org, linux-afs@lists.infradead.org, cluster-devel@redhat.com, linux-cachefs@redhat.com, intel-wired-lan@lists.osuosl.org, xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>, linux-um@lists.infradead.org, intel-gfx@lists.freedesktop.org, ecryptfs@vger.kernel.org, linux-erofs@lists.ozlabs.org, reiserfs-devel@vger.kernel.org, linux-block@vger.kernel.org, linux-bcache@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>, io-uring@vger.kernel.org, linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
 List-ID: <linux-um.lists.infradead.org>
 
-On Fri 09-10-20 12:14:31, Peter Zijlstra wrote:
-> On Fri, Oct 09, 2020 at 12:10:44PM +0200, Michal Hocko wrote:
-> > On Fri 09-10-20 11:42:45, Peter Zijlstra wrote:
-> > > On Fri, Oct 09, 2020 at 11:12:18AM +0200, Michal Hocko wrote:
-> > > > Is there any additional feedback? Should I split up the patch and repost
-> > > > for inclusion?
-> > > 
-> > > Maybe remove PREEMPT_NONE after that?  Since that's then equivalent to
-> > > building with VOLUNTARY and booting with preempt=none.
-> > 
-> > So do you mean that I should post an additional patch which does this on
-> > top? With a justification that there is one option less to chose from?
-> 
-> Exactly!
+From: Ira Weiny <ira.weiny@intel.com>
 
-It seems we have to get rid of CONFIG_NO_PREEMPT first
-$ git grep ARCH_NO_PREEMPT
-arch/Kconfig:config ARCH_NO_PREEMPT
-arch/alpha/Kconfig:     select ARCH_NO_PREEMPT
-arch/hexagon/Kconfig:   select ARCH_NO_PREEMPT
-arch/m68k/Kconfig:      select ARCH_NO_PREEMPT if !COLDFIRE
-arch/um/Kconfig:        select ARCH_NO_PREEMPT
-kernel/Kconfig.preempt: depends on !ARCH_NO_PREEMPT
-kernel/Kconfig.preempt: depends on !ARCH_NO_PREEMPT
-lib/Kconfig.debug:      select PREEMPT_COUNT if !ARCH_NO_PREEMPT
-lib/Kconfig.debug:      depends on !ARCH_NO_PREEMPT
+These kmap() calls are localized to a single thread.  To avoid the over
+head of global PKRS updates use the new kmap_thread() call.
 
-Is there anybody working on that. Is this even possible? I can see it
-has been added by 87a4c375995e ("kconfig: include kernel/Kconfig.preempt
-from init/Kconfig") but this looks more like a mechanical change and it
-has defined ARCH_NO_PREEMPT all arches which haven't included
-Kconfig.preempt. But is there any reason why those cannot support
-preemption for some reason? Cc respective maintainer (the email thread
-starts http://lkml.kernel.org/r/20201007120401.11200-1-mhocko@kernel.org
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+---
+ mm/memory.c      | 8 ++++----
+ mm/swapfile.c    | 4 ++--
+ mm/userfaultfd.c | 4 ++--
+ 3 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/mm/memory.c b/mm/memory.c
+index fcfc4ca36eba..75a054882d7a 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -4945,7 +4945,7 @@ int __access_remote_vm(struct task_struct *tsk, struct mm_struct *mm,
+ 			if (bytes > PAGE_SIZE-offset)
+ 				bytes = PAGE_SIZE-offset;
+ 
+-			maddr = kmap(page);
++			maddr = kmap_thread(page);
+ 			if (write) {
+ 				copy_to_user_page(vma, page, addr,
+ 						  maddr + offset, buf, bytes);
+@@ -4954,7 +4954,7 @@ int __access_remote_vm(struct task_struct *tsk, struct mm_struct *mm,
+ 				copy_from_user_page(vma, page, addr,
+ 						    buf, maddr + offset, bytes);
+ 			}
+-			kunmap(page);
++			kunmap_thread(page);
+ 			put_page(page);
+ 		}
+ 		len -= bytes;
+@@ -5216,14 +5216,14 @@ long copy_huge_page_from_user(struct page *dst_page,
+ 
+ 	for (i = 0; i < pages_per_huge_page; i++) {
+ 		if (allow_pagefault)
+-			page_kaddr = kmap(dst_page + i);
++			page_kaddr = kmap_thread(dst_page + i);
+ 		else
+ 			page_kaddr = kmap_atomic(dst_page + i);
+ 		rc = copy_from_user(page_kaddr,
+ 				(const void __user *)(src + i * PAGE_SIZE),
+ 				PAGE_SIZE);
+ 		if (allow_pagefault)
+-			kunmap(dst_page + i);
++			kunmap_thread(dst_page + i);
+ 		else
+ 			kunmap_atomic(page_kaddr);
+ 
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index debc94155f74..e3296ff95648 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -3219,7 +3219,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+ 		error = PTR_ERR(page);
+ 		goto bad_swap_unlock_inode;
+ 	}
+-	swap_header = kmap(page);
++	swap_header = kmap_thread(page);
+ 
+ 	maxpages = read_swap_header(p, swap_header, inode);
+ 	if (unlikely(!maxpages)) {
+@@ -3395,7 +3395,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+ 		filp_close(swap_file, NULL);
+ out:
+ 	if (page && !IS_ERR(page)) {
+-		kunmap(page);
++		kunmap_thread(page);
+ 		put_page(page);
+ 	}
+ 	if (name)
+diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
+index 9a3d451402d7..4d38c881bb2d 100644
+--- a/mm/userfaultfd.c
++++ b/mm/userfaultfd.c
+@@ -586,11 +586,11 @@ static __always_inline ssize_t __mcopy_atomic(struct mm_struct *dst_mm,
+ 			mmap_read_unlock(dst_mm);
+ 			BUG_ON(!page);
+ 
+-			page_kaddr = kmap(page);
++			page_kaddr = kmap_thread(page);
+ 			err = copy_from_user(page_kaddr,
+ 					     (const void __user *) src_addr,
+ 					     PAGE_SIZE);
+-			kunmap(page);
++			kunmap_thread(page);
+ 			if (unlikely(err)) {
+ 				err = -EFAULT;
+ 				goto out;
 -- 
-Michal Hocko
-SUSE Labs
+2.28.0.rc0.12.gb6a658bd00c9
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
