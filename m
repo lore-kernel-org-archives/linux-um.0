@@ -1,33 +1,84 @@
-Return-Path: <linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Thu, 15 Oct 2020 10:08:04 +0100
-From: Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH v2 02/16] mm: Inline wait_on_page_read into its one caller
-Message-ID: <20201015090804.GC12879@infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: [PATCH v2 02/16] mm: Inline wait_on_page_read into its one caller
+Date: Fri,  9 Oct 2020 15:30:50 +0100
+Message-Id: <20201009143104.22673-3-willy@infradead.org>
+In-Reply-To: <20201009143104.22673-1-willy@infradead.org>
 References: <20201009143104.22673-1-willy@infradead.org>
- <20201009143104.22673-3-willy@infradead.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20201009143104.22673-3-willy@infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
-List-Post: <mailto:linux-mtd@lists.infradead.org>
-List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-Errors-To: linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc: linux-cifs@vger.kernel.org, Richard Weinberger <richard@nod.at>, ecryptfs@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, linux-mm@kvack.org, linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org, v9fs-developer@lists.sourceforge.net, ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org
-List-ID: <linux-um.lists.infradead.org>
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-fsdevel@vger.kernel.org
+Cc: linux-cifs@vger.kernel.org, Richard Weinberger <richard@nod.at>, ecryptfs@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>, linux-xfs@vger.kernel.org, linux-mm@kvack.org, linux-mtd@lists.infradead.org, v9fs-developer@lists.sourceforge.net, ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org
 
-Looks good,
+Having this code inline helps the function read more easily.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ mm/filemap.c | 20 ++++----------------
+ 1 file changed, 4 insertions(+), 16 deletions(-)
 
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 95b68ec1f22c..0ef06d515532 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2834,18 +2834,6 @@ EXPORT_SYMBOL(filemap_page_mkwrite);
+ EXPORT_SYMBOL(generic_file_mmap);
+ EXPORT_SYMBOL(generic_file_readonly_mmap);
+ 
+-static struct page *wait_on_page_read(struct page *page)
+-{
+-	if (!IS_ERR(page)) {
+-		wait_on_page_locked(page);
+-		if (!PageUptodate(page)) {
+-			put_page(page);
+-			page = ERR_PTR(-EIO);
+-		}
+-	}
+-	return page;
+-}
+-
+ static struct page *do_read_cache_page(struct address_space *mapping,
+ 				pgoff_t index,
+ 				int (*filler)(void *, struct page *),
+@@ -2876,7 +2864,10 @@ static struct page *do_read_cache_page(struct address_space *mapping,
+ 			err = mapping->a_ops->readpage(data, page);
+ 		if (err == AOP_UPDATED_PAGE) {
+ 			unlock_page(page);
+-			goto out;
++		} else if (!err) {
++			wait_on_page_locked(page);
++			if (!PageUptodate(page))
++				err = -EIO;
+ 		}
+ 
+ 		if (err < 0) {
+@@ -2884,9 +2875,6 @@ static struct page *do_read_cache_page(struct address_space *mapping,
+ 			return ERR_PTR(err);
+ 		}
+ 
+-		page = wait_on_page_read(page);
+-		if (IS_ERR(page))
+-			return page;
+ 		goto out;
+ 	}
+ 	if (PageUptodate(page))
+-- 
+2.28.0
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
