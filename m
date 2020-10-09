@@ -1,84 +1,82 @@
-Return-Path: <linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: ira.weiny@intel.com
-Subject: [PATCH RFC PKS/PMEM 43/58] drivers/mmc: Utilize new kmap_thread()
-Date: Fri,  9 Oct 2020 12:50:18 -0700
-Message-Id: <20201009195033.3208459-44-ira.weiny@intel.com>
-In-Reply-To: <20201009195033.3208459-1-ira.weiny@intel.com>
-References: <20201009195033.3208459-1-ira.weiny@intel.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kQunz-0000gI-GX
+ for linux-um@lists.infradead.org; Fri, 09 Oct 2020 15:59:40 +0000
+Message-ID: <d2b67bdfa5e1b48d5faf60387904aa254b3ae8da.camel@sipsolutions.net>
+Subject: Re: [RFC v7 03/21] um: move arch/um/os-Linux dir to tools/um/uml
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Fri, 09 Oct 2020 17:59:33 +0200
+In-Reply-To: <CAMoF9u2Fc2s1uitk3D3osgq1XByebxUTirq4SROcMZg9kJ_Gfw@mail.gmail.com>
+ (sfid-20201008_225343_681111_E8A35813)
+References: <cover.1601960644.git.thehajime@gmail.com>
+ <d5df1b8807384a00f96e4b02d41a37183fad5562.1601960644.git.thehajime@gmail.com>
+ <0ed761fbe77f9858244ee2ffbf3e700d7df78418.camel@sipsolutions.net>
+ <CAMoF9u1XX6gJpPfUh-6hmh1RNosn+=GUf75FQsMoxacrP=f7jg@mail.gmail.com>
+ <1b271e1bca9852bebc2d67c6aada25f7ce1a7240.camel@sipsolutions.net>
+ <CAMoF9u2Fc2s1uitk3D3osgq1XByebxUTirq4SROcMZg9kJ_Gfw@mail.gmail.com>
+ (sfid-20201008_225343_681111_E8A35813)
 MIME-Version: 1.0
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
-List-Post: <mailto:linux-mtd@lists.infradead.org>
-List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-Errors-To: linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Andrew Morton <akpm@linux-foundation.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>
-Cc: linux-aio@kvack.org, Ulf Hansson <ulf.hansson@linaro.org>, linux-efi@vger.kernel.org, kvm@vger.kernel.org, linux-doc@vger.kernel.org, linux-mmc@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>, dri-devel@lists.freedesktop.org, linux-mm@kvack.org, Sascha Sommer <saschasommer@freenet.de>, linux-mtd@lists.infradead.org, linux-kselftest@vger.kernel.org, samba-technical@lists.samba.org, Ira Weiny <ira.weiny@intel.com>, ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com, devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org, linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org, linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org, x86@kernel.org, amd-gfx@lists.freedesktop.org, linux-afs@lists.infradead.org, cluster-devel@redhat.com, linux-cachefs@redhat.com, intel-wired-lan@lists.osuosl.org, xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>, linux-um@lists.infradead.org, intel-gfx@lists.freedesktop.org, ecryptfs@vger.kernel.org, linux-erofs@lists.ozlabs.org, reiserfs-devel@vger.kernel.org, linux-block@vger.kernel.org, linux-bcache@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>, io-uring@vger.kernel.org, linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, target-devel@vger.kernel.org, linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Octavian Purdila <tavi.purdila@gmail.com>
+Cc: linux-arch <linux-arch@vger.kernel.org>, Richard Weinberger <richard@nod.at>, jdike@addtoit.com, linux-um <linux-um@lists.infradead.org>, Akira Moroo <retrage01@gmail.com>, linux-kernel-library <linux-kernel-library@freelists.org>, Hajime Tazaki <thehajime@gmail.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-From: Ira Weiny <ira.weiny@intel.com>
+On Thu, 2020-10-08 at 23:53 +0300, Octavian Purdila wrote:
 
-These kmap() calls are localized to a single thread.  To avoid the over
-head of global PKRS updates use the new kmap_thread() call.
+> Leaving the library/standalone build itself aside for a while, do you
+> agree that the various tools we are building with library mode should
+> be placed in tools? Things like lklfuse - mounting Linux filesystems
+> with fuse, or lklhijack.so - a preload library that intercept
+> network/file system calls and routes them through the library mode.
 
-Cc: Ulf Hansson <ulf.hansson@linaro.org>
-Cc: Sascha Sommer <saschasommer@freenet.de>
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
----
- drivers/mmc/host/mmc_spi.c    | 4 ++--
- drivers/mmc/host/sdricoh_cs.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+Yeah, I guess that makes sense. I realize the line gets blurry ...
 
-diff --git a/drivers/mmc/host/mmc_spi.c b/drivers/mmc/host/mmc_spi.c
-index 18a850f37ddc..ab28e7103b8d 100644
---- a/drivers/mmc/host/mmc_spi.c
-+++ b/drivers/mmc/host/mmc_spi.c
-@@ -918,7 +918,7 @@ mmc_spi_data_do(struct mmc_spi_host *host, struct mmc_command *cmd,
- 		}
- 
- 		/* allow pio too; we don't allow highmem */
--		kmap_addr = kmap(sg_page(sg));
-+		kmap_addr = kmap_thread(sg_page(sg));
- 		if (direction == DMA_TO_DEVICE)
- 			t->tx_buf = kmap_addr + sg->offset;
- 		else
-@@ -950,7 +950,7 @@ mmc_spi_data_do(struct mmc_spi_host *host, struct mmc_command *cmd,
- 		/* discard mappings */
- 		if (direction == DMA_FROM_DEVICE)
- 			flush_kernel_dcache_page(sg_page(sg));
--		kunmap(sg_page(sg));
-+		kunmap_thread(sg_page(sg));
- 		if (dma_dev)
- 			dma_unmap_page(dma_dev, dma_addr, PAGE_SIZE, dir);
- 
-diff --git a/drivers/mmc/host/sdricoh_cs.c b/drivers/mmc/host/sdricoh_cs.c
-index 76a8cd3a186f..7806bc69c4f1 100644
---- a/drivers/mmc/host/sdricoh_cs.c
-+++ b/drivers/mmc/host/sdricoh_cs.c
-@@ -312,11 +312,11 @@ static void sdricoh_request(struct mmc_host *mmc, struct mmc_request *mrq)
- 			int result;
- 			page = sg_page(data->sg);
- 
--			buf = kmap(page) + data->sg->offset + (len * i);
-+			buf = kmap_thread(page) + data->sg->offset + (len * i);
- 			result =
- 				sdricoh_blockio(host,
- 					data->flags & MMC_DATA_READ, buf, len);
--			kunmap(page);
-+			kunmap_thread(page);
- 			flush_dcache_page(page);
- 			if (result) {
- 				dev_err(dev, "sdricoh_request: cmd %i "
--- 
-2.28.0.rc0.12.gb6a658bd00c9
+OTOH, should these even live in the kernel tree? Almost seems like if
+the base lkl library is there, the other stuff might not really need to
+be, it's supposed to use the (stable) syscall API?
+
+Dunno. Not sure "doesn't need to be" really is an argument for
+"shouldn't be" anyway.
+
+> > You're looking at it the other way around I think - it seems that you're
+> > thinking the kernel binary is the vmlinux.a, and that's what the
+> > kernel's build system worries about; then the "vmlinux.so" (library
+> > mode) or "linux" (standalone mode - perhaps that's a good name?) is the
+> > eventual 'tool' that we build, using the previously built vmlinux.a.
+> > 
+> 
+> Correct, this is my perspective.
+> 
+> > But that really isn't how standalone mode works, and IMHO it also
+> > doesn't match what tools are today.
+> > 
+> 
+> What if we could use standalone mode for other purposes that would
+> require creating a new binary in addition to the current linux binary?
+
+Anything specific you have in mind?
+
+But I still think that "UML standalone 'linux' binary" is something that
+seems like the kernel build system should be able do? If only to avoid
+regressions from what we have now ...
+
+johannes
 
 
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
