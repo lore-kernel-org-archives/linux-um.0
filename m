@@ -1,53 +1,232 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: [PATCH v2 14/16] vboxsf: Tell the VFS that readpage was synchronous
-Date: Fri,  9 Oct 2020 15:31:02 +0100
-Message-Id: <20201009143104.22673-15-willy@infradead.org>
-In-Reply-To: <20201009143104.22673-1-willy@infradead.org>
-References: <20201009143104.22673-1-willy@infradead.org>
+Return-Path: <linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org>
+From: ira.weiny@intel.com
+Subject: [PATCH RFC PKS/PMEM 02/58] x86/pks/test: Add testing for global option
+Date: Fri,  9 Oct 2020 12:49:37 -0700
+Message-Id: <20201009195033.3208459-3-ira.weiny@intel.com>
+In-Reply-To: <20201009195033.3208459-1-ira.weiny@intel.com>
+References: <20201009195033.3208459-1-ira.weiny@intel.com>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-fsdevel@vger.kernel.org
-Cc: linux-cifs@vger.kernel.org, Richard Weinberger <richard@nod.at>, ecryptfs@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>, linux-xfs@vger.kernel.org, linux-mm@kvack.org, linux-mtd@lists.infradead.org, v9fs-developer@lists.sourceforge.net, ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org
+Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
+Errors-To: linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Andrew Morton <akpm@linux-foundation.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>
+Cc: linux-aio@kvack.org, linux-efi@vger.kernel.org, kvm@vger.kernel.org, linux-doc@vger.kernel.org, linux-mmc@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>, dri-devel@lists.freedesktop.org, linux-mm@kvack.org, target-devel@vger.kernel.org, linux-mtd@lists.infradead.org, linux-kselftest@vger.kernel.org, samba-technical@lists.samba.org, Ira Weiny <ira.weiny@intel.com>, ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com, devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org, linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org, linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org, x86@kernel.org, amd-gfx@lists.freedesktop.org, linux-afs@lists.infradead.org, cluster-devel@redhat.com, linux-cachefs@redhat.com, intel-wired-lan@lists.osuosl.org, xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>, linux-um@lists.infradead.org, intel-gfx@lists.freedesktop.org, ecryptfs@vger.kernel.org, linux-erofs@lists.ozlabs.org, reiserfs-devel@vger.kernel.org, linux-block@vger.kernel.org, linux-bcache@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>, io-uring@vger.kernel.org, linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-The vboxsf inline data readpage implementation was already synchronous,
-so use AOP_UPDATED_PAGE to avoid cycling the page lock.
+From: Ira Weiny <ira.weiny@intel.com>
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Now that PKS can be enabled globaly (for all threads) add a test which
+spawns a thread and tests the same PKS functionality.
+
+The test enables/disables PKS in 1 thread while attempting to access the
+page in another thread.  We use the same test array as in the 'local'
+PKS testing.
+
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 ---
- fs/vboxsf/file.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/mm/fault.c |   4 ++
+ lib/pks/pks_test.c  | 128 +++++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 124 insertions(+), 8 deletions(-)
 
-diff --git a/fs/vboxsf/file.c b/fs/vboxsf/file.c
-index c4ab5996d97a..c2a144e5cb5a 100644
---- a/fs/vboxsf/file.c
-+++ b/fs/vboxsf/file.c
-@@ -228,6 +228,8 @@ static int vboxsf_readpage(struct file *file, struct page *page)
+diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+index 4b4ff9efa298..4c74f52fbc23 100644
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -1108,6 +1108,10 @@ static int spurious_kernel_fault_check(unsigned long error_code, pte_t *pte,
+ 		if (global_pkey_is_enabled(pte, is_write, irq_state))
+ 			return 1;
+ 
++		/*
++		 * NOTE: This must be after the global_pkey_is_enabled() call
++		 * to allow the fixup code to be tested.
++		 */
+ 		if (handle_pks_testing(error_code, irq_state))
+ 			return 1;
+ 
+diff --git a/lib/pks/pks_test.c b/lib/pks/pks_test.c
+index 286c8b8457da..dfddccbe4cb6 100644
+--- a/lib/pks/pks_test.c
++++ b/lib/pks/pks_test.c
+@@ -154,7 +154,8 @@ static void check_exception(irqentry_state_t *irq_state)
  	}
  
- 	kunmap(page);
-+	if (!err)
-+		return AOP_UPDATED_PAGE;
- 	unlock_page(page);
- 	return err;
+ 	/* Check the exception state */
+-	if (!check_pkrs(test_armed_key, PKEY_DISABLE_ACCESS)) {
++	if (!check_pkrs(test_armed_key,
++			PKEY_DISABLE_ACCESS | PKEY_DISABLE_WRITE)) {
+ 		pr_err("     FAIL: PKRS cache and MSR\n");
+ 		test_exception_ctx->pass = false;
+ 	}
+@@ -308,24 +309,29 @@ static int test_it(struct pks_test_ctx *ctx, struct pks_access_test *test, void
+ 	return ret;
  }
+ 
+-static int run_access_test(struct pks_test_ctx *ctx,
+-			   struct pks_access_test *test,
+-			   void *ptr)
++static void set_protection(int pkey, enum pks_access_mode mode, bool global)
+ {
+-	switch (test->mode) {
++	switch (mode) {
+ 		case PKS_TEST_NO_ACCESS:
+-			pks_mknoaccess(ctx->pkey, false);
++			pks_mknoaccess(pkey, global);
+ 			break;
+ 		case PKS_TEST_RDWR:
+-			pks_mkrdwr(ctx->pkey, false);
++			pks_mkrdwr(pkey, global);
+ 			break;
+ 		case PKS_TEST_RDONLY:
+-			pks_mkread(ctx->pkey, false);
++			pks_mkread(pkey, global);
+ 			break;
+ 		default:
+ 			pr_err("BUG in test invalid mode\n");
+ 			break;
+ 	}
++}
++
++static int run_access_test(struct pks_test_ctx *ctx,
++			   struct pks_access_test *test,
++			   void *ptr)
++{
++	set_protection(ctx->pkey, test->mode, false);
+ 
+ 	return test_it(ctx, test, ptr);
+ }
+@@ -516,6 +522,110 @@ static void run_exception_test(void)
+ 		 pass ? "PASS" : "FAIL");
+ }
+ 
++struct shared_data {
++	struct mutex lock;
++	struct pks_test_ctx *ctx;
++	void *kmap_addr;
++	struct pks_access_test *test;
++};
++
++static int thread_main(void *d)
++{
++	struct shared_data *data = d;
++	struct pks_test_ctx *ctx = data->ctx;
++
++	while (!kthread_should_stop()) {
++		mutex_lock(&data->lock);
++		/*
++		 * wait for the main thread to hand us the page
++		 * We should be spinning so hopefully we will not have gotten
++		 * the global value from a schedule in.
++		 */
++		if (data->kmap_addr) {
++			if (test_it(ctx, data->test, data->kmap_addr))
++				ctx->pass = false;
++			data->kmap_addr = NULL;
++		}
++		mutex_unlock(&data->lock);
++	}
++
++	return 0;
++}
++
++static void run_thread_access_test(struct shared_data *data,
++				   struct pks_test_ctx *ctx,
++				   struct pks_access_test *test,
++				   void *ptr)
++{
++	set_protection(ctx->pkey, test->mode, true);
++
++	pr_info("checking...  mode %s; write %s\n",
++			get_mode_str(test->mode), test->write ? "TRUE" : "FALSE");
++
++	mutex_lock(&data->lock);
++	data->test = test;
++	data->kmap_addr = ptr;
++	mutex_unlock(&data->lock);
++
++	while (data->kmap_addr) {
++		msleep(10);
++	}
++}
++
++static void run_global_test(void)
++{
++	struct task_struct *other_task;
++	struct pks_test_ctx *ctx;
++	struct shared_data data;
++	bool pass = true;
++	void *ptr;
++	int i;
++
++	pr_info("     ***** BEGIN: global pkey checking\n");
++
++	/* Set up context, data pgae, and thread */
++	ctx = alloc_ctx("global pkey test");
++	if (IS_ERR(ctx)) {
++		pr_err("     FAIL: no context\n");
++		pass = false;
++		goto result;
++	}
++	ptr = alloc_test_page(ctx->pkey);
++	if (!ptr) {
++		pr_err("     FAIL: no vmalloc page\n");
++		pass = false;
++		goto free_context;
++	}
++	other_task = kthread_run(thread_main, &data, "PKRS global test");
++	if (IS_ERR(other_task)) {
++		pr_err("     FAIL: Failed to start thread\n");
++		pass = false;
++		goto free_page;
++	}
++
++	memset(&data, 0, sizeof(data));
++	mutex_init(&data.lock);
++	data.ctx = ctx;
++
++	/* Start testing */
++	ctx->pass = true;
++
++	for (i = 0; i < ARRAY_SIZE(pkey_test_ary); i++) {
++		run_thread_access_test(&data, ctx, &pkey_test_ary[i], ptr);
++	}
++
++	kthread_stop(other_task);
++	pass = ctx->pass;
++
++free_page:
++	vfree(ptr);
++free_context:
++	free_ctx(ctx);
++result:
++	pr_info("     ***** END: global pkey checking : %s\n",
++		 pass ? "PASS" : "FAIL");
++}
++
+ static void run_all(void)
+ {
+ 	struct pks_test_ctx *ctx[PKS_NUM_KEYS];
+@@ -538,6 +648,8 @@ static void run_all(void)
+ 	}
+ 
+ 	run_exception_test();
++
++	run_global_test();
+ }
+ 
+ static void crash_it(void)
 -- 
-2.28.0
+2.28.0.rc0.12.gb6a658bd00c9
 
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
