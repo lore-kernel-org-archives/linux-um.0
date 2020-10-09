@@ -1,159 +1,61 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pj1-x1043.google.com ([2607:f8b0:4864:20::1043])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kPjWu-0008MI-JN
- for linux-um@lists.infradead.org; Tue, 06 Oct 2020 09:45:09 +0000
-Received: by mail-pj1-x1043.google.com with SMTP id x5so655988pjv.3
- for <linux-um@lists.infradead.org>; Tue, 06 Oct 2020 02:45:08 -0700 (PDT)
-From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v7 05/21] um: move arch/x86/um/os-Linux to tools/um/uml/
-Date: Tue,  6 Oct 2020 18:44:14 +0900
-Message-Id: <451a47b488766c4bc67d69dacff3d6dbc01d0843.1601960644.git.thehajime@gmail.com>
-In-Reply-To: <cover.1601960644.git.thehajime@gmail.com>
-References: <cover.1601960644.git.thehajime@gmail.com>
+Return-Path: <linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org>
+From: ira.weiny@intel.com
+Subject: [PATCH RFC PKS/PMEM 39/58] fs/jffs2: Utilize new kmap_thread()
+Date: Fri,  9 Oct 2020 12:50:14 -0700
+Message-Id: <20201009195033.3208459-40-ira.weiny@intel.com>
+In-Reply-To: <20201009195033.3208459-1-ira.weiny@intel.com>
+References: <20201009195033.3208459-1-ira.weiny@intel.com>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
-Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, retrage01@gmail.com
+Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
+Errors-To: linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Andrew Morton <akpm@linux-foundation.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>
+Cc: linux-aio@kvack.org, linux-efi@vger.kernel.org, kvm@vger.kernel.org, linux-doc@vger.kernel.org, linux-mmc@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>, dri-devel@lists.freedesktop.org, linux-mm@kvack.org, target-devel@vger.kernel.org, linux-mtd@lists.infradead.org, linux-kselftest@vger.kernel.org, samba-technical@lists.samba.org, Ira Weiny <ira.weiny@intel.com>, ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com, devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org, linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org, linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org, x86@kernel.org, amd-gfx@lists.freedesktop.org, linux-afs@lists.infradead.org, cluster-devel@redhat.com, linux-cachefs@redhat.com, intel-wired-lan@lists.osuosl.org, xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>, linux-um@lists.infradead.org, intel-gfx@lists.freedesktop.org, ecryptfs@vger.kernel.org, linux-erofs@lists.ozlabs.org, reiserfs-devel@vger.kernel.org, linux-block@vger.kernel.org, linux-bcache@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>, io-uring@vger.kernel.org, linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-Similar to arch/um/os-Linux code, arch/x86 also contains OS dependent
-part as well.  This patch moves underlying OS dependent part to tools/um
-directory so that arch/x86 code does not need to build host build
-facilities (e.g., libc).
+From: Ira Weiny <ira.weiny@intel.com>
 
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+These kmap() calls are localized to a single thread.  To avoid the over head of
+global PKRS updates use the new kmap_thread() call.
+
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 ---
- arch/x86/um/Makefile                                |  2 +-
- arch/x86/um/os-Linux/Makefile                       | 13 -------------
- tools/um/Makefile                                   |  2 +-
- tools/um/uml/Build                                  |  2 ++
- tools/um/uml/x86/Build                              | 11 +++++++++++
- .../x86/um/os-Linux => tools/um/uml/x86}/mcontext.c |  0
- {arch/x86/um/os-Linux => tools/um/uml/x86}/prctl.c  |  0
- .../um/os-Linux => tools/um/uml/x86}/registers.c    |  0
- .../um/os-Linux => tools/um/uml/x86}/task_size.c    |  0
- {arch/x86/um/os-Linux => tools/um/uml/x86}/tls.c    |  0
- 10 files changed, 15 insertions(+), 15 deletions(-)
- delete mode 100644 arch/x86/um/os-Linux/Makefile
- create mode 100644 tools/um/uml/x86/Build
- rename {arch/x86/um/os-Linux => tools/um/uml/x86}/mcontext.c (100%)
- rename {arch/x86/um/os-Linux => tools/um/uml/x86}/prctl.c (100%)
- rename {arch/x86/um/os-Linux => tools/um/uml/x86}/registers.c (100%)
- rename {arch/x86/um/os-Linux => tools/um/uml/x86}/task_size.c (100%)
- rename {arch/x86/um/os-Linux => tools/um/uml/x86}/tls.c (100%)
+ fs/jffs2/file.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
-index 77f70b969d14..25e9846b36a2 100644
---- a/arch/x86/um/Makefile
-+++ b/arch/x86/um/Makefile
-@@ -13,7 +13,7 @@ obj-y = bugs_$(BITS).o delay.o fault.o ldt.o \
- 	ptrace_$(BITS).o ptrace_user.o setjmp_$(BITS).o signal.o \
- 	stub_$(BITS).o stub_segv.o \
- 	sys_call_table_$(BITS).o sysrq_$(BITS).o tls_$(BITS).o \
--	mem_$(BITS).o subarch.o os-$(OS)/
-+	mem_$(BITS).o subarch.o
+diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
+index 3e6d54f9b011..14dd2b18cc16 100644
+--- a/fs/jffs2/file.c
++++ b/fs/jffs2/file.c
+@@ -287,13 +287,13 @@ static int jffs2_write_end(struct file *filp, struct address_space *mapping,
  
- ifeq ($(CONFIG_X86_32),y)
+ 	/* In 2.4, it was already kmapped by generic_file_write(). Doesn't
+ 	   hurt to do it again. The alternative is ifdefs, which are ugly. */
+-	kmap(pg);
++	kmap_thread(pg);
  
-diff --git a/arch/x86/um/os-Linux/Makefile b/arch/x86/um/os-Linux/Makefile
-deleted file mode 100644
-index 253bfb8cb702..000000000000
---- a/arch/x86/um/os-Linux/Makefile
-+++ /dev/null
-@@ -1,13 +0,0 @@
--#
--# Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
--# Licensed under the GPL
--#
--
--obj-y = registers.o task_size.o mcontext.o
--
--obj-$(CONFIG_X86_32) += tls.o
--obj-$(CONFIG_64BIT) += prctl.o
--
--USER_OBJS := $(obj-y)
--
--include arch/um/scripts/Makefile.rules
-diff --git a/tools/um/Makefile b/tools/um/Makefile
-index 07b9b93ed817..552ed5f1edae 100644
---- a/tools/um/Makefile
-+++ b/tools/um/Makefile
-@@ -61,7 +61,7 @@ $(OUTPUT)%-in.o: FORCE
- 	$(Q)$(MAKE) -f $(srctree)/tools/build/Makefile.build dir=$(patsubst %/,%,$(dir $*)) obj=$(notdir $*)
+ 	ret = jffs2_write_inode_range(c, f, ri, page_address(pg) + aligned_start,
+ 				      (pg->index << PAGE_SHIFT) + aligned_start,
+ 				      end - aligned_start, &writtenlen);
  
- # rule to build objects
--$(OUTPUT)%-in.o: $(OUTPUT)lib/linux.o
-+$(OUTPUT)%-in.o: $(OUTPUT)lib/linux.o FORCE
- 	$(Q)$(MAKE) -f $(srctree)/tools/build/Makefile.build dir=$(patsubst %/,%,$(dir $*)) obj=$(notdir $*)
+-	kunmap(pg);
++	kunmap_thread(pg);
  
- clean:
-diff --git a/tools/um/uml/Build b/tools/um/uml/Build
-index ad93c6ad51fc..0d87d601bc06 100644
---- a/tools/um/uml/Build
-+++ b/tools/um/uml/Build
-@@ -12,6 +12,8 @@ liblinux-y += execvp.o file.o helper.o irq.o main.o mem.o process.o \
- 	registers.o sigio.o signal.o start_up.o time.o tty.o \
- 	umid.o util.o drivers/ skas/
- 
-+liblinux-y += x86/
-+
- liblinux-$(CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA) += elf_aux.o
- 
- export O = $(srctree)
-diff --git a/tools/um/uml/x86/Build b/tools/um/uml/x86/Build
-new file mode 100644
-index 000000000000..16bbc7eb19d1
---- /dev/null
-+++ b/tools/um/uml/x86/Build
-@@ -0,0 +1,11 @@
-+#
-+# Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-+# Licensed under the GPL
-+#
-+
-+include $(objtree)/include/config/auto.conf
-+
-+liblinux-y = registers.o task_size.o mcontext.o
-+
-+liblinux-$(CONFIG_X86_32) += tls.o
-+liblinux-$(CONFIG_64BIT) += prctl.o
-diff --git a/arch/x86/um/os-Linux/mcontext.c b/tools/um/uml/x86/mcontext.c
-similarity index 100%
-rename from arch/x86/um/os-Linux/mcontext.c
-rename to tools/um/uml/x86/mcontext.c
-diff --git a/arch/x86/um/os-Linux/prctl.c b/tools/um/uml/x86/prctl.c
-similarity index 100%
-rename from arch/x86/um/os-Linux/prctl.c
-rename to tools/um/uml/x86/prctl.c
-diff --git a/arch/x86/um/os-Linux/registers.c b/tools/um/uml/x86/registers.c
-similarity index 100%
-rename from arch/x86/um/os-Linux/registers.c
-rename to tools/um/uml/x86/registers.c
-diff --git a/arch/x86/um/os-Linux/task_size.c b/tools/um/uml/x86/task_size.c
-similarity index 100%
-rename from arch/x86/um/os-Linux/task_size.c
-rename to tools/um/uml/x86/task_size.c
-diff --git a/arch/x86/um/os-Linux/tls.c b/tools/um/uml/x86/tls.c
-similarity index 100%
-rename from arch/x86/um/os-Linux/tls.c
-rename to tools/um/uml/x86/tls.c
+ 	if (ret) {
+ 		/* There was an error writing. */
 -- 
-2.21.0 (Apple Git-122.2)
+2.28.0.rc0.12.gb6a658bd00c9
 
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
