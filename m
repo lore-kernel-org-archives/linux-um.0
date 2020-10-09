@@ -1,106 +1,176 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kXCEx-0000hi-1A
- for linux-um@lists.infradead.org; Mon, 26 Oct 2020 23:49:28 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.9 016/147] um: change sigio_spinlock to a mutex
-Date: Mon, 26 Oct 2020 19:46:54 -0400
-Message-Id: <20201026234905.1022767-16-sashal@kernel.org>
-In-Reply-To: <20201026234905.1022767-1-sashal@kernel.org>
-References: <20201026234905.1022767-1-sashal@kernel.org>
+Return-Path: <linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org>
+From: ira.weiny@intel.com
+Subject: [PATCH RFC PKS/PMEM 35/58] fs: Utilize new kmap_thread()
+Date: Fri,  9 Oct 2020 12:50:10 -0700
+Message-Id: <20201009195033.3208459-36-ira.weiny@intel.com>
+In-Reply-To: <20201009195033.3208459-1-ira.weiny@intel.com>
+References: <20201009195033.3208459-1-ira.weiny@intel.com>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org, Johannes Berg <johannes.berg@intel.com>
+Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
+Errors-To: linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Andrew Morton <akpm@linux-foundation.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>
+Cc: linux-aio@kvack.org, linux-efi@vger.kernel.org, kvm@vger.kernel.org, linux-doc@vger.kernel.org, linux-mmc@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>, dri-devel@lists.freedesktop.org, linux-mm@kvack.org, target-devel@vger.kernel.org, linux-mtd@lists.infradead.org, linux-kselftest@vger.kernel.org, samba-technical@lists.samba.org, Ira Weiny <ira.weiny@intel.com>, ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com, devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org, linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org, linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org, x86@kernel.org, amd-gfx@lists.freedesktop.org, linux-afs@lists.infradead.org, cluster-devel@redhat.com, linux-cachefs@redhat.com, intel-wired-lan@lists.osuosl.org, xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>, linux-um@lists.infradead.org, intel-gfx@lists.freedesktop.org, ecryptfs@vger.kernel.org, linux-erofs@lists.ozlabs.org, reiserfs-devel@vger.kernel.org, linux-block@vger.kernel.org, linux-bcache@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>, Dan Williams <dan.j.williams@intel.com>, io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>, linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Ira Weiny <ira.weiny@intel.com>
 
-[ Upstream commit f2d05059e15af3f70502074f4e3a504530af504a ]
+These kmap() calls are localized to a single thread.  To avoid the over
+head of global PKRS updates use the new kmap_thread() call.
 
-Lockdep complains at boot:
-
-=============================
-[ BUG: Invalid wait context ]
-5.7.0-05093-g46d91ecd597b #98 Not tainted
------------------------------
-swapper/1 is trying to lock:
-0000000060931b98 (&desc[i].request_mutex){+.+.}-{3:3}, at: __setup_irq+0x11d/0x623
-other info that might help us debug this:
-context-{4:4}
-1 lock held by swapper/1:
- #0: 000000006074fed8 (sigio_spinlock){+.+.}-{2:2}, at: sigio_lock+0x1a/0x1c
-stack backtrace:
-CPU: 0 PID: 1 Comm: swapper Not tainted 5.7.0-05093-g46d91ecd597b #98
-Stack:
- 7fa4fab0 6028dfd1 0000002a 6008bea5
- 7fa50700 7fa50040 7fa4fac0 6028e016
- 7fa4fb50 6007f6da 60959c18 00000000
-Call Trace:
- [<60023a0e>] show_stack+0x13b/0x155
- [<6028e016>] dump_stack+0x2a/0x2c
- [<6007f6da>] __lock_acquire+0x515/0x15f2
- [<6007eb50>] lock_acquire+0x245/0x273
- [<6050d9f1>] __mutex_lock+0xbd/0x325
- [<6050dc76>] mutex_lock_nested+0x1d/0x1f
- [<6008e27e>] __setup_irq+0x11d/0x623
- [<6008e8ed>] request_threaded_irq+0x169/0x1a6
- [<60021eb0>] um_request_irq+0x1ee/0x24b
- [<600234ee>] write_sigio_irq+0x3b/0x76
- [<600383ca>] sigio_broken+0x146/0x2e4
- [<60020bd8>] do_one_initcall+0xde/0x281
-
-Because we hold sigio_spinlock and then get into requesting
-an interrupt with a mutex.
-
-Change the spinlock to a mutex to avoid that.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 ---
- arch/um/kernel/sigio.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/aio.c              |  4 ++--
+ fs/binfmt_elf.c       |  4 ++--
+ fs/binfmt_elf_fdpic.c |  4 ++--
+ fs/exec.c             | 10 +++++-----
+ fs/io_uring.c         |  4 ++--
+ fs/splice.c           |  4 ++--
+ 6 files changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/arch/um/kernel/sigio.c b/arch/um/kernel/sigio.c
-index 10c99e058fcae..d1cffc2a7f212 100644
---- a/arch/um/kernel/sigio.c
-+++ b/arch/um/kernel/sigio.c
-@@ -35,14 +35,14 @@ int write_sigio_irq(int fd)
- }
+diff --git a/fs/aio.c b/fs/aio.c
+index d5ec30385566..27f95996d25f 100644
+--- a/fs/aio.c
++++ b/fs/aio.c
+@@ -1223,10 +1223,10 @@ static long aio_read_events_ring(struct kioctx *ctx,
+ 		avail = min(avail, nr - ret);
+ 		avail = min_t(long, avail, AIO_EVENTS_PER_PAGE - pos);
  
- /* These are called from os-Linux/sigio.c to protect its pollfds arrays. */
--static DEFINE_SPINLOCK(sigio_spinlock);
-+static DEFINE_MUTEX(sigio_mutex);
+-		ev = kmap(page);
++		ev = kmap_thread(page);
+ 		copy_ret = copy_to_user(event + ret, ev + pos,
+ 					sizeof(*ev) * avail);
+-		kunmap(page);
++		kunmap_thread(page);
  
- void sigio_lock(void)
- {
--	spin_lock(&sigio_spinlock);
-+	mutex_lock(&sigio_mutex);
- }
+ 		if (unlikely(copy_ret)) {
+ 			ret = -EFAULT;
+diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+index 13d053982dd7..1a332ef1ae03 100644
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -2430,9 +2430,9 @@ static int elf_core_dump(struct coredump_params *cprm)
  
- void sigio_unlock(void)
- {
--	spin_unlock(&sigio_spinlock);
-+	mutex_unlock(&sigio_mutex);
+ 			page = get_dump_page(addr);
+ 			if (page) {
+-				void *kaddr = kmap(page);
++				void *kaddr = kmap_thread(page);
+ 				stop = !dump_emit(cprm, kaddr, PAGE_SIZE);
+-				kunmap(page);
++				kunmap_thread(page);
+ 				put_page(page);
+ 			} else
+ 				stop = !dump_skip(cprm, PAGE_SIZE);
+diff --git a/fs/binfmt_elf_fdpic.c b/fs/binfmt_elf_fdpic.c
+index 50f845702b92..8fbe188e0fdd 100644
+--- a/fs/binfmt_elf_fdpic.c
++++ b/fs/binfmt_elf_fdpic.c
+@@ -1542,9 +1542,9 @@ static bool elf_fdpic_dump_segments(struct coredump_params *cprm)
+ 			bool res;
+ 			struct page *page = get_dump_page(addr);
+ 			if (page) {
+-				void *kaddr = kmap(page);
++				void *kaddr = kmap_thread(page);
+ 				res = dump_emit(cprm, kaddr, PAGE_SIZE);
+-				kunmap(page);
++				kunmap_thread(page);
+ 				put_page(page);
+ 			} else {
+ 				res = dump_skip(cprm, PAGE_SIZE);
+diff --git a/fs/exec.c b/fs/exec.c
+index a91003e28eaa..3948b8511e3a 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -575,11 +575,11 @@ static int copy_strings(int argc, struct user_arg_ptr argv,
+ 
+ 				if (kmapped_page) {
+ 					flush_kernel_dcache_page(kmapped_page);
+-					kunmap(kmapped_page);
++					kunmap_thread(kmapped_page);
+ 					put_arg_page(kmapped_page);
+ 				}
+ 				kmapped_page = page;
+-				kaddr = kmap(kmapped_page);
++				kaddr = kmap_thread(kmapped_page);
+ 				kpos = pos & PAGE_MASK;
+ 				flush_arg_page(bprm, kpos, kmapped_page);
+ 			}
+@@ -593,7 +593,7 @@ static int copy_strings(int argc, struct user_arg_ptr argv,
+ out:
+ 	if (kmapped_page) {
+ 		flush_kernel_dcache_page(kmapped_page);
+-		kunmap(kmapped_page);
++		kunmap_thread(kmapped_page);
+ 		put_arg_page(kmapped_page);
+ 	}
+ 	return ret;
+@@ -871,11 +871,11 @@ int transfer_args_to_stack(struct linux_binprm *bprm,
+ 
+ 	for (index = MAX_ARG_PAGES - 1; index >= stop; index--) {
+ 		unsigned int offset = index == stop ? bprm->p & ~PAGE_MASK : 0;
+-		char *src = kmap(bprm->page[index]) + offset;
++		char *src = kmap_thread(bprm->page[index]) + offset;
+ 		sp -= PAGE_SIZE - offset;
+ 		if (copy_to_user((void *) sp, src, PAGE_SIZE - offset) != 0)
+ 			ret = -EFAULT;
+-		kunmap(bprm->page[index]);
++		kunmap_thread(bprm->page[index]);
+ 		if (ret)
+ 			goto out;
+ 	}
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index aae0ef2ec34d..f59bb079822d 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -2903,7 +2903,7 @@ static ssize_t loop_rw_iter(int rw, struct file *file, struct kiocb *kiocb,
+ 			iovec = iov_iter_iovec(iter);
+ 		} else {
+ 			/* fixed buffers import bvec */
+-			iovec.iov_base = kmap(iter->bvec->bv_page)
++			iovec.iov_base = kmap_thread(iter->bvec->bv_page)
+ 						+ iter->iov_offset;
+ 			iovec.iov_len = min(iter->count,
+ 					iter->bvec->bv_len - iter->iov_offset);
+@@ -2918,7 +2918,7 @@ static ssize_t loop_rw_iter(int rw, struct file *file, struct kiocb *kiocb,
+ 		}
+ 
+ 		if (iov_iter_is_bvec(iter))
+-			kunmap(iter->bvec->bv_page);
++			kunmap_thread(iter->bvec->bv_page);
+ 
+ 		if (nr < 0) {
+ 			if (!ret)
+diff --git a/fs/splice.c b/fs/splice.c
+index ce75aec52274..190c4d218c30 100644
+--- a/fs/splice.c
++++ b/fs/splice.c
+@@ -815,9 +815,9 @@ static int write_pipe_buf(struct pipe_inode_info *pipe, struct pipe_buffer *buf,
+ 	void *data;
+ 	loff_t tmp = sd->pos;
+ 
+-	data = kmap(buf->page);
++	data = kmap_thread(buf->page);
+ 	ret = __kernel_write(sd->u.file, data + buf->offset, sd->len, &tmp);
+-	kunmap(buf->page);
++	kunmap_thread(buf->page);
+ 
+ 	return ret;
  }
 -- 
-2.25.1
+2.28.0.rc0.12.gb6a658bd00c9
 
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
