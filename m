@@ -1,109 +1,44 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kPjX5-0008Op-4j
- for linux-um@lists.infradead.org; Tue, 06 Oct 2020 09:45:19 +0000
-Received: by mail-pl1-x643.google.com with SMTP id d23so952372pll.7
- for <linux-um@lists.infradead.org>; Tue, 06 Oct 2020 02:45:18 -0700 (PDT)
-From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v7 07/21] um: extend arch_switch_to for alternate SUBARCH
-Date: Tue,  6 Oct 2020 18:44:16 +0900
-Message-Id: <d4a65be8d05d945885f53bc168fd85f08e72adf1.1601960644.git.thehajime@gmail.com>
-In-Reply-To: <cover.1601960644.git.thehajime@gmail.com>
-References: <cover.1601960644.git.thehajime@gmail.com>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: ira.weiny@intel.com
+Subject: [PATCH RFC PKS/PMEM 44/58] drivers/xen: Utilize new kmap_thread()
+Date: Fri,  9 Oct 2020 12:50:19 -0700
+Message-Id: <20201009195033.3208459-45-ira.weiny@intel.com>
+In-Reply-To: <20201009195033.3208459-1-ira.weiny@intel.com>
+References: <20201009195033.3208459-1-ira.weiny@intel.com>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
-Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, Hajime Tazaki <thehajime@gmail.com>, retrage01@gmail.com
+Content-Transfer-Encoding: 8bit
+To: Andrew Morton <akpm@linux-foundation.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>
+Cc: Ira Weiny <ira.weiny@intel.com>, Stefano Stabellini <sstabellini@kernel.org>, x86@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>, Dan Williams <dan.j.williams@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org, kexec@lists.infradead.org, linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org, linux-efi@vger.kernel.org, linux-mmc@vger.kernel.org, linux-scsi@vger.kernel.org, target-devel@vger.kernel.org, linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org, linux-aio@kvack.org, io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org, linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net, reiserfs-devel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-nilfs@vger.kernel.org, cluster-devel@redhat.com, ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-afs@lists.infradead.org, linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, xen-devel@lists.xenproject.org, linux-cachefs@redhat.com, samba-technical@lists.samba.org, intel-wired-lan@lists.osuosl.org
+List-ID: <linux-um.lists.infradead.org>
 
-This commit introduces additional argument of previous task when
-context switch happens.  New SUBARCH can use the new information to
-switch tasks in a subarch-specific manner.
+From: Ira Weiny <ira.weiny@intel.com>
 
-The patch is particularly required by nommu mode implemented as a
-SUBARCH of UML.
+These kmap() calls are localized to a single thread.  To avoid the over
+head of global PKRS updates use the new kmap_thread() call.
 
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+Cc: Stefano Stabellini <sstabellini@kernel.org>
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 ---
- arch/um/kernel/process.c  | 6 +++---
- arch/x86/um/ptrace_32.c   | 2 +-
- arch/x86/um/syscalls_64.c | 2 +-
- 3 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/xen/gntalloc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index 26b5e243d3fc..87a8cfa228ca 100644
---- a/arch/um/kernel/process.c
-+++ b/arch/um/kernel/process.c
-@@ -80,7 +80,7 @@ static inline void set_current(struct task_struct *task)
- 		{ external_pid(), task });
- }
- 
--extern void arch_switch_to(struct task_struct *to);
-+extern void arch_switch_to(struct task_struct *from, struct task_struct *to);
- 
- void *__switch_to(struct task_struct *from, struct task_struct *to)
+diff --git a/drivers/xen/gntalloc.c b/drivers/xen/gntalloc.c
+index 3fa40c723e8e..3b78e055feff 100644
+--- a/drivers/xen/gntalloc.c
++++ b/drivers/xen/gntalloc.c
+@@ -184,9 +184,9 @@ static int add_grefs(struct ioctl_gntalloc_alloc_gref *op,
+ static void __del_gref(struct gntalloc_gref *gref)
  {
-@@ -88,7 +88,7 @@ void *__switch_to(struct task_struct *from, struct task_struct *to)
- 	set_current(to);
- 
- 	switch_threads(&from->thread.switch_buf, &to->thread.switch_buf);
--	arch_switch_to(current);
-+	arch_switch_to(from, to);
- 
- 	return current->thread.prev_sched;
- }
-@@ -145,7 +145,7 @@ void fork_handler(void)
- 	 * arch_switch_to isn't needed. We could want to apply this to
- 	 * improve performance. -bb
- 	 */
--	arch_switch_to(current);
-+	arch_switch_to(NULL, current);
- 
- 	current->thread.prev_sched = NULL;
- 
-diff --git a/arch/x86/um/ptrace_32.c b/arch/x86/um/ptrace_32.c
-index 2497bac56066..0f184710d4ca 100644
---- a/arch/x86/um/ptrace_32.c
-+++ b/arch/x86/um/ptrace_32.c
-@@ -11,7 +11,7 @@
- 
- extern int arch_switch_tls(struct task_struct *to);
- 
--void arch_switch_to(struct task_struct *to)
-+void arch_switch_to(struct task_struct *from, struct task_struct *to)
- {
- 	int err = arch_switch_tls(to);
- 	if (!err)
-diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
-index 58f51667e2e4..2ef9474d2bd2 100644
---- a/arch/x86/um/syscalls_64.c
-+++ b/arch/x86/um/syscalls_64.c
-@@ -80,7 +80,7 @@ SYSCALL_DEFINE2(arch_prctl, int, option, unsigned long, arg2)
- 	return arch_prctl(current, option, (unsigned long __user *) arg2);
- }
- 
--void arch_switch_to(struct task_struct *to)
-+void arch_switch_to(struct task_struct *from, struct task_struct *to)
- {
- 	if ((to->thread.arch.fs == 0) || (to->mm == NULL))
- 		return;
+ 	if (gref->notify.flags & UNMAP_NOTIFY_CLEAR_BYTE) {
+-		uint8_t *tmp = kmap(gref->page);
++		uint8_t *tmp = kmap_thread(gref->page);
+ 		tmp[gref->notify.pgoff] = 0;
+-		kunmap(gref->page);
++		kunmap_thread(gref->page);
+ 	}
+ 	if (gref->notify.flags & UNMAP_NOTIFY_SEND_EVENT) {
+ 		notify_remote_via_evtchn(gref->notify.event);
 -- 
-2.21.0 (Apple Git-122.2)
+2.28.0.rc0.12.gb6a658bd00c9
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
