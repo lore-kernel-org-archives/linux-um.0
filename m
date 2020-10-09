@@ -1,8 +1,8 @@
 Return-Path: <linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org>
 From: ira.weiny@intel.com
-Subject: [PATCH RFC PKS/PMEM 52/58] mm: Utilize new kmap_thread()
-Date: Fri,  9 Oct 2020 12:50:27 -0700
-Message-Id: <20201009195033.3208459-53-ira.weiny@intel.com>
+Subject: [PATCH RFC PKS/PMEM 41/58] drivers/target: Utilize new kmap_thread()
+Date: Fri,  9 Oct 2020 12:50:16 -0700
+Message-Id: <20201009195033.3208459-42-ira.weiny@intel.com>
 In-Reply-To: <20201009195033.3208459-1-ira.weiny@intel.com>
 References: <20201009195033.3208459-1-ira.weiny@intel.com>
 MIME-Version: 1.0
@@ -23,95 +23,73 @@ List-ID: <linux-um.lists.infradead.org>
 
 From: Ira Weiny <ira.weiny@intel.com>
 
-These kmap() calls are localized to a single thread.  To avoid the over
-head of global PKRS updates use the new kmap_thread() call.
+These kmap() calls in this driver are localized to a single thread.  To
+avoid the over head of global PKRS updates use the new kmap_thread()
+call.
 
 Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 ---
- mm/memory.c      | 8 ++++----
- mm/swapfile.c    | 4 ++--
- mm/userfaultfd.c | 4 ++--
- 3 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/target/target_core_iblock.c    | 4 ++--
+ drivers/target/target_core_rd.c        | 4 ++--
+ drivers/target/target_core_transport.c | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/mm/memory.c b/mm/memory.c
-index fcfc4ca36eba..75a054882d7a 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -4945,7 +4945,7 @@ int __access_remote_vm(struct task_struct *tsk, struct mm_struct *mm,
- 			if (bytes > PAGE_SIZE-offset)
- 				bytes = PAGE_SIZE-offset;
+diff --git a/drivers/target/target_core_iblock.c b/drivers/target/target_core_iblock.c
+index 1c181d31f4c8..df7b1568edb3 100644
+--- a/drivers/target/target_core_iblock.c
++++ b/drivers/target/target_core_iblock.c
+@@ -415,7 +415,7 @@ iblock_execute_zero_out(struct block_device *bdev, struct se_cmd *cmd)
+ 	unsigned char *buf, *not_zero;
+ 	int ret;
  
--			maddr = kmap(page);
-+			maddr = kmap_thread(page);
- 			if (write) {
- 				copy_to_user_page(vma, page, addr,
- 						  maddr + offset, buf, bytes);
-@@ -4954,7 +4954,7 @@ int __access_remote_vm(struct task_struct *tsk, struct mm_struct *mm,
- 				copy_from_user_page(vma, page, addr,
- 						    buf, maddr + offset, bytes);
- 			}
--			kunmap(page);
-+			kunmap_thread(page);
- 			put_page(page);
+-	buf = kmap(sg_page(sg)) + sg->offset;
++	buf = kmap_thread(sg_page(sg)) + sg->offset;
+ 	if (!buf)
+ 		return TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE;
+ 	/*
+@@ -423,7 +423,7 @@ iblock_execute_zero_out(struct block_device *bdev, struct se_cmd *cmd)
+ 	 * incoming WRITE_SAME payload does not contain zeros.
+ 	 */
+ 	not_zero = memchr_inv(buf, 0x00, cmd->data_length);
+-	kunmap(sg_page(sg));
++	kunmap_thread(sg_page(sg));
+ 
+ 	if (not_zero)
+ 		return TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE;
+diff --git a/drivers/target/target_core_rd.c b/drivers/target/target_core_rd.c
+index 408bd975170b..dbbdd39c5bf9 100644
+--- a/drivers/target/target_core_rd.c
++++ b/drivers/target/target_core_rd.c
+@@ -159,9 +159,9 @@ static int rd_allocate_sgl_table(struct rd_dev *rd_dev, struct rd_dev_sg_table *
+ 			sg_assign_page(&sg[j], pg);
+ 			sg[j].length = PAGE_SIZE;
+ 
+-			p = kmap(pg);
++			p = kmap_thread(pg);
+ 			memset(p, init_payload, PAGE_SIZE);
+-			kunmap(pg);
++			kunmap_thread(pg);
  		}
- 		len -= bytes;
-@@ -5216,14 +5216,14 @@ long copy_huge_page_from_user(struct page *dst_page,
  
- 	for (i = 0; i < pages_per_huge_page; i++) {
- 		if (allow_pagefault)
--			page_kaddr = kmap(dst_page + i);
-+			page_kaddr = kmap_thread(dst_page + i);
- 		else
- 			page_kaddr = kmap_atomic(dst_page + i);
- 		rc = copy_from_user(page_kaddr,
- 				(const void __user *)(src + i * PAGE_SIZE),
- 				PAGE_SIZE);
- 		if (allow_pagefault)
--			kunmap(dst_page + i);
-+			kunmap_thread(dst_page + i);
- 		else
- 			kunmap_atomic(page_kaddr);
+ 		page_offset += sg_per_table;
+diff --git a/drivers/target/target_core_transport.c b/drivers/target/target_core_transport.c
+index ff26ab0a5f60..8d0bae5a92e5 100644
+--- a/drivers/target/target_core_transport.c
++++ b/drivers/target/target_core_transport.c
+@@ -1692,11 +1692,11 @@ int target_submit_cmd_map_sgls(struct se_cmd *se_cmd, struct se_session *se_sess
+ 			unsigned char *buf = NULL;
  
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index debc94155f74..e3296ff95648 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -3219,7 +3219,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
- 		error = PTR_ERR(page);
- 		goto bad_swap_unlock_inode;
- 	}
--	swap_header = kmap(page);
-+	swap_header = kmap_thread(page);
+ 			if (sgl)
+-				buf = kmap(sg_page(sgl)) + sgl->offset;
++				buf = kmap_thread(sg_page(sgl)) + sgl->offset;
  
- 	maxpages = read_swap_header(p, swap_header, inode);
- 	if (unlikely(!maxpages)) {
-@@ -3395,7 +3395,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
- 		filp_close(swap_file, NULL);
- out:
- 	if (page && !IS_ERR(page)) {
--		kunmap(page);
-+		kunmap_thread(page);
- 		put_page(page);
- 	}
- 	if (name)
-diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
-index 9a3d451402d7..4d38c881bb2d 100644
---- a/mm/userfaultfd.c
-+++ b/mm/userfaultfd.c
-@@ -586,11 +586,11 @@ static __always_inline ssize_t __mcopy_atomic(struct mm_struct *dst_mm,
- 			mmap_read_unlock(dst_mm);
- 			BUG_ON(!page);
+ 			if (buf) {
+ 				memset(buf, 0, sgl->length);
+-				kunmap(sg_page(sgl));
++				kunmap_thread(sg_page(sgl));
+ 			}
+ 		}
  
--			page_kaddr = kmap(page);
-+			page_kaddr = kmap_thread(page);
- 			err = copy_from_user(page_kaddr,
- 					     (const void __user *) src_addr,
- 					     PAGE_SIZE);
--			kunmap(page);
-+			kunmap_thread(page);
- 			if (unlikely(err)) {
- 				err = -EFAULT;
- 				goto out;
 -- 
 2.28.0.rc0.12.gb6a658bd00c9
 
