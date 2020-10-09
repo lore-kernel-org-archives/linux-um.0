@@ -1,132 +1,65 @@
-Return-Path: <linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: ira.weiny@intel.com
-Subject: [PATCH RFC PKS/PMEM 21/58] fs/nfs: Utilize new kmap_thread()
-Date: Fri,  9 Oct 2020 12:49:56 -0700
-Message-Id: <20201009195033.3208459-22-ira.weiny@intel.com>
+Subject: [PATCH RFC PKS/PMEM 58/58] [dax|pmem]: Enable stray access protection
+Date: Fri,  9 Oct 2020 12:50:33 -0700
+Message-Id: <20201009195033.3208459-59-ira.weiny@intel.com>
 In-Reply-To: <20201009195033.3208459-1-ira.weiny@intel.com>
 References: <20201009195033.3208459-1-ira.weiny@intel.com>
 MIME-Version: 1.0
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
-List-Post: <mailto:linux-mtd@lists.infradead.org>
-List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-Errors-To: linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org
+Content-Transfer-Encoding: 8bit
 To: Andrew Morton <akpm@linux-foundation.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>
-Cc: linux-aio@kvack.org, linux-efi@vger.kernel.org, kvm@vger.kernel.org, linux-doc@vger.kernel.org, linux-mmc@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>, dri-devel@lists.freedesktop.org, linux-mm@kvack.org, target-devel@vger.kernel.org, linux-mtd@lists.infradead.org, linux-kselftest@vger.kernel.org, samba-technical@lists.samba.org, Ira Weiny <ira.weiny@intel.com>, ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com, devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org, linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org, linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org, x86@kernel.org, amd-gfx@lists.freedesktop.org, io-uring@vger.kernel.org, cluster-devel@redhat.com, linux-cachefs@redhat.com, intel-wired-lan@lists.osuosl.org, xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>, linux-afs@lists.infradead.org, linux-um@lists.infradead.org, intel-gfx@lists.freedesktop.org, ecryptfs@vger.kernel.org, linux-erofs@lists.ozlabs.org, reiserfs-devel@vger.kernel.org, linux-block@vger.kernel.org, linux-bcache@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>, Trond Myklebust <trond.myklebust@hammerspace.com>, linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Anna Schumaker <anna.schumaker@netapp.com>, linux-btrfs@vger.kernel.org
+Cc: Ira Weiny <ira.weiny@intel.com>, x86@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>, Dan Williams <dan.j.williams@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org, kexec@lists.infradead.org, linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org, linux-efi@vger.kernel.org, linux-mmc@vger.kernel.org, linux-scsi@vger.kernel.org, target-devel@vger.kernel.org, linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org, linux-aio@kvack.org, io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org, linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net, reiserfs-devel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-nilfs@vger.kernel.org, cluster-devel@redhat.com, ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-afs@lists.infradead.org, linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, xen-devel@lists.xenproject.org, linux-cachefs@redhat.com, samba-technical@lists.samba.org, intel-wired-lan@lists.osuosl.org
 List-ID: <linux-um.lists.infradead.org>
 
 From: Ira Weiny <ira.weiny@intel.com>
 
-The kmap() calls in this FS are localized to a single thread.  To avoid
-the over head of global PKRS updates use the new kmap_thread() call.
+Protecting against stray writes is particularly important for PMEM
+because, unlike writes to anonymous memory, writes to PMEM persists
+across a reboot.  Thus data corruption could result in permanent loss of
+data.
 
-Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
-Cc: Anna Schumaker <anna.schumaker@netapp.com>
+While stray writes are more serious than reads, protection is also
+enabled for reads.  This helps to detect bugs in code which would
+incorrectly access device memory and prevents a more serious machine
+checks should those bug reads from a poison page.
+
+Enable stray access protection by setting the flag in pgmap which
+requests it.  There is no option presented to the user.  If Zone Device
+Access Protection not be supported this flag will have no affect.
+
 Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 ---
- fs/nfs/dir.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ drivers/dax/device.c  | 2 ++
+ drivers/nvdimm/pmem.c | 2 ++
+ 2 files changed, 4 insertions(+)
 
-diff --git a/fs/nfs/dir.c b/fs/nfs/dir.c
-index cb52db9a0cfb..fee321acccb4 100644
---- a/fs/nfs/dir.c
-+++ b/fs/nfs/dir.c
-@@ -213,7 +213,7 @@ int nfs_readdir_make_qstr(struct qstr *string, const char *name, unsigned int le
- static
- int nfs_readdir_add_to_array(struct nfs_entry *entry, struct page *page)
- {
--	struct nfs_cache_array *array = kmap(page);
-+	struct nfs_cache_array *array = kmap_thread(page);
- 	struct nfs_cache_array_entry *cache_entry;
- 	int ret;
- 
-@@ -235,7 +235,7 @@ int nfs_readdir_add_to_array(struct nfs_entry *entry, struct page *page)
- 	if (entry->eof != 0)
- 		array->eof_index = array->size;
- out:
--	kunmap(page);
-+	kunmap_thread(page);
- 	return ret;
- }
- 
-@@ -347,7 +347,7 @@ int nfs_readdir_search_array(nfs_readdir_descriptor_t *desc)
- 	struct nfs_cache_array *array;
- 	int status;
- 
--	array = kmap(desc->page);
-+	array = kmap_thread(desc->page);
- 
- 	if (*desc->dir_cookie == 0)
- 		status = nfs_readdir_search_for_pos(array, desc);
-@@ -359,7 +359,7 @@ int nfs_readdir_search_array(nfs_readdir_descriptor_t *desc)
- 		desc->current_index += array->size;
- 		desc->page_index++;
- 	}
--	kunmap(desc->page);
-+	kunmap_thread(desc->page);
- 	return status;
- }
- 
-@@ -602,10 +602,10 @@ int nfs_readdir_page_filler(nfs_readdir_descriptor_t *desc, struct nfs_entry *en
- 
- out_nopages:
- 	if (count == 0 || (status == -EBADCOOKIE && entry->eof != 0)) {
--		array = kmap(page);
-+		array = kmap_thread(page);
- 		array->eof_index = array->size;
- 		status = 0;
--		kunmap(page);
-+		kunmap_thread(page);
+diff --git a/drivers/dax/device.c b/drivers/dax/device.c
+index 1e89513f3c59..e6fb35b4f0fb 100644
+--- a/drivers/dax/device.c
++++ b/drivers/dax/device.c
+@@ -430,6 +430,8 @@ int dev_dax_probe(struct device *dev)
  	}
  
- 	put_page(scratch);
-@@ -669,7 +669,7 @@ int nfs_readdir_xdr_to_array(nfs_readdir_descriptor_t *desc, struct page *page,
- 		goto out;
+ 	dev_dax->pgmap.type = MEMORY_DEVICE_GENERIC;
++	dev_dax->pgmap.flags |= PGMAP_PROT_ENABLED;
++
+ 	addr = devm_memremap_pages(dev, &dev_dax->pgmap);
+ 	if (IS_ERR(addr))
+ 		return PTR_ERR(addr);
+diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
+index e4dc1ae990fc..9fcd8338e23f 100644
+--- a/drivers/nvdimm/pmem.c
++++ b/drivers/nvdimm/pmem.c
+@@ -426,6 +426,8 @@ static int pmem_attach_disk(struct device *dev,
+ 		return -EBUSY;
  	}
  
--	array = kmap(page);
-+	array = kmap_thread(page);
- 
- 	status = nfs_readdir_alloc_pages(pages, array_size);
- 	if (status < 0)
-@@ -691,7 +691,7 @@ int nfs_readdir_xdr_to_array(nfs_readdir_descriptor_t *desc, struct page *page,
- 
- 	nfs_readdir_free_pages(pages, array_size);
- out_release_array:
--	kunmap(page);
-+	kunmap_thread(page);
- 	nfs4_label_free(entry.label);
- out:
- 	nfs_free_fattr(entry.fattr);
-@@ -803,7 +803,7 @@ int nfs_do_filldir(nfs_readdir_descriptor_t *desc)
- 	struct nfs_cache_array *array = NULL;
- 	struct nfs_open_dir_context *ctx = file->private_data;
- 
--	array = kmap(desc->page);
-+	array = kmap_thread(desc->page);
- 	for (i = desc->cache_entry_index; i < array->size; i++) {
- 		struct nfs_cache_array_entry *ent;
- 
-@@ -827,7 +827,7 @@ int nfs_do_filldir(nfs_readdir_descriptor_t *desc)
- 	if (array->eof_index >= 0)
- 		desc->eof = true;
- 
--	kunmap(desc->page);
-+	kunmap_thread(desc->page);
- 	dfprintk(DIRCACHE, "NFS: nfs_do_filldir() filling ended @ cookie %Lu; returning = %d\n",
- 			(unsigned long long)*desc->dir_cookie, res);
- 	return res;
++	pmem->pgmap.flags |= PGMAP_PROT_ENABLED;
++
+ 	q = blk_alloc_queue(dev_to_node(dev));
+ 	if (!q)
+ 		return -ENOMEM;
 -- 
 2.28.0.rc0.12.gb6a658bd00c9
 
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
