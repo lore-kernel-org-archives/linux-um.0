@@ -1,262 +1,59 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-ej1-x643.google.com ([2a00:1450:4864:20::643])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kO9on-0000rP-Ov
- for linux-um@lists.infradead.org; Fri, 02 Oct 2020 01:25:06 +0000
-Received: by mail-ej1-x643.google.com with SMTP id p9so553782ejf.6
- for <linux-um@lists.infradead.org>; Thu, 01 Oct 2020 18:25:05 -0700 (PDT)
-From: Jann Horn <jannh@google.com>
-In-Reply-To: <CAG48ez1+ok5c5PK4DjA6-rYkg9qPeKoRrJmc5jsGf=TZZbShJg@mail.gmail.com>
-References: <CAG48ez1+ok5c5PK4DjA6-rYkg9qPeKoRrJmc5jsGf=TZZbShJg@mail.gmail.com>
+Return-Path: <peterz@infradead.org>
+Date: Fri, 9 Oct 2020 13:42:16 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [RFC PATCH] kernel: allow to configure PREEMPT_NONE,
+ PREEMPT_VOLUNTARY on kernel command line
+Message-ID: <20201009114216.GM2628@hirez.programming.kicks-ass.net>
+References: <20201007120401.11200-1-mhocko@kernel.org>
+ <20201009091218.GF4967@dhcp22.suse.cz>
+ <20201009094245.GG2628@hirez.programming.kicks-ass.net>
+ <20201009101044.GH4967@dhcp22.suse.cz>
+ <20201009101431.GJ2628@hirez.programming.kicks-ass.net>
+ <20201009103730.GJ4967@dhcp22.suse.cz>
 MIME-Version: 1.0
-Date: Thu, 1 Oct 2020 21:25:04 -0400
-Message-ID: <CAG48ez1rCScOo7jC2ReC7QTLNFGnpB8UvNbeiiN3pXCWbNvW+g@mail.gmail.com>
-Subject: [PATCH 2/2] exec: Broadly lock nascent mm until setup_arg_pages()
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
-Cc: Michel Lespinasse <walken@google.com>, Jason Gunthorpe <jgg@nvidia.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, "Eric W . Biederman" <ebiederm@xmission.com>, Sakari Ailus <sakari.ailus@linux.intel.com>, John Hubbard <jhubbard@nvidia.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201009103730.GJ4967@dhcp22.suse.cz>
+To: Michal Hocko <mhocko@suse.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Frederic Weisbecker <fweisbecker@suse.de>, LKML <linux-kernel@vger.kernel.org>, Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org, Brian Cain <bcain@codeaurora.org>, linux-hexagon@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
+List-ID: <linux-um.lists.infradead.org>
 
-While AFAIK there currently is nothing that can modify the VMA tree of a
-new mm until userspace has started running under the mm, we should properly
-lock the mm here anyway, both to keep lockdep happy when adding locking
-assertions and to be safe in the future in case someone e.g. decides to
-permit VMA-tree-mutating operations in process_madvise_behavior_valid().
+On Fri, Oct 09, 2020 at 12:37:30PM +0200, Michal Hocko wrote:
+> On Fri 09-10-20 12:14:31, Peter Zijlstra wrote:
+> > On Fri, Oct 09, 2020 at 12:10:44PM +0200, Michal Hocko wrote:
+> > > On Fri 09-10-20 11:42:45, Peter Zijlstra wrote:
+> > > > On Fri, Oct 09, 2020 at 11:12:18AM +0200, Michal Hocko wrote:
+> > > > > Is there any additional feedback? Should I split up the patch and repost
+> > > > > for inclusion?
+> > > > 
+> > > > Maybe remove PREEMPT_NONE after that?  Since that's then equivalent to
+> > > > building with VOLUNTARY and booting with preempt=none.
+> > > 
+> > > So do you mean that I should post an additional patch which does this on
+> > > top? With a justification that there is one option less to chose from?
+> > 
+> > Exactly!
+> 
+> It seems we have to get rid of CONFIG_NO_PREEMPT first
+> $ git grep ARCH_NO_PREEMPT
+> arch/Kconfig:config ARCH_NO_PREEMPT
+> arch/alpha/Kconfig:     select ARCH_NO_PREEMPT
+> arch/hexagon/Kconfig:   select ARCH_NO_PREEMPT
+> arch/m68k/Kconfig:      select ARCH_NO_PREEMPT if !COLDFIRE
+> arch/um/Kconfig:        select ARCH_NO_PREEMPT
+> kernel/Kconfig.preempt: depends on !ARCH_NO_PREEMPT
+> kernel/Kconfig.preempt: depends on !ARCH_NO_PREEMPT
+> lib/Kconfig.debug:      select PREEMPT_COUNT if !ARCH_NO_PREEMPT
+> lib/Kconfig.debug:      depends on !ARCH_NO_PREEMPT
+> 
+> Is there anybody working on that. Is this even possible? I can see it
+> has been added by 87a4c375995e ("kconfig: include kernel/Kconfig.preempt
+> from init/Kconfig") but this looks more like a mechanical change and it
+> has defined ARCH_NO_PREEMPT all arches which haven't included
+> Kconfig.preempt. But is there any reason why those cannot support
+> preemption for some reason? Cc respective maintainer (the email thread
+> starts http://lkml.kernel.org/r/20201007120401.11200-1-mhocko@kernel.org
 
-The goal of this patch is to broadly lock the nascent mm in the exec path,
-from around the time it is created all the way to the end of
-setup_arg_pages() (because setup_arg_pages() accesses bprm->vma).
-As long as the mm is write-locked, keep it around in bprm->mm, even after
-it has been installed on the task (with an extra reference on the mm, to
-reduce complexity in free_bprm()).
-After setup_arg_pages(), we have to unlock the mm so that APIs such as
-copy_to_user() will work in the following binfmt-specific setup code.
-
-Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-Suggested-by: Michel Lespinasse <walken@google.com>
-Signed-off-by: Jann Horn <jannh@google.com>
----
- fs/exec.c               | 68 ++++++++++++++++++++---------------------
- include/linux/binfmts.h |  2 +-
- 2 files changed, 35 insertions(+), 35 deletions(-)
-
-diff --git a/fs/exec.c b/fs/exec.c
-index 229dbc7aa61a..fe11d77e397a 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -254,11 +254,6 @@ static int __bprm_mm_init(struct linux_binprm *bprm)
- 		return -ENOMEM;
- 	vma_set_anonymous(vma);
-
--	if (mmap_write_lock_killable(mm)) {
--		err = -EINTR;
--		goto err_free;
--	}
--
- 	/*
- 	 * Place the stack at the largest stack address the architecture
- 	 * supports. Later, we'll move this to an appropriate place. We don't
-@@ -276,12 +271,9 @@ static int __bprm_mm_init(struct linux_binprm *bprm)
- 		goto err;
-
- 	mm->stack_vm = mm->total_vm = 1;
--	mmap_write_unlock(mm);
- 	bprm->p = vma->vm_end - sizeof(void *);
- 	return 0;
- err:
--	mmap_write_unlock(mm);
--err_free:
- 	bprm->vma = NULL;
- 	vm_area_free(vma);
- 	return err;
-@@ -364,9 +356,9 @@ static int bprm_mm_init(struct linux_binprm *bprm)
- 	struct mm_struct *mm = NULL;
-
- 	bprm->mm = mm = mm_alloc();
--	err = -ENOMEM;
- 	if (!mm)
--		goto err;
-+		return -ENOMEM;
-+	mmap_write_lock_nascent(mm);
-
- 	/* Save current stack limit for all calculations made during exec. */
- 	task_lock(current->group_leader);
-@@ -374,17 +366,12 @@ static int bprm_mm_init(struct linux_binprm *bprm)
- 	task_unlock(current->group_leader);
-
- 	err = __bprm_mm_init(bprm);
--	if (err)
--		goto err;
--
--	return 0;
--
--err:
--	if (mm) {
--		bprm->mm = NULL;
--		mmdrop(mm);
--	}
-+	if (!err)
-+		return 0;
-
-+	bprm->mm = NULL;
-+	mmap_write_unlock(mm);
-+	mmdrop(mm);
- 	return err;
- }
-
-@@ -735,6 +722,7 @@ static int shift_arg_pages(struct vm_area_struct
-*vma, unsigned long shift)
- /*
-  * Finalizes the stack vm_area_struct. The flags and permissions are updated,
-  * the stack is optionally relocated, and some extra space is added.
-+ * At the end of this, the mm_struct will be unlocked on success.
-  */
- int setup_arg_pages(struct linux_binprm *bprm,
- 		    unsigned long stack_top,
-@@ -787,9 +775,6 @@ int setup_arg_pages(struct linux_binprm *bprm,
- 		bprm->loader -= stack_shift;
- 	bprm->exec -= stack_shift;
-
--	if (mmap_write_lock_killable(mm))
--		return -EINTR;
--
- 	vm_flags = VM_STACK_FLAGS;
-
- 	/*
-@@ -807,7 +792,7 @@ int setup_arg_pages(struct linux_binprm *bprm,
- 	ret = mprotect_fixup(vma, &prev, vma->vm_start, vma->vm_end,
- 			vm_flags);
- 	if (ret)
--		goto out_unlock;
-+		return ret;
- 	BUG_ON(prev != vma);
-
- 	if (unlikely(vm_flags & VM_EXEC)) {
-@@ -819,7 +804,7 @@ int setup_arg_pages(struct linux_binprm *bprm,
- 	if (stack_shift) {
- 		ret = shift_arg_pages(vma, stack_shift);
- 		if (ret)
--			goto out_unlock;
-+			return ret;
- 	}
-
- 	/* mprotect_fixup is overkill to remove the temporary stack flags */
-@@ -846,11 +831,17 @@ int setup_arg_pages(struct linux_binprm *bprm,
- 	current->mm->start_stack = bprm->p;
- 	ret = expand_stack(vma, stack_base);
- 	if (ret)
--		ret = -EFAULT;
-+		return -EFAULT;
-
--out_unlock:
-+	/*
-+	 * From this point on, anything that wants to poke around in the
-+	 * mm_struct must lock it by itself.
-+	 */
-+	bprm->vma = NULL;
- 	mmap_write_unlock(mm);
--	return ret;
-+	mmput(mm);
-+	bprm->mm = NULL;
-+	return 0;
- }
- EXPORT_SYMBOL(setup_arg_pages);
-
-@@ -1114,8 +1105,6 @@ static int exec_mmap(struct mm_struct *mm)
- 	if (ret)
- 		return ret;
-
--	mmap_write_lock_nascent(mm);
--
- 	if (old_mm) {
- 		/*
- 		 * Make sure that if there is a core dump in progress
-@@ -1127,11 +1116,12 @@ static int exec_mmap(struct mm_struct *mm)
- 		if (unlikely(old_mm->core_state)) {
- 			mmap_read_unlock(old_mm);
- 			mutex_unlock(&tsk->signal->exec_update_mutex);
--			mmap_write_unlock(mm);
- 			return -EINTR;
- 		}
- 	}
-
-+	/* bprm->mm stays refcounted, current->mm takes an extra reference */
-+	mmget(mm);
- 	task_lock(tsk);
- 	active_mm = tsk->active_mm;
- 	membarrier_exec_mmap(mm);
-@@ -1141,7 +1131,6 @@ static int exec_mmap(struct mm_struct *mm)
- 	tsk->mm->vmacache_seqnum = 0;
- 	vmacache_flush(tsk);
- 	task_unlock(tsk);
--	mmap_write_unlock(mm);
- 	if (old_mm) {
- 		mmap_read_unlock(old_mm);
- 		BUG_ON(active_mm != old_mm);
-@@ -1397,8 +1386,6 @@ int begin_new_exec(struct linux_binprm * bprm)
- 	if (retval)
- 		goto out;
-
--	bprm->mm = NULL;
--
- #ifdef CONFIG_POSIX_TIMERS
- 	exit_itimers(me->signal);
- 	flush_itimer_signals();
-@@ -1545,6 +1532,18 @@ void setup_new_exec(struct linux_binprm * bprm)
- 	me->mm->task_size = TASK_SIZE;
- 	mutex_unlock(&me->signal->exec_update_mutex);
- 	mutex_unlock(&me->signal->cred_guard_mutex);
-+
-+#ifndef CONFIG_MMU
-+	/*
-+	 * On MMU, setup_arg_pages() wants to access bprm->vma after this point,
-+	 * so we can't drop the mmap lock yet.
-+	 * On !MMU, we have neither setup_arg_pages() nor bprm->vma, so we
-+	 * should drop the lock here.
-+	 */
-+	mmap_write_unlock(bprm->mm);
-+	mmput(bprm->mm);
-+	bprm->mm = NULL;
-+#endif
- }
- EXPORT_SYMBOL(setup_new_exec);
-
-@@ -1581,6 +1580,7 @@ static void free_bprm(struct linux_binprm *bprm)
- {
- 	if (bprm->mm) {
- 		acct_arg_size(bprm, 0);
-+		mmap_write_unlock(bprm->mm);
- 		mmput(bprm->mm);
- 	}
- 	free_arg_pages(bprm);
-diff --git a/include/linux/binfmts.h b/include/linux/binfmts.h
-index 0571701ab1c5..3bf06212fbae 100644
---- a/include/linux/binfmts.h
-+++ b/include/linux/binfmts.h
-@@ -22,7 +22,7 @@ struct linux_binprm {
- # define MAX_ARG_PAGES	32
- 	struct page *page[MAX_ARG_PAGES];
- #endif
--	struct mm_struct *mm;
-+	struct mm_struct *mm; /* nascent mm, write-locked */
- 	unsigned long p; /* current top of mem */
- 	unsigned long argmin; /* rlimit marker for copy_strings() */
- 	unsigned int
--- 
-2.28.0.806.g8561365e88-goog
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+I suspect we can drop ARCH_NO_PREEMPT from VOLUNTARY, IIRC there's no
+arch dependency there. PREEMPT itself obviously needs arch help.
 
