@@ -1,35 +1,75 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Thu, 15 Oct 2020 10:08:45 +0100
-From: Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH v2 15/16] iomap: Inline iomap_iop_set_range_uptodate into
- its one caller
-Message-ID: <20201015090845.GD12879@infradead.org>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: [PATCH v2 15/16] iomap: Inline iomap_iop_set_range_uptodate into its one caller
+Date: Fri,  9 Oct 2020 15:31:03 +0100
+Message-Id: <20201009143104.22673-16-willy@infradead.org>
+In-Reply-To: <20201009143104.22673-1-willy@infradead.org>
 References: <20201009143104.22673-1-willy@infradead.org>
- <20201009143104.22673-16-willy@infradead.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20201009143104.22673-16-willy@infradead.org>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc: linux-cifs@vger.kernel.org, Richard Weinberger <richard@nod.at>, ecryptfs@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, linux-mm@kvack.org, linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org, v9fs-developer@lists.sourceforge.net, ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+To: linux-fsdevel@vger.kernel.org
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>, linux-mm@kvack.org, v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org, ecryptfs@vger.kernel.org, linux-um@lists.infradead.org, linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>, linux-xfs@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-Looks good,
+iomap_set_range_uptodate() is the only caller of
+iomap_iop_set_range_uptodate() and it makes future patches easier to
+have it inline.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ fs/iomap/buffered-io.c | 24 ++++++++++--------------
+ 1 file changed, 10 insertions(+), 14 deletions(-)
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+index 8180061b9e16..e60f572e1590 100644
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -141,8 +141,8 @@ iomap_adjust_read_range(struct inode *inode, struct iomap_page *iop,
+ 	*lenp = plen;
+ }
+ 
+-static void
+-iomap_iop_set_range_uptodate(struct page *page, unsigned off, unsigned len)
++static void iomap_set_range_uptodate(struct page *page, unsigned off,
++		unsigned len)
+ {
+ 	struct iomap_page *iop = to_iomap_page(page);
+ 	struct inode *inode = page->mapping->host;
+@@ -150,6 +150,14 @@ iomap_iop_set_range_uptodate(struct page *page, unsigned off, unsigned len)
+ 	unsigned last = (off + len - 1) >> inode->i_blkbits;
+ 	unsigned long flags;
+ 
++	if (PageError(page))
++		return;
++
++	if (!iop) {
++		SetPageUptodate(page);
++		return;
++	}
++
+ 	spin_lock_irqsave(&iop->uptodate_lock, flags);
+ 	bitmap_set(iop->uptodate, first, last - first + 1);
+ 	if (bitmap_full(iop->uptodate, i_blocks_per_page(inode, page)))
+@@ -157,18 +165,6 @@ iomap_iop_set_range_uptodate(struct page *page, unsigned off, unsigned len)
+ 	spin_unlock_irqrestore(&iop->uptodate_lock, flags);
+ }
+ 
+-static void
+-iomap_set_range_uptodate(struct page *page, unsigned off, unsigned len)
+-{
+-	if (PageError(page))
+-		return;
+-
+-	if (page_has_private(page))
+-		iomap_iop_set_range_uptodate(page, off, len);
+-	else
+-		SetPageUptodate(page);
+-}
+-
+ static void
+ iomap_read_page_end_io(struct bio_vec *bvec, int error)
+ {
+-- 
+2.28.0
+
 
