@@ -1,11 +1,14 @@
 Return-Path: <linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: ira.weiny@intel.com
-Subject: [PATCH RFC PKS/PMEM 06/58] kmap: Introduce k[un]map_thread debugging
-Date: Fri,  9 Oct 2020 12:49:41 -0700
-Message-Id: <20201009195033.3208459-7-ira.weiny@intel.com>
-In-Reply-To: <20201009195033.3208459-1-ira.weiny@intel.com>
+Date: Sat, 10 Oct 2020 16:01:55 -0700
+From: Ira Weiny <ira.weiny@intel.com>
+Subject: Re: [PATCH RFC PKS/PMEM 09/58] drivers/gpu: Utilize new kmap_thread()
+Message-ID: <20201010230155.GX2046448@iweiny-DESK2.sc.intel.com>
 References: <20201009195033.3208459-1-ira.weiny@intel.com>
+ <20201009195033.3208459-10-ira.weiny@intel.com>
+ <20201009220349.GQ438822@phenom.ffwll.local>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20201009220349.GQ438822@phenom.ffwll.local>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
@@ -17,247 +20,397 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Andrew Morton <akpm@linux-foundation.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>, linux-aio@kvack.org, linux-efi@vger.kernel.org, kvm@vger.kernel.org, linux-doc@vger.kernel.org, linux-mmc@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>, dri-devel@lists.freedesktop.org, Ben Segall <bsegall@google.com>, linux-mm@kvack.org, target-devel@vger.kernel.org, linux-mtd@lists.infradead.org, linux-kselftest@vger.kernel.org, samba-technical@lists.samba.org, Ira Weiny <ira.weiny@intel.com>, ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com, devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org, linux-nilfs@vger.kernel.org, Vincent Guittot <vincent.guittot@linaro.org>, linux-scsi@vger.kernel.org, linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org, x86@kernel.org, amd-gfx@lists.freedesktop.org, io-uring@vger.kernel.org, cluster-devel@redhat.com, linux-cachefs@redhat.com, intel-wired-lan@lists.osuosl.org, Mel Gorman <mgorman@suse.de>, xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>, linux-afs@lists.infradead.org, linux-um@lists.infradead.org, intel-gfx@lists.freedesktop.org, ecryptfs@vger.kernel.org, linux-erofs@lists.ozlabs.org, reiserfs-devel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>, linux-block@vger.kernel.org, linux-bcache@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>, Dietmar Eggemann <dietmar.eggemann@arm.com>, linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
+To: Andrew Morton <akpm@linux-foundation.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, David Airlie <airlied@linux.ie>, Patrik Jakobsson <patrik.r.jakobsson@gmail.com>, x86@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>, Dan Williams <dan.j.williams@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org, kexec@lists.infradead.org, linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org, linux-efi@vger.kernel.org, linux-mmc@vger.kernel.org, linux-scsi@vger.kernel.org, target-devel@vger.kernel.org, linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org, linux-aio@kvack.org, io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org, linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net, reiserfs-devel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-nilfs@vger.kernel.org, cluster-devel@redhat.com, ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-afs@lists.infradead.org, linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, xen-devel@lists.xenproject.org, linux-cachefs@redhat.com, samba-technical@lists.samba.org, intel-wired-lan@lists.osuosl.org
 List-ID: <linux-um.lists.infradead.org>
 
-From: Ira Weiny <ira.weiny@intel.com>
+On Sat, Oct 10, 2020 at 12:03:49AM +0200, Daniel Vetter wrote:
+> On Fri, Oct 09, 2020 at 12:49:44PM -0700, ira.weiny@intel.com wrote:
+> > From: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > These kmap() calls in the gpu stack are localized to a single thread.
+> > To avoid the over head of global PKRS updates use the new kmap_thread()
+> > call.
+> > 
+> > Cc: David Airlie <airlied@linux.ie>
+> > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > Cc: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> 
+> I'm guessing the entire pile goes in through some other tree.
+>
 
-Most kmap() callers use the map within a single thread and have no need
-for the protection domain to be enabled globally.
+Apologies for not realizing there were multiple maintainers here.
 
-To differentiate these kmap users, new k[un]map_thread() calls were
-introduced which are thread local.
+But, I was thinking it would land together through the mm tree once the core
+support lands.  I've tried to split these out in a way they can be easily
+reviewed/acked by the correct developers.
 
-To aid in debugging the new use of kmap_thread(), add a reference count,
-a check on that count, and tracing to ID where mapping errors occur.
+> If so:
+> 
+> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> 
+> If you want this to land through maintainer trees, then we need a
+> per-driver split (since aside from amdgpu and radeon they're all different
+> subtrees).
 
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ben Segall <bsegall@google.com>
-Cc: Mel Gorman <mgorman@suse.de>
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
----
- include/linux/highmem.h            |  5 +++
- include/linux/sched.h              |  5 +++
- include/trace/events/kmap_thread.h | 56 ++++++++++++++++++++++++++++++
- init/init_task.c                   |  3 ++
- kernel/fork.c                      | 15 ++++++++
- lib/Kconfig.debug                  |  8 +++++
- mm/debug.c                         | 23 ++++++++++++
- 7 files changed, 115 insertions(+)
- create mode 100644 include/trace/events/kmap_thread.h
+It is just RFC for the moment.  I need to get the core support accepted first
+then this can land.
 
-diff --git a/include/linux/highmem.h b/include/linux/highmem.h
-index ef7813544719..22d1c000802e 100644
---- a/include/linux/highmem.h
-+++ b/include/linux/highmem.h
-@@ -247,6 +247,10 @@ static inline void kunmap(struct page *page)
- 	__kunmap(page, true);
- }
- 
-+#ifdef CONFIG_DEBUG_KMAP_THREAD
-+void *kmap_thread(struct page *page);
-+void kunmap_thread(struct page *page);
-+#else
- static inline void *kmap_thread(struct page *page)
- {
- 	return __kmap(page, false);
-@@ -255,6 +259,7 @@ static inline void kunmap_thread(struct page *page)
- {
- 	__kunmap(page, false);
- }
-+#endif
- 
- /*
-  * Prevent people trying to call kunmap_atomic() as if it were kunmap()
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 25d97ab6c757..4627ea4a49e6 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1318,6 +1318,11 @@ struct task_struct {
- #ifdef CONFIG_ZONE_DEVICE_ACCESS_PROTECTION
- 	unsigned int			dev_page_access_ref;
- #endif
-+
-+#ifdef CONFIG_DEBUG_KMAP_THREAD
-+	unsigned int			kmap_thread_cnt;
-+#endif
-+
- 	/*
- 	 * New fields for task_struct should be added above here, so that
- 	 * they are included in the randomized portion of task_struct.
-diff --git a/include/trace/events/kmap_thread.h b/include/trace/events/kmap_thread.h
-new file mode 100644
-index 000000000000..e7143cfe0daf
---- /dev/null
-+++ b/include/trace/events/kmap_thread.h
-@@ -0,0 +1,56 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
-+
-+/*
-+ * Copyright (c) 2020 Intel Corporation.  All rights reserved.
-+ *
-+ */
-+
-+#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM kmap_thread
-+
-+#if !defined(_TRACE_KMAP_THREAD_H) || defined(TRACE_HEADER_MULTI_READ)
-+#define _TRACE_KMAP_THREAD_H
-+
-+#include <linux/tracepoint.h>
-+
-+DECLARE_EVENT_CLASS(kmap_thread_template,
-+	TP_PROTO(struct task_struct *tsk, struct page *page,
-+		 void *caller_addr, int cnt),
-+	TP_ARGS(tsk, page, caller_addr, cnt),
-+
-+	TP_STRUCT__entry(
-+		__field(int, pid)
-+		__field(struct page *, page)
-+		__field(void *, caller_addr)
-+		__field(int, cnt)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->pid = tsk->pid;
-+		__entry->page = page;
-+		__entry->caller_addr = caller_addr;
-+		__entry->cnt = cnt;
-+	),
-+
-+	TP_printk("PID %d; (%d) %pS %p",
-+		__entry->pid,
-+		__entry->cnt,
-+		__entry->caller_addr,
-+		__entry->page
-+	)
-+);
-+
-+DEFINE_EVENT(kmap_thread_template, kmap_thread,
-+	TP_PROTO(struct task_struct *tsk, struct page *page,
-+		 void *caller_addr, int cnt),
-+	TP_ARGS(tsk, page, caller_addr, cnt));
-+
-+DEFINE_EVENT(kmap_thread_template, kunmap_thread,
-+	TP_PROTO(struct task_struct *tsk, struct page *page,
-+		 void *caller_addr, int cnt),
-+	TP_ARGS(tsk, page, caller_addr, cnt));
-+
-+
-+#endif /* _TRACE_KMAP_THREAD_H */
-+
-+#include <trace/define_trace.h>
-diff --git a/init/init_task.c b/init/init_task.c
-index 9b39f25de59b..19f09965eb34 100644
---- a/init/init_task.c
-+++ b/init/init_task.c
-@@ -212,6 +212,9 @@ struct task_struct init_task
- #ifdef CONFIG_ZONE_DEVICE_ACCESS_PROTECTION
- 	.dev_page_access_ref = 0,
- #endif
-+#ifdef CONFIG_DEBUG_KMAP_THREAD
-+	.kmap_thread_cnt = 0,
-+#endif
- };
- EXPORT_SYMBOL(init_task);
- 
-diff --git a/kernel/fork.c b/kernel/fork.c
-index b6a3ee328a89..2c66e49b7614 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -722,6 +722,17 @@ static inline void put_signal_struct(struct signal_struct *sig)
- 		free_signal_struct(sig);
- }
- 
-+#ifdef CONFIG_DEBUG_KMAP_THREAD
-+static void check_outstanding_kmap_thread(struct task_struct *tsk)
-+{
-+	if (tsk->kmap_thread_cnt)
-+		pr_warn(KERN_ERR "WARNING: PID %d; Failed to kunmap_thread() [cnt %d]\n",
-+			tsk->pid, tsk->kmap_thread_cnt);
-+}
-+#else
-+static void check_outstanding_kmap_thread(struct task_struct *tsk) { }
-+#endif
-+
- void __put_task_struct(struct task_struct *tsk)
- {
- 	WARN_ON(!tsk->exit_state);
-@@ -734,6 +745,7 @@ void __put_task_struct(struct task_struct *tsk)
- 	exit_creds(tsk);
- 	delayacct_tsk_free(tsk);
- 	put_signal_struct(tsk->signal);
-+	check_outstanding_kmap_thread(tsk);
- 
- 	if (!profile_handoff_task(tsk))
- 		free_task(tsk);
-@@ -943,6 +955,9 @@ static struct task_struct *dup_task_struct(struct task_struct *orig, int node)
- #endif
- #ifdef CONFIG_ZONE_DEVICE_ACCESS_PROTECTION
- 	tsk->dev_page_access_ref = 0;
-+#endif
-+#ifdef CONFIG_DEBUG_KMAP_THREAD
-+	tsk->kmap_thread_cnt = 0;
- #endif
- 	return tsk;
- 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index f015c09ba5a1..6507b43d5b0c 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -858,6 +858,14 @@ config DEBUG_HIGHMEM
- 	  This option enables additional error checking for high memory
- 	  systems.  Disable for production systems.
- 
-+config DEBUG_KMAP_THREAD
-+	bool "Kmap debugging"
-+	depends on DEBUG_KERNEL
-+	help
-+	  This option enables additional error checking for kernel mapping code
-+	  specifically the k[un]map_thread() calls.  Disable for production
-+	  systems.
-+
- config HAVE_DEBUG_STACKOVERFLOW
- 	bool
- 
-diff --git a/mm/debug.c b/mm/debug.c
-index ca8d1cacdecc..68d186f3570e 100644
---- a/mm/debug.c
-+++ b/mm/debug.c
-@@ -320,3 +320,26 @@ void page_init_poison(struct page *page, size_t size)
- }
- EXPORT_SYMBOL_GPL(page_init_poison);
- #endif		/* CONFIG_DEBUG_VM */
-+
-+#define CREATE_TRACE_POINTS
-+#include <trace/events/kmap_thread.h>
-+
-+#ifdef CONFIG_DEBUG_KMAP_THREAD
-+void *kmap_thread(struct page *page)
-+{
-+	trace_kmap_thread(current, page, __builtin_return_address(0),
-+			  current->kmap_thread_cnt);
-+	current->kmap_thread_cnt++;
-+	return __kmap(page, false);
-+}
-+EXPORT_SYMBOL_GPL(kmap_thread);
-+
-+void kunmap_thread(struct page *page)
-+{
-+	__kunmap(page, false);
-+	current->kmap_thread_cnt--;
-+	trace_kunmap_thread(current, page, __builtin_return_address(0),
-+			    current->kmap_thread_cnt);
-+}
-+EXPORT_SYMBOL_GPL(kunmap_thread);
-+#endif
--- 
-2.28.0.rc0.12.gb6a658bd00c9
+> 
+> btw the two kmap calls in drm you highlight in the cover letter should
+> also be convertible to kmap_thread. We only hold vmalloc mappings for a
+> longer time (or it'd be quite a driver bug). So if you want maybe throw
+> those two as two additional patches on top, and we can do some careful
+> review & testing for them.
 
+Cool.  I'll add them in.
+
+Ira
+
+> -Daniel
+> 
+> > ---
+> >  drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c              | 12 ++++++------
+> >  drivers/gpu/drm/gma500/gma_display.c                 |  4 ++--
+> >  drivers/gpu/drm/gma500/mmu.c                         | 10 +++++-----
+> >  drivers/gpu/drm/i915/gem/i915_gem_shmem.c            |  4 ++--
+> >  .../gpu/drm/i915/gem/selftests/i915_gem_context.c    |  4 ++--
+> >  drivers/gpu/drm/i915/gem/selftests/i915_gem_mman.c   |  8 ++++----
+> >  drivers/gpu/drm/i915/gt/intel_ggtt_fencing.c         |  4 ++--
+> >  drivers/gpu/drm/i915/gt/intel_gtt.c                  |  4 ++--
+> >  drivers/gpu/drm/i915/gt/shmem_utils.c                |  4 ++--
+> >  drivers/gpu/drm/i915/i915_gem.c                      |  8 ++++----
+> >  drivers/gpu/drm/i915/i915_gpu_error.c                |  4 ++--
+> >  drivers/gpu/drm/i915/selftests/i915_perf.c           |  4 ++--
+> >  drivers/gpu/drm/radeon/radeon_ttm.c                  |  4 ++--
+> >  13 files changed, 37 insertions(+), 37 deletions(-)
+> > 
+> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+> > index 978bae731398..bd564bccb7a3 100644
+> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+> > @@ -2437,11 +2437,11 @@ static ssize_t amdgpu_ttm_gtt_read(struct file *f, char __user *buf,
+> >  
+> >  		page = adev->gart.pages[p];
+> >  		if (page) {
+> > -			ptr = kmap(page);
+> > +			ptr = kmap_thread(page);
+> >  			ptr += off;
+> >  
+> >  			r = copy_to_user(buf, ptr, cur_size);
+> > -			kunmap(adev->gart.pages[p]);
+> > +			kunmap_thread(adev->gart.pages[p]);
+> >  		} else
+> >  			r = clear_user(buf, cur_size);
+> >  
+> > @@ -2507,9 +2507,9 @@ static ssize_t amdgpu_iomem_read(struct file *f, char __user *buf,
+> >  		if (p->mapping != adev->mman.bdev.dev_mapping)
+> >  			return -EPERM;
+> >  
+> > -		ptr = kmap(p);
+> > +		ptr = kmap_thread(p);
+> >  		r = copy_to_user(buf, ptr + off, bytes);
+> > -		kunmap(p);
+> > +		kunmap_thread(p);
+> >  		if (r)
+> >  			return -EFAULT;
+> >  
+> > @@ -2558,9 +2558,9 @@ static ssize_t amdgpu_iomem_write(struct file *f, const char __user *buf,
+> >  		if (p->mapping != adev->mman.bdev.dev_mapping)
+> >  			return -EPERM;
+> >  
+> > -		ptr = kmap(p);
+> > +		ptr = kmap_thread(p);
+> >  		r = copy_from_user(ptr + off, buf, bytes);
+> > -		kunmap(p);
+> > +		kunmap_thread(p);
+> >  		if (r)
+> >  			return -EFAULT;
+> >  
+> > diff --git a/drivers/gpu/drm/gma500/gma_display.c b/drivers/gpu/drm/gma500/gma_display.c
+> > index 3df6d6e850f5..35f4e55c941f 100644
+> > --- a/drivers/gpu/drm/gma500/gma_display.c
+> > +++ b/drivers/gpu/drm/gma500/gma_display.c
+> > @@ -400,9 +400,9 @@ int gma_crtc_cursor_set(struct drm_crtc *crtc,
+> >  		/* Copy the cursor to cursor mem */
+> >  		tmp_dst = dev_priv->vram_addr + cursor_gt->offset;
+> >  		for (i = 0; i < cursor_pages; i++) {
+> > -			tmp_src = kmap(gt->pages[i]);
+> > +			tmp_src = kmap_thread(gt->pages[i]);
+> >  			memcpy(tmp_dst, tmp_src, PAGE_SIZE);
+> > -			kunmap(gt->pages[i]);
+> > +			kunmap_thread(gt->pages[i]);
+> >  			tmp_dst += PAGE_SIZE;
+> >  		}
+> >  
+> > diff --git a/drivers/gpu/drm/gma500/mmu.c b/drivers/gpu/drm/gma500/mmu.c
+> > index 505044c9a673..fba7a3a461fd 100644
+> > --- a/drivers/gpu/drm/gma500/mmu.c
+> > +++ b/drivers/gpu/drm/gma500/mmu.c
+> > @@ -192,20 +192,20 @@ struct psb_mmu_pd *psb_mmu_alloc_pd(struct psb_mmu_driver *driver,
+> >  		pd->invalid_pte = 0;
+> >  	}
+> >  
+> > -	v = kmap(pd->dummy_pt);
+> > +	v = kmap_thread(pd->dummy_pt);
+> >  	for (i = 0; i < (PAGE_SIZE / sizeof(uint32_t)); ++i)
+> >  		v[i] = pd->invalid_pte;
+> >  
+> > -	kunmap(pd->dummy_pt);
+> > +	kunmap_thread(pd->dummy_pt);
+> >  
+> > -	v = kmap(pd->p);
+> > +	v = kmap_thread(pd->p);
+> >  	for (i = 0; i < (PAGE_SIZE / sizeof(uint32_t)); ++i)
+> >  		v[i] = pd->invalid_pde;
+> >  
+> > -	kunmap(pd->p);
+> > +	kunmap_thread(pd->p);
+> >  
+> >  	clear_page(kmap(pd->dummy_page));
+> > -	kunmap(pd->dummy_page);
+> > +	kunmap_thread(pd->dummy_page);
+> >  
+> >  	pd->tables = vmalloc_user(sizeof(struct psb_mmu_pt *) * 1024);
+> >  	if (!pd->tables)
+> > diff --git a/drivers/gpu/drm/i915/gem/i915_gem_shmem.c b/drivers/gpu/drm/i915/gem/i915_gem_shmem.c
+> > index 38113d3c0138..274424795fb7 100644
+> > --- a/drivers/gpu/drm/i915/gem/i915_gem_shmem.c
+> > +++ b/drivers/gpu/drm/i915/gem/i915_gem_shmem.c
+> > @@ -566,9 +566,9 @@ i915_gem_object_create_shmem_from_data(struct drm_i915_private *dev_priv,
+> >  		if (err < 0)
+> >  			goto fail;
+> >  
+> > -		vaddr = kmap(page);
+> > +		vaddr = kmap_thread(page);
+> >  		memcpy(vaddr, data, len);
+> > -		kunmap(page);
+> > +		kunmap_thread(page);
+> >  
+> >  		err = pagecache_write_end(file, file->f_mapping,
+> >  					  offset, len, len,
+> > diff --git a/drivers/gpu/drm/i915/gem/selftests/i915_gem_context.c b/drivers/gpu/drm/i915/gem/selftests/i915_gem_context.c
+> > index 7ffc3c751432..b466c677d007 100644
+> > --- a/drivers/gpu/drm/i915/gem/selftests/i915_gem_context.c
+> > +++ b/drivers/gpu/drm/i915/gem/selftests/i915_gem_context.c
+> > @@ -1754,7 +1754,7 @@ static int check_scratch_page(struct i915_gem_context *ctx, u32 *out)
+> >  		return -EINVAL;
+> >  	}
+> >  
+> > -	vaddr = kmap(page);
+> > +	vaddr = kmap_thread(page);
+> >  	if (!vaddr) {
+> >  		pr_err("No (mappable) scratch page!\n");
+> >  		return -EINVAL;
+> > @@ -1765,7 +1765,7 @@ static int check_scratch_page(struct i915_gem_context *ctx, u32 *out)
+> >  		pr_err("Inconsistent initial state of scratch page!\n");
+> >  		err = -EINVAL;
+> >  	}
+> > -	kunmap(page);
+> > +	kunmap_thread(page);
+> >  
+> >  	return err;
+> >  }
+> > diff --git a/drivers/gpu/drm/i915/gem/selftests/i915_gem_mman.c b/drivers/gpu/drm/i915/gem/selftests/i915_gem_mman.c
+> > index 9c7402ce5bf9..447df22e2e06 100644
+> > --- a/drivers/gpu/drm/i915/gem/selftests/i915_gem_mman.c
+> > +++ b/drivers/gpu/drm/i915/gem/selftests/i915_gem_mman.c
+> > @@ -143,7 +143,7 @@ static int check_partial_mapping(struct drm_i915_gem_object *obj,
+> >  	intel_gt_flush_ggtt_writes(&to_i915(obj->base.dev)->gt);
+> >  
+> >  	p = i915_gem_object_get_page(obj, offset >> PAGE_SHIFT);
+> > -	cpu = kmap(p) + offset_in_page(offset);
+> > +	cpu = kmap_thread(p) + offset_in_page(offset);
+> >  	drm_clflush_virt_range(cpu, sizeof(*cpu));
+> >  	if (*cpu != (u32)page) {
+> >  		pr_err("Partial view for %lu [%u] (offset=%llu, size=%u [%llu, row size %u], fence=%d, tiling=%d, stride=%d) misalignment, expected write to page (%llu + %u [0x%llx]) of 0x%x, found 0x%x\n",
+> > @@ -161,7 +161,7 @@ static int check_partial_mapping(struct drm_i915_gem_object *obj,
+> >  	}
+> >  	*cpu = 0;
+> >  	drm_clflush_virt_range(cpu, sizeof(*cpu));
+> > -	kunmap(p);
+> > +	kunmap_thread(p);
+> >  
+> >  out:
+> >  	__i915_vma_put(vma);
+> > @@ -236,7 +236,7 @@ static int check_partial_mappings(struct drm_i915_gem_object *obj,
+> >  		intel_gt_flush_ggtt_writes(&to_i915(obj->base.dev)->gt);
+> >  
+> >  		p = i915_gem_object_get_page(obj, offset >> PAGE_SHIFT);
+> > -		cpu = kmap(p) + offset_in_page(offset);
+> > +		cpu = kmap_thread(p) + offset_in_page(offset);
+> >  		drm_clflush_virt_range(cpu, sizeof(*cpu));
+> >  		if (*cpu != (u32)page) {
+> >  			pr_err("Partial view for %lu [%u] (offset=%llu, size=%u [%llu, row size %u], fence=%d, tiling=%d, stride=%d) misalignment, expected write to page (%llu + %u [0x%llx]) of 0x%x, found 0x%x\n",
+> > @@ -254,7 +254,7 @@ static int check_partial_mappings(struct drm_i915_gem_object *obj,
+> >  		}
+> >  		*cpu = 0;
+> >  		drm_clflush_virt_range(cpu, sizeof(*cpu));
+> > -		kunmap(p);
+> > +		kunmap_thread(p);
+> >  		if (err)
+> >  			return err;
+> >  
+> > diff --git a/drivers/gpu/drm/i915/gt/intel_ggtt_fencing.c b/drivers/gpu/drm/i915/gt/intel_ggtt_fencing.c
+> > index 7fb36b12fe7a..38da348282f1 100644
+> > --- a/drivers/gpu/drm/i915/gt/intel_ggtt_fencing.c
+> > +++ b/drivers/gpu/drm/i915/gt/intel_ggtt_fencing.c
+> > @@ -731,7 +731,7 @@ static void swizzle_page(struct page *page)
+> >  	char *vaddr;
+> >  	int i;
+> >  
+> > -	vaddr = kmap(page);
+> > +	vaddr = kmap_thread(page);
+> >  
+> >  	for (i = 0; i < PAGE_SIZE; i += 128) {
+> >  		memcpy(temp, &vaddr[i], 64);
+> > @@ -739,7 +739,7 @@ static void swizzle_page(struct page *page)
+> >  		memcpy(&vaddr[i + 64], temp, 64);
+> >  	}
+> >  
+> > -	kunmap(page);
+> > +	kunmap_thread(page);
+> >  }
+> >  
+> >  /**
+> > diff --git a/drivers/gpu/drm/i915/gt/intel_gtt.c b/drivers/gpu/drm/i915/gt/intel_gtt.c
+> > index 2a72cce63fd9..4cfb24e9ed62 100644
+> > --- a/drivers/gpu/drm/i915/gt/intel_gtt.c
+> > +++ b/drivers/gpu/drm/i915/gt/intel_gtt.c
+> > @@ -312,9 +312,9 @@ static void poison_scratch_page(struct page *page, unsigned long size)
+> >  	do {
+> >  		void *vaddr;
+> >  
+> > -		vaddr = kmap(page);
+> > +		vaddr = kmap_thread(page);
+> >  		memset(vaddr, POISON_FREE, PAGE_SIZE);
+> > -		kunmap(page);
+> > +		kunmap_thread(page);
+> >  
+> >  		page = pfn_to_page(page_to_pfn(page) + 1);
+> >  		size -= PAGE_SIZE;
+> > diff --git a/drivers/gpu/drm/i915/gt/shmem_utils.c b/drivers/gpu/drm/i915/gt/shmem_utils.c
+> > index 43c7acbdc79d..a40d3130cebf 100644
+> > --- a/drivers/gpu/drm/i915/gt/shmem_utils.c
+> > +++ b/drivers/gpu/drm/i915/gt/shmem_utils.c
+> > @@ -142,12 +142,12 @@ static int __shmem_rw(struct file *file, loff_t off,
+> >  		if (IS_ERR(page))
+> >  			return PTR_ERR(page);
+> >  
+> > -		vaddr = kmap(page);
+> > +		vaddr = kmap_thread(page);
+> >  		if (write)
+> >  			memcpy(vaddr + offset_in_page(off), ptr, this);
+> >  		else
+> >  			memcpy(ptr, vaddr + offset_in_page(off), this);
+> > -		kunmap(page);
+> > +		kunmap_thread(page);
+> >  		put_page(page);
+> >  
+> >  		len -= this;
+> > diff --git a/drivers/gpu/drm/i915/i915_gem.c b/drivers/gpu/drm/i915/i915_gem.c
+> > index 9aa3066cb75d..cae8300fd224 100644
+> > --- a/drivers/gpu/drm/i915/i915_gem.c
+> > +++ b/drivers/gpu/drm/i915/i915_gem.c
+> > @@ -312,14 +312,14 @@ shmem_pread(struct page *page, int offset, int len, char __user *user_data,
+> >  	char *vaddr;
+> >  	int ret;
+> >  
+> > -	vaddr = kmap(page);
+> > +	vaddr = kmap_thread(page);
+> >  
+> >  	if (needs_clflush)
+> >  		drm_clflush_virt_range(vaddr + offset, len);
+> >  
+> >  	ret = __copy_to_user(user_data, vaddr + offset, len);
+> >  
+> > -	kunmap(page);
+> > +	kunmap_thread(page);
+> >  
+> >  	return ret ? -EFAULT : 0;
+> >  }
+> > @@ -708,7 +708,7 @@ shmem_pwrite(struct page *page, int offset, int len, char __user *user_data,
+> >  	char *vaddr;
+> >  	int ret;
+> >  
+> > -	vaddr = kmap(page);
+> > +	vaddr = kmap_thread(page);
+> >  
+> >  	if (needs_clflush_before)
+> >  		drm_clflush_virt_range(vaddr + offset, len);
+> > @@ -717,7 +717,7 @@ shmem_pwrite(struct page *page, int offset, int len, char __user *user_data,
+> >  	if (!ret && needs_clflush_after)
+> >  		drm_clflush_virt_range(vaddr + offset, len);
+> >  
+> > -	kunmap(page);
+> > +	kunmap_thread(page);
+> >  
+> >  	return ret ? -EFAULT : 0;
+> >  }
+> > diff --git a/drivers/gpu/drm/i915/i915_gpu_error.c b/drivers/gpu/drm/i915/i915_gpu_error.c
+> > index 3e6cbb0d1150..aecd469b6b6e 100644
+> > --- a/drivers/gpu/drm/i915/i915_gpu_error.c
+> > +++ b/drivers/gpu/drm/i915/i915_gpu_error.c
+> > @@ -1058,9 +1058,9 @@ i915_vma_coredump_create(const struct intel_gt *gt,
+> >  
+> >  			drm_clflush_pages(&page, 1);
+> >  
+> > -			s = kmap(page);
+> > +			s = kmap_thread(page);
+> >  			ret = compress_page(compress, s, dst, false);
+> > -			kunmap(page);
+> > +			kunmap_thread(page);
+> >  
+> >  			drm_clflush_pages(&page, 1);
+> >  
+> > diff --git a/drivers/gpu/drm/i915/selftests/i915_perf.c b/drivers/gpu/drm/i915/selftests/i915_perf.c
+> > index c2d001d9c0ec..7f7ef2d056f4 100644
+> > --- a/drivers/gpu/drm/i915/selftests/i915_perf.c
+> > +++ b/drivers/gpu/drm/i915/selftests/i915_perf.c
+> > @@ -307,7 +307,7 @@ static int live_noa_gpr(void *arg)
+> >  	}
+> >  
+> >  	/* Poison the ce->vm so we detect writes not to the GGTT gt->scratch */
+> > -	scratch = kmap(ce->vm->scratch[0].base.page);
+> > +	scratch = kmap_thread(ce->vm->scratch[0].base.page);
+> >  	memset(scratch, POISON_FREE, PAGE_SIZE);
+> >  
+> >  	rq = intel_context_create_request(ce);
+> > @@ -405,7 +405,7 @@ static int live_noa_gpr(void *arg)
+> >  out_rq:
+> >  	i915_request_put(rq);
+> >  out_ce:
+> > -	kunmap(ce->vm->scratch[0].base.page);
+> > +	kunmap_thread(ce->vm->scratch[0].base.page);
+> >  	intel_context_put(ce);
+> >  out:
+> >  	stream_destroy(stream);
+> > diff --git a/drivers/gpu/drm/radeon/radeon_ttm.c b/drivers/gpu/drm/radeon/radeon_ttm.c
+> > index 004344dce140..0aba0cac51e1 100644
+> > --- a/drivers/gpu/drm/radeon/radeon_ttm.c
+> > +++ b/drivers/gpu/drm/radeon/radeon_ttm.c
+> > @@ -1013,11 +1013,11 @@ static ssize_t radeon_ttm_gtt_read(struct file *f, char __user *buf,
+> >  
+> >  		page = rdev->gart.pages[p];
+> >  		if (page) {
+> > -			ptr = kmap(page);
+> > +			ptr = kmap_thread(page);
+> >  			ptr += off;
+> >  
+> >  			r = copy_to_user(buf, ptr, cur_size);
+> > -			kunmap(rdev->gart.pages[p]);
+> > +			kunmap_thread(rdev->gart.pages[p]);
+> >  		} else
+> >  			r = clear_user(buf, cur_size);
+> >  
+> > -- 
+> > 2.28.0.rc0.12.gb6a658bd00c9
+> > 
+> 
+> -- 
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
 
 ______________________________________________________
 Linux MTD discussion mailing list
