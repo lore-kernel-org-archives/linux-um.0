@@ -1,79 +1,74 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Sun, 11 Oct 2020 22:52:19 -0700
-From: Ira Weiny <ira.weiny@intel.com>
+Return-Path: <linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org>
 Subject: Re: [PATCH RFC PKS/PMEM 57/58] nvdimm/pmem: Stray access protection
  for pmem->virt_addr
-Message-ID: <20201012055218.GA2046448@iweiny-DESK2.sc.intel.com>
 References: <20201009195033.3208459-1-ira.weiny@intel.com>
  <20201009195033.3208459-58-ira.weiny@intel.com>
- <bd3f5ece-0e7b-4c15-abbc-1b3b943334dc@nvidia.com>
+From: John Hubbard <jhubbard@nvidia.com>
+Message-ID: <bd3f5ece-0e7b-4c15-abbc-1b3b943334dc@nvidia.com>
+Date: Fri, 9 Oct 2020 19:53:07 -0700
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <bd3f5ece-0e7b-4c15-abbc-1b3b943334dc@nvidia.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20201009195033.3208459-58-ira.weiny@intel.com>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: John Hubbard <jhubbard@nvidia.com>
-Cc: linux-aio@kvack.org, linux-efi@vger.kernel.org, kvm@vger.kernel.org, linux-doc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, linux-mmc@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>, dri-devel@lists.freedesktop.org, linux-mm@kvack.org, target-devel@vger.kernel.org, linux-mtd@lists.infradead.org, linux-kselftest@vger.kernel.org, samba-technical@lists.samba.org, Thomas Gleixner <tglx@linutronix.de>, drbd-dev@lists.linbit.com, devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org, linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org, linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org, x86@kernel.org, ceph-devel@vger.kernel.org, amd-gfx@lists.freedesktop.org, io-uring@vger.kernel.org, cluster-devel@redhat.com, Ingo Molnar <mingo@redhat.com>, intel-wired-lan@lists.osuosl.org, xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>, linux-afs@lists.infradead.org, linux-um@lists.infradead.org, intel-gfx@lists.freedesktop.org, ecryptfs@vger.kernel.org, linux-erofs@lists.ozlabs.org, reiserfs-devel@vger.kernel.org, linux-block@vger.kernel.org, linux-bcache@vger.kernel.org, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Dan Williams <dan.j.williams@intel.com>, Andrew Morton <akpm@linux-foundation.org>, linux-cachefs@redhat.com, linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
+Errors-To: linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org
+To: ira.weiny@intel.com, Andrew Morton <akpm@linux-foundation.org>, "Thomas Gleixner  <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,  Borislav Petkov  <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra" <peterz@infradead.org>
+Cc: linux-aio@kvack.org, linux-efi@vger.kernel.org, kvm@vger.kernel.org, linux-doc@vger.kernel.org, linux-mmc@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>, dri-devel@lists.freedesktop.org, linux-mm@kvack.org, target-devel@vger.kernel.org, linux-mtd@lists.infradead.org, linux-kselftest@vger.kernel.org, samba-technical@lists.samba.org, ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com, devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org, linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org, linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org, x86@kernel.org, amd-gfx@lists.freedesktop.org, linux-afs@lists.infradead.org, cluster-devel@redhat.com, linux-cachefs@redhat.com, intel-wired-lan@lists.osuosl.org, xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>, linux-um@lists.infradead.org, intel-gfx@lists.freedesktop.org, ecryptfs@vger.kernel.org, linux-erofs@lists.ozlabs.org, reiserfs-devel@vger.kernel.org, linux-block@vger.kernel.org, linux-bcache@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>, io-uring@vger.kernel.org, linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-On Fri, Oct 09, 2020 at 07:53:07PM -0700, John Hubbard wrote:
-> On 10/9/20 12:50 PM, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > The pmem driver uses a cached virtual address to access its memory
-> > directly.  Because the nvdimm driver is well aware of the special
-> > protections it has mapped memory with, we call dev_access_[en|dis]able()
-> > around the direct pmem->virt_addr (pmem_addr) usage instead of the
-> > unnecessary overhead of trying to get a page to kmap.
-> > 
-> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > ---
-> >   drivers/nvdimm/pmem.c | 4 ++++
-> >   1 file changed, 4 insertions(+)
-> > 
-> > diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
-> > index fab29b514372..e4dc1ae990fc 100644
-> > --- a/drivers/nvdimm/pmem.c
-> > +++ b/drivers/nvdimm/pmem.c
-> > @@ -148,7 +148,9 @@ static blk_status_t pmem_do_read(struct pmem_device *pmem,
-> >   	if (unlikely(is_bad_pmem(&pmem->bb, sector, len)))
-> >   		return BLK_STS_IOERR;
-> > +	dev_access_enable(false);
-> >   	rc = read_pmem(page, page_off, pmem_addr, len);
-> > +	dev_access_disable(false);
+On 10/9/20 12:50 PM, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
 > 
-> Hi Ira!
+> The pmem driver uses a cached virtual address to access its memory
+> directly.  Because the nvdimm driver is well aware of the special
+> protections it has mapped memory with, we call dev_access_[en|dis]able()
+> around the direct pmem->virt_addr (pmem_addr) usage instead of the
+> unnecessary overhead of trying to get a page to kmap.
 > 
-> The APIs should be tweaked to use a symbol (GLOBAL, PER_THREAD), instead of
-> true/false. Try reading the above and you'll see that it sounds like it's
-> doing the opposite of what it is ("enable_this(false)" sounds like a clumsy
-> API design to *disable*, right?). And there is no hint about the scope.
-
-Sounds reasonable.
-
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> ---
+>   drivers/nvdimm/pmem.c | 4 ++++
+>   1 file changed, 4 insertions(+)
 > 
-> And it *could* be so much more readable like this:
-> 
->     dev_access_enable(DEV_ACCESS_THIS_THREAD);
+> diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
+> index fab29b514372..e4dc1ae990fc 100644
+> --- a/drivers/nvdimm/pmem.c
+> +++ b/drivers/nvdimm/pmem.c
+> @@ -148,7 +148,9 @@ static blk_status_t pmem_do_read(struct pmem_device *pmem,
+>   	if (unlikely(is_bad_pmem(&pmem->bb, sector, len)))
+>   		return BLK_STS_IOERR;
+>   
+> +	dev_access_enable(false);
+>   	rc = read_pmem(page, page_off, pmem_addr, len);
+> +	dev_access_disable(false);
 
-I'll think about the flag name.  I'm not liking 'this thread'.
+Hi Ira!
 
-Maybe DEV_ACCESS_[GLOBAL|THREAD]
+The APIs should be tweaked to use a symbol (GLOBAL, PER_THREAD), instead of
+true/false. Try reading the above and you'll see that it sounds like it's
+doing the opposite of what it is ("enable_this(false)" sounds like a clumsy
+API design to *disable*, right?). And there is no hint about the scope.
 
-Ira
+And it *could* be so much more readable like this:
+
+     dev_access_enable(DEV_ACCESS_THIS_THREAD);
 
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
