@@ -1,44 +1,46 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: ira.weiny@intel.com
-Subject: [PATCH RFC PKS/PMEM 28/58] fs/cachefiles: Utilize new kmap_thread()
-Date: Fri,  9 Oct 2020 12:50:03 -0700
-Message-Id: <20201009195033.3208459-29-ira.weiny@intel.com>
-In-Reply-To: <20201009195033.3208459-1-ira.weiny@intel.com>
-References: <20201009195033.3208459-1-ira.weiny@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: Andrew Morton <akpm@linux-foundation.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>
-Cc: Ira Weiny <ira.weiny@intel.com>, David Howells <dhowells@redhat.com>, x86@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>, Dan Williams <dan.j.williams@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org, kexec@lists.infradead.org, linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org, linux-efi@vger.kernel.org, linux-mmc@vger.kernel.org, linux-scsi@vger.kernel.org, target-devel@vger.kernel.org, linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org, linux-aio@kvack.org, io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org, linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net, reiserfs-devel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-nilfs@vger.kernel.org, cluster-devel@redhat.com, ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-afs@lists.infradead.org, linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, xen-devel@lists.xenproject.org, linux-cachefs@redhat.com, samba-technical@lists.samba.org, intel-wired-lan@lists.osuosl.org
+Date: Mon, 12 Oct 2020 09:24:25 +0200
+References: <20201012072114.5245-1-geert@linux-m68k.org>
+In-Reply-To: <20201012072114.5245-1-geert@linux-m68k.org>
+Message-ID: <CAMuHMdU_RtEsoRy0Accb99uiTTb4Y_z1iDAg4yijNtDZA9ZoNw@mail.gmail.com>
+Subject: Re: Build regressions/improvements in v5.9
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc: linux-um <linux-um@lists.infradead.org>
 List-ID: <linux-um.lists.infradead.org>
 
-From: Ira Weiny <ira.weiny@intel.com>
+On Mon, Oct 12, 2020 at 9:22 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> JFYI, when comparing v5.9[1] to v5.9-rc8[3], the summaries are:
+>   - build errors: +6/-3
+>   - build warnings: +5/-0
 
-The kmap() calls in this FS are localized to a single thread.  To avoid
-the over head of global PKRS updates use the new kmap_thread() call.
+  + error: modpost: "devm_ioremap"
+[drivers/net/ethernet/xilinx/ll_temac.ko] undefined!:  => N/A
+  + error: modpost: "devm_ioremap_resource"
+[drivers/net/ethernet/xilinx/xilinx_emac.ko] undefined!:  => N/A
+  + error: modpost: "devm_of_iomap"
+[drivers/net/ethernet/xilinx/ll_temac.ko] undefined!:  => N/A
+  + error: modpost: "devm_platform_ioremap_resource"
+[drivers/iio/adc/adi-axi-adc.ko] undefined!:  => N/A
+  + error: modpost: "devm_platform_ioremap_resource"
+[drivers/ptp/ptp_ines.ko] undefined!:  => N/A
+  + error: modpost: "devm_platform_ioremap_resource_byname"
+[drivers/net/ethernet/xilinx/ll_temac.ko] undefined!:  => N/A
 
-Cc: David Howells <dhowells@redhat.com>
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
----
- fs/cachefiles/rdwr.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+um-all{mod,yes}config
 
-diff --git a/fs/cachefiles/rdwr.c b/fs/cachefiles/rdwr.c
-index 3080cda9e824..2468e5c067ba 100644
---- a/fs/cachefiles/rdwr.c
-+++ b/fs/cachefiles/rdwr.c
-@@ -936,9 +936,9 @@ int cachefiles_write_page(struct fscache_storage *op, struct page *page)
- 		}
- 	}
- 
--	data = kmap(page);
-+	data = kmap_thread(page);
- 	ret = kernel_write(file, data, len, &pos);
--	kunmap(page);
-+	kunmap_thread(page);
- 	fput(file);
- 	if (ret != len)
- 		goto error_eio;
+> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/bbf5c979011a099af5dc76498918ed7df445635b/ (all 192 configs)
+> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/549738f15da0e5a00275977623be199fbbf7df50/ (all 192 configs)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.28.0.rc0.12.gb6a658bd00c9
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
