@@ -1,100 +1,81 @@
-Return-Path: <linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: ira.weiny@intel.com
-Subject: [PATCH RFC PKS/PMEM 41/58] drivers/target: Utilize new kmap_thread()
-Date: Fri,  9 Oct 2020 12:50:16 -0700
-Message-Id: <20201009195033.3208459-42-ira.weiny@intel.com>
-In-Reply-To: <20201009195033.3208459-1-ira.weiny@intel.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Date: Tue, 13 Oct 2020 13:50:12 -0700
+From: Ira Weiny <ira.weiny@intel.com>
+Subject: Re: [PATCH RFC PKS/PMEM 33/58] fs/cramfs: Utilize new kmap_thread()
+Message-ID: <20201013205012.GI2046448@iweiny-DESK2.sc.intel.com>
 References: <20201009195033.3208459-1-ira.weiny@intel.com>
+ <20201009195033.3208459-34-ira.weiny@intel.com>
+ <CAPcyv4gL3jfw4d+SJGPqAD3Dp4F_K=X3domuN4ndAA1FQDGcPg@mail.gmail.com>
+ <20201013193643.GK20115@casper.infradead.org>
+ <20201013200149.GI3576660@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
-List-Post: <mailto:linux-mtd@lists.infradead.org>
-List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Disposition: inline
+In-Reply-To: <20201013200149.GI3576660@ZenIV.linux.org.uk>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-Errors-To: linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Andrew Morton <akpm@linux-foundation.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>
-Cc: linux-aio@kvack.org, linux-efi@vger.kernel.org, kvm@vger.kernel.org, linux-doc@vger.kernel.org, linux-mmc@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>, dri-devel@lists.freedesktop.org, linux-mm@kvack.org, target-devel@vger.kernel.org, linux-mtd@lists.infradead.org, linux-kselftest@vger.kernel.org, samba-technical@lists.samba.org, Ira Weiny <ira.weiny@intel.com>, ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com, devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org, linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org, linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org, x86@kernel.org, amd-gfx@lists.freedesktop.org, linux-afs@lists.infradead.org, cluster-devel@redhat.com, linux-cachefs@redhat.com, intel-wired-lan@lists.osuosl.org, xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>, linux-um@lists.infradead.org, intel-gfx@lists.freedesktop.org, ecryptfs@vger.kernel.org, linux-erofs@lists.ozlabs.org, reiserfs-devel@vger.kernel.org, linux-block@vger.kernel.org, linux-bcache@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>, io-uring@vger.kernel.org, linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: linux-aio@kvack.org, linux-efi <linux-efi@vger.kernel.org>, KVM list <kvm@vger.kernel.org>, Linux Doc Mailing List <linux-doc@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, linux-mmc@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, Linux MM <linux-mm@kvack.org>, target-devel@vger.kernel.org, linux-mtd@lists.infradead.org, amd-gfx list <amd-gfx@lists.freedesktop.org>, linux-kselftest@vger.kernel.org, samba-technical@lists.samba.org, Thomas Gleixner <tglx@linutronix.de>, drbd-dev@lists.linbit.com, devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org, linux-nilfs@vger.kernel.org, linux-scsi <linux-scsi@vger.kernel.org>, linux-nvdimm <linux-nvdimm@lists.01.org>, linux-rdma <linux-rdma@vger.kernel.org>, X86 ML <x86@kernel.org>, ceph-devel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>, io-uring@vger.kernel.org, cluster-devel@redhat.com, Ingo Molnar <mingo@redhat.com>, intel-wired-lan@lists.osuosl.org, xen-devel <xen-devel@lists.xenproject.org>, linux-ext4 <linux-ext4@vger.kernel.org>, Fenghua Yu <fenghua.yu@intel.com>, linux-afs@lists.infradead.org, linux-um@lists.infradead.org, intel-gfx@lists.freedesktop.org, ecryptfs@vger.kernel.org, linux-erofs@lists.ozlabs.org, reiserfs-devel@vger.kernel.org, linux-block@vger.kernel.org, linux-bcache@vger.kernel.org, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Dan Williams <dan.j.williams@intel.com>, bpf@vger.kernel.org, linux-cachefs@redhat.com, linux-nfs@vger.kernel.org, Nicolas Pitre <nico@fluxnic.net>, linux-ntfs-dev@lists.sourceforge.net, Netdev <netdev@vger.kernel.org>, Kexec Mailing List <kexec@lists.infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel <linux-fsdevel@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-btrfs <linux-btrfs@vger.kernel.org>
 
-From: Ira Weiny <ira.weiny@intel.com>
+On Tue, Oct 13, 2020 at 09:01:49PM +0100, Al Viro wrote:
+> On Tue, Oct 13, 2020 at 08:36:43PM +0100, Matthew Wilcox wrote:
+> 
+> > static inline void copy_to_highpage(struct page *to, void *vfrom, unsigned int size)
+> > {
+> > 	char *vto = kmap_atomic(to);
+> > 
+> > 	memcpy(vto, vfrom, size);
+> > 	kunmap_atomic(vto);
+> > }
+> > 
+> > in linux/highmem.h ?
+> 
+> You mean, like
+> static void memcpy_from_page(char *to, struct page *page, size_t offset, size_t len)
+> {
+>         char *from = kmap_atomic(page);
+>         memcpy(to, from + offset, len);
+>         kunmap_atomic(from);
+> }
+> 
+> static void memcpy_to_page(struct page *page, size_t offset, const char *from, size_t len)
+> {
+>         char *to = kmap_atomic(page);
+>         memcpy(to + offset, from, len);
+>         kunmap_atomic(to);
+> }
+> 
+> static void memzero_page(struct page *page, size_t offset, size_t len)
+> {
+>         char *addr = kmap_atomic(page);
+>         memset(addr + offset, 0, len);
+>         kunmap_atomic(addr);
+> }
+> 
+> in lib/iov_iter.c?  FWIW, I don't like that "highpage" in the name and
+> highmem.h as location - these make perfect sense regardless of highmem;
+> they are normal memory operations with page + offset used instead of
+> a pointer...
 
-These kmap() calls in this driver are localized to a single thread.  To
-avoid the over head of global PKRS updates use the new kmap_thread()
-call.
+I was thinking along those lines as well especially because of the direction
+this patch set takes kmap().
 
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
----
- drivers/target/target_core_iblock.c    | 4 ++--
- drivers/target/target_core_rd.c        | 4 ++--
- drivers/target/target_core_transport.c | 4 ++--
- 3 files changed, 6 insertions(+), 6 deletions(-)
+Thanks for pointing these out to me.  How about I lift them to a common header?
+But if not highmem.h where?
 
-diff --git a/drivers/target/target_core_iblock.c b/drivers/target/target_core_iblock.c
-index 1c181d31f4c8..df7b1568edb3 100644
---- a/drivers/target/target_core_iblock.c
-+++ b/drivers/target/target_core_iblock.c
-@@ -415,7 +415,7 @@ iblock_execute_zero_out(struct block_device *bdev, struct se_cmd *cmd)
- 	unsigned char *buf, *not_zero;
- 	int ret;
- 
--	buf = kmap(sg_page(sg)) + sg->offset;
-+	buf = kmap_thread(sg_page(sg)) + sg->offset;
- 	if (!buf)
- 		return TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE;
- 	/*
-@@ -423,7 +423,7 @@ iblock_execute_zero_out(struct block_device *bdev, struct se_cmd *cmd)
- 	 * incoming WRITE_SAME payload does not contain zeros.
- 	 */
- 	not_zero = memchr_inv(buf, 0x00, cmd->data_length);
--	kunmap(sg_page(sg));
-+	kunmap_thread(sg_page(sg));
- 
- 	if (not_zero)
- 		return TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE;
-diff --git a/drivers/target/target_core_rd.c b/drivers/target/target_core_rd.c
-index 408bd975170b..dbbdd39c5bf9 100644
---- a/drivers/target/target_core_rd.c
-+++ b/drivers/target/target_core_rd.c
-@@ -159,9 +159,9 @@ static int rd_allocate_sgl_table(struct rd_dev *rd_dev, struct rd_dev_sg_table *
- 			sg_assign_page(&sg[j], pg);
- 			sg[j].length = PAGE_SIZE;
- 
--			p = kmap(pg);
-+			p = kmap_thread(pg);
- 			memset(p, init_payload, PAGE_SIZE);
--			kunmap(pg);
-+			kunmap_thread(pg);
- 		}
- 
- 		page_offset += sg_per_table;
-diff --git a/drivers/target/target_core_transport.c b/drivers/target/target_core_transport.c
-index ff26ab0a5f60..8d0bae5a92e5 100644
---- a/drivers/target/target_core_transport.c
-+++ b/drivers/target/target_core_transport.c
-@@ -1692,11 +1692,11 @@ int target_submit_cmd_map_sgls(struct se_cmd *se_cmd, struct se_session *se_sess
- 			unsigned char *buf = NULL;
- 
- 			if (sgl)
--				buf = kmap(sg_page(sgl)) + sgl->offset;
-+				buf = kmap_thread(sg_page(sgl)) + sgl->offset;
- 
- 			if (buf) {
- 				memset(buf, 0, sgl->length);
--				kunmap(sg_page(sgl));
-+				kunmap_thread(sg_page(sgl));
- 			}
- 		}
- 
--- 
-2.28.0.rc0.12.gb6a658bd00c9
+Ira
 
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
