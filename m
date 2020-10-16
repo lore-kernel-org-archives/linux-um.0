@@ -1,82 +1,199 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: ira.weiny@intel.com
-Subject: [PATCH RFC PKS/PMEM 32/58] fs/hostfs: Utilize new kmap_thread()
-Date: Fri,  9 Oct 2020 12:50:07 -0700
-Message-Id: <20201009195033.3208459-33-ira.weiny@intel.com>
-In-Reply-To: <20201009195033.3208459-1-ira.weiny@intel.com>
-References: <20201009195033.3208459-1-ira.weiny@intel.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-wr1-x443.google.com ([2a00:1450:4864:20::443])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kTYfB-00078C-IS
+ for linux-um@lists.infradead.org; Fri, 16 Oct 2020 22:57:31 +0000
+Received: by mail-wr1-x443.google.com with SMTP id x7so4854089wrl.3
+ for <linux-um@lists.infradead.org>; Fri, 16 Oct 2020 15:57:27 -0700 (PDT)
+From: Jann Horn <jannh@google.com>
+Subject: [PATCH resend v3 1/2] mmap locking API: Order lock of nascent mm
+ outside lock of live mm
+Date: Sat, 17 Oct 2020 00:57:12 +0200
+Message-Id: <20201016225713.1971256-2-jannh@google.com>
+In-Reply-To: <20201016225713.1971256-1-jannh@google.com>
+References: <20201016225713.1971256-1-jannh@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: Andrew Morton <akpm@linux-foundation.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>
-Cc: Ira Weiny <ira.weiny@intel.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, x86@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>, Dan Williams <dan.j.williams@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org, kexec@lists.infradead.org, linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org, linux-efi@vger.kernel.org, linux-mmc@vger.kernel.org, linux-scsi@vger.kernel.org, target-devel@vger.kernel.org, linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org, linux-aio@kvack.org, io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org, linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net, reiserfs-devel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-nilfs@vger.kernel.org, cluster-devel@redhat.com, ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-afs@lists.infradead.org, linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, xen-devel@lists.xenproject.org, linux-cachefs@redhat.com, samba-technical@lists.samba.org, intel-wired-lan@lists.osuosl.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Cc: Michel Lespinasse <walken@google.com>, Jason Gunthorpe <jgg@nvidia.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, "Eric W . Biederman" <ebiederm@xmission.com>, Sakari Ailus <sakari.ailus@linux.intel.com>, John Hubbard <jhubbard@nvidia.com>, Johannes Berg <johannes@sipsolutions.net>, Mauro Carvalho Chehab <mchehab@kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-From: Ira Weiny <ira.weiny@intel.com>
+Until now, the mmap lock of the nascent mm was ordered inside the mmap lock
+of the old mm (in dup_mmap() and in UML's activate_mm()).
+A following patch will change the exec path to very broadly lock the
+nascent mm, but fine-grained locking should still work at the same time for
+the old mm.
 
-The kmap() calls in this FS are localized to a single thread.  To avoid
-the over head of global PKRS updates use the new kmap_thread() call.
+In particular, mmap locking calls are hidden behind the copy_from_user()
+calls and such that are reached through functions like copy_strings() -
+when a page fault occurs on a userspace memory access, the mmap lock
+will be taken.
 
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+To do this in a way that lockdep is happy about, let's turn around the lock
+ordering in both places that currently nest the locks.
+Since SINGLE_DEPTH_NESTING is normally used for the inner nesting layer,
+make up our own lock subclass MMAP_LOCK_SUBCLASS_NASCENT and use that
+instead.
+The added locking calls in exec_mmap() are temporary; the following patch
+will move the locking out of exec_mmap().
+
+As Johannes Berg pointed out[1][2], moving the mmap locking of
+arch/um/'s activate_mm() up into the execve code also fixes an issue that
+would've caused a scheduling-in-atomic bug due to mmap_write_lock_nested()
+while holding a spinlock if UM had support for voluntary preemption.
+(Even when a semaphore is uncontended, locking it can still trigger
+rescheduling via might_sleep().)
+
+[1] https://lore.kernel.org/linux-mm/115d17aa221b73a479e26ffee52899ddb18b1f53.camel@sipsolutions.net/
+[2] https://lore.kernel.org/linux-mm/7b7d6954b74e109e653539d880173fa9cb5c5ddf.camel@sipsolutions.net/
+
+Signed-off-by: Jann Horn <jannh@google.com>
 ---
- fs/hostfs/hostfs_kern.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ arch/um/include/asm/mmu_context.h |  3 +--
+ fs/exec.c                         |  4 ++++
+ include/linux/mmap_lock.h         | 23 +++++++++++++++++++++--
+ kernel/fork.c                     |  7 ++-----
+ 4 files changed, 28 insertions(+), 9 deletions(-)
 
-diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-index c070c0d8e3e9..608efd0f83cb 100644
---- a/fs/hostfs/hostfs_kern.c
-+++ b/fs/hostfs/hostfs_kern.c
-@@ -409,7 +409,7 @@ static int hostfs_writepage(struct page *page, struct writeback_control *wbc)
- 	if (page->index >= end_index)
- 		count = inode->i_size & (PAGE_SIZE-1);
- 
--	buffer = kmap(page);
-+	buffer = kmap_thread(page);
- 
- 	err = write_file(HOSTFS_I(inode)->fd, &base, buffer, count);
- 	if (err != count) {
-@@ -425,7 +425,7 @@ static int hostfs_writepage(struct page *page, struct writeback_control *wbc)
- 	err = 0;
- 
-  out:
--	kunmap(page);
-+	kunmap_thread(page);
- 
- 	unlock_page(page);
- 	return err;
-@@ -437,7 +437,7 @@ static int hostfs_readpage(struct file *file, struct page *page)
- 	loff_t start = page_offset(page);
- 	int bytes_read, ret = 0;
- 
--	buffer = kmap(page);
-+	buffer = kmap_thread(page);
- 	bytes_read = read_file(FILE_HOSTFS_I(file)->fd, &start, buffer,
- 			PAGE_SIZE);
- 	if (bytes_read < 0) {
-@@ -454,7 +454,7 @@ static int hostfs_readpage(struct file *file, struct page *page)
- 
-  out:
- 	flush_dcache_page(page);
--	kunmap(page);
-+	kunmap_thread(page);
- 	unlock_page(page);
- 	return ret;
+diff --git a/arch/um/include/asm/mmu_context.h b/arch/um/include/asm/mmu_context.h
+index 17ddd4edf875..c13bc5150607 100644
+--- a/arch/um/include/asm/mmu_context.h
++++ b/arch/um/include/asm/mmu_context.h
+@@ -48,9 +48,8 @@ static inline void activate_mm(struct mm_struct *old, struct mm_struct *new)
+ 	 * when the new ->mm is used for the first time.
+ 	 */
+ 	__switch_mm(&new->context.id);
+-	mmap_write_lock_nested(new, SINGLE_DEPTH_NESTING);
++	mmap_assert_write_locked(new);
+ 	uml_setup_stubs(new);
+-	mmap_write_unlock(new);
  }
-@@ -480,9 +480,9 @@ static int hostfs_write_end(struct file *file, struct address_space *mapping,
- 	unsigned from = pos & (PAGE_SIZE - 1);
- 	int err;
  
--	buffer = kmap(page);
-+	buffer = kmap_thread(page);
- 	err = write_file(FILE_HOSTFS_I(file)->fd, &pos, buffer + from, copied);
--	kunmap(page);
-+	kunmap_thread(page);
+ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next, 
+diff --git a/fs/exec.c b/fs/exec.c
+index a91003e28eaa..229dbc7aa61a 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -1114,6 +1114,8 @@ static int exec_mmap(struct mm_struct *mm)
+ 	if (ret)
+ 		return ret;
  
- 	if (!PageUptodate(page) && err == PAGE_SIZE)
- 		SetPageUptodate(page);
++	mmap_write_lock_nascent(mm);
++
+ 	if (old_mm) {
+ 		/*
+ 		 * Make sure that if there is a core dump in progress
+@@ -1125,6 +1127,7 @@ static int exec_mmap(struct mm_struct *mm)
+ 		if (unlikely(old_mm->core_state)) {
+ 			mmap_read_unlock(old_mm);
+ 			mutex_unlock(&tsk->signal->exec_update_mutex);
++			mmap_write_unlock(mm);
+ 			return -EINTR;
+ 		}
+ 	}
+@@ -1138,6 +1141,7 @@ static int exec_mmap(struct mm_struct *mm)
+ 	tsk->mm->vmacache_seqnum = 0;
+ 	vmacache_flush(tsk);
+ 	task_unlock(tsk);
++	mmap_write_unlock(mm);
+ 	if (old_mm) {
+ 		mmap_read_unlock(old_mm);
+ 		BUG_ON(active_mm != old_mm);
+diff --git a/include/linux/mmap_lock.h b/include/linux/mmap_lock.h
+index 0707671851a8..24de1fe99ee4 100644
+--- a/include/linux/mmap_lock.h
++++ b/include/linux/mmap_lock.h
+@@ -3,6 +3,18 @@
+ 
+ #include <linux/mmdebug.h>
+ 
++/*
++ * Lock subclasses for the mmap_lock.
++ *
++ * MMAP_LOCK_SUBCLASS_NASCENT is for core kernel code that wants to lock an mm
++ * that is still being constructed and wants to be able to access the active mm
++ * normally at the same time. It nests outside MMAP_LOCK_SUBCLASS_NORMAL.
++ */
++enum {
++	MMAP_LOCK_SUBCLASS_NORMAL = 0,
++	MMAP_LOCK_SUBCLASS_NASCENT
++};
++
+ #define MMAP_LOCK_INITIALIZER(name) \
+ 	.mmap_lock = __RWSEM_INITIALIZER((name).mmap_lock),
+ 
+@@ -16,9 +28,16 @@ static inline void mmap_write_lock(struct mm_struct *mm)
+ 	down_write(&mm->mmap_lock);
+ }
+ 
+-static inline void mmap_write_lock_nested(struct mm_struct *mm, int subclass)
++/*
++ * Lock an mm_struct that is still being set up (during fork or exec).
++ * This nests outside the mmap locks of live mm_struct instances.
++ * No interruptible/killable versions exist because at the points where you're
++ * supposed to use this helper, the mm isn't visible to anything else, so we
++ * expect the mmap_lock to be uncontended.
++ */
++static inline void mmap_write_lock_nascent(struct mm_struct *mm)
+ {
+-	down_write_nested(&mm->mmap_lock, subclass);
++	down_write_nested(&mm->mmap_lock, MMAP_LOCK_SUBCLASS_NASCENT);
+ }
+ 
+ static inline int mmap_write_lock_killable(struct mm_struct *mm)
+diff --git a/kernel/fork.c b/kernel/fork.c
+index da8d360fb032..db67eb4ac7bd 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -474,6 +474,7 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+ 	unsigned long charge;
+ 	LIST_HEAD(uf);
+ 
++	mmap_write_lock_nascent(mm);
+ 	uprobe_start_dup_mmap();
+ 	if (mmap_write_lock_killable(oldmm)) {
+ 		retval = -EINTR;
+@@ -481,10 +482,6 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+ 	}
+ 	flush_cache_dup_mm(oldmm);
+ 	uprobe_dup_mmap(oldmm, mm);
+-	/*
+-	 * Not linked in yet - no deadlock potential:
+-	 */
+-	mmap_write_lock_nested(mm, SINGLE_DEPTH_NESTING);
+ 
+ 	/* No ordering required: file already has been exposed. */
+ 	RCU_INIT_POINTER(mm->exe_file, get_mm_exe_file(oldmm));
+@@ -600,12 +597,12 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+ 	/* a new mm has just been created */
+ 	retval = arch_dup_mmap(oldmm, mm);
+ out:
+-	mmap_write_unlock(mm);
+ 	flush_tlb_mm(oldmm);
+ 	mmap_write_unlock(oldmm);
+ 	dup_userfaultfd_complete(&uf);
+ fail_uprobe_end:
+ 	uprobe_end_dup_mmap();
++	mmap_write_unlock(mm);
+ 	return retval;
+ fail_nomem_anon_vma_fork:
+ 	mpol_put(vma_policy(tmp));
 -- 
-2.28.0.rc0.12.gb6a658bd00c9
+2.29.0.rc1.297.gfa9743e501-goog
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
