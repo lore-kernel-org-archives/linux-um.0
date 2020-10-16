@@ -1,14 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kXCTS-00081q-3Z
- for linux-um@lists.infradead.org; Tue, 27 Oct 2020 00:04:31 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 07/60] um: change sigio_spinlock to a mutex
-Date: Mon, 26 Oct 2020 20:03:22 -0400
-Message-Id: <20201027000415.1026364-7-sashal@kernel.org>
-In-Reply-To: <20201027000415.1026364-1-sashal@kernel.org>
-References: <20201027000415.1026364-1-sashal@kernel.org>
+ id 1kTPGk-0003TI-Ms
+ for linux-um@lists.infradead.org; Fri, 16 Oct 2020 12:55:39 +0000
+Date: Fri, 16 Oct 2020 14:55:34 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <1686303327.201886.1602852934891.JavaMail.zimbra@nod.at>
+Subject: [GIT PULL] uml updates for 5.10
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -18,89 +16,54 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org, Johannes Berg <johannes.berg@intel.com>
+To: linux-um <linux-um@lists.infradead.org>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>
 
-From: Johannes Berg <johannes.berg@intel.com>
-
-[ Upstream commit f2d05059e15af3f70502074f4e3a504530af504a ]
-
-Lockdep complains at boot:
-
-=============================
-[ BUG: Invalid wait context ]
-5.7.0-05093-g46d91ecd597b #98 Not tainted
------------------------------
-swapper/1 is trying to lock:
-0000000060931b98 (&desc[i].request_mutex){+.+.}-{3:3}, at: __setup_irq+0x11d/0x623
-other info that might help us debug this:
-context-{4:4}
-1 lock held by swapper/1:
- #0: 000000006074fed8 (sigio_spinlock){+.+.}-{2:2}, at: sigio_lock+0x1a/0x1c
-stack backtrace:
-CPU: 0 PID: 1 Comm: swapper Not tainted 5.7.0-05093-g46d91ecd597b #98
-Stack:
- 7fa4fab0 6028dfd1 0000002a 6008bea5
- 7fa50700 7fa50040 7fa4fac0 6028e016
- 7fa4fb50 6007f6da 60959c18 00000000
-Call Trace:
- [<60023a0e>] show_stack+0x13b/0x155
- [<6028e016>] dump_stack+0x2a/0x2c
- [<6007f6da>] __lock_acquire+0x515/0x15f2
- [<6007eb50>] lock_acquire+0x245/0x273
- [<6050d9f1>] __mutex_lock+0xbd/0x325
- [<6050dc76>] mutex_lock_nested+0x1d/0x1f
- [<6008e27e>] __setup_irq+0x11d/0x623
- [<6008e8ed>] request_threaded_irq+0x169/0x1a6
- [<60021eb0>] um_request_irq+0x1ee/0x24b
- [<600234ee>] write_sigio_irq+0x3b/0x76
- [<600383ca>] sigio_broken+0x146/0x2e4
- [<60020bd8>] do_one_initcall+0xde/0x281
-
-Because we hold sigio_spinlock and then get into requesting
-an interrupt with a mutex.
-
-Change the spinlock to a mutex to avoid that.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/um/kernel/sigio.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/um/kernel/sigio.c b/arch/um/kernel/sigio.c
-index b5e0cbb343828..476ded92affac 100644
---- a/arch/um/kernel/sigio.c
-+++ b/arch/um/kernel/sigio.c
-@@ -36,14 +36,14 @@ int write_sigio_irq(int fd)
- }
- 
- /* These are called from os-Linux/sigio.c to protect its pollfds arrays. */
--static DEFINE_SPINLOCK(sigio_spinlock);
-+static DEFINE_MUTEX(sigio_mutex);
- 
- void sigio_lock(void)
- {
--	spin_lock(&sigio_spinlock);
-+	mutex_lock(&sigio_mutex);
- }
- 
- void sigio_unlock(void)
- {
--	spin_unlock(&sigio_spinlock);
-+	mutex_unlock(&sigio_mutex);
- }
--- 
-2.25.1
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+TGludXMsCgpUaGUgZm9sbG93aW5nIGNoYW5nZXMgc2luY2UgY29tbWl0IGJhNGYxODRlMTI2Yjc1
+MWQxYmZmYWQ1ODk3ZjI2MzEwOGJlZmM3ODA6CgogIExpbnV4IDUuOS1yYzYgKDIwMjAtMDktMjAg
+MTY6MzM6NTUgLTA3MDApCgphcmUgYXZhaWxhYmxlIGluIHRoZSBHaXQgcmVwb3NpdG9yeSBhdDoK
+CiAgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3J3L3VtbC5n
+aXQgdGFncy9mb3ItbGludXMtNS4xMC1yYzEKCmZvciB5b3UgdG8gZmV0Y2ggY2hhbmdlcyB1cCB0
+byBmMDY4ODViM2YzZTM4ODRmOTgzNTFkN2I3MmE0ZmM4NDAwOTExY2RlOgoKICB1bTogdmVjdG9y
+OiBBZGQgZHluYW1pYyB0YXAgaW50ZXJmYWNlcyBhbmQgc2NyaXB0aW5nICgyMDIwLTEwLTExIDIz
+OjI2OjM3ICswMjAwKQoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGlzIHB1bGwgcmVxdWVzdCBjb250YWlucyB0aGUgZm9s
+bG93aW5nIGNoYW5nZXMgZm9yIFVNTDoKCi0gSW1wcm92ZSBzdXBwb3J0IGZvciBub24tZ2xpYmMg
+c3lzdGVtcwotIFZlY3RvcjogQWRkIHN1cHBvcnQgZm9yIHNjcmlwdGluZyBhbmQgZHluYW1pYyB0
+YXAgZGV2aWNlcwotIFZhcmlvdXMgZml4ZXMgZm9yIHRoZSB2ZWN0b3IgbmV0d29ya2luZyBkcml2
+ZXIKLSBWYXJpb3VzIGZpeGVzIGZvciB0aW1lIHRyYXZlbCBtb2RlCgotLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkFudG9uIEl2
+YW5vdiAoMSk6CiAgICAgIHVtOiB2ZWN0b3I6IEFkZCBkeW5hbWljIHRhcCBpbnRlcmZhY2VzIGFu
+ZCBzY3JpcHRpbmcKCkdhYnJpZWwgS3Jpc21hbiBCZXJ0YXppICgxKToKICAgICAgdW06IFJlbW92
+ZSBkZWFkIHVzYWdlIG9mIFRJRl9JQTMyCgpHYXVyYXYgU2luZ2ggKDEpOgogICAgICB1bTogRml4
+IG51bGwgcG9pbnRlciBkZXJlZmVyZW5jZSBpbiB2ZWN0b3JfdXNlcl9icGYKCklnbmF0IEtvcmNo
+YWdpbiAoMik6CiAgICAgIHVtOiBTb21lIGZpeGVzIHRvIGJ1aWxkIFVNTCB3aXRoIG11c2wKICAg
+ICAgdW06IEFsbG93IHN0YXRpYyBsaW5raW5nIGZvciBub24tZ2xpYmMgaW1wbGVtZW50YXRpb25z
+CgpKb2hhbm5lcyBCZXJnICg0KToKICAgICAgdW06IHRpbWUtdHJhdmVsOiBGaXggSVJRIGhhbmRs
+aW5nIGluIHRpbWVfdHJhdmVsX2hhbmRsZV9tZXNzYWdlKCkKICAgICAgdW06IHRpbWUtdHJhdmVs
+OiBSZXR1cm4gdGhlIHNlcXVlbmNlIG51bWJlciBpbiBBQ0sgbWVzc2FnZXMKICAgICAgdW06IGNo
+YW5nZSBzaWdpb19zcGlubG9jayB0byBhIG11dGV4CiAgICAgIHVtOiBDbGVhbiB1cCBzdGFja3Ry
+YWNlIGR1bXAKCkxpIEhlbmcgKDEpOgogICAgICB1bTogUmVtb3ZlIHJlZHVuZGFudCBOVUxMIGNo
+ZWNrCgpNYWNpZWogxbtlbmN6eWtvd3NraSAoMSk6CiAgICAgIHVtOiBGaXggaW5jb3JyZWN0IGFz
+c3VtcHRpb25zIGFib3V0IG1heCBwaWQgbGVuZ3RoCgpUaWV6aHUgWWFuZyAoMSk6CiAgICAgIHVt
+OiB2ZWN0b3I6IFVzZSBHRlBfQVRPTUlDIHVuZGVyIHNwaW4gbG9jawoKIGFyY2gvdW0vS2NvbmZp
+ZyAgICAgICAgICAgICAgIHwgIDYgKystLQogYXJjaC91bS9kcml2ZXJzL0tjb25maWcgICAgICAg
+fCAgNiArKy0tCiBhcmNoL3VtL2RyaXZlcnMvZGFlbW9uX3VzZXIuYyB8ICAxICsKIGFyY2gvdW0v
+ZHJpdmVycy9wY2FwX3VzZXIuYyAgIHwgMTIgKysrKy0tLS0KIGFyY2gvdW0vZHJpdmVycy9zbGlw
+X3VzZXIuYyAgIHwgIDIgKy0KIGFyY2gvdW0vZHJpdmVycy92ZWN0b3Jfa2Vybi5jIHwgIDQgKy0t
+CiBhcmNoL3VtL2RyaXZlcnMvdmVjdG9yX3VzZXIuYyB8IDcxICsrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrLS0tLS0tLS0tLS0KIGFyY2gvdW0va2VybmVsL3NpZ2lvLmMgICAgICAgIHwg
+IDYgKystLQogYXJjaC91bS9rZXJuZWwvc3lzcnEuYyAgICAgICAgfCAgNCArLS0KIGFyY2gvdW0v
+a2VybmVsL3RpbWUuYyAgICAgICAgIHwgMTUgKysrKysrLS0tCiBhcmNoL3VtL29zLUxpbnV4L3Vt
+aWQuYyAgICAgICB8ICA4ICsrLS0tCiBhcmNoL3VtL29zLUxpbnV4L3V0aWwuYyAgICAgICB8ICAy
+ICstCiBhcmNoL3g4Ni91bS9wdHJhY2VfNjQuYyAgICAgICB8IDEzICstLS0tLS0tCiBhcmNoL3g4
+Ni91bS91c2VyLW9mZnNldHMuYyAgICB8ICAyICstCiAxNCBmaWxlcyBjaGFuZ2VkLCA5MSBpbnNl
+cnRpb25zKCspLCA2MSBkZWxldGlvbnMoLSkKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5p
+bmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
+bGludXgtdW0K
 
