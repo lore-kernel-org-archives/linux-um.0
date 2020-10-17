@@ -1,14 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kUCCn-00053p-Ul
- for linux-um@lists.infradead.org; Sun, 18 Oct 2020 17:10:51 +0000
-Subject: Re: [GIT PULL] uml updates for 5.10
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <1807778111.204345.1602968387192.JavaMail.zimbra@nod.at>
-References: <1807778111.204345.1602968387192.JavaMail.zimbra@nod.at>
-Message-Id: <160304104874.11245.6127789064612973776.pr-tracker-bot@kernel.org>
-Date: Sun, 18 Oct 2020 17:10:48 +0000
+ id 1kTtIw-000246-0k
+ for linux-um@lists.infradead.org; Sat, 17 Oct 2020 20:59:56 +0000
+Date: Sat, 17 Oct 2020 22:59:47 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <1807778111.204345.1602968387192.JavaMail.zimbra@nod.at>
+Subject: [GIT PULL] uml updates for 5.10
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -17,29 +16,55 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-um <linux-um@lists.infradead.org>, torvalds <torvalds@linux-foundation.org>, linux-kernel <linux-kernel@vger.kernel.org>
+To: torvalds <torvalds@linux-foundation.org>
+Cc: linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
 
-The pull request you sent on Sat, 17 Oct 2020 22:59:47 +0200 (CEST):
-
-> git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.10-rc1
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/9453b2d4694c2cb6c30d99e65d4a3deb09e94ac3
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+W3JlLXNlbmRpbmcsIHRoaXMgdGltZSB3aXRoIExpbnVzIGluIHRoZSByZWNpcGllbnQgbGlzdC4u
+Ll0KCkxpbnVzLAoKVGhlIGZvbGxvd2luZyBjaGFuZ2VzIHNpbmNlIGNvbW1pdCBiYTRmMTg0ZTEy
+NmI3NTFkMWJmZmFkNTg5N2YyNjMxMDhiZWZjNzgwOgoKICBMaW51eCA1LjktcmM2ICgyMDIwLTA5
+LTIwIDE2OjMzOjU1IC0wNzAwKQoKYXJlIGF2YWlsYWJsZSBpbiB0aGUgR2l0IHJlcG9zaXRvcnkg
+YXQ6CgogIGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9ydy91
+bWwuZ2l0IHRhZ3MvZm9yLWxpbnVzLTUuMTAtcmMxCgpmb3IgeW91IHRvIGZldGNoIGNoYW5nZXMg
+dXAgdG8gZjA2ODg1YjNmM2UzODg0Zjk4MzUxZDdiNzJhNGZjODQwMDkxMWNkZToKCiAgdW06IHZl
+Y3RvcjogQWRkIGR5bmFtaWMgdGFwIGludGVyZmFjZXMgYW5kIHNjcmlwdGluZyAoMjAyMC0xMC0x
+MSAyMzoyNjozNyArMDIwMCkKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGhpcyBwdWxsIHJlcXVlc3QgY29udGFpbnMgdGhl
+IGZvbGxvd2luZyBjaGFuZ2VzIGZvciBVTUw6CgotIEltcHJvdmUgc3VwcG9ydCBmb3Igbm9uLWds
+aWJjIHN5c3RlbXMKLSBWZWN0b3I6IEFkZCBzdXBwb3J0IGZvciBzY3JpcHRpbmcgYW5kIGR5bmFt
+aWMgdGFwIGRldmljZXMKLSBWYXJpb3VzIGZpeGVzIGZvciB0aGUgdmVjdG9yIG5ldHdvcmtpbmcg
+ZHJpdmVyCi0gVmFyaW91cyBmaXhlcyBmb3IgdGltZSB0cmF2ZWwgbW9kZQoKLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpBbnRv
+biBJdmFub3YgKDEpOgogICAgICB1bTogdmVjdG9yOiBBZGQgZHluYW1pYyB0YXAgaW50ZXJmYWNl
+cyBhbmQgc2NyaXB0aW5nCgpHYWJyaWVsIEtyaXNtYW4gQmVydGF6aSAoMSk6CiAgICAgIHVtOiBS
+ZW1vdmUgZGVhZCB1c2FnZSBvZiBUSUZfSUEzMgoKR2F1cmF2IFNpbmdoICgxKToKICAgICAgdW06
+IEZpeCBudWxsIHBvaW50ZXIgZGVyZWZlcmVuY2UgaW4gdmVjdG9yX3VzZXJfYnBmCgpJZ25hdCBL
+b3JjaGFnaW4gKDIpOgogICAgICB1bTogU29tZSBmaXhlcyB0byBidWlsZCBVTUwgd2l0aCBtdXNs
+CiAgICAgIHVtOiBBbGxvdyBzdGF0aWMgbGlua2luZyBmb3Igbm9uLWdsaWJjIGltcGxlbWVudGF0
+aW9ucwoKSm9oYW5uZXMgQmVyZyAoNCk6CiAgICAgIHVtOiB0aW1lLXRyYXZlbDogRml4IElSUSBo
+YW5kbGluZyBpbiB0aW1lX3RyYXZlbF9oYW5kbGVfbWVzc2FnZSgpCiAgICAgIHVtOiB0aW1lLXRy
+YXZlbDogUmV0dXJuIHRoZSBzZXF1ZW5jZSBudW1iZXIgaW4gQUNLIG1lc3NhZ2VzCiAgICAgIHVt
+OiBjaGFuZ2Ugc2lnaW9fc3BpbmxvY2sgdG8gYSBtdXRleAogICAgICB1bTogQ2xlYW4gdXAgc3Rh
+Y2t0cmFjZSBkdW1wCgpMaSBIZW5nICgxKToKICAgICAgdW06IFJlbW92ZSByZWR1bmRhbnQgTlVM
+TCBjaGVjawoKTWFjaWVqIMW7ZW5jenlrb3dza2kgKDEpOgogICAgICB1bTogRml4IGluY29ycmVj
+dCBhc3N1bXB0aW9ucyBhYm91dCBtYXggcGlkIGxlbmd0aAoKVGllemh1IFlhbmcgKDEpOgogICAg
+ICB1bTogdmVjdG9yOiBVc2UgR0ZQX0FUT01JQyB1bmRlciBzcGluIGxvY2sKCiBhcmNoL3VtL0tj
+b25maWcgICAgICAgICAgICAgICB8ICA2ICsrLS0KIGFyY2gvdW0vZHJpdmVycy9LY29uZmlnICAg
+ICAgIHwgIDYgKystLQogYXJjaC91bS9kcml2ZXJzL2RhZW1vbl91c2VyLmMgfCAgMSArCiBhcmNo
+L3VtL2RyaXZlcnMvcGNhcF91c2VyLmMgICB8IDEyICsrKystLS0tCiBhcmNoL3VtL2RyaXZlcnMv
+c2xpcF91c2VyLmMgICB8ICAyICstCiBhcmNoL3VtL2RyaXZlcnMvdmVjdG9yX2tlcm4uYyB8ICA0
+ICstLQogYXJjaC91bS9kcml2ZXJzL3ZlY3Rvcl91c2VyLmMgfCA3MSArKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tCiBhcmNoL3VtL2tlcm5lbC9zaWdpby5jICAgICAg
+ICB8ICA2ICsrLS0KIGFyY2gvdW0va2VybmVsL3N5c3JxLmMgICAgICAgIHwgIDQgKy0tCiBhcmNo
+L3VtL2tlcm5lbC90aW1lLmMgICAgICAgICB8IDE1ICsrKysrKy0tLQogYXJjaC91bS9vcy1MaW51
+eC91bWlkLmMgICAgICAgfCAgOCArKy0tLQogYXJjaC91bS9vcy1MaW51eC91dGlsLmMgICAgICAg
+fCAgMiArLQogYXJjaC94ODYvdW0vcHRyYWNlXzY0LmMgICAgICAgfCAxMyArLS0tLS0tLQogYXJj
+aC94ODYvdW0vdXNlci1vZmZzZXRzLmMgICAgfCAgMiArLQogMTQgZmlsZXMgY2hhbmdlZCwgOTEg
+aW5zZXJ0aW9ucygrKSwgNjEgZGVsZXRpb25zKC0pCgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlz
+dHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2xpbnV4LXVtCg==
 
