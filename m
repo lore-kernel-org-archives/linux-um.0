@@ -1,15 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kVyMA-00059M-3g
- for linux-um@lists.infradead.org; Fri, 23 Oct 2020 14:47:51 +0000
-From: Christopher Obbard <chris.obbard@collabora.com>
+Date: Tue, 20 Oct 2020 02:51:15 +0100
+From: Matthew Wilcox <willy@infradead.org>
 Subject: Re: [PATCH] um: Call pgtable_pmd_page_dtor() in __pmd_free_tlb()
-Date: Fri, 23 Oct 2020 15:47:31 +0100
-Message-Id: <20201023144731.303328-1-chris.obbard@collabora.com>
-In-Reply-To: <20201019211049.22524-1-richard@nod.at>
+Message-ID: <20201020015115.GX20115@casper.infradead.org>
 References: <20201019211049.22524-1-richard@nod.at>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20201019211049.22524-1-richard@nod.at>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -32,9 +29,15 @@ On Mon, Oct 19, 2020 at 11:10:49PM +0200, Richard Weinberger wrote:
 > 
 > Reported-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 > Co-developed-by: Matthew Wilcox <willy@infradead.org>
+
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+
 > Signed-off-by: Richard Weinberger <richard@nod.at>
 
-Tested-by: Christopher Obbard <chris.obbard@collabora.com>
+And as a bonus, $ grep PageTables /proc/meminfo 
+PageTables:       128720 kB
+
+gets more accurate!
 
 _______________________________________________
 linux-um mailing list
