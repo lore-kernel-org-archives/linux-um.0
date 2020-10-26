@@ -1,12 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kXR0D-0003dv-Bm
- for linux-um@lists.infradead.org; Tue, 27 Oct 2020 15:35:14 +0000
-From: Christopher Obbard <chris.obbard@collabora.com>
-Subject: [PATCH] um: random: register random as hwrng-core device
-Date: Tue, 27 Oct 2020 15:30:22 +0000
-Message-Id: <20201027153022.196800-1-chris.obbard@collabora.com>
+ id 1kXCHn-00026G-U2
+ for linux-um@lists.infradead.org; Mon, 26 Oct 2020 23:52:39 +0000
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.8 014/132] um: change sigio_spinlock to a mutex
+Date: Mon, 26 Oct 2020 19:50:06 -0400
+Message-Id: <20201026235205.1023962-14-sashal@kernel.org>
+In-Reply-To: <20201026235205.1023962-1-sashal@kernel.org>
+References: <20201026235205.1023962-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -20,250 +22,81 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
-Cc: Herbert Xu <herbert@gondor.apana.org.au>, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, Alexander Neville <dark@volatile.bz>, Sjoerd Simons <sjoerd.simons@collabora.co.uk>, linux-crypto@vger.kernel.org, Matt Mackall <mpm@selenic.com>, kernel@collabora.com, Christopher Obbard <chris.obbard@collabora.com>
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Sasha Levin <sashal@kernel.org>, Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org, Johannes Berg <johannes.berg@intel.com>
 
-The UML random driver creates a dummy device under the guest,
-/dev/hw_random. When this file is read from the guest, the driver
-reads from the host machine's /dev/random, in-turn reading from
-the host kernel's entropy pool. This entropy pool could have been
-filled by a hardware random number generator or just the host
-kernel's internal software entropy generator.
+From: Johannes Berg <johannes.berg@intel.com>
 
-Currently the driver does not fill the guests kernel entropy pool,
-this requires a userspace tool running inside the guest (like
-rng-tools) to read from the dummy device provided by this driver,
-which then would fill the guest's internal entropy pool.
+[ Upstream commit f2d05059e15af3f70502074f4e3a504530af504a ]
 
-This all seems quite pointless when we are already reading from an
-entropy pool, so this patch aims to register the device as a hwrng
-device using the hwrng-core framework. This not only improves and
-cleans up the driver, but also fills the guest's entropy pool
-without having to resort to using extra userspace tools in the guest.
+Lockdep complains at boot:
 
-This is typically a nuisance when booting a guest: the random pool
-takes a long time (~200s) to build up enough entropy since the dummy
-hwrng is not used to fill the guest's pool.
+=============================
+[ BUG: Invalid wait context ]
+5.7.0-05093-g46d91ecd597b #98 Not tainted
+-----------------------------
+swapper/1 is trying to lock:
+0000000060931b98 (&desc[i].request_mutex){+.+.}-{3:3}, at: __setup_irq+0x11d/0x623
+other info that might help us debug this:
+context-{4:4}
+1 lock held by swapper/1:
+ #0: 000000006074fed8 (sigio_spinlock){+.+.}-{2:2}, at: sigio_lock+0x1a/0x1c
+stack backtrace:
+CPU: 0 PID: 1 Comm: swapper Not tainted 5.7.0-05093-g46d91ecd597b #98
+Stack:
+ 7fa4fab0 6028dfd1 0000002a 6008bea5
+ 7fa50700 7fa50040 7fa4fac0 6028e016
+ 7fa4fb50 6007f6da 60959c18 00000000
+Call Trace:
+ [<60023a0e>] show_stack+0x13b/0x155
+ [<6028e016>] dump_stack+0x2a/0x2c
+ [<6007f6da>] __lock_acquire+0x515/0x15f2
+ [<6007eb50>] lock_acquire+0x245/0x273
+ [<6050d9f1>] __mutex_lock+0xbd/0x325
+ [<6050dc76>] mutex_lock_nested+0x1d/0x1f
+ [<6008e27e>] __setup_irq+0x11d/0x623
+ [<6008e8ed>] request_threaded_irq+0x169/0x1a6
+ [<60021eb0>] um_request_irq+0x1ee/0x24b
+ [<600234ee>] write_sigio_irq+0x3b/0x76
+ [<600383ca>] sigio_broken+0x146/0x2e4
+ [<60020bd8>] do_one_initcall+0xde/0x281
 
-This port was originally attempted by Alexander Neville "dark" (in CC,
-discussion in Link), but the conversation there stalled since the
-handling of -EAGAIN errors were no removed and longer handled by the
-driver. This patch attempts to use the existing method of error
-handling but utilises the new hwrng core.
+Because we hold sigio_spinlock and then get into requesting
+an interrupt with a mutex.
 
-The issue can be noticed when booting a UML guest:
+Change the spinlock to a mutex to avoid that.
 
-    [    2.560000] random: fast init done
-    [  214.000000] random: crng init done
-
-With the patch applied, filling the pool becomes a lot quicker:
-
-    [    2.560000] random: fast init done
-    [   12.000000] random: crng init done
-
-Cc: Alexander Neville <dark@volatile.bz>
-Link: https://lore.kernel.org/lkml/20190828204609.02a7ff70@TheDarkness/
-Link: https://lore.kernel.org/lkml/20190829135001.6a5ff940@TheDarkness.local/
-Cc: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
-Signed-off-by: Christopher Obbard <chris.obbard@collabora.com>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/drivers/random.c       | 101 ++++++++-------------------------
- drivers/char/hw_random/Kconfig |  16 +++---
- 2 files changed, 33 insertions(+), 84 deletions(-)
+ arch/um/kernel/sigio.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/um/drivers/random.c b/arch/um/drivers/random.c
-index ce115fce52f0..e4b9b2ce9abf 100644
---- a/arch/um/drivers/random.c
-+++ b/arch/um/drivers/random.c
-@@ -11,6 +11,7 @@
- #include <linux/fs.h>
- #include <linux/interrupt.h>
- #include <linux/miscdevice.h>
-+#include <linux/hw_random.h>
- #include <linux/delay.h>
- #include <linux/uaccess.h>
- #include <init.h>
-@@ -18,9 +19,8 @@
- #include <os.h>
- 
- /*
-- * core module and version information
-+ * core module information
-  */
--#define RNG_VERSION "1.0.0"
- #define RNG_MODULE_NAME "hw_random"
- 
- /* Changed at init time, in the non-modular case, and at module load
-@@ -28,88 +28,36 @@
-  * protects against a module being loaded twice at the same time.
-  */
- static int random_fd = -1;
--static DECLARE_WAIT_QUEUE_HEAD(host_read_wait);
-+static struct hwrng hwrng = { 0, };
-+static DECLARE_COMPLETION(have_data);
- 
--static int rng_dev_open (struct inode *inode, struct file *filp)
-+static int rng_dev_read(struct hwrng *rng, void *buf, size_t max, bool block)
- {
--	/* enforce read-only access to this chrdev */
--	if ((filp->f_mode & FMODE_READ) == 0)
--		return -EINVAL;
--	if ((filp->f_mode & FMODE_WRITE) != 0)
--		return -EINVAL;
-+	int ret;
- 
--	return 0;
--}
--
--static atomic_t host_sleep_count = ATOMIC_INIT(0);
--
--static ssize_t rng_dev_read (struct file *filp, char __user *buf, size_t size,
--			     loff_t *offp)
--{
--	u32 data;
--	int n, ret = 0, have_data;
--
--	while (size) {
--		n = os_read_file(random_fd, &data, sizeof(data));
--		if (n > 0) {
--			have_data = n;
--			while (have_data && size) {
--				if (put_user((u8) data, buf++)) {
--					ret = ret ? : -EFAULT;
--					break;
--				}
--				size--;
--				ret++;
--				have_data--;
--				data >>= 8;
--			}
--		}
--		else if (n == -EAGAIN) {
--			DECLARE_WAITQUEUE(wait, current);
--
--			if (filp->f_flags & O_NONBLOCK)
--				return ret ? : -EAGAIN;
--
--			atomic_inc(&host_sleep_count);
-+	for (;;) {
-+		ret = os_read_file(random_fd, buf, max);
-+		if (block && ret == -EAGAIN) {
- 			add_sigio_fd(random_fd);
- 
--			add_wait_queue(&host_read_wait, &wait);
--			set_current_state(TASK_INTERRUPTIBLE);
-+			ret = wait_for_completion_killable(&have_data);
- 
--			schedule();
--			remove_wait_queue(&host_read_wait, &wait);
-+			ignore_sigio_fd(random_fd);
-+			deactivate_fd(random_fd, RANDOM_IRQ);
- 
--			if (atomic_dec_and_test(&host_sleep_count)) {
--				ignore_sigio_fd(random_fd);
--				deactivate_fd(random_fd, RANDOM_IRQ);
--			}
-+			if (ret < 0)
-+				break;
-+		} else {
-+			break;
- 		}
--		else
--			return n;
--
--		if (signal_pending (current))
--			return ret ? : -ERESTARTSYS;
- 	}
--	return ret;
--}
- 
--static const struct file_operations rng_chrdev_ops = {
--	.owner		= THIS_MODULE,
--	.open		= rng_dev_open,
--	.read		= rng_dev_read,
--	.llseek		= noop_llseek,
--};
--
--/* rng_init shouldn't be called more than once at boot time */
--static struct miscdevice rng_miscdev = {
--	HWRNG_MINOR,
--	RNG_MODULE_NAME,
--	&rng_chrdev_ops,
--};
-+	return ret != -EAGAIN ? ret : 0;
-+}
- 
- static irqreturn_t random_interrupt(int irq, void *data)
- {
--	wake_up(&host_read_wait);
-+	complete(&have_data);
- 
- 	return IRQ_HANDLED;
- }
-@@ -126,18 +74,19 @@ static int __init rng_init (void)
- 		goto out;
- 
- 	random_fd = err;
--
- 	err = um_request_irq(RANDOM_IRQ, random_fd, IRQ_READ, random_interrupt,
- 			     0, "random", NULL);
- 	if (err)
- 		goto err_out_cleanup_hw;
- 
- 	sigio_broken(random_fd, 1);
-+	hwrng.name = RNG_MODULE_NAME;
-+	hwrng.read = rng_dev_read;
-+	hwrng.quality = 1024;
- 
--	err = misc_register (&rng_miscdev);
-+	err = hwrng_register(&hwrng);
- 	if (err) {
--		printk (KERN_ERR RNG_MODULE_NAME ": misc device register "
--			"failed\n");
-+		pr_err(RNG_MODULE_NAME " registering failed (%d)\n", err);
- 		goto err_out_cleanup_hw;
- 	}
- out:
-@@ -161,8 +110,8 @@ static void cleanup(void)
- 
- static void __exit rng_cleanup(void)
- {
-+	hwrng_unregister(&hwrng);
- 	os_close_file(random_fd);
--	misc_deregister (&rng_miscdev);
+diff --git a/arch/um/kernel/sigio.c b/arch/um/kernel/sigio.c
+index 10c99e058fcae..d1cffc2a7f212 100644
+--- a/arch/um/kernel/sigio.c
++++ b/arch/um/kernel/sigio.c
+@@ -35,14 +35,14 @@ int write_sigio_irq(int fd)
  }
  
- module_init (rng_init);
-diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
-index e92c4d9469d8..5952210526aa 100644
---- a/drivers/char/hw_random/Kconfig
-+++ b/drivers/char/hw_random/Kconfig
-@@ -540,15 +540,15 @@ endif # HW_RANDOM
+ /* These are called from os-Linux/sigio.c to protect its pollfds arrays. */
+-static DEFINE_SPINLOCK(sigio_spinlock);
++static DEFINE_MUTEX(sigio_mutex);
  
- config UML_RANDOM
- 	depends on UML
--	tristate "Hardware random number generator"
-+	select HW_RANDOM
-+	tristate "UML Random Number Generator support"
- 	help
- 	  This option enables UML's "hardware" random number generator.  It
- 	  attaches itself to the host's /dev/random, supplying as much entropy
- 	  as the host has, rather than the small amount the UML gets from its
--	  own drivers.  It registers itself as a standard hardware random number
--	  generator, major 10, minor 183, and the canonical device name is
--	  /dev/hwrng.
--	  The way to make use of this is to install the rng-tools package
--	  (check your distro, or download from
--	  http://sourceforge.net/projects/gkernel/).  rngd periodically reads
--	  /dev/hwrng and injects the entropy into /dev/random.
-+	  own drivers. It registers itself as a rng-core driver thus providing
-+	  a device which is usually called /dev/hwrng. This hardware random
-+	  number generator does feed into the kernel's random number generator
-+	  entropy pool.
-+
-+	  If unsure, say Y.
+ void sigio_lock(void)
+ {
+-	spin_lock(&sigio_spinlock);
++	mutex_lock(&sigio_mutex);
+ }
+ 
+ void sigio_unlock(void)
+ {
+-	spin_unlock(&sigio_spinlock);
++	mutex_unlock(&sigio_mutex);
+ }
 -- 
-2.28.0
+2.25.1
 
 
 _______________________________________________
