@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kXCYn-00021t-4V
- for linux-um@lists.infradead.org; Tue, 27 Oct 2020 00:10:29 +0000
+ id 1kXCEx-0000hi-1A
+ for linux-um@lists.infradead.org; Mon, 26 Oct 2020 23:49:28 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.14 06/46] um: change sigio_spinlock to a mutex
-Date: Mon, 26 Oct 2020 20:09:05 -0400
-Message-Id: <20201027000946.1026923-6-sashal@kernel.org>
-In-Reply-To: <20201027000946.1026923-1-sashal@kernel.org>
-References: <20201027000946.1026923-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.9 016/147] um: change sigio_spinlock to a mutex
+Date: Mon, 26 Oct 2020 19:46:54 -0400
+Message-Id: <20201026234905.1022767-16-sashal@kernel.org>
+In-Reply-To: <20201026234905.1022767-1-sashal@kernel.org>
+References: <20201026234905.1022767-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -74,10 +74,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/arch/um/kernel/sigio.c b/arch/um/kernel/sigio.c
-index b5e0cbb343828..476ded92affac 100644
+index 10c99e058fcae..d1cffc2a7f212 100644
 --- a/arch/um/kernel/sigio.c
 +++ b/arch/um/kernel/sigio.c
-@@ -36,14 +36,14 @@ int write_sigio_irq(int fd)
+@@ -35,14 +35,14 @@ int write_sigio_irq(int fd)
  }
  
  /* These are called from os-Linux/sigio.c to protect its pollfds arrays. */
