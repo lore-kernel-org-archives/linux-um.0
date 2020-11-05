@@ -2,13 +2,16 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab7.miniserver.com ([37.128.132.42]
  helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kcrcn-0002Nv-7Y
- for linux-um@lists.infradead.org; Wed, 11 Nov 2020 15:01:30 +0000
-From: anton.ivanov@cambridgegreys.com
-Subject: [PATCH] um: enable the use of optimized xor routines in UML
-Date: Wed, 11 Nov 2020 15:01:14 +0000
-Message-Id: <20201111150114.23778-1-anton.ivanov@cambridgegreys.com>
+ id 1kak4u-00085x-Qu
+ for linux-um@lists.infradead.org; Thu, 05 Nov 2020 18:33:45 +0000
+Subject: Re: [PATCH] um: add support for TIF_NOTIFY_SIGNAL
+References: <d0b7533b-9c4c-369e-3a3d-6f98a18417d9@kernel.dk>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <27d9aa86-5409-f381-0742-294d27dbcfa9@cambridgegreys.com>
+Date: Thu, 5 Nov 2020 18:15:04 +0000
 MIME-Version: 1.0
+In-Reply-To: <d0b7533b-9c4c-369e-3a3d-6f98a18417d9@kernel.dk>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -17,224 +20,77 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: Jens Axboe <axboe@kernel.dk>, linux-um@lists.infradead.org
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-This patch enable the use of optimized xor routines from the x86
-tree as well as supply the necessary macros for them to be used in
-UML.
 
-The macros supply several "fake" flags and definitions to allow
-using the x86 files "as is".
+On 29/10/2020 16:23, Jens Axboe wrote:
+> Wire up TIF_NOTIFY_SIGNAL handling for um.
+> 
+> Cc: linux-um@lists.infradead.org
+> Signed-off-by: Jens Axboe <axboe@kernel.dk>
+> ---
+> 
+> 5.11 has support queued up for TIF_NOTIFY_SIGNAL, see this posting
+> for details:
+> 
+> https://lore.kernel.org/io-uring/20201026203230.386348-1-axboe@kernel.dk/
+> 
+> As part of that work, I'm adding TIF_NOTIFY_SIGNAL support to all archs,
+> as that will enable a set of cleanups once all of them support it. I'm
+> happy carrying this patch if need be, or it can be funelled through the
+> arch tree. Let me know.
+> 
+>   arch/um/include/asm/thread_info.h | 2 ++
+>   arch/um/kernel/process.c          | 3 ++-
+>   2 files changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/um/include/asm/thread_info.h b/arch/um/include/asm/thread_info.h
+> index 4c19ce4c49f1..3b1cb8b3b186 100644
+> --- a/arch/um/include/asm/thread_info.h
+> +++ b/arch/um/include/asm/thread_info.h
+> @@ -57,6 +57,7 @@ static inline struct thread_info *current_thread_info(void)
+>   #define TIF_SYSCALL_TRACE	0	/* syscall trace active */
+>   #define TIF_SIGPENDING		1	/* signal pending */
+>   #define TIF_NEED_RESCHED	2	/* rescheduling necessary */
+> +#define TIF_NOTIFY_SIGNAL	3	/* signal notifications exist */
+>   #define TIF_RESTART_BLOCK	4
+>   #define TIF_MEMDIE		5	/* is terminating due to OOM killer */
+>   #define TIF_SYSCALL_AUDIT	6
+> @@ -67,6 +68,7 @@ static inline struct thread_info *current_thread_info(void)
+>   #define _TIF_SYSCALL_TRACE	(1 << TIF_SYSCALL_TRACE)
+>   #define _TIF_SIGPENDING		(1 << TIF_SIGPENDING)
+>   #define _TIF_NEED_RESCHED	(1 << TIF_NEED_RESCHED)
+> +#define _TIF_NOTIFY_SIGNAL	(1 << TIF_NOTIFY_SIGNAL)
+>   #define _TIF_MEMDIE		(1 << TIF_MEMDIE)
+>   #define _TIF_SYSCALL_AUDIT	(1 << TIF_SYSCALL_AUDIT)
+>   #define _TIF_SECCOMP		(1 << TIF_SECCOMP)
+> diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+> index 3bed09538dd9..9e19da9e6198 100644
+> --- a/arch/um/kernel/process.c
+> +++ b/arch/um/kernel/process.c
+> @@ -99,7 +99,8 @@ void interrupt_end(void)
+>   
+>   	if (need_resched())
+>   		schedule();
+> -	if (test_thread_flag(TIF_SIGPENDING))
+> +	if (test_thread_flag(TIF_SIGPENDING) ||
+> +	    test_thread_flag(TIF_NOTIFY_SIGNAL))
+>   		do_signal(regs);
+>   	if (test_thread_flag(TIF_NOTIFY_RESUME))
+>   		tracehook_notify_resume(regs);
+> 
 
-This patchset implements only the flags needed for the optimized
-strings.h, xor.h and checksum.h implementations instead of
-trying to copy the entire x86 flags environment.
+Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
----
- arch/um/include/asm/processor-generic.h |  3 +++
- arch/um/include/asm/xor-x86.h           |  1 +
- arch/um/include/asm/xor.h               | 17 ++++++++++++-
- arch/um/include/asm/xor_32.h            |  1 +
- arch/um/include/asm/xor_64.h            |  1 +
- arch/um/include/asm/xor_avx.h           |  1 +
- arch/um/include/shared/os.h             |  1 +
- arch/um/kernel/um_arch.c                | 20 ++++++++++++++--
- arch/um/os-Linux/start_up.c             | 32 +++++++++++++++++++++++++
- 9 files changed, 74 insertions(+), 3 deletions(-)
- create mode 120000 arch/um/include/asm/xor-x86.h
- create mode 120000 arch/um/include/asm/xor_32.h
- create mode 120000 arch/um/include/asm/xor_64.h
- create mode 120000 arch/um/include/asm/xor_avx.h
-
-diff --git a/arch/um/include/asm/processor-generic.h b/arch/um/include/asm/processor-generic.h
-index afd9b267cf81..b8bcddbb1898 100644
---- a/arch/um/include/asm/processor-generic.h
-+++ b/arch/um/include/asm/processor-generic.h
-@@ -90,6 +90,9 @@ extern void start_thread(struct pt_regs *regs, unsigned long entry,
- struct cpuinfo_um {
- 	unsigned long loops_per_jiffy;
- 	int ipi_pipe[2];
-+	/* There is only a small set of x86 features we are interested
-+	 * in for now */
-+	unsigned long host_features;
- };
- 
- extern struct cpuinfo_um boot_cpu_data;
-diff --git a/arch/um/include/asm/xor-x86.h b/arch/um/include/asm/xor-x86.h
-new file mode 120000
-index 000000000000..beff7de6890d
---- /dev/null
-+++ b/arch/um/include/asm/xor-x86.h
-@@ -0,0 +1 @@
-+../../../x86/include/asm/xor.h
-\ No newline at end of file
-diff --git a/arch/um/include/asm/xor.h b/arch/um/include/asm/xor.h
-index 36b33d62a35d..3c2c67698908 100644
---- a/arch/um/include/asm/xor.h
-+++ b/arch/um/include/asm/xor.h
-@@ -1,7 +1,22 @@
- /* SPDX-License-Identifier: GPL-2.0 */
--#include <asm-generic/xor.h>
-+#ifndef _ASM_UM_XOR_H
-+#define _ASM_UM_XOR_H
-+
-+#ifdef CONFIG_64BIT
-+#undef CONFIG_X86_32
-+#else
-+#define CONFIG_X86_32 "Y"
-+#endif
-+
-+#include <asm/cpufeature.h>
-+#include <asm/xor-x86.h>
- #include <linux/time-internal.h>
- 
-+#ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
-+#undef XOR_SELECT_TEMPLATE
- /* pick an arbitrary one - measuring isn't possible with inf-cpu */
- #define XOR_SELECT_TEMPLATE(x)	\
- 	(time_travel_mode == TT_MODE_INFCPU ? &xor_block_8regs : NULL)
-+#endif
-+
-+#endif
-diff --git a/arch/um/include/asm/xor_32.h b/arch/um/include/asm/xor_32.h
-new file mode 120000
-index 000000000000..8a0894e996d7
---- /dev/null
-+++ b/arch/um/include/asm/xor_32.h
-@@ -0,0 +1 @@
-+../../../x86/include/asm/xor_32.h
-\ No newline at end of file
-diff --git a/arch/um/include/asm/xor_64.h b/arch/um/include/asm/xor_64.h
-new file mode 120000
-index 000000000000..b8d346c516bf
---- /dev/null
-+++ b/arch/um/include/asm/xor_64.h
-@@ -0,0 +1 @@
-+../../../x86/include/asm/xor_64.h
-\ No newline at end of file
-diff --git a/arch/um/include/asm/xor_avx.h b/arch/um/include/asm/xor_avx.h
-new file mode 120000
-index 000000000000..370ded122095
---- /dev/null
-+++ b/arch/um/include/asm/xor_avx.h
-@@ -0,0 +1 @@
-+../../../x86/include/asm/xor_avx.h
-\ No newline at end of file
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index f467d28fc0b4..05eafa39ec97 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -187,6 +187,7 @@ int os_poll(unsigned int n, const int *fds);
- extern void os_early_checks(void);
- extern void os_check_bugs(void);
- extern void check_host_supports_tls(int *supports_tls, int *tls_min);
-+extern unsigned long check_host_cpu_features(const char **feature_names, int n); 
- 
- /* mem.c */
- extern int create_mem_file(unsigned long long len);
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index 76b37297b7d4..f73db4fa1acc 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -48,9 +48,16 @@ static void __init add_arg(char *arg)
-  */
- struct cpuinfo_um boot_cpu_data = {
- 	.loops_per_jiffy	= 0,
--	.ipi_pipe		= { -1, -1 }
-+	.ipi_pipe		= { -1, -1 },
-+	.host_features		= 0
- };
- 
-+EXPORT_SYMBOL(boot_cpu_data);
-+
-+const char* host_cpu_feature_names[] = {"mmx", "xmm", "avx", "rep_good", "erms"};
-+#define MAX_UM_CPU_FEATURES 5
-+
-+
- union thread_union cpu0_irqstack
- 	__section(".data..init_irqstack") =
- 		{ .thread_info = INIT_THREAD_INFO(init_task) };
-@@ -67,9 +74,15 @@ static int show_cpuinfo(struct seq_file *m, void *v)
- 	seq_printf(m, "model name\t: UML\n");
- 	seq_printf(m, "mode\t\t: skas\n");
- 	seq_printf(m, "host\t\t: %s\n", host_info);
--	seq_printf(m, "bogomips\t: %lu.%02lu\n\n",
-+	seq_printf(m, "bogomips\t: %lu.%02lu\n",
- 		   loops_per_jiffy/(500000/HZ),
- 		   (loops_per_jiffy/(5000/HZ)) % 100);
-+	seq_printf(m, "flags\t\t:");
-+	for (index = 0; index < MAX_UM_CPU_FEATURES; index++) {
-+		if (boot_cpu_data.host_features & (1 << index))
-+			seq_printf(m," %s", host_cpu_feature_names[index]);
-+	}
-+	seq_printf(m, "\n\n");
- 
- 	return 0;
- }
-@@ -275,6 +288,9 @@ int __init linux_main(int argc, char **argv)
- 	/* OS sanity checks that need to happen before the kernel runs */
- 	os_early_checks();
- 
-+	boot_cpu_data.host_features =
-+		check_host_cpu_features(host_cpu_feature_names, MAX_UM_CPU_FEATURES);
-+
- 	brk_start = (unsigned long) sbrk(0);
- 
- 	/*
-diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
-index f79dc338279e..be884ed86b30 100644
---- a/arch/um/os-Linux/start_up.c
-+++ b/arch/um/os-Linux/start_up.c
-@@ -321,6 +321,38 @@ static void __init check_coredump_limit(void)
- 		os_info("%llu\n", (unsigned long long)lim.rlim_max);
- }
- 
-+unsigned long  __init check_host_cpu_features(const char **feature_names, int n)
-+{
-+	FILE *cpuinfo;
-+	char *line = NULL;
-+	size_t len = 0;
-+	int i;
-+	bool done_parsing = false;
-+	unsigned long result = 0;
-+
-+	cpuinfo = fopen("/proc/cpuinfo", "r");
-+	if (cpuinfo == NULL) {
-+		os_info("Failed to get host CPU features\n");
-+	} else {
-+		while ((getline(&line, &len, cpuinfo)) != -1) {
-+			if (strstr(line, "flags")) {
-+				for (i = 0; i < n; i++) {
-+					if (strstr(line, feature_names[i])) {
-+						result |= (1 << i);
-+					}
-+				}
-+				done_parsing = true;
-+			}
-+			free(line);
-+			line = NULL;
-+			if (done_parsing)
-+				break;
-+		}
-+		fclose(cpuinfo);
-+	}
-+	return result;
-+}
-+
- void __init os_early_checks(void)
- {
- 	int pid;
 -- 
-2.20.1
-
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
 _______________________________________________
 linux-um mailing list
