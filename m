@@ -1,15 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kcRoV-0005xK-8D
- for linux-um@lists.infradead.org; Tue, 10 Nov 2020 11:27:52 +0000
-Message-ID: <1e0dc5977c309d777ff4155565eb4d667733256a.camel@sipsolutions.net>
-Subject: Re: [PATCH] um: Fetch registers only for signals which need them
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Tue, 10 Nov 2020 12:27:47 +0100
-In-Reply-To: <20201110111137.16117-1-anton.ivanov@cambridgegreys.com>
-References: <20201110111137.16117-1-anton.ivanov@cambridgegreys.com>
+ id 1kcRZ3-000219-EW
+ for linux-um@lists.infradead.org; Tue, 10 Nov 2020 11:11:54 +0000
+From: anton.ivanov@cambridgegreys.com
+Subject: [PATCH] um: Fetch registers only for signals which need them
+Date: Tue, 10 Nov 2020 11:11:37 +0000
+Message-Id: <20201110111137.16117-1-anton.ivanov@cambridgegreys.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -23,59 +21,44 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: anton.ivanov@cambridgegreys.com, linux-um@lists.infradead.org
-Cc: richard@nod.at
+To: linux-um@lists.infradead.org
+Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-On Tue, 2020-11-10 at 11:11 +0000, anton.ivanov@cambridgegreys.com
-wrote:
-> From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-> 
-> UML userspace fetches siginfo and passes it to signal handlers
-> in UML. This is needed only for some of the signals, because
-> key handlers like SIGIO make no use of this variable.
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-It looks like even for SIGSEGV it depends on PTRACE_FULL_FAULTINFO,
-which is only set for 64-bit?
+UML userspace fetches siginfo and passes it to signal handlers
+in UML. This is needed only for some of the signals, because
+key handlers like SIGIO make no use of this variable.
 
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+---
+ arch/um/os-Linux/skas/process.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-> -			ptrace(PTRACE_GETSIGINFO, pid, 0, (struct siginfo *)&si);
-> +			switch (sig) {
-> +			case SIGSEGV:
-> +			case SIGTRAP:
-> +			case SIGILL:
-> +			case SIGBUS:
-> +			case SIGFPE:
-> +			case SIGWINCH:
-> +				ptrace(PTRACE_GETSIGINFO, pid, 0, (struct siginfo *)&si);
-> +				break;
-> +			}
->  
->  			switch (sig) {
->  			case SIGSEGV:
-
-So perhaps it might make sense to push it further down into that switch?
-It'd end up duplicating it to three places though.
-
-In the SIGIO case you could write it as
-
-case SIGILL:
-case SIGBUS:
-case SIGFPE:
-case SIGWINCH:
-	ptrace(...);
-	fallthrough;
-case SIGIO:
-	block_signals_trace();
-	// etc
-
-But I have no strong opinion either way really.
-
-
-I do think a comment is needed though, because we _do_ pass the pointer
-to the sigio handler ... or maybe separate that out just like
-handle_trap() etc.?
-
-johannes
+diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
+index 4fb877b99dde..8123b1c6b1b5 100644
+--- a/arch/um/os-Linux/skas/process.c
++++ b/arch/um/os-Linux/skas/process.c
+@@ -400,7 +400,16 @@ void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
+ 		if (WIFSTOPPED(status)) {
+ 			int sig = WSTOPSIG(status);
+ 
+-			ptrace(PTRACE_GETSIGINFO, pid, 0, (struct siginfo *)&si);
++			switch (sig) {
++			case SIGSEGV:
++			case SIGTRAP:
++			case SIGILL:
++			case SIGBUS:
++			case SIGFPE:
++			case SIGWINCH:
++				ptrace(PTRACE_GETSIGINFO, pid, 0, (struct siginfo *)&si);
++				break;
++			}
+ 
+ 			switch (sig) {
+ 			case SIGSEGV:
+-- 
+2.20.1
 
 
 _______________________________________________
