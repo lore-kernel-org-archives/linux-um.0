@@ -2,8 +2,8 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab7.miniserver.com ([37.128.132.42]
  helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kcuYq-0007G0-Ot
- for linux-um@lists.infradead.org; Wed, 11 Nov 2020 18:09:37 +0000
+ id 1kcsWt-0000gQ-Ux
+ for linux-um@lists.infradead.org; Wed, 11 Nov 2020 15:59:29 +0000
 Subject: Re: [PATCH] um: allow using glibc string functions instead of generics
 From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 References: <20201110163034.22963-1-anton.ivanov@cambridgegreys.com>
@@ -14,8 +14,8 @@ References: <20201110163034.22963-1-anton.ivanov@cambridgegreys.com>
  <1539736322.290788.1605044349917.JavaMail.zimbra@nod.at>
  <4b431cfb-8811-371f-9f2a-536861cc2202@cambridgegreys.com>
  <56bff3f1-59fa-948a-0cec-17ac04ebcff1@cambridgegreys.com>
-Message-ID: <89da3e35-87a0-c8fc-ec66-481e594e8518@cambridgegreys.com>
-Date: Wed, 11 Nov 2020 18:09:32 +0000
+Message-ID: <0fb7019c-c1be-7862-29be-c8af08f6c8c0@cambridgegreys.com>
+Date: Wed, 11 Nov 2020 15:59:23 +0000
 MIME-Version: 1.0
 In-Reply-To: <56bff3f1-59fa-948a-0cec-17ac04ebcff1@cambridgegreys.com>
 Content-Language: en-US
@@ -79,20 +79,20 @@ IEJvdGggMzIgYml0IGFuZCA2NCBiaXQgdmVyc2lvbnMgb2YgVU1MIGJyaW5nIGluIGFuIG9sZCBj
 b3B5IG9mIHRoZSAzMiBiaXQgeDg2IGNoZWNrc3VtIHdoaWNoIGhhcyBiZWVuIGR1cGxpY2F0ZWQg
 aW50byBhcmNoL3g4Ni91bS4gVGhlcmUgaXMgc29tZSA2NCBiaXQgY29kZSB3aGljaCB1bmxlc3Mg
 SSBhbSBtaXN0YWtlbiBpcyBuZXZlciBwdWxsZWQgaW4gYmVjYXVzZSBpdCBpcyBzdGlsbCBpZmRl
-ZmVkIG9uIENPTkZJR19YODZfMzIgaW5zdGVhZCBvZiBDT05GSUdfNjRCSVQKPgo+IHN0cmluZy5o
-IGxvb2tzIG1vcmUgc3RyYWlnaHQgZm9yd2FyZCwgSSB3aWxsIHByb2JhYmx5IGRvIGl0IG5leHQg
-bGVhdmluZyBja3N1bSBsYXN0LgoKSSBtYW5hZ2VkIHRvIHVudGFuZ2xlIGNoZWNrc3VtIHNvIGl0
-IDEwMCUgd29ya3MgdXNpbmcgeDg2ICJ1cHN0cmVhbSIgZmlsZXMgYW5kIEkgaGF2ZSBhIHdvcmtp
-bmcgdmVyc2lvbiwgYnV0IEkgd2lsbCBuZWVkIHNvbWUgdGVzdGluZyBmb3IgMzIvNjQgYml0IGNh
-c2VzIHRvIG1ha2Ugc3VyZSBpdCBpcyBPSy4KCkkgd2lsbCBwcm9iYWJseSBwdXNoIGl0IGJlZm9y
-ZSB0aGUgZW5kIG9mIHRoZSB3ZWVrLgoKQS4KCj4KPiBBLgo+Cj4KPj4KPj4+Cj4+PiBUaGFua3Ms
-Cj4+PiAvL3JpY2hhcmQKPj4+Cj4+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwo+Pj4gbGludXgtdW0gbWFpbGluZyBsaXN0Cj4+PiBsaW51eC11bUBsaXN0
-cy5pbmZyYWRlYWQub3JnCj4+PiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2xpbnV4LXVtCj4+Pgo+Pgo+PgotLSAKQW50b24gUi4gSXZhbm92CkNhbWJyaWRnZWdy
-ZXlzIExpbWl0ZWQuIFJlZ2lzdGVyZWQgaW4gRW5nbGFuZC4gQ29tcGFueSBOdW1iZXIgMTAyNzM2
-NjEKaHR0cHM6Ly93d3cuY2FtYnJpZGdlZ3JleXMuY29tLwoKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11
-bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vbGludXgtdW0K
+ZmVkIG9uIENPTkZJR19YODZfMzIgaW5zdGVhZCBvZiBDT05GSUdfNjRCSVQKCkFjdHVhbGx5LCB0
+aGUgeDg2L3VtL0tjb25maWcgZGVmaW5lcyB0aGUgQ09ORklHX1g4Nl8zMi9DT05GSUdfWDg2XzY0
+LCBzbyB0aGUgNjQgYml0IGNvZGUgaXMgcHVsbGVkIGluLiBNeSBtaXN0YWtlLgoKVGhlIHJlc3Qg
+c3RpbGwgYXBwbGllcywgc29tZSBvZiB0aGUgZmlsZXMgYXJlIGNvcGllcyBvZiBvbGRlciB2ZXJz
+aW9ucyBvZiB0aGUgeDg2LCB3ZSBzaG91bGQgYmUgcGlja2luZyB1cCB0aGUgbmV3ZXIgb25lcyB3
+aGVyZXZlciBwb3NzaWJsZS4KCkEuCgo+Cj4gc3RyaW5nLmggbG9va3MgbW9yZSBzdHJhaWdodCBm
+b3J3YXJkLCBJIHdpbGwgcHJvYmFibHkgZG8gaXQgbmV4dCBsZWF2aW5nIGNrc3VtIGxhc3QuCj4K
+PiBBLgo+Cj4KPj4KPj4+Cj4+PiBUaGFua3MsCj4+PiAvL3JpY2hhcmQKPj4+Cj4+PiBfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+Pj4gbGludXgtdW0gbWFp
+bGluZyBsaXN0Cj4+PiBsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCj4+PiBodHRwOi8vbGlz
+dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCj4+Pgo+Pgo+PgotLSAK
+QW50b24gUi4gSXZhbm92CkNhbWJyaWRnZWdyZXlzIExpbWl0ZWQuIFJlZ2lzdGVyZWQgaW4gRW5n
+bGFuZC4gQ29tcGFueSBOdW1iZXIgMTAyNzM2NjEKaHR0cHM6Ly93d3cuY2FtYnJpZGdlZ3JleXMu
+Y29tLwoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxp
+bnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9s
+aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
 
