@@ -1,17 +1,24 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-qt1-x82a.google.com ([2607:f8b0:4864:20::82a])
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kcaZ3-00078B-Fw
- for linux-um@lists.infradead.org; Tue, 10 Nov 2020 20:48:30 +0000
-Received: by mail-qt1-x82a.google.com with SMTP id 3so9639124qtx.3
- for <linux-um@lists.infradead.org>; Tue, 10 Nov 2020 12:48:27 -0800 (PST)
+ id 1kcuYq-0007G0-Ot
+ for linux-um@lists.infradead.org; Wed, 11 Nov 2020 18:09:37 +0000
+Subject: Re: [PATCH] um: allow using glibc string functions instead of generics
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+References: <20201110163034.22963-1-anton.ivanov@cambridgegreys.com>
+ <1098264641.290574.1605039225057.JavaMail.zimbra@nod.at>
+ <ee2da9e0-2858-ef9c-b8b9-bdf569ec9bb4@cambridgegreys.com>
+ <1253718433.290759.1605043793706.JavaMail.zimbra@nod.at>
+ <de2e76d2-6adc-d9e9-7764-5d8ce22536bd@cambridgegreys.com>
+ <1539736322.290788.1605044349917.JavaMail.zimbra@nod.at>
+ <4b431cfb-8811-371f-9f2a-536861cc2202@cambridgegreys.com>
+ <56bff3f1-59fa-948a-0cec-17ac04ebcff1@cambridgegreys.com>
+Message-ID: <89da3e35-87a0-c8fc-ec66-481e594e8518@cambridgegreys.com>
+Date: Wed, 11 Nov 2020 18:09:32 +0000
 MIME-Version: 1.0
-References: <aa967d60-ba8c-5915-1ee1-b7792e20a77b@kot-begemot.co.uk>
-In-Reply-To: <aa967d60-ba8c-5915-1ee1-b7792e20a77b@kot-begemot.co.uk>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Tue, 10 Nov 2020 21:48:13 +0100
-Message-ID: <CAFLxGvxu6dBGC4F53VBoFnLxq2fFBE90SvNQfCp9bXJGYfL+hw@mail.gmail.com>
-Subject: Re: The UMID fixes need to be added to stable
+In-Reply-To: <56bff3f1-59fa-948a-0cec-17ac04ebcff1@cambridgegreys.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,31 +27,72 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Cc: Richard Weinberger <richard@nod.at>, linux-um <linux-um@lists.infradead.org>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-um <linux-um@lists.infradead.org>
 
-On Tue, Oct 20, 2020 at 10:35 AM Anton Ivanov
-<anton.ivanov@kot-begemot.co.uk> wrote:
->
-> Hi list, hi Richard,
->
-> I figured out the other bug where I was getting weird crashes on older versions - my machine was using larger pid numbers.
->
-> IMHO we need to push the two UMID fixes - ba758cfce00a5977ccf019926f8379a96f5ac5f6 and e8a58591afbc7dc279a11454c08fce1281958eef to stable.
-
-Agreed. Feel free to notify stable folks. You are listed in the
-maintainers file. :-)
-
--- 
-Thanks,
-//richard
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+Ck9uIDExLzExLzIwMjAgMTU6MTQsIEFudG9uIEl2YW5vdiB3cm90ZToKPgo+IE9uIDExLzExLzIw
+MjAgMDc6MTMsIEFudG9uIEl2YW5vdiB3cm90ZToKPj4gT24gMTAvMTEvMjAyMCAyMTozOSwgUmlj
+aGFyZCBXZWluYmVyZ2VyIHdyb3RlOgo+Pj4gLS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0t
+LQo+Pj4+IFZvbjogImFudG9uIGl2YW5vdiIgPGFudG9uLml2YW5vdkBjYW1icmlkZ2VncmV5cy5j
+b20+Cj4+Pj4gQW46ICJyaWNoYXJkIiA8cmljaGFyZEBub2QuYXQ+Cj4+Pj4gQ0M6ICJsaW51eC11
+bSIgPGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmc+Cj4+Pj4gR2VzZW5kZXQ6IERpZW5zdGFn
+LCAxMC4gTm92ZW1iZXIgMjAyMCAyMjozMzo0OAo+Pj4+IEJldHJlZmY6IFJlOiBbUEFUQ0hdIHVt
+OiBhbGxvdyB1c2luZyBnbGliYyBzdHJpbmcgZnVuY3Rpb25zIGluc3RlYWQgb2YgZ2VuZXJpY3MK
+Pj4+Cj4+Pj4gT24gMTAvMTEvMjAyMCAyMToyOSwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgo+
+Pj4+PiAtLS0tLSBVcnNwcsO8bmdsaWNoZSBNYWlsIC0tLS0tCj4+Pj4+PiBWb246ICJhbnRvbiBp
+dmFub3YiIDxhbnRvbi5pdmFub3ZAY2FtYnJpZGdlZ3JleXMuY29tPgo+Pj4+Pj4+IE9uIHdoYXQg
+d29ya2xvYWQgZGlkIHlvdSBzZWUgc3VjaCBhIGh1Z2UgcGVyZm9ybWFuY2UgaW1wcm92ZW1lbnQ/
+Cj4+Pj4+PiBGaWxlIElPIH4gMSUgb3IgdGhlcmVhYm91dHMsIGlwZXJmIC0gMi00JS4KPj4+Pj4+
+Cj4+Pj4+Pj4gVGhlIGluLWtlcm5lbCB2YXJpYW50cyBvZiBtZW1jcHkgYW5kIHN1Y2ggYXJlIGFs
+cmVhZHkgd2VsbCBvcHRpbWl6ZWQuCj4+Pj4+PiBVTUwgaGFzIG5vIHN0cmluZy5oIGluIGFzbSB3
+aGljaCBtZWFucyBpdCBmYWxscyBiYWNrIHRvCj4+Pj4+PiBhc20tZ2VuZXJpYy9zdHJpbmcuaCB3
+aGljaCBpbiB0dXJuIHB1bGxzIGluIHRoZSBvbmVzIGZyb20gbGliL3N0cmluZy5jCj4+Pj4+Pgo+
+Pj4+Pj4gVGhlc2UgYXJlIG5vdCBvcHRpbWl6ZWQuCj4+Pj4+IEhtbW0sIEkgdGhpbmsgaXQgc2hv
+dWxkIHVzZSB0aGUgaGlnaGx5IG9wdGltaXplZCB2YXJpYW50cyBmcm9tIGFyY2gveDg2Lgo+Pj4+
+Cj4+Pj4gVGhhdCBpcyB0aGUgb3RoZXIgb3B0aW9uIC0gdG8gYnJpbmcgaW4gc3RyaW5nMzIuaCBh
+bmQgc3RyaW5nNjQuaCBmcm9tIHg4Ni4KPj4+Cj4+PiBZZXMsIEkgdGhvdWdodCB3ZSBkbyBzbyBh
+bHJlYWR5LiBJIGZlYXIgd2UgbGlzdCB0aGlzIGZlYXR1cmUgYWZ0ZXIgc29tZSBjb2RlCj4+PiBj
+bGVhbnVwIGEgbG9uZyB0aW1lIGFnby4KPj4+Cj4+PiBJJ20gaGFwcHkgd2l0aCBlaXRoZXIgb3B0
+aW9uLgo+Pgo+PiBJIHdpbGwgaGF2ZSBhIGxvb2sgaWYgd2UgbG9zdCBvdGhlciBvcHRpbWl6ZWQg
+Y29kZSBhcyBhIHJlc3VsdCBvZiB0aGUgYXNtIGNsZWFudXAgYW5kIHNvcnQgaXQgb3V0IGluIHRo
+ZSBuZXh0IHZlcnNpb24uCj4+Cj4+IFRoZSBhZHZhbnRhZ2Ugb2YgZ2xpYmMgaXMgdGhhdCBpdCBp
+cyBndWFyYW50ZWVkIHRvIGNob3NlIHRoZSBjb3JyZWN0IGZsYXZvciBmb3IgdGhlIENQVS4KPj4K
+Pj4gSSBkbyBub3QgdGhpbmsgdGhhdCB0aGlzIHRoZSBjYXNlIGZvciB0aGUga2VybmVsIG9uZXMs
+IGJlY2F1c2UgdGhleSByZWx5IG9uIGJvb3R0aW1lIENQVSBmZWF0dXJlcyBkZXRlY3Rpb24gd2hp
+Y2ggZG9lcyBub3QgaGFwcGVuIGluIHRoZSBjYXNlIG9mIFVNTC4gU28gaW4gb3JkZXIgdG8gdXNl
+IHRoZW0gcHJvcGVybHksIHdlIG1heSBoYXZlIHRvIGltcGxlbWVudCB0aGF0Lgo+Pgo+PiBPdGhl
+cndpc2UsIHRoZSBjb2RlIGluIHRoZSBnbGliYyB0cmVlIGFuZCBpbiB0aGUga2VybmVsIGlzIG5l
+YXJseSBpZGVudGljYWwuIEp1c3QgZ2xpYmMgd2FzIGVhc2llciBhcyBpdCBkaWQgbm90IHJlcXVp
+cmUgZmlndXJpbmcgb3V0IENQVSBkZXRlY3Rpb24gOikKPgo+IEkgZGlkIFhPUiwgdGhlIGRpZmZl
+cmVuY2Ugb24gaXRzIG93biBiZW5jaG1hcmtzIG9uIG15IG1hY2hpbmUgaXMgMTE3JS4KPgo+IFRo
+YXQgd2FzIHRoZSByZWxhdGl2ZWx5IGVhc3kgcGFydC4KPgo+IFdlIGhhdmUgaXNzdWVzIGFwcGx5
+aW5nIHRoZSBzYW1lIGFwcHJvYWNoIHRvIGNoZWNrc3VtLmgKPgo+IDEuIFRoZSB4ODYgY2hlY2tz
+dW1fMzIuaCBhbmQgY2hlY2tzdW1fNjQuaCBmaWxlcyBkbyBub3QgaWZkZWYgd2l0aCB0aGUgYXBw
+cm9wcmlhdGUgaWZkZWZzIGNzdW1fYW5kX2NvcHlfZnJvbV91c2VyKCkgYW5kIHRvX3VzZXIuIElu
+IG9yZGVyIHRvIHVzZSB0aGVzZSBpbnN0ZWFkIG9mIG91ciBvd24gY29waWVzLCB3ZSBuZWVkIHRv
+IGFkZCB0aGUgbWlzc2luZyBpZmRlZnMuCj4KPiAyLiBDaGVja3N1bSBuZWVkcyB0aWR5bmcgdXAu
+IEJvdGggMzIgYml0IGFuZCA2NCBiaXQgdmVyc2lvbnMgb2YgVU1MIGJyaW5nIGluIGFuIG9sZCBj
+b3B5IG9mIHRoZSAzMiBiaXQgeDg2IGNoZWNrc3VtIHdoaWNoIGhhcyBiZWVuIGR1cGxpY2F0ZWQg
+aW50byBhcmNoL3g4Ni91bS4gVGhlcmUgaXMgc29tZSA2NCBiaXQgY29kZSB3aGljaCB1bmxlc3Mg
+SSBhbSBtaXN0YWtlbiBpcyBuZXZlciBwdWxsZWQgaW4gYmVjYXVzZSBpdCBpcyBzdGlsbCBpZmRl
+ZmVkIG9uIENPTkZJR19YODZfMzIgaW5zdGVhZCBvZiBDT05GSUdfNjRCSVQKPgo+IHN0cmluZy5o
+IGxvb2tzIG1vcmUgc3RyYWlnaHQgZm9yd2FyZCwgSSB3aWxsIHByb2JhYmx5IGRvIGl0IG5leHQg
+bGVhdmluZyBja3N1bSBsYXN0LgoKSSBtYW5hZ2VkIHRvIHVudGFuZ2xlIGNoZWNrc3VtIHNvIGl0
+IDEwMCUgd29ya3MgdXNpbmcgeDg2ICJ1cHN0cmVhbSIgZmlsZXMgYW5kIEkgaGF2ZSBhIHdvcmtp
+bmcgdmVyc2lvbiwgYnV0IEkgd2lsbCBuZWVkIHNvbWUgdGVzdGluZyBmb3IgMzIvNjQgYml0IGNh
+c2VzIHRvIG1ha2Ugc3VyZSBpdCBpcyBPSy4KCkkgd2lsbCBwcm9iYWJseSBwdXNoIGl0IGJlZm9y
+ZSB0aGUgZW5kIG9mIHRoZSB3ZWVrLgoKQS4KCj4KPiBBLgo+Cj4KPj4KPj4+Cj4+PiBUaGFua3Ms
+Cj4+PiAvL3JpY2hhcmQKPj4+Cj4+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwo+Pj4gbGludXgtdW0gbWFpbGluZyBsaXN0Cj4+PiBsaW51eC11bUBsaXN0
+cy5pbmZyYWRlYWQub3JnCj4+PiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2xpbnV4LXVtCj4+Pgo+Pgo+PgotLSAKQW50b24gUi4gSXZhbm92CkNhbWJyaWRnZWdy
+ZXlzIExpbWl0ZWQuIFJlZ2lzdGVyZWQgaW4gRW5nbGFuZC4gQ29tcGFueSBOdW1iZXIgMTAyNzM2
+NjEKaHR0cHM6Ly93d3cuY2FtYnJpZGdlZ3JleXMuY29tLwoKCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11
+bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vbGludXgtdW0K
 
