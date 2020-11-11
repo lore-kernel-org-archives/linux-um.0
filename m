@@ -1,15 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kctDg-0007sD-IJ
- for linux-um@lists.infradead.org; Wed, 11 Nov 2020 16:43:41 +0000
-Message-ID: <f6678bb73cd5163521eef21a640cad90408b8f6e.camel@sipsolutions.net>
-Subject: Re: [PATCH] um: enable the use of optimized xor routines in UML
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Wed, 11 Nov 2020 17:43:34 +0100
-In-Reply-To: <20201111150114.23778-1-anton.ivanov@cambridgegreys.com>
-References: <20201111150114.23778-1-anton.ivanov@cambridgegreys.com>
+ id 1kcrcn-0002Nv-7Y
+ for linux-um@lists.infradead.org; Wed, 11 Nov 2020 15:01:30 +0000
+From: anton.ivanov@cambridgegreys.com
+Subject: [PATCH] um: enable the use of optimized xor routines in UML
+Date: Wed, 11 Nov 2020 15:01:14 +0000
+Message-Id: <20201111150114.23778-1-anton.ivanov@cambridgegreys.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -23,48 +21,219 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: anton.ivanov@cambridgegreys.com, linux-um@lists.infradead.org
-Cc: richard@nod.at
+To: linux-um@lists.infradead.org
+Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-On Wed, 2020-11-11 at 15:01 +0000, anton.ivanov@cambridgegreys.com
-wrote:
-> 
-> +++ b/arch/um/include/asm/xor.h
-> @@ -1,7 +1,22 @@
->  /* SPDX-License-Identifier: GPL-2.0 */
-> -#include <asm-generic/xor.h>
-> +#ifndef _ASM_UM_XOR_H
-> +#define _ASM_UM_XOR_H
-> +
-> +#ifdef CONFIG_64BIT
-> +#undef CONFIG_X86_32
-> +#else
-> +#define CONFIG_X86_32 "Y"
-> +#endif
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Should that be '1' instead of '"Y"' to match what gets into the kernel's
-autoconf.h, i.e. just '#define CONFIG_X86_32 1'?
+This patch enable the use of optimized xor routines from the x86
+tree as well as supply the necessary macros for them to be used in
+UML.
 
-Probably just used with #ifdef, but still, the string looks odd.
+The macros supply several "fake" flags and definitions to allow
+using the x86 files "as is".
 
-> +++ b/arch/um/kernel/um_arch.c
-> @@ -48,9 +48,16 @@ static void __init add_arg(char *arg)
->   */
->  struct cpuinfo_um boot_cpu_data = {
->  	.loops_per_jiffy	= 0,
-> -	.ipi_pipe		= { -1, -1 }
-> +	.ipi_pipe		= { -1, -1 },
-> +	.host_features		= 0
+This patchset implements only the flags needed for the optimized
+strings.h, xor.h and checksum.h implementations instead of
+trying to copy the entire x86 flags environment.
 
-Don't _really_ need to 0-initialize, but also doesn't hurt :)
-Might want to add a , at the end to make the next change easier.
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+---
+ arch/um/include/asm/processor-generic.h |  3 +++
+ arch/um/include/asm/xor-x86.h           |  1 +
+ arch/um/include/asm/xor.h               | 17 ++++++++++++-
+ arch/um/include/asm/xor_32.h            |  1 +
+ arch/um/include/asm/xor_64.h            |  1 +
+ arch/um/include/asm/xor_avx.h           |  1 +
+ arch/um/include/shared/os.h             |  1 +
+ arch/um/kernel/um_arch.c                | 20 ++++++++++++++--
+ arch/um/os-Linux/start_up.c             | 32 +++++++++++++++++++++++++
+ 9 files changed, 74 insertions(+), 3 deletions(-)
+ create mode 120000 arch/um/include/asm/xor-x86.h
+ create mode 120000 arch/um/include/asm/xor_32.h
+ create mode 120000 arch/um/include/asm/xor_64.h
+ create mode 120000 arch/um/include/asm/xor_avx.h
 
-> +const char* host_cpu_feature_names[] = {"mmx", "xmm", "avx", "rep_good", "erms"};
-> +#define MAX_UM_CPU_FEATURES 5
-
-Why the define rather than ARRAY_SIZE()?
-
-johannes
+diff --git a/arch/um/include/asm/processor-generic.h b/arch/um/include/asm/processor-generic.h
+index afd9b267cf81..b8bcddbb1898 100644
+--- a/arch/um/include/asm/processor-generic.h
++++ b/arch/um/include/asm/processor-generic.h
+@@ -90,6 +90,9 @@ extern void start_thread(struct pt_regs *regs, unsigned long entry,
+ struct cpuinfo_um {
+ 	unsigned long loops_per_jiffy;
+ 	int ipi_pipe[2];
++	/* There is only a small set of x86 features we are interested
++	 * in for now */
++	unsigned long host_features;
+ };
+ 
+ extern struct cpuinfo_um boot_cpu_data;
+diff --git a/arch/um/include/asm/xor-x86.h b/arch/um/include/asm/xor-x86.h
+new file mode 120000
+index 000000000000..beff7de6890d
+--- /dev/null
++++ b/arch/um/include/asm/xor-x86.h
+@@ -0,0 +1 @@
++../../../x86/include/asm/xor.h
+\ No newline at end of file
+diff --git a/arch/um/include/asm/xor.h b/arch/um/include/asm/xor.h
+index 36b33d62a35d..3c2c67698908 100644
+--- a/arch/um/include/asm/xor.h
++++ b/arch/um/include/asm/xor.h
+@@ -1,7 +1,22 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+-#include <asm-generic/xor.h>
++#ifndef _ASM_UM_XOR_H
++#define _ASM_UM_XOR_H
++
++#ifdef CONFIG_64BIT
++#undef CONFIG_X86_32
++#else
++#define CONFIG_X86_32 "Y"
++#endif
++
++#include <asm/cpufeature.h>
++#include <asm/xor-x86.h>
+ #include <linux/time-internal.h>
+ 
++#ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
++#undef XOR_SELECT_TEMPLATE
+ /* pick an arbitrary one - measuring isn't possible with inf-cpu */
+ #define XOR_SELECT_TEMPLATE(x)	\
+ 	(time_travel_mode == TT_MODE_INFCPU ? &xor_block_8regs : NULL)
++#endif
++
++#endif
+diff --git a/arch/um/include/asm/xor_32.h b/arch/um/include/asm/xor_32.h
+new file mode 120000
+index 000000000000..8a0894e996d7
+--- /dev/null
++++ b/arch/um/include/asm/xor_32.h
+@@ -0,0 +1 @@
++../../../x86/include/asm/xor_32.h
+\ No newline at end of file
+diff --git a/arch/um/include/asm/xor_64.h b/arch/um/include/asm/xor_64.h
+new file mode 120000
+index 000000000000..b8d346c516bf
+--- /dev/null
++++ b/arch/um/include/asm/xor_64.h
+@@ -0,0 +1 @@
++../../../x86/include/asm/xor_64.h
+\ No newline at end of file
+diff --git a/arch/um/include/asm/xor_avx.h b/arch/um/include/asm/xor_avx.h
+new file mode 120000
+index 000000000000..370ded122095
+--- /dev/null
++++ b/arch/um/include/asm/xor_avx.h
+@@ -0,0 +1 @@
++../../../x86/include/asm/xor_avx.h
+\ No newline at end of file
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index f467d28fc0b4..05eafa39ec97 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -187,6 +187,7 @@ int os_poll(unsigned int n, const int *fds);
+ extern void os_early_checks(void);
+ extern void os_check_bugs(void);
+ extern void check_host_supports_tls(int *supports_tls, int *tls_min);
++extern unsigned long check_host_cpu_features(const char **feature_names, int n); 
+ 
+ /* mem.c */
+ extern int create_mem_file(unsigned long long len);
+diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
+index 76b37297b7d4..f73db4fa1acc 100644
+--- a/arch/um/kernel/um_arch.c
++++ b/arch/um/kernel/um_arch.c
+@@ -48,9 +48,16 @@ static void __init add_arg(char *arg)
+  */
+ struct cpuinfo_um boot_cpu_data = {
+ 	.loops_per_jiffy	= 0,
+-	.ipi_pipe		= { -1, -1 }
++	.ipi_pipe		= { -1, -1 },
++	.host_features		= 0
+ };
+ 
++EXPORT_SYMBOL(boot_cpu_data);
++
++const char* host_cpu_feature_names[] = {"mmx", "xmm", "avx", "rep_good", "erms"};
++#define MAX_UM_CPU_FEATURES 5
++
++
+ union thread_union cpu0_irqstack
+ 	__section(".data..init_irqstack") =
+ 		{ .thread_info = INIT_THREAD_INFO(init_task) };
+@@ -67,9 +74,15 @@ static int show_cpuinfo(struct seq_file *m, void *v)
+ 	seq_printf(m, "model name\t: UML\n");
+ 	seq_printf(m, "mode\t\t: skas\n");
+ 	seq_printf(m, "host\t\t: %s\n", host_info);
+-	seq_printf(m, "bogomips\t: %lu.%02lu\n\n",
++	seq_printf(m, "bogomips\t: %lu.%02lu\n",
+ 		   loops_per_jiffy/(500000/HZ),
+ 		   (loops_per_jiffy/(5000/HZ)) % 100);
++	seq_printf(m, "flags\t\t:");
++	for (index = 0; index < MAX_UM_CPU_FEATURES; index++) {
++		if (boot_cpu_data.host_features & (1 << index))
++			seq_printf(m," %s", host_cpu_feature_names[index]);
++	}
++	seq_printf(m, "\n\n");
+ 
+ 	return 0;
+ }
+@@ -275,6 +288,9 @@ int __init linux_main(int argc, char **argv)
+ 	/* OS sanity checks that need to happen before the kernel runs */
+ 	os_early_checks();
+ 
++	boot_cpu_data.host_features =
++		check_host_cpu_features(host_cpu_feature_names, MAX_UM_CPU_FEATURES);
++
+ 	brk_start = (unsigned long) sbrk(0);
+ 
+ 	/*
+diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
+index f79dc338279e..be884ed86b30 100644
+--- a/arch/um/os-Linux/start_up.c
++++ b/arch/um/os-Linux/start_up.c
+@@ -321,6 +321,38 @@ static void __init check_coredump_limit(void)
+ 		os_info("%llu\n", (unsigned long long)lim.rlim_max);
+ }
+ 
++unsigned long  __init check_host_cpu_features(const char **feature_names, int n)
++{
++	FILE *cpuinfo;
++	char *line = NULL;
++	size_t len = 0;
++	int i;
++	bool done_parsing = false;
++	unsigned long result = 0;
++
++	cpuinfo = fopen("/proc/cpuinfo", "r");
++	if (cpuinfo == NULL) {
++		os_info("Failed to get host CPU features\n");
++	} else {
++		while ((getline(&line, &len, cpuinfo)) != -1) {
++			if (strstr(line, "flags")) {
++				for (i = 0; i < n; i++) {
++					if (strstr(line, feature_names[i])) {
++						result |= (1 << i);
++					}
++				}
++				done_parsing = true;
++			}
++			free(line);
++			line = NULL;
++			if (done_parsing)
++				break;
++		}
++		fclose(cpuinfo);
++	}
++	return result;
++}
++
+ void __init os_early_checks(void)
+ {
+ 	int pid;
+-- 
+2.20.1
 
 
 _______________________________________________
