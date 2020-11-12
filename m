@@ -1,15 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kdAUT-00025G-1A
- for linux-um@lists.infradead.org; Thu, 12 Nov 2020 11:10:10 +0000
-Date: Thu, 12 Nov 2020 12:09:57 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <1031007630.296676.1605179397893.JavaMail.zimbra@nod.at>
-In-Reply-To: <20201112103337.4862-1-anton.ivanov@cambridgegreys.com>
-References: <20201112103337.4862-1-anton.ivanov@cambridgegreys.com>
+ id 1kdAPg-0001cZ-RG
+ for linux-um@lists.infradead.org; Thu, 12 Nov 2020 11:05:13 +0000
 Subject: Re: [PATCH v2] um: enable the use of optimized xor routines in UML
+References: <20201112103337.4862-1-anton.ivanov@cambridgegreys.com>
+ <ad8a0e21d0785978f23ef42e4491c942f3a4e75f.camel@sipsolutions.net>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <2bbc8742-4fdb-321f-f23b-e75a229e44d6@cambridgegreys.com>
+Date: Thu, 12 Nov 2020 11:05:09 +0000
 MIME-Version: 1.0
+In-Reply-To: <ad8a0e21d0785978f23ef42e4491c942f3a4e75f.camel@sipsolutions.net>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,31 +21,53 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: anton ivanov <anton.ivanov@cambridgegreys.com>
-Cc: linux-um <linux-um@lists.infradead.org>
+To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
+Cc: richard@nod.at
 
-QW50b24sCgotLS0tLSBVcnNwcsO8bmdsaWNoZSBNYWlsIC0tLS0tCj4gVm9uOiAiYW50b24gaXZh
-bm92IiA8YW50b24uaXZhbm92QGNhbWJyaWRnZWdyZXlzLmNvbT4KPiBBbjogImxpbnV4LXVtIiA8
-bGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZz4KPiBDQzogInJpY2hhcmQiIDxyaWNoYXJkQG5v
-ZC5hdD4sICJhbnRvbiBpdmFub3YiIDxhbnRvbi5pdmFub3ZAY2FtYnJpZGdlZ3JleXMuY29tPgo+
-IEdlc2VuZGV0OiBEb25uZXJzdGFnLCAxMi4gTm92ZW1iZXIgMjAyMCAxMTozMzozNwo+IEJldHJl
-ZmY6IFtQQVRDSCB2Ml0gdW06IGVuYWJsZSB0aGUgdXNlIG9mIG9wdGltaXplZCB4b3Igcm91dGlu
-ZXMgaW4gVU1MCgo+IEZyb206IEFudG9uIEl2YW5vdiA8YW50b24uaXZhbm92QGNhbWJyaWRnZWdy
-ZXlzLmNvbT4KPiAKPiBUaGlzIHBhdGNoIGVuYWJsZSB0aGUgdXNlIG9mIG9wdGltaXplZCB4b3Ig
-cm91dGluZXMgZnJvbSB0aGUgeDg2Cj4gdHJlZSBhcyB3ZWxsIGFzIHN1cHBseSB0aGUgbmVjZXNz
-YXJ5IG1hY3JvcyBmb3IgdGhlbSB0byBiZSB1c2VkIGluCj4gVU1MLgo+IAo+IFRoZSBtYWNyb3Mg
-c3VwcGx5IHNldmVyYWwgImZha2UiIGZsYWdzIGFuZCBkZWZpbml0aW9ucyB0byBhbGxvdwo+IHVz
-aW5nIHRoZSB4ODYgZmlsZXMgImFzIGlzIi4KPiAKPiBUaGlzIHBhdGNoc2V0IGltcGxlbWVudHMg
-b25seSB0aGUgZmxhZ3MgbmVlZGVkIGZvciB0aGUgb3B0aW1pemVkCj4gc3RyaW5ncy5oLCB4b3Iu
-aCBhbmQgY2hlY2tzdW0uaCBpbXBsZW1lbnRhdGlvbnMgaW5zdGVhZCBvZgo+IHRyeWluZyB0byBj
-b3B5IHRoZSBlbnRpcmUgeDg2IGZsYWdzIGVudmlyb25tZW50LgoKU28sIHRoZSBwbGFuIGlzIHVz
-aW5nIHhvciBtZXRob2RzIGZyb20gYXJjaC94ODYgYW5kIHN0cmluZyBtZXRob2RzCmZyb20gZ2xp
-YmM/CgpUaGFua3MsCi8vcmljaGFyZAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJh
-ZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
-eC11bQo=
+
+On 12/11/2020 11:00, Johannes Berg wrote:
+> On Thu, 2020-11-12 at 10:33 +0000, anton.ivanov@cambridgegreys.com
+> wrote:
+>> +++ b/arch/um/include/asm/xor.h
+>> @@ -1,7 +1,22 @@
+>>   /* SPDX-License-Identifier: GPL-2.0 */
+>> -#include <asm-generic/xor.h>
+>> +#ifndef _ASM_UM_XOR_H
+>> +#define _ASM_UM_XOR_H
+>> +
+>> +#ifdef CONFIG_64BIT
+>> +#undef CONFIG_X86_32
+>> +#else
+>> +#define CONFIG_X86_32 "Y"
+>> +#endif
+> I thought you said it was some leftover? :)
+>
+>> +	for (index = 0; index < MAX_UM_CPU_FEATURES; index++) {
+>> +		if (boot_cpu_data.host_features & (1 << index))
+>> +			seq_printf(m, " %s", host_cpu_feature_names[index]);
+> Confused. Now I don't see MAX_UM_CPU_FEATURES or
+> host_cpu_feature_names[] anywhere now?
+
+
+Ooops... forgot to include a file. Broken patch.
+
+
+>
+> johannes
+>
+>
+-- 
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
