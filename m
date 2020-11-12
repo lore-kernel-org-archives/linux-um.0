@@ -1,11 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH RFC PKS/PMEM 05/58] kmap: Introduce k[un]map_thread
-In-Reply-To: <20201009195033.3208459-6-ira.weiny@intel.com>
-References: <20201009195033.3208459-1-ira.weiny@intel.com>
- <20201009195033.3208459-6-ira.weiny@intel.com>
-Date: Tue, 10 Nov 2020 02:13:56 +0100
-Message-ID: <87h7pyhv3f.fsf@nanos.tec.linutronix.de>
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kd9b3-0001IK-EC
+ for linux-um@lists.infradead.org; Thu, 12 Nov 2020 10:12:54 +0000
+From: anton.ivanov@cambridgegreys.com
+Subject: [PATCH v2] um: allow the use of glibc functions instead of builtins
+Date: Thu, 12 Nov 2020 10:12:44 +0000
+Message-Id: <20201112101244.2148-1-anton.ivanov@cambridgegreys.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -19,80 +21,213 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: ira.weiny@intel.com, Andrew Morton <akpm@linux-foundation.org>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>
-Cc: linux-aio@kvack.org, linux-efi@vger.kernel.org, kvm@vger.kernel.org, linux-doc@vger.kernel.org, linux-mmc@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>, dri-devel@lists.freedesktop.org, linux-mm@kvack.org, target-devel@vger.kernel.org, linux-mtd@lists.infradead.org, linux-kselftest@vger.kernel.org, samba-technical@lists.samba.org, ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com, devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org, linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org, linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org, x86@kernel.org, amd-gfx@lists.freedesktop.org, linux-afs@lists.infradead.org, cluster-devel@redhat.com, linux-cachefs@redhat.com, intel-wired-lan@lists.osuosl.org, xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>, linux-um@lists.infradead.org, intel-gfx@lists.freedesktop.org, ecryptfs@vger.kernel.org, linux-erofs@lists.ozlabs.org, reiserfs-devel@vger.kernel.org, linux-block@vger.kernel.org, linux-bcache@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>, io-uring@vger.kernel.org, linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
+To: linux-um@lists.infradead.org
+Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Ira,
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-On Fri, Oct 09 2020 at 12:49, ira weiny wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
->
-> To correctly support the semantics of kmap() with Kernel protection keys
-> (PKS), kmap() may be required to set the protections on multiple
-> processors (globally).  Enabling PKS globally can be very expensive
-> depending on the requested operation.  Furthermore, enabling a domain
-> globally reduces the protection afforded by PKS.
->
-> Most kmap() (Aprox 209 of 229) callers use the map within a single thread and
-> have no need for the protection domain to be enabled globally.  However, the
-> remaining callers do not follow this pattern and, as best I can tell, expect
-> the mapping to be 'global' and available to any thread who may access the
-> mapping.[1]
->
-> We don't anticipate global mappings to pmem, however in general there is a
-> danger in changing the semantics of kmap().  Effectively, this would cause an
-> unresolved page fault with little to no information about why the failure
-> occurred.
->
-> To resolve this a number of options were considered.
->
-> 1) Attempt to change all the thread local kmap() calls to kmap_atomic()[2]
-> 2) Introduce a flags parameter to kmap() to indicate if the mapping should be
->    global or not
-> 3) Change ~20 call sites to 'kmap_global()' to indicate that they require a
->    global enablement of the pages.
-> 4) Change ~209 call sites to 'kmap_thread()' to indicate that the mapping is to
->    be used within that thread of execution only
->
-> Option 1 is simply not feasible.  Option 2 would require all of the call sites
-> of kmap() to change.  Option 3 seems like a good minimal change but there is a
-> danger that new code may miss the semantic change of kmap() and not get the
-> behavior the developer intended.  Therefore, #4 was chosen.
+The UML kernel runs as a normal userspace process and can use most
+of glibc string.h functionality instead of built-ins. At present,
+when using built-ins, it is also limited to their unoptimized
+versions, because it does not have the runtime code patching present
+on x86 via apply_alternatives()
 
-There is Option #5:
+Allowing the use of glibc for memcpy, memmove, etc provides 1-5%
+boost on common file io as measured by cat and dd. The size of
+the linux executable is also reduced by ~10KBytes.
 
-Convert the thread local kmap() invocations to the proposed kmap_local()
-interface which is coming along [1].
+It is possible to turn this on/off via the kernel configuration.
 
-That solves a couple of issues:
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+---
+ arch/um/Kconfig              | 10 ++++++
+ arch/um/include/asm/string.h | 70 ++++++++++++++++++++++++++++++++++++
+ arch/um/os-Linux/user_syms.c | 27 +++++++++++++-
+ arch/x86/um/Makefile         |  6 ++--
+ 4 files changed, 110 insertions(+), 3 deletions(-)
+ create mode 100644 arch/um/include/asm/string.h
 
- 1) It relieves the current kmap_atomic() usage sites from the implict
-    pagefault/preempt disable semantics which apply even when
-    CONFIG_HIGHMEM is disabled. kmap_local() still can be invoked from
-    atomic context.
-
- 2) Due to #1 it allows to replace the conditional usage of kmap() and
-    kmap_atomic() for purely thread local mappings.
-
- 3) It puts the burden on the HIGHMEM inflicted systems
-
- 4) It is actually more efficient for most of the pure thread local use
-    cases on HIGHMEM inflicted systems because it avoids the overhead of
-    the global lock and the potential kmap slot exhaustion. A potential
-    preemption will be more expensive, but that's not really the case we
-    want to optimize for.
-
- 5) It solves the RT issue vs. kmap_atomic()
-
-So instead of creating yet another variety of kmap() which is just
-scratching the particular PKRS itch, can we please consolidate all of
-that on the wider reaching kmap_local() approach?
-
-Thanks,
-
-        tglx
-     
-[1] https://lore.kernel.org/lkml/20201103092712.714480842@linutronix.de/
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index 4b799fad8b48..ec2802ded9d1 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -189,6 +189,16 @@ config UML_TIME_TRAVEL_SUPPORT
+ 
+ 	  It is safe to say Y, but you probably don't need this.
+ 
++config UML_USE_BUILT_IN_STRINGS
++	bool
++	default N
++	prompt "Use kernel memcpy, memmove, etc"
++	help
++	  UML can use the kernel built in memcpy, memmove, etc functions
++	  or use the glibc equivalents instead.
++	  The glibc equivalents are slightly faster and will result in a
++	  slightly smaller executable when linking UML dynamically.
++
+ endmenu
+ 
+ source "arch/um/drivers/Kconfig"
+diff --git a/arch/um/include/asm/string.h b/arch/um/include/asm/string.h
+new file mode 100644
+index 000000000000..ac16890e0867
+--- /dev/null
++++ b/arch/um/include/asm/string.h
+@@ -0,0 +1,70 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++/*
++ * Copyright (C) 2020 Cambridge Greys Ltd.
++ * Copyright (C) 2020 Red Hat Inc.
++ */
++
++#ifndef __ASM_UM_STRING_H
++#define __ASM_UM_STRING_H
++
++#ifndef CONFIG_UML_USE_BUILT_IN_STRINGS
++
++#include <stddef.h>
++
++#define __HAVE_ARCH_STRCPY
++extern char *strcpy(char *dest, const char *src);
++#define __HAVE_ARCH_STRNCPY
++extern char *strncpy(char *dest, const char *src, size_t n);
++#define __HAVE_ARCH_STRCAT
++extern char *strcat(char *dest, const char *src);
++#define __HAVE_ARCH_STRNCAT
++extern char *strncat(char *dest, const char *src, size_t n);
++#define __HAVE_ARCH_STRCMP
++extern int strcmp(const char *s1, const char *s2);
++#define __HAVE_ARCH_STRNCMP
++extern int strncmp(const char *s1, const char *s2, size_t n);
++#define __HAVE_ARCH_STRCHR
++extern char *strchr(const char *s, int c);
++#define __HAVE_ARCH_STRLEN
++extern size_t strlen(const char *s);
++#define __HAVE_ARCH_MEMCPY
++extern void *memcpy(void *dest, const void *src, size_t n);
++#define __HAVE_ARCH_MEMMOVE
++extern void *memmove(void *dest, const void *src, size_t n);
++#define __HAVE_ARCH_MEMCHR
++extern void *memchr(const void *s, int c, size_t n);
++#define __HAVE_ARCH_STRNLEN
++extern size_t strnlen(const char *s, size_t maxlen);
++#define __HAVE_ARCH_STRSTR
++extern char *strstr(const char *haystack, const char *needle);
++#define __HAVE_ARCH_MEMSET
++extern void *memset(void *s, int c, size_t n);
++#define __HAVE_ARCH_STRNCASECMP
++extern int strncasecmp(const char *s1, const char *s2, size_t n);
++#define __HAVE_ARCH_STRCASECMP
++extern int strcasecmp(const char *s1, const char *s2);
++#define __HAVE_ARCH_STRCHRNUL
++extern char *strchrnul(const char *s, int c);
++#define __HAVE_ARCH_STRRCH
++extern char *strchrnul(const char *s, int c);
++#define __HAVE_ARCH_STRSPN
++extern size_t strspn(const char *s, const char *accept);
++#define __HAVE_ARCH_STRCSPN
++extern size_t strcspn(const char *s, const char *reject);
++#define __HAVE_ARCH_STRPBRK
++extern char *strpbrk(const char *s, const char *accept);
++#define __HAVE_ARCH_STRSEP
++extern char *strsep(char **stringp, const char *delim);
++#define __HAVE_ARCH_MEMCMP
++extern int memcmp(const void *s1, const void *s2, size_t n);
++#define __HAVE_ARCH_BCMP
++extern int bcmp(const void *s1, const void *s2, size_t n);
++
++#else
++
++#include <asm-generic/string.h>
++
++#endif
++
++#endif /* __ASM_UM_STRING_H */
+diff --git a/arch/um/os-Linux/user_syms.c b/arch/um/os-Linux/user_syms.c
+index 715594fe5719..9da980a89a9f 100644
+--- a/arch/um/os-Linux/user_syms.c
++++ b/arch/um/os-Linux/user_syms.c
+@@ -9,6 +9,7 @@
+  * add an EXPORT for the glibc one.
+  */
+ 
++#ifdef CONFIG_UML_USE_BUILT_IN_STRINGS
+ #undef strlen
+ #undef strstr
+ #undef memcpy
+@@ -17,6 +18,7 @@
+ extern size_t strlen(const char *);
+ extern void *memmove(void *, const void *, size_t);
+ extern void *memset(void *, int, size_t);
++#endif
+ extern int printf(const char *, ...);
+ 
+ /* If it's not defined, the export is included in lib/string.c.*/
+@@ -24,7 +26,7 @@ extern int printf(const char *, ...);
+ EXPORT_SYMBOL(strstr);
+ #endif
+ 
+-#ifndef __x86_64__
++#if !defined(__x86_64__) || !defined(CONFIG_UML_USE_BUILT_IN_STRINGS)
+ extern void *memcpy(void *, const void *, size_t);
+ EXPORT_SYMBOL(memcpy);
+ #endif
+@@ -33,6 +35,29 @@ EXPORT_SYMBOL(memmove);
+ EXPORT_SYMBOL(memset);
+ EXPORT_SYMBOL(printf);
+ 
++#ifndef CONFIG_UML_USE_BUILT_IN_STRINGS
++/* These all come from glibc */
++EXPORT_SYMBOL(strcpy);
++EXPORT_SYMBOL(strncpy);
++EXPORT_SYMBOL(strcat);
++EXPORT_SYMBOL(strncat);
++EXPORT_SYMBOL(strcmp);
++EXPORT_SYMBOL(strncmp);
++EXPORT_SYMBOL(strchr);
++EXPORT_SYMBOL(strlen);
++EXPORT_SYMBOL(memchr);
++EXPORT_SYMBOL(strnlen);
++EXPORT_SYMBOL(strncasecmp);
++EXPORT_SYMBOL(strcasecmp);
++EXPORT_SYMBOL(strchrnul);
++EXPORT_SYMBOL(strcspn);
++EXPORT_SYMBOL(strpbrk);
++EXPORT_SYMBOL(strsep);
++EXPORT_SYMBOL(memcmp);
++EXPORT_SYMBOL(bcmp);
++
++#endif
++
+ /* Here, instead, I can provide a fake prototype. Yes, someone cares: genksyms.
+  * However, the modules will use the CRC defined *here*, no matter if it is
+  * good; so the versions of these symbols will always match
+diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
+index 77f70b969d14..453ea23a9770 100644
+--- a/arch/x86/um/Makefile
++++ b/arch/x86/um/Makefile
+@@ -20,14 +20,16 @@ ifeq ($(CONFIG_X86_32),y)
+ obj-y += checksum_32.o syscalls_32.o
+ obj-$(CONFIG_ELF_CORE) += elfcore.o
+ 
+-subarch-y = ../lib/string_32.o ../lib/atomic64_32.o ../lib/atomic64_cx8_32.o
++subarch-y = ../lib/atomic64_32.o ../lib/atomic64_cx8_32.o
+ subarch-y += ../kernel/sys_ia32.o
++subarch-$(CONFIG_UML_USE_BUILT_IN_STRINGS) += ../lib/string_32.o
+ 
+ else
+ 
+ obj-y += syscalls_64.o vdso/
+ 
+-subarch-y = ../lib/csum-partial_64.o ../lib/memcpy_64.o ../entry/thunk_64.o
++subarch-y = ../lib/csum-partial_64.o ../entry/thunk_64.o
++subarch-$(CONFIG_UML_USE_BUILT_IN_STRINGS) += ../lib/memcpy_64.o
+ 
+ endif
+ 
+-- 
+2.20.1
 
 
 _______________________________________________
