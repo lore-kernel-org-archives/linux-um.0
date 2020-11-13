@@ -1,68 +1,35 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khHkx-00063M-AU
- for linux-um@lists.infradead.org; Mon, 23 Nov 2020 19:44:12 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH] um: sigio: return error from add_sigio_fd()
-Date: Mon, 23 Nov 2020 20:44:02 +0100
-Message-Id: <20201123204402.cd59c660941a.I05dae9d28604fcfeb7cbddd602b33b418b624fe5@changeid>
+Return-Path: <linux-sh-owner@vger.kernel.org>
+Message-Id: <20201113141732.680780121@linutronix.de>
+Date: Fri, 13 Nov 2020 15:02:08 +0100
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: [patch 01/19] parisc: Remove bogus __IRQ_STAT macro
+References: <20201113140207.499353218@linutronix.de>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8-bit
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Frederic Weisbecker <frederic@kernel.org>, Paul McKenney <paulmck@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Arnd Bergmann <arnd@arndb.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Russell King <linux@armlinux.org.uk>, Marc Zyngier <maz@kernel.org>, Valentin Schneider <valentin.schneider@arm.com>, linux-arm-kernel@lists.infradead.org, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-From: Johannes Berg <johannes.berg@intel.com>
+This is a leftover from a historical array based implementation and unused.
 
-If we run out of space, return an error instead of 0.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc: Helge Deller <deller@gmx.de>
+Cc: linux-parisc@vger.kernel.org
 ---
- arch/um/os-Linux/sigio.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/parisc/include/asm/hardirq.h |    1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/um/os-Linux/sigio.c b/arch/um/os-Linux/sigio.c
-index 75558080d0bf..f91fd16e9911 100644
---- a/arch/um/os-Linux/sigio.c
-+++ b/arch/um/os-Linux/sigio.c
-@@ -167,15 +167,17 @@ static void update_thread(void)
- int add_sigio_fd(int fd)
- {
- 	struct pollfd *p;
--	int err = 0, i, n;
-+	int err, i, n;
+--- a/arch/parisc/include/asm/hardirq.h
++++ b/arch/parisc/include/asm/hardirq.h
+@@ -32,7 +32,6 @@ typedef struct {
+ DECLARE_PER_CPU_SHARED_ALIGNED(irq_cpustat_t, irq_stat);
  
- 	sigio_lock();
- 	for (i = 0; i < all_sigio_fds.used; i++) {
- 		if (all_sigio_fds.poll[i].fd == fd)
- 			break;
- 	}
--	if (i == all_sigio_fds.used)
-+	if (i == all_sigio_fds.used) {
-+		err = -ENOSPC;
- 		goto out;
-+	}
- 
- 	p = &all_sigio_fds.poll[i];
- 
--- 
-2.26.2
+ #define __ARCH_IRQ_STAT
+-#define __IRQ_STAT(cpu, member) (irq_stat[cpu].member)
+ #define inc_irq_stat(member)	this_cpu_inc(irq_stat.member)
+ #define __inc_irq_stat(member)	__this_cpu_inc(irq_stat.member)
+ #define ack_bad_irq(irq) WARN(1, "unexpected IRQ trap at vector %02x\n", irq)
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
