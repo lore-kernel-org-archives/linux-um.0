@@ -1,63 +1,81 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Message-Id: <20201113141732.844232404@linutronix.de>
-Date: Fri, 13 Nov 2020 15:02:09 +0100
+Return-Path: <linux-sh-owner@vger.kernel.org>
+Message-Id: <20201113141734.442990268@linutronix.de>
+Date: Fri, 13 Nov 2020 15:02:22 +0100
 From: Thomas Gleixner <tglx@linutronix.de>
-Subject: [patch 02/19] sh: Get rid of nmi_count()
+Subject: [patch 15/19] tick/sched: Prevent false positive softirq pending
+ warnings on RT
 References: <20201113140207.499353218@linutronix.de>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8-bit
 To: LKML <linux-kernel@vger.kernel.org>
-Cc: Marc Zyngier <maz@kernel.org>, Rich Felker <dalias@libc.org>, Catalin Marinas <catalin.marinas@arm.com>, Paul McKenney <paulmck@kernel.org>, Arnd Bergmann <arnd@arndb.de>, linux-sh@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Frederic Weisbecker <frederic@kernel.org>, Valentin Schneider <valentin.schneider@arm.com>, Jeff Dike <jdike@addtoit.com>, Russell King <linux@armlinux.org.uk>, Yoshinori Sato <ysato@users.sourceforge.jp>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>, linux-um@lists.infradead.org, Will Deacon <will@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, linux-arm-kernel@lists.infradead.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Frederic Weisbecker <frederic@kernel.org>, Paul McKenney <paulmck@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Arnd Bergmann <arnd@arndb.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Russell King <linux@armlinux.org.uk>, Marc Zyngier <maz@kernel.org>, Valentin Schneider <valentin.schneider@arm.com>, linux-arm-kernel@lists.infradead.org, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-nmi_count() is a historical leftover and SH is the only user. Replace it
-with regular per cpu accessors.
+On RT a task which has soft interrupts disabled can block on a lock and
+schedule out to idle while soft interrupts are pending. This triggers the
+warning in the NOHZ idle code which complains about going idle with pending
+soft interrupts. But as the task is blocked soft interrupt processing is
+temporarily blocked as well which means that such a warning is a false
+positive.
+
+To prevent that check the per CPU state which indicates that a scheduled
+out task has soft interrupts disabled.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Rich Felker <dalias@libc.org>
-Cc: linux-sh@vger.kernel.org
 ---
- arch/sh/kernel/irq.c   |    2 +-
- arch/sh/kernel/traps.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ include/linux/bottom_half.h |    6 ++++++
+ kernel/softirq.c            |   15 +++++++++++++++
+ kernel/time/tick-sched.c    |    2 +-
+ 3 files changed, 22 insertions(+), 1 deletion(-)
 
---- a/arch/sh/kernel/irq.c
-+++ b/arch/sh/kernel/irq.c
-@@ -44,7 +44,7 @@ int arch_show_interrupts(struct seq_file
+--- a/include/linux/bottom_half.h
++++ b/include/linux/bottom_half.h
+@@ -32,4 +32,10 @@ static inline void local_bh_enable(void)
+ 	__local_bh_enable_ip(_THIS_IP_, SOFTIRQ_DISABLE_OFFSET);
+ }
  
- 	seq_printf(p, "%*s: ", prec, "NMI");
- 	for_each_online_cpu(j)
--		seq_printf(p, "%10u ", nmi_count(j));
-+		seq_printf(p, "%10u ", per_cpu(irq_stat.__nmi_count, j);
- 	seq_printf(p, "  Non-maskable interrupts\n");
++#ifdef CONFIG_PREEMPT_RT
++extern bool local_bh_blocked(void);
++#else
++static inline bool local_bh_blocked(void) { return false; }
++#endif
++
+ #endif /* _LINUX_BH_H */
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -138,6 +138,21 @@ static DEFINE_PER_CPU(struct softirq_ctr
+ 	.lock	= INIT_LOCAL_LOCK(softirq_ctrl.lock),
+ };
  
- 	seq_printf(p, "%*s: %10u\n", prec, "ERR", atomic_read(&irq_err_count));
---- a/arch/sh/kernel/traps.c
-+++ b/arch/sh/kernel/traps.c
-@@ -186,7 +186,7 @@ BUILD_TRAP_HANDLER(nmi)
- 	arch_ftrace_nmi_enter();
++/**
++ * local_bh_blocked() - Check for idle whether BH processing is blocked
++ *
++ * Returns false if the per CPU softirq::cnt is 0 otherwise true.
++ *
++ * This is invoked from the idle task to guard against false positive
++ * softirq pending warnings, which would happen when the task which holds
++ * softirq_ctrl::lock was the only running task on the CPU and blocks on
++ * some other lock.
++ */
++bool local_bh_blocked(void)
++{
++	return this_cpu_read(softirq_ctrl.cnt) != 0;
++}
++
+ void __local_bh_disable_ip(unsigned long ip, unsigned int cnt)
+ {
+ 	unsigned long flags;
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -925,7 +925,7 @@ static bool can_stop_idle_tick(int cpu,
+ 	if (unlikely(local_softirq_pending())) {
+ 		static int ratelimit;
  
- 	nmi_enter();
--	nmi_count(cpu)++;
-+	this_cpu_inc(irq_stat.__nmi_count);
- 
- 	switch (notify_die(DIE_NMI, "NMI", regs, 0, vec & 0xff, SIGINT)) {
- 	case NOTIFY_OK:
+-		if (ratelimit < 10 &&
++		if (ratelimit < 10 && !local_bh_blocked() &&
+ 		    (local_softirq_pending() & SOFTIRQ_STOP_IDLE_MASK)) {
+ 			pr_warn("NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #%02x!!!\n",
+ 				(unsigned int) local_softirq_pending());
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
