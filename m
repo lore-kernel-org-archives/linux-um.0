@@ -1,65 +1,131 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kfUrJ-0001cy-Bp
- for linux-um@lists.infradead.org; Wed, 18 Nov 2020 21:19:22 +0000
-From: Gabriel Krisman Bertazi <krisman@collabora.com>
-Subject: Re: [PATCH] um: ubd: Submit all data segments atomically
-References: <20201025044139.3019273-1-krisman@collabora.com>
- <7c1bf8c3-0e80-ab90-778c-c124fab3f747@cambridgegreys.com>
-Date: Wed, 18 Nov 2020 16:19:11 -0500
-In-Reply-To: <7c1bf8c3-0e80-ab90-778c-c124fab3f747@cambridgegreys.com> (Anton
- Ivanov's message of "Mon, 26 Oct 2020 09:25:51 +0000")
-Message-ID: <87pn4atlbk.fsf@collabora.com>
+Return-Path: <linux-sh-owner@vger.kernel.org>
+Message-Id: <20201113141734.207605126@linutronix.de>
+Date: Fri, 13 Nov 2020 15:02:20 +0100
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: [patch 13/19] softirq: Move various protections into inline helpers
+References: <20201113140207.499353218@linutronix.de>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Martyn Welch <martyn@collabora.com>, richard@nod.at, jdike@addtoit.com, linux-um@lists.infradead.org, kernel@collabora.com, Christopher Obbard <chris.obbard@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8-bit
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Frederic Weisbecker <frederic@kernel.org>, Paul McKenney <paulmck@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Arnd Bergmann <arnd@arndb.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Russell King <linux@armlinux.org.uk>, Marc Zyngier <maz@kernel.org>, Valentin Schneider <valentin.schneider@arm.com>, linux-arm-kernel@lists.infradead.org, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-Anton Ivanov <anton.ivanov@cambridgegreys.com> writes:
+To allow reuse of the bulk of softirq processing code for RT and to avoid
+#ifdeffery all over the place, split protections for various code sections
+out into inline helpers so the RT variant can just replace them in one go.
 
-> On 25/10/2020 04:41, Gabriel Krisman Bertazi wrote:
->> Internally, UBD treats each physical IO segment as a separate command to
->> be submitted in the execution pipe.  If the pipe returns a transient
->> error after a few segments have already been written, UBD will tell the
->> block layer to requeue the request, but there is no way to reclaim the
->> segments already submitted.  When a new attempt to dispatch the request
->> is done, those segments already submitted will get duplicated, causing
->> the WARN_ON below in the best case, and potentially data corruption.
->> In my system, running a UML instance with 2GB of RAM and a 50M UBD
->> disk,
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ kernel/softirq.c |   53 ++++++++++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 44 insertions(+), 9 deletions(-)
 
->>   [...]
->> ---[ end trace c6e7444e55386c0f ]---
->> Cc: Christopher Obbard <chris.obbard@collabora.com>
->> Reported-by: Martyn Welch <martyn@collabora.com>
->> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -204,6 +204,42 @@ void __local_bh_enable_ip(unsigned long
+ }
+ EXPORT_SYMBOL(__local_bh_enable_ip);
+ 
++static inline void local_bh_disable_irq_enter(void)
++{
++	local_bh_disable();
++}
++
++static inline void local_bh_enable_irq_enter(void)
++{
++	_local_bh_enable();
++}
++
++static inline void softirq_handle_begin(void)
++{
++	__local_bh_disable_ip(_RET_IP_, SOFTIRQ_OFFSET);
++}
++
++static inline void softirq_handle_end(void)
++{
++	__local_bh_enable(SOFTIRQ_OFFSET);
++	WARN_ON_ONCE(in_interrupt());
++}
++
++static inline void ksoftirqd_run_begin(void)
++{
++	local_irq_disable();
++}
++
++static inline void ksoftirqd_run_end(void)
++{
++	local_irq_enable();
++}
++
++static inline bool should_wake_ksoftirqd(void)
++{
++	return true;
++}
++
+ static inline void invoke_softirq(void)
+ {
+ 	if (ksoftirqd_running(local_softirq_pending()))
+@@ -317,7 +353,7 @@ asmlinkage __visible void __softirq_entr
+ 	pending = local_softirq_pending();
+ 	account_irq_enter_time(current);
+ 
+-	__local_bh_disable_ip(_RET_IP_, SOFTIRQ_OFFSET);
++	softirq_handle_begin();
+ 	in_hardirq = lockdep_softirq_start();
+ 
+ restart:
+@@ -367,8 +403,7 @@ asmlinkage __visible void __softirq_entr
+ 
+ 	lockdep_softirq_end(in_hardirq);
+ 	account_irq_exit_time(current);
+-	__local_bh_enable(SOFTIRQ_OFFSET);
+-	WARN_ON_ONCE(in_interrupt());
++	softirq_handle_end();
+ 	current_restore_flags(old_flags, PF_MEMALLOC);
+ }
+ 
+@@ -382,9 +417,9 @@ void irq_enter_rcu(void)
+ 		 * Prevent raise_softirq from needlessly waking up ksoftirqd
+ 		 * here, as softirq will be serviced on return from interrupt.
+ 		 */
+-		local_bh_disable();
++		local_bh_disable_irq_enter();
+ 		tick_irq_enter();
+-		_local_bh_enable();
++		local_bh_enable_irq_enter();
+ 	}
+ 	__irq_enter();
+ }
+@@ -467,7 +502,7 @@ inline void raise_softirq_irqoff(unsigne
+ 	 * Otherwise we wake up ksoftirqd to make sure we
+ 	 * schedule the softirq soon.
+ 	 */
+-	if (!in_interrupt())
++	if (!in_interrupt() && should_wake_ksoftirqd())
+ 		wakeup_softirqd();
+ }
+ 
+@@ -645,18 +680,18 @@ static int ksoftirqd_should_run(unsigned
+ 
+ static void run_ksoftirqd(unsigned int cpu)
+ {
+-	local_irq_disable();
++	ksoftirqd_run_begin();
+ 	if (local_softirq_pending()) {
+ 		/*
+ 		 * We can safely run softirq on inline stack, as we are not deep
+ 		 * in the task stack here.
+ 		 */
+ 		__do_softirq();
+-		local_irq_enable();
++		ksoftirqd_run_end();
+ 		cond_resched();
+ 		return;
+ 	}
+-	local_irq_enable();
++	ksoftirqd_run_end();
+ }
+ 
+ #ifdef CONFIG_HOTPLUG_CPU
 
-> Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-
-Hi,
-
-Is this queued somewhere?  I've been watching the linux-next branch of
-rw's tree.  Is that the right tree?
-
-Thanks,
-
--- 
-Gabriel Krisman Bertazi
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
