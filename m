@@ -1,43 +1,66 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Thu, 19 Nov 2020 13:18:01 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [patch 12/19] softirq: Add RT specific softirq accounting
-Message-ID: <20201119121801.GA20115@lothringen>
+Return-Path: <linux-sh-owner@vger.kernel.org>
+Message-Id: <20201113141734.096224353@linutronix.de>
+Date: Fri, 13 Nov 2020 15:02:19 +0100
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: [patch 12/19] softirq: Add RT specific softirq accounting
 References: <20201113140207.499353218@linutronix.de>
- <20201113141734.096224353@linutronix.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20201113141734.096224353@linutronix.de>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Rich Felker <dalias@libc.org>, Catalin Marinas <catalin.marinas@arm.com>, Paul McKenney <paulmck@kernel.org>, Arnd Bergmann <arnd@arndb.de>, linux-sh@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Valentin Schneider <valentin.schneider@arm.com>, Jeff Dike <jdike@addtoit.com>, LKML <linux-kernel@vger.kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, linux-parisc@vger.kernel.org, Marc Zyngier <maz@kernel.org>, Russell King <linux@armlinux.org.uk>, linux-um@lists.infradead.org, Will Deacon <will@kernel.org>, Helge Deller <deller@gmx.de>, linux-arm-kernel@lists.infradead.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Content-Type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8-bit
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Frederic Weisbecker <frederic@kernel.org>, Paul McKenney <paulmck@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Arnd Bergmann <arnd@arndb.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Russell King <linux@armlinux.org.uk>, Marc Zyngier <maz@kernel.org>, Valentin Schneider <valentin.schneider@arm.com>, linux-arm-kernel@lists.infradead.org, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-On Fri, Nov 13, 2020 at 03:02:19PM +0100, Thomas Gleixner wrote:
-> RT requires the softirq to be preemptible and uses a per CPU local lock to
-> protect BH disabled sections and softirq processing. Therefore RT cannot
-> use the preempt counter to keep track of BH disabled/serving.
-> 
-> Add a RT only counter to task struct and adjust the relevant macros in
-> preempt.h.
+RT requires the softirq to be preemptible and uses a per CPU local lock to
+protect BH disabled sections and softirq processing. Therefore RT cannot
+use the preempt counter to keep track of BH disabled/serving.
 
-You may want to describe a bit the reason for this per task counter.
-It's not intuitive at this stage.
+Add a RT only counter to task struct and adjust the relevant macros in
+preempt.h.
 
-Thanks.
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ include/linux/hardirq.h |    1 +
+ include/linux/preempt.h |    6 +++++-
+ include/linux/sched.h   |    3 +++
+ 3 files changed, 9 insertions(+), 1 deletion(-)
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+--- a/include/linux/hardirq.h
++++ b/include/linux/hardirq.h
+@@ -6,6 +6,7 @@
+ #include <linux/preempt.h>
+ #include <linux/lockdep.h>
+ #include <linux/ftrace_irq.h>
++#include <linux/sched.h>
+ #include <linux/vtime.h>
+ #include <asm/hardirq.h>
+ 
+--- a/include/linux/preempt.h
++++ b/include/linux/preempt.h
+@@ -79,7 +79,11 @@
+ 
+ #define nmi_count()	(preempt_count() & NMI_MASK)
+ #define hardirq_count()	(preempt_count() & HARDIRQ_MASK)
+-#define softirq_count()	(preempt_count() & SOFTIRQ_MASK)
++#ifdef CONFIG_PREEMPT_RT
++# define softirq_count()	(current->softirq_disable_cnt & SOFTIRQ_MASK)
++#else
++# define softirq_count()	(preempt_count() & SOFTIRQ_MASK)
++#endif
+ #define irq_count()	(nmi_count() | hardirq_count() | softirq_count())
+ 
+ /*
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1004,6 +1004,9 @@ struct task_struct {
+ 	int				softirq_context;
+ 	int				irq_config;
+ #endif
++#ifdef CONFIG_PREEMPT_RT
++	int				softirq_disable_cnt;
++#endif
+ 
+ #ifdef CONFIG_LOCKDEP
+ # define MAX_LOCK_DEPTH			48UL
+
 
