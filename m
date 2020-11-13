@@ -1,164 +1,63 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kgDyH-0008ED-D3
- for linux-um@lists.infradead.org; Fri, 20 Nov 2020 21:29:35 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH 4/4] um: allow PM with suspend-to-idle
-Date: Fri, 20 Nov 2020 22:29:21 +0100
-Message-Id: <20201120222625.7a475c89cdd4.Id4fe7fb6f0405eb24f3db3ae7a6276293f0ce6f7@changeid>
-In-Reply-To: <20201120212921.880781-1-johannes@sipsolutions.net>
-References: <20201120212921.880781-1-johannes@sipsolutions.net>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Message-Id: <20201113141733.737377332@linutronix.de>
+Date: Fri, 13 Nov 2020 15:02:16 +0100
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: [patch 09/19] irqstat: Move declaration into asm-generic/hardirq.h
+References: <20201113140207.499353218@linutronix.de>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8-bit
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Frederic Weisbecker <frederic@kernel.org>, Paul McKenney <paulmck@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Arnd Bergmann <arnd@arndb.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Russell King <linux@armlinux.org.uk>, Marc Zyngier <maz@kernel.org>, Valentin Schneider <valentin.schneider@arm.com>, linux-arm-kernel@lists.infradead.org, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-From: Johannes Berg <johannes.berg@intel.com>
+Move the declaration of the irq_cpustat per cpu variable to
+asm-generic/hardirq.h and remove the now empty linux/irq_cpustat.h header.
 
-In order to be able to experiment with suspend in UML,
-add the minimal work to be able to suspend (s2idle) an
-instance of UML, and be able to wake it back up from
-that state with the USR1 signal sent to the main UML
-process.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/um/Kconfig                    |  5 +++++
- arch/um/include/shared/kern_util.h |  2 ++
- arch/um/include/shared/os.h        |  1 +
- arch/um/kernel/um_arch.c           | 25 +++++++++++++++++++++++++
- arch/um/os-Linux/signal.c          | 14 +++++++++++++-
- 5 files changed, 46 insertions(+), 1 deletion(-)
+ include/asm-generic/hardirq.h |    3 ++-
+ include/linux/irq_cpustat.h   |   24 ------------------------
+ 2 files changed, 2 insertions(+), 25 deletions(-)
 
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index eb51fec75948..daee3bf35942 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -207,3 +207,8 @@ config UML_TIME_TRAVEL_SUPPORT
- endmenu
+--- a/include/asm-generic/hardirq.h
++++ b/include/asm-generic/hardirq.h
+@@ -12,7 +12,8 @@ typedef struct {
+ #endif
+ } ____cacheline_aligned irq_cpustat_t;
  
- source "arch/um/drivers/Kconfig"
+-#include <linux/irq_cpustat.h>	/* Standard mappings for irq_cpustat_t above */
++DECLARE_PER_CPU_ALIGNED(irq_cpustat_t, irq_stat);
 +
-+config ARCH_SUSPEND_POSSIBLE
-+	def_bool y
-+
-+source "kernel/power/Kconfig"
-diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
-index ccafb62e8cce..9c08e728a675 100644
---- a/arch/um/include/shared/kern_util.h
-+++ b/arch/um/include/shared/kern_util.h
-@@ -39,6 +39,8 @@ extern int is_syscall(unsigned long addr);
+ #include <linux/irq.h>
  
- extern void timer_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
- 
-+extern void uml_pm_wake(void);
-+
- extern int start_uml(void);
- extern void paging_init(void);
- 
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index c89ce642b0d3..5992157ab63f 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -241,6 +241,7 @@ extern int set_signals(int enable);
- extern int set_signals_trace(int enable);
- extern int os_is_signal_stack(void);
- extern void deliver_alarm(void);
-+extern void register_pm_wake_signal(void);
- 
- /* util.c */
- extern void stack_protections(unsigned long address);
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index 00141e70de56..15b6792134b6 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -13,6 +13,7 @@
- #include <linux/sched.h>
- #include <linux/sched/task.h>
- #include <linux/kmsg_dump.h>
-+#include <linux/suspend.h>
- 
- #include <asm/processor.h>
- #include <asm/sections.h>
-@@ -377,3 +378,27 @@ void *text_poke(void *addr, const void *opcode, size_t len)
- void text_poke_sync(void)
- {
- }
-+
-+#ifdef CONFIG_PM_SLEEP
-+void uml_pm_wake(void)
-+{
-+	pm_system_wakeup();
-+}
-+
-+static int init_pm_wake_signal(void)
-+{
-+	/*
-+	 * In external time-travel mode we can't use signals to wake up
-+	 * since that would mess with the scheduling. We'll have to do
-+	 * some additional work to support wakeup on virtio devices or
-+	 * similar, perhaps implementing a fake RTC controller that can
-+	 * trigger wakeup (and request the appropriate scheduling from
-+	 * the external scheduler when going to suspend.)
-+	 */
-+	if (time_travel_mode != TT_MODE_EXTERNAL)
-+		register_pm_wake_signal();
-+	return 0;
-+}
-+
-+late_initcall(init_pm_wake_signal);
-+#endif
-diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
-index b58bc68cbe64..0a2ea84033b4 100644
---- a/arch/um/os-Linux/signal.c
-+++ b/arch/um/os-Linux/signal.c
-@@ -136,6 +136,16 @@ void set_sigstack(void *sig_stack, int size)
- 		panic("enabling signal stack failed, errno = %d\n", errno);
- }
- 
-+static void sigusr1_handler(int sig, struct siginfo *unused_si, mcontext_t *mc)
-+{
-+	uml_pm_wake();
-+}
-+
-+void register_pm_wake_signal(void)
-+{
-+	set_handler(SIGUSR1);
-+}
-+
- static void (*handlers[_NSIG])(int sig, struct siginfo *si, mcontext_t *mc) = {
- 	[SIGSEGV] = sig_handler,
- 	[SIGBUS] = sig_handler,
-@@ -145,7 +155,9 @@ static void (*handlers[_NSIG])(int sig, struct siginfo *si, mcontext_t *mc) = {
- 
- 	[SIGIO] = sig_handler,
- 	[SIGWINCH] = sig_handler,
--	[SIGALRM] = timer_alarm_handler
-+	[SIGALRM] = timer_alarm_handler,
-+
-+	[SIGUSR1] = sigusr1_handler,
- };
- 
- static void hard_handler(int sig, siginfo_t *si, void *p)
--- 
-2.26.2
+ #ifndef ack_bad_irq
+--- a/include/linux/irq_cpustat.h
++++ /dev/null
+@@ -1,24 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef __irq_cpustat_h
+-#define __irq_cpustat_h
+-
+-/*
+- * Contains default mappings for irq_cpustat_t, used by almost every
+- * architecture.  Some arch (like s390) have per cpu hardware pages and
+- * they define their own mappings for irq_stat.
+- *
+- * Keith Owens <kaos@ocs.com.au> July 2000.
+- */
+-
+-
+-/*
+- * Simple wrappers reducing source bloat.  Define all irq_stat fields
+- * here, even ones that are arch dependent.  That way we get common
+- * definitions instead of differing sets for each arch.
+- */
+-
+-#ifndef __ARCH_IRQ_STAT
+-DECLARE_PER_CPU_ALIGNED(irq_cpustat_t, irq_stat);	/* defined in asm/hardirq.h */
+-#endif
+-
+-#endif	/* __irq_cpustat_h */
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
