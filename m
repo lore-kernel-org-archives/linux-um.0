@@ -1,45 +1,79 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Mon, 16 Nov 2020 13:17:48 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [patch 10/19] preempt: Cleanup the macro maze a bit
-Message-ID: <20201116121748.GD3121378@hirez.programming.kicks-ass.net>
+Return-Path: <linux-sh-owner@vger.kernel.org>
+Message-Id: <20201113141733.864469886@linutronix.de>
+Date: Fri, 13 Nov 2020 15:02:17 +0100
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: [patch 10/19] preempt: Cleanup the macro maze a bit
 References: <20201113140207.499353218@linutronix.de>
- <20201113141733.864469886@linutronix.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20201113141733.864469886@linutronix.de>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Marc Zyngier <maz@kernel.org>, Rich Felker <dalias@libc.org>, Catalin Marinas <catalin.marinas@arm.com>, Paul McKenney <paulmck@kernel.org>, Arnd Bergmann <arnd@arndb.de>, linux-sh@vger.kernel.org, Richard Weinberger <richard@nod.at>, Frederic Weisbecker <frederic@kernel.org>, Valentin Schneider <valentin.schneider@arm.com>, Jeff Dike <jdike@addtoit.com>, LKML <linux-kernel@vger.kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>, Russell King <linux@armlinux.org.uk>, linux-um@lists.infradead.org, Will Deacon <will@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, linux-arm-kernel@lists.infradead.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Content-Type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8-bit
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Frederic Weisbecker <frederic@kernel.org>, Paul McKenney <paulmck@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Arnd Bergmann <arnd@arndb.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Russell King <linux@armlinux.org.uk>, Marc Zyngier <maz@kernel.org>, Valentin Schneider <valentin.schneider@arm.com>, linux-arm-kernel@lists.infradead.org, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-On Fri, Nov 13, 2020 at 03:02:17PM +0100, Thomas Gleixner wrote:
+Make the macro maze consistent and prepare it for adding the RT variant for
+BH accounting.
 
-> -#define irq_count()	(preempt_count() & (HARDIRQ_MASK | SOFTIRQ_MASK \
-> -				 | NMI_MASK))
-> +#define irq_count()	(nmi_count() | hardirq_count() | softirq_count())
+ - Use nmi_count() for the NMI portion of preempt count
+ - Introduce in_hardirq() to make the naming consistent and non-ambiguos
+ - Use the macros to create combined checks (e.g. in_task()) so the
+   softirq representation for RT just falls into place.
+ - Update comments and move the deprecated macros aside
 
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ include/linux/preempt.h |   30 ++++++++++++++++--------------
+ 1 file changed, 16 insertions(+), 14 deletions(-)
 
-> +#define in_task()		(!(in_nmi() | in_hardirq() | in_serving_softirq()))
-> -#define in_task()		(!(preempt_count() & \
-> -				   (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_OFFSET)))
+--- a/include/linux/preempt.h
++++ b/include/linux/preempt.h
+@@ -77,31 +77,33 @@
+ /* preempt_count() and related functions, depends on PREEMPT_NEED_RESCHED */
+ #include <asm/preempt.h>
+ 
++#define nmi_count()	(preempt_count() & NMI_MASK)
+ #define hardirq_count()	(preempt_count() & HARDIRQ_MASK)
+ #define softirq_count()	(preempt_count() & SOFTIRQ_MASK)
+-#define irq_count()	(preempt_count() & (HARDIRQ_MASK | SOFTIRQ_MASK \
+-				 | NMI_MASK))
++#define irq_count()	(nmi_count() | hardirq_count() | softirq_count())
+ 
+ /*
+- * Are we doing bottom half or hardware interrupt processing?
++ * Macros to retrieve the current execution context:
+  *
+- * in_irq()       - We're in (hard) IRQ context
++ * in_nmi()		- We're in NMI context
++ * in_hardirq()		- We're in hard IRQ context
++ * in_serving_softirq()	- We're in softirq context
++ * in_task()		- We're in task context
++ */
++#define in_nmi()		(nmi_count())
++#define in_hardirq()		(hardirq_count())
++#define in_serving_softirq()	(softirq_count() & SOFTIRQ_OFFSET)
++#define in_task()		(!(in_nmi() | in_hardirq() | in_serving_softirq()))
++
++/*
++ * The following macros are deprecated and should not be used in new code:
++ * in_irq()       - Obsolete version of in_hardirq()
+  * in_softirq()   - We have BH disabled, or are processing softirqs
+  * in_interrupt() - We're in NMI,IRQ,SoftIRQ context or have BH disabled
+- * in_serving_softirq() - We're in softirq context
+- * in_nmi()       - We're in NMI context
+- * in_task()	  - We're in task context
+- *
+- * Note: due to the BH disabled confusion: in_softirq(),in_interrupt() really
+- *       should not be used in new code.
+  */
+ #define in_irq()		(hardirq_count())
+ #define in_softirq()		(softirq_count())
+ #define in_interrupt()		(irq_count())
+-#define in_serving_softirq()	(softirq_count() & SOFTIRQ_OFFSET)
+-#define in_nmi()		(preempt_count() & NMI_MASK)
+-#define in_task()		(!(preempt_count() & \
+-				   (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_OFFSET)))
+ 
+ /*
+  * The preempt_count offset after preempt_disable();
 
-How horrible is the code-gen? Because preempt_count() is
-raw_cpu_read_4() and at least some old compilers will refuse to CSE it
-(consider the this_cpu_read_stable mess).
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
