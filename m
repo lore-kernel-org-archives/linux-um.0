@@ -1,103 +1,36 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-io1-xd44.google.com ([2607:f8b0:4864:20::d44])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kahx3-0003vc-Qx
- for linux-um@lists.infradead.org; Thu, 05 Nov 2020 16:17:30 +0000
-Received: by mail-io1-xd44.google.com with SMTP id u19so2364178ion.3
- for <linux-um@lists.infradead.org>; Thu, 05 Nov 2020 08:17:29 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
- by smtp.gmail.com with ESMTPSA id o14sm1340644ilo.80.2020.11.05.08.17.26
- for <linux-um@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 05 Nov 2020 08:17:26 -0800 (PST)
-Subject: Re: [PATCH] um: add support for TIF_NOTIFY_SIGNAL
-From: Jens Axboe <axboe@kernel.dk>
-References: <d0b7533b-9c4c-369e-3a3d-6f98a18417d9@kernel.dk>
-Message-ID: <36a6bac0-ea19-3741-b742-36bee1c51b56@kernel.dk>
-Date: Thu, 5 Nov 2020 09:17:26 -0700
+Return-Path: <linux-sh-owner@vger.kernel.org>
+Message-Id: <20201113141734.558782917@linutronix.de>
+Date: Fri, 13 Nov 2020 15:02:23 +0100
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: [patch 16/19] rcu: Prevent false positive softirq warning on RT
+References: <20201113140207.499353218@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <d0b7533b-9c4c-369e-3a3d-6f98a18417d9@kernel.dk>
-Content-Language: en-US
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8-bit
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Frederic Weisbecker <frederic@kernel.org>, Paul McKenney <paulmck@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Arnd Bergmann <arnd@arndb.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Russell King <linux@armlinux.org.uk>, Marc Zyngier <maz@kernel.org>, Valentin Schneider <valentin.schneider@arm.com>, linux-arm-kernel@lists.infradead.org, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-Gentle nudge on this one.
+Soft interrupt disabled sections can legitimately be preempted or schedule
+out when blocking on a lock on RT enabled kernels so the RCU preempt check
+warning has to be disabled for RT kernels.
 
-On 10/29/20 10:23 AM, Jens Axboe wrote:
-> Wire up TIF_NOTIFY_SIGNAL handling for um.
-> 
-> Cc: linux-um@lists.infradead.org
-> Signed-off-by: Jens Axboe <axboe@kernel.dk>
-> ---
-> 
-> 5.11 has support queued up for TIF_NOTIFY_SIGNAL, see this posting
-> for details:
-> 
-> https://lore.kernel.org/io-uring/20201026203230.386348-1-axboe@kernel.dk/
-> 
-> As part of that work, I'm adding TIF_NOTIFY_SIGNAL support to all archs,
-> as that will enable a set of cleanups once all of them support it. I'm
-> happy carrying this patch if need be, or it can be funelled through the
-> arch tree. Let me know.
-> 
->  arch/um/include/asm/thread_info.h | 2 ++
->  arch/um/kernel/process.c          | 3 ++-
->  2 files changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/um/include/asm/thread_info.h b/arch/um/include/asm/thread_info.h
-> index 4c19ce4c49f1..3b1cb8b3b186 100644
-> --- a/arch/um/include/asm/thread_info.h
-> +++ b/arch/um/include/asm/thread_info.h
-> @@ -57,6 +57,7 @@ static inline struct thread_info *current_thread_info(void)
->  #define TIF_SYSCALL_TRACE	0	/* syscall trace active */
->  #define TIF_SIGPENDING		1	/* signal pending */
->  #define TIF_NEED_RESCHED	2	/* rescheduling necessary */
-> +#define TIF_NOTIFY_SIGNAL	3	/* signal notifications exist */
->  #define TIF_RESTART_BLOCK	4
->  #define TIF_MEMDIE		5	/* is terminating due to OOM killer */
->  #define TIF_SYSCALL_AUDIT	6
-> @@ -67,6 +68,7 @@ static inline struct thread_info *current_thread_info(void)
->  #define _TIF_SYSCALL_TRACE	(1 << TIF_SYSCALL_TRACE)
->  #define _TIF_SIGPENDING		(1 << TIF_SIGPENDING)
->  #define _TIF_NEED_RESCHED	(1 << TIF_NEED_RESCHED)
-> +#define _TIF_NOTIFY_SIGNAL	(1 << TIF_NOTIFY_SIGNAL)
->  #define _TIF_MEMDIE		(1 << TIF_MEMDIE)
->  #define _TIF_SYSCALL_AUDIT	(1 << TIF_SYSCALL_AUDIT)
->  #define _TIF_SECCOMP		(1 << TIF_SECCOMP)
-> diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-> index 3bed09538dd9..9e19da9e6198 100644
-> --- a/arch/um/kernel/process.c
-> +++ b/arch/um/kernel/process.c
-> @@ -99,7 +99,8 @@ void interrupt_end(void)
->  
->  	if (need_resched())
->  		schedule();
-> -	if (test_thread_flag(TIF_SIGPENDING))
-> +	if (test_thread_flag(TIF_SIGPENDING) ||
-> +	    test_thread_flag(TIF_NOTIFY_SIGNAL))
->  		do_signal(regs);
->  	if (test_thread_flag(TIF_NOTIFY_RESUME))
->  		tracehook_notify_resume(regs);
-> 
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ include/linux/rcupdate.h |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -319,7 +319,8 @@ static inline void rcu_preempt_sleep_che
+ #define rcu_sleep_check()						\
+ 	do {								\
+ 		rcu_preempt_sleep_check();				\
+-		RCU_LOCKDEP_WARN(lock_is_held(&rcu_bh_lock_map),	\
++		if (!IS_ENABLED(CONFIG_PREEMPT_RT))			\
++		    RCU_LOCKDEP_WARN(lock_is_held(&rcu_bh_lock_map),	\
+ 				 "Illegal context switch in RCU-bh read-side critical section"); \
+ 		RCU_LOCKDEP_WARN(lock_is_held(&rcu_sched_lock_map),	\
+ 				 "Illegal context switch in RCU-sched read-side critical section"); \
 
--- 
-Jens Axboe
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
