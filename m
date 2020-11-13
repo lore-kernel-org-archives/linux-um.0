@@ -1,120 +1,44 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khHwu-0006f2-FM
- for linux-um@lists.infradead.org; Mon, 23 Nov 2020 19:56:33 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH 5/7] um: irq: reduce irq_reg allocation
-Date: Mon, 23 Nov 2020 20:56:19 +0100
-Message-Id: <20201123205446.b6bc2722c4d1.I3351860a05d7ec403e2abc5337660c9d9726f095@changeid>
-In-Reply-To: <20201123195621.275470-1-johannes@sipsolutions.net>
-References: <20201123195621.275470-1-johannes@sipsolutions.net>
+Return-Path: <linux-sh-owner@vger.kernel.org>
+Message-Id: <20201113140207.499353218@linutronix.de>
+Date: Fri, 13 Nov 2020 15:02:07 +0100
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: [patch 00/19] softirq: Cleanups and RT awareness
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Frederic Weisbecker <frederic@kernel.org>, Paul McKenney <paulmck@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Arnd Bergmann <arnd@arndb.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Russell King <linux@armlinux.org.uk>, Marc Zyngier <maz@kernel.org>, Valentin Schneider <valentin.schneider@arm.com>, linux-arm-kernel@lists.infradead.org, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-From: Johannes Berg <johannes.berg@intel.com>
-
-We don't need an array of 4 entries to capture three and the
-name 'MAX_IRQ_TYPE' really gets confusing as well. Remove it
-and add a correct NUM_IRQ_TYPES, and use that correctly.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- arch/um/include/shared/irq_user.h |  2 +-
- arch/um/kernel/irq.c              | 12 ++++++------
- 2 files changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/arch/um/include/shared/irq_user.h b/arch/um/include/shared/irq_user.h
-index 2dd5fd7d9443..5e975a9e8354 100644
---- a/arch/um/include/shared/irq_user.h
-+++ b/arch/um/include/shared/irq_user.h
-@@ -12,7 +12,7 @@
- #define IRQ_READ  0
- #define IRQ_WRITE 1
- #define IRQ_NONE 2
--#define MAX_IRQ_TYPE (IRQ_NONE + 1)
-+#define NUM_IRQ_TYPES (IRQ_NONE + 1)
- 
- struct siginfo;
- extern void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
-diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-index 923a80c9808a..93eb742ecafe 100644
---- a/arch/um/kernel/irq.c
-+++ b/arch/um/kernel/irq.c
-@@ -43,7 +43,7 @@ struct irq_reg {
- struct irq_entry {
- 	struct irq_entry *next;
- 	int fd;
--	struct irq_reg *irq_array[MAX_IRQ_TYPE + 1];
-+	struct irq_reg *irq_array[NUM_IRQ_TYPES];
- };
- 
- static struct irq_entry *active_fds;
-@@ -101,7 +101,7 @@ void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
- 			 */
- 			irq_entry = (struct irq_entry *)
- 				os_epoll_get_data_pointer(i);
--			for (j = 0; j < MAX_IRQ_TYPE ; j++) {
-+			for (j = 0; j < NUM_IRQ_TYPES ; j++) {
- 				irq = irq_entry->irq_array[j];
- 				if (irq == NULL)
- 					continue;
-@@ -124,7 +124,7 @@ static int assign_epoll_events_to_irq(struct irq_entry *irq_entry)
- 	int events = 0;
- 	struct irq_reg *irq;
- 
--	for (i = 0; i < MAX_IRQ_TYPE ; i++) {
-+	for (i = 0; i < NUM_IRQ_TYPES ; i++) {
- 		irq = irq_entry->irq_array[i];
- 		if (irq != NULL)
- 			events = irq->events | events;
-@@ -172,7 +172,7 @@ static int activate_fd(int irq, int fd, int type, void *dev_id)
- 			goto out_unlock;
- 		}
- 		irq_entry->fd = fd;
--		for (i = 0; i < MAX_IRQ_TYPE; i++)
-+		for (i = 0; i < NUM_IRQ_TYPES; i++)
- 			irq_entry->irq_array[i] = NULL;
- 		irq_entry->next = active_fds;
- 		active_fds = irq_entry;
-@@ -244,7 +244,7 @@ static void garbage_collect_irq_entries(void)
- 	walk = active_fds;
- 	while (walk != NULL) {
- 		reap = true;
--		for (i = 0; i < MAX_IRQ_TYPE ; i++) {
-+		for (i = 0; i < NUM_IRQ_TYPES ; i++) {
- 			if (walk->irq_array[i] != NULL) {
- 				reap = false;
- 				break;
-@@ -301,7 +301,7 @@ static void do_free_by_irq_and_dev(
- 	int i;
- 	struct irq_reg *to_free;
- 
--	for (i = 0; i < MAX_IRQ_TYPE ; i++) {
-+	for (i = 0; i < NUM_IRQ_TYPES ; i++) {
- 		if (irq_entry->irq_array[i] != NULL) {
- 			if (
- 			((flags & IGNORE_IRQ) ||
--- 
-2.26.2
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+UlQgcnVucyBzb2Z0aXJxIHByb2Nlc3NpbmcgYWx3YXlzIGluIHRocmVhZCBjb250ZXh0IGFuZCBp
+dCByZXF1aXJlcyB0aGF0CmJvdGggdGhlIHNvZnRpcnEgZXhlY3V0aW9uIGFuZCB0aGUgQkggZGlz
+YWJsZWQgc2VjdGlvbnMgYXJlIHByZWVtcHRpYmxlLgoKVGhpcyBpcyBhY2hpZXZlZCBieSBzZXJp
+YWxpemF0aW9uIHRocm91Z2ggcGVyIENQVSBsb2NhbCBsb2NrcyBhbmQKc3Vic3RpdHV0aW5nIGEg
+ZmV3IHBhcnRzIG9mIHRoZSBleGlzdGluZyBzb2Z0aXJxIHByb2Nlc3NpbmcgY29kZSB3aXRoCmhl
+bHBlciBmdW5jdGlvbnMuCgpUaGUgZm9sbG93aW5nIHNlcmllcyBoYXMgdHdvIHBhcnRzOgoKICAg
+IDEpIENsZWFudXAgaXJxX2NwdXN0YXRzIGFuZCBjb25zb2xpZGF0aW9uIG9mIHRoZSBwcmVlbXB0
+IGNvdW50IG1hemUKICAgICAgIHNvIHNvZnRpcnFfY291bnQoKSBhbmQgcmVsYXRlZCBwYXJ0cyBj
+YW4gYmUgc3Vic3RpdHV0ZWQgZm9yIFJUCgogICAgMikgVGhlIGFjdHVhbCBjb3JlIGltcGxlbWVu
+dGF0aW9uIGluY2x1ZGluZyB0aGUgcmVxdWlyZWQgZml4dXBzIGZvcgogICAgICAgTk9IWiwgUkNV
+IGFuZCB0YXNrbGV0cy4KClRoZSBzZXJpZXMgaXMgYWxzbyBhdmFpbGFibGUgZnJvbSBnaXQ6Cgog
+IGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90Z2x4L2RldmVs
+LmdpdCBzb2Z0aXJxCgpUaGUgUlQgdmFyaWFudCBoYXMgc3VjZXNzZnVsbHkgYmVlbiB0ZXN0ZWQg
+aW4gdGhlIGN1cnJlbnQgNS4xMC1ydApwYXRjaGVzLiBGb3Igbm9uLVJUIGtlcm5lbHMgdGhlcmUg
+aXMgbm8gZnVuY3Rpb25hbCBjaGFuZ2UuCgpUaGFua3MsCgoJdGdseAotLS0KIGIvYXJjaC9hcm0v
+aW5jbHVkZS9hc20vaGFyZGlycS5oICAgIHwgICAxMSAKIGIvYXJjaC9hcm0vaW5jbHVkZS9hc20v
+aXJxLmggICAgICAgIHwgICAgMiAKIGIvYXJjaC9hcm02NC9pbmNsdWRlL2FzbS9oYXJkaXJxLmgg
+IHwgICAgNyAKIGIvYXJjaC9wYXJpc2MvaW5jbHVkZS9hc20vaGFyZGlycS5oIHwgICAgMSAKIGIv
+YXJjaC9zaC9pbmNsdWRlL2FzbS9oYXJkaXJxLmggICAgIHwgICAxNCAtCiBiL2FyY2gvc2gva2Vy
+bmVsL2lycS5jICAgICAgICAgICAgICB8ICAgIDIgCiBiL2FyY2gvc2gva2VybmVsL3RyYXBzLmMg
+ICAgICAgICAgICB8ICAgIDIgCiBiL2FyY2gvdW0vaW5jbHVkZS9hc20vaGFyZGlycS5oICAgICB8
+ICAgMTcgLQogYi9pbmNsdWRlL2FzbS1nZW5lcmljL2hhcmRpcnEuaCAgICAgfCAgICA2IAogYi9p
+bmNsdWRlL2xpbnV4L2JvdHRvbV9oYWxmLmggICAgICAgfCAgICA4IAogYi9pbmNsdWRlL2xpbnV4
+L2hhcmRpcnEuaCAgICAgICAgICAgfCAgICAxIAogYi9pbmNsdWRlL2xpbnV4L2ludGVycnVwdC5o
+ICAgICAgICAgfCAgIDEzIC0KIGIvaW5jbHVkZS9saW51eC9wcmVlbXB0LmggICAgICAgICAgIHwg
+ICAzNiArLS0KIGIvaW5jbHVkZS9saW51eC9yY3VwZGF0ZS5oICAgICAgICAgIHwgICAgMyAKIGIv
+aW5jbHVkZS9saW51eC9zY2hlZC5oICAgICAgICAgICAgIHwgICAgMyAKIGIva2VybmVsL3NvZnRp
+cnEuYyAgICAgICAgICAgICAgICAgIHwgIDQxMiArKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KystLS0tLS0KIGIva2VybmVsL3RpbWUvdGljay1zY2hlZC5jICAgICAgICAgIHwgICAgMiAKIGlu
+Y2x1ZGUvbGludXgvaXJxX2NwdXN0YXQuaCAgICAgICAgIHwgICAyOCAtLQogMTggZmlsZXMgY2hh
+bmdlZCwgNDA1IGluc2VydGlvbnMoKyksIDE2MyBkZWxldGlvbnMoLSkKCgoKCgoK
 
