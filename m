@@ -1,95 +1,37 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kji60-0005GW-Sb
- for linux-um@lists.infradead.org; Mon, 30 Nov 2020 12:15:59 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v6 2/5] um: time: fix read_persistent_clock64() in time-travel
-Date: Mon, 30 Nov 2020 13:15:47 +0100
-Message-Id: <20201130131520.fab1b91849fd.I3f5effe88fe040ff9262de115dd71bfd65d2b0a2@changeid>
-In-Reply-To: <20201130121550.173513-1-johannes@sipsolutions.net>
-References: <20201130121550.173513-1-johannes@sipsolutions.net>
+Return-Path: <linux-sh-owner@vger.kernel.org>
+Message-Id: <20201113141734.788853107@linutronix.de>
+Date: Fri, 13 Nov 2020 15:02:25 +0100
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: [patch 18/19] tasklets: Use static inlines for stub implementations
+References: <20201113140207.499353218@linutronix.de>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8-bit
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Frederic Weisbecker <frederic@kernel.org>, Paul McKenney <paulmck@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Arnd Bergmann <arnd@arndb.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Russell King <linux@armlinux.org.uk>, Marc Zyngier <maz@kernel.org>, Valentin Schneider <valentin.schneider@arm.com>, linux-arm-kernel@lists.infradead.org, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-From: Johannes Berg <johannes.berg@intel.com>
+Inlines exist for a reason.
 
-In time-travel mode, we've relied on read_persistent_clock64()
-being called only once at system startup, but this is both the
-right thing to call from the pseudo-RTC, and also gets called
-by the timekeeping core during suspend/resume.
-
-Thus, fix this to always fall make use of the time_travel_time
-in any time-travel mode, initializing time_travel_start at boot
-to the right value depending on the time-travel mode.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/um/kernel/time.c | 23 ++++++++++++++++++++---
- 1 file changed, 20 insertions(+), 3 deletions(-)
+ include/linux/interrupt.h |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
-index 8e8eb8ba04a4..80d33735cfd2 100644
---- a/arch/um/kernel/time.c
-+++ b/arch/um/kernel/time.c
-@@ -676,10 +676,8 @@ void read_persistent_clock64(struct timespec64 *ts)
- {
- 	long long nsecs;
- 
--	if (time_travel_start_set)
-+	if (time_travel_mode != TT_MODE_OFF)
- 		nsecs = time_travel_start + time_travel_time;
--	else if (time_travel_mode == TT_MODE_EXTERNAL)
--		nsecs = time_travel_ext_req(UM_TIMETRAVEL_GET_TOD, -1);
- 	else
- 		nsecs = os_persistent_clock_emulation();
- 
-@@ -689,6 +687,25 @@ void read_persistent_clock64(struct timespec64 *ts)
- 
- void __init time_init(void)
- {
-+#ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
-+	switch (time_travel_mode) {
-+	case TT_MODE_EXTERNAL:
-+		time_travel_start = time_travel_ext_req(UM_TIMETRAVEL_GET_TOD, -1);
-+		/* controller gave us the *current* time, so adjust by that */
-+		time_travel_ext_get_time();
-+		time_travel_start -= time_travel_time;
-+		break;
-+	case TT_MODE_INFCPU:
-+	case TT_MODE_BASIC:
-+		if (!time_travel_start_set)
-+			time_travel_start = os_persistent_clock_emulation();
-+		break;
-+	case TT_MODE_OFF:
-+		/* we just read the host clock with os_persistent_clock_emulation() */
-+		break;
-+	}
-+#endif
-+
- 	timer_set_signal_handler();
- 	late_time_init = um_timer_setup;
+--- a/include/linux/interrupt.h
++++ b/include/linux/interrupt.h
+@@ -672,9 +672,9 @@ static inline void tasklet_unlock_wait(s
+ 		cpu_relax();
  }
--- 
-2.26.2
+ #else
+-#define tasklet_trylock(t) 1
+-#define tasklet_unlock_wait(t) do { } while (0)
+-#define tasklet_unlock(t) do { } while (0)
++static inline int tasklet_trylock(struct tasklet_struct *t) { return 1; }
++static inline void tasklet_unlock(struct tasklet_struct *t) { }
++static inline void tasklet_unlock_wait(struct tasklet_struct *t) { }
+ #endif
+ 
+ extern void __tasklet_schedule(struct tasklet_struct *t);
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
