@@ -2,12 +2,12 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab7.miniserver.com ([37.128.132.42]
  helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kcRZ3-000219-EW
- for linux-um@lists.infradead.org; Tue, 10 Nov 2020 11:11:54 +0000
+ id 1kdWdp-0004yt-EZ
+ for linux-um@lists.infradead.org; Fri, 13 Nov 2020 10:49:18 +0000
 From: anton.ivanov@cambridgegreys.com
-Subject: [PATCH] um: Fetch registers only for signals which need them
-Date: Tue, 10 Nov 2020 11:11:37 +0000
-Message-Id: <20201110111137.16117-1-anton.ivanov@cambridgegreys.com>
+Subject: [PATCH v2] um: "borrow" atomics from x86 architecture
+Date: Fri, 13 Nov 2020 10:49:11 +0000
+Message-Id: <20201113104911.20508-1-anton.ivanov@cambridgegreys.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -26,37 +26,58 @@ Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
 From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-UML userspace fetches siginfo and passes it to signal handlers
-in UML. This is needed only for some of the signals, because
-key handlers like SIGIO make no use of this variable.
+This moves UML on 64 bit from generic atomics to their x86
+equivalents.
+
+Generic atomics bracket most operations by interrupts off/interrupts
+on. This is quite expensive on UML - it translates to changing
+the signal mask and rerunning the signal loop every time.
 
 Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 ---
- arch/um/os-Linux/skas/process.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ arch/um/include/asm/atomic-x86.h  |  1 +
+ arch/um/include/asm/atomic.h      | 13 +++++++++++++
+ arch/um/include/asm/atomic64_64.h |  1 +
+ 3 files changed, 15 insertions(+)
+ create mode 120000 arch/um/include/asm/atomic-x86.h
+ create mode 100644 arch/um/include/asm/atomic.h
+ create mode 120000 arch/um/include/asm/atomic64_64.h
 
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 4fb877b99dde..8123b1c6b1b5 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -400,7 +400,16 @@ void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
- 		if (WIFSTOPPED(status)) {
- 			int sig = WSTOPSIG(status);
- 
--			ptrace(PTRACE_GETSIGINFO, pid, 0, (struct siginfo *)&si);
-+			switch (sig) {
-+			case SIGSEGV:
-+			case SIGTRAP:
-+			case SIGILL:
-+			case SIGBUS:
-+			case SIGFPE:
-+			case SIGWINCH:
-+				ptrace(PTRACE_GETSIGINFO, pid, 0, (struct siginfo *)&si);
-+				break;
-+			}
- 
- 			switch (sig) {
- 			case SIGSEGV:
+diff --git a/arch/um/include/asm/atomic-x86.h b/arch/um/include/asm/atomic-x86.h
+new file mode 120000
+index 000000000000..e71a389e112d
+--- /dev/null
++++ b/arch/um/include/asm/atomic-x86.h
+@@ -0,0 +1 @@
++../../../x86/include/asm/atomic.h
+\ No newline at end of file
+diff --git a/arch/um/include/asm/atomic.h b/arch/um/include/asm/atomic.h
+new file mode 100644
+index 000000000000..77b4146c2b36
+--- /dev/null
++++ b/arch/um/include/asm/atomic.h
+@@ -0,0 +1,13 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_UM_ATOMIC_H
++#define _ASM_UM_ATOMIC_H
++
++#ifdef CONFIG_64BIT
++#undef CONFIG_X86_32
++#include <asm/atomic-x86.h>
++#else
++#include <asm-generic/atomic.h>
++#endif
++
++
++#endif
+diff --git a/arch/um/include/asm/atomic64_64.h b/arch/um/include/asm/atomic64_64.h
+new file mode 120000
+index 000000000000..f817a1478603
+--- /dev/null
++++ b/arch/um/include/asm/atomic64_64.h
+@@ -0,0 +1 @@
++../../../x86/include/asm/atomic64_64.h
+\ No newline at end of file
 -- 
 2.20.1
 
