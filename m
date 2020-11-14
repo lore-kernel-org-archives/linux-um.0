@@ -1,131 +1,45 @@
-Return-Path: <linux-sh-owner@vger.kernel.org>
-Message-Id: <20201113141734.207605126@linutronix.de>
-Date: Fri, 13 Nov 2020 15:02:20 +0100
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: [patch 13/19] softirq: Move various protections into inline helpers
-References: <20201113140207.499353218@linutronix.de>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail.kernel.org ([198.145.29.99])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1ke2Vr-00081Z-Mo
+ for linux-um@lists.infradead.org; Sat, 14 Nov 2020 20:51:12 +0000
+Subject: Re: [GIT PULL] um fixes for 5.10-rc4
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <588878911.301948.1605306004530.JavaMail.zimbra@nod.at>
+References: <588878911.301948.1605306004530.JavaMail.zimbra@nod.at>
+Message-Id: <160538707005.24878.6761595780198110576.pr-tracker-bot@kernel.org>
+Date: Sat, 14 Nov 2020 20:51:10 +0000
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Frederic Weisbecker <frederic@kernel.org>, Paul McKenney <paulmck@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Arnd Bergmann <arnd@arndb.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Russell King <linux@armlinux.org.uk>, Marc Zyngier <maz@kernel.org>, Valentin Schneider <valentin.schneider@arm.com>, linux-arm-kernel@lists.infradead.org, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-um <linux-um@lists.infradead.org>, torvalds <torvalds@linux-foundation.org>, linux-kernel <linux-kernel@vger.kernel.org>
 
-To allow reuse of the bulk of softirq processing code for RT and to avoid
-#ifdeffery all over the place, split protections for various code sections
-out into inline helpers so the RT variant can just replace them in one go.
+The pull request you sent on Fri, 13 Nov 2020 23:20:04 +0100 (CET):
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- kernel/softirq.c |   53 ++++++++++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 44 insertions(+), 9 deletions(-)
+> git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.10-rc4
 
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -204,6 +204,42 @@ void __local_bh_enable_ip(unsigned long
- }
- EXPORT_SYMBOL(__local_bh_enable_ip);
- 
-+static inline void local_bh_disable_irq_enter(void)
-+{
-+	local_bh_disable();
-+}
-+
-+static inline void local_bh_enable_irq_enter(void)
-+{
-+	_local_bh_enable();
-+}
-+
-+static inline void softirq_handle_begin(void)
-+{
-+	__local_bh_disable_ip(_RET_IP_, SOFTIRQ_OFFSET);
-+}
-+
-+static inline void softirq_handle_end(void)
-+{
-+	__local_bh_enable(SOFTIRQ_OFFSET);
-+	WARN_ON_ONCE(in_interrupt());
-+}
-+
-+static inline void ksoftirqd_run_begin(void)
-+{
-+	local_irq_disable();
-+}
-+
-+static inline void ksoftirqd_run_end(void)
-+{
-+	local_irq_enable();
-+}
-+
-+static inline bool should_wake_ksoftirqd(void)
-+{
-+	return true;
-+}
-+
- static inline void invoke_softirq(void)
- {
- 	if (ksoftirqd_running(local_softirq_pending()))
-@@ -317,7 +353,7 @@ asmlinkage __visible void __softirq_entr
- 	pending = local_softirq_pending();
- 	account_irq_enter_time(current);
- 
--	__local_bh_disable_ip(_RET_IP_, SOFTIRQ_OFFSET);
-+	softirq_handle_begin();
- 	in_hardirq = lockdep_softirq_start();
- 
- restart:
-@@ -367,8 +403,7 @@ asmlinkage __visible void __softirq_entr
- 
- 	lockdep_softirq_end(in_hardirq);
- 	account_irq_exit_time(current);
--	__local_bh_enable(SOFTIRQ_OFFSET);
--	WARN_ON_ONCE(in_interrupt());
-+	softirq_handle_end();
- 	current_restore_flags(old_flags, PF_MEMALLOC);
- }
- 
-@@ -382,9 +417,9 @@ void irq_enter_rcu(void)
- 		 * Prevent raise_softirq from needlessly waking up ksoftirqd
- 		 * here, as softirq will be serviced on return from interrupt.
- 		 */
--		local_bh_disable();
-+		local_bh_disable_irq_enter();
- 		tick_irq_enter();
--		_local_bh_enable();
-+		local_bh_enable_irq_enter();
- 	}
- 	__irq_enter();
- }
-@@ -467,7 +502,7 @@ inline void raise_softirq_irqoff(unsigne
- 	 * Otherwise we wake up ksoftirqd to make sure we
- 	 * schedule the softirq soon.
- 	 */
--	if (!in_interrupt())
-+	if (!in_interrupt() && should_wake_ksoftirqd())
- 		wakeup_softirqd();
- }
- 
-@@ -645,18 +680,18 @@ static int ksoftirqd_should_run(unsigned
- 
- static void run_ksoftirqd(unsigned int cpu)
- {
--	local_irq_disable();
-+	ksoftirqd_run_begin();
- 	if (local_softirq_pending()) {
- 		/*
- 		 * We can safely run softirq on inline stack, as we are not deep
- 		 * in the task stack here.
- 		 */
- 		__do_softirq();
--		local_irq_enable();
-+		ksoftirqd_run_end();
- 		cond_resched();
- 		return;
- 	}
--	local_irq_enable();
-+	ksoftirqd_run_end();
- }
- 
- #ifdef CONFIG_HOTPLUG_CPU
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/4aea779d35120d5062647d288817678decb28c10
 
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
