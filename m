@@ -1,23 +1,31 @@
-Return-Path: <linux-sh-owner@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date: Mon, 16 Nov 2020 10:51:00 +0000
-From: Marc Zyngier <maz@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Date: Mon, 16 Nov 2020 10:01:10 +0000
+From: Will Deacon <will@kernel.org>
 Subject: Re: [patch 06/19] arm64: irqstat: Get rid of duplicated declaration
-In-Reply-To: <20201113141733.392015387@linutronix.de>
+Message-ID: <20201116100110.GA29459@willie-the-truck>
 References: <20201113140207.499353218@linutronix.de>
  <20201113141733.392015387@linutronix.de>
-Message-ID: <813afa3a895b0da8974fac72832a03b3@kernel.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20201113141733.392015387@linutronix.de>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: Thomas Gleixner <tglx@linutronix.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, Frederic Weisbecker <frederic@kernel.org>, Paul McKenney <paulmck@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Arnd Bergmann <arnd@arndb.de>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Russell King <linux@armlinux.org.uk>, Valentin Schneider <valentin.schneider@arm.com>
-List-ID: <linux-um.lists.infradead.org>
+Cc: Rich Felker <dalias@libc.org>, Paul McKenney <paulmck@kernel.org>, Arnd Bergmann <arnd@arndb.de>, linux-sh@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Catalin Marinas <catalin.marinas@arm.com>, Frederic Weisbecker <frederic@kernel.org>, Valentin Schneider <valentin.schneider@arm.com>, Jeff Dike <jdike@addtoit.com>, LKML <linux-kernel@vger.kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Richard Weinberger <richard@nod.at>, linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>, Marc Zyngier <maz@kernel.org>, Russell King <linux@armlinux.org.uk>, linux-um@lists.infradead.org, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, linux-arm-kernel@lists.infradead.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-On 2020-11-13 14:02, Thomas Gleixner wrote:
+On Fri, Nov 13, 2020 at 03:02:13PM +0100, Thomas Gleixner wrote:
 > irq_cpustat_t is exactly the same as the asm-generic one. Define
-> ack_bad_irq so the generic header does not emit the generic version of 
-> it.
+> ack_bad_irq so the generic header does not emit the generic version of it.
 > 
 > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 > Cc: Catalin Marinas <catalin.marinas@arm.com>
@@ -27,27 +35,13 @@ On 2020-11-13 14:02, Thomas Gleixner wrote:
 > ---
 >  arch/arm64/include/asm/hardirq.h |    7 ++-----
 >  1 file changed, 2 insertions(+), 5 deletions(-)
-> 
-> --- a/arch/arm64/include/asm/hardirq.h
-> +++ b/arch/arm64/include/asm/hardirq.h
-> @@ -13,11 +13,8 @@
->  #include <asm/kvm_arm.h>
->  #include <asm/sysreg.h>
-> 
-> -typedef struct {
-> -	unsigned int __softirq_pending;
-> -} ____cacheline_aligned irq_cpustat_t;
-> -
-> -#include <linux/irq_cpustat.h>	/* Standard mappings for irq_cpustat_t 
-> above */
-> +#define ack_bad_irq ack_bad_irq
-> +#include <asm-generic/hardirq.h>
-> 
->  #define __ARCH_IRQ_EXIT_IRQS_DISABLED	1
 
-Acked-by: Marc Zyngier <maz@kernel.org>
+Acked-by: Will Deacon <will@kernel.org>
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+Will
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
