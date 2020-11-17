@@ -1,10 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Message-Id: <20201113141733.392015387@linutronix.de>
-Date: Fri, 13 Nov 2020 15:02:13 +0100
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: [patch 06/19] arm64: irqstat: Get rid of duplicated declaration
+Date: Tue, 17 Nov 2020 11:21:19 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [patch 10/19] preempt: Cleanup the macro maze a bit
+Message-ID: <20201117102119.GE3121406@hirez.programming.kicks-ass.net>
 References: <20201113140207.499353218@linutronix.de>
+ <20201113141733.864469886@linutronix.de>
+ <20201116121748.GD3121378@hirez.programming.kicks-ass.net>
+ <871rgtyz9g.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <871rgtyz9g.fsf@nanos.tec.linutronix.de>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -17,38 +22,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Rich Felker <dalias@libc.org>, Paul McKenney <paulmck@kernel.org>, Arnd Bergmann <arnd@arndb.de>, linux-sh@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Catalin Marinas <catalin.marinas@arm.com>, Frederic Weisbecker <frederic@kernel.org>, Valentin Schneider <valentin.schneider@arm.com>, Jeff Dike <jdike@addtoit.com>, Russell King <linux@armlinux.org.uk>, Yoshinori Sato <ysato@users.sourceforge.jp>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Richard Weinberger <richard@nod.at>, linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>, Marc Zyngier <maz@kernel.org>, linux-um@lists.infradead.org, Will Deacon <will@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, linux-arm-kernel@lists.infradead.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Marc Zyngier <maz@kernel.org>, Rich Felker <dalias@libc.org>, Catalin Marinas <catalin.marinas@arm.com>, Paul McKenney <paulmck@kernel.org>, Arnd Bergmann <arnd@arndb.de>, linux-sh@vger.kernel.org, Richard Weinberger <richard@nod.at>, Frederic Weisbecker <frederic@kernel.org>, Valentin Schneider <valentin.schneider@arm.com>, Jeff Dike <jdike@addtoit.com>, LKML <linux-kernel@vger.kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>, Russell King <linux@armlinux.org.uk>, linux-um@lists.infradead.org, Will Deacon <will@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, linux-arm-kernel@lists.infradead.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-irq_cpustat_t is exactly the same as the asm-generic one. Define
-ack_bad_irq so the generic header does not emit the generic version of it.
+On Mon, Nov 16, 2020 at 06:42:19PM +0100, Thomas Gleixner wrote:
+> On Mon, Nov 16 2020 at 13:17, Peter Zijlstra wrote:
+> > On Fri, Nov 13, 2020 at 03:02:17PM +0100, Thomas Gleixner wrote:
+> >
+> >> -#define irq_count()	(preempt_count() & (HARDIRQ_MASK | SOFTIRQ_MASK \
+> >> -				 | NMI_MASK))
+> >> +#define irq_count()	(nmi_count() | hardirq_count() | softirq_count())
+> >
+> >
+> >> +#define in_task()		(!(in_nmi() | in_hardirq() | in_serving_softirq()))
+> >> -#define in_task()		(!(preempt_count() & \
+> >> -				   (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_OFFSET)))
+> >
+> > How horrible is the code-gen? Because preempt_count() is
+> > raw_cpu_read_4() and at least some old compilers will refuse to CSE it
+> > (consider the this_cpu_read_stable mess).
+> 
+> I looked at gcc8 and 10 output and the compilers are smart enough to
+> fold it for the !RT case. But yeah ...
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org
----
- arch/arm64/include/asm/hardirq.h |    7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
-
---- a/arch/arm64/include/asm/hardirq.h
-+++ b/arch/arm64/include/asm/hardirq.h
-@@ -13,11 +13,8 @@
- #include <asm/kvm_arm.h>
- #include <asm/sysreg.h>
- 
--typedef struct {
--	unsigned int __softirq_pending;
--} ____cacheline_aligned irq_cpustat_t;
--
--#include <linux/irq_cpustat.h>	/* Standard mappings for irq_cpustat_t above */
-+#define ack_bad_irq ack_bad_irq
-+#include <asm-generic/hardirq.h>
- 
- #define __ARCH_IRQ_EXIT_IRQS_DISABLED	1
- 
-
+If recent GCC is smart enough I suppose it doesn't matter, thanks!
 
 _______________________________________________
 linux-um mailing list
