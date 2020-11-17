@@ -1,18 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kezpt-0002um-De
- for linux-um@lists.infradead.org; Tue, 17 Nov 2020 12:11:50 +0000
-Message-ID: <cc3181a27ff19403db94385b42ec4a1feb60a965.camel@sipsolutions.net>
+ id 1kezR2-00085o-GL
+ for linux-um@lists.infradead.org; Tue, 17 Nov 2020 11:46:09 +0000
 Subject: Re: [PATCH] um: borrow bitops from the x86 tree
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Tue, 17 Nov 2020 13:11:29 +0100
-In-Reply-To: <d2817ac8-e4a9-5d88-468e-03705e986b6e@cambridgegreys.com>
 References: <20201116144426.8415-1-anton.ivanov@cambridgegreys.com>
  <a5ad1be201a7488bdc317bc72776f1465347504f.camel@sipsolutions.net>
- <d2817ac8-e4a9-5d88-468e-03705e986b6e@cambridgegreys.com>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <d2817ac8-e4a9-5d88-468e-03705e986b6e@cambridgegreys.com>
+Date: Tue, 17 Nov 2020 11:46:03 +0000
 MIME-Version: 1.0
+In-Reply-To: <a5ad1be201a7488bdc317bc72776f1465347504f.camel@sipsolutions.net>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -21,31 +21,48 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
+To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
 Cc: richard@nod.at
 
-On Tue, 2020-11-17 at 11:46 +0000, Anton Ivanov wrote:
-> 
-> My usual test is:
-> 
->   time busybox find /usr/lib/ -type f -exec cat {} > /dev/null \;
-> 
-> I discard the first run and use only runs from fs cache.
-
-Oh. I didn't even run the timing inside. I ran it *outside*, something
-like
-
-time ./linux args... init=/path/to/test-script.sh
-
-johannes
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+CgpPbiAxNy8xMS8yMDIwIDExOjA1LCBKb2hhbm5lcyBCZXJnIHdyb3RlOgo+IEhpIEFudG9uLAo+
+IAo+IFNvIEkgdGhvdWdodCBJJ2QgdGVzdCB5b3VyIHBlcmZvcm1hbmNlIHBhdGNoZXMgaGVyZSwg
+YW5kIGFwcGxpZWQKPiAoaG9wZWZ1bGx5IHRoZSBsYXRlc3QgdmVyc2lvbnMgb2YpIG9uIHRvcCBv
+ZiA1Ljk6Cj4gCj4gICAgICAgIHVtOiBhbGxvdyB0aGUgdXNlIG9mIGdsaWJjIGZ1bmN0aW9ucyBp
+bnN0ZWFkIG9mIGJ1aWx0aW5zCj4gICAgICAgIHVtOiBGZXRjaCByZWdpc3RlcnMgb25seSBmb3Ig
+c2lnbmFscyB3aGljaCBuZWVkIHRoZW0KPiAgICAgICAgdW06IGVuYWJsZSB0aGUgdXNlIG9mIG9w
+dGltaXplZCB4b3Igcm91dGluZXMgaW4gVU1MCj4gICAgICAgIHVtOiBhZGQgYSBVTUwgc3BlY2lm
+aWMgZnV0ZXggaW1wbGVtZW50YXRpb24KPiAgICAgICAgdW06IFJlbW92ZSB1c2Ugb2YgYXNwcmlu
+ZiBpbiB1bWlkLmMKPiAgICAgICAgdW06ICJib3Jyb3ciIGF0b21pY3MgZnJvbSB4ODYgYXJjaGl0
+ZWN0dXJlCj4gICAgICAgIHVtOiAiYm9ycm93IiBjbXB4Y2hnIGZyb20geDg2IHRyZWUgaW4gVU1M
+Cj4gICAgICAgIHVtOiBib3Jyb3cgYml0b3BzIGZyb20gdGhlIHg4NiB0cmVlCj4gCj4gCj4gV2l0
+aCB0aGUgcGF0Y2hlcyAoY29tcGlsZWQgd2l0aCBnbGliYyBmdW5jdGlvbnMpLCBvbmUgb2YgbXkg
+dHJpdmlhbAo+IHZpcnR1YWwgbGFiIHRlc3RzIGdldHM6Cj4gCj4gICAgVGltZSAobWVhbiDCsSDP
+gyk6ICAgICAxNS45MTggcyDCsSAgMC44MzMgcyAgICBbVXNlcjogMTAuOTc3IHMsIFN5c3RlbTog
+NS42MDAgc10KPiAgICBSYW5nZSAobWluIOKApiBtYXgpOiAgIDE1LjM3MSBzIOKApiAxNy45ODYg
+cyAgICAxMCBydW5zCj4gCj4gSXQncyBub3QgYSBsYXJnZSBpbXByb3ZlbWVudCwgaXQgc2VlbXMg
+bm90aWNhYmxlOyB3aXRob3V0IHRoZSBwYXRjaGVzIEkKPiBnZXQ6Cj4gCj4gICAgVGltZSAobWVh
+biDCsSDPgyk6ICAgICAxNi41MjUgcyDCsSAgMC44ODQgcyAgICBbVXNlcjogMTEuMzU1IHMsIFN5
+c3RlbTogNS42NDggc10KPiAgICBSYW5nZSAobWluIOKApiBtYXgpOiAgIDE1LjY4MiBzIOKApiAx
+OC4wODggcyAgICAxMCBydW5zCj4gCj4gam9oYW5uZXMKPiAKPiAKClRoaXMgaXMgc2ltaWxhciB0
+byB3aGF0IEkgZ2V0LgoKTXkgdXN1YWwgdGVzdCBpczoKCiAgdGltZSBidXN5Ym94IGZpbmQgL3Vz
+ci9saWIvIC10eXBlIGYgLWV4ZWMgY2F0IHt9ID4gL2Rldi9udWxsIFw7CgpJIGRpc2NhcmQgdGhl
+IGZpcnN0IHJ1biBhbmQgdXNlIG9ubHkgcnVucyBmcm9tIGZzIGNhY2hlLgoKV2l0aCBzdG9jayBJ
+IGdldAoKcmVhbAkzNC4wIC0gMzYuMAp1c2VyIAkyOS42IC0gMjkuOQpzeXMJMy40IC0gMy42CgoK
+V2l0aCB0aGUgcGF0Y2gtc2V0IEkgZ2V0CgpyZWFsCTMyLjAgLSAzNC4wCnVzZXIJMjguMiAtIDI5
+LjIKc3lzCTMuMCAtIDMuNAoKZGQgaWY9L2Rldi96ZXJvIG9mPS9kZXYvbnVsbCBicz0xTSBvbiB0
+aGUgd2hvbGUgVUJEIGRldmljZSB3aXRob3V0IHRoZSBwYXRjaGVzIGZvciAybmQgcnVuIGFuZCBs
+YXRlciBpcyAyLjBHQi9zIC0gMi4xR0Ivcywgd2l0aCB0aGUgcGF0Y2hlcyBpcyAyLjJHQi9zIC0g
+Mi4zR0IvcwoKSXQgaXMgbm90IGEgbG90LCBidXQgc29tZXRoaW5nIC0gMi01JSBvbiBhdmVyYWdl
+IGRlcGVuZGluZyBvbiBhY3R1YWwgdGVzdC4KClRoZSByZWFsIGdhaW4gd2lsbCBiZSB0byBmaWd1
+cmUgb3V0IGhvdyB0byBvcHRpbWl6ZSB0aGUgbWVtb3J5IG1hcHBlci4gSXQgaXMgdGhlICJoYW5k
+YnJha2UiIHdoaWNoIHNsb3dzIGRvd24gZXZlcnl0aGluZyBlbHNlLgoKLS0gCkFudG9uIFIuIEl2
+YW5vdgpDYW1icmlkZ2VncmV5cyBMaW1pdGVkLiBSZWdpc3RlcmVkIGluIEVuZ2xhbmQuIENvbXBh
+bnkgTnVtYmVyIDEwMjczNjYxCmh0dHBzOi8vd3d3LmNhbWJyaWRnZWdyZXlzLmNvbS8KCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxp
+bmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
+YWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
 
