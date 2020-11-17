@@ -2,13 +2,19 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab7.miniserver.com ([37.128.132.42]
  helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kdGzb-0006kq-Py
- for linux-um@lists.infradead.org; Thu, 12 Nov 2020 18:06:44 +0000
-From: anton.ivanov@cambridgegreys.com
-Subject: [PATCH] um: add a UML specific futex implementation
-Date: Thu, 12 Nov 2020 18:06:32 +0000
-Message-Id: <20201112180632.28140-1-anton.ivanov@cambridgegreys.com>
+ id 1kf0UF-0008WK-T5
+ for linux-um@lists.infradead.org; Tue, 17 Nov 2020 12:53:32 +0000
+Subject: Re: [PATCH] um: borrow bitops from the x86 tree
+References: <20201116144426.8415-1-anton.ivanov@cambridgegreys.com>
+ <a5ad1be201a7488bdc317bc72776f1465347504f.camel@sipsolutions.net>
+ <d2817ac8-e4a9-5d88-468e-03705e986b6e@cambridgegreys.com>
+ <cc3181a27ff19403db94385b42ec4a1feb60a965.camel@sipsolutions.net>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <cd43d9fd-c1e8-d10d-1b39-d1893eb0cdc3@cambridgegreys.com>
+Date: Tue, 17 Nov 2020 12:53:26 +0000
 MIME-Version: 1.0
+In-Reply-To: <cc3181a27ff19403db94385b42ec4a1feb60a965.camel@sipsolutions.net>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -17,191 +23,54 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
+Cc: richard@nod.at
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+On 17/11/2020 12:11, Johannes Berg wrote:
+> On Tue, 2020-11-17 at 11:46 +0000, Anton Ivanov wrote:
+>>
+>> My usual test is:
+>>
+>>    time busybox find /usr/lib/ -type f -exec cat {} > /dev/null \;
+>>
+>> I discard the first run and use only runs from fs cache.
+> 
+> Oh. I didn't even run the timing inside. I ran it *outside*, something
+> like
+> 
+> time ./linux args... init=/path/to/test-script.sh
 
-The generic asm futex implementation emulates atomic access to
-memory by doing a get_user followed by put_user. These translate
-to two mapping operations on UML with paging enabled in the
-meantime. This, in turn may end up changing interrupts,
-invoking the signal loop, etc.
+I usually do a full set of tests on fs access, device IO access and a 
+netperf after each patch.
 
-This replaces the generic implementation by a mapping followed
-by an operation on the mapped segment. It is for now limited
-to 64 bit as the 32 bit may also need to take care of highmem,
-etc.
+Based on them it looks like it is worth it.
 
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
----
- arch/um/include/asm/futex.h   |  20 ++++++
- arch/um/kernel/skas/uaccess.c | 114 ++++++++++++++++++++++++++++++++++
- 2 files changed, 134 insertions(+)
- create mode 100644 arch/um/include/asm/futex.h
+The more interesting question is - is this the right organization?
 
-diff --git a/arch/um/include/asm/futex.h b/arch/um/include/asm/futex.h
-new file mode 100644
-index 000000000000..9af35ab66b6e
---- /dev/null
-+++ b/arch/um/include/asm/futex.h
-@@ -0,0 +1,20 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_GENERIC_FUTEX_H
-+#define _ASM_GENERIC_FUTEX_H
-+
-+#ifdef CONFIG_64BIT
-+
-+#include <linux/futex.h>
-+#include <linux/uaccess.h>
-+#include <asm/errno.h>
-+
-+
-+extern int arch_futex_atomic_op_inuser(int op, u32 oparg, int *oval, u32 __user *uaddr);
-+extern int futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
-+			      u32 oldval, u32 newval);
-+
-+#else
-+#include <"asm-generic/futex.h">
-+#endif /* CONFIG_64BIT */
-+
-+#endif
-diff --git a/arch/um/kernel/skas/uaccess.c b/arch/um/kernel/skas/uaccess.c
-index 2dec915abe6f..83bfaa018b3b 100644
---- a/arch/um/kernel/skas/uaccess.c
-+++ b/arch/um/kernel/skas/uaccess.c
-@@ -11,6 +11,7 @@
- #include <asm/current.h>
- #include <asm/page.h>
- #include <kern_util.h>
-+#include <asm/futex.h>
- #include <os.h>
- 
- pte_t *virt_to_pte(struct mm_struct *mm, unsigned long addr)
-@@ -248,3 +249,116 @@ long __strnlen_user(const void __user *str, long len)
- 	return 0;
- }
- EXPORT_SYMBOL(__strnlen_user);
-+
-+/**
-+ * arch_futex_atomic_op_inuser() - Atomic arithmetic operation with constant
-+ *			  argument and comparison of the previous
-+ *			  futex value with another constant.
-+ *
-+ * @encoded_op:	encoded operation to execute
-+ * @uaddr:	pointer to user space address
-+ *
-+ * Return:
-+ * 0 - On success
-+ * -EFAULT - User access resulted in a page fault
-+ * -EAGAIN - Atomic operation was unable to complete due to contention
-+ * -ENOSYS - Operation not supported
-+ */
-+int arch_futex_atomic_op_inuser(int op, u32 oparg, int *oval, u32 __user *uaddr)
-+{
-+	int oldval, ret;
-+	struct page *page;
-+	pte_t *pte;
-+
-+	ret = -EFAULT;
-+	preempt_disable();
-+	pte = maybe_map((unsigned long) uaddr, 1);
-+	if (pte == NULL)
-+		goto out_inuser;
-+
-+	page = pte_page(*pte);
-+	pagefault_disable();
-+	uaddr = page_address(page) + (((unsigned long) uaddr) & ~PAGE_MASK);
-+
-+	oldval = *uaddr;
-+
-+	ret = 0;
-+
-+	switch (op) {
-+	case FUTEX_OP_SET:
-+		*uaddr = oparg;
-+		break;
-+	case FUTEX_OP_ADD:
-+		*uaddr += oparg;
-+		break;
-+	case FUTEX_OP_OR:
-+		*uaddr |= oparg;
-+		break;
-+	case FUTEX_OP_ANDN:
-+		*uaddr &= ~oparg;
-+		break;
-+	case FUTEX_OP_XOR:
-+		*uaddr ^= oparg;
-+		break;
-+	default:
-+		ret = -ENOSYS;
-+	}
-+	pagefault_enable();
-+
-+out_inuser:
-+	preempt_enable();
-+
-+	if (ret == 0)
-+		*oval = oldval;
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL(arch_futex_atomic_op_inuser);
-+
-+/**
-+ * futex_atomic_cmpxchg_inatomic() - Compare and exchange the content of the
-+ *				uaddr with newval if the current value is
-+ *				oldval.
-+ * @uval:	pointer to store content of @uaddr
-+ * @uaddr:	pointer to user space address
-+ * @oldval:	old value
-+ * @newval:	new value to store to @uaddr
-+ *
-+ * Return:
-+ * 0 - On success
-+ * -EFAULT - User access resulted in a page fault
-+ * -EAGAIN - Atomic operation was unable to complete due to contention
-+ * -ENOSYS - Function not implemented (only if !HAVE_FUTEX_CMPXCHG)
-+ */
-+
-+int futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
-+			      u32 oldval, u32 newval)
-+{
-+	u32 val;
-+	struct page *page;
-+	pte_t *pte;
-+	int ret = -EFAULT;
-+
-+	preempt_disable();
-+	pte = maybe_map((unsigned long) uaddr, 1);
-+	if (pte == NULL)
-+		goto out_inatomic;
-+
-+	page = pte_page(*pte);
-+	pagefault_disable();
-+	uaddr = page_address(page) + (((unsigned long) uaddr) & ~PAGE_MASK);
-+
-+	val = *uaddr;
-+
-+	if (val == oldval)
-+		*uaddr = newval;
-+
-+	*uval = val;
-+	pagefault_enable();
-+	ret = 0;
-+
-+out_inatomic:
-+	preempt_enable();
-+	return ret;
-+}
-+EXPORT_SYMBOL(futex_atomic_cmpxchg_inatomic);
+We have stuff in multiple places now - arch/x86/um , arch/um, etc.
+
+IMHO, we should probably look at getting it organized so that all 
+sub-arches are under the um tree at some point.
+
+> 
+> johannes
+> 
+> 
+> _______________________________________________
+> linux-um mailing list
+> linux-um@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-um
+> 
+
+
 -- 
-2.20.1
-
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
 _______________________________________________
 linux-um mailing list
