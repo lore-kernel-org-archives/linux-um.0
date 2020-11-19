@@ -1,14 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-f195.google.com ([209.85.214.195])
+Received: from mga03.intel.com ([134.134.136.65])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kfzt6-0002mk-Li
- for linux-um@lists.infradead.org; Fri, 20 Nov 2020 06:27:17 +0000
-Received: by mail-pl1-f195.google.com with SMTP id y22so4343654plr.6
- for <linux-um@lists.infradead.org>; Thu, 19 Nov 2020 22:27:14 -0800 (PST)
-Date: Thu, 19 Nov 2020 22:27:12 -0800
-From: Moritz Fischer <mdf@kernel.org>
+ id 1kfhwY-0005QY-5M
+ for linux-um@lists.infradead.org; Thu, 19 Nov 2020 11:17:39 +0000
+Date: Thu, 19 Nov 2020 19:13:21 +0800
+From: Xu Yilun <yilun.xu@intel.com>
 Subject: Re: [PATCH] drivers: fpga: Specify HAS_IOMEM dependency for FPGA_DFL
-Message-ID: <X7dhwNFehhCRs7Ry@epycbox.lan>
+Message-ID: <20201119111321.GA26472@yilunxu-OptiPlex-7050>
 References: <20201119082209.3598354-1-davidgow@google.com>
 MIME-Version: 1.0
 Content-Disposition: inline
@@ -28,7 +26,10 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: David Gow <davidgow@google.com>
 Cc: Tom Rix <trix@redhat.com>, linux-fpga@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Moritz Fischer <mdf@kernel.org>, Brendan Higgins <brendanhiggins@google.com>
 
-Hi David,
+Thanks for the fix, looks good to me.
+
+Thanks,
+Yilun
 
 On Thu, Nov 19, 2020 at 12:22:09AM -0800, David Gow wrote:
 > Because dfl.c uses the 'devm_ioremap', 'devm_iounmap',
@@ -57,11 +58,6 @@ On Thu, Nov 19, 2020 at 12:22:09AM -0800, David Gow wrote:
 >  	  creates a linked list of feature headers within the MMIO space
 > -- 
 > 2.29.2.454.gaff20da3a2-goog
-> 
-Do you think we can add a Fixes: tag for this?
-
-Thanks,
-Moritz
 
 _______________________________________________
 linux-um mailing list
