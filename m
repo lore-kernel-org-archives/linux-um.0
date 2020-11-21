@@ -1,237 +1,99 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab7.miniserver.com ([37.128.132.42]
- helo=www.kot-begemot.co.uk)
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kd9b3-0001IK-EC
- for linux-um@lists.infradead.org; Thu, 12 Nov 2020 10:12:54 +0000
-From: anton.ivanov@cambridgegreys.com
-Subject: [PATCH v2] um: allow the use of glibc functions instead of builtins
-Date: Thu, 12 Nov 2020 10:12:44 +0000
-Message-Id: <20201112101244.2148-1-anton.ivanov@cambridgegreys.com>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+References: <20201119085022.3606135-1-davidgow@google.com> <CAEf4BzY4i0fH34eO=-4WOzVpifgPmJ0ER5ipBJWB0_4Zdv0AQg@mail.gmail.com>
+In-Reply-To: <CAEf4BzY4i0fH34eO=-4WOzVpifgPmJ0ER5ipBJWB0_4Zdv0AQg@mail.gmail.com>
+From: David Gow <davidgow@google.com>
+Date: Sat, 21 Nov 2020 17:48:44 +0800
+Message-ID: <CABVgOSn10kCaD7EQCMJTgD8udNx6fOExqUL1gXHzEViemiq3LA@mail.gmail.com>
+Subject: Re: [RFC PATCH] bpf: preload: Fix build error when O= is set
+Content-Type: text/plain; charset="UTF-8"
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, Brendan Higgins <brendanhiggins@google.com>, Masami Hiramatsu <mhiramat@kernel.org>, linux-um <linux-um@lists.infradead.org>
+List-ID: <linux-um.lists.infradead.org>
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+On Sat, Nov 21, 2020 at 3:38 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, Nov 19, 2020 at 12:51 AM David Gow <davidgow@google.com> wrote:
+> >
+> > If BPF_PRELOAD is enabled, and an out-of-tree build is requested with
+> > make O=<path>, compilation seems to fail with:
+> >
+> > tools/scripts/Makefile.include:4: *** O=.kunit does not exist.  Stop.
+> > make[4]: *** [../kernel/bpf/preload/Makefile:8: kernel/bpf/preload/libbpf.a] Error 2
+> > make[3]: *** [../scripts/Makefile.build:500: kernel/bpf/preload] Error 2
+> > make[2]: *** [../scripts/Makefile.build:500: kernel/bpf] Error 2
+> > make[2]: *** Waiting for unfinished jobs....
+> > make[1]: *** [.../Makefile:1799: kernel] Error 2
+> > make[1]: *** Waiting for unfinished jobs....
+> > make: *** [Makefile:185: __sub-make] Error 2
+> >
+> > By the looks of things, this is because the (relative path) O= passed on
+> > the command line is being passed to the libbpf Makefile, which then
+> > can't find the directory. Given OUTPUT= is being passed anyway, we can
+> > work around this by explicitly setting an empty O=, which will be
+> > ignored in favour of OUTPUT= in tools/scripts/Makefile.include.
+>
+> Strange, but I can't repro it. I use make O=<absolute path> all the
+> time with no issues. I just tried specifically with a make O=.build,
+> where .build is inside Linux repo, and it still worked fine. See also
+> be40920fbf10 ("tools: Let O= makes handle a relative path with -C
+> option") which was supposed to address such an issue. So I'm wondering
+> what exactly is causing this problem.
+>
+[+ linux-um list]
 
-The UML kernel runs as a normal userspace process and can use most
-of glibc string.h functionality instead of built-ins. At present,
-when using built-ins, it is also limited to their unoptimized
-versions, because it does not have the runtime code patching present
-on x86 via apply_alternatives()
+Hmm... From a quick check, I can't reproduce this on x86, so it's
+possibly a UML-specific issue.
 
-Allowing the use of glibc for memcpy, memmove, etc provides 1-5%
-boost on common file io as measured by cat and dd. The size of
-the linux executable is also reduced by ~10KBytes.
+The problem here seems to be that $PWD is, for whatever reason, equal
+to the srcdir on x86, but not on UML. In general, $PWD behaves pretty
+weirdly -- I don't fully understand it -- but if I add a tactical "PWD
+:= $(shell pwd)" or use $(CURDIR) instead, the issue shows up on x86
+as well. I guess this is because PWD only gets updated when set by a
+shell or something, and UML does this somewhere?
 
-It is possible to turn this on/off via the kernel configuration.
+Thoughts?
 
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
----
- arch/um/Kconfig              | 10 ++++++
- arch/um/include/asm/string.h | 70 ++++++++++++++++++++++++++++++++++++
- arch/um/os-Linux/user_syms.c | 27 +++++++++++++-
- arch/x86/um/Makefile         |  6 ++--
- 4 files changed, 110 insertions(+), 3 deletions(-)
- create mode 100644 arch/um/include/asm/string.h
+Cheers,
+-- David
 
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index 4b799fad8b48..ec2802ded9d1 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -189,6 +189,16 @@ config UML_TIME_TRAVEL_SUPPORT
- 
- 	  It is safe to say Y, but you probably don't need this.
- 
-+config UML_USE_BUILT_IN_STRINGS
-+	bool
-+	default N
-+	prompt "Use kernel memcpy, memmove, etc"
-+	help
-+	  UML can use the kernel built in memcpy, memmove, etc functions
-+	  or use the glibc equivalents instead.
-+	  The glibc equivalents are slightly faster and will result in a
-+	  slightly smaller executable when linking UML dynamically.
-+
- endmenu
- 
- source "arch/um/drivers/Kconfig"
-diff --git a/arch/um/include/asm/string.h b/arch/um/include/asm/string.h
-new file mode 100644
-index 000000000000..ac16890e0867
---- /dev/null
-+++ b/arch/um/include/asm/string.h
-@@ -0,0 +1,70 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+/*
-+ * Copyright (C) 2020 Cambridge Greys Ltd.
-+ * Copyright (C) 2020 Red Hat Inc.
-+ */
-+
-+#ifndef __ASM_UM_STRING_H
-+#define __ASM_UM_STRING_H
-+
-+#ifndef CONFIG_UML_USE_BUILT_IN_STRINGS
-+
-+#include <stddef.h>
-+
-+#define __HAVE_ARCH_STRCPY
-+extern char *strcpy(char *dest, const char *src);
-+#define __HAVE_ARCH_STRNCPY
-+extern char *strncpy(char *dest, const char *src, size_t n);
-+#define __HAVE_ARCH_STRCAT
-+extern char *strcat(char *dest, const char *src);
-+#define __HAVE_ARCH_STRNCAT
-+extern char *strncat(char *dest, const char *src, size_t n);
-+#define __HAVE_ARCH_STRCMP
-+extern int strcmp(const char *s1, const char *s2);
-+#define __HAVE_ARCH_STRNCMP
-+extern int strncmp(const char *s1, const char *s2, size_t n);
-+#define __HAVE_ARCH_STRCHR
-+extern char *strchr(const char *s, int c);
-+#define __HAVE_ARCH_STRLEN
-+extern size_t strlen(const char *s);
-+#define __HAVE_ARCH_MEMCPY
-+extern void *memcpy(void *dest, const void *src, size_t n);
-+#define __HAVE_ARCH_MEMMOVE
-+extern void *memmove(void *dest, const void *src, size_t n);
-+#define __HAVE_ARCH_MEMCHR
-+extern void *memchr(const void *s, int c, size_t n);
-+#define __HAVE_ARCH_STRNLEN
-+extern size_t strnlen(const char *s, size_t maxlen);
-+#define __HAVE_ARCH_STRSTR
-+extern char *strstr(const char *haystack, const char *needle);
-+#define __HAVE_ARCH_MEMSET
-+extern void *memset(void *s, int c, size_t n);
-+#define __HAVE_ARCH_STRNCASECMP
-+extern int strncasecmp(const char *s1, const char *s2, size_t n);
-+#define __HAVE_ARCH_STRCASECMP
-+extern int strcasecmp(const char *s1, const char *s2);
-+#define __HAVE_ARCH_STRCHRNUL
-+extern char *strchrnul(const char *s, int c);
-+#define __HAVE_ARCH_STRRCH
-+extern char *strchrnul(const char *s, int c);
-+#define __HAVE_ARCH_STRSPN
-+extern size_t strspn(const char *s, const char *accept);
-+#define __HAVE_ARCH_STRCSPN
-+extern size_t strcspn(const char *s, const char *reject);
-+#define __HAVE_ARCH_STRPBRK
-+extern char *strpbrk(const char *s, const char *accept);
-+#define __HAVE_ARCH_STRSEP
-+extern char *strsep(char **stringp, const char *delim);
-+#define __HAVE_ARCH_MEMCMP
-+extern int memcmp(const void *s1, const void *s2, size_t n);
-+#define __HAVE_ARCH_BCMP
-+extern int bcmp(const void *s1, const void *s2, size_t n);
-+
-+#else
-+
-+#include <asm-generic/string.h>
-+
-+#endif
-+
-+#endif /* __ASM_UM_STRING_H */
-diff --git a/arch/um/os-Linux/user_syms.c b/arch/um/os-Linux/user_syms.c
-index 715594fe5719..9da980a89a9f 100644
---- a/arch/um/os-Linux/user_syms.c
-+++ b/arch/um/os-Linux/user_syms.c
-@@ -9,6 +9,7 @@
-  * add an EXPORT for the glibc one.
-  */
- 
-+#ifdef CONFIG_UML_USE_BUILT_IN_STRINGS
- #undef strlen
- #undef strstr
- #undef memcpy
-@@ -17,6 +18,7 @@
- extern size_t strlen(const char *);
- extern void *memmove(void *, const void *, size_t);
- extern void *memset(void *, int, size_t);
-+#endif
- extern int printf(const char *, ...);
- 
- /* If it's not defined, the export is included in lib/string.c.*/
-@@ -24,7 +26,7 @@ extern int printf(const char *, ...);
- EXPORT_SYMBOL(strstr);
- #endif
- 
--#ifndef __x86_64__
-+#if !defined(__x86_64__) || !defined(CONFIG_UML_USE_BUILT_IN_STRINGS)
- extern void *memcpy(void *, const void *, size_t);
- EXPORT_SYMBOL(memcpy);
- #endif
-@@ -33,6 +35,29 @@ EXPORT_SYMBOL(memmove);
- EXPORT_SYMBOL(memset);
- EXPORT_SYMBOL(printf);
- 
-+#ifndef CONFIG_UML_USE_BUILT_IN_STRINGS
-+/* These all come from glibc */
-+EXPORT_SYMBOL(strcpy);
-+EXPORT_SYMBOL(strncpy);
-+EXPORT_SYMBOL(strcat);
-+EXPORT_SYMBOL(strncat);
-+EXPORT_SYMBOL(strcmp);
-+EXPORT_SYMBOL(strncmp);
-+EXPORT_SYMBOL(strchr);
-+EXPORT_SYMBOL(strlen);
-+EXPORT_SYMBOL(memchr);
-+EXPORT_SYMBOL(strnlen);
-+EXPORT_SYMBOL(strncasecmp);
-+EXPORT_SYMBOL(strcasecmp);
-+EXPORT_SYMBOL(strchrnul);
-+EXPORT_SYMBOL(strcspn);
-+EXPORT_SYMBOL(strpbrk);
-+EXPORT_SYMBOL(strsep);
-+EXPORT_SYMBOL(memcmp);
-+EXPORT_SYMBOL(bcmp);
-+
-+#endif
-+
- /* Here, instead, I can provide a fake prototype. Yes, someone cares: genksyms.
-  * However, the modules will use the CRC defined *here*, no matter if it is
-  * good; so the versions of these symbols will always match
-diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
-index 77f70b969d14..453ea23a9770 100644
---- a/arch/x86/um/Makefile
-+++ b/arch/x86/um/Makefile
-@@ -20,14 +20,16 @@ ifeq ($(CONFIG_X86_32),y)
- obj-y += checksum_32.o syscalls_32.o
- obj-$(CONFIG_ELF_CORE) += elfcore.o
- 
--subarch-y = ../lib/string_32.o ../lib/atomic64_32.o ../lib/atomic64_cx8_32.o
-+subarch-y = ../lib/atomic64_32.o ../lib/atomic64_cx8_32.o
- subarch-y += ../kernel/sys_ia32.o
-+subarch-$(CONFIG_UML_USE_BUILT_IN_STRINGS) += ../lib/string_32.o
- 
- else
- 
- obj-y += syscalls_64.o vdso/
- 
--subarch-y = ../lib/csum-partial_64.o ../lib/memcpy_64.o ../entry/thunk_64.o
-+subarch-y = ../lib/csum-partial_64.o ../entry/thunk_64.o
-+subarch-$(CONFIG_UML_USE_BUILT_IN_STRINGS) += ../lib/memcpy_64.o
- 
- endif
- 
--- 
-2.20.1
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+> >
+> > Signed-off-by: David Gow <davidgow@google.com>
+> > ---
+> >
+> > Hi all,
+> >
+> > I'm not 100% sure this is the correct fix here -- it seems to work for
+> > me, and makes some sense, but let me know if there's a better way.
+> >
+> > One other thing worth noting is that I've been hitting this with
+> > make allyesconfig on ARCH=um, but there's a comment in the Kconfig
+> > suggesting that, because BPF_PRELOAD depends on !COMPILE_TEST, that
+> > maybe it shouldn't be being built at all. I figured that it was worth
+> > trying to fix this anyway.
+> >
+> > Cheers,
+> > -- David
+> >
+> >
+> >  kernel/bpf/preload/Makefile | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/bpf/preload/Makefile b/kernel/bpf/preload/Makefile
+> > index 23ee310b6eb4..39848d296097 100644
+> > --- a/kernel/bpf/preload/Makefile
+> > +++ b/kernel/bpf/preload/Makefile
+> > @@ -5,7 +5,7 @@ LIBBPF_A = $(obj)/libbpf.a
+> >  LIBBPF_OUT = $(abspath $(obj))
+> >
+> >  $(LIBBPF_A):
+> > -       $(Q)$(MAKE) -C $(LIBBPF_SRCS) OUTPUT=$(LIBBPF_OUT)/ $(LIBBPF_OUT)/libbpf.a
+> > +       $(Q)$(MAKE) -C $(LIBBPF_SRCS) O= OUTPUT=$(LIBBPF_OUT)/ $(LIBBPF_OUT)/libbpf.a
+> >
+> >  userccflags += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi \
+> >         -I $(srctree)/tools/lib/ -Wno-unused-result
+> > --
+> > 2.29.2.454.gaff20da3a2-goog
+> >
 
