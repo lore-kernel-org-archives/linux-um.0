@@ -1,112 +1,156 @@
-Return-Path: <linux-sh-owner@vger.kernel.org>
-Message-Id: <20201113141734.907075915@linutronix.de>
-Date: Fri, 13 Nov 2020 15:02:26 +0100
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: [patch 19/19] tasklets: Prevent kill/unlock_wait deadlock on RT
-References: <20201113140207.499353218@linutronix.de>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
+ by casper.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kgS39-000828-C4
+ for linux-um@lists.infradead.org; Sat, 21 Nov 2020 12:31:33 +0000
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [PATCH v2] um: simplify os_idle_sleep() and sleep longer
+Date: Sat, 21 Nov 2020 13:31:11 +0100
+Message-Id: <20201121133110.c08aab9c34aa.I3b692c844a4ca459ee3084334a92ac5ef5b4cec4@changeid>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Frederic Weisbecker <frederic@kernel.org>, Paul McKenney <paulmck@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Arnd Bergmann <arnd@arndb.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Russell King <linux@armlinux.org.uk>, Marc Zyngier <maz@kernel.org>, Valentin Schneider <valentin.schneider@arm.com>, linux-arm-kernel@lists.infradead.org, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
 
-tasklet_kill() and tasklet_unlock_wait() spin and wait for the
-TASKLET_STATE_SCHED resp. TASKLET_STATE_RUN bit in the tasklet state to be
-cleared. This works on !RT nicely because the corresponding execution can
-only happen on a different CPU.
+From: Johannes Berg <johannes.berg@intel.com>
 
-On RT softirq processing is preemptible, therefore a task preempting the
-softirq processing thread can spin forever. Prevent this by invoking
-local_bh_disable()/enable() inside the loop. In case that the softirq
-processing thread was preempted by the current task, current will block on
-the local lock which yields the CPU to the preempted softirq processing
-thread. If the tasklet is processed on a different CPU then the
-local_bh_disable()/enable() pair is just a waste of processor cycles.
+There really is no reason to pass the amount of time we should
+sleep, especially since it's just hard-coded to one second.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Additionally, one second isn't really all that long, and as we
+are expecting to be woken up by a signal, we can sleep longer
+and avoid doing some work every second. Bump to two minutes.
+
+In externally controlled time-travel mode, just wait "forever",
+which basically sets our next event if any, and if we really
+don't have any then we'll wait forever without any control
+socket communication until the outside system sends us an event.
+
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- include/linux/interrupt.h |    8 ++------
- kernel/softirq.c          |   38 +++++++++++++++++++++++++++++++++++++-
- 2 files changed, 39 insertions(+), 7 deletions(-)
+ arch/um/include/linux/time-internal.h |  2 +-
+ arch/um/include/shared/os.h           |  2 +-
+ arch/um/kernel/process.c              | 11 ++++-------
+ arch/um/kernel/time.c                 | 11 ++++++++++-
+ arch/um/os-Linux/time.c               |  8 +++-----
+ 5 files changed, 19 insertions(+), 15 deletions(-)
 
---- a/include/linux/interrupt.h
-+++ b/include/linux/interrupt.h
-@@ -654,7 +654,7 @@ enum
- 	TASKLET_STATE_RUN	/* Tasklet is running (SMP only) */
- };
+diff --git a/arch/um/include/linux/time-internal.h b/arch/um/include/linux/time-internal.h
+index f3b03d39a854..deb7f1d209eb 100644
+--- a/arch/um/include/linux/time-internal.h
++++ b/arch/um/include/linux/time-internal.h
+@@ -28,7 +28,7 @@ struct time_travel_event {
  
--#ifdef CONFIG_SMP
-+#if defined(CONFIG_SMP) || defined(CONFIG_PREEMPT_RT)
- static inline int tasklet_trylock(struct tasklet_struct *t)
+ extern enum time_travel_mode time_travel_mode;
+ 
+-void time_travel_sleep(unsigned long long duration);
++void time_travel_sleep(void);
+ 
+ static inline void
+ time_travel_set_event_fn(struct time_travel_event *e,
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index f467d28fc0b4..c89ce642b0d3 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -256,7 +256,7 @@ extern void os_warn(const char *fmt, ...)
+ 	__attribute__ ((format (printf, 1, 2)));
+ 
+ /* time.c */
+-extern void os_idle_sleep(unsigned long long nsecs);
++extern void os_idle_sleep(void);
+ extern int os_timer_create(void);
+ extern int os_timer_set_interval(unsigned long long nsecs);
+ extern int os_timer_one_shot(unsigned long long nsecs);
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index 26b5e243d3fc..6f599b206bc7 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -204,13 +204,10 @@ void initial_thread_cb(void (*proc)(void *), void *arg)
+ 
+ static void um_idle_sleep(void)
  {
- 	return !test_and_set_bit(TASKLET_STATE_RUN, &(t)->state);
-@@ -666,11 +666,7 @@ static inline void tasklet_unlock(struct
- 	clear_bit(TASKLET_STATE_RUN, &(t)->state);
+-	unsigned long long duration = UM_NSEC_PER_SEC;
+-
+-	if (time_travel_mode != TT_MODE_OFF) {
+-		time_travel_sleep(duration);
+-	} else {
+-		os_idle_sleep(duration);
+-	}
++	if (time_travel_mode != TT_MODE_OFF)
++		time_travel_sleep();
++	else
++		os_idle_sleep();
  }
  
--static inline void tasklet_unlock_wait(struct tasklet_struct *t)
--{
--	while (test_bit(TASKLET_STATE_RUN, &(t)->state))
--		cpu_relax();
--}
-+void tasklet_unlock_wait(struct tasklet_struct *t);
- #else
- static inline int tasklet_trylock(struct tasklet_struct *t) { return 1; }
- static inline void tasklet_unlock(struct tasklet_struct *t) { }
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -851,6 +851,29 @@ void tasklet_init(struct tasklet_struct
+ void arch_cpu_idle(void)
+diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
+index 8dafc3f2add4..b69130c77827 100644
+--- a/arch/um/kernel/time.c
++++ b/arch/um/kernel/time.c
+@@ -399,13 +399,22 @@ static void time_travel_oneshot_timer(struct time_travel_event *e)
+ 	deliver_alarm();
  }
- EXPORT_SYMBOL(tasklet_init);
  
-+#if defined(CONFIG_SMP) || defined(CONFIG_PREEMPT_RT)
-+
-+void tasklet_unlock_wait(struct tasklet_struct *t)
-+{
-+	while (test_bit(TASKLET_STATE_RUN, &(t)->state)) {
-+		if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
-+			/*
-+			 * Prevent a live lock when current preempted soft
-+			 * interrupt processing or prevents ksoftirqd from
-+			 * running. If the tasklet runs on a different CPU
-+			 * then this has no effect other than doing the BH
-+			 * disable/enable dance for nothing.
-+			 */
-+			local_bh_disable();
-+			local_bh_enable();
-+		} else {
-+			cpu_relax();
-+		}
-+	}
-+}
-+EXPORT_SYMBOL(tasklet_unlock_wait);
-+#endif
-+
- void tasklet_kill(struct tasklet_struct *t)
+-void time_travel_sleep(unsigned long long duration)
++void time_travel_sleep(void)
  {
- 	if (in_interrupt())
-@@ -858,7 +881,20 @@ void tasklet_kill(struct tasklet_struct
++	unsigned long long duration = NSEC_PER_SEC * 120;
+ 	unsigned long long next = time_travel_time + duration;
  
- 	while (test_and_set_bit(TASKLET_STATE_SCHED, &t->state)) {
- 		do {
--			yield();
-+			if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
-+				/*
-+				 * Prevent a live lock when current
-+				 * preempted soft interrupt processing or
-+				 * prevents ksoftirqd from running. If the
-+				 * tasklet runs on a different CPU then
-+				 * this has no effect other than doing the
-+				 * BH disable/enable dance for nothing.
-+				 */
-+				local_bh_disable();
-+				local_bh_enable();
-+			} else {
-+				yield();
-+			}
- 		} while (test_bit(TASKLET_STATE_SCHED, &t->state));
- 	}
- 	tasklet_unlock_wait(t);
+ 	if (time_travel_mode == TT_MODE_BASIC)
+ 		os_timer_disable();
+ 
++	/*
++	 * In external mode, just tell the external controller we'll
++	 * (essentially) wait "forever" (S64_MAX because there are
++	 * some potential wrapping issues.)
++	 */
++	if (time_travel_mode == TT_MODE_EXTERNAL)
++		next = S64_MAX;
++
+ 	time_travel_update_time(next, true);
+ 
+ 	if (time_travel_mode == TT_MODE_BASIC &&
+diff --git a/arch/um/os-Linux/time.c b/arch/um/os-Linux/time.c
+index 90f6de224c70..56386ee9e7e8 100644
+--- a/arch/um/os-Linux/time.c
++++ b/arch/um/os-Linux/time.c
+@@ -99,14 +99,12 @@ long long os_nsecs(void)
+ }
+ 
+ /**
+- * os_idle_sleep() - sleep for a given time of nsecs
+- * @nsecs: nanoseconds to sleep
++ * os_idle_sleep() - idle sleep for some (long) time
+  */
+-void os_idle_sleep(unsigned long long nsecs)
++void os_idle_sleep(void)
+ {
+ 	struct timespec ts = {
+-		.tv_sec  = nsecs / UM_NSEC_PER_SEC,
+-		.tv_nsec = nsecs % UM_NSEC_PER_SEC
++		.tv_sec = 120,
+ 	};
+ 
+ 	/*
+-- 
+2.26.2
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
