@@ -1,10 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Message-Id: <20201113141733.276505871@linutronix.de>
-Date: Fri, 13 Nov 2020 15:02:12 +0100
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: [patch 05/19] ARM: irqstat: Get rid of duplicated declaration
-References: <20201113140207.499353218@linutronix.de>
+Received: from mail-pl1-f196.google.com ([209.85.214.196])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kgd59-0002Hm-MM
+ for linux-um@lists.infradead.org; Sun, 22 Nov 2020 00:18:20 +0000
+Received: by mail-pl1-f196.google.com with SMTP id 5so6934860plj.8
+ for <linux-um@lists.infradead.org>; Sat, 21 Nov 2020 16:18:12 -0800 (PST)
+Date: Sat, 21 Nov 2020 16:18:10 -0800
+From: Moritz Fischer <mdf@kernel.org>
+Subject: Re: [PATCH v2] drivers: fpga: Specify HAS_IOMEM dependency for
+ FPGA_DFL
+Message-ID: <X7muQm+0089dbLS9@archbook>
+References: <20201120234648.4050910-1-davidgow@google.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20201120234648.4050910-1-davidgow@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -17,56 +26,49 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Rich Felker <dalias@libc.org>, Catalin Marinas <catalin.marinas@arm.com>, Paul McKenney <paulmck@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Yoshinori Sato <ysato@users.sourceforge.jp>, Peter Zijlstra <peterz@infradead.org>, Marc Zyngier <maz@kernel.org>, Frederic Weisbecker <frederic@kernel.org>, linux-sh@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Russell King <linux@armlinux.org.uk>, Valentin Schneider <valentin.schneider@arm.com>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Richard Weinberger <richard@nod.at>, linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>, linux-um@lists.infradead.org, Will Deacon <will@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, linux-arm-kernel@lists.infradead.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: David Gow <davidgow@google.com>
+Cc: Tom Rix <trix@redhat.com>, linux-fpga@vger.kernel.org, linux-um <linux-um@lists.infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>, Brendan Higgins <brendanhiggins@google.com>
 
-irq_cpustat_t is exactly the same as the asm-generic one. Define
-ack_bad_irq so the generic header does not emit the generic version of it.
+On Fri, Nov 20, 2020 at 03:46:48PM -0800, David Gow wrote:
+> Because dfl.c uses the 'devm_ioremap', 'devm_iounmap',
+> 'devm_ioremap_resource', and 'devm_platform_ioremap_resource'
+> functions, it should depend on HAS_IOMEM.
+> 
+> This fixes make allyesconfig under UML (ARCH=um), which doesn't provide
+> HAS_IOMEM.
+> 
+> Fixes: 89eb35e810a8 ("fpga: dfl: map feature mmio resources in their own feature drivers")
+> Signed-off-by: David Gow <davidgow@google.com>
+> ---
+> 
+> Changes since v1:
+> ( https://lore.kernel.org/linux-fpga/20201119082209.3598354-1-davidgow@google.com/ )
+> - Add Fixes tag
+> 
+>  drivers/fpga/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
+> index 7cd5a29fc437..5645226ca3ce 100644
+> --- a/drivers/fpga/Kconfig
+> +++ b/drivers/fpga/Kconfig
+> @@ -142,6 +142,7 @@ config FPGA_DFL
+>  	tristate "FPGA Device Feature List (DFL) support"
+>  	select FPGA_BRIDGE
+>  	select FPGA_REGION
+> +	depends on HAS_IOMEM
+>  	help
+>  	  Device Feature List (DFL) defines a feature list structure that
+>  	  creates a linked list of feature headers within the MMIO space
+> -- 
+> 2.29.2.454.gaff20da3a2-goog
+> 
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org
----
- arch/arm/include/asm/hardirq.h |   11 +++--------
- arch/arm/include/asm/irq.h     |    2 ++
- 2 files changed, 5 insertions(+), 8 deletions(-)
+Applied to for-5.10,
 
---- a/arch/arm/include/asm/hardirq.h
-+++ b/arch/arm/include/asm/hardirq.h
-@@ -2,16 +2,11 @@
- #ifndef __ASM_HARDIRQ_H
- #define __ASM_HARDIRQ_H
- 
--#include <linux/cache.h>
--#include <linux/threads.h>
- #include <asm/irq.h>
- 
--typedef struct {
--	unsigned int __softirq_pending;
--} ____cacheline_aligned irq_cpustat_t;
--
--#include <linux/irq_cpustat.h>	/* Standard mappings for irq_cpustat_t above */
--
- #define __ARCH_IRQ_EXIT_IRQS_DISABLED	1
-+#define ack_bad_irq ack_bad_irq
-+
-+#include <asm-generic/hardirq.h>
- 
- #endif /* __ASM_HARDIRQ_H */
---- a/arch/arm/include/asm/irq.h
-+++ b/arch/arm/include/asm/irq.h
-@@ -31,6 +31,8 @@ void handle_IRQ(unsigned int, struct pt_
- void init_IRQ(void);
- 
- #ifdef CONFIG_SMP
-+#include <linux/cpumask.h>
-+
- extern void arch_trigger_cpumask_backtrace(const cpumask_t *mask,
- 					   bool exclude_self);
- #define arch_trigger_cpumask_backtrace arch_trigger_cpumask_backtrace
+I fixed up your commit message (dropped the drivers:)
 
+- Moritz
 
 _______________________________________________
 linux-um mailing list
