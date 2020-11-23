@@ -1,9 +1,9 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Tue, 24 Nov 2020 00:58:01 +0100
+Date: Mon, 23 Nov 2020 20:56:03 +0100
 From: Frederic Weisbecker <frederic@kernel.org>
 Subject: Re: [patch 14/19] softirq: Make softirq control and processing RT
  aware
-Message-ID: <20201123235801.GE1751@lothringen>
+Message-ID: <20201123195603.GA1751@lothringen>
 References: <20201113140207.499353218@linutronix.de>
  <20201113141734.324061522@linutronix.de>
  <20201123134437.GA95787@lothringen>
@@ -44,10 +44,12 @@ On Mon, Nov 23, 2020 at 08:27:33PM +0100, Thomas Gleixner wrote:
 > > +static inline void softirq_handle_begin(void) { }
 > > +static inline void softirq_handle_end(void) { }
 
-Ah but then account_irq_enter_time() is called with SOFTIRQ_OFFSET (it's
-currently called with softirq_count == 0 at this point) and that may mess
-up irqtime accounting which relies on it. It could spuriously account all
-the time between the last (soft-)IRQ exit until now as softirq time.
+Oh missed that indeed, sorry!
+
+> 
+> Thanks,
+> 
+>         tglx
 
 _______________________________________________
 linux-um mailing list
