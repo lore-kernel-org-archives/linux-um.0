@@ -1,9 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Message-Id: <20201113141733.005212732@linutronix.de>
-Date: Fri, 13 Nov 2020 15:02:10 +0100
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: [patch 03/19] irqstat: Get rid of nmi_count() and __IRQ_STAT()
-References: <20201113140207.499353218@linutronix.de>
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1khHkx-00063M-AU
+ for linux-um@lists.infradead.org; Mon, 23 Nov 2020 19:44:12 +0000
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [PATCH] um: sigio: return error from add_sigio_fd()
+Date: Mon, 23 Nov 2020 20:44:02 +0100
+Message-Id: <20201123204402.cd59c660941a.I05dae9d28604fcfeb7cbddd602b33b418b624fe5@changeid>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -17,29 +21,44 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Marc Zyngier <maz@kernel.org>, Rich Felker <dalias@libc.org>, Catalin Marinas <catalin.marinas@arm.com>, Paul McKenney <paulmck@kernel.org>, Arnd Bergmann <arnd@arndb.de>, linux-sh@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Frederic Weisbecker <frederic@kernel.org>, Valentin Schneider <valentin.schneider@arm.com>, Jeff Dike <jdike@addtoit.com>, Russell King <linux@armlinux.org.uk>, Yoshinori Sato <ysato@users.sourceforge.jp>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>, linux-um@lists.infradead.org, Will Deacon <will@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, linux-arm-kernel@lists.infradead.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
 
-Nothing uses this anymore.
+From: Johannes Berg <johannes.berg@intel.com>
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+If we run out of space, return an error instead of 0.
+
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- include/linux/irq_cpustat.h |    4 ----
- 1 file changed, 4 deletions(-)
+ arch/um/os-Linux/sigio.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/include/linux/irq_cpustat.h
-+++ b/include/linux/irq_cpustat.h
-@@ -19,10 +19,6 @@
+diff --git a/arch/um/os-Linux/sigio.c b/arch/um/os-Linux/sigio.c
+index 75558080d0bf..f91fd16e9911 100644
+--- a/arch/um/os-Linux/sigio.c
++++ b/arch/um/os-Linux/sigio.c
+@@ -167,15 +167,17 @@ static void update_thread(void)
+ int add_sigio_fd(int fd)
+ {
+ 	struct pollfd *p;
+-	int err = 0, i, n;
++	int err, i, n;
  
- #ifndef __ARCH_IRQ_STAT
- DECLARE_PER_CPU_ALIGNED(irq_cpustat_t, irq_stat);	/* defined in asm/hardirq.h */
--#define __IRQ_STAT(cpu, member)	(per_cpu(irq_stat.member, cpu))
- #endif
+ 	sigio_lock();
+ 	for (i = 0; i < all_sigio_fds.used; i++) {
+ 		if (all_sigio_fds.poll[i].fd == fd)
+ 			break;
+ 	}
+-	if (i == all_sigio_fds.used)
++	if (i == all_sigio_fds.used) {
++		err = -ENOSPC;
+ 		goto out;
++	}
  
--/* arch dependent irq_stat fields */
--#define nmi_count(cpu)		__IRQ_STAT((cpu), __nmi_count)	/* i386 */
--
- #endif	/* __irq_cpustat_h */
+ 	p = &all_sigio_fds.poll[i];
+ 
+-- 
+2.26.2
 
 
 _______________________________________________
