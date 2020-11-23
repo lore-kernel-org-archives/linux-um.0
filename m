@@ -2,19 +2,12 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khGGk-0001S7-2C
- for linux-um@lists.infradead.org; Mon, 23 Nov 2020 18:08:54 +0000
-Received: by sipsolutions.net with esmtpsa
- (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
- (Exim 4.94) (envelope-from <johannes@sipsolutions.net>)
- id 1khGGi-00DJsn-0D
- for linux-um@lists.infradead.org; Mon, 23 Nov 2020 19:08:52 +0100
-Message-ID: <362501dc4aa835093a5a50b42a4a01d5668f6821.camel@sipsolutions.net>
-Subject: Re: [PATCH v3] um: simplify os_idle_sleep() and sleep longer
+ id 1khCM9-00021B-0R
+ for linux-um@lists.infradead.org; Mon, 23 Nov 2020 13:58:14 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Mon, 23 Nov 2020 19:08:42 +0100
-In-Reply-To: <20201123145759.eda58700e604.I3b692c844a4ca459ee3084334a92ac5ef5b4cec4@changeid>
-References: <20201123145759.eda58700e604.I3b692c844a4ca459ee3084334a92ac5ef5b4cec4@changeid>
+Subject: [PATCH v3] um: simplify os_idle_sleep() and sleep longer
+Date: Mon, 23 Nov 2020 14:57:59 +0100
+Message-Id: <20201123145759.eda58700e604.I3b692c844a4ca459ee3084334a92ac5ef5b4cec4@changeid>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -29,52 +22,143 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
 
-On Mon, 2020-11-23 at 14:57 +0100, Johannes Berg wrote:
-> 
-> -void time_travel_sleep(unsigned long long duration)
-> +void time_travel_sleep(void)
->  {
-> +	unsigned long long duration = NSEC_PER_SEC * 120;
->  	unsigned long long next = time_travel_time + duration;
->  
->  	if (time_travel_mode == TT_MODE_BASIC)
->  		os_timer_disable();
->  
-> +	/*
-> +	 * In external mode, just tell the external controller we'll
-> +	 * (essentially) wait "forever" (S64_MAX because there are
-> +	 * some potential wrapping issues.)
-> +	 */
-> +	if (time_travel_mode == TT_MODE_EXTERNAL)
-> +		next = S64_MAX;
+From: Johannes Berg <johannes.berg@intel.com>
 
-Ahrg. That was stupid. I should just make that S64_MAX the default, and
-probably in fact crash later if we ever reach that point ...
+There really is no reason to pass the amount of time we should
+sleep, especially since it's just hard-coded to one second.
 
-Otherwise now my suspend/resume only ever suspends for exactly 2
-minutes, since the later event added by the fake RTC is, well, later.
-I'd either have to loop here, or just start with a later time to start
-with.
+Additionally, one second isn't really all that long, and as we
+are expecting to be woken up by a signal, we can sleep longer
+and avoid doing some work every second, do this by replacing
+clock_nanosleep() with just an empty select() that can _only_
+be woken up by a signal.
 
-And really there's no reason _not_ to start with a later time. In a
-normally operating system, this is always the fallback, since another
-event has been added to the list already to wake up for e.g. the next
-10ms (HZ=100) timer.
+We can also remove the deliver_alarm() since we don't need to
+do that when we got e.g. SIGIO that woke us up, and if we got
+SIGALRM the signal handler will actually (have) run, so it's
+just unnecessary extra work.
 
-If you _actually_ hit this, your system is misconfigured in some way, or
-you can't actually get it back out of this state anyway since it'd sleep
-for millenia (if you had done this in a real system), so crashing on it
-seems completely fine. I don't foresee anyone really wanting to test a
-few thousand years.
+In externally controlled time-travel mode, just wait "forever",
+which basically sets our next event if any, and if we really
+don't have any then we'll wait forever without any control
+socket communication until the outside system sends us an event.
 
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+---
+ arch/um/include/linux/time-internal.h |  2 +-
+ arch/um/include/shared/os.h           |  2 +-
+ arch/um/kernel/process.c              | 11 ++++-------
+ arch/um/kernel/time.c                 | 11 ++++++++++-
+ arch/um/os-Linux/time.c               | 16 +++-------------
+ 5 files changed, 19 insertions(+), 23 deletions(-)
 
-So ... I guess I'll just resent v4 that makes it sleep forever, and
-perhaps adds a "you did something stupid so I'll just crash" to when you
-suspend without ever having anything to resume from (in time-travel
-only, of course.)
-
-johannes
+diff --git a/arch/um/include/linux/time-internal.h b/arch/um/include/linux/time-internal.h
+index f3b03d39a854..deb7f1d209eb 100644
+--- a/arch/um/include/linux/time-internal.h
++++ b/arch/um/include/linux/time-internal.h
+@@ -28,7 +28,7 @@ struct time_travel_event {
+ 
+ extern enum time_travel_mode time_travel_mode;
+ 
+-void time_travel_sleep(unsigned long long duration);
++void time_travel_sleep(void);
+ 
+ static inline void
+ time_travel_set_event_fn(struct time_travel_event *e,
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index f467d28fc0b4..c89ce642b0d3 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -256,7 +256,7 @@ extern void os_warn(const char *fmt, ...)
+ 	__attribute__ ((format (printf, 1, 2)));
+ 
+ /* time.c */
+-extern void os_idle_sleep(unsigned long long nsecs);
++extern void os_idle_sleep(void);
+ extern int os_timer_create(void);
+ extern int os_timer_set_interval(unsigned long long nsecs);
+ extern int os_timer_one_shot(unsigned long long nsecs);
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index 3bed09538dd9..0686fabba576 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -204,13 +204,10 @@ void initial_thread_cb(void (*proc)(void *), void *arg)
+ 
+ static void um_idle_sleep(void)
+ {
+-	unsigned long long duration = UM_NSEC_PER_SEC;
+-
+-	if (time_travel_mode != TT_MODE_OFF) {
+-		time_travel_sleep(duration);
+-	} else {
+-		os_idle_sleep(duration);
+-	}
++	if (time_travel_mode != TT_MODE_OFF)
++		time_travel_sleep();
++	else
++		os_idle_sleep();
+ }
+ 
+ void arch_cpu_idle(void)
+diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
+index 8dafc3f2add4..b69130c77827 100644
+--- a/arch/um/kernel/time.c
++++ b/arch/um/kernel/time.c
+@@ -399,13 +399,22 @@ static void time_travel_oneshot_timer(struct time_travel_event *e)
+ 	deliver_alarm();
+ }
+ 
+-void time_travel_sleep(unsigned long long duration)
++void time_travel_sleep(void)
+ {
++	unsigned long long duration = NSEC_PER_SEC * 120;
+ 	unsigned long long next = time_travel_time + duration;
+ 
+ 	if (time_travel_mode == TT_MODE_BASIC)
+ 		os_timer_disable();
+ 
++	/*
++	 * In external mode, just tell the external controller we'll
++	 * (essentially) wait "forever" (S64_MAX because there are
++	 * some potential wrapping issues.)
++	 */
++	if (time_travel_mode == TT_MODE_EXTERNAL)
++		next = S64_MAX;
++
+ 	time_travel_update_time(next, true);
+ 
+ 	if (time_travel_mode == TT_MODE_BASIC &&
+diff --git a/arch/um/os-Linux/time.c b/arch/um/os-Linux/time.c
+index 90f6de224c70..27b447505782 100644
+--- a/arch/um/os-Linux/time.c
++++ b/arch/um/os-Linux/time.c
+@@ -99,19 +99,9 @@ long long os_nsecs(void)
+ }
+ 
+ /**
+- * os_idle_sleep() - sleep for a given time of nsecs
+- * @nsecs: nanoseconds to sleep
++ * os_idle_sleep() - sleep until interrupted
+  */
+-void os_idle_sleep(unsigned long long nsecs)
++void os_idle_sleep(void)
+ {
+-	struct timespec ts = {
+-		.tv_sec  = nsecs / UM_NSEC_PER_SEC,
+-		.tv_nsec = nsecs % UM_NSEC_PER_SEC
+-	};
+-
+-	/*
+-	 * Relay the signal if clock_nanosleep is interrupted.
+-	 */
+-	if (clock_nanosleep(CLOCK_MONOTONIC, 0, &ts, NULL))
+-		deliver_alarm();
++	select(0, NULL, NULL, NULL, NULL);
+ }
+-- 
+2.26.2
 
 
 _______________________________________________
