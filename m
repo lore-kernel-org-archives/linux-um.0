@@ -1,79 +1,84 @@
-Return-Path: <linux-sh-owner@vger.kernel.org>
-Message-Id: <20201113141733.864469886@linutronix.de>
-Date: Fri, 13 Nov 2020 15:02:17 +0100
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: [patch 10/19] preempt: Cleanup the macro maze a bit
-References: <20201113140207.499353218@linutronix.de>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1khGGk-0001S7-2C
+ for linux-um@lists.infradead.org; Mon, 23 Nov 2020 18:08:54 +0000
+Received: by sipsolutions.net with esmtpsa
+ (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+ (Exim 4.94) (envelope-from <johannes@sipsolutions.net>)
+ id 1khGGi-00DJsn-0D
+ for linux-um@lists.infradead.org; Mon, 23 Nov 2020 19:08:52 +0100
+Message-ID: <362501dc4aa835093a5a50b42a4a01d5668f6821.camel@sipsolutions.net>
+Subject: Re: [PATCH v3] um: simplify os_idle_sleep() and sleep longer
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Mon, 23 Nov 2020 19:08:42 +0100
+In-Reply-To: <20201123145759.eda58700e604.I3b692c844a4ca459ee3084334a92ac5ef5b4cec4@changeid>
+References: <20201123145759.eda58700e604.I3b692c844a4ca459ee3084334a92ac5ef5b4cec4@changeid>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Frederic Weisbecker <frederic@kernel.org>, Paul McKenney <paulmck@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Arnd Bergmann <arnd@arndb.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Russell King <linux@armlinux.org.uk>, Marc Zyngier <maz@kernel.org>, Valentin Schneider <valentin.schneider@arm.com>, linux-arm-kernel@lists.infradead.org, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
 
-Make the macro maze consistent and prepare it for adding the RT variant for
-BH accounting.
+On Mon, 2020-11-23 at 14:57 +0100, Johannes Berg wrote:
+> 
+> -void time_travel_sleep(unsigned long long duration)
+> +void time_travel_sleep(void)
+>  {
+> +	unsigned long long duration = NSEC_PER_SEC * 120;
+>  	unsigned long long next = time_travel_time + duration;
+>  
+>  	if (time_travel_mode == TT_MODE_BASIC)
+>  		os_timer_disable();
+>  
+> +	/*
+> +	 * In external mode, just tell the external controller we'll
+> +	 * (essentially) wait "forever" (S64_MAX because there are
+> +	 * some potential wrapping issues.)
+> +	 */
+> +	if (time_travel_mode == TT_MODE_EXTERNAL)
+> +		next = S64_MAX;
 
- - Use nmi_count() for the NMI portion of preempt count
- - Introduce in_hardirq() to make the naming consistent and non-ambiguos
- - Use the macros to create combined checks (e.g. in_task()) so the
-   softirq representation for RT just falls into place.
- - Update comments and move the deprecated macros aside
+Ahrg. That was stupid. I should just make that S64_MAX the default, and
+probably in fact crash later if we ever reach that point ...
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- include/linux/preempt.h |   30 ++++++++++++++++--------------
- 1 file changed, 16 insertions(+), 14 deletions(-)
+Otherwise now my suspend/resume only ever suspends for exactly 2
+minutes, since the later event added by the fake RTC is, well, later.
+I'd either have to loop here, or just start with a later time to start
+with.
 
---- a/include/linux/preempt.h
-+++ b/include/linux/preempt.h
-@@ -77,31 +77,33 @@
- /* preempt_count() and related functions, depends on PREEMPT_NEED_RESCHED */
- #include <asm/preempt.h>
- 
-+#define nmi_count()	(preempt_count() & NMI_MASK)
- #define hardirq_count()	(preempt_count() & HARDIRQ_MASK)
- #define softirq_count()	(preempt_count() & SOFTIRQ_MASK)
--#define irq_count()	(preempt_count() & (HARDIRQ_MASK | SOFTIRQ_MASK \
--				 | NMI_MASK))
-+#define irq_count()	(nmi_count() | hardirq_count() | softirq_count())
- 
- /*
-- * Are we doing bottom half or hardware interrupt processing?
-+ * Macros to retrieve the current execution context:
-  *
-- * in_irq()       - We're in (hard) IRQ context
-+ * in_nmi()		- We're in NMI context
-+ * in_hardirq()		- We're in hard IRQ context
-+ * in_serving_softirq()	- We're in softirq context
-+ * in_task()		- We're in task context
-+ */
-+#define in_nmi()		(nmi_count())
-+#define in_hardirq()		(hardirq_count())
-+#define in_serving_softirq()	(softirq_count() & SOFTIRQ_OFFSET)
-+#define in_task()		(!(in_nmi() | in_hardirq() | in_serving_softirq()))
-+
-+/*
-+ * The following macros are deprecated and should not be used in new code:
-+ * in_irq()       - Obsolete version of in_hardirq()
-  * in_softirq()   - We have BH disabled, or are processing softirqs
-  * in_interrupt() - We're in NMI,IRQ,SoftIRQ context or have BH disabled
-- * in_serving_softirq() - We're in softirq context
-- * in_nmi()       - We're in NMI context
-- * in_task()	  - We're in task context
-- *
-- * Note: due to the BH disabled confusion: in_softirq(),in_interrupt() really
-- *       should not be used in new code.
-  */
- #define in_irq()		(hardirq_count())
- #define in_softirq()		(softirq_count())
- #define in_interrupt()		(irq_count())
--#define in_serving_softirq()	(softirq_count() & SOFTIRQ_OFFSET)
--#define in_nmi()		(preempt_count() & NMI_MASK)
--#define in_task()		(!(preempt_count() & \
--				   (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_OFFSET)))
- 
- /*
-  * The preempt_count offset after preempt_disable();
+And really there's no reason _not_ to start with a later time. In a
+normally operating system, this is always the fallback, since another
+event has been added to the list already to wake up for e.g. the next
+10ms (HZ=100) timer.
 
+If you _actually_ hit this, your system is misconfigured in some way, or
+you can't actually get it back out of this state anyway since it'd sleep
+for millenia (if you had done this in a real system), so crashing on it
+seems completely fine. I don't foresee anyone really wanting to test a
+few thousand years.
+
+
+So ... I guess I'll just resent v4 that makes it sleep forever, and
+perhaps adds a "you did something stupid so I'll just crash" to when you
+suspend without ever having anything to resume from (in time-travel
+only, of course.)
+
+johannes
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
