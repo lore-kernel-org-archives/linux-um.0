@@ -1,12 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khGct-0004O6-W2
- for linux-um@lists.infradead.org; Mon, 23 Nov 2020 18:31:49 +0000
-From: Christopher Obbard <chris.obbard@collabora.com>
-Subject: [PATCH] um: ubd: Set device serial attribute from cmdline
-Date: Mon, 23 Nov 2020 18:31:37 +0000
-Message-Id: <20201123183137.741647-1-chris.obbard@collabora.com>
+ id 1khI4D-0007L2-HH
+ for linux-um@lists.infradead.org; Mon, 23 Nov 2020 20:04:08 +0000
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [PATCH v5 3/5] um: allow PM with suspend-to-idle
+Date: Mon, 23 Nov 2020 21:03:54 +0100
+Message-Id: <20201123210307.6d11713fcf44.Id4fe7fb6f0405eb24f3db3ae7a6276293f0ce6f7@changeid>
+In-Reply-To: <20201123200356.297213-1-johannes@sipsolutions.net>
+References: <20201123200356.297213-1-johannes@sipsolutions.net>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -20,168 +23,137 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Sjoerd Simons <sjoerd@collabora.co.uk>, Ben Hutchings <ben.hutchings@codethink.co.uk>, Gabriel Krisman Bertazi <krisman@collabora.com>, Christopher Obbard <chris.obbard@collabora.com>, Arnd Bergmann <arnd@arndb.de>
+To: linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
 
-Adds the ability to set the UBD device serial number from the
-commandline, disabling the serial number functionality by default.
+From: Johannes Berg <johannes.berg@intel.com>
 
-In some cases it may be useful to set a serial to the UBD device, such
-that downstream users (i.e. udev) can use this information to better
-describe the hardware to the user from the UML cmdline. In our case we
-use this parameter to create some entries under /dev/disk/by-ubd-id/
-for each of the UBD devices passed through the UML cmdline.
+In order to be able to experiment with suspend in UML, add the
+minimal work to be able to suspend (s2idle) an instance of UML,
+and be able to wake it back up from that state with the USR1
+signal sent to the main UML process.
 
-Signed-off-by: Christopher Obbard <chris.obbard@collabora.com>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- arch/um/drivers/ubd_kern.c | 78 ++++++++++++++++++++++++++++++--------
- 1 file changed, 62 insertions(+), 16 deletions(-)
+ arch/um/Kconfig                    |  5 +++++
+ arch/um/include/shared/kern_util.h |  2 ++
+ arch/um/include/shared/os.h        |  1 +
+ arch/um/kernel/um_arch.c           | 25 +++++++++++++++++++++++++
+ arch/um/os-Linux/signal.c          | 14 +++++++++++++-
+ 5 files changed, 46 insertions(+), 1 deletion(-)
 
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index a97b40432331..f59e23748c16 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -155,6 +155,7 @@ struct ubd {
- 	/* name (and fd, below) of the file opened for writing, either the
- 	 * backing or the cow file. */
- 	char *file;
-+	char *serial;
- 	int count;
- 	int fd;
- 	__u64 size;
-@@ -180,6 +181,7 @@ struct ubd {
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index 4b799fad8b48..1c57599b82fa 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -192,3 +192,8 @@ config UML_TIME_TRAVEL_SUPPORT
+ endmenu
  
- #define DEFAULT_UBD { \
- 	.file = 		NULL, \
-+	.serial =		NULL, \
- 	.count =		0, \
- 	.fd =			-1, \
- 	.size =			-1, \
-@@ -272,7 +274,7 @@ static int ubd_setup_common(char *str, int *index_out, char **error_out)
+ source "arch/um/drivers/Kconfig"
++
++config ARCH_SUSPEND_POSSIBLE
++	def_bool y
++
++source "kernel/power/Kconfig"
+diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
+index ccafb62e8cce..9c08e728a675 100644
+--- a/arch/um/include/shared/kern_util.h
++++ b/arch/um/include/shared/kern_util.h
+@@ -39,6 +39,8 @@ extern int is_syscall(unsigned long addr);
+ 
+ extern void timer_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
+ 
++extern void uml_pm_wake(void);
++
+ extern int start_uml(void);
+ extern void paging_init(void);
+ 
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index 0f7fb8bad728..78250a05394a 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -241,6 +241,7 @@ extern int set_signals(int enable);
+ extern int set_signals_trace(int enable);
+ extern int os_is_signal_stack(void);
+ extern void deliver_alarm(void);
++extern void register_pm_wake_signal(void);
+ 
+ /* util.c */
+ extern void stack_protections(unsigned long address);
+diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
+index 76b37297b7d4..237a8d73a096 100644
+--- a/arch/um/kernel/um_arch.c
++++ b/arch/um/kernel/um_arch.c
+@@ -13,6 +13,7 @@
+ #include <linux/sched.h>
+ #include <linux/sched/task.h>
+ #include <linux/kmsg_dump.h>
++#include <linux/suspend.h>
+ 
+ #include <asm/processor.h>
+ #include <asm/sections.h>
+@@ -377,3 +378,27 @@ void *text_poke(void *addr, const void *opcode, size_t len)
+ void text_poke_sync(void)
  {
- 	struct ubd *ubd_dev;
- 	struct openflags flags = global_openflags;
--	char *backing_file;
-+	char *file, *backing_file, *serial;
- 	int n, err = 0, i;
- 
- 	if(index_out) *index_out = -1;
-@@ -368,24 +370,27 @@ static int ubd_setup_common(char *str, int *index_out, char **error_out)
- 	goto out;
- 
- break_loop:
--	backing_file = strchr(str, ',');
-+	file = strsep(&str, ",:");
-+	if (*file == '\0')
-+		file = NULL;
- 
--	if (backing_file == NULL)
--		backing_file = strchr(str, ':');
-+	backing_file = strsep(&str, ",:");
-+	if (*backing_file == '\0')
-+		backing_file = NULL;
- 
--	if(backing_file != NULL){
--		if(ubd_dev->no_cow){
--			*error_out = "Can't specify both 'd' and a cow file";
--			goto out;
--		}
--		else {
--			*backing_file = '\0';
--			backing_file++;
--		}
-+	serial = strsep(&str, ",:");
-+	if (*serial == '\0')
-+		serial = NULL;
+ }
 +
-+	if (backing_file && ubd_dev->no_cow) {
-+		*error_out = "Can't specify both 'd' and a cow file";
-+		goto out;
- 	}
++#ifdef CONFIG_PM_SLEEP
++void uml_pm_wake(void)
++{
++	pm_system_wakeup();
++}
 +
- 	err = 0;
--	ubd_dev->file = str;
-+	ubd_dev->file = file;
- 	ubd_dev->cow.file = backing_file;
-+	ubd_dev->serial = serial;
- 	ubd_dev->boot_openflags = flags;
- out:
- 	mutex_unlock(&ubd_lock);
-@@ -406,7 +411,7 @@ static int ubd_setup(char *str)
- 
- __setup("ubd", ubd_setup);
- __uml_help(ubd_setup,
--"ubd<n><flags>=<filename>[(:|,)<filename2>]\n"
-+"ubd<n><flags>=<filename>[(:|,)<filename2>][(:|,)<serial>]\n"
- "    This is used to associate a device with a file in the underlying\n"
- "    filesystem. When specifying two filenames, the first one is the\n"
- "    COW name and the second is the backing file name. As separator you can\n"
-@@ -429,6 +434,12 @@ __uml_help(ubd_setup,
- "    UMLs and file locking will be turned off - this is appropriate for a\n"
- "    cluster filesystem and inappropriate at almost all other times.\n\n"
- "    't' will disable trim/discard support on the device (enabled by default).\n\n"
-+"    An optional device serial number can be exposed using the serial parameter\n"
-+"    on the cmdline which is exposed as a sysfs entry. This is particularly\n"
-+"    useful when a unique number should be given to the device. Note when\n"
-+"    specifying a label, the filename2 must be also presented. It can be\n"
-+"    an empty string, in which case the backing file is not used:\n"
-+"       ubd0=File,,Serial\n"
- );
- 
- static int udb_setup(char *str)
-@@ -868,6 +879,41 @@ static void ubd_device_release(struct device *dev)
- 	*ubd_dev = ((struct ubd) DEFAULT_UBD);
++static int init_pm_wake_signal(void)
++{
++	/*
++	 * In external time-travel mode we can't use signals to wake up
++	 * since that would mess with the scheduling. We'll have to do
++	 * some additional work to support wakeup on virtio devices or
++	 * similar, perhaps implementing a fake RTC controller that can
++	 * trigger wakeup (and request the appropriate scheduling from
++	 * the external scheduler when going to suspend.)
++	 */
++	if (time_travel_mode != TT_MODE_EXTERNAL)
++		register_pm_wake_signal();
++	return 0;
++}
++
++late_initcall(init_pm_wake_signal);
++#endif
+diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
+index b58bc68cbe64..0a2ea84033b4 100644
+--- a/arch/um/os-Linux/signal.c
++++ b/arch/um/os-Linux/signal.c
+@@ -136,6 +136,16 @@ void set_sigstack(void *sig_stack, int size)
+ 		panic("enabling signal stack failed, errno = %d\n", errno);
  }
  
-+static ssize_t serial_show(struct device *dev,
-+			   struct device_attribute *attr, char *buf)
++static void sigusr1_handler(int sig, struct siginfo *unused_si, mcontext_t *mc)
 +{
-+	struct gendisk *disk = dev_to_disk(dev);
-+	struct ubd *ubd_dev = disk->private_data;
-+
-+	if (!ubd_dev)
-+		return 0;
-+
-+	return sprintf(buf, "%s", ubd_dev->serial);
++	uml_pm_wake();
 +}
 +
-+static DEVICE_ATTR_RO(serial);
-+
-+static struct attribute *ubd_attrs[] = {
-+	&dev_attr_serial.attr,
-+	NULL,
-+};
-+
-+static umode_t ubd_attrs_are_visible(struct kobject *kobj,
-+				     struct attribute *a, int n)
++void register_pm_wake_signal(void)
 +{
-+	return a->mode;
++	set_handler(SIGUSR1);
 +}
 +
-+static const struct attribute_group ubd_attr_group = {
-+	.attrs = ubd_attrs,
-+	.is_visible = ubd_attrs_are_visible,
-+};
-+
-+static const struct attribute_group *ubd_attr_groups[] = {
-+	&ubd_attr_group,
-+	NULL,
-+};
-+
- static int ubd_disk_register(int major, u64 size, int unit,
- 			     struct gendisk **disk_out)
- {
-@@ -899,7 +945,7 @@ static int ubd_disk_register(int major, u64 size, int unit,
+ static void (*handlers[_NSIG])(int sig, struct siginfo *si, mcontext_t *mc) = {
+ 	[SIGSEGV] = sig_handler,
+ 	[SIGBUS] = sig_handler,
+@@ -145,7 +155,9 @@ static void (*handlers[_NSIG])(int sig, struct siginfo *si, mcontext_t *mc) = {
  
- 	disk->private_data = &ubd_devs[unit];
- 	disk->queue = ubd_devs[unit].queue;
--	device_add_disk(parent, disk, NULL);
-+	device_add_disk(parent, disk, ubd_attr_groups);
+ 	[SIGIO] = sig_handler,
+ 	[SIGWINCH] = sig_handler,
+-	[SIGALRM] = timer_alarm_handler
++	[SIGALRM] = timer_alarm_handler,
++
++	[SIGUSR1] = sigusr1_handler,
+ };
  
- 	*disk_out = disk;
- 	return 0;
+ static void hard_handler(int sig, siginfo_t *si, void *p)
 -- 
-2.28.0
+2.26.2
 
 
 _______________________________________________
