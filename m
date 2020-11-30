@@ -2,14 +2,14 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khI4D-0007L2-HH
- for linux-um@lists.infradead.org; Mon, 23 Nov 2020 20:04:08 +0000
+ id 1kji61-0005Gc-2W
+ for linux-um@lists.infradead.org; Mon, 30 Nov 2020 12:16:00 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v5 3/5] um: allow PM with suspend-to-idle
-Date: Mon, 23 Nov 2020 21:03:54 +0100
-Message-Id: <20201123210307.6d11713fcf44.Id4fe7fb6f0405eb24f3db3ae7a6276293f0ce6f7@changeid>
-In-Reply-To: <20201123200356.297213-1-johannes@sipsolutions.net>
-References: <20201123200356.297213-1-johannes@sipsolutions.net>
+Subject: [PATCH v6 4/5] um: support suspend to RAM
+Date: Mon, 30 Nov 2020 13:15:49 +0100
+Message-Id: <20201130131520.80e9b1810786.I3e8e33cbe3196d9325946af3a5655f7b6719382d@changeid>
+In-Reply-To: <20201130121550.173513-1-johannes@sipsolutions.net>
+References: <20201130121550.173513-1-johannes@sipsolutions.net>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -28,130 +28,304 @@ Cc: Johannes Berg <johannes.berg@intel.com>
 
 From: Johannes Berg <johannes.berg@intel.com>
 
-In order to be able to experiment with suspend in UML, add the
-minimal work to be able to suspend (s2idle) an instance of UML,
-and be able to wake it back up from that state with the USR1
-signal sent to the main UML process.
+With all the previous bits in place, we can now also support
+suspend to RAM, in the sense that everything is suspended,
+not just most, including userspace, processes like in s2idle.
+
+Since um_idle_sleep() now waits forever, we can simply call
+that to "suspend" the system.
+
+As before, you can wake it up using SIGUSR1 since we're just
+in a select() call that only needs to return; thus also from
+this mode, any arbitrary other signal that we catch and that
+doesn't cause UML to abort (e.g. SIGIO) works.
+
+In order to implement selective resume from certain devices,
+and not have any arbitrary device interrupt wake up, suspend
+interrupts by removing SIGIO notification (O_ASYNC) from all
+the FDs that are not supposed to wake up the system. Then,
+suspend SIGIO handling by installing a dummy noop handler.
+
+Since we're in an infinite select, the mere act of receiving
+SIGIO wakes us up, and then after things have been restored
+enough, re-set O_ASYNC for all previously suspended FDs,
+reinstall the proper SIGIO handler, and send SIGIO to self
+to process anything that might now be pending.
 
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- arch/um/Kconfig                    |  5 +++++
- arch/um/include/shared/kern_util.h |  2 ++
- arch/um/include/shared/os.h        |  1 +
- arch/um/kernel/um_arch.c           | 25 +++++++++++++++++++++++++
- arch/um/os-Linux/signal.c          | 14 +++++++++++++-
- 5 files changed, 46 insertions(+), 1 deletion(-)
+ arch/um/include/shared/kern_util.h |  1 +
+ arch/um/include/shared/os.h        |  4 ++
+ arch/um/kernel/irq.c               | 81 ++++++++++++++++++++++++++++++
+ arch/um/kernel/process.c           |  2 +-
+ arch/um/kernel/um_arch.c           | 42 ++++++++++++++++
+ arch/um/os-Linux/signal.c          | 23 ++++++++-
+ 6 files changed, 150 insertions(+), 3 deletions(-)
 
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index 4b799fad8b48..1c57599b82fa 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -192,3 +192,8 @@ config UML_TIME_TRAVEL_SUPPORT
- endmenu
- 
- source "arch/um/drivers/Kconfig"
-+
-+config ARCH_SUSPEND_POSSIBLE
-+	def_bool y
-+
-+source "kernel/power/Kconfig"
 diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
-index ccafb62e8cce..9c08e728a675 100644
+index 9c08e728a675..2888ec812f6e 100644
 --- a/arch/um/include/shared/kern_util.h
 +++ b/arch/um/include/shared/kern_util.h
-@@ -39,6 +39,8 @@ extern int is_syscall(unsigned long addr);
+@@ -68,5 +68,6 @@ extern void bus_handler(int sig, struct siginfo *si, struct uml_pt_regs *regs);
+ extern void winch(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
+ extern void fatal_sigsegv(void) __attribute__ ((noreturn));
  
- extern void timer_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
++void um_idle_sleep(void);
  
-+extern void uml_pm_wake(void);
-+
- extern int start_uml(void);
- extern void paging_init(void);
- 
+ #endif
 diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index 0f7fb8bad728..78250a05394a 100644
+index 78250a05394a..df64a3b98c54 100644
 --- a/arch/um/include/shared/os.h
 +++ b/arch/um/include/shared/os.h
-@@ -241,6 +241,7 @@ extern int set_signals(int enable);
- extern int set_signals_trace(int enable);
- extern int os_is_signal_stack(void);
- extern void deliver_alarm(void);
-+extern void register_pm_wake_signal(void);
+@@ -233,6 +233,8 @@ extern void timer_set_signal_handler(void);
+ extern void set_sigstack(void *sig_stack, int size);
+ extern void remove_sigstack(void);
+ extern void set_handler(int sig);
++extern void suspend_sigio(void);
++extern void send_sigio_to_self(void);
+ extern int change_sig(int signal, int on);
+ extern void block_signals(void);
+ extern void unblock_signals(void);
+@@ -307,6 +309,8 @@ extern int os_mod_epoll_fd(int events, int fd, void *data);
+ extern int os_del_epoll_fd(int fd);
+ extern void os_set_ioignore(void);
+ extern void os_close_epoll_fd(void);
++extern void um_irqs_suspend(void);
++extern void um_irqs_resume(void);
  
- /* util.c */
- extern void stack_protections(unsigned long address);
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index 76b37297b7d4..237a8d73a096 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -13,6 +13,7 @@
- #include <linux/sched.h>
- #include <linux/sched/task.h>
- #include <linux/kmsg_dump.h>
-+#include <linux/suspend.h>
+ /* sigio.c */
+ extern int add_sigio_fd(int fd);
+diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
+index bbf5a466b44c..5c9798d0037f 100644
+--- a/arch/um/kernel/irq.c
++++ b/arch/um/kernel/irq.c
+@@ -36,12 +36,14 @@ struct irq_reg {
+ 	int events;
+ 	bool active;
+ 	bool pending;
++	bool wakeup;
+ };
  
- #include <asm/processor.h>
- #include <asm/sections.h>
-@@ -377,3 +378,27 @@ void *text_poke(void *addr, const void *opcode, size_t len)
- void text_poke_sync(void)
- {
- }
-+
+ struct irq_entry {
+ 	struct list_head list;
+ 	int fd;
+ 	struct irq_reg reg[NUM_IRQ_TYPES];
++	bool suspended;
+ };
+ 
+ static DEFINE_SPINLOCK(irq_lock);
+@@ -367,6 +369,84 @@ int um_request_irq(int irq, int fd, enum um_irq_type type,
+ 
+ EXPORT_SYMBOL(um_request_irq);
+ 
 +#ifdef CONFIG_PM_SLEEP
-+void uml_pm_wake(void)
++void um_irqs_suspend(void)
 +{
-+	pm_system_wakeup();
++	struct irq_entry *entry;
++	unsigned long flags;
++
++	suspend_sigio();
++
++	spin_lock_irqsave(&irq_lock, flags);
++	list_for_each_entry(entry, &active_fds, list) {
++		enum um_irq_type t;
++		bool wake = false;
++
++		for (t = 0; t < NUM_IRQ_TYPES; t++) {
++			if (!entry->reg[t].events)
++				continue;
++
++			if (entry->reg[t].wakeup) {
++				wake = true;
++				break;
++			}
++		}
++
++		if (!wake) {
++			entry->suspended = true;
++			os_clear_fd_async(entry->fd);
++		}
++	}
++	spin_unlock_irqrestore(&irq_lock, flags);
 +}
 +
-+static int init_pm_wake_signal(void)
++void um_irqs_resume(void)
 +{
-+	/*
-+	 * In external time-travel mode we can't use signals to wake up
-+	 * since that would mess with the scheduling. We'll have to do
-+	 * some additional work to support wakeup on virtio devices or
-+	 * similar, perhaps implementing a fake RTC controller that can
-+	 * trigger wakeup (and request the appropriate scheduling from
-+	 * the external scheduler when going to suspend.)
-+	 */
-+	if (time_travel_mode != TT_MODE_EXTERNAL)
-+		register_pm_wake_signal();
++	struct irq_entry *entry;
++	unsigned long flags;
++
++	spin_lock_irqsave(&irq_lock, flags);
++	list_for_each_entry(entry, &active_fds, list) {
++		if (entry->suspended) {
++			int err = os_set_fd_async(entry->fd);
++
++			WARN(err < 0, "os_set_fd_async returned %d\n", err);
++			entry->suspended = false;
++		}
++	}
++	spin_unlock_irqrestore(&irq_lock, flags);
++
++	set_handler(SIGIO);
++	send_sigio_to_self();
++}
++
++static int normal_irq_set_wake(struct irq_data *d, unsigned int on)
++{
++	struct irq_entry *entry;
++	unsigned long flags;
++
++	spin_lock_irqsave(&irq_lock, flags);
++	list_for_each_entry(entry, &active_fds, list) {
++		enum um_irq_type t;
++
++		for (t = 0; t < NUM_IRQ_TYPES; t++) {
++			if (!entry->reg[t].events)
++				continue;
++
++			if (entry->reg[t].irq != d->irq)
++				continue;
++			entry->reg[t].wakeup = on;
++			goto unlock;
++		}
++	}
++unlock:
++	spin_unlock_irqrestore(&irq_lock, flags);
++	return 0;
++}
++#else
++#define normal_irq_set_wake NULL
++#endif
++
+ /*
+  * irq_chip must define at least enable/disable and ack when
+  * the edge handler is used.
+@@ -383,6 +463,7 @@ static struct irq_chip normal_irq_type = {
+ 	.irq_ack = dummy,
+ 	.irq_mask = dummy,
+ 	.irq_unmask = dummy,
++	.irq_set_wake = normal_irq_set_wake,
+ };
+ 
+ static struct irq_chip alarm_irq_type = {
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index 0686fabba576..f0f50eae2293 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -202,7 +202,7 @@ void initial_thread_cb(void (*proc)(void *), void *arg)
+ 	kmalloc_ok = save_kmalloc_ok;
+ }
+ 
+-static void um_idle_sleep(void)
++void um_idle_sleep(void)
+ {
+ 	if (time_travel_mode != TT_MODE_OFF)
+ 		time_travel_sleep();
+diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
+index 237a8d73a096..9c7e6d7ea1b3 100644
+--- a/arch/um/kernel/um_arch.c
++++ b/arch/um/kernel/um_arch.c
+@@ -385,6 +385,45 @@ void uml_pm_wake(void)
+ 	pm_system_wakeup();
+ }
+ 
++static int um_suspend_valid(suspend_state_t state)
++{
++	return state == PM_SUSPEND_MEM;
++}
++
++static int um_suspend_prepare(void)
++{
++	um_irqs_suspend();
 +	return 0;
 +}
 +
-+late_initcall(init_pm_wake_signal);
-+#endif
-diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
-index b58bc68cbe64..0a2ea84033b4 100644
---- a/arch/um/os-Linux/signal.c
-+++ b/arch/um/os-Linux/signal.c
-@@ -136,6 +136,16 @@ void set_sigstack(void *sig_stack, int size)
- 		panic("enabling signal stack failed, errno = %d\n", errno);
++static int um_suspend_enter(suspend_state_t state)
++{
++	if (WARN_ON(state != PM_SUSPEND_MEM))
++		return -EINVAL;
++
++	/*
++	 * This is identical to the idle sleep, but we've just
++	 * (during suspend) turned off all interrupt sources
++	 * except for the ones we want, so now we can only wake
++	 * up on something we actually want to wake up on. All
++	 * timing has also been suspended.
++	 */
++	um_idle_sleep();
++	return 0;
++}
++
++static void um_suspend_finish(void)
++{
++	um_irqs_resume();
++}
++
++const struct platform_suspend_ops um_suspend_ops = {
++	.valid = um_suspend_valid,
++	.prepare = um_suspend_prepare,
++	.enter = um_suspend_enter,
++	.finish = um_suspend_finish,
++};
++
+ static int init_pm_wake_signal(void)
+ {
+ 	/*
+@@ -397,6 +436,9 @@ static int init_pm_wake_signal(void)
+ 	 */
+ 	if (time_travel_mode != TT_MODE_EXTERNAL)
+ 		register_pm_wake_signal();
++
++	suspend_set_ops(&um_suspend_ops);
++
+ 	return 0;
  }
  
-+static void sigusr1_handler(int sig, struct siginfo *unused_si, mcontext_t *mc)
+diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
+index 0a2ea84033b4..85a7283b166c 100644
+--- a/arch/um/os-Linux/signal.c
++++ b/arch/um/os-Linux/signal.c
+@@ -203,13 +203,17 @@ static void hard_handler(int sig, siginfo_t *si, void *p)
+ 	} while (pending);
+ }
+ 
+-void set_handler(int sig)
++static void noop_handler(int sig, siginfo_t *si, void *p)
 +{
-+	uml_pm_wake();
 +}
 +
-+void register_pm_wake_signal(void)
++static void _set_handler(int sig, bool suspend)
+ {
+ 	struct sigaction action;
+ 	int flags = SA_SIGINFO | SA_ONSTACK;
+ 	sigset_t sig_mask;
+ 
+-	action.sa_sigaction = hard_handler;
++	action.sa_sigaction = suspend ? noop_handler : hard_handler;
+ 
+ 	/* block irq ones */
+ 	sigemptyset(&action.sa_mask);
+@@ -234,6 +238,21 @@ void set_handler(int sig)
+ 		panic("sigprocmask failed - errno = %d\n", errno);
+ }
+ 
++void set_handler(int sig)
 +{
-+	set_handler(SIGUSR1);
++	_set_handler(sig, false);
 +}
 +
- static void (*handlers[_NSIG])(int sig, struct siginfo *si, mcontext_t *mc) = {
- 	[SIGSEGV] = sig_handler,
- 	[SIGBUS] = sig_handler,
-@@ -145,7 +155,9 @@ static void (*handlers[_NSIG])(int sig, struct siginfo *si, mcontext_t *mc) = {
- 
- 	[SIGIO] = sig_handler,
- 	[SIGWINCH] = sig_handler,
--	[SIGALRM] = timer_alarm_handler
-+	[SIGALRM] = timer_alarm_handler,
++void suspend_sigio(void)
++{
++	_set_handler(SIGIO, true);
++}
 +
-+	[SIGUSR1] = sigusr1_handler,
- };
- 
- static void hard_handler(int sig, siginfo_t *si, void *p)
++void send_sigio_to_self(void)
++{
++	kill(0, SIGIO);
++}
++
+ int change_sig(int signal, int on)
+ {
+ 	sigset_t sigset;
 -- 
 2.26.2
 
