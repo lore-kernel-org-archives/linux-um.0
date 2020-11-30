@@ -2,14 +2,16 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1khI4D-0007Ky-GI
- for linux-um@lists.infradead.org; Mon, 23 Nov 2020 20:04:07 +0000
+ id 1kjgGR-0004Lu-Q8
+ for linux-um@lists.infradead.org; Mon, 30 Nov 2020 10:18:36 +0000
+Message-ID: <366f7093a7e358a0d91232dfb744ba6902b5401b.camel@sipsolutions.net>
+Subject: Re: [PATCH v5 1/5] um: simplify os_idle_sleep() and sleep longer
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v5 2/5] um: time: fix read_persistent_clock64() in time-travel
-Date: Mon, 23 Nov 2020 21:03:53 +0100
-Message-Id: <20201123210307.51c595dccd81.I3f5effe88fe040ff9262de115dd71bfd65d2b0a2@changeid>
-In-Reply-To: <20201123200356.297213-1-johannes@sipsolutions.net>
+Date: Mon, 30 Nov 2020 11:18:16 +0100
+In-Reply-To: <64ef8f80-be65-ebfb-dbe9-b0e6e32ed077@kot-begemot.co.uk>
 References: <20201123200356.297213-1-johannes@sipsolutions.net>
+ <20201123210307.9036fe7d71fa.I3b692c844a4ca459ee3084334a92ac5ef5b4cec4@changeid>
+ <64ef8f80-be65-ebfb-dbe9-b0e6e32ed077@kot-begemot.co.uk>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -23,67 +25,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, linux-um@lists.infradead.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+On Mon, 2020-11-30 at 10:17 +0000, Anton Ivanov wrote:
+> 
+> > -void time_travel_sleep(unsigned long long duration);
+> > +void time_travel_sleep(void);
+> 
+> This is missing the change in the definition when timetravel mode is not enabled.
+> 
+> As a result if TT is not enabled in the config the build fails.
 
-In time-travel mode, we've relied on read_persistent_clock64()
-being called only once at system startup, but this is both the
-right thing to call from the pseudo-RTC, and also gets called
-by the timekeeping core during suspend/resume.
+Oops, sorry. I'll send fixed version.
 
-Thus, fix this to always fall make use of the time_travel_time
-in any time-travel mode, initializing time_travel_start at boot
-to the right value depending on the time-travel mode.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- arch/um/kernel/time.c | 21 ++++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
-
-diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
-index 8e8eb8ba04a4..f060d28d0f83 100644
---- a/arch/um/kernel/time.c
-+++ b/arch/um/kernel/time.c
-@@ -676,10 +676,8 @@ void read_persistent_clock64(struct timespec64 *ts)
- {
- 	long long nsecs;
- 
--	if (time_travel_start_set)
-+	if (time_travel_mode != TT_MODE_OFF)
- 		nsecs = time_travel_start + time_travel_time;
--	else if (time_travel_mode == TT_MODE_EXTERNAL)
--		nsecs = time_travel_ext_req(UM_TIMETRAVEL_GET_TOD, -1);
- 	else
- 		nsecs = os_persistent_clock_emulation();
- 
-@@ -689,6 +687,23 @@ void read_persistent_clock64(struct timespec64 *ts)
- 
- void __init time_init(void)
- {
-+	switch (time_travel_mode) {
-+	case TT_MODE_EXTERNAL:
-+		time_travel_start = time_travel_ext_req(UM_TIMETRAVEL_GET_TOD, -1);
-+		/* controller gave us the *current* time, so adjust by that */
-+		time_travel_ext_get_time();
-+		time_travel_start -= time_travel_time;
-+		break;
-+	case TT_MODE_INFCPU:
-+	case TT_MODE_BASIC:
-+		if (!time_travel_start_set)
-+			time_travel_start = os_persistent_clock_emulation();
-+		break;
-+	case TT_MODE_OFF:
-+		/* we just read the host clock with os_persistent_clock_emulation() */
-+		break;
-+	}
-+
- 	timer_set_signal_handler();
- 	late_time_init = um_timer_setup;
- }
--- 
-2.26.2
+johannes
 
 
 _______________________________________________
