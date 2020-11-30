@@ -1,81 +1,52 @@
-Return-Path: <linux-sh-owner@vger.kernel.org>
-Message-Id: <20201113141734.442990268@linutronix.de>
-Date: Fri, 13 Nov 2020 15:02:22 +0100
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: [patch 15/19] tick/sched: Prevent false positive softirq pending
- warnings on RT
-References: <20201113140207.499353218@linutronix.de>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kji60-0005GS-Se
+ for linux-um@lists.infradead.org; Mon, 30 Nov 2020 12:15:58 +0000
+Received: by sipsolutions.net with esmtpsa
+ (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+ (Exim 4.94) (envelope-from <johannes@sipsolutions.net>)
+ id 1kji5y-00HQrD-Sr
+ for linux-um@lists.infradead.org; Mon, 30 Nov 2020 13:15:54 +0100
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [PATCH v6 0/5] um: suspend/resume support
+Date: Mon, 30 Nov 2020 13:15:45 +0100
+Message-Id: <20201130121550.173513-1-johannes@sipsolutions.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Frederic Weisbecker <frederic@kernel.org>, Paul McKenney <paulmck@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Arnd Bergmann <arnd@arndb.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Russell King <linux@armlinux.org.uk>, Marc Zyngier <maz@kernel.org>, Valentin Schneider <valentin.schneider@arm.com>, linux-arm-kernel@lists.infradead.org, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
 
-On RT a task which has soft interrupts disabled can block on a lock and
-schedule out to idle while soft interrupts are pending. This triggers the
-warning in the NOHZ idle code which complains about going idle with pending
-soft interrupts. But as the task is blocked soft interrupt processing is
-temporarily blocked as well which means that such a warning is a false
-positive.
+This adds suspend/resume support to ARCH=um, both in regular and
+time-travel modes.
 
-To prevent that check the per CPU state which indicates that a scheduled
-out task has soft interrupts disabled.
+The biggest complexity was around how IRQs are handled, and I've
+solved that in patch 4 - basically just disables SIGIO for any FD
+that shouldn't wake up the system, and then some trickery with the
+signal handler to not deliver interrupts while they're still not
+enabled again.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- include/linux/bottom_half.h |    6 ++++++
- kernel/softirq.c            |   15 +++++++++++++++
- kernel/time/tick-sched.c    |    2 +-
- 3 files changed, 22 insertions(+), 1 deletion(-)
 
---- a/include/linux/bottom_half.h
-+++ b/include/linux/bottom_half.h
-@@ -32,4 +32,10 @@ static inline void local_bh_enable(void)
- 	__local_bh_enable_ip(_THIS_IP_, SOFTIRQ_DISABLE_OFFSET);
- }
- 
-+#ifdef CONFIG_PREEMPT_RT
-+extern bool local_bh_blocked(void);
-+#else
-+static inline bool local_bh_blocked(void) { return false; }
-+#endif
-+
- #endif /* _LINUX_BH_H */
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -138,6 +138,21 @@ static DEFINE_PER_CPU(struct softirq_ctr
- 	.lock	= INIT_LOCAL_LOCK(softirq_ctrl.lock),
- };
- 
-+/**
-+ * local_bh_blocked() - Check for idle whether BH processing is blocked
-+ *
-+ * Returns false if the per CPU softirq::cnt is 0 otherwise true.
-+ *
-+ * This is invoked from the idle task to guard against false positive
-+ * softirq pending warnings, which would happen when the task which holds
-+ * softirq_ctrl::lock was the only running task on the CPU and blocks on
-+ * some other lock.
-+ */
-+bool local_bh_blocked(void)
-+{
-+	return this_cpu_read(softirq_ctrl.cnt) != 0;
-+}
-+
- void __local_bh_disable_ip(unsigned long ip, unsigned int cnt)
- {
- 	unsigned long flags;
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -925,7 +925,7 @@ static bool can_stop_idle_tick(int cpu,
- 	if (unlikely(local_softirq_pending())) {
- 		static int ratelimit;
- 
--		if (ratelimit < 10 &&
-+		if (ratelimit < 10 && !local_bh_blocked() &&
- 		    (local_softirq_pending() & SOFTIRQ_STOP_IDLE_MASK)) {
- 			pr_warn("NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #%02x!!!\n",
- 				(unsigned int) local_softirq_pending());
+v6:
+ - a few build fixes for !CONFIG_UML_TIME_TRAVEL, thanks Anton
 
+johannes
+
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
