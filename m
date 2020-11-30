@@ -1,17 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kgDyH-0008EC-D2
- for linux-um@lists.infradead.org; Fri, 20 Nov 2020 21:29:34 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH 3/4] um: virtio: disable VQs during suspend if in-band kick is
- used
-Date: Fri, 20 Nov 2020 22:29:20 +0100
-Message-Id: <20201120222625.bd91fe57e2b3.If62b5749ee500e51ad4b86910fb466c039f0ba8f@changeid>
-In-Reply-To: <20201120212921.880781-1-johannes@sipsolutions.net>
-References: <20201120212921.880781-1-johannes@sipsolutions.net>
+ id 1kjjUm-000603-AS
+ for linux-um@lists.infradead.org; Mon, 30 Nov 2020 13:45:37 +0000
+Subject: Re: [PATCH 2/7] um: virtio: use dynamic IRQ allocation
+References: <20201123195621.275470-1-johannes@sipsolutions.net>
+ <20201123205445.ca0bcc4d6429.Id7bf6cf5659579ac53cce88552126e4d98a74e3d@changeid>
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Message-ID: <ef69fa0d-bb33-3f3c-2720-b6d40f7ace6d@kot-begemot.co.uk>
+Date: Mon, 30 Nov 2020 13:45:32 +0000
 MIME-Version: 1.0
+In-Reply-To: <20201123205445.ca0bcc4d6429.Id7bf6cf5659579ac53cce88552126e4d98a74e3d@changeid>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,111 +21,148 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
+To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
 Cc: Johannes Berg <johannes.berg@intel.com>
 
-From: Johannes Berg <johannes.berg@intel.com>
 
-If we're suspended, we'll not be handling interrupts. This is
-fine if the interrupts are not in-band, since then they just
-pile up on the eventfd, which just counts.
 
-However, if we're using in-band messages, then the messages
-will pile up and eventually block, or worse, if we negotiated
-ACKs then we'll never ACK them and things get stuck.
+On 23/11/2020 19:56, Johannes Berg wrote:
+> From: Johannes Berg <johannes.berg@intel.com>
+> 
+> This separates the devices, which is better for debug and for
+> later suspend/resume and wakeup support, since there we'll
+> have to separate which IRQs can wake up the system and which
+> cannot.
+> 
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+> ---
+>   arch/um/drivers/virtio_uml.c | 22 ++++++++++++++--------
+>   arch/um/include/asm/irq.h    |  5 ++---
+>   2 files changed, 16 insertions(+), 11 deletions(-)
+> 
+> diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
+> index f76b8da28d20..94b112749d5b 100644
+> --- a/arch/um/drivers/virtio_uml.c
+> +++ b/arch/um/drivers/virtio_uml.c
+> @@ -55,7 +55,7 @@ struct virtio_uml_device {
+>   	struct platform_device *pdev;
+>   
+>   	spinlock_t sock_lock;
+> -	int sock, req_fd;
+> +	int sock, req_fd, irq;
+>   	u64 features;
+>   	u64 protocol_features;
+>   	u8 status;
+> @@ -409,12 +409,14 @@ static int vhost_user_init_slave_req(struct virtio_uml_device *vu_dev)
+>   		return rc;
+>   	vu_dev->req_fd = req_fds[0];
+>   
+> -	rc = um_request_irq(VIRTIO_IRQ, vu_dev->req_fd, IRQ_READ,
+> +	rc = um_request_irq(UM_IRQ_ALLOC, vu_dev->req_fd, IRQ_READ,
+>   			    vu_req_interrupt, IRQF_SHARED,
+>   			    vu_dev->pdev->name, vu_dev);
+>   	if (rc < 0)
+>   		goto err_close;
+>   
+> +	vu_dev->irq = rc;
+> +
+>   	rc = vhost_user_send_no_payload_fd(vu_dev, VHOST_USER_SET_SLAVE_REQ_FD,
+>   					   req_fds[1]);
+>   	if (rc)
+> @@ -423,7 +425,7 @@ static int vhost_user_init_slave_req(struct virtio_uml_device *vu_dev)
+>   	goto out;
+>   
+>   err_free_irq:
+> -	um_free_irq(VIRTIO_IRQ, vu_dev);
+> +	um_free_irq(vu_dev->irq, vu_dev);
+>   err_close:
+>   	os_close_file(req_fds[0]);
+>   out:
+> @@ -802,7 +804,11 @@ static void vu_del_vq(struct virtqueue *vq)
+>   	struct virtio_uml_vq_info *info = vq->priv;
+>   
+>   	if (info->call_fd >= 0) {
+> -		um_free_irq(VIRTIO_IRQ, vq);
+> +		struct virtio_uml_device *vu_dev;
+> +
+> +		vu_dev = to_virtio_uml_device(vq->vdev);
+> +
+> +		um_free_irq(vu_dev->irq, vq);
+>   		os_close_file(info->call_fd);
+>   	}
+>   
+> @@ -852,7 +858,7 @@ static int vu_setup_vq_call_fd(struct virtio_uml_device *vu_dev,
+>   		return rc;
+>   
+>   	info->call_fd = call_fds[0];
+> -	rc = um_request_irq(VIRTIO_IRQ, info->call_fd, IRQ_READ,
+> +	rc = um_request_irq(vu_dev->irq, info->call_fd, IRQ_READ,
+>   			    vu_interrupt, IRQF_SHARED, info->name, vq);
+>   	if (rc < 0)
+>   		goto close_both;
+> @@ -864,7 +870,7 @@ static int vu_setup_vq_call_fd(struct virtio_uml_device *vu_dev,
+>   	goto out;
+>   
+>   release_irq:
+> -	um_free_irq(VIRTIO_IRQ, vq);
+> +	um_free_irq(vu_dev->irq, vq);
+>   close_both:
+>   	os_close_file(call_fds[0]);
+>   out:
+> @@ -969,7 +975,7 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
+>   
+>   error_setup:
+>   	if (info->call_fd >= 0) {
+> -		um_free_irq(VIRTIO_IRQ, vq);
+> +		um_free_irq(vu_dev->irq, vq);
+>   		os_close_file(info->call_fd);
+>   	}
+>   error_call:
+> @@ -1078,7 +1084,7 @@ static void virtio_uml_release_dev(struct device *d)
+>   
+>   	/* might not have been opened due to not negotiating the feature */
+>   	if (vu_dev->req_fd >= 0) {
+> -		um_free_irq(VIRTIO_IRQ, vu_dev);
+> +		um_free_irq(vu_dev->irq, vu_dev);
+>   		os_close_file(vu_dev->req_fd);
+>   	}
+>   
+> diff --git a/arch/um/include/asm/irq.h b/arch/um/include/asm/irq.h
+> index b6fa6301c75b..547bff7b3a89 100644
+> --- a/arch/um/include/asm/irq.h
+> +++ b/arch/um/include/asm/irq.h
+> @@ -17,18 +17,17 @@
+>   #define TELNETD_IRQ 		12
+>   #define XTERM_IRQ 		13
+>   #define RANDOM_IRQ 		14
+> -#define VIRTIO_IRQ		15
+>   
+>   #ifdef CONFIG_UML_NET_VECTOR
+>   
+> -#define VECTOR_BASE_IRQ		(VIRTIO_IRQ + 1)
+> +#define VECTOR_BASE_IRQ		(RANDOM_IRQ + 1)
+>   #define VECTOR_IRQ_SPACE	8
+>   
+>   #define UM_FIRST_DYN_IRQ (VECTOR_IRQ_SPACE + VECTOR_BASE_IRQ)
+>   
+>   #else
+>   
+> -#define UM_FIRST_DYN_IRQ (VIRTIO_IRQ + 1)
+> +#define UM_FIRST_DYN_IRQ (RANDOM_IRQ + 1)
+>   
+>   #endif
+>   
+> 
 
-To avoid this, disable virtqueues in suspend, and as we may
-only suspend to idle (kernel services are still on), prevent
-sending anything on them as well.
+Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- arch/um/drivers/virtio_uml.c | 44 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
-
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index a6c4bb6c2c01..9404314aa6a9 100644
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -70,6 +70,7 @@ struct virtio_uml_vq_info {
- 	vq_callback_t *callback;
- 	struct time_travel_event defer;
- #endif
-+	bool disabled;
- };
- 
- extern unsigned long long physmem_size, highmem;
-@@ -725,6 +726,9 @@ static bool vu_notify(struct virtqueue *vq)
- 	const uint64_t n = 1;
- 	int rc;
- 
-+	if (info->disabled)
-+		return true;
-+
- 	time_travel_propagate_time();
- 
- 	if (info->kick_fd < 0) {
-@@ -1284,6 +1288,44 @@ static const struct of_device_id virtio_uml_match[] = {
- };
- MODULE_DEVICE_TABLE(of, virtio_uml_match);
- 
-+static int virtio_uml_suspend(struct platform_device *pdev, pm_message_t state)
-+{
-+	struct virtio_uml_device *vu_dev = platform_get_drvdata(pdev);
-+	struct virtqueue *vq;
-+
-+	if (!(vu_dev->protocol_features &
-+			BIT_ULL(VHOST_USER_PROTOCOL_F_INBAND_NOTIFICATIONS)))
-+		return 0;
-+
-+	virtio_device_for_each_vq((&vu_dev->vdev), vq) {
-+		struct virtio_uml_vq_info *info = vq->priv;
-+
-+		info->disabled = true;
-+		vhost_user_set_vring_enable(vu_dev, vq->index, false);
-+	}
-+
-+	return 0;
-+}
-+
-+static int virtio_uml_resume(struct platform_device *pdev)
-+{
-+	struct virtio_uml_device *vu_dev = platform_get_drvdata(pdev);
-+	struct virtqueue *vq;
-+
-+	if (!(vu_dev->protocol_features &
-+			BIT_ULL(VHOST_USER_PROTOCOL_F_INBAND_NOTIFICATIONS)))
-+		return 0;
-+
-+	virtio_device_for_each_vq((&vu_dev->vdev), vq) {
-+		struct virtio_uml_vq_info *info = vq->priv;
-+
-+		info->disabled = false;
-+		vhost_user_set_vring_enable(vu_dev, vq->index, true);
-+	}
-+
-+	return 0;
-+}
-+
- static struct platform_driver virtio_uml_driver = {
- 	.probe = virtio_uml_probe,
- 	.remove = virtio_uml_remove,
-@@ -1291,6 +1333,8 @@ static struct platform_driver virtio_uml_driver = {
- 		.name = "virtio-uml",
- 		.of_match_table = virtio_uml_match,
- 	},
-+	.suspend = virtio_uml_suspend,
-+	.resume = virtio_uml_resume,
- };
- 
- static int __init virtio_uml_init(void)
 -- 
-2.26.2
-
+Anton R. Ivanov
+https://www.kot-begemot.co.uk/
 
 _______________________________________________
 linux-um mailing list
