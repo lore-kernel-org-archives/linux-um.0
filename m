@@ -1,20 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab7.miniserver.com ([37.128.132.42]
- helo=www.kot-begemot.co.uk)
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kkO36-0007jG-Ee
- for linux-um@lists.infradead.org; Wed, 02 Dec 2020 09:03:46 +0000
+ id 1kkC40-00056F-DP
+ for linux-um@lists.infradead.org; Tue, 01 Dec 2020 20:15:53 +0000
+Message-ID: <4ebc9f4069082c1fa3606fc636f15c664bc0af60.camel@sipsolutions.net>
 Subject: Re: [PATCH 7/7] um: simplify IRQ handling code
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Tue, 01 Dec 2020 21:15:47 +0100
+In-Reply-To: <96e31171-965d-c1d7-282e-b1b0bec6b73f@kot-begemot.co.uk>
 References: <20201123195621.275470-1-johannes@sipsolutions.net>
  <20201123205446.6370687fa983.I811873233b8d71fbde9154b84c85b498521e3b12@changeid>
  <96e31171-965d-c1d7-282e-b1b0bec6b73f@kot-begemot.co.uk>
- <4ebc9f4069082c1fa3606fc636f15c664bc0af60.camel@sipsolutions.net>
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Message-ID: <02516224-6caf-c947-3410-0fcdc6e7204e@kot-begemot.co.uk>
-Date: Wed, 2 Dec 2020 09:03:38 +0000
 MIME-Version: 1.0
-In-Reply-To: <4ebc9f4069082c1fa3606fc636f15c664bc0af60.camel@sipsolutions.net>
-Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -23,94 +21,50 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
+To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, linux-um@lists.infradead.org
 
-Ck9uIDAxLzEyLzIwMjAgMjA6MTUsIEpvaGFubmVzIEJlcmcgd3JvdGU6Cj4gT24gTW9uLCAyMDIw
-LTExLTMwIGF0IDE2OjMwICswMDAwLCBBbnRvbiBJdmFub3Ygd3JvdGU6Cj4+IE9uIDIzLzExLzIw
-MjAgMTk6NTYsIEpvaGFubmVzIEJlcmcgd3JvdGU6Cj4+PiBGcm9tOiBKb2hhbm5lcyBCZXJnIDxq
-b2hhbm5lcy5iZXJnQGludGVsLmNvbT4KPj4+Cj4+PiBSZWR1Y2UgZHluYW1pYyBhbGxvY2F0aW9u
-cyAoYW5kIHRoZXJlYnkgY2FjaGUgbWlzc2VzKSBieSBzaW1wbHkKPj4+IGVtYmVkZGluZyB0aGUg
-cmVnaXN0cmF0aW9uIGRhdGEgZm9yIElSUXMgaW4gdGhlIGlycV9lbnRyeSwgd2UKPj4+IG5ldmVy
-IHN1cHBvcnRlZCB0aGVzZSBiZWluZyByZWFsbHkgZHluYW1pYyBhbnl3YXkgYXMgb25seSBvbmUK
-Pj4+IHdhcyBldmVyIGFsbG93ZWQgKCJUcnlpbmcgdG8gcmVyZWdpc3RlciAuLi4iKS4KPj4+Cj4+
-PiBMb2NrbGVzcyBiZWhhdmlvdXIgaXMgcHJlc2VydmVkIGJ5IHJlbW92aW5nIHRoZSBGRCBmcm9t
-IHRoZSBwb2xsCj4+PiBzZXQgYXBwcm9wcmlhdGVseSwgYnV0IHdlIHVzZSByZWctPmV2ZW50cyB0
-byBpbmRpY2F0ZSB3aGV0aGVyIG9yCj4+PiBub3QgdGhpcyBlbnRyeSBpcyB1c2VkLCByYXRoZXIg
-dGhhbiBkeW5hbWljYWxseSBhbGxvY2F0aW5nIHRoZW0uCj4+Pgo+Pj4gQWxzbyBwb3J0IHRoZSBs
-aXN0IG9mIElSUSBlbnRyaWVzIHRvIGxpc3RfaGVhZCBpbnN0ZWFkIG9mIHRoZQo+Pj4gY3VycmVu
-dCBvcGVuLWNvZGVkIHNpbmdseS1saW5rZWQgbGlzdCBpbXBsZW1lbnRhdGlvbiwganVzdCBmb3IK
-Pj4+IHNhbml0eS4KPj4gVGhpcyBvbmUgaXMgYnJva2VuLiBJIHdpbGwgbG9vayBleGFjdGx5IHdo
-ZXJlLiBJdCBpcyBzb21ld2hlcmUgaW4gdGhlIElSUSBkZWxldGUvcmUtcmVxdWVzdCBsb2dpYy4K
-Pj4KPj4gSG93IHRvIHRlc3QKPj4KPj4gcnVuIGlwZXJmIC1zIGluIHRoZSBVTUwgd2l0aCBhIHZl
-Y3RvciBuZXR3b3JrIGRyaXZlci4KPj4KPj4gcnVuIGlwZXJmIC1jIHRvIHRoZSBVTUwgaW5zdGFu
-Y2UgZnJvbSB0aGUgaG9zdCBpbiBhIGxvb3AKPiBIb3cgZG8geW91IHVzdWFsbHkgdXNlIGl0PyB0
-YXAgZGV2aWNlPwoKcmF3IHNvY2tldHMgb24gYSB2RXRoIHBhaXIuCgpJIGF2b2lkIHRhcCBhcyBp
-dCBkb2VzIG5vdCBleGVyY2lzZSB0aGUgZnVsbCB2ZWN0b3IgSU8gY29kZSBmb3Igbm93LiBPbmUg
-ZGF5IEkgd2lsbCBmaW5kIGEgd2F5IHRvIGV4dHJhY3QgZnJvbSB0aGUga2VybmVsIHRoZSB1bmRl
-cmx5aW5nIHNvY2tldCB3aGljaCB0YXAgdXNlcyBpbnRlcm5hbGx5IGFuZCBpdCB3aWxsIGJlY29t
-ZSAxMDAlIGVxdWl2YWxlbnQgdG8gdGhlIG90aGVyIHRyYW5zcG9ydHMuCgo+Cj4+IFRyeSB0byBp
-ZnVwL2lmZG93biB0aGUgdmVjWCBpbnRlcmZhY2UgaW5zaWRlIHRoZSBVTUwuCj4+Cj4+IFdpdGgg
-bWFzdGVyIGl0IHdvcmtzIGZpbmUuIFdpdGggdGhpcyBwYXRjaCBpdCBmYWlscy4KPiBIb3cgZG9l
-cyBpdCBmYWlsPwoKLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0tLS0tLS0tLS0tCldBUk5JTkc6
-IENQVTogMCBQSUQ6IDQwMSBhdCBhcmNoL3VtL2tlcm5lbC9pcnEuYzoxNzcgdW1fcmVxdWVzdF9p
-cnErMHhmZi8weDIyZQpNb2R1bGVzIGxpbmtlZCBpbjoKQ1BVOiAwIFBJRDogNDAxIENvbW06IGlw
-IFRhaW50ZWQ6IEfCoMKgwqDCoMKgwqDCoCBXIDUuMTAuMC1yYzYtMDAwMDctZzZhNTE3MTNlN2Y0
-MyAjMzc3ClN0YWNrOgogwqA2MDMxMjAxOSAwMDAwMDAwMCA2NWJjMzFkMCA2MDMxMjAxOQogwqAw
-MDAwMDAwOSAwMDAwMDAwMCAwMDAwMDAwMCBmZmZmZmY4ZQogwqA2NWJjMzFlMCA2MDMxMzIyOCA2
-NWJjMzIyMCA2MDAzZTJkMgpDYWxsIFRyYWNlOgogwqBbPDYwMzEyMDE5Pl0gPyBwcmludGsrMHgw
-LzB4OTQKIMKgWzw2MDAxZjM0Yj5dIHNob3dfc3RhY2srMHgxM2UvMHgxNGQKIMKgWzw2MDMxMjAx
-OT5dID8gcHJpbnRrKzB4MC8weDk0CiDCoFs8NjAzMTIwMTk+XSA/IHByaW50aysweDAvMHg5NAog
-wqBbPDYwMzEzMjI4Pl0gZHVtcF9zdGFjaysweDM0LzB4MzYKIMKgWzw2MDAzZTJkMj5dIF9fd2Fy
-bisweGYwLzB4MTM3CiDCoFs8NjAwMzUzNzQ+XSA/IHNldF9zaWduYWxzKzB4MC8weDM2CiDCoFs8
-NjAzMTE2MDY+XSB3YXJuX3Nsb3dwYXRoX2ZtdCsweGQxLzB4ZGYKIMKgWzw2MDAyODYyND5dID8g
-dW1sX3Jhd19lbmFibGVfdm5ldF9oZWFkZXJzKzB4MC8weDVkCiDCoFs8NjAyMjdjMDY+XSA/IHN0
-cmxlbisweDAvMHgxMQogwqBbPDYwMzE0YmI3Pl0gPyBuZXRkZXZfaW5mbysweGFkLzB4YWYKIMKg
-Wzw2MDMxMTUzNT5dID8gd2Fybl9zbG93cGF0aF9mbXQrMHgwLzB4ZGYKIMKgWzw2MDAzNTNhND5d
-ID8gc2V0X3NpZ25hbHMrMHgzMC8weDM2CiDCoFs8NjAwMzUzYTQ+XSA/IHNldF9zaWduYWxzKzB4
-MzAvMHgzNgogwqBbPDYwMDFkN2UxPl0gdW1fcmVxdWVzdF9pcnErMHhmZi8weDIyZQogwqBbPDYw
-MDI3ZjA1Pl0gPyB2ZWN0b3JfcnhfaW50ZXJydXB0KzB4MC8weDJhCiDCoFs8NjAwMjYyODg+XSA/
-IGdldF9kZXB0aCsweDAvMHg0YgogwqBbPDYwMDFkNmUyPl0gPyB1bV9yZXF1ZXN0X2lycSsweDAv
-MHgyMmUKIMKgWzw2MDAyN2NkOD5dIHZlY3Rvcl9uZXRfb3BlbisweDFlOS8weDQxNgogwqBbPDYw
-MjcyMDU5Pl0gX19kZXZfb3BlbisweDEwMC8weDE1YQogwqBbPDYwMjcxZjIwPl0gPyBkZXZfc2V0
-X3J4X21vZGUrMHgwLzB4MzkKIMKgWzw2MDI3MjNkNz5dIF9fZGV2X2NoYW5nZV9mbGFncysweDEy
-NS8weDFjYwogwqBbPDYwMjcyNGE4Pl0gZGV2X2NoYW5nZV9mbGFncysweDJhLzB4NjcKIMKgWzw2
-MDI4MjUwMj5dIGRvX3NldGxpbmsrMHgzNzUvMHhlOTAKIMKgWzw2MDIxYzRlNT5dID8gX19ubGFf
-dmFsaWRhdGVfcGFyc2UrMHg2ZC8weDhjZgogwqBbPDYwMjFjZDg4Pl0gPyBfX25sYV9wYXJzZSsw
-eDJiLzB4MmQKIMKgWzw2MDI4MzZkYj5dIF9fcnRubF9uZXdsaW5rKzB4M2YyLzB4ODFmCiDCoFs8
-NjAwMzUzYTQ+XSA/IHNldF9zaWduYWxzKzB4MzAvMHgzNgogwqBbPDYwMjdjMjNmPl0gPyBfX25s
-bXNnX3BhcnNlKzB4NTgvMHg2MAogwqBbPDYwMGNmMzdhPl0gPyBnZXRfcGFnZV9mcm9tX2ZyZWVs
-aXN0KzB4MC8weDk3MwogwqBbPDYwMGNkNzFiPl0gPyBmaXJzdF96b25lc196b25lbGlzdCsweDAv
-MHgyMAogwqBbPDYwMGQwMzkzPl0gPyBfX2FsbG9jX3BhZ2VzX25vZGVtYXNrKzB4MTI4LzB4ODFj
-CiDCoFs8NjAwMzc3ZmU+XSA/IHdhaXRfc3R1Yl9kb25lKzB4NDAvMHgxMGMKIMKgWzw2MDI4M2I2
-Mz5dIHJ0bmxfbmV3bGluaysweDViLzB4N2IKIMKgWzw2MDI5YWY5YT5dID8gX19uZXRsaW5rX25z
-X2NhcGFibGUrMHgyNS8weDUzCiDCoFs8NjAyN2JjNWI+XSA/IHJ0bmxfZ2V0X2xpbmsrMHgwLzB4
-MmIKIMKgWzw2MDI3ZTBhZT5dIHJ0bmV0bGlua19yY3ZfbXNnKzB4MjI5LzB4MjVhCiDCoFs8NjAw
-MjEzNWM+XSA/IGNvcHlfY2h1bmtfZnJvbV91c2VyKzB4MC8weDJlCiDCoFs8NjAwMjEzNWM+XSA/
-IGNvcHlfY2h1bmtfZnJvbV91c2VyKzB4MC8weDJlCiDCoFs8NjAwMjE2NDQ+XSA/IGJ1ZmZlcl9v
-cCsweDRhLzB4ZGIKIMKgWzw2MDI3ZGU4NT5dID8gcnRuZXRsaW5rX3Jjdl9tc2crMHgwLzB4MjVh
-CiDCoFs8NjAyOWYyODk+XSBuZXRsaW5rX3Jjdl9za2IrMHg2Ny8weGNiCiDCoFs8NjAyNWMwOGQ+
-XSA/IGtmcmVlX3NrYisweDAvMHgyYwogwqBbPDYwMjdjNjZhPl0gcnRuZXRsaW5rX3JjdisweDFh
-LzB4MWMKIMKgWzw2MDI5ZWFjZT5dIG5ldGxpbmtfdW5pY2FzdCsweDEzOS8weDFkZgogwqBbPDYw
-MjllZWM5Pl0gbmV0bGlua19zZW5kbXNnKzB4MzU1LzB4MzdhCiDCoFs8NjAyMTU2YjQ+XSA/IF9f
-aW1wb3J0X2lvdmVjKzB4ZTEvMHgxMDQKIMKgWzw2MDI1MDkxMz5dID8gc29ja19zZW5kbXNnX25v
-c2VjKzB4MC8weDY1CiDCoFs8NjAyNTA5MjU+XSBzb2NrX3NlbmRtc2dfbm9zZWMrMHgxMi8weDY1
-CiDCoFs8NjAyNTBiNjU+XSBfX19fc3lzX3NlbmRtc2crMHgxMGIvMHgxNmIKIMKgWzw2MDI1Mjk2
-Nj5dIF9fX3N5c19zZW5kbXNnKzB4NzkvMHhhOAogwqBbPDYwMDM3MTc5Pl0gPyBkb19zeXNjYWxs
-X3N0dWIrMHhmZi8weDIyZgogwqBbPDYwMDM3MzQ3Pl0gPyBydW5fc3lzY2FsbF9zdHViKzB4OWUv
-MHhhMAogwqBbPDYwMDM3NDQxPl0gPyBtYXArMHg0YS8weDRjCiDCoFs8NjAwZjllZDc+XSA/IF9f
-ZmdldF9saWdodCsweDM2LzB4NjMKIMKgWzw2MDBmOWYxOT5dID8gX19mZGdldCsweDE1LzB4MTcK
-IMKgWzw2MDI1MDNmYj5dID8gZmRnZXQrMHgxMC8weDFjCiDCoFs8NjAyNTJhMTg+XSBfX3N5c19z
-ZW5kbXNnKzB4NTQvMHg4MgogwqBbPDYwMjUyYTViPl0gc3lzX3NlbmRtc2crMHgxNS8weDE3CiDC
-oFs8NjAwMjEzMmU+XSBoYW5kbGVfc3lzY2FsbCsweDc5LzB4YTcKIMKgWzw2MDAzN2YwZT5dIHVz
-ZXJzcGFjZSsweDQ4My8weDUxMAogwqBbPDYwMDFlMTY2Pl0gZm9ya19oYW5kbGVyKzB4OTQvMHg5
-NgotLS1bIGVuZCB0cmFjZSA5NWJhMTVkN2ZjMzM4NDY1IF0tLS0KdW1sLXZlY3RvciB1bWwtdmVj
-dG9yLjAgdmVjMDogdmVjdG9yX29wZW46IGZhaWxlZCB0byBnZXQgcnggaXJxKC0xMTQpCgo+Cj4g
-am9oYW5uZXMKPgo+Ci0tIApBbnRvbiBSLiBJdmFub3YKaHR0cHM6Ly93d3cua290LWJlZ2Vtb3Qu
-Y28udWsvCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-bGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
-L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
+On Mon, 2020-11-30 at 16:30 +0000, Anton Ivanov wrote:
+> On 23/11/2020 19:56, Johannes Berg wrote:
+> > From: Johannes Berg <johannes.berg@intel.com>
+> > 
+> > Reduce dynamic allocations (and thereby cache misses) by simply
+> > embedding the registration data for IRQs in the irq_entry, we
+> > never supported these being really dynamic anyway as only one
+> > was ever allowed ("Trying to reregister ...").
+> > 
+> > Lockless behaviour is preserved by removing the FD from the poll
+> > set appropriately, but we use reg->events to indicate whether or
+> > not this entry is used, rather than dynamically allocating them.
+> > 
+> > Also port the list of IRQ entries to list_head instead of the
+> > current open-coded singly-linked list implementation, just for
+> > sanity.
+> 
+> This one is broken. I will look exactly where. It is somewhere in the IRQ delete/re-request logic.
+> 
+> How to test
+> 
+> run iperf -s in the UML with a vector network driver.
+> 
+> run iperf -c to the UML instance from the host in a loop
+
+How do you usually use it? tap device?
+
+> Try to ifup/ifdown the vecX interface inside the UML.
+> 
+> With master it works fine. With this patch it fails.
+
+How does it fail?
+
+johannes
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
