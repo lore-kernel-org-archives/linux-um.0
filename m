@@ -2,12 +2,16 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kl9MM-0008Dr-DE
- for linux-um@lists.infradead.org; Fri, 04 Dec 2020 11:34:47 +0000
+ id 1kkT9U-0006aQ-5Q
+ for linux-um@lists.infradead.org; Wed, 02 Dec 2020 14:30:44 +0000
+Message-ID: <8150f47fe182e8821ddcafaf3c818e1934d9c7a9.camel@sipsolutions.net>
+Subject: Re: [PATCH v2 7/7] um: simplify IRQ handling code
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH] um: time-travel: avoid multiple identical propagations
-Date: Fri,  4 Dec 2020 12:34:34 +0100
-Message-Id: <20201204123433.01282063e81f.I6cdf9966c9d253628195b50d800c8a688f829b46@changeid>
+Date: Wed, 02 Dec 2020 15:30:36 +0100
+In-Reply-To: <20f2f9bc-8cb9-bd40-cc59-934f7b8ca66a@kot-begemot.co.uk>
+References: <20201202115956.42963-1-johannes@sipsolutions.net>
+ <20201202125915.762ac2a43be6.I811873233b8d71fbde9154b84c85b498521e3b12@changeid>
+ <20f2f9bc-8cb9-bd40-cc59-934f7b8ca66a@kot-begemot.co.uk>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -21,42 +25,15 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, linux-um@lists.infradead.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+On Wed, 2020-12-02 at 14:29 +0000, Anton Ivanov wrote:
+> 
+> Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-If there is some kind of interrupt negotation or such then
-it may happen that we send an update message multiple times,
-avoid that in the interest of efficiency by storing the last
-transmitted value and only sending a new update if it's not
-the same as the last update.
+Wohoo, thanks for testing :-)
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- arch/um/kernel/time.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
-index 5ac084deac7e..2c1c04f4ef27 100644
---- a/arch/um/kernel/time.c
-+++ b/arch/um/kernel/time.c
-@@ -198,7 +198,13 @@ static void time_travel_ext_update_request(unsigned long long time)
- 
- void __time_travel_propagate_time(void)
- {
-+	static unsigned long long last_propagated;
-+
-+	if (last_propagated == time_travel_time)
-+		return;
-+
- 	time_travel_ext_req(UM_TIMETRAVEL_UPDATE, time_travel_time);
-+	last_propagated = time_travel_time;
- }
- EXPORT_SYMBOL_GPL(__time_travel_propagate_time);
- 
--- 
-2.26.2
+johannes
 
 
 _______________________________________________
