@@ -1,17 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kkldN-0002t5-Mf
- for linux-um@lists.infradead.org; Thu, 03 Dec 2020 10:14:46 +0000
-Message-ID: <d088cddc27a49a21866c0f930defe74af2396fb2.camel@sipsolutions.net>
+ id 1kklVY-0001iN-OA
+ for linux-um@lists.infradead.org; Thu, 03 Dec 2020 10:06:41 +0000
 Subject: Re: [PATCH v7 0/5] um: suspend/resume support
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Thu, 03 Dec 2020 11:14:40 +0100
-In-Reply-To: <858ef5b7-b3db-fabe-3fc6-01ca3a6b39da@kot-begemot.co.uk>
 References: <20201202195808.244645-1-johannes@sipsolutions.net>
- <858ef5b7-b3db-fabe-3fc6-01ca3a6b39da@kot-begemot.co.uk>
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Message-ID: <858ef5b7-b3db-fabe-3fc6-01ca3a6b39da@kot-begemot.co.uk>
+Date: Thu, 3 Dec 2020 10:06:33 +0000
 MIME-Version: 1.0
+In-Reply-To: <20201202195808.244645-1-johannes@sipsolutions.net>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,50 +20,43 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, linux-um@lists.infradead.org
+To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
 
-T24gVGh1LCAyMDIwLTEyLTAzIGF0IDEwOjA2ICswMDAwLCBBbnRvbiBJdmFub3Ygd3JvdGU6Cj4g
-Cj4gV29ya3MgbmljZWx5IGFuZCBJIHdpbGwgQUNLIHRoZW0gc2hvcnRseS4KCjopCgo+IEkgd2ls
-bCBzZWUgaWYgSSBjYW4gYWRkIHNvbWUgV09MIGZ1bmN0aW9uYWxpdHkgdG8gdGhlIHZlY3RvciBk
-cml2ZXJzLgoKVGhhdCBtaWdodCBiZSBuaWNlLgoKPiBJdCBpcyBkZWZpbml0ZWx5IHBvc3NpYmxl
-IGZvciB0aGUgb25lcyB3aGljaCB1c2UgYSByYXcgc29ja2V0IC0geW91Cj4gbGVhdmUgdGhlbSBh
-cyBjYXBhYmxlIG9mIGdlbmVyYXRpbmcgYSBTSUdJTywgYnV0IGxvYWQgYSAic2xlZXB0aW1lIgo+
-IEJQRiBmaWx0ZXIgd2hpY2ggYWxsb3dzIG9ubHkgdGhlIHR5cGVzIG9mIHBhY2tldHMgdGhhdCBh
-cmUgZW50aXRsZWQgdG8KPiB3YWtlIHlvdSB1cCAtIFdPTCBtYWdpYywgQVJQLCB1bmljYXN0IHRv
-IHlvdXIgb3duIE1BQywgZXRjLiBJSVJDCj4gZXRodG9vbCBoYXMgYSBsaXN0IG9mIGFsbCB0aGUg
-cG9zc2libGUgb3B0aW9ucy4gV2hlbiB5b3Ugd2FrZSB1cCwgeW91Cj4gc3dhcCBiYWNrIHRoZSBv
-bGQgZmlsdGVyIChpZiB0aGVyZSB3YXMgYW55KS4KClJpZ2h0LCB5b3UgY2FuIHNldCB0aGUgSVJR
-IHRvIGFsbG93IHdha2V1cCB1c2luZyBqdXN0IHRoZSBub3JtYWwKaXJxX3NldF9pcnFfd2FrZSgp
-IGZ1bmN0aW9uLCBhbmQgdGhlbiB5b3UgZ2V0IHdva2VuIHVwIG9uIGFueXRoaW5nLgoKQW5kIHdp
-dGggYSBCUEYgZmlsdGVyIHlvdSBjYW4gZHJvcCBhbGwgdGhlIG90aGVyIHBhY2tldHMsIHNvIHlv
-dSBkb24ndApnZXQgYSBmdWxsIHNvY2tldCBxdWV1ZSBlaXRoZXIgKGluIHRoZSBob3N0KSB0aGF0
-IHdvdWxkIHByZXZlbnQKc29tZXRoaW5nIGZyb20gd29ya2luZy4KCkluZGVlZCB0aGVyZSBhcmUg
-bW9yZSBvcHRpb25zIHRoYW4gSSB0aG91Z2h0IHRoZXJlIHdlcmU6CgogICAgICAgICAgIHdvbCBw
-fHV8bXxifGF8Z3xzfGZ8ZC4uLgogICAgICAgICAgICAgICAgICBTZXRzIFdha2Utb24tTEFOIG9w
-dGlvbnMuICBOb3QgYWxsIGRldmljZXMgc3VwcG9ydCB0aGlzLiAgVGhlIGFyZ3VtZW50IHRvIHRo
-aXMgb3B0aW9uIGlzIGEgc3RyaW5nCiAgICAgICAgICAgICAgICAgIG9mIGNoYXJhY3RlcnMgc3Bl
-Y2lmeWluZyB3aGljaCBvcHRpb25zIHRvIGVuYWJsZS4KCiAgICAgICAgICAgICAgICAgIHAgICBX
-YWtlIG9uIFBIWSBhY3Rpdml0eQogICAgICAgICAgICAgICAgICB1ICAgV2FrZSBvbiB1bmljYXN0
-IG1lc3NhZ2VzCiAgICAgICAgICAgICAgICAgIG0gICBXYWtlIG9uIG11bHRpY2FzdCBtZXNzYWdl
-cwogICAgICAgICAgICAgICAgICBiICAgV2FrZSBvbiBicm9hZGNhc3QgbWVzc2FnZXMKICAgICAg
-ICAgICAgICAgICAgYSAgIFdha2Ugb24gQVJQCiAgICAgICAgICAgICAgICAgIGcgICBXYWtlIG9u
-IE1hZ2ljUGFja2V04oSiCiAgICAgICAgICAgICAgICAgIHMgICBFbmFibGUgU2VjdXJlT27ihKIg
-cGFzc3dvcmQgZm9yIE1hZ2ljUGFja2V04oSiCiAgICAgICAgICAgICAgICAgIGYgICBXYWtlIG9u
-IGZpbHRlcihzKQogICAgICAgICAgICAgICAgICBkICAgRGlzYWJsZSAgKHdha2UgIG9uICBub3Ro
-aW5nKS4gIFRoaXMgb3B0aW9uCiAgICAgICAgICAgICAgICAgICAgICBjbGVhcnMgYWxsIHByZXZp
-b3VzIG9wdGlvbnMuCgoKcCB3b3VsZCBiZSB0cml2aWFsLCByZXF1aXJpbmcgb25seSBhIGNhbGwg
-dG8gaXJxX3NldF9pcnFfd2FrZSgpLCB1LCBtLApiLCBhLCBnIGFuZCBzIHdvdWxkIHJlcXVpcmUg
-QlBGIGZpbHRlcnMsIGFuZCBmIChmaWx0ZXIpIGlzIGRpZmZpY3VsdCwKeW91J2QgbmVlZCB0byBz
-dXBwb3J0IFJYLWZsb3ctc3BlYyBzdHVmZiwgYXBwYXJlbnRseS4KCgpJJ20gdHJ5aW5nIHRvIGFk
-ZCBzdXBwb3J0IGZvciB2aXJ0aW8gLi4uIGhtbS4gQWN0dWFsbHkgcCBvciB1IG1pZ2h0IGJlCnZl
-cnkgdXNlZnVsIHRoZXJlIGZvciBtZSwgYnV0IGl0J2QgcmVxdWlyZSBjaGFuZ2luZyB0aGUgdmly
-dGlvLW5ldCBzcGVjCkkgZ3Vlc3MgLi4uIE1heWJlIEknbGwganVzdCBkbyBhbiBvdXQtb2YtYmFu
-ZCB3YWtlIGRldmljZSBmb3IgbXkgc3lzdGVtCjopCgpqb2hhbm5lcwoKCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdAps
-aW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vbGludXgtdW0K
+
+On 02/12/2020 19:58, Johannes Berg wrote:
+> Here's a respin, for one since I wanted to use pause() instead of
+> the strange select(0, NULL, NULL, NULL, NULL), but also fixing some
+> signal handling bugs in the suspend/resume code.
+>
+> johannes
+>
+>
+>
+>
+> _______________________________________________
+> linux-um mailing list
+> linux-um@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-um
+
+Works nicely and I will ACK them shortly.
+
+I will see if I can add some WOL functionality to the vector drivers.
+
+It is definitely possible for the ones which use a raw socket - you leave them as capable of generating a SIGIO, but load a "sleeptime" BPF filter which allows only the types of packets that are entitled to wake you up - WOL magic, ARP, unicast to your own MAC, etc. IIRC ethtool has a list of all the possible options. When you wake up, you swap back the old filter (if there was any).
+
+Brgds,
+
+-- 
+Anton R. Ivanov
+https://www.kot-begemot.co.uk/
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
