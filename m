@@ -2,14 +2,15 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kkYGb-0005Ek-9a
- for linux-um@lists.infradead.org; Wed, 02 Dec 2020 19:58:24 +0000
+ id 1kkldN-0002t5-Mf
+ for linux-um@lists.infradead.org; Thu, 03 Dec 2020 10:14:46 +0000
+Message-ID: <d088cddc27a49a21866c0f930defe74af2396fb2.camel@sipsolutions.net>
+Subject: Re: [PATCH v7 0/5] um: suspend/resume support
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v7 1/5] um: simplify os_idle_sleep() and sleep longer
-Date: Wed,  2 Dec 2020 20:58:04 +0100
-Message-Id: <20201202205659.32c9eac05149.I3b692c844a4ca459ee3084334a92ac5ef5b4cec4@changeid>
-In-Reply-To: <20201202195808.244645-1-johannes@sipsolutions.net>
+Date: Thu, 03 Dec 2020 11:14:40 +0100
+In-Reply-To: <858ef5b7-b3db-fabe-3fc6-01ca3a6b39da@kot-begemot.co.uk>
 References: <20201202195808.244645-1-johannes@sipsolutions.net>
+ <858ef5b7-b3db-fabe-3fc6-01ca3a6b39da@kot-begemot.co.uk>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -19,179 +20,50 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, linux-um@lists.infradead.org
 
-From: Johannes Berg <johannes.berg@intel.com>
-
-There really is no reason to pass the amount of time we should
-sleep, especially since it's just hard-coded to one second.
-
-Additionally, one second isn't really all that long, and as we
-are expecting to be woken up by a signal, we can sleep longer
-and avoid doing some work every second, so replace the current
-clock_nanosleep() with just an empty select() that can _only_
-be woken up by a signal.
-
-We can also remove the deliver_alarm() since we don't need to
-do that when we got e.g. SIGIO that woke us up, and if we got
-SIGALRM the signal handler will actually (have) run, so it's
-just unnecessary extra work.
-
-Similarly, in time-travel mode, just program the wakeup event
-from idle to be S64_MAX, which is basically the most you could
-ever simulate to. Of course, you should already have an event
-in the list that's earlier and will cause a wakeup, normally
-that's the regular timer interrupt, though in suspend it may
-(later) also be an RTC event. Since actually getting to this
-point would be a bug and you can't ever get out again, panic()
-on it in the time control code.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
-v7:
- - use pause()
----
- arch/um/include/linux/time-internal.h |  4 ++--
- arch/um/include/shared/os.h           |  2 +-
- arch/um/kernel/process.c              | 11 ++++-------
- arch/um/kernel/time.c                 | 12 ++++++++++--
- arch/um/os-Linux/time.c               | 17 ++++-------------
- 5 files changed, 21 insertions(+), 25 deletions(-)
-
-diff --git a/arch/um/include/linux/time-internal.h b/arch/um/include/linux/time-internal.h
-index f3b03d39a854..68e45e950137 100644
---- a/arch/um/include/linux/time-internal.h
-+++ b/arch/um/include/linux/time-internal.h
-@@ -28,7 +28,7 @@ struct time_travel_event {
- 
- extern enum time_travel_mode time_travel_mode;
- 
--void time_travel_sleep(unsigned long long duration);
-+void time_travel_sleep(void);
- 
- static inline void
- time_travel_set_event_fn(struct time_travel_event *e,
-@@ -60,7 +60,7 @@ struct time_travel_event {
- 
- #define time_travel_mode TT_MODE_OFF
- 
--static inline void time_travel_sleep(unsigned long long duration)
-+static inline void time_travel_sleep(void)
- {
- }
- 
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index e2bb7e488d59..0f7fb8bad728 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -256,7 +256,7 @@ extern void os_warn(const char *fmt, ...)
- 	__attribute__ ((format (printf, 1, 2)));
- 
- /* time.c */
--extern void os_idle_sleep(unsigned long long nsecs);
-+extern void os_idle_sleep(void);
- extern int os_timer_create(void);
- extern int os_timer_set_interval(unsigned long long nsecs);
- extern int os_timer_one_shot(unsigned long long nsecs);
-diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index 3bed09538dd9..0686fabba576 100644
---- a/arch/um/kernel/process.c
-+++ b/arch/um/kernel/process.c
-@@ -204,13 +204,10 @@ void initial_thread_cb(void (*proc)(void *), void *arg)
- 
- static void um_idle_sleep(void)
- {
--	unsigned long long duration = UM_NSEC_PER_SEC;
--
--	if (time_travel_mode != TT_MODE_OFF) {
--		time_travel_sleep(duration);
--	} else {
--		os_idle_sleep(duration);
--	}
-+	if (time_travel_mode != TT_MODE_OFF)
-+		time_travel_sleep();
-+	else
-+		os_idle_sleep();
- }
- 
- void arch_cpu_idle(void)
-diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
-index 8dafc3f2add4..8e8eb8ba04a4 100644
---- a/arch/um/kernel/time.c
-+++ b/arch/um/kernel/time.c
-@@ -46,6 +46,9 @@ static void time_travel_set_time(unsigned long long ns)
- 	if (unlikely(ns < time_travel_time))
- 		panic("time-travel: time goes backwards %lld -> %lld\n",
- 		      time_travel_time, ns);
-+	else if (unlikely(ns >= S64_MAX))
-+		panic("The system was going to sleep forever, aborting");
-+
- 	time_travel_time = ns;
- }
- 
-@@ -399,9 +402,14 @@ static void time_travel_oneshot_timer(struct time_travel_event *e)
- 	deliver_alarm();
- }
- 
--void time_travel_sleep(unsigned long long duration)
-+void time_travel_sleep(void)
- {
--	unsigned long long next = time_travel_time + duration;
-+	/*
-+	 * Wait "forever" (using S64_MAX because there are some potential
-+	 * wrapping issues, especially with the current TT_MODE_EXTERNAL
-+	 * controller application.
-+	 */
-+	unsigned long long next = S64_MAX;
- 
- 	if (time_travel_mode == TT_MODE_BASIC)
- 		os_timer_disable();
-diff --git a/arch/um/os-Linux/time.c b/arch/um/os-Linux/time.c
-index 90f6de224c70..a61cbf73a179 100644
---- a/arch/um/os-Linux/time.c
-+++ b/arch/um/os-Linux/time.c
-@@ -7,6 +7,7 @@
-  */
- 
- #include <stddef.h>
-+#include <unistd.h>
- #include <errno.h>
- #include <signal.h>
- #include <time.h>
-@@ -99,19 +100,9 @@ long long os_nsecs(void)
- }
- 
- /**
-- * os_idle_sleep() - sleep for a given time of nsecs
-- * @nsecs: nanoseconds to sleep
-+ * os_idle_sleep() - sleep until interrupted
-  */
--void os_idle_sleep(unsigned long long nsecs)
-+void os_idle_sleep(void)
- {
--	struct timespec ts = {
--		.tv_sec  = nsecs / UM_NSEC_PER_SEC,
--		.tv_nsec = nsecs % UM_NSEC_PER_SEC
--	};
--
--	/*
--	 * Relay the signal if clock_nanosleep is interrupted.
--	 */
--	if (clock_nanosleep(CLOCK_MONOTONIC, 0, &ts, NULL))
--		deliver_alarm();
-+	pause();
- }
--- 
-2.26.2
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gVGh1LCAyMDIwLTEyLTAzIGF0IDEwOjA2ICswMDAwLCBBbnRvbiBJdmFub3Ygd3JvdGU6Cj4g
+Cj4gV29ya3MgbmljZWx5IGFuZCBJIHdpbGwgQUNLIHRoZW0gc2hvcnRseS4KCjopCgo+IEkgd2ls
+bCBzZWUgaWYgSSBjYW4gYWRkIHNvbWUgV09MIGZ1bmN0aW9uYWxpdHkgdG8gdGhlIHZlY3RvciBk
+cml2ZXJzLgoKVGhhdCBtaWdodCBiZSBuaWNlLgoKPiBJdCBpcyBkZWZpbml0ZWx5IHBvc3NpYmxl
+IGZvciB0aGUgb25lcyB3aGljaCB1c2UgYSByYXcgc29ja2V0IC0geW91Cj4gbGVhdmUgdGhlbSBh
+cyBjYXBhYmxlIG9mIGdlbmVyYXRpbmcgYSBTSUdJTywgYnV0IGxvYWQgYSAic2xlZXB0aW1lIgo+
+IEJQRiBmaWx0ZXIgd2hpY2ggYWxsb3dzIG9ubHkgdGhlIHR5cGVzIG9mIHBhY2tldHMgdGhhdCBh
+cmUgZW50aXRsZWQgdG8KPiB3YWtlIHlvdSB1cCAtIFdPTCBtYWdpYywgQVJQLCB1bmljYXN0IHRv
+IHlvdXIgb3duIE1BQywgZXRjLiBJSVJDCj4gZXRodG9vbCBoYXMgYSBsaXN0IG9mIGFsbCB0aGUg
+cG9zc2libGUgb3B0aW9ucy4gV2hlbiB5b3Ugd2FrZSB1cCwgeW91Cj4gc3dhcCBiYWNrIHRoZSBv
+bGQgZmlsdGVyIChpZiB0aGVyZSB3YXMgYW55KS4KClJpZ2h0LCB5b3UgY2FuIHNldCB0aGUgSVJR
+IHRvIGFsbG93IHdha2V1cCB1c2luZyBqdXN0IHRoZSBub3JtYWwKaXJxX3NldF9pcnFfd2FrZSgp
+IGZ1bmN0aW9uLCBhbmQgdGhlbiB5b3UgZ2V0IHdva2VuIHVwIG9uIGFueXRoaW5nLgoKQW5kIHdp
+dGggYSBCUEYgZmlsdGVyIHlvdSBjYW4gZHJvcCBhbGwgdGhlIG90aGVyIHBhY2tldHMsIHNvIHlv
+dSBkb24ndApnZXQgYSBmdWxsIHNvY2tldCBxdWV1ZSBlaXRoZXIgKGluIHRoZSBob3N0KSB0aGF0
+IHdvdWxkIHByZXZlbnQKc29tZXRoaW5nIGZyb20gd29ya2luZy4KCkluZGVlZCB0aGVyZSBhcmUg
+bW9yZSBvcHRpb25zIHRoYW4gSSB0aG91Z2h0IHRoZXJlIHdlcmU6CgogICAgICAgICAgIHdvbCBw
+fHV8bXxifGF8Z3xzfGZ8ZC4uLgogICAgICAgICAgICAgICAgICBTZXRzIFdha2Utb24tTEFOIG9w
+dGlvbnMuICBOb3QgYWxsIGRldmljZXMgc3VwcG9ydCB0aGlzLiAgVGhlIGFyZ3VtZW50IHRvIHRo
+aXMgb3B0aW9uIGlzIGEgc3RyaW5nCiAgICAgICAgICAgICAgICAgIG9mIGNoYXJhY3RlcnMgc3Bl
+Y2lmeWluZyB3aGljaCBvcHRpb25zIHRvIGVuYWJsZS4KCiAgICAgICAgICAgICAgICAgIHAgICBX
+YWtlIG9uIFBIWSBhY3Rpdml0eQogICAgICAgICAgICAgICAgICB1ICAgV2FrZSBvbiB1bmljYXN0
+IG1lc3NhZ2VzCiAgICAgICAgICAgICAgICAgIG0gICBXYWtlIG9uIG11bHRpY2FzdCBtZXNzYWdl
+cwogICAgICAgICAgICAgICAgICBiICAgV2FrZSBvbiBicm9hZGNhc3QgbWVzc2FnZXMKICAgICAg
+ICAgICAgICAgICAgYSAgIFdha2Ugb24gQVJQCiAgICAgICAgICAgICAgICAgIGcgICBXYWtlIG9u
+IE1hZ2ljUGFja2V04oSiCiAgICAgICAgICAgICAgICAgIHMgICBFbmFibGUgU2VjdXJlT27ihKIg
+cGFzc3dvcmQgZm9yIE1hZ2ljUGFja2V04oSiCiAgICAgICAgICAgICAgICAgIGYgICBXYWtlIG9u
+IGZpbHRlcihzKQogICAgICAgICAgICAgICAgICBkICAgRGlzYWJsZSAgKHdha2UgIG9uICBub3Ro
+aW5nKS4gIFRoaXMgb3B0aW9uCiAgICAgICAgICAgICAgICAgICAgICBjbGVhcnMgYWxsIHByZXZp
+b3VzIG9wdGlvbnMuCgoKcCB3b3VsZCBiZSB0cml2aWFsLCByZXF1aXJpbmcgb25seSBhIGNhbGwg
+dG8gaXJxX3NldF9pcnFfd2FrZSgpLCB1LCBtLApiLCBhLCBnIGFuZCBzIHdvdWxkIHJlcXVpcmUg
+QlBGIGZpbHRlcnMsIGFuZCBmIChmaWx0ZXIpIGlzIGRpZmZpY3VsdCwKeW91J2QgbmVlZCB0byBz
+dXBwb3J0IFJYLWZsb3ctc3BlYyBzdHVmZiwgYXBwYXJlbnRseS4KCgpJJ20gdHJ5aW5nIHRvIGFk
+ZCBzdXBwb3J0IGZvciB2aXJ0aW8gLi4uIGhtbS4gQWN0dWFsbHkgcCBvciB1IG1pZ2h0IGJlCnZl
+cnkgdXNlZnVsIHRoZXJlIGZvciBtZSwgYnV0IGl0J2QgcmVxdWlyZSBjaGFuZ2luZyB0aGUgdmly
+dGlvLW5ldCBzcGVjCkkgZ3Vlc3MgLi4uIE1heWJlIEknbGwganVzdCBkbyBhbiBvdXQtb2YtYmFu
+ZCB3YWtlIGRldmljZSBmb3IgbXkgc3lzdGVtCjopCgpqb2hhbm5lcwoKCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdAps
+aW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vbGludXgtdW0K
 
