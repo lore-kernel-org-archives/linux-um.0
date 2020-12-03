@@ -1,16 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kkQnl-0008OS-HI
- for linux-um@lists.infradead.org; Wed, 02 Dec 2020 12:00:08 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v2 6/7] um: remove IRQ_NONE type
-Date: Wed,  2 Dec 2020 12:59:55 +0100
-Message-Id: <20201202125915.c5309340fc3e.Id467f02803b7fb8edf0255d7588e63a01ca9c1e8@changeid>
-In-Reply-To: <20201202115956.42963-1-johannes@sipsolutions.net>
-References: <20201202115956.42963-1-johannes@sipsolutions.net>
+ id 1kkmsX-000443-1i
+ for linux-um@lists.infradead.org; Thu, 03 Dec 2020 11:34:30 +0000
+Subject: Re: [PATCH v7 4/5] um: support suspend to RAM
+References: <20201202195808.244645-1-johannes@sipsolutions.net>
+ <20201202205659.aee91a932c38.I3e8e33cbe3196d9325946af3a5655f7b6719382d@changeid>
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Message-ID: <717ba48f-2000-d146-5f55-56d85888760a@kot-begemot.co.uk>
+Date: Thu, 3 Dec 2020 11:34:24 +0000
 MIME-Version: 1.0
+In-Reply-To: <20201202205659.aee91a932c38.I3e8e33cbe3196d9325946af3a5655f7b6719382d@changeid>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -19,274 +21,318 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
 
-From: Johannes Berg <johannes.berg@intel.com>
 
-We don't actually use this in um_request_irq(), so it can
-never be assigned. It's also not clear what that would be
-useful for, so just remove it.
 
-This results in quite a number of cleanups, all the way to
-removing the "SIGIO on close" startup check, since the data
-it assigns (pty_close_sigio) is not used anymore.
+On 02/12/2020 19:58, Johannes Berg wrote:
+> From: Johannes Berg <johannes.berg@intel.com>
+> 
+> With all the previous bits in place, we can now also support
+> suspend to RAM, in the sense that everything is suspended,
+> not just most, including userspace, processes like in s2idle.
+> 
+> Since um_idle_sleep() now waits forever, we can simply call
+> that to "suspend" the system.
+> 
+> As before, you can wake it up using SIGUSR1 since we're just
+> in a pause() call that only needs to return.
+> 
+> In order to implement selective resume from certain devices,
+> and not have any arbitrary device interrupt wake up, suspend
+> interrupts by removing SIGIO notification (O_ASYNC) from all
+> the FDs that are not supposed to wake up the system. However,
+> swap out the handler so we don't actually handle the SIGIO as
+> an interrupt.
+> 
+> Since we're in pause(), the mere act of receiving SIGIO wakes
+> us up, and then after things have been restored enough, re-set
+> O_ASYNC for all previously suspended FDs, reinstall the proper
+> SIGIO handler, and send SIGIO to self to process anything that
+> might now be pending.
+> 
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+> ---
+> v7:
+>   - clean up a bit
+>   - send SIGIO to self properly, not to the entire group
+> ---
+>   arch/um/include/shared/kern_util.h |  1 +
+>   arch/um/include/shared/os.h        |  3 +
+>   arch/um/kernel/irq.c               | 88 +++++++++++++++++++++++++++++-
+>   arch/um/kernel/process.c           |  2 +-
+>   arch/um/kernel/um_arch.c           | 42 ++++++++++++++
+>   arch/um/os-Linux/signal.c          |  5 ++
+>   6 files changed, 139 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
+> index 9c08e728a675..2888ec812f6e 100644
+> --- a/arch/um/include/shared/kern_util.h
+> +++ b/arch/um/include/shared/kern_util.h
+> @@ -68,5 +68,6 @@ extern void bus_handler(int sig, struct siginfo *si, struct uml_pt_regs *regs);
+>   extern void winch(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
+>   extern void fatal_sigsegv(void) __attribute__ ((noreturn));
+>   
+> +void um_idle_sleep(void);
+>   
+>   #endif
+> diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+> index 78250a05394a..cd750d4edfb5 100644
+> --- a/arch/um/include/shared/os.h
+> +++ b/arch/um/include/shared/os.h
+> @@ -233,6 +233,7 @@ extern void timer_set_signal_handler(void);
+>   extern void set_sigstack(void *sig_stack, int size);
+>   extern void remove_sigstack(void);
+>   extern void set_handler(int sig);
+> +extern void send_sigio_to_self(void);
+>   extern int change_sig(int signal, int on);
+>   extern void block_signals(void);
+>   extern void unblock_signals(void);
+> @@ -307,6 +308,8 @@ extern int os_mod_epoll_fd(int events, int fd, void *data);
+>   extern int os_del_epoll_fd(int fd);
+>   extern void os_set_ioignore(void);
+>   extern void os_close_epoll_fd(void);
+> +extern void um_irqs_suspend(void);
+> +extern void um_irqs_resume(void);
+>   
+>   /* sigio.c */
+>   extern int add_sigio_fd(int fd);
+> diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
+> index 482269580b79..ea43312cbfd3 100644
+> --- a/arch/um/kernel/irq.c
+> +++ b/arch/um/kernel/irq.c
+> @@ -20,6 +20,7 @@
+>   #include <os.h>
+>   #include <irq_user.h>
+>   #include <irq_kern.h>
+> +#include <as-layout.h>
+>   
+>   
+>   extern void free_irqs(void);
+> @@ -36,12 +37,14 @@ struct irq_reg {
+>   	int events;
+>   	bool active;
+>   	bool pending;
+> +	bool wakeup;
+>   };
+>   
+>   struct irq_entry {
+>   	struct list_head list;
+>   	int fd;
+>   	struct irq_reg reg[NUM_IRQ_TYPES];
+> +	bool suspended;
+>   };
+>   
+>   static DEFINE_SPINLOCK(irq_lock);
+> @@ -70,6 +73,11 @@ static void irq_io_loop(struct irq_reg *irq, struct uml_pt_regs *regs)
+>   	}
+>   }
+>   
+> +void sigio_handler_suspend(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
+> +{
+> +	/* nothing */
+> +}
+> +
+>   void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
+>   {
+>   	struct irq_entry *irq_entry;
+> @@ -365,9 +373,86 @@ int um_request_irq(int irq, int fd, enum um_irq_type type,
+>   	clear_bit(irq, irqs_allocated);
+>   	return err;
+>   }
+> -
+>   EXPORT_SYMBOL(um_request_irq);
+>   
+> +#ifdef CONFIG_PM_SLEEP
+> +void um_irqs_suspend(void)
+> +{
+> +	struct irq_entry *entry;
+> +	unsigned long flags;
+> +
+> +	sig_info[SIGIO] = sigio_handler_suspend;
+> +
+> +	spin_lock_irqsave(&irq_lock, flags);
+> +	list_for_each_entry(entry, &active_fds, list) {
+> +		enum um_irq_type t;
+> +		bool wake = false;
+> +
+> +		for (t = 0; t < NUM_IRQ_TYPES; t++) {
+> +			if (!entry->reg[t].events)
+> +				continue;
+> +
+> +			if (entry->reg[t].wakeup) {
+> +				wake = true;
+> +				break;
+> +			}
+> +		}
+> +
+> +		if (!wake) {
+> +			entry->suspended = true;
+> +			os_clear_fd_async(entry->fd);
+> +		}
+> +	}
+> +	spin_unlock_irqrestore(&irq_lock, flags);
+> +}
+> +
+> +void um_irqs_resume(void)
+> +{
+> +	struct irq_entry *entry;
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&irq_lock, flags);
+> +	list_for_each_entry(entry, &active_fds, list) {
+> +		if (entry->suspended) {
+> +			int err = os_set_fd_async(entry->fd);
+> +
+> +			WARN(err < 0, "os_set_fd_async returned %d\n", err);
+> +			entry->suspended = false;
+> +		}
+> +	}
+> +	spin_unlock_irqrestore(&irq_lock, flags);
+> +
+> +	sig_info[SIGIO] = sigio_handler;
+> +	send_sigio_to_self();
+> +}
+> +
+> +static int normal_irq_set_wake(struct irq_data *d, unsigned int on)
+> +{
+> +	struct irq_entry *entry;
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&irq_lock, flags);
+> +	list_for_each_entry(entry, &active_fds, list) {
+> +		enum um_irq_type t;
+> +
+> +		for (t = 0; t < NUM_IRQ_TYPES; t++) {
+> +			if (!entry->reg[t].events)
+> +				continue;
+> +
+> +			if (entry->reg[t].irq != d->irq)
+> +				continue;
+> +			entry->reg[t].wakeup = on;
+> +			goto unlock;
+> +		}
+> +	}
+> +unlock:
+> +	spin_unlock_irqrestore(&irq_lock, flags);
+> +	return 0;
+> +}
+> +#else
+> +#define normal_irq_set_wake NULL
+> +#endif
+> +
+>   /*
+>    * irq_chip must define at least enable/disable and ack when
+>    * the edge handler is used.
+> @@ -384,6 +469,7 @@ static struct irq_chip normal_irq_type = {
+>   	.irq_ack = dummy,
+>   	.irq_mask = dummy,
+>   	.irq_unmask = dummy,
+> +	.irq_set_wake = normal_irq_set_wake,
+>   };
+>   
+>   static struct irq_chip alarm_irq_type = {
+> diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+> index 0686fabba576..f0f50eae2293 100644
+> --- a/arch/um/kernel/process.c
+> +++ b/arch/um/kernel/process.c
+> @@ -202,7 +202,7 @@ void initial_thread_cb(void (*proc)(void *), void *arg)
+>   	kmalloc_ok = save_kmalloc_ok;
+>   }
+>   
+> -static void um_idle_sleep(void)
+> +void um_idle_sleep(void)
+>   {
+>   	if (time_travel_mode != TT_MODE_OFF)
+>   		time_travel_sleep();
+> diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
+> index 237a8d73a096..9c7e6d7ea1b3 100644
+> --- a/arch/um/kernel/um_arch.c
+> +++ b/arch/um/kernel/um_arch.c
+> @@ -385,6 +385,45 @@ void uml_pm_wake(void)
+>   	pm_system_wakeup();
+>   }
+>   
+> +static int um_suspend_valid(suspend_state_t state)
+> +{
+> +	return state == PM_SUSPEND_MEM;
+> +}
+> +
+> +static int um_suspend_prepare(void)
+> +{
+> +	um_irqs_suspend();
+> +	return 0;
+> +}
+> +
+> +static int um_suspend_enter(suspend_state_t state)
+> +{
+> +	if (WARN_ON(state != PM_SUSPEND_MEM))
+> +		return -EINVAL;
+> +
+> +	/*
+> +	 * This is identical to the idle sleep, but we've just
+> +	 * (during suspend) turned off all interrupt sources
+> +	 * except for the ones we want, so now we can only wake
+> +	 * up on something we actually want to wake up on. All
+> +	 * timing has also been suspended.
+> +	 */
+> +	um_idle_sleep();
+> +	return 0;
+> +}
+> +
+> +static void um_suspend_finish(void)
+> +{
+> +	um_irqs_resume();
+> +}
+> +
+> +const struct platform_suspend_ops um_suspend_ops = {
+> +	.valid = um_suspend_valid,
+> +	.prepare = um_suspend_prepare,
+> +	.enter = um_suspend_enter,
+> +	.finish = um_suspend_finish,
+> +};
+> +
+>   static int init_pm_wake_signal(void)
+>   {
+>   	/*
+> @@ -397,6 +436,9 @@ static int init_pm_wake_signal(void)
+>   	 */
+>   	if (time_travel_mode != TT_MODE_EXTERNAL)
+>   		register_pm_wake_signal();
+> +
+> +	suspend_set_ops(&um_suspend_ops);
+> +
+>   	return 0;
+>   }
+>   
+> diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
+> index 0a2ea84033b4..510e956b4320 100644
+> --- a/arch/um/os-Linux/signal.c
+> +++ b/arch/um/os-Linux/signal.c
+> @@ -234,6 +234,11 @@ void set_handler(int sig)
+>   		panic("sigprocmask failed - errno = %d\n", errno);
+>   }
+>   
+> +void send_sigio_to_self(void)
+> +{
+> +	kill(os_getpid(), SIGIO);
+> +}
+> +
+>   int change_sig(int signal, int on)
+>   {
+>   	sigset_t sigset;
+> 
 
-While at it, also make this an enum so we get a minimum of
-type checking, and remove the IRQ_NONE hack in virtio since
-we now no longer have the name twice.
+Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- arch/um/drivers/random.c          |  2 +-
- arch/um/drivers/virtio_uml.c      |  5 -----
- arch/um/include/shared/irq_kern.h |  7 ++++---
- arch/um/include/shared/irq_user.h |  9 +++++----
- arch/um/include/shared/os.h       |  6 +++---
- arch/um/kernel/irq.c              | 15 +++++++--------
- arch/um/os-Linux/irq.c            |  2 +-
- arch/um/os-Linux/sigio.c          | 25 +++++--------------------
- 8 files changed, 26 insertions(+), 45 deletions(-)
-
-diff --git a/arch/um/drivers/random.c b/arch/um/drivers/random.c
-index 385cb08d7ec2..efbf88ec48ac 100644
---- a/arch/um/drivers/random.c
-+++ b/arch/um/drivers/random.c
-@@ -132,7 +132,7 @@ static int __init rng_init (void)
- 	if (err < 0)
- 		goto err_out_cleanup_hw;
- 
--	sigio_broken(random_fd, 1);
-+	sigio_broken(random_fd);
- 
- 	err = misc_register (&rng_miscdev);
- 	if (err) {
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index 94b112749d5b..27e92d3881ff 100644
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -33,11 +33,6 @@
- #include <os.h>
- #include "vhost_user.h"
- 
--/* Workaround due to a conflict between irq_user.h and irqreturn.h */
--#ifdef IRQ_NONE
--#undef IRQ_NONE
--#endif
--
- #define MAX_SUPPORTED_QUEUE_SIZE	256
- 
- #define to_virtio_uml_device(_vdev) \
-diff --git a/arch/um/include/shared/irq_kern.h b/arch/um/include/shared/irq_kern.h
-index 7c04a0fd3a27..7807de593bda 100644
---- a/arch/um/include/shared/irq_kern.h
-+++ b/arch/um/include/shared/irq_kern.h
-@@ -8,11 +8,12 @@
- 
- #include <linux/interrupt.h>
- #include <asm/ptrace.h>
-+#include "irq_user.h"
- 
- #define UM_IRQ_ALLOC	-1
- 
--int um_request_irq(int irq, int fd, int type, irq_handler_t handler,
--		   unsigned long irqflags,  const char * devname,
--		   void *dev_id);
-+int um_request_irq(int irq, int fd, enum um_irq_type type,
-+		   irq_handler_t handler, unsigned long irqflags,
-+		   const char *devname, void *dev_id);
- void um_free_irq(int irq, void *dev_id);
- #endif
-diff --git a/arch/um/include/shared/irq_user.h b/arch/um/include/shared/irq_user.h
-index 5e975a9e8354..07239e801a5b 100644
---- a/arch/um/include/shared/irq_user.h
-+++ b/arch/um/include/shared/irq_user.h
-@@ -9,10 +9,11 @@
- #include <sysdep/ptrace.h>
- #include <stdbool.h>
- 
--#define IRQ_READ  0
--#define IRQ_WRITE 1
--#define IRQ_NONE 2
--#define NUM_IRQ_TYPES (IRQ_NONE + 1)
-+enum um_irq_type {
-+	IRQ_READ,
-+	IRQ_WRITE,
-+	NUM_IRQ_TYPES,
-+};
- 
- struct siginfo;
- extern void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index f467d28fc0b4..e2bb7e488d59 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -299,7 +299,7 @@ extern void reboot_skas(void);
- extern int os_waiting_for_events_epoll(void);
- extern void *os_epoll_get_data_pointer(int index);
- extern int os_epoll_triggered(int index, int events);
--extern int os_event_mask(int irq_type);
-+extern int os_event_mask(enum um_irq_type irq_type);
- extern int os_setup_epoll(void);
- extern int os_add_epoll_fd(int events, int fd, void *data);
- extern int os_mod_epoll_fd(int events, int fd, void *data);
-@@ -310,8 +310,8 @@ extern void os_close_epoll_fd(void);
- /* sigio.c */
- extern int add_sigio_fd(int fd);
- extern int ignore_sigio_fd(int fd);
--extern void maybe_sigio_broken(int fd, int read);
--extern void sigio_broken(int fd, int read);
-+extern void maybe_sigio_broken(int fd);
-+extern void sigio_broken(int fd);
- 
- /* prctl.c */
- extern int os_arch_prctl(int pid, int option, unsigned long *arg2);
-diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-index 93eb742ecafe..9e8f776bb43a 100644
---- a/arch/um/kernel/irq.c
-+++ b/arch/um/kernel/irq.c
-@@ -32,7 +32,7 @@ extern void free_irqs(void);
- 
- struct irq_reg {
- 	void *id;
--	int type;
-+	enum um_irq_type type;
- 	int irq;
- 	int events;
- 	bool active;
-@@ -96,7 +96,7 @@ void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
- 		}
- 
- 		for (i = 0; i < n ; i++) {
--			/* Epoll back reference is the entry with 3 irq_reg
-+			/* Epoll back reference is the entry with 2 irq_reg
- 			 * leaves - one for each irq type.
- 			 */
- 			irq_entry = (struct irq_entry *)
-@@ -139,7 +139,7 @@ static int assign_epoll_events_to_irq(struct irq_entry *irq_entry)
- 
- 
- 
--static int activate_fd(int irq, int fd, int type, void *dev_id)
-+static int activate_fd(int irq, int fd, enum um_irq_type type, void *dev_id)
- {
- 	struct irq_reg *new_fd;
- 	struct irq_entry *irq_entry;
-@@ -217,7 +217,7 @@ static int activate_fd(int irq, int fd, int type, void *dev_id)
- 	/* Turn back IO on with the correct (new) IO event mask */
- 	assign_epoll_events_to_irq(irq_entry);
- 	spin_unlock_irqrestore(&irq_lock, flags);
--	maybe_sigio_broken(fd, (type != IRQ_NONE));
-+	maybe_sigio_broken(fd);
- 
- 	return 0;
- out_unlock:
-@@ -444,10 +444,9 @@ void um_free_irq(int irq, void *dev)
- }
- EXPORT_SYMBOL(um_free_irq);
- 
--int um_request_irq(int irq, int fd, int type,
--		   irq_handler_t handler,
--		   unsigned long irqflags, const char * devname,
--		   void *dev_id)
-+int um_request_irq(int irq, int fd, enum um_irq_type type,
-+		   irq_handler_t handler, unsigned long irqflags,
-+		   const char *devname, void *dev_id)
- {
- 	int err;
- 
-diff --git a/arch/um/os-Linux/irq.c b/arch/um/os-Linux/irq.c
-index d508310ee5e1..aa90a05b3d78 100644
---- a/arch/um/os-Linux/irq.c
-+++ b/arch/um/os-Linux/irq.c
-@@ -45,7 +45,7 @@ int os_epoll_triggered(int index, int events)
-  * access to the right includes/defines for EPOLL constants.
-  */
- 
--int os_event_mask(int irq_type)
-+int os_event_mask(enum um_irq_type irq_type)
- {
- 	if (irq_type == IRQ_READ)
- 		return EPOLLIN | EPOLLPRI;
-diff --git a/arch/um/os-Linux/sigio.c b/arch/um/os-Linux/sigio.c
-index 75558080d0bf..233b2b2212f1 100644
---- a/arch/um/os-Linux/sigio.c
-+++ b/arch/um/os-Linux/sigio.c
-@@ -336,7 +336,7 @@ static void write_sigio_workaround(void)
- 	close(l_write_sigio_fds[1]);
- }
- 
--void sigio_broken(int fd, int read)
-+void sigio_broken(int fd)
- {
- 	int err;
- 
-@@ -352,7 +352,7 @@ void sigio_broken(int fd, int read)
- 
- 	all_sigio_fds.poll[all_sigio_fds.used++] =
- 		((struct pollfd) { .fd  	= fd,
--				   .events 	= read ? POLLIN : POLLOUT,
-+				   .events 	= POLLIN,
- 				   .revents 	= 0 });
- out:
- 	sigio_unlock();
-@@ -360,17 +360,16 @@ void sigio_broken(int fd, int read)
- 
- /* Changed during early boot */
- static int pty_output_sigio;
--static int pty_close_sigio;
- 
--void maybe_sigio_broken(int fd, int read)
-+void maybe_sigio_broken(int fd)
- {
- 	if (!isatty(fd))
- 		return;
- 
--	if ((read || pty_output_sigio) && (!read || pty_close_sigio))
-+	if (pty_output_sigio)
- 		return;
- 
--	sigio_broken(fd, read);
-+	sigio_broken(fd);
- }
- 
- static void sigio_cleanup(void)
-@@ -514,19 +513,6 @@ static void tty_output(int master, int slave)
- 		printk(UM_KERN_CONT "tty_output : read failed, err = %d\n", n);
- }
- 
--static void tty_close(int master, int slave)
--{
--	printk(UM_KERN_INFO "Checking that host ptys support SIGIO on "
--	       "close...");
--
--	close(slave);
--	if (got_sigio) {
--		printk(UM_KERN_CONT "Yes\n");
--		pty_close_sigio = 1;
--	} else
--		printk(UM_KERN_CONT "No, enabling workaround\n");
--}
--
- static void __init check_sigio(void)
- {
- 	if ((access("/dev/ptmx", R_OK) < 0) &&
-@@ -536,7 +522,6 @@ static void __init check_sigio(void)
- 		return;
- 	}
- 	check_one_sigio(tty_output);
--	check_one_sigio(tty_close);
- }
- 
- /* Here because it only does the SIGIO testing for now */
 -- 
-2.26.2
-
+Anton R. Ivanov
+https://www.kot-begemot.co.uk/
 
 _______________________________________________
 linux-um mailing list
