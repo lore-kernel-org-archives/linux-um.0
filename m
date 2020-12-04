@@ -2,12 +2,12 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1klCv6-0006Et-KB
- for linux-um@lists.infradead.org; Fri, 04 Dec 2020 15:22:53 +0000
+ id 1kl9MM-0008Dr-DE
+ for linux-um@lists.infradead.org; Fri, 04 Dec 2020 11:34:47 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH] um: line: don't free winch (with IRQ) under spinlock
-Date: Fri,  4 Dec 2020 16:22:44 +0100
-Message-Id: <20201204162243.779ca2ed9a30.I11ed45127847cd6c160f561a3508ba111be82b2d@changeid>
+Subject: [PATCH] um: time-travel: avoid multiple identical propagations
+Date: Fri,  4 Dec 2020 12:34:34 +0100
+Message-Id: <20201204123433.01282063e81f.I6cdf9966c9d253628195b50d800c8a688f829b46@changeid>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -26,63 +26,35 @@ Cc: Johannes Berg <johannes.berg@intel.com>
 
 From: Johannes Berg <johannes.berg@intel.com>
 
-Lockdep correctly complains that one shouldn't call um_free_irq()
-with free_irq() inside under a spinlock since that will attempt
-to acquire a mutex.
-
-Rearrange the code to keep the list manipulations under the lock
-while moving the actual freeing outside of it, to avoid this.
-
-In particular, this removes the lockdep complaint at shutdown that
-I was seeing with lockdep enabled.
+If there is some kind of interrupt negotation or such then
+it may happen that we send an update message multiple times,
+avoid that in the interest of efficiency by storing the last
+transmitted value and only sending a new update if it's not
+the same as the last update.
 
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- arch/um/drivers/line.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ arch/um/kernel/time.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
-index 2d68f58ac54b..1c70a31e7c5b 100644
---- a/arch/um/drivers/line.c
-+++ b/arch/um/drivers/line.c
-@@ -614,7 +614,6 @@ static void free_winch(struct winch *winch)
- 	winch->fd = -1;
- 	if (fd != -1)
- 		os_close_file(fd);
--	list_del(&winch->list);
- 	__free_winch(&winch->work);
- }
+diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
+index 5ac084deac7e..2c1c04f4ef27 100644
+--- a/arch/um/kernel/time.c
++++ b/arch/um/kernel/time.c
+@@ -198,7 +198,13 @@ static void time_travel_ext_update_request(unsigned long long time)
  
-@@ -715,6 +714,8 @@ static void unregister_winch(struct tty_struct *tty)
- 		winch = list_entry(ele, struct winch, list);
- 		wtty = tty_port_tty_get(winch->port);
- 		if (wtty == tty) {
-+			list_del(&winch->list);
-+			spin_unlock(&winch_handler_lock);
- 			free_winch(winch);
- 			break;
- 		}
-@@ -725,14 +726,17 @@ static void unregister_winch(struct tty_struct *tty)
- 
- static void winch_cleanup(void)
+ void __time_travel_propagate_time(void)
  {
--	struct list_head *ele, *next;
- 	struct winch *winch;
- 
- 	spin_lock(&winch_handler_lock);
-+	while ((winch = list_first_entry_or_null(&winch_handlers,
-+						 struct winch, list))) {
-+		list_del(&winch->list);
-+		spin_unlock(&winch_handler_lock);
- 
--	list_for_each_safe(ele, next, &winch_handlers) {
--		winch = list_entry(ele, struct winch, list);
- 		free_winch(winch);
++	static unsigned long long last_propagated;
 +
-+		spin_lock(&winch_handler_lock);
- 	}
++	if (last_propagated == time_travel_time)
++		return;
++
+ 	time_travel_ext_req(UM_TIMETRAVEL_UPDATE, time_travel_time);
++	last_propagated = time_travel_time;
+ }
+ EXPORT_SYMBOL_GPL(__time_travel_propagate_time);
  
- 	spin_unlock(&winch_handler_lock);
 -- 
 2.26.2
 
