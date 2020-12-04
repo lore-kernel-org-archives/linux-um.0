@@ -1,14 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kleVi-0002pB-KX
- for linux-um@lists.infradead.org; Sat, 05 Dec 2020 20:50:31 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH 1/2] um: support some of ARCH_HAS_SET_MEMORY
-Date: Sat,  5 Dec 2020 21:50:17 +0100
-Message-Id: <20201205215016.eac3b08ee1a2.I47d69ccd6a474726b83813c60a75aa82556b69ae@changeid>
+ id 1klErJ-0003j0-N2
+ for linux-um@lists.infradead.org; Fri, 04 Dec 2020 17:27:06 +0000
+Subject: Re: [PATCH] um: line: don't free winch (with IRQ) under spinlock
+References: <20201204162243.779ca2ed9a30.I11ed45127847cd6c160f561a3508ba111be82b2d@changeid>
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Message-ID: <2b196bee-9ac6-6f47-298a-d29d721b04d0@kot-begemot.co.uk>
+Date: Fri, 4 Dec 2020 17:26:55 +0000
 MIME-Version: 1.0
+In-Reply-To: <20201204162243.779ca2ed9a30.I11ed45127847cd6c160f561a3508ba111be82b2d@changeid>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -17,131 +20,82 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
+To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
 Cc: Johannes Berg <johannes.berg@intel.com>
 
-From: Johannes Berg <johannes.berg@intel.com>
 
-For now, only support set_memory_ro()/rw() which we need for
-the stack protection in the next patch.
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- arch/um/Kconfig                  |  1 +
- arch/um/include/asm/pgtable.h    |  3 ++
- arch/um/include/asm/set_memory.h |  1 +
- arch/um/kernel/tlb.c             | 54 ++++++++++++++++++++++++++++++++
- 4 files changed, 59 insertions(+)
- create mode 100644 arch/um/include/asm/set_memory.h
+On 04/12/2020 15:22, Johannes Berg wrote:
+> From: Johannes Berg <johannes.berg@intel.com>
+> 
+> Lockdep correctly complains that one shouldn't call um_free_irq()
+> with free_irq() inside under a spinlock since that will attempt
+> to acquire a mutex.
+> 
+> Rearrange the code to keep the list manipulations under the lock
+> while moving the actual freeing outside of it, to avoid this.
+> 
+> In particular, this removes the lockdep complaint at shutdown that
+> I was seeing with lockdep enabled.
+> 
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+> ---
+>   arch/um/drivers/line.c | 12 ++++++++----
+>   1 file changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
+> index 2d68f58ac54b..1c70a31e7c5b 100644
+> --- a/arch/um/drivers/line.c
+> +++ b/arch/um/drivers/line.c
+> @@ -614,7 +614,6 @@ static void free_winch(struct winch *winch)
+>   	winch->fd = -1;
+>   	if (fd != -1)
+>   		os_close_file(fd);
+> -	list_del(&winch->list);
+>   	__free_winch(&winch->work);
+>   }
+>   
+> @@ -715,6 +714,8 @@ static void unregister_winch(struct tty_struct *tty)
+>   		winch = list_entry(ele, struct winch, list);
+>   		wtty = tty_port_tty_get(winch->port);
+>   		if (wtty == tty) {
+> +			list_del(&winch->list);
+> +			spin_unlock(&winch_handler_lock);
+>   			free_winch(winch);
+>   			break;
+>   		}
+> @@ -725,14 +726,17 @@ static void unregister_winch(struct tty_struct *tty)
+>   
+>   static void winch_cleanup(void)
+>   {
+> -	struct list_head *ele, *next;
+>   	struct winch *winch;
+>   
+>   	spin_lock(&winch_handler_lock);
+> +	while ((winch = list_first_entry_or_null(&winch_handlers,
+> +						 struct winch, list))) {
+> +		list_del(&winch->list);
+> +		spin_unlock(&winch_handler_lock);
+>   
+> -	list_for_each_safe(ele, next, &winch_handlers) {
+> -		winch = list_entry(ele, struct winch, list);
+>   		free_winch(winch);
+> +
+> +		spin_lock(&winch_handler_lock);
+>   	}
+>   
+>   	spin_unlock(&winch_handler_lock);
+> 
 
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index 1c57599b82fa..70ee19cc6ec6 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -15,6 +15,7 @@ config UML
- 	select HAVE_DEBUG_KMEMLEAK
- 	select HAVE_DEBUG_BUGVERBOSE
- 	select NO_DMA
-+	select ARCH_HAS_SET_MEMORY
- 	select GENERIC_IRQ_SHOW
- 	select GENERIC_CPU_DEVICES
- 	select GENERIC_CLOCKEVENTS
-diff --git a/arch/um/include/asm/pgtable.h b/arch/um/include/asm/pgtable.h
-index def376194dce..39376bb63abf 100644
---- a/arch/um/include/asm/pgtable.h
-+++ b/arch/um/include/asm/pgtable.h
-@@ -55,12 +55,15 @@ extern unsigned long end_iomem;
- #define _PAGE_CHG_MASK	(PAGE_MASK | _PAGE_ACCESSED | _PAGE_DIRTY)
- #define __PAGE_KERNEL_EXEC                                              \
- 	 (_PAGE_PRESENT | _PAGE_RW | _PAGE_DIRTY | _PAGE_ACCESSED)
-+#define __PAGE_KERNEL_RO						\
-+	 (_PAGE_PRESENT | _PAGE_DIRTY | _PAGE_ACCESSED)
- #define PAGE_NONE	__pgprot(_PAGE_PROTNONE | _PAGE_ACCESSED)
- #define PAGE_SHARED	__pgprot(_PAGE_PRESENT | _PAGE_RW | _PAGE_USER | _PAGE_ACCESSED)
- #define PAGE_COPY	__pgprot(_PAGE_PRESENT | _PAGE_USER | _PAGE_ACCESSED)
- #define PAGE_READONLY	__pgprot(_PAGE_PRESENT | _PAGE_USER | _PAGE_ACCESSED)
- #define PAGE_KERNEL	__pgprot(_PAGE_PRESENT | _PAGE_RW | _PAGE_DIRTY | _PAGE_ACCESSED)
- #define PAGE_KERNEL_EXEC	__pgprot(__PAGE_KERNEL_EXEC)
-+#define PAGE_KERNEL_RO		__pgprot(__PAGE_KERNEL_RO)
- 
- /*
-  * The i386 can't do page protection for execute, and considers that the same
-diff --git a/arch/um/include/asm/set_memory.h b/arch/um/include/asm/set_memory.h
-new file mode 100644
-index 000000000000..24266c63720d
---- /dev/null
-+++ b/arch/um/include/asm/set_memory.h
-@@ -0,0 +1 @@
-+#include <asm-generic/set_memory.h>
-diff --git a/arch/um/kernel/tlb.c b/arch/um/kernel/tlb.c
-index 61776790cd67..437d1f1cc5ec 100644
---- a/arch/um/kernel/tlb.c
-+++ b/arch/um/kernel/tlb.c
-@@ -608,3 +608,57 @@ void force_flush_all(void)
- 		vma = vma->vm_next;
- 	}
- }
-+
-+struct page_change_data {
-+	unsigned int set_mask, clear_mask;
-+};
-+
-+static int change_page_range(pte_t *ptep, unsigned long addr, void *data)
-+{
-+	struct page_change_data *cdata = data;
-+	pte_t pte = READ_ONCE(*ptep);
-+
-+	pte_clear_bits(pte, cdata->clear_mask);
-+	pte_set_bits(pte, cdata->set_mask);
-+
-+	set_pte(ptep, pte);
-+	return 0;
-+}
-+
-+static int change_memory(unsigned long start, unsigned long pages,
-+			 unsigned int set_mask, unsigned int clear_mask)
-+{
-+	unsigned long size = pages * PAGE_SIZE;
-+	struct page_change_data data;
-+	int ret;
-+
-+	data.set_mask = set_mask;
-+	data.clear_mask = clear_mask;
-+
-+	ret = apply_to_page_range(&init_mm, start, size, change_page_range,
-+				  &data);
-+
-+	flush_tlb_kernel_range(start, start + size);
-+
-+	return ret;
-+}
-+
-+int set_memory_ro(unsigned long addr, int numpages)
-+{
-+	return change_memory(addr, numpages, 0, _PAGE_RW);
-+}
-+
-+int set_memory_rw(unsigned long addr, int numpages)
-+{
-+	return change_memory(addr, numpages, _PAGE_RW, 0);
-+}
-+
-+int set_memory_nx(unsigned long addr, int numpages)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+int set_memory_x(unsigned long addr, int numpages)
-+{
-+	return -EOPNOTSUPP;
-+}
+Acked-By: anton.ivanov@cambridgegreys.com
+
 -- 
-2.26.2
-
+Anton R. Ivanov
+https://www.kot-begemot.co.uk/
 
 _______________________________________________
 linux-um mailing list
