@@ -1,16 +1,22 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kkQnl-0008O7-2z
- for linux-um@lists.infradead.org; Wed, 02 Dec 2020 12:00:07 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v2 2/7] um: virtio: use dynamic IRQ allocation
-Date: Wed,  2 Dec 2020 12:59:51 +0100
-Message-Id: <20201202125915.d5cbac8ab2de.Id7bf6cf5659579ac53cce88552126e4d98a74e3d@changeid>
-In-Reply-To: <20201202115956.42963-1-johannes@sipsolutions.net>
-References: <20201202115956.42963-1-johannes@sipsolutions.net>
+ id 1klqNz-0000Hs-0H
+ for linux-um@lists.infradead.org; Sun, 06 Dec 2020 09:31:19 +0000
+Subject: Re: [PATCH 2/2] um: allocate a guard page to helper threads
+References: <20201205215016.eac3b08ee1a2.I47d69ccd6a474726b83813c60a75aa82556b69ae@changeid>
+ <20201205215016.c9770d63195d.I816f5a22bff56c55095e7c847df8449d08e9514c@changeid>
+ <20f9d000-d4a9-59cc-9dba-9673d9185def@cambridgegreys.com>
+ <63dd29aaceeef43e15f42aaf4de45a9093812116.camel@sipsolutions.net>
+ <c0d2af57-3db9-09e7-8d9a-813018529174@cambridgegreys.com>
+ <b9c9db94168d96026c323dfb256500ac42e7024b.camel@sipsolutions.net>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <11ba94a0-c554-1d9d-a56d-59b37c3555f8@cambridgegreys.com>
+Date: Sun, 6 Dec 2020 09:31:13 +0000
 MIME-Version: 1.0
+In-Reply-To: <b9c9db94168d96026c323dfb256500ac42e7024b.camel@sipsolutions.net>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -19,142 +25,80 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+On 06/12/2020 08:53, Johannes Berg wrote:
+> On Sun, 2020-12-06 at 08:23 +0000, Anton Ivanov wrote:
+>> On 06/12/2020 08:11, Johannes Berg wrote:
+>>> On Sat, 2020-12-05 at 22:09 +0000, Anton Ivanov wrote:
+>>>
+>>>>> -unsigned long alloc_stack(int order, int atomic)
+>>>>> +unsigned long alloc_stack(int atomic)
+>>>>>     {
+>>>>> -	unsigned long page;
+>>>>> +	unsigned long addr;
+>>>>>     	gfp_t flags = GFP_KERNEL;
+>>>>>     
+>>>>>     	if (atomic)
+>>>>>     		flags = GFP_ATOMIC;
+>>>>> -	page = __get_free_pages(flags, order);
+>>>>> +	addr = __get_free_pages(flags, 1);
+>>>> Why are you dropping order?
+>>> It was always called with 0 as the order argument, so I didn't think it
+>>> was relevant. I guess we can keep it and allocate order+1, and then
+>>> reserve a page, but if then e.g. you wanted order 2 (16k) you'd actually
+>>> get 28k of usable stack and use up 32k. So I thought it was less
+>>> surprising if we'd remove it.
+>>>
+>>>> I believe we do not fit in a stack of order
+>>>> less than 2 on newer 64 bit and we need even more with valgrind.
+>>> Not sure what you mean by this, tbh. Running the whole of UML in
+>>> valgrind? Why would that require more stack?
+>>
+>> According to the description of the stack order option in the config it
+>> does.
+> 
+> Ah ok, you're referring to CONFIG_KERNEL_STACK_ORDER. That indeed
+> affects only *kernel* threads, not the helper threads that are allocated
+> here.
+> 
+> Not sure why valgrind would matter, but perhaps it does some magic with
+> stacks under the hood, don't really know well what it really does.
+> 
+>>> Kernel threads are
+>>> unaffected, and the helper threads don't do much that would really make
+>>> a significant difference between 32 and 64 bit?
+>>
+>> OK, I need to have a look again on where do we use the order parameter
+>> and what that config option really means.
+> 
+> Well, it affects THREAD_SIZE_ORDER, which is used in kernel/fork.c to
+> allocate the kernel stacks for new threads, so that makes sense. >
+> But the code I changed here has no relation to it, it's just for the
+> userspace helper threads such as winch_thread :)
 
-This separates the devices, which is better for debug and for
-later suspend/resume and wakeup support, since there we'll
-have to separate which IRQs can wake up the system and which
-cannot.
+Ah, cool. I did not look in detail as it was ~ past 21:00 over here when 
+I saw the email. Just noted stack order :)
 
-Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- arch/um/drivers/virtio_uml.c | 22 ++++++++++++++--------
- arch/um/include/asm/irq.h    |  5 ++---
- 2 files changed, 16 insertions(+), 11 deletions(-)
+> 
+> johannes
+> 
+> 
+> _______________________________________________
+> linux-um mailing list
+> linux-um@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-um
+> 
 
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index f76b8da28d20..94b112749d5b 100644
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -55,7 +55,7 @@ struct virtio_uml_device {
- 	struct platform_device *pdev;
- 
- 	spinlock_t sock_lock;
--	int sock, req_fd;
-+	int sock, req_fd, irq;
- 	u64 features;
- 	u64 protocol_features;
- 	u8 status;
-@@ -409,12 +409,14 @@ static int vhost_user_init_slave_req(struct virtio_uml_device *vu_dev)
- 		return rc;
- 	vu_dev->req_fd = req_fds[0];
- 
--	rc = um_request_irq(VIRTIO_IRQ, vu_dev->req_fd, IRQ_READ,
-+	rc = um_request_irq(UM_IRQ_ALLOC, vu_dev->req_fd, IRQ_READ,
- 			    vu_req_interrupt, IRQF_SHARED,
- 			    vu_dev->pdev->name, vu_dev);
- 	if (rc < 0)
- 		goto err_close;
- 
-+	vu_dev->irq = rc;
-+
- 	rc = vhost_user_send_no_payload_fd(vu_dev, VHOST_USER_SET_SLAVE_REQ_FD,
- 					   req_fds[1]);
- 	if (rc)
-@@ -423,7 +425,7 @@ static int vhost_user_init_slave_req(struct virtio_uml_device *vu_dev)
- 	goto out;
- 
- err_free_irq:
--	um_free_irq(VIRTIO_IRQ, vu_dev);
-+	um_free_irq(vu_dev->irq, vu_dev);
- err_close:
- 	os_close_file(req_fds[0]);
- out:
-@@ -802,7 +804,11 @@ static void vu_del_vq(struct virtqueue *vq)
- 	struct virtio_uml_vq_info *info = vq->priv;
- 
- 	if (info->call_fd >= 0) {
--		um_free_irq(VIRTIO_IRQ, vq);
-+		struct virtio_uml_device *vu_dev;
-+
-+		vu_dev = to_virtio_uml_device(vq->vdev);
-+
-+		um_free_irq(vu_dev->irq, vq);
- 		os_close_file(info->call_fd);
- 	}
- 
-@@ -852,7 +858,7 @@ static int vu_setup_vq_call_fd(struct virtio_uml_device *vu_dev,
- 		return rc;
- 
- 	info->call_fd = call_fds[0];
--	rc = um_request_irq(VIRTIO_IRQ, info->call_fd, IRQ_READ,
-+	rc = um_request_irq(vu_dev->irq, info->call_fd, IRQ_READ,
- 			    vu_interrupt, IRQF_SHARED, info->name, vq);
- 	if (rc < 0)
- 		goto close_both;
-@@ -864,7 +870,7 @@ static int vu_setup_vq_call_fd(struct virtio_uml_device *vu_dev,
- 	goto out;
- 
- release_irq:
--	um_free_irq(VIRTIO_IRQ, vq);
-+	um_free_irq(vu_dev->irq, vq);
- close_both:
- 	os_close_file(call_fds[0]);
- out:
-@@ -969,7 +975,7 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
- 
- error_setup:
- 	if (info->call_fd >= 0) {
--		um_free_irq(VIRTIO_IRQ, vq);
-+		um_free_irq(vu_dev->irq, vq);
- 		os_close_file(info->call_fd);
- 	}
- error_call:
-@@ -1078,7 +1084,7 @@ static void virtio_uml_release_dev(struct device *d)
- 
- 	/* might not have been opened due to not negotiating the feature */
- 	if (vu_dev->req_fd >= 0) {
--		um_free_irq(VIRTIO_IRQ, vu_dev);
-+		um_free_irq(vu_dev->irq, vu_dev);
- 		os_close_file(vu_dev->req_fd);
- 	}
- 
-diff --git a/arch/um/include/asm/irq.h b/arch/um/include/asm/irq.h
-index b6fa6301c75b..547bff7b3a89 100644
---- a/arch/um/include/asm/irq.h
-+++ b/arch/um/include/asm/irq.h
-@@ -17,18 +17,17 @@
- #define TELNETD_IRQ 		12
- #define XTERM_IRQ 		13
- #define RANDOM_IRQ 		14
--#define VIRTIO_IRQ		15
- 
- #ifdef CONFIG_UML_NET_VECTOR
- 
--#define VECTOR_BASE_IRQ		(VIRTIO_IRQ + 1)
-+#define VECTOR_BASE_IRQ		(RANDOM_IRQ + 1)
- #define VECTOR_IRQ_SPACE	8
- 
- #define UM_FIRST_DYN_IRQ (VECTOR_IRQ_SPACE + VECTOR_BASE_IRQ)
- 
- #else
- 
--#define UM_FIRST_DYN_IRQ (VIRTIO_IRQ + 1)
-+#define UM_FIRST_DYN_IRQ (RANDOM_IRQ + 1)
- 
- #endif
- 
+
 -- 
-2.26.2
-
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
 _______________________________________________
 linux-um mailing list
