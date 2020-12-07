@@ -1,13 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kp70T-0005VV-Oi
- for linux-um@lists.infradead.org; Tue, 15 Dec 2020 09:52:34 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v2 1/5] um: virtio: clean up a comment
-Date: Tue, 15 Dec 2020 10:52:21 +0100
-Message-Id: <20201215105225.5c1b7720a11b.Ibacb1cbbdd1fa7ae866f0c3c94488dcbae01b39b@changeid>
+ id 1kmKAx-0000ig-Vv
+ for linux-um@lists.infradead.org; Mon, 07 Dec 2020 17:19:53 +0000
+From: anton.ivanov@cambridgegreys.com
+Subject: [PATCH 2/3] um: tty: Fix handling of close in tty lines
+Date: Mon,  7 Dec 2020 17:19:39 +0000
+Message-Id: <20201207171940.25240-2-anton.ivanov@cambridgegreys.com>
+In-Reply-To: <20201207171940.25240-1-anton.ivanov@cambridgegreys.com>
+References: <20201207171940.25240-1-anton.ivanov@cambridgegreys.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,35 +24,47 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-There's no 'simtime' device, because implementing that through
-virtio was just too much complexity. Clean up the comment that
-still refers to it.
+Fix a logical error in tty reading. We get 0 and errno == EAGAIN
+on the first attempt to read from a closed file descriptor.
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Compared to that a true EAGAIN is EAGAIN and -1.
+
+If we check errno for EAGAIN first, before checking the return
+value we miss the fact that the descriptor is closed.
+
+This bug is as old as the driver. It was not showing up with
+the original POLL based IRQ controller, because it was
+producing multiple events. Switching to EPOLL unmasked it.
+
+Fixes: ff6a17989c08 ("Epoll based IRQ controller")
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 ---
- arch/um/drivers/virtio_uml.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/um/drivers/chan_user.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index 27e92d3881ff..ead9a1aea192 100644
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -914,8 +914,7 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
- #ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
- 	/*
- 	 * When we get an interrupt, we must bounce it through the simulation
--	 * calendar (the simtime device), except for the simtime device itself
--	 * since that's part of the simulation control.
-+	 * calendar (the time-travel=ext:... socket).
- 	 */
- 	if (time_travel_mode == TT_MODE_EXTERNAL && callback) {
- 		info->callback = callback;
+diff --git a/arch/um/drivers/chan_user.c b/arch/um/drivers/chan_user.c
+index 4d80526a4236..d8845d4aac6a 100644
+--- a/arch/um/drivers/chan_user.c
++++ b/arch/um/drivers/chan_user.c
+@@ -26,10 +26,10 @@ int generic_read(int fd, char *c_out, void *unused)
+ 	n = read(fd, c_out, sizeof(*c_out));
+ 	if (n > 0)
+ 		return n;
+-	else if (errno == EAGAIN)
+-		return 0;
+ 	else if (n == 0)
+ 		return -EIO;
++	else if (errno == EAGAIN)
++		return 0;
+ 	return -errno;
+ }
+ 
 -- 
-2.26.2
+2.20.1
 
 
 _______________________________________________
