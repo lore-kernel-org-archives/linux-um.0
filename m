@@ -1,13 +1,21 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kq14c-00060Z-2u
- for linux-um@lists.infradead.org; Thu, 17 Dec 2020 21:44:35 +0000
-Date: Thu, 17 Dec 2020 22:44:23 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <841389660.140020.1608241463043.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] UML updates for 5.11-rc1
+ id 1kmL6A-0001Sv-7N
+ for linux-um@lists.infradead.org; Mon, 07 Dec 2020 18:18:59 +0000
+Subject: Re: [PATCH] um: borrow bitops from the x86 tree
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+References: <20201116144426.8415-1-anton.ivanov@cambridgegreys.com>
+ <a5ad1be201a7488bdc317bc72776f1465347504f.camel@sipsolutions.net>
+ <d2817ac8-e4a9-5d88-468e-03705e986b6e@cambridgegreys.com>
+ <cc3181a27ff19403db94385b42ec4a1feb60a965.camel@sipsolutions.net>
+ <cd43d9fd-c1e8-d10d-1b39-d1893eb0cdc3@cambridgegreys.com>
+Message-ID: <c20d604f-f26f-aaf7-0d55-57b1c33e4862@cambridgegreys.com>
+Date: Mon, 7 Dec 2020 18:18:53 +0000
 MIME-Version: 1.0
+In-Reply-To: <cd43d9fd-c1e8-d10d-1b39-d1893eb0cdc3@cambridgegreys.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -16,123 +24,39 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: torvalds <torvalds@linux-foundation.org>
-Cc: linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
+To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
+Cc: richard@nod.at
 
-Linus,
-
-The following changes since commit b65054597872ce3aefbc6a666385eabdf9e288da:
-
-  Linux 5.10-rc6 (2020-11-29 15:50:50 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.11-rc1
-
-for you to fetch changes up to 1fb1abc83636f5329c26cd29f0f19f3faeb697a5:
-
-  um: Fix build w/o CONFIG_PM_SLEEP (2020-12-14 21:15:32 +0100)
-
-----------------------------------------------------------------
-This pull request contains the following changes for UML:
-
-- IRQ handling cleanups
-- Support for suspend
-- Various fixes for UML specific drivers: ubd, vector, xterm
-
-----------------------------------------------------------------
-Allen Pais (1):
-      um: Convert tasklets to use new tasklet_setup() API
-
-Andy Shevchenko (1):
-      um: Increase stack frame size threshold for signal.c
-
-Anton Ivanov (5):
-      um: Remove use of asprinf in umid.c
-      um: Fetch registers only for signals which need them
-      um: Monitor error events in IRQ controller
-      um: tty: Fix handling of close in tty lines
-      um: chan_xterm: Fix fd leak
-
-Christopher Obbard (2):
-      um: random: Register random as hwrng-core device
-      um: ubd: Set device serial attribute from cmdline
-
-Gabriel Krisman Bertazi (1):
-      um: ubd: Submit all data segments atomically
-
-Jens Axboe (1):
-      um: Add support for TIF_NOTIFY_SIGNAL
-
-Johannes Berg (21):
-      um: Fix time-travel mode
-      um: line: Don't free winch (with IRQ) under spinlock
-      um: sigio: Return error from add_sigio_fd()
-      um: Support dynamic IRQ allocation
-      um: virtio: Use dynamic IRQ allocation
-      um: Clean up alarm IRQ chip name
-      um: irq: Clean up and rename struct irq_fd
-      um: irq: Reduce irq_reg allocation
-      um: Remove IRQ_NONE type
-      um: Simplify IRQ handling code
-      um: Simplify os_idle_sleep() and sleep longer
-      um: time: Fix read_persistent_clock64() in time-travel
-      um: Allow PM with suspend-to-idle
-      um: Support suspend to RAM
-      um: time-travel: avoid multiple identical propagations
-      um: support some of ARCH_HAS_SET_MEMORY
-      um: allocate a guard page to helper threads
-      um: time-travel: Actually apply "free-until" optimisation
-      um: irq/sigio: Support suspend/resume handling of workaround IRQs
-      um: time-travel: Correct time event IRQ delivery
-      um: Fix build w/o CONFIG_PM_SLEEP
-
- arch/um/Kconfig                         |   6 +
- arch/um/drivers/chan_user.c             |   4 +-
- arch/um/drivers/line.c                  |  30 +-
- arch/um/drivers/mconsole_kern.c         |   2 +-
- arch/um/drivers/net_kern.c              |   2 +-
- arch/um/drivers/port_kern.c             |   4 +-
- arch/um/drivers/random.c                | 105 ++-----
- arch/um/drivers/ubd_kern.c              | 273 ++++++++++------
- arch/um/drivers/vector_kern.c           |  10 +-
- arch/um/drivers/virtio_uml.c            |  31 +-
- arch/um/drivers/xterm.c                 |   5 +
- arch/um/drivers/xterm_kern.c            |   2 +-
- arch/um/include/asm/irq.h               |   9 +-
- arch/um/include/asm/pgtable.h           |   3 +
- arch/um/include/asm/set_memory.h        |   1 +
- arch/um/include/asm/thread_info.h       |   2 +
- arch/um/include/linux/time-internal.h   |   4 +-
- arch/um/include/shared/common-offsets.h |   3 +
- arch/um/include/shared/irq_kern.h       |  13 +-
- arch/um/include/shared/irq_user.h       |  21 +-
- arch/um/include/shared/kern_util.h      |   5 +-
- arch/um/include/shared/os.h             |  23 +-
- arch/um/kernel/irq.c                    | 534 +++++++++++++++++---------------
- arch/um/kernel/process.c                |  27 +-
- arch/um/kernel/sigio.c                  |   2 +-
- arch/um/kernel/time.c                   |  97 +++++-
- arch/um/kernel/tlb.c                    |  54 ++++
- arch/um/kernel/um_arch.c                |  67 ++++
- arch/um/os-Linux/Makefile               |   2 +
- arch/um/os-Linux/helper.c               |   4 +-
- arch/um/os-Linux/irq.c                  |   4 +-
- arch/um/os-Linux/sigio.c                |  70 +++--
- arch/um/os-Linux/signal.c               |  22 +-
- arch/um/os-Linux/skas/process.c         |  15 +-
- arch/um/os-Linux/time.c                 |  17 +-
- arch/um/os-Linux/umid.c                 |  17 +-
- drivers/char/hw_random/Kconfig          |  16 +-
- 37 files changed, 909 insertions(+), 597 deletions(-)
- create mode 100644 arch/um/include/asm/set_memory.h
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gMTcvMTEvMjAyMCAxMjo1MywgQW50b24gSXZhbm92IHdyb3RlOgo+IE9uIDE3LzExLzIwMjAg
+MTI6MTEsIEpvaGFubmVzIEJlcmcgd3JvdGU6Cj4+IE9uIFR1ZSwgMjAyMC0xMS0xNyBhdCAxMTo0
+NiArMDAwMCwgQW50b24gSXZhbm92IHdyb3RlOgo+Pj4KPj4+IE15IHVzdWFsIHRlc3QgaXM6Cj4+
+Pgo+Pj4gwqDCoCB0aW1lIGJ1c3lib3ggZmluZCAvdXNyL2xpYi8gLXR5cGUgZiAtZXhlYyBjYXQg
+e30gPiAvZGV2L251bGwgXDsKPj4+Cj4+PiBJIGRpc2NhcmQgdGhlIGZpcnN0IHJ1biBhbmQgdXNl
+IG9ubHkgcnVucyBmcm9tIGZzIGNhY2hlLgo+Pgo+PiBPaC4gSSBkaWRuJ3QgZXZlbiBydW4gdGhl
+IHRpbWluZyBpbnNpZGUuIEkgcmFuIGl0ICpvdXRzaWRlKiwgc29tZXRoaW5nCj4+IGxpa2UKPj4K
+Pj4gdGltZSAuL2xpbnV4IGFyZ3MuLi4gaW5pdD0vcGF0aC90by90ZXN0LXNjcmlwdC5zaAo+IAo+
+IEkgdXN1YWxseSBkbyBhIGZ1bGwgc2V0IG9mIHRlc3RzIG9uIGZzIGFjY2VzcywgZGV2aWNlIElP
+IGFjY2VzcyBhbmQgYSAKPiBuZXRwZXJmIGFmdGVyIGVhY2ggcGF0Y2guCj4gCj4gQmFzZWQgb24g
+dGhlbSBpdCBsb29rcyBsaWtlIGl0IGlzIHdvcnRoIGl0Lgo+IAo+IFRoZSBtb3JlIGludGVyZXN0
+aW5nIHF1ZXN0aW9uIGlzIC0gaXMgdGhpcyB0aGUgcmlnaHQgb3JnYW5pemF0aW9uPwo+IAo+IFdl
+IGhhdmUgc3R1ZmYgaW4gbXVsdGlwbGUgcGxhY2VzIG5vdyAtIGFyY2gveDg2L3VtICwgYXJjaC91
+bSwgZXRjLgo+IAo+IElNSE8sIHdlIHNob3VsZCBwcm9iYWJseSBsb29rIGF0IGdldHRpbmcgaXQg
+b3JnYW5pemVkIHNvIHRoYXQgYWxsIAo+IHN1Yi1hcmNoZXMgYXJlIHVuZGVyIHRoZSB1bSB0cmVl
+IGF0IHNvbWUgcG9pbnQuCgoKSW4gdGhlIG1lYW50aW1lLCBhIGJhY2twb3J0IG9mIHRoZXNlIHBh
+dGNoc2V0cyAoc3RyaW5nLCBhdG9taWMsIGJpdG9wcywgCnhvciwgZnV0ZXgsIGV0YykgdG8gT3Bl
+bldSVC9VTUwgaGFzIGNsb2NrZWQgMTQgZGF5cyBhcyBteSBtYWluIENQRS4KCkkgaGF2ZSBub3Qg
+b2JzZXJ2ZWQgYW55IHN0YWJpbGl0eSBpc3N1ZXMgYW5kIHRoZXJlIGlzIHNvbWUgdmlzaWJsZSAK
+aW1wcm92ZW1lbnQgaW4gQ1BVIHVzYWdlLgoKCj4gCj4+Cj4+IGpvaGFubmVzCj4+Cj4+Cj4+IF9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+IGxpbnV4LXVt
+IG1haWxpbmcgbGlzdAo+PiBsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCj4+IGh0dHA6Ly9s
+aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0KPj4KPiAKPiAKCgot
+LSAKQW50b24gUi4gSXZhbm92CkNhbWJyaWRnZWdyZXlzIExpbWl0ZWQuIFJlZ2lzdGVyZWQgaW4g
+RW5nbGFuZC4gQ29tcGFueSBOdW1iZXIgMTAyNzM2NjEKaHR0cHM6Ly93d3cuY2FtYnJpZGdlZ3Jl
+eXMuY29tLwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+bGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
+L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
 
