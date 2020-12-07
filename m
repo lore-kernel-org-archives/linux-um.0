@@ -1,104 +1,91 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: "Enrico Weigelt, metux IT consult" <info@metux.net>
-Subject: [PATCH] arch: fix 'unexpected IRQ trap at vector' warnings
-Date: Mon,  7 Dec 2020 15:31:46 +0100
-Message-Id: <20201207143146.30021-1-info@metux.net>
-To: linux-kernel@vger.kernel.org
-Cc: James.Bottomley@HansenPartnership.com, deller@gmx.de, benh@kernel.crashing.org, paulus@samba.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-um@lists.infradead.org
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kmKAy-0000ix-0H
+ for linux-um@lists.infradead.org; Mon, 07 Dec 2020 17:19:53 +0000
+From: anton.ivanov@cambridgegreys.com
+Subject: [PATCH 3/3] um: chan_xterm: Fix fd leak
+Date: Mon,  7 Dec 2020 17:19:40 +0000
+Message-Id: <20201207171940.25240-3-anton.ivanov@cambridgegreys.com>
+In-Reply-To: <20201207171940.25240-1-anton.ivanov@cambridgegreys.com>
+References: <20201207171940.25240-1-anton.ivanov@cambridgegreys.com>
+MIME-Version: 1.0
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
+Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-All archs, except Alpha, print out the irq number in hex, but the message
-looks like it was a decimal number, which is quite confusing. Fixing this
-by adding "0x" prefix.
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+xterm serial channel was leaking a fd used in setting up the
+port helper
+
+This bug is prehistoric - it predates switching to git. The "fixes"
+header here is really just to mark all the versions we would like this to
+apply to which is "Anything from the Cretaceous period onwards".
+
+No dinosaurs were harmed in fixing this bug.
+
+Fixes: b40997b872cd ("um: drivers/xterm.c: fix a file descriptor leak")
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 ---
- arch/arm/include/asm/hw_irq.h      | 2 +-
- arch/parisc/include/asm/hardirq.h  | 2 +-
- arch/powerpc/include/asm/hardirq.h | 2 +-
- arch/s390/include/asm/hardirq.h    | 2 +-
- arch/um/include/asm/hardirq.h      | 2 +-
- arch/x86/kernel/irq.c              | 2 +-
- 6 files changed, 6 insertions(+), 6 deletions(-)
+ arch/um/drivers/xterm.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/arm/include/asm/hw_irq.h b/arch/arm/include/asm/hw_irq.h
-index cecc13214ef1..2749f19271d9 100644
---- a/arch/arm/include/asm/hw_irq.h
-+++ b/arch/arm/include/asm/hw_irq.h
-@@ -9,7 +9,7 @@ static inline void ack_bad_irq(int irq)
- {
- 	extern unsigned long irq_err_count;
- 	irq_err_count++;
--	pr_crit("unexpected IRQ trap at vector %02x\n", irq);
-+	pr_crit("unexpected IRQ trap at vector 0x%02x\n", irq);
+diff --git a/arch/um/drivers/xterm.c b/arch/um/drivers/xterm.c
+index fc7f1e746703..87ca4a47cd66 100644
+--- a/arch/um/drivers/xterm.c
++++ b/arch/um/drivers/xterm.c
+@@ -18,6 +18,7 @@
+ struct xterm_chan {
+ 	int pid;
+ 	int helper_pid;
++	int chan_fd;
+ 	char *title;
+ 	int device;
+ 	int raw;
+@@ -33,6 +34,7 @@ static void *xterm_init(char *str, int device, const struct chan_opts *opts)
+ 		return NULL;
+ 	*data = ((struct xterm_chan) { .pid 		= -1,
+ 				       .helper_pid 	= -1,
++				       .chan_fd		= -1,
+ 				       .device 		= device,
+ 				       .title 		= opts->xterm_title,
+ 				       .raw  		= opts->raw } );
+@@ -149,6 +151,7 @@ static int xterm_open(int input, int output, int primary, void *d,
+ 		goto out_kill;
+ 	}
+ 
++	data->chan_fd = fd;
+ 	new = xterm_fd(fd, &data->helper_pid);
+ 	if (new < 0) {
+ 		err = new;
+@@ -206,6 +209,8 @@ static void xterm_close(int fd, void *d)
+ 		os_kill_process(data->helper_pid, 0);
+ 	data->helper_pid = -1;
+ 
++	if (data->chan_fd != -1)
++		os_close_file(data->chan_fd);
+ 	os_close_file(fd);
  }
  
- #define ARCH_IRQ_INIT_FLAGS	(IRQ_NOREQUEST | IRQ_NOPROBE)
-diff --git a/arch/parisc/include/asm/hardirq.h b/arch/parisc/include/asm/hardirq.h
-index 7f7039516e53..c3348af88d3f 100644
---- a/arch/parisc/include/asm/hardirq.h
-+++ b/arch/parisc/include/asm/hardirq.h
-@@ -35,6 +35,6 @@ DECLARE_PER_CPU_SHARED_ALIGNED(irq_cpustat_t, irq_stat);
- #define __IRQ_STAT(cpu, member) (irq_stat[cpu].member)
- #define inc_irq_stat(member)	this_cpu_inc(irq_stat.member)
- #define __inc_irq_stat(member)	__this_cpu_inc(irq_stat.member)
--#define ack_bad_irq(irq) WARN(1, "unexpected IRQ trap at vector %02x\n", irq)
-+#define ack_bad_irq(irq) WARN(1, "unexpected IRQ trap at vector 0x%02x\n", irq)
- 
- #endif /* _PARISC_HARDIRQ_H */
-diff --git a/arch/powerpc/include/asm/hardirq.h b/arch/powerpc/include/asm/hardirq.h
-index f133b5930ae1..ec8cf3cf6e49 100644
---- a/arch/powerpc/include/asm/hardirq.h
-+++ b/arch/powerpc/include/asm/hardirq.h
-@@ -29,7 +29,7 @@ DECLARE_PER_CPU_SHARED_ALIGNED(irq_cpustat_t, irq_stat);
- 
- static inline void ack_bad_irq(unsigned int irq)
- {
--	printk(KERN_CRIT "unexpected IRQ trap at vector %02x\n", irq);
-+	printk(KERN_CRIT "unexpected IRQ trap at vector 0x%02x\n", irq);
- }
- 
- extern u64 arch_irq_stat_cpu(unsigned int cpu);
-diff --git a/arch/s390/include/asm/hardirq.h b/arch/s390/include/asm/hardirq.h
-index dfbc3c6c0674..aaaec5cdd4fe 100644
---- a/arch/s390/include/asm/hardirq.h
-+++ b/arch/s390/include/asm/hardirq.h
-@@ -23,7 +23,7 @@
- 
- static inline void ack_bad_irq(unsigned int irq)
- {
--	printk(KERN_CRIT "unexpected IRQ trap at vector %02x\n", irq);
-+	printk(KERN_CRIT "unexpected IRQ trap at vector 0x%02x\n", irq);
- }
- 
- #endif /* __ASM_HARDIRQ_H */
-diff --git a/arch/um/include/asm/hardirq.h b/arch/um/include/asm/hardirq.h
-index b426796d26fd..2a2e6eae034b 100644
---- a/arch/um/include/asm/hardirq.h
-+++ b/arch/um/include/asm/hardirq.h
-@@ -15,7 +15,7 @@ typedef struct {
- #ifndef ack_bad_irq
- static inline void ack_bad_irq(unsigned int irq)
- {
--	printk(KERN_CRIT "unexpected IRQ trap at vector %02x\n", irq);
-+	printk(KERN_CRIT "unexpected IRQ trap at vector 0x%02x\n", irq);
- }
- #endif
- 
-diff --git a/arch/x86/kernel/irq.c b/arch/x86/kernel/irq.c
-index c5dd50369e2f..957c716f2df7 100644
---- a/arch/x86/kernel/irq.c
-+++ b/arch/x86/kernel/irq.c
-@@ -37,7 +37,7 @@ atomic_t irq_err_count;
- void ack_bad_irq(unsigned int irq)
- {
- 	if (printk_ratelimit())
--		pr_err("unexpected IRQ trap at vector %02x\n", irq);
-+		pr_err("unexpected IRQ trap at vector 0x%02x\n", irq);
- 
- 	/*
- 	 * Currently unexpected vectors happen only on SMP and APIC.
 -- 
-2.11.0
+2.20.1
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
