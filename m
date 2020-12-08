@@ -1,17 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mout.kundenserver.de ([212.227.17.24])
+Received: from galois.linutronix.de ([193.142.43.55])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kpGh5-0006HA-NV
- for linux-um@lists.infradead.org; Tue, 15 Dec 2020 20:13:13 +0000
+ id 1kmlyo-00056s-QE
+ for linux-um@lists.infradead.org; Tue, 08 Dec 2020 23:01:11 +0000
+From: Thomas Gleixner <tglx@linutronix.de>
 Subject: Re: [PATCH] arch: fix 'unexpected IRQ trap at vector' warnings
+In-Reply-To: <877dptt5av.fsf@mpe.ellerman.id.au>
 References: <20201207143146.30021-1-info@metux.net>
- <877dptt5av.fsf@mpe.ellerman.id.au> <87y2i7298s.fsf@nanos.tec.linutronix.de>
-From: "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <33001e60-cbfc-f114-55bf-f347f21fee9b@metux.net>
-Date: Tue, 15 Dec 2020 21:12:26 +0100
+ <877dptt5av.fsf@mpe.ellerman.id.au>
+Date: Wed, 09 Dec 2020 00:01:07 +0100
+Message-ID: <87y2i7298s.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <87y2i7298s.fsf@nanos.tec.linutronix.de>
-Content-Language: tl
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,83 +19,106 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Thomas Gleixner <tglx@linutronix.de>, Michael Ellerman <mpe@ellerman.id.au>, "Enrico Weigelt, metux IT consult" <info@metux.net>, linux-kernel@vger.kernel.org
+To: Michael Ellerman <mpe@ellerman.id.au>, Enrico Weigelt,
 Cc: linux-s390@vger.kernel.org, hpa@zytor.com, linux-parisc@vger.kernel.org, benh@kernel.crashing.org, deller@gmx.de, x86@kernel.org, linux-um@lists.infradead.org, James.Bottomley@HansenPartnership.com, mingo@redhat.com, paulus@samba.org, richard@nod.at, bp@alien8.de, linuxppc-dev@lists.ozlabs.org, jdike@addtoit.com, anton.ivanov@cambridgegreys.com
 
-T24gMDkuMTIuMjAgMDA6MDEsIFRob21hcyBHbGVpeG5lciB3cm90ZToKCj4gVGhlcmUgYXJlIGEg
-ZmV3IHNpdHVhdGlvbnMgd2h5IGl0IGlzIGludm9rZWQgb3Igbm90Ogo+IAo+ICAgMSkgVGhlIG9y
-aWdpbmFsIHg4NiB1c2FnZSBpcyBub3QgbG9uZ2VyIHVzaW5nIGl0IGJlY2F1c2UgaXQgY29tcGxh
-aW5zCj4gICAgICByaWdodGZ1bGx5IGFib3V0IGEgdmVjdG9yIGJlaW5nIHJhaXNlZCB3aGljaCBo
-YXMgbm8gaW50ZXJydXB0Cj4gICAgICBkZXNjcmlwdG9yIGFzc29jaWF0ZWQgdG8gaXQuIFNvIHRo
-ZSBvcmlnaW5hbCByZWFzb24gZm9yIG5hbWluZyBpdAo+ICAgICAgdmVjdG9yIGlzIGdvbmUgbG9u
-ZyBhZ28uIEl0IGVtaXRzOgo+IAo+ICAgICAgcHJfZW1lcmdfcmF0ZWxpbWl0ZWQoIiVzOiAlZC4l
-dSBObyBpcnEgaGFuZGxlciBmb3IgdmVjdG9yXG4iLAo+ICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgX19mdW5jX18sIHNtcF9wcm9jZXNzb3JfaWQoKSwgdmVjdG9yKTsKPiAKPiAgICAgIERpcmVj
-dGx5IGZyb20gdGhlIHg4NiBDIGVudHJ5IHBvaW50IHdpdGhvdXQgZXZlciBpbnZva2luZyB0aGF0
-Cj4gICAgICBmdW5jdGlvbi4gIFByZXR0eSBwb3B1bGFyIGVycm9yIG1lc3NhZ2UgZHVlIHRvIHNv
-bWUgQU1EIEJJT1MKPiAgICAgIHdyZWNrYWdlLiA6KQoKT2YgY291cnNlLCB0aGUgdGVybSAidmVj
-dG9yIiBzaG91bGQgYmUgcmVwbGFjZWQgYnkgc29tZXRoaW5nIGxpa2UKImlycW5yIiBvciAidmly
-cSIsIGJ1dCBJIGRpZG4ndCBoYXZlIG5hbWUgY2hhbmdlcyB3aXRoaW4gc2NvcGUgLSBqdXN0Cndh
-bnRlZCB0byBmaXggdGhlIHByaW50aW5nIG9mIHRoYXQgbnVtYmVyLCBhcyBpJ3ZlIHN0dXBsZWQg
-b3ZlciBpdCB3aGlsZQp3b3JraW5nIG9uIHNvbWV0aGluZyBkaWZmZXJlbnQgYW5kIHdvbmRlcmVk
-IHdoeSB0aGUgbnVtYmVyIGRpZmZlcmVkIGZyb20Kd2hhdCBJIGhhZCBleHBlY3RlZCwgdW50aWwg
-SSBzZWVuIHRoYXQgaXQgcHJpbnRzIGhleCBpbnN0ZWFkIG9mIGRlY2ltYWwuCgpCdXQgaWYgeW91
-IHByZWZlciBhIG1vcmUgY29tcGxldGUgY2xlYW51cCwgSSdsbCBiZSBoYXBweSB0byBkbyBpdC4K
-Cj4gICAzKSBJdCdzIGludm9rZWQgZnJvbSBfX2hhbmRsZV9kb21haW5faXJxKCkgd2hlbiB0aGUg
-J2h3aXJxJyB3aGljaCBpcwo+ICAgICAgaGFuZGVkIGluIGJ5IHRoZSBjYWxsZXIgZG9lcyBub3Qg
-cmVzb2x2ZSB0byBhIG1hcHBlZCBMaW51eAo+ICAgICAgaW50ZXJydXB0IHdoaWNoIGlzIHByZXR0
-eSBtdWNoIHRoZSBzYW1lIGFzIHRoZSB4ODYgc2l0dWF0aW9uIGFib3ZlCj4gICAgICBpbiAjMSwg
-YnV0IGl0IHByaW50cyB1c2VsZXNzIGRhdGEuCj4gCj4gICAgICBJdCBwcmludHMgJ2lycScgd2hp
-Y2ggaXMgaW52YWxpZCBidXQgaXQgZG9lcyBub3QgcHJpbnQgdGhlIHJlYWxseQo+ICAgICAgaW50
-ZXJlc3RpbmcgJ2h3aXJxJyB3aGljaCB3YXMgaGFuZGVkIGluIGJ5IHRoZSBjYWxsZXIgYW5kIGRp
-ZAo+ICAgICAgbm90IHJlc29sdmUuCgpJIHdvdWxkbid0IHNheSB0aGUgaXJxLW5yIGlzbid0IGlu
-dGVyZXN0aW5nLiBJbiBteSBwYXJ0aWN1bGFyIGNhc2UgaXQKd2FzIHF1aXRlIHdoYXQgSSd2ZSBi
-ZWVuIGxvb2tpbmcgZm9yLiBCdXQgeW91J3JlIHJpZ2h0LCBod2lycSBzaG91bGQKYWxzbyBiZSBw
-cmludGVkLgoKPiAgICAgIEluIHRoaXMgY2FzZSB0aGUgTGludXggaXJxIG51bWJlciBpcyB1bmlu
-dGVyZXN0aW5nIGFzIGl0IGlzIGtub3duCj4gICAgICB0byBiZSBpbnZhbGlkIGFuZCBzaW1wbHkg
-aXMgbm90IG1hcHBlZCBhbmQgdGhlcmVmb3JlIGRvZXMgbm90Cj4gICAgICBleGlzdC4KCkluIG15
-IGNhc2UgaXQgY2FtZSBpbiBmcm9tIGdlbmVyaWNfaGFuZGxlX2lycSgpLCBhbmQgaW4gdGhpcyBj
-YXNlIHRoaXMKaXJxIG51bWJlciAoSU1ITykgaGFzIGJlZW4gdmFsaWQsIGJ1dCBub2JvZHkgaGFu
-ZGxlZCBpdCwgc28gaXQgd2VudCB0bwphY2tfYmFkX2lycS4KCk9mIGNvdXJzZSwgaWYgdGhpcyBm
-dW5jdGlvbiBpcyBtZWFudCBhcyBhIGZhbGxiYWNrIHRvIGFjayBzb21lIG5vdApvdGhlcndpc2Ug
-aGFuZGxlZCBJUlEgb24gdGhlIGh3LCB0aGUgbGludXggaXJxIG51bWJlciBpbmRlZWQgaXNuJ3Qg
-cXVpdGUKaGVscGZ1bCAodW5sZXNzIHdlIGV4cGVjdCB0aGF0IGNvZGUgdG8gZG8gYSBsb29rdXAg
-dG8gdGhlIGh3IGlycSkuCgouLi4gcmV0aGlua2luZyB0aGlzIGZ1cnRoZXIgLi4uIHNob3VsZG4n
-dCB3ZSBhbHNvIHBhc3MgaW4gZXZlbiBtb3JlIGRhdGEKKGVnLiBpcnFfZGVzYywgaXJxY2hpcCwg
-Li4uKSwgc28gdGhpcyBmdW5jdGlvbiBjYW4gY2hlY2sgd2hpY2ggaHcgdG8KYWN0dWFsbHkgdGFs
-ayB0byA/Cgo+ICAgNCkgSXQncyBpbnZva2VkIGZyb20gdGhlIGR1bW15IGlycSBjaGlwIHdoaWNo
-IGlzIGluc3RhbGxlZCBmb3IgYQo+ICAgICAgY291cGxlIG9mIHRydWx5IHZpcnR1YWwgaW50ZXJy
-dXB0cyB3aGVyZSB0aGUgaW52b2NhdGlvbiBvZgo+ICAgICAgZHVtbXlfaXJxX2NoaXA6OmlycV9h
-Y2soKSBpcyBpbmRpY2F0aW5nIHdyZWNrYWdlLgo+IAo+ICAgICAgSW4gdGhhdCBjYXNlIHRoZSBM
-aW51eCBpcnEgbnVtYmVyIGlzIHRoZSB0aGluZyB3aGljaCBpcyBwcmludGVkLgo+IAo+IFNvIG5v
-LiBJdCdzIG5vdCBqdXN0IGluY29uc2lzdGVudCBpdCdzIGluIHNvbWUgcGxhY2VzIG91dHJpZ2h0
-Cj4gd3JvbmcuIFdoYXQgd2UgcmVhbGx5IHdhbnQgaXM6Cj4gCj4gYWNrX2JhZF9pcnEoaW50IGh3
-aXJxLCBpbnQgdmlycSkKCmlzICdpbnQnIGNvcnJlY3QgaGVyZSA/CgpCVFc6IEkgYWxzbyB3b25k
-ZXIgd2h5IHRoZSB2aXJxIGlzIHVuc2lnbmVkIGludCwgd2hpbGUgaHdpcnEgKGVnLiBpbgpzdHJ1
-Y3QgaXJxX2RhdGEpIGlzIHVuc2lnbmVkIGxvbmcuIHNob3VsZG4ndCB0aGUgdmlydHVhbCBudW1i
-ZXIgc3BhY2UKYmUgYXQgbGVhc3QgYXMgYmlnIChvciBldmVuIGJpZ2dlcikgdGhhbiB0aGUgaHcg
-b25lID8KCiB7Cj4gICAgICAgICBpZiAoaHdpcnEgPj0gMCkKPiAgICAgICAgICAgIHByaW50X3Vz
-ZWZ1bF9pbmZvKGh3aXJxKTsKPiAgICAgICAgIGlmICh2aXJxID4gMCkKPiAgICAgICAgICAgIHBy
-aW50X3VzZWZ1bF9pbmZvKHZpcnEpOwo+ICAgICAgICAgYXJjaF90cnlfdG9fYWNrKGh3aXJxLCB2
-aXJxKTsKPiB9Cj4gICAgIAo+IGZvciB0aGlzIHRvIG1ha2Ugc2Vuc2UuIEp1c3QgZml4aW5nIHRo
-ZSBleGlzdGluZyBwcmludGsoKSB0byBiZSBsZXNzCj4gd3JvbmcgaXMgbm90IHJlYWxseSBhbiBp
-bXByb3ZlbWVudC4KCk9rYXksIG1ha2VzIHNlbnNlLgoKT1RPSDogc2luY2UgYm90aCBjYWxsZXJz
-IChkdW1teWNoaXAuYywgaGFuZGxlLmMpIGFscmVhZHkgZHVtcCBvdXQgYmVmb3JlCmFja19iYWRf
-aXJxKCksIGRvIHdlIG5lZWQgdG8gcHJpbnQgb3V0IGFueXRoaW5nIGF0IGFsbCA/CgpJJ3ZlIGFs
-c28gc2VlbiB0aGF0IG1hbnkgYXJjaHMgaW5jcmVhc2UgYSBjb3VudGVyIChzb21lIHVzZSBsb25n
-LCBvdGhlcnMKYXRvbWljX3QpIC0gc2hvdWxkIHdlIGFsc28gY29uc29saWRhdGUgdGhpcyBpbiBh
-biBhcmNoLWluZGVwZW5kZW50IHdheQppbiBoYW5kbGUuYyAob3IgZG9lcyBrc3RhdF9pbmNyX2ly
-cXNfdGhpc19jcHUgYWxyZWFkeSBkbyB0aGlzKSA/CgotLW10eAoKLS0gCi0tLQpIaW53ZWlzOiB1
-bnZlcnNjaGzDvHNzZWx0ZSBFLU1haWxzIGvDtm5uZW4gbGVpY2h0IGFiZ2Vow7ZydCB1bmQgbWFu
-aXB1bGllcnQKd2VyZGVuICEgRsO8ciBlaW5lIHZlcnRyYXVsaWNoZSBLb21tdW5pa2F0aW9uIHNl
-bmRlbiBTaWUgYml0dGUgaWhyZW4KR1BHL1BHUC1TY2hsw7xzc2VsIHp1LgotLS0KRW5yaWNvIFdl
-aWdlbHQsIG1ldHV4IElUIGNvbnN1bHQKRnJlZSBzb2Z0d2FyZSBhbmQgTGludXggZW1iZWRkZWQg
-ZW5naW5lZXJpbmcKaW5mb0BtZXR1eC5uZXQgLS0gKzQ5LTE1MS0yNzU2NTI4NwoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBs
-aXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
+On Tue, Dec 08 2020 at 13:11, Michael Ellerman wrote:
+> "Enrico Weigelt, metux IT consult" <info@metux.net> writes:
+>> All archs, except Alpha, print out the irq number in hex, but the message
+>> looks like it was a decimal number, which is quite confusing. Fixing this
+>> by adding "0x" prefix.
+>
+> Arguably decimal would be better, /proc/interrupts and /proc/irq/ both
+> use decimal.
+>
+> The whole message is very dated IMO, these days the number it prints is
+> (possibly) virtualised via IRQ domains, ie. it's not necessarily a
+> "vector" if that even makes sense on all arches). Arguably "trap" is the
+> wrong term on some arches too.
+>
+> So it would be better reworded entirely IMO, and also switched to
+> decimal to match other sources of information on interrupts.
+
+So much for the theory.
+
+The printk originates from the very early days of i386 Linux where it
+was called from the low level entry code when there was no interrupt
+assigned to a vector, which is an x86'ism.
+
+That was copied to other architectures without actually thinking about
+whether the vector concept made sense on that architecture and at some
+point it got completely bonkers because it moved to core code without
+thought.
+
+There are a few situations why it is invoked or not:
+
+  1) The original x86 usage is not longer using it because it complains
+     rightfully about a vector being raised which has no interrupt
+     descriptor associated to it. So the original reason for naming it
+     vector is gone long ago. It emits:
+
+     pr_emerg_ratelimited("%s: %d.%u No irq handler for vector\n",
+                          __func__, smp_processor_id(), vector);
+
+     Directly from the x86 C entry point without ever invoking that
+     function.  Pretty popular error message due to some AMD BIOS
+     wreckage. :)
+
+  2) It's invoked when there is an interrupt descriptor installed but
+     not configured/requested. In that case some architectures need to
+     ack it in order not to block further interrupt delivery. In that
+     case 'vector is bogus' and really want's to be 'irqnr' or such
+     because there is a Linux virq number associated to it.
+
+  3) It's invoked from __handle_domain_irq() when the 'hwirq' which is
+     handed in by the caller does not resolve to a mapped Linux
+     interrupt which is pretty much the same as the x86 situation above
+     in #1, but it prints useless data.
+
+     It prints 'irq' which is invalid but it does not print the really
+     interesting 'hwirq' which was handed in by the caller and did
+     not resolve.
+
+     In this case the Linux irq number is uninteresting as it is known
+     to be invalid and simply is not mapped and therefore does not
+     exist.
+
+     This has to print out 'hwirq' which is kinda the equivalent to the
+     original 'vector' message.
+
+  4) It's invoked from the dummy irq chip which is installed for a
+     couple of truly virtual interrupts where the invocation of
+     dummy_irq_chip::irq_ack() is indicating wreckage.
+
+     In that case the Linux irq number is the thing which is printed.
+
+So no. It's not just inconsistent it's in some places outright
+wrong. What we really want is:
+
+ack_bad_irq(int hwirq, int virq)
+{
+        if (hwirq >= 0)
+           print_useful_info(hwirq);
+        if (virq > 0)
+           print_useful_info(virq);
+        arch_try_to_ack(hwirq, virq);
+}
+    
+for this to make sense. Just fixing the existing printk() to be less
+wrong is not really an improvement.
+
+Thanks,
+
+        tglx
+
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
