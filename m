@@ -2,15 +2,18 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab7.miniserver.com ([37.128.132.42]
  helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1knmUu-0008JG-MF
- for linux-um@lists.infradead.org; Fri, 11 Dec 2020 17:46:29 +0000
-From: anton.ivanov@cambridgegreys.com
-Subject: [PATCH v4 7/7] um: borrow bitops from the x86 tree
-Date: Fri, 11 Dec 2020 17:45:59 +0000
-Message-Id: <20201211174559.26010-8-anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20201211174559.26010-1-anton.ivanov@cambridgegreys.com>
-References: <20201211174559.26010-1-anton.ivanov@cambridgegreys.com>
+ id 1kn3aN-0002AI-S0
+ for linux-um@lists.infradead.org; Wed, 09 Dec 2020 17:49:08 +0000
+Subject: Re: [PATCH 1/3] um: Monitor error events in IRQ controller
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+References: <20201207171940.25240-1-anton.ivanov@cambridgegreys.com>
+ <3904ecc6b329edc1af908f7701bc08fb18316fff.camel@sipsolutions.net>
+ <f5f1c309-461c-592c-2d6a-7de8511c2e8e@cambridgegreys.com>
+Message-ID: <97338648-5999-3a8b-9e55-d0500a196659@cambridgegreys.com>
+Date: Wed, 9 Dec 2020 17:49:00 +0000
 MIME-Version: 1.0
+In-Reply-To: <f5f1c309-461c-592c-2d6a-7de8511c2e8e@cambridgegreys.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -19,54 +22,50 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
+Cc: richard@nod.at
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-
-Using x86 bitops instead of the asm-generic allows to squeeze
-a couple of percents improvement on fs IO in UML. It should
-improve other areas as well.
-
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
----
- arch/um/include/asm/bitops-x86.h | 1 +
- arch/um/include/asm/bitops.h     | 7 +++++++
- 2 files changed, 8 insertions(+)
- create mode 120000 arch/um/include/asm/bitops-x86.h
- create mode 100644 arch/um/include/asm/bitops.h
-
-diff --git a/arch/um/include/asm/bitops-x86.h b/arch/um/include/asm/bitops-x86.h
-new file mode 120000
-index 000000000000..15a96ff554b2
---- /dev/null
-+++ b/arch/um/include/asm/bitops-x86.h
-@@ -0,0 +1 @@
-+../../../x86/include/asm/bitops.h
-\ No newline at end of file
-diff --git a/arch/um/include/asm/bitops.h b/arch/um/include/asm/bitops.h
-new file mode 100644
-index 000000000000..a0cd978c6aaa
---- /dev/null
-+++ b/arch/um/include/asm/bitops.h
-@@ -0,0 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_UM_BITOPS_H
-+#define _ASM_UM_BITOPS_H
-+
-+#include <asm/bitops-x86.h>
-+
-+#endif
--- 
-2.20.1
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gMDcvMTIvMjAyMCAxODoxMSwgQW50b24gSXZhbm92IHdyb3RlOgo+IE9uIDA3LzEyLzIwMjAg
+MTc6MzUsIEpvaGFubmVzIEJlcmcgd3JvdGU6Cj4+IE9uIE1vbiwgMjAyMC0xMi0wNyBhdCAxNzox
+OSArMDAwMCwgYW50b24uaXZhbm92QGNhbWJyaWRnZWdyZXlzLmNvbQo+PiB3cm90ZToKPj4+IEZy
+b206IEFudG9uIEl2YW5vdiA8YW50b24uaXZhbm92QGNhbWJyaWRnZWdyZXlzLmNvbT4KPj4+Cj4+
+PiBFbnN1cmUgdGhhdCBmaWxlIGNsb3NlcywgY29ubmVjdGlvbiBjbG9zZXMsIGV0YyBhcmUgcHJv
+cGFnYXRlZAo+Pj4gYXMgaW50ZXJydXB0cyBpbiB0aGUgaW50ZXJydXB0IGNvbnRyb2xsZXIuCj4+
+Pgo+Pj4gRml4ZXM6IGZmNmExNzk4OWMwOCAoIkVwb2xsIGJhc2VkIElSUSBjb250cm9sbGVyIikK
+Pj4+IFNpZ25lZC1vZmYtYnk6IEFudG9uIEl2YW5vdiA8YW50b24uaXZhbm92QGNhbWJyaWRnZWdy
+ZXlzLmNvbT4KPj4+IC0tLQo+Pj4gwqAgYXJjaC91bS9vcy1MaW51eC9pcnEuYyB8IDIgKy0KPj4+
+IMKgIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQo+Pj4KPj4+
+IGRpZmYgLS1naXQgYS9hcmNoL3VtL29zLUxpbnV4L2lycS5jIGIvYXJjaC91bS9vcy1MaW51eC9p
+cnEuYwo+Pj4gaW5kZXggZDUwODMxMGVlNWUxLi5mMTczMmMzMDhjNjEgMTAwNjQ0Cj4+PiAtLS0g
+YS9hcmNoL3VtL29zLUxpbnV4L2lycS5jCj4+PiArKysgYi9hcmNoL3VtL29zLUxpbnV4L2lycS5j
+Cj4+PiBAQCAtNDgsNyArNDgsNyBAQCBpbnQgb3NfZXBvbGxfdHJpZ2dlcmVkKGludCBpbmRleCwg
+aW50IGV2ZW50cykKPj4+IMKgIGludCBvc19ldmVudF9tYXNrKGludCBpcnFfdHlwZSkKPj4+IMKg
+IHsKPj4+IMKgwqDCoMKgwqAgaWYgKGlycV90eXBlID09IElSUV9SRUFEKQo+Pj4gLcKgwqDCoMKg
+wqDCoMKgIHJldHVybiBFUE9MTElOIHwgRVBPTExQUkk7Cj4+PiArwqDCoMKgwqDCoMKgwqAgcmV0
+dXJuIEVQT0xMSU4gfCBFUE9MTFBSSSB8IEVQT0xMRVJSIHwgRVBPTExIVVAgfCBFUE9MTFJESFVQ
+Owo+Pj4gwqDCoMKgwqDCoCBpZiAoaXJxX3R5cGUgPT0gSVJRX1dSSVRFKQo+Pj4gwqDCoMKgwqDC
+oMKgwqDCoMKgIHJldHVybiBFUE9MTE9VVDsKPj4KPj4gV2h5IG5vdCBtb25pdG9yIGl0IGFsc28g
+Zm9yIHdyaXRlPwo+Cj4gVGhlIHdyaXRlIGNvZGUgaW4gbW9zdCBkcml2ZXJzIGhhcyBubyBlcnJv
+ciBjaGVja2luZyBhbmQgbm8gY2xvc2UgdXBvbiAKPiBlcnJvci4KPgo+IEkgd2lsbCBoYXZlIHRv
+IGdvIHRocm91Z2ggdGhlbSBhbmQgZW5zdXJlIHRoZXkgYmVoYXZlIGNvcnJlY3RseSBmaXJzdC4K
+Pgo+IFNvIC0geWVzLCBpdCdzIGEgZ29vZCBpZGVhIGFuZCB3ZSB3aWxsIGFkZCBpdCBsYXRlciwg
+b25jZSBJIGhhdmUgCj4gZG91YmxlLWNoZWNrZWQgYWxsIGRyaXZlcnMuCgpJIGhhdmUgYSBjb3Vw
+bGUgb2YgZnVydGhlciBjbGVhbi11cCBwYXRjaGVzIHRvIGZvbGxvdywgYnV0IHRoZXkgbmVlZCAK
+Ym90aCB5b3VyIHNlcmllcyBhbmQgbXkgc2VyaWVzIHRvIGdvIGluIGZpcnN0LgoKVGhleSBhcmUg
+bW9zdGx5IGNvc21ldGljIC0gZW5zdXJpbmcgY29ycmVjdCBiZWhhdmlvciBvbiBlcG9sbCBlcnJv
+cnMgYW5kIApzdXBwcmVzc2luZyBtZXNzYWdlcyBmb3IgY29uZGl0aW9ucyB3aGljaCBhcmUgbm90
+IHJlYWxseSBlcnJvcnMsIGJ1dCAKImJ1c2luZXNzIGFzIHVzdWFsIi4KCkEuCgo+Cj4+Cj4+IGpv
+aGFubmVzCj4+Cj4+Cj4+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCj4+IGxpbnV4LXVtIG1haWxpbmcgbGlzdAo+PiBsaW51eC11bUBsaXN0cy5pbmZyYWRl
+YWQub3JnCj4+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGlu
+dXgtdW0KPj4KPgo+CgotLSAKQW50b24gUi4gSXZhbm92CkNhbWJyaWRnZWdyZXlzIExpbWl0ZWQu
+IFJlZ2lzdGVyZWQgaW4gRW5nbGFuZC4gQ29tcGFueSBOdW1iZXIgMTAyNzM2NjEKaHR0cHM6Ly93
+d3cuY2FtYnJpZGdlZ3JleXMuY29tLwoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZy
+YWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGlu
+dXgtdW0K
 
