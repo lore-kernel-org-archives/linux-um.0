@@ -1,17 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
+Received: from mga14.intel.com ([192.55.52.115])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kn90J-0008Di-0j
- for linux-um@lists.infradead.org; Wed, 09 Dec 2020 23:36:15 +0000
-Received: by mail-lj1-x244.google.com with SMTP id t22so4586079ljk.0
- for <linux-um@lists.infradead.org>; Wed, 09 Dec 2020 15:36:12 -0800 (PST)
+ id 1kn43i-0004zH-5l
+ for linux-um@lists.infradead.org; Wed, 09 Dec 2020 18:19:27 +0000
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1] um: Increase stack frame size threshold for signal.c
+Date: Wed,  9 Dec 2020 20:19:15 +0200
+Message-Id: <20201209181915.39147-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-References: <20201209181915.39147-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20201209181915.39147-1-andriy.shevchenko@linux.intel.com>
-From: David Gow <davidgow@google.com>
-Date: Thu, 10 Dec 2020 07:35:59 +0800
-Message-ID: <CABVgOSm068MCw1H2m5Gz-deHicpg_U3jcU=GfJTB0S5B-g-ZUQ@mail.gmail.com>
-Subject: Re: [PATCH v1] um: Increase stack frame size threshold for signal.c
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +20,34 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, linux-kselftest@vger.kernel.org
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-T24gVGh1LCBEZWMgMTAsIDIwMjAgYXQgMjoyMyBBTSBBbmR5IFNoZXZjaGVua28KPGFuZHJpeS5z
-aGV2Y2hlbmtvQGxpbnV4LmludGVsLmNvbT4gd3JvdGU6Cj4KPiBUaGUgc2lnbmFsLmMgY2FuJ3Qg
-dXNlIGhlYXAgZm9yIGJpdCBkYXRhIGxvY2F0ZWQgb24gc3RhY2suIEhvd2V2ZXIsCj4gYnkgZGVm
-YXVsdCBhIGNvbXBpbGVyIHdhcm5zIHVzIGFib3V0IG92ZXJzdGVwcGluZyBzdGFjayBmcmFtZSBz
-aXplCj4gdGhyZXNob2xkOgo+Cj4gYXJjaC91bS9vcy1MaW51eC9zaWduYWwuYzogSW4gZnVuY3Rp
-b24g4oCYc2lnX2hhbmRsZXJfY29tbW9u4oCZOgo+IGFyY2gvdW0vb3MtTGludXgvc2lnbmFsLmM6
-NTE6MTogd2FybmluZzogdGhlIGZyYW1lIHNpemUgb2YgMjk2MCBieXRlcyBpcyBsYXJnZXIgdGhh
-biAyMDQ4IGJ5dGVzIFstV2ZyYW1lLWxhcmdlci10aGFuPV0KPiAgICA1MSB8IH0KPiAgICAgICB8
-IF4KPiBhcmNoL3VtL29zLUxpbnV4L3NpZ25hbC5jOiBJbiBmdW5jdGlvbiDigJh0aW1lcl9yZWFs
-X2FsYXJtX2hhbmRsZXLigJk6Cj4gYXJjaC91bS9vcy1MaW51eC9zaWduYWwuYzo5NToxOiB3YXJu
-aW5nOiB0aGUgZnJhbWUgc2l6ZSBvZiAyOTYwIGJ5dGVzIGlzIGxhcmdlciB0aGFuIDIwNDggYnl0
-ZXMgWy1XZnJhbWUtbGFyZ2VyLXRoYW49XQo+ICAgICA5NSB8IH0KPiAgICAgICAgfCBeCj4KPiBE
-dWUgdG8gYWJvdmUgaW5jcmVhc2Ugc3RhY2sgZnJhbWUgc2l6ZSB0aHJlc2hvbGQgZXhwbGljaXRs
-eSBmb3Igc2lnbmFsLmMKPiB0byBhdm9pZCB1bm5lY2Vzc2FyeSB3YXJuaW5nLgo+Cj4gU2lnbmVk
-LW9mZi1ieTogQW5keSBTaGV2Y2hlbmtvIDxhbmRyaXkuc2hldmNoZW5rb0BsaW51eC5pbnRlbC5j
-b20+Cj4gLS0tClRoYW5rcyAtLSB0aGlzIGhhcyBiZWVuIGFubm95aW5nIG1lIGZvciBhIHdoaWxl
-IQoKSSd2ZSB0ZXN0ZWQgaXQgLS0gdGhlIHdhcm5pbmcgaXMgaW5kZWVkIGdvbmUsIGFuZCBub3Ro
-aW5nIGVsc2Ugc2VlbXMgdG8gYnJlYWsuCgpUZXN0ZWQtYnk6IERhdmlkIEdvdyA8ZGF2aWRnb3dA
-Z29vZ2xlLmNvbT4KCkNoZWVycywKLS0gRGF2aWQKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0
-cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vbGludXgtdW0K
+VGhlIHNpZ25hbC5jIGNhbid0IHVzZSBoZWFwIGZvciBiaXQgZGF0YSBsb2NhdGVkIG9uIHN0YWNr
+LiBIb3dldmVyLApieSBkZWZhdWx0IGEgY29tcGlsZXIgd2FybnMgdXMgYWJvdXQgb3ZlcnN0ZXBw
+aW5nIHN0YWNrIGZyYW1lIHNpemUKdGhyZXNob2xkOgoKYXJjaC91bS9vcy1MaW51eC9zaWduYWwu
+YzogSW4gZnVuY3Rpb24g4oCYc2lnX2hhbmRsZXJfY29tbW9u4oCZOgphcmNoL3VtL29zLUxpbnV4
+L3NpZ25hbC5jOjUxOjE6IHdhcm5pbmc6IHRoZSBmcmFtZSBzaXplIG9mIDI5NjAgYnl0ZXMgaXMg
+bGFyZ2VyIHRoYW4gMjA0OCBieXRlcyBbLVdmcmFtZS1sYXJnZXItdGhhbj1dCiAgIDUxIHwgfQog
+ICAgICB8IF4KYXJjaC91bS9vcy1MaW51eC9zaWduYWwuYzogSW4gZnVuY3Rpb24g4oCYdGltZXJf
+cmVhbF9hbGFybV9oYW5kbGVy4oCZOgphcmNoL3VtL29zLUxpbnV4L3NpZ25hbC5jOjk1OjE6IHdh
+cm5pbmc6IHRoZSBmcmFtZSBzaXplIG9mIDI5NjAgYnl0ZXMgaXMgbGFyZ2VyIHRoYW4gMjA0OCBi
+eXRlcyBbLVdmcmFtZS1sYXJnZXItdGhhbj1dCiAgICA5NSB8IH0KICAgICAgIHwgXgoKRHVlIHRv
+IGFib3ZlIGluY3JlYXNlIHN0YWNrIGZyYW1lIHNpemUgdGhyZXNob2xkIGV4cGxpY2l0bHkgZm9y
+IHNpZ25hbC5jCnRvIGF2b2lkIHVubmVjZXNzYXJ5IHdhcm5pbmcuCgpTaWduZWQtb2ZmLWJ5OiBB
+bmR5IFNoZXZjaGVua28gPGFuZHJpeS5zaGV2Y2hlbmtvQGxpbnV4LmludGVsLmNvbT4KLS0tCiBh
+cmNoL3VtL29zLUxpbnV4L01ha2VmaWxlIHwgMiArKwogMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0
+aW9ucygrKQoKZGlmZiAtLWdpdCBhL2FyY2gvdW0vb3MtTGludXgvTWFrZWZpbGUgYi9hcmNoL3Vt
+L29zLUxpbnV4L01ha2VmaWxlCmluZGV4IDgzOTkxNWI4YzMxYy4uNzdhYzUwYmFhM2Y4IDEwMDY0
+NAotLS0gYS9hcmNoL3VtL29zLUxpbnV4L01ha2VmaWxlCisrKyBiL2FyY2gvdW0vb3MtTGludXgv
+TWFrZWZpbGUKQEAgLTEwLDYgKzEwLDggQEAgb2JqLXkgPSBleGVjdnAubyBmaWxlLm8gaGVscGVy
+Lm8gaXJxLm8gbWFpbi5vIG1lbS5vIHByb2Nlc3MubyBcCiAJcmVnaXN0ZXJzLm8gc2lnaW8ubyBz
+aWduYWwubyBzdGFydF91cC5vIHRpbWUubyB0dHkubyBcCiAJdW1pZC5vIHVzZXJfc3ltcy5vIHV0
+aWwubyBkcml2ZXJzLyBza2FzLwogCitDRkxBR1Nfc2lnbmFsLm8gKz0gLVdmcmFtZS1sYXJnZXIt
+dGhhbj00MDk2CisKIG9iai0kKENPTkZJR19BUkNIX1JFVVNFX0hPU1RfVlNZU0NBTExfQVJFQSkg
+Kz0gZWxmX2F1eC5vCiAKIFVTRVJfT0JKUyA6PSAkKHVzZXItb2Jqcy15KSBlbGZfYXV4Lm8gZXhl
+Y3ZwLm8gZmlsZS5vIGhlbHBlci5vIGlycS5vIFwKLS0gCjIuMjkuMgoKCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdAps
+aW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vbGludXgtdW0K
 
