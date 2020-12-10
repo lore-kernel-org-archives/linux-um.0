@@ -1,15 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+Received: from mail-qv1-xf44.google.com ([2607:f8b0:4864:20::f44])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kkxI9-0006wa-EC
- for linux-um@lists.infradead.org; Thu, 03 Dec 2020 22:41:38 +0000
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: Re: [PATCH] rtc: enable RTC framework on ARCH=um
-Date: Thu,  3 Dec 2020 23:41:33 +0100
-Message-Id: <160703528647.99810.8924384359041408113.b4-ty@bootlin.com>
-In-Reply-To: <20201120211103.6895ac740d11.Ic19a9926e8e4c70c03329e55f9e5b1d45095b904@changeid>
-References: <20201120211103.6895ac740d11.Ic19a9926e8e4c70c03329e55f9e5b1d45095b904@changeid>
+ id 1knUTk-0003yA-SX
+ for linux-um@lists.infradead.org; Thu, 10 Dec 2020 22:32:05 +0000
+Received: by mail-qv1-xf44.google.com with SMTP id p12so3285903qvj.13
+ for <linux-um@lists.infradead.org>; Thu, 10 Dec 2020 14:32:04 -0800 (PST)
 MIME-Version: 1.0
+References: <20201122041356.1454413-1-krisman@collabora.com>
+ <87blf35bim.fsf@collabora.com>
+In-Reply-To: <87blf35bim.fsf@collabora.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Thu, 10 Dec 2020 23:31:52 +0100
+Message-ID: <CAFLxGvyR0YAU=-PmGG4t2pSqd_DzsRLYsA63bD5LpyRhi4iReg@mail.gmail.com>
+Subject: Re: [PATCH v2] um: ubd: Submit all data segments atomically
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,24 +25,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>, linux-rtc@vger.kernel.org
-Cc: Alessandro Zummo <a.zummo@towertech.it>, Alexandre Belloni <alexandre.belloni@bootlin.com>, linux-um@lists.infradead.org, Johannes Berg <johannes.berg@intel.com>
+To: Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc: Martyn Welch <martyn@collabora.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, kernel@collabora.com, Christopher Obbard <chris.obbard@collabora.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-On Fri, 20 Nov 2020 21:11:06 +0100, Johannes Berg wrote:
-> There's no real reason it should be disabled, and at least we can
-> use it for development & testing with the RTC test driver.
-> 
-> However, two devices are missing a HAS_IOMEM dependency, so add
-> that to avoid build failures from e.g. allyesconfig.
+On Wed, Dec 9, 2020 at 2:56 PM Gabriel Krisman Bertazi
+<krisman@collabora.com> wrote:
+>
+> Gabriel Krisman Bertazi <krisman@collabora.com> writes:
+>
+> > Internally, UBD treats each physical IO segment as a separate command to
+> > be submitted in the execution pipe.  If the pipe returns a transient
+> > error after a few segments have already been written, UBD will tell the
+> > block layer to requeue the request, but there is no way to reclaim the
+> > segments already submitted.  When a new attempt to dispatch the request
+> > is done, those segments already submitted will get duplicated, causing
+> > the WARN_ON below in the best case, and potentially data corruption.
+>
+> [...]
+>
+> > Cc: Christopher Obbard <chris.obbard@collabora.com>
+> > Reported-by: Martyn Welch <martyn@collabora.com>
+> > Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> > Tested-by: Christopher Obbard <chris.obbard@collabora.com>
+> > Acked-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+>
+> ping. :)
 
-Applied, thanks!
+Just pushed my local tree to next. Including your patch. :-)
 
-[1/1] rtc: enable RTC framework on ARCH=um
-      commit: 9c7957991e56291c59803cf0412127ae7177beac
-
-Best regards,
 -- 
-Alexandre Belloni <alexandre.belloni@bootlin.com>
+Thanks,
+//richard
 
 _______________________________________________
 linux-um mailing list
