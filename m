@@ -2,14 +2,14 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab7.miniserver.com ([37.128.132.42]
  helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1knf7z-00023K-Ud
- for linux-um@lists.infradead.org; Fri, 11 Dec 2020 09:54:21 +0000
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+ id 1knUur-0005G6-QN
+ for linux-um@lists.infradead.org; Thu, 10 Dec 2020 23:00:07 +0000
 Subject: Re: [PATCH v2] um: add a UML specific futex implementation
 References: <20201112195718.6070-1-anton.ivanov@cambridgegreys.com>
  <CAFLxGvxiQiiS5Di3UqZKPyANd5EQC0DwzBZ-9r8skcbe=YYY7w@mail.gmail.com>
-Message-ID: <f4d41c5a-c5e6-ffaa-5d86-f1c9274c19cc@cambridgegreys.com>
-Date: Fri, 11 Dec 2020 09:54:14 +0000
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <fb1a9caf-da4a-0d6e-b14c-e3e62d8a8039@cambridgegreys.com>
+Date: Thu, 10 Dec 2020 22:59:58 +0000
 MIME-Version: 1.0
 In-Reply-To: <CAFLxGvxiQiiS5Di3UqZKPyANd5EQC0DwzBZ-9r8skcbe=YYY7w@mail.gmail.com>
 Content-Language: en-US
@@ -30,7 +30,6 @@ Cc: Richard Weinberger <richard@nod.at>, linux-um <linux-um@lists.infradead.org>
 
 On 10/12/2020 22:38, Richard Weinberger wrote:
 > On Thu, Nov 12, 2020 at 8:57 PM <anton.ivanov@cambridgegreys.com> wrote:
->>
 >> From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 >>
 >> The generic asm futex implementation emulates atomic access to
@@ -109,32 +108,23 @@ On 10/12/2020 22:38, Richard Weinberger wrote:
 >> + * -ENOSYS - Operation not supported
 >> + */
 >> +int arch_futex_atomic_op_inuser(int op, u32 oparg, int *oval, u32 __user *uaddr)
-> 
 > Does this even build in 32bits mode?
 > AFAICT the generic futex implementation has
 > arch_futex_atomic_op_inuser() as static inline...
-> 
+>
+I did not try, mea culpa. It was pulling the generic before. So generic 
+should work.
 
-It's an inline, but it includes two very slow non-inline calls:
+I can retest this one and the others in 32 bit mode tomorrow (most of 
+them were written to fall back to generic implementation for 32).
 
-https://elixir.bootlin.com/linux/latest/source/include/asm-generic/futex.h#L39
-
-if (unlikely(get_user(oldval, uaddr) != 0))
-
-and
-
-https://elixir.bootlin.com/linux/latest/source/include/asm-generic/futex.h#L65
-
-if (ret == 0 && unlikely(put_user(tmp, uaddr) != 0))
-
-So better to have not inline, but actually fast and done in a single atomic operation on the target memory location.
-
-I will fix all 32 bit and resubmit (and promise to test it on 32 next time :)
+A.
 
 -- 
 Anton R. Ivanov
 Cambridgegreys Limited. Registered in England. Company Number 10273661
 https://www.cambridgegreys.com/
+
 
 _______________________________________________
 linux-um mailing list
