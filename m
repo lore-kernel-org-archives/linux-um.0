@@ -1,15 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab7.miniserver.com ([37.128.132.42]
- helo=www.kot-begemot.co.uk)
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1knmUr-0008Hz-F7
- for linux-um@lists.infradead.org; Fri, 11 Dec 2020 17:46:26 +0000
-From: anton.ivanov@cambridgegreys.com
-Subject: [PATCH v4 5/7] um: "borrow" cmpxchg from x86 tree in UML
-Date: Fri, 11 Dec 2020 17:45:57 +0000
-Message-Id: <20201211174559.26010-6-anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20201211174559.26010-1-anton.ivanov@cambridgegreys.com>
-References: <20201211174559.26010-1-anton.ivanov@cambridgegreys.com>
+ id 1knf9q-0002QG-VL
+ for linux-um@lists.infradead.org; Fri, 11 Dec 2020 09:56:15 +0000
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [PATCH v9 1/2] um: irq/sigio: support suspend/resume handling of
+ workaround IRQs
+Date: Fri, 11 Dec 2020 10:56:07 +0100
+Message-Id: <20201211105608.360ad4134981.I8977ac4a1a8c221ec8974574a4f9e2b7586dd943@changeid>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -24,65 +23,218 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Johannes Berg <johannes.berg@intel.com>
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-UML was falling back to asm-generic cmpxchg which emulates atomic
-behaviour by turning irqs on/off. On UML this means turning
-on/off signals for each cmpxchg which is expensive.
+If the sigio workaround needed to be applied to a file descriptor,
+set_irq_wake() wouldn't work for it since it would get polled by
+the thread instead of causing SIGIO, and thus could never really
+cause a wakeup, since the thread notification FD wasn't marked as
+being able to wake up the system.
 
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Fix this by marking the thread's notification FD explicitly as a
+wake source FD, i.e. not suppressing SIGIO for it in suspend. In
+order to not cause spurious wakeups, we then need to remove all
+FDs that shouldn't wake up the system from the polling thread. In
+order to do this, add unlocked versions of ignore_sigio_fd() and
+add_sigio_fd() (nothing else is happening in suspend, so this is
+fine), and also modify ignore_sigio_fd() to return -ENOENT if the
+FD wasn't originally in there. This doesn't matter because nothing
+else currently checks the return value, but the irq code needs to
+know which ones to restore the workaround for.
+
+All told, this lets us use a timerfd for the RTC clock in the next
+patch, which doesn't send SIGIO.
+
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- arch/um/include/asm/cmpxchg-x86.h | 1 +
- arch/um/include/asm/cmpxchg.h     | 7 +++++++
- arch/um/include/asm/cmpxchg_32.h  | 1 +
- arch/um/include/asm/cmpxchg_64.h  | 1 +
- 4 files changed, 10 insertions(+)
- create mode 120000 arch/um/include/asm/cmpxchg-x86.h
- create mode 100644 arch/um/include/asm/cmpxchg.h
- create mode 120000 arch/um/include/asm/cmpxchg_32.h
- create mode 120000 arch/um/include/asm/cmpxchg_64.h
+ arch/um/include/shared/os.h |  8 +++++++
+ arch/um/kernel/irq.c        | 17 +++++++++++++-
+ arch/um/os-Linux/sigio.c    | 47 +++++++++++++++++++++++++------------
+ 3 files changed, 56 insertions(+), 16 deletions(-)
 
-diff --git a/arch/um/include/asm/cmpxchg-x86.h b/arch/um/include/asm/cmpxchg-x86.h
-new file mode 120000
-index 000000000000..a5c607edde88
---- /dev/null
-+++ b/arch/um/include/asm/cmpxchg-x86.h
-@@ -0,0 +1 @@
-+../../../x86/include/asm/cmpxchg.h
-\ No newline at end of file
-diff --git a/arch/um/include/asm/cmpxchg.h b/arch/um/include/asm/cmpxchg.h
-new file mode 100644
-index 000000000000..03e7a669eeef
---- /dev/null
-+++ b/arch/um/include/asm/cmpxchg.h
-@@ -0,0 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_UM_CMPXCHG_H
-+#define _ASM_UM_CMPXCHG_H
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index cd750d4edfb5..bc25c960f7e0 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -316,6 +316,14 @@ extern int add_sigio_fd(int fd);
+ extern int ignore_sigio_fd(int fd);
+ extern void maybe_sigio_broken(int fd);
+ extern void sigio_broken(int fd);
++/*
++ * unlocked versions for IRQ controller code.
++ *
++ * This is safe because it's used at suspend/resume and nothing
++ * else is running.
++ */
++extern int __add_sigio_fd(int fd);
++extern int __ignore_sigio_fd(int fd);
+ 
+ /* prctl.c */
+ extern int os_arch_prctl(int pid, int option, unsigned long *arg2);
+diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
+index ea43312cbfd3..3741d2380060 100644
+--- a/arch/um/kernel/irq.c
++++ b/arch/um/kernel/irq.c
+@@ -45,6 +45,7 @@ struct irq_entry {
+ 	int fd;
+ 	struct irq_reg reg[NUM_IRQ_TYPES];
+ 	bool suspended;
++	bool sigio_workaround;
+ };
+ 
+ static DEFINE_SPINLOCK(irq_lock);
+@@ -392,7 +393,14 @@ void um_irqs_suspend(void)
+ 			if (!entry->reg[t].events)
+ 				continue;
+ 
+-			if (entry->reg[t].wakeup) {
++			/*
++			 * For the SIGIO_WRITE_IRQ, which is used to handle the
++			 * SIGIO workaround thread, we need special handling:
++			 * enable wake for it itself, but below we tell it about
++			 * any FDs that should be suspended.
++			 */
++			if (entry->reg[t].wakeup ||
++			    entry->reg[t].irq == SIGIO_WRITE_IRQ) {
+ 				wake = true;
+ 				break;
+ 			}
+@@ -401,6 +409,8 @@ void um_irqs_suspend(void)
+ 		if (!wake) {
+ 			entry->suspended = true;
+ 			os_clear_fd_async(entry->fd);
++			entry->sigio_workaround =
++				!__ignore_sigio_fd(entry->fd);
+ 		}
+ 	}
+ 	spin_unlock_irqrestore(&irq_lock, flags);
+@@ -418,6 +428,11 @@ void um_irqs_resume(void)
+ 
+ 			WARN(err < 0, "os_set_fd_async returned %d\n", err);
+ 			entry->suspended = false;
 +
-+#include <asm/cmpxchg-x86.h>
++			if (entry->sigio_workaround) {
++				err = __add_sigio_fd(entry->fd);
++				WARN(err < 0, "add_sigio_returned %d\n", err);
++			}
+ 		}
+ 	}
+ 	spin_unlock_irqrestore(&irq_lock, flags);
+diff --git a/arch/um/os-Linux/sigio.c b/arch/um/os-Linux/sigio.c
+index 79cd6d6d6211..6597ea1986ff 100644
+--- a/arch/um/os-Linux/sigio.c
++++ b/arch/um/os-Linux/sigio.c
+@@ -164,47 +164,55 @@ static void update_thread(void)
+ 	set_signals_trace(flags);
+ }
+ 
+-int add_sigio_fd(int fd)
++int __add_sigio_fd(int fd)
+ {
+ 	struct pollfd *p;
+ 	int err, i, n;
+ 
+-	sigio_lock();
+ 	for (i = 0; i < all_sigio_fds.used; i++) {
+ 		if (all_sigio_fds.poll[i].fd == fd)
+ 			break;
+ 	}
+-	if (i == all_sigio_fds.used) {
+-		err = -ENOSPC;
+-		goto out;
+-	}
++	if (i == all_sigio_fds.used)
++		return -ENOSPC;
+ 
+ 	p = &all_sigio_fds.poll[i];
+ 
+ 	for (i = 0; i < current_poll.used; i++) {
+ 		if (current_poll.poll[i].fd == fd)
+-			goto out;
++			return 0;
+ 	}
+ 
+ 	n = current_poll.used;
+ 	err = need_poll(&next_poll, n + 1);
+ 	if (err)
+-		goto out;
++		return err;
+ 
+ 	memcpy(next_poll.poll, current_poll.poll,
+ 	       current_poll.used * sizeof(struct pollfd));
+ 	next_poll.poll[n] = *p;
+ 	next_poll.used = n + 1;
+ 	update_thread();
+- out:
 +
-+#endif
-diff --git a/arch/um/include/asm/cmpxchg_32.h b/arch/um/include/asm/cmpxchg_32.h
-new file mode 120000
-index 000000000000..1f360d0a9fa9
---- /dev/null
-+++ b/arch/um/include/asm/cmpxchg_32.h
-@@ -0,0 +1 @@
-+../../../x86/include/asm/cmpxchg_32.h
-\ No newline at end of file
-diff --git a/arch/um/include/asm/cmpxchg_64.h b/arch/um/include/asm/cmpxchg_64.h
-new file mode 120000
-index 000000000000..bc09ae22b0cb
---- /dev/null
-+++ b/arch/um/include/asm/cmpxchg_64.h
-@@ -0,0 +1 @@
-+../../../x86/include/asm/cmpxchg_64.h
-\ No newline at end of file
++	return 0;
++}
++
++
++int add_sigio_fd(int fd)
++{
++	int err;
++
++	sigio_lock();
++	err = __add_sigio_fd(fd);
+ 	sigio_unlock();
++
+ 	return err;
+ }
+ 
+-int ignore_sigio_fd(int fd)
++int __ignore_sigio_fd(int fd)
+ {
+ 	struct pollfd *p;
+-	int err = 0, i, n = 0;
++	int err, i, n = 0;
+ 
+ 	/*
+ 	 * This is called from exitcalls elsewhere in UML - if
+@@ -214,17 +222,16 @@ int ignore_sigio_fd(int fd)
+ 	if (write_sigio_pid == -1)
+ 		return -EIO;
+ 
+-	sigio_lock();
+ 	for (i = 0; i < current_poll.used; i++) {
+ 		if (current_poll.poll[i].fd == fd)
+ 			break;
+ 	}
+ 	if (i == current_poll.used)
+-		goto out;
++		return -ENOENT;
+ 
+ 	err = need_poll(&next_poll, current_poll.used - 1);
+ 	if (err)
+-		goto out;
++		return err;
+ 
+ 	for (i = 0; i < current_poll.used; i++) {
+ 		p = &current_poll.poll[i];
+@@ -234,8 +241,18 @@ int ignore_sigio_fd(int fd)
+ 	next_poll.used = current_poll.used - 1;
+ 
+ 	update_thread();
+- out:
++
++	return 0;
++}
++
++int ignore_sigio_fd(int fd)
++{
++	int err;
++
++	sigio_lock();
++	err = __ignore_sigio_fd(fd);
+ 	sigio_unlock();
++
+ 	return err;
+ }
+ 
 -- 
-2.20.1
+2.26.2
 
 
 _______________________________________________
