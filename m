@@ -1,21 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab7.miniserver.com ([37.128.132.42]
- helo=www.kot-begemot.co.uk)
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1knr5X-000405-Ln
- for linux-um@lists.infradead.org; Fri, 11 Dec 2020 22:40:36 +0000
+ id 1knqSV-0000AZ-4F
+ for linux-um@lists.infradead.org; Fri, 11 Dec 2020 22:00:15 +0000
+Message-ID: <419748449d7e47922fb59335e1b2a44789080066.camel@sipsolutions.net>
 Subject: Re: [PATCH v4 2/7] um: enable the use of optimized xor routines in UML
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Fri, 11 Dec 2020 23:00:12 +0100
+In-Reply-To: <d8eb09bd-a8ff-72f1-7ea9-54342935bd60@cambridgegreys.com>
 References: <20201211174559.26010-1-anton.ivanov@cambridgegreys.com>
  <20201211174559.26010-3-anton.ivanov@cambridgegreys.com>
  <eaba0159c3925f367e42fd17dcf85b829a703666.camel@sipsolutions.net>
  <d8eb09bd-a8ff-72f1-7ea9-54342935bd60@cambridgegreys.com>
- <419748449d7e47922fb59335e1b2a44789080066.camel@sipsolutions.net>
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Message-ID: <0f944d7c-e96e-62b2-61ab-1496d8d2db09@cambridgegreys.com>
-Date: Fri, 11 Dec 2020 22:40:30 +0000
 MIME-Version: 1.0
-In-Reply-To: <419748449d7e47922fb59335e1b2a44789080066.camel@sipsolutions.net>
-Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,66 +22,67 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
+To: Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
 Cc: richard@nod.at
 
-T24gMTEvMTIvMjAyMCAyMjowMCwgSm9oYW5uZXMgQmVyZyB3cm90ZToKPiBPbiBGcmksIDIwMjAt
-MTItMTEgYXQgMjE6NTcgKzAwMDAsIEFudG9uIEl2YW5vdiB3cm90ZToKPj4+PiAtLS0gL2Rldi9u
-dWxsCj4+Pj4gKysrIGIvYXJjaC91bS9pbmNsdWRlL2FzbS94b3IteDg2LmgKPj4+PiBAQCAtMCww
-ICsxIEBACj4+Pj4gKy4uLy4uLy4uL3g4Ni9pbmNsdWRlL2FzbS94b3IuaAo+Pj4gRG8gdGhlc2Ug
-cmVhbGx5IG5lZWQgdG8gYmUgc3ltbGlua3M/IExhc3QgSSBsb29rZWQsIGl0IHNlZW1lZCB0aGF0
-Cj4+PiBhcmNoL3g4Ni9pbmNsdWRlL2FzbS8gaXMgYWN0dWFsbHkgaW4gdGhlIGluY2x1ZGUgcGF0
-aD8KPj4gSXQgaXMgaW5jbHVkZWQsIGJ1dCBpdCBpcyBpbmNsdWRlZCBxdWl0ZSBmYXIgZG93biB0
-aGUgbGlzdC4KPiBJIHNlZS4gU28geW91J3JlIHNheWluZyBiYXNpY2FsbHkgd2UnbGwgZ2V0IGFz
-bS1nZW5lcmljL3hvci5oIGJlZm9yZSB0aGUKPiB4ODYgdmVyc2lvbiwgYW5kIHRoZW4gd2UncmUg
-Z2V0dGluZyB0aGUgd29yc3QgcG9zc2libGUgaW1wbGVtZW50YXRpb24sCj4gcmlnaHQ/CgpBIHg4
-NiBpbXBsZW1lbnRhdGlvbiB3aGljaCBpcyBhdCAid29yc3QgY2FzZSBzY2VuYXJpbyBkZWZhdWx0
-cyIgYW5kIGhhcyBub3QgdW5kZXJnb25lIGFuIGFsdGVybmF0aXZlIHJlcGxhY2VtZW50IGZvciB0
-aGUgYWN0dWFsIENQVSBmZWF0dXJlcyBjYW4gYmUgYXMgYmFkIGFzIHRoZSBnZW5lcmljLiBJbiBm
-YWN0LCBpbiBzb21lIGNhc2VzIGdlbmVyaWMgbWF5IGV2ZW4gYmUgYmV0dGVyIDooCgo+PiBXZSBw
-aWNrIHVwIGEgZmV3IHRoaW5ncyBvdXQgb2YgdGhlcmUsIGJ1dCBpZiB3ZSBsZWF2ZSB0aGVtICJh
-cyBpcyIgdGhleQo+PiBhbGwgZGVmYXVsdCB0byB0aGVpciBsZWFzdCBvcHRpbWl6ZWQgdmVyc2lv
-bnMuIFRoZSByZXN1bHRzIGNsZWFybHkKPj4gZGVtb25zdHJhdGUgdGhhdCB0b28gLSAzMCUgZGlm
-ZmVyZW5jZSBvbiA2NCBiaXQgYW5kID4gMTAwJSBvbiAzMiBiaXQuCj4gUmlnaHQuCj4KPj4gVGhp
-cyBpcyBiZWNhdXNlIHdlIGRvIG5vdCBwZXJmb3JtIGFsdGVybmF0aXZlcyBzdWJzdGl0dXRpb24u
-IE91cgo+PiAiYWx0ZXJuYXRpdmVzIiBwcm9jZXNzaW5nIGZ1bmN0aW9uIGluIHRoZSBVTUwgc3Rh
-cnR1cCBpcyBhIG5vb3AuCj4gT2gsIHNvIHdlICpkbyogZ2V0IHg4NiwgYnV0IGNvbXBhdGliaWxp
-dHkgd2l0aCBhbmNpZW50IENQVXM/CgpOb3QganVzdCBhbmNpZW50IENQVXMuIEFuY2llbnQgQlVH
-R1kgY3B1cy4gSXQgaXMgdXN1YWxseSB0aGUgd29yc3QgY2FzZSAKc2NlbmFyaW8gaW1wbGVtZW50
-YXRpb24uCgo+Cj4+IE15IGlkZWEgd2FzIHRvIG92ZXJyaWRlIHRoYXQgdG8gdGhlIGV4dGVudCBw
-b3NzaWJsZSBhbmQgZ2V0IHdoYXRldmVyCj4+IG1pbGVhZ2UgaXMgcG9zc2libGUgd2l0aG91dCB0
-aGF0Lgo+IE1ha2VzIHNlbnNlLgo+Cj4+IEkgY2FuIGdpdmUgaXQgYSB0cnkgdG8gc2VlIGhvdyBp
-dCBsb29rcyBpZiBJIHVzZSB0aGUgeDg2IGZlYXR1cmUgdGFibGUKPj4gYW5kIG90aGVyIGJpdHMg
-d2hpY2ggYXJlIHBpY2tlZCB1cCBmcm9tIHRoZXJlLCBidXQgd29ya2luZyB3aXRoIHRoYXQgaXMK
-Pj4gbGlrZSBwdWxsaW5nIHRlZXRoIHdpdGhvdXQgYW5hZXN0aGV0aWMuCj4+Cj4+IE9uIHRoZSBw
-b3NpdGl2ZSBzaWRlIHRoaXMgbWVhbnMgdGhhdCB3ZSBjYW4gY29weSB0aGUgYWx0ZXJuYXRpdmVz
-IGNvZGUKPj4gb24geDg2Lgo+Pgo+PiBJIGNhbiBnaXZlIGl0IGFub3RoZXIgZ28uIEkgdHJpZWQg
-ZWFybHkgb24gYW5kIGl0IHdhcyBhIGJpdCBwYWluZnVsLgo+IFllYWgsIG5vLCBub3Qgc3VyZSAu
-Li4KPgo+IE1heWJlIGp1c3QgZG9pbmcgc29tZXRoaW5nIGxpa2UKPgo+ICNpbmNsdWRlICIuLi8u
-Li8uLi94ODYvaW5jbHVkZS9hc20veG9yLmgiCj4KPiB3b3VsZCBiZSBhY2NlcHRhYmxlPyBJdCBz
-ZWVtcyBhIGJpdCBiZXR0ZXIgdG8gbWUgaW4gdGhlIHNlbnNlIG9mIGJlaW5nCj4gbW9yZSBvYnZp
-b3VzIHRoYW4gdGhlIHN5bWxpbmtzLi4uIGJ1dCBkdW5uby4KClRoYXQgKGFuZCBldmVyeXRoaW5n
-IGVsc2UpIHJlbGllcyBvbiB0aGUgQ1BVIEZlYXR1cmVzIGF2YWlsYWJsZSBtYWNyb3MuIApJICJj
-aGVhdGVkIiBvbiB0aG9zZSBhbmQgY3JlYXRlZCBvdXIgb3duIHVzaW5nIGp1c3Qgb25lIHVsb25n
-IC0gdGhlIDUtNiAKYml0cyB3aGljaCBhcmUgcmVsZXZhbnQgdG8gdXMuIFRoYXQgaXMgdGhlIG9y
-aWdpbmFsIGlkZWEgYmVoaW5kIHB1bGxpbmcgCnRoaW5ncyBpbiBhbmQgc3ltbGlua2luZyAtIHRv
-IG1ha2Ugc3VyZSB0aGV5IHBpY2sgT1VSIGRlZnMsIG5vdCB0aGUgCndob2xlIGFycmF5IG9mIGZl
-YXR1cmVzIG91dCBvZiB0aGUgeDg2IHRyZWUuCgpXZSBhbHNvIG5lZWQgdG8gbm9vcCBvciByZWRl
-ZmluZSBhIGZldyB0aGluZ3MgbGlrZSBmcHVfZXhpdCwgZnB1X2VudGVyLCBldGMuCgpIb3dldmVy
-LCBiYXNlZCBvbiB0aGUgZGlzY3Vzc2lvbiB3ZSBoYXZlIGhhZCBzbyBmYXIswqAgSSBzaG91bGQg
-cmV2aXNpdCAKdGhpcyBhbmQgZG8gaXQgT05MWSB3aGVyZSBpdCBpcyBuZWVkZWQsIG5vdCBpbiBh
-bGwgY2FzZXMuCgpJIHdpbGwgZ2l2ZSBpdCBhbm90aGVyIGdvIG9uIE1vbmRheS4KCkxvb2tpbmcg
-YXQgdGhlIHJlc3VsdHMsIGl0J3MgZGVmaW5pdGVseSB3b3J0aCBpdC4gRm9yIG1lIGl0IGlzIGEg
-CnF1ZXN0aW9uIG9mIGhvdyB0byBkbyBpdCwgbm90ICJzaG91bGQgd2UgZG8gaXQiLiAzMCUgZGlm
-ZmVyZW5jZSBpcyBpbiAKdGhlIHJlYWxtIG9mICJkZWZpbml0ZWx5IHdvcnRoIGl0Ii4KCj4KPiBq
-b2hhbm5lcwo+Cj4KCi0tIApBbnRvbiBSLiBJdmFub3YKQ2FtYnJpZGdlZ3JleXMgTGltaXRlZC4g
-UmVnaXN0ZXJlZCBpbiBFbmdsYW5kLiBDb21wYW55IE51bWJlciAxMDI3MzY2MQpodHRwczovL3d3
-dy5jYW1icmlkZ2VncmV5cy5jb20vCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJh
-ZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
-eC11bQo=
+On Fri, 2020-12-11 at 21:57 +0000, Anton Ivanov wrote:
+> 
+> > > --- /dev/null
+> > > +++ b/arch/um/include/asm/xor-x86.h
+> > > @@ -0,0 +1 @@
+> > > +../../../x86/include/asm/xor.h
+> > Do these really need to be symlinks? Last I looked, it seemed that
+> > arch/x86/include/asm/ is actually in the include path?
+> 
+> It is included, but it is included quite far down the list.
+
+I see. So you're saying basically we'll get asm-generic/xor.h before the
+x86 version, and then we're getting the worst possible implementation,
+right?
+
+> We pick up a few things out of there, but if we leave them "as is" they 
+> all default to their least optimized versions. The results clearly 
+> demonstrate that too - 30% difference on 64 bit and > 100% on 32 bit.
+
+Right.
+
+> This is because we do not perform alternatives substitution. Our 
+> "alternatives" processing function in the UML startup is a noop.
+
+Oh, so we *do* get x86, but compatibility with ancient CPUs?
+
+> My idea was to override that to the extent possible and get whatever 
+> mileage is possible without that.
+
+Makes sense.
+
+> I can give it a try to see how it looks if I use the x86 feature table 
+> and other bits which are picked up from there, but working with that is 
+> like pulling teeth without anaesthetic.
+> 
+> On the positive side this means that we can copy the alternatives code 
+> on x86.
+> 
+> I can give it another go. I tried early on and it was a bit painful.
+
+Yeah, no, not sure ...
+
+Maybe just doing something like
+
+#include "../../../x86/include/asm/xor.h"
+
+would be acceptable? It seems a bit better to me in the sense of being
+more obvious than the symlinks... but dunno.
+
+johannes
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
