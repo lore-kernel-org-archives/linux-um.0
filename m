@@ -1,18 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kkC40-00056F-DP
- for linux-um@lists.infradead.org; Tue, 01 Dec 2020 20:15:53 +0000
-Message-ID: <4ebc9f4069082c1fa3606fc636f15c664bc0af60.camel@sipsolutions.net>
-Subject: Re: [PATCH 7/7] um: simplify IRQ handling code
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Tue, 01 Dec 2020 21:15:47 +0100
-In-Reply-To: <96e31171-965d-c1d7-282e-b1b0bec6b73f@kot-begemot.co.uk>
-References: <20201123195621.275470-1-johannes@sipsolutions.net>
- <20201123205446.6370687fa983.I811873233b8d71fbde9154b84c85b498521e3b12@changeid>
- <96e31171-965d-c1d7-282e-b1b0bec6b73f@kot-begemot.co.uk>
+Date: Sun, 13 Dec 2020 09:10:29 -0500
+From: Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH AUTOSEL 5.9 27/39] sched/idle: Fix arch_cpu_idle() vs
+ tracing
+Message-ID: <20201213141029.GQ643756@sasha-vm>
+References: <20201203132834.930999-1-sashal@kernel.org>
+ <20201203132834.930999-27-sashal@kernel.org>
+ <20201203145442.GC9994@osiris>
+ <20201203171015.GN2414@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20201203171015.GN2414@hirez.programming.kicks-ass.net>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -21,47 +19,48 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, linux-um@lists.infradead.org
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, uclinux-h8-devel@lists.sourceforge.jp, linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-csky@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
 
-On Mon, 2020-11-30 at 16:30 +0000, Anton Ivanov wrote:
-> On 23/11/2020 19:56, Johannes Berg wrote:
-> > From: Johannes Berg <johannes.berg@intel.com>
-> > 
-> > Reduce dynamic allocations (and thereby cache misses) by simply
-> > embedding the registration data for IRQs in the irq_entry, we
-> > never supported these being really dynamic anyway as only one
-> > was ever allowed ("Trying to reregister ...").
-> > 
-> > Lockless behaviour is preserved by removing the FD from the poll
-> > set appropriately, but we use reg->events to indicate whether or
-> > not this entry is used, rather than dynamically allocating them.
-> > 
-> > Also port the list of IRQ entries to list_head instead of the
-> > current open-coded singly-linked list implementation, just for
-> > sanity.
-> 
-> This one is broken. I will look exactly where. It is somewhere in the IRQ delete/re-request logic.
-> 
-> How to test
-> 
-> run iperf -s in the UML with a vector network driver.
-> 
-> run iperf -c to the UML instance from the host in a loop
+On Thu, Dec 03, 2020 at 06:10:15PM +0100, Peter Zijlstra wrote:
+>On Thu, Dec 03, 2020 at 03:54:42PM +0100, Heiko Carstens wrote:
+>> On Thu, Dec 03, 2020 at 08:28:21AM -0500, Sasha Levin wrote:
+>> > From: Peter Zijlstra <peterz@infradead.org>
+>> >
+>> > [ Upstream commit 58c644ba512cfbc2e39b758dd979edd1d6d00e27 ]
+>> >
+>> > We call arch_cpu_idle() with RCU disabled, but then use
+>> > local_irq_{en,dis}able(), which invokes tracing, which relies on RCU.
+>> >
+>> > Switch all arch_cpu_idle() implementations to use
+>> > raw_local_irq_{en,dis}able() and carefully manage the
+>> > lockdep,rcu,tracing state like we do in entry.
+>> >
+>> > (XXX: we really should change arch_cpu_idle() to not return with
+>> > interrupts enabled)
+>> >
+>> > Reported-by: Sven Schnelle <svens@linux.ibm.com>
+>> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+>> > Reviewed-by: Mark Rutland <mark.rutland@arm.com>
+>> > Tested-by: Mark Rutland <mark.rutland@arm.com>
+>> > Link: https://lkml.kernel.org/r/20201120114925.594122626@infradead.org
+>> > Signed-off-by: Sasha Levin <sashal@kernel.org>
+>>
+>> This patch broke s390 irq state tracing. A patch to fix this is
+>> scheduled to be merged upstream today (hopefully).
+>> Therefore I think this patch should not yet go into 5.9 stable.
+>
+>Agreed.
 
-How do you usually use it? tap device?
+I'll also grab b1cae1f84a0f ("s390: fix irq state tracing"). Thanks!
 
-> Try to ifup/ifdown the vecX interface inside the UML.
-> 
-> With master it works fine. With this patch it fails.
-
-How does it fail?
-
-johannes
-
+-- 
+Thanks,
+Sasha
 
 _______________________________________________
 linux-um mailing list
