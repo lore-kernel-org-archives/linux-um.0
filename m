@@ -1,12 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mga14.intel.com ([192.55.52.115])
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kn43i-0004zH-5l
- for linux-um@lists.infradead.org; Wed, 09 Dec 2020 18:19:27 +0000
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1] um: Increase stack frame size threshold for signal.c
-Date: Wed,  9 Dec 2020 20:19:15 +0200
-Message-Id: <20201209181915.39147-1-andriy.shevchenko@linux.intel.com>
+ id 1kosNI-0006LD-Hl
+ for linux-um@lists.infradead.org; Mon, 14 Dec 2020 18:15:09 +0000
+From: anton.ivanov@cambridgegreys.com
+Subject: [PATCH v5 2/4] um: enable the use of optimized xor routines in UML
+Date: Mon, 14 Dec 2020 18:14:57 +0000
+Message-Id: <20201214181459.11096-3-anton.ivanov@cambridgegreys.com>
+In-Reply-To: <20201214181459.11096-1-anton.ivanov@cambridgegreys.com>
+References: <20201214181459.11096-1-anton.ivanov@cambridgegreys.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -16,38 +19,80 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, linux-kselftest@vger.kernel.org
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: linux-um@lists.infradead.org
+Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-VGhlIHNpZ25hbC5jIGNhbid0IHVzZSBoZWFwIGZvciBiaXQgZGF0YSBsb2NhdGVkIG9uIHN0YWNr
-LiBIb3dldmVyLApieSBkZWZhdWx0IGEgY29tcGlsZXIgd2FybnMgdXMgYWJvdXQgb3ZlcnN0ZXBw
-aW5nIHN0YWNrIGZyYW1lIHNpemUKdGhyZXNob2xkOgoKYXJjaC91bS9vcy1MaW51eC9zaWduYWwu
-YzogSW4gZnVuY3Rpb24g4oCYc2lnX2hhbmRsZXJfY29tbW9u4oCZOgphcmNoL3VtL29zLUxpbnV4
-L3NpZ25hbC5jOjUxOjE6IHdhcm5pbmc6IHRoZSBmcmFtZSBzaXplIG9mIDI5NjAgYnl0ZXMgaXMg
-bGFyZ2VyIHRoYW4gMjA0OCBieXRlcyBbLVdmcmFtZS1sYXJnZXItdGhhbj1dCiAgIDUxIHwgfQog
-ICAgICB8IF4KYXJjaC91bS9vcy1MaW51eC9zaWduYWwuYzogSW4gZnVuY3Rpb24g4oCYdGltZXJf
-cmVhbF9hbGFybV9oYW5kbGVy4oCZOgphcmNoL3VtL29zLUxpbnV4L3NpZ25hbC5jOjk1OjE6IHdh
-cm5pbmc6IHRoZSBmcmFtZSBzaXplIG9mIDI5NjAgYnl0ZXMgaXMgbGFyZ2VyIHRoYW4gMjA0OCBi
-eXRlcyBbLVdmcmFtZS1sYXJnZXItdGhhbj1dCiAgICA5NSB8IH0KICAgICAgIHwgXgoKRHVlIHRv
-IGFib3ZlIGluY3JlYXNlIHN0YWNrIGZyYW1lIHNpemUgdGhyZXNob2xkIGV4cGxpY2l0bHkgZm9y
-IHNpZ25hbC5jCnRvIGF2b2lkIHVubmVjZXNzYXJ5IHdhcm5pbmcuCgpTaWduZWQtb2ZmLWJ5OiBB
-bmR5IFNoZXZjaGVua28gPGFuZHJpeS5zaGV2Y2hlbmtvQGxpbnV4LmludGVsLmNvbT4KLS0tCiBh
-cmNoL3VtL29zLUxpbnV4L01ha2VmaWxlIHwgMiArKwogMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0
-aW9ucygrKQoKZGlmZiAtLWdpdCBhL2FyY2gvdW0vb3MtTGludXgvTWFrZWZpbGUgYi9hcmNoL3Vt
-L29zLUxpbnV4L01ha2VmaWxlCmluZGV4IDgzOTkxNWI4YzMxYy4uNzdhYzUwYmFhM2Y4IDEwMDY0
-NAotLS0gYS9hcmNoL3VtL29zLUxpbnV4L01ha2VmaWxlCisrKyBiL2FyY2gvdW0vb3MtTGludXgv
-TWFrZWZpbGUKQEAgLTEwLDYgKzEwLDggQEAgb2JqLXkgPSBleGVjdnAubyBmaWxlLm8gaGVscGVy
-Lm8gaXJxLm8gbWFpbi5vIG1lbS5vIHByb2Nlc3MubyBcCiAJcmVnaXN0ZXJzLm8gc2lnaW8ubyBz
-aWduYWwubyBzdGFydF91cC5vIHRpbWUubyB0dHkubyBcCiAJdW1pZC5vIHVzZXJfc3ltcy5vIHV0
-aWwubyBkcml2ZXJzLyBza2FzLwogCitDRkxBR1Nfc2lnbmFsLm8gKz0gLVdmcmFtZS1sYXJnZXIt
-dGhhbj00MDk2CisKIG9iai0kKENPTkZJR19BUkNIX1JFVVNFX0hPU1RfVlNZU0NBTExfQVJFQSkg
-Kz0gZWxmX2F1eC5vCiAKIFVTRVJfT0JKUyA6PSAkKHVzZXItb2Jqcy15KSBlbGZfYXV4Lm8gZXhl
-Y3ZwLm8gZmlsZS5vIGhlbHBlci5vIGlycS5vIFwKLS0gCjIuMjkuMgoKCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdAps
-aW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vbGludXgtdW0K
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+
+This patch enables the use of optimized xor routines from the x86
+tree as well as the necessary fpu api shims so they can work on
+UML.
+
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+---
+ arch/um/include/asm/fpu/api.h | 14 ++++++++++++++
+ arch/um/include/asm/xor.h     | 17 ++++++++++++++++-
+ 2 files changed, 30 insertions(+), 1 deletion(-)
+ create mode 100644 arch/um/include/asm/fpu/api.h
+
+diff --git a/arch/um/include/asm/fpu/api.h b/arch/um/include/asm/fpu/api.h
+new file mode 100644
+index 000000000000..2873a6f0105d
+--- /dev/null
++++ b/arch/um/include/asm/fpu/api.h
+@@ -0,0 +1,14 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++#ifndef _ASM_UM_FPU_API_H
++#define _ASM_UM_FPU_API_H
++
++/* Copyright (c) 2020 Cambridge Greys Ltd
++ * Copyright (c) 2020 Red Hat Inc.
++ * A set of "dummy" defines to allow the direct inclusion
++ * of x86 optimized copy, xor, etc routines into the
++ * UML code tree. */
++
++#define kernel_fpu_begin() (void)0
++#define kernel_fpu_end() (void)0
++
++#endif
+diff --git a/arch/um/include/asm/xor.h b/arch/um/include/asm/xor.h
+index 36b33d62a35d..f512704a9ec7 100644
+--- a/arch/um/include/asm/xor.h
++++ b/arch/um/include/asm/xor.h
+@@ -1,7 +1,22 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+-#include <asm-generic/xor.h>
++#ifndef _ASM_UM_XOR_H
++#define _ASM_UM_XOR_H
++
++#ifdef CONFIG_64BIT
++#undef CONFIG_X86_32
++#else
++#define CONFIG_X86_32 1
++#endif
++
++#include <asm/cpufeature.h>
++#include <../../x86/include/asm/xor.h>
+ #include <linux/time-internal.h>
+ 
++#ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
++#undef XOR_SELECT_TEMPLATE
+ /* pick an arbitrary one - measuring isn't possible with inf-cpu */
+ #define XOR_SELECT_TEMPLATE(x)	\
+ 	(time_travel_mode == TT_MODE_INFCPU ? &xor_block_8regs : NULL)
++#endif
++
++#endif
+-- 
+2.20.1
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
