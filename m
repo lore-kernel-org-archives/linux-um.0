@@ -1,15 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kkYGb-0005Eq-9X
- for linux-um@lists.infradead.org; Wed, 02 Dec 2020 19:58:24 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v7 4/5] um: support suspend to RAM
-Date: Wed,  2 Dec 2020 20:58:07 +0100
-Message-Id: <20201202205659.aee91a932c38.I3e8e33cbe3196d9325946af3a5655f7b6719382d@changeid>
-In-Reply-To: <20201202195808.244645-1-johannes@sipsolutions.net>
-References: <20201202195808.244645-1-johannes@sipsolutions.net>
+ id 1kosNM-0006Nm-4R
+ for linux-um@lists.infradead.org; Mon, 14 Dec 2020 18:15:12 +0000
+From: anton.ivanov@cambridgegreys.com
+Subject: [PATCH v5 4/4] um: allow the use of glibc functions instead of
+ builtins
+Date: Mon, 14 Dec 2020 18:14:59 +0000
+Message-Id: <20201214181459.11096-5-anton.ivanov@cambridgegreys.com>
+In-Reply-To: <20201214181459.11096-1-anton.ivanov@cambridgegreys.com>
+References: <20201214181459.11096-1-anton.ivanov@cambridgegreys.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -24,305 +25,211 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-With all the previous bits in place, we can now also support
-suspend to RAM, in the sense that everything is suspended,
-not just most, including userspace, processes like in s2idle.
+The UML kernel runs as a normal userspace process and can use most
+of glibc string.h functionality instead of built-ins. At present,
+when using built-ins, it is also limited to their unoptimized
+versions, because it does not have the runtime code patching present
+on x86 via apply_alternatives()
 
-Since um_idle_sleep() now waits forever, we can simply call
-that to "suspend" the system.
+Allowing the use of glibc for memcpy, memmove, etc provides 1-5%
+boost on common file io as measured by cat and dd. The size of
+the linux executable is also reduced by ~10KBytes.
 
-As before, you can wake it up using SIGUSR1 since we're just
-in a pause() call that only needs to return.
+It is possible to turn this on/off via the kernel configuration.
 
-In order to implement selective resume from certain devices,
-and not have any arbitrary device interrupt wake up, suspend
-interrupts by removing SIGIO notification (O_ASYNC) from all
-the FDs that are not supposed to wake up the system. However,
-swap out the handler so we don't actually handle the SIGIO as
-an interrupt.
-
-Since we're in pause(), the mere act of receiving SIGIO wakes
-us up, and then after things have been restored enough, re-set
-O_ASYNC for all previously suspended FDs, reinstall the proper
-SIGIO handler, and send SIGIO to self to process anything that
-might now be pending.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 ---
-v7:
- - clean up a bit
- - send SIGIO to self properly, not to the entire group
----
- arch/um/include/shared/kern_util.h |  1 +
- arch/um/include/shared/os.h        |  3 +
- arch/um/kernel/irq.c               | 88 +++++++++++++++++++++++++++++-
- arch/um/kernel/process.c           |  2 +-
- arch/um/kernel/um_arch.c           | 42 ++++++++++++++
- arch/um/os-Linux/signal.c          |  5 ++
- 6 files changed, 139 insertions(+), 2 deletions(-)
+ arch/um/Kconfig              | 10 ++++++
+ arch/um/include/asm/string.h | 70 ++++++++++++++++++++++++++++++++++++
+ arch/um/os-Linux/user_syms.c | 29 ++++++++++++---
+ arch/x86/um/Makefile         |  6 ++--
+ 4 files changed, 109 insertions(+), 6 deletions(-)
+ create mode 100644 arch/um/include/asm/string.h
 
-diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
-index 9c08e728a675..2888ec812f6e 100644
---- a/arch/um/include/shared/kern_util.h
-+++ b/arch/um/include/shared/kern_util.h
-@@ -68,5 +68,6 @@ extern void bus_handler(int sig, struct siginfo *si, struct uml_pt_regs *regs);
- extern void winch(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
- extern void fatal_sigsegv(void) __attribute__ ((noreturn));
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index 6d707122e8d8..9e4503066552 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -192,6 +192,16 @@ config UML_TIME_TRAVEL_SUPPORT
  
-+void um_idle_sleep(void);
+ 	  It is safe to say Y, but you probably don't need this.
  
- #endif
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index 78250a05394a..cd750d4edfb5 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -233,6 +233,7 @@ extern void timer_set_signal_handler(void);
- extern void set_sigstack(void *sig_stack, int size);
- extern void remove_sigstack(void);
- extern void set_handler(int sig);
-+extern void send_sigio_to_self(void);
- extern int change_sig(int signal, int on);
- extern void block_signals(void);
- extern void unblock_signals(void);
-@@ -307,6 +308,8 @@ extern int os_mod_epoll_fd(int events, int fd, void *data);
- extern int os_del_epoll_fd(int fd);
- extern void os_set_ioignore(void);
- extern void os_close_epoll_fd(void);
-+extern void um_irqs_suspend(void);
-+extern void um_irqs_resume(void);
++config UML_USE_BUILT_IN_STRINGS
++	bool
++	default N
++	prompt "Use kernel memcpy, memmove, etc"
++	help
++	  UML can use the kernel built in memcpy, memmove, etc functions
++	  or use the glibc equivalents instead.
++	  The glibc equivalents are slightly faster and will result in a
++	  slightly smaller executable when linking UML dynamically.
++
+ endmenu
  
- /* sigio.c */
- extern int add_sigio_fd(int fd);
-diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-index 482269580b79..ea43312cbfd3 100644
---- a/arch/um/kernel/irq.c
-+++ b/arch/um/kernel/irq.c
-@@ -20,6 +20,7 @@
- #include <os.h>
- #include <irq_user.h>
- #include <irq_kern.h>
-+#include <as-layout.h>
- 
- 
- extern void free_irqs(void);
-@@ -36,12 +37,14 @@ struct irq_reg {
- 	int events;
- 	bool active;
- 	bool pending;
-+	bool wakeup;
- };
- 
- struct irq_entry {
- 	struct list_head list;
- 	int fd;
- 	struct irq_reg reg[NUM_IRQ_TYPES];
-+	bool suspended;
- };
- 
- static DEFINE_SPINLOCK(irq_lock);
-@@ -70,6 +73,11 @@ static void irq_io_loop(struct irq_reg *irq, struct uml_pt_regs *regs)
- 	}
- }
- 
-+void sigio_handler_suspend(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
-+{
-+	/* nothing */
-+}
+ source "arch/um/drivers/Kconfig"
+diff --git a/arch/um/include/asm/string.h b/arch/um/include/asm/string.h
+new file mode 100644
+index 000000000000..a65bbbe83083
+--- /dev/null
++++ b/arch/um/include/asm/string.h
+@@ -0,0 +1,70 @@
++/* SPDX-License-Identifier: GPL-2.0 */
 +
- void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
- {
- 	struct irq_entry *irq_entry;
-@@ -365,9 +373,86 @@ int um_request_irq(int irq, int fd, enum um_irq_type type,
- 	clear_bit(irq, irqs_allocated);
- 	return err;
- }
--
- EXPORT_SYMBOL(um_request_irq);
- 
-+#ifdef CONFIG_PM_SLEEP
-+void um_irqs_suspend(void)
-+{
-+	struct irq_entry *entry;
-+	unsigned long flags;
++/*
++ * Copyright (C) 2020 Cambridge Greys Ltd.
++ * Copyright (C) 2020 Red Hat Inc.
++ */
 +
-+	sig_info[SIGIO] = sigio_handler_suspend;
++#ifndef __ASM_UM_STRING_H
++#define __ASM_UM_STRING_H
 +
-+	spin_lock_irqsave(&irq_lock, flags);
-+	list_for_each_entry(entry, &active_fds, list) {
-+		enum um_irq_type t;
-+		bool wake = false;
++#ifndef CONFIG_UML_USE_BUILT_IN_STRINGS
 +
-+		for (t = 0; t < NUM_IRQ_TYPES; t++) {
-+			if (!entry->reg[t].events)
-+				continue;
++#include <stddef.h>
 +
-+			if (entry->reg[t].wakeup) {
-+				wake = true;
-+				break;
-+			}
-+		}
++#define __HAVE_ARCH_STRCPY
++extern char *strcpy(char *dest, const char *src);
++#define __HAVE_ARCH_STRNCPY
++extern char *strncpy(char *dest, const char *src, size_t n);
++#define __HAVE_ARCH_STRCAT
++extern char *strcat(char *dest, const char *src);
++#define __HAVE_ARCH_STRNCAT
++extern char *strncat(char *dest, const char *src, size_t n);
++#define __HAVE_ARCH_STRCMP
++extern int strcmp(const char *s1, const char *s2);
++#define __HAVE_ARCH_STRNCMP
++extern int strncmp(const char *s1, const char *s2, size_t n);
++#define __HAVE_ARCH_STRCHR
++extern char *strchr(const char *s, int c);
++#define __HAVE_ARCH_STRLEN
++extern size_t strlen(const char *s);
++#define __HAVE_ARCH_MEMCPY
++extern void *memcpy(void *dest, const void *src, size_t n);
++#define __HAVE_ARCH_MEMMOVE
++extern void *memmove(void *dest, const void *src, size_t n);
++#define __HAVE_ARCH_MEMCHR
++extern void *memchr(const void *s, int c, size_t n);
++#define __HAVE_ARCH_STRNLEN
++extern size_t strnlen(const char *s, size_t maxlen);
++#define __HAVE_ARCH_STRSTR
++extern char *strstr(const char *haystack, const char *needle);
++#define __HAVE_ARCH_MEMSET
++extern void *memset(void *s, int c, size_t n);
++#define __HAVE_ARCH_STRNCASECMP
++extern int strncasecmp(const char *s1, const char *s2, size_t n);
++#define __HAVE_ARCH_STRCASECMP
++extern int strcasecmp(const char *s1, const char *s2);
++#define __HAVE_ARCH_STRCHRNUL
++extern char *strchrnul(const char *s, int c);
++#define __HAVE_ARCH_STRRCH
++extern char *strchrnul(const char *s, int c);
++#define __HAVE_ARCH_STRSPN
++extern size_t strspn(const char *s, const char *accept);
++#define __HAVE_ARCH_STRCSPN
++extern size_t strcspn(const char *s, const char *reject);
++#define __HAVE_ARCH_STRPBRK
++extern char *strpbrk(const char *s, const char *accept);
++#define __HAVE_ARCH_STRSEP
++extern char *strsep(char **stringp, const char *delim);
++#define __HAVE_ARCH_MEMCMP
++extern int memcmp(const void *s1, const void *s2, size_t n);
++#define __HAVE_ARCH_BCMP
++extern int bcmp(const void *s1, const void *s2, size_t n);
 +
-+		if (!wake) {
-+			entry->suspended = true;
-+			os_clear_fd_async(entry->fd);
-+		}
-+	}
-+	spin_unlock_irqrestore(&irq_lock, flags);
-+}
-+
-+void um_irqs_resume(void)
-+{
-+	struct irq_entry *entry;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&irq_lock, flags);
-+	list_for_each_entry(entry, &active_fds, list) {
-+		if (entry->suspended) {
-+			int err = os_set_fd_async(entry->fd);
-+
-+			WARN(err < 0, "os_set_fd_async returned %d\n", err);
-+			entry->suspended = false;
-+		}
-+	}
-+	spin_unlock_irqrestore(&irq_lock, flags);
-+
-+	sig_info[SIGIO] = sigio_handler;
-+	send_sigio_to_self();
-+}
-+
-+static int normal_irq_set_wake(struct irq_data *d, unsigned int on)
-+{
-+	struct irq_entry *entry;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&irq_lock, flags);
-+	list_for_each_entry(entry, &active_fds, list) {
-+		enum um_irq_type t;
-+
-+		for (t = 0; t < NUM_IRQ_TYPES; t++) {
-+			if (!entry->reg[t].events)
-+				continue;
-+
-+			if (entry->reg[t].irq != d->irq)
-+				continue;
-+			entry->reg[t].wakeup = on;
-+			goto unlock;
-+		}
-+	}
-+unlock:
-+	spin_unlock_irqrestore(&irq_lock, flags);
-+	return 0;
-+}
 +#else
-+#define normal_irq_set_wake NULL
++
++#include <../../x86/include/asm/string.h>
++
 +#endif
 +
- /*
-  * irq_chip must define at least enable/disable and ack when
-  * the edge handler is used.
-@@ -384,6 +469,7 @@ static struct irq_chip normal_irq_type = {
- 	.irq_ack = dummy,
- 	.irq_mask = dummy,
- 	.irq_unmask = dummy,
-+	.irq_set_wake = normal_irq_set_wake,
- };
++#endif /* __ASM_UM_STRING_H */
+diff --git a/arch/um/os-Linux/user_syms.c b/arch/um/os-Linux/user_syms.c
+index 715594fe5719..2e24c9000316 100644
+--- a/arch/um/os-Linux/user_syms.c
++++ b/arch/um/os-Linux/user_syms.c
+@@ -9,6 +9,7 @@
+  * add an EXPORT for the glibc one.
+  */
  
- static struct irq_chip alarm_irq_type = {
-diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index 0686fabba576..f0f50eae2293 100644
---- a/arch/um/kernel/process.c
-+++ b/arch/um/kernel/process.c
-@@ -202,7 +202,7 @@ void initial_thread_cb(void (*proc)(void *), void *arg)
- 	kmalloc_ok = save_kmalloc_ok;
- }
++#ifdef CONFIG_UML_USE_BUILT_IN_STRINGS
+ #undef strlen
+ #undef strstr
+ #undef memcpy
+@@ -17,6 +18,7 @@
+ extern size_t strlen(const char *);
+ extern void *memmove(void *, const void *, size_t);
+ extern void *memset(void *, int, size_t);
++#endif
+ extern int printf(const char *, ...);
  
--static void um_idle_sleep(void)
-+void um_idle_sleep(void)
- {
- 	if (time_travel_mode != TT_MODE_OFF)
- 		time_travel_sleep();
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index 237a8d73a096..9c7e6d7ea1b3 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -385,6 +385,45 @@ void uml_pm_wake(void)
- 	pm_system_wakeup();
- }
+ /* If it's not defined, the export is included in lib/string.c.*/
+@@ -24,14 +26,33 @@ extern int printf(const char *, ...);
+ EXPORT_SYMBOL(strstr);
+ #endif
  
-+static int um_suspend_valid(suspend_state_t state)
-+{
-+	return state == PM_SUSPEND_MEM;
-+}
+-#ifndef __x86_64__
+-extern void *memcpy(void *, const void *, size_t);
+-EXPORT_SYMBOL(memcpy);
++#ifndef CONFIG_UML_USE_BUILT_IN_STRINGS
++/* These all come from glibc */
++EXPORT_SYMBOL(printf);
++EXPORT_SYMBOL(strcpy);
++EXPORT_SYMBOL(strncpy);
++EXPORT_SYMBOL(strcat);
++EXPORT_SYMBOL(strncat);
++EXPORT_SYMBOL(strcmp);
++EXPORT_SYMBOL(strncmp);
++EXPORT_SYMBOL(strchr);
++EXPORT_SYMBOL(strlen);
++EXPORT_SYMBOL(memchr);
++EXPORT_SYMBOL(strnlen);
++EXPORT_SYMBOL(strncasecmp);
++EXPORT_SYMBOL(strcasecmp);
++EXPORT_SYMBOL(strchrnul);
++EXPORT_SYMBOL(strcspn);
++EXPORT_SYMBOL(strpbrk);
++EXPORT_SYMBOL(strsep);
++EXPORT_SYMBOL(memcmp);
++EXPORT_SYMBOL(bcmp);
 +
-+static int um_suspend_prepare(void)
-+{
-+	um_irqs_suspend();
-+	return 0;
-+}
-+
-+static int um_suspend_enter(suspend_state_t state)
-+{
-+	if (WARN_ON(state != PM_SUSPEND_MEM))
-+		return -EINVAL;
-+
-+	/*
-+	 * This is identical to the idle sleep, but we've just
-+	 * (during suspend) turned off all interrupt sources
-+	 * except for the ones we want, so now we can only wake
-+	 * up on something we actually want to wake up on. All
-+	 * timing has also been suspended.
-+	 */
-+	um_idle_sleep();
-+	return 0;
-+}
-+
-+static void um_suspend_finish(void)
-+{
-+	um_irqs_resume();
-+}
-+
-+const struct platform_suspend_ops um_suspend_ops = {
-+	.valid = um_suspend_valid,
-+	.prepare = um_suspend_prepare,
-+	.enter = um_suspend_enter,
-+	.finish = um_suspend_finish,
-+};
-+
- static int init_pm_wake_signal(void)
- {
- 	/*
-@@ -397,6 +436,9 @@ static int init_pm_wake_signal(void)
- 	 */
- 	if (time_travel_mode != TT_MODE_EXTERNAL)
- 		register_pm_wake_signal();
-+
-+	suspend_set_ops(&um_suspend_ops);
-+
- 	return 0;
- }
+ #endif
  
-diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
-index 0a2ea84033b4..510e956b4320 100644
---- a/arch/um/os-Linux/signal.c
-+++ b/arch/um/os-Linux/signal.c
-@@ -234,6 +234,11 @@ void set_handler(int sig)
- 		panic("sigprocmask failed - errno = %d\n", errno);
- }
++EXPORT_SYMBOL(memcpy);
+ EXPORT_SYMBOL(memmove);
+ EXPORT_SYMBOL(memset);
+-EXPORT_SYMBOL(printf);
  
-+void send_sigio_to_self(void)
-+{
-+	kill(os_getpid(), SIGIO);
-+}
-+
- int change_sig(int signal, int on)
- {
- 	sigset_t sigset;
+ /* Here, instead, I can provide a fake prototype. Yes, someone cares: genksyms.
+  * However, the modules will use the CRC defined *here*, no matter if it is
+diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
+index 77f70b969d14..453ea23a9770 100644
+--- a/arch/x86/um/Makefile
++++ b/arch/x86/um/Makefile
+@@ -20,14 +20,16 @@ ifeq ($(CONFIG_X86_32),y)
+ obj-y += checksum_32.o syscalls_32.o
+ obj-$(CONFIG_ELF_CORE) += elfcore.o
+ 
+-subarch-y = ../lib/string_32.o ../lib/atomic64_32.o ../lib/atomic64_cx8_32.o
++subarch-y = ../lib/atomic64_32.o ../lib/atomic64_cx8_32.o
+ subarch-y += ../kernel/sys_ia32.o
++subarch-$(CONFIG_UML_USE_BUILT_IN_STRINGS) += ../lib/string_32.o
+ 
+ else
+ 
+ obj-y += syscalls_64.o vdso/
+ 
+-subarch-y = ../lib/csum-partial_64.o ../lib/memcpy_64.o ../entry/thunk_64.o
++subarch-y = ../lib/csum-partial_64.o ../entry/thunk_64.o
++subarch-$(CONFIG_UML_USE_BUILT_IN_STRINGS) += ../lib/memcpy_64.o
+ 
+ endif
+ 
 -- 
-2.26.2
+2.20.1
 
 
 _______________________________________________
