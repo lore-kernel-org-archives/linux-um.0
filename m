@@ -2,14 +2,14 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab7.miniserver.com ([37.128.132.42]
  helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kp6sl-0004Zk-Vn
- for linux-um@lists.infradead.org; Tue, 15 Dec 2020 09:44:37 +0000
+ id 1kosNH-0006Kj-U8
+ for linux-um@lists.infradead.org; Mon, 14 Dec 2020 18:15:09 +0000
 From: anton.ivanov@cambridgegreys.com
-Subject: [PATCH v6 3/4] um: add a UML specific futex implementation
-Date: Tue, 15 Dec 2020 09:44:25 +0000
-Message-Id: <20201215094426.1117-3-anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20201215094426.1117-1-anton.ivanov@cambridgegreys.com>
-References: <20201215094426.1117-1-anton.ivanov@cambridgegreys.com>
+Subject: [PATCH v5 1/4] um: Add support for host CPU flags and alignment
+Date: Mon, 14 Dec 2020 18:14:56 +0000
+Message-Id: <20201214181459.11096-2-anton.ivanov@cambridgegreys.com>
+In-Reply-To: <20201214181459.11096-1-anton.ivanov@cambridgegreys.com>
+References: <20201214181459.11096-1-anton.ivanov@cambridgegreys.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -28,206 +28,269 @@ Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
 From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-The generic asm futex implementation emulates atomic access to
-memory by doing a get_user followed by put_user. These translate
-to two mapping operations on UML with paging enabled in the
-meantime. This, in turn may end up changing interrupts,
-invoking the signal loop, etc.
+1. Reflect host cpu flags into the UML instance so they can
+be used to select the correct implementations for xor, crypto, etc.
 
-This replaces the generic implementation by a mapping followed
-by an operation on the mapped segment.
+2. Reflect host cache alignment into UML instance. This is
+important when running 32 bit on a 64 bit host as 32 bit by
+default aligns to 32 while the actual alignment should be 64.
+Ditto for some Xeons which align at 128.
 
 Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 ---
- arch/um/include/asm/Kbuild    |   1 -
- arch/um/include/asm/futex.h   |  14 ++++
- arch/um/kernel/skas/uaccess.c | 136 ++++++++++++++++++++++++++++++++++
- 3 files changed, 150 insertions(+), 1 deletion(-)
- create mode 100644 arch/um/include/asm/futex.h
+ arch/um/Kconfig                         |  3 ++
+ arch/um/include/asm/processor-generic.h |  8 +++++
+ arch/um/include/shared/os.h             |  3 ++
+ arch/um/kernel/Makefile                 | 13 +++++--
+ arch/um/kernel/um_arch.c                | 48 ++++++++++++++++++++++---
+ arch/um/os-Linux/start_up.c             | 32 +++++++++++++++++
+ 6 files changed, 101 insertions(+), 6 deletions(-)
 
-diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
-index 1c63b260ecc4..873e6815bc50 100644
---- a/arch/um/include/asm/Kbuild
-+++ b/arch/um/include/asm/Kbuild
-@@ -8,7 +8,6 @@ generic-y += emergency-restart.h
- generic-y += exec.h
- generic-y += extable.h
- generic-y += ftrace.h
--generic-y += futex.h
- generic-y += hw_irq.h
- generic-y += irq_regs.h
- generic-y += irq_work.h
-diff --git a/arch/um/include/asm/futex.h b/arch/um/include/asm/futex.h
-new file mode 100644
-index 000000000000..780aa6bfc050
---- /dev/null
-+++ b/arch/um/include/asm/futex.h
-@@ -0,0 +1,14 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_UM_FUTEX_H
-+#define _ASM_UM_FUTEX_H
-+
-+#include <linux/futex.h>
-+#include <linux/uaccess.h>
-+#include <asm/errno.h>
-+
-+
-+int arch_futex_atomic_op_inuser(int op, u32 oparg, int *oval, u32 __user *uaddr);
-+int futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
-+			      u32 oldval, u32 newval);
-+
-+#endif
-diff --git a/arch/um/kernel/skas/uaccess.c b/arch/um/kernel/skas/uaccess.c
-index 2dec915abe6f..6c76df96e858 100644
---- a/arch/um/kernel/skas/uaccess.c
-+++ b/arch/um/kernel/skas/uaccess.c
-@@ -11,6 +11,7 @@
- #include <asm/current.h>
- #include <asm/page.h>
- #include <kern_util.h>
-+#include <asm/futex.h>
- #include <os.h>
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index 4b799fad8b48..6d707122e8d8 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -61,6 +61,9 @@ config NR_CPUS
+ 	range 1 1
+ 	default 1
  
- pte_t *virt_to_pte(struct mm_struct *mm, unsigned long addr)
-@@ -248,3 +249,138 @@ long __strnlen_user(const void __user *str, long len)
++config ARCH_HAS_CACHE_LINE_SIZE
++	def_bool y
++
+ source "arch/$(HEADER_ARCH)/um/Kconfig"
+ 
+ config MAY_HAVE_RUNTIME_DEPS
+diff --git a/arch/um/include/asm/processor-generic.h b/arch/um/include/asm/processor-generic.h
+index afd9b267cf81..b5cf0ed116d9 100644
+--- a/arch/um/include/asm/processor-generic.h
++++ b/arch/um/include/asm/processor-generic.h
+@@ -16,6 +16,8 @@ struct task_struct;
+ 
+ #include <linux/prefetch.h>
+ 
++#include <asm/cpufeatures.h>
++
+ struct mm_struct;
+ 
+ struct thread_struct {
+@@ -90,12 +92,18 @@ extern void start_thread(struct pt_regs *regs, unsigned long entry,
+ struct cpuinfo_um {
+ 	unsigned long loops_per_jiffy;
+ 	int ipi_pipe[2];
++	int cache_alignment;
++	union {
++		__u32		x86_capability[NCAPINTS + NBUGINTS];
++		unsigned long	x86_capability_alignment;
++	};
+ };
+ 
+ extern struct cpuinfo_um boot_cpu_data;
+ 
+ #define cpu_data (&boot_cpu_data)
+ #define current_cpu_data boot_cpu_data
++#define cache_line_size()	(boot_cpu_data.cache_alignment)
+ 
+ #define KSTK_REG(tsk, reg) get_thread_reg(reg, &tsk->thread.switch_buf)
+ extern unsigned long get_wchan(struct task_struct *p);
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index f467d28fc0b4..c73be207fbe5 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -187,6 +187,9 @@ int os_poll(unsigned int n, const int *fds);
+ extern void os_early_checks(void);
+ extern void os_check_bugs(void);
+ extern void check_host_supports_tls(int *supports_tls, int *tls_min);
++extern void get_host_cpu_features(
++	void (*flags_helper_func)(char *line),
++	void (*cache_helper_func)(char *line));
+ 
+ /* mem.c */
+ extern int create_mem_file(unsigned long long len);
+diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
+index 5aa882011e04..64f82652db2e 100644
+--- a/arch/um/kernel/Makefile
++++ b/arch/um/kernel/Makefile
+@@ -17,7 +17,7 @@ extra-y := vmlinux.lds
+ obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
+ 	physmem.o process.o ptrace.o reboot.o sigio.o \
+ 	signal.o syscall.o sysrq.o time.o tlb.o trap.o \
+-	um_arch.o umid.o maccess.o kmsg_dump.o skas/
++	um_arch.o umid.o maccess.o kmsg_dump.o capflags.o skas/
+ 
+ obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
+ obj-$(CONFIG_GPROF)	+= gprof_syms.o
+@@ -29,7 +29,7 @@ USER_OBJS := config.o
+ 
+ include arch/um/scripts/Makefile.rules
+ 
+-targets := config.c config.tmp
++targets := config.c config.tmp capflags.c
+ 
+ # Be careful with the below Sed code - sed is pitfall-rich!
+ # We use sed to lower build requirements, for "embedded" builders for instance.
+@@ -44,6 +44,15 @@ quiet_cmd_quote1 = QUOTE   $@
+ $(obj)/config.c: $(src)/config.c.in $(obj)/config.tmp FORCE
+ 	$(call if_changed,quote2)
+ 
++quiet_cmd_mkcapflags = MKCAP   $@
++      cmd_mkcapflags = $(CONFIG_SHELL) $(srctree)/$(src)/../../x86/kernel/cpu/mkcapflags.sh $@ $^
++
++cpufeature = $(src)/../../x86/include/asm/cpufeatures.h
++vmxfeature = $(src)/../../x86/include/asm/vmxfeatures.h
++
++$(obj)/capflags.c: $(cpufeature) $(vmxfeature) $(src)/../../x86/kernel/cpu/mkcapflags.sh FORCE
++	$(call if_changed,mkcapflags)
++
+ quiet_cmd_quote2 = QUOTE   $@
+       cmd_quote2 = sed -e '/CONFIG/{'          \
+ 		  -e 's/"CONFIG"//'            \
+diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
+index 76b37297b7d4..d6bcaa01633d 100644
+--- a/arch/um/kernel/um_arch.c
++++ b/arch/um/kernel/um_arch.c
+@@ -6,6 +6,7 @@
+ #include <linux/delay.h>
+ #include <linux/init.h>
+ #include <linux/mm.h>
++#include <linux/ctype.h>
+ #include <linux/module.h>
+ #include <linux/seq_file.h>
+ #include <linux/string.h>
+@@ -15,6 +16,7 @@
+ #include <linux/kmsg_dump.h>
+ 
+ #include <asm/processor.h>
++#include <asm/cpufeature.h>
+ #include <asm/sections.h>
+ #include <asm/setup.h>
+ #include <as-layout.h>
+@@ -48,9 +50,13 @@ static void __init add_arg(char *arg)
+  */
+ struct cpuinfo_um boot_cpu_data = {
+ 	.loops_per_jiffy	= 0,
+-	.ipi_pipe		= { -1, -1 }
++	.ipi_pipe		= { -1, -1 },
++	.cache_alignment	= L1_CACHE_BYTES,
++	.x86_capability		= { 0 }
+ };
+ 
++EXPORT_SYMBOL(boot_cpu_data);
++
+ union thread_union cpu0_irqstack
+ 	__section(".data..init_irqstack") =
+ 		{ .thread_info = INIT_THREAD_INFO(init_task) };
+@@ -60,17 +66,25 @@ static char host_info[(__NEW_UTS_LEN + 1) * 5];
+ 
+ static int show_cpuinfo(struct seq_file *m, void *v)
+ {
+-	int index = 0;
++	int i = 0;
+ 
+-	seq_printf(m, "processor\t: %d\n", index);
++	seq_printf(m, "processor\t: %d\n", i);
+ 	seq_printf(m, "vendor_id\t: User Mode Linux\n");
+ 	seq_printf(m, "model name\t: UML\n");
+ 	seq_printf(m, "mode\t\t: skas\n");
+ 	seq_printf(m, "host\t\t: %s\n", host_info);
+-	seq_printf(m, "bogomips\t: %lu.%02lu\n\n",
++	seq_printf(m, "fpu\t\t: %s\n", cpu_has(&boot_cpu_data, X86_FEATURE_FPU) ? "yes" : "no");
++	seq_printf(m, "flags\t\t:");
++	for (i = 0; i < 32*NCAPINTS; i++)
++		if (cpu_has(&boot_cpu_data, i) && (x86_cap_flags[i] != NULL))
++			seq_printf(m, " %s", x86_cap_flags[i]);
++	seq_printf(m, "\n");
++	seq_printf(m, "cache_alignment\t: %d\n", boot_cpu_data.cache_alignment);
++	seq_printf(m, "bogomips\t: %lu.%02lu\n",
+ 		   loops_per_jiffy/(500000/HZ),
+ 		   (loops_per_jiffy/(5000/HZ)) % 100);
+ 
++
  	return 0;
  }
- EXPORT_SYMBOL(__strnlen_user);
-+
-+/**
-+ * arch_futex_atomic_op_inuser() - Atomic arithmetic operation with constant
-+ *			  argument and comparison of the previous
-+ *			  futex value with another constant.
-+ *
-+ * @encoded_op:	encoded operation to execute
-+ * @uaddr:	pointer to user space address
-+ *
-+ * Return:
-+ * 0 - On success
-+ * -EFAULT - User access resulted in a page fault
-+ * -EAGAIN - Atomic operation was unable to complete due to contention
-+ * -ENOSYS - Operation not supported
-+ */
-+
-+int arch_futex_atomic_op_inuser(int op, u32 oparg, int *oval, u32 __user *uaddr)
+ 
+@@ -246,6 +260,30 @@ EXPORT_SYMBOL(end_iomem);
+ 
+ #define MIN_VMALLOC (32 * 1024 * 1024)
+ 
++static void parse_host_cpu_flags(char *line)
 +{
-+	int oldval, ret;
-+	struct page *page;
-+	unsigned long addr = (unsigned long) uaddr;
-+	pte_t *pte;
-+
-+	ret = -EFAULT;
-+	if (!access_ok(uaddr, sizeof(*uaddr)))
-+		return -EFAULT;
-+	preempt_disable();
-+	pte = maybe_map(addr, 1);
-+	if (pte == NULL)
-+		goto out_inuser;
-+
-+	page = pte_page(*pte);
-+#ifdef CONFIG_64BIT
-+	pagefault_disable();
-+	addr = (unsigned long) page_address(page) +
-+			(((unsigned long) addr) & ~PAGE_MASK);
-+#else
-+	addr = (unsigned long) kmap_atomic(page) +
-+		((unsigned long) addr & ~PAGE_MASK);
-+#endif
-+	uaddr = (u32 *) addr;
-+	oldval = *uaddr;
-+
-+	ret = 0;
-+
-+	switch (op) {
-+	case FUTEX_OP_SET:
-+		*uaddr = oparg;
-+		break;
-+	case FUTEX_OP_ADD:
-+		*uaddr += oparg;
-+		break;
-+	case FUTEX_OP_OR:
-+		*uaddr |= oparg;
-+		break;
-+	case FUTEX_OP_ANDN:
-+		*uaddr &= ~oparg;
-+		break;
-+	case FUTEX_OP_XOR:
-+		*uaddr ^= oparg;
-+		break;
-+	default:
-+		ret = -ENOSYS;
++	int i;
++	for (i = 0; i < 32*NCAPINTS; i++) {
++		if ((x86_cap_flags[i] != NULL) && strstr(line, x86_cap_flags[i]))
++			set_cpu_cap(&boot_cpu_data, i);;
 +	}
-+#ifdef CONFIG_64BIT
-+	pagefault_enable();
-+#else
-+	kunmap_atomic((void *)addr);
-+#endif
-+
-+out_inuser:
-+	preempt_enable();
-+
-+	if (ret == 0)
-+		*oval = oldval;
-+
-+	return ret;
 +}
-+EXPORT_SYMBOL(arch_futex_atomic_op_inuser);
-+
-+/**
-+ * futex_atomic_cmpxchg_inatomic() - Compare and exchange the content of the
-+ *				uaddr with newval if the current value is
-+ *				oldval.
-+ * @uval:	pointer to store content of @uaddr
-+ * @uaddr:	pointer to user space address
-+ * @oldval:	old value
-+ * @newval:	new value to store to @uaddr
-+ *
-+ * Return:
-+ * 0 - On success
-+ * -EFAULT - User access resulted in a page fault
-+ * -EAGAIN - Atomic operation was unable to complete due to contention
-+ * -ENOSYS - Function not implemented (only if !HAVE_FUTEX_CMPXCHG)
-+ */
-+
-+int futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
-+			      u32 oldval, u32 newval)
++static void parse_cache_line(char *line)
 +{
-+	struct page *page;
-+	pte_t *pte;
-+	int ret = -EFAULT;
-+
-+	if (!access_ok(uaddr, sizeof(*uaddr)))
-+		return -EFAULT;
-+
-+	preempt_disable();
-+	pte = maybe_map((unsigned long) uaddr, 1);
-+	if (pte == NULL)
-+		goto out_inatomic;
-+
-+	page = pte_page(*pte);
-+#ifdef CONFIG_64BIT
-+	pagefault_disable();
-+	uaddr = page_address(page) + (((unsigned long) uaddr) & ~PAGE_MASK);
-+#else
-+	uaddr = kmap_atomic(page) + ((unsigned long) uaddr & ~PAGE_MASK);
-+#endif
-+
-+	*uval = *uaddr;
-+
-+	ret = cmpxchg(uaddr, oldval, newval);
-+
-+#ifdef CONFIG_64BIT
-+	pagefault_enable();
-+#else
-+	kunmap_atomic(uaddr);
-+#endif
-+	ret = 0;
-+
-+out_inatomic:
-+	preempt_enable();
-+	return ret;
++	long res;
++	char *to_parse = strstr(line, ":");
++	if (to_parse) {
++		to_parse++;
++		while (*to_parse != 0 && isspace(*to_parse)) {
++			to_parse++;
++		}
++		if (kstrtoul(to_parse, 10, &res) == 0 && is_power_of_2(res))
++			boot_cpu_data.cache_alignment = res;
++		else
++			boot_cpu_data.cache_alignment = L1_CACHE_BYTES;
++	}
 +}
-+EXPORT_SYMBOL(futex_atomic_cmpxchg_inatomic);
++
+ int __init linux_main(int argc, char **argv)
+ {
+ 	unsigned long avail, diff;
+@@ -275,6 +313,8 @@ int __init linux_main(int argc, char **argv)
+ 	/* OS sanity checks that need to happen before the kernel runs */
+ 	os_early_checks();
+ 
++	get_host_cpu_features(parse_host_cpu_flags, parse_cache_line);
++
+ 	brk_start = (unsigned long) sbrk(0);
+ 
+ 	/*
+diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
+index f79dc338279e..8a72c99994eb 100644
+--- a/arch/um/os-Linux/start_up.c
++++ b/arch/um/os-Linux/start_up.c
+@@ -321,6 +321,38 @@ static void __init check_coredump_limit(void)
+ 		os_info("%llu\n", (unsigned long long)lim.rlim_max);
+ }
+ 
++void  __init get_host_cpu_features(
++		void (*flags_helper_func)(char *line),
++		void (*cache_helper_func)(char *line))
++{
++	FILE *cpuinfo;
++	char *line = NULL;
++	size_t len = 0;
++	int done_parsing = 0;
++
++	cpuinfo = fopen("/proc/cpuinfo", "r");
++	if (cpuinfo == NULL) {
++		os_info("Failed to get host CPU features\n");
++	} else {
++		while ((getline(&line, &len, cpuinfo)) != -1) {
++			if (strstr(line, "flags")) {
++				flags_helper_func(line);
++				done_parsing++;
++			}
++			if (strstr(line, "cache_alignment")) {
++				cache_helper_func(line);
++				done_parsing++;
++			}
++			free(line);
++			line = NULL;
++			if (done_parsing > 1)
++				break;
++		}
++		fclose(cpuinfo);
++	}
++}
++
++
+ void __init os_early_checks(void)
+ {
+ 	int pid;
 -- 
 2.20.1
 
