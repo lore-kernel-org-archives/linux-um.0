@@ -1,15 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab7.miniserver.com ([37.128.132.42]
- helo=www.kot-begemot.co.uk)
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kmKAy-0000ix-0H
- for linux-um@lists.infradead.org; Mon, 07 Dec 2020 17:19:53 +0000
-From: anton.ivanov@cambridgegreys.com
-Subject: [PATCH 3/3] um: chan_xterm: Fix fd leak
-Date: Mon,  7 Dec 2020 17:19:40 +0000
-Message-Id: <20201207171940.25240-3-anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20201207171940.25240-1-anton.ivanov@cambridgegreys.com>
-References: <20201207171940.25240-1-anton.ivanov@cambridgegreys.com>
+ id 1kotsG-0006fO-1V
+ for linux-um@lists.infradead.org; Mon, 14 Dec 2020 19:51:13 +0000
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [PATCH] um: fix build w/o CONFIG_PM_SLEEP
+Date: Mon, 14 Dec 2020 20:51:02 +0100
+Message-Id: <20201214205101.27cb3eb8d19a.Ic09b2e3a99bc19009d85516f857e6c38d31edc00@changeid>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -24,64 +22,43 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Randy Dunlap <rdunlap@infradead.org>, Johannes Berg <johannes.berg@intel.com>
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-xterm serial channel was leaking a fd used in setting up the
-port helper
+uml_pm_wake() is unconditionally called from the SIGUSR1 wakeup
+handler since that's in the userspace portion of UML, and thus
+a bit tricky to ifdef out. Since pm_system_wakeup() can always
+be called (but may be an empty inline), also simply always have
+uml_pm_wake() to fix the build.
 
-This bug is prehistoric - it predates switching to git. The "fixes"
-header here is really just to mark all the versions we would like this to
-apply to which is "Anything from the Cretaceous period onwards".
-
-No dinosaurs were harmed in fixing this bug.
-
-Fixes: b40997b872cd ("um: drivers/xterm.c: fix a file descriptor leak")
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- arch/um/drivers/xterm.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/um/kernel/um_arch.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/um/drivers/xterm.c b/arch/um/drivers/xterm.c
-index fc7f1e746703..87ca4a47cd66 100644
---- a/arch/um/drivers/xterm.c
-+++ b/arch/um/drivers/xterm.c
-@@ -18,6 +18,7 @@
- struct xterm_chan {
- 	int pid;
- 	int helper_pid;
-+	int chan_fd;
- 	char *title;
- 	int device;
- 	int raw;
-@@ -33,6 +34,7 @@ static void *xterm_init(char *str, int device, const struct chan_opts *opts)
- 		return NULL;
- 	*data = ((struct xterm_chan) { .pid 		= -1,
- 				       .helper_pid 	= -1,
-+				       .chan_fd		= -1,
- 				       .device 		= device,
- 				       .title 		= opts->xterm_title,
- 				       .raw  		= opts->raw } );
-@@ -149,6 +151,7 @@ static int xterm_open(int input, int output, int primary, void *d,
- 		goto out_kill;
- 	}
- 
-+	data->chan_fd = fd;
- 	new = xterm_fd(fd, &data->helper_pid);
- 	if (new < 0) {
- 		err = new;
-@@ -206,6 +209,8 @@ static void xterm_close(int fd, void *d)
- 		os_kill_process(data->helper_pid, 0);
- 	data->helper_pid = -1;
- 
-+	if (data->chan_fd != -1)
-+		os_close_file(data->chan_fd);
- 	os_close_file(fd);
+diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
+index 9c7e6d7ea1b3..31d356b1ffd8 100644
+--- a/arch/um/kernel/um_arch.c
++++ b/arch/um/kernel/um_arch.c
+@@ -379,12 +379,12 @@ void text_poke_sync(void)
+ {
  }
  
+-#ifdef CONFIG_PM_SLEEP
+ void uml_pm_wake(void)
+ {
+ 	pm_system_wakeup();
+ }
+ 
++#ifdef CONFIG_PM_SLEEP
+ static int um_suspend_valid(suspend_state_t state)
+ {
+ 	return state == PM_SUSPEND_MEM;
 -- 
-2.20.1
+2.26.2
 
 
 _______________________________________________
