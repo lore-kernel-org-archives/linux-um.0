@@ -1,14 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kub8g-0008A0-Vi
- for linux-um@lists.infradead.org; Wed, 30 Dec 2020 13:03:44 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.10 20/31] um: allocate a guard page to helper threads
-Date: Wed, 30 Dec 2020 08:03:02 -0500
-Message-Id: <20201230130314.3636961-20-sashal@kernel.org>
-In-Reply-To: <20201230130314.3636961-1-sashal@kernel.org>
-References: <20201230130314.3636961-1-sashal@kernel.org>
+ id 1kp70T-0005VT-Oe
+ for linux-um@lists.infradead.org; Tue, 15 Dec 2020 09:52:35 +0000
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [PATCH v2 3/5] um: virtio: disable VQs during suspend
+Date: Tue, 15 Dec 2020 10:52:23 +0100
+Message-Id: <20201215105225.8cd384700f63.If62b5749ee500e51ad4b86910fb466c039f0ba8f@changeid>
+In-Reply-To: <20201215105225.5c1b7720a11b.Ibacb1cbbdd1fa7ae866f0c3c94488dcbae01b39b@changeid>
+References: <20201215105225.5c1b7720a11b.Ibacb1cbbdd1fa7ae866f0c3c94488dcbae01b39b@changeid>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,119 +23,91 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org, Johannes Berg <johannes.berg@intel.com>
+To: linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
 
 From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit ef4459a6da0955b533ebfc97a7d756ac090f50c9 ]
-
-We've been running into stack overflows in helper threads
-corrupting memory (e.g. because somebody put printf() or
-os_info() there), so to avoid those causing hard-to-debug
-issues later on, allocate a guard page for helper thread
-stacks and mark it read-only.
-
-Unfortunately, the crash dump at that point is useless as
-the stack tracer will try to backtrace the *kernel* thread,
-not the helper thread, but at least we don't survive to a
-random issue caused by corruption.
+If the system is suspended, the device shouldn't be able to send
+anything to it. Disable virtqueues in suspend to simulate this,
+and as we might be only using s2idle (kernel services are still
+on), prevent sending anything on them as well.
 
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/drivers/ubd_kern.c         |  2 +-
- arch/um/include/shared/kern_util.h |  2 +-
- arch/um/kernel/process.c           | 11 +++++++----
- arch/um/os-Linux/helper.c          |  4 ++--
- 4 files changed, 11 insertions(+), 8 deletions(-)
+ arch/um/drivers/virtio_uml.c | 36 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index b12c1b0d3e1d0..e337702c30c78 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -1195,7 +1195,7 @@ static int __init ubd_driver_init(void){
- 		/* Letting ubd=sync be like using ubd#s= instead of ubd#= is
- 		 * enough. So use anyway the io thread. */
- 	}
--	stack = alloc_stack(0, 0);
-+	stack = alloc_stack(0);
- 	io_pid = start_io_thread(stack + PAGE_SIZE - sizeof(void *),
- 				 &thread_fd);
- 	if(io_pid < 0){
-diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
-index ccafb62e8ccec..c3ccbc2bbd2ce 100644
---- a/arch/um/include/shared/kern_util.h
-+++ b/arch/um/include/shared/kern_util.h
-@@ -19,7 +19,7 @@ extern int kmalloc_ok;
- #define UML_ROUND_UP(addr) \
- 	((((unsigned long) addr) + PAGE_SIZE - 1) & PAGE_MASK)
+diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
+index 030bef37d6d4..aacc8a578426 100644
+--- a/arch/um/drivers/virtio_uml.c
++++ b/arch/um/drivers/virtio_uml.c
+@@ -65,6 +65,7 @@ struct virtio_uml_vq_info {
+ 	vq_callback_t *callback;
+ 	struct time_travel_event defer;
+ #endif
++	bool suspended;
+ };
  
--extern unsigned long alloc_stack(int order, int atomic);
-+extern unsigned long alloc_stack(int atomic);
- extern void free_stack(unsigned long stack, int order);
+ extern unsigned long long physmem_size, highmem;
+@@ -725,6 +726,9 @@ static bool vu_notify(struct virtqueue *vq)
+ 	const uint64_t n = 1;
+ 	int rc;
  
- struct pt_regs;
-diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index 9505a7e87396a..bb352dc446870 100644
---- a/arch/um/kernel/process.c
-+++ b/arch/um/kernel/process.c
-@@ -32,6 +32,7 @@
- #include <os.h>
- #include <skas.h>
- #include <linux/time-internal.h>
-+#include <asm/set_memory.h>
- 
- /*
-  * This is a per-cpu array.  A processor only modifies its entry and it only
-@@ -62,16 +63,18 @@ void free_stack(unsigned long stack, int order)
- 	free_pages(stack, order);
- }
- 
--unsigned long alloc_stack(int order, int atomic)
-+unsigned long alloc_stack(int atomic)
- {
--	unsigned long page;
-+	unsigned long addr;
- 	gfp_t flags = GFP_KERNEL;
- 
- 	if (atomic)
- 		flags = GFP_ATOMIC;
--	page = __get_free_pages(flags, order);
-+	addr = __get_free_pages(flags, 1);
- 
--	return page;
-+	set_memory_ro(addr, 1);
++	if (info->suspended)
++		return true;
 +
-+	return addr + PAGE_SIZE;
- }
+ 	time_travel_propagate_time();
  
- static inline void set_current(struct task_struct *task)
-diff --git a/arch/um/os-Linux/helper.c b/arch/um/os-Linux/helper.c
-index 9fa6e4187d4fb..feb48d796e005 100644
---- a/arch/um/os-Linux/helper.c
-+++ b/arch/um/os-Linux/helper.c
-@@ -45,7 +45,7 @@ int run_helper(void (*pre_exec)(void *), void *pre_data, char **argv)
- 	unsigned long stack, sp;
- 	int pid, fds[2], ret, n;
+ 	if (info->kick_fd < 0) {
+@@ -1287,6 +1291,36 @@ static const struct of_device_id virtio_uml_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, virtio_uml_match);
  
--	stack = alloc_stack(0, __cant_sleep());
-+	stack = alloc_stack(__cant_sleep());
- 	if (stack == 0)
- 		return -ENOMEM;
++static int virtio_uml_suspend(struct platform_device *pdev, pm_message_t state)
++{
++	struct virtio_uml_device *vu_dev = platform_get_drvdata(pdev);
++	struct virtqueue *vq;
++
++	virtio_device_for_each_vq((&vu_dev->vdev), vq) {
++		struct virtio_uml_vq_info *info = vq->priv;
++
++		info->suspended = true;
++		vhost_user_set_vring_enable(vu_dev, vq->index, false);
++	}
++
++	return 0;
++}
++
++static int virtio_uml_resume(struct platform_device *pdev)
++{
++	struct virtio_uml_device *vu_dev = platform_get_drvdata(pdev);
++	struct virtqueue *vq;
++
++	virtio_device_for_each_vq((&vu_dev->vdev), vq) {
++		struct virtio_uml_vq_info *info = vq->priv;
++
++		info->suspended = false;
++		vhost_user_set_vring_enable(vu_dev, vq->index, true);
++	}
++
++	return 0;
++}
++
+ static struct platform_driver virtio_uml_driver = {
+ 	.probe = virtio_uml_probe,
+ 	.remove = virtio_uml_remove,
+@@ -1294,6 +1328,8 @@ static struct platform_driver virtio_uml_driver = {
+ 		.name = "virtio-uml",
+ 		.of_match_table = virtio_uml_match,
+ 	},
++	.suspend = virtio_uml_suspend,
++	.resume = virtio_uml_resume,
+ };
  
-@@ -116,7 +116,7 @@ int run_helper_thread(int (*proc)(void *), void *arg, unsigned int flags,
- 	unsigned long stack, sp;
- 	int pid, status, err;
- 
--	stack = alloc_stack(0, __cant_sleep());
-+	stack = alloc_stack(__cant_sleep());
- 	if (stack == 0)
- 		return -ENOMEM;
- 
+ static int __init virtio_uml_init(void)
 -- 
-2.27.0
+2.26.2
 
 
 _______________________________________________
