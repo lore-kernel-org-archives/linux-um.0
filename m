@@ -1,14 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x62a.google.com ([2607:f8b0:4864:20::62a])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1krAsQ-0005MH-Pn
- for linux-um@lists.infradead.org; Mon, 21 Dec 2020 02:24:47 +0000
-Received: by mail-pl1-x62a.google.com with SMTP id g3so4853429plp.2
- for <linux-um@lists.infradead.org>; Sun, 20 Dec 2020 18:24:45 -0800 (PST)
-From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [PATCH] um: ubd: fix command line handling of ubd
-Date: Mon, 21 Dec 2020 11:24:34 +0900
-Message-Id: <20201221022434.21725-1-thehajime@gmail.com>
+ id 1kp70U-0005VY-9x
+ for linux-um@lists.infradead.org; Tue, 15 Dec 2020 09:52:35 +0000
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [PATCH v2 5/5] um: virtio: allow devices to be configured for wakeup
+Date: Tue, 15 Dec 2020 10:52:25 +0100
+Message-Id: <20201215105225.a6aab14dfbe9.I2279a1ab566499554b882c07ed27e5199f991b56@changeid>
+In-Reply-To: <20201215105225.5c1b7720a11b.Ibacb1cbbdd1fa7ae866f0c3c94488dcbae01b39b@changeid>
+References: <20201215105225.5c1b7720a11b.Ibacb1cbbdd1fa7ae866f0c3c94488dcbae01b39b@changeid>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,42 +23,83 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
-Cc: Hajime Tazaki <thehajime@gmail.com>, Christopher Obbard <chris.obbard@collabora.com>
+To: linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
 
-This commit fixes a regression to handle command line parameters of ubd.
-With a simple line "./linux ubd0="./disk-ext4.img", it fails at
-ubd_setup_common().  The commit adds additional checks to the variables
-in order to properly parse the paremeters which previously worked.
+From: Johannes Berg <johannes.berg@intel.com>
 
-Fixes: ef3ba87cb7c9 ("um: ubd: Set device serial attribute from
-cmdline")
-Cc: Christopher Obbard <chris.obbard@collabora.com>
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+With all the IRQ machinery being in place, we can allow virtio
+devices to additionally be configured as wakeup sources, in
+which case basically any interrupt from them wakes us up. Note
+that this requires a call FD because the VQs are all disabled.
+
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- arch/um/drivers/ubd_kern.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+v2: let only devices configured for wakeup add an irq event
+---
+ arch/um/drivers/virtio_uml.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 13b1fe694b90..bd16b17ba4d6 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -375,11 +375,11 @@ static int ubd_setup_common(char *str, int *index_out, char **error_out)
- 		file = NULL;
+diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
+index 492cf5115752..c870d42d7268 100644
+--- a/arch/um/drivers/virtio_uml.c
++++ b/arch/um/drivers/virtio_uml.c
+@@ -55,6 +55,7 @@ struct virtio_uml_device {
+ 	u64 protocol_features;
+ 	u8 status;
+ 	u8 registered:1;
++	u8 suspended:1;
  
- 	backing_file = strsep(&str, ",:");
--	if (*backing_file == '\0')
-+	if (backing_file && *backing_file == '\0')
- 		backing_file = NULL;
+ 	u8 config_changed_irq:1;
+ 	uint64_t vq_irq_vq_map;
+@@ -390,7 +391,7 @@ static irqreturn_t vu_req_read_message(struct virtio_uml_device *vu_dev,
+ 		       msg.msg.header.request);
+ 	}
  
- 	serial = strsep(&str, ",:");
--	if (*serial == '\0')
-+	if (serial && *serial == '\0')
- 		serial = NULL;
+-	if (ev)
++	if (ev && !vu_dev->suspended)
+ 		time_travel_add_irq_event(ev);
  
- 	if (backing_file && ubd_dev->no_cow) {
+ 	if (msg.msg.header.flags & VHOST_USER_FLAG_NEED_REPLY)
+@@ -1134,6 +1135,8 @@ static int virtio_uml_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, vu_dev);
+ 
++	device_set_wakeup_capable(&vu_dev->vdev.dev, true);
++
+ 	rc = register_virtio_device(&vu_dev->vdev);
+ 	if (rc)
+ 		put_device(&vu_dev->vdev.dev);
+@@ -1307,7 +1310,12 @@ static int virtio_uml_suspend(struct platform_device *pdev, pm_message_t state)
+ 		vhost_user_set_vring_enable(vu_dev, vq->index, false);
+ 	}
+ 
+-	return 0;
++	if (!device_may_wakeup(&vu_dev->vdev.dev)) {
++		vu_dev->suspended = true;
++		return 0;
++	}
++
++	return irq_set_irq_wake(vu_dev->irq, 1);
+ }
+ 
+ static int virtio_uml_resume(struct platform_device *pdev)
+@@ -1322,7 +1330,12 @@ static int virtio_uml_resume(struct platform_device *pdev)
+ 		vhost_user_set_vring_enable(vu_dev, vq->index, true);
+ 	}
+ 
+-	return 0;
++	vu_dev->suspended = false;
++
++	if (!device_may_wakeup(&vu_dev->vdev.dev))
++		return 0;
++
++	return irq_set_irq_wake(vu_dev->irq, 0);
+ }
+ 
+ static struct platform_driver virtio_uml_driver = {
 -- 
-2.17.2
+2.26.2
 
 
 _______________________________________________
