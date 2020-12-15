@@ -1,17 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kp6v3-0004xX-Dn
- for linux-um@lists.infradead.org; Tue, 15 Dec 2020 09:46:58 +0000
-Date: Tue, 15 Dec 2020 10:46:54 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <480679445.130046.1608025614425.JavaMail.zimbra@nod.at>
-In-Reply-To: <140a74e6-29e0-5bee-1df0-d40fb25a146d@cambridgegreys.com>
+ id 1kp6s7-0004Qa-1t
+ for linux-um@lists.infradead.org; Tue, 15 Dec 2020 09:43:56 +0000
+Subject: Re: [PATCH v5 3/4] um: add a UML specific futex implementation
 References: <20201214181459.11096-1-anton.ivanov@cambridgegreys.com>
  <20201214181459.11096-4-anton.ivanov@cambridgegreys.com>
- <140a74e6-29e0-5bee-1df0-d40fb25a146d@cambridgegreys.com>
-Subject: Re: [PATCH v5 3/4] um: add a UML specific futex implementation
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <140a74e6-29e0-5bee-1df0-d40fb25a146d@cambridgegreys.com>
+Date: Tue, 15 Dec 2020 09:43:48 +0000
 MIME-Version: 1.0
+In-Reply-To: <20201214181459.11096-4-anton.ivanov@cambridgegreys.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,56 +21,225 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: anton ivanov <anton.ivanov@cambridgegreys.com>
-Cc: linux-um <linux-um@lists.infradead.org>
+To: linux-um@lists.infradead.org
+Cc: richard@nod.at
 
-QW50b24sCgotLS0tLSBVcnNwcsO8bmdsaWNoZSBNYWlsIC0tLS0tCj4gVm9uOiAiYW50b24gaXZh
-bm92IiA8YW50b24uaXZhbm92QGNhbWJyaWRnZWdyZXlzLmNvbT4KPiBBbjogImxpbnV4LXVtIiA8
-bGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZz4KPiBDQzogInJpY2hhcmQiIDxyaWNoYXJkQG5v
-ZC5hdD4KPiBHZXNlbmRldDogRGllbnN0YWcsIDE1LiBEZXplbWJlciAyMDIwIDEwOjQzOjQ4Cj4g
-QmV0cmVmZjogUmU6IFtQQVRDSCB2NSAzLzRdIHVtOiBhZGQgYSBVTUwgc3BlY2lmaWMgZnV0ZXgg
-aW1wbGVtZW50YXRpb24KCj4gT24gMTQvMTIvMjAyMCAxODoxNCwgYW50b24uaXZhbm92QGNhbWJy
-aWRnZWdyZXlzLmNvbSB3cm90ZToKPj4gRnJvbTogQW50b24gSXZhbm92IDxhbnRvbi5pdmFub3ZA
-Y2FtYnJpZGdlZ3JleXMuY29tPgo+Pgo+PiBUaGUgZ2VuZXJpYyBhc20gZnV0ZXggaW1wbGVtZW50
-YXRpb24gZW11bGF0ZXMgYXRvbWljIGFjY2VzcyB0bwo+PiBtZW1vcnkgYnkgZG9pbmcgYSBnZXRf
-dXNlciBmb2xsb3dlZCBieSBwdXRfdXNlci4gVGhlc2UgdHJhbnNsYXRlCj4+IHRvIHR3byBtYXBw
-aW5nIG9wZXJhdGlvbnMgb24gVU1MIHdpdGggcGFnaW5nIGVuYWJsZWQgaW4gdGhlCj4+IG1lYW50
-aW1lLiBUaGlzLCBpbiB0dXJuIG1heSBlbmQgdXAgY2hhbmdpbmcgaW50ZXJydXB0cywKPj4gaW52
-b2tpbmcgdGhlIHNpZ25hbCBsb29wLCBldGMuCj4+Cj4+IFRoaXMgcmVwbGFjZXMgdGhlIGdlbmVy
-aWMgaW1wbGVtZW50YXRpb24gYnkgYSBtYXBwaW5nIGZvbGxvd2VkCj4+IGJ5IGFuIG9wZXJhdGlv
-biBvbiB0aGUgbWFwcGVkIHNlZ21lbnQuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IEFudG9uIEl2YW5v
-diA8YW50b24uaXZhbm92QGNhbWJyaWRnZWdyZXlzLmNvbT4KPj4gLS0tCj4+ICAgYXJjaC91bS9p
-bmNsdWRlL2FzbS9LYnVpbGQgICAgfCAgIDEgLQo+PiAgIGFyY2gvdW0vaW5jbHVkZS9hc20vZnV0
-ZXguaCAgIHwgIDE0ICsrKysKPj4gICBhcmNoL3VtL2tlcm5lbC9za2FzL3VhY2Nlc3MuYyB8IDEz
-MCArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrCj4+ICAgMyBmaWxlcyBjaGFuZ2Vk
-LCAxNDQgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQo+PiAgIGNyZWF0ZSBtb2RlIDEwMDY0
-NCBhcmNoL3VtL2luY2x1ZGUvYXNtL2Z1dGV4LmgKPj4KPj4gZGlmZiAtLWdpdCBhL2FyY2gvdW0v
-aW5jbHVkZS9hc20vS2J1aWxkIGIvYXJjaC91bS9pbmNsdWRlL2FzbS9LYnVpbGQKPj4gaW5kZXgg
-MWM2M2IyNjBlY2M0Li44NzNlNjgxNWJjNTAgMTAwNjQ0Cj4+IC0tLSBhL2FyY2gvdW0vaW5jbHVk
-ZS9hc20vS2J1aWxkCj4+ICsrKyBiL2FyY2gvdW0vaW5jbHVkZS9hc20vS2J1aWxkCj4+IEBAIC04
-LDcgKzgsNiBAQCBnZW5lcmljLXkgKz0gZW1lcmdlbmN5LXJlc3RhcnQuaAo+PiAgIGdlbmVyaWMt
-eSArPSBleGVjLmgKPj4gICBnZW5lcmljLXkgKz0gZXh0YWJsZS5oCj4+ICAgZ2VuZXJpYy15ICs9
-IGZ0cmFjZS5oCj4+IC1nZW5lcmljLXkgKz0gZnV0ZXguaAo+PiAgIGdlbmVyaWMteSArPSBod19p
-cnEuaAo+PiAgIGdlbmVyaWMteSArPSBpcnFfcmVncy5oCj4+ICAgZ2VuZXJpYy15ICs9IGlycV93
-b3JrLmgKPj4gZGlmZiAtLWdpdCBhL2FyY2gvdW0vaW5jbHVkZS9hc20vZnV0ZXguaCBiL2FyY2gv
-dW0vaW5jbHVkZS9hc20vZnV0ZXguaAo+PiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+PiBpbmRleCAw
-MDAwMDAwMDAwMDAuLjBhMDFmMWY2MGRlMAo+PiAtLS0gL2Rldi9udWxsCj4+ICsrKyBiL2FyY2gv
-dW0vaW5jbHVkZS9hc20vZnV0ZXguaAo+PiBAQCAtMCwwICsxLDE0IEBACj4+ICsvKiBTUERYLUxp
-Y2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMCAqLwo+PiArI2lmbmRlZiBfQVNNX0dFTkVSSUNfRlVU
-RVhfSAo+PiArI2RlZmluZSBfQVNNX0dFTkVSSUNfRlVURVhfSAo+IAo+IF5eXl4gVWdnZ2hoaAo+
-IAo+PiArCj4+ICsjaW5jbHVkZSA8bGludXgvZnV0ZXguaD4KPj4gKyNpbmNsdWRlIDxsaW51eC91
-YWNjZXNzLmg+Cj4+ICsjaW5jbHVkZSA8YXNtL2Vycm5vLmg+Cj4+ICsKPj4gKwo+PiArZXh0ZXJu
-IGludCBhcmNoX2Z1dGV4X2F0b21pY19vcF9pbnVzZXIoaW50IG9wLCB1MzIgb3BhcmcsIGludCAq
-b3ZhbCwgdTMyIF9fdXNlcgo+PiAqdWFkZHIpOwo+PiArZXh0ZXJuIGludCBmdXRleF9hdG9taWNf
-Y21weGNoZ19pbmF0b21pYyh1MzIgKnV2YWwsIHUzMiBfX3VzZXIgKnVhZGRyLAo+PiArCQkJICAg
-ICAgdTMyIG9sZHZhbCwgdTMyIG5ld3ZhbCk7Cj4gXl5eXiBEaWQgbm90IGFkZHJlc3MgSm9oYW5u
-ZXMgY29tbWVudHMsIHdpbGwgZG8gaW4gdjYKCk5vIG5lZWQgdG8gaHVycnkuIFRoaXMgaGFzIHRv
-IHdhaXQgYW55d2F5IGZvciA1LjEyLiA6LSkKClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxp
-c3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
+
+On 14/12/2020 18:14, anton.ivanov@cambridgegreys.com wrote:
+> From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+>
+> The generic asm futex implementation emulates atomic access to
+> memory by doing a get_user followed by put_user. These translate
+> to two mapping operations on UML with paging enabled in the
+> meantime. This, in turn may end up changing interrupts,
+> invoking the signal loop, etc.
+>
+> This replaces the generic implementation by a mapping followed
+> by an operation on the mapped segment.
+>
+> Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> ---
+>   arch/um/include/asm/Kbuild    |   1 -
+>   arch/um/include/asm/futex.h   |  14 ++++
+>   arch/um/kernel/skas/uaccess.c | 130 ++++++++++++++++++++++++++++++++++
+>   3 files changed, 144 insertions(+), 1 deletion(-)
+>   create mode 100644 arch/um/include/asm/futex.h
+>
+> diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
+> index 1c63b260ecc4..873e6815bc50 100644
+> --- a/arch/um/include/asm/Kbuild
+> +++ b/arch/um/include/asm/Kbuild
+> @@ -8,7 +8,6 @@ generic-y += emergency-restart.h
+>   generic-y += exec.h
+>   generic-y += extable.h
+>   generic-y += ftrace.h
+> -generic-y += futex.h
+>   generic-y += hw_irq.h
+>   generic-y += irq_regs.h
+>   generic-y += irq_work.h
+> diff --git a/arch/um/include/asm/futex.h b/arch/um/include/asm/futex.h
+> new file mode 100644
+> index 000000000000..0a01f1f60de0
+> --- /dev/null
+> +++ b/arch/um/include/asm/futex.h
+> @@ -0,0 +1,14 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _ASM_GENERIC_FUTEX_H
+> +#define _ASM_GENERIC_FUTEX_H
+
+^^^^ Uggghhh
+
+> +
+> +#include <linux/futex.h>
+> +#include <linux/uaccess.h>
+> +#include <asm/errno.h>
+> +
+> +
+> +extern int arch_futex_atomic_op_inuser(int op, u32 oparg, int *oval, u32 __user *uaddr);
+> +extern int futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
+> +			      u32 oldval, u32 newval);
+^^^^ Did not address Johannes comments, will do in v6
+> +
+> +#endif
+> diff --git a/arch/um/kernel/skas/uaccess.c b/arch/um/kernel/skas/uaccess.c
+> index 2dec915abe6f..85022e91bf53 100644
+> --- a/arch/um/kernel/skas/uaccess.c
+> +++ b/arch/um/kernel/skas/uaccess.c
+> @@ -11,6 +11,7 @@
+>   #include <asm/current.h>
+>   #include <asm/page.h>
+>   #include <kern_util.h>
+> +#include <asm/futex.h>
+>   #include <os.h>
+>   
+>   pte_t *virt_to_pte(struct mm_struct *mm, unsigned long addr)
+> @@ -248,3 +249,132 @@ long __strnlen_user(const void __user *str, long len)
+>   	return 0;
+>   }
+>   EXPORT_SYMBOL(__strnlen_user);
+> +
+> +/**
+> + * arch_futex_atomic_op_inuser() - Atomic arithmetic operation with constant
+> + *			  argument and comparison of the previous
+> + *			  futex value with another constant.
+> + *
+> + * @encoded_op:	encoded operation to execute
+> + * @uaddr:	pointer to user space address
+> + *
+> + * Return:
+> + * 0 - On success
+> + * -EFAULT - User access resulted in a page fault
+> + * -EAGAIN - Atomic operation was unable to complete due to contention
+> + * -ENOSYS - Operation not supported
+> + */
+> +
+> +int arch_futex_atomic_op_inuser(int op, u32 oparg, int *oval, u32 __user *uaddr)
+> +{
+> +	int oldval, ret;
+> +	struct page *page;
+> +	unsigned long addr = (unsigned long) uaddr;
+> +	pte_t *pte;
+> +
+> +	ret = -EFAULT;
+> +	if (!access_ok(uaddr, sizeof(*uaddr)))
+> +		return -EFAULT;
+> +	preempt_disable();
+> +	pte = maybe_map(addr, 1);
+> +	if (pte == NULL)
+> +		goto out_inuser;
+> +
+> +	page = pte_page(*pte);
+> +#ifdef CONFIG_64BIT
+> +	pagefault_disable();
+> +	addr = (unsigned long) page_address(page) +
+> +			(((unsigned long) addr) & ~PAGE_MASK);
+> +#else
+> +	addr = (unsigned long) kmap_atomic(page) +
+> +		((unsigned long) addr & ~PAGE_MASK);
+> +#endif
+> +	uaddr = (u32 *) addr;
+> +	oldval = *uaddr;
+> +
+> +	ret = 0;
+> +
+> +	switch (op) {
+> +	case FUTEX_OP_SET:
+> +		*uaddr = oparg;
+> +		break;
+> +	case FUTEX_OP_ADD:
+> +		*uaddr += oparg;
+> +		break;
+> +	case FUTEX_OP_OR:
+> +		*uaddr |= oparg;
+> +		break;
+> +	case FUTEX_OP_ANDN:
+> +		*uaddr &= ~oparg;
+> +		break;
+> +	case FUTEX_OP_XOR:
+> +		*uaddr ^= oparg;
+> +		break;
+> +	default:
+> +		ret = -ENOSYS;
+> +	}
+> +#ifdef CONFIG_64BIT
+> +	pagefault_enable();
+> +#else
+> +	kunmap_atomic((void *)addr);
+> +#endif
+> +
+> +out_inuser:
+> +	preempt_enable();
+> +
+> +	if (ret == 0)
+> +		*oval = oldval;
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL(arch_futex_atomic_op_inuser);
+> +
+> +/**
+> + * futex_atomic_cmpxchg_inatomic() - Compare and exchange the content of the
+> + *				uaddr with newval if the current value is
+> + *				oldval.
+> + * @uval:	pointer to store content of @uaddr
+> + * @uaddr:	pointer to user space address
+> + * @oldval:	old value
+> + * @newval:	new value to store to @uaddr
+> + *
+> + * Return:
+> + * 0 - On success
+> + * -EFAULT - User access resulted in a page fault
+> + * -EAGAIN - Atomic operation was unable to complete due to contention
+> + * -ENOSYS - Function not implemented (only if !HAVE_FUTEX_CMPXCHG)
+> + */
+> +
+> +int futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
+> +			      u32 oldval, u32 newval)
+> +{
+> +	u32 val;
+> +	struct page *page;
+> +	pte_t *pte;
+> +	int ret = -EFAULT;
+> +
+> +	if (!access_ok(uaddr, sizeof(*uaddr)))
+> +		return -EFAULT;
+> +
+> +	preempt_disable();
+> +	pte = maybe_map((unsigned long) uaddr, 1);
+> +	if (pte == NULL)
+> +		goto out_inatomic;
+> +
+> +	page = pte_page(*pte);
+> +	pagefault_disable();
+> +	uaddr = page_address(page) + (((unsigned long) uaddr) & ~PAGE_MASK);
+^^^ missing 32 bit case, sending v6 with fix shortly.
+> +
+> +	val = *uaddr;
+> +
+> +	ret = cmpxchg(uaddr, oldval, newval);
+> +
+> +	*uval = val;
+> +	pagefault_enable();
+> +	ret = 0;
+> +
+> +out_inatomic:
+> +	preempt_enable();
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL(futex_atomic_cmpxchg_inatomic);
+
+-- 
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
