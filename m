@@ -1,15 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kp70T-0005VU-Od
- for linux-um@lists.infradead.org; Tue, 15 Dec 2020 09:52:34 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v2 2/5] um: virtio: fix handling of messages without payload
-Date: Tue, 15 Dec 2020 10:52:22 +0100
-Message-Id: <20201215105225.8815d03733c5.I4a7f2dd58cc3e4f134cd8494539cde940c18c75c@changeid>
-In-Reply-To: <20201215105225.5c1b7720a11b.Ibacb1cbbdd1fa7ae866f0c3c94488dcbae01b39b@changeid>
-References: <20201215105225.5c1b7720a11b.Ibacb1cbbdd1fa7ae866f0c3c94488dcbae01b39b@changeid>
+ id 1kp6sl-0004Zk-Vn
+ for linux-um@lists.infradead.org; Tue, 15 Dec 2020 09:44:37 +0000
+From: anton.ivanov@cambridgegreys.com
+Subject: [PATCH v6 3/4] um: add a UML specific futex implementation
+Date: Tue, 15 Dec 2020 09:44:25 +0000
+Message-Id: <20201215094426.1117-3-anton.ivanov@cambridgegreys.com>
+In-Reply-To: <20201215094426.1117-1-anton.ivanov@cambridgegreys.com>
+References: <20201215094426.1117-1-anton.ivanov@cambridgegreys.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -24,36 +24,212 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-If we have a message without payload, we call full_read() with
-len set to 0, which causes it to return -ECONNRESET. Catch this
-case and explicitly return 0 for it so we can actually use the
-zero-size config-changed message.
+The generic asm futex implementation emulates atomic access to
+memory by doing a get_user followed by put_user. These translate
+to two mapping operations on UML with paging enabled in the
+meantime. This, in turn may end up changing interrupts,
+invoking the signal loop, etc.
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+This replaces the generic implementation by a mapping followed
+by an operation on the mapped segment.
+
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 ---
- arch/um/drivers/virtio_uml.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/um/include/asm/Kbuild    |   1 -
+ arch/um/include/asm/futex.h   |  14 ++++
+ arch/um/kernel/skas/uaccess.c | 136 ++++++++++++++++++++++++++++++++++
+ 3 files changed, 150 insertions(+), 1 deletion(-)
+ create mode 100644 arch/um/include/asm/futex.h
 
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index ead9a1aea192..030bef37d6d4 100644
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -97,6 +97,9 @@ static int full_read(int fd, void *buf, int len, bool abortable)
- {
- 	int rc;
- 
-+	if (!len)
-+		return 0;
+diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
+index 1c63b260ecc4..873e6815bc50 100644
+--- a/arch/um/include/asm/Kbuild
++++ b/arch/um/include/asm/Kbuild
+@@ -8,7 +8,6 @@ generic-y += emergency-restart.h
+ generic-y += exec.h
+ generic-y += extable.h
+ generic-y += ftrace.h
+-generic-y += futex.h
+ generic-y += hw_irq.h
+ generic-y += irq_regs.h
+ generic-y += irq_work.h
+diff --git a/arch/um/include/asm/futex.h b/arch/um/include/asm/futex.h
+new file mode 100644
+index 000000000000..780aa6bfc050
+--- /dev/null
++++ b/arch/um/include/asm/futex.h
+@@ -0,0 +1,14 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_UM_FUTEX_H
++#define _ASM_UM_FUTEX_H
 +
- 	do {
- 		rc = os_read_file(fd, buf, len);
- 		if (rc > 0) {
++#include <linux/futex.h>
++#include <linux/uaccess.h>
++#include <asm/errno.h>
++
++
++int arch_futex_atomic_op_inuser(int op, u32 oparg, int *oval, u32 __user *uaddr);
++int futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
++			      u32 oldval, u32 newval);
++
++#endif
+diff --git a/arch/um/kernel/skas/uaccess.c b/arch/um/kernel/skas/uaccess.c
+index 2dec915abe6f..6c76df96e858 100644
+--- a/arch/um/kernel/skas/uaccess.c
++++ b/arch/um/kernel/skas/uaccess.c
+@@ -11,6 +11,7 @@
+ #include <asm/current.h>
+ #include <asm/page.h>
+ #include <kern_util.h>
++#include <asm/futex.h>
+ #include <os.h>
+ 
+ pte_t *virt_to_pte(struct mm_struct *mm, unsigned long addr)
+@@ -248,3 +249,138 @@ long __strnlen_user(const void __user *str, long len)
+ 	return 0;
+ }
+ EXPORT_SYMBOL(__strnlen_user);
++
++/**
++ * arch_futex_atomic_op_inuser() - Atomic arithmetic operation with constant
++ *			  argument and comparison of the previous
++ *			  futex value with another constant.
++ *
++ * @encoded_op:	encoded operation to execute
++ * @uaddr:	pointer to user space address
++ *
++ * Return:
++ * 0 - On success
++ * -EFAULT - User access resulted in a page fault
++ * -EAGAIN - Atomic operation was unable to complete due to contention
++ * -ENOSYS - Operation not supported
++ */
++
++int arch_futex_atomic_op_inuser(int op, u32 oparg, int *oval, u32 __user *uaddr)
++{
++	int oldval, ret;
++	struct page *page;
++	unsigned long addr = (unsigned long) uaddr;
++	pte_t *pte;
++
++	ret = -EFAULT;
++	if (!access_ok(uaddr, sizeof(*uaddr)))
++		return -EFAULT;
++	preempt_disable();
++	pte = maybe_map(addr, 1);
++	if (pte == NULL)
++		goto out_inuser;
++
++	page = pte_page(*pte);
++#ifdef CONFIG_64BIT
++	pagefault_disable();
++	addr = (unsigned long) page_address(page) +
++			(((unsigned long) addr) & ~PAGE_MASK);
++#else
++	addr = (unsigned long) kmap_atomic(page) +
++		((unsigned long) addr & ~PAGE_MASK);
++#endif
++	uaddr = (u32 *) addr;
++	oldval = *uaddr;
++
++	ret = 0;
++
++	switch (op) {
++	case FUTEX_OP_SET:
++		*uaddr = oparg;
++		break;
++	case FUTEX_OP_ADD:
++		*uaddr += oparg;
++		break;
++	case FUTEX_OP_OR:
++		*uaddr |= oparg;
++		break;
++	case FUTEX_OP_ANDN:
++		*uaddr &= ~oparg;
++		break;
++	case FUTEX_OP_XOR:
++		*uaddr ^= oparg;
++		break;
++	default:
++		ret = -ENOSYS;
++	}
++#ifdef CONFIG_64BIT
++	pagefault_enable();
++#else
++	kunmap_atomic((void *)addr);
++#endif
++
++out_inuser:
++	preempt_enable();
++
++	if (ret == 0)
++		*oval = oldval;
++
++	return ret;
++}
++EXPORT_SYMBOL(arch_futex_atomic_op_inuser);
++
++/**
++ * futex_atomic_cmpxchg_inatomic() - Compare and exchange the content of the
++ *				uaddr with newval if the current value is
++ *				oldval.
++ * @uval:	pointer to store content of @uaddr
++ * @uaddr:	pointer to user space address
++ * @oldval:	old value
++ * @newval:	new value to store to @uaddr
++ *
++ * Return:
++ * 0 - On success
++ * -EFAULT - User access resulted in a page fault
++ * -EAGAIN - Atomic operation was unable to complete due to contention
++ * -ENOSYS - Function not implemented (only if !HAVE_FUTEX_CMPXCHG)
++ */
++
++int futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
++			      u32 oldval, u32 newval)
++{
++	struct page *page;
++	pte_t *pte;
++	int ret = -EFAULT;
++
++	if (!access_ok(uaddr, sizeof(*uaddr)))
++		return -EFAULT;
++
++	preempt_disable();
++	pte = maybe_map((unsigned long) uaddr, 1);
++	if (pte == NULL)
++		goto out_inatomic;
++
++	page = pte_page(*pte);
++#ifdef CONFIG_64BIT
++	pagefault_disable();
++	uaddr = page_address(page) + (((unsigned long) uaddr) & ~PAGE_MASK);
++#else
++	uaddr = kmap_atomic(page) + ((unsigned long) uaddr & ~PAGE_MASK);
++#endif
++
++	*uval = *uaddr;
++
++	ret = cmpxchg(uaddr, oldval, newval);
++
++#ifdef CONFIG_64BIT
++	pagefault_enable();
++#else
++	kunmap_atomic(uaddr);
++#endif
++	ret = 0;
++
++out_inatomic:
++	preempt_enable();
++	return ret;
++}
++EXPORT_SYMBOL(futex_atomic_cmpxchg_inatomic);
 -- 
-2.26.2
+2.20.1
 
 
 _______________________________________________
