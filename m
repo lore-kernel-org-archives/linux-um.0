@@ -1,144 +1,102 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Thomas Gleixner <tglx@linutronix.de>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mout.kundenserver.de ([212.227.17.24])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kpGh5-0006HA-NV
+ for linux-um@lists.infradead.org; Tue, 15 Dec 2020 20:13:13 +0000
 Subject: Re: [PATCH] arch: fix 'unexpected IRQ trap at vector' warnings
-In-Reply-To: <33001e60-cbfc-f114-55bf-f347f21fee9b@metux.net>
-References: <20201207143146.30021-1-info@metux.net> <877dptt5av.fsf@mpe.ellerman.id.au> <87y2i7298s.fsf@nanos.tec.linutronix.de> <33001e60-cbfc-f114-55bf-f347f21fee9b@metux.net>
-Date: Tue, 15 Dec 2020 23:12:40 +0100
-Message-ID: <87a6ueu3af.fsf@nanos.tec.linutronix.de>
+References: <20201207143146.30021-1-info@metux.net>
+ <877dptt5av.fsf@mpe.ellerman.id.au> <87y2i7298s.fsf@nanos.tec.linutronix.de>
+From: "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <33001e60-cbfc-f114-55bf-f347f21fee9b@metux.net>
+Date: Tue, 15 Dec 2020 21:12:26 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-To: "Enrico Weigelt, metux IT consult" <lkml@metux.net>, Michael Ellerman <mpe@ellerman.id.au>, "Enrico Weigelt, metux IT consult" <info@metux.net>, linux-kernel@vger.kernel.org
-Cc: James.Bottomley@HansenPartnership.com, deller@gmx.de, benh@kernel.crashing.org, paulus@samba.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-um@lists.infradead.org
-List-ID: <linux-um.lists.infradead.org>
+In-Reply-To: <87y2i7298s.fsf@nanos.tec.linutronix.de>
+Content-Language: tl
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Thomas Gleixner <tglx@linutronix.de>, Michael Ellerman <mpe@ellerman.id.au>, "Enrico Weigelt, metux IT consult" <info@metux.net>, linux-kernel@vger.kernel.org
+Cc: linux-s390@vger.kernel.org, hpa@zytor.com, linux-parisc@vger.kernel.org, benh@kernel.crashing.org, deller@gmx.de, x86@kernel.org, linux-um@lists.infradead.org, James.Bottomley@HansenPartnership.com, mingo@redhat.com, paulus@samba.org, richard@nod.at, bp@alien8.de, linuxppc-dev@lists.ozlabs.org, jdike@addtoit.com, anton.ivanov@cambridgegreys.com
 
-On Tue, Dec 15 2020 at 21:12, Enrico Weigelt wrote:
-> On 09.12.20 00:01, Thomas Gleixner wrote:
->>   3) It's invoked from __handle_domain_irq() when the 'hwirq' which is
->>      handed in by the caller does not resolve to a mapped Linux
->>      interrupt which is pretty much the same as the x86 situation above
->>      in #1, but it prints useless data.
->> 
->>      It prints 'irq' which is invalid but it does not print the really
->>      interesting 'hwirq' which was handed in by the caller and did
->>      not resolve.
->
-> I wouldn't say the irq-nr isn't interesting. In my particular case it
-> was quite what I've been looking for. But you're right, hwirq should
-> also be printed.
-
-The number is _not_ interesting in this case. It's useless because the
-function does:
-
-    irq = hwirq;
-
-    if (lookup)
-        irq = find_mapping(hwirq);
-
-    if (!irq || irq >= nr_irqs)
-       -> BAD
-
-So irq is completely useless because find_mapping() returns 0 if there
-is no mapping and if irq >= nr_irqs then there was no lookup and the
-hwirq number is bogus.
-
-In both cases the only interesting information is that hwirq does not
-resolve to a valid Linux interrupt number and which hwirq number caused
-that.
-
->>      In this case the Linux irq number is uninteresting as it is known
->>      to be invalid and simply is not mapped and therefore does not
->>      exist.
->
-> In my case it came in from generic_handle_irq(), and in this case this
-> irq number (IMHO) has been valid, but nobody handled it, so it went to
-> ack_bad_irq.
-
-generic_handle_irq() _is_ a different function which is only invoked
-when there is a valid Linux interrupt number and then the ack_bad_irq()
-is invoked from a different place. See below.
-
-> Of course, if this function is meant as a fallback to ack some not
-> otherwise handled IRQ on the hw, the linux irq number indeed isn't quite
-> helpful (unless we expect that code to do a lookup to the hw irq).
-
-If there is no valid linux irq number then there is no lookup. And you
-can't look it up from the hardware either.
-
-If you look really then you find out that there is exactly _ONE_
-architecture which does anything else than incrementing a counter and/or
-printing stuff: X86, which has a big fat comment explaining why. The
-only way to ack an interrupt on X86 is to issue EOI on the local APIC,
-i.e. it does _not_ need any further information.
-
-> ... rethinking this further ... shouldn't we also pass in even more data
-> (eg. irq_desc, irqchip, ...), so this function can check which hw to
-> actually talk to ?
-
-There are 3 ways to get there:
-
-      1) via dummy chip which obviously has no hardware associated
-
-      2) via handle_bad_irq() which prints the info already
-
-      3) __handle_domain_irq() which cannot print anything and obviously
-         cannot figure out the hw to talk to because there is no irq
-         descriptor associated.
-
->>   4) It's invoked from the dummy irq chip which is installed for a
->>      couple of truly virtual interrupts where the invocation of
->>      dummy_irq_chip::irq_ack() is indicating wreckage.
->> 
->>      In that case the Linux irq number is the thing which is printed.
->> 
->> So no. It's not just inconsistent it's in some places outright
->> wrong. What we really want is:
->> 
->> ack_bad_irq(int hwirq, int virq)
->
-> is 'int' correct here ?
-
-This was just for illustration.
-
-> BTW: I also wonder why the virq is unsigned int, while hwirq (eg. in
-> struct irq_data) is unsigned long. shouldn't the virtual number space
-> be at least as big (or even bigger) than the hw one ?
-
-Only if there are no irqdomain mappings and the virq space is 1:1 mapped
-to the hwirq space. Systems with > 4G interrupts are pretty unlikely.
-
-Also hwirq can be completely artificial and encode information about
-interrupts which are composed, i.e. PCI/MSI. See pci_msi_domain_calc_hwirq().
-
->  {
->>         if (hwirq >= 0)
->>            print_useful_info(hwirq);
->>         if (virq > 0)
->>            print_useful_info(virq);
->>         arch_try_to_ack(hwirq, virq);
->> }
->>     
->> for this to make sense. Just fixing the existing printk() to be less
->> wrong is not really an improvement.
->
-> Okay, makes sense.
->
-> OTOH: since both callers (dummychip.c, handle.c) already dump out before
-> ack_bad_irq(), do we need to print out anything at all ?
-
-Not all callers print something, but yes this could do with some general
-cleanup.
-
-> I've also seen that many archs increase a counter (some use long, others
-> atomic_t) - should we also consolidate this in an arch-independent way
-> in handle.c (or does kstat_incr_irqs_this_cpu already do this) ?
-
-kstat_incr_irqs_this_cpu(desc) operates on the irq descriptor which
-requires that an irq descriptor exists in the first place.
-
-The error counter is independent of that, but yes there is room for
-consolidation.
-
-Thanks,
-
-        tglx
+T24gMDkuMTIuMjAgMDA6MDEsIFRob21hcyBHbGVpeG5lciB3cm90ZToKCj4gVGhlcmUgYXJlIGEg
+ZmV3IHNpdHVhdGlvbnMgd2h5IGl0IGlzIGludm9rZWQgb3Igbm90Ogo+IAo+ICAgMSkgVGhlIG9y
+aWdpbmFsIHg4NiB1c2FnZSBpcyBub3QgbG9uZ2VyIHVzaW5nIGl0IGJlY2F1c2UgaXQgY29tcGxh
+aW5zCj4gICAgICByaWdodGZ1bGx5IGFib3V0IGEgdmVjdG9yIGJlaW5nIHJhaXNlZCB3aGljaCBo
+YXMgbm8gaW50ZXJydXB0Cj4gICAgICBkZXNjcmlwdG9yIGFzc29jaWF0ZWQgdG8gaXQuIFNvIHRo
+ZSBvcmlnaW5hbCByZWFzb24gZm9yIG5hbWluZyBpdAo+ICAgICAgdmVjdG9yIGlzIGdvbmUgbG9u
+ZyBhZ28uIEl0IGVtaXRzOgo+IAo+ICAgICAgcHJfZW1lcmdfcmF0ZWxpbWl0ZWQoIiVzOiAlZC4l
+dSBObyBpcnEgaGFuZGxlciBmb3IgdmVjdG9yXG4iLAo+ICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgX19mdW5jX18sIHNtcF9wcm9jZXNzb3JfaWQoKSwgdmVjdG9yKTsKPiAKPiAgICAgIERpcmVj
+dGx5IGZyb20gdGhlIHg4NiBDIGVudHJ5IHBvaW50IHdpdGhvdXQgZXZlciBpbnZva2luZyB0aGF0
+Cj4gICAgICBmdW5jdGlvbi4gIFByZXR0eSBwb3B1bGFyIGVycm9yIG1lc3NhZ2UgZHVlIHRvIHNv
+bWUgQU1EIEJJT1MKPiAgICAgIHdyZWNrYWdlLiA6KQoKT2YgY291cnNlLCB0aGUgdGVybSAidmVj
+dG9yIiBzaG91bGQgYmUgcmVwbGFjZWQgYnkgc29tZXRoaW5nIGxpa2UKImlycW5yIiBvciAidmly
+cSIsIGJ1dCBJIGRpZG4ndCBoYXZlIG5hbWUgY2hhbmdlcyB3aXRoaW4gc2NvcGUgLSBqdXN0Cndh
+bnRlZCB0byBmaXggdGhlIHByaW50aW5nIG9mIHRoYXQgbnVtYmVyLCBhcyBpJ3ZlIHN0dXBsZWQg
+b3ZlciBpdCB3aGlsZQp3b3JraW5nIG9uIHNvbWV0aGluZyBkaWZmZXJlbnQgYW5kIHdvbmRlcmVk
+IHdoeSB0aGUgbnVtYmVyIGRpZmZlcmVkIGZyb20Kd2hhdCBJIGhhZCBleHBlY3RlZCwgdW50aWwg
+SSBzZWVuIHRoYXQgaXQgcHJpbnRzIGhleCBpbnN0ZWFkIG9mIGRlY2ltYWwuCgpCdXQgaWYgeW91
+IHByZWZlciBhIG1vcmUgY29tcGxldGUgY2xlYW51cCwgSSdsbCBiZSBoYXBweSB0byBkbyBpdC4K
+Cj4gICAzKSBJdCdzIGludm9rZWQgZnJvbSBfX2hhbmRsZV9kb21haW5faXJxKCkgd2hlbiB0aGUg
+J2h3aXJxJyB3aGljaCBpcwo+ICAgICAgaGFuZGVkIGluIGJ5IHRoZSBjYWxsZXIgZG9lcyBub3Qg
+cmVzb2x2ZSB0byBhIG1hcHBlZCBMaW51eAo+ICAgICAgaW50ZXJydXB0IHdoaWNoIGlzIHByZXR0
+eSBtdWNoIHRoZSBzYW1lIGFzIHRoZSB4ODYgc2l0dWF0aW9uIGFib3ZlCj4gICAgICBpbiAjMSwg
+YnV0IGl0IHByaW50cyB1c2VsZXNzIGRhdGEuCj4gCj4gICAgICBJdCBwcmludHMgJ2lycScgd2hp
+Y2ggaXMgaW52YWxpZCBidXQgaXQgZG9lcyBub3QgcHJpbnQgdGhlIHJlYWxseQo+ICAgICAgaW50
+ZXJlc3RpbmcgJ2h3aXJxJyB3aGljaCB3YXMgaGFuZGVkIGluIGJ5IHRoZSBjYWxsZXIgYW5kIGRp
+ZAo+ICAgICAgbm90IHJlc29sdmUuCgpJIHdvdWxkbid0IHNheSB0aGUgaXJxLW5yIGlzbid0IGlu
+dGVyZXN0aW5nLiBJbiBteSBwYXJ0aWN1bGFyIGNhc2UgaXQKd2FzIHF1aXRlIHdoYXQgSSd2ZSBi
+ZWVuIGxvb2tpbmcgZm9yLiBCdXQgeW91J3JlIHJpZ2h0LCBod2lycSBzaG91bGQKYWxzbyBiZSBw
+cmludGVkLgoKPiAgICAgIEluIHRoaXMgY2FzZSB0aGUgTGludXggaXJxIG51bWJlciBpcyB1bmlu
+dGVyZXN0aW5nIGFzIGl0IGlzIGtub3duCj4gICAgICB0byBiZSBpbnZhbGlkIGFuZCBzaW1wbHkg
+aXMgbm90IG1hcHBlZCBhbmQgdGhlcmVmb3JlIGRvZXMgbm90Cj4gICAgICBleGlzdC4KCkluIG15
+IGNhc2UgaXQgY2FtZSBpbiBmcm9tIGdlbmVyaWNfaGFuZGxlX2lycSgpLCBhbmQgaW4gdGhpcyBj
+YXNlIHRoaXMKaXJxIG51bWJlciAoSU1ITykgaGFzIGJlZW4gdmFsaWQsIGJ1dCBub2JvZHkgaGFu
+ZGxlZCBpdCwgc28gaXQgd2VudCB0bwphY2tfYmFkX2lycS4KCk9mIGNvdXJzZSwgaWYgdGhpcyBm
+dW5jdGlvbiBpcyBtZWFudCBhcyBhIGZhbGxiYWNrIHRvIGFjayBzb21lIG5vdApvdGhlcndpc2Ug
+aGFuZGxlZCBJUlEgb24gdGhlIGh3LCB0aGUgbGludXggaXJxIG51bWJlciBpbmRlZWQgaXNuJ3Qg
+cXVpdGUKaGVscGZ1bCAodW5sZXNzIHdlIGV4cGVjdCB0aGF0IGNvZGUgdG8gZG8gYSBsb29rdXAg
+dG8gdGhlIGh3IGlycSkuCgouLi4gcmV0aGlua2luZyB0aGlzIGZ1cnRoZXIgLi4uIHNob3VsZG4n
+dCB3ZSBhbHNvIHBhc3MgaW4gZXZlbiBtb3JlIGRhdGEKKGVnLiBpcnFfZGVzYywgaXJxY2hpcCwg
+Li4uKSwgc28gdGhpcyBmdW5jdGlvbiBjYW4gY2hlY2sgd2hpY2ggaHcgdG8KYWN0dWFsbHkgdGFs
+ayB0byA/Cgo+ICAgNCkgSXQncyBpbnZva2VkIGZyb20gdGhlIGR1bW15IGlycSBjaGlwIHdoaWNo
+IGlzIGluc3RhbGxlZCBmb3IgYQo+ICAgICAgY291cGxlIG9mIHRydWx5IHZpcnR1YWwgaW50ZXJy
+dXB0cyB3aGVyZSB0aGUgaW52b2NhdGlvbiBvZgo+ICAgICAgZHVtbXlfaXJxX2NoaXA6OmlycV9h
+Y2soKSBpcyBpbmRpY2F0aW5nIHdyZWNrYWdlLgo+IAo+ICAgICAgSW4gdGhhdCBjYXNlIHRoZSBM
+aW51eCBpcnEgbnVtYmVyIGlzIHRoZSB0aGluZyB3aGljaCBpcyBwcmludGVkLgo+IAo+IFNvIG5v
+LiBJdCdzIG5vdCBqdXN0IGluY29uc2lzdGVudCBpdCdzIGluIHNvbWUgcGxhY2VzIG91dHJpZ2h0
+Cj4gd3JvbmcuIFdoYXQgd2UgcmVhbGx5IHdhbnQgaXM6Cj4gCj4gYWNrX2JhZF9pcnEoaW50IGh3
+aXJxLCBpbnQgdmlycSkKCmlzICdpbnQnIGNvcnJlY3QgaGVyZSA/CgpCVFc6IEkgYWxzbyB3b25k
+ZXIgd2h5IHRoZSB2aXJxIGlzIHVuc2lnbmVkIGludCwgd2hpbGUgaHdpcnEgKGVnLiBpbgpzdHJ1
+Y3QgaXJxX2RhdGEpIGlzIHVuc2lnbmVkIGxvbmcuIHNob3VsZG4ndCB0aGUgdmlydHVhbCBudW1i
+ZXIgc3BhY2UKYmUgYXQgbGVhc3QgYXMgYmlnIChvciBldmVuIGJpZ2dlcikgdGhhbiB0aGUgaHcg
+b25lID8KCiB7Cj4gICAgICAgICBpZiAoaHdpcnEgPj0gMCkKPiAgICAgICAgICAgIHByaW50X3Vz
+ZWZ1bF9pbmZvKGh3aXJxKTsKPiAgICAgICAgIGlmICh2aXJxID4gMCkKPiAgICAgICAgICAgIHBy
+aW50X3VzZWZ1bF9pbmZvKHZpcnEpOwo+ICAgICAgICAgYXJjaF90cnlfdG9fYWNrKGh3aXJxLCB2
+aXJxKTsKPiB9Cj4gICAgIAo+IGZvciB0aGlzIHRvIG1ha2Ugc2Vuc2UuIEp1c3QgZml4aW5nIHRo
+ZSBleGlzdGluZyBwcmludGsoKSB0byBiZSBsZXNzCj4gd3JvbmcgaXMgbm90IHJlYWxseSBhbiBp
+bXByb3ZlbWVudC4KCk9rYXksIG1ha2VzIHNlbnNlLgoKT1RPSDogc2luY2UgYm90aCBjYWxsZXJz
+IChkdW1teWNoaXAuYywgaGFuZGxlLmMpIGFscmVhZHkgZHVtcCBvdXQgYmVmb3JlCmFja19iYWRf
+aXJxKCksIGRvIHdlIG5lZWQgdG8gcHJpbnQgb3V0IGFueXRoaW5nIGF0IGFsbCA/CgpJJ3ZlIGFs
+c28gc2VlbiB0aGF0IG1hbnkgYXJjaHMgaW5jcmVhc2UgYSBjb3VudGVyIChzb21lIHVzZSBsb25n
+LCBvdGhlcnMKYXRvbWljX3QpIC0gc2hvdWxkIHdlIGFsc28gY29uc29saWRhdGUgdGhpcyBpbiBh
+biBhcmNoLWluZGVwZW5kZW50IHdheQppbiBoYW5kbGUuYyAob3IgZG9lcyBrc3RhdF9pbmNyX2ly
+cXNfdGhpc19jcHUgYWxyZWFkeSBkbyB0aGlzKSA/CgotLW10eAoKLS0gCi0tLQpIaW53ZWlzOiB1
+bnZlcnNjaGzDvHNzZWx0ZSBFLU1haWxzIGvDtm5uZW4gbGVpY2h0IGFiZ2Vow7ZydCB1bmQgbWFu
+aXB1bGllcnQKd2VyZGVuICEgRsO8ciBlaW5lIHZlcnRyYXVsaWNoZSBLb21tdW5pa2F0aW9uIHNl
+bmRlbiBTaWUgYml0dGUgaWhyZW4KR1BHL1BHUC1TY2hsw7xzc2VsIHp1LgotLS0KRW5yaWNvIFdl
+aWdlbHQsIG1ldHV4IElUIGNvbnN1bHQKRnJlZSBzb2Z0d2FyZSBhbmQgTGludXggZW1iZWRkZWQg
+ZW5naW5lZXJpbmcKaW5mb0BtZXR1eC5uZXQgLS0gKzQ5LTE1MS0yNzU2NTI4NwoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBs
+aXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
 
