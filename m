@@ -2,12 +2,12 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kp70T-0005VT-Oe
- for linux-um@lists.infradead.org; Tue, 15 Dec 2020 09:52:35 +0000
+ id 1kp70T-0005VU-Od
+ for linux-um@lists.infradead.org; Tue, 15 Dec 2020 09:52:34 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v2 3/5] um: virtio: disable VQs during suspend
-Date: Tue, 15 Dec 2020 10:52:23 +0100
-Message-Id: <20201215105225.8cd384700f63.If62b5749ee500e51ad4b86910fb466c039f0ba8f@changeid>
+Subject: [PATCH v2 2/5] um: virtio: fix handling of messages without payload
+Date: Tue, 15 Dec 2020 10:52:22 +0100
+Message-Id: <20201215105225.8815d03733c5.I4a7f2dd58cc3e4f134cd8494539cde940c18c75c@changeid>
 In-Reply-To: <20201215105225.5c1b7720a11b.Ibacb1cbbdd1fa7ae866f0c3c94488dcbae01b39b@changeid>
 References: <20201215105225.5c1b7720a11b.Ibacb1cbbdd1fa7ae866f0c3c94488dcbae01b39b@changeid>
 MIME-Version: 1.0
@@ -28,84 +28,30 @@ Cc: Johannes Berg <johannes.berg@intel.com>
 
 From: Johannes Berg <johannes.berg@intel.com>
 
-If the system is suspended, the device shouldn't be able to send
-anything to it. Disable virtqueues in suspend to simulate this,
-and as we might be only using s2idle (kernel services are still
-on), prevent sending anything on them as well.
+If we have a message without payload, we call full_read() with
+len set to 0, which causes it to return -ECONNRESET. Catch this
+case and explicitly return 0 for it so we can actually use the
+zero-size config-changed message.
 
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- arch/um/drivers/virtio_uml.c | 36 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+ arch/um/drivers/virtio_uml.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index 030bef37d6d4..aacc8a578426 100644
+index ead9a1aea192..030bef37d6d4 100644
 --- a/arch/um/drivers/virtio_uml.c
 +++ b/arch/um/drivers/virtio_uml.c
-@@ -65,6 +65,7 @@ struct virtio_uml_vq_info {
- 	vq_callback_t *callback;
- 	struct time_travel_event defer;
- #endif
-+	bool suspended;
- };
- 
- extern unsigned long long physmem_size, highmem;
-@@ -725,6 +726,9 @@ static bool vu_notify(struct virtqueue *vq)
- 	const uint64_t n = 1;
+@@ -97,6 +97,9 @@ static int full_read(int fd, void *buf, int len, bool abortable)
+ {
  	int rc;
  
-+	if (info->suspended)
-+		return true;
++	if (!len)
++		return 0;
 +
- 	time_travel_propagate_time();
- 
- 	if (info->kick_fd < 0) {
-@@ -1287,6 +1291,36 @@ static const struct of_device_id virtio_uml_match[] = {
- };
- MODULE_DEVICE_TABLE(of, virtio_uml_match);
- 
-+static int virtio_uml_suspend(struct platform_device *pdev, pm_message_t state)
-+{
-+	struct virtio_uml_device *vu_dev = platform_get_drvdata(pdev);
-+	struct virtqueue *vq;
-+
-+	virtio_device_for_each_vq((&vu_dev->vdev), vq) {
-+		struct virtio_uml_vq_info *info = vq->priv;
-+
-+		info->suspended = true;
-+		vhost_user_set_vring_enable(vu_dev, vq->index, false);
-+	}
-+
-+	return 0;
-+}
-+
-+static int virtio_uml_resume(struct platform_device *pdev)
-+{
-+	struct virtio_uml_device *vu_dev = platform_get_drvdata(pdev);
-+	struct virtqueue *vq;
-+
-+	virtio_device_for_each_vq((&vu_dev->vdev), vq) {
-+		struct virtio_uml_vq_info *info = vq->priv;
-+
-+		info->suspended = false;
-+		vhost_user_set_vring_enable(vu_dev, vq->index, true);
-+	}
-+
-+	return 0;
-+}
-+
- static struct platform_driver virtio_uml_driver = {
- 	.probe = virtio_uml_probe,
- 	.remove = virtio_uml_remove,
-@@ -1294,6 +1328,8 @@ static struct platform_driver virtio_uml_driver = {
- 		.name = "virtio-uml",
- 		.of_match_table = virtio_uml_match,
- 	},
-+	.suspend = virtio_uml_suspend,
-+	.resume = virtio_uml_resume,
- };
- 
- static int __init virtio_uml_init(void)
+ 	do {
+ 		rc = os_read_file(fd, buf, len);
+ 		if (rc > 0) {
 -- 
 2.26.2
 
