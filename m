@@ -2,14 +2,14 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab7.miniserver.com ([37.128.132.42]
  helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kmKAx-0000ig-Vv
- for linux-um@lists.infradead.org; Mon, 07 Dec 2020 17:19:53 +0000
+ id 1kp6sk-0004ZC-1S
+ for linux-um@lists.infradead.org; Tue, 15 Dec 2020 09:44:35 +0000
 From: anton.ivanov@cambridgegreys.com
-Subject: [PATCH 2/3] um: tty: Fix handling of close in tty lines
-Date: Mon,  7 Dec 2020 17:19:39 +0000
-Message-Id: <20201207171940.25240-2-anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20201207171940.25240-1-anton.ivanov@cambridgegreys.com>
-References: <20201207171940.25240-1-anton.ivanov@cambridgegreys.com>
+Subject: [PATCH v6 2/4] um: enable the use of optimized xor routines in UML
+Date: Tue, 15 Dec 2020 09:44:24 +0000
+Message-Id: <20201215094426.1117-2-anton.ivanov@cambridgegreys.com>
+In-Reply-To: <20201215094426.1117-1-anton.ivanov@cambridgegreys.com>
+References: <20201215094426.1117-1-anton.ivanov@cambridgegreys.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -28,41 +28,65 @@ Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
 From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Fix a logical error in tty reading. We get 0 and errno == EAGAIN
-on the first attempt to read from a closed file descriptor.
+This patch enables the use of optimized xor routines from the x86
+tree as well as the necessary fpu api shims so they can work on
+UML.
 
-Compared to that a true EAGAIN is EAGAIN and -1.
-
-If we check errno for EAGAIN first, before checking the return
-value we miss the fact that the descriptor is closed.
-
-This bug is as old as the driver. It was not showing up with
-the original POLL based IRQ controller, because it was
-producing multiple events. Switching to EPOLL unmasked it.
-
-Fixes: ff6a17989c08 ("Epoll based IRQ controller")
 Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 ---
- arch/um/drivers/chan_user.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/um/include/asm/fpu/api.h | 14 ++++++++++++++
+ arch/um/include/asm/xor.h     | 17 ++++++++++++++++-
+ 2 files changed, 30 insertions(+), 1 deletion(-)
+ create mode 100644 arch/um/include/asm/fpu/api.h
 
-diff --git a/arch/um/drivers/chan_user.c b/arch/um/drivers/chan_user.c
-index 4d80526a4236..d8845d4aac6a 100644
---- a/arch/um/drivers/chan_user.c
-+++ b/arch/um/drivers/chan_user.c
-@@ -26,10 +26,10 @@ int generic_read(int fd, char *c_out, void *unused)
- 	n = read(fd, c_out, sizeof(*c_out));
- 	if (n > 0)
- 		return n;
--	else if (errno == EAGAIN)
--		return 0;
- 	else if (n == 0)
- 		return -EIO;
-+	else if (errno == EAGAIN)
-+		return 0;
- 	return -errno;
- }
+diff --git a/arch/um/include/asm/fpu/api.h b/arch/um/include/asm/fpu/api.h
+new file mode 100644
+index 000000000000..2873a6f0105d
+--- /dev/null
++++ b/arch/um/include/asm/fpu/api.h
+@@ -0,0 +1,14 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++#ifndef _ASM_UM_FPU_API_H
++#define _ASM_UM_FPU_API_H
++
++/* Copyright (c) 2020 Cambridge Greys Ltd
++ * Copyright (c) 2020 Red Hat Inc.
++ * A set of "dummy" defines to allow the direct inclusion
++ * of x86 optimized copy, xor, etc routines into the
++ * UML code tree. */
++
++#define kernel_fpu_begin() (void)0
++#define kernel_fpu_end() (void)0
++
++#endif
+diff --git a/arch/um/include/asm/xor.h b/arch/um/include/asm/xor.h
+index 36b33d62a35d..f512704a9ec7 100644
+--- a/arch/um/include/asm/xor.h
++++ b/arch/um/include/asm/xor.h
+@@ -1,7 +1,22 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+-#include <asm-generic/xor.h>
++#ifndef _ASM_UM_XOR_H
++#define _ASM_UM_XOR_H
++
++#ifdef CONFIG_64BIT
++#undef CONFIG_X86_32
++#else
++#define CONFIG_X86_32 1
++#endif
++
++#include <asm/cpufeature.h>
++#include <../../x86/include/asm/xor.h>
+ #include <linux/time-internal.h>
  
++#ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
++#undef XOR_SELECT_TEMPLATE
+ /* pick an arbitrary one - measuring isn't possible with inf-cpu */
+ #define XOR_SELECT_TEMPLATE(x)	\
+ 	(time_travel_mode == TT_MODE_INFCPU ? &xor_block_8regs : NULL)
++#endif
++
++#endif
 -- 
 2.20.1
 
