@@ -1,19 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kkYGb-0005Ef-9Y
- for linux-um@lists.infradead.org; Wed, 02 Dec 2020 19:58:22 +0000
-Received: by sipsolutions.net with esmtpsa
- (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
- (Exim 4.94) (envelope-from <johannes@sipsolutions.net>)
- id 1kkYGX-001HM1-Go
- for linux-um@lists.infradead.org; Wed, 02 Dec 2020 20:58:17 +0100
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v7 0/5] um: suspend/resume support
-Date: Wed,  2 Dec 2020 20:58:03 +0100
-Message-Id: <20201202195808.244645-1-johannes@sipsolutions.net>
+ id 1kp74J-0005z2-VI
+ for linux-um@lists.infradead.org; Tue, 15 Dec 2020 09:56:33 +0000
+Subject: Re: [PATCH v5 3/4] um: add a UML specific futex implementation
+References: <20201214181459.11096-1-anton.ivanov@cambridgegreys.com>
+ <20201214181459.11096-4-anton.ivanov@cambridgegreys.com>
+ <140a74e6-29e0-5bee-1df0-d40fb25a146d@cambridgegreys.com>
+ <480679445.130046.1608025614425.JavaMail.zimbra@nod.at>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <16cbc08a-f115-45e3-55ec-2dc6df6089b2@cambridgegreys.com>
+Date: Tue, 15 Dec 2020 09:56:28 +0000
 MIME-Version: 1.0
+In-Reply-To: <480679445.130046.1608025614425.JavaMail.zimbra@nod.at>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,23 +23,74 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-um <linux-um@lists.infradead.org>
 
-Here's a respin, for one since I wanted to use pause() instead of
-the strange select(0, NULL, NULL, NULL, NULL), but also fixing some
-signal handling bugs in the suspend/resume code.
-
-johannes
-
-
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+Ck9uIDE1LzEyLzIwMjAgMDk6NDYsIFJpY2hhcmQgV2VpbmJlcmdlciB3cm90ZToKPiBBbnRvbiwK
+Pgo+IC0tLS0tIFVyc3Byw7xuZ2xpY2hlIE1haWwgLS0tLS0KPj4gVm9uOiAiYW50b24gaXZhbm92
+IiA8YW50b24uaXZhbm92QGNhbWJyaWRnZWdyZXlzLmNvbT4KPj4gQW46ICJsaW51eC11bSIgPGxp
+bnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmc+Cj4+IENDOiAicmljaGFyZCIgPHJpY2hhcmRAbm9k
+LmF0Pgo+PiBHZXNlbmRldDogRGllbnN0YWcsIDE1LiBEZXplbWJlciAyMDIwIDEwOjQzOjQ4Cj4+
+IEJldHJlZmY6IFJlOiBbUEFUQ0ggdjUgMy80XSB1bTogYWRkIGEgVU1MIHNwZWNpZmljIGZ1dGV4
+IGltcGxlbWVudGF0aW9uCj4+IE9uIDE0LzEyLzIwMjAgMTg6MTQsIGFudG9uLml2YW5vdkBjYW1i
+cmlkZ2VncmV5cy5jb20gd3JvdGU6Cj4+PiBGcm9tOiBBbnRvbiBJdmFub3YgPGFudG9uLml2YW5v
+dkBjYW1icmlkZ2VncmV5cy5jb20+Cj4+Pgo+Pj4gVGhlIGdlbmVyaWMgYXNtIGZ1dGV4IGltcGxl
+bWVudGF0aW9uIGVtdWxhdGVzIGF0b21pYyBhY2Nlc3MgdG8KPj4+IG1lbW9yeSBieSBkb2luZyBh
+IGdldF91c2VyIGZvbGxvd2VkIGJ5IHB1dF91c2VyLiBUaGVzZSB0cmFuc2xhdGUKPj4+IHRvIHR3
+byBtYXBwaW5nIG9wZXJhdGlvbnMgb24gVU1MIHdpdGggcGFnaW5nIGVuYWJsZWQgaW4gdGhlCj4+
+PiBtZWFudGltZS4gVGhpcywgaW4gdHVybiBtYXkgZW5kIHVwIGNoYW5naW5nIGludGVycnVwdHMs
+Cj4+PiBpbnZva2luZyB0aGUgc2lnbmFsIGxvb3AsIGV0Yy4KPj4+Cj4+PiBUaGlzIHJlcGxhY2Vz
+IHRoZSBnZW5lcmljIGltcGxlbWVudGF0aW9uIGJ5IGEgbWFwcGluZyBmb2xsb3dlZAo+Pj4gYnkg
+YW4gb3BlcmF0aW9uIG9uIHRoZSBtYXBwZWQgc2VnbWVudC4KPj4+Cj4+PiBTaWduZWQtb2ZmLWJ5
+OiBBbnRvbiBJdmFub3YgPGFudG9uLml2YW5vdkBjYW1icmlkZ2VncmV5cy5jb20+Cj4+PiAtLS0K
+Pj4+ICAgIGFyY2gvdW0vaW5jbHVkZS9hc20vS2J1aWxkICAgIHwgICAxIC0KPj4+ICAgIGFyY2gv
+dW0vaW5jbHVkZS9hc20vZnV0ZXguaCAgIHwgIDE0ICsrKysKPj4+ICAgIGFyY2gvdW0va2VybmVs
+L3NrYXMvdWFjY2Vzcy5jIHwgMTMwICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysK
+Pj4+ICAgIDMgZmlsZXMgY2hhbmdlZCwgMTQ0IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkK
+Pj4+ICAgIGNyZWF0ZSBtb2RlIDEwMDY0NCBhcmNoL3VtL2luY2x1ZGUvYXNtL2Z1dGV4LmgKPj4+
+Cj4+PiBkaWZmIC0tZ2l0IGEvYXJjaC91bS9pbmNsdWRlL2FzbS9LYnVpbGQgYi9hcmNoL3VtL2lu
+Y2x1ZGUvYXNtL0tidWlsZAo+Pj4gaW5kZXggMWM2M2IyNjBlY2M0Li44NzNlNjgxNWJjNTAgMTAw
+NjQ0Cj4+PiAtLS0gYS9hcmNoL3VtL2luY2x1ZGUvYXNtL0tidWlsZAo+Pj4gKysrIGIvYXJjaC91
+bS9pbmNsdWRlL2FzbS9LYnVpbGQKPj4+IEBAIC04LDcgKzgsNiBAQCBnZW5lcmljLXkgKz0gZW1l
+cmdlbmN5LXJlc3RhcnQuaAo+Pj4gICAgZ2VuZXJpYy15ICs9IGV4ZWMuaAo+Pj4gICAgZ2VuZXJp
+Yy15ICs9IGV4dGFibGUuaAo+Pj4gICAgZ2VuZXJpYy15ICs9IGZ0cmFjZS5oCj4+PiAtZ2VuZXJp
+Yy15ICs9IGZ1dGV4LmgKPj4+ICAgIGdlbmVyaWMteSArPSBod19pcnEuaAo+Pj4gICAgZ2VuZXJp
+Yy15ICs9IGlycV9yZWdzLmgKPj4+ICAgIGdlbmVyaWMteSArPSBpcnFfd29yay5oCj4+PiBkaWZm
+IC0tZ2l0IGEvYXJjaC91bS9pbmNsdWRlL2FzbS9mdXRleC5oIGIvYXJjaC91bS9pbmNsdWRlL2Fz
+bS9mdXRleC5oCj4+PiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+Pj4gaW5kZXggMDAwMDAwMDAwMDAw
+Li4wYTAxZjFmNjBkZTAKPj4+IC0tLSAvZGV2L251bGwKPj4+ICsrKyBiL2FyY2gvdW0vaW5jbHVk
+ZS9hc20vZnV0ZXguaAo+Pj4gQEAgLTAsMCArMSwxNCBAQAo+Pj4gKy8qIFNQRFgtTGljZW5zZS1J
+ZGVudGlmaWVyOiBHUEwtMi4wICovCj4+PiArI2lmbmRlZiBfQVNNX0dFTkVSSUNfRlVURVhfSAo+
+Pj4gKyNkZWZpbmUgX0FTTV9HRU5FUklDX0ZVVEVYX0gKPj4gXl5eXiBVZ2dnaGhoCj4+Cj4+PiAr
+Cj4+PiArI2luY2x1ZGUgPGxpbnV4L2Z1dGV4Lmg+Cj4+PiArI2luY2x1ZGUgPGxpbnV4L3VhY2Nl
+c3MuaD4KPj4+ICsjaW5jbHVkZSA8YXNtL2Vycm5vLmg+Cj4+PiArCj4+PiArCj4+PiArZXh0ZXJu
+IGludCBhcmNoX2Z1dGV4X2F0b21pY19vcF9pbnVzZXIoaW50IG9wLCB1MzIgb3BhcmcsIGludCAq
+b3ZhbCwgdTMyIF9fdXNlcgo+Pj4gKnVhZGRyKTsKPj4+ICtleHRlcm4gaW50IGZ1dGV4X2F0b21p
+Y19jbXB4Y2hnX2luYXRvbWljKHUzMiAqdXZhbCwgdTMyIF9fdXNlciAqdWFkZHIsCj4+PiArCQkJ
+ICAgICAgdTMyIG9sZHZhbCwgdTMyIG5ld3ZhbCk7Cj4+IF5eXl4gRGlkIG5vdCBhZGRyZXNzIEpv
+aGFubmVzIGNvbW1lbnRzLCB3aWxsIGRvIGluIHY2Cj4gTm8gbmVlZCB0byBodXJyeS4gVGhpcyBo
+YXMgdG8gd2FpdCBhbnl3YXkgZm9yIDUuMTIuIDotKQoKVGhhdCdzIGZpbmUgOikKCkkgd2FudGVk
+IHRvIGdldCBpdCBvdXQgb2YgdGhlIHdheSBhbmQgZ2V0IGJhY2sgdG8gZUJQRi4KCkkgYW0gdHJ5
+aW5nIHRvIGdldCBteSBoZWFkIGFyb3VuZCBvbiBob3cgdG8gcmV1c2UgYXMgbXVjaCBhcyBwb3Nz
+aWJsZSBmcm9tIHRoZSB2ZWN0b3IgY29kZSB0byBidWlsZCBhbiBBRl9YRFAgbXVsdGktcG9ydCBu
+ZXRkZXYgYW5kIGEgc3dpdGNoZGV2IG9uIHRvcCBvZiB0aGF0LiBTb21lIG9mIGl0IGlzIGxpa2Ug
+cHVsbGluZyB0ZWV0aCB3aXRob3V0IGFuZXN0aGV0aWMuIFRoZSBkb2N1bWVudGF0aW9uIGxlYXZl
+cyBhIGxvdCB0byBiZSBkZXNpcmVkIDopCgpDb21wYXJlZCB0byB0aGF0IHNvbWUgcGVyZm9ybWFu
+Y2UgcG9saXNoaW5nIHdhcyBhIG5pY2UgKGFuZCBmYWlybHkgcGxlYXNhbnQpIGRpc3RyYWN0aW9u
+LgoKSSB0aGluayBpdCBpcyBjbG9zZSB0byB3aGVyZSBpdCBzaG91bGQgYmUgbm93LiBJdCBwYXNz
+ZXMgYWxsIGJlbmNobWFya3MgaW5jbHVkaW5nIG11bHRpLXRocmVhZGVkIHVzZXJzcGFjZSBvbmVz
+IG9uIGJvdGggMzIgYW5kIDY0LgoKT25lIHRoaW5nIHdoaWNoIHdlIHNob3VsZCBwcm9iYWJseSBj
+b25zaWRlciBpcyBvbi9vZmYtaW5nIHRoZSBkaXNwbGF5IG9mIHRoZSBDUFUgZmxhZ3MgYWNxdWly
+ZWQgZnJvbSB0aGUgaG9zdCB2aWEgYSBrZXJuZWwgY29tbWFuZCBsaW5lIHN3aXRjaC4gQXQgcHJl
+c2VudCB0aGV5IGFyZSByZWZsZWN0ZWQgMToxIGludG8gdGhlIFVNTCBpbnN0YW5jZS4KCj4KPiBU
+aGFua3MsCj4gLy9yaWNoYXJkCj4KLS0gCkFudG9uIFIuIEl2YW5vdgpDYW1icmlkZ2VncmV5cyBM
+aW1pdGVkLiBSZWdpc3RlcmVkIGluIEVuZ2xhbmQuIENvbXBhbnkgTnVtYmVyIDEwMjczNjYxCmh0
+dHBzOi8vd3d3LmNhbWJyaWRnZWdyZXlzLmNvbS8KCgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlz
+dHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2xpbnV4LXVtCg==
 
