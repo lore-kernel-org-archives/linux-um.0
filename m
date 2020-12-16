@@ -1,16 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab7.miniserver.com ([37.128.132.42]
- helo=www.kot-begemot.co.uk)
+Received: from mout.kundenserver.de ([212.227.126.135])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kosNI-0006LD-Hl
- for linux-um@lists.infradead.org; Mon, 14 Dec 2020 18:15:09 +0000
-From: anton.ivanov@cambridgegreys.com
-Subject: [PATCH v5 2/4] um: enable the use of optimized xor routines in UML
-Date: Mon, 14 Dec 2020 18:14:57 +0000
-Message-Id: <20201214181459.11096-3-anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20201214181459.11096-1-anton.ivanov@cambridgegreys.com>
-References: <20201214181459.11096-1-anton.ivanov@cambridgegreys.com>
+ id 1kpZtR-00030U-Gz
+ for linux-um@lists.infradead.org; Wed, 16 Dec 2020 16:43:14 +0000
+Subject: Re: [PATCH] arch: fix 'unexpected IRQ trap at vector' warnings
+References: <20201207143146.30021-1-info@metux.net>
+ <877dptt5av.fsf@mpe.ellerman.id.au> <87y2i7298s.fsf@nanos.tec.linutronix.de>
+ <33001e60-cbfc-f114-55bf-f347f21fee9b@metux.net>
+ <87a6ueu3af.fsf@nanos.tec.linutronix.de>
+From: "Enrico Weigelt, metux IT consult" <info@metux.net>
+Message-ID: <7cee04bd-b962-c6cd-19d7-b1f63926f570@metux.net>
+Date: Wed, 16 Dec 2020 17:42:18 +0100
 MIME-Version: 1.0
+In-Reply-To: <87a6ueu3af.fsf@nanos.tec.linutronix.de>
+Content-Language: tl
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -19,80 +22,104 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: Thomas Gleixner <tglx@linutronix.de>, Michael Ellerman <mpe@ellerman.id.au>, "Enrico Weigelt, metux IT consult" <info@metux.net>, linux-kernel@vger.kernel.org
+Cc: linux-s390@vger.kernel.org, hpa@zytor.com, linux-parisc@vger.kernel.org, benh@kernel.crashing.org, deller@gmx.de, x86@kernel.org, linux-um@lists.infradead.org, James.Bottomley@HansenPartnership.com, mingo@redhat.com, paulus@samba.org, richard@nod.at, bp@alien8.de, linuxppc-dev@lists.ozlabs.org, jdike@addtoit.com, anton.ivanov@cambridgegreys.com
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-
-This patch enables the use of optimized xor routines from the x86
-tree as well as the necessary fpu api shims so they can work on
-UML.
-
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
----
- arch/um/include/asm/fpu/api.h | 14 ++++++++++++++
- arch/um/include/asm/xor.h     | 17 ++++++++++++++++-
- 2 files changed, 30 insertions(+), 1 deletion(-)
- create mode 100644 arch/um/include/asm/fpu/api.h
-
-diff --git a/arch/um/include/asm/fpu/api.h b/arch/um/include/asm/fpu/api.h
-new file mode 100644
-index 000000000000..2873a6f0105d
---- /dev/null
-+++ b/arch/um/include/asm/fpu/api.h
-@@ -0,0 +1,14 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+#ifndef _ASM_UM_FPU_API_H
-+#define _ASM_UM_FPU_API_H
-+
-+/* Copyright (c) 2020 Cambridge Greys Ltd
-+ * Copyright (c) 2020 Red Hat Inc.
-+ * A set of "dummy" defines to allow the direct inclusion
-+ * of x86 optimized copy, xor, etc routines into the
-+ * UML code tree. */
-+
-+#define kernel_fpu_begin() (void)0
-+#define kernel_fpu_end() (void)0
-+
-+#endif
-diff --git a/arch/um/include/asm/xor.h b/arch/um/include/asm/xor.h
-index 36b33d62a35d..f512704a9ec7 100644
---- a/arch/um/include/asm/xor.h
-+++ b/arch/um/include/asm/xor.h
-@@ -1,7 +1,22 @@
- /* SPDX-License-Identifier: GPL-2.0 */
--#include <asm-generic/xor.h>
-+#ifndef _ASM_UM_XOR_H
-+#define _ASM_UM_XOR_H
-+
-+#ifdef CONFIG_64BIT
-+#undef CONFIG_X86_32
-+#else
-+#define CONFIG_X86_32 1
-+#endif
-+
-+#include <asm/cpufeature.h>
-+#include <../../x86/include/asm/xor.h>
- #include <linux/time-internal.h>
- 
-+#ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
-+#undef XOR_SELECT_TEMPLATE
- /* pick an arbitrary one - measuring isn't possible with inf-cpu */
- #define XOR_SELECT_TEMPLATE(x)	\
- 	(time_travel_mode == TT_MODE_INFCPU ? &xor_block_8regs : NULL)
-+#endif
-+
-+#endif
--- 
-2.20.1
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gMTUuMTIuMjAgMjM6MTIsIFRob21hcyBHbGVpeG5lciB3cm90ZToKPiBPbiBUdWUsIERlYyAx
+NSAyMDIwIGF0IDIxOjEyLCBFbnJpY28gV2VpZ2VsdCB3cm90ZToKPj4gT24gMDkuMTIuMjAgMDA6
+MDEsIFRob21hcyBHbGVpeG5lciB3cm90ZToKPj4+ICAgMykgSXQncyBpbnZva2VkIGZyb20gX19o
+YW5kbGVfZG9tYWluX2lycSgpIHdoZW4gdGhlICdod2lycScgd2hpY2ggaXMKPj4+ICAgICAgaGFu
+ZGVkIGluIGJ5IHRoZSBjYWxsZXIgZG9lcyBub3QgcmVzb2x2ZSB0byBhIG1hcHBlZCBMaW51eAo+
+Pj4gICAgICBpbnRlcnJ1cHQgd2hpY2ggaXMgcHJldHR5IG11Y2ggdGhlIHNhbWUgYXMgdGhlIHg4
+NiBzaXR1YXRpb24gYWJvdmUKPj4+ICAgICAgaW4gIzEsIGJ1dCBpdCBwcmludHMgdXNlbGVzcyBk
+YXRhLgo+Pj4KPj4+ICAgICAgSXQgcHJpbnRzICdpcnEnIHdoaWNoIGlzIGludmFsaWQgYnV0IGl0
+IGRvZXMgbm90IHByaW50IHRoZSByZWFsbHkKPj4+ICAgICAgaW50ZXJlc3RpbmcgJ2h3aXJxJyB3
+aGljaCB3YXMgaGFuZGVkIGluIGJ5IHRoZSBjYWxsZXIgYW5kIGRpZAo+Pj4gICAgICBub3QgcmVz
+b2x2ZS4KPj4KPj4gSSB3b3VsZG4ndCBzYXkgdGhlIGlycS1uciBpc24ndCBpbnRlcmVzdGluZy4g
+SW4gbXkgcGFydGljdWxhciBjYXNlIGl0Cj4+IHdhcyBxdWl0ZSB3aGF0IEkndmUgYmVlbiBsb29r
+aW5nIGZvci4gQnV0IHlvdSdyZSByaWdodCwgaHdpcnEgc2hvdWxkCj4+IGFsc28gYmUgcHJpbnRl
+ZC4KPiAKPiBUaGUgbnVtYmVyIGlzIF9ub3RfIGludGVyZXN0aW5nIGluIHRoaXMgY2FzZS4gSXQn
+cyB1c2VsZXNzIGJlY2F1c2UgdGhlCj4gZnVuY3Rpb24gZG9lczoKCk9oLCBJJ3ZlIG1peGVkIHVw
+IHRoZSBjYXNlcyAtIEkgb25seSBoYWQgdGhlIG90aGVyIG9uZSwgZG93biBiZWxvdy4KCj4gICAg
+IGlycSA9IGh3aXJxOwo+IAo+ICAgICBpZiAobG9va3VwKQo+ICAgICAgICAgaXJxID0gZmluZF9t
+YXBwaW5nKGh3aXJxKTsKPiAKPiAgICAgaWYgKCFpcnEgfHwgaXJxID49IG5yX2lycXMpCj4gICAg
+ICAgIC0+IEJBRAoKV2hlbiBleGFjdGx5IGNhbiB0aGF0IGhhcHBlbiA/IE9ubHkgd2hlbiBzb21l
+IGhhcmR3YXJlIHNlbmRpbmcgYW4gSVJRLApidXQgbm8gZHJpdmVyIGxpc3RlbmluZyB0byBpdCwg
+b3IgYXJlIHRoZXJlIG90aGVyIGNhc2VzID8KCkJ5IHRoZSB3YXk6IHdobydzIHN1cHBvc2VkIHRv
+IGNhbGwgdGhhdCBmdW5jdGlvbiA/IE9ubHkgaXJxY2hpcCdzCihhbmQgdGhlIGZldyBzb2Mgc3Bl
+Y2lmaWMgMXN0LWxldmVsIGlycSBoYW5kbGVycykgPyBJJ20gYXNraW5nLCBiZWNhdXNlCndlIGhh
+dmUgbG90cyBvZiBncGlvIGRyaXZlcnMsIHdoaWNoIGhhdmUgdGhlaXIgb3duIGlycSBkb21haW4s
+IGJ1dCBnbwp0aGUgZ2VuZXJpY19oYW5kbGVfaXJxKCkgcm91dGUuIFNhbWUgZm9yIHNvbWUgU09D
+LXNwZWNpZmljIGlycWNoaXBzLgoKU2hvdWxkIHRoZXkgYWxzbyBjYWxsIGhhbmRsZV9kb21haW5f
+aXJxKCkgaW5zdGVhZCA/Cgo+IEluIGJvdGggY2FzZXMgdGhlIG9ubHkgaW50ZXJlc3RpbmcgaW5m
+b3JtYXRpb24gaXMgdGhhdCBod2lycSBkb2VzIG5vdAo+IHJlc29sdmUgdG8gYSB2YWxpZCBMaW51
+eCBpbnRlcnJ1cHQgbnVtYmVyIGFuZCB3aGljaCBod2lycSBudW1iZXIgY2F1c2VkCj4gdGhhdC4K
+CkRvbid0IHdlIGFsc28gbmVlZCBrbm93IHdoaWNoIGlycWNoaXAgdGhlIGh3aXJxIG51bWJlciBi
+ZWxvbmdzIHRvID8KCj4gSWYgeW91IGxvb2sgcmVhbGx5IHRoZW4geW91IGZpbmQgb3V0IHRoYXQg
+dGhlcmUgaXMgZXhhY3RseSBfT05FXwo+IGFyY2hpdGVjdHVyZSB3aGljaCBkb2VzIGFueXRoaW5n
+IGVsc2UgdGhhbiBpbmNyZW1lbnRpbmcgYSBjb3VudGVyIGFuZC9vcgo+IHByaW50aW5nIHN0dWZm
+OiBYODYsIHdoaWNoIGhhcyBhIGJpZyBmYXQgY29tbWVudCBleHBsYWluaW5nIHdoeS4gVGhlCj4g
+b25seSB3YXkgdG8gYWNrIGFuIGludGVycnVwdCBvbiBYODYgaXMgdG8gaXNzdWUgRU9JIG9uIHRo
+ZSBsb2NhbCBBUElDLAo+IGkuZS4gaXQgZG9lcyBfbm90XyBuZWVkIGFueSBmdXJ0aGVyIGluZm9y
+bWF0aW9uLgoKWWVhaCwgZm91bmQgaXQgOikKCkF0IHRoaXMgcG9pbnQgSSB3b25kZXIgd2hldGhl
+ciB0aGUgYWNrX0FQSUNfaXJxKCkgY2FsbCBjb3VsZCBiZSBkb25lCnNvbWV3aGVyZSBmdXJ0aGVy
+IHVwIGluIHRoZSBjYWxsIGNoYWluLCBlZy4gaGFuZGxlX2lycSgpIG9yCmNvbW1vbl9pbnRlcnJ1
+cHQoKSA/CgpJZiB0aGF0IHdvcmtzLCB3ZSBJTUhPIGNvdWxkIGRyb3AgYWNrX2JhZF9pcnEoKSBj
+b21wbGV0ZWx5IChleGNlcHQgZm9yCnRoZSBjb3VudGVyIGFuZCBwcmludGssIHdoaWNoIHdlIGNv
+dWxkIGNvbnNvbGlkYXRlIGVsc2V3aGVyZSBhbnl3YXlzKQoKPj4gLi4uIHJldGhpbmtpbmcgdGhp
+cyBmdXJ0aGVyIC4uLiBzaG91bGRuJ3Qgd2UgYWxzbyBwYXNzIGluIGV2ZW4gbW9yZSBkYXRhCj4+
+IChlZy4gaXJxX2Rlc2MsIGlycWNoaXAsIC4uLiksIHNvIHRoaXMgZnVuY3Rpb24gY2FuIGNoZWNr
+IHdoaWNoIGh3IHRvCj4+IGFjdHVhbGx5IHRhbGsgdG8gPwo+IAo+IFRoZXJlIGFyZSAzIHdheXMg
+dG8gZ2V0IHRoZXJlOgo+IAo+ICAgICAgIDEpIHZpYSBkdW1teSBjaGlwIHdoaWNoIG9idmlvdXNs
+eSBoYXMgbm8gaGFyZHdhcmUgYXNzb2NpYXRlZAoKLi4uIHdoaWNoIGFsc28gY2FsbHMgcHJpbnRf
+aXJxX2Rlc2MoKSAuLgoKPiAgICAgICAyKSB2aWEgaGFuZGxlX2JhZF9pcnEoKSB3aGljaCBwcmlu
+dHMgdGhlIGluZm8gYWxyZWFkeQoKcHJpbnRfaXJxX2Rlc2MoKSBkb2Vzbid0IHNlZW0gdG8gcHJp
+bnQgdGhlIGh3aXJxIC4uLiBzaGFsbCB3ZSBmaXggdGhpcyA/Cgo+ICAgICAgIDMpIF9faGFuZGxl
+X2RvbWFpbl9pcnEoKSB3aGljaCBjYW5ub3QgcHJpbnQgYW55dGhpbmcgYW5kIG9idmlvdXNseQo+
+ICAgICAgICAgIGNhbm5vdCBmaWd1cmUgb3V0IHRoZSBodyB0byB0YWxrIHRvIGJlY2F1c2UgdGhl
+cmUgaXMgbm8gaXJxCj4gICAgICAgICAgZGVzY3JpcHRvciBhc3NvY2lhdGVkLgoKT2theSwgd2hh
+dCdzIHRoZSBjb25jbHVzaW9uID8gRHJvcCBwcmludG91dHMgaW4gdGhlIGFja19iYWRfaXJxKCkn
+cyA/Cgo+Pj4gICA0KSBJdCdzIGludm9rZWQgZnJvbSB0aGUgZHVtbXkgaXJxIGNoaXAgd2hpY2gg
+aXMgaW5zdGFsbGVkIGZvciBhCj4+PiAgICAgIGNvdXBsZSBvZiB0cnVseSB2aXJ0dWFsIGludGVy
+cnVwdHMgd2hlcmUgdGhlIGludm9jYXRpb24gb2YKPj4+ICAgICAgZHVtbXlfaXJxX2NoaXA6Omly
+cV9hY2soKSBpcyBpbmRpY2F0aW5nIHdyZWNrYWdlLgo+Pj4KPj4+ICAgICAgSW4gdGhhdCBjYXNl
+IHRoZSBMaW51eCBpcnEgbnVtYmVyIGlzIHRoZSB0aGluZyB3aGljaCBpcyBwcmludGVkLgo+Pj4K
+Pj4+IFNvIG5vLiBJdCdzIG5vdCBqdXN0IGluY29uc2lzdGVudCBpdCdzIGluIHNvbWUgcGxhY2Vz
+IG91dHJpZ2h0Cj4+PiB3cm9uZy4gV2hhdCB3ZSByZWFsbHkgd2FudCBpczoKPj4+Cj4+PiBhY2tf
+YmFkX2lycShpbnQgaHdpcnEsIGludCB2aXJxKQo+Pgo+PiBpcyAnaW50JyBjb3JyZWN0IGhlcmUg
+Pwo+IAo+IFRoaXMgd2FzIGp1c3QgZm9yIGlsbHVzdHJhdGlvbi4KCk9rYXksIHRoYW5rcy4gSnVz
+dCBkaXNjb3ZlcmVkIGFscmVhZHkgaGF2ZSBhbiBpcnFfaHdfbnVtYmVyX3QsIHdoaWNoCmRvZXNu
+J3Qgc2VlbSB0byBiZSB1c2VkIGV2ZXJ5d2hlcmUgLi4uIHNoYWxsIHdlIGZpeCB0aGF0ID8KCj4+
+IE9UT0g6IHNpbmNlIGJvdGggY2FsbGVycyAoZHVtbXljaGlwLmMsIGhhbmRsZS5jKSBhbHJlYWR5
+IGR1bXAgb3V0IGJlZm9yZQo+PiBhY2tfYmFkX2lycSgpLCBkbyB3ZSBuZWVkIHRvIHByaW50IG91
+dCBhbnl0aGluZyBhdCBhbGwgPwo+IAo+IE5vdCBhbGwgY2FsbGVycyBwcmludCBzb21ldGhpbmcs
+IGJ1dCB5ZXMgdGhpcyBjb3VsZCBkbyB3aXRoIHNvbWUgZ2VuZXJhbAo+IGNsZWFudXAuCgpJJ3Zl
+IGZvdW5kIHRocmVlIGNhbGxlcnMsIG9ubHkgb25lIChfX2hhbmRsZV9kb21haW5faXJxKCkgaW4g
+aXJxZGVzYy5jKQpkb2Vzbid0IHByaW50IG91dCBhbnl0aGluZy4gSSBiZWxpdmUsIGFkZGluZyBh
+IHByX3dhcm4oKSBoZXJlIGFuZCBkcm9wCmFsbCB0aGUgcHJpbnRvdXRzIGluIGFja19iYWRfaXJx
+KCkncyBtYWtlcyBzZW5zZS4KCj4gVGhlIGVycm9yIGNvdW50ZXIgaXMgaW5kZXBlbmRlbnQgb2Yg
+dGhhdCwgYnV0IHllcyB0aGVyZSBpcyByb29tIGZvcgo+IGNvbnNvbGlkYXRpb24uCgpPaywgSSd2
+ZSBhbHJlYWR5IHN0YXJ0ZWQgaGFja2luZyBhIGJpdCBoZXJlOiBhZGRpbmcgYW4gYXRvbWljX3Qg
+Y291bnRlcgppbiBrZXJuZWwvaXJxL2hhbmRsZS5jIGFuZCBpbmxpbmUnZCBhY2Nlc3NvciBmdW5j
+dGlvbnMgaW4KaW5jbHVkZS9hc20tZ2VuZXJpYy9pcnEuaCAoanVzdCBmZWVsaW5nIHRoYXQgYWNj
+ZXNzb3JzIGFyZSBhIGJpdCBjbGVhbmVyCnRoYW4gZGlyZWN0IGFjY2VzcykuIFdvdWxkIHRoYXQg
+YmUgb2theSA/CgpCeSB0aGUgd2F5OiBJIHN0aWxsIHdvbmRlciB3aGV0aGVyIG15IGNhc2Ugc2hv
+dWxkIGhhdmUgZXZlciByZWFjaGVkCmFja19iYWRfaXJxKCkuCgpUaGUgaXJxZGVzY3MgaGFkIGJl
+ZW4gYWxsb2NhdGVkIHZpYSBkZXZtX2lycV9hbGxvY19kZXNjcygpLCBhbmQgdGhlCmRyaXZlciBq
+dXN0IGNhbGxlZCBnZW5lcmljX2hhbmRsZV9pcnEoKSB3aXRoIGJhc2UgaXJxICsgZ3BpbyBuci4K
+U28sIElNSE8gaXQgd2FzIGEgdmFsaWQgbGludXggaXJxIG51bWJlciwgYnV0IG5vIChleHBsaWNp
+dCkgaGFuZGxlci4KCkkgd29uZGVyIHdoZXRoZXIgYWNrJ2luZyB0aG9zZSB2aXJ0dWFsIGlycXMg
+b250byBodyBjb3VsZCBiZSBoYXJtZnVsLgoKCi0tbXR4CgotLSAKLS0tCkhpbndlaXM6IHVudmVy
+c2NobMO8c3NlbHRlIEUtTWFpbHMga8O2bm5lbiBsZWljaHQgYWJnZWjDtnJ0IHVuZCBtYW5pcHVs
+aWVydAp3ZXJkZW4gISBGw7xyIGVpbmUgdmVydHJhdWxpY2hlIEtvbW11bmlrYXRpb24gc2VuZGVu
+IFNpZSBiaXR0ZSBpaHJlbgpHUEcvUEdQLVNjaGzDvHNzZWwgenUuCi0tLQpFbnJpY28gV2VpZ2Vs
+dCwgbWV0dXggSVQgY29uc3VsdApGcmVlIHNvZnR3YXJlIGFuZCBMaW51eCBlbWJlZGRlZCBlbmdp
+bmVlcmluZwppbmZvQG1ldHV4Lm5ldCAtLSArNDktMTUxLTI3NTY1Mjg3CgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QK
+bGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
 
