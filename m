@@ -1,15 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab7.miniserver.com ([37.128.132.42]
- helo=www.kot-begemot.co.uk)
+Received: from youngberry.canonical.com ([91.189.89.112])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1knmUt-0008IV-40
- for linux-um@lists.infradead.org; Fri, 11 Dec 2020 17:46:27 +0000
-From: anton.ivanov@cambridgegreys.com
-Subject: [PATCH v4 6/7] um: swithch futex ops to cmpxchg
-Date: Fri, 11 Dec 2020 17:45:58 +0000
-Message-Id: <20201211174559.26010-7-anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20201211174559.26010-1-anton.ivanov@cambridgegreys.com>
-References: <20201211174559.26010-1-anton.ivanov@cambridgegreys.com>
+ id 1kpVHk-0006iF-P7
+ for linux-um@lists.infradead.org; Wed, 16 Dec 2020 11:48:01 +0000
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] um: fix spelling mistake in Kconfig "privleges" ->
+ "privileges"
+Date: Wed, 16 Dec 2020 11:47:55 +0000
+Message-Id: <20201216114755.12461-1-colin.king@canonical.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -23,43 +21,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Brendan Higgins <brendanhiggins@google.com>, linux-um@lists.infradead.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-As a result of switching from emulated to true atomic cmpxchg
-we can use cmpxchg in the corresponding um futex op.
+There is a spelling mistake in the Kconfig help text. Fix it.
 
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- arch/um/kernel/skas/uaccess.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ arch/um/drivers/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/um/kernel/skas/uaccess.c b/arch/um/kernel/skas/uaccess.c
-index de71048b5371..858b2e16e364 100644
---- a/arch/um/kernel/skas/uaccess.c
-+++ b/arch/um/kernel/skas/uaccess.c
-@@ -343,7 +343,6 @@ EXPORT_SYMBOL(arch_futex_atomic_op_inuser);
-  * -EAGAIN - Atomic operation was unable to complete due to contention
-  * -ENOSYS - Function not implemented (only if !HAVE_FUTEX_CMPXCHG)
-  */
--
- int futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
- 			      u32 oldval, u32 newval)
- {
-@@ -366,8 +365,7 @@ int futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
- 
- 	val = *uaddr;
- 
--	if (val == oldval)
--		*uaddr = newval;
-+	ret = cmpxchg(uaddr, oldval, newval);
- 
- 	*uval = val;
- 	pagefault_enable();
+diff --git a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
+index 2e7b8e0e7194..58e3ffc17b7d 100644
+--- a/arch/um/drivers/Kconfig
++++ b/arch/um/drivers/Kconfig
+@@ -323,7 +323,7 @@ config UML_NET_SLIRP
+ 	  frames.  In general, slirp allows the UML the same IP connectivity
+ 	  to the outside world that the host user is permitted, and unlike
+ 	  other transports, SLiRP works without the need of root level
+-	  privleges, setuid binaries, or SLIP devices on the host.  This
++	  privileges, setuid binaries, or SLIP devices on the host.  This
+ 	  also means not every type of connection is possible, but most
+ 	  situations can be accommodated with carefully crafted slirp
+ 	  commands that can be passed along as part of the network device's
 -- 
-2.20.1
+2.29.2
 
 
 _______________________________________________
