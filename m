@@ -1,14 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from mail-lf1-x134.google.com ([2a00:1450:4864:20::134])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1klCeV-0002JS-0I
- for linux-um@lists.infradead.org; Fri, 04 Dec 2020 15:05:44 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v8] um: add a pseudo RTC
-Date: Fri,  4 Dec 2020 16:05:32 +0100
-Message-Id: <20201204160531.2f53a5246d18.I9e5927602a6f5495d3dd574d89e3b138e978bcb4@changeid>
+ id 1kppEm-0007vL-2K
+ for linux-um@lists.infradead.org; Thu, 17 Dec 2020 09:06:17 +0000
+Received: by mail-lf1-x134.google.com with SMTP id 23so55463708lfg.10
+ for <linux-um@lists.infradead.org>; Thu, 17 Dec 2020 01:06:13 -0800 (PST)
 MIME-Version: 1.0
+References: <20201119085022.3606135-1-davidgow@google.com>
+ <CAEf4BzY4i0fH34eO=-4WOzVpifgPmJ0ER5ipBJWB0_4Zdv0AQg@mail.gmail.com>
+ <CABVgOSn10kCaD7EQCMJTgD8udNx6fOExqUL1gXHzEViemiq3LA@mail.gmail.com>
+ <3678c6eb-3815-a360-f495-fc246513f0f5@isovalent.com>
+In-Reply-To: <3678c6eb-3815-a360-f495-fc246513f0f5@isovalent.com>
+From: David Gow <davidgow@google.com>
+Date: Thu, 17 Dec 2020 17:05:59 +0800
+Message-ID: <CABVgOSmRrtHQ_6n43kFk6MFYCpf+cS-E=TOiwS=__v6wGNeMNQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] bpf: preload: Fix build error when O= is set
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -21,591 +27,113 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+To: Quentin Monnet <quentin@isovalent.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, Networking <netdev@vger.kernel.org>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, Brendan Higgins <brendanhiggins@google.com>, Alexei Starovoitov <ast@kernel.org>, open list <linux-kernel@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>, Masami Hiramatsu <mhiramat@kernel.org>, bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii.nakryiko@gmail.com>
 
-From: Johannes Berg <johannes.berg@intel.com>
+On Wed, Dec 16, 2020 at 10:53 PM Quentin Monnet <quentin@isovalent.com> wrote:
+>
+> 2020-11-21 17:48 UTC+0800 ~ David Gow <davidgow@google.com>
+> > On Sat, Nov 21, 2020 at 3:38 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> >>
+> >> On Thu, Nov 19, 2020 at 12:51 AM David Gow <davidgow@google.com> wrote:
+> >>>
+> >>> If BPF_PRELOAD is enabled, and an out-of-tree build is requested with
+> >>> make O=<path>, compilation seems to fail with:
+> >>>
+> >>> tools/scripts/Makefile.include:4: *** O=.kunit does not exist.  Stop.
+> >>> make[4]: *** [../kernel/bpf/preload/Makefile:8: kernel/bpf/preload/libbpf.a] Error 2
+> >>> make[3]: *** [../scripts/Makefile.build:500: kernel/bpf/preload] Error 2
+> >>> make[2]: *** [../scripts/Makefile.build:500: kernel/bpf] Error 2
+> >>> make[2]: *** Waiting for unfinished jobs....
+> >>> make[1]: *** [.../Makefile:1799: kernel] Error 2
+> >>> make[1]: *** Waiting for unfinished jobs....
+> >>> make: *** [Makefile:185: __sub-make] Error 2
+> >>>
+> >>> By the looks of things, this is because the (relative path) O= passed on
+> >>> the command line is being passed to the libbpf Makefile, which then
+> >>> can't find the directory. Given OUTPUT= is being passed anyway, we can
+> >>> work around this by explicitly setting an empty O=, which will be
+> >>> ignored in favour of OUTPUT= in tools/scripts/Makefile.include.
+> >>
+> >> Strange, but I can't repro it. I use make O=<absolute path> all the
+> >> time with no issues. I just tried specifically with a make O=.build,
+> >> where .build is inside Linux repo, and it still worked fine. See also
+> >> be40920fbf10 ("tools: Let O= makes handle a relative path with -C
+> >> option") which was supposed to address such an issue. So I'm wondering
+> >> what exactly is causing this problem.
+> >>
+> > [+ linux-um list]
+> >
+> > Hmm... From a quick check, I can't reproduce this on x86, so it's
+> > possibly a UML-specific issue.
+> >
+> > The problem here seems to be that $PWD is, for whatever reason, equal
+> > to the srcdir on x86, but not on UML. In general, $PWD behaves pretty
+> > weirdly -- I don't fully understand it -- but if I add a tactical "PWD
+> > := $(shell pwd)" or use $(CURDIR) instead, the issue shows up on x86
+> > as well. I guess this is because PWD only gets updated when set by a
+> > shell or something, and UML does this somewhere?
+> >
+> > Thoughts?
+> >
+> > Cheers,
+> > -- David
+>
+> Hi David, Andrii,
+>
+> David, did you use a different command for building for UML and x86? I'm
+> asking because I reproduce on x86, but only for some targets, in
+> particular when I tried bindeb-pkg.
 
-Add a pseudo RTC that simply is able to send an alarm signal
-waking up the system at a given time in the future.
+I just ran "make ARCH={x86,um} O=.bpftest", with defconfig + enabling
+BPF_PRELOAD and its dependencies. UML fails, x86 works. (Though I can
+reproduce the failure if I make bindeb-pkg on x86).
 
-Since apparently timerfd_create() FDs don't (always?) support
-SIGIO, we fork a background thread that does nothing but wait
-for control input. If the alarm is enabled it wakes up at the
-right time to send an interrupt back to the system.
+(It also shows up when building UML with the allyesconfig-based KUnit
+alltests option by running "./tools/testing/kunit/kunit.py run
+--alltests", though this understandably takes a long time and is less
+obvious)
+>
+> With "make O=.build vmlinux", I have:
+> - $(O) for "dummy" check in tools/scripts/Makefile.include set to
+> /linux/.build
+> - $(PWD) for same check set to /linux/tools
+> - Since $(O) is an absolute path, the "dummy" check passes
+>
+> With "make O=.build bindeb-pkg", I have instead:
+> - $(O) set to .build (relative path)
+> - $(PWD) set to /linux/.build
+> - "dummy" check changes to /linux/.build and searches for .build in it,
+> which fails and aborts the build
+>
+> (tools/scripts/Makefile.include is included from libbpf's Makefile,
+> called from kernel/bpf/preload/Makefile.)
+>
+> I'm not sure how exactly the bindeb-pkg target ends up passing these values.
 
-This probably isn't _quite_ right since it doesn't specifically
-use CLOCK_REALTIME, and thus if time changes on the host we'll
-not wake up at the right time, but it will let us test suspend
-and RTC-initiated resume.
+Yeah: I haven't been able to find where uml is changing them either:
+I'm assuming there's something which changes directory and/or spawns a
+shell/recursive make to change $(PWD) or something.
 
-For time-travel mode, OTOH, just add an event at the specified
-time in the future, and that's already sufficient to wake up
-the system at that point in time since suspend will just be in
-an "endless wait".
+> For what it's worth, I have been solving this (before finding this
+> thread) with a fix close to yours, I pass "O=$(abspath .)" on the
+> command line for building libbpf in kernel/bpf/preload/Makefile. It
+> looked consistent to me with the "tools/:" target from the main
+> Makefile, where "O=$(abspath $(objtree))" is passed (and $(objtree) is ".").
 
-For s2idle support also call pm_system_wakeup().
+Given that there are several targets being broken here, it's probably
+worth having a fix like this which overrides O= rather than trying to
+hunt down every target which could change $(PWD). I don't particularly
+mind whether we use O= or O=$(abspath .), both are working in the UML
+usecase as well.
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
-v8:
- * make sure the helper thread dies (by removing CLONE_FILES)
----
- arch/um/drivers/Kconfig               |  11 ++
- arch/um/drivers/Makefile              |   2 +
- arch/um/drivers/rtc.h                 |  15 ++
- arch/um/drivers/rtc_kern.c            | 210 ++++++++++++++++++++++++++
- arch/um/drivers/rtc_user.c            | 194 ++++++++++++++++++++++++
- arch/um/include/linux/time-internal.h |  11 ++
- arch/um/kernel/time.c                 |  10 +-
- 7 files changed, 452 insertions(+), 1 deletion(-)
- create mode 100644 arch/um/drivers/rtc.h
- create mode 100644 arch/um/drivers/rtc_kern.c
- create mode 100644 arch/um/drivers/rtc_user.c
+Does anyone object to basically accepting either this patch as-is, or
+using O=$(abspath .)?
 
-diff --git a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
-index 2e7b8e0e7194..5509e627bbd4 100644
---- a/arch/um/drivers/Kconfig
-+++ b/arch/um/drivers/Kconfig
-@@ -346,3 +346,14 @@ config VIRTIO_UML
- 	help
- 	  This driver provides support for virtio based paravirtual device
- 	  drivers over vhost-user sockets.
-+
-+config UML_RTC
-+	bool "UML RTC driver"
-+	depends on RTC_CLASS
-+	# there's no use in this if PM_SLEEP isn't enabled ...
-+	depends on PM_SLEEP
-+	help
-+	  When PM_SLEEP is configured, it may be desirable to wake up using
-+	  rtcwake, especially in time-travel mode. This driver enables that
-+	  by providing a fake RTC clock that causes a wakeup at the right
-+	  time.
-diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
-index 2a249f619467..dcc64a02f81f 100644
---- a/arch/um/drivers/Makefile
-+++ b/arch/um/drivers/Makefile
-@@ -17,6 +17,7 @@ hostaudio-objs := hostaudio_kern.o
- ubd-objs := ubd_kern.o ubd_user.o
- port-objs := port_kern.o port_user.o
- harddog-objs := harddog_kern.o harddog_user.o
-+rtc-objs := rtc_kern.o rtc_user.o
- 
- LDFLAGS_pcap.o = $(shell $(CC) $(KBUILD_CFLAGS) -print-file-name=libpcap.a)
- 
-@@ -62,6 +63,7 @@ obj-$(CONFIG_UML_WATCHDOG) += harddog.o
- obj-$(CONFIG_BLK_DEV_COW_COMMON) += cow_user.o
- obj-$(CONFIG_UML_RANDOM) += random.o
- obj-$(CONFIG_VIRTIO_UML) += virtio_uml.o
-+obj-$(CONFIG_UML_RTC) += rtc.o
- 
- # pcap_user.o must be added explicitly.
- USER_OBJS := fd.o null.o pty.o tty.o xterm.o slip_common.o pcap_user.o vde_user.o vector_user.o
-diff --git a/arch/um/drivers/rtc.h b/arch/um/drivers/rtc.h
-new file mode 100644
-index 000000000000..95e41c7d35c4
---- /dev/null
-+++ b/arch/um/drivers/rtc.h
-@@ -0,0 +1,15 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2020 Intel Corporation
-+ * Author: Johannes Berg <johannes@sipsolutions.net>
-+ */
-+#ifndef __UM_RTC_H__
-+#define __UM_RTC_H__
-+
-+int uml_rtc_start(bool timetravel);
-+int uml_rtc_enable_alarm(unsigned long long delta_seconds);
-+void uml_rtc_disable_alarm(void);
-+void uml_rtc_stop(bool timetravel);
-+void uml_rtc_send_timetravel_alarm(void);
-+
-+#endif /* __UM_RTC_H__ */
-diff --git a/arch/um/drivers/rtc_kern.c b/arch/um/drivers/rtc_kern.c
-new file mode 100644
-index 000000000000..d4ae97ff7aea
---- /dev/null
-+++ b/arch/um/drivers/rtc_kern.c
-@@ -0,0 +1,210 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2020 Intel Corporation
-+ * Author: Johannes Berg <johannes@sipsolutions.net>
-+ */
-+#include <linux/platform_device.h>
-+#include <linux/time-internal.h>
-+#include <linux/suspend.h>
-+#include <linux/err.h>
-+#include <linux/rtc.h>
-+#include <kern_util.h>
-+#include <irq_kern.h>
-+#include <os.h>
-+#include "rtc.h"
-+
-+static time64_t uml_rtc_alarm_time;
-+static bool uml_rtc_alarm_enabled;
-+static struct rtc_device *uml_rtc;
-+static int uml_rtc_irq_fd, uml_rtc_irq;
-+
-+#ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
-+
-+static void uml_rtc_time_travel_alarm(struct time_travel_event *ev)
-+{
-+	uml_rtc_send_timetravel_alarm();
-+}
-+
-+static struct time_travel_event uml_rtc_alarm_event = {
-+	.fn = uml_rtc_time_travel_alarm,
-+};
-+#endif
-+
-+static int uml_rtc_read_time(struct device *dev, struct rtc_time *tm)
-+{
-+	struct timespec64 ts;
-+
-+	/* Use this to get correct time in time-travel mode */
-+	read_persistent_clock64(&ts);
-+	rtc_time64_to_tm(timespec64_to_ktime(ts) / NSEC_PER_SEC, tm);
-+
-+	return 0;
-+}
-+
-+static int uml_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alrm)
-+{
-+	rtc_time64_to_tm(uml_rtc_alarm_time, &alrm->time);
-+	alrm->enabled = uml_rtc_alarm_enabled;
-+
-+	return 0;
-+}
-+
-+static int uml_rtc_alarm_irq_enable(struct device *dev, unsigned int enable)
-+{
-+	unsigned long long secs;
-+
-+	if (!enable && !uml_rtc_alarm_enabled)
-+		return 0;
-+
-+	uml_rtc_alarm_enabled = enable;
-+
-+	secs = uml_rtc_alarm_time - ktime_get_real_seconds();
-+
-+	if (time_travel_mode == TT_MODE_OFF) {
-+		if (!enable) {
-+			uml_rtc_disable_alarm();
-+			return 0;
-+		}
-+
-+		/* enable or update */
-+		return uml_rtc_enable_alarm(secs);
-+	} else {
-+		time_travel_del_event(&uml_rtc_alarm_event);
-+
-+		if (enable)
-+			time_travel_add_event_rel(&uml_rtc_alarm_event,
-+						  secs * NSEC_PER_SEC);
-+	}
-+
-+	return 0;
-+}
-+
-+static int uml_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alrm)
-+{
-+	uml_rtc_alarm_irq_enable(dev, 0);
-+	uml_rtc_alarm_time = rtc_tm_to_time64(&alrm->time);
-+	uml_rtc_alarm_irq_enable(dev, alrm->enabled);
-+
-+	return 0;
-+}
-+
-+static const struct rtc_class_ops uml_rtc_ops = {
-+	.read_time = uml_rtc_read_time,
-+	.read_alarm = uml_rtc_read_alarm,
-+	.alarm_irq_enable = uml_rtc_alarm_irq_enable,
-+	.set_alarm = uml_rtc_set_alarm,
-+};
-+
-+static irqreturn_t uml_rtc_interrupt(int irq, void *data)
-+{
-+	char c = -1;
-+
-+	/* alarm triggered, it's now off */
-+	uml_rtc_alarm_enabled = false;
-+
-+	os_read_file(uml_rtc_irq_fd, &c, sizeof(c));
-+	WARN_ON(c);
-+
-+	pm_system_wakeup();
-+	rtc_update_irq(uml_rtc, 1, RTC_IRQF | RTC_AF);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static int uml_rtc_setup(void)
-+{
-+	int err;
-+
-+	err = uml_rtc_start(time_travel_mode != TT_MODE_OFF);
-+	if (err < 0)
-+		return err;
-+
-+	uml_rtc_irq_fd = err;
-+
-+	err = um_request_irq(UM_IRQ_ALLOC, uml_rtc_irq_fd, IRQ_READ,
-+			     uml_rtc_interrupt, 0, "rtc", NULL);
-+	if (err < 0) {
-+		uml_rtc_stop(time_travel_mode != TT_MODE_OFF);
-+		return err;
-+	}
-+
-+	irq_set_irq_wake(err, 1);
-+
-+	uml_rtc_irq = err;
-+	return 0;
-+}
-+
-+static void uml_rtc_cleanup(void)
-+{
-+	um_free_irq(uml_rtc_irq, NULL);
-+	uml_rtc_stop(time_travel_mode != TT_MODE_OFF);
-+}
-+
-+static int uml_rtc_probe(struct platform_device *pdev)
-+{
-+	int err;
-+
-+	err = uml_rtc_setup();
-+	if (err)
-+		return err;
-+
-+	uml_rtc = devm_rtc_allocate_device(&pdev->dev);
-+	if (IS_ERR(uml_rtc)) {
-+		err = PTR_ERR(uml_rtc);
-+		goto cleanup;
-+	}
-+
-+	uml_rtc->ops = &uml_rtc_ops;
-+
-+	err = rtc_register_device(uml_rtc);
-+	if (err)
-+		goto cleanup;
-+
-+	device_init_wakeup(&pdev->dev, 1);
-+	return 0;
-+cleanup:
-+	uml_rtc_cleanup();
-+	return err;
-+}
-+
-+static int uml_rtc_remove(struct platform_device *pdev)
-+{
-+	device_init_wakeup(&pdev->dev, 0);
-+	uml_rtc_cleanup();
-+	return 0;
-+}
-+
-+static struct platform_driver uml_rtc_driver = {
-+	.probe = uml_rtc_probe,
-+	.remove = uml_rtc_remove,
-+	.driver = {
-+		.name = "uml-rtc",
-+	},
-+};
-+
-+static int __init uml_rtc_init(void)
-+{
-+	struct platform_device *pdev;
-+	int err;
-+
-+	err = platform_driver_register(&uml_rtc_driver);
-+	if (err)
-+		return err;
-+
-+	pdev = platform_device_alloc("uml-rtc", 0);
-+	if (!pdev) {
-+		err = -ENOMEM;
-+		goto unregister;
-+	}
-+
-+	err = platform_device_add(pdev);
-+	if (err)
-+		goto unregister;
-+	return 0;
-+
-+unregister:
-+	platform_device_put(pdev);
-+	platform_driver_unregister(&uml_rtc_driver);
-+	return err;
-+}
-+device_initcall(uml_rtc_init);
-diff --git a/arch/um/drivers/rtc_user.c b/arch/um/drivers/rtc_user.c
-new file mode 100644
-index 000000000000..01b9eae405e9
---- /dev/null
-+++ b/arch/um/drivers/rtc_user.c
-@@ -0,0 +1,194 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2020 Intel Corporation
-+ * Author: Johannes Berg <johannes@sipsolutions.net>
-+ */
-+#include <os.h>
-+#include <errno.h>
-+#include <sched.h>
-+#include <unistd.h>
-+#include <kern_util.h>
-+#include <sys/select.h>
-+#include <stdio.h>
-+#include "rtc.h"
-+
-+/*
-+ * It seems we should just be able to use a timerfd here,
-+ * but apparently they don't send SIGIO. So use our own
-+ * helper thread instead.
-+ */
-+
-+static unsigned long uml_rtc_stack;
-+static int uml_rtc_comm_fds[2];
-+static int uml_rtc_irq_fds[2];
-+static int uml_rtc_thread_pid;
-+
-+struct uml_rtc_message {
-+	unsigned long long secs;
-+	bool enabled;
-+};
-+
-+static int uml_rtc_signal_wake(int fd)
-+{
-+	char c = 0;
-+	int err;
-+
-+	CATCH_EINTR(err = write(fd, &c, sizeof(c)));
-+	if (err != 1) {
-+		printf("rtc helper: failed to write irq (errno=%d)\n",
-+		       errno);
-+		fflush(stdout);
-+		return -EIO;
-+	}
-+
-+	return 0;
-+}
-+
-+void uml_rtc_send_timetravel_alarm(void)
-+{
-+	uml_rtc_signal_wake(uml_rtc_irq_fds[1]);
-+}
-+
-+static int uml_rtc_thread(void *_data)
-+{
-+	struct timeval timeout = {};
-+	bool enabled = false;
-+
-+	os_fix_helper_signals();
-+
-+	os_close_file(uml_rtc_irq_fds[0]);
-+	os_close_file(uml_rtc_comm_fds[0]);
-+
-+	while (1) {
-+		fd_set fdset;
-+		int readable, err;
-+
-+		FD_ZERO(&fdset);
-+		FD_SET(uml_rtc_comm_fds[1], &fdset);
-+
-+		readable = select(uml_rtc_comm_fds[1] + 1, &fdset, NULL, NULL,
-+				  enabled ? &timeout : NULL);
-+		if (readable == 1) {
-+			struct uml_rtc_message msg;
-+			char c = 0;
-+
-+			CATCH_EINTR(err = read(uml_rtc_comm_fds[1], &msg,
-+					       sizeof(msg)));
-+			if (err != sizeof(msg)) {
-+				fflush(stdout);
-+				return -EIO;
-+			}
-+
-+			enabled = msg.enabled;
-+			timeout.tv_usec = 0;
-+			timeout.tv_sec = msg.secs;
-+
-+			CATCH_EINTR(err = write(uml_rtc_comm_fds[1], &c,
-+						sizeof(c)));
-+			if (err != 1) {
-+				fflush(stdout);
-+				return -EIO;
-+			}
-+		} else if (readable == 0) {
-+			enabled = false;
-+
-+			err = uml_rtc_signal_wake(uml_rtc_irq_fds[1]);
-+			if (err)
-+				return err;
-+		}
-+		/* else ... should we update the timeout if enabled? */
-+	}
-+
-+	return 0;
-+}
-+
-+int uml_rtc_send(struct uml_rtc_message *msg)
-+{
-+	char c;
-+	int err;
-+
-+	CATCH_EINTR(err = write(uml_rtc_comm_fds[0], msg, sizeof(*msg)));
-+	if (err != sizeof(*msg))
-+		return err >= 0 ? -EPIPE : err;
-+
-+	CATCH_EINTR(err = read(uml_rtc_comm_fds[0], &c, sizeof(c)));
-+	if (err != sizeof(c))
-+		return err >= 0 ? -EPIPE : err;
-+
-+	return 0;
-+}
-+
-+int uml_rtc_start(bool timetravel)
-+{
-+	struct uml_rtc_message msg = {
-+		.enabled = false,
-+	};
-+	int err;
-+
-+	if (uml_rtc_stack)
-+		return -EBUSY;
-+
-+	err = os_pipe(uml_rtc_irq_fds, 1, 1);
-+	if (err)
-+		return err;
-+
-+	if (!timetravel) {
-+		err = os_pipe(uml_rtc_comm_fds, 1, 1);
-+		if (err)
-+			goto fail;
-+
-+		err = run_helper_thread(uml_rtc_thread, NULL, 0,
-+					&uml_rtc_stack);
-+		if (err < 0)
-+			goto fail;
-+		uml_rtc_thread_pid = err;
-+
-+		err = uml_rtc_send(&msg);
-+		if (err)
-+			goto fail;
-+	}
-+
-+	return uml_rtc_irq_fds[0];
-+
-+fail:
-+	uml_rtc_stop(timetravel);
-+	return err;
-+}
-+
-+int uml_rtc_enable_alarm(unsigned long long delta_seconds)
-+{
-+	struct uml_rtc_message msg = {
-+		.enabled = true,
-+		.secs = delta_seconds,
-+	};
-+
-+	return uml_rtc_send(&msg);
-+}
-+
-+void uml_rtc_disable_alarm(void)
-+{
-+	struct uml_rtc_message msg = {
-+		.enabled = false,
-+	};
-+
-+	uml_rtc_send(&msg);
-+}
-+
-+void uml_rtc_stop(bool timetravel)
-+{
-+	os_close_file(uml_rtc_irq_fds[1]);
-+	os_close_file(uml_rtc_irq_fds[0]);
-+
-+	if (timetravel)
-+		return;
-+
-+	os_close_file(uml_rtc_comm_fds[1]);
-+	os_close_file(uml_rtc_comm_fds[0]);
-+
-+	if (uml_rtc_thread_pid)
-+		os_kill_process(uml_rtc_thread_pid, 1);
-+	if (uml_rtc_stack)
-+		free_stack(uml_rtc_stack, 0);
-+	uml_rtc_thread_pid = 0;
-+	uml_rtc_stack = 0;
-+}
-diff --git a/arch/um/include/linux/time-internal.h b/arch/um/include/linux/time-internal.h
-index 68e45e950137..088d6a4c0b9d 100644
---- a/arch/um/include/linux/time-internal.h
-+++ b/arch/um/include/linux/time-internal.h
-@@ -54,6 +54,9 @@ static inline void time_travel_wait_readable(int fd)
- }
- 
- void time_travel_add_irq_event(struct time_travel_event *e);
-+void time_travel_add_event_rel(struct time_travel_event *e,
-+			       unsigned long long delay_ns);
-+bool time_travel_del_event(struct time_travel_event *e);
- #else
- struct time_travel_event {
- };
-@@ -74,6 +77,14 @@ static inline void time_travel_propagate_time(void)
- static inline void time_travel_wait_readable(int fd)
- {
- }
-+
-+/*
-+ * not inlines so the data structure need not exist,
-+ * cause linker failures
-+ */
-+extern void time_travel_not_configured(void);
-+#define time_travel_add_event_rel(...) time_travel_not_configured()
-+#define time_travel_del_event(...) time_travel_not_configured()
- #endif /* CONFIG_UML_TIME_TRAVEL_SUPPORT */
- 
- /*
-diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
-index 80d33735cfd2..303565ce8c64 100644
---- a/arch/um/kernel/time.c
-+++ b/arch/um/kernel/time.c
-@@ -302,6 +302,12 @@ static void time_travel_add_event(struct time_travel_event *e,
- 	__time_travel_add_event(e, time);
- }
- 
-+void time_travel_add_event_rel(struct time_travel_event *e,
-+			       unsigned long long delay_ns)
-+{
-+	time_travel_add_event(e, time_travel_time + delay_ns);
-+}
-+
- void time_travel_periodic_timer(struct time_travel_event *e)
- {
- 	time_travel_add_event(&time_travel_timer_event,
-@@ -328,7 +334,7 @@ static void time_travel_deliver_event(struct time_travel_event *e)
- 	}
- }
- 
--static bool time_travel_del_event(struct time_travel_event *e)
-+bool time_travel_del_event(struct time_travel_event *e)
- {
- 	if (!e->pending)
- 		return false;
-@@ -504,6 +510,8 @@ extern u64 time_travel_ext_req(u32 op, u64 time);
- 
- /* these are empty macros so the struct/fn need not exist */
- #define time_travel_add_event(e, time) do { } while (0)
-+/* externally not usable - redefine here so we can */
-+#undef time_travel_del_event
- #define time_travel_del_event(e) do { } while (0)
- #endif
- 
--- 
-2.26.2
 
+Cheers,
+-- David
 
 _______________________________________________
 linux-um mailing list
