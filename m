@@ -1,20 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab7.miniserver.com ([37.128.132.42]
- helo=www.kot-begemot.co.uk)
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kmL6A-0001Sv-7N
- for linux-um@lists.infradead.org; Mon, 07 Dec 2020 18:18:59 +0000
-Subject: Re: [PATCH] um: borrow bitops from the x86 tree
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-References: <20201116144426.8415-1-anton.ivanov@cambridgegreys.com>
- <a5ad1be201a7488bdc317bc72776f1465347504f.camel@sipsolutions.net>
- <d2817ac8-e4a9-5d88-468e-03705e986b6e@cambridgegreys.com>
- <cc3181a27ff19403db94385b42ec4a1feb60a965.camel@sipsolutions.net>
- <cd43d9fd-c1e8-d10d-1b39-d1893eb0cdc3@cambridgegreys.com>
-Message-ID: <c20d604f-f26f-aaf7-0d55-57b1c33e4862@cambridgegreys.com>
-Date: Mon, 7 Dec 2020 18:18:53 +0000
+ id 1kqWHz-0005Fw-Oj
+ for linux-um@lists.infradead.org; Sat, 19 Dec 2020 07:04:29 +0000
+Subject: Re: set_page_dirty vs truncate
+References: <20201218160531.GL15600@casper.infradead.org>
+ <20201218220316.GO15600@casper.infradead.org>
+ <20201219051852.GP15600@casper.infradead.org>
+ <7a7c3052-74c7-c63b-5fe3-65d692c1c5d1@nvidia.com>
+ <20201219065057.GR15600@casper.infradead.org>
+From: John Hubbard <jhubbard@nvidia.com>
+Message-ID: <43f05a8f-25ce-a400-5825-d8fa159ee7f6@nvidia.com>
+Date: Fri, 18 Dec 2020 23:04:23 -0800
 MIME-Version: 1.0
-In-Reply-To: <cd43d9fd-c1e8-d10d-1b39-d1893eb0cdc3@cambridgegreys.com>
+In-Reply-To: <20201219065057.GR15600@casper.infradead.org>
 Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -24,39 +23,87 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
-Cc: richard@nod.at
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Martin Brandenburg <martin@omnibond.com>, linux-cifs@vger.kernel.org, jfs-discussion@lists.sourceforge.net, Miklos Szeredi <miklos@szeredi.hu>, Dave Kleikamp <shaggy@kernel.org>, Richard Weinberger <richard@nod.at>, Dominique Martinet <asmadeus@codewreck.org>, linux-um@lists.infradead.org, linux-nfs@vger.kernel.org, Trond Myklebust <trond.myklebust@hammerspace.com>, Steve French <sfrench@samba.org>, linux-ntfs-dev@lists.sourceforge.net, Hans de Goede <hdegoede@redhat.com>, devel@lists.orangefs.org, Anna Schumaker <anna.schumaker@netapp.com>, linux-fsdevel@vger.kernel.org, v9fs-developer@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, Anton Altaparmakov <anton@tuxera.com>, Mike Marshall <hubcap@omnibond.com>
 
-T24gMTcvMTEvMjAyMCAxMjo1MywgQW50b24gSXZhbm92IHdyb3RlOgo+IE9uIDE3LzExLzIwMjAg
-MTI6MTEsIEpvaGFubmVzIEJlcmcgd3JvdGU6Cj4+IE9uIFR1ZSwgMjAyMC0xMS0xNyBhdCAxMTo0
-NiArMDAwMCwgQW50b24gSXZhbm92IHdyb3RlOgo+Pj4KPj4+IE15IHVzdWFsIHRlc3QgaXM6Cj4+
-Pgo+Pj4gwqDCoCB0aW1lIGJ1c3lib3ggZmluZCAvdXNyL2xpYi8gLXR5cGUgZiAtZXhlYyBjYXQg
-e30gPiAvZGV2L251bGwgXDsKPj4+Cj4+PiBJIGRpc2NhcmQgdGhlIGZpcnN0IHJ1biBhbmQgdXNl
-IG9ubHkgcnVucyBmcm9tIGZzIGNhY2hlLgo+Pgo+PiBPaC4gSSBkaWRuJ3QgZXZlbiBydW4gdGhl
-IHRpbWluZyBpbnNpZGUuIEkgcmFuIGl0ICpvdXRzaWRlKiwgc29tZXRoaW5nCj4+IGxpa2UKPj4K
-Pj4gdGltZSAuL2xpbnV4IGFyZ3MuLi4gaW5pdD0vcGF0aC90by90ZXN0LXNjcmlwdC5zaAo+IAo+
-IEkgdXN1YWxseSBkbyBhIGZ1bGwgc2V0IG9mIHRlc3RzIG9uIGZzIGFjY2VzcywgZGV2aWNlIElP
-IGFjY2VzcyBhbmQgYSAKPiBuZXRwZXJmIGFmdGVyIGVhY2ggcGF0Y2guCj4gCj4gQmFzZWQgb24g
-dGhlbSBpdCBsb29rcyBsaWtlIGl0IGlzIHdvcnRoIGl0Lgo+IAo+IFRoZSBtb3JlIGludGVyZXN0
-aW5nIHF1ZXN0aW9uIGlzIC0gaXMgdGhpcyB0aGUgcmlnaHQgb3JnYW5pemF0aW9uPwo+IAo+IFdl
-IGhhdmUgc3R1ZmYgaW4gbXVsdGlwbGUgcGxhY2VzIG5vdyAtIGFyY2gveDg2L3VtICwgYXJjaC91
-bSwgZXRjLgo+IAo+IElNSE8sIHdlIHNob3VsZCBwcm9iYWJseSBsb29rIGF0IGdldHRpbmcgaXQg
-b3JnYW5pemVkIHNvIHRoYXQgYWxsIAo+IHN1Yi1hcmNoZXMgYXJlIHVuZGVyIHRoZSB1bSB0cmVl
-IGF0IHNvbWUgcG9pbnQuCgoKSW4gdGhlIG1lYW50aW1lLCBhIGJhY2twb3J0IG9mIHRoZXNlIHBh
-dGNoc2V0cyAoc3RyaW5nLCBhdG9taWMsIGJpdG9wcywgCnhvciwgZnV0ZXgsIGV0YykgdG8gT3Bl
-bldSVC9VTUwgaGFzIGNsb2NrZWQgMTQgZGF5cyBhcyBteSBtYWluIENQRS4KCkkgaGF2ZSBub3Qg
-b2JzZXJ2ZWQgYW55IHN0YWJpbGl0eSBpc3N1ZXMgYW5kIHRoZXJlIGlzIHNvbWUgdmlzaWJsZSAK
-aW1wcm92ZW1lbnQgaW4gQ1BVIHVzYWdlLgoKCj4gCj4+Cj4+IGpvaGFubmVzCj4+Cj4+Cj4+IF9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+IGxpbnV4LXVt
-IG1haWxpbmcgbGlzdAo+PiBsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCj4+IGh0dHA6Ly9s
-aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0KPj4KPiAKPiAKCgot
-LSAKQW50b24gUi4gSXZhbm92CkNhbWJyaWRnZWdyZXlzIExpbWl0ZWQuIFJlZ2lzdGVyZWQgaW4g
-RW5nbGFuZC4gQ29tcGFueSBOdW1iZXIgMTAyNzM2NjEKaHR0cHM6Ly93d3cuY2FtYnJpZGdlZ3Jl
-eXMuY29tLwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-bGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
-L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
+On 12/18/20 10:50 PM, Matthew Wilcox wrote:
+...
+>>> Hmmm ... looks like __set_page_dirty_nobuffers() has a similar problem:
+>>>
+>>> {
+>>>           lock_page_memcg(page);
+>>>           if (!TestSetPageDirty(page)) {
+>>>                   struct address_space *mapping = page_mapping(page);
+>>>                   unsigned long flags;
+>>>
+>>>                   if (!mapping) {
+>>>                           unlock_page_memcg(page);
+>>>                           return 1;
+>>>                   }
+>>>
+>>>                   xa_lock_irqsave(&mapping->i_pages, flags);
+>>>                   BUG_ON(page_mapping(page) != mapping);
+>>>
+>>> sure, we check that the page wasn't truncated between set_page_dirty()
+>>> and the call to TestSetPageDirty(), but we can truncate dirty pages
+>>> with no problem.  So between the call to TestSetPageDirty() and
+>>> the call to xa_lock_irqsave(), the page can be truncated, and the
+>>> BUG_ON should fire.
+>>>
+>>> I haven't been able to find any examples of this, but maybe it's just a very
+>>> narrow race.  Does anyone recognise this signature?  Adding the filesystems
+>>> which use __set_page_dirty_nobuffers() directly without extra locking.
+>>
+>>
+>> That sounds like the same *kind* of failure that Jan Kara and I were
+>> seeing on live systems[1], that led eventually to the gup-to-pup
+>> conversion exercise.
+>>
+>> That crash happened due to calling set_page_dirty() on pages that had no
+>> buffers on them [2]. And that sounds like *exactly* the same thing as
+>> calling __set_page_dirty_nobuffers() without extra locking. So I'd
+>> expect that it's Just Wrong To Do, for the same reasons as Jan spells
+>> out very clearly in [1].
+> 
+> Interesting.  It's a bit different, *but* Jan's race might be what's
+> causing this symptom.  The reason is that the backtrace contains
+> set_page_dirty_lock() which holds the page lock.  So there can't be
+> a truncation race because truncate holds the page lock when calling
+> ->invalidatepage.
+> 
+> That said, the syzbot reproducer doesn't have any O_DIRECT in it
+> either.  So maybe this is some other race?
+
+Jan's race can be also be reproduced *without* O_DIRECT. I first saw
+it via a program that just did these steps on a normal ext4 filesystem:
+
+a) pin ext4 file-backed pages, via get_user_pages(). Actually the way
+it got here was due to using what *looked* like anonymous RAM to the
+program, but was really file-backed RAM, because the admin had it
+set up to mount ext4 on /tmp, instead of using tmpfs, to "save RAM",
+but I digress. :)
+
+b) wait a while, optionally do some DMA on the pages from a GPU, drink
+coffee...
+
+c) call set_pages_dirty()
+
+d) unpin the pages
+
+e) BUG_ON() in page_buffers().
+
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
