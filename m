@@ -1,23 +1,23 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from web2.default.djames.uk0.bigv.io ([2001:41c8:51:1f6::246])
+Received: from mail-wr1-x435.google.com ([2a00:1450:4864:20::435])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kvhb0-0006M8-Iw
- for linux-um@lists.infradead.org; Sat, 02 Jan 2021 14:09:31 +0000
-Received: from mail-io1-f42.google.com ([209.85.166.42])
- by web2.default.djames.uk0.bigv.io with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.89)
- (envelope-from <chris@64studio.com>) id 1kvhaa-0000Qc-8V
- for linux-um@lists.infradead.org; Sat, 02 Jan 2021 14:09:04 +0000
-Received: by mail-io1-f42.google.com with SMTP id p187so20905283iod.4
- for <linux-um@lists.infradead.org>; Sat, 02 Jan 2021 06:09:04 -0800 (PST)
+ id 1kvhVd-0005wq-CN
+ for linux-um@lists.infradead.org; Sat, 02 Jan 2021 14:03:58 +0000
+Received: by mail-wr1-x435.google.com with SMTP id r3so26492105wrt.2
+ for <linux-um@lists.infradead.org>; Sat, 02 Jan 2021 06:03:54 -0800 (PST)
+Received: from ?IPv6:2a02:c7f:488e:de00:f7c6:fee1:4d55:b3b3?
+ ([2a02:c7f:488e:de00:f7c6:fee1:4d55:b3b3])
+ by smtp.gmail.com with ESMTPSA id b14sm78263428wrx.77.2021.01.02.06.03.52
+ for <linux-um@lists.infradead.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Sat, 02 Jan 2021 06:03:52 -0800 (PST)
+From: Joshua Hawking <joshuahawking1@gmail.com>
+Subject: [PATCH] um: Fix null pointer dereference when parsing ubd commandline
+ arguments
+Message-ID: <0c7b460e-1929-bf42-2ade-f99f97d45428@gmail.com>
+Date: Sat, 2 Jan 2021 14:03:52 +0000
 MIME-Version: 1.0
-References: <0c7b460e-1929-bf42-2ade-f99f97d45428@gmail.com>
-In-Reply-To: <0c7b460e-1929-bf42-2ade-f99f97d45428@gmail.com>
-From: Christopher Obbard <chris@64studio.com>
-Date: Sat, 2 Jan 2021 14:08:52 +0000
-Message-ID: <CAP03Xep=BNW_K4S5QNLOmgvzMK4yr=Y2P_qYOkK9MsU41jvJew@mail.gmail.com>
-Subject: Re: [PATCH] um: Fix null pointer dereference when parsing ubd
- commandline arguments
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -26,70 +26,39 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Joshua Hawking <joshuahawking1@gmail.com>
-Cc: linux-um@lists.infradead.org
+To: linux-um@lists.infradead.org
 
-Hi Joshua,
-See http://lists.infradead.org/pipermail/linux-um/2020-December/000983.html
-this patch hasn't yet been applied to linux-next, it will probably
-arrive for 5.11rc2
-
-Thanks!
-Chris
-
-On Sat, 2 Jan 2021 at 14:04, Joshua Hawking <joshuahawking1@gmail.com> wrote:
->
-> From: Adam Watson (aw414141@gmail.com)
->
-> When passing one or two arguments to ubd during UML setup - i.e.
-> ubd0=File or ubd0=File,Backing_File - the parsing code introduced in commit
-> ef3ba87cb7c9 ("um: ubd: Set device serial attribute from cmdline") does
-> not check
-> whether strsep consumed the entire string without finding a delimeter
-> last time
-> it was called (and so has set str to NULL, causing the next output of strsep
-> on that string to be NULL) before attempting to dereference the output of it
-> inside the if statements. For example, with two arguments (and only 1
-> comma/colon), serial will be NULL, and (*serial == '\0') causes a null
-> pointer
-> dereference.
->
-> Signed-off-by: Adam Watson (aw414141@gmail.com)
-> Signed-off-by: Joshua Hawking (joshuahawking1@gmail.com)
-> Tested-by: Joshua Hawking (joshuahawking1@gmail.com)
-> Fixes: ef3ba87cb7c9 ("um: ubd: Set device serial attribute from cmdline")
-> ---
-> --- b/arch/um/drivers/ubd_kern.c    2021-01-02 13:13:55.995018942 +0000
-> +++ a/arch/um/drivers/ubd_kern.c    2021-01-02 13:16:16.847023905 +0000
-> @@ -375,11 +375,11 @@ break_loop:
->          file = NULL;
->
->      backing_file = strsep(&str, ",:");
-> -    if (*backing_file == '\0')
-> +    if (backing_file && *backing_file == '\0')
->          backing_file = NULL;
->
->      serial = strsep(&str, ",:");
-> -    if (*serial == '\0')
-> +    if (serial && *serial == '\0')
->          serial = NULL;
->
->      if (backing_file && ubd_dev->no_cow) {
->
->
->
->
-> _______________________________________________
-> linux-um mailing list
-> linux-um@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-um
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+RnJvbTogQWRhbSBXYXRzb24gKGF3NDE0MTQxQGdtYWlsLmNvbSkKCldoZW4gcGFzc2luZyBvbmUg
+b3IgdHdvIGFyZ3VtZW50cyB0byB1YmQgZHVyaW5nIFVNTCBzZXR1cCAtIGkuZS4KdWJkMD1GaWxl
+IG9yIHViZDA9RmlsZSxCYWNraW5nX0ZpbGUgLSB0aGUgcGFyc2luZyBjb2RlIGludHJvZHVjZWQg
+aW4gY29tbWl0CmVmM2JhODdjYjdjOSAoInVtOiB1YmQ6IFNldCBkZXZpY2Ugc2VyaWFsIGF0dHJp
+YnV0ZSBmcm9tIGNtZGxpbmUiKSBkb2VzCm5vdCBjaGVjawp3aGV0aGVyIHN0cnNlcCBjb25zdW1l
+ZCB0aGUgZW50aXJlIHN0cmluZyB3aXRob3V0IGZpbmRpbmcgYSBkZWxpbWV0ZXIKbGFzdCB0aW1l
+Cml0IHdhcyBjYWxsZWQgKGFuZCBzbyBoYXMgc2V0IHN0ciB0byBOVUxMLCBjYXVzaW5nIHRoZSBu
+ZXh0IG91dHB1dCBvZiBzdHJzZXAKb24gdGhhdCBzdHJpbmcgdG8gYmUgTlVMTCkgYmVmb3JlIGF0
+dGVtcHRpbmcgdG8gZGVyZWZlcmVuY2UgdGhlIG91dHB1dCBvZiBpdAppbnNpZGUgdGhlIGlmIHN0
+YXRlbWVudHMuIEZvciBleGFtcGxlLCB3aXRoIHR3byBhcmd1bWVudHMgKGFuZCBvbmx5IDEKY29t
+bWEvY29sb24pLCBzZXJpYWwgd2lsbCBiZSBOVUxMLCBhbmQgKCpzZXJpYWwgPT0gJ1wwJykgY2F1
+c2VzIGEgbnVsbApwb2ludGVyCmRlcmVmZXJlbmNlLgoKU2lnbmVkLW9mZi1ieTogQWRhbSBXYXRz
+b24gKGF3NDE0MTQxQGdtYWlsLmNvbSkKU2lnbmVkLW9mZi1ieTogSm9zaHVhIEhhd2tpbmcgKGpv
+c2h1YWhhd2tpbmcxQGdtYWlsLmNvbSkKVGVzdGVkLWJ5OiBKb3NodWEgSGF3a2luZyAoam9zaHVh
+aGF3a2luZzFAZ21haWwuY29tKQpGaXhlczogZWYzYmE4N2NiN2M5ICgidW06IHViZDogU2V0IGRl
+dmljZSBzZXJpYWwgYXR0cmlidXRlIGZyb20gY21kbGluZSIpCi0tLQotLS0gYi9hcmNoL3VtL2Ry
+aXZlcnMvdWJkX2tlcm4uY8KgwqAgwqAyMDIxLTAxLTAyIDEzOjEzOjU1Ljk5NTAxODk0MiArMDAw
+MAorKysgYS9hcmNoL3VtL2RyaXZlcnMvdWJkX2tlcm4uY8KgwqAgwqAyMDIxLTAxLTAyIDEzOjE2
+OjE2Ljg0NzAyMzkwNSArMDAwMApAQCAtMzc1LDExICszNzUsMTEgQEAgYnJlYWtfbG9vcDoKwqDC
+oMKgIMKgwqDCoCDCoGZpbGUgPSBOVUxMOwrCoArCoMKgwqAgwqBiYWNraW5nX2ZpbGUgPSBzdHJz
+ZXAoJnN0ciwgIiw6Iik7Ci3CoMKgIMKgaWYgKCpiYWNraW5nX2ZpbGUgPT0gJ1wwJykKK8KgwqAg
+wqBpZiAoYmFja2luZ19maWxlICYmICpiYWNraW5nX2ZpbGUgPT0gJ1wwJykKwqDCoMKgIMKgwqDC
+oCDCoGJhY2tpbmdfZmlsZSA9IE5VTEw7CsKgCsKgwqDCoCDCoHNlcmlhbCA9IHN0cnNlcCgmc3Ry
+LCAiLDoiKTsKLcKgwqAgwqBpZiAoKnNlcmlhbCA9PSAnXDAnKQorwqDCoCDCoGlmIChzZXJpYWwg
+JiYgKnNlcmlhbCA9PSAnXDAnKQrCoMKgwqAgwqDCoMKgIMKgc2VyaWFsID0gTlVMTDsKwqAKwqDC
+oMKgIMKgaWYgKGJhY2tpbmdfZmlsZSAmJiB1YmRfZGV2LT5ub19jb3cpIHsKCgoKCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcg
+bGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
+b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
 
