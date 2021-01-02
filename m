@@ -1,11 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 08/27] alpha: syscalls: switch to generic syscalltbl.sh
-Date: Thu, 28 Jan 2021 09:50:50 +0900
-Message-Id: <20210128005110.2613902-9-masahiroy@kernel.org>
-In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
-References: <20210128005110.2613902-1-masahiroy@kernel.org>
+Received: from mail-wr1-x429.google.com ([2a00:1450:4864:20::429])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kvhdF-0006YX-6m
+ for linux-um@lists.infradead.org; Sat, 02 Jan 2021 14:11:50 +0000
+Received: by mail-wr1-x429.google.com with SMTP id m5so26435084wrx.9
+ for <linux-um@lists.infradead.org>; Sat, 02 Jan 2021 06:11:48 -0800 (PST)
+Subject: Re: [PATCH] um: Fix null pointer dereference when parsing ubd
+ commandline arguments
+References: <0c7b460e-1929-bf42-2ade-f99f97d45428@gmail.com>
+ <CAP03Xep=BNW_K4S5QNLOmgvzMK4yr=Y2P_qYOkK9MsU41jvJew@mail.gmail.com>
+From: Joshua Hawking <joshuahawking1@gmail.com>
+Message-ID: <da820446-790b-3fe7-bde9-a489561772f7@gmail.com>
+Date: Sat, 2 Jan 2021 14:11:46 +0000
 MIME-Version: 1.0
+In-Reply-To: <CAP03Xep=BNW_K4S5QNLOmgvzMK4yr=Y2P_qYOkK9MsU41jvJew@mail.gmail.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,106 +27,65 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-arch@vger.kernel.org, x86@kernel.org
-Cc: linux-xtensa@linux-xtensa.org, linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org, linux-kbuild@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+To: Christopher Obbard <chris@64studio.com>
+Cc: linux-um@lists.infradead.org
 
-As of v5.11-rc1, 12 architectures duplicate similar shell scripts in
-order to generate syscall table headers. My goal is to unify them into
-the single scripts/syscalltbl.sh.
+Aha we didn't see this patch, good to see it was already fixed, thanks!
 
-This commit converts alpha to use scripts/syscalltbl.sh.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- arch/alpha/kernel/syscalls/Makefile      |  7 ++----
- arch/alpha/kernel/syscalls/syscalltbl.sh | 32 ------------------------
- arch/alpha/kernel/systbls.S              |  3 +--
- 3 files changed, 3 insertions(+), 39 deletions(-)
- delete mode 100644 arch/alpha/kernel/syscalls/syscalltbl.sh
-
-diff --git a/arch/alpha/kernel/syscalls/Makefile b/arch/alpha/kernel/syscalls/Makefile
-index 1c42d2d2926d..6610130c67bc 100644
---- a/arch/alpha/kernel/syscalls/Makefile
-+++ b/arch/alpha/kernel/syscalls/Makefile
-@@ -7,7 +7,7 @@ _dummy := $(shell [ -d '$(uapi)' ] || mkdir -p '$(uapi)')	\
- 
- syscall := $(srctree)/$(src)/syscall.tbl
- syshdr := $(srctree)/$(src)/syscallhdr.sh
--systbl := $(srctree)/$(src)/syscalltbl.sh
-+systbl := $(srctree)/scripts/syscalltbl.sh
- 
- quiet_cmd_syshdr = SYSHDR  $@
-       cmd_syshdr = $(CONFIG_SHELL) '$(syshdr)' '$<' '$@'	\
-@@ -16,10 +16,7 @@ quiet_cmd_syshdr = SYSHDR  $@
- 		   '$(syshdr_offset_$(basetarget))'
- 
- quiet_cmd_systbl = SYSTBL  $@
--      cmd_systbl = $(CONFIG_SHELL) '$(systbl)' '$<' '$@'	\
--		   '$(systbl_abis_$(basetarget))'		\
--		   '$(systbl_abi_$(basetarget))'		\
--		   '$(systbl_offset_$(basetarget))'
-+      cmd_systbl = $(CONFIG_SHELL) $(systbl) $< $@
- 
- $(uapi)/unistd_32.h: $(syscall) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
-diff --git a/arch/alpha/kernel/syscalls/syscalltbl.sh b/arch/alpha/kernel/syscalls/syscalltbl.sh
-deleted file mode 100644
-index 85d78d9309ad..000000000000
---- a/arch/alpha/kernel/syscalls/syscalltbl.sh
-+++ /dev/null
-@@ -1,32 +0,0 @@
--#!/bin/sh
--# SPDX-License-Identifier: GPL-2.0
--
--in="$1"
--out="$2"
--my_abis=`echo "($3)" | tr ',' '|'`
--my_abi="$4"
--offset="$5"
--
--emit() {
--	t_nxt="$1"
--	t_nr="$2"
--	t_entry="$3"
--
--	while [ $t_nxt -lt $t_nr ]; do
--		printf "__SYSCALL(%s, sys_ni_syscall, )\n" "${t_nxt}"
--		t_nxt=$((t_nxt+1))
--	done
--	printf "__SYSCALL(%s, %s, )\n" "${t_nxt}" "${t_entry}"
--}
--
--grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
--	nxt=0
--	if [ -z "$offset" ]; then
--		offset=0
--	fi
--
--	while read nr abi name entry ; do
--		emit $((nxt+offset)) $((nr+offset)) $entry
--		nxt=$((nr+1))
--	done
--) > "$out"
-diff --git a/arch/alpha/kernel/systbls.S b/arch/alpha/kernel/systbls.S
-index 9704f22ed5e3..68f3e4f329eb 100644
---- a/arch/alpha/kernel/systbls.S
-+++ b/arch/alpha/kernel/systbls.S
-@@ -7,10 +7,9 @@
- 
- #include <asm/unistd.h>
- 
--#define __SYSCALL(nr, entry, nargs) .quad entry
-+#define __SYSCALL(nr, entry) .quad entry
- 	.data
- 	.align 3
- 	.globl sys_call_table
- sys_call_table:
- #include <asm/syscall_table.h>
--#undef __SYSCALL
--- 
-2.27.0
-
+On 02/01/2021 14:08, Christopher Obbard wrote:
+> Hi Joshua,
+> See http://lists.infradead.org/pipermail/linux-um/2020-December/000983.html
+> this patch hasn't yet been applied to linux-next, it will probably
+> arrive for 5.11rc2
+>
+> Thanks!
+> Chris
+>
+> On Sat, 2 Jan 2021 at 14:04, Joshua Hawking <joshuahawking1@gmail.com> wrote:
+>> From: Adam Watson (aw414141@gmail.com)
+>>
+>> When passing one or two arguments to ubd during UML setup - i.e.
+>> ubd0=File or ubd0=File,Backing_File - the parsing code introduced in commit
+>> ef3ba87cb7c9 ("um: ubd: Set device serial attribute from cmdline") does
+>> not check
+>> whether strsep consumed the entire string without finding a delimeter
+>> last time
+>> it was called (and so has set str to NULL, causing the next output of strsep
+>> on that string to be NULL) before attempting to dereference the output of it
+>> inside the if statements. For example, with two arguments (and only 1
+>> comma/colon), serial will be NULL, and (*serial == '\0') causes a null
+>> pointer
+>> dereference.
+>>
+>> Signed-off-by: Adam Watson (aw414141@gmail.com)
+>> Signed-off-by: Joshua Hawking (joshuahawking1@gmail.com)
+>> Tested-by: Joshua Hawking (joshuahawking1@gmail.com)
+>> Fixes: ef3ba87cb7c9 ("um: ubd: Set device serial attribute from cmdline")
+>> ---
+>> --- b/arch/um/drivers/ubd_kern.c    2021-01-02 13:13:55.995018942 +0000
+>> +++ a/arch/um/drivers/ubd_kern.c    2021-01-02 13:16:16.847023905 +0000
+>> @@ -375,11 +375,11 @@ break_loop:
+>>          file = NULL;
+>>
+>>      backing_file = strsep(&str, ",:");
+>> -    if (*backing_file == '\0')
+>> +    if (backing_file && *backing_file == '\0')
+>>          backing_file = NULL;
+>>
+>>      serial = strsep(&str, ",:");
+>> -    if (*serial == '\0')
+>> +    if (serial && *serial == '\0')
+>>          serial = NULL;
+>>
+>>      if (backing_file && ubd_dev->no_cow) {
+>>
+>>
+>>
+>>
+>> _______________________________________________
+>> linux-um mailing list
+>> linux-um@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-um
 
 _______________________________________________
 linux-um mailing list
