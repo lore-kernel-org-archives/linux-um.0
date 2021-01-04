@@ -1,186 +1,65 @@
-Return-Path: <linux-sh-owner@vger.kernel.org>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 25/27] powerpc: syscalls: switch to generic syscalltbl.sh
-Date: Thu, 28 Jan 2021 09:51:07 +0900
-Message-Id: <20210128005110.2613902-26-masahiroy@kernel.org>
-In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
-References: <20210128005110.2613902-1-masahiroy@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from lithops.sigma-star.at ([195.201.40.130])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kwNso-0004Gk-5Y
+ for linux-um@lists.infradead.org; Mon, 04 Jan 2021 11:18:43 +0000
+Date: Mon, 4 Jan 2021 12:18:31 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <1915321888.202504.1609759111591.JavaMail.zimbra@nod.at>
+In-Reply-To: <8ea288a9-d482-3295-266b-d00cc315d2c5@collabora.com>
+References: <20201221022434.21725-1-thehajime@gmail.com>
+ <5f11-5fe1dd00-6d-1cae2c20@60061556>
+ <CAFLxGvynAbtSLJweY6-oJ1egu1aSOAMPewsaz0VCrUMWazBZ4A@mail.gmail.com>
+ <8ea288a9-d482-3295-266b-d00cc315d2c5@collabora.com>
+Subject: Re: [PATCH] um: ubd: fix command line handling of ubd
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-arch@vger.kernel.org, x86@kernel.org
-Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Christopher Obbard <chris.obbard@collabora.com>
+Cc: linux-um <linux-um@lists.infradead.org>, Hajime Tazaki <thehajime@gmail.com>
 
-As of v5.11-rc1, 12 architectures duplicate similar shell scripts in
-order to generate syscall table headers. My goal is to unify them into
-the single scripts/syscalltbl.sh.
-
-This commit converts powerpc to use scripts/syscalltbl.sh.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- arch/powerpc/include/asm/Kbuild             |  1 -
- arch/powerpc/kernel/syscalls/Makefile       | 22 +++----------
- arch/powerpc/kernel/syscalls/syscalltbl.sh  | 36 ---------------------
- arch/powerpc/kernel/systbl.S                |  5 ++-
- arch/powerpc/platforms/cell/spu_callbacks.c |  2 +-
- 5 files changed, 10 insertions(+), 56 deletions(-)
- delete mode 100644 arch/powerpc/kernel/syscalls/syscalltbl.sh
-
-diff --git a/arch/powerpc/include/asm/Kbuild b/arch/powerpc/include/asm/Kbuild
-index e1f9b4ea1c53..bcf95ce0964f 100644
---- a/arch/powerpc/include/asm/Kbuild
-+++ b/arch/powerpc/include/asm/Kbuild
-@@ -1,7 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- generated-y += syscall_table_32.h
- generated-y += syscall_table_64.h
--generated-y += syscall_table_c32.h
- generated-y += syscall_table_spu.h
- generic-y += export.h
- generic-y += kvm_types.h
-diff --git a/arch/powerpc/kernel/syscalls/Makefile b/arch/powerpc/kernel/syscalls/Makefile
-index d609f0040b2a..ecf1474f8ea5 100644
---- a/arch/powerpc/kernel/syscalls/Makefile
-+++ b/arch/powerpc/kernel/syscalls/Makefile
-@@ -7,7 +7,7 @@ _dummy := $(shell [ -d '$(uapi)' ] || mkdir -p '$(uapi)')	\
- 
- syscall := $(srctree)/$(src)/syscall.tbl
- syshdr := $(srctree)/$(src)/syscallhdr.sh
--systbl := $(srctree)/$(src)/syscalltbl.sh
-+systbl := $(srctree)/scripts/syscalltbl.sh
- 
- quiet_cmd_syshdr = SYSHDR  $@
-       cmd_syshdr = $(CONFIG_SHELL) '$(syshdr)' '$<' '$@'	\
-@@ -16,10 +16,7 @@ quiet_cmd_syshdr = SYSHDR  $@
- 		   '$(syshdr_offset_$(basetarget))'
- 
- quiet_cmd_systbl = SYSTBL  $@
--      cmd_systbl = $(CONFIG_SHELL) '$(systbl)' '$<' '$@'	\
--		   '$(systbl_abis_$(basetarget))'		\
--		   '$(systbl_abi_$(basetarget))'		\
--		   '$(systbl_offset_$(basetarget))'
-+      cmd_systbl = $(CONFIG_SHELL) $(systbl) $< $@ $(abis)
- 
- syshdr_abis_unistd_32 := common,nospu,32
- $(uapi)/unistd_32.h: $(syscall) $(syshdr) FORCE
-@@ -29,30 +26,21 @@ syshdr_abis_unistd_64 := common,nospu,64
- $(uapi)/unistd_64.h: $(syscall) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
- 
--systbl_abis_syscall_table_32 := common,nospu,32
--systbl_abi_syscall_table_32 := 32
-+$(kapi)/syscall_table_32.h: abis := common,nospu,32
- $(kapi)/syscall_table_32.h: $(syscall) $(systbl) FORCE
- 	$(call if_changed,systbl)
- 
--systbl_abis_syscall_table_64 := common,nospu,64
--systbl_abi_syscall_table_64 := 64
-+$(kapi)/syscall_table_64.h: abis := common,nospu,64
- $(kapi)/syscall_table_64.h: $(syscall) $(systbl) FORCE
- 	$(call if_changed,systbl)
- 
--systbl_abis_syscall_table_c32 := common,nospu,32
--systbl_abi_syscall_table_c32 := c32
--$(kapi)/syscall_table_c32.h: $(syscall) $(systbl) FORCE
--	$(call if_changed,systbl)
--
--systbl_abis_syscall_table_spu := common,spu
--systbl_abi_syscall_table_spu := spu
-+$(kapi)/syscall_table_spu.h: abis := common,spu
- $(kapi)/syscall_table_spu.h: $(syscall) $(systbl) FORCE
- 	$(call if_changed,systbl)
- 
- uapisyshdr-y		+= unistd_32.h unistd_64.h
- kapisyshdr-y		+= syscall_table_32.h		\
- 			   syscall_table_64.h		\
--			   syscall_table_c32.h		\
- 			   syscall_table_spu.h
- 
- uapisyshdr-y	:= $(addprefix $(uapi)/, $(uapisyshdr-y))
-diff --git a/arch/powerpc/kernel/syscalls/syscalltbl.sh b/arch/powerpc/kernel/syscalls/syscalltbl.sh
-deleted file mode 100644
-index f7393a7b18aa..000000000000
---- a/arch/powerpc/kernel/syscalls/syscalltbl.sh
-+++ /dev/null
-@@ -1,36 +0,0 @@
--#!/bin/sh
--# SPDX-License-Identifier: GPL-2.0
--
--in="$1"
--out="$2"
--my_abis=`echo "($3)" | tr ',' '|'`
--my_abi="$4"
--offset="$5"
--
--emit() {
--	t_nxt="$1"
--	t_nr="$2"
--	t_entry="$3"
--
--	while [ $t_nxt -lt $t_nr ]; do
--		printf "__SYSCALL(%s,sys_ni_syscall)\n" "${t_nxt}"
--		t_nxt=$((t_nxt+1))
--	done
--	printf "__SYSCALL(%s,%s)\n" "${t_nxt}" "${t_entry}"
--}
--
--grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
--	nxt=0
--	if [ -z "$offset" ]; then
--		offset=0
--	fi
--
--	while read nr abi name entry compat ; do
--		if [ "$my_abi" = "c32" ] && [ ! -z "$compat" ]; then
--			emit $((nxt+offset)) $((nr+offset)) $compat
--		else
--			emit $((nxt+offset)) $((nr+offset)) $entry
--		fi
--		nxt=$((nr+1))
--	done
--) > "$out"
-diff --git a/arch/powerpc/kernel/systbl.S b/arch/powerpc/kernel/systbl.S
-index d34276f3c495..cb3358886203 100644
---- a/arch/powerpc/kernel/systbl.S
-+++ b/arch/powerpc/kernel/systbl.S
-@@ -21,6 +21,7 @@
- #define __SYSCALL(nr, entry)	.long entry
- #endif
- 
-+#define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, native)
- .globl sys_call_table
- sys_call_table:
- #ifdef CONFIG_PPC64
-@@ -30,8 +31,10 @@ sys_call_table:
- #endif
- 
- #ifdef CONFIG_COMPAT
-+#undef __SYSCALL_WITH_COMPAT
-+#define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, compat)
- .globl compat_sys_call_table
- compat_sys_call_table:
- #define compat_sys_sigsuspend	sys_sigsuspend
--#include <asm/syscall_table_c32.h>
-+#include <asm/syscall_table_32.h>
- #endif
-diff --git a/arch/powerpc/platforms/cell/spu_callbacks.c b/arch/powerpc/platforms/cell/spu_callbacks.c
-index abdef9bcf432..fe0d8797a00a 100644
---- a/arch/powerpc/platforms/cell/spu_callbacks.c
-+++ b/arch/powerpc/platforms/cell/spu_callbacks.c
-@@ -35,9 +35,9 @@
-  */
- 
- static void *spu_syscall_table[] = {
-+#define __SYSCALL_WITH_COMPAT(nr, entry, compat) __SYSCALL(nr, entry)
- #define __SYSCALL(nr, entry) [nr] = entry,
- #include <asm/syscall_table_spu.h>
--#undef __SYSCALL
- };
- 
- long spu_sys_callback(struct spu_syscall_block *s)
--- 
-2.27.0
-
+CgotLS0tLSBVcnNwcsO8bmdsaWNoZSBNYWlsIC0tLS0tCj4gVm9uOiAiQ2hyaXN0b3BoZXIgT2Ji
+YXJkIiA8Y2hyaXMub2JiYXJkQGNvbGxhYm9yYS5jb20+Cj4gQW46ICJSaWNoYXJkIFdlaW5iZXJn
+ZXIiIDxyaWNoYXJkLndlaW5iZXJnZXJAZ21haWwuY29tPiwgInJpY2hhcmQiIDxyaWNoYXJkQG5v
+ZC5hdD4KPiBDQzogIkhhamltZSBUYXpha2kiIDx0aGVoYWppbWVAZ21haWwuY29tPiwgImxpbnV4
+LXVtIiA8bGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZz4KPiBHZXNlbmRldDogTW9udGFnLCA0
+LiBKYW51YXIgMjAyMSAxMTo1Njo1Mwo+IEJldHJlZmY6IFJlOiBbUEFUQ0hdIHVtOiB1YmQ6IGZp
+eCBjb21tYW5kIGxpbmUgaGFuZGxpbmcgb2YgdWJkCgo+IEhpIFJpY2hhcmQsCj4gCj4gT24gMjMv
+MTIvMjAyMCAxMDoxOSwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgo+PiBPbiBUdWUsIERlYyAy
+MiwgMjAyMCBhdCAxMjo0OSBQTSBDaHJpc3RvcGhlciBPYmJhcmQKPj4gPGNocmlzLm9iYmFyZEBj
+b2xsYWJvcmEuY29tPiB3cm90ZToKPj4+Cj4+PiBIaSBIYWppbWUsCj4+Pgo+Pj4gRG9oISBUaGFu
+a3MgZm9yIHNvcnRpbmcgb3V0IHRoaXMgcmVncmVzc2lvbiEKPj4+Cj4+PiBPbiBNb25kYXksIDIx
+IERlY2VtYmVyLCAyMDIwIDAyOjI0IEdNVCwgSGFqaW1lIFRhemFraSA8dGhlaGFqaW1lQGdtYWls
+LmNvbT4KPj4+IHdyb3RlOgo+Pj4+IFRoaXMgY29tbWl0IGZpeGVzIGEgcmVncmVzc2lvbiB0byBo
+YW5kbGUgY29tbWFuZCBsaW5lIHBhcmFtZXRlcnMgb2YgdWJkLgo+Pj4+IFdpdGggYSBzaW1wbGUg
+bGluZSAiLi9saW51eCB1YmQwPSIuL2Rpc2stZXh0NC5pbWciLCBpdCBmYWlscyBhdAo+Pj4+IHVi
+ZF9zZXR1cF9jb21tb24oKS4gIFRoZSBjb21taXQgYWRkcyBhZGRpdGlvbmFsIGNoZWNrcyB0byB0
+aGUgdmFyaWFibGVzCj4+Pj4gaW4gb3JkZXIgdG8gcHJvcGVybHkgcGFyc2UgdGhlIHBhcmVtZXRl
+cnMgd2hpY2ggcHJldmlvdXNseSB3b3JrZWQuCj4+Pj4KPj4+PiBGaXhlczogZWYzYmE4N2NiN2M5
+ICgidW06IHViZDogU2V0IGRldmljZSBzZXJpYWwgYXR0cmlidXRlIGZyb20KPj4+PiBjbWRsaW5l
+IikKPj4+PiBDYzogQ2hyaXN0b3BoZXIgT2JiYXJkIDxjaHJpcy5vYmJhcmRAY29sbGFib3JhLmNv
+bT4KPj4+PiBTaWduZWQtb2ZmLWJ5OiBIYWppbWUgVGF6YWtpIDx0aGVoYWppbWVAZ21haWwuY29t
+Pgo+Pj4KPj4+IEFja2VkLWJ5OiBDaHJpc3RvcGhlciBPYmJhcmQgPGNocmlzLm9iYmFyZEBjb2xs
+YWJvcmEuY29tPgo+PiAKPj4gQXBwbGllZCwgdGh4IQo+PiAKPiAKPiBIb3BlIHlvdSBkb24ndCBt
+aW5kIHRoZSBleHRyYSBwb2tlIG1lc3NhZ2UgZnJvbSBtZSwgYnV0IGl0IGRpZG4ndCBzZWVtCj4g
+bGlrZSB0aGlzIHBhdGNoIHdhcyBhcHBsaWVkIHRvIDUuMTEtcmMyICYgSSBjYW5ub3Qgc2VlIHRo
+ZSBwYXRjaCB1bmRlcgo+IHlvdXIgdHJlZSBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20v
+bGludXgva2VybmVsL2dpdC9ydy91bWwuZ2l0LwoKSXQgaXMgaW4gbXkgcGF0Y2h3b3JrIGJ1bmRs
+ZSBhbmQgbWFya2VkIGFzIGFjY2VwdGVkOgpodHRwczovL3BhdGNod29yay5vemxhYnMub3JnL2J1
+bmRsZS9ydy91bWwtNS4xMS1yYzEtZml4ZXMvP3Nlcmllcz0mc3VibWl0dGVyPSZzdGF0ZT0qJnE9
+JmFyY2hpdmU9CiAKWG1hcyBoYXBwZW5lZCBiZWZvcmUgSSBjb3VsZCBwdXNoIGl0IG91dCBhbmQg
+ZG8gYSBQUi4KClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMu
+aW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2xpbnV4LXVtCg==
 
