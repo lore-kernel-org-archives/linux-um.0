@@ -1,15 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l1p2P-00039V-L5
- for linux-um@lists.infradead.org; Tue, 19 Jan 2021 11:19:06 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH] init/module: split CONFIG_CONSTRUCTORS to fix module gcov on
- UML
-Date: Tue, 19 Jan 2021 12:18:53 +0100
-Message-Id: <20210119121853.4e22b2506c9a.I1358f584b76f1898373adfed77f4462c8705b736@changeid>
+ id 1kxVQD-0002jw-La
+ for linux-um@lists.infradead.org; Thu, 07 Jan 2021 13:33:50 +0000
+Subject: Re: Replacing a legacy uml-switch with bess
+References: <78c472a8-741c-bdad-4e34-896bd968af5e@gmail.com>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <44225bda-b33e-7802-f127-13174398f888@cambridgegreys.com>
+Date: Thu, 7 Jan 2021 12:58:16 +0000
 MIME-Version: 1.0
+In-Reply-To: <78c472a8-741c-bdad-4e34-896bd968af5e@gmail.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,158 +20,84 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: linux-arch@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Johannes Berg <johannes.berg@intel.com>, Peter Oberparleiter <oberpar@linux.ibm.com>, linux-kernel@vger.kernel.org, Jessica Yu <jeyu@kernel.org>
+To: Joshua Hawking <joshuahawking1@gmail.com>, linux-um@lists.infradead.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+On 07/01/2021 12:31, Joshua Hawking wrote:
+> Hi everyone,
+> 
+> I currently maintain a project called Netkit which facilitates network
+> simulation using UML machines. This project is quite old and we've been
+> working on upgrading it to a modern codebase.
+> 
+> Netkit relies on using uml_net for communication between the machines.
+> It uses the legacy uml_switches to create hubs that connect to the
+> machine, using the old ethX command line parameters. For example:
+> 
+> /home/josh/netkit-kernel
+> --eth0=daemon,,,/home/josh/.netkit/vhub_Internet.cnct
+> 
+> where the vhub_Internet.cnct is the uml_switch socket. We're looking to
+> upgrade this to use the new vector networking to utilize the better
+> performance and remove legacy code that could break on a kernel update.
+> 
+> I've been looking at the linux kernel documentation that discusses using
+> the Bess switch software to provide networking between UML machines.
+> (https://github.com/torvalds/linux/blob/master/Documentation/virt/uml/user_mode_linux_howto_v2.rst#bess-socket-transport)
+> 
+> However, I can't find any good examples of using Bess with UML and was
+> wondering whether anyone on the mailing list has any advice/examples.
+> 
+> I noted that Anton had submitted a PR to Bess to improve UML support and
+> I was wondering whether this means that the build without this patch
+> would not work with UML at all.
+> 
+> https://github.com/NetSys/bess/pull/1022
+> 
+> Hopefully someone may be able to point me in the right direction on
+> handling uml_switch removal!
 
-On ARCH=um, loading a module doesn't result in its constructors
-getting called, which breaks module gcov since the debugfs files
-are never registered. On the other hand, in-kernel constructors
-have already been called by the dynamic linker, so we can't call
-them again.
+It will, but you need a fairly complex pipeline.
 
-Get out of this conundrum by splitting CONFIG_CONSTRUCTORS into
-CONFIG_CONSTRUCTORS_KERNEL and CONFIG_CONSTRUCTORS_MODULE, both
-of which are enabled by default if CONFIG_CONSTRUCTORS is turned
-on, but CONFIG_CONSTRUCTORS_KERNEL depends on !UML so that it's
-not used on ARCH=um.
+Basically, BESS replicator module which you need for BCAST/MCAST as well 
+as flooding does not have a reflection check.
 
-Also remove the "if !UML" from GCOV selecting CONSTRUCTORS now,
-since we really do want CONSTRUCTORS, just not kernel binary
-ones.
+So f.e. 3 ports wired to a Replicator will not work.
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
-Tested with a kernel configured with CONFIG_GCOV_KERNEL, without
-the patch nothing ever appears in /sys/kernel/debug/gcov/ (apart
-from the reset file), and with it we get the files and they work.
+As a result you cannot implement a simple shared switch and have to do a 
+fully featured per-port pipeline with "drop to slow path for learning", 
+implicit reflection checks, etc.
 
-I have no idea which tree this might go through, any suggestions?
----
- include/asm-generic/vmlinux.lds.h | 6 +++---
- include/linux/module.h            | 2 +-
- init/Kconfig                      | 9 ++++++++-
- init/main.c                       | 2 +-
- kernel/gcov/Kconfig               | 2 +-
- kernel/module.c                   | 4 ++--
- 6 files changed, 16 insertions(+), 9 deletions(-)
+The workaround would be to have
 
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index b2b3d81b1535..87b300471c54 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -698,7 +698,7 @@
- 		INIT_TASK_DATA(align)					\
- 	}
- 
--#ifdef CONFIG_CONSTRUCTORS
-+#ifdef CONFIG_CONSTRUCTORS_KERNEL
- #define KERNEL_CTORS()	. = ALIGN(8);			   \
- 			__ctors_start = .;		   \
- 			KEEP(*(SORT(.ctors.*)))		   \
-@@ -990,11 +990,11 @@
- /*
-  * Clang's -fsanitize=kernel-address and -fsanitize=thread produce
-  * unwanted sections (.eh_frame and .init_array.*), but
-- * CONFIG_CONSTRUCTORS wants to keep any .init_array.* sections.
-+ * CONFIG_CONSTRUCTORS_KERNEL wants to keep any .init_array.* sections.
-  * https://bugs.llvm.org/show_bug.cgi?id=46478
-  */
- #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KCSAN)
--# ifdef CONFIG_CONSTRUCTORS
-+# ifdef CONFIG_CONSTRUCTORS_KERNEL
- #  define SANITIZER_DISCARDS						\
- 	*(.eh_frame)
- # else
-diff --git a/include/linux/module.h b/include/linux/module.h
-index 7a0bcb5b1ffc..027cfdbd84bd 100644
---- a/include/linux/module.h
-+++ b/include/linux/module.h
-@@ -528,7 +528,7 @@ struct module {
- 	atomic_t refcnt;
- #endif
- 
--#ifdef CONFIG_CONSTRUCTORS
-+#ifdef CONFIG_CONSTRUCTORS_MODULE
- 	/* Constructor functions. */
- 	ctor_fn_t *ctors;
- 	unsigned int num_ctors;
-diff --git a/init/Kconfig b/init/Kconfig
-index b77c60f8b963..e409de8d6c17 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -76,7 +76,14 @@ config CC_HAS_ASM_INLINE
- 
- config CONSTRUCTORS
- 	bool
--	depends on !UML
-+
-+config CONSTRUCTORS_KERNEL
-+	def_bool y
-+	depends on CONSTRUCTORS && !UML
-+
-+config CONSTRUCTORS_MODULE
-+	def_bool y
-+	depends on CONSTRUCTORS
- 
- config IRQ_WORK
- 	bool
-diff --git a/init/main.c b/init/main.c
-index c68d784376ca..51eb4802511c 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -1066,7 +1066,7 @@ asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
- /* Call all constructor functions linked into the kernel. */
- static void __init do_ctors(void)
- {
--#ifdef CONFIG_CONSTRUCTORS
-+#ifdef CONFIG_CONSTRUCTORS_KERNEL
- 	ctor_fn_t *fn = (ctor_fn_t *) __ctors_start;
- 
- 	for (; fn < (ctor_fn_t *) __ctors_end; fn++)
-diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
-index 3110c77230c7..f62de2dea8a3 100644
---- a/kernel/gcov/Kconfig
-+++ b/kernel/gcov/Kconfig
-@@ -4,7 +4,7 @@ menu "GCOV-based kernel profiling"
- config GCOV_KERNEL
- 	bool "Enable gcov-based kernel profiling"
- 	depends on DEBUG_FS
--	select CONSTRUCTORS if !UML
-+	select CONSTRUCTORS
- 	default n
- 	help
- 	This option enables gcov-based code profiling (e.g. for code coverage
-diff --git a/kernel/module.c b/kernel/module.c
-index 4bf30e4b3eaa..c161a360d929 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -3257,7 +3257,7 @@ static int find_module_sections(struct module *mod, struct load_info *info)
- 					    &mod->num_unused_gpl_syms);
- 	mod->unused_gpl_crcs = section_addr(info, "__kcrctab_unused_gpl");
- #endif
--#ifdef CONFIG_CONSTRUCTORS
-+#ifdef CONFIG_CONSTRUCTORS_MODULE
- 	mod->ctors = section_objs(info, ".ctors",
- 				  sizeof(*mod->ctors), &mod->num_ctors);
- 	if (!mod->ctors)
-@@ -3612,7 +3612,7 @@ static bool finished_loading(const char *name)
- /* Call module constructors. */
- static void do_mod_ctors(struct module *mod)
- {
--#ifdef CONFIG_CONSTRUCTORS
-+#ifdef CONFIG_CONSTRUCTORS_MODULE
- 	unsigned long i;
- 
- 	for (i = 0; i < mod->num_ctors; i++)
+inPort->L2Forwarding->Replicator
+
+chain for each port and ensure that the Replicator is wired only to 
+other ports in the same VLAN.
+
+A.
+
+> 
+> Thanks,
+> 
+> Josh
+> 
+> 
+> 
+> _______________________________________________
+> linux-um mailing list
+> linux-um@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-um
+> 
+
+
 -- 
-2.26.2
-
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
 _______________________________________________
 linux-um mailing list
