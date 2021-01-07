@@ -1,18 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+Received: from www17.your-server.de ([213.133.104.17])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kwNXm-0004wS-KU
- for linux-um@lists.infradead.org; Mon, 04 Jan 2021 10:56:59 +0000
-Subject: Re: [PATCH] um: ubd: fix command line handling of ubd
-References: <20201221022434.21725-1-thehajime@gmail.com>
- <5f11-5fe1dd00-6d-1cae2c20@60061556>
- <CAFLxGvynAbtSLJweY6-oJ1egu1aSOAMPewsaz0VCrUMWazBZ4A@mail.gmail.com>
-From: Christopher Obbard <chris.obbard@collabora.com>
-Message-ID: <8ea288a9-d482-3295-266b-d00cc315d2c5@collabora.com>
-Date: Mon, 4 Jan 2021 10:56:53 +0000
+ id 1kxQIr-0006Ac-H3
+ for linux-um@lists.infradead.org; Thu, 07 Jan 2021 08:05:54 +0000
+From: Thomas Meyer <thomas@m3y3r.de>
+Subject: [PATCH] um: kmsg_dumper: always dump when not tty console
+Date: Thu,  7 Jan 2021 09:05:31 +0100
+Message-Id: <20210107080531.17936-1-thomas@m3y3r.de>
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvynAbtSLJweY6-oJ1egu1aSOAMPewsaz0VCrUMWazBZ4A@mail.gmail.com>
-Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -21,47 +16,53 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard.weinberger@gmail.com>, Richard Weinberger <richard@nod.at>
-Cc: linux-um <linux-um@lists.infradead.org>, Hajime Tazaki <thehajime@gmail.com>
+To: richard@nod.at, linux-um@lists.infradead.org
+Cc: Thomas Meyer <thomas@m3y3r.de>
 
-Hi Richard,
+With the addition of the ttynull console driver, the chance that a
+console driver was already registerd did increase. Refine the logic when
+to dump the kernel message buffer: always dump the buffer, when the UML
+stdio console driver is not active and the preferred console.
 
-On 23/12/2020 10:19, Richard Weinberger wrote:
-> On Tue, Dec 22, 2020 at 12:49 PM Christopher Obbard
-> <chris.obbard@collabora.com> wrote:
->>
->> Hi Hajime,
->>
->> Doh! Thanks for sorting out this regression!
->>
->> On Monday, 21 December, 2020 02:24 GMT, Hajime Tazaki <thehajime@gmail.com> wrote:
->>> This commit fixes a regression to handle command line parameters of ubd.
->>> With a simple line "./linux ubd0="./disk-ext4.img", it fails at
->>> ubd_setup_common().  The commit adds additional checks to the variables
->>> in order to properly parse the paremeters which previously worked.
->>>
->>> Fixes: ef3ba87cb7c9 ("um: ubd: Set device serial attribute from
->>> cmdline")
->>> Cc: Christopher Obbard <chris.obbard@collabora.com>
->>> Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
->>
->> Acked-by: Christopher Obbard <chris.obbard@collabora.com>
-> 
-> Applied, thx!
-> 
+Signed-off-by: Thomas Meyer <thomas@m3y3r.de>
+---
+ arch/um/kernel/kmsg_dump.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-Hope you don't mind the extra poke message from me, but it didn't seem 
-like this patch was applied to 5.11-rc2 & I cannot see the patch under 
-your tree https://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git/
+diff --git a/arch/um/kernel/kmsg_dump.c b/arch/um/kernel/kmsg_dump.c
+index e4abac6c9727..9dd91fc09421 100644
+--- a/arch/um/kernel/kmsg_dump.c
++++ b/arch/um/kernel/kmsg_dump.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include <linux/kmsg_dump.h>
+ #include <linux/console.h>
++#include <linux/string.h>
+ #include <shared/init.h>
+ #include <shared/kern.h>
+ #include <os.h>
+@@ -16,8 +17,12 @@ static void kmsg_dumper_stdout(struct kmsg_dumper *dumper,
+ 	if (!console_trylock())
+ 		return;
+ 
+-	for_each_console(con)
+-		break;
++	for_each_console(con) {
++		if(strcmp(con->name, "tty") == 0 &&
++		  con->flags & (CON_ENABLED | CON_CONSDEV) != 0) {
++			break;
++		}
++	}
+ 
+ 	console_unlock();
+ 
+-- 
+2.20.1
 
-
-
-Thanks!
-Chris
 
 _______________________________________________
 linux-um mailing list
