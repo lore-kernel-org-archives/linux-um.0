@@ -2,12 +2,14 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l33EQ-0007DF-62
- for linux-um@lists.infradead.org; Fri, 22 Jan 2021 20:40:35 +0000
+ id 1kyf5i-0006pP-SI
+ for linux-um@lists.infradead.org; Sun, 10 Jan 2021 18:05:29 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH] um: fix os_idle_sleep() to not hang
-Date: Fri, 22 Jan 2021 21:40:23 +0100
-Message-Id: <20210122214023.c2219f43d6c1.I1382fc1a4ce633c65cf2fdb9693462e76722937b@changeid>
+Subject: [PATCH 2/2] Revert "um: support some of ARCH_HAS_SET_MEMORY"
+Date: Sun, 10 Jan 2021 19:05:09 +0100
+Message-Id: <20210110180518.60785-1-johannes@sipsolutions.net>
+In-Reply-To: <20210110190509.65a0c174fcca.I148fc32a2b85fd17746ca528f3811c80483232bd@changeid>
+References: <20210110190509.65a0c174fcca.I148fc32a2b85fd17746ca528f3811c80483232bd@changeid>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,73 +24,131 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+Cc: Benjamin Berg <benjamin@sipsolutions.net>, Johannes Berg <johannes.berg@intel.com>
 
 From: Johannes Berg <johannes.berg@intel.com>
 
-Changing os_idle_sleep() to use pause() (I accidentally described
-it as an empty select() in the commit log because I had changed it
-from that to pause() in a later revision) exposed a race condition
-in the idle code. The following can happen:
+This reverts commit 963285b0b47a ("um: support some of
+ARCH_HAS_SET_MEMORY"), as it turns out that it's not only not
+working (due to um never using the protection bits in the
+page tables) but also corrupts the page tables if used on a
+non-vmalloc page, since um never allocates proper page tables
+for the 'physmem' in the first place.
 
- timer_settime(0, 0, {it_interval={tv_sec=0, tv_nsec=0}, it_value={tv_sec=0, tv_nsec=624017}}, NULL) = 0
- ...
- <SIGALRM is delivered but we're already on the way to idle>
- pause()
+Fixing all this will take more effort, so for now revert it.
 
-and we now hang forever. This was previously possible as well, but
-it could never cause UML to hang for more than a second since we
-could only sleep for that much, so at most you'd notice a "hiccup"
-in the UML. Obviously, any sort of external interrupt also "saves"
-it and interrupts pause().
-
-Fix this by properly handling the race, rather than papering over
-it again:
-
- - first, block SIGALRM, and obtain the old signal set
- - check the timer
- - suspend, waiting for any signal out of the old set, if, and only
-   if, the timer will fire in the future
- - restore the old signal mask
-
-This ensures race-free operation: as it's blocked, the signal won't
-be delivered while we're looking at the timer even if it were to be
-triggered right _after_ we've returned from timer_gettime() with a
-non-zero value (telling us the timer will trigger). Thus, despite
-getting to sigsuspend() because timer_gettime() told us we're still
-waiting, we'll not hang because sigsuspend() will return immediately
-due to the pending signal.
-
-Fixes: 49da38a3ef33 ("um: Simplify os_idle_sleep() and sleep longer")
+Reported-by: Benjamin Berg <benjamin@sipsolutions.net>
+Fixes: 963285b0b47a ("um: support some of ARCH_HAS_SET_MEMORY")
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- arch/um/os-Linux/time.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+ arch/um/Kconfig                  |  1 -
+ arch/um/include/asm/pgtable.h    |  3 --
+ arch/um/include/asm/set_memory.h |  1 -
+ arch/um/kernel/tlb.c             | 54 --------------------------------
+ 4 files changed, 59 deletions(-)
+ delete mode 100644 arch/um/include/asm/set_memory.h
 
-diff --git a/arch/um/os-Linux/time.c b/arch/um/os-Linux/time.c
-index a61cbf73a179..6c5041c5560b 100644
---- a/arch/um/os-Linux/time.c
-+++ b/arch/um/os-Linux/time.c
-@@ -104,5 +104,18 @@ long long os_nsecs(void)
-  */
- void os_idle_sleep(void)
- {
--	pause();
-+	struct itimerspec its;
-+	sigset_t set, old;
-+
-+	/* block SIGALRM while we analyze the timer state */
-+	sigemptyset(&set);
-+	sigaddset(&set, SIGALRM);
-+	sigprocmask(SIG_BLOCK, &set, &old);
-+
-+	/* check the timer, and if it'll fire then wait for it */
-+	timer_gettime(event_high_res_timer, &its);
-+	if (its.it_value.tv_sec || its.it_value.tv_nsec)
-+		sigsuspend(&old);
-+	/* either way, restore the signal mask */
-+	sigprocmask(SIG_UNBLOCK, &set, NULL);
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index 34d302d1a07f..c3030db3325f 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -15,7 +15,6 @@ config UML
+ 	select HAVE_DEBUG_KMEMLEAK
+ 	select HAVE_DEBUG_BUGVERBOSE
+ 	select NO_DMA
+-	select ARCH_HAS_SET_MEMORY
+ 	select GENERIC_IRQ_SHOW
+ 	select GENERIC_CPU_DEVICES
+ 	select HAVE_GCC_PLUGINS
+diff --git a/arch/um/include/asm/pgtable.h b/arch/um/include/asm/pgtable.h
+index 39376bb63abf..def376194dce 100644
+--- a/arch/um/include/asm/pgtable.h
++++ b/arch/um/include/asm/pgtable.h
+@@ -55,15 +55,12 @@ extern unsigned long end_iomem;
+ #define _PAGE_CHG_MASK	(PAGE_MASK | _PAGE_ACCESSED | _PAGE_DIRTY)
+ #define __PAGE_KERNEL_EXEC                                              \
+ 	 (_PAGE_PRESENT | _PAGE_RW | _PAGE_DIRTY | _PAGE_ACCESSED)
+-#define __PAGE_KERNEL_RO						\
+-	 (_PAGE_PRESENT | _PAGE_DIRTY | _PAGE_ACCESSED)
+ #define PAGE_NONE	__pgprot(_PAGE_PROTNONE | _PAGE_ACCESSED)
+ #define PAGE_SHARED	__pgprot(_PAGE_PRESENT | _PAGE_RW | _PAGE_USER | _PAGE_ACCESSED)
+ #define PAGE_COPY	__pgprot(_PAGE_PRESENT | _PAGE_USER | _PAGE_ACCESSED)
+ #define PAGE_READONLY	__pgprot(_PAGE_PRESENT | _PAGE_USER | _PAGE_ACCESSED)
+ #define PAGE_KERNEL	__pgprot(_PAGE_PRESENT | _PAGE_RW | _PAGE_DIRTY | _PAGE_ACCESSED)
+ #define PAGE_KERNEL_EXEC	__pgprot(__PAGE_KERNEL_EXEC)
+-#define PAGE_KERNEL_RO		__pgprot(__PAGE_KERNEL_RO)
+ 
+ /*
+  * The i386 can't do page protection for execute, and considers that the same
+diff --git a/arch/um/include/asm/set_memory.h b/arch/um/include/asm/set_memory.h
+deleted file mode 100644
+index 24266c63720d..000000000000
+--- a/arch/um/include/asm/set_memory.h
++++ /dev/null
+@@ -1 +0,0 @@
+-#include <asm-generic/set_memory.h>
+diff --git a/arch/um/kernel/tlb.c b/arch/um/kernel/tlb.c
+index 437d1f1cc5ec..61776790cd67 100644
+--- a/arch/um/kernel/tlb.c
++++ b/arch/um/kernel/tlb.c
+@@ -608,57 +608,3 @@ void force_flush_all(void)
+ 		vma = vma->vm_next;
+ 	}
  }
+-
+-struct page_change_data {
+-	unsigned int set_mask, clear_mask;
+-};
+-
+-static int change_page_range(pte_t *ptep, unsigned long addr, void *data)
+-{
+-	struct page_change_data *cdata = data;
+-	pte_t pte = READ_ONCE(*ptep);
+-
+-	pte_clear_bits(pte, cdata->clear_mask);
+-	pte_set_bits(pte, cdata->set_mask);
+-
+-	set_pte(ptep, pte);
+-	return 0;
+-}
+-
+-static int change_memory(unsigned long start, unsigned long pages,
+-			 unsigned int set_mask, unsigned int clear_mask)
+-{
+-	unsigned long size = pages * PAGE_SIZE;
+-	struct page_change_data data;
+-	int ret;
+-
+-	data.set_mask = set_mask;
+-	data.clear_mask = clear_mask;
+-
+-	ret = apply_to_page_range(&init_mm, start, size, change_page_range,
+-				  &data);
+-
+-	flush_tlb_kernel_range(start, start + size);
+-
+-	return ret;
+-}
+-
+-int set_memory_ro(unsigned long addr, int numpages)
+-{
+-	return change_memory(addr, numpages, 0, _PAGE_RW);
+-}
+-
+-int set_memory_rw(unsigned long addr, int numpages)
+-{
+-	return change_memory(addr, numpages, _PAGE_RW, 0);
+-}
+-
+-int set_memory_nx(unsigned long addr, int numpages)
+-{
+-	return -EOPNOTSUPP;
+-}
+-
+-int set_memory_x(unsigned long addr, int numpages)
+-{
+-	return -EOPNOTSUPP;
+-}
 -- 
 2.26.2
 
