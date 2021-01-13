@@ -1,10 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 18/27] parisc: syscalls: switch to generic syscalltbl.sh
-Date: Thu, 28 Jan 2021 09:51:00 +0900
-Message-Id: <20210128005110.2613902-19-masahiroy@kernel.org>
-In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
-References: <20210128005110.2613902-1-masahiroy@kernel.org>
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kznNH-0000fp-Oy
+ for linux-um@lists.infradead.org; Wed, 13 Jan 2021 21:08:16 +0000
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [PATCH 2/2] um: defer killing userspace on page table update failures
+Date: Wed, 13 Jan 2021 22:08:03 +0100
+Message-Id: <20210113220803.92a83b1591ae.I9425b924e7d9483efde4c0ba5bd0c0bed018472a@changeid>
+In-Reply-To: <20210113220803.0d97c6c96aae.I91e62e7568b2834a3922202a05700c972deaca3f@changeid>
+References: <20210113220803.0d97c6c96aae.I91e62e7568b2834a3922202a05700c972deaca3f@changeid>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -18,176 +23,90 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-arch@vger.kernel.org, x86@kernel.org
-Cc: linux-xtensa@linux-xtensa.org, linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org, linux-kbuild@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+To: linux-um@lists.infradead.org
+Cc: stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>
 
-As of v5.11-rc1, 12 architectures duplicate similar shell scripts in
-order to generate syscall table headers. My goal is to unify them into
-the single scripts/syscalltbl.sh.
+From: Johannes Berg <johannes.berg@intel.com>
 
-This commit converts parisc to use scripts/syscalltbl.sh. This also
-unifies syscall_table_64.h and syscall_table_c32.h.
+In some cases we can get to fix_range_common() with mmap_sem held,
+and in others we get there without it being held. For example, we
+get there with it held from sys_mprotect(), and without it held
+from fork_handler().
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Avoid any issues in this and simply defer killing the task until
+it runs the next time. Do it on the mm so that another task that
+shares the same mm can't continue running afterwards.
+
+Cc: stable@vger.kernel.org
+Fixes: 468f65976a8d ("um: Fix hung task in fix_range_common()")
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
+ arch/um/include/shared/skas/mm_id.h | 1 +
+ arch/um/kernel/tlb.c                | 7 +++----
+ arch/um/os-Linux/skas/process.c     | 4 ++++
+ 3 files changed, 8 insertions(+), 4 deletions(-)
 
- arch/parisc/include/asm/Kbuild            |  1 -
- arch/parisc/kernel/syscall.S              | 16 +++++-----
- arch/parisc/kernel/syscalls/Makefile      | 19 ++++--------
- arch/parisc/kernel/syscalls/syscalltbl.sh | 36 -----------------------
- 4 files changed, 12 insertions(+), 60 deletions(-)
- delete mode 100644 arch/parisc/kernel/syscalls/syscalltbl.sh
-
-diff --git a/arch/parisc/include/asm/Kbuild b/arch/parisc/include/asm/Kbuild
-index 4406475a2304..e6e7f74c8ac9 100644
---- a/arch/parisc/include/asm/Kbuild
-+++ b/arch/parisc/include/asm/Kbuild
-@@ -1,7 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- generated-y += syscall_table_32.h
- generated-y += syscall_table_64.h
--generated-y += syscall_table_c32.h
- generic-y += kvm_para.h
- generic-y += mcs_spinlock.h
- generic-y += user.h
-diff --git a/arch/parisc/kernel/syscall.S b/arch/parisc/kernel/syscall.S
-index 322503780db6..3f24a0af1e04 100644
---- a/arch/parisc/kernel/syscall.S
-+++ b/arch/parisc/kernel/syscall.S
-@@ -919,24 +919,24 @@ ENTRY(lws_table)
- END(lws_table)
- 	/* End of lws table */
+diff --git a/arch/um/include/shared/skas/mm_id.h b/arch/um/include/shared/skas/mm_id.h
+index 4337b4ced095..e82e203f5f41 100644
+--- a/arch/um/include/shared/skas/mm_id.h
++++ b/arch/um/include/shared/skas/mm_id.h
+@@ -12,6 +12,7 @@ struct mm_id {
+ 		int pid;
+ 	} u;
+ 	unsigned long stack;
++	int kill;
+ };
  
-+#ifdef CONFIG_64BIT
-+#define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, compat)
-+#else
-+#define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, native)
-+#endif
- #define __SYSCALL(nr, entry)	ASM_ULONG_INSN entry
- 	.align 8
- ENTRY(sys_call_table)
- 	.export sys_call_table,data
--#ifdef CONFIG_64BIT
--#include <asm/syscall_table_c32.h>   /* Compat syscalls */
--#else
--#include <asm/syscall_table_32.h>    /* 32-bit native syscalls */
--#endif
-+#include <asm/syscall_table_32.h>    /* 32-bit syscalls */
- END(sys_call_table)
- 
- #ifdef CONFIG_64BIT
- 	.align 8
- ENTRY(sys_call_table64)
--#include <asm/syscall_table_64.h>    /* 64-bit native syscalls */
-+#include <asm/syscall_table_64.h>    /* 64-bit syscalls */
- END(sys_call_table64)
  #endif
--#undef __SYSCALL
+diff --git a/arch/um/kernel/tlb.c b/arch/um/kernel/tlb.c
+index 89468da6bf88..5be1b0da9f3b 100644
+--- a/arch/um/kernel/tlb.c
++++ b/arch/um/kernel/tlb.c
+@@ -352,12 +352,11 @@ void fix_range_common(struct mm_struct *mm, unsigned long start_addr,
  
- 	/*
- 		All light-weight-syscall atomic operations 
-@@ -961,5 +961,3 @@ END(lws_lock_start)
- 	.previous
+ 	/* This is not an else because ret is modified above */
+ 	if (ret) {
++		struct mm_id *mm_idp = &current->mm->context.id;
++
+ 		printk(KERN_ERR "fix_range_common: failed, killing current "
+ 		       "process: %d\n", task_tgid_vnr(current));
+-		/* We are under mmap_lock, release it such that current can terminate */
+-		mmap_write_unlock(current->mm);
+-		force_sig(SIGKILL);
+-		do_signal(&current->thread.regs);
++		mm_idp->kill = 1;
+ 	}
+ }
  
- .end
--
--
-diff --git a/arch/parisc/kernel/syscalls/Makefile b/arch/parisc/kernel/syscalls/Makefile
-index 556fe30a6c8f..77fea5beb9be 100644
---- a/arch/parisc/kernel/syscalls/Makefile
-+++ b/arch/parisc/kernel/syscalls/Makefile
-@@ -7,7 +7,7 @@ _dummy := $(shell [ -d '$(uapi)' ] || mkdir -p '$(uapi)')	\
+diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
+index 0621d521208e..02c4741ade5e 100644
+--- a/arch/um/os-Linux/skas/process.c
++++ b/arch/um/os-Linux/skas/process.c
+@@ -249,6 +249,7 @@ static int userspace_tramp(void *stack)
+ }
  
- syscall := $(srctree)/$(src)/syscall.tbl
- syshdr := $(srctree)/$(src)/syscallhdr.sh
--systbl := $(srctree)/$(src)/syscalltbl.sh
-+systbl := $(srctree)/scripts/syscalltbl.sh
+ int userspace_pid[NR_CPUS];
++int kill_userspace_mm[NR_CPUS];
  
- quiet_cmd_syshdr = SYSHDR  $@
-       cmd_syshdr = $(CONFIG_SHELL) '$(syshdr)' '$<' '$@'	\
-@@ -16,10 +16,7 @@ quiet_cmd_syshdr = SYSHDR  $@
- 		   '$(syshdr_offset_$(basetarget))'
+ /**
+  * start_userspace() - prepare a new userspace process
+@@ -342,6 +343,8 @@ void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
+ 	interrupt_end();
  
- quiet_cmd_systbl = SYSTBL  $@
--      cmd_systbl = $(CONFIG_SHELL) '$(systbl)' '$<' '$@'	\
--		   '$(systbl_abis_$(basetarget))'		\
--		   '$(systbl_abi_$(basetarget))'		\
--		   '$(systbl_offset_$(basetarget))'
-+      cmd_systbl = $(CONFIG_SHELL) $(systbl) $< $@ $(abis)
+ 	while (1) {
++		if (kill_userspace_mm[0])
++			fatal_sigsegv();
  
- syshdr_abis_unistd_32 := common,32
- $(uapi)/unistd_32.h: $(syscall) $(syshdr) FORCE
-@@ -29,23 +26,17 @@ syshdr_abis_unistd_64 := common,64
- $(uapi)/unistd_64.h: $(syscall) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
- 
--systbl_abis_syscall_table_32 := common,32
-+$(kapi)/syscall_table_32.h: abis := common,32
- $(kapi)/syscall_table_32.h: $(syscall) $(systbl) FORCE
- 	$(call if_changed,systbl)
- 
--systbl_abis_syscall_table_64 := common,64
-+$(kapi)/syscall_table_64.h: abis := common,64
- $(kapi)/syscall_table_64.h: $(syscall) $(systbl) FORCE
- 	$(call if_changed,systbl)
- 
--systbl_abis_syscall_table_c32 := common,32
--systbl_abi_syscall_table_c32 := c32
--$(kapi)/syscall_table_c32.h: $(syscall) $(systbl) FORCE
--	$(call if_changed,systbl)
--
- uapisyshdr-y		+= unistd_32.h unistd_64.h
- kapisyshdr-y		+= syscall_table_32.h		\
--			   syscall_table_64.h		\
--			   syscall_table_c32.h
-+			   syscall_table_64.h
- 
- uapisyshdr-y	:= $(addprefix $(uapi)/, $(uapisyshdr-y))
- kapisyshdr-y	:= $(addprefix $(kapi)/, $(kapisyshdr-y))
-diff --git a/arch/parisc/kernel/syscalls/syscalltbl.sh b/arch/parisc/kernel/syscalls/syscalltbl.sh
-deleted file mode 100644
-index f7393a7b18aa..000000000000
---- a/arch/parisc/kernel/syscalls/syscalltbl.sh
-+++ /dev/null
-@@ -1,36 +0,0 @@
--#!/bin/sh
--# SPDX-License-Identifier: GPL-2.0
--
--in="$1"
--out="$2"
--my_abis=`echo "($3)" | tr ',' '|'`
--my_abi="$4"
--offset="$5"
--
--emit() {
--	t_nxt="$1"
--	t_nr="$2"
--	t_entry="$3"
--
--	while [ $t_nxt -lt $t_nr ]; do
--		printf "__SYSCALL(%s,sys_ni_syscall)\n" "${t_nxt}"
--		t_nxt=$((t_nxt+1))
--	done
--	printf "__SYSCALL(%s,%s)\n" "${t_nxt}" "${t_entry}"
--}
--
--grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
--	nxt=0
--	if [ -z "$offset" ]; then
--		offset=0
--	fi
--
--	while read nr abi name entry compat ; do
--		if [ "$my_abi" = "c32" ] && [ ! -z "$compat" ]; then
--			emit $((nxt+offset)) $((nr+offset)) $compat
--		else
--			emit $((nxt+offset)) $((nr+offset)) $entry
--		fi
--		nxt=$((nr+1))
--	done
--) > "$out"
+ 		/*
+ 		 * This can legitimately fail if the process loads a
+@@ -663,4 +666,5 @@ void reboot_skas(void)
+ void __switch_mm(struct mm_id *mm_idp)
+ {
+ 	userspace_pid[0] = mm_idp->u.pid;
++	kill_userspace_mm[0] = mm_idp->kill;
+ }
 -- 
-2.27.0
+2.26.2
 
 
 _______________________________________________
