@@ -1,16 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x52c.google.com ([2607:f8b0:4864:20::52c])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l23Dz-000282-HX
- for linux-um@lists.infradead.org; Wed, 20 Jan 2021 02:28:00 +0000
-Received: by mail-pg1-x52c.google.com with SMTP id g15so14211659pgu.9
- for <linux-um@lists.infradead.org>; Tue, 19 Jan 2021 18:27:58 -0800 (PST)
-From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v8 03/20] um: move arch/x86/um/os-Linux to tools/um/uml/
-Date: Wed, 20 Jan 2021 11:27:08 +0900
-Message-Id: <04a14158366274d995d05910e4a4e8da5c73fce1.1611103406.git.thehajime@gmail.com>
-In-Reply-To: <cover.1611103406.git.thehajime@gmail.com>
-References: <cover.1611103406.git.thehajime@gmail.com>
+ id 1kzmoJ-0005kT-J6
+ for linux-um@lists.infradead.org; Wed, 13 Jan 2021 20:32:08 +0000
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [PATCH] um: hostfs: use a kmem cache for inodes
+Date: Wed, 13 Jan 2021 21:31:55 +0100
+Message-Id: <20210113213155.049fef96fce4.If4230573eba7b6e24ebc79f8ca827577260a60e5@changeid>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -24,117 +21,69 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
-Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, thehajime@gmail.com, retrage01@gmail.com
+To: linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
 
-Similar to arch/um/os-Linux code, arch/x86 also contains OS dependent
-part as well.  This patch moves underlying OS dependent part to tools/um
-directory so that arch/x86 code does not need to build host build
-facilities (e.g., libc).
+From: Johannes Berg <johannes.berg@intel.com>
 
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+This collects all of them together and makes it possible to
+e.g. exclude it from slub debugging.
+
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- arch/x86/um/Makefile                                |  2 +-
- arch/x86/um/os-Linux/Makefile                       | 13 -------------
- tools/um/uml/Build                                  |  1 +
- tools/um/uml/x86/Build                              | 11 +++++++++++
- .../x86/um/os-Linux => tools/um/uml/x86}/mcontext.c |  0
- {arch/x86/um/os-Linux => tools/um/uml/x86}/prctl.c  |  0
- .../um/os-Linux => tools/um/uml/x86}/registers.c    |  0
- .../um/os-Linux => tools/um/uml/x86}/task_size.c    |  0
- {arch/x86/um/os-Linux => tools/um/uml/x86}/tls.c    |  0
- 9 files changed, 13 insertions(+), 14 deletions(-)
- delete mode 100644 arch/x86/um/os-Linux/Makefile
- create mode 100644 tools/um/uml/x86/Build
- rename {arch/x86/um/os-Linux => tools/um/uml/x86}/mcontext.c (100%)
- rename {arch/x86/um/os-Linux => tools/um/uml/x86}/prctl.c (100%)
- rename {arch/x86/um/os-Linux => tools/um/uml/x86}/registers.c (100%)
- rename {arch/x86/um/os-Linux => tools/um/uml/x86}/task_size.c (100%)
- rename {arch/x86/um/os-Linux => tools/um/uml/x86}/tls.c (100%)
+ fs/hostfs/hostfs_kern.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
-index 77f70b969d14..25e9846b36a2 100644
---- a/arch/x86/um/Makefile
-+++ b/arch/x86/um/Makefile
-@@ -13,7 +13,7 @@ obj-y = bugs_$(BITS).o delay.o fault.o ldt.o \
- 	ptrace_$(BITS).o ptrace_user.o setjmp_$(BITS).o signal.o \
- 	stub_$(BITS).o stub_segv.o \
- 	sys_call_table_$(BITS).o sysrq_$(BITS).o tls_$(BITS).o \
--	mem_$(BITS).o subarch.o os-$(OS)/
-+	mem_$(BITS).o subarch.o
+diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+index aea35459d390..4a5beca6eaa8 100644
+--- a/fs/hostfs/hostfs_kern.c
++++ b/fs/hostfs/hostfs_kern.c
+@@ -34,6 +34,8 @@ static inline struct hostfs_inode_info *HOSTFS_I(struct inode *inode)
  
- ifeq ($(CONFIG_X86_32),y)
+ #define FILE_HOSTFS_I(file) HOSTFS_I(file_inode(file))
  
-diff --git a/arch/x86/um/os-Linux/Makefile b/arch/x86/um/os-Linux/Makefile
-deleted file mode 100644
-index 253bfb8cb702..000000000000
---- a/arch/x86/um/os-Linux/Makefile
-+++ /dev/null
-@@ -1,13 +0,0 @@
--#
--# Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
--# Licensed under the GPL
--#
--
--obj-y = registers.o task_size.o mcontext.o
--
--obj-$(CONFIG_X86_32) += tls.o
--obj-$(CONFIG_64BIT) += prctl.o
--
--USER_OBJS := $(obj-y)
--
--include arch/um/scripts/Makefile.rules
-diff --git a/tools/um/uml/Build b/tools/um/uml/Build
-index 0e629c9cb8eb..810aa99f8409 100644
---- a/tools/um/uml/Build
-+++ b/tools/um/uml/Build
-@@ -14,6 +14,7 @@ liblinux-y += execvp.o file.o helper.o irq.o main.o mem.o process.o \
- 
- CFLAGS_signal.o += -Wframe-larger-than=4096
- 
-+liblinux-y += x86/
- liblinux-$(CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA) += elf_aux.o
- 
- export O = $(srctree)
-diff --git a/tools/um/uml/x86/Build b/tools/um/uml/x86/Build
-new file mode 100644
-index 000000000000..16bbc7eb19d1
---- /dev/null
-+++ b/tools/um/uml/x86/Build
-@@ -0,0 +1,11 @@
-+#
-+# Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-+# Licensed under the GPL
-+#
++static struct kmem_cache *hostfs_inode_cache;
 +
-+include $(objtree)/include/config/auto.conf
-+
-+liblinux-y = registers.o task_size.o mcontext.o
-+
-+liblinux-$(CONFIG_X86_32) += tls.o
-+liblinux-$(CONFIG_64BIT) += prctl.o
-diff --git a/arch/x86/um/os-Linux/mcontext.c b/tools/um/uml/x86/mcontext.c
-similarity index 100%
-rename from arch/x86/um/os-Linux/mcontext.c
-rename to tools/um/uml/x86/mcontext.c
-diff --git a/arch/x86/um/os-Linux/prctl.c b/tools/um/uml/x86/prctl.c
-similarity index 100%
-rename from arch/x86/um/os-Linux/prctl.c
-rename to tools/um/uml/x86/prctl.c
-diff --git a/arch/x86/um/os-Linux/registers.c b/tools/um/uml/x86/registers.c
-similarity index 100%
-rename from arch/x86/um/os-Linux/registers.c
-rename to tools/um/uml/x86/registers.c
-diff --git a/arch/x86/um/os-Linux/task_size.c b/tools/um/uml/x86/task_size.c
-similarity index 100%
-rename from arch/x86/um/os-Linux/task_size.c
-rename to tools/um/uml/x86/task_size.c
-diff --git a/arch/x86/um/os-Linux/tls.c b/tools/um/uml/x86/tls.c
-similarity index 100%
-rename from arch/x86/um/os-Linux/tls.c
-rename to tools/um/uml/x86/tls.c
+ /* Changed in hostfs_args before the kernel starts running */
+ static char *root_ino = "";
+ static int append = 0;
+@@ -221,7 +223,7 @@ static struct inode *hostfs_alloc_inode(struct super_block *sb)
+ {
+ 	struct hostfs_inode_info *hi;
+ 
+-	hi = kmalloc(sizeof(*hi), GFP_KERNEL_ACCOUNT);
++	hi = kmem_cache_alloc(hostfs_inode_cache, GFP_KERNEL_ACCOUNT);
+ 	if (hi == NULL)
+ 		return NULL;
+ 	hi->fd = -1;
+@@ -243,7 +245,7 @@ static void hostfs_evict_inode(struct inode *inode)
+ 
+ static void hostfs_free_inode(struct inode *inode)
+ {
+-	kfree(HOSTFS_I(inode));
++	kmem_cache_free(hostfs_inode_cache, HOSTFS_I(inode));
+ }
+ 
+ static int hostfs_show_options(struct seq_file *seq, struct dentry *root)
+@@ -986,12 +988,16 @@ MODULE_ALIAS_FS("hostfs");
+ 
+ static int __init init_hostfs(void)
+ {
++	hostfs_inode_cache = KMEM_CACHE(hostfs_inode_info, 0);
++	if (!hostfs_inode_cache)
++		return -ENOMEM;
+ 	return register_filesystem(&hostfs_type);
+ }
+ 
+ static void __exit exit_hostfs(void)
+ {
+ 	unregister_filesystem(&hostfs_type);
++	kmem_cache_destroy(hostfs_inode_cache);
+ }
+ 
+ module_init(init_hostfs)
 -- 
-2.21.0 (Apple Git-122.2)
+2.26.2
 
 
 _______________________________________________
