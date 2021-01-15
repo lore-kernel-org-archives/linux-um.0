@@ -1,111 +1,79 @@
-Return-Path: <linux-sh-owner@vger.kernel.org>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 15/27] mips: add missing FORCE and fix 'targets' to make if_changed work
-Date: Thu, 28 Jan 2021 09:50:57 +0900
-Message-Id: <20210128005110.2613902-16-masahiroy@kernel.org>
-In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
-References: <20210128005110.2613902-1-masahiroy@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1l0NuW-0006ls-RS
+ for linux-um@lists.infradead.org; Fri, 15 Jan 2021 12:09:01 +0000
+Message-ID: <9e989a0274d7e55038b37ab1b9e6ab7553bb3488.camel@sipsolutions.net>
+Subject: Re: [PATCH 3/3] um: remove process stub VMA
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Fri, 15 Jan 2021 13:08:58 +0100
+In-Reply-To: <20210113220944.ba020fe73c75.Ia71e6fe697af9b196278084a9f730c30e20773c9@changeid>
+References: <20210113220944.7732f6bfd3bb.Ib87c91b49d57d27314cf444696273da6d8463e9c@changeid>
+ <20210113220944.ba020fe73c75.Ia71e6fe697af9b196278084a9f730c30e20773c9@changeid>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-arch@vger.kernel.org, x86@kernel.org
-Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
+Cc: linux-arch@vger.kernel.org
 
-The rules in this Makefile cannot detect the command line change because
-the prerequisite 'FORCE' is missing.
+On Wed, 2021-01-13 at 22:09 +0100, Johannes Berg wrote:
+> 
+> +++ b/arch/um/include/asm/mmu_context.h
+> @@ -9,34 +9,9 @@
+>  #include <linux/sched.h>
+>  #include <linux/mm_types.h>
+>  #include <linux/mmap_lock.h>
+> -
+> +#include <asm/mm_hooks.h>
+>  #include <asm/mmu.h>
+>  
+> -extern void uml_setup_stubs(struct mm_struct *mm);
+> -/*
+> - * Needed since we do not use the asm-generic/mm_hooks.h:
+> - */
+> -static inline int arch_dup_mmap(struct mm_struct *oldmm, struct mm_struct *mm)
+> -{
+> -	uml_setup_stubs(mm);
+> -	return 0;
+> -}
+> -extern void arch_exit_mmap(struct mm_struct *mm);
+> -static inline void arch_unmap(struct mm_struct *mm,
+> -			unsigned long start, unsigned long end)
+> -{
+> -}
+> -static inline bool arch_vma_access_permitted(struct vm_area_struct *vma,
+> -		bool write, bool execute, bool foreign)
+> -{
+> -	/* by default, allow everything */
+> -	return true;
+> -}
+> -
+> -/*
+> - * end asm-generic/mm_hooks.h functions
+> - */
+> -
+>  #define deactivate_mm(tsk,mm)	do { } while (0)
 
-Adding 'FORCE' will result in the headers being rebuilt every time
-because the 'targets' addition is also wrong; the file paths in
-'targets' must be relative to the current Makefile.
 
-Fix all of them so the if_changed rules work correctly.
+Just saw there's a small conflict since in the meantime, deactivate_mm()
+has been removed. Just take neither code.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+johannes
 
- arch/mips/kernel/syscalls/Makefile | 27 ++++++++++++++-------------
- 1 file changed, 14 insertions(+), 13 deletions(-)
 
-diff --git a/arch/mips/kernel/syscalls/Makefile b/arch/mips/kernel/syscalls/Makefile
-index 6efb2f6889a7..f15842bda464 100644
---- a/arch/mips/kernel/syscalls/Makefile
-+++ b/arch/mips/kernel/syscalls/Makefile
-@@ -31,50 +31,50 @@ quiet_cmd_systbl = SYSTBL  $@
- 		   '$(systbl_offset_$(basetarget))'
- 
- syshdr_offset_unistd_n32 := __NR_Linux
--$(uapi)/unistd_n32.h: $(syscalln32) $(syshdr)
-+$(uapi)/unistd_n32.h: $(syscalln32) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
- 
- syshdr_offset_unistd_n64 := __NR_Linux
--$(uapi)/unistd_n64.h: $(syscalln64) $(syshdr)
-+$(uapi)/unistd_n64.h: $(syscalln64) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
- 
- syshdr_offset_unistd_o32 := __NR_Linux
--$(uapi)/unistd_o32.h: $(syscallo32) $(syshdr)
-+$(uapi)/unistd_o32.h: $(syscallo32) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
- 
- sysnr_pfx_unistd_nr_n32 := N32
- sysnr_offset_unistd_nr_n32 := 6000
--$(uapi)/unistd_nr_n32.h: $(syscalln32) $(sysnr)
-+$(uapi)/unistd_nr_n32.h: $(syscalln32) $(sysnr) FORCE
- 	$(call if_changed,sysnr)
- 
- sysnr_pfx_unistd_nr_n64 := 64
- sysnr_offset_unistd_nr_n64 := 5000
--$(uapi)/unistd_nr_n64.h: $(syscalln64) $(sysnr)
-+$(uapi)/unistd_nr_n64.h: $(syscalln64) $(sysnr) FORCE
- 	$(call if_changed,sysnr)
- 
- sysnr_pfx_unistd_nr_o32 := O32
- sysnr_offset_unistd_nr_o32 := 4000
--$(uapi)/unistd_nr_o32.h: $(syscallo32) $(sysnr)
-+$(uapi)/unistd_nr_o32.h: $(syscallo32) $(sysnr) FORCE
- 	$(call if_changed,sysnr)
- 
- systbl_abi_syscall_table_32_o32 := 32_o32
- systbl_offset_syscall_table_32_o32 := 4000
--$(kapi)/syscall_table_32_o32.h: $(syscallo32) $(systbl)
-+$(kapi)/syscall_table_32_o32.h: $(syscallo32) $(systbl) FORCE
- 	$(call if_changed,systbl)
- 
- systbl_abi_syscall_table_64_n32 := 64_n32
- systbl_offset_syscall_table_64_n32 := 6000
--$(kapi)/syscall_table_64_n32.h: $(syscalln32) $(systbl)
-+$(kapi)/syscall_table_64_n32.h: $(syscalln32) $(systbl) FORCE
- 	$(call if_changed,systbl)
- 
- systbl_abi_syscall_table_64_n64 := 64_n64
- systbl_offset_syscall_table_64_n64 := 5000
--$(kapi)/syscall_table_64_n64.h: $(syscalln64) $(systbl)
-+$(kapi)/syscall_table_64_n64.h: $(syscalln64) $(systbl) FORCE
- 	$(call if_changed,systbl)
- 
- systbl_abi_syscall_table_64_o32 := 64_o32
- systbl_offset_syscall_table_64_o32 := 4000
--$(kapi)/syscall_table_64_o32.h: $(syscallo32) $(systbl)
-+$(kapi)/syscall_table_64_o32.h: $(syscallo32) $(systbl) FORCE
- 	$(call if_changed,systbl)
- 
- uapisyshdr-y		+= unistd_n32.h			\
-@@ -88,9 +88,10 @@ kapisyshdr-y		+= syscall_table_32_o32.h	\
- 			   syscall_table_64_n64.h	\
- 			   syscall_table_64_o32.h
- 
--targets	+= $(uapisyshdr-y) $(kapisyshdr-y)
-+uapisyshdr-y	:= $(addprefix $(uapi)/, $(uapisyshdr-y))
-+kapisyshdr-y	:= $(addprefix $(kapi)/, $(kapisyshdr-y))
-+targets		+= $(addprefix ../../../../, $(uapisyshdr-y) $(kapisyshdr-y))
- 
- PHONY += all
--all: $(addprefix $(uapi)/,$(uapisyshdr-y))
--all: $(addprefix $(kapi)/,$(kapisyshdr-y))
-+all: $(uapisyshdr-y) $(kapisyshdr-y)
- 	@:
--- 
-2.27.0
-
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
