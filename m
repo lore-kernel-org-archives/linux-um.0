@@ -1,10 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 23/27] sparc: syscalls: switch to generic syscalltbl.sh
-Date: Thu, 28 Jan 2021 09:51:05 +0900
-Message-Id: <20210128005110.2613902-24-masahiroy@kernel.org>
-In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
-References: <20210128005110.2613902-1-masahiroy@kernel.org>
+Received: from mail-pl1-x635.google.com ([2607:f8b0:4864:20::635])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1l23FX-0002Rq-7D
+ for linux-um@lists.infradead.org; Wed, 20 Jan 2021 02:29:36 +0000
+Received: by mail-pl1-x635.google.com with SMTP id x12so11663746plr.10
+ for <linux-um@lists.infradead.org>; Tue, 19 Jan 2021 18:29:34 -0800 (PST)
+From: Hajime Tazaki <thehajime@gmail.com>
+Subject: [RFC v8 16/20] um: host: add utilities functions
+Date: Wed, 20 Jan 2021 11:27:21 +0900
+Message-Id: <8416d4b2f5c5510bfa3162cf04bae181c13d3f6e.1611103406.git.thehajime@gmail.com>
+In-Reply-To: <cover.1611103406.git.thehajime@gmail.com>
+References: <cover.1611103406.git.thehajime@gmail.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -18,180 +24,279 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-arch@vger.kernel.org, x86@kernel.org
-Cc: linux-xtensa@linux-xtensa.org, linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org, linux-kbuild@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+To: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
+Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, thehajime@gmail.com, retrage01@gmail.com
 
-As of v5.11-rc1, 12 architectures duplicate similar shell scripts in
-order to generate syscall table headers. My goal is to unify them into
-the single scripts/syscalltbl.sh.
+Add basic utility functions for getting a string from a kernel error
+code and a fprintf like function that uses the host print
+operation. The latter is useful for informing the user about errors
+that occur in the host library.
 
-This commit converts sparc to use scripts/syscalltbl.sh. This also
-unifies syscall_table_64.h and syscall_table_c32.h.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
 ---
+ tools/um/include/lkl.h |  23 +++++
+ tools/um/lib/Build     |   3 +
+ tools/um/lib/utils.c   | 205 +++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 231 insertions(+)
+ create mode 100644 tools/um/lib/Build
+ create mode 100644 tools/um/lib/utils.c
 
- arch/sparc/include/asm/Kbuild            |  1 -
- arch/sparc/kernel/syscalls/Makefile      | 19 ++++---------
- arch/sparc/kernel/syscalls/syscalltbl.sh | 36 ------------------------
- arch/sparc/kernel/systbls_32.S           |  4 +--
- arch/sparc/kernel/systbls_64.S           |  8 ++++--
- 5 files changed, 12 insertions(+), 56 deletions(-)
- delete mode 100644 arch/sparc/kernel/syscalls/syscalltbl.sh
-
-diff --git a/arch/sparc/include/asm/Kbuild b/arch/sparc/include/asm/Kbuild
-index aec20406145e..0b9d98ced34a 100644
---- a/arch/sparc/include/asm/Kbuild
-+++ b/arch/sparc/include/asm/Kbuild
-@@ -1,7 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- generated-y += syscall_table_32.h
- generated-y += syscall_table_64.h
--generated-y += syscall_table_c32.h
- generic-y += export.h
- generic-y += kvm_para.h
- generic-y += mcs_spinlock.h
-diff --git a/arch/sparc/kernel/syscalls/Makefile b/arch/sparc/kernel/syscalls/Makefile
-index 556fe30a6c8f..77fea5beb9be 100644
---- a/arch/sparc/kernel/syscalls/Makefile
-+++ b/arch/sparc/kernel/syscalls/Makefile
-@@ -7,7 +7,7 @@ _dummy := $(shell [ -d '$(uapi)' ] || mkdir -p '$(uapi)')	\
+diff --git a/tools/um/include/lkl.h b/tools/um/include/lkl.h
+index 2417ed5ccf71..97da2d11502f 100644
+--- a/tools/um/include/lkl.h
++++ b/tools/um/include/lkl.h
+@@ -27,6 +27,29 @@ extern "C" {
+ #undef class
+ #endif
  
- syscall := $(srctree)/$(src)/syscall.tbl
- syshdr := $(srctree)/$(src)/syscallhdr.sh
--systbl := $(srctree)/$(src)/syscalltbl.sh
-+systbl := $(srctree)/scripts/syscalltbl.sh
- 
- quiet_cmd_syshdr = SYSHDR  $@
-       cmd_syshdr = $(CONFIG_SHELL) '$(syshdr)' '$<' '$@'	\
-@@ -16,10 +16,7 @@ quiet_cmd_syshdr = SYSHDR  $@
- 		   '$(syshdr_offset_$(basetarget))'
- 
- quiet_cmd_systbl = SYSTBL  $@
--      cmd_systbl = $(CONFIG_SHELL) '$(systbl)' '$<' '$@'	\
--		   '$(systbl_abis_$(basetarget))'		\
--		   '$(systbl_abi_$(basetarget))'		\
--		   '$(systbl_offset_$(basetarget))'
-+      cmd_systbl = $(CONFIG_SHELL) $(systbl) $< $@ $(abis)
- 
- syshdr_abis_unistd_32 := common,32
- $(uapi)/unistd_32.h: $(syscall) $(syshdr) FORCE
-@@ -29,23 +26,17 @@ syshdr_abis_unistd_64 := common,64
- $(uapi)/unistd_64.h: $(syscall) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
- 
--systbl_abis_syscall_table_32 := common,32
-+$(kapi)/syscall_table_32.h: abis := common,32
- $(kapi)/syscall_table_32.h: $(syscall) $(systbl) FORCE
- 	$(call if_changed,systbl)
- 
--systbl_abis_syscall_table_64 := common,64
-+$(kapi)/syscall_table_64.h: abis := common,64
- $(kapi)/syscall_table_64.h: $(syscall) $(systbl) FORCE
- 	$(call if_changed,systbl)
- 
--systbl_abis_syscall_table_c32 := common,32
--systbl_abi_syscall_table_c32 := c32
--$(kapi)/syscall_table_c32.h: $(syscall) $(systbl) FORCE
--	$(call if_changed,systbl)
--
- uapisyshdr-y		+= unistd_32.h unistd_64.h
- kapisyshdr-y		+= syscall_table_32.h		\
--			   syscall_table_64.h		\
--			   syscall_table_c32.h
-+			   syscall_table_64.h
- 
- uapisyshdr-y	:= $(addprefix $(uapi)/, $(uapisyshdr-y))
- kapisyshdr-y	:= $(addprefix $(kapi)/, $(kapisyshdr-y))
-diff --git a/arch/sparc/kernel/syscalls/syscalltbl.sh b/arch/sparc/kernel/syscalls/syscalltbl.sh
-deleted file mode 100644
-index 77cf0143ba19..000000000000
---- a/arch/sparc/kernel/syscalls/syscalltbl.sh
-+++ /dev/null
-@@ -1,36 +0,0 @@
--#!/bin/sh
--# SPDX-License-Identifier: GPL-2.0
--
--in="$1"
--out="$2"
--my_abis=`echo "($3)" | tr ',' '|'`
--my_abi="$4"
--offset="$5"
--
--emit() {
--	t_nxt="$1"
--	t_nr="$2"
--	t_entry="$3"
--
--	while [ $t_nxt -lt $t_nr ]; do
--		printf "__SYSCALL(%s, sys_nis_syscall, )\n" "${t_nxt}"
--		t_nxt=$((t_nxt+1))
--	done
--	printf "__SYSCALL(%s, %s, )\n" "${t_nxt}" "${t_entry}"
--}
--
--grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
--	nxt=0
--	if [ -z "$offset" ]; then
--		offset=0
--	fi
--
--	while read nr abi name entry compat ; do
--		if [ "$my_abi" = "c32" ] && [ ! -z "$compat" ]; then
--			emit $((nxt+offset)) $((nr+offset)) $compat
--		else
--			emit $((nxt+offset)) $((nr+offset)) $entry
--		fi
--		nxt=$((nr+1))
--	done
--) > "$out"
-diff --git a/arch/sparc/kernel/systbls_32.S b/arch/sparc/kernel/systbls_32.S
-index ab9e4d57685a..3aaffa017706 100644
---- a/arch/sparc/kernel/systbls_32.S
-+++ b/arch/sparc/kernel/systbls_32.S
-@@ -9,10 +9,10 @@
-  * Copyright (C) 1995 Adrian M. Rodriguez (adrian@remus.rutgers.edu)
-  */
- 
--#define __SYSCALL(nr, entry, nargs) .long entry
-+#define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, native)
-+#define __SYSCALL(nr, entry) .long entry
- 	.data
- 	.align 4
- 	.globl sys_call_table
- sys_call_table:
- #include <asm/syscall_table_32.h>	/* 32-bit native syscalls */
--#undef __SYSCALL
-diff --git a/arch/sparc/kernel/systbls_64.S b/arch/sparc/kernel/systbls_64.S
-index a27394bf7d7f..398fe449dd34 100644
---- a/arch/sparc/kernel/systbls_64.S
-+++ b/arch/sparc/kernel/systbls_64.S
-@@ -10,18 +10,20 @@
-  * Copyright (C) 1995 Adrian M. Rodriguez (adrian@remus.rutgers.edu)
-  */
- 
--#define __SYSCALL(nr, entry, nargs) .word entry
-+#define __SYSCALL(nr, entry) .word entry
- 	.text
- 	.align	4
- #ifdef CONFIG_COMPAT
- 	.globl sys_call_table32
- sys_call_table32:
--#include <asm/syscall_table_c32.h>	/* Compat syscalls */
-+#define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, compat)
-+#include <asm/syscall_table_32.h>	/* Compat syscalls */
-+#undef __SYSCALL_WITH_COMPAT
- #endif /* CONFIG_COMPAT */
- 
- 	.align	4
- 	.globl sys_call_table64, sys_call_table
- sys_call_table64:
- sys_call_table:
-+#define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, native)
- #include <asm/syscall_table_64.h>	/* 64-bit native syscalls */
--#undef __SYSCALL
++/**
++ * lkl_printf - print a message via the host print operation
++ *
++ * @fmt: printf like format string
++ */
++int lkl_printf(const char *fmt, ...);
++
++/**
++ * lkl_strerror - returns a string describing the given error code
++ *
++ * @err - error code
++ * @returns - string for the given error code
++ */
++const char *lkl_strerror(int err);
++
++/**
++ * lkl_perror - prints a string describing the given error code
++ *
++ * @msg - prefix for the error message
++ * @err - error code
++ */
++void lkl_perror(char *msg, int err);
++
+ #if __LKL__BITS_PER_LONG == 64
+ #define lkl_sys_fstatat lkl_sys_newfstatat
+ #define lkl_sys_fstat lkl_sys_newfstat
+diff --git a/tools/um/lib/Build b/tools/um/lib/Build
+new file mode 100644
+index 000000000000..77acd6f55e76
+--- /dev/null
++++ b/tools/um/lib/Build
+@@ -0,0 +1,3 @@
++include $(objtree)/include/config/auto.conf
++
++liblinux-$(CONFIG_UMMODE_LIB) += utils.o
+diff --git a/tools/um/lib/utils.c b/tools/um/lib/utils.c
+new file mode 100644
+index 000000000000..3b38e1a95124
+--- /dev/null
++++ b/tools/um/lib/utils.c
+@@ -0,0 +1,205 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <stdarg.h>
++#include <stdio.h>
++#include <string.h>
++#include <lkl_host.h>
++
++static const char * const lkl_err_strings[] = {
++	[0]			= "Success",
++	[LKL_EPERM]		= "Operation not permitted",
++	[LKL_ENOENT]		= "No such file or directory",
++	[LKL_ESRCH]		= "No such process",
++	[LKL_EINTR]		= "Interrupted system call",
++	[LKL_EIO]		= "I/O error",
++	[LKL_ENXIO]		= "No such device or address",
++	[LKL_E2BIG]		= "Argument list too long",
++	[LKL_ENOEXEC]		= "Exec format error",
++	[LKL_EBADF]		= "Bad file number",
++	[LKL_ECHILD]		= "No child processes",
++	[LKL_EAGAIN]		= "Try again",
++	[LKL_ENOMEM]		= "Out of memory",
++	[LKL_EACCES]		= "Permission denied",
++	[LKL_EFAULT]		= "Bad address",
++	[LKL_ENOTBLK]		= "Block device required",
++	[LKL_EBUSY]		= "Device or resource busy",
++	[LKL_EEXIST]		= "File exists",
++	[LKL_EXDEV]		= "Cross-device link",
++	[LKL_ENODEV]		= "No such device",
++	[LKL_ENOTDIR]		= "Not a directory",
++	[LKL_EISDIR]		= "Is a directory",
++	[LKL_EINVAL]		= "Invalid argument",
++	[LKL_ENFILE]		= "File table overflow",
++	[LKL_EMFILE]		= "Too many open files",
++	[LKL_ENOTTY]		= "Not a typewriter",
++	[LKL_ETXTBSY]		= "Text file busy",
++	[LKL_EFBIG]		= "File too large",
++	[LKL_ENOSPC]		= "No space left on device",
++	[LKL_ESPIPE]		= "Illegal seek",
++	[LKL_EROFS]		= "Read-only file system",
++	[LKL_EMLINK]		= "Too many links",
++	[LKL_EPIPE]		= "Broken pipe",
++	[LKL_EDOM]		= "Math argument out of domain of func",
++	[LKL_ERANGE]		= "Math result not representable",
++	[LKL_EDEADLK]		= "Resource deadlock would occur",
++	[LKL_ENAMETOOLONG]	= "File name too long",
++	[LKL_ENOLCK]		= "No record locks available",
++	[LKL_ENOSYS]		= "Invalid system call number",
++	[LKL_ENOTEMPTY]		= "Directory not empty",
++	[LKL_ELOOP]		= "Too many symbolic links encountered",
++	[LKL_ENOMSG]		= "No message of desired type",
++	[LKL_EIDRM]		= "Identifier removed",
++	[LKL_ECHRNG]		= "Channel number out of range",
++	[LKL_EL2NSYNC]		= "Level 2 not synchronized",
++	[LKL_EL3HLT]		= "Level 3 halted",
++	[LKL_EL3RST]		= "Level 3 reset",
++	[LKL_ELNRNG]		= "Link number out of range",
++	[LKL_EUNATCH]		= "Protocol driver not attached",
++	[LKL_ENOCSI]		= "No CSI structure available",
++	[LKL_EL2HLT]		= "Level 2 halted",
++	[LKL_EBADE]		= "Invalid exchange",
++	[LKL_EBADR]		= "Invalid request descriptor",
++	[LKL_EXFULL]		= "Exchange full",
++	[LKL_ENOANO]		= "No anode",
++	[LKL_EBADRQC]		= "Invalid request code",
++	[LKL_EBADSLT]		= "Invalid slot",
++	[LKL_EBFONT]		= "Bad font file format",
++	[LKL_ENOSTR]		= "Device not a stream",
++	[LKL_ENODATA]		= "No data available",
++	[LKL_ETIME]		= "Timer expired",
++	[LKL_ENOSR]		= "Out of streams resources",
++	[LKL_ENONET]		= "Machine is not on the network",
++	[LKL_ENOPKG]		= "Package not installed",
++	[LKL_EREMOTE]		= "Object is remote",
++	[LKL_ENOLINK]		= "Link has been severed",
++	[LKL_EADV]		= "Advertise error",
++	[LKL_ESRMNT]		= "Srmount error",
++	[LKL_ECOMM]		= "Communication error on send",
++	[LKL_EPROTO]		= "Protocol error",
++	[LKL_EMULTIHOP]		= "Multihop attempted",
++	[LKL_EDOTDOT]		= "RFS specific error",
++	[LKL_EBADMSG]		= "Not a data message",
++	[LKL_EOVERFLOW]		= "Value too large for defined data type",
++	[LKL_ENOTUNIQ]		= "Name not unique on network",
++	[LKL_EBADFD]		= "File descriptor in bad state",
++	[LKL_EREMCHG]		= "Remote address changed",
++	[LKL_ELIBACC]		= "Can not access a needed shared library",
++	[LKL_ELIBBAD]		= "Accessing a corrupted shared library",
++	[LKL_ELIBSCN]		= ".lib section in a.out corrupted",
++	[LKL_ELIBMAX]		= "Attempting to link in too many shared libraries",
++	[LKL_ELIBEXEC]		= "Cannot exec a shared library directly",
++	[LKL_EILSEQ]		= "Illegal byte sequence",
++	[LKL_ERESTART]		= "Interrupted system call should be restarted",
++	[LKL_ESTRPIPE]		= "Streams pipe error",
++	[LKL_EUSERS]		= "Too many users",
++	[LKL_ENOTSOCK]		= "Socket operation on non-socket",
++	[LKL_EDESTADDRREQ]	= "Destination address required",
++	[LKL_EMSGSIZE]		= "Message too long",
++	[LKL_EPROTOTYPE]	= "Protocol wrong type for socket",
++	[LKL_ENOPROTOOPT]	= "Protocol not available",
++	[LKL_EPROTONOSUPPORT]	= "Protocol not supported",
++	[LKL_ESOCKTNOSUPPORT]	= "Socket type not supported",
++	[LKL_EOPNOTSUPP]	= "Operation not supported on transport endpoint",
++	[LKL_EPFNOSUPPORT]	= "Protocol family not supported",
++	[LKL_EAFNOSUPPORT]	= "Address family not supported by protocol",
++	[LKL_EADDRINUSE]	= "Address already in use",
++	[LKL_EADDRNOTAVAIL]	= "Cannot assign requested address",
++	[LKL_ENETDOWN]		= "Network is down",
++	[LKL_ENETUNREACH]	= "Network is unreachable",
++	[LKL_ENETRESET]		= "Network dropped connection because of reset",
++	[LKL_ECONNABORTED]	= "Software caused connection abort",
++	[LKL_ECONNRESET]	= "Connection reset by peer",
++	[LKL_ENOBUFS]		= "No buffer space available",
++	[LKL_EISCONN]		= "Transport endpoint is already connected",
++	[LKL_ENOTCONN]		= "Transport endpoint is not connected",
++	[LKL_ESHUTDOWN]		= "Cannot send after transport endpoint shutdown",
++	[LKL_ETOOMANYREFS]	= "Too many references: cannot splice",
++	[LKL_ETIMEDOUT]		= "Connection timed out",
++	[LKL_ECONNREFUSED]	= "Connection refused",
++	[LKL_EHOSTDOWN]		= "Host is down",
++	[LKL_EHOSTUNREACH]	= "No route to host",
++	[LKL_EALREADY]		= "Operation already in progress",
++	[LKL_EINPROGRESS]	= "Operation now in progress",
++	[LKL_ESTALE]		= "Stale file handle",
++	[LKL_EUCLEAN]		= "Structure needs cleaning",
++	[LKL_ENOTNAM]		= "Not a XENIX named type file",
++	[LKL_ENAVAIL]		= "No XENIX semaphores available",
++	[LKL_EISNAM]		= "Is a named type file",
++	[LKL_EREMOTEIO]		= "Remote I/O error",
++	[LKL_EDQUOT]		= "Quota exceeded",
++	[LKL_ENOMEDIUM]		= "No medium found",
++	[LKL_EMEDIUMTYPE]	= "Wrong medium type",
++	[LKL_ECANCELED]		= "Operation Canceled",
++	[LKL_ENOKEY]		= "Required key not available",
++	[LKL_EKEYEXPIRED]	= "Key has expired",
++	[LKL_EKEYREVOKED]	= "Key has been revoked",
++	[LKL_EKEYREJECTED]	= "Key was rejected by service",
++	[LKL_EOWNERDEAD]	= "Owner died",
++	[LKL_ENOTRECOVERABLE]	= "State not recoverable",
++	[LKL_ERFKILL]		= "Operation not possible due to RF-kill",
++	[LKL_EHWPOISON]		= "Memory page has hardware error",
++};
++
++const char *lkl_strerror(int err)
++{
++	if (err < 0)
++		err = -err;
++
++	if ((size_t)err >= sizeof(lkl_err_strings) / sizeof(const char *))
++		return "Bad error code";
++
++	return lkl_err_strings[err];
++}
++
++void lkl_perror(char *msg, int err)
++{
++	const char *err_msg = lkl_strerror(err);
++	/* We need to use 'real' printf because lkl_print can
++	 * be turned off when debugging is off.
++	 */
++	lkl_printf("%s: %s\n", msg, err_msg);
++}
++
++static int lkl_vprintf(const char *fmt, va_list args)
++{
++	int n;
++	char *buffer;
++	va_list copy;
++
++	va_copy(copy, args);
++	n = vsnprintf(NULL, 0, fmt, copy);
++	va_end(copy);
++
++	buffer = lkl_mem_alloc(n + 1);
++	if (!buffer)
++		return (-1);
++
++	vsnprintf(buffer, n + 1, fmt, args);
++
++	lkl_print(buffer, n);
++	lkl_mem_free(buffer);
++
++	return n;
++}
++
++int lkl_printf(const char *fmt, ...)
++{
++	int n;
++	va_list args;
++
++	va_start(args, fmt);
++	n = lkl_vprintf(fmt, args);
++	va_end(args);
++
++	return n;
++}
++
++void lkl_bug(const char *fmt, ...)
++{
++	va_list args;
++
++	va_start(args, fmt);
++	lkl_vprintf(fmt, args);
++	va_end(args);
++
++	lkl_panic();
++}
 -- 
-2.27.0
+2.21.0 (Apple Git-122.2)
 
 
 _______________________________________________
