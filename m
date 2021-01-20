@@ -1,94 +1,110 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 20/27] sh: syscalls: switch to generic syscalltbl.sh
-Date: Thu, 28 Jan 2021 09:51:02 +0900
-Message-Id: <20210128005110.2613902-21-masahiroy@kernel.org>
-In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
-References: <20210128005110.2613902-1-masahiroy@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pg1-x532.google.com ([2607:f8b0:4864:20::532])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1l23EJ-0002BE-Np
+ for linux-um@lists.infradead.org; Wed, 20 Jan 2021 02:28:20 +0000
+Received: by mail-pg1-x532.google.com with SMTP id c132so14240128pga.3
+ for <linux-um@lists.infradead.org>; Tue, 19 Jan 2021 18:28:19 -0800 (PST)
+From: Hajime Tazaki <thehajime@gmail.com>
+Subject: [RFC v8 05/20] um: extend arch_switch_to for alternate SUBARCH
+Date: Wed, 20 Jan 2021 11:27:10 +0900
+Message-Id: <89ce5467e30e16eb89f80173b473908d9e8151f3.1611103406.git.thehajime@gmail.com>
+In-Reply-To: <cover.1611103406.git.thehajime@gmail.com>
+References: <cover.1611103406.git.thehajime@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-arch@vger.kernel.org, x86@kernel.org
-Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
+Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, thehajime@gmail.com, retrage01@gmail.com
 
-As of v5.11-rc1, 12 architectures duplicate similar shell scripts in
-order to generate syscall table headers. My goal is to unify them into
-the single scripts/syscalltbl.sh.
+This commit introduces additional argument of previous task when
+context switch happens.  New SUBARCH can use the new information to
+switch tasks in a subarch-specific manner.
 
-This commit converts sh to use scripts/syscalltbl.sh.
+The patch is particularly required by library mode, implemented as a
+SUBARCH of UML.  Having access to the previous thread will be required
+in the library mode for it to implement thread switching correctly.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
 ---
+ arch/um/kernel/process.c  | 6 +++---
+ arch/x86/um/ptrace_32.c   | 2 +-
+ arch/x86/um/syscalls_64.c | 2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
- arch/sh/kernel/syscalls/Makefile      |  7 ++----
- arch/sh/kernel/syscalls/syscalltbl.sh | 32 ---------------------------
- 2 files changed, 2 insertions(+), 37 deletions(-)
- delete mode 100644 arch/sh/kernel/syscalls/syscalltbl.sh
-
-diff --git a/arch/sh/kernel/syscalls/Makefile b/arch/sh/kernel/syscalls/Makefile
-index 1c42d2d2926d..6610130c67bc 100644
---- a/arch/sh/kernel/syscalls/Makefile
-+++ b/arch/sh/kernel/syscalls/Makefile
-@@ -7,7 +7,7 @@ _dummy := $(shell [ -d '$(uapi)' ] || mkdir -p '$(uapi)')	\
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index 2a986ece5478..9b0a36f64339 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -83,7 +83,7 @@ static inline void set_current(struct task_struct *task)
+ 		{ external_pid(), task });
+ }
  
- syscall := $(srctree)/$(src)/syscall.tbl
- syshdr := $(srctree)/$(src)/syscallhdr.sh
--systbl := $(srctree)/$(src)/syscalltbl.sh
-+systbl := $(srctree)/scripts/syscalltbl.sh
+-extern void arch_switch_to(struct task_struct *to);
++extern void arch_switch_to(struct task_struct *from, struct task_struct *to);
  
- quiet_cmd_syshdr = SYSHDR  $@
-       cmd_syshdr = $(CONFIG_SHELL) '$(syshdr)' '$<' '$@'	\
-@@ -16,10 +16,7 @@ quiet_cmd_syshdr = SYSHDR  $@
- 		   '$(syshdr_offset_$(basetarget))'
+ void *__switch_to(struct task_struct *from, struct task_struct *to)
+ {
+@@ -91,7 +91,7 @@ void *__switch_to(struct task_struct *from, struct task_struct *to)
+ 	set_current(to);
  
- quiet_cmd_systbl = SYSTBL  $@
--      cmd_systbl = $(CONFIG_SHELL) '$(systbl)' '$<' '$@'	\
--		   '$(systbl_abis_$(basetarget))'		\
--		   '$(systbl_abi_$(basetarget))'		\
--		   '$(systbl_offset_$(basetarget))'
-+      cmd_systbl = $(CONFIG_SHELL) $(systbl) $< $@
+ 	switch_threads(&from->thread.switch_buf, &to->thread.switch_buf);
+-	arch_switch_to(current);
++	arch_switch_to(from, to);
  
- $(uapi)/unistd_32.h: $(syscall) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
-diff --git a/arch/sh/kernel/syscalls/syscalltbl.sh b/arch/sh/kernel/syscalls/syscalltbl.sh
-deleted file mode 100644
-index 904b8e6e625d..000000000000
---- a/arch/sh/kernel/syscalls/syscalltbl.sh
-+++ /dev/null
-@@ -1,32 +0,0 @@
--#!/bin/sh
--# SPDX-License-Identifier: GPL-2.0
--
--in="$1"
--out="$2"
--my_abis=`echo "($3)" | tr ',' '|'`
--my_abi="$4"
--offset="$5"
--
--emit() {
--	t_nxt="$1"
--	t_nr="$2"
--	t_entry="$3"
--
--	while [ $t_nxt -lt $t_nr ]; do
--		printf "__SYSCALL(%s,sys_ni_syscall)\n" "${t_nxt}"
--		t_nxt=$((t_nxt+1))
--	done
--	printf "__SYSCALL(%s,%s)\n" "${t_nxt}" "${t_entry}"
--}
--
--grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
--	nxt=0
--	if [ -z "$offset" ]; then
--		offset=0
--	fi
--
--	while read nr abi name entry ; do
--		emit $((nxt+offset)) $((nr+offset)) $entry
--		nxt=$((nr+1))
--	done
--) > "$out"
+ 	return current->thread.prev_sched;
+ }
+@@ -149,7 +149,7 @@ void fork_handler(void)
+ 	 * arch_switch_to isn't needed. We could want to apply this to
+ 	 * improve performance. -bb
+ 	 */
+-	arch_switch_to(current);
++	arch_switch_to(NULL, current);
+ 
+ 	current->thread.prev_sched = NULL;
+ 
+diff --git a/arch/x86/um/ptrace_32.c b/arch/x86/um/ptrace_32.c
+index 2497bac56066..0f184710d4ca 100644
+--- a/arch/x86/um/ptrace_32.c
++++ b/arch/x86/um/ptrace_32.c
+@@ -11,7 +11,7 @@
+ 
+ extern int arch_switch_tls(struct task_struct *to);
+ 
+-void arch_switch_to(struct task_struct *to)
++void arch_switch_to(struct task_struct *from, struct task_struct *to)
+ {
+ 	int err = arch_switch_tls(to);
+ 	if (!err)
+diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
+index 58f51667e2e4..2ef9474d2bd2 100644
+--- a/arch/x86/um/syscalls_64.c
++++ b/arch/x86/um/syscalls_64.c
+@@ -80,7 +80,7 @@ SYSCALL_DEFINE2(arch_prctl, int, option, unsigned long, arg2)
+ 	return arch_prctl(current, option, (unsigned long __user *) arg2);
+ }
+ 
+-void arch_switch_to(struct task_struct *to)
++void arch_switch_to(struct task_struct *from, struct task_struct *to)
+ {
+ 	if ((to->thread.arch.fs == 0) || (to->mm == NULL))
+ 		return;
 -- 
-2.27.0
+2.21.0 (Apple Git-122.2)
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
