@@ -1,9 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 00/27] arch: syscalls: unifiy all syscalltbl.sh into
- scripts/syscalltbl.sh
-Date: Thu, 28 Jan 2021 09:50:42 +0900
-Message-Id: <20210128005110.2613902-1-masahiroy@kernel.org>
+Received: from mail-pj1-x102d.google.com ([2607:f8b0:4864:20::102d])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1l23FC-0002KQ-M9
+ for linux-um@lists.infradead.org; Wed, 20 Jan 2021 02:29:15 +0000
+Received: by mail-pj1-x102d.google.com with SMTP id my11so2365831pjb.1
+ for <linux-um@lists.infradead.org>; Tue, 19 Jan 2021 18:29:14 -0800 (PST)
+From: Hajime Tazaki <thehajime@gmail.com>
+Subject: [RFC v8 12/20] um: lkl: initialization and cleanup
+Date: Wed, 20 Jan 2021 11:27:17 +0900
+Message-Id: <031847ceca73023566fba8e84433a615eac6a2f3.1611103406.git.thehajime@gmail.com>
+In-Reply-To: <cover.1611103406.git.thehajime@gmail.com>
+References: <cover.1611103406.git.thehajime@gmail.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -17,163 +24,245 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-arch@vger.kernel.org, x86@kernel.org
-Cc: linux-xtensa@linux-xtensa.org, linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org, linux-kbuild@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+To: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
+Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, thehajime@gmail.com, retrage01@gmail.com
 
+Add the lkl_start_kernel and lkl_sys_halt APIs that start and
+respectively stops the Linux kernel.
 
-As of v5.11-rc1, 12 architectures duplicate similar shell scripts:
+lkl_start_kernel creates a separate threads that will run the initial
+and idle kernel thread. It waits for the kernel to complete
+initialization before returning, to avoid races with system calls
+issues by the host application.
 
-  $ find arch -name syscalltbl.sh | sort
-  arch/alpha/kernel/syscalls/syscalltbl.sh
-  arch/arm/tools/syscalltbl.sh
-  arch/ia64/kernel/syscalls/syscalltbl.sh
-  arch/m68k/kernel/syscalls/syscalltbl.sh
-  arch/microblaze/kernel/syscalls/syscalltbl.sh
-  arch/mips/kernel/syscalls/syscalltbl.sh
-  arch/parisc/kernel/syscalls/syscalltbl.sh
-  arch/powerpc/kernel/syscalls/syscalltbl.sh
-  arch/sh/kernel/syscalls/syscalltbl.sh
-  arch/sparc/kernel/syscalls/syscalltbl.sh
-  arch/x86/entry/syscalls/syscalltbl.sh
-  arch/xtensa/kernel/syscalls/syscalltbl.sh
+During the setup phase, we create "/init" in initial ramfs root
+filesystem to avoid mounting the "real" rootfs since ramfs is good
+enough for now.
 
-This patch set unifies all of them into a single file,
-scripts/syscalltbl.sh.
+lkl_sys_halt will shutdown the kernel, terminate all threads and
+free all host resources used by the kernel before returning.
 
-The code-diff is attractive:
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
+---
+ arch/um/lkl/include/uapi/asm/host_ops.h |  20 +++
+ arch/um/lkl/um/setup.c                  | 162 ++++++++++++++++++++++++
+ tools/um/uml/process.c                  |   2 +
+ 3 files changed, 184 insertions(+)
+ create mode 100644 arch/um/lkl/um/setup.c
 
- 51 files changed, 254 insertions(+), 674 deletions(-)
- delete mode 100644 arch/alpha/kernel/syscalls/syscalltbl.sh
- delete mode 100644 arch/arm/tools/syscalltbl.sh
- delete mode 100644 arch/ia64/kernel/syscalls/syscalltbl.sh
- delete mode 100644 arch/m68k/kernel/syscalls/syscalltbl.sh
- delete mode 100644 arch/microblaze/kernel/syscalls/syscalltbl.sh
- delete mode 100644 arch/mips/kernel/syscalls/syscalltbl.sh
- delete mode 100644 arch/parisc/kernel/syscalls/syscalltbl.sh
- delete mode 100644 arch/powerpc/kernel/syscalls/syscalltbl.sh
- delete mode 100644 arch/sh/kernel/syscalls/syscalltbl.sh
- delete mode 100644 arch/sparc/kernel/syscalls/syscalltbl.sh
- delete mode 100644 arch/x86/entry/syscalls/syscalltbl.sh
- delete mode 100644 arch/xtensa/kernel/syscalls/syscalltbl.sh
- create mode 100644 scripts/syscalltbl.sh
-
-Also, this includes Makefile fixes, and some x86 fixes and cleanups.
-
-My question is, how to merge this series.
-
-I am touching all architectures, but the first patch is a prerequisite
-of the rest of this series.
-
-One possibility is to ask the x86 maintainers to pickup the first 5
-patches for v5.12-rc1, and then send the rest for v5.13-rc1,
-splitting per-arch.
-
-I want the x86 maintainers to check the first 5 patches because
-I cleaned up the x32 code.
-
-I know x32 was considered for deprecation, but my motivation is to
-clean-up scripts across the tree without changing the functionality.
-
-
-
-Masahiro Yamada (27):
-  scripts: add generic syscalltbl.sh
-  x86/syscalls: fix -Wmissing-prototypes warnings from COND_SYSCALL()
-  x86/build: add missing FORCE and fix 'targets' to make if_changed work
-  x86/entry/x32: rename __x32_compat_sys_* to __x64_compat_sys_*
-  x86/syscalls: switch to generic syscalltbl.sh
-  ARM: syscalls: switch to generic syscalltbl.sh
-  alpha: add missing FORCE and fix 'targets' to make if_changed work
-  alpha: syscalls: switch to generic syscalltbl.sh
-  ia64: add missing FORCE and fix 'targets' to make if_changed work
-  ia64: syscalls: switch to generic syscalltbl.sh
-  m68k: add missing FORCE and fix 'targets' to make if_changed work
-  m68k: syscalls: switch to generic syscalltbl.sh
-  microblaze: add missing FORCE and fix 'targets' to make if_changed
-    work
-  microblaze: syscalls: switch to generic syscalltbl.sh
-  mips: add missing FORCE and fix 'targets' to make if_changed work
-  mips: syscalls: switch to generic syscalltbl.sh
-  parisc: add missing FORCE and fix 'targets' to make if_changed work
-  parisc: syscalls: switch to generic syscalltbl.sh
-  sh: add missing FORCE and fix 'targets' to make if_changed work
-  sh: syscalls: switch to generic syscalltbl.sh
-  sparc: remove wrong comment from arch/sparc/include/asm/Kbuild
-  sparc: add missing FORCE and fix 'targets' to make if_changed work
-  sparc: syscalls: switch to generic syscalltbl.sh
-  powerpc: add missing FORCE and fix 'targets' to make if_changed work
-  powerpc: syscalls: switch to generic syscalltbl.sh
-  xtensa: add missing FORCE and fix 'targets' to make if_changed work
-  xtensa: syscalls: switch to generic syscalltbl.sh
-
- arch/alpha/kernel/syscalls/Makefile           | 18 +++----
- arch/alpha/kernel/syscalls/syscalltbl.sh      | 32 -----------
- arch/alpha/kernel/systbls.S                   |  3 +-
- arch/arm/kernel/entry-common.S                |  8 +--
- arch/arm/tools/Makefile                       |  9 ++--
- arch/arm/tools/syscalltbl.sh                  | 22 --------
- arch/ia64/kernel/entry.S                      |  3 +-
- arch/ia64/kernel/syscalls/Makefile            | 19 +++----
- arch/ia64/kernel/syscalls/syscalltbl.sh       | 32 -----------
- arch/m68k/kernel/syscalls/Makefile            | 18 +++----
- arch/m68k/kernel/syscalls/syscalltbl.sh       | 32 -----------
- arch/m68k/kernel/syscalltable.S               |  3 +-
- arch/microblaze/kernel/syscall_table.S        |  3 +-
- arch/microblaze/kernel/syscalls/Makefile      | 18 +++----
- arch/microblaze/kernel/syscalls/syscalltbl.sh | 32 -----------
- arch/mips/include/asm/Kbuild                  |  7 ++-
- arch/mips/kernel/scall32-o32.S                |  4 +-
- arch/mips/kernel/scall64-n32.S                |  3 +-
- arch/mips/kernel/scall64-n64.S                |  3 +-
- arch/mips/kernel/scall64-o32.S                |  4 +-
- arch/mips/kernel/syscalls/Makefile            | 53 ++++++++-----------
- arch/mips/kernel/syscalls/syscalltbl.sh       | 36 -------------
- arch/parisc/include/asm/Kbuild                |  1 -
- arch/parisc/kernel/syscall.S                  | 16 +++---
- arch/parisc/kernel/syscalls/Makefile          | 34 +++++-------
- arch/parisc/kernel/syscalls/syscalltbl.sh     | 36 -------------
- arch/powerpc/include/asm/Kbuild               |  1 -
- arch/powerpc/kernel/syscalls/Makefile         | 39 +++++---------
- arch/powerpc/kernel/syscalls/syscalltbl.sh    | 36 -------------
- arch/powerpc/kernel/systbl.S                  |  5 +-
- arch/powerpc/platforms/cell/spu_callbacks.c   |  2 +-
- arch/sh/kernel/syscalls/Makefile              | 18 +++----
- arch/sh/kernel/syscalls/syscalltbl.sh         | 32 -----------
- arch/sparc/include/asm/Kbuild                 |  3 --
- arch/sparc/kernel/syscalls/Makefile           | 34 +++++-------
- arch/sparc/kernel/syscalls/syscalltbl.sh      | 36 -------------
- arch/sparc/kernel/systbls_32.S                |  4 +-
- arch/sparc/kernel/systbls_64.S                |  8 +--
- arch/x86/entry/syscall_32.c                   | 12 +++--
- arch/x86/entry/syscall_64.c                   |  9 ++--
- arch/x86/entry/syscall_x32.c                  | 27 ++--------
- arch/x86/entry/syscalls/Makefile              | 33 +++++++-----
- arch/x86/entry/syscalls/syscalltbl.sh         | 46 ----------------
- arch/x86/include/asm/Kbuild                   |  1 +
- arch/x86/include/asm/syscall_wrapper.h        | 11 ++--
- arch/x86/um/sys_call_table_32.c               |  8 +--
- arch/x86/um/sys_call_table_64.c               |  9 ++--
- arch/xtensa/kernel/syscall.c                  |  3 +-
- arch/xtensa/kernel/syscalls/Makefile          | 18 +++----
- arch/xtensa/kernel/syscalls/syscalltbl.sh     | 32 -----------
- scripts/syscalltbl.sh                         | 52 ++++++++++++++++++
- 51 files changed, 254 insertions(+), 674 deletions(-)
- delete mode 100644 arch/alpha/kernel/syscalls/syscalltbl.sh
- delete mode 100644 arch/arm/tools/syscalltbl.sh
- delete mode 100644 arch/ia64/kernel/syscalls/syscalltbl.sh
- delete mode 100644 arch/m68k/kernel/syscalls/syscalltbl.sh
- delete mode 100644 arch/microblaze/kernel/syscalls/syscalltbl.sh
- delete mode 100644 arch/mips/kernel/syscalls/syscalltbl.sh
- delete mode 100644 arch/parisc/kernel/syscalls/syscalltbl.sh
- delete mode 100644 arch/powerpc/kernel/syscalls/syscalltbl.sh
- delete mode 100644 arch/sh/kernel/syscalls/syscalltbl.sh
- delete mode 100644 arch/sparc/kernel/syscalls/syscalltbl.sh
- delete mode 100644 arch/x86/entry/syscalls/syscalltbl.sh
- delete mode 100644 arch/xtensa/kernel/syscalls/syscalltbl.sh
- create mode 100644 scripts/syscalltbl.sh
-
+diff --git a/arch/um/lkl/include/uapi/asm/host_ops.h b/arch/um/lkl/include/uapi/asm/host_ops.h
+index 976fc4301b3d..85d7d4790602 100644
+--- a/arch/um/lkl/include/uapi/asm/host_ops.h
++++ b/arch/um/lkl/include/uapi/asm/host_ops.h
+@@ -252,4 +252,24 @@ void *lkl_tls_get(struct lkl_tls_key *key);
+  */
+ void lkl_print(const char *str, int len);
+ 
++/**
++ * lkl_panic - called during a kernel panic
++ *
++ */
++void lkl_panic(void);
++
++/**
++ * lkl_start_kernel() - registers the host operations and starts the kernel
++ *
++ * @ops: pointer to host operations
++ * @fmt: format for command line string that is going to be used to
++ * generate the Linux kernel command line
++ *
++ * Return: 0 if there is no error; otherwise non-zero value returns.
++ *
++ * The function returns only after the kernel is shutdown with lkl_sys_halt.
++ */
++int lkl_start_kernel(struct lkl_host_operations *ops,
++		     const char *fmt, ...);
++
+ #endif
+diff --git a/arch/um/lkl/um/setup.c b/arch/um/lkl/um/setup.c
+new file mode 100644
+index 000000000000..ba8338d4fc23
+--- /dev/null
++++ b/arch/um/lkl/um/setup.c
+@@ -0,0 +1,162 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/binfmts.h>
++#include <linux/init.h>
++#include <linux/init_task.h>
++#include <linux/personality.h>
++#include <linux/reboot.h>
++#include <linux/fs.h>
++#include <linux/start_kernel.h>
++#include <linux/fdtable.h>
++#include <linux/tick.h>
++#include <linux/kernel.h>
++#include <linux/console.h>
++#include <asm/host_ops.h>
++#include <asm/irq.h>
++#include <asm/unistd.h>
++#include <asm/syscalls.h>
++#include <asm/cpu.h>
++#include <os.h>
++#include <as-layout.h>
++
++
++static void *init_sem;
++static int is_running;
++
++
++struct lkl_host_operations *lkl_ops;
++
++long lkl_panic_blink(int state)
++{
++	lkl_panic();
++	return 0;
++}
++
++static void __init *lkl_run_kernel(void *arg)
++{
++
++	panic_blink = lkl_panic_blink;
++
++	threads_init();
++	lkl_cpu_get();
++	start_kernel();
++
++	return NULL;
++}
++
++int __init lkl_start_kernel(struct lkl_host_operations *ops,
++			    const char *fmt, ...)
++{
++	int ret;
++
++	lkl_ops = ops;
++
++	init_sem = lkl_sem_alloc(0);
++	if (!init_sem)
++		return -ENOMEM;
++
++	ret = lkl_cpu_init();
++	if (ret)
++		goto out_free_init_sem;
++
++	ret = lkl_thread_create(lkl_run_kernel, NULL);
++	if (!ret) {
++		ret = -ENOMEM;
++		goto out_free_init_sem;
++	}
++
++	lkl_sem_down(init_sem);
++	lkl_sem_free(init_sem);
++	current_thread_info()->task->thread.arch.tid = lkl_thread_self();
++	lkl_cpu_change_owner(current_thread_info()->task->thread.arch.tid);
++
++	lkl_cpu_put();
++	is_running = 1;
++
++	return 0;
++
++out_free_init_sem:
++	lkl_sem_free(init_sem);
++
++	return ret;
++}
++
++int lkl_is_running(void)
++{
++	return is_running;
++}
++
++
++long lkl_sys_halt(void)
++{
++	long err;
++	long params[6] = {LINUX_REBOOT_MAGIC1,
++		LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_RESTART, };
++
++	err = lkl_syscall(__NR_reboot, params);
++	if (err < 0)
++		return err;
++
++	is_running = false;
++
++	lkl_cpu_wait_shutdown();
++
++	syscalls_cleanup();
++	threads_cleanup();
++	/* Shutdown the clockevents source. */
++	tick_suspend_local();
++	free_mem();
++	lkl_thread_join(current_thread_info()->task->thread.arch.tid);
++
++	return 0;
++}
++
++
++static int lkl_run_init(struct linux_binprm *bprm);
++
++static struct linux_binfmt lkl_run_init_binfmt = {
++	.module		= THIS_MODULE,
++	.load_binary	= lkl_run_init,
++};
++
++static int lkl_run_init(struct linux_binprm *bprm)
++{
++	int ret;
++
++	if (strcmp("/init", bprm->filename) != 0)
++		return -EINVAL;
++
++	ret = begin_new_exec(bprm);
++	if (ret)
++		return ret;
++	set_personality(PER_LINUX);
++	setup_new_exec(bprm);
++
++	set_binfmt(&lkl_run_init_binfmt);
++
++	init_pid_ns.child_reaper = 0;
++
++	syscalls_init();
++
++	lkl_sem_up(init_sem);
++	lkl_thread_exit();
++
++	return 0;
++}
++
++
++/* skip mounting the "real" rootfs. ramfs is good enough. */
++static int __init fs_setup(void)
++{
++	int fd, flags = 0;
++
++	if (force_o_largefile())
++		flags |= O_LARGEFILE;
++	fd = do_sys_open(AT_FDCWD, "/init", O_CREAT | flags, 0700);
++	WARN_ON(fd < 0);
++	close_fd(fd);
++
++	register_binfmt(&lkl_run_init_binfmt);
++
++	return 0;
++}
++late_initcall(fs_setup);
+diff --git a/tools/um/uml/process.c b/tools/um/uml/process.c
+index e52dd37ddadc..c39d914e80ac 100644
+--- a/tools/um/uml/process.c
++++ b/tools/um/uml/process.c
+@@ -114,6 +114,8 @@ void os_kill_process(int pid, int reap_child)
+ 
+ void os_kill_ptraced_process(int pid, int reap_child)
+ {
++	if (pid == 0)
++		return;
+ 	kill(pid, SIGKILL);
+ 	ptrace(PTRACE_KILL, pid);
+ 	ptrace(PTRACE_CONT, pid);
 -- 
-2.27.0
+2.21.0 (Apple Git-122.2)
 
 
 _______________________________________________
