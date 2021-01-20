@@ -1,10 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 27/27] xtensa: syscalls: switch to generic syscalltbl.sh
-Date: Thu, 28 Jan 2021 09:51:09 +0900
-Message-Id: <20210128005110.2613902-28-masahiroy@kernel.org>
-In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
-References: <20210128005110.2613902-1-masahiroy@kernel.org>
+Received: from mail-pg1-x52c.google.com ([2607:f8b0:4864:20::52c])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1l23Dz-000282-HX
+ for linux-um@lists.infradead.org; Wed, 20 Jan 2021 02:28:00 +0000
+Received: by mail-pg1-x52c.google.com with SMTP id g15so14211659pgu.9
+ for <linux-um@lists.infradead.org>; Tue, 19 Jan 2021 18:27:58 -0800 (PST)
+From: Hajime Tazaki <thehajime@gmail.com>
+Subject: [RFC v8 03/20] um: move arch/x86/um/os-Linux to tools/um/uml/
+Date: Wed, 20 Jan 2021 11:27:08 +0900
+Message-Id: <04a14158366274d995d05910e4a4e8da5c73fce1.1611103406.git.thehajime@gmail.com>
+In-Reply-To: <cover.1611103406.git.thehajime@gmail.com>
+References: <cover.1611103406.git.thehajime@gmail.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -18,104 +24,117 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-arch@vger.kernel.org, x86@kernel.org
-Cc: linux-xtensa@linux-xtensa.org, linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org, linux-kbuild@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+To: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
+Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, thehajime@gmail.com, retrage01@gmail.com
 
-As of v5.11-rc1, 12 architectures duplicate similar shell scripts in
-order to generate syscall table headers. My goal is to unify them into
-the single scripts/syscalltbl.sh.
+Similar to arch/um/os-Linux code, arch/x86 also contains OS dependent
+part as well.  This patch moves underlying OS dependent part to tools/um
+directory so that arch/x86 code does not need to build host build
+facilities (e.g., libc).
 
-This commit converts xtensa to use scripts/syscalltbl.sh.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
 ---
+ arch/x86/um/Makefile                                |  2 +-
+ arch/x86/um/os-Linux/Makefile                       | 13 -------------
+ tools/um/uml/Build                                  |  1 +
+ tools/um/uml/x86/Build                              | 11 +++++++++++
+ .../x86/um/os-Linux => tools/um/uml/x86}/mcontext.c |  0
+ {arch/x86/um/os-Linux => tools/um/uml/x86}/prctl.c  |  0
+ .../um/os-Linux => tools/um/uml/x86}/registers.c    |  0
+ .../um/os-Linux => tools/um/uml/x86}/task_size.c    |  0
+ {arch/x86/um/os-Linux => tools/um/uml/x86}/tls.c    |  0
+ 9 files changed, 13 insertions(+), 14 deletions(-)
+ delete mode 100644 arch/x86/um/os-Linux/Makefile
+ create mode 100644 tools/um/uml/x86/Build
+ rename {arch/x86/um/os-Linux => tools/um/uml/x86}/mcontext.c (100%)
+ rename {arch/x86/um/os-Linux => tools/um/uml/x86}/prctl.c (100%)
+ rename {arch/x86/um/os-Linux => tools/um/uml/x86}/registers.c (100%)
+ rename {arch/x86/um/os-Linux => tools/um/uml/x86}/task_size.c (100%)
+ rename {arch/x86/um/os-Linux => tools/um/uml/x86}/tls.c (100%)
 
- arch/xtensa/kernel/syscall.c              |  3 +--
- arch/xtensa/kernel/syscalls/Makefile      |  7 ++---
- arch/xtensa/kernel/syscalls/syscalltbl.sh | 32 -----------------------
- 3 files changed, 3 insertions(+), 39 deletions(-)
- delete mode 100644 arch/xtensa/kernel/syscalls/syscalltbl.sh
-
-diff --git a/arch/xtensa/kernel/syscall.c b/arch/xtensa/kernel/syscall.c
-index 2c415fce6801..a453d17f0da8 100644
---- a/arch/xtensa/kernel/syscall.c
-+++ b/arch/xtensa/kernel/syscall.c
-@@ -31,9 +31,8 @@
- syscall_t sys_call_table[__NR_syscalls] /* FIXME __cacheline_aligned */= {
- 	[0 ... __NR_syscalls - 1] = (syscall_t)&sys_ni_syscall,
+diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
+index 77f70b969d14..25e9846b36a2 100644
+--- a/arch/x86/um/Makefile
++++ b/arch/x86/um/Makefile
+@@ -13,7 +13,7 @@ obj-y = bugs_$(BITS).o delay.o fault.o ldt.o \
+ 	ptrace_$(BITS).o ptrace_user.o setjmp_$(BITS).o signal.o \
+ 	stub_$(BITS).o stub_segv.o \
+ 	sys_call_table_$(BITS).o sysrq_$(BITS).o tls_$(BITS).o \
+-	mem_$(BITS).o subarch.o os-$(OS)/
++	mem_$(BITS).o subarch.o
  
--#define __SYSCALL(nr, entry, nargs)[nr] = (syscall_t)entry,
-+#define __SYSCALL(nr, entry)[nr] = (syscall_t)entry,
- #include <asm/syscall_table.h>
--#undef __SYSCALL
- };
+ ifeq ($(CONFIG_X86_32),y)
  
- #define COLOUR_ALIGN(addr, pgoff) \
-diff --git a/arch/xtensa/kernel/syscalls/Makefile b/arch/xtensa/kernel/syscalls/Makefile
-index 1c42d2d2926d..6610130c67bc 100644
---- a/arch/xtensa/kernel/syscalls/Makefile
-+++ b/arch/xtensa/kernel/syscalls/Makefile
-@@ -7,7 +7,7 @@ _dummy := $(shell [ -d '$(uapi)' ] || mkdir -p '$(uapi)')	\
- 
- syscall := $(srctree)/$(src)/syscall.tbl
- syshdr := $(srctree)/$(src)/syscallhdr.sh
--systbl := $(srctree)/$(src)/syscalltbl.sh
-+systbl := $(srctree)/scripts/syscalltbl.sh
- 
- quiet_cmd_syshdr = SYSHDR  $@
-       cmd_syshdr = $(CONFIG_SHELL) '$(syshdr)' '$<' '$@'	\
-@@ -16,10 +16,7 @@ quiet_cmd_syshdr = SYSHDR  $@
- 		   '$(syshdr_offset_$(basetarget))'
- 
- quiet_cmd_systbl = SYSTBL  $@
--      cmd_systbl = $(CONFIG_SHELL) '$(systbl)' '$<' '$@'	\
--		   '$(systbl_abis_$(basetarget))'		\
--		   '$(systbl_abi_$(basetarget))'		\
--		   '$(systbl_offset_$(basetarget))'
-+      cmd_systbl = $(CONFIG_SHELL) $(systbl) $< $@
- 
- $(uapi)/unistd_32.h: $(syscall) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
-diff --git a/arch/xtensa/kernel/syscalls/syscalltbl.sh b/arch/xtensa/kernel/syscalls/syscalltbl.sh
+diff --git a/arch/x86/um/os-Linux/Makefile b/arch/x86/um/os-Linux/Makefile
 deleted file mode 100644
-index 85d78d9309ad..000000000000
---- a/arch/xtensa/kernel/syscalls/syscalltbl.sh
+index 253bfb8cb702..000000000000
+--- a/arch/x86/um/os-Linux/Makefile
 +++ /dev/null
-@@ -1,32 +0,0 @@
--#!/bin/sh
--# SPDX-License-Identifier: GPL-2.0
+@@ -1,13 +0,0 @@
+-#
+-# Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+-# Licensed under the GPL
+-#
 -
--in="$1"
--out="$2"
--my_abis=`echo "($3)" | tr ',' '|'`
--my_abi="$4"
--offset="$5"
+-obj-y = registers.o task_size.o mcontext.o
 -
--emit() {
--	t_nxt="$1"
--	t_nr="$2"
--	t_entry="$3"
+-obj-$(CONFIG_X86_32) += tls.o
+-obj-$(CONFIG_64BIT) += prctl.o
 -
--	while [ $t_nxt -lt $t_nr ]; do
--		printf "__SYSCALL(%s, sys_ni_syscall, )\n" "${t_nxt}"
--		t_nxt=$((t_nxt+1))
--	done
--	printf "__SYSCALL(%s, %s, )\n" "${t_nxt}" "${t_entry}"
--}
+-USER_OBJS := $(obj-y)
 -
--grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
--	nxt=0
--	if [ -z "$offset" ]; then
--		offset=0
--	fi
--
--	while read nr abi name entry ; do
--		emit $((nxt+offset)) $((nr+offset)) $entry
--		nxt=$((nr+1))
--	done
--) > "$out"
+-include arch/um/scripts/Makefile.rules
+diff --git a/tools/um/uml/Build b/tools/um/uml/Build
+index 0e629c9cb8eb..810aa99f8409 100644
+--- a/tools/um/uml/Build
++++ b/tools/um/uml/Build
+@@ -14,6 +14,7 @@ liblinux-y += execvp.o file.o helper.o irq.o main.o mem.o process.o \
+ 
+ CFLAGS_signal.o += -Wframe-larger-than=4096
+ 
++liblinux-y += x86/
+ liblinux-$(CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA) += elf_aux.o
+ 
+ export O = $(srctree)
+diff --git a/tools/um/uml/x86/Build b/tools/um/uml/x86/Build
+new file mode 100644
+index 000000000000..16bbc7eb19d1
+--- /dev/null
++++ b/tools/um/uml/x86/Build
+@@ -0,0 +1,11 @@
++#
++# Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
++# Licensed under the GPL
++#
++
++include $(objtree)/include/config/auto.conf
++
++liblinux-y = registers.o task_size.o mcontext.o
++
++liblinux-$(CONFIG_X86_32) += tls.o
++liblinux-$(CONFIG_64BIT) += prctl.o
+diff --git a/arch/x86/um/os-Linux/mcontext.c b/tools/um/uml/x86/mcontext.c
+similarity index 100%
+rename from arch/x86/um/os-Linux/mcontext.c
+rename to tools/um/uml/x86/mcontext.c
+diff --git a/arch/x86/um/os-Linux/prctl.c b/tools/um/uml/x86/prctl.c
+similarity index 100%
+rename from arch/x86/um/os-Linux/prctl.c
+rename to tools/um/uml/x86/prctl.c
+diff --git a/arch/x86/um/os-Linux/registers.c b/tools/um/uml/x86/registers.c
+similarity index 100%
+rename from arch/x86/um/os-Linux/registers.c
+rename to tools/um/uml/x86/registers.c
+diff --git a/arch/x86/um/os-Linux/task_size.c b/tools/um/uml/x86/task_size.c
+similarity index 100%
+rename from arch/x86/um/os-Linux/task_size.c
+rename to tools/um/uml/x86/task_size.c
+diff --git a/arch/x86/um/os-Linux/tls.c b/tools/um/uml/x86/tls.c
+similarity index 100%
+rename from arch/x86/um/os-Linux/tls.c
+rename to tools/um/uml/x86/tls.c
 -- 
-2.27.0
+2.21.0 (Apple Git-122.2)
 
 
 _______________________________________________
