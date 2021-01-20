@@ -1,11 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 04/27] x86/entry/x32: rename __x32_compat_sys_* to
- __x64_compat_sys_*
-Date: Thu, 28 Jan 2021 09:50:46 +0900
-Message-Id: <20210128005110.2613902-5-masahiroy@kernel.org>
-In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
-References: <20210128005110.2613902-1-masahiroy@kernel.org>
+Received: from mail-pf1-x432.google.com ([2607:f8b0:4864:20::432])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1l23Eu-0002II-Ea
+ for linux-um@lists.infradead.org; Wed, 20 Jan 2021 02:28:57 +0000
+Received: by mail-pf1-x432.google.com with SMTP id w18so2273950pfu.9
+ for <linux-um@lists.infradead.org>; Tue, 19 Jan 2021 18:28:55 -0800 (PST)
+From: Hajime Tazaki <thehajime@gmail.com>
+Subject: [RFC v8 11/20] um: lkl: basic console support
+Date: Wed, 20 Jan 2021 11:27:16 +0900
+Message-Id: <5ec3a7157f7d96943b5701f8d57e102181cd56d2.1611103406.git.thehajime@gmail.com>
+In-Reply-To: <cover.1611103406.git.thehajime@gmail.com>
+References: <cover.1611103406.git.thehajime@gmail.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -19,113 +24,109 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-arch@vger.kernel.org, x86@kernel.org
-Cc: linux-xtensa@linux-xtensa.org, linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org, linux-kbuild@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+To: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
+Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, thehajime@gmail.com, retrage01@gmail.com
 
-In arch/x86/entry/syscall_x32.c, the macros are mapped to symbols
-as follows:
+This patch adds a basic structure of console support in kernel.  Write
+operations are deferred to the host print operation.
 
-  __SYSCALL_COMMON(nr, sym)  -->  __x64_<sym>
-  __SYSCALL_X32(nr, sym)     -->  __x32_<sym>
+This commit also disables stdio-console of UML when library mode to avoid
+conflicts between multiple consoles.
 
-Originally, the syscalls in the x32 special range (512-547) were all
-compat.
-
-This assumption is now broken after the following commits:
-
-  55db9c0e8534 ("net: remove compat_sys_{get,set}sockopt")
-  5f764d624a89 ("fs: remove the compat readv/writev syscalls")
-  598b3cec831f ("fs: remove compat_sys_vmsplice")
-  c3973b401ef2 ("mm: remove compat_process_vm_{readv,writev}")
-
-Those commits redefined __x32_sys_* to __x64_sys_* because there is
-no stub like __x32_sys_*.
-
-I think defining as follows is sensible and cleaner.
-
-  __SYSCALL_COMMON(nr, sym)  -->  __x64_<sym>
-  __SYSCALL_X32(nr, sym)     -->  __x64_<sym>
-
-The ugly #define __x32_sys_* will go away.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
 ---
+ arch/um/drivers/Makefile                |  8 ++++-
+ arch/um/lkl/include/uapi/asm/host_ops.h |  9 ++++++
+ arch/um/lkl/um/console.c                | 41 +++++++++++++++++++++++++
+ 3 files changed, 57 insertions(+), 1 deletion(-)
+ create mode 100644 arch/um/lkl/um/console.c
 
- arch/x86/entry/syscall_x32.c           | 16 ++--------------
- arch/x86/include/asm/syscall_wrapper.h | 10 +++++-----
- 2 files changed, 7 insertions(+), 19 deletions(-)
-
-diff --git a/arch/x86/entry/syscall_x32.c b/arch/x86/entry/syscall_x32.c
-index f2fe0a33bcfd..3fea8fb9cd6a 100644
---- a/arch/x86/entry/syscall_x32.c
-+++ b/arch/x86/entry/syscall_x32.c
-@@ -8,27 +8,15 @@
- #include <asm/unistd.h>
- #include <asm/syscall.h>
+diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
+index ae96c83e312d..dc0d32d62294 100644
+--- a/arch/um/drivers/Makefile
++++ b/arch/um/drivers/Makefile
+@@ -37,7 +37,13 @@ $(obj)/vde.o: $(obj)/vde_kern.o $(obj)/vde_user.o
+ # When the above is fixed, don't forget to add this too!
+ #targets += $(obj)/pcap.o
  
--/*
-- * Reuse the 64-bit entry points for the x32 versions that occupy different
-- * slots in the syscall table.
-- */
--#define __x32_sys_readv		__x64_sys_readv
--#define __x32_sys_writev	__x64_sys_writev
--#define __x32_sys_getsockopt	__x64_sys_getsockopt
--#define __x32_sys_setsockopt	__x64_sys_setsockopt
--#define __x32_sys_vmsplice	__x64_sys_vmsplice
--#define __x32_sys_process_vm_readv	__x64_sys_process_vm_readv
--#define __x32_sys_process_vm_writev	__x64_sys_process_vm_writev
--
- #define __SYSCALL_64(nr, sym)
+-obj-y := stdio_console.o fd.o chan_kern.o chan_user.o line.o
++ifndef CONFIG_UMMODE_LIB
++obj-y := stdio_console.o
++else
++obj-y :=
++endif
++obj-y += fd.o chan_kern.o chan_user.o line.o
++
+ obj-$(CONFIG_SSL) += ssl.o
+ obj-$(CONFIG_STDERR_CONSOLE) += stderr_console.o
  
--#define __SYSCALL_X32(nr, sym) extern long __x32_##sym(const struct pt_regs *);
-+#define __SYSCALL_X32(nr, sym) extern long __x64_##sym(const struct pt_regs *);
- #define __SYSCALL_COMMON(nr, sym) extern long __x64_##sym(const struct pt_regs *);
- #include <asm/syscalls_64.h>
- #undef __SYSCALL_X32
- #undef __SYSCALL_COMMON
- 
--#define __SYSCALL_X32(nr, sym) [nr] = __x32_##sym,
-+#define __SYSCALL_X32(nr, sym) [nr] = __x64_##sym,
- #define __SYSCALL_COMMON(nr, sym) [nr] = __x64_##sym,
- 
- asmlinkage const sys_call_ptr_t x32_sys_call_table[__NR_x32_syscall_max+1] = {
-diff --git a/arch/x86/include/asm/syscall_wrapper.h b/arch/x86/include/asm/syscall_wrapper.h
-index 80c08c7d5e72..6a2827d0681f 100644
---- a/arch/x86/include/asm/syscall_wrapper.h
-+++ b/arch/x86/include/asm/syscall_wrapper.h
-@@ -17,7 +17,7 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
-  * __x64_sys_*()         - 64-bit native syscall
-  * __ia32_sys_*()        - 32-bit native syscall or common compat syscall
-  * __ia32_compat_sys_*() - 32-bit compat syscall
-- * __x32_compat_sys_*()  - 64-bit X32 compat syscall
-+ * __x64_compat_sys_*()  - 64-bit X32 compat syscall
-  *
-  * The registers are decoded according to the ABI:
-  * 64-bit: RDI, RSI, RDX, R10, R8, R9
-@@ -166,17 +166,17 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
-  * with x86_64 obviously do not need such care.
+diff --git a/arch/um/lkl/include/uapi/asm/host_ops.h b/arch/um/lkl/include/uapi/asm/host_ops.h
+index b97aa1099a17..976fc4301b3d 100644
+--- a/arch/um/lkl/include/uapi/asm/host_ops.h
++++ b/arch/um/lkl/include/uapi/asm/host_ops.h
+@@ -243,4 +243,13 @@ int lkl_tls_set(struct lkl_tls_key *key, void *data);
   */
- #define __X32_COMPAT_SYS_STUB0(name)					\
--	__SYS_STUB0(x32, compat_sys_##name)
-+	__SYS_STUB0(x64, compat_sys_##name)
+ void *lkl_tls_get(struct lkl_tls_key *key);
  
- #define __X32_COMPAT_SYS_STUBx(x, name, ...)				\
--	__SYS_STUBx(x32, compat_sys##name,				\
-+	__SYS_STUBx(x64, compat_sys##name,				\
- 		    SC_X86_64_REGS_TO_ARGS(x, __VA_ARGS__))
- 
- #define __X32_COMPAT_COND_SYSCALL(name)					\
--	__COND_SYSCALL(x32, compat_sys_##name)
-+	__COND_SYSCALL(x64, compat_sys_##name)
- 
- #define __X32_COMPAT_SYS_NI(name)					\
--	__SYS_NI(x32, compat_sys_##name)
-+	__SYS_NI(x64, compat_sys_##name)
- #else /* CONFIG_X86_X32 */
- #define __X32_COMPAT_SYS_STUB0(name)
- #define __X32_COMPAT_SYS_STUBx(x, name, ...)
++/**
++ * lkl_print - optional operation that receives console messages
++ *
++ * @str: strings to be printed
++ * @len: the length of @str
++ *
++ */
++void lkl_print(const char *str, int len);
++
+ #endif
+diff --git a/arch/um/lkl/um/console.c b/arch/um/lkl/um/console.c
+new file mode 100644
+index 000000000000..f2b48dc7ae22
+--- /dev/null
++++ b/arch/um/lkl/um/console.c
+@@ -0,0 +1,41 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/console.h>
++#include <asm/host_ops.h>
++
++static void console_write(struct console *con, const char *str, unsigned len)
++{
++	lkl_print(str, len);
++}
++
++#ifdef CONFIG_LKL_EARLY_CONSOLE
++static struct console lkl_boot_console = {
++	.name	= "lkl_boot_console",
++	.write	= console_write,
++	.flags	= CON_PRINTBUFFER | CON_BOOT,
++	.index	= -1,
++};
++
++int __init lkl_boot_console_init(void)
++{
++	register_console(&lkl_boot_console);
++	return 0;
++}
++early_initcall(lkl_boot_console_init);
++#endif
++
++static struct console lkl_console = {
++	.name	= "lkl_console",
++	.write	= console_write,
++	.flags	= CON_PRINTBUFFER,
++	.index	= -1,
++};
++
++int __init lkl_console_init(void)
++{
++	register_console(&lkl_console);
++	return 0;
++}
++core_initcall(lkl_console_init);
++
 -- 
-2.27.0
+2.21.0 (Apple Git-122.2)
 
 
 _______________________________________________
