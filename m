@@ -1,93 +1,124 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 03/27] x86/build: add missing FORCE and fix 'targets' to make if_changed work
-Date: Thu, 28 Jan 2021 09:50:45 +0900
-Message-Id: <20210128005110.2613902-4-masahiroy@kernel.org>
-In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
-References: <20210128005110.2613902-1-masahiroy@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pj1-x1030.google.com ([2607:f8b0:4864:20::1030])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1l23Fz-0002WA-5K
+ for linux-um@lists.infradead.org; Wed, 20 Jan 2021 02:30:03 +0000
+Received: by mail-pj1-x1030.google.com with SMTP id m5so1179349pjv.5
+ for <linux-um@lists.infradead.org>; Tue, 19 Jan 2021 18:30:02 -0800 (PST)
+From: Hajime Tazaki <thehajime@gmail.com>
+Subject: [RFC v8 20/20] um: lkl: add documentation
+Date: Wed, 20 Jan 2021 11:27:25 +0900
+Message-Id: <043677211bb5562397c511911e7861c3e217611b.1611103406.git.thehajime@gmail.com>
+In-Reply-To: <cover.1611103406.git.thehajime@gmail.com>
+References: <cover.1611103406.git.thehajime@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-arch@vger.kernel.org, x86@kernel.org
-Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
+Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, thehajime@gmail.com, retrage01@gmail.com
 
-The rules in this Makefile cannot detect the command line change because
-the prerequisite 'FORCE' is missing.
+A document describing brief introduction of LKL, why it is needed, and
+how it is used is added.  The document is located under uml/ directory.
 
-Adding 'FORCE' will result in the headers being rebuilt every time
-because the 'targets' addition is also wrong; the file paths in
-'targets' must be relative to the current Makefile.
-
-Fix all of them so the if_changed rules work correctly.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
 ---
+ Documentation/virt/uml/lkl.txt | 48 ++++++++++++++++++++++++++++++++++
+ MAINTAINERS                    | 10 +++++++
+ 2 files changed, 58 insertions(+)
+ create mode 100644 Documentation/virt/uml/lkl.txt
 
- arch/x86/entry/syscalls/Makefile | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
-
-diff --git a/arch/x86/entry/syscalls/Makefile b/arch/x86/entry/syscalls/Makefile
-index 6fb9b57ed5ba..e1c7ddb7546b 100644
---- a/arch/x86/entry/syscalls/Makefile
-+++ b/arch/x86/entry/syscalls/Makefile
-@@ -24,34 +24,34 @@ quiet_cmd_hypercalls = HYPERCALLS $@
-       cmd_hypercalls = $(CONFIG_SHELL) '$<' $@ $(filter-out $<,$^)
+diff --git a/Documentation/virt/uml/lkl.txt b/Documentation/virt/uml/lkl.txt
+new file mode 100644
+index 000000000000..4942b7f093c5
+--- /dev/null
++++ b/Documentation/virt/uml/lkl.txt
+@@ -0,0 +1,48 @@
++
++Introduction
++============
++
++Library mode of UML, a.k.a. LKL (Linux Kernel Library), is aiming to allow
++reusing the Linux kernel code as extensively as possible with minimal effort and
++reduced maintenance overhead.
++
++Examples of how LKL can be used are: creating userspace applications (running on
++Linux and other operating systems) that can read or write Linux filesystems or
++can use the Linux networking stack, creating kernel drivers for other operating
++systems that can read Linux filesystems, bootloaders support for reading/writing
++Linux filesystems, etc.
++
++With LKL, the kernel code is compiled into an object file that can be directly
++linked by applications. The API offered by LKL is based on the Linux system call
++interface.
++
++LKL is implemented as one of the mode of UML (arch/um), and it internally uses
++sub-architecture (SUBARCH) of UML (SUBARCH=lkl). It uses host operations
++defined by the application or a host library (tools/um).
++
++
++Supported hosts
++===============
++
++The supported host for now is Linux (x86 architecture) userspace applications.
++
++
++Building LKL the host library and LKL applications
++==================================================
++
++    $ make ARCH=um SUBARCH=lkl defconfig
++    $ make ARCH=um SUBARCH=lkl
++
++will build LKL as a object file, it will install it in tools/um together with
++the headers files in tools/um/include then will build the host library, tests
++and a few of application examples:
++
++* tools/testing/selftests/um/boot.c - a simple applications that uses LKL and
++  exercises the basic LKL APIs
++
++* tools/testing/selftests/um/disk.c - a simple applications that tests LKL and
++  exercises the basic filesystem-related LKL APIs
++
++Those tests can run with the following kselftest command:
++
++    $ make ARCH=um SUBARCH=lkl TARGETS="um" kselftest
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 00836f6452f0..8587a9715020 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -18613,6 +18613,16 @@ F:	arch/um/
+ F:	arch/x86/um/
+ F:	fs/hostfs/
  
- syshdr_abi_unistd_32 := i386
--$(uapi)/unistd_32.h: $(syscall32) $(syshdr)
-+$(uapi)/unistd_32.h: $(syscall32) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
- 
- syshdr_abi_unistd_32_ia32 := i386
- syshdr_pfx_unistd_32_ia32 := ia32_
--$(out)/unistd_32_ia32.h: $(syscall32) $(syshdr)
-+$(out)/unistd_32_ia32.h: $(syscall32) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
- 
- syshdr_abi_unistd_x32 := common,x32
- syshdr_offset_unistd_x32 := __X32_SYSCALL_BIT
--$(uapi)/unistd_x32.h: $(syscall64) $(syshdr)
-+$(uapi)/unistd_x32.h: $(syscall64) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
- 
- syshdr_abi_unistd_64 := common,64
--$(uapi)/unistd_64.h: $(syscall64) $(syshdr)
-+$(uapi)/unistd_64.h: $(syscall64) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
- 
- syshdr_abi_unistd_64_x32 := x32
- syshdr_pfx_unistd_64_x32 := x32_
--$(out)/unistd_64_x32.h: $(syscall64) $(syshdr)
-+$(out)/unistd_64_x32.h: $(syscall64) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
- 
--$(out)/syscalls_32.h: $(syscall32) $(systbl)
-+$(out)/syscalls_32.h: $(syscall32) $(systbl) FORCE
- 	$(call if_changed,systbl)
--$(out)/syscalls_64.h: $(syscall64) $(systbl)
-+$(out)/syscalls_64.h: $(syscall64) $(systbl) FORCE
- 	$(call if_changed,systbl)
- 
--$(out)/xen-hypercalls.h: $(srctree)/scripts/xen-hypercalls.sh
-+$(out)/xen-hypercalls.h: $(srctree)/scripts/xen-hypercalls.sh FORCE
- 	$(call if_changed,hypercalls)
- 
- $(out)/xen-hypercalls.h: $(srctree)/include/xen/interface/xen*.h
-@@ -62,9 +62,10 @@ syshdr-$(CONFIG_X86_64)		+= unistd_32_ia32.h unistd_64_x32.h
- syshdr-$(CONFIG_X86_64)		+= syscalls_64.h
- syshdr-$(CONFIG_XEN)		+= xen-hypercalls.h
- 
--targets	+= $(uapisyshdr-y) $(syshdr-y)
-+uapisyshdr-y	:= $(addprefix $(uapi)/, $(uapisyshdr-y))
-+syshdr-y	:= $(addprefix $(out)/, $(syshdr-y))
-+targets		+= $(addprefix ../../../../, $(uapisyshdr-y) $(syshdr-y))
- 
- PHONY += all
--all: $(addprefix $(uapi)/,$(uapisyshdr-y))
--all: $(addprefix $(out)/,$(syshdr-y))
-+all: $(uapisyshdr-y) $(syshdr-y)
- 	@:
++USER-MODE LINUX (UML) LIBRARY MODE
++M:	Octavian Purdila <tavi.purdila@gmail.com>
++M:	Hajime Tazaki <thehajime@gmail.com>
++L:	linux-um@lists.infradead.org
++S:	Maintained
++T:	https://github.com/lkl/linux
++F:	arch/um/lkl/
++F:	tools/testing/selftests/um/
++F:	tools/um/
++
+ USERSPACE COPYIN/COPYOUT (UIOVEC)
+ M:	Alexander Viro <viro@zeniv.linux.org.uk>
+ S:	Maintained
 -- 
-2.27.0
+2.21.0 (Apple Git-122.2)
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
