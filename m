@@ -1,17 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x532.google.com ([2607:f8b0:4864:20::532])
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l23EJ-0002BE-Np
- for linux-um@lists.infradead.org; Wed, 20 Jan 2021 02:28:20 +0000
-Received: by mail-pg1-x532.google.com with SMTP id c132so14240128pga.3
- for <linux-um@lists.infradead.org>; Tue, 19 Jan 2021 18:28:19 -0800 (PST)
-From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v8 05/20] um: extend arch_switch_to for alternate SUBARCH
-Date: Wed, 20 Jan 2021 11:27:10 +0900
-Message-Id: <89ce5467e30e16eb89f80173b473908d9e8151f3.1611103406.git.thehajime@gmail.com>
-In-Reply-To: <cover.1611103406.git.thehajime@gmail.com>
-References: <cover.1611103406.git.thehajime@gmail.com>
+ id 1l3yFm-0001uL-EI
+ for linux-um@lists.infradead.org; Mon, 25 Jan 2021 09:33:47 +0000
+Subject: Re: [PATCH] um: fix os_idle_sleep() to not hang
+References: <20210122214023.c2219f43d6c1.I1382fc1a4ce633c65cf2fdb9693462e76722937b@changeid>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <4abf9a9d-658b-a0f5-4d37-0fb620132864@cambridgegreys.com>
+Date: Mon, 25 Jan 2021 09:13:46 +0000
 MIME-Version: 1.0
+In-Reply-To: <20210122214023.c2219f43d6c1.I1382fc1a4ce633c65cf2fdb9693462e76722937b@changeid>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,88 +20,89 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
-Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, thehajime@gmail.com, retrage01@gmail.com
+To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
 
-This commit introduces additional argument of previous task when
-context switch happens.  New SUBARCH can use the new information to
-switch tasks in a subarch-specific manner.
 
-The patch is particularly required by library mode, implemented as a
-SUBARCH of UML.  Having access to the previous thread will be required
-in the library mode for it to implement thread switching correctly.
 
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
----
- arch/um/kernel/process.c  | 6 +++---
- arch/x86/um/ptrace_32.c   | 2 +-
- arch/x86/um/syscalls_64.c | 2 +-
- 3 files changed, 5 insertions(+), 5 deletions(-)
+On 22/01/2021 20:40, Johannes Berg wrote:
+> From: Johannes Berg <johannes.berg@intel.com>
+> 
+> Changing os_idle_sleep() to use pause() (I accidentally described
+> it as an empty select() in the commit log because I had changed it
+> from that to pause() in a later revision) exposed a race condition
+> in the idle code. The following can happen:
+> 
+>   timer_settime(0, 0, {it_interval={tv_sec=0, tv_nsec=0}, it_value={tv_sec=0, tv_nsec=624017}}, NULL) = 0
+>   ...
+>   <SIGALRM is delivered but we're already on the way to idle>
+>   pause()
+> 
+> and we now hang forever. This was previously possible as well, but
+> it could never cause UML to hang for more than a second since we
+> could only sleep for that much, so at most you'd notice a "hiccup"
+> in the UML. Obviously, any sort of external interrupt also "saves"
+> it and interrupts pause().
+> 
+> Fix this by properly handling the race, rather than papering over
+> it again:
+> 
+>   - first, block SIGALRM, and obtain the old signal set
+>   - check the timer
+>   - suspend, waiting for any signal out of the old set, if, and only
+>     if, the timer will fire in the future
+>   - restore the old signal mask
+> 
+> This ensures race-free operation: as it's blocked, the signal won't
+> be delivered while we're looking at the timer even if it were to be
+> triggered right _after_ we've returned from timer_gettime() with a
+> non-zero value (telling us the timer will trigger). Thus, despite
+> getting to sigsuspend() because timer_gettime() told us we're still
+> waiting, we'll not hang because sigsuspend() will return immediately
+> due to the pending signal.
+> 
+> Fixes: 49da38a3ef33 ("um: Simplify os_idle_sleep() and sleep longer")
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+> ---
+>   arch/um/os-Linux/time.c | 15 ++++++++++++++-
+>   1 file changed, 14 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/um/os-Linux/time.c b/arch/um/os-Linux/time.c
+> index a61cbf73a179..6c5041c5560b 100644
+> --- a/arch/um/os-Linux/time.c
+> +++ b/arch/um/os-Linux/time.c
+> @@ -104,5 +104,18 @@ long long os_nsecs(void)
+>    */
+>   void os_idle_sleep(void)
+>   {
+> -	pause();
+> +	struct itimerspec its;
+> +	sigset_t set, old;
+> +
+> +	/* block SIGALRM while we analyze the timer state */
+> +	sigemptyset(&set);
+> +	sigaddset(&set, SIGALRM);
+> +	sigprocmask(SIG_BLOCK, &set, &old);
+> +
+> +	/* check the timer, and if it'll fire then wait for it */
+> +	timer_gettime(event_high_res_timer, &its);
+> +	if (its.it_value.tv_sec || its.it_value.tv_nsec)
+> +		sigsuspend(&old);
+> +	/* either way, restore the signal mask */
+> +	sigprocmask(SIG_UNBLOCK, &set, NULL);
+>   }
+> 
 
-diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index 2a986ece5478..9b0a36f64339 100644
---- a/arch/um/kernel/process.c
-+++ b/arch/um/kernel/process.c
-@@ -83,7 +83,7 @@ static inline void set_current(struct task_struct *task)
- 		{ external_pid(), task });
- }
- 
--extern void arch_switch_to(struct task_struct *to);
-+extern void arch_switch_to(struct task_struct *from, struct task_struct *to);
- 
- void *__switch_to(struct task_struct *from, struct task_struct *to)
- {
-@@ -91,7 +91,7 @@ void *__switch_to(struct task_struct *from, struct task_struct *to)
- 	set_current(to);
- 
- 	switch_threads(&from->thread.switch_buf, &to->thread.switch_buf);
--	arch_switch_to(current);
-+	arch_switch_to(from, to);
- 
- 	return current->thread.prev_sched;
- }
-@@ -149,7 +149,7 @@ void fork_handler(void)
- 	 * arch_switch_to isn't needed. We could want to apply this to
- 	 * improve performance. -bb
- 	 */
--	arch_switch_to(current);
-+	arch_switch_to(NULL, current);
- 
- 	current->thread.prev_sched = NULL;
- 
-diff --git a/arch/x86/um/ptrace_32.c b/arch/x86/um/ptrace_32.c
-index 2497bac56066..0f184710d4ca 100644
---- a/arch/x86/um/ptrace_32.c
-+++ b/arch/x86/um/ptrace_32.c
-@@ -11,7 +11,7 @@
- 
- extern int arch_switch_tls(struct task_struct *to);
- 
--void arch_switch_to(struct task_struct *to)
-+void arch_switch_to(struct task_struct *from, struct task_struct *to)
- {
- 	int err = arch_switch_tls(to);
- 	if (!err)
-diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
-index 58f51667e2e4..2ef9474d2bd2 100644
---- a/arch/x86/um/syscalls_64.c
-+++ b/arch/x86/um/syscalls_64.c
-@@ -80,7 +80,7 @@ SYSCALL_DEFINE2(arch_prctl, int, option, unsigned long, arg2)
- 	return arch_prctl(current, option, (unsigned long __user *) arg2);
- }
- 
--void arch_switch_to(struct task_struct *to)
-+void arch_switch_to(struct task_struct *from, struct task_struct *to)
- {
- 	if ((to->thread.arch.fs == 0) || (to->mm == NULL))
- 		return;
+Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+
 -- 
-2.21.0 (Apple Git-122.2)
-
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
 _______________________________________________
 linux-um mailing list
