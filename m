@@ -1,8 +1,8 @@
 Return-Path: <linux-sh-owner@vger.kernel.org>
 From: Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 22/27] sparc: add missing FORCE and fix 'targets' to make if_changed work
-Date: Thu, 28 Jan 2021 09:51:04 +0900
-Message-Id: <20210128005110.2613902-23-masahiroy@kernel.org>
+Subject: [PATCH 24/27] powerpc: add missing FORCE and fix 'targets' to make if_changed work
+Date: Thu, 28 Jan 2021 09:51:06 +0900
+Message-Id: <20210128005110.2613902-25-masahiroy@kernel.org>
 In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
 References: <20210128005110.2613902-1-masahiroy@kernel.org>
 MIME-Version: 1.0
@@ -23,46 +23,54 @@ Fix all of them so the if_changed rules work correctly.
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
- arch/sparc/kernel/syscalls/Makefile | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+ arch/powerpc/kernel/syscalls/Makefile | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-diff --git a/arch/sparc/kernel/syscalls/Makefile b/arch/sparc/kernel/syscalls/Makefile
-index c22a21c39f30..556fe30a6c8f 100644
---- a/arch/sparc/kernel/syscalls/Makefile
-+++ b/arch/sparc/kernel/syscalls/Makefile
-@@ -22,24 +22,24 @@ quiet_cmd_systbl = SYSTBL  $@
+diff --git a/arch/powerpc/kernel/syscalls/Makefile b/arch/powerpc/kernel/syscalls/Makefile
+index 27b48954808d..d609f0040b2a 100644
+--- a/arch/powerpc/kernel/syscalls/Makefile
++++ b/arch/powerpc/kernel/syscalls/Makefile
+@@ -22,31 +22,31 @@ quiet_cmd_systbl = SYSTBL  $@
  		   '$(systbl_offset_$(basetarget))'
  
- syshdr_abis_unistd_32 := common,32
+ syshdr_abis_unistd_32 := common,nospu,32
 -$(uapi)/unistd_32.h: $(syscall) $(syshdr)
 +$(uapi)/unistd_32.h: $(syscall) $(syshdr) FORCE
  	$(call if_changed,syshdr)
  
- syshdr_abis_unistd_64 := common,64
+ syshdr_abis_unistd_64 := common,nospu,64
 -$(uapi)/unistd_64.h: $(syscall) $(syshdr)
 +$(uapi)/unistd_64.h: $(syscall) $(syshdr) FORCE
  	$(call if_changed,syshdr)
  
- systbl_abis_syscall_table_32 := common,32
+ systbl_abis_syscall_table_32 := common,nospu,32
+ systbl_abi_syscall_table_32 := 32
 -$(kapi)/syscall_table_32.h: $(syscall) $(systbl)
 +$(kapi)/syscall_table_32.h: $(syscall) $(systbl) FORCE
  	$(call if_changed,systbl)
  
- systbl_abis_syscall_table_64 := common,64
+ systbl_abis_syscall_table_64 := common,nospu,64
+ systbl_abi_syscall_table_64 := 64
 -$(kapi)/syscall_table_64.h: $(syscall) $(systbl)
 +$(kapi)/syscall_table_64.h: $(syscall) $(systbl) FORCE
  	$(call if_changed,systbl)
  
- systbl_abis_syscall_table_c32 := common,32
+ systbl_abis_syscall_table_c32 := common,nospu,32
  systbl_abi_syscall_table_c32 := c32
 -$(kapi)/syscall_table_c32.h: $(syscall) $(systbl)
 +$(kapi)/syscall_table_c32.h: $(syscall) $(systbl) FORCE
  	$(call if_changed,systbl)
  
+ systbl_abis_syscall_table_spu := common,spu
+ systbl_abi_syscall_table_spu := spu
+-$(kapi)/syscall_table_spu.h: $(syscall) $(systbl)
++$(kapi)/syscall_table_spu.h: $(syscall) $(systbl) FORCE
+ 	$(call if_changed,systbl)
+ 
  uapisyshdr-y		+= unistd_32.h unistd_64.h
-@@ -47,9 +47,10 @@ kapisyshdr-y		+= syscall_table_32.h		\
- 			   syscall_table_64.h		\
- 			   syscall_table_c32.h
+@@ -55,9 +55,10 @@ kapisyshdr-y		+= syscall_table_32.h		\
+ 			   syscall_table_c32.h		\
+ 			   syscall_table_spu.h
  
 -targets	+= $(uapisyshdr-y) $(kapisyshdr-y)
 +uapisyshdr-y	:= $(addprefix $(uapi)/, $(uapisyshdr-y))
