@@ -1,8 +1,8 @@
-Return-Path: <linux-sh-owner@vger.kernel.org>
+Return-Path: <linux-arch-owner@vger.kernel.org>
 From: Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 02/27] x86/syscalls: fix -Wmissing-prototypes warnings from COND_SYSCALL()
-Date: Thu, 28 Jan 2021 09:50:44 +0900
-Message-Id: <20210128005110.2613902-3-masahiroy@kernel.org>
+Subject: [PATCH 19/27] sh: add missing FORCE and fix 'targets' to make if_changed work
+Date: Thu, 28 Jan 2021 09:51:01 +0900
+Message-Id: <20210128005110.2613902-20-masahiroy@kernel.org>
 In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
 References: <20210128005110.2613902-1-masahiroy@kernel.org>
 MIME-Version: 1.0
@@ -11,61 +11,50 @@ To: linux-arch@vger.kernel.org, x86@kernel.org
 Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>
 List-ID: <linux-um.lists.infradead.org>
 
-Building kernel/sys_ni.c with W=1 omits tons of -Wmissing-prototypes
-warnings.
+The rules in this Makefile cannot detect the command line change because
+the prerequisite 'FORCE' is missing.
 
-$ make W=1 kernel/sys_ni.o
-  [ snip ]
-  CC      kernel/sys_ni.o
-In file included from kernel/sys_ni.c:10:
-./arch/x86/include/asm/syscall_wrapper.h:83:14: warning: no previous prototype for '__x64_sys_io_setup' [-Wmissing-prototypes]
-   83 |  __weak long __##abi##_##name(const struct pt_regs *__unused) \
-      |              ^~
-./arch/x86/include/asm/syscall_wrapper.h:100:2: note: in expansion of macro '__COND_SYSCALL'
-  100 |  __COND_SYSCALL(x64, sys_##name)
-      |  ^~~~~~~~~~~~~~
-./arch/x86/include/asm/syscall_wrapper.h:256:2: note: in expansion of macro '__X64_COND_SYSCALL'
-  256 |  __X64_COND_SYSCALL(name)     \
-      |  ^~~~~~~~~~~~~~~~~~
-kernel/sys_ni.c:39:1: note: in expansion of macro 'COND_SYSCALL'
-   39 | COND_SYSCALL(io_setup);
-      | ^~~~~~~~~~~~
-./arch/x86/include/asm/syscall_wrapper.h:83:14: warning: no previous prototype for '__ia32_sys_io_setup' [-Wmissing-prototypes]
-   83 |  __weak long __##abi##_##name(const struct pt_regs *__unused) \
-      |              ^~
-./arch/x86/include/asm/syscall_wrapper.h:120:2: note: in expansion of macro '__COND_SYSCALL'
-  120 |  __COND_SYSCALL(ia32, sys_##name)
-      |  ^~~~~~~~~~~~~~
-./arch/x86/include/asm/syscall_wrapper.h:257:2: note: in expansion of macro '__IA32_COND_SYSCALL'
-  257 |  __IA32_COND_SYSCALL(name)
-      |  ^~~~~~~~~~~~~~~~~~~
-kernel/sys_ni.c:39:1: note: in expansion of macro 'COND_SYSCALL'
-   39 | COND_SYSCALL(io_setup);
-      | ^~~~~~~~~~~~
-  ...
+Adding 'FORCE' will result in the headers being rebuilt every time
+because the 'targets' addition is also wrong; the file paths in
+'targets' must be relative to the current Makefile.
 
-__SYS_STUB0() and __SYS_STUBx() defined a few lines above have forward
-declarations. Let's do likewise for __COND_SYSCALL() to fix the
-warnings.
+Fix all of them so the if_changed rules work correctly.
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
- arch/x86/include/asm/syscall_wrapper.h | 1 +
- 1 file changed, 1 insertion(+)
+ arch/sh/kernel/syscalls/Makefile | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/arch/x86/include/asm/syscall_wrapper.h b/arch/x86/include/asm/syscall_wrapper.h
-index a84333adeef2..80c08c7d5e72 100644
---- a/arch/x86/include/asm/syscall_wrapper.h
-+++ b/arch/x86/include/asm/syscall_wrapper.h
-@@ -80,6 +80,7 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
- 	}
+diff --git a/arch/sh/kernel/syscalls/Makefile b/arch/sh/kernel/syscalls/Makefile
+index 659faefdcb1d..1c42d2d2926d 100644
+--- a/arch/sh/kernel/syscalls/Makefile
++++ b/arch/sh/kernel/syscalls/Makefile
+@@ -21,18 +21,19 @@ quiet_cmd_systbl = SYSTBL  $@
+ 		   '$(systbl_abi_$(basetarget))'		\
+ 		   '$(systbl_offset_$(basetarget))'
  
- #define __COND_SYSCALL(abi, name)					\
-+	__weak long __##abi##_##name(const struct pt_regs *__unused);	\
- 	__weak long __##abi##_##name(const struct pt_regs *__unused)	\
- 	{								\
- 		return sys_ni_syscall();				\
+-$(uapi)/unistd_32.h: $(syscall) $(syshdr)
++$(uapi)/unistd_32.h: $(syscall) $(syshdr) FORCE
+ 	$(call if_changed,syshdr)
+ 
+-$(kapi)/syscall_table.h: $(syscall) $(systbl)
++$(kapi)/syscall_table.h: $(syscall) $(systbl) FORCE
+ 	$(call if_changed,systbl)
+ 
+ uapisyshdr-y		+= unistd_32.h
+ kapisyshdr-y		+= syscall_table.h
+ 
+-targets	+= $(uapisyshdr-y) $(kapisyshdr-y)
++uapisyshdr-y	:= $(addprefix $(uapi)/, $(uapisyshdr-y))
++kapisyshdr-y	:= $(addprefix $(kapi)/, $(kapisyshdr-y))
++targets		+= $(addprefix ../../../../, $(uapisyshdr-y) $(kapisyshdr-y))
+ 
+ PHONY += all
+-all: $(addprefix $(uapi)/,$(uapisyshdr-y))
+-all: $(addprefix $(kapi)/,$(kapisyshdr-y))
++all: $(uapisyshdr-y) $(kapisyshdr-y)
+ 	@:
 -- 
 2.27.0
 
