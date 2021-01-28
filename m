@@ -1,17 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x432.google.com ([2607:f8b0:4864:20::432])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l23Eu-0002II-Ea
- for linux-um@lists.infradead.org; Wed, 20 Jan 2021 02:28:57 +0000
-Received: by mail-pf1-x432.google.com with SMTP id w18so2273950pfu.9
- for <linux-um@lists.infradead.org>; Tue, 19 Jan 2021 18:28:55 -0800 (PST)
-From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v8 11/20] um: lkl: basic console support
-Date: Wed, 20 Jan 2021 11:27:16 +0900
-Message-Id: <5ec3a7157f7d96943b5701f8d57e102181cd56d2.1611103406.git.thehajime@gmail.com>
-In-Reply-To: <cover.1611103406.git.thehajime@gmail.com>
-References: <cover.1611103406.git.thehajime@gmail.com>
 MIME-Version: 1.0
+References: <20210128005110.2613902-1-masahiroy@kernel.org>
+ <20210128005110.2613902-2-masahiroy@kernel.org>
+In-Reply-To: <20210128005110.2613902-2-masahiroy@kernel.org>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Thu, 28 Jan 2021 10:01:50 +0900
+Message-ID: <CAK7LNASxQkX9R3g+r2mwKGE11oFLkNVPwsTezgHFzLgHjzcjdw@mail.gmail.com>
+Subject: Re: [PATCH 01/27] scripts: add generic syscalltbl.sh
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,110 +19,162 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
-Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, thehajime@gmail.com, retrage01@gmail.com
+To: linux-arch <linux-arch@vger.kernel.org>, X86 ML <x86@kernel.org>
+Cc: "open list:TENSILICA XTENSA PORT (xtensa)" <linux-xtensa@linux-xtensa.org>, linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, linux-um@lists.infradead.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-mips@vger.kernel.org, linux-m68k <linux-m68k@lists.linux-m68k.org>, linux-alpha@vger.kernel.org, sparclinux <sparclinux@vger.kernel.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 
-This patch adds a basic structure of console support in kernel.  Write
-operations are deferred to the host print operation.
+On Thu, Jan 28, 2021 at 9:51 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> Most of architectures generate syscall headers at the compile time
+> in the almost same way.
+>
+> The syscall table has the same format for all architectures. Each line
+> has 3, 4 or 5 fields; syscall number, ABI, syscall name, native entry
+> point, and compat entry point. The syscall table is processed by
+> syscalltbl.sh script into header files.
+>
+> Despite the same pattern, scripts are maintained per architecture,
+> which results in code duplication and bad maintainability.
+>
+> As of v5.11-rc1, 12 architectures duplicate similar shell scripts:
+>
+>   $ find arch -name syscalltbl.sh | sort
+>   arch/alpha/kernel/syscalls/syscalltbl.sh
+>   arch/arm/tools/syscalltbl.sh
+>   arch/ia64/kernel/syscalls/syscalltbl.sh
+>   arch/m68k/kernel/syscalls/syscalltbl.sh
+>   arch/microblaze/kernel/syscalls/syscalltbl.sh
+>   arch/mips/kernel/syscalls/syscalltbl.sh
+>   arch/parisc/kernel/syscalls/syscalltbl.sh
+>   arch/powerpc/kernel/syscalls/syscalltbl.sh
+>   arch/sh/kernel/syscalls/syscalltbl.sh
+>   arch/sparc/kernel/syscalls/syscalltbl.sh
+>   arch/x86/entry/syscalls/syscalltbl.sh
+>   arch/xtensa/kernel/syscalls/syscalltbl.sh
+>
+> My goal is to unify them into a single file, scripts/syscalltbl.sh.
+>
+> For example, the i386 syscall table looks like this:
+>
+>   0  i386  restart_syscall  sys_restart_syscall
+>   1  i386  exit             sys_exit
+>   2  i386  fork             sys_fork
+>   3  i386  read             sys_read
+>   4  i386  write            sys_write
+>   5  i386  open             sys_open              compat_sys_open
+>   ...
+>
+> scripts/syscalltbl.sh generates the following code:
+>
+>   __SYSCALL(0, sys_restart_syscall)
+>   __SYSCALL(1, sys_exit)
+>   __SYSCALL(2, sys_fork)
+>   __SYSCALL(3, sys_read)
+>   __SYSCALL(4, sys_write)
+>   __SYSCALL_WITH_COMPAT(5, sys_open, compat_sys_open)
+>   ...
+>
+> Then, the i386 kernel will do:
+>
+>   #define __SYSCALL_WITH_COMPAT(nr, native, compat) __SYSCALL(nr, native)
+>
+> and the x86_64 kernel will do:
+>
+>   #define __SYSCALL_WITH_COMPAT(nr, native, compat) __SYSCALL(nr, compat)
+>
+> I noticed all 32/64 bit architectures can be covered by the same
+> pattern. Having an arch-specific script is fine if there is a good
+> reason to do so, but a single generic script should work for this case.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+>
+>  scripts/syscalltbl.sh | 52 +++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 52 insertions(+)
+>  create mode 100644 scripts/syscalltbl.sh
+>
+> diff --git a/scripts/syscalltbl.sh b/scripts/syscalltbl.sh
+> new file mode 100644
+> index 000000000000..15bf4e09f88c
+> --- /dev/null
+> +++ b/scripts/syscalltbl.sh
+> @@ -0,0 +1,52 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +#
+> +# Usage:
+> +#  scripts/syscalltbl.sh INFILE OUTFILE [ABIS] [OFFSET]
+> +#
+> +# INFILE: input syscall table
+> +# OUTFILE: output file
+> +# ABIS (optional): specify the ABIs to handle.
+> +#                  If omitted, all lines are handled.
+> +# OFFSET (optinal): spefify the offset of the syscall numbers.
+> +#                   If omitted, the offset is zero.
+> +#
+> +# The syscall table format:
+> +# nr abi name native [compat]
 
-This commit also disables stdio-console of UML when library mode to avoid
-conflicts between multiple consoles.
 
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
----
- arch/um/drivers/Makefile                |  8 ++++-
- arch/um/lkl/include/uapi/asm/host_ops.h |  9 ++++++
- arch/um/lkl/um/console.c                | 41 +++++++++++++++++++++++++
- 3 files changed, 57 insertions(+), 1 deletion(-)
- create mode 100644 arch/um/lkl/um/console.c
+This line should be
 
-diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
-index ae96c83e312d..dc0d32d62294 100644
---- a/arch/um/drivers/Makefile
-+++ b/arch/um/drivers/Makefile
-@@ -37,7 +37,13 @@ $(obj)/vde.o: $(obj)/vde_kern.o $(obj)/vde_user.o
- # When the above is fixed, don't forget to add this too!
- #targets += $(obj)/pcap.o
- 
--obj-y := stdio_console.o fd.o chan_kern.o chan_user.o line.o
-+ifndef CONFIG_UMMODE_LIB
-+obj-y := stdio_console.o
-+else
-+obj-y :=
-+endif
-+obj-y += fd.o chan_kern.o chan_user.o line.o
-+
- obj-$(CONFIG_SSL) += ssl.o
- obj-$(CONFIG_STDERR_CONSOLE) += stderr_console.o
- 
-diff --git a/arch/um/lkl/include/uapi/asm/host_ops.h b/arch/um/lkl/include/uapi/asm/host_ops.h
-index b97aa1099a17..976fc4301b3d 100644
---- a/arch/um/lkl/include/uapi/asm/host_ops.h
-+++ b/arch/um/lkl/include/uapi/asm/host_ops.h
-@@ -243,4 +243,13 @@ int lkl_tls_set(struct lkl_tls_key *key, void *data);
-  */
- void *lkl_tls_get(struct lkl_tls_key *key);
- 
-+/**
-+ * lkl_print - optional operation that receives console messages
-+ *
-+ * @str: strings to be printed
-+ * @len: the length of @str
-+ *
-+ */
-+void lkl_print(const char *str, int len);
-+
- #endif
-diff --git a/arch/um/lkl/um/console.c b/arch/um/lkl/um/console.c
-new file mode 100644
-index 000000000000..f2b48dc7ae22
---- /dev/null
-+++ b/arch/um/lkl/um/console.c
-@@ -0,0 +1,41 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/console.h>
-+#include <asm/host_ops.h>
-+
-+static void console_write(struct console *con, const char *str, unsigned len)
-+{
-+	lkl_print(str, len);
-+}
-+
-+#ifdef CONFIG_LKL_EARLY_CONSOLE
-+static struct console lkl_boot_console = {
-+	.name	= "lkl_boot_console",
-+	.write	= console_write,
-+	.flags	= CON_PRINTBUFFER | CON_BOOT,
-+	.index	= -1,
-+};
-+
-+int __init lkl_boot_console_init(void)
-+{
-+	register_console(&lkl_boot_console);
-+	return 0;
-+}
-+early_initcall(lkl_boot_console_init);
-+#endif
-+
-+static struct console lkl_console = {
-+	.name	= "lkl_console",
-+	.write	= console_write,
-+	.flags	= CON_PRINTBUFFER,
-+	.index	= -1,
-+};
-+
-+int __init lkl_console_init(void)
-+{
-+	register_console(&lkl_console);
-+	return 0;
-+}
-+core_initcall(lkl_console_init);
-+
+ nr abi name [native] [compat]
+
+
+because the native entry point is also optional.
+(if it is missing, sys_ni_syscall is used)
+
+
+
+
+> +#
+> +# nr: syscall number
+> +# abi: ABI name
+> +# name: syscall name
+> +# native: native entry point
+
+native (optional): native entry point
+
+
+> +# compat (optional): compat entry point
+> +
+> +set -e
+> +
+> +in="$1"
+> +out="$2"
+> +abis=$(echo "($3)" | tr ',' '|')
+> +offset="${4:-0}"
+> +
+> +nxt=$offset
+> +
+> +grep -E "^[0-9]+[[:space:]]+${abis}" "$in" | sort -n | {
+> +
+> +       while read nr abi name native compat ; do
+> +
+> +               nr=$((nr + $offset))
+> +
+> +               while [ $nxt -lt $nr ]; do
+> +                       echo "__SYSCALL($nxt, sys_ni_syscall)"
+> +                       nxt=$((nxt + 1))
+> +               done
+> +
+> +               if [ -n "$compat" ]; then
+> +                       echo "__SYSCALL_WITH_COMPAT($nr, $native, $compat)"
+> +               elif [ -n "$native" ]; then
+> +                       echo "__SYSCALL($nr, $native)"
+> +               else
+> +                       echo "__SYSCALL($nr, sys_ni_syscall)"
+> +               fi
+> +               nxt=$((nr + 1))
+> +       done
+> +} > "$out"
+> --
+> 2.27.0
+>
+
+
 -- 
-2.21.0 (Apple Git-122.2)
-
+Best Regards
+Masahiro Yamada
 
 _______________________________________________
 linux-um mailing list
