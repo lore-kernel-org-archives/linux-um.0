@@ -1,191 +1,186 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kznOr-0000ld-Ew
- for linux-um@lists.infradead.org; Wed, 13 Jan 2021 21:09:55 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH 1/3] um: separate child and parent errors in clone stub
-Date: Wed, 13 Jan 2021 22:09:42 +0100
-Message-Id: <20210113220944.7732f6bfd3bb.Ib87c91b49d57d27314cf444696273da6d8463e9c@changeid>
+Return-Path: <linux-sh-owner@vger.kernel.org>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 25/27] powerpc: syscalls: switch to generic syscalltbl.sh
+Date: Thu, 28 Jan 2021 09:51:07 +0900
+Message-Id: <20210128005110.2613902-26-masahiroy@kernel.org>
+In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
+References: <20210128005110.2613902-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: linux-arch@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>
+Content-Transfer-Encoding: 8bit
+To: linux-arch@vger.kernel.org, x86@kernel.org
+Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-From: Johannes Berg <johannes.berg@intel.com>
+As of v5.11-rc1, 12 architectures duplicate similar shell scripts in
+order to generate syscall table headers. My goal is to unify them into
+the single scripts/syscalltbl.sh.
 
-If the two are mixed up, then it looks as though the parent
-returned an error if the child failed (before) the mmap(),
-and then the resulting process never gets killed. Fix this
-by splitting the child and parent errors, reporting and
-using them appropriately.
+This commit converts powerpc to use scripts/syscalltbl.sh.
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
- arch/um/include/shared/skas/stub-data.h |  2 +-
- arch/um/kernel/skas/clone.c             | 25 +++++++++++--------------
- arch/um/os-Linux/skas/process.c         | 23 +++++++++++++----------
- arch/x86/um/shared/sysdep/stub_32.h     |  2 +-
- arch/x86/um/shared/sysdep/stub_64.h     |  2 +-
- 5 files changed, 27 insertions(+), 27 deletions(-)
 
-diff --git a/arch/um/include/shared/skas/stub-data.h b/arch/um/include/shared/skas/stub-data.h
-index 6b01d97a9386..5e3ade3fb38b 100644
---- a/arch/um/include/shared/skas/stub-data.h
-+++ b/arch/um/include/shared/skas/stub-data.h
-@@ -11,7 +11,7 @@
- struct stub_data {
- 	unsigned long offset;
- 	int fd;
--	long err;
-+	long parent_err, child_err;
+ arch/powerpc/include/asm/Kbuild             |  1 -
+ arch/powerpc/kernel/syscalls/Makefile       | 22 +++----------
+ arch/powerpc/kernel/syscalls/syscalltbl.sh  | 36 ---------------------
+ arch/powerpc/kernel/systbl.S                |  5 ++-
+ arch/powerpc/platforms/cell/spu_callbacks.c |  2 +-
+ 5 files changed, 10 insertions(+), 56 deletions(-)
+ delete mode 100644 arch/powerpc/kernel/syscalls/syscalltbl.sh
+
+diff --git a/arch/powerpc/include/asm/Kbuild b/arch/powerpc/include/asm/Kbuild
+index e1f9b4ea1c53..bcf95ce0964f 100644
+--- a/arch/powerpc/include/asm/Kbuild
++++ b/arch/powerpc/include/asm/Kbuild
+@@ -1,7 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ generated-y += syscall_table_32.h
+ generated-y += syscall_table_64.h
+-generated-y += syscall_table_c32.h
+ generated-y += syscall_table_spu.h
+ generic-y += export.h
+ generic-y += kvm_types.h
+diff --git a/arch/powerpc/kernel/syscalls/Makefile b/arch/powerpc/kernel/syscalls/Makefile
+index d609f0040b2a..ecf1474f8ea5 100644
+--- a/arch/powerpc/kernel/syscalls/Makefile
++++ b/arch/powerpc/kernel/syscalls/Makefile
+@@ -7,7 +7,7 @@ _dummy := $(shell [ -d '$(uapi)' ] || mkdir -p '$(uapi)')	\
+ 
+ syscall := $(srctree)/$(src)/syscall.tbl
+ syshdr := $(srctree)/$(src)/syscallhdr.sh
+-systbl := $(srctree)/$(src)/syscalltbl.sh
++systbl := $(srctree)/scripts/syscalltbl.sh
+ 
+ quiet_cmd_syshdr = SYSHDR  $@
+       cmd_syshdr = $(CONFIG_SHELL) '$(syshdr)' '$<' '$@'	\
+@@ -16,10 +16,7 @@ quiet_cmd_syshdr = SYSHDR  $@
+ 		   '$(syshdr_offset_$(basetarget))'
+ 
+ quiet_cmd_systbl = SYSTBL  $@
+-      cmd_systbl = $(CONFIG_SHELL) '$(systbl)' '$<' '$@'	\
+-		   '$(systbl_abis_$(basetarget))'		\
+-		   '$(systbl_abi_$(basetarget))'		\
+-		   '$(systbl_offset_$(basetarget))'
++      cmd_systbl = $(CONFIG_SHELL) $(systbl) $< $@ $(abis)
+ 
+ syshdr_abis_unistd_32 := common,nospu,32
+ $(uapi)/unistd_32.h: $(syscall) $(syshdr) FORCE
+@@ -29,30 +26,21 @@ syshdr_abis_unistd_64 := common,nospu,64
+ $(uapi)/unistd_64.h: $(syscall) $(syshdr) FORCE
+ 	$(call if_changed,syshdr)
+ 
+-systbl_abis_syscall_table_32 := common,nospu,32
+-systbl_abi_syscall_table_32 := 32
++$(kapi)/syscall_table_32.h: abis := common,nospu,32
+ $(kapi)/syscall_table_32.h: $(syscall) $(systbl) FORCE
+ 	$(call if_changed,systbl)
+ 
+-systbl_abis_syscall_table_64 := common,nospu,64
+-systbl_abi_syscall_table_64 := 64
++$(kapi)/syscall_table_64.h: abis := common,nospu,64
+ $(kapi)/syscall_table_64.h: $(syscall) $(systbl) FORCE
+ 	$(call if_changed,systbl)
+ 
+-systbl_abis_syscall_table_c32 := common,nospu,32
+-systbl_abi_syscall_table_c32 := c32
+-$(kapi)/syscall_table_c32.h: $(syscall) $(systbl) FORCE
+-	$(call if_changed,systbl)
+-
+-systbl_abis_syscall_table_spu := common,spu
+-systbl_abi_syscall_table_spu := spu
++$(kapi)/syscall_table_spu.h: abis := common,spu
+ $(kapi)/syscall_table_spu.h: $(syscall) $(systbl) FORCE
+ 	$(call if_changed,systbl)
+ 
+ uapisyshdr-y		+= unistd_32.h unistd_64.h
+ kapisyshdr-y		+= syscall_table_32.h		\
+ 			   syscall_table_64.h		\
+-			   syscall_table_c32.h		\
+ 			   syscall_table_spu.h
+ 
+ uapisyshdr-y	:= $(addprefix $(uapi)/, $(uapisyshdr-y))
+diff --git a/arch/powerpc/kernel/syscalls/syscalltbl.sh b/arch/powerpc/kernel/syscalls/syscalltbl.sh
+deleted file mode 100644
+index f7393a7b18aa..000000000000
+--- a/arch/powerpc/kernel/syscalls/syscalltbl.sh
++++ /dev/null
+@@ -1,36 +0,0 @@
+-#!/bin/sh
+-# SPDX-License-Identifier: GPL-2.0
+-
+-in="$1"
+-out="$2"
+-my_abis=`echo "($3)" | tr ',' '|'`
+-my_abi="$4"
+-offset="$5"
+-
+-emit() {
+-	t_nxt="$1"
+-	t_nr="$2"
+-	t_entry="$3"
+-
+-	while [ $t_nxt -lt $t_nr ]; do
+-		printf "__SYSCALL(%s,sys_ni_syscall)\n" "${t_nxt}"
+-		t_nxt=$((t_nxt+1))
+-	done
+-	printf "__SYSCALL(%s,%s)\n" "${t_nxt}" "${t_entry}"
+-}
+-
+-grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
+-	nxt=0
+-	if [ -z "$offset" ]; then
+-		offset=0
+-	fi
+-
+-	while read nr abi name entry compat ; do
+-		if [ "$my_abi" = "c32" ] && [ ! -z "$compat" ]; then
+-			emit $((nxt+offset)) $((nr+offset)) $compat
+-		else
+-			emit $((nxt+offset)) $((nr+offset)) $entry
+-		fi
+-		nxt=$((nr+1))
+-	done
+-) > "$out"
+diff --git a/arch/powerpc/kernel/systbl.S b/arch/powerpc/kernel/systbl.S
+index d34276f3c495..cb3358886203 100644
+--- a/arch/powerpc/kernel/systbl.S
++++ b/arch/powerpc/kernel/systbl.S
+@@ -21,6 +21,7 @@
+ #define __SYSCALL(nr, entry)	.long entry
+ #endif
+ 
++#define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, native)
+ .globl sys_call_table
+ sys_call_table:
+ #ifdef CONFIG_PPC64
+@@ -30,8 +31,10 @@ sys_call_table:
+ #endif
+ 
+ #ifdef CONFIG_COMPAT
++#undef __SYSCALL_WITH_COMPAT
++#define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, compat)
+ .globl compat_sys_call_table
+ compat_sys_call_table:
+ #define compat_sys_sigsuspend	sys_sigsuspend
+-#include <asm/syscall_table_c32.h>
++#include <asm/syscall_table_32.h>
+ #endif
+diff --git a/arch/powerpc/platforms/cell/spu_callbacks.c b/arch/powerpc/platforms/cell/spu_callbacks.c
+index abdef9bcf432..fe0d8797a00a 100644
+--- a/arch/powerpc/platforms/cell/spu_callbacks.c
++++ b/arch/powerpc/platforms/cell/spu_callbacks.c
+@@ -35,9 +35,9 @@
+  */
+ 
+ static void *spu_syscall_table[] = {
++#define __SYSCALL_WITH_COMPAT(nr, entry, compat) __SYSCALL(nr, entry)
+ #define __SYSCALL(nr, entry) [nr] = entry,
+ #include <asm/syscall_table_spu.h>
+-#undef __SYSCALL
  };
  
- #endif
-diff --git a/arch/um/kernel/skas/clone.c b/arch/um/kernel/skas/clone.c
-index bfb70c456b30..7c592c788cbf 100644
---- a/arch/um/kernel/skas/clone.c
-+++ b/arch/um/kernel/skas/clone.c
-@@ -24,29 +24,26 @@
- void __attribute__ ((__section__ (".__syscall_stub")))
- stub_clone_handler(void)
- {
--	struct stub_data *data = (struct stub_data *) STUB_DATA;
-+	int stack;
-+	struct stub_data *data = (void *) ((unsigned long)&stack & ~(UM_KERN_PAGE_SIZE - 1));
- 	long err;
- 
- 	err = stub_syscall2(__NR_clone, CLONE_PARENT | CLONE_FILES | SIGCHLD,
--			    STUB_DATA + UM_KERN_PAGE_SIZE / 2 - sizeof(void *));
--	if (err != 0)
--		goto out;
-+			    (unsigned long)data + UM_KERN_PAGE_SIZE / 2 - sizeof(void *));
-+	if (err) {
-+		data->parent_err = err;
-+		goto done;
-+	}
- 
- 	err = stub_syscall4(__NR_ptrace, PTRACE_TRACEME, 0, 0, 0);
--	if (err)
--		goto out;
-+	if (err) {
-+		data->child_err = err;
-+		goto done;
-+	}
- 
- 	remap_stack(data->fd, data->offset);
- 	goto done;
- 
-- out:
--	/*
--	 * save current result.
--	 * Parent: pid;
--	 * child: retcode of mmap already saved and it jumps around this
--	 * assignment
--	 */
--	data->err = err;
-  done:
- 	trap_myself();
- }
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index d910e25c273e..623b0aeadf4c 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -545,8 +545,14 @@ int copy_context_skas0(unsigned long new_stack, int pid)
- 	 * and child's mmap2 calls
- 	 */
- 	*data = ((struct stub_data) {
--			.offset	= MMAP_OFFSET(new_offset),
--			.fd     = new_fd
-+		.offset	= MMAP_OFFSET(new_offset),
-+		.fd     = new_fd,
-+		.parent_err = -ESRCH,
-+		.child_err = 0,
-+	});
-+
-+	*child_data = ((struct stub_data) {
-+		.child_err = -ESRCH,
- 	});
- 
- 	err = ptrace_setregs(pid, thread_regs);
-@@ -564,9 +570,6 @@ int copy_context_skas0(unsigned long new_stack, int pid)
- 		return err;
- 	}
- 
--	/* set a well known return code for detection of child write failure */
--	child_data->err = 12345678;
--
- 	/*
- 	 * Wait, until parent has finished its work: read child's pid from
- 	 * parent's stack, and check, if bad result.
-@@ -581,7 +584,7 @@ int copy_context_skas0(unsigned long new_stack, int pid)
- 
- 	wait_stub_done(pid);
- 
--	pid = data->err;
-+	pid = data->parent_err;
- 	if (pid < 0) {
- 		printk(UM_KERN_ERR "copy_context_skas0 - stub-parent reports "
- 		       "error %d\n", -pid);
-@@ -593,10 +596,10 @@ int copy_context_skas0(unsigned long new_stack, int pid)
- 	 * child's stack and check it.
- 	 */
- 	wait_stub_done(pid);
--	if (child_data->err != STUB_DATA) {
--		printk(UM_KERN_ERR "copy_context_skas0 - stub-child reports "
--		       "error %ld\n", child_data->err);
--		err = child_data->err;
-+	if (child_data->child_err != STUB_DATA) {
-+		printk(UM_KERN_ERR "copy_context_skas0 - stub-child %d reports "
-+		       "error %ld\n", pid, data->child_err);
-+		err = data->child_err;
- 		goto out_kill;
- 	}
- 
-diff --git a/arch/x86/um/shared/sysdep/stub_32.h b/arch/x86/um/shared/sysdep/stub_32.h
-index 51fd256c75f0..8ea69211e53c 100644
---- a/arch/x86/um/shared/sysdep/stub_32.h
-+++ b/arch/x86/um/shared/sysdep/stub_32.h
-@@ -86,7 +86,7 @@ static inline void remap_stack(int fd, unsigned long offset)
- 			    "d" (PROT_READ | PROT_WRITE),
- 			    "S" (MAP_FIXED | MAP_SHARED), "D" (fd),
- 			    "a" (offset),
--			    "i" (&((struct stub_data *) STUB_DATA)->err)
-+			    "i" (&((struct stub_data *) STUB_DATA)->child_err)
- 			  : "memory");
- }
- 
-diff --git a/arch/x86/um/shared/sysdep/stub_64.h b/arch/x86/um/shared/sysdep/stub_64.h
-index 994df93c5ed3..b7b8b8e4359d 100644
---- a/arch/x86/um/shared/sysdep/stub_64.h
-+++ b/arch/x86/um/shared/sysdep/stub_64.h
-@@ -92,7 +92,7 @@ static inline void remap_stack(long fd, unsigned long offset)
- 			    "d" (PROT_READ | PROT_WRITE),
-                             "g" (MAP_FIXED | MAP_SHARED), "g" (fd),
- 			    "g" (offset),
--			    "i" (&((struct stub_data *) STUB_DATA)->err)
-+			    "i" (&((struct stub_data *) STUB_DATA)->child_err)
- 			  : __syscall_clobber, "r10", "r8", "r9" );
- }
- 
+ long spu_sys_callback(struct spu_syscall_block *s)
 -- 
-2.26.2
+2.27.0
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
