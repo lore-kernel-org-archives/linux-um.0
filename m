@@ -1,86 +1,80 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mx2.suse.de ([195.135.220.15])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kwp1C-000853-6R
- for linux-um@lists.infradead.org; Tue, 05 Jan 2021 16:17:11 +0000
-Date: Tue, 5 Jan 2021 17:17:07 +0100
-From: Petr Mladek <pmladek@suse.com>
-Subject: Re: kunit stopped working
-Message-ID: <X/SRA1P8t+ONZFKb@alley>
-References: <20201221144302.GR4077@smile.fi.intel.com>
- <20201221144510.GS4077@smile.fi.intel.com>
- <2d4b8148-48ca-290f-1d66-33e302e7571d@linuxfoundation.org>
- <20201221192757.GZ4077@smile.fi.intel.com>
- <20201221194008.GA4077@smile.fi.intel.com>
- <20201221200332.GB4077@smile.fi.intel.com>
- <CABVgOS=tz-611qhrn-pcgokyJeS_NStfxPRBnT60KpPhBVPGpA@mail.gmail.com>
+Return-Path: <linux-sh-owner@vger.kernel.org>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 22/27] sparc: add missing FORCE and fix 'targets' to make if_changed work
+Date: Thu, 28 Jan 2021 09:51:04 +0900
+Message-Id: <20210128005110.2613902-23-masahiroy@kernel.org>
+In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
+References: <20210128005110.2613902-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CABVgOS=tz-611qhrn-pcgokyJeS_NStfxPRBnT60KpPhBVPGpA@mail.gmail.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: David Gow <davidgow@google.com>
-Cc: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Brendan Higgins <brendanhiggins@google.com>, linux-um <linux-um@lists.infradead.org>, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Shuah Khan <skhan@linuxfoundation.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Guenter Roeck <linux@roeck-us.net>, KUnit Development <kunit-dev@googlegroups.com>
+Content-Transfer-Encoding: 8bit
+To: linux-arch@vger.kernel.org, x86@kernel.org
+Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-On Tue 2020-12-22 09:43:48, David Gow wrote:
-> On Tue, Dec 22, 2020 at 4:02 AM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> >
-> > On Mon, Dec 21, 2020 at 09:40:08PM +0200, Andy Shevchenko wrote:
-> > > +Cc people from culprit commit
-> >
-> > Guys, revert helps. I am open to test any solution you may propose, thanks!
-> >
-> > ...
-> >
-> > > # first bad commit: [757055ae8dedf5333af17b3b5b4b70ba9bc9da4e] init/console: Use ttynull as a fallback when there is no console
-> >
-> > --
-> 
-> +CC linux-um
-> 
-> There appear to be two problems here:
-> 1. UML now no longer has console output by default (which KUnit needs
-> to get results)
+The rules in this Makefile cannot detect the command line change because
+the prerequisite 'FORCE' is missing.
 
-> This can be worked around for KUnit by passing console=tty to the
-> kernel. I don't think this is a "correct" fix
+Adding 'FORCE' will result in the headers being rebuilt every time
+because the 'targets' addition is also wrong; the file paths in
+'targets' must be relative to the current Makefile.
 
-It is rather a workaround. ttynull was supposed to be an ultimate
-fallback to provide a "valid" stdin, stdout, and stderr for
-the init process. ttyX still should be used by default when
-there is no console defined on the command line.
+Fix all of them so the if_changed rules work correctly.
 
-So the question is why ttyX was not registered with this patch.
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-I see the problem even when I revert the commit
-757055ae8dedf5333af ("init/console: Use ttynull as a fallback when
-there is no console") and enable the ttynull driver as built in:
+ arch/sparc/kernel/syscalls/Makefile | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-     CONFIG_NULL_TTY=y
+diff --git a/arch/sparc/kernel/syscalls/Makefile b/arch/sparc/kernel/syscalls/Makefile
+index c22a21c39f30..556fe30a6c8f 100644
+--- a/arch/sparc/kernel/syscalls/Makefile
++++ b/arch/sparc/kernel/syscalls/Makefile
+@@ -22,24 +22,24 @@ quiet_cmd_systbl = SYSTBL  $@
+ 		   '$(systbl_offset_$(basetarget))'
+ 
+ syshdr_abis_unistd_32 := common,32
+-$(uapi)/unistd_32.h: $(syscall) $(syshdr)
++$(uapi)/unistd_32.h: $(syscall) $(syshdr) FORCE
+ 	$(call if_changed,syshdr)
+ 
+ syshdr_abis_unistd_64 := common,64
+-$(uapi)/unistd_64.h: $(syscall) $(syshdr)
++$(uapi)/unistd_64.h: $(syscall) $(syshdr) FORCE
+ 	$(call if_changed,syshdr)
+ 
+ systbl_abis_syscall_table_32 := common,32
+-$(kapi)/syscall_table_32.h: $(syscall) $(systbl)
++$(kapi)/syscall_table_32.h: $(syscall) $(systbl) FORCE
+ 	$(call if_changed,systbl)
+ 
+ systbl_abis_syscall_table_64 := common,64
+-$(kapi)/syscall_table_64.h: $(syscall) $(systbl)
++$(kapi)/syscall_table_64.h: $(syscall) $(systbl) FORCE
+ 	$(call if_changed,systbl)
+ 
+ systbl_abis_syscall_table_c32 := common,32
+ systbl_abi_syscall_table_c32 := c32
+-$(kapi)/syscall_table_c32.h: $(syscall) $(systbl)
++$(kapi)/syscall_table_c32.h: $(syscall) $(systbl) FORCE
+ 	$(call if_changed,systbl)
+ 
+ uapisyshdr-y		+= unistd_32.h unistd_64.h
+@@ -47,9 +47,10 @@ kapisyshdr-y		+= syscall_table_32.h		\
+ 			   syscall_table_64.h		\
+ 			   syscall_table_c32.h
+ 
+-targets	+= $(uapisyshdr-y) $(kapisyshdr-y)
++uapisyshdr-y	:= $(addprefix $(uapi)/, $(uapisyshdr-y))
++kapisyshdr-y	:= $(addprefix $(kapi)/, $(kapisyshdr-y))
++targets		+= $(addprefix ../../../../, $(uapisyshdr-y) $(kapisyshdr-y))
+ 
+ PHONY += all
+-all: $(addprefix $(uapi)/,$(uapisyshdr-y))
+-all: $(addprefix $(kapi)/,$(kapisyshdr-y))
++all: $(uapisyshdr-y) $(kapisyshdr-y)
+ 	@:
+-- 
+2.27.0
 
-By other words, the problem existed even before. The commit only
-made it visible by default.
-
-I am still trying to understand arch/um and kunit code. I wonder
-if it is somehow related to stdiocons implemented in
-arch/um/drivers/stdio_console.c.
-
-Best Regards,
-Petr
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
