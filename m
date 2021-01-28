@@ -1,14 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Subject: Re: [PATCH 02/27] x86/syscalls: fix -Wmissing-prototypes warnings
  from COND_SYSCALL()
-From: Sergei Shtylyov <sergei.shtylyov@gmail.com>
 References: <20210128005110.2613902-1-masahiroy@kernel.org>
  <20210128005110.2613902-3-masahiroy@kernel.org>
- <dd37a7f2-55e1-2e96-0c93-4a40980b8ef2@gmail.com>
-Message-ID: <605cea27-bd69-5b21-f285-2d3d0f6abd23@gmail.com>
-Date: Thu, 28 Jan 2021 11:00:29 +0300
+From: Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Message-ID: <dd37a7f2-55e1-2e96-0c93-4a40980b8ef2@gmail.com>
+Date: Thu, 28 Jan 2021 10:59:07 +0300
 MIME-Version: 1.0
-In-Reply-To: <dd37a7f2-55e1-2e96-0c93-4a40980b8ef2@gmail.com>
+In-Reply-To: <20210128005110.2613902-3-masahiroy@kernel.org>
 Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -18,64 +17,82 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: Masahiro Yamada <masahiroy@kernel.org>, linux-arch@vger.kernel.org, x86@kernel.org
 Cc: linux-xtensa@linux-xtensa.org, linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org, linux-kbuild@vger.kernel.org, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
 
-T24gMjguMDEuMjAyMSAxMDo1OSwgU2VyZ2VpIFNodHlseW92IHdyb3RlOgoKWy4uLl0KPj4gQnVp
-bGRpbmcga2VybmVsL3N5c19uaS5jIHdpdGggVz0xIG9taXRzIHRvbnMgb2YgLVdtaXNzaW5nLXBy
-b3RvdHlwZXMKPiAKPiAgwqDCoCBFbWl0cz8KPiAKPj4gd2FybmluZ3MuCj4+Cj4+ICQgbWFrZSBX
-PTEga2VybmVsL3N5c19uaS5vCj4+IMKgwqAgWyBzbmlwIF0KPj4gwqDCoCBDQ8KgwqDCoMKgwqAg
-a2VybmVsL3N5c19uaS5vCj4+IEluIGZpbGUgaW5jbHVkZWQgZnJvbSBrZXJuZWwvc3lzX25pLmM6
-MTA6Cj4+IC4vYXJjaC94ODYvaW5jbHVkZS9hc20vc3lzY2FsbF93cmFwcGVyLmg6ODM6MTQ6IHdh
-cm5pbmc6IG5vIHByZXZpb3VzIAo+PiBwcm90b3R5cGUgZm9yICdfX3g2NF9zeXNfaW9fc2V0dXAn
-IFstV21pc3NpbmctcHJvdG90eXBlc10KPj4gwqDCoMKgIDgzIHzCoCBfX3dlYWsgbG9uZyBfXyMj
-YWJpIyNfIyNuYW1lKGNvbnN0IHN0cnVjdCBwdF9yZWdzICpfX3VudXNlZCkgXAo+PiDCoMKgwqDC
-oMKgwqAgfMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIF5+Cj4+IC4vYXJjaC94ODYvaW5jbHVk
-ZS9hc20vc3lzY2FsbF93cmFwcGVyLmg6MTAwOjI6IG5vdGU6IGluIGV4cGFuc2lvbiBvZiBtYWNy
-byAKPj4gJ19fQ09ORF9TWVNDQUxMJwo+PiDCoMKgIDEwMCB8wqAgX19DT05EX1NZU0NBTEwoeDY0
-LCBzeXNfIyNuYW1lKQo+PiDCoMKgwqDCoMKgwqAgfMKgIF5+fn5+fn5+fn5+fn5+Cj4+IC4vYXJj
-aC94ODYvaW5jbHVkZS9hc20vc3lzY2FsbF93cmFwcGVyLmg6MjU2OjI6IG5vdGU6IGluIGV4cGFu
-c2lvbiBvZiBtYWNybyAKPj4gJ19fWDY0X0NPTkRfU1lTQ0FMTCcKPj4gwqDCoCAyNTYgfMKgIF9f
-WDY0X0NPTkRfU1lTQ0FMTChuYW1lKcKgwqDCoMKgIFwKPj4gwqDCoMKgwqDCoMKgIHzCoCBefn5+
-fn5+fn5+fn5+fn5+fn4KPj4ga2VybmVsL3N5c19uaS5jOjM5OjE6IG5vdGU6IGluIGV4cGFuc2lv
-biBvZiBtYWNybyAnQ09ORF9TWVNDQUxMJwo+PiDCoMKgwqAgMzkgfCBDT05EX1NZU0NBTEwoaW9f
-c2V0dXApOwo+PiDCoMKgwqDCoMKgwqAgfCBefn5+fn5+fn5+fn4KPj4gLi9hcmNoL3g4Ni9pbmNs
-dWRlL2FzbS9zeXNjYWxsX3dyYXBwZXIuaDo4MzoxNDogd2FybmluZzogbm8gcHJldmlvdXMgCj4+
-IHByb3RvdHlwZSBmb3IgJ19faWEzMl9zeXNfaW9fc2V0dXAnIFstV21pc3NpbmctcHJvdG90eXBl
-c10KPj4gwqDCoMKgIDgzIHzCoCBfX3dlYWsgbG9uZyBfXyMjYWJpIyNfIyNuYW1lKGNvbnN0IHN0
-cnVjdCBwdF9yZWdzICpfX3VudXNlZCkgXAo+PiDCoMKgwqDCoMKgwqAgfMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIF5+Cj4+IC4vYXJjaC94ODYvaW5jbHVkZS9hc20vc3lzY2FsbF93cmFwcGVy
-Lmg6MTIwOjI6IG5vdGU6IGluIGV4cGFuc2lvbiBvZiBtYWNybyAKPj4gJ19fQ09ORF9TWVNDQUxM
-Jwo+PiDCoMKgIDEyMCB8wqAgX19DT05EX1NZU0NBTEwoaWEzMiwgc3lzXyMjbmFtZSkKPj4gwqDC
-oMKgwqDCoMKgIHzCoCBefn5+fn5+fn5+fn5+fgo+PiAuL2FyY2gveDg2L2luY2x1ZGUvYXNtL3N5
-c2NhbGxfd3JhcHBlci5oOjI1NzoyOiBub3RlOiBpbiBleHBhbnNpb24gb2YgbWFjcm8gCj4+ICdf
-X0lBMzJfQ09ORF9TWVNDQUxMJwo+PiDCoMKgIDI1NyB8wqAgX19JQTMyX0NPTkRfU1lTQ0FMTChu
-YW1lKQo+PiDCoMKgwqDCoMKgwqAgfMKgIF5+fn5+fn5+fn5+fn5+fn5+fn4KPj4ga2VybmVsL3N5
-c19uaS5jOjM5OjE6IG5vdGU6IGluIGV4cGFuc2lvbiBvZiBtYWNybyAnQ09ORF9TWVNDQUxMJwo+
-PiDCoMKgwqAgMzkgfCBDT05EX1NZU0NBTEwoaW9fc2V0dXApOwo+PiDCoMKgwqDCoMKgwqAgfCBe
-fn5+fn5+fn5+fn4KPj4gwqDCoCAuLi4KPj4KPj4gX19TWVNfU1RVQjAoKSBhbmQgX19TWVNfU1RV
-QngoKSBkZWZpbmVkIGEgZmV3IGxpbmVzIGFib3ZlIGhhdmUgZm9yd2FyZAo+PiBkZWNsYXJhdGlv
-bnMuIExldCdzIGRvIGxpa2V3aXNlIGZvciBfX0NPTkRfU1lTQ0FMTCgpIHRvIGZpeCB0aGUKPj4g
-d2FybmluZ3MuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IE1hc2FoaXJvIFlhbWFkYSA8bWFzYWhpcm95
-QGtlcm5lbC5vcmc+Cj4+IC0tLQo+Pgo+PiDCoCBhcmNoL3g4Ni9pbmNsdWRlL2FzbS9zeXNjYWxs
-X3dyYXBwZXIuaCB8IDEgKwo+PiDCoCAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykKPj4K
-Pj4gZGlmZiAtLWdpdCBhL2FyY2gveDg2L2luY2x1ZGUvYXNtL3N5c2NhbGxfd3JhcHBlci5oIAo+
-PiBiL2FyY2gveDg2L2luY2x1ZGUvYXNtL3N5c2NhbGxfd3JhcHBlci5oCj4+IGluZGV4IGE4NDMz
-M2FkZWVmMi4uODBjMDhjN2Q1ZTcyIDEwMDY0NAo+PiAtLS0gYS9hcmNoL3g4Ni9pbmNsdWRlL2Fz
-bS9zeXNjYWxsX3dyYXBwZXIuaAo+PiArKysgYi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9zeXNjYWxs
-X3dyYXBwZXIuaAo+PiBAQCAtODAsNiArODAsNyBAQCBleHRlcm4gbG9uZyBfX2lhMzJfc3lzX25p
-X3N5c2NhbGwoY29uc3Qgc3RydWN0IHB0X3JlZ3MgCj4+ICpyZWdzKTsKPj4gwqDCoMKgwqDCoCB9
-Cj4+IMKgICNkZWZpbmUgX19DT05EX1NZU0NBTEwoYWJpLCBuYW1lKcKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgIFwKPj4gK8KgwqDCoCBfX3dlYWsgbG9uZyBfXyMjYWJpIyNf
-IyNuYW1lKGNvbnN0IHN0cnVjdCBwdF9yZWdzICpfX3VudXNlZCk7wqDCoMKgIFwKPj4gwqDCoMKg
-wqDCoCBfX3dlYWsgbG9uZyBfXyMjYWJpIyNfIyNuYW1lKGNvbnN0IHN0cnVjdCBwdF9yZWdzICpf
-X3VudXNlZCnCoMKgwqAgXAo+IAo+ICDCoMKgIEFyZW4ndCB0aGVzZSB0d28gbGluZXMgaWRlbnRp
-Y2FsPwoKICAgICBBaCwgZ290IGl0ISA6LSkKClsuLi5dCgpNQlIsIFNlcmdlaQoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBs
-aXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
+Hello!
+
+On 28.01.2021 3:50, Masahiro Yamada wrote:
+
+> Building kernel/sys_ni.c with W=1 omits tons of -Wmissing-prototypes
+
+    Emits?
+
+> warnings.
+> 
+> $ make W=1 kernel/sys_ni.o
+>    [ snip ]
+>    CC      kernel/sys_ni.o
+> In file included from kernel/sys_ni.c:10:
+> ./arch/x86/include/asm/syscall_wrapper.h:83:14: warning: no previous prototype for '__x64_sys_io_setup' [-Wmissing-prototypes]
+>     83 |  __weak long __##abi##_##name(const struct pt_regs *__unused) \
+>        |              ^~
+> ./arch/x86/include/asm/syscall_wrapper.h:100:2: note: in expansion of macro '__COND_SYSCALL'
+>    100 |  __COND_SYSCALL(x64, sys_##name)
+>        |  ^~~~~~~~~~~~~~
+> ./arch/x86/include/asm/syscall_wrapper.h:256:2: note: in expansion of macro '__X64_COND_SYSCALL'
+>    256 |  __X64_COND_SYSCALL(name)     \
+>        |  ^~~~~~~~~~~~~~~~~~
+> kernel/sys_ni.c:39:1: note: in expansion of macro 'COND_SYSCALL'
+>     39 | COND_SYSCALL(io_setup);
+>        | ^~~~~~~~~~~~
+> ./arch/x86/include/asm/syscall_wrapper.h:83:14: warning: no previous prototype for '__ia32_sys_io_setup' [-Wmissing-prototypes]
+>     83 |  __weak long __##abi##_##name(const struct pt_regs *__unused) \
+>        |              ^~
+> ./arch/x86/include/asm/syscall_wrapper.h:120:2: note: in expansion of macro '__COND_SYSCALL'
+>    120 |  __COND_SYSCALL(ia32, sys_##name)
+>        |  ^~~~~~~~~~~~~~
+> ./arch/x86/include/asm/syscall_wrapper.h:257:2: note: in expansion of macro '__IA32_COND_SYSCALL'
+>    257 |  __IA32_COND_SYSCALL(name)
+>        |  ^~~~~~~~~~~~~~~~~~~
+> kernel/sys_ni.c:39:1: note: in expansion of macro 'COND_SYSCALL'
+>     39 | COND_SYSCALL(io_setup);
+>        | ^~~~~~~~~~~~
+>    ...
+> 
+> __SYS_STUB0() and __SYS_STUBx() defined a few lines above have forward
+> declarations. Let's do likewise for __COND_SYSCALL() to fix the
+> warnings.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+>   arch/x86/include/asm/syscall_wrapper.h | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/x86/include/asm/syscall_wrapper.h b/arch/x86/include/asm/syscall_wrapper.h
+> index a84333adeef2..80c08c7d5e72 100644
+> --- a/arch/x86/include/asm/syscall_wrapper.h
+> +++ b/arch/x86/include/asm/syscall_wrapper.h
+> @@ -80,6 +80,7 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
+>   	}
+>   
+>   #define __COND_SYSCALL(abi, name)					\
+> +	__weak long __##abi##_##name(const struct pt_regs *__unused);	\
+>   	__weak long __##abi##_##name(const struct pt_regs *__unused)	\
+
+    Aren't these two lines identical?
+
+[...]
+
+MBR, Sergei
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
