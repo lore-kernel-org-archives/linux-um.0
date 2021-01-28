@@ -1,56 +1,61 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1kmzwv-0000Cm-5m
- for linux-um@lists.infradead.org; Wed, 09 Dec 2020 13:56:10 +0000
-From: Gabriel Krisman Bertazi <krisman@collabora.com>
-Subject: Re: [PATCH v2] um: ubd: Submit all data segments atomically
-References: <20201122041356.1454413-1-krisman@collabora.com>
-Date: Wed, 09 Dec 2020 10:56:01 -0300
-In-Reply-To: <20201122041356.1454413-1-krisman@collabora.com> (Gabriel Krisman
- Bertazi's message of "Sat, 21 Nov 2020 23:13:56 -0500")
-Message-ID: <87blf35bim.fsf@collabora.com>
+Return-Path: <linux-sh-owner@vger.kernel.org>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 13/27] microblaze: add missing FORCE and fix 'targets' to make if_changed work
+Date: Thu, 28 Jan 2021 09:50:55 +0900
+Message-Id: <20210128005110.2613902-14-masahiroy@kernel.org>
+In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
+References: <20210128005110.2613902-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: jdike@addtoit.com
-Cc: Martyn Welch <martyn@collabora.com>, richard@nod.at, linux-um@lists.infradead.org, kernel@collabora.com, Christopher Obbard <chris.obbard@collabora.com>, anton.ivanov@cambridgegreys.com
+Content-Transfer-Encoding: 8bit
+To: linux-arch@vger.kernel.org, x86@kernel.org
+Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-Gabriel Krisman Bertazi <krisman@collabora.com> writes:
+The rules in this Makefile cannot detect the command line change because
+the prerequisite 'FORCE' is missing.
 
-> Internally, UBD treats each physical IO segment as a separate command to
-> be submitted in the execution pipe.  If the pipe returns a transient
-> error after a few segments have already been written, UBD will tell the
-> block layer to requeue the request, but there is no way to reclaim the
-> segments already submitted.  When a new attempt to dispatch the request
-> is done, those segments already submitted will get duplicated, causing
-> the WARN_ON below in the best case, and potentially data corruption.
+Adding 'FORCE' will result in the headers being rebuilt every time
+because the 'targets' addition is also wrong; the file paths in
+'targets' must be relative to the current Makefile.
 
-[...]
+Fix all of them so the if_changed rules work correctly.
 
-> Cc: Christopher Obbard <chris.obbard@collabora.com>
-> Reported-by: Martyn Welch <martyn@collabora.com>
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-> Tested-by: Christopher Obbard <chris.obbard@collabora.com>
-> Acked-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-ping. :)
+ arch/microblaze/kernel/syscalls/Makefile | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
+diff --git a/arch/microblaze/kernel/syscalls/Makefile b/arch/microblaze/kernel/syscalls/Makefile
+index 659faefdcb1d..1c42d2d2926d 100644
+--- a/arch/microblaze/kernel/syscalls/Makefile
++++ b/arch/microblaze/kernel/syscalls/Makefile
+@@ -21,18 +21,19 @@ quiet_cmd_systbl = SYSTBL  $@
+ 		   '$(systbl_abi_$(basetarget))'		\
+ 		   '$(systbl_offset_$(basetarget))'
+ 
+-$(uapi)/unistd_32.h: $(syscall) $(syshdr)
++$(uapi)/unistd_32.h: $(syscall) $(syshdr) FORCE
+ 	$(call if_changed,syshdr)
+ 
+-$(kapi)/syscall_table.h: $(syscall) $(systbl)
++$(kapi)/syscall_table.h: $(syscall) $(systbl) FORCE
+ 	$(call if_changed,systbl)
+ 
+ uapisyshdr-y		+= unistd_32.h
+ kapisyshdr-y		+= syscall_table.h
+ 
+-targets	+= $(uapisyshdr-y) $(kapisyshdr-y)
++uapisyshdr-y	:= $(addprefix $(uapi)/, $(uapisyshdr-y))
++kapisyshdr-y	:= $(addprefix $(kapi)/, $(kapisyshdr-y))
++targets		+= $(addprefix ../../../../, $(uapisyshdr-y) $(kapisyshdr-y))
+ 
+ PHONY += all
+-all: $(addprefix $(uapi)/,$(uapisyshdr-y))
+-all: $(addprefix $(kapi)/,$(kapisyshdr-y))
++all: $(uapisyshdr-y) $(kapisyshdr-y)
+ 	@:
 -- 
-Gabriel Krisman Bertazi
+2.27.0
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
