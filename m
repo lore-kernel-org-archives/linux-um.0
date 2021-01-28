@@ -1,12 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 17/27] parisc: add missing FORCE and fix 'targets' to make
- if_changed work
-Date: Thu, 28 Jan 2021 09:50:59 +0900
-Message-Id: <20210128005110.2613902-18-masahiroy@kernel.org>
-In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
+Subject: Re: [PATCH 02/27] x86/syscalls: fix -Wmissing-prototypes warnings
+ from COND_SYSCALL()
+From: Sergei Shtylyov <sergei.shtylyov@gmail.com>
 References: <20210128005110.2613902-1-masahiroy@kernel.org>
+ <20210128005110.2613902-3-masahiroy@kernel.org>
+ <dd37a7f2-55e1-2e96-0c93-4a40980b8ef2@gmail.com>
+Message-ID: <605cea27-bd69-5b21-f285-2d3d0f6abd23@gmail.com>
+Date: Thu, 28 Jan 2021 11:00:29 +0300
 MIME-Version: 1.0
+In-Reply-To: <dd37a7f2-55e1-2e96-0c93-4a40980b8ef2@gmail.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -15,82 +18,64 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-arch@vger.kernel.org, x86@kernel.org
-Cc: linux-xtensa@linux-xtensa.org, linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org, linux-kbuild@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+To: Masahiro Yamada <masahiroy@kernel.org>, linux-arch@vger.kernel.org, x86@kernel.org
+Cc: linux-xtensa@linux-xtensa.org, linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org, linux-kbuild@vger.kernel.org, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
 
-The rules in this Makefile cannot detect the command line change because
-the prerequisite 'FORCE' is missing.
-
-Adding 'FORCE' will result in the headers being rebuilt every time
-because the 'targets' addition is also wrong; the file paths in
-'targets' must be relative to the current Makefile.
-
-Fix all of them so the if_changed rules work correctly.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- arch/parisc/kernel/syscalls/Makefile | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
-
-diff --git a/arch/parisc/kernel/syscalls/Makefile b/arch/parisc/kernel/syscalls/Makefile
-index c22a21c39f30..556fe30a6c8f 100644
---- a/arch/parisc/kernel/syscalls/Makefile
-+++ b/arch/parisc/kernel/syscalls/Makefile
-@@ -22,24 +22,24 @@ quiet_cmd_systbl = SYSTBL  $@
- 		   '$(systbl_offset_$(basetarget))'
- 
- syshdr_abis_unistd_32 := common,32
--$(uapi)/unistd_32.h: $(syscall) $(syshdr)
-+$(uapi)/unistd_32.h: $(syscall) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
- 
- syshdr_abis_unistd_64 := common,64
--$(uapi)/unistd_64.h: $(syscall) $(syshdr)
-+$(uapi)/unistd_64.h: $(syscall) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
- 
- systbl_abis_syscall_table_32 := common,32
--$(kapi)/syscall_table_32.h: $(syscall) $(systbl)
-+$(kapi)/syscall_table_32.h: $(syscall) $(systbl) FORCE
- 	$(call if_changed,systbl)
- 
- systbl_abis_syscall_table_64 := common,64
--$(kapi)/syscall_table_64.h: $(syscall) $(systbl)
-+$(kapi)/syscall_table_64.h: $(syscall) $(systbl) FORCE
- 	$(call if_changed,systbl)
- 
- systbl_abis_syscall_table_c32 := common,32
- systbl_abi_syscall_table_c32 := c32
--$(kapi)/syscall_table_c32.h: $(syscall) $(systbl)
-+$(kapi)/syscall_table_c32.h: $(syscall) $(systbl) FORCE
- 	$(call if_changed,systbl)
- 
- uapisyshdr-y		+= unistd_32.h unistd_64.h
-@@ -47,9 +47,10 @@ kapisyshdr-y		+= syscall_table_32.h		\
- 			   syscall_table_64.h		\
- 			   syscall_table_c32.h
- 
--targets	+= $(uapisyshdr-y) $(kapisyshdr-y)
-+uapisyshdr-y	:= $(addprefix $(uapi)/, $(uapisyshdr-y))
-+kapisyshdr-y	:= $(addprefix $(kapi)/, $(kapisyshdr-y))
-+targets		+= $(addprefix ../../../../, $(uapisyshdr-y) $(kapisyshdr-y))
- 
- PHONY += all
--all: $(addprefix $(uapi)/,$(uapisyshdr-y))
--all: $(addprefix $(kapi)/,$(kapisyshdr-y))
-+all: $(uapisyshdr-y) $(kapisyshdr-y)
- 	@:
--- 
-2.27.0
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gMjguMDEuMjAyMSAxMDo1OSwgU2VyZ2VpIFNodHlseW92IHdyb3RlOgoKWy4uLl0KPj4gQnVp
+bGRpbmcga2VybmVsL3N5c19uaS5jIHdpdGggVz0xIG9taXRzIHRvbnMgb2YgLVdtaXNzaW5nLXBy
+b3RvdHlwZXMKPiAKPiAgwqDCoCBFbWl0cz8KPiAKPj4gd2FybmluZ3MuCj4+Cj4+ICQgbWFrZSBX
+PTEga2VybmVsL3N5c19uaS5vCj4+IMKgwqAgWyBzbmlwIF0KPj4gwqDCoCBDQ8KgwqDCoMKgwqAg
+a2VybmVsL3N5c19uaS5vCj4+IEluIGZpbGUgaW5jbHVkZWQgZnJvbSBrZXJuZWwvc3lzX25pLmM6
+MTA6Cj4+IC4vYXJjaC94ODYvaW5jbHVkZS9hc20vc3lzY2FsbF93cmFwcGVyLmg6ODM6MTQ6IHdh
+cm5pbmc6IG5vIHByZXZpb3VzIAo+PiBwcm90b3R5cGUgZm9yICdfX3g2NF9zeXNfaW9fc2V0dXAn
+IFstV21pc3NpbmctcHJvdG90eXBlc10KPj4gwqDCoMKgIDgzIHzCoCBfX3dlYWsgbG9uZyBfXyMj
+YWJpIyNfIyNuYW1lKGNvbnN0IHN0cnVjdCBwdF9yZWdzICpfX3VudXNlZCkgXAo+PiDCoMKgwqDC
+oMKgwqAgfMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIF5+Cj4+IC4vYXJjaC94ODYvaW5jbHVk
+ZS9hc20vc3lzY2FsbF93cmFwcGVyLmg6MTAwOjI6IG5vdGU6IGluIGV4cGFuc2lvbiBvZiBtYWNy
+byAKPj4gJ19fQ09ORF9TWVNDQUxMJwo+PiDCoMKgIDEwMCB8wqAgX19DT05EX1NZU0NBTEwoeDY0
+LCBzeXNfIyNuYW1lKQo+PiDCoMKgwqDCoMKgwqAgfMKgIF5+fn5+fn5+fn5+fn5+Cj4+IC4vYXJj
+aC94ODYvaW5jbHVkZS9hc20vc3lzY2FsbF93cmFwcGVyLmg6MjU2OjI6IG5vdGU6IGluIGV4cGFu
+c2lvbiBvZiBtYWNybyAKPj4gJ19fWDY0X0NPTkRfU1lTQ0FMTCcKPj4gwqDCoCAyNTYgfMKgIF9f
+WDY0X0NPTkRfU1lTQ0FMTChuYW1lKcKgwqDCoMKgIFwKPj4gwqDCoMKgwqDCoMKgIHzCoCBefn5+
+fn5+fn5+fn5+fn5+fn4KPj4ga2VybmVsL3N5c19uaS5jOjM5OjE6IG5vdGU6IGluIGV4cGFuc2lv
+biBvZiBtYWNybyAnQ09ORF9TWVNDQUxMJwo+PiDCoMKgwqAgMzkgfCBDT05EX1NZU0NBTEwoaW9f
+c2V0dXApOwo+PiDCoMKgwqDCoMKgwqAgfCBefn5+fn5+fn5+fn4KPj4gLi9hcmNoL3g4Ni9pbmNs
+dWRlL2FzbS9zeXNjYWxsX3dyYXBwZXIuaDo4MzoxNDogd2FybmluZzogbm8gcHJldmlvdXMgCj4+
+IHByb3RvdHlwZSBmb3IgJ19faWEzMl9zeXNfaW9fc2V0dXAnIFstV21pc3NpbmctcHJvdG90eXBl
+c10KPj4gwqDCoMKgIDgzIHzCoCBfX3dlYWsgbG9uZyBfXyMjYWJpIyNfIyNuYW1lKGNvbnN0IHN0
+cnVjdCBwdF9yZWdzICpfX3VudXNlZCkgXAo+PiDCoMKgwqDCoMKgwqAgfMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgIF5+Cj4+IC4vYXJjaC94ODYvaW5jbHVkZS9hc20vc3lzY2FsbF93cmFwcGVy
+Lmg6MTIwOjI6IG5vdGU6IGluIGV4cGFuc2lvbiBvZiBtYWNybyAKPj4gJ19fQ09ORF9TWVNDQUxM
+Jwo+PiDCoMKgIDEyMCB8wqAgX19DT05EX1NZU0NBTEwoaWEzMiwgc3lzXyMjbmFtZSkKPj4gwqDC
+oMKgwqDCoMKgIHzCoCBefn5+fn5+fn5+fn5+fgo+PiAuL2FyY2gveDg2L2luY2x1ZGUvYXNtL3N5
+c2NhbGxfd3JhcHBlci5oOjI1NzoyOiBub3RlOiBpbiBleHBhbnNpb24gb2YgbWFjcm8gCj4+ICdf
+X0lBMzJfQ09ORF9TWVNDQUxMJwo+PiDCoMKgIDI1NyB8wqAgX19JQTMyX0NPTkRfU1lTQ0FMTChu
+YW1lKQo+PiDCoMKgwqDCoMKgwqAgfMKgIF5+fn5+fn5+fn5+fn5+fn5+fn4KPj4ga2VybmVsL3N5
+c19uaS5jOjM5OjE6IG5vdGU6IGluIGV4cGFuc2lvbiBvZiBtYWNybyAnQ09ORF9TWVNDQUxMJwo+
+PiDCoMKgwqAgMzkgfCBDT05EX1NZU0NBTEwoaW9fc2V0dXApOwo+PiDCoMKgwqDCoMKgwqAgfCBe
+fn5+fn5+fn5+fn4KPj4gwqDCoCAuLi4KPj4KPj4gX19TWVNfU1RVQjAoKSBhbmQgX19TWVNfU1RV
+QngoKSBkZWZpbmVkIGEgZmV3IGxpbmVzIGFib3ZlIGhhdmUgZm9yd2FyZAo+PiBkZWNsYXJhdGlv
+bnMuIExldCdzIGRvIGxpa2V3aXNlIGZvciBfX0NPTkRfU1lTQ0FMTCgpIHRvIGZpeCB0aGUKPj4g
+d2FybmluZ3MuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IE1hc2FoaXJvIFlhbWFkYSA8bWFzYWhpcm95
+QGtlcm5lbC5vcmc+Cj4+IC0tLQo+Pgo+PiDCoCBhcmNoL3g4Ni9pbmNsdWRlL2FzbS9zeXNjYWxs
+X3dyYXBwZXIuaCB8IDEgKwo+PiDCoCAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykKPj4K
+Pj4gZGlmZiAtLWdpdCBhL2FyY2gveDg2L2luY2x1ZGUvYXNtL3N5c2NhbGxfd3JhcHBlci5oIAo+
+PiBiL2FyY2gveDg2L2luY2x1ZGUvYXNtL3N5c2NhbGxfd3JhcHBlci5oCj4+IGluZGV4IGE4NDMz
+M2FkZWVmMi4uODBjMDhjN2Q1ZTcyIDEwMDY0NAo+PiAtLS0gYS9hcmNoL3g4Ni9pbmNsdWRlL2Fz
+bS9zeXNjYWxsX3dyYXBwZXIuaAo+PiArKysgYi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9zeXNjYWxs
+X3dyYXBwZXIuaAo+PiBAQCAtODAsNiArODAsNyBAQCBleHRlcm4gbG9uZyBfX2lhMzJfc3lzX25p
+X3N5c2NhbGwoY29uc3Qgc3RydWN0IHB0X3JlZ3MgCj4+ICpyZWdzKTsKPj4gwqDCoMKgwqDCoCB9
+Cj4+IMKgICNkZWZpbmUgX19DT05EX1NZU0NBTEwoYWJpLCBuYW1lKcKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIFwKPj4gK8KgwqDCoCBfX3dlYWsgbG9uZyBfXyMjYWJpIyNf
+IyNuYW1lKGNvbnN0IHN0cnVjdCBwdF9yZWdzICpfX3VudXNlZCk7wqDCoMKgIFwKPj4gwqDCoMKg
+wqDCoCBfX3dlYWsgbG9uZyBfXyMjYWJpIyNfIyNuYW1lKGNvbnN0IHN0cnVjdCBwdF9yZWdzICpf
+X3VudXNlZCnCoMKgwqAgXAo+IAo+ICDCoMKgIEFyZW4ndCB0aGVzZSB0d28gbGluZXMgaWRlbnRp
+Y2FsPwoKICAgICBBaCwgZ290IGl0ISA6LSkKClsuLi5dCgpNQlIsIFNlcmdlaQoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBs
+aXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
 
