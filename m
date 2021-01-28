@@ -1,16 +1,10 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x430.google.com ([2607:f8b0:4864:20::430])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l23FK-0002MK-Ez
- for linux-um@lists.infradead.org; Wed, 20 Jan 2021 02:29:23 +0000
-Received: by mail-pf1-x430.google.com with SMTP id o20so5154683pfu.0
- for <linux-um@lists.infradead.org>; Tue, 19 Jan 2021 18:29:21 -0800 (PST)
-From: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC v8 15/20] um: host: add library mode build for ARCH=um
-Date: Wed, 20 Jan 2021 11:27:20 +0900
-Message-Id: <800d34cda146c025770e5a802de592417dfced30.1611103406.git.thehajime@gmail.com>
-In-Reply-To: <cover.1611103406.git.thehajime@gmail.com>
-References: <cover.1611103406.git.thehajime@gmail.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 27/27] xtensa: syscalls: switch to generic syscalltbl.sh
+Date: Thu, 28 Jan 2021 09:51:09 +0900
+Message-Id: <20210128005110.2613902-28-masahiroy@kernel.org>
+In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
+References: <20210128005110.2613902-1-masahiroy@kernel.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -24,343 +18,104 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
-Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, thehajime@gmail.com, retrage01@gmail.com
+To: linux-arch@vger.kernel.org, x86@kernel.org
+Cc: linux-xtensa@linux-xtensa.org, linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org, linux-kbuild@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
 
-This patch adds the skeleton for the host library.
+As of v5.11-rc1, 12 architectures duplicate similar shell scripts in
+order to generate syscall table headers. My goal is to unify them into
+the single scripts/syscalltbl.sh.
 
-The host library is implementing the host operations needed by library
-mode and splits into host dependent (e.g., POSIX hosts) and host
-independent parts.
+This commit converts xtensa to use scripts/syscalltbl.sh.
 
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
-Signed-off-by: Octavian Purdila <tavi.purdila@gmail.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
- tools/um/.gitignore              |   1 +
- tools/um/Makefile                |   1 +
- tools/um/Targets                 |   6 +-
- tools/um/include/lkl.h           | 135 +++++++++++++++++++++++++++++++
- tools/um/include/lkl_host.h      |  18 +++++
- tools/um/uml/Build               |  16 +++-
- tools/um/uml/lkl/Build           |   1 +
- tools/um/uml/lkl/registers.c     |  21 +++++
- tools/um/uml/lkl/unimplemented.c |  21 +++++
- 9 files changed, 214 insertions(+), 6 deletions(-)
- create mode 100644 tools/um/.gitignore
- create mode 100644 tools/um/include/lkl.h
- create mode 100644 tools/um/include/lkl_host.h
- create mode 100644 tools/um/uml/lkl/Build
- create mode 100644 tools/um/uml/lkl/registers.c
- create mode 100644 tools/um/uml/lkl/unimplemented.c
 
-diff --git a/tools/um/.gitignore b/tools/um/.gitignore
-new file mode 100644
-index 000000000000..0d20b6487c61
---- /dev/null
-+++ b/tools/um/.gitignore
-@@ -0,0 +1 @@
-+*.pyc
-diff --git a/tools/um/Makefile b/tools/um/Makefile
-index 877d0bdefa67..c07e91a93372 100644
---- a/tools/um/Makefile
-+++ b/tools/um/Makefile
-@@ -66,6 +66,7 @@ RM := rm -f
- clean:
- 	$(call QUIET_CLEAN, objects)find $(OUTPUT) -name '*.o' -delete -o -name '\.*.cmd'\
- 	 -delete -o -name '\.*.d' -delete
-+	$(call QUIET_CLEAN, headers)$(RM) -r $(OUTPUT)/include/lkl/
- 	$(call QUIET_CLEAN, liblinux.a)$(RM) $(OUTPUT)/liblinux.a
- 	$(call QUIET_CLEAN, $(TARGETS))$(RM) $(TARGETS)
+ arch/xtensa/kernel/syscall.c              |  3 +--
+ arch/xtensa/kernel/syscalls/Makefile      |  7 ++---
+ arch/xtensa/kernel/syscalls/syscalltbl.sh | 32 -----------------------
+ 3 files changed, 3 insertions(+), 39 deletions(-)
+ delete mode 100644 arch/xtensa/kernel/syscalls/syscalltbl.sh
+
+diff --git a/arch/xtensa/kernel/syscall.c b/arch/xtensa/kernel/syscall.c
+index 2c415fce6801..a453d17f0da8 100644
+--- a/arch/xtensa/kernel/syscall.c
++++ b/arch/xtensa/kernel/syscall.c
+@@ -31,9 +31,8 @@
+ syscall_t sys_call_table[__NR_syscalls] /* FIXME __cacheline_aligned */= {
+ 	[0 ... __NR_syscalls - 1] = (syscall_t)&sys_ni_syscall,
  
-diff --git a/tools/um/Targets b/tools/um/Targets
-index e8b43c7758fe..ae6c8d8b168e 100644
---- a/tools/um/Targets
-+++ b/tools/um/Targets
-@@ -1,7 +1,9 @@
--ifneq ($(CONFIG_UMMODE_LIB),y)
-+ifeq ($(CONFIG_UMMODE_LIB),y)
-+libs-y += liblinux.a
-+else
- progs-y += uml/linux
- endif
+-#define __SYSCALL(nr, entry, nargs)[nr] = (syscall_t)entry,
++#define __SYSCALL(nr, entry)[nr] = (syscall_t)entry,
+ #include <asm/syscall_table.h>
+-#undef __SYSCALL
+ };
  
--LDLIBS_linux-y := -lrt -lpthread -lutil
-+LDLIBS := -lrt -lpthread -lutil
- LDFLAGS_linux-y := -no-pie -Wl,--wrap,malloc -Wl,--wrap,free -Wl,--wrap,calloc
- LDFLAGS_linux-$(CONFIG_STATIC_LINK) += -static
-diff --git a/tools/um/include/lkl.h b/tools/um/include/lkl.h
-new file mode 100644
-index 000000000000..2417ed5ccf71
---- /dev/null
-+++ b/tools/um/include/lkl.h
-@@ -0,0 +1,135 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LKL_H
-+#define _LKL_H
-+
-+#ifdef __cplusplus
-+extern "C" {
-+#endif
-+
-+#define _LKL_LIBC_COMPAT_H
-+
-+#ifdef __cplusplus
-+#define class __lkl__class
-+#endif
-+
-+/*
-+ * Avoid collisions between Android which defines __unused and
-+ * linux/icmp.h which uses __unused as a structure field.
-+ */
-+#pragma push_macro("__unused")
-+#undef __unused
-+
-+#include <lkl/asm/syscalls.h>
-+
-+#pragma pop_macro("__unused")
-+
-+#ifdef __cplusplus
-+#undef class
-+#endif
-+
-+#if __LKL__BITS_PER_LONG == 64
-+#define lkl_sys_fstatat lkl_sys_newfstatat
-+#define lkl_sys_fstat lkl_sys_newfstat
-+
-+#else
-+#define __lkl__NR_fcntl __lkl__NR_fcntl64
-+
-+#define lkl_stat lkl_stat64
-+#define lkl_sys_stat lkl_sys_stat64
-+#define lkl_sys_lstat lkl_sys_lstat64
-+#define lkl_sys_truncate lkl_sys_truncate64
-+#define lkl_sys_ftruncate lkl_sys_ftruncate64
-+#define lkl_sys_sendfile lkl_sys_sendfile64
-+#define lkl_sys_fstatat lkl_sys_fstatat64
-+#define lkl_sys_fstat lkl_sys_fstat64
-+#define lkl_sys_fcntl lkl_sys_fcntl64
-+
-+#define lkl_statfs lkl_statfs64
-+
-+static inline int lkl_sys_statfs(const char *path, struct lkl_statfs *buf)
-+{
-+	return lkl_sys_statfs64(path, sizeof(*buf), buf);
-+}
-+
-+static inline int lkl_sys_fstatfs(unsigned int fd, struct lkl_statfs *buf)
-+{
-+	return lkl_sys_fstatfs64(fd, sizeof(*buf), buf);
-+}
-+
-+#define lkl_sys_nanosleep lkl_sys_nanosleep_time32
-+static inline int lkl_sys_nanosleep_time32(struct lkl_timespec *rqtp,
-+					   struct lkl_timespec *rmtp)
-+{
-+	long p[6] = {(long)rqtp, (long)rmtp, 0, 0, 0, 0};
-+
-+	return lkl_syscall(__lkl__NR_nanosleep, p);
-+}
-+
-+#endif
-+
-+static inline int lkl_sys_stat(const char *path, struct lkl_stat *buf)
-+{
-+	return lkl_sys_fstatat(LKL_AT_FDCWD, path, buf, 0);
-+}
-+
-+static inline int lkl_sys_lstat(const char *path, struct lkl_stat *buf)
-+{
-+	return lkl_sys_fstatat(LKL_AT_FDCWD, path, buf,
-+			       LKL_AT_SYMLINK_NOFOLLOW);
-+}
-+
-+#ifdef __lkl__NR_openat
-+/**
-+ * lkl_sys_open - wrapper for lkl_sys_openat
-+ */
-+static inline long lkl_sys_open(const char *file, int flags, int mode)
-+{
-+	return lkl_sys_openat(LKL_AT_FDCWD, file, flags, mode);
-+}
-+
-+/**
-+ * lkl_sys_creat - wrapper for lkl_sys_openat
-+ */
-+static inline long lkl_sys_creat(const char *file, int mode)
-+{
-+	return lkl_sys_openat(LKL_AT_FDCWD, file,
-+			      LKL_O_CREAT|LKL_O_WRONLY|LKL_O_TRUNC, mode);
-+}
-+#endif
-+
-+#ifdef __lkl__NR_mkdirat
-+/**
-+ * lkl_sys_mkdir - wrapper for lkl_sys_mkdirat
-+ */
-+static inline long lkl_sys_mkdir(const char *path, mode_t mode)
-+{
-+	return lkl_sys_mkdirat(LKL_AT_FDCWD, path, mode);
-+}
-+#endif
-+
-+#ifdef __lkl__NR_epoll_create1
-+/**
-+ * lkl_sys_epoll_create - wrapper for lkl_sys_epoll_create1
-+ */
-+static inline long lkl_sys_epoll_create(int size)
-+{
-+	return lkl_sys_epoll_create1(0);
-+}
-+#endif
-+
-+#ifdef __lkl__NR_epoll_pwait
-+/**
-+ * lkl_sys_epoll_wait - wrapper for lkl_sys_epoll_pwait
-+ */
-+static inline long lkl_sys_epoll_wait(int fd, struct lkl_epoll_event *ev,
-+				      int cnt, int to)
-+{
-+	return lkl_sys_epoll_pwait(fd, ev, cnt, to, 0, _LKL_NSIG/8);
-+}
-+#endif
-+
-+#ifdef __cplusplus
-+}
-+#endif
-+
-+#endif
-diff --git a/tools/um/include/lkl_host.h b/tools/um/include/lkl_host.h
-new file mode 100644
-index 000000000000..5fe7a64dc4dd
---- /dev/null
-+++ b/tools/um/include/lkl_host.h
-@@ -0,0 +1,18 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LKL_HOST_H
-+#define _LKL_HOST_H
-+
-+#ifdef __cplusplus
-+extern "C" {
-+#endif
-+
-+#include <lkl/asm/host_ops.h>
-+#include <lkl.h>
-+
-+extern struct lkl_host_operations lkl_host_ops;
-+
-+#ifdef __cplusplus
-+}
-+#endif
-+
-+#endif
-diff --git a/tools/um/uml/Build b/tools/um/uml/Build
-index 810aa99f8409..b523923afd45 100644
---- a/tools/um/uml/Build
-+++ b/tools/um/uml/Build
-@@ -8,13 +8,21 @@ KCOV_INSTRUMENT                := n
+ #define COLOUR_ALIGN(addr, pgoff) \
+diff --git a/arch/xtensa/kernel/syscalls/Makefile b/arch/xtensa/kernel/syscalls/Makefile
+index 1c42d2d2926d..6610130c67bc 100644
+--- a/arch/xtensa/kernel/syscalls/Makefile
++++ b/arch/xtensa/kernel/syscalls/Makefile
+@@ -7,7 +7,7 @@ _dummy := $(shell [ -d '$(uapi)' ] || mkdir -p '$(uapi)')	\
  
- include $(objtree)/include/config/auto.conf
+ syscall := $(srctree)/$(src)/syscall.tbl
+ syshdr := $(srctree)/$(src)/syscallhdr.sh
+-systbl := $(srctree)/$(src)/syscalltbl.sh
++systbl := $(srctree)/scripts/syscalltbl.sh
  
--liblinux-y += execvp.o file.o helper.o irq.o main.o mem.o process.o \
--	registers.o sigio.o signal.o start_up.o time.o tty.o \
--	umid.o util.o drivers/ skas/
-+liblinux-y += execvp.o file.o helper.o irq.o mem.o process.o \
-+	registers.o sigio.o signal.o time.o tty.o \
-+	umid.o util.o drivers/
+ quiet_cmd_syshdr = SYSHDR  $@
+       cmd_syshdr = $(CONFIG_SHELL) '$(syshdr)' '$<' '$@'	\
+@@ -16,10 +16,7 @@ quiet_cmd_syshdr = SYSHDR  $@
+ 		   '$(syshdr_offset_$(basetarget))'
  
- CFLAGS_signal.o += -Wframe-larger-than=4096
+ quiet_cmd_systbl = SYSTBL  $@
+-      cmd_systbl = $(CONFIG_SHELL) '$(systbl)' '$<' '$@'	\
+-		   '$(systbl_abis_$(basetarget))'		\
+-		   '$(systbl_abi_$(basetarget))'		\
+-		   '$(systbl_offset_$(basetarget))'
++      cmd_systbl = $(CONFIG_SHELL) $(systbl) $< $@
  
-+ifndef CONFIG_UMMODE_LIB
-+liblinux-y += main.o start_up.o skas/
-+HEADER_ARCH 	:= x86
- liblinux-y += x86/
-+else
-+HEADER_ARCH 	:= um/lkl
-+liblinux-y += lkl/
-+endif
-+
- liblinux-$(CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA) += elf_aux.o
- 
- export O = $(srctree)
-@@ -24,7 +32,6 @@ CFLAGS := -g -O2
- 
- # from arch/um/Makefile
- ARCH_DIR := arch/um
--HEADER_ARCH 	:= x86
- HOST_DIR := arch/$(HEADER_ARCH)
- ifdef CONFIG_64BIT
-   KBUILD_CFLAGS += -mcmodel=large
-@@ -34,6 +41,7 @@ KBUILD_CFLAGS += $(CFLAGS) $(CFLAGS-y) -D__arch_um__ \
- 	-Dlongjmp=kernel_longjmp -Dsetjmp=kernel_setjmp \
- 	-Din6addr_loopback=kernel_in6addr_loopback \
- 	-Din6addr_any=kernel_in6addr_any -Dstrrchr=kernel_strrchr
-+KBUILD_CFLAGS := $(filter-out -Dsigprocmask=kernel_sigprocmask,$(KBUILD_CFLAGS))
- SHARED_HEADERS	:= $(ARCH_DIR)/include/shared
- MODE_INCLUDE	+= -I$(srctree)/$(ARCH_DIR)/include/shared/skas
- ARCH_INCLUDE	:= -I$(srctree)/$(SHARED_HEADERS)
-diff --git a/tools/um/uml/lkl/Build b/tools/um/uml/lkl/Build
-new file mode 100644
-index 000000000000..98fd6b86a085
---- /dev/null
-+++ b/tools/um/uml/lkl/Build
-@@ -0,0 +1 @@
-+liblinux-y = registers.o unimplemented.o
-diff --git a/tools/um/uml/lkl/registers.c b/tools/um/uml/lkl/registers.c
-new file mode 100644
-index 000000000000..11573a204720
---- /dev/null
-+++ b/tools/um/uml/lkl/registers.c
-@@ -0,0 +1,21 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+struct uml_pt_regs;
-+
-+int get_fp_registers(int pid, unsigned long *regs)
-+{
-+	return 0;
-+}
-+
-+int save_i387_registers(int pid, unsigned long *fp_regs)
-+{
-+	return 0;
-+}
-+
-+void arch_init_registers(int pid)
-+{
-+}
-+
-+void get_regs_from_mc(struct uml_pt_regs *regs, void *mc)
-+{
-+}
-diff --git a/tools/um/uml/lkl/unimplemented.c b/tools/um/uml/lkl/unimplemented.c
-new file mode 100644
-index 000000000000..9da3e5c8bafb
---- /dev/null
-+++ b/tools/um/uml/lkl/unimplemented.c
-@@ -0,0 +1,21 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <generated/user_constants.h>
-+
-+struct uml_pt_regs;
-+
-+/* os-Linux/skas/process.c */
-+int userspace_pid[UM_NR_CPUS];
-+void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
-+{}
-+
-+
-+/* x86/os-Linux/task_size.c */
-+unsigned long os_get_top_address(void)
-+{
-+	return 0;
-+}
-+
-+/* start-up.c */
-+void os_early_checks(void)
-+{
-+}
+ $(uapi)/unistd_32.h: $(syscall) $(syshdr) FORCE
+ 	$(call if_changed,syshdr)
+diff --git a/arch/xtensa/kernel/syscalls/syscalltbl.sh b/arch/xtensa/kernel/syscalls/syscalltbl.sh
+deleted file mode 100644
+index 85d78d9309ad..000000000000
+--- a/arch/xtensa/kernel/syscalls/syscalltbl.sh
++++ /dev/null
+@@ -1,32 +0,0 @@
+-#!/bin/sh
+-# SPDX-License-Identifier: GPL-2.0
+-
+-in="$1"
+-out="$2"
+-my_abis=`echo "($3)" | tr ',' '|'`
+-my_abi="$4"
+-offset="$5"
+-
+-emit() {
+-	t_nxt="$1"
+-	t_nr="$2"
+-	t_entry="$3"
+-
+-	while [ $t_nxt -lt $t_nr ]; do
+-		printf "__SYSCALL(%s, sys_ni_syscall, )\n" "${t_nxt}"
+-		t_nxt=$((t_nxt+1))
+-	done
+-	printf "__SYSCALL(%s, %s, )\n" "${t_nxt}" "${t_entry}"
+-}
+-
+-grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
+-	nxt=0
+-	if [ -z "$offset" ]; then
+-		offset=0
+-	fi
+-
+-	while read nr abi name entry ; do
+-		emit $((nxt+offset)) $((nr+offset)) $entry
+-		nxt=$((nr+1))
+-	done
+-) > "$out"
 -- 
-2.21.0 (Apple Git-122.2)
+2.27.0
 
 
 _______________________________________________
