@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from mail.kernel.org ([198.145.29.99])
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l7HBc-0001AP-SR
- for linux-um@lists.infradead.org; Wed, 03 Feb 2021 12:23:09 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH] um: irq.h: include <asm-generic/irq.h>
-Date: Wed,  3 Feb 2021 13:23:02 +0100
-Message-Id: <20210203132302.cbcb6da074b9.I09cc30d8b2ab45e0d9c31429a8c20d34f54a3a78@changeid>
-MIME-Version: 1.0
+ id 1l7OU6-0004fD-My
+ for linux-um@lists.infradead.org; Wed, 03 Feb 2021 20:10:43 +0000
+Subject: Re: [GIT PULL] UML fixes for 5.11-rc7
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <2021686242.358980.1612381974638.JavaMail.zimbra@nod.at>
+References: <2021686242.358980.1612381974638.JavaMail.zimbra@nod.at>
+Message-Id: <161238304134.2800.11569803493386915876.pr-tracker-bot@kernel.org>
+Date: Wed, 03 Feb 2021 20:10:41 +0000
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -17,38 +17,26 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-um <linux-um@lists.infradead.org>, torvalds <torvalds@linux-foundation.org>, linux-kernel <linux-kernel@vger.kernel.org>
 
-From: Johannes Berg <johannes.berg@intel.com>
+The pull request you sent on Wed, 3 Feb 2021 20:52:54 +0100 (CET):
 
-This will get the (no-op) definition of irq_canonicalize()
-which some code might want. We could define that ourselves,
-but it seems like we'd likely want generic extensions in
-the future, if any.
+> git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.11-rc7
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- arch/um/include/asm/irq.h | 1 +
- 1 file changed, 1 insertion(+)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/61556703b610a104de324e4f061dc6cf7b218b46
 
-diff --git a/arch/um/include/asm/irq.h b/arch/um/include/asm/irq.h
-index 547bff7b3a89..3f5d3e8228fc 100644
---- a/arch/um/include/asm/irq.h
-+++ b/arch/um/include/asm/irq.h
-@@ -33,4 +33,5 @@
- 
- #define NR_IRQS			64
- 
-+#include <asm-generic/irq.h>
- #endif
+Thank you!
+
 -- 
-2.26.2
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
 _______________________________________________
 linux-um mailing list
