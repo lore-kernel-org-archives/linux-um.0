@@ -2,8 +2,8 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab7.miniserver.com ([37.128.132.42]
  helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lEsb1-0006Cg-4L
- for linux-um@lists.infradead.org; Wed, 24 Feb 2021 11:44:48 +0000
+ id 1lEc0q-0003nB-V7
+ for linux-um@lists.infradead.org; Tue, 23 Feb 2021 18:02:21 +0000
 Subject: Re: linux uml segfault
 References: <3448a70e7a39b9c3202aeefa7858ace265b8a978.camel@debian.org>
  <6d37b5aa-36f2-1fce-b70b-8faa0ff882e0@kot-begemot.co.uk>
@@ -11,8 +11,8 @@ References: <3448a70e7a39b9c3202aeefa7858ace265b8a978.camel@debian.org>
  <db40449e-6916-56bf-377c-01b042b9c890@kot-begemot.co.uk>
  <529cd4e2f39efffb18125dffab3058aeec3351ce.camel@debian.org>
 From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Message-ID: <573e256a-990b-ddf6-7965-367bb8b21229@kot-begemot.co.uk>
-Date: Wed, 24 Feb 2021 11:44:39 +0000
+Message-ID: <2ecd8e13-36d4-f20b-fb97-256c114b9e8c@kot-begemot.co.uk>
+Date: Tue, 23 Feb 2021 18:02:16 +0000
 MIME-Version: 1.0
 In-Reply-To: <529cd4e2f39efffb18125dffab3058aeec3351ce.camel@debian.org>
 Content-Language: en-US
@@ -31,8 +31,6 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: rrs@debian.org, Christopher Obbard <chris.obbard@collabora.com>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>
 Cc: 983379@bugs.debian.org
 
-
-
 On 23/02/2021 17:26, Ritesh Raj Sarraf wrote:
 > Added the debian bug report in CC.
 > 
@@ -50,32 +48,34 @@ On 23/02/2021 17:26, Ritesh Raj Sarraf wrote:
 >>
 > 
 > Did you mean 5.10, 5.2 and 4.19 (UML) guests ?
+
+No. Hosts.
+
+I have several 6core/12thread Ryzens which are used for development 
+testing.
+
+They all use identical userspace with the sole difference being the 
+kernel. They all use a selection of 5.x because 4.19 does not support 
+the hardware properly.
+
+The 4.19 testing is done on my old "test farm" which is all A8s and 
+Athlon X760.
+
 > 
 > We've seen this happen on Debian Testing and Unstable Host (of which
 > the former would soon be the next stable i.e. Debian Bullseye).
+
+
+
 > 
 > In our tests, when running the same linux uml binary (5.10) on a Debian
 > Stable Host, it is working fine.
+> 
 
-I cannot reproduce it on a physical Bullseye host using the Debian user-mode-linux package compiled from source.
 
-Environment - Bullseye minimal install and build deps. 6 cores/12 threads Ryzen
+OK. I will upgrade one of my systems to Debian testing to try to 
+reproduce this.
 
-I cannot reproduce it using the upstream source and the patches from the user-mode-linux package
-
-Environment - same as above.
-
-I cannot reproduce it using the upstream source + patches and compiling on Buster using the following:
-
-1. Bullseye physical host, minimal install, same hardware
-
-2. Bullseye VM, minimal install, running with 4 vCPUs on the same host
-
-3. Bullseye LXC container running on a Debian Buster host, minimal install, same hardware
-
-In all cases it boots cleanly and there are no segfaults.
-
-So, frankly, no idea what is causing it to crash - I have run most combinations of 5.10 on a 5.10, all work fine here.
 
 -- 
 Anton R. Ivanov
