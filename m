@@ -1,16 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lEWYn-0000vI-9u
- for linux-um@lists.infradead.org; Tue, 23 Feb 2021 12:13:02 +0000
+ id 1lEVH5-0002wp-V3
+ for linux-um@lists.infradead.org; Tue, 23 Feb 2021 10:50:41 +0000
 Subject: Re: linux uml segfault
 References: <3448a70e7a39b9c3202aeefa7858ace265b8a978.camel@debian.org>
- <6d37b5aa-36f2-1fce-b70b-8faa0ff882e0@kot-begemot.co.uk>
-From: Christopher Obbard <chris.obbard@collabora.com>
-Message-ID: <c8bb257c-1542-12f5-89f1-5c1f14b8a70a@collabora.com>
-Date: Tue, 23 Feb 2021 12:12:57 +0000
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Message-ID: <6d37b5aa-36f2-1fce-b70b-8faa0ff882e0@kot-begemot.co.uk>
+Date: Tue, 23 Feb 2021 10:50:35 +0000
 MIME-Version: 1.0
-In-Reply-To: <6d37b5aa-36f2-1fce-b70b-8faa0ff882e0@kot-begemot.co.uk>
+In-Reply-To: <3448a70e7a39b9c3202aeefa7858ace265b8a978.camel@debian.org>
 Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -20,133 +20,172 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, rrs@debian.org, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>
+To: rrs@debian.org, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>
 
-SGkgQW50b24sCgpPbiAyMy8wMi8yMDIxIDEwOjUwLCBBbnRvbiBJdmFub3Ygd3JvdGU6Cj4gCj4g
-Cj4gT24gMjMvMDIvMjAyMSAwODowNiwgUml0ZXNoIFJhaiBTYXJyYWYgd3JvdGU6Cj4+IEhpLAo+
-Pgo+PiBSZWNlbnRseSwgd2l0aCB0aGUgTGludXggNS4xMCByZWxlYXNlLCBJIGhhdmUgcnVuIGlu
-dG8gdGhlIGZvbGxvd2luZwo+PiBzZWdmYXVsdCBvbiBVTUwuIEkgd2FzIGEgbGl0dGxlIGRpc2Fw
-cG9pbnRlZCBpbiBteXNlbGYgdGhhdCB0aGlzCj4+IHNsaXBwZWQgbXkgcmVndWxhciBzZXQgb2Yg
-dGVzdHMsIGJlZm9yZSBiZWluZyBwdXNoZWQgdG8gRGViaWFuLiBJdCBpcwo+PiByaWdodCBub3cg
-cGFydCBvZiBEZWJpYW4gVGVzdGluZyB0b28gYW5kIEknZCBoYXRlIHRvIGhhdmUgaXQgcmVtb3Zl
-ZAo+PiBmcm9tIHRoZSBCdWxsc2V5ZSByZWxlYXNlLgo+Pgo+PiBXaGF0IGlzIHdvcnNlIGlzIHRo
-YXQgKHRvIGRvIHNvbWUgcXVpY2sgdGVzdHMpIEkgcmV2ZXJ0ZWQgdG8gYW4gb2xkZXIKPj4gVU1M
-ICg1LjkpIHdoaWNoIEkgcmVjb2xsZWN0IHRvIGhhdmUgd29ya2luZywgYW5kIHRoYXQgdG9vIGZh
-aWxlZCBvbiB0aGUKPj4gc2V0dXBzLgo+Pgo+PiBJbiByZWdhcmQgdG8gc2V0dXBzLCBJIHRyaWVk
-IGFuZCByZXByb2R1Y2VkIHRoZSBpc3N1ZSBvbiAzIGRpZmZlcmVudAo+PiBtYWNoaW5lcywgYnV0
-IGFsbCBydW5uaW5nIEludGVsIGhhcmR3YXJlLiBBbmQgYWxsIHJ1bm5pbmcgNS4xMCBob3N0Cj4+
-IGtlcm5lbAo+Pgo+Pgo+PiBJdCB3b3VsZCByZWFsbHkgaGVscCBpZiBvdGhlcnMgb24gdGhpcyBt
-YWlsaW5nIGxpc3QgY2FuIGNoZWNrIGFuZAo+PiB2YWxpZGF0ZSBpZiB0aGV5IHJ1biBpbnRvIHRo
-aXMgcHJvYmxlbS4gU28gZmFyIEkgaGF2ZSBoYWQgMSByZXBvcnQgb2YKPj4gYmVpbmcgYWJsZSB0
-byByZXByb2R1Y2UgdGhpcyBidWcgb3RoZXIgdGhhbiBtZS4gSSBoYXZlIGFsc28gaGFkIDEKPj4g
-cmVwb3J0IG9mIG5vdCBiZWluZyBhYmxlIHRvIHJlcHJvZHVjZSB0aGlzIGJ1Zy4KPiAKPiBDb25m
-aXJtZWQuIFRoaXMgaXMgdGhlIGFzcHJpbnRmIGlzc3VlLiBJdCBpcyB1c3VhbGx5IGp1c3QgYSB3
-YXJuaW5nLCBidXQgCj4gZm9yIHlvdXIgY29uZmlnIGl0IGNhdXNlcyBhIGd1YXJhbnRlZWQgc2Vn
-ZmF1bHQuCj4gCj4gWW91IG5lZWQgOTdiZTdjZWFmN2ZlYTY4MTA0ODI0YjZhYTg3NGNmZjIzNTMz
-M2FjMSB1bTogUmVtb3ZlIHVzZSBvZiAKPiBhc3ByaW5mIGluIHVtaWQuYwo+IAo+IEluIHRoZSBw
-YXRjaHNldCBmb3IgdGhlIGRlYmlhbiBwYWNrYWdlLgoKVGhlIGN1cnJlbnQgRGViaWFuIHVzZXIt
-bW9kZS1saW51eCBwYWNrYWdlIGluIHVuc3RhYmxlIGlzIGJhc2VkIG9uIHRoZSAKNS4xMC41IHN0
-YWJsZSBzb3VyY2Ugd2hpY2ggaW5jbHVkZXMgdGhlIG1lbnRpb25lZCBwYXRjaCwgYnV0IGlzIHN0
-aWxsIApjYXVzaW5nIGFuIGVycm9yIGZvciBzb21lIHVzZXJzLgoKdGhhbmtzIQpDaHJpcwoKPiAK
-PiBBLgo+Pgo+Pgo+PiBUaGFua3MsCj4+IFJpdGVzaAo+Pgo+Pgo+PiBgYGAKPj4gcnJzQHByaXlh
-c2k6fiQgbGludXggdWJkMD1+L3Jycy1ob21lL0xpYnZpcnQtSW1hZ2VzL3VtbC5pbWcKPj4gdmVj
-MDp0cmFuc3BvcnQ9dGFwLGlmbmFtZT10YXAwLGdybz0xIG1lbT0xMDI0TSBydwo+PiBDb3JlIGR1
-bXAgbGltaXRzIDoKPj4gwqDCoMKgwqDCoMKgwqDCoCBzb2Z0IC0gMAo+PiDCoMKgwqDCoMKgwqDC
-oMKgIGhhcmQgLSBOT05FCj4+IENoZWNraW5nIHRoYXQgcHRyYWNlIGNhbiBjaGFuZ2Ugc3lzdGVt
-IGNhbGwgbnVtYmVycy4uLk9LCj4+IENoZWNraW5nIHN5c2NhbGwgZW11bGF0aW9uIHBhdGNoIGZv
-ciBwdHJhY2UuLi5PSwo+PiBDaGVja2luZyBhZHZhbmNlZCBzeXNjYWxsIGVtdWxhdGlvbiBwYXRj
-aCBmb3IgcHRyYWNlLi4uT0sKPj4gQ2hlY2tpbmcgZW52aXJvbm1lbnQgdmFyaWFibGVzIGZvciBh
-IHRlbXBkaXIuLi5ub25lIGZvdW5kCj4+IENoZWNraW5nIGlmIC9kZXYvc2htIGlzIG9uIHRtcGZz
-Li4uT0sKPj4gQ2hlY2tpbmcgUFJPVF9FWEVDIG1tYXAgaW4gL2Rldi9zaG0uLi5PSwo+PiBBZGRp
-bmcgNTkwNjQzMiBieXRlcyB0byBwaHlzaWNhbCBtZW1vcnkgdG8gYWNjb3VudCBmb3IgZXhlYy1z
-aGllbGQgZ2FwCj4+IGttc2dfZHVtcDoKPj4gPDU+TGludXggdmVyc2lvbiA1LjEwLjUgKGJ1aWxk
-ZEB4ODYtY29ub3ZhLTAxKSAoZ2NjIChEZWJpYW4gMTAuMi4xLTYpCj4+IDEwLjIuMSAyMDIxMDEx
-MCwgR05VIGxkIChHTlUgQmludXRpbHMgZm9yIERlYmlhbikgMi4zNS4xKSAjMSBNb24gSmFuIDEx
-Cj4+IDIwOjQwOjUzIFVUQyAyMDIxCj4+IDw2PlpvbmUgcmFuZ2VzOgo+PiA8Nj7CoCBOb3JtYWzC
-oMKgIFttZW0gMHgwMDAwMDAwMDAwMDAwMDAwLTB4MDAwMDAwMDBhMDVhMWZmZl0KPj4gPDY+TW92
-YWJsZSB6b25lIHN0YXJ0IGZvciBlYWNoIG5vZGUKPj4gPDY+RWFybHkgbWVtb3J5IG5vZGUgcmFu
-Z2VzCj4+IDw2PsKgIG5vZGXCoMKgIDA6IFttZW0gMHgwMDAwMDAwMDAwMDAwMDAwLTB4MDAwMDAw
-MDA0MDVhMWZmZl0KPj4gPDY+SW5pdG1lbSBzZXR1cCBub2RlIDAgW21lbSAweDAwMDAwMDAwMDAw
-MDAwMDAtMHgwMDAwMDAwMDQwNWExZmZmXQo+PiA8Nz5PbiBub2RlIDAgdG90YWxwYWdlczogMjYz
-NTg2Cj4+IDw3PsKgIE5vcm1hbCB6b25lOiA0MTE5IHBhZ2VzIHVzZWQgZm9yIG1lbW1hcAo+PiA8
-Nz7CoCBOb3JtYWwgem9uZTogMCBwYWdlcyByZXNlcnZlZAo+PiA8Nz7CoCBOb3JtYWwgem9uZTog
-MjYzNTg2IHBhZ2VzLCBMSUZPIGJhdGNoOjYzCj4+IDw3PnBjcHUtYWxsb2M6IHMwIHIwIGQzMjc2
-OCB1MzI3NjggYWxsb2M9MSozMjc2OAo+PiA8Nz5wY3B1LWFsbG9jOiBbMF0gMAo+PiA8Nj5CdWls
-dCAxIHpvbmVsaXN0cywgbW9iaWxpdHkgZ3JvdXBpbmcgb24uwqAgVG90YWwgcGFnZXM6IDI1OTQ2
-Nwo+PiA8NT5LZXJuZWwgY29tbWFuZCBsaW5lOiB1YmQwPS9ob21lL3Jycy9ycnMtaG9tZS9MaWJ2
-aXJ0LUltYWdlcy91bWwuaW1nCj4+IHZlYzA6dHJhbnNwb3J0PXRhcCxpZm5hbWU9dGFwMCxncm89
-MSBtZW09MTAyNE0gcncgcm9vdD05ODowCj4+IDw2PkRlbnRyeSBjYWNoZSBoYXNoIHRhYmxlIGVu
-dHJpZXM6IDEzMTA3MiAob3JkZXI6IDgsIDEwNDg1NzYgYnl0ZXMsCj4+IGxpbmVhcikKPj4gPDY+
-SW5vZGUtY2FjaGUgaGFzaCB0YWJsZSBlbnRyaWVzOiA2NTUzNiAob3JkZXI6IDcsIDUyNDI4OCBi
-eXRlcywKPj4gbGluZWFyKQo+PiA8Nj5tZW0gYXV0by1pbml0OiBzdGFjazpvZmYsIGhlYXAgYWxs
-b2M6b2ZmLCBoZWFwIGZyZWU6b2ZmCj4+IDw2Pk1lbW9yeTogMTAxNjQ2NEsvMTA1NDM0NEsgYXZh
-aWxhYmxlICg1ODMwSyBrZXJuZWwgY29kZSwgMTUzNUsKPj4gcndkYXRhLCAxNzQ0SyByb2RhdGEs
-IDE5MUsgaW5pdCwgMjI1SyBic3MsIDM3ODgwSyByZXNlcnZlZCwgMEsgY21hLQo+PiByZXNlcnZl
-ZCkKPj4gPDY+U0xVQjogSFdhbGlnbj02NCwgT3JkZXI9MC0zLCBNaW5PYmplY3RzPTAsIENQVXM9
-MSwgTm9kZXM9MQo+PiA8Nj5OUl9JUlFTOiAyNAo+PiA8Nj5jbG9ja3NvdXJjZTogdGltZXI6IG1h
-c2s6IDB4ZmZmZmZmZmZmZmZmZmZmZiBtYXhfY3ljbGVzOgo+PiAweDFjZDQyZTIwNSwgbWF4X2lk
-bGVfbnM6IDg4MTU5MDQwNDQyNiBucwo+PiA8Nj5DYWxpYnJhdGluZyBkZWxheSBsb29wLi4uIDU3
-MzEuOTQgQm9nb01JUFMgKGxwaj0yODY1OTcxMikKPj4gPDY+cGlkX21heDogZGVmYXVsdDogMzI3
-NjggbWluaW11bTogMzAxCj4+IDw2PkxTTTogU2VjdXJpdHkgRnJhbWV3b3JrIGluaXRpYWxpemlu
-Zwo+PiA8Nj5ZYW1hOiBkaXNhYmxlZCBieSBkZWZhdWx0OyBlbmFibGUgd2l0aCBzeXNjdGwga2Vy
-bmVsLnlhbWEuKgo+PiA8Nj5TRUxpbnV4OsKgIEluaXRpYWxpemluZy4KPj4gPDY+VE9NT1lPIExp
-bnV4IGluaXRpYWxpemVkCj4+IDw2Pk1vdW50LWNhY2hlIGhhc2ggdGFibGUgZW50cmllczogMjA0
-OCAob3JkZXI6IDIsIDE2Mzg0IGJ5dGVzLCBsaW5lYXIpCj4+IDw2Pk1vdW50cG9pbnQtY2FjaGUg
-aGFzaCB0YWJsZSBlbnRyaWVzOiAyMDQ4IChvcmRlcjogMiwgMTYzODQgYnl0ZXMsCj4+IGxpbmVh
-cikKPj4gPDQ+Cj4+IDw0Pk1vZHVsZXMgbGlua2VkIGluOgo+PiA8Nj5QaWQ6IDAsIGNvbW06IHN3
-YXBwZXIgTm90IHRhaW50ZWQgNS4xMC41Cj4+IDw2PlJJUDogMDAzMzpbPDAwMDAwMDAwNjA0ZDQy
-MDE+XQo+PiA8Nj5SU1A6IDAwMDA3ZmZjYTU2YTg4OTDCoCBFRkxBR1M6IDAwMDEwMjA2Cj4+IDw2
-PlJBWDogMDAwMDAwMDYwMDAwMDAwMCBSQlg6IDAwMDAwMDAwMDAwMDAwNTkgUkNYOiAwMDAwN2Zm
-Y2E1NmE4MDAwCj4+IDw2PlJEWDogMDAwMDAwMDAwMDAwMDAzNSBSU0k6IDAwMDAwMDAwNjBiNjlh
-NzEgUkRJOiAwMDAwMDAwMDYwZDhhYzNiCj4+IDw2PlJCUDogMDAwMDAwMDAwMDAwMDAwMCBSMDg6
-IDAwMDAwMDAwNjBiNjlhNzIgUjA5OiAwMDAwMDAwMDYwZDhhYmUyCj4+IDw2PlIxMDogMDAwMDAw
-MDA4MDAwMDAwMCBSMTE6IDNkNzQ2OTZlNjk1ZjY3NmUgUjEyOiAwMDAwMDAwMDAwMDAwMDAyCj4+
-IDw2PlIxMzogMDAwMDAwMDAwMDAwMDAwNSBSMTQ6IDAwMDAwMDAwMDAwMDAwMDAgUjE1OiAwMDAw
-MDAwMDAwMDAwMDAxCj4+IDwwPktlcm5lbCBwYW5pYyAtIG5vdCBzeW5jaW5nOiBTZWdmYXVsdCB3
-aXRoIG5vIG1tCj4+IDw0PkNQVTogMCBQSUQ6IDAgQ29tbTogc3dhcHBlciBOb3QgdGFpbnRlZCA1
-LjEwLjUgIzEKPj4gPDQ+U3RhY2s6Cj4+IDw0PiA2MTMzNWI1MCA4MDAwMDAwMDAwMDAwMDAwIDdm
-YWU2OTQ2NTkwOCA3ZmFlNjk0NjVhZTUKPj4gPDQ+IDdmYWU2OThhZTllOCAwMDAwMDAwMCA3ZmZj
-YTU2YTg4ZDAgMDAwMDA0MDAKPj4gPDQ+IDdmYWU2OTg1YmYyMCA3ZmFlNjk4YWU5ZTggMDAwMDAw
-MDAgMDAwMDAwMDBDYWxsIFRyYWNlOgo+PiA8ND4gWzw2MDRkNGZhMz5dID8gX19wcmludGtfc2Fm
-ZV9lbnRlcisweDAvMHgzNQo+PiA8ND4gWzw2MDRkMTU0YT5dID8gYXJjaF9sb2NhbF9pcnFfc2F2
-ZSsweDAvMHgyMgo+PiA8ND4gWzw2MDRkNDZmNT5dID8gdnByaW50a19lbWl0KzB4OWQvMHgxODUK
-Pj4gPDQ+IFs8NjA0ZDQ5ZDM+XSA/IHZwcmludGtfZGVmZXJyZWQrMHgxZC8weDMyCj4+IDw0PiBb
-PDYwYTI2ZWUyPl0gPyBwcmludGtfZGVmZXJyZWQrMHg5My8weDliCj4+IDw0PiBbPDYwODhmNzlm
-Pl0gPyBidWNrZXRfdGFibGVfYWxsb2MuaXNyYS4wKzB4MTE1LzB4MTNkCj4+IDw0PiBbPDYwYTI2
-ZTRmPl0gPyBwcmludGtfZGVmZXJyZWQrMHgwLzB4OWIKPj4gPDQ+IFs8NjA0OWNkZGI+XSA/IHNl
-dF9zaWduYWxzKzB4MC8weDM4Cj4+IDw0PiBbPDYwNTg5NTg4Pl0gPyBhcmNoX2xvY2FsX2lycV9z
-YXZlKzB4MC8weDIyCj4+IDw0PiBbPDYwNTVjOTI4Pl0gPyBrdm1hbGxvY19ub2RlKzB4NTYvMHg5
-Ngo+PiA8ND4gWzw2MDU4ZDNjMD5dID8gX19rbWFsbG9jKzB4MWUyLzB4MWY5Cj4+IDw0PiBbPDYw
-OGUzZDMyPl0gPyBfX19yYXRlbGltaXQrMHhkMC8weGRlCj4+IDw0PiBbPDYwODhmNzlmPl0gPyBi
-dWNrZXRfdGFibGVfYWxsb2MuaXNyYS4wKzB4MTE1LzB4MTNkCj4+IDw0PiBbPDYwOTAxNDg1Pl0g
-PyBfd2Fybl91bnNlZWRlZF9yYW5kb21uZXNzKzB4NjAvMHg4Zgo+PiA8ND4gWzw2MDkwMjk1Yj5d
-ID8gZ2V0X3JhbmRvbV91MzIrMHgyOS8weDk4Cj4+IDw0PiBbPDYwODhmNzlmPl0gPyBidWNrZXRf
-dGFibGVfYWxsb2MuaXNyYS4wKzB4MTE1LzB4MTNkCj4+IDw0PiBbPDYwODhmNjhhPl0gPyBidWNr
-ZXRfdGFibGVfYWxsb2MuaXNyYS4wKzB4MC8weDEzZAo+PiA8ND4gWzw2MDg4ZmY3YT5dID8gcmhh
-c2h0YWJsZV9pbml0KzB4MTc1LzB4MWNhCj4+IDw0PiBbPDYwN2VmMzE3Pl0gPyBpcGNfaW5pdF9p
-ZHMrMHg0ZS8weDZmCj4+IDw0PiBbPDYwMDE1M2JkPl0gPyBzZW1faW5pdCsweDE3LzB4NDUKPj4g
-PDQ+IFs8NjA0OWQwZTU+XSA/IHN0YXJ0X3B0cmFjZWRfY2hpbGQrMHgwLzB4MTgwCj4+IDw0PiBb
-PDYwNGEwY2UwPl0gPyBrZXJuZWxfbG9uZ2ptcCsweDAvMHgyMAo+PiA8ND4gWzw2MDQ5Y2MzZD5d
-ID8gc2V0X2hhbmRsZXIrMHgxMjMvMHgxNWIKPj4gPDQ+IFs8NjA0OWM5ZWU+XSA/IGhhcmRfaGFu
-ZGxlcisweDAvMHhjZAo+PiA8ND4gWzw2MDRhMGNlMD5dID8ga2VybmVsX2xvbmdqbXArMHgwLzB4
-MjAKPj4gPDQ+IFs8NjA0OWMzYTY+XSA/IG9wZW5wdHlfY2IrMHgyMi8weDNiCj4+IDw0PiBbPDYw
-NDlmYjRiPl0gPyBzdGFydF9pZGxlX3RocmVhZCsweDY2LzB4MTE2Cj4+IDw0PiBbPDYwMDA0NjEz
-Pl0gPyBsaW51eF9tYWluKzB4MmU3LzB4MmY5Cj4+IDw0PiBbPDYwNDljYzg2Pl0gPyBjaGFuZ2Vf
-c2lnKzB4MC8weDZhCj4+IDw0PiBbPDYwMDA1NjVlPl0gPyBtYWluKzB4MjMwLzB4MmRjCj4+IDw0
-PiBbPDYwYTI1NmIwPl0gPyBfX2xpYmNfY3N1X2luaXQrMHgwLzB4NjAKPj4gPDQ+IFs8NjA0ODI3
-ZDA+XSA/IF9zdGFydCsweDAvMHgzMAo+PiA8ND4gWzw2MDAwNTQyZT5dID8gbWFpbisweDAvMHgy
-ZGMKPj4gPDQ+IFs8NjA0ODI3ZDA+XSA/IF9zdGFydCsweDAvMHgzMAo+PiA8ND4gWzw2MDQ4Mjdk
-MD5dID8gX3N0YXJ0KzB4MC8weDMwCj4+IDw0PiBbPDYwNDgyN2ZhPl0gPyBfc3RhcnQrMHgyYS8w
-eDMwCj4+IDw0PiBbPDYwNDgyN2QwPl0gPyBfc3RhcnQrMHgwLzB4MzAKPj4gQWJvcnRlZCAoY29y
-ZSBkdW1wZWQpCj4+IGBgYAo+Pgo+Pgo+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwo+PiBsaW51eC11bSBtYWlsaW5nIGxpc3QKPj4gbGludXgtdW1AbGlz
-dHMuaW5mcmFkZWFkLm9yZwo+PiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2xpbnV4LXVtCj4+Cj4gCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFk
-ZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
-LXVtCg==
+
+
+On 23/02/2021 08:06, Ritesh Raj Sarraf wrote:
+> Hi,
+> 
+> Recently, with the Linux 5.10 release, I have run into the following
+> segfault on UML. I was a little disappointed in myself that this
+> slipped my regular set of tests, before being pushed to Debian. It is
+> right now part of Debian Testing too and I'd hate to have it removed
+> from the Bullseye release.
+> 
+> What is worse is that (to do some quick tests) I reverted to an older
+> UML (5.9) which I recollect to have working, and that too failed on the
+> setups.
+> 
+> In regard to setups, I tried and reproduced the issue on 3 different
+> machines, but all running Intel hardware. And all running 5.10 host
+> kernel
+> 
+> 
+> It would really help if others on this mailing list can check and
+> validate if they run into this problem. So far I have had 1 report of
+> being able to reproduce this bug other than me. I have also had 1
+> report of not being able to reproduce this bug.
+
+Confirmed. This is the asprintf issue. It is usually just a warning, but for your config it causes a guaranteed segfault.
+
+You need 97be7ceaf7fea68104824b6aa874cff235333ac1 um: Remove use of asprinf in umid.c
+
+In the patchset for the debian package.
+
+A.
+> 
+> 
+> Thanks,
+> Ritesh
+> 
+> 
+> ```
+> rrs@priyasi:~$ linux ubd0=~/rrs-home/Libvirt-Images/uml.img
+> vec0:transport=tap,ifname=tap0,gro=1 mem=1024M rw
+> Core dump limits :
+>          soft - 0
+>          hard - NONE
+> Checking that ptrace can change system call numbers...OK
+> Checking syscall emulation patch for ptrace...OK
+> Checking advanced syscall emulation patch for ptrace...OK
+> Checking environment variables for a tempdir...none found
+> Checking if /dev/shm is on tmpfs...OK
+> Checking PROT_EXEC mmap in /dev/shm...OK
+> Adding 5906432 bytes to physical memory to account for exec-shield gap
+> kmsg_dump:
+> <5>Linux version 5.10.5 (buildd@x86-conova-01) (gcc (Debian 10.2.1-6)
+> 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1) #1 Mon Jan 11
+> 20:40:53 UTC 2021
+> <6>Zone ranges:
+> <6>  Normal   [mem 0x0000000000000000-0x00000000a05a1fff]
+> <6>Movable zone start for each node
+> <6>Early memory node ranges
+> <6>  node   0: [mem 0x0000000000000000-0x00000000405a1fff]
+> <6>Initmem setup node 0 [mem 0x0000000000000000-0x00000000405a1fff]
+> <7>On node 0 totalpages: 263586
+> <7>  Normal zone: 4119 pages used for memmap
+> <7>  Normal zone: 0 pages reserved
+> <7>  Normal zone: 263586 pages, LIFO batch:63
+> <7>pcpu-alloc: s0 r0 d32768 u32768 alloc=1*32768
+> <7>pcpu-alloc: [0] 0
+> <6>Built 1 zonelists, mobility grouping on.  Total pages: 259467
+> <5>Kernel command line: ubd0=/home/rrs/rrs-home/Libvirt-Images/uml.img
+> vec0:transport=tap,ifname=tap0,gro=1 mem=1024M rw root=98:0
+> <6>Dentry cache hash table entries: 131072 (order: 8, 1048576 bytes,
+> linear)
+> <6>Inode-cache hash table entries: 65536 (order: 7, 524288 bytes,
+> linear)
+> <6>mem auto-init: stack:off, heap alloc:off, heap free:off
+> <6>Memory: 1016464K/1054344K available (5830K kernel code, 1535K
+> rwdata, 1744K rodata, 191K init, 225K bss, 37880K reserved, 0K cma-
+> reserved)
+> <6>SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
+> <6>NR_IRQS: 24
+> <6>clocksource: timer: mask: 0xffffffffffffffff max_cycles:
+> 0x1cd42e205, max_idle_ns: 881590404426 ns
+> <6>Calibrating delay loop... 5731.94 BogoMIPS (lpj=28659712)
+> <6>pid_max: default: 32768 minimum: 301
+> <6>LSM: Security Framework initializing
+> <6>Yama: disabled by default; enable with sysctl kernel.yama.*
+> <6>SELinux:  Initializing.
+> <6>TOMOYO Linux initialized
+> <6>Mount-cache hash table entries: 2048 (order: 2, 16384 bytes, linear)
+> <6>Mountpoint-cache hash table entries: 2048 (order: 2, 16384 bytes,
+> linear)
+> <4>
+> <4>Modules linked in:
+> <6>Pid: 0, comm: swapper Not tainted 5.10.5
+> <6>RIP: 0033:[<00000000604d4201>]
+> <6>RSP: 00007ffca56a8890  EFLAGS: 00010206
+> <6>RAX: 0000000600000000 RBX: 0000000000000059 RCX: 00007ffca56a8000
+> <6>RDX: 0000000000000035 RSI: 0000000060b69a71 RDI: 0000000060d8ac3b
+> <6>RBP: 0000000000000000 R08: 0000000060b69a72 R09: 0000000060d8abe2
+> <6>R10: 0000000080000000 R11: 3d74696e695f676e R12: 0000000000000002
+> <6>R13: 0000000000000005 R14: 0000000000000000 R15: 0000000000000001
+> <0>Kernel panic - not syncing: Segfault with no mm
+> <4>CPU: 0 PID: 0 Comm: swapper Not tainted 5.10.5 #1
+> <4>Stack:
+> <4> 61335b50 8000000000000000 7fae69465908 7fae69465ae5
+> <4> 7fae698ae9e8 00000000 7ffca56a88d0 00000400
+> <4> 7fae6985bf20 7fae698ae9e8 00000000 00000000Call Trace:
+> <4> [<604d4fa3>] ? __printk_safe_enter+0x0/0x35
+> <4> [<604d154a>] ? arch_local_irq_save+0x0/0x22
+> <4> [<604d46f5>] ? vprintk_emit+0x9d/0x185
+> <4> [<604d49d3>] ? vprintk_deferred+0x1d/0x32
+> <4> [<60a26ee2>] ? printk_deferred+0x93/0x9b
+> <4> [<6088f79f>] ? bucket_table_alloc.isra.0+0x115/0x13d
+> <4> [<60a26e4f>] ? printk_deferred+0x0/0x9b
+> <4> [<6049cddb>] ? set_signals+0x0/0x38
+> <4> [<60589588>] ? arch_local_irq_save+0x0/0x22
+> <4> [<6055c928>] ? kvmalloc_node+0x56/0x96
+> <4> [<6058d3c0>] ? __kmalloc+0x1e2/0x1f9
+> <4> [<608e3d32>] ? ___ratelimit+0xd0/0xde
+> <4> [<6088f79f>] ? bucket_table_alloc.isra.0+0x115/0x13d
+> <4> [<60901485>] ? _warn_unseeded_randomness+0x60/0x8f
+> <4> [<6090295b>] ? get_random_u32+0x29/0x98
+> <4> [<6088f79f>] ? bucket_table_alloc.isra.0+0x115/0x13d
+> <4> [<6088f68a>] ? bucket_table_alloc.isra.0+0x0/0x13d
+> <4> [<6088ff7a>] ? rhashtable_init+0x175/0x1ca
+> <4> [<607ef317>] ? ipc_init_ids+0x4e/0x6f
+> <4> [<600153bd>] ? sem_init+0x17/0x45
+> <4> [<6049d0e5>] ? start_ptraced_child+0x0/0x180
+> <4> [<604a0ce0>] ? kernel_longjmp+0x0/0x20
+> <4> [<6049cc3d>] ? set_handler+0x123/0x15b
+> <4> [<6049c9ee>] ? hard_handler+0x0/0xcd
+> <4> [<604a0ce0>] ? kernel_longjmp+0x0/0x20
+> <4> [<6049c3a6>] ? openpty_cb+0x22/0x3b
+> <4> [<6049fb4b>] ? start_idle_thread+0x66/0x116
+> <4> [<60004613>] ? linux_main+0x2e7/0x2f9
+> <4> [<6049cc86>] ? change_sig+0x0/0x6a
+> <4> [<6000565e>] ? main+0x230/0x2dc
+> <4> [<60a256b0>] ? __libc_csu_init+0x0/0x60
+> <4> [<604827d0>] ? _start+0x0/0x30
+> <4> [<6000542e>] ? main+0x0/0x2dc
+> <4> [<604827d0>] ? _start+0x0/0x30
+> <4> [<604827d0>] ? _start+0x0/0x30
+> <4> [<604827fa>] ? _start+0x2a/0x30
+> <4> [<604827d0>] ? _start+0x0/0x30
+> Aborted (core dumped)
+> ```
+> 
+> 
+> _______________________________________________
+> linux-um mailing list
+> linux-um@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-um
+> 
+
+-- 
+Anton R. Ivanov
+https://www.kot-begemot.co.uk/
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
