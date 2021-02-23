@@ -2,12 +2,15 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lEUEu-0004SS-6D
- for linux-um@lists.infradead.org; Tue, 23 Feb 2021 09:44:21 +0000
+ id 1lEZak-0001Cx-Ca
+ for linux-um@lists.infradead.org; Tue, 23 Feb 2021 15:27:16 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH] um: fix tag order in stub_32.h
-Date: Tue, 23 Feb 2021 10:44:08 +0100
-Message-Id: <20210223104408.d0783602b9b8.I166e8f9ed51f0df5e32936cec1ed8cff00b48b2e@changeid>
+Subject: [PATCH 5/7] um: irqs: allow invoking time-travel handler multiple
+ times
+Date: Tue, 23 Feb 2021 16:27:05 +0100
+Message-Id: <20210223161449.b769860c16f6.I0344b4c8a7e79d8ac1645acad97371f202837777@changeid>
+In-Reply-To: <20210223152707.408995-1-johannes@sipsolutions.net>
+References: <20210223152707.408995-1-johannes@sipsolutions.net>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,32 +25,43 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: kernel test robot <lkp@intel.com>, Johannes Berg <johannes.berg@intel.com>
+Cc: Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>
 
 From: Johannes Berg <johannes.berg@intel.com>
 
-"static void inline" is the wrong way around, fix that.
+If we happen to get multiple messages while IRQS are already
+suspended, we still need to handle them, since otherwise the
+simulation blocks.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: 9f0b4807a44f ("um: rework userspace stubs to not hard-code stub location")
+Remove the "prevent nesting" part, time_travel_add_irq_event()
+will deal with being called multiple times just fine.
+
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- arch/x86/um/shared/sysdep/stub_32.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/um/kernel/irq.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/um/shared/sysdep/stub_32.h b/arch/x86/um/shared/sysdep/stub_32.h
-index c3891c1ada26..b95db9daf0e8 100644
---- a/arch/x86/um/shared/sysdep/stub_32.h
-+++ b/arch/x86/um/shared/sysdep/stub_32.h
-@@ -77,7 +77,7 @@ static inline void trap_myself(void)
- 	__asm("int3");
- }
+diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
+index 76448b85292f..3718a5cdbc85 100644
+--- a/arch/um/kernel/irq.c
++++ b/arch/um/kernel/irq.c
+@@ -101,10 +101,12 @@ static bool irq_do_timetravel_handler(struct irq_entry *entry,
+ 	if (!reg->timetravel_handler)
+ 		return false;
  
--static void inline remap_stack_and_trap(void)
-+static inline void remap_stack_and_trap(void)
- {
- 	__asm__ volatile (
- 		"movl %%esp,%%ebx ;"
+-	/* prevent nesting - we'll get it again later when we SIGIO ourselves */
+-	if (reg->pending_on_resume)
+-		return true;
+-
++	/*
++	 * Handle all messages - we might get multiple even while
++	 * interrupts are already suspended, due to suspend order
++	 * etc. Note that time_travel_add_irq_event() will not add
++	 * an event twice, if it's pending already "first wins".
++	 */
+ 	reg->timetravel_handler(reg->irq, entry->fd, reg->id, &reg->event);
+ 
+ 	if (!reg->event.pending)
 -- 
 2.26.2
 
