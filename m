@@ -1,73 +1,181 @@
-MIME-Version: 1.0
-Date: Tue, 23 Feb 2021 16:44:06 +0100
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1lEZak-0001Ch-62
+ for linux-um@lists.infradead.org; Tue, 23 Feb 2021 15:27:15 +0000
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [PATCH 1/7] um: allow disabling NO_IOMEM
+Date: Tue, 23 Feb 2021 16:27:01 +0100
+Message-Id: <20210223161449.5fbbdace8fea.I7b2fad8378e4fde7f26ef06a03980ae2807d81c9@changeid>
+In-Reply-To: <20210223152707.408995-1-johannes@sipsolutions.net>
 References: <20210223152707.408995-1-johannes@sipsolutions.net>
-	<20210223161449.5fbbdace8fea.I7b2fad8378e4fde7f26ef06a03980ae2807d81c9@changeid>
-In-Reply-To: <20210223161449.5fbbdace8fea.I7b2fad8378e4fde7f26ef06a03980ae2807d81c9@changeid>
-Message-ID: <CAMuHMdUU40kv6SncuCYGjattnEWR2k7FG2NS+6ffY6K+D1qsiQ@mail.gmail.com>
-Subject: Re: [PATCH 1/7] um: allow disabling NO_IOMEM
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-um <linux-um@lists.infradead.org>, Arnd Bergmann <arnd@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Johannes Berg <johannes.berg@intel.com>
-List-ID: <linux-um.lists.infradead.org>
+MIME-Version: 1.0
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
+Cc: Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>
 
-Hi Johannes,
+From: Johannes Berg <johannes.berg@intel.com>
 
-On Tue, Feb 23, 2021 at 4:27 PM Johannes Berg <johannes@sipsolutions.net> wrote:
-> From: Johannes Berg <johannes.berg@intel.com>
->
-> Adjust the kconfig a little to allow disabling NO_IOMEM in UML. To
-> make an "allyesconfig" with CONFIG_NO_IOMEM=n build, adjust a few
-> Kconfig things elsewhere and add dummy asm/fb.h and asm/vga.h files.
->
-> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Adjust the kconfig a little to allow disabling NO_IOMEM in UML. To
+make an "allyesconfig" with CONFIG_NO_IOMEM=n build, adjust a few
+Kconfig things elsewhere and add dummy asm/fb.h and asm/vga.h files.
 
-Thanks for your patch!
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+---
+ arch/um/Kconfig                |  4 ++++
+ arch/um/include/asm/fb.h       | 15 +++++++++++++++
+ arch/um/include/asm/vga.h      |  9 +++++++++
+ drivers/input/Kconfig          |  1 -
+ drivers/input/gameport/Kconfig |  1 +
+ drivers/input/joystick/Kconfig |  1 +
+ drivers/tty/Kconfig            |  5 ++---
+ drivers/video/console/Kconfig  |  2 +-
+ 8 files changed, 33 insertions(+), 5 deletions(-)
+ create mode 100644 arch/um/include/asm/fb.h
+ create mode 100644 arch/um/include/asm/vga.h
 
-> --- /dev/null
-> +++ b/arch/um/include/asm/fb.h
-> @@ -0,0 +1,15 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_UM_FB_H
-> +#define _ASM_UM_FB_H
-> +
-> +static inline void fb_pgprotect(struct file *file, struct vm_area_struct *vma,
-> +                                unsigned long off)
-> +{
-> +}
-> +
-> +static inline int fb_is_primary_device(struct fb_info *info)
-> +{
-> +       return 0;
-> +}
-> +
-> +#endif /* _ASM_UM_FB_H */
-> diff --git a/arch/um/include/asm/vga.h b/arch/um/include/asm/vga.h
-> new file mode 100644
-> index 000000000000..0b0e73ccdb28
-> --- /dev/null
-> +++ b/arch/um/include/asm/vga.h
-> @@ -0,0 +1,9 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_UM_VGA_H
-> +#define _ASM_UM_VGA_H
-> +
-> +#define VGA_MAP_MEM(x, s)      ((unsigned long) ioremap(x, s))
-> +#define vga_readb(a)           readb((u8 __iomem *)(a))
-> +#define vga_writeb(v,a)                writeb(v, (u8 __iomem *)(a))
-> +
-> +#endif /* _ASM_UM_VGA_H */
-
-Can't you just use the asm-generic versions instead?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index c3030db3325f..20b0640e01b8 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -26,6 +26,10 @@ config MMU
+ 	default y
+ 
+ config NO_IOMEM
++	bool "disable IOMEM" if EXPERT
++	default y
++
++config NO_IOPORT_MAP
+ 	def_bool y
+ 
+ config ISA
+diff --git a/arch/um/include/asm/fb.h b/arch/um/include/asm/fb.h
+new file mode 100644
+index 000000000000..f8fa5a6b43b5
+--- /dev/null
++++ b/arch/um/include/asm/fb.h
+@@ -0,0 +1,15 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_UM_FB_H
++#define _ASM_UM_FB_H
++
++static inline void fb_pgprotect(struct file *file, struct vm_area_struct *vma,
++                                unsigned long off)
++{
++}
++
++static inline int fb_is_primary_device(struct fb_info *info)
++{
++	return 0;
++}
++
++#endif /* _ASM_UM_FB_H */
+diff --git a/arch/um/include/asm/vga.h b/arch/um/include/asm/vga.h
+new file mode 100644
+index 000000000000..0b0e73ccdb28
+--- /dev/null
++++ b/arch/um/include/asm/vga.h
+@@ -0,0 +1,9 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_UM_VGA_H
++#define _ASM_UM_VGA_H
++
++#define VGA_MAP_MEM(x, s)	((unsigned long) ioremap(x, s))
++#define vga_readb(a)		readb((u8 __iomem *)(a))
++#define vga_writeb(v,a)		writeb(v, (u8 __iomem *)(a))
++
++#endif /* _ASM_UM_VGA_H */
+diff --git a/drivers/input/Kconfig b/drivers/input/Kconfig
+index ec0e861f185f..5baebf62df33 100644
+--- a/drivers/input/Kconfig
++++ b/drivers/input/Kconfig
+@@ -4,7 +4,6 @@
+ #
+ 
+ menu "Input device support"
+-	depends on !UML
+ 
+ config INPUT
+ 	tristate "Generic input layer (needed for keyboard, mouse, ...)" if EXPERT
+diff --git a/drivers/input/gameport/Kconfig b/drivers/input/gameport/Kconfig
+index 4761795cb49f..5a2c2fb3217d 100644
+--- a/drivers/input/gameport/Kconfig
++++ b/drivers/input/gameport/Kconfig
+@@ -4,6 +4,7 @@
+ #
+ config GAMEPORT
+ 	tristate "Gameport support"
++	depends on !UML
+ 	help
+ 	  Gameport support is for the standard 15-pin PC gameport. If you
+ 	  have a joystick, gamepad, gameport card, a soundcard with a gameport
+diff --git a/drivers/input/joystick/Kconfig b/drivers/input/joystick/Kconfig
+index b080f0cfb068..6a03a1f0cd5f 100644
+--- a/drivers/input/joystick/Kconfig
++++ b/drivers/input/joystick/Kconfig
+@@ -4,6 +4,7 @@
+ #
+ menuconfig INPUT_JOYSTICK
+ 	bool "Joysticks/Gamepads"
++	depends on !UML
+ 	help
+ 	  If you have a joystick, 6dof controller, gamepad, steering wheel,
+ 	  weapon control system or something like that you can say Y here
+diff --git a/drivers/tty/Kconfig b/drivers/tty/Kconfig
+index e15cd6b5bb99..26648daaaee2 100644
+--- a/drivers/tty/Kconfig
++++ b/drivers/tty/Kconfig
+@@ -12,9 +12,8 @@ if TTY
+ 
+ config VT
+ 	bool "Virtual terminal" if EXPERT
+-	depends on !UML
+ 	select INPUT
+-	default y
++	default y if !UML
+ 	help
+ 	  If you say Y here, you will get support for terminal devices with
+ 	  display and keyboard devices. These are called "virtual" because you
+@@ -78,7 +77,7 @@ config VT_CONSOLE_SLEEP
+ 
+ config HW_CONSOLE
+ 	bool
+-	depends on VT && !UML
++	depends on VT
+ 	default y
+ 
+ config VT_HW_CONSOLE_BINDING
+diff --git a/drivers/video/console/Kconfig b/drivers/video/console/Kconfig
+index ee33b8ec62bb..840d9813b0bc 100644
+--- a/drivers/video/console/Kconfig
++++ b/drivers/video/console/Kconfig
+@@ -9,7 +9,7 @@ config VGA_CONSOLE
+ 	bool "VGA text console" if EXPERT || !X86
+ 	depends on !4xx && !PPC_8xx && !SPARC && !M68K && !PARISC &&  !SUPERH && \
+ 		(!ARM || ARCH_FOOTBRIDGE || ARCH_INTEGRATOR || ARCH_NETWINDER) && \
+-		!ARM64 && !ARC && !MICROBLAZE && !OPENRISC && !NDS32 && !S390
++		!ARM64 && !ARC && !MICROBLAZE && !OPENRISC && !NDS32 && !S390 && !UML
+ 	default y
+ 	help
+ 	  Saying Y here will allow you to use Linux in text mode through a
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.26.2
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
