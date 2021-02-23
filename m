@@ -2,14 +2,12 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lEfAW-0007pX-ME
- for linux-um@lists.infradead.org; Tue, 23 Feb 2021 21:24:33 +0000
-Message-ID: <d2c3b464d782809298670b1ecbc199f56d776600.camel@sipsolutions.net>
-Subject: Re: [PATCH 0/7] PCI support for UML
+ id 1lEZaj-0001CU-Hi
+ for linux-um@lists.infradead.org; Tue, 23 Feb 2021 15:27:14 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Tue, 23 Feb 2021 22:24:25 +0100
-In-Reply-To: <20210223152707.408995-1-johannes@sipsolutions.net>
-References: <20210223152707.408995-1-johannes@sipsolutions.net>
+Subject: [PATCH 0/7] PCI support for UML
+Date: Tue, 23 Feb 2021 16:27:00 +0100
+Message-Id: <20210223152707.408995-1-johannes@sipsolutions.net>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -26,32 +24,31 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
 Cc: Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org
 
-On Tue, 2021-02-23 at 16:27 +0100, Johannes Berg wrote:
-> In order to simulate some devices and write tests completely
-> independent of real PCI devices, we continued the development
-> of time-travel and related bits, and are adding PCI support
-> here now.
-> 
-> The way it works is that it communicates with the outside (of
-> UML) with virtio, which we previously added using vhost-user,
-> and then offers a PCI bus to the inside system, where normal
-> PCI probing etc. happens, but all config space & IO accesses
-> are forwarded over virtio.
+Hi,
 
-I hadn't sent it out until now, but the userspace bits for all the time-
-travel and PCI-over-vhost-user are here:
+In order to simulate some devices and write tests completely
+independent of real PCI devices, we continued the development
+of time-travel and related bits, and are adding PCI support
+here now.
 
-https://github.com/linux-test-project/usfstl/
+The way it works is that it communicates with the outside (of
+UML) with virtio, which we previously added using vhost-user,
+and then offers a PCI bus to the inside system, where normal
+PCI probing etc. happens, but all config space & IO accesses
+are forwarded over virtio.
 
-If anyone has any suggestions on a good example PCI device that already
-has a driver upstream I'd be interested - I looked for something simple
-like LED or GPIO but no such thing I could find (that wasn't platform
-dependent in some way). So far I've only implemented a virtual Intel
-WiFi NIC, but that depends on a large body of code I can't publish. As
-an example, it would be nice to write (and publish there) a simple PCI
-device implementation. :)
+To enable that, add lib/logic_iomem, similar to logic_pio but
+for iomem regions, this way, ioread/iowrite can be redirected
+over the virtio device.
+
+Since currently no official virtio device ID is assigned yet
+a Kconfig option for that is required to be set to the value
+you want to use locally for experimentation. Once we have an
+official value we can change the default (currently -1 which
+makes it non-functional) or remove the option entirely.
 
 johannes
+
 
 
 _______________________________________________
