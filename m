@@ -1,58 +1,34 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lEZak-0001D3-Ls
- for linux-um@lists.infradead.org; Tue, 23 Feb 2021 15:27:16 +0000
+Return-Path: <johannes@sipsolutions.net>
+Message-ID: <b4f7d1f0367548d58d870694eea6187293f0a386.camel@sipsolutions.net>
+Subject: Re: [PATCH 0/7] PCI support for UML
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH 3/7] um: remove unused smp_sigio_handler() declaration
-Date: Tue, 23 Feb 2021 16:27:03 +0100
-Message-Id: <20210223161449.bef71f0bbee7.I479aba3ebfb7a6418255b7a51c5c2cfe3796e9a2@changeid>
-In-Reply-To: <20210223152707.408995-1-johannes@sipsolutions.net>
+Date: Wed, 24 Feb 2021 15:35:11 +0100
+In-Reply-To: <CAMuHMdWymKxYQHPC4Rqc1A7WSdQZDm6noaedHgXqfXPttmGV6w@mail.gmail.com> (sfid-20210224_104734_536153_8E0CF38E)
 References: <20210223152707.408995-1-johannes@sipsolutions.net>
+	 <d2c3b464d782809298670b1ecbc199f56d776600.camel@sipsolutions.net>
+	 <CAMuHMdWymKxYQHPC4Rqc1A7WSdQZDm6noaedHgXqfXPttmGV6w@mail.gmail.com>
+	 (sfid-20210224_104734_536153_8E0CF38E)
+Content-Type: text/plain; charset="UTF-8"
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-um <linux-um@lists.infradead.org>, Arnd Bergmann <arnd@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-From: Johannes Berg <johannes.berg@intel.com>
+Hi,
 
-This function doesn't exist, remove its declaration.
+> > If anyone has any suggestions on a good example PCI device that already
+> > has a driver upstream I'd be interested - I looked for something simple
+> > like LED or GPIO but no such thing I could find (that wasn't platform
+> > dependent in some way). So far I've only implemented a virtual Intel
+> > WiFi NIC, but that depends on a large body of code I can't publish. As
+> > an example, it would be nice to write (and publish there) a simple PCI
+> > device implementation. :)
+> 
+>  bt8xxgpio?
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- arch/um/include/shared/kern_util.h | 1 -
- 1 file changed, 1 deletion(-)
+Yeah, that looks pretty good, thanks for the pointer!
 
-diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
-index 2888ec812f6e..a2cfd42608a0 100644
---- a/arch/um/include/shared/kern_util.h
-+++ b/arch/um/include/shared/kern_util.h
-@@ -33,7 +33,6 @@ extern int handle_page_fault(unsigned long address, unsigned long ip,
- 			     int is_write, int is_user, int *code_out);
- 
- extern unsigned int do_IRQ(int irq, struct uml_pt_regs *regs);
--extern int smp_sigio_handler(void);
- extern void initial_thread_cb(void (*proc)(void *), void *arg);
- extern int is_syscall(unsigned long addr);
- 
--- 
-2.26.2
+johannes
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
