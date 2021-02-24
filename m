@@ -1,13 +1,21 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l7OCx-0003TZ-Ih
- for linux-um@lists.infradead.org; Wed, 03 Feb 2021 19:53:00 +0000
-Date: Wed, 3 Feb 2021 20:52:54 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <2021686242.358980.1612381974638.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] UML fixes for 5.11-rc7
+ id 1lEsb1-0006Cg-4L
+ for linux-um@lists.infradead.org; Wed, 24 Feb 2021 11:44:48 +0000
+Subject: Re: linux uml segfault
+References: <3448a70e7a39b9c3202aeefa7858ace265b8a978.camel@debian.org>
+ <6d37b5aa-36f2-1fce-b70b-8faa0ff882e0@kot-begemot.co.uk>
+ <c8bb257c-1542-12f5-89f1-5c1f14b8a70a@collabora.com>
+ <db40449e-6916-56bf-377c-01b042b9c890@kot-begemot.co.uk>
+ <529cd4e2f39efffb18125dffab3058aeec3351ce.camel@debian.org>
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Message-ID: <573e256a-990b-ddf6-7965-367bb8b21229@kot-begemot.co.uk>
+Date: Wed, 24 Feb 2021 11:44:39 +0000
 MIME-Version: 1.0
+In-Reply-To: <529cd4e2f39efffb18125dffab3058aeec3351ce.camel@debian.org>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -16,67 +24,62 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: torvalds <torvalds@linux-foundation.org>
-Cc: linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
+To: rrs@debian.org, Christopher Obbard <chris.obbard@collabora.com>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>
+Cc: 983379@bugs.debian.org
 
-Linus,
 
-The following changes since commit 4992eb41ab1b5d08479193afdc94f9678e5ded13:
 
-  Merge tag 'for-linus' of git://git.kernel.org/pub/scm/virt/kvm/kvm (2021-01-26 11:10:14 -0800)
+On 23/02/2021 17:26, Ritesh Raj Sarraf wrote:
+> Added the debian bug report in CC.
+> 
+> On Tue, 2021-02-23 at 17:19 +0000, Anton Ivanov wrote:
+>>> The current Debian user-mode-linux package in unstable is based on
+>>> the 5.10.5 stable source which includes the mentioned patch, but is
+>>> still causing an error for some users.
+>>
+>> After updating the tree to 5.10.5 and applying all Debian patches
+>> from the package, I cannot reproduce the bug.
+>>
+>> I am running it on 5.10, 5.2 and 4.19 hosts with the same parameters
+>> without issues. Hosts are all up to date Debian 10.8 and so is the
+>> UML userspace.
+>>
+> 
+> Did you mean 5.10, 5.2 and 4.19 (UML) guests ?
+> 
+> We've seen this happen on Debian Testing and Unstable Host (of which
+> the former would soon be the next stable i.e. Debian Bullseye).
+> 
+> In our tests, when running the same linux uml binary (5.10) on a Debian
+> Stable Host, it is working fine.
 
-are available in the Git repository at:
+I cannot reproduce it on a physical Bullseye host using the Debian user-mode-linux package compiled from source.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.11-rc7
+Environment - Bullseye minimal install and build deps. 6 cores/12 threads Ryzen
 
-for you to fetch changes up to 7f3414226b58b0df0426104c8ab5e8d50ae71d11:
+I cannot reproduce it using the upstream source and the patches from the user-mode-linux package
 
-  um: time: fix initialization in time-travel mode (2021-01-26 22:11:38 +0100)
+Environment - same as above.
 
-----------------------------------------------------------------
-This pull request contains the following bug fixes for UML:
+I cannot reproduce it using the upstream source + patches and compiling on Buster using the following:
 
-- Make sure to set a default console, otherwise ttynull is selected.
-- Revert initial ARCH_HAS_SET_MEMORY support, this needs more work.
-- Fix a regression due to ubd refactoring.
-- Various small fixes.
+1. Bullseye physical host, minimal install, same hardware
 
-----------------------------------------------------------------
-Hajime Tazaki (1):
-      um: ubd: fix command line handling of ubd
+2. Bullseye VM, minimal install, running with 4 vCPUs on the same host
 
-Johannes Berg (6):
-      um: return error from ioremap()
-      um: virtio: free vu_dev only with the contained struct device
-      Revert "um: allocate a guard page to helper threads"
-      Revert "um: support some of ARCH_HAS_SET_MEMORY"
-      um: fix os_idle_sleep() to not hang
-      um: time: fix initialization in time-travel mode
+3. Bullseye LXC container running on a Debian Buster host, minimal install, same hardware
 
-Thomas Meyer (2):
-      um: stdio_console: Make preferred console
-      um: kmsg_dumper: always dump when not tty console
+In all cases it boots cleanly and there are no segfaults.
 
- arch/um/Kconfig                    |  1 -
- arch/um/drivers/ubd_kern.c         |  6 ++---
- arch/um/drivers/virtio_uml.c       |  3 ++-
- arch/um/include/asm/io.h           |  2 +-
- arch/um/include/asm/pgtable.h      |  3 ---
- arch/um/include/asm/set_memory.h   |  1 -
- arch/um/include/shared/kern_util.h |  2 +-
- arch/um/kernel/kmsg_dump.c         |  9 +++++--
- arch/um/kernel/process.c           | 11 +++-----
- arch/um/kernel/time.c              | 50 +++++++++++++++++++++--------------
- arch/um/kernel/tlb.c               | 54 --------------------------------------
- arch/um/kernel/um_arch.c           | 22 +++++++++++++---
- arch/um/os-Linux/helper.c          |  4 +--
- arch/um/os-Linux/time.c            | 15 ++++++++++-
- 14 files changed, 84 insertions(+), 99 deletions(-)
- delete mode 100644 arch/um/include/asm/set_memory.h
+So, frankly, no idea what is causing it to crash - I have run most combinations of 5.10 on a 5.10, all work fine here.
+
+-- 
+Anton R. Ivanov
+https://www.kot-begemot.co.uk/
 
 _______________________________________________
 linux-um mailing list
