@@ -1,15 +1,8 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lEZak-0001D6-Vf
- for linux-um@lists.infradead.org; Tue, 23 Feb 2021 15:27:18 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH 7/7] um: virtio/pci: enable suspend/resume
-Date: Tue, 23 Feb 2021 16:27:07 +0100
-Message-Id: <20210223161449.b8aeac19b66e.I2e9caf8b2083e2a8d0c76799179db35d08032aa1@changeid>
-In-Reply-To: <20210223152707.408995-1-johannes@sipsolutions.net>
-References: <20210223152707.408995-1-johannes@sipsolutions.net>
+From: John Ogness <john.ogness@linutronix.de>
+Subject: [PATCH next v3 00/15] printk: remove logbuf_lock
+Date: Thu, 25 Feb 2021 21:24:23 +0100
+Message-Id: <20210225202438.28985-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -23,154 +16,88 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>
+To: Petr Mladek <pmladek@suse.com>
+Cc: linux-hyperv@vger.kernel.org, Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>, Vignesh Raghavendra <vigneshr@ti.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Douglas Anderson <dianders@chromium.org>, linux-mtd@lists.infradead.org, Michael Ellerman <mpe@ellerman.id.au>, Miquel Raynal <miquel.raynal@bootlin.com>, "K. Y. Srinivasan" <kys@microsoft.com>, Thomas Meyer <thomas@m3y3r.de>, Kees Cook <keescook@chromium.org>, Daniel Thompson <daniel.thompson@linaro.org>, Madhavan Srinivasan <maddy@linux.ibm.com>, Stephen Hemminger <sthemmin@microsoft.com>, Richard Weinberger <richard@nod.at>, Anton Vorontsov <anton@enomsg.org>, Joel Stanley <joel@jms.id.au>, Jordan Niethe <jniethe5@gmail.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Wei Li <liwei391@huawei.com>, Haiyang Zhang <haiyangz@microsoft.com>, Ravi Bangoria <ravi.bangoria@linux.ibm.com>, Pavel Tatashin <pasha.tatashin@soleen.com>, Alistair Popple <alistair@popple.id.au>, Jeff Dike <jdike@addtoit.com>, Colin Cross <ccross@android.com>, linux-um@lists.infradead.org, Wei Liu <wei.liu@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, Davidlohr Bueso <dave@stgolabs.net>, Nicholas Piggin <npiggin@gmail.com>, Oleg Nesterov <oleg@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Michael Kelley <mikelley@microsoft.com>, Christophe Leroy <christophe.leroy@c-s.fr>, Sumit Garg <sumit.garg@linaro.org>, Tony Luck <tony.luck@intel.com>, linux-kernel@vger.kernel.org, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, Jason Wessel <jason.wessel@windriver.com>, kgdb-bugreport@lists.sourceforge.net, Paul Mackerras <paulus@samba.org>, linuxppc-dev@lists.ozlabs.org, Mike Rapoport <rppt@kernel.org>
 
-From: Johannes Berg <johannes.berg@intel.com>
+Hello,
 
-The UM virtual PCI devices currently cannot be suspended properly
-since the virtio driver already disables VQs well before the PCI
-bus's suspend_noirq wants to complete the transition by writing to
-PCI config space.
+Here is v3 of a series to remove @logbuf_lock, exposing the
+ringbuffer locklessly to both readers and writers. v2 is here [0].
 
-After trying around for a long time with moving the devices on the
-DPM list, trying to create dependencies between them, etc. I gave
-up and instead added UML specific cross-driver API that lets the
-virt-pci code enable not suspending/resuming VQs for its devices.
+Since @logbuf_lock was protecting much more than just the
+ringbuffer, this series clarifies and cleans up the various
+protections using comments, lockless accessors, atomic types, and a
+new finer-grained @syslog_lock.
 
-This then allows the PCI bus suspend_noirq to still talk to the
-device, and suspend/resume works properly.
+Removing @logbuf_lock required changing the semantics of the
+kmsg_dumper callback in order to work locklessly. Since this
+involved touching all the kmsg_dump users, we also decided [1] to
+use this opportunity to clean up and clarify the kmsg_dump semantics
+in general.
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- arch/um/drivers/virt-pci.c         |  7 ++++++
- arch/um/drivers/virtio_uml.c       | 40 ++++++++++++++++++++++--------
- arch/um/include/linux/virtio-uml.h | 13 ++++++++++
- 3 files changed, 50 insertions(+), 10 deletions(-)
- create mode 100644 arch/um/include/linux/virtio-uml.h
+This series is based on next-20210225.
 
-diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
-index dd85f36197aa..e5d57ec8ada6 100644
---- a/arch/um/drivers/virt-pci.c
-+++ b/arch/um/drivers/virt-pci.c
-@@ -10,6 +10,7 @@
- #include <linux/logic_iomem.h>
- #include <linux/irqdomain.h>
- #include <linux/virtio_pcidev.h>
-+#include <linux/virtio-uml.h>
- #include <linux/delay.h>
- #include <linux/msi.h>
- #include <asm/unaligned.h>
-@@ -550,6 +551,12 @@ static int um_pci_virtio_probe(struct virtio_device *vdev)
- 
- 	device_set_wakeup_enable(&vdev->dev, true);
- 
-+	/*
-+	 * In order to do suspend-resume properly, don't allow VQs
-+	 * to be suspended.
-+	 */
-+	virtio_uml_set_no_vq_suspend(vdev, true);
-+
- 	um_pci_rescan();
- 	return 0;
- error:
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index 91ddf74ca888..4412d6febade 100644
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -56,6 +56,7 @@ struct virtio_uml_device {
- 	u8 status;
- 	u8 registered:1;
- 	u8 suspended:1;
-+	u8 no_vq_suspend:1;
- 
- 	u8 config_changed_irq:1;
- 	uint64_t vq_irq_vq_map;
-@@ -1098,6 +1099,19 @@ static void virtio_uml_release_dev(struct device *d)
- 	kfree(vu_dev);
- }
- 
-+void virtio_uml_set_no_vq_suspend(struct virtio_device *vdev,
-+				  bool no_vq_suspend)
-+{
-+	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
-+
-+	if (WARN_ON(vdev->config != &virtio_uml_config_ops))
-+		return;
-+
-+	vu_dev->no_vq_suspend = no_vq_suspend;
-+	dev_info(&vdev->dev, "%sabled VQ suspend\n",
-+		 no_vq_suspend ? "dis" : "en");
-+}
-+
- /* Platform device */
- 
- static int virtio_uml_probe(struct platform_device *pdev)
-@@ -1302,13 +1316,16 @@ MODULE_DEVICE_TABLE(of, virtio_uml_match);
- static int virtio_uml_suspend(struct platform_device *pdev, pm_message_t state)
- {
- 	struct virtio_uml_device *vu_dev = platform_get_drvdata(pdev);
--	struct virtqueue *vq;
- 
--	virtio_device_for_each_vq((&vu_dev->vdev), vq) {
--		struct virtio_uml_vq_info *info = vq->priv;
-+	if (!vu_dev->no_vq_suspend) {
-+		struct virtqueue *vq;
- 
--		info->suspended = true;
--		vhost_user_set_vring_enable(vu_dev, vq->index, false);
-+		virtio_device_for_each_vq((&vu_dev->vdev), vq) {
-+			struct virtio_uml_vq_info *info = vq->priv;
-+
-+			info->suspended = true;
-+			vhost_user_set_vring_enable(vu_dev, vq->index, false);
-+		}
- 	}
- 
- 	if (!device_may_wakeup(&vu_dev->vdev.dev)) {
-@@ -1322,13 +1339,16 @@ static int virtio_uml_suspend(struct platform_device *pdev, pm_message_t state)
- static int virtio_uml_resume(struct platform_device *pdev)
- {
- 	struct virtio_uml_device *vu_dev = platform_get_drvdata(pdev);
--	struct virtqueue *vq;
- 
--	virtio_device_for_each_vq((&vu_dev->vdev), vq) {
--		struct virtio_uml_vq_info *info = vq->priv;
-+	if (!vu_dev->no_vq_suspend) {
-+		struct virtqueue *vq;
-+
-+		virtio_device_for_each_vq((&vu_dev->vdev), vq) {
-+			struct virtio_uml_vq_info *info = vq->priv;
- 
--		info->suspended = false;
--		vhost_user_set_vring_enable(vu_dev, vq->index, true);
-+			info->suspended = false;
-+			vhost_user_set_vring_enable(vu_dev, vq->index, true);
-+		}
- 	}
- 
- 	vu_dev->suspended = false;
-diff --git a/arch/um/include/linux/virtio-uml.h b/arch/um/include/linux/virtio-uml.h
-new file mode 100644
-index 000000000000..2f652fa90f04
---- /dev/null
-+++ b/arch/um/include/linux/virtio-uml.h
-@@ -0,0 +1,13 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2021 Intel Corporation
-+ * Author: Johannes Berg <johannes@sipsolutions.net>
-+ */
-+
-+#ifndef __VIRTIO_UML_H__
-+#define __VIRTIO_UML_H__
-+
-+void virtio_uml_set_no_vq_suspend(struct virtio_device *vdev,
-+				  bool no_vq_suspend);
-+
-+#endif /* __VIRTIO_UML_H__ */
+Changes since v2:
+
+- use get_maintainer.pl to get the full list of developers that
+  should at least see the changes in their respective areas
+
+- do not disable interrupts in arch/um kmsg_dumper (because there is
+  no need to)
+
+- protect the mtd/mtdoops kmsg_dumper buffer against concurrent
+  dumps
+
+- update kerneldoc for kmsg_dump_get_line() (@len_out)
+
+- remove ksmg_dump's @active flag
+
+- change kmsg_dumper callback to:
+  void (*dump)(enum kmsg_dump_reason reason);
+
+- rename kmsg_dumper_iter to kmsg_dump_iter
+
+- update kmsg_dumpers to use their own kmsg_dump_iter (and
+  initialize it with kmsg_dump_rewind() if necessary)
+
+John Ogness
+
+[0] https://lkml.kernel.org/r/20210218081817.28849-1-john.ogness@linutronix.de
+[1] https://lkml.kernel.org/r/YDeZAA08NKCHa4s%2F@alley
+
+John Ogness (15):
+  um: synchronize kmsg_dumper
+  mtd: mtdoops: synchronize kmsg_dumper
+  printk: limit second loop of syslog_print_all
+  printk: kmsg_dump: remove unused fields
+  printk: refactor kmsg_dump_get_buffer()
+  printk: consolidate kmsg_dump_get_buffer/syslog_print_all code
+  printk: introduce CONSOLE_LOG_MAX for improved multi-line support
+  printk: use seqcount_latch for clear_seq
+  printk: use atomic64_t for devkmsg_user.seq
+  printk: add syslog_lock
+  printk: kmsg_dumper: remove @active field
+  printk: introduce a kmsg_dump iterator
+  printk: remove logbuf_lock
+  printk: kmsg_dump: remove _nolock() variants
+  printk: console: remove unnecessary safe buffer usage
+
+ arch/powerpc/kernel/nvram_64.c             |  14 +-
+ arch/powerpc/platforms/powernv/opal-kmsg.c |   3 +-
+ arch/powerpc/xmon/xmon.c                   |   6 +-
+ arch/um/kernel/kmsg_dump.c                 |  15 +-
+ drivers/hv/vmbus_drv.c                     |   7 +-
+ drivers/mtd/mtdoops.c                      |  20 +-
+ fs/pstore/platform.c                       |   8 +-
+ include/linux/kmsg_dump.h                  |  49 +--
+ kernel/debug/kdb/kdb_main.c                |  10 +-
+ kernel/printk/internal.h                   |   4 +-
+ kernel/printk/printk.c                     | 456 ++++++++++-----------
+ kernel/printk/printk_safe.c                |  27 +-
+ 12 files changed, 309 insertions(+), 310 deletions(-)
+
 -- 
-2.26.2
+2.20.1
 
 
 _______________________________________________
