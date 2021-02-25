@@ -1,14 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lFNBj-0008Nx-4m
- for linux-um@lists.infradead.org; Thu, 25 Feb 2021 20:24:45 +0000
-From: John Ogness <john.ogness@linutronix.de>
-Subject: [PATCH next v3 01/15] um: synchronize kmsg_dumper
-Date: Thu, 25 Feb 2021 21:24:24 +0100
-Message-Id: <20210225202438.28985-2-john.ogness@linutronix.de>
-In-Reply-To: <20210225202438.28985-1-john.ogness@linutronix.de>
-References: <20210225202438.28985-1-john.ogness@linutronix.de>
+ id 1lFGSZ-0000dT-Ic
+ for linux-um@lists.infradead.org; Thu, 25 Feb 2021 13:13:40 +0000
+Message-ID: <96d1f031409d87ff91582eb5b3c1db5af9832bf9.camel@sipsolutions.net>
+Subject: Re: [PATCH 4/7] um: time-travel/signals: fix ndelay() in interrupt
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Thu, 25 Feb 2021 14:13:33 +0100
+In-Reply-To: <20210223161449.7461e0b6dacc.I3507b456d425cb95a092eb50b6cb491fe8575c50@changeid>
+References: <20210223152707.408995-1-johannes@sipsolutions.net>
+ <20210223161449.7461e0b6dacc.I3507b456d425cb95a092eb50b6cb491fe8575c50@changeid>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,59 +24,48 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Petr Mladek <pmladek@suse.com>
-Cc: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Thomas Meyer <thomas@m3y3r.de>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: linux-um@lists.infradead.org
+Cc: Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org
 
-The kmsg_dumper can be called from any context and CPU, possibly
-from multiple CPUs simultaneously. Since a static buffer is used
-to retrieve the kernel logs, this buffer must be protected against
-simultaneous dumping. Skip dumping if another context is already
-dumping.
+On Tue, 2021-02-23 at 16:27 +0100, Johannes Berg wrote:
+> 
+> +void unblock_signals_hard(void)
+> +{
+> +	if (!signals_blocked)
+> +		return;
+> +
+> +	if (signals_pending && signals_enabled) {
+> +		/* this is a bit inefficient, but that's not really important */
+> +		block_signals();
+> +		unblock_signals();
+> +	} else if (signals_pending & SIGIO_MASK) {
+> +		/* we need to run time-travel handlers even if not enabled */
+> +		sigio_run_timetravel_handlers();
+> +	}
+> +
+> +	signals_blocked = 0;
+> +}
 
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
-Reviewed-by: Petr Mladek <pmladek@suse.com>
----
- arch/um/kernel/kmsg_dump.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+This is, of course, racy & wrong - we could set signals_pending just
+after checking it.
 
-diff --git a/arch/um/kernel/kmsg_dump.c b/arch/um/kernel/kmsg_dump.c
-index 6516ef1f8274..4869e2cc787c 100644
---- a/arch/um/kernel/kmsg_dump.c
-+++ b/arch/um/kernel/kmsg_dump.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <linux/kmsg_dump.h>
-+#include <linux/spinlock.h>
- #include <linux/console.h>
- #include <linux/string.h>
- #include <shared/init.h>
-@@ -9,6 +10,7 @@
- static void kmsg_dumper_stdout(struct kmsg_dumper *dumper,
- 				enum kmsg_dump_reason reason)
- {
-+	static DEFINE_SPINLOCK(lock);
- 	static char line[1024];
- 	struct console *con;
- 	size_t len = 0;
-@@ -29,11 +31,16 @@ static void kmsg_dumper_stdout(struct kmsg_dumper *dumper,
- 	if (con)
- 		return;
- 
-+	if (!spin_trylock(&lock))
-+		return;
-+
- 	printf("kmsg_dump:\n");
- 	while (kmsg_dump_get_line(dumper, true, line, sizeof(line), &len)) {
- 		line[len] = '\0';
- 		printf("%s", line);
- 	}
-+
-+	spin_unlock(&lock);
- }
- 
- static struct kmsg_dumper kmsg_dumper = {
--- 
-2.20.1
+Need to make this
+
+{
+	if (!signals_blocked)
+		return;
+	signals_blocked = 0;
+	barrier();
+
+	if (signals_pending && signals_enabled) {
+...
+
+
+Anyway, I need to repost this series, but I'll wait a bit longer for
+further feedback before that, since I know Arnd and others wanted to
+take a look at the IOMEM and PCI bits.
+
+johannes
 
 
 _______________________________________________
