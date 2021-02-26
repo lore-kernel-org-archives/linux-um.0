@@ -1,12 +1,11 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from lithops.sigma-star.at ([195.201.40.130])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lDuvv-0006Qz-0J
- for linux-um@lists.infradead.org; Sun, 21 Feb 2021 20:02:24 +0000
-Date: Sun, 21 Feb 2021 21:02:21 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <1264486228.14901.1613937741621.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] UML changes for 5.12
+From: John Ogness <john.ogness@linutronix.de>
+Subject: Re: [PATCH next v3 12/15] printk: introduce a kmsg_dump iterator
+In-Reply-To: <20210225202438.28985-13-john.ogness@linutronix.de>
+References: <20210225202438.28985-1-john.ogness@linutronix.de>
+ <20210225202438.28985-13-john.ogness@linutronix.de>
+Date: Fri, 26 Feb 2021 08:59:10 +0100
+Message-ID: <87a6rrxnsh.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -20,97 +19,95 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: torvalds <torvalds@linux-foundation.org>
-Cc: linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
+To: Petr Mladek <pmladek@suse.com>
+Cc: linux-hyperv@vger.kernel.org, Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Douglas Anderson <dianders@chromium.org>, Paul Mackerras <paulus@samba.org>, Miquel Raynal <miquel.raynal@bootlin.com>, "K. Y. Srinivasan" <kys@microsoft.com>, Thomas Meyer <thomas@m3y3r.de>, Vignesh Raghavendra <vigneshr@ti.com>, Wei Liu <wei.liu@kernel.org>, Madhavan Srinivasan <maddy@linux.ibm.com>, Stephen Hemminger <sthemmin@microsoft.com>, kernel test robot <lkp@intel.com>, Michael Ellerman <mpe@ellerman.id.au>, Anton Vorontsov <anton@enomsg.org>, clang-built-linux@googlegroups.com, Joel Stanley <joel@jms.id.au>, Jason Wessel <jason.wessel@windriver.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Wei Li <liwei391@huawei.com>, Haiyang Zhang <haiyangz@microsoft.com>, Ravi Bangoria <ravi.bangoria@linux.ibm.com>, Kees Cook <keescook@chromium.org>, Alistair Popple <alistair@popple.id.au>, Jeff Dike <jdike@addtoit.com>, Colin Cross <ccross@android.com>, linux-um@lists.infradead.org, Daniel Thompson <daniel.thompson@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, Davidlohr Bueso <dave@stgolabs.net>, Nicholas Piggin <npiggin@gmail.com>, Oleg Nesterov <oleg@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Jordan Niethe <jniethe5@gmail.com>, Michael Kelley <mikelley@microsoft.com>, Christophe Leroy <christophe.leroy@c-s.fr>, Tony Luck <tony.luck@intel.com>, kbuild-all@lists.01.org, Pavel Tatashin <pasha.tatashin@soleen.com>, linux-kernel@vger.kernel.org, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, Richard Weinberger <richard@nod.at>, kgdb-bugreport@lists.sourceforge.net, linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, Mike Rapoport <rppt@kernel.org>
 
-Linus,
+Hello,
 
-The following changes since commit 92bf22614b21a2706f4993b278017e437f7785b3:
+Thank you kernel test robot!
 
-  Linux 5.11-rc7 (2021-02-07 13:57:38 -0800)
+Despite all of my efforts to carefully construct and test this series,
+somehome I managed to miss a compile test with CONFIG_MTD_OOPS. That
+kmsg_dumper does require the dumper parameter so that it can use
+container_of().
 
-are available in the Git repository at:
+I will discuss this with the printk team. But most likely we will just
+re-instate the dumper parameter in the callback.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linux-5.12-rc1
+I apologize for the lack of care on my part.
 
-for you to fetch changes up to ddad5187fc2a12cb84c9d1ac8ecb816708a2986b:
+John Ogness
 
-  um: irq.h: include <asm-generic/irq.h> (2021-02-12 21:40:14 +0100)
-
-----------------------------------------------------------------
-This pull request contains the following changes for UML:
-
-- Many cleanups and fixes for our virtio code
-- Add support for a pseudo RTC
-- Fix for a possible jailbreak
-- Minor fixes (spelling, header files)
-
-----------------------------------------------------------------
-Christophe Leroy (1):
-      mm: Remove arch_remap() and mm-arch-hooks.h
-
-Colin Ian King (1):
-      um: fix spelling mistake in Kconfig "privleges" -> "privileges"
-
-Johannes Berg (15):
-      um: virtio: clean up a comment
-      um: virtio: fix handling of messages without payload
-      um: virtio: disable VQs during suspend
-      um: time-travel: rework interrupt handling in ext mode
-      um: virtio: allow devices to be configured for wakeup
-      um: hostfs: use a kmem cache for inodes
-      um: print register names in wait_for_stub
-      um: mm: check more comprehensively for stub changes
-      um: defer killing userspace on page table update failures
-      um: separate child and parent errors in clone stub
-      um: rework userspace stubs to not hard-code stub location
-      um: remove process stub VMA
-      um: add a pseudo RTC
-      um: io.h: include <linux/types.h>
-      um: irq.h: include <asm-generic/irq.h>
-
- arch/um/drivers/Kconfig                 |  13 +-
- arch/um/drivers/Makefile                |   2 +
- arch/um/drivers/rtc.h                   |  15 +++
- arch/um/drivers/rtc_kern.c              | 211 ++++++++++++++++++++++++++++++++
- arch/um/drivers/rtc_user.c              |  80 ++++++++++++
- arch/um/drivers/virtio_uml.c            | 145 +++++++++++++++-------
- arch/um/include/asm/Kbuild              |   2 +-
- arch/um/include/asm/io.h                |   1 +
- arch/um/include/asm/irq.h               |   1 +
- arch/um/include/asm/mmu_context.h       |  29 +----
- arch/um/include/linux/time-internal.h   |  17 +++
- arch/um/include/shared/as-layout.h      |  17 +--
- arch/um/include/shared/common-offsets.h |   6 +
- arch/um/include/shared/irq_kern.h       |  60 +++++++++
- arch/um/include/shared/skas/mm_id.h     |   1 +
- arch/um/include/shared/skas/stub-data.h |   2 +-
- arch/um/kernel/exec.c                   |   4 +-
- arch/um/kernel/irq.c                    | 171 ++++++++++++++++++++++----
- arch/um/kernel/skas/clone.c             |  28 ++---
- arch/um/kernel/skas/mmu.c               |  87 -------------
- arch/um/kernel/time.c                   |  17 ++-
- arch/um/kernel/tlb.c                    |  14 +--
- arch/um/kernel/um_arch.c                |   5 +
- arch/um/os-Linux/skas/mem.c             |   2 +
- arch/um/os-Linux/skas/process.c         |  86 ++++++++++---
- arch/x86/um/os-Linux/task_size.c        |   2 +-
- arch/x86/um/shared/sysdep/stub_32.h     |  33 +++--
- arch/x86/um/shared/sysdep/stub_64.h     |  36 ++++--
- arch/x86/um/stub_32.S                   |  17 ++-
- arch/x86/um/stub_64.S                   |   5 +-
- arch/x86/um/stub_segv.c                 |   5 +-
- fs/hostfs/hostfs_kern.c                 |  10 +-
- include/asm-generic/Kbuild              |   1 -
- include/asm-generic/mm-arch-hooks.h     |  16 ---
- include/linux/mm-arch-hooks.h           |  22 ----
- mm/mremap.c                             |   3 -
- 36 files changed, 841 insertions(+), 325 deletions(-)
- create mode 100644 arch/um/drivers/rtc.h
- create mode 100644 arch/um/drivers/rtc_kern.c
- create mode 100644 arch/um/drivers/rtc_user.c
- delete mode 100644 include/asm-generic/mm-arch-hooks.h
- delete mode 100644 include/linux/mm-arch-hooks.h
+On 2021-02-26, kernel test robot <lkp@intel.com> wrote:
+> Hi John,
+>
+> I love your patch! Yet something to improve:
+>
+> [auto build test ERROR on next-20210225]
+>
+> url:    https://github.com/0day-ci/linux/commits/John-Ogness/printk-remove-logbuf_lock/20210226-043457
+> base:    7f206cf3ec2bee4621325cfacb2588e5085c07f5
+> config: arm-randconfig-r024-20210225 (attached as .config)
+> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project a921aaf789912d981cbb2036bdc91ad7289e1523)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install arm cross compiling tool for clang build
+>         # apt-get install binutils-arm-linux-gnueabi
+>         # https://github.com/0day-ci/linux/commit/fc7f655cded40fc98ba5304c200e3a01e8291fb4
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review John-Ogness/printk-remove-logbuf_lock/20210226-043457
+>         git checkout fc7f655cded40fc98ba5304c200e3a01e8291fb4
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm 
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+>>> drivers/mtd/mtdoops.c:277:45: error: use of undeclared identifier 'dumper'
+>            struct mtdoops_context *cxt = container_of(dumper,
+>                                                       ^
+>>> drivers/mtd/mtdoops.c:277:45: error: use of undeclared identifier 'dumper'
+>>> drivers/mtd/mtdoops.c:277:45: error: use of undeclared identifier 'dumper'
+>    3 errors generated.
+>
+>
+> vim +/dumper +277 drivers/mtd/mtdoops.c
+>
+> 4b23aff083649e Richard Purdie 2007-05-29  274  
+> fc7f655cded40f John Ogness    2021-02-25  275  static void mtdoops_do_dump(enum kmsg_dump_reason reason)
+> 2e386e4bac9055 Simon Kagstrom 2009-11-03  276  {
+> 2e386e4bac9055 Simon Kagstrom 2009-11-03 @277  	struct mtdoops_context *cxt = container_of(dumper,
+> 2e386e4bac9055 Simon Kagstrom 2009-11-03  278  			struct mtdoops_context, dump);
+> fc7f655cded40f John Ogness    2021-02-25  279  	struct kmsg_dump_iter iter;
+> fc2d557c74dc58 Seiji Aguchi   2011-01-12  280  
+> 2e386e4bac9055 Simon Kagstrom 2009-11-03  281  	/* Only dump oopses if dump_oops is set */
+> 2e386e4bac9055 Simon Kagstrom 2009-11-03  282  	if (reason == KMSG_DUMP_OOPS && !dump_oops)
+> 2e386e4bac9055 Simon Kagstrom 2009-11-03  283  		return;
+> 2e386e4bac9055 Simon Kagstrom 2009-11-03  284  
+> fc7f655cded40f John Ogness    2021-02-25  285  	kmsg_dump_rewind(&iter);
+> fc7f655cded40f John Ogness    2021-02-25  286  
+> df92cad8a03e83 John Ogness    2021-02-25  287  	if (test_and_set_bit(0, &cxt->oops_buf_busy))
+> df92cad8a03e83 John Ogness    2021-02-25  288  		return;
+> fc7f655cded40f John Ogness    2021-02-25  289  	kmsg_dump_get_buffer(&iter, true, cxt->oops_buf + MTDOOPS_HEADER_SIZE,
+> e2ae715d66bf4b Kay Sievers    2012-06-15  290  			     record_size - MTDOOPS_HEADER_SIZE, NULL);
+> df92cad8a03e83 John Ogness    2021-02-25  291  	clear_bit(0, &cxt->oops_buf_busy);
+> 2e386e4bac9055 Simon Kagstrom 2009-11-03  292  
+> c1cf1d57d14922 Mark Tomlinson 2020-09-03  293  	if (reason != KMSG_DUMP_OOPS) {
+> 2e386e4bac9055 Simon Kagstrom 2009-11-03  294  		/* Panics must be written immediately */
+> 2e386e4bac9055 Simon Kagstrom 2009-11-03  295  		mtdoops_write(cxt, 1);
+> c1cf1d57d14922 Mark Tomlinson 2020-09-03  296  	} else {
+> 2e386e4bac9055 Simon Kagstrom 2009-11-03  297  		/* For other cases, schedule work to write it "nicely" */
+> 2e386e4bac9055 Simon Kagstrom 2009-11-03  298  		schedule_work(&cxt->work_write);
+> 2e386e4bac9055 Simon Kagstrom 2009-11-03  299  	}
+> c1cf1d57d14922 Mark Tomlinson 2020-09-03  300  }
+> 4b23aff083649e Richard Purdie 2007-05-29  301  
+>
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 _______________________________________________
 linux-um mailing list
