@@ -1,79 +1,48 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
- by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lI8ms-00En4j-E5
- for linux-um@lists.infradead.org; Fri, 05 Mar 2021 11:38:32 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v3 0/9] PCI support for UML
-Date: Fri,  5 Mar 2021 12:37:48 +0100
-Message-Id: <20210305113756.331001-1-johannes@sipsolutions.net>
+Return-Path: <masahiroy@kernel.org>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 0/7] x86: fix warnings and refactor syscall code
+Date: Mon,  1 Mar 2021 22:15:25 +0900
+Message-Id: <20210301131533.64671-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Arnd Bergmann <arnd@kernel.org>
-
-Hi,
-
-Chances since v2:
- - add "um: expose time-travel mode to userspace side"
-   to simplify "um: time-travel/signals: fix ndelay() in interrupt"
- - rework "um: time-travel/signals: fix ndelay() in interrupt"
-   a fair bit to fix bugs with time_travel_mode != TT_MODE_EXTERNAL
-   when CONFIG_UML_TIME_TRAVEL_SUPPORT is enabled, and to clean up
-   the code
- - no changes to the other patches
-
-Changes since v1:
- - fix a memory leak in the PCI code
- - fix race in interrupt handling
- - fix checks in interrupt handling
- - use asm-generic for fb.h and vga.h
- - rediff against v5.12-rc1
- - export signals_enabled directly
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>
+Cc: linux-kernel@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Andy Lutomirski <luto@kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Brian Gerst <brgerst@gmail.com>, Dominik Brodowski <linux@dominikbrodowski.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Jeff Dike <jdike@addtoit.com>, Johannes Berg <johannes.berg@intel.com>, Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org
+List-ID: <linux-um.lists.infradead.org>
 
 
-Original description:
-
-In order to simulate some devices and write tests completely
-independent of real PCI devices, we continued the development
-of time-travel and related bits, and are adding PCI support
-here now.
-
-The way it works is that it communicates with the outside (of
-UML) with virtio, which we previously added using vhost-user,
-and then offers a PCI bus to the inside system, where normal
-PCI probing etc. happens, but all config space & IO accesses
-are forwarded over virtio.
-
-To enable that, add lib/logic_iomem, similar to logic_pio but
-for iomem regions, this way, ioread/iowrite can be redirected
-over the virtio device.
-
-Since currently no official virtio device ID is assigned yet
-a Kconfig option for that is required to be set to the value
-you want to use locally for experimentation. Once we have an
-official value we can change the default (currently -1 which
-makes it non-functional) or remove the option entirely.
-
-johannes
+This patch series makes a lot of cleanups.
+We can remove a lot of lines.
+The code diff is attractive.
 
 
 
+Masahiro Yamada (7):
+  x86/syscalls: fix -Wmissing-prototypes warnings from COND_SYSCALL()
+  x86/entry/x32: rename __x32_compat_sys_* to __x64_compat_sys_*
+  x86/syscalls: switch to generic syscalltbl.sh
+  x86/syscalls: stop filling syscall arrays with *_sys_ni_syscall
+  x86/unistd: define X32_NR_syscalls only for 64-bit kernel
+  x86/syscalls: use __NR_syscalls instead of __NR_syscall_max
+  x86/syscalls: switch to generic syscallhdr.sh
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+ arch/um/kernel/skas/syscall.c          |  2 +-
+ arch/x86/entry/syscall_32.c            | 20 +++++------
+ arch/x86/entry/syscall_64.c            | 17 +++-------
+ arch/x86/entry/syscall_x32.c           | 35 ++++----------------
+ arch/x86/entry/syscalls/Makefile       | 36 +++++++++++---------
+ arch/x86/entry/syscalls/syscallhdr.sh  | 35 --------------------
+ arch/x86/entry/syscalls/syscalltbl.sh  | 46 --------------------------
+ arch/x86/include/asm/Kbuild            |  1 +
+ arch/x86/include/asm/syscall_wrapper.h | 11 +++---
+ arch/x86/include/asm/unistd.h          |  8 ++---
+ arch/x86/um/sys_call_table_32.c        | 14 +++-----
+ arch/x86/um/sys_call_table_64.c        | 15 ++-------
+ 12 files changed, 61 insertions(+), 179 deletions(-)
+ delete mode 100644 arch/x86/entry/syscalls/syscallhdr.sh
+ delete mode 100644 arch/x86/entry/syscalls/syscalltbl.sh
+
+-- 
+2.27.0
+
 
