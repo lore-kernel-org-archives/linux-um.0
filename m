@@ -1,63 +1,113 @@
-Return-Path: <linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Wed, 3 Mar 2021 14:18:29 +0100
-From: Petr Mladek <pmladek@suse.com>
-Subject: lkml delivery: was: Re: [PATCH next v4 00/15] printk: remove
- logbuf_lock
-Message-ID: <YD+MpccJp4gX6bOP@alley>
-References: <20210303101528.29901-1-john.ogness@linutronix.de>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from conuserg-08.nifty.com ([210.131.2.75])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1lGiQX-0008Kk-NU
+ for linux-um@lists.infradead.org; Mon, 01 Mar 2021 13:17:37 +0000
+From: Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 6/7] x86/syscalls: use __NR_syscalls instead of
+ __NR_syscall_max
+Date: Mon,  1 Mar 2021 22:15:31 +0900
+Message-Id: <20210301131533.64671-7-masahiroy@kernel.org>
+In-Reply-To: <20210301131533.64671-1-masahiroy@kernel.org>
+References: <20210301131533.64671-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210303101528.29901-1-john.ogness@linutronix.de>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
-List-Post: <mailto:linux-mtd@lists.infradead.org>
-List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-Errors-To: linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org
-To: John Ogness <john.ogness@linutronix.de>, Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-Cc: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Thomas Meyer <thomas@m3y3r.de>, linux-um@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>, Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org, Kees Cook <keescook@chromium.org>, Pavel Tatashin <pasha.tatashin@soleen.com>, Michael Ellerman <mpe@ellerman.id.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Jason Wessel <jason.wessel@windriver.com>, Daniel Thompson <daniel.thompson@linaro.org>, Douglas Anderson <dianders@chromium.org>, Jordan Niethe <jniethe5@gmail.com>, Alistair Popple <alistair@popple.id.au>, Ravi Bangoria <ravi.bangoria@linux.ibm.com>, Nicholas Piggin <npiggin@gmail.com>, Madhavan Srinivasan <maddy@linux.ibm.com>, Mike Rapoport <rppt@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Wei Li <liwei391@huawei.com>, Davidlohr Bueso <dave@stgolabs.net>, linuxppc-dev@lists.ozlabs.org, kgdb-bugreport@lists.sourceforge.net, "K. Y. Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, Stephen Hemminger <sthemmin@microsoft.com>, Wei Liu <wei.liu@kernel.org>, Anton Vorontsov <anton@enomsg.org>, Colin Cross <ccross@android.com>, Tony Luck <tony.luck@intel.com>, Christophe Leroy <christophe.leroy@c-s.fr>, Michael Kelley <mikelley@microsoft.com>, linux-hyperv@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>
+Cc: Johannes Berg <johannes.berg@intel.com>, Brian Gerst <brgerst@gmail.com>, Masahiro Yamada <masahiroy@kernel.org>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-SGkgSm9obiwKCk9uIFdlZCAyMDIxLTAzLTAzIDExOjE1OjEzLCBKb2huIE9nbmVzcyB3cm90ZToK
-PiBIZWxsbywKPiAKPiBIZXJlIGlzIHY0IG9mIGEgc2VyaWVzIHRvIHJlbW92ZSBAbG9nYnVmX2xv
-Y2ssIGV4cG9zaW5nIHRoZQo+IHJpbmdidWZmZXIgbG9ja2xlc3NseSB0byBib3RoIHJlYWRlcnMg
-YW5kIHdyaXRlcnMuIHYzIGlzCj4gaGVyZSBbMF0uCgpIYXZlIHlvdSBnb3Qgc29tZSByZXBseSBm
-cm9tIGxrbWwgdGhhdCBpdCBoYXMgbm90IGRlbGl2ZXJlZCB0aGVyZSwKcGxlYXNlPwoKSSBhbSBu
-b3QgYWJsZSB0byBnZXQgdGhlIHBhdGNoc2V0IHVzaW5nIGI0IHRvb2w6CgokPiBiNCBhbSAtbyB0
-ZXN0IDIwMjEwMzAzMTAxNTI4LjI5OTAxLTEtam9obi5vZ25lc3NAbGludXRyb25peC5kZQpMb29r
-aW5nIHVwIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL3IvMjAyMTAzMDMxMDE1MjguMjk5MDEtMS1q
-b2huLm9nbmVzcyU0MGxpbnV0cm9uaXguZGUKR3JhYmJpbmcgdGhyZWFkIGZyb20gbG9yZS5rZXJu
-ZWwub3JnL2xpbnV4LWh5cGVydgpBbmFseXppbmcgMiBtZXNzYWdlcyBpbiB0aGUgdGhyZWFkCi0t
-LQpUaHJlYWQgaW5jb21wbGV0ZSwgYXR0ZW1wdGluZyB0byBiYWNrZmlsbApHcmFiYmluZyB0aHJl
-YWQgZnJvbSBsb3JlLmtlcm5lbC5vcmcvbGttbApTZXJ2ZXIgcmV0dXJuZWQgYW4gZXJyb3I6IDQw
-NApHcmFiYmluZyB0aHJlYWQgZnJvbSBsb3JlLmtlcm5lbC5vcmcvbGludXgtbXRkClNlcnZlciBy
-ZXR1cm5lZCBhbiBlcnJvcjogNDA0CkdyYWJiaW5nIHRocmVhZCBmcm9tIGxvcmUua2VybmVsLm9y
-Zy9saW51eHBwYy1kZXYKTG9hZGVkIDIgbWVzc2FnZXMgZnJvbSBodHRwczovL2xvcmUua2VybmVs
-Lm9yZy9saW51eHBwYy1kZXYvCi0tLQpXcml0aW5nIHRlc3QvdjRfMjAyMTAzMDNfam9obl9vZ25l
-c3NfcHJpbnRrX3JlbW92ZV9sb2didWZfbG9jay5tYngKICBFUlJPUjogbWlzc2luZyBbMS8xNV0h
-CiAgRVJST1I6IG1pc3NpbmcgWzIvMTVdIQogIEVSUk9SOiBtaXNzaW5nIFszLzE1XSEKICBFUlJP
-UjogbWlzc2luZyBbNC8xNV0hCiAgRVJST1I6IG1pc3NpbmcgWzUvMTVdIQogIEVSUk9SOiBtaXNz
-aW5nIFs2LzE1XSEKICBFUlJPUjogbWlzc2luZyBbNy8xNV0hCiAgRVJST1I6IG1pc3NpbmcgWzgv
-MTVdIQogIEVSUk9SOiBtaXNzaW5nIFs5LzE1XSEKICBFUlJPUjogbWlzc2luZyBbMTAvMTVdIQog
-IFtQQVRDSCBuZXh0IHY0IDExLzE1XSBwcmludGs6IGttc2dfZHVtcGVyOiByZW1vdmUgQGFjdGl2
-ZSBmaWVsZAogIOKckyBbUEFUQ0ggbmV4dCB2NCAxMi8xNV0gcHJpbnRrOiBpbnRyb2R1Y2UgYSBr
-bXNnX2R1bXAgaXRlcmF0b3IKICBFUlJPUjogbWlzc2luZyBbMTMvMTVdIQogIFtQQVRDSCBuZXh0
-IHY0IDE0LzE1XSBwcmludGs6IGttc2dfZHVtcDogcmVtb3ZlIF9ub2xvY2soKSB2YXJpYW50cwog
-IEVSUk9SOiBtaXNzaW5nIFsxNS8xNV0hCi0tLQpUb3RhbCBwYXRjaGVzOiAzCi0tLQpXQVJOSU5H
-OiBUaHJlYWQgaW5jb21wbGV0ZSEKQ292ZXI6IHRlc3QvdjRfMjAyMTAzMDNfam9obl9vZ25lc3Nf
-cHJpbnRrX3JlbW92ZV9sb2didWZfbG9jay5jb3ZlcgogTGluazogaHR0cHM6Ly9sb3JlLmtlcm5l
-bC5vcmcvci8yMDIxMDMwMzEwMTUyOC4yOTkwMS0xLWpvaG4ub2duZXNzQGxpbnV0cm9uaXguZGUK
-IEJhc2U6IG5vdCBmb3VuZAogICAgICAgZ2l0IGFtIHRlc3QvdjRfMjAyMTAzMDNfam9obl9vZ25l
-c3NfcHJpbnRrX3JlbW92ZV9sb2didWZfbG9jay5tYngKCgphbmQgSSBkbyBub3Qgc2VlIGl0IGF0
-IGxvcmUuIEl0IGhhcyBvbmx5IGZvdW5kIGNvcGllcyBpbiBsaW51eC1oeXBlcnYKYW5kIGxpbnV4
-LXBwY2RldiBtYWlsaW5nIGxpc3RzLApzZWUgaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGttbC8y
-MDIxMDMwMzEwMTUyOC4yOTkwMS0yLWpvaG4ub2duZXNzQGxpbnV0cm9uaXguZGUvCgpCZXN0IFJl
-Z2FyZHMsClBldHIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+__NR_syscall_max is only used by x86 and UML in the following two files:
+
+  - arch/um/kernel/skas/syscall.c
+  - arch/x86/include/asm/unistd.h
+
+In contrast, __NR_syscalls is widely used by all the architectures.
+
+Let's convert __NR_syscall_max to __NR_syscalls by adding one.
+
+This makes arch/x86/include/asm/unistd.h look cleaner, and also
+prepares x86 to switch to the generic scripts/syscallhdr.sh from
+arch/x86/entry/syscalls/syscallhdr.sh.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ arch/um/kernel/skas/syscall.c         | 2 +-
+ arch/x86/entry/syscalls/syscallhdr.sh | 2 +-
+ arch/x86/include/asm/unistd.h         | 8 ++++----
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/arch/um/kernel/skas/syscall.c b/arch/um/kernel/skas/syscall.c
+index 3d91f89fd852..9ee19e566da3 100644
+--- a/arch/um/kernel/skas/syscall.c
++++ b/arch/um/kernel/skas/syscall.c
+@@ -41,7 +41,7 @@ void handle_syscall(struct uml_pt_regs *r)
+ 		goto out;
+ 
+ 	syscall = UPT_SYSCALL_NR(r);
+-	if (syscall >= 0 && syscall <= __NR_syscall_max)
++	if (syscall >= 0 && syscall < __NR_syscalls)
+ 		PT_REGS_SET_SYSCALL_RETURN(regs,
+ 				EXECUTE_SYSCALL(syscall, regs));
+ 
+diff --git a/arch/x86/entry/syscalls/syscallhdr.sh b/arch/x86/entry/syscalls/syscallhdr.sh
+index cc1e63857427..75e66af06773 100644
+--- a/arch/x86/entry/syscalls/syscallhdr.sh
++++ b/arch/x86/entry/syscalls/syscallhdr.sh
+@@ -28,7 +28,7 @@ grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
+ 
+     echo ""
+     echo "#ifdef __KERNEL__"
+-    echo "#define __NR_${prefix}syscall_max $max"
++    echo "#define __NR_${prefix}syscalls $(($max + 1))"
+     echo "#endif"
+     echo ""
+     echo "#endif /* ${fileguard} */"
+diff --git a/arch/x86/include/asm/unistd.h b/arch/x86/include/asm/unistd.h
+index 1bc6020bc58d..80e9d5206a71 100644
+--- a/arch/x86/include/asm/unistd.h
++++ b/arch/x86/include/asm/unistd.h
+@@ -13,7 +13,7 @@
+ #  define __ARCH_WANT_SYS_OLD_MMAP
+ #  define __ARCH_WANT_SYS_OLD_SELECT
+ 
+-#  define __NR_ia32_syscall_max __NR_syscall_max
++#  define IA32_NR_syscalls (__NR_syscalls)
+ 
+ # else
+ 
+@@ -26,12 +26,12 @@
+ #  define __ARCH_WANT_COMPAT_SYS_PWRITEV64
+ #  define __ARCH_WANT_COMPAT_SYS_PREADV64V2
+ #  define __ARCH_WANT_COMPAT_SYS_PWRITEV64V2
+-#  define X32_NR_syscalls (__NR_x32_syscall_max + 1)
++#  define X32_NR_syscalls (__NR_x32_syscalls)
++#  define IA32_NR_syscalls (__NR_ia32_syscalls)
+ 
+ # endif
+ 
+-# define NR_syscalls (__NR_syscall_max + 1)
+-# define IA32_NR_syscalls (__NR_ia32_syscall_max + 1)
++# define NR_syscalls (__NR_syscalls)
+ 
+ # define __ARCH_WANT_NEW_STAT
+ # define __ARCH_WANT_OLD_READDIR
+-- 
+2.27.0
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
