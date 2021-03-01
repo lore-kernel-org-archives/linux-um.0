@@ -1,13 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
- by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lKeW5-00B5TT-RJ
- for linux-um@lists.infradead.org; Fri, 12 Mar 2021 09:55:41 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH 0/6] um: fix up CONFIG_GCOV support
-Date: Fri, 12 Mar 2021 10:55:20 +0100
-Message-Id: <20210312095526.197739-1-johannes@sipsolutions.net>
+Received: from conuserg-08.nifty.com ([210.131.2.75])
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1lGiQX-0008Kl-NS
+ for linux-um@lists.infradead.org; Mon, 01 Mar 2021 13:17:37 +0000
+From: Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 4/7] x86/syscalls: stop filling syscall arrays with
+ *_sys_ni_syscall
+Date: Mon,  1 Mar 2021 22:15:29 +0900
+Message-Id: <20210301131533.64671-5-masahiroy@kernel.org>
+In-Reply-To: <20210301131533.64671-1-masahiroy@kernel.org>
+References: <20210301131533.64671-1-masahiroy@kernel.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -21,54 +23,167 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
-Cc: Jessica Yu <jeyu@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org
+To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>
+Cc: Richard Weinberger <richard@nod.at>, Masahiro Yamada <masahiroy@kernel.org>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>, Jeff Dike <jdike@addtoit.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-CONFIG_GCOV is fairly useful for ARCH=um (e.g. with kunit, though
-my main use case is a bit different) since it writes coverage data
-directly out like a normal userspace binary. Theoretically, that
-is.
+This is a follow-up cleanup after switching to the generic
+syscalltbl.sh.
 
-Unfortunately, it's broken in multiple ways today:
+The old arch/x86/entry/syscalls/syscalltbl.sh skipped non-existing
+syscalls. So, the generated syscalls_64.h, for example, had a big
+hole in the syscall numbers 335-423 range. That is why there exists
+[0 ... __NR_*_syscall_max] = &__*_sys_ni_cyscall.
 
- 1) it doesn't like, due to 'mangle_path' in seq_file, and the only
-    solution to that seems to be to rename our symbol, but that's
-    not so bad, and "mangle_path" sounds very generic anyway, which
-    it isn't quite
+The new script, scripts/syscalltbl.sh automatically fills holes
+with __SYSCALL(<nr>, sys_ni_syscall), hence such ugly code can
+go away. The designated initializers, '[nr] =' are also unneeded.
 
- 2) gcov requires exit handlers to write out the data, and those are
-    never called for modules, config CONSTRUCTORS exists for init
-    handlers, so add CONFIG_MODULE_DESTRUCTORS here that we can then
-    select in ARCH=um
+Also, there is no need to give __NR_*_syscall_max+1 because the array
+size is implied by the number of syscalls in the generated headers.
+Hence, there is no need to include <asm/unistd.h>, either.
 
- 3) As mentioned above, gcov requires init/exit handlers, but they
-    aren't linked into binary properly, that's easy to fix.
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
- 4) gcda files are then written, so .gitignore them
+ arch/x86/entry/syscall_32.c     | 10 ++--------
+ arch/x86/entry/syscall_64.c     | 10 ++--------
+ arch/x86/entry/syscall_x32.c    | 10 ++--------
+ arch/x86/um/sys_call_table_32.c |  6 ------
+ arch/x86/um/sys_call_table_64.c |  6 ------
+ 5 files changed, 6 insertions(+), 36 deletions(-)
 
- 5) it's not always useful to create coverage data for the *entire*
-    kernel, so I've split off CONFIG_GCOV_BASE from CONFIG_GCOV to
-    allow option in only in some places, which of course requires
-    adding the necessary "subdir-cflags" or "CFLAGS_obj" changes in
-    the places where it's desired, as local patches.
-
-
-None of these changes (hopefully) seem too controversional, biggest
-are the module changes but obviously they compile to nothing if the
-architecture doesn't WANT_MODULE_DESTRUCTORS.
-
-Any thoughts on how to merge this? The seq_file/.gitignore changes
-are independent at least code-wise, though of course it only works
-with the seq_file changes (.gitignore doesn't matter, of course),
-while the module changes are a requirement for the later ARCH=um
-patches since the Kconfig symbol has to exist.
-
-Perhaps I can just get ACKs on all the patches and then they can go
-through the UML tree?
-
-Thanks,
-johannes
-
+diff --git a/arch/x86/entry/syscall_32.c b/arch/x86/entry/syscall_32.c
+index 70bf46e73b1c..8cfc9bc73e7f 100644
+--- a/arch/x86/entry/syscall_32.c
++++ b/arch/x86/entry/syscall_32.c
+@@ -5,7 +5,6 @@
+ #include <linux/sys.h>
+ #include <linux/cache.h>
+ #include <linux/syscalls.h>
+-#include <asm/unistd.h>
+ #include <asm/syscall.h>
+ 
+ #ifdef CONFIG_IA32_EMULATION
+@@ -19,13 +18,8 @@
+ #include <asm/syscalls_32.h>
+ #undef __SYSCALL
+ 
+-#define __SYSCALL(nr, sym) [nr] = __ia32_##sym,
++#define __SYSCALL(nr, sym) __ia32_##sym,
+ 
+-__visible const sys_call_ptr_t ia32_sys_call_table[__NR_ia32_syscall_max+1] = {
+-	/*
+-	 * Smells like a compiler bug -- it doesn't work
+-	 * when the & below is removed.
+-	 */
+-	[0 ... __NR_ia32_syscall_max] = &__ia32_sys_ni_syscall,
++__visible const sys_call_ptr_t ia32_sys_call_table[] = {
+ #include <asm/syscalls_32.h>
+ };
+diff --git a/arch/x86/entry/syscall_64.c b/arch/x86/entry/syscall_64.c
+index 82670bb10931..be120eec1fc9 100644
+--- a/arch/x86/entry/syscall_64.c
++++ b/arch/x86/entry/syscall_64.c
+@@ -5,20 +5,14 @@
+ #include <linux/sys.h>
+ #include <linux/cache.h>
+ #include <linux/syscalls.h>
+-#include <asm/unistd.h>
+ #include <asm/syscall.h>
+ 
+ #define __SYSCALL(nr, sym) extern long __x64_##sym(const struct pt_regs *);
+ #include <asm/syscalls_64.h>
+ #undef __SYSCALL
+ 
+-#define __SYSCALL(nr, sym) [nr] = __x64_##sym,
++#define __SYSCALL(nr, sym) __x64_##sym,
+ 
+-asmlinkage const sys_call_ptr_t sys_call_table[__NR_syscall_max+1] = {
+-	/*
+-	 * Smells like a compiler bug -- it doesn't work
+-	 * when the & below is removed.
+-	 */
+-	[0 ... __NR_syscall_max] = &__x64_sys_ni_syscall,
++asmlinkage const sys_call_ptr_t sys_call_table[] = {
+ #include <asm/syscalls_64.h>
+ };
+diff --git a/arch/x86/entry/syscall_x32.c b/arch/x86/entry/syscall_x32.c
+index 6d2ef887d7b6..bdd0e03a1265 100644
+--- a/arch/x86/entry/syscall_x32.c
++++ b/arch/x86/entry/syscall_x32.c
+@@ -5,20 +5,14 @@
+ #include <linux/sys.h>
+ #include <linux/cache.h>
+ #include <linux/syscalls.h>
+-#include <asm/unistd.h>
+ #include <asm/syscall.h>
+ 
+ #define __SYSCALL(nr, sym) extern long __x64_##sym(const struct pt_regs *);
+ #include <asm/syscalls_x32.h>
+ #undef __SYSCALL
+ 
+-#define __SYSCALL(nr, sym) [nr] = __x64_##sym,
++#define __SYSCALL(nr, sym) __x64_##sym,
+ 
+-asmlinkage const sys_call_ptr_t x32_sys_call_table[__NR_x32_syscall_max+1] = {
+-	/*
+-	 * Smells like a compiler bug -- it doesn't work
+-	 * when the & below is removed.
+-	 */
+-	[0 ... __NR_x32_syscall_max] = &__x64_sys_ni_syscall,
++asmlinkage const sys_call_ptr_t x32_sys_call_table[] = {
+ #include <asm/syscalls_x32.h>
+ };
+diff --git a/arch/x86/um/sys_call_table_32.c b/arch/x86/um/sys_call_table_32.c
+index e83619c365dc..f8323104e353 100644
+--- a/arch/x86/um/sys_call_table_32.c
++++ b/arch/x86/um/sys_call_table_32.c
+@@ -7,7 +7,6 @@
+ #include <linux/linkage.h>
+ #include <linux/sys.h>
+ #include <linux/cache.h>
+-#include <asm/unistd.h>
+ #include <asm/syscall.h>
+ 
+ #define __NO_STUBS
+@@ -37,11 +36,6 @@
+ extern asmlinkage long sys_ni_syscall(unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long);
+ 
+ const sys_call_ptr_t sys_call_table[] ____cacheline_aligned = {
+-	/*
+-	 * Smells like a compiler bug -- it doesn't work
+-	 * when the & below is removed.
+-	 */
+-	[0 ... __NR_syscall_max] = &sys_ni_syscall,
+ #include <asm/syscalls_32.h>
+ };
+ 
+diff --git a/arch/x86/um/sys_call_table_64.c b/arch/x86/um/sys_call_table_64.c
+index 6fb75af7cf54..5ed665dc785f 100644
+--- a/arch/x86/um/sys_call_table_64.c
++++ b/arch/x86/um/sys_call_table_64.c
+@@ -7,7 +7,6 @@
+ #include <linux/linkage.h>
+ #include <linux/sys.h>
+ #include <linux/cache.h>
+-#include <asm/unistd.h>
+ #include <asm/syscall.h>
+ 
+ #define __NO_STUBS
+@@ -45,11 +44,6 @@
+ extern asmlinkage long sys_ni_syscall(unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long);
+ 
+ const sys_call_ptr_t sys_call_table[] ____cacheline_aligned = {
+-	/*
+-	 * Smells like a compiler bug -- it doesn't work
+-	 * when the & below is removed.
+-	 */
+-	[0 ... __NR_syscall_max] = &sys_ni_syscall,
+ #include <asm/syscalls_64.h>
+ };
+ 
+-- 
+2.27.0
 
 
 _______________________________________________
