@@ -1,16 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
- by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lHTwN-005Va5-Na
- for linux-um@lists.infradead.org; Wed, 03 Mar 2021 16:01:38 +0000
-From: Benjamin Berg <benjamin@sipsolutions.net>
-Subject: [PATCH 22/27] um: Add stub side of SECCOMP/futex based process
- handling
-Date: Wed,  3 Mar 2021 16:55:18 +0100
-Message-Id: <20210303155523.124277-23-benjamin@sipsolutions.net>
-In-Reply-To: <20210303155523.124277-1-benjamin@sipsolutions.net>
-References: <20210303155523.124277-1-benjamin@sipsolutions.net>
+ by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1lGk8p-0008Af-HO
+ for linux-um@lists.infradead.org; Mon, 01 Mar 2021 15:07:25 +0000
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [PATCH v2 8/8] um: virtio/pci: enable suspend/resume
+Date: Mon,  1 Mar 2021 16:07:08 +0100
+Message-Id: <20210301160501.19e6e5378a97.I2e9caf8b2083e2a8d0c76799179db35d08032aa1@changeid>
+In-Reply-To: <20210301150708.244970-1-johannes@sipsolutions.net>
+References: <20210301150708.244970-1-johannes@sipsolutions.net>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -25,231 +24,163 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: Benjamin Berg <benjamin@sipsolutions.net>, Johannes Berg <johannes@sipsolutions.net>
+Cc: Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>
 
-This adds the stub side for the new seccomp process management code. In
-this case we do register save/restore through the signal handler
-mcontext. For the FS_BASE/GS_BASE register we need special handling.
+From: Johannes Berg <johannes.berg@intel.com>
 
-Co-authored-by: Johannes Berg <johannes@sipsolutions.net>
-Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
+The UM virtual PCI devices currently cannot be suspended properly
+since the virtio driver already disables VQs well before the PCI
+bus's suspend_noirq wants to complete the transition by writing to
+PCI config space.
+
+After trying around for a long time with moving the devices on the
+DPM list, trying to create dependencies between them, etc. I gave
+up and instead added UML specific cross-driver API that lets the
+virt-pci code enable not suspending/resuming VQs for its devices.
+
+This then allows the PCI bus suspend_noirq to still talk to the
+device, and suspend/resume works properly.
+
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- arch/um/include/shared/skas/stub-data.h | 15 +++++++
- arch/um/kernel/skas/clone.c             | 25 ++++++++++++
- arch/um/kernel/skas/stub.c              | 53 +++++++++++++++++++++++++
- arch/x86/um/shared/sysdep/stub-data.h   | 11 +++++
- arch/x86/um/shared/sysdep/stub.h        |  3 ++
- arch/x86/um/shared/sysdep/stub_32.h     |  5 +++
- arch/x86/um/shared/sysdep/stub_64.h     | 10 +++++
- 7 files changed, 122 insertions(+)
- create mode 100644 arch/x86/um/shared/sysdep/stub-data.h
+ arch/um/drivers/virt-pci.c         | 10 ++++++++
+ arch/um/drivers/virtio_uml.c       | 40 ++++++++++++++++++++++--------
+ arch/um/include/linux/virtio-uml.h | 13 ++++++++++
+ 3 files changed, 53 insertions(+), 10 deletions(-)
+ create mode 100644 arch/um/include/linux/virtio-uml.h
 
-diff --git a/arch/um/include/shared/skas/stub-data.h b/arch/um/include/shared/skas/stub-data.h
-index efa78bc359cb..e130c428cda9 100644
---- a/arch/um/include/shared/skas/stub-data.h
-+++ b/arch/um/include/shared/skas/stub-data.h
-@@ -8,8 +8,13 @@
- #ifndef __STUB_DATA_H
- #define __STUB_DATA_H
+diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
+index dd85f36197aa..0b802834f40a 100644
+--- a/arch/um/drivers/virt-pci.c
++++ b/arch/um/drivers/virt-pci.c
+@@ -10,6 +10,7 @@
+ #include <linux/logic_iomem.h>
+ #include <linux/irqdomain.h>
+ #include <linux/virtio_pcidev.h>
++#include <linux/virtio-uml.h>
+ #include <linux/delay.h>
+ #include <linux/msi.h>
+ #include <asm/unaligned.h>
+@@ -134,6 +135,9 @@ static int um_pci_send_cmd(struct um_pci_device *dev,
+ 		if (completed == HANDLE_NO_FREE(cmd))
+ 			break;
  
-+#include <linux/kconfig.h>
- #include <linux/compiler_types.h>
- #include <as-layout.h>
-+#include <sysdep/stub-data.h>
++		if (completed && !HANDLE_IS_NO_FREE(completed))
++			kfree(completed);
 +
-+#define FUTEX_IN_CHILD 0
-+#define FUTEX_IN_KERN 1
+ 		if (WARN_ONCE(virtqueue_is_broken(dev->cmd_vq) ||
+ 			      ++delay_count > UM_VIRT_PCI_MAXDELAY,
+ 			      "um virt-pci delay: %d", delay_count)) {
+@@ -550,6 +554,12 @@ static int um_pci_virtio_probe(struct virtio_device *vdev)
  
- #define STUB_NEXT_SYSCALL(s) \
- 	((struct stub_syscall *) (((unsigned long) s) + (s)->cmd_len))
-@@ -32,6 +37,16 @@ struct stub_data {
- 	unsigned char syscall_data[UM_KERN_PAGE_SIZE - MINSIGSTKSZ - 128]
- 		      __aligned(16);
+ 	device_set_wakeup_enable(&vdev->dev, true);
  
-+	/* data shared with signal handler (only used in seccomp mode) */
-+	short restart_wait;
-+	unsigned int futex;
-+	int signal;
-+	unsigned short si_offset;
-+	unsigned short mctx_offset;
++	/*
++	 * In order to do suspend-resume properly, don't allow VQs
++	 * to be suspended.
++	 */
++	virtio_uml_set_no_vq_suspend(vdev, true);
 +
-+	/* seccomp architecture specific state restore */
-+	struct stub_data_arch arch_data;
-+
- 	/* Stack for our signal handlers and for calling into . */
- 	unsigned char sigstack[MINSIGSTKSZ + 32] __aligned(16);
- };
-diff --git a/arch/um/kernel/skas/clone.c b/arch/um/kernel/skas/clone.c
-index a680d80b3870..d6e0742c77fd 100644
---- a/arch/um/kernel/skas/clone.c
-+++ b/arch/um/kernel/skas/clone.c
-@@ -49,3 +49,28 @@ stub_clone_handler(void)
-  done:
- 	trap_myself();
+ 	um_pci_rescan();
+ 	return 0;
+ error:
+diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
+index 91ddf74ca888..4412d6febade 100644
+--- a/arch/um/drivers/virtio_uml.c
++++ b/arch/um/drivers/virtio_uml.c
+@@ -56,6 +56,7 @@ struct virtio_uml_device {
+ 	u8 status;
+ 	u8 registered:1;
+ 	u8 suspended:1;
++	u8 no_vq_suspend:1;
+ 
+ 	u8 config_changed_irq:1;
+ 	uint64_t vq_irq_vq_map;
+@@ -1098,6 +1099,19 @@ static void virtio_uml_release_dev(struct device *d)
+ 	kfree(vu_dev);
  }
-+
-+#ifdef CONFIG_UML_SECCOMP
-+void __attribute__ ((__section__ (".__syscall_stub")))
-+stub_clone_handler_seccomp(void)
+ 
++void virtio_uml_set_no_vq_suspend(struct virtio_device *vdev,
++				  bool no_vq_suspend)
 +{
-+	int stack;
-+	struct stub_data *data = (void *) ((unsigned long)&stack & ~(UM_KERN_PAGE_SIZE - 1));
-+	long err;
++	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
 +
-+	/* Use the syscall data as a temporary stack area. */
-+	err = stub_syscall2(__NR_clone, CLONE_PARENT | CLONE_FILES | SIGCHLD,
-+			    (unsigned long) data->syscall_data +
-+					    sizeof(data->syscall_data) -
-+					    sizeof(void *));
-+	if (err) {
-+		data->err = err;
-+		goto done;
-+	}
++	if (WARN_ON(vdev->config != &virtio_uml_config_ops))
++		return;
 +
-+	remap_stack_and_trap();
-+
-+ done:
-+	trap_myself();
++	vu_dev->no_vq_suspend = no_vq_suspend;
++	dev_info(&vdev->dev, "%sabled VQ suspend\n",
++		 no_vq_suspend ? "dis" : "en");
 +}
-+#endif
-diff --git a/arch/um/kernel/skas/stub.c b/arch/um/kernel/skas/stub.c
-index 5d1bcc883866..4bf32fdf4599 100644
---- a/arch/um/kernel/skas/stub.c
-+++ b/arch/um/kernel/skas/stub.c
-@@ -5,6 +5,13 @@
- 
- #include <sysdep/stub.h>
- 
-+#ifdef CONFIG_UML_SECCOMP
-+#include <linux/futex.h>
-+#include <errno.h>
 +
-+#define CATCH_EINTR(expr) while ((res = (expr)) && (res == -EINTR))
-+#endif
-+
- static __always_inline int
- syscall_handler(struct stub_data *d)
+ /* Platform device */
+ 
+ static int virtio_uml_probe(struct platform_device *pdev)
+@@ -1302,13 +1316,16 @@ MODULE_DEVICE_TABLE(of, virtio_uml_match);
+ static int virtio_uml_suspend(struct platform_device *pdev, pm_message_t state)
  {
-@@ -50,3 +57,49 @@ stub_syscall_handler(void)
+ 	struct virtio_uml_device *vu_dev = platform_get_drvdata(pdev);
+-	struct virtqueue *vq;
  
- 	trap_myself();
- }
+-	virtio_device_for_each_vq((&vu_dev->vdev), vq) {
+-		struct virtio_uml_vq_info *info = vq->priv;
++	if (!vu_dev->no_vq_suspend) {
++		struct virtqueue *vq;
+ 
+-		info->suspended = true;
+-		vhost_user_set_vring_enable(vu_dev, vq->index, false);
++		virtio_device_for_each_vq((&vu_dev->vdev), vq) {
++			struct virtio_uml_vq_info *info = vq->priv;
 +
-+#ifdef CONFIG_UML_SECCOMP
-+void __attribute__ ((__section__ (".__syscall_stub")))
-+stub_signal_interrupt(int sig, siginfo_t *info, void *p)
-+{
-+	int stack;
-+	struct stub_data *d = (void *) ((unsigned long)&stack & ~(UM_KERN_PAGE_SIZE - 1));
-+	ucontext_t *uc = p;
-+	long res;
++			info->suspended = true;
++			vhost_user_set_vring_enable(vu_dev, vq->index, false);
++		}
+ 	}
+ 
+ 	if (!device_may_wakeup(&vu_dev->vdev.dev)) {
+@@ -1322,13 +1339,16 @@ static int virtio_uml_suspend(struct platform_device *pdev, pm_message_t state)
+ static int virtio_uml_resume(struct platform_device *pdev)
+ {
+ 	struct virtio_uml_device *vu_dev = platform_get_drvdata(pdev);
+-	struct virtqueue *vq;
+ 
+-	virtio_device_for_each_vq((&vu_dev->vdev), vq) {
+-		struct virtio_uml_vq_info *info = vq->priv;
++	if (!vu_dev->no_vq_suspend) {
++		struct virtqueue *vq;
 +
-+	d->signal = sig;
-+	d->si_offset = (unsigned long)info - (unsigned long)&d->sigstack[0];
-+	d->mctx_offset = (unsigned long)&uc->uc_mcontext - (unsigned long)&d->sigstack[0];
-+
-+restart_wait:
-+	d->futex = FUTEX_IN_KERN;
-+	CATCH_EINTR(stub_syscall3(__NR_futex, (unsigned long)&d->futex,
-+				  FUTEX_WAKE, 1));
-+	do {
-+		res = stub_syscall4(__NR_futex, (unsigned long)&d->futex,
-+				    FUTEX_WAIT, FUTEX_IN_KERN, 0);
-+	} while (res == -EINTR || d->futex == FUTEX_IN_KERN);
-+
-+	if (res < 0 && res != -EAGAIN)
-+		stub_syscall2(__NR_kill, 0, SIGKILL);
-+
-+	/* Try running queued syscalls. */
-+	if (syscall_handler(d) < 0 || d->restart_wait) {
-+		/* Report SIGTRAP if we restart. */
-+		d->signal = SIGTRAP;
-+		d->restart_wait = 0;
-+		goto restart_wait;
-+	}
-+
-+	/* Restore arch dependent state that is not part of the mcontext */
-+	stub_seccomp_restore_state(&d->arch_data);
-+
-+	/* Return so that the host modified mcontext is restored. */
-+}
-+
-+void __attribute__ ((__section__ (".__syscall_stub")))
-+stub_signal_restorer(void)
-+{
-+	stub_syscall0(__NR_rt_sigreturn);
-+}
-+#endif
-diff --git a/arch/x86/um/shared/sysdep/stub-data.h b/arch/x86/um/shared/sysdep/stub-data.h
++		virtio_device_for_each_vq((&vu_dev->vdev), vq) {
++			struct virtio_uml_vq_info *info = vq->priv;
+ 
+-		info->suspended = false;
+-		vhost_user_set_vring_enable(vu_dev, vq->index, true);
++			info->suspended = false;
++			vhost_user_set_vring_enable(vu_dev, vq->index, true);
++		}
+ 	}
+ 
+ 	vu_dev->suspended = false;
+diff --git a/arch/um/include/linux/virtio-uml.h b/arch/um/include/linux/virtio-uml.h
 new file mode 100644
-index 000000000000..2e71b48ebb1f
+index 000000000000..2f652fa90f04
 --- /dev/null
-+++ b/arch/x86/um/shared/sysdep/stub-data.h
-@@ -0,0 +1,11 @@
++++ b/arch/um/include/linux/virtio-uml.h
+@@ -0,0 +1,13 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
-+#ifdef __i386__
-+struct stub_data_arch { };
-+#else
-+struct stub_data_arch {
-+	int sync;
-+	unsigned long fs_base;
-+	unsigned long gs_base;
-+};
-+#endif
++/*
++ * Copyright (C) 2021 Intel Corporation
++ * Author: Johannes Berg <johannes@sipsolutions.net>
++ */
 +
-diff --git a/arch/x86/um/shared/sysdep/stub.h b/arch/x86/um/shared/sysdep/stub.h
-index 579681d12158..eb2e3a24d40b 100644
---- a/arch/x86/um/shared/sysdep/stub.h
-+++ b/arch/x86/um/shared/sysdep/stub.h
-@@ -14,3 +14,6 @@
- extern void stub_segv_handler(int, siginfo_t *, void *);
- extern void stub_syscall_handler(void);
- extern void stub_clone_handler(void);
-+extern void stub_signal_interrupt(int, siginfo_t *, void *);
-+extern void stub_signal_restorer(void);
-+extern void stub_clone_handler_seccomp(void);
-diff --git a/arch/x86/um/shared/sysdep/stub_32.h b/arch/x86/um/shared/sysdep/stub_32.h
-index 3fb8559fe994..62aa7597576a 100644
---- a/arch/x86/um/shared/sysdep/stub_32.h
-+++ b/arch/x86/um/shared/sysdep/stub_32.h
-@@ -130,4 +130,9 @@ static __always_inline void remap_stack_and_trap(void)
- 		"memory");
- }
- 
-+static __always_inline void stub_seccomp_restore_state(struct stub_data_arch *arch)
-+{
-+	/* No extra arch specific restore */
-+}
++#ifndef __VIRTIO_UML_H__
++#define __VIRTIO_UML_H__
 +
- #endif
-diff --git a/arch/x86/um/shared/sysdep/stub_64.h b/arch/x86/um/shared/sysdep/stub_64.h
-index c41ae0462c8f..69f9aeca8cee 100644
---- a/arch/x86/um/shared/sysdep/stub_64.h
-+++ b/arch/x86/um/shared/sysdep/stub_64.h
-@@ -8,6 +8,7 @@
- 
- #include <sysdep/ptrace_user.h>
- #include <generated/asm-offsets.h>
-+#include <asm/prctl.h>
- 
- #define STUB_MMAP_NR __NR_mmap
- #define MMAP_OFFSET(o) (o)
-@@ -125,4 +126,13 @@ static __always_inline void remap_stack_and_trap(void)
- 		__syscall_clobber, "r10", "r8", "r9");
- }
- 
-+static __always_inline void stub_seccomp_restore_state(struct stub_data_arch *arch)
-+{
-+	/* TODO: Use _writefsbase_u64/_writegsbase_u64 when possible */
-+	if (arch->sync & 0x1)
-+		stub_syscall2(__NR_arch_prctl, ARCH_SET_FS, arch->fs_base);
-+	if (arch->sync & 0x2)
-+		stub_syscall2(__NR_arch_prctl, ARCH_SET_GS, arch->gs_base);
-+}
++void virtio_uml_set_no_vq_suspend(struct virtio_device *vdev,
++				  bool no_vq_suspend);
 +
- #endif
++#endif /* __VIRTIO_UML_H__ */
 -- 
-2.29.2
+2.26.2
 
 
 _______________________________________________
