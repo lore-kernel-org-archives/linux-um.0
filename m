@@ -1,15 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from conuserg-08.nifty.com ([210.131.2.75])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lGiQX-0008Kl-NS
- for linux-um@lists.infradead.org; Mon, 01 Mar 2021 13:17:37 +0000
-From: Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 4/7] x86/syscalls: stop filling syscall arrays with
- *_sys_ni_syscall
-Date: Mon,  1 Mar 2021 22:15:29 +0900
-Message-Id: <20210301131533.64671-5-masahiroy@kernel.org>
-In-Reply-To: <20210301131533.64671-1-masahiroy@kernel.org>
-References: <20210301131533.64671-1-masahiroy@kernel.org>
+ id 1lGk8o-0008BR-Cc
+ for linux-um@lists.infradead.org; Mon, 01 Mar 2021 15:07:23 +0000
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [PATCH v2 6/8] um: irqs: allow invoking time-travel handler multiple
+ times
+Date: Mon,  1 Mar 2021 16:07:06 +0100
+Message-Id: <20210301160501.55ca8a7f5c73.I0344b4c8a7e79d8ac1645acad97371f202837777@changeid>
+In-Reply-To: <20210301150708.244970-1-johannes@sipsolutions.net>
+References: <20210301150708.244970-1-johannes@sipsolutions.net>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -23,167 +24,46 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>
-Cc: Richard Weinberger <richard@nod.at>, Masahiro Yamada <masahiroy@kernel.org>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>, Jeff Dike <jdike@addtoit.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: linux-um@lists.infradead.org
+Cc: Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>
 
-This is a follow-up cleanup after switching to the generic
-syscalltbl.sh.
+From: Johannes Berg <johannes.berg@intel.com>
 
-The old arch/x86/entry/syscalls/syscalltbl.sh skipped non-existing
-syscalls. So, the generated syscalls_64.h, for example, had a big
-hole in the syscall numbers 335-423 range. That is why there exists
-[0 ... __NR_*_syscall_max] = &__*_sys_ni_cyscall.
+If we happen to get multiple messages while IRQS are already
+suspended, we still need to handle them, since otherwise the
+simulation blocks.
 
-The new script, scripts/syscalltbl.sh automatically fills holes
-with __SYSCALL(<nr>, sys_ni_syscall), hence such ugly code can
-go away. The designated initializers, '[nr] =' are also unneeded.
+Remove the "prevent nesting" part, time_travel_add_irq_event()
+will deal with being called multiple times just fine.
 
-Also, there is no need to give __NR_*_syscall_max+1 because the array
-size is implied by the number of syscalls in the generated headers.
-Hence, there is no need to include <asm/unistd.h>, either.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
+ arch/um/kernel/irq.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
- arch/x86/entry/syscall_32.c     | 10 ++--------
- arch/x86/entry/syscall_64.c     | 10 ++--------
- arch/x86/entry/syscall_x32.c    | 10 ++--------
- arch/x86/um/sys_call_table_32.c |  6 ------
- arch/x86/um/sys_call_table_64.c |  6 ------
- 5 files changed, 6 insertions(+), 36 deletions(-)
-
-diff --git a/arch/x86/entry/syscall_32.c b/arch/x86/entry/syscall_32.c
-index 70bf46e73b1c..8cfc9bc73e7f 100644
---- a/arch/x86/entry/syscall_32.c
-+++ b/arch/x86/entry/syscall_32.c
-@@ -5,7 +5,6 @@
- #include <linux/sys.h>
- #include <linux/cache.h>
- #include <linux/syscalls.h>
--#include <asm/unistd.h>
- #include <asm/syscall.h>
+diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
+index ccf5e4d27202..2ee0a368aa59 100644
+--- a/arch/um/kernel/irq.c
++++ b/arch/um/kernel/irq.c
+@@ -101,10 +101,12 @@ static bool irq_do_timetravel_handler(struct irq_entry *entry,
+ 	if (!reg->timetravel_handler)
+ 		return false;
  
- #ifdef CONFIG_IA32_EMULATION
-@@ -19,13 +18,8 @@
- #include <asm/syscalls_32.h>
- #undef __SYSCALL
+-	/* prevent nesting - we'll get it again later when we SIGIO ourselves */
+-	if (reg->pending_on_resume)
+-		return true;
+-
++	/*
++	 * Handle all messages - we might get multiple even while
++	 * interrupts are already suspended, due to suspend order
++	 * etc. Note that time_travel_add_irq_event() will not add
++	 * an event twice, if it's pending already "first wins".
++	 */
+ 	reg->timetravel_handler(reg->irq, entry->fd, reg->id, &reg->event);
  
--#define __SYSCALL(nr, sym) [nr] = __ia32_##sym,
-+#define __SYSCALL(nr, sym) __ia32_##sym,
- 
--__visible const sys_call_ptr_t ia32_sys_call_table[__NR_ia32_syscall_max+1] = {
--	/*
--	 * Smells like a compiler bug -- it doesn't work
--	 * when the & below is removed.
--	 */
--	[0 ... __NR_ia32_syscall_max] = &__ia32_sys_ni_syscall,
-+__visible const sys_call_ptr_t ia32_sys_call_table[] = {
- #include <asm/syscalls_32.h>
- };
-diff --git a/arch/x86/entry/syscall_64.c b/arch/x86/entry/syscall_64.c
-index 82670bb10931..be120eec1fc9 100644
---- a/arch/x86/entry/syscall_64.c
-+++ b/arch/x86/entry/syscall_64.c
-@@ -5,20 +5,14 @@
- #include <linux/sys.h>
- #include <linux/cache.h>
- #include <linux/syscalls.h>
--#include <asm/unistd.h>
- #include <asm/syscall.h>
- 
- #define __SYSCALL(nr, sym) extern long __x64_##sym(const struct pt_regs *);
- #include <asm/syscalls_64.h>
- #undef __SYSCALL
- 
--#define __SYSCALL(nr, sym) [nr] = __x64_##sym,
-+#define __SYSCALL(nr, sym) __x64_##sym,
- 
--asmlinkage const sys_call_ptr_t sys_call_table[__NR_syscall_max+1] = {
--	/*
--	 * Smells like a compiler bug -- it doesn't work
--	 * when the & below is removed.
--	 */
--	[0 ... __NR_syscall_max] = &__x64_sys_ni_syscall,
-+asmlinkage const sys_call_ptr_t sys_call_table[] = {
- #include <asm/syscalls_64.h>
- };
-diff --git a/arch/x86/entry/syscall_x32.c b/arch/x86/entry/syscall_x32.c
-index 6d2ef887d7b6..bdd0e03a1265 100644
---- a/arch/x86/entry/syscall_x32.c
-+++ b/arch/x86/entry/syscall_x32.c
-@@ -5,20 +5,14 @@
- #include <linux/sys.h>
- #include <linux/cache.h>
- #include <linux/syscalls.h>
--#include <asm/unistd.h>
- #include <asm/syscall.h>
- 
- #define __SYSCALL(nr, sym) extern long __x64_##sym(const struct pt_regs *);
- #include <asm/syscalls_x32.h>
- #undef __SYSCALL
- 
--#define __SYSCALL(nr, sym) [nr] = __x64_##sym,
-+#define __SYSCALL(nr, sym) __x64_##sym,
- 
--asmlinkage const sys_call_ptr_t x32_sys_call_table[__NR_x32_syscall_max+1] = {
--	/*
--	 * Smells like a compiler bug -- it doesn't work
--	 * when the & below is removed.
--	 */
--	[0 ... __NR_x32_syscall_max] = &__x64_sys_ni_syscall,
-+asmlinkage const sys_call_ptr_t x32_sys_call_table[] = {
- #include <asm/syscalls_x32.h>
- };
-diff --git a/arch/x86/um/sys_call_table_32.c b/arch/x86/um/sys_call_table_32.c
-index e83619c365dc..f8323104e353 100644
---- a/arch/x86/um/sys_call_table_32.c
-+++ b/arch/x86/um/sys_call_table_32.c
-@@ -7,7 +7,6 @@
- #include <linux/linkage.h>
- #include <linux/sys.h>
- #include <linux/cache.h>
--#include <asm/unistd.h>
- #include <asm/syscall.h>
- 
- #define __NO_STUBS
-@@ -37,11 +36,6 @@
- extern asmlinkage long sys_ni_syscall(unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long);
- 
- const sys_call_ptr_t sys_call_table[] ____cacheline_aligned = {
--	/*
--	 * Smells like a compiler bug -- it doesn't work
--	 * when the & below is removed.
--	 */
--	[0 ... __NR_syscall_max] = &sys_ni_syscall,
- #include <asm/syscalls_32.h>
- };
- 
-diff --git a/arch/x86/um/sys_call_table_64.c b/arch/x86/um/sys_call_table_64.c
-index 6fb75af7cf54..5ed665dc785f 100644
---- a/arch/x86/um/sys_call_table_64.c
-+++ b/arch/x86/um/sys_call_table_64.c
-@@ -7,7 +7,6 @@
- #include <linux/linkage.h>
- #include <linux/sys.h>
- #include <linux/cache.h>
--#include <asm/unistd.h>
- #include <asm/syscall.h>
- 
- #define __NO_STUBS
-@@ -45,11 +44,6 @@
- extern asmlinkage long sys_ni_syscall(unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long);
- 
- const sys_call_ptr_t sys_call_table[] ____cacheline_aligned = {
--	/*
--	 * Smells like a compiler bug -- it doesn't work
--	 * when the & below is removed.
--	 */
--	[0 ... __NR_syscall_max] = &sys_ni_syscall,
- #include <asm/syscalls_64.h>
- };
- 
+ 	if (!reg->event.pending)
 -- 
-2.27.0
+2.26.2
 
 
 _______________________________________________
