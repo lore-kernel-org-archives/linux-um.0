@@ -1,12 +1,14 @@
 Return-Path: <linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: John Ogness <john.ogness@linutronix.de>
+Date: Tue, 2 Mar 2021 14:55:26 +0100
+From: Petr Mladek <pmladek@suse.com>
 Subject: Re: [PATCH next v3 12/15] printk: introduce a kmsg_dump iterator
-In-Reply-To: <YD0tbVV+hZOFvWyB@alley>
+Message-ID: <YD5DzldNpnzuECaA@alley>
 References: <20210225202438.28985-1-john.ogness@linutronix.de>
- <20210225202438.28985-13-john.ogness@linutronix.de> <YD0tbVV+hZOFvWyB@alley>
-Date: Tue, 02 Mar 2021 14:20:51 +0100
-Message-ID: <87lfb5pu8c.fsf@jogness.linutronix.de>
+ <20210225202438.28985-13-john.ogness@linutronix.de>
+ <YD0tbVV+hZOFvWyB@alley> <87lfb5pu8c.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <87lfb5pu8c.fsf@jogness.linutronix.de>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
@@ -18,126 +20,91 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Petr Mladek <pmladek@suse.com>
-Cc: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "K. Y. Srinivasan  <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, Stephen Hemminger" <sthemmin@microsoft.com>, Wei Liu <wei.liu@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>, Vignesh Raghavendra <vigneshr@ti.com>, Kees Cook <keescook@chromium.org>, Anton Vorontsov <anton@enomsg.org>, Colin Cross <ccross@android.com>, Tony Luck <tony.luck@intel.com>, Jason Wessel <jason.wessel@windriver.com>, Daniel Thompson <daniel.thompson@linaro.org>, Douglas Anderson <dianders@chromium.org>, Pavel Tatashin <pasha.tatashin@soleen.com>, Joel Stanley <joel@jms.id.au>, Christophe Leroy <christophe.leroy@c-s.fr>, Jordan Niethe <jniethe5@gmail.com>, Alistair Popple <alistair@popple.id.au>, Ravi Bangoria <ravi.bangoria@linux.ibm.com>, Nicholas Piggin <npiggin@gmail.com>, Mike Rapoport <rppt@kernel.org>, Madhavan Srinivasan <maddy@linux.ibm.com>, Thomas Meyer <thomas@m3y3r.de>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Davidlohr Bueso <dave@stgolabs.net>, Oleg Nesterov <oleg@redhat.com>, Wei Li <liwei391@huawei.com>, Michael Kelley <mikelley@microsoft.com>, linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org, linux-hyperv@vger.kernel.org, linux-mtd@lists.infradead.org, kgdb-bugreport@lists.sourceforge.net
+To: John Ogness <john.ogness@linutronix.de>
+Cc: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "K. Y. Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, Stephen Hemminger <sthemmin@microsoft.com>, Wei Liu <wei.liu@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>, Vignesh Raghavendra <vigneshr@ti.com>, Kees Cook <keescook@chromium.org>, Anton Vorontsov <anton@enomsg.org>, Colin Cross <ccross@android.com>, Tony Luck <tony.luck@intel.com>, Jason Wessel <jason.wessel@windriver.com>, Daniel Thompson <daniel.thompson@linaro.org>, Douglas Anderson <dianders@chromium.org>, Pavel Tatashin <pasha.tatashin@soleen.com>, Joel Stanley <joel@jms.id.au>, Christophe Leroy <christophe.leroy@c-s.fr>, Jordan Niethe <jniethe5@gmail.com>, Alistair Popple <alistair@popple.id.au>, Ravi Bangoria <ravi.bangoria@linux.ibm.com>, Nicholas Piggin <npiggin@gmail.com>, Mike Rapoport <rppt@kernel.org>, Madhavan Srinivasan <maddy@linux.ibm.com>, Thomas Meyer <thomas@m3y3r.de>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Davidlohr Bueso <dave@stgolabs.net>, Oleg Nesterov <oleg@redhat.com>, Wei Li <liwei391@huawei.com>, Michael Kelley <mikelley@microsoft.com>, linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org, linux-hyperv@vger.kernel.org, linux-mtd@lists.infradead.org, kgdb-bugreport@lists.sourceforge.net
 List-ID: <linux-um.lists.infradead.org>
 
-On 2021-03-01, Petr Mladek <pmladek@suse.com> wrote:
->> diff --git a/arch/powerpc/kernel/nvram_64.c b/arch/powerpc/kernel/nvram_64.c
->> index 532f22637783..5a64b24a91c2 100644
->> --- a/arch/powerpc/kernel/nvram_64.c
->> +++ b/arch/powerpc/kernel/nvram_64.c
->> @@ -72,8 +72,7 @@ static const char *nvram_os_partitions[] = {
->>  	NULL
->>  };
->>  
->> -static void oops_to_nvram(struct kmsg_dumper *dumper,
->> -			  enum kmsg_dump_reason reason);
->> +static void oops_to_nvram(enum kmsg_dump_reason reason);
->>  
->>  static struct kmsg_dumper nvram_kmsg_dumper = {
->>  	.dump = oops_to_nvram
->> @@ -642,11 +641,11 @@ void __init nvram_init_oops_partition(int rtas_partition_exists)
->>   * that we think will compress sufficiently to fit in the lnx,oops-log
->>   * partition.  If that's too much, go back and capture uncompressed text.
->>   */
->> -static void oops_to_nvram(struct kmsg_dumper *dumper,
->> -			  enum kmsg_dump_reason reason)
->> +static void oops_to_nvram(enum kmsg_dump_reason reason)
->>  {
->>  	struct oops_log_info *oops_hdr = (struct oops_log_info *)oops_buf;
->>  	static unsigned int oops_count = 0;
->> +	static struct kmsg_dump_iter iter;
->>  	static bool panicking = false;
->>  	static DEFINE_SPINLOCK(lock);
->>  	unsigned long flags;
->> @@ -681,13 +680,14 @@ static void oops_to_nvram(struct kmsg_dumper *dumper,
->>  		return;
->>  
->>  	if (big_oops_buf) {
->> -		kmsg_dump_get_buffer(dumper, false,
->> +		kmsg_dump_rewind(&iter);
->
-> It would be nice to get rid of the kmsg_dump_rewind(&iter) calls
-> in all callers.
->
-> A solution might be to create the following in include/linux/kmsg_dump.h
->
-> #define KMSG_DUMP_ITER_INIT(iter) {	\
-> 	.cur_seq = 0,			\
-> 	.next_seq = U64_MAX,		\
-> 	}
->
-> #define DEFINE_KMSG_DUMP_ITER(iter)	\
-> 	struct kmsg_dump_iter iter = KMSG_DUMP_ITER_INIT(iter)
+On Tue 2021-03-02 14:20:51, John Ogness wrote:
+> On 2021-03-01, Petr Mladek <pmladek@suse.com> wrote:
+> >> diff --git a/arch/powerpc/kernel/nvram_64.c b/arch/powerpc/kernel/nvram_64.c
+> >> index 532f22637783..5a64b24a91c2 100644
+> >> --- a/arch/powerpc/kernel/nvram_64.c
+> >> +++ b/arch/powerpc/kernel/nvram_64.c
+> >> @@ -681,13 +680,14 @@ static void oops_to_nvram(struct kmsg_dumper *dumper,
+> >>  		return;
+> >>  
+> >>  	if (big_oops_buf) {
+> >> -		kmsg_dump_get_buffer(dumper, false,
+> >> +		kmsg_dump_rewind(&iter);
+> >
+> > It would be nice to get rid of the kmsg_dump_rewind(&iter) calls
+> > in all callers.
+> >
+> > A solution might be to create the following in include/linux/kmsg_dump.h
+> >
+> > Then we could do the following at the beginning of both
+> > kmsg_dump_get_buffer() and kmsg_dump_get_line():
+> >
+> > 	u64 clear_seq = latched_seq_read_nolock(&clear_seq);
+> >
+> > 	if (iter->cur_seq < clear_seq)
+> > 		cur_seq = clear_seq;
+> 
+> I suppose we need to add this part anyway, if we want to enforce that
+> records before @clear_seq are not to be available for dumpers.
 
-For this caller (arch/powerpc/kernel/nvram_64.c) and for
-(kernel/debug/kdb/kdb_main.c), kmsg_dump_rewind() is called twice within
-the dumper. So rewind will still be used there.
+Yup.
 
-> Then we could do the following at the beginning of both
-> kmsg_dump_get_buffer() and kmsg_dump_get_line():
->
-> 	u64 clear_seq = latched_seq_read_nolock(&clear_seq);
->
-> 	if (iter->cur_seq < clear_seq)
-> 		cur_seq = clear_seq;
+> > It might be better to avoid the infinite loop. We could do the following:
+> >
+> > static void check_and_set_iter(struct kmsg_dump_iter)
+> > {
+> > 	if (iter->cur_seq == 0 && iter->next_seq == U64_MAX) {
+> > 		kmsg_dump_rewind(iter);
+> > }
+> >
+> > and call this at the beginning of both kmsg_dump_get_buffer()
+> > and kmsg_dump_get_line()
+> >
+> > What do you think?
+> 
+> On a technical level, it does not make any difference. It is pure
+> cosmetic.
 
-I suppose we need to add this part anyway, if we want to enforce that
-records before @clear_seq are not to be available for dumpers.
+Yup.
 
-> I am not completely sure about next_seq:
->
->    + kmsg_dump_get_buffer() will set it for the next call anyway.
->      It reads the blocks of messages from the newest.
->
->    + kmsg_dump_get_line() wants to read the entire buffer anyway.
->      But there is a small risk of an infinite loop when new messages
->      are printed when dumping each line.
->
-> It might be better to avoid the infinite loop. We could do the following:
->
-> static void check_and_set_iter(struct kmsg_dump_iter)
-> {
-> 	if (iter->cur_seq == 0 && iter->next_seq == U64_MAX) {
-> 		kmsg_dump_rewind(iter);
-> }
->
-> and call this at the beginning of both kmsg_dump_get_buffer()
-> and kmsg_dump_get_line()
->
-> What do you think?
+> Personally, I prefer the rewind directly before the kmsg_dump_get calls
+> because it puts the initializer directly next to the user.
+> 
+> As an example to illustrate my view, I prefer:
+> 
+>     for (i = 0; i < n; i++)
+>         ...;
+> 
+> instead of:
+> 
+>     int i = 0;
+> 
+>     ...
+> 
+>     for (; i < n; i++)
+>         ...;
+> 
+> Also, I do not really like the special use of 0/U64_MAX to identify
+> special actions of the kmsg_dump_get functions.
 
-On a technical level, it does not make any difference. It is pure
-cosmetic.
+Fair enough.
 
-Personally, I prefer the rewind directly before the kmsg_dump_get calls
-because it puts the initializer directly next to the user.
+> > Note that I do not resist on it. But it might make the API easier to
+> > use from my POV.
+> 
+> Since you do not resist, I will keep the API the same for v4. But I will
+> add the @clear_seq check to the kmsg_dump_get functions.
 
-As an example to illustrate my view, I prefer:
+Go for it.
 
-    for (i = 0; i < n; i++)
-        ...;
-
-instead of:
-
-    int i = 0;
-
-    ...
-
-    for (; i < n; i++)
-        ...;
-
-Also, I do not really like the special use of 0/U64_MAX to identify
-special actions of the kmsg_dump_get functions.
-
-> Note that I do not resist on it. But it might make the API easier to
-> use from my POV.
-
-Since you do not resist, I will keep the API the same for v4. But I will
-add the @clear_seq check to the kmsg_dump_get functions.
-
-John Ogness
+Best Regards,
+Petr
 
 ______________________________________________________
 Linux MTD discussion mailing list
