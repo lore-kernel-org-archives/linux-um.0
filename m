@@ -2,12 +2,13 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lHTwr-005Vi8-DV
- for linux-um@lists.infradead.org; Wed, 03 Mar 2021 16:02:08 +0000
+ id 1lHTqx-005UJG-2N
+ for linux-um@lists.infradead.org; Wed, 03 Mar 2021 15:56:04 +0000
 From: Benjamin Berg <benjamin@sipsolutions.net>
-Subject: [PATCH 10/27] um: Always inline stub functions
-Date: Wed,  3 Mar 2021 16:55:06 +0100
-Message-Id: <20210303155523.124277-11-benjamin@sipsolutions.net>
+Subject: [PATCH 05/27] um: Make errors to stop ptraced child fatal during
+ startup
+Date: Wed,  3 Mar 2021 16:55:01 +0100
+Message-Id: <20210303155523.124277-6-benjamin@sipsolutions.net>
 In-Reply-To: <20210303155523.124277-1-benjamin@sipsolutions.net>
 References: <20210303155523.124277-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
@@ -26,153 +27,101 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
 Cc: Benjamin Berg <benjamin@sipsolutions.net>
 
-The stub executable page is remapped to a different location in the
-userland process. As these functions may be used by the stub, they
-really need to be always inlined rather than permitting the compiler to
-emit a function.
+For the detection code to check whether SYSEMU_SINGLESTEP works
+correctly we needed some error cases while stopping to be non-fatal.
+However, at this point stop_ptraced_child must always succeed, and we
+can therefore simplify it slightly to exit immediately on error.
 
 Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
 ---
- arch/x86/um/shared/sysdep/stub_32.h | 21 +++++++++++----------
- arch/x86/um/shared/sysdep/stub_64.h | 15 ++++++++-------
- 2 files changed, 19 insertions(+), 17 deletions(-)
+ arch/um/os-Linux/start_up.c | 41 +++++++++++--------------------------
+ 1 file changed, 12 insertions(+), 29 deletions(-)
 
-diff --git a/arch/x86/um/shared/sysdep/stub_32.h b/arch/x86/um/shared/sysdep/stub_32.h
-index c3891c1ada26..02511d046404 100644
---- a/arch/x86/um/shared/sysdep/stub_32.h
-+++ b/arch/x86/um/shared/sysdep/stub_32.h
-@@ -12,7 +12,7 @@
- #define STUB_MMAP_NR __NR_mmap2
- #define MMAP_OFFSET(o) ((o) >> UM_KERN_PAGE_SHIFT)
- 
--static inline long stub_syscall0(long syscall)
-+static __always_inline long stub_syscall0(long syscall)
- {
- 	long ret;
- 
-@@ -21,7 +21,7 @@ static inline long stub_syscall0(long syscall)
- 	return ret;
+diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
+index 4f8fbe51fad6..8e6f8c4f3f62 100644
+--- a/arch/um/os-Linux/start_up.c
++++ b/arch/um/os-Linux/start_up.c
+@@ -112,35 +112,20 @@ static int start_ptraced_child(void)
+ 	return pid;
  }
  
--static inline long stub_syscall1(long syscall, long arg1)
-+static __always_inline long stub_syscall1(long syscall, long arg1)
+-/* When testing for SYSEMU support, if it is one of the broken versions, we
+- * must just avoid using sysemu, not panic, but only if SYSEMU features are
+- * broken.
+- * So only for SYSEMU features we test mustpanic, while normal host features
+- * must work anyway!
+- */
+-static int stop_ptraced_child(int pid, int exitcode, int mustexit)
++static void stop_ptraced_child(int pid, int exitcode)
  {
- 	long ret;
+-	int status, n, ret = 0;
++	int status, n;
++
++	if (ptrace(PTRACE_CONT, pid, 0, 0) < 0)
++		fatal_perror("stop_ptraced_child : ptrace failed");
  
-@@ -30,7 +30,7 @@ static inline long stub_syscall1(long syscall, long arg1)
- 	return ret;
+-	if (ptrace(PTRACE_CONT, pid, 0, 0) < 0) {
+-		perror("stop_ptraced_child : ptrace failed");
+-		return -1;
+-	}
+ 	CATCH_EINTR(n = waitpid(pid, &status, 0));
+ 	if (!WIFEXITED(status) || (WEXITSTATUS(status) != exitcode)) {
+ 		int exit_with = WEXITSTATUS(status);
+-		if (exit_with == 2)
+-			non_fatal("check_ptrace : child exited with status 2. "
+-				  "\nDisabling SYSEMU support.\n");
+-		non_fatal("check_ptrace : child exited with exitcode %d, while "
+-			  "expecting %d; status 0x%x\n", exit_with,
+-			  exitcode, status);
+-		if (mustexit)
+-			exit(1);
+-		ret = -1;
++		fatal("stop_ptraced_child : child exited with exitcode %d, "
++		      "while expecting %d; status 0x%x\n", exit_with,
++		      exitcode, status);
+ 	}
+-
+-	return ret;
  }
  
--static inline long stub_syscall2(long syscall, long arg1, long arg2)
-+static __always_inline long stub_syscall2(long syscall, long arg1, long arg2)
- {
- 	long ret;
+ static void __init check_sysemu(void)
+@@ -185,16 +170,14 @@ static void __init check_sysemu(void)
+ 			goto fail;
+ 		}
+ 	}
+-	if (stop_ptraced_child(pid, 0, 0) < 0)
+-		goto fail_stopped;
++	stop_ptraced_child(pid, 0);
  
-@@ -40,7 +40,8 @@ static inline long stub_syscall2(long syscall, long arg1, long arg2)
- 	return ret;
+ 	os_info("OK\n");
+ 
+ 	return;
+ 
+ fail:
+-	stop_ptraced_child(pid, 1, 0);
+-fail_stopped:
++	stop_ptraced_child(pid, 1);
+ 	fatal("missing\n");
  }
  
--static inline long stub_syscall3(long syscall, long arg1, long arg2, long arg3)
-+static __always_inline long stub_syscall3(long syscall, long arg1, long arg2,
-+					  long arg3)
- {
- 	long ret;
- 
-@@ -50,8 +51,8 @@ static inline long stub_syscall3(long syscall, long arg1, long arg2, long arg3)
- 	return ret;
+@@ -233,7 +216,7 @@ static void __init check_ptrace(void)
+ 			break;
+ 		}
+ 	}
+-	stop_ptraced_child(pid, 0, 1);
++	stop_ptraced_child(pid, 0);
+ 	os_info("OK\n");
+ 	check_sysemu();
+ }
+@@ -280,7 +263,7 @@ void __init os_early_checks(void)
+ 	pid = start_ptraced_child();
+ 	if (init_registers(pid))
+ 		fatal("Failed to initialize default registers");
+-	stop_ptraced_child(pid, 1, 1);
++	stop_ptraced_child(pid, 1);
  }
  
--static inline long stub_syscall4(long syscall, long arg1, long arg2, long arg3,
--				 long arg4)
-+static __always_inline long stub_syscall4(long syscall, long arg1, long arg2,
-+					  long arg3, long arg4)
- {
- 	long ret;
- 
-@@ -61,8 +62,8 @@ static inline long stub_syscall4(long syscall, long arg1, long arg2, long arg3,
- 	return ret;
- }
- 
--static inline long stub_syscall5(long syscall, long arg1, long arg2, long arg3,
--				 long arg4, long arg5)
-+static __always_inline long stub_syscall5(long syscall, long arg1, long arg2,
-+					  long arg3, long arg4, long arg5)
- {
- 	long ret;
- 
-@@ -72,12 +73,12 @@ static inline long stub_syscall5(long syscall, long arg1, long arg2, long arg3,
- 	return ret;
- }
- 
--static inline void trap_myself(void)
-+static __always_inline void trap_myself(void)
- {
- 	__asm("int3");
- }
- 
--static void inline remap_stack_and_trap(void)
-+static __always_inline void remap_stack_and_trap(void)
- {
- 	__asm__ volatile (
- 		"movl %%esp,%%ebx ;"
-diff --git a/arch/x86/um/shared/sysdep/stub_64.h b/arch/x86/um/shared/sysdep/stub_64.h
-index 6e2626b77a2e..871c770fc44b 100644
---- a/arch/x86/um/shared/sysdep/stub_64.h
-+++ b/arch/x86/um/shared/sysdep/stub_64.h
-@@ -15,7 +15,7 @@
- #define __syscall_clobber "r11","rcx","memory"
- #define __syscall "syscall"
- 
--static inline long stub_syscall0(long syscall)
-+static __always_inline long stub_syscall0(long syscall)
- {
- 	long ret;
- 
-@@ -26,7 +26,7 @@ static inline long stub_syscall0(long syscall)
- 	return ret;
- }
- 
--static inline long stub_syscall2(long syscall, long arg1, long arg2)
-+static __always_inline long stub_syscall2(long syscall, long arg1, long arg2)
- {
- 	long ret;
- 
-@@ -37,7 +37,8 @@ static inline long stub_syscall2(long syscall, long arg1, long arg2)
- 	return ret;
- }
- 
--static inline long stub_syscall3(long syscall, long arg1, long arg2, long arg3)
-+static __always_inline long stub_syscall3(long syscall, long arg1, long arg2,
-+					  long arg3)
- {
- 	long ret;
- 
-@@ -63,8 +64,8 @@ static inline long stub_syscall4(long syscall, long arg1, long arg2, long arg3,
- 	return ret;
- }
- 
--static inline long stub_syscall5(long syscall, long arg1, long arg2, long arg3,
--				 long arg4, long arg5)
-+static __always_inline long stub_syscall5(long syscall, long arg1, long arg2,
-+					  long arg3, long arg4, long arg5)
- {
- 	long ret;
- 
-@@ -77,12 +78,12 @@ static inline long stub_syscall5(long syscall, long arg1, long arg2, long arg3,
- 	return ret;
- }
- 
--static inline void trap_myself(void)
-+static __always_inline void trap_myself(void)
- {
- 	__asm("int3");
- }
- 
--static inline void remap_stack_and_trap(void)
-+static __always_inline void remap_stack_and_trap(void)
- {
- 	__asm__ volatile (
- 		"movq %0,%%rax ;"
+ int __init parse_iomem(char *str, int *add)
 -- 
 2.29.2
 
