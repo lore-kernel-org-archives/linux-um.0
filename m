@@ -1,13 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Mon, 1 Mar 2021 19:07:41 +0100
-From: Petr Mladek <pmladek@suse.com>
-Subject: Re: [PATCH next v3 12/15] printk: introduce a kmsg_dump iterator
-Message-ID: <YD0tbVV+hZOFvWyB@alley>
-References: <20210225202438.28985-1-john.ogness@linutronix.de>
- <20210225202438.28985-13-john.ogness@linutronix.de>
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
+ by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
+ id 1lHTqx-005UJB-2M
+ for linux-um@lists.infradead.org; Wed, 03 Mar 2021 15:56:02 +0000
+From: Benjamin Berg <benjamin@sipsolutions.net>
+Subject: [PATCH 00/27] Implement SECCOMP based userland
+Date: Wed,  3 Mar 2021 16:54:56 +0100
+Message-Id: <20210303155523.124277-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210225202438.28985-13-john.ogness@linutronix.de>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,127 +21,114 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: John Ogness <john.ogness@linutronix.de>
-Cc: linux-hyperv@vger.kernel.org, Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Douglas Anderson <dianders@chromium.org>, Paul Mackerras <paulus@samba.org>, Miquel Raynal <miquel.raynal@bootlin.com>, "K. Y. Srinivasan" <kys@microsoft.com>, Thomas Meyer <thomas@m3y3r.de>, Vignesh Raghavendra <vigneshr@ti.com>, Wei Liu <wei.liu@kernel.org>, Madhavan Srinivasan <maddy@linux.ibm.com>, Stephen Hemminger <sthemmin@microsoft.com>, Michael Ellerman <mpe@ellerman.id.au>, Anton Vorontsov <anton@enomsg.org>, Joel Stanley <joel@jms.id.au>, Jason Wessel <jason.wessel@windriver.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Wei Li <liwei391@huawei.com>, Haiyang Zhang <haiyangz@microsoft.com>, Ravi Bangoria <ravi.bangoria@linux.ibm.com>, Kees Cook <keescook@chromium.org>, Alistair Popple <alistair@popple.id.au>, Jeff Dike <jdike@addtoit.com>, Colin Cross <ccross@android.com>, linux-um@lists.infradead.org, Daniel Thompson <daniel.thompson@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, Davidlohr Bueso <dave@stgolabs.net>, Nicholas Piggin <npiggin@gmail.com>, Oleg Nesterov <oleg@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Jordan Niethe <jniethe5@gmail.com>, Michael Kelley <mikelley@microsoft.com>, Christophe Leroy <christophe.leroy@c-s.fr>, Tony Luck <tony.luck@intel.com>, Pavel Tatashin <pasha.tatashin@soleen.com>, linux-kernel@vger.kernel.org, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, Richard Weinberger <richard@nod.at>, kgdb-bugreport@lists.sourceforge.net, linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, Mike Rapoport <rppt@kernel.org>
+To: linux-um@lists.infradead.org
+Cc: Benjamin Berg <benjamin@sipsolutions.net>
 
-On Thu 2021-02-25 21:24:35, John Ogness wrote:
-> Rather than storing the iterator information in the registered
-> kmsg_dumper structure, create a separate iterator structure. The
-> kmsg_dump_iter structure can reside on the stack of the caller, thus
-> allowing lockless use of the kmsg_dump functions.
-> 
-> This change also means that the kmsg_dumper dump() callback no
-> longer needs to pass in the kmsg_dumper as an argument. If
-> kmsg_dumpers want to access the kernel logs, they can use the new
-> iterator.
-> 
-> Update the kmsg_dumper callback prototype. Update code that accesses
-> the kernel logs using the kmsg_dumper structure to use the new
-> kmsg_dump_iter structure. For kmsg_dumpers, this also means adding a
-> call to kmsg_dump_rewind() to initialize the iterator.
-> 
-> All this is in preparation for removal of @logbuf_lock.
-> 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
-> ---
->  arch/powerpc/kernel/nvram_64.c             | 14 +++---
->  arch/powerpc/platforms/powernv/opal-kmsg.c |  3 +-
->  arch/powerpc/xmon/xmon.c                   |  6 +--
->  arch/um/kernel/kmsg_dump.c                 |  8 +--
->  drivers/hv/vmbus_drv.c                     |  7 +--
->  drivers/mtd/mtdoops.c                      |  8 +--
->  fs/pstore/platform.c                       |  8 +--
->  include/linux/kmsg_dump.h                  | 38 ++++++++-------
->  kernel/debug/kdb/kdb_main.c                | 10 ++--
->  kernel/printk/printk.c                     | 57 ++++++++++------------
->  10 files changed, 81 insertions(+), 78 deletions(-)
-> 
-> diff --git a/arch/powerpc/kernel/nvram_64.c b/arch/powerpc/kernel/nvram_64.c
-> index 532f22637783..5a64b24a91c2 100644
-> --- a/arch/powerpc/kernel/nvram_64.c
-> +++ b/arch/powerpc/kernel/nvram_64.c
-> @@ -72,8 +72,7 @@ static const char *nvram_os_partitions[] = {
->  	NULL
->  };
->  
-> -static void oops_to_nvram(struct kmsg_dumper *dumper,
-> -			  enum kmsg_dump_reason reason);
-> +static void oops_to_nvram(enum kmsg_dump_reason reason);
->  
->  static struct kmsg_dumper nvram_kmsg_dumper = {
->  	.dump = oops_to_nvram
-> @@ -642,11 +641,11 @@ void __init nvram_init_oops_partition(int rtas_partition_exists)
->   * that we think will compress sufficiently to fit in the lnx,oops-log
->   * partition.  If that's too much, go back and capture uncompressed text.
->   */
-> -static void oops_to_nvram(struct kmsg_dumper *dumper,
-> -			  enum kmsg_dump_reason reason)
-> +static void oops_to_nvram(enum kmsg_dump_reason reason)
->  {
->  	struct oops_log_info *oops_hdr = (struct oops_log_info *)oops_buf;
->  	static unsigned int oops_count = 0;
-> +	static struct kmsg_dump_iter iter;
->  	static bool panicking = false;
->  	static DEFINE_SPINLOCK(lock);
->  	unsigned long flags;
-> @@ -681,13 +680,14 @@ static void oops_to_nvram(struct kmsg_dumper *dumper,
->  		return;
->  
->  	if (big_oops_buf) {
-> -		kmsg_dump_get_buffer(dumper, false,
-> +		kmsg_dump_rewind(&iter);
+Currently UML uses ptrace in order to implement userspace processes. This
+works really well, however, it requires six context switches per pagefault
+(get faultinfo, run syscalls, continue process).
 
-It would be nice to get rid of the kmsg_dump_rewind(&iter) calls
-in all callers.
+By switching to use SECCOMP, the whole process becomes more collaborative
+as the userspace process can run code, including host syscalls, before
+jumping into the kernel and after the kernel returns control. This means
+pagefaults only require two context switches to be processed.
 
-A solution might be to create the following in include/linux/kmsg_dump.h
+In pagefault heavy scenarios (e.g. fork/exec) the performance increase of
+doing this can be considerable, with runtimes dropping by 30% or more.
 
-#define KMSG_DUMP_ITER_INIT(iter) {	\
-	.cur_seq = 0,			\
-	.next_seq = U64_MAX,		\
-	}
+Note that this implementation is not safe as userspace code could jump
+directly to the syscall instruction in order to execute an arbitrary host
+syscall. This should be fixable by remapping the page RW for a short time
+in order to NOP out the syscall instruction.
+Because of this, the seccomp mode is disabled by default.
 
-#define DEFINE_KMSG_DUMP_ITER(iter)	\
-	struct kmsg_dump_iter iter = KMSG_DUMP_ITER_INIT(iter)
+Benjamin Berg (27):
+  um: Switch printk calls to adhere to correct coding style
+  um: Declare fix_range_common as a static function
+  um: Drop support for hosts without SYSEMU_SINGLESTEP support
+  um: Drop NULL check from start_userspace
+  um: Make errors to stop ptraced child fatal during startup
+  um: Don't use vfprintf() for os_info()
+  um: Do not use printk in SIGWINCH helper thread
+  um: Reap winch thread if it fails
+  um: Do not use printk in userspace trampoline
+  um: Always inline stub functions
+  um: Rely on PTRACE_SETREGSET to set FS/GS base registers
+  um: Remove unused register save/restore functions
+  um: Mark 32bit syscall helpers as clobbering memory
+  um: Create signal stack memory assignment in stub_data
+  um: Add generic stub_syscall6 function
+  um: Rework syscall handling
+  um: Store full CSGSFS and SS register from mcontext
+  um: Pass full mm_id to functions creating helper processes
+  um: Move faultinfo extraction into userspace routine
+  um: Use struct uml_pt_regs for copy_context_skas0
+  um: Add UML_SECCOMP configuration option
+  um: Add stub side of SECCOMP/futex based process handling
+  um: Add helper functions to get/set state for SECCOMP
+  um: Add SECCOMP support detection and initialization
+  um: Die if a child dies unexpectedly in seccomp mode
+  um: Implement kernel side of SECCOMP based process handling
+  um: Delay flushing syscalls until the thread is restarted
 
-Then we could do the following at the beginning of both
-kmsg_dump_get_buffer() and kmsg_dump_get_line():
+ arch/um/Kconfig                         |  19 +
+ arch/um/drivers/chan_user.c             |  41 +-
+ arch/um/drivers/line.c                  |  13 +-
+ arch/um/include/asm/processor-generic.h |   1 -
+ arch/um/include/shared/kern_util.h      |   1 -
+ arch/um/include/shared/os.h             |  32 +-
+ arch/um/include/shared/ptrace_user.h    |  41 --
+ arch/um/include/shared/registers.h      |   2 -
+ arch/um/include/shared/skas/mm_id.h     |   1 +
+ arch/um/include/shared/skas/skas.h      |   7 +
+ arch/um/include/shared/skas/stub-data.h |  41 +-
+ arch/um/include/shared/user.h           |   8 +
+ arch/um/kernel/exec.c                   |  10 +-
+ arch/um/kernel/process.c                |  75 +--
+ arch/um/kernel/ptrace.c                 |   2 -
+ arch/um/kernel/signal.c                 |  12 -
+ arch/um/kernel/skas/Makefile            |   4 +-
+ arch/um/kernel/skas/clone.c             |  32 +-
+ arch/um/kernel/skas/mmu.c               |   6 +-
+ arch/um/kernel/skas/process.c           |   8 +
+ arch/um/kernel/skas/stub.c              | 105 ++++
+ arch/um/kernel/tlb.c                    |  54 +-
+ arch/um/os-Linux/process.c              |  40 ++
+ arch/um/os-Linux/registers.c            |  24 +-
+ arch/um/os-Linux/signal.c               |   7 +
+ arch/um/os-Linux/skas/mem.c             | 278 ++++-----
+ arch/um/os-Linux/skas/process.c         | 722 ++++++++++++++++--------
+ arch/um/os-Linux/start_up.c             | 240 ++++----
+ arch/um/os-Linux/util.c                 |  19 +-
+ arch/x86/um/Makefile                    |   2 +-
+ arch/x86/um/asm/elf.h                   |   4 +-
+ arch/x86/um/asm/processor_64.h          |   3 -
+ arch/x86/um/ldt.c                       |  45 +-
+ arch/x86/um/os-Linux/Makefile           |   1 -
+ arch/x86/um/os-Linux/mcontext.c         | 103 +++-
+ arch/x86/um/os-Linux/prctl.c            |  12 -
+ arch/x86/um/ptrace_32.c                 |  24 -
+ arch/x86/um/ptrace_64.c                 |  26 -
+ arch/x86/um/shared/sysdep/mcontext.h    |   9 +
+ arch/x86/um/shared/sysdep/ptrace_32.h   |   4 -
+ arch/x86/um/shared/sysdep/stub-data.h   |  11 +
+ arch/x86/um/shared/sysdep/stub.h        |   4 +
+ arch/x86/um/shared/sysdep/stub_32.h     |  66 ++-
+ arch/x86/um/shared/sysdep/stub_64.h     |  41 +-
+ arch/x86/um/stub_32.S                   |  56 --
+ arch/x86/um/stub_64.S                   |  50 --
+ arch/x86/um/syscalls_64.c               |  59 +-
+ arch/x86/um/tls_64.c                    |   2 +-
+ 48 files changed, 1375 insertions(+), 992 deletions(-)
+ create mode 100644 arch/um/kernel/skas/stub.c
+ delete mode 100644 arch/x86/um/os-Linux/prctl.c
+ create mode 100644 arch/x86/um/shared/sysdep/stub-data.h
+ delete mode 100644 arch/x86/um/stub_32.S
+ delete mode 100644 arch/x86/um/stub_64.S
 
-	u64 clear_seq = latched_seq_read_nolock(&clear_seq);
+-- 
+2.29.2
 
-	if (iter->cur_seq < clear_seq)
-		cur_seq = clear_seq;
-
-
-I am not completely sure about next_seq:
-
-   + kmsg_dump_get_buffer() will set it for the next call anyway.
-     It reads the blocks of messages from the newest.
-
-   + kmsg_dump_get_line() wants to read the entire buffer anyway.
-     But there is a small risk of an infinite loop when new messages
-     are printed when dumping each line.
-
-It might be better to avoid the infinite loop. We could do the following:
-
-static void check_and_set_iter(struct kmsg_dump_iter)
-{
-	if (iter->cur_seq == 0 && iter->next_seq == U64_MAX) {
-		kmsg_dump_rewind(iter);
-}
-
-and call this at the beginning of both kmsg_dump_get_buffer()
-and kmsg_dump_get_line()
-
-What do you think?
-
-Note that I do not resist on it. But it might make the API easier to
-use from my POV.
-
-Otherwise the patch looks good to me.
-
-Best Regards,
-Petr
 
 _______________________________________________
 linux-um mailing list
