@@ -1,13 +1,28 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
- by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lHTqx-005UJB-2M
- for linux-um@lists.infradead.org; Wed, 03 Mar 2021 15:56:02 +0000
-From: Benjamin Berg <benjamin@sipsolutions.net>
-Subject: [PATCH 00/27] Implement SECCOMP based userland
-Date: Wed,  3 Mar 2021 16:54:56 +0100
-Message-Id: <20210303155523.124277-1-benjamin@sipsolutions.net>
+Received: from mail-pf1-x433.google.com ([2607:f8b0:4864:20::433])
+ by casper.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
+ id 1lHP1j-002Emm-Pg
+ for linux-um@lists.infradead.org; Wed, 03 Mar 2021 10:46:49 +0000
+Received: by mail-pf1-x433.google.com with SMTP id q204so14928121pfq.10
+ for <linux-um@lists.infradead.org>; Wed, 03 Mar 2021 02:46:47 -0800 (PST)
+Message-ID: <e86375146432f4fa12da18525d99c56292af72ac.camel@debian.org>
+Subject: Re: Bug#983379: linux uml segfault
+From: Ritesh Raj Sarraf <rrs@debian.org>
+Date: Wed, 03 Mar 2021 16:15:38 +0530
+In-Reply-To: <3e230682-5bb8-4e86-123d-b157728d489b@kot-begemot.co.uk>
+References: <3448a70e7a39b9c3202aeefa7858ace265b8a978.camel@debian.org>
+ <6d37b5aa-36f2-1fce-b70b-8faa0ff882e0@kot-begemot.co.uk>
+ <c8bb257c-1542-12f5-89f1-5c1f14b8a70a@collabora.com>
+ <db40449e-6916-56bf-377c-01b042b9c890@kot-begemot.co.uk>
+ <529cd4e2f39efffb18125dffab3058aeec3351ce.camel@debian.org>
+ <573e256a-990b-ddf6-7965-367bb8b21229@kot-begemot.co.uk>
+ <1bdedf3c60058e1ae242a2a7f16eee256b0be3e0.camel@debian.org>
+ <6370b92a-84fa-aa21-4270-fcaf1bf42407@kot-begemot.co.uk>
+ <02e348bbb13f0fac92f2147309fb1c006b4583b2.camel@debian.org>
+ <5ee28b97-6111-e12c-d0e9-83a13f2151ce@kot-begemot.co.uk>
+ <5e068447e2067fff8b21c0689f14d080b984f6e0.camel@debian.org>
+ <161406935658.1350056.9530002632452194106.reportbug@beast>
+ <3e230682-5bb8-4e86-123d-b157728d489b@kot-begemot.co.uk>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -17,121 +32,108 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: rrs@debian.org
+Content-Type: multipart/mixed; boundary="===============7800872331998579222=="
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Benjamin Berg <benjamin@sipsolutions.net>
+To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, 983379@bugs.debian.org, Christopher Obbard <chris.obbard@collabora.com>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>
 
-Currently UML uses ptrace in order to implement userspace processes. This
-works really well, however, it requires six context switches per pagefault
-(get faultinfo, run syscalls, continue process).
 
-By switching to use SECCOMP, the whole process becomes more collaborative
-as the userspace process can run code, including host syscalls, before
-jumping into the kernel and after the kernel returns control. This means
-pagefaults only require two context switches to be processed.
+--===============7800872331998579222==
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="=-egv5v90dyTdl8tmzTg73"
 
-In pagefault heavy scenarios (e.g. fork/exec) the performance increase of
-doing this can be considerable, with runtimes dropping by 30% or more.
 
-Note that this implementation is not safe as userspace code could jump
-directly to the syscall instruction in order to execute an arbitrary host
-syscall. This should be fixable by remapping the page RW for a short time
-in order to NOP out the syscall instruction.
-Because of this, the seccomp mode is disabled by default.
+--=-egv5v90dyTdl8tmzTg73
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Benjamin Berg (27):
-  um: Switch printk calls to adhere to correct coding style
-  um: Declare fix_range_common as a static function
-  um: Drop support for hosts without SYSEMU_SINGLESTEP support
-  um: Drop NULL check from start_userspace
-  um: Make errors to stop ptraced child fatal during startup
-  um: Don't use vfprintf() for os_info()
-  um: Do not use printk in SIGWINCH helper thread
-  um: Reap winch thread if it fails
-  um: Do not use printk in userspace trampoline
-  um: Always inline stub functions
-  um: Rely on PTRACE_SETREGSET to set FS/GS base registers
-  um: Remove unused register save/restore functions
-  um: Mark 32bit syscall helpers as clobbering memory
-  um: Create signal stack memory assignment in stub_data
-  um: Add generic stub_syscall6 function
-  um: Rework syscall handling
-  um: Store full CSGSFS and SS register from mcontext
-  um: Pass full mm_id to functions creating helper processes
-  um: Move faultinfo extraction into userspace routine
-  um: Use struct uml_pt_regs for copy_context_skas0
-  um: Add UML_SECCOMP configuration option
-  um: Add stub side of SECCOMP/futex based process handling
-  um: Add helper functions to get/set state for SECCOMP
-  um: Add SECCOMP support detection and initialization
-  um: Die if a child dies unexpectedly in seccomp mode
-  um: Implement kernel side of SECCOMP based process handling
-  um: Delay flushing syscalls until the thread is restarted
+HI Anton,
 
- arch/um/Kconfig                         |  19 +
- arch/um/drivers/chan_user.c             |  41 +-
- arch/um/drivers/line.c                  |  13 +-
- arch/um/include/asm/processor-generic.h |   1 -
- arch/um/include/shared/kern_util.h      |   1 -
- arch/um/include/shared/os.h             |  32 +-
- arch/um/include/shared/ptrace_user.h    |  41 --
- arch/um/include/shared/registers.h      |   2 -
- arch/um/include/shared/skas/mm_id.h     |   1 +
- arch/um/include/shared/skas/skas.h      |   7 +
- arch/um/include/shared/skas/stub-data.h |  41 +-
- arch/um/include/shared/user.h           |   8 +
- arch/um/kernel/exec.c                   |  10 +-
- arch/um/kernel/process.c                |  75 +--
- arch/um/kernel/ptrace.c                 |   2 -
- arch/um/kernel/signal.c                 |  12 -
- arch/um/kernel/skas/Makefile            |   4 +-
- arch/um/kernel/skas/clone.c             |  32 +-
- arch/um/kernel/skas/mmu.c               |   6 +-
- arch/um/kernel/skas/process.c           |   8 +
- arch/um/kernel/skas/stub.c              | 105 ++++
- arch/um/kernel/tlb.c                    |  54 +-
- arch/um/os-Linux/process.c              |  40 ++
- arch/um/os-Linux/registers.c            |  24 +-
- arch/um/os-Linux/signal.c               |   7 +
- arch/um/os-Linux/skas/mem.c             | 278 ++++-----
- arch/um/os-Linux/skas/process.c         | 722 ++++++++++++++++--------
- arch/um/os-Linux/start_up.c             | 240 ++++----
- arch/um/os-Linux/util.c                 |  19 +-
- arch/x86/um/Makefile                    |   2 +-
- arch/x86/um/asm/elf.h                   |   4 +-
- arch/x86/um/asm/processor_64.h          |   3 -
- arch/x86/um/ldt.c                       |  45 +-
- arch/x86/um/os-Linux/Makefile           |   1 -
- arch/x86/um/os-Linux/mcontext.c         | 103 +++-
- arch/x86/um/os-Linux/prctl.c            |  12 -
- arch/x86/um/ptrace_32.c                 |  24 -
- arch/x86/um/ptrace_64.c                 |  26 -
- arch/x86/um/shared/sysdep/mcontext.h    |   9 +
- arch/x86/um/shared/sysdep/ptrace_32.h   |   4 -
- arch/x86/um/shared/sysdep/stub-data.h   |  11 +
- arch/x86/um/shared/sysdep/stub.h        |   4 +
- arch/x86/um/shared/sysdep/stub_32.h     |  66 ++-
- arch/x86/um/shared/sysdep/stub_64.h     |  41 +-
- arch/x86/um/stub_32.S                   |  56 --
- arch/x86/um/stub_64.S                   |  50 --
- arch/x86/um/syscalls_64.c               |  59 +-
- arch/x86/um/tls_64.c                    |   2 +-
- 48 files changed, 1375 insertions(+), 992 deletions(-)
- create mode 100644 arch/um/kernel/skas/stub.c
- delete mode 100644 arch/x86/um/os-Linux/prctl.c
- create mode 100644 arch/x86/um/shared/sysdep/stub-data.h
- delete mode 100644 arch/x86/um/stub_32.S
- delete mode 100644 arch/x86/um/stub_64.S
+On Wed, 2021-03-03 at 09:30 +0000, Anton Ivanov wrote:
+>=20
+> >=20
+> > OTOH, I have one more user (other than you) who's not been able to
+> > reproduce the issue.
+> >=20
+> > > I will do a dissect the moment I figure out how to reproduce it.
+> > > I
+> > > will try to do some more experiments on that tomorrow.
+>=20
+> I tried to alter the userspace a bit, but it makes no difference.
+>=20
+> Out of curiosity, what are you running it on?
+>=20
 
--- 
-2.29.2
+Bare-metal machines. 3 different machines, all Intel processors.
+And it fails on all 3 of them.
 
+On the distribution side, all 3 of them run Debian Unstable, with Linux
+5.10.13
+
+> >=20
+>=20
+> The code here is:
+>=20
+> static inline u32 printk_caller_id(void)
+> {
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return in_task() ? task_p=
+id_nr(current) :
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A00x80000000 + raw_smp_processor_id();
+> }
+>=20
+>=20
+> That is something which should not bomb out unless we have memory
+> corruption or something along those lines - current being invalid.
+>=20
+
+Must be something different. Not all machines could have bad memory at
+the same time.
+
+
+--=20
+Given the large number of mailing lists I follow, I request you to CC
+me in replies for quicker response
+
+--=-egv5v90dyTdl8tmzTg73
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEQCVDstmIVAB/Yn02pjpYo/LhdWkFAmA/aNIACgkQpjpYo/Lh
+dWn4eQ/9EpwKAkRhf7lObcpte0G6XDuE1MG8NcnPIQuGaVTgb8kN0ZQRc+hYTpUB
+xlZBGe22g2yJ3TulN610YM5KBwGuyB1xVAxdWAFqzbZttSAIw5ZBoF6jWoh4U7TZ
+NUMrtHhHb9Ou7tRIK45vlWH9fA5nnB3ABQBLOyKzbpjitXGaq7HGbq/4kZ6Rbl5d
+VsDw7gDhQp/Ix7UqHQAEVGQLwaNftBj76Anb7ODD9uf7YfyXPH3Z6vcwjjzkj1Jk
++Aeg4PO2HhAv9o/N9PxMKGuubxIlaIYtV5ykxV5jxfnG7XZRIiZgP1eb0X6i1d1/
+k/chs9mmnTnhfU5QZQKJ7lLemt4Ucwpkx5iNgqG67PJl4eBuFrlLldG1BDDCGm5W
+qJxssrjU488f6OEXWIZmhJzobw9kPH8mFUtIw1Q0d5dR4aANbEoGsIuuGBhrPwu1
+mboRGFk96aINPUZVaK15oBzCKGl4IjPdOTpWEVPdz//HLoO26IKQEwV+qr4ir+r2
+nF+8sd4ieggRoCXvSQ6nMS/nVVBh89DS5XdwyMaqtAbz1smXMEfEWzLPJyl6Z0Hf
+JfLIgGTQUe0e2Adc8Vl2QHpssRpospayjsdYlqO/2vFuWOCf/BPnxqT7LKSD8fEm
+pLD+arZnDtfgha0/nKWlmwqVFFmbfFRopWpb21NP2WpeRrGqkyU=
+=Yf6q
+-----END PGP SIGNATURE-----
+
+--=-egv5v90dyTdl8tmzTg73--
+
+
+
+--===============7800872331998579222==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 linux-um mailing list
 linux-um@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-um
+
+--===============7800872331998579222==--
+
+
 
