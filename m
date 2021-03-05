@@ -1,16 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lGk8o-0008BR-Cc
- for linux-um@lists.infradead.org; Mon, 01 Mar 2021 15:07:23 +0000
+ by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
+ id 1lI9RU-00Ewm4-Gi
+ for linux-um@lists.infradead.org; Fri, 05 Mar 2021 12:20:30 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v2 6/8] um: irqs: allow invoking time-travel handler multiple
- times
-Date: Mon,  1 Mar 2021 16:07:06 +0100
-Message-Id: <20210301160501.55ca8a7f5c73.I0344b4c8a7e79d8ac1645acad97371f202837777@changeid>
-In-Reply-To: <20210301150708.244970-1-johannes@sipsolutions.net>
-References: <20210301150708.244970-1-johannes@sipsolutions.net>
+Subject: [PATCH v4 0/9] PCI support for UML
+Date: Fri,  5 Mar 2021 13:19:50 +0100
+Message-Id: <20210305122010.442577-1-johannes@sipsolutions.net>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -25,45 +22,56 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>
+Cc: Arnd Bergmann <arnd@kernel.org>
 
-From: Johannes Berg <johannes.berg@intel.com>
+Changes since v3:
+ - fix a circular build dependency in
+   "um: expose time-travel mode to userspace side"
 
-If we happen to get multiple messages while IRQS are already
-suspended, we still need to handle them, since otherwise the
-simulation blocks.
+Chances since v2:
+ - add "um: expose time-travel mode to userspace side"
+   to simplify "um: time-travel/signals: fix ndelay() in interrupt"
+ - rework "um: time-travel/signals: fix ndelay() in interrupt"
+   a fair bit to fix bugs with time_travel_mode != TT_MODE_EXTERNAL
+   when CONFIG_UML_TIME_TRAVEL_SUPPORT is enabled, and to clean up
+   the code
+ - no changes to the other patches
 
-Remove the "prevent nesting" part, time_travel_add_irq_event()
-will deal with being called multiple times just fine.
+Changes since v1:
+ - fix a memory leak in the PCI code
+ - fix race in interrupt handling
+ - fix checks in interrupt handling
+ - use asm-generic for fb.h and vga.h
+ - rediff against v5.12-rc1
+ - export signals_enabled directly
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- arch/um/kernel/irq.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-index ccf5e4d27202..2ee0a368aa59 100644
---- a/arch/um/kernel/irq.c
-+++ b/arch/um/kernel/irq.c
-@@ -101,10 +101,12 @@ static bool irq_do_timetravel_handler(struct irq_entry *entry,
- 	if (!reg->timetravel_handler)
- 		return false;
- 
--	/* prevent nesting - we'll get it again later when we SIGIO ourselves */
--	if (reg->pending_on_resume)
--		return true;
--
-+	/*
-+	 * Handle all messages - we might get multiple even while
-+	 * interrupts are already suspended, due to suspend order
-+	 * etc. Note that time_travel_add_irq_event() will not add
-+	 * an event twice, if it's pending already "first wins".
-+	 */
- 	reg->timetravel_handler(reg->irq, entry->fd, reg->id, &reg->event);
- 
- 	if (!reg->event.pending)
--- 
-2.26.2
+Original description:
+
+In order to simulate some devices and write tests completely
+independent of real PCI devices, we continued the development
+of time-travel and related bits, and are adding PCI support
+here now.
+
+The way it works is that it communicates with the outside (of
+UML) with virtio, which we previously added using vhost-user,
+and then offers a PCI bus to the inside system, where normal
+PCI probing etc. happens, but all config space & IO accesses
+are forwarded over virtio.
+
+To enable that, add lib/logic_iomem, similar to logic_pio but
+for iomem regions, this way, ioread/iowrite can be redirected
+over the virtio device.
+
+Since currently no official virtio device ID is assigned yet
+a Kconfig option for that is required to be set to the value
+you want to use locally for experimentation. Once we have an
+official value we can change the default (currently -1 which
+makes it non-functional) or remove the option entirely.
+
+johannes
+
+
 
 
 _______________________________________________
