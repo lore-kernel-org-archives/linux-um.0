@@ -2,12 +2,12 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lI8n1-00En7C-BK
- for linux-um@lists.infradead.org; Fri, 05 Mar 2021 11:38:53 +0000
+ id 1lI8n1-00En7O-W6
+ for linux-um@lists.infradead.org; Fri, 05 Mar 2021 11:38:54 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v3 5/9] um: expose time-travel mode to userspace side
-Date: Fri,  5 Mar 2021 12:37:53 +0100
-Message-Id: <20210305123552.ab248e802417.Id2bd78c4198c3a57eac2ed766fda392944e6f76c@changeid>
+Subject: [PATCH v3 9/9] um: virtio/pci: enable suspend/resume
+Date: Fri,  5 Mar 2021 12:37:57 +0100
+Message-Id: <20210305123552.b67ff0e4a609.I2e9caf8b2083e2a8d0c76799179db35d08032aa1@changeid>
 In-Reply-To: <20210305113756.331001-1-johannes@sipsolutions.net>
 References: <20210305113756.331001-1-johannes@sipsolutions.net>
 MIME-Version: 1.0
@@ -28,88 +28,157 @@ Cc: Johannes Berg <johannes.berg@intel.com>
 
 From: Johannes Berg <johannes.berg@intel.com>
 
-This will be necessary in the userspace side to fix the
-signal/interrupt handling in time-travel=ext mode, which
-is the next patch.
+The UM virtual PCI devices currently cannot be suspended properly
+since the virtio driver already disables VQs well before the PCI
+bus's suspend_noirq wants to complete the transition by writing to
+PCI config space.
+
+After trying around for a long time with moving the devices on the
+DPM list, trying to create dependencies between them, etc. I gave
+up and instead added UML specific cross-driver API that lets the
+virt-pci code enable not suspending/resuming VQs for its devices.
+
+This then allows the PCI bus suspend_noirq to still talk to the
+device, and suspend/resume works properly.
 
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
-v3: new patch in this patchset
----
- arch/um/include/linux/time-internal.h | 12 +-----------
- arch/um/include/shared/timetravel.h   | 22 ++++++++++++++++++++++
- 2 files changed, 23 insertions(+), 11 deletions(-)
- create mode 100644 arch/um/include/shared/timetravel.h
+ arch/um/drivers/virt-pci.c         | 10 ++++++++
+ arch/um/drivers/virtio_uml.c       | 40 ++++++++++++++++++++++--------
+ arch/um/include/linux/virtio-uml.h | 13 ++++++++++
+ 3 files changed, 53 insertions(+), 10 deletions(-)
+ create mode 100644 arch/um/include/linux/virtio-uml.h
 
-diff --git a/arch/um/include/linux/time-internal.h b/arch/um/include/linux/time-internal.h
-index 759956ab0108..b22226634ff6 100644
---- a/arch/um/include/linux/time-internal.h
-+++ b/arch/um/include/linux/time-internal.h
-@@ -8,17 +8,11 @@
- #define __TIMER_INTERNAL_H__
- #include <linux/list.h>
- #include <asm/bug.h>
-+#include <shared/timetravel.h>
+diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
+index dd85f36197aa..0b802834f40a 100644
+--- a/arch/um/drivers/virt-pci.c
++++ b/arch/um/drivers/virt-pci.c
+@@ -10,6 +10,7 @@
+ #include <linux/logic_iomem.h>
+ #include <linux/irqdomain.h>
+ #include <linux/virtio_pcidev.h>
++#include <linux/virtio-uml.h>
+ #include <linux/delay.h>
+ #include <linux/msi.h>
+ #include <asm/unaligned.h>
+@@ -134,6 +135,9 @@ static int um_pci_send_cmd(struct um_pci_device *dev,
+ 		if (completed == HANDLE_NO_FREE(cmd))
+ 			break;
  
- #define TIMER_MULTIPLIER 256
- #define TIMER_MIN_DELTA  500
++		if (completed && !HANDLE_IS_NO_FREE(completed))
++			kfree(completed);
++
+ 		if (WARN_ONCE(virtqueue_is_broken(dev->cmd_vq) ||
+ 			      ++delay_count > UM_VIRT_PCI_MAXDELAY,
+ 			      "um virt-pci delay: %d", delay_count)) {
+@@ -550,6 +554,12 @@ static int um_pci_virtio_probe(struct virtio_device *vdev)
  
--enum time_travel_mode {
--	TT_MODE_OFF,
--	TT_MODE_BASIC,
--	TT_MODE_INFCPU,
--	TT_MODE_EXTERNAL,
--};
--
- #ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
- struct time_travel_event {
- 	unsigned long long time;
-@@ -27,8 +21,6 @@ struct time_travel_event {
- 	bool pending, onstack;
- };
+ 	device_set_wakeup_enable(&vdev->dev, true);
  
--extern enum time_travel_mode time_travel_mode;
--
- void time_travel_sleep(void);
++	/*
++	 * In order to do suspend-resume properly, don't allow VQs
++	 * to be suspended.
++	 */
++	virtio_uml_set_no_vq_suspend(vdev, true);
++
+ 	um_pci_rescan();
+ 	return 0;
+ error:
+diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
+index 91ddf74ca888..4412d6febade 100644
+--- a/arch/um/drivers/virtio_uml.c
++++ b/arch/um/drivers/virtio_uml.c
+@@ -56,6 +56,7 @@ struct virtio_uml_device {
+ 	u8 status;
+ 	u8 registered:1;
+ 	u8 suspended:1;
++	u8 no_vq_suspend:1;
  
- static inline void
-@@ -62,8 +54,6 @@ bool time_travel_del_event(struct time_travel_event *e);
- struct time_travel_event {
- };
- 
--#define time_travel_mode TT_MODE_OFF
--
- static inline void time_travel_sleep(void)
- {
+ 	u8 config_changed_irq:1;
+ 	uint64_t vq_irq_vq_map;
+@@ -1098,6 +1099,19 @@ static void virtio_uml_release_dev(struct device *d)
+ 	kfree(vu_dev);
  }
-diff --git a/arch/um/include/shared/timetravel.h b/arch/um/include/shared/timetravel.h
+ 
++void virtio_uml_set_no_vq_suspend(struct virtio_device *vdev,
++				  bool no_vq_suspend)
++{
++	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
++
++	if (WARN_ON(vdev->config != &virtio_uml_config_ops))
++		return;
++
++	vu_dev->no_vq_suspend = no_vq_suspend;
++	dev_info(&vdev->dev, "%sabled VQ suspend\n",
++		 no_vq_suspend ? "dis" : "en");
++}
++
+ /* Platform device */
+ 
+ static int virtio_uml_probe(struct platform_device *pdev)
+@@ -1302,13 +1316,16 @@ MODULE_DEVICE_TABLE(of, virtio_uml_match);
+ static int virtio_uml_suspend(struct platform_device *pdev, pm_message_t state)
+ {
+ 	struct virtio_uml_device *vu_dev = platform_get_drvdata(pdev);
+-	struct virtqueue *vq;
+ 
+-	virtio_device_for_each_vq((&vu_dev->vdev), vq) {
+-		struct virtio_uml_vq_info *info = vq->priv;
++	if (!vu_dev->no_vq_suspend) {
++		struct virtqueue *vq;
+ 
+-		info->suspended = true;
+-		vhost_user_set_vring_enable(vu_dev, vq->index, false);
++		virtio_device_for_each_vq((&vu_dev->vdev), vq) {
++			struct virtio_uml_vq_info *info = vq->priv;
++
++			info->suspended = true;
++			vhost_user_set_vring_enable(vu_dev, vq->index, false);
++		}
+ 	}
+ 
+ 	if (!device_may_wakeup(&vu_dev->vdev.dev)) {
+@@ -1322,13 +1339,16 @@ static int virtio_uml_suspend(struct platform_device *pdev, pm_message_t state)
+ static int virtio_uml_resume(struct platform_device *pdev)
+ {
+ 	struct virtio_uml_device *vu_dev = platform_get_drvdata(pdev);
+-	struct virtqueue *vq;
+ 
+-	virtio_device_for_each_vq((&vu_dev->vdev), vq) {
+-		struct virtio_uml_vq_info *info = vq->priv;
++	if (!vu_dev->no_vq_suspend) {
++		struct virtqueue *vq;
++
++		virtio_device_for_each_vq((&vu_dev->vdev), vq) {
++			struct virtio_uml_vq_info *info = vq->priv;
+ 
+-		info->suspended = false;
+-		vhost_user_set_vring_enable(vu_dev, vq->index, true);
++			info->suspended = false;
++			vhost_user_set_vring_enable(vu_dev, vq->index, true);
++		}
+ 	}
+ 
+ 	vu_dev->suspended = false;
+diff --git a/arch/um/include/linux/virtio-uml.h b/arch/um/include/linux/virtio-uml.h
 new file mode 100644
-index 000000000000..cbc58ff7c91f
+index 000000000000..2f652fa90f04
 --- /dev/null
-+++ b/arch/um/include/shared/timetravel.h
-@@ -0,0 +1,22 @@
++++ b/arch/um/include/linux/virtio-uml.h
+@@ -0,0 +1,13 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
-+ * Copyright (C) 2019-2021 Intel Corporation
++ * Copyright (C) 2021 Intel Corporation
++ * Author: Johannes Berg <johannes@sipsolutions.net>
 + */
-+#ifndef _UM_TIME_TRAVEL_H_
-+#define _UM_TIME_TRAVEL_H_
-+#include <generated/asm-offsets.h>
 +
-+enum time_travel_mode {
-+	TT_MODE_OFF,
-+	TT_MODE_BASIC,
-+	TT_MODE_INFCPU,
-+	TT_MODE_EXTERNAL,
-+};
++#ifndef __VIRTIO_UML_H__
++#define __VIRTIO_UML_H__
 +
-+#ifdef UML_CONFIG_UML_TIME_TRAVEL_SUPPORT
-+extern enum time_travel_mode time_travel_mode;
-+#else
-+#define time_travel_mode TT_MODE_OFF
-+#endif /* UML_CONFIG_UML_TIME_TRAVEL_SUPPORT */
++void virtio_uml_set_no_vq_suspend(struct virtio_device *vdev,
++				  bool no_vq_suspend);
 +
-+#endif /* _UM_TIME_TRAVEL_H_ */
++#endif /* __VIRTIO_UML_H__ */
 -- 
 2.26.2
 
