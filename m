@@ -2,13 +2,13 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lIGie-00GI11-Es
- for linux-um@lists.infradead.org; Fri, 05 Mar 2021 20:06:42 +0000
-Message-ID: <d657cc169ff8fee29353cf473f5c4093c374ecc8.camel@sipsolutions.net>
+ id 1lIGWl-00GFpD-ML
+ for linux-um@lists.infradead.org; Fri, 05 Mar 2021 19:54:28 +0000
+Message-ID: <e8b84a87173e80d1e3b602f280b564b0b758c879.camel@sipsolutions.net>
 Subject: Re: linux uml segfault
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Fri, 05 Mar 2021 21:06:35 +0100
-In-Reply-To: <02a1bb6c-3727-61d6-d0bb-a2200f1b0d14@kot-begemot.co.uk>
+Date: Fri, 05 Mar 2021 20:54:11 +0100
+In-Reply-To: <01a1b3551284a39a3c06ab2ec0222cbf6099a537.camel@sipsolutions.net>
 References: <3448a70e7a39b9c3202aeefa7858ace265b8a978.camel@debian.org>
  <6d37b5aa-36f2-1fce-b70b-8faa0ff882e0@kot-begemot.co.uk>
  <c8bb257c-1542-12f5-89f1-5c1f14b8a70a@collabora.com>
@@ -21,11 +21,6 @@ References: <3448a70e7a39b9c3202aeefa7858ace265b8a978.camel@debian.org>
  <5ee28b97-6111-e12c-d0e9-83a13f2151ce@kot-begemot.co.uk>
  <5e068447e2067fff8b21c0689f14d080b984f6e0.camel@debian.org>
  <01a1b3551284a39a3c06ab2ec0222cbf6099a537.camel@sipsolutions.net>
- <m21rcv5vi5.wl-thehajime@gmail.com>
- <3c447c59bc30ba2bae1130ec89beddd699a0d21a.camel@sipsolutions.net>
- <c016e628-5c28-e732-d99d-7b2f10e3c5a3@kot-begemot.co.uk>
- <BA89CA55-A40B-48E7-BD6A-8F33B9045E09@sipsolutions.net>
- <02a1bb6c-3727-61d6-d0bb-a2200f1b0d14@kot-begemot.co.uk>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -39,23 +34,55 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, Hajime Tazaki <thehajime@gmail.com>
-Cc: rrs@debian.org, chris.obbard@collabora.com, linux-um@lists.infradead.org, 983379@bugs.debian.org
+To: rrs@debian.org, Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, Christopher Obbard <chris.obbard@collabora.com>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>
+Cc: 983379@bugs.debian.org
 
-On Fri, 2021-03-05 at 19:03 +0000, Anton Ivanov wrote:
+On Wed, 2021-03-03 at 23:40 +0100, Johannes Berg wrote:
+
+> Now libcom_err.so.2 is trying to call sem_init(), and that gets ... tada
+> ... Linux's sem_init() instead of libpthread's.
 > 
-> I thought of that, but surrendered to the "dark side" of the quick and ugly fix.
+> And then the crash.
 
-:)
+FWIW, I can trivially reproduce this by simply force-loading
+libcom_err.so:
 
-> We can do that for the ipc/sem.c - it brings in uaccess.h which
-> ultimately pulls uaccess from our asm tree. So if we do it there, it
-> will end up in sem.c
 
-Well, most easily you could do it in ipc/util.h, where it's declared. Or
-any place that is pulled in by it, e.g. even asm/errno.h.
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index 1cea46ff9bb7..a16b411154fb 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -134,7 +134,7 @@ LINK_WRAPS = -Wl,--wrap,malloc -Wl,--wrap,free -Wl,--wrap,calloc
+ LD_FLAGS_CMDLINE = $(foreach opt,$(KBUILD_LDFLAGS),-Wl,$(opt))
+ 
+ # Used by link-vmlinux.sh which has special support for um link
+-export CFLAGS_vmlinux := $(LINK-y) $(LINK_WRAPS) $(LD_FLAGS_CMDLINE)
++export CFLAGS_vmlinux := $(LINK-y) $(LINK_WRAPS) $(LD_FLAGS_CMDLINE) -ldl
+ 
+ # When cleaning we don't include .config, so we don't include
+ # TT or skas makefiles and don't clean skas_ptregs.h.
+diff --git a/arch/um/os-Linux/main.c b/arch/um/os-Linux/main.c
+index c8a42ecbd7a2..873dc4c40cb7 100644
+--- a/arch/um/os-Linux/main.c
++++ b/arch/um/os-Linux/main.c
+@@ -16,6 +16,7 @@
+ #include <kern_util.h>
+ #include <os.h>
+ #include <um_malloc.h>
++#include <dlfcn.h>
+ 
+ #define PGD_BOUND (4 * 1024 * 1024)
+ #define STACKSIZE (8 * 1024 * 1024)
+@@ -115,6 +116,8 @@ int __init main(int argc, char **argv, char **envp)
+ 
+ 	setsid();
+ 
++dlopen("/usr/lib64/libcom_err.so.2", RTLD_NOW|RTLD_GLOBAL);
++
+ 	new_argv = malloc((argc + 1) * sizeof(char *));
+ 	if (new_argv == NULL) {
+ 		perror("Mallocing argv");
 
-All ugly though.
 
 johannes
 
