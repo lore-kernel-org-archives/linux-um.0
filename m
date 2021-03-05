@@ -1,15 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab7.miniserver.com ([37.128.132.42]
- helo=www.kot-begemot.co.uk)
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lKjWX-00BkwX-Vm
- for linux-um@lists.infradead.org; Fri, 12 Mar 2021 15:16:23 +0000
-From: anton.ivanov@cambridgegreys.com
-Subject: [PATCH v7 2/3] um: enable the use of optimized xor routines in UML
-Date: Fri, 12 Mar 2021 15:16:08 +0000
-Message-Id: <20210312151609.24745-3-anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20210312151609.24745-1-anton.ivanov@cambridgegreys.com>
-References: <20210312151609.24745-1-anton.ivanov@cambridgegreys.com>
+ id 1lI8n1-00En7C-BK
+ for linux-um@lists.infradead.org; Fri, 05 Mar 2021 11:38:53 +0000
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [PATCH v3 5/9] um: expose time-travel mode to userspace side
+Date: Fri,  5 Mar 2021 12:37:53 +0100
+Message-Id: <20210305123552.ab248e802417.Id2bd78c4198c3a57eac2ed766fda392944e6f76c@changeid>
+In-Reply-To: <20210305113756.331001-1-johannes@sipsolutions.net>
+References: <20210305113756.331001-1-johannes@sipsolutions.net>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -24,77 +24,94 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Johannes Berg <johannes.berg@intel.com>
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-This patch enables the use of optimized xor routines from the x86
-tree as well as the necessary fpu api shims so they can work on
-UML.
+This will be necessary in the userspace side to fix the
+signal/interrupt handling in time-travel=ext mode, which
+is the next patch.
 
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- arch/um/include/asm/fpu/api.h | 20 ++++++++++++++++++++
- arch/um/include/asm/xor.h     | 17 ++++++++++++++++-
- 2 files changed, 36 insertions(+), 1 deletion(-)
- create mode 100644 arch/um/include/asm/fpu/api.h
+v3: new patch in this patchset
+---
+ arch/um/include/linux/time-internal.h | 12 +-----------
+ arch/um/include/shared/timetravel.h   | 22 ++++++++++++++++++++++
+ 2 files changed, 23 insertions(+), 11 deletions(-)
+ create mode 100644 arch/um/include/shared/timetravel.h
 
-diff --git a/arch/um/include/asm/fpu/api.h b/arch/um/include/asm/fpu/api.h
-new file mode 100644
-index 000000000000..71bfd9ef3938
---- /dev/null
-+++ b/arch/um/include/asm/fpu/api.h
-@@ -0,0 +1,20 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+#ifndef _ASM_UM_FPU_API_H
-+#define _ASM_UM_FPU_API_H
-+
-+/* Copyright (c) 2020 Cambridge Greys Ltd
-+ * Copyright (c) 2020 Red Hat Inc.
-+ * A set of "dummy" defines to allow the direct inclusion
-+ * of x86 optimized copy, xor, etc routines into the
-+ * UML code tree. */
-+
-+#define kernel_fpu_begin() (void)0
-+#define kernel_fpu_end() (void)0
-+
-+static inline bool irq_fpu_usable(void)
-+{
-+	return true;
-+}
-+
-+
-+#endif
-diff --git a/arch/um/include/asm/xor.h b/arch/um/include/asm/xor.h
-index 36b33d62a35d..f512704a9ec7 100644
---- a/arch/um/include/asm/xor.h
-+++ b/arch/um/include/asm/xor.h
-@@ -1,7 +1,22 @@
- /* SPDX-License-Identifier: GPL-2.0 */
--#include <asm-generic/xor.h>
-+#ifndef _ASM_UM_XOR_H
-+#define _ASM_UM_XOR_H
-+
-+#ifdef CONFIG_64BIT
-+#undef CONFIG_X86_32
-+#else
-+#define CONFIG_X86_32 1
-+#endif
-+
-+#include <asm/cpufeature.h>
-+#include <../../x86/include/asm/xor.h>
- #include <linux/time-internal.h>
+diff --git a/arch/um/include/linux/time-internal.h b/arch/um/include/linux/time-internal.h
+index 759956ab0108..b22226634ff6 100644
+--- a/arch/um/include/linux/time-internal.h
++++ b/arch/um/include/linux/time-internal.h
+@@ -8,17 +8,11 @@
+ #define __TIMER_INTERNAL_H__
+ #include <linux/list.h>
+ #include <asm/bug.h>
++#include <shared/timetravel.h>
  
-+#ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
-+#undef XOR_SELECT_TEMPLATE
- /* pick an arbitrary one - measuring isn't possible with inf-cpu */
- #define XOR_SELECT_TEMPLATE(x)	\
- 	(time_travel_mode == TT_MODE_INFCPU ? &xor_block_8regs : NULL)
-+#endif
+ #define TIMER_MULTIPLIER 256
+ #define TIMER_MIN_DELTA  500
+ 
+-enum time_travel_mode {
+-	TT_MODE_OFF,
+-	TT_MODE_BASIC,
+-	TT_MODE_INFCPU,
+-	TT_MODE_EXTERNAL,
+-};
+-
+ #ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
+ struct time_travel_event {
+ 	unsigned long long time;
+@@ -27,8 +21,6 @@ struct time_travel_event {
+ 	bool pending, onstack;
+ };
+ 
+-extern enum time_travel_mode time_travel_mode;
+-
+ void time_travel_sleep(void);
+ 
+ static inline void
+@@ -62,8 +54,6 @@ bool time_travel_del_event(struct time_travel_event *e);
+ struct time_travel_event {
+ };
+ 
+-#define time_travel_mode TT_MODE_OFF
+-
+ static inline void time_travel_sleep(void)
+ {
+ }
+diff --git a/arch/um/include/shared/timetravel.h b/arch/um/include/shared/timetravel.h
+new file mode 100644
+index 000000000000..cbc58ff7c91f
+--- /dev/null
++++ b/arch/um/include/shared/timetravel.h
+@@ -0,0 +1,22 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (C) 2019-2021 Intel Corporation
++ */
++#ifndef _UM_TIME_TRAVEL_H_
++#define _UM_TIME_TRAVEL_H_
++#include <generated/asm-offsets.h>
 +
-+#endif
++enum time_travel_mode {
++	TT_MODE_OFF,
++	TT_MODE_BASIC,
++	TT_MODE_INFCPU,
++	TT_MODE_EXTERNAL,
++};
++
++#ifdef UML_CONFIG_UML_TIME_TRAVEL_SUPPORT
++extern enum time_travel_mode time_travel_mode;
++#else
++#define time_travel_mode TT_MODE_OFF
++#endif /* UML_CONFIG_UML_TIME_TRAVEL_SUPPORT */
++
++#endif /* _UM_TIME_TRAVEL_H_ */
 -- 
-2.20.1
+2.26.2
 
 
 _______________________________________________
