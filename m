@@ -1,15 +1,11 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lI7NV-00ERxy-Nv
- for linux-um@lists.infradead.org; Fri, 05 Mar 2021 10:08:16 +0000
-Message-ID: <8c894bae0401e5cdb6d214a0854fa750e00a0c31.camel@sipsolutions.net>
+ id 1lI7FR-00EQ9K-06
+ for linux-um@lists.infradead.org; Fri, 05 Mar 2021 09:59:55 +0000
 Subject: Re: linux uml segfault
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Fri, 05 Mar 2021 11:07:48 +0100
-In-Reply-To: <1543fce7-7bcd-b8c9-ca1c-0970e0a0c590@kot-begemot.co.uk>
- (sfid-20210305_110000_980788_73AE7F28)
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
 References: <3448a70e7a39b9c3202aeefa7858ace265b8a978.camel@debian.org>
  <6d37b5aa-36f2-1fce-b70b-8faa0ff882e0@kot-begemot.co.uk>
  <c8bb257c-1542-12f5-89f1-5c1f14b8a70a@collabora.com>
@@ -26,9 +22,11 @@ References: <3448a70e7a39b9c3202aeefa7858ace265b8a978.camel@debian.org>
  <3c447c59bc30ba2bae1130ec89beddd699a0d21a.camel@sipsolutions.net>
  <19322b1442a7fc5938e026cb4eccc113a7c2328b.camel@sipsolutions.net>
  <fdbe84e1-ab45-7eb4-7aa7-5ba9798be633@kot-begemot.co.uk>
- <1543fce7-7bcd-b8c9-ca1c-0970e0a0c590@kot-begemot.co.uk>
- (sfid-20210305_110000_980788_73AE7F28)
+Message-ID: <1543fce7-7bcd-b8c9-ca1c-0970e0a0c590@kot-begemot.co.uk>
+Date: Fri, 5 Mar 2021 09:59:48 +0000
 MIME-Version: 1.0
+In-Reply-To: <fdbe84e1-ab45-7eb4-7aa7-5ba9798be633@kot-begemot.co.uk>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -37,44 +35,63 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, Benjamin Berg <benjamin@sipsolutions.net>, Hajime Tazaki <thehajime@gmail.com>
+To: Benjamin Berg <benjamin@sipsolutions.net>, Johannes Berg <johannes@sipsolutions.net>, Hajime Tazaki <thehajime@gmail.com>
 Cc: rrs@debian.org, chris.obbard@collabora.com, linux-um@lists.infradead.org, 983379@bugs.debian.org
 
-On Fri, 2021-03-05 at 09:59 +0000, Anton Ivanov wrote:
-> 
-> This is proving very "interesting" to try to chase down, because the
-> "picking the wrong library" does not happen every time.
-> 
-> F.E. yesterday my 5.10 builds were picking glibc memcpy and friends.
-> Today with the same config and everything else the same it is picking
-> built-ins.
-
-Ouch.
-
-> I need to finds some better way to reproduce this.
-
-Maybe something like the original report? That caused sem_init() to be
-called, so we know libc will/may call something there.
-
-You and me probably don't have the nss setup to cause sem_init() to get
-called, but maybe simply putting
-
-void init_nss_interface(void)
-{
-  panic("how did we get here");
-}
-
-somewhere in the kernel image might already reproduce it?
-
-johannes
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+Ck9uIDA0LzAzLzIwMjEgMTg6NDEsIEFudG9uIEl2YW5vdiB3cm90ZToKPgo+Cj4gT24gMDQvMDMv
+MjAyMSAwODowNSwgQmVuamFtaW4gQmVyZyB3cm90ZToKPj4gT24gVGh1LCAyMDIxLTAzLTA0IGF0
+IDA4OjQ3ICswMTAwLCBKb2hhbm5lcyBCZXJnIHdyb3RlOgo+PiBPbiBUaHUsIDIwMjEtMDMtMDQg
+YXQgMTQ6MzggKzA5MDAsIEhhamltZSBUYXpha2kgd3JvdGU6Cj4+Cj4+Pj4gTm93LCBJIGRvbid0
+IGtub3cgaG93IHRvIGZpeCBpdCAoc2hvcnQgb2YgY2hhbmdpbmcgeW91ciBuc3N3aXRjaAo+Pj4+
+IGNvbmZpZ3VyYXRpb24pIC0gbWF5YmUgd2UgY291bGQgc29tZWhvdyByZW5hbWUgc2VtX2luaXQo
+KT8gT3IgbWF5YmUKPj4+PiB3ZQo+Pj4+IGNhbiBzb21laG93IGdpdmUgdGhlIGtlcm5lbCBiaW5h
+cnkgYSBsb3dlciBzeW1ib2wgcmVzb2x1dGlvbiB0aGFuCj4+Pj4gdGhlCj4+Pj4gbGliYy9saWJw
+dGhyZWFkLgo+Pj4KPj4+IG9iamNvcHkgKGZyb20gYmludXRpbHMpIGNhbiBsb2NhbGl6ZSBzeW1i
+b2xzIChpLmUuLCBvYmpjb3B5IC1MCj4+PiBzZW1faW5pdCAkb3JpZ19maWxlICRuZXdfZmlsZSku
+wqAgSXQgYWxzbyBkb2VzIHJlbmFtaW5nIHN5bWJvbHMuwqAgQnV0Cj4+PiBub3Qgc3VyZSB0aGlz
+IGlzIHRoZSBpZGVhbCBzb2x1dGlvbi4KPj4KPj4gWWVzLCB3ZSBzdGFydGVkIHRoaW5raW5nIGFi
+b3V0IGl0IGJ1dCBpdCB3YXMgdG9vIGxhdGUgYXQgbmlnaHQgd2hlbiBJCj4+IHJlcGxpZWQgLi4u
+Cj4+Cj4+IEkgdGhpbmsgdGhlcmUncyBiYXNpY2FsbHkgYSB3YXkgdG8gaGF2ZSBhbiBleHRlcm5h
+bCBsaXN0IG9mIHN5bWJvbHMgdG8KPj4gZXhwb3J0LCBmb3Igc3ltYm9sIHZlcnNpb25pbmcsIHRo
+YXQgd2UgY291bGQvc2hvdWxkIHVzZSB0byBiYXNpY2FsbHkKPj4gbm90Cj4+IGV4cG9ydCBhbnkg
+b2YgdGhlIGtlcm5lbCBzeW1ib2xzIG91dCB0byBsaWJzLgo+Pgo+PiBNYXliZSB1c2luZyB0aGUg
+bGQgLS12ZXJzaW9uLXNjcmlwdD0gb3B0aW9uIGhlcmUgd29ya3MgdG8gbWFyayBhbGwKPj4ga2Vy
+bmVsIHN5bWJvbHMgYXMgYmVpbmcgImxvY2FsIiBhbmQgcHJldmVudCB0aGVtIGZyb20gYmVpbmcg
+cGlja2VkIHVwCj4+IGJ5IGxpYnJhcmllcy4KPj4KPj4gQmVuamFtaW4KPj4KPj4+IEhvdyBkb2Vz
+IFVNTCBoYW5kbGUgc3ltYm9sIGNvbmZsaWN0cyBiZXR3ZWVuIHVzZXJzcGFjZSBjb2RlIGFuZCBM
+aW51eAo+Pj4ga2VybmVsIChsaWtlIHRoaXMgY2FzZSBzZW1faW5pdCkgP8KgIEFGQUlLLCBsaWJu
+bCBoYXMgYSBzYW1lIHN5bWJvbCBhcwo+Pj4gTGludXgga2VybmVsIChnZW5sbXNnX3B1dCkgYW5k
+IG90aGVycyBjYW4gcG9zc2libHkgZG8gYXMgd2VsbC4KPj4KPj4gSSBmZWFyIGl0IGRvZXNuJ3Q/
+Cj4KPiBJIGNhbiBjb25maXJtIHRoYXQgaXQgZGlkIGFuZCB0aGlzIGJ1ZyBpcyBiaXNlY3QtYWJs
+ZS4KPgo+IHdpdGggNS43Cj4KPiAjIGRkIGlmPS9kZXYvdWJkYSBvZj0vZGV2L251bGwgYnM9MU0K
+PiAxNjM4NCsxIHJlY29yZHMgaW4KPiAxNjM4NCsxIHJlY29yZHMgb3V0Cj4gMTcxNzk4Njk2OTYg
+Ynl0ZXMgKDE3IEdCLCAxNiBHaUIpIGNvcGllZCwgMTAuNjk3MyBzLCAxLjYgR0Ivcwo+Cj4gd2l0
+aCA1LjEwIHRoZSBzcGVlZCBpcyAyLjIKPiA1Ljcgd2l0aCAic3RyaW5ncyBmcm9tIGdsaWJjIiBw
+YXRjaCBzcGVlZCBpcyAyLjIKPgo+IEFzIHdlIGRpZCBub3QgZG8gYW55dGhpbmcgZWxzZSBpbiB0
+aGlzIHRpbWVmcmFtZSB0byBqYWNrIHVwIHRoZSBzcGVlZCBmcm9tIDEuNkdCL3MgdG8gMi4yR0Iv
+cyBhbmQgYXMgaXQgaXMgaWRlbnRpY2FsIHRvIHRoZSBzcGVlZCB5b3UgZ2V0IHdpdGggdGhlICJ1
+c2UgZ2xpYmMgc3RyaW5ncy5oIiB0aGlzIGxvb2tzIGxpa2UgYSBnb29kIGNyaXRlcmlhIHRvIGJp
+c2VjdCBvbi4KPgo+IEkgYW0gZ29pbmcgdG8gZG8gYSBiaXNlY3Qgd2l0aCA1LjcgImdvb2QiIGFu
+ZCA1LjEwICJiYWQiIHVzaW5nIHRoZSBzcGVlZCB0ZXN0IGFzIGEgd29ya2luZyBoeXBvdGhlc2lz
+LgoKVGhpcyBpcyBwcm92aW5nIHZlcnkgImludGVyZXN0aW5nIiB0byB0cnkgdG8gY2hhc2UgZG93
+biwgYmVjYXVzZSB0aGUgInBpY2tpbmcgdGhlIHdyb25nIGxpYnJhcnkiIGRvZXMgbm90IGhhcHBl
+biBldmVyeSB0aW1lLgoKRi5FLiB5ZXN0ZXJkYXkgbXkgNS4xMCBidWlsZHMgd2VyZSBwaWNraW5n
+IGdsaWJjIG1lbWNweSBhbmQgZnJpZW5kcy4gVG9kYXkgd2l0aCB0aGUgc2FtZSBjb25maWcgYW5k
+IGV2ZXJ5dGhpbmcgZWxzZSB0aGUgc2FtZSBpdCBpcyBwaWNraW5nIGJ1aWx0LWlucy4KCkkgbmVl
+ZCB0byBmaW5kcyBzb21lIGJldHRlciB3YXkgdG8gcmVwcm9kdWNlIHRoaXMuCgpBLgoKCj4KPiBB
+Lgo+Cj4KPj4KPj4gam9oYW5uZXMKPj4KPj4KPj4gX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KPj4gbGludXgtdW0gbWFpbGluZyBsaXN0Cj4+IGxpbnV4LXVt
+QGxpc3RzLmluZnJhZGVhZC5vcmcKPj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9saW51eC11bQo+Pgo+Pgo+Pgo+PiBfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwo+PiBsaW51eC11bSBtYWlsaW5nIGxpc3QKPj4gbGludXgt
+dW1AbGlzdHMuaW5mcmFkZWFkLm9yZwo+PiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2xpbnV4LXVtCj4+Cj4KLS0gCkFudG9uIFIuIEl2YW5vdgpodHRwczovL3d3
+dy5rb3QtYmVnZW1vdC5jby51ay8KCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFk
+ZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
+LXVtCg==
 
