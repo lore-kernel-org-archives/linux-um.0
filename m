@@ -1,16 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lKeW5-00B5Tn-RN
- for linux-um@lists.infradead.org; Fri, 12 Mar 2021 09:55:44 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH 3/6] .gitignore: also ignore gcda files
-Date: Fri, 12 Mar 2021 10:55:23 +0100
-Message-Id: <20210312104627.77a4bc149381.I4f7b3002fa9ef4a168fca1f7952a277b52cae695@changeid>
-In-Reply-To: <20210312095526.197739-1-johannes@sipsolutions.net>
-References: <20210312095526.197739-1-johannes@sipsolutions.net>
+ id 1lIBAB-00FEvB-B7
+ for linux-um@lists.infradead.org; Fri, 05 Mar 2021 14:10:46 +0000
+Subject: Re: [PATCH v4 3/9] um: remove unused smp_sigio_handler() declaration
+References: <20210305122010.442577-1-johannes@sipsolutions.net>
+ <20210305131934.159de8b94c36.I479aba3ebfb7a6418255b7a51c5c2cfe3796e9a2@changeid>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <f97f8671-e4ac-ee84-4ed3-b5c142d0f30d@cambridgegreys.com>
+Date: Fri, 5 Mar 2021 14:10:36 +0000
 MIME-Version: 1.0
+In-Reply-To: <20210305131934.159de8b94c36.I479aba3ebfb7a6418255b7a51c5c2cfe3796e9a2@changeid>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -19,42 +21,45 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
-Cc: Jessica Yu <jeyu@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>
+To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
 
-From: Johannes Berg <johannes.berg@intel.com>
 
-We already ignore gcno files that are created by the compiler
-at build time for -ftest-coverage. However, with ARCH=um it's
-possible to select CONFIG_GCOV which actually has the kernel
-binary write out gcda files (rather than have them in debugfs
-like CONFIG_GCOV_KERNEL does), so an in-tree build can create
-them. Ignore them so the tree doesn't look dirty for that.
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- .gitignore | 1 +
- 1 file changed, 1 insertion(+)
+On 05/03/2021 12:19, Johannes Berg wrote:
+> From: Johannes Berg <johannes.berg@intel.com>
+> 
+> This function doesn't exist, remove its declaration.
+> 
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+> ---
+>   arch/um/include/shared/kern_util.h | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
+> index 2888ec812f6e..a2cfd42608a0 100644
+> --- a/arch/um/include/shared/kern_util.h
+> +++ b/arch/um/include/shared/kern_util.h
+> @@ -33,7 +33,6 @@ extern int handle_page_fault(unsigned long address, unsigned long ip,
+>   			     int is_write, int is_user, int *code_out);
+>   
+>   extern unsigned int do_IRQ(int irq, struct uml_pt_regs *regs);
+> -extern int smp_sigio_handler(void);
+>   extern void initial_thread_cb(void (*proc)(void *), void *arg);
+>   extern int is_syscall(unsigned long addr);
+>   
+> 
 
-diff --git a/.gitignore b/.gitignore
-index 3af66272d6f1..91e46190d418 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -23,6 +23,7 @@
- *.dwo
- *.elf
- *.gcno
-+*.gcda
- *.gz
- *.i
- *.ko
+Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+
 -- 
-2.29.2
-
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
 _______________________________________________
 linux-um mailing list
