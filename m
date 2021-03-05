@@ -2,15 +2,14 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lHTqx-005UJD-2J
- for linux-um@lists.infradead.org; Wed, 03 Mar 2021 15:56:07 +0000
-From: Benjamin Berg <benjamin@sipsolutions.net>
-Subject: [PATCH 03/27] um: Drop support for hosts without SYSEMU_SINGLESTEP
- support
-Date: Wed,  3 Mar 2021 16:54:59 +0100
-Message-Id: <20210303155523.124277-4-benjamin@sipsolutions.net>
-In-Reply-To: <20210303155523.124277-1-benjamin@sipsolutions.net>
-References: <20210303155523.124277-1-benjamin@sipsolutions.net>
+ id 1lI9RV-00Ewml-9K
+ for linux-um@lists.infradead.org; Fri, 05 Mar 2021 12:20:32 +0000
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [PATCH v4 2/9] lib: add iomem emulation (logic_iomem)
+Date: Fri,  5 Mar 2021 13:19:52 +0100
+Message-Id: <20210305131934.ee097bce9bd9.I01b0589b5b625d4fb3bdc31b84dd4d4cedca399a@changeid>
+In-Reply-To: <20210305122010.442577-1-johannes@sipsolutions.net>
+References: <20210305122010.442577-1-johannes@sipsolutions.net>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -25,538 +24,551 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: Benjamin Berg <benjamin@sipsolutions.net>
+Cc: Johannes Berg <johannes.berg@intel.com>, Arnd Bergmann <arnd@kernel.org>
 
-These features have existed since Linux 2.6.14 and can be considered
-widely available at this point.
+From: Johannes Berg <johannes.berg@intel.com>
 
-Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
+Add IO memory emulation that uses callbacks for read/write to
+the allocated regions. The callbacks can be registered by the
+users using logic_iomem_alloc().
+
+To use, an architecture must 'select LOGIC_IOMEM' in Kconfig
+and then include <asm-generic/logic_io.h> into asm/io.h to get
+the __raw_read*/__raw_write* functions.
+
+Optionally, an architecture may 'select LOGIC_IOMEM_FALLBACK'
+in which case non-emulated regions will 'fall back' to the
+various real_* functions that must then be provided.
+
+Cc: Arnd Bergmann <arnd@kernel.org>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- arch/um/include/asm/processor-generic.h |  1 -
- arch/um/include/shared/kern_util.h      |  1 -
- arch/um/include/shared/ptrace_user.h    | 41 --------------
- arch/um/kernel/process.c                | 75 +------------------------
- arch/um/kernel/ptrace.c                 |  2 -
- arch/um/kernel/signal.c                 | 12 ----
- arch/um/os-Linux/skas/process.c         | 56 +++---------------
- arch/um/os-Linux/start_up.c             | 70 ++---------------------
- arch/x86/um/ptrace_32.c                 | 24 --------
- arch/x86/um/ptrace_64.c                 | 26 ---------
- arch/x86/um/shared/sysdep/ptrace_32.h   |  4 --
- 11 files changed, 15 insertions(+), 297 deletions(-)
+ include/asm-generic/logic_io.h |  78 ++++++++
+ include/linux/logic_iomem.h    |  62 +++++++
+ lib/Kconfig                    |  14 ++
+ lib/Makefile                   |   2 +
+ lib/logic_iomem.c              | 318 +++++++++++++++++++++++++++++++++
+ 5 files changed, 474 insertions(+)
+ create mode 100644 include/asm-generic/logic_io.h
+ create mode 100644 include/linux/logic_iomem.h
+ create mode 100644 lib/logic_iomem.c
 
-diff --git a/arch/um/include/asm/processor-generic.h b/arch/um/include/asm/processor-generic.h
-index afd9b267cf81..1cafe30a0241 100644
---- a/arch/um/include/asm/processor-generic.h
-+++ b/arch/um/include/asm/processor-generic.h
-@@ -21,7 +21,6 @@ struct mm_struct;
- struct thread_struct {
- 	struct pt_regs regs;
- 	struct pt_regs *segv_regs;
--	int singlestep_syscall;
- 	void *fault_addr;
- 	jmp_buf *fault_catcher;
- 	struct task_struct *prev_sched;
-diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
-index 2888ec812f6e..d474a5f3d131 100644
---- a/arch/um/include/shared/kern_util.h
-+++ b/arch/um/include/shared/kern_util.h
-@@ -35,7 +35,6 @@ extern int handle_page_fault(unsigned long address, unsigned long ip,
- extern unsigned int do_IRQ(int irq, struct uml_pt_regs *regs);
- extern int smp_sigio_handler(void);
- extern void initial_thread_cb(void (*proc)(void *), void *arg);
--extern int is_syscall(unsigned long addr);
+diff --git a/include/asm-generic/logic_io.h b/include/asm-generic/logic_io.h
+new file mode 100644
+index 000000000000..a53116b8c57e
+--- /dev/null
++++ b/include/asm-generic/logic_io.h
+@@ -0,0 +1,78 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (C) 2021 Intel Corporation
++ * Author: johannes@sipsolutions.net
++ */
++#ifndef _LOGIC_IO_H
++#define _LOGIC_IO_H
++#include <linux/types.h>
++
++/* include this file into asm/io.h */
++
++#ifdef CONFIG_INDIRECT_IOMEM
++
++#ifdef CONFIG_INDIRECT_IOMEM_FALLBACK
++/*
++ * If you want emulated IO memory to fall back to 'normal' IO memory
++ * if a region wasn't registered as emulated, then you need to have
++ * all of the real_* functions implemented.
++ */
++#if !defined(real_ioremap) || !defined(real_iounmap) || \
++    !defined(real_raw_readb) || !defined(real_raw_writeb) || \
++    !defined(real_raw_readw) || !defined(real_raw_writew) || \
++    !defined(real_raw_readl) || !defined(real_raw_writel) || \
++    (defined(CONFIG_64BIT) && \
++     (!defined(real_raw_readq) || !defined(real_raw_writeq))) || \
++    !defined(real_memset_io) || \
++    !defined(real_memcpy_fromio) || \
++    !defined(real_memcpy_toio)
++#error "Must provide fallbacks for real IO memory access"
++#endif /* defined ... */
++#endif /* CONFIG_INDIRECT_IOMEM_FALLBACK */
++
++#define ioremap ioremap
++void __iomem *ioremap(phys_addr_t offset, size_t size);
++
++#define iounmap iounmap
++void iounmap(void __iomem *addr);
++
++#define __raw_readb __raw_readb
++u8 __raw_readb(const volatile void __iomem *addr);
++
++#define __raw_readw __raw_readw
++u16 __raw_readw(const volatile void __iomem *addr);
++
++#define __raw_readl __raw_readl
++u32 __raw_readl(const volatile void __iomem *addr);
++
++#ifdef CONFIG_64BIT
++#define __raw_readq __raw_readq
++u64 __raw_readq(const volatile void __iomem *addr);
++#endif /* CONFIG_64BIT */
++
++#define __raw_writeb __raw_writeb
++void __raw_writeb(u8 value, volatile void __iomem *addr);
++
++#define __raw_writew __raw_writew
++void __raw_writew(u16 value, volatile void __iomem *addr);
++
++#define __raw_writel __raw_writel
++void __raw_writel(u32 value, volatile void __iomem *addr);
++
++#ifdef CONFIG_64BIT
++#define __raw_writeq __raw_writeq
++void __raw_writeq(u64 value, volatile void __iomem *addr);
++#endif /* CONFIG_64BIT */
++
++#define memset_io memset_io
++void memset_io(volatile void __iomem *addr, int value, size_t size);
++
++#define memcpy_fromio memcpy_fromio
++void memcpy_fromio(void *buffer, const volatile void __iomem *addr,
++		   size_t size);
++
++#define memcpy_toio memcpy_toio
++void memcpy_toio(volatile void __iomem *addr, const void *buffer, size_t size);
++
++#endif /* CONFIG_INDIRECT_IOMEM */
++#endif /* _LOGIC_IO_H */
+diff --git a/include/linux/logic_iomem.h b/include/linux/logic_iomem.h
+new file mode 100644
+index 000000000000..3fa65c964379
+--- /dev/null
++++ b/include/linux/logic_iomem.h
+@@ -0,0 +1,62 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (C) 2021 Intel Corporation
++ * Author: johannes@sipsolutions.net
++ */
++#ifndef __LOGIC_IOMEM_H
++#define __LOGIC_IOMEM_H
++#include <linux/types.h>
++#include <linux/ioport.h>
++
++/**
++ * struct logic_iomem_ops - emulated IO memory ops
++ * @read: read an 8, 16, 32 or 64 bit quantity from the given offset,
++ *	size is given in bytes (1, 2, 4 or 8)
++ *	(64-bit only necessary if CONFIG_64BIT is set)
++ * @write: write an 8, 16 32 or 64 bit quantity to the given offset,
++ *	size is given in bytes (1, 2, 4 or 8)
++ *	(64-bit only necessary if CONFIG_64BIT is set)
++ * @set: optional, for memset_io()
++ * @copy_from: optional, for memcpy_fromio()
++ * @copy_to: optional, for memcpy_toio()
++ * @unmap: optional, this region is getting unmapped
++ */
++struct logic_iomem_ops {
++	unsigned long (*read)(void *priv, unsigned int offset, int size);
++	void (*write)(void *priv, unsigned int offset, int size,
++		      unsigned long val);
++
++	void (*set)(void *priv, unsigned int offset, u8 value, int size);
++	void (*copy_from)(void *priv, void *buffer, unsigned int offset,
++			  int size);
++	void (*copy_to)(void *priv, unsigned int offset, const void *buffer,
++			int size);
++
++	void (*unmap)(void *priv);
++};
++
++/**
++ * struct logic_iomem_region_ops - ops for an IO memory handler
++ * @map: map a range in the registered IO memory region, must
++ *	fill *ops with the ops and may fill *priv to be passed
++ *	to the ops. The offset is given as the offset into the
++ *	registered resource region.
++ *	The return value is negative for errors, or >= 0 for
++ *	success. On success, the return value is added to the
++ *	offset for later ops, to allow for partial mappings.
++ */
++struct logic_iomem_region_ops {
++	long (*map)(unsigned long offset, size_t size,
++		    const struct logic_iomem_ops **ops,
++		    void **priv);
++};
++
++/**
++ * logic_iomem_add_region - register an IO memory region
++ * @resource: the resource description for this region
++ * @ops: the IO memory mapping ops for this resource
++ */
++int logic_iomem_add_region(struct resource *resource,
++			   const struct logic_iomem_region_ops *ops);
++
++#endif /* __LOGIC_IOMEM_H */
+diff --git a/lib/Kconfig b/lib/Kconfig
+index a38cc61256f1..04684ae9593d 100644
+--- a/lib/Kconfig
++++ b/lib/Kconfig
+@@ -102,6 +102,20 @@ config INDIRECT_PIO
  
- extern void timer_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
+ 	  When in doubt, say N.
  
-diff --git a/arch/um/include/shared/ptrace_user.h b/arch/um/include/shared/ptrace_user.h
-index 95455e8996e7..8a705d8f96ce 100644
---- a/arch/um/include/shared/ptrace_user.h
-+++ b/arch/um/include/shared/ptrace_user.h
-@@ -12,45 +12,4 @@
- extern int ptrace_getregs(long pid, unsigned long *regs_out);
- extern int ptrace_setregs(long pid, unsigned long *regs_in);
++config INDIRECT_IOMEM
++	bool
++	help
++	  This is selected by other options/architectures to provide the
++	  emulated iomem accessors.
++
++config INDIRECT_IOMEM_FALLBACK
++	bool
++	depends on INDIRECT_IOMEM
++	help
++	  If INDIRECT_IOMEM is selected, this enables falling back to plain
++	  mmio accesses when the IO memory address is not a registered
++	  emulated region.
++
+ config CRC_CCITT
+ 	tristate "CRC-CCITT functions"
+ 	help
+diff --git a/lib/Makefile b/lib/Makefile
+index b5307d3eec1a..f50b1b5d2391 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -147,6 +147,8 @@ obj-$(CONFIG_DEBUG_LOCKING_API_SELFTESTS) += locking-selftest.o
  
--/* syscall emulation path in ptrace */
--
--#ifndef PTRACE_SYSEMU
--#define PTRACE_SYSEMU 31
--#endif
--#ifndef PTRACE_SYSEMU_SINGLESTEP
--#define PTRACE_SYSEMU_SINGLESTEP 32
--#endif
--
--/* On architectures, that started to support PTRACE_O_TRACESYSGOOD
-- * in linux 2.4, there are two different definitions of
-- * PTRACE_SETOPTIONS: linux 2.4 uses 21 while linux 2.6 uses 0x4200.
-- * For binary compatibility, 2.6 also supports the old "21", named
-- * PTRACE_OLDSETOPTION. On these architectures, UML always must use
-- * "21", to ensure the kernel runs on 2.4 and 2.6 host without
-- * recompilation. So, we use PTRACE_OLDSETOPTIONS in UML.
-- * We also want to be able to build the kernel on 2.4, which doesn't
-- * have PTRACE_OLDSETOPTIONS. So, if it is missing, we declare
-- * PTRACE_OLDSETOPTIONS to be the same as PTRACE_SETOPTIONS.
-- *
-- * On architectures, that start to support PTRACE_O_TRACESYSGOOD on
-- * linux 2.6, PTRACE_OLDSETOPTIONS never is defined, and also isn't
-- * supported by the host kernel. In that case, our trick lets us use
-- * the new 0x4200 with the name PTRACE_OLDSETOPTIONS.
-- */
--#ifndef PTRACE_OLDSETOPTIONS
--#define PTRACE_OLDSETOPTIONS PTRACE_SETOPTIONS
--#endif
--
--void set_using_sysemu(int value);
--int get_using_sysemu(void);
--extern int sysemu_supported;
--
--#define SELECT_PTRACE_OPERATION(sysemu_mode, singlestep_mode) \
--	(((int[3][3] ) { \
--		{ PTRACE_SYSCALL, PTRACE_SYSCALL, PTRACE_SINGLESTEP }, \
--		{ PTRACE_SYSEMU, PTRACE_SYSEMU, PTRACE_SINGLESTEP }, \
--		{ PTRACE_SYSEMU, PTRACE_SYSEMU_SINGLESTEP, \
--		  PTRACE_SYSEMU_SINGLESTEP } }) \
--		[sysemu_mode][singlestep_mode])
--
- #endif
-diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index c5011064b5dd..a7eaad38e40e 100644
---- a/arch/um/kernel/process.c
-+++ b/arch/um/kernel/process.c
-@@ -268,84 +268,11 @@ int cpu(void)
- 	return current_thread_info()->cpu;
- }
+ lib-y += logic_pio.o
  
--static atomic_t using_sysemu = ATOMIC_INIT(0);
--int sysemu_supported;
--
--void set_using_sysemu(int value)
--{
--	if (value > sysemu_supported)
--		return;
--	atomic_set(&using_sysemu, value);
--}
--
--int get_using_sysemu(void)
--{
--	return atomic_read(&using_sysemu);
--}
--
--static int sysemu_proc_show(struct seq_file *m, void *v)
--{
--	seq_printf(m, "%d\n", get_using_sysemu());
--	return 0;
--}
--
--static int sysemu_proc_open(struct inode *inode, struct file *file)
--{
--	return single_open(file, sysemu_proc_show, NULL);
--}
--
--static ssize_t sysemu_proc_write(struct file *file, const char __user *buf,
--				 size_t count, loff_t *pos)
--{
--	char tmp[2];
--
--	if (copy_from_user(tmp, buf, 1))
--		return -EFAULT;
--
--	if (tmp[0] >= '0' && tmp[0] <= '2')
--		set_using_sysemu(tmp[0] - '0');
--	/* We use the first char, but pretend to write everything */
--	return count;
--}
--
--static const struct proc_ops sysemu_proc_ops = {
--	.proc_open	= sysemu_proc_open,
--	.proc_read	= seq_read,
--	.proc_lseek	= seq_lseek,
--	.proc_release	= single_release,
--	.proc_write	= sysemu_proc_write,
--};
--
--int __init make_proc_sysemu(void)
--{
--	struct proc_dir_entry *ent;
--	if (!sysemu_supported)
--		return 0;
--
--	ent = proc_create("sysemu", 0600, NULL, &sysemu_proc_ops);
--
--	if (ent == NULL)
--	{
--		printk(KERN_WARNING "Failed to register /proc/sysemu\n");
--		return 0;
--	}
--
--	return 0;
--}
--
--late_initcall(make_proc_sysemu);
--
- int singlestepping(void * t)
- {
- 	struct task_struct *task = t ? t : current;
++lib-$(CONFIG_INDIRECT_IOMEM) += logic_iomem.o
++
+ obj-$(CONFIG_GENERIC_HWEIGHT) += hweight.o
  
--	if (!(task->ptrace & PT_DTRACE))
--		return 0;
--
--	if (task->thread.singlestep_syscall)
--		return 1;
--
--	return 2;
-+	return !!(task->ptrace & PT_DTRACE);
- }
- 
- /*
-diff --git a/arch/um/kernel/ptrace.c b/arch/um/kernel/ptrace.c
-index b425f47bddbb..dd56b6a80616 100644
---- a/arch/um/kernel/ptrace.c
-+++ b/arch/um/kernel/ptrace.c
-@@ -13,7 +13,6 @@
- void user_enable_single_step(struct task_struct *child)
- {
- 	child->ptrace |= PT_DTRACE;
--	child->thread.singlestep_syscall = 0;
- 
- #ifdef SUBARCH_SET_SINGLESTEPPING
- 	SUBARCH_SET_SINGLESTEPPING(child, 1);
-@@ -23,7 +22,6 @@ void user_enable_single_step(struct task_struct *child)
- void user_disable_single_step(struct task_struct *child)
- {
- 	child->ptrace &= ~PT_DTRACE;
--	child->thread.singlestep_syscall = 0;
- 
- #ifdef SUBARCH_SET_SINGLESTEPPING
- 	SUBARCH_SET_SINGLESTEPPING(child, 0);
-diff --git a/arch/um/kernel/signal.c b/arch/um/kernel/signal.c
-index 88cd9b5c1b74..87c9c625f29b 100644
---- a/arch/um/kernel/signal.c
-+++ b/arch/um/kernel/signal.c
-@@ -120,18 +120,6 @@ void do_signal(struct pt_regs *regs)
- 		}
- 	}
- 
--	/*
--	 * This closes a way to execute a system call on the host.  If
--	 * you set a breakpoint on a system call instruction and singlestep
--	 * from it, the tracing thread used to PTRACE_SINGLESTEP the process
--	 * rather than PTRACE_SYSCALL it, allowing the system call to execute
--	 * on the host.  The tracing thread will check this flag and
--	 * PTRACE_SYSCALL if necessary.
--	 */
--	if (current->ptrace & PT_DTRACE)
--		current->thread.singlestep_syscall =
--			is_syscall(PT_REGS_IP(&current->thread.regs));
--
- 	/*
- 	 * if there's no signal to deliver, we just put the saved sigmask
- 	 * back
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 8c524e27571c..d30c96b599ac 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -176,48 +176,11 @@ static void handle_segv(int pid, struct uml_pt_regs *regs, unsigned long *aux_fp
- 	segv(regs->faultinfo, 0, 1, NULL);
- }
- 
--/*
-- * To use the same value of using_sysemu as the caller, ask it that value
-- * (in local_using_sysemu
-- */
--static void handle_trap(int pid, struct uml_pt_regs *regs,
--			int local_using_sysemu)
-+static void handle_trap(int pid, struct uml_pt_regs *regs)
- {
--	int err, status;
--
- 	if ((UPT_IP(regs) >= STUB_START) && (UPT_IP(regs) < STUB_END))
- 		fatal_sigsegv();
- 
--	if (!local_using_sysemu)
--	{
--		err = ptrace(PTRACE_POKEUSER, pid, PT_SYSCALL_NR_OFFSET,
--			     __NR_getpid);
--		if (err < 0) {
--			printk(UM_KERN_ERR "%s - nullifying syscall failed, errno = %d\n",
--			       __func__, errno);
--			fatal_sigsegv();
--		}
--
--		err = ptrace(PTRACE_SYSCALL, pid, 0, 0);
--		if (err < 0) {
--			printk(UM_KERN_ERR "%s - continuing to end of syscall failed, errno = %d\n",
--			       __func__, errno);
--			fatal_sigsegv();
--		}
--
--		CATCH_EINTR(err = waitpid(pid, &status, WUNTRACED | __WALL));
--		if ((err < 0) || !WIFSTOPPED(status) ||
--		    (WSTOPSIG(status) != SIGTRAP + 0x80)) {
--			err = ptrace_dump_regs(pid);
--			if (err)
--				printk(UM_KERN_ERR "Failed to get registers from process, errno = %d\n",
--				       -err);
--			printk(UM_KERN_ERR "%s - failed to wait at end of syscall, errno = %d, status = %d\n",
--			       __func__, errno, status);
--			fatal_sigsegv();
--		}
--	}
--
- 	handle_syscall(regs);
- }
- 
-@@ -354,7 +317,7 @@ int start_userspace(unsigned long stub_stack)
- 		goto out_kill;
- 	}
- 
--	if (ptrace(PTRACE_OLDSETOPTIONS, pid, NULL,
-+	if (ptrace(PTRACE_SETOPTIONS, pid, NULL,
- 		   (void *) PTRACE_O_TRACESYSGOOD) < 0) {
- 		err = -errno;
- 		printk(UM_KERN_ERR "%s : PTRACE_OLDSETOPTIONS failed, errno = %d\n",
-@@ -379,8 +342,6 @@ int start_userspace(unsigned long stub_stack)
- void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
- {
- 	int err, status, op, pid = userspace_pid[0];
--	/* To prevent races if using_sysemu changes under us.*/
--	int local_using_sysemu;
- 	siginfo_t si;
- 
- 	/* Handle any immediate reschedules or signals */
-@@ -410,11 +371,10 @@ void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
- 			fatal_sigsegv();
- 		}
- 
--		/* Now we set local_using_sysemu to be used for one loop */
--		local_using_sysemu = get_using_sysemu();
--
--		op = SELECT_PTRACE_OPERATION(local_using_sysemu,
--					     singlestepping(NULL));
-+		if (singlestepping(NULL))
-+			op = PTRACE_SYSEMU_SINGLESTEP;
-+		else
-+			op = PTRACE_SYSEMU;
- 
- 		if (ptrace(op, pid, 0, 0)) {
- 			printk(UM_KERN_ERR "%s - ptrace continue failed, op = %d, errno = %d\n",
-@@ -473,7 +433,7 @@ void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
- 				else handle_segv(pid, regs, aux_fp_regs);
- 				break;
- 			case SIGTRAP + 0x80:
--			        handle_trap(pid, regs, local_using_sysemu);
-+				handle_trap(pid, regs);
- 				break;
- 			case SIGTRAP:
- 				relay_signal(SIGTRAP, (struct siginfo *)&si, regs);
-@@ -596,7 +556,7 @@ int copy_context_skas0(unsigned long new_stack, int pid)
- 		goto out_kill;
- 	}
- 
--	if (ptrace(PTRACE_OLDSETOPTIONS, pid, NULL,
-+	if (ptrace(PTRACE_SETOPTIONS, pid, NULL,
- 		   (void *)PTRACE_O_TRACESYSGOOD) < 0) {
- 		err = -errno;
- 		printk(UM_KERN_ERR "%s : PTRACE_OLDSETOPTIONS failed, errno = %d\n",
-diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
-index f79dc338279e..4f8fbe51fad6 100644
---- a/arch/um/os-Linux/start_up.c
-+++ b/arch/um/os-Linux/start_up.c
-@@ -143,71 +143,16 @@ static int stop_ptraced_child(int pid, int exitcode, int mustexit)
- 	return ret;
- }
- 
--/* Changed only during early boot */
--static int force_sysemu_disabled = 0;
--
--static int __init nosysemu_cmd_param(char *str, int* add)
--{
--	force_sysemu_disabled = 1;
--	return 0;
--}
--
--__uml_setup("nosysemu", nosysemu_cmd_param,
--"nosysemu\n"
--"    Turns off syscall emulation patch for ptrace (SYSEMU).\n"
--"    SYSEMU is a performance-patch introduced by Laurent Vivier. It changes\n"
--"    behaviour of ptrace() and helps reduce host context switch rates.\n"
--"    To make it work, you need a kernel patch for your host, too.\n"
--"    See http://perso.wanadoo.fr/laurent.vivier/UML/ for further \n"
--"    information.\n\n");
--
- static void __init check_sysemu(void)
- {
--	unsigned long regs[MAX_REG_NR];
- 	int pid, n, status, count=0;
- 
--	os_info("Checking syscall emulation patch for ptrace...");
--	sysemu_supported = 0;
--	pid = start_ptraced_child();
--
--	if (ptrace(PTRACE_SYSEMU, pid, 0, 0) < 0)
--		goto fail;
--
--	CATCH_EINTR(n = waitpid(pid, &status, WUNTRACED));
--	if (n < 0)
--		fatal_perror("check_sysemu : wait failed");
--	if (!WIFSTOPPED(status) || (WSTOPSIG(status) != SIGTRAP))
--		fatal("check_sysemu : expected SIGTRAP, got status = %d\n",
--		      status);
--
--	if (ptrace(PTRACE_GETREGS, pid, 0, regs) < 0)
--		fatal_perror("check_sysemu : PTRACE_GETREGS failed");
--	if (PT_SYSCALL_NR(regs) != __NR_getpid) {
--		non_fatal("check_sysemu got system call number %d, "
--			  "expected %d...", PT_SYSCALL_NR(regs), __NR_getpid);
--		goto fail;
--	}
--
--	n = ptrace(PTRACE_POKEUSER, pid, PT_SYSCALL_RET_OFFSET, os_getpid());
--	if (n < 0) {
--		non_fatal("check_sysemu : failed to modify system call "
--			  "return");
--		goto fail;
--	}
--
--	if (stop_ptraced_child(pid, 0, 0) < 0)
--		goto fail_stopped;
--
--	sysemu_supported = 1;
--	os_info("OK\n");
--	set_using_sysemu(!force_sysemu_disabled);
--
--	os_info("Checking advanced syscall emulation patch for ptrace...");
-+	os_info("Checking syscall emulation for ptrace...");
- 	pid = start_ptraced_child();
- 
--	if ((ptrace(PTRACE_OLDSETOPTIONS, pid, 0,
-+	if ((ptrace(PTRACE_SETOPTIONS, pid, 0,
- 		   (void *) PTRACE_O_TRACESYSGOOD) < 0))
--		fatal_perror("check_sysemu: PTRACE_OLDSETOPTIONS failed");
-+		fatal_perror("check_sysemu: PTRACE_SETOPTIONS failed");
- 
- 	while (1) {
- 		count++;
-@@ -243,17 +188,14 @@ static void __init check_sysemu(void)
- 	if (stop_ptraced_child(pid, 0, 0) < 0)
- 		goto fail_stopped;
- 
--	sysemu_supported = 2;
- 	os_info("OK\n");
- 
--	if (!force_sysemu_disabled)
--		set_using_sysemu(sysemu_supported);
- 	return;
- 
- fail:
- 	stop_ptraced_child(pid, 1, 0);
- fail_stopped:
--	non_fatal("missing\n");
-+	fatal("missing\n");
- }
- 
- static void __init check_ptrace(void)
-@@ -263,9 +205,9 @@ static void __init check_ptrace(void)
- 	os_info("Checking that ptrace can change system call numbers...");
- 	pid = start_ptraced_child();
- 
--	if ((ptrace(PTRACE_OLDSETOPTIONS, pid, 0,
-+	if ((ptrace(PTRACE_SETOPTIONS, pid, 0,
- 		   (void *) PTRACE_O_TRACESYSGOOD) < 0))
--		fatal_perror("check_ptrace: PTRACE_OLDSETOPTIONS failed");
-+		fatal_perror("check_ptrace: PTRACE_SETOPTIONS failed");
- 
- 	while (1) {
- 		if (ptrace(PTRACE_SYSCALL, pid, 0, 0) < 0)
-diff --git a/arch/x86/um/ptrace_32.c b/arch/x86/um/ptrace_32.c
-index 2497bac56066..0c3439aeb2d2 100644
---- a/arch/x86/um/ptrace_32.c
-+++ b/arch/x86/um/ptrace_32.c
-@@ -24,30 +24,6 @@ void arch_switch_to(struct task_struct *to)
- 		printk(KERN_WARNING "arch_switch_tls failed, errno = EINVAL\n");
- }
- 
--int is_syscall(unsigned long addr)
--{
--	unsigned short instr;
--	int n;
--
--	n = copy_from_user(&instr, (void __user *) addr, sizeof(instr));
--	if (n) {
--		/* access_process_vm() grants access to vsyscall and stub,
--		 * while copy_from_user doesn't. Maybe access_process_vm is
--		 * slow, but that doesn't matter, since it will be called only
--		 * in case of singlestepping, if copy_from_user failed.
--		 */
--		n = access_process_vm(current, addr, &instr, sizeof(instr),
--				FOLL_FORCE);
--		if (n != sizeof(instr)) {
--			printk(KERN_ERR "is_syscall : failed to read "
--			       "instruction from 0x%lx\n", addr);
--			return 1;
--		}
--	}
--	/* int 0x80 or sysenter */
--	return (instr == 0x80cd) || (instr == 0x340f);
--}
--
- /* determines which flags the user has access to. */
- /* 1 = access 0 = no access */
- #define FLAG_MASK 0x00044dd5
-diff --git a/arch/x86/um/ptrace_64.c b/arch/x86/um/ptrace_64.c
-index 1401899dee9b..727f3ef3a76b 100644
---- a/arch/x86/um/ptrace_64.c
-+++ b/arch/x86/um/ptrace_64.c
-@@ -187,32 +187,6 @@ int peek_user(struct task_struct *child, long addr, long data)
- 	return put_user(tmp, (unsigned long *) data);
- }
- 
--/* XXX Mostly copied from sys-i386 */
--int is_syscall(unsigned long addr)
--{
--	unsigned short instr;
--	int n;
--
--	n = copy_from_user(&instr, (void __user *) addr, sizeof(instr));
--	if (n) {
--		/*
--		 * access_process_vm() grants access to vsyscall and stub,
--		 * while copy_from_user doesn't. Maybe access_process_vm is
--		 * slow, but that doesn't matter, since it will be called only
--		 * in case of singlestepping, if copy_from_user failed.
--		 */
--		n = access_process_vm(current, addr, &instr, sizeof(instr),
--				FOLL_FORCE);
--		if (n != sizeof(instr)) {
--			printk("is_syscall : failed to read instruction from "
--			       "0x%lx\n", addr);
--			return 1;
--		}
--	}
--	/* sysenter */
--	return instr == 0x050f;
--}
--
- static int get_fpregs(struct user_i387_struct __user *buf, struct task_struct *child)
- {
- 	int err, n, cpu = ((struct thread_info *) child->stack)->cpu;
-diff --git a/arch/x86/um/shared/sysdep/ptrace_32.h b/arch/x86/um/shared/sysdep/ptrace_32.h
-index db8478a83a09..0c4989842fbe 100644
---- a/arch/x86/um/shared/sysdep/ptrace_32.h
-+++ b/arch/x86/um/shared/sysdep/ptrace_32.h
-@@ -8,10 +8,6 @@
- 
- #define MAX_FP_NR HOST_FPX_SIZE
- 
--void set_using_sysemu(int value);
--int get_using_sysemu(void);
--extern int sysemu_supported;
--
- #define UPT_SYSCALL_ARG1(r) UPT_BX(r)
- #define UPT_SYSCALL_ARG2(r) UPT_CX(r)
- #define UPT_SYSCALL_ARG3(r) UPT_DX(r)
+ obj-$(CONFIG_BTREE) += btree.o
+diff --git a/lib/logic_iomem.c b/lib/logic_iomem.c
+new file mode 100644
+index 000000000000..b76b92dd0f1f
+--- /dev/null
++++ b/lib/logic_iomem.c
+@@ -0,0 +1,318 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2021 Intel Corporation
++ * Author: Johannes Berg <johannes@sipsolutions.net>
++ */
++#include <linux/types.h>
++#include <linux/slab.h>
++#include <linux/logic_iomem.h>
++
++struct logic_iomem_region {
++	const struct resource *res;
++	const struct logic_iomem_region_ops *ops;
++	struct list_head list;
++};
++
++struct logic_iomem_area {
++	const struct logic_iomem_ops *ops;
++	void *priv;
++};
++
++#define AREA_SHIFT	24
++#define MAX_AREA_SIZE	(1 << AREA_SHIFT)
++#define MAX_AREAS	((1ULL<<32) / MAX_AREA_SIZE)
++#define AREA_BITS	((MAX_AREAS - 1) << AREA_SHIFT)
++#define AREA_MASK	(MAX_AREA_SIZE - 1)
++#ifdef CONFIG_64BIT
++#define IOREMAP_BIAS	0xDEAD000000000000UL
++#define IOREMAP_MASK	0xFFFFFFFF00000000UL
++#else
++#define IOREMAP_BIAS	0
++#define IOREMAP_MASK	0
++#endif
++
++static DEFINE_MUTEX(regions_mtx);
++static LIST_HEAD(regions_list);
++static struct logic_iomem_area mapped_areas[MAX_AREAS];
++
++int logic_iomem_add_region(struct resource *resource,
++			   const struct logic_iomem_region_ops *ops)
++{
++	struct logic_iomem_region *rreg;
++	int err;
++
++	if (WARN_ON(!resource || !ops))
++		return -EINVAL;
++
++	if (WARN_ON((resource->flags & IORESOURCE_TYPE_BITS) != IORESOURCE_MEM))
++		return -EINVAL;
++
++	rreg = kzalloc(sizeof(*rreg), GFP_KERNEL);
++	if (!rreg)
++		return -ENOMEM;
++
++	err = request_resource(&iomem_resource, resource);
++	if (err) {
++		kfree(rreg);
++		return -ENOMEM;
++	}
++
++	mutex_lock(&regions_mtx);
++	rreg->res = resource;
++	rreg->ops = ops;
++	list_add_tail(&rreg->list, &regions_list);
++	mutex_unlock(&regions_mtx);
++
++	return 0;
++}
++EXPORT_SYMBOL(logic_iomem_add_region);
++
++#ifndef CONFIG_LOGIC_IOMEM_FALLBACK
++static void __iomem *real_ioremap(phys_addr_t offset, size_t size)
++{
++	WARN(1, "invalid ioremap(0x%llx, 0x%zx)\n",
++	     (unsigned long long)offset, size);
++	return NULL;
++}
++
++static void real_iounmap(void __iomem *addr)
++{
++	WARN(1, "invalid iounmap for addr 0x%llx\n",
++	     (unsigned long long)addr);
++}
++#endif /* CONFIG_LOGIC_IOMEM_FALLBACK */
++
++void __iomem *ioremap(phys_addr_t offset, size_t size)
++{
++	void __iomem *ret = NULL;
++	struct logic_iomem_region *rreg, *found = NULL;
++	int i;
++
++	mutex_lock(&regions_mtx);
++	list_for_each_entry(rreg, &regions_list, list) {
++		if (rreg->res->start > offset)
++			continue;
++		if (rreg->res->end < offset + size - 1)
++			continue;
++		found = rreg;
++		break;
++	}
++
++	if (!found)
++		goto out;
++
++	for (i = 0; i < MAX_AREAS; i++) {
++		long offs;
++
++		if (mapped_areas[i].ops)
++			continue;
++
++		offs = rreg->ops->map(offset - found->res->start,
++				      size, &mapped_areas[i].ops,
++				      &mapped_areas[i].priv);
++		if (offs < 0) {
++			mapped_areas[i].ops = NULL;
++			break;
++		}
++
++		if (WARN_ON(!mapped_areas[i].ops)) {
++			mapped_areas[i].ops = NULL;
++			break;
++		}
++
++		ret = (void __iomem *)(IOREMAP_BIAS + (i << AREA_SHIFT) + offs);
++		break;
++	}
++out:
++	mutex_unlock(&regions_mtx);
++	if (ret)
++		return ret;
++	return real_ioremap(offset, size);
++}
++EXPORT_SYMBOL(ioremap);
++
++static inline struct logic_iomem_area *
++get_area(const volatile void __iomem *addr)
++{
++	unsigned long a = (unsigned long)addr;
++	unsigned int idx;
++
++	if (WARN_ON((a & IOREMAP_MASK) != IOREMAP_BIAS))
++		return NULL;
++
++	idx = (a & AREA_BITS) >> AREA_SHIFT;
++
++	if (mapped_areas[idx].ops)
++		return &mapped_areas[idx];
++
++	return NULL;
++}
++
++void iounmap(void __iomem *addr)
++{
++	struct logic_iomem_area *area = get_area(addr);
++
++	if (!area) {
++		real_iounmap(addr);
++		return;
++	}
++
++	if (area->ops->unmap)
++		area->ops->unmap(area->priv);
++
++	mutex_lock(&regions_mtx);
++	area->ops = NULL;
++	area->priv = NULL;
++	mutex_unlock(&regions_mtx);
++}
++EXPORT_SYMBOL(iounmap);
++
++#ifndef CONFIG_LOGIC_IOMEM_FALLBACK
++#define MAKE_FALLBACK(op, sz) 						\
++static u##sz real_raw_read ## op(const volatile void __iomem *addr)	\
++{									\
++	WARN(1, "Invalid read" #op " at address %llx\n",		\
++	     (unsigned long long)addr);					\
++	return (u ## sz)~0ULL;						\
++}									\
++									\
++void real_raw_write ## op(u ## sz val, volatile void __iomem *addr)	\
++{									\
++	WARN(1, "Invalid writeq" #op " of 0x%llx at address %llx\n",	\
++	     (unsigned long long)val, (unsigned long long)addr);	\
++}									\
++
++MAKE_FALLBACK(b, 8);
++MAKE_FALLBACK(w, 16);
++MAKE_FALLBACK(l, 32);
++#ifdef CONFIG_64BIT
++MAKE_FALLBACK(q, 64);
++#endif
++
++static void real_memset_io(volatile void __iomem *addr, int value, size_t size)
++{
++	WARN(1, "Invalid memset_io at address 0x%llx\n",
++	     (unsigned long long)addr);
++}
++
++static void real_memcpy_fromio(void *buffer, const volatile void __iomem *addr,
++			       size_t size)
++{
++	WARN(1, "Invalid memcpy_fromio at address 0x%llx\n",
++	     (unsigned long long)addr);
++
++	memset(buffer, 0xff, size);
++}
++
++static void real_memcpy_toio(volatile void __iomem *addr, const void *buffer,
++			     size_t size)
++{
++	WARN(1, "Invalid memcpy_toio at address 0x%llx\n",
++	     (unsigned long long)addr);
++}
++#endif /* CONFIG_LOGIC_IOMEM_FALLBACK */
++
++#define MAKE_OP(op, sz) 						\
++u##sz __raw_read ## op(const volatile void __iomem *addr)		\
++{									\
++	struct logic_iomem_area *area = get_area(addr);			\
++									\
++	if (!area)							\
++		return real_raw_read ## op(addr);			\
++									\
++	return (u ## sz) area->ops->read(area->priv,			\
++					 (unsigned long)addr & AREA_MASK,\
++					 sz / 8);			\
++}									\
++EXPORT_SYMBOL(__raw_read ## op);					\
++									\
++void __raw_write ## op(u ## sz val, volatile void __iomem *addr)	\
++{									\
++	struct logic_iomem_area *area = get_area(addr);			\
++									\
++	if (!area) {							\
++		real_raw_write ## op(val, addr);			\
++		return;							\
++	}								\
++									\
++	area->ops->write(area->priv,					\
++			 (unsigned long)addr & AREA_MASK,		\
++			 sz / 8, val);					\
++}									\
++EXPORT_SYMBOL(__raw_write ## op)
++
++MAKE_OP(b, 8);
++MAKE_OP(w, 16);
++MAKE_OP(l, 32);
++#ifdef CONFIG_64BIT
++MAKE_OP(q, 64);
++#endif
++
++void memset_io(volatile void __iomem *addr, int value, size_t size)
++{
++	struct logic_iomem_area *area = get_area(addr);
++	unsigned long offs, start;
++
++	if (!area) {
++		real_memset_io(addr, value, size);
++		return;
++	}
++
++	start = (unsigned long)addr & AREA_MASK;
++
++	if (area->ops->set) {
++		area->ops->set(area->priv, start, value, size);
++		return;
++	}
++
++	for (offs = 0; offs < size; offs++)
++		area->ops->write(area->priv, start + offs, 1, value);
++}
++EXPORT_SYMBOL(memset_io);
++
++void memcpy_fromio(void *buffer, const volatile void __iomem *addr,
++                   size_t size)
++{
++	struct logic_iomem_area *area = get_area(addr);
++	u8 *buf = buffer;
++	unsigned long offs, start;
++
++	if (!area) {
++		real_memcpy_fromio(buffer, addr, size);
++		return;
++	}
++
++	start = (unsigned long)addr & AREA_MASK;
++
++	if (area->ops->copy_from) {
++		area->ops->copy_from(area->priv, buffer, start, size);
++		return;
++	}
++
++	for (offs = 0; offs < size; offs++)
++		buf[offs] = area->ops->read(area->priv, start + offs, 1);
++}
++EXPORT_SYMBOL(memcpy_fromio);
++
++void memcpy_toio(volatile void __iomem *addr, const void *buffer, size_t size)
++{
++	struct logic_iomem_area *area = get_area(addr);
++	const u8 *buf = buffer;
++	unsigned long offs, start;
++
++	if (!area) {
++		real_memcpy_toio(addr, buffer, size);
++		return;
++	}
++
++	start = (unsigned long)addr & AREA_MASK;
++
++	if (area->ops->copy_to) {
++		area->ops->copy_to(area->priv, start, buffer, size);
++		return;
++	}
++
++	for (offs = 0; offs < size; offs++)
++		area->ops->write(area->priv, start + offs, 1, buf[offs]);
++}
++EXPORT_SYMBOL(memcpy_toio);
 -- 
-2.29.2
+2.26.2
 
 
 _______________________________________________
