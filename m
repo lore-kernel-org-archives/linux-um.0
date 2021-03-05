@@ -2,15 +2,14 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lLXc7-00EWjE-CP
- for linux-um@lists.infradead.org; Sun, 14 Mar 2021 20:45:34 +0000
-Message-ID: <5e1f64997ffca8267bde7955fe2eb214dfb9e891.camel@sipsolutions.net>
-Subject: Re: [RFC v8 13/20] um: lkl: integrate with irq infrastructure of UML
+ id 1lI9RU-00Ewm9-IW
+ for linux-um@lists.infradead.org; Fri, 05 Mar 2021 12:20:30 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Sun, 14 Mar 2021 21:45:23 +0100
-In-Reply-To: <46935454bf02224fb325f0e74d60d0ed674a59f9.1611103406.git.thehajime@gmail.com>
-References: <cover.1611103406.git.thehajime@gmail.com>
- <46935454bf02224fb325f0e74d60d0ed674a59f9.1611103406.git.thehajime@gmail.com>
+Subject: [PATCH v4 1/9] um: allow disabling NO_IOMEM
+Date: Fri,  5 Mar 2021 13:19:51 +0100
+Message-Id: <20210305131934.37d08314e452.I7b2fad8378e4fde7f26ef06a03980ae2807d81c9@changeid>
+In-Reply-To: <20210305122010.442577-1-johannes@sipsolutions.net>
+References: <20210305122010.442577-1-johannes@sipsolutions.net>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -20,27 +19,143 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Hajime Tazaki <thehajime@gmail.com>, linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
-Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, retrage01@gmail.com
+To: linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
 
-T24gV2VkLCAyMDIxLTAxLTIwIGF0IDExOjI3ICswOTAwLCBIYWppbWUgVGF6YWtpIHdyb3RlOgo+
-IMKgc3RhdGljIGlycXJldHVybl90IHVtX3RpbWVyKGludCBpcnEsIHZvaWQgKmRldikKPiDCoHsK
-PiArI2lmbmRlZiBDT05GSUdfVU1NT0RFX0xJQgo+IMKgCWlmIChnZXRfY3VycmVudCgpLT5tbSAh
-PSBOVUxMKQoKV2h5IGlzIHRoZSBpZmRlZiBuZWVkZWQgLSBnZXRfY3VycmVudCgpLT5tbSBzaG91
-bGQgYWx3YXlzIGJlIE5VTEwgZm9yCkxLTD8gU3VyZWx5IGdldF9jdXJyZW50KCkgbXVzdCBzdGls
-bCB3b3JrPwoKPiDCoAlzaWdlbXB0eXNldCgmc2lnX21hc2spOwo+IMKgCXNpZ2FkZHNldCgmc2ln
-X21hc2ssIHNpZyk7Cj4gLQlpZiAoc2lncHJvY21hc2soU0lHX1VOQkxPQ0ssICZzaWdfbWFzaywg
-TlVMTCkgPCAwKQo+IC0JCXBhbmljKCJzaWdwcm9jbWFzayBmYWlsZWQgLSBlcnJubyA9ICVkXG4i
-LCBlcnJubyk7Cj4gKwlpZiAocHRocmVhZF9zaWdtYXNrKFNJR19VTkJMT0NLLCAmc2lnX21hc2ss
-IE5VTEwpIDwgMCkKPiArCQlwYW5pYygicHRocmVhZF9zaWdtYXNrIGZhaWxlZCAtIGVycm5vID0g
-JWRcbiIsIGVycm5vKTsKClVNTCBkb2Vzbid0IG5vcm1hbGx5IGxpbmsgd2l0aCBsaWJwdGhyZWFk
-LCBhbmQgTEtMIGRvZXNuJ3QgYWN0dWFsbHkKYXBwZWFyIHRvIHJlcXVpcmUgaXQgZWl0aGVyIChz
-aW5jZSBpdCBoYXMgaXRzIGxrbF90aHJlYWQgYW5kIGFsbCksIHNvCnRoaXMgc2VlbXMgd3Jvbmc/
-Cgpqb2hhbm5lcwoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0
-dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
+From: Johannes Berg <johannes.berg@intel.com>
+
+Adjust the kconfig a little to allow disabling NO_IOMEM in UML. To
+make an "allyesconfig" with CONFIG_NO_IOMEM=n build, adjust a few
+Kconfig things elsewhere and add dummy asm/fb.h and asm/vga.h files.
+
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+---
+v2: use asm-generic for fb.h and vga.h
+---
+ arch/um/Kconfig                | 4 ++++
+ arch/um/include/asm/Kbuild     | 2 ++
+ drivers/input/Kconfig          | 1 -
+ drivers/input/gameport/Kconfig | 1 +
+ drivers/input/joystick/Kconfig | 1 +
+ drivers/tty/Kconfig            | 5 ++---
+ drivers/video/console/Kconfig  | 2 +-
+ 7 files changed, 11 insertions(+), 5 deletions(-)
+
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index c3030db3325f..20b0640e01b8 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -26,6 +26,10 @@ config MMU
+ 	default y
+ 
+ config NO_IOMEM
++	bool "disable IOMEM" if EXPERT
++	default y
++
++config NO_IOPORT_MAP
+ 	def_bool y
+ 
+ config ISA
+diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
+index d7492e5a1bbb..10b7228b3aee 100644
+--- a/arch/um/include/asm/Kbuild
++++ b/arch/um/include/asm/Kbuild
+@@ -7,6 +7,7 @@ generic-y += device.h
+ generic-y += emergency-restart.h
+ generic-y += exec.h
+ generic-y += extable.h
++generic-y += fb.h
+ generic-y += ftrace.h
+ generic-y += futex.h
+ generic-y += hw_irq.h
+@@ -27,3 +28,4 @@ generic-y += trace_clock.h
+ generic-y += word-at-a-time.h
+ generic-y += kprobes.h
+ generic-y += mm_hooks.h
++generic-y += vga.h
+diff --git a/drivers/input/Kconfig b/drivers/input/Kconfig
+index ec0e861f185f..5baebf62df33 100644
+--- a/drivers/input/Kconfig
++++ b/drivers/input/Kconfig
+@@ -4,7 +4,6 @@
+ #
+ 
+ menu "Input device support"
+-	depends on !UML
+ 
+ config INPUT
+ 	tristate "Generic input layer (needed for keyboard, mouse, ...)" if EXPERT
+diff --git a/drivers/input/gameport/Kconfig b/drivers/input/gameport/Kconfig
+index 4761795cb49f..5a2c2fb3217d 100644
+--- a/drivers/input/gameport/Kconfig
++++ b/drivers/input/gameport/Kconfig
+@@ -4,6 +4,7 @@
+ #
+ config GAMEPORT
+ 	tristate "Gameport support"
++	depends on !UML
+ 	help
+ 	  Gameport support is for the standard 15-pin PC gameport. If you
+ 	  have a joystick, gamepad, gameport card, a soundcard with a gameport
+diff --git a/drivers/input/joystick/Kconfig b/drivers/input/joystick/Kconfig
+index 5e38899058c1..b10948bf9551 100644
+--- a/drivers/input/joystick/Kconfig
++++ b/drivers/input/joystick/Kconfig
+@@ -4,6 +4,7 @@
+ #
+ menuconfig INPUT_JOYSTICK
+ 	bool "Joysticks/Gamepads"
++	depends on !UML
+ 	help
+ 	  If you have a joystick, 6dof controller, gamepad, steering wheel,
+ 	  weapon control system or something like that you can say Y here
+diff --git a/drivers/tty/Kconfig b/drivers/tty/Kconfig
+index e15cd6b5bb99..26648daaaee2 100644
+--- a/drivers/tty/Kconfig
++++ b/drivers/tty/Kconfig
+@@ -12,9 +12,8 @@ if TTY
+ 
+ config VT
+ 	bool "Virtual terminal" if EXPERT
+-	depends on !UML
+ 	select INPUT
+-	default y
++	default y if !UML
+ 	help
+ 	  If you say Y here, you will get support for terminal devices with
+ 	  display and keyboard devices. These are called "virtual" because you
+@@ -78,7 +77,7 @@ config VT_CONSOLE_SLEEP
+ 
+ config HW_CONSOLE
+ 	bool
+-	depends on VT && !UML
++	depends on VT
+ 	default y
+ 
+ config VT_HW_CONSOLE_BINDING
+diff --git a/drivers/video/console/Kconfig b/drivers/video/console/Kconfig
+index ee33b8ec62bb..840d9813b0bc 100644
+--- a/drivers/video/console/Kconfig
++++ b/drivers/video/console/Kconfig
+@@ -9,7 +9,7 @@ config VGA_CONSOLE
+ 	bool "VGA text console" if EXPERT || !X86
+ 	depends on !4xx && !PPC_8xx && !SPARC && !M68K && !PARISC &&  !SUPERH && \
+ 		(!ARM || ARCH_FOOTBRIDGE || ARCH_INTEGRATOR || ARCH_NETWINDER) && \
+-		!ARM64 && !ARC && !MICROBLAZE && !OPENRISC && !NDS32 && !S390
++		!ARM64 && !ARC && !MICROBLAZE && !OPENRISC && !NDS32 && !S390 && !UML
+ 	default y
+ 	help
+ 	  Saying Y here will allow you to use Linux in text mode through a
+-- 
+2.26.2
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
