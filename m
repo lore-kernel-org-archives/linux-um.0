@@ -1,12 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from mail-pg1-x52d.google.com ([2607:f8b0:4864:20::52d])
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lIsQQ-009zSL-S3
- for linux-um@lists.infradead.org; Sun, 07 Mar 2021 12:22:25 +0000
-Received: by mail-pg1-x52d.google.com with SMTP id a4so4582025pgc.11
- for <linux-um@lists.infradead.org>; Sun, 07 Mar 2021 04:22:21 -0800 (PST)
-Date: Sun, 07 Mar 2021 21:22:13 +0900
-Message-ID: <m2sg57jgqy.wl-thehajime@gmail.com>
+ id 1lIItK-00GoMc-Dm
+ for linux-um@lists.infradead.org; Fri, 05 Mar 2021 22:25:53 +0000
+Received: by mail-pg1-x52d.google.com with SMTP id o38so2296054pgm.9
+ for <linux-um@lists.infradead.org>; Fri, 05 Mar 2021 14:25:49 -0800 (PST)
+Date: Sat, 06 Mar 2021 07:25:43 +0900
+Message-ID: <m2tupp44rc.wl-thehajime@gmail.com>
 From: Hajime Tazaki<thehajime@gmail.com>
 Subject: Re: linux uml segfault
 In-Reply-To: <5fee882c709f6c9d061b58a0e7b3110b3afbb96e.camel@sipsolutions.net>
@@ -41,11 +41,9 @@ To: johannes@sipsolutions.net
 Cc: rrs@debian.org, anton.ivanov@kot-begemot.co.uk, chris.obbard@collabora.com, linux-um@lists.infradead.org, 983379@bugs.debian.org
 
 
-Sorry that this email is going to be long.  In summary, what Johannes
-said is right: what objcopy does is not sufficient, and with ld it
-transforms as we expected.
+might be late, but I'll give it a try with your dlopen reproducer.
 
-More goes to below.
+-- Hajime
 
 On Sat, 06 Mar 2021 05:22:19 +0900,
 Johannes Berg wrote:
@@ -63,84 +61,6 @@ Johannes Berg wrote:
 > Even that doesn't seem to actually work/help? I still get libcom_err
 > trying to call UML's sem_init, even after doing
 >  objcopy --redefine-sym sem_init=uml_sem_init
-> 
-> 
-> > How does UML handle symbol conflicts between userspace code and Linux
-> > kernel (like this case sem_init) ?  AFAIK, libnl has a same symbol as
-> > Linux kernel (genlmsg_put) and others can possibly do as well.
-> 
-> I think like I said it just doesn't but since you don't have much
-> userspace code linked with UML it never really mattered?
-> 
-> We only link a 'linux' binary, after all. How does LKL handle this
-> though? It should be far more affected?
-> 
-> 
-> Despite the objcopy *not* fixing it, this does seem to:
-
-with slightly old version:
- - objcopy/ld version 2.29.1-23.fc28
-
-I confirmed that objcopy (both --redefine-sym and --localize-symbol)
-only changes symbols of .symtab table.  But there is another table,
-.dynsym table, which is used to resolve.
-So, the original file looks like this:
-
-
-1) before objcopy (vmlinux)
-% readelf -s obj-x86-um/vmlinux |grep -E "sem_init|Symbol table|Num:"
-Symbol table '.dynsym' contains 179 entries:
-   Num:    Value          Size Type    Bind   Vis      Ndx Name
-   129: 0000000060011d38    72 FUNC    GLOBAL DEFAULT    2 sem_init
-Symbol table '.symtab' contains 38474 entries:
-   Num:    Value          Size Type    Bind   Vis      Ndx Name
- 28515: 0000000060011d38    72 FUNC    GLOBAL DEFAULT    2 sem_init
- 37798: 00000000601e30d5    62 FUNC    GLOBAL DEFAULT   13 sem_init_ns
- 
-the result object looks like
-
-2) after objcopy (linux)
-% readelf -s obj-x86-um/linux |grep -E "sem_init|Symbol table|Num:"
-Symbol table '.dynsym' contains 179 entries:
-   Num:    Value          Size Type    Bind   Vis      Ndx Name
-   129: 0000000060011d38    72 FUNC    GLOBAL DEFAULT    2 sem_init
-Symbol table '.symtab' contains 38474 entries:
-   Num:    Value          Size Type    Bind   Vis      Ndx Name
- 28455: 0000000060011d38    72 FUNC    LOCAL  DEFAULT    2 sem_init
- 37798: 00000000601e30d5    62 FUNC    GLOBAL DEFAULT   13 sem_init_ns
-
-Only .symtab symbol table is changed to local while .dynsym table is
-not changed.  So, sem_init call from libcom_err.so still can resolve
-the Linux symbol.
-
-
-On the other hand, ld --version script solution does as we wish.
-
-3) localized with ld
-% readelf -s obj-x86-um/linux G -E "sem_init|Symbol table|Num:" 
-Symbol table '.dynsym' contains 142 entries:
-   Num:    Value          Size Type    Bind   Vis      Ndx Name
-Symbol table '.symtab' contains 38474 entries:
-   Num:    Value          Size Type    Bind   Vis      Ndx Name
- 28512: 0000000060011d38    72 FUNC    LOCAL  DEFAULT    2 sem_init
- 37669: 00000000601e2b45    62 FUNC    LOCAL  DEFAULT   13 sem_init_ns
-
-Only .symtab table is generated for the sem_init symbol and it's localized.
-
-
-Because the way to build is different from what UML currently does,
-LKL (and UML binaries) do not have this issue, with a quick check.
-
-LKL applies objcopy before generating intermediate file (linux.o), and
-the symbols of the final binary (linux) are localized and have no
-.dynsym entries, thus no issue in this case.
-
-refs:
-https://stackoverflow.com/questions/54332797/binding-failure-with-objcopy-redefine-syms
-https://sourceware.org/legacy-ml/binutils/2019-01/msg00254.html
-
-
--- Hajime
 
 _______________________________________________
 linux-um mailing list
