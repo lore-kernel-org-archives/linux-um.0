@@ -2,14 +2,14 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lIHIC-00GQZG-KH
- for linux-um@lists.infradead.org; Fri, 05 Mar 2021 20:43:27 +0000
+ id 1lI9RW-00EwoY-Rn
+ for linux-um@lists.infradead.org; Fri, 05 Mar 2021 12:20:33 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH] um: mark all kernel symbols as local
-Date: Fri,  5 Mar 2021 21:43:15 +0100
-Message-Id: <20210305214315.75ea78f93d79.I410acf4509c4ff51aac4a03df61d19abfa0454cb@changeid>
-In-Reply-To: <3448a70e7a39b9c3202aeefa7858ace265b8a978.camel@debian.org>
-References: <3448a70e7a39b9c3202aeefa7858ace265b8a978.camel@debian.org>
+Subject: [PATCH v4 9/9] um: virtio/pci: enable suspend/resume
+Date: Fri,  5 Mar 2021 13:19:59 +0100
+Message-Id: <20210305131934.1f617650de08.I2e9caf8b2083e2a8d0c76799179db35d08032aa1@changeid>
+In-Reply-To: <20210305122010.442577-1-johannes@sipsolutions.net>
+References: <20210305122010.442577-1-johannes@sipsolutions.net>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -24,105 +24,161 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: Ritesh Raj Sarraf <rrs@debian.org>, Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, 983379@bugs.debian.org, Christopher Obbard <chris.obbard@collabora.com>, Johannes Berg <johannes.berg@intel.com>
+Cc: Johannes Berg <johannes.berg@intel.com>
 
 From: Johannes Berg <johannes.berg@intel.com>
 
-Ritesh reported a bug [1] against UML, noting that it crashed on
-startup. The backtrace shows the following (heavily redacted):
+The UM virtual PCI devices currently cannot be suspended properly
+since the virtio driver already disables VQs well before the PCI
+bus's suspend_noirq wants to complete the transition by writing to
+PCI config space.
 
-(gdb) bt
-...
- #26 0x0000000060015b5d in sem_init () at ipc/sem.c:268
- #27 0x00007f89906d92f7 in ?? () from /lib/x86_64-linux-gnu/libcom_err.so.2
- #28 0x00007f8990ab8fb2 in call_init (...) at dl-init.c:72
-...
- #40 0x00007f89909bf3a6 in nss_load_library (...) at nsswitch.c:359
-...
- #44 0x00007f8990895e35 in _nss_compat_getgrnam_r (...) at nss_compat/compat-grp.c:486
- #45 0x00007f8990968b85 in __getgrnam_r [...]
- #46 0x00007f89909d6b77 in grantpt [...]
- #47 0x00007f8990a9394e in __GI_openpty [...]
- #48 0x00000000604a1f65 in openpty_cb (...) at arch/um/os-Linux/sigio.c:407
- #49 0x00000000604a58d0 in start_idle_thread (...) at arch/um/os-Linux/skas/process.c:598
- #50 0x0000000060004a3d in start_uml () at arch/um/kernel/skas/process.c:45
- #51 0x00000000600047b2 in linux_main (...) at arch/um/kernel/um_arch.c:334
- #52 0x000000006000574f in main (...) at arch/um/os-Linux/main.c:144
+After trying around for a long time with moving the devices on the
+DPM list, trying to create dependencies between them, etc. I gave
+up and instead added UML specific cross-driver API that lets the
+virt-pci code enable not suspending/resuming VQs for its devices.
 
-indicating that the UML function openpty_cb() calls openpty(),
-which internally calls __getgrnam_r(), which causes the nsswitch
-machinery to get started.
+This then allows the PCI bus suspend_noirq to still talk to the
+device, and suspend/resume works properly.
 
-This loads, through lots of indirection that I snipped, the
-libcom_err.so.2 library, which (in an unknown function, "??")
-calls sem_init().
-
-Now, of course it wants to get libpthread's sem_init(), since
-it's linked against libpthread. However, the dynamic linker
-looks up that symbol against the binary first, and gets the
-kernel's sem_init().
-
-Hajime Tazaki noted that "objcopy -L" can localize a symbol,
-so the dynamic linker wouldn't do the lookup this way. I tried,
-but for some reason that didn't seem to work.
-
-Doing the same thing in the linker script instead does seem to
-work, though I cannot entirely explain - it *also* works if I
-just add "VERSION { { global: *; }; }" instead, indicating that
-something else is happening that I don't really understand. It
-may be that explicitly doing that marks them with some kind of
-empty version, and that's different from the default.
-
-Explicitly marking them with a version breaks kallsyms, so that
-doesn't seem to be possible.
-
-Marking all the symbols as local seems correct, and does seem
-to address the issue, so do that. Also do it for static link,
-nsswitch libraries could still be loaded there.
-
-[1] https://bugs.debian.org/983379
-
-Reported-by: Ritesh Raj Sarraf <rrs@debian.org>
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- arch/um/kernel/dyn.lds.S | 6 ++++++
- arch/um/kernel/uml.lds.S | 6 ++++++
- 2 files changed, 12 insertions(+)
+ arch/um/drivers/virt-pci.c         | 10 ++++++++
+ arch/um/drivers/virtio_uml.c       | 40 ++++++++++++++++++++++--------
+ arch/um/include/linux/virtio-uml.h | 13 ++++++++++
+ 3 files changed, 53 insertions(+), 10 deletions(-)
+ create mode 100644 arch/um/include/linux/virtio-uml.h
 
-diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
-index dacbfabf66d8..2f2a8ce92f1e 100644
---- a/arch/um/kernel/dyn.lds.S
-+++ b/arch/um/kernel/dyn.lds.S
-@@ -6,6 +6,12 @@ OUTPUT_ARCH(ELF_ARCH)
- ENTRY(_start)
- jiffies = jiffies_64;
+diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
+index dd85f36197aa..0b802834f40a 100644
+--- a/arch/um/drivers/virt-pci.c
++++ b/arch/um/drivers/virt-pci.c
+@@ -10,6 +10,7 @@
+ #include <linux/logic_iomem.h>
+ #include <linux/irqdomain.h>
+ #include <linux/virtio_pcidev.h>
++#include <linux/virtio-uml.h>
+ #include <linux/delay.h>
+ #include <linux/msi.h>
+ #include <asm/unaligned.h>
+@@ -134,6 +135,9 @@ static int um_pci_send_cmd(struct um_pci_device *dev,
+ 		if (completed == HANDLE_NO_FREE(cmd))
+ 			break;
  
-+VERSION {
-+  {
-+    local: *;
-+  };
++		if (completed && !HANDLE_IS_NO_FREE(completed))
++			kfree(completed);
++
+ 		if (WARN_ONCE(virtqueue_is_broken(dev->cmd_vq) ||
+ 			      ++delay_count > UM_VIRT_PCI_MAXDELAY,
+ 			      "um virt-pci delay: %d", delay_count)) {
+@@ -550,6 +554,12 @@ static int um_pci_virtio_probe(struct virtio_device *vdev)
+ 
+ 	device_set_wakeup_enable(&vdev->dev, true);
+ 
++	/*
++	 * In order to do suspend-resume properly, don't allow VQs
++	 * to be suspended.
++	 */
++	virtio_uml_set_no_vq_suspend(vdev, true);
++
+ 	um_pci_rescan();
+ 	return 0;
+ error:
+diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
+index 91ddf74ca888..4412d6febade 100644
+--- a/arch/um/drivers/virtio_uml.c
++++ b/arch/um/drivers/virtio_uml.c
+@@ -56,6 +56,7 @@ struct virtio_uml_device {
+ 	u8 status;
+ 	u8 registered:1;
+ 	u8 suspended:1;
++	u8 no_vq_suspend:1;
+ 
+ 	u8 config_changed_irq:1;
+ 	uint64_t vq_irq_vq_map;
+@@ -1098,6 +1099,19 @@ static void virtio_uml_release_dev(struct device *d)
+ 	kfree(vu_dev);
+ }
+ 
++void virtio_uml_set_no_vq_suspend(struct virtio_device *vdev,
++				  bool no_vq_suspend)
++{
++	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
++
++	if (WARN_ON(vdev->config != &virtio_uml_config_ops))
++		return;
++
++	vu_dev->no_vq_suspend = no_vq_suspend;
++	dev_info(&vdev->dev, "%sabled VQ suspend\n",
++		 no_vq_suspend ? "dis" : "en");
 +}
 +
- SECTIONS
- {
-   PROVIDE (__executable_start = START);
-diff --git a/arch/um/kernel/uml.lds.S b/arch/um/kernel/uml.lds.S
-index 45d957d7004c..7a8e2b123e29 100644
---- a/arch/um/kernel/uml.lds.S
-+++ b/arch/um/kernel/uml.lds.S
-@@ -7,6 +7,12 @@ OUTPUT_ARCH(ELF_ARCH)
- ENTRY(_start)
- jiffies = jiffies_64;
+ /* Platform device */
  
-+VERSION {
-+  {
-+    local: *;
-+  };
-+}
-+
- SECTIONS
+ static int virtio_uml_probe(struct platform_device *pdev)
+@@ -1302,13 +1316,16 @@ MODULE_DEVICE_TABLE(of, virtio_uml_match);
+ static int virtio_uml_suspend(struct platform_device *pdev, pm_message_t state)
  {
-   /* This must contain the right address - not quite the default ELF one.*/
+ 	struct virtio_uml_device *vu_dev = platform_get_drvdata(pdev);
+-	struct virtqueue *vq;
+ 
+-	virtio_device_for_each_vq((&vu_dev->vdev), vq) {
+-		struct virtio_uml_vq_info *info = vq->priv;
++	if (!vu_dev->no_vq_suspend) {
++		struct virtqueue *vq;
+ 
+-		info->suspended = true;
+-		vhost_user_set_vring_enable(vu_dev, vq->index, false);
++		virtio_device_for_each_vq((&vu_dev->vdev), vq) {
++			struct virtio_uml_vq_info *info = vq->priv;
++
++			info->suspended = true;
++			vhost_user_set_vring_enable(vu_dev, vq->index, false);
++		}
+ 	}
+ 
+ 	if (!device_may_wakeup(&vu_dev->vdev.dev)) {
+@@ -1322,13 +1339,16 @@ static int virtio_uml_suspend(struct platform_device *pdev, pm_message_t state)
+ static int virtio_uml_resume(struct platform_device *pdev)
+ {
+ 	struct virtio_uml_device *vu_dev = platform_get_drvdata(pdev);
+-	struct virtqueue *vq;
+ 
+-	virtio_device_for_each_vq((&vu_dev->vdev), vq) {
+-		struct virtio_uml_vq_info *info = vq->priv;
++	if (!vu_dev->no_vq_suspend) {
++		struct virtqueue *vq;
++
++		virtio_device_for_each_vq((&vu_dev->vdev), vq) {
++			struct virtio_uml_vq_info *info = vq->priv;
+ 
+-		info->suspended = false;
+-		vhost_user_set_vring_enable(vu_dev, vq->index, true);
++			info->suspended = false;
++			vhost_user_set_vring_enable(vu_dev, vq->index, true);
++		}
+ 	}
+ 
+ 	vu_dev->suspended = false;
+diff --git a/arch/um/include/linux/virtio-uml.h b/arch/um/include/linux/virtio-uml.h
+new file mode 100644
+index 000000000000..2f652fa90f04
+--- /dev/null
++++ b/arch/um/include/linux/virtio-uml.h
+@@ -0,0 +1,13 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (C) 2021 Intel Corporation
++ * Author: Johannes Berg <johannes@sipsolutions.net>
++ */
++
++#ifndef __VIRTIO_UML_H__
++#define __VIRTIO_UML_H__
++
++void virtio_uml_set_no_vq_suspend(struct virtio_device *vdev,
++				  bool no_vq_suspend);
++
++#endif /* __VIRTIO_UML_H__ */
 -- 
 2.26.2
 
