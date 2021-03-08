@@ -1,82 +1,45 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
- by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lLvqk-00H2Wm-Gk
- for linux-um@lists.infradead.org; Mon, 15 Mar 2021 22:38:12 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH] um: implement flush_cache_vmap/flush_cache_vunmap
-Date: Mon, 15 Mar 2021 23:38:04 +0100
-Message-Id: <20210315233804.d3e52f6a3422.I9672eef7dfa7ce6c3de1ccf7ab8d9aad1fa7f3a6@changeid>
+Return-Path: <linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org>
+Date: Mon, 8 Mar 2021 16:09:24 +0100
+From: Petr Mladek <pmladek@suse.com>
+Subject: Re: [PATCH next v4 00/15] printk: remove logbuf_lock
+Message-ID: <YEY+JBoW6TByix30@alley>
+References: <20210303101528.29901-1-john.ogness@linutronix.de>
+ <YD+seF3dQUoPcZP7@alley>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Disposition: inline
+In-Reply-To: <YD+seF3dQUoPcZP7@alley>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
+Errors-To: linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org
+To: John Ogness <john.ogness@linutronix.de>
+Cc: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Thomas Meyer <thomas@m3y3r.de>, linux-um@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>, Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org, Kees Cook <keescook@chromium.org>, Pavel Tatashin <pasha.tatashin@soleen.com>, Michael Ellerman <mpe@ellerman.id.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Jason Wessel <jason.wessel@windriver.com>, Daniel Thompson <daniel.thompson@linaro.org>, Douglas Anderson <dianders@chromium.org>, Jordan Niethe <jniethe5@gmail.com>, Alistair Popple <alistair@popple.id.au>, Ravi Bangoria <ravi.bangoria@linux.ibm.com>, Nicholas Piggin <npiggin@gmail.com>, Madhavan Srinivasan <maddy@linux.ibm.com>, Mike Rapoport <rppt@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Wei Li <liwei391@huawei.com>, Davidlohr Bueso <dave@stgolabs.net>, linuxppc-dev@lists.ozlabs.org, kgdb-bugreport@lists.sourceforge.net, "K. Y. Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, Stephen Hemminger <sthemmin@microsoft.com>, Wei Liu <wei.liu@kernel.org>, Anton Vorontsov <anton@enomsg.org>, Colin Cross <ccross@android.com>, Tony Luck <tony.luck@intel.com>, Christophe Leroy <christophe.leroy@c-s.fr>, Michael Kelley <mikelley@microsoft.com>, linux-hyperv@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>
+List-ID: <linux-um.lists.infradead.org>
 
-From: Johannes Berg <johannes.berg@intel.com>
+On Wed 2021-03-03 16:34:19, Petr Mladek wrote:
+> On Wed 2021-03-03 11:15:13, John Ogness wrote:
+> > Hello,
+> > 
+> > Here is v4 of a series to remove @logbuf_lock, exposing the
+> > ringbuffer locklessly to both readers and writers. v3 is
+> > here [0].
+> 
+> The series look ready. I am going to push it into printk/linux.git
+> the following week unless anyone speaks against it in the meantime.
 
-vmalloc() heavy workloads in UML are extremely slow, due to
-flushing the entire kernel VM space (flush_tlb_kernel_vm())
-on the first segfault.
+The series is committed in printk/linux.git, branch printk-rework.
 
-Implement flush_cache_vmap() to avoid that, and while at it
-also add flush_cache_vunmap() since it's trivial.
+Best Regards,
+Petr
 
-This speeds up my vmalloc() heavy test of copying files out
-from /sys/kernel/debug/gcov/ by 30x (from 30s to 1s.)
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- arch/um/include/asm/cacheflush.h | 9 +++++++++
- arch/um/include/asm/tlb.h        | 2 +-
- 2 files changed, 10 insertions(+), 1 deletion(-)
- create mode 100644 arch/um/include/asm/cacheflush.h
-
-diff --git a/arch/um/include/asm/cacheflush.h b/arch/um/include/asm/cacheflush.h
-new file mode 100644
-index 000000000000..4c9858cd36ec
---- /dev/null
-+++ b/arch/um/include/asm/cacheflush.h
-@@ -0,0 +1,9 @@
-+#ifndef __UM_ASM_CACHEFLUSH_H
-+#define __UM_ASM_CACHEFLUSH_H
-+
-+#include <asm/tlbflush.h>
-+#define flush_cache_vmap flush_tlb_kernel_range
-+#define flush_cache_vunmap flush_tlb_kernel_range
-+
-+#include <asm-generic/cacheflush.h>
-+#endif /* __UM_ASM_CACHEFLUSH_H */
-diff --git a/arch/um/include/asm/tlb.h b/arch/um/include/asm/tlb.h
-index ff9c62828962..0422467bda5b 100644
---- a/arch/um/include/asm/tlb.h
-+++ b/arch/um/include/asm/tlb.h
-@@ -5,7 +5,7 @@
- #include <linux/mm.h>
- 
- #include <asm/tlbflush.h>
--#include <asm-generic/cacheflush.h>
-+#include <asm/cacheflush.h>
- #include <asm-generic/tlb.h>
- 
- #endif
--- 
-2.30.2
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
