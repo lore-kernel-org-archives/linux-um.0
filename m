@@ -2,15 +2,21 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lLU7I-00EN1m-Tj
- for linux-um@lists.infradead.org; Sun, 14 Mar 2021 17:01:26 +0000
-Message-ID: <d1d37b2a05fe0ebffca23e1aff1c7f6a5a5d87fd.camel@sipsolutions.net>
-Subject: Re: [RFC v8 09/20] um: lkl: kernel thread support
+ id 1lJDCn-00GTFF-7W
+ for linux-um@lists.infradead.org; Mon, 08 Mar 2021 10:33:43 +0000
+Message-ID: <ad507487a9181b1ef2771d0c965aa0d49af43dc9.camel@sipsolutions.net>
+Subject: Re: Bug#983379: [PATCH] um: mark all kernel symbols as local
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Sun, 14 Mar 2021 18:01:20 +0100
-In-Reply-To: <3aecd66b9314f2b435fb6df029dc5829bf8c50ff.1611103406.git.thehajime@gmail.com>
-References: <cover.1611103406.git.thehajime@gmail.com>
- <3aecd66b9314f2b435fb6df029dc5829bf8c50ff.1611103406.git.thehajime@gmail.com>
+Date: Mon, 08 Mar 2021 11:33:32 +0100
+In-Reply-To: <358bce016384468722ba5cf42d2b5ae8650868e6.camel@debian.org>
+ (sfid-20210308_112923_852002_C82CA2D5)
+References: <3448a70e7a39b9c3202aeefa7858ace265b8a978.camel@debian.org>
+ <20210305214315.75ea78f93d79.I410acf4509c4ff51aac4a03df61d19abfa0454cb@changeid>
+ <5d04179e-5ba5-a0cc-e514-c90feea5eb00@cambridgegreys.com>
+ <161406935658.1350056.9530002632452194106.reportbug@beast>
+ <ca04eca09e65939f1b828b7572c91e9cb2046b4b.camel@debian.org>
+ <358bce016384468722ba5cf42d2b5ae8650868e6.camel@debian.org>
+ (sfid-20210308_112923_852002_C82CA2D5)
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -20,56 +26,28 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Hajime Tazaki <thehajime@gmail.com>, linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
-Cc: tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, retrage01@gmail.com
+To: rrs@debian.org, 983379@bugs.debian.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
+Cc: Christopher Obbard <chris.obbard@collabora.com>
 
-T24gV2VkLCAyMDIxLTAxLTIwIGF0IDExOjI3ICswOTAwLCBIYWppbWUgVGF6YWtpIHdyb3RlOgoK
-PiArdm9pZCBfX3dlYWsgc3ViYXJjaF9jcHVfaWRsZSh2b2lkKQo+ICt7Cj4gK30KPiArCj4gwqB2
-b2lkIGFyY2hfY3B1X2lkbGUodm9pZCkKPiDCoHsKPiDCoAljcHVfdGFza3NbY3VycmVudF90aHJl
-YWRfaW5mbygpLT5jcHVdLnBpZCA9IG9zX2dldHBpZCgpOwo+IMKgCXVtX2lkbGVfc2xlZXAoKTsK
-PiArCXN1YmFyY2hfY3B1X2lkbGUoKTsKCgpOb3Qgc3VyZSB0aGF0IGJlbG9uZ3MgaW50byB0aGlz
-IHBhdGNoIGluIHRoZSBmaXJzdCBwbGFjZSwgYnV0IHdvdWxkbid0Cml0IG1ha2Ugc29tZSBzZW5z
-ZSB0byBtb3ZlIHRoZSB1bV9pZGxlX3NsZWVwKCkgaW50byB0aGUKc3ViYXJjaF9jcHVfaWRsZSgp
-IHNvIExLTCAob3IgYXBwcyB1c2luZyBpdCkgY2FuIGdldCBmdWxsIGNvbnRyb2w/Cgo+ICsvKgo+
-ICsgKiBUaGlzIHN0cnVjdHVyZSBpcyB1c2VkIHRvIGdldCBhY2Nlc3MgdG8gdGhlICJMS0wgQ1BV
-IiB0aGF0IGFsbG93cyB1cyB0byBydW4KPiArICogTGludXggY29kZS4gQmVjYXVzZSB3ZSBoYXZl
-IHRvIGRlYWwgd2l0aCB2YXJpb3VzIHN5bmNocm9uaXphdGlvbiByZXF1aXJlbWVudHMKPiArICog
-YmV0d2VlbiBpZGxlIHRocmVhZCwgc3lzdGVtIGNhbGxzLCBpbnRlcnJ1cHRzLCAicmVlbnRyYW5j
-eSIsIENQVSBzaHV0ZG93biwKPiArICogaW1iYWxhbmNlIHdha2UgdXAgKGkuZS4gYWNxdWlyZSB0
-aGUgQ1BVIGZyb20gb25lIHRocmVhZCBhbmQgcmVsZWFzZSBpdCBmcm9tCj4gKyAqIGFub3RoZXIp
-LCB3ZSBjYW4ndCB1c2UgYSBzaW1wbGUgc3luY2hyb25pemF0aW9uIG1lY2hhbmlzbSBzdWNoIGFz
-IChyZWN1cnNpdmUpCj4gKyAqIG11dGV4IG9yIHNlbWFwaG9yZS4gSW5zdGVhZCwgd2UgdXNlIGEg
-bXV0ZXggYW5kIGEgYnVuY2ggb2Ygc3RhdHVzIGRhdGEgcGx1cyBhCj4gKyAqIHNlbWFwaG9yZS4K
-PiArICovCgpIb25lc3RseSwgc29tZSBvZiB0aGF0IGRvY3VtZW50YXRpb24sIGFuZCBwZXJoYXBz
-IGV2ZW4gdGhlIHdob2xlIEFQSSBmb3IKTEtMIGZlZWxzIGxpa2UgaXQgc2hvdWxkIGNvbWUgZWFy
-bGllciBpbiB0aGUgc2VyaWVzLgoKRS5nLiBub3cgaGVyZSBJIHNlZSBhbGwgdGhvc2UgbGtsX211
-dGV4X2xvY2soKSAod2hlcmUgYnR3IGRvY3VtZW50YXRpb24KZG9lc24ndCBhbHdheXMgbWF0Y2gg
-dGhlIGZ1bmN0aW9uIG5hbWUpLCBzbyB5b3UgKmRvbid0KiBoYXZlIHRoZQpmdW5jdGlvbiBvcHMg
-cG9pbnRlciBzdHJ1Y3QgYW55bW9yZT8KCkl0J2QgYmUgbmljZSB0byBoYXZlIHNvbWUgaGlnaC1s
-ZXZlbCB2aWV3IG9mIHdoYXQgYXBwbGljYXRpb25zICptdXN0KgpkbywgYW5kIHdoYXQgdGhleSAq
-Y2FuKiBkbywgYXQgdGhlIGJlZ2lubmluZyBvZiB0aGlzIHNlcmllcy4KCj4gKwkgKgo+ICsJICog
-VGhpcyBhbGdvcml0aG0gYXNzdW1lcyB0aGF0IHdlIG5ldmVyIGhhdmUgbW9yZSB0aGUgTUFYX1RI
-UkVBRFMKPiArCSAqIHJlcXVlc3RpbmcgQ1BVIGFjY2Vzcy4KPiArCSAqLwo+ICsJI2RlZmluZSBN
-QVhfVEhSRUFEUyAxMDAwMDAwCgpXaGF0IGltcGxpY2F0aW9ucyBkb2VzIHRoYXQgdmFsdWUgaGF2
-ZT8gSXQgc2VlbXMgc2V2ZXJhbCBvcmRlcnMgb2YKbWFnbml0dWRlIHRvbyBsYXJnZT8KCj4gK3N0
-YXRpYyBpbnQgX19jcHVfdHJ5X2dldF9sb2NrKGludCBuKQo+ICt7Cj4gKwlsa2xfdGhyZWFkX3Qg
-c2VsZjsKPiArCj4gKwlpZiAoX19zeW5jX2ZldGNoX2FuZF9hZGQoJmNwdS5zaHV0ZG93bl9nYXRl
-LCBuKSA+PSBNQVhfVEhSRUFEUykKPiArCQlyZXR1cm4gLTI7CgpGZWVscyBsaWtlIHRoYXQgY291
-bGQgYmUgc29tZSBraW5kIG9mIGVudW0gaGVyZSBpbnN0ZWFkIG9mIC0yIGFuZCAtMSBhbmQKYWxs
-IHRoYXQgbWFnaWMuCgo+ICsJLyogd2hlbiBzb21lYm9keSBob2xkcyBhIGxvY2ssIHNsZWVwIHVu
-dGlsIHJlbGVhc2VkLAo+ICsJICogd2l0aCBvYnRhaW5pbmcgYSBzZW1hcGhvcmUgKGNwdS5zZW0p
-Cj4gKwkgKi8KCm5pdDogLyoKICAgICAgKiB1c2UgdGhpcyBjb21tZW50IHN0eWxlCiAgICAgICov
-Cgo+ICt2b2lkIHN3aXRjaF90aHJlYWRzKGptcF9idWYgKm1lLCBqbXBfYnVmICp5b3UpCj4gK3sK
-PiArCS8qIE5PUCAqLwo+ICt9CgpXaHksIGFjdHVhbGx5PwoKQWdhaW4sIGdvZXMgYmFjayB0byB0
-aGUgaGlnaC1sZXZlbCBkZXNpZ24gdGhpbmcgSSBhbGx1ZGVkIHRvIGFib3ZlLCBidXQKaXQncyBu
-b3QgY2xlYXIgdG8gbWUgd2h5IHlvdSBuZWVkIGlkbGUgKHdoaWNoIGltcGxpZXMgeW91J3JlIHJ1
-bm5pbmcgdGhlCnNjaGVkdWxlcikgYnV0IG5vdCB0aGlzICh3aGljaCBpbXBsaWVzIHlvdSdyZSAq
-bm90KiBydW5uaW5nIHRoZQpzY2hlZHVsZXIpPwoKam9oYW5uZXMKCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGlu
-dXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
+On Mon, 2021-03-08 at 15:59 +0530, Ritesh Raj Sarraf wrote:
+> Hi,
+> 
+> Just a follow-up question on this fix.
+> 
+> Is it something that is a candidate for linux-stable ?
+
+I guess that makes sense. Once it's in mainline you can also request
+that yourself :)
+
+johannes
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
