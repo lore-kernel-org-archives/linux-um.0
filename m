@@ -2,19 +2,12 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lJHjy-000Xzo-5b
- for linux-um@lists.infradead.org; Mon, 08 Mar 2021 15:24:16 +0000
-Received: by sipsolutions.net with esmtpsa
- (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
- (Exim 4.94) (envelope-from <johannes@sipsolutions.net>)
- id 1lJHju-00DShe-Qr
- for linux-um@lists.infradead.org; Mon, 08 Mar 2021 16:24:10 +0100
-Message-ID: <6ca43d1bdb6edf3cba2e7a29ee999bef3fc68f9c.camel@sipsolutions.net>
-Subject: Re: [PATCH] um: allow not setting extra rpaths in the linux binary
+ id 1lJFX4-00HJIf-BC
+ for linux-um@lists.infradead.org; Mon, 08 Mar 2021 13:02:48 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Mon, 08 Mar 2021 16:24:10 +0100
-In-Reply-To: <20210308140237.ec2ecc0123db.Ib0c23e3dda8322f9306a9dd04146e797eb0690b2@changeid>
-References: <20210308140237.ec2ecc0123db.Ib0c23e3dda8322f9306a9dd04146e797eb0690b2@changeid>
+Subject: [PATCH] um: allow not setting extra rpaths in the linux binary
+Date: Mon,  8 Mar 2021 14:02:37 +0100
+Message-Id: <20210308140237.ec2ecc0123db.Ib0c23e3dda8322f9306a9dd04146e797eb0690b2@changeid>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -29,28 +22,79 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
 
-On Mon, 2021-03-08 at 14:02 +0100, Johannes Berg wrote:
-> +config LD_SCRIPT_DYN_RPATH
-> +	bool "set rpath in the binary" if EXPERT
-> +	default y
-> +	depends on LD_SCRIPT_DYN
+From: Johannes Berg <johannes.berg@intel.com>
 
-Somehow, that seems to trigger Kconfig bug.
+There doesn't seem to be any reason for the rpath being set in
+the binaries, at on systems that I tested on. On the other hand,
+setting rpath is actually harming binaries in some cases, e.g.
+if using nix-based compilation environments where /lib & /lib64
+are not part of the actual environment.
 
-The resulting option is not actually visible, although in a menuconfig
-search it's visibility is shown as being true, but it's shown
-*underneath* STATIC_LINK (Force a static link) which is actually not
-visible for me, and ... that's just weird?
+Add a new Kconfig option (under EXPERT, for less user confusion)
+that allows disabling the rpath additions.
 
-If I manually set it in the .config file then it does stick, however, so
-it's actually settable that way.
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+---
+ arch/um/Kconfig      | 13 +++++++++++++
+ arch/um/Makefile     |  3 ++-
+ arch/x86/Makefile.um |  2 +-
+ 3 files changed, 16 insertions(+), 2 deletions(-)
 
-That's actually good enough for me (and in fact, because I was doing it
-that way, I didn't even notice the issue at first!), but it's not really
-what I expected.
-
-johannes
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index f64d774706e5..e5cc1aea223c 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -105,6 +105,19 @@ config LD_SCRIPT_DYN
+ 	depends on !LD_SCRIPT_STATIC
+ 	select MODULE_REL_CRCS if MODVERSIONS
+ 
++config LD_SCRIPT_DYN_RPATH
++	bool "set rpath in the binary" if EXPERT
++	default y
++	depends on LD_SCRIPT_DYN
++	help
++	  Add /lib (and /lib64 for 64-bit) to the linux binary's rpath
++	  explicitly.
++
++	  You may need to turn this off if compiling for nix systems
++	  that have their libraries in random /nix directories and
++	  might otherwise unexpected use libraries from /lib or /lib64
++	  instead of the desired ones.
++
+ config HOSTFS
+ 	tristate "Host filesystem"
+ 	help
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index 1cea46ff9bb7..12a7acef0357 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -118,7 +118,8 @@ archprepare:
+ 	$(Q)$(MAKE) $(build)=$(HOST_DIR)/um include/generated/user_constants.h
+ 
+ LINK-$(CONFIG_LD_SCRIPT_STATIC) += -static
+-LINK-$(CONFIG_LD_SCRIPT_DYN) += -Wl,-rpath,/lib $(call cc-option, -no-pie)
++LINK-$(CONFIG_LD_SCRIPT_DYN) += $(call cc-option, -no-pie)
++LINK-$(CONFIG_LD_SCRIPT_DYN_RPATH) += -Wl,-rpath,/lib
+ 
+ CFLAGS_NO_HARDENING := $(call cc-option, -fno-PIC,) $(call cc-option, -fno-pic,) \
+ 	-fno-stack-protector $(call cc-option, -fno-stack-protector-all)
+diff --git a/arch/x86/Makefile.um b/arch/x86/Makefile.um
+index 1db7913795f5..b3c1ae084180 100644
+--- a/arch/x86/Makefile.um
++++ b/arch/x86/Makefile.um
+@@ -44,7 +44,7 @@ ELF_FORMAT := elf64-x86-64
+ 
+ # Not on all 64-bit distros /lib is a symlink to /lib64. PLD is an example.
+ 
+-LINK-$(CONFIG_LD_SCRIPT_DYN) += -Wl,-rpath,/lib64
++LINK-$(CONFIG_LD_SCRIPT_DYN_RPATH) += -Wl,-rpath,/lib64
+ LINK-y += -m64
+ 
+ endif
+-- 
+2.29.2
 
 
 _______________________________________________
