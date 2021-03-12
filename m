@@ -1,15 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lKeW5-00B5Tj-Lv
- for linux-um@lists.infradead.org; Fri, 12 Mar 2021 09:55:43 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH 1/6] seq_file: rename mangle_path to seq_mangle_path
-Date: Fri, 12 Mar 2021 10:55:21 +0100
-Message-Id: <20210312104627.3ac77adf84c4.I2f2e5cec5cc82a51652dafbeb0d1b88708b3c565@changeid>
-In-Reply-To: <20210312095526.197739-1-johannes@sipsolutions.net>
-References: <20210312095526.197739-1-johannes@sipsolutions.net>
+ id 1lKjWV-00BkvU-KI
+ for linux-um@lists.infradead.org; Fri, 12 Mar 2021 15:16:21 +0000
+From: anton.ivanov@cambridgegreys.com
+Subject: Updated performance patch series - resend
+Date: Fri, 12 Mar 2021 15:16:06 +0000
+Message-Id: <20210312151609.24745-1-anton.ivanov@cambridgegreys.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -23,110 +21,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
-Cc: Jessica Yu <jeyu@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>
+To: linux-um@lists.infradead.org
+Cc: richard@nod.at
 
-From: Johannes Berg <johannes.berg@intel.com>
+Hi all, apologies if some of you will get this twice. Some of the
+arguments to git send-email were wrong the first time so some of the
+messages bounced.
 
-The symbol mangle_path conflicts with a gcov symbol which
-can break the build of ARCH=um with gcov, and it's also
-not very specific and descriptive.
+I have removed the "use glibc strings" patch leaving only xor (needed
+for crypto and filesystems), futex (anything multi-threaded) and the
+cpu flags transfer from host which is a pre-requisite.
 
-Rename mangle_path() to seq_mangle_path(), and also remove
-the export since it's not needed or used by any modules.
+Rationale: prior to the glibc 2.33 which is at least one-two
+releases away (next debian will be using 2.31-9), the "hardware
+optimized support" in the host glibc is not fully complete. It has
+various issues in covering corner cases, etc. As a result the tests are
+not fully reproducible and the performance gain is not worth it except
+some of the newer Intel CPUs.
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- fs/seq_file.c            | 11 +++++------
- include/linux/seq_file.h |  2 +-
- lib/seq_buf.c            |  2 +-
- 3 files changed, 7 insertions(+), 8 deletions(-)
+It works and there will be clear benefit when various bits and pieces
+catch up. We can deal with it then as it will be much easier to
+demonstrate.
 
-diff --git a/fs/seq_file.c b/fs/seq_file.c
-index cb11a34fb871..dfa1982a87ca 100644
---- a/fs/seq_file.c
-+++ b/fs/seq_file.c
-@@ -413,7 +413,7 @@ void seq_printf(struct seq_file *m, const char *f, ...)
- EXPORT_SYMBOL(seq_printf);
- 
- /**
-- *	mangle_path -	mangle and copy path to buffer beginning
-+ *	seq_mangle_path -	mangle and copy path to buffer beginning
-  *	@s: buffer start
-  *	@p: beginning of path in above buffer
-  *	@esc: set of characters that need escaping
-@@ -423,7 +423,7 @@ EXPORT_SYMBOL(seq_printf);
-  *      Returns pointer past last written character in @s, or NULL in case of
-  *      failure.
-  */
--char *mangle_path(char *s, const char *p, const char *esc)
-+char *seq_mangle_path(char *s, const char *p, const char *esc)
- {
- 	while (s <= p) {
- 		char c = *p++;
-@@ -442,7 +442,6 @@ char *mangle_path(char *s, const char *p, const char *esc)
- 	}
- 	return NULL;
- }
--EXPORT_SYMBOL(mangle_path);
- 
- /**
-  * seq_path - seq_file interface to print a pathname
-@@ -462,7 +461,7 @@ int seq_path(struct seq_file *m, const struct path *path, const char *esc)
- 	if (size) {
- 		char *p = d_path(path, buf, size);
- 		if (!IS_ERR(p)) {
--			char *end = mangle_path(buf, p, esc);
-+			char *end = seq_mangle_path(buf, p, esc);
- 			if (end)
- 				res = end - buf;
- 		}
-@@ -505,7 +504,7 @@ int seq_path_root(struct seq_file *m, const struct path *path,
- 			return SEQ_SKIP;
- 		res = PTR_ERR(p);
- 		if (!IS_ERR(p)) {
--			char *end = mangle_path(buf, p, esc);
-+			char *end = seq_mangle_path(buf, p, esc);
- 			if (end)
- 				res = end - buf;
- 			else
-@@ -529,7 +528,7 @@ int seq_dentry(struct seq_file *m, struct dentry *dentry, const char *esc)
- 	if (size) {
- 		char *p = dentry_path(dentry, buf, size);
- 		if (!IS_ERR(p)) {
--			char *end = mangle_path(buf, p, esc);
-+			char *end = seq_mangle_path(buf, p, esc);
- 			if (end)
- 				res = end - buf;
- 		}
-diff --git a/include/linux/seq_file.h b/include/linux/seq_file.h
-index b83b3ae3c877..0a7dda239e56 100644
---- a/include/linux/seq_file.h
-+++ b/include/linux/seq_file.h
-@@ -104,7 +104,7 @@ static inline void seq_setwidth(struct seq_file *m, size_t size)
- }
- void seq_pad(struct seq_file *m, char c);
- 
--char *mangle_path(char *s, const char *p, const char *esc);
-+char *seq_mangle_path(char *s, const char *p, const char *esc);
- int seq_open(struct file *, const struct seq_operations *);
- ssize_t seq_read(struct file *, char __user *, size_t, loff_t *);
- ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter);
-diff --git a/lib/seq_buf.c b/lib/seq_buf.c
-index 707453f5d58e..90b50a514edb 100644
---- a/lib/seq_buf.c
-+++ b/lib/seq_buf.c
-@@ -274,7 +274,7 @@ int seq_buf_path(struct seq_buf *s, const struct path *path, const char *esc)
- 	if (size) {
- 		char *p = d_path(path, buf, size);
- 		if (!IS_ERR(p)) {
--			char *end = mangle_path(buf, p, esc);
-+			char *end = seq_mangle_path(buf, p, esc);
- 			if (end)
- 				res = end - buf;
- 		}
--- 
-2.29.2
+While at it, there is no point to implement "alternatives" as used
+in the kernel at least on newer AMD processors. I applied them to the
+various key functions in string.h by hand (by commenting/uncommenting
+code) and tested the various combinations.
+
+There is practically no difference. 
+
 
 
 _______________________________________________
