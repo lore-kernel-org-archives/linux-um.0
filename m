@@ -2,15 +2,14 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lKezr-00BARs-Ka
- for linux-um@lists.infradead.org; Fri, 12 Mar 2021 10:26:21 +0000
-Message-ID: <0375326f2f20dc82c056d41faee97489a1a03677.camel@sipsolutions.net>
-Subject: Re: [PATCH 2/6] module: add support for CONFIG_MODULE_DESTRUCTORS
+ id 1lKeW5-00B5Tm-Ra
+ for linux-um@lists.infradead.org; Fri, 12 Mar 2021 09:55:49 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Fri, 12 Mar 2021 11:26:17 +0100
-In-Reply-To: <20210312104627.8b2523b0593c.Ib0fb7906e3d7bd69ebe5eb877e2e9f33ef915d4b@changeid>
+Subject: [PATCH 2/6] module: add support for CONFIG_MODULE_DESTRUCTORS
+Date: Fri, 12 Mar 2021 10:55:22 +0100
+Message-Id: <20210312104627.8b2523b0593c.Ib0fb7906e3d7bd69ebe5eb877e2e9f33ef915d4b@changeid>
+In-Reply-To: <20210312095526.197739-1-johannes@sipsolutions.net>
 References: <20210312095526.197739-1-johannes@sipsolutions.net>
- <20210312104627.8b2523b0593c.Ib0fb7906e3d7bd69ebe5eb877e2e9f33ef915d4b@changeid>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -25,45 +24,156 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
-Cc: Jessica Yu <jeyu@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org
+Cc: Jessica Yu <jeyu@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>
 
-On Fri, 2021-03-12 at 10:55 +0100, Johannes Berg wrote:
-> From: Johannes Berg <johannes.berg@intel.com>
-> 
-> At least in ARCH=um with CONFIG_GCOV (which writes all the
-> coverage data directly out from the userspace binary rather
-> than presenting it in debugfs) it's necessary to run all
-> the atexit handlers (dtors/fini_array) so that gcov actually
-> does write out the data.
-> 
-> Add a new config option CONFIG_MODULE_DESTRUCTORS that can
-> be selected via CONFIG_WANT_MODULE_DESTRUCTORS that the arch
-> selects (this indirection exists so the architecture doesn't
-> have to worry about whether or not CONFIG_MODULES is on).
-> Additionally, the architecture must then (when it exits and
-> no more module code can run) call run_all_module_destructors
-> to run the code for all modules that are still loaded. When
-> modules are unloaded, the handlers are called as well.
+From: Johannes Berg <johannes.berg@intel.com>
 
-Oops, I forgot to add this bit to the patch:
+At least in ARCH=um with CONFIG_GCOV (which writes all the
+coverage data directly out from the userspace binary rather
+than presenting it in debugfs) it's necessary to run all
+the atexit handlers (dtors/fini_array) so that gcov actually
+does write out the data.
 
---- a/scripts/module.lds.S
-+++ b/scripts/module.lds.S
-@@ -16,6 +16,8 @@ SECTIONS {
+Add a new config option CONFIG_MODULE_DESTRUCTORS that can
+be selected via CONFIG_WANT_MODULE_DESTRUCTORS that the arch
+selects (this indirection exists so the architecture doesn't
+have to worry about whether or not CONFIG_MODULES is on).
+Additionally, the architecture must then (when it exits and
+no more module code can run) call run_all_module_destructors
+to run the code for all modules that are still loaded. When
+modules are unloaded, the handlers are called as well.
+
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+---
+ include/linux/module.h | 14 ++++++++++++++
+ init/Kconfig           | 17 +++++++++++++++++
+ kernel/module.c        | 39 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 70 insertions(+)
+
+diff --git a/include/linux/module.h b/include/linux/module.h
+index 59f094fa6f74..8574d76a884d 100644
+--- a/include/linux/module.h
++++ b/include/linux/module.h
+@@ -517,6 +517,12 @@ struct module {
+ 	unsigned int num_ctors;
+ #endif
  
-        .init_array             0 : ALIGN(8) { *(SORT(.init_array.*)) *(.init_array) }
- 
-+       .fini_array             0 : ALIGN(8) { *(SORT(.fini_array.*)) *(.fini_array) }
++#ifdef CONFIG_MODULE_DESTRUCTORS
++	/* Destructor functions. */
++	ctor_fn_t *dtors;
++	unsigned int num_dtors;
++#endif
 +
-        __jump_table            0 : ALIGN(8) { KEEP(*(__jump_table)) }
+ #ifdef CONFIG_FUNCTION_ERROR_INJECTION
+ 	struct error_injection_entry *ei_funcs;
+ 	unsigned int num_ei_funcs;
+@@ -853,4 +859,12 @@ int module_kallsyms_on_each_symbol(int (*fn)(void *, const char *,
+ 					     struct module *, unsigned long),
+ 				   void *data);
  
-        __patchable_function_entries : { *(__patchable_function_entries) }
-
-
-Should that be under the ifdef? .init_array isn't, even though it's only
-relevant for CONFIG_CONSTRUCTORS.
-
-johannes
++#ifdef CONFIG_MODULE_DESTRUCTORS
++void run_all_module_destructors(void);
++#else
++static inline void run_all_module_destructors(void)
++{
++}
++#endif
++
+ #endif /* _LINUX_MODULE_H */
+diff --git a/init/Kconfig b/init/Kconfig
+index 22946fe5ded9..b0f0f51f9d2c 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -2295,6 +2295,23 @@ config UNUSED_KSYMS_WHITELIST
+ 
+ endif # MODULES
+ 
++config WANT_MODULE_DESTRUCTORS
++	bool
++	help
++	  Architectures may select this if they need atexit functions (such as
++	  generated by the compiler for -ftest-coverage/gcov) to run in modules.
++	  They're then responsible for calling run_all_module_destructors() at
++	  shutdown so that module destructors are called for all still loaded
++	  modules as well.
++
++	  Note that CONFIG_GCOV_KERNEL does *not* require this since it keeps
++	  all the coverage data in the kernel, notably CONFIG_GCOV in ARCH=um
++	  requires this.
++
++config MODULE_DESTRUCTORS
++	def_bool y
++	depends on WANT_MODULE_DESTRUCTORS && MODULES
++
+ config MODULES_TREE_LOOKUP
+ 	def_bool y
+ 	depends on PERF_EVENTS || TRACING
+diff --git a/kernel/module.c b/kernel/module.c
+index 30479355ab85..3023b5f054d4 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -904,6 +904,27 @@ EXPORT_SYMBOL(module_refcount);
+ /* This exists whether we can unload or not */
+ static void free_module(struct module *mod);
+ 
++#ifdef CONFIG_MODULE_DESTRUCTORS
++static void do_mod_dtors(struct module *mod)
++{
++	unsigned long i;
++
++	for (i = 0; i < mod->num_dtors; i++)
++		mod->dtors[i]();
++}
++
++void run_all_module_destructors(void)
++{
++	struct module *mod;
++
++	/* we no longer need to care about locking at this point */
++	list_for_each_entry(mod, &modules, list)
++		do_mod_dtors(mod);
++}
++#else
++static inline void do_mod_dtors(struct module *mod) {}
++#endif
++
+ SYSCALL_DEFINE2(delete_module, const char __user *, name_user,
+ 		unsigned int, flags)
+ {
+@@ -966,6 +987,7 @@ SYSCALL_DEFINE2(delete_module, const char __user *, name_user,
+ 				     MODULE_STATE_GOING, mod);
+ 	klp_module_going(mod);
+ 	ftrace_release_mod(mod);
++	do_mod_dtors(mod);
+ 
+ 	async_synchronize_full();
+ 
+@@ -3263,6 +3285,23 @@ static int find_module_sections(struct module *mod, struct load_info *info)
+ 	}
+ #endif
+ 
++#ifdef CONFIG_MODULE_DESTRUCTORS
++	mod->dtors = section_objs(info, ".dtors",
++				  sizeof(*mod->dtors), &mod->num_dtors);
++	if (!mod->dtors)
++		mod->dtors = section_objs(info, ".fini_array",
++				sizeof(*mod->dtors), &mod->num_dtors);
++	else if (find_sec(info, ".fini_array")) {
++		/*
++		 * This shouldn't happen with same compiler and binutils
++		 * building all parts of the module.
++		 */
++		pr_warn("%s: has both .dtors and .fini_array.\n",
++		       mod->name);
++		return -EINVAL;
++	}
++#endif
++
+ 	mod->noinstr_text_start = section_objs(info, ".noinstr.text", 1,
+ 						&mod->noinstr_text_size);
+ 
+-- 
+2.29.2
 
 
 _______________________________________________
