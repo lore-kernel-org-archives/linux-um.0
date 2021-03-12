@@ -1,15 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lI9RW-00EwoY-Rn
- for linux-um@lists.infradead.org; Fri, 05 Mar 2021 12:20:33 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v4 9/9] um: virtio/pci: enable suspend/resume
-Date: Fri,  5 Mar 2021 13:19:59 +0100
-Message-Id: <20210305131934.1f617650de08.I2e9caf8b2083e2a8d0c76799179db35d08032aa1@changeid>
-In-Reply-To: <20210305122010.442577-1-johannes@sipsolutions.net>
-References: <20210305122010.442577-1-johannes@sipsolutions.net>
+ id 1lKjWZ-00Bkx0-S9
+ for linux-um@lists.infradead.org; Fri, 12 Mar 2021 15:16:26 +0000
+From: anton.ivanov@cambridgegreys.com
+Subject: [PATCH v7 3/3] um: add a UML specific futex implementation
+Date: Fri, 12 Mar 2021 15:16:09 +0000
+Message-Id: <20210312151609.24745-4-anton.ivanov@cambridgegreys.com>
+In-Reply-To: <20210312151609.24745-1-anton.ivanov@cambridgegreys.com>
+References: <20210312151609.24745-1-anton.ivanov@cambridgegreys.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -24,163 +24,212 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-The UM virtual PCI devices currently cannot be suspended properly
-since the virtio driver already disables VQs well before the PCI
-bus's suspend_noirq wants to complete the transition by writing to
-PCI config space.
+The generic asm futex implementation emulates atomic access to
+memory by doing a get_user followed by put_user. These translate
+to two mapping operations on UML with paging enabled in the
+meantime. This, in turn may end up changing interrupts,
+invoking the signal loop, etc.
 
-After trying around for a long time with moving the devices on the
-DPM list, trying to create dependencies between them, etc. I gave
-up and instead added UML specific cross-driver API that lets the
-virt-pci code enable not suspending/resuming VQs for its devices.
+This replaces the generic implementation by a mapping followed
+by an operation on the mapped segment.
 
-This then allows the PCI bus suspend_noirq to still talk to the
-device, and suspend/resume works properly.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 ---
- arch/um/drivers/virt-pci.c         | 10 ++++++++
- arch/um/drivers/virtio_uml.c       | 40 ++++++++++++++++++++++--------
- arch/um/include/linux/virtio-uml.h | 13 ++++++++++
- 3 files changed, 53 insertions(+), 10 deletions(-)
- create mode 100644 arch/um/include/linux/virtio-uml.h
+ arch/um/include/asm/Kbuild    |   1 -
+ arch/um/include/asm/futex.h   |  14 ++++
+ arch/um/kernel/skas/uaccess.c | 136 ++++++++++++++++++++++++++++++++++
+ 3 files changed, 150 insertions(+), 1 deletion(-)
+ create mode 100644 arch/um/include/asm/futex.h
 
-diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
-index dd85f36197aa..0b802834f40a 100644
---- a/arch/um/drivers/virt-pci.c
-+++ b/arch/um/drivers/virt-pci.c
-@@ -10,6 +10,7 @@
- #include <linux/logic_iomem.h>
- #include <linux/irqdomain.h>
- #include <linux/virtio_pcidev.h>
-+#include <linux/virtio-uml.h>
- #include <linux/delay.h>
- #include <linux/msi.h>
- #include <asm/unaligned.h>
-@@ -134,6 +135,9 @@ static int um_pci_send_cmd(struct um_pci_device *dev,
- 		if (completed == HANDLE_NO_FREE(cmd))
- 			break;
- 
-+		if (completed && !HANDLE_IS_NO_FREE(completed))
-+			kfree(completed);
-+
- 		if (WARN_ONCE(virtqueue_is_broken(dev->cmd_vq) ||
- 			      ++delay_count > UM_VIRT_PCI_MAXDELAY,
- 			      "um virt-pci delay: %d", delay_count)) {
-@@ -550,6 +554,12 @@ static int um_pci_virtio_probe(struct virtio_device *vdev)
- 
- 	device_set_wakeup_enable(&vdev->dev, true);
- 
-+	/*
-+	 * In order to do suspend-resume properly, don't allow VQs
-+	 * to be suspended.
-+	 */
-+	virtio_uml_set_no_vq_suspend(vdev, true);
-+
- 	um_pci_rescan();
- 	return 0;
- error:
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index 91ddf74ca888..4412d6febade 100644
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -56,6 +56,7 @@ struct virtio_uml_device {
- 	u8 status;
- 	u8 registered:1;
- 	u8 suspended:1;
-+	u8 no_vq_suspend:1;
- 
- 	u8 config_changed_irq:1;
- 	uint64_t vq_irq_vq_map;
-@@ -1098,6 +1099,19 @@ static void virtio_uml_release_dev(struct device *d)
- 	kfree(vu_dev);
- }
- 
-+void virtio_uml_set_no_vq_suspend(struct virtio_device *vdev,
-+				  bool no_vq_suspend)
-+{
-+	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
-+
-+	if (WARN_ON(vdev->config != &virtio_uml_config_ops))
-+		return;
-+
-+	vu_dev->no_vq_suspend = no_vq_suspend;
-+	dev_info(&vdev->dev, "%sabled VQ suspend\n",
-+		 no_vq_suspend ? "dis" : "en");
-+}
-+
- /* Platform device */
- 
- static int virtio_uml_probe(struct platform_device *pdev)
-@@ -1302,13 +1316,16 @@ MODULE_DEVICE_TABLE(of, virtio_uml_match);
- static int virtio_uml_suspend(struct platform_device *pdev, pm_message_t state)
- {
- 	struct virtio_uml_device *vu_dev = platform_get_drvdata(pdev);
--	struct virtqueue *vq;
- 
--	virtio_device_for_each_vq((&vu_dev->vdev), vq) {
--		struct virtio_uml_vq_info *info = vq->priv;
-+	if (!vu_dev->no_vq_suspend) {
-+		struct virtqueue *vq;
- 
--		info->suspended = true;
--		vhost_user_set_vring_enable(vu_dev, vq->index, false);
-+		virtio_device_for_each_vq((&vu_dev->vdev), vq) {
-+			struct virtio_uml_vq_info *info = vq->priv;
-+
-+			info->suspended = true;
-+			vhost_user_set_vring_enable(vu_dev, vq->index, false);
-+		}
- 	}
- 
- 	if (!device_may_wakeup(&vu_dev->vdev.dev)) {
-@@ -1322,13 +1339,16 @@ static int virtio_uml_suspend(struct platform_device *pdev, pm_message_t state)
- static int virtio_uml_resume(struct platform_device *pdev)
- {
- 	struct virtio_uml_device *vu_dev = platform_get_drvdata(pdev);
--	struct virtqueue *vq;
- 
--	virtio_device_for_each_vq((&vu_dev->vdev), vq) {
--		struct virtio_uml_vq_info *info = vq->priv;
-+	if (!vu_dev->no_vq_suspend) {
-+		struct virtqueue *vq;
-+
-+		virtio_device_for_each_vq((&vu_dev->vdev), vq) {
-+			struct virtio_uml_vq_info *info = vq->priv;
- 
--		info->suspended = false;
--		vhost_user_set_vring_enable(vu_dev, vq->index, true);
-+			info->suspended = false;
-+			vhost_user_set_vring_enable(vu_dev, vq->index, true);
-+		}
- 	}
- 
- 	vu_dev->suspended = false;
-diff --git a/arch/um/include/linux/virtio-uml.h b/arch/um/include/linux/virtio-uml.h
+diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
+index d7492e5a1bbb..ac87700844b5 100644
+--- a/arch/um/include/asm/Kbuild
++++ b/arch/um/include/asm/Kbuild
+@@ -8,7 +8,6 @@ generic-y += emergency-restart.h
+ generic-y += exec.h
+ generic-y += extable.h
+ generic-y += ftrace.h
+-generic-y += futex.h
+ generic-y += hw_irq.h
+ generic-y += irq_regs.h
+ generic-y += irq_work.h
+diff --git a/arch/um/include/asm/futex.h b/arch/um/include/asm/futex.h
 new file mode 100644
-index 000000000000..2f652fa90f04
+index 000000000000..780aa6bfc050
 --- /dev/null
-+++ b/arch/um/include/linux/virtio-uml.h
-@@ -0,0 +1,13 @@
++++ b/arch/um/include/asm/futex.h
+@@ -0,0 +1,14 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2021 Intel Corporation
-+ * Author: Johannes Berg <johannes@sipsolutions.net>
++#ifndef _ASM_UM_FUTEX_H
++#define _ASM_UM_FUTEX_H
++
++#include <linux/futex.h>
++#include <linux/uaccess.h>
++#include <asm/errno.h>
++
++
++int arch_futex_atomic_op_inuser(int op, u32 oparg, int *oval, u32 __user *uaddr);
++int futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
++			      u32 oldval, u32 newval);
++
++#endif
+diff --git a/arch/um/kernel/skas/uaccess.c b/arch/um/kernel/skas/uaccess.c
+index 2dec915abe6f..6c76df96e858 100644
+--- a/arch/um/kernel/skas/uaccess.c
++++ b/arch/um/kernel/skas/uaccess.c
+@@ -11,6 +11,7 @@
+ #include <asm/current.h>
+ #include <asm/page.h>
+ #include <kern_util.h>
++#include <asm/futex.h>
+ #include <os.h>
+ 
+ pte_t *virt_to_pte(struct mm_struct *mm, unsigned long addr)
+@@ -248,3 +249,138 @@ long __strnlen_user(const void __user *str, long len)
+ 	return 0;
+ }
+ EXPORT_SYMBOL(__strnlen_user);
++
++/**
++ * arch_futex_atomic_op_inuser() - Atomic arithmetic operation with constant
++ *			  argument and comparison of the previous
++ *			  futex value with another constant.
++ *
++ * @encoded_op:	encoded operation to execute
++ * @uaddr:	pointer to user space address
++ *
++ * Return:
++ * 0 - On success
++ * -EFAULT - User access resulted in a page fault
++ * -EAGAIN - Atomic operation was unable to complete due to contention
++ * -ENOSYS - Operation not supported
 + */
 +
-+#ifndef __VIRTIO_UML_H__
-+#define __VIRTIO_UML_H__
++int arch_futex_atomic_op_inuser(int op, u32 oparg, int *oval, u32 __user *uaddr)
++{
++	int oldval, ret;
++	struct page *page;
++	unsigned long addr = (unsigned long) uaddr;
++	pte_t *pte;
 +
-+void virtio_uml_set_no_vq_suspend(struct virtio_device *vdev,
-+				  bool no_vq_suspend);
++	ret = -EFAULT;
++	if (!access_ok(uaddr, sizeof(*uaddr)))
++		return -EFAULT;
++	preempt_disable();
++	pte = maybe_map(addr, 1);
++	if (pte == NULL)
++		goto out_inuser;
 +
-+#endif /* __VIRTIO_UML_H__ */
++	page = pte_page(*pte);
++#ifdef CONFIG_64BIT
++	pagefault_disable();
++	addr = (unsigned long) page_address(page) +
++			(((unsigned long) addr) & ~PAGE_MASK);
++#else
++	addr = (unsigned long) kmap_atomic(page) +
++		((unsigned long) addr & ~PAGE_MASK);
++#endif
++	uaddr = (u32 *) addr;
++	oldval = *uaddr;
++
++	ret = 0;
++
++	switch (op) {
++	case FUTEX_OP_SET:
++		*uaddr = oparg;
++		break;
++	case FUTEX_OP_ADD:
++		*uaddr += oparg;
++		break;
++	case FUTEX_OP_OR:
++		*uaddr |= oparg;
++		break;
++	case FUTEX_OP_ANDN:
++		*uaddr &= ~oparg;
++		break;
++	case FUTEX_OP_XOR:
++		*uaddr ^= oparg;
++		break;
++	default:
++		ret = -ENOSYS;
++	}
++#ifdef CONFIG_64BIT
++	pagefault_enable();
++#else
++	kunmap_atomic((void *)addr);
++#endif
++
++out_inuser:
++	preempt_enable();
++
++	if (ret == 0)
++		*oval = oldval;
++
++	return ret;
++}
++EXPORT_SYMBOL(arch_futex_atomic_op_inuser);
++
++/**
++ * futex_atomic_cmpxchg_inatomic() - Compare and exchange the content of the
++ *				uaddr with newval if the current value is
++ *				oldval.
++ * @uval:	pointer to store content of @uaddr
++ * @uaddr:	pointer to user space address
++ * @oldval:	old value
++ * @newval:	new value to store to @uaddr
++ *
++ * Return:
++ * 0 - On success
++ * -EFAULT - User access resulted in a page fault
++ * -EAGAIN - Atomic operation was unable to complete due to contention
++ * -ENOSYS - Function not implemented (only if !HAVE_FUTEX_CMPXCHG)
++ */
++
++int futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
++			      u32 oldval, u32 newval)
++{
++	struct page *page;
++	pte_t *pte;
++	int ret = -EFAULT;
++
++	if (!access_ok(uaddr, sizeof(*uaddr)))
++		return -EFAULT;
++
++	preempt_disable();
++	pte = maybe_map((unsigned long) uaddr, 1);
++	if (pte == NULL)
++		goto out_inatomic;
++
++	page = pte_page(*pte);
++#ifdef CONFIG_64BIT
++	pagefault_disable();
++	uaddr = page_address(page) + (((unsigned long) uaddr) & ~PAGE_MASK);
++#else
++	uaddr = kmap_atomic(page) + ((unsigned long) uaddr & ~PAGE_MASK);
++#endif
++
++	*uval = *uaddr;
++
++	ret = cmpxchg(uaddr, oldval, newval);
++
++#ifdef CONFIG_64BIT
++	pagefault_enable();
++#else
++	kunmap_atomic(uaddr);
++#endif
++	ret = 0;
++
++out_inatomic:
++	preempt_enable();
++	return ret;
++}
++EXPORT_SYMBOL(futex_atomic_cmpxchg_inatomic);
 -- 
-2.26.2
+2.20.1
 
 
 _______________________________________________
