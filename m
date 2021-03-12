@@ -2,14 +2,14 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lI8n0-00En73-Jc
- for linux-um@lists.infradead.org; Fri, 05 Mar 2021 11:38:43 +0000
+ id 1lKeW5-00B5Tk-RK
+ for linux-um@lists.infradead.org; Fri, 12 Mar 2021 09:55:45 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v3 3/9] um: remove unused smp_sigio_handler() declaration
-Date: Fri,  5 Mar 2021 12:37:51 +0100
-Message-Id: <20210305123552.159de8b94c36.I479aba3ebfb7a6418255b7a51c5c2cfe3796e9a2@changeid>
-In-Reply-To: <20210305113756.331001-1-johannes@sipsolutions.net>
-References: <20210305113756.331001-1-johannes@sipsolutions.net>
+Subject: [PATCH 6/6] um: fix CONFIG_GCOV for modules
+Date: Fri, 12 Mar 2021 10:55:26 +0100
+Message-Id: <20210312104627.54210a33e4c0.I9807ad0ea6ee21a81f86d367f3b61e5f24f8b30b@changeid>
+In-Reply-To: <20210312095526.197739-1-johannes@sipsolutions.net>
+References: <20210312095526.197739-1-johannes@sipsolutions.net>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -23,32 +23,51 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+To: linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
+Cc: Jessica Yu <jeyu@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>
 
 From: Johannes Berg <johannes.berg@intel.com>
 
-This function doesn't exist, remove its declaration.
+At least with current toolchain versions, gcov (as enabled
+by CONFIG_GCOV) requires init and exit handlers to run. For
+modules, this wasn't done properly, so use the new support
+for CONFIG_MODULE_DESTRUCTORS as well as CONFIG_CONSTRUCTORS
+to have gcov init and exit called appropriately.
 
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- arch/um/include/shared/kern_util.h | 1 -
- 1 file changed, 1 deletion(-)
+ arch/um/Kconfig.debug    | 2 ++
+ arch/um/kernel/process.c | 2 ++
+ 2 files changed, 4 insertions(+)
 
-diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
-index 2888ec812f6e..a2cfd42608a0 100644
---- a/arch/um/include/shared/kern_util.h
-+++ b/arch/um/include/shared/kern_util.h
-@@ -33,7 +33,6 @@ extern int handle_page_fault(unsigned long address, unsigned long ip,
- 			     int is_write, int is_user, int *code_out);
+diff --git a/arch/um/Kconfig.debug b/arch/um/Kconfig.debug
+index ca040b4e86e5..74b27b11cb44 100644
+--- a/arch/um/Kconfig.debug
++++ b/arch/um/Kconfig.debug
+@@ -17,6 +17,8 @@ config GCOV_BASE
+ 	bool "Enable gcov support (selectively)"
+ 	depends on DEBUG_INFO
+ 	depends on !KCOV && !GCOV_KERNEL
++	select CONSTRUCTORS
++	select WANT_MODULE_DESTRUCTORS
+ 	help
+ 	  This option allows developers to retrieve coverage data from a UML
+ 	  session, stored to disk just like with a regular userspace binary,
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index c5011064b5dd..33f895a95ff8 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -240,6 +240,8 @@ void do_uml_exitcalls(void)
+ 	call = &__uml_exitcall_end;
+ 	while (--call >= &__uml_exitcall_begin)
+ 		(*call)();
++
++	run_all_module_destructors();
+ }
  
- extern unsigned int do_IRQ(int irq, struct uml_pt_regs *regs);
--extern int smp_sigio_handler(void);
- extern void initial_thread_cb(void (*proc)(void *), void *arg);
- extern int is_syscall(unsigned long addr);
- 
+ char *uml_strdup(const char *string)
 -- 
-2.26.2
+2.29.2
 
 
 _______________________________________________
