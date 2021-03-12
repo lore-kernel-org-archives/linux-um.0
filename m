@@ -2,14 +2,12 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lKiqh-00Bf68-Op
- for linux-um@lists.infradead.org; Fri, 12 Mar 2021 14:33:09 +0000
-Message-ID: <d36ea54d8c0a8dd706826ba844a6f27691f45d55.camel@sipsolutions.net>
-Subject: Re: [PATCH 0/6] um: fix up CONFIG_GCOV support
+ id 1lKeW5-00B5TT-RJ
+ for linux-um@lists.infradead.org; Fri, 12 Mar 2021 09:55:41 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Fri, 12 Mar 2021 15:33:01 +0100
-In-Reply-To: <20210312095526.197739-1-johannes@sipsolutions.net>
-References: <20210312095526.197739-1-johannes@sipsolutions.net>
+Subject: [PATCH 0/6] um: fix up CONFIG_GCOV support
+Date: Fri, 12 Mar 2021 10:55:20 +0100
+Message-Id: <20210312095526.197739-1-johannes@sipsolutions.net>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -19,68 +17,62 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
 Cc: Jessica Yu <jeyu@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org
 
-T24gRnJpLCAyMDIxLTAzLTEyIGF0IDEwOjU1ICswMTAwLCBKb2hhbm5lcyBCZXJnIHdyb3RlOgo+
-IENPTkZJR19HQ09WIGlzIGZhaXJseSB1c2VmdWwgZm9yIEFSQ0g9dW0gKGUuZy4gd2l0aCBrdW5p
-dCwgdGhvdWdoCj4gbXkgbWFpbiB1c2UgY2FzZSBpcyBhIGJpdCBkaWZmZXJlbnQpIHNpbmNlIGl0
-IHdyaXRlcyBjb3ZlcmFnZSBkYXRhCj4gZGlyZWN0bHkgb3V0IGxpa2UgYSBub3JtYWwgdXNlcnNw
-YWNlIGJpbmFyeS4gVGhlb3JldGljYWxseSwgdGhhdAo+IGlzLgo+IAo+IFVuZm9ydHVuYXRlbHks
-IGl0J3MgYnJva2VuIGluIG11bHRpcGxlIHdheXMgdG9kYXk6Cj4gCj4gwqAxKSBpdCBkb2Vzbid0
-IGxpa2UsIGR1ZSB0byAnbWFuZ2xlX3BhdGgnIGluIHNlcV9maWxlLCBhbmQgdGhlIG9ubHkKPiDC
-oMKgwqDCoHNvbHV0aW9uIHRvIHRoYXQgc2VlbXMgdG8gYmUgdG8gcmVuYW1lIG91ciBzeW1ib2ws
-IGJ1dCB0aGF0J3MKPiDCoMKgwqDCoG5vdCBzbyBiYWQsIGFuZCAibWFuZ2xlX3BhdGgiIHNvdW5k
-cyB2ZXJ5IGdlbmVyaWMgYW55d2F5LCB3aGljaAo+IMKgwqDCoMKgaXQgaXNuJ3QgcXVpdGUKPiAK
-PiDCoDIpIGdjb3YgcmVxdWlyZXMgZXhpdCBoYW5kbGVycyB0byB3cml0ZSBvdXQgdGhlIGRhdGEs
-IGFuZCB0aG9zZSBhcmUKPiDCoMKgwqDCoG5ldmVyIGNhbGxlZCBmb3IgbW9kdWxlcywgY29uZmln
-IENPTlNUUlVDVE9SUyBleGlzdHMgZm9yIGluaXQKPiDCoMKgwqDCoGhhbmRsZXJzLCBzbyBhZGQg
-Q09ORklHX01PRFVMRV9ERVNUUlVDVE9SUyBoZXJlIHRoYXQgd2UgY2FuIHRoZW4KPiDCoMKgwqDC
-oHNlbGVjdCBpbiBBUkNIPXVtCgpZZWFoLCBJIHdpc2guCgpOb25lIG9mIHRoaXMgY2FuIHJlYWxs
-eSB3b3JrLiBUaGluZyBpcywgX19nY292X2luaXQoKSwgY2FsbGVkIGZyb20gdGhlCmNvbnN0cnVj
-dG9ycywgd2lsbCBhZGQgdGhlIGxvY2FsIGRhdGEgc3RydWN0dXJlIGZvciB0aGUgb2JqZWN0IGZp
-bGUgaW50bwp0aGUgZ2xvYmFsIGxpc3QgKF9fZ2Nvdl9yb290KS4gU28gZmFyLCBzbyBnb29kLgoK
-SG93ZXZlciwgX19nY292X2V4aXQoKSwgd2hpY2ggaXMgY2FsbGVkIGZyb20gdGhlIGRlc3RydWN0
-b3JzIChmaW5pX2FycmF5CndoaWNoIEkgYWRkZWQgc3VwcG9ydCBmb3IgaGVyZSkgbmV2ZXIgZ2V0
-cyBwYXNzZWQgdGhlIGxvY2FsIGRhdGEKc3RydWN0dXJlIHBvaW50ZXIuIEl0IGR1bXBzIF9fZ2Nv
-dl9yb290LCBhbmQgdGhhdCdzIGl0LgoKVGhhdCBiYXNpY2FsbHkgbWVhbnMgZWFjaCBleGVjdXRh
-YmxlL3NoYXJlZCBvYmplY3Qgc2hvdWxkIGhhdmUgaXRzIG93bgppbnN0YW5jZSBvZiBfX2djb3Zf
-cm9vdCBhbmQgdGhlIGZ1bmN0aW9ucy4gQnV0IHRoZSBjb2RlIGluIFVNTCB3YXMgc2V0CnVwIHRv
-IGV4cG9ydCBfX2djb3ZfZXhpdCgpLCB3aGljaCBvYnZpb3VzbHkgdGhlbiBkdW1wcyB0aGUga2Vy
-bmVsJ3MgZ2NvdgpkYXRhLgoKU28gdG8gbWFrZSB0aGlzIHJlYWxseSB3b3JrIHdlIHNob3VsZCB0
-cmVhdCBtb2R1bGVzIGxpa2Ugc2hhcmVkIG9iamVjdHMsCmFuZCBsaW5rIGxpYmdjb3YuYSBpbnRv
-IGVhY2ggb25lIG9mIHRoZW0uIFRoYXQgbWlnaHQgZXZlbiB3b3JrLCBidXQgd2UKZ2V0CgpFUlJP
-UjogbW9kcG9zdDogImZyZWUiIFttb2R1bGUua29dIHVuZGVmaW5lZCEKRVJST1I6IG1vZHBvc3Q6
-ICJ2ZnByaW50ZiIgW21vZHVsZS5rb10gdW5kZWZpbmVkIQpFUlJPUjogbW9kcG9zdDogImZjbnRs
-IiBbbW9kdWxlLmtvXSB1bmRlZmluZWQhCkVSUk9SOiBtb2Rwb3N0OiAic2V0YnVmIiBbbW9kdWxl
-LmtvXSB1bmRlZmluZWQhCkVSUk9SOiBtb2Rwb3N0OiAiZXhpdCIgW21vZHVsZS5rb10gdW5kZWZp
-bmVkIQpFUlJPUjogbW9kcG9zdDogImZ3cml0ZSIgW21vZHVsZS5rb10gdW5kZWZpbmVkIQpFUlJP
-UjogbW9kcG9zdDogInN0ZGVyciIgW21vZHVsZS5rb10gdW5kZWZpbmVkIQpFUlJPUjogbW9kcG9z
-dDogImZjbG9zZSIgW21vZHVsZS5rb10gdW5kZWZpbmVkIQpFUlJPUjogbW9kcG9zdDogImZ0ZWxs
-IiBbbW9kdWxlLmtvXSB1bmRlZmluZWQhCkVSUk9SOiBtb2Rwb3N0OiAiZm9wZW4iIFttb2R1bGUu
-a29dIHVuZGVmaW5lZCEKRVJST1I6IG1vZHBvc3Q6ICJmcmVhZCIgW21vZHVsZS5rb10gdW5kZWZp
-bmVkIQpFUlJPUjogbW9kcG9zdDogImZkb3BlbiIgW21vZHVsZS5rb10gdW5kZWZpbmVkIQpFUlJP
-UjogbW9kcG9zdDogImZzZWVrIiBbbW9kdWxlLmtvXSB1bmRlZmluZWQhCkVSUk9SOiBtb2Rwb3N0
-OiAiZnByaW50ZiIgW21vZHVsZS5rb10gdW5kZWZpbmVkIQpFUlJPUjogbW9kcG9zdDogInN0cnRv
-bCIgW21vZHVsZS5rb10gdW5kZWZpbmVkIQpFUlJPUjogbW9kcG9zdDogIm1hbGxvYyIgW21vZHVs
-ZS5rb10gdW5kZWZpbmVkIQpFUlJPUjogbW9kcG9zdDogImdldHBpZCIgW21vZHVsZS5rb10gdW5k
-ZWZpbmVkIQpFUlJPUjogbW9kcG9zdDogImdldGVudiIgW21vZHVsZS5rb10gdW5kZWZpbmVkIQoK
-V2UgY291bGQgb2YgY291cnNlIGV4cG9ydCB0aG9zZSwgYnV0IHRoYXQgbWFrZXMgbWUgbmVydm91
-cywgZS5nLgpwcmludGYoKSBpcyBrbm93biB0byB1c2UgYSBMT1Qgb2Ygc3RhY2ssIGZhciBtb3Jl
-IHRoYW4gd2UgaGF2ZSBpbiB0aGUKa2VybmVsLgoKQWxzbywgd2Ugc2VlOgoKV0FSTklORzogbW9k
-cG9zdDogIl9fZ2Nvdl92YXIiIFttb2R1bGVdIGlzIENPTU1PTiBzeW1ib2wKV0FSTklORzogbW9k
-cG9zdDogIl9fZ2Nvdl9yb290IiBbbW9kdWxlXSBpcyBDT01NT04gc3ltYm9sCgp3aGljaCBtZWFu
-cyB0aGUgbW9kdWxlIGNhbm5vdCBiZSBsb2FkZWQuCgpJIHRoaW5rIEknbGwganVzdCBtYWtlIENP
-TkZJR19HQ09WIGRlcGVuZCBvbiAhTU9EVUxFIGluc3RlYWQsIGFuZCBmb3IgbXkKdXNlIGNhc2Ug
-dXNlIENPTkZJR19HQ09WX0tFUk5FTC4KCk9yIG1heWJlIGp1c3Qga2lsbCBDT05GSUdfR0NPViBl
-bnRpcmVseSwgc2luY2Ugb2J2aW91c2x5IG5vYm9keSBoYXMgZXZlcgp0cmllZCB0byB1c2UgaXQg
-d2l0aCBtb2R1bGVzIG9yIHdpdGggcmVjZW50IHRvb2xjaGFpbnMgKGdjYyA5IG9yIG5ld2VyLAp0
-aGUgbWFuZ2xlX3BhdGggY29uZmxpY3QpLgoKam9oYW5uZXMKCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgt
-dW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2xpbnV4LXVtCg==
+CONFIG_GCOV is fairly useful for ARCH=um (e.g. with kunit, though
+my main use case is a bit different) since it writes coverage data
+directly out like a normal userspace binary. Theoretically, that
+is.
+
+Unfortunately, it's broken in multiple ways today:
+
+ 1) it doesn't like, due to 'mangle_path' in seq_file, and the only
+    solution to that seems to be to rename our symbol, but that's
+    not so bad, and "mangle_path" sounds very generic anyway, which
+    it isn't quite
+
+ 2) gcov requires exit handlers to write out the data, and those are
+    never called for modules, config CONSTRUCTORS exists for init
+    handlers, so add CONFIG_MODULE_DESTRUCTORS here that we can then
+    select in ARCH=um
+
+ 3) As mentioned above, gcov requires init/exit handlers, but they
+    aren't linked into binary properly, that's easy to fix.
+
+ 4) gcda files are then written, so .gitignore them
+
+ 5) it's not always useful to create coverage data for the *entire*
+    kernel, so I've split off CONFIG_GCOV_BASE from CONFIG_GCOV to
+    allow option in only in some places, which of course requires
+    adding the necessary "subdir-cflags" or "CFLAGS_obj" changes in
+    the places where it's desired, as local patches.
+
+
+None of these changes (hopefully) seem too controversional, biggest
+are the module changes but obviously they compile to nothing if the
+architecture doesn't WANT_MODULE_DESTRUCTORS.
+
+Any thoughts on how to merge this? The seq_file/.gitignore changes
+are independent at least code-wise, though of course it only works
+with the seq_file changes (.gitignore doesn't matter, of course),
+while the module changes are a requirement for the later ARCH=um
+patches since the Kconfig symbol has to exist.
+
+Perhaps I can just get ACKs on all the patches and then they can go
+through the UML tree?
+
+Thanks,
+johannes
+
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
