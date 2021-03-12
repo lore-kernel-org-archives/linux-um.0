@@ -1,21 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x42e.google.com ([2607:f8b0:4864:20::42e])
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1lH124-0008SH-Up
- for linux-um@lists.infradead.org; Tue, 02 Mar 2021 09:09:33 +0000
-Received: by mail-pf1-x42e.google.com with SMTP id w18so13415286pfu.9
- for <linux-um@lists.infradead.org>; Tue, 02 Mar 2021 01:09:30 -0800 (PST)
-Message-ID: <1bdedf3c60058e1ae242a2a7f16eee256b0be3e0.camel@debian.org>
-Subject: Re: linux uml segfault
-From: Ritesh Raj Sarraf <rrs@debian.org>
-Date: Tue, 02 Mar 2021 14:39:22 +0530
-In-Reply-To: <573e256a-990b-ddf6-7965-367bb8b21229@kot-begemot.co.uk>
-References: <3448a70e7a39b9c3202aeefa7858ace265b8a978.camel@debian.org>
- <6d37b5aa-36f2-1fce-b70b-8faa0ff882e0@kot-begemot.co.uk>
- <c8bb257c-1542-12f5-89f1-5c1f14b8a70a@collabora.com>
- <db40449e-6916-56bf-377c-01b042b9c890@kot-begemot.co.uk>
- <529cd4e2f39efffb18125dffab3058aeec3351ce.camel@debian.org>
- <573e256a-990b-ddf6-7965-367bb8b21229@kot-begemot.co.uk>
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
+ by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
+ id 1lKjWX-00BkwX-Vm
+ for linux-um@lists.infradead.org; Fri, 12 Mar 2021 15:16:23 +0000
+From: anton.ivanov@cambridgegreys.com
+Subject: [PATCH v7 2/3] um: enable the use of optimized xor routines in UML
+Date: Fri, 12 Mar 2021 15:16:08 +0000
+Message-Id: <20210312151609.24745-3-anton.ivanov@cambridgegreys.com>
+In-Reply-To: <20210312151609.24745-1-anton.ivanov@cambridgegreys.com>
+References: <20210312151609.24745-1-anton.ivanov@cambridgegreys.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -25,75 +19,86 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Reply-To: rrs@debian.org
-Content-Type: multipart/mixed; boundary="===============2615394976070681269=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, Christopher Obbard <chris.obbard@collabora.com>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>
-Cc: 983379@bugs.debian.org
+To: linux-um@lists.infradead.org
+Cc: richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
---===============2615394976070681269==
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="=-sQ+YYcfd5YMW7CEe8w0S"
+This patch enables the use of optimized xor routines from the x86
+tree as well as the necessary fpu api shims so they can work on
+UML.
 
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+---
+ arch/um/include/asm/fpu/api.h | 20 ++++++++++++++++++++
+ arch/um/include/asm/xor.h     | 17 ++++++++++++++++-
+ 2 files changed, 36 insertions(+), 1 deletion(-)
+ create mode 100644 arch/um/include/asm/fpu/api.h
 
---=-sQ+YYcfd5YMW7CEe8w0S
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+diff --git a/arch/um/include/asm/fpu/api.h b/arch/um/include/asm/fpu/api.h
+new file mode 100644
+index 000000000000..71bfd9ef3938
+--- /dev/null
++++ b/arch/um/include/asm/fpu/api.h
+@@ -0,0 +1,20 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++#ifndef _ASM_UM_FPU_API_H
++#define _ASM_UM_FPU_API_H
++
++/* Copyright (c) 2020 Cambridge Greys Ltd
++ * Copyright (c) 2020 Red Hat Inc.
++ * A set of "dummy" defines to allow the direct inclusion
++ * of x86 optimized copy, xor, etc routines into the
++ * UML code tree. */
++
++#define kernel_fpu_begin() (void)0
++#define kernel_fpu_end() (void)0
++
++static inline bool irq_fpu_usable(void)
++{
++	return true;
++}
++
++
++#endif
+diff --git a/arch/um/include/asm/xor.h b/arch/um/include/asm/xor.h
+index 36b33d62a35d..f512704a9ec7 100644
+--- a/arch/um/include/asm/xor.h
++++ b/arch/um/include/asm/xor.h
+@@ -1,7 +1,22 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+-#include <asm-generic/xor.h>
++#ifndef _ASM_UM_XOR_H
++#define _ASM_UM_XOR_H
++
++#ifdef CONFIG_64BIT
++#undef CONFIG_X86_32
++#else
++#define CONFIG_X86_32 1
++#endif
++
++#include <asm/cpufeature.h>
++#include <../../x86/include/asm/xor.h>
+ #include <linux/time-internal.h>
+ 
++#ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
++#undef XOR_SELECT_TEMPLATE
+ /* pick an arbitrary one - measuring isn't possible with inf-cpu */
+ #define XOR_SELECT_TEMPLATE(x)	\
+ 	(time_travel_mode == TT_MODE_INFCPU ? &xor_block_8regs : NULL)
++#endif
++
++#endif
+-- 
+2.20.1
 
-On Wed, 2021-02-24 at 11:44 +0000, Anton Ivanov wrote:
-> In all cases it boots cleanly and there are no segfaults.
->=20
-> So, frankly, no idea what is causing it to crash - I have run most
-> combinations of 5.10 on a 5.10, all work fine here.
-
-Is there any other way I can help you with this issue ?
-I do have the core dump available on my local machine.
-
-
---=20
-Ritesh Raj Sarraf | http://people.debian.org/~rrs
-Debian - The Universal Operating System
-
---=-sQ+YYcfd5YMW7CEe8w0S
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEQCVDstmIVAB/Yn02pjpYo/LhdWkFAmA+AMIACgkQpjpYo/Lh
-dWkgoQ/8Drbr5D8q4wRiI2ksHztbvTzNoIxxKhW2nG+ydzZGuebGVCdp9iyxOH5e
-VJSp3gLNLgJqaBY552nTuqoGUSvMhXyW40vC/2qqAW7WV/1b8q9Knyv/G3n2dTCB
-xK0X0X2hJ1lvw/IK/D5T0phKiY4cBr54xt+lYKSr0jK218NOrZu6E2KzY0ZVGsMc
-gE9RnEmhn1jJ3tVJq8riy7ygGoT4Ie0zflgPjjMcE9KqUZ2anVoYNIryjlW9msxc
-g6b05AD353A9EV+dV0RHNomvvY2uEqzxTD09fWf9L3rbAp34E+BpR4OWhlOf4++B
-XTy4IWf8NYkROB1Hb6KufKlCik8b+kkV0t5sbjYSHat3BjCzoTzOy/CzLzqrxcqJ
-OUSfIRg0FHIWswNKhHcmpztGVDCvwiZgbJDqJItUP5gShvbz4vVb6fT617fL4JrY
-/kLulVa6WKcl6J6umqUhCg6nE9Mj+zP7t95+lTYKp/vE61b1qEAYGrDiwqDgKH7y
-YjC2Dbyn3QfoAOpOY5VDyRwKJwli5qsJ92sbPW30q8xyPnopc/ANl85w5LfjS+sI
-/rETLFykzOdHJkzEbFnusrdIfsFn6iRkccVnHmgB6p87AAeTkQ9cpbJRblbnbSuS
-ecq+kPktRvpg83UkjBjaAwZu3gMS8DSzyTszvocHY7XlPs1x9AQ=
-=Jfk0
------END PGP SIGNATURE-----
-
---=-sQ+YYcfd5YMW7CEe8w0S--
-
-
-
---===============2615394976070681269==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 linux-um mailing list
 linux-um@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-um
-
---===============2615394976070681269==--
-
-
 
