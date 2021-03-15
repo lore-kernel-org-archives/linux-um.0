@@ -2,14 +2,12 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lHTqx-005UJI-AJ
- for linux-um@lists.infradead.org; Wed, 03 Mar 2021 15:56:07 +0000
-From: Benjamin Berg <benjamin@sipsolutions.net>
-Subject: [PATCH 07/27] um: Do not use printk in SIGWINCH helper thread
-Date: Wed,  3 Mar 2021 16:55:03 +0100
-Message-Id: <20210303155523.124277-8-benjamin@sipsolutions.net>
-In-Reply-To: <20210303155523.124277-1-benjamin@sipsolutions.net>
-References: <20210303155523.124277-1-benjamin@sipsolutions.net>
+ id 1lLvzs-00H3Bn-E0
+ for linux-um@lists.infradead.org; Mon, 15 Mar 2021 22:47:39 +0000
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [PATCH] um: disable CONFIG_GCOV with MODULES
+Date: Mon, 15 Mar 2021 23:47:31 +0100
+Message-Id: <20210315234731.2e03184a344b.I04f1816296f04c5aa7d7d88b33bd4a14dd458da8@changeid>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -24,91 +22,74 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: Benjamin Berg <benjamin@sipsolutions.net>
+Cc: Johannes Berg <johannes.berg@intel.com>
 
-The thread is running outside of the UML kernel scope and is a helper.
-As such, printk cannot work and os_info must be used instead.
+From: Johannes Berg <johannes.berg@intel.com>
 
-Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
+CONFIG_GCOV doesn't work with modules, and for various reasons
+it cannot work, see also
+https://lore.kernel.org/r/d36ea54d8c0a8dd706826ba844a6f27691f45d55.camel@sipsolutions.net
+
+Make CONFIG_GCOV depend on !MODULES to avoid anyone
+running into issues there. This also means we need
+not export the gcov symbols.
+
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- arch/um/drivers/chan_user.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+ arch/um/Kconfig.debug      |  1 +
+ arch/um/kernel/Makefile    |  1 -
+ arch/um/kernel/gmon_syms.c | 16 ----------------
+ 3 files changed, 1 insertion(+), 17 deletions(-)
+ delete mode 100644 arch/um/kernel/gmon_syms.c
 
-diff --git a/arch/um/drivers/chan_user.c b/arch/um/drivers/chan_user.c
-index d8845d4aac6a..9d87c9998741 100644
---- a/arch/um/drivers/chan_user.c
-+++ b/arch/um/drivers/chan_user.c
-@@ -153,8 +153,8 @@ static int winch_thread(void *arg)
- 	pipe_fd = data->pipe_fd;
- 	count = write(pipe_fd, &c, sizeof(c));
- 	if (count != sizeof(c))
--		printk(UM_KERN_ERR "winch_thread : failed to write "
--		       "synchronization byte, err = %d\n", -count);
-+		os_info("winch_thread : failed to write synchronization byte, err = %d\n",
-+			-count);
+diff --git a/arch/um/Kconfig.debug b/arch/um/Kconfig.debug
+index 315d368e63ad..1dfb2959c73b 100644
+--- a/arch/um/Kconfig.debug
++++ b/arch/um/Kconfig.debug
+@@ -17,6 +17,7 @@ config GCOV
+ 	bool "Enable gcov support"
+ 	depends on DEBUG_INFO
+ 	depends on !KCOV
++	depends on !MODULES
+ 	help
+ 	  This option allows developers to retrieve coverage data from a UML
+ 	  session.
+diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
+index c1205f9ec17e..2fdd00de5a72 100644
+--- a/arch/um/kernel/Makefile
++++ b/arch/um/kernel/Makefile
+@@ -21,7 +21,6 @@ obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
  
- 	/*
- 	 * We are not using SIG_IGN on purpose, so don't fix it as I thought to
-@@ -166,28 +166,28 @@ static int winch_thread(void *arg)
- 	sigfillset(&sigs);
- 	/* Block all signals possible. */
- 	if (sigprocmask(SIG_SETMASK, &sigs, NULL) < 0) {
--		printk(UM_KERN_ERR "winch_thread : sigprocmask failed, "
--		       "errno = %d\n", errno);
-+		os_info("winch_thread : sigprocmask failed, errno = %d\n",
-+			errno);
- 		exit(1);
- 	}
- 	/* In sigsuspend(), block anything else than SIGWINCH. */
- 	sigdelset(&sigs, SIGWINCH);
- 
- 	if (setsid() < 0) {
--		printk(UM_KERN_ERR "winch_thread : setsid failed, errno = %d\n",
-+		os_info("winch_thread : setsid failed, errno = %d\n",
- 		       errno);
- 		exit(1);
- 	}
- 
- 	if (ioctl(pty_fd, TIOCSCTTY, 0) < 0) {
--		printk(UM_KERN_ERR "winch_thread : TIOCSCTTY failed on "
--		       "fd %d err = %d\n", pty_fd, errno);
-+		os_info("winch_thread : TIOCSCTTY failed on "
-+			"fd %d err = %d\n", pty_fd, errno);
- 		exit(1);
- 	}
- 
- 	if (tcsetpgrp(pty_fd, os_getpid()) < 0) {
--		printk(UM_KERN_ERR "winch_thread : tcsetpgrp failed on "
--		       "fd %d err = %d\n", pty_fd, errno);
-+		os_info("winch_thread : tcsetpgrp failed on fd %d err = %d\n",
-+			pty_fd, errno);
- 		exit(1);
- 	}
- 
-@@ -199,8 +199,8 @@ static int winch_thread(void *arg)
- 	 */
- 	count = read(pipe_fd, &c, sizeof(c));
- 	if (count != sizeof(c))
--		printk(UM_KERN_ERR "winch_thread : failed to read "
--		       "synchronization byte, err = %d\n", errno);
-+		os_info("winch_thread : failed to read synchronization byte, err = %d\n",
-+			errno);
- 
- 	while(1) {
- 		/*
-@@ -211,8 +211,8 @@ static int winch_thread(void *arg)
- 
- 		count = write(pipe_fd, &c, sizeof(c));
- 		if (count != sizeof(c))
--			printk(UM_KERN_ERR "winch_thread : write failed, "
--			       "err = %d\n", errno);
-+			os_info("winch_thread : write failed, err = %d\n",
-+				errno);
- 	}
- }
- 
+ obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
+ obj-$(CONFIG_GPROF)	+= gprof_syms.o
+-obj-$(CONFIG_GCOV)	+= gmon_syms.o
+ obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
+ obj-$(CONFIG_STACKTRACE) += stacktrace.o
+ obj-$(CONFIG_GENERIC_PCI_IOMAP) += ioport.o
+diff --git a/arch/um/kernel/gmon_syms.c b/arch/um/kernel/gmon_syms.c
+deleted file mode 100644
+index 9361a8eb9bf1..000000000000
+--- a/arch/um/kernel/gmon_syms.c
++++ /dev/null
+@@ -1,16 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*
+- * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+- */
+-
+-#include <linux/module.h>
+-
+-extern void __bb_init_func(void *)  __attribute__((weak));
+-EXPORT_SYMBOL(__bb_init_func);
+-
+-extern void __gcov_init(void *)  __attribute__((weak));
+-EXPORT_SYMBOL(__gcov_init);
+-extern void __gcov_merge_add(void *, unsigned int)  __attribute__((weak));
+-EXPORT_SYMBOL(__gcov_merge_add);
+-extern void __gcov_exit(void)  __attribute__((weak));
+-EXPORT_SYMBOL(__gcov_exit);
 -- 
-2.29.2
+2.30.2
 
 
 _______________________________________________
