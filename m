@@ -2,15 +2,18 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lI8n1-00En7G-Eg
- for linux-um@lists.infradead.org; Fri, 05 Mar 2021 11:38:53 +0000
+ id 1lMHMU-001uup-5l
+ for linux-um@lists.infradead.org; Tue, 16 Mar 2021 21:36:23 +0000
+Message-ID: <83c63df46b2a3d710a5ad48478ae12cefba44433.camel@sipsolutions.net>
+Subject: Re: [RFC v8 13/20] um: lkl: integrate with irq infrastructure of UML
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v3 7/9] um: irqs: allow invoking time-travel handler multiple
- times
-Date: Fri,  5 Mar 2021 12:37:55 +0100
-Message-Id: <20210305123552.1d565a356c90.I0344b4c8a7e79d8ac1645acad97371f202837777@changeid>
-In-Reply-To: <20210305113756.331001-1-johannes@sipsolutions.net>
-References: <20210305113756.331001-1-johannes@sipsolutions.net>
+Date: Tue, 16 Mar 2021 22:36:19 +0100
+In-Reply-To: <m21rcfc2sy.wl-thehajime@gmail.com>
+ (sfid-20210316_022016_788128_95241D90)
+References: <cover.1611103406.git.thehajime@gmail.com>
+ <46935454bf02224fb325f0e74d60d0ed674a59f9.1611103406.git.thehajime@gmail.com>
+ <5e1f64997ffca8267bde7955fe2eb214dfb9e891.camel@sipsolutions.net>
+ <m21rcfc2sy.wl-thehajime@gmail.com> (sfid-20210316_022016_788128_95241D90)
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -24,46 +27,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+To: Hajime Tazaki <thehajime@gmail.com>
+Cc: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, retrage01@gmail.com
 
-From: Johannes Berg <johannes.berg@intel.com>
+On Tue, 2021-03-16 at 10:20 +0900, Hajime Tazaki wrote:
+> 
+> > > -	if (sigprocmask(SIG_UNBLOCK, &sig_mask, NULL) < 0)
+> > > -		panic("sigprocmask failed - errno = %d\n", errno);
+> > > +	if (pthread_sigmask(SIG_UNBLOCK, &sig_mask, NULL) < 0)
+> > > +		panic("pthread_sigmask failed - errno = %d\n", errno);
+> > 
+> > UML doesn't normally link with libpthread, and LKL doesn't actually
+> > appear to require it either (since it has its lkl_thread and all), so
+> > this seems wrong?
+> 
+> I think both UML/LKL link with libpthread.  See old
+> scripts/link-vmlinux.sh, or [01/20] patch.
+> 
+> -		${CC} ${CFLAGS_vmlinux}				\
+> -			${strip_debug}				\
+> -			-o ${output}				\
+> -			-Wl,-T,${lds}				\
+> -			${objects}				\
+> -			-lutil -lrt -lpthread
+> -		rm -f linux
 
-If we happen to get multiple messages while IRQS are already
-suspended, we still need to handle them, since otherwise the
-simulation blocks.
+Interesting. You're right, I really didn't expect that, nor did I ever
+see that before.
 
-Remove the "prevent nesting" part, time_travel_add_irq_event()
-will deal with being called multiple times just fine.
+How does this interact with all the clone() calls etc. that UML does?
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- arch/um/kernel/irq.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-index 1c448ea4729e..f3f19da7b876 100644
---- a/arch/um/kernel/irq.c
-+++ b/arch/um/kernel/irq.c
-@@ -101,10 +101,12 @@ static bool irq_do_timetravel_handler(struct irq_entry *entry,
- 	if (!reg->timetravel_handler)
- 		return false;
- 
--	/* prevent nesting - we'll get it again later when we SIGIO ourselves */
--	if (reg->pending_on_resume)
--		return true;
--
-+	/*
-+	 * Handle all messages - we might get multiple even while
-+	 * interrupts are already suspended, due to suspend order
-+	 * etc. Note that time_travel_add_irq_event() will not add
-+	 * an event twice, if it's pending already "first wins".
-+	 */
- 	reg->timetravel_handler(reg->irq, entry->fd, reg->id, &reg->event);
- 
- 	if (!reg->event.pending)
--- 
-2.26.2
+johannes
 
 
 _______________________________________________
