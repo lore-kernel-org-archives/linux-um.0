@@ -1,15 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lM6U6-000LDs-00
- for linux-um@lists.infradead.org; Tue, 16 Mar 2021 09:59:31 +0000
-Message-ID: <8d38e204acf8fbd1de42890ff8a351cbe689c1d3.camel@sipsolutions.net>
-Subject: Re: [PATCH] um: implement arch_sync_kernel_mappings
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Tue, 16 Mar 2021 10:59:27 +0100
-In-Reply-To: <20210316095841.5837-1-anton.ivanov@cambridgegreys.com>
-References: <20210316095841.5837-1-anton.ivanov@cambridgegreys.com>
+ id 1lM6TQ-000L5G-W7
+ for linux-um@lists.infradead.org; Tue, 16 Mar 2021 09:58:50 +0000
+From: anton.ivanov@cambridgegreys.com
+Subject: [PATCH] um: implement arch_sync_kernel_mappings
+Date: Tue, 16 Mar 2021 09:58:41 +0000
+Message-Id: <20210316095841.5837-1-anton.ivanov@cambridgegreys.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -23,21 +21,49 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: anton.ivanov@cambridgegreys.com, linux-um@lists.infradead.org
+To: linux-um@lists.infradead.org
+Cc: johannes@sipsolutions.net, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-On Tue, 2021-03-16 at 09:58 +0000, anton.ivanov@cambridgegreys.com
-wrote:
-> From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-> 
-> This improves the tlb flushing behavior by syncing modified
-> ranges out of map_kernel_range_noflush in a way which is
-> similar to x86.
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-So I take it this replaces my patch?
+This improves the tlb flushing behavior by syncing modified
+ranges out of map_kernel_range_noflush in a way which is
+similar to x86.
 
-Want me to test it (without the kvmalloc)?
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+---
+ arch/um/include/asm/page.h | 2 ++
+ arch/um/kernel/tlb.c       | 5 +++++
+ 2 files changed, 7 insertions(+)
 
-johannes
+diff --git a/arch/um/include/asm/page.h b/arch/um/include/asm/page.h
+index 95af12e82a32..f4c66689f039 100644
+--- a/arch/um/include/asm/page.h
++++ b/arch/um/include/asm/page.h
+@@ -9,6 +9,8 @@
+ 
+ #include <linux/const.h>
+ 
++#define ARCH_PAGE_TABLE_SYNC_MASK PGTBL_PMD_MODIFIED
++
+ /* PAGE_SHIFT determines the page size */
+ #define PAGE_SHIFT	12
+ #define PAGE_SIZE	(_AC(1, UL) << PAGE_SHIFT)
+diff --git a/arch/um/kernel/tlb.c b/arch/um/kernel/tlb.c
+index bc38f79ca3a3..b27c4457cc72 100644
+--- a/arch/um/kernel/tlb.c
++++ b/arch/um/kernel/tlb.c
+@@ -602,3 +602,8 @@ void force_flush_all(void)
+ 		vma = vma->vm_next;
+ 	}
+ }
++
++void arch_sync_kernel_mappings(unsigned long start, unsigned long end)
++{
++	flush_tlb_kernel_range_common(start, end);
++}
+-- 
+2.20.1
 
 
 _______________________________________________
