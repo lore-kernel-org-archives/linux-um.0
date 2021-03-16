@@ -1,21 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-io1-xd29.google.com ([2607:f8b0:4864:20::d29])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lMWmA-003D0u-Rn
- for linux-um@lists.infradead.org; Wed, 17 Mar 2021 14:03:57 +0000
-Received: by mail-io1-xd29.google.com with SMTP id a7so41010551iok.12
- for <linux-um@lists.infradead.org>; Wed, 17 Mar 2021 07:03:52 -0700 (PDT)
-MIME-Version: 1.0
+ id 1lMHFv-001tz8-IF
+ for linux-um@lists.infradead.org; Tue, 16 Mar 2021 21:29:38 +0000
+Message-ID: <bc30898d6ac14c5c6e7eeeb72e41353a298bdf65.camel@sipsolutions.net>
+Subject: Re: [RFC v8 00/20] Unifying LKL into UML
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Tue, 16 Mar 2021 22:29:27 +0100
+In-Reply-To: <m2czvzc2xw.wl-thehajime@gmail.com>
+ (sfid-20210316_021719_580974_E5FDB71E)
 References: <cover.1601960644.git.thehajime@gmail.com>
  <cover.1611103406.git.thehajime@gmail.com>
  <d357fbd075319d8b32667323bc545e3e5e8e8a21.camel@sipsolutions.net>
- <m2czvzc2xw.wl-thehajime@gmail.com>
- <bc30898d6ac14c5c6e7eeeb72e41353a298bdf65.camel@sipsolutions.net>
-In-Reply-To: <bc30898d6ac14c5c6e7eeeb72e41353a298bdf65.camel@sipsolutions.net>
-From: Octavian Purdila <tavi.purdila@gmail.com>
-Date: Wed, 17 Mar 2021 16:03:38 +0200
-Message-ID: <CAMoF9u3q_uhvzT0RJj42fAVQpVf-nnwXM9Zh_qXxYAG8YHcOUQ@mail.gmail.com>
-Subject: Re: [RFC v8 00/20] Unifying LKL into UML
+ <m2czvzc2xw.wl-thehajime@gmail.com> (sfid-20210316_021719_580974_E5FDB71E)
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,166 +23,147 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Hajime Tazaki <thehajime@gmail.com>, linux-um <linux-um@lists.infradead.org>, jdike@addtoit.com, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-kernel-library <linux-kernel-library@freelists.org>, linux-arch <linux-arch@vger.kernel.org>, Akira Moroo <retrage01@gmail.com>
+To: Hajime Tazaki <thehajime@gmail.com>
+Cc: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, tavi.purdila@gmail.com, linux-kernel-library@freelists.org, linux-arch@vger.kernel.org, retrage01@gmail.com
 
-On Tue, Mar 16, 2021 at 11:29 PM Johannes Berg
-<johannes@sipsolutions.net> wrote:
->
-> Hi,
-
-Hi Johannes,
-
-> > My interpretation of MMU/NOMMU is like this;
-> >
-> > With (emulated) MMU architecture you will have more smooth integration
-> > with other subsystems of kernel tree, because some subsystems/features
-> > are written with "#ifdef CONFIG_MMU".  While NOMMU doesn't, it will
-> > bring a simplified design with better portability.
-> >
-> > LKL takes rather to benefit better portability.
->
-> I don't think it *matters* so much for portability? I mean, every system
-> under the sun is going to allow some kind of "mprotect", right? You
-> don't really want to port LKL to systems that don't have even that?
->
-
-One use case where this matters are non OS environments such as
-bootloaders [1], running on bare-bone hardware or kernel drivers [2,
-3]. IMO it would be nice to keep these properties.
-
-[1] https://www.freelists.org/post/linux-kernel-library/UEFI-LKL-port
-[2] https://github.com/lkl/lkl-win-fsd
-[3] https://www.haiku-os.org/tags/lkl-haiku-fsd/
-
-> > >  * Why pthreads and all? You already require jump_buf, so UML's
-> > >    switch_threads() ought to be just fine for scheduling? It almost
-> > >    seems like you're doing this just so you can serialize against "other
-> > >    threads" (application threads), but wouldn't that trivially be
-> > >    handled by the application? You could let it hook into switch_to() or
-> > >    something, but why should a single "LKL" CPU ever require multiple
-> > >    threads? Seems to me that the userspace could be required to
-> > >    "lkl_run()" or so (vs. lkl_start()). Heck, you could even exit
-> > >    lkl_run() every time you switch tasks in the kernel, and leave
-> > >    scheduling the kernel vs. the application entirely up to the
-> > >    application? (A trivial application would be simply doing something
-> > >    like "while (1) { lkl_run(); pause(); }" mimicking the idle loop of
-> > >    UML.
-> >
-> > There is a description about this design choice in the LKL paper (*1);
-> >
-> >   "implementations based on setjmp - longjmp require usage of a single
-> >   stack space partitioned between all threads. As the Linux kernel
-> >   uses deep stacks (especially in the VFS layer), in an environment
-> >   with small stack sizes (e.g. inside another operating system's
-> >   kernel) this will place a very low limit on the number of possible
-> >   threads."
-> >
-> > (from page 2, Section II, 2) Thread Support)
-> >
-> > This is a reason of using pthread as a context primitive.
->
-> That impliciation (setjmp doesnt do stacks, so must use pthread) really
-> isn't true, you also have posix contexts or windows fibers. That would
-> probably be much easier to understands, since real threads imply that
-> you have actual concurrency, which _shouldn't_ be true in the case of
-> Linux emulated as being on a single CPU.
->
-> Perhaps that just means you chose the wrong abstraction.
->
-> In usfstl (something I've been working on) for example, we have an
-> abstraction called (execution) "contexts", and they can be implemented
-> using pthreads, fibers, or posix contexts, and you switch between them.
->
-> (see https://github.com/linux-test-project/usfstl/blob/main/src/ctx-common.c)
->
-> Using real pthreads implies that you have real threading, but then you
-> need access to real mutexes, etc.
->
-> If your abstraction was instead "switch context" then you could still
-> implement it using pthreads+mutexes, or you could implement it using
-> fibers on windows, or posix contexts - but you'd have a significantly
-> reduced API surface, since you'd only expose __switch_to() or similar,
-> and maybe a new stack allocation etc.
->
-
-You are right. When I started the implementation for ucontext it was
-obvious that it would be much simpler to have abstractions closer to
-what Linux has (alloc, free and switch threads). But I never got to
-finish that and then things went into a different direction.
-
-> Additionally, I do wonder how UML does this now, it *does* use setjmp,
-> so are you saying it doesn't properly use the kernel stacks?
->
-
-To clarify a bit the statement in the paper, the context there was
-that we should push the thread implementation to the
-application/environment we run rather than providing "LKL" threads.
-This was particularly important for running LKL in other OSes kernel
-drivers. But you are right, we can use the switch abstraction and
-implement it with threads and mutexes for those environments where it
-helps.
-
-> > to design that with UML, what we need to do are;
-> >
-> > 1) change Makefile to output liblinux.a
->
-> or liblinux.so, I guess, dynamic linking should be ok.
->
-> > we faced linker script issue, which is related with generating
-> > relocatable object in the middle.
-> >
-> > 2) make the linker-script clean with 2-stage build
-> > we fix the linker issues of (1)
-> >
-> > 3) expose syscall as a function call
-> > conflicts names (link-time and compile-time conflicts)
-> >
-> > 4) header rename, object localization
-> > to fix the issue (3)
-> >
-> > This is a common set of modifications to a library of UML.
->
-> All of this is just _build_ issues. It doesn't mean you couldn't take
-> some minimal code + liblinux.a and link it to get a "linux" equivalent
-> to the current UML?
->
-> TBH, I started thinking that it might be _really_ nice to be able to
-> write an application that's *not quite UML* but has all the properties
-> of UML built into it, i.e. can run userspace etc.
->
-> > Other parts are a choice of design, I believe.
-> > Because a library is more _reusable_ than an executable (by it means), the
-> > choice of LKL is to be portable, which the current UML doesn't pursue it
-> > extensibly (focus on intel platforms).
-> >
->
-> I don't think this really conflicts.
->
-> You could have a liblinux.a/liblinux.so and some code that links it all
-> together to get "linux" (UML). Having userspace running inside the UML
-> (liblinux) might only be supported on x86 for now, MMU vs. NOMMU might
-> be something that's configurable at build time, and if you pick NOMMU
-> you cannot run userspace either, etc.
->
-> But conceptually, why wouldn't it be possible to have a liblinux.so that
-> *does* build with MMU and userspace support, and UML is a wrapper around
-> it?
->
-
-This is an interesting idea. Conceptually I think it is possible.
-There are lots of details to be figured out before we do this. I think
-that having a NOMMU version could be a good step in the right
-direction, especially since I think a liblinux.so has more NOMMU
-usecases than MMU usecases - but I haven't given too much thought to
-the MMU usecases.
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+SGksCgo+IEZpcnN0IG9mIGFsbCwgdGhhbmtzIGZvciBhbGwgdGhlIGNvbW1lbnRzIHRvIHRoZSBw
+YXRjaHNldCB3aGljaCBoYXMKPiBiZWVuIGEgYml0IHN0YWxlLiAgSSdsbCByZXBseSB0aGVtLgoK
+WWVhaCwgc29ycnkuIEkgaGFkIGl0IG1hcmtlZCB1bnJlYWQgKCJ0byBsb29rIGF0Iikgc2luY2Ug
+eW91IHBvc3RlZCBpdC4KCj4gV2UgZGlkbid0IHdyaXRlIGRvd24gdGhlIGRldGFpbHMsIHdoaWNo
+IGFyZSBhbHJlYWR5IGRlc2NyaWJlZCBpbiB0aGUKPiBMS0wncyBwYXBlciAoKjEpLiAgQnV0IEkg
+dGhpbmsgd2UgY2FuIGV4dHJhY3Qvc3VtbWFyaXplIHNvbWUgb2YKPiBpbXBvcnRhbnQgaW5mb3Jt
+YXRpb24gZnJvbSB0aGUgcGFwZXIgdG8gdGhlIGRvY3VtZW50IHNvIHRoYXQgdGhlCj4gZGVzaWdu
+IGlzIG1vcmUgdW5kZXJzdGFuZGFibGUuCj4gCj4gKjEgTEtMJ3MgcGFwZXIgKHBvaW50ZXIgaXMg
+YWxzbyBpbiB0aGUgY292ZXIgbGV0dGVyKQo+IGh0dHBzOi8vd3d3LnJlc2VhcmNoZ2F0ZS5uZXQv
+cHJvZmlsZS9OaWNvbGFlX1RhcHVzMi9wdWJsaWNhdGlvbi8yMjQxNjQ2ODJfTEtMX1RoZV9MaW51
+eF9rZXJuZWxfbGlicmFyeS9saW5rcy8wMmJmZTUwZmQ5MjFhYjRmN2MwMDAwMDAucGRmCgpPSywg
+SSBndWVzcyBJIHNob3VsZCB0YWtlIGEgbG9vay4gUHJvYmFibHkgSSBuZXZlciBkaWQsIGFsd2F5
+cyB0aGlua2luZwp0aGF0IGl0IHdhcyBtb3JlIG9mIGFuIG92ZXJ2aWV3IHRoYW4gdGVjaG5pY2Fs
+IGRldGFpbHMgYW5kIGRlc2lnbgpkZWNpc2lvbnMuCj4gCj4gTXkgaW50ZXJwcmV0YXRpb24gb2Yg
+TU1VL05PTU1VIGlzIGxpa2UgdGhpczsKPiAKPiBXaXRoIChlbXVsYXRlZCkgTU1VIGFyY2hpdGVj
+dHVyZSB5b3Ugd2lsbCBoYXZlIG1vcmUgc21vb3RoIGludGVncmF0aW9uCj4gd2l0aCBvdGhlciBz
+dWJzeXN0ZW1zIG9mIGtlcm5lbCB0cmVlLCBiZWNhdXNlIHNvbWUgc3Vic3lzdGVtcy9mZWF0dXJl
+cwo+IGFyZSB3cml0dGVuIHdpdGggIiNpZmRlZiBDT05GSUdfTU1VIi4gIFdoaWxlIE5PTU1VIGRv
+ZXNuJ3QsIGl0IHdpbGwKPiBicmluZyBhIHNpbXBsaWZpZWQgZGVzaWduIHdpdGggYmV0dGVyIHBv
+cnRhYmlsaXR5Lgo+IAo+IExLTCB0YWtlcyByYXRoZXIgdG8gYmVuZWZpdCBiZXR0ZXIgcG9ydGFi
+aWxpdHkuCgpJIGRvbid0IHRoaW5rIGl0ICptYXR0ZXJzKiBzbyBtdWNoIGZvciBwb3J0YWJpbGl0
+eT8gSSBtZWFuLCBldmVyeSBzeXN0ZW0KdW5kZXIgdGhlIHN1biBpcyBnb2luZyB0byBhbGxvdyBz
+b21lIGtpbmQgb2YgIm1wcm90ZWN0IiwgcmlnaHQ/IFlvdQpkb24ndCByZWFsbHkgd2FudCB0byBw
+b3J0IExLTCB0byBzeXN0ZW1zIHRoYXQgZG9uJ3QgaGF2ZSBldmVuIHRoYXQ/Cgo+ID4gwqAqIFdo
+eSBwdGhyZWFkcyBhbmQgYWxsPyBZb3UgYWxyZWFkeSByZXF1aXJlIGp1bXBfYnVmLCBzbyBVTUwn
+cwo+ID4gwqDCoMKgc3dpdGNoX3RocmVhZHMoKSBvdWdodCB0byBiZSBqdXN0IGZpbmUgZm9yIHNj
+aGVkdWxpbmc/IEl0IGFsbW9zdAo+ID4gwqDCoMKgc2VlbXMgbGlrZSB5b3UncmUgZG9pbmcgdGhp
+cyBqdXN0IHNvIHlvdSBjYW4gc2VyaWFsaXplIGFnYWluc3QgIm90aGVyCj4gPiDCoMKgwqB0aHJl
+YWRzIiAoYXBwbGljYXRpb24gdGhyZWFkcyksIGJ1dCB3b3VsZG4ndCB0aGF0IHRyaXZpYWxseSBi
+ZQo+ID4gwqDCoMKgaGFuZGxlZCBieSB0aGUgYXBwbGljYXRpb24/IFlvdSBjb3VsZCBsZXQgaXQg
+aG9vayBpbnRvIHN3aXRjaF90bygpIG9yCj4gPiDCoMKgwqBzb21ldGhpbmcsIGJ1dCB3aHkgc2hv
+dWxkIGEgc2luZ2xlICJMS0wiIENQVSBldmVyIHJlcXVpcmUgbXVsdGlwbGUKPiA+IMKgwqDCoHRo
+cmVhZHM/IFNlZW1zIHRvIG1lIHRoYXQgdGhlIHVzZXJzcGFjZSBjb3VsZCBiZSByZXF1aXJlZCB0
+bwo+ID4gwqDCoMKgImxrbF9ydW4oKSIgb3Igc28gKHZzLiBsa2xfc3RhcnQoKSkuIEhlY2ssIHlv
+dSBjb3VsZCBldmVuIGV4aXQKPiA+IMKgwqDCoGxrbF9ydW4oKSBldmVyeSB0aW1lIHlvdSBzd2l0
+Y2ggdGFza3MgaW4gdGhlIGtlcm5lbCwgYW5kIGxlYXZlCj4gPiDCoMKgwqBzY2hlZHVsaW5nIHRo
+ZSBrZXJuZWwgdnMuIHRoZSBhcHBsaWNhdGlvbiBlbnRpcmVseSB1cCB0byB0aGUKPiA+IMKgwqDC
+oGFwcGxpY2F0aW9uPyAoQSB0cml2aWFsIGFwcGxpY2F0aW9uIHdvdWxkIGJlIHNpbXBseSBkb2lu
+ZyBzb21ldGhpbmcKPiA+IMKgwqDCoGxpa2UgIndoaWxlICgxKSB7IGxrbF9ydW4oKTsgcGF1c2Uo
+KTsgfSIgbWltaWNraW5nIHRoZSBpZGxlIGxvb3Agb2YKPiA+IMKgwqDCoFVNTC4KPiAKPiBUaGVy
+ZSBpcyBhIGRlc2NyaXB0aW9uIGFib3V0IHRoaXMgZGVzaWduIGNob2ljZSBpbiB0aGUgTEtMIHBh
+cGVyICgqMSk7Cj4gCj4gwqDCoCJpbXBsZW1lbnRhdGlvbnMgYmFzZWQgb24gc2V0am1wIC0gbG9u
+Z2ptcCByZXF1aXJlIHVzYWdlIG9mIGEgc2luZ2xlCj4gwqDCoHN0YWNrIHNwYWNlIHBhcnRpdGlv
+bmVkIGJldHdlZW4gYWxsIHRocmVhZHMuIEFzIHRoZSBMaW51eCBrZXJuZWwKPiDCoMKgdXNlcyBk
+ZWVwIHN0YWNrcyAoZXNwZWNpYWxseSBpbiB0aGUgVkZTIGxheWVyKSwgaW4gYW4gZW52aXJvbm1l
+bnQKPiDCoMKgd2l0aCBzbWFsbCBzdGFjayBzaXplcyAoZS5nLiBpbnNpZGUgYW5vdGhlciBvcGVy
+YXRpbmcgc3lzdGVtJ3MKPiDCoMKga2VybmVsKSB0aGlzIHdpbGwgcGxhY2UgYSB2ZXJ5IGxvdyBs
+aW1pdCBvbiB0aGUgbnVtYmVyIG9mIHBvc3NpYmxlCj4gwqDCoHRocmVhZHMuIgo+IAo+IChmcm9t
+IHBhZ2UgMiwgU2VjdGlvbiBJSSwgMikgVGhyZWFkIFN1cHBvcnQpCj4gCj4gVGhpcyBpcyBhIHJl
+YXNvbiBvZiB1c2luZyBwdGhyZWFkIGFzIGEgY29udGV4dCBwcmltaXRpdmUuCgpUaGF0IGltcGxp
+Y2lhdGlvbiAoc2V0am1wIGRvZXNudCBkbyBzdGFja3MsIHNvIG11c3QgdXNlIHB0aHJlYWQpIHJl
+YWxseQppc24ndCB0cnVlLCB5b3UgYWxzbyBoYXZlIHBvc2l4IGNvbnRleHRzIG9yIHdpbmRvd3Mg
+ZmliZXJzLiBUaGF0IHdvdWxkCnByb2JhYmx5IGJlIG11Y2ggZWFzaWVyIHRvIHVuZGVyc3RhbmRz
+LCBzaW5jZSByZWFsIHRocmVhZHMgaW1wbHkgdGhhdAp5b3UgaGF2ZSBhY3R1YWwgY29uY3VycmVu
+Y3ksIHdoaWNoIF9zaG91bGRuJ3RfIGJlIHRydWUgaW4gdGhlIGNhc2Ugb2YKTGludXggZW11bGF0
+ZWQgYXMgYmVpbmcgb24gYSBzaW5nbGUgQ1BVLgoKUGVyaGFwcyB0aGF0IGp1c3QgbWVhbnMgeW91
+IGNob3NlIHRoZSB3cm9uZyBhYnN0cmFjdGlvbi4KCkluIHVzZnN0bCAoc29tZXRoaW5nIEkndmUg
+YmVlbiB3b3JraW5nIG9uKSBmb3IgZXhhbXBsZSwgd2UgaGF2ZSBhbgphYnN0cmFjdGlvbiBjYWxs
+ZWQgKGV4ZWN1dGlvbikgImNvbnRleHRzIiwgYW5kIHRoZXkgY2FuIGJlIGltcGxlbWVudGVkCnVz
+aW5nIHB0aHJlYWRzLCBmaWJlcnMsIG9yIHBvc2l4IGNvbnRleHRzLCBhbmQgeW91IHN3aXRjaCBi
+ZXR3ZWVuIHRoZW0uCgooc2VlIGh0dHBzOi8vZ2l0aHViLmNvbS9saW51eC10ZXN0LXByb2plY3Qv
+dXNmc3RsL2Jsb2IvbWFpbi9zcmMvY3R4LWNvbW1vbi5jKQoKVXNpbmcgcmVhbCBwdGhyZWFkcyBp
+bXBsaWVzIHRoYXQgeW91IGhhdmUgcmVhbCB0aHJlYWRpbmcsIGJ1dCB0aGVuIHlvdQpuZWVkIGFj
+Y2VzcyB0byByZWFsIG11dGV4ZXMsIGV0Yy4KCklmIHlvdXIgYWJzdHJhY3Rpb24gd2FzIGluc3Rl
+YWQgInN3aXRjaCBjb250ZXh0IiB0aGVuIHlvdSBjb3VsZCBzdGlsbAppbXBsZW1lbnQgaXQgdXNp
+bmcgcHRocmVhZHMrbXV0ZXhlcywgb3IgeW91IGNvdWxkIGltcGxlbWVudCBpdCB1c2luZwpmaWJl
+cnMgb24gd2luZG93cywgb3IgcG9zaXggY29udGV4dHMgLSBidXQgeW91J2QgaGF2ZSBhIHNpZ25p
+ZmljYW50bHkKcmVkdWNlZCBBUEkgc3VyZmFjZSwgc2luY2UgeW91J2Qgb25seSBleHBvc2UgX19z
+d2l0Y2hfdG8oKSBvciBzaW1pbGFyLAphbmQgbWF5YmUgYSBuZXcgc3RhY2sgYWxsb2NhdGlvbiBl
+dGMuCgpBZGRpdGlvbmFsbHksIEkgZG8gd29uZGVyIGhvdyBVTUwgZG9lcyB0aGlzIG5vdywgaXQg
+KmRvZXMqIHVzZSBzZXRqbXAsCnNvIGFyZSB5b3Ugc2F5aW5nIGl0IGRvZXNuJ3QgcHJvcGVybHkg
+dXNlIHRoZSBrZXJuZWwgc3RhY2tzPwoKPiBBbmQgaW5zdGVhZCBvZiBtYW51YWxseSBkb2luZyBs
+a2xfcnVuKCkgdG8gc2NoZWR1bGUgdGhyZWFkcyBhbmQKPiByZWx5aW5nIG9uIGhvc3Qgc2NoZWR1
+bGVyLCBMS0wgYXNzb2NpYXRlcyBlYWNoIGtlcm5lbCB0aHJlYWQgd2l0aCBhCj4gaG9zdC1wcm92
+aWRlZCBzZW1hcGhvcmUgc28gdGhhdCBMaW51eCBzY2hlZHVsZXIgaGFzIGEgY29udHJvbCBvZiBo
+b3N0Cj4gc2NoZWR1bGVyIChwcmVwYXJlZCBieSBwdGhyZWFkKS4KClJpZ2h0LgoKVGhhdCdzIGlu
+IGxpbmUgd2l0aCB3aGF0IEkgZGlkIGluIG15IHRlc3QgZnJhbWV3b3JrIGluCmh0dHBzOi8vZ2l0
+aHViLmNvbS9saW51eC10ZXN0LXByb2plY3QvdXNmc3RsL2Jsb2IvbWFpbi9zcmMvY3R4LXB0aHJl
+YWQuYwoKYnV0IGxpa2UgSSBzYWlkIGFib3ZlLCBJIHRoaW5rIGl0J3MgdGhlIHdyb25nIGFic3Ry
+YWN0aW9uLiBZb3VyCmFic3RyYWN0aW9uIHNob3VsZCBiZSAic3dpdGNoIGNvbnRleHQiIChvciAi
+c3dpdGNoIHRocmVhZCIpLCBub3QgZGVhbGluZwp3aXRoIHB0aHJlYWQsIG11dGV4ZXMsIGV0Yy4K
+Cgo+ID4gQW5kIC0ga2luZCBvZiB0aGUgdGhlbWUgYmVoaW5kIGFsbCB0aGVzZSBxdWVzdGlvbnMg
+LSB3aHkgaXMgdGhpcyBub3QKPiA+IG1ha2luZyBVTUwgYWN0dWFsbHkgYmUgYSBiaW5hcnkgdGhh
+dCB1c2VzIExLTD8gSWYgdGhlIGRlc2lnbiB3ZXJlIGxpa2UKPiA+IHdoYXQgSSdtIGFsbHVkaW5n
+IHRvIGFib3ZlLCB0aGF0IHNob3VsZCBhY3R1YWxseSBiZSBwb3NzaWJsZT8gV2h5IHNob3VsZAo+
+ID4gaXQgbm90IGJlIHBvc3NpYmxlPyBXaHkgd291bGQgaXQgbm90IGJlIGRlc2lyYWJsZT8gKEkn
+bSBhY3R1YWxseQo+ID4gdGhpbmtpbmcgdGhhdCBtaWdodCBiZSByZWFsbHkgdXNlZnVsIHRvIHNv
+bWUgb2YgdGhlIHRoaW5ncyBJJ20gZG9pbmcuKQo+ID4gWWVzLCBpZiB0aGUgYXBwbGljYXRpb24g
+YWN0dWFsbHkgc3VwcG9ydHMgdXNlcnNwYWNlIHJ1bm5pbmcgdGhlbiBpdCBoYXMKPiA+IHNvbSBs
+aW1pdGF0aW9ucyBvbiB3aGF0IGl0IGNhbiBkbyAoaW4gcGFydGljdWxhciB3cnQuIHNpZ25hbHMg
+ZXRjLiksIGJ1dAo+ID4gdGhhdCBjb3VsZCBiZSBkb2N1bWVudGVkIGFuZCB3b3VsZCBiZSBPSz8K
+PiAKPiBMZXQgbWUgdHJ5IHRvIGRlc2NyaWJlIGhvdyBJIHRoaW5rIHdoeSBub3QganVzdCBnZW5l
+cmF0ZSBsaWJsaW51eC5zbwo+IGZyb20gY3VycmVudCBVTUwuCj4gCj4gTWFraW5nIFVNTCB0byBi
+dWlsZCBhIGxpYnJhcnksIHdoaWNoIGhhcyBiZWVuIGEgbG9uZyB3YW50ZWQgZmVhdHVyZXMsCj4g
+Y2FuIGJlIHN0YXJ0ZWQ7Cj4gCj4gCj4gSSB0aGluayB0aGVyZSBhcmUgc2V2ZXJhbCBmdW5jdGlv
+bnMgd2hpY2ggdGhlIGxpYnJhcnkgb2ZmZXJzOwo+IAo+IC0gYXBwbGljYXRpb25zIGNhbiBsaW5r
+IHRoZSBsaWJyYXJ5IGFuZCBjYWxsIGZ1bmN0aW9ucyBpbiB0aGUgbGlicmFyeQoKUmlnaHQuCgo+
+IC0gdGhlIGxpYnJhcnkgd2lsbCBiZSB1c2VkIGFzIGEgcmVwbGFjZW1lbnQgb2YgbGliYy5hIGZv
+ciBzeXNjYWxsIG9wZXJhdGlvbnMKCk5vdCBzdXJlIEkgc2VlIHRoaXMsIGlzIHRoYXQgcmVhbGx5
+IHVzZWZ1bD8gSSBtZWFuLCBtb3N0IGFwcGxpY2F0aW9ucwpkb24ndCBsaXZlICJzdGFuZGFsb25l
+IiBpbiB0aGVpciBvd24gd29ybGQ/IER1bm5vLiBNYXliZSBpdCdzIHVzZWZ1bC4KCgo+IHRvIGRl
+c2lnbiB0aGF0IHdpdGggVU1MLCB3aGF0IHdlIG5lZWQgdG8gZG8gYXJlOwo+IAo+IDEpIGNoYW5n
+ZSBNYWtlZmlsZSB0byBvdXRwdXQgbGlibGludXguYQoKb3IgbGlibGludXguc28sIEkgZ3Vlc3Ms
+IGR5bmFtaWMgbGlua2luZyBzaG91bGQgYmUgb2suCgo+IHdlIGZhY2VkIGxpbmtlciBzY3JpcHQg
+aXNzdWUsIHdoaWNoIGlzIHJlbGF0ZWQgd2l0aCBnZW5lcmF0aW5nCj4gcmVsb2NhdGFibGUgb2Jq
+ZWN0IGluIHRoZSBtaWRkbGUuCj4gCj4gMikgbWFrZSB0aGUgbGlua2VyLXNjcmlwdCBjbGVhbiB3
+aXRoIDItc3RhZ2UgYnVpbGQKPiB3ZSBmaXggdGhlIGxpbmtlciBpc3N1ZXMgb2YgKDEpCj4gCj4g
+MykgZXhwb3NlIHN5c2NhbGwgYXMgYSBmdW5jdGlvbiBjYWxsCj4gY29uZmxpY3RzIG5hbWVzIChs
+aW5rLXRpbWUgYW5kIGNvbXBpbGUtdGltZSBjb25mbGljdHMpCj4gCj4gNCkgaGVhZGVyIHJlbmFt
+ZSwgb2JqZWN0IGxvY2FsaXphdGlvbgo+IHRvIGZpeCB0aGUgaXNzdWUgKDMpCj4gCj4gVGhpcyBp
+cyBhIGNvbW1vbiBzZXQgb2YgbW9kaWZpY2F0aW9ucyB0byBhIGxpYnJhcnkgb2YgVU1MLgoKQWxs
+IG9mIHRoaXMgaXMganVzdCBfYnVpbGRfIGlzc3Vlcy4gSXQgZG9lc24ndCBtZWFuIHlvdSBjb3Vs
+ZG4ndCB0YWtlCnNvbWUgbWluaW1hbCBjb2RlICsgbGlibGludXguYSBhbmQgbGluayBpdCB0byBn
+ZXQgYSAibGludXgiIGVxdWl2YWxlbnQKdG8gdGhlIGN1cnJlbnQgVU1MPwoKVEJILCBJIHN0YXJ0
+ZWQgdGhpbmtpbmcgdGhhdCBpdCBtaWdodCBiZSBfcmVhbGx5XyBuaWNlIHRvIGJlIGFibGUgdG8K
+d3JpdGUgYW4gYXBwbGljYXRpb24gdGhhdCdzICpub3QgcXVpdGUgVU1MKiBidXQgaGFzIGFsbCB0
+aGUgcHJvcGVydGllcwpvZiBVTUwgYnVpbHQgaW50byBpdCwgaS5lLiBjYW4gcnVuIHVzZXJzcGFj
+ZSBldGMuCgo+IE90aGVyIHBhcnRzIGFyZSBhIGNob2ljZSBvZiBkZXNpZ24sIEkgYmVsaWV2ZS4K
+PiBCZWNhdXNlIGEgbGlicmFyeSBpcyBtb3JlIF9yZXVzYWJsZV8gdGhhbiBhbiBleGVjdXRhYmxl
+IChieSBpdCBtZWFucyksIHRoZQo+IGNob2ljZSBvZiBMS0wgaXMgdG8gYmUgcG9ydGFibGUsIHdo
+aWNoIHRoZSBjdXJyZW50IFVNTCBkb2Vzbid0IHB1cnN1ZSBpdAo+IGV4dGVuc2libHkgKGZvY3Vz
+IG9uIGludGVsIHBsYXRmb3JtcykuCj4gCgpJIGRvbid0IHRoaW5rIHRoaXMgcmVhbGx5IGNvbmZs
+aWN0cy4KCllvdSBjb3VsZCBoYXZlIGEgbGlibGludXguYS9saWJsaW51eC5zbyBhbmQgc29tZSBj
+b2RlIHRoYXQgbGlua3MgaXQgYWxsCnRvZ2V0aGVyIHRvIGdldCAibGludXgiIChVTUwpLiBIYXZp
+bmcgdXNlcnNwYWNlIHJ1bm5pbmcgaW5zaWRlIHRoZSBVTUwKKGxpYmxpbnV4KSBtaWdodCBvbmx5
+IGJlIHN1cHBvcnRlZCBvbiB4ODYgZm9yIG5vdywgTU1VIHZzLiBOT01NVSBtaWdodApiZSBzb21l
+dGhpbmcgdGhhdCdzIGNvbmZpZ3VyYWJsZSBhdCBidWlsZCB0aW1lLCBhbmQgaWYgeW91IHBpY2sg
+Tk9NTVUKeW91IGNhbm5vdCBydW4gdXNlcnNwYWNlIGVpdGhlciwgZXRjLgoKQnV0IGNvbmNlcHR1
+YWxseSwgd2h5IHdvdWxkbid0IGl0IGJlIHBvc3NpYmxlIHRvIGhhdmUgYSBsaWJsaW51eC5zbyB0
+aGF0Cipkb2VzKiBidWlsZCB3aXRoIE1NVSBhbmQgdXNlcnNwYWNlIHN1cHBvcnQsIGFuZCBVTUwg
+aXMgYSB3cmFwcGVyIGFyb3VuZAppdD8KCj4gSSBob3BlIHRoaXMgbWFrZXMgaXQgYSBiaXQgY2xl
+YXIsIGJ1dCBsZXQgbWUga25vdyBpZiB5b3UgZm91bmQKPiBhbnl0aGluZyB1bmNsZWFyLgoKU2Vl
+IGFib3ZlLCBJIGd1ZXNzIDopCgpUaGFua3MgZm9yIGFsbCB0aGUgZGlzY3Vzc2lvbiEKCmpvaGFu
+bmVzCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGlu
+dXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
 
