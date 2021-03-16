@@ -1,17 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lM5UN-000AsW-7I
- for linux-um@lists.infradead.org; Tue, 16 Mar 2021 08:55:45 +0000
-Message-ID: <0d2ce878a618b9ac5868b19ca72ef5d88cd5d3c9.camel@sipsolutions.net>
+ id 1lM5Lq-0009yD-Hq
+ for linux-um@lists.infradead.org; Tue, 16 Mar 2021 08:46:56 +0000
 Subject: Re: [PATCH] um: implement flush_cache_vmap/flush_cache_vunmap
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Tue, 16 Mar 2021 09:55:40 +0100
-In-Reply-To: <27e8fe7b-8567-4489-6af3-cf13ad4ab25a@kot-begemot.co.uk>
 References: <20210315233804.d3e52f6a3422.I9672eef7dfa7ce6c3de1ccf7ab8d9aad1fa7f3a6@changeid>
- <27e8fe7b-8567-4489-6af3-cf13ad4ab25a@kot-begemot.co.uk>
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Message-ID: <27e8fe7b-8567-4489-6af3-cf13ad4ab25a@kot-begemot.co.uk>
+Date: Tue, 16 Mar 2021 08:46:48 +0000
 MIME-Version: 1.0
+In-Reply-To: <20210315233804.d3e52f6a3422.I9672eef7dfa7ce6c3de1ccf7ab8d9aad1fa7f3a6@changeid>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,42 +20,81 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, linux-um@lists.infradead.org
+To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
 
-On Tue, 2021-03-16 at 08:46 +0000, Anton Ivanov wrote:
+
+
+On 15/03/2021 22:38, Johannes Berg wrote:
+> From: Johannes Berg <johannes.berg@intel.com>
 > 
-> Well spotted.
+> vmalloc() heavy workloads in UML are extremely slow, due to
+> flushing the entire kernel VM space (flush_tlb_kernel_vm())
+> on the first segfault.
 > 
-> Unless I am mistaken, there may be a slightly better way of doing it.
+> Implement flush_cache_vmap() to avoid that, and while at it
+> also add flush_cache_vunmap() since it's trivial.
 > 
-> We can implement arch_sync_kernel_mappings() and sync only where the
-> page modified mask says so by setting ARCH_PAGE_TABLE_SYNC_MASK
+> This speeds up my vmalloc() heavy test of copying files out
+> from /sys/kernel/debug/gcov/ by 30x (from 30s to 1s.)
 > 
-> This way flush_cache_* can remain nops as in asm-generic
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+> ---
+>   arch/um/include/asm/cacheflush.h | 9 +++++++++
+>   arch/um/include/asm/tlb.h        | 2 +-
+>   2 files changed, 10 insertions(+), 1 deletion(-)
+>   create mode 100644 arch/um/include/asm/cacheflush.h
+> 
+> diff --git a/arch/um/include/asm/cacheflush.h b/arch/um/include/asm/cacheflush.h
+> new file mode 100644
+> index 000000000000..4c9858cd36ec
+> --- /dev/null
+> +++ b/arch/um/include/asm/cacheflush.h
+> @@ -0,0 +1,9 @@
+> +#ifndef __UM_ASM_CACHEFLUSH_H
+> +#define __UM_ASM_CACHEFLUSH_H
+> +
+> +#include <asm/tlbflush.h>
+> +#define flush_cache_vmap flush_tlb_kernel_range
+> +#define flush_cache_vunmap flush_tlb_kernel_range
+> +
+> +#include <asm-generic/cacheflush.h>
+> +#endif /* __UM_ASM_CACHEFLUSH_H */
+> diff --git a/arch/um/include/asm/tlb.h b/arch/um/include/asm/tlb.h
+> index ff9c62828962..0422467bda5b 100644
+> --- a/arch/um/include/asm/tlb.h
+> +++ b/arch/um/include/asm/tlb.h
+> @@ -5,7 +5,7 @@
+>   #include <linux/mm.h>
+>   
+>   #include <asm/tlbflush.h>
+> -#include <asm-generic/cacheflush.h>
+> +#include <asm/cacheflush.h>
+>   #include <asm-generic/tlb.h>
+>   
+>   #endif
+> 
 
-Would that actually buy us anything?
+Well spotted.
 
-Not that I mind, or even understand the TLB code well, but it seems
-fairly similar?
+Unless I am mistaken, there may be a slightly better way of doing it.
 
-> I am going to give that a spin, if it works, I will post it to the list by lunchtime GMT
+We can implement arch_sync_kernel_mappings() and sync only where the page modified mask says so by setting ARCH_PAGE_TABLE_SYNC_MASK
 
-Sounds good to me :)
+This way flush_cache_* can remain nops as in asm-generic
 
-I also made these patches:
+I am going to give that a spin, if it works, I will post it to the list by lunchtime GMT
 
-https://lore.kernel.org/lkml/20210315235453.e3fbb86e99a0.I08a3ee6dbe47ea3e8024956083f162884a958e40@changeid/T/#u
+ >
 
 
-so my "vmalloc-heavy workload" no longer is vmalloc heavy since it now
-uses kvmalloc and never hits vmalloc, always kmalloc :)
-
-johannes
-
+-- 
+Anton R. Ivanov
+https://www.kot-begemot.co.uk/
 
 _______________________________________________
 linux-um mailing list
