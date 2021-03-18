@@ -1,58 +1,44 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
- by merlin.infradead.org with esmtps (Exim 4.92.3 #3 (Red Hat Linux))
- id 1l7HBc-00019F-9s
- for linux-um@lists.infradead.org; Wed, 03 Feb 2021 12:23:09 +0000
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Message-ID: <90d11ebdb1f9e13387aa7699702da7e7fecec27d.camel@sipsolutions.net>
+Subject: Re: [PATCH 4/6] um: split up CONFIG_GCOV
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH] um: io.h: include <linux/types.h>
-Date: Wed,  3 Feb 2021 13:22:51 +0100
-Message-Id: <20210203132251.23b844e9955f.If15f127996772db0fa885e0e0edd3c6c87d2dd33@changeid>
+Date: Thu, 18 Mar 2021 22:30:38 +0100
+In-Reply-To: <CAFd5g47uR=HxjVET3uygeND8tFsZtfkgsS-PjMagbcagPMTBEg@mail.gmail.com> (sfid-20210318_222737_121554_AD23102C)
+References: <20210312095526.197739-1-johannes@sipsolutions.net>
+         <20210312104627.927fb4c7d36f.Idb980393c41c2129ee592de4ed71e7a5518212f9@changeid>
+         <CAFd5g47uR=HxjVET3uygeND8tFsZtfkgsS-PjMagbcagPMTBEg@mail.gmail.com>
+         (sfid-20210318_222737_121554_AD23102C)
+Content-Type: text/plain; charset="UTF-8"
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+To: Brendan Higgins <brendanhiggins@google.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>, Jessica Yu <jeyu@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel <linux-fsdevel@vger.kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-From: Johannes Berg <johannes.berg@intel.com>
+Hi Brendan,
 
-This may be needed for size_t if something doesn't get
-it included elsewhere before including <asm/io.h>, so
-add the include.
+> Hey, thanks for doing this! I was looking into this a few weeks ago
+> and root caused part of the issue in GCC and in the kernel, but I did
+> not have a fix put together.
+> 
+> Anyway, most of the patches make sense to me, but I am not able to
+> apply this patch on torvalds/master. Do you mind sending a rebase so I
+> can test it?
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- arch/um/include/asm/io.h | 1 +
- 1 file changed, 1 insertion(+)
+Well, if you see my other replies in the thread, I gave up for various
+reasons, see
 
-diff --git a/arch/um/include/asm/io.h b/arch/um/include/asm/io.h
-index cef03e3aa0f9..6ce18d343997 100644
---- a/arch/um/include/asm/io.h
-+++ b/arch/um/include/asm/io.h
-@@ -1,6 +1,7 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- #ifndef _ASM_UM_IO_H
- #define _ASM_UM_IO_H
-+#include <linux/types.h>
- 
- #define ioremap ioremap
- static inline void __iomem *ioremap(phys_addr_t offset, size_t size)
--- 
-2.26.2
+https://lore.kernel.org/r/d36ea54d8c0a8dd706826ba844a6f27691f45d55.camel@sipsolutions.net
+
+Personally, I ended up switching to CONFIG_GCOV_KERNEL instead because
+it actually works for modules, but then it was _really_ slow (think 30s
+to copy data for a few modules), but I root-caused this and ultimately
+sent these patches instead:
+
+https://patchwork.ozlabs.org/project/linux-um/patch/20210315233804.d3e52f6a3422.I9672eef7dfa7ce6c3de1ccf7ab8d9aad1fa7f3a6@changeid/
+https://patchwork.ozlabs.org/project/linux-um/patch/20210315234731.2e03184a344b.I04f1816296f04c5aa7d7d88b33bd4a14dd458da8@changeid/
 
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+johannes
+
 
