@@ -1,8 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Wed, 14 Apr 2021 16:58:08 +0800
-From: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Subject: [PATCH] init: consolidate trap_init()
-Message-ID: <20210414165808.458a3d11@xhacker.debian>
+Received: from mail-pj1-x1032.google.com ([2607:f8b0:4864:20::1032])
+ by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
+ id 1lWYUN-007VaG-BT
+ for linux-um@lists.infradead.org; Wed, 14 Apr 2021 05:55:01 +0000
+Received: by mail-pj1-x1032.google.com with SMTP id
+ b8-20020a17090a5508b029014d0fbe9b64so11899743pji.5
+ for <linux-um@lists.infradead.org>; Tue, 13 Apr 2021 22:54:58 -0700 (PDT)
+From: Andrei Vagin <avagin@gmail.com>
+Subject: [PATCH 4/4] selftests: add tests for process_vm_exec
+Date: Tue, 13 Apr 2021 22:52:17 -0700
+Message-Id: <20210414055217.543246-5-avagin@gmail.com>
+In-Reply-To: <20210414055217.543246-1-avagin@gmail.com>
+References: <20210414055217.543246-1-avagin@gmail.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -16,217 +25,528 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Yoshinori Sato <ysato@users.sourceforge.jp>, Brian Cain <bcain@codeaurora.org>, Nick Hu <nickhu@andestech.com>, Greentime Hu <green.hu@gmail.com>, Vincent Chen <deanbo422@gmail.com>, Ley Foon Tan <ley.foon.tan@intel.com>, Jonas Bonn <jonas@southpole.se>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-um@lists.infradead.org, Anup Patel <anup@brainfault.org>
+To: linux-kernel@vger.kernel.org, linux-api@vger.kernel.org
+Cc: linux-um@lists.infradead.org, criu@openvz.org, avagin@google.com, Andrei Vagin <avagin@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Andy Lutomirski <luto@kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Christian Brauner <christian.brauner@ubuntu.com>, Dmitry Safonov <0x7f454c46@gmail.com>, Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>, Mike Rapoport <rppt@linux.ibm.com>, Michael Kerrisk <mtk.manpages@gmail.com>, Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>
 
-Many architectures implement the trap_init() as NOP, since there is
-no such default for trap_init(), this empty stub is duplicated among
-these architectures. Provide a generic but weak NOP implementation
-to drop the empty stubs of trap_init() in these architectures.
+Output:
+ $ make run_tests
+ TAP version 13
+ 1..4
+ # selftests: process_vm_exec: process_vm_exec
+ # 1..1
+ # ok 1 275 ns/syscall
+ # # Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
+ ok 1 selftests: process_vm_exec: process_vm_exec
+ # selftests: process_vm_exec: process_vm_exec_fault
+ # 1..1
+ # ok 1 789 ns/signal
+ # # Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
+ ok 2 selftests: process_vm_exec: process_vm_exec_fault
+ # selftests: process_vm_exec: ptrace_vm_exec
+ # 1..1
+ # ok 1 1378 ns/syscall# Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
+ ok 3 selftests: process_vm_exec: ptrace_vm_exec
+ # selftests: process_vm_exec: process_vm_exec_syscall
+ # 1..1
+ # ok 1 write works as expectd
+ # # Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
+ ok 4 selftests: process_vm_exec: process_vm_exec_syscall
 
-Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Signed-off-by: Andrei Vagin <avagin@gmail.com>
 ---
- arch/arc/kernel/traps.c      |  5 -----
- arch/arm/kernel/traps.c      |  5 -----
- arch/h8300/kernel/traps.c    | 13 -------------
- arch/hexagon/kernel/traps.c  |  4 ----
- arch/nds32/kernel/traps.c    |  5 -----
- arch/nios2/kernel/traps.c    |  5 -----
- arch/openrisc/kernel/traps.c |  5 -----
- arch/parisc/kernel/traps.c   |  4 ----
- arch/powerpc/kernel/traps.c  |  5 -----
- arch/riscv/kernel/traps.c    |  5 -----
- arch/um/kernel/trap.c        |  4 ----
- init/main.c                  |  2 ++
- 12 files changed, 2 insertions(+), 60 deletions(-)
+ .../selftests/process_vm_exec/Makefile        |   7 ++
+ tools/testing/selftests/process_vm_exec/log.h |  26 ++++
+ .../process_vm_exec/process_vm_exec.c         | 105 +++++++++++++++++
+ .../process_vm_exec/process_vm_exec_fault.c   | 111 ++++++++++++++++++
+ .../process_vm_exec/process_vm_exec_syscall.c |  81 +++++++++++++
+ .../process_vm_exec/ptrace_vm_exec.c          | 111 ++++++++++++++++++
+ 6 files changed, 441 insertions(+)
+ create mode 100644 tools/testing/selftests/process_vm_exec/Makefile
+ create mode 100644 tools/testing/selftests/process_vm_exec/log.h
+ create mode 100644 tools/testing/selftests/process_vm_exec/process_vm_exec.c
+ create mode 100644 tools/testing/selftests/process_vm_exec/process_vm_exec_fault.c
+ create mode 100644 tools/testing/selftests/process_vm_exec/process_vm_exec_syscall.c
+ create mode 100644 tools/testing/selftests/process_vm_exec/ptrace_vm_exec.c
 
-diff --git a/arch/arc/kernel/traps.c b/arch/arc/kernel/traps.c
-index 57235e5c0cea..6b83e3f2b41c 100644
---- a/arch/arc/kernel/traps.c
-+++ b/arch/arc/kernel/traps.c
-@@ -20,11 +20,6 @@
- #include <asm/unaligned.h>
- #include <asm/kprobes.h>
- 
--void __init trap_init(void)
--{
--	return;
--}
--
- void die(const char *str, struct pt_regs *regs, unsigned long address)
- {
- 	show_kernel_fault_diag(str, regs, address);
-diff --git a/arch/arm/kernel/traps.c b/arch/arm/kernel/traps.c
-index 17d5a785df28..9baccef20392 100644
---- a/arch/arm/kernel/traps.c
-+++ b/arch/arm/kernel/traps.c
-@@ -780,11 +780,6 @@ void abort(void)
- 	panic("Oops failed to kill thread");
- }
- 
--void __init trap_init(void)
--{
--	return;
--}
--
- #ifdef CONFIG_KUSER_HELPERS
- static void __init kuser_init(void *vectors)
- {
-diff --git a/arch/h8300/kernel/traps.c b/arch/h8300/kernel/traps.c
-index 5d8b969cd8f3..c3a3ebf77fbb 100644
---- a/arch/h8300/kernel/traps.c
-+++ b/arch/h8300/kernel/traps.c
-@@ -30,19 +30,6 @@
- 
- static DEFINE_SPINLOCK(die_lock);
- 
--/*
-- * this must be called very early as the kernel might
-- * use some instruction that are emulated on the 060
-- */
--
--void __init base_trap_init(void)
--{
--}
--
--void __init trap_init(void)
--{
--}
--
- asmlinkage void set_esp0(unsigned long ssp)
- {
- 	current->thread.esp0 = ssp;
-diff --git a/arch/hexagon/kernel/traps.c b/arch/hexagon/kernel/traps.c
-index 904134b37232..edfc35dafeb1 100644
---- a/arch/hexagon/kernel/traps.c
-+++ b/arch/hexagon/kernel/traps.c
-@@ -28,10 +28,6 @@
- #define TRAP_SYSCALL	1
- #define TRAP_DEBUG	0xdb
- 
--void __init trap_init(void)
--{
--}
--
- #ifdef CONFIG_GENERIC_BUG
- /* Maybe should resemble arch/sh/kernel/traps.c ?? */
- int is_valid_bugaddr(unsigned long addr)
-diff --git a/arch/nds32/kernel/traps.c b/arch/nds32/kernel/traps.c
-index ee0d9ae192a5..f06421c645af 100644
---- a/arch/nds32/kernel/traps.c
-+++ b/arch/nds32/kernel/traps.c
-@@ -183,11 +183,6 @@ void __pgd_error(const char *file, int line, unsigned long val)
- }
- 
- extern char *exception_vector, *exception_vector_end;
--void __init trap_init(void)
--{
--	return;
--}
--
- void __init early_trap_init(void)
- {
- 	unsigned long ivb = 0;
-diff --git a/arch/nios2/kernel/traps.c b/arch/nios2/kernel/traps.c
-index b172da4eb1a9..596986a74a26 100644
---- a/arch/nios2/kernel/traps.c
-+++ b/arch/nios2/kernel/traps.c
-@@ -105,11 +105,6 @@ void show_stack(struct task_struct *task, unsigned long *stack,
- 	printk("%s\n", loglvl);
- }
- 
--void __init trap_init(void)
--{
--	/* Nothing to do here */
--}
--
- /* Breakpoint handler */
- asmlinkage void breakpoint_c(struct pt_regs *fp)
- {
-diff --git a/arch/openrisc/kernel/traps.c b/arch/openrisc/kernel/traps.c
-index 4d61333c2623..aa1e709405ac 100644
---- a/arch/openrisc/kernel/traps.c
-+++ b/arch/openrisc/kernel/traps.c
-@@ -231,11 +231,6 @@ void unhandled_exception(struct pt_regs *regs, int ea, int vector)
- 	die("Oops", regs, 9);
- }
- 
--void __init trap_init(void)
--{
--	/* Nothing needs to be done */
--}
--
- asmlinkage void do_trap(struct pt_regs *regs, unsigned long address)
- {
- 	force_sig_fault(SIGTRAP, TRAP_BRKPT, (void __user *)regs->pc);
-diff --git a/arch/parisc/kernel/traps.c b/arch/parisc/kernel/traps.c
-index 8d8441d4562a..747c328fb886 100644
---- a/arch/parisc/kernel/traps.c
-+++ b/arch/parisc/kernel/traps.c
-@@ -859,7 +859,3 @@ void  __init early_trap_init(void)
- 
- 	initialize_ivt(&fault_vector_20);
- }
--
--void __init trap_init(void)
--{
--}
-diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
-index a44a30b0688c..e952bee89684 100644
---- a/arch/powerpc/kernel/traps.c
-+++ b/arch/powerpc/kernel/traps.c
-@@ -2207,11 +2207,6 @@ DEFINE_INTERRUPT_HANDLER(kernel_bad_stack)
- 	die("Bad kernel stack pointer", regs, SIGABRT);
- }
- 
--void __init trap_init(void)
--{
--}
--
--
- #ifdef CONFIG_PPC_EMULATED_STATS
- 
- #define WARN_EMULATED_SETUP(type)	.type = { .name = #type }
-diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
-index 0879b5df11b9..b3f3d84de779 100644
---- a/arch/riscv/kernel/traps.c
-+++ b/arch/riscv/kernel/traps.c
-@@ -194,8 +194,3 @@ int is_valid_bugaddr(unsigned long pc)
- 		return ((insn & __COMPRESSED_INSN_MASK) == __BUG_INSN_16);
- }
- #endif /* CONFIG_GENERIC_BUG */
--
--/* stvec & scratch is already set from head.S */
--void trap_init(void)
--{
--}
-diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
-index ad12f78bda7e..3198c4767387 100644
---- a/arch/um/kernel/trap.c
-+++ b/arch/um/kernel/trap.c
-@@ -311,7 +311,3 @@ void winch(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
- {
- 	do_IRQ(WINCH_IRQ, regs);
- }
--
--void trap_init(void)
--{
--}
-diff --git a/init/main.c b/init/main.c
-index 53b278845b88..4bdbe2928530 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -790,6 +790,8 @@ static inline void initcall_debug_enable(void)
- }
- #endif
- 
-+void __init __weak trap_init(void) { }
+diff --git a/tools/testing/selftests/process_vm_exec/Makefile b/tools/testing/selftests/process_vm_exec/Makefile
+new file mode 100644
+index 000000000000..bdf7fcf0fdd3
+--- /dev/null
++++ b/tools/testing/selftests/process_vm_exec/Makefile
+@@ -0,0 +1,7 @@
++# SPDX-License-Identifier: GPL-2.0
 +
- /* Report memory auto-initialization states for this boot. */
- static void __init report_meminit(void)
- {
++UNAME_M := $(shell uname -m)
++TEST_GEN_PROGS_x86_64 := process_vm_exec process_vm_exec_fault ptrace_vm_exec process_vm_exec_syscall
++TEST_GEN_PROGS += $(TEST_GEN_PROGS_$(UNAME_M))
++
++include ../lib.mk
+diff --git a/tools/testing/selftests/process_vm_exec/log.h b/tools/testing/selftests/process_vm_exec/log.h
+new file mode 100644
+index 000000000000..ef268c2cf2b8
+--- /dev/null
++++ b/tools/testing/selftests/process_vm_exec/log.h
+@@ -0,0 +1,26 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef __SELFTEST_PROCESS_VM_EXEC_LOG_H__
++#define __SELFTEST_PROCESS_VM_EXEC_LOG_H__
++
++#define pr_msg(fmt, lvl, ...)						\
++	ksft_print_msg("[%s] (%s:%d)\t" fmt "\n",			\
++			lvl, __FILE__, __LINE__, ##__VA_ARGS__)
++
++#define pr_p(func, fmt, ...)	func(fmt ": %m", ##__VA_ARGS__)
++
++#define pr_err(fmt, ...)						\
++	({								\
++		ksft_test_result_error(fmt "\n", ##__VA_ARGS__);		\
++		-1;							\
++	})
++
++#define pr_fail(fmt, ...)					\
++	({							\
++		ksft_test_result_fail(fmt "\n", ##__VA_ARGS__);	\
++		-1;						\
++	})
++
++#define pr_perror(fmt, ...)	pr_p(pr_err, fmt, ##__VA_ARGS__)
++
++#endif
+diff --git a/tools/testing/selftests/process_vm_exec/process_vm_exec.c b/tools/testing/selftests/process_vm_exec/process_vm_exec.c
+new file mode 100644
+index 000000000000..aa4009c43e01
+--- /dev/null
++++ b/tools/testing/selftests/process_vm_exec/process_vm_exec.c
+@@ -0,0 +1,105 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#define _GNU_SOURCE
++#include <sys/types.h>
++#include <sys/wait.h>
++#include <signal.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <stdio.h>
++#include <sys/user.h>
++#include <sys/uio.h>
++#include <sys/prctl.h>
++#include "asm/unistd.h"
++#include <time.h>
++#include <sys/mman.h>
++
++#include "../kselftest.h"
++#include "log.h"
++
++#ifndef __NR_process_vm_exec
++#define __NR_process_vm_exec 441
++#endif
++
++#define TEST_SYSCALL 123
++#define TEST_SYSCALL_RET 456
++#define TEST_MARKER 789
++#define TEST_TIMEOUT 5
++#define TEST_STACK_SIZE 65536
++
++static inline long __syscall1(long n, long a1)
++{
++	unsigned long ret;
++
++	__asm__ __volatile__ ("syscall" : "=a"(ret) : "a"(n), "D"(a1) : "rcx", "r11", "memory");
++
++	return ret;
++}
++
++int marker;
++
++static void guest(void)
++{
++	while (1)
++		if (__syscall1(TEST_SYSCALL, marker) != TEST_SYSCALL_RET)
++			abort();
++}
++
++int main(int argc, char **argv)
++{
++	struct sigcontext ctx = {};
++	struct timespec start, cur;
++	int status, ret;
++	pid_t pid;
++	long sysnr;
++	void *stack;
++
++	ksft_set_plan(1);
++
++	stack = mmap(NULL, TEST_STACK_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, 0, 0);
++	if (stack == MAP_FAILED)
++		return pr_perror("mmap");
++
++	pid  = fork();
++	if (pid == 0) {
++		prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
++		marker = TEST_MARKER;
++		kill(getpid(), SIGSTOP);
++		abort();
++		return 0;
++	}
++
++	ctx.rip = (long)guest;
++	ctx.rsp = (long)stack + TEST_STACK_SIZE;
++	ctx.cs = 0x33;
++
++	sysnr = 0;
++	clock_gettime(CLOCK_MONOTONIC, &start);
++	while (1) {
++		unsigned long long sigmask = 0xffffffff;
++		siginfo_t siginfo;
++
++		clock_gettime(CLOCK_MONOTONIC, &cur);
++		if (start.tv_sec + TEST_TIMEOUT < cur.tv_sec ||
++		    (start.tv_sec + TEST_TIMEOUT == cur.tv_sec &&
++		     start.tv_nsec < cur.tv_nsec))
++			break;
++
++		ret = syscall(__NR_process_vm_exec, pid, &ctx, 0, &siginfo, &sigmask, 8);
++#ifdef __DEBUG
++		ksft_print_msg("ret %d signo %d sysno %d ip %lx\n",
++			ret, siginfo.si_signo, siginfo.si_syscall, ctx.rip);
++#endif
++		if (ret != 0)
++			pr_fail("unexpected return code: ret %d errno %d", ret, errno);
++		if (siginfo.si_signo != SIGSYS)
++			pr_fail("unexpected signal: %d", siginfo.si_signo);
++		if (siginfo.si_syscall != TEST_SYSCALL)
++			pr_fail("unexpected syscall: %d", siginfo.si_syscall);
++		ctx.rax = TEST_SYSCALL_RET;
++		sysnr++;
++	}
++	ksft_test_result_pass("%ld ns/syscall\n", 1000000000 / sysnr);
++	ksft_exit_pass();
++	return 0;
++}
+diff --git a/tools/testing/selftests/process_vm_exec/process_vm_exec_fault.c b/tools/testing/selftests/process_vm_exec/process_vm_exec_fault.c
+new file mode 100644
+index 000000000000..b2c49095f386
+--- /dev/null
++++ b/tools/testing/selftests/process_vm_exec/process_vm_exec_fault.c
+@@ -0,0 +1,111 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#define _GNU_SOURCE
++#include <stdio.h>
++#include <stdlib.h>
++#include <signal.h>
++#include <time.h>
++#include <unistd.h>
++#include <sys/types.h>
++#include <sys/mman.h>
++#include <sys/prctl.h>
++#include <sys/wait.h>
++#include <sys/user.h>
++#include <sys/uio.h>
++#include <asm/unistd.h>
++
++#include "../kselftest.h"
++#include "log.h"
++
++#ifndef __NR_process_vm_exec
++#define __NR_process_vm_exec 441
++#endif
++
++#define TEST_TIMEOUT 5
++#define TEST_STACK_SIZE 65536
++
++#define TEST_VAL 0xaabbccddee
++
++unsigned long test_val;
++
++static inline void fault(unsigned long addr)
++{
++	unsigned long val = 0;
++
++	__asm__ __volatile__ (
++	"movq %%rcx, (%%rax)\n"
++	:
++	: "a"(addr), "c"(val)
++	:);
++}
++
++
++int marker;
++
++static void guest(void)
++{
++	unsigned long addr = 0;
++
++	while (1) {
++		addr = (addr + 1) % 8;
++		fault(addr);
++		if (test_val != TEST_VAL)
++			_exit(1);
++	}
++}
++
++int main(char argc, char **argv)
++{
++	siginfo_t siginfo;
++	unsigned long long sigmask = 0xffffffff;
++	struct sigcontext ctx = {};
++	struct timespec start, cur;
++	unsigned long addr;
++	int status, ret;
++	char *stack;
++	pid_t pid;
++	long faults;
++
++	ksft_set_plan(1);
++
++	stack = mmap(NULL, TEST_STACK_SIZE, PROT_READ | PROT_WRITE,
++		     MAP_SHARED | MAP_ANONYMOUS, 0, 0);
++	if (stack == MAP_FAILED)
++		return pr_perror("mmap");
++
++	pid  = fork();
++	if (pid == 0) {
++		prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
++		marker = 789;
++		kill(getpid(), SIGSTOP);
++		abort();
++		return 0;
++	}
++
++	ctx.rip = (long)guest;
++	ctx.rsp = (long)stack + TEST_STACK_SIZE;
++	ctx.cs = 0x33;
++
++	faults = 0;
++	addr = 0;
++	clock_gettime(CLOCK_MONOTONIC, &start);
++	while (1) {
++		addr = (addr + 1) % 8;
++
++		clock_gettime(CLOCK_MONOTONIC, &cur);
++		if (start.tv_sec + TEST_TIMEOUT < cur.tv_sec ||
++		    (start.tv_sec + TEST_TIMEOUT == cur.tv_sec &&
++		     start.tv_nsec < cur.tv_nsec))
++			break;
++
++		ret = syscall(__NR_process_vm_exec, pid, &ctx, 0, &siginfo, &sigmask, 8);
++		if (addr % 8 != ctx.rax)
++			return pr_fail("unexpected address: %lx", addr);
++		ctx.rax = (long)&test_val;
++		ctx.rcx = TEST_VAL;
++		faults++;
++	}
++	ksft_test_result_pass("%ld ns/signal\n", 1000000000 / faults);
++	ksft_exit_pass();
++	return 0;
++}
+diff --git a/tools/testing/selftests/process_vm_exec/process_vm_exec_syscall.c b/tools/testing/selftests/process_vm_exec/process_vm_exec_syscall.c
+new file mode 100644
+index 000000000000..c0a7f6ee5b1a
+--- /dev/null
++++ b/tools/testing/selftests/process_vm_exec/process_vm_exec_syscall.c
+@@ -0,0 +1,81 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#define _GNU_SOURCE
++#include <signal.h>
++#include <stdlib.h>
++#include <stdio.h>
++#include <time.h>
++#include <unistd.h>
++#include <sys/types.h>
++#include <sys/wait.h>
++#include <sys/prctl.h>
++#include <sys/user.h>
++#include <sys/uio.h>
++#include <asm/unistd.h>
++
++#include "../kselftest.h"
++#include "log.h"
++
++#ifndef __NR_process_vm_exec
++#define __NR_process_vm_exec 441
++#endif
++
++#ifndef PROCESS_VM_EXEC_SYSCALL
++#define PROCESS_VM_EXEC_SYSCALL 0x1
++#endif
++
++#define TEST_VAL 0x1e511e51
++
++int test_val = TEST_VAL;
++
++int main(int argc, char **argv)
++{
++	struct sigcontext ctx = {};
++	unsigned long long sigmask;
++	int ret, p[2], val;
++	siginfo_t siginfo;
++	pid_t pid;
++
++	ksft_set_plan(1);
++
++	pid  = fork();
++	if (pid < 0)
++		return pr_perror("fork");
++	if (pid == 0) {
++		prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
++		kill(getpid(), SIGSTOP);
++		return 0;
++	}
++
++	test_val = 0;
++	if (pipe(p))
++		return pr_perror("pipe");
++
++	ctx.rax = __NR_write;
++	ctx.rdi = p[1];
++	ctx.rsi = (unsigned long) &test_val;
++	ctx.rdx = sizeof(test_val);
++	ctx.r10 = 0;
++	ctx.r8 = 0;
++	ctx.r9 = 0;
++	sigmask = 0xffffffff;
++	ret = syscall(__NR_process_vm_exec, pid, &ctx, PROCESS_VM_EXEC_SYSCALL,
++		      &siginfo, &sigmask, 8);
++	if (ret != 0)
++		return pr_perror("process_vm_exec");
++	if (siginfo.si_signo != SIGSYS)
++		return pr_fail("unexpected signal: %d", siginfo.si_signo);
++	if (ctx.rax != sizeof(test_val))
++		pr_fail("unexpected rax: %lx", ctx.rax);
++	if (kill(pid, SIGKILL))
++		return pr_perror("kill");
++	if (wait(NULL) != pid)
++		return pr_perror("kill");
++	if (read(p[0], &val, sizeof(val)) != sizeof(val))
++		pr_perror("read");
++	if (val != TEST_VAL)
++		pr_fail("unexpected data: %x", val);
++	ksft_test_result_pass("process_vm_exec(..., PROCESS_VM_EXEC_SYSCALL, ...) \n");
++	ksft_exit_pass();
++	return 0;
++}
+diff --git a/tools/testing/selftests/process_vm_exec/ptrace_vm_exec.c b/tools/testing/selftests/process_vm_exec/ptrace_vm_exec.c
+new file mode 100644
+index 000000000000..aac14c2e8f11
+--- /dev/null
++++ b/tools/testing/selftests/process_vm_exec/ptrace_vm_exec.c
+@@ -0,0 +1,111 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <sys/types.h>
++#include <sys/wait.h>
++#include <signal.h>
++#include <sys/ptrace.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <linux/unistd.h>
++#include <stdio.h>
++#include <sys/user.h>
++#include <sys/uio.h>
++#include <time.h>
++
++#include "../kselftest.h"
++#include "log.h"
++
++static inline long __syscall1(long n, long a1)
++{
++	unsigned long ret;
++
++	__asm__ __volatile__ ("syscall"
++		: "=a"(ret)
++		: "a"(n), "D"(a1)
++		: "rcx", "r11", "memory");
++	return ret;
++}
++
++#define TEST_SYSCALL 444
++#define TEST_SYSCALL_RET 555
++#define TEST_MARKER 789
++#define TEST_TIMEOUT 5
++
++static int marker;
++
++static void guest(void)
++{
++	while (1) {
++		int ret;
++
++		ret = __syscall1(TEST_SYSCALL, marker);
++		if (ret != TEST_SYSCALL_RET)
++			abort();
++	}
++}
++
++int main(int argc, char **argv)
++{
++	struct user_regs_struct regs = {};
++	struct timespec start, cur;
++	int status;
++	long sysnr;
++	pid_t pid;
++
++	ksft_set_plan(1);
++
++	pid  = fork();
++	if (pid == 0) {
++		marker = TEST_MARKER;
++		kill(getpid(), SIGSTOP);
++		/* unreachable */
++		abort();
++		return 0;
++	}
++
++	if (waitpid(pid, &status, WUNTRACED) != pid)
++		return pr_perror("waidpid");
++	if (ptrace(PTRACE_ATTACH, pid, 0, 0))
++		return pr_perror("PTRACE_ATTACH");
++	if (wait(&status) != pid)
++		return pr_perror("waidpid");
++	if (ptrace(PTRACE_CONT, pid, 0, 0))
++		return pr_perror("PTRACE_CONT");
++	if (waitpid(pid, &status, 0) != pid)
++		return pr_perror("waidpid");
++
++	if (ptrace(PTRACE_SETOPTIONS, pid, 0, PTRACE_O_EXITKILL))
++		return pr_perror("PTRACE_SETOPTIONS");
++	if (ptrace(PTRACE_GETREGS, pid, NULL, &regs))
++		return pr_perror("PTRACE_SETREGS");
++	regs.rip = (long)guest;
++
++	clock_gettime(CLOCK_MONOTONIC, &start);
++	for (sysnr = 0; ; sysnr++) {
++		int status;
++
++		clock_gettime(CLOCK_MONOTONIC, &cur);
++		if (start.tv_sec + TEST_TIMEOUT < cur.tv_sec ||
++		    (start.tv_sec + TEST_TIMEOUT == cur.tv_sec &&
++		     start.tv_nsec < cur.tv_nsec))
++			break;
++		if (ptrace(PTRACE_SETREGS, pid, NULL, &regs))
++			return pr_perror("PTRACE_SETREGS");
++		if (ptrace(PTRACE_SYSEMU, pid, 0, 0))
++			return pr_perror("PTRACE_SYSEMU");
++		if (waitpid(pid, &status, 0) != pid)
++			return pr_perror("waitpid");
++		if (!WIFSTOPPED(status) || WSTOPSIG(status) != SIGTRAP)
++			return pr_err("unexpected status: %d", status);
++		if (ptrace(PTRACE_GETREGS, pid, NULL, &regs))
++			return pr_perror("PTRACE_GETREGS: %d", regs.rdi);
++		if (regs.rdi != TEST_MARKER)
++			return pr_err("unexpected marker: %d", regs.rdi);
++		if (regs.orig_rax != TEST_SYSCALL)
++			return pr_err("unexpected syscall: %d", regs.orig_rax);
++		regs.rax = TEST_SYSCALL_RET;
++	}
++	ksft_test_result_pass("%ld ns/syscall\n", 1000000000 / sysnr);
++	ksft_exit_pass();
++	return 0;
++}
 -- 
-2.31.0
+2.29.2
 
 
 _______________________________________________
