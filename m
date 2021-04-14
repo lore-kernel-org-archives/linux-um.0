@@ -1,15 +1,11 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-ot1-x329.google.com ([2607:f8b0:4864:20::329])
- by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lYVt2-00BUUO-Rd
- for linux-um@lists.infradead.org; Mon, 19 Apr 2021 15:32:36 +0000
-Received: by mail-ot1-x329.google.com with SMTP id
- f75-20020a9d03d10000b0290280def9ab76so27826018otf.12
- for <linux-um@lists.infradead.org>; Mon, 19 Apr 2021 08:32:29 -0700 (PDT)
-From: YiFei Zhu <zhuyifei1999@gmail.com>
-Subject: [PATCH v2] um: Fix stack pointer alignment
-Date: Mon, 19 Apr 2021 10:32:13 -0500
-Message-Id: <20210419153213.1337562-1-zhuyifei1999@gmail.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH 1/3] um: pgtable.h: fix W=1 warning for empty body in 'do'
+ statement
+Date: Tue, 13 Apr 2021 23:43:48 -0700
+Message-Id: <20210414064350.3923-2-rdunlap@infradead.org>
+In-Reply-To: <20210414064350.3923-1-rdunlap@infradead.org>
+References: <20210414064350.3923-1-rdunlap@infradead.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -19,176 +15,35 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes.berg@intel.com>, Benjamin Berg <benjamin@sipsolutions.net>, YiFei Zhu <zhuyifei1999@gmail.com>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
 
-GCC assumes that stack is aligned to 16-byte on call sites [1].
-Since GCC 8, GCC began using 16-byte aligned SSE instructions to
-implement assignments to structs on stack. This affects
-os-Linux/sigio.c, write_sigio_thread:
-
-  struct pollfds *fds, tmp;
-  tmp = current_poll;
-
-Note that struct pollfds is exactly 16 bytes in size.
-GCC 8+ generates assembly similar to:
-
-  movdqa (%rdi),%xmm0
-  movaps %xmm0,-0x50(%rbp)
-
-This is an issue, because movaps will #GP if -0x50(%rbp) is not
-aligned to 16 bytes [2], and how rbp gets assigned to is via glibc
-clone thread_start, then function prologue, going though execution
-trace similar to (showing only relevant instructions):
-
-  sub    $0x10,%rsi
-  mov    %rcx,0x8(%rsi)
-  mov    %rdi,(%rsi)
-  syscall
-  pop    %rax
-  pop    %rdi
-  callq  *%rax
-  push   %rbp
-  mov    %rsp,%rbp
-
-The stack pointer always points to the topmost element on stack,
-rather then the space right above the topmost. On push, the
-pointer decrements first before writing to the memory pointed to
-by it. Therefore, there is no need to have the stack pointer
-pointer always point to valid memory unless the stack is poped;
-so the `- sizeof(void *)` in the code is unnecessary.
-
-On the other hand, glibc reserves the 16 bytes it needs on stack
-and pops itself, so by the call instruction the stack pointer
-is exactly the caller-supplied sp. It then push the 16 bytes of
-the return address and the saved stack pointer, so the base
-pointer will be 16-byte aligned if and only if the caller
-supplied sp is 16-byte aligned. Therefore, the caller must supply
-a 16-byte aligned pointer, which `stack + UM_KERN_PAGE_SIZE`
-already satisfies.
-
-On a side note, musl is unaffected by this issue because it forces
-16 byte alignment via `and $-16,%rsi` in its clone wrapper.
-Similarly, glibc i386 is also uneffected because it has
-`andl $0xfffffff0, %ecx`.
-
-To reproduce this bug, enable CONFIG_UML_RTC. uml_rtc will call
-add_sigio_fd which will then cause write_sigio_thread to go
-into segfault loop.
-
-Similarly, signal stacks will be aligned by the host kernel upon
-signal delivery. `- sizeof(void *)` to sigaltstack is
-unconventional and extraneous.
-
-On a related note, initialization of longjmp buffers do require
-`- sizeof(void *)`. This is to account for the return address
-that would have been pushed to the stack at the call site.
-
-The reason for uml to respect 16-byte alignment, rather than
-telling GCC to assume 8-byte alignment like the host kernel since
-commit d9b0cde91c60 ("x86-64, gcc: Use
--mpreferred-stack-boundary=3 if supported"), is because uml links
-against libc. There is no reason to assume libc is also compiled
-with that flag and assumes 8-byte alignment rather than 16-byte.
-
-[1] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=40838
-[2] https://c9x.me/x86/html/file_module_x86_id_180.html
-
-Signed-off-by: YiFei Zhu <zhuyifei1999@gmail.com>
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
----
- arch/um/drivers/ubd_kern.c      | 3 +--
- arch/um/kernel/skas/clone.c     | 2 +-
- arch/um/os-Linux/helper.c       | 4 ++--
- arch/um/os-Linux/signal.c       | 2 +-
- arch/um/os-Linux/skas/process.c | 2 +-
- 5 files changed, 6 insertions(+), 7 deletions(-)
-
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 8e0b43cf089f..cbd4f00fe77e 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -1242,8 +1242,7 @@ static int __init ubd_driver_init(void){
- 		 * enough. So use anyway the io thread. */
- 	}
- 	stack = alloc_stack(0, 0);
--	io_pid = start_io_thread(stack + PAGE_SIZE - sizeof(void *),
--				 &thread_fd);
-+	io_pid = start_io_thread(stack + PAGE_SIZE, &thread_fd);
- 	if(io_pid < 0){
- 		printk(KERN_ERR
- 		       "ubd : Failed to start I/O thread (errno = %d) - "
-diff --git a/arch/um/kernel/skas/clone.c b/arch/um/kernel/skas/clone.c
-index 592cdb138441..5afac0fef24e 100644
---- a/arch/um/kernel/skas/clone.c
-+++ b/arch/um/kernel/skas/clone.c
-@@ -29,7 +29,7 @@ stub_clone_handler(void)
- 	long err;
- 
- 	err = stub_syscall2(__NR_clone, CLONE_PARENT | CLONE_FILES | SIGCHLD,
--			    (unsigned long)data + UM_KERN_PAGE_SIZE / 2 - sizeof(void *));
-+			    (unsigned long)data + UM_KERN_PAGE_SIZE / 2);
- 	if (err) {
- 		data->parent_err = err;
- 		goto done;
-diff --git a/arch/um/os-Linux/helper.c b/arch/um/os-Linux/helper.c
-index 9fa6e4187d4f..32e88baf18dd 100644
---- a/arch/um/os-Linux/helper.c
-+++ b/arch/um/os-Linux/helper.c
-@@ -64,7 +64,7 @@ int run_helper(void (*pre_exec)(void *), void *pre_data, char **argv)
- 		goto out_close;
- 	}
- 
--	sp = stack + UM_KERN_PAGE_SIZE - sizeof(void *);
-+	sp = stack + UM_KERN_PAGE_SIZE;
- 	data.pre_exec = pre_exec;
- 	data.pre_data = pre_data;
- 	data.argv = argv;
-@@ -120,7 +120,7 @@ int run_helper_thread(int (*proc)(void *), void *arg, unsigned int flags,
- 	if (stack == 0)
- 		return -ENOMEM;
- 
--	sp = stack + UM_KERN_PAGE_SIZE - sizeof(void *);
-+	sp = stack + UM_KERN_PAGE_SIZE;
- 	pid = clone(proc, (void *) sp, flags, arg);
- 	if (pid < 0) {
- 		err = -errno;
-diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
-index 96f511d1aabe..e283f130aadc 100644
---- a/arch/um/os-Linux/signal.c
-+++ b/arch/um/os-Linux/signal.c
-@@ -129,7 +129,7 @@ void set_sigstack(void *sig_stack, int size)
- 	stack_t stack = {
- 		.ss_flags = 0,
- 		.ss_sp = sig_stack,
--		.ss_size = size - sizeof(void *)
-+		.ss_size = size
- 	};
- 
- 	if (sigaltstack(&stack, NULL) != 0)
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index fba674fac8b7..43d6ec2a4bea 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -327,7 +327,7 @@ int start_userspace(unsigned long stub_stack)
- 	}
- 
- 	/* set stack pointer to the end of the stack page, so it can grow downwards */
--	sp = (unsigned long) stack + UM_KERN_PAGE_SIZE - sizeof(void *);
-+	sp = (unsigned long)stack + UM_KERN_PAGE_SIZE;
- 
- 	flags = CLONE_FILES | SIGCHLD;
- 
--- 
-2.31.1
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+VXNlIHRoZSBjb21tb24ga2VybmVsIHN0eWxlIHRvIGVsaW1pbmF0ZSBhIHdhcm5pbmc6CgouL2Fy
+Y2gvdW0vaW5jbHVkZS9hc20vcGd0YWJsZS5oOjMwNTo0Nzogd2FybmluZzogc3VnZ2VzdCBicmFj
+ZXMgYXJvdW5kIGVtcHR5IGJvZHkgaW4g4oCYZG/igJkgc3RhdGVtZW50IFstV2VtcHR5LWJvZHld
+CiAjZGVmaW5lIHVwZGF0ZV9tbXVfY2FjaGUodm1hLGFkZHJlc3MscHRlcCkgZG8gOyB3aGlsZSAo
+MCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBeCm1tL2Zp
+bGVtYXAuYzozMjEyOjM6IG5vdGU6IGluIGV4cGFuc2lvbiBvZiBtYWNybyDigJh1cGRhdGVfbW11
+X2NhY2hl4oCZCiAgIHVwZGF0ZV9tbXVfY2FjaGUodm1hLCBhZGRyLCB2bWYtPnB0ZSk7CiAgIF5+
+fn5+fn5+fn5+fn5+fn4KClNpZ25lZC1vZmYtYnk6IFJhbmR5IER1bmxhcCA8cmR1bmxhcEBpbmZy
+YWRlYWQub3JnPgpDYzogSmVmZiBEaWtlIDxqZGlrZUBhZGR0b2l0LmNvbT4KQ2M6IFJpY2hhcmQg
+V2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+CkNjOiBBbnRvbiBJdmFub3YgPGFudG9uLml2YW5v
+dkBjYW1icmlkZ2VncmV5cy5jb20+CkNjOiBsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCi0t
+LQogYXJjaC91bS9pbmNsdWRlL2FzbS9wZ3RhYmxlLmggfCAgICAyICstCiAxIGZpbGUgY2hhbmdl
+ZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKCi0tLSBsaW51eC1uZXh0LTIwMjEwNDEz
+Lm9yaWcvYXJjaC91bS9pbmNsdWRlL2FzbS9wZ3RhYmxlLmgKKysrIGxpbnV4LW5leHQtMjAyMTA0
+MTMvYXJjaC91bS9pbmNsdWRlL2FzbS9wZ3RhYmxlLmgKQEAgLTMwMiw3ICszMDIsNyBAQCBzdGF0
+aWMgaW5saW5lIHB0ZV90IHB0ZV9tb2RpZnkocHRlX3QgcHRlCiBzdHJ1Y3QgbW1fc3RydWN0Owog
+ZXh0ZXJuIHB0ZV90ICp2aXJ0X3RvX3B0ZShzdHJ1Y3QgbW1fc3RydWN0ICptbSwgdW5zaWduZWQg
+bG9uZyBhZGRyKTsKIAotI2RlZmluZSB1cGRhdGVfbW11X2NhY2hlKHZtYSxhZGRyZXNzLHB0ZXAp
+IGRvIDsgd2hpbGUgKDApCisjZGVmaW5lIHVwZGF0ZV9tbXVfY2FjaGUodm1hLGFkZHJlc3MscHRl
+cCkgZG8ge30gd2hpbGUgKDApCiAKIC8qIEVuY29kZSBhbmQgZGUtY29kZSBhIHN3YXAgZW50cnkg
+Ki8KICNkZWZpbmUgX19zd3BfdHlwZSh4KQkJCSgoKHgpLnZhbCA+PiA1KSAmIDB4MWYpCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWls
+aW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
 
