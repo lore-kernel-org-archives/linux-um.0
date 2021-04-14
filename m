@@ -1,15 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x62d.google.com ([2607:f8b0:4864:20::62d])
+Received: from mail-pl1-x633.google.com ([2607:f8b0:4864:20::633])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lWYUJ-007VY1-Cf
- for linux-um@lists.infradead.org; Wed, 14 Apr 2021 05:54:56 +0000
-Received: by mail-pl1-x62d.google.com with SMTP id e2so5180562plh.8
- for <linux-um@lists.infradead.org>; Tue, 13 Apr 2021 22:54:54 -0700 (PDT)
+ id 1lWYUM-007VZc-8r
+ for linux-um@lists.infradead.org; Wed, 14 Apr 2021 05:55:00 +0000
+Received: by mail-pl1-x633.google.com with SMTP id y2so9491606plg.5
+ for <linux-um@lists.infradead.org>; Tue, 13 Apr 2021 22:54:57 -0700 (PDT)
 From: Andrei Vagin <avagin@gmail.com>
-Subject: [PATCH 0/4 POC] Allow executing code and syscalls in another address
- space
-Date: Tue, 13 Apr 2021 22:52:13 -0700
-Message-Id: <20210414055217.543246-1-avagin@gmail.com>
+Subject: [PATCH 3/4] arch/x86: allow to execute syscalls via process_vm_exec
+Date: Tue, 13 Apr 2021 22:52:16 -0700
+Message-Id: <20210414055217.543246-4-avagin@gmail.com>
+In-Reply-To: <20210414055217.543246-1-avagin@gmail.com>
+References: <20210414055217.543246-1-avagin@gmail.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -19,119 +20,174 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-kernel@vger.kernel.org, linux-api@vger.kernel.org
 Cc: linux-um@lists.infradead.org, criu@openvz.org, avagin@google.com, Andrei Vagin <avagin@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Andy Lutomirski <luto@kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Christian Brauner <christian.brauner@ubuntu.com>, Dmitry Safonov <0x7f454c46@gmail.com>, Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>, Mike Rapoport <rppt@linux.ibm.com>, Michael Kerrisk <mtk.manpages@gmail.com>, Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>
 
-V2UgYWxyZWFkeSBoYXZlIHByb2Nlc3Nfdm1fcmVhZHYgYW5kIHByb2Nlc3Nfdm1fd3JpdGV2IHRv
-IHJlYWQgYW5kIHdyaXRlCnRvIGEgcHJvY2VzcyBtZW1vcnkgZmFzdGVyIHRoYW4gd2UgY2FuIGRv
-IHRoaXMgd2l0aCBwdHJhY2UuIEFuZCBub3cgaXQKaXMgdGltZSBmb3IgcHJvY2Vzc192bV9leGVj
-IHRoYXQgYWxsb3dzIGV4ZWN1dGluZyBjb2RlIGluIGFuIGFkZHJlc3MKc3BhY2Ugb2YgYW5vdGhl
-ciBwcm9jZXNzLiBXZSBjYW4gZG8gdGhpcyB3aXRoIHB0cmFjZSBidXQgaXQgaXMgbXVjaApzbG93
-ZXIuCgo9IFVzZS1jYXNlcyA9CgpIZXJlIGFyZSB0d28ga25vd24gdXNlLWNhc2VzLiBUaGUgZmly
-c3Qgb25lIGlzIOKAnGFwcGxpY2F0aW9uIGtlcm5lbOKAnQpzYW5kYm94ZXMgbGlrZSBVc2VyLW1v
-ZGUgTGludXggYW5kIGdWaXNvci4gSW4gdGhpcyBjYXNlLCB3ZSBoYXZlIGEKcHJvY2VzcyB0aGF0
-IHJ1bnMgdGhlIHNhbmRib3gga2VybmVsIGFuZCBhIHNldCBvZiBzdHViIHByb2Nlc3NlcyB0aGF0
-CmFyZSB1c2VkIHRvIG1hbmFnZSBndWVzdCBhZGRyZXNzIHNwYWNlcy4gR3Vlc3QgY29kZSBpcyBl
-eGVjdXRlZCBpbiB0aGUKY29udGV4dCBvZiBzdHViIHByb2Nlc3NlcyBidXQgYWxsIHN5c3RlbSBj
-YWxscyBhcmUgaW50ZXJjZXB0ZWQgYW5kCmhhbmRsZWQgaW4gdGhlIHNhbmRib3gga2VybmVsLiBS
-aWdodCBub3csIHRoZXNlIHNvcnQgb2Ygc2FuZGJveGVzIHVzZQpQVFJBQ0VfU1lTRU1VIHRvIHRy
-YXAgc3lzdGVtIGNhbGxzLCBidXQgdGhlIHByb2Nlc3Nfdm1fZXhlYyBjYW4Kc2lnbmlmaWNhbnRs
-eSBzcGVlZCB0aGVtIHVwLgoKQW5vdGhlciB1c2UtY2FzZSBpcyBDUklVIChDaGVja3BvaW50L1Jl
-c3RvcmUgaW4gVXNlci1zcGFjZSkuIFNldmVyYWwKcHJvY2VzcyBwcm9wZXJ0aWVzIGNhbiBiZSBy
-ZWNlaXZlZCBvbmx5IGZyb20gdGhlIHByb2Nlc3MgaXRzZWxmLiBSaWdodApub3csIHdlIHVzZSBh
-IHBhcmFzaXRlIGNvZGUgdGhhdCBpcyBpbmplY3RlZCBpbnRvIHRoZSBwcm9jZXNzLiBXZSBkbwp0
-aGlzIHdpdGggcHRyYWNlIGJ1dCBpdCBpcyBzbG93LCB1bnNhZmUsIGFuZCB0cmlja3kuIHByb2Nl
-c3Nfdm1fZXhlYyBjYW4Kc2ltcGxpZnkgdGhlIHByb2Nlc3Mgb2YgaW5qZWN0aW5nIGEgcGFyYXNp
-dGUgY29kZSBhbmQgaXQgd2lsbCBhbGxvdwpwcmUtZHVtcCBtZW1vcnkgd2l0aG91dCBzdG9wcGlu
-ZyBwcm9jZXNzZXMuIFRoZSBwcmUtZHVtcCBoZXJlIGlzIHdoZW4gd2UKZW5hYmxlIGEgbWVtb3J5
-IHRyYWNrZXIgYW5kIGR1bXAgdGhlIG1lbW9yeSB3aGlsZSBhIHByb2Nlc3MgaXMgY29udGludWUK
-cnVubmluZy4gT24gZWFjaCBpbnRlcmFjdGlvbiB3ZSBkdW1wIG1lbW9yeSB0aGF0IGhhcyBiZWVu
-IGNoYW5nZWQgZnJvbQp0aGUgcHJldmlvdXMgaXRlcmF0aW9uLiBJbiB0aGUgZmluYWwgc3RlcCwg
-d2Ugd2lsbCBzdG9wIHByb2Nlc3NlcyBhbmQKZHVtcCB0aGVpciBmdWxsIHN0YXRlLiBSaWdodCBu
-b3cgdGhlIG1vc3QgZWZmZWN0aXZlIHdheSB0byBkdW1wIHByb2Nlc3MKbWVtb3J5IGlzIHRvIGNy
-ZWF0ZSBhIHNldCBvZiBwaXBlcyBhbmQgc3BsaWNlIG1lbW9yeSBpbnRvIHRoZXNlIHBpcGVzCmZy
-b20gdGhlIHBhcmFzaXRlIGNvZGUuIFdpdGggcHJvY2Vzc192bV9leGVjLCB3ZSB3aWxsIGJlIGFi
-bGUgdG8gY2FsbAp2bXNwbGljZSBkaXJlY3RseS4gSXQgbWVhbnMgdGhhdCB3ZSB3aWxsIG5vdCBu
-ZWVkIHRvIHN0b3AgYSBwcm9jZXNzIHRvCmluamVjdCB0aGUgcGFyYXNpdGUgY29kZS4KCj0gSG93
-IGl0IHdvcmtzID0KCnByb2Nlc3Nfdm1fZXhlYyBoYXMgdHdvIG1vZGVzOgoKKiBFeGVjdXRlIGNv
-ZGUgaW4gYW4gYWRkcmVzcyBzcGFjZSBvZiBhIHRhcmdldCBwcm9jZXNzIGFuZCBzdG9wIG9uIGFu
-eQogIHNpZ25hbCBvciBzeXN0ZW0gY2FsbC4KCiogRXhlY3V0ZSBhIHN5c3RlbSBjYWxsIGluIGFu
-IGFkZHJlc3Mgc3BhY2Ugb2YgYSB0YXJnZXQgcHJvY2Vzcy4KCmludCBwcm9jZXNzX3ZtX2V4ZWMo
-cGlkX3QgcGlkLCBzdHJ1Y3Qgc2lnY29udGV4dCB1Y3R4LAoJCSAgICB1bnNpZ25lZCBsb25nIGZs
-YWdzLCBzaWdpbmZvX3Qgc2lnaW5mbywKCQkgICAgc2lnc2V0X3QgICpzaWdtYXNrLCBzaXplX3Qg
-c2l6ZW1hc2spCgpQSUQgLSB0YXJnZXQgcHJvY2VzcyBpZGVudGlmaWNhdGlvbi4gV2UgY2FuIGNv
-bnNpZGVyIHRvIHVzZSBwaWRmZAppbnN0ZWFkIG9mIFBJRCBoZXJlLgoKc2lnY29udGV4dCBjb250
-YWlucyBhIHByb2Nlc3Mgc3RhdGUgd2l0aCB3aGF0IHRoZSBwcm9jZXNzIHdpbGwgYmUKcmVzdW1l
-ZCBhZnRlciBzd2l0Y2hpbmcgdGhlIGFkZHJlc3Mgc3BhY2UgYW5kIHRoZW4gd2hlbiBhIHByb2Nl
-c3Mgd2lsbApiZSBzdG9wcGVkLCBpdHMgc2F0ZSB3aWxsIGJlIHNhdmVkIGJhY2sgdG8gc2lnY29u
-dGV4dC4KCnNpZ2luZm8gaXMgaW5mb3JtYXRpb24gYWJvdXQgYSBzaWduYWwgdGhhdCBoYXMgaW50
-ZXJydXB0ZWQgdGhlIHByb2Nlc3MuCklmIGEgcHJvY2VzcyBpcyBpbnRlcnJ1cHRlZCBieSBhIHN5
-c3RlbSBjYWxsLCBzaWduZm8gd2lsbCBjb250YWluIGEKc3ludGhldGljIHNpZ2luZm8gb2YgdGhl
-IFNJR1NZUyBzaWduYWwuCgpzaWdtYXNrIGlzIGEgc2V0IG9mIHNpZ25hbHMgdGhhdCBwcm9jZXNz
-X3ZtX2V4ZWMgcmV0dXJucyB2aWEgc2lnbmZvLgoKIyBIb3cgZmFzdCBpcyBpdAoKSW4gdGhlIGZv
-dXJ0aCBwYXRjaCwgeW91IGNhbiBmaW5kIHR3byBiZW5jaG1hcmtzIHRoYXQgZXhlY3V0ZSBhIGZ1
-bmN0aW9uCnRoYXQgY2FsbHMgc3lzdGVtIGNhbGxzIGluIGEgbG9vcC4gcHRyYWNlX3ZtX2V4ZSB1
-c2VzIHB0cmFjZSB0byB0cmFwCnN5c3RlbSBjYWxscywgcHJvY2VzX3ZtX2V4ZWMgdXNlcyB0aGUg
-cHJvY2Vzc192bV9leGVjIHN5c2NhbGwgdG8gZG8gdGhlCnNhbWUgdGhpbmcuCgpwdHJhY2Vfdm1f
-ZXhlYzogICAxNDQ2IG5zL3N5c2NhbGwKcHRyb2Nlc3Nfdm1fZXhlYzogIDI4OSBucy9zeXNjYWxs
-CgpQUzogVGhpcyB2ZXJzaW9uIGlzIGp1c3QgYSBwcm90b3R5cGUuIEl0cyBnb2FsIGlzIHRvIGNv
-bGxlY3QgdGhlIGluaXRpYWwKZmVlZGJhY2ssIHRvIGRpc2N1c3MgdGhlIGludGVyZmFjZXMsIGFu
-ZCBtYXliZSB0byBnZXQgc29tZSBhZHZpY2Ugb24KaW1wbGVtZW50YXRpb24uLgoKQ2M6IEFuZHJl
-dyBNb3J0b24gPGFrcG1AbGludXgtZm91bmRhdGlvbi5vcmc+CkNjOiBBbmR5IEx1dG9taXJza2kg
-PGx1dG9Aa2VybmVsLm9yZz4KQ2M6IEFudG9uIEl2YW5vdiA8YW50b24uaXZhbm92QGNhbWJyaWRn
-ZWdyZXlzLmNvbT4KQ2M6IENocmlzdGlhbiBCcmF1bmVyIDxjaHJpc3RpYW4uYnJhdW5lckB1YnVu
-dHUuY29tPgpDYzogRG1pdHJ5IFNhZm9ub3YgPDB4N2Y0NTRjNDZAZ21haWwuY29tPgpDYzogSW5n
-byBNb2xuYXIgPG1pbmdvQHJlZGhhdC5jb20+CkNjOiBKZWZmIERpa2UgPGpkaWtlQGFkZHRvaXQu
-Y29tPgpDYzogTWlrZSBSYXBvcG9ydCA8cnBwdEBsaW51eC5pYm0uY29tPgpDYzogTWljaGFlbCBL
-ZXJyaXNrIChtYW4tcGFnZXMpIDxtdGsubWFucGFnZXNAZ21haWwuY29tPgpDYzogT2xlZyBOZXN0
-ZXJvdiA8b2xlZ0ByZWRoYXQuY29tPgpDYzogUGV0ZXIgWmlqbHN0cmEgPHBldGVyekBpbmZyYWRl
-YWQub3JnPgpDYzogUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNoYXJkQG5vZC5hdD4KQ2M6IFRob21h
-cyBHbGVpeG5lciA8dGdseEBsaW51dHJvbml4LmRlPgoKQW5kcmVpIFZhZ2luICg0KToKICBzaWdu
-YWw6IGFkZCBhIGhlbHBlciB0byByZXN0b3JlIGEgcHJvY2VzcyBzdGF0ZSBmcm9tIHNpZ2NvbnRl
-eAogIGFyY2gveDg2OiBpbXBsZW1lbnQgdGhlIHByb2Nlc3Nfdm1fZXhlYyBzeXNjYWxsCiAgYXJj
-aC94ODY6IGFsbG93IHRvIGV4ZWN1dGUgc3lzY2FsbHMgdmlhIHByb2Nlc3Nfdm1fZXhlYwogIHNl
-bGZ0ZXN0czogYWRkIHRlc3RzIGZvciBwcm9jZXNzX3ZtX2V4ZWMKCiBhcmNoL0tjb25maWcgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMTUgKysKIGFyY2gveDg2L0tjb25maWcg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMSArCiBhcmNoL3g4Ni9lbnRyeS9jb21t
-b24uYyAgICAgICAgICAgICAgICAgICAgICAgfCAgMTkgKysrCiBhcmNoL3g4Ni9lbnRyeS9zeXNj
-YWxscy9zeXNjYWxsXzY0LnRibCAgICAgICAgfCAgIDEgKwogYXJjaC94ODYvaW5jbHVkZS9hc20v
-c2lnY29udGV4dC5oICAgICAgICAgICAgIHwgICAyICsKIGFyY2gveDg2L2tlcm5lbC9NYWtlZmls
-ZSAgICAgICAgICAgICAgICAgICAgICB8ICAgMSArCiBhcmNoL3g4Ni9rZXJuZWwvcHJvY2Vzc192
-bV9leGVjLmMgICAgICAgICAgICAgfCAxNjAgKysrKysrKysrKysrKysrKysrCiBhcmNoL3g4Ni9r
-ZXJuZWwvc2lnbmFsLmMgICAgICAgICAgICAgICAgICAgICAgfCAxMjUgKysrKysrKysrKy0tLS0K
-IGluY2x1ZGUvbGludXgvZW50cnktY29tbW9uLmggICAgICAgICAgICAgICAgICB8ICAgMiArCiBp
-bmNsdWRlL2xpbnV4L3Byb2Nlc3Nfdm1fZXhlYy5oICAgICAgICAgICAgICAgfCAgMTcgKysKIGlu
-Y2x1ZGUvbGludXgvc2NoZWQuaCAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgNyArCiBpbmNs
-dWRlL2xpbnV4L3N5c2NhbGxzLmggICAgICAgICAgICAgICAgICAgICAgfCAgIDYgKwogaW5jbHVk
-ZS91YXBpL2FzbS1nZW5lcmljL3VuaXN0ZC5oICAgICAgICAgICAgIHwgICA0ICstCiBpbmNsdWRl
-L3VhcGkvbGludXgvcHJvY2Vzc192bV9leGVjLmggICAgICAgICAgfCAgIDggKwoga2VybmVsL2Vu
-dHJ5L2NvbW1vbi5jICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAyICstCiBrZXJuZWwvZm9y
-ay5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDkgKwoga2VybmVsL3N5c19u
-aS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAyICsKIC4uLi9zZWxmdGVzdHMv
-cHJvY2Vzc192bV9leGVjL01ha2VmaWxlICAgICAgICB8ICAgNyArCiB0b29scy90ZXN0aW5nL3Nl
-bGZ0ZXN0cy9wcm9jZXNzX3ZtX2V4ZWMvbG9nLmggfCAgMjYgKysrCiAuLi4vcHJvY2Vzc192bV9l
-eGVjL3Byb2Nlc3Nfdm1fZXhlYy5jICAgICAgICAgfCAxMDUgKysrKysrKysrKysrCiAuLi4vcHJv
-Y2Vzc192bV9leGVjL3Byb2Nlc3Nfdm1fZXhlY19mYXVsdC5jICAgfCAxMTEgKysrKysrKysrKysr
-CiAuLi4vcHJvY2Vzc192bV9leGVjL3Byb2Nlc3Nfdm1fZXhlY19zeXNjYWxsLmMgfCAgODEgKysr
-KysrKysrCiAuLi4vcHJvY2Vzc192bV9leGVjL3B0cmFjZV92bV9leGVjLmMgICAgICAgICAgfCAx
-MTEgKysrKysrKysrKysrCiAyMyBmaWxlcyBjaGFuZ2VkLCA3ODUgaW5zZXJ0aW9ucygrKSwgMzcg
-ZGVsZXRpb25zKC0pCiBjcmVhdGUgbW9kZSAxMDA2NDQgYXJjaC94ODYva2VybmVsL3Byb2Nlc3Nf
-dm1fZXhlYy5jCiBjcmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS9saW51eC9wcm9jZXNzX3ZtX2V4
-ZWMuaAogY3JlYXRlIG1vZGUgMTAwNjQ0IGluY2x1ZGUvdWFwaS9saW51eC9wcm9jZXNzX3ZtX2V4
-ZWMuaAogY3JlYXRlIG1vZGUgMTAwNjQ0IHRvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL3Byb2Nlc3Nf
-dm1fZXhlYy9NYWtlZmlsZQogY3JlYXRlIG1vZGUgMTAwNjQ0IHRvb2xzL3Rlc3Rpbmcvc2VsZnRl
-c3RzL3Byb2Nlc3Nfdm1fZXhlYy9sb2cuaAogY3JlYXRlIG1vZGUgMTAwNjQ0IHRvb2xzL3Rlc3Rp
-bmcvc2VsZnRlc3RzL3Byb2Nlc3Nfdm1fZXhlYy9wcm9jZXNzX3ZtX2V4ZWMuYwogY3JlYXRlIG1v
-ZGUgMTAwNjQ0IHRvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL3Byb2Nlc3Nfdm1fZXhlYy9wcm9jZXNz
-X3ZtX2V4ZWNfZmF1bHQuYwogY3JlYXRlIG1vZGUgMTAwNjQ0IHRvb2xzL3Rlc3Rpbmcvc2VsZnRl
-c3RzL3Byb2Nlc3Nfdm1fZXhlYy9wcm9jZXNzX3ZtX2V4ZWNfc3lzY2FsbC5jCiBjcmVhdGUgbW9k
-ZSAxMDA2NDQgdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvcHJvY2Vzc192bV9leGVjL3B0cmFjZV92
-bV9leGVjLmMKCi0tIAoyLjI5LjIKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFk
-ZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
-LXVtCg==
+process_vm_exec allows to execute code in an address space of another
+process. It changes the current address space to the target address
+space and resume the current process with registers from sigcontex that
+is passed in the arguments.
+
+This changes adds the PROCESS_VM_EXEC_SYSCALL flag and if it is set
+process_vm_exec will execute a system call with arguments from sigcontext.
+
+process_vm_exec retuns 0 if the system call has been executed and an error
+code in other cases.
+
+A return code of the system call can be found in a proper register in
+sigcontext.
+
+Signed-off-by: Andrei Vagin <avagin@gmail.com>
+---
+ arch/x86/entry/common.c              |  5 ++++-
+ arch/x86/kernel/process_vm_exec.c    | 29 +++++++++++++++++++++++++++-
+ include/linux/entry-common.h         |  2 ++
+ include/linux/process_vm_exec.h      |  2 ++
+ include/uapi/linux/process_vm_exec.h |  8 ++++++++
+ kernel/entry/common.c                |  2 +-
+ 6 files changed, 45 insertions(+), 3 deletions(-)
+ create mode 100644 include/uapi/linux/process_vm_exec.h
+
+diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
+index 42eac459b25b..8de02ca19aca 100644
+--- a/arch/x86/entry/common.c
++++ b/arch/x86/entry/common.c
+@@ -40,7 +40,10 @@
+ __visible noinstr void do_syscall_64(unsigned long nr, struct pt_regs *regs)
+ {
+ #ifdef CONFIG_PROCESS_VM_EXEC
+-	if (current->exec_mm && current->exec_mm->ctx) {
++	struct exec_mm *exec_mm = current->exec_mm;
++
++	if (exec_mm && exec_mm->ctx &&
++	    !(exec_mm->flags & PROCESS_VM_EXEC_SYSCALL)) {
+ 		kernel_siginfo_t info = {
+ 			.si_signo = SIGSYS,
+ 			.si_call_addr = (void __user *)KSTK_EIP(current),
+diff --git a/arch/x86/kernel/process_vm_exec.c b/arch/x86/kernel/process_vm_exec.c
+index 28b32330f744..9124b23f1e9b 100644
+--- a/arch/x86/kernel/process_vm_exec.c
++++ b/arch/x86/kernel/process_vm_exec.c
+@@ -11,6 +11,7 @@
+ #include <linux/sched/mm.h>
+ #include <linux/syscalls.h>
+ #include <linux/vmacache.h>
++#include <linux/entry-common.h>
+ #include <linux/process_vm_exec.h>
+ 
+ static void swap_mm(struct mm_struct *prev_mm, struct mm_struct *target_mm)
+@@ -73,7 +74,7 @@ SYSCALL_DEFINE6(process_vm_exec, pid_t, pid, struct sigcontext __user *, uctx,
+ 
+ 	sigset_t mask;
+ 
+-	if (flags)
++	if (flags & ~PROCESS_VM_EXEC_SYSCALL)
+ 		return -EINVAL;
+ 
+ 	if (sizemask != sizeof(sigset_t))
+@@ -97,6 +98,9 @@ SYSCALL_DEFINE6(process_vm_exec, pid_t, pid, struct sigcontext __user *, uctx,
+ 	}
+ 
+ 	current_pt_regs()->ax = 0;
++	if (flags & PROCESS_VM_EXEC_SYSCALL)
++		syscall_exit_to_user_mode_prepare(current_pt_regs());
++
+ 	ret = swap_vm_exec_context(uctx);
+ 	if (ret < 0)
+ 		goto err_mm_put;
+@@ -117,6 +121,29 @@ SYSCALL_DEFINE6(process_vm_exec, pid_t, pid, struct sigcontext __user *, uctx,
+ 	mmgrab(prev_mm);
+ 	swap_mm(prev_mm, mm);
+ 
++	if (flags & PROCESS_VM_EXEC_SYSCALL) {
++		struct pt_regs *regs = current_pt_regs();
++		kernel_siginfo_t info;
++		int sysno;
++
++		regs->orig_ax = regs->ax;
++		regs->ax = -ENOSYS;
++		sysno = syscall_get_nr(current, regs);
++
++		do_syscall_64(sysno, regs);
++
++		restore_vm_exec_context(regs);
++		info.si_signo = SIGSYS;
++		info.si_call_addr = (void __user *)KSTK_EIP(current);
++		info.si_arch = syscall_get_arch(current);
++		info.si_syscall = sysno;
++		ret = copy_siginfo_to_user(current->exec_mm->siginfo, &info);
++		current_pt_regs()->orig_ax = __NR_process_vm_exec;
++		current_pt_regs()->ax = -ENOSYS;
++		syscall_enter_from_user_mode_work(current_pt_regs(), current_pt_regs()->orig_ax);
++		return ret;
++	}
++
+ 	ret = current_pt_regs()->ax;
+ 
+ 	return ret;
+diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
+index 474f29638d2c..d0ebbe9ca9e4 100644
+--- a/include/linux/entry-common.h
++++ b/include/linux/entry-common.h
+@@ -285,6 +285,8 @@ static inline void arch_syscall_exit_tracehook(struct pt_regs *regs, bool step)
+ }
+ #endif
+ 
++void syscall_exit_to_user_mode_prepare(struct pt_regs *regs);
++
+ /**
+  * syscall_exit_to_user_mode - Handle work before returning to user mode
+  * @regs:	Pointer to currents pt_regs
+diff --git a/include/linux/process_vm_exec.h b/include/linux/process_vm_exec.h
+index a02535fbd5c8..2e04b4875a92 100644
+--- a/include/linux/process_vm_exec.h
++++ b/include/linux/process_vm_exec.h
+@@ -2,6 +2,8 @@
+ #ifndef _LINUX_PROCESS_VM_EXEC_H
+ #define _LINUX_PROCESS_VM_EXEC_H
+ 
++#include <uapi/linux/process_vm_exec.h>
++
+ struct exec_mm {
+ 	struct sigcontext *ctx;
+ 	struct mm_struct *mm;
+diff --git a/include/uapi/linux/process_vm_exec.h b/include/uapi/linux/process_vm_exec.h
+new file mode 100644
+index 000000000000..35465b5d3ebf
+--- /dev/null
++++ b/include/uapi/linux/process_vm_exec.h
+@@ -0,0 +1,8 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++
++#ifndef _UAPI_LINUX_PROCESS_VM_EXEC_H
++#define _UAPI_LINUX_PROCESS_VM_EXEC_H
++
++#define PROCESS_VM_EXEC_SYSCALL 0x1UL
++
++#endif
+diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+index e9e2df3f3f9e..c325a2e5ecf4 100644
+--- a/kernel/entry/common.c
++++ b/kernel/entry/common.c
+@@ -235,7 +235,7 @@ static void syscall_exit_work(struct pt_regs *regs, unsigned long ti_work)
+  * Syscall specific exit to user mode preparation. Runs with interrupts
+  * enabled.
+  */
+-static void syscall_exit_to_user_mode_prepare(struct pt_regs *regs)
++void syscall_exit_to_user_mode_prepare(struct pt_regs *regs)
+ {
+ 	u32 cached_flags = READ_ONCE(current_thread_info()->flags);
+ 	unsigned long nr = syscall_get_nr(current, regs);
+-- 
+2.29.2
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
