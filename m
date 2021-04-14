@@ -1,61 +1,236 @@
-Return-Path: <openrisc-bounces@lists.librecores.org>
-References: <20210414165808.458a3d11@xhacker.debian>
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <44bdf1f1-117d-0f10-fc59-9edd32d1ad61@csgroup.eu>
-Date: Wed, 14 Apr 2021 11:10:42 +0200
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Date: Wed, 14 Apr 2021 16:58:08 +0800
+From: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Subject: [PATCH] init: consolidate trap_init()
+Message-ID: <20210414165808.458a3d11@xhacker.debian>
 MIME-Version: 1.0
-In-Reply-To: <20210414165808.458a3d11@xhacker.debian>
-Content-Language: fr
-Subject: Re: [OpenRISC] [PATCH] init: consolidate trap_init()
-List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
- <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
-List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
-List-Post: <mailto:openrisc@lists.librecores.org>
-List-Help: <mailto:openrisc-request@lists.librecores.org?subject=help>
-List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
- <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Errors-To: openrisc-bounces@lists.librecores.org
-Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
-To: Jisheng Zhang <Jisheng.Zhang@synaptics.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Yoshinori Sato <ysato@users.sourceforge.jp>, Brian Cain <bcain@codeaurora.org>, Nick Hu <nickhu@andestech.com>, Greentime Hu <green.hu@gmail.com>, Vincent Chen <deanbo422@gmail.com>, Ley Foon Tan <ley.foon.tan@intel.com>, Jonas Bonn <jonas@southpole.se>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: uclinux-h8-devel@lists.sourceforge.jp, linux-parisc@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, openrisc@lists.librecores.org, Anup Patel <anup@brainfault.org>, linux-riscv@lists.infradead.org, linux-snps-arc@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Yoshinori Sato <ysato@users.sourceforge.jp>, Brian Cain <bcain@codeaurora.org>, Nick Hu <nickhu@andestech.com>, Greentime Hu <green.hu@gmail.com>, Vincent Chen <deanbo422@gmail.com>, Ley Foon Tan <ley.foon.tan@intel.com>, Jonas Bonn <jonas@southpole.se>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-um@lists.infradead.org, Anup Patel <anup@brainfault.org>
 
-CgpMZSAxNC8wNC8yMDIxIMOgIDEwOjU4LCBKaXNoZW5nIFpoYW5nIGEgw6ljcml0wqA6Cj4gTWFu
-eSBhcmNoaXRlY3R1cmVzIGltcGxlbWVudCB0aGUgdHJhcF9pbml0KCkgYXMgTk9QLCBzaW5jZSB0
-aGVyZSBpcwo+IG5vIHN1Y2ggZGVmYXVsdCBmb3IgdHJhcF9pbml0KCksIHRoaXMgZW1wdHkgc3R1
-YiBpcyBkdXBsaWNhdGVkIGFtb25nCj4gdGhlc2UgYXJjaGl0ZWN0dXJlcy4gUHJvdmlkZSBhIGdl
-bmVyaWMgYnV0IHdlYWsgTk9QIGltcGxlbWVudGF0aW9uCj4gdG8gZHJvcCB0aGUgZW1wdHkgc3R1
-YnMgb2YgdHJhcF9pbml0KCkgaW4gdGhlc2UgYXJjaGl0ZWN0dXJlcy4KCllvdSBkZWZpbmUgdGhl
-IHdlYWsgZnVuY3Rpb24gaW4gdGhlIF9faW5pdCBzZWN0aW9uLgoKTW9zdCBidXQgbm90IGFsbCBh
-cmNoaXRlY3R1cmVzIGhhZCBpdCBpbiBfX2luaXQgc2VjdGlvbi4KCkFuZCB0aGUgcmVtYWluaW5n
-IG9uZXMgbWF5IG5vdCBiZSBkZWZpbmVkIGluIF9faW5pdCBzZWN0aW9uLiBGb3IgaW5zdGFuY2Ug
-bG9vayBhdCB0aGUgb25lIGluIGFscGhhIAphcmNoaXRlY3R1cmUuCgpIYXZlIHlvdSBjaGVja2Vk
-IHRoYXQgaXQgaXMgbm90IGEgcHJvYmxlbSA/IEl0IHdvdWxkIGJlIGdvb2QgdG8gc2F5IHNvbWV0
-aGluZyBhYm91dCBpdCBpbiB0aGUgY29tbWl0IApkZXNjcmlwdGlvbi4KCgo+IAo+IFNpZ25lZC1v
-ZmYtYnk6IEppc2hlbmcgWmhhbmcgPEppc2hlbmcuWmhhbmdAc3luYXB0aWNzLmNvbT4KPiAtLS0K
-PiAgIGFyY2gvYXJjL2tlcm5lbC90cmFwcy5jICAgICAgfCAgNSAtLS0tLQo+ICAgYXJjaC9hcm0v
-a2VybmVsL3RyYXBzLmMgICAgICB8ICA1IC0tLS0tCj4gICBhcmNoL2g4MzAwL2tlcm5lbC90cmFw
-cy5jICAgIHwgMTMgLS0tLS0tLS0tLS0tLQo+ICAgYXJjaC9oZXhhZ29uL2tlcm5lbC90cmFwcy5j
-ICB8ICA0IC0tLS0KPiAgIGFyY2gvbmRzMzIva2VybmVsL3RyYXBzLmMgICAgfCAgNSAtLS0tLQo+
-ICAgYXJjaC9uaW9zMi9rZXJuZWwvdHJhcHMuYyAgICB8ICA1IC0tLS0tCj4gICBhcmNoL29wZW5y
-aXNjL2tlcm5lbC90cmFwcy5jIHwgIDUgLS0tLS0KPiAgIGFyY2gvcGFyaXNjL2tlcm5lbC90cmFw
-cy5jICAgfCAgNCAtLS0tCj4gICBhcmNoL3Bvd2VycGMva2VybmVsL3RyYXBzLmMgIHwgIDUgLS0t
-LS0KPiAgIGFyY2gvcmlzY3Yva2VybmVsL3RyYXBzLmMgICAgfCAgNSAtLS0tLQo+ICAgYXJjaC91
-bS9rZXJuZWwvdHJhcC5jICAgICAgICB8ICA0IC0tLS0KPiAgIGluaXQvbWFpbi5jICAgICAgICAg
-ICAgICAgICAgfCAgMiArKwo+ICAgMTIgZmlsZXMgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCA2
-MCBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvaW5pdC9tYWluLmMgYi9pbml0L21haW4u
-Ywo+IGluZGV4IDUzYjI3ODg0NWI4OC4uNGJkYmUyOTI4NTMwIDEwMDY0NAo+IC0tLSBhL2luaXQv
-bWFpbi5jCj4gKysrIGIvaW5pdC9tYWluLmMKPiBAQCAtNzkwLDYgKzc5MCw4IEBAIHN0YXRpYyBp
-bmxpbmUgdm9pZCBpbml0Y2FsbF9kZWJ1Z19lbmFibGUodm9pZCkKPiAgIH0KPiAgICNlbmRpZgo+
-ICAgCj4gK3ZvaWQgX19pbml0IF9fd2VhayB0cmFwX2luaXQodm9pZCkgeyB9Cj4gKwoKSSB0aGlu
-ayBpbiBhIEMgZmlsZSB3ZSBkb24ndCB0cnkgdG8gc2F2ZSBzcGFjZSBhcyBtdWNoIGFzIGluIGEg
-aGVhZGVyIGZpbGUuCgpJIHdvdWxkIHByZWZlciBzb21ldGhpbmcgbGlrZToKCgp2b2lkIF9faW5p
-dCBfX3dlYWsgdHJhcF9pbml0KHZvaWQpCnsKfQoKCj4gICAvKiBSZXBvcnQgbWVtb3J5IGF1dG8t
-aW5pdGlhbGl6YXRpb24gc3RhdGVzIGZvciB0aGlzIGJvb3QuICovCj4gICBzdGF0aWMgdm9pZCBf
-X2luaXQgcmVwb3J0X21lbWluaXQodm9pZCkKPiAgIHsKPiAKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KT3BlblJJU0MgbWFpbGluZyBsaXN0Ck9wZW5SSVND
-QGxpc3RzLmxpYnJlY29yZXMub3JnCmh0dHBzOi8vbGlzdHMubGlicmVjb3Jlcy5vcmcvbGlzdGlu
-Zm8vb3BlbnJpc2MK
+Many architectures implement the trap_init() as NOP, since there is
+no such default for trap_init(), this empty stub is duplicated among
+these architectures. Provide a generic but weak NOP implementation
+to drop the empty stubs of trap_init() in these architectures.
+
+Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+---
+ arch/arc/kernel/traps.c      |  5 -----
+ arch/arm/kernel/traps.c      |  5 -----
+ arch/h8300/kernel/traps.c    | 13 -------------
+ arch/hexagon/kernel/traps.c  |  4 ----
+ arch/nds32/kernel/traps.c    |  5 -----
+ arch/nios2/kernel/traps.c    |  5 -----
+ arch/openrisc/kernel/traps.c |  5 -----
+ arch/parisc/kernel/traps.c   |  4 ----
+ arch/powerpc/kernel/traps.c  |  5 -----
+ arch/riscv/kernel/traps.c    |  5 -----
+ arch/um/kernel/trap.c        |  4 ----
+ init/main.c                  |  2 ++
+ 12 files changed, 2 insertions(+), 60 deletions(-)
+
+diff --git a/arch/arc/kernel/traps.c b/arch/arc/kernel/traps.c
+index 57235e5c0cea..6b83e3f2b41c 100644
+--- a/arch/arc/kernel/traps.c
++++ b/arch/arc/kernel/traps.c
+@@ -20,11 +20,6 @@
+ #include <asm/unaligned.h>
+ #include <asm/kprobes.h>
+ 
+-void __init trap_init(void)
+-{
+-	return;
+-}
+-
+ void die(const char *str, struct pt_regs *regs, unsigned long address)
+ {
+ 	show_kernel_fault_diag(str, regs, address);
+diff --git a/arch/arm/kernel/traps.c b/arch/arm/kernel/traps.c
+index 17d5a785df28..9baccef20392 100644
+--- a/arch/arm/kernel/traps.c
++++ b/arch/arm/kernel/traps.c
+@@ -780,11 +780,6 @@ void abort(void)
+ 	panic("Oops failed to kill thread");
+ }
+ 
+-void __init trap_init(void)
+-{
+-	return;
+-}
+-
+ #ifdef CONFIG_KUSER_HELPERS
+ static void __init kuser_init(void *vectors)
+ {
+diff --git a/arch/h8300/kernel/traps.c b/arch/h8300/kernel/traps.c
+index 5d8b969cd8f3..c3a3ebf77fbb 100644
+--- a/arch/h8300/kernel/traps.c
++++ b/arch/h8300/kernel/traps.c
+@@ -30,19 +30,6 @@
+ 
+ static DEFINE_SPINLOCK(die_lock);
+ 
+-/*
+- * this must be called very early as the kernel might
+- * use some instruction that are emulated on the 060
+- */
+-
+-void __init base_trap_init(void)
+-{
+-}
+-
+-void __init trap_init(void)
+-{
+-}
+-
+ asmlinkage void set_esp0(unsigned long ssp)
+ {
+ 	current->thread.esp0 = ssp;
+diff --git a/arch/hexagon/kernel/traps.c b/arch/hexagon/kernel/traps.c
+index 904134b37232..edfc35dafeb1 100644
+--- a/arch/hexagon/kernel/traps.c
++++ b/arch/hexagon/kernel/traps.c
+@@ -28,10 +28,6 @@
+ #define TRAP_SYSCALL	1
+ #define TRAP_DEBUG	0xdb
+ 
+-void __init trap_init(void)
+-{
+-}
+-
+ #ifdef CONFIG_GENERIC_BUG
+ /* Maybe should resemble arch/sh/kernel/traps.c ?? */
+ int is_valid_bugaddr(unsigned long addr)
+diff --git a/arch/nds32/kernel/traps.c b/arch/nds32/kernel/traps.c
+index ee0d9ae192a5..f06421c645af 100644
+--- a/arch/nds32/kernel/traps.c
++++ b/arch/nds32/kernel/traps.c
+@@ -183,11 +183,6 @@ void __pgd_error(const char *file, int line, unsigned long val)
+ }
+ 
+ extern char *exception_vector, *exception_vector_end;
+-void __init trap_init(void)
+-{
+-	return;
+-}
+-
+ void __init early_trap_init(void)
+ {
+ 	unsigned long ivb = 0;
+diff --git a/arch/nios2/kernel/traps.c b/arch/nios2/kernel/traps.c
+index b172da4eb1a9..596986a74a26 100644
+--- a/arch/nios2/kernel/traps.c
++++ b/arch/nios2/kernel/traps.c
+@@ -105,11 +105,6 @@ void show_stack(struct task_struct *task, unsigned long *stack,
+ 	printk("%s\n", loglvl);
+ }
+ 
+-void __init trap_init(void)
+-{
+-	/* Nothing to do here */
+-}
+-
+ /* Breakpoint handler */
+ asmlinkage void breakpoint_c(struct pt_regs *fp)
+ {
+diff --git a/arch/openrisc/kernel/traps.c b/arch/openrisc/kernel/traps.c
+index 4d61333c2623..aa1e709405ac 100644
+--- a/arch/openrisc/kernel/traps.c
++++ b/arch/openrisc/kernel/traps.c
+@@ -231,11 +231,6 @@ void unhandled_exception(struct pt_regs *regs, int ea, int vector)
+ 	die("Oops", regs, 9);
+ }
+ 
+-void __init trap_init(void)
+-{
+-	/* Nothing needs to be done */
+-}
+-
+ asmlinkage void do_trap(struct pt_regs *regs, unsigned long address)
+ {
+ 	force_sig_fault(SIGTRAP, TRAP_BRKPT, (void __user *)regs->pc);
+diff --git a/arch/parisc/kernel/traps.c b/arch/parisc/kernel/traps.c
+index 8d8441d4562a..747c328fb886 100644
+--- a/arch/parisc/kernel/traps.c
++++ b/arch/parisc/kernel/traps.c
+@@ -859,7 +859,3 @@ void  __init early_trap_init(void)
+ 
+ 	initialize_ivt(&fault_vector_20);
+ }
+-
+-void __init trap_init(void)
+-{
+-}
+diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
+index a44a30b0688c..e952bee89684 100644
+--- a/arch/powerpc/kernel/traps.c
++++ b/arch/powerpc/kernel/traps.c
+@@ -2207,11 +2207,6 @@ DEFINE_INTERRUPT_HANDLER(kernel_bad_stack)
+ 	die("Bad kernel stack pointer", regs, SIGABRT);
+ }
+ 
+-void __init trap_init(void)
+-{
+-}
+-
+-
+ #ifdef CONFIG_PPC_EMULATED_STATS
+ 
+ #define WARN_EMULATED_SETUP(type)	.type = { .name = #type }
+diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
+index 0879b5df11b9..b3f3d84de779 100644
+--- a/arch/riscv/kernel/traps.c
++++ b/arch/riscv/kernel/traps.c
+@@ -194,8 +194,3 @@ int is_valid_bugaddr(unsigned long pc)
+ 		return ((insn & __COMPRESSED_INSN_MASK) == __BUG_INSN_16);
+ }
+ #endif /* CONFIG_GENERIC_BUG */
+-
+-/* stvec & scratch is already set from head.S */
+-void trap_init(void)
+-{
+-}
+diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
+index ad12f78bda7e..3198c4767387 100644
+--- a/arch/um/kernel/trap.c
++++ b/arch/um/kernel/trap.c
+@@ -311,7 +311,3 @@ void winch(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
+ {
+ 	do_IRQ(WINCH_IRQ, regs);
+ }
+-
+-void trap_init(void)
+-{
+-}
+diff --git a/init/main.c b/init/main.c
+index 53b278845b88..4bdbe2928530 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -790,6 +790,8 @@ static inline void initcall_debug_enable(void)
+ }
+ #endif
+ 
++void __init __weak trap_init(void) { }
++
+ /* Report memory auto-initialization states for this boot. */
+ static void __init report_meminit(void)
+ {
+-- 
+2.31.0
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
