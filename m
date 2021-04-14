@@ -1,20 +1,21 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x534.google.com ([2607:f8b0:4864:20::534])
+Received: from mail-lj1-f174.google.com ([209.85.208.174])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lWnkj-0088Vl-2K
- for linux-um@lists.infradead.org; Wed, 14 Apr 2021 22:12:54 +0000
-Received: by mail-pg1-x534.google.com with SMTP id y32so15435149pga.11
- for <linux-um@lists.infradead.org>; Wed, 14 Apr 2021 15:12:49 -0700 (PDT)
-Date: Wed, 14 Apr 2021 15:10:12 -0700
-From: Andrei Vagin <avagin@gmail.com>
+ id 1lWg3i-007opy-L8
+ for linux-um@lists.infradead.org; Wed, 14 Apr 2021 14:00:00 +0000
+Received: by mail-lj1-f174.google.com with SMTP id a25so10094305ljm.11
+ for <linux-um@lists.infradead.org>; Wed, 14 Apr 2021 06:59:58 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210414055217.543246-1-avagin@gmail.com>
+ <87blahb1pr.fsf@oldenburg.str.redhat.com>
+ <CAG48ez2z0a4x2GfHv9L0HmO1-uzsKtfOF40erPb8ADR-m+itbg@mail.gmail.com>
+ <874kg99hwf.fsf@oldenburg.str.redhat.com>
+In-Reply-To: <874kg99hwf.fsf@oldenburg.str.redhat.com>
+From: Jann Horn <jannh@google.com>
+Date: Wed, 14 Apr 2021 15:58:25 +0200
+Message-ID: <CAG48ez02UDn_yeLuLF4c=kX0=h2Qq8Fdb0cer1yN8atbXSNjkQ@mail.gmail.com>
 Subject: Re: [PATCH 0/4 POC] Allow executing code and syscalls in another
  address space
-Message-ID: <YHdoRAJb9VlZ5lSu@gmail.com>
-References: <20210414055217.543246-1-avagin@gmail.com>
- <CAG48ez0jfsS=gKN0Vo_VS2EvvMBvEr+QNz0vDKPeSAzsrsRwPQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAG48ez0jfsS=gKN0Vo_VS2EvvMBvEr+QNz0vDKPeSAzsrsRwPQ@mail.gmail.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -23,127 +24,150 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jann Horn <jannh@google.com>
-Cc: kernel list <linux-kernel@vger.kernel.org>, Linux API <linux-api@vger.kernel.org>, linux-um@lists.infradead.org, criu@openvz.org, avagin@google.com, Andrew Morton <akpm@linux-foundation.org>, Andy Lutomirski <luto@kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Christian Brauner <christian.brauner@ubuntu.com>, Dmitry Safonov <0x7f454c46@gmail.com>, Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>, Mike Rapoport <rppt@linux.ibm.com>, Michael Kerrisk <mtk.manpages@gmail.com>, Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>
+To: Florian Weimer <fweimer@redhat.com>
+Cc: Andrei Vagin <avagin@gmail.com>, kernel list <linux-kernel@vger.kernel.org>, Linux API <linux-api@vger.kernel.org>, linux-um@lists.infradead.org, criu@openvz.org, Andrei Vagin <avagin@google.com>, Andrew Morton <akpm@linux-foundation.org>, Andy Lutomirski <luto@kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Christian Brauner <christian.brauner@ubuntu.com>, Dmitry Safonov <0x7f454c46@gmail.com>, Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>, Mike Rapoport <rppt@linux.ibm.com>, Michael Kerrisk <mtk.manpages@gmail.com>, Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>
 
-T24gV2VkLCBBcHIgMTQsIDIwMjEgYXQgMDg6NDY6NDBBTSArMDIwMCwgSmFubiBIb3JuIHdyb3Rl
-Ogo+IE9uIFdlZCwgQXByIDE0LCAyMDIxIGF0IDc6NTkgQU0gQW5kcmVpIFZhZ2luIDxhdmFnaW5A
-Z21haWwuY29tPiB3cm90ZToKPiA+IFdlIGFscmVhZHkgaGF2ZSBwcm9jZXNzX3ZtX3JlYWR2IGFu
-ZCBwcm9jZXNzX3ZtX3dyaXRldiB0byByZWFkIGFuZCB3cml0ZQo+ID4gdG8gYSBwcm9jZXNzIG1l
-bW9yeSBmYXN0ZXIgdGhhbiB3ZSBjYW4gZG8gdGhpcyB3aXRoIHB0cmFjZS4gQW5kIG5vdyBpdAo+
-ID4gaXMgdGltZSBmb3IgcHJvY2Vzc192bV9leGVjIHRoYXQgYWxsb3dzIGV4ZWN1dGluZyBjb2Rl
-IGluIGFuIGFkZHJlc3MKPiA+IHNwYWNlIG9mIGFub3RoZXIgcHJvY2Vzcy4gV2UgY2FuIGRvIHRo
-aXMgd2l0aCBwdHJhY2UgYnV0IGl0IGlzIG11Y2gKPiA+IHNsb3dlci4KPiA+Cj4gPiA9IFVzZS1j
-YXNlcyA9Cj4gCj4gSXQgc2VlbXMgdG8gbWUgbGlrZSB5b3VyIHByb3Bvc2VkIEFQSSBkb2Vzbid0
-IHJlYWxseSBmaXQgZWl0aGVyIG9uZSBvZgo+IHRob3NlIHVzZWNhc2VzIHdlbGwuLi4KCldlIGRl
-ZmluaXRlbHkgY2FuIGludmVudCBtb3JlIHNwZWNpZmljIGludGVyZmFjZXMgZm9yIGVhY2ggb2Yg
-dGhlc2UKcHJvYmxlbXMuIFN1cmUsIHRoZXkgd2lsbCBoYW5kbGUgdGhlaXIgdXNlLWNhc2VzIGEg
-Yml0IGJldHRlciB0aGFuIHRoaXMKZ2VuZXJpYyBvbmUuIEJ1dCBkbyB3ZSB3YW50IHRvIGhhdmUg
-dHdvIHZlcnkgc3BlY2lmaWMgaW50ZXJmYWNlcyB3aXRoCnNlcGFyYXRlIGtlcm5lbCBpbXBsZW1l
-bnRhdGlvbnM/IE15IHByZXZpb3VzIGV4cGVyaWVuY2VzIHNob3dlZCB0aGF0IHRoZQprZXJuZWwg
-Y29tbXVuaXR5IGRvZXNuJ3QgbGlrZSBpbnRlcmZhY2VzIHRoYXQgYXJlIHNwZWNpZmljIGZvciBv
-bmx5IG9uZQpuYXJyb3cgdXNlLWNhc2UuCgpTbyB3aGVuIEkgd2FzIHdvcmtpbmcgb24gcHJvY2Vz
-c192bV9leGVjLCBJIHdhcyB0aGlua2luZyBob3cgdG8gbWFrZQpvbmUgaW50ZXJmYWNlcyB0aGF0
-IHdpbGwgYmUgZ29vZCBlbm91Z2ggZm9yIGFsbCB0aGVzZSB1c2UtY2FzZXMuCgo+IAo+ID4gSGVy
-ZSBhcmUgdHdvIGtub3duIHVzZS1jYXNlcy4gVGhlIGZpcnN0IG9uZSBpcyDigJxhcHBsaWNhdGlv
-biBrZXJuZWzigJ0KPiA+IHNhbmRib3hlcyBsaWtlIFVzZXItbW9kZSBMaW51eCBhbmQgZ1Zpc29y
-LiBJbiB0aGlzIGNhc2UsIHdlIGhhdmUgYQo+ID4gcHJvY2VzcyB0aGF0IHJ1bnMgdGhlIHNhbmRi
-b3gga2VybmVsIGFuZCBhIHNldCBvZiBzdHViIHByb2Nlc3NlcyB0aGF0Cj4gPiBhcmUgdXNlZCB0
-byBtYW5hZ2UgZ3Vlc3QgYWRkcmVzcyBzcGFjZXMuIEd1ZXN0IGNvZGUgaXMgZXhlY3V0ZWQgaW4g
-dGhlCj4gPiBjb250ZXh0IG9mIHN0dWIgcHJvY2Vzc2VzIGJ1dCBhbGwgc3lzdGVtIGNhbGxzIGFy
-ZSBpbnRlcmNlcHRlZCBhbmQKPiA+IGhhbmRsZWQgaW4gdGhlIHNhbmRib3gga2VybmVsLiBSaWdo
-dCBub3csIHRoZXNlIHNvcnQgb2Ygc2FuZGJveGVzIHVzZQo+ID4gUFRSQUNFX1NZU0VNVSB0byB0
-cmFwIHN5c3RlbSBjYWxscywgYnV0IHRoZSBwcm9jZXNzX3ZtX2V4ZWMgY2FuCj4gPiBzaWduaWZp
-Y2FudGx5IHNwZWVkIHRoZW0gdXAuCj4gCj4gSW4gdGhpcyBjYXNlLCBzaW5jZSB5b3UgcmVhbGx5
-IG9ubHkgd2FudCBhbiBtbV9zdHJ1Y3QgdG8gcnVuIGNvZGUKPiB1bmRlciwgaXQgc2VlbXMgd2Vp
-cmQgdG8gY3JlYXRlIGEgd2hvbGUgdGFzayB3aXRoIGl0cyBvd24gUElEIGFuZCBzbwo+IG9uLiBJ
-dCBzZWVtcyB0byBtZSBsaWtlIHNvbWV0aGluZyBzaW1pbGFyIHRvIHRoZSAvZGV2L2t2bSBBUEkg
-d291bGQgYmUKPiBtb3JlIGFwcHJvcHJpYXRlIGhlcmU/IEltcGxlbWVudGF0aW9uIG9wdGlvbnMg
-dGhhdCBJIHNlZSBmb3IgdGhhdAo+IHdvdWxkIGJlOgo+IAo+IDEuIG1tX3N0cnVjdC1iYXNlZDoK
-PiAgICAgICBhIHNldCBvZiBzeXNjYWxscyB0byBjcmVhdGUgYSBuZXcgbW1fc3RydWN0LAo+ICAg
-ICAgIGNoYW5nZSBtZW1vcnkgbWFwcGluZ3MgdW5kZXIgdGhhdCBtbV9zdHJ1Y3QsIGFuZCBzd2l0
-Y2ggdG8gaXQKPiAyLiBwYWdldGFibGUtbWlycm9yaW5nLWJhc2VkOgo+ICAgICAgIGxpa2UgL2Rl
-di9rdm0sIGFuIEFQSSB0byBjcmVhdGUgYSBuZXcgcGFnZXRhYmxlLCBtaXJyb3IgcGFydHMgb2YK
-PiAgICAgICB0aGUgbW1fc3RydWN0J3MgcGFnZXRhYmxlcyBvdmVyIGludG8gaXQgd2l0aCBtb2Rp
-ZmllZCBwZXJtaXNzaW9ucwo+ICAgICAgIChsaWtlIEtWTV9TRVRfVVNFUl9NRU1PUllfUkVHSU9O
-KSwKPiAgICAgICBhbmQgcnVuIGNvZGUgdW5kZXIgdGhhdCBjb250ZXh0Lgo+ICAgICAgIHBhZ2Ug
-ZmF1bHQgaGFuZGxpbmcgd291bGQgZmlyc3QgaGFuZGxlIHRoZSBmYXVsdCBhZ2FpbnN0IG1tLT5w
-Z2QKPiAgICAgICBhcyBub3JtYWwsIHRoZW4gbWlycm9yIHRoZSBQVEUgb3ZlciBpbnRvIHRoZSBz
-ZWNvbmRhcnkgcGFnZXRhYmxlcy4KPiAgICAgICBpbnZhbGlkYXRpb24gY291bGQgYmUgaGFuZGxl
-ZCB3aXRoIE1NVSBub3RpZmllcnMuCgpXZSBhcmUgcmVhZHkgdG8gZGlzY3VzcyB0aGlzIHNvcnQg
-b2YgaW50ZXJmYWNlcyBpZiB0aGUgY29tbXVuaXR5IHdpbGwKYWdyZWUgdG8gYWNjZXB0IGl0LiBB
-cmUgdGhlcmUgYW55IG90aGVyIHVzZXJzIGV4Y2VwdCBzYW5kYm94ZXMgdGhhdCB3aWxsCm5lZWQg
-c29tZXRoaW5nIGxpa2UgdGhpcz8gV2lsbCB0aGUgc2FuZGJveCB1c2UtY2FzZSBlbm91Z2ggdG8g
-anVzdGlmeQp0aGUgYWRkaXRpb24gb2YgdGhpcyBpbnRlcmZhY2U/Cgo+IAo+ID4gQW5vdGhlciB1
-c2UtY2FzZSBpcyBDUklVIChDaGVja3BvaW50L1Jlc3RvcmUgaW4gVXNlci1zcGFjZSkuIFNldmVy
-YWwKPiA+IHByb2Nlc3MgcHJvcGVydGllcyBjYW4gYmUgcmVjZWl2ZWQgb25seSBmcm9tIHRoZSBw
-cm9jZXNzIGl0c2VsZi4gUmlnaHQKPiA+IG5vdywgd2UgdXNlIGEgcGFyYXNpdGUgY29kZSB0aGF0
-IGlzIGluamVjdGVkIGludG8gdGhlIHByb2Nlc3MuIFdlIGRvCj4gPiB0aGlzIHdpdGggcHRyYWNl
-IGJ1dCBpdCBpcyBzbG93LCB1bnNhZmUsIGFuZCB0cmlja3kuCj4gCj4gQnV0IHRoaXMgQVBJIHdp
-bGwgb25seSBsZXQgeW91IHJ1biBjb2RlIHVuZGVyIHRoZSAqbW0qIG9mIHRoZSB0YXJnZXQKPiBw
-cm9jZXNzLCBub3QgZnVsbHkgaW4gdGhlIGNvbnRleHQgb2YgYSB0YXJnZXQgKnRhc2sqLCByaWdo
-dD8gU28geW91Cj4gc3RpbGwgd29uJ3QgYmUgYWJsZSB0byB1c2UgdGhpcyBmb3IgYWNjZXNzaW5n
-IGFueXRoaW5nIG90aGVyIHRoYW4KPiBtZW1vcnk/IFRoYXQgZG9lc24ndCBzZWVtIHZlcnkgZ2Vu
-ZXJpY2FsbHkgdXNlZnVsIHRvIG1lLgoKWW91IGFyZSByaWdodCwgdGhpcyB3aWxsIG5vdCByaWQg
-dXMgb2YgdGhlIG5lZWQgdG8gcnVuIGEgcGFyYXNpdGUgY29kZS4KSSB3cm90ZSB0aGF0IGl0IHdp
-bGwgbWFrZSBhIHByb2Nlc3Mgb2YgaW5qZWN0aW5nIGEgcGFyYXNpdGUgY29kZSBhIGJpdApzaW1w
-bGVyLgoKPiAKPiBBbHNvLCBJIGRvbid0IGRvdWJ0IHRoYXQgYW55dGhpbmcgaW52b2x2aW5nIHB0
-cmFjZSBpcyBraW5kYSB0cmlja3ksCj4gYnV0IGl0IHdvdWxkIGJlIG5pY2UgdG8gaGF2ZSBzb21l
-IG1vcmUgZGV0YWlsIG9uIHdoYXQgZXhhY3RseSBtYWtlcwo+IHRoaXMgc2xvdywgdW5zYWZlIGFu
-ZCB0cmlja3kuIEFyZSB0aGVyZSBBUEkgYWRkaXRpb25zIGZvciBwdHJhY2UgdGhhdAo+IHdvdWxk
-IG1ha2UgdGhpcyB3b3JrIGJldHRlcj8gSSBpbWFnaW5lIHlvdSdyZSB0aGlua2luZyBvZiB0aGlu
-Z3MgbGlrZQo+IGFuIEFQSSBmb3IgaW5qZWN0aW5nIGEgc3lzY2FsbCBpbnRvIHRoZSB0YXJnZXQg
-cHJvY2VzcyB3aXRob3V0IGhhdmluZwo+IHRvIGZpcnN0IHNvbWVob3cgZmluZCBhbiBleGlzdGlu
-ZyBTWVNDQUxMIGluc3RydWN0aW9uIGluIHRoZSB0YXJnZXQKPiBwcm9jZXNzPwoKCllvdSBkZXNj
-cmliZSB0aGUgZmlyc3QgcHJvYmxlbSByaWdodC4gV2UgbmVlZCB0byBmaW5kIG9yIGluamVjdCBh
-CnN5c2NhbGwgaW5zdHJ1Y3Rpb24gdG8gYSB0YXJnZXQgcHJvY2Vzcy4KUmlnaHQgbm93LCB3ZSBu
-ZWVkIHRvIGRvIHRoZXNlIHN0ZXBzIHRvIGV4ZWN1dGUgYSBzeXN0ZW0gY2FsbDoKCiogaW5qZWN0
-IHRoZSBzeXNjYWxsIGluc3RydWN0aW9uIChQVFJBQ0VfUEVFS0RBVEEvUFRSQUNFX1BPS0VEQVRB
-KS4KKiBnZXQgb3JpZ2luIHJlZ2lzdGVycwoqIHNldCBuZXcgcmVnaXN0ZXJzCiogZ2V0IGEgc2ln
-bmFsIG1hc2suCiogYmxvY2sgc2lnbmFscwoqIHJlc3VtZSB0aGUgcHJvY2VzcwoqIHN0b3AgaXQg
-b24gdGhlIG5leHQgc3lzY2FsbC1leGl0CiogZ2V0IHJlZ2lzdGVycwoqIHNldCBvcmlnaW4gcmVn
-aXN0ZXJzCiogcmVzdG9yZSBhIHNpZ25hbCBtYXNrLgoKT25lIG9mIHRoZSBDUklVIHByaW5jaXBh
-bHMgaXMgdG8gYXZvaWQgY2hhbmdpbmcgYSBwcm9jZXNzIHN0YXRlLCBzbyBpZgpjcml1IGlzIGlu
-dGVycnVwdGVkLCBwcm9jZXNzZXMgbXVzdCBiZSByZXN1bWVkIGFuZCBjb250aW51ZSBydW5uaW5n
-LiBUaGUKcHJvY2VkdXJlIG9mIGluamVjdGluZyBhIHN5c3RlbSBjYWxsIGNyZWF0ZXMgYSB3aW5k
-b3cgd2hlbiBhIHByb2Nlc3MgaXMKaW4gYW4gaW5jb25zaXN0ZW50IHN0YXRlLCBhbmQgYSBkaXNh
-cHBlYXJpbmcgQ1JJVSBhdCBzdWNoIG1vbWVudHMgd2lsbApiZSBmYXRhbCBmb3IgdGhlIHByb2Nl
-c3MuIFdlIGRvbid0IHRoaW5rIHRoYXQgd2UgY2FuIGVsaW1pbmF0ZSBzdWNoCndpbmRvd3MsIGJ1
-dCB3ZSB3YW50IHRvIG1ha2UgdGhlbSBzbWFsbGVyLgoKSW4gQ1JJVSwgd2UgaGF2ZSBhIHNlbGYt
-aGVhbGVkIHBhcmFzaXRlLiBUaGUgaWRlYSBpcyB0byBpbmplY3QgYQpwYXJhc2l0ZSBjb2RlIHdp
-dGggYSBzaWduYWwgZnJhbWUgdGhhdCBjb250YWlucyB0aGUgb3JpZ2luIHByb2Nlc3MKc3RhdGUu
-IFRoZSBwYXJhc2l0ZSBydW5zIGluIGFuICJSUEMgZGFlbW9uIG1vZGUiIGFuZCBnZXRzIGNvbW1h
-bmRzIGZyb20KY3JpdSB2aWEgYSB1bml4IHNvY2tldC4gSWYgaXQgZGV0ZWN0cyB0aGF0IGNyaXUg
-ZGlzYXBwZWFyZWQsIGl0IGNhbGxzCnJ0X3NpZ3JldHVybiBhbmQgcmVzdW1lcyB0aGUgb3JpZ2lu
-IHByb2Nlc3MuCgpBcyBmb3IgdGhlIHBlcmZvcm1hbmNlIG9mIHRoZSBwdHJhY2UsIHRoZXJlIGFy
-ZSBhIGZldyByZWFzb25zIHdoeSBpdCBpcwpzbG93LiBGaXJzdCwgaXQgaXMgYSBudW1iZXIgb2Yg
-c3RlcHMgd2hhdCB3ZSBuZWVkIHRvIGRvLiBTZWNvbmQsIGl0IGlzCnR3byBzeW5jaHJvbmlvdXMg
-Y29udGV4dCBzd2l0Y2hlcy4gRXZlbiBpZiB3ZSB3aWxsIHNvbHZlIHRoZSBmaXJzdApwcm9ibGVt
-IHdpdGggYSBuZXcgcHRyYWNlIGNvbW1hbmQsIGl0IHdpbGwgYmUgbm90IGVub3VnaCB0byBzdG9w
-IHVzaW5nIGEKcGFyYXNpdGUgaW4gQ1JJVS4KCj4gCj4gPiBwcm9jZXNzX3ZtX2V4ZWMgY2FuCj4g
-PiBzaW1wbGlmeSB0aGUgcHJvY2VzcyBvZiBpbmplY3RpbmcgYSBwYXJhc2l0ZSBjb2RlIGFuZCBp
-dCB3aWxsIGFsbG93Cj4gPiBwcmUtZHVtcCBtZW1vcnkgd2l0aG91dCBzdG9wcGluZyBwcm9jZXNz
-ZXMuIFRoZSBwcmUtZHVtcCBoZXJlIGlzIHdoZW4gd2UKPiA+IGVuYWJsZSBhIG1lbW9yeSB0cmFj
-a2VyIGFuZCBkdW1wIHRoZSBtZW1vcnkgd2hpbGUgYSBwcm9jZXNzIGlzIGNvbnRpbnVlCj4gPiBy
-dW5uaW5nLiBPbiBlYWNoIGludGVyYWN0aW9uIHdlIGR1bXAgbWVtb3J5IHRoYXQgaGFzIGJlZW4g
-Y2hhbmdlZCBmcm9tCj4gPiB0aGUgcHJldmlvdXMgaXRlcmF0aW9uLiBJbiB0aGUgZmluYWwgc3Rl
-cCwgd2Ugd2lsbCBzdG9wIHByb2Nlc3NlcyBhbmQKPiA+IGR1bXAgdGhlaXIgZnVsbCBzdGF0ZS4g
-UmlnaHQgbm93IHRoZSBtb3N0IGVmZmVjdGl2ZSB3YXkgdG8gZHVtcCBwcm9jZXNzCj4gPiBtZW1v
-cnkgaXMgdG8gY3JlYXRlIGEgc2V0IG9mIHBpcGVzIGFuZCBzcGxpY2UgbWVtb3J5IGludG8gdGhl
-c2UgcGlwZXMKPiA+IGZyb20gdGhlIHBhcmFzaXRlIGNvZGUuIFdpdGggcHJvY2Vzc192bV9leGVj
-LCB3ZSB3aWxsIGJlIGFibGUgdG8gY2FsbAo+ID4gdm1zcGxpY2UgZGlyZWN0bHkuIEl0IG1lYW5z
-IHRoYXQgd2Ugd2lsbCBub3QgbmVlZCB0byBzdG9wIGEgcHJvY2VzcyB0bwo+ID4gaW5qZWN0IHRo
-ZSBwYXJhc2l0ZSBjb2RlLgo+IAo+IEFsdGVybmF0aXZlbHkgeW91IGNvdWxkIGFkZCBzcGxpY2Ug
-c3VwcG9ydCB0byAvcHJvYy8kcGlkL21lbSBvciBhZGQgYQo+IHN5c2NhbGwgc2ltaWxhciB0byBw
-cm9jZXNzX3ZtX3JlYWR2KCkgdGhhdCBzcGxpY2VzIGludG8gYSBwaXBlLCByaWdodD8KCldlIHNl
-bmQgcGF0Y2hlcyB0byBpbnRyb2N1ZGUgcHJvY2Vzc192bV9zcGxpY2U6Cmh0dHBzOi8vbG9yZS5r
-ZXJuZWwub3JnL3BhdGNod29yay9jb3Zlci84NzExMTYvCgpidXQgdGhleSB3ZXJlIG5vdCBtZXJn
-ZWQgYW5kIHRoZSBtYWluIHJlYXNvbiB3YXMgYSBsYWNrIG9mIGVub3VnaCB1c2Vycwp0byBqdXN0
-aWZ5IGl0cyBhZGRpdGlvbi4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQu
-b3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
+ On Wed, Apr 14, 2021 at 2:20 PM Florian Weimer <fweimer@redhat.com> wrote:
+>
+> * Jann Horn:
+>
+> > On Wed, Apr 14, 2021 at 12:27 PM Florian Weimer <fweimer@redhat.com> wrote:
+> >>
+> >> * Andrei Vagin:
+> >>
+> >> > We already have process_vm_readv and process_vm_writev to read and write
+> >> > to a process memory faster than we can do this with ptrace. And now it
+> >> > is time for process_vm_exec that allows executing code in an address
+> >> > space of another process. We can do this with ptrace but it is much
+> >> > slower.
+> >> >
+> >> > = Use-cases =
+> >>
+> >> We also have some vaguely related within the same address space: running
+> >> code on another thread, without modifying its stack, while it has signal
+> >> handlers blocked, and without causing system calls to fail with EINTR.
+> >> This can be used to implement certain kinds of memory barriers.
+> >
+> > That's what the membarrier() syscall is for, right? Unless you don't
+> > want to register all threads for expedited membarrier use?
+>
+> membarrier is not sufficiently powerful for revoking biased locks, for
+> example.
+
+But on Linux >=5.10, together with rseq, it is, right? Then lock
+acquisition could look roughly like this, in pseudo-C (yes, I know,
+real rseq doesn't quite look like that, you'd need inline asm for that
+unless the compiler adds special support for this):
+
+
+enum local_state {
+  STATE_FREE_OR_BIASED,
+  STATE_LOCKED
+};
+#define OWNER_LOCKBIT (1U<<31)
+#define OWNER_WAITER_BIT (1U<<30) /* notify futex when OWNER_LOCKBIT
+is cleared */
+struct biased_lock {
+  unsigned int owner_with_lockbit;
+  enum local_state local_state;
+};
+
+void lock(struct biased_lock *L) {
+  unsigned int my_tid = THREAD_SELF->tid;
+  RSEQ_SEQUENCE_START(); // restart here on failure
+  if (READ_ONCE(L->owner) == my_tid) {
+    if (READ_ONCE(L->local_state) == STATE_LOCKED) {
+      RSEQ_SEQUENCE_END();
+      /*
+       * Deadlock, abort execution.
+       * Note that we are not necessarily actually *holding* the lock;
+       * this can also happen if we entered a signal handler while we
+       * were in the process of acquiring the lock.
+       * But in that case it could just as well have happened that we
+       * already grabbed the lock, so the caller is wrong anyway.
+       */
+      fatal_error();
+    }
+    RSEQ_COMMIT(L->local_state = STATE_LOCKED);
+    return; /* fastpath success */
+  }
+  RSEQ_SEQUENCE_END();
+
+  /* slowpath */
+  /* acquire and lock owner field */
+  unsigned int old_owner_with_lockbit;
+  while (1) {
+    old_owner_with_lockbit = READ_ONCE(L->owner_with_lockbit);
+    if (old_owner_with_lockbit & OWNER_LOCKBIT) {
+      if (!__sync_bool_compare_and_swap (&L->owner_with_lockbit,
+old_owner_with_lockbit, my_tid | OWNER_LOCKBIT | OWNER_WAITER_BIT))
+       continue;
+      futex(&L->owner_with_lockbit, FUTEX_WAIT,
+old_owner_with_lockbit, NULL, NULL, 0);
+      continue;
+    } else {
+      if (__sync_bool_compare_and_swap (&L->owner_with_lockbit,
+old_owner_with_lockbit, my_tid | OWNER_LOCKBIT))
+        break;
+    }
+  }
+
+  /*
+   * ensure old owner won't lock local_state anymore.
+   * we only have to worry about the owner that directly preceded us here;
+   * it will have done this step for the owners that preceded it before clearing
+   * the LOCKBIT; so if we were the old owner, we don't have to sync.
+   */
+  if (old_owner_with_lockbit != my_tid) {
+    if (membarrier(MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ, 0, 0))
+      fatal_error();
+  }
+
+  /*
+   * As soon as the lock becomes STATE_FREE_OR_BIASED, we own it; but
+   * at this point it might still be locked.
+   */
+  while (READ_ONCE(L->local_state) == STATE_LOCKED) {
+    futex(&L->local_state, FUTEX_WAIT, STATE_LOCKED, NULL, NULL, 0);
+  }
+
+  /* OK, now the lock is biased to us and we can grab it. */
+  WRITE_ONCE(L->local_state, STATE_LOCKED);
+
+  /* drop lockbit */
+  unsigned int old_owner_with_lockbit;
+  while (1) {
+    old_owner_with_lockbit = READ_ONCE(L->owner_with_lockbit);
+    if (__sync_bool_compare_and_swap (&L->owner_with_lockbit,
+old_owner_with_lockbit, my_tid))
+      break;
+  }
+  if (old_owner_with_lockbit & OWNER_WAITER_BIT)
+    futex(&L->owner_with_lockbit, FUTEX_WAKE, INT_MAX, NULL, NULL, 0);
+}
+
+void unlock(struct biased_lock *L) {
+  unsigned int my_tid = THREAD_SELF->tid;
+
+  /*
+   * If we run before the membarrier(), the lock() path will immediately
+   * see the lock as uncontended, and we don't need to call futex().
+   * If we run after the membarrier(), the ->owner_with_lockbit read
+   * here will observe the new owner and we'll wake the futex.
+   */
+  RSEQ_SEQUENCE_START();
+  unsigned int old_owner_with_lockbit = READ_ONCE(L->owner_with_lockbit);
+  RSEQ_COMMIT(WRITE_ONCE(L->local_state, STATE_FREE_OR_BIASED));
+  if (old_owner_with_lockbit != my_tid)
+    futex(&L->local_state, FUTEX_WAKE, INT_MAX, NULL, NULL, 0);
+}
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
