@@ -1,12 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH 1/3] um: pgtable.h: fix W=1 warning for empty body in 'do'
- statement
-Date: Tue, 13 Apr 2021 23:43:48 -0700
-Message-Id: <20210414064350.3923-2-rdunlap@infradead.org>
-In-Reply-To: <20210414064350.3923-1-rdunlap@infradead.org>
-References: <20210414064350.3923-1-rdunlap@infradead.org>
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
+ by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
+ id 1lXHhq-0096jD-Uh
+ for linux-um@lists.infradead.org; Fri, 16 Apr 2021 06:11:56 +0000
+Subject: Re: [PATCH v2] uml: fix W=1 missing-include-dirs warnings
+References: <20210415171352.27398-1-rdunlap@infradead.org>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <e3a93e3e-84ba-7274-3476-d63ad4fbcca9@cambridgegreys.com>
+Date: Fri, 16 Apr 2021 07:11:43 +0100
 MIME-Version: 1.0
+In-Reply-To: <20210415171352.27398-1-rdunlap@infradead.org>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -15,35 +20,68 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
+To: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc: Masahiro Yamada <masahiroy@kernel.org>, Michal Marek <michal.lkml@markovi.net>, linux-kbuild@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org
 
-VXNlIHRoZSBjb21tb24ga2VybmVsIHN0eWxlIHRvIGVsaW1pbmF0ZSBhIHdhcm5pbmc6CgouL2Fy
-Y2gvdW0vaW5jbHVkZS9hc20vcGd0YWJsZS5oOjMwNTo0Nzogd2FybmluZzogc3VnZ2VzdCBicmFj
-ZXMgYXJvdW5kIGVtcHR5IGJvZHkgaW4g4oCYZG/igJkgc3RhdGVtZW50IFstV2VtcHR5LWJvZHld
-CiAjZGVmaW5lIHVwZGF0ZV9tbXVfY2FjaGUodm1hLGFkZHJlc3MscHRlcCkgZG8gOyB3aGlsZSAo
-MCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBeCm1tL2Zp
-bGVtYXAuYzozMjEyOjM6IG5vdGU6IGluIGV4cGFuc2lvbiBvZiBtYWNybyDigJh1cGRhdGVfbW11
-X2NhY2hl4oCZCiAgIHVwZGF0ZV9tbXVfY2FjaGUodm1hLCBhZGRyLCB2bWYtPnB0ZSk7CiAgIF5+
-fn5+fn5+fn5+fn5+fn4KClNpZ25lZC1vZmYtYnk6IFJhbmR5IER1bmxhcCA8cmR1bmxhcEBpbmZy
-YWRlYWQub3JnPgpDYzogSmVmZiBEaWtlIDxqZGlrZUBhZGR0b2l0LmNvbT4KQ2M6IFJpY2hhcmQg
-V2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+CkNjOiBBbnRvbiBJdmFub3YgPGFudG9uLml2YW5v
-dkBjYW1icmlkZ2VncmV5cy5jb20+CkNjOiBsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCi0t
-LQogYXJjaC91bS9pbmNsdWRlL2FzbS9wZ3RhYmxlLmggfCAgICAyICstCiAxIGZpbGUgY2hhbmdl
-ZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKCi0tLSBsaW51eC1uZXh0LTIwMjEwNDEz
-Lm9yaWcvYXJjaC91bS9pbmNsdWRlL2FzbS9wZ3RhYmxlLmgKKysrIGxpbnV4LW5leHQtMjAyMTA0
-MTMvYXJjaC91bS9pbmNsdWRlL2FzbS9wZ3RhYmxlLmgKQEAgLTMwMiw3ICszMDIsNyBAQCBzdGF0
-aWMgaW5saW5lIHB0ZV90IHB0ZV9tb2RpZnkocHRlX3QgcHRlCiBzdHJ1Y3QgbW1fc3RydWN0Owog
-ZXh0ZXJuIHB0ZV90ICp2aXJ0X3RvX3B0ZShzdHJ1Y3QgbW1fc3RydWN0ICptbSwgdW5zaWduZWQg
-bG9uZyBhZGRyKTsKIAotI2RlZmluZSB1cGRhdGVfbW11X2NhY2hlKHZtYSxhZGRyZXNzLHB0ZXAp
-IGRvIDsgd2hpbGUgKDApCisjZGVmaW5lIHVwZGF0ZV9tbXVfY2FjaGUodm1hLGFkZHJlc3MscHRl
-cCkgZG8ge30gd2hpbGUgKDApCiAKIC8qIEVuY29kZSBhbmQgZGUtY29kZSBhIHN3YXAgZW50cnkg
-Ki8KICNkZWZpbmUgX19zd3BfdHlwZSh4KQkJCSgoKHgpLnZhbCA+PiA1KSAmIDB4MWYpCgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWls
-aW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
+On 15/04/2021 18:13, Randy Dunlap wrote:
+> Currently when using "W=1" with UML builds, there are over 700 warnings
+> like so:
+>
+>    CC      arch/um/drivers/stderr_console.o
+> cc1: warning: ./arch/um/include/uapi: No such file or directory [-Wmissing-include-dirs]
+>
+> but arch/um/ does not have include/uapi/ at all, so add that
+> subdir and put one Kbuild file into it (since git does not track
+> empty subdirs).
+>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Masahiro Yamada <masahiroy@kernel.org>
+> Cc: Michal Marek <michal.lkml@markovi.net>
+> Cc: linux-kbuild@vger.kernel.org
+> Cc: Jeff Dike <jdike@addtoit.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> Cc: linux-um@lists.infradead.org
+> ---
+> v2: use Option 4 from v1: add arch/um/include/uapi so that 'make' is
+>      placated -- and just like all other arch's have.
+>
+>   arch/um/include/uapi/asm/Kbuild |    1 +
+>   1 file changed, 1 insertion(+)
+>
+> diff --git a/arch/um/include/uapi/asm/Kbuild b/arch/um/include/uapi/asm/Kbuild
+> new file mode 100644
+> index 000000000000..f66554cd5c45
+> --- /dev/null
+> +++ b/arch/um/include/uapi/asm/Kbuild
+> @@ -0,0 +1 @@
+> +# SPDX-License-Identifier: GPL-2.0
+>
+> _______________________________________________
+> linux-um mailing list
+> linux-um@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-um
+>
++1
+
+I will forward it to openwrt-dev. Their build process adds uapi to uml, 
+so if we are going to change this, it will be nice to give them a heads-up.
+
+Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+
+
+-- 
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
