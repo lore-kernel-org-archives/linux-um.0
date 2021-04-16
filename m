@@ -1,49 +1,73 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ciao.gmane.io ([116.202.254.214])
- by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lXpJg-005uTS-6L
- for linux-um@lists.infradead.org; Sat, 17 Apr 2021 18:05:15 +0000
-Received: from list by ciao.gmane.io with local (Exim 4.92)
- (envelope-from <glud-user-mode-linux-devel@m.gmane-mx.org>)
- id 1lXpJW-00071U-ER
- for linux-um@lists.infradead.org; Sat, 17 Apr 2021 20:05:02 +0200
-From: sbaugh@catern.com
-Subject: Re: [PATCH 0/4 POC] Allow executing code and syscalls in another
- address space
-Date: Sat, 17 Apr 2021 12:28:16 -0400
-Message-ID: <87sg3oub8f.fsf@catern.com>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Kirill Smelkov <kirr@nexedi.com>
+Subject: Re: [PATCH 0/4 POC] Allow executing code and syscalls in another address space
+Message-Id: <YHnlmm7mK3tmxcdr@deco.navytux.spb.ru>
 References: <20210414055217.543246-1-avagin@gmail.com>
-Mime-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20210414055217.543246-1-avagin@gmail.com>
+Date: Fri, 16 Apr 2021 19:29:41 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: linux-api@vger.kernel.org, linux-kernel@vger.kernel.org, linux-api@vger.kernel.org
+To: Andrei Vagin <avagin@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-api@vger.kernel.org, linux-um@lists.infradead.org, criu@openvz.org, avagin@google.com, Andrew Morton <akpm@linux-foundation.org>, Andy Lutomirski <luto@kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Christian Brauner <christian.brauner@ubuntu.com>, Dmitry Safonov <0x7f454c46@gmail.com>, Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>, Mike Rapoport <rppt@linux.ibm.com>, Michael Kerrisk <mtk.manpages@gmail.com>, Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>
+List-ID: <linux-um.lists.infradead.org>
 
+On Tue, Apr 13, 2021 at 10:52:13PM -0700, Andrei Vagin wrote:
+> We already have process_vm_readv and process_vm_writev to read and write
+> to a process memory faster than we can do this with ptrace. And now it
+> is time for process_vm_exec that allows executing code in an address
+> space of another process. We can do this with ptrace but it is much
+> slower.
 
-Just to add to the list of use cases for PROCESS_VM_EXEC_SYSCALL,
-another use case is initializing a process from the "outside", instead
-of from the "inside" as fork requires.  This can be much easier to work
-with.  http://catern.com/rsys21.pdf goes into this use case in some
-depth.
+I'd like to add that there are cases when using ptrace is even hardly possible:
+in my situation one process needs to modify address space of another process
+while that target process is being blocked under pagefault. From
+https://lab.nexedi.com/kirr/wendelin.core/blob/539ec405/wcfs/notes.txt#L149-171 ,
+https://lab.nexedi.com/kirr/wendelin.core/blob/539ec405/wcfs/wcfs.go#L395-397 :
 
-It relies heavily on a remote syscall primitive:
-https://github.com/catern/rsyscall.  The PROCESS_VM_EXEC_SYSCALL API
-proposed in this patch would be a great replacement for the current
-implementation, which relies on running code inside the target process.
+---- 8< ----
+Client cannot be ptraced while under pagefault
+==============================================
 
+We cannot use ptrace to run code on client thread that is under pagefault:
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+The kernel sends SIGSTOP to interrupt tracee, but the signal will be
+processed only when the process returns from kernel space, e.g. here
+
+     https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/x86/entry/common.c?id=v4.19-rc8-151-g23469de647c4#n160
+
+This way the tracer won't receive obligatory information that tracee
+stopped (via wait...) and even though ptrace(ATTACH) succeeds, all other
+ptrace commands will fail:
+
+     https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/ptrace.c?id=v4.19-rc8-151-g23469de647c4#n1140
+     https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/ptrace.c?id=v4.19-rc8-151-g23469de647c4#n207
+
+My original idea was to use ptrace to run code in process to change it's
+memory mappings, while the triggering process is under pagefault/read
+to wcfs, and the above shows it won't work - trying to ptrace the
+client from under wcfs will just block forever (the kernel will be
+waiting for read operation to finish for ptrace, and read will be first
+waiting on ptrace stopping to complete = deadlock)
+
+...
+
+//	( one could imagine adjusting mappings synchronously via running
+//	  wcfs-trusted code via ptrace that wcfs injects into clients, but ptrace
+//	  won't work when client thread is blocked under pagefault or syscall(^) )
+---- 8< ----
+
+To workaround that I need to add special thread into target process and
+implement custom additional "isolation protocol" in between my filesystem and
+client processes that use it:
+
+https://lab.nexedi.com/kirr/wendelin.core/blob/539ec405/wcfs/wcfs.go#L94-182
+https://lab.nexedi.com/kirr/wendelin.core/blob/539ec405/wcfs/client/wcfs.h#L20-96
+https://lab.nexedi.com/kirr/wendelin.core/blob/539ec405/wcfs/client/wcfs.cpp#L24-203
+
+Most parts of that dance would be much easier, or completely
+unnecessary, if it could be possible to reliably make changes to address
+space of target process from outside.
+
+Kirill
 
