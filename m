@@ -1,17 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pj1-x1032.google.com ([2607:f8b0:4864:20::1032])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lWYUN-007VaG-BT
- for linux-um@lists.infradead.org; Wed, 14 Apr 2021 05:55:01 +0000
-Received: by mail-pj1-x1032.google.com with SMTP id
- b8-20020a17090a5508b029014d0fbe9b64so11899743pji.5
- for <linux-um@lists.infradead.org>; Tue, 13 Apr 2021 22:54:58 -0700 (PDT)
-From: Andrei Vagin <avagin@gmail.com>
-Subject: [PATCH 4/4] selftests: add tests for process_vm_exec
-Date: Tue, 13 Apr 2021 22:52:17 -0700
-Message-Id: <20210414055217.543246-5-avagin@gmail.com>
-In-Reply-To: <20210414055217.543246-1-avagin@gmail.com>
-References: <20210414055217.543246-1-avagin@gmail.com>
+ id 1lYkGY-00BrQg-LJ
+ for linux-um@lists.infradead.org; Tue, 20 Apr 2021 06:53:48 +0000
+Message-ID: <583ae07ddd319c7015f3be411e696dc67a6d95e9.camel@sipsolutions.net>
+Subject: Re: [PATCH v3] um: Fix stack pointer alignment
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Tue, 20 Apr 2021 08:53:43 +0200
+In-Reply-To: <20210420055610.1698584-1-zhuyifei1999@gmail.com>
+References: <20210420055610.1698584-1-zhuyifei1999@gmail.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -21,536 +19,73 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, linux-api@vger.kernel.org
-Cc: linux-um@lists.infradead.org, criu@openvz.org, avagin@google.com, Andrei Vagin <avagin@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Andy Lutomirski <luto@kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Christian Brauner <christian.brauner@ubuntu.com>, Dmitry Safonov <0x7f454c46@gmail.com>, Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>, Mike Rapoport <rppt@linux.ibm.com>, Michael Kerrisk <mtk.manpages@gmail.com>, Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>
+To: YiFei Zhu <zhuyifei1999@gmail.com>, linux-um@lists.infradead.org
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Benjamin Berg <benjamin@sipsolutions.net>
 
-Output:
- $ make run_tests
- TAP version 13
- 1..4
- # selftests: process_vm_exec: process_vm_exec
- # 1..1
- # ok 1 275 ns/syscall
- # # Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
- ok 1 selftests: process_vm_exec: process_vm_exec
- # selftests: process_vm_exec: process_vm_exec_fault
- # 1..1
- # ok 1 789 ns/signal
- # # Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
- ok 2 selftests: process_vm_exec: process_vm_exec_fault
- # selftests: process_vm_exec: ptrace_vm_exec
- # 1..1
- # ok 1 1378 ns/syscall# Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
- ok 3 selftests: process_vm_exec: ptrace_vm_exec
- # selftests: process_vm_exec: process_vm_exec_syscall
- # 1..1
- # ok 1 write works as expectd
- # # Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
- ok 4 selftests: process_vm_exec: process_vm_exec_syscall
-
-Signed-off-by: Andrei Vagin <avagin@gmail.com>
----
- .../selftests/process_vm_exec/Makefile        |   7 ++
- tools/testing/selftests/process_vm_exec/log.h |  26 ++++
- .../process_vm_exec/process_vm_exec.c         | 105 +++++++++++++++++
- .../process_vm_exec/process_vm_exec_fault.c   | 111 ++++++++++++++++++
- .../process_vm_exec/process_vm_exec_syscall.c |  81 +++++++++++++
- .../process_vm_exec/ptrace_vm_exec.c          | 111 ++++++++++++++++++
- 6 files changed, 441 insertions(+)
- create mode 100644 tools/testing/selftests/process_vm_exec/Makefile
- create mode 100644 tools/testing/selftests/process_vm_exec/log.h
- create mode 100644 tools/testing/selftests/process_vm_exec/process_vm_exec.c
- create mode 100644 tools/testing/selftests/process_vm_exec/process_vm_exec_fault.c
- create mode 100644 tools/testing/selftests/process_vm_exec/process_vm_exec_syscall.c
- create mode 100644 tools/testing/selftests/process_vm_exec/ptrace_vm_exec.c
-
-diff --git a/tools/testing/selftests/process_vm_exec/Makefile b/tools/testing/selftests/process_vm_exec/Makefile
-new file mode 100644
-index 000000000000..bdf7fcf0fdd3
---- /dev/null
-+++ b/tools/testing/selftests/process_vm_exec/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+UNAME_M := $(shell uname -m)
-+TEST_GEN_PROGS_x86_64 := process_vm_exec process_vm_exec_fault ptrace_vm_exec process_vm_exec_syscall
-+TEST_GEN_PROGS += $(TEST_GEN_PROGS_$(UNAME_M))
-+
-+include ../lib.mk
-diff --git a/tools/testing/selftests/process_vm_exec/log.h b/tools/testing/selftests/process_vm_exec/log.h
-new file mode 100644
-index 000000000000..ef268c2cf2b8
---- /dev/null
-+++ b/tools/testing/selftests/process_vm_exec/log.h
-@@ -0,0 +1,26 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef __SELFTEST_PROCESS_VM_EXEC_LOG_H__
-+#define __SELFTEST_PROCESS_VM_EXEC_LOG_H__
-+
-+#define pr_msg(fmt, lvl, ...)						\
-+	ksft_print_msg("[%s] (%s:%d)\t" fmt "\n",			\
-+			lvl, __FILE__, __LINE__, ##__VA_ARGS__)
-+
-+#define pr_p(func, fmt, ...)	func(fmt ": %m", ##__VA_ARGS__)
-+
-+#define pr_err(fmt, ...)						\
-+	({								\
-+		ksft_test_result_error(fmt "\n", ##__VA_ARGS__);		\
-+		-1;							\
-+	})
-+
-+#define pr_fail(fmt, ...)					\
-+	({							\
-+		ksft_test_result_fail(fmt "\n", ##__VA_ARGS__);	\
-+		-1;						\
-+	})
-+
-+#define pr_perror(fmt, ...)	pr_p(pr_err, fmt, ##__VA_ARGS__)
-+
-+#endif
-diff --git a/tools/testing/selftests/process_vm_exec/process_vm_exec.c b/tools/testing/selftests/process_vm_exec/process_vm_exec.c
-new file mode 100644
-index 000000000000..aa4009c43e01
---- /dev/null
-+++ b/tools/testing/selftests/process_vm_exec/process_vm_exec.c
-@@ -0,0 +1,105 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#define _GNU_SOURCE
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+#include <signal.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <stdio.h>
-+#include <sys/user.h>
-+#include <sys/uio.h>
-+#include <sys/prctl.h>
-+#include "asm/unistd.h"
-+#include <time.h>
-+#include <sys/mman.h>
-+
-+#include "../kselftest.h"
-+#include "log.h"
-+
-+#ifndef __NR_process_vm_exec
-+#define __NR_process_vm_exec 441
-+#endif
-+
-+#define TEST_SYSCALL 123
-+#define TEST_SYSCALL_RET 456
-+#define TEST_MARKER 789
-+#define TEST_TIMEOUT 5
-+#define TEST_STACK_SIZE 65536
-+
-+static inline long __syscall1(long n, long a1)
-+{
-+	unsigned long ret;
-+
-+	__asm__ __volatile__ ("syscall" : "=a"(ret) : "a"(n), "D"(a1) : "rcx", "r11", "memory");
-+
-+	return ret;
-+}
-+
-+int marker;
-+
-+static void guest(void)
-+{
-+	while (1)
-+		if (__syscall1(TEST_SYSCALL, marker) != TEST_SYSCALL_RET)
-+			abort();
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	struct sigcontext ctx = {};
-+	struct timespec start, cur;
-+	int status, ret;
-+	pid_t pid;
-+	long sysnr;
-+	void *stack;
-+
-+	ksft_set_plan(1);
-+
-+	stack = mmap(NULL, TEST_STACK_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, 0, 0);
-+	if (stack == MAP_FAILED)
-+		return pr_perror("mmap");
-+
-+	pid  = fork();
-+	if (pid == 0) {
-+		prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
-+		marker = TEST_MARKER;
-+		kill(getpid(), SIGSTOP);
-+		abort();
-+		return 0;
-+	}
-+
-+	ctx.rip = (long)guest;
-+	ctx.rsp = (long)stack + TEST_STACK_SIZE;
-+	ctx.cs = 0x33;
-+
-+	sysnr = 0;
-+	clock_gettime(CLOCK_MONOTONIC, &start);
-+	while (1) {
-+		unsigned long long sigmask = 0xffffffff;
-+		siginfo_t siginfo;
-+
-+		clock_gettime(CLOCK_MONOTONIC, &cur);
-+		if (start.tv_sec + TEST_TIMEOUT < cur.tv_sec ||
-+		    (start.tv_sec + TEST_TIMEOUT == cur.tv_sec &&
-+		     start.tv_nsec < cur.tv_nsec))
-+			break;
-+
-+		ret = syscall(__NR_process_vm_exec, pid, &ctx, 0, &siginfo, &sigmask, 8);
-+#ifdef __DEBUG
-+		ksft_print_msg("ret %d signo %d sysno %d ip %lx\n",
-+			ret, siginfo.si_signo, siginfo.si_syscall, ctx.rip);
-+#endif
-+		if (ret != 0)
-+			pr_fail("unexpected return code: ret %d errno %d", ret, errno);
-+		if (siginfo.si_signo != SIGSYS)
-+			pr_fail("unexpected signal: %d", siginfo.si_signo);
-+		if (siginfo.si_syscall != TEST_SYSCALL)
-+			pr_fail("unexpected syscall: %d", siginfo.si_syscall);
-+		ctx.rax = TEST_SYSCALL_RET;
-+		sysnr++;
-+	}
-+	ksft_test_result_pass("%ld ns/syscall\n", 1000000000 / sysnr);
-+	ksft_exit_pass();
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/process_vm_exec/process_vm_exec_fault.c b/tools/testing/selftests/process_vm_exec/process_vm_exec_fault.c
-new file mode 100644
-index 000000000000..b2c49095f386
---- /dev/null
-+++ b/tools/testing/selftests/process_vm_exec/process_vm_exec_fault.c
-@@ -0,0 +1,111 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#define _GNU_SOURCE
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <signal.h>
-+#include <time.h>
-+#include <unistd.h>
-+#include <sys/types.h>
-+#include <sys/mman.h>
-+#include <sys/prctl.h>
-+#include <sys/wait.h>
-+#include <sys/user.h>
-+#include <sys/uio.h>
-+#include <asm/unistd.h>
-+
-+#include "../kselftest.h"
-+#include "log.h"
-+
-+#ifndef __NR_process_vm_exec
-+#define __NR_process_vm_exec 441
-+#endif
-+
-+#define TEST_TIMEOUT 5
-+#define TEST_STACK_SIZE 65536
-+
-+#define TEST_VAL 0xaabbccddee
-+
-+unsigned long test_val;
-+
-+static inline void fault(unsigned long addr)
-+{
-+	unsigned long val = 0;
-+
-+	__asm__ __volatile__ (
-+	"movq %%rcx, (%%rax)\n"
-+	:
-+	: "a"(addr), "c"(val)
-+	:);
-+}
-+
-+
-+int marker;
-+
-+static void guest(void)
-+{
-+	unsigned long addr = 0;
-+
-+	while (1) {
-+		addr = (addr + 1) % 8;
-+		fault(addr);
-+		if (test_val != TEST_VAL)
-+			_exit(1);
-+	}
-+}
-+
-+int main(char argc, char **argv)
-+{
-+	siginfo_t siginfo;
-+	unsigned long long sigmask = 0xffffffff;
-+	struct sigcontext ctx = {};
-+	struct timespec start, cur;
-+	unsigned long addr;
-+	int status, ret;
-+	char *stack;
-+	pid_t pid;
-+	long faults;
-+
-+	ksft_set_plan(1);
-+
-+	stack = mmap(NULL, TEST_STACK_SIZE, PROT_READ | PROT_WRITE,
-+		     MAP_SHARED | MAP_ANONYMOUS, 0, 0);
-+	if (stack == MAP_FAILED)
-+		return pr_perror("mmap");
-+
-+	pid  = fork();
-+	if (pid == 0) {
-+		prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
-+		marker = 789;
-+		kill(getpid(), SIGSTOP);
-+		abort();
-+		return 0;
-+	}
-+
-+	ctx.rip = (long)guest;
-+	ctx.rsp = (long)stack + TEST_STACK_SIZE;
-+	ctx.cs = 0x33;
-+
-+	faults = 0;
-+	addr = 0;
-+	clock_gettime(CLOCK_MONOTONIC, &start);
-+	while (1) {
-+		addr = (addr + 1) % 8;
-+
-+		clock_gettime(CLOCK_MONOTONIC, &cur);
-+		if (start.tv_sec + TEST_TIMEOUT < cur.tv_sec ||
-+		    (start.tv_sec + TEST_TIMEOUT == cur.tv_sec &&
-+		     start.tv_nsec < cur.tv_nsec))
-+			break;
-+
-+		ret = syscall(__NR_process_vm_exec, pid, &ctx, 0, &siginfo, &sigmask, 8);
-+		if (addr % 8 != ctx.rax)
-+			return pr_fail("unexpected address: %lx", addr);
-+		ctx.rax = (long)&test_val;
-+		ctx.rcx = TEST_VAL;
-+		faults++;
-+	}
-+	ksft_test_result_pass("%ld ns/signal\n", 1000000000 / faults);
-+	ksft_exit_pass();
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/process_vm_exec/process_vm_exec_syscall.c b/tools/testing/selftests/process_vm_exec/process_vm_exec_syscall.c
-new file mode 100644
-index 000000000000..c0a7f6ee5b1a
---- /dev/null
-+++ b/tools/testing/selftests/process_vm_exec/process_vm_exec_syscall.c
-@@ -0,0 +1,81 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#define _GNU_SOURCE
-+#include <signal.h>
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <time.h>
-+#include <unistd.h>
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+#include <sys/prctl.h>
-+#include <sys/user.h>
-+#include <sys/uio.h>
-+#include <asm/unistd.h>
-+
-+#include "../kselftest.h"
-+#include "log.h"
-+
-+#ifndef __NR_process_vm_exec
-+#define __NR_process_vm_exec 441
-+#endif
-+
-+#ifndef PROCESS_VM_EXEC_SYSCALL
-+#define PROCESS_VM_EXEC_SYSCALL 0x1
-+#endif
-+
-+#define TEST_VAL 0x1e511e51
-+
-+int test_val = TEST_VAL;
-+
-+int main(int argc, char **argv)
-+{
-+	struct sigcontext ctx = {};
-+	unsigned long long sigmask;
-+	int ret, p[2], val;
-+	siginfo_t siginfo;
-+	pid_t pid;
-+
-+	ksft_set_plan(1);
-+
-+	pid  = fork();
-+	if (pid < 0)
-+		return pr_perror("fork");
-+	if (pid == 0) {
-+		prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
-+		kill(getpid(), SIGSTOP);
-+		return 0;
-+	}
-+
-+	test_val = 0;
-+	if (pipe(p))
-+		return pr_perror("pipe");
-+
-+	ctx.rax = __NR_write;
-+	ctx.rdi = p[1];
-+	ctx.rsi = (unsigned long) &test_val;
-+	ctx.rdx = sizeof(test_val);
-+	ctx.r10 = 0;
-+	ctx.r8 = 0;
-+	ctx.r9 = 0;
-+	sigmask = 0xffffffff;
-+	ret = syscall(__NR_process_vm_exec, pid, &ctx, PROCESS_VM_EXEC_SYSCALL,
-+		      &siginfo, &sigmask, 8);
-+	if (ret != 0)
-+		return pr_perror("process_vm_exec");
-+	if (siginfo.si_signo != SIGSYS)
-+		return pr_fail("unexpected signal: %d", siginfo.si_signo);
-+	if (ctx.rax != sizeof(test_val))
-+		pr_fail("unexpected rax: %lx", ctx.rax);
-+	if (kill(pid, SIGKILL))
-+		return pr_perror("kill");
-+	if (wait(NULL) != pid)
-+		return pr_perror("kill");
-+	if (read(p[0], &val, sizeof(val)) != sizeof(val))
-+		pr_perror("read");
-+	if (val != TEST_VAL)
-+		pr_fail("unexpected data: %x", val);
-+	ksft_test_result_pass("process_vm_exec(..., PROCESS_VM_EXEC_SYSCALL, ...) \n");
-+	ksft_exit_pass();
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/process_vm_exec/ptrace_vm_exec.c b/tools/testing/selftests/process_vm_exec/ptrace_vm_exec.c
-new file mode 100644
-index 000000000000..aac14c2e8f11
---- /dev/null
-+++ b/tools/testing/selftests/process_vm_exec/ptrace_vm_exec.c
-@@ -0,0 +1,111 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+#include <signal.h>
-+#include <sys/ptrace.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <linux/unistd.h>
-+#include <stdio.h>
-+#include <sys/user.h>
-+#include <sys/uio.h>
-+#include <time.h>
-+
-+#include "../kselftest.h"
-+#include "log.h"
-+
-+static inline long __syscall1(long n, long a1)
-+{
-+	unsigned long ret;
-+
-+	__asm__ __volatile__ ("syscall"
-+		: "=a"(ret)
-+		: "a"(n), "D"(a1)
-+		: "rcx", "r11", "memory");
-+	return ret;
-+}
-+
-+#define TEST_SYSCALL 444
-+#define TEST_SYSCALL_RET 555
-+#define TEST_MARKER 789
-+#define TEST_TIMEOUT 5
-+
-+static int marker;
-+
-+static void guest(void)
-+{
-+	while (1) {
-+		int ret;
-+
-+		ret = __syscall1(TEST_SYSCALL, marker);
-+		if (ret != TEST_SYSCALL_RET)
-+			abort();
-+	}
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	struct user_regs_struct regs = {};
-+	struct timespec start, cur;
-+	int status;
-+	long sysnr;
-+	pid_t pid;
-+
-+	ksft_set_plan(1);
-+
-+	pid  = fork();
-+	if (pid == 0) {
-+		marker = TEST_MARKER;
-+		kill(getpid(), SIGSTOP);
-+		/* unreachable */
-+		abort();
-+		return 0;
-+	}
-+
-+	if (waitpid(pid, &status, WUNTRACED) != pid)
-+		return pr_perror("waidpid");
-+	if (ptrace(PTRACE_ATTACH, pid, 0, 0))
-+		return pr_perror("PTRACE_ATTACH");
-+	if (wait(&status) != pid)
-+		return pr_perror("waidpid");
-+	if (ptrace(PTRACE_CONT, pid, 0, 0))
-+		return pr_perror("PTRACE_CONT");
-+	if (waitpid(pid, &status, 0) != pid)
-+		return pr_perror("waidpid");
-+
-+	if (ptrace(PTRACE_SETOPTIONS, pid, 0, PTRACE_O_EXITKILL))
-+		return pr_perror("PTRACE_SETOPTIONS");
-+	if (ptrace(PTRACE_GETREGS, pid, NULL, &regs))
-+		return pr_perror("PTRACE_SETREGS");
-+	regs.rip = (long)guest;
-+
-+	clock_gettime(CLOCK_MONOTONIC, &start);
-+	for (sysnr = 0; ; sysnr++) {
-+		int status;
-+
-+		clock_gettime(CLOCK_MONOTONIC, &cur);
-+		if (start.tv_sec + TEST_TIMEOUT < cur.tv_sec ||
-+		    (start.tv_sec + TEST_TIMEOUT == cur.tv_sec &&
-+		     start.tv_nsec < cur.tv_nsec))
-+			break;
-+		if (ptrace(PTRACE_SETREGS, pid, NULL, &regs))
-+			return pr_perror("PTRACE_SETREGS");
-+		if (ptrace(PTRACE_SYSEMU, pid, 0, 0))
-+			return pr_perror("PTRACE_SYSEMU");
-+		if (waitpid(pid, &status, 0) != pid)
-+			return pr_perror("waitpid");
-+		if (!WIFSTOPPED(status) || WSTOPSIG(status) != SIGTRAP)
-+			return pr_err("unexpected status: %d", status);
-+		if (ptrace(PTRACE_GETREGS, pid, NULL, &regs))
-+			return pr_perror("PTRACE_GETREGS: %d", regs.rdi);
-+		if (regs.rdi != TEST_MARKER)
-+			return pr_err("unexpected marker: %d", regs.rdi);
-+		if (regs.orig_rax != TEST_SYSCALL)
-+			return pr_err("unexpected syscall: %d", regs.orig_rax);
-+		regs.rax = TEST_SYSCALL_RET;
-+	}
-+	ksft_test_result_pass("%ld ns/syscall\n", 1000000000 / sysnr);
-+	ksft_exit_pass();
-+	return 0;
-+}
--- 
-2.29.2
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gVHVlLCAyMDIxLTA0LTIwIGF0IDAwOjU2IC0wNTAwLCBZaUZlaSBaaHUgd3JvdGU6Cj4gR0ND
+IGFzc3VtZXMgdGhhdCBzdGFjayBpcyBhbGlnbmVkIHRvIDE2LWJ5dGUgb24gY2FsbCBzaXRlcyBb
+MV0uCj4gU2luY2UgR0NDIDgsIEdDQyBiZWdhbiB1c2luZyAxNi1ieXRlIGFsaWduZWQgU1NFIGlu
+c3RydWN0aW9ucyB0bwo+IGltcGxlbWVudCBhc3NpZ25tZW50cyB0byBzdHJ1Y3RzIG9uIHN0YWNr
+LiBXaGVuCj4gQ0NfT1BUSU1JWkVfRk9SX1BFUkZPUk1BTkNFIGlzIGVuYWJsZWQsIHRoaXMgYWZm
+ZWN0cwo+IG9zLUxpbnV4L3NpZ2lvLmMsIHdyaXRlX3NpZ2lvX3RocmVhZDoKPiAKPiDCoMKgc3Ry
+dWN0IHBvbGxmZHMgKmZkcywgdG1wOwo+IMKgwqB0bXAgPSBjdXJyZW50X3BvbGw7Cj4gCj4gTm90
+ZSB0aGF0IHN0cnVjdCBwb2xsZmRzIGlzIGV4YWN0bHkgMTYgYnl0ZXMgaW4gc2l6ZS4KPiBHQ0Mg
+OCsgZ2VuZXJhdGVzIGFzc2VtYmx5IHNpbWlsYXIgdG86Cj4gCj4gwqDCoG1vdmRxYSAoJXJkaSks
+JXhtbTAKPiDCoMKgbW92YXBzICV4bW0wLC0weDUwKCVyYnApCj4gCj4gVGhpcyBpcyBhbiBpc3N1
+ZSwgYmVjYXVzZSBtb3ZhcHMgd2lsbCAjR1AgaWYgLTB4NTAoJXJicCkgaXMgbm90Cj4gYWxpZ25l
+ZCB0byAxNiBieXRlcyBbMl0sIGFuZCBob3cgcmJwIGdldHMgYXNzaWduZWQgdG8gaXMgdmlhIGds
+aWJjCj4gY2xvbmUgdGhyZWFkX3N0YXJ0LCB0aGVuIGZ1bmN0aW9uIHByb2xvZ3VlLCBnb2luZyB0
+aG91Z2ggZXhlY3V0aW9uCj4gdHJhY2Ugc2ltaWxhciB0byAoc2hvd2luZyBvbmx5IHJlbGV2YW50
+IGluc3RydWN0aW9ucyk6Cj4gCj4gwqDCoHN1YiAgICAkMHgxMCwlcnNpCj4gwqDCoG1vdiAgICAl
+cmN4LDB4OCglcnNpKQo+IMKgwqBtb3YgICAgJXJkaSwoJXJzaSkKPiDCoMKgc3lzY2FsbAo+IMKg
+wqBwb3AgICAgJXJheAo+IMKgwqBwb3AgICAgJXJkaQo+IMKgwqBjYWxscSAgKiVyYXgKPiDCoMKg
+cHVzaCAgICVyYnAKPiDCoMKgbW92ICAgICVyc3AsJXJicAo+IAo+IFRoZSBzdGFjayBwb2ludGVy
+IGFsd2F5cyBwb2ludHMgdG8gdGhlIHRvcG1vc3QgZWxlbWVudCBvbiBzdGFjaywKPiByYXRoZXIg
+dGhlbiB0aGUgc3BhY2UgcmlnaHQgYWJvdmUgdGhlIHRvcG1vc3QuIE9uIHB1c2gsIHRoZQo+IHBv
+aW50ZXIgZGVjcmVtZW50cyBmaXJzdCBiZWZvcmUgd3JpdGluZyB0byB0aGUgbWVtb3J5IHBvaW50
+ZWQgdG8KPiBieSBpdC4gVGhlcmVmb3JlLCB0aGVyZSBpcyBubyBuZWVkIHRvIGhhdmUgdGhlIHN0
+YWNrIHBvaW50ZXIKPiBwb2ludGVyIGFsd2F5cyBwb2ludCB0byB2YWxpZCBtZW1vcnkgdW5sZXNz
+IHRoZSBzdGFjayBpcyBwb3BlZDsKPiBzbyB0aGUgYC0gc2l6ZW9mKHZvaWQgKilgIGluIHRoZSBj
+b2RlIGlzIHVubmVjZXNzYXJ5Lgo+IAo+IE9uIHRoZSBvdGhlciBoYW5kLCBnbGliYyByZXNlcnZl
+cyB0aGUgMTYgYnl0ZXMgaXQgbmVlZHMgb24gc3RhY2sKPiBhbmQgcG9wcyBpdHNlbGYsIHNvIGJ5
+IHRoZSBjYWxsIGluc3RydWN0aW9uIHRoZSBzdGFjayBwb2ludGVyCj4gaXMgZXhhY3RseSB0aGUg
+Y2FsbGVyLXN1cHBsaWVkIHNwLiBJdCB0aGVuIHB1c2ggdGhlIDE2IGJ5dGVzIG9mCj4gdGhlIHJl
+dHVybiBhZGRyZXNzIGFuZCB0aGUgc2F2ZWQgc3RhY2sgcG9pbnRlciwgc28gdGhlIGJhc2UKPiBw
+b2ludGVyIHdpbGwgYmUgMTYtYnl0ZSBhbGlnbmVkIGlmIGFuZCBvbmx5IGlmIHRoZSBjYWxsZXIK
+PiBzdXBwbGllZCBzcCBpcyAxNi1ieXRlIGFsaWduZWQuIFRoZXJlZm9yZSwgdGhlIGNhbGxlciBt
+dXN0IHN1cHBseQo+IGEgMTYtYnl0ZSBhbGlnbmVkIHBvaW50ZXIsIHdoaWNoIGBzdGFjayArIFVN
+X0tFUk5fUEFHRV9TSVpFYAo+IGFscmVhZHkgc2F0aXNmaWVzLgo+IAo+IE9uIGEgc2lkZSBub3Rl
+LCBtdXNsIGlzIHVuYWZmZWN0ZWQgYnkgdGhpcyBpc3N1ZSBiZWNhdXNlIGl0IGZvcmNlcwo+IDE2
+IGJ5dGUgYWxpZ25tZW50IHZpYSBgYW5kICQtMTYsJXJzaWAgaW4gaXRzIGNsb25lIHdyYXBwZXIu
+Cj4gU2ltaWxhcmx5LCBnbGliYyBpMzg2IGlzIGFsc28gdW5hZmZlY3RlZCBiZWNhdXNlIGl0IGhh
+cwo+IGBhbmRsICQweGZmZmZmZmYwLCAlZWN4YC4KPiAKPiBUbyByZXByb2R1Y2UgdGhpcyBidWcs
+IGVuYWJsZSBDT05GSUdfVU1MX1JUQyBhbmQKPiBDQ19PUFRJTUlaRV9GT1JfUEVSRk9STUFOQ0Uu
+IHVtbF9ydGMgd2lsbCBjYWxsCj4gYWRkX3NpZ2lvX2ZkIHdoaWNoIHdpbGwgdGhlbiBjYXVzZSB3
+cml0ZV9zaWdpb190aHJlYWQgdG8gZWl0aGVyIGdvCj4gaW50byBzZWdmYXVsdCBsb29wIG9yIHBh
+bmljIHdpdGggIlNlZ2ZhdWx0IHdpdGggbm8gbW0iLgo+IAo+IFNpbWlsYXJseSwgc2lnbmFsIHN0
+YWNrcyB3aWxsIGJlIGFsaWduZWQgYnkgdGhlIGhvc3Qga2VybmVsIHVwb24KPiBzaWduYWwgZGVs
+aXZlcnkuIGAtIHNpemVvZih2b2lkICopYCB0byBzaWdhbHRzdGFjayBpcwo+IHVuY29udmVudGlv
+bmFsIGFuZCBleHRyYW5lb3VzLgo+IAo+IE9uIGEgcmVsYXRlZCBub3RlLCBpbml0aWFsaXphdGlv
+biBvZiBsb25nam1wIGJ1ZmZlcnMgZG8gcmVxdWlyZQo+IGAtIHNpemVvZih2b2lkICopYC4gVGhp
+cyBpcyB0byBhY2NvdW50IGZvciB0aGUgcmV0dXJuIGFkZHJlc3MKPiB0aGF0IHdvdWxkIGhhdmUg
+YmVlbiBwdXNoZWQgdG8gdGhlIHN0YWNrIGF0IHRoZSBjYWxsIHNpdGUuCj4gCj4gVGhlIHJlYXNv
+biBmb3IgdW1sIHRvIHJlc3BlY3QgMTYtYnl0ZSBhbGlnbm1lbnQsIHJhdGhlciB0aGFuCj4gdGVs
+bGluZyBHQ0MgdG8gYXNzdW1lIDgtYnl0ZSBhbGlnbm1lbnQgbGlrZSB0aGUgaG9zdCBrZXJuZWwg
+c2luY2UKPiBjb21taXQgZDliMGNkZTkxYzYwICgieDg2LTY0LCBnY2M6IFVzZQo+IC1tcHJlZmVy
+cmVkLXN0YWNrLWJvdW5kYXJ5PTMgaWYgc3VwcG9ydGVkIiksIGlzIGJlY2F1c2UgdW1sIGxpbmtz
+Cj4gYWdhaW5zdCBsaWJjLiBUaGVyZSBpcyBubyByZWFzb24gdG8gYXNzdW1lIGxpYmMgaXMgYWxz
+byBjb21waWxlZAo+IHdpdGggdGhhdCBmbGFnIGFuZCBhc3N1bWVzIDgtYnl0ZSBhbGlnbm1lbnQg
+cmF0aGVyIHRoYW4gMTYtYnl0ZS4KPiAKPiBbMV0gaHR0cHM6Ly9nY2MuZ251Lm9yZy9idWd6aWxs
+YS9zaG93X2J1Zy5jZ2k/aWQ9NDA4MzgKPiBbMl0gaHR0cHM6Ly9jOXgubWUveDg2L2h0bWwvZmls
+ZV9tb2R1bGVfeDg2X2lkXzE4MC5odG1sCj4gCj4gU2lnbmVkLW9mZi1ieTogWWlGZWkgWmh1IDx6
+aHV5aWZlaTE5OTlAZ21haWwuY29tPgo+IEZpeGVzOiAxZGExNzdlNGMzZjQgKCJMaW51eC0yLjYu
+MTItcmMyIikKClN0aWxsCgpSZXZpZXdlZC1ieTogSm9oYW5uZXMgQmVyZyA8am9oYW5uZXNAc2lw
+c29sdXRpb25zLm5ldD4KCm9mIGNvdXJzZSA6LSkKClRoYW5rcyBhIGxvdCEKCmpvaGFubmVzCgoK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0g
+bWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmlu
+ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
 
