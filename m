@@ -1,20 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from mail-pj1-x1035.google.com ([2607:f8b0:4864:20::1035])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lYkDj-00BrJG-5f
- for linux-um@lists.infradead.org; Tue, 20 Apr 2021 06:50:55 +0000
-Message-ID: <876ff6c99b90f5f37fdeaa22c0874a72c56ee1e0.camel@sipsolutions.net>
-Subject: Re: [PATCH v2] um: Fix stack pointer alignment
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Tue, 20 Apr 2021 08:50:42 +0200
-In-Reply-To: <CABqSeASZLeK8dq-75dcM51zmkHUteuJc07bS8ixKVhEAAeuPDw@mail.gmail.com>
- (sfid-20210419_223624_736006_CB63BFF5)
+ id 1lYjku-00BqCm-K9
+ for linux-um@lists.infradead.org; Tue, 20 Apr 2021 06:21:08 +0000
+Received: by mail-pj1-x1035.google.com with SMTP id cu16so17270360pjb.4
+ for <linux-um@lists.infradead.org>; Mon, 19 Apr 2021 23:21:03 -0700 (PDT)
+MIME-Version: 1.0
 References: <20210419153213.1337562-1-zhuyifei1999@gmail.com>
  <546324c4e77ebe65f27b0f06fea3ace28dd75fe6.camel@sipsolutions.net>
  <CABqSeASZLeK8dq-75dcM51zmkHUteuJc07bS8ixKVhEAAeuPDw@mail.gmail.com>
- (sfid-20210419_223624_736006_CB63BFF5)
-MIME-Version: 1.0
+ <CABqSeAQdwhJCTyO9w6f2cmyobh2bnA5wG6ZgCS9gD0b7ZSi=yw@mail.gmail.com>
+In-Reply-To: <CABqSeAQdwhJCTyO9w6f2cmyobh2bnA5wG6ZgCS9gD0b7ZSi=yw@mail.gmail.com>
+From: YiFei Zhu <zhuyifei1999@gmail.com>
+Date: Tue, 20 Apr 2021 01:20:52 -0500
+Message-ID: <CABqSeATFW7F3cJkm6t3h1yzJite8yCCbvAQZbafHk=+VbfHntQ@mail.gmail.com>
+Subject: Re: [PATCH v2] um: Fix stack pointer alignment
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -27,64 +27,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: YiFei Zhu <zhuyifei1999@gmail.com>, Colin Ian King <colin.king@canonical.com>
+To: Johannes Berg <johannes@sipsolutions.net>, Colin Ian King <colin.king@canonical.com>
 Cc: linux-um@lists.infradead.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Benjamin Berg <benjamin@sipsolutions.net>
 
-Hi,
+On Tue, Apr 20, 2021 at 12:47 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+>   movaps (%rdx),%xmm0
+>   movaps %xmm0,(%r12)
+>
+> The move from xmm0 to stack is omitted.
 
-Sorry, went to sleep after sending the other mail last night :)
+I looked into this a bit further and thought I should clarify, these
+two instructions belong to `current_poll = next_poll`. AFAICT, `tmp =
+current_poll` is compiled to:
 
-On Mon, 2021-04-19 at 15:36 -0500, YiFei Zhu wrote:
-> On Mon, Apr 19, 2021 at 2:41 PM Johannes Berg <johannes@sipsolutions.net> wrote:
-> > On Mon, 2021-04-19 at 10:32 -0500, YiFei Zhu wrote:
-> > > On a side note, musl is unaffected by this issue because it forces
-> > > 16 byte alignment via `and $-16,%rsi` in its clone wrapper.
-> > > Similarly, glibc i386 is also uneffected because it has
-> 
-> I realize I forgot to fix the typo here. Can you amend it or shall I send a v3?
-> 
+  movabs $0x605198b0,%r12 ; <current_poll>
+  [...]
+  movabs 0x605198b8,%rax ; <current_poll+8>
+  mov    (%r12),%rcx
 
-Please resend - I most likely won't be the one applying the patch, but
-Richard. Just easier that way.
+and `next_poll = tmp` is:
 
-> 
-> This could be considered a glibc bug that it doesn't force alignment,
-> yeah, considering musl does it for both x86_32 and x86_64, and glibc
-> does it for only x86_32 and not x86_64. However, I'm unaware that
-> anywhere saying something like "it's libc's duty to align the stack
-> pointer to clone()"
-> 
+  movabs %rax,0x605198a8 ; <next_poll+8>
+  mov    %rcx,(%rdx)
 
-True. And the man page does document alignment restrictions at least in
-some cases.
+So it uses two registers, rax and rcx to store tmp, rather than on the stack.
 
-> Speaking of aarch64, it looks like that message might be out of date.
-
-Might very well be. I found another reference to "126-bit alignment"
-(and have since sent a patch to fix that to say "128-bit"), but I don't
-know whether any of that is really accurate.
-> > 
-> > It must also depend on the glibc version, because I've definitely been
-> > testing UML_RTC on 64-bit, on Fedora 32 at the time.
-> > 
-> 
-> Hmm. Interesting. I can't seem to find anything suggesting Fedora has
-> a patch that would align the stack within clone() [3][4]. I also got a
-> Fedora 32 docker image and could not see the aligning from disassembly
-> of clone, and the gcc version installed by yum is 10.2.1-9.fc32, which
-> is supposed to be affected by this issue... weird. I would expect this
-> to fail outright. I'm considering compiling uml inside this container
-> to see what is going on.
-
-Hm, wait. It could also be a *compiler* version thing, right?
-
-And actually, most of my testing probably wasn't on Fedora 33, but
-rather on a somewhat dated version of nixos, with gcc 9.3. I could even
-give you the description file to reproduce the exact environment, but I
-doubt it's really worthwhile. Let's just fix the bug?
-
-johannes
-
+YiFei Zhu
 
 _______________________________________________
 linux-um mailing list
