@@ -1,15 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-oi1-x232.google.com ([2607:f8b0:4864:20::232])
+Received: from mail-pf1-x42a.google.com ([2607:f8b0:4864:20::42a])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lYjN7-00BpZp-Rk
- for linux-um@lists.infradead.org; Tue, 20 Apr 2021 05:56:31 +0000
-Received: by mail-oi1-x232.google.com with SMTP id k25so37906831oic.4
- for <linux-um@lists.infradead.org>; Mon, 19 Apr 2021 22:56:29 -0700 (PDT)
-From: YiFei Zhu <zhuyifei1999@gmail.com>
-Subject: [PATCH v3] um: Fix stack pointer alignment
-Date: Tue, 20 Apr 2021 00:56:10 -0500
-Message-Id: <20210420055610.1698584-1-zhuyifei1999@gmail.com>
+ id 1lYjEZ-00BpJA-Ct
+ for linux-um@lists.infradead.org; Tue, 20 Apr 2021 05:47:43 +0000
+Received: by mail-pf1-x42a.google.com with SMTP id g16so11478300pfq.5
+ for <linux-um@lists.infradead.org>; Mon, 19 Apr 2021 22:47:39 -0700 (PDT)
 MIME-Version: 1.0
+References: <20210419153213.1337562-1-zhuyifei1999@gmail.com>
+ <546324c4e77ebe65f27b0f06fea3ace28dd75fe6.camel@sipsolutions.net>
+ <CABqSeASZLeK8dq-75dcM51zmkHUteuJc07bS8ixKVhEAAeuPDw@mail.gmail.com>
+In-Reply-To: <CABqSeASZLeK8dq-75dcM51zmkHUteuJc07bS8ixKVhEAAeuPDw@mail.gmail.com>
+From: YiFei Zhu <zhuyifei1999@gmail.com>
+Date: Tue, 20 Apr 2021 00:47:27 -0500
+Message-ID: <CABqSeAQdwhJCTyO9w6f2cmyobh2bnA5wG6ZgCS9gD0b7ZSi=yw@mail.gmail.com>
+Subject: Re: [PATCH v2] um: Fix stack pointer alignment
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,171 +26,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes.berg@intel.com>, Benjamin Berg <benjamin@sipsolutions.net>, YiFei Zhu <zhuyifei1999@gmail.com>
+To: Johannes Berg <johannes@sipsolutions.net>, Colin Ian King <colin.king@canonical.com>
+Cc: linux-um@lists.infradead.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Benjamin Berg <benjamin@sipsolutions.net>
 
-GCC assumes that stack is aligned to 16-byte on call sites [1].
-Since GCC 8, GCC began using 16-byte aligned SSE instructions to
-implement assignments to structs on stack. When
-CC_OPTIMIZE_FOR_PERFORMANCE is enabled, this affects
-os-Linux/sigio.c, write_sigio_thread:
+On Mon, Apr 19, 2021 at 3:36 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> > > To reproduce this bug, enable CONFIG_UML_RTC. uml_rtc will call
+> > > add_sigio_fd which will then cause write_sigio_thread to go
+> > > into segfault loop.
+> >
+> > It must also depend on the glibc version, because I've definitely been
+> > testing UML_RTC on 64-bit, on Fedora 32 at the time.
+> >
+>
+> Hmm. Interesting. I can't seem to find anything suggesting Fedora has
+> a patch that would align the stack within clone() [3][4]. I also got a
+> Fedora 32 docker image and could not see the aligning from disassembly
+> of clone, and the gcc version installed by yum is 10.2.1-9.fc32, which
+> is supposed to be affected by this issue... weird. I would expect this
+> to fail outright. I'm considering compiling uml inside this container
+> to see what is going on.
 
-  struct pollfds *fds, tmp;
-  tmp = current_poll;
+It seems config related. I tested with my original config and it
+segfault loops, but then I tested with a fresh defconfig, then enabled
+RTC_CLASS and UML_RTC and it boots successfully, with the assembly as:
 
-Note that struct pollfds is exactly 16 bytes in size.
-GCC 8+ generates assembly similar to:
+  movaps (%rdx),%xmm0
+  movaps %xmm0,(%r12)
 
-  movdqa (%rdi),%xmm0
-  movaps %xmm0,-0x50(%rbp)
+The move from xmm0 to stack is omitted.
 
-This is an issue, because movaps will #GP if -0x50(%rbp) is not
-aligned to 16 bytes [2], and how rbp gets assigned to is via glibc
-clone thread_start, then function prologue, going though execution
-trace similar to (showing only relevant instructions):
+After a bit of trial and error I found changing from
+CC_OPTIMIZE_FOR_SIZE to CC_OPTIMIZE_FOR_PERFORMANCE alone makes the
+difference. What's also interesting is that instead of
+segfault-looping (as in, segfault recovery did not do anything to fix
+the fault, so after sigreturn it segfaults again), it panics with
+"Segfault with no mm" which seems more like the expected behavior.
 
-  sub    $0x10,%rsi
-  mov    %rcx,0x8(%rsi)
-  mov    %rdi,(%rsi)
-  syscall
-  pop    %rax
-  pop    %rdi
-  callq  *%rax
-  push   %rbp
-  mov    %rsp,%rbp
+I'll send a v3 to clarify CC_OPTIMIZE_FOR_PERFORMANCE.
 
-The stack pointer always points to the topmost element on stack,
-rather then the space right above the topmost. On push, the
-pointer decrements first before writing to the memory pointed to
-by it. Therefore, there is no need to have the stack pointer
-pointer always point to valid memory unless the stack is poped;
-so the `- sizeof(void *)` in the code is unnecessary.
-
-On the other hand, glibc reserves the 16 bytes it needs on stack
-and pops itself, so by the call instruction the stack pointer
-is exactly the caller-supplied sp. It then push the 16 bytes of
-the return address and the saved stack pointer, so the base
-pointer will be 16-byte aligned if and only if the caller
-supplied sp is 16-byte aligned. Therefore, the caller must supply
-a 16-byte aligned pointer, which `stack + UM_KERN_PAGE_SIZE`
-already satisfies.
-
-On a side note, musl is unaffected by this issue because it forces
-16 byte alignment via `and $-16,%rsi` in its clone wrapper.
-Similarly, glibc i386 is also unaffected because it has
-`andl $0xfffffff0, %ecx`.
-
-To reproduce this bug, enable CONFIG_UML_RTC and
-CC_OPTIMIZE_FOR_PERFORMANCE. uml_rtc will call
-add_sigio_fd which will then cause write_sigio_thread to either go
-into segfault loop or panic with "Segfault with no mm".
-
-Similarly, signal stacks will be aligned by the host kernel upon
-signal delivery. `- sizeof(void *)` to sigaltstack is
-unconventional and extraneous.
-
-On a related note, initialization of longjmp buffers do require
-`- sizeof(void *)`. This is to account for the return address
-that would have been pushed to the stack at the call site.
-
-The reason for uml to respect 16-byte alignment, rather than
-telling GCC to assume 8-byte alignment like the host kernel since
-commit d9b0cde91c60 ("x86-64, gcc: Use
--mpreferred-stack-boundary=3 if supported"), is because uml links
-against libc. There is no reason to assume libc is also compiled
-with that flag and assumes 8-byte alignment rather than 16-byte.
-
-[1] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=40838
-[2] https://c9x.me/x86/html/file_module_x86_id_180.html
-
-Signed-off-by: YiFei Zhu <zhuyifei1999@gmail.com>
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
----
- arch/um/drivers/ubd_kern.c      | 3 +--
- arch/um/kernel/skas/clone.c     | 2 +-
- arch/um/os-Linux/helper.c       | 4 ++--
- arch/um/os-Linux/signal.c       | 2 +-
- arch/um/os-Linux/skas/process.c | 2 +-
- 5 files changed, 6 insertions(+), 7 deletions(-)
-
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 8e0b43cf089f..cbd4f00fe77e 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -1242,8 +1242,7 @@ static int __init ubd_driver_init(void){
- 		 * enough. So use anyway the io thread. */
- 	}
- 	stack = alloc_stack(0, 0);
--	io_pid = start_io_thread(stack + PAGE_SIZE - sizeof(void *),
--				 &thread_fd);
-+	io_pid = start_io_thread(stack + PAGE_SIZE, &thread_fd);
- 	if(io_pid < 0){
- 		printk(KERN_ERR
- 		       "ubd : Failed to start I/O thread (errno = %d) - "
-diff --git a/arch/um/kernel/skas/clone.c b/arch/um/kernel/skas/clone.c
-index 592cdb138441..5afac0fef24e 100644
---- a/arch/um/kernel/skas/clone.c
-+++ b/arch/um/kernel/skas/clone.c
-@@ -29,7 +29,7 @@ stub_clone_handler(void)
- 	long err;
- 
- 	err = stub_syscall2(__NR_clone, CLONE_PARENT | CLONE_FILES | SIGCHLD,
--			    (unsigned long)data + UM_KERN_PAGE_SIZE / 2 - sizeof(void *));
-+			    (unsigned long)data + UM_KERN_PAGE_SIZE / 2);
- 	if (err) {
- 		data->parent_err = err;
- 		goto done;
-diff --git a/arch/um/os-Linux/helper.c b/arch/um/os-Linux/helper.c
-index 9fa6e4187d4f..32e88baf18dd 100644
---- a/arch/um/os-Linux/helper.c
-+++ b/arch/um/os-Linux/helper.c
-@@ -64,7 +64,7 @@ int run_helper(void (*pre_exec)(void *), void *pre_data, char **argv)
- 		goto out_close;
- 	}
- 
--	sp = stack + UM_KERN_PAGE_SIZE - sizeof(void *);
-+	sp = stack + UM_KERN_PAGE_SIZE;
- 	data.pre_exec = pre_exec;
- 	data.pre_data = pre_data;
- 	data.argv = argv;
-@@ -120,7 +120,7 @@ int run_helper_thread(int (*proc)(void *), void *arg, unsigned int flags,
- 	if (stack == 0)
- 		return -ENOMEM;
- 
--	sp = stack + UM_KERN_PAGE_SIZE - sizeof(void *);
-+	sp = stack + UM_KERN_PAGE_SIZE;
- 	pid = clone(proc, (void *) sp, flags, arg);
- 	if (pid < 0) {
- 		err = -errno;
-diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
-index 96f511d1aabe..e283f130aadc 100644
---- a/arch/um/os-Linux/signal.c
-+++ b/arch/um/os-Linux/signal.c
-@@ -129,7 +129,7 @@ void set_sigstack(void *sig_stack, int size)
- 	stack_t stack = {
- 		.ss_flags = 0,
- 		.ss_sp = sig_stack,
--		.ss_size = size - sizeof(void *)
-+		.ss_size = size
- 	};
- 
- 	if (sigaltstack(&stack, NULL) != 0)
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index fba674fac8b7..43d6ec2a4bea 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -327,7 +327,7 @@ int start_userspace(unsigned long stub_stack)
- 	}
- 
- 	/* set stack pointer to the end of the stack page, so it can grow downwards */
--	sp = (unsigned long) stack + UM_KERN_PAGE_SIZE - sizeof(void *);
-+	sp = (unsigned long)stack + UM_KERN_PAGE_SIZE;
- 
- 	flags = CLONE_FILES | SIGCHLD;
- 
--- 
-2.31.1
-
+YiFei Zhu
 
 _______________________________________________
 linux-um mailing list
