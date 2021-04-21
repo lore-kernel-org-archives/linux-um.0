@@ -2,16 +2,15 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab7.miniserver.com ([37.128.132.42]
  helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lZCE9-00CsEq-OV
- for linux-um@lists.infradead.org; Wed, 21 Apr 2021 12:45:11 +0000
+ id 1lZC1k-00Cryz-En
+ for linux-um@lists.infradead.org; Wed, 21 Apr 2021 12:32:24 +0000
 Subject: Re: Race between SIGIO and epoll from SMP host
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
 References: <CABqSeARcB3hZZ=qrWCOUSqVnGLcSohzm-L2_8J6BZB+Tsh0zGw@mail.gmail.com>
- <d26d976f-2ef0-aeec-e2f4-51b171e0a069@kot-begemot.co.uk>
-Message-ID: <9dd2fe8d-71cd-a5e6-15e3-0375568c2b40@kot-begemot.co.uk>
-Date: Wed, 21 Apr 2021 13:45:05 +0100
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Message-ID: <d26d976f-2ef0-aeec-e2f4-51b171e0a069@kot-begemot.co.uk>
+Date: Wed, 21 Apr 2021 13:32:10 +0100
 MIME-Version: 1.0
-In-Reply-To: <d26d976f-2ef0-aeec-e2f4-51b171e0a069@kot-begemot.co.uk>
+In-Reply-To: <CABqSeARcB3hZZ=qrWCOUSqVnGLcSohzm-L2_8J6BZB+Tsh0zGw@mail.gmail.com>
 Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -21,136 +20,193 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: YiFei Zhu <zhuyifei1999@gmail.com>, linux-um@lists.infradead.org
 
-CgpPbiAyMS8wNC8yMDIxIDEzOjMyLCBBbnRvbiBJdmFub3Ygd3JvdGU6Cj4gCj4gCj4gT24gMjEv
-MDQvMjAyMSAxMjo1MywgWWlGZWkgWmh1IHdyb3RlOgo+PiBIaQo+Pgo+PiBJIHdhcyBwbGF5aW5n
-IGFyb3VuZCB3aXRoIHh4ZCBsYXJnZSBmaWxlcyB3aGVuIEkgbm90aWNlZCB0aGF0IHRoZQo+PiB0
-ZXJtaW5hbCBvdXRwdXQgb2Z0ZW4gc3RhbGxzIGZvciBhIGZldyBzZWNvbmRzLiBJdCdzIGEgaGVp
-c2VuYnVnIHNvCj4+IHRoZSByb290IGNhdXNlIHdhcyBtb3N0bHkgZm91bmQgYnkgZGVidWdnaW5n
-LWJ5LXByaW50aW5nIGFuZAo+PiB0cmlhbC1hbmQtZXJyb3IuCj4+Cj4+IFRoaXMgYnVnIEkgY2Fu
-IHJlbGlhYmx5IHJlcHJvZHVjZSBieSBydW5uaW5nIGB4eGQgL2Rldi96ZXJvYCBpbnNpZGUKPj4g
-VU1MIHRoYXQgaGFzIGl0cyB0dHkgYXMgYGZkOjAsZmQ6MWAuIEJlaGF2aW9yOiB0aGUgdGVybWlu
-YWwgb3V0cHV0Cj4+IHN0YWxscyBpbiB0aGUgbWlkZGxlIG9mIGEgbGluZSwgc3RhbGxpbmcgZm9y
-IHNlY29uZHMgYW5kIHBvc3NpYmx5IGEKPj4gdmVyeSBsb25nIHRpbWUuIEtleWJvYXJkIGlucHV0
-IGRlLXN0YWxscyB0aGUgb3V0cHV0IGJ1dCB3aWxsIHN0YWxsCj4+IGFnYWluIHF1aWNrbHkuCj4+
-Cj4+IEFGQUlDVCwgdGhlIHdheSBVTUwgcmVjZWl2ZXMgQ09OU09MRV9XUklURV9JUlEgZnJvbSBz
-dGRvdXQgaXMgdGhhdCwgaXQKPj4gc2V0cyBPX0FTWU5DIG9uIHN0ZG91dCwgdGhlbiB3aGVuZXZl
-ciBhIFNJR0lPIGlzIHJlY2VpdmVkIGJ5IFVNTCwgaXQKPj4gY2hlY2tzIGZvciB0aGUgb3JpZ2lu
-IG9mIHRoZSBTSUdJTyB2aWEgZXBvbGxfd2FpdCBpbgo+PiBvc193YWl0aW5nX2Zvcl9ldmVudHNf
-ZXBvbGwuIEhvd2V2ZXIsIHRoaXMgaXMgcmFjeTogQSBTSUdJTyBjYW4gYmUKPj4gZ2VuZXJhdGVk
-IHByaW9yIHRvIGVwb2xsIHJlY2VpdmluZyB0aGUgZXZlbnQsIHNvIGVwb2xsX3dhaXQgd2l0aCB6
-ZXJvCj4+IHRpbWVvdXQgbWF5IGJlIGNhbGxlZCBiZWZvcmUgZXBvbGwgcmVjZWl2ZXMgdGhlIGV2
-ZW50LCBhbmQgdGhlIGV2ZW50Cj4+IGNhbiBiZSBtaXNzZWQuCj4+Cj4+IEFzIGEgbWluaW1hbCBy
-ZXByb2R1Y2libGUgZXhhbXBsZSwgdGhpcyBDIGNvZGUgcnVubmluZyBvbiB0aGUgaG9zdAo+PiBv
-ZnRlbiBhc3NlcnQgZmFpbHVyZSBpbiBgcmVzID09IDFgOgo+Pgo+PiBbc25pcF0KPj4gI2RlZmlu
-ZSBfR05VX1NPVVJDRSAxCj4+Cj4+ICNpbmNsdWRlIDxhc3NlcnQuaD4KPj4gI2luY2x1ZGUgPGVy
-cm5vLmg+Cj4+ICNpbmNsdWRlIDxzdGRpby5oPgo+PiAjaW5jbHVkZSA8c2lnbmFsLmg+Cj4+ICNp
-bmNsdWRlIDxzeXMvZXBvbGwuaD4KPj4gI2luY2x1ZGUgPHN5cy9mY250bC5oPgo+PiAjaW5jbHVk
-ZSA8dW5pc3RkLmg+Cj4+Cj4+ICNkZWZpbmUgTUFYX0VQT0xMX0VWRU5UUyA2NAo+PiB2b2xhdGls
-ZSBzaWdfYXRvbWljX3Qgc3RhdGU7Cj4+IHN0YXRpYyBzdHJ1Y3QgZXBvbGxfZXZlbnQgZXBvbGxf
-ZXZlbnRzW01BWF9FUE9MTF9FVkVOVFNdOwo+Pgo+PiBzdGF0aWMgY2hhciBtc2dbXSA9Cj4+IMKg
-wqDCoMKgICIwMDAwMDAwMDogMDAwMCAwMDAwIDAwMDAgMDAwMCAwMDAwIDAwMDAgMDAwMCAwMDAw
-wqAgLi4uLi4uLi4uLi4uLi4uLlxuIjsKPj4KPj4gc3RhdGljIHZvaWQgc2lnaW9faGFuZGxlcihp
-bnQgaWdub3JlZCkKPj4gewo+PiDCoMKgwqDCoCBhc3NlcnQoc3RhdGUgPT0gMSB8fCBzdGF0ZSA9
-PSAwKTsKPj4gwqDCoMKgwqAgc3RhdGUgPSAyOwo+PiB9Cj4+Cj4+IGludCBtYWluKGludCBhcmdj
-LCBjaGFyICoqYXJndikKPj4gewo+PiDCoMKgwqDCoCBpbnQgZXBvbGxmZCwgZmxhZ3MsIHJlczsK
-Pj4gwqDCoMKgwqAgc3RydWN0IGVwb2xsX2V2ZW50IGV2ZW50Owo+Pgo+PiDCoMKgwqDCoCBzdGF0
-ZSA9IDA7Cj4+Cj4+IMKgwqDCoMKgIHNpZ25hbChTSUdJTywgc2lnaW9faGFuZGxlcik7Cj4+Cj4+
-IMKgwqDCoMKgIGVwb2xsZmQgPSBlcG9sbF9jcmVhdGUoTUFYX0VQT0xMX0VWRU5UUyk7Cj4+IMKg
-wqDCoMKgIGFzc2VydChlcG9sbGZkID49IDApOwo+Pgo+PiDCoMKgwqDCoCBldmVudC5kYXRhLnB0
-ciA9IE5VTEw7Cj4+IMKgwqDCoMKgIGV2ZW50LmV2ZW50cyA9IEVQT0xMT1VUIHwgRVBPTExFVDsK
-Pj4gwqDCoMKgwqAgYXNzZXJ0KCFlcG9sbF9jdGwoZXBvbGxmZCwgRVBPTExfQ1RMX0FERCwgMSwg
-JmV2ZW50KSk7Cj4+Cj4+IMKgwqDCoMKgIGZsYWdzID0gZmNudGwoMSwgRl9HRVRGTCk7Cj4+IMKg
-wqDCoMKgIGFzc2VydChmbGFncyA+PSAwKTsKPj4gwqDCoMKgwqAgZmxhZ3MgfD0gT19BU1lOQyB8
-IE9fTk9OQkxPQ0s7Cj4+Cj4+IMKgwqDCoMKgIGFzc2VydCghZmNudGwoMSwgRl9TRVRGTCwgZmxh
-Z3MpKTsKPj4gwqDCoMKgwqAgYXNzZXJ0KCFmY250bCgxLCBGX1NFVFNJRywgU0lHSU8pKTsKPj4g
-wqDCoMKgwqAgYXNzZXJ0KCFmY250bCgxLCBGX1NFVE9XTiwgZ2V0cGlkKCkpKTsKPj4KPj4gwqDC
-oMKgwqAgZm9yICg7Oykgewo+PiDCoMKgwqDCoMKgwqDCoMKgIGlmIChzdGF0ZSA9PSAwKSB7Cj4+
-IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXMgPSB3cml0ZSgxLCBtc2csIHNpemVvZihtc2cp
-KTsKPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlmIChyZXMgPCAwICYmIGVycm5vID09IEVB
-R0FJTikKPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3RhdGUgPSAxOwo+PiDC
-oMKgwqDCoMKgwqDCoMKgIH0gZWxzZSBpZiAoc3RhdGUgPT0gMSkgewo+PiDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqAgcGF1c2UoKTsKPj4gwqDCoMKgwqDCoMKgwqDCoCB9IGVsc2UgaWYgKHN0YXRl
-ID09IDIpIHsKPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJlcyA9IGVwb2xsX3dhaXQoZXBv
-bGxmZCwgZXBvbGxfZXZlbnRzLCBNQVhfRVBPTExfRVZFTlRTLCAxKTsKPj4gwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIGFzc2VydChyZXMgPT0gMSk7Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oCBzdGF0ZSA9IDA7Cj4+IMKgwqDCoMKgwqDCoMKgwqAgfQo+PiDCoMKgwqDCoCB9Cj4+IH0KPj4g
-Wy9zbmlwXQo+Pgo+PiBzdHJhY2UgLWUgZXBvbGxfd2FpdCBzaG93cywgdGhlIGxhc3QgZmV3IGxp
-bmVzOgo+Pgo+PiDCoMKgIC0tLSBTSUdJTyB7c2lfc2lnbm89U0lHSU8sIHNpX2NvZGU9UE9MTF9P
-VVQsIHNpX2JhbmQ9NzcyfSAtLS0KPj4gwqDCoCBlcG9sbF93YWl0KDMsIFt7ZXZlbnRzPUVQT0xM
-T1VULCBkYXRhPXt1MzI9MCwgdTY0PTB9fV0sIDY0LCAxKSA9IDEKPj4gwqDCoCAtLS0gU0lHSU8g
-e3NpX3NpZ25vPVNJR0lPLCBzaV9jb2RlPVBPTExfT1VULCBzaV9iYW5kPTc3Mn0gLS0tCj4+IMKg
-wqAgZXBvbGxfd2FpdCgzLCBbe2V2ZW50cz1FUE9MTE9VVCwgZGF0YT17dTMyPTAsIHU2ND0wfX1d
-LCA2NCwgMSkgPSAxCj4+IMKgwqAgLS0tIFNJR0lPIHtzaV9zaWdubz1TSUdJTywgc2lfY29kZT1Q
-T0xMX09VVCwgc2lfYmFuZD03NzJ9IC0tLQo+PiDCoMKgIGVwb2xsX3dhaXQoMywgW10sIDY0LCAx
-KcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCA9IDAKPj4gwqDCoCAtLS0gU0lHQUJSVCB7
-c2lfc2lnbm89U0lHQUJSVCwgc2lfY29kZT1TSV9US0lMTCwgc2lfcGlkPTIwMzM2MTQsCj4+IHNp
-X3VpZD0xMDAwfSAtLS0KPj4gwqDCoCArKysga2lsbGVkIGJ5IFNJR0FCUlQgKGNvcmUgZHVtcGVk
-KSArKysKPj4KPj4gSSByZXByb2R1Y2VkIHRoaXMgYXNzZXJ0aW9uIGZhaWx1cmUgb246Cj4+ICog
-YSBzZWxmLWJ1aWx0IDUuMTEuMTQgU01QIHZhbmlsbGEga2VybmVsIHJ1bm5pbmcgb24gYmFyZSBt
-ZXRhbCwgd2l0aAo+PiB0ZXJtaW5hbCBhcyBhIGdyYXBoaWNhbCBhcHBsaWNhdGlvbi4KPj4gKiBh
-IDQuMTkuMC0wLmJwby4xNC1hbWQ2NCBEZWJpYW4gNC4xOS4xNzEtMn5kZWI5dTEgU01QIGtlcm5l
-bCB3aXRoCj4+IHRlcm1pbmFsIGFzIHNzaCB0ZXJtaW5hbC4KPj4KPj4gQ2FuIHN0aWxsIHJlcHJv
-ZHVjZSBhZnRlciBzZXR0aW5nIHRpbWVvdXQgdG8gMSBtcywgaW4gYm90aCBpbiBVTUwgYW5kCj4+
-IGluIHRoaXMgbWluaW1hbCBleGFtcGxlLgo+Pgo+PiBJIGxvb2tlZCBpbnRvIGhvdyBTSUdJTyBh
-bmQgZXBvbGwgZXZlbnRzIGFyZSBnZW5lcmF0ZWQgZm9yIGEgdHR5LCBhbmQKPj4gaXQgc2VlbXMg
-dGhhdCBTSUdJTyBpcyBnZW5lcmF0ZWQgc3RyaWN0bHkgYmVmb3JlIGVwb2xsIGV2ZW50cyBhcmUK
-Pj4gZ2VuZXJhdGVkLiBnZGIgYmFja3RyYWNlIGxvb2tzIGxpa2UgKHllcywgb24gVU1MOyBkaWRu
-J3QgYm90aGVyIHRvCj4+IHNwaW4gdXAgcWVtdSBzaW5jZSBJIGhhZCBhIFVNTCBnZGIgb3Blbik6
-Cj4+Cj4+IMKgwqAgIzDCoCBzZW5kX3NpZ2lvIChmb3duPTB4Njc0YTRiOTgsIGZkPTB4MSwgYmFu
-ZD0weDIpIGF0IC4vZnMvZmNudGwuYzo3OTUKPj4gwqDCoCAjMcKgIGtpbGxfZmFzeW5jX3JjdSAo
-YmFuZD08b3B0aW1pemVkIG91dD4sIHNpZz08b3B0aW1pemVkIG91dD4sCj4+IGZhPTB4NjcyZjkw
-YzApIGF0IC4vZnMvZmNudGwuYzoxMDE5Cj4+IMKgwqAgIzLCoCBraWxsX2Zhc3luYyAoZnA9PG9w
-dGltaXplZCBvdXQ+LCBzaWc9MHgxZCwgYmFuZD0weDIpIGF0IC4vZnMvZmNudGwuYzoxMDMzCj4+
-IMKgwqAgIzPCoCBuX3R0eV93cml0ZV93YWtldXAgKHR0eT08b3B0aW1pemVkIG91dD4pIGF0IC4v
-ZHJpdmVycy90dHkvbl90dHkuYzoyNDMKPj4gwqDCoCAjNMKgIHR0eV93YWtldXAgKHR0eT0weDY3
-NDg1ODAwKSBhdCAuL2RyaXZlcnMvdHR5L3R0eV9pby5jOjUzMwo+PiDCoMKgICM1wqAgdHR5X3Bv
-cnRfZGVmYXVsdF93YWtldXAgKHBvcnQ9PG9wdGltaXplZCBvdXQ+KSBhdAo+PiAuL2RyaXZlcnMv
-dHR5L3R0eV9wb3J0LmM6NTAKPj4gwqDCoCAjNsKgIHR0eV9wb3J0X3R0eV93YWtldXAgKHBvcnQ9
-MHg2MTVkZWQ4MCA8dnRzPikgYXQKPj4gLi9kcml2ZXJzL3R0eS90dHlfcG9ydC5jOjM4OAo+Pgo+
-PiDCoMKgICMwwqAgZXBfcG9sbF9jYWxsYmFjayAod2FpdD0weDY3NGQyYWQwLCBtb2RlPTB4MSwg
-c3luYz0weDAsIGtleT0weDQpCj4+IGF0IC4vZnMvZXZlbnRwb2xsLmM6MzYxCj4+IMKgwqAgIzHC
-oCBfX3dha2VfdXBfY29tbW9uICh3cV9oZWFkPTB4Njc0ODVjZTgsIG1vZGU9MHgxLAo+PiBucl9l
-eGNsdXNpdmU9MHgxLCB3YWtlX2ZsYWdzPTB4MCwga2V5PTB4NCwgYm9va21hcms9MHg2MTM5NmY3
-MCkgYXQKPj4gLi9rZXJuZWwvc2NoZWQvd2FpdC5jOjEwOAo+PiDCoMKgICMywqAgX193YWtlX3Vw
-X2NvbW1vbl9sb2NrICh3cV9oZWFkPTB4Njc0ODVjZTgsIG1vZGU9MHgxLAo+PiBucl9leGNsdXNp
-dmU9MHgxLCB3YWtlX2ZsYWdzPTB4MCwga2V5PTB4NCkgYXQKPj4gLi9rZXJuZWwvc2NoZWQvd2Fp
-dC5jOjEzOAo+PiDCoMKgICMzwqAgX193YWtlX3VwICh3cV9oZWFkPTB4Njc0ODVjZTgsIG1vZGU9
-MHgxLCBucl9leGNsdXNpdmU9MHgxLAo+PiBrZXk9MHg0KSBhdCAuL2tlcm5lbC9zY2hlZC93YWl0
-LmM6MTU3Cj4+IMKgwqAgIzTCoCB0dHlfd2FrZXVwICh0dHk9MHg2NzQ4NTgwMCkgYXQgLi9kcml2
-ZXJzL3R0eS90dHlfaW8uYzo1MzcKPj4gwqDCoCAjNcKgIHR0eV9wb3J0X2RlZmF1bHRfd2FrZXVw
-IChwb3J0PTxvcHRpbWl6ZWQgb3V0PikgYXQKPj4gLi9kcml2ZXJzL3R0eS90dHlfcG9ydC5jOjUw
-Cj4+IMKgwqAgIzbCoCB0dHlfcG9ydF90dHlfd2FrZXVwIChwb3J0PTB4NjE1ZGVkODAgPHZ0cz4p
-IGF0Cj4+IC4vZHJpdmVycy90dHkvdHR5X3BvcnQuYzozODgKPj4KPj4gVGhlIGxhc3Qgc2hhcmVk
-IGZyYW1lIGlzIGluIHR0eV93YWtldXAsIGFuZCBuX3R0eV93cml0ZV93YWtldXAgaXMKPj4gY2Fs
-bGVkIGJ5IGBsZC0+b3BzLT53cml0ZV93YWtldXBgIHdoZXJlYXMgX193YWtlX3VwIGlzIGluIHRo
-ZSBtYWNybwo+PiB3YWtlX3VwX2ludGVycnVwdGlibGVfcG9sbCwgc28gc2VuZF9zaWdpbyBpcyBj
-YWxsZWQgc3RyaWN0bHkgYmVmb3JlCj4+IGVwX3BvbGxfY2FsbGJhY2sgZm9yIHR0eV93YWtldXAu
-Cj4+Cj4+IEkgaGF2ZSBub3QgdGVzdGVkIG9uIGEgbm9uLVNNUCBob3N0LCBidXQgb24gYW4gU01Q
-IGhvc3QsIFNJR0lPIGNvdWxkCj4+IGNhdXNlIHRoZSB3YWl0aW5nIHRhc2sgdG8gd2FrZSB1cCBv
-biBhIGRpZmZlcmVudCBjb3JlLCBhbmQgdGhlIHRhc2sKPj4gY291bGQgaW52b2tlIGVwb2xsX3dh
-aXQgYmVmb3JlIHRoZSBpbnRlcnJ1cHQgaGFuZGxlciBnZW5lcmF0ZXMgdGhlCj4+IGVwb2xsIGV2
-ZW50IGluIGVwX3BvbGxfY2FsbGJhY2suIElmIHRoaXMgaGFwcGVucyB0byBVTUwsIHRoZSBpbnRl
-cnJ1cHQKPj4gZm9yIFVNTCB0byBtYWtlIHRoZSB0dHkgcmVhZHkgd2lsbCBiZSBtaXNzZWQgdW50
-aWwgdGhlIG5leHQgU0lHSU8uCj4+Cj4+IENvbnNpZGVyaW5nIHRoYXQgdGhpcyBpcyBhIHJhY2Ug
-b24gdGhlIGhvc3QsIHdoYXQgd291bGQgYmUgdGhlIGJlc3QKPj4gd2F5IHRvIGZpeCB0aGlzPwo+
-IAo+IEludGVyZXN0aW5nIG9uZS4gSSBuZWVkIHRvIHRoaW5rLgo+IAo+IE9uZSBvcHRpb24gd291
-bGQgYmUgdG8gd2FpdCBmb3IgZXBvbGwgZXZlbnRzIHdpdGggYSB0aW1lb3V0IHdoaWNoIGlzIGxh
-cmdlciB0aGFuIHplcm8gLSBmLmUuIEhaLgo+IAo+IElmIHdlIGhhdmUgcmVjZWl2ZWQgYSBTSUdJ
-TyB0aGVyZSBpcyBhbiBlcG9sbCBldmVudCBvbiB0aGUgd2F5LiBUaGUgZmFjdCB0aGF0IGl0IGlz
-IG5vdCBpbiB0aGUgcXVldWUgcmlnaHQgbm93IG1lYW5zIHRoYXQgd2UgYXJlIGR1ZSB0byBwcm9j
-ZXNzIGl0IHNob3J0bHkuCgpObywgdGhpcyBkb2VzIG5vdCB3b3JrLiBJIHdpbGwgdGhpbmsgb2Yg
-b3RoZXIgYXBwcm9hY2hlcyB0byB0aGlzLgoKPiAKPiBBLgo+IAo+Pgo+PiBZaUZlaSBaaHUKPj4K
-Pj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPj4gbGlu
-dXgtdW0gbWFpbGluZyBsaXN0Cj4+IGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKPj4gaHR0
-cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo+Pgo+IAoK
-LS0gCkFudG9uIFIuIEl2YW5vdgpodHRwczovL3d3dy5rb3QtYmVnZW1vdC5jby51ay8KCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxp
-bmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
+
+
+On 21/04/2021 12:53, YiFei Zhu wrote:
+> Hi
+> 
+> I was playing around with xxd large files when I noticed that the
+> terminal output often stalls for a few seconds. It's a heisenbug so
+> the root cause was mostly found by debugging-by-printing and
+> trial-and-error.
+> 
+> This bug I can reliably reproduce by running `xxd /dev/zero` inside
+> UML that has its tty as `fd:0,fd:1`. Behavior: the terminal output
+> stalls in the middle of a line, stalling for seconds and possibly a
+> very long time. Keyboard input de-stalls the output but will stall
+> again quickly.
+> 
+> AFAICT, the way UML receives CONSOLE_WRITE_IRQ from stdout is that, it
+> sets O_ASYNC on stdout, then whenever a SIGIO is received by UML, it
+> checks for the origin of the SIGIO via epoll_wait in
+> os_waiting_for_events_epoll. However, this is racy: A SIGIO can be
+> generated prior to epoll receiving the event, so epoll_wait with zero
+> timeout may be called before epoll receives the event, and the event
+> can be missed.
+> 
+> As a minimal reproducible example, this C code running on the host
+> often assert failure in `res == 1`:
+> 
+> [snip]
+> #define _GNU_SOURCE 1
+> 
+> #include <assert.h>
+> #include <errno.h>
+> #include <stdio.h>
+> #include <signal.h>
+> #include <sys/epoll.h>
+> #include <sys/fcntl.h>
+> #include <unistd.h>
+> 
+> #define MAX_EPOLL_EVENTS 64
+> volatile sig_atomic_t state;
+> static struct epoll_event epoll_events[MAX_EPOLL_EVENTS];
+> 
+> static char msg[] =
+>      "00000000: 0000 0000 0000 0000 0000 0000 0000 0000  ................\n";
+> 
+> static void sigio_handler(int ignored)
+> {
+>      assert(state == 1 || state == 0);
+>      state = 2;
+> }
+> 
+> int main(int argc, char **argv)
+> {
+>      int epollfd, flags, res;
+>      struct epoll_event event;
+> 
+>      state = 0;
+> 
+>      signal(SIGIO, sigio_handler);
+> 
+>      epollfd = epoll_create(MAX_EPOLL_EVENTS);
+>      assert(epollfd >= 0);
+> 
+>      event.data.ptr = NULL;
+>      event.events = EPOLLOUT | EPOLLET;
+>      assert(!epoll_ctl(epollfd, EPOLL_CTL_ADD, 1, &event));
+> 
+>      flags = fcntl(1, F_GETFL);
+>      assert(flags >= 0);
+>      flags |= O_ASYNC | O_NONBLOCK;
+> 
+>      assert(!fcntl(1, F_SETFL, flags));
+>      assert(!fcntl(1, F_SETSIG, SIGIO));
+>      assert(!fcntl(1, F_SETOWN, getpid()));
+> 
+>      for (;;) {
+>          if (state == 0) {
+>              res = write(1, msg, sizeof(msg));
+>              if (res < 0 && errno == EAGAIN)
+>                  state = 1;
+>          } else if (state == 1) {
+>              pause();
+>          } else if (state == 2) {
+>              res = epoll_wait(epollfd, epoll_events, MAX_EPOLL_EVENTS, 1);
+>              assert(res == 1);
+>              state = 0;
+>          }
+>      }
+> }
+> [/snip]
+> 
+> strace -e epoll_wait shows, the last few lines:
+> 
+>    --- SIGIO {si_signo=SIGIO, si_code=POLL_OUT, si_band=772} ---
+>    epoll_wait(3, [{events=EPOLLOUT, data={u32=0, u64=0}}], 64, 1) = 1
+>    --- SIGIO {si_signo=SIGIO, si_code=POLL_OUT, si_band=772} ---
+>    epoll_wait(3, [{events=EPOLLOUT, data={u32=0, u64=0}}], 64, 1) = 1
+>    --- SIGIO {si_signo=SIGIO, si_code=POLL_OUT, si_band=772} ---
+>    epoll_wait(3, [], 64, 1)                = 0
+>    --- SIGABRT {si_signo=SIGABRT, si_code=SI_TKILL, si_pid=2033614,
+> si_uid=1000} ---
+>    +++ killed by SIGABRT (core dumped) +++
+> 
+> I reproduced this assertion failure on:
+> * a self-built 5.11.14 SMP vanilla kernel running on bare metal, with
+> terminal as a graphical application.
+> * a 4.19.0-0.bpo.14-amd64 Debian 4.19.171-2~deb9u1 SMP kernel with
+> terminal as ssh terminal.
+> 
+> Can still reproduce after setting timeout to 1 ms, in both in UML and
+> in this minimal example.
+> 
+> I looked into how SIGIO and epoll events are generated for a tty, and
+> it seems that SIGIO is generated strictly before epoll events are
+> generated. gdb backtrace looks like (yes, on UML; didn't bother to
+> spin up qemu since I had a UML gdb open):
+> 
+>    #0  send_sigio (fown=0x674a4b98, fd=0x1, band=0x2) at ./fs/fcntl.c:795
+>    #1  kill_fasync_rcu (band=<optimized out>, sig=<optimized out>,
+> fa=0x672f90c0) at ./fs/fcntl.c:1019
+>    #2  kill_fasync (fp=<optimized out>, sig=0x1d, band=0x2) at ./fs/fcntl.c:1033
+>    #3  n_tty_write_wakeup (tty=<optimized out>) at ./drivers/tty/n_tty.c:243
+>    #4  tty_wakeup (tty=0x67485800) at ./drivers/tty/tty_io.c:533
+>    #5  tty_port_default_wakeup (port=<optimized out>) at
+> ./drivers/tty/tty_port.c:50
+>    #6  tty_port_tty_wakeup (port=0x615ded80 <vts>) at
+> ./drivers/tty/tty_port.c:388
+> 
+>    #0  ep_poll_callback (wait=0x674d2ad0, mode=0x1, sync=0x0, key=0x4)
+> at ./fs/eventpoll.c:361
+>    #1  __wake_up_common (wq_head=0x67485ce8, mode=0x1,
+> nr_exclusive=0x1, wake_flags=0x0, key=0x4, bookmark=0x61396f70) at
+> ./kernel/sched/wait.c:108
+>    #2  __wake_up_common_lock (wq_head=0x67485ce8, mode=0x1,
+> nr_exclusive=0x1, wake_flags=0x0, key=0x4) at
+> ./kernel/sched/wait.c:138
+>    #3  __wake_up (wq_head=0x67485ce8, mode=0x1, nr_exclusive=0x1,
+> key=0x4) at ./kernel/sched/wait.c:157
+>    #4  tty_wakeup (tty=0x67485800) at ./drivers/tty/tty_io.c:537
+>    #5  tty_port_default_wakeup (port=<optimized out>) at
+> ./drivers/tty/tty_port.c:50
+>    #6  tty_port_tty_wakeup (port=0x615ded80 <vts>) at
+> ./drivers/tty/tty_port.c:388
+> 
+> The last shared frame is in tty_wakeup, and n_tty_write_wakeup is
+> called by `ld->ops->write_wakeup` whereas __wake_up is in the macro
+> wake_up_interruptible_poll, so send_sigio is called strictly before
+> ep_poll_callback for tty_wakeup.
+> 
+> I have not tested on a non-SMP host, but on an SMP host, SIGIO could
+> cause the waiting task to wake up on a different core, and the task
+> could invoke epoll_wait before the interrupt handler generates the
+> epoll event in ep_poll_callback. If this happens to UML, the interrupt
+> for UML to make the tty ready will be missed until the next SIGIO.
+> 
+> Considering that this is a race on the host, what would be the best
+> way to fix this?
+
+Interesting one. I need to think.
+
+One option would be to wait for epoll events with a timeout which is larger than zero - f.e. HZ.
+
+If we have received a SIGIO there is an epoll event on the way. The fact that it is not in the queue right now means that we are due to process it shortly.
+
+A.
+
+> 
+> YiFei Zhu
+> 
+> _______________________________________________
+> linux-um mailing list
+> linux-um@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-um
+> 
+
+-- 
+Anton R. Ivanov
+https://www.kot-begemot.co.uk/
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
