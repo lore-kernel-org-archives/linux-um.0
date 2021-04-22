@@ -1,21 +1,21 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x630.google.com ([2607:f8b0:4864:20::630])
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lZUz9-00DW29-7e
- for linux-um@lists.infradead.org; Thu, 22 Apr 2021 08:46:56 +0000
-Received: by mail-pl1-x630.google.com with SMTP id h20so23179202plr.4
- for <linux-um@lists.infradead.org>; Thu, 22 Apr 2021 01:46:54 -0700 (PDT)
-MIME-Version: 1.0
+ id 1lZU6o-00DT8E-Jr
+ for linux-um@lists.infradead.org; Thu, 22 Apr 2021 07:50:48 +0000
+Subject: Re: Race between SIGIO and epoll from SMP host
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
 References: <CABqSeARcB3hZZ=qrWCOUSqVnGLcSohzm-L2_8J6BZB+Tsh0zGw@mail.gmail.com>
  <d26d976f-2ef0-aeec-e2f4-51b171e0a069@kot-begemot.co.uk>
  <CABqSeAQ-UdKoBGvWC-n=020opHDkSKV42c98cb=KvgxHn7gCfw@mail.gmail.com>
  <ea3cfb8b-3bbd-1ee7-800f-bfb2905869f8@kot-begemot.co.uk>
  <bb88a493-7db5-d508-8a07-bcd80e550347@kot-begemot.co.uk>
+Message-ID: <4adc4864-9daf-bb10-c472-456deaef2f10@kot-begemot.co.uk>
+Date: Thu, 22 Apr 2021 08:50:42 +0100
+MIME-Version: 1.0
 In-Reply-To: <bb88a493-7db5-d508-8a07-bcd80e550347@kot-begemot.co.uk>
-From: YiFei Zhu <zhuyifei1999@gmail.com>
-Date: Thu, 22 Apr 2021 03:46:43 -0500
-Message-ID: <CABqSeATCv1d+OgaWZwuM4kdLYq-iSei+te3E-wp=SvyTaTYsBg@mail.gmail.com>
-Subject: Re: Race between SIGIO and epoll from SMP host
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,47 +24,107 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+To: YiFei Zhu <zhuyifei1999@gmail.com>
 Cc: linux-um@lists.infradead.org
 
-On Thu, Apr 22, 2021 at 2:32 AM Anton Ivanov
-<anton.ivanov@kot-begemot.co.uk> wrote:
+On 22/04/2021 08:32, Anton Ivanov wrote:
+> On 21/04/2021 16:45, Anton Ivanov wrote:
+>>
+>>
+>> On 21/04/2021 14:35, YiFei Zhu wrote:
+>>> On Wed, Apr 21, 2021 at 7:32 AM Anton Ivanov
+>>> <anton.ivanov@kot-begemot.co.uk> wrote:
+>>>>> Considering that this is a race on the host, what would be the best
+>>>>> way to fix this?
+>>>>
+>>>> Interesting one. I need to think.
+>>>>
+>>>> One option would be to wait for epoll events with a timeout which is 
+>>>> larger than zero - f.e. HZ.
+>>>
+>>> I was about to say I could reproduce it even with a timeout of 1ms,
+>>> then I realized that code I pasted above already used 1ms timeout.
+>>> Assertion failures using 1ms timeout seems much rarer than 0 timeout
+>>> however.
+>>>
+>>> For reference my CONFIG_HZ on the host is 1000. I also use
+>>> CONFIG_NO_HZ_IDLE if that's relevant (I'm not too familiar with how
+>>> the kernel ticking works).
+>>>
+>>>> If we have received a SIGIO there is an epoll event on the way. The 
+>>>> fact that it is not in the queue right now means that we are due to 
+>>>> process it shortly.
+>>
+>> This seems to be limited to ttys. Why - I need to figure it out.
+>>
+>> If this ends up as tty specific, we can enable the work-around for 
+>> ttys which was there when they were not producing sigio on write 
+>> correctly.
+>>
+>> This ends up disabled on most modern machines, because modern kernels 
+>> produce sigio on write correctly for ttys.
+>>
+>> With the workaround enabled there is an extra IO event which is 
+>> produced after the notification appears on the poll loop in a helper 
+>> thread. So the stall should never happen.
+> 
+> 
 > I now have an idea why we see this on ttys.
->
-> TTY IO wake-up in addition to doing SIGIO before poll notifications,
+> 
+> TTY IO wake-up in addition to doing SIGIO before poll notifications, 
 > also does poll notifications using a wake-up which will reschedule.
->
-> Compared to that, let's say socket does a sync wake-up which does not
+> 
+> Compared to that, let's say socket does a sync wake-up which does not 
 > reschedule and does it before SIGIO.
->
-> In either case, we stand a chance of missing an interrupt. Just in the
-> second case it is extremely small. So small that I have never seen it in
+> 
+> In either case, we stand a chance of missing an interrupt. Just in the 
+> second case it is extremely small. So small that I have never seen it in 
 > practice.
->
-> The real way of dealing with it will be to do to do a helper thread
-> which (e)polls the epoll fd and generates a SIGIO if there is an
-> outstanding EPOLL notification which has been missed. This would also
-> take care of the range of conditions which are currently handled by the
+> 
+> The real way of dealing with it will be to do to do a helper thread 
+> which (e)polls the epoll fd and generates a SIGIO if there is an 
+> outstanding EPOLL notification which has been missed. This would also 
+> take care of the range of conditions which are currently handled by the 
 > SIGIO fd helper so that would become surplus to requirements.
->
-> I think that just polling the epoll fd should do the job here. So this
-> will also get rid of all the motions needed to register fds with the
+> 
+> I think that just polling the epoll fd should do the job here. So this 
+> will also get rid of all the motions needed to register fds with the 
 > async helper.
->
+
+In fact, we can kill the registration of fds for SIGIO too. The helper 
+does the same job, so why bother?
+
+A
+
+> 
 > Brgds,
+> 
+> 
+>>
+>> A.
+>>
+>>>>
+>>>> A.
+>>>
+>>> YiFei Zhu
+>>>
+>>> _______________________________________________
+>>> linux-um mailing list
+>>> linux-um@lists.infradead.org
+>>> http://lists.infradead.org/mailman/listinfo/linux-um
+>>>
+>>
+> 
+> 
 
-By "async helper" do you mean the sigio helper? Is what you are
-suggesting to, in the sigio helper, use epoll instead of using poll,
-and then send SIGIO to notify the kernel thread once epoll receives an
-event? It sounds like a fix, although no idea how difficult it would
-be to efficiently send 'which events have been epolled' back to the
-kernel efficiently without running into races.
 
-YiFei Zhu
+-- 
+Anton R. Ivanov
+https://www.kot-begemot.co.uk/
 
 _______________________________________________
 linux-um mailing list
