@@ -1,17 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-yb1-xb49.google.com ([2607:f8b0:4864:20::b49])
+Received: from mail-pf1-x436.google.com ([2607:f8b0:4864:20::436])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lkJTR-0000E7-Dw
- for linux-um@lists.infradead.org; Sat, 22 May 2021 04:42:55 +0000
-Received: by mail-yb1-xb49.google.com with SMTP id
- s8-20020a5b04480000b029049fb35700b9so30356525ybp.5
- for <linux-um@lists.infradead.org>; Fri, 21 May 2021 21:42:51 -0700 (PDT)
-Date: Fri, 21 May 2021 21:42:39 -0700
-Message-Id: <20210522044241.2763088-1-davidgow@google.com>
-Mime-Version: 1.0
-Subject: [PATCH v2 1/3] kunit: arch/um/configs: Enable KUNIT_ALL_TESTS by
- default
-From: David Gow <davidgow@google.com>
+ id 1leHIq-004li9-M7
+ for linux-um@lists.infradead.org; Wed, 05 May 2021 13:11:03 +0000
+Received: by mail-pf1-x436.google.com with SMTP id b15so1960300pfl.4
+ for <linux-um@lists.infradead.org>; Wed, 05 May 2021 06:11:00 -0700 (PDT)
+Message-ID: <d7ef0f49bcb2648f39082bec08c4ed05cbedddc9.camel@debian.org>
+Subject: Re: UML Wiki
+From: Ritesh Raj Sarraf <rrs@debian.org>
+Date: Wed, 05 May 2021 18:40:54 +0530
+In-Reply-To: <26259540-5fec-e253-4193-2028dbac75bc@kot-begemot.co.uk>
+References: <162b202963d8d72e275df35b7d4db55d56f8fa55.camel@researchut.com>
+ <26259540-5fec-e253-4193-2028dbac75bc@kot-begemot.co.uk>
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,61 +21,81 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: rrs@debian.org
+Content-Type: multipart/mixed; boundary="===============0852207198376825987=="
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Brendan Higgins <brendanhiggins@google.com>, Shuah Khan <shuah@kernel.org>
-Cc: David Gow <davidgow@google.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Daniel Latypov <dlatypov@google.com>
+To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, johannes@sipsolutions.net, richard@nod.at
 
-Make the default .kunitconfig (specified in
-arch/um/configs/kunit_defconfig) specify CONFIG_KUNIT_ALL_TESTS by
-default. KUNIT_ALL_TESTS runs all tests which have satisfied
-dependencies in the current .config (which would be the architecture
-defconfig).
 
-Currently, the default .kunitconfig enables only the example tests and
-KUnit's own tests. While this does provide a good example of what a
-.kunitconfig for running a few individual tests should look like, it
-does mean that kunit_tool runs a pretty paltry collection of tests by
-default.
+--===============0852207198376825987==
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="=-CQr4gIyv0SWCXVEnTEva"
 
-The example tests' config entry (CONFIG_KUNIT_EXAMPLE_TEST=y) continues
-to be included -- despite now being redundant -- to provide an example
-of how tests are enabled when KUNIT_ALL_TESTS is disabled.
 
-A default run of ./tools/testing/kunit/kunit.py run now runs 70 tests
-instead of 14.
+--=-CQr4gIyv0SWCXVEnTEva
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: David Gow <davidgow@google.com>
-Acked-by: Daniel Latypov <dlatypov@google.com>
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
----
+On Wed, 2021-05-05 at 09:58 +0100, Anton Ivanov wrote:
+> I missed the wiki. I did not even know it exists when I rewrote the
+> documentation.
+>=20
+> Most of the stuff is in the documentation.
+>=20
+> AFAIK, we are missing only two sections in the kernel docs - Time
+> Travel and Virtio.
+>=20
+> IMHO it will be better if we have the documentation in one place.
 
-Changes since v1:
-https://lore.kernel.org/linux-kselftest/20210518035825.1885357-1-davidgow@google.com/
-- Keep the KUNIT_EXAMPLE_TEST entry as an example.
-- Move (in patches 2,3) kunit_defconfig to tools/testing/kunit/configs
-  and replace all_tests.config.
+Yes. Having it at a single location, in this case, the kernel
+documentation, is the right thing.
 
- arch/um/configs/kunit_defconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+That's why I'm requesting a big mention of it on the UML Wiki. Or,
+otherwise, lets drop the wiki.
 
-diff --git a/arch/um/configs/kunit_defconfig b/arch/um/configs/kunit_defconfig
-index 9235b7d42d38..e67af7b9f1bb 100644
---- a/arch/um/configs/kunit_defconfig
-+++ b/arch/um/configs/kunit_defconfig
-@@ -1,3 +1,3 @@
- CONFIG_KUNIT=y
--CONFIG_KUNIT_TEST=y
- CONFIG_KUNIT_EXAMPLE_TEST=y
-+CONFIG_KUNIT_ALL_TESTS=y
--- 
-2.31.1.818.g46aad6cb9e-goog
+--=20
+Given the large number of mailing lists I follow, I request you to CC
+me in replies for quicker response
 
+--=-CQr4gIyv0SWCXVEnTEva
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEQCVDstmIVAB/Yn02pjpYo/LhdWkFAmCSmV4ACgkQpjpYo/Lh
+dWks0RAAuPXzRCVardI48p8qCEP9T7hOKatWpVuUNh5mSpAIdkReDdI1HWUimZVw
+nu46k3C5oRkC21X/sRxh3H+UT1sCQMZwfWntSTtGbsHYT8e6zFcm2RjGRzxXN3Fn
+sw9eFwFrHsVI+Ck4tqWaQ1tK5VCa1Ls6bvAuSYlecn0AzBXgS7dHv5Lgw0ZR7gvB
+pBl9iWC1otVaxp/mh1W9ecSY3p8qGgZNbkvhBqIKfQeo/qadrC3ZVVsjn2z6p90y
+tAD0roNqJO9Cfi9MoohnHeP+M4mUZICACjBfYwbOY67c03N75eXQVEpG7/SrRH5O
+sw0kQYvdMODX7N4fGr+pIIuPkPpcUpEj77EOVw+JJMZlzMAz7P1pxJZvnbEHblrV
+accmLK0c28ufyExI+bQ1SQctXpUjTh+HF9IzJVjOiI/afc7D8IkozVnTdUphUGP7
+SM3N483QqxAOH0h6oq8/1D9ypf7CNokfQXbCbKdUjQ1bwW3ezQZDxKIItbreX1CS
+ZuoOHwkURGJImqHReTiH44gqHT5YUSQkdIaJrrJeI510v86rcZ2G4KXJtXSZ1+3Q
+atBP7NIWuudCyf/VBYqBpc1mfmnCMto0T7XoG2T13lqdMy40pS42wJv1ny0yXWIB
+QALhQVTKreaN5TjqAKcDfFB1XW8VmLA27UXBQWAeJNYvPsJlJQY=
+=FwS9
+-----END PGP SIGNATURE-----
+
+--=-CQr4gIyv0SWCXVEnTEva--
+
+
+
+--===============0852207198376825987==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 linux-um mailing list
 linux-um@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-um
+
+--===============0852207198376825987==--
+
+
 
