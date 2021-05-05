@@ -1,13 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from szxga01-in.huawei.com ([45.249.212.187])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lnYQs-00AZjy-Ec
- for linux-um@lists.infradead.org; Mon, 31 May 2021 03:17:40 +0000
-From: Shaokun Zhang <zhangshaokun@hisilicon.com>
-Subject: [PATCH] um: Remove the repeated declaration
-Date: Mon, 31 May 2021 11:17:07 +0800
-Message-ID: <1622431027-4395-1-git-send-email-zhangshaokun@hisilicon.com>
-MIME-Version: 1.0
+Received: from mail.kernel.org ([198.145.29.99])
+ by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
+ id 1le6AH-004NIO-MX
+ for linux-um@lists.infradead.org; Wed, 05 May 2021 01:17:26 +0000
+Subject: Re: [GIT PULL] UML changes for 5.13
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <1774500012.55581.1620159368372.JavaMail.zimbra@nod.at>
+References: <1774500012.55581.1620159368372.JavaMail.zimbra@nod.at>
+Message-Id: <162017744523.16566.12478026286126646878.pr-tracker-bot@kernel.org>
+Date: Wed, 05 May 2021 01:17:25 +0000
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -16,38 +17,26 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Shaokun Zhang <zhangshaokun@hisilicon.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
+To: Richard Weinberger <richard@nod.at>
+Cc: torvalds <torvalds@linux-foundation.org>, linux-kernel <linux-kernel@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>
 
-Function 'os_flush_stdout' is declared twice, so remove the
-repeated declaration.
+The pull request you sent on Tue, 4 May 2021 22:16:08 +0200 (CEST):
 
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
----
- arch/um/include/shared/os.h | 1 -
- 1 file changed, 1 deletion(-)
+> git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.13-rc1
 
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index 13d86f94cf0f..a3f213f729b2 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -211,7 +211,6 @@ extern int os_protect_memory(void *addr, unsigned long len,
- extern int os_unmap_memory(void *addr, int len);
- extern int os_drop_memory(void *addr, int length);
- extern int can_drop_memory(void);
--extern void os_flush_stdout(void);
- extern int os_mincore(void *addr, unsigned long len);
- 
- /* execvp.c */
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/d665ea6ea86c785760ee4bad4543dab3267ad074
+
+Thank you!
+
 -- 
-2.7.4
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
 _______________________________________________
 linux-um mailing list
