@@ -1,15 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lgtCh-00Afx4-8O
- for linux-um@lists.infradead.org; Wed, 12 May 2021 18:03:28 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.10 12/34] um: Disable CONFIG_GCOV with MODULES
-Date: Wed, 12 May 2021 14:02:43 -0400
-Message-Id: <20210512180306.664925-12-sashal@kernel.org>
-In-Reply-To: <20210512180306.664925-1-sashal@kernel.org>
-References: <20210512180306.664925-1-sashal@kernel.org>
+ id 1lfJ1O-007SIz-Og
+ for linux-um@lists.infradead.org; Sat, 08 May 2021 09:13:16 +0000
+Subject: Re: [PATCH 1/1] um: fix error return code in slip_open()
+References: <20210508031354.2127-1-thunder.leizhen@huawei.com>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <70835fd6-69ba-8bff-65a1-aad83e400a52@cambridgegreys.com>
+Date: Sat, 8 May 2021 10:13:02 +0100
 MIME-Version: 1.0
+In-Reply-To: <20210508031354.2127-1-thunder.leizhen@huawei.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,84 +20,44 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Johannes Berg <johannes.berg@intel.com>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, linux-um@lists.infradead.org
+To: Zhen Lei <thunder.leizhen@huawei.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Andrew Morton <akpm@osdl.org>, linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
 
-From: Johannes Berg <johannes.berg@intel.com>
+On 08/05/2021 04:13, Zhen Lei wrote:
+> Fix to return a negative error code from the error handling case instead
+> of 0, as done elsewhere in this function.
+> 
+> Fixes: a3c77c67a443 ("[PATCH] uml: slirp and slip driver cleanups and fixes")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>   arch/um/drivers/slip_user.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/um/drivers/slip_user.c b/arch/um/drivers/slip_user.c
+> index 482a19c5105c..7334019c9e60 100644
+> --- a/arch/um/drivers/slip_user.c
+> +++ b/arch/um/drivers/slip_user.c
+> @@ -145,7 +145,8 @@ static int slip_open(void *data)
+>   	}
+>   	sfd = err;
+>   
+> -	if (set_up_tty(sfd))
+> +	err = set_up_tty(sfd);
+> +	if (err)
+>   		goto out_close2;
+>   
+>   	pri->slave = sfd;
+> 
+Acked-By: anton.ivanov@cambridgegreys.com
 
-[ Upstream commit ad3d19911632debc886ef4a992d41d6de7927006 ]
-
-CONFIG_GCOV doesn't work with modules, and for various reasons
-it cannot work, see also
-https://lore.kernel.org/r/d36ea54d8c0a8dd706826ba844a6f27691f45d55.camel@sipsolutions.net
-
-Make CONFIG_GCOV depend on !MODULES to avoid anyone
-running into issues there. This also means we need
-not export the gcov symbols.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/um/Kconfig.debug      |  1 +
- arch/um/kernel/Makefile    |  1 -
- arch/um/kernel/gmon_syms.c | 16 ----------------
- 3 files changed, 1 insertion(+), 17 deletions(-)
- delete mode 100644 arch/um/kernel/gmon_syms.c
-
-diff --git a/arch/um/Kconfig.debug b/arch/um/Kconfig.debug
-index 315d368e63ad..1dfb2959c73b 100644
---- a/arch/um/Kconfig.debug
-+++ b/arch/um/Kconfig.debug
-@@ -17,6 +17,7 @@ config GCOV
- 	bool "Enable gcov support"
- 	depends on DEBUG_INFO
- 	depends on !KCOV
-+	depends on !MODULES
- 	help
- 	  This option allows developers to retrieve coverage data from a UML
- 	  session.
-diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
-index 5aa882011e04..e698e0c7dbdc 100644
---- a/arch/um/kernel/Makefile
-+++ b/arch/um/kernel/Makefile
-@@ -21,7 +21,6 @@ obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
- 
- obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
- obj-$(CONFIG_GPROF)	+= gprof_syms.o
--obj-$(CONFIG_GCOV)	+= gmon_syms.o
- obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
- obj-$(CONFIG_STACKTRACE) += stacktrace.o
- 
-diff --git a/arch/um/kernel/gmon_syms.c b/arch/um/kernel/gmon_syms.c
-deleted file mode 100644
-index 9361a8eb9bf1..000000000000
---- a/arch/um/kernel/gmon_syms.c
-+++ /dev/null
-@@ -1,16 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-- */
--
--#include <linux/module.h>
--
--extern void __bb_init_func(void *)  __attribute__((weak));
--EXPORT_SYMBOL(__bb_init_func);
--
--extern void __gcov_init(void *)  __attribute__((weak));
--EXPORT_SYMBOL(__gcov_init);
--extern void __gcov_merge_add(void *, unsigned int)  __attribute__((weak));
--EXPORT_SYMBOL(__gcov_merge_add);
--extern void __gcov_exit(void)  __attribute__((weak));
--EXPORT_SYMBOL(__gcov_exit);
 -- 
-2.30.2
-
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
 _______________________________________________
 linux-um mailing list
