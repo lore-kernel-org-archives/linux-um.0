@@ -1,142 +1,139 @@
-Return-Path: <arnd@kernel.org>
-From: Arnd Bergmann <arnd@kernel.org>
-Subject: [PATCH 4/5] asm-generic: uaccess: remove inline strncpy_from_user/strnlen_user
-Date: Sat, 15 May 2021 00:09:41 +0200
-Message-Id: <20210514220942.879805-5-arnd@kernel.org>
-In-Reply-To: <20210514220942.879805-1-arnd@kernel.org>
-References: <20210514220942.879805-1-arnd@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail.kernel.org ([198.145.29.99])
+ by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
+ id 1lgtEH-00AgFu-7P
+ for linux-um@lists.infradead.org; Wed, 12 May 2021 18:05:06 +0000
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 08/18] um: Mark all kernel symbols as local
+Date: Wed, 12 May 2021 14:04:39 -0400
+Message-Id: <20210512180450.665586-8-sashal@kernel.org>
+In-Reply-To: <20210512180450.665586-1-sashal@kernel.org>
+References: <20210512180450.665586-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-arch@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Brian Cain <bcain@codeaurora.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Sid Manning <sidneym@codeaurora.org>, Andrew Morton <akpm@linux-foundation.org>, Mike Rapoport <rppt@kernel.org>, linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-riscv@lists.infradead.org, linux-um@lists.infradead.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Johannes Berg <johannes.berg@intel.com>, Ritesh Raj Sarraf <rrs@debian.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, linux-um@lists.infradead.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Johannes Berg <johannes.berg@intel.com>
 
-Consolidate the asm-generic implementation with the library version
-that is used everywhere else.
+[ Upstream commit d5027ca63e0e778b641cf23e3f5c6d6212cf412b ]
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Ritesh reported a bug [1] against UML, noting that it crashed on
+startup. The backtrace shows the following (heavily redacted):
+
+(gdb) bt
+...
+ #26 0x0000000060015b5d in sem_init () at ipc/sem.c:268
+ #27 0x00007f89906d92f7 in ?? () from /lib/x86_64-linux-gnu/libcom_err.so.2
+ #28 0x00007f8990ab8fb2 in call_init (...) at dl-init.c:72
+...
+ #40 0x00007f89909bf3a6 in nss_load_library (...) at nsswitch.c:359
+...
+ #44 0x00007f8990895e35 in _nss_compat_getgrnam_r (...) at nss_compat/compat-grp.c:486
+ #45 0x00007f8990968b85 in __getgrnam_r [...]
+ #46 0x00007f89909d6b77 in grantpt [...]
+ #47 0x00007f8990a9394e in __GI_openpty [...]
+ #48 0x00000000604a1f65 in openpty_cb (...) at arch/um/os-Linux/sigio.c:407
+ #49 0x00000000604a58d0 in start_idle_thread (...) at arch/um/os-Linux/skas/process.c:598
+ #50 0x0000000060004a3d in start_uml () at arch/um/kernel/skas/process.c:45
+ #51 0x00000000600047b2 in linux_main (...) at arch/um/kernel/um_arch.c:334
+ #52 0x000000006000574f in main (...) at arch/um/os-Linux/main.c:144
+
+indicating that the UML function openpty_cb() calls openpty(),
+which internally calls __getgrnam_r(), which causes the nsswitch
+machinery to get started.
+
+This loads, through lots of indirection that I snipped, the
+libcom_err.so.2 library, which (in an unknown function, "??")
+calls sem_init().
+
+Now, of course it wants to get libpthread's sem_init(), since
+it's linked against libpthread. However, the dynamic linker
+looks up that symbol against the binary first, and gets the
+kernel's sem_init().
+
+Hajime Tazaki noted that "objcopy -L" can localize a symbol,
+so the dynamic linker wouldn't do the lookup this way. I tried,
+but for some reason that didn't seem to work.
+
+Doing the same thing in the linker script instead does seem to
+work, though I cannot entirely explain - it *also* works if I
+just add "VERSION { { global: *; }; }" instead, indicating that
+something else is happening that I don't really understand. It
+may be that explicitly doing that marks them with some kind of
+empty version, and that's different from the default.
+
+Explicitly marking them with a version breaks kallsyms, so that
+doesn't seem to be possible.
+
+Marking all the symbols as local seems correct, and does seem
+to address the issue, so do that. Also do it for static link,
+nsswitch libraries could still be loaded there.
+
+[1] https://bugs.debian.org/983379
+
+Reported-by: Ritesh Raj Sarraf <rrs@debian.org>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Tested-By: Ritesh Raj Sarraf <rrs@debian.org>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/h8300/Kconfig            |  2 ++
- arch/m68k/Kconfig             |  4 +--
- arch/riscv/Kconfig            |  4 +--
- include/asm-generic/uaccess.h | 46 ++++++-----------------------------
- 4 files changed, 14 insertions(+), 42 deletions(-)
+ arch/um/kernel/dyn.lds.S | 6 ++++++
+ arch/um/kernel/uml.lds.S | 6 ++++++
+ 2 files changed, 12 insertions(+)
 
-diff --git a/arch/h8300/Kconfig b/arch/h8300/Kconfig
-index 3e3e0f16f7e0..53dfd2d47e0e 100644
---- a/arch/h8300/Kconfig
-+++ b/arch/h8300/Kconfig
-@@ -11,6 +11,8 @@ config H8300
- 	select GENERIC_IRQ_SHOW
- 	select FRAME_POINTER
- 	select GENERIC_CPU_DEVICES
-+	select GENERIC_STRNCPY_FROM_USER
-+	select GENERIC_STRNLEN_USER
- 	select MODULES_USE_ELF_RELA
- 	select COMMON_CLK
- 	select ARCH_WANT_FRAME_POINTERS
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 372e4e69c43a..8e5241598007 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -16,8 +16,8 @@ config M68K
- 	select GENERIC_CPU_DEVICES
- 	select GENERIC_IOMAP
- 	select GENERIC_IRQ_SHOW
--	select GENERIC_STRNCPY_FROM_USER if MMU
--	select GENERIC_STRNLEN_USER if MMU
-+	select GENERIC_STRNCPY_FROM_USER
-+	select GENERIC_STRNLEN_USER
- 	select HAVE_AOUT if MMU
- 	select HAVE_ASM_MODVERSIONS
- 	select HAVE_DEBUG_BUGVERBOSE
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index a8ad8eb76120..ada7a2918c05 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -55,8 +55,8 @@ config RISCV
- 	select GENERIC_PTDUMP if MMU
- 	select GENERIC_SCHED_CLOCK
- 	select GENERIC_SMP_IDLE_THREAD
--	select GENERIC_STRNCPY_FROM_USER if MMU
--	select GENERIC_STRNLEN_USER if MMU
-+	select GENERIC_STRNCPY_FROM_USER
-+	select GENERIC_STRNLEN_USER
- 	select GENERIC_TIME_VSYSCALL if MMU && 64BIT
- 	select HANDLE_DOMAIN_IRQ
- 	select HAVE_ARCH_AUDITSYSCALL
-diff --git a/include/asm-generic/uaccess.h b/include/asm-generic/uaccess.h
-index c03889cc904c..83a48f430951 100644
---- a/include/asm-generic/uaccess.h
-+++ b/include/asm-generic/uaccess.h
-@@ -119,6 +119,11 @@ static inline void set_fs(mm_segment_t fs)
- #ifndef uaccess_kernel
- #define uaccess_kernel() (get_fs().seg == KERNEL_DS.seg)
- #endif
+diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
+index 5568cf882371..899233625467 100644
+--- a/arch/um/kernel/dyn.lds.S
++++ b/arch/um/kernel/dyn.lds.S
+@@ -6,6 +6,12 @@ OUTPUT_ARCH(ELF_ARCH)
+ ENTRY(_start)
+ jiffies = jiffies_64;
+ 
++VERSION {
++  {
++    local: *;
++  };
++}
 +
-+#ifndef user_addr_max
-+#define user_addr_max() (uaccess_kernel() ? ~0UL : TASK_SIZE)
-+#endif
+ SECTIONS
+ {
+   PROVIDE (__executable_start = START);
+diff --git a/arch/um/kernel/uml.lds.S b/arch/um/kernel/uml.lds.S
+index 36b07ec09742..22ff701d9b71 100644
+--- a/arch/um/kernel/uml.lds.S
++++ b/arch/um/kernel/uml.lds.S
+@@ -7,6 +7,12 @@ OUTPUT_ARCH(ELF_ARCH)
+ ENTRY(_start)
+ jiffies = jiffies_64;
+ 
++VERSION {
++  {
++    local: *;
++  };
++}
 +
- #endif /* CONFIG_SET_FS */
- 
- #define access_ok(addr, size) __access_ok((unsigned long)(addr),(size))
-@@ -243,44 +248,6 @@ static inline int __get_user_fn(size_t size, const void __user *ptr, void *x)
- 
- extern int __get_user_bad(void) __attribute__((noreturn));
- 
--/*
-- * Copy a null terminated string from userspace.
-- */
--#ifndef strncpy_from_user
--static inline long
--strncpy_from_user(char *dst, const char __user *src, long count)
--{
--	char *tmp;
--
--	if (!access_ok(src, 1))
--		return -EFAULT;
--
--	strncpy(dst, (const char __force *)src, count);
--	for (tmp = dst; *tmp && count > 0; tmp++, count--)
--		;
--	return (tmp - dst);
--}
--#endif
--
--#ifndef strnlen_user
--/*
-- * Return the size of a string (including the ending 0)
-- *
-- * Return 0 on exception, a value greater than N if too long
-- *
-- * Unlike strnlen, strnlen_user includes the nul terminator in
-- * its returned count. Callers should check for a returned value
-- * greater than N as an indication the string is too long.
-- */
--static inline long strnlen_user(const char __user *src, long n)
--{
--	if (!access_ok(src, 1))
--		return 0;
--
--	return strnlen(src, n) + 1;
--}
--#endif
--
- /*
-  * Zero Userspace
-  */
-@@ -305,4 +272,7 @@ clear_user(void __user *to, unsigned long n)
- 
- #include <asm/extable.h>
- 
-+extern long strncpy_from_user(char *dst, const char __user *src, long count);
-+extern long strnlen_user(const char __user *src, long n);
-+
- #endif /* __ASM_GENERIC_UACCESS_H */
+ SECTIONS
+ {
+   /* This must contain the right address - not quite the default ELF one.*/
 -- 
-2.29.2
+2.30.2
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
