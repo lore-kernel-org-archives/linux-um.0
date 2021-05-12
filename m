@@ -1,15 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from conuserg-09.nifty.com ([210.131.2.76])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1liXq0-00DYGI-MK
- for linux-um@lists.infradead.org; Mon, 17 May 2021 07:38:54 +0000
-From: Masahiro Yamada <masahiroy@kernel.org>
-Subject: [RESEND PATCH 5/6] x86/syscalls: use __NR_syscalls instead of
- __NR_syscall_max
-Date: Mon, 17 May 2021 16:38:13 +0900
-Message-Id: <20210517073815.97426-6-masahiroy@kernel.org>
-In-Reply-To: <20210517073815.97426-1-masahiroy@kernel.org>
-References: <20210517073815.97426-1-masahiroy@kernel.org>
+ id 1lgtEl-00AgIq-TB
+ for linux-um@lists.infradead.org; Wed, 12 May 2021 18:05:37 +0000
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 07/12] um: Mark all kernel symbols as local
+Date: Wed, 12 May 2021 14:05:17 -0400
+Message-Id: <20210512180522.665788-7-sashal@kernel.org>
+In-Reply-To: <20210512180522.665788-1-sashal@kernel.org>
+References: <20210512180522.665788-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -23,87 +22,114 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-Cc: Masahiro Yamada <masahiroy@kernel.org>, Andy Lutomirski <luto@kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "H. Peter Anvin" <hpa@zytor.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Johannes Berg <johannes.berg@intel.com>, Ritesh Raj Sarraf <rrs@debian.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, linux-um@lists.infradead.org
 
-__NR_syscall_max is only used by x86 and UML in the following two files:
+From: Johannes Berg <johannes.berg@intel.com>
 
-  - arch/um/kernel/skas/syscall.c
-  - arch/x86/include/asm/unistd.h
+[ Upstream commit d5027ca63e0e778b641cf23e3f5c6d6212cf412b ]
 
-In contrast, __NR_syscalls is widely used by all the architectures.
+Ritesh reported a bug [1] against UML, noting that it crashed on
+startup. The backtrace shows the following (heavily redacted):
 
-Let's convert __NR_syscall_max to __NR_syscalls by adding one.
+(gdb) bt
+...
+ #26 0x0000000060015b5d in sem_init () at ipc/sem.c:268
+ #27 0x00007f89906d92f7 in ?? () from /lib/x86_64-linux-gnu/libcom_err.so.2
+ #28 0x00007f8990ab8fb2 in call_init (...) at dl-init.c:72
+...
+ #40 0x00007f89909bf3a6 in nss_load_library (...) at nsswitch.c:359
+...
+ #44 0x00007f8990895e35 in _nss_compat_getgrnam_r (...) at nss_compat/compat-grp.c:486
+ #45 0x00007f8990968b85 in __getgrnam_r [...]
+ #46 0x00007f89909d6b77 in grantpt [...]
+ #47 0x00007f8990a9394e in __GI_openpty [...]
+ #48 0x00000000604a1f65 in openpty_cb (...) at arch/um/os-Linux/sigio.c:407
+ #49 0x00000000604a58d0 in start_idle_thread (...) at arch/um/os-Linux/skas/process.c:598
+ #50 0x0000000060004a3d in start_uml () at arch/um/kernel/skas/process.c:45
+ #51 0x00000000600047b2 in linux_main (...) at arch/um/kernel/um_arch.c:334
+ #52 0x000000006000574f in main (...) at arch/um/os-Linux/main.c:144
 
-This makes arch/x86/include/asm/unistd.h look cleaner, and also
-prepares x86 to switch to the generic scripts/syscallhdr.sh from
-arch/x86/entry/syscalls/syscallhdr.sh.
+indicating that the UML function openpty_cb() calls openpty(),
+which internally calls __getgrnam_r(), which causes the nsswitch
+machinery to get started.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+This loads, through lots of indirection that I snipped, the
+libcom_err.so.2 library, which (in an unknown function, "??")
+calls sem_init().
+
+Now, of course it wants to get libpthread's sem_init(), since
+it's linked against libpthread. However, the dynamic linker
+looks up that symbol against the binary first, and gets the
+kernel's sem_init().
+
+Hajime Tazaki noted that "objcopy -L" can localize a symbol,
+so the dynamic linker wouldn't do the lookup this way. I tried,
+but for some reason that didn't seem to work.
+
+Doing the same thing in the linker script instead does seem to
+work, though I cannot entirely explain - it *also* works if I
+just add "VERSION { { global: *; }; }" instead, indicating that
+something else is happening that I don't really understand. It
+may be that explicitly doing that marks them with some kind of
+empty version, and that's different from the default.
+
+Explicitly marking them with a version breaks kallsyms, so that
+doesn't seem to be possible.
+
+Marking all the symbols as local seems correct, and does seem
+to address the issue, so do that. Also do it for static link,
+nsswitch libraries could still be loaded there.
+
+[1] https://bugs.debian.org/983379
+
+Reported-by: Ritesh Raj Sarraf <rrs@debian.org>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Tested-By: Ritesh Raj Sarraf <rrs@debian.org>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
+ arch/um/kernel/dyn.lds.S | 6 ++++++
+ arch/um/kernel/uml.lds.S | 6 ++++++
+ 2 files changed, 12 insertions(+)
 
- arch/um/kernel/skas/syscall.c         | 2 +-
- arch/x86/entry/syscalls/syscallhdr.sh | 2 +-
- arch/x86/include/asm/unistd.h         | 8 ++++----
- 3 files changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/arch/um/kernel/skas/syscall.c b/arch/um/kernel/skas/syscall.c
-index 3d91f89fd852..9ee19e566da3 100644
---- a/arch/um/kernel/skas/syscall.c
-+++ b/arch/um/kernel/skas/syscall.c
-@@ -41,7 +41,7 @@ void handle_syscall(struct uml_pt_regs *r)
- 		goto out;
+diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
+index d417e3899700..06309bdbfbbf 100644
+--- a/arch/um/kernel/dyn.lds.S
++++ b/arch/um/kernel/dyn.lds.S
+@@ -7,6 +7,12 @@ OUTPUT_ARCH(ELF_ARCH)
+ ENTRY(_start)
+ jiffies = jiffies_64;
  
- 	syscall = UPT_SYSCALL_NR(r);
--	if (syscall >= 0 && syscall <= __NR_syscall_max)
-+	if (syscall >= 0 && syscall < __NR_syscalls)
- 		PT_REGS_SET_SYSCALL_RETURN(regs,
- 				EXECUTE_SYSCALL(syscall, regs));
++VERSION {
++  {
++    local: *;
++  };
++}
++
+ SECTIONS
+ {
+   PROVIDE (__executable_start = START);
+diff --git a/arch/um/kernel/uml.lds.S b/arch/um/kernel/uml.lds.S
+index 3d6ed6ba5b78..c3e32fa3941f 100644
+--- a/arch/um/kernel/uml.lds.S
++++ b/arch/um/kernel/uml.lds.S
+@@ -7,6 +7,12 @@ OUTPUT_ARCH(ELF_ARCH)
+ ENTRY(_start)
+ jiffies = jiffies_64;
  
-diff --git a/arch/x86/entry/syscalls/syscallhdr.sh b/arch/x86/entry/syscalls/syscallhdr.sh
-index cc1e63857427..75e66af06773 100644
---- a/arch/x86/entry/syscalls/syscallhdr.sh
-+++ b/arch/x86/entry/syscalls/syscallhdr.sh
-@@ -28,7 +28,7 @@ grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
- 
-     echo ""
-     echo "#ifdef __KERNEL__"
--    echo "#define __NR_${prefix}syscall_max $max"
-+    echo "#define __NR_${prefix}syscalls $(($max + 1))"
-     echo "#endif"
-     echo ""
-     echo "#endif /* ${fileguard} */"
-diff --git a/arch/x86/include/asm/unistd.h b/arch/x86/include/asm/unistd.h
-index 1bc6020bc58d..80e9d5206a71 100644
---- a/arch/x86/include/asm/unistd.h
-+++ b/arch/x86/include/asm/unistd.h
-@@ -13,7 +13,7 @@
- #  define __ARCH_WANT_SYS_OLD_MMAP
- #  define __ARCH_WANT_SYS_OLD_SELECT
- 
--#  define __NR_ia32_syscall_max __NR_syscall_max
-+#  define IA32_NR_syscalls (__NR_syscalls)
- 
- # else
- 
-@@ -26,12 +26,12 @@
- #  define __ARCH_WANT_COMPAT_SYS_PWRITEV64
- #  define __ARCH_WANT_COMPAT_SYS_PREADV64V2
- #  define __ARCH_WANT_COMPAT_SYS_PWRITEV64V2
--#  define X32_NR_syscalls (__NR_x32_syscall_max + 1)
-+#  define X32_NR_syscalls (__NR_x32_syscalls)
-+#  define IA32_NR_syscalls (__NR_ia32_syscalls)
- 
- # endif
- 
--# define NR_syscalls (__NR_syscall_max + 1)
--# define IA32_NR_syscalls (__NR_ia32_syscall_max + 1)
-+# define NR_syscalls (__NR_syscalls)
- 
- # define __ARCH_WANT_NEW_STAT
- # define __ARCH_WANT_OLD_READDIR
++VERSION {
++  {
++    local: *;
++  };
++}
++
+ SECTIONS
+ {
+   /* This must contain the right address - not quite the default ELF one.*/
 -- 
-2.27.0
+2.30.2
 
 
 _______________________________________________
