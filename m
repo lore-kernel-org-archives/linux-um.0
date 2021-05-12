@@ -1,84 +1,103 @@
-Return-Path: <arnd@kernel.org>
-From: Arnd Bergmann <arnd@kernel.org>
-Subject: [PATCH 6/6] [v2] asm-generic: remove extra strn{cpy_from,len}_user declarations
-Date: Sat, 15 May 2021 12:18:03 +0200
-Message-Id: <20210515101803.924427-7-arnd@kernel.org>
-In-Reply-To: <20210515101803.924427-1-arnd@kernel.org>
-References: <20210515101803.924427-1-arnd@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
+ by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
+ id 1lgjaC-00ABes-8q
+ for linux-um@lists.infradead.org; Wed, 12 May 2021 07:47:06 +0000
+Subject: Re: [PATCH] um: add 2 missing libs to fix various build errors
+References: <20210404182044.9918-1-rdunlap@infradead.org>
+ <9f7eeb70-8ddc-fb04-a378-5f1e80d485e6@infradead.org>
+ <74a0ba94-9a22-b7a4-3c1b-596ddbaa856e@cambridgegreys.com>
+ <2a2ddf5b-3d08-1a13-94c8-ae2ca0e6444b@infradead.org>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <2f1283d0-64bc-a225-cff3-71893fdf3330@cambridgegreys.com>
+Date: Wed, 12 May 2021 08:46:45 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-arch@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Brian Cain <bcain@codeaurora.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Sid Manning <sidneym@codeaurora.org>, Andrew Morton <akpm@linux-foundation.org>, Mike Rapoport <rppt@kernel.org>, linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-riscv@lists.infradead.org, linux-um@lists.infradead.org
-List-ID: <linux-um.lists.infradead.org>
+In-Reply-To: <2a2ddf5b-3d08-1a13-94c8-ae2ca0e6444b@infradead.org>
+Content-Language: en-US
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc: kernel test robot <lkp@intel.com>, Brendan Jackman <jackmanb@google.com>, Alexei Starovoitov <ast@kernel.org>, kbuild-all@lists.01.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org, Johannes Berg <johannes@sipsolutions.net>, Johannes Berg <johannes.berg@intel.com>
 
-From: Arnd Bergmann <arnd@arndb.de>
 
-As these are now in asm-generic, it's no longer necessary to
-declare them in the architecture.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/arc/include/asm/uaccess.h     | 5 -----
- arch/hexagon/include/asm/uaccess.h | 6 ------
- arch/um/include/asm/uaccess.h      | 5 +----
- 3 files changed, 1 insertion(+), 15 deletions(-)
+On 12/05/2021 02:56, Randy Dunlap wrote:
+> On 4/9/21 10:28 PM, Anton Ivanov wrote:
+>> On 10/04/2021 05:13, Randy Dunlap wrote:
+>>> On 4/4/21 11:20 AM, Randy Dunlap wrote:
+> 
+> 
+> [snip]
+> 
+>>>
+>>> There are still some build errors in 2 object files:
+>>>
+>>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x8): undefined reference to `X86_FEATURE_XMM2'
+>>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x15): undefined reference to `X86_FEATURE_XMM2'
+>>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x22): undefined reference to `X86_FEATURE_XMM'
+>>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x2f): undefined reference to `X86_FEATURE_XMM'
+>>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x3c): undefined reference to `X86_FEATURE_XMM'
+>>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x49): undefined reference to `X86_FEATURE_XMM'
+>>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x56): undefined reference to `X86_FEATURE_XMM'
+>>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x63): more undefined references to `X86_FEATURE_XMM' follow
+>>>
+>>> and
+>>>
+>>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x8): undefined reference to `X86_FEATURE_XMM2'
+>>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x15): undefined reference to `X86_FEATURE_XMM2'
+>>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x22): undefined reference to `X86_FEATURE_XMM'
+>>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x2f): undefined reference to `X86_FEATURE_XMM'
+>>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x3c): undefined reference to `X86_FEATURE_XMM'
+>>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x49): undefined reference to `X86_FEATURE_XMM'
+>>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x56): undefined reference to `X86_FEATURE_XMM'
+>>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x63): undefined reference to `X86_FEATURE_XMM2'
+>>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x70): undefined reference to `X86_FEATURE_XMM2'
+>>>
+>>> I don't know what to do about these or what is causing them (other than
+>>> "alternatives").
+>>
+>> I have a patch in the queue which should fix these - it "steals" the bug/feature definitions from the x86 tree.
+>>
+>> A
+> 
+> Hi Anton,
+> 
+> Can you post (repost) the patch for these or point me to it
+> on a mailing list, please?
+> 
+> 
+> thanks.
 
-diff --git a/arch/arc/include/asm/uaccess.h b/arch/arc/include/asm/uaccess.h
-index 754a23f26736..783bfdb3bfa3 100644
---- a/arch/arc/include/asm/uaccess.h
-+++ b/arch/arc/include/asm/uaccess.h
-@@ -667,11 +667,6 @@ extern unsigned long arc_clear_user_noinline(void __user *to,
- #define __clear_user(d, n)		arc_clear_user_noinline(d, n)
- #endif
- 
--extern long strncpy_from_user(char *dst, const char __user *src, long count);
--#define strncpy_from_user(d, s, n)	strncpy_from_user(d, s, n)
--extern long strnlen_user(const char __user *src, long n);
--#define strnlen_user(s, n)		strnlen_user(s, n)
--
- #include <asm/segment.h>
- #include <asm-generic/uaccess.h>
- 
-diff --git a/arch/hexagon/include/asm/uaccess.h b/arch/hexagon/include/asm/uaccess.h
-index d950df12d8c5..ef5bfef8d490 100644
---- a/arch/hexagon/include/asm/uaccess.h
-+++ b/arch/hexagon/include/asm/uaccess.h
-@@ -57,12 +57,6 @@ unsigned long raw_copy_to_user(void __user *to, const void *from,
- __kernel_size_t __clear_user_hexagon(void __user *dest, unsigned long count);
- #define __clear_user(a, s) __clear_user_hexagon((a), (s))
- 
--extern long strnlen_user(const char __user *src, long n);
--#define strnlen_user strnlen_user
--
--extern long strncpy_from_user(char *dst, const char __user *src, long n)
--#define strncpy_from_user strncpy_from_user
--
- #include <asm-generic/uaccess.h>
- 
- 
-diff --git a/arch/um/include/asm/uaccess.h b/arch/um/include/asm/uaccess.h
-index 3bf209f683f8..191ef36dd543 100644
---- a/arch/um/include/asm/uaccess.h
-+++ b/arch/um/include/asm/uaccess.h
-@@ -23,16 +23,13 @@
- 
- extern unsigned long raw_copy_from_user(void *to, const void __user *from, unsigned long n);
- extern unsigned long raw_copy_to_user(void __user *to, const void *from, unsigned long n);
--extern long strncpy_from_user(char *dst, const char __user *src, long count);
--extern long strnlen_user(const void __user *str, long len);
- extern unsigned long __clear_user(void __user *mem, unsigned long len);
- static inline int __access_ok(unsigned long addr, unsigned long size);
- 
- /* Teach asm-generic/uaccess.h that we have C functions for these. */
- #define __access_ok __access_ok
- #define __clear_user __clear_user
--#define strnlen_user strnlen_user
--#define strncpy_from_user strncpy_from_user
-+
- #define INLINE_COPY_FROM_USER
- #define INLINE_COPY_TO_USER
- 
+They are in patchwork:
+
+It is the first patch in these series:
+
+https://patchwork.ozlabs.org/project/linux-um/patch/20210312151609.24745-2-anton.ivanov@cambridgegreys.com/
+https://patchwork.ozlabs.org/project/linux-um/patch/20210312151609.24745-3-anton.ivanov@cambridgegreys.com/
+https://patchwork.ozlabs.org/project/linux-um/patch/20210312151609.24745-4-anton.ivanov@cambridgegreys.com/
+
+Best Regards,
+
+> 
+
 -- 
-2.29.2
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
