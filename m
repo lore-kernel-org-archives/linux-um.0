@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lgtF3-00AgKR-S0
- for linux-um@lists.infradead.org; Wed, 12 May 2021 18:05:55 +0000
+ id 1lgtFL-00AgQa-V2
+ for linux-um@lists.infradead.org; Wed, 12 May 2021 18:06:13 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.9 4/7] um: Mark all kernel symbols as local
-Date: Wed, 12 May 2021 14:05:41 -0400
-Message-Id: <20210512180545.665946-4-sashal@kernel.org>
-In-Reply-To: <20210512180545.665946-1-sashal@kernel.org>
-References: <20210512180545.665946-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 3/4] um: Mark all kernel symbols as local
+Date: Wed, 12 May 2021 14:06:02 -0400
+Message-Id: <20210512180604.666144-3-sashal@kernel.org>
+In-Reply-To: <20210512180604.666144-1-sashal@kernel.org>
+References: <20210512180604.666144-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -95,7 +95,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 12 insertions(+)
 
 diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
-index 4fdbcf958cd5..558e5258dfff 100644
+index adde088aeeff..d837636ec823 100644
 --- a/arch/um/kernel/dyn.lds.S
 +++ b/arch/um/kernel/dyn.lds.S
 @@ -6,6 +6,12 @@ OUTPUT_ARCH(ELF_ARCH)
@@ -112,7 +112,7 @@ index 4fdbcf958cd5..558e5258dfff 100644
  {
    PROVIDE (__executable_start = START);
 diff --git a/arch/um/kernel/uml.lds.S b/arch/um/kernel/uml.lds.S
-index 1840f55ed042..f544b8c13c2e 100644
+index 6899195602b7..09620aa953ca 100644
 --- a/arch/um/kernel/uml.lds.S
 +++ b/arch/um/kernel/uml.lds.S
 @@ -6,6 +6,12 @@ OUTPUT_ARCH(ELF_ARCH)
