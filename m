@@ -1,78 +1,104 @@
-Return-Path: <arnd@kernel.org>
-From: Arnd Bergmann <arnd@kernel.org>
-Subject: [PATCH 0/5] asm-generic: strncpy_from_user/strnlen_user cleanup
-Date: Sat, 15 May 2021 00:09:37 +0200
-Message-Id: <20210514220942.879805-1-arnd@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail.kernel.org ([198.145.29.99])
+ by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
+ id 1lgtCh-00Afx4-8O
+ for linux-um@lists.infradead.org; Wed, 12 May 2021 18:03:28 +0000
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 12/34] um: Disable CONFIG_GCOV with MODULES
+Date: Wed, 12 May 2021 14:02:43 -0400
+Message-Id: <20210512180306.664925-12-sashal@kernel.org>
+In-Reply-To: <20210512180306.664925-1-sashal@kernel.org>
+References: <20210512180306.664925-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-arch@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Brian Cain <bcain@codeaurora.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Sid Manning <sidneym@codeaurora.org>, Andrew Morton <akpm@linux-foundation.org>, Mike Rapoport <rppt@kernel.org>, linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-riscv@lists.infradead.org, linux-um@lists.infradead.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Johannes Berg <johannes.berg@intel.com>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, linux-um@lists.infradead.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Johannes Berg <johannes.berg@intel.com>
 
-As I've queued up some patches for include/asm-generic/unistd.h, I
-remembered an older series that I created but never submitted.
+[ Upstream commit ad3d19911632debc886ef4a992d41d6de7927006 ]
 
-These two functions appear to be unnecessarily different between
-architectures, and the asm-generic version is a bit questionable,
-even for NOMMU architectures.
+CONFIG_GCOV doesn't work with modules, and for various reasons
+it cannot work, see also
+https://lore.kernel.org/r/d36ea54d8c0a8dd706826ba844a6f27691f45d55.camel@sipsolutions.net
 
-Clean this up to just use the generic library version for anything
-that uses the generic version today.
+Make CONFIG_GCOV depend on !MODULES to avoid anyone
+running into issues there. This also means we need
+not export the gcov symbols.
 
-       Arnd
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/um/Kconfig.debug      |  1 +
+ arch/um/kernel/Makefile    |  1 -
+ arch/um/kernel/gmon_syms.c | 16 ----------------
+ 3 files changed, 1 insertion(+), 17 deletions(-)
+ delete mode 100644 arch/um/kernel/gmon_syms.c
 
-Arnd Bergmann (5):
-  asm-generic/uaccess.h: remove __strncpy_from_user/__strnlen_user
-  hexagon: use generic strncpy/strnlen from_user
-  arc: use generic strncpy/strnlen from_user
-  asm-generic: uaccess: remove inline strncpy_from_user/strnlen_user
-  asm-generic: remove extra strn{cpy_from,len}_user declarations
-
- arch/arc/Kconfig                    |   2 +
- arch/arc/include/asm/uaccess.h      |  72 ----------------
- arch/arc/mm/extable.c               |  12 ---
- arch/h8300/Kconfig                  |   2 +
- arch/hexagon/Kconfig                |   2 +
- arch/hexagon/include/asm/uaccess.h  |  31 -------
- arch/hexagon/kernel/hexagon_ksyms.c |   1 -
- arch/hexagon/mm/Makefile            |   2 +-
- arch/hexagon/mm/strnlen_user.S      | 126 ----------------------------
- arch/m68k/Kconfig                   |   4 +-
- arch/riscv/Kconfig                  |   4 +-
- arch/um/include/asm/uaccess.h       |   5 +-
- arch/um/kernel/skas/uaccess.c       |   5 +-
- include/asm-generic/uaccess.h       |  52 ++----------
- 14 files changed, 24 insertions(+), 296 deletions(-)
- delete mode 100644 arch/hexagon/mm/strnlen_user.S
-
+diff --git a/arch/um/Kconfig.debug b/arch/um/Kconfig.debug
+index 315d368e63ad..1dfb2959c73b 100644
+--- a/arch/um/Kconfig.debug
++++ b/arch/um/Kconfig.debug
+@@ -17,6 +17,7 @@ config GCOV
+ 	bool "Enable gcov support"
+ 	depends on DEBUG_INFO
+ 	depends on !KCOV
++	depends on !MODULES
+ 	help
+ 	  This option allows developers to retrieve coverage data from a UML
+ 	  session.
+diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
+index 5aa882011e04..e698e0c7dbdc 100644
+--- a/arch/um/kernel/Makefile
++++ b/arch/um/kernel/Makefile
+@@ -21,7 +21,6 @@ obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
+ 
+ obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
+ obj-$(CONFIG_GPROF)	+= gprof_syms.o
+-obj-$(CONFIG_GCOV)	+= gmon_syms.o
+ obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
+ obj-$(CONFIG_STACKTRACE) += stacktrace.o
+ 
+diff --git a/arch/um/kernel/gmon_syms.c b/arch/um/kernel/gmon_syms.c
+deleted file mode 100644
+index 9361a8eb9bf1..000000000000
+--- a/arch/um/kernel/gmon_syms.c
++++ /dev/null
+@@ -1,16 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*
+- * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+- */
+-
+-#include <linux/module.h>
+-
+-extern void __bb_init_func(void *)  __attribute__((weak));
+-EXPORT_SYMBOL(__bb_init_func);
+-
+-extern void __gcov_init(void *)  __attribute__((weak));
+-EXPORT_SYMBOL(__gcov_init);
+-extern void __gcov_merge_add(void *, unsigned int)  __attribute__((weak));
+-EXPORT_SYMBOL(__gcov_merge_add);
+-extern void __gcov_exit(void)  __attribute__((weak));
+-EXPORT_SYMBOL(__gcov_exit);
 -- 
-2.29.2
+2.30.2
 
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Vineet Gupta <vgupta@synopsys.com>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Brian Cain <bcain@codeaurora.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Albert Ou <aou@eecs.berkeley.edu>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Sid Manning <sidneym@codeaurora.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Mike Rapoport <rppt@kernel.org>
-Cc: linux-snps-arc@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Cc: uclinux-h8-devel@lists.sourceforge.jp
-Cc: linux-hexagon@vger.kernel.org
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: linux-riscv@lists.infradead.org
-Cc: linux-um@lists.infradead.org
-Cc: linux-arch@vger.kernel.org
 
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
