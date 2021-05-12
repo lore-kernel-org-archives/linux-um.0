@@ -1,231 +1,104 @@
-Return-Path: <arnd@kernel.org>
-From: Arnd Bergmann <arnd@kernel.org>
-Subject: [PATCH 1/5] asm-generic/uaccess.h: remove __strncpy_from_user/__strnlen_user
-Date: Sat, 15 May 2021 00:09:38 +0200
-Message-Id: <20210514220942.879805-2-arnd@kernel.org>
-In-Reply-To: <20210514220942.879805-1-arnd@kernel.org>
-References: <20210514220942.879805-1-arnd@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail.kernel.org ([198.145.29.99])
+ by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
+ id 1lgtBj-00Afoz-N6
+ for linux-um@lists.infradead.org; Wed, 12 May 2021 18:02:29 +0000
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.11 13/35] um: Disable CONFIG_GCOV with MODULES
+Date: Wed, 12 May 2021 14:01:43 -0400
+Message-Id: <20210512180206.664536-13-sashal@kernel.org>
+In-Reply-To: <20210512180206.664536-1-sashal@kernel.org>
+References: <20210512180206.664536-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-arch@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Brian Cain <bcain@codeaurora.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Sid Manning <sidneym@codeaurora.org>, Andrew Morton <akpm@linux-foundation.org>, Mike Rapoport <rppt@kernel.org>, linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-riscv@lists.infradead.org, linux-um@lists.infradead.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Johannes Berg <johannes.berg@intel.com>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, linux-um@lists.infradead.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Johannes Berg <johannes.berg@intel.com>
 
-This is a preparation for changing over architectures to the
-generic implementation one at a time. As there are no callers
-of either __strncpy_from_user() or __strnlen_user(), fold these
-into the strncpy_from_user() strnlen_user() functions to make
-each implementation independent of the others.
+[ Upstream commit ad3d19911632debc886ef4a992d41d6de7927006 ]
 
-Many of these implementations have known bugs, but the intention
-here is to not change behavior at all and stay compatible with
-those bugs for the moment.
+CONFIG_GCOV doesn't work with modules, and for various reasons
+it cannot work, see also
+https://lore.kernel.org/r/d36ea54d8c0a8dd706826ba844a6f27691f45d55.camel@sipsolutions.net
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Make CONFIG_GCOV depend on !MODULES to avoid anyone
+running into issues there. This also means we need
+not export the gcov symbols.
+
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arc/include/asm/uaccess.h     | 14 ++++++++++----
- arch/hexagon/include/asm/uaccess.h | 22 +++++++++++++---------
- arch/um/include/asm/uaccess.h      |  8 ++++----
- arch/um/kernel/skas/uaccess.c      |  5 ++++-
- include/asm-generic/uaccess.h      | 28 +++++++++++-----------------
- 5 files changed, 42 insertions(+), 35 deletions(-)
+ arch/um/Kconfig.debug      |  1 +
+ arch/um/kernel/Makefile    |  1 -
+ arch/um/kernel/gmon_syms.c | 16 ----------------
+ 3 files changed, 1 insertion(+), 17 deletions(-)
+ delete mode 100644 arch/um/kernel/gmon_syms.c
 
-diff --git a/arch/arc/include/asm/uaccess.h b/arch/arc/include/asm/uaccess.h
-index ea40ec7f6cae..3476348f361e 100644
---- a/arch/arc/include/asm/uaccess.h
-+++ b/arch/arc/include/asm/uaccess.h
-@@ -661,6 +661,9 @@ __arc_strncpy_from_user(char *dst, const char __user *src, long count)
- 	long res = 0;
- 	char val;
+diff --git a/arch/um/Kconfig.debug b/arch/um/Kconfig.debug
+index 315d368e63ad..1dfb2959c73b 100644
+--- a/arch/um/Kconfig.debug
++++ b/arch/um/Kconfig.debug
+@@ -17,6 +17,7 @@ config GCOV
+ 	bool "Enable gcov support"
+ 	depends on DEBUG_INFO
+ 	depends on !KCOV
++	depends on !MODULES
+ 	help
+ 	  This option allows developers to retrieve coverage data from a UML
+ 	  session.
+diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
+index 5aa882011e04..e698e0c7dbdc 100644
+--- a/arch/um/kernel/Makefile
++++ b/arch/um/kernel/Makefile
+@@ -21,7 +21,6 @@ obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
  
-+	if (!access_ok(src, 1))
-+		return -EFAULT;
-+
- 	if (count == 0)
- 		return 0;
+ obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
+ obj-$(CONFIG_GPROF)	+= gprof_syms.o
+-obj-$(CONFIG_GCOV)	+= gmon_syms.o
+ obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
+ obj-$(CONFIG_STACKTRACE) += stacktrace.o
  
-@@ -693,6 +696,9 @@ static inline long __arc_strnlen_user(const char __user *s, long n)
- 	long res, tmp1, cnt;
- 	char val;
- 
-+	if (!access_ok(s, 1))
-+		return 0;
-+
- 	__asm__ __volatile__(
- 	"	mov %2, %1			\n"
- 	"1:	ldb.ab  %3, [%0, 1]		\n"
-@@ -724,8 +730,8 @@ static inline long __arc_strnlen_user(const char __user *s, long n)
- #define INLINE_COPY_FROM_USER
- 
- #define __clear_user(d, n)		__arc_clear_user(d, n)
--#define __strncpy_from_user(d, s, n)	__arc_strncpy_from_user(d, s, n)
--#define __strnlen_user(s, n)		__arc_strnlen_user(s, n)
-+#define strncpy_from_user(d, s, n)	__arc_strncpy_from_user(d, s, n)
-+#define strnlen_user(s, n)		__arc_strnlen_user(s, n)
- #else
- extern unsigned long arc_clear_user_noinline(void __user *to,
- 		unsigned long n);
-@@ -734,8 +740,8 @@ extern long arc_strncpy_from_user_noinline (char *dst, const char __user *src,
- extern long arc_strnlen_user_noinline(const char __user *src, long n);
- 
- #define __clear_user(d, n)		arc_clear_user_noinline(d, n)
--#define __strncpy_from_user(d, s, n)	arc_strncpy_from_user_noinline(d, s, n)
--#define __strnlen_user(s, n)		arc_strnlen_user_noinline(s, n)
-+#define strncpy_from_user(d, s, n)	arc_strncpy_from_user_noinline(d, s, n)
-+#define strnlen_user(s, n)		arc_strnlen_user_noinline(s, n)
- 
- #endif
- 
-diff --git a/arch/hexagon/include/asm/uaccess.h b/arch/hexagon/include/asm/uaccess.h
-index c1019a736ff1..59aa3a50744f 100644
---- a/arch/hexagon/include/asm/uaccess.h
-+++ b/arch/hexagon/include/asm/uaccess.h
-@@ -57,23 +57,27 @@ unsigned long raw_copy_to_user(void __user *to, const void *from,
- __kernel_size_t __clear_user_hexagon(void __user *dest, unsigned long count);
- #define __clear_user(a, s) __clear_user_hexagon((a), (s))
- 
--#define __strncpy_from_user(dst, src, n) hexagon_strncpy_from_user(dst, src, n)
-+extern long __strnlen_user(const char __user *src, long n);
- 
--/*  get around the ifndef in asm-generic/uaccess.h  */
--#define __strnlen_user __strnlen_user
-+static inline strnlen_user(const char __user *src, long n)
-+{
-+        if (!access_ok(src, 1))
-+		return 0;
- 
--extern long __strnlen_user(const char __user *src, long n);
-+	return __strnlen_user(src, n);
-+}
-+/*  get around the ifndef in asm-generic/uaccess.h  */
-+#define strnlen_user strnlen_user
- 
--static inline long hexagon_strncpy_from_user(char *dst, const char __user *src,
--					     long n);
-+static inline long strncpy_from_user(char *dst, const char __user *src, long n);
-+#define strncpy_from_user strncpy_from_user
- 
- #include <asm-generic/uaccess.h>
- 
- /*  Todo:  an actual accelerated version of this.  */
--static inline long hexagon_strncpy_from_user(char *dst, const char __user *src,
--					     long n)
-+static inline long strncpy_from_user(char *dst, const char __user *src, long n)
- {
--	long res = __strnlen_user(src, n);
-+	long res = strnlen_user(src, n);
- 
- 	if (unlikely(!res))
- 		return -EFAULT;
-diff --git a/arch/um/include/asm/uaccess.h b/arch/um/include/asm/uaccess.h
-index fe66d659acad..3bf209f683f8 100644
---- a/arch/um/include/asm/uaccess.h
-+++ b/arch/um/include/asm/uaccess.h
-@@ -23,16 +23,16 @@
- 
- extern unsigned long raw_copy_from_user(void *to, const void __user *from, unsigned long n);
- extern unsigned long raw_copy_to_user(void __user *to, const void *from, unsigned long n);
--extern long __strncpy_from_user(char *dst, const char __user *src, long count);
--extern long __strnlen_user(const void __user *str, long len);
-+extern long strncpy_from_user(char *dst, const char __user *src, long count);
-+extern long strnlen_user(const void __user *str, long len);
- extern unsigned long __clear_user(void __user *mem, unsigned long len);
- static inline int __access_ok(unsigned long addr, unsigned long size);
- 
- /* Teach asm-generic/uaccess.h that we have C functions for these. */
- #define __access_ok __access_ok
- #define __clear_user __clear_user
--#define __strnlen_user __strnlen_user
--#define __strncpy_from_user __strncpy_from_user
-+#define strnlen_user strnlen_user
-+#define strncpy_from_user strncpy_from_user
- #define INLINE_COPY_FROM_USER
- #define INLINE_COPY_TO_USER
- 
-diff --git a/arch/um/kernel/skas/uaccess.c b/arch/um/kernel/skas/uaccess.c
-index 2dec915abe6f..205679cc4bb7 100644
---- a/arch/um/kernel/skas/uaccess.c
-+++ b/arch/um/kernel/skas/uaccess.c
-@@ -188,11 +188,14 @@ static int strncpy_chunk_from_user(unsigned long from, int len, void *arg)
- 	return 0;
- }
- 
--long __strncpy_from_user(char *dst, const char __user *src, long count)
-+long strncpy_from_user(char *dst, const char __user *src, long count)
- {
- 	long n;
- 	char *ptr = dst;
- 
-+	if (!access_ok(src, 1))
-+		return -EFAULT;
-+
- 	if (uaccess_kernel()) {
- 		strncpy(dst, (__force void *) src, count);
- 		return strnlen(dst, count);
-diff --git a/include/asm-generic/uaccess.h b/include/asm-generic/uaccess.h
-index 4973328f3c6e..c03889cc904c 100644
---- a/include/asm-generic/uaccess.h
-+++ b/include/asm-generic/uaccess.h
-@@ -246,11 +246,15 @@ extern int __get_user_bad(void) __attribute__((noreturn));
- /*
-  * Copy a null terminated string from userspace.
-  */
--#ifndef __strncpy_from_user
-+#ifndef strncpy_from_user
- static inline long
--__strncpy_from_user(char *dst, const char __user *src, long count)
-+strncpy_from_user(char *dst, const char __user *src, long count)
- {
- 	char *tmp;
-+
-+	if (!access_ok(src, 1))
-+		return -EFAULT;
-+
- 	strncpy(dst, (const char __force *)src, count);
- 	for (tmp = dst; *tmp && count > 0; tmp++, count--)
- 		;
-@@ -258,24 +262,12 @@ __strncpy_from_user(char *dst, const char __user *src, long count)
- }
- #endif
- 
--static inline long
--strncpy_from_user(char *dst, const char __user *src, long count)
--{
--	if (!access_ok(src, 1))
--		return -EFAULT;
--	return __strncpy_from_user(dst, src, count);
--}
--
-+#ifndef strnlen_user
- /*
-  * Return the size of a string (including the ending 0)
-  *
-  * Return 0 on exception, a value greater than N if too long
-- */
--#ifndef __strnlen_user
--#define __strnlen_user(s, n) (strnlen((s), (n)) + 1)
--#endif
--
+diff --git a/arch/um/kernel/gmon_syms.c b/arch/um/kernel/gmon_syms.c
+deleted file mode 100644
+index 9361a8eb9bf1..000000000000
+--- a/arch/um/kernel/gmon_syms.c
++++ /dev/null
+@@ -1,16 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
 -/*
-+ *
-  * Unlike strnlen, strnlen_user includes the nul terminator in
-  * its returned count. Callers should check for a returned value
-  * greater than N as an indication the string is too long.
-@@ -284,8 +276,10 @@ static inline long strnlen_user(const char __user *src, long n)
- {
- 	if (!access_ok(src, 1))
- 		return 0;
--	return __strnlen_user(src, n);
-+
-+	return strnlen(src, n) + 1;
- }
-+#endif
- 
- /*
-  * Zero Userspace
+- * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+- */
+-
+-#include <linux/module.h>
+-
+-extern void __bb_init_func(void *)  __attribute__((weak));
+-EXPORT_SYMBOL(__bb_init_func);
+-
+-extern void __gcov_init(void *)  __attribute__((weak));
+-EXPORT_SYMBOL(__gcov_init);
+-extern void __gcov_merge_add(void *, unsigned int)  __attribute__((weak));
+-EXPORT_SYMBOL(__gcov_merge_add);
+-extern void __gcov_exit(void)  __attribute__((weak));
+-EXPORT_SYMBOL(__gcov_exit);
 -- 
-2.29.2
+2.30.2
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
