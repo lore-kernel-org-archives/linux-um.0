@@ -1,88 +1,252 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-yb1-xb4a.google.com ([2607:f8b0:4864:20::b4a])
- by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lkJTc-0000FW-Hj
- for linux-um@lists.infradead.org; Sat, 22 May 2021 04:43:05 +0000
-Received: by mail-yb1-xb4a.google.com with SMTP id
- s8-20020a5b04480000b029049fb35700b9so30356950ybp.5
- for <linux-um@lists.infradead.org>; Fri, 21 May 2021 21:43:03 -0700 (PDT)
-Date: Fri, 21 May 2021 21:42:40 -0700
-In-Reply-To: <20210522044241.2763088-1-davidgow@google.com>
-Message-Id: <20210522044241.2763088-2-davidgow@google.com>
-Mime-Version: 1.0
-References: <20210522044241.2763088-1-davidgow@google.com>
-Subject: [PATCH v2 2/3] kunit: Move default config from arch/um ->
- tools/testing/kunit
-From: David Gow <davidgow@google.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Brendan Higgins <brendanhiggins@google.com>, Shuah Khan <shuah@kernel.org>
-Cc: David Gow <davidgow@google.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Jonathan Corbet <corbet@lwn.net>, kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org, linux-um@lists.infradead.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Return-Path: <arnd@kernel.org>
+From: Arnd Bergmann <arnd@kernel.org>
+Subject: [PATCH 2/5] hexagon: use generic strncpy/strnlen from_user
+Date: Sat, 15 May 2021 00:09:39 +0200
+Message-Id: <20210514220942.879805-3-arnd@kernel.org>
+In-Reply-To: <20210514220942.879805-1-arnd@kernel.org>
+References: <20210514220942.879805-1-arnd@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To: linux-arch@vger.kernel.org
+Cc: Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Brian Cain <bcain@codeaurora.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Sid Manning <sidneym@codeaurora.org>, Andrew Morton <akpm@linux-foundation.org>, Mike Rapoport <rppt@kernel.org>, linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-riscv@lists.infradead.org, linux-um@lists.infradead.org
+List-ID: <linux-um.lists.infradead.org>
 
-The default .kunitconfig file is currently kept in
-arch/um/configs/kunit_defconfig, but -- with the impending QEMU patch
--- will no-longer be exclusively used for UML-based kernels.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Move it alongside the other KUnit configs in
-tools/testing/kunit/configs, and give it a name which matches the
-existing all_tests.config and broken_on_uml.config files.
+Most per-architecture versions of these functions are broken
+in some form, and they are almost certainly slower than the
+generic code as well.
 
-Also update the Getting Started documentation to point to the new file.
+Remove the ones for hexagon and instead use the generic
+version.
 
-Signed-off-by: David Gow <davidgow@google.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- Documentation/dev-tools/kunit/start.rst                         | 2 +-
- .../testing/kunit/configs/default.config                        | 0
- tools/testing/kunit/kunit_kernel.py                             | 2 +-
- 3 files changed, 2 insertions(+), 2 deletions(-)
- rename arch/um/configs/kunit_defconfig => tools/testing/kunit/configs/default.config (100%)
+ arch/hexagon/Kconfig                |   2 +
+ arch/hexagon/include/asm/uaccess.h  |  33 +-------
+ arch/hexagon/kernel/hexagon_ksyms.c |   1 -
+ arch/hexagon/mm/Makefile            |   2 +-
+ arch/hexagon/mm/strnlen_user.S      | 126 ----------------------------
+ 5 files changed, 5 insertions(+), 159 deletions(-)
+ delete mode 100644 arch/hexagon/mm/strnlen_user.S
 
-diff --git a/Documentation/dev-tools/kunit/start.rst b/Documentation/dev-tools/kunit/start.rst
-index 0e65cabe08eb..5becb09b1751 100644
---- a/Documentation/dev-tools/kunit/start.rst
-+++ b/Documentation/dev-tools/kunit/start.rst
-@@ -36,7 +36,7 @@ A good starting point for a ``.kunitconfig`` is the KUnit defconfig:
- .. code-block:: bash
+diff --git a/arch/hexagon/Kconfig b/arch/hexagon/Kconfig
+index 44a409967af1..c7ecb5e894d2 100644
+--- a/arch/hexagon/Kconfig
++++ b/arch/hexagon/Kconfig
+@@ -19,6 +19,8 @@ config HEXAGON
+ 	# GENERIC_ALLOCATOR is used by dma_alloc_coherent()
+ 	select GENERIC_ALLOCATOR
+ 	select GENERIC_IRQ_SHOW
++	select GENERIC_STRNCPY_FROM_USER
++	select GENERIC_STRNLEN_USER
+ 	select HAVE_ARCH_KGDB
+ 	select HAVE_ARCH_TRACEHOOK
+ 	select NEED_SG_DMA_LENGTH
+diff --git a/arch/hexagon/include/asm/uaccess.h b/arch/hexagon/include/asm/uaccess.h
+index 59aa3a50744f..d950df12d8c5 100644
+--- a/arch/hexagon/include/asm/uaccess.h
++++ b/arch/hexagon/include/asm/uaccess.h
+@@ -57,42 +57,13 @@ unsigned long raw_copy_to_user(void __user *to, const void *from,
+ __kernel_size_t __clear_user_hexagon(void __user *dest, unsigned long count);
+ #define __clear_user(a, s) __clear_user_hexagon((a), (s))
  
- 	cd $PATH_TO_LINUX_REPO
--	cp arch/um/configs/kunit_defconfig .kunitconfig
-+	cp tools/testing/kunit/configs/default.config .kunitconfig
+-extern long __strnlen_user(const char __user *src, long n);
+-
+-static inline strnlen_user(const char __user *src, long n)
+-{
+-        if (!access_ok(src, 1))
+-		return 0;
+-
+-	return __strnlen_user(src, n);
+-}
+-/*  get around the ifndef in asm-generic/uaccess.h  */
++extern long strnlen_user(const char __user *src, long n);
+ #define strnlen_user strnlen_user
  
- You can then add any other Kconfig options you wish, e.g.:
+-static inline long strncpy_from_user(char *dst, const char __user *src, long n);
++extern long strncpy_from_user(char *dst, const char __user *src, long n)
+ #define strncpy_from_user strncpy_from_user
  
-diff --git a/arch/um/configs/kunit_defconfig b/tools/testing/kunit/configs/default.config
-similarity index 100%
-rename from arch/um/configs/kunit_defconfig
-rename to tools/testing/kunit/configs/default.config
-diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-index 89a7d4024e87..5b57a43de33f 100644
---- a/tools/testing/kunit/kunit_kernel.py
-+++ b/tools/testing/kunit/kunit_kernel.py
-@@ -20,7 +20,7 @@ import kunit_parser
+ #include <asm-generic/uaccess.h>
  
- KCONFIG_PATH = '.config'
- KUNITCONFIG_PATH = '.kunitconfig'
--DEFAULT_KUNITCONFIG_PATH = 'arch/um/configs/kunit_defconfig'
-+DEFAULT_KUNITCONFIG_PATH = 'tools/testing/kunit/configs/default.config'
- BROKEN_ALLCONFIG_PATH = 'tools/testing/kunit/configs/broken_on_uml.config'
- OUTFILE_PATH = 'test.log'
+-/*  Todo:  an actual accelerated version of this.  */
+-static inline long strncpy_from_user(char *dst, const char __user *src, long n)
+-{
+-	long res = strnlen_user(src, n);
+-
+-	if (unlikely(!res))
+-		return -EFAULT;
+-
+-	if (res > n) {
+-		long left = raw_copy_from_user(dst, src, n);
+-		if (unlikely(left))
+-			memset(dst + (n - left), 0, left);
+-		return n;
+-	} else {
+-		long left = raw_copy_from_user(dst, src, res);
+-		if (unlikely(left))
+-			memset(dst + (res - left), 0, left);
+-		return res-1;
+-	}
+-}
  
+ #endif
+diff --git a/arch/hexagon/kernel/hexagon_ksyms.c b/arch/hexagon/kernel/hexagon_ksyms.c
+index 35545a7386a0..ec56ce2d92a2 100644
+--- a/arch/hexagon/kernel/hexagon_ksyms.c
++++ b/arch/hexagon/kernel/hexagon_ksyms.c
+@@ -15,7 +15,6 @@ EXPORT_SYMBOL(__clear_user_hexagon);
+ EXPORT_SYMBOL(raw_copy_from_user);
+ EXPORT_SYMBOL(raw_copy_to_user);
+ EXPORT_SYMBOL(iounmap);
+-EXPORT_SYMBOL(__strnlen_user);
+ EXPORT_SYMBOL(__vmgetie);
+ EXPORT_SYMBOL(__vmsetie);
+ EXPORT_SYMBOL(__vmyield);
+diff --git a/arch/hexagon/mm/Makefile b/arch/hexagon/mm/Makefile
+index 893838499591..49911a906fd0 100644
+--- a/arch/hexagon/mm/Makefile
++++ b/arch/hexagon/mm/Makefile
+@@ -4,4 +4,4 @@
+ #
+ 
+ obj-y := init.o ioremap.o uaccess.o vm_fault.o cache.o
+-obj-y += copy_to_user.o copy_from_user.o strnlen_user.o vm_tlb.o
++obj-y += copy_to_user.o copy_from_user.o vm_tlb.o
+diff --git a/arch/hexagon/mm/strnlen_user.S b/arch/hexagon/mm/strnlen_user.S
+deleted file mode 100644
+index 4b5574a7cc9c..000000000000
+--- a/arch/hexagon/mm/strnlen_user.S
++++ /dev/null
+@@ -1,126 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-/*
+- * User string length functions for kernel
+- *
+- * Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+- */
+-
+-#define isrc	r0
+-#define max	r1	/*  Do not change!  */
+-
+-#define end	r2
+-#define tmp1	r3
+-
+-#define obo	r6	/*  off-by-one  */
+-#define start	r7
+-#define mod8	r8
+-#define dbuf    r15:14
+-#define dcmp	r13:12
+-
+-/*
+- * The vector mask version of this turned out *really* badly.
+- * The hardware loop version also turned out *really* badly.
+- * Seems straight pointer arithmetic basically wins here.
+- */
+-
+-#define fname __strnlen_user
+-
+-	.text
+-	.global fname
+-	.type fname, @function
+-	.p2align 5  /*  why?  */
+-fname:
+-	{
+-		mod8 = and(isrc,#7);
+-		end = add(isrc,max);
+-		start = isrc;
+-	}
+-	{
+-		P0 = cmp.eq(mod8,#0);
+-		mod8 = and(end,#7);
+-		dcmp = #0;
+-		if (P0.new) jump:t dw_loop;	/*  fire up the oven  */
+-	}
+-
+-alignment_loop:
+-fail_1:	{
+-		tmp1 = memb(start++#1);
+-	}
+-	{
+-		P0 = cmp.eq(tmp1,#0);
+-		if (P0.new) jump:nt exit_found;
+-		P1 = cmp.gtu(end,start);
+-		mod8 = and(start,#7);
+-	}
+-	{
+-		if (!P1) jump exit_error;  /*  hit the end  */
+-		P0 = cmp.eq(mod8,#0);
+-	}
+-	{
+-		if (!P0) jump alignment_loop;
+-	}
+-
+-
+-
+-dw_loop:
+-fail_2:	{
+-		dbuf = memd(start);
+-		obo = add(start,#1);
+-	}
+-	{
+-		P0 = vcmpb.eq(dbuf,dcmp);
+-	}
+-	{
+-		tmp1 = P0;
+-		P0 = cmp.gtu(end,start);
+-	}
+-	{
+-		tmp1 = ct0(tmp1);
+-		mod8 = and(end,#7);
+-		if (!P0) jump end_check;
+-	}
+-	{
+-		P0 = cmp.eq(tmp1,#32);
+-		if (!P0.new) jump:nt exit_found;
+-		if (!P0.new) start = add(obo,tmp1);
+-	}
+-	{
+-		start = add(start,#8);
+-		jump dw_loop;
+-	}	/*  might be nice to combine these jumps...   */
+-
+-
+-end_check:
+-	{
+-		P0 = cmp.gt(tmp1,mod8);
+-		if (P0.new) jump:nt exit_error;	/*  neverfound!  */
+-		start = add(obo,tmp1);
+-	}
+-
+-exit_found:
+-	{
+-		R0 = sub(start,isrc);
+-		jumpr R31;
+-	}
+-
+-exit_error:
+-	{
+-		R0 = add(max,#1);
+-		jumpr R31;
+-	}
+-
+-	/*  Uh, what does the "fixup" return here?  */
+-	.falign
+-fix_1:
+-	{
+-		R0 = #0;
+-		jumpr R31;
+-	}
+-
+-	.size fname,.-fname
+-
+-
+-.section __ex_table,"a"
+-.long fail_1,fix_1
+-.long fail_2,fix_1
+-.previous
 -- 
-2.31.1.818.g46aad6cb9e-goog
+2.29.2
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
