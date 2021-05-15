@@ -1,10 +1,10 @@
 Return-Path: <arnd@kernel.org>
 From: Arnd Bergmann <arnd@kernel.org>
-Subject: [PATCH 3/5] arc: use generic strncpy/strnlen from_user
-Date: Sat, 15 May 2021 00:09:40 +0200
-Message-Id: <20210514220942.879805-4-arnd@kernel.org>
-In-Reply-To: <20210514220942.879805-1-arnd@kernel.org>
-References: <20210514220942.879805-1-arnd@kernel.org>
+Subject: [PATCH 1/6] [v2] asm-generic/uaccess.h: remove __strncpy_from_user/__strnlen_user
+Date: Sat, 15 May 2021 12:17:58 +0200
+Message-Id: <20210515101803.924427-2-arnd@kernel.org>
+In-Reply-To: <20210515101803.924427-1-arnd@kernel.org>
+References: <20210515101803.924427-1-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 To: linux-arch@vger.kernel.org
@@ -13,160 +13,218 @@ List-ID: <linux-um.lists.infradead.org>
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Most per-architecture versions of these functions are broken
-in some form, and they are almost certainly slower than the
-generic code as well.
+This is a preparation for changing over architectures to the
+generic implementation one at a time. As there are no callers
+of either __strncpy_from_user() or __strnlen_user(), fold these
+into the strncpy_from_user() strnlen_user() functions to make
+each implementation independent of the others.
 
-Remove the ones for arc and instead use the generic
-version.
+Many of these implementations have known bugs, but the intention
+here is to not change behavior at all and stay compatible with
+those bugs for the moment.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arc/Kconfig               |  2 +
- arch/arc/include/asm/uaccess.h | 83 ++--------------------------------
- arch/arc/mm/extable.c          | 12 -----
- 3 files changed, 7 insertions(+), 90 deletions(-)
+ arch/arc/include/asm/uaccess.h     | 14 ++++++++++----
+ arch/hexagon/include/asm/uaccess.h | 22 +++++++++++++---------
+ arch/um/include/asm/uaccess.h      |  8 ++++----
+ arch/um/kernel/skas/uaccess.c      |  5 ++++-
+ include/asm-generic/uaccess.h      | 28 +++++++++++-----------------
+ 5 files changed, 42 insertions(+), 35 deletions(-)
 
-diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
-index 2d98501c0897..a38f403a8811 100644
---- a/arch/arc/Kconfig
-+++ b/arch/arc/Kconfig
-@@ -27,6 +27,8 @@ config ARC
- 	select GENERIC_PENDING_IRQ if SMP
- 	select GENERIC_SCHED_CLOCK
- 	select GENERIC_SMP_IDLE_THREAD
-+	select GENERIC_STRNCPY_FROM_USER
-+	select GENERIC_STRNLEN_USER
- 	select HAVE_ARCH_KGDB
- 	select HAVE_ARCH_TRACEHOOK
- 	select HAVE_ARCH_TRANSPARENT_HUGEPAGE if ARC_MMU_V4
 diff --git a/arch/arc/include/asm/uaccess.h b/arch/arc/include/asm/uaccess.h
-index 3476348f361e..754a23f26736 100644
+index ea40ec7f6cae..3476348f361e 100644
 --- a/arch/arc/include/asm/uaccess.h
 +++ b/arch/arc/include/asm/uaccess.h
-@@ -655,96 +655,23 @@ static inline unsigned long __arc_clear_user(void __user *to, unsigned long n)
- 	return res;
- }
+@@ -661,6 +661,9 @@ __arc_strncpy_from_user(char *dst, const char __user *src, long count)
+ 	long res = 0;
+ 	char val;
  
--static inline long
--__arc_strncpy_from_user(char *dst, const char __user *src, long count)
--{
--	long res = 0;
--	char val;
--
--	if (!access_ok(src, 1))
--		return -EFAULT;
--
--	if (count == 0)
--		return 0;
--
--	__asm__ __volatile__(
--	"	mov	lp_count, %5		\n"
--	"	lp	3f			\n"
--	"1:	ldb.ab  %3, [%2, 1]		\n"
--	"	breq.d	%3, 0, 3f               \n"
--	"	stb.ab  %3, [%1, 1]		\n"
--	"	add	%0, %0, 1	# Num of NON NULL bytes copied	\n"
--	"3:								\n"
--	"	.section .fixup, \"ax\"		\n"
--	"	.align 4			\n"
--	"4:	mov %0, %4		# sets @res as -EFAULT	\n"
--	"	j   3b				\n"
--	"	.previous			\n"
--	"	.section __ex_table, \"a\"	\n"
--	"	.align 4			\n"
--	"	.word   1b, 4b			\n"
--	"	.previous			\n"
--	: "+r"(res), "+r"(dst), "+r"(src), "=r"(val)
--	: "g"(-EFAULT), "r"(count)
--	: "lp_count", "memory");
--
--	return res;
--}
--
--static inline long __arc_strnlen_user(const char __user *s, long n)
--{
--	long res, tmp1, cnt;
--	char val;
--
--	if (!access_ok(s, 1))
--		return 0;
--
--	__asm__ __volatile__(
--	"	mov %2, %1			\n"
--	"1:	ldb.ab  %3, [%0, 1]		\n"
--	"	breq.d  %3, 0, 2f		\n"
--	"	sub.f   %2, %2, 1		\n"
--	"	bnz 1b				\n"
--	"	sub %2, %2, 1			\n"
--	"2:	sub %0, %1, %2			\n"
--	"3:	;nop				\n"
--	"	.section .fixup, \"ax\"		\n"
--	"	.align 4			\n"
--	"4:	mov %0, 0			\n"
--	"	j   3b				\n"
--	"	.previous			\n"
--	"	.section __ex_table, \"a\"	\n"
--	"	.align 4			\n"
--	"	.word 1b, 4b			\n"
--	"	.previous			\n"
--	: "=r"(res), "=r"(tmp1), "=r"(cnt), "=r"(val)
--	: "0"(s), "1"(n)
--	: "memory");
--
--	return res;
--}
--
- #ifndef CONFIG_CC_OPTIMIZE_FOR_SIZE
++	if (!access_ok(src, 1))
++		return -EFAULT;
++
+ 	if (count == 0)
+ 		return 0;
  
- #define INLINE_COPY_TO_USER
+@@ -693,6 +696,9 @@ static inline long __arc_strnlen_user(const char __user *s, long n)
+ 	long res, tmp1, cnt;
+ 	char val;
+ 
++	if (!access_ok(s, 1))
++		return 0;
++
+ 	__asm__ __volatile__(
+ 	"	mov %2, %1			\n"
+ 	"1:	ldb.ab  %3, [%0, 1]		\n"
+@@ -724,8 +730,8 @@ static inline long __arc_strnlen_user(const char __user *s, long n)
  #define INLINE_COPY_FROM_USER
  
  #define __clear_user(d, n)		__arc_clear_user(d, n)
--#define strncpy_from_user(d, s, n)	__arc_strncpy_from_user(d, s, n)
--#define strnlen_user(s, n)		__arc_strnlen_user(s, n)
+-#define __strncpy_from_user(d, s, n)	__arc_strncpy_from_user(d, s, n)
+-#define __strnlen_user(s, n)		__arc_strnlen_user(s, n)
++#define strncpy_from_user(d, s, n)	__arc_strncpy_from_user(d, s, n)
++#define strnlen_user(s, n)		__arc_strnlen_user(s, n)
  #else
  extern unsigned long arc_clear_user_noinline(void __user *to,
  		unsigned long n);
--extern long arc_strncpy_from_user_noinline (char *dst, const char __user *src,
--		long count);
--extern long arc_strnlen_user_noinline(const char __user *src, long n);
--
+@@ -734,8 +740,8 @@ extern long arc_strncpy_from_user_noinline (char *dst, const char __user *src,
+ extern long arc_strnlen_user_noinline(const char __user *src, long n);
+ 
  #define __clear_user(d, n)		arc_clear_user_noinline(d, n)
--#define strncpy_from_user(d, s, n)	arc_strncpy_from_user_noinline(d, s, n)
--#define strnlen_user(s, n)		arc_strnlen_user_noinline(s, n)
--
+-#define __strncpy_from_user(d, s, n)	arc_strncpy_from_user_noinline(d, s, n)
+-#define __strnlen_user(s, n)		arc_strnlen_user_noinline(s, n)
++#define strncpy_from_user(d, s, n)	arc_strncpy_from_user_noinline(d, s, n)
++#define strnlen_user(s, n)		arc_strnlen_user_noinline(s, n)
+ 
  #endif
  
-+extern long strncpy_from_user(char *dst, const char __user *src, long count);
-+#define strncpy_from_user(d, s, n)	strncpy_from_user(d, s, n)
-+extern long strnlen_user(const char __user *src, long n);
-+#define strnlen_user(s, n)		strnlen_user(s, n)
-+
- #include <asm/segment.h>
+diff --git a/arch/hexagon/include/asm/uaccess.h b/arch/hexagon/include/asm/uaccess.h
+index c1019a736ff1..59aa3a50744f 100644
+--- a/arch/hexagon/include/asm/uaccess.h
++++ b/arch/hexagon/include/asm/uaccess.h
+@@ -57,23 +57,27 @@ unsigned long raw_copy_to_user(void __user *to, const void *from,
+ __kernel_size_t __clear_user_hexagon(void __user *dest, unsigned long count);
+ #define __clear_user(a, s) __clear_user_hexagon((a), (s))
+ 
+-#define __strncpy_from_user(dst, src, n) hexagon_strncpy_from_user(dst, src, n)
++extern long __strnlen_user(const char __user *src, long n);
+ 
+-/*  get around the ifndef in asm-generic/uaccess.h  */
+-#define __strnlen_user __strnlen_user
++static inline strnlen_user(const char __user *src, long n)
++{
++        if (!access_ok(src, 1))
++		return 0;
+ 
+-extern long __strnlen_user(const char __user *src, long n);
++	return __strnlen_user(src, n);
++}
++/*  get around the ifndef in asm-generic/uaccess.h  */
++#define strnlen_user strnlen_user
+ 
+-static inline long hexagon_strncpy_from_user(char *dst, const char __user *src,
+-					     long n);
++static inline long strncpy_from_user(char *dst, const char __user *src, long n);
++#define strncpy_from_user strncpy_from_user
+ 
  #include <asm-generic/uaccess.h>
  
-diff --git a/arch/arc/mm/extable.c b/arch/arc/mm/extable.c
-index b06b09ddf924..4e14c4244ea2 100644
---- a/arch/arc/mm/extable.c
-+++ b/arch/arc/mm/extable.c
-@@ -32,16 +32,4 @@ unsigned long arc_clear_user_noinline(void __user *to,
- }
- EXPORT_SYMBOL(arc_clear_user_noinline);
+ /*  Todo:  an actual accelerated version of this.  */
+-static inline long hexagon_strncpy_from_user(char *dst, const char __user *src,
+-					     long n)
++static inline long strncpy_from_user(char *dst, const char __user *src, long n)
+ {
+-	long res = __strnlen_user(src, n);
++	long res = strnlen_user(src, n);
  
--long arc_strncpy_from_user_noinline(char *dst, const char __user *src,
--		long count)
--{
--	return __arc_strncpy_from_user(dst, src, count);
--}
--EXPORT_SYMBOL(arc_strncpy_from_user_noinline);
--
--long arc_strnlen_user_noinline(const char __user *src, long n)
--{
--	return __arc_strnlen_user(src, n);
--}
--EXPORT_SYMBOL(arc_strnlen_user_noinline);
+ 	if (unlikely(!res))
+ 		return -EFAULT;
+diff --git a/arch/um/include/asm/uaccess.h b/arch/um/include/asm/uaccess.h
+index fe66d659acad..3bf209f683f8 100644
+--- a/arch/um/include/asm/uaccess.h
++++ b/arch/um/include/asm/uaccess.h
+@@ -23,16 +23,16 @@
+ 
+ extern unsigned long raw_copy_from_user(void *to, const void __user *from, unsigned long n);
+ extern unsigned long raw_copy_to_user(void __user *to, const void *from, unsigned long n);
+-extern long __strncpy_from_user(char *dst, const char __user *src, long count);
+-extern long __strnlen_user(const void __user *str, long len);
++extern long strncpy_from_user(char *dst, const char __user *src, long count);
++extern long strnlen_user(const void __user *str, long len);
+ extern unsigned long __clear_user(void __user *mem, unsigned long len);
+ static inline int __access_ok(unsigned long addr, unsigned long size);
+ 
+ /* Teach asm-generic/uaccess.h that we have C functions for these. */
+ #define __access_ok __access_ok
+ #define __clear_user __clear_user
+-#define __strnlen_user __strnlen_user
+-#define __strncpy_from_user __strncpy_from_user
++#define strnlen_user strnlen_user
++#define strncpy_from_user strncpy_from_user
+ #define INLINE_COPY_FROM_USER
+ #define INLINE_COPY_TO_USER
+ 
+diff --git a/arch/um/kernel/skas/uaccess.c b/arch/um/kernel/skas/uaccess.c
+index 2dec915abe6f..205679cc4bb7 100644
+--- a/arch/um/kernel/skas/uaccess.c
++++ b/arch/um/kernel/skas/uaccess.c
+@@ -188,11 +188,14 @@ static int strncpy_chunk_from_user(unsigned long from, int len, void *arg)
+ 	return 0;
+ }
+ 
+-long __strncpy_from_user(char *dst, const char __user *src, long count)
++long strncpy_from_user(char *dst, const char __user *src, long count)
+ {
+ 	long n;
+ 	char *ptr = dst;
+ 
++	if (!access_ok(src, 1))
++		return -EFAULT;
++
+ 	if (uaccess_kernel()) {
+ 		strncpy(dst, (__force void *) src, count);
+ 		return strnlen(dst, count);
+diff --git a/include/asm-generic/uaccess.h b/include/asm-generic/uaccess.h
+index 4973328f3c6e..c03889cc904c 100644
+--- a/include/asm-generic/uaccess.h
++++ b/include/asm-generic/uaccess.h
+@@ -246,11 +246,15 @@ extern int __get_user_bad(void) __attribute__((noreturn));
+ /*
+  * Copy a null terminated string from userspace.
+  */
+-#ifndef __strncpy_from_user
++#ifndef strncpy_from_user
+ static inline long
+-__strncpy_from_user(char *dst, const char __user *src, long count)
++strncpy_from_user(char *dst, const char __user *src, long count)
+ {
+ 	char *tmp;
++
++	if (!access_ok(src, 1))
++		return -EFAULT;
++
+ 	strncpy(dst, (const char __force *)src, count);
+ 	for (tmp = dst; *tmp && count > 0; tmp++, count--)
+ 		;
+@@ -258,24 +262,12 @@ __strncpy_from_user(char *dst, const char __user *src, long count)
+ }
  #endif
+ 
+-static inline long
+-strncpy_from_user(char *dst, const char __user *src, long count)
+-{
+-	if (!access_ok(src, 1))
+-		return -EFAULT;
+-	return __strncpy_from_user(dst, src, count);
+-}
+-
++#ifndef strnlen_user
+ /*
+  * Return the size of a string (including the ending 0)
+  *
+  * Return 0 on exception, a value greater than N if too long
+- */
+-#ifndef __strnlen_user
+-#define __strnlen_user(s, n) (strnlen((s), (n)) + 1)
+-#endif
+-
+-/*
++ *
+  * Unlike strnlen, strnlen_user includes the nul terminator in
+  * its returned count. Callers should check for a returned value
+  * greater than N as an indication the string is too long.
+@@ -284,8 +276,10 @@ static inline long strnlen_user(const char __user *src, long n)
+ {
+ 	if (!access_ok(src, 1))
+ 		return 0;
+-	return __strnlen_user(src, n);
++
++	return strnlen(src, n) + 1;
+ }
++#endif
+ 
+ /*
+  * Zero Userspace
 -- 
 2.29.2
 
