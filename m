@@ -1,66 +1,87 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pj1-x104a.google.com ([2607:f8b0:4864:20::104a])
- by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1liqsO-00EI6M-NE
- for linux-um@lists.infradead.org; Tue, 18 May 2021 03:58:42 +0000
-Received: by mail-pj1-x104a.google.com with SMTP id
- a11-20020a17090a70cbb029015d3e996884so895201pjm.4
- for <linux-um@lists.infradead.org>; Mon, 17 May 2021 20:58:34 -0700 (PDT)
-Date: Mon, 17 May 2021 20:58:25 -0700
-Message-Id: <20210518035825.1885357-1-davidgow@google.com>
-Mime-Version: 1.0
-Subject: [PATCH] kunit: arch/um/configs: Enable KUNIT_ALL_TESTS by default
-From: David Gow <davidgow@google.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Brendan Higgins <brendanhiggins@google.com>, Shuah Khan <shuah@kernel.org>
-Cc: David Gow <davidgow@google.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+Return-Path: <arnd@kernel.org>
+From: Arnd Bergmann <arnd@kernel.org>
+Subject: [PATCH 0/6] [v2] asm-generic: strncpy_from_user/strnlen_user cleanup
+Date: Sat, 15 May 2021 12:17:57 +0200
+Message-Id: <20210515101803.924427-1-arnd@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To: linux-arch@vger.kernel.org
+Cc: Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Brian Cain <bcain@codeaurora.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Sid Manning <sidneym@codeaurora.org>, Andrew Morton <akpm@linux-foundation.org>, Mike Rapoport <rppt@kernel.org>, linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-riscv@lists.infradead.org, linux-um@lists.infradead.org
+List-ID: <linux-um.lists.infradead.org>
 
-Make the default .kunitconfig (specified in
-arch/um/configs/kunit_defconfig) specify CONFIG_KUNIT_ALL_TESTS by
-default. KUNIT_ALL_TESTS runs all tests which have satisfied
-dependencies in the current .config (which would be the architecture
-defconfig).
+From: Arnd Bergmann <arnd@arndb.de>
 
-Currently, the default .kunitconfig enables only the example tests and
-KUnit's own tests. While this does provide a good example of what a
-.kunitconfig for running a few individual tests should look like, it
-does mean that kunit_tool runs a pretty paltry collection of tests by
-default.
+As I've queued up some patches for asm-generic, I remembered an
+older series that I created but never submitted.
 
-A default run of ./tools/testing/kunit/kunit.py run now runs 70 tests
-instead of 14.
+These two functions appear to be unnecessarily different between
+architectures, and the asm-generic version is a bit questionable,
+even for NOMMU architectures.
 
-Signed-off-by: David Gow <davidgow@google.com>
----
- arch/um/configs/kunit_defconfig | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Clean this up to just use the generic library version for anything
+that uses the generic version today. I've expanded on the patch
+descriptions a little, as suggested by Christoph Hellwig, but I
+suspect a more detailed review would uncover additional problems
+with the custom versions that are getting removed.
 
-diff --git a/arch/um/configs/kunit_defconfig b/arch/um/configs/kunit_defconfig
-index 9235b7d42d38..becf3432a375 100644
---- a/arch/um/configs/kunit_defconfig
-+++ b/arch/um/configs/kunit_defconfig
-@@ -1,3 +1,2 @@
- CONFIG_KUNIT=y
--CONFIG_KUNIT_TEST=y
--CONFIG_KUNIT_EXAMPLE_TEST=y
-+CONFIG_KUNIT_ALL_TESTS=y
+       Arnd
+
+Arnd Bergmann (6):
+  [v2] asm-generic/uaccess.h: remove __strncpy_from_user/__strnlen_user
+  [v2] h8300: remove stale strncpy_from_user
+  [v2] hexagon: use generic strncpy/strnlen from_user
+  [v2] arc: use generic strncpy/strnlen from_user
+  [v2] asm-generic: uaccess: remove inline
+    strncpy_from_user/strnlen_user
+  [v2] asm-generic: remove extra strn{cpy_from,len}_user declarations
+
+ arch/arc/Kconfig                    |   2 +
+ arch/arc/include/asm/uaccess.h      |  72 ----------------
+ arch/arc/mm/extable.c               |  12 ---
+ arch/h8300/Kconfig                  |   2 +
+ arch/h8300/kernel/h8300_ksyms.c     |   2 -
+ arch/h8300/lib/Makefile             |   2 +-
+ arch/h8300/lib/strncpy.S            |  35 --------
+ arch/hexagon/Kconfig                |   2 +
+ arch/hexagon/include/asm/uaccess.h  |  31 -------
+ arch/hexagon/kernel/hexagon_ksyms.c |   1 -
+ arch/hexagon/mm/Makefile            |   2 +-
+ arch/hexagon/mm/strnlen_user.S      | 126 ----------------------------
+ arch/m68k/Kconfig                   |   4 +-
+ arch/riscv/Kconfig                  |   4 +-
+ arch/um/include/asm/uaccess.h       |   5 +-
+ arch/um/kernel/skas/uaccess.c       |   5 +-
+ include/asm-generic/uaccess.h       |  52 ++----------
+ 17 files changed, 25 insertions(+), 334 deletions(-)
+ delete mode 100644 arch/h8300/lib/strncpy.S
+ delete mode 100644 arch/hexagon/mm/strnlen_user.S
+
 -- 
-2.31.1.751.gd2f1c929bd-goog
+2.29.2
 
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Vineet Gupta <vgupta@synopsys.com>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: Brian Cain <bcain@codeaurora.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Albert Ou <aou@eecs.berkeley.edu>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Sid Manning <sidneym@codeaurora.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: linux-snps-arc@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Cc: uclinux-h8-devel@lists.sourceforge.jp
+Cc: linux-hexagon@vger.kernel.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-riscv@lists.infradead.org
+Cc: linux-um@lists.infradead.org
+Cc: linux-arch@vger.kernel.org
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
