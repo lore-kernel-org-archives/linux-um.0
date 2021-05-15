@@ -1,139 +1,101 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
- by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lgtCf-00Afwq-CA
- for linux-um@lists.infradead.org; Wed, 12 May 2021 18:03:27 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.10 11/34] um: Mark all kernel symbols as local
-Date: Wed, 12 May 2021 14:02:42 -0400
-Message-Id: <20210512180306.664925-11-sashal@kernel.org>
-In-Reply-To: <20210512180306.664925-1-sashal@kernel.org>
-References: <20210512180306.664925-1-sashal@kernel.org>
+Return-Path: <arnd@kernel.org>
+From: Arnd Bergmann <arnd@kernel.org>
+Subject: [PATCH 2/6] [v2] h8300: remove stale strncpy_from_user
+Date: Sat, 15 May 2021 12:17:59 +0200
+Message-Id: <20210515101803.924427-3-arnd@kernel.org>
+In-Reply-To: <20210515101803.924427-1-arnd@kernel.org>
+References: <20210515101803.924427-1-arnd@kernel.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Johannes Berg <johannes.berg@intel.com>, Ritesh Raj Sarraf <rrs@debian.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, linux-um@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+To: linux-arch@vger.kernel.org
+Cc: Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Brian Cain <bcain@codeaurora.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Sid Manning <sidneym@codeaurora.org>, Andrew Morton <akpm@linux-foundation.org>, Mike Rapoport <rppt@kernel.org>, linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-riscv@lists.infradead.org, linux-um@lists.infradead.org
+List-ID: <linux-um.lists.infradead.org>
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit d5027ca63e0e778b641cf23e3f5c6d6212cf412b ]
+This function is never called because h8300 uses the asm-generic
+inline function version.
 
-Ritesh reported a bug [1] against UML, noting that it crashed on
-startup. The backtrace shows the following (heavily redacted):
-
-(gdb) bt
-...
- #26 0x0000000060015b5d in sem_init () at ipc/sem.c:268
- #27 0x00007f89906d92f7 in ?? () from /lib/x86_64-linux-gnu/libcom_err.so.2
- #28 0x00007f8990ab8fb2 in call_init (...) at dl-init.c:72
-...
- #40 0x00007f89909bf3a6 in nss_load_library (...) at nsswitch.c:359
-...
- #44 0x00007f8990895e35 in _nss_compat_getgrnam_r (...) at nss_compat/compat-grp.c:486
- #45 0x00007f8990968b85 in __getgrnam_r [...]
- #46 0x00007f89909d6b77 in grantpt [...]
- #47 0x00007f8990a9394e in __GI_openpty [...]
- #48 0x00000000604a1f65 in openpty_cb (...) at arch/um/os-Linux/sigio.c:407
- #49 0x00000000604a58d0 in start_idle_thread (...) at arch/um/os-Linux/skas/process.c:598
- #50 0x0000000060004a3d in start_uml () at arch/um/kernel/skas/process.c:45
- #51 0x00000000600047b2 in linux_main (...) at arch/um/kernel/um_arch.c:334
- #52 0x000000006000574f in main (...) at arch/um/os-Linux/main.c:144
-
-indicating that the UML function openpty_cb() calls openpty(),
-which internally calls __getgrnam_r(), which causes the nsswitch
-machinery to get started.
-
-This loads, through lots of indirection that I snipped, the
-libcom_err.so.2 library, which (in an unknown function, "??")
-calls sem_init().
-
-Now, of course it wants to get libpthread's sem_init(), since
-it's linked against libpthread. However, the dynamic linker
-looks up that symbol against the binary first, and gets the
-kernel's sem_init().
-
-Hajime Tazaki noted that "objcopy -L" can localize a symbol,
-so the dynamic linker wouldn't do the lookup this way. I tried,
-but for some reason that didn't seem to work.
-
-Doing the same thing in the linker script instead does seem to
-work, though I cannot entirely explain - it *also* works if I
-just add "VERSION { { global: *; }; }" instead, indicating that
-something else is happening that I don't really understand. It
-may be that explicitly doing that marks them with some kind of
-empty version, and that's different from the default.
-
-Explicitly marking them with a version breaks kallsyms, so that
-doesn't seem to be possible.
-
-Marking all the symbols as local seems correct, and does seem
-to address the issue, so do that. Also do it for static link,
-nsswitch libraries could still be loaded there.
-
-[1] https://bugs.debian.org/983379
-
-Reported-by: Ritesh Raj Sarraf <rrs@debian.org>
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Tested-By: Ritesh Raj Sarraf <rrs@debian.org>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/um/kernel/dyn.lds.S | 6 ++++++
- arch/um/kernel/uml.lds.S | 6 ++++++
- 2 files changed, 12 insertions(+)
+ arch/h8300/kernel/h8300_ksyms.c |  2 --
+ arch/h8300/lib/Makefile         |  2 +-
+ arch/h8300/lib/strncpy.S        | 35 ---------------------------------
+ 3 files changed, 1 insertion(+), 38 deletions(-)
+ delete mode 100644 arch/h8300/lib/strncpy.S
 
-diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
-index dacbfabf66d8..2f2a8ce92f1e 100644
---- a/arch/um/kernel/dyn.lds.S
-+++ b/arch/um/kernel/dyn.lds.S
-@@ -6,6 +6,12 @@ OUTPUT_ARCH(ELF_ARCH)
- ENTRY(_start)
- jiffies = jiffies_64;
+diff --git a/arch/h8300/kernel/h8300_ksyms.c b/arch/h8300/kernel/h8300_ksyms.c
+index 1c6f902e82a5..853d6e886477 100644
+--- a/arch/h8300/kernel/h8300_ksyms.c
++++ b/arch/h8300/kernel/h8300_ksyms.c
+@@ -19,7 +19,6 @@ asmlinkage long __mulsi3(long, long);
+ asmlinkage long __udivsi3(long, long);
+ asmlinkage void *memcpy(void *, const void *, size_t);
+ asmlinkage void *memset(void *, int, size_t);
+-asmlinkage long strncpy_from_user(void *to, void *from, size_t n);
  
-+VERSION {
-+  {
-+    local: *;
-+  };
-+}
-+
- SECTIONS
- {
-   PROVIDE (__executable_start = START);
-diff --git a/arch/um/kernel/uml.lds.S b/arch/um/kernel/uml.lds.S
-index 45d957d7004c..7a8e2b123e29 100644
---- a/arch/um/kernel/uml.lds.S
-+++ b/arch/um/kernel/uml.lds.S
-@@ -7,6 +7,12 @@ OUTPUT_ARCH(ELF_ARCH)
- ENTRY(_start)
- jiffies = jiffies_64;
+ 	/* gcc lib functions */
+ EXPORT_SYMBOL(__ucmpdi2);
+@@ -34,4 +33,3 @@ EXPORT_SYMBOL(__mulsi3);
+ EXPORT_SYMBOL(__udivsi3);
+ EXPORT_SYMBOL(memcpy);
+ EXPORT_SYMBOL(memset);
+-EXPORT_SYMBOL(strncpy_from_user);
+diff --git a/arch/h8300/lib/Makefile b/arch/h8300/lib/Makefile
+index 685fa837c1f7..5911c1fa856d 100644
+--- a/arch/h8300/lib/Makefile
++++ b/arch/h8300/lib/Makefile
+@@ -3,7 +3,7 @@
+ # Makefile for H8/300-specific library files..
+ #
  
-+VERSION {
-+  {
-+    local: *;
-+  };
-+}
-+
- SECTIONS
- {
-   /* This must contain the right address - not quite the default ELF one.*/
+-lib-y  = memcpy.o memset.o abs.o strncpy.o \
++lib-y  = memcpy.o memset.o abs.o \
+ 	 mulsi3.o udivsi3.o muldi3.o moddivsi3.o \
+ 	 ashldi3.o lshrdi3.o ashrdi3.o ucmpdi2.o \
+ 	 delay.o
+diff --git a/arch/h8300/lib/strncpy.S b/arch/h8300/lib/strncpy.S
+deleted file mode 100644
+index 8b65d7c4727b..000000000000
+--- a/arch/h8300/lib/strncpy.S
++++ /dev/null
+@@ -1,35 +0,0 @@
+-;;; SPDX-License-Identifier: GPL-2.0
+-;;; strncpy.S
+-
+-#include <asm/linkage.h>
+-
+-	.text
+-.global strncpy_from_user
+-
+-;;; long strncpy_from_user(void *to, void *from, size_t n)
+-strncpy_from_user:
+-	mov.l	er2,er2
+-	bne	1f
+-	sub.l	er0,er0
+-	rts
+-1:
+-	mov.l	er4,@-sp
+-	sub.l	er3,er3
+-2:
+-	mov.b	@er1+,r4l
+-	mov.b	r4l,@er0
+-	adds	#1,er0
+-	beq	3f
+-	inc.l	#1,er3
+-	dec.l	#1,er2
+-	bne	2b
+-3:
+-	dec.l	#1,er2
+-4:
+-	mov.b	r4l,@er0
+-	adds	#1,er0
+-	dec.l	#1,er2
+-	bne	4b
+-	mov.l	er3,er0
+-	mov.l	@sp+,er4
+-	rts
 -- 
-2.30.2
+2.29.2
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
