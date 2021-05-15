@@ -1,8 +1,8 @@
 Return-Path: <arnd@kernel.org>
 From: Arnd Bergmann <arnd@kernel.org>
-Subject: [PATCH 2/6] [v2] h8300: remove stale strncpy_from_user
-Date: Sat, 15 May 2021 12:17:59 +0200
-Message-Id: <20210515101803.924427-3-arnd@kernel.org>
+Subject: [PATCH 6/6] [v2] asm-generic: remove extra strn{cpy_from,len}_user declarations
+Date: Sat, 15 May 2021 12:18:03 +0200
+Message-Id: <20210515101803.924427-7-arnd@kernel.org>
 In-Reply-To: <20210515101803.924427-1-arnd@kernel.org>
 References: <20210515101803.924427-1-arnd@kernel.org>
 MIME-Version: 1.0
@@ -13,88 +13,71 @@ List-ID: <linux-um.lists.infradead.org>
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-This function is never called because h8300 uses the asm-generic
-inline function version.
+As these are now in asm-generic, it's no longer necessary to
+declare them in the architecture.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/h8300/kernel/h8300_ksyms.c |  2 --
- arch/h8300/lib/Makefile         |  2 +-
- arch/h8300/lib/strncpy.S        | 35 ---------------------------------
- 3 files changed, 1 insertion(+), 38 deletions(-)
- delete mode 100644 arch/h8300/lib/strncpy.S
+ arch/arc/include/asm/uaccess.h     | 5 -----
+ arch/hexagon/include/asm/uaccess.h | 6 ------
+ arch/um/include/asm/uaccess.h      | 5 +----
+ 3 files changed, 1 insertion(+), 15 deletions(-)
 
-diff --git a/arch/h8300/kernel/h8300_ksyms.c b/arch/h8300/kernel/h8300_ksyms.c
-index 1c6f902e82a5..853d6e886477 100644
---- a/arch/h8300/kernel/h8300_ksyms.c
-+++ b/arch/h8300/kernel/h8300_ksyms.c
-@@ -19,7 +19,6 @@ asmlinkage long __mulsi3(long, long);
- asmlinkage long __udivsi3(long, long);
- asmlinkage void *memcpy(void *, const void *, size_t);
- asmlinkage void *memset(void *, int, size_t);
--asmlinkage long strncpy_from_user(void *to, void *from, size_t n);
+diff --git a/arch/arc/include/asm/uaccess.h b/arch/arc/include/asm/uaccess.h
+index 754a23f26736..783bfdb3bfa3 100644
+--- a/arch/arc/include/asm/uaccess.h
++++ b/arch/arc/include/asm/uaccess.h
+@@ -667,11 +667,6 @@ extern unsigned long arc_clear_user_noinline(void __user *to,
+ #define __clear_user(d, n)		arc_clear_user_noinline(d, n)
+ #endif
  
- 	/* gcc lib functions */
- EXPORT_SYMBOL(__ucmpdi2);
-@@ -34,4 +33,3 @@ EXPORT_SYMBOL(__mulsi3);
- EXPORT_SYMBOL(__udivsi3);
- EXPORT_SYMBOL(memcpy);
- EXPORT_SYMBOL(memset);
--EXPORT_SYMBOL(strncpy_from_user);
-diff --git a/arch/h8300/lib/Makefile b/arch/h8300/lib/Makefile
-index 685fa837c1f7..5911c1fa856d 100644
---- a/arch/h8300/lib/Makefile
-+++ b/arch/h8300/lib/Makefile
-@@ -3,7 +3,7 @@
- # Makefile for H8/300-specific library files..
- #
+-extern long strncpy_from_user(char *dst, const char __user *src, long count);
+-#define strncpy_from_user(d, s, n)	strncpy_from_user(d, s, n)
+-extern long strnlen_user(const char __user *src, long n);
+-#define strnlen_user(s, n)		strnlen_user(s, n)
+-
+ #include <asm/segment.h>
+ #include <asm-generic/uaccess.h>
  
--lib-y  = memcpy.o memset.o abs.o strncpy.o \
-+lib-y  = memcpy.o memset.o abs.o \
- 	 mulsi3.o udivsi3.o muldi3.o moddivsi3.o \
- 	 ashldi3.o lshrdi3.o ashrdi3.o ucmpdi2.o \
- 	 delay.o
-diff --git a/arch/h8300/lib/strncpy.S b/arch/h8300/lib/strncpy.S
-deleted file mode 100644
-index 8b65d7c4727b..000000000000
---- a/arch/h8300/lib/strncpy.S
-+++ /dev/null
-@@ -1,35 +0,0 @@
--;;; SPDX-License-Identifier: GPL-2.0
--;;; strncpy.S
+diff --git a/arch/hexagon/include/asm/uaccess.h b/arch/hexagon/include/asm/uaccess.h
+index d950df12d8c5..ef5bfef8d490 100644
+--- a/arch/hexagon/include/asm/uaccess.h
++++ b/arch/hexagon/include/asm/uaccess.h
+@@ -57,12 +57,6 @@ unsigned long raw_copy_to_user(void __user *to, const void *from,
+ __kernel_size_t __clear_user_hexagon(void __user *dest, unsigned long count);
+ #define __clear_user(a, s) __clear_user_hexagon((a), (s))
+ 
+-extern long strnlen_user(const char __user *src, long n);
+-#define strnlen_user strnlen_user
 -
--#include <asm/linkage.h>
+-extern long strncpy_from_user(char *dst, const char __user *src, long n)
+-#define strncpy_from_user strncpy_from_user
 -
--	.text
--.global strncpy_from_user
--
--;;; long strncpy_from_user(void *to, void *from, size_t n)
--strncpy_from_user:
--	mov.l	er2,er2
--	bne	1f
--	sub.l	er0,er0
--	rts
--1:
--	mov.l	er4,@-sp
--	sub.l	er3,er3
--2:
--	mov.b	@er1+,r4l
--	mov.b	r4l,@er0
--	adds	#1,er0
--	beq	3f
--	inc.l	#1,er3
--	dec.l	#1,er2
--	bne	2b
--3:
--	dec.l	#1,er2
--4:
--	mov.b	r4l,@er0
--	adds	#1,er0
--	dec.l	#1,er2
--	bne	4b
--	mov.l	er3,er0
--	mov.l	@sp+,er4
--	rts
+ #include <asm-generic/uaccess.h>
+ 
+ 
+diff --git a/arch/um/include/asm/uaccess.h b/arch/um/include/asm/uaccess.h
+index 3bf209f683f8..191ef36dd543 100644
+--- a/arch/um/include/asm/uaccess.h
++++ b/arch/um/include/asm/uaccess.h
+@@ -23,16 +23,13 @@
+ 
+ extern unsigned long raw_copy_from_user(void *to, const void __user *from, unsigned long n);
+ extern unsigned long raw_copy_to_user(void __user *to, const void *from, unsigned long n);
+-extern long strncpy_from_user(char *dst, const char __user *src, long count);
+-extern long strnlen_user(const void __user *str, long len);
+ extern unsigned long __clear_user(void __user *mem, unsigned long len);
+ static inline int __access_ok(unsigned long addr, unsigned long size);
+ 
+ /* Teach asm-generic/uaccess.h that we have C functions for these. */
+ #define __access_ok __access_ok
+ #define __clear_user __clear_user
+-#define strnlen_user strnlen_user
+-#define strncpy_from_user strncpy_from_user
++
+ #define INLINE_COPY_FROM_USER
+ #define INLINE_COPY_TO_USER
+ 
 -- 
 2.29.2
 
