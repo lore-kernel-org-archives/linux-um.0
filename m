@@ -1,176 +1,114 @@
-Return-Path: <arnd@kernel.org>
-From: Arnd Bergmann <arnd@kernel.org>
-Subject: [PATCH 4/6] [v2] arc: use generic strncpy/strnlen from_user
-Date: Sat, 15 May 2021 12:18:01 +0200
-Message-Id: <20210515101803.924427-5-arnd@kernel.org>
-In-Reply-To: <20210515101803.924427-1-arnd@kernel.org>
-References: <20210515101803.924427-1-arnd@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from conuserg-09.nifty.com ([210.131.2.76])
+ by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
+ id 1liXpq-00DYF2-Ks
+ for linux-um@lists.infradead.org; Mon, 17 May 2021 07:38:44 +0000
+From: Masahiro Yamada <masahiroy@kernel.org>
+Subject: [RESEND PATCH 0/6] x86: switch to generic syscall{tbl,
+ hdr}.sh with various syscall code cleanups
+Date: Mon, 17 May 2021 16:38:08 +0900
+Message-Id: <20210517073815.97426-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-arch@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Brian Cain <bcain@codeaurora.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Sid Manning <sidneym@codeaurora.org>, Andrew Morton <akpm@linux-foundation.org>, Mike Rapoport <rppt@kernel.org>, linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-riscv@lists.infradead.org, linux-um@lists.infradead.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
+Cc: Masahiro Yamada <masahiroy@kernel.org>, Andy Lutomirski <luto@kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "H. Peter Anvin" <hpa@zytor.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
 
-From: Arnd Bergmann <arnd@arndb.de>
 
-Most per-architecture versions of these functions are broken
-in some form, and they are almost certainly slower than the
-generic code as well.
+Previously, many architectures duplicated similar scripts to
+generate syscall headers.
 
-This version is fairly slow because it always does byte accesses
-even for aligned data, and its checks for user_addr_max() differ
-from the generic code.
+For v5.11:
 
-Remove the ones for arc and instead use the generic version.
+  $ find  arch  -name syscalltbl.sh
+  arch/parisc/kernel/syscalls/syscalltbl.sh
+  arch/alpha/kernel/syscalls/syscalltbl.sh
+  arch/microblaze/kernel/syscalls/syscalltbl.sh
+  arch/powerpc/kernel/syscalls/syscalltbl.sh
+  arch/arm/tools/syscalltbl.sh
+  arch/sparc/kernel/syscalls/syscalltbl.sh
+  arch/sh/kernel/syscalls/syscalltbl.sh
+  arch/xtensa/kernel/syscalls/syscalltbl.sh
+  arch/ia64/kernel/syscalls/syscalltbl.sh
+  arch/x86/entry/syscalls/syscalltbl.sh
+  arch/mips/kernel/syscalls/syscalltbl.sh
+  arch/m68k/kernel/syscalls/syscalltbl.sh
+  $ find  arch  -name  syscallhdr.sh
+  arch/parisc/kernel/syscalls/syscallhdr.sh
+  arch/alpha/kernel/syscalls/syscallhdr.sh
+  arch/microblaze/kernel/syscalls/syscallhdr.sh
+  arch/powerpc/kernel/syscalls/syscallhdr.sh
+  arch/arm/tools/syscallhdr.sh
+  arch/sparc/kernel/syscalls/syscallhdr.sh
+  arch/sh/kernel/syscalls/syscallhdr.sh
+  arch/xtensa/kernel/syscalls/syscallhdr.sh
+  arch/ia64/kernel/syscalls/syscallhdr.sh
+  arch/x86/entry/syscalls/syscallhdr.sh
+  arch/mips/kernel/syscalls/syscallhdr.sh
+  arch/m68k/kernel/syscalls/syscallhdr.sh
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/arc/Kconfig               |  2 +
- arch/arc/include/asm/uaccess.h | 83 ++--------------------------------
- arch/arc/mm/extable.c          | 12 -----
- 3 files changed, 7 insertions(+), 90 deletions(-)
+They were mostly consolidated by the time of v5.13-rc1:
 
-diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
-index 2d98501c0897..a38f403a8811 100644
---- a/arch/arc/Kconfig
-+++ b/arch/arc/Kconfig
-@@ -27,6 +27,8 @@ config ARC
- 	select GENERIC_PENDING_IRQ if SMP
- 	select GENERIC_SCHED_CLOCK
- 	select GENERIC_SMP_IDLE_THREAD
-+	select GENERIC_STRNCPY_FROM_USER
-+	select GENERIC_STRNLEN_USER
- 	select HAVE_ARCH_KGDB
- 	select HAVE_ARCH_TRACEHOOK
- 	select HAVE_ARCH_TRANSPARENT_HUGEPAGE if ARC_MMU_V4
-diff --git a/arch/arc/include/asm/uaccess.h b/arch/arc/include/asm/uaccess.h
-index 3476348f361e..754a23f26736 100644
---- a/arch/arc/include/asm/uaccess.h
-+++ b/arch/arc/include/asm/uaccess.h
-@@ -655,96 +655,23 @@ static inline unsigned long __arc_clear_user(void __user *to, unsigned long n)
- 	return res;
- }
- 
--static inline long
--__arc_strncpy_from_user(char *dst, const char __user *src, long count)
--{
--	long res = 0;
--	char val;
--
--	if (!access_ok(src, 1))
--		return -EFAULT;
--
--	if (count == 0)
--		return 0;
--
--	__asm__ __volatile__(
--	"	mov	lp_count, %5		\n"
--	"	lp	3f			\n"
--	"1:	ldb.ab  %3, [%2, 1]		\n"
--	"	breq.d	%3, 0, 3f               \n"
--	"	stb.ab  %3, [%1, 1]		\n"
--	"	add	%0, %0, 1	# Num of NON NULL bytes copied	\n"
--	"3:								\n"
--	"	.section .fixup, \"ax\"		\n"
--	"	.align 4			\n"
--	"4:	mov %0, %4		# sets @res as -EFAULT	\n"
--	"	j   3b				\n"
--	"	.previous			\n"
--	"	.section __ex_table, \"a\"	\n"
--	"	.align 4			\n"
--	"	.word   1b, 4b			\n"
--	"	.previous			\n"
--	: "+r"(res), "+r"(dst), "+r"(src), "=r"(val)
--	: "g"(-EFAULT), "r"(count)
--	: "lp_count", "memory");
--
--	return res;
--}
--
--static inline long __arc_strnlen_user(const char __user *s, long n)
--{
--	long res, tmp1, cnt;
--	char val;
--
--	if (!access_ok(s, 1))
--		return 0;
--
--	__asm__ __volatile__(
--	"	mov %2, %1			\n"
--	"1:	ldb.ab  %3, [%0, 1]		\n"
--	"	breq.d  %3, 0, 2f		\n"
--	"	sub.f   %2, %2, 1		\n"
--	"	bnz 1b				\n"
--	"	sub %2, %2, 1			\n"
--	"2:	sub %0, %1, %2			\n"
--	"3:	;nop				\n"
--	"	.section .fixup, \"ax\"		\n"
--	"	.align 4			\n"
--	"4:	mov %0, 0			\n"
--	"	j   3b				\n"
--	"	.previous			\n"
--	"	.section __ex_table, \"a\"	\n"
--	"	.align 4			\n"
--	"	.word 1b, 4b			\n"
--	"	.previous			\n"
--	: "=r"(res), "=r"(tmp1), "=r"(cnt), "=r"(val)
--	: "0"(s), "1"(n)
--	: "memory");
--
--	return res;
--}
--
- #ifndef CONFIG_CC_OPTIMIZE_FOR_SIZE
- 
- #define INLINE_COPY_TO_USER
- #define INLINE_COPY_FROM_USER
- 
- #define __clear_user(d, n)		__arc_clear_user(d, n)
--#define strncpy_from_user(d, s, n)	__arc_strncpy_from_user(d, s, n)
--#define strnlen_user(s, n)		__arc_strnlen_user(s, n)
- #else
- extern unsigned long arc_clear_user_noinline(void __user *to,
- 		unsigned long n);
--extern long arc_strncpy_from_user_noinline (char *dst, const char __user *src,
--		long count);
--extern long arc_strnlen_user_noinline(const char __user *src, long n);
--
- #define __clear_user(d, n)		arc_clear_user_noinline(d, n)
--#define strncpy_from_user(d, s, n)	arc_strncpy_from_user_noinline(d, s, n)
--#define strnlen_user(s, n)		arc_strnlen_user_noinline(s, n)
--
- #endif
- 
-+extern long strncpy_from_user(char *dst, const char __user *src, long count);
-+#define strncpy_from_user(d, s, n)	strncpy_from_user(d, s, n)
-+extern long strnlen_user(const char __user *src, long n);
-+#define strnlen_user(s, n)		strnlen_user(s, n)
-+
- #include <asm/segment.h>
- #include <asm-generic/uaccess.h>
- 
-diff --git a/arch/arc/mm/extable.c b/arch/arc/mm/extable.c
-index b06b09ddf924..4e14c4244ea2 100644
---- a/arch/arc/mm/extable.c
-+++ b/arch/arc/mm/extable.c
-@@ -32,16 +32,4 @@ unsigned long arc_clear_user_noinline(void __user *to,
- }
- EXPORT_SYMBOL(arc_clear_user_noinline);
- 
--long arc_strncpy_from_user_noinline(char *dst, const char __user *src,
--		long count)
--{
--	return __arc_strncpy_from_user(dst, src, count);
--}
--EXPORT_SYMBOL(arc_strncpy_from_user_noinline);
--
--long arc_strnlen_user_noinline(const char __user *src, long n)
--{
--	return __arc_strnlen_user(src, n);
--}
--EXPORT_SYMBOL(arc_strnlen_user_noinline);
- #endif
+Now:
+
+  $ find  arch  -name syscalltbl.sh
+  arch/x86/entry/syscalls/syscalltbl.sh
+  $ find  arch  -name  syscallhdr.sh
+  arch/x86/entry/syscalls/syscallhdr.sh
+
+x86 is a remaining bit because x86 maintainers did not respond.
+
+This patch series makes a lot of cleanups.
+We can remove a lot of lines.
+The code diff is attractive.
+
+No code change since the previous submission.
+(Only 1/7 was applied, so dropped from the series)
+
+https://lore.kernel.org/lkml/20210301131533.64671-1-masahiroy@kernel.org/
+
+
+
+Masahiro Yamada (6):
+  x86/entry/x32: rename __x32_compat_sys_* to __x64_compat_sys_*
+  x86/syscalls: switch to generic syscalltbl.sh
+  x86/syscalls: stop filling syscall arrays with *_sys_ni_syscall
+  x86/unistd: define X32_NR_syscalls only for 64-bit kernel
+  x86/syscalls: use __NR_syscalls instead of __NR_syscall_max
+  x86/syscalls: switch to generic syscallhdr.sh
+
+ arch/um/kernel/skas/syscall.c          |  2 +-
+ arch/x86/entry/syscall_32.c            | 20 +++++------
+ arch/x86/entry/syscall_64.c            | 17 +++-------
+ arch/x86/entry/syscall_x32.c           | 35 ++++----------------
+ arch/x86/entry/syscalls/Makefile       | 36 +++++++++++---------
+ arch/x86/entry/syscalls/syscallhdr.sh  | 35 --------------------
+ arch/x86/entry/syscalls/syscalltbl.sh  | 46 --------------------------
+ arch/x86/include/asm/Kbuild            |  1 +
+ arch/x86/include/asm/syscall_wrapper.h | 10 +++---
+ arch/x86/include/asm/unistd.h          |  8 ++---
+ arch/x86/um/sys_call_table_32.c        | 14 +++-----
+ arch/x86/um/sys_call_table_64.c        | 15 ++-------
+ 12 files changed, 60 insertions(+), 179 deletions(-)
+ delete mode 100644 arch/x86/entry/syscalls/syscallhdr.sh
+ delete mode 100644 arch/x86/entry/syscalls/syscalltbl.sh
+
 -- 
-2.29.2
+2.27.0
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
