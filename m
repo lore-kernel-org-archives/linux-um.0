@@ -1,18 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out203-205-221-235.mail.qq.com ([203.205.221.235] helo=qq.com)
+Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lfNPZ-007Zx8-Sh
- for linux-um@lists.infradead.org; Sat, 08 May 2021 13:54:31 +0000
-Message-ID: <tencent_99073B61C8137C88B76C231139F94EFB3805@qq.com>
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.20.0.2.21\))
-Subject: Re: [PATCH v2] init/gcov: allow CONFIG_CONSTRUCTORS on UML to fix
- module gcov
-From: Lambert <lambertdev@qq.com>
-In-Reply-To: <ee3bc3bf-9582-d278-5b7a-d9fa27b17800@linux.ibm.com>
-Date: Sat, 8 May 2021 21:50:09 +0800
-References: <e386f13f8496330cd42e93c6d48a25b9a57a6792.camel@sipsolutions.net>
- <20210120172041.c246a2cac2fb.I1358f584b76f1898373adfed77f4462c8705b736@changeid>
- <ee3bc3bf-9582-d278-5b7a-d9fa27b17800@linux.ibm.com>
+ id 1liXq0-00DYGI-MK
+ for linux-um@lists.infradead.org; Mon, 17 May 2021 07:38:54 +0000
+From: Masahiro Yamada <masahiroy@kernel.org>
+Subject: [RESEND PATCH 5/6] x86/syscalls: use __NR_syscalls instead of
+ __NR_syscall_max
+Date: Mon, 17 May 2021 16:38:13 +0900
+Message-Id: <20210517073815.97426-6-masahiroy@kernel.org>
+In-Reply-To: <20210517073815.97426-1-masahiroy@kernel.org>
+References: <20210517073815.97426-1-masahiroy@kernel.org>
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -21,86 +19,95 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Peter Oberparleiter <oberpar@linux.ibm.com>, Johannes Berg <johannes@sipsolutions.net>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Jessica Yu <jeyu@kernel.org>, Johannes Berg <johannes.berg@intel.com>, linux-um@lists.infradead.org, "Lambert." <lambertdev@foxmail.com>
+To: x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
+Cc: Masahiro Yamada <masahiroy@kernel.org>, Andy Lutomirski <luto@kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "H. Peter Anvin" <hpa@zytor.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
 
-Cj4gT24gSmFuIDIxLCAyMDIxLCBhdCAxOjA0IEFNLCBQZXRlciBPYmVycGFybGVpdGVyIDxvYmVy
-cGFyQGxpbnV4LmlibS5jb20+IHdyb3RlOgo+IAo+IE9uIDIwLjAxLjIwMjEgMTc6MjAsIEpvaGFu
-bmVzIEJlcmcgd3JvdGU6Cj4+IEZyb206IEpvaGFubmVzIEJlcmcgPGpvaGFubmVzLmJlcmdAaW50
-ZWwuY29tPgo+PiAKPj4gT24gQVJDSD11bSwgbG9hZGluZyBhIG1vZHVsZSBkb2Vzbid0IHJlc3Vs
-dCBpbiBpdHMgY29uc3RydWN0b3JzCj4+IGdldHRpbmcgY2FsbGVkLCB3aGljaCBicmVha3MgbW9k
-dWxlIGdjb3Ygc2luY2UgdGhlIGRlYnVnZnMgZmlsZXMKPj4gYXJlIG5ldmVyIHJlZ2lzdGVyZWQu
-IE9uIHRoZSBvdGhlciBoYW5kLCBpbi1rZXJuZWwgY29uc3RydWN0b3JzCj4+IGhhdmUgYWxyZWFk
-eSBiZWVuIGNhbGxlZCBieSB0aGUgZHluYW1pYyBsaW5rZXIsIHNvIHdlIGNhbid0IGNhbGwKPj4g
-dGhlbSBhZ2Fpbi4KPj4gCj4+IEdldCBvdXQgb2YgdGhpcyBjb251bmRydW0gYnkgYWxsb3dpbmcg
-Q09ORklHX0NPTlNUUlVDVE9SUyB0byBiZQo+PiBzZWxlY3RlZCwgYnV0IGF2b2lkaW5nIHRoZSBp
-bi1rZXJuZWwgY29uc3RydWN0b3IgY2FsbHMuCj4+IAo+PiBBbHNvIHJlbW92ZSB0aGUgImlmICFV
-TUwiIGZyb20gR0NPViBzZWxlY3RpbmcgQ09OU1RSVUNUT1JTIG5vdywKPj4gc2luY2Ugd2UgcmVh
-bGx5IGRvIHdhbnQgQ09OU1RSVUNUT1JTLCBqdXN0IG5vdCBrZXJuZWwgYmluYXJ5Cj4+IG9uZXMu
-Cj4+IAo+PiBTaWduZWQtb2ZmLWJ5OiBKb2hhbm5lcyBCZXJnIDxqb2hhbm5lcy5iZXJnQGludGVs
-LmNvbT4KPiAKPiBMb29rcyBnb29kK25pY2VyIHRoYW4gdjEgdG8gbWUhCj4gCj4gSSBhbHNvIHRl
-c3RlZCB0aGlzIHBhdGNoIG9uIHMzOTAgYW5kIGNhbiBjb25maXJtIHRoYXQgaXQgZG9lc24ndCBi
-cmVhawo+IGdjb3Yta2VybmVsIHRoZXJlLgo+IAo+IFJldmlld2VkLWJ5OiBQZXRlciBPYmVycGFy
-bGVpdGVyIDxvYmVycGFyQGxpbnV4LmlibS5jb20+Cj4gCj4gQW5kcmV3LCBkbyB3ZSBuZWVkIGFk
-ZGl0aW9uYWwgcmV2aWV3cy9zaWduLW9mZnM/IENvdWxkIHRoaXMgZ28gaW4gdmlhCj4geW91ciB0
-cmVlPwo+IAo+PiAtLS0KPj4gVGVzdGVkIHdpdGggYSBrZXJuZWwgY29uZmlndXJlZCB3aXRoIENP
-TkZJR19HQ09WX0tFUk5FTCwgd2l0aG91dAo+PiB0aGUgcGF0Y2ggbm90aGluZyBldmVyIGFwcGVh
-cnMgaW4gL3N5cy9rZXJuZWwvZGVidWcvZ2Nvdi8gKGFwYXJ0Cj4+IGZyb20gdGhlIHJlc2V0IGZp
-bGUpLCBhbmQgd2l0aCBpdCB3ZSBnZXQgdGhlIGZpbGVzIGFuZCB0aGV5IHdvcmsuCj4gCj4gSnVz
-dCB0byBiZSBzdXJlOiBjb3VsZCB5b3UgY29uZmlybSB0aGF0IHRoaXMgdGVzdCBzdGF0ZW1lbnQg
-Zm9yIFVNTCBhbHNvCj4gYXBwbGllcyB0byB2MiwgaS5lLiB0aGF0IGl0IGZpeGVzIHRoZSBvcmln
-aW5hbCBwcm9ibGVtIHlvdSB3ZXJlIHNlZWluZz8KPiAKCkhpIEpvaGFubmVzIGFuZCBQZXRlciwg
-c29ycnkgdG8gYm90aGVyIGJ1dCBJIGhhdmUgb25lIHF1ZXN0aW9uIApvbiB0aGlzIGNoYW5nZS4g
-VGhlIGRvX2N0b3JzKCkgd29u4oCZdCBiZSBleGVjdXRlZCBmb3IgVU1MIApiZWNhdXNlICAqdGhl
-IGNvbnN0cnVjdG9ycyBoYXZlIGFscmVhZHkgYmVlbiBjYWxsZWQgZm9yIEVMRiouIAoKVGhlIGlu
-aXRfYXJyYXkgc2VjdGlvbiBmb3IgZWFjaCBDIGZpbGUgaXMgbGlua2VkIHRvICp2bWxpbnV4KiAg
-YmV0d2VlbiAKKl9fY3RvcnNfc3RhcnQqICBhbmQgICpfX2N0b3JzX2VuZCogc3ltYm9scy4gU2Vl
-IGxpbms6Cmh0dHBzOi8vZWxpeGlyLmJvb3RsaW4uY29tL2xpbnV4L3Y1LjEyLjIvc291cmNlL2lu
-Y2x1ZGUvYXNtLWdlbmVyaWMvdm1saW51eC5sZHMuaCNMNjc2CgpJbiBteSBlbnZpcm9ubWVudCwg
-VU1MK0dDQyAxMCwgSSBjYW4ndCBmaW5kIF9fZ2Nvdl9pbml0IGV4ZWN1dGVkIApiZWZvcmUga2Vy
-bmVsIHN0YXJ0cy4gU28gSSBkaWQgc29tZSB0cmFjZSBhbmQgZm91bmQgZ2xpYmMgX19saWJjX2Nz
-dV9pbml0IAp3aWxsIG9ubHkgZXhlY3V0ZSBjb25zdHJ1Y3RvcnMgYmV0d2VlbiAqX19pbml0X2Fy
-cmF5X3N0YXJ0KmFuZCAqX19pbml0X2FycmF5X2VuZCouICAKV2hpY2ggbWVhbnMgaWYgZG9fY3Rv
-cnMoKSBpcyBub3QgZXhlY3V0ZWQgZm9yIFVNTCwgbm8gZWxzZXdoZXJlIHdpbGwgCnRoZSBjb25z
-dHJ1Y3RvcnMgYmUgZXhlY3V0ZWQuCgpTaGFsbCB3ZSByZW1vdmUgdGhlICohZGVmaW5lZChDT05G
-SUdfVU1MKSogZm9yIEdDQywgb3IgSSBqdXN0IG1pc3NlZCAKc29tZSBzdGVwcyB0byBtYWtlIHRo
-ZSBHQ09WIHdvcmsgZm9yIFVNTD8gCgo+PiAKPj4gdjI6Cj4+ICogc3BlY2lhbC1jYXNlIFVNTCBp
-bnN0ZWFkIG9mIHNwbGl0dGluZyB0aGUgQ09OU1RSVUNUT1JTIGNvbmZpZwo+PiAtLS0KPj4gaW5p
-dC9LY29uZmlnICAgICAgICB8IDEgLQo+PiBpbml0L21haW4uYyAgICAgICAgIHwgOCArKysrKysr
-LQo+PiBrZXJuZWwvZ2Nvdi9LY29uZmlnIHwgMiArLQo+PiAzIGZpbGVzIGNoYW5nZWQsIDggaW5z
-ZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkKPj4gCj4+IGRpZmYgLS1naXQgYS9pbml0L0tjb25m
-aWcgYi9pbml0L0tjb25maWcKPj4gaW5kZXggYjc3YzYwZjhiOTYzLi4yOWFkNjgzMjUwMjggMTAw
-NjQ0Cj4+IC0tLSBhL2luaXQvS2NvbmZpZwo+PiArKysgYi9pbml0L0tjb25maWcKPj4gQEAgLTc2
-LDcgKzc2LDYgQEAgY29uZmlnIENDX0hBU19BU01fSU5MSU5FCj4+IAo+PiBjb25maWcgQ09OU1RS
-VUNUT1JTCj4+IAlib29sCj4+IC0JZGVwZW5kcyBvbiAhVU1MCj4+IAo+PiBjb25maWcgSVJRX1dP
-UksKPj4gCWJvb2wKPj4gZGlmZiAtLWdpdCBhL2luaXQvbWFpbi5jIGIvaW5pdC9tYWluLmMKPj4g
-aW5kZXggYzY4ZDc4NDM3NmNhLi5hNjI2ZTc4ZGJmMDYgMTAwNjQ0Cj4+IC0tLSBhL2luaXQvbWFp
-bi5jCj4+ICsrKyBiL2luaXQvbWFpbi5jCj4+IEBAIC0xMDY2LDcgKzEwNjYsMTMgQEAgYXNtbGlu
-a2FnZSBfX3Zpc2libGUgdm9pZCBfX2luaXQgX19ub19zYW5pdGl6ZV9hZGRyZXNzIHN0YXJ0X2tl
-cm5lbCh2b2lkKQo+PiAvKiBDYWxsIGFsbCBjb25zdHJ1Y3RvciBmdW5jdGlvbnMgbGlua2VkIGlu
-dG8gdGhlIGtlcm5lbC4gKi8KPj4gc3RhdGljIHZvaWQgX19pbml0IGRvX2N0b3JzKHZvaWQpCj4+
-IHsKPj4gLSNpZmRlZiBDT05GSUdfQ09OU1RSVUNUT1JTCj4+ICsvKgo+PiArICogRm9yIFVNTCwg
-dGhlIGNvbnN0cnVjdG9ycyBoYXZlIGFscmVhZHkgYmVlbiBjYWxsZWQgYnkgdGhlCj4+ICsgKiBu
-b3JtYWwgc2V0dXAgY29kZSBhcyBpdCdzIGp1c3QgYSBub3JtYWwgRUxGIGJpbmFyeSwgc28gd2UK
-Pj4gKyAqIGNhbm5vdCBkbyBpdCBhZ2FpbiAtIGJ1dCB3ZSBkbyBuZWVkIENPTkZJR19DT05TVFJV
-Q1RPUlMKPj4gKyAqIGV2ZW4gb24gVU1MIGZvciBtb2R1bGVzLgo+PiArICovCj4+ICsjaWYgZGVm
-aW5lZChDT05GSUdfQ09OU1RSVUNUT1JTKSAmJiAhZGVmaW5lZChDT05GSUdfVU1MKQo+PiAJY3Rv
-cl9mbl90ICpmbiA9IChjdG9yX2ZuX3QgKikgX19jdG9yc19zdGFydDsKPj4gCj4+IAlmb3IgKDsg
-Zm4gPCAoY3Rvcl9mbl90ICopIF9fY3RvcnNfZW5kOyBmbisrKQo+PiBkaWZmIC0tZ2l0IGEva2Vy
-bmVsL2djb3YvS2NvbmZpZyBiL2tlcm5lbC9nY292L0tjb25maWcKPj4gaW5kZXggMzExMGM3NzIz
-MGM3Li5mNjJkZTJkZWE4YTMgMTAwNjQ0Cj4+IC0tLSBhL2tlcm5lbC9nY292L0tjb25maWcKPj4g
-KysrIGIva2VybmVsL2djb3YvS2NvbmZpZwo+PiBAQCAtNCw3ICs0LDcgQEAgbWVudSAiR0NPVi1i
-YXNlZCBrZXJuZWwgcHJvZmlsaW5nIgo+PiBjb25maWcgR0NPVl9LRVJORUwKPj4gCWJvb2wgIkVu
-YWJsZSBnY292LWJhc2VkIGtlcm5lbCBwcm9maWxpbmciCj4+IAlkZXBlbmRzIG9uIERFQlVHX0ZT
-Cj4+IC0Jc2VsZWN0IENPTlNUUlVDVE9SUyBpZiAhVU1MCj4+ICsJc2VsZWN0IENPTlNUUlVDVE9S
-Uwo+PiAJZGVmYXVsdCBuCj4+IAloZWxwCj4+IAlUaGlzIG9wdGlvbiBlbmFibGVzIGdjb3YtYmFz
-ZWQgY29kZSBwcm9maWxpbmcgKGUuZy4gZm9yIGNvZGUgY292ZXJhZ2UKPj4gCj4gCj4gCj4gLS0g
-Cj4gUGV0ZXIgT2JlcnBhcmxlaXRlcgo+IExpbnV4IG9uIFogRGV2ZWxvcG1lbnQgLSBJQk0gR2Vy
-bWFueQo+IAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6
-Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
+__NR_syscall_max is only used by x86 and UML in the following two files:
+
+  - arch/um/kernel/skas/syscall.c
+  - arch/x86/include/asm/unistd.h
+
+In contrast, __NR_syscalls is widely used by all the architectures.
+
+Let's convert __NR_syscall_max to __NR_syscalls by adding one.
+
+This makes arch/x86/include/asm/unistd.h look cleaner, and also
+prepares x86 to switch to the generic scripts/syscallhdr.sh from
+arch/x86/entry/syscalls/syscallhdr.sh.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ arch/um/kernel/skas/syscall.c         | 2 +-
+ arch/x86/entry/syscalls/syscallhdr.sh | 2 +-
+ arch/x86/include/asm/unistd.h         | 8 ++++----
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/arch/um/kernel/skas/syscall.c b/arch/um/kernel/skas/syscall.c
+index 3d91f89fd852..9ee19e566da3 100644
+--- a/arch/um/kernel/skas/syscall.c
++++ b/arch/um/kernel/skas/syscall.c
+@@ -41,7 +41,7 @@ void handle_syscall(struct uml_pt_regs *r)
+ 		goto out;
+ 
+ 	syscall = UPT_SYSCALL_NR(r);
+-	if (syscall >= 0 && syscall <= __NR_syscall_max)
++	if (syscall >= 0 && syscall < __NR_syscalls)
+ 		PT_REGS_SET_SYSCALL_RETURN(regs,
+ 				EXECUTE_SYSCALL(syscall, regs));
+ 
+diff --git a/arch/x86/entry/syscalls/syscallhdr.sh b/arch/x86/entry/syscalls/syscallhdr.sh
+index cc1e63857427..75e66af06773 100644
+--- a/arch/x86/entry/syscalls/syscallhdr.sh
++++ b/arch/x86/entry/syscalls/syscallhdr.sh
+@@ -28,7 +28,7 @@ grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
+ 
+     echo ""
+     echo "#ifdef __KERNEL__"
+-    echo "#define __NR_${prefix}syscall_max $max"
++    echo "#define __NR_${prefix}syscalls $(($max + 1))"
+     echo "#endif"
+     echo ""
+     echo "#endif /* ${fileguard} */"
+diff --git a/arch/x86/include/asm/unistd.h b/arch/x86/include/asm/unistd.h
+index 1bc6020bc58d..80e9d5206a71 100644
+--- a/arch/x86/include/asm/unistd.h
++++ b/arch/x86/include/asm/unistd.h
+@@ -13,7 +13,7 @@
+ #  define __ARCH_WANT_SYS_OLD_MMAP
+ #  define __ARCH_WANT_SYS_OLD_SELECT
+ 
+-#  define __NR_ia32_syscall_max __NR_syscall_max
++#  define IA32_NR_syscalls (__NR_syscalls)
+ 
+ # else
+ 
+@@ -26,12 +26,12 @@
+ #  define __ARCH_WANT_COMPAT_SYS_PWRITEV64
+ #  define __ARCH_WANT_COMPAT_SYS_PREADV64V2
+ #  define __ARCH_WANT_COMPAT_SYS_PWRITEV64V2
+-#  define X32_NR_syscalls (__NR_x32_syscall_max + 1)
++#  define X32_NR_syscalls (__NR_x32_syscalls)
++#  define IA32_NR_syscalls (__NR_ia32_syscalls)
+ 
+ # endif
+ 
+-# define NR_syscalls (__NR_syscall_max + 1)
+-# define IA32_NR_syscalls (__NR_ia32_syscall_max + 1)
++# define NR_syscalls (__NR_syscalls)
+ 
+ # define __ARCH_WANT_NEW_STAT
+ # define __ARCH_WANT_OLD_READDIR
+-- 
+2.27.0
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
