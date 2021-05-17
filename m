@@ -1,12 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from szxga06-in.huawei.com ([45.249.212.32])
+Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lfDYR-007LIA-9E
- for linux-um@lists.infradead.org; Sat, 08 May 2021 03:23:00 +0000
-From: Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 1/1] um: fix error return code in winch_tramp()
-Date: Sat, 8 May 2021 11:22:39 +0800
-Message-ID: <20210508032239.2177-1-thunder.leizhen@huawei.com>
+ id 1liXpq-00DYF1-Ks
+ for linux-um@lists.infradead.org; Mon, 17 May 2021 07:38:44 +0000
+From: Masahiro Yamada <masahiroy@kernel.org>
+Subject: [RESEND PATCH 3/6] x86/syscalls: stop filling syscall arrays with
+ *_sys_ni_syscall
+Date: Mon, 17 May 2021 16:38:11 +0900
+Message-Id: <20210517073815.97426-4-masahiroy@kernel.org>
+In-Reply-To: <20210517073815.97426-1-masahiroy@kernel.org>
+References: <20210517073815.97426-1-masahiroy@kernel.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -20,36 +23,167 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Andrew Morton <akpm@linux-foundation.org>, Eduard-Gabriel Munteanu <maxdamage@aladin.ro>, linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
-Cc: Zhen Lei <thunder.leizhen@huawei.com>
+To: x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
+Cc: Masahiro Yamada <masahiroy@kernel.org>, Andy Lutomirski <luto@kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "H. Peter Anvin" <hpa@zytor.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
 
-Fix to return a negative error code from the error handling case instead
-of 0, as done elsewhere in this function.
+This is a follow-up cleanup after switching to the generic
+syscalltbl.sh.
 
-Fixes: 89df6bfc0405 ("uml: DEBUG_SHIRQ fixes")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+The old arch/x86/entry/syscalls/syscalltbl.sh skipped non-existing
+syscalls. So, the generated syscalls_64.h, for example, had a big
+hole in the syscall numbers 335-423 range. That is why there exists
+[0 ... __NR_*_syscall_max] = &__*_sys_ni_cyscall.
+
+The new script, scripts/syscalltbl.sh automatically fills holes
+with __SYSCALL(<nr>, sys_ni_syscall), hence such ugly code can
+go away. The designated initializers, '[nr] =' are also unneeded.
+
+Also, there is no need to give __NR_*_syscall_max+1 because the array
+size is implied by the number of syscalls in the generated headers.
+Hence, there is no need to include <asm/unistd.h>, either.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
- arch/um/drivers/chan_user.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/um/drivers/chan_user.c b/arch/um/drivers/chan_user.c
-index d8845d4aac6a..6040817c036f 100644
---- a/arch/um/drivers/chan_user.c
-+++ b/arch/um/drivers/chan_user.c
-@@ -256,7 +256,8 @@ static int winch_tramp(int fd, struct tty_port *port, int *fd_out,
- 		goto out_close;
- 	}
+ arch/x86/entry/syscall_32.c     | 10 ++--------
+ arch/x86/entry/syscall_64.c     | 10 ++--------
+ arch/x86/entry/syscall_x32.c    | 10 ++--------
+ arch/x86/um/sys_call_table_32.c |  6 ------
+ arch/x86/um/sys_call_table_64.c |  6 ------
+ 5 files changed, 6 insertions(+), 36 deletions(-)
+
+diff --git a/arch/x86/entry/syscall_32.c b/arch/x86/entry/syscall_32.c
+index 70bf46e73b1c..8cfc9bc73e7f 100644
+--- a/arch/x86/entry/syscall_32.c
++++ b/arch/x86/entry/syscall_32.c
+@@ -5,7 +5,6 @@
+ #include <linux/sys.h>
+ #include <linux/cache.h>
+ #include <linux/syscalls.h>
+-#include <asm/unistd.h>
+ #include <asm/syscall.h>
  
--	if (os_set_fd_block(*fd_out, 0)) {
-+	err = os_set_fd_block(*fd_out, 0);
-+	if (err) {
- 		printk(UM_KERN_ERR "winch_tramp: failed to set thread_fd "
- 		       "non-blocking.\n");
- 		goto out_close;
+ #ifdef CONFIG_IA32_EMULATION
+@@ -19,13 +18,8 @@
+ #include <asm/syscalls_32.h>
+ #undef __SYSCALL
+ 
+-#define __SYSCALL(nr, sym) [nr] = __ia32_##sym,
++#define __SYSCALL(nr, sym) __ia32_##sym,
+ 
+-__visible const sys_call_ptr_t ia32_sys_call_table[__NR_ia32_syscall_max+1] = {
+-	/*
+-	 * Smells like a compiler bug -- it doesn't work
+-	 * when the & below is removed.
+-	 */
+-	[0 ... __NR_ia32_syscall_max] = &__ia32_sys_ni_syscall,
++__visible const sys_call_ptr_t ia32_sys_call_table[] = {
+ #include <asm/syscalls_32.h>
+ };
+diff --git a/arch/x86/entry/syscall_64.c b/arch/x86/entry/syscall_64.c
+index 82670bb10931..be120eec1fc9 100644
+--- a/arch/x86/entry/syscall_64.c
++++ b/arch/x86/entry/syscall_64.c
+@@ -5,20 +5,14 @@
+ #include <linux/sys.h>
+ #include <linux/cache.h>
+ #include <linux/syscalls.h>
+-#include <asm/unistd.h>
+ #include <asm/syscall.h>
+ 
+ #define __SYSCALL(nr, sym) extern long __x64_##sym(const struct pt_regs *);
+ #include <asm/syscalls_64.h>
+ #undef __SYSCALL
+ 
+-#define __SYSCALL(nr, sym) [nr] = __x64_##sym,
++#define __SYSCALL(nr, sym) __x64_##sym,
+ 
+-asmlinkage const sys_call_ptr_t sys_call_table[__NR_syscall_max+1] = {
+-	/*
+-	 * Smells like a compiler bug -- it doesn't work
+-	 * when the & below is removed.
+-	 */
+-	[0 ... __NR_syscall_max] = &__x64_sys_ni_syscall,
++asmlinkage const sys_call_ptr_t sys_call_table[] = {
+ #include <asm/syscalls_64.h>
+ };
+diff --git a/arch/x86/entry/syscall_x32.c b/arch/x86/entry/syscall_x32.c
+index 6d2ef887d7b6..bdd0e03a1265 100644
+--- a/arch/x86/entry/syscall_x32.c
++++ b/arch/x86/entry/syscall_x32.c
+@@ -5,20 +5,14 @@
+ #include <linux/sys.h>
+ #include <linux/cache.h>
+ #include <linux/syscalls.h>
+-#include <asm/unistd.h>
+ #include <asm/syscall.h>
+ 
+ #define __SYSCALL(nr, sym) extern long __x64_##sym(const struct pt_regs *);
+ #include <asm/syscalls_x32.h>
+ #undef __SYSCALL
+ 
+-#define __SYSCALL(nr, sym) [nr] = __x64_##sym,
++#define __SYSCALL(nr, sym) __x64_##sym,
+ 
+-asmlinkage const sys_call_ptr_t x32_sys_call_table[__NR_x32_syscall_max+1] = {
+-	/*
+-	 * Smells like a compiler bug -- it doesn't work
+-	 * when the & below is removed.
+-	 */
+-	[0 ... __NR_x32_syscall_max] = &__x64_sys_ni_syscall,
++asmlinkage const sys_call_ptr_t x32_sys_call_table[] = {
+ #include <asm/syscalls_x32.h>
+ };
+diff --git a/arch/x86/um/sys_call_table_32.c b/arch/x86/um/sys_call_table_32.c
+index e83619c365dc..f8323104e353 100644
+--- a/arch/x86/um/sys_call_table_32.c
++++ b/arch/x86/um/sys_call_table_32.c
+@@ -7,7 +7,6 @@
+ #include <linux/linkage.h>
+ #include <linux/sys.h>
+ #include <linux/cache.h>
+-#include <asm/unistd.h>
+ #include <asm/syscall.h>
+ 
+ #define __NO_STUBS
+@@ -37,11 +36,6 @@
+ extern asmlinkage long sys_ni_syscall(unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long);
+ 
+ const sys_call_ptr_t sys_call_table[] ____cacheline_aligned = {
+-	/*
+-	 * Smells like a compiler bug -- it doesn't work
+-	 * when the & below is removed.
+-	 */
+-	[0 ... __NR_syscall_max] = &sys_ni_syscall,
+ #include <asm/syscalls_32.h>
+ };
+ 
+diff --git a/arch/x86/um/sys_call_table_64.c b/arch/x86/um/sys_call_table_64.c
+index 6fb75af7cf54..5ed665dc785f 100644
+--- a/arch/x86/um/sys_call_table_64.c
++++ b/arch/x86/um/sys_call_table_64.c
+@@ -7,7 +7,6 @@
+ #include <linux/linkage.h>
+ #include <linux/sys.h>
+ #include <linux/cache.h>
+-#include <asm/unistd.h>
+ #include <asm/syscall.h>
+ 
+ #define __NO_STUBS
+@@ -45,11 +44,6 @@
+ extern asmlinkage long sys_ni_syscall(unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long);
+ 
+ const sys_call_ptr_t sys_call_table[] ____cacheline_aligned = {
+-	/*
+-	 * Smells like a compiler bug -- it doesn't work
+-	 * when the & below is removed.
+-	 */
+-	[0 ... __NR_syscall_max] = &sys_ni_syscall,
+ #include <asm/syscalls_64.h>
+ };
+ 
 -- 
-2.25.1
-
+2.27.0
 
 
 _______________________________________________
