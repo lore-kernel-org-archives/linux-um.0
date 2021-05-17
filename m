@@ -1,114 +1,38 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from conuserg-09.nifty.com ([210.131.2.76])
- by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1liXpq-00DYF2-Ks
- for linux-um@lists.infradead.org; Mon, 17 May 2021 07:38:44 +0000
-From: Masahiro Yamada <masahiroy@kernel.org>
-Subject: [RESEND PATCH 0/6] x86: switch to generic syscall{tbl,
- hdr}.sh with various syscall code cleanups
-Date: Mon, 17 May 2021 16:38:08 +0900
-Message-Id: <20210517073815.97426-1-masahiroy@kernel.org>
+Return-Path: <arnd@kernel.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-Cc: Masahiro Yamada <masahiroy@kernel.org>, Andy Lutomirski <luto@kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "H. Peter Anvin" <hpa@zytor.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
+References: <20210515101803.924427-1-arnd@kernel.org> <20210515101803.924427-4-arnd@kernel.org>
+ <20210517061635.GA23581@lst.de>
+In-Reply-To: <20210517061635.GA23581@lst.de>
+From: Arnd Bergmann <arnd@kernel.org>
+Date: Mon, 17 May 2021 08:46:02 +0200
+Message-ID: <CAK8P3a30+Y=9GGjP5ec-h6w9ZLqgzm_4YWpmwRimUjv8NdcuFA@mail.gmail.com>
+Subject: Re: [PATCH 3/6] [v2] hexagon: use generic strncpy/strnlen from_user
+Content-Type: text/plain; charset="UTF-8"
+To: Christoph Hellwig <hch@lst.de>
+Cc: linux-arch <linux-arch@vger.kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Brian Cain <bcain@codeaurora.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Sid Manning <sidneym@codeaurora.org>, Andrew Morton <akpm@linux-foundation.org>, Mike Rapoport <rppt@kernel.org>, "open list:SYNOPSYS ARC ARCHITECTURE" <linux-snps-arc@lists.infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "moderated list:H8/300 ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>, "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, linux-riscv <linux-riscv@lists.infradead.org>, linux-um <linux-um@lists.infradead.org>
+List-ID: <linux-um.lists.infradead.org>
 
+On Mon, May 17, 2021 at 8:16 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Sat, May 15, 2021 at 12:18:00PM +0200, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > Most per-architecture versions of these functions are broken in some form,
+> > and they are almost certainly slower than the generic code as well.
+> >
+> > Remove the ones for hexagon and instead use the generic version.
+> > This custom version reads the data twice for strncpy() by doing an extra
+> > strnlen(), and it apparently lacks a check for user_addr_max().
+>
+> I'd be tempted to just remove the first paragraph and reword the second
+> as:
+>
+> Remove the hexagon implementation of strncpy/strnlen and instead use the
+> generic versions.  The hexago version of strncpy reads the data twice by
+> doing an extra strnlen(), and it apparently lacks a check for
+> user_addr_max().
 
-Previously, many architectures duplicated similar scripts to
-generate syscall headers.
+Changed to your version now, thanks!
 
-For v5.11:
-
-  $ find  arch  -name syscalltbl.sh
-  arch/parisc/kernel/syscalls/syscalltbl.sh
-  arch/alpha/kernel/syscalls/syscalltbl.sh
-  arch/microblaze/kernel/syscalls/syscalltbl.sh
-  arch/powerpc/kernel/syscalls/syscalltbl.sh
-  arch/arm/tools/syscalltbl.sh
-  arch/sparc/kernel/syscalls/syscalltbl.sh
-  arch/sh/kernel/syscalls/syscalltbl.sh
-  arch/xtensa/kernel/syscalls/syscalltbl.sh
-  arch/ia64/kernel/syscalls/syscalltbl.sh
-  arch/x86/entry/syscalls/syscalltbl.sh
-  arch/mips/kernel/syscalls/syscalltbl.sh
-  arch/m68k/kernel/syscalls/syscalltbl.sh
-  $ find  arch  -name  syscallhdr.sh
-  arch/parisc/kernel/syscalls/syscallhdr.sh
-  arch/alpha/kernel/syscalls/syscallhdr.sh
-  arch/microblaze/kernel/syscalls/syscallhdr.sh
-  arch/powerpc/kernel/syscalls/syscallhdr.sh
-  arch/arm/tools/syscallhdr.sh
-  arch/sparc/kernel/syscalls/syscallhdr.sh
-  arch/sh/kernel/syscalls/syscallhdr.sh
-  arch/xtensa/kernel/syscalls/syscallhdr.sh
-  arch/ia64/kernel/syscalls/syscallhdr.sh
-  arch/x86/entry/syscalls/syscallhdr.sh
-  arch/mips/kernel/syscalls/syscallhdr.sh
-  arch/m68k/kernel/syscalls/syscallhdr.sh
-
-They were mostly consolidated by the time of v5.13-rc1:
-
-Now:
-
-  $ find  arch  -name syscalltbl.sh
-  arch/x86/entry/syscalls/syscalltbl.sh
-  $ find  arch  -name  syscallhdr.sh
-  arch/x86/entry/syscalls/syscallhdr.sh
-
-x86 is a remaining bit because x86 maintainers did not respond.
-
-This patch series makes a lot of cleanups.
-We can remove a lot of lines.
-The code diff is attractive.
-
-No code change since the previous submission.
-(Only 1/7 was applied, so dropped from the series)
-
-https://lore.kernel.org/lkml/20210301131533.64671-1-masahiroy@kernel.org/
-
-
-
-Masahiro Yamada (6):
-  x86/entry/x32: rename __x32_compat_sys_* to __x64_compat_sys_*
-  x86/syscalls: switch to generic syscalltbl.sh
-  x86/syscalls: stop filling syscall arrays with *_sys_ni_syscall
-  x86/unistd: define X32_NR_syscalls only for 64-bit kernel
-  x86/syscalls: use __NR_syscalls instead of __NR_syscall_max
-  x86/syscalls: switch to generic syscallhdr.sh
-
- arch/um/kernel/skas/syscall.c          |  2 +-
- arch/x86/entry/syscall_32.c            | 20 +++++------
- arch/x86/entry/syscall_64.c            | 17 +++-------
- arch/x86/entry/syscall_x32.c           | 35 ++++----------------
- arch/x86/entry/syscalls/Makefile       | 36 +++++++++++---------
- arch/x86/entry/syscalls/syscallhdr.sh  | 35 --------------------
- arch/x86/entry/syscalls/syscalltbl.sh  | 46 --------------------------
- arch/x86/include/asm/Kbuild            |  1 +
- arch/x86/include/asm/syscall_wrapper.h | 10 +++---
- arch/x86/include/asm/unistd.h          |  8 ++---
- arch/x86/um/sys_call_table_32.c        | 14 +++-----
- arch/x86/um/sys_call_table_64.c        | 15 ++-------
- 12 files changed, 60 insertions(+), 179 deletions(-)
- delete mode 100644 arch/x86/entry/syscalls/syscallhdr.sh
- delete mode 100644 arch/x86/entry/syscalls/syscalltbl.sh
-
--- 
-2.27.0
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+        Arnd
 
