@@ -1,15 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from mail-pj1-x1032.google.com ([2607:f8b0:4864:20::1032])
  by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lgtBj-00Afoz-N6
- for linux-um@lists.infradead.org; Wed, 12 May 2021 18:02:29 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.11 13/35] um: Disable CONFIG_GCOV with MODULES
-Date: Wed, 12 May 2021 14:01:43 -0400
-Message-Id: <20210512180206.664536-13-sashal@kernel.org>
-In-Reply-To: <20210512180206.664536-1-sashal@kernel.org>
-References: <20210512180206.664536-1-sashal@kernel.org>
+ id 1lj73e-00EyJs-R6
+ for linux-um@lists.infradead.org; Tue, 18 May 2021 21:15:20 +0000
+Received: by mail-pj1-x1032.google.com with SMTP id
+ n6-20020a17090ac686b029015d2f7aeea8so2310694pjt.1
+ for <linux-um@lists.infradead.org>; Tue, 18 May 2021 14:15:17 -0700 (PDT)
 MIME-Version: 1.0
+References: <20210518035825.1885357-1-davidgow@google.com>
+In-Reply-To: <20210518035825.1885357-1-davidgow@google.com>
+From: Brendan Higgins <brendanhiggins@google.com>
+Date: Tue, 18 May 2021 14:15:05 -0700
+Message-ID: <CAFd5g47kTYkUudpOTFW6k24yJWzgBQ63-ycksOYhqkhAW2P8kQ@mail.gmail.com>
+Subject: Re: [PATCH] kunit: arch/um/configs: Enable KUNIT_ALL_TESTS by default
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,80 +25,55 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Johannes Berg <johannes.berg@intel.com>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, linux-um@lists.infradead.org
+To: David Gow <davidgow@google.com>
+Cc: Shuah Khan <shuah@kernel.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, KUnit Development <kunit-dev@googlegroups.com>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 
-From: Johannes Berg <johannes.berg@intel.com>
+On Mon, May 17, 2021 at 8:58 PM David Gow <davidgow@google.com> wrote:
+>
+> Make the default .kunitconfig (specified in
+> arch/um/configs/kunit_defconfig) specify CONFIG_KUNIT_ALL_TESTS by
+> default. KUNIT_ALL_TESTS runs all tests which have satisfied
+> dependencies in the current .config (which would be the architecture
+> defconfig).
+>
+> Currently, the default .kunitconfig enables only the example tests and
+> KUnit's own tests. While this does provide a good example of what a
+> .kunitconfig for running a few individual tests should look like, it
+> does mean that kunit_tool runs a pretty paltry collection of tests by
+> default.
+>
+> A default run of ./tools/testing/kunit/kunit.py run now runs 70 tests
+> instead of 14.
+>
+> Signed-off-by: David Gow <davidgow@google.com>
 
-[ Upstream commit ad3d19911632debc886ef4a992d41d6de7927006 ]
+I am totally on board with what you want to do here, but I have one
+minor issue below.
 
-CONFIG_GCOV doesn't work with modules, and for various reasons
-it cannot work, see also
-https://lore.kernel.org/r/d36ea54d8c0a8dd706826ba844a6f27691f45d55.camel@sipsolutions.net
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
 
-Make CONFIG_GCOV depend on !MODULES to avoid anyone
-running into issues there. This also means we need
-not export the gcov symbols.
+> ---
+>  arch/um/configs/kunit_defconfig | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/arch/um/configs/kunit_defconfig b/arch/um/configs/kunit_defconfig
+> index 9235b7d42d38..becf3432a375 100644
+> --- a/arch/um/configs/kunit_defconfig
+> +++ b/arch/um/configs/kunit_defconfig
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/um/Kconfig.debug      |  1 +
- arch/um/kernel/Makefile    |  1 -
- arch/um/kernel/gmon_syms.c | 16 ----------------
- 3 files changed, 1 insertion(+), 17 deletions(-)
- delete mode 100644 arch/um/kernel/gmon_syms.c
+Could we also apply this to
+tools/testing/kunit/configs/all_tests.config ? The contents of the
+file are identical, and I think are supposed to be for the same
+purpose.
 
-diff --git a/arch/um/Kconfig.debug b/arch/um/Kconfig.debug
-index 315d368e63ad..1dfb2959c73b 100644
---- a/arch/um/Kconfig.debug
-+++ b/arch/um/Kconfig.debug
-@@ -17,6 +17,7 @@ config GCOV
- 	bool "Enable gcov support"
- 	depends on DEBUG_INFO
- 	depends on !KCOV
-+	depends on !MODULES
- 	help
- 	  This option allows developers to retrieve coverage data from a UML
- 	  session.
-diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
-index 5aa882011e04..e698e0c7dbdc 100644
---- a/arch/um/kernel/Makefile
-+++ b/arch/um/kernel/Makefile
-@@ -21,7 +21,6 @@ obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
- 
- obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
- obj-$(CONFIG_GPROF)	+= gprof_syms.o
--obj-$(CONFIG_GCOV)	+= gmon_syms.o
- obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
- obj-$(CONFIG_STACKTRACE) += stacktrace.o
- 
-diff --git a/arch/um/kernel/gmon_syms.c b/arch/um/kernel/gmon_syms.c
-deleted file mode 100644
-index 9361a8eb9bf1..000000000000
---- a/arch/um/kernel/gmon_syms.c
-+++ /dev/null
-@@ -1,16 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-- */
--
--#include <linux/module.h>
--
--extern void __bb_init_func(void *)  __attribute__((weak));
--EXPORT_SYMBOL(__bb_init_func);
--
--extern void __gcov_init(void *)  __attribute__((weak));
--EXPORT_SYMBOL(__gcov_init);
--extern void __gcov_merge_add(void *, unsigned int)  __attribute__((weak));
--EXPORT_SYMBOL(__gcov_merge_add);
--extern void __gcov_exit(void)  __attribute__((weak));
--EXPORT_SYMBOL(__gcov_exit);
--- 
-2.30.2
-
+> @@ -1,3 +1,2 @@
+>  CONFIG_KUNIT=y
+> -CONFIG_KUNIT_TEST=y
+> -CONFIG_KUNIT_EXAMPLE_TEST=y
+> +CONFIG_KUNIT_ALL_TESTS=y
+> --
+> 2.31.1.751.gd2f1c929bd-goog
+>
 
 _______________________________________________
 linux-um mailing list
