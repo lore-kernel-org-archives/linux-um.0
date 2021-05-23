@@ -3,12 +3,11 @@ Subject: Re: [PATCH] LOCKDEP: use depends on LOCKDEP_SUPPORT instead of $ARCH
  list
 References: <20210517034430.9569-1-rdunlap@infradead.org>
  <YKIXBpxyvhzdb1uv@gmail.com>
- <1284b997-b9da-769f-2d36-4d4232c7df88@redhat.com>
 From: Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <f073a95b-5cf5-d379-4cf4-213bdf8a28e7@infradead.org>
-Date: Sat, 22 May 2021 20:12:18 -0700
+Message-ID: <71d07ade-af7a-8f7e-90d8-f4431943c7f1@infradead.org>
+Date: Sat, 22 May 2021 20:09:54 -0700
 MIME-Version: 1.0
-In-Reply-To: <1284b997-b9da-769f-2d36-4d4232c7df88@redhat.com>
+In-Reply-To: <YKIXBpxyvhzdb1uv@gmail.com>
 Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -18,64 +17,73 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Waiman Long <llong@redhat.com>, Ingo Molnar <mingo@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>, Boqun Feng <boqun.feng@gmail.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Johannes Berg <johannes@sipsolutions.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
+To: Ingo Molnar <mingo@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Johannes Berg <johannes@sipsolutions.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
 
-T24gNS8xNy8yMSA3OjAyIEFNLCBXYWltYW4gTG9uZyB3cm90ZToKPiBPbiA1LzE3LzIxIDM6MTEg
-QU0sIEluZ28gTW9sbmFyIHdyb3RlOgo+PiAqIFJhbmR5IER1bmxhcCA8cmR1bmxhcEBpbmZyYWRl
-YWQub3JnPiB3cm90ZToKPj4KPj4+IEJvdGggYXJjaC91bS8gYW5kIGFyY2gveHRlbnNhLyBjYXVz
-ZSBhIEtjb25maWcgd2FybmluZyBmb3IgTE9DS0RFUC4KPj4+IFRoZXNlIGFyY2gtZXMgc2VsZWN0
-IExPQ0tERVBfU1VQUE9SVCBidXQgdGhleSBhcmUgbm90IGxpc3RlZCBhcyBvbmUKPj4+IG9mIHRo
-ZSBhcmNoLWVzIHRoYXQgTE9DS0RFUCBkZXBlbmRzIG9uLgo+Pj4KPj4+IFNpbmNlICgxNikgYXJj
-aC1lcyBkZWZpbmUgdGhlIEtjb25maWcgc3ltYm9sIExPQ0tERVBfU1VQUE9SVCBpZiB0aGV5Cj4+
-PiBpbnRlbmQgdG8gaGF2ZSBMT0NLREVQIHN1cHBvcnQsIHJlcGxhY2UgdGhlIGF3a3dhcmQgbGlz
-dCBvZgo+Pj4gYXJjaC1lcyB0aGF0IExPQ0tERVAgZGVwZW5kcyBvbiB3aXRoIHRoZSBMT0NLREVQ
-X1NVUFBPUlQgc3ltYm9sLgo+Pj4KPj4+IEZpeGVzIHRoaXMga2NvbmZpZyB3YXJuaW5nOiAoZm9y
-IGJvdGggdW0gYW5kIHh0ZW5zYSkKPj4+Cj4+PiBXQVJOSU5HOiB1bm1ldCBkaXJlY3QgZGVwZW5k
-ZW5jaWVzIGRldGVjdGVkIGZvciBMT0NLREVQCj4+PiDCoMKgIERlcGVuZHMgb24gW25dOiBERUJV
-R19LRVJORUwgWz15XSAmJiBMT0NLX0RFQlVHR0lOR19TVVBQT1JUIFs9eV0gJiYgKEZSQU1FX1BP
-SU5URVIgWz1uXSB8fCBNSVBTIHx8IFBQQyB8fCBTMzkwIHx8IE1JQ1JPQkxBWkUgfHwgQVJNIHx8
-IEFSQyB8fCBYODYpCj4+PiDCoMKgIFNlbGVjdGVkIGJ5IFt5XToKPj4+IMKgwqAgLSBQUk9WRV9M
-T0NLSU5HIFs9eV0gJiYgREVCVUdfS0VSTkVMIFs9eV0gJiYgTE9DS19ERUJVR0dJTkdfU1VQUE9S
-VCBbPXldCj4+PiDCoMKgIC0gTE9DS19TVEFUIFs9eV0gJiYgREVCVUdfS0VSTkVMIFs9eV0gJiYg
-TE9DS19ERUJVR0dJTkdfU1VQUE9SVCBbPXldCj4+PiDCoMKgIC0gREVCVUdfTE9DS19BTExPQyBb
-PXldICYmIERFQlVHX0tFUk5FTCBbPXldICYmIExPQ0tfREVCVUdHSU5HX1NVUFBPUlQgWz15XQo+
-Pj4KPj4+IFNpZ25lZC1vZmYtYnk6IFJhbmR5IER1bmxhcCA8cmR1bmxhcEBpbmZyYWRlYWQub3Jn
-Pgo+Pj4gQ2M6IFBldGVyIFppamxzdHJhIDxwZXRlcnpAaW5mcmFkZWFkLm9yZz4KPj4+IENjOiBJ
-bmdvIE1vbG5hciA8bWluZ29AcmVkaGF0LmNvbT4KPj4+IENjOiBXaWxsIERlYWNvbiA8d2lsbEBr
-ZXJuZWwub3JnPgo+Pj4gQ2M6IFdhaW1hbiBMb25nIDxsb25nbWFuQHJlZGhhdC5jb20+Cj4+PiBD
-YzogQm9xdW4gRmVuZyA8Ym9xdW4uZmVuZ0BnbWFpbC5jb20+Cj4+PiBDYzogQ2hyaXMgWmFua2Vs
-IDxjaHJpc0B6YW5rZWwubmV0Pgo+Pj4gQ2M6IE1heCBGaWxpcHBvdiA8amNtdmJrYmNAZ21haWwu
-Y29tPgo+Pj4gQ2M6IGxpbnV4LXh0ZW5zYUBsaW51eC14dGVuc2Eub3JnCj4+PiBDYzogSm9oYW5u
-ZXMgQmVyZyA8am9oYW5uZXNAc2lwc29sdXRpb25zLm5ldD4KPj4+IENjOiBKZWZmIERpa2UgPGpk
-aWtlQGFkZHRvaXQuY29tPgo+Pj4gQ2M6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2Qu
-YXQ+Cj4+PiBDYzogQW50b24gSXZhbm92IDxhbnRvbi5pdmFub3ZAY2FtYnJpZGdlZ3JleXMuY29t
-Pgo+Pj4gQ2M6IGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKPj4+IC0tLQo+Pj4gwqAgbGli
-L0tjb25maWcuZGVidWcgfMKgwqDCoCAyICstCj4+PiDCoCAxIGZpbGUgY2hhbmdlZCwgMSBpbnNl
-cnRpb24oKyksIDEgZGVsZXRpb24oLSkKPj4+Cj4+PiAtLS0gbGludXgtbmV4dC0yMDIxMDUxNC5v
-cmlnL2xpYi9LY29uZmlnLmRlYnVnCj4+PiArKysgbGludXgtbmV4dC0yMDIxMDUxNC9saWIvS2Nv
-bmZpZy5kZWJ1Zwo+Pj4gQEAgLTEzODMsNyArMTM4Myw3IEBAIGNvbmZpZyBMT0NLREVQCj4+PiDC
-oMKgwqDCoMKgIGJvb2wKPj4+IMKgwqDCoMKgwqAgZGVwZW5kcyBvbiBERUJVR19LRVJORUwgJiYg
-TE9DS19ERUJVR0dJTkdfU1VQUE9SVAo+Pj4gwqDCoMKgwqDCoCBzZWxlY3QgU1RBQ0tUUkFDRQo+
-Pj4gLcKgwqDCoCBkZXBlbmRzIG9uIEZSQU1FX1BPSU5URVIgfHwgTUlQUyB8fCBQUEMgfHwgUzM5
-MCB8fCBNSUNST0JMQVpFIHx8IEFSTSB8fCBBUkMgfHwgWDg2Cj4+PiArwqDCoMKgIGRlcGVuZHMg
-b24gRlJBTUVfUE9JTlRFUiB8fCBMT0NLREVQX1NVUFBPUlQKPj4gT2sgLSB0aGUgRlJBTUVfUE9J
-TlRFUiBiaXQgaXMgd2VpcmQuIEFyZSB0aGVyZSBhbnkgYXJjaGl0ZWN0dXJlcyB0aGF0IGhhdmUK
-Pj4gRlJBTUVfUE9JTlRFUiBkZWZpbmVkIGJ1dCBubyBMT0NLREVQX1NVUFBPUlQ/Cj4gCj4gTE9D
-S19ERUJVR0dJTkdfU1VQUE9SVCBkZXBlbmRzIG9uIExPQ0tERVBfU1VQUE9SVC4gU28gdGhpcyBw
-YXRjaCBpcyBlcXVpdmFsZW50IHRvIGp1c3QgZGVsZXRlIHRoZSBzZWNvbmQgZGVwZW5kcy1vbiBs
-aW5lLiBCZXNpZGUgTE9DS0RFUCwgTEFURU5DWVRPUCBhbHNvIGhhdmUgZXhhY3RseSB0aGUgc2Ft
-ZSBkZXBlbmRzLW9uIGxpbmUuCgpJIHdpbGwgYXR0ZW1wdCB0byBjb25zb2xpZGF0ZSB0aG9zZS4K
-Cj4gU28gaXNuJ3QgRlJBTUVfUE9JTlRFUiB1c2VkIG1haW5seSB0byBzdXBwb3J0IFNUQUNLX1RS
-QUNFPyBIb3dldmVyLCBMT0NLX0RFQlVHR0lOR19TVVBQT1JUIGhhcyBhbHJlYWR5IGluY2x1ZGVk
-IFNUQUNLX1RSQUNFX1NVUFBPUlQgaW4gaXRzIGRlcGVuZGVuY3kuIFNvIHdoeSB0aGVyZSBpcyBh
-IEZSQU1FX1BPSU5URVIgZGVwZW5kZW5jeT8KCkkgZHVubm8gd2h5IEZSQU1FX1BPSU5URVIgaXMg
-dGhlcmUuIEl0IHdhcyB0aGVyZSBiZWZvcmUgdGhpcyBwYXRjaC4KCnRoYW5rcy4KLS0gCn5SYW5k
-eQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4
-LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0
-cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
+On 5/17/21 12:11 AM, Ingo Molnar wrote:
+> 
+> * Randy Dunlap <rdunlap@infradead.org> wrote:
+> 
+>> Both arch/um/ and arch/xtensa/ cause a Kconfig warning for LOCKDEP.
+>> These arch-es select LOCKDEP_SUPPORT but they are not listed as one
+>> of the arch-es that LOCKDEP depends on.
+>>
+>> Since (16) arch-es define the Kconfig symbol LOCKDEP_SUPPORT if they
+>> intend to have LOCKDEP support, replace the awkward list of
+>> arch-es that LOCKDEP depends on with the LOCKDEP_SUPPORT symbol.
+>>
+>> Fixes this kconfig warning: (for both um and xtensa)
+>>
+>> WARNING: unmet direct dependencies detected for LOCKDEP
+>>   Depends on [n]: DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y] && (FRAME_POINTER [=n] || MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86)
+>>   Selected by [y]:
+>>   - PROVE_LOCKING [=y] && DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y]
+>>   - LOCK_STAT [=y] && DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y]
+>>   - DEBUG_LOCK_ALLOC [=y] && DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y]
+>>
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Cc: Peter Zijlstra <peterz@infradead.org>
+>> Cc: Ingo Molnar <mingo@redhat.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: Waiman Long <longman@redhat.com>
+>> Cc: Boqun Feng <boqun.feng@gmail.com>
+>> Cc: Chris Zankel <chris@zankel.net>
+>> Cc: Max Filippov <jcmvbkbc@gmail.com>
+>> Cc: linux-xtensa@linux-xtensa.org
+>> Cc: Johannes Berg <johannes@sipsolutions.net>
+>> Cc: Jeff Dike <jdike@addtoit.com>
+>> Cc: Richard Weinberger <richard@nod.at>
+>> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+>> Cc: linux-um@lists.infradead.org
+>> ---
+>>  lib/Kconfig.debug |    2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> --- linux-next-20210514.orig/lib/Kconfig.debug
+>> +++ linux-next-20210514/lib/Kconfig.debug
+>> @@ -1383,7 +1383,7 @@ config LOCKDEP
+>>  	bool
+>>  	depends on DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT
+>>  	select STACKTRACE
+>> -	depends on FRAME_POINTER || MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86
+>> +	depends on FRAME_POINTER || LOCKDEP_SUPPORT
+> 
+> Ok - the FRAME_POINTER bit is weird. Are there any architectures that have 
+> FRAME_POINTER defined but no LOCKDEP_SUPPORT?
+
+arch/h8300/ does AFAICT.
+and arch/parisc/ has user-choosable FRAME_POINTER and no LOCKDEP support.
+
+-- 
+~Randy
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
