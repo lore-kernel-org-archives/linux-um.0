@@ -1,193 +1,189 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from conuserg-09.nifty.com ([210.131.2.76])
- by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1liXpq-00DYF1-Ks
- for linux-um@lists.infradead.org; Mon, 17 May 2021 07:38:44 +0000
-From: Masahiro Yamada <masahiroy@kernel.org>
-Subject: [RESEND PATCH 3/6] x86/syscalls: stop filling syscall arrays with
- *_sys_ni_syscall
-Date: Mon, 17 May 2021 16:38:11 +0900
-Message-Id: <20210517073815.97426-4-masahiroy@kernel.org>
-In-Reply-To: <20210517073815.97426-1-masahiroy@kernel.org>
-References: <20210517073815.97426-1-masahiroy@kernel.org>
+Return-Path: <openrisc-bounces@lists.librecores.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-Cc: Masahiro Yamada <masahiroy@kernel.org>, Andy Lutomirski <luto@kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "H. Peter Anvin" <hpa@zytor.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
+References: <20210512075729.60291-1-masahiroy@kernel.org>
+In-Reply-To: <20210512075729.60291-1-masahiroy@kernel.org>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Wed, 26 May 2021 23:32:22 +0900
+Message-ID: <CAK7LNAS7cEj9h=Hi0O-AoFjJPg2mxp0zbi8boXj4O9aYt_yg6Q@mail.gmail.com>
+Subject: Re: [OpenRISC] [PATCH 1/5] kbuild: require all architectures to
+ have arch/$(SRCARCH)/Kbuild
+List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
+ <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
+List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
+List-Post: <mailto:openrisc@lists.librecores.org>
+List-Help: <mailto:openrisc-request@lists.librecores.org?subject=help>
+List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
+ <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: openrisc-bounces@lists.librecores.org
+Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
+To: Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Cc: Rich Felker <dalias@libc.org>, linux-ia64@vger.kernel.org, Linux-sh list <linux-sh@vger.kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Max Filippov <jcmvbkbc@gmail.com>, Guo Ren <guoren@kernel.org>, linux-csky@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>, sparclinux <sparclinux@vger.kernel.org>, linux-hexagon@vger.kernel.org, "open list:SIFIVE DRIVERS" <linux-riscv@lists.infradead.org>, Vincent Chen <deanbo422@gmail.com>, Will Deacon <will@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Paul Mackerras <paulus@samba.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Jonas Bonn <jonas@southpole.se>, linux-s390 <linux-s390@vger.kernel.org>, Brian Cain <bcain@codeaurora.org>, Michael Ellerman <mpe@ellerman.id.au>, Helge Deller <deller@gmx.de>, X86 ML <x86@kernel.org>, Russell King <linux@armlinux.org.uk>, Ley Foon Tan <ley.foon.tan@intel.com>, Christian Borntraeger <borntraeger@de.ibm.com>, Ingo Molnar <mingo@redhat.com>, Parisc List <linux-parisc@vger.kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Matt Turner <mattst88@gmail.com>, arcml <linux-snps-arc@lists.infradead.org>, Jeff Dike <jdike@addtoit.com>, "moderated list:H8/300 ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>, "open list:TENSILICA XTENSA PORT (xtensa)" <linux-xtensa@linux-xtensa.org>, Albert Ou <aou@eecs.berkeley.edu>, Vasily Gorbik <gor@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, linux-alpha@vger.kernel.org, linux-um@lists.infradead.org, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Greentime Hu <green.hu@gmail.com>, Paul Walmsley <paul.walmsley@sifive.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Chris Zankel <chris@zankel.net>, Michal Simek <monstr@monstr.eu>, Michal Marek <michal.lkml@markovi.net>, Yoshinori Sato <ysato@users.sourceforge.jp>, Nick Hu <nickhu@andestech.com>, Vineet Gupta <vgupta@synopsys.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, openrisc@lists.librecores.org, Palmer Dabbelt <palmer@dabbelt.com>, Richard Weinberger <richard@nod.at>, Borislav Petkov <bp@alien8.de>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, "David S. Miller" <davem@davemloft.net>
+List-ID: <linux-um.lists.infradead.org>
 
-This is a follow-up cleanup after switching to the generic
-syscalltbl.sh.
-
-The old arch/x86/entry/syscalls/syscalltbl.sh skipped non-existing
-syscalls. So, the generated syscalls_64.h, for example, had a big
-hole in the syscall numbers 335-423 range. That is why there exists
-[0 ... __NR_*_syscall_max] = &__*_sys_ni_cyscall.
-
-The new script, scripts/syscalltbl.sh automatically fills holes
-with __SYSCALL(<nr>, sys_ni_syscall), hence such ugly code can
-go away. The designated initializers, '[nr] =' are also unneeded.
-
-Also, there is no need to give __NR_*_syscall_max+1 because the array
-size is implied by the number of syscalls in the generated headers.
-Hence, there is no need to include <asm/unistd.h>, either.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- arch/x86/entry/syscall_32.c     | 10 ++--------
- arch/x86/entry/syscall_64.c     | 10 ++--------
- arch/x86/entry/syscall_x32.c    | 10 ++--------
- arch/x86/um/sys_call_table_32.c |  6 ------
- arch/x86/um/sys_call_table_64.c |  6 ------
- 5 files changed, 6 insertions(+), 36 deletions(-)
-
-diff --git a/arch/x86/entry/syscall_32.c b/arch/x86/entry/syscall_32.c
-index 70bf46e73b1c..8cfc9bc73e7f 100644
---- a/arch/x86/entry/syscall_32.c
-+++ b/arch/x86/entry/syscall_32.c
-@@ -5,7 +5,6 @@
- #include <linux/sys.h>
- #include <linux/cache.h>
- #include <linux/syscalls.h>
--#include <asm/unistd.h>
- #include <asm/syscall.h>
- 
- #ifdef CONFIG_IA32_EMULATION
-@@ -19,13 +18,8 @@
- #include <asm/syscalls_32.h>
- #undef __SYSCALL
- 
--#define __SYSCALL(nr, sym) [nr] = __ia32_##sym,
-+#define __SYSCALL(nr, sym) __ia32_##sym,
- 
--__visible const sys_call_ptr_t ia32_sys_call_table[__NR_ia32_syscall_max+1] = {
--	/*
--	 * Smells like a compiler bug -- it doesn't work
--	 * when the & below is removed.
--	 */
--	[0 ... __NR_ia32_syscall_max] = &__ia32_sys_ni_syscall,
-+__visible const sys_call_ptr_t ia32_sys_call_table[] = {
- #include <asm/syscalls_32.h>
- };
-diff --git a/arch/x86/entry/syscall_64.c b/arch/x86/entry/syscall_64.c
-index 82670bb10931..be120eec1fc9 100644
---- a/arch/x86/entry/syscall_64.c
-+++ b/arch/x86/entry/syscall_64.c
-@@ -5,20 +5,14 @@
- #include <linux/sys.h>
- #include <linux/cache.h>
- #include <linux/syscalls.h>
--#include <asm/unistd.h>
- #include <asm/syscall.h>
- 
- #define __SYSCALL(nr, sym) extern long __x64_##sym(const struct pt_regs *);
- #include <asm/syscalls_64.h>
- #undef __SYSCALL
- 
--#define __SYSCALL(nr, sym) [nr] = __x64_##sym,
-+#define __SYSCALL(nr, sym) __x64_##sym,
- 
--asmlinkage const sys_call_ptr_t sys_call_table[__NR_syscall_max+1] = {
--	/*
--	 * Smells like a compiler bug -- it doesn't work
--	 * when the & below is removed.
--	 */
--	[0 ... __NR_syscall_max] = &__x64_sys_ni_syscall,
-+asmlinkage const sys_call_ptr_t sys_call_table[] = {
- #include <asm/syscalls_64.h>
- };
-diff --git a/arch/x86/entry/syscall_x32.c b/arch/x86/entry/syscall_x32.c
-index 6d2ef887d7b6..bdd0e03a1265 100644
---- a/arch/x86/entry/syscall_x32.c
-+++ b/arch/x86/entry/syscall_x32.c
-@@ -5,20 +5,14 @@
- #include <linux/sys.h>
- #include <linux/cache.h>
- #include <linux/syscalls.h>
--#include <asm/unistd.h>
- #include <asm/syscall.h>
- 
- #define __SYSCALL(nr, sym) extern long __x64_##sym(const struct pt_regs *);
- #include <asm/syscalls_x32.h>
- #undef __SYSCALL
- 
--#define __SYSCALL(nr, sym) [nr] = __x64_##sym,
-+#define __SYSCALL(nr, sym) __x64_##sym,
- 
--asmlinkage const sys_call_ptr_t x32_sys_call_table[__NR_x32_syscall_max+1] = {
--	/*
--	 * Smells like a compiler bug -- it doesn't work
--	 * when the & below is removed.
--	 */
--	[0 ... __NR_x32_syscall_max] = &__x64_sys_ni_syscall,
-+asmlinkage const sys_call_ptr_t x32_sys_call_table[] = {
- #include <asm/syscalls_x32.h>
- };
-diff --git a/arch/x86/um/sys_call_table_32.c b/arch/x86/um/sys_call_table_32.c
-index e83619c365dc..f8323104e353 100644
---- a/arch/x86/um/sys_call_table_32.c
-+++ b/arch/x86/um/sys_call_table_32.c
-@@ -7,7 +7,6 @@
- #include <linux/linkage.h>
- #include <linux/sys.h>
- #include <linux/cache.h>
--#include <asm/unistd.h>
- #include <asm/syscall.h>
- 
- #define __NO_STUBS
-@@ -37,11 +36,6 @@
- extern asmlinkage long sys_ni_syscall(unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long);
- 
- const sys_call_ptr_t sys_call_table[] ____cacheline_aligned = {
--	/*
--	 * Smells like a compiler bug -- it doesn't work
--	 * when the & below is removed.
--	 */
--	[0 ... __NR_syscall_max] = &sys_ni_syscall,
- #include <asm/syscalls_32.h>
- };
- 
-diff --git a/arch/x86/um/sys_call_table_64.c b/arch/x86/um/sys_call_table_64.c
-index 6fb75af7cf54..5ed665dc785f 100644
---- a/arch/x86/um/sys_call_table_64.c
-+++ b/arch/x86/um/sys_call_table_64.c
-@@ -7,7 +7,6 @@
- #include <linux/linkage.h>
- #include <linux/sys.h>
- #include <linux/cache.h>
--#include <asm/unistd.h>
- #include <asm/syscall.h>
- 
- #define __NO_STUBS
-@@ -45,11 +44,6 @@
- extern asmlinkage long sys_ni_syscall(unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long);
- 
- const sys_call_ptr_t sys_call_table[] ____cacheline_aligned = {
--	/*
--	 * Smells like a compiler bug -- it doesn't work
--	 * when the & below is removed.
--	 */
--	[0 ... __NR_syscall_max] = &sys_ni_syscall,
- #include <asm/syscalls_64.h>
- };
- 
--- 
-2.27.0
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gV2VkLCBNYXkgMTIsIDIwMjEgYXQgNTowMCBQTSBNYXNhaGlybyBZYW1hZGEgPG1hc2FoaXJv
+eUBrZXJuZWwub3JnPiB3cm90ZToKPgo+IGFyY2gvJChTUkNBUkNIKS9LYnVpbGQgaXMgdXNlZnVs
+IGZvciBNYWtlZmlsZSBjbGVhbnVwcyBiZWNhdXNlIHlvdSBjYW4KPiB1c2UgdGhlIG9iai15IHN5
+bnRheC4KPgo+IEFkZCBhbiBlbXB0eSBmaWxlIGlmIGl0IGlzIG1pc3NpbmcgaW4gYXJjaC8kKFNS
+Q0FSQ0gpLy4KPgo+IFNpZ25lZC1vZmYtYnk6IE1hc2FoaXJvIFlhbWFkYSA8bWFzYWhpcm95QGtl
+cm5lbC5vcmc+Cj4gLS0tCgoKQXBwbGllZCB0byBsaW51eC1rYnVpbGQuCgo+Cj4gIE1ha2VmaWxl
+ICAgICAgICAgICAgICAgfCAyICstCj4gIGFyY2gvYWxwaGEvS2J1aWxkICAgICAgfCAxICsKPiAg
+YXJjaC9hcmMvTWFrZWZpbGUgICAgICB8IDMgLS0tCj4gIGFyY2gvYXJtL01ha2VmaWxlICAgICAg
+fCAxIC0KPiAgYXJjaC9hcm02NC9NYWtlZmlsZSAgICB8IDEgLQo+ICBhcmNoL2Nza3kvS2J1aWxk
+ICAgICAgIHwgMSArCj4gIGFyY2gvaDgzMDAvS2J1aWxkICAgICAgfCAxICsKPiAgYXJjaC9oZXhh
+Z29uL0tidWlsZCAgICB8IDEgKwo+ICBhcmNoL2lhNjQvS2J1aWxkICAgICAgIHwgMSArCj4gIGFy
+Y2gvbWljcm9ibGF6ZS9LYnVpbGQgfCAxICsKPiAgYXJjaC9taXBzL01ha2VmaWxlICAgICB8IDMg
+LS0tCj4gIGFyY2gvbmRzMzIvS2J1aWxkICAgICAgfCAxICsKPiAgYXJjaC9uaW9zMi9LYnVpbGQg
+ICAgICB8IDEgKwo+ICBhcmNoL29wZW5yaXNjL01ha2VmaWxlIHwgMSAtCj4gIGFyY2gvcGFyaXNj
+L0tidWlsZCAgICAgfCAxICsKPiAgYXJjaC9wb3dlcnBjL01ha2VmaWxlICB8IDMgLS0tCj4gIGFy
+Y2gvcmlzY3YvTWFrZWZpbGUgICAgfCAxIC0KPiAgYXJjaC9zMzkwL01ha2VmaWxlICAgICB8IDMg
+LS0tCj4gIGFyY2gvc2gvS2J1aWxkICAgICAgICAgfCAxICsKPiAgYXJjaC9zcGFyYy9NYWtlZmls
+ZSAgICB8IDMgLS0tCj4gIGFyY2gvdW0vS2J1aWxkICAgICAgICAgfCAxICsKPiAgYXJjaC94ODYv
+TWFrZWZpbGUgICAgICB8IDMgLS0tCj4gIGFyY2gveHRlbnNhL0tidWlsZCAgICAgfCAxICsKPiAg
+MjMgZmlsZXMgY2hhbmdlZCwgMTMgaW5zZXJ0aW9ucygrKSwgMjMgZGVsZXRpb25zKC0pCj4gIGNy
+ZWF0ZSBtb2RlIDEwMDY0NCBhcmNoL2FscGhhL0tidWlsZAo+ICBjcmVhdGUgbW9kZSAxMDA2NDQg
+YXJjaC9jc2t5L0tidWlsZAo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgYXJjaC9oODMwMC9LYnVpbGQK
+PiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGFyY2gvaGV4YWdvbi9LYnVpbGQKPiAgY3JlYXRlIG1vZGUg
+MTAwNjQ0IGFyY2gvaWE2NC9LYnVpbGQKPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGFyY2gvbWljcm9i
+bGF6ZS9LYnVpbGQKPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGFyY2gvbmRzMzIvS2J1aWxkCj4gIGNy
+ZWF0ZSBtb2RlIDEwMDY0NCBhcmNoL25pb3MyL0tidWlsZAo+ICBjcmVhdGUgbW9kZSAxMDA2NDQg
+YXJjaC9wYXJpc2MvS2J1aWxkCj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBhcmNoL3NoL0tidWlsZAo+
+ICBjcmVhdGUgbW9kZSAxMDA2NDQgYXJjaC91bS9LYnVpbGQKPiAgY3JlYXRlIG1vZGUgMTAwNjQ0
+IGFyY2gveHRlbnNhL0tidWlsZAo+Cj4gZGlmZiAtLWdpdCBhL01ha2VmaWxlIGIvTWFrZWZpbGUK
+PiBpbmRleCAxNWI2NDc2ZDBmODkuLjdkZjA0MGIxYjAyMyAxMDA2NDQKPiAtLS0gYS9NYWtlZmls
+ZQo+ICsrKyBiL01ha2VmaWxlCj4gQEAgLTY1OCw3ICs2NTgsNyBAQCBlbmRpZgo+Cj4gIGlmZXEg
+KCQoS0JVSUxEX0VYVE1PRCksKQo+ICAjIE9iamVjdHMgd2Ugd2lsbCBsaW5rIGludG8gdm1saW51
+eCAvIHN1YmRpcnMgd2UgbmVlZCB0byB2aXNpdAo+IC1jb3JlLXkgICAgICAgICA6PSBpbml0LyB1
+c3IvCj4gK2NvcmUteSAgICAgICAgIDo9IGluaXQvIHVzci8gYXJjaC8kKFNSQ0FSQ0gpLwo+ICBk
+cml2ZXJzLXkgICAgICA6PSBkcml2ZXJzLyBzb3VuZC8KPiAgZHJpdmVycy0kKENPTkZJR19TQU1Q
+TEVTKSArPSBzYW1wbGVzLwo+ICBkcml2ZXJzLSQoQ09ORklHX05FVCkgKz0gbmV0Lwo+IGRpZmYg
+LS1naXQgYS9hcmNoL2FscGhhL0tidWlsZCBiL2FyY2gvYWxwaGEvS2J1aWxkCj4gbmV3IGZpbGUg
+bW9kZSAxMDA2NDQKPiBpbmRleCAwMDAwMDAwMDAwMDAuLmE0ZTQwZTUzNGU2YQo+IC0tLSAvZGV2
+L251bGwKPiArKysgYi9hcmNoL2FscGhhL0tidWlsZAo+IEBAIC0wLDAgKzEgQEAKPiArIyBTUERY
+LUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMC1vbmx5Cj4gZGlmZiAtLWdpdCBhL2FyY2gvYXJj
+L01ha2VmaWxlIGIvYXJjaC9hcmMvTWFrZWZpbGUKPiBpbmRleCA0MzkyYzljMTg5YzQuLjNlNmQ0
+Yjg0Nzk3ZiAxMDA2NDQKPiAtLS0gYS9hcmNoL2FyYy9NYWtlZmlsZQo+ICsrKyBiL2FyY2gvYXJj
+L01ha2VmaWxlCj4gQEAgLTg1LDkgKzg1LDYgQEAgS0JVSUxEX0xERkxBR1MgICAgICAgICs9ICQo
+bGRmbGFncy15KQo+Cj4gIGhlYWQteSAgICAgICAgIDo9IGFyY2gvYXJjL2tlcm5lbC9oZWFkLm8K
+Pgo+IC0jIFNlZSBhcmNoL2FyYy9LYnVpbGQgZm9yIGNvbnRlbnQgb2YgY29yZSBwYXJ0IG9mIHRo
+ZSBrZXJuZWwKPiAtY29yZS15ICAgICAgICAgKz0gYXJjaC9hcmMvCj4gLQo+ICAjIHcvbyB0aGlz
+IGR0YiB3b24ndCBlbWJlZCBpbnRvIGtlcm5lbCBiaW5hcnkKPiAgY29yZS15ICAgICAgICAgKz0g
+YXJjaC9hcmMvYm9vdC9kdHMvCj4KPiBkaWZmIC0tZ2l0IGEvYXJjaC9hcm0vTWFrZWZpbGUgYi9h
+cmNoL2FybS9NYWtlZmlsZQo+IGluZGV4IDQxNWMzNTE0NTczYS4uMTczZGE2ODVhNTJlIDEwMDY0
+NAo+IC0tLSBhL2FyY2gvYXJtL01ha2VmaWxlCj4gKysrIGIvYXJjaC9hcm0vTWFrZWZpbGUKPiBA
+QCAtMjUyLDcgKzI1Miw2IEBAIGVuZGlmCj4KPiAgZXhwb3J0IFRFWFRfT0ZGU0VUIEdaRkxBR1Mg
+TU1VRVhUCj4KPiAtY29yZS15ICAgICAgICAgICAgICAgICAgICAgICAgICs9IGFyY2gvYXJtLwo+
+ICAjIElmIHdlIGhhdmUgYSBtYWNoaW5lLXNwZWNpZmljIGRpcmVjdG9yeSwgdGhlbiBpbmNsdWRl
+IGl0IGluIHRoZSBidWlsZC4KPiAgY29yZS15ICAgICAgICAgICAgICAgICAgICAgICAgICs9ICQo
+bWFjaGRpcnMpICQocGxhdGRpcnMpCj4KPiBkaWZmIC0tZ2l0IGEvYXJjaC9hcm02NC9NYWtlZmls
+ZSBiL2FyY2gvYXJtNjQvTWFrZWZpbGUKPiBpbmRleCA3ZWY0NDQ3ODU2MGQuLmI3M2MxNTFmM2E1
+MyAxMDA2NDQKPiAtLS0gYS9hcmNoL2FybTY0L01ha2VmaWxlCj4gKysrIGIvYXJjaC9hcm02NC9N
+YWtlZmlsZQo+IEBAIC0xNDksNyArMTQ5LDYgQEAgS0JVSUxEX0NGTEFHUyArPSAtREtBU0FOX1NI
+QURPV19TQ0FMRV9TSElGVD0kKEtBU0FOX1NIQURPV19TQ0FMRV9TSElGVCkKPiAgS0JVSUxEX0NQ
+UEZMQUdTICs9IC1ES0FTQU5fU0hBRE9XX1NDQUxFX1NISUZUPSQoS0FTQU5fU0hBRE9XX1NDQUxF
+X1NISUZUKQo+ICBLQlVJTERfQUZMQUdTICs9IC1ES0FTQU5fU0hBRE9XX1NDQUxFX1NISUZUPSQo
+S0FTQU5fU0hBRE9XX1NDQUxFX1NISUZUKQo+Cj4gLWNvcmUteSAgICAgICAgICs9IGFyY2gvYXJt
+NjQvCj4gIGxpYnMteSAgICAgICAgIDo9IGFyY2gvYXJtNjQvbGliLyAkKGxpYnMteSkKPiAgbGli
+cy0kKENPTkZJR19FRklfU1RVQikgKz0gJChvYmp0cmVlKS9kcml2ZXJzL2Zpcm13YXJlL2VmaS9s
+aWJzdHViL2xpYi5hCj4KPiBkaWZmIC0tZ2l0IGEvYXJjaC9jc2t5L0tidWlsZCBiL2FyY2gvY3Nr
+eS9LYnVpbGQKPiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+IGluZGV4IDAwMDAwMDAwMDAwMC4uYTRl
+NDBlNTM0ZTZhCj4gLS0tIC9kZXYvbnVsbAo+ICsrKyBiL2FyY2gvY3NreS9LYnVpbGQKPiBAQCAt
+MCwwICsxIEBACj4gKyMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAtb25seQo+IGRp
+ZmYgLS1naXQgYS9hcmNoL2g4MzAwL0tidWlsZCBiL2FyY2gvaDgzMDAvS2J1aWxkCj4gbmV3IGZp
+bGUgbW9kZSAxMDA2NDQKPiBpbmRleCAwMDAwMDAwMDAwMDAuLmE0ZTQwZTUzNGU2YQo+IC0tLSAv
+ZGV2L251bGwKPiArKysgYi9hcmNoL2g4MzAwL0tidWlsZAo+IEBAIC0wLDAgKzEgQEAKPiArIyBT
+UERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMC1vbmx5Cj4gZGlmZiAtLWdpdCBhL2FyY2gv
+aGV4YWdvbi9LYnVpbGQgYi9hcmNoL2hleGFnb24vS2J1aWxkCj4gbmV3IGZpbGUgbW9kZSAxMDA2
+NDQKPiBpbmRleCAwMDAwMDAwMDAwMDAuLmE0ZTQwZTUzNGU2YQo+IC0tLSAvZGV2L251bGwKPiAr
+KysgYi9hcmNoL2hleGFnb24vS2J1aWxkCj4gQEAgLTAsMCArMSBAQAo+ICsjIFNQRFgtTGljZW5z
+ZS1JZGVudGlmaWVyOiBHUEwtMi4wLW9ubHkKPiBkaWZmIC0tZ2l0IGEvYXJjaC9pYTY0L0tidWls
+ZCBiL2FyY2gvaWE2NC9LYnVpbGQKPiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+IGluZGV4IDAwMDAw
+MDAwMDAwMC4uYTRlNDBlNTM0ZTZhCj4gLS0tIC9kZXYvbnVsbAo+ICsrKyBiL2FyY2gvaWE2NC9L
+YnVpbGQKPiBAQCAtMCwwICsxIEBACj4gKyMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0y
+LjAtb25seQo+IGRpZmYgLS1naXQgYS9hcmNoL21pY3JvYmxhemUvS2J1aWxkIGIvYXJjaC9taWNy
+b2JsYXplL0tidWlsZAo+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0Cj4gaW5kZXggMDAwMDAwMDAwMDAw
+Li5hNGU0MGU1MzRlNmEKPiAtLS0gL2Rldi9udWxsCj4gKysrIGIvYXJjaC9taWNyb2JsYXplL0ti
+dWlsZAo+IEBAIC0wLDAgKzEgQEAKPiArIyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIu
+MC1vbmx5Cj4gZGlmZiAtLWdpdCBhL2FyY2gvbWlwcy9NYWtlZmlsZSBiL2FyY2gvbWlwcy9NYWtl
+ZmlsZQo+IGluZGV4IDI1ODIzNGMzNWEwOS4uNGU5NDJiN2VmMDIyIDEwMDY0NAo+IC0tLSBhL2Fy
+Y2gvbWlwcy9NYWtlZmlsZQo+ICsrKyBiL2FyY2gvbWlwcy9NYWtlZmlsZQo+IEBAIC0zMzIsOSAr
+MzMyLDYgQEAgaGVhZC15IDo9IGFyY2gvbWlwcy9rZXJuZWwvaGVhZC5vCj4gIGxpYnMteSAgICAg
+ICAgICAgICAgICAgKz0gYXJjaC9taXBzL2xpYi8KPiAgbGlicy0kKENPTkZJR19NSVBTX0ZQX1NV
+UFBPUlQpICs9IGFyY2gvbWlwcy9tYXRoLWVtdS8KPgo+IC0jIFNlZSBhcmNoL21pcHMvS2J1aWxk
+IGZvciBjb250ZW50IG9mIGNvcmUgcGFydCBvZiB0aGUga2VybmVsCj4gLWNvcmUteSArPSBhcmNo
+L21pcHMvCj4gLQo+ICBkcml2ZXJzLXkgICAgICAgICAgICAgICAgICAgICAgKz0gYXJjaC9taXBz
+L2NyeXB0by8KPgo+ICAjIHN1c3BlbmQgYW5kIGhpYmVybmF0aW9uIHN1cHBvcnQKPiBkaWZmIC0t
+Z2l0IGEvYXJjaC9uZHMzMi9LYnVpbGQgYi9hcmNoL25kczMyL0tidWlsZAo+IG5ldyBmaWxlIG1v
+ZGUgMTAwNjQ0Cj4gaW5kZXggMDAwMDAwMDAwMDAwLi5hNGU0MGU1MzRlNmEKPiAtLS0gL2Rldi9u
+dWxsCj4gKysrIGIvYXJjaC9uZHMzMi9LYnVpbGQKPiBAQCAtMCwwICsxIEBACj4gKyMgU1BEWC1M
+aWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAtb25seQo+IGRpZmYgLS1naXQgYS9hcmNoL25pb3My
+L0tidWlsZCBiL2FyY2gvbmlvczIvS2J1aWxkCj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQKPiBpbmRl
+eCAwMDAwMDAwMDAwMDAuLmE0ZTQwZTUzNGU2YQo+IC0tLSAvZGV2L251bGwKPiArKysgYi9hcmNo
+L25pb3MyL0tidWlsZAo+IEBAIC0wLDAgKzEgQEAKPiArIyBTUERYLUxpY2Vuc2UtSWRlbnRpZmll
+cjogR1BMLTIuMC1vbmx5Cj4gZGlmZiAtLWdpdCBhL2FyY2gvb3BlbnJpc2MvTWFrZWZpbGUgYi9h
+cmNoL29wZW5yaXNjL01ha2VmaWxlCj4gaW5kZXggNDEwZTdhYmZhYzY5Li5jNTJkZTUyNmU1MTgg
+MTAwNjQ0Cj4gLS0tIGEvYXJjaC9vcGVucmlzYy9NYWtlZmlsZQo+ICsrKyBiL2FyY2gvb3BlbnJp
+c2MvTWFrZWZpbGUKPiBAQCAtNDIsNyArNDIsNiBAQCBlbmRpZgo+Cj4gIGhlYWQteSAgICAgICAg
+ICAgICAgICAgOj0gYXJjaC9vcGVucmlzYy9rZXJuZWwvaGVhZC5vCj4KPiAtY29yZS15ICAgICAg
+ICAgKz0gYXJjaC9vcGVucmlzYy8KPiAgbGlicy15ICAgICAgICAgKz0gJChMSUJHQ0MpCj4KPiAg
+UEhPTlkgKz0gdm1saW51eC5iaW4KPiBkaWZmIC0tZ2l0IGEvYXJjaC9wYXJpc2MvS2J1aWxkIGIv
+YXJjaC9wYXJpc2MvS2J1aWxkCj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQKPiBpbmRleCAwMDAwMDAw
+MDAwMDAuLmE0ZTQwZTUzNGU2YQo+IC0tLSAvZGV2L251bGwKPiArKysgYi9hcmNoL3BhcmlzYy9L
+YnVpbGQKPiBAQCAtMCwwICsxIEBACj4gKyMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0y
+LjAtb25seQo+IGRpZmYgLS1naXQgYS9hcmNoL3Bvd2VycGMvTWFrZWZpbGUgYi9hcmNoL3Bvd2Vy
+cGMvTWFrZWZpbGUKPiBpbmRleCAzMjEyZDA3NmFjNmEuLmFmNjY5YWE3NWI3MyAxMDA2NDQKPiAt
+LS0gYS9hcmNoL3Bvd2VycGMvTWFrZWZpbGUKPiArKysgYi9hcmNoL3Bvd2VycGMvTWFrZWZpbGUK
+PiBAQCAtMjY3LDkgKzI2Nyw2IEBAIGhlYWQtJChDT05GSUdfUFBDX0ZQVSkgICAgICAgICAgICAg
+ICs9IGFyY2gvcG93ZXJwYy9rZXJuZWwvZnB1Lm8KPiAgaGVhZC0kKENPTkZJR19BTFRJVkVDKSAg
+ICAgICAgICs9IGFyY2gvcG93ZXJwYy9rZXJuZWwvdmVjdG9yLm8KPiAgaGVhZC0kKENPTkZJR19Q
+UENfT0ZfQk9PVF9UUkFNUE9MSU5FKSAgKz0gYXJjaC9wb3dlcnBjL2tlcm5lbC9wcm9tX2luaXQu
+bwo+Cj4gLSMgU2VlIGFyY2gvcG93ZXJwYy9LYnVpbGQgZm9yIGNvbnRlbnQgb2YgY29yZSBwYXJ0
+IG9mIHRoZSBrZXJuZWwKPiAtY29yZS15ICs9IGFyY2gvcG93ZXJwYy8KPiAtCj4gICMgRGVmYXVs
+dCB0byB6SW1hZ2UsIG92ZXJyaWRlIHdoZW4gbmVlZGVkCj4gIGFsbDogekltYWdlCj4KPiBkaWZm
+IC0tZ2l0IGEvYXJjaC9yaXNjdi9NYWtlZmlsZSBiL2FyY2gvcmlzY3YvTWFrZWZpbGUKPiBpbmRl
+eCAzZWI5NTkwYTA3NzUuLmM1ZjM1OTU0MDg2MiAxMDA2NDQKPiAtLS0gYS9hcmNoL3Jpc2N2L01h
+a2VmaWxlCj4gKysrIGIvYXJjaC9yaXNjdi9NYWtlZmlsZQo+IEBAIC05MCw3ICs5MCw2IEBAIGVu
+ZGlmCj4KPiAgaGVhZC15IDo9IGFyY2gvcmlzY3Yva2VybmVsL2hlYWQubwo+Cj4gLWNvcmUteSAr
+PSBhcmNoL3Jpc2N2Lwo+ICBjb3JlLSQoQ09ORklHX1JJU0NWX0VSUkFUQV9BTFRFUk5BVElWRSkg
+Kz0gYXJjaC9yaXNjdi9lcnJhdGEvCj4KPiAgbGlicy15ICs9IGFyY2gvcmlzY3YvbGliLwo+IGRp
+ZmYgLS1naXQgYS9hcmNoL3MzOTAvTWFrZWZpbGUgYi9hcmNoL3MzOTAvTWFrZWZpbGUKPiBpbmRl
+eCBlNDQzZWQ5OTQ3YmQuLjM3YjYxNjQ1Njk0YyAxMDA2NDQKPiAtLS0gYS9hcmNoL3MzOTAvTWFr
+ZWZpbGUKPiArKysgYi9hcmNoL3MzOTAvTWFrZWZpbGUKPiBAQCAtMTI4LDkgKzEyOCw2IEBAIE9C
+SkNPUFlGTEFHUyAgICAgICAgOj0gLU8gYmluYXJ5Cj4KPiAgaGVhZC15ICAgICAgICAgOj0gYXJj
+aC9zMzkwL2tlcm5lbC9oZWFkNjQubwo+Cj4gLSMgU2VlIGFyY2gvczM5MC9LYnVpbGQgZm9yIGNv
+bnRlbnQgb2YgY29yZSBwYXJ0IG9mIHRoZSBrZXJuZWwKPiAtY29yZS15ICAgICAgICAgKz0gYXJj
+aC9zMzkwLwo+IC0KPiAgbGlicy15ICAgICAgICAgKz0gYXJjaC9zMzkwL2xpYi8KPiAgZHJpdmVy
+cy15ICAgICAgKz0gZHJpdmVycy9zMzkwLwo+Cj4gZGlmZiAtLWdpdCBhL2FyY2gvc2gvS2J1aWxk
+IGIvYXJjaC9zaC9LYnVpbGQKPiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+IGluZGV4IDAwMDAwMDAw
+MDAwMC4uYTRlNDBlNTM0ZTZhCj4gLS0tIC9kZXYvbnVsbAo+ICsrKyBiL2FyY2gvc2gvS2J1aWxk
+Cj4gQEAgLTAsMCArMSBAQAo+ICsjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wLW9u
+bHkKPiBkaWZmIC0tZ2l0IGEvYXJjaC9zcGFyYy9NYWtlZmlsZSBiL2FyY2gvc3BhcmMvTWFrZWZp
+bGUKPiBpbmRleCBiZWU5OWU2NWZlMjMuLjRlNjUyNDViYzc1NSAxMDA2NDQKPiAtLS0gYS9hcmNo
+L3NwYXJjL01ha2VmaWxlCj4gKysrIGIvYXJjaC9zcGFyYy9NYWtlZmlsZQo+IEBAIC01OCw5ICs1
+OCw2IEBAIGVuZGlmCj4KPiAgaGVhZC15ICAgICAgICAgICAgICAgICA6PSBhcmNoL3NwYXJjL2tl
+cm5lbC9oZWFkXyQoQklUUykubwo+Cj4gLSMgU2VlIGFyY2gvc3BhcmMvS2J1aWxkIGZvciB0aGUg
+Y29yZSBwYXJ0IG9mIHRoZSBrZXJuZWwKPiAtY29yZS15ICAgICAgICAgICAgICAgICArPSBhcmNo
+L3NwYXJjLwo+IC0KPiAgbGlicy15ICAgICAgICAgICAgICAgICArPSBhcmNoL3NwYXJjL3Byb20v
+Cj4gIGxpYnMteSAgICAgICAgICAgICAgICAgKz0gYXJjaC9zcGFyYy9saWIvCj4KPiBkaWZmIC0t
+Z2l0IGEvYXJjaC91bS9LYnVpbGQgYi9hcmNoL3VtL0tidWlsZAo+IG5ldyBmaWxlIG1vZGUgMTAw
+NjQ0Cj4gaW5kZXggMDAwMDAwMDAwMDAwLi5hNGU0MGU1MzRlNmEKPiAtLS0gL2Rldi9udWxsCj4g
+KysrIGIvYXJjaC91bS9LYnVpbGQKPiBAQCAtMCwwICsxIEBACj4gKyMgU1BEWC1MaWNlbnNlLUlk
+ZW50aWZpZXI6IEdQTC0yLjAtb25seQo+IGRpZmYgLS1naXQgYS9hcmNoL3g4Ni9NYWtlZmlsZSBi
+L2FyY2gveDg2L01ha2VmaWxlCj4gaW5kZXggYzc3YzVkOGE3YjNlLi40MzA3YmY0OGVjNTMgMTAw
+NjQ0Cj4gLS0tIGEvYXJjaC94ODYvTWFrZWZpbGUKPiArKysgYi9hcmNoL3g4Ni9NYWtlZmlsZQo+
+IEBAIC0yMzksOSArMjM5LDYgQEAgaGVhZC15ICs9IGFyY2gveDg2L2tlcm5lbC9wbGF0Zm9ybS1x
+dWlya3Mubwo+Cj4gIGxpYnMteSAgKz0gYXJjaC94ODYvbGliLwo+Cj4gLSMgU2VlIGFyY2gveDg2
+L0tidWlsZCBmb3IgY29udGVudCBvZiBjb3JlIHBhcnQgb2YgdGhlIGtlcm5lbAo+IC1jb3JlLXkg
+Kz0gYXJjaC94ODYvCj4gLQo+ICAjIGRyaXZlcnMteSBhcmUgbGlua2VkIGFmdGVyIGNvcmUteQo+
+ICBkcml2ZXJzLSQoQ09ORklHX01BVEhfRU1VTEFUSU9OKSArPSBhcmNoL3g4Ni9tYXRoLWVtdS8K
+PiAgZHJpdmVycy0kKENPTkZJR19QQ0kpICAgICAgICAgICAgKz0gYXJjaC94ODYvcGNpLwo+IGRp
+ZmYgLS1naXQgYS9hcmNoL3h0ZW5zYS9LYnVpbGQgYi9hcmNoL3h0ZW5zYS9LYnVpbGQKPiBuZXcg
+ZmlsZSBtb2RlIDEwMDY0NAo+IGluZGV4IDAwMDAwMDAwMDAwMC4uYTRlNDBlNTM0ZTZhCj4gLS0t
+IC9kZXYvbnVsbAo+ICsrKyBiL2FyY2gveHRlbnNhL0tidWlsZAo+IEBAIC0wLDAgKzEgQEAKPiAr
+IyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMC1vbmx5Cj4gLS0KPiAyLjI3LjAKPgoK
+Ci0tIApCZXN0IFJlZ2FyZHMKTWFzYWhpcm8gWWFtYWRhCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCk9wZW5SSVNDIG1haWxpbmcgbGlzdApPcGVuUklTQ0Bs
+aXN0cy5saWJyZWNvcmVzLm9yZwpodHRwczovL2xpc3RzLmxpYnJlY29yZXMub3JnL2xpc3RpbmZv
+L29wZW5yaXNjCg==
 
