@@ -1,18 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-yb1-xb49.google.com ([2607:f8b0:4864:20::b49])
- by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lkJTh-0000GS-1d
- for linux-um@lists.infradead.org; Sat, 22 May 2021 04:43:10 +0000
-Received: by mail-yb1-xb49.google.com with SMTP id
- o12-20020a5b050c0000b02904f4a117bd74so29977692ybp.17
- for <linux-um@lists.infradead.org>; Fri, 21 May 2021 21:43:07 -0700 (PDT)
-Date: Fri, 21 May 2021 21:42:41 -0700
-In-Reply-To: <20210522044241.2763088-1-davidgow@google.com>
-Message-Id: <20210522044241.2763088-3-davidgow@google.com>
-Mime-Version: 1.0
-References: <20210522044241.2763088-1-davidgow@google.com>
-Subject: [PATCH v2 3/3] kunit: Remove the unused all_tests.config
-From: David Gow <davidgow@google.com>
+Received: from szxga01-in.huawei.com ([45.249.212.187])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1lnYQs-00AZjy-Ec
+ for linux-um@lists.infradead.org; Mon, 31 May 2021 03:17:40 +0000
+From: Shaokun Zhang <zhangshaokun@hisilicon.com>
+Subject: [PATCH] um: Remove the repeated declaration
+Date: Mon, 31 May 2021 11:17:07 +0800
+Message-ID: <1622431027-4395-1-git-send-email-zhangshaokun@hisilicon.com>
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -25,30 +20,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Brendan Higgins <brendanhiggins@google.com>, Shuah Khan <shuah@kernel.org>
-Cc: David Gow <davidgow@google.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+To: linux-um@lists.infradead.org
+Cc: Shaokun Zhang <zhangshaokun@hisilicon.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
 
-This isn't used anywhere. While it's possible that people were manually
-referencing it, the new default config (in default.config in the same
-path) provides equivalent functionality.
+Function 'os_flush_stdout' is declared twice, so remove the
+repeated declaration.
 
-Signed-off-by: David Gow <davidgow@google.com>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
 ---
- tools/testing/kunit/configs/all_tests.config | 3 ---
- 1 file changed, 3 deletions(-)
- delete mode 100644 tools/testing/kunit/configs/all_tests.config
+ arch/um/include/shared/os.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/tools/testing/kunit/configs/all_tests.config b/tools/testing/kunit/configs/all_tests.config
-deleted file mode 100644
-index 9235b7d42d38..000000000000
---- a/tools/testing/kunit/configs/all_tests.config
-+++ /dev/null
-@@ -1,3 +0,0 @@
--CONFIG_KUNIT=y
--CONFIG_KUNIT_TEST=y
--CONFIG_KUNIT_EXAMPLE_TEST=y
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index 13d86f94cf0f..a3f213f729b2 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -211,7 +211,6 @@ extern int os_protect_memory(void *addr, unsigned long len,
+ extern int os_unmap_memory(void *addr, int len);
+ extern int os_drop_memory(void *addr, int length);
+ extern int can_drop_memory(void);
+-extern void os_flush_stdout(void);
+ extern int os_mincore(void *addr, unsigned long len);
+ 
+ /* execvp.c */
 -- 
-2.31.1.818.g46aad6cb9e-goog
+2.7.4
 
 
 _______________________________________________
