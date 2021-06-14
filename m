@@ -1,13 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-m121144.qiye.163.com ([115.236.121.144])
+Received: from verein.lst.de ([213.95.11.211])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1luQKI-00G18M-GB
- for linux-um@lists.infradead.org; Sat, 19 Jun 2021 02:03:16 +0000
-From: Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] um: remove unneeded semicolon in um_arch.c
-Date: Sat, 19 Jun 2021 10:02:59 +0800
-Message-Id: <20210619020301.77672-1-wanjiabing@vivo.com>
+ id 1lsjDf-00DRSE-OG
+ for linux-um@lists.infradead.org; Mon, 14 Jun 2021 09:49:25 +0000
+Date: Mon, 14 Jun 2021 11:49:19 +0200
+From: Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 2/2] ubd: use blk_mq_alloc_disk and blk_cleanup_disk
+Message-ID: <20210614094919.GA9501@lst.de>
+References: <20210614060759.3965724-1-hch@lst.de>
+ <20210614060759.3965724-3-hch@lst.de>
+ <847f7608-1d11-1410-5394-b5aa5de9f45e@cambridgegreys.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <847f7608-1d11-1410-5394-b5aa5de9f45e@cambridgegreys.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,32 +25,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes.berg@intel.com>, Andrew Morton <akpm@linux-foundation.org>, Nick Desaulniers <ndesaulniers@gooogle.com>, Corey Minyard <cminyard@mvista.com>, Thomas Meyer <thomas@m3y3r.de>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Joe Perches <joe@perches.com>, Wan Jiabing <wanjiabing@vivo.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+To: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Christoph Hellwig <hch@lst.de>, Richard Weinberger <richard@nod.at>, Jens Axboe <axboe@kernel.dk>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
 
-Fix following coccicheck warning:
-./arch/um/kernel/um_arch.c:284:34-35: Unneeded semicolon
+On Mon, Jun 14, 2021 at 09:26:58AM +0100, Anton Ivanov wrote:
+> This does not build for me when applied to master:
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- arch/um/kernel/um_arch.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yes, as mentioned in the cover letter it needs for-5.14/block branch
+from here:
 
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index f9f1463f0521..a149a5e9a16a 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -281,7 +281,7 @@ static void parse_host_cpu_flags(char *line)
- 	int i;
- 	for (i = 0; i < 32*NCAPINTS; i++) {
- 		if ((x86_cap_flags[i] != NULL) && strstr(line, x86_cap_flags[i]))
--			set_cpu_cap(&boot_cpu_data, i);;
-+			set_cpu_cap(&boot_cpu_data, i);
- 	}
- }
- static void parse_cache_line(char *line)
--- 
-2.20.1
+   git://git.kernel.dk/linux-block for-5.14/block
 
+Gitweb:
+
+   https://git.kernel.dk/cgit/linux-block/log/?h=for-5.14/block
 
 _______________________________________________
 linux-um mailing list
