@@ -1,15 +1,10 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
- by bombadil.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
- id 1lgtEl-00AgIq-TB
- for linux-um@lists.infradead.org; Wed, 12 May 2021 18:05:37 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.14 07/12] um: Mark all kernel symbols as local
-Date: Wed, 12 May 2021 14:05:17 -0400
-Message-Id: <20210512180522.665788-7-sashal@kernel.org>
-In-Reply-To: <20210512180522.665788-1-sashal@kernel.org>
-References: <20210512180522.665788-1-sashal@kernel.org>
-MIME-Version: 1.0
+Date: Wed, 16 Jun 2021 16:08:09 -0700
+From: akpm@linux-foundation.org
+Subject: [to-be-updated]
+ mm-rename-p4d_page_vaddr-to-p4d_pgtable-and-make-it-return-pud_t.patch
+ removed from -mm tree
+Message-ID: <20210616230809.aAS-HuAzz%akpm@linux-foundation.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,118 +13,232 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Johannes Berg <johannes.berg@intel.com>, Ritesh Raj Sarraf <rrs@debian.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, linux-um@lists.infradead.org
+To: aneesh.kumar@linux.ibm.com, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, mm-commits@vger.kernel.org, sparclinux@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit d5027ca63e0e778b641cf23e3f5c6d6212cf412b ]
+The patch titled
+     Subject: mm: rename p4d_page_vaddr to p4d_pgtable and make it return pud_t *
+has been removed from the -mm tree.  Its filename was
+     mm-rename-p4d_page_vaddr-to-p4d_pgtable-and-make-it-return-pud_t.patch
 
-Ritesh reported a bug [1] against UML, noting that it crashed on
-startup. The backtrace shows the following (heavily redacted):
+This patch was dropped because an updated version will be merged
 
-(gdb) bt
-...
- #26 0x0000000060015b5d in sem_init () at ipc/sem.c:268
- #27 0x00007f89906d92f7 in ?? () from /lib/x86_64-linux-gnu/libcom_err.so.2
- #28 0x00007f8990ab8fb2 in call_init (...) at dl-init.c:72
-...
- #40 0x00007f89909bf3a6 in nss_load_library (...) at nsswitch.c:359
-...
- #44 0x00007f8990895e35 in _nss_compat_getgrnam_r (...) at nss_compat/compat-grp.c:486
- #45 0x00007f8990968b85 in __getgrnam_r [...]
- #46 0x00007f89909d6b77 in grantpt [...]
- #47 0x00007f8990a9394e in __GI_openpty [...]
- #48 0x00000000604a1f65 in openpty_cb (...) at arch/um/os-Linux/sigio.c:407
- #49 0x00000000604a58d0 in start_idle_thread (...) at arch/um/os-Linux/skas/process.c:598
- #50 0x0000000060004a3d in start_uml () at arch/um/kernel/skas/process.c:45
- #51 0x00000000600047b2 in linux_main (...) at arch/um/kernel/um_arch.c:334
- #52 0x000000006000574f in main (...) at arch/um/os-Linux/main.c:144
+------------------------------------------------------
+From: "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Subject: mm: rename p4d_page_vaddr to p4d_pgtable and make it return pud_t *
 
-indicating that the UML function openpty_cb() calls openpty(),
-which internally calls __getgrnam_r(), which causes the nsswitch
-machinery to get started.
+No functional change in this patch.
 
-This loads, through lots of indirection that I snipped, the
-libcom_err.so.2 library, which (in an unknown function, "??")
-calls sem_init().
-
-Now, of course it wants to get libpthread's sem_init(), since
-it's linked against libpthread. However, the dynamic linker
-looks up that symbol against the binary first, and gets the
-kernel's sem_init().
-
-Hajime Tazaki noted that "objcopy -L" can localize a symbol,
-so the dynamic linker wouldn't do the lookup this way. I tried,
-but for some reason that didn't seem to work.
-
-Doing the same thing in the linker script instead does seem to
-work, though I cannot entirely explain - it *also* works if I
-just add "VERSION { { global: *; }; }" instead, indicating that
-something else is happening that I don't really understand. It
-may be that explicitly doing that marks them with some kind of
-empty version, and that's different from the default.
-
-Explicitly marking them with a version breaks kallsyms, so that
-doesn't seem to be possible.
-
-Marking all the symbols as local seems correct, and does seem
-to address the issue, so do that. Also do it for static link,
-nsswitch libraries could still be loaded there.
-
-[1] https://bugs.debian.org/983379
-
-Reported-by: Ritesh Raj Sarraf <rrs@debian.org>
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Tested-By: Ritesh Raj Sarraf <rrs@debian.org>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lkml.kernel.org/r/20210615110859.320299-2-aneesh.kumar@linux.ibm.com
+Link: https://lore.kernel.org/linuxppc-dev/CAHk-=wi+J+iodze9FtjM3Zi4j4OeS+qqbKxME9QN4roxPEXH9Q@mail.gmail.com/
+Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Cc: <linux-alpha@vger.kernel.org>
+Cc: <linux-kernel@vger.kernel.org>
+Cc: <linux-arm-kernel@lists.infradead.org>
+Cc: <linux-ia64@vger.kernel.org>
+Cc: <linux-m68k@lists.linux-m68k.org>
+Cc: <linux-mips@vger.kernel.org>
+Cc: <linux-parisc@vger.kernel.org>
+Cc: <linuxppc-dev@lists.ozlabs.org>
+Cc: <linux-riscv@lists.infradead.org>
+Cc: <linux-sh@vger.kernel.org>
+Cc: <sparclinux@vger.kernel.org>
+Cc: <linux-um@lists.infradead.org>
+Cc: <linux-arch@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
- arch/um/kernel/dyn.lds.S | 6 ++++++
- arch/um/kernel/uml.lds.S | 6 ++++++
- 2 files changed, 12 insertions(+)
 
-diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
-index d417e3899700..06309bdbfbbf 100644
---- a/arch/um/kernel/dyn.lds.S
-+++ b/arch/um/kernel/dyn.lds.S
-@@ -7,6 +7,12 @@ OUTPUT_ARCH(ELF_ARCH)
- ENTRY(_start)
- jiffies = jiffies_64;
+ arch/arm64/include/asm/pgtable.h                |    4 ++--
+ arch/ia64/include/asm/pgtable.h                 |    2 +-
+ arch/mips/include/asm/pgtable-64.h              |    4 ++--
+ arch/powerpc/include/asm/book3s/64/pgtable.h    |    5 ++++-
+ arch/powerpc/include/asm/nohash/64/pgtable-4k.h |    6 +++++-
+ arch/powerpc/mm/book3s64/radix_pgtable.c        |    2 +-
+ arch/powerpc/mm/pgtable_64.c                    |    2 +-
+ arch/sparc/include/asm/pgtable_64.h             |    4 ++--
+ arch/x86/include/asm/pgtable.h                  |    4 ++--
+ arch/x86/mm/init_64.c                           |    4 ++--
+ include/asm-generic/pgtable-nop4d.h             |    2 +-
+ include/asm-generic/pgtable-nopud.h             |    2 +-
+ include/linux/pgtable.h                         |    2 +-
+ 13 files changed, 25 insertions(+), 18 deletions(-)
+
+--- a/arch/arm64/include/asm/pgtable.h~mm-rename-p4d_page_vaddr-to-p4d_pgtable-and-make-it-return-pud_t
++++ a/arch/arm64/include/asm/pgtable.h
+@@ -694,9 +694,9 @@ static inline phys_addr_t p4d_page_paddr
+ 	return __p4d_to_phys(p4d);
+ }
  
-+VERSION {
-+  {
-+    local: *;
-+  };
+-static inline unsigned long p4d_page_vaddr(p4d_t p4d)
++static inline pud_t *p4d_pgtable(p4d_t p4d)
+ {
+-	return (unsigned long)__va(p4d_page_paddr(p4d));
++	return (pud_t *)__va(p4d_page_paddr(p4d));
+ }
+ 
+ /* Find an entry in the frst-level page table. */
+--- a/arch/ia64/include/asm/pgtable.h~mm-rename-p4d_page_vaddr-to-p4d_pgtable-and-make-it-return-pud_t
++++ a/arch/ia64/include/asm/pgtable.h
+@@ -281,7 +281,7 @@ ia64_phys_addr_valid (unsigned long addr
+ #define p4d_bad(p4d)			(!ia64_phys_addr_valid(p4d_val(p4d)))
+ #define p4d_present(p4d)		(p4d_val(p4d) != 0UL)
+ #define p4d_clear(p4dp)			(p4d_val(*(p4dp)) = 0UL)
+-#define p4d_page_vaddr(p4d)		((unsigned long) __va(p4d_val(p4d) & _PFN_MASK))
++#define p4d_pgtable(p4d)		((pud_t *) __va(p4d_val(p4d) & _PFN_MASK))
+ #define p4d_page(p4d)			virt_to_page((p4d_val(p4d) + PAGE_OFFSET))
+ #endif
+ 
+--- a/arch/mips/include/asm/pgtable-64.h~mm-rename-p4d_page_vaddr-to-p4d_pgtable-and-make-it-return-pud_t
++++ a/arch/mips/include/asm/pgtable-64.h
+@@ -209,9 +209,9 @@ static inline void p4d_clear(p4d_t *p4dp
+ 	p4d_val(*p4dp) = (unsigned long)invalid_pud_table;
+ }
+ 
+-static inline unsigned long p4d_page_vaddr(p4d_t p4d)
++static inline pud_t *p4d_pgtable(p4d_t p4d)
+ {
+-	return p4d_val(p4d);
++	return (pud_t *)p4d_val(p4d);
+ }
+ 
+ #define p4d_phys(p4d)		virt_to_phys((void *)p4d_val(p4d))
+--- a/arch/powerpc/include/asm/book3s/64/pgtable.h~mm-rename-p4d_page_vaddr-to-p4d_pgtable-and-make-it-return-pud_t
++++ a/arch/powerpc/include/asm/book3s/64/pgtable.h
+@@ -1048,7 +1048,10 @@ extern struct page *p4d_page(p4d_t p4d);
+ /* Pointers in the page table tree are physical addresses */
+ #define __pgtable_ptr_val(ptr)	__pa(ptr)
+ 
+-#define p4d_page_vaddr(p4d)	__va(p4d_val(p4d) & ~P4D_MASKED_BITS)
++static inline pud_t *p4d_pgtable(p4d_t p4d)
++{
++	return (pud_t *)__va(p4d_val(p4d) & ~P4D_MASKED_BITS);
++}
+ 
+ static inline pmd_t *pud_pgtable(pud_t pud)
+ {
+--- a/arch/powerpc/include/asm/nohash/64/pgtable-4k.h~mm-rename-p4d_page_vaddr-to-p4d_pgtable-and-make-it-return-pud_t
++++ a/arch/powerpc/include/asm/nohash/64/pgtable-4k.h
+@@ -56,10 +56,14 @@
+ #define p4d_none(p4d)		(!p4d_val(p4d))
+ #define p4d_bad(p4d)		(p4d_val(p4d) == 0)
+ #define p4d_present(p4d)	(p4d_val(p4d) != 0)
+-#define p4d_page_vaddr(p4d)	(p4d_val(p4d) & ~P4D_MASKED_BITS)
+ 
+ #ifndef __ASSEMBLY__
+ 
++static inline pud_t *p4d_pgtable(p4d_t p4d)
++{
++	return (pud_t *) (p4d_val(p4d) & ~P4D_MASKED_BITS);
 +}
 +
- SECTIONS
+ static inline void p4d_clear(p4d_t *p4dp)
  {
-   PROVIDE (__executable_start = START);
-diff --git a/arch/um/kernel/uml.lds.S b/arch/um/kernel/uml.lds.S
-index 3d6ed6ba5b78..c3e32fa3941f 100644
---- a/arch/um/kernel/uml.lds.S
-+++ b/arch/um/kernel/uml.lds.S
-@@ -7,6 +7,12 @@ OUTPUT_ARCH(ELF_ARCH)
- ENTRY(_start)
- jiffies = jiffies_64;
+ 	*p4dp = __p4d(0);
+--- a/arch/powerpc/mm/book3s64/radix_pgtable.c~mm-rename-p4d_page_vaddr-to-p4d_pgtable-and-make-it-return-pud_t
++++ a/arch/powerpc/mm/book3s64/radix_pgtable.c
+@@ -860,7 +860,7 @@ static void __meminit remove_pagetable(u
+ 			continue;
+ 		}
  
-+VERSION {
-+  {
-+    local: *;
-+  };
-+}
-+
- SECTIONS
+-		pud_base = (pud_t *)p4d_page_vaddr(*p4d);
++		pud_base = p4d_pgtable(*p4d);
+ 		remove_pud_table(pud_base, addr, next);
+ 		free_pud_table(pud_base, p4d);
+ 	}
+--- a/arch/powerpc/mm/pgtable_64.c~mm-rename-p4d_page_vaddr-to-p4d_pgtable-and-make-it-return-pud_t
++++ a/arch/powerpc/mm/pgtable_64.c
+@@ -105,7 +105,7 @@ struct page *p4d_page(p4d_t p4d)
+ 		VM_WARN_ON(!p4d_huge(p4d));
+ 		return pte_page(p4d_pte(p4d));
+ 	}
+-	return virt_to_page(p4d_page_vaddr(p4d));
++	return virt_to_page(p4d_pgtable(p4d));
+ }
+ #endif
+ 
+--- a/arch/sparc/include/asm/pgtable_64.h~mm-rename-p4d_page_vaddr-to-p4d_pgtable-and-make-it-return-pud_t
++++ a/arch/sparc/include/asm/pgtable_64.h
+@@ -856,8 +856,8 @@ static inline pmd_t *pud_pgtable(pud_t p
+ #define pmd_clear(pmdp)			(pmd_val(*(pmdp)) = 0UL)
+ #define pud_present(pud)		(pud_val(pud) != 0U)
+ #define pud_clear(pudp)			(pud_val(*(pudp)) = 0UL)
+-#define p4d_page_vaddr(p4d)		\
+-	((unsigned long) __va(p4d_val(p4d)))
++#define p4d_pgtable(p4d)		\
++	((pud_t *) __va(p4d_val(p4d)))
+ #define p4d_present(p4d)		(p4d_val(p4d) != 0U)
+ #define p4d_clear(p4dp)			(p4d_val(*(p4dp)) = 0UL)
+ 
+--- a/arch/x86/include/asm/pgtable.h~mm-rename-p4d_page_vaddr-to-p4d_pgtable-and-make-it-return-pud_t
++++ a/arch/x86/include/asm/pgtable.h
+@@ -906,9 +906,9 @@ static inline int p4d_present(p4d_t p4d)
+ 	return p4d_flags(p4d) & _PAGE_PRESENT;
+ }
+ 
+-static inline unsigned long p4d_page_vaddr(p4d_t p4d)
++static inline pud_t *p4d_pgtable(p4d_t p4d)
  {
-   /* This must contain the right address - not quite the default ELF one.*/
--- 
-2.30.2
+-	return (unsigned long)__va(p4d_val(p4d) & p4d_pfn_mask(p4d));
++	return (pud_t *)__va(p4d_val(p4d) & p4d_pfn_mask(p4d));
+ }
+ 
+ /*
+--- a/arch/x86/mm/init_64.c~mm-rename-p4d_page_vaddr-to-p4d_pgtable-and-make-it-return-pud_t
++++ a/arch/x86/mm/init_64.c
+@@ -195,8 +195,8 @@ static void sync_global_pgds_l4(unsigned
+ 			spin_lock(pgt_lock);
+ 
+ 			if (!p4d_none(*p4d_ref) && !p4d_none(*p4d))
+-				BUG_ON(p4d_page_vaddr(*p4d)
+-				       != p4d_page_vaddr(*p4d_ref));
++				BUG_ON(p4d_pgtable(*p4d)
++				       != p4d_pgtable(*p4d_ref));
+ 
+ 			if (p4d_none(*p4d))
+ 				set_p4d(p4d, *p4d_ref);
+--- a/include/asm-generic/pgtable-nop4d.h~mm-rename-p4d_page_vaddr-to-p4d_pgtable-and-make-it-return-pud_t
++++ a/include/asm-generic/pgtable-nop4d.h
+@@ -42,7 +42,7 @@ static inline p4d_t *p4d_offset(pgd_t *p
+ #define __p4d(x)				((p4d_t) { __pgd(x) })
+ 
+ #define pgd_page(pgd)				(p4d_page((p4d_t){ pgd }))
+-#define pgd_page_vaddr(pgd)			(p4d_page_vaddr((p4d_t){ pgd }))
++#define pgd_page_vaddr(pgd)			(p4d_pgtable((p4d_t){ pgd }))
+ 
+ /*
+  * allocating and freeing a p4d is trivial: the 1-entry p4d is
+--- a/include/asm-generic/pgtable-nopud.h~mm-rename-p4d_page_vaddr-to-p4d_pgtable-and-make-it-return-pud_t
++++ a/include/asm-generic/pgtable-nopud.h
+@@ -49,7 +49,7 @@ static inline pud_t *pud_offset(p4d_t *p
+ #define __pud(x)				((pud_t) { __p4d(x) })
+ 
+ #define p4d_page(p4d)				(pud_page((pud_t){ p4d }))
+-#define p4d_page_vaddr(p4d)			(pud_pgtable((pud_t){ p4d }))
++#define p4d_pgtable(p4d)			((pud_t *)(pud_pgtable((pud_t){ p4d })))
+ 
+ /*
+  * allocating and freeing a pud is trivial: the 1-entry pud is
+--- a/include/linux/pgtable.h~mm-rename-p4d_page_vaddr-to-p4d_pgtable-and-make-it-return-pud_t
++++ a/include/linux/pgtable.h
+@@ -114,7 +114,7 @@ static inline pmd_t *pmd_offset(pud_t *p
+ #ifndef pud_offset
+ static inline pud_t *pud_offset(p4d_t *p4d, unsigned long address)
+ {
+-	return (pud_t *)p4d_page_vaddr(*p4d) + pud_index(address);
++	return p4d_pgtable(*p4d) + pud_index(address);
+ }
+ #define pud_offset pud_offset
+ #endif
+_
+
+Patches currently in -mm which might be from aneesh.kumar@linux.ibm.com are
+
+mm-rename-p4d_page_vaddr-to-p4d_pgtable-and-make-it-return-pud_t-fix.patch
 
 
 _______________________________________________
