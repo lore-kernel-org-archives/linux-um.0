@@ -2,14 +2,18 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lwhIW-000OH2-Ou
- for linux-um@lists.infradead.org; Fri, 25 Jun 2021 08:34:50 +0000
+ id 1ltxjj-00BWOY-1o
+ for linux-um@lists.infradead.org; Thu, 17 Jun 2021 19:31:36 +0000
+Message-ID: <db83b3c4a2202c2591898c410f4980cf88fb1613.camel@sipsolutions.net>
+Subject: Re: [PATCH v4 4/9] um: export signals_enabled directly
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH 2/4] lib/logic_iomem: fix sparse warnings
-Date: Fri, 25 Jun 2021 10:34:35 +0200
-Message-Id: <20210625103437.8ab400c16323.Ic4ba1a600f837d01bf592fad52f55fe52c063388@changeid>
-In-Reply-To: <20210625103436.900a9e962c32.Id45a0d2d0167dd9b6a067b42d791523896574064@changeid>
-References: <20210625103436.900a9e962c32.Id45a0d2d0167dd9b6a067b42d791523896574064@changeid>
+Date: Thu, 17 Jun 2021 21:31:30 +0200
+In-Reply-To: <CAFLxGvy8aZq9OO+--bz7vxFa3s+NgaPqTFQO+DLBFivS+Fai-Q@mail.gmail.com>
+ (sfid-20210617_212157_642443_0F782CCF)
+References: <20210305122010.442577-1-johannes@sipsolutions.net>
+ <20210305131934.b1cae3585b98.I2a08cbe698fc23f1731e33e4f2582475290b90dc@changeid>
+ <CAFLxGvy8aZq9OO+--bz7vxFa3s+NgaPqTFQO+DLBFivS+Fai-Q@mail.gmail.com>
+ (sfid-20210617_212157_642443_0F782CCF)
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -23,90 +27,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>, kernel test robot <lkp@intel.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: linux-um <linux-um@lists.infradead.org>
 
-From: Johannes Berg <johannes.berg@intel.com>
+On Thu, 2021-06-17 at 21:21 +0200, Richard Weinberger wrote:
+> On Fri, Mar 5, 2021 at 1:20 PM Johannes Berg <johannes@sipsolutions.net> wrote:
+> > +#define UML_SETJMP(buf) ({                             \
+> > +       int n, enable;                                  \
+> > +       enable = *(volatile int *)&signals_enabled;     \
+> 
+> Isn't this a case for READ_ONCE()?
 
-A couple of sparse warnings happened here due to casts on
-the prints, a missing static and a missing include. Fix
-all of them.
+I guess, but it's in shared code, so must compile without kernel-space
+headers.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: ca2e334232b6 ("lib: add iomem emulation (logic_iomem)")
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- lib/logic_iomem.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
-
-diff --git a/lib/logic_iomem.c b/lib/logic_iomem.c
-index b76b92dd0f1f..9bdfde0c0f86 100644
---- a/lib/logic_iomem.c
-+++ b/lib/logic_iomem.c
-@@ -6,6 +6,7 @@
- #include <linux/types.h>
- #include <linux/slab.h>
- #include <linux/logic_iomem.h>
-+#include <asm/io.h>
- 
- struct logic_iomem_region {
- 	const struct resource *res;
-@@ -78,7 +79,7 @@ static void __iomem *real_ioremap(phys_addr_t offset, size_t size)
- static void real_iounmap(void __iomem *addr)
- {
- 	WARN(1, "invalid iounmap for addr 0x%llx\n",
--	     (unsigned long long)addr);
-+	     (unsigned long long __force)addr);
- }
- #endif /* CONFIG_LOGIC_IOMEM_FALLBACK */
- 
-@@ -172,14 +173,15 @@ EXPORT_SYMBOL(iounmap);
- static u##sz real_raw_read ## op(const volatile void __iomem *addr)	\
- {									\
- 	WARN(1, "Invalid read" #op " at address %llx\n",		\
--	     (unsigned long long)addr);					\
-+	     (unsigned long long __force)addr);				\
- 	return (u ## sz)~0ULL;						\
- }									\
- 									\
--void real_raw_write ## op(u ## sz val, volatile void __iomem *addr)	\
-+static void real_raw_write ## op(u ## sz val,				\
-+				 volatile void __iomem *addr)		\
- {									\
- 	WARN(1, "Invalid writeq" #op " of 0x%llx at address %llx\n",	\
--	     (unsigned long long)val, (unsigned long long)addr);	\
-+	     (unsigned long long)val, (unsigned long long __force)addr);\
- }									\
- 
- MAKE_FALLBACK(b, 8);
-@@ -192,14 +194,14 @@ MAKE_FALLBACK(q, 64);
- static void real_memset_io(volatile void __iomem *addr, int value, size_t size)
- {
- 	WARN(1, "Invalid memset_io at address 0x%llx\n",
--	     (unsigned long long)addr);
-+	     (unsigned long long __force)addr);
- }
- 
- static void real_memcpy_fromio(void *buffer, const volatile void __iomem *addr,
- 			       size_t size)
- {
- 	WARN(1, "Invalid memcpy_fromio at address 0x%llx\n",
--	     (unsigned long long)addr);
-+	     (unsigned long long __force)addr);
- 
- 	memset(buffer, 0xff, size);
- }
-@@ -208,7 +210,7 @@ static void real_memcpy_toio(volatile void __iomem *addr, const void *buffer,
- 			     size_t size)
- {
- 	WARN(1, "Invalid memcpy_toio at address 0x%llx\n",
--	     (unsigned long long)addr);
-+	     (unsigned long long __force)addr);
- }
- #endif /* CONFIG_LOGIC_IOMEM_FALLBACK */
- 
--- 
-2.31.1
+johannes
 
 
 _______________________________________________
