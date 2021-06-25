@@ -1,142 +1,57 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 2/2] ubd: use blk_mq_alloc_disk and blk_cleanup_disk
-Date: Mon, 14 Jun 2021 08:07:59 +0200
-Message-Id: <20210614060759.3965724-3-hch@lst.de>
-In-Reply-To: <20210614060759.3965724-1-hch@lst.de>
-References: <20210614060759.3965724-1-hch@lst.de>
+Return-Path: <linux-gpio-owner@vger.kernel.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Jens Axboe <axboe@kernel.dk>
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
+References: <20210625103734.2f29630be607.Ied890c9ca650517103410e399ef509796653f5d3@changeid>
+In-Reply-To: <20210625103734.2f29630be607.Ied890c9ca650517103410e399ef509796653f5d3@changeid>
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date: Fri, 25 Jun 2021 12:16:56 +0200
+Message-ID: <CAMpxmJWnh6RB98H_z5U3_x7J05GNwN8TW5=eiTj7QzPJRnuKuQ@mail.gmail.com>
+Subject: Re: [PATCH] drivers: gpio: AMD8111 and TQMX86 require HAS_IOPORT_MAP
+Content-Type: text/plain; charset="UTF-8"
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-gpio <linux-gpio@vger.kernel.org>, Linus Walleij <linus.walleij@linaro.org>, Dmitry Baryshkov <dbaryshkov@gmail.com>, Andrew Lunn <andrew@lunn.ch>, linux-um@lists.infradead.org, Johannes Berg <johannes.berg@intel.com>, kernel test robot <lkp@intel.com>
+List-ID: <linux-um.lists.infradead.org>
 
-Use blk_mq_alloc_disk and blk_cleanup_disk to simplify the gendisk and
-request_queue allocation.
+On Fri, Jun 25, 2021 at 10:37 AM Johannes Berg
+<johannes@sipsolutions.net> wrote:
+>
+> From: Johannes Berg <johannes.berg@intel.com>
+>
+> Both of these drivers use ioport_map(), so they need to
+> depend on HAS_IOPORT_MAP. Otherwise, they cannot be built
+> even with COMPILE_TEST on architectures without an ioport
+> implementation, such as ARCH=um.
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+> ---
+>  drivers/gpio/Kconfig | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+> index 1dd0ec6727fd..3c69b785cb79 100644
+> --- a/drivers/gpio/Kconfig
+> +++ b/drivers/gpio/Kconfig
+> @@ -1383,6 +1383,7 @@ config GPIO_TPS68470
+>  config GPIO_TQMX86
+>         tristate "TQ-Systems QTMX86 GPIO"
+>         depends on MFD_TQMX86 || COMPILE_TEST
+> +       depends on HAS_IOPORT_MAP
+>         select GPIOLIB_IRQCHIP
+>         help
+>           This driver supports GPIO on the TQMX86 IO controller.
+> @@ -1450,6 +1451,7 @@ menu "PCI GPIO expanders"
+>  config GPIO_AMD8111
+>         tristate "AMD 8111 GPIO driver"
+>         depends on X86 || COMPILE_TEST
+> +       depends on HAS_IOPORT_MAP
+>         help
+>           The AMD 8111 south bridge contains 32 GPIO pins which can be used.
+>
+> --
+> 2.31.1
+>
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- arch/um/drivers/ubd_kern.c | 44 ++++++++++++--------------------------
- 1 file changed, 14 insertions(+), 30 deletions(-)
+Applied, thanks!
 
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index f508d45f7a69..0b86aa1b12f1 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -825,7 +825,6 @@ static void ubd_device_release(struct device *dev)
- {
- 	struct ubd *ubd_dev = dev_get_drvdata(dev);
- 
--	blk_cleanup_queue(ubd_dev->queue);
- 	blk_mq_free_tag_set(&ubd_dev->tag_set);
- 	*ubd_dev = ((struct ubd) DEFAULT_UBD);
- }
-@@ -865,17 +864,12 @@ static const struct attribute_group *ubd_attr_groups[] = {
- 	NULL,
- };
- 
--static int ubd_disk_register(int major, u64 size, int unit,
--			     struct gendisk **disk_out)
-+static void ubd_disk_register(int major, u64 size, int unit,
-+			      struct gendisk *disk)
- {
--	struct gendisk *disk;
--
--	disk = alloc_disk(1 << UBD_SHIFT);
--	if(disk == NULL)
--		return -ENOMEM;
--
- 	disk->major = major;
- 	disk->first_minor = unit << UBD_SHIFT;
-+	disk->minors = 1 << UBD_SHIFT;
- 	disk->fops = &ubd_blops;
- 	set_capacity(disk, size / 512);
- 	sprintf(disk->disk_name, "ubd%c", 'a' + unit);
-@@ -889,9 +883,6 @@ static int ubd_disk_register(int major, u64 size, int unit,
- 	disk->private_data = &ubd_devs[unit];
- 	disk->queue = ubd_devs[unit].queue;
- 	device_add_disk(&ubd_devs[unit].pdev.dev, disk, ubd_attr_groups);
--
--	*disk_out = disk;
--	return 0;
- }
- 
- #define ROUND_BLOCK(n) ((n + (SECTOR_SIZE - 1)) & (-SECTOR_SIZE))
-@@ -903,6 +894,7 @@ static const struct blk_mq_ops ubd_mq_ops = {
- static int ubd_add(int n, char **error_out)
- {
- 	struct ubd *ubd_dev = &ubd_devs[n];
-+	struct gendisk *disk;
- 	int err = 0;
- 
- 	if(ubd_dev->file == NULL)
-@@ -927,32 +919,24 @@ static int ubd_add(int n, char **error_out)
- 	if (err)
- 		goto out;
- 
--	ubd_dev->queue = blk_mq_init_queue(&ubd_dev->tag_set);
--	if (IS_ERR(ubd_dev->queue)) {
--		err = PTR_ERR(ubd_dev->queue);
-+	disk = blk_mq_alloc_disk(&ubd_dev->tag_set, ubd_dev);
-+	if (IS_ERR(disk)) {
-+		err = PTR_ERR(disk);
- 		goto out_cleanup_tags;
- 	}
-+	ubd_dev->queue = disk->queue;
- 
--	ubd_dev->queue->queuedata = ubd_dev;
- 	blk_queue_write_cache(ubd_dev->queue, true, false);
--
- 	blk_queue_max_segments(ubd_dev->queue, MAX_SG);
- 	blk_queue_segment_boundary(ubd_dev->queue, PAGE_SIZE - 1);
--	err = ubd_disk_register(UBD_MAJOR, ubd_dev->size, n, &ubd_gendisk[n]);
--	if(err){
--		*error_out = "Failed to register device";
--		goto out_cleanup_tags;
--	}
--
--	err = 0;
--out:
--	return err;
-+	ubd_disk_register(UBD_MAJOR, ubd_dev->size, n, disk);
-+	ubd_gendisk[n] = disk;
-+	return 0;
- 
- out_cleanup_tags:
- 	blk_mq_free_tag_set(&ubd_dev->tag_set);
--	if (!(IS_ERR(ubd_dev->queue)))
--		blk_cleanup_queue(ubd_dev->queue);
--	goto out;
-+out:
-+	return err;
- }
- 
- static int ubd_config(char *str, char **error_out)
-@@ -1055,7 +1039,7 @@ static int ubd_remove(int n, char **error_out)
- 	ubd_gendisk[n] = NULL;
- 	if(disk != NULL){
- 		del_gendisk(disk);
--		put_disk(disk);
-+		blk_cleanup_disk(disk);
- 	}
- 
- 	err = 0;
--- 
-2.30.2
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+Bart
 
