@@ -1,40 +1,126 @@
-Return-Path: <dmaengine-owner@vger.kernel.org>
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH] dmaengine: idxd: depends on !UML
-Date: Fri, 25 Jun 2021 10:38:10 +0200
-Message-Id: <20210625103810.fe877ae0aef4.If240438e3f50ae226f3f755fc46ea498c6858393@changeid>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1lwhwt-000bvA-3r
+ for linux-um@lists.infradead.org; Fri, 25 Jun 2021 09:16:32 +0000
+Subject: Re: [PATCH 2/4] lib/logic_iomem: fix sparse warnings
+References: <20210625103436.900a9e962c32.Id45a0d2d0167dd9b6a067b42d791523896574064@changeid>
+ <20210625103437.8ab400c16323.Ic4ba1a600f837d01bf592fad52f55fe52c063388@changeid>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <1ec68d06-eafa-cc49-2f49-43f0b6289540@cambridgegreys.com>
+Date: Fri, 25 Jun 2021 10:16:27 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: dmaengine@vger.kernel.org
-Cc: Dave Jiang <dave.jiang@intel.com>, linux-um@lists.infradead.org, Johannes Berg <johannes.berg@intel.com>, kernel test robot <lkp@intel.com>
-List-ID: <linux-um.lists.infradead.org>
+In-Reply-To: <20210625103437.8ab400c16323.Ic4ba1a600f837d01bf592fad52f55fe52c063388@changeid>
+Content-Language: en-US
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>, kernel test robot <lkp@intel.com>
 
-From: Johannes Berg <johannes.berg@intel.com>
 
-Now that UML has PCI support, this driver must depend also on
-!UML since it pokes at X86_64 architecture internals that don't
-exist on ARCH=um.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- drivers/dma/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 25/06/2021 09:34, Johannes Berg wrote:
+> From: Johannes Berg <johannes.berg@intel.com>
+> 
+> A couple of sparse warnings happened here due to casts on
+> the prints, a missing static and a missing include. Fix
+> all of them.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Fixes: ca2e334232b6 ("lib: add iomem emulation (logic_iomem)")
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+> ---
+>   lib/logic_iomem.c | 16 +++++++++-------
+>   1 file changed, 9 insertions(+), 7 deletions(-)
+> 
+> diff --git a/lib/logic_iomem.c b/lib/logic_iomem.c
+> index b76b92dd0f1f..9bdfde0c0f86 100644
+> --- a/lib/logic_iomem.c
+> +++ b/lib/logic_iomem.c
+> @@ -6,6 +6,7 @@
+>   #include <linux/types.h>
+>   #include <linux/slab.h>
+>   #include <linux/logic_iomem.h>
+> +#include <asm/io.h>
+>   
+>   struct logic_iomem_region {
+>   	const struct resource *res;
+> @@ -78,7 +79,7 @@ static void __iomem *real_ioremap(phys_addr_t offset, size_t size)
+>   static void real_iounmap(void __iomem *addr)
+>   {
+>   	WARN(1, "invalid iounmap for addr 0x%llx\n",
+> -	     (unsigned long long)addr);
+> +	     (unsigned long long __force)addr);
+>   }
+>   #endif /* CONFIG_LOGIC_IOMEM_FALLBACK */
+>   
+> @@ -172,14 +173,15 @@ EXPORT_SYMBOL(iounmap);
+>   static u##sz real_raw_read ## op(const volatile void __iomem *addr)	\
+>   {									\
+>   	WARN(1, "Invalid read" #op " at address %llx\n",		\
+> -	     (unsigned long long)addr);					\
+> +	     (unsigned long long __force)addr);				\
+>   	return (u ## sz)~0ULL;						\
+>   }									\
+>   									\
+> -void real_raw_write ## op(u ## sz val, volatile void __iomem *addr)	\
+> +static void real_raw_write ## op(u ## sz val,				\
+> +				 volatile void __iomem *addr)		\
+>   {									\
+>   	WARN(1, "Invalid writeq" #op " of 0x%llx at address %llx\n",	\
+> -	     (unsigned long long)val, (unsigned long long)addr);	\
+> +	     (unsigned long long)val, (unsigned long long __force)addr);\
+>   }									\
+>   
+>   MAKE_FALLBACK(b, 8);
+> @@ -192,14 +194,14 @@ MAKE_FALLBACK(q, 64);
+>   static void real_memset_io(volatile void __iomem *addr, int value, size_t size)
+>   {
+>   	WARN(1, "Invalid memset_io at address 0x%llx\n",
+> -	     (unsigned long long)addr);
+> +	     (unsigned long long __force)addr);
+>   }
+>   
+>   static void real_memcpy_fromio(void *buffer, const volatile void __iomem *addr,
+>   			       size_t size)
+>   {
+>   	WARN(1, "Invalid memcpy_fromio at address 0x%llx\n",
+> -	     (unsigned long long)addr);
+> +	     (unsigned long long __force)addr);
+>   
+>   	memset(buffer, 0xff, size);
+>   }
+> @@ -208,7 +210,7 @@ static void real_memcpy_toio(volatile void __iomem *addr, const void *buffer,
+>   			     size_t size)
+>   {
+>   	WARN(1, "Invalid memcpy_toio at address 0x%llx\n",
+> -	     (unsigned long long)addr);
+> +	     (unsigned long long __force)addr);
+>   }
+>   #endif /* CONFIG_LOGIC_IOMEM_FALLBACK */
+>   
+> 
 
-diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-index 6ab9d9a488a6..1f3c0e2ea4d9 100644
---- a/drivers/dma/Kconfig
-+++ b/drivers/dma/Kconfig
-@@ -278,7 +278,7 @@ config INTEL_IDMA64
- 
- config INTEL_IDXD
- 	tristate "Intel Data Accelerators support"
--	depends on PCI && X86_64
-+	depends on PCI && X86_64 && !UML
- 	depends on PCI_MSI
- 	depends on SBITMAP
- 	select DMA_ENGINE
+Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+
 -- 
-2.31.1
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
