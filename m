@@ -1,18 +1,9 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-il1-x131.google.com ([2607:f8b0:4864:20::131])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lxxF1-0093bQ-CL
- for linux-um@lists.infradead.org; Mon, 28 Jun 2021 19:48:24 +0000
-Received: by mail-il1-x131.google.com with SMTP id s19so18590846ilj.1
- for <linux-um@lists.infradead.org>; Mon, 28 Jun 2021 12:48:21 -0700 (PDT)
-Subject: Re: [PATCH] ubd: remove dead code in ubd_setup_common
-References: <20210628093937.1325608-1-hch@lst.de>
-From: Jens Axboe <axboe@kernel.dk>
-Message-ID: <59dff238-e9aa-4de3-fa00-08d376f443a6@kernel.dk>
-Date: Mon, 28 Jun 2021 13:48:22 -0600
+From: Christoph Hellwig <hch@lst.de>
+Subject: [PATCH] ubd: remove dead code in ubd_setup_common
+Date: Mon, 28 Jun 2021 11:39:37 +0200
+Message-Id: <20210628093937.1325608-1-hch@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <20210628093937.1325608-1-hch@lst.de>
-Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -25,17 +16,47 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Christoph Hellwig <hch@lst.de>, richard@nod.at, anton.ivanov@cambridgegreys.com
+To: axboe@kernel.dk, richard@nod.at, anton.ivanov@cambridgegreys.com
 Cc: linux-um@lists.infradead.org, linux-block@vger.kernel.org
 
-On 6/28/21 3:39 AM, Christoph Hellwig wrote:
-> Remove some leftovers of the fake major number parsing that cause
-> complains from some compilers.
+Remove some leftovers of the fake major number parsing that cause
+complains from some compilers.
 
-Applied, thanks.
+Fixes: aebbd9fdb0cc ("ubd: remove the code to register as the legacy IDE driver")
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ arch/um/drivers/ubd_kern.c | 10 ----------
+ 1 file changed, 10 deletions(-)
 
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index 0b86aa1b12f1..e3093071406d 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -243,22 +243,12 @@ static int ubd_setup_common(char *str, int *index_out, char **error_out)
+ 	if(index_out) *index_out = -1;
+ 	n = *str;
+ 	if(n == '='){
+-		char *end;
+-		int major;
+-
+ 		str++;
+ 		if(!strcmp(str, "sync")){
+ 			global_openflags = of_sync(global_openflags);
+ 			return err;
+ 		}
+ 
+-		err = -EINVAL;
+-		major = simple_strtoul(str, &end, 0);
+-		if((*end != '\0') || (end == str)){
+-			*error_out = "Didn't parse major number";
+-			return err;
+-		}
+-
+ 		pr_warn("fake major not supported any more\n");
+ 		return 0;
+ 	}
 -- 
-Jens Axboe
+2.30.2
 
 
 _______________________________________________
