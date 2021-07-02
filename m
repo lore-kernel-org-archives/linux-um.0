@@ -1,339 +1,147 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
-From: Arnd Bergmann <arnd@kernel.org>
-Subject: [PATCH v3 1/9] asm-generic/uaccess.h: remove __strncpy_from_user/__strnlen_user
-Date: Thu, 22 Jul 2021 14:48:06 +0200
-Message-Id: <20210722124814.778059-2-arnd@kernel.org>
-In-Reply-To: <20210722124814.778059-1-arnd@kernel.org>
-References: <20210722124814.778059-1-arnd@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pf1-x430.google.com ([2607:f8b0:4864:20::430])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1lzS1N-004C43-OX
+ for linux-um@lists.infradead.org; Fri, 02 Jul 2021 22:52:31 +0000
+Received: by mail-pf1-x430.google.com with SMTP id f20so2553064pfa.1
+ for <linux-um@lists.infradead.org>; Fri, 02 Jul 2021 15:52:29 -0700 (PDT)
+Date: Fri, 2 Jul 2021 15:48:53 -0700
+From: Andrei Vagin <avagin@gmail.com>
+Subject: Re: [PATCH 2/4] arch/x86: implement the process_vm_exec syscall
+Message-ID: <YN+X1QKWQOKekK4E@gmail.com>
+References: <20210414055217.543246-1-avagin@gmail.com>
+ <20210414055217.543246-3-avagin@gmail.com>
+ <CAG48ez37ZUNvWy1eOvrW13kFRM-_ZW175x99Nyjq43w4Qz1qJQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-arch@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Al Viro <viro@zeniv.linux.org.uk>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Brian Cain <bcain@codeaurora.org>, Chris Zankel <chris@zankel.net>, Christian Borntraeger <borntraeger@de.ibm.com>, Christoph Hellwig <hch@lst.de>, Guo Ren <guoren@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Jeff Dike <jdike@addtoit.com>, Linus Walleij <linus.walleij@linaro.org>, Max Filippov <jcmvbkbc@gmail.com>, Michal Simek <monstr@monstr.eu>, Richard Weinberger <richard@nod.at>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Vasily Gorbik <gor@linux.ibm.com>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, uclinux-h8-devel@lists.sourceforge.jp
-List-ID: <linux-um.lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <CAG48ez37ZUNvWy1eOvrW13kFRM-_ZW175x99Nyjq43w4Qz1qJQ@mail.gmail.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Jann Horn <jannh@google.com>
+Cc: the arch/x86 maintainers <x86@kernel.org>, Andy Lutomirski <luto@kernel.org>, linux-kernel@vger.kernel.org, linux-api@vger.kernel.org, linux-um@lists.infradead.org, criu@openvz.org, avagin@google.com, Andrew Morton <akpm@linux-foundation.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Christian Brauner <christian.brauner@ubuntu.com>, Dmitry Safonov <0x7f454c46@gmail.com>, Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>, Mike Rapoport <rppt@linux.ibm.com>, Michael Kerrisk <mtk.manpages@gmail.com>, Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Fri, Jul 02, 2021 at 10:56:38PM +0200, Jann Horn wrote:
+> On Wed, Apr 14, 2021 at 7:59 AM Andrei Vagin <avagin@gmail.com> wrote:
+> > This change introduces the new system call:
+> > process_vm_exec(pid_t pid, struct sigcontext *uctx, unsigned long flags,
+> >                 siginfo_t * uinfo, sigset_t *sigmask, size_t sizemask)
+> >
+> > process_vm_exec allows to execute the current process in an address
+> > space of another process.
+> >
+> > process_vm_exec swaps the current address space with an address space of
+> > a specified process, sets a state from sigcontex and resumes the process.
+> > When a process receives a signal or calls a system call,
+> > process_vm_exec saves the process state back to sigcontext, restores the
+> > origin address space, restores the origin process state, and returns to
+> > userspace.
+> >
+> > If it was interrupted by a signal and the signal is in the user_mask,
+> > the signal is dequeued and information about it is saved in uinfo.
+> > If process_vm_exec is interrupted by a system call, a synthetic siginfo
+> > for the SIGSYS signal is generated.
+> >
+> > The behavior of this system call is similar to PTRACE_SYSEMU but
+> > everything is happing in the context of one process, so
+> > process_vm_exec shows a better performance.
+> >
+> > PTRACE_SYSEMU is primarily used to implement sandboxes (application
+> > kernels) like User-mode Linux or gVisor. These type of sandboxes
+> > intercepts applications system calls and acts as the guest kernel.
+> > A simple benchmark, where a "tracee" process executes systems calls in a
+> > loop and a "tracer" process traps syscalls and handles them just
+> > incrementing the tracee instruction pointer to skip the syscall
+> > instruction shows that process_vm_exec works more than 5 times faster
+> > than PTRACE_SYSEMU.
+> [...]
+> > +long swap_vm_exec_context(struct sigcontext __user *uctx)
+> > +{
+> > +       struct sigcontext ctx = {};
+> > +       sigset_t set = {};
+> > +
+> > +
+> > +       if (copy_from_user(&ctx, uctx, CONTEXT_COPY_SIZE))
+> > +               return -EFAULT;
+> > +       /* A floating point state is managed from user-space. */
+> > +       if (ctx.fpstate != 0)
+> > +               return -EINVAL;
+> > +       if (!user_access_begin(uctx, sizeof(*uctx)))
+> > +               return -EFAULT;
+> > +       unsafe_put_sigcontext(uctx, NULL, current_pt_regs(), (&set), Efault);
+> > +       user_access_end();
+> > +
+> > +       if (__restore_sigcontext(current_pt_regs(), &ctx, 0))
+> > +               goto badframe;
+> > +
+> > +       return 0;
+> > +Efault:
+> > +       user_access_end();
+> > +badframe:
+> > +       signal_fault(current_pt_regs(), uctx, "swap_vm_exec_context");
+> > +       return -EFAULT;
+> > +}
+> 
+> Comparing the pieces of context that restore_sigcontext() restores
+> with what a normal task switch does (see __switch_to() and callees), I
+> noticed: On CPUs with FSGSBASE support, I think sandboxed code could
+> overwrite FSBASE/GSBASE using the WRFSBASE/WRGSBASE instructions,
+> causing the supervisor to access attacker-controlled addresses when it
+> tries to access a thread-local variable like "errno"? Signal handling
+> saves the segment registers, but not the FS/GS base addresses.
+> 
+> 
+> jannh@laptop:~/test$ cat signal_gsbase.c
+> // compile with -mfsgsbase
+> #include <stdio.h>
+> #include <signal.h>
+> #include <immintrin.h>
+> 
+> void signal_handler(int sig, siginfo_t *info, void *ucontext_) {
+>   puts("signal handler");
+>   _writegsbase_u64(0x12345678);
+> }
+> 
+> int main(void) {
+>   struct sigaction new_act = {
+>     .sa_sigaction = signal_handler,
+>     .sa_flags = SA_SIGINFO
+>   };
+>   sigaction(SIGUSR1, &new_act, NULL);
+> 
+>   printf("original gsbase is 0x%lx\n", _readgsbase_u64());
+>   raise(SIGUSR1);
+>   printf("post-signal gsbase is 0x%lx\n", _readgsbase_u64());
+> }
+> jannh@laptop:~/test$ gcc -o signal_gsbase signal_gsbase.c -mfsgsbase
+> jannh@laptop:~/test$ ./signal_gsbase
+> original gsbase is 0x0
+> signal handler
+> post-signal gsbase is 0x12345678
+> jannh@laptop:~/test$
+> 
+> 
+> So to make this usable for a sandboxing usecase, you'd also have to
+> save and restore FSBASE/GSBASE, just like __switch_to().
 
-This is a preparation for changing over architectures to the
-generic implementation one at a time. As there are no callers
-of either __strncpy_from_user() or __strnlen_user(), fold these
-into the strncpy_from_user() and strnlen_user() functions to make
-each implementation independent of the others.
+You are right. I've found this too when I implemented the gviosr user-space
+part.
 
-Many of these implementations have known bugs, but the intention
-here is to not change behavior at all and stay compatible with
-those bugs for the moment.
+Here is the tree whether this problem has been fixed:
+https://github.com/avagin/linux-task-diag/commits/wip/gvisor-5.10
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/arc/include/asm/uaccess.h     | 14 ++++++++++----
- arch/csky/include/asm/uaccess.h    |  8 ++++----
- arch/csky/lib/usercopy.c           | 14 ++++++++++----
- arch/hexagon/include/asm/uaccess.h | 22 +++++++++++++---------
- arch/um/include/asm/uaccess.h      |  8 ++++----
- arch/um/kernel/skas/uaccess.c      | 14 ++++++++++----
- include/asm-generic/uaccess.h      | 28 +++++++++++-----------------
- 7 files changed, 62 insertions(+), 46 deletions(-)
 
-diff --git a/arch/arc/include/asm/uaccess.h b/arch/arc/include/asm/uaccess.h
-index ea40ec7f6cae..3476348f361e 100644
---- a/arch/arc/include/asm/uaccess.h
-+++ b/arch/arc/include/asm/uaccess.h
-@@ -661,6 +661,9 @@ __arc_strncpy_from_user(char *dst, const char __user *src, long count)
- 	long res = 0;
- 	char val;
- 
-+	if (!access_ok(src, 1))
-+		return -EFAULT;
-+
- 	if (count == 0)
- 		return 0;
- 
-@@ -693,6 +696,9 @@ static inline long __arc_strnlen_user(const char __user *s, long n)
- 	long res, tmp1, cnt;
- 	char val;
- 
-+	if (!access_ok(s, 1))
-+		return 0;
-+
- 	__asm__ __volatile__(
- 	"	mov %2, %1			\n"
- 	"1:	ldb.ab  %3, [%0, 1]		\n"
-@@ -724,8 +730,8 @@ static inline long __arc_strnlen_user(const char __user *s, long n)
- #define INLINE_COPY_FROM_USER
- 
- #define __clear_user(d, n)		__arc_clear_user(d, n)
--#define __strncpy_from_user(d, s, n)	__arc_strncpy_from_user(d, s, n)
--#define __strnlen_user(s, n)		__arc_strnlen_user(s, n)
-+#define strncpy_from_user(d, s, n)	__arc_strncpy_from_user(d, s, n)
-+#define strnlen_user(s, n)		__arc_strnlen_user(s, n)
- #else
- extern unsigned long arc_clear_user_noinline(void __user *to,
- 		unsigned long n);
-@@ -734,8 +740,8 @@ extern long arc_strncpy_from_user_noinline (char *dst, const char __user *src,
- extern long arc_strnlen_user_noinline(const char __user *src, long n);
- 
- #define __clear_user(d, n)		arc_clear_user_noinline(d, n)
--#define __strncpy_from_user(d, s, n)	arc_strncpy_from_user_noinline(d, s, n)
--#define __strnlen_user(s, n)		arc_strnlen_user_noinline(s, n)
-+#define strncpy_from_user(d, s, n)	arc_strncpy_from_user_noinline(d, s, n)
-+#define strnlen_user(s, n)		arc_strnlen_user_noinline(s, n)
- 
- #endif
- 
-diff --git a/arch/csky/include/asm/uaccess.h b/arch/csky/include/asm/uaccess.h
-index ac83823fc437..e17c02a6709f 100644
---- a/arch/csky/include/asm/uaccess.h
-+++ b/arch/csky/include/asm/uaccess.h
-@@ -209,11 +209,11 @@ unsigned long raw_copy_to_user(void *to, const void *from, unsigned long n);
- unsigned long __clear_user(void __user *to, unsigned long n);
- #define __clear_user __clear_user
- 
--long __strncpy_from_user(char *dst, const char *src, long count);
--#define __strncpy_from_user __strncpy_from_user
-+long strncpy_from_user(char *dst, const char *src, long count);
-+#define strncpy_from_user strncpy_from_user
- 
--long __strnlen_user(const char *s, long n);
--#define __strnlen_user __strnlen_user
-+long strnlen_user(const char *s, long n);
-+#define strnlen_user strnlen_user
- 
- #include <asm/segment.h>
- #include <asm-generic/uaccess.h>
-diff --git a/arch/csky/lib/usercopy.c b/arch/csky/lib/usercopy.c
-index c5d394a0ae78..938b750d2fb1 100644
---- a/arch/csky/lib/usercopy.c
-+++ b/arch/csky/lib/usercopy.c
-@@ -163,11 +163,14 @@ EXPORT_SYMBOL(raw_copy_to_user);
-  * If @count is smaller than the length of the string, copies @count bytes
-  * and returns @count.
-  */
--long __strncpy_from_user(char *dst, const char *src, long count)
-+long strncpy_from_user(char *dst, const char *src, long count)
- {
- 	long res, faultres;
- 	int tmp;
- 
-+	if (!access_ok(src, 1))
-+		return -EFAULT;
-+
- 	__asm__ __volatile__(
- 	"       cmpnei  %3, 0           \n"
- 	"       bf      4f              \n"
-@@ -198,7 +201,7 @@ long __strncpy_from_user(char *dst, const char *src, long count)
- 
- 	return res;
- }
--EXPORT_SYMBOL(__strncpy_from_user);
-+EXPORT_SYMBOL(strncpy_from_user);
- 
- /*
-  * strnlen_user: - Get the size of a string in user space.
-@@ -211,10 +214,13 @@ EXPORT_SYMBOL(__strncpy_from_user);
-  * On exception, returns 0.
-  * If the string is too long, returns a value greater than @n.
-  */
--long __strnlen_user(const char *s, long n)
-+long strnlen_user(const char *s, long n)
- {
- 	unsigned long res, tmp;
- 
-+	if (!access_ok(src, 1))
-+		return -EFAULT;
-+
- 	__asm__ __volatile__(
- 	"       cmpnei  %1, 0           \n"
- 	"       bf      3f              \n"
-@@ -242,7 +248,7 @@ long __strnlen_user(const char *s, long n)
- 
- 	return res;
- }
--EXPORT_SYMBOL(__strnlen_user);
-+EXPORT_SYMBOL(strnlen_user);
- 
- /*
-  * __clear_user: - Zero a block of memory in user space, with less checking.
-diff --git a/arch/hexagon/include/asm/uaccess.h b/arch/hexagon/include/asm/uaccess.h
-index c1019a736ff1..59aa3a50744f 100644
---- a/arch/hexagon/include/asm/uaccess.h
-+++ b/arch/hexagon/include/asm/uaccess.h
-@@ -57,23 +57,27 @@ unsigned long raw_copy_to_user(void __user *to, const void *from,
- __kernel_size_t __clear_user_hexagon(void __user *dest, unsigned long count);
- #define __clear_user(a, s) __clear_user_hexagon((a), (s))
- 
--#define __strncpy_from_user(dst, src, n) hexagon_strncpy_from_user(dst, src, n)
-+extern long __strnlen_user(const char __user *src, long n);
- 
--/*  get around the ifndef in asm-generic/uaccess.h  */
--#define __strnlen_user __strnlen_user
-+static inline strnlen_user(const char __user *src, long n)
-+{
-+        if (!access_ok(src, 1))
-+		return 0;
- 
--extern long __strnlen_user(const char __user *src, long n);
-+	return __strnlen_user(src, n);
-+}
-+/*  get around the ifndef in asm-generic/uaccess.h  */
-+#define strnlen_user strnlen_user
- 
--static inline long hexagon_strncpy_from_user(char *dst, const char __user *src,
--					     long n);
-+static inline long strncpy_from_user(char *dst, const char __user *src, long n);
-+#define strncpy_from_user strncpy_from_user
- 
- #include <asm-generic/uaccess.h>
- 
- /*  Todo:  an actual accelerated version of this.  */
--static inline long hexagon_strncpy_from_user(char *dst, const char __user *src,
--					     long n)
-+static inline long strncpy_from_user(char *dst, const char __user *src, long n)
- {
--	long res = __strnlen_user(src, n);
-+	long res = strnlen_user(src, n);
- 
- 	if (unlikely(!res))
- 		return -EFAULT;
-diff --git a/arch/um/include/asm/uaccess.h b/arch/um/include/asm/uaccess.h
-index fe66d659acad..3bf209f683f8 100644
---- a/arch/um/include/asm/uaccess.h
-+++ b/arch/um/include/asm/uaccess.h
-@@ -23,16 +23,16 @@
- 
- extern unsigned long raw_copy_from_user(void *to, const void __user *from, unsigned long n);
- extern unsigned long raw_copy_to_user(void __user *to, const void *from, unsigned long n);
--extern long __strncpy_from_user(char *dst, const char __user *src, long count);
--extern long __strnlen_user(const void __user *str, long len);
-+extern long strncpy_from_user(char *dst, const char __user *src, long count);
-+extern long strnlen_user(const void __user *str, long len);
- extern unsigned long __clear_user(void __user *mem, unsigned long len);
- static inline int __access_ok(unsigned long addr, unsigned long size);
- 
- /* Teach asm-generic/uaccess.h that we have C functions for these. */
- #define __access_ok __access_ok
- #define __clear_user __clear_user
--#define __strnlen_user __strnlen_user
--#define __strncpy_from_user __strncpy_from_user
-+#define strnlen_user strnlen_user
-+#define strncpy_from_user strncpy_from_user
- #define INLINE_COPY_FROM_USER
- #define INLINE_COPY_TO_USER
- 
-diff --git a/arch/um/kernel/skas/uaccess.c b/arch/um/kernel/skas/uaccess.c
-index 6c76df96e858..fc2c7e961e72 100644
---- a/arch/um/kernel/skas/uaccess.c
-+++ b/arch/um/kernel/skas/uaccess.c
-@@ -189,11 +189,14 @@ static int strncpy_chunk_from_user(unsigned long from, int len, void *arg)
- 	return 0;
- }
- 
--long __strncpy_from_user(char *dst, const char __user *src, long count)
-+long strncpy_from_user(char *dst, const char __user *src, long count)
- {
- 	long n;
- 	char *ptr = dst;
- 
-+	if (!access_ok(src, 1))
-+		return -EFAULT;
-+
- 	if (uaccess_kernel()) {
- 		strncpy(dst, (__force void *) src, count);
- 		return strnlen(dst, count);
-@@ -205,7 +208,7 @@ long __strncpy_from_user(char *dst, const char __user *src, long count)
- 		return -EFAULT;
- 	return strnlen(dst, count);
- }
--EXPORT_SYMBOL(__strncpy_from_user);
-+EXPORT_SYMBOL(strncpy_from_user);
- 
- static int clear_chunk(unsigned long addr, int len, void *unused)
- {
-@@ -236,10 +239,13 @@ static int strnlen_chunk(unsigned long str, int len, void *arg)
- 	return 0;
- }
- 
--long __strnlen_user(const void __user *str, long len)
-+long strnlen_user(const void __user *str, long len)
- {
- 	int count = 0, n;
- 
-+	if (!access_ok(src, 1))
-+		return -EFAULT;
-+
- 	if (uaccess_kernel())
- 		return strnlen((__force char*)str, len) + 1;
- 
-@@ -248,7 +254,7 @@ long __strnlen_user(const void __user *str, long len)
- 		return count + 1;
- 	return 0;
- }
--EXPORT_SYMBOL(__strnlen_user);
-+EXPORT_SYMBOL(strnlen_user);
- 
- /**
-  * arch_futex_atomic_op_inuser() - Atomic arithmetic operation with constant
-diff --git a/include/asm-generic/uaccess.h b/include/asm-generic/uaccess.h
-index a0b2f270dddc..2f8a5d3bbd57 100644
---- a/include/asm-generic/uaccess.h
-+++ b/include/asm-generic/uaccess.h
-@@ -246,11 +246,15 @@ extern int __get_user_bad(void) __attribute__((noreturn));
- /*
-  * Copy a null terminated string from userspace.
-  */
--#ifndef __strncpy_from_user
-+#ifndef strncpy_from_user
- static inline long
--__strncpy_from_user(char *dst, const char __user *src, long count)
-+strncpy_from_user(char *dst, const char __user *src, long count)
- {
- 	char *tmp;
-+
-+	if (!access_ok(src, 1))
-+		return -EFAULT;
-+
- 	strncpy(dst, (const char __force *)src, count);
- 	for (tmp = dst; *tmp && count > 0; tmp++, count--)
- 		;
-@@ -258,24 +262,12 @@ __strncpy_from_user(char *dst, const char __user *src, long count)
- }
- #endif
- 
--static inline long
--strncpy_from_user(char *dst, const char __user *src, long count)
--{
--	if (!access_ok(src, 1))
--		return -EFAULT;
--	return __strncpy_from_user(dst, src, count);
--}
--
-+#ifndef strnlen_user
- /*
-  * Return the size of a string (including the ending 0)
-  *
-  * Return 0 on exception, a value greater than N if too long
-- */
--#ifndef __strnlen_user
--#define __strnlen_user(s, n) (strnlen((s), (n)) + 1)
--#endif
--
--/*
-+ *
-  * Unlike strnlen, strnlen_user includes the nul terminator in
-  * its returned count. Callers should check for a returned value
-  * greater than N as an indication the string is too long.
-@@ -284,8 +276,10 @@ static inline long strnlen_user(const char __user *src, long n)
- {
- 	if (!access_ok(src, 1))
- 		return 0;
--	return __strnlen_user(src, n);
-+
-+	return strnlen(src, n) + 1;
- }
-+#endif
- 
- /*
-  * Zero Userspace
--- 
-2.29.2
-
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
