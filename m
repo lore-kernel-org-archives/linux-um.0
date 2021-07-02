@@ -1,18 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from mail-lf1-x130.google.com ([2a00:1450:4864:20::130])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lzPy3-0041QN-MS
- for linux-um@lists.infradead.org; Fri, 02 Jul 2021 20:40:57 +0000
-Mime-Version: 1.0
-Message-Id: <9a943ade-cabe-40e0-992a-13f26ed58f69@www.fastmail.com>
-In-Reply-To: <CAG48ez1=RPbsUos6yY1jMVU49U+GqSN8kFPosoFpKJZjFa4yvQ@mail.gmail.com>
+ id 1lzHhq-002wkO-DY
+ for linux-um@lists.infradead.org; Fri, 02 Jul 2021 11:51:39 +0000
+Received: by mail-lf1-x130.google.com with SMTP id bq39so4977162lfb.12
+ for <linux-um@lists.infradead.org>; Fri, 02 Jul 2021 04:51:36 -0700 (PDT)
+MIME-Version: 1.0
 References: <20210414055217.543246-1-avagin@gmail.com>
  <20210414055217.543246-3-avagin@gmail.com>
  <CAG48ez3UrzPE8rkucTgCu8ggcTEjx_h3Gj2FES1qM-uv2KD8bQ@mail.gmail.com>
  <YN6wlwFomEJ0LK1Y@gmail.com>
- <CAG48ez1=RPbsUos6yY1jMVU49U+GqSN8kFPosoFpKJZjFa4yvQ@mail.gmail.com>
-Date: Fri, 02 Jul 2021 13:40:26 -0700
-From: "Andy Lutomirski" <luto@kernel.org>
+In-Reply-To: <YN6wlwFomEJ0LK1Y@gmail.com>
+From: Jann Horn <jannh@google.com>
+Date: Fri, 2 Jul 2021 13:51:08 +0200
+Message-ID: <CAG48ez1=RPbsUos6yY1jMVU49U+GqSN8kFPosoFpKJZjFa4yvQ@mail.gmail.com>
 Subject: Re: [PATCH 2/4] arch/x86: implement the process_vm_exec syscall
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,72 +23,70 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jann Horn <jannh@google.com>, Andrei Vagin <avagin@gmail.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux API <linux-api@vger.kernel.org>, linux-um@lists.infradead.org, criu@openvz.org, avagin@google.com, Andrew Morton <akpm@linux-foundation.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Christian Brauner <christian.brauner@ubuntu.com>, Dmitry Safonov <0x7f454c46@gmail.com>, Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>, Mike Rapoport <rppt@linux.ibm.com>, Michael Kerrisk <mtk.manpages@gmail.com>, Oleg Nesterov <oleg@redhat.com>, "Peter Zijlstra (Intel)" <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, linux-mm@kvack.org
+To: Andrei Vagin <avagin@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-api@vger.kernel.org, linux-um@lists.infradead.org, criu@openvz.org, avagin@google.com, Andrew Morton <akpm@linux-foundation.org>, Andy Lutomirski <luto@kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Christian Brauner <christian.brauner@ubuntu.com>, Dmitry Safonov <0x7f454c46@gmail.com>, Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>, Mike Rapoport <rppt@linux.ibm.com>, Michael Kerrisk <mtk.manpages@gmail.com>, Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, linux-mm@kvack.org
 
-CgpPbiBGcmksIEp1bCAyLCAyMDIxLCBhdCA0OjUxIEFNLCBKYW5uIEhvcm4gd3JvdGU6Cj4gT24g
-RnJpLCBKdWwgMiwgMjAyMSBhdCA4OjI1IEFNIEFuZHJlaSBWYWdpbiA8YXZhZ2luQGdtYWlsLmNv
-bT4gd3JvdGU6Cj4gPiBPbiBNb24sIEp1biAyOCwgMjAyMSBhdCAwNjoxMzoyOVBNICswMjAwLCBK
-YW5uIEhvcm4gd3JvdGU6Cj4gPiA+IE9uIFdlZCwgQXByIDE0LCAyMDIxIGF0IDc6NTkgQU0gQW5k
-cmVpIFZhZ2luIDxhdmFnaW5AZ21haWwuY29tPiB3cm90ZToKPiA+ID4gPiArc3RhdGljIHZvaWQg
-c3dhcF9tbShzdHJ1Y3QgbW1fc3RydWN0ICpwcmV2X21tLCBzdHJ1Y3QgbW1fc3RydWN0ICp0YXJn
-ZXRfbW0pCj4gPiA+ID4gK3sKPiA+ID4gPiArICAgICAgIHN0cnVjdCB0YXNrX3N0cnVjdCAqdHNr
-ID0gY3VycmVudDsKPiA+ID4gPiArICAgICAgIHN0cnVjdCBtbV9zdHJ1Y3QgKmFjdGl2ZV9tbTsK
-PiA+ID4gPiArCj4gPiA+ID4gKyAgICAgICB0YXNrX2xvY2sodHNrKTsKPiA+ID4gPiArICAgICAg
-IC8qIEhvbGQgb2ZmIHRsYiBmbHVzaCBJUElzIHdoaWxlIHN3aXRjaGluZyBtbSdzICovCj4gPiA+
-ID4gKyAgICAgICBsb2NhbF9pcnFfZGlzYWJsZSgpOwo+ID4gPiA+ICsKPiA+ID4gPiArICAgICAg
-IHN5bmNfbW1fcnNzKHByZXZfbW0pOwo+ID4gPiA+ICsKPiA+ID4gPiArICAgICAgIHZtYWNhY2hl
-X2ZsdXNoKHRzayk7Cj4gPiA+ID4gKwo+ID4gPiA+ICsgICAgICAgYWN0aXZlX21tID0gdHNrLT5h
-Y3RpdmVfbW07Cj4gPiA+ID4gKyAgICAgICBpZiAoYWN0aXZlX21tICE9IHRhcmdldF9tbSkgewo+
-ID4gPiA+ICsgICAgICAgICAgICAgICBtbWdyYWIodGFyZ2V0X21tKTsKPiA+ID4gPiArICAgICAg
-ICAgICAgICAgdHNrLT5hY3RpdmVfbW0gPSB0YXJnZXRfbW07Cj4gPiA+ID4gKyAgICAgICB9Cj4g
-PiA+ID4gKyAgICAgICB0c2stPm1tID0gdGFyZ2V0X21tOwo+ID4gPgo+ID4gPiBJJ20gcHJldHR5
-IHN1cmUgeW91J3JlIG5vdCBjdXJyZW50bHkgYWxsb3dlZCB0byBvdmVyd3JpdGUgdGhlIC0+bW0K
-PiA+ID4gcG9pbnRlciBvZiBhIHVzZXJzcGFjZSB0aHJlYWQuIEZvciBleGFtcGxlLCB6YXBfdGhy
-ZWFkcygpIGFzc3VtZXMgdGhhdAo+ID4gPiBhbGwgdGhyZWFkcyBydW5uaW5nIHVuZGVyIGEgcHJv
-Y2VzcyBoYXZlIHRoZSBzYW1lIC0+bW0uIChBbmQgaWYgeW91J3JlCj4gPiA+IGZpZGRsaW5nIHdp
-dGggLT5tbSBzdHVmZiwgeW91IHNob3VsZCBwcm9iYWJseSBDQyBsaW51eC1tbUAuKQo+ID4gPgo+
-ID4gPiBBcyBmYXIgYXMgSSB1bmRlcnN0YW5kLCBvbmx5IGt0aHJlYWRzIGFyZSBhbGxvd2VkIHRv
-IGRvIHRoaXMgKGFzCj4gPiA+IGltcGxlbWVudGVkIGluIGt0aHJlYWRfdXNlX21tKCkpLgo+ID4K
-PiA+IGt0aHJlYWRfdXNlX21tKCkgd2FzIHJlbmFtZWQgZnJvbSB1c2VfbW0gaW4gdGhlIHY1Ljgg
-a2VybmVsLiBCZWZvcmUKPiA+IHRoYXQsIGl0IHdhc24ndCB1c2VkIGZvciB1c2VyIHByb2Nlc3Nl
-cyBpbiB0aGUga2VybmVsLCBidXQgaXQgd2FzCj4gPiBleHBvcnRlZCBmb3IgbW9kdWxlcywgYW5k
-IHdlIHVzZWQgaXQgd2l0aG91dCBhbnkgdmlzaWJsZSBwcm9ibGVtcy4gV2UKPiA+IHVuZGVyc3Rv
-b2QgdGhhdCB0aGVyZSBjb3VsZCBiZSBzb21lIGlzc3VlcyBsaWtlIHphcF90aHJlYWRzIGFuZCBp
-dCB3YXMKPiA+IG9uZSBvZiByZWFzb25zIHdoeSB3ZSBkZWNpZGVkIHRvIGludHJvZHVjZSB0aGlz
-IHN5c3RlbSBjYWxsLgo+ID4KPiA+IEkgdW5kZXJzdGFuZCB0aGF0IHRoZXJlIGFyZSBubyBwbGFj
-ZXMgaW4gdGhlIGtlcm5lbCB3aGVyZSB3ZSBjaGFuZ2UgbW0KPiA+IG9mIHVzZXIgdGhyZWFkcyBi
-YWNrIGFuZCBmb3J0aCwgYnV0IGFyZSB0aGVyZSBhbnkgcmVhbCBjb25jZXJucyB3aHkgd2UKPiA+
-IHNob3VsZCBub3QgZG8gdGhhdD8gSSBhZ3JlZSB0aGF0IHphcF90aHJlYWRzIHNob3VsZCBiZSBm
-aXhlZCwgYnV0IGl0Cj4gPiB3aWxsIHRoZSBlYXN5IG9uZS4KPiAKPiBNeSBwb2ludCBpcyB0aGF0
-IGlmIHlvdSBicmVhayBhIHByZWV4aXN0aW5nIGFzc3VtcHRpb24gbGlrZSB0aGlzLAo+IHlvdSds
-bCBoYXZlIHRvIGdvIHRocm91Z2ggdGhlIGtlcm5lbCBhbmQgc2VhcmNoIGZvciBwbGFjZXMgdGhh
-dCByZWx5Cj4gb24gdGhpcyBhc3N1bXB0aW9uLCBhbmQgZml4IHRoZW0gdXAsIHdoaWNoIG1heSBw
-b3RlbnRpYWxseSByZXF1aXJlCj4gdGhpbmtpbmcgYWJvdXQgd2hhdCBraW5kcyBvZiBzZW1hbnRp
-Y3Mgd291bGQgYWN0dWFsbHkgYmUgYXBwcm9wcmlhdGUKPiB0aGVyZS4gTGlrZSB0aGUgTUNFIGtp
-bGxpbmcgbG9naWMgKGNvbGxlY3RfcHJvY3NfYW5vbigpIGFuZCBzdWNoKS4gQW5kCj4gY3VycmVu
-dF9pc19zaW5nbGVfdGhyZWFkZWQoKSwgaW4gd2hpY2ggdGhlIGN1cnJlbnQgcGF0Y2ggcHJvYmFi
-bHkKPiBsZWFkcyB0byBsb2dpYyBzZWN1cml0eSBidWdzLiBBbmQgX191cHJvYmVfcGVyZl9maWx0
-ZXIoKS4gQmVmb3JlIG15Cj4gcmVmYWN0b3Jpbmcgb2YgdGhlIEVMRiBjb3JlZHVtcCBsb2dpYyBp
-biBrZXJuZWwgNS4xMCAoY29tbWl0Cj4gYjI3NjdkOTdmNWZmNzUgYW5kIHRoZSBvbmVzIGJlZm9y
-ZSBpdCksIHlvdSdkIGhhdmUgYWxzbyBwcm9iYWJseQo+IGNyZWF0ZWQgbWVtb3J5IGNvcnJ1cHRp
-b24gYnVncyBpbiByYWNlcyBiZXR3ZWVuIGVsZl9jb3JlX2R1bXAoKSBhbmQKPiBzeXNjYWxscyBs
-aWtlIG1tYXAoKS9tdW5tYXAoKS4gKE5vdGUgdGhhdCB0aGlzIGlzIG5vdCBuZWNlc3NhcmlseSBh
-bgo+IGV4aGF1c3RpdmUgbGlzdC4pCj4gCgpUaGVyZeKAmXMgbm1pX3VhY2Nlc3Nfb2theSgpLCBh
-bmQgaXRzIGNhbGxlcnMgYXNzdW1lIHRoYXQsIHdoZW4gYSB0YXNrIGlzIHBlcmYgdHJhY2luZyBp
-dHNlbGYsIHRoYXQgYW4gZXZlbnQgb24gdGhhdCB0YXNrIHdpdGggbm1pX3VhY2Nlc3Nfb2theSgp
-IG1lYW5zIHRoYXQgdWFjY2VzcyB3aWxsIGFjY2VzcyB0aGF0IHRhc2vigJlzIG1lbW9yeS4KCkNv
-cmUgZHVtcCBjb2RlIHByb2JhYmx5IGV4cGVjdHMgdGhhdCBkdW1waW5nIG1lbW9yeSB3aWxsIGFj
-Y2VzcyB0aGUgY29ycmVjdCBtbS4KCkkgY2Fubm90IGZhdGhvbSB3aHkgYW55IGtpbmQgb2YgcmVt
-b3RlIHZtIGFjY2VzcyB0b3VjaGVkIEZQVSBzdGF0ZSBhdCBhbGwuCgpXaGF0IFBLUlUgdmFsdWUg
-aXMgc3VwcG9zZWQgdG8gYmUgdXNlZCB3aGVuIGRvaW5nIG1tIHN3YXAgc2hlbmFuaWdhbnM/ICBI
-b3cgYWJvdXQgUEFTSUQ/CgpXaGF0IGhhcHBlbnMgaWYgb25lIHRhc2sgYXR0ZW1wdHMgdG8gaXNz
-dWUgYSBLVk0gaW9jdGwgd2hpbGUgaXRzIG1tIGlzIHN3YXBwZWQ/CgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGlu
-dXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
+On Fri, Jul 2, 2021 at 8:25 AM Andrei Vagin <avagin@gmail.com> wrote:
+> On Mon, Jun 28, 2021 at 06:13:29PM +0200, Jann Horn wrote:
+> > On Wed, Apr 14, 2021 at 7:59 AM Andrei Vagin <avagin@gmail.com> wrote:
+> > > +static void swap_mm(struct mm_struct *prev_mm, struct mm_struct *target_mm)
+> > > +{
+> > > +       struct task_struct *tsk = current;
+> > > +       struct mm_struct *active_mm;
+> > > +
+> > > +       task_lock(tsk);
+> > > +       /* Hold off tlb flush IPIs while switching mm's */
+> > > +       local_irq_disable();
+> > > +
+> > > +       sync_mm_rss(prev_mm);
+> > > +
+> > > +       vmacache_flush(tsk);
+> > > +
+> > > +       active_mm = tsk->active_mm;
+> > > +       if (active_mm != target_mm) {
+> > > +               mmgrab(target_mm);
+> > > +               tsk->active_mm = target_mm;
+> > > +       }
+> > > +       tsk->mm = target_mm;
+> >
+> > I'm pretty sure you're not currently allowed to overwrite the ->mm
+> > pointer of a userspace thread. For example, zap_threads() assumes that
+> > all threads running under a process have the same ->mm. (And if you're
+> > fiddling with ->mm stuff, you should probably CC linux-mm@.)
+> >
+> > As far as I understand, only kthreads are allowed to do this (as
+> > implemented in kthread_use_mm()).
+>
+> kthread_use_mm() was renamed from use_mm in the v5.8 kernel. Before
+> that, it wasn't used for user processes in the kernel, but it was
+> exported for modules, and we used it without any visible problems. We
+> understood that there could be some issues like zap_threads and it was
+> one of reasons why we decided to introduce this system call.
+>
+> I understand that there are no places in the kernel where we change mm
+> of user threads back and forth, but are there any real concerns why we
+> should not do that? I agree that zap_threads should be fixed, but it
+> will the easy one.
+
+My point is that if you break a preexisting assumption like this,
+you'll have to go through the kernel and search for places that rely
+on this assumption, and fix them up, which may potentially require
+thinking about what kinds of semantics would actually be appropriate
+there. Like the MCE killing logic (collect_procs_anon() and such). And
+current_is_single_threaded(), in which the current patch probably
+leads to logic security bugs. And __uprobe_perf_filter(). Before my
+refactoring of the ELF coredump logic in kernel 5.10 (commit
+b2767d97f5ff75 and the ones before it), you'd have also probably
+created memory corruption bugs in races between elf_core_dump() and
+syscalls like mmap()/munmap(). (Note that this is not necessarily an
+exhaustive list.)
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
