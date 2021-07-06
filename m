@@ -1,13 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m5nU1-00CavW-GR
- for linux-um@lists.infradead.org; Tue, 20 Jul 2021 11:00:19 +0000
-From: Roberto Sassu <roberto.sassu@huawei.com>
-Subject: linux process killed after poweroff
-Date: Tue, 20 Jul 2021 11:00:09 +0000
-Message-ID: <18247e831eac439fa066a56efa3e96e6@huawei.com>
-Content-Language: en-US
+ id 1m0sNA-00Cqxt-ER
+ for linux-um@lists.infradead.org; Tue, 06 Jul 2021 21:12:53 +0000
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [PATCH] hostfs: support splice_write
+Date: Tue,  6 Jul 2021 23:12:42 +0200
+Message-Id: <20210706231242.aa02ddf73d5b.Id2928a2670d916fb090812a3e9c980d155ffac20@changeid>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -21,54 +21,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>, "anton.ivanov@cambridgegreys.com" <anton.ivanov@cambridgegreys.com>, "richard@nod.at" <richard@nod.at>
-Cc: "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>
+To: linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
 
-Hi everyone
+From: Johannes Berg <johannes.berg@intel.com>
 
-I found a change of behavior after:
+There's really no good reason not to, and e.g. trace-cmd
+currently requires it for the temporary per-CPU files.
+Hook up splice_write just like everyone else does.
 
-commit ccf1236ecac476d9d2704866d9a476c86e387971
-Author: Zhen Lei <thunder.leizhen@huawei.com>
-Date:   Sat May 8 11:22:39 2021 +0800
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+---
+ fs/hostfs/hostfs_kern.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-    um: fix error return code in winch_tramp()
+diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+index 7d0c3dbb2898..d5c9d886cd9f 100644
+--- a/fs/hostfs/hostfs_kern.c
++++ b/fs/hostfs/hostfs_kern.c
+@@ -381,6 +381,7 @@ static int hostfs_fsync(struct file *file, loff_t start, loff_t end,
+ static const struct file_operations hostfs_file_fops = {
+ 	.llseek		= generic_file_llseek,
+ 	.splice_read	= generic_file_splice_read,
++	.splice_write	= iter_file_splice_write,
+ 	.read_iter	= generic_file_read_iter,
+ 	.write_iter	= generic_file_write_iter,
+ 	.mmap		= generic_file_mmap,
+-- 
+2.31.1
 
-When linux (UML) is executed inside a script, the following
-error message appears:
-
-
-root@(none):/# poweroff -f
-Powering off.
-reboot: System halted
-./test.sh: line 3: 1474370 Killed                  ./linux rootfstype=hostfs mem=256M init=/bin/bash
-                                                                                                    137
-
-Before this patch:
-
-root@(none):/# poweroff -f
-Powering off.
-reboot: System halted
-
-0
-
-The script I used for the test is:
-
-#! /bin/bash
-
-./linux rootfstype=hostfs mem=256M init=/bin/bash
-echo $?
-
-I'm using the exit code of linux to determine whether or not
-a test executed inside UML was successful. Is the new behavior
-intended?
-
-Thanks
-
-Roberto
-
-HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-Managing Director: Li Peng, Li Jian, Shi Yanli
 
 _______________________________________________
 linux-um mailing list
