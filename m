@@ -1,84 +1,45 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
-From: Arnd Bergmann <arnd@kernel.org>
-Subject: [PATCH v3 8/9] asm-generic: remove extra strn{cpy_from,len}_user declarations
-Date: Thu, 22 Jul 2021 14:48:13 +0200
-Message-Id: <20210722124814.778059-9-arnd@kernel.org>
-In-Reply-To: <20210722124814.778059-1-arnd@kernel.org>
-References: <20210722124814.778059-1-arnd@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from verein.lst.de ([213.95.11.211])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1m1tos-002ADP-Ae
+ for linux-um@lists.infradead.org; Fri, 09 Jul 2021 16:57:43 +0000
+Date: Fri, 9 Jul 2021 18:57:37 +0200
+From: Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH, RFC] um: remove set_fs
+Message-ID: <20210709165737.GA24903@lst.de>
+References: <20210709133836.3821559-1-hch@lst.de>
+ <b7b4f02385c2b103d66eadb1dfcff607a28a82b2.camel@sipsolutions.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-arch@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Al Viro <viro@zeniv.linux.org.uk>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Brian Cain <bcain@codeaurora.org>, Chris Zankel <chris@zankel.net>, Christian Borntraeger <borntraeger@de.ibm.com>, Christoph Hellwig <hch@lst.de>, Guo Ren <guoren@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Jeff Dike <jdike@addtoit.com>, Linus Walleij <linus.walleij@linaro.org>, Max Filippov <jcmvbkbc@gmail.com>, Michal Simek <monstr@monstr.eu>, Richard Weinberger <richard@nod.at>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Vasily Gorbik <gor@linux.ibm.com>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, uclinux-h8-devel@lists.sourceforge.jp
-List-ID: <linux-um.lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <b7b4f02385c2b103d66eadb1dfcff607a28a82b2.camel@sipsolutions.net>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Christoph Hellwig <hch@lst.de>, richard@nod.at, anton.ivanov@cambridgegreys.com, linux-um@lists.infradead.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Fri, Jul 09, 2021 at 04:47:34PM +0200, Johannes Berg wrote:
+> Seems to survive my normal (wireless related) tests :)
+> 
+> But I don't really understand what any of it does, so ...
+> 
+> In particular, why no pagefaults for kernel addresses?
 
-As these are now in asm-generic, it's no longer necessary to
-declare them in the architecture.
+No idea.  But the existing uaccess_kernel() versions of the user copy
+routines assume it, so this patch just keeps that behavior when switching
+to the proper helpers.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/arc/include/asm/uaccess.h     | 5 -----
- arch/hexagon/include/asm/uaccess.h | 6 ------
- arch/um/include/asm/uaccess.h      | 5 +----
- 3 files changed, 1 insertion(+), 15 deletions(-)
-
-diff --git a/arch/arc/include/asm/uaccess.h b/arch/arc/include/asm/uaccess.h
-index 754a23f26736..783bfdb3bfa3 100644
---- a/arch/arc/include/asm/uaccess.h
-+++ b/arch/arc/include/asm/uaccess.h
-@@ -667,11 +667,6 @@ extern unsigned long arc_clear_user_noinline(void __user *to,
- #define __clear_user(d, n)		arc_clear_user_noinline(d, n)
- #endif
- 
--extern long strncpy_from_user(char *dst, const char __user *src, long count);
--#define strncpy_from_user(d, s, n)	strncpy_from_user(d, s, n)
--extern long strnlen_user(const char __user *src, long n);
--#define strnlen_user(s, n)		strnlen_user(s, n)
--
- #include <asm/segment.h>
- #include <asm-generic/uaccess.h>
- 
-diff --git a/arch/hexagon/include/asm/uaccess.h b/arch/hexagon/include/asm/uaccess.h
-index d950df12d8c5..ef5bfef8d490 100644
---- a/arch/hexagon/include/asm/uaccess.h
-+++ b/arch/hexagon/include/asm/uaccess.h
-@@ -57,12 +57,6 @@ unsigned long raw_copy_to_user(void __user *to, const void *from,
- __kernel_size_t __clear_user_hexagon(void __user *dest, unsigned long count);
- #define __clear_user(a, s) __clear_user_hexagon((a), (s))
- 
--extern long strnlen_user(const char __user *src, long n);
--#define strnlen_user strnlen_user
--
--extern long strncpy_from_user(char *dst, const char __user *src, long n)
--#define strncpy_from_user strncpy_from_user
--
- #include <asm-generic/uaccess.h>
- 
- 
-diff --git a/arch/um/include/asm/uaccess.h b/arch/um/include/asm/uaccess.h
-index 3bf209f683f8..191ef36dd543 100644
---- a/arch/um/include/asm/uaccess.h
-+++ b/arch/um/include/asm/uaccess.h
-@@ -23,16 +23,13 @@
- 
- extern unsigned long raw_copy_from_user(void *to, const void __user *from, unsigned long n);
- extern unsigned long raw_copy_to_user(void __user *to, const void *from, unsigned long n);
--extern long strncpy_from_user(char *dst, const char __user *src, long count);
--extern long strnlen_user(const void __user *str, long len);
- extern unsigned long __clear_user(void __user *mem, unsigned long len);
- static inline int __access_ok(unsigned long addr, unsigned long size);
- 
- /* Teach asm-generic/uaccess.h that we have C functions for these. */
- #define __access_ok __access_ok
- #define __clear_user __clear_user
--#define strnlen_user strnlen_user
--#define strncpy_from_user strncpy_from_user
-+
- #define INLINE_COPY_FROM_USER
- #define INLINE_COPY_TO_USER
- 
--- 
-2.29.2
-
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
