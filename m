@@ -1,26 +1,45 @@
-Return-Path: <dmaengine-owner@vger.kernel.org>
-Date: Wed, 14 Jul 2021 12:30:04 +0530
-From: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH] dmaengine: idxd: depends on !UML
-Message-ID: <YO6LdCg2/4M47k7/@matsya>
-References: <20210625103810.fe877ae0aef4.If240438e3f50ae226f3f755fc46ea498c6858393@changeid>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail.kernel.org ([198.145.29.99])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1m1uVU-002E8i-40
+ for linux-um@lists.infradead.org; Fri, 09 Jul 2021 17:41:45 +0000
+Subject: Re: [GIT PULL] UML changes for 5.14
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <62640125.4933.1625778597465.JavaMail.zimbra@nod.at>
+References: <62640125.4933.1625778597465.JavaMail.zimbra@nod.at>
+Message-Id: <162585250366.25269.3836290697571426848.pr-tracker-bot@kernel.org>
+Date: Fri, 09 Jul 2021 17:41:43 +0000
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210625103810.fe877ae0aef4.If240438e3f50ae226f3f755fc46ea498c6858393@changeid>
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: dmaengine@vger.kernel.org, Dave Jiang <dave.jiang@intel.com>, linux-um@lists.infradead.org, Johannes Berg <johannes.berg@intel.com>, kernel test robot <lkp@intel.com>
-List-ID: <linux-um.lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Richard Weinberger <richard@nod.at>
+Cc: torvalds <torvalds@linux-foundation.org>, linux-kernel <linux-kernel@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>
 
-On 25-06-21, 10:38, Johannes Berg wrote:
-> From: Johannes Berg <johannes.berg@intel.com>
-> 
-> Now that UML has PCI support, this driver must depend also on
-> !UML since it pokes at X86_64 architecture internals that don't
-> exist on ARCH=um.
+The pull request you sent on Thu, 8 Jul 2021 23:09:57 +0200 (CEST):
 
-Applied, thanks
+> git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.14-rc1
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/dcf3c935dd9e8e76c9922e88672fa4ad6a8a4df8
+
+Thank you!
 
 -- 
-~Vinod
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
