@@ -1,18 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from so254-9.mailgun.net ([198.61.254.9])
+Received: from m43-7.mailgun.net ([69.72.43.7])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m3PCa-00BKt7-MS
- for linux-um@lists.infradead.org; Tue, 13 Jul 2021 20:40:26 +0000
+ id 1m3Opk-00BIHC-8l
+ for linux-um@lists.infradead.org; Tue, 13 Jul 2021 20:16:50 +0000
 MIME-Version: 1.0
-Date: Tue, 13 Jul 2021 14:40:22 -0600
+Date: Tue, 13 Jul 2021 14:16:46 -0600
 From: subashab@codeaurora.org
 Subject: Re: UML kernel panic on initialization
-In-Reply-To: <17bc19ae635b61d50627fd1601b0ab12b5128999.camel@sipsolutions.net>
+In-Reply-To: <8c377addaa42a7dd3bbe047e1f744a51103e6ff2.camel@sipsolutions.net>
 References: <a6188b0422c2a8fe1b5e9f164bfa1796@codeaurora.org>
  <6442ec0e5e2cf55990b43ff178023fd6050e63fb.camel@sipsolutions.net>
  <8c377addaa42a7dd3bbe047e1f744a51103e6ff2.camel@sipsolutions.net>
- <17bc19ae635b61d50627fd1601b0ab12b5128999.camel@sipsolutions.net>
-Message-ID: <067d008eef6bd19e6fee22f16db40628@codeaurora.org>
+Message-ID: <e8b9a7f3683933c472f2e5ba22e9433d@codeaurora.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -28,20 +27,38 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: Johannes Berg <johannes@sipsolutions.net>
 Cc: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, linux-um@lists.infradead.org
 
-> [snip]
+> Oh, and it looks like 84b2789d6115 actually got some bits that 
+> shouldn't
+> have been there!
 > 
-> And as yet another experiment in this area, does it work again if you
-> apply this patch?
+> Assuming it does *not* work with just the first three patches reverted,
+> does it work again if you revert the first three patches, and only this
+> bit of the fourth?
 > 
-> https://patchwork.ozlabs.org/project/linux-um/patch/20210303155523.124277-11-benjamin@sipsolutions.net/
+> --- a/arch/um/kernel/skas/clone.c
+> +++ b/arch/um/kernel/skas/clone.c
+> @@ -24,29 +24,26 @@
+>  void __attribute__ ((__section__ (".__syscall_stub")))
+>  stub_clone_handler(void)
+>  {
+> -       struct stub_data *data = (struct stub_data *) STUB_DATA;
+> +       int stack;
+> +       struct stub_data *data = (void *) ((unsigned long)&stack &
+> ~(UM_KERN_PAGE_SIZE - 1));
+>         long err;
 > 
-> Not sure it applies as-is, but you can see the schema there.
+> 
+> 
+> I think we probably have some miscompilation again with this thing - I
+> saw a bunch of similar issues with our syscall stubs at some point, and
+> I'm not sure we got it all right already.
 > 
 > johannes
 
-If this patch is applied without any reverts the crash is seen.
-If patch is applied with the 3 reverts applied, the initialization
-is hanging.
+Initialization is successful if only this bit of 
+84b2789d61156db0224724806b20110c0d34b07c
+is reverted.
+
 
 _______________________________________________
 linux-um mailing list
