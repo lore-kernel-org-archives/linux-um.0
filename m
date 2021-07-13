@@ -1,13 +1,21 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m3QFP-00BPWB-NZ
- for linux-um@lists.infradead.org; Tue, 13 Jul 2021 21:47:25 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH] um: fix stub location calculation
-Date: Tue, 13 Jul 2021 23:47:10 +0200
-Message-Id: <20210713234710.ba0da02a609f.I56390429bc78e79e859e374183370c6311535786@changeid>
+ id 1m3QfY-00BRa3-4F
+ for linux-um@lists.infradead.org; Tue, 13 Jul 2021 22:14:26 +0000
+Date: Wed, 14 Jul 2021 00:14:20 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <756593647.23483.1626214460129.JavaMail.zimbra@nod.at>
+In-Reply-To: <CABqSeARhjVWwX3YnaUZtvn1-8a6c46oxCj6BnpDirVMP9jjEgA@mail.gmail.com>
+References: <a6188b0422c2a8fe1b5e9f164bfa1796@codeaurora.org>
+ <675205198.21885.1626185036367.JavaMail.zimbra@nod.at>
+ <5a30a105b004c98186883182e7e4f56a@codeaurora.org>
+ <66cdf3de4a10308be633b1dc40567857c55df9aa.camel@sipsolutions.net>
+ <5a402bd444a2c9926f9b3945beb4b5a2@codeaurora.org>
+ <f6a53d9531996a10d29aaae16ecda60afd290769.camel@sipsolutions.net>
+ <ca337f4b5e3e60fc0701be00f6546f2e@codeaurora.org>
+ <CABqSeARhjVWwX3YnaUZtvn1-8a6c46oxCj6BnpDirVMP9jjEgA@mail.gmail.com>
+Subject: Re: UML kernel panic on initialization
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -17,116 +25,34 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: subashab@codeaurora.org, Johannes Berg <johannes.berg@intel.com>
+To: YiFei Zhu <zhuyifei1999@gmail.com>
+Cc: subashab <subashab@codeaurora.org>, Johannes Berg <johannes@sipsolutions.net>, anton ivanov <anton.ivanov@cambridgegreys.com>, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, stranche <stranche@codeaurora.org>
 
-From: Johannes Berg <johannes.berg@intel.com>
-
-In commit 9f0b4807a44f ("um: rework userspace stubs to not hard-code
-stub location") I changed stub_segv_handler() to do a calculation with
-a pointer to a stack variable to find the data page that we're using
-for the stack and the rest of the data. This same commit was meant to
-do it as well for stub_clone_handler(), but the change inadvertently
-went into commit 84b2789d6115 ("um: separate child and parent errors
-in clone stub") instead.
-
-This was reported to not be compiled correctly by gcc 5, causing the
-code to crash here. I'm not sure why, perhaps it's UB because the var
-isn't initialized? In any case, this trick always seemed bad, so just
-create a new inline function that does the calculation in assembly.
-
-Reported-by: subashab@codeaurora.org
-Fixes: 9f0b4807a44f ("um: rework userspace stubs to not hard-code stub location")
-Fixes: 84b2789d6115 ("um: separate child and parent errors in clone stub")
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- arch/um/kernel/skas/clone.c         |  3 +--
- arch/x86/um/shared/sysdep/stub_32.h | 12 ++++++++++++
- arch/x86/um/shared/sysdep/stub_64.h | 12 ++++++++++++
- arch/x86/um/stub_segv.c             |  3 +--
- 4 files changed, 26 insertions(+), 4 deletions(-)
-
-diff --git a/arch/um/kernel/skas/clone.c b/arch/um/kernel/skas/clone.c
-index 592cdb138441..c0d2d592b31b 100644
---- a/arch/um/kernel/skas/clone.c
-+++ b/arch/um/kernel/skas/clone.c
-@@ -24,8 +24,7 @@
- void __attribute__ ((__section__ (".__syscall_stub")))
- stub_clone_handler(void)
- {
--	int stack;
--	struct stub_data *data = (void *) ((unsigned long)&stack & ~(UM_KERN_PAGE_SIZE - 1));
-+	struct stub_data *data = get_stub_page();
- 	long err;
- 
- 	err = stub_syscall2(__NR_clone, CLONE_PARENT | CLONE_FILES | SIGCHLD,
-diff --git a/arch/x86/um/shared/sysdep/stub_32.h b/arch/x86/um/shared/sysdep/stub_32.h
-index b95db9daf0e8..4c6c2be0c899 100644
---- a/arch/x86/um/shared/sysdep/stub_32.h
-+++ b/arch/x86/um/shared/sysdep/stub_32.h
-@@ -101,4 +101,16 @@ static inline void remap_stack_and_trap(void)
- 		"memory");
- }
- 
-+static __always_inline void *get_stub_page(void)
-+{
-+	unsigned long ret;
-+
-+	asm volatile (
-+		"movl %%esp,%0 ;"
-+		"andl %1,%0"
-+		: "=a" (ret)
-+		: "g" (~(UM_KERN_PAGE_SIZE - 1)));
-+
-+	return (void *)ret;
-+}
- #endif
-diff --git a/arch/x86/um/shared/sysdep/stub_64.h b/arch/x86/um/shared/sysdep/stub_64.h
-index 6e2626b77a2e..e9c4b2b38803 100644
---- a/arch/x86/um/shared/sysdep/stub_64.h
-+++ b/arch/x86/um/shared/sysdep/stub_64.h
-@@ -108,4 +108,16 @@ static inline void remap_stack_and_trap(void)
- 		__syscall_clobber, "r10", "r8", "r9");
- }
- 
-+static __always_inline void *get_stub_page(void)
-+{
-+	unsigned long ret;
-+
-+	asm volatile (
-+		"movq %%rsp,%0 ;"
-+		"andq %1,%0"
-+		: "=a" (ret)
-+		: "g" (~(UM_KERN_PAGE_SIZE - 1)));
-+
-+	return (void *)ret;
-+}
- #endif
-diff --git a/arch/x86/um/stub_segv.c b/arch/x86/um/stub_segv.c
-index 21836eaf1725..f7eefba034f9 100644
---- a/arch/x86/um/stub_segv.c
-+++ b/arch/x86/um/stub_segv.c
-@@ -11,9 +11,8 @@
- void __attribute__ ((__section__ (".__syscall_stub")))
- stub_segv_handler(int sig, siginfo_t *info, void *p)
- {
--	int stack;
-+	struct faultinfo *f = get_stub_page();
- 	ucontext_t *uc = p;
--	struct faultinfo *f = (void *)(((unsigned long)&stack) & ~(UM_KERN_PAGE_SIZE - 1));
- 
- 	GET_FAULTINFO_FROM_MC(*f, &uc->uc_mcontext);
- 	trap_myself();
--- 
-2.31.1
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIllpRmVpIFpodSIgPHpodXlp
+ZmVpMTk5OUBnbWFpbC5jb20+Cj4gQW46ICJzdWJhc2hhYiIgPHN1YmFzaGFiQGNvZGVhdXJvcmEu
+b3JnPgo+IENDOiAiSm9oYW5uZXMgQmVyZyIgPGpvaGFubmVzQHNpcHNvbHV0aW9ucy5uZXQ+LCAi
+cmljaGFyZCIgPHJpY2hhcmRAbm9kLmF0PiwgImFudG9uIGl2YW5vdiIKPiA8YW50b24uaXZhbm92
+QGNhbWJyaWRnZWdyZXlzLmNvbT4sICJKZWZmIERpa2UiIDxqZGlrZUBhZGR0b2l0LmNvbT4sICJs
+aW51eC11bSIgPGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmc+LAo+ICJzdHJhbmNoZSIgPHN0
+cmFuY2hlQGNvZGVhdXJvcmEub3JnPgo+IEdlc2VuZGV0OiBEaWVuc3RhZywgMTMuIEp1bGkgMjAy
+MSAyMjo1Mjo0Mwo+IEJldHJlZmY6IFJlOiBVTUwga2VybmVsIHBhbmljIG9uIGluaXRpYWxpemF0
+aW9uCgo+IE9uIFR1ZSwgSnVsIDEzLCAyMDIxIGF0IDM6MDAgUE0gPHN1YmFzaGFiQGNvZGVhdXJv
+cmEub3JnPiB3cm90ZToKPj4KPj4gPiBXYXNuJ3QgY29tcGF0aWJsZSB3aXRoIG15IHN5c3RlbSAu
+Li4gY2FuIHlvdSBkZXNjcmliZSB0aGUgaG9zdCBzeXN0ZW0/Cj4+ID4KPj4gPiBqb2hhbm5lcwo+
+Pgo+PiBJdHMgYW4gSW50ZWwgOHRoIGdlbiBpNyB3aXRoIFVidW50dSAxNi4wNCBMVFMuCj4+IEtl
+cm5lbCB2ZXJzaW9uIGlzIDQuMTUuMC03MC1nZW5lcmljLgo+PiBnY2MgdmVyc2lvbiBpcyA1LjQu
+Cj4gCj4gRldJVywgZm9yIG1lLCBjb21waWxpbmcgVU1MIHdpdGggZGVmY29uZmlnIGluc2lkZSBh
+IFVidW50dSAxNi4wNAo+IGRvY2tlciBpcyBlbm91Z2ggdG8gcHJvZHVjZSBhIGJpbmFyeSB0aGF0
+IGNvdWxkIHRyaWdnZXIgYSBjcmFzaCBldmVuCj4gb3V0c2lkZSBkb2NrZXIsIHVzaW5nIGhvc3Rm
+cyByb290IG1vdW50IChzbyBubyBzcGVjaWFsIGxkLnNvKS4KPiAKPiBUaGlzIGlzIHNvbWUgc29y
+dCBvZiBjb21waWxlciBkaWZmZXJlbmNlLgoKRXhhY3RseS4gOi0pClBsZWFzZSBzZWUgSm9oYW5u
+ZXMnIHBhdGNoOgpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9waXBlcm1haWwvbGludXgtdW0v
+MjAyMS1KdWx5LzAwMTU3MS5odG1sCgpUaGFua3MsCi8vcmljaGFyZAoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0Cmxp
+bnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9saW51eC11bQo=
 
