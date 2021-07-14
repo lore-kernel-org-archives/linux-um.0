@@ -1,21 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pj1-x1034.google.com ([2607:f8b0:4864:20::1034])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lzDB1-002LNP-4k
- for linux-um@lists.infradead.org; Fri, 02 Jul 2021 07:01:30 +0000
-Received: by mail-pj1-x1034.google.com with SMTP id
- in17-20020a17090b4391b0290170ba0ec7fcso8232041pjb.4
- for <linux-um@lists.infradead.org>; Fri, 02 Jul 2021 00:01:26 -0700 (PDT)
-Date: Thu, 1 Jul 2021 23:57:53 -0700
-From: Andrei Vagin <avagin@gmail.com>
-Subject: Re: [PATCH 0/4 POC] Allow executing code and syscalls in another
- address space
-Message-ID: <YN648cPBDIGKYlYa@gmail.com>
-References: <20210414055217.543246-1-avagin@gmail.com>
- <CAG48ez0jfsS=gKN0Vo_VS2EvvMBvEr+QNz0vDKPeSAzsrsRwPQ@mail.gmail.com>
+ id 1m3YkR-00CSeQ-AX
+ for linux-um@lists.infradead.org; Wed, 14 Jul 2021 06:52:00 +0000
+Message-ID: <1b269475702f8915defaee1016279917a047b44b.camel@sipsolutions.net>
+Subject: Re: [PATCH] um: fix stub location calculation
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Wed, 14 Jul 2021 08:51:55 +0200
+In-Reply-To: <CABqSeAQWt41yvGCV3AbKuLeHUF0kvQvj6=0of-US4sn_=wxLDg@mail.gmail.com>
+References: <20210713234710.ba0da02a609f.I56390429bc78e79e859e374183370c6311535786@changeid>
+ <CAFLxGvxuC61cre6hOg2_-qCe6ArRgOYw0E8q-5ECS=mggoqF0g@mail.gmail.com>
+ <CABqSeAQWt41yvGCV3AbKuLeHUF0kvQvj6=0of-US4sn_=wxLDg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAG48ez0jfsS=gKN0Vo_VS2EvvMBvEr+QNz0vDKPeSAzsrsRwPQ@mail.gmail.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,97 +21,32 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jann Horn <jannh@google.com>
-Cc: kernel list <linux-kernel@vger.kernel.org>, Linux API <linux-api@vger.kernel.org>, linux-um@lists.infradead.org, criu@openvz.org, avagin@google.com, Andrew Morton <akpm@linux-foundation.org>, Andy Lutomirski <luto@kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Christian Brauner <christian.brauner@ubuntu.com>, Dmitry Safonov <0x7f454c46@gmail.com>, Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>, Mike Rapoport <rppt@linux.ibm.com>, Michael Kerrisk <mtk.manpages@gmail.com>, Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, linux-mm@kvack.org
+To: YiFei Zhu <zhuyifei1999@gmail.com>, Richard Weinberger <richard.weinberger@gmail.com>
+Cc: linux-um <linux-um@lists.infradead.org>, subashab@codeaurora.org
 
-T24gV2VkLCBBcHIgMTQsIDIwMjEgYXQgMDg6NDY6NDBBTSArMDIwMCwgSmFubiBIb3JuIHdyb3Rl
-Ogo+IE9uIFdlZCwgQXByIDE0LCAyMDIxIGF0IDc6NTkgQU0gQW5kcmVpIFZhZ2luIDxhdmFnaW5A
-Z21haWwuY29tPiB3cm90ZToKPiA+IFdlIGFscmVhZHkgaGF2ZSBwcm9jZXNzX3ZtX3JlYWR2IGFu
-ZCBwcm9jZXNzX3ZtX3dyaXRldiB0byByZWFkIGFuZCB3cml0ZQo+ID4gdG8gYSBwcm9jZXNzIG1l
-bW9yeSBmYXN0ZXIgdGhhbiB3ZSBjYW4gZG8gdGhpcyB3aXRoIHB0cmFjZS4gQW5kIG5vdyBpdAo+
-ID4gaXMgdGltZSBmb3IgcHJvY2Vzc192bV9leGVjIHRoYXQgYWxsb3dzIGV4ZWN1dGluZyBjb2Rl
-IGluIGFuIGFkZHJlc3MKPiA+IHNwYWNlIG9mIGFub3RoZXIgcHJvY2Vzcy4gV2UgY2FuIGRvIHRo
-aXMgd2l0aCBwdHJhY2UgYnV0IGl0IGlzIG11Y2gKPiA+IHNsb3dlci4KPiA+Cj4gPiA9IFVzZS1j
-YXNlcyA9Cj4gCj4gSXQgc2VlbXMgdG8gbWUgbGlrZSB5b3VyIHByb3Bvc2VkIEFQSSBkb2Vzbid0
-IHJlYWxseSBmaXQgZWl0aGVyIG9uZSBvZgo+IHRob3NlIHVzZWNhc2VzIHdlbGwuLi4KPiAKPiA+
-IEhlcmUgYXJlIHR3byBrbm93biB1c2UtY2FzZXMuIFRoZSBmaXJzdCBvbmUgaXMg4oCcYXBwbGlj
-YXRpb24ga2VybmVs4oCdCj4gPiBzYW5kYm94ZXMgbGlrZSBVc2VyLW1vZGUgTGludXggYW5kIGdW
-aXNvci4gSW4gdGhpcyBjYXNlLCB3ZSBoYXZlIGEKPiA+IHByb2Nlc3MgdGhhdCBydW5zIHRoZSBz
-YW5kYm94IGtlcm5lbCBhbmQgYSBzZXQgb2Ygc3R1YiBwcm9jZXNzZXMgdGhhdAo+ID4gYXJlIHVz
-ZWQgdG8gbWFuYWdlIGd1ZXN0IGFkZHJlc3Mgc3BhY2VzLiBHdWVzdCBjb2RlIGlzIGV4ZWN1dGVk
-IGluIHRoZQo+ID4gY29udGV4dCBvZiBzdHViIHByb2Nlc3NlcyBidXQgYWxsIHN5c3RlbSBjYWxs
-cyBhcmUgaW50ZXJjZXB0ZWQgYW5kCj4gPiBoYW5kbGVkIGluIHRoZSBzYW5kYm94IGtlcm5lbC4g
-UmlnaHQgbm93LCB0aGVzZSBzb3J0IG9mIHNhbmRib3hlcyB1c2UKPiA+IFBUUkFDRV9TWVNFTVUg
-dG8gdHJhcCBzeXN0ZW0gY2FsbHMsIGJ1dCB0aGUgcHJvY2Vzc192bV9leGVjIGNhbgo+ID4gc2ln
-bmlmaWNhbnRseSBzcGVlZCB0aGVtIHVwLgo+IAo+IEluIHRoaXMgY2FzZSwgc2luY2UgeW91IHJl
-YWxseSBvbmx5IHdhbnQgYW4gbW1fc3RydWN0IHRvIHJ1biBjb2RlCj4gdW5kZXIsIGl0IHNlZW1z
-IHdlaXJkIHRvIGNyZWF0ZSBhIHdob2xlIHRhc2sgd2l0aCBpdHMgb3duIFBJRCBhbmQgc28KPiBv
-bi4gSXQgc2VlbXMgdG8gbWUgbGlrZSBzb21ldGhpbmcgc2ltaWxhciB0byB0aGUgL2Rldi9rdm0g
-QVBJIHdvdWxkIGJlCj4gbW9yZSBhcHByb3ByaWF0ZSBoZXJlPyBJbXBsZW1lbnRhdGlvbiBvcHRp
-b25zIHRoYXQgSSBzZWUgZm9yIHRoYXQKPiB3b3VsZCBiZToKPiAKPiAxLiBtbV9zdHJ1Y3QtYmFz
-ZWQ6Cj4gICAgICAgYSBzZXQgb2Ygc3lzY2FsbHMgdG8gY3JlYXRlIGEgbmV3IG1tX3N0cnVjdCwK
-PiAgICAgICBjaGFuZ2UgbWVtb3J5IG1hcHBpbmdzIHVuZGVyIHRoYXQgbW1fc3RydWN0LCBhbmQg
-c3dpdGNoIHRvIGl0CgpJIGxpa2UgdGhlIGlkZWEgdG8gaGF2ZSBhIGhhbmRsZSBmb3IgbW0uIElu
-c3RlYWQgb2YgcGlkLCB3ZSB3aWxsIHBhc3MKdGhpcyBoYW5kbGUgdG8gcHJvY2Vzc192bV9leGVj
-LiBXZSBoYXZlIHBpZGZkIGZvciBwcm9jZXNzZXMgYW5kIHdlIGNhbgppbnRyb2R1Y2UgbW1mZCBm
-b3IgbW1fc3RydWN0LgoKCj4gMi4gcGFnZXRhYmxlLW1pcnJvcmluZy1iYXNlZDoKPiAgICAgICBs
-aWtlIC9kZXYva3ZtLCBhbiBBUEkgdG8gY3JlYXRlIGEgbmV3IHBhZ2V0YWJsZSwgbWlycm9yIHBh
-cnRzIG9mCj4gICAgICAgdGhlIG1tX3N0cnVjdCdzIHBhZ2V0YWJsZXMgb3ZlciBpbnRvIGl0IHdp
-dGggbW9kaWZpZWQgcGVybWlzc2lvbnMKPiAgICAgICAobGlrZSBLVk1fU0VUX1VTRVJfTUVNT1JZ
-X1JFR0lPTiksCj4gICAgICAgYW5kIHJ1biBjb2RlIHVuZGVyIHRoYXQgY29udGV4dC4KPiAgICAg
-ICBwYWdlIGZhdWx0IGhhbmRsaW5nIHdvdWxkIGZpcnN0IGhhbmRsZSB0aGUgZmF1bHQgYWdhaW5z
-dCBtbS0+cGdkCj4gICAgICAgYXMgbm9ybWFsLCB0aGVuIG1pcnJvciB0aGUgUFRFIG92ZXIgaW50
-byB0aGUgc2Vjb25kYXJ5IHBhZ2V0YWJsZXMuCj4gICAgICAgaW52YWxpZGF0aW9uIGNvdWxkIGJl
-IGhhbmRsZWQgd2l0aCBNTVUgbm90aWZpZXJzLgo+CgpJIGZvdW5kIHRoaXMgaWRlYSBpbnRlcmVz
-dGluZyBhbmQgZGVjaWRlZCB0byBsb29rIGF0IGl0IG1vcmUgY2xvc2VseS4KQWZ0ZXIgcmVhZGlu
-ZyB0aGUga2VybmVsIGNvZGUgZm9yIGEgZmV3IGRheXMsIEkgcmVhbGl6ZWQgdGhhdCBpdCB3b3Vs
-ZApub3QgYmUgZWFzeSB0byBpbXBsZW1lbnQgc29tZXRoaW5nIGxpa2UgdGhpcywgYnV0IG1vcmUg
-aW1wb3J0YW50IGlzIHRoYXQKSSBkb27igJl0IHVuZGVyc3RhbmQgd2hhdCBwcm9ibGVtIGl0IHNv
-bHZlcy4gV2lsbCBpdCBzaW1wbGlmeSB0aGUKdXNlci1zcGFjZSBjb2RlPyBJIGRvbuKAmXQgdGhp
-bmsgc28uIFdpbGwgaXQgaW1wcm92ZSBwZXJmb3JtYW5jZT8gSXQgaXMKdW5jbGVhciBmb3IgbWUg
-dG9vLgoKRmlyc3QsIGluIHRoZSBLVk0gY2FzZSwgd2UgaGF2ZSBhIGZldyBiaWcgbGluZWFyIG1h
-cHBpbmdzIGFuZCBuZWVkIHRvCnN1cHBvcnQgb25lIOKAnHNoYWRvd+KAnSBhZGRyZXNzIHNwYWNl
-LiBJbiB0aGUgY2FzZSBvZiBzYW5kYm94ZXMsIHdlIGNhbgpoYXZlIGEgdHJlbWVuZG91cyBhbW91
-bnQgb2YgbWFwcGluZ3MgYW5kIG1hbnkgYWRkcmVzcyBzcGFjZXMgdGhhdCB3ZQpuZWVkIHRvIG1h
-bmFnZS4gIE1lbW9yeSBtYXBwaW5ncyB3aWxsIGJlIG1hcHBlZCB3aXRoIGRpZmZlcmVudCBhZGRy
-ZXNzZXMKaW4gYSBzdXBlcnZpc29yIGFkZHJlc3Mgc3BhY2UgYW5kIOKAnGd1ZXN04oCdIGFkZHJl
-c3Mgc3BhY2VzLiBJZiBndWVzdAphZGRyZXNzIHNwYWNlcyB3aWxsIG5vdCBoYXZlIHRoZWlyIG1t
-X3N0cnVjdHMsIHdlIHdpbGwgbmVlZCB0byByZWludmVudAp2bWEtcyBpbiBzb21lIGZvcm0uIElm
-IGd1ZXN0IGFkZHJlc3Mgc3BhY2VzIGhhdmUgbW1fc3RydWN0cywgdGhpcyB3aWxsCmxvb2sgc2lt
-aWxhciB0byBodHRwczovL2x3bi5uZXQvQXJ0aWNsZXMvODMwNjQ4Ly4KClNlY29uZCwgZWFjaCBw
-YWdldGFibGUgaXMgdGllZCB1cCB3aXRoIG1tX3N0dWN0LiBZb3Ugc3VnZ2VzdCBjcmVhdGluZwpu
-ZXcgcGFnZXRhYmxlcyB0aGF0IHdpbGwgbm90IGhhdmUgdGhlaXIgbW1fc3RydWN0LXMgKHNvcnJ5
-IGlmIEkKbWlzdW5kZXJzdG9vZCBzb21ldGhpbmcpLiBJIGFtIG5vdCBzdXJlIHRoYXQgaXQgd2ls
-bCBiZSBlYXN5IHRvCmltcGxlbWVudC4gSG93IG1hbnkgY29ybmVyIGNhc2VzIHdpbGwgYmUgdGhl
-cmU/CgpBcyBmb3IgcGFnZSBmYXVsdHMgaW4gYSBzZWNvbmRhcnkgYWRkcmVzcyBzcGFjZSwgd2Ug
-d2lsbCBuZWVkIHRvIGZpbmQgYQpmYXVsdCBhZGRyZXNzIGluIHRoZSBtYWluIGFkZHJlc3Mgc3Bh
-Y2UsIGhhbmRsZSB0aGUgZmF1bHQgdGhlcmUgYW5kIHRoZW4KbWlycm9yIHRoZSBQVEUgdG8gdGhl
-IHNlY29uZGFyeSBwYWdldGFibGUuIEVmZmVjdGl2ZWx5LCBpdCBtZWFucyB0aGF0CnBhZ2UgZmF1
-bHRzIHdpbGwgYmUgaGFuZGxlZCBpbiB0d28gYWRkcmVzcyBzcGFjZXMuIFJpZ2h0IG5vdywgd2Ug
-dXNlCm1lbWZkIGFuZCBzaGFyZWQgbWFwcGluZ3MuIEl0IG1lYW5zIHRoYXQgZWFjaCBmYXVsdCBp
-cyBoYW5kbGVkIG9ubHkgaW4Kb25lIGFkZHJlc3Mgc3BhY2UsIGFuZCB3ZSBtYXAgYSBndWVzdCBt
-ZW1vcnkgcmVnaW9uIHRvIHRoZSBzdXBlcnZpc29yCmFkZHJlc3Mgc3BhY2Ugb25seSB3aGVuIHdl
-IG5lZWQgdG8gYWNjZXNzIGl0LiBBIGxhcmdlIHBvcnRpb24gb2YgZ3Vlc3QKYW5vbnltb3VzIG1l
-bW9yeSBpcyBuZXZlciBtYXBwZWQgdG8gdGhlIHN1cGVydmlzb3IgYWRkcmVzcyBzcGFjZS4KV2ls
-bCBhbiBvdmVyaGVhZCBvZiBtaXJyb3JlZCBhZGRyZXNzIHNwYWNlcyBiZSBzbWFsbGVyIHRoYW4g
-bWVtZmQgc2hhcmVkCm1hcHBpbmdzPyBJIGFtIG5vdCBzdXJlLgoKVGhpcmQsIHRoaXMgYXBwcm9h
-Y2ggd2lsbCBub3QgZ2V0IHJpZCBvZiBoYXZpbmcgcHJvY2Vzc192bV9leGVjLiBXZSB3aWxsCm5l
-ZWQgdG8gc3dpdGNoIHRvIGEgZ3Vlc3QgYWRkcmVzcyBzcGFjZSB3aXRoIGEgc3BlY2lmaWVkIHN0
-YXRlIGFuZApzd2l0Y2ggYmFjayBvbiBmYXVsdHMgb3Igc3lzY2FsbHMuIElmIHRoZSBtYWluIGNv
-bmNlcm4gaXMgdGhlIGFiaWxpdHkgdG8KcnVuIHN5c2NhbGxzIG9uIGEgcmVtb3RlIG1tLCB3ZSBj
-YW4gdGhpbmsgYWJvdXQgaG93IHRvIGZpeCB0aGlzLiBJIHNlZQp0d28gd2F5cyB3aGF0IHdlIGNh
-biBkbyBoZXJlOgoKKiBTcGVjaWZ5IHRoZSBleGFjdCBsaXN0IG9mIHN5c3RlbSBjYWxscyB0aGF0
-IGFyZSBhbGxvd2VkLiBUaGUgZmlyc3QKdGhyZWUgY2FuZGlkYXRlcyBhcmUgbW1hcCwgbXVubWFw
-LCBhbmQgdm1zcGxpY2UuCgoqIEluc3RlYWQgb2YgYWxsb3dpbmcgdXMgdG8gcnVuIHN5c3RlbSBj
-YWxscywgd2UgY2FuIGltcGxlbWVudCB0aGlzIGluCnRoZSBmb3JtIG9mIGNvbW1hbmRzLiBJbiB0
-aGUgY2FzZSBvZiBzYW5kYm94ZXMsIHdlIG5lZWQgdG8gaW1wbGVtZW50Cm9ubHkgdHdvIGNvbW1h
-bmRzIHRvIGNyZWF0ZSBhbmQgZGVzdHJveSBtZW1vcnkgbWFwcGluZ3MgaW4gYSB0YXJnZXQKYWRk
-cmVzcyBzcGFjZS4KClRoYW5rcywKQW5kcmVpCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMu
-aW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2xpbnV4LXVtCg==
+On Tue, 2021-07-13 at 17:44 -0500, YiFei Zhu wrote:
+> 
+> The store is optimized away -> the faultinfo is unmodified -> the segv
+> handler treats the fault as unfixable -> init dead.
+
+Yeah. I was confused about this in the clone case, but even there of
+course the store is important because that's the child's PID in the
+parent ... I somehow looked at the code last night and thought it was
+only a broken error case.
+
+I'll leave it to Richard to figure out which of the two things to apply,
+I guess. And it should probably come with a Cc: stable, which I forgot
+on my patch.
+
+johannes
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
