@@ -1,21 +1,21 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pj1-x1034.google.com ([2607:f8b0:4864:20::1034])
+Received: from mail-pj1-x1030.google.com ([2607:f8b0:4864:20::1030])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lzCcZ-002FPo-5T
- for linux-um@lists.infradead.org; Fri, 02 Jul 2021 06:25:52 +0000
-Received: by mail-pj1-x1034.google.com with SMTP id
- b8-20020a17090a4888b02901725eedd346so2559910pjh.4
- for <linux-um@lists.infradead.org>; Thu, 01 Jul 2021 23:25:49 -0700 (PDT)
-Date: Thu, 1 Jul 2021 23:22:15 -0700
+ id 1m4vlB-007GFb-2E
+ for linux-um@lists.infradead.org; Sun, 18 Jul 2021 01:38:26 +0000
+Received: by mail-pj1-x1030.google.com with SMTP id
+ b8-20020a17090a4888b02901725eedd346so10003958pjh.4
+ for <linux-um@lists.infradead.org>; Sat, 17 Jul 2021 18:38:24 -0700 (PDT)
+Date: Sat, 17 Jul 2021 18:34:39 -0700
 From: Andrei Vagin <avagin@gmail.com>
-Subject: Re: [PATCH 2/4] arch/x86: implement the process_vm_exec syscall
-Message-ID: <YN6wlwFomEJ0LK1Y@gmail.com>
+Subject: Re: [PATCH 0/4 POC] Allow executing code and syscalls in another
+ address space
+Message-ID: <YPOFL6QHZl2pq+cb@gmail.com>
 References: <20210414055217.543246-1-avagin@gmail.com>
- <20210414055217.543246-3-avagin@gmail.com>
- <CAG48ez3UrzPE8rkucTgCu8ggcTEjx_h3Gj2FES1qM-uv2KD8bQ@mail.gmail.com>
+ <6073e4c6-6fe8-0448-4586-5d04d7154164@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAG48ez3UrzPE8rkucTgCu8ggcTEjx_h3Gj2FES1qM-uv2KD8bQ@mail.gmail.com>
+In-Reply-To: <6073e4c6-6fe8-0448-4586-5d04d7154164@kernel.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,84 +24,68 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jann Horn <jannh@google.com>
-Cc: linux-kernel@vger.kernel.org, linux-api@vger.kernel.org, linux-um@lists.infradead.org, criu@openvz.org, avagin@google.com, Andrew Morton <akpm@linux-foundation.org>, Andy Lutomirski <luto@kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Christian Brauner <christian.brauner@ubuntu.com>, Dmitry Safonov <0x7f454c46@gmail.com>, Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>, Mike Rapoport <rppt@linux.ibm.com>, Michael Kerrisk <mtk.manpages@gmail.com>, Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, linux-mm@kvack.org
+To: Andy Lutomirski <luto@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-api@vger.kernel.org, linux-um@lists.infradead.org, criu@openvz.org, avagin@google.com, Andrew Morton <akpm@linux-foundation.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Christian Brauner <christian.brauner@ubuntu.com>, Dmitry Safonov <0x7f454c46@gmail.com>, Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>, Mike Rapoport <rppt@linux.ibm.com>, Michael Kerrisk <mtk.manpages@gmail.com>, Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>
 
-On Mon, Jun 28, 2021 at 06:13:29PM +0200, Jann Horn wrote:
-> On Wed, Apr 14, 2021 at 7:59 AM Andrei Vagin <avagin@gmail.com> wrote:
-> > This change introduces the new system call:
-> > process_vm_exec(pid_t pid, struct sigcontext *uctx, unsigned long flags,
-> >                 siginfo_t * uinfo, sigset_t *sigmask, size_t sizemask)
-> >
-> > process_vm_exec allows to execute the current process in an address
-> > space of another process.
-> [...]
-> 
-> I still think that this whole API is fundamentally the wrong approach
-> because it tries to shoehorn multiple usecases with different
-> requirements into a single API. But that aside:
-
-Here, I can't agree with you, but this is discussed in the parallel
-thread.
-
-> 
-> > +static void swap_mm(struct mm_struct *prev_mm, struct mm_struct *target_mm)
-> > +{
-> > +       struct task_struct *tsk = current;
-> > +       struct mm_struct *active_mm;
-> > +
-> > +       task_lock(tsk);
-> > +       /* Hold off tlb flush IPIs while switching mm's */
-> > +       local_irq_disable();
-> > +
-> > +       sync_mm_rss(prev_mm);
-> > +
-> > +       vmacache_flush(tsk);
-> > +
-> > +       active_mm = tsk->active_mm;
-> > +       if (active_mm != target_mm) {
-> > +               mmgrab(target_mm);
-> > +               tsk->active_mm = target_mm;
-> > +       }
-> > +       tsk->mm = target_mm;
-> 
-> I'm pretty sure you're not currently allowed to overwrite the ->mm
-> pointer of a userspace thread. For example, zap_threads() assumes that
-> all threads running under a process have the same ->mm. (And if you're
-> fiddling with ->mm stuff, you should probably CC linux-mm@.)
-> 
-> As far as I understand, only kthreads are allowed to do this (as
-> implemented in kthread_use_mm()).
-
-kthread_use_mm() was renamed from use_mm in the v5.8 kernel. Before
-that, it wasn't used for user processes in the kernel, but it was
-exported for modules, and we used it without any visible problems. We
-understood that there could be some issues like zap_threads and it was
-one of reasons why we decided to introduce this system call.
-
-I understand that there are no places in the kernel where we change mm
-of user threads back and forth, but are there any real concerns why we
-should not do that? I agree that zap_threads should be fixed, but it
-will the easy one.
-
-> 
-> > +       switch_mm_irqs_off(active_mm, target_mm, tsk);
-> > +       local_irq_enable();
-> > +       task_unlock(tsk);
-> > +#ifdef finish_arch_post_lock_switch
-> > +       finish_arch_post_lock_switch();
-> > +#endif
-> > +
-> > +       if (active_mm != target_mm)
-> > +               mmdrop(active_mm);
-> > +}
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gRnJpLCBKdWwgMDIsIDIwMjEgYXQgMDM6NDQ6NDFQTSAtMDcwMCwgQW5keSBMdXRvbWlyc2tp
+IHdyb3RlOgo+IE9uIDQvMTMvMjEgMTA6NTIgUE0sIEFuZHJlaSBWYWdpbiB3cm90ZToKPiAKPiA+
+IHByb2Nlc3Nfdm1fZXhlYyBoYXMgdHdvIG1vZGVzOgo+ID4gCj4gPiAqIEV4ZWN1dGUgY29kZSBp
+biBhbiBhZGRyZXNzIHNwYWNlIG9mIGEgdGFyZ2V0IHByb2Nlc3MgYW5kIHN0b3Agb24gYW55Cj4g
+PiAgIHNpZ25hbCBvciBzeXN0ZW0gY2FsbC4KPiAKPiBXZSBhbHJlYWR5IGhhdmUgYSBwZXJmZWN0
+bHkgZ29vZCBjb250ZXh0IHN3aXRjaCBtZWNoYW5pc206IGNvbnRleHQKPiBzd2l0Y2hlcy4gIElm
+IHlvdSBleGVjdXRlIGNvZGUsIHlvdSBhcmUgYmFzaWNhbGx5IGd1YXJhbnRlZWQgdG8gYmUKPiBz
+dWJqZWN0IHRvIGJlaW5nIGhpamFja2VkLCB3aGljaCBtZWFucyB5b3UgcHJldHR5IG11Y2ggY2Fu
+J3QgYWxsb3cKPiBzeXNjYWxscy4gIEJ1dCB0aGVyZSdzIGEgbG90IG9mIG5vbi1zeXNjYWxsIHN0
+YXRlLCBhbmQgSSB0aGluayBjb250ZXh0Cj4gc3dpdGNoaW5nIG5lZWRzIHRvIGJlIGRvbmUgd2l0
+aCBleHRyZW1lIGNhcmUuCj4gCj4gKEp1c3QgYXMgZXhhbXBsZSwgc3VwcG9zZSB5b3Ugc3dpdGNo
+IG1tcywgdGhlbiBzZXQgJWdzIHRvIHBvaW50IHRvIHRoZQo+IExEVCwgdGhlbiBzd2l0Y2ggYmFj
+ay4gIE5vdyB5b3UncmUgaW4gYSB3ZWlyZCBzdGF0ZS4gIFdpdGggJXNzIHRoZSBwbG90Cj4gaXMg
+YSBiaXQgdGhpY2tlci4gIEFuZCB0aGVyZSBhcmUgZW11bGF0ZWQgdnN5c2NhbGxzIGFuZCBzdWNo
+LikKPiAKPiBJZiB5b3UsIFBldGVyWiwgYW5kIHRoZSBVTUNHIGNvdWxkIGFsbCBmaW5kIGFuIGFj
+Y2VwdGFibGUsIGVmZmljaWVudCB3YXkKPiB0byB3YWtlLWFuZC13YWl0IHNvIHlvdSBjYW4gc3dp
+dGNoIGludG8gYW4gaW5qZWN0ZWQgdGFzayBpbiB0aGUgdGFyZ2V0Cj4gcHJvY2VzcyBhbmQgc3dp
+dGNoIGJhY2sgcXVpY2tseSwgdGhlbiBJIHRoaW5rIGEgbXVjaCBuaWNlciBzb2x1dGlvbiB3aWxs
+Cj4gYmVjb21lIGF2YWlsYWJsZS4KCkkga25vdyBhYm91dCB1bWNnIGFuZCBJIGV2ZW4gZGlkIGEg
+cHJvdG90eXBlIHRoYXQgdXNlZCBmdXhldF9zd2FwICh0aGUKcHJldmlvdXMgYXR0ZW1wdCBvZiB1
+bWNnKS4gSGVyZSBhcmUgYSBmZXcgcHJvYmxlbXMgYW5kIG1heWJlIHlvdSB3aWxsCmhhdmUgc29t
+ZSBpZGVhcyBvbiBob3cgdG8gc29sdmUgdGhlbS4KClRoZSBtYWluIHF1ZXN0aW9uIGlzIGhvdyB0
+byBoaWphY2sgYSBzdHViIHByb2Nlc3Mgd2hlcmUgYSBndWVzdCBjb2RlIGlzCmV4ZWN1dGluZy4g
+V2UgbmVlZCB0byB0cmFwIHN5c3RlbSBjYWxscywgbWVtb3J5IGZhdWx0cywgYW5kIG90aGVyCmV4
+Y2VwdGlvbnMgYW5kIGhhbmRsZSB0aGVtIGluIHRoZSBTZW50cnkgKHN1cGVydmlzb3Iva2VybmVs
+KS4gQWxsCmludGVyZXN0ZWQgZXZlbnRzIGV4Y2VwdCBzeXN0ZW0gY2FsbHMgZ2VuZXJhdGUgc2ln
+bmFscy4gV2UgY2FuIHVzZQpzZWNjb21wIHRvIGdldCBzaWduYWxzIG9uIHN5c3RlbSBjYWxscyB0
+b28uIEluIG15IHByb3RvdHlwZSwgYSBndWVzdApjb2RlIGlzIHJ1bm5pbmcgaW4gc3R1YiBwcm9j
+ZXNzZXMuIE9uZSBzdHViIHByb2Nlc3MgaXMgZm9yIGVhY2ggZ3Vlc3QKYWRkcmVzcyBzcGFjZS4g
+SW4gYSBzdHViIHByb2Nlc3MsIEkgc2V0IGEgc2lnbmFsIGhhbmRsZXIgZm9yIFNJR1NFR1YsClNJ
+R0JVUywgU0lHRlBFLCBTSUdTWVMsIFNJR0lMTCwgc2V0IGFuIGFsdGVybmF0ZSBzaWduYWwgc3Rh
+Y2ssIGFuZCBzZXQKc2VjY29tcCBydWxlcy4gVGhlIHNpZ25hbCBoYW5kbGVyIGNvbW11bmljYXRl
+cyB3aXRoIHRoZSBTZW50cnkKKHN1cGVydmlzb3Iva2VybmVsKSB2aWEgc2hhcmVkIG1lbW9yeSBh
+bmQgdXNlcyBmdXRleF9zd2FwIHRvIG1ha2UgZmFzdApzd2l0Y2hlcyB0byB0aGUgU2VudHJ5IGFu
+ZCBiYWNrIHRvIGEgc3R1YiBwcm9jZXNzLgoKSGVyZSBhcmUgYSBmZXcgcHJvYmxlbXMuIEZpcnN0
+LCB3ZSBoYXZlIGEgc2lnbmFsIGhhbmRsZXIgY29kZSwgaXRzCnN0YWNrLCBhbmQgYSBzaGFyZWQg
+bWVtb3J5IHJlZ2lvbiBpbiBhIGd1ZXN0IGFkZHJlc3Mgc3BhY2UsIGFuZCB3ZSBuZWVkCnRvIGd1
+YXJhbnRlZSB0aGF0IGEgZ3Vlc3QgY29kZSB3aWxsIG5vdCBiZSBhYmxlIHRvIHVzZSB0aGVtIHRv
+IGRvCnNvbWV0aGluZyB1bmV4cGVjdGVkLgoKVGhlIHNlY29uZCBwcm9ibGVtIGlzIHBlcmZvcm1h
+bmNlLiBJdCBpcyBtdWNoIGZhc3RlciBpZiB3ZSBjb21wYXJlIGl0CndpdGggdGhlIHB0cmFjZSBw
+bGF0Zm9ybSwgYnV0IGl0IGlzIHN0aWxsIGEgZmV3IHRpbWVzIHNsb3dlciB0aGFuCnByb2Nlc3Nf
+dm1fZXhlYy4gU2lnbmFsIGhhbmRsaW5nIGlzIGV4cGVuc2l2ZS4gVGhlIGtlcm5lbCBoYXMgdG8K
+Z2VuZXJhdGUgYSBzaWduYWwgZnJhbWUsIGV4ZWN1dGUgYSBzaWduYWwgaGFuZGxlciwgYW5kIHRo
+ZW4gaXQgbmVlZHMgdG8KY2FsbCBydF9zaWdyZXR1cm4uIEZ1dGV4X3N3YXAgbWFrZXMgZmFzdCBj
+b250ZXh0IHN3aXRjaGVzLCBidXQgaXQgaXMKc3RpbGwgc2xvd2VyIHRoYW4gcHJvY2Vzc192bV9l
+eGVjLiBVTUNHIHNob3VsZCBiZSBmYXN0ZXIgYmVjYXVzZSBpdApkb2VzbuKAmXQgaGF2ZSBhIGZ1
+dGV4IG92ZXJoZWFkLgoKQW5keSwgd2hhdCBkbyB5b3UgdGhpbmsgYWJvdXQgdGhlIGlkZWEgdG8g
+cmV3b3JrIHByb2Nlc3Nfdm1fZXhlYyBzbyB0aGF0Cml0IGV4ZWN1dGVzIGNvZGUgYW5kIHN5c2Nh
+bGxzIGluIHRoZSBjb250ZXh0IG9mIGEgdGFyZ2V0IHByb2Nlc3M/Ck1heWJlIHlvdSBzZWUgb3Ro
+ZXIgd2F5cyBob3cgd2UgY2FuIOKAnGhpamFja+KAnSBhIHJlbW90ZSBwcm9jZXNzPwoKVGhhbmtz
+LApBbmRyZWkKCj4gCj4gPiAKPiA+ICogRXhlY3V0ZSBhIHN5c3RlbSBjYWxsIGluIGFuIGFkZHJl
+c3Mgc3BhY2Ugb2YgYSB0YXJnZXQgcHJvY2Vzcy4KPiAKPiBJIGNvdWxkIGdldCBiZWhpbmQgdGhp
+cywgYnV0IHRoZXJlIGFyZSBwbGVudHkgb2YgY2FucyBvZiB3b3JtcyB0byB3YXRjaAo+IG91dCBm
+b3IuICBTZXJpb3VzIGF1ZGl0aW5nIHdvdWxkIGJlIG5lZWRlZC4KCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51
+eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
+YW4vbGlzdGluZm8vbGludXgtdW0K
 
