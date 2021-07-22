@@ -1,151 +1,194 @@
-Return-Path: <arnd@kernel.org>
-From: Arnd Bergmann <arnd@kernel.org>
-Subject: [PATCH v3 7/9] asm-generic: uaccess: remove inline strncpy_from_user/strnlen_user
-Date: Thu, 22 Jul 2021 14:48:12 +0200
-Message-Id: <20210722124814.778059-8-arnd@kernel.org>
-In-Reply-To: <20210722124814.778059-1-arnd@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+From: Vineet Gupta <Vineet.Gupta1@synopsys.com>
+Subject: Re: [PATCH v3 4/9] arc: use generic strncpy/strnlen from_user
+Date: Thu, 22 Jul 2021 15:34:31 +0000
+Message-ID: <fe655b87-8fbc-101e-7b53-9f2a2887f7df@synopsys.com>
 References: <20210722124814.778059-1-arnd@kernel.org>
+ <20210722124814.778059-5-arnd@kernel.org>
+In-Reply-To: <20210722124814.778059-5-arnd@kernel.org>
+Content-Language: en-US
+Content-ID: <73F9861E435C6E489C89616888EB6F96@namprd12.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-arch@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Al Viro <viro@zeniv.linux.org.uk>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Brian Cain <bcain@codeaurora.org>, Chris Zankel <chris@zankel.net>, Christian Borntraeger <borntraeger@de.ibm.com>, Christoph Hellwig <hch@lst.de>, Guo Ren <guoren@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Jeff Dike <jdike@addtoit.com>, Linus Walleij <linus.walleij@linaro.org>, Max Filippov <jcmvbkbc@gmail.com>, Michal Simek <monstr@monstr.eu>, Richard Weinberger <richard@nod.at>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Vasily Gorbik <gor@linux.ibm.com>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, uclinux-h8-devel@lists.sourceforge.jp, Geert Uytterhoeven <geert@linux-m68k.org>
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Arnd Bergmann <arnd@kernel.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Al Viro <viro@zeniv.linux.org.uk>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Brian Cain <bcain@codeaurora.org>, Chris Zankel <chris@zankel.net>, Christian Borntraeger <borntraeger@de.ibm.com>, Christoph Hellwig <hch@lst.de>, Guo Ren <guoren@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Jeff Dike <jdike@addtoit.com>, Linus Walleij <linus.walleij@linaro.org>, Max Filippov <jcmvbkbc@gmail.com>, Michal Simek <monstr@monstr.eu>, Richard Weinberger <richard@nod.at>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Vasily Gorbik <gor@linux.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "uclinux-h8-devel@lists.sourceforge.jp" <uclinux-h8-devel@lists.sourceforge.jp>
 
-From: Arnd Bergmann <arnd@arndb.de>
+On 7/22/21 5:48 AM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> Remove the arc implemenation of strncpy/strnlen and instead use the
+> generic versions.  The arc version is fairly slow because it always does
+> byte accesses even for aligned data, and its checks for user_addr_max()
+> differ from the generic code.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-The inline version is used on three NOMMU architectures and is
-particularly inefficient when it scans the string one byte at a time
-twice. It also lacks a check for user_addr_max(), but this is
-probably ok on NOMMU targets.
+LGTM. Thx for doing this Arnd !
 
-Consolidate the asm-generic implementation with the library version
-that is used everywhere else.  This version is generalized enough to
-work efficiently on both MMU and NOMMU targets, and using the
-same code everywhere reduces the potential for subtle bugs.
+Acked-by: Vineet Gupta <vgupta@synopsys.com>
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/h8300/Kconfig            |  2 ++
- arch/m68k/Kconfig             |  4 +--
- arch/riscv/Kconfig            |  4 +--
- include/asm-generic/uaccess.h | 46 ++++++-----------------------------
- 4 files changed, 14 insertions(+), 42 deletions(-)
+-Vineet
 
-diff --git a/arch/h8300/Kconfig b/arch/h8300/Kconfig
-index 3e3e0f16f7e0..53dfd2d47e0e 100644
---- a/arch/h8300/Kconfig
-+++ b/arch/h8300/Kconfig
-@@ -11,6 +11,8 @@ config H8300
- 	select GENERIC_IRQ_SHOW
- 	select FRAME_POINTER
- 	select GENERIC_CPU_DEVICES
-+	select GENERIC_STRNCPY_FROM_USER
-+	select GENERIC_STRNLEN_USER
- 	select MODULES_USE_ELF_RELA
- 	select COMMON_CLK
- 	select ARCH_WANT_FRAME_POINTERS
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 96989ad46f66..37a65bed6dfa 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -16,8 +16,8 @@ config M68K
- 	select GENERIC_CPU_DEVICES
- 	select GENERIC_IOMAP
- 	select GENERIC_IRQ_SHOW
--	select GENERIC_STRNCPY_FROM_USER if MMU
--	select GENERIC_STRNLEN_USER if MMU
-+	select GENERIC_STRNCPY_FROM_USER
-+	select GENERIC_STRNLEN_USER
- 	select HAVE_AOUT if MMU
- 	select HAVE_ASM_MODVERSIONS
- 	select HAVE_DEBUG_BUGVERBOSE
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 8fcceb8eda07..47bbbcab91b2 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -56,8 +56,8 @@ config RISCV
- 	select GENERIC_PTDUMP if MMU
- 	select GENERIC_SCHED_CLOCK
- 	select GENERIC_SMP_IDLE_THREAD
--	select GENERIC_STRNCPY_FROM_USER if MMU
--	select GENERIC_STRNLEN_USER if MMU
-+	select GENERIC_STRNCPY_FROM_USER
-+	select GENERIC_STRNLEN_USER
- 	select GENERIC_TIME_VSYSCALL if MMU && 64BIT
- 	select HANDLE_DOMAIN_IRQ
- 	select HAVE_ARCH_AUDITSYSCALL
-diff --git a/include/asm-generic/uaccess.h b/include/asm-generic/uaccess.h
-index 2f8a5d3bbd57..df60871ce2e8 100644
---- a/include/asm-generic/uaccess.h
-+++ b/include/asm-generic/uaccess.h
-@@ -119,6 +119,11 @@ static inline void set_fs(mm_segment_t fs)
- #ifndef uaccess_kernel
- #define uaccess_kernel() (get_fs().seg == KERNEL_DS.seg)
- #endif
-+
-+#ifndef user_addr_max
-+#define user_addr_max() (uaccess_kernel() ? ~0UL : TASK_SIZE)
-+#endif
-+
- #endif /* CONFIG_SET_FS */
- 
- #define access_ok(addr, size) __access_ok((unsigned long)(addr),(size))
-@@ -243,44 +248,6 @@ static inline int __get_user_fn(size_t size, const void __user *ptr, void *x)
- 
- extern int __get_user_bad(void) __attribute__((noreturn));
- 
--/*
-- * Copy a null terminated string from userspace.
-- */
--#ifndef strncpy_from_user
--static inline long
--strncpy_from_user(char *dst, const char __user *src, long count)
--{
--	char *tmp;
--
--	if (!access_ok(src, 1))
--		return -EFAULT;
--
--	strncpy(dst, (const char __force *)src, count);
--	for (tmp = dst; *tmp && count > 0; tmp++, count--)
--		;
--	return (tmp - dst);
--}
--#endif
--
--#ifndef strnlen_user
--/*
-- * Return the size of a string (including the ending 0)
-- *
-- * Return 0 on exception, a value greater than N if too long
-- *
-- * Unlike strnlen, strnlen_user includes the nul terminator in
-- * its returned count. Callers should check for a returned value
-- * greater than N as an indication the string is too long.
-- */
--static inline long strnlen_user(const char __user *src, long n)
--{
--	if (!access_ok(src, 1))
--		return 0;
--
--	return strnlen(src, n) + 1;
--}
--#endif
--
- /*
-  * Zero Userspace
-  */
-@@ -305,4 +272,7 @@ clear_user(void __user *to, unsigned long n)
- 
- #include <asm/extable.h>
- 
-+long strncpy_from_user(char *dst, const char __user *src, long count);
-+long strnlen_user(const char __user *src, long n);
-+
- #endif /* __ASM_GENERIC_UACCESS_H */
--- 
-2.29.2
+> ---
+>   arch/arc/Kconfig               |  2 +
+>   arch/arc/include/asm/uaccess.h | 83 ++--------------------------------
+>   arch/arc/mm/extable.c          | 12 -----
+>   3 files changed, 7 insertions(+), 90 deletions(-)
+>
+> diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
+> index d8f51eb8963b..64e5f9366401 100644
+> --- a/arch/arc/Kconfig
+> +++ b/arch/arc/Kconfig
+> @@ -27,6 +27,8 @@ config ARC
+>   	select GENERIC_PENDING_IRQ if SMP
+>   	select GENERIC_SCHED_CLOCK
+>   	select GENERIC_SMP_IDLE_THREAD
+> +	select GENERIC_STRNCPY_FROM_USER
+> +	select GENERIC_STRNLEN_USER
+>   	select HAVE_ARCH_KGDB
+>   	select HAVE_ARCH_TRACEHOOK
+>   	select HAVE_ARCH_TRANSPARENT_HUGEPAGE if ARC_MMU_V4
+> diff --git a/arch/arc/include/asm/uaccess.h b/arch/arc/include/asm/uaccess.h
+> index 3476348f361e..754a23f26736 100644
+> --- a/arch/arc/include/asm/uaccess.h
+> +++ b/arch/arc/include/asm/uaccess.h
+> @@ -655,96 +655,23 @@ static inline unsigned long __arc_clear_user(void __user *to, unsigned long n)
+>   	return res;
+>   }
+>   
+> -static inline long
+> -__arc_strncpy_from_user(char *dst, const char __user *src, long count)
+> -{
+> -	long res = 0;
+> -	char val;
+> -
+> -	if (!access_ok(src, 1))
+> -		return -EFAULT;
+> -
+> -	if (count == 0)
+> -		return 0;
+> -
+> -	__asm__ __volatile__(
+> -	"	mov	lp_count, %5		\n"
+> -	"	lp	3f			\n"
+> -	"1:	ldb.ab  %3, [%2, 1]		\n"
+> -	"	breq.d	%3, 0, 3f               \n"
+> -	"	stb.ab  %3, [%1, 1]		\n"
+> -	"	add	%0, %0, 1	# Num of NON NULL bytes copied	\n"
+> -	"3:								\n"
+> -	"	.section .fixup, \"ax\"		\n"
+> -	"	.align 4			\n"
+> -	"4:	mov %0, %4		# sets @res as -EFAULT	\n"
+> -	"	j   3b				\n"
+> -	"	.previous			\n"
+> -	"	.section __ex_table, \"a\"	\n"
+> -	"	.align 4			\n"
+> -	"	.word   1b, 4b			\n"
+> -	"	.previous			\n"
+> -	: "+r"(res), "+r"(dst), "+r"(src), "=r"(val)
+> -	: "g"(-EFAULT), "r"(count)
+> -	: "lp_count", "memory");
+> -
+> -	return res;
+> -}
+> -
+> -static inline long __arc_strnlen_user(const char __user *s, long n)
+> -{
+> -	long res, tmp1, cnt;
+> -	char val;
+> -
+> -	if (!access_ok(s, 1))
+> -		return 0;
+> -
+> -	__asm__ __volatile__(
+> -	"	mov %2, %1			\n"
+> -	"1:	ldb.ab  %3, [%0, 1]		\n"
+> -	"	breq.d  %3, 0, 2f		\n"
+> -	"	sub.f   %2, %2, 1		\n"
+> -	"	bnz 1b				\n"
+> -	"	sub %2, %2, 1			\n"
+> -	"2:	sub %0, %1, %2			\n"
+> -	"3:	;nop				\n"
+> -	"	.section .fixup, \"ax\"		\n"
+> -	"	.align 4			\n"
+> -	"4:	mov %0, 0			\n"
+> -	"	j   3b				\n"
+> -	"	.previous			\n"
+> -	"	.section __ex_table, \"a\"	\n"
+> -	"	.align 4			\n"
+> -	"	.word 1b, 4b			\n"
+> -	"	.previous			\n"
+> -	: "=r"(res), "=r"(tmp1), "=r"(cnt), "=r"(val)
+> -	: "0"(s), "1"(n)
+> -	: "memory");
+> -
+> -	return res;
+> -}
+> -
+>   #ifndef CONFIG_CC_OPTIMIZE_FOR_SIZE
+>   
+>   #define INLINE_COPY_TO_USER
+>   #define INLINE_COPY_FROM_USER
+>   
+>   #define __clear_user(d, n)		__arc_clear_user(d, n)
+> -#define strncpy_from_user(d, s, n)	__arc_strncpy_from_user(d, s, n)
+> -#define strnlen_user(s, n)		__arc_strnlen_user(s, n)
+>   #else
+>   extern unsigned long arc_clear_user_noinline(void __user *to,
+>   		unsigned long n);
+> -extern long arc_strncpy_from_user_noinline (char *dst, const char __user *src,
+> -		long count);
+> -extern long arc_strnlen_user_noinline(const char __user *src, long n);
+> -
+>   #define __clear_user(d, n)		arc_clear_user_noinline(d, n)
+> -#define strncpy_from_user(d, s, n)	arc_strncpy_from_user_noinline(d, s, n)
+> -#define strnlen_user(s, n)		arc_strnlen_user_noinline(s, n)
+> -
+>   #endif
+>   
+> +extern long strncpy_from_user(char *dst, const char __user *src, long count);
+> +#define strncpy_from_user(d, s, n)	strncpy_from_user(d, s, n)
+> +extern long strnlen_user(const char __user *src, long n);
+> +#define strnlen_user(s, n)		strnlen_user(s, n)
+> +
+>   #include <asm/segment.h>
+>   #include <asm-generic/uaccess.h>
+>   
+> diff --git a/arch/arc/mm/extable.c b/arch/arc/mm/extable.c
+> index b06b09ddf924..4e14c4244ea2 100644
+> --- a/arch/arc/mm/extable.c
+> +++ b/arch/arc/mm/extable.c
+> @@ -32,16 +32,4 @@ unsigned long arc_clear_user_noinline(void __user *to,
+>   }
+>   EXPORT_SYMBOL(arc_clear_user_noinline);
+>   
+> -long arc_strncpy_from_user_noinline(char *dst, const char __user *src,
+> -		long count)
+> -{
+> -	return __arc_strncpy_from_user(dst, src, count);
+> -}
+> -EXPORT_SYMBOL(arc_strncpy_from_user_noinline);
+> -
+> -long arc_strnlen_user_noinline(const char __user *src, long n)
+> -{
+> -	return __arc_strnlen_user(src, n);
+> -}
+> -EXPORT_SYMBOL(arc_strnlen_user_noinline);
+>   #endif
 
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
