@@ -1,139 +1,119 @@
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from conuserg-09.nifty.com ([210.131.2.76])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1m7MVo-007fJb-FL
+ for linux-um@lists.infradead.org; Sat, 24 Jul 2021 18:36:38 +0000
+From: Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH] kbuild: do not require sub-make for separate output tree
+ builds
+Date: Sun, 25 Jul 2021 03:35:56 +0900
+Message-Id: <20210724183556.76680-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-Date: Wed, 14 Jul 2021 16:44:05 +0200
-References: <20210714143239.2529044-1-geert@linux-m68k.org>
-In-Reply-To: <20210714143239.2529044-1-geert@linux-m68k.org>
-Message-ID: <CAMuHMdWv8-6fBDLb8cFvvLxsb7RkEVkLNUBeCm-9yN9_iJkg-g@mail.gmail.com>
-Subject: Re: Build regressions/improvements in v5.14-rc1
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc: Marco Elver <elver@google.com>, Steen Hegelund <Steen.Hegelund@microchip.com>, linux-um <linux-um@lists.infradead.org>, scsi <linux-scsi@vger.kernel.org>, kasan-dev <kasan-dev@googlegroups.com>, netdev <netdev@vger.kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-kbuild@vger.kernel.org
+Cc: Masahiro Yamada <masahiroy@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Borislav Petkov <bp@alien8.de>, x86@kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, linux-mips@vger.kernel.org, Michal Marek <michal.lkml@markovi.net>, Richard Weinberger <richard@nod.at>, Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-On Wed, Jul 14, 2021 at 4:35 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> Below is the list of build error/warning regressions/improvements in
-> v5.14-rc1[1] compared to v5.13+[2].
->
-> Summarized:
->   - build errors: +24/-4
->   - build warnings: +71/-65
->
-> Happy fixing! ;-)
->
-> Thanks to the linux-next team for providing the build service.
->
-> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/e73f0f0ee7541171d89f2e2491130c7771ba58d3/ (all 189 configs)
-> [2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/66d9282523b3228183b14d9f812872dd2620704d/ (all 189 configs)
->
->
-> *** ERRORS ***
->
-> 24 error regressions:
+As explained in commit 3204a7fb98a3 ("kbuild: prefix $(srctree)/ to some
+included Makefiles"), I want to stop using --include-dir some day.
 
-  + /kisskb/src/drivers/dma/idxd/init.c: error: implicit declaration
-of function 'cpu_feature_enabled'
-[-Werror=implicit-function-declaration]:  => 805:7
-  + /kisskb/src/drivers/dma/idxd/perfmon.h: error: 'struct perf_event'
-has no member named 'pmu':  => 24:13, 35:13
-  + /kisskb/src/drivers/dma/ioat/dca.c: error: implicit declaration of
-function 'boot_cpu_has' [-Werror=implicit-function-declaration]:  =>
-74:6
-  + /kisskb/src/drivers/dma/ioat/dca.c: error: implicit declaration of
-function 'cpuid_eax' [-Werror=implicit-function-declaration]:  =>
-64:18
-  + /kisskb/src/drivers/dma/ioat/dca.c: error: implicit declaration of
-function 'cpuid_ebx' [-Werror=implicit-function-declaration]:  =>
-17:31
-  + /kisskb/src/drivers/pci/controller/vmd.c: error:
-'X86_MSI_BASE_ADDRESS_HIGH' undeclared (first use in this function):
-=> 150:20
-  + /kisskb/src/drivers/pci/controller/vmd.c: error:
-'X86_MSI_BASE_ADDRESS_LOW' undeclared (first use in this function):
-=> 151:35
-  + /kisskb/src/drivers/pci/controller/vmd.c: error:
-'arch_msi_msg_addr_lo_t {aka struct arch_msi_msg_addr_lo}' has no
-member named 'base_address':  => 151:19
-  + /kisskb/src/drivers/pci/controller/vmd.c: error:
-'arch_msi_msg_addr_lo_t {aka struct arch_msi_msg_addr_lo}' has no
-member named 'destid_0_7':  => 152:19
-  + /kisskb/src/drivers/pci/controller/vmd.c: error: control reaches
-end of non-void function [-Werror=return-type]:  => 127:1
-  + /kisskb/src/drivers/pci/controller/vmd.c: error: dereferencing
-pointer to incomplete type 'struct pci_sysdata':  => 700:4
-  + /kisskb/src/drivers/pci/controller/vmd.c: error: field 'sysdata'
-has incomplete type:  => 116:21
+I already fixed up the top Makefile, but some arch Makefiles (mips, um,
+x86) still include check-in Makefiles without $(srctree)/.
 
-um-x86_64/um-all{mod,yes}config
+Fix them up so 'need-sub-make := 1' can go away for this case.
 
-  + /kisskb/src/drivers/scsi/arm/fas216.c: error: 'GOOD' undeclared
-(first use in this function):  => 2013:47
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-arm-gcc4.9/rpc_defconfig
+ Makefile           | 5 ++---
+ arch/mips/Makefile | 2 +-
+ arch/um/Makefile   | 6 +++---
+ arch/x86/Makefile  | 2 +-
+ 4 files changed, 7 insertions(+), 8 deletions(-)
 
-  + /kisskb/src/drivers/tty/synclink_gt.c: error: conflicting types
-for 'set_signals':  => 442:13
-
-um-x86_64/um-allmodconfig
-
-  + /kisskb/src/include/linux/compiler_attributes.h: error:
-"__GCC4_has_attribute___no_sanitize_coverage__" is not defined
-[-Werror=undef]:  => 29:29
-
-mips-gcc4.9/mips-allmodconfig
-s390x-gcc4.9/s390-allyesconfig
-
-  + /kisskb/src/include/linux/compiler_types.h: error: call to
-'__compiletime_assert_1857' declared with attribute error: FIELD_PREP:
-value too large for the field:  => 328:38
-  + /kisskb/src/include/linux/compiler_types.h: error: call to
-'__compiletime_assert_1864' declared with attribute error: FIELD_PREP:
-value too large for the field:  => 328:38
-
-arm64-gcc5.4/arm64-allmodconfig
-arm64-gcc8/arm64-allmodconfig
-
-  + /kisskb/src/include/linux/compiler_types.h: error: call to
-'__compiletime_assert_399' declared with attribute error: Unsupported
-width, must be <= 40:  => 328:38
-  + /kisskb/src/include/linux/compiler_types.h: error: call to
-'__compiletime_assert_417' declared with attribute error: Unsupported
-width, must be <= 40:  => 328:38
-  + /kisskb/src/include/linux/compiler_types.h: error: call to
-'__compiletime_assert_418' declared with attribute error: Unsupported
-width, must be <= 40:  => 328:38
-  + /kisskb/src/include/linux/compiler_types.h: error: call to
-'__compiletime_assert_431' declared with attribute error: Unsupported
-width, must be <= 40:  => 328:38
-  + /kisskb/src/include/linux/compiler_types.h: error: call to
-'__compiletime_assert_433' declared with attribute error: Unsupported
-width, must be <= 40:  => 328:38
-  + /kisskb/src/include/linux/compiler_types.h: error: call to
-'__compiletime_assert_450' declared with attribute error: Unsupported
-width, must be <= 40:  => 328:38
-  + /kisskb/src/include/linux/compiler_types.h: error: call to
-'__compiletime_assert_517' declared with attribute error: Unsupported
-width, must be <= 40:  => 328:38
-
-arm64-gcc5.4/arm64-allmodconfig
-mipsel/mips-allmodconfig
-mips-gcc4.9/mips-allmodconfig
-powerpc-gcc4.9/allmodconfig+64K_PAGES
-powerpc-gcc4.9/powerpc-allmodconfig
-powerpc-gcc4.9/powerpc-allyesconfig
-powerpc-gcc4.9/ppc64_book3e_allmodconfig
-s390x-gcc4.9/s390-allyesconfig
-sparc64/sparc64-allmodconfig
-sparc64/sparc-allmodconfig
-xtensa/xtensa-allmodconfig
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/Makefile b/Makefile
+index e4f5895badb5..bb10a93edf5c 100644
+--- a/Makefile
++++ b/Makefile
+@@ -191,10 +191,9 @@ endif
+ ifneq ($(abs_srctree),$(abs_objtree))
+ # Look for make include files relative to root of kernel src
+ #
+-# This does not become effective immediately because MAKEFLAGS is re-parsed
+-# once after the Makefile is read. We need to invoke sub-make.
++# --included-dir is added for backward compatibility, but you should not rely on
++# it. Please add $(srctree)/ prefix to include Makefiles in the source tree.
+ MAKEFLAGS += --include-dir=$(abs_srctree)
+-need-sub-make := 1
+ endif
+ 
+ ifneq ($(filter 3.%,$(MAKE_VERSION)),)
+diff --git a/arch/mips/Makefile b/arch/mips/Makefile
+index 4e942b7ef022..bc2e1857d8ce 100644
+--- a/arch/mips/Makefile
++++ b/arch/mips/Makefile
+@@ -254,7 +254,7 @@ endif
+ #
+ # Board-dependent options and extra files
+ #
+-include arch/mips/Kbuild.platforms
++include $(srctree)/arch/mips/Kbuild.platforms
+ 
+ ifdef CONFIG_PHYSICAL_START
+ load-y					= $(CONFIG_PHYSICAL_START)
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index 12a7acef0357..f2fe63bfd819 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -41,8 +41,8 @@ endif
+ 
+ HOST_DIR := arch/$(HEADER_ARCH)
+ 
+-include $(ARCH_DIR)/Makefile-skas
+-include $(HOST_DIR)/Makefile.um
++include $(srctree)/$(ARCH_DIR)/Makefile-skas
++include $(srctree)/$(HOST_DIR)/Makefile.um
+ 
+ core-y += $(HOST_DIR)/um/
+ 
+@@ -76,7 +76,7 @@ USER_CFLAGS = $(patsubst $(KERNEL_DEFINES),,$(patsubst -I%,,$(KBUILD_CFLAGS))) \
+ 		-idirafter $(objtree)/include -D__KERNEL__ -D__UM_HOST__
+ 
+ #This will adjust *FLAGS accordingly to the platform.
+-include $(ARCH_DIR)/Makefile-os-$(OS)
++include $(srctree)/$(ARCH_DIR)/Makefile-os-$(OS)
+ 
+ KBUILD_CPPFLAGS += -I$(srctree)/$(HOST_DIR)/include \
+ 		   -I$(srctree)/$(HOST_DIR)/include/uapi \
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 307fd0000a83..0fa7dc73b5d8 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -75,7 +75,7 @@ ifeq ($(CONFIG_X86_32),y)
+         KBUILD_CFLAGS += $(call cc-option,$(cc_stack_align4))
+ 
+         # CPU-specific tuning. Anything which can be shared with UML should go here.
+-        include arch/x86/Makefile_32.cpu
++        include $(srctree)/arch/x86/Makefile_32.cpu
+         KBUILD_CFLAGS += $(cflags-y)
+ 
+         # temporary until string.h is fixed
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.27.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
