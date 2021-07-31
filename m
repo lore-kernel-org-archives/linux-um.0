@@ -1,171 +1,24 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
-From: Arnd Bergmann <arnd@kernel.org>
-Subject: [PATCH v3 4/9] arc: use generic strncpy/strnlen from_user
-Date: Thu, 22 Jul 2021 14:48:09 +0200
-Message-Id: <20210722124814.778059-5-arnd@kernel.org>
-In-Reply-To: <20210722124814.778059-1-arnd@kernel.org>
-References: <20210722124814.778059-1-arnd@kernel.org>
+Return-Path: <Vineet.Gupta1@synopsys.com>
+From: Vineet Gupta <Vineet.Gupta1@synopsys.com>
+Subject: Re: [PATCH 2/3] trace: refactor TRACE_IRQFLAGS_SUPPORT in Kconfig
+Date: Sat, 31 Jul 2021 23:12:38 +0000
+Message-ID: <1036d104-44c1-b162-2262-973226628be2@synopsys.com>
+References: <20210731052233.4703-1-masahiroy@kernel.org>
+ <20210731052233.4703-2-masahiroy@kernel.org>
+In-Reply-To: <20210731052233.4703-2-masahiroy@kernel.org>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <D343C53D18DD6D43ADCBB013B53C2A98@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-arch@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Al Viro <viro@zeniv.linux.org.uk>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Brian Cain <bcain@codeaurora.org>, Chris Zankel <chris@zankel.net>, Christian Borntraeger <borntraeger@de.ibm.com>, Christoph Hellwig <hch@lst.de>, Guo Ren <guoren@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Jeff Dike <jdike@addtoit.com>, Linus Walleij <linus.walleij@linaro.org>, Max Filippov <jcmvbkbc@gmail.com>, Michal Simek <monstr@monstr.eu>, Richard Weinberger <richard@nod.at>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Vasily Gorbik <gor@linux.ibm.com>, Vineet Gupta <vgupta@synopsys.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, uclinux-h8-devel@lists.sourceforge.jp
+To: Masahiro Yamada <masahiroy@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@redhat.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Ard Biesheuvel <ardb@kernel.org>, Borislav Petkov <bp@alien8.de>, Linus Walleij <linus.walleij@linaro.org>, Ley Foon Tan <ley.foon.tan@intel.com>, "x86@kernel.org" <x86@kernel.org>, "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, Anshuman Khandual <anshuman.khandual@arm.com>, Nick Hu <nickhu@andestech.com>, Thomas Gleixner <tglx@linutronix.de>, Mike Rapoport <rppt@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Peter Zijlstra <peterz@infradead.org>, Catalin Marinas <catalin.marinas@arm.com>, "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>, YiFei Zhu <yifeifz2@illinois.edu>, Greentime Hu <green.hu@gmail.com>, Palmer Dabbelt <palmer@dabbelt.com>, Michal Simek <monstr@monstr.eu>, Helge Deller <deller@gmx.de>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, =?utf-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= <u.kleine-koenig@pengutronix.de>, Guo Ren <guoren@kernel.org>, Sami Tolvanen <samitolvanen@google.com>, Richard Weinberger <richard@nod.at>, Christian Borntraeger <borntraeger@de.ibm.com>, Rich Felker <dalias@libc.org>, Albert Ou <aou@eecs.berkeley.edu>, Heiko Carstens <hca@linux.ibm.com>, Jeff Dike <jdike@addtoit.com>, Max Filippov <jcmvbkbc@gmail.com>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "H. Peter Anvin" <hpa@zytor.com>, Will Deacon <will@kernel.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, Andrey Konovalov <andreyknvl@gmail.com>, Frederic Weisbecker <frederic@kernel.org>, Nicholas Piggin <npiggin@gmail.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Brian Cain <bcain@codeaurora.org>, "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>, Stafford Horne <shorne@gmail.com>, Russell King <linux@armlinux.org.uk>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Paul Walmsley <paul.walmsley@sifive.com>, Chris Zankel <chris@zankel.net>, Vasily Gorbik <gor@linux.ibm.com>, "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>, Jonas Bonn <jonas@southpole.se>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, Kees Cook <keescook@chromium.org>, Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>, Colin Ian King <colin.king@canonical.com>, "David S. Miller" <davem@davemloft.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Vincent Chen <deanbo422@gmail.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Andrew Morton <akpm@linux-foundation.org>, Michael Ellerman <mpe@ellerman.id.au>, Paul Mackerras <paulus@samba.org>, Mark Rutland <mark.rutland@arm.com>, Viresh Kumar <viresh.kumar@linaro.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "openrisc@lists.librecores.org" <openrisc@lists.librecores.org>
 List-ID: <linux-um.lists.infradead.org>
 
-From: Arnd Bergmann <arnd@arndb.de>
-
-Remove the arc implemenation of strncpy/strnlen and instead use the
-generic versions.  The arc version is fairly slow because it always does
-byte accesses even for aligned data, and its checks for user_addr_max()
-differ from the generic code.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/arc/Kconfig               |  2 +
- arch/arc/include/asm/uaccess.h | 83 ++--------------------------------
- arch/arc/mm/extable.c          | 12 -----
- 3 files changed, 7 insertions(+), 90 deletions(-)
-
-diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
-index d8f51eb8963b..64e5f9366401 100644
---- a/arch/arc/Kconfig
-+++ b/arch/arc/Kconfig
-@@ -27,6 +27,8 @@ config ARC
- 	select GENERIC_PENDING_IRQ if SMP
- 	select GENERIC_SCHED_CLOCK
- 	select GENERIC_SMP_IDLE_THREAD
-+	select GENERIC_STRNCPY_FROM_USER
-+	select GENERIC_STRNLEN_USER
- 	select HAVE_ARCH_KGDB
- 	select HAVE_ARCH_TRACEHOOK
- 	select HAVE_ARCH_TRANSPARENT_HUGEPAGE if ARC_MMU_V4
-diff --git a/arch/arc/include/asm/uaccess.h b/arch/arc/include/asm/uaccess.h
-index 3476348f361e..754a23f26736 100644
---- a/arch/arc/include/asm/uaccess.h
-+++ b/arch/arc/include/asm/uaccess.h
-@@ -655,96 +655,23 @@ static inline unsigned long __arc_clear_user(void __user *to, unsigned long n)
- 	return res;
- }
- 
--static inline long
--__arc_strncpy_from_user(char *dst, const char __user *src, long count)
--{
--	long res = 0;
--	char val;
--
--	if (!access_ok(src, 1))
--		return -EFAULT;
--
--	if (count == 0)
--		return 0;
--
--	__asm__ __volatile__(
--	"	mov	lp_count, %5		\n"
--	"	lp	3f			\n"
--	"1:	ldb.ab  %3, [%2, 1]		\n"
--	"	breq.d	%3, 0, 3f               \n"
--	"	stb.ab  %3, [%1, 1]		\n"
--	"	add	%0, %0, 1	# Num of NON NULL bytes copied	\n"
--	"3:								\n"
--	"	.section .fixup, \"ax\"		\n"
--	"	.align 4			\n"
--	"4:	mov %0, %4		# sets @res as -EFAULT	\n"
--	"	j   3b				\n"
--	"	.previous			\n"
--	"	.section __ex_table, \"a\"	\n"
--	"	.align 4			\n"
--	"	.word   1b, 4b			\n"
--	"	.previous			\n"
--	: "+r"(res), "+r"(dst), "+r"(src), "=r"(val)
--	: "g"(-EFAULT), "r"(count)
--	: "lp_count", "memory");
--
--	return res;
--}
--
--static inline long __arc_strnlen_user(const char __user *s, long n)
--{
--	long res, tmp1, cnt;
--	char val;
--
--	if (!access_ok(s, 1))
--		return 0;
--
--	__asm__ __volatile__(
--	"	mov %2, %1			\n"
--	"1:	ldb.ab  %3, [%0, 1]		\n"
--	"	breq.d  %3, 0, 2f		\n"
--	"	sub.f   %2, %2, 1		\n"
--	"	bnz 1b				\n"
--	"	sub %2, %2, 1			\n"
--	"2:	sub %0, %1, %2			\n"
--	"3:	;nop				\n"
--	"	.section .fixup, \"ax\"		\n"
--	"	.align 4			\n"
--	"4:	mov %0, 0			\n"
--	"	j   3b				\n"
--	"	.previous			\n"
--	"	.section __ex_table, \"a\"	\n"
--	"	.align 4			\n"
--	"	.word 1b, 4b			\n"
--	"	.previous			\n"
--	: "=r"(res), "=r"(tmp1), "=r"(cnt), "=r"(val)
--	: "0"(s), "1"(n)
--	: "memory");
--
--	return res;
--}
--
- #ifndef CONFIG_CC_OPTIMIZE_FOR_SIZE
- 
- #define INLINE_COPY_TO_USER
- #define INLINE_COPY_FROM_USER
- 
- #define __clear_user(d, n)		__arc_clear_user(d, n)
--#define strncpy_from_user(d, s, n)	__arc_strncpy_from_user(d, s, n)
--#define strnlen_user(s, n)		__arc_strnlen_user(s, n)
- #else
- extern unsigned long arc_clear_user_noinline(void __user *to,
- 		unsigned long n);
--extern long arc_strncpy_from_user_noinline (char *dst, const char __user *src,
--		long count);
--extern long arc_strnlen_user_noinline(const char __user *src, long n);
--
- #define __clear_user(d, n)		arc_clear_user_noinline(d, n)
--#define strncpy_from_user(d, s, n)	arc_strncpy_from_user_noinline(d, s, n)
--#define strnlen_user(s, n)		arc_strnlen_user_noinline(s, n)
--
- #endif
- 
-+extern long strncpy_from_user(char *dst, const char __user *src, long count);
-+#define strncpy_from_user(d, s, n)	strncpy_from_user(d, s, n)
-+extern long strnlen_user(const char __user *src, long n);
-+#define strnlen_user(s, n)		strnlen_user(s, n)
-+
- #include <asm/segment.h>
- #include <asm-generic/uaccess.h>
- 
-diff --git a/arch/arc/mm/extable.c b/arch/arc/mm/extable.c
-index b06b09ddf924..4e14c4244ea2 100644
---- a/arch/arc/mm/extable.c
-+++ b/arch/arc/mm/extable.c
-@@ -32,16 +32,4 @@ unsigned long arc_clear_user_noinline(void __user *to,
- }
- EXPORT_SYMBOL(arc_clear_user_noinline);
- 
--long arc_strncpy_from_user_noinline(char *dst, const char __user *src,
--		long count)
--{
--	return __arc_strncpy_from_user(dst, src, count);
--}
--EXPORT_SYMBOL(arc_strncpy_from_user_noinline);
--
--long arc_strnlen_user_noinline(const char __user *src, long n)
--{
--	return __arc_strnlen_user(src, n);
--}
--EXPORT_SYMBOL(arc_strnlen_user_noinline);
- #endif
--- 
-2.29.2
-
+T24gNy8zMC8yMSAxMDoyMiBQTSwgTWFzYWhpcm8gWWFtYWRhIHdyb3RlOg0KPiBNYWtlIGFyY2hp
+dGVjdHVyZXMgc2VsZWN0IFRSQUNFX0lSUUZMQUdTX1NVUFBPUlQgaW5zdGVhZCBvZg0KPiBoYXZp
+bmcgbWFueSBkZWZpbmVzLg0KPg0KPiBTaWduZWQtb2ZmLWJ5OiBNYXNhaGlybyBZYW1hZGEgPG1h
+c2FoaXJveUBrZXJuZWwub3JnPg0KPiAtLS0NCj4NCj4gICBhcmNoL2FyYy9LY29uZmlnICAgICAg
+ICAgICAgICB8IDQgKy0tLQ0KPiBbc25pcC4uXQ0KDQoNCkFja2VkLWJ5OiBWaW5lZXQgR3VwdGEg
+PHZndXB0YUBzeW5vcHN5cy5jb20+wqDCoCAjYXJjaC9hcmMNCg0K
 
