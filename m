@@ -1,71 +1,53 @@
-Return-Path: <mcgrof@infradead.org>
-From: Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 05/15] um/drivers/ubd_kern: add error handling support for add_disk()
-Date: Mon, 30 Aug 2021 15:09:50 -0700
-Message-Id: <20210830221000.179369-6-mcgrof@kernel.org>
-In-Reply-To: <20210830221000.179369-1-mcgrof@kernel.org>
-References: <20210830221000.179369-1-mcgrof@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+From: Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 03/15] dm: make EBS depend on !HIGHMEM
+Date: Wed,  4 Aug 2021 11:56:22 +0200
+Message-Id: <20210804095634.460779-4-hch@lst.de>
+In-Reply-To: <20210804095634.460779-1-hch@lst.de>
+References: <20210804095634.460779-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-To: axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org, ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org, philipp.reisner@linbit.com, lars.ellenberg@linbit.com, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, chris.obbard@collabora.com, krisman@collabora.com, zhuyifei1999@gmail.com, thehajime@gmail.com, chris@zankel.net, jcmvbkbc@gmail.com, tim@cyberelk.net
-Cc: linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Jens Axboe <axboe@kernel.dk>
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Geoff Levand <geoff@infradead.org>, Ilya Dryomov <idryomov@gmail.com>, Paolo Bonzini <pbonzini@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, Song Liu <song@kernel.org>, Mike Snitzer <snitzer@redhat.com>, Coly Li <colyli@suse.de>, Stefan Haberland <sth@linux.ibm.com>, Jan Hoeppner <hoeppner@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Phillip Lougher <phillip@squashfs.org.uk>, linux-block@vger.kernel.org, dm-devel@redhat.com, linux-um@lists.infradead.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, linux-raid@vger.kernel.org, linux-bcache@vger.kernel.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org
 
-We never checked for errors on add_disk() as this function
-returned void. Now that this is fixed, use the shiny new
-error handling.
+__ebs_rw_bvec use page_address on the submitted bios data, and thus
+can't deal with highmem.  Disable the target on highmem configs.
 
-ubd_disk_register() never returned an error, so just fix
-that now and let the caller handle the error condition.
-
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/um/drivers/ubd_kern.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ drivers/md/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index cd9dc0556e91..81045c199c30 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -854,8 +854,8 @@ static const struct attribute_group *ubd_attr_groups[] = {
- 	NULL,
- };
+diff --git a/drivers/md/Kconfig b/drivers/md/Kconfig
+index 0602e82a9516..ecc559c60d40 100644
+--- a/drivers/md/Kconfig
++++ b/drivers/md/Kconfig
+@@ -340,7 +340,7 @@ config DM_WRITECACHE
  
--static void ubd_disk_register(int major, u64 size, int unit,
--			      struct gendisk *disk)
-+static int ubd_disk_register(int major, u64 size, int unit,
-+			     struct gendisk *disk)
- {
- 	disk->major = major;
- 	disk->first_minor = unit << UBD_SHIFT;
-@@ -872,7 +872,7 @@ static void ubd_disk_register(int major, u64 size, int unit,
- 
- 	disk->private_data = &ubd_devs[unit];
- 	disk->queue = ubd_devs[unit].queue;
--	device_add_disk(&ubd_devs[unit].pdev.dev, disk, ubd_attr_groups);
-+	return device_add_disk(&ubd_devs[unit].pdev.dev, disk, ubd_attr_groups);
- }
- 
- #define ROUND_BLOCK(n) ((n + (SECTOR_SIZE - 1)) & (-SECTOR_SIZE))
-@@ -919,10 +919,15 @@ static int ubd_add(int n, char **error_out)
- 	blk_queue_write_cache(ubd_dev->queue, true, false);
- 	blk_queue_max_segments(ubd_dev->queue, MAX_SG);
- 	blk_queue_segment_boundary(ubd_dev->queue, PAGE_SIZE - 1);
--	ubd_disk_register(UBD_MAJOR, ubd_dev->size, n, disk);
-+	err = ubd_disk_register(UBD_MAJOR, ubd_dev->size, n, disk);
-+	if (err)
-+		goto out_cleanup_disk;
-+
- 	ubd_gendisk[n] = disk;
- 	return 0;
- 
-+out_cleanup_disk:
-+	blk_cleanup_disk(disk);
- out_cleanup_tags:
- 	blk_mq_free_tag_set(&ubd_dev->tag_set);
- out:
+ config DM_EBS
+ 	tristate "Emulated block size target (EXPERIMENTAL)"
+-	depends on BLK_DEV_DM
++	depends on BLK_DEV_DM && !HIGHMEM
+ 	select DM_BUFIO
+ 	help
+ 	  dm-ebs emulates smaller logical block size on backing devices
 -- 
 2.30.2
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
