@@ -1,8 +1,8 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 07/15] rbd: use bvec_virt
-Date: Wed,  4 Aug 2021 11:56:26 +0200
-Message-Id: <20210804095634.460779-8-hch@lst.de>
+Subject: [PATCH 04/15] dm-ebs: use bvec_virt
+Date: Wed,  4 Aug 2021 11:56:23 +0200
+Message-Id: <20210804095634.460779-5-hch@lst.de>
 In-Reply-To: <20210804095634.460779-1-hch@lst.de>
 References: <20210804095634.460779-1-hch@lst.de>
 MIME-Version: 1.0
@@ -25,23 +25,22 @@ Use bvec_virt instead of open coding it.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/block/rbd.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/md/dm-ebs-target.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/block/rbd.c b/drivers/block/rbd.c
-index 6d596c2c2cd6..e65c9d706f6f 100644
---- a/drivers/block/rbd.c
-+++ b/drivers/block/rbd.c
-@@ -2986,8 +2986,7 @@ static bool is_zero_bvecs(struct bio_vec *bvecs, u32 bytes)
- 	};
+diff --git a/drivers/md/dm-ebs-target.c b/drivers/md/dm-ebs-target.c
+index 71475a2410be..0c509dae0ff8 100644
+--- a/drivers/md/dm-ebs-target.c
++++ b/drivers/md/dm-ebs-target.c
+@@ -74,7 +74,7 @@ static int __ebs_rw_bvec(struct ebs_c *ec, int rw, struct bio_vec *bv, struct bv
+ 	if (unlikely(!bv->bv_page || !bv_len))
+ 		return -EIO;
  
- 	ceph_bvec_iter_advance_step(&it, bytes, ({
--		if (memchr_inv(page_address(bv.bv_page) + bv.bv_offset, 0,
--			       bv.bv_len))
-+		if (memchr_inv(bvec_virt(&bv), 0, bv.bv_len))
- 			return false;
- 	}));
- 	return true;
+-	pa = page_address(bv->bv_page) + bv->bv_offset;
++	pa = bvec_virt(bv);
+ 
+ 	/* Handle overlapping page <-> blocks */
+ 	while (bv_len) {
 -- 
 2.30.2
 
