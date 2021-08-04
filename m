@@ -1,68 +1,62 @@
-Return-Path: <mcgrof@infradead.org>
-From: Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 06/15] xtensa/platforms/iss/simdisk: add error handling support for add_disk()
-Date: Mon, 30 Aug 2021 15:09:51 -0700
-Message-Id: <20210830221000.179369-7-mcgrof@kernel.org>
-In-Reply-To: <20210830221000.179369-1-mcgrof@kernel.org>
-References: <20210830221000.179369-1-mcgrof@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Date: Wed, 4 Aug 2021 07:33:12 -0700
+From: Keith Busch <kbusch@kernel.org>
+Subject: Re: [PATCH 15/15] nvme: use bvec_virt
+Message-ID: <20210804143312.GA2296276@dhcp-10-100-145-180.wdc.com>
+References: <20210804095634.460779-1-hch@lst.de>
+ <20210804095634.460779-16-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-To: axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org, ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org, philipp.reisner@linbit.com, lars.ellenberg@linbit.com, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, chris.obbard@collabora.com, krisman@collabora.com, zhuyifei1999@gmail.com, thehajime@gmail.com, chris@zankel.net, jcmvbkbc@gmail.com, tim@cyberelk.net
-Cc: linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <20210804095634.460779-16-hch@lst.de>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Christoph Hellwig <hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Geoff Levand <geoff@infradead.org>, Ilya Dryomov <idryomov@gmail.com>, Paolo Bonzini <pbonzini@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, Song Liu <song@kernel.org>, Mike Snitzer <snitzer@redhat.com>, Coly Li <colyli@suse.de>, Stefan Haberland <sth@linux.ibm.com>, Jan Hoeppner <hoeppner@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Phillip Lougher <phillip@squashfs.org.uk>, linux-block@vger.kernel.org, dm-devel@redhat.com, linux-um@lists.infradead.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, linux-raid@vger.kernel.org, linux-bcache@vger.kernel.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org
 
-We never checked for errors on add_disk() as this function
-returned void. Now that this is fixed, use the shiny new
-error handling.
+On Wed, Aug 04, 2021 at 11:56:34AM +0200, Christoph Hellwig wrote:
+> Use bvec_virt instead of open coding it.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  drivers/nvme/host/core.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+> index dfd9dec0c1f6..02ce94b2906b 100644
+> --- a/drivers/nvme/host/core.c
+> +++ b/drivers/nvme/host/core.c
+> @@ -968,12 +968,11 @@ void nvme_cleanup_cmd(struct request *req)
+>  {
+>  	if (req->rq_flags & RQF_SPECIAL_PAYLOAD) {
+>  		struct nvme_ctrl *ctrl = nvme_req(req)->ctrl;
+> -		struct page *page = req->special_vec.bv_page;
+>  
+> -		if (page == ctrl->discard_page)
+> +		if (req->special_vec.bv_page == ctrl->discard_page)
+>  			clear_bit_unlock(0, &ctrl->discard_page_busy);
+>  		else
+> -			kfree(page_address(page) + req->special_vec.bv_offset);
+> +			kfree(bvec_virt(&req->special_vec));
+>  	}
+>  }
+>  EXPORT_SYMBOL_GPL(nvme_cleanup_cmd);
 
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- arch/xtensa/platforms/iss/simdisk.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+Looks good.
 
-diff --git a/arch/xtensa/platforms/iss/simdisk.c b/arch/xtensa/platforms/iss/simdisk.c
-index 3cdfa00738e0..ad85c554cd45 100644
---- a/arch/xtensa/platforms/iss/simdisk.c
-+++ b/arch/xtensa/platforms/iss/simdisk.c
-@@ -259,6 +259,7 @@ static int __init simdisk_setup(struct simdisk *dev, int which,
- 		struct proc_dir_entry *procdir)
- {
- 	char tmp[2] = { '0' + which, 0 };
-+	int err = -ENOMEM;
- 
- 	dev->fd = -1;
- 	dev->filename = NULL;
-@@ -267,7 +268,7 @@ static int __init simdisk_setup(struct simdisk *dev, int which,
- 
- 	dev->gd = blk_alloc_disk(NUMA_NO_NODE);
- 	if (!dev->gd)
--		return -ENOMEM;
-+		goto out;
- 	dev->gd->major = simdisk_major;
- 	dev->gd->first_minor = which;
- 	dev->gd->minors = SIMDISK_MINORS;
-@@ -275,10 +276,18 @@ static int __init simdisk_setup(struct simdisk *dev, int which,
- 	dev->gd->private_data = dev;
- 	snprintf(dev->gd->disk_name, 32, "simdisk%d", which);
- 	set_capacity(dev->gd, 0);
--	add_disk(dev->gd);
-+	err = add_disk(dev->gd);
-+	if (err)
-+		goto out_cleanup_disk;
- 
- 	dev->procfile = proc_create_data(tmp, 0644, procdir, &simdisk_proc_ops, dev);
-+
- 	return 0;
-+
-+out_cleanup_disk:
-+	blk_cleanup_disk(dev->gd);
-+out:
-+	return err;
- }
- 
- static int __init simdisk_init(void)
--- 
-2.30.2
+Reviewed-by: Keith Busch <kbusch@kernel.org>
 
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
