@@ -1,8 +1,8 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 03/15] dm: make EBS depend on !HIGHMEM
-Date: Wed,  4 Aug 2021 11:56:22 +0200
-Message-Id: <20210804095634.460779-4-hch@lst.de>
+Subject: [PATCH 06/15] squashfs: use bvec_virt
+Date: Wed,  4 Aug 2021 11:56:25 +0200
+Message-Id: <20210804095634.460779-7-hch@lst.de>
 In-Reply-To: <20210804095634.460779-1-hch@lst.de>
 References: <20210804095634.460779-1-hch@lst.de>
 MIME-Version: 1.0
@@ -21,27 +21,115 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Geoff Levand <geoff@infradead.org>, Ilya Dryomov <idryomov@gmail.com>, Paolo Bonzini <pbonzini@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, Song Liu <song@kernel.org>, Mike Snitzer <snitzer@redhat.com>, Coly Li <colyli@suse.de>, Stefan Haberland <sth@linux.ibm.com>, Jan Hoeppner <hoeppner@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Phillip Lougher <phillip@squashfs.org.uk>, linux-block@vger.kernel.org, dm-devel@redhat.com, linux-um@lists.infradead.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, linux-raid@vger.kernel.org, linux-bcache@vger.kernel.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org
 
-__ebs_rw_bvec use page_address on the submitted bios data, and thus
-can't deal with highmem.  Disable the target on highmem configs.
+Use bvec_virt instead of open coding it.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/md/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/squashfs/block.c        | 7 +++----
+ fs/squashfs/lz4_wrapper.c  | 2 +-
+ fs/squashfs/lzo_wrapper.c  | 2 +-
+ fs/squashfs/xz_wrapper.c   | 2 +-
+ fs/squashfs/zlib_wrapper.c | 2 +-
+ fs/squashfs/zstd_wrapper.c | 2 +-
+ 6 files changed, 8 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/md/Kconfig b/drivers/md/Kconfig
-index 0602e82a9516..ecc559c60d40 100644
---- a/drivers/md/Kconfig
-+++ b/drivers/md/Kconfig
-@@ -340,7 +340,7 @@ config DM_WRITECACHE
+diff --git a/fs/squashfs/block.c b/fs/squashfs/block.c
+index 855f0e87066d..2db8bcf7ff85 100644
+--- a/fs/squashfs/block.c
++++ b/fs/squashfs/block.c
+@@ -49,8 +49,7 @@ static int copy_bio_to_actor(struct bio *bio,
  
- config DM_EBS
- 	tristate "Emulated block size target (EXPERIMENTAL)"
--	depends on BLK_DEV_DM
-+	depends on BLK_DEV_DM && !HIGHMEM
- 	select DM_BUFIO
- 	help
- 	  dm-ebs emulates smaller logical block size on backing devices
+ 		bytes_to_copy = min_t(int, bytes_to_copy,
+ 				      req_length - copied_bytes);
+-		memcpy(actor_addr + actor_offset,
+-		       page_address(bvec->bv_page) + bvec->bv_offset + offset,
++		memcpy(actor_addr + actor_offset, bvec_virt(bvec) + offset,
+ 		       bytes_to_copy);
+ 
+ 		actor_offset += bytes_to_copy;
+@@ -177,7 +176,7 @@ int squashfs_read_data(struct super_block *sb, u64 index, int length,
+ 			goto out_free_bio;
+ 		}
+ 		/* Extract the length of the metadata block */
+-		data = page_address(bvec->bv_page) + bvec->bv_offset;
++		data = bvec_virt(bvec);
+ 		length = data[offset];
+ 		if (offset < bvec->bv_len - 1) {
+ 			length |= data[offset + 1] << 8;
+@@ -186,7 +185,7 @@ int squashfs_read_data(struct super_block *sb, u64 index, int length,
+ 				res = -EIO;
+ 				goto out_free_bio;
+ 			}
+-			data = page_address(bvec->bv_page) + bvec->bv_offset;
++			data = bvec_virt(bvec);
+ 			length |= data[0] << 8;
+ 		}
+ 		bio_free_pages(bio);
+diff --git a/fs/squashfs/lz4_wrapper.c b/fs/squashfs/lz4_wrapper.c
+index 233d5582fbee..b685b6238316 100644
+--- a/fs/squashfs/lz4_wrapper.c
++++ b/fs/squashfs/lz4_wrapper.c
+@@ -101,7 +101,7 @@ static int lz4_uncompress(struct squashfs_sb_info *msblk, void *strm,
+ 	while (bio_next_segment(bio, &iter_all)) {
+ 		int avail = min(bytes, ((int)bvec->bv_len) - offset);
+ 
+-		data = page_address(bvec->bv_page) + bvec->bv_offset;
++		data = bvec_virt(bvec);
+ 		memcpy(buff, data + offset, avail);
+ 		buff += avail;
+ 		bytes -= avail;
+diff --git a/fs/squashfs/lzo_wrapper.c b/fs/squashfs/lzo_wrapper.c
+index 97bb7d92ddcd..cb510a631968 100644
+--- a/fs/squashfs/lzo_wrapper.c
++++ b/fs/squashfs/lzo_wrapper.c
+@@ -76,7 +76,7 @@ static int lzo_uncompress(struct squashfs_sb_info *msblk, void *strm,
+ 	while (bio_next_segment(bio, &iter_all)) {
+ 		int avail = min(bytes, ((int)bvec->bv_len) - offset);
+ 
+-		data = page_address(bvec->bv_page) + bvec->bv_offset;
++		data = bvec_virt(bvec);
+ 		memcpy(buff, data + offset, avail);
+ 		buff += avail;
+ 		bytes -= avail;
+diff --git a/fs/squashfs/xz_wrapper.c b/fs/squashfs/xz_wrapper.c
+index e80419aed862..68f6d09bb3a2 100644
+--- a/fs/squashfs/xz_wrapper.c
++++ b/fs/squashfs/xz_wrapper.c
+@@ -146,7 +146,7 @@ static int squashfs_xz_uncompress(struct squashfs_sb_info *msblk, void *strm,
+ 			}
+ 
+ 			avail = min(length, ((int)bvec->bv_len) - offset);
+-			data = page_address(bvec->bv_page) + bvec->bv_offset;
++			data = bvec_virt(bvec);
+ 			length -= avail;
+ 			stream->buf.in = data + offset;
+ 			stream->buf.in_size = avail;
+diff --git a/fs/squashfs/zlib_wrapper.c b/fs/squashfs/zlib_wrapper.c
+index bcb881ec47f2..a20e9042146b 100644
+--- a/fs/squashfs/zlib_wrapper.c
++++ b/fs/squashfs/zlib_wrapper.c
+@@ -76,7 +76,7 @@ static int zlib_uncompress(struct squashfs_sb_info *msblk, void *strm,
+ 			}
+ 
+ 			avail = min(length, ((int)bvec->bv_len) - offset);
+-			data = page_address(bvec->bv_page) + bvec->bv_offset;
++			data = bvec_virt(bvec);
+ 			length -= avail;
+ 			stream->next_in = data + offset;
+ 			stream->avail_in = avail;
+diff --git a/fs/squashfs/zstd_wrapper.c b/fs/squashfs/zstd_wrapper.c
+index b7cb1faa652d..0015cf8b5582 100644
+--- a/fs/squashfs/zstd_wrapper.c
++++ b/fs/squashfs/zstd_wrapper.c
+@@ -94,7 +94,7 @@ static int zstd_uncompress(struct squashfs_sb_info *msblk, void *strm,
+ 			}
+ 
+ 			avail = min(length, ((int)bvec->bv_len) - offset);
+-			data = page_address(bvec->bv_page) + bvec->bv_offset;
++			data = bvec_virt(bvec);
+ 			length -= avail;
+ 			in_buf.src = data + offset;
+ 			in_buf.size = avail;
 -- 
 2.30.2
 
