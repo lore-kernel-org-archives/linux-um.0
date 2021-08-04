@@ -1,15 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mG1Lt-002sJ7-4L
- for linux-um@lists.infradead.org; Tue, 17 Aug 2021 15:50:11 +0000
-Date: Tue, 17 Aug 2021 10:50:06 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-Subject: Re: [PATCH v2 7/8] um: add PCI over virtio emulation driver
-Message-ID: <20210817155006.GA3020013@bjorn-Precision-5520>
+Subject: Re: [PATCH 09/15] bcache: use bvec_virt
+References: <20210804095634.460779-1-hch@lst.de>
+ <20210804095634.460779-10-hch@lst.de>
+From: Coly Li <colyli@suse.de>
+Message-ID: <13eb9def-5db4-d776-2b5a-0096a0a2a681@suse.de>
+Date: Thu, 5 Aug 2021 01:05:10 +0800
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210301160501.bafdfe225ce2.I21b27d26611ebecd8c918e20728e37b184d817bb@changeid>
+In-Reply-To: <20210804095634.460779-10-hch@lst.de>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,78 +20,42 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-um@lists.infradead.org, Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>
+To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Geoff Levand <geoff@infradead.org>, Ilya Dryomov <idryomov@gmail.com>, Paolo Bonzini <pbonzini@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, Song Liu <song@kernel.org>, Mike Snitzer <snitzer@redhat.com>, Stefan Haberland <sth@linux.ibm.com>, Jan Hoeppner <hoeppner@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Phillip Lougher <phillip@squashfs.org.uk>, linux-block@vger.kernel.org, dm-devel@redhat.com, linux-um@lists.infradead.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, linux-raid@vger.kernel.org, linux-bcache@vger.kernel.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 04:07:07PM +0100, Johannes Berg wrote:
-> From: Johannes Berg <johannes.berg@intel.com>
-> 
-> To support testing of PCI/PCIe drivers in UML, add a PCI bus
-> support driver. This driver uses virtio, which in UML is really
-> just vhost-user, to talk to devices, and adds the devices to
-> the virtual PCI bus in the system.
+On 8/4/21 5:56 PM, Christoph Hellwig wrote:
+> Use bvec_virt instead of open coding it.  Note that the existing code is
+> fine despite ignoring bv_offset as the bio is known to contain exactly
+> one page from the page allocator per bio_vec.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Hi Johannes,
+Looks good to me.
 
-The virtio_pcidev_ops kernel-doc below doesn't match the actual enum,
-so it generates several warnings:
+Reviewed-by: Coly Li <colyli@suse.de>
 
-  include/uapi/linux/virtio_pcidev.h:41: warning: Enum value 'VIRTIO_PCIDEV_OP_RESERVED' not described in enum 'virtio_pcidev_ops'
-  include/uapi/linux/virtio_pcidev.h:41: warning: Enum value 'VIRTIO_PCIDEV_OP_MMIO_READ' not described in enum 'virtio_pcidev_ops'
-  include/uapi/linux/virtio_pcidev.h:41: warning: Enum value 'VIRTIO_PCIDEV_OP_MMIO_WRITE' not described in enum 'virtio_pcidev_ops'
-  include/uapi/linux/virtio_pcidev.h:41: warning: Excess enum value 'VIRTIO_PCIDEV_OP_BAR_READ' description in 'virtio_pcidev_ops'
-  include/uapi/linux/virtio_pcidev.h:41: warning: Excess enum value 'VIRTIO_PCIDEV_OP_BAR_WRITE' description in 'virtio_pcidev_ops'
+Thanks.
 
-FWIW, here's the command I used to find these:
+Coly Li
 
-  $ find include drivers/pci -type f -path "*pci*.[ch]" | xargs scripts/kernel-doc -none
+> ---
+>  drivers/md/bcache/btree.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/md/bcache/btree.c b/drivers/md/bcache/btree.c
+> index 183a58c89377..0595559de174 100644
+> --- a/drivers/md/bcache/btree.c
+> +++ b/drivers/md/bcache/btree.c
+> @@ -378,7 +378,7 @@ static void do_btree_node_write(struct btree *b)
+>  		struct bvec_iter_all iter_all;
+>  
+>  		bio_for_each_segment_all(bv, b->bio, iter_all) {
+> -			memcpy(page_address(bv->bv_page), addr, PAGE_SIZE);
+> +			memcpy(bvec_virt(bv), addr, PAGE_SIZE);
+>  			addr += PAGE_SIZE;
+>  		}
+>  
 
-> diff --git a/include/uapi/linux/virtio_pcidev.h b/include/uapi/linux/virtio_pcidev.h
-> new file mode 100644
-> index 000000000000..89daa88bcfef
-> --- /dev/null
-> +++ b/include/uapi/linux/virtio_pcidev.h
-> @@ -0,0 +1,64 @@
-> +/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
-> +/*
-> + * Copyright (C) 2021 Intel Corporation
-> + * Author: Johannes Berg <johannes@sipsolutions.net>
-> + */
-> +#ifndef _UAPI_LINUX_VIRTIO_PCIDEV_H
-> +#define _UAPI_LINUX_VIRTIO_PCIDEV_H
-> +#include <linux/types.h>
-> +
-> +/**
-> + * enum virtio_pcidev_ops - virtual PCI device operations
-> + * @VIRTIO_PCIDEV_OP_CFG_READ: read config space, size is 1, 2, 4 or 8;
-> + *	the @data field should be filled in by the device (in little endian).
-> + * @VIRTIO_PCIDEV_OP_CFG_WRITE: write config space, size is 1, 2, 4 or 8;
-> + *	the @data field contains the data to write (in little endian).
-> + * @VIRTIO_PCIDEV_OP_BAR_READ: read BAR mem/pio, size can be variable;
-> + *	the @data field should be filled in by the device (in little endian).
-> + * @VIRTIO_PCIDEV_OP_BAR_WRITE: write BAR mem/pio, size can be variable;
-> + *	the @data field contains the data to write (in little endian).
-> + * @VIRTIO_PCIDEV_OP_MMIO_MEMSET: memset MMIO, size is variable but
-> + *	the @data field only has one byte (unlike @VIRTIO_PCIDEV_OP_MMIO_WRITE)
-> + * @VIRTIO_PCIDEV_OP_INT: legacy INTx# pin interrupt, the addr field is 1-4 for
-> + *	the number
-> + * @VIRTIO_PCIDEV_OP_MSI: MSI(-X) interrupt, this message basically transports
-> + *	the 16- or 32-bit write that would otherwise be done into memory,
-> + *	analogous to the write messages (@VIRTIO_PCIDEV_OP_MMIO_WRITE) above
-> + * @VIRTIO_PCIDEV_OP_PME: Dummy message whose content is ignored (and should be
-> + *	all zeroes) to signal the PME# pin.
-> + */
-> +enum virtio_pcidev_ops {
-> +	VIRTIO_PCIDEV_OP_RESERVED = 0,
-> +	VIRTIO_PCIDEV_OP_CFG_READ,
-> +	VIRTIO_PCIDEV_OP_CFG_WRITE,
-> +	VIRTIO_PCIDEV_OP_MMIO_READ,
-> +	VIRTIO_PCIDEV_OP_MMIO_WRITE,
-> +	VIRTIO_PCIDEV_OP_MMIO_MEMSET,
-> +	VIRTIO_PCIDEV_OP_INT,
-> +	VIRTIO_PCIDEV_OP_MSI,
-> +	VIRTIO_PCIDEV_OP_PME,
-> +};
 
 _______________________________________________
 linux-um mailing list
