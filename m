@@ -1,53 +1,49 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 14/15] dcssblk: use bvec_virt
-Date: Wed,  4 Aug 2021 11:56:33 +0200
-Message-Id: <20210804095634.460779-15-hch@lst.de>
-In-Reply-To: <20210804095634.460779-1-hch@lst.de>
-References: <20210804095634.460779-1-hch@lst.de>
+Return-Path: <lee.jones@linaro.org>
+Date: Thu, 5 Aug 2021 19:54:27 +0100
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 1/3] arch: Export machine_restart() instances so they can
+ be called from modules
+Message-ID: <YQwz4xkuxvfrCnag@google.com>
+References: <20210805075032.723037-1-lee.jones@linaro.org>
+ <20210805075032.723037-2-lee.jones@linaro.org>
+ <20210805173625.GH6719@arm.com>
+ <YQww08x2whx/LIIT@kroah.com>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Geoff Levand <geoff@infradead.org>, Ilya Dryomov <idryomov@gmail.com>, Paolo Bonzini <pbonzini@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, Song Liu <song@kernel.org>, Mike Snitzer <snitzer@redhat.com>, Coly Li <colyli@suse.de>, Stefan Haberland <sth@linux.ibm.com>, Jan Hoeppner <hoeppner@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Phillip Lougher <phillip@squashfs.org.uk>, linux-block@vger.kernel.org, dm-devel@redhat.com, linux-um@lists.infradead.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, linux-raid@vger.kernel.org, linux-bcache@vger.kernel.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YQww08x2whx/LIIT@kroah.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>, Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, Brian Cain <bcain@codeaurora.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, John Crispin <john@phrozen.org>, Ley Foon Tan <ley.foon.tan@intel.com>, Jonas Bonn <jonas@southpole.se>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@de.ibm.com>, Rich Felker <dalias@libc.org>, "David S . Miller" <davem@davemloft.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Sebastian Reichel <sre@kernel.org>, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
+List-ID: <linux-um.lists.infradead.org>
 
-Use bvec_virt instead of open coding it.
+On Thu, 05 Aug 2021, Greg Kroah-Hartman wrote:
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/s390/block/dcssblk.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+> On Thu, Aug 05, 2021 at 06:36:25PM +0100, Catalin Marinas wrote:
+> > On Thu, Aug 05, 2021 at 08:50:30AM +0100, Lee Jones wrote:
+> > > diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+> > > index b4bb67f17a2ca..cf89ce91d7145 100644
+> > > --- a/arch/arm64/kernel/process.c
+> > > +++ b/arch/arm64/kernel/process.c
+> > > @@ -212,6 +212,7 @@ void machine_restart(char *cmd)
+> > >  	printk("Reboot failed -- System halted\n");
+> > >  	while (1);
+> > >  }
+> > > +EXPORT_SYMBOL(machine_restart);
+> > 
+> > Should we make this EXPORT_SYMBOL_GPL? I suppose it's not for general
+> > use by out of tree drivers and it matches the other pm_power_off symbol
+> > we export in this file.
+> 
+> Yes please.
 
-diff --git a/drivers/s390/block/dcssblk.c b/drivers/s390/block/dcssblk.c
-index 29180bdf0977..5be3d1c39a78 100644
---- a/drivers/s390/block/dcssblk.c
-+++ b/drivers/s390/block/dcssblk.c
-@@ -892,8 +892,7 @@ dcssblk_submit_bio(struct bio *bio)
- 
- 	index = (bio->bi_iter.bi_sector >> 3);
- 	bio_for_each_segment(bvec, bio, iter) {
--		page_addr = (unsigned long)
--			page_address(bvec.bv_page) + bvec.bv_offset;
-+		page_addr = (unsigned long)bvec_virt(&bvec);
- 		source_addr = dev_info->start + (index<<12) + bytes_done;
- 		if (unlikely((page_addr & 4095) != 0) || (bvec.bv_len & 4095) != 0)
- 			// More paranoia.
+Sure.
+
+Thanks for the feedback.
+
 -- 
-2.30.2
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
 
