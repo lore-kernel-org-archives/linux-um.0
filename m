@@ -1,59 +1,57 @@
-Return-Path: <mcgrof@infradead.org>
-From: Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 00/15] block: third batch of add_disk() error handling conversions
-Date: Mon, 30 Aug 2021 15:09:45 -0700
-Message-Id: <20210830221000.179369-1-mcgrof@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Message-ID: <440e1815a8b6f1605b6bce51af6eceadf8e742f7.camel@kernel.org>
+Subject: Re: [PATCH 07/15] rbd: use bvec_virt
+From: Jeff Layton <jlayton@kernel.org>
+Date: Thu, 05 Aug 2021 08:01:13 -0400
+In-Reply-To: <20210804095634.460779-8-hch@lst.de>
+References: <20210804095634.460779-1-hch@lst.de>
+ <20210804095634.460779-8-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-To: axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org, ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org, philipp.reisner@linbit.com, lars.ellenberg@linbit.com, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, chris.obbard@collabora.com, krisman@collabora.com, zhuyifei1999@gmail.com, thehajime@gmail.com, chris@zankel.net, jcmvbkbc@gmail.com, tim@cyberelk.net
-Cc: linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Geoff Levand <geoff@infradead.org>, Ilya Dryomov <idryomov@gmail.com>, Paolo Bonzini <pbonzini@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, Song Liu <song@kernel.org>, Mike Snitzer <snitzer@redhat.com>, Coly Li <colyli@suse.de>, Stefan Haberland <sth@linux.ibm.com>, Jan Hoeppner <hoeppner@linux.ibm.com>, "Martin K. Petersen  <martin.petersen@oracle.com>, Phillip Lougher" <phillip@squashfs.org.uk>, linux-block@vger.kernel.org, dm-devel@redhat.com, linux-um@lists.infradead.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, linux-raid@vger.kernel.org, linux-bcache@vger.kernel.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org
 
-This is the third set of block drivers add_disk() error handling
-patches. It's a bit bigger set than the first two sets given the
-pcd/pf/pd drivers could use some love before the conversions.
+On Wed, 2021-08-04 at 11:56 +0200, Christoph Hellwig wrote:
+> Use bvec_virt instead of open coding it.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  drivers/block/rbd.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/block/rbd.c b/drivers/block/rbd.c
+> index 6d596c2c2cd6..e65c9d706f6f 100644
+> --- a/drivers/block/rbd.c
+> +++ b/drivers/block/rbd.c
+> @@ -2986,8 +2986,7 @@ static bool is_zero_bvecs(struct bio_vec *bvecs, u32 bytes)
+>  	};
+>  
+>  	ceph_bvec_iter_advance_step(&it, bytes, ({
+> -		if (memchr_inv(page_address(bv.bv_page) + bv.bv_offset, 0,
+> -			       bv.bv_len))
+> +		if (memchr_inv(bvec_virt(&bv), 0, bv.bv_len))
+>  			return false;
+>  	}));
+>  	return true;
 
-Please let me know if you spot any issues.
+LGTM
 
-The full set of changes can be found on my branch titled
-20210830-for-axboe-add-disk-error-handling-v2 [0].
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
 
-[0] https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/log/?h=20210830-for-axboe-add-disk-error-handling-v2
 
-Christoph Hellwig (4):
-  pcd: move the identify buffer into pcd_identify
-  pcd: cleanup initialization
-  pf: cleanup initialization
-  pd: cleanup initialization
-
-Luis Chamberlain (11):
-  z2ram: add error handling support for add_disk()
-  aoe: add error handling support for add_disk()
-  m68k/emu/nfblock: add error handling support for add_disk()
-  drbd: add error handling support for add_disk()
-  um/drivers/ubd_kern: add error handling support for add_disk()
-  xtensa/platforms/iss/simdisk: add error handling support for
-    add_disk()
-  n64cart: add error handling support for add_disk()
-  pcd: add error handling support for add_disk()
-  pcd: fix ordering of unregister_cdrom()
-  pcd: capture errors on cdrom_register()
-  pd: add error handling support for add_disk()
-
- arch/m68k/emu/nfblock.c             |   9 +-
- arch/um/drivers/ubd_kern.c          |  13 +-
- arch/xtensa/platforms/iss/simdisk.c |  13 +-
- drivers/block/aoe/aoeblk.c          |   6 +-
- drivers/block/drbd/drbd_main.c      |   6 +-
- drivers/block/n64cart.c             |  12 +-
- drivers/block/paride/pcd.c          | 304 +++++++++++++---------------
- drivers/block/paride/pd.c           | 146 ++++++-------
- drivers/block/paride/pf.c           | 223 +++++++++-----------
- drivers/block/z2ram.c               |   7 +-
- 10 files changed, 365 insertions(+), 374 deletions(-)
-
--- 
-2.30.2
-
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
