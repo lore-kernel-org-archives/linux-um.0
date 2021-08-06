@@ -1,102 +1,43 @@
-Return-Path: <lee.jones@linaro.org>
-From: Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 0/3] power: reset: Convert Power-Off driver to tristate
-Date: Thu,  5 Aug 2021 08:50:29 +0100
-Message-Id: <20210805075032.723037-1-lee.jones@linaro.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Subject: Re: [PATCH 10/15] sd: use bvec_virt
+From: "Martin K. Petersen" <martin.petersen@oracle.com>
+Message-ID: <yq1im0jguup.fsf@ca-mkp.ca.oracle.com>
+References: <20210804095634.460779-1-hch@lst.de>
+ <20210804095634.460779-11-hch@lst.de>
+Date: Thu, 05 Aug 2021 22:43:08 -0400
+In-Reply-To: <20210804095634.460779-11-hch@lst.de> (Christoph Hellwig's
+ message of "Wed, 4 Aug 2021 11:56:29 +0200")
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: lee.jones@linaro.org
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@codeaurora.org>, Catalin Marinas <catalin.marinas@arm.com>, Christian Borntraeger <borntraeger@de.ibm.com>, Chris Zankel <chris@zankel.net>, "David S . Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Guo Ren <guoren@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@redhat.com>, "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>, Jeff Dike <jdike@addtoit.com>, John Crispin <john@phrozen.org>, Jonas Bonn <jonas@southpole.se>, Ley Foon Tan <ley.foon.tan@intel.com>, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, openrisc@lists.librecores.org, Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, sparclinux@vger.kernel.org, Stafford Horne <shorne@gmail.com>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner <tglx@linutronix.de>, uclinux-h8-devel@lists.sourceforge.jp, Vasily Gorbik <gor@linux.ibm.com>, Vineet Gupta <vgupta@synopsys.com>, Will Deacon <will@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Christoph Hellwig <hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Geoff Levand <geoff@infradead.org>, Ilya Dryomov <idryomov@gmail.com>, Paolo Bonzini <pbonzini@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, Song Liu <song@kernel.org>, Mike Snitzer <snitzer@redhat.com>, Coly Li <colyli@suse.de>, Stefan Haberland <sth@linux.ibm.com>, Jan Hoeppner <hoeppner@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Phillip Lougher <phillip@squashfs.org.uk>, linux-block@vger.kernel.org, dm-devel@redhat.com, linux-um@lists.infradead.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, linux-raid@vger.kernel.org, linux-bcache@vger.kernel.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org
 
-Provide support to compile the Power-Off driver as a module.
 
-Elliot Berman (2):
-  reboot: Export reboot_mode
-  power: reset: Enable tristate on restart power-off driver
+Christoph,
 
-Lee Jones (1):
-  arch: Export machine_restart() instances so they can be called from
-    modules
+> Use bvec_virt instead of open coding it.
 
- arch/arc/kernel/reset.c            | 1 +
- arch/arm/kernel/reboot.c           | 1 +
- arch/arm64/kernel/process.c        | 1 +
- arch/csky/kernel/power.c           | 1 +
- arch/h8300/kernel/process.c        | 1 +
- arch/hexagon/kernel/reset.c        | 1 +
- arch/m68k/kernel/process.c         | 1 +
- arch/microblaze/kernel/reset.c     | 1 +
- arch/mips/kernel/reset.c           | 1 +
- arch/mips/lantiq/falcon/reset.c    | 1 +
- arch/mips/sgi-ip27/ip27-reset.c    | 1 +
- arch/nios2/kernel/process.c        | 1 +
- arch/openrisc/kernel/process.c     | 1 +
- arch/parisc/kernel/process.c       | 1 +
- arch/powerpc/kernel/setup-common.c | 1 +
- arch/riscv/kernel/reset.c          | 1 +
- arch/s390/kernel/setup.c           | 1 +
- arch/sh/kernel/reboot.c            | 1 +
- arch/sparc/kernel/process_32.c     | 1 +
- arch/sparc/kernel/reboot.c         | 1 +
- arch/um/kernel/reboot.c            | 1 +
- arch/x86/kernel/reboot.c           | 1 +
- arch/xtensa/kernel/setup.c         | 1 +
- drivers/power/reset/Kconfig        | 2 +-
- kernel/reboot.c                    | 2 ++
- 25 files changed, 26 insertions(+), 1 deletion(-)
+bv_offset is set to 0 right above but I'm OK with bvec_virt() for the
+sake of consistency.
 
-Cc: Albert Ou <aou@eecs.berkeley.edu>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Brian Cain <bcain@codeaurora.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-Cc: Chris Zankel <chris@zankel.net>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Guo Ren <guoren@kernel.org>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Helge Deller <deller@gmx.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: James E.J. Bottomley <James.Bottomley@HansenPartnership.com>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: John Crispin <john@phrozen.org>
-Cc: Jonas Bonn <jonas@southpole.se>
-Cc: Ley Foon Tan <ley.foon.tan@intel.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-csky@vger.kernel.org
-Cc: linux-hexagon@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: linux-mips@vger.kernel.org
-Cc: linux-parisc@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-riscv@lists.infradead.org
-Cc: linux-s390@vger.kernel.org
-Cc: linux-sh@vger.kernel.org
-Cc: linux-snps-arc@lists.infradead.org
-Cc: linux-um@lists.infradead.org
-Cc: linux-xtensa@linux-xtensa.org
-Cc: Max Filippov <jcmvbkbc@gmail.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Michal Simek <monstr@monstr.eu>
-Cc: openrisc@lists.librecores.org
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Rich Felker <dalias@libc.org>
-Cc: sparclinux@vger.kernel.org
-Cc: Stafford Horne <shorne@gmail.com>
-Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: uclinux-h8-devel@lists.sourceforge.jp
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Vineet Gupta <vgupta@synopsys.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Acked-by: Martin K. Petersen <martin.petersen@oracle.com>
+
 -- 
-2.32.0.605.g8dce9f2422-goog
+Martin K. Petersen	Oracle Linux Engineering
 
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
