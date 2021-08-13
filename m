@@ -1,90 +1,53 @@
-Return-Path: <mcgrof@infradead.org>
-From: Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 08/15] pcd: move the identify buffer into pcd_identify
-Date: Mon, 30 Aug 2021 15:09:53 -0700
-Message-Id: <20210830221000.179369-9-mcgrof@kernel.org>
-In-Reply-To: <20210830221000.179369-1-mcgrof@kernel.org>
-References: <20210830221000.179369-1-mcgrof@kernel.org>
+Return-Path: <openrisc-bounces@lists.librecores.org>
+From: Michael Ellerman <mpe@ellerman.id.au>
+In-Reply-To: <20210812123602.76356-1-wangkefeng.wang@huawei.com>
+References: <20210812123602.76356-1-wangkefeng.wang@huawei.com>
+Date: Fri, 13 Aug 2021 12:27:58 +1000
+Message-ID: <87czqim635.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-To: axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org, ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org, philipp.reisner@linbit.com, lars.ellenberg@linbit.com, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, chris.obbard@collabora.com, krisman@collabora.com, zhuyifei1999@gmail.com, thehajime@gmail.com, chris@zankel.net, jcmvbkbc@gmail.com, tim@cyberelk.net
-Cc: linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Subject: Re: [OpenRISC] [PATCH -next] trap: Cleanup trap_init()
+List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
+ <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
+List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
+List-Post: <mailto:openrisc@lists.librecores.org>
+List-Help: <mailto:openrisc-request@lists.librecores.org?subject=help>
+List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
+ <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: openrisc-bounces@lists.librecores.org
+Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
+To: Kefeng Wang <wangkefeng.wang@huawei.com>, linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-um@lists.infradead.org, linux-mm@kvack.org
+Cc: Jonas Bonn <jonas@southpole.se>, Kefeng Wang <wangkefeng.wang@huawei.com>, Andrew Morton <akpm@linux-foundation.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Helge Deller <deller@gmx.de>, Paul Walmsley <palmerdabbelt@google.com>, Russell King <linux@armlinux.org.uk>, Ley Foon Tan <ley.foon.tan@intel.com>, "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>, Richard Weinberger <richard@nod.at>, Paul Mackerras <paulus@samba.org>, Vineet Gupta <vgupta@kernel.org>, Jeff Dike <jdike@addtoit.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 List-ID: <linux-um.lists.infradead.org>
 
-From: Christoph Hellwig <hch@lst.de>
-
-No need to pass it through a bunch of functions.
-
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/block/paride/pcd.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/block/paride/pcd.c b/drivers/block/paride/pcd.c
-index f9cdd11f02f5..8903fdaa2046 100644
---- a/drivers/block/paride/pcd.c
-+++ b/drivers/block/paride/pcd.c
-@@ -630,10 +630,11 @@ static int pcd_drive_status(struct cdrom_device_info *cdi, int slot_nr)
- 	return CDS_DISC_OK;
- }
- 
--static int pcd_identify(struct pcd_unit *cd, char *id)
-+static int pcd_identify(struct pcd_unit *cd)
- {
--	int k, s;
- 	char id_cmd[12] = { 0x12, 0, 0, 0, 36, 0, 0, 0, 0, 0, 0, 0 };
-+	char id[18];
-+	int k, s;
- 
- 	pcd_bufblk = -1;
- 
-@@ -664,15 +665,15 @@ static int pcd_identify(struct pcd_unit *cd, char *id)
-  * returns  0, with id set if drive is detected
-  *	    -1, if drive detection failed
-  */
--static int pcd_probe(struct pcd_unit *cd, int ms, char *id)
-+static int pcd_probe(struct pcd_unit *cd, int ms)
- {
- 	if (ms == -1) {
- 		for (cd->drive = 0; cd->drive <= 1; cd->drive++)
--			if (!pcd_reset(cd) && !pcd_identify(cd, id))
-+			if (!pcd_reset(cd) && !pcd_identify(cd))
- 				return 0;
- 	} else {
- 		cd->drive = ms;
--		if (!pcd_reset(cd) && !pcd_identify(cd, id))
-+		if (!pcd_reset(cd) && !pcd_identify(cd))
- 			return 0;
- 	}
- 	return -1;
-@@ -709,7 +710,6 @@ static void pcd_probe_capabilities(void)
- 
- static int pcd_detect(void)
- {
--	char id[18];
- 	int k, unit;
- 	struct pcd_unit *cd;
- 
-@@ -727,7 +727,7 @@ static int pcd_detect(void)
- 		cd = pcd;
- 		if (cd->disk && pi_init(cd->pi, 1, -1, -1, -1, -1, -1,
- 			    pcd_buffer, PI_PCD, verbose, cd->name)) {
--			if (!pcd_probe(cd, -1, id)) {
-+			if (!pcd_probe(cd, -1)) {
- 				cd->present = 1;
- 				k++;
- 			} else
-@@ -744,7 +744,7 @@ static int pcd_detect(void)
- 				     conf[D_UNI], conf[D_PRO], conf[D_DLY],
- 				     pcd_buffer, PI_PCD, verbose, cd->name)) 
- 				continue;
--			if (!pcd_probe(cd, conf[D_SLV], id)) {
-+			if (!pcd_probe(cd, conf[D_SLV])) {
- 				cd->present = 1;
- 				k++;
- 			} else
--- 
-2.30.2
-
+S2VmZW5nIFdhbmcgPHdhbmdrZWZlbmcud2FuZ0BodWF3ZWkuY29tPiB3cml0ZXM6Cj4gVGhlcmUg
+YXJlIHNvbWUgZW1wdHkgdHJhcF9pbml0KCkgaW4gZGlmZmVyZW50IEFSQ0hzLCBpbnRyb2R1Y2UK
+PiBhIG5ldyB3ZWFrIHRyYXBfaW5pdCgpIGZ1bmN0aW9uIHRvIGNsZWFudXAgdGhlbS4KPgo+IENj
+OiBWaW5lZXQgR3VwdGEgPHZndXB0YUBrZXJuZWwub3JnPgo+IENjOiBSdXNzZWxsIEtpbmcgPGxp
+bnV4QGFybWxpbnV4Lm9yZy51az4KPiBDYzogWW9zaGlub3JpIFNhdG8gPHlzYXRvQHVzZXJzLnNv
+dXJjZWZvcmdlLmpwPgo+IENjOiBMZXkgRm9vbiBUYW4gPGxleS5mb29uLnRhbkBpbnRlbC5jb20+
+Cj4gQ2M6IEpvbmFzIEJvbm4gPGpvbmFzQHNvdXRocG9sZS5zZT4KPiBDYzogU3RlZmFuIEtyaXN0
+aWFuc3NvbiA8c3RlZmFuLmtyaXN0aWFuc3NvbkBzYXVuYWxhaHRpLmZpPgo+IENjOiBTdGFmZm9y
+ZCBIb3JuZSA8c2hvcm5lQGdtYWlsLmNvbT4KPiBDYzogSmFtZXMgRS5KLiBCb3R0b21sZXkgPEph
+bWVzLkJvdHRvbWxleUBIYW5zZW5QYXJ0bmVyc2hpcC5jb20+Cj4gQ2M6IEhlbGdlIERlbGxlciA8
+ZGVsbGVyQGdteC5kZT4KPiBDYzogTWljaGFlbCBFbGxlcm1hbiA8bXBlQGVsbGVybWFuLmlkLmF1
+Pgo+IENjOiBCZW5qYW1pbiBIZXJyZW5zY2htaWR0IDxiZW5oQGtlcm5lbC5jcmFzaGluZy5vcmc+
+Cj4gQ2M6IFBhdWwgTWFja2VycmFzIDxwYXVsdXNAc2FtYmEub3JnPgo+IENjOiBQYXVsIFdhbG1z
+bGV5IDxwYWxtZXJkYWJiZWx0QGdvb2dsZS5jb20+Cj4gQ2M6IEplZmYgRGlrZSA8amRpa2VAYWRk
+dG9pdC5jb20+Cj4gQ2M6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+Cj4gQ2M6
+IEFudG9uIEl2YW5vdiA8YW50b24uaXZhbm92QGNhbWJyaWRnZWdyZXlzLmNvbT4KPiBDYzogQW5k
+cmV3IE1vcnRvbiA8YWtwbUBsaW51eC1mb3VuZGF0aW9uLm9yZz4KPiBTaWduZWQtb2ZmLWJ5OiBL
+ZWZlbmcgV2FuZyA8d2FuZ2tlZmVuZy53YW5nQGh1YXdlaS5jb20+Cj4gLS0tCj4gIGFyY2gvYXJj
+L2tlcm5lbC90cmFwcy5jICAgICAgfCA1IC0tLS0tCj4gIGFyY2gvYXJtL2tlcm5lbC90cmFwcy5j
+ICAgICAgfCA1IC0tLS0tCj4gIGFyY2gvaDgzMDAva2VybmVsL3RyYXBzLmMgICAgfCA0IC0tLS0K
+PiAgYXJjaC9oZXhhZ29uL2tlcm5lbC90cmFwcy5jICB8IDQgLS0tLQo+ICBhcmNoL25kczMyL2tl
+cm5lbC90cmFwcy5jICAgIHwgNSAtLS0tLQo+ICBhcmNoL25pb3MyL2tlcm5lbC90cmFwcy5jICAg
+IHwgNSAtLS0tLQo+ICBhcmNoL29wZW5yaXNjL2tlcm5lbC90cmFwcy5jIHwgNSAtLS0tLQo+ICBh
+cmNoL3BhcmlzYy9rZXJuZWwvdHJhcHMuYyAgIHwgNCAtLS0tCj4gIGFyY2gvcG93ZXJwYy9rZXJu
+ZWwvdHJhcHMuYyAgfCA1IC0tLS0tCgpBY2tlZC1ieTogTWljaGFlbCBFbGxlcm1hbiA8bXBlQGVs
+bGVybWFuLmlkLmF1PiAocG93ZXJwYykKCmNoZWVycwpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpPcGVuUklTQyBtYWlsaW5nIGxpc3QKT3BlblJJU0NAbGlz
+dHMubGlicmVjb3Jlcy5vcmcKaHR0cHM6Ly9saXN0cy5saWJyZWNvcmVzLm9yZy9saXN0aW5mby9v
+cGVucmlzYwo=
 
