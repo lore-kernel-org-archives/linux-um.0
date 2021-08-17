@@ -1,53 +1,68 @@
-Return-Path: <mcgrof@infradead.org>
-From: Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 01/15] z2ram: add error handling support for add_disk()
-Date: Mon, 30 Aug 2021 15:09:46 -0700
-Message-Id: <20210830221000.179369-2-mcgrof@kernel.org>
-In-Reply-To: <20210830221000.179369-1-mcgrof@kernel.org>
-References: <20210830221000.179369-1-mcgrof@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mG1PK-002tEx-Rc
+ for linux-um@lists.infradead.org; Tue, 17 Aug 2021 15:53:47 +0000
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [PATCH] um: virt-pci: fix uapi documentation
+Date: Tue, 17 Aug 2021 17:53:29 +0200
+Message-Id: <20210817175329.690c43fd70fc.I72e658bf03a3642f6cf6b5b413671e761bd83d74@changeid>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-To: axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org, ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org, philipp.reisner@linbit.com, lars.ellenberg@linbit.com, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, chris.obbard@collabora.com, krisman@collabora.com, zhuyifei1999@gmail.com, thehajime@gmail.com, chris@zankel.net, jcmvbkbc@gmail.com, tim@cyberelk.net
-Cc: linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>, Bjorn Helgaas <helgaas@kernel.org>
 
-We never checked for errors on add_disk() as this function
-returned void. Now that this is fixed, use the shiny new
-error handling. Only the disk is cleaned up inside
-z2ram_register_disk() as the caller deals with the rest.
+From: Johannes Berg <johannes.berg@intel.com>
 
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+The identifier names in the documentation here didn't match
+the real ones, and the reserved was missing. Fix that.
+
+Reported-by: Bjorn Helgaas <helgaas@kernel.org>
+Fixes: 68f5d3f3b654 ("um: add PCI over virtio emulation driver")
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- drivers/block/z2ram.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ include/uapi/linux/virtio_pcidev.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/block/z2ram.c b/drivers/block/z2ram.c
-index 4eef218108c6..6648bbc87c30 100644
---- a/drivers/block/z2ram.c
-+++ b/drivers/block/z2ram.c
-@@ -318,6 +318,7 @@ static const struct blk_mq_ops z2_mq_ops = {
- static int z2ram_register_disk(int minor)
- {
- 	struct gendisk *disk;
-+	int err;
+diff --git a/include/uapi/linux/virtio_pcidev.h b/include/uapi/linux/virtio_pcidev.h
+index 89daa88bcfef..668b07ce515b 100644
+--- a/include/uapi/linux/virtio_pcidev.h
++++ b/include/uapi/linux/virtio_pcidev.h
+@@ -9,13 +9,14 @@
  
- 	disk = blk_mq_alloc_disk(&tag_set, NULL);
- 	if (IS_ERR(disk))
-@@ -333,8 +334,10 @@ static int z2ram_register_disk(int minor)
- 		sprintf(disk->disk_name, "z2ram");
- 
- 	z2ram_gendisk[minor] = disk;
--	add_disk(disk);
--	return 0;
-+	err = add_disk(disk);
-+	if (err)
-+		blk_cleaup_disk(disk);
-+	return err;
- }
- 
- static int __init z2_init(void)
+ /**
+  * enum virtio_pcidev_ops - virtual PCI device operations
++ * @VIRTIO_PCIDEV_OP_RESERVED: reserved to catch errors
+  * @VIRTIO_PCIDEV_OP_CFG_READ: read config space, size is 1, 2, 4 or 8;
+  *	the @data field should be filled in by the device (in little endian).
+  * @VIRTIO_PCIDEV_OP_CFG_WRITE: write config space, size is 1, 2, 4 or 8;
+  *	the @data field contains the data to write (in little endian).
+- * @VIRTIO_PCIDEV_OP_BAR_READ: read BAR mem/pio, size can be variable;
++ * @VIRTIO_PCIDEV_OP_MMIO_READ: read BAR mem/pio, size can be variable;
+  *	the @data field should be filled in by the device (in little endian).
+- * @VIRTIO_PCIDEV_OP_BAR_WRITE: write BAR mem/pio, size can be variable;
++ * @VIRTIO_PCIDEV_OP_MMIO_WRITE: write BAR mem/pio, size can be variable;
+  *	the @data field contains the data to write (in little endian).
+  * @VIRTIO_PCIDEV_OP_MMIO_MEMSET: memset MMIO, size is variable but
+  *	the @data field only has one byte (unlike @VIRTIO_PCIDEV_OP_MMIO_WRITE)
 -- 
-2.30.2
+2.31.1
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
