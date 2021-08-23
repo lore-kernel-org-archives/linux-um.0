@@ -1,141 +1,39 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 06/15] squashfs: use bvec_virt
-Date: Wed,  4 Aug 2021 11:56:25 +0200
-Message-Id: <20210804095634.460779-7-hch@lst.de>
-In-Reply-To: <20210804095634.460779-1-hch@lst.de>
-References: <20210804095634.460779-1-hch@lst.de>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Geoff Levand <geoff@infradead.org>, Ilya Dryomov <idryomov@gmail.com>, Paolo Bonzini <pbonzini@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, Song Liu <song@kernel.org>, Mike Snitzer <snitzer@redhat.com>, Coly Li <colyli@suse.de>, Stefan Haberland <sth@linux.ibm.com>, Jan Hoeppner <hoeppner@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Phillip Lougher <phillip@squashfs.org.uk>, linux-block@vger.kernel.org, dm-devel@redhat.com, linux-um@lists.infradead.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, linux-raid@vger.kernel.org, linux-bcache@vger.kernel.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org
+Date: Mon, 23 Aug 2021 13:16:08 +0200
+References: <20210823104942.1371825-1-geert@linux-m68k.org>
+In-Reply-To: <20210823104942.1371825-1-geert@linux-m68k.org>
+Message-ID: <CAMuHMdVnF6yAf6ffUd7Jy2p03fbTNz6ymVGU5dUSkr18b=fo7Q@mail.gmail.com>
+Subject: Re: Build regressions/improvements in v5.14-rc6
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc: linux-um <linux-um@lists.infradead.org>
+List-ID: <linux-um.lists.infradead.org>
 
-Use bvec_virt instead of open coding it.
+On Mon, Aug 23, 2021 at 12:52 PM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> JFYI, when comparing v5.14-rc6[1] to v5.14-rc5[3], the summaries are:
+>   - build errors: +2/-0
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/squashfs/block.c        | 7 +++----
- fs/squashfs/lz4_wrapper.c  | 2 +-
- fs/squashfs/lzo_wrapper.c  | 2 +-
- fs/squashfs/xz_wrapper.c   | 2 +-
- fs/squashfs/zlib_wrapper.c | 2 +-
- fs/squashfs/zstd_wrapper.c | 2 +-
- 6 files changed, 8 insertions(+), 9 deletions(-)
+  + /kisskb/src/drivers/dma/idxd/init.c: error: implicit declaration
+of function 'cpu_feature_enabled'
+[-Werror=implicit-function-declaration]:  => 815:7
+  + /kisskb/src/drivers/dma/idxd/perfmon.h: error: 'struct perf_event'
+has no member named 'pmu':  => 35:13, 24:13
 
-diff --git a/fs/squashfs/block.c b/fs/squashfs/block.c
-index 855f0e87066d..2db8bcf7ff85 100644
---- a/fs/squashfs/block.c
-+++ b/fs/squashfs/block.c
-@@ -49,8 +49,7 @@ static int copy_bio_to_actor(struct bio *bio,
- 
- 		bytes_to_copy = min_t(int, bytes_to_copy,
- 				      req_length - copied_bytes);
--		memcpy(actor_addr + actor_offset,
--		       page_address(bvec->bv_page) + bvec->bv_offset + offset,
-+		memcpy(actor_addr + actor_offset, bvec_virt(bvec) + offset,
- 		       bytes_to_copy);
- 
- 		actor_offset += bytes_to_copy;
-@@ -177,7 +176,7 @@ int squashfs_read_data(struct super_block *sb, u64 index, int length,
- 			goto out_free_bio;
- 		}
- 		/* Extract the length of the metadata block */
--		data = page_address(bvec->bv_page) + bvec->bv_offset;
-+		data = bvec_virt(bvec);
- 		length = data[offset];
- 		if (offset < bvec->bv_len - 1) {
- 			length |= data[offset + 1] << 8;
-@@ -186,7 +185,7 @@ int squashfs_read_data(struct super_block *sb, u64 index, int length,
- 				res = -EIO;
- 				goto out_free_bio;
- 			}
--			data = page_address(bvec->bv_page) + bvec->bv_offset;
-+			data = bvec_virt(bvec);
- 			length |= data[0] << 8;
- 		}
- 		bio_free_pages(bio);
-diff --git a/fs/squashfs/lz4_wrapper.c b/fs/squashfs/lz4_wrapper.c
-index 233d5582fbee..b685b6238316 100644
---- a/fs/squashfs/lz4_wrapper.c
-+++ b/fs/squashfs/lz4_wrapper.c
-@@ -101,7 +101,7 @@ static int lz4_uncompress(struct squashfs_sb_info *msblk, void *strm,
- 	while (bio_next_segment(bio, &iter_all)) {
- 		int avail = min(bytes, ((int)bvec->bv_len) - offset);
- 
--		data = page_address(bvec->bv_page) + bvec->bv_offset;
-+		data = bvec_virt(bvec);
- 		memcpy(buff, data + offset, avail);
- 		buff += avail;
- 		bytes -= avail;
-diff --git a/fs/squashfs/lzo_wrapper.c b/fs/squashfs/lzo_wrapper.c
-index 97bb7d92ddcd..cb510a631968 100644
---- a/fs/squashfs/lzo_wrapper.c
-+++ b/fs/squashfs/lzo_wrapper.c
-@@ -76,7 +76,7 @@ static int lzo_uncompress(struct squashfs_sb_info *msblk, void *strm,
- 	while (bio_next_segment(bio, &iter_all)) {
- 		int avail = min(bytes, ((int)bvec->bv_len) - offset);
- 
--		data = page_address(bvec->bv_page) + bvec->bv_offset;
-+		data = bvec_virt(bvec);
- 		memcpy(buff, data + offset, avail);
- 		buff += avail;
- 		bytes -= avail;
-diff --git a/fs/squashfs/xz_wrapper.c b/fs/squashfs/xz_wrapper.c
-index e80419aed862..68f6d09bb3a2 100644
---- a/fs/squashfs/xz_wrapper.c
-+++ b/fs/squashfs/xz_wrapper.c
-@@ -146,7 +146,7 @@ static int squashfs_xz_uncompress(struct squashfs_sb_info *msblk, void *strm,
- 			}
- 
- 			avail = min(length, ((int)bvec->bv_len) - offset);
--			data = page_address(bvec->bv_page) + bvec->bv_offset;
-+			data = bvec_virt(bvec);
- 			length -= avail;
- 			stream->buf.in = data + offset;
- 			stream->buf.in_size = avail;
-diff --git a/fs/squashfs/zlib_wrapper.c b/fs/squashfs/zlib_wrapper.c
-index bcb881ec47f2..a20e9042146b 100644
---- a/fs/squashfs/zlib_wrapper.c
-+++ b/fs/squashfs/zlib_wrapper.c
-@@ -76,7 +76,7 @@ static int zlib_uncompress(struct squashfs_sb_info *msblk, void *strm,
- 			}
- 
- 			avail = min(length, ((int)bvec->bv_len) - offset);
--			data = page_address(bvec->bv_page) + bvec->bv_offset;
-+			data = bvec_virt(bvec);
- 			length -= avail;
- 			stream->next_in = data + offset;
- 			stream->avail_in = avail;
-diff --git a/fs/squashfs/zstd_wrapper.c b/fs/squashfs/zstd_wrapper.c
-index b7cb1faa652d..0015cf8b5582 100644
---- a/fs/squashfs/zstd_wrapper.c
-+++ b/fs/squashfs/zstd_wrapper.c
-@@ -94,7 +94,7 @@ static int zstd_uncompress(struct squashfs_sb_info *msblk, void *strm,
- 			}
- 
- 			avail = min(length, ((int)bvec->bv_len) - offset);
--			data = page_address(bvec->bv_page) + bvec->bv_offset;
-+			data = bvec_virt(bvec);
- 			length -= avail;
- 			in_buf.src = data + offset;
- 			in_buf.size = avail;
+um-x86_64/um-allmodconfig
+
+> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/7c60610d476766e128cc4284bb6349732cbd6606/ (182 out of 189 configs)
+> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/36a21d51725af2ce0700c6ebcb6b9594aac658a6/ (182 out of 189 configs)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.30.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
