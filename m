@@ -1,11 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 05/15] dm-integrity: use bvec_virt
-Date: Wed,  4 Aug 2021 11:56:24 +0200
-Message-Id: <20210804095634.460779-6-hch@lst.de>
-In-Reply-To: <20210804095634.460779-1-hch@lst.de>
-References: <20210804095634.460779-1-hch@lst.de>
+Received: from mail.kernel.org ([198.145.29.99])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mJdny-00Cghr-Qk
+ for linux-um@lists.infradead.org; Fri, 27 Aug 2021 15:30:08 +0000
 MIME-Version: 1.0
+Subject: Re: [PATCH net-next] um: vector: adjust to coalesce API changes
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163007820547.21913.18376633815628407296.git-patchwork-notify@kernel.org>
+Date: Fri, 27 Aug 2021 15:30:05 +0000
+References: <20210827094759.f3ab06684bd0.I985181cc00fe017cfe6413d9e1bb720cbe852e6d@changeid>
+In-Reply-To: <20210827094759.f3ab06684bd0.I985181cc00fe017cfe6413d9e1bb720cbe852e6d@changeid>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,40 +22,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Geoff Levand <geoff@infradead.org>, Ilya Dryomov <idryomov@gmail.com>, Paolo Bonzini <pbonzini@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, Song Liu <song@kernel.org>, Mike Snitzer <snitzer@redhat.com>, Coly Li <colyli@suse.de>, Stefan Haberland <sth@linux.ibm.com>, Jan Hoeppner <hoeppner@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Phillip Lougher <phillip@squashfs.org.uk>, linux-block@vger.kernel.org, dm-devel@redhat.com, linux-um@lists.infradead.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, linux-raid@vger.kernel.org, linux-bcache@vger.kernel.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: netdev@vger.kernel.org, linux-um@lists.infradead.org, moyufeng@huawei.com, tanhuazhong@huawei.com, kuba@kernel.org, johannes.berg@intel.com
 
-Use bvec_virt instead of open coding it.
+Hello:
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/md/dm-integrity.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-diff --git a/drivers/md/dm-integrity.c b/drivers/md/dm-integrity.c
-index 20f2510db1f6..a9ea361769a7 100644
---- a/drivers/md/dm-integrity.c
-+++ b/drivers/md/dm-integrity.c
-@@ -1819,7 +1819,7 @@ static void integrity_metadata(struct work_struct *w)
- 				unsigned this_len;
- 
- 				BUG_ON(PageHighMem(biv.bv_page));
--				tag = lowmem_page_address(biv.bv_page) + biv.bv_offset;
-+				tag = bvec_virt(&biv);
- 				this_len = min(biv.bv_len, data_to_process);
- 				r = dm_integrity_rw_tag(ic, tag, &dio->metadata_block, &dio->metadata_offset,
- 							this_len, dio->op == REQ_OP_READ ? TAG_READ : TAG_WRITE);
-@@ -2006,7 +2006,7 @@ static bool __journal_read_write(struct dm_integrity_io *dio, struct bio *bio,
- 					unsigned tag_now = min(biv.bv_len, tag_todo);
- 					char *tag_addr;
- 					BUG_ON(PageHighMem(biv.bv_page));
--					tag_addr = lowmem_page_address(biv.bv_page) + biv.bv_offset;
-+					tag_addr = bvec_virt(&biv);
- 					if (likely(dio->op == REQ_OP_WRITE))
- 						memcpy(tag_ptr, tag_addr, tag_now);
- 					else
--- 
-2.30.2
+On Fri, 27 Aug 2021 09:48:04 +0200 you wrote:
+> From: Johannes Berg <johannes.berg@intel.com>
+> 
+> The API changes were propagated to most drivers, but clearly
+> arch/um/drivers/ was missed, perhaps due to looking only at
+> the drivers/ folder. Fix that.
+> 
+> Fixes: f3ccfda19319 ("ethtool: extend coalesce setting uAPI with CQE mode")
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next] um: vector: adjust to coalesce API changes
+    https://git.kernel.org/netdev/net-next/c/4baf0e0b3298
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
 _______________________________________________
