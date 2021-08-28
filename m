@@ -1,10 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 04/15] dm-ebs: use bvec_virt
-Date: Wed,  4 Aug 2021 11:56:23 +0200
-Message-Id: <20210804095634.460779-5-hch@lst.de>
-In-Reply-To: <20210804095634.460779-1-hch@lst.de>
-References: <20210804095634.460779-1-hch@lst.de>
+Received: from mail-qt1-x82e.google.com ([2607:f8b0:4864:20::82e])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mJmsQ-00DZ6s-AG
+ for linux-um@lists.infradead.org; Sat, 28 Aug 2021 01:11:19 +0000
+Received: by mail-qt1-x82e.google.com with SMTP id r21so6786835qtw.11
+ for <linux-um@lists.infradead.org>; Fri, 27 Aug 2021 18:11:17 -0700 (PDT)
+From: CGEL <cgel.zte@gmail.com>
+Subject: [PATCH linux-next] um: Replace if (cond) BUG() with BUG_ON()
+Date: Fri, 27 Aug 2021 18:11:08 -0700
+Message-Id: <20210828011108.11232-1-deng.changcheng@zte.com.cn>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -18,31 +22,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Geoff Levand <geoff@infradead.org>, Ilya Dryomov <idryomov@gmail.com>, Paolo Bonzini <pbonzini@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, Song Liu <song@kernel.org>, Mike Snitzer <snitzer@redhat.com>, Coly Li <colyli@suse.de>, Stefan Haberland <sth@linux.ibm.com>, Jan Hoeppner <hoeppner@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Phillip Lougher <phillip@squashfs.org.uk>, linux-block@vger.kernel.org, dm-devel@redhat.com, linux-um@lists.infradead.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, linux-raid@vger.kernel.org, linux-bcache@vger.kernel.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@redhat.com>, Yang Li <yang.lee@linux.alibaba.com>, Christophe Leroy <christophe.leroy@c-s.fr>, Dave Hansen <dave.hansen@linux.intel.com>, Kefeng Wang <wangkefeng.wang@huawei.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Changcheng Deng <deng.changcheng@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
 
-Use bvec_virt instead of open coding it.
+From: Changcheng Deng <deng.changcheng@zte.com.cn>
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Fix the following coccinelle reports:
+
+./arch/um/kernel/mem.c:89:2-5: WARNING: Use BUG_ON instead of if
+condition followed by BUG.
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
 ---
- drivers/md/dm-ebs-target.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/um/kernel/mem.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/md/dm-ebs-target.c b/drivers/md/dm-ebs-target.c
-index 71475a2410be..0c509dae0ff8 100644
---- a/drivers/md/dm-ebs-target.c
-+++ b/drivers/md/dm-ebs-target.c
-@@ -74,7 +74,7 @@ static int __ebs_rw_bvec(struct ebs_c *ec, int rw, struct bio_vec *bv, struct bv
- 	if (unlikely(!bv->bv_page || !bv_len))
- 		return -EIO;
+diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
+index 8e636ce..1810e69 100644
+--- a/arch/um/kernel/mem.c
++++ b/arch/um/kernel/mem.c
+@@ -85,8 +85,7 @@ static void __init one_md_table_init(pud_t *pud)
+ 		      __func__, PAGE_SIZE, PAGE_SIZE);
  
--	pa = page_address(bv->bv_page) + bv->bv_offset;
-+	pa = bvec_virt(bv);
+ 	set_pud(pud, __pud(_KERNPG_TABLE + (unsigned long) __pa(pmd_table)));
+-	if (pmd_table != pmd_offset(pud, 0))
+-		BUG();
++	BUG_ON(pmd_table != pmd_offset(pud, 0));
+ #endif
+ }
  
- 	/* Handle overlapping page <-> blocks */
- 	while (bv_len) {
 -- 
-2.30.2
+1.8.3.1
+
 
 
 _______________________________________________
