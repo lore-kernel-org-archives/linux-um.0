@@ -1,39 +1,68 @@
+Return-Path: <mcgrof@infradead.org>
+From: Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH 06/15] xtensa/platforms/iss/simdisk: add error handling support for add_disk()
+Date: Mon, 30 Aug 2021 15:09:51 -0700
+Message-Id: <20210830221000.179369-7-mcgrof@kernel.org>
+In-Reply-To: <20210830221000.179369-1-mcgrof@kernel.org>
+References: <20210830221000.179369-1-mcgrof@kernel.org>
 MIME-Version: 1.0
-Date: Mon, 23 Aug 2021 13:16:08 +0200
-References: <20210823104942.1371825-1-geert@linux-m68k.org>
-In-Reply-To: <20210823104942.1371825-1-geert@linux-m68k.org>
-Message-ID: <CAMuHMdVnF6yAf6ffUd7Jy2p03fbTNz6ymVGU5dUSkr18b=fo7Q@mail.gmail.com>
-Subject: Re: Build regressions/improvements in v5.14-rc6
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc: linux-um <linux-um@lists.infradead.org>
+Content-Transfer-Encoding: 8bit
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+To: axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org, ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org, philipp.reisner@linbit.com, lars.ellenberg@linbit.com, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, chris.obbard@collabora.com, krisman@collabora.com, zhuyifei1999@gmail.com, thehajime@gmail.com, chris@zankel.net, jcmvbkbc@gmail.com, tim@cyberelk.net
+Cc: linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
 List-ID: <linux-um.lists.infradead.org>
 
-On Mon, Aug 23, 2021 at 12:52 PM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> JFYI, when comparing v5.14-rc6[1] to v5.14-rc5[3], the summaries are:
->   - build errors: +2/-0
+We never checked for errors on add_disk() as this function
+returned void. Now that this is fixed, use the shiny new
+error handling.
 
-  + /kisskb/src/drivers/dma/idxd/init.c: error: implicit declaration
-of function 'cpu_feature_enabled'
-[-Werror=implicit-function-declaration]:  => 815:7
-  + /kisskb/src/drivers/dma/idxd/perfmon.h: error: 'struct perf_event'
-has no member named 'pmu':  => 35:13, 24:13
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+---
+ arch/xtensa/platforms/iss/simdisk.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-um-x86_64/um-allmodconfig
-
-> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/7c60610d476766e128cc4284bb6349732cbd6606/ (182 out of 189 configs)
-> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/36a21d51725af2ce0700c6ebcb6b9594aac658a6/ (182 out of 189 configs)
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/arch/xtensa/platforms/iss/simdisk.c b/arch/xtensa/platforms/iss/simdisk.c
+index 3cdfa00738e0..ad85c554cd45 100644
+--- a/arch/xtensa/platforms/iss/simdisk.c
++++ b/arch/xtensa/platforms/iss/simdisk.c
+@@ -259,6 +259,7 @@ static int __init simdisk_setup(struct simdisk *dev, int which,
+ 		struct proc_dir_entry *procdir)
+ {
+ 	char tmp[2] = { '0' + which, 0 };
++	int err = -ENOMEM;
+ 
+ 	dev->fd = -1;
+ 	dev->filename = NULL;
+@@ -267,7 +268,7 @@ static int __init simdisk_setup(struct simdisk *dev, int which,
+ 
+ 	dev->gd = blk_alloc_disk(NUMA_NO_NODE);
+ 	if (!dev->gd)
+-		return -ENOMEM;
++		goto out;
+ 	dev->gd->major = simdisk_major;
+ 	dev->gd->first_minor = which;
+ 	dev->gd->minors = SIMDISK_MINORS;
+@@ -275,10 +276,18 @@ static int __init simdisk_setup(struct simdisk *dev, int which,
+ 	dev->gd->private_data = dev;
+ 	snprintf(dev->gd->disk_name, 32, "simdisk%d", which);
+ 	set_capacity(dev->gd, 0);
+-	add_disk(dev->gd);
++	err = add_disk(dev->gd);
++	if (err)
++		goto out_cleanup_disk;
+ 
+ 	dev->procfile = proc_create_data(tmp, 0644, procdir, &simdisk_proc_ops, dev);
++
+ 	return 0;
++
++out_cleanup_disk:
++	blk_cleanup_disk(dev->gd);
++out:
++	return err;
+ }
+ 
+ static int __init simdisk_init(void)
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.30.2
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
 
