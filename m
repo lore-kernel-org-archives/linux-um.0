@@ -1,8 +1,8 @@
-Return-Path: <linux-m68k-owner@vger.kernel.org>
+Return-Path: <mcgrof@infradead.org>
 From: Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 04/15] drbd: add error handling support for add_disk()
-Date: Mon, 30 Aug 2021 15:09:49 -0700
-Message-Id: <20210830221000.179369-5-mcgrof@kernel.org>
+Subject: [PATCH 01/15] z2ram: add error handling support for add_disk()
+Date: Mon, 30 Aug 2021 15:09:46 -0700
+Message-Id: <20210830221000.179369-2-mcgrof@kernel.org>
 In-Reply-To: <20210830221000.179369-1-mcgrof@kernel.org>
 References: <20210830221000.179369-1-mcgrof@kernel.org>
 MIME-Version: 1.0
@@ -14,37 +14,39 @@ List-ID: <linux-um.lists.infradead.org>
 
 We never checked for errors on add_disk() as this function
 returned void. Now that this is fixed, use the shiny new
-error handling.
+error handling. Only the disk is cleaned up inside
+z2ram_register_disk() as the caller deals with the rest.
 
 Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- drivers/block/drbd/drbd_main.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/block/z2ram.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/block/drbd/drbd_main.c b/drivers/block/drbd/drbd_main.c
-index 55234a558e98..19db80a1e409 100644
---- a/drivers/block/drbd/drbd_main.c
-+++ b/drivers/block/drbd/drbd_main.c
-@@ -2794,7 +2794,9 @@ enum drbd_ret_code drbd_create_device(struct drbd_config_context *adm_ctx, unsig
- 		goto out_idr_remove_vol;
- 	}
+diff --git a/drivers/block/z2ram.c b/drivers/block/z2ram.c
+index 4eef218108c6..6648bbc87c30 100644
+--- a/drivers/block/z2ram.c
++++ b/drivers/block/z2ram.c
+@@ -318,6 +318,7 @@ static const struct blk_mq_ops z2_mq_ops = {
+ static int z2ram_register_disk(int minor)
+ {
+ 	struct gendisk *disk;
++	int err;
  
+ 	disk = blk_mq_alloc_disk(&tag_set, NULL);
+ 	if (IS_ERR(disk))
+@@ -333,8 +334,10 @@ static int z2ram_register_disk(int minor)
+ 		sprintf(disk->disk_name, "z2ram");
+ 
+ 	z2ram_gendisk[minor] = disk;
 -	add_disk(disk);
+-	return 0;
 +	err = add_disk(disk);
 +	if (err)
-+		goto out_cleanup_disk;
++		blk_cleaup_disk(disk);
++	return err;
+ }
  
- 	/* inherit the connection state */
- 	device->state.conn = first_connection(resource)->cstate;
-@@ -2808,6 +2810,8 @@ enum drbd_ret_code drbd_create_device(struct drbd_config_context *adm_ctx, unsig
- 	drbd_debugfs_device_add(device);
- 	return NO_ERROR;
- 
-+out_cleanup_disk:
-+	blk_cleanup_disk(disk);
- out_idr_remove_vol:
- 	idr_remove(&connection->peer_devices, vnr);
- out_idr_remove_from_resource:
+ static int __init z2_init(void)
 -- 
 2.30.2
 
