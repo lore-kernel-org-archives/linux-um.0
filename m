@@ -1,189 +1,42 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mKxvX-001WYh-CL
- for linux-um@lists.infradead.org; Tue, 31 Aug 2021 07:11:27 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH] um: rename set_signals() to um_set_signals()
-Date: Tue, 31 Aug 2021 09:11:15 +0200
-Message-Id: <20210831091115.d27beda5175d.I3bbfda9c15924f4ae99f12ed5f5463567c84c54a@changeid>
+Return-Path: <mcgrof@infradead.org>
+From: Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH 13/15] pcd: fix ordering of unregister_cdrom()
+Date: Mon, 30 Aug 2021 15:09:58 -0700
+Message-Id: <20210830221000.179369-14-mcgrof@kernel.org>
+In-Reply-To: <20210830221000.179369-1-mcgrof@kernel.org>
+References: <20210830221000.179369-1-mcgrof@kernel.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>, kernel test robot <lkp@intel.com>
+Content-Transfer-Encoding: 8bit
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+To: axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org, ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org, philipp.reisner@linbit.com, lars.ellenberg@linbit.com, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, chris.obbard@collabora.com, krisman@collabora.com, zhuyifei1999@gmail.com, thehajime@gmail.com, chris@zankel.net, jcmvbkbc@gmail.com, tim@cyberelk.net
+Cc: linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-From: Johannes Berg <johannes.berg@intel.com>
+We first register cdrom and then we add_disk() and
+so we we should likewise unregister the cdrom first and
+then del_gendisk().
 
-Rename set_signals() as there's at least one driver that
-uses the same name and can now be built on UM due to PCI
-support, and thus we can get symbol conflicts.
-
-Also rename set_signals_trace() to be consistent.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: 68f5d3f3b654 ("um: add PCI over virtio emulation driver")
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- arch/um/include/asm/irqflags.h   | 4 ++--
- arch/um/include/shared/longjmp.h | 2 +-
- arch/um/include/shared/os.h      | 4 ++--
- arch/um/kernel/ksyms.c           | 2 +-
- arch/um/os-Linux/sigio.c         | 6 +++---
- arch/um/os-Linux/signal.c        | 8 ++++----
- 6 files changed, 13 insertions(+), 13 deletions(-)
+ drivers/block/paride/pcd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/um/include/asm/irqflags.h b/arch/um/include/asm/irqflags.h
-index dab5744e9253..1e69ef5bc35e 100644
---- a/arch/um/include/asm/irqflags.h
-+++ b/arch/um/include/asm/irqflags.h
-@@ -3,7 +3,7 @@
- #define __UM_IRQFLAGS_H
+diff --git a/drivers/block/paride/pcd.c b/drivers/block/paride/pcd.c
+index a7fab3830d7b..82a654fc4db8 100644
+--- a/drivers/block/paride/pcd.c
++++ b/drivers/block/paride/pcd.c
+@@ -1021,9 +1021,9 @@ static void __exit pcd_exit(void)
+ 		if (!cd->present)
+ 			continue;
  
- extern int signals_enabled;
--int set_signals(int enable);
-+int um_set_signals(int enable);
- void block_signals(void);
- void unblock_signals(void);
++		unregister_cdrom(&cd->info);
+ 		del_gendisk(cd->disk);
+ 		pi_release(cd->pi);
+-		unregister_cdrom(&cd->info);
+ 		blk_cleanup_disk(cd->disk);
  
-@@ -16,7 +16,7 @@ static inline unsigned long arch_local_save_flags(void)
- #define arch_local_irq_restore arch_local_irq_restore
- static inline void arch_local_irq_restore(unsigned long flags)
- {
--	set_signals(flags);
-+	um_set_signals(flags);
- }
- 
- #define arch_local_irq_enable arch_local_irq_enable
-diff --git a/arch/um/include/shared/longjmp.h b/arch/um/include/shared/longjmp.h
-index bdb2869b72b3..8863319039f3 100644
---- a/arch/um/include/shared/longjmp.h
-+++ b/arch/um/include/shared/longjmp.h
-@@ -18,7 +18,7 @@ extern void longjmp(jmp_buf, int);
- 	enable = *(volatile int *)&signals_enabled;	\
- 	n = setjmp(*buf);				\
- 	if(n != 0)					\
--		set_signals_trace(enable);		\
-+		um_set_signals_trace(enable);		\
- 	n; })
- 
- #endif
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index 60b84edc8a68..4c4963ec400a 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -239,8 +239,8 @@ extern void send_sigio_to_self(void);
- extern int change_sig(int signal, int on);
- extern void block_signals(void);
- extern void unblock_signals(void);
--extern int set_signals(int enable);
--extern int set_signals_trace(int enable);
-+extern int um_set_signals(int enable);
-+extern int um_set_signals_trace(int enable);
- extern int os_is_signal_stack(void);
- extern void deliver_alarm(void);
- extern void register_pm_wake_signal(void);
-diff --git a/arch/um/kernel/ksyms.c b/arch/um/kernel/ksyms.c
-index b1e5634398d0..3a85bde3e173 100644
---- a/arch/um/kernel/ksyms.c
-+++ b/arch/um/kernel/ksyms.c
-@@ -6,7 +6,7 @@
- #include <linux/module.h>
- #include <os.h>
- 
--EXPORT_SYMBOL(set_signals);
-+EXPORT_SYMBOL(um_set_signals);
- EXPORT_SYMBOL(signals_enabled);
- 
- EXPORT_SYMBOL(os_stat_fd);
-diff --git a/arch/um/os-Linux/sigio.c b/arch/um/os-Linux/sigio.c
-index 6597ea1986ff..9e71794839e8 100644
---- a/arch/um/os-Linux/sigio.c
-+++ b/arch/um/os-Linux/sigio.c
-@@ -132,7 +132,7 @@ static void update_thread(void)
- 	int n;
- 	char c;
- 
--	flags = set_signals_trace(0);
-+	flags = um_set_signals_trace(0);
- 	CATCH_EINTR(n = write(sigio_private[0], &c, sizeof(c)));
- 	if (n != sizeof(c)) {
- 		printk(UM_KERN_ERR "update_thread : write failed, err = %d\n",
-@@ -147,7 +147,7 @@ static void update_thread(void)
- 		goto fail;
- 	}
- 
--	set_signals_trace(flags);
-+	um_set_signals_trace(flags);
- 	return;
-  fail:
- 	/* Critical section start */
-@@ -161,7 +161,7 @@ static void update_thread(void)
- 	close(write_sigio_fds[0]);
- 	close(write_sigio_fds[1]);
- 	/* Critical section end */
--	set_signals_trace(flags);
-+	um_set_signals_trace(flags);
- }
- 
- int __add_sigio_fd(int fd)
-diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
-index 6de99bb16113..5c07ec95775d 100644
---- a/arch/um/os-Linux/signal.c
-+++ b/arch/um/os-Linux/signal.c
-@@ -94,7 +94,7 @@ void sig_handler(int sig, struct siginfo *si, mcontext_t *mc)
- 
- 	sig_handler_common(sig, si, mc);
- 
--	set_signals_trace(enabled);
-+	um_set_signals_trace(enabled);
- }
- 
- static void timer_real_alarm_handler(mcontext_t *mc)
-@@ -126,7 +126,7 @@ void timer_alarm_handler(int sig, struct siginfo *unused_si, mcontext_t *mc)
- 
- 	signals_active &= ~SIGALRM_MASK;
- 
--	set_signals_trace(enabled);
-+	um_set_signals_trace(enabled);
- }
- 
- void deliver_alarm(void) {
-@@ -348,7 +348,7 @@ void unblock_signals(void)
- 	}
- }
- 
--int set_signals(int enable)
-+int um_set_signals(int enable)
- {
- 	int ret;
- 	if (signals_enabled == enable)
-@@ -362,7 +362,7 @@ int set_signals(int enable)
- 	return ret;
- }
- 
--int set_signals_trace(int enable)
-+int um_set_signals_trace(int enable)
- {
- 	int ret;
- 	if (signals_enabled == enable)
+ 		blk_mq_free_tag_set(&cd->tag_set);
 -- 
-2.31.1
+2.30.2
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
