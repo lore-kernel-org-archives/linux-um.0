@@ -1,34 +1,51 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: add a bvec_virt helper
-Date: Wed,  4 Aug 2021 11:56:19 +0200
-Message-Id: <20210804095634.460779-1-hch@lst.de>
+Return-Path: <mcgrof@infradead.org>
+From: Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH 02/15] aoe: add error handling support for add_disk()
+Date: Mon, 30 Aug 2021 15:09:47 -0700
+Message-Id: <20210830221000.179369-3-mcgrof@kernel.org>
+In-Reply-To: <20210830221000.179369-1-mcgrof@kernel.org>
+References: <20210830221000.179369-1-mcgrof@kernel.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Geoff Levand <geoff@infradead.org>, Ilya Dryomov <idryomov@gmail.com>, Paolo Bonzini <pbonzini@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, Song Liu <song@kernel.org>, Mike Snitzer <snitzer@redhat.com>, Coly Li <colyli@suse.de>, Stefan Haberland <sth@linux.ibm.com>, Jan Hoeppner <hoeppner@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Phillip Lougher <phillip@squashfs.org.uk>, linux-block@vger.kernel.org, dm-devel@redhat.com, linux-um@lists.infradead.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, linux-raid@vger.kernel.org, linux-bcache@vger.kernel.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+To: axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org, ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org, philipp.reisner@linbit.com, lars.ellenberg@linbit.com, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, chris.obbard@collabora.com, krisman@collabora.com, zhuyifei1999@gmail.com, thehajime@gmail.com, chris@zankel.net, jcmvbkbc@gmail.com, tim@cyberelk.net
+Cc: linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-Hi Jens,
+We never checked for errors on add_disk() as this function
+returned void. Now that this is fixed, use the shiny new
+error handling.
 
-this series adds a bvec_virt helper to return the virtual address of the
-data in bvec to replace the open coded calculation, and as a reminder
-that generall bio/bvec data can be in high memory unless it is caller
-controller or in an architecture specific driver where highmem is
-impossible.
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+---
+ drivers/block/aoe/aoeblk.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+diff --git a/drivers/block/aoe/aoeblk.c b/drivers/block/aoe/aoeblk.c
+index 06b360f7123a..e436b0e8eff5 100644
+--- a/drivers/block/aoe/aoeblk.c
++++ b/drivers/block/aoe/aoeblk.c
+@@ -417,7 +417,9 @@ aoeblk_gdalloc(void *vp)
+ 
+ 	spin_unlock_irqrestore(&d->lock, flags);
+ 
+-	device_add_disk(NULL, gd, aoe_attr_groups);
++	err = device_add_disk(NULL, gd, aoe_attr_groups);
++	if (err)
++		goto out_disk_cleanup;
+ 	aoedisk_add_debugfs(d);
+ 
+ 	spin_lock_irqsave(&d->lock, flags);
+@@ -426,6 +428,8 @@ aoeblk_gdalloc(void *vp)
+ 	spin_unlock_irqrestore(&d->lock, flags);
+ 	return;
+ 
++out_disk_cleanup:
++	blk_cleanup_disk(gd);
+ err_tagset:
+ 	blk_mq_free_tag_set(set);
+ err_mempool:
+-- 
+2.30.2
+
 
