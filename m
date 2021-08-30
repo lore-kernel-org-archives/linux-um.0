@@ -1,8 +1,8 @@
 Return-Path: <mcgrof@infradead.org>
 From: Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 15/15] pd: add error handling support for add_disk()
-Date: Mon, 30 Aug 2021 15:10:00 -0700
-Message-Id: <20210830221000.179369-16-mcgrof@kernel.org>
+Subject: [PATCH 05/15] um/drivers/ubd_kern: add error handling support for add_disk()
+Date: Mon, 30 Aug 2021 15:09:50 -0700
+Message-Id: <20210830221000.179369-6-mcgrof@kernel.org>
 In-Reply-To: <20210830221000.179369-1-mcgrof@kernel.org>
 References: <20210830221000.179369-1-mcgrof@kernel.org>
 MIME-Version: 1.0
@@ -16,29 +16,55 @@ We never checked for errors on add_disk() as this function
 returned void. Now that this is fixed, use the shiny new
 error handling.
 
+ubd_disk_register() never returned an error, so just fix
+that now and let the caller handle the error condition.
+
 Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- drivers/block/paride/pd.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ arch/um/drivers/ubd_kern.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/block/paride/pd.c b/drivers/block/paride/pd.c
-index 500b89a4bdaf..226ed5c93b68 100644
---- a/drivers/block/paride/pd.c
-+++ b/drivers/block/paride/pd.c
-@@ -938,8 +938,12 @@ static int pd_probe_drive(struct pd_unit *disk, int autoprobe, int port,
- 	if (ret)
- 		goto put_disk;
- 	set_capacity(disk->gd, disk->capacity);
--	add_disk(disk->gd);
-+	ret = add_disk(disk->gd);
-+	if (ret)
-+		goto cleanup_disk;
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index cd9dc0556e91..81045c199c30 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -854,8 +854,8 @@ static const struct attribute_group *ubd_attr_groups[] = {
+ 	NULL,
+ };
+ 
+-static void ubd_disk_register(int major, u64 size, int unit,
+-			      struct gendisk *disk)
++static int ubd_disk_register(int major, u64 size, int unit,
++			     struct gendisk *disk)
+ {
+ 	disk->major = major;
+ 	disk->first_minor = unit << UBD_SHIFT;
+@@ -872,7 +872,7 @@ static void ubd_disk_register(int major, u64 size, int unit,
+ 
+ 	disk->private_data = &ubd_devs[unit];
+ 	disk->queue = ubd_devs[unit].queue;
+-	device_add_disk(&ubd_devs[unit].pdev.dev, disk, ubd_attr_groups);
++	return device_add_disk(&ubd_devs[unit].pdev.dev, disk, ubd_attr_groups);
+ }
+ 
+ #define ROUND_BLOCK(n) ((n + (SECTOR_SIZE - 1)) & (-SECTOR_SIZE))
+@@ -919,10 +919,15 @@ static int ubd_add(int n, char **error_out)
+ 	blk_queue_write_cache(ubd_dev->queue, true, false);
+ 	blk_queue_max_segments(ubd_dev->queue, MAX_SG);
+ 	blk_queue_segment_boundary(ubd_dev->queue, PAGE_SIZE - 1);
+-	ubd_disk_register(UBD_MAJOR, ubd_dev->size, n, disk);
++	err = ubd_disk_register(UBD_MAJOR, ubd_dev->size, n, disk);
++	if (err)
++		goto out_cleanup_disk;
++
+ 	ubd_gendisk[n] = disk;
  	return 0;
-+cleanup_disk:
-+	blk_cleanup_disk(&disk);
- put_disk:
- 	put_disk(p);
- 	disk->gd = NULL;
+ 
++out_cleanup_disk:
++	blk_cleanup_disk(disk);
+ out_cleanup_tags:
+ 	blk_mq_free_tag_set(&ubd_dev->tag_set);
+ out:
 -- 
 2.30.2
 
