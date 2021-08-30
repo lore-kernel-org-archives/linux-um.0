@@ -1,8 +1,8 @@
 Return-Path: <mcgrof@infradead.org>
 From: Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 07/15] n64cart: add error handling support for add_disk()
-Date: Mon, 30 Aug 2021 15:09:52 -0700
-Message-Id: <20210830221000.179369-8-mcgrof@kernel.org>
+Subject: [PATCH 12/15] pcd: add error handling support for add_disk()
+Date: Mon, 30 Aug 2021 15:09:57 -0700
+Message-Id: <20210830221000.179369-13-mcgrof@kernel.org>
 In-Reply-To: <20210830221000.179369-1-mcgrof@kernel.org>
 References: <20210830221000.179369-1-mcgrof@kernel.org>
 MIME-Version: 1.0
@@ -18,50 +18,28 @@ error handling.
 
 Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- drivers/block/n64cart.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ drivers/block/paride/pcd.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/block/n64cart.c b/drivers/block/n64cart.c
-index c84be0028f63..1ba9137bdf30 100644
---- a/drivers/block/n64cart.c
-+++ b/drivers/block/n64cart.c
-@@ -117,6 +117,7 @@ static const struct block_device_operations n64cart_fops = {
- static int __init n64cart_probe(struct platform_device *pdev)
- {
- 	struct gendisk *disk;
-+	int err = -ENOMEM;
- 
- 	if (!start || !size) {
- 		pr_err("start or size not specified\n");
-@@ -134,7 +135,7 @@ static int __init n64cart_probe(struct platform_device *pdev)
- 
- 	disk = blk_alloc_disk(NUMA_NO_NODE);
- 	if (!disk)
--		return -ENOMEM;
-+		goto out;
- 
- 	disk->first_minor = 0;
- 	disk->flags = GENHD_FL_NO_PART_SCAN;
-@@ -149,11 +150,18 @@ static int __init n64cart_probe(struct platform_device *pdev)
- 	blk_queue_physical_block_size(disk->queue, 4096);
- 	blk_queue_logical_block_size(disk->queue, 4096);
- 
--	add_disk(disk);
-+	err = add_disk(disk);
-+	if (err)
-+		goto out_cleanup_disk;
- 
- 	pr_info("n64cart: %u kb disk\n", size / 1024);
- 
+diff --git a/drivers/block/paride/pcd.c b/drivers/block/paride/pcd.c
+index 93ed63626232..a7fab3830d7b 100644
+--- a/drivers/block/paride/pcd.c
++++ b/drivers/block/paride/pcd.c
+@@ -941,9 +941,13 @@ static int pcd_init_unit(struct pcd_unit *cd, bool autoprobe, int port,
+ 	cd->present = 1;
+ 	pcd_probe_capabilities(cd);
+ 	register_cdrom(cd->disk, &cd->info);
+-	add_disk(cd->disk);
++	ret = add_disk(cd->disk);
++	if (ret)
++		goto out_unreg_cdrom;
  	return 0;
-+
-+out_cleanup_disk:
-+	blk_cleanup_disk(disk);
-+out:
-+	return err;
- }
  
- static struct platform_driver n64cart_driver = {
++out_unreg_cdrom:
++	unregister_cdrom(&cd->info);
+ out_pi_release:
+ 	pi_release(cd->pi);
+ out_free_disk:
 -- 
 2.30.2
 
