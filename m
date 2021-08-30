@@ -1,8 +1,8 @@
-Return-Path: <mcgrof@infradead.org>
+Return-Path: <linux-m68k-owner@vger.kernel.org>
 From: Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 03/15] m68k/emu/nfblock: add error handling support for add_disk()
-Date: Mon, 30 Aug 2021 15:09:48 -0700
-Message-Id: <20210830221000.179369-4-mcgrof@kernel.org>
+Subject: [PATCH 04/15] drbd: add error handling support for add_disk()
+Date: Mon, 30 Aug 2021 15:09:49 -0700
+Message-Id: <20210830221000.179369-5-mcgrof@kernel.org>
 In-Reply-To: <20210830221000.179369-1-mcgrof@kernel.org>
 References: <20210830221000.179369-1-mcgrof@kernel.org>
 MIME-Version: 1.0
@@ -18,44 +18,33 @@ error handling.
 
 Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- arch/m68k/emu/nfblock.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/block/drbd/drbd_main.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/arch/m68k/emu/nfblock.c b/arch/m68k/emu/nfblock.c
-index 9a8394e96388..4de5a6087034 100644
---- a/arch/m68k/emu/nfblock.c
-+++ b/arch/m68k/emu/nfblock.c
-@@ -100,6 +100,7 @@ static int __init nfhd_init_one(int id, u32 blocks, u32 bsize)
- {
- 	struct nfhd_device *dev;
- 	int dev_id = id - NFHD_DEV_OFFSET;
-+	int err = -ENOMEM;
+diff --git a/drivers/block/drbd/drbd_main.c b/drivers/block/drbd/drbd_main.c
+index 55234a558e98..19db80a1e409 100644
+--- a/drivers/block/drbd/drbd_main.c
++++ b/drivers/block/drbd/drbd_main.c
+@@ -2794,7 +2794,9 @@ enum drbd_ret_code drbd_create_device(struct drbd_config_context *adm_ctx, unsig
+ 		goto out_idr_remove_vol;
+ 	}
  
- 	pr_info("nfhd%u: found device with %u blocks (%u bytes)\n", dev_id,
- 		blocks, bsize);
-@@ -130,16 +131,20 @@ static int __init nfhd_init_one(int id, u32 blocks, u32 bsize)
- 	sprintf(dev->disk->disk_name, "nfhd%u", dev_id);
- 	set_capacity(dev->disk, (sector_t)blocks * (bsize / 512));
- 	blk_queue_logical_block_size(dev->disk->queue, bsize);
--	add_disk(dev->disk);
-+	err = add_disk(dev->disk);
+-	add_disk(disk);
++	err = add_disk(disk);
 +	if (err)
 +		goto out_cleanup_disk;
  
- 	list_add_tail(&dev->list, &nfhd_list);
- 
- 	return 0;
+ 	/* inherit the connection state */
+ 	device->state.conn = first_connection(resource)->cstate;
+@@ -2808,6 +2810,8 @@ enum drbd_ret_code drbd_create_device(struct drbd_config_context *adm_ctx, unsig
+ 	drbd_debugfs_device_add(device);
+ 	return NO_ERROR;
  
 +out_cleanup_disk:
-+	blk_cleanup_disk(dev->disk);
- free_dev:
- 	kfree(dev);
- out:
--	return -ENOMEM;
-+	return err;
- }
- 
- static int __init nfhd_init(void)
++	blk_cleanup_disk(disk);
+ out_idr_remove_vol:
+ 	idr_remove(&connection->peer_devices, vnr);
+ out_idr_remove_from_resource:
 -- 
 2.30.2
 
