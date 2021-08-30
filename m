@@ -1,143 +1,231 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 13/15] dasd: use bvec_virt
-Date: Wed,  4 Aug 2021 11:56:32 +0200
-Message-Id: <20210804095634.460779-14-hch@lst.de>
-In-Reply-To: <20210804095634.460779-1-hch@lst.de>
-References: <20210804095634.460779-1-hch@lst.de>
+Return-Path: <mcgrof@infradead.org>
+From: Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH 11/15] pd: cleanup initialization
+Date: Mon, 30 Aug 2021 15:09:56 -0700
+Message-Id: <20210830221000.179369-12-mcgrof@kernel.org>
+In-Reply-To: <20210830221000.179369-1-mcgrof@kernel.org>
+References: <20210830221000.179369-1-mcgrof@kernel.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Geoff Levand <geoff@infradead.org>, Ilya Dryomov <idryomov@gmail.com>, Paolo Bonzini <pbonzini@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, Song Liu <song@kernel.org>, Mike Snitzer <snitzer@redhat.com>, Coly Li <colyli@suse.de>, Stefan Haberland <sth@linux.ibm.com>, Jan Hoeppner <hoeppner@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Phillip Lougher <phillip@squashfs.org.uk>, linux-block@vger.kernel.org, dm-devel@redhat.com, linux-um@lists.infradead.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, linux-raid@vger.kernel.org, linux-bcache@vger.kernel.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+To: axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org, ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org, philipp.reisner@linbit.com, lars.ellenberg@linbit.com, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, chris.obbard@collabora.com, krisman@collabora.com, zhuyifei1999@gmail.com, thehajime@gmail.com, chris@zankel.net, jcmvbkbc@gmail.com, tim@cyberelk.net
+Cc: linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+List-ID: <linux-um.lists.infradead.org>
 
-Use bvec_virt instead of open coding it.
+From: Christoph Hellwig <hch@lst.de>
+
+Refactor the pf initialization to have a dedicated helper to initialize
+a single disk.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/s390/block/dasd_diag.c |  2 +-
- drivers/s390/block/dasd_eckd.c | 14 +++++++-------
- drivers/s390/block/dasd_fba.c  |  4 ++--
- 3 files changed, 10 insertions(+), 10 deletions(-)
+ drivers/block/paride/pd.c | 142 +++++++++++++++++++-------------------
+ 1 file changed, 71 insertions(+), 71 deletions(-)
 
-diff --git a/drivers/s390/block/dasd_diag.c b/drivers/s390/block/dasd_diag.c
-index 6bb775236c16..db5987281010 100644
---- a/drivers/s390/block/dasd_diag.c
-+++ b/drivers/s390/block/dasd_diag.c
-@@ -552,7 +552,7 @@ static struct dasd_ccw_req *dasd_diag_build_cp(struct dasd_device *memdev,
- 	dbio = dreq->bio;
- 	recid = first_rec;
- 	rq_for_each_segment(bv, req, iter) {
--		dst = page_address(bv.bv_page) + bv.bv_offset;
-+		dst = bvec_virt(&bv);
- 		for (off = 0; off < bv.bv_len; off += blksize) {
- 			memset(dbio, 0, sizeof (struct dasd_diag_bio));
- 			dbio->type = rw_cmd;
-diff --git a/drivers/s390/block/dasd_eckd.c b/drivers/s390/block/dasd_eckd.c
-index 0de1a463c509..8610ea414322 100644
---- a/drivers/s390/block/dasd_eckd.c
-+++ b/drivers/s390/block/dasd_eckd.c
-@@ -3267,7 +3267,7 @@ static int dasd_eckd_ese_read(struct dasd_ccw_req *cqr, struct irb *irb)
- 	end_blk = (curr_trk + 1) * recs_per_trk;
+diff --git a/drivers/block/paride/pd.c b/drivers/block/paride/pd.c
+index 9b3298926356..500b89a4bdaf 100644
+--- a/drivers/block/paride/pd.c
++++ b/drivers/block/paride/pd.c
+@@ -875,9 +875,27 @@ static const struct blk_mq_ops pd_mq_ops = {
+ 	.queue_rq	= pd_queue_rq,
+ };
  
- 	rq_for_each_segment(bv, req, iter) {
--		dst = page_address(bv.bv_page) + bv.bv_offset;
-+		dst = bvec_virt(&bv);
- 		for (off = 0; off < bv.bv_len; off += blksize) {
- 			if (first_blk + blk_count >= end_blk) {
- 				cqr->proc_bytes = blk_count * blksize;
-@@ -3999,7 +3999,7 @@ static struct dasd_ccw_req *dasd_eckd_build_cp_cmd_single(
- 			      last_rec - recid + 1, cmd, basedev, blksize);
+-static void pd_probe_drive(struct pd_unit *disk)
++static int pd_probe_drive(struct pd_unit *disk, int autoprobe, int port,
++		int mode, int unit, int protocol, int delay)
+ {
++	int index = disk - pd;
++	int *parm = *drives[index];
+ 	struct gendisk *p;
++	int ret;
++
++	disk->pi = &disk->pia;
++	disk->access = 0;
++	disk->changed = 1;
++	disk->capacity = 0;
++	disk->drive = parm[D_SLV];
++	snprintf(disk->name, PD_NAMELEN, "%s%c", name, 'a' + index);
++	disk->alt_geom = parm[D_GEO];
++	disk->standby = parm[D_SBY];
++	INIT_LIST_HEAD(&disk->rq_list);
++
++	if (!pi_init(disk->pi, autoprobe, port, mode, unit, protocol, delay,
++			pd_scratch, PI_PD, verbose, disk->name))
++		return -ENXIO;
+ 
+ 	memset(&disk->tag_set, 0, sizeof(disk->tag_set));
+ 	disk->tag_set.ops = &pd_mq_ops;
+@@ -887,14 +905,14 @@ static void pd_probe_drive(struct pd_unit *disk)
+ 	disk->tag_set.queue_depth = 2;
+ 	disk->tag_set.numa_node = NUMA_NO_NODE;
+ 	disk->tag_set.flags = BLK_MQ_F_SHOULD_MERGE | BLK_MQ_F_BLOCKING;
+-
+-	if (blk_mq_alloc_tag_set(&disk->tag_set))
+-		return;
++	ret = blk_mq_alloc_tag_set(&disk->tag_set);
++	if (ret)
++		goto pi_release;
+ 
+ 	p = blk_mq_alloc_disk(&disk->tag_set, disk);
+-	if (!p) {
+-		blk_mq_free_tag_set(&disk->tag_set);
+-		return;
++	if (IS_ERR(p)) {
++		ret = PTR_ERR(p);
++		goto free_tag_set;
  	}
- 	rq_for_each_segment(bv, req, iter) {
--		dst = page_address(bv.bv_page) + bv.bv_offset;
-+		dst = bvec_virt(&bv);
- 		if (dasd_page_cache) {
- 			char *copy = kmem_cache_alloc(dasd_page_cache,
- 						      GFP_DMA | __GFP_NOWARN);
-@@ -4166,7 +4166,7 @@ static struct dasd_ccw_req *dasd_eckd_build_cp_cmd_track(
- 	idaw_dst = NULL;
- 	idaw_len = 0;
- 	rq_for_each_segment(bv, req, iter) {
--		dst = page_address(bv.bv_page) + bv.bv_offset;
-+		dst = bvec_virt(&bv);
- 		seg_len = bv.bv_len;
- 		while (seg_len) {
- 			if (new_track) {
-@@ -4509,7 +4509,7 @@ static struct dasd_ccw_req *dasd_eckd_build_cp_tpm_track(
- 		new_track = 1;
- 		recid = first_rec;
- 		rq_for_each_segment(bv, req, iter) {
--			dst = page_address(bv.bv_page) + bv.bv_offset;
-+			dst = bvec_virt(&bv);
- 			seg_len = bv.bv_len;
- 			while (seg_len) {
- 				if (new_track) {
-@@ -4542,7 +4542,7 @@ static struct dasd_ccw_req *dasd_eckd_build_cp_tpm_track(
- 		}
+ 	disk->gd = p;
+ 
+@@ -905,102 +923,84 @@ static void pd_probe_drive(struct pd_unit *disk)
+ 	p->minors = 1 << PD_BITS;
+ 	p->events = DISK_EVENT_MEDIA_CHANGE;
+ 	p->private_data = disk;
+-
+ 	blk_queue_max_hw_sectors(p->queue, cluster);
+ 	blk_queue_bounce_limit(p->queue, BLK_BOUNCE_HIGH);
+ 
+ 	if (disk->drive == -1) {
+-		for (disk->drive = 0; disk->drive <= 1; disk->drive++)
+-			if (pd_special_command(disk, pd_identify) == 0)
+-				return;
+-	} else if (pd_special_command(disk, pd_identify) == 0)
+-		return;
+-	disk->gd = NULL;
++		for (disk->drive = 0; disk->drive <= 1; disk->drive++) {
++			ret = pd_special_command(disk, pd_identify);
++			if (ret == 0)
++				break;
++		}
++	} else {
++		ret = pd_special_command(disk, pd_identify);
++	}
++	if (ret)
++		goto put_disk;
++	set_capacity(disk->gd, disk->capacity);
++	add_disk(disk->gd);
++	return 0;
++put_disk:
+ 	put_disk(p);
++	disk->gd = NULL;
++free_tag_set:
++	blk_mq_free_tag_set(&disk->tag_set);
++pi_release:
++	pi_release(disk->pi);
++	return ret;
+ }
+ 
+-static int pd_detect(void)
++static int __init pd_init(void)
+ {
+ 	int found = 0, unit, pd_drive_count = 0;
+ 	struct pd_unit *disk;
+ 
+-	for (unit = 0; unit < PD_UNITS; unit++) {
+-		int *parm = *drives[unit];
+-		struct pd_unit *disk = pd + unit;
+-		disk->pi = &disk->pia;
+-		disk->access = 0;
+-		disk->changed = 1;
+-		disk->capacity = 0;
+-		disk->drive = parm[D_SLV];
+-		snprintf(disk->name, PD_NAMELEN, "%s%c", name, 'a'+unit);
+-		disk->alt_geom = parm[D_GEO];
+-		disk->standby = parm[D_SBY];
+-		if (parm[D_PRT])
+-			pd_drive_count++;
+-		INIT_LIST_HEAD(&disk->rq_list);
+-	}
++	if (disable)
++		return -ENODEV;
++
++	if (register_blkdev(major, name))
++		return -ENODEV;
++
++	printk("%s: %s version %s, major %d, cluster %d, nice %d\n",
++	       name, name, PD_VERSION, major, cluster, nice);
+ 
+ 	par_drv = pi_register_driver(name);
+ 	if (!par_drv) {
+ 		pr_err("failed to register %s driver\n", name);
+-		return -1;
++		goto out_unregister_blkdev;
+ 	}
+ 
+-	if (pd_drive_count == 0) { /* nothing spec'd - so autoprobe for 1 */
+-		disk = pd;
+-		if (pi_init(disk->pi, 1, -1, -1, -1, -1, -1, pd_scratch,
+-			    PI_PD, verbose, disk->name)) {
+-			pd_probe_drive(disk);
+-			if (!disk->gd)
+-				pi_release(disk->pi);
+-		}
++	for (unit = 0; unit < PD_UNITS; unit++) {
++		int *parm = *drives[unit];
+ 
++		if (parm[D_PRT])
++			pd_drive_count++;
++	}
++
++	if (pd_drive_count == 0) { /* nothing spec'd - so autoprobe for 1 */
++		if (!pd_probe_drive(pd, 1, -1, -1, -1, -1, -1))
++			found++;
  	} else {
- 		rq_for_each_segment(bv, req, iter) {
--			dst = page_address(bv.bv_page) + bv.bv_offset;
-+			dst = bvec_virt(&bv);
- 			last_tidaw = itcw_add_tidaw(itcw, 0x00,
- 						    dst, bv.bv_len);
- 			if (IS_ERR(last_tidaw)) {
-@@ -4778,7 +4778,7 @@ static struct dasd_ccw_req *dasd_eckd_build_cp_raw(struct dasd_device *startdev,
- 			idaws = idal_create_words(idaws, rawpadpage, PAGE_SIZE);
+ 		for (unit = 0, disk = pd; unit < PD_UNITS; unit++, disk++) {
+ 			int *parm = *drives[unit];
+ 			if (!parm[D_PRT])
+ 				continue;
+-			if (pi_init(disk->pi, 0, parm[D_PRT], parm[D_MOD],
+-				     parm[D_UNI], parm[D_PRO], parm[D_DLY],
+-				     pd_scratch, PI_PD, verbose, disk->name)) {
+-				pd_probe_drive(disk);
+-				if (!disk->gd)
+-					pi_release(disk->pi);
+-			}
+-		}
+-	}
+-	for (unit = 0, disk = pd; unit < PD_UNITS; unit++, disk++) {
+-		if (disk->gd) {
+-			set_capacity(disk->gd, disk->capacity);
+-			add_disk(disk->gd);
+-			found = 1;
++			if (!pd_probe_drive(disk, 0, parm[D_PRT], parm[D_MOD],
++					parm[D_UNI], parm[D_PRO], parm[D_DLY]))
++				found++;
+ 		}
  	}
- 	rq_for_each_segment(bv, req, iter) {
--		dst = page_address(bv.bv_page) + bv.bv_offset;
-+		dst = bvec_virt(&bv);
- 		seg_len = bv.bv_len;
- 		if (cmd == DASD_ECKD_CCW_READ_TRACK)
- 			memset(dst, 0, seg_len);
-@@ -4839,7 +4839,7 @@ dasd_eckd_free_cp(struct dasd_ccw_req *cqr, struct request *req)
- 	if (private->uses_cdl == 0 || recid > 2*blk_per_trk)
- 		ccw++;
- 	rq_for_each_segment(bv, req, iter) {
--		dst = page_address(bv.bv_page) + bv.bv_offset;
-+		dst = bvec_virt(&bv);
- 		for (off = 0; off < bv.bv_len; off += blksize) {
- 			/* Skip locate record. */
- 			if (private->uses_cdl && recid <= 2*blk_per_trk)
-diff --git a/drivers/s390/block/dasd_fba.c b/drivers/s390/block/dasd_fba.c
-index 3ad319aee51e..e084f4dedddd 100644
---- a/drivers/s390/block/dasd_fba.c
-+++ b/drivers/s390/block/dasd_fba.c
-@@ -501,7 +501,7 @@ static struct dasd_ccw_req *dasd_fba_build_cp_regular(
+ 	if (!found) {
+ 		printk("%s: no valid drive found\n", name);
+-		pi_unregister_driver(par_drv);
++		goto out_pi_unregister_driver;
  	}
- 	recid = first_rec;
- 	rq_for_each_segment(bv, req, iter) {
--		dst = page_address(bv.bv_page) + bv.bv_offset;
-+		dst = bvec_virt(&bv);
- 		if (dasd_page_cache) {
- 			char *copy = kmem_cache_alloc(dasd_page_cache,
- 						      GFP_DMA | __GFP_NOWARN);
-@@ -583,7 +583,7 @@ dasd_fba_free_cp(struct dasd_ccw_req *cqr, struct request *req)
- 	if (private->rdc_data.mode.bits.data_chain != 0)
- 		ccw++;
- 	rq_for_each_segment(bv, req, iter) {
--		dst = page_address(bv.bv_page) + bv.bv_offset;
-+		dst = bvec_virt(&bv);
- 		for (off = 0; off < bv.bv_len; off += blksize) {
- 			/* Skip locate record. */
- 			if (private->rdc_data.mode.bits.data_chain == 0)
+-	return found;
+-}
+-
+-static int __init pd_init(void)
+-{
+-	if (disable)
+-		goto out1;
+-
+-	if (register_blkdev(major, name))
+-		goto out1;
+-
+-	printk("%s: %s version %s, major %d, cluster %d, nice %d\n",
+-	       name, name, PD_VERSION, major, cluster, nice);
+-	if (!pd_detect())
+-		goto out2;
+ 
+ 	return 0;
+ 
+-out2:
++out_pi_unregister_driver:
++	pi_unregister_driver(par_drv);
++out_unregister_blkdev:
+ 	unregister_blkdev(major, name);
+-out1:
+ 	return -ENODEV;
+ }
+ 
 -- 
 2.30.2
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
