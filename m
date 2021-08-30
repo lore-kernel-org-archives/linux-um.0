@@ -1,135 +1,307 @@
-Return-Path: <openrisc-bounces@lists.librecores.org>
-From: Kefeng Wang <wangkefeng.wang@huawei.com>
-Date: Thu, 12 Aug 2021 20:36:02 +0800
-Message-ID: <20210812123602.76356-1-wangkefeng.wang@huawei.com>
+Return-Path: <linux-m68k-owner@vger.kernel.org>
+From: Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH 10/15] pf: cleanup initialization
+Date: Mon, 30 Aug 2021 15:09:55 -0700
+Message-Id: <20210830221000.179369-11-mcgrof@kernel.org>
+In-Reply-To: <20210830221000.179369-1-mcgrof@kernel.org>
+References: <20210830221000.179369-1-mcgrof@kernel.org>
 MIME-Version: 1.0
-Subject: [OpenRISC] [PATCH -next] trap: Cleanup trap_init()
-List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
- <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
-List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
-List-Post: <mailto:openrisc@lists.librecores.org>
-List-Help: <mailto:openrisc-request@lists.librecores.org?subject=help>
-List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
- <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: openrisc-bounces@lists.librecores.org
-Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
-To: linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-um@lists.infradead.org, linux-mm@kvack.org
-Cc: Jonas Bonn <jonas@southpole.se>, Kefeng Wang <wangkefeng.wang@huawei.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Andrew Morton <akpm@linux-foundation.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, Michael Ellerman <mpe@ellerman.id.au>, Helge Deller <deller@gmx.de>, Paul Walmsley <palmerdabbelt@google.com>, Russell King <linux@armlinux.org.uk>, Ley Foon Tan <ley.foon.tan@intel.com>, "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>, Richard Weinberger <richard@nod.at>, Paul Mackerras <paulus@samba.org>, Vineet Gupta <vgupta@kernel.org>, Jeff Dike <jdike@addtoit.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Content-Transfer-Encoding: 8bit
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+To: axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org, ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org, philipp.reisner@linbit.com, lars.ellenberg@linbit.com, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, chris.obbard@collabora.com, krisman@collabora.com, zhuyifei1999@gmail.com, thehajime@gmail.com, chris@zankel.net, jcmvbkbc@gmail.com, tim@cyberelk.net
+Cc: linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
 List-ID: <linux-um.lists.infradead.org>
 
-VGhlcmUgYXJlIHNvbWUgZW1wdHkgdHJhcF9pbml0KCkgaW4gZGlmZmVyZW50IEFSQ0hzLCBpbnRy
-b2R1Y2UKYSBuZXcgd2VhayB0cmFwX2luaXQoKSBmdW5jdGlvbiB0byBjbGVhbnVwIHRoZW0uCgpD
-YzogVmluZWV0IEd1cHRhIDx2Z3VwdGFAa2VybmVsLm9yZz4KQ2M6IFJ1c3NlbGwgS2luZyA8bGlu
-dXhAYXJtbGludXgub3JnLnVrPgpDYzogWW9zaGlub3JpIFNhdG8gPHlzYXRvQHVzZXJzLnNvdXJj
-ZWZvcmdlLmpwPgpDYzogTGV5IEZvb24gVGFuIDxsZXkuZm9vbi50YW5AaW50ZWwuY29tPgpDYzog
-Sm9uYXMgQm9ubiA8am9uYXNAc291dGhwb2xlLnNlPgpDYzogU3RlZmFuIEtyaXN0aWFuc3NvbiA8
-c3RlZmFuLmtyaXN0aWFuc3NvbkBzYXVuYWxhaHRpLmZpPgpDYzogU3RhZmZvcmQgSG9ybmUgPHNo
-b3JuZUBnbWFpbC5jb20+CkNjOiBKYW1lcyBFLkouIEJvdHRvbWxleSA8SmFtZXMuQm90dG9tbGV5
-QEhhbnNlblBhcnRuZXJzaGlwLmNvbT4KQ2M6IEhlbGdlIERlbGxlciA8ZGVsbGVyQGdteC5kZT4K
-Q2M6IE1pY2hhZWwgRWxsZXJtYW4gPG1wZUBlbGxlcm1hbi5pZC5hdT4KQ2M6IEJlbmphbWluIEhl
-cnJlbnNjaG1pZHQgPGJlbmhAa2VybmVsLmNyYXNoaW5nLm9yZz4KQ2M6IFBhdWwgTWFja2VycmFz
-IDxwYXVsdXNAc2FtYmEub3JnPgpDYzogUGF1bCBXYWxtc2xleSA8cGFsbWVyZGFiYmVsdEBnb29n
-bGUuY29tPgpDYzogSmVmZiBEaWtlIDxqZGlrZUBhZGR0b2l0LmNvbT4KQ2M6IFJpY2hhcmQgV2Vp
-bmJlcmdlciA8cmljaGFyZEBub2QuYXQ+CkNjOiBBbnRvbiBJdmFub3YgPGFudG9uLml2YW5vdkBj
-YW1icmlkZ2VncmV5cy5jb20+CkNjOiBBbmRyZXcgTW9ydG9uIDxha3BtQGxpbnV4LWZvdW5kYXRp
-b24ub3JnPgpTaWduZWQtb2ZmLWJ5OiBLZWZlbmcgV2FuZyA8d2FuZ2tlZmVuZy53YW5nQGh1YXdl
-aS5jb20+Ci0tLQogYXJjaC9hcmMva2VybmVsL3RyYXBzLmMgICAgICB8IDUgLS0tLS0KIGFyY2gv
-YXJtL2tlcm5lbC90cmFwcy5jICAgICAgfCA1IC0tLS0tCiBhcmNoL2g4MzAwL2tlcm5lbC90cmFw
-cy5jICAgIHwgNCAtLS0tCiBhcmNoL2hleGFnb24va2VybmVsL3RyYXBzLmMgIHwgNCAtLS0tCiBh
-cmNoL25kczMyL2tlcm5lbC90cmFwcy5jICAgIHwgNSAtLS0tLQogYXJjaC9uaW9zMi9rZXJuZWwv
-dHJhcHMuYyAgICB8IDUgLS0tLS0KIGFyY2gvb3BlbnJpc2Mva2VybmVsL3RyYXBzLmMgfCA1IC0t
-LS0tCiBhcmNoL3BhcmlzYy9rZXJuZWwvdHJhcHMuYyAgIHwgNCAtLS0tCiBhcmNoL3Bvd2VycGMv
-a2VybmVsL3RyYXBzLmMgIHwgNSAtLS0tLQogYXJjaC9yaXNjdi9rZXJuZWwvdHJhcHMuYyAgICB8
-IDUgLS0tLS0KIGFyY2gvdW0va2VybmVsL3RyYXAuYyAgICAgICAgfCA0IC0tLS0KIGluaXQvbWFp
-bi5jICAgICAgICAgICAgICAgICAgfCAyICsrCiAxMiBmaWxlcyBjaGFuZ2VkLCAyIGluc2VydGlv
-bnMoKyksIDUxIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2FyY2gvYXJjL2tlcm5lbC90cmFw
-cy5jIGIvYXJjaC9hcmMva2VybmVsL3RyYXBzLmMKaW5kZXggNTcyMzVlNWMwY2VhLi42YjgzZTNm
-MmI0MWMgMTAwNjQ0Ci0tLSBhL2FyY2gvYXJjL2tlcm5lbC90cmFwcy5jCisrKyBiL2FyY2gvYXJj
-L2tlcm5lbC90cmFwcy5jCkBAIC0yMCwxMSArMjAsNiBAQAogI2luY2x1ZGUgPGFzbS91bmFsaWdu
-ZWQuaD4KICNpbmNsdWRlIDxhc20va3Byb2Jlcy5oPgogCi12b2lkIF9faW5pdCB0cmFwX2luaXQo
-dm9pZCkKLXsKLQlyZXR1cm47Ci19Ci0KIHZvaWQgZGllKGNvbnN0IGNoYXIgKnN0ciwgc3RydWN0
-IHB0X3JlZ3MgKnJlZ3MsIHVuc2lnbmVkIGxvbmcgYWRkcmVzcykKIHsKIAlzaG93X2tlcm5lbF9m
-YXVsdF9kaWFnKHN0ciwgcmVncywgYWRkcmVzcyk7CmRpZmYgLS1naXQgYS9hcmNoL2FybS9rZXJu
-ZWwvdHJhcHMuYyBiL2FyY2gvYXJtL2tlcm5lbC90cmFwcy5jCmluZGV4IDY0MzA4ZTNhNWQwYy4u
-ZTliNGYyYjQ5YmQ4IDEwMDY0NAotLS0gYS9hcmNoL2FybS9rZXJuZWwvdHJhcHMuYworKysgYi9h
-cmNoL2FybS9rZXJuZWwvdHJhcHMuYwpAQCAtNzgxLDExICs3ODEsNiBAQCB2b2lkIGFib3J0KHZv
-aWQpCiAJcGFuaWMoIk9vcHMgZmFpbGVkIHRvIGtpbGwgdGhyZWFkIik7CiB9CiAKLXZvaWQgX19p
-bml0IHRyYXBfaW5pdCh2b2lkKQotewotCXJldHVybjsKLX0KLQogI2lmZGVmIENPTkZJR19LVVNF
-Ul9IRUxQRVJTCiBzdGF0aWMgdm9pZCBfX2luaXQga3VzZXJfaW5pdCh2b2lkICp2ZWN0b3JzKQog
-ewpkaWZmIC0tZ2l0IGEvYXJjaC9oODMwMC9rZXJuZWwvdHJhcHMuYyBiL2FyY2gvaDgzMDAva2Vy
-bmVsL3RyYXBzLmMKaW5kZXggNWQ4Yjk2OWNkOGYzLi5iZGJlOTg4ZDhkYmMgMTAwNjQ0Ci0tLSBh
-L2FyY2gvaDgzMDAva2VybmVsL3RyYXBzLmMKKysrIGIvYXJjaC9oODMwMC9rZXJuZWwvdHJhcHMu
-YwpAQCAtMzksMTAgKzM5LDYgQEAgdm9pZCBfX2luaXQgYmFzZV90cmFwX2luaXQodm9pZCkKIHsK
-IH0KIAotdm9pZCBfX2luaXQgdHJhcF9pbml0KHZvaWQpCi17Ci19Ci0KIGFzbWxpbmthZ2Ugdm9p
-ZCBzZXRfZXNwMCh1bnNpZ25lZCBsb25nIHNzcCkKIHsKIAljdXJyZW50LT50aHJlYWQuZXNwMCA9
-IHNzcDsKZGlmZiAtLWdpdCBhL2FyY2gvaGV4YWdvbi9rZXJuZWwvdHJhcHMuYyBiL2FyY2gvaGV4
-YWdvbi9rZXJuZWwvdHJhcHMuYwppbmRleCA5MDQxMzRiMzcyMzIuLmVkZmMzNWRhZmViMSAxMDA2
-NDQKLS0tIGEvYXJjaC9oZXhhZ29uL2tlcm5lbC90cmFwcy5jCisrKyBiL2FyY2gvaGV4YWdvbi9r
-ZXJuZWwvdHJhcHMuYwpAQCAtMjgsMTAgKzI4LDYgQEAKICNkZWZpbmUgVFJBUF9TWVNDQUxMCTEK
-ICNkZWZpbmUgVFJBUF9ERUJVRwkweGRiCiAKLXZvaWQgX19pbml0IHRyYXBfaW5pdCh2b2lkKQot
-ewotfQotCiAjaWZkZWYgQ09ORklHX0dFTkVSSUNfQlVHCiAvKiBNYXliZSBzaG91bGQgcmVzZW1i
-bGUgYXJjaC9zaC9rZXJuZWwvdHJhcHMuYyA/PyAqLwogaW50IGlzX3ZhbGlkX2J1Z2FkZHIodW5z
-aWduZWQgbG9uZyBhZGRyKQpkaWZmIC0tZ2l0IGEvYXJjaC9uZHMzMi9rZXJuZWwvdHJhcHMuYyBi
-L2FyY2gvbmRzMzIva2VybmVsL3RyYXBzLmMKaW5kZXggZWUwZDlhZTE5MmE1Li5mMDY0MjFjNjQ1
-YWYgMTAwNjQ0Ci0tLSBhL2FyY2gvbmRzMzIva2VybmVsL3RyYXBzLmMKKysrIGIvYXJjaC9uZHMz
-Mi9rZXJuZWwvdHJhcHMuYwpAQCAtMTgzLDExICsxODMsNiBAQCB2b2lkIF9fcGdkX2Vycm9yKGNv
-bnN0IGNoYXIgKmZpbGUsIGludCBsaW5lLCB1bnNpZ25lZCBsb25nIHZhbCkKIH0KIAogZXh0ZXJu
-IGNoYXIgKmV4Y2VwdGlvbl92ZWN0b3IsICpleGNlcHRpb25fdmVjdG9yX2VuZDsKLXZvaWQgX19p
-bml0IHRyYXBfaW5pdCh2b2lkKQotewotCXJldHVybjsKLX0KLQogdm9pZCBfX2luaXQgZWFybHlf
-dHJhcF9pbml0KHZvaWQpCiB7CiAJdW5zaWduZWQgbG9uZyBpdmIgPSAwOwpkaWZmIC0tZ2l0IGEv
-YXJjaC9uaW9zMi9rZXJuZWwvdHJhcHMuYyBiL2FyY2gvbmlvczIva2VybmVsL3RyYXBzLmMKaW5k
-ZXggYjE3MmRhNGViMWE5Li41OTY5ODZhNzRhMjYgMTAwNjQ0Ci0tLSBhL2FyY2gvbmlvczIva2Vy
-bmVsL3RyYXBzLmMKKysrIGIvYXJjaC9uaW9zMi9rZXJuZWwvdHJhcHMuYwpAQCAtMTA1LDExICsx
-MDUsNiBAQCB2b2lkIHNob3dfc3RhY2soc3RydWN0IHRhc2tfc3RydWN0ICp0YXNrLCB1bnNpZ25l
-ZCBsb25nICpzdGFjaywKIAlwcmludGsoIiVzXG4iLCBsb2dsdmwpOwogfQogCi12b2lkIF9faW5p
-dCB0cmFwX2luaXQodm9pZCkKLXsKLQkvKiBOb3RoaW5nIHRvIGRvIGhlcmUgKi8KLX0KLQogLyog
-QnJlYWtwb2ludCBoYW5kbGVyICovCiBhc21saW5rYWdlIHZvaWQgYnJlYWtwb2ludF9jKHN0cnVj
-dCBwdF9yZWdzICpmcCkKIHsKZGlmZiAtLWdpdCBhL2FyY2gvb3BlbnJpc2Mva2VybmVsL3RyYXBz
-LmMgYi9hcmNoL29wZW5yaXNjL2tlcm5lbC90cmFwcy5jCmluZGV4IDRkNjEzMzNjMjYyMy4uYWEx
-ZTcwOTQwNWFjIDEwMDY0NAotLS0gYS9hcmNoL29wZW5yaXNjL2tlcm5lbC90cmFwcy5jCisrKyBi
-L2FyY2gvb3BlbnJpc2Mva2VybmVsL3RyYXBzLmMKQEAgLTIzMSwxMSArMjMxLDYgQEAgdm9pZCB1
-bmhhbmRsZWRfZXhjZXB0aW9uKHN0cnVjdCBwdF9yZWdzICpyZWdzLCBpbnQgZWEsIGludCB2ZWN0
-b3IpCiAJZGllKCJPb3BzIiwgcmVncywgOSk7CiB9CiAKLXZvaWQgX19pbml0IHRyYXBfaW5pdCh2
-b2lkKQotewotCS8qIE5vdGhpbmcgbmVlZHMgdG8gYmUgZG9uZSAqLwotfQotCiBhc21saW5rYWdl
-IHZvaWQgZG9fdHJhcChzdHJ1Y3QgcHRfcmVncyAqcmVncywgdW5zaWduZWQgbG9uZyBhZGRyZXNz
-KQogewogCWZvcmNlX3NpZ19mYXVsdChTSUdUUkFQLCBUUkFQX0JSS1BULCAodm9pZCBfX3VzZXIg
-KilyZWdzLT5wYyk7CmRpZmYgLS1naXQgYS9hcmNoL3BhcmlzYy9rZXJuZWwvdHJhcHMuYyBiL2Fy
-Y2gvcGFyaXNjL2tlcm5lbC90cmFwcy5jCmluZGV4IDhkODQ0MWQ0NTYyYS4uNzQ3YzMyOGZiODg2
-IDEwMDY0NAotLS0gYS9hcmNoL3BhcmlzYy9rZXJuZWwvdHJhcHMuYworKysgYi9hcmNoL3Bhcmlz
-Yy9rZXJuZWwvdHJhcHMuYwpAQCAtODU5LDcgKzg1OSwzIEBAIHZvaWQgIF9faW5pdCBlYXJseV90
-cmFwX2luaXQodm9pZCkKIAogCWluaXRpYWxpemVfaXZ0KCZmYXVsdF92ZWN0b3JfMjApOwogfQot
-Ci12b2lkIF9faW5pdCB0cmFwX2luaXQodm9pZCkKLXsKLX0KZGlmZiAtLWdpdCBhL2FyY2gvcG93
-ZXJwYy9rZXJuZWwvdHJhcHMuYyBiL2FyY2gvcG93ZXJwYy9rZXJuZWwvdHJhcHMuYwppbmRleCBl
-MTAzYjg5MjM0Y2QuLjkxZWZiNWM2ZjJmMyAxMDA2NDQKLS0tIGEvYXJjaC9wb3dlcnBjL2tlcm5l
-bC90cmFwcy5jCisrKyBiL2FyY2gvcG93ZXJwYy9rZXJuZWwvdHJhcHMuYwpAQCAtMjIwOSwxMSAr
-MjIwOSw2IEBAIERFRklORV9JTlRFUlJVUFRfSEFORExFUihrZXJuZWxfYmFkX3N0YWNrKQogCWRp
-ZSgiQmFkIGtlcm5lbCBzdGFjayBwb2ludGVyIiwgcmVncywgU0lHQUJSVCk7CiB9CiAKLXZvaWQg
-X19pbml0IHRyYXBfaW5pdCh2b2lkKQotewotfQotCi0KICNpZmRlZiBDT05GSUdfUFBDX0VNVUxB
-VEVEX1NUQVRTCiAKICNkZWZpbmUgV0FSTl9FTVVMQVRFRF9TRVRVUCh0eXBlKQkudHlwZSA9IHsg
-Lm5hbWUgPSAjdHlwZSB9CmRpZmYgLS1naXQgYS9hcmNoL3Jpc2N2L2tlcm5lbC90cmFwcy5jIGIv
-YXJjaC9yaXNjdi9rZXJuZWwvdHJhcHMuYwppbmRleCAwYTk4ZmQwZGRmZTkuLjBkYWFhM2U0NjMw
-ZCAxMDA2NDQKLS0tIGEvYXJjaC9yaXNjdi9rZXJuZWwvdHJhcHMuYworKysgYi9hcmNoL3Jpc2N2
-L2tlcm5lbC90cmFwcy5jCkBAIC0xOTksMTEgKzE5OSw2IEBAIGludCBpc192YWxpZF9idWdhZGRy
-KHVuc2lnbmVkIGxvbmcgcGMpCiB9CiAjZW5kaWYgLyogQ09ORklHX0dFTkVSSUNfQlVHICovCiAK
-LS8qIHN0dmVjICYgc2NyYXRjaCBpcyBhbHJlYWR5IHNldCBmcm9tIGhlYWQuUyAqLwotdm9pZCBf
-X2luaXQgdHJhcF9pbml0KHZvaWQpCi17Ci19Ci0KICNpZmRlZiBDT05GSUdfVk1BUF9TVEFDSwog
-c3RhdGljIERFRklORV9QRVJfQ1BVKHVuc2lnbmVkIGxvbmcgW09WRVJGTE9XX1NUQUNLX1NJWkUv
-c2l6ZW9mKGxvbmcpXSwKIAkJb3ZlcmZsb3dfc3RhY2spX19hbGlnbmVkKDE2KTsKZGlmZiAtLWdp
-dCBhL2FyY2gvdW0va2VybmVsL3RyYXAuYyBiL2FyY2gvdW0va2VybmVsL3RyYXAuYwppbmRleCBh
-ZDEyZjc4YmRhN2UuLjMxOThjNDc2NzM4NyAxMDA2NDQKLS0tIGEvYXJjaC91bS9rZXJuZWwvdHJh
-cC5jCisrKyBiL2FyY2gvdW0va2VybmVsL3RyYXAuYwpAQCAtMzExLDcgKzMxMSwzIEBAIHZvaWQg
-d2luY2goaW50IHNpZywgc3RydWN0IHNpZ2luZm8gKnVudXNlZF9zaSwgc3RydWN0IHVtbF9wdF9y
-ZWdzICpyZWdzKQogewogCWRvX0lSUShXSU5DSF9JUlEsIHJlZ3MpOwogfQotCi12b2lkIHRyYXBf
-aW5pdCh2b2lkKQotewotfQpkaWZmIC0tZ2l0IGEvaW5pdC9tYWluLmMgYi9pbml0L21haW4uYwpp
-bmRleCA0YjQ4OTdiNzkxZmQuLjg2M2U1MDg3MjYzZCAxMDA2NDQKLS0tIGEvaW5pdC9tYWluLmMK
-KysrIGIvaW5pdC9tYWluLmMKQEAgLTc3NSw2ICs3NzUsOCBAQCB2b2lkIF9faW5pdCBfX3dlYWsg
-cG9raW5nX2luaXQodm9pZCkgeyB9CiAKIHZvaWQgX19pbml0IF9fd2VhayBwZ3RhYmxlX2NhY2hl
-X2luaXQodm9pZCkgeyB9CiAKK3ZvaWQgX19pbml0IF9fd2VhayB0cmFwX2luaXQodm9pZCkgeyB9
-CisKIGJvb2wgaW5pdGNhbGxfZGVidWc7CiBjb3JlX3BhcmFtKGluaXRjYWxsX2RlYnVnLCBpbml0
-Y2FsbF9kZWJ1ZywgYm9vbCwgMDY0NCk7CiAKLS0gCjIuMjYuMgoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KT3BlblJJU0MgbWFpbGluZyBsaXN0Ck9wZW5S
-SVNDQGxpc3RzLmxpYnJlY29yZXMub3JnCmh0dHBzOi8vbGlzdHMubGlicmVjb3Jlcy5vcmcvbGlz
-dGluZm8vb3BlbnJpc2MK
+From: Christoph Hellwig <hch@lst.de>
+
+Refactor the pf initialization to have a dedicated helper to initialize
+a single disk.
+
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ drivers/block/paride/pf.c | 223 +++++++++++++++++---------------------
+ 1 file changed, 99 insertions(+), 124 deletions(-)
+
+diff --git a/drivers/block/paride/pf.c b/drivers/block/paride/pf.c
+index d5b9c88ba76f..f471d48a87bc 100644
+--- a/drivers/block/paride/pf.c
++++ b/drivers/block/paride/pf.c
+@@ -214,7 +214,6 @@ static int pf_getgeo(struct block_device *bdev, struct hd_geometry *geo);
+ 
+ static void pf_release(struct gendisk *disk, fmode_t mode);
+ 
+-static int pf_detect(void);
+ static void do_pf_read(void);
+ static void do_pf_read_start(void);
+ static void do_pf_write(void);
+@@ -285,45 +284,6 @@ static const struct blk_mq_ops pf_mq_ops = {
+ 	.queue_rq	= pf_queue_rq,
+ };
+ 
+-static void __init pf_init_units(void)
+-{
+-	struct pf_unit *pf;
+-	int unit;
+-
+-	pf_drive_count = 0;
+-	for (unit = 0, pf = units; unit < PF_UNITS; unit++, pf++) {
+-		struct gendisk *disk;
+-
+-		if (blk_mq_alloc_sq_tag_set(&pf->tag_set, &pf_mq_ops, 1,
+-				BLK_MQ_F_SHOULD_MERGE))
+-			continue;
+-
+-		disk = blk_mq_alloc_disk(&pf->tag_set, pf);
+-		if (IS_ERR(disk)) {
+-			blk_mq_free_tag_set(&pf->tag_set);
+-			continue;
+-		}
+-
+-		INIT_LIST_HEAD(&pf->rq_list);
+-		blk_queue_max_segments(disk->queue, cluster);
+-		blk_queue_bounce_limit(disk->queue, BLK_BOUNCE_HIGH);
+-		pf->disk = disk;
+-		pf->pi = &pf->pia;
+-		pf->media_status = PF_NM;
+-		pf->drive = (*drives[unit])[D_SLV];
+-		pf->lun = (*drives[unit])[D_LUN];
+-		snprintf(pf->name, PF_NAMELEN, "%s%d", name, unit);
+-		disk->major = major;
+-		disk->first_minor = unit;
+-		disk->minors = 1;
+-		strcpy(disk->disk_name, pf->name);
+-		disk->fops = &pf_fops;
+-		disk->events = DISK_EVENT_MEDIA_CHANGE;
+-		if (!(*drives[unit])[D_PRT])
+-			pf_drive_count++;
+-	}
+-}
+-
+ static int pf_open(struct block_device *bdev, fmode_t mode)
+ {
+ 	struct pf_unit *pf = bdev->bd_disk->private_data;
+@@ -718,59 +678,6 @@ static int pf_probe(struct pf_unit *pf)
+ 	return -1;
+ }
+ 
+-static int pf_detect(void)
+-{
+-	struct pf_unit *pf = units;
+-	int k, unit;
+-
+-	printk("%s: %s version %s, major %d, cluster %d, nice %d\n",
+-	       name, name, PF_VERSION, major, cluster, nice);
+-
+-	par_drv = pi_register_driver(name);
+-	if (!par_drv) {
+-		pr_err("failed to register %s driver\n", name);
+-		return -1;
+-	}
+-	k = 0;
+-	if (pf_drive_count == 0) {
+-		if (pi_init(pf->pi, 1, -1, -1, -1, -1, -1, pf_scratch, PI_PF,
+-			    verbose, pf->name)) {
+-			if (!pf_probe(pf) && pf->disk) {
+-				pf->present = 1;
+-				k++;
+-			} else
+-				pi_release(pf->pi);
+-		}
+-
+-	} else
+-		for (unit = 0; unit < PF_UNITS; unit++, pf++) {
+-			int *conf = *drives[unit];
+-			if (!conf[D_PRT])
+-				continue;
+-			if (pi_init(pf->pi, 0, conf[D_PRT], conf[D_MOD],
+-				    conf[D_UNI], conf[D_PRO], conf[D_DLY],
+-				    pf_scratch, PI_PF, verbose, pf->name)) {
+-				if (pf->disk && !pf_probe(pf)) {
+-					pf->present = 1;
+-					k++;
+-				} else
+-					pi_release(pf->pi);
+-			}
+-		}
+-	if (k)
+-		return 0;
+-
+-	printk("%s: No ATAPI disk detected\n", name);
+-	for (pf = units, unit = 0; unit < PF_UNITS; pf++, unit++) {
+-		if (!pf->disk)
+-			continue;
+-		blk_cleanup_disk(pf->disk);
+-		blk_mq_free_tag_set(&pf->tag_set);
+-	}
+-	pi_unregister_driver(par_drv);
+-	return -1;
+-}
+-
+ /* The i/o request engine */
+ 
+ static int pf_start(struct pf_unit *pf, int cmd, int b, int c)
+@@ -1014,61 +921,129 @@ static void do_pf_write_done(void)
+ 	next_request(0);
+ }
+ 
++static int __init pf_init_unit(struct pf_unit *pf, bool autoprobe, int port,
++		int mode, int unit, int protocol, int delay, int ms)
++{
++	struct gendisk *disk;
++	int ret;
++
++	ret = blk_mq_alloc_sq_tag_set(&pf->tag_set, &pf_mq_ops, 1,
++				      BLK_MQ_F_SHOULD_MERGE);
++	if (ret)
++		return ret;
++
++	disk = blk_mq_alloc_disk(&pf->tag_set, pf);
++	if (IS_ERR(disk)) {
++		ret = PTR_ERR(disk);
++		goto out_free_tag_set;
++	}
++	disk->major = major;
++	disk->first_minor = pf - units;
++	disk->minors = 1;
++	strcpy(disk->disk_name, pf->name);
++	disk->fops = &pf_fops;
++	disk->events = DISK_EVENT_MEDIA_CHANGE;
++	disk->private_data = pf;
++
++	blk_queue_max_segments(disk->queue, cluster);
++	blk_queue_bounce_limit(disk->queue, BLK_BOUNCE_HIGH);
++
++	INIT_LIST_HEAD(&pf->rq_list);
++	pf->disk = disk;
++	pf->pi = &pf->pia;
++	pf->media_status = PF_NM;
++	pf->drive = (*drives[disk->first_minor])[D_SLV];
++	pf->lun = (*drives[disk->first_minor])[D_LUN];
++	snprintf(pf->name, PF_NAMELEN, "%s%d", name, disk->first_minor);
++
++	if (!pi_init(pf->pi, autoprobe, port, mode, unit, protocol, delay,
++			pf_scratch, PI_PF, verbose, pf->name))
++		goto out_free_disk;
++	if (pf_probe(pf))
++		goto out_pi_release;
++
++	add_disk(disk);
++	pf->present = 1;
++	return 0;
++
++out_pi_release:
++	pi_release(pf->pi);
++out_free_disk:
++	blk_cleanup_disk(pf->disk);
++out_free_tag_set:
++	blk_mq_free_tag_set(&pf->tag_set);
++	return ret;
++}
++
+ static int __init pf_init(void)
+ {				/* preliminary initialisation */
+ 	struct pf_unit *pf;
+-	int unit;
++	int found = 0, unit;
+ 
+ 	if (disable)
+ 		return -EINVAL;
+ 
+-	pf_init_units();
++	if (register_blkdev(major, name))
++		return -EBUSY;
+ 
+-	if (pf_detect())
+-		return -ENODEV;
+-	pf_busy = 0;
++	printk("%s: %s version %s, major %d, cluster %d, nice %d\n",
++	       name, name, PF_VERSION, major, cluster, nice);
+ 
+-	if (register_blkdev(major, name)) {
+-		for (pf = units, unit = 0; unit < PF_UNITS; pf++, unit++) {
+-			if (!pf->disk)
+-				continue;
+-			blk_cleanup_queue(pf->disk->queue);
+-			blk_mq_free_tag_set(&pf->tag_set);
+-			put_disk(pf->disk);
+-		}
+-		return -EBUSY;
++	par_drv = pi_register_driver(name);
++	if (!par_drv) {
++		pr_err("failed to register %s driver\n", name);
++		goto out_unregister_blkdev;
+ 	}
+ 
+-	for (pf = units, unit = 0; unit < PF_UNITS; pf++, unit++) {
+-		struct gendisk *disk = pf->disk;
++	for (unit = 0; unit < PF_UNITS; unit++) {
++		if (!(*drives[unit])[D_PRT])
++			pf_drive_count++;
++	}
+ 
+-		if (!pf->present)
+-			continue;
+-		disk->private_data = pf;
+-		add_disk(disk);
++	pf = units;
++	if (pf_drive_count == 0) {
++		if (pf_init_unit(pf, 1, -1, -1, -1, -1, -1, verbose))
++			found++;
++	} else {
++		for (unit = 0; unit < PF_UNITS; unit++, pf++) {
++			int *conf = *drives[unit];
++			if (!conf[D_PRT])
++				continue;
++			if (pf_init_unit(pf, 0, conf[D_PRT], conf[D_MOD],
++				    conf[D_UNI], conf[D_PRO], conf[D_DLY],
++				    verbose))
++				found++;
++		}
++	}
++	if (!found) {
++		printk("%s: No ATAPI disk detected\n", name);
++		goto out_unregister_pi_driver;
+ 	}
++	pf_busy = 0;
+ 	return 0;
++
++out_unregister_pi_driver:
++	pi_unregister_driver(par_drv);
++out_unregister_blkdev:
++	unregister_blkdev(major, name);
++	return -ENODEV;
+ }
+ 
+ static void __exit pf_exit(void)
+ {
+ 	struct pf_unit *pf;
+ 	int unit;
+-	unregister_blkdev(major, name);
++
+ 	for (pf = units, unit = 0; unit < PF_UNITS; pf++, unit++) {
+-		if (!pf->disk)
++		if (!pf->present)
+ 			continue;
+-
+-		if (pf->present)
+-			del_gendisk(pf->disk);
+-
+-		blk_cleanup_queue(pf->disk->queue);
++		del_gendisk(pf->disk);
++		blk_cleanup_disk(pf->disk);
+ 		blk_mq_free_tag_set(&pf->tag_set);
+-		put_disk(pf->disk);
+-
+-		if (pf->present)
+-			pi_release(pf->pi);
++		pi_release(pf->pi);
+ 	}
++
++	unregister_blkdev(major, name);
+ }
+ 
+ MODULE_LICENSE("GPL");
+-- 
+2.30.2
+
 
