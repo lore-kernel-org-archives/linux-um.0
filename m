@@ -1,42 +1,69 @@
-Return-Path: <mcgrof@infradead.org>
-From: Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 13/15] pcd: fix ordering of unregister_cdrom()
-Date: Mon, 30 Aug 2021 15:09:58 -0700
-Message-Id: <20210830221000.179369-14-mcgrof@kernel.org>
-In-Reply-To: <20210830221000.179369-1-mcgrof@kernel.org>
-References: <20210830221000.179369-1-mcgrof@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mKyBd-001drA-4E
+ for linux-um@lists.infradead.org; Tue, 31 Aug 2021 07:28:08 +0000
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [PATCH] um: fix ndelay/udelay defines
+Date: Tue, 31 Aug 2021 09:27:53 +0200
+Message-Id: <20210831092753.4ea66dc7dff8.Ife5ad95810e75d88a9c8fae6cf1314e7486bfe19@changeid>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-To: axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org, ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org, philipp.reisner@linbit.com, lars.ellenberg@linbit.com, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, chris.obbard@collabora.com, krisman@collabora.com, zhuyifei1999@gmail.com, thehajime@gmail.com, chris@zankel.net, jcmvbkbc@gmail.com, tim@cyberelk.net
-Cc: linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>, kernel test robot <lkp@intel.com>
 
-We first register cdrom and then we add_disk() and
-so we we should likewise unregister the cdrom first and
-then del_gendisk().
+From: Johannes Berg <johannes.berg@intel.com>
 
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+Many places in the kernel use 'udelay' as an identifier, and
+are broken with the current "#define udelay um_udelay". Fix
+this by adding an argument to the macro, and do the same to
+'ndelay' as well, just in case.
+
+Fixes: 0bc8fb4dda2b ("um: Implement ndelay/udelay in time-travel mode")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- drivers/block/paride/pcd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/um/include/asm/delay.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/block/paride/pcd.c b/drivers/block/paride/pcd.c
-index a7fab3830d7b..82a654fc4db8 100644
---- a/drivers/block/paride/pcd.c
-+++ b/drivers/block/paride/pcd.c
-@@ -1021,9 +1021,9 @@ static void __exit pcd_exit(void)
- 		if (!cd->present)
- 			continue;
+diff --git a/arch/um/include/asm/delay.h b/arch/um/include/asm/delay.h
+index 56fc2b8f2dd0..e79b2ab6f40c 100644
+--- a/arch/um/include/asm/delay.h
++++ b/arch/um/include/asm/delay.h
+@@ -14,7 +14,7 @@ static inline void um_ndelay(unsigned long nsecs)
+ 	ndelay(nsecs);
+ }
+ #undef ndelay
+-#define ndelay um_ndelay
++#define ndelay(n) um_ndelay(n)
  
-+		unregister_cdrom(&cd->info);
- 		del_gendisk(cd->disk);
- 		pi_release(cd->pi);
--		unregister_cdrom(&cd->info);
- 		blk_cleanup_disk(cd->disk);
- 
- 		blk_mq_free_tag_set(&cd->tag_set);
+ static inline void um_udelay(unsigned long usecs)
+ {
+@@ -26,5 +26,5 @@ static inline void um_udelay(unsigned long usecs)
+ 	udelay(usecs);
+ }
+ #undef udelay
+-#define udelay um_udelay
++#define udelay(n) um_udelay(n)
+ #endif /* __UM_DELAY_H */
 -- 
-2.30.2
+2.31.1
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
