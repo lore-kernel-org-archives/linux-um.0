@@ -1,53 +1,46 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH] drm/ttm: provide default page protection for UML
-Date: Wed,  1 Sep 2021 19:01:29 -0700
-Message-Id: <20210902020129.25952-1-rdunlap@infradead.org>
+Return-Path: <mcgrof@infradead.org>
+Date: Wed, 1 Sep 2021 12:38:27 -0700
+From: Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: [PATCH 15/15] pd: add error handling support for add_disk()
+Message-ID: <YS/Ws2iD1suaut39@bombadil.infradead.org>
+References: <20210830221000.179369-1-mcgrof@kernel.org>
+ <20210830221000.179369-16-mcgrof@kernel.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>, =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>, =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>, Huang Rui <ray.huang@amd.com>, dri-devel@lists.freedesktop.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210830221000.179369-16-mcgrof@kernel.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+To: axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org, ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org, philipp.reisner@linbit.com, lars.ellenberg@linbit.com, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, chris.obbard@collabora.com, krisman@collabora.com, zhuyifei1999@gmail.com, thehajime@gmail.com, chris@zankel.net, jcmvbkbc@gmail.com, tim@cyberelk.net
+Cc: linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-Ym9vdF9jcHVfZGF0YSBbc3RydWN0IGNwdWluZm9fdW0gKG9uIFVNTCldIGRvZXMgbm90IGhhdmUg
-YSBzdHJ1Y3QKbWVtYmVyIG5hbWVkICd4ODYnLCBzbyBwcm92aWRlIGEgZGVmYXVsdCBwYWdlIHBy
-b3RlY3Rpb24gbW9kZQpmb3IgQ09ORklHX1VNTC4KCk1lbmRzIHRoaXMgYnVpbGQgZXJyb3I6Ci4u
-L2RyaXZlcnMvZ3B1L2RybS90dG0vdHRtX21vZHVsZS5jOiBJbiBmdW5jdGlvbiDigJh0dG1fcHJv
-dF9mcm9tX2NhY2hpbmfigJk6Ci4uL2RyaXZlcnMvZ3B1L2RybS90dG0vdHRtX21vZHVsZS5jOjU5
-OjI0OiBlcnJvcjog4oCYc3RydWN0IGNwdWluZm9fdW3igJkgaGFzIG5vIG1lbWJlciBuYW1lZCDi
-gJh4ODbigJkKICBlbHNlIGlmIChib290X2NwdV9kYXRhLng4NiA+IDMpCiAgICAgICAgICAgICAg
-ICAgICAgICAgIF4KCkZpeGVzOiAzYmYzNzEwZTM3MTggKCJkcm0vdHRtOiBBZGQgYSBnZW5lcmlj
-IFRUTSBtZW1jcHkgbW92ZSBmb3IgcGFnZS1iYXNlZCBpb21lbSIpClNpZ25lZC1vZmYtYnk6IFJh
-bmR5IER1bmxhcCA8cmR1bmxhcEBpbmZyYWRlYWQub3JnPgpDYzogVGhvbWFzIEhlbGxzdHLDtm0g
-PHRob21hcy5oZWxsc3Ryb21AbGludXguaW50ZWwuY29tPgpDYzogQ2hyaXN0aWFuIEvDtm5pZyA8
-Y2hyaXN0aWFuLmtvZW5pZ0BhbWQuY29tPgpDYzogSHVhbmcgUnVpIDxyYXkuaHVhbmdAYW1kLmNv
-bT4KQ2M6IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKQ2M6IEplZmYgRGlrZSA8amRp
-a2VAYWRkdG9pdC5jb20+CkNjOiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0PgpD
-YzogQW50b24gSXZhbm92IDxhbnRvbi5pdmFub3ZAY2FtYnJpZGdlZ3JleXMuY29tPgpDYzogbGlu
-dXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpDYzogRGF2aWQgQWlybGllIDxhaXJsaWVkQGxpbnV4
-LmllPgpDYzogRGFuaWVsIFZldHRlciA8ZGFuaWVsQGZmd2xsLmNoPgotLS0KIGRyaXZlcnMvZ3B1
-L2RybS90dG0vdHRtX21vZHVsZS5jIHwgICAgNCArKysrCiAxIGZpbGUgY2hhbmdlZCwgNCBpbnNl
-cnRpb25zKCspCgotLS0gbGludXgtbmV4dC0yMDIxMDkwMS5vcmlnL2RyaXZlcnMvZ3B1L2RybS90
-dG0vdHRtX21vZHVsZS5jCisrKyBsaW51eC1uZXh0LTIwMjEwOTAxL2RyaXZlcnMvZ3B1L2RybS90
-dG0vdHRtX21vZHVsZS5jCkBAIC01Myw2ICs1Myw5IEBAIHBncHJvdF90IHR0bV9wcm90X2Zyb21f
-Y2FjaGluZyhlbnVtIHR0bV8KIAlpZiAoY2FjaGluZyA9PSB0dG1fY2FjaGVkKQogCQlyZXR1cm4g
-dG1wOwogCisjaWZkZWYgQ09ORklHX1VNTAorCXRtcCA9IHBncHJvdF9ub25jYWNoZWQodG1wKTsK
-KyNlbHNlCiAjaWYgZGVmaW5lZChfX2kzODZfXykgfHwgZGVmaW5lZChfX3g4Nl82NF9fKQogCWlm
-IChjYWNoaW5nID09IHR0bV93cml0ZV9jb21iaW5lZCkKIAkJdG1wID0gcGdwcm90X3dyaXRlY29t
-YmluZSh0bXApOwpAQCAtNjksNiArNzIsNyBAQCBwZ3Byb3RfdCB0dG1fcHJvdF9mcm9tX2NhY2hp
-bmcoZW51bSB0dG1fCiAjaWYgZGVmaW5lZChfX3NwYXJjX18pCiAJdG1wID0gcGdwcm90X25vbmNh
-Y2hlZCh0bXApOwogI2VuZGlmCisjZW5kaWYKIAlyZXR1cm4gdG1wOwogfQogCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxp
-c3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
+On Mon, Aug 30, 2021 at 03:10:00PM -0700, Luis Chamberlain wrote:
+> We never checked for errors on add_disk() as this function
+> returned void. Now that this is fixed, use the shiny new
+> error handling.
+> 
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> ---
+>  drivers/block/paride/pd.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/block/paride/pd.c b/drivers/block/paride/pd.c
+> index 500b89a4bdaf..226ed5c93b68 100644
+> --- a/drivers/block/paride/pd.c
+> +++ b/drivers/block/paride/pd.c
+> @@ -938,8 +938,12 @@ static int pd_probe_drive(struct pd_unit *disk, int autoprobe, int port,
+>  	if (ret)
+>  		goto put_disk;
+>  	set_capacity(disk->gd, disk->capacity);
+> -	add_disk(disk->gd);
+> +	ret = add_disk(disk->gd);
+> +	if (ret)
+> +		goto cleanup_disk;
+>  	return 0;
+> +cleanup_disk:
+> +	blk_cleanup_disk(&disk);
+
+This should be blk_cleanup_disk(disk->gd); Will fix up in my v2.
+
+  Luis
 
