@@ -1,63 +1,34 @@
-Return-Path: <mcgrof@infradead.org>
-From: Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH v2 00/15] block: third batch of add_disk() error handling conversions
-Date: Mon, 27 Sep 2021 15:00:55 -0700
-Message-Id: <20210927220110.1066271-1-mcgrof@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-To: axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org, ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org, philipp.reisner@linbit.com, lars.ellenberg@linbit.com, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, chris.obbard@collabora.com, krisman@collabora.com, zhuyifei1999@gmail.com, thehajime@gmail.com, chris@zankel.net, jcmvbkbc@gmail.com, tim@cyberelk.net
-Cc: linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
+Date: Wed, 1 Sep 2021 15:43:46 +0200
+References: <20210830221000.179369-1-mcgrof@kernel.org>
+	<20210830221000.179369-4-mcgrof@kernel.org>
+In-Reply-To: <20210830221000.179369-4-mcgrof@kernel.org>
+Message-ID: <CAMuHMdXCUhrnXSmjFP7nJKHZp2joVRz-Ka2BUNMcZFA06CJ1wQ@mail.gmail.com>
+Subject: Re: [PATCH 03/15] m68k/emu/nfblock: add error handling support for add_disk()
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Jens Axboe <axboe@kernel.dk>, justin@coraid.com, Ulf Hansson <ulf.hansson@linaro.org>, Hannes Reinecke <hare@suse.de>, Tejun Heo <tj@kernel.org>, Philipp Reisner <philipp.reisner@linbit.com>, Lars Ellenberg <lars.ellenberg@linbit.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes.berg@intel.com>, chris.obbard@collabora.com, Gabriel Krisman Bertazi <krisman@collabora.com>, YiFei Zhu <zhuyifei1999@gmail.com>, thehajime@gmail.com, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Tim Waugh <tim@cyberelk.net>, "open list:TENSILICA XTENSA PORT (xtensa)" <linux-xtensa@linux-xtensa.org>, linux-um <linux-um@lists.infradead.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Lars Ellenberg <drbd-dev@lists.linbit.com>, linux-block@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>
 List-ID: <linux-um.lists.infradead.org>
 
-This is the 2nd version of the third batch of driver conversions for the
-add_disk() error handling. This and the entire 7th series of driver
-conversions can be found on my 20210927-for-axboe-add-disk-error-handling
-branch [0].
+On Tue, Aug 31, 2021 at 12:10 AM Luis Chamberlain <mcgrof@kernel.org> wrote:
+> We never checked for errors on add_disk() as this function
+> returned void. Now that this is fixed, use the shiny new
+> error handling.
+>
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 
-On this v2 series the following changes have been made since the v1
-series of this patch set:
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-  - rebased onto linux-next tag 20210927
-  - z2ram: fixed compile warning reported by 0day and Geert Uytterhoe
-  - um/drivers/ubd_kern: added the reviewed-by tag by Gabriel Krisman
-    Bertazi
+Gr{oetje,eeting}s,
 
-[0] https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/log/?h=20210927-for-axboe-add-disk-error-handling
-
-Christoph Hellwig (4):
-  pcd: move the identify buffer into pcd_identify
-  pcd: cleanup initialization
-  pf: cleanup initialization
-  pd: cleanup initialization
-
-Luis Chamberlain (11):
-  z2ram: add error handling support for add_disk()
-  aoe: add error handling support for add_disk()
-  m68k/emu/nfblock: add error handling support for add_disk()
-  drbd: add error handling support for add_disk()
-  um/drivers/ubd_kern: add error handling support for add_disk()
-  xtensa/platforms/iss/simdisk: add error handling support for
-    add_disk()
-  n64cart: add error handling support for add_disk()
-  pcd: add error handling support for add_disk()
-  pcd: fix ordering of unregister_cdrom()
-  pcd: capture errors on cdrom_register()
-  pd: add error handling support for add_disk()
-
- arch/m68k/emu/nfblock.c             |   9 +-
- arch/um/drivers/ubd_kern.c          |  13 +-
- arch/xtensa/platforms/iss/simdisk.c |  13 +-
- drivers/block/aoe/aoeblk.c          |   6 +-
- drivers/block/drbd/drbd_main.c      |   6 +-
- drivers/block/n64cart.c             |  12 +-
- drivers/block/paride/pcd.c          | 304 +++++++++++++---------------
- drivers/block/paride/pd.c           | 144 ++++++-------
- drivers/block/paride/pf.c           | 223 +++++++++-----------
- drivers/block/z2ram.c               |   7 +-
- 10 files changed, 364 insertions(+), 373 deletions(-)
+                        Geert
 
 -- 
-2.30.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
