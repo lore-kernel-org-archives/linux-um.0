@@ -2,12 +2,12 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mLiCj-008zw8-96
- for linux-um@lists.infradead.org; Thu, 02 Sep 2021 08:36:18 +0000
+ id 1mLi4z-008yxt-3y
+ for linux-um@lists.infradead.org; Thu, 02 Sep 2021 08:28:18 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v2] um: don't use CONFIG_X86_{32,64} symbols on x86
-Date: Thu,  2 Sep 2021 10:36:05 +0200
-Message-Id: <20210902103604.c750ebe53919.Icb5c49998c55b87c8584d46894c01b114ae2e661@changeid>
+Subject: [PATCH] um: don't use CONFIG_X86_{32,64} symbols on x86
+Date: Thu,  2 Sep 2021 10:28:05 +0200
+Message-Id: <20210902102750.1ddfef4c1915.Icb5c49998c55b87c8584d46894c01b114ae2e661@changeid>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -59,13 +59,8 @@ delete those now.
 
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
-v2:
- - fix arch/x86/include/asm/vermagic.h
-   (last-minute changes to Kconfig.cpu broke that)
----
  arch/um/include/asm/page.h          |  2 +-
  arch/x86/Kconfig.cpu                | 16 ++++++++--------
- arch/x86/include/asm/vermagic.h     |  2 +-
  arch/x86/um/Kconfig                 |  4 ++--
  arch/x86/um/Makefile                |  4 ++--
  arch/x86/um/asm/archparam.h         |  2 +-
@@ -97,7 +92,7 @@ v2:
  net/netfilter/nft_set_pipapo_avx2.h |  4 ++--
  security/Kconfig                    |  2 +-
  sound/core/control_compat.c         |  2 +-
- 34 files changed, 61 insertions(+), 62 deletions(-)
+ 33 files changed, 60 insertions(+), 61 deletions(-)
 
 diff --git a/arch/um/include/asm/page.h b/arch/um/include/asm/page.h
 index 95af12e82a32..6e75a1b497e7 100644
@@ -175,19 +170,6 @@ index 814fe0d349b0..78929e1fd4f8 100644
  	default "6" if X86_32 && (MPENTIUM4 || MPENTIUMM || MPENTIUMIII || MPENTIUMII || M686 || MVIAC3_2 || MVIAC7 || MEFFICEON || MATOM || MCRUSOE || MCORE2 || MK7 || MK8)
  	default "5" if X86_32 && X86_CMPXCHG64
  	default "4"
-diff --git a/arch/x86/include/asm/vermagic.h b/arch/x86/include/asm/vermagic.h
-index 75884d2cdec3..be5e55c7dd54 100644
---- a/arch/x86/include/asm/vermagic.h
-+++ b/arch/x86/include/asm/vermagic.h
-@@ -3,7 +3,7 @@
- #ifndef _ASM_VERMAGIC_H
- #define _ASM_VERMAGIC_H
- 
--#ifdef CONFIG_X86_64
-+#if defined(CONFIG_X86_64) || defined(CONFIG_X86_64_UML)
- /* X86_64 does not define MODULE_PROC_FAMILY */
- #elif defined CONFIG_M486SX
- #define MODULE_PROC_FAMILY "486SX "
 diff --git a/arch/x86/um/Kconfig b/arch/x86/um/Kconfig
 index 95d26a69088b..d63d68de6a06 100644
 --- a/arch/x86/um/Kconfig
