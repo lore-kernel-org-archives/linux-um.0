@@ -1,19 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mLhOC-008rIt-GX
- for linux-um@lists.infradead.org; Thu, 02 Sep 2021 07:44:04 +0000
-Message-ID: <288a2d4dbcb1e6b0fbeff6da86569aa92df09202.camel@sipsolutions.net>
+ id 1mLg4A-008hbR-BX
+ for linux-um@lists.infradead.org; Thu, 02 Sep 2021 06:19:18 +0000
 Subject: Re: [PATCH] drm/ttm: provide default page protection for UML
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Thu, 02 Sep 2021 09:43:33 +0200
-In-Reply-To: <0887903c-483d-49c7-0d35-f59be2f85bac@cambridgegreys.com>
 References: <20210902020129.25952-1-rdunlap@infradead.org>
  <9faacbc8-3346-8033-5b4d-60543eae959e@cambridgegreys.com>
  <f978cae5-7275-6780-8a17-c6e61247bce7@infradead.org>
- <0887903c-483d-49c7-0d35-f59be2f85bac@cambridgegreys.com>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <0887903c-483d-49c7-0d35-f59be2f85bac@cambridgegreys.com>
+Date: Thu, 2 Sep 2021 07:19:01 +0100
 MIME-Version: 1.0
+In-Reply-To: <f978cae5-7275-6780-8a17-c6e61247bce7@infradead.org>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,52 +22,58 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Anton Ivanov <anton.ivanov@cambridgegreys.com>, Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc: Thomas =?ISO-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>, Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>, Huang Rui <ray.huang@amd.com>, dri-devel@lists.freedesktop.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>
+To: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc: =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= <thomas.hellstrom@linux.intel.com>, =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>, Huang Rui <ray.huang@amd.com>, dri-devel@lists.freedesktop.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>
 
-On Thu, 2021-09-02 at 07:19 +0100, Anton Ivanov wrote:
-> > > 
-> > > I have a question though - why all of DRM is not !UML in config. Not 
-> > > like we can use them.
-> > 
-> > I have no idea about that.
-> > Hopefully one of the (other) UML maintainers can answer you.
-> 
-> Touche.
-> 
-> We will discuss that and possibly push a patch to !UML that part of the 
-> tree. IMHO it is not applicable.
-
-As I just said on the other patch, all of this is fallout from my commit
-68f5d3f3b654 ("um: add PCI over virtio emulation driver") which is the
-first time that you could have PCI on UML.
-
-Without having checked, in this particular case it's probably something
-like
-
-	depends on PCI && X86_64
-
-as we've seen in other drivers (idxd, ioat).
-
-The biggest problem is probably that UML internally uses X86_64
-(arch/x86/um/Kconfig), which is ... unexpected ... since CONFIG_X86_64
-is typically considered the ARCH, and now the ARCH is actually um.
-
-I think we can just fix that and get rid of this entire class of
-problems? Something like
-
-https://p.sipsolutions.net/fbac19d86637e286.txt
-
-johannes
-
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gMDIvMDkvMjAyMSAwNjo1MiwgUmFuZHkgRHVubGFwIHdyb3RlOgo+IE9uIDkvMS8yMSAxMDo0
+OCBQTSwgQW50b24gSXZhbm92IHdyb3RlOgo+PiBPbiAwMi8wOS8yMDIxIDAzOjAxLCBSYW5keSBE
+dW5sYXAgd3JvdGU6Cj4+PiBib290X2NwdV9kYXRhIFtzdHJ1Y3QgY3B1aW5mb191bSAob24gVU1M
+KV0gZG9lcyBub3QgaGF2ZSBhIHN0cnVjdAo+Pj4gbWVtYmVyIG5hbWVkICd4ODYnLCBzbyBwcm92
+aWRlIGEgZGVmYXVsdCBwYWdlIHByb3RlY3Rpb24gbW9kZQo+Pj4gZm9yIENPTkZJR19VTUwuCj4+
+Pgo+Pj4gTWVuZHMgdGhpcyBidWlsZCBlcnJvcjoKPj4+IC4uL2RyaXZlcnMvZ3B1L2RybS90dG0v
+dHRtX21vZHVsZS5jOiBJbiBmdW5jdGlvbiAKPj4+IOKAmHR0bV9wcm90X2Zyb21fY2FjaGluZ+KA
+mToKPj4+IC4uL2RyaXZlcnMvZ3B1L2RybS90dG0vdHRtX21vZHVsZS5jOjU5OjI0OiBlcnJvcjog
+4oCYc3RydWN0IGNwdWluZm9fdW3igJkgCj4+PiBoYXMgbm8gbWVtYmVyIG5hbWVkIOKAmHg4NuKA
+mQo+Pj4gwqDCoCBlbHNlIGlmIChib290X2NwdV9kYXRhLng4NiA+IDMpCj4+PiDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgXgo+Pj4KPj4+IEZpeGVzOiAz
+YmYzNzEwZTM3MTggKCJkcm0vdHRtOiBBZGQgYSBnZW5lcmljIFRUTSBtZW1jcHkgbW92ZSBmb3Ig
+Cj4+PiBwYWdlLWJhc2VkIGlvbWVtIikKPj4+IFNpZ25lZC1vZmYtYnk6IFJhbmR5IER1bmxhcCA8
+cmR1bmxhcEBpbmZyYWRlYWQub3JnPgo+Pj4gQ2M6IFRob21hcyBIZWxsc3Ryw7ZtIDx0aG9tYXMu
+aGVsbHN0cm9tQGxpbnV4LmludGVsLmNvbT4KPj4+IENjOiBDaHJpc3RpYW4gS8O2bmlnIDxjaHJp
+c3RpYW4ua29lbmlnQGFtZC5jb20+Cj4+PiBDYzogSHVhbmcgUnVpIDxyYXkuaHVhbmdAYW1kLmNv
+bT4KPj4+IENjOiBkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCj4+PiBDYzogSmVmZiBE
+aWtlIDxqZGlrZUBhZGR0b2l0LmNvbT4KPj4+IENjOiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hh
+cmRAbm9kLmF0Pgo+Pj4gQ2M6IEFudG9uIEl2YW5vdiA8YW50b24uaXZhbm92QGNhbWJyaWRnZWdy
+ZXlzLmNvbT4KPj4+IENjOiBsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCj4+PiBDYzogRGF2
+aWQgQWlybGllIDxhaXJsaWVkQGxpbnV4LmllPgo+Pj4gQ2M6IERhbmllbCBWZXR0ZXIgPGRhbmll
+bEBmZndsbC5jaD4KPj4+IC0tLQo+Pj4gwqAgZHJpdmVycy9ncHUvZHJtL3R0bS90dG1fbW9kdWxl
+LmMgfMKgwqDCoCA0ICsrKysKPj4+IMKgIDEgZmlsZSBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKykK
+Pj4+Cj4+PiAtLS0gbGludXgtbmV4dC0yMDIxMDkwMS5vcmlnL2RyaXZlcnMvZ3B1L2RybS90dG0v
+dHRtX21vZHVsZS5jCj4+PiArKysgbGludXgtbmV4dC0yMDIxMDkwMS9kcml2ZXJzL2dwdS9kcm0v
+dHRtL3R0bV9tb2R1bGUuYwo+Pj4gQEAgLTUzLDYgKzUzLDkgQEAgcGdwcm90X3QgdHRtX3Byb3Rf
+ZnJvbV9jYWNoaW5nKGVudW0gdHRtXwo+Pj4gwqDCoMKgwqDCoCBpZiAoY2FjaGluZyA9PSB0dG1f
+Y2FjaGVkKQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVybiB0bXA7Cj4+PiArI2lmZGVmIENP
+TkZJR19VTUwKPj4+ICvCoMKgwqAgdG1wID0gcGdwcm90X25vbmNhY2hlZCh0bXApOwo+Pj4gKyNl
+bHNlCj4+PiDCoCAjaWYgZGVmaW5lZChfX2kzODZfXykgfHwgZGVmaW5lZChfX3g4Nl82NF9fKQo+
+Pj4gwqDCoMKgwqDCoCBpZiAoY2FjaGluZyA9PSB0dG1fd3JpdGVfY29tYmluZWQpCj4+PiDCoMKg
+wqDCoMKgwqDCoMKgwqAgdG1wID0gcGdwcm90X3dyaXRlY29tYmluZSh0bXApOwo+Pj4gQEAgLTY5
+LDYgKzcyLDcgQEAgcGdwcm90X3QgdHRtX3Byb3RfZnJvbV9jYWNoaW5nKGVudW0gdHRtXwo+Pj4g
+wqAgI2lmIGRlZmluZWQoX19zcGFyY19fKQo+Pj4gwqDCoMKgwqDCoCB0bXAgPSBwZ3Byb3Rfbm9u
+Y2FjaGVkKHRtcCk7Cj4+PiDCoCAjZW5kaWYKPj4+ICsjZW5kaWYKPj4+IMKgwqDCoMKgwqAgcmV0
+dXJuIHRtcDsKPj4+IMKgIH0KPj4KPj4gUGF0Y2ggbG9va3MgT0suCj4+Cj4+IEkgaGF2ZSBhIHF1
+ZXN0aW9uIHRob3VnaCAtIHdoeSBhbGwgb2YgRFJNIGlzIG5vdCAhVU1MIGluIGNvbmZpZy4gTm90
+IAo+PiBsaWtlIHdlIGNhbiB1c2UgdGhlbS4KPiAKPiBJIGhhdmUgbm8gaWRlYSBhYm91dCB0aGF0
+Lgo+IEhvcGVmdWxseSBvbmUgb2YgdGhlIChvdGhlcikgVU1MIG1haW50YWluZXJzIGNhbiBhbnN3
+ZXIgeW91LgoKVG91Y2hlLgoKV2Ugd2lsbCBkaXNjdXNzIHRoYXQgYW5kIHBvc3NpYmx5IHB1c2gg
+YSBwYXRjaCB0byAhVU1MIHRoYXQgcGFydCBvZiB0aGUgCnRyZWUuIElNSE8gaXQgaXMgbm90IGFw
+cGxpY2FibGUuCgpBLgoKPiAKPiB0aGFua3MuCgoKLS0gCkFudG9uIFIuIEl2YW5vdgpDYW1icmlk
+Z2VncmV5cyBMaW1pdGVkLiBSZWdpc3RlcmVkIGluIEVuZ2xhbmQuIENvbXBhbnkgTnVtYmVyIDEw
+MjczNjYxCmh0dHBzOi8vd3d3LmNhbWJyaWRnZWdyZXlzLmNvbS8KCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51
+eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
+YW4vbGlzdGluZm8vbGludXgtdW0K
 
