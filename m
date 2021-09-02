@@ -1,21 +1,21 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-wr1-x435.google.com ([2a00:1450:4864:20::435])
+Received: from mail-dm6nam12on2063.outbound.protection.outlook.com
+ ([40.107.243.63] helo=NAM12-DM6-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mLnyN-009q8r-5R
- for linux-um@lists.infradead.org; Thu, 02 Sep 2021 14:45:50 +0000
-Received: by mail-wr1-x435.google.com with SMTP id x6so3324604wrv.13
- for <linux-um@lists.infradead.org>; Thu, 02 Sep 2021 07:45:45 -0700 (PDT)
-Date: Thu, 2 Sep 2021 16:45:42 +0200
-From: Daniel Vetter <daniel@ffwll.ch>
+ id 1mLiWd-00917R-7W
+ for linux-um@lists.infradead.org; Thu, 02 Sep 2021 08:56:51 +0000
 Subject: Re: [PATCH] drm/ttm: provide default page protection for UML
-Message-ID: <YTDjlixwDWi7Y2uR@phenom.ffwll.local>
 References: <20210902020129.25952-1-rdunlap@infradead.org>
  <9faacbc8-3346-8033-5b4d-60543eae959e@cambridgegreys.com>
  <f978cae5-7275-6780-8a17-c6e61247bce7@infradead.org>
  <0887903c-483d-49c7-0d35-f59be2f85bac@cambridgegreys.com>
+ <288a2d4dbcb1e6b0fbeff6da86569aa92df09202.camel@sipsolutions.net>
+From: =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <e4e4a4c2-6729-4964-edc9-8e06733207a9@amd.com>
+Date: Thu, 2 Sep 2021 10:56:36 +0200
+In-Reply-To: <288a2d4dbcb1e6b0fbeff6da86569aa92df09202.camel@sipsolutions.net>
+Content-Language: en-US
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <0887903c-483d-49c7-0d35-f59be2f85bac@cambridgegreys.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,65 +24,62 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org, Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>, Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>, Huang Rui <ray.huang@amd.com>, dri-devel@lists.freedesktop.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>
+To: Johannes Berg <johannes@sipsolutions.net>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc: =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= <thomas.hellstrom@linux.intel.com>, Huang Rui <ray.huang@amd.com>, dri-devel@lists.freedesktop.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>
 
-T24gVGh1LCBTZXAgMDIsIDIwMjEgYXQgMDc6MTk6MDFBTSArMDEwMCwgQW50b24gSXZhbm92IHdy
-b3RlOgo+IE9uIDAyLzA5LzIwMjEgMDY6NTIsIFJhbmR5IER1bmxhcCB3cm90ZToKPiA+IE9uIDkv
-MS8yMSAxMDo0OCBQTSwgQW50b24gSXZhbm92IHdyb3RlOgo+ID4gPiBPbiAwMi8wOS8yMDIxIDAz
-OjAxLCBSYW5keSBEdW5sYXAgd3JvdGU6Cj4gPiA+ID4gYm9vdF9jcHVfZGF0YSBbc3RydWN0IGNw
-dWluZm9fdW0gKG9uIFVNTCldIGRvZXMgbm90IGhhdmUgYSBzdHJ1Y3QKPiA+ID4gPiBtZW1iZXIg
-bmFtZWQgJ3g4NicsIHNvIHByb3ZpZGUgYSBkZWZhdWx0IHBhZ2UgcHJvdGVjdGlvbiBtb2RlCj4g
-PiA+ID4gZm9yIENPTkZJR19VTUwuCj4gPiA+ID4gCj4gPiA+ID4gTWVuZHMgdGhpcyBidWlsZCBl
-cnJvcjoKPiA+ID4gPiAuLi9kcml2ZXJzL2dwdS9kcm0vdHRtL3R0bV9tb2R1bGUuYzogSW4gZnVu
-Y3Rpb24KPiA+ID4gPiDigJh0dG1fcHJvdF9mcm9tX2NhY2hpbmfigJk6Cj4gPiA+ID4gLi4vZHJp
-dmVycy9ncHUvZHJtL3R0bS90dG1fbW9kdWxlLmM6NTk6MjQ6IGVycm9yOiDigJhzdHJ1Y3QKPiA+
-ID4gPiBjcHVpbmZvX3Vt4oCZIGhhcyBubyBtZW1iZXIgbmFtZWQg4oCYeDg24oCZCj4gPiA+ID4g
-wqDCoCBlbHNlIGlmIChib290X2NwdV9kYXRhLng4NiA+IDMpCj4gPiA+ID4gwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIF4KPiA+ID4gPiAKPiA+ID4gPiBG
-aXhlczogM2JmMzcxMGUzNzE4ICgiZHJtL3R0bTogQWRkIGEgZ2VuZXJpYyBUVE0gbWVtY3B5IG1v
-dmUgZm9yCj4gPiA+ID4gcGFnZS1iYXNlZCBpb21lbSIpCj4gPiA+ID4gU2lnbmVkLW9mZi1ieTog
-UmFuZHkgRHVubGFwIDxyZHVubGFwQGluZnJhZGVhZC5vcmc+Cj4gPiA+ID4gQ2M6IFRob21hcyBI
-ZWxsc3Ryw7ZtIDx0aG9tYXMuaGVsbHN0cm9tQGxpbnV4LmludGVsLmNvbT4KPiA+ID4gPiBDYzog
-Q2hyaXN0aWFuIEvDtm5pZyA8Y2hyaXN0aWFuLmtvZW5pZ0BhbWQuY29tPgo+ID4gPiA+IENjOiBI
-dWFuZyBSdWkgPHJheS5odWFuZ0BhbWQuY29tPgo+ID4gPiA+IENjOiBkcmktZGV2ZWxAbGlzdHMu
-ZnJlZWRlc2t0b3Aub3JnCj4gPiA+ID4gQ2M6IEplZmYgRGlrZSA8amRpa2VAYWRkdG9pdC5jb20+
-Cj4gPiA+ID4gQ2M6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+Cj4gPiA+ID4g
-Q2M6IEFudG9uIEl2YW5vdiA8YW50b24uaXZhbm92QGNhbWJyaWRnZWdyZXlzLmNvbT4KPiA+ID4g
-PiBDYzogbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwo+ID4gPiA+IENjOiBEYXZpZCBBaXJs
-aWUgPGFpcmxpZWRAbGludXguaWU+Cj4gPiA+ID4gQ2M6IERhbmllbCBWZXR0ZXIgPGRhbmllbEBm
-ZndsbC5jaD4KPiA+ID4gPiAtLS0KPiA+ID4gPiDCoCBkcml2ZXJzL2dwdS9kcm0vdHRtL3R0bV9t
-b2R1bGUuYyB8wqDCoMKgIDQgKysrKwo+ID4gPiA+IMKgIDEgZmlsZSBjaGFuZ2VkLCA0IGluc2Vy
-dGlvbnMoKykKPiA+ID4gPiAKPiA+ID4gPiAtLS0gbGludXgtbmV4dC0yMDIxMDkwMS5vcmlnL2Ry
-aXZlcnMvZ3B1L2RybS90dG0vdHRtX21vZHVsZS5jCj4gPiA+ID4gKysrIGxpbnV4LW5leHQtMjAy
-MTA5MDEvZHJpdmVycy9ncHUvZHJtL3R0bS90dG1fbW9kdWxlLmMKPiA+ID4gPiBAQCAtNTMsNiAr
-NTMsOSBAQCBwZ3Byb3RfdCB0dG1fcHJvdF9mcm9tX2NhY2hpbmcoZW51bSB0dG1fCj4gPiA+ID4g
-wqDCoMKgwqDCoCBpZiAoY2FjaGluZyA9PSB0dG1fY2FjaGVkKQo+ID4gPiA+IMKgwqDCoMKgwqDC
-oMKgwqDCoCByZXR1cm4gdG1wOwo+ID4gPiA+ICsjaWZkZWYgQ09ORklHX1VNTAo+ID4gPiA+ICvC
-oMKgwqAgdG1wID0gcGdwcm90X25vbmNhY2hlZCh0bXApOwo+ID4gPiA+ICsjZWxzZQo+ID4gPiA+
-IMKgICNpZiBkZWZpbmVkKF9faTM4Nl9fKSB8fCBkZWZpbmVkKF9feDg2XzY0X18pCj4gPiA+ID4g
-wqDCoMKgwqDCoCBpZiAoY2FjaGluZyA9PSB0dG1fd3JpdGVfY29tYmluZWQpCj4gPiA+ID4gwqDC
-oMKgwqDCoMKgwqDCoMKgIHRtcCA9IHBncHJvdF93cml0ZWNvbWJpbmUodG1wKTsKPiA+ID4gPiBA
-QCAtNjksNiArNzIsNyBAQCBwZ3Byb3RfdCB0dG1fcHJvdF9mcm9tX2NhY2hpbmcoZW51bSB0dG1f
-Cj4gPiA+ID4gwqAgI2lmIGRlZmluZWQoX19zcGFyY19fKQo+ID4gPiA+IMKgwqDCoMKgwqAgdG1w
-ID0gcGdwcm90X25vbmNhY2hlZCh0bXApOwo+ID4gPiA+IMKgICNlbmRpZgo+ID4gPiA+ICsjZW5k
-aWYKPiA+ID4gPiDCoMKgwqDCoMKgIHJldHVybiB0bXA7Cj4gPiA+ID4gwqAgfQo+ID4gPiAKPiA+
-ID4gUGF0Y2ggbG9va3MgT0suCj4gPiA+IAo+ID4gPiBJIGhhdmUgYSBxdWVzdGlvbiB0aG91Z2gg
-LSB3aHkgYWxsIG9mIERSTSBpcyBub3QgIVVNTCBpbiBjb25maWcuIE5vdAo+ID4gPiBsaWtlIHdl
-IGNhbiB1c2UgdGhlbS4KPiA+IAo+ID4gSSBoYXZlIG5vIGlkZWEgYWJvdXQgdGhhdC4KPiA+IEhv
-cGVmdWxseSBvbmUgb2YgdGhlIChvdGhlcikgVU1MIG1haW50YWluZXJzIGNhbiBhbnN3ZXIgeW91
-Lgo+IAo+IFRvdWNoZS4KPiAKPiBXZSB3aWxsIGRpc2N1c3MgdGhhdCBhbmQgcG9zc2libHkgcHVz
-aCBhIHBhdGNoIHRvICFVTUwgdGhhdCBwYXJ0IG9mIHRoZQo+IHRyZWUuIElNSE8gaXQgaXMgbm90
-IGFwcGxpY2FibGUuCgpJIHRob3VnaHQga3VuaXQgaXMgYmFzZWQgb24gdG9wIG9mIHVtbCwgYW5k
-IHdlIGRvIHdhbnQgdG8gZXZlbnR1YWxseSBhZG9wdAp0aGF0LiBFc3BlY2lhbGx5IGZvciBoZWxw
-ZXIgbGlicmFyaWVzIGxpa2UgdHRtLgoKQnV0IGFsc28gdGhhdCdzIHF1aXRlIGEgYml0IGluIHRo
-ZSBmdXR1cmUuCi1EYW5pZWwKLS0gCkRhbmllbCBWZXR0ZXIKU29mdHdhcmUgRW5naW5lZXIsIElu
-dGVsIENvcnBvcmF0aW9uCmh0dHA6Ly9ibG9nLmZmd2xsLmNoCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgt
-dW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2xpbnV4LXVtCg==
+Am 02.09.21 um 09:43 schrieb Johannes Berg:
+> On Thu, 2021-09-02 at 07:19 +0100, Anton Ivanov wrote:
+>>>> I have a question though - why all of DRM is not !UML in config. Not
+>>>> like we can use them.
+>>> I have no idea about that.
+>>> Hopefully one of the (other) UML maintainers can answer you.
+>> Touche.
+>>
+>> We will discuss that and possibly push a patch to !UML that part of the
+>> tree. IMHO it is not applicable.
+> As I just said on the other patch, all of this is fallout from my commit
+> 68f5d3f3b654 ("um: add PCI over virtio emulation driver") which is the
+> first time that you could have PCI on UML.
+>
+> Without having checked, in this particular case it's probably something
+> like
+>
+> 	depends on PCI && X86_64
+>
+> as we've seen in other drivers (idxd, ioat).
+>
+> The biggest problem is probably that UML internally uses X86_64
+> (arch/x86/um/Kconfig), which is ... unexpected ... since CONFIG_X86_64
+> is typically considered the ARCH, and now the ARCH is actually um.
+
+Yeah, as TTM maintainer I was about to NAK that approach here.
+
+Basically you are claiming to be X86_64, but then you don't use the 
+X86_64 architecture and are surprised that it things break somewhere else.
+
+This is not something you can blame on subsystems or even drivers, but 
+rather just a broken architectural design and so needs to be fixed there.
+
+Regards,
+Christian.
+
+>
+> I think we can just fix that and get rid of this entire class of
+> problems? Something like
+>
+> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fp.sipsolutions.net%2Ffbac19d86637e286.txt&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7Cd773b1e8b66643874d1308d96de56a86%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637661654674393046%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=xBT%2Fj%2FbEgltQfvE%2B7%2FGRV7IctGn3sDvy8ycmBvTTSXU%3D&amp;reserved=0
+>
+> johannes
+>
+>
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
