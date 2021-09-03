@@ -1,17 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mM4R4-00BF0F-T9
- for linux-um@lists.infradead.org; Fri, 03 Sep 2021 08:20:32 +0000
-Message-ID: <93705335a3e6dcdb56de601df566445aa5bcb28e.camel@sipsolutions.net>
-Subject: Re: [PATCH -next] um: virt-pci: Fix the application of sizeof to
- pointer
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Fri, 03 Sep 2021 10:20:13 +0200
-In-Reply-To: <1630655468-71684-1-git-send-email-yang.lee@linux.alibaba.com>
-References: <1630655468-71684-1-git-send-email-yang.lee@linux.alibaba.com>
-MIME-Version: 1.0
+ id 1mM3zO-00BCA1-F9
+ for linux-um@lists.infradead.org; Fri, 03 Sep 2021 07:51:56 +0000
+From: Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH -next] um: virt-pci: Fix the application of sizeof to pointer
+Date: Fri,  3 Sep 2021 15:51:08 +0800
+Message-Id: <1630655468-71684-1-git-send-email-yang.lee@linux.alibaba.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,35 +15,42 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Yang Li <yang.lee@linux.alibaba.com>, jdike@addtoit.com
-Cc: richard@nod.at, anton.ivanov@cambridgegreys.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+To: jdike@addtoit.com
+Cc: richard@nod.at, anton.ivanov@cambridgegreys.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
 
-On Fri, 2021-09-03 at 15:51 +0800, Yang Li wrote:
-> sizeof() when applied to a pointer typed expression gives the size of
-> the pointer.
-> 
-> Clean up coccicheck warning:
-> ./arch/um/drivers/virt-pci.c:192:20-26: ERROR: application of sizeof to
-> pointer
-> 
+sizeof() when applied to a pointer typed expression gives the size of
+the pointer.
 
-> -	memset(data, 0xff, sizeof(data));
-> +	memset(data, 0xff, sizeof(*data));
+Clean up coccicheck warning:
+./arch/um/drivers/virt-pci.c:192:20-26: ERROR: application of sizeof to
+pointer
 
-Oops. I guess I only tested on 64-bit where this is the same, and in
-fact on 32-bit it also wouldn't matter since you can't even do 64-bit
-reads there :)
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ arch/um/drivers/virt-pci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-A Fixes: tag would be nice, but otherwise
-
-Reviewed-by: Johannes Berg <johannes@sipsolutions.net>
-
-johannes
-
+diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
+index c080666..156af2f 100644
+--- a/arch/um/drivers/virt-pci.c
++++ b/arch/um/drivers/virt-pci.c
+@@ -189,7 +189,7 @@ static unsigned long um_pci_cfgspace_read(void *priv, unsigned int offset,
+ 	buf = get_cpu_var(um_pci_msg_bufs);
+ 	data = buf->data;
+ 
+-	memset(data, 0xff, sizeof(data));
++	memset(data, 0xff, sizeof(*data));
+ 
+ 	switch (size) {
+ 	case 1:
+-- 
+1.8.3.1
 
 
 _______________________________________________
