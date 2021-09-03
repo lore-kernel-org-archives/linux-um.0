@@ -1,51 +1,115 @@
-Return-Path: <mcgrof@infradead.org>
-From: Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH v2 02/15] aoe: add error handling support for add_disk()
-Date: Mon, 27 Sep 2021 15:00:57 -0700
-Message-Id: <20210927220110.1066271-3-mcgrof@kernel.org>
-In-Reply-To: <20210927220110.1066271-1-mcgrof@kernel.org>
-References: <20210927220110.1066271-1-mcgrof@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mM64h-00Bcts-Mq
+ for linux-um@lists.infradead.org; Fri, 03 Sep 2021 10:05:33 +0000
+Subject: Re: [PATCH] um: don't use CONFIG_X86_{32,64} symbols on x86
+References: <20210902102750.1ddfef4c1915.Icb5c49998c55b87c8584d46894c01b114ae2e661@changeid>
+ <f177f8b287f14c93b04542d7ab4a8dfd@AcuMS.aculab.com>
+ <30ab717a9ba1c2bb17e2a6948ff61d26c4430772.camel@sipsolutions.net>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <f6759c9c-0c79-788b-7182-4519cd73008f@cambridgegreys.com>
+Date: Fri, 3 Sep 2021 11:05:22 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-To: axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org, ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org, philipp.reisner@linbit.com, lars.ellenberg@linbit.com, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, chris.obbard@collabora.com, krisman@collabora.com, zhuyifei1999@gmail.com, thehajime@gmail.com, chris@zankel.net, jcmvbkbc@gmail.com, tim@cyberelk.net
-Cc: linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+In-Reply-To: <30ab717a9ba1c2bb17e2a6948ff61d26c4430772.camel@sipsolutions.net>
+Content-Language: en-US
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Johannes Berg <johannes@sipsolutions.net>, David Laight <David.Laight@ACULAB.COM>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>
+Cc: "x86@kernel.org" <x86@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-We never checked for errors on add_disk() as this function
-returned void. Now that this is fixed, use the shiny new
-error handling.
+On 03/09/2021 09:40, Johannes Berg wrote:
+> On Fri, 2021-09-03 at 08:27 +0000, David Laight wrote:
+>> From: Johannes Berg
+>>> Sent: 02 September 2021 09:28
+>>>
+>>> The CONFIG_X86_32 and CONFIG_X86_64 symbols are used by
+>>> both "real" x86 architecture builds and ARCH=um today.
+>>> However, clearly most people and places in the code are
+>>> treating it as the architecture Kconfig (technically
+>>> that's just CONFIG_X86) and use it to indicate that the
+>>> architecture is X86 in 32- or 64-bit flavour.
+>>>
+>>> This has caused a fair amount of issues in the past,
+>>> for example drivers not building because use x86 macros
+>>> or similar under CONFIG_X86_{32,64} ifdef, and then we
+>>> find build reports and add "!UML" to their Kconfig etc.
+>>>
+>>> However, this is error-prone and a kind of whack-a-mole
+>>> game, even with the build bots reporting things.
+>> I suspect you've just changed the 'mole'.
+> Yeah, that thought occurred to me too.
+>
+>
+>> You've now got lots of lines like:
+>>
+>> #if defined(CONFIG_X86_64) || defined(CONFIG_X86_64_UML)
+>>
+>> Missing off the UML define is going to cause the 32bit code
+>> to get compiled by mistake - which is likely to be more
+>> confusing that the places where you need to do special 'stuff'
+>> for UML
+> I'm not sure I agree though.
+>
+> Yes, I agree that I have a number of lines. But looking through them, we
+> have new ones:
+>   - AFS, and it fundamentally wants to know the arch. If it misses one,
+>     well, that can also happen with any other arch.
+>   - XFS/falloc has arch-specific stuff again, and considers other
+>     architectures too
+>   - fs/ioctl.c is actually unnecessary since CONFIG_COMPAT doesn't exist
+>     on UML
+>   - same for blktrace
+>   - BPF jit - not really sure about that one
+BPF jit IIRC works. People are using UML as a verifier in testing environments for the "does it load and run on this kernel version" test.
+>   - crypto Kconfig - but again already considers different architectures
+>     there
+>   - sound - ok that's a stupid one :)
+>   - lzo - again stuff that already considers many architectures
+>
+> But on the other side removal we have
+>   - sysctl
+>   - netfilter
+>   - security
+>   - many fixes to driver Kconfig that you don't see here because they're
+>     *missing* "depends on !UML" now
+>
+>
+> So my gut feeling is that while we've indeed traded one mole for another
+> in a sense, the somewhat surprising places (like sound and BPF) are much
+> fewer, and most of the places that we now need it are places that are
+> already considering different architectures.
 
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- drivers/block/aoe/aoeblk.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
++1. I'd rather fix all places the mole pops up once and for all.
 
-diff --git a/drivers/block/aoe/aoeblk.c b/drivers/block/aoe/aoeblk.c
-index 06b360f7123a..e436b0e8eff5 100644
---- a/drivers/block/aoe/aoeblk.c
-+++ b/drivers/block/aoe/aoeblk.c
-@@ -417,7 +417,9 @@ aoeblk_gdalloc(void *vp)
- 
- 	spin_unlock_irqrestore(&d->lock, flags);
- 
--	device_add_disk(NULL, gd, aoe_attr_groups);
-+	err = device_add_disk(NULL, gd, aoe_attr_groups);
-+	if (err)
-+		goto out_disk_cleanup;
- 	aoedisk_add_debugfs(d);
- 
- 	spin_lock_irqsave(&d->lock, flags);
-@@ -426,6 +428,8 @@ aoeblk_gdalloc(void *vp)
- 	spin_unlock_irqrestore(&d->lock, flags);
- 	return;
- 
-+out_disk_cleanup:
-+	blk_cleanup_disk(gd);
- err_tagset:
- 	blk_mq_free_tag_set(set);
- err_mempool:
+>
+> johannes
+>
+>
+> _______________________________________________
+> linux-um mailing list
+> linux-um@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-um
+>
 -- 
-2.30.2
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
