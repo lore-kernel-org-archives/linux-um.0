@@ -1,45 +1,109 @@
-Return-Path: <mcgrof@infradead.org>
-From: Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH v2 15/15] pd: add error handling support for add_disk()
-Date: Mon, 27 Sep 2021 15:01:10 -0700
-Message-Id: <20210927220110.1066271-16-mcgrof@kernel.org>
-In-Reply-To: <20210927220110.1066271-1-mcgrof@kernel.org>
-References: <20210927220110.1066271-1-mcgrof@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-ed1-x52d.google.com ([2a00:1450:4864:20::52d])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mO16W-007FxT-3y
+ for linux-um@lists.infradead.org; Wed, 08 Sep 2021 17:11:21 +0000
+Received: by mail-ed1-x52d.google.com with SMTP id u19so3906282edb.3
+ for <linux-um@lists.infradead.org>; Wed, 08 Sep 2021 10:11:18 -0700 (PDT)
+Date: Wed, 8 Sep 2021 19:11:14 +0200
+From: Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH] drm/ttm: provide default page protection for UML
+Message-ID: <YTjusuDs4UhvCJuc@phenom.ffwll.local>
+References: <20210902020129.25952-1-rdunlap@infradead.org>
+ <9faacbc8-3346-8033-5b4d-60543eae959e@cambridgegreys.com>
+ <f978cae5-7275-6780-8a17-c6e61247bce7@infradead.org>
+ <0887903c-483d-49c7-0d35-f59be2f85bac@cambridgegreys.com>
+ <YTDjlixwDWi7Y2uR@phenom.ffwll.local>
+ <CABVgOSnvW_H03KjXxK5=j0ApEPh-Me3RxMF9QGFFT3kEtXJ65Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-To: axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org, ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org, philipp.reisner@linbit.com, lars.ellenberg@linbit.com, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, chris.obbard@collabora.com, krisman@collabora.com, zhuyifei1999@gmail.com, thehajime@gmail.com, chris@zankel.net, jcmvbkbc@gmail.com, tim@cyberelk.net
-Cc: linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <CABVgOSnvW_H03KjXxK5=j0ApEPh-Me3RxMF9QGFFT3kEtXJ65Q@mail.gmail.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: David Gow <davidgow@google.com>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>, Randy Dunlap <rdunlap@infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>, Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>, Huang Rui <ray.huang@amd.com>, dri-devel@lists.freedesktop.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, linux-um <linux-um@lists.infradead.org>, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>
 
-We never checked for errors on add_disk() as this function
-returned void. Now that this is fixed, use the shiny new
-error handling.
-
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- drivers/block/paride/pd.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/block/paride/pd.c b/drivers/block/paride/pd.c
-index 500b89a4bdaf..e59759bcf416 100644
---- a/drivers/block/paride/pd.c
-+++ b/drivers/block/paride/pd.c
-@@ -938,8 +938,12 @@ static int pd_probe_drive(struct pd_unit *disk, int autoprobe, int port,
- 	if (ret)
- 		goto put_disk;
- 	set_capacity(disk->gd, disk->capacity);
--	add_disk(disk->gd);
-+	ret = add_disk(disk->gd);
-+	if (ret)
-+		goto cleanup_disk;
- 	return 0;
-+cleanup_disk:
-+	blk_cleanup_disk(disk->gd);
- put_disk:
- 	put_disk(p);
- 	disk->gd = NULL;
--- 
-2.30.2
-
+T24gU2F0LCBTZXAgMDQsIDIwMjEgYXQgMTE6NTA6MzdBTSArMDgwMCwgRGF2aWQgR293IHdyb3Rl
+Ogo+IE9uIFRodSwgU2VwIDIsIDIwMjEgYXQgMTA6NDYgUE0gRGFuaWVsIFZldHRlciA8ZGFuaWVs
+QGZmd2xsLmNoPiB3cm90ZToKPiA+Cj4gPiBPbiBUaHUsIFNlcCAwMiwgMjAyMSBhdCAwNzoxOTow
+MUFNICswMTAwLCBBbnRvbiBJdmFub3Ygd3JvdGU6Cj4gPiA+IE9uIDAyLzA5LzIwMjEgMDY6NTIs
+IFJhbmR5IER1bmxhcCB3cm90ZToKPiA+ID4gPiBPbiA5LzEvMjEgMTA6NDggUE0sIEFudG9uIEl2
+YW5vdiB3cm90ZToKPiA+ID4gPiA+IE9uIDAyLzA5LzIwMjEgMDM6MDEsIFJhbmR5IER1bmxhcCB3
+cm90ZToKPiA+ID4gPiA+ID4gYm9vdF9jcHVfZGF0YSBbc3RydWN0IGNwdWluZm9fdW0gKG9uIFVN
+TCldIGRvZXMgbm90IGhhdmUgYSBzdHJ1Y3QKPiA+ID4gPiA+ID4gbWVtYmVyIG5hbWVkICd4ODYn
+LCBzbyBwcm92aWRlIGEgZGVmYXVsdCBwYWdlIHByb3RlY3Rpb24gbW9kZQo+ID4gPiA+ID4gPiBm
+b3IgQ09ORklHX1VNTC4KPiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4gTWVuZHMgdGhpcyBidWlsZCBl
+cnJvcjoKPiA+ID4gPiA+ID4gLi4vZHJpdmVycy9ncHUvZHJtL3R0bS90dG1fbW9kdWxlLmM6IElu
+IGZ1bmN0aW9uCj4gPiA+ID4gPiA+IOKAmHR0bV9wcm90X2Zyb21fY2FjaGluZ+KAmToKPiA+ID4g
+PiA+ID4gLi4vZHJpdmVycy9ncHUvZHJtL3R0bS90dG1fbW9kdWxlLmM6NTk6MjQ6IGVycm9yOiDi
+gJhzdHJ1Y3QKPiA+ID4gPiA+ID4gY3B1aW5mb191beKAmSBoYXMgbm8gbWVtYmVyIG5hbWVkIOKA
+mHg4NuKAmQo+ID4gPiA+ID4gPiAgICBlbHNlIGlmIChib290X2NwdV9kYXRhLng4NiA+IDMpCj4g
+PiA+ID4gPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICBeCj4gPiA+ID4gPiA+Cj4gPiA+ID4g
+PiA+IEZpeGVzOiAzYmYzNzEwZTM3MTggKCJkcm0vdHRtOiBBZGQgYSBnZW5lcmljIFRUTSBtZW1j
+cHkgbW92ZSBmb3IKPiA+ID4gPiA+ID4gcGFnZS1iYXNlZCBpb21lbSIpCj4gPiA+ID4gPiA+IFNp
+Z25lZC1vZmYtYnk6IFJhbmR5IER1bmxhcCA8cmR1bmxhcEBpbmZyYWRlYWQub3JnPgo+ID4gPiA+
+ID4gPiBDYzogVGhvbWFzIEhlbGxzdHLDtm0gPHRob21hcy5oZWxsc3Ryb21AbGludXguaW50ZWwu
+Y29tPgo+ID4gPiA+ID4gPiBDYzogQ2hyaXN0aWFuIEvDtm5pZyA8Y2hyaXN0aWFuLmtvZW5pZ0Bh
+bWQuY29tPgo+ID4gPiA+ID4gPiBDYzogSHVhbmcgUnVpIDxyYXkuaHVhbmdAYW1kLmNvbT4KPiA+
+ID4gPiA+ID4gQ2M6IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKPiA+ID4gPiA+ID4g
+Q2M6IEplZmYgRGlrZSA8amRpa2VAYWRkdG9pdC5jb20+Cj4gPiA+ID4gPiA+IENjOiBSaWNoYXJk
+IFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0Pgo+ID4gPiA+ID4gPiBDYzogQW50b24gSXZhbm92
+IDxhbnRvbi5pdmFub3ZAY2FtYnJpZGdlZ3JleXMuY29tPgo+ID4gPiA+ID4gPiBDYzogbGludXgt
+dW1AbGlzdHMuaW5mcmFkZWFkLm9yZwo+ID4gPiA+ID4gPiBDYzogRGF2aWQgQWlybGllIDxhaXJs
+aWVkQGxpbnV4LmllPgo+ID4gPiA+ID4gPiBDYzogRGFuaWVsIFZldHRlciA8ZGFuaWVsQGZmd2xs
+LmNoPgo+ID4gPiA+ID4gPiAtLS0KPiA+ID4gPiA+ID4gICBkcml2ZXJzL2dwdS9kcm0vdHRtL3R0
+bV9tb2R1bGUuYyB8ICAgIDQgKysrKwo+ID4gPiA+ID4gPiAgIDEgZmlsZSBjaGFuZ2VkLCA0IGlu
+c2VydGlvbnMoKykKPiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4gLS0tIGxpbnV4LW5leHQtMjAyMTA5
+MDEub3JpZy9kcml2ZXJzL2dwdS9kcm0vdHRtL3R0bV9tb2R1bGUuYwo+ID4gPiA+ID4gPiArKysg
+bGludXgtbmV4dC0yMDIxMDkwMS9kcml2ZXJzL2dwdS9kcm0vdHRtL3R0bV9tb2R1bGUuYwo+ID4g
+PiA+ID4gPiBAQCAtNTMsNiArNTMsOSBAQCBwZ3Byb3RfdCB0dG1fcHJvdF9mcm9tX2NhY2hpbmco
+ZW51bSB0dG1fCj4gPiA+ID4gPiA+ICAgICAgIGlmIChjYWNoaW5nID09IHR0bV9jYWNoZWQpCj4g
+PiA+ID4gPiA+ICAgICAgICAgICByZXR1cm4gdG1wOwo+ID4gPiA+ID4gPiArI2lmZGVmIENPTkZJ
+R19VTUwKPiA+ID4gPiA+ID4gKyAgICB0bXAgPSBwZ3Byb3Rfbm9uY2FjaGVkKHRtcCk7Cj4gPiA+
+ID4gPiA+ICsjZWxzZQo+ID4gPiA+ID4gPiAgICNpZiBkZWZpbmVkKF9faTM4Nl9fKSB8fCBkZWZp
+bmVkKF9feDg2XzY0X18pCj4gPiA+ID4gPiA+ICAgICAgIGlmIChjYWNoaW5nID09IHR0bV93cml0
+ZV9jb21iaW5lZCkKPiA+ID4gPiA+ID4gICAgICAgICAgIHRtcCA9IHBncHJvdF93cml0ZWNvbWJp
+bmUodG1wKTsKPiA+ID4gPiA+ID4gQEAgLTY5LDYgKzcyLDcgQEAgcGdwcm90X3QgdHRtX3Byb3Rf
+ZnJvbV9jYWNoaW5nKGVudW0gdHRtXwo+ID4gPiA+ID4gPiAgICNpZiBkZWZpbmVkKF9fc3BhcmNf
+XykKPiA+ID4gPiA+ID4gICAgICAgdG1wID0gcGdwcm90X25vbmNhY2hlZCh0bXApOwo+ID4gPiA+
+ID4gPiAgICNlbmRpZgo+ID4gPiA+ID4gPiArI2VuZGlmCj4gPiA+ID4gPiA+ICAgICAgIHJldHVy
+biB0bXA7Cj4gPiA+ID4gPiA+ICAgfQo+ID4gPiA+ID4KPiA+ID4gPiA+IFBhdGNoIGxvb2tzIE9L
+Lgo+ID4gPiA+ID4KPiA+ID4gPiA+IEkgaGF2ZSBhIHF1ZXN0aW9uIHRob3VnaCAtIHdoeSBhbGwg
+b2YgRFJNIGlzIG5vdCAhVU1MIGluIGNvbmZpZy4gTm90Cj4gPiA+ID4gPiBsaWtlIHdlIGNhbiB1
+c2UgdGhlbS4KPiA+ID4gPgo+ID4gPiA+IEkgaGF2ZSBubyBpZGVhIGFib3V0IHRoYXQuCj4gPiA+
+ID4gSG9wZWZ1bGx5IG9uZSBvZiB0aGUgKG90aGVyKSBVTUwgbWFpbnRhaW5lcnMgY2FuIGFuc3dl
+ciB5b3UuCj4gPiA+Cj4gPiA+IFRvdWNoZS4KPiA+ID4KPiA+ID4gV2Ugd2lsbCBkaXNjdXNzIHRo
+YXQgYW5kIHBvc3NpYmx5IHB1c2ggYSBwYXRjaCB0byAhVU1MIHRoYXQgcGFydCBvZiB0aGUKPiA+
+ID4gdHJlZS4gSU1ITyBpdCBpcyBub3QgYXBwbGljYWJsZS4KPiA+Cj4gPiBJIHRob3VnaHQga3Vu
+aXQgaXMgYmFzZWQgb24gdG9wIG9mIHVtbCwgYW5kIHdlIGRvIHdhbnQgdG8gZXZlbnR1YWxseSBh
+ZG9wdAo+ID4gdGhhdC4gRXNwZWNpYWxseSBmb3IgaGVscGVyIGxpYnJhcmllcyBsaWtlIHR0bS4K
+PiAKPiBVTUwgaXMgbm90IGFjdHVhbGx5IGEgZGVwZW5kZW5jeSBmb3IgS1VuaXQsIHNvIGl0J3Mg
+ZGVmaW5pdGVseQo+IHBvc3NpYmxlIHRvIHRlc3QgdGhpbmdzIHdoaWNoIGFyZW4ndCBjb21wYXRp
+YmxlIHdpdGggVU1MLiAoSW4gZmFjdCwKPiB0aGVyZSdzIGV2ZW4gbm93IHNvbWUgdG9vbGluZyBz
+dXBwb3J0IHRvIHVzZSBxZW11IGluc3RlYWQgb24gYSBudW1iZXIKPiBvZiBhcmNoaXRlY3R1cmVz
+LikKPiAKPiBUaGF0IGJlaW5nIHNhaWQsIHRoZSBLVW5pdCB0b29saW5nIGRvZXMgdXNlIFVNTCBi
+eSBkZWZhdWx0LCBzbyBpZiBpdCdzCj4gbm90IHRvbyBkaWZmaWN1bHQgdG8ga2VlcCBzb21lIGxl
+dmVsIG9mIFVNTCBzdXBwb3J0LCBpdCdsbCBtYWtlIGl0IGEKPiBsaXR0bGUgZWFzaWVyIChhbmQg
+ZmFzdGVyKSBmb3IgcGVvcGxlIHRvIHJ1biBhbnkgS1VuaXQgdGVzdHMuCgpZZWFoIG15IHVuZGVy
+c3RhbmRpbmcgaXMgdGhhdCB1bWwgaXMgdGhlIHF1aWNrZXN0IHdheSB0byBzcGF3biBhIG5ldwpr
+ZXJuZWwsIHdoaWNoIGt1bml0IG5lZWRzIHRvIHJ1bi4gQW5kIEkgcmVhbGx5IGRvIGxpa2UgdGhh
+dCBpZGVhLCBiZWNhdXNlCmhhdmluZyB2aXJ0dWFsaXphdGlvbiBzdXBwb3J0IGluIGNsb3VkIENJ
+IHN5c3RlbXMgKHdoaWNoIHVzZSBjb250YWluZXJzCnRoZW1zZWx2ZXMpIGlzIGEgYml0IGEgZnVu
+IGV4ZXJjaXNlLiBUaGUgbGVzcyB3ZSByZWx5IG9uIHZpcnR1YWwgbWFjaGluZXMKaW4gY29udGFp
+bmVycyBmb3IgdGhhdCwgdGhlIGJldHRlci4KCkhlbmNlIHdoeSBJIHJlYWxseSBsaWtlIHRoZSB1
+bWwgYXBwcm9hY2ggZm9yIGt1bml0LgotRGFuaWVsCi0tIApEYW5pZWwgVmV0dGVyClNvZnR3YXJl
+IEVuZ2luZWVyLCBJbnRlbCBDb3Jwb3JhdGlvbgpodHRwOi8vYmxvZy5mZndsbC5jaAoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGlu
+ZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVh
+ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
 
