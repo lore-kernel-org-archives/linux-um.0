@@ -1,18 +1,9 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from zeniv-ca.linux.org.uk ([2607:5300:60:148a::1])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mSQuM-003BNL-LP
- for linux-um@lists.infradead.org; Mon, 20 Sep 2021 21:33:05 +0000
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red
- Hat Linux)) id 1mSQuL-005yeR-QS
- for linux-um@lists.infradead.org; Mon, 20 Sep 2021 21:33:01 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH 06/15] um: kill unused cpu()
-Date: Mon, 20 Sep 2021 21:32:52 +0000
-Message-Id: <20210920213301.1424730-6-viro@zeniv.linux.org.uk>
-In-Reply-To: <20210920213301.1424730-1-viro@zeniv.linux.org.uk>
-References: <YUj9S+S4Gd86mM6N@zeniv-ca.linux.org.uk>
- <20210920213301.1424730-1-viro@zeniv.linux.org.uk>
+From: Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH] um: registers: rename function names to avoid conflicts and
+ build problems
+Date: Sun, 12 Sep 2021 23:12:52 -0700
+Message-Id: <20210913061252.15582-1-rdunlap@infradead.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -26,45 +17,90 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+The function names init_registers() and restore_registers() are used
+in several net/ethernet/ and gpu/drm/ drivers for other purposes (not
+calls to UML functions), so rename them.
+
+This fixes multiple build errors.
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: linux-um@lists.infradead.org
 ---
- arch/um/include/shared/kern_util.h | 1 -
- arch/um/kernel/process.c           | 5 -----
- 2 files changed, 6 deletions(-)
+ arch/um/include/shared/registers.h |    4 ++--
+ arch/um/os-Linux/registers.c       |    4 ++--
+ arch/um/os-Linux/start_up.c        |    2 +-
+ arch/x86/um/syscalls_64.c          |    3 ++-
+ 4 files changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
-index a2cfd42608a0c..fbfff76065c5b 100644
---- a/arch/um/include/shared/kern_util.h
-+++ b/arch/um/include/shared/kern_util.h
-@@ -53,7 +53,6 @@ extern void do_uml_exitcalls(void);
- extern int __cant_sleep(void);
- extern int get_current_pid(void);
- extern int copy_from_user_proc(void *to, void *from, int size);
--extern int cpu(void);
- extern char *uml_strdup(const char *string);
- 
- extern unsigned long to_irq_stack(unsigned long *mask_out);
-diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index a5a430c637ba1..d5079a35e48ae 100644
---- a/arch/um/kernel/process.c
-+++ b/arch/um/kernel/process.c
-@@ -264,11 +264,6 @@ int clear_user_proc(void __user *buf, int size)
- 	return clear_user(buf, size);
+--- lnx-515-rc1.orig/arch/um/include/shared/registers.h
++++ lnx-515-rc1/arch/um/include/shared/registers.h
+@@ -16,8 +16,8 @@ extern int restore_fp_registers(int pid,
+ extern int save_fpx_registers(int pid, unsigned long *fp_regs);
+ extern int restore_fpx_registers(int pid, unsigned long *fp_regs);
+ extern int save_registers(int pid, struct uml_pt_regs *regs);
+-extern int restore_registers(int pid, struct uml_pt_regs *regs);
+-extern int init_registers(int pid);
++extern int restore_pid_registers(int pid, struct uml_pt_regs *regs);
++extern int init_pid_registers(int pid);
+ extern void get_safe_registers(unsigned long *regs, unsigned long *fp_regs);
+ extern unsigned long get_thread_reg(int reg, jmp_buf *buf);
+ extern int get_fp_registers(int pid, unsigned long *regs);
+--- lnx-515-rc1.orig/arch/um/os-Linux/registers.c
++++ lnx-515-rc1/arch/um/os-Linux/registers.c
+@@ -21,7 +21,7 @@ int save_registers(int pid, struct uml_p
+ 	return 0;
  }
  
--int cpu(void)
--{
--	return current_thread_info()->cpu;
--}
--
- static atomic_t using_sysemu = ATOMIC_INIT(0);
- int sysemu_supported;
+-int restore_registers(int pid, struct uml_pt_regs *regs)
++int restore_pid_registers(int pid, struct uml_pt_regs *regs)
+ {
+ 	int err;
  
--- 
-2.11.0
-
+@@ -36,7 +36,7 @@ int restore_registers(int pid, struct um
+ static unsigned long exec_regs[MAX_REG_NR];
+ static unsigned long exec_fp_regs[FP_SIZE];
+ 
+-int init_registers(int pid)
++int init_pid_registers(int pid)
+ {
+ 	int err;
+ 
+--- lnx-515-rc1.orig/arch/um/os-Linux/start_up.c
++++ lnx-515-rc1/arch/um/os-Linux/start_up.c
+@@ -368,7 +368,7 @@ void __init os_early_checks(void)
+ 	check_tmpexec();
+ 
+ 	pid = start_ptraced_child();
+-	if (init_registers(pid))
++	if (init_pid_registers(pid))
+ 		fatal("Failed to initialize default registers");
+ 	stop_ptraced_child(pid, 1, 1);
+ }
+--- lnx-515-rc1.orig/arch/x86/um/syscalls_64.c
++++ lnx-515-rc1/arch/x86/um/syscalls_64.c
+@@ -11,6 +11,7 @@
+ #include <linux/uaccess.h>
+ #include <asm/prctl.h> /* XXX This should get the constants from libc */
+ #include <os.h>
++#include <registers.h>
+ 
+ long arch_prctl(struct task_struct *task, int option,
+ 		unsigned long __user *arg2)
+@@ -35,7 +36,7 @@ long arch_prctl(struct task_struct *task
+ 	switch (option) {
+ 	case ARCH_SET_FS:
+ 	case ARCH_SET_GS:
+-		ret = restore_registers(pid, &current->thread.regs.regs);
++		ret = restore_pid_registers(pid, &current->thread.regs.regs);
+ 		if (ret)
+ 			return ret;
+ 		break;
 
 _______________________________________________
 linux-um mailing list
