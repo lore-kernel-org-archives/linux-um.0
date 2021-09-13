@@ -2,14 +2,12 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mQZg5-009iGu-0R
- for linux-um@lists.infradead.org; Wed, 15 Sep 2021 18:30:38 +0000
+ id 1mPh9Q-000gZJ-CD
+ for linux-um@lists.infradead.org; Mon, 13 Sep 2021 08:17:18 +0000
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH v2 2/3] lib/logic_iomem: fix 32-bit build
-Date: Wed, 15 Sep 2021 20:30:21 +0200
-Message-Id: <20210915203021.b48a745c3a3e.I1b11945a1f7c3e701ef5e7fe193e51f2b202090e@changeid>
-In-Reply-To: <20210915203021.1454bd968b28.I160cb938058758bba3cb1968419314dbeb9dc004@changeid>
-References: <20210915203021.1454bd968b28.I160cb938058758bba3cb1968419314dbeb9dc004@changeid>
+Subject: [PATCH] um: virtio_uml: fix time-travel external time propagation
+Date: Mon, 13 Sep 2021 10:16:55 +0200
+Message-Id: <20210913101651.cdb4485c257e.I6268ef8a313d80008f422b7ac8b52cb52554d636@changeid>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -24,80 +22,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>, Al Viro <viro@zeniv.linux.org.uk>
+Cc: Johannes Berg <johannes.berg@intel.com>
 
 From: Johannes Berg <johannes.berg@intel.com>
 
-On a 32-bit build, the (unsigned long long) casts throw warnings
-(or errors) due to being to a different integer size. Cast to
-uintptr_t first (with the __force for sparse) and then further
-to get the consistent print on 32 and 64-bit.
+When creating an external event, the current time needs to
+be propagated to other participants of a simulation. This
+is done in the places here where we kick a virtq etc.
 
-Fixes: ca2e334232b6 ("lib: add iomem emulation (logic_iomem)")
-Reported-by: Al Viro <viro@zeniv.linux.org.uk>
+However, it must be done for _all_ external events, and
+that includes making the initial socket connection. Call
+time_travel_propagate_time() to do this before making the
+socket connection.
+
+Apparently, due to the remote side in my use cases using
+only microseconds (rather than nanoseconds), this wasn't a
+problem yet - only started failing between 5.14-rc1 and
+5.15-rc1 (didn't test others much), or possibly depending
+on the configuration, where more delays happen before the
+virtio devices are initialized.
+
+Fixes: 88ce64249233 ("um: Implement time-travel=ext")
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- lib/logic_iomem.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ arch/um/drivers/virtio_uml.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/lib/logic_iomem.c b/lib/logic_iomem.c
-index 9bdfde0c0f86..54fa601f3300 100644
---- a/lib/logic_iomem.c
-+++ b/lib/logic_iomem.c
-@@ -79,7 +79,7 @@ static void __iomem *real_ioremap(phys_addr_t offset, size_t size)
- static void real_iounmap(void __iomem *addr)
- {
- 	WARN(1, "invalid iounmap for addr 0x%llx\n",
--	     (unsigned long long __force)addr);
-+	     (unsigned long long)(uintptr_t __force)addr);
- }
- #endif /* CONFIG_LOGIC_IOMEM_FALLBACK */
+diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
+index d51e445df797..860b7430bcff 100644
+--- a/arch/um/drivers/virtio_uml.c
++++ b/arch/um/drivers/virtio_uml.c
+@@ -1136,6 +1136,8 @@ static int virtio_uml_probe(struct platform_device *pdev)
+ 	vu_dev->pdev = pdev;
+ 	vu_dev->req_fd = -1;
  
-@@ -173,7 +173,7 @@ EXPORT_SYMBOL(iounmap);
- static u##sz real_raw_read ## op(const volatile void __iomem *addr)	\
- {									\
- 	WARN(1, "Invalid read" #op " at address %llx\n",		\
--	     (unsigned long long __force)addr);				\
-+	     (unsigned long long)(uintptr_t __force)addr);		\
- 	return (u ## sz)~0ULL;						\
- }									\
- 									\
-@@ -181,7 +181,8 @@ static void real_raw_write ## op(u ## sz val,				\
- 				 volatile void __iomem *addr)		\
- {									\
- 	WARN(1, "Invalid writeq" #op " of 0x%llx at address %llx\n",	\
--	     (unsigned long long)val, (unsigned long long __force)addr);\
-+	     (unsigned long long)val,					\
-+	     (unsigned long long)(uintptr_t __force)addr);\
- }									\
- 
- MAKE_FALLBACK(b, 8);
-@@ -194,14 +195,14 @@ MAKE_FALLBACK(q, 64);
- static void real_memset_io(volatile void __iomem *addr, int value, size_t size)
- {
- 	WARN(1, "Invalid memset_io at address 0x%llx\n",
--	     (unsigned long long __force)addr);
-+	     (unsigned long long)(uintptr_t __force)addr);
- }
- 
- static void real_memcpy_fromio(void *buffer, const volatile void __iomem *addr,
- 			       size_t size)
- {
- 	WARN(1, "Invalid memcpy_fromio at address 0x%llx\n",
--	     (unsigned long long __force)addr);
-+	     (unsigned long long)(uintptr_t __force)addr);
- 
- 	memset(buffer, 0xff, size);
- }
-@@ -210,7 +211,7 @@ static void real_memcpy_toio(volatile void __iomem *addr, const void *buffer,
- 			     size_t size)
- {
- 	WARN(1, "Invalid memcpy_toio at address 0x%llx\n",
--	     (unsigned long long __force)addr);
-+	     (unsigned long long)(uintptr_t __force)addr);
- }
- #endif /* CONFIG_LOGIC_IOMEM_FALLBACK */
- 
++	time_travel_propagate_time();
++
+ 	do {
+ 		rc = os_connect_socket(pdata->socket_path);
+ 	} while (rc == -EINTR);
 -- 
 2.31.1
 
