@@ -1,11 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH v2 4/6] memblock: stop aliasing __memblock_free_late with
- memblock_free_late
-Date: Thu, 30 Sep 2021 21:50:29 +0300
-Message-Id: <20210930185031.18648-5-rppt@kernel.org>
-In-Reply-To: <20210930185031.18648-1-rppt@kernel.org>
-References: <20210930185031.18648-1-rppt@kernel.org>
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mQpGi-00Awwh-1V
+ for linux-um@lists.infradead.org; Thu, 16 Sep 2021 11:09:29 +0000
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [PATCH v2] um: virtio_uml: fix time-travel external time propagation
+Date: Thu, 16 Sep 2021 13:09:22 +0200
+Message-Id: <20210916130922.56cd8b4ab7a7.I6268ef8a313d80008f422b7ac8b52cb52554d636@changeid>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -19,88 +21,60 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Christophe Leroy <christophe.leroy@csgroup.eu>, Juergen Gross <jgross@suse.com>, Linus Torvalds <torvalds@linux-foundation.org>, Mike Rapoport <rppt@kernel.org>, Mike Rapoport <rppt@linux.ibm.com>, Shahab Vahedi <Shahab.Vahedi@synopsys.com>, devicetree@vger.kernel.org, iommu@lists.linux-foundation.org, kasan-dev@googlegroups.com, kvm@vger.kernel.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-efi@vger.kernel.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-usb@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org
+To: linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-memblock_free_late() is a NOP wrapper for __memblock_free_late(), there is
-no point to keep this indirection.
+When creating an external event, the current time needs to
+be propagated to other participants of a simulation. This
+is done in the places here where we kick a virtq etc.
 
-Drop the wrapper and rename __memblock_free_late() to memblock_free_late().
+However, it must be done for _all_ external events, and
+that includes making the initial socket connection and
+later closing it. Call time_travel_propagate_time() to do
+this before making or closing the socket connection.
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Apparently, at least for the initial connection creation,
+due to the remote side in my use cases using microseconds
+(rather than nanoseconds), this wasn't a problem yet; only
+started failing between 5.14-rc1 and 5.15-rc1 (didn't test
+others much), or possibly depending on the configuration,
+where more delays happen before the virtio devices are
+initialized.
+
+Fixes: 88ce64249233 ("um: Implement time-travel=ext")
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- include/linux/memblock.h | 7 +------
- mm/memblock.c            | 8 ++++----
- 2 files changed, 5 insertions(+), 10 deletions(-)
+v2: also necessary before closing the connection
+---
+ arch/um/drivers/virtio_uml.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-index fc8183be340c..e25f964fdd60 100644
---- a/include/linux/memblock.h
-+++ b/include/linux/memblock.h
-@@ -133,7 +133,7 @@ void __next_mem_range_rev(u64 *idx, int nid, enum memblock_flags flags,
- 			  struct memblock_type *type_b, phys_addr_t *out_start,
- 			  phys_addr_t *out_end, int *out_nid);
+diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
+index d51e445df797..7755cb4ff9fc 100644
+--- a/arch/um/drivers/virtio_uml.c
++++ b/arch/um/drivers/virtio_uml.c
+@@ -1090,6 +1090,8 @@ static void virtio_uml_release_dev(struct device *d)
+ 			container_of(d, struct virtio_device, dev);
+ 	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
  
--void __memblock_free_late(phys_addr_t base, phys_addr_t size);
-+void memblock_free_late(phys_addr_t base, phys_addr_t size);
++	time_travel_propagate_time();
++
+ 	/* might not have been opened due to not negotiating the feature */
+ 	if (vu_dev->req_fd >= 0) {
+ 		um_free_irq(vu_dev->irq, vu_dev);
+@@ -1136,6 +1138,8 @@ static int virtio_uml_probe(struct platform_device *pdev)
+ 	vu_dev->pdev = pdev;
+ 	vu_dev->req_fd = -1;
  
- #ifdef CONFIG_HAVE_MEMBLOCK_PHYS_MAP
- static inline void __next_physmem_range(u64 *idx, struct memblock_type *type,
-@@ -441,11 +441,6 @@ static inline void *memblock_alloc_node(phys_addr_t size,
- 				      MEMBLOCK_ALLOC_ACCESSIBLE, nid);
- }
- 
--static inline void memblock_free_late(phys_addr_t base, phys_addr_t size)
--{
--	__memblock_free_late(base, size);
--}
--
- /*
-  * Set the allocation direction to bottom-up or top-down.
-  */
-diff --git a/mm/memblock.c b/mm/memblock.c
-index 184dcd2e5d99..603f4a02be9b 100644
---- a/mm/memblock.c
-+++ b/mm/memblock.c
-@@ -366,14 +366,14 @@ void __init memblock_discard(void)
- 		addr = __pa(memblock.reserved.regions);
- 		size = PAGE_ALIGN(sizeof(struct memblock_region) *
- 				  memblock.reserved.max);
--		__memblock_free_late(addr, size);
-+		memblock_free_late(addr, size);
- 	}
- 
- 	if (memblock.memory.regions != memblock_memory_init_regions) {
- 		addr = __pa(memblock.memory.regions);
- 		size = PAGE_ALIGN(sizeof(struct memblock_region) *
- 				  memblock.memory.max);
--		__memblock_free_late(addr, size);
-+		memblock_free_late(addr, size);
- 	}
- 
- 	memblock_memory = NULL;
-@@ -1586,7 +1586,7 @@ void * __init memblock_alloc_try_nid(
- }
- 
- /**
-- * __memblock_free_late - free pages directly to buddy allocator
-+ * memblock_free_late - free pages directly to buddy allocator
-  * @base: phys starting address of the  boot memory block
-  * @size: size of the boot memory block in bytes
-  *
-@@ -1594,7 +1594,7 @@ void * __init memblock_alloc_try_nid(
-  * down, but we are still initializing the system.  Pages are released directly
-  * to the buddy allocator.
-  */
--void __init __memblock_free_late(phys_addr_t base, phys_addr_t size)
-+void __init memblock_free_late(phys_addr_t base, phys_addr_t size)
- {
- 	phys_addr_t cursor, end;
- 
++	time_travel_propagate_time();
++
+ 	do {
+ 		rc = os_connect_socket(pdata->socket_path);
+ 	} while (rc == -EINTR);
 -- 
-2.28.0
+2.31.1
 
 
 _______________________________________________
