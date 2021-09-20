@@ -1,41 +1,75 @@
-Return-Path: <mcgrof@infradead.org>
-From: Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH v2 14/15] pcd: capture errors on cdrom_register()
-Date: Mon, 27 Sep 2021 15:01:09 -0700
-Message-Id: <20210927220110.1066271-15-mcgrof@kernel.org>
-In-Reply-To: <20210927220110.1066271-1-mcgrof@kernel.org>
-References: <20210927220110.1066271-1-mcgrof@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from zeniv-ca.linux.org.uk ([2607:5300:60:148a::1])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mSQuM-003BNu-Ui
+ for linux-um@lists.infradead.org; Mon, 20 Sep 2021 21:33:06 +0000
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red
+ Hat Linux)) id 1mSQuM-005yea-0z
+ for linux-um@lists.infradead.org; Mon, 20 Sep 2021 21:33:02 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH 09/15] um, x86: bury crypto_tfm_ctx_offset
+Date: Mon, 20 Sep 2021 21:32:55 +0000
+Message-Id: <20210920213301.1424730-9-viro@zeniv.linux.org.uk>
+In-Reply-To: <20210920213301.1424730-1-viro@zeniv.linux.org.uk>
+References: <YUj9S+S4Gd86mM6N@zeniv-ca.linux.org.uk>
+ <20210920213301.1424730-1-viro@zeniv.linux.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-To: axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org, ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org, philipp.reisner@linbit.com, lars.ellenberg@linbit.com, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, chris.obbard@collabora.com, krisman@collabora.com, zhuyifei1999@gmail.com, thehajime@gmail.com, chris@zankel.net, jcmvbkbc@gmail.com, tim@cyberelk.net
-Cc: linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
 
-No errors were being captured wehen cdrom_register() fails,
-capture the error and return the error.
+unused since 2011
 
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 ---
- drivers/block/paride/pcd.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/um/include/shared/common-offsets.h | 3 ---
+ arch/x86/kernel/asm-offsets.c           | 3 ---
+ 2 files changed, 6 deletions(-)
 
-diff --git a/drivers/block/paride/pcd.c b/drivers/block/paride/pcd.c
-index 82a654fc4db8..4cc0d141db78 100644
---- a/drivers/block/paride/pcd.c
-+++ b/drivers/block/paride/pcd.c
-@@ -940,7 +940,9 @@ static int pcd_init_unit(struct pcd_unit *cd, bool autoprobe, int port,
+diff --git a/arch/um/include/shared/common-offsets.h b/arch/um/include/shared/common-offsets.h
+index edc90ab737347..b2483104e27f0 100644
+--- a/arch/um/include/shared/common-offsets.h
++++ b/arch/um/include/shared/common-offsets.h
+@@ -18,9 +18,6 @@ DEFINE(UM_NR_CPUS, NR_CPUS);
+ DEFINE(UM_GFP_KERNEL, GFP_KERNEL);
+ DEFINE(UM_GFP_ATOMIC, GFP_ATOMIC);
  
- 	cd->present = 1;
- 	pcd_probe_capabilities(cd);
--	register_cdrom(cd->disk, &cd->info);
-+	ret = register_cdrom(cd->disk, &cd->info);
-+	if (ret)
-+		goto out_pi_release;
- 	ret = add_disk(cd->disk);
- 	if (ret)
- 		goto out_unreg_cdrom;
+-/* For crypto assembler code. */
+-DEFINE(crypto_tfm_ctx_offset, offsetof(struct crypto_tfm, __crt_ctx));
+-
+ DEFINE(UM_THREAD_SIZE, THREAD_SIZE);
+ 
+ DEFINE(UM_HZ, HZ);
+diff --git a/arch/x86/kernel/asm-offsets.c b/arch/x86/kernel/asm-offsets.c
+index ecd3fd6993d1a..9fb0a2f8b62a2 100644
+--- a/arch/x86/kernel/asm-offsets.c
++++ b/arch/x86/kernel/asm-offsets.c
+@@ -38,9 +38,6 @@ static void __used common(void)
+ #endif
+ 
+ 	BLANK();
+-	OFFSET(crypto_tfm_ctx_offset, crypto_tfm, __crt_ctx);
+-
+-	BLANK();
+ 	OFFSET(pbe_address, pbe, address);
+ 	OFFSET(pbe_orig_address, pbe, orig_address);
+ 	OFFSET(pbe_next, pbe, next);
 -- 
-2.30.2
+2.11.0
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
