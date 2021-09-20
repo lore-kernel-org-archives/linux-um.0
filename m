@@ -1,19 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from zeniv-ca.linux.org.uk ([2607:5300:60:148a::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mSQuM-003BNV-PC
- for linux-um@lists.infradead.org; Mon, 20 Sep 2021 21:33:06 +0000
+ id 1mSQrH-003B6U-Tl
+ for linux-um@lists.infradead.org; Mon, 20 Sep 2021 21:29:53 +0000
 Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red
- Hat Linux)) id 1mSQuL-005yeX-VB
- for linux-um@lists.infradead.org; Mon, 20 Sep 2021 21:33:01 +0000
+ Hat Linux)) id 1mSQrD-005yZB-RO
+ for linux-um@lists.infradead.org; Mon, 20 Sep 2021 21:29:47 +0000
+Date: Mon, 20 Sep 2021 21:29:47 +0000
 From: Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH 08/15] um: unexport handle_page_fault()
-Date: Mon, 20 Sep 2021 21:32:54 +0000
-Message-Id: <20210920213301.1424730-8-viro@zeniv.linux.org.uk>
-In-Reply-To: <20210920213301.1424730-1-viro@zeniv.linux.org.uk>
-References: <YUj9S+S4Gd86mM6N@zeniv-ca.linux.org.uk>
- <20210920213301.1424730-1-viro@zeniv.linux.org.uk>
+Subject: [PATCHES] uml cleanups and (minor) fixes
+Message-ID: <YUj9S+S4Gd86mM6N@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
+Content-Disposition: inline
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -28,26 +26,47 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
----
- arch/um/kernel/trap.c | 1 -
- 1 file changed, 1 deletion(-)
+	A bunch of assorted um patches - most of that is trimming
+an ancient unused crap (declarations with no definitions, unused
+macros, etc.), with a couple of fixes - missing include in barrier.h
+and misannotations of iounmap().
 
-diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
-index 3198c47673879..92989f7831017 100644
---- a/arch/um/kernel/trap.c
-+++ b/arch/um/kernel/trap.c
-@@ -127,7 +127,6 @@ int handle_page_fault(unsigned long address, unsigned long ip,
- 	pagefault_out_of_memory();
- 	return 0;
- }
--EXPORT_SYMBOL(handle_page_fault);
- 
- static void show_segv_info(struct uml_pt_regs *regs)
- {
--- 
-2.11.0
+	The stuff is based at 5.15-rc1 and it can be found in
+git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.um
 
+	Individual patches in followups.
+
+Diffstat:
+
+ arch/um/include/asm/processor-generic.h |  2 +-
+ arch/um/include/shared/common-offsets.h | 15 ---------------
+ arch/um/include/shared/irq_user.h       |  1 -
+ arch/um/include/shared/kern_util.h      |  2 --
+ arch/um/include/shared/mem_user.h       |  5 -----
+ arch/um/include/shared/net_kern.h       |  2 --
+ arch/um/include/shared/net_user.h       |  1 -
+ arch/um/include/shared/os.h             | 13 -------------
+ arch/um/include/shared/registers.h      |  2 --
+ arch/um/include/shared/sigio.h          |  1 -
+ arch/um/kernel/Makefile                 |  2 +-
+ arch/um/kernel/exec.c                   |  1 +
+ arch/um/kernel/process.c                |  6 +-----
+ arch/um/kernel/syscall.c                | 28 ----------------------------
+ arch/um/kernel/trap.c                   |  1 -
+ arch/x86/kernel/asm-offsets.c           |  3 ---
+ arch/x86/um/asm/barrier.h               |  1 +
+ arch/x86/um/os-Linux/registers.c        |  1 +
+ arch/x86/um/ptrace_32.c                 |  1 +
+ arch/x86/um/ptrace_64.c                 |  1 +
+ arch/x86/um/shared/sysdep/syscalls_64.h |  3 ---
+ arch/x86/um/signal.c                    |  1 +
+ arch/x86/um/sys_call_table_32.c         |  4 ----
+ arch/x86/um/sys_call_table_64.c         | 17 -----------------
+ arch/x86/um/syscalls_64.c               | 11 +++++++++++
+ include/asm-generic/logic_io.h          |  2 +-
+ lib/logic_iomem.c                       |  4 ++--
+ 27 files changed, 23 insertions(+), 108 deletions(-)
+ delete mode 100644 arch/um/kernel/syscall.c
 
 _______________________________________________
 linux-um mailing list
