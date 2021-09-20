@@ -1,51 +1,105 @@
-Return-Path: <linux-m68k-owner@vger.kernel.org>
-From: Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH v2 04/15] drbd: add error handling support for add_disk()
-Date: Mon, 27 Sep 2021 15:00:59 -0700
-Message-Id: <20210927220110.1066271-5-mcgrof@kernel.org>
-In-Reply-To: <20210927220110.1066271-1-mcgrof@kernel.org>
-References: <20210927220110.1066271-1-mcgrof@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from zeniv-ca.linux.org.uk ([2607:5300:60:148a::1])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mSQuM-003BNG-8e
+ for linux-um@lists.infradead.org; Mon, 20 Sep 2021 21:33:03 +0000
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red
+ Hat Linux)) id 1mSQuL-005yeD-1h
+ for linux-um@lists.infradead.org; Mon, 20 Sep 2021 21:33:01 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH 01/15] uml: trim unused junk from
+ arch/x86/um/sys_call_table_*.c
+Date: Mon, 20 Sep 2021 21:32:47 +0000
+Message-Id: <20210920213301.1424730-1-viro@zeniv.linux.org.uk>
+In-Reply-To: <YUj9S+S4Gd86mM6N@zeniv-ca.linux.org.uk>
+References: <YUj9S+S4Gd86mM6N@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-To: axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org, ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org, philipp.reisner@linbit.com, lars.ellenberg@linbit.com, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, chris.obbard@collabora.com, krisman@collabora.com, zhuyifei1999@gmail.com, thehajime@gmail.com, chris@zankel.net, jcmvbkbc@gmail.com, tim@cyberelk.net
-Cc: linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
 
-We never checked for errors on add_disk() as this function
-returned void. Now that this is fixed, use the shiny new
-error handling.
+a bunch of detritus there - definitions that are never expanded or
+checked.
 
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 ---
- drivers/block/drbd/drbd_main.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ arch/x86/um/sys_call_table_32.c |  4 ----
+ arch/x86/um/sys_call_table_64.c | 14 --------------
+ 2 files changed, 18 deletions(-)
 
-diff --git a/drivers/block/drbd/drbd_main.c b/drivers/block/drbd/drbd_main.c
-index 55234a558e98..19db80a1e409 100644
---- a/drivers/block/drbd/drbd_main.c
-+++ b/drivers/block/drbd/drbd_main.c
-@@ -2794,7 +2794,9 @@ enum drbd_ret_code drbd_create_device(struct drbd_config_context *adm_ctx, unsig
- 		goto out_idr_remove_vol;
- 	}
+diff --git a/arch/x86/um/sys_call_table_32.c b/arch/x86/um/sys_call_table_32.c
+index 0575decb5e544..89df5d89d6640 100644
+--- a/arch/x86/um/sys_call_table_32.c
++++ b/arch/x86/um/sys_call_table_32.c
+@@ -9,8 +9,6 @@
+ #include <linux/cache.h>
+ #include <asm/syscall.h>
  
--	add_disk(disk);
-+	err = add_disk(disk);
-+	if (err)
-+		goto out_cleanup_disk;
+-#define __NO_STUBS
+-
+ /*
+  * Below you can see, in terms of #define's, the differences between the x86-64
+  * and the UML syscall table.
+@@ -23,8 +21,6 @@
+ #define sys_vm86old sys_ni_syscall
+ #define sys_vm86 sys_ni_syscall
  
- 	/* inherit the connection state */
- 	device->state.conn = first_connection(resource)->cstate;
-@@ -2808,6 +2810,8 @@ enum drbd_ret_code drbd_create_device(struct drbd_config_context *adm_ctx, unsig
- 	drbd_debugfs_device_add(device);
- 	return NO_ERROR;
+-#define old_mmap sys_old_mmap
+-
+ #define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, native)
  
-+out_cleanup_disk:
-+	blk_cleanup_disk(disk);
- out_idr_remove_vol:
- 	idr_remove(&connection->peer_devices, vnr);
- out_idr_remove_from_resource:
+ #define __SYSCALL(nr, sym) extern asmlinkage long sym(unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long);
+diff --git a/arch/x86/um/sys_call_table_64.c b/arch/x86/um/sys_call_table_64.c
+index 95725b5a41ac8..82b695ed23c41 100644
+--- a/arch/x86/um/sys_call_table_64.c
++++ b/arch/x86/um/sys_call_table_64.c
+@@ -9,8 +9,6 @@
+ #include <linux/cache.h>
+ #include <asm/syscall.h>
+ 
+-#define __NO_STUBS
+-
+ /*
+  * Below you can see, in terms of #define's, the differences between the x86-64
+  * and the UML syscall table.
+@@ -20,21 +18,9 @@
+ #define sys_iopl sys_ni_syscall
+ #define sys_ioperm sys_ni_syscall
+ 
+-/*
+- * The UML TLS problem. Note that x86_64 does not implement this, so the below
+- * is needed only for the ia32 compatibility.
+- */
+-
+ /* On UML we call it this way ("old" means it's not mmap2) */
+ #define sys_mmap old_mmap
+ 
+-#define stub_clone sys_clone
+-#define stub_fork sys_fork
+-#define stub_vfork sys_vfork
+-#define stub_execve sys_execve
+-#define stub_execveat sys_execveat
+-#define stub_rt_sigreturn sys_rt_sigreturn
+-
+ #define __SYSCALL(nr, sym) extern asmlinkage long sym(unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long);
+ #include <asm/syscalls_64.h>
+ 
 -- 
-2.30.2
+2.11.0
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
