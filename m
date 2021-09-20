@@ -1,68 +1,143 @@
-Return-Path: <mcgrof@infradead.org>
-From: Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH v2 07/15] n64cart: add error handling support for add_disk()
-Date: Mon, 27 Sep 2021 15:01:02 -0700
-Message-Id: <20210927220110.1066271-8-mcgrof@kernel.org>
-In-Reply-To: <20210927220110.1066271-1-mcgrof@kernel.org>
-References: <20210927220110.1066271-1-mcgrof@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from zeniv-ca.linux.org.uk ([2607:5300:60:148a::1])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mSQuM-003BNH-Aj
+ for linux-um@lists.infradead.org; Mon, 20 Sep 2021 21:33:03 +0000
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red
+ Hat Linux)) id 1mSQuL-005yeF-HP
+ for linux-um@lists.infradead.org; Mon, 20 Sep 2021 21:33:01 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH 02/15] um: move amd64 variant of mmap(2) to
+ arch/x86/um/syscalls_64.c
+Date: Mon, 20 Sep 2021 21:32:48 +0000
+Message-Id: <20210920213301.1424730-2-viro@zeniv.linux.org.uk>
+In-Reply-To: <20210920213301.1424730-1-viro@zeniv.linux.org.uk>
+References: <YUj9S+S4Gd86mM6N@zeniv-ca.linux.org.uk>
+ <20210920213301.1424730-1-viro@zeniv.linux.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-To: axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org, ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org, philipp.reisner@linbit.com, lars.ellenberg@linbit.com, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, chris.obbard@collabora.com, krisman@collabora.com, zhuyifei1999@gmail.com, thehajime@gmail.com, chris@zankel.net, jcmvbkbc@gmail.com, tim@cyberelk.net
-Cc: linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
 
-We never checked for errors on add_disk() as this function
-returned void. Now that this is fixed, use the shiny new
-error handling.
-
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 ---
- drivers/block/n64cart.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ arch/um/kernel/Makefile                 |  2 +-
+ arch/um/kernel/syscall.c                | 28 ----------------------------
+ arch/x86/um/shared/sysdep/syscalls_64.h |  3 ---
+ arch/x86/um/sys_call_table_64.c         |  3 ---
+ arch/x86/um/syscalls_64.c               | 10 ++++++++++
+ 5 files changed, 11 insertions(+), 35 deletions(-)
+ delete mode 100644 arch/um/kernel/syscall.c
 
-diff --git a/drivers/block/n64cart.c b/drivers/block/n64cart.c
-index 26798da661bd..35aa5d38f57d 100644
---- a/drivers/block/n64cart.c
-+++ b/drivers/block/n64cart.c
-@@ -117,6 +117,7 @@ static const struct block_device_operations n64cart_fops = {
- static int __init n64cart_probe(struct platform_device *pdev)
- {
- 	struct gendisk *disk;
-+	int err = -ENOMEM;
+diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
+index 1d18e4e469895..7ab6d40558b61 100644
+--- a/arch/um/kernel/Makefile
++++ b/arch/um/kernel/Makefile
+@@ -16,7 +16,7 @@ extra-y := vmlinux.lds
  
- 	if (!start || !size) {
- 		pr_err("start or size not specified\n");
-@@ -134,7 +135,7 @@ static int __init n64cart_probe(struct platform_device *pdev)
+ obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
+ 	physmem.o process.o ptrace.o reboot.o sigio.o \
+-	signal.o syscall.o sysrq.o time.o tlb.o trap.o \
++	signal.o sysrq.o time.o tlb.o trap.o \
+ 	um_arch.o umid.o maccess.o kmsg_dump.o capflags.o skas/
  
- 	disk = blk_alloc_disk(NUMA_NO_NODE);
- 	if (!disk)
--		return -ENOMEM;
-+		goto out;
+ obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
+diff --git a/arch/um/kernel/syscall.c b/arch/um/kernel/syscall.c
+deleted file mode 100644
+index eed54c53fbbb9..0000000000000
+--- a/arch/um/kernel/syscall.c
++++ /dev/null
+@@ -1,28 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*
+- * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+- */
+-
+-#include <linux/file.h>
+-#include <linux/fs.h>
+-#include <linux/mm.h>
+-#include <linux/sched.h>
+-#include <linux/utsname.h>
+-#include <linux/syscalls.h>
+-#include <asm/current.h>
+-#include <asm/mman.h>
+-#include <linux/uaccess.h>
+-#include <asm/unistd.h>
+-
+-long old_mmap(unsigned long addr, unsigned long len,
+-	      unsigned long prot, unsigned long flags,
+-	      unsigned long fd, unsigned long offset)
+-{
+-	long err = -EINVAL;
+-	if (offset & ~PAGE_MASK)
+-		goto out;
+-
+-	err = ksys_mmap_pgoff(addr, len, prot, flags, fd, offset >> PAGE_SHIFT);
+- out:
+-	return err;
+-}
+diff --git a/arch/x86/um/shared/sysdep/syscalls_64.h b/arch/x86/um/shared/sysdep/syscalls_64.h
+index 8a7d5e1da98e5..48d6cd12f8a5e 100644
+--- a/arch/x86/um/shared/sysdep/syscalls_64.h
++++ b/arch/x86/um/shared/sysdep/syscalls_64.h
+@@ -23,9 +23,6 @@ extern syscall_handler_t *sys_call_table[];
+ 				      UPT_SYSCALL_ARG5(&regs->regs), \
+ 				      UPT_SYSCALL_ARG6(&regs->regs)))
  
- 	disk->first_minor = 0;
- 	disk->flags = GENHD_FL_NO_PART_SCAN;
-@@ -149,11 +150,18 @@ static int __init n64cart_probe(struct platform_device *pdev)
- 	blk_queue_physical_block_size(disk->queue, 4096);
- 	blk_queue_logical_block_size(disk->queue, 4096);
+-extern long old_mmap(unsigned long addr, unsigned long len,
+-		     unsigned long prot, unsigned long flags,
+-		     unsigned long fd, unsigned long pgoff);
+ extern syscall_handler_t sys_modify_ldt;
+ extern syscall_handler_t sys_arch_prctl;
  
--	add_disk(disk);
-+	err = add_disk(disk);
-+	if (err)
-+		goto out_cleanup_disk;
+diff --git a/arch/x86/um/sys_call_table_64.c b/arch/x86/um/sys_call_table_64.c
+index 82b695ed23c41..b0b4cfd2308c8 100644
+--- a/arch/x86/um/sys_call_table_64.c
++++ b/arch/x86/um/sys_call_table_64.c
+@@ -18,9 +18,6 @@
+ #define sys_iopl sys_ni_syscall
+ #define sys_ioperm sys_ni_syscall
  
- 	pr_info("n64cart: %u kb disk\n", size / 1024);
+-/* On UML we call it this way ("old" means it's not mmap2) */
+-#define sys_mmap old_mmap
+-
+ #define __SYSCALL(nr, sym) extern asmlinkage long sym(unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long);
+ #include <asm/syscalls_64.h>
  
- 	return 0;
-+
-+out_cleanup_disk:
-+	blk_cleanup_disk(disk);
-+out:
-+	return err;
+diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
+index 58f51667e2e4b..ad974f8ddf11b 100644
+--- a/arch/x86/um/syscalls_64.c
++++ b/arch/x86/um/syscalls_64.c
+@@ -87,3 +87,13 @@ void arch_switch_to(struct task_struct *to)
+ 
+ 	arch_prctl(to, ARCH_SET_FS, (void __user *) to->thread.arch.fs);
  }
- 
- static struct platform_driver n64cart_driver = {
++
++SYSCALL_DEFINE6(mmap, unsigned long, addr, unsigned long, len,
++		unsigned long, prot, unsigned long, flags,
++		unsigned long, fd, unsigned long, off)
++{
++	if (off & ~PAGE_MASK)
++		return -EINVAL;
++
++	return ksys_mmap_pgoff(addr, len, prot, flags, fd, off >> PAGE_SHIFT);
++}
 -- 
-2.30.2
+2.11.0
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
