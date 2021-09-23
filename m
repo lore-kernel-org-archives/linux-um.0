@@ -1,90 +1,68 @@
-Return-Path: <mcgrof@infradead.org>
-From: Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH v2 08/15] pcd: move the identify buffer into pcd_identify
-Date: Mon, 27 Sep 2021 15:01:03 -0700
-Message-Id: <20210927220110.1066271-9-mcgrof@kernel.org>
-In-Reply-To: <20210927220110.1066271-1-mcgrof@kernel.org>
-References: <20210927220110.1066271-1-mcgrof@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+From: Mike Rapoport <rppt@kernel.org>
+Subject: [PATCH 1/3] arch_numa: simplify numa_distance allocation
+Date: Thu, 23 Sep 2021 10:43:33 +0300
+Message-Id: <20210923074335.12583-2-rppt@kernel.org>
+In-Reply-To: <20210923074335.12583-1-rppt@kernel.org>
+References: <20210923074335.12583-1-rppt@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-To: axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org, ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org, philipp.reisner@linbit.com, lars.ellenberg@linbit.com, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, chris.obbard@collabora.com, krisman@collabora.com, zhuyifei1999@gmail.com, thehajime@gmail.com, chris@zankel.net, jcmvbkbc@gmail.com, tim@cyberelk.net
-Cc: linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, devicetree@vger.kernel.org, iommu@lists.linux-foundation.org, kasan-dev@googlegroups.com, kvm@vger.kernel.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-usb@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, Mike Rapoport <rppt@linux.ibm.com>
 
-From: Christoph Hellwig <hch@lst.de>
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-No need to pass it through a bunch of functions.
+Memory allocation of numa_distance uses memblock_phys_alloc_range() without
+actual range limits, converts the returned physical address to virtual and
+then only uses the virtual address for further initialization.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Simplify this by replacing memblock_phys_alloc_range() with
+memblock_alloc().
+
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
- drivers/block/paride/pcd.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/base/arch_numa.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/block/paride/pcd.c b/drivers/block/paride/pcd.c
-index f9cdd11f02f5..8903fdaa2046 100644
---- a/drivers/block/paride/pcd.c
-+++ b/drivers/block/paride/pcd.c
-@@ -630,10 +630,11 @@ static int pcd_drive_status(struct cdrom_device_info *cdi, int slot_nr)
- 	return CDS_DISC_OK;
- }
- 
--static int pcd_identify(struct pcd_unit *cd, char *id)
-+static int pcd_identify(struct pcd_unit *cd)
+diff --git a/drivers/base/arch_numa.c b/drivers/base/arch_numa.c
+index 00fb4120a5b3..f6d0efd01188 100644
+--- a/drivers/base/arch_numa.c
++++ b/drivers/base/arch_numa.c
+@@ -275,15 +275,13 @@ void __init numa_free_distance(void)
+ static int __init numa_alloc_distance(void)
  {
--	int k, s;
- 	char id_cmd[12] = { 0x12, 0, 0, 0, 36, 0, 0, 0, 0, 0, 0, 0 };
-+	char id[18];
-+	int k, s;
+ 	size_t size;
+-	u64 phys;
+ 	int i, j;
  
- 	pcd_bufblk = -1;
+ 	size = nr_node_ids * nr_node_ids * sizeof(numa_distance[0]);
+-	phys = memblock_phys_alloc_range(size, PAGE_SIZE, 0, PFN_PHYS(max_pfn));
+-	if (WARN_ON(!phys))
++	numa_distance = memblock_alloc(size, PAGE_SIZE);
++	if (WARN_ON(!numa_distance))
+ 		return -ENOMEM;
  
-@@ -664,15 +665,15 @@ static int pcd_identify(struct pcd_unit *cd, char *id)
-  * returns  0, with id set if drive is detected
-  *	    -1, if drive detection failed
-  */
--static int pcd_probe(struct pcd_unit *cd, int ms, char *id)
-+static int pcd_probe(struct pcd_unit *cd, int ms)
- {
- 	if (ms == -1) {
- 		for (cd->drive = 0; cd->drive <= 1; cd->drive++)
--			if (!pcd_reset(cd) && !pcd_identify(cd, id))
-+			if (!pcd_reset(cd) && !pcd_identify(cd))
- 				return 0;
- 	} else {
- 		cd->drive = ms;
--		if (!pcd_reset(cd) && !pcd_identify(cd, id))
-+		if (!pcd_reset(cd) && !pcd_identify(cd))
- 			return 0;
- 	}
- 	return -1;
-@@ -709,7 +710,6 @@ static void pcd_probe_capabilities(void)
+-	numa_distance = __va(phys);
+ 	numa_distance_cnt = nr_node_ids;
  
- static int pcd_detect(void)
- {
--	char id[18];
- 	int k, unit;
- 	struct pcd_unit *cd;
- 
-@@ -727,7 +727,7 @@ static int pcd_detect(void)
- 		cd = pcd;
- 		if (cd->disk && pi_init(cd->pi, 1, -1, -1, -1, -1, -1,
- 			    pcd_buffer, PI_PCD, verbose, cd->name)) {
--			if (!pcd_probe(cd, -1, id)) {
-+			if (!pcd_probe(cd, -1)) {
- 				cd->present = 1;
- 				k++;
- 			} else
-@@ -744,7 +744,7 @@ static int pcd_detect(void)
- 				     conf[D_UNI], conf[D_PRO], conf[D_DLY],
- 				     pcd_buffer, PI_PCD, verbose, cd->name)) 
- 				continue;
--			if (!pcd_probe(cd, conf[D_SLV], id)) {
-+			if (!pcd_probe(cd, conf[D_SLV])) {
- 				cd->present = 1;
- 				k++;
- 			} else
+ 	/* fill with the default distances */
 -- 
-2.30.2
+2.28.0
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
