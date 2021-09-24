@@ -1,78 +1,124 @@
-Return-Path: <krisman@collabora.com>
-From: Gabriel Krisman Bertazi <krisman@collabora.com>
-Subject: Re: [PATCH 05/15] um/drivers/ubd_kern: add error handling support
- for add_disk()
-References: <20210830221000.179369-1-mcgrof@kernel.org>
-	<20210830221000.179369-6-mcgrof@kernel.org>
-Date: Wed, 01 Sep 2021 11:24:55 -0400
-In-Reply-To: <20210830221000.179369-6-mcgrof@kernel.org> (Luis Chamberlain's
-	message of "Mon, 30 Aug 2021 15:09:50 -0700")
-Message-ID: <8735qotj20.fsf@collabora.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Date: Fri, 24 Sep 2021 08:32:21 +0300
+From: Mike Rapoport <rppt@linux.ibm.com>
+Subject: Re: [PATCH 3/3] memblock: cleanup memblock_free interface
+Message-ID: <YU1i5YyldfS1HH0j@linux.ibm.com>
+References: <20210923074335.12583-1-rppt@kernel.org>
+ <20210923074335.12583-4-rppt@kernel.org>
+ <1101e3c7-fcb7-a632-8e22-47f4a01ea02e@csgroup.eu>
+ <YUxsgN/uolhn1Ok+@linux.ibm.com>
+ <96e3da9f-70ff-e5c0-ef2e-cf0b636e5695@csgroup.eu>
+Content-Disposition: inline
+In-Reply-To: <96e3da9f-70ff-e5c0-ef2e-cf0b636e5695@csgroup.eu>
 MIME-Version: 1.0
-Content-Type: text/plain
-To: Luis Chamberlain <mcgrof@kernel.org>
-Cc: axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org, ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org, philipp.reisner@linbit.com, lars.ellenberg@linbit.com, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, chris.obbard@collabora.com, zhuyifei1999@gmail.com, thehajime@gmail.com, chris@zankel.net, jcmvbkbc@gmail.com, tim@cyberelk.net, linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Mike Rapoport <rppt@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, devicetree@vger.kernel.org, linux-efi@vger.kernel.org, kvm@vger.kernel.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com, linux-mips@vger.kernel.org, linux-mm@kvack.org, iommu@lists.linux-foundation.org, linux-usb@vger.kernel.org, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, Andrew Morton <akpm@linux-foundation.org>, linux-snps-arc@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 
-Luis Chamberlain <mcgrof@kernel.org> writes:
+On Thu, Sep 23, 2021 at 03:54:46PM +0200, Christophe Leroy wrote:
+> =
 
-> We never checked for errors on add_disk() as this function
-> returned void. Now that this is fixed, use the shiny new
-> error handling.
->
-> ubd_disk_register() never returned an error, so just fix
-> that now and let the caller handle the error condition.
->
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> Le 23/09/2021 =E0 14:01, Mike Rapoport a =E9crit=A0:
+> > On Thu, Sep 23, 2021 at 11:47:48AM +0200, Christophe Leroy wrote:
+> > > =
 
-Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> > > =
 
-> ---
->  arch/um/drivers/ubd_kern.c | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-> index cd9dc0556e91..81045c199c30 100644
-> --- a/arch/um/drivers/ubd_kern.c
-> +++ b/arch/um/drivers/ubd_kern.c
-> @@ -854,8 +854,8 @@ static const struct attribute_group *ubd_attr_groups[] = {
->  	NULL,
->  };
->  
-> -static void ubd_disk_register(int major, u64 size, int unit,
-> -			      struct gendisk *disk)
-> +static int ubd_disk_register(int major, u64 size, int unit,
-> +			     struct gendisk *disk)
->  {
->  	disk->major = major;
->  	disk->first_minor = unit << UBD_SHIFT;
-> @@ -872,7 +872,7 @@ static void ubd_disk_register(int major, u64 size, int unit,
->  
->  	disk->private_data = &ubd_devs[unit];
->  	disk->queue = ubd_devs[unit].queue;
-> -	device_add_disk(&ubd_devs[unit].pdev.dev, disk, ubd_attr_groups);
-> +	return device_add_disk(&ubd_devs[unit].pdev.dev, disk, ubd_attr_groups);
->  }
->  
->  #define ROUND_BLOCK(n) ((n + (SECTOR_SIZE - 1)) & (-SECTOR_SIZE))
-> @@ -919,10 +919,15 @@ static int ubd_add(int n, char **error_out)
->  	blk_queue_write_cache(ubd_dev->queue, true, false);
->  	blk_queue_max_segments(ubd_dev->queue, MAX_SG);
->  	blk_queue_segment_boundary(ubd_dev->queue, PAGE_SIZE - 1);
-> -	ubd_disk_register(UBD_MAJOR, ubd_dev->size, n, disk);
-> +	err = ubd_disk_register(UBD_MAJOR, ubd_dev->size, n, disk);
-> +	if (err)
-> +		goto out_cleanup_disk;
-> +
->  	ubd_gendisk[n] = disk;
->  	return 0;
->  
-> +out_cleanup_disk:
-> +	blk_cleanup_disk(disk);
->  out_cleanup_tags:
->  	blk_mq_free_tag_set(&ubd_dev->tag_set);
->  out:
+> > > Le 23/09/2021 =E0 09:43, Mike Rapoport a =E9crit=A0:
+> > > > From: Mike Rapoport <rppt@linux.ibm.com>
+> > > > =
 
--- 
-Gabriel Krisman Bertazi
+> > > > For ages memblock_free() interface dealt with physical addresses ev=
+en
+> > > > despite the existence of memblock_alloc_xx() functions that return a
+> > > > virtual pointer.
+> > > > =
+
+> > > > Introduce memblock_phys_free() for freeing physical ranges and repu=
+rpose
+> > > > memblock_free() to free virtual pointers to make the following pair=
+ing
+> > > > abundantly clear:
+> > > > =
+
+> > > > 	int memblock_phys_free(phys_addr_t base, phys_addr_t size);
+> > > > 	phys_addr_t memblock_phys_alloc(phys_addr_t base, phys_addr_t size=
+);
+> > > > =
+
+> > > > 	void *memblock_alloc(phys_addr_t size, phys_addr_t align);
+> > > > 	void memblock_free(void *ptr, size_t size);
+> > > > =
+
+> > > > Replace intermediate memblock_free_ptr() with memblock_free() and d=
+rop
+> > > > unnecessary aliases memblock_free_early() and memblock_free_early_n=
+id().
+> > > > =
+
+> > > > Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > > > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> > > > ---
+> > > =
+
+> > > > diff --git a/arch/s390/kernel/smp.c b/arch/s390/kernel/smp.c
+> > > > index 1a04e5bdf655..37826d8c4f74 100644
+> > > > --- a/arch/s390/kernel/smp.c
+> > > > +++ b/arch/s390/kernel/smp.c
+> > > > @@ -723,7 +723,7 @@ void __init smp_save_dump_cpus(void)
+> > > >    			/* Get the CPU registers */
+> > > >    			smp_save_cpu_regs(sa, addr, is_boot_cpu, page);
+> > > >    	}
+> > > > -	memblock_free(page, PAGE_SIZE);
+> > > > +	memblock_phys_free(page, PAGE_SIZE);
+> > > >    	diag_amode31_ops.diag308_reset();
+> > > >    	pcpu_set_smt(0);
+> > > >    }
+> > > > @@ -880,7 +880,7 @@ void __init smp_detect_cpus(void)
+> > > >    	/* Add CPUs present at boot */
+> > > >    	__smp_rescan_cpus(info, true);
+> > > > -	memblock_free_early((unsigned long)info, sizeof(*info));
+> > > > +	memblock_free(info, sizeof(*info));
+> > > >    }
+> > > >    /*
+> > > =
+
+> > > I'm a bit lost. IIUC memblock_free_early() and memblock_free() where
+> > > identical.
+> > =
+
+> > Yes, they were, but all calls to memblock_free_early() were using
+> > __pa(vaddr) because they had a virtual address at hand.
+> =
+
+> I'm still not following. In the above memblock_free_early() was taking
+> (unsigned long)info . Was it a bug ? =
+
+
+Not really because s390 has pa =3D=3D va:
+
+https://elixir.bootlin.com/linux/latest/source/arch/s390/include/asm/page.h=
+#L169
+
+
+-- =
+
+Sincerely yours,
+Mike.
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
