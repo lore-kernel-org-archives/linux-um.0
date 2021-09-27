@@ -1,8 +1,8 @@
 Return-Path: <mcgrof@infradead.org>
 From: Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH v2 05/15] um/drivers/ubd_kern: add error handling support for add_disk()
-Date: Mon, 27 Sep 2021 15:01:00 -0700
-Message-Id: <20210927220110.1066271-6-mcgrof@kernel.org>
+Subject: [PATCH v2 07/15] n64cart: add error handling support for add_disk()
+Date: Mon, 27 Sep 2021 15:01:02 -0700
+Message-Id: <20210927220110.1066271-8-mcgrof@kernel.org>
 In-Reply-To: <20210927220110.1066271-1-mcgrof@kernel.org>
 References: <20210927220110.1066271-1-mcgrof@kernel.org>
 MIME-Version: 1.0
@@ -16,56 +16,52 @@ We never checked for errors on add_disk() as this function
 returned void. Now that this is fixed, use the shiny new
 error handling.
 
-ubd_disk_register() never returned an error, so just fix
-that now and let the caller handle the error condition.
-
-Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- arch/um/drivers/ubd_kern.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ drivers/block/n64cart.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index cd9dc0556e91..81045c199c30 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -854,8 +854,8 @@ static const struct attribute_group *ubd_attr_groups[] = {
- 	NULL,
- };
- 
--static void ubd_disk_register(int major, u64 size, int unit,
--			      struct gendisk *disk)
-+static int ubd_disk_register(int major, u64 size, int unit,
-+			     struct gendisk *disk)
+diff --git a/drivers/block/n64cart.c b/drivers/block/n64cart.c
+index 26798da661bd..35aa5d38f57d 100644
+--- a/drivers/block/n64cart.c
++++ b/drivers/block/n64cart.c
+@@ -117,6 +117,7 @@ static const struct block_device_operations n64cart_fops = {
+ static int __init n64cart_probe(struct platform_device *pdev)
  {
- 	disk->major = major;
- 	disk->first_minor = unit << UBD_SHIFT;
-@@ -872,7 +872,7 @@ static void ubd_disk_register(int major, u64 size, int unit,
+ 	struct gendisk *disk;
++	int err = -ENOMEM;
  
- 	disk->private_data = &ubd_devs[unit];
- 	disk->queue = ubd_devs[unit].queue;
--	device_add_disk(&ubd_devs[unit].pdev.dev, disk, ubd_attr_groups);
-+	return device_add_disk(&ubd_devs[unit].pdev.dev, disk, ubd_attr_groups);
- }
+ 	if (!start || !size) {
+ 		pr_err("start or size not specified\n");
+@@ -134,7 +135,7 @@ static int __init n64cart_probe(struct platform_device *pdev)
  
- #define ROUND_BLOCK(n) ((n + (SECTOR_SIZE - 1)) & (-SECTOR_SIZE))
-@@ -919,10 +919,15 @@ static int ubd_add(int n, char **error_out)
- 	blk_queue_write_cache(ubd_dev->queue, true, false);
- 	blk_queue_max_segments(ubd_dev->queue, MAX_SG);
- 	blk_queue_segment_boundary(ubd_dev->queue, PAGE_SIZE - 1);
--	ubd_disk_register(UBD_MAJOR, ubd_dev->size, n, disk);
-+	err = ubd_disk_register(UBD_MAJOR, ubd_dev->size, n, disk);
+ 	disk = blk_alloc_disk(NUMA_NO_NODE);
+ 	if (!disk)
+-		return -ENOMEM;
++		goto out;
+ 
+ 	disk->first_minor = 0;
+ 	disk->flags = GENHD_FL_NO_PART_SCAN;
+@@ -149,11 +150,18 @@ static int __init n64cart_probe(struct platform_device *pdev)
+ 	blk_queue_physical_block_size(disk->queue, 4096);
+ 	blk_queue_logical_block_size(disk->queue, 4096);
+ 
+-	add_disk(disk);
++	err = add_disk(disk);
 +	if (err)
 +		goto out_cleanup_disk;
-+
- 	ubd_gendisk[n] = disk;
- 	return 0;
  
+ 	pr_info("n64cart: %u kb disk\n", size / 1024);
+ 
+ 	return 0;
++
 +out_cleanup_disk:
 +	blk_cleanup_disk(disk);
- out_cleanup_tags:
- 	blk_mq_free_tag_set(&ubd_dev->tag_set);
- out:
++out:
++	return err;
+ }
+ 
+ static struct platform_driver n64cart_driver = {
 -- 
 2.30.2
 
