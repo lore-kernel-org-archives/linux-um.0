@@ -1,58 +1,42 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from zeniv-ca.linux.org.uk ([2607:5300:60:148a::1])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mSQuM-003BNM-NO
- for linux-um@lists.infradead.org; Mon, 20 Sep 2021 21:33:05 +0000
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red
- Hat Linux)) id 1mSQuL-005yeU-Sx
- for linux-um@lists.infradead.org; Mon, 20 Sep 2021 21:33:01 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH 07/15] um: remove a dangling extern of syscall_trace()
-Date: Mon, 20 Sep 2021 21:32:53 +0000
-Message-Id: <20210920213301.1424730-7-viro@zeniv.linux.org.uk>
-In-Reply-To: <20210920213301.1424730-1-viro@zeniv.linux.org.uk>
-References: <YUj9S+S4Gd86mM6N@zeniv-ca.linux.org.uk>
- <20210920213301.1424730-1-viro@zeniv.linux.org.uk>
+Return-Path: <mcgrof@infradead.org>
+From: Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH v2 13/15] pcd: fix ordering of unregister_cdrom()
+Date: Mon, 27 Sep 2021 15:01:08 -0700
+Message-Id: <20210927220110.1066271-14-mcgrof@kernel.org>
+In-Reply-To: <20210927220110.1066271-1-mcgrof@kernel.org>
+References: <20210927220110.1066271-1-mcgrof@kernel.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+To: axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org, ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org, philipp.reisner@linbit.com, lars.ellenberg@linbit.com, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, chris.obbard@collabora.com, krisman@collabora.com, zhuyifei1999@gmail.com, thehajime@gmail.com, chris@zankel.net, jcmvbkbc@gmail.com, tim@cyberelk.net
+Cc: linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-the function had been gone since 2012...
+We first register cdrom and then we add_disk() and
+so we we should likewise unregister the cdrom first and
+then del_gendisk().
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- arch/um/include/shared/kern_util.h | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/block/paride/pcd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
-index fbfff76065c5b..d8b8b4f07e429 100644
---- a/arch/um/include/shared/kern_util.h
-+++ b/arch/um/include/shared/kern_util.h
-@@ -58,7 +58,6 @@ extern char *uml_strdup(const char *string);
- extern unsigned long to_irq_stack(unsigned long *mask_out);
- extern unsigned long from_irq_stack(int nested);
+diff --git a/drivers/block/paride/pcd.c b/drivers/block/paride/pcd.c
+index a7fab3830d7b..82a654fc4db8 100644
+--- a/drivers/block/paride/pcd.c
++++ b/drivers/block/paride/pcd.c
+@@ -1021,9 +1021,9 @@ static void __exit pcd_exit(void)
+ 		if (!cd->present)
+ 			continue;
  
--extern void syscall_trace(struct uml_pt_regs *regs, int entryexit);
- extern int singlestepping(void *t);
++		unregister_cdrom(&cd->info);
+ 		del_gendisk(cd->disk);
+ 		pi_release(cd->pi);
+-		unregister_cdrom(&cd->info);
+ 		blk_cleanup_disk(cd->disk);
  
- extern void segv_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
+ 		blk_mq_free_tag_set(&cd->tag_set);
 -- 
-2.11.0
+2.30.2
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
