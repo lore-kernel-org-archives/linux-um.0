@@ -1,41 +1,89 @@
 Return-Path: <mcgrof@infradead.org>
 From: Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH v2 13/15] pcd: fix ordering of unregister_cdrom()
-Date: Mon, 27 Sep 2021 15:01:08 -0700
-Message-Id: <20210927220110.1066271-14-mcgrof@kernel.org>
+Subject: [PATCH v2 08/15] pcd: move the identify buffer into pcd_identify
+Date: Mon, 27 Sep 2021 15:01:03 -0700
+Message-Id: <20210927220110.1066271-9-mcgrof@kernel.org>
 In-Reply-To: <20210927220110.1066271-1-mcgrof@kernel.org>
 References: <20210927220110.1066271-1-mcgrof@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: Luis Chamberlain <mcgrof@infradead.org>
 To: axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org, ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org, philipp.reisner@linbit.com, lars.ellenberg@linbit.com, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, chris.obbard@collabora.com, krisman@collabora.com, zhuyifei1999@gmail.com, thehajime@gmail.com, chris@zankel.net, jcmvbkbc@gmail.com, tim@cyberelk.net
-Cc: linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
+Cc: linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
 List-ID: <linux-um.lists.infradead.org>
 
-We first register cdrom and then we add_disk() and
-so we we should likewise unregister the cdrom first and
-then del_gendisk().
+From: Christoph Hellwig <hch@lst.de>
 
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+No need to pass it through a bunch of functions.
+
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/block/paride/pcd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/block/paride/pcd.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/block/paride/pcd.c b/drivers/block/paride/pcd.c
-index a7fab3830d7b..82a654fc4db8 100644
+index f9cdd11f02f5..8903fdaa2046 100644
 --- a/drivers/block/paride/pcd.c
 +++ b/drivers/block/paride/pcd.c
-@@ -1021,9 +1021,9 @@ static void __exit pcd_exit(void)
- 		if (!cd->present)
- 			continue;
+@@ -630,10 +630,11 @@ static int pcd_drive_status(struct cdrom_device_info *cdi, int slot_nr)
+ 	return CDS_DISC_OK;
+ }
  
-+		unregister_cdrom(&cd->info);
- 		del_gendisk(cd->disk);
- 		pi_release(cd->pi);
--		unregister_cdrom(&cd->info);
- 		blk_cleanup_disk(cd->disk);
+-static int pcd_identify(struct pcd_unit *cd, char *id)
++static int pcd_identify(struct pcd_unit *cd)
+ {
+-	int k, s;
+ 	char id_cmd[12] = { 0x12, 0, 0, 0, 36, 0, 0, 0, 0, 0, 0, 0 };
++	char id[18];
++	int k, s;
  
- 		blk_mq_free_tag_set(&cd->tag_set);
+ 	pcd_bufblk = -1;
+ 
+@@ -664,15 +665,15 @@ static int pcd_identify(struct pcd_unit *cd, char *id)
+  * returns  0, with id set if drive is detected
+  *	    -1, if drive detection failed
+  */
+-static int pcd_probe(struct pcd_unit *cd, int ms, char *id)
++static int pcd_probe(struct pcd_unit *cd, int ms)
+ {
+ 	if (ms == -1) {
+ 		for (cd->drive = 0; cd->drive <= 1; cd->drive++)
+-			if (!pcd_reset(cd) && !pcd_identify(cd, id))
++			if (!pcd_reset(cd) && !pcd_identify(cd))
+ 				return 0;
+ 	} else {
+ 		cd->drive = ms;
+-		if (!pcd_reset(cd) && !pcd_identify(cd, id))
++		if (!pcd_reset(cd) && !pcd_identify(cd))
+ 			return 0;
+ 	}
+ 	return -1;
+@@ -709,7 +710,6 @@ static void pcd_probe_capabilities(void)
+ 
+ static int pcd_detect(void)
+ {
+-	char id[18];
+ 	int k, unit;
+ 	struct pcd_unit *cd;
+ 
+@@ -727,7 +727,7 @@ static int pcd_detect(void)
+ 		cd = pcd;
+ 		if (cd->disk && pi_init(cd->pi, 1, -1, -1, -1, -1, -1,
+ 			    pcd_buffer, PI_PCD, verbose, cd->name)) {
+-			if (!pcd_probe(cd, -1, id)) {
++			if (!pcd_probe(cd, -1)) {
+ 				cd->present = 1;
+ 				k++;
+ 			} else
+@@ -744,7 +744,7 @@ static int pcd_detect(void)
+ 				     conf[D_UNI], conf[D_PRO], conf[D_DLY],
+ 				     pcd_buffer, PI_PCD, verbose, cd->name)) 
+ 				continue;
+-			if (!pcd_probe(cd, conf[D_SLV], id)) {
++			if (!pcd_probe(cd, conf[D_SLV])) {
+ 				cd->present = 1;
+ 				k++;
+ 			} else
 -- 
 2.30.2
 
