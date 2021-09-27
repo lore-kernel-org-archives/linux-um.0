@@ -1,109 +1,72 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH] um: registers: rename function names to avoid conflicts and
- build problems
-Date: Sun, 12 Sep 2021 23:12:52 -0700
-Message-Id: <20210913061252.15582-1-rdunlap@infradead.org>
+Return-Path: <mcgrof@infradead.org>
+From: Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH v2 05/15] um/drivers/ubd_kern: add error handling support for add_disk()
+Date: Mon, 27 Sep 2021 15:01:00 -0700
+Message-Id: <20210927220110.1066271-6-mcgrof@kernel.org>
+In-Reply-To: <20210927220110.1066271-1-mcgrof@kernel.org>
+References: <20210927220110.1066271-1-mcgrof@kernel.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+To: axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org, ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org, philipp.reisner@linbit.com, lars.ellenberg@linbit.com, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, chris.obbard@collabora.com, krisman@collabora.com, zhuyifei1999@gmail.com, thehajime@gmail.com, chris@zankel.net, jcmvbkbc@gmail.com, tim@cyberelk.net
+Cc: linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-The function names init_registers() and restore_registers() are used
-in several net/ethernet/ and gpu/drm/ drivers for other purposes (not
-calls to UML functions), so rename them.
+We never checked for errors on add_disk() as this function
+returned void. Now that this is fixed, use the shiny new
+error handling.
 
-This fixes multiple build errors.
+ubd_disk_register() never returned an error, so just fix
+that now and let the caller handle the error condition.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: linux-um@lists.infradead.org
+Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- arch/um/include/shared/registers.h |    4 ++--
- arch/um/os-Linux/registers.c       |    4 ++--
- arch/um/os-Linux/start_up.c        |    2 +-
- arch/x86/um/syscalls_64.c          |    3 ++-
- 4 files changed, 7 insertions(+), 6 deletions(-)
+ arch/um/drivers/ubd_kern.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
---- lnx-515-rc1.orig/arch/um/include/shared/registers.h
-+++ lnx-515-rc1/arch/um/include/shared/registers.h
-@@ -16,8 +16,8 @@ extern int restore_fp_registers(int pid,
- extern int save_fpx_registers(int pid, unsigned long *fp_regs);
- extern int restore_fpx_registers(int pid, unsigned long *fp_regs);
- extern int save_registers(int pid, struct uml_pt_regs *regs);
--extern int restore_registers(int pid, struct uml_pt_regs *regs);
--extern int init_registers(int pid);
-+extern int restore_pid_registers(int pid, struct uml_pt_regs *regs);
-+extern int init_pid_registers(int pid);
- extern void get_safe_registers(unsigned long *regs, unsigned long *fp_regs);
- extern unsigned long get_thread_reg(int reg, jmp_buf *buf);
- extern int get_fp_registers(int pid, unsigned long *regs);
---- lnx-515-rc1.orig/arch/um/os-Linux/registers.c
-+++ lnx-515-rc1/arch/um/os-Linux/registers.c
-@@ -21,7 +21,7 @@ int save_registers(int pid, struct uml_p
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index cd9dc0556e91..81045c199c30 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -854,8 +854,8 @@ static const struct attribute_group *ubd_attr_groups[] = {
+ 	NULL,
+ };
+ 
+-static void ubd_disk_register(int major, u64 size, int unit,
+-			      struct gendisk *disk)
++static int ubd_disk_register(int major, u64 size, int unit,
++			     struct gendisk *disk)
+ {
+ 	disk->major = major;
+ 	disk->first_minor = unit << UBD_SHIFT;
+@@ -872,7 +872,7 @@ static void ubd_disk_register(int major, u64 size, int unit,
+ 
+ 	disk->private_data = &ubd_devs[unit];
+ 	disk->queue = ubd_devs[unit].queue;
+-	device_add_disk(&ubd_devs[unit].pdev.dev, disk, ubd_attr_groups);
++	return device_add_disk(&ubd_devs[unit].pdev.dev, disk, ubd_attr_groups);
+ }
+ 
+ #define ROUND_BLOCK(n) ((n + (SECTOR_SIZE - 1)) & (-SECTOR_SIZE))
+@@ -919,10 +919,15 @@ static int ubd_add(int n, char **error_out)
+ 	blk_queue_write_cache(ubd_dev->queue, true, false);
+ 	blk_queue_max_segments(ubd_dev->queue, MAX_SG);
+ 	blk_queue_segment_boundary(ubd_dev->queue, PAGE_SIZE - 1);
+-	ubd_disk_register(UBD_MAJOR, ubd_dev->size, n, disk);
++	err = ubd_disk_register(UBD_MAJOR, ubd_dev->size, n, disk);
++	if (err)
++		goto out_cleanup_disk;
++
+ 	ubd_gendisk[n] = disk;
  	return 0;
- }
  
--int restore_registers(int pid, struct uml_pt_regs *regs)
-+int restore_pid_registers(int pid, struct uml_pt_regs *regs)
- {
- 	int err;
- 
-@@ -36,7 +36,7 @@ int restore_registers(int pid, struct um
- static unsigned long exec_regs[MAX_REG_NR];
- static unsigned long exec_fp_regs[FP_SIZE];
- 
--int init_registers(int pid)
-+int init_pid_registers(int pid)
- {
- 	int err;
- 
---- lnx-515-rc1.orig/arch/um/os-Linux/start_up.c
-+++ lnx-515-rc1/arch/um/os-Linux/start_up.c
-@@ -368,7 +368,7 @@ void __init os_early_checks(void)
- 	check_tmpexec();
- 
- 	pid = start_ptraced_child();
--	if (init_registers(pid))
-+	if (init_pid_registers(pid))
- 		fatal("Failed to initialize default registers");
- 	stop_ptraced_child(pid, 1, 1);
- }
---- lnx-515-rc1.orig/arch/x86/um/syscalls_64.c
-+++ lnx-515-rc1/arch/x86/um/syscalls_64.c
-@@ -11,6 +11,7 @@
- #include <linux/uaccess.h>
- #include <asm/prctl.h> /* XXX This should get the constants from libc */
- #include <os.h>
-+#include <registers.h>
- 
- long arch_prctl(struct task_struct *task, int option,
- 		unsigned long __user *arg2)
-@@ -35,7 +36,7 @@ long arch_prctl(struct task_struct *task
- 	switch (option) {
- 	case ARCH_SET_FS:
- 	case ARCH_SET_GS:
--		ret = restore_registers(pid, &current->thread.regs.regs);
-+		ret = restore_pid_registers(pid, &current->thread.regs.regs);
- 		if (ret)
- 			return ret;
- 		break;
++out_cleanup_disk:
++	blk_cleanup_disk(disk);
+ out_cleanup_tags:
+ 	blk_mq_free_tag_set(&ubd_dev->tag_set);
+ out:
+-- 
+2.30.2
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
