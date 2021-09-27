@@ -1,59 +1,53 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH 2/3] xen/x86: free_p2m_page: use memblock_free_ptr() to free a
- virtual pointer
-Date: Thu, 23 Sep 2021 10:43:34 +0300
-Message-Id: <20210923074335.12583-3-rppt@kernel.org>
-In-Reply-To: <20210923074335.12583-1-rppt@kernel.org>
-References: <20210923074335.12583-1-rppt@kernel.org>
+Return-Path: <mcgrof@infradead.org>
+From: Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH v2 01/15] z2ram: add error handling support for add_disk()
+Date: Mon, 27 Sep 2021 15:00:56 -0700
+Message-Id: <20210927220110.1066271-2-mcgrof@kernel.org>
+In-Reply-To: <20210927220110.1066271-1-mcgrof@kernel.org>
+References: <20210927220110.1066271-1-mcgrof@kernel.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, devicetree@vger.kernel.org, iommu@lists.linux-foundation.org, kasan-dev@googlegroups.com, kvm@vger.kernel.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-usb@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, Mike Rapoport <rppt@linux.ibm.com>
+Content-Transfer-Encoding: 8bit
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+To: axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org, ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org, philipp.reisner@linbit.com, lars.ellenberg@linbit.com, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, chris.obbard@collabora.com, krisman@collabora.com, zhuyifei1999@gmail.com, thehajime@gmail.com, chris@zankel.net, jcmvbkbc@gmail.com, tim@cyberelk.net
+Cc: linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+We never checked for errors on add_disk() as this function
+returned void. Now that this is fixed, use the shiny new
+error handling. Only the disk is cleaned up inside
+z2ram_register_disk() as the caller deals with the rest.
 
-free_p2m_page() wrongly passes a virtual pointer to memblock_free() that
-treats it as a physical address.
-
-Call memblock_free_ptr() instead that gets a virtual address to free the
-memory.
-
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- arch/x86/xen/p2m.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/block/z2ram.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/xen/p2m.c b/arch/x86/xen/p2m.c
-index 5e6e236977c7..141bb9dbd2fb 100644
---- a/arch/x86/xen/p2m.c
-+++ b/arch/x86/xen/p2m.c
-@@ -197,7 +197,7 @@ static void * __ref alloc_p2m_page(void)
- static void __ref free_p2m_page(void *p)
+diff --git a/drivers/block/z2ram.c b/drivers/block/z2ram.c
+index 4eef218108c6..ccc52c935faf 100644
+--- a/drivers/block/z2ram.c
++++ b/drivers/block/z2ram.c
+@@ -318,6 +318,7 @@ static const struct blk_mq_ops z2_mq_ops = {
+ static int z2ram_register_disk(int minor)
  {
- 	if (unlikely(!slab_is_available())) {
--		memblock_free((unsigned long)p, PAGE_SIZE);
-+		memblock_free_ptr(p, PAGE_SIZE);
- 		return;
- 	}
+ 	struct gendisk *disk;
++	int err;
  
+ 	disk = blk_mq_alloc_disk(&tag_set, NULL);
+ 	if (IS_ERR(disk))
+@@ -333,8 +334,10 @@ static int z2ram_register_disk(int minor)
+ 		sprintf(disk->disk_name, "z2ram");
+ 
+ 	z2ram_gendisk[minor] = disk;
+-	add_disk(disk);
+-	return 0;
++	err = add_disk(disk);
++	if (err)
++		blk_cleanup_disk(disk);
++	return err;
+ }
+ 
+ static int __init z2_init(void)
 -- 
-2.28.0
+2.30.2
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
