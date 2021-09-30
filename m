@@ -1,8 +1,11 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 From: Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH v2 0/6] memblock: cleanup memblock_free interface
-Date: Thu, 30 Sep 2021 21:50:25 +0300
-Message-Id: <20210930185031.18648-1-rppt@kernel.org>
+Subject: [PATCH v2 4/6] memblock: stop aliasing __memblock_free_late with
+ memblock_free_late
+Date: Thu, 30 Sep 2021 21:50:29 +0300
+Message-Id: <20210930185031.18648-5-rppt@kernel.org>
+In-Reply-To: <20210930185031.18648-1-rppt@kernel.org>
+References: <20210930185031.18648-1-rppt@kernel.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -21,104 +24,81 @@ Cc: Andrew Morton <akpm@linux-foundation.org>, Christophe Leroy <christophe.lero
 
 From: Mike Rapoport <rppt@linux.ibm.com>
 
-Hi,
+memblock_free_late() is a NOP wrapper for __memblock_free_late(), there is
+no point to keep this indirection.
 
-Following the discussion on [1] this is the fix for memblock freeing APIs
-mismatch. 
+Drop the wrapper and rename __memblock_free_late() to memblock_free_late().
 
-The first patch is a cleanup of numa_distance allocation in arch_numa I've
-spotted during the conversion.
-The second patch is a fix for Xen memory freeing on some of the error
-paths.
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+---
+ include/linux/memblock.h | 7 +------
+ mm/memblock.c            | 8 ++++----
+ 2 files changed, 5 insertions(+), 10 deletions(-)
 
-I agree with Christophe that doing step by step makes the thing easier to
-review, so the patches 3-6 do the actual cleanup step by step.
-
-This time I used stricter coccinelle scripts so that only straightforward
-uses would get converted.
-
-There still a couple of (void *) castings for the cases when a virtual
-address has unsigned long type rather than a pointer type, like e.g
-initrd_start.
-
-Since scripts/get_maintainer.pl returned more than 100 addresses I've
-trimmed the distribution list only to the relevant lists.
-
-Juergen and Shahab, I didn't keep your Reviewed-by because the patches are
-a bit different this time.
-
-v2:
-* split changes into several patches
-* use stricter coccinelle scripts 
-
-[1] https://lore.kernel.org/all/CAHk-=wj9k4LZTz+svCxLYs5Y1=+yKrbAUArH1+ghyG3OLd8VVg@mail.gmail.com
-
-Mike Rapoport (6):
-  arch_numa: simplify numa_distance allocation
-  xen/x86: free_p2m_page: use memblock_free_ptr() to free a virtual pointer
-  memblock: drop memblock_free_early_nid() and memblock_free_early()
-  memblock: stop aliasing __memblock_free_late with memblock_free_late
-  memblock: rename memblock_free to memblock_phys_free
-  memblock: use memblock_free for freeing virtual pointers
-
- arch/alpha/kernel/core_irongate.c         |  2 +-
- arch/arc/mm/init.c                        |  2 +-
- arch/arm/mach-hisi/platmcpm.c             |  2 +-
- arch/arm/mm/init.c                        |  2 +-
- arch/arm64/mm/mmu.c                       |  4 ++--
- arch/mips/mm/init.c                       |  2 +-
- arch/mips/sgi-ip30/ip30-setup.c           |  6 +++---
- arch/powerpc/kernel/dt_cpu_ftrs.c         |  4 ++--
- arch/powerpc/kernel/paca.c                |  8 ++++----
- arch/powerpc/kernel/setup-common.c        |  2 +-
- arch/powerpc/kernel/setup_64.c            |  2 +-
- arch/powerpc/platforms/powernv/pci-ioda.c |  2 +-
- arch/powerpc/platforms/pseries/svm.c      |  3 +--
- arch/riscv/kernel/setup.c                 |  4 ++--
- arch/s390/kernel/setup.c                  |  8 ++++----
- arch/s390/kernel/smp.c                    |  4 ++--
- arch/s390/kernel/uv.c                     |  2 +-
- arch/s390/mm/kasan_init.c                 |  2 +-
- arch/sh/boards/mach-ap325rxa/setup.c      |  2 +-
- arch/sh/boards/mach-ecovec24/setup.c      |  4 ++--
- arch/sh/boards/mach-kfr2r09/setup.c       |  2 +-
- arch/sh/boards/mach-migor/setup.c         |  2 +-
- arch/sh/boards/mach-se/7724/setup.c       |  4 ++--
- arch/sparc/kernel/smp_64.c                |  2 +-
- arch/um/kernel/mem.c                      |  2 +-
- arch/x86/kernel/setup.c                   |  4 ++--
- arch/x86/kernel/setup_percpu.c            |  2 +-
- arch/x86/mm/init.c                        |  2 +-
- arch/x86/mm/kasan_init_64.c               |  4 ++--
- arch/x86/mm/numa.c                        |  2 +-
- arch/x86/mm/numa_emulation.c              |  2 +-
- arch/x86/xen/mmu_pv.c                     |  6 +++---
- arch/x86/xen/p2m.c                        |  2 +-
- arch/x86/xen/setup.c                      |  6 +++---
- drivers/base/arch_numa.c                  | 10 ++++------
- drivers/firmware/efi/memmap.c             |  2 +-
- drivers/macintosh/smu.c                   |  2 +-
- drivers/of/kexec.c                        |  3 +--
- drivers/of/of_reserved_mem.c              |  5 +++--
- drivers/s390/char/sclp_early.c            |  2 +-
- drivers/usb/early/xhci-dbc.c              | 10 +++++-----
- drivers/xen/swiotlb-xen.c                 |  2 +-
- include/linux/memblock.h                  | 23 +++--------------------
- init/initramfs.c                          |  2 +-
- init/main.c                               |  2 +-
- kernel/dma/swiotlb.c                      |  2 +-
- kernel/printk/printk.c                    |  4 ++--
- lib/bootconfig.c                          |  2 +-
- lib/cpumask.c                             |  2 +-
- mm/cma.c                                  |  2 +-
- mm/memblock.c                             | 22 +++++++++++-----------
- mm/memory_hotplug.c                       |  2 +-
- mm/percpu.c                               |  8 ++++----
- mm/sparse.c                               |  2 +-
- 54 files changed, 99 insertions(+), 119 deletions(-)
-
-
-base-commit: 5816b3e6577eaa676ceb00a848f0fd65fe2adc29
+diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+index fc8183be340c..e25f964fdd60 100644
+--- a/include/linux/memblock.h
++++ b/include/linux/memblock.h
+@@ -133,7 +133,7 @@ void __next_mem_range_rev(u64 *idx, int nid, enum memblock_flags flags,
+ 			  struct memblock_type *type_b, phys_addr_t *out_start,
+ 			  phys_addr_t *out_end, int *out_nid);
+ 
+-void __memblock_free_late(phys_addr_t base, phys_addr_t size);
++void memblock_free_late(phys_addr_t base, phys_addr_t size);
+ 
+ #ifdef CONFIG_HAVE_MEMBLOCK_PHYS_MAP
+ static inline void __next_physmem_range(u64 *idx, struct memblock_type *type,
+@@ -441,11 +441,6 @@ static inline void *memblock_alloc_node(phys_addr_t size,
+ 				      MEMBLOCK_ALLOC_ACCESSIBLE, nid);
+ }
+ 
+-static inline void memblock_free_late(phys_addr_t base, phys_addr_t size)
+-{
+-	__memblock_free_late(base, size);
+-}
+-
+ /*
+  * Set the allocation direction to bottom-up or top-down.
+  */
+diff --git a/mm/memblock.c b/mm/memblock.c
+index 184dcd2e5d99..603f4a02be9b 100644
+--- a/mm/memblock.c
++++ b/mm/memblock.c
+@@ -366,14 +366,14 @@ void __init memblock_discard(void)
+ 		addr = __pa(memblock.reserved.regions);
+ 		size = PAGE_ALIGN(sizeof(struct memblock_region) *
+ 				  memblock.reserved.max);
+-		__memblock_free_late(addr, size);
++		memblock_free_late(addr, size);
+ 	}
+ 
+ 	if (memblock.memory.regions != memblock_memory_init_regions) {
+ 		addr = __pa(memblock.memory.regions);
+ 		size = PAGE_ALIGN(sizeof(struct memblock_region) *
+ 				  memblock.memory.max);
+-		__memblock_free_late(addr, size);
++		memblock_free_late(addr, size);
+ 	}
+ 
+ 	memblock_memory = NULL;
+@@ -1586,7 +1586,7 @@ void * __init memblock_alloc_try_nid(
+ }
+ 
+ /**
+- * __memblock_free_late - free pages directly to buddy allocator
++ * memblock_free_late - free pages directly to buddy allocator
+  * @base: phys starting address of the  boot memory block
+  * @size: size of the boot memory block in bytes
+  *
+@@ -1594,7 +1594,7 @@ void * __init memblock_alloc_try_nid(
+  * down, but we are still initializing the system.  Pages are released directly
+  * to the buddy allocator.
+  */
+-void __init __memblock_free_late(phys_addr_t base, phys_addr_t size)
++void __init memblock_free_late(phys_addr_t base, phys_addr_t size)
+ {
+ 	phys_addr_t cursor, end;
+ 
 -- 
 2.28.0
 
