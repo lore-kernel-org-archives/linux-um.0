@@ -2,18 +2,16 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mXUNH-007xB4-2a
- for linux-um@lists.infradead.org; Mon, 04 Oct 2021 20:15:48 +0000
-Message-ID: <c77621b6131984b61132b426159d393964fb1b06.camel@sipsolutions.net>
+ id 1mXUIO-007wgl-Nr
+ for linux-um@lists.infradead.org; Mon, 04 Oct 2021 20:10:46 +0000
+Message-ID: <45651f920ed904702166da57aea5da7af0c1c0a0.camel@sipsolutions.net>
 Subject: Re: Bug 214611 - UM: stdout output ceases under certain conditions
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Mon, 04 Oct 2021 22:15:43 +0200
-In-Reply-To: <a577f3ff-da05-a8e7-2740-4489c991ecf5@kot-begemot.co.uk>
+Date: Mon, 04 Oct 2021 22:10:40 +0200
+In-Reply-To: <20211004115410.4716345d@crass-HP-ZBook-15-G2>
 References: <20211002210023.55861502@crass-HP-ZBook-15-G2>
  <aad9145655670d2f7d06a8dffd93d99171183fe0.camel@sipsolutions.net>
  <20211004115410.4716345d@crass-HP-ZBook-15-G2>
- <45651f920ed904702166da57aea5da7af0c1c0a0.camel@sipsolutions.net>
- <a577f3ff-da05-a8e7-2740-4489c991ecf5@kot-begemot.co.uk>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -23,32 +21,60 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, development@efficientek.com
+To: development@efficientek.com
 Cc: linux-um@lists.infradead.org
 
-On Mon, 2021-10-04 at 21:14 +0100, Anton Ivanov wrote:
-> > So I think we need Richard or somebody to chime in here - I can't really
-> > disagree that the behaviour is strange, but clearly it seems intended,
-> > for whatever reason.
-> > 
-> 
-> I will have a look at it tomorrow. I remember fixing a similar bug 
-> around 5.4-ish which was in the tree since the time of the dinosaurs.
-> 
-> I assume Glenn is running master, right? If not, what version.
-
-He was running on 5.14.8, but I did all my experiments now with this on
-5.15-rc, so master should be fine.
-
-johannes
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gTW9uLCAyMDIxLTEwLTA0IGF0IDExOjU0IC0wNTAwLCBHbGVubiBXYXNoYnVybiB3cm90ZToK
+PiAKPiBUaGlzIHdhcyBqdXN0IGEgd2F5IHRvIHRyaWdnZXIgdGhlIGlzc3VlIEkgd2FzIHNlZWlu
+Zy7CoAo+IAoKSGFoLCBvayA6KQoKPiBJIGhhdmUgYSBiYXNoCj4gc2NyaXB0IHdoaWNoIHdhcyBk
+b2luZyBzb21ldGhpbmcgbGlrZSB0aGUgZm9sbG93aW5nOgo+IAo+IGdyZXAgInNlYXJjaCIgL3Bh
+dGgvdG8vZmlsZSB8Cj4gd2hpbGUgcmVhZCBWQVI7IGRvCj4gwqDCoHJ1bl9zb21lX3NjcmlwdF93
+aGljaF9ldmVudHVhbGx5X3J1bnNfdW1sICRWQVI7Cj4gZG9uZQoKT2guIE9LLCB0aGF0J3MgZmFp
+ci4KCj4gVGhpcyBzZWVtcyBsaWtlIGl0IGNvdWxkIGJlIGEgYnVnLiBDb3VsZG4ndCB0aGUgY29u
+c29sZSBub3QgYmUgY2xvc2VkLAo+IGJ1dCB0aGUgY29uc29sZSBoYW5kbGluZyBjb2RlIGludGVy
+bmFsbHkgbWFyayBzdGRpbiBhcyBjbG9zZWQ/IFBlcmhhcHMKPiB0aGVyZSBjb3VsZCBldmVuIGJl
+IGxvZ2ljIHRvIGRldGVjdCBpZiBzdGRpbiBhbmQgc3Rkb3V0IGFyZSBmcm9tIHRoZQo+IHNhbWUg
+ZmQsIHRoZW4gY2xvc2UgdGhlIGNvbnNvbGUsIG90aGVyd2lzZSBkb24ndC4gRnJvbSBhIHVzZXIK
+PiBwZXJzcGVjdGl2ZSwgdGhpbmtpbmcgb2YgVU1MIGFzIGEgbm9ybWFsIHByb2Nlc3MsIGl0IGRv
+ZXNuJ3QgbWFrZSBzZW5zZQo+IHRoYXQgY2xvc2luZyBzdGRpbiB3b3VsZCBjbG9zZSBzdGRvdXQg
+YXMgd2VsbC4KClllYWgsIHRoYXQncyBraW5kIG9mIGEgZ29vZCBwb2ludC4gSSBoYWQgdGhvdWdo
+dCBhYm91dCBpdCBiZWZvcmUsIGJ1dApvbmx5IGJyaWVmbHksIGFuZCBzb3J0IG9mIGRpc2NhcmRl
+ZCB0aGF0IGFzICJjbGVhcmx5IGJlaGF2ZXMgYXMKZXhwZWN0ZWQiLiBUaG91Z2ggYXMgeW91IHBv
+aW50IG91dCB3aXRoIHRoZSBzaGVsbCBwaXBlbGluZSwgdGhhdCBtYWtlcwppdCBjbGVhcmVyIHRo
+YXQgaXQgd291bGQgaW5kZWVkIG1ha2Ugc2Vuc2UgdG8gaGF2ZSB0aGlzIGJlaGF2ZQpkaWZmZXJl
+bnRseS4KCkRldGVjdGluZyBzdGRpbj09c3Rkb3V0IGRvZXNuJ3QgbWFrZSBtdWNoIHNlbnNlLCBp
+ZiBvbmUgaXMgY2xvc2VkIHRoZQpvdGhlciB3aWxsIGFsc28gZGV0ZWN0IHRoZSBjbG9zZSBjb25k
+aXRpb24sIGFuZCBJIGJlbGlldmUgdGhleSdsbCBhbHdheXMKYmUgZGlmZmVyZW50IEZEcyBhbnl3
+YXkuCgpDaGFuZ2luZyBpdCByZWFsbHkgc2hvdWxkbid0IGJlIGhhcmQsIGJ1dCBpdCBjbGVhcmx5
+IGxvb2tzIGxpa2UgYWxsIG9mCnRoaXMgaXMgaW50ZW50aW9uYWw/IExvb2tpbmcgYXQgYXJjaC91
+bS9kcml2ZXJzL2NoYW5fa2Vybi5jOgoKdm9pZCBjaGFuX2ludGVycnVwdChzdHJ1Y3QgbGluZSAq
+bGluZSwgaW50IGlycSkKewouLi4KICAgICAgICBpZiAoZXJyID09IC1FSU8pIHsKICAgICAgICAg
+ICAgICAgIGlmIChjaGFuLT5wcmltYXJ5KSB7CiAgICAgICAgICAgICAgICAgICAgICAgIHR0eV9w
+b3J0X3R0eV9oYW5ndXAoJmxpbmUtPnBvcnQsIGZhbHNlKTsKICAgICAgICAgICAgICAgICAgICAg
+ICAgaWYgKGxpbmUtPmNoYW5fb3V0ICE9IGNoYW4pCiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgY2xvc2Vfb25lX2NoYW4obGluZS0+Y2hhbl9vdXQsIDEpOwogICAgICAgICAgICAgICAg
+fQogICAgICAgICAgICAgICAgY2xvc2Vfb25lX2NoYW4oY2hhbiwgMSk7CiAgICAgICAgICAgICAg
+ICBpZiAoY2hhbi0+cHJpbWFyeSkKICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuOwogICAg
+ICAgIH0KCgphbmQgY2hhbi0+cHJpbWFyeSBpcyBzZXQgaGVyZSAtIHRob3VnaCBJIGNvdWxkbid0
+IGZpZ3VyZSBvdXQgaWYgaXQncwpldmVyICpub3QqIHNldD8KClNvIEkgdGhpbmsgd2UgbmVlZCBS
+aWNoYXJkIG9yIHNvbWVib2R5IHRvIGNoaW1lIGluIGhlcmUgLSBJIGNhbid0IHJlYWxseQpkaXNh
+Z3JlZSB0aGF0IHRoZSBiZWhhdmlvdXIgaXMgc3RyYW5nZSwgYnV0IGNsZWFybHkgaXQgc2VlbXMg
+aW50ZW5kZWQsCmZvciB3aGF0ZXZlciByZWFzb24uCgoKPiA+IElmIGFueXRoaW5nLCB0aGUgYnVn
+IGlzIHRoYXQgd2hlbiB5b3UncmUgbm90IGNhdXNpbmcgZW5vdWdoIGludGVycnVwdHMKPiA+IGJ5
+IHVzaW5nIHViZCwgc29tZWhvdyB0aGlzIHNpdHVhdGlvbiBkb2Vzbid0IGdldCBkZXRlY3RlZCwg
+YW5kIHRoZQo+ID4gY29uc29sZSByZW1haW5zIG9wZW4sIHNvIHlvdSBzdGlsbCBzZWUgdGhlIG91
+dHB1dC4uLiBJIHRoaW5rIHRoaXMgbWlnaHQKPiA+IGJlIGlmIGNsb3NpbmcgdGhlIEZEIGRpZG4n
+dCBnZW5lcmF0ZSBhIFNJR0lPPwo+IAo+IFRoaXMgbGVhZHMgdG8gc3RyYW5nZSBiZWhhdmlvci4g
+QnV0IGZvciB0aGlzIGlzc3VlLCBJIHRoaW5rIHRoZQo+IHN1Z2dlc3Rpb24gYWJvdmUgd291bGQg
+b2J2aWF0ZSB0aGUgbmVlZCB0byBkbyBhbnl0aGluZyBhYm91dCB0aGlzLgoKQWdyZWUuCgo+IFRo
+YW5rcywgZ290IGEgY2h1Y2tsZSBvdXQgb2YgdGhhdC4KCkkgaGFkIHRvIHRha2UgdGhhdCBldmVu
+IGZ1cnRoZXIgYW5kIGVuZGVkIHVwIHRlbGxpbmcgbXkga2lkcyB0aGF0IEkganVzdAp0b2xkIHNv
+bWVvbmUgdG8gbm90IHRyeSB0YWxraW5nIHRvIGEgZGVhZCBjYXQgOy0pCgpqb2hhbm5lcwoKCgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBt
+YWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
 
