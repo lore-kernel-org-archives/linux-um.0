@@ -2,17 +2,18 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab7.miniserver.com ([37.128.132.42]
  helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mY9IQ-00Et1S-Fz
- for linux-um@lists.infradead.org; Wed, 06 Oct 2021 15:57:32 +0000
+ id 1mXUxp-0085Db-5v
+ for linux-um@lists.infradead.org; Mon, 04 Oct 2021 20:53:35 +0000
 Subject: Re: Bug 214611 - UM: stdout output ceases under certain conditions
 References: <20211002210023.55861502@crass-HP-ZBook-15-G2>
  <aad9145655670d2f7d06a8dffd93d99171183fe0.camel@sipsolutions.net>
  <20211004115410.4716345d@crass-HP-ZBook-15-G2>
+ <45651f920ed904702166da57aea5da7af0c1c0a0.camel@sipsolutions.net>
 From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Message-ID: <3fa82a81-83b5-0e14-9a9d-36282a77d177@kot-begemot.co.uk>
-Date: Wed, 6 Oct 2021 16:57:22 +0100
+Message-ID: <a577f3ff-da05-a8e7-2740-4489c991ecf5@kot-begemot.co.uk>
+Date: Mon, 4 Oct 2021 21:14:24 +0100
 MIME-Version: 1.0
-In-Reply-To: <20211004115410.4716345d@crass-HP-ZBook-15-G2>
+In-Reply-To: <45651f920ed904702166da57aea5da7af0c1c0a0.camel@sipsolutions.net>
 Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,128 +23,71 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: development@efficientek.com, Johannes Berg <johannes@sipsolutions.net>
+To: Johannes Berg <johannes@sipsolutions.net>, development@efficientek.com
 Cc: linux-um@lists.infradead.org
 
-
-
-On 04/10/2021 17:54, Glenn Washburn wrote:
-> On Mon, 04 Oct 2021 14:48:34 +0200
-> Johannes Berg <johannes@sipsolutions.net> wrote:
-> 
->> On Sat, 2021-10-02 at 21:00 -0500, Glenn Washburn wrote:
->>> Hi list,
->>>
->>> I'm notifying the list of a bug report[1] I created in the kernel
->>> bugzilla. I'm not subscribed to this list, so please add this my email
->>> in any replies to this email.
->>
->>
->>> [1] https://bugzilla.kernel.org/show_bug.cgi?id=214611
->>
->> This really has nothing to do with UBD or something. What's happening is
->> that you're using the command line badly.
->>
->> What do you expect this:
->>
->>    ... < <(cat /dev/null)
->>
->> to do?
-> 
-> This was just a way to trigger the issue I was seeing. I have a bash
-> script which was doing something like the following:
-> 
-> grep "search" /path/to/file |
-> while read VAR; do
->    run_some_script_which_eventually_runs_uml $VAR;
-> done
-> 
-> I was confused why running this script caused UML to lose output always
-> when mounting the ubd in the UML mount script. And it didn't happen
-> when I ran "run_some_script_which_eventually_runs_uml" alone. Since the
-> amount of data returned by the grep was small, this issue was triggered
-> all the time. If the output were a lot of data, I might have noticed
-> that early runs of run_some_script_which_eventually_runs_uml would not
-> have output disappear after mounting. Thanks for debugging this.
-> 
->> What happens is that the shell creates a pipe. This pipe is connected on
->> the one side to fd:1 in UML (stdin) and on the other to stdout of 'cat'.
->>
->> Now this is all fine, but 'cat' will *quit immediately* since it cannot
->> read anything from /dev/null (it's write-only!).
->>
->> Therefore, the fd:1 in UML will be invalidated pretty much immediately,
->> receiving EPOLLHUP.
->>
->> This is detected by the epoll code, raising an interrupt into the line
->> level code, and the line code then closes the stdio console channel
->> entirely, including stdout.
-> 
-> This seems like it could be a bug. Couldn't the console not be closed,
-> but the console handling code internally mark stdin as closed? Perhaps
-> there could even be logic to detect if stdin and stdout are from the
-> same fd, then close the console, otherwise don't. From a user
-> perspective, thinking of UML as a normal process, it doesn't make sense
-> that closing stdin would close stdout as well.
-
-There is an even more convoluted case where the stdin is a socket (which
-is possible - you pass it to UML as a fd:N). That can be half-closed.
-
-Looking at it at the moment, but to be honest, separating the logic for in
-and out if the fd is the same is going to be quite difficult (if at all
-possible). It all ends as EPOLL events at the bottom. Even if you handle IN
-and OUT separately in the upper layers, the kernel will handle them as the
-same fd and any event (f.e. closure) will show up on both.
-
-A.
-
-> 
->> If anything, the bug is that when you're not causing enough interrupts
->> by using ubd, somehow this situation doesn't get detected, and the
->> console remains open, so you still see the output... I think this might
->> be if closing the FD didn't generate a SIGIO?
-> 
-> This leads to strange behavior. But for this issue, I think the
-> suggestion above would obviate the need to do anything about this.
-> 
->> In fact, if you generate SIGIO in *any* other way, including pressing
->> enter while the script is running even if stdin is redirected from your
->> dead cat [1], you still get the same behaviour of the channel getting
->> closed.
-> 
-> Ok, I've confirmed that. I think that's another reason to fix this in
-> a manner that doesn't tie stdin to stdout, just hitting enter can make
-> outut disappear (non-intuitive). In my case, stdout was going to a file.
-> So my intuition would say that stdin (from a pipe) and stdout (to a
-> file) shouldn't be connected (yes a program can create any kind of
-> connection it wants, but it's not intuitive). It would be like rsync
-> -av dir1 dir2 < <(cat /dev/null) having its output disappear if you
-> pressed enter in the middle of the run.
-> 
->>
->>
->> johannes
->>
->> [1] did I really just write that? heh.
-> 
-> Thanks, got a chuckle out of that.
-> 
-> _______________________________________________
-> linux-um mailing list
-> linux-um@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-um
-> 
-
--- 
-Anton R. Ivanov
-https://www.kot-begemot.co.uk/
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gMDQvMTAvMjAyMSAyMToxMCwgSm9oYW5uZXMgQmVyZyB3cm90ZToKPiBPbiBNb24sIDIwMjEt
+MTAtMDQgYXQgMTE6NTQgLTA1MDAsIEdsZW5uIFdhc2hidXJuIHdyb3RlOgo+Pgo+PiBUaGlzIHdh
+cyBqdXN0IGEgd2F5IHRvIHRyaWdnZXIgdGhlIGlzc3VlIEkgd2FzIHNlZWluZy4KPj4KPiAKPiBI
+YWgsIG9rIDopCj4gCj4+IEkgaGF2ZSBhIGJhc2gKPj4gc2NyaXB0IHdoaWNoIHdhcyBkb2luZyBz
+b21ldGhpbmcgbGlrZSB0aGUgZm9sbG93aW5nOgo+Pgo+PiBncmVwICJzZWFyY2giIC9wYXRoL3Rv
+L2ZpbGUgfAo+PiB3aGlsZSByZWFkIFZBUjsgZG8KPj4gIMKgwqBydW5fc29tZV9zY3JpcHRfd2hp
+Y2hfZXZlbnR1YWxseV9ydW5zX3VtbCAkVkFSOwo+PiBkb25lCj4gCj4gT2guIE9LLCB0aGF0J3Mg
+ZmFpci4KPiAKPj4gVGhpcyBzZWVtcyBsaWtlIGl0IGNvdWxkIGJlIGEgYnVnLiBDb3VsZG4ndCB0
+aGUgY29uc29sZSBub3QgYmUgY2xvc2VkLAo+PiBidXQgdGhlIGNvbnNvbGUgaGFuZGxpbmcgY29k
+ZSBpbnRlcm5hbGx5IG1hcmsgc3RkaW4gYXMgY2xvc2VkPyBQZXJoYXBzCj4+IHRoZXJlIGNvdWxk
+IGV2ZW4gYmUgbG9naWMgdG8gZGV0ZWN0IGlmIHN0ZGluIGFuZCBzdGRvdXQgYXJlIGZyb20gdGhl
+Cj4+IHNhbWUgZmQsIHRoZW4gY2xvc2UgdGhlIGNvbnNvbGUsIG90aGVyd2lzZSBkb24ndC4gRnJv
+bSBhIHVzZXIKPj4gcGVyc3BlY3RpdmUsIHRoaW5raW5nIG9mIFVNTCBhcyBhIG5vcm1hbCBwcm9j
+ZXNzLCBpdCBkb2Vzbid0IG1ha2Ugc2Vuc2UKPj4gdGhhdCBjbG9zaW5nIHN0ZGluIHdvdWxkIGNs
+b3NlIHN0ZG91dCBhcyB3ZWxsLgo+IAo+IFllYWgsIHRoYXQncyBraW5kIG9mIGEgZ29vZCBwb2lu
+dC4gSSBoYWQgdGhvdWdodCBhYm91dCBpdCBiZWZvcmUsIGJ1dAo+IG9ubHkgYnJpZWZseSwgYW5k
+IHNvcnQgb2YgZGlzY2FyZGVkIHRoYXQgYXMgImNsZWFybHkgYmVoYXZlcyBhcwo+IGV4cGVjdGVk
+Ii4gVGhvdWdoIGFzIHlvdSBwb2ludCBvdXQgd2l0aCB0aGUgc2hlbGwgcGlwZWxpbmUsIHRoYXQg
+bWFrZXMKPiBpdCBjbGVhcmVyIHRoYXQgaXQgd291bGQgaW5kZWVkIG1ha2Ugc2Vuc2UgdG8gaGF2
+ZSB0aGlzIGJlaGF2ZQo+IGRpZmZlcmVudGx5Lgo+IAo+IERldGVjdGluZyBzdGRpbj09c3Rkb3V0
+IGRvZXNuJ3QgbWFrZSBtdWNoIHNlbnNlLCBpZiBvbmUgaXMgY2xvc2VkIHRoZQo+IG90aGVyIHdp
+bGwgYWxzbyBkZXRlY3QgdGhlIGNsb3NlIGNvbmRpdGlvbiwgYW5kIEkgYmVsaWV2ZSB0aGV5J2xs
+IGFsd2F5cwo+IGJlIGRpZmZlcmVudCBGRHMgYW55d2F5Lgo+IAo+IENoYW5naW5nIGl0IHJlYWxs
+eSBzaG91bGRuJ3QgYmUgaGFyZCwgYnV0IGl0IGNsZWFybHkgbG9va3MgbGlrZSBhbGwgb2YKPiB0
+aGlzIGlzIGludGVudGlvbmFsPyBMb29raW5nIGF0IGFyY2gvdW0vZHJpdmVycy9jaGFuX2tlcm4u
+YzoKPiAKPiB2b2lkIGNoYW5faW50ZXJydXB0KHN0cnVjdCBsaW5lICpsaW5lLCBpbnQgaXJxKQo+
+IHsKPiAuLi4KPiAgICAgICAgICBpZiAoZXJyID09IC1FSU8pIHsKPiAgICAgICAgICAgICAgICAg
+IGlmIChjaGFuLT5wcmltYXJ5KSB7Cj4gICAgICAgICAgICAgICAgICAgICAgICAgIHR0eV9wb3J0
+X3R0eV9oYW5ndXAoJmxpbmUtPnBvcnQsIGZhbHNlKTsKPiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgaWYgKGxpbmUtPmNoYW5fb3V0ICE9IGNoYW4pCj4gICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgY2xvc2Vfb25lX2NoYW4obGluZS0+Y2hhbl9vdXQsIDEpOwo+ICAgICAgICAgICAg
+ICAgICAgfQo+ICAgICAgICAgICAgICAgICAgY2xvc2Vfb25lX2NoYW4oY2hhbiwgMSk7Cj4gICAg
+ICAgICAgICAgICAgICBpZiAoY2hhbi0+cHJpbWFyeSkKPiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgcmV0dXJuOwo+ICAgICAgICAgIH0KPiAKPiAKPiBhbmQgY2hhbi0+cHJpbWFyeSBpcyBzZXQg
+aGVyZSAtIHRob3VnaCBJIGNvdWxkbid0IGZpZ3VyZSBvdXQgaWYgaXQncwo+IGV2ZXIgKm5vdCog
+c2V0Pwo+IAo+IFNvIEkgdGhpbmsgd2UgbmVlZCBSaWNoYXJkIG9yIHNvbWVib2R5IHRvIGNoaW1l
+IGluIGhlcmUgLSBJIGNhbid0IHJlYWxseQo+IGRpc2FncmVlIHRoYXQgdGhlIGJlaGF2aW91ciBp
+cyBzdHJhbmdlLCBidXQgY2xlYXJseSBpdCBzZWVtcyBpbnRlbmRlZCwKPiBmb3Igd2hhdGV2ZXIg
+cmVhc29uLgo+CgpJIHdpbGwgaGF2ZSBhIGxvb2sgYXQgaXQgdG9tb3Jyb3cuIEkgcmVtZW1iZXIg
+Zml4aW5nIGEgc2ltaWxhciBidWcgCmFyb3VuZCA1LjQtaXNoIHdoaWNoIHdhcyBpbiB0aGUgdHJl
+ZSBzaW5jZSB0aGUgdGltZSBvZiB0aGUgZGlub3NhdXJzLgoKSSBhc3N1bWUgR2xlbm4gaXMgcnVu
+bmluZyBtYXN0ZXIsIHJpZ2h0PyBJZiBub3QsIHdoYXQgdmVyc2lvbi4KCkJyZ2RzLAoKCj4gCj4+
+PiBJZiBhbnl0aGluZywgdGhlIGJ1ZyBpcyB0aGF0IHdoZW4geW91J3JlIG5vdCBjYXVzaW5nIGVu
+b3VnaCBpbnRlcnJ1cHRzCj4+PiBieSB1c2luZyB1YmQsIHNvbWVob3cgdGhpcyBzaXR1YXRpb24g
+ZG9lc24ndCBnZXQgZGV0ZWN0ZWQsIGFuZCB0aGUKPj4+IGNvbnNvbGUgcmVtYWlucyBvcGVuLCBz
+byB5b3Ugc3RpbGwgc2VlIHRoZSBvdXRwdXQuLi4gSSB0aGluayB0aGlzIG1pZ2h0Cj4+PiBiZSBp
+ZiBjbG9zaW5nIHRoZSBGRCBkaWRuJ3QgZ2VuZXJhdGUgYSBTSUdJTz8KPj4KPj4gVGhpcyBsZWFk
+cyB0byBzdHJhbmdlIGJlaGF2aW9yLiBCdXQgZm9yIHRoaXMgaXNzdWUsIEkgdGhpbmsgdGhlCj4+
+IHN1Z2dlc3Rpb24gYWJvdmUgd291bGQgb2J2aWF0ZSB0aGUgbmVlZCB0byBkbyBhbnl0aGluZyBh
+Ym91dCB0aGlzLgo+IAo+IEFncmVlLgo+IAo+PiBUaGFua3MsIGdvdCBhIGNodWNrbGUgb3V0IG9m
+IHRoYXQuCj4gCj4gSSBoYWQgdG8gdGFrZSB0aGF0IGV2ZW4gZnVydGhlciBhbmQgZW5kZWQgdXAg
+dGVsbGluZyBteSBraWRzIHRoYXQgSSBqdXN0Cj4gdG9sZCBzb21lb25lIHRvIG5vdCB0cnkgdGFs
+a2luZyB0byBhIGRlYWQgY2F0IDstKQo+IAo+IGpvaGFubmVzCj4gCj4gCj4gCj4gX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBsaW51eC11bSBtYWlsaW5n
+IGxpc3QKPiBsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo+IAoKCi0tIApBbnRvbiBSLiBJdmFu
+b3YKaHR0cHM6Ly93d3cua290LWJlZ2Vtb3QuY28udWsvCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1A
+bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2xpbnV4LXVtCg==
 
