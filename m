@@ -1,17 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from mail-qt1-x832.google.com ([2607:f8b0:4864:20::832])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mXUIO-007wgl-Nr
- for linux-um@lists.infradead.org; Mon, 04 Oct 2021 20:10:46 +0000
-Message-ID: <45651f920ed904702166da57aea5da7af0c1c0a0.camel@sipsolutions.net>
+ id 1mXREL-007CiR-7C
+ for linux-um@lists.infradead.org; Mon, 04 Oct 2021 16:54:23 +0000
+Received: by mail-qt1-x832.google.com with SMTP id e16so6297634qte.13
+ for <linux-um@lists.infradead.org>; Mon, 04 Oct 2021 09:54:17 -0700 (PDT)
+Date: Mon, 4 Oct 2021 11:54:10 -0500
+From: Glenn Washburn <development@efficientek.com>
 Subject: Re: Bug 214611 - UM: stdout output ceases under certain conditions
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Mon, 04 Oct 2021 22:10:40 +0200
-In-Reply-To: <20211004115410.4716345d@crass-HP-ZBook-15-G2>
+Message-ID: <20211004115410.4716345d@crass-HP-ZBook-15-G2>
+In-Reply-To: <aad9145655670d2f7d06a8dffd93d99171183fe0.camel@sipsolutions.net>
 References: <20211002210023.55861502@crass-HP-ZBook-15-G2>
  <aad9145655670d2f7d06a8dffd93d99171183fe0.camel@sipsolutions.net>
- <20211004115410.4716345d@crass-HP-ZBook-15-G2>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -21,60 +21,104 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Reply-To: development@efficientek.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: development@efficientek.com
+To: Johannes Berg <johannes@sipsolutions.net>
 Cc: linux-um@lists.infradead.org
 
-T24gTW9uLCAyMDIxLTEwLTA0IGF0IDExOjU0IC0wNTAwLCBHbGVubiBXYXNoYnVybiB3cm90ZToK
-PiAKPiBUaGlzIHdhcyBqdXN0IGEgd2F5IHRvIHRyaWdnZXIgdGhlIGlzc3VlIEkgd2FzIHNlZWlu
-Zy7CoAo+IAoKSGFoLCBvayA6KQoKPiBJIGhhdmUgYSBiYXNoCj4gc2NyaXB0IHdoaWNoIHdhcyBk
-b2luZyBzb21ldGhpbmcgbGlrZSB0aGUgZm9sbG93aW5nOgo+IAo+IGdyZXAgInNlYXJjaCIgL3Bh
-dGgvdG8vZmlsZSB8Cj4gd2hpbGUgcmVhZCBWQVI7IGRvCj4gwqDCoHJ1bl9zb21lX3NjcmlwdF93
-aGljaF9ldmVudHVhbGx5X3J1bnNfdW1sICRWQVI7Cj4gZG9uZQoKT2guIE9LLCB0aGF0J3MgZmFp
-ci4KCj4gVGhpcyBzZWVtcyBsaWtlIGl0IGNvdWxkIGJlIGEgYnVnLiBDb3VsZG4ndCB0aGUgY29u
-c29sZSBub3QgYmUgY2xvc2VkLAo+IGJ1dCB0aGUgY29uc29sZSBoYW5kbGluZyBjb2RlIGludGVy
-bmFsbHkgbWFyayBzdGRpbiBhcyBjbG9zZWQ/IFBlcmhhcHMKPiB0aGVyZSBjb3VsZCBldmVuIGJl
-IGxvZ2ljIHRvIGRldGVjdCBpZiBzdGRpbiBhbmQgc3Rkb3V0IGFyZSBmcm9tIHRoZQo+IHNhbWUg
-ZmQsIHRoZW4gY2xvc2UgdGhlIGNvbnNvbGUsIG90aGVyd2lzZSBkb24ndC4gRnJvbSBhIHVzZXIK
-PiBwZXJzcGVjdGl2ZSwgdGhpbmtpbmcgb2YgVU1MIGFzIGEgbm9ybWFsIHByb2Nlc3MsIGl0IGRv
-ZXNuJ3QgbWFrZSBzZW5zZQo+IHRoYXQgY2xvc2luZyBzdGRpbiB3b3VsZCBjbG9zZSBzdGRvdXQg
-YXMgd2VsbC4KClllYWgsIHRoYXQncyBraW5kIG9mIGEgZ29vZCBwb2ludC4gSSBoYWQgdGhvdWdo
-dCBhYm91dCBpdCBiZWZvcmUsIGJ1dApvbmx5IGJyaWVmbHksIGFuZCBzb3J0IG9mIGRpc2NhcmRl
-ZCB0aGF0IGFzICJjbGVhcmx5IGJlaGF2ZXMgYXMKZXhwZWN0ZWQiLiBUaG91Z2ggYXMgeW91IHBv
-aW50IG91dCB3aXRoIHRoZSBzaGVsbCBwaXBlbGluZSwgdGhhdCBtYWtlcwppdCBjbGVhcmVyIHRo
-YXQgaXQgd291bGQgaW5kZWVkIG1ha2Ugc2Vuc2UgdG8gaGF2ZSB0aGlzIGJlaGF2ZQpkaWZmZXJl
-bnRseS4KCkRldGVjdGluZyBzdGRpbj09c3Rkb3V0IGRvZXNuJ3QgbWFrZSBtdWNoIHNlbnNlLCBp
-ZiBvbmUgaXMgY2xvc2VkIHRoZQpvdGhlciB3aWxsIGFsc28gZGV0ZWN0IHRoZSBjbG9zZSBjb25k
-aXRpb24sIGFuZCBJIGJlbGlldmUgdGhleSdsbCBhbHdheXMKYmUgZGlmZmVyZW50IEZEcyBhbnl3
-YXkuCgpDaGFuZ2luZyBpdCByZWFsbHkgc2hvdWxkbid0IGJlIGhhcmQsIGJ1dCBpdCBjbGVhcmx5
-IGxvb2tzIGxpa2UgYWxsIG9mCnRoaXMgaXMgaW50ZW50aW9uYWw/IExvb2tpbmcgYXQgYXJjaC91
-bS9kcml2ZXJzL2NoYW5fa2Vybi5jOgoKdm9pZCBjaGFuX2ludGVycnVwdChzdHJ1Y3QgbGluZSAq
-bGluZSwgaW50IGlycSkKewouLi4KICAgICAgICBpZiAoZXJyID09IC1FSU8pIHsKICAgICAgICAg
-ICAgICAgIGlmIChjaGFuLT5wcmltYXJ5KSB7CiAgICAgICAgICAgICAgICAgICAgICAgIHR0eV9w
-b3J0X3R0eV9oYW5ndXAoJmxpbmUtPnBvcnQsIGZhbHNlKTsKICAgICAgICAgICAgICAgICAgICAg
-ICAgaWYgKGxpbmUtPmNoYW5fb3V0ICE9IGNoYW4pCiAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgY2xvc2Vfb25lX2NoYW4obGluZS0+Y2hhbl9vdXQsIDEpOwogICAgICAgICAgICAgICAg
-fQogICAgICAgICAgICAgICAgY2xvc2Vfb25lX2NoYW4oY2hhbiwgMSk7CiAgICAgICAgICAgICAg
-ICBpZiAoY2hhbi0+cHJpbWFyeSkKICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuOwogICAg
-ICAgIH0KCgphbmQgY2hhbi0+cHJpbWFyeSBpcyBzZXQgaGVyZSAtIHRob3VnaCBJIGNvdWxkbid0
-IGZpZ3VyZSBvdXQgaWYgaXQncwpldmVyICpub3QqIHNldD8KClNvIEkgdGhpbmsgd2UgbmVlZCBS
-aWNoYXJkIG9yIHNvbWVib2R5IHRvIGNoaW1lIGluIGhlcmUgLSBJIGNhbid0IHJlYWxseQpkaXNh
-Z3JlZSB0aGF0IHRoZSBiZWhhdmlvdXIgaXMgc3RyYW5nZSwgYnV0IGNsZWFybHkgaXQgc2VlbXMg
-aW50ZW5kZWQsCmZvciB3aGF0ZXZlciByZWFzb24uCgoKPiA+IElmIGFueXRoaW5nLCB0aGUgYnVn
-IGlzIHRoYXQgd2hlbiB5b3UncmUgbm90IGNhdXNpbmcgZW5vdWdoIGludGVycnVwdHMKPiA+IGJ5
-IHVzaW5nIHViZCwgc29tZWhvdyB0aGlzIHNpdHVhdGlvbiBkb2Vzbid0IGdldCBkZXRlY3RlZCwg
-YW5kIHRoZQo+ID4gY29uc29sZSByZW1haW5zIG9wZW4sIHNvIHlvdSBzdGlsbCBzZWUgdGhlIG91
-dHB1dC4uLiBJIHRoaW5rIHRoaXMgbWlnaHQKPiA+IGJlIGlmIGNsb3NpbmcgdGhlIEZEIGRpZG4n
-dCBnZW5lcmF0ZSBhIFNJR0lPPwo+IAo+IFRoaXMgbGVhZHMgdG8gc3RyYW5nZSBiZWhhdmlvci4g
-QnV0IGZvciB0aGlzIGlzc3VlLCBJIHRoaW5rIHRoZQo+IHN1Z2dlc3Rpb24gYWJvdmUgd291bGQg
-b2J2aWF0ZSB0aGUgbmVlZCB0byBkbyBhbnl0aGluZyBhYm91dCB0aGlzLgoKQWdyZWUuCgo+IFRo
-YW5rcywgZ290IGEgY2h1Y2tsZSBvdXQgb2YgdGhhdC4KCkkgaGFkIHRvIHRha2UgdGhhdCBldmVu
-IGZ1cnRoZXIgYW5kIGVuZGVkIHVwIHRlbGxpbmcgbXkga2lkcyB0aGF0IEkganVzdAp0b2xkIHNv
-bWVvbmUgdG8gbm90IHRyeSB0YWxraW5nIHRvIGEgZGVhZCBjYXQgOy0pCgpqb2hhbm5lcwoKCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBt
-YWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
+On Mon, 04 Oct 2021 14:48:34 +0200
+Johannes Berg <johannes@sipsolutions.net> wrote:
+
+> On Sat, 2021-10-02 at 21:00 -0500, Glenn Washburn wrote:
+> > Hi list,
+> > 
+> > I'm notifying the list of a bug report[1] I created in the kernel
+> > bugzilla. I'm not subscribed to this list, so please add this my email
+> > in any replies to this email.
+> 
+> 
+> > [1] https://bugzilla.kernel.org/show_bug.cgi?id=214611
+> 
+> This really has nothing to do with UBD or something. What's happening is
+> that you're using the command line badly.
+> 
+> What do you expect this:
+> 
+>   ... < <(cat /dev/null)
+> 
+> to do?
+
+This was just a way to trigger the issue I was seeing. I have a bash
+script which was doing something like the following:
+
+grep "search" /path/to/file |
+while read VAR; do
+  run_some_script_which_eventually_runs_uml $VAR;
+done
+
+I was confused why running this script caused UML to lose output always
+when mounting the ubd in the UML mount script. And it didn't happen
+when I ran "run_some_script_which_eventually_runs_uml" alone. Since the
+amount of data returned by the grep was small, this issue was triggered
+all the time. If the output were a lot of data, I might have noticed
+that early runs of run_some_script_which_eventually_runs_uml would not
+have output disappear after mounting. Thanks for debugging this.
+
+> What happens is that the shell creates a pipe. This pipe is connected on
+> the one side to fd:1 in UML (stdin) and on the other to stdout of 'cat'.
+> 
+> Now this is all fine, but 'cat' will *quit immediately* since it cannot
+> read anything from /dev/null (it's write-only!).
+> 
+> Therefore, the fd:1 in UML will be invalidated pretty much immediately,
+> receiving EPOLLHUP.
+> 
+> This is detected by the epoll code, raising an interrupt into the line
+> level code, and the line code then closes the stdio console channel
+> entirely, including stdout.
+
+This seems like it could be a bug. Couldn't the console not be closed,
+but the console handling code internally mark stdin as closed? Perhaps
+there could even be logic to detect if stdin and stdout are from the
+same fd, then close the console, otherwise don't. From a user
+perspective, thinking of UML as a normal process, it doesn't make sense
+that closing stdin would close stdout as well.
+
+> If anything, the bug is that when you're not causing enough interrupts
+> by using ubd, somehow this situation doesn't get detected, and the
+> console remains open, so you still see the output... I think this might
+> be if closing the FD didn't generate a SIGIO?
+
+This leads to strange behavior. But for this issue, I think the
+suggestion above would obviate the need to do anything about this.
+
+> In fact, if you generate SIGIO in *any* other way, including pressing
+> enter while the script is running even if stdin is redirected from your
+> dead cat [1], you still get the same behaviour of the channel getting
+> closed.
+
+Ok, I've confirmed that. I think that's another reason to fix this in
+a manner that doesn't tie stdin to stdout, just hitting enter can make
+outut disappear (non-intuitive). In my case, stdout was going to a file.
+So my intuition would say that stdin (from a pipe) and stdout (to a
+file) shouldn't be connected (yes a program can create any kind of
+connection it wants, but it's not intuitive). It would be like rsync
+-av dir1 dir2 < <(cat /dev/null) having its output disappear if you
+pressed enter in the middle of the run.
+
+> 
+> 
+> johannes
+> 
+> [1] did I really just write that? heh.
+
+Thanks, got a chuckle out of that.
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
