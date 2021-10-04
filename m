@@ -1,57 +1,36 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH net] hamradio: baycom_epp: fix build for UML
-Date: Thu, 14 Oct 2021 19:18:04 -0700
-Message-Id: <20211015021804.17005-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: netdev@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>, linux-um@lists.infradead.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Thomas Sailer <t.sailer@alumni.ethz.ch>, linux-hams@vger.kernel.org
+Date: Mon, 4 Oct 2021 13:18:23 +0200
+References: <20211004111224.941450-1-geert@linux-m68k.org>
+In-Reply-To: <20211004111224.941450-1-geert@linux-m68k.org>
+Message-ID: <CAMuHMdXA-4Y0obSTmwkavauwpMrM8LXxnofeNXtGuC7N=bu5Uw@mail.gmail.com>
+Subject: Re: Build regressions/improvements in v5.15-rc4
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc: linux-um <linux-um@lists.infradead.org>
+List-ID: <linux-um.lists.infradead.org>
 
-T24gaTM4NiwgdGhlIGJheWNvbV9lcHAgZHJpdmVyIHdhbnRzIHRvIGluc3BlY3QgWDg2IENQVSBm
-ZWF0dXJlcyAoVFNDKQphbmQgdGhlbiBhY3Qgb24gdGhhdCBkYXRhLCBidXQgdGhhdCBpbmZvIGlz
-IG5vdCBhdmFpbGFibGUgd2hlbiBydW5uaW5nCm9uIFVNTCwgc28gcHJldmVudCB0aGF0IHRlc3Qg
-YW5kIGRvIHRoZSBkZWZhdWx0IGFjdGlvbi4KClByZXZlbnRzIHRoaXMgYnVpbGQgZXJyb3Igb24g
-VU1MICsgaTM4NjoKCi4uL2RyaXZlcnMvbmV0L2hhbXJhZGlvL2JheWNvbV9lcHAuYzogSW4gZnVu
-Y3Rpb24g4oCYZXBwX2Jo4oCZOgouLi9kcml2ZXJzL25ldC9oYW1yYWRpby9iYXljb21fZXBwLmM6
-NjMwOjY6IGVycm9yOiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlvbiDigJhib290X2Nw
-dV9oYXPigJk7IGRpZCB5b3UgbWVhbiDigJhnZXRfY3B1X21hc2vigJk/IFstV2Vycm9yPWltcGxp
-Y2l0LWZ1bmN0aW9uLWRlY2xhcmF0aW9uXQogIGlmIChib290X2NwdV9oYXMoWDg2X0ZFQVRVUkVf
-VFNDKSkgICBcCiAgICAgIF4KLi4vZHJpdmVycy9uZXQvaGFtcmFkaW8vYmF5Y29tX2VwcC5jOjY1
-ODoyOiBub3RlOiBpbiBleHBhbnNpb24gb2YgbWFjcm8g4oCYR0VUVElDS+KAmQogIEdFVFRJQ0so
-dGltZTEpOwoKRml4ZXM6IDY4ZjVkM2YzYjY1NCAoInVtOiBhZGQgUENJIG92ZXIgdmlydGlvIGVt
-dWxhdGlvbiBkcml2ZXIiKQpTaWduZWQtb2ZmLWJ5OiBSYW5keSBEdW5sYXAgPHJkdW5sYXBAaW5m
-cmFkZWFkLm9yZz4KQ2M6IGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKQ2M6IEplZmYgRGlr
-ZSA8amRpa2VAYWRkdG9pdC5jb20+CkNjOiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9k
-LmF0PgpDYzogQW50b24gSXZhbm92IDxhbnRvbi5pdmFub3ZAY2FtYnJpZGdlZ3JleXMuY29tPgpD
-YzogIkRhdmlkIFMuIE1pbGxlciIgPGRhdmVtQGRhdmVtbG9mdC5uZXQ+CkNjOiBKYWt1YiBLaWNp
-bnNraSA8a3ViYUBrZXJuZWwub3JnPgpDYzogVGhvbWFzIFNhaWxlciA8dC5zYWlsZXJAYWx1bW5p
-LmV0aHouY2g+CkNjOiBsaW51eC1oYW1zQHZnZXIua2VybmVsLm9yZwotLS0KIGRyaXZlcnMvbmV0
-L2hhbXJhZGlvL2JheWNvbV9lcHAuYyB8ICAgIDYgKysrLS0tCiAxIGZpbGUgY2hhbmdlZCwgMyBp
-bnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQoKLS0tIGxpbnV4LW5leHQtMjAyMTEwMTMub3Jp
-Zy9kcml2ZXJzL25ldC9oYW1yYWRpby9iYXljb21fZXBwLmMKKysrIGxpbnV4LW5leHQtMjAyMTEw
-MTMvZHJpdmVycy9uZXQvaGFtcmFkaW8vYmF5Y29tX2VwcC5jCkBAIC02MjMsMTYgKzYyMywxNiBA
-QCBzdGF0aWMgaW50IHJlY2VpdmUoc3RydWN0IG5ldF9kZXZpY2UgKmRlCiAKIC8qIC0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLSAqLwogCi0jaWZkZWYgX19pMzg2X18KKyNpZiBkZWZpbmVkKF9faTM4Nl9fKSAmJiAhZGVm
-aW5lZChDT05GSUdfVU1MKQogI2luY2x1ZGUgPGFzbS9tc3IuaD4KICNkZWZpbmUgR0VUVElDSyh4
-KQkJCQkJCVwKICh7CQkJCQkJCQlcCiAJaWYgKGJvb3RfY3B1X2hhcyhYODZfRkVBVFVSRV9UU0Mp
-KQkJCVwKIAkJeCA9ICh1bnNpZ25lZCBpbnQpcmR0c2MoKTsJCQlcCiB9KQotI2Vsc2UgLyogX19p
-Mzg2X18gKi8KKyNlbHNlIC8qIF9faTM4Nl9fICAmJiAhQ09ORklHX1VNTCAqLwogI2RlZmluZSBH
-RVRUSUNLKHgpCi0jZW5kaWYgLyogX19pMzg2X18gKi8KKyNlbmRpZiAvKiBfX2kzODZfXyAgJiYg
-IUNPTkZJR19VTUwgKi8KIAogc3RhdGljIHZvaWQgZXBwX2JoKHN0cnVjdCB3b3JrX3N0cnVjdCAq
-d29yaykKIHsKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6
-Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
+On Mon, Oct 4, 2021 at 1:15 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> JFYI, when comparing v5.15-rc4[1] to v5.15-rc3[3], the summaries are:
+>   - build errors: +1/-4
+
+  + /kisskb/src/drivers/video/fbdev/nvidia/nvidia.c: error: passing
+argument 1 of 'iounmap' discards 'volatile' qualifier from pointer
+target type [-Werror=discarded-qualifiers]:  => 1439:10, 1414:10
+
+um-x86_64/um-allyesconfig (fix available)
+
+> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/9e1ff307c779ce1f0f810c7ecce3d95bbae40896/ (90 out of 182 configs)
+> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/5816b3e6577eaa676ceb00a848f0fd65fe2adc29/ (90 out of 182 configs)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
