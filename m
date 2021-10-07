@@ -1,10 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab7.miniserver.com ([37.128.132.42]
- helo=www.kot-begemot.co.uk)
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mYNY0-00GNgZ-HA
- for linux-um@lists.infradead.org; Thu, 07 Oct 2021 07:10:34 +0000
+ id 1mYNR7-00GLtf-8S
+ for linux-um@lists.infradead.org; Thu, 07 Oct 2021 07:03:27 +0000
+Message-ID: <f27a4ea1bafcb59ee5946bcdba6af6357007a515.camel@sipsolutions.net>
 Subject: Re: Bug 214611 - UM: stdout output ceases under certain conditions
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Thu, 07 Oct 2021 09:03:17 +0200
+In-Reply-To: <0e867e3c-80e5-de8a-8da2-2d1baedde2d5@kot-begemot.co.uk>
 References: <20211002210023.55861502@crass-HP-ZBook-15-G2>
  <aad9145655670d2f7d06a8dffd93d99171183fe0.camel@sipsolutions.net>
  <20211004115410.4716345d@crass-HP-ZBook-15-G2>
@@ -16,13 +20,7 @@ References: <20211002210023.55861502@crass-HP-ZBook-15-G2>
  <5606fffc-a750-4e13-e805-ccd640f7de6d@kot-begemot.co.uk>
  <20211006162827.71919c7f@crass-HP-ZBook-15-G2>
  <0e867e3c-80e5-de8a-8da2-2d1baedde2d5@kot-begemot.co.uk>
- <f27a4ea1bafcb59ee5946bcdba6af6357007a515.camel@sipsolutions.net>
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Message-ID: <c3f73fde-ac40-bc92-e659-8ea809d063c4@kot-begemot.co.uk>
-Date: Thu, 7 Oct 2021 08:10:28 +0100
 MIME-Version: 1.0
-In-Reply-To: <f27a4ea1bafcb59ee5946bcdba6af6357007a515.camel@sipsolutions.net>
-Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -31,41 +29,32 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>, development@efficientek.com
+To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, development@efficientek.com
 Cc: linux-um@lists.infradead.org
 
-On 07/10/2021 08:03, Johannes Berg wrote:
-> On Thu, 2021-10-07 at 08:00 +0100, Anton Ivanov wrote:
->> The detection that a file "behind" a device is closed at present
->> presently happens in the interrupt controller - it maps EPOLL events on
->> the fds to IRQs. All file IO gets multiplexed through there.
-> True. But it really just causes an IRQ event to be reported, the upper
-> layer is still responsible for reading and then handling the error on
-> the FD.
->
->> All in all, if we add this functionality to the console/tty channels it
->> should be an extra option, because it is opposite to existing behavior.
-> As I pointed out earlier in the thread, somehow providing a way to get
-> chan->primary be not set would already provide the necessary behaviour.
-> I believe even when the FDs are identical (e.g. a socket), because we
-> separate read/write epoll and error handling.
+On Thu, 2021-10-07 at 08:00 +0100, Anton Ivanov wrote:
+> 
+> The detection that a file "behind" a device is closed at present 
+> presently happens in the interrupt controller - it maps EPOLL events on 
+> the fds to IRQs. All file IO gets multiplexed through there.
 
-The easiest way to provide this behavior is to add an option to the tty 
-command line args and parse it. An optional extra "[,options]" after the 
-fds will do the job.
+True. But it really just causes an IRQ event to be reported, the upper
+layer is still responsible for reading and then handling the error on
+the FD.
 
->
-> johannes
->
->
+> All in all, if we add this functionality to the console/tty channels it 
+> should be an extra option, because it is opposite to existing behavior.
 
--- 
-Anton R. Ivanov
-https://www.kot-begemot.co.uk/
+As I pointed out earlier in the thread, somehow providing a way to get
+chan->primary be not set would already provide the necessary behaviour.
+I believe even when the FDs are identical (e.g. a socket), because we
+separate read/write epoll and error handling.
+
+johannes
 
 
 _______________________________________________
