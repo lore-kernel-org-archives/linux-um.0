@@ -1,17 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from mail-pj1-x1030.google.com ([2607:f8b0:4864:20::1030])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mYYsn-000ZNO-He
- for linux-um@lists.infradead.org; Thu, 07 Oct 2021 19:16:48 +0000
-Message-ID: <aeac5d6ec9a59becbe84be6484bb312b216045ad.camel@sipsolutions.net>
-Subject: Re: Using GDB to debug a user space process in UML
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Thu, 07 Oct 2021 21:16:40 +0200
-In-Reply-To: <CABqSeAQgYiBq7USUkb-fPZkXi6rtYeew_u1Gwg4Uxp9J3=NxsQ@mail.gmail.com>
-References: <20211007013601.45fa8947@crass-HP-ZBook-15-G2>
- <CABqSeAQgYiBq7USUkb-fPZkXi6rtYeew_u1Gwg4Uxp9J3=NxsQ@mail.gmail.com>
+ id 1mYYL9-000VkU-On
+ for linux-um@lists.infradead.org; Thu, 07 Oct 2021 18:42:02 +0000
+Received: by mail-pj1-x1030.google.com with SMTP id
+ na16-20020a17090b4c1000b0019f5bb661f9so5885876pjb.0
+ for <linux-um@lists.infradead.org>; Thu, 07 Oct 2021 11:41:58 -0700 (PDT)
 MIME-Version: 1.0
+References: <20211007013601.45fa8947@crass-HP-ZBook-15-G2>
+In-Reply-To: <20211007013601.45fa8947@crass-HP-ZBook-15-G2>
+From: YiFei Zhu <zhuyifei1999@gmail.com>
+Date: Thu, 7 Oct 2021 11:41:45 -0700
+Message-ID: <CABqSeAQgYiBq7USUkb-fPZkXi6rtYeew_u1Gwg4Uxp9J3=NxsQ@mail.gmail.com>
+Subject: Re: Using GDB to debug a user space process in UML
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +25,240 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: YiFei Zhu <zhuyifei1999@gmail.com>, development@efficientek.com
+To: development@efficientek.com
 Cc: linux-um <linux-um@lists.infradead.org>
 
-On Thu, 2021-10-07 at 11:41 -0700, YiFei Zhu wrote:
-> On Wed, Oct 6, 2021 at 11:36 PM Glenn Washburn
-> <development@efficientek.com> wrote:
-> > 
-> > I'm trying to debug a crash in busybox while it is the init process in
-> > a UML instance. I'm having trouble breaking on the entry point of the
-> > busybox binary. I'm pretty new to this space, so I'm proceeding from a
-> > lot of ignorance, please correct me where I'm wrong and help me clear
-> > up some things.
-> 
-> AFAIK, that isn't possible, but not because of address space
-> translation, but because UML is already ptracing user space threads.
+On Wed, Oct 6, 2021 at 11:36 PM Glenn Washburn
+<development@efficientek.com> wrote:
+>
+> I'm trying to debug a crash in busybox while it is the init process in
+> a UML instance. I'm having trouble breaking on the entry point of the
+> busybox binary. I'm pretty new to this space, so I'm proceeding from a
+> lot of ignorance, please correct me where I'm wrong and help me clear
+> up some things.
 
-Indeed.
+AFAIK, that isn't possible, but not because of address space
+translation, but because UML is already ptracing user space threads.
 
-My brother posted some (incomplete and not entirely working yet) patches
-recently here on the list to allow not using ptrace but seccomp instead,
-and that does in fact then allow attaching gdb to the userspace
-processes, but note that there's a process per mm, not per userspace
-thread, and thread switching happens by running something else in the
-mm. So effectively, you're actually debugging all the threads of an
-application, everything that runs in a single mm, all together.
+> Based on the tracing and debugging sections of the UML howto[1] and
+> other potentially out-of-date mailinglist comments, I understand that
+> the architecture of UML is that there is one kernel thread, a SIGIO
+> thread, a UBD thread, and some other threads for MMU emulation. One
+> thing that is unclear to me is where the user-space processes fir in to
+> this. In some old mailinglist emails, I've seen things that lead me to
+> belief that all user-space processes are in the kernel thread. I've
+> also seen things suggesting that each user space process has its own
+> thread, perhaps this was only with SKAS(3) mode. My guess is that they
+> are all in the one kernel thread.
 
-It's still really nice because you can actually use gdb to look at the
-lower-level internals of UML, but as I said, not quite working yet.
+Yes, each user space process in the UML has its own thread in the
+host. I think this was called skas0 in the past when we had a bunch of
+modes, but skas3&4 were dropped [1] since it needed host patches to
+switch between the different address spaces in the kernel. The main
+thing with this mode is that there's a thread in the host for each
+user space address space in the guest, and the kernel thread uses
+ptrace to control each guest thread, and uses stubs to manipulate the
+guest to perform mm syscalls. skas3/4 on the other hand, the UML
+kernel can directly switch between each address space and perform
+operations on it, so it could use a kernel thread per virtual
+processor instead.
 
-johannes
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d0b5e15f0c0fdd759dd3dd48dc2dc2e7199e0da0
 
+More specifically on how this works: init_new_context in UML's mm will
+either invoke copy_context_skas0 if there is a mm the task is being
+forked from, or start_userspace if not. The former ptraces user space
+threads [2] so that it runs a stub to perform a generic clone with
+CLONE_PARENT | CLONE_FILES | SIGCHLD [3], and the latter th kernel
+performs a generic clone with CLONE_FILES | SIGCHLD [4], into a
+trampoline that that maps the stubs and does some other setup in the
+new thread.
+
+[2] https://elixir.bootlin.com/linux/v5.14.10/source/arch/um/kernel/skas/mmu.c#L33
+[3] https://elixir.bootlin.com/linux/v5.14.10/source/arch/um/kernel/skas/clone.c#L30
+[4] https://elixir.bootlin.com/linux/v5.14.10/source/arch/um/os-Linux/skas/process.c#L335
+
+I think it's important to note that there are more like 3 kinds of
+threads in UML on the host: the kernel thread, the kernel helper
+threads (like sigio thread and ubd thread), and user space threads.
+The first two runs in the kernel address space, whereas the user space
+threads runs on the UML guest address space (they are native speed
+after all) but are being constantly ptraced.
+
+For example, this is the process tree in the UML guest:
+
+  USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+  root         2  0.0  0.0      0     0 ?        S    10:31   0:00 [kthreadd]
+  root         3  0.0  0.0      0     0 ?        I    10:31   0:00  \_
+[kworker/0:0-events]
+  [many many kthreads]
+  root        53  0.0  0.0    976   624 ?        S    10:31   0:00  \_
+bpfilter_umh
+  root        54  0.0  0.0      0     0 ?        I<   10:31   0:00  \_ [kstrp]
+  root         1  0.9  0.0   4744  2480 ?        S    10:31   0:02
+/bin/bash [a bunch of args I use for init]
+  root       144  0.3  0.0   5520  3600 tty0     Ss   10:31   0:00
+bash --rcfile /tmp/.bashrc
+  root       156  8.7  0.0   5516  3668 tty0     S    10:35   0:00  \_ bash
+  root       165  0.0  0.0   7328  1876 tty0     R+   10:35   0:00
+ \_ ps auxfww
+
+and this is UML on the host (ps exited, sorry):
+
+  USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+  zhuyife+ 4070701  1.5  0.6 8395768 206696 ?      Ss   10:31   0:05
+\_ ./linux [many many many args]
+  zhuyife+ 4070706  0.0  0.6 8395768 206696 ?      S    10:31   0:00
+   \_ ./linux [many many many args]
+  zhuyife+ 4070707  0.0  0.6 8395768 206696 ?      S    10:31   0:00
+   \_ ./linux [many many many args]
+  zhuyife+ 4070708  0.0  0.0   2588   840 ?        t    10:31   0:00
+   \_ ./linux [many many many args]
+  zhuyife+ 4070715  0.0  0.0      0     0 ?        Zs   10:31   0:00
+   \_ [linux] <defunct>
+  zhuyife+ 4070719  0.0  0.0   4824  2308 ?        t    10:31   0:00
+   \_ ./linux [many many many args]
+  zhuyife+ 4070891  0.0  0.0   5944  3136 ?        t    10:31   0:00
+   \_ ./linux [many many many args]
+  zhuyife+ 4071216  0.0  0.0   6012  3124 ?        t    10:35   0:00
+   \_ ./linux [many many many args]
+
+PID 4070701 is the main kernel thread, it'll have a backtrace looking like:
+
+  #0  0x00007f4e65cc45f8 in __GI___sigsuspend (set=0x612dfd60) at
+glibc/sysdeps/unix/sysv/linux/sigsuspend.c:26
+  #1  0x0000000060051406 in os_idle_sleep () at
+linux/arch/um/os-Linux/time.c:118
+  #2  0x0000000060031e64 in um_idle_sleep () at
+linux/arch/um/kernel/process.c:211
+  #3  arch_cpu_idle () at linux/arch/um/kernel/process.c:217
+  #4  0x00000000608c5543 in default_idle_call () at
+linux/kernel/sched/idle.c:112
+  #5  0x00000000600998ef in cpuidle_idle_call () at
+linux/kernel/sched/idle.c:194
+  #6  do_idle () at linux/kernel/sched/idle.c:300
+  #7  0x0000000060099e23 in cpu_startup_entry (state=CPUHP_ONLINE) at
+linux/kernel/sched/idle.c:397
+  #8  0x00000000608bcc72 in rest_init () at linux/init/main.c:721
+  #9  0x00000000600018fc in arch_call_rest_init () at linux/init/main.c:849
+  #10 0x0000000060002433 in start_kernel () at linux/init/main.c:1064
+  #11 0x0000000060005f78 in start_kernel_proc (unused=<optimized out>)
+at linux/arch/um/kernel/skas/process.c:28
+  #12 0x00000000600317c1 in new_thread_handler () at
+linux/arch/um/kernel/process.c:133
+  #13 0x0000000060036327 in uml_finishsetup () at
+linux/arch/um/kernel/um_arch.c:248
+  #14 0x0000000000000000 in ?? ()
+
+While entering userspace, the same thread have a backtrace looking like:
+
+  #0  ptrace (request=PTRACE_SETREGS) at
+glibc/sysdeps/unix/sysv/linux/ptrace.c:30
+  #1  0x0000000060052b7c in userspace (regs=0x67fee758,
+aux_fp_regs=0x69298028) at linux/arch/um/os-Linux/skas/process.c:404
+  #2  0x0000000060031894 in fork_handler () at
+linux/arch/um/kernel/process.c:153
+  #3  0x0000000000000000 in ?? ()
+
+4070706 is a helper thread (ubd thread I think):
+
+  #0  0x00007f4e65d78923 in __GI___poll (fds=0x6153faf0
+<kernel_pollfd>, nfds=0x1, timeout=0xffffffff) at
+glibc/sysdeps/unix/sysv/linux/poll.c:29
+  #1  0x0000000060046f0a in poll (__timeout=0xffffffff, __nfds=0x1,
+__fds=0x6153faf0 <kernel_pollfd>) at /usr/include/bits/poll2.h:47
+  #2  ubd_read_poll (timeout=0xffffffff) at linux/arch/um/drivers/ubd_user.c:71
+  #3  0x00000000600468c4 in io_thread (arg=<optimized out>) at
+linux/arch/um/drivers/ubd_kern.c:1676
+  #4  0x00007f4e65d8324f in clone () at
+glibc/misc/../sysdeps/unix/sysv/linux/x86_64/clone.S:95
+
+4070707 is also a helper thread (sigio thread I think):
+
+  #0  0x00007f4e65d78923 in __GI___poll (fds=0x64012960, nfds=0x2,
+timeout=0xffffffff) at glibc/sysdeps/unix/sysv/linux/poll.c:29
+  #1  0x000000006004f957 in poll (__timeout=0xffffffff,
+__nfds=<optimized out>, __fds=<optimized out>) at
+/usr/include/bits/poll2.h:47
+  #2  write_sigio_thread (unused=<optimized out>) at
+linux/arch/um/os-Linux/sigio.c:61
+  #3  0x00007f4e65d8324f in clone () at
+glibc/misc/../sysdeps/unix/sysv/linux/x86_64/clone.S:95
+
+4070708 is bpfilter_umh (umh user space thread), 4070719 is guest PID
+1, and 4070891 is PID 144, and 4071216 is PID 156.
+
+What zombie PID 4070715 is I have no idea. Probably some helper or umh
+that exited but not reaped, since it started before PID 1.
+
+> When I break on start_thread, I can see its being called with an EIP
+> that is the value of the entry point of the busybox binary. But when I
+> set a break point (software or hardware), it never gets hit. My guess
+> is that that address, which is virtual for the UML, must get translated
+> to the real virtual address of the UML process/host kernel. If so, how
+> do I do that translation?
+
+No, the host will see the address space of the guest user space.
+/proc/[pid]/maps in the host will contain the address mapping of the
+virtual address to a /dev/shm file (which UML considers as its
+physical memory). eg, this is that of bpfilter_umh:
+
+  $ cat /proc/4070708/maps
+  00400000-00401000 r-xs 03c49000 00:15 1088516
+    /dev/shm/#1088516 (deleted)
+  00401000-00402000 r-xs fffff000 00:15 1088516
+    /dev/shm/#1088516 (deleted)
+  00402000-00403000 r-xs 1f8fc6000 00:15 1088516
+    /dev/shm/#1088516 (deleted)
+  00403000-00404000 r-xs 1f9bd0000 00:15 1088516
+    /dev/shm/#1088516 (deleted)
+  [...]
+
+> I've also tried to step into the busybox from the kernel by stepping
+> through instructions after breaking on switch_threads. This doesn't
+> seem to ever step through non-kernel space. Am I correct that the
+> UML_LONGJMP is the part of the code that would jump into user space?
+
+You are correct that stepping on kernel thread won't ever step into
+userspace, but for the wrong reason. User space is being executed in a
+different thread and it is already being ptraced.
+
+As for UML_LONGJMP in switch_threads, it only switches between the
+different kernel contexts. Eg, between the first backtrace I pasted
+that belongs to swapper, and the second backtrace that belongs to a
+kernel context of a user space task.
+
+> Also, I may be confused about TT (thread tracing) vs SKAS (separate
+> kernel address space) modes. My understanding is that the mainline has
+> what's called SKAS0, which was called TT mode. And what was called SKAS
+> mode, also called SKAS3, was never merged into mainline. Is this
+> correct?
+
+AFAIK, SKAS0 and TT are two different modes, even though in SKAS 0
+ptrace is still being used a lot. This article [5] might explain this
+in more detail, but AFAIK, in TT, kernel and userspace are mapped into
+the same address space, and there is a seperate tracing thread that
+intercepts syscalls and switch to the "kernel part" in the same host
+thread.
+
+[5] https://flylib.com/books/en/2.275.1.51/1/
+
+> I've seen the question of debugging user space in UML pop up on the old
+> mailing list, but haven't really seen much in the way of an answer. Is
+> there currently a way to do this? If the UML user space process's
+> address space is remapped in the UML process, it seems like gdb could
+> theoretically be able remap the debug symbols to the right place.
+
+I don't think it's possible, since user space threads are already
+being ptraced and AFAIK there's no "gdb server" implementation in UML
+
+> Any help would be much appreciated,
+> Glenn
+>
+> [1]
+> https://www.kernel.org/doc/html/v5.14/virt/uml/user_mode_linux_howto_v2.html#tracing-uml
+
+YiFei Zhu
 
 _______________________________________________
 linux-um mailing list
