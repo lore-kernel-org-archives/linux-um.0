@@ -2,16 +2,17 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mYuqj-003tUf-TM
- for linux-um@lists.infradead.org; Fri, 08 Oct 2021 18:44:07 +0000
-Message-ID: <6aa90fcd1d262b9d963acd161e1afe2d6f9d6a6d.camel@sipsolutions.net>
+ id 1mYtL9-003gG9-1T
+ for linux-um@lists.infradead.org; Fri, 08 Oct 2021 17:07:24 +0000
+Message-ID: <4e236e5a507bb7bd20059a1e7c09a84610804431.camel@sipsolutions.net>
 Subject: Re: Using GDB to debug a user space process in UML
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Fri, 08 Oct 2021 20:43:59 +0200
-In-Reply-To: <20211008114605.1071e36d@crass-HP-ZBook-15-G2>
+Date: Fri, 08 Oct 2021 19:07:19 +0200
+In-Reply-To: <20211008120121.0932b2c9@crass-HP-ZBook-15-G2>
 References: <20211007013601.45fa8947@crass-HP-ZBook-15-G2>
  <CABqSeAQgYiBq7USUkb-fPZkXi6rtYeew_u1Gwg4Uxp9J3=NxsQ@mail.gmail.com>
- <20211008114605.1071e36d@crass-HP-ZBook-15-G2>
+ <aeac5d6ec9a59becbe84be6484bb312b216045ad.camel@sipsolutions.net>
+ <20211008120121.0932b2c9@crass-HP-ZBook-15-G2>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -25,35 +26,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: development@efficientek.com, YiFei Zhu <zhuyifei1999@gmail.com>
-Cc: linux-um <linux-um@lists.infradead.org>
+To: development@efficientek.com
+Cc: YiFei Zhu <zhuyifei1999@gmail.com>, linux-um <linux-um@lists.infradead.org>
 
-On Fri, 2021-10-08 at 11:46 -0500, Glenn Washburn wrote:
+On Fri, 2021-10-08 at 12:01 -0500, Glenn Washburn wrote:
 > 
-> Another idea, that might be easier and maybe there's ideas on how this
-> can be done without code changes, is to have the user-space process
-> coredump on the host. I've enabled codedumps for the UML process, but
-> they don't seem to contain the user-space processes. Probably because
-> the user-space processes are not threads, but actually separate
-> processes (or am I wrong about that?).
+> Do you have an idea of what is not working? The only thing I see
+> referenced in the cover letter[1] seems to be more of a security issue
+> and a functionality issue. So don't run the patch on untrusted code.
+> Anything else I should be aware of?
 
-I don't think it's really all that simple.
+Last I checked, it didn't even compile entirely well, and when I looked
+a bit, it seemed the reason it worked for him was that he had some half-
+compiled version before/after the changes, likely due to some missing
+dependencies in the build system (possibly [2]).
 
-A host process that UML creates corresponds to an *mm*, basically
-virtual address space. This will often be a set of processes created
-using clone(CLONE_VM), such as threads.
+I'm sure it's fixable, and I have an interest in this as well (due to
+some payloads I run in UML for my testing), but so far neither of us had
+a chance to actually sit down and do it. It's probably not even that
+hard.
 
-Also, a crash of a userspace process inside UML, such as via a segfault,
-does not result in a crash of the UML process that's encapsulating that
-process's mm, and in fact not even necessarily results in the
-destruction of that mm, if e.g. other threads continue running.
+> According to the cover letter, this could be an answer to the "is
+> exec still slow" question I posted earlier. Very cool!
 
-What UML does then is switch around the actual threads inside those mm
-processes whenever the scheduler decides which one should run. All those
-mm processes are also around all at the same time, but only one of them
-will ever be executing at a time (since UML is currently non-SMP).
+To some extent. It's still slowish I believe - still has to entirely
+tear down all the mappings and recreate etc., but not quite as bad any
+more because it happens directly in the userspace process, not with a
+ton of overhead through executing individual syscalls there. But yeah,
+it's much better on fork/exec heavy loads for sure.
 
 johannes
+
+> [1] http://lists.infradead.org/pipermail/linux-um/2021-March/001167.html
+[2] https://patchwork.ozlabs.org/project/linux-um/patch/20210928115146.277bec2328bb.If70926505d16d6c6a229002eb6d3f6838b546175@changeid/
 
 
 _______________________________________________
