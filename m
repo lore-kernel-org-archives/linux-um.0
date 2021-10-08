@@ -1,19 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x62a.google.com ([2607:f8b0:4864:20::62a])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mYvnz-0040EZ-OH
- for linux-um@lists.infradead.org; Fri, 08 Oct 2021 19:45:21 +0000
-Received: by mail-pl1-x62a.google.com with SMTP id n11so6401641plf.4
- for <linux-um@lists.infradead.org>; Fri, 08 Oct 2021 12:45:18 -0700 (PDT)
-MIME-Version: 1.0
+ id 1mYuqj-003tUf-TM
+ for linux-um@lists.infradead.org; Fri, 08 Oct 2021 18:44:07 +0000
+Message-ID: <6aa90fcd1d262b9d963acd161e1afe2d6f9d6a6d.camel@sipsolutions.net>
+Subject: Re: Using GDB to debug a user space process in UML
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Fri, 08 Oct 2021 20:43:59 +0200
+In-Reply-To: <20211008114605.1071e36d@crass-HP-ZBook-15-G2>
 References: <20211007013601.45fa8947@crass-HP-ZBook-15-G2>
  <CABqSeAQgYiBq7USUkb-fPZkXi6rtYeew_u1Gwg4Uxp9J3=NxsQ@mail.gmail.com>
  <20211008114605.1071e36d@crass-HP-ZBook-15-G2>
-In-Reply-To: <20211008114605.1071e36d@crass-HP-ZBook-15-G2>
-From: YiFei Zhu <zhuyifei1999@gmail.com>
-Date: Fri, 8 Oct 2021 12:45:07 -0700
-Message-ID: <CABqSeARMxjvFoSCewyZC7AW9m4Mvi9yTg37NewL_Ws50yiwGxw@mail.gmail.com>
-Subject: Re: Using GDB to debug a user space process in UML
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -26,55 +25,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: development@efficientek.com
+To: development@efficientek.com, YiFei Zhu <zhuyifei1999@gmail.com>
 Cc: linux-um <linux-um@lists.infradead.org>
 
-  On Fri, Oct 8, 2021 at 9:46 AM Glenn Washburn
-<development@efficientek.com> wrote:
-> Wow, thanks for that response! After reading your excellent and detailed
-> response, I'm thinking perhaps all is not lost. One idea is to have a
-> mode, perhaps set by a commandline flag called init_debug, where if the
-> init process recieves a signal that would make a coredump, the process
-> is stopped and the tracing thread stops ptracing it. There could be a
-> message output which says something like "Init PID <pid> has crashed,
-> been stopped, and waiting to be attached by debugger."
->
-> I make this init process specific because other processes should be
-> debuggable via gdb inside the UML instance. Also it might be painful if
-> the terminal isn't setup right. But I don't see why it couldn't be
-> extended to the same behavior for all processes. Yes, this might cause
-> a bunch of unreaped dead processes hanging around, but I think that's
-> acceptable considering this is a debug mode.
+On Fri, 2021-10-08 at 11:46 -0500, Glenn Washburn wrote:
+> 
+> Another idea, that might be easier and maybe there's ideas on how this
+> can be done without code changes, is to have the user-space process
+> coredump on the host. I've enabled codedumps for the UML process, but
+> they don't seem to contain the user-space processes. Probably because
+> the user-space processes are not threads, but actually separate
+> processes (or am I wrong about that?).
 
-Some more ideas: completely untested, feel free to try out.
+I don't think it's really all that simple.
 
-* When the kernel is about to panic to PID 1 dying, instead of
-actually dying, send PID 1 SIGABRT, then go into an infinite loop. I
-don't exactly know the signal handler list on UML user space
-processes, but if that doesn't work making userspace_trampset the
-signal handler to SIG_DFL should work in theory.
-* For an unhandled SIGSEGV, coredump happens before the process exits
-[1] which causes the kernel to panic, so if, instead of calling group
-exit during the signal handling, you go into infinite D sleep. The UML
-kernel might be able to get the coredump saved if wherever filesystem
-it is writing to is writable.
-* On the host, even though UML user space processes are being ptraced,
-/proc/pid/mem is still readable, so in theory, one could construct
-some sort of core dump based on /proc/pid/mem.
+A host process that UML creates corresponds to an *mm*, basically
+virtual address space. This will often be a set of processes created
+using clone(CLONE_VM), such as threads.
 
-Note though, if the coredump is on the host, all the memory maps are
-like /dev/shm/#123456 which isn't useful in determining what files are
-mapped where. And like Johannes said, this just dumps the address
-space of a UML process, which isn't as useful as a real coredump.
+Also, a crash of a userspace process inside UML, such as via a segfault,
+does not result in a crash of the UML process that's encapsulating that
+process's mm, and in fact not even necessarily results in the
+destruction of that mm, if e.g. other threads continue running.
 
-[1] https://elixir.bootlin.com/linux/v5.14.10/source/kernel/signal.c#L2782
+What UML does then is switch around the actual threads inside those mm
+processes whenever the scheduler decides which one should run. All those
+mm processes are also around all at the same time, but only one of them
+will ever be executing at a time (since UML is currently non-SMP).
 
-Oh btw, UML kernel segv handler probably isn't a great place to do the
-hooking. UML, like a normal kernel-mode Linux kernel, loads pages into
-a process's address space lazily. So it is quite noisy even with
-normal operation.
+johannes
 
-YiFei Zhu
 
 _______________________________________________
 linux-um mailing list
