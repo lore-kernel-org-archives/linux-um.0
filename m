@@ -1,8 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH net-next] net: tulip: winbond-840: fix build for UML
-Date: Wed, 13 Oct 2021 22:06:06 -0700
-Message-Id: <20211014050606.7288-1-rdunlap@infradead.org>
+Received: from lithops.sigma-star.at ([195.201.40.130])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mZIqC-0062uT-D6
+ for linux-um@lists.infradead.org; Sat, 09 Oct 2021 20:21:10 +0000
+Date: Sat, 9 Oct 2021 22:20:59 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <356575565.55001.1633810859041.JavaMail.zimbra@nod.at>
+In-Reply-To: <5B27741E-71A5-41CF-912C-D299248691F7@sipsolutions.net>
+References: <20211008215133.9371-1-rdunlap@infradead.org>
+ <CABVgOS=QVysVtN5seB5hp7hHAw5P0yuOaA3rgkRtEyiJu-1H6Q@mail.gmail.com>
+ <05939461-793d-2266-8752-1b593bab8eec@infradead.org>
+ <f0ead035-f05b-73fb-1fd4-48c1eff8bc92@cambridgegreys.com>
+ <5B27741E-71A5-41CF-912C-D299248691F7@sipsolutions.net>
+Subject: Re: [PATCH] um: Add missing "FORCE" target when using if_changed
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -16,38 +26,30 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: netdev@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>, linux-um@lists.infradead.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, linux-parisc@vger.kernel.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: anton ivanov <anton.ivanov@cambridgegreys.com>, Randy Dunlap <rdunlap@infradead.org>, davidgow <davidgow@google.com>, masahiroy <masahiroy@kernel.org>, Michal Marek <michal.lkml@markovi.net>, Nick Desaulniers <ndesaulniers@google.com>, linux-kbuild <linux-kbuild@vger.kernel.org>, Jeff Dike <jdike@addtoit.com>, linux-um <linux-um@lists.infradead.org>, x86 <x86@kernel.org>
 
-T24gaTM4Niwgd2hlbiBidWlsdGluIChub3QgYSBsb2FkYWJsZSBtb2R1bGUpLCB0aGUgd2luYm9u
-ZC04NDAgZHJpdmVyCmluc3BlY3RzIGJvb3RfY3B1X2RhdGEgdG8gc2VlIHdoYXQgQ1BVIGZhbWls
-eSBpdCBpcyBydW5uaW5nIG9uLCBhbmQKdGhlbiBhY3RzIG9uIHRoYXQgZGF0YS4gVGhlICJmYW1p
-bHkiIHN0cnVjdCBtZW1iZXIgKHg4NikgZG9lcyBub3QgZXhpc3QKd2hlbiBydW5uaW5nIG9uIFVN
-TCwgc28gcHJldmVudCB0aGF0IHRlc3QgYW5kIGRvIHRoZSBkZWZhdWx0IGFjdGlvbi4KClByZXZl
-bnRzIHRoaXMgYnVpbGQgZXJyb3Igb24gVU1MICsgaTM4NjoKCi4uL2RyaXZlcnMvbmV0L2V0aGVy
-bmV0L2RlYy90dWxpcC93aW5ib25kLTg0MC5jOiBJbiBmdW5jdGlvbiDigJhpbml0X3JlZ2lzdGVy
-c+KAmToKLi4vZHJpdmVycy9uZXQvZXRoZXJuZXQvZGVjL3R1bGlwL3dpbmJvbmQtODQwLmM6ODgy
-OjE5OiBlcnJvcjog4oCYc3RydWN0IGNwdWluZm9fdW3igJkgaGFzIG5vIG1lbWJlciBuYW1lZCDi
-gJh4ODbigJkKICBpZiAoYm9vdF9jcHVfZGF0YS54ODYgPD0gNCkgewoKRml4ZXM6IDY4ZjVkM2Yz
-YjY1NCAoInVtOiBhZGQgUENJIG92ZXIgdmlydGlvIGVtdWxhdGlvbiBkcml2ZXIiKQpTaWduZWQt
-b2ZmLWJ5OiBSYW5keSBEdW5sYXAgPHJkdW5sYXBAaW5mcmFkZWFkLm9yZz4KQ2M6IGxpbnV4LXVt
-QGxpc3RzLmluZnJhZGVhZC5vcmcKQ2M6IEplZmYgRGlrZSA8amRpa2VAYWRkdG9pdC5jb20+CkNj
-OiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0PgpDYzogQW50b24gSXZhbm92IDxh
-bnRvbi5pdmFub3ZAY2FtYnJpZGdlZ3JleXMuY29tPgpDYzogIkRhdmlkIFMuIE1pbGxlciIgPGRh
-dmVtQGRhdmVtbG9mdC5uZXQ+CkNjOiBKYWt1YiBLaWNpbnNraSA8a3ViYUBrZXJuZWwub3JnPgpD
-YzogbGludXgtcGFyaXNjQHZnZXIua2VybmVsLm9yZwotLS0KIGRyaXZlcnMvbmV0L2V0aGVybmV0
-L2RlYy90dWxpcC93aW5ib25kLTg0MC5jIHwgICAgMiArLQogMSBmaWxlIGNoYW5nZWQsIDEgaW5z
-ZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCgotLS0gbGludXgtbmV4dC0yMDIxMTAxMy5vcmlnL2Ry
-aXZlcnMvbmV0L2V0aGVybmV0L2RlYy90dWxpcC93aW5ib25kLTg0MC5jCisrKyBsaW51eC1uZXh0
-LTIwMjExMDEzL2RyaXZlcnMvbmV0L2V0aGVybmV0L2RlYy90dWxpcC93aW5ib25kLTg0MC5jCkBA
-IC04NzcsNyArODc3LDcgQEAgc3RhdGljIHZvaWQgaW5pdF9yZWdpc3RlcnMoc3RydWN0IG5ldF9k
-ZQogCQk4MDAwCTE2IGxvbmd3b3JkcwkJMDIwMCAyIGxvbmd3b3JkcwkyMDAwIDMyIGxvbmd3b3Jk
-cwogCQlDMDAwCTMyICBsb25nd29yZHMJCTA0MDAgNCBsb25nd29yZHMgKi8KIAotI2lmIGRlZmlu
-ZWQgKF9faTM4Nl9fKSAmJiAhZGVmaW5lZChNT0RVTEUpCisjaWYgZGVmaW5lZCAoX19pMzg2X18p
-ICYmICFkZWZpbmVkKE1PRFVMRSkgJiYgIWRlZmluZWQoQ09ORklHX1VNTCkKIAkvKiBXaGVuIG5v
-dCBhIG1vZHVsZSB3ZSBjYW4gd29yayBhcm91bmQgYnJva2VuICc0ODYgUENJIGJvYXJkcy4gKi8K
-IAlpZiAoYm9vdF9jcHVfZGF0YS54ODYgPD0gNCkgewogCQlpIHw9IDB4NDgwMDsKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcg
-bGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIkpvaGFubmVzIEJlcmciIDxq
+b2hhbm5lc0BzaXBzb2x1dGlvbnMubmV0Pgo+IEFuOiAiYW50b24gaXZhbm92IiA8YW50b24uaXZh
+bm92QGNhbWJyaWRnZWdyZXlzLmNvbT4sICJSYW5keSBEdW5sYXAiIDxyZHVubGFwQGluZnJhZGVh
+ZC5vcmc+LCAiZGF2aWRnb3ciCj4gPGRhdmlkZ293QGdvb2dsZS5jb20+Cj4gQ0M6ICJtYXNhaGly
+b3kiIDxtYXNhaGlyb3lAa2VybmVsLm9yZz4sICJNaWNoYWwgTWFyZWsiIDxtaWNoYWwubGttbEBt
+YXJrb3ZpLm5ldD4sICJOaWNrIERlc2F1bG5pZXJzIgo+IDxuZGVzYXVsbmllcnNAZ29vZ2xlLmNv
+bT4sICJsaW51eC1rYnVpbGQiIDxsaW51eC1rYnVpbGRAdmdlci5rZXJuZWwub3JnPiwgIkplZmYg
+RGlrZSIgPGpkaWtlQGFkZHRvaXQuY29tPiwgInJpY2hhcmQiCj4gPHJpY2hhcmRAbm9kLmF0Piwg
+ImxpbnV4LXVtIiA8bGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZz4sICJ4ODYiIDx4ODZAa2Vy
+bmVsLm9yZz4KPiBHZXNlbmRldDogU2Ftc3RhZywgOS4gT2t0b2JlciAyMDIxIDE1OjA2OjAxCj4g
+QmV0cmVmZjogUmU6IFtQQVRDSF0gdW06IEFkZCBtaXNzaW5nICJGT1JDRSIgdGFyZ2V0IHdoZW4g
+dXNpbmcgaWZfY2hhbmdlZAoKPiBPbiA5IE9jdG9iZXIgMjAyMSAwNzozNjozNiBDRVNULCBBbnRv
+biBJdmFub3YgPGFudG9uLml2YW5vdkBjYW1icmlkZ2VncmV5cy5jb20+Cj4gd3JvdGU6Cj4gCj4+
+VGhlIHBhdGNoIGJ5IEpvaGFubmVzIGlzIG5vdCBpbiB0aGUgcGVuZGluZyBsaXN0IGluIHBhdGNo
+d29yaywgc28gaXQKPj5sb29rcyBsaWtlIFJpY2hhcmQgaGFzIHByb2Nlc3NlZCBpdCBhbmQgaXQg
+d2lsbCBiZSBpbiB0aGUgbmV4dCBwdWxsIHJlcXVlc3QuCj4gCj4gSSB0aGluayBpdCdzIHN0aWxs
+IG9wZW46Cj4gaHR0cHM6Ly9wYXRjaHdvcmsub3psYWJzLm9yZy9wcm9qZWN0L2xpbnV4LXVtL3Bh
+dGNoLzIwMjEwOTI4MTE1MTQ2LjI3N2JlYzIzMjhiYi5JZjcwOTI2NTA1ZDE2ZDZjNmEyMjkwMDJl
+YjZkM2Y2ODM4YjU0NjE3NUBjaGFuZ2VpZC8KClRoaXMgcGF0Y2ggaXMgbm93IGluIGxpbnV4LW5l
+eHQuCgpUaGFua3MsCi8vcmljaGFyZAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJh
+ZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
+eC11bQo=
 
