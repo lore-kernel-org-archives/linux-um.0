@@ -1,16 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mx2.smtp.larsendata.com ([91.221.196.228])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mZygf-00AAbF-2d
- for linux-um@lists.infradead.org; Mon, 11 Oct 2021 17:02:06 +0000
-Date: Mon, 11 Oct 2021 19:02:00 +0200
-From: Sam Ravnborg <sam@ravnborg.org>
 Subject: Re: [PATCH v2] drm/r128: fix build for UML
-Message-ID: <YWRuCCkBOhQ5gN+b@ravnborg.org>
 References: <20211011080006.31081-1-rdunlap@infradead.org>
+From: Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <95f6d5b9-1aa8-9093-4356-df3f79c41faf@infradead.org>
+Date: Mon, 11 Oct 2021 01:02:16 -0700
 MIME-Version: 1.0
-Content-Disposition: inline
 In-Reply-To: <20211011080006.31081-1-rdunlap@infradead.org>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -19,42 +15,40 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
+To: linux-kernel@vger.kernel.org
+Cc: David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Sam Ravnborg <sam@ravnborg.org>
 
-T24gTW9uLCBPY3QgMTEsIDIwMjEgYXQgMDE6MDA6MDZBTSAtMDcwMCwgUmFuZHkgRHVubGFwIHdy
-b3RlOgo+IEZpeCBhIGJ1aWxkIGVycm9yIG9uIENPTkZJR19VTUwsIHdoaWNoIGRvZXMgbm90IHN1
-cHBvcnQgKHByb3ZpZGUpCj4gd2JpbnZkKCkuIFVNTCBjYW4gdXNlIHRoZSBnZW5lcmljIG1iKCkg
-aW5zdGVhZC4KPiAKPiAuLi9kcml2ZXJzL2dwdS9kcm0vcjEyOC9hdGlfcGNpZ2FydC5jOiBJbiBm
-dW5jdGlvbiDigJhkcm1fYXRpX3BjaWdhcnRfaW5pdOKAmToKPiAuLi9kcml2ZXJzL2dwdS9kcm0v
-cjEyOC9hdGlfcGNpZ2FydC5jOjIxODoyOiBlcnJvcjogaW1wbGljaXQgZGVjbGFyYXRpb24gb2Yg
-ZnVuY3Rpb24g4oCYd2JpbnZk4oCZIFstV2Vycm9yPWltcGxpY2l0LWZ1bmN0aW9uLWRlY2xhcmF0
-aW9uXQo+ICAgd2JpbnZkKCk7Cj4gICBefn5+fn4KPiAKPiBGaXhlczogNjhmNWQzZjNiNjU0ICgi
-dW06IGFkZCBQQ0kgb3ZlciB2aXJ0aW8gZW11bGF0aW9uIGRyaXZlciIpCj4gU2lnbmVkLW9mZi1i
-eTogUmFuZHkgRHVubGFwIDxyZHVubGFwQGluZnJhZGVhZC5vcmc+Cj4gQ2M6IERhdmlkIEFpcmxp
-ZSA8YWlybGllZEBsaW51eC5pZT4KPiBDYzogRGFuaWVsIFZldHRlciA8ZGFuaWVsQGZmd2xsLmNo
-Pgo+IENjOiBkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCj4gQ2M6IEplZmYgRGlrZSA8
-amRpa2VAYWRkdG9pdC5jb20+Cj4gQ2M6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2Qu
-YXQ+Cj4gQ2M6IEFudG9uIEl2YW5vdiA8YW50b24uaXZhbm92QGNhbWJyaWRnZWdyZXlzLmNvbT4K
-PiBDYzogbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwo+IENjOiBTYW0gUmF2bmJvcmcgPHNh
-bUByYXZuYm9yZy5vcmc+CgpBcHBsaWVkIHRvIGRybS1taXNjLWZpeGVzLiBJIHdhcyBub3Qgc3Vy
-ZSBpZiB0aGlzIHdhcyB1cmdlbnQgZW5vdWdoIGZvcgpmaXhlcyBidXQgc2luY2UgaXQgZml4ZXMg
-dGhlIFVNIGJ1aWxkIEkgZW5kZWQgdXAgZmFzdCB0cmFja2luZyBpdCB0bwptYXN0ZXIuCgoJU2Ft
-Cgo+IC0tLQo+IHYyOiB1cGRhdGUgRml4ZXM6IHRhZyAoSm9oYW5uZXMpCj4gICAgIFVzZSBzaW1w
-bGUgQ09ORklHX1g4NiBpbnN0ZWFkIG9mIGEgbW9yZSBjb21wbGljYXRlZCBleHByZXNzaW9uLiAo
-U2FtKQo+IAo+ICBkcml2ZXJzL2dwdS9kcm0vcjEyOC9hdGlfcGNpZ2FydC5jIHwgICAgMiArLQo+
-ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKPiAKPiAtLS0g
-bGludXgtbmV4dC0yMDIxMTAwNy5vcmlnL2RyaXZlcnMvZ3B1L2RybS9yMTI4L2F0aV9wY2lnYXJ0
-LmMKPiArKysgbGludXgtbmV4dC0yMDIxMTAwNy9kcml2ZXJzL2dwdS9kcm0vcjEyOC9hdGlfcGNp
-Z2FydC5jCj4gQEAgLTIxNSw3ICsyMTUsNyBAQCBpbnQgZHJtX2F0aV9wY2lnYXJ0X2luaXQoc3Ry
-dWN0IGRybV9kZXZpCj4gIAl9Cj4gIAlyZXQgPSAwOwo+ICAKPiAtI2lmIGRlZmluZWQoX19pMzg2
-X18pIHx8IGRlZmluZWQoX194ODZfNjRfXykKPiArI2lmZGVmIENPTkZJR19YODYKPiAgCXdiaW52
-ZCgpOwo+ICAjZWxzZQo+ICAJbWIoKTsKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZy
-YWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGlu
-dXgtdW0K
+T24gMTAvMTEvMjEgMTowMCBBTSwgUmFuZHkgRHVubGFwIHdyb3RlOgo+IEZpeCBhIGJ1aWxkIGVy
+cm9yIG9uIENPTkZJR19VTUwsIHdoaWNoIGRvZXMgbm90IHN1cHBvcnQgKHByb3ZpZGUpCj4gd2Jp
+bnZkKCkuIFVNTCBjYW4gdXNlIHRoZSBnZW5lcmljIG1iKCkgaW5zdGVhZC4KPiAKPiAuLi9kcml2
+ZXJzL2dwdS9kcm0vcjEyOC9hdGlfcGNpZ2FydC5jOiBJbiBmdW5jdGlvbiDigJhkcm1fYXRpX3Bj
+aWdhcnRfaW5pdOKAmToKPiAuLi9kcml2ZXJzL2dwdS9kcm0vcjEyOC9hdGlfcGNpZ2FydC5jOjIx
+ODoyOiBlcnJvcjogaW1wbGljaXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24g4oCYd2JpbnZk4oCZ
+IFstV2Vycm9yPWltcGxpY2l0LWZ1bmN0aW9uLWRlY2xhcmF0aW9uXQo+ICAgIHdiaW52ZCgpOwo+
+ICAgIF5+fn5+fgo+IAo+IEZpeGVzOiA2OGY1ZDNmM2I2NTQgKCJ1bTogYWRkIFBDSSBvdmVyIHZp
+cnRpbyBlbXVsYXRpb24gZHJpdmVyIikKPiBTaWduZWQtb2ZmLWJ5OiBSYW5keSBEdW5sYXAgPHJk
+dW5sYXBAaW5mcmFkZWFkLm9yZz4KPiBDYzogRGF2aWQgQWlybGllIDxhaXJsaWVkQGxpbnV4Lmll
+Pgo+IENjOiBEYW5pZWwgVmV0dGVyIDxkYW5pZWxAZmZ3bGwuY2g+Cj4gQ2M6IGRyaS1kZXZlbEBs
+aXN0cy5mcmVlZGVza3RvcC5vcmcKPiBDYzogSmVmZiBEaWtlIDxqZGlrZUBhZGR0b2l0LmNvbT4K
+PiBDYzogUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNoYXJkQG5vZC5hdD4KPiBDYzogQW50b24gSXZh
+bm92IDxhbnRvbi5pdmFub3ZAY2FtYnJpZGdlZ3JleXMuY29tPgo+IENjOiBsaW51eC11bUBsaXN0
+cy5pbmZyYWRlYWQub3JnCj4gQ2M6IFNhbSBSYXZuYm9yZyA8c2FtQHJhdm5ib3JnLm9yZz4KPiAt
+LS0KPiB2MjogdXBkYXRlIEZpeGVzOiB0YWcgKEpvaGFubmVzKQo+ICAgICAgVXNlIHNpbXBsZSBD
+T05GSUdfWDg2IGluc3RlYWQgb2YgYSBtb3JlIGNvbXBsaWNhdGVkIGV4cHJlc3Npb24uIChTYW0p
+Cj4gCgpPb3BzLCBhcHBhcmVudGx5IEkgY2FuJ3QgY291bnQgYW5kIHRoaXMgaXMgdjMuLi4gOigK
+Cj4gICBkcml2ZXJzL2dwdS9kcm0vcjEyOC9hdGlfcGNpZ2FydC5jIHwgICAgMiArLQo+ICAgMSBm
+aWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCj4gCj4gLS0tIGxpbnV4
+LW5leHQtMjAyMTEwMDcub3JpZy9kcml2ZXJzL2dwdS9kcm0vcjEyOC9hdGlfcGNpZ2FydC5jCj4g
+KysrIGxpbnV4LW5leHQtMjAyMTEwMDcvZHJpdmVycy9ncHUvZHJtL3IxMjgvYXRpX3BjaWdhcnQu
+Ywo+IEBAIC0yMTUsNyArMjE1LDcgQEAgaW50IGRybV9hdGlfcGNpZ2FydF9pbml0KHN0cnVjdCBk
+cm1fZGV2aQo+ICAgCX0KPiAgIAlyZXQgPSAwOwo+ICAgCj4gLSNpZiBkZWZpbmVkKF9faTM4Nl9f
+KSB8fCBkZWZpbmVkKF9feDg2XzY0X18pCj4gKyNpZmRlZiBDT05GSUdfWDg2Cj4gICAJd2JpbnZk
+KCk7Cj4gICAjZWxzZQo+ICAgCW1iKCk7Cj4gCgoKLS0gCn5SYW5keQoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0Cmxp
+bnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9saW51eC11bQo=
 
