@@ -1,67 +1,53 @@
-Return-Path: <mcgrof@infradead.org>
-From: Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 8/9] rnbd: add error handling support for add_disk()
-Date: Fri, 15 Oct 2021 16:30:27 -0700
-Message-Id: <20211015233028.2167651-9-mcgrof@kernel.org>
-In-Reply-To: <20211015233028.2167651-1-mcgrof@kernel.org>
-References: <20211015233028.2167651-1-mcgrof@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from ms.lwn.net ([45.79.88.28])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1maO4N-00DtuS-2g
+ for linux-um@lists.infradead.org; Tue, 12 Oct 2021 20:08:16 +0000
+From: Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH] docs: UML: user_mode_linux_howto_v2 edits
+In-Reply-To: <20211010064827.3405-1-rdunlap@infradead.org>
+References: <20211010064827.3405-1-rdunlap@infradead.org>
+Date: Tue, 12 Oct 2021 14:08:14 -0600
+Message-ID: <871r4quhu9.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-To: axboe@kernel.dk, jejb@linux.ibm.com, martin.petersen@oracle.com, agk@redhat.com, snitzer@redhat.com, colyli@suse.de, kent.overstreet@gmail.com, boris.ostrovsky@oracle.com, jgross@suse.com, sstabellini@kernel.org, roger.pau@citrix.com, geert@linux-m68k.org, ulf.hansson@linaro.org, tj@kernel.org, hare@suse.de, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, krisman@collabora.com, chris.obbard@collabora.com, thehajime@gmail.com, zhuyifei1999@gmail.com, haris.iqbal@ionos.com, jinpu.wang@ionos.com, miquel.raynal@bootlin.com, vigneshr@ti.com, linux-mtd@lists.infradead.org
-Cc: linux-scsi@vger.kernel.org, dm-devel@redhat.com, linux-bcache@vger.kernel.org, xen-devel@lists.xenproject.org, linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, linux-doc@vger.kernel.org
 
-We never checked for errors on add_disk() as this function
-returned void. Now that this is fixed, use the shiny new
-error handling.
+Randy Dunlap <rdunlap@infradead.org> writes:
 
-Acked-by: Jack Wang <jinpu.wang@ionos.com>
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- drivers/block/rnbd/rnbd-clt.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+> Fix various typos, command syntax, punctuation, capitalization,
+> and whitespace.
+>
+> Fixes: 04301bf5b072 ("docs: replace the old User Mode Linux HowTo with a new one")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Jeff Dike <jdike@addtoit.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> Cc: linux-um@lists.infradead.org
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: linux-doc@vger.kernel.org
+> ---
+>  Documentation/virt/uml/user_mode_linux_howto_v2.rst |  119 +++++-----
+>  1 file changed, 62 insertions(+), 57 deletions(-)
 
-diff --git a/drivers/block/rnbd/rnbd-clt.c b/drivers/block/rnbd/rnbd-clt.c
-index 5864c9b46cb9..3b78dc55a9a2 100644
---- a/drivers/block/rnbd/rnbd-clt.c
-+++ b/drivers/block/rnbd/rnbd-clt.c
-@@ -1384,8 +1384,10 @@ static void setup_request_queue(struct rnbd_clt_dev *dev)
- 	blk_queue_write_cache(dev->queue, dev->wc, dev->fua);
- }
- 
--static void rnbd_clt_setup_gen_disk(struct rnbd_clt_dev *dev, int idx)
-+static int rnbd_clt_setup_gen_disk(struct rnbd_clt_dev *dev, int idx)
- {
-+	int err;
-+
- 	dev->gd->major		= rnbd_client_major;
- 	dev->gd->first_minor	= idx << RNBD_PART_BITS;
- 	dev->gd->minors		= 1 << RNBD_PART_BITS;
-@@ -1410,7 +1412,11 @@ static void rnbd_clt_setup_gen_disk(struct rnbd_clt_dev *dev, int idx)
- 
- 	if (!dev->rotational)
- 		blk_queue_flag_set(QUEUE_FLAG_NONROT, dev->queue);
--	add_disk(dev->gd);
-+	err = add_disk(dev->gd);
-+	if (err)
-+		blk_cleanup_disk(dev->gd);
-+
-+	return err;
- }
- 
- static int rnbd_client_setup_device(struct rnbd_clt_dev *dev)
-@@ -1426,8 +1432,7 @@ static int rnbd_client_setup_device(struct rnbd_clt_dev *dev)
- 	rnbd_init_mq_hw_queues(dev);
- 
- 	setup_request_queue(dev);
--	rnbd_clt_setup_gen_disk(dev, idx);
--	return 0;
-+	return rnbd_clt_setup_gen_disk(dev, idx);
- }
- 
- static struct rnbd_clt_dev *init_dev(struct rnbd_clt_session *sess,
--- 
-2.30.2
+Applied, thanks.
 
+jon
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
