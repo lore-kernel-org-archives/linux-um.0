@@ -1,50 +1,99 @@
-Return-Path: <mcgrof@infradead.org>
-From: Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 3/9] dm: add add_disk() error handling
-Date: Fri, 15 Oct 2021 16:30:22 -0700
-Message-Id: <20211015233028.2167651-4-mcgrof@kernel.org>
-In-Reply-To: <20211015233028.2167651-1-mcgrof@kernel.org>
-References: <20211015233028.2167651-1-mcgrof@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pg1-x534.google.com ([2607:f8b0:4864:20::534])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1maF3v-00CRJp-Cl
+ for linux-um@lists.infradead.org; Tue, 12 Oct 2021 10:31:12 +0000
+Received: by mail-pg1-x534.google.com with SMTP id g184so13472159pgc.6
+ for <linux-um@lists.infradead.org>; Tue, 12 Oct 2021 03:31:10 -0700 (PDT)
+From: davidcomponentone@gmail.com
+Subject: [PATCH v3] Fix application of sizeof to pointer
+Date: Tue, 12 Oct 2021 18:30:54 +0800
+Message-Id: <ba5d88fd5470e6c72bbb70a34068b9662a72d418.1634024019.git.davidcomponentone@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-To: axboe@kernel.dk, jejb@linux.ibm.com, martin.petersen@oracle.com, agk@redhat.com, snitzer@redhat.com, colyli@suse.de, kent.overstreet@gmail.com, boris.ostrovsky@oracle.com, jgross@suse.com, sstabellini@kernel.org, roger.pau@citrix.com, geert@linux-m68k.org, ulf.hansson@linaro.org, tj@kernel.org, hare@suse.de, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, krisman@collabora.com, chris.obbard@collabora.com, thehajime@gmail.com, zhuyifei1999@gmail.com, haris.iqbal@ionos.com, jinpu.wang@ionos.com, miquel.raynal@bootlin.com, vigneshr@ti.com, linux-mtd@lists.infradead.org
-Cc: linux-scsi@vger.kernel.org, dm-devel@redhat.com, linux-bcache@vger.kernel.org, xen-devel@lists.xenproject.org, linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: jdike@addtoit.com
+Cc: joe@perches.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, davidcomponentone@gmail.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>
 
-We never checked for errors on add_disk() as this function
-returned void. Now that this is fixed, use the shiny new
-error handling.
+From: David Yang <davidcomponentone@gmail.com>
 
-There are two calls to dm_setup_md_queue() which can fail then,
-one on dm_early_create() and we can easily see that the error path
-there calls dm_destroy in the error path. The other use case is on
-the ioctl table_load case. If that fails userspace needs to call
-the DM_DEV_REMOVE_CMD to cleanup the state - similar to any other
-failure.
+The coccinelle check report:
+"./arch/um/drivers/virt-pci.c:192:20-26:
+ERROR: application of sizeof to pointer"
+Using the "sizeof(buf->data)" to fix it.
 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: David Yang <davidcomponentone@gmail.com>
 ---
- drivers/md/dm.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/um/drivers/virt-pci.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/md/dm.c b/drivers/md/dm.c
-index 245fa4153306..6d3265ed37c0 100644
---- a/drivers/md/dm.c
-+++ b/drivers/md/dm.c
-@@ -2086,7 +2086,9 @@ int dm_setup_md_queue(struct mapped_device *md, struct dm_table *t)
- 	if (r)
- 		return r;
+diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
+index c08066633023..148fa7a15ee0 100644
+--- a/arch/um/drivers/virt-pci.c
++++ b/arch/um/drivers/virt-pci.c
+@@ -180,16 +180,14 @@ static unsigned long um_pci_cfgspace_read(void *priv, unsigned int offset,
+ 	};
+ 	/* buf->data is maximum size - we may only use parts of it */
+ 	struct um_pci_message_buffer *buf;
+-	u8 *data;
+ 	unsigned long ret = ~0ULL;
  
--	add_disk(md->disk);
-+	r = add_disk(md->disk);
-+	if (r)
-+		return r;
+ 	if (!dev)
+ 		return ~0ULL;
  
- 	r = dm_sysfs_init(md);
- 	if (r) {
+ 	buf = get_cpu_var(um_pci_msg_bufs);
+-	data = buf->data;
+ 
+-	memset(data, 0xff, sizeof(data));
++	memset(buf->data, 0xff, sizeof(buf->data));
+ 
+ 	switch (size) {
+ 	case 1:
+@@ -204,22 +202,22 @@ static unsigned long um_pci_cfgspace_read(void *priv, unsigned int offset,
+ 		goto out;
+ 	}
+ 
+-	if (um_pci_send_cmd(dev, &hdr, sizeof(hdr), NULL, 0, data, 8))
++	if (um_pci_send_cmd(dev, &hdr, sizeof(hdr), NULL, 0, buf->data, 8))
+ 		goto out;
+ 
+ 	switch (size) {
+ 	case 1:
+-		ret = data[0];
++		ret = buf->data[0];
+ 		break;
+ 	case 2:
+-		ret = le16_to_cpup((void *)data);
++		ret = le16_to_cpup((void *)buf->data);
+ 		break;
+ 	case 4:
+-		ret = le32_to_cpup((void *)data);
++		ret = le32_to_cpup((void *)buf->data);
+ 		break;
+ #ifdef CONFIG_64BIT
+ 	case 8:
+-		ret = le64_to_cpup((void *)data);
++		ret = le64_to_cpup((void *)buf->data);
+ 		break;
+ #endif
+ 	default:
 -- 
 2.30.2
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
