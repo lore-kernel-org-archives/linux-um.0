@@ -1,15 +1,9 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mbCz3-0053sF-Fi
- for linux-um@lists.infradead.org; Fri, 15 Oct 2021 02:30:13 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH net-next] net: fealnx: fix build for UML
+Date: Wed, 13 Oct 2021 22:05:00 -0700
+Message-Id: <20211014050500.5620-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next] net: fealnx: fix build for UML
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163426500848.31820.18368368881396978501.git-patchwork-notify@kernel.org>
-Date: Fri, 15 Oct 2021 02:30:08 +0000
-References: <20211014050500.5620-1-rdunlap@infradead.org>
-In-Reply-To: <20211014050500.5620-1-rdunlap@infradead.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,41 +12,38 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: netdev@vger.kernel.org, linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, davem@davemloft.net, kuba@kernel.org
+To: netdev@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>, linux-um@lists.infradead.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>
 
-Hello:
-
-This patch was applied to netdev/net-next.git (master)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Wed, 13 Oct 2021 22:05:00 -0700 you wrote:
-> On i386, when builtin (not a loadable module), the fealnx driver
-> inspects boot_cpu_data to see what CPU family it is running on, and
-> then acts on that data. The "family" struct member (x86) does not exist
-> when running on UML, so prevent that test and do the default action.
-> 
-> Prevents this build error on UML + i386:
-> 
-> [...]
-
-Here is the summary with links:
-  - [net-next] net: fealnx: fix build for UML
-    https://git.kernel.org/netdev/net-next/c/cd2621d07d51
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gaTM4Niwgd2hlbiBidWlsdGluIChub3QgYSBsb2FkYWJsZSBtb2R1bGUpLCB0aGUgZmVhbG54
+IGRyaXZlcgppbnNwZWN0cyBib290X2NwdV9kYXRhIHRvIHNlZSB3aGF0IENQVSBmYW1pbHkgaXQg
+aXMgcnVubmluZyBvbiwgYW5kCnRoZW4gYWN0cyBvbiB0aGF0IGRhdGEuIFRoZSAiZmFtaWx5IiBz
+dHJ1Y3QgbWVtYmVyICh4ODYpIGRvZXMgbm90IGV4aXN0CndoZW4gcnVubmluZyBvbiBVTUwsIHNv
+IHByZXZlbnQgdGhhdCB0ZXN0IGFuZCBkbyB0aGUgZGVmYXVsdCBhY3Rpb24uCgpQcmV2ZW50cyB0
+aGlzIGJ1aWxkIGVycm9yIG9uIFVNTCArIGkzODY6CgouLi9kcml2ZXJzL25ldC9ldGhlcm5ldC9m
+ZWFsbnguYzogSW4gZnVuY3Rpb24g4oCYbmV0ZGV2X29wZW7igJk6Ci4uL2RyaXZlcnMvbmV0L2V0
+aGVybmV0L2ZlYWxueC5jOjg2MToxOTogZXJyb3I6IOKAmHN0cnVjdCBjcHVpbmZvX3Vt4oCZIGhh
+cyBubyBtZW1iZXIgbmFtZWQg4oCYeDg24oCZCgpGaXhlczogNjhmNWQzZjNiNjU0ICgidW06IGFk
+ZCBQQ0kgb3ZlciB2aXJ0aW8gZW11bGF0aW9uIGRyaXZlciIpClNpZ25lZC1vZmYtYnk6IFJhbmR5
+IER1bmxhcCA8cmR1bmxhcEBpbmZyYWRlYWQub3JnPgpDYzogbGludXgtdW1AbGlzdHMuaW5mcmFk
+ZWFkLm9yZwpDYzogSmVmZiBEaWtlIDxqZGlrZUBhZGR0b2l0LmNvbT4KQ2M6IFJpY2hhcmQgV2Vp
+bmJlcmdlciA8cmljaGFyZEBub2QuYXQ+CkNjOiBBbnRvbiBJdmFub3YgPGFudG9uLml2YW5vdkBj
+YW1icmlkZ2VncmV5cy5jb20+CkNjOiAiRGF2aWQgUy4gTWlsbGVyIiA8ZGF2ZW1AZGF2ZW1sb2Z0
+Lm5ldD4KQ2M6IEpha3ViIEtpY2luc2tpIDxrdWJhQGtlcm5lbC5vcmc+Ci0tLQogZHJpdmVycy9u
+ZXQvZXRoZXJuZXQvZmVhbG54LmMgfCAgICAyICstCiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRp
+b24oKyksIDEgZGVsZXRpb24oLSkKCi0tLSBsaW51eC1uZXh0LTIwMjExMDEzLm9yaWcvZHJpdmVy
+cy9uZXQvZXRoZXJuZXQvZmVhbG54LmMKKysrIGxpbnV4LW5leHQtMjAyMTEwMTMvZHJpdmVycy9u
+ZXQvZXRoZXJuZXQvZmVhbG54LmMKQEAgLTg1Nyw3ICs4NTcsNyBAQCBzdGF0aWMgaW50IG5ldGRl
+dl9vcGVuKHN0cnVjdCBuZXRfZGV2aWNlCiAJbnAtPmJjcnZhbHVlIHw9IDB4MDQ7CS8qIGJpZy1l
+bmRpYW4gKi8KICNlbmRpZgogCi0jaWYgZGVmaW5lZChfX2kzODZfXykgJiYgIWRlZmluZWQoTU9E
+VUxFKQorI2lmIGRlZmluZWQoX19pMzg2X18pICYmICFkZWZpbmVkKE1PRFVMRSkgJiYgIWRlZmlu
+ZWQoQ09ORklHX1VNTCkKIAlpZiAoYm9vdF9jcHVfZGF0YS54ODYgPD0gNCkKIAkJbnAtPmNydmFs
+dWUgPSAweGEwMDsKIAllbHNlCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFk
+Lm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVt
+Cg==
 
