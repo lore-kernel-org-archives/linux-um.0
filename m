@@ -1,15 +1,9 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mbCz3-0053sA-Do
- for linux-um@lists.infradead.org; Fri, 15 Oct 2021 02:30:12 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH net-next] net: intel: igc_ptp: fix build for UML
+Date: Wed, 13 Oct 2021 22:05:16 -0700
+Message-Id: <20211014050516.6846-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next] net: intel: igc_ptp: fix build for UML
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163426500834.31820.14758482906938638216.git-patchwork-notify@kernel.org>
-Date: Fri, 15 Oct 2021 02:30:08 +0000
-References: <20211014050516.6846-1-rdunlap@infradead.org>
-In-Reply-To: <20211014050516.6846-1-rdunlap@infradead.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,41 +12,46 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: netdev@vger.kernel.org, linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, davem@davemloft.net, kuba@kernel.org, jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com, intel-wired-lan@lists.osuosl.org
+To: netdev@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>, linux-um@lists.infradead.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Jesse Brandeburg <jesse.brandeburg@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, intel-wired-lan@lists.osuosl.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (master)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Wed, 13 Oct 2021 22:05:16 -0700 you wrote:
-> On a UML build, the igc_ptp driver uses CONFIG_X86_TSC for timestamp
-> conversion. The function that is used is not available on UML builds,
-> so have the function use the default system_counterval_t timestamp
-> instead for UML builds.
-> 
-> Prevents this build error on UML:
-> 
-> [...]
-
-Here is the summary with links:
-  - [net-next] net: intel: igc_ptp: fix build for UML
-    https://git.kernel.org/netdev/net-next/c/523994ba3ad1
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gYSBVTUwgYnVpbGQsIHRoZSBpZ2NfcHRwIGRyaXZlciB1c2VzIENPTkZJR19YODZfVFNDIGZv
+ciB0aW1lc3RhbXAKY29udmVyc2lvbi4gVGhlIGZ1bmN0aW9uIHRoYXQgaXMgdXNlZCBpcyBub3Qg
+YXZhaWxhYmxlIG9uIFVNTCBidWlsZHMsCnNvIGhhdmUgdGhlIGZ1bmN0aW9uIHVzZSB0aGUgZGVm
+YXVsdCBzeXN0ZW1fY291bnRlcnZhbF90IHRpbWVzdGFtcAppbnN0ZWFkIGZvciBVTUwgYnVpbGRz
+LgoKUHJldmVudHMgdGhpcyBidWlsZCBlcnJvciBvbiBVTUw6CgouLi9kcml2ZXJzL25ldC9ldGhl
+cm5ldC9pbnRlbC9pZ2MvaWdjX3B0cC5jOiBJbiBmdW5jdGlvbiDigJhpZ2NfZGV2aWNlX3RzdGFt
+cF90b19zeXN0ZW3igJk6Ci4uL2RyaXZlcnMvbmV0L2V0aGVybmV0L2ludGVsL2lnYy9pZ2NfcHRw
+LmM6Nzc3Ojk6IGVycm9yOiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlvbiDigJhjb252
+ZXJ0X2FydF9uc190b190c2PigJkgWy1XZXJyb3I9aW1wbGljaXQtZnVuY3Rpb24tZGVjbGFyYXRp
+b25dCiAgcmV0dXJuIGNvbnZlcnRfYXJ0X25zX3RvX3RzYyh0c3RhbXApOwouLi9kcml2ZXJzL25l
+dC9ldGhlcm5ldC9pbnRlbC9pZ2MvaWdjX3B0cC5jOjc3Nzo5OiBlcnJvcjogaW5jb21wYXRpYmxl
+IHR5cGVzIHdoZW4gcmV0dXJuaW5nIHR5cGUg4oCYaW504oCZIGJ1dCDigJhzdHJ1Y3Qgc3lzdGVt
+X2NvdW50ZXJ2YWxfdOKAmSB3YXMgZXhwZWN0ZWQKICByZXR1cm4gY29udmVydF9hcnRfbnNfdG9f
+dHNjKHRzdGFtcCk7CgpGaXhlczogNjhmNWQzZjNiNjU0ICgidW06IGFkZCBQQ0kgb3ZlciB2aXJ0
+aW8gZW11bGF0aW9uIGRyaXZlciIpClNpZ25lZC1vZmYtYnk6IFJhbmR5IER1bmxhcCA8cmR1bmxh
+cEBpbmZyYWRlYWQub3JnPgpDYzogbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpDYzogSmVm
+ZiBEaWtlIDxqZGlrZUBhZGR0b2l0LmNvbT4KQ2M6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFy
+ZEBub2QuYXQ+CkNjOiBBbnRvbiBJdmFub3YgPGFudG9uLml2YW5vdkBjYW1icmlkZ2VncmV5cy5j
+b20+CkNjOiAiRGF2aWQgUy4gTWlsbGVyIiA8ZGF2ZW1AZGF2ZW1sb2Z0Lm5ldD4KQ2M6IEpha3Vi
+IEtpY2luc2tpIDxrdWJhQGtlcm5lbC5vcmc+CkNjOiBKZXNzZSBCcmFuZGVidXJnIDxqZXNzZS5i
+cmFuZGVidXJnQGludGVsLmNvbT4KQ2M6IFRvbnkgTmd1eWVuIDxhbnRob255Lmwubmd1eWVuQGlu
+dGVsLmNvbT4KQ2M6IGludGVsLXdpcmVkLWxhbkBsaXN0cy5vc3Vvc2wub3JnCi0tLQogZHJpdmVy
+cy9uZXQvZXRoZXJuZXQvaW50ZWwvaWdjL2lnY19wdHAuYyB8ICAgIDIgKy0KIDEgZmlsZSBjaGFu
+Z2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQoKLS0tIGxpbnV4LW5leHQtMjAyMTEw
+MTMub3JpZy9kcml2ZXJzL25ldC9ldGhlcm5ldC9pbnRlbC9pZ2MvaWdjX3B0cC5jCisrKyBsaW51
+eC1uZXh0LTIwMjExMDEzL2RyaXZlcnMvbmV0L2V0aGVybmV0L2ludGVsL2lnYy9pZ2NfcHRwLmMK
+QEAgLTc3Myw3ICs3NzMsNyBAQCBzdGF0aWMgYm9vbCBpZ2NfaXNfY3Jvc3N0c3RhbXBfc3VwcG9y
+dGVkCiAKIHN0YXRpYyBzdHJ1Y3Qgc3lzdGVtX2NvdW50ZXJ2YWxfdCBpZ2NfZGV2aWNlX3RzdGFt
+cF90b19zeXN0ZW0odTY0IHRzdGFtcCkKIHsKLSNpZiBJU19FTkFCTEVEKENPTkZJR19YODZfVFND
+KQorI2lmIElTX0VOQUJMRUQoQ09ORklHX1g4Nl9UU0MpICYmICFkZWZpbmVkKENPTkZJR19VTUwp
+CiAJcmV0dXJuIGNvbnZlcnRfYXJ0X25zX3RvX3RzYyh0c3RhbXApOwogI2Vsc2UKIAlyZXR1cm4g
+KHN0cnVjdCBzeXN0ZW1fY291bnRlcnZhbF90KSB7IH07CgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1A
+bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2xpbnV4LXVtCg==
 
