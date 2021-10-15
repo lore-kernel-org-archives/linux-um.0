@@ -1,51 +1,58 @@
-Return-Path: <mcgrof@infradead.org>
-From: Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 1/9] scsi/sd: add error handling support for add_disk()
-Date: Fri, 15 Oct 2021 16:30:20 -0700
-Message-Id: <20211015233028.2167651-2-mcgrof@kernel.org>
-In-Reply-To: <20211015233028.2167651-1-mcgrof@kernel.org>
-References: <20211015233028.2167651-1-mcgrof@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail.kernel.org ([198.145.29.99])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mbCz3-0053sA-Do
+ for linux-um@lists.infradead.org; Fri, 15 Oct 2021 02:30:12 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-To: axboe@kernel.dk, jejb@linux.ibm.com, martin.petersen@oracle.com, agk@redhat.com, snitzer@redhat.com, colyli@suse.de, kent.overstreet@gmail.com, boris.ostrovsky@oracle.com, jgross@suse.com, sstabellini@kernel.org, roger.pau@citrix.com, geert@linux-m68k.org, ulf.hansson@linaro.org, tj@kernel.org, hare@suse.de, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, krisman@collabora.com, chris.obbard@collabora.com, thehajime@gmail.com, zhuyifei1999@gmail.com, haris.iqbal@ionos.com, jinpu.wang@ionos.com, miquel.raynal@bootlin.com, vigneshr@ti.com, linux-mtd@lists.infradead.org
-Cc: linux-scsi@vger.kernel.org, dm-devel@redhat.com, linux-bcache@vger.kernel.org, xen-devel@lists.xenproject.org, linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>, Christoph Hellwig <hch@lst.de>
-List-ID: <linux-um.lists.infradead.org>
+Subject: Re: [PATCH net-next] net: intel: igc_ptp: fix build for UML
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163426500834.31820.14758482906938638216.git-patchwork-notify@kernel.org>
+Date: Fri, 15 Oct 2021 02:30:08 +0000
+References: <20211014050516.6846-1-rdunlap@infradead.org>
+In-Reply-To: <20211014050516.6846-1-rdunlap@infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: netdev@vger.kernel.org, linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, davem@davemloft.net, kuba@kernel.org, jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com, intel-wired-lan@lists.osuosl.org
 
-We never checked for errors on add_disk() as this function
-returned void. Now that this is fixed, use the shiny new
-error handling.
+Hello:
 
-As with the error handling for device_add() we follow the same
-logic and just put the device so that cleanup is done via the
-scsi_disk_release().
+This patch was applied to netdev/net-next.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- drivers/scsi/sd.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+On Wed, 13 Oct 2021 22:05:16 -0700 you wrote:
+> On a UML build, the igc_ptp driver uses CONFIG_X86_TSC for timestamp
+> conversion. The function that is used is not available on UML builds,
+> so have the function use the default system_counterval_t timestamp
+> instead for UML builds.
+> 
+> Prevents this build error on UML:
+> 
+> [...]
 
-diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-index a646d27df681..d69f2e626e76 100644
---- a/drivers/scsi/sd.c
-+++ b/drivers/scsi/sd.c
-@@ -3457,7 +3457,13 @@ static int sd_probe(struct device *dev)
- 		pm_runtime_set_autosuspend_delay(dev,
- 			sdp->host->hostt->rpm_autosuspend_delay);
- 	}
--	device_add_disk(dev, gd, NULL);
-+
-+	error = device_add_disk(dev, gd, NULL);
-+	if (error) {
-+		put_device(&sdkp->dev);
-+		goto out;
-+	}
-+
- 	if (sdkp->capacity)
- 		sd_dif_config_host(sdkp);
- 
--- 
-2.30.2
+Here is the summary with links:
+  - [net-next] net: intel: igc_ptp: fix build for UML
+    https://git.kernel.org/netdev/net-next/c/523994ba3ad1
 
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
