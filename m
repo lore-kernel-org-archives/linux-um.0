@@ -1,85 +1,58 @@
-Return-Path: <mcgrof@infradead.org>
-From: Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 4/9] bcache: add error handling support for add_disk()
-Date: Fri, 15 Oct 2021 16:30:23 -0700
-Message-Id: <20211015233028.2167651-5-mcgrof@kernel.org>
-In-Reply-To: <20211015233028.2167651-1-mcgrof@kernel.org>
-References: <20211015233028.2167651-1-mcgrof@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail.kernel.org ([198.145.29.99])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mbCz3-0053sF-Fi
+ for linux-um@lists.infradead.org; Fri, 15 Oct 2021 02:30:13 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-To: axboe@kernel.dk, jejb@linux.ibm.com, martin.petersen@oracle.com, agk@redhat.com, snitzer@redhat.com, colyli@suse.de, kent.overstreet@gmail.com, boris.ostrovsky@oracle.com, jgross@suse.com, sstabellini@kernel.org, roger.pau@citrix.com, geert@linux-m68k.org, ulf.hansson@linaro.org, tj@kernel.org, hare@suse.de, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, krisman@collabora.com, chris.obbard@collabora.com, thehajime@gmail.com, zhuyifei1999@gmail.com, haris.iqbal@ionos.com, jinpu.wang@ionos.com, miquel.raynal@bootlin.com, vigneshr@ti.com, linux-mtd@lists.infradead.org
-Cc: linux-scsi@vger.kernel.org, dm-devel@redhat.com, linux-bcache@vger.kernel.org, xen-devel@lists.xenproject.org, linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+Subject: Re: [PATCH net-next] net: fealnx: fix build for UML
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163426500848.31820.18368368881396978501.git-patchwork-notify@kernel.org>
+Date: Fri, 15 Oct 2021 02:30:08 +0000
+References: <20211014050500.5620-1-rdunlap@infradead.org>
+In-Reply-To: <20211014050500.5620-1-rdunlap@infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: netdev@vger.kernel.org, linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, davem@davemloft.net, kuba@kernel.org
 
-We never checked for errors on add_disk() as this function
-returned void. Now that this is fixed, use the shiny new
-error handling.
+Hello:
 
-This driver doesn't do any unwinding with blk_cleanup_disk()
-even on errors after add_disk() and so we follow that
-tradition.
+This patch was applied to netdev/net-next.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
 
-Acked-by: Coly Li <colyli@suse.de>
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- drivers/md/bcache/super.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+On Wed, 13 Oct 2021 22:05:00 -0700 you wrote:
+> On i386, when builtin (not a loadable module), the fealnx driver
+> inspects boot_cpu_data to see what CPU family it is running on, and
+> then acts on that data. The "family" struct member (x86) does not exist
+> when running on UML, so prevent that test and do the default action.
+> 
+> Prevents this build error on UML + i386:
+> 
+> [...]
 
-diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-index f2874c77ff79..f0c32cdd6594 100644
---- a/drivers/md/bcache/super.c
-+++ b/drivers/md/bcache/super.c
-@@ -1082,7 +1082,9 @@ int bch_cached_dev_run(struct cached_dev *dc)
- 		closure_sync(&cl);
- 	}
- 
--	add_disk(d->disk);
-+	ret = add_disk(d->disk);
-+	if (ret)
-+		goto out;
- 	bd_link_disk_holder(dc->bdev, dc->disk.disk);
- 	/*
- 	 * won't show up in the uevent file, use udevadm monitor -e instead
-@@ -1534,10 +1536,11 @@ static void flash_dev_flush(struct closure *cl)
- 
- static int flash_dev_run(struct cache_set *c, struct uuid_entry *u)
- {
-+	int err = -ENOMEM;
- 	struct bcache_device *d = kzalloc(sizeof(struct bcache_device),
- 					  GFP_KERNEL);
- 	if (!d)
--		return -ENOMEM;
-+		goto err_ret;
- 
- 	closure_init(&d->cl, NULL);
- 	set_closure_fn(&d->cl, flash_dev_flush, system_wq);
-@@ -1551,9 +1554,12 @@ static int flash_dev_run(struct cache_set *c, struct uuid_entry *u)
- 	bcache_device_attach(d, c, u - c->uuids);
- 	bch_sectors_dirty_init(d);
- 	bch_flash_dev_request_init(d);
--	add_disk(d->disk);
-+	err = add_disk(d->disk);
-+	if (err)
-+		goto err;
- 
--	if (kobject_add(&d->kobj, &disk_to_dev(d->disk)->kobj, "bcache"))
-+	err = kobject_add(&d->kobj, &disk_to_dev(d->disk)->kobj, "bcache");
-+	if (err)
- 		goto err;
- 
- 	bcache_device_link(d, c, "volume");
-@@ -1567,7 +1573,8 @@ static int flash_dev_run(struct cache_set *c, struct uuid_entry *u)
- 	return 0;
- err:
- 	kobject_put(&d->kobj);
--	return -ENOMEM;
-+err_ret:
-+	return err;
- }
- 
- static int flash_devs_run(struct cache_set *c)
--- 
-2.30.2
+Here is the summary with links:
+  - [net-next] net: fealnx: fix build for UML
+    https://git.kernel.org/netdev/net-next/c/cd2621d07d51
 
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
