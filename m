@@ -1,99 +1,54 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x534.google.com ([2607:f8b0:4864:20::534])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1maF3v-00CRJp-Cl
- for linux-um@lists.infradead.org; Tue, 12 Oct 2021 10:31:12 +0000
-Received: by mail-pg1-x534.google.com with SMTP id g184so13472159pgc.6
- for <linux-um@lists.infradead.org>; Tue, 12 Oct 2021 03:31:10 -0700 (PDT)
-From: davidcomponentone@gmail.com
-Subject: [PATCH v3] Fix application of sizeof to pointer
-Date: Tue, 12 Oct 2021 18:30:54 +0800
-Message-Id: <ba5d88fd5470e6c72bbb70a34068b9662a72d418.1634024019.git.davidcomponentone@gmail.com>
+Return-Path: <mcgrof@infradead.org>
+From: Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH 5/9] xen-blkfront: add error handling support for add_disk()
+Date: Fri, 15 Oct 2021 16:30:24 -0700
+Message-Id: <20211015233028.2167651-6-mcgrof@kernel.org>
+In-Reply-To: <20211015233028.2167651-1-mcgrof@kernel.org>
+References: <20211015233028.2167651-1-mcgrof@kernel.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: jdike@addtoit.com
-Cc: joe@perches.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, davidcomponentone@gmail.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>
+Content-Transfer-Encoding: 8bit
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+To: axboe@kernel.dk, jejb@linux.ibm.com, martin.petersen@oracle.com, agk@redhat.com, snitzer@redhat.com, colyli@suse.de, kent.overstreet@gmail.com, boris.ostrovsky@oracle.com, jgross@suse.com, sstabellini@kernel.org, roger.pau@citrix.com, geert@linux-m68k.org, ulf.hansson@linaro.org, tj@kernel.org, hare@suse.de, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, krisman@collabora.com, chris.obbard@collabora.com, thehajime@gmail.com, zhuyifei1999@gmail.com, haris.iqbal@ionos.com, jinpu.wang@ionos.com, miquel.raynal@bootlin.com, vigneshr@ti.com, linux-mtd@lists.infradead.org
+Cc: linux-scsi@vger.kernel.org, dm-devel@redhat.com, linux-bcache@vger.kernel.org, xen-devel@lists.xenproject.org, linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-From: David Yang <davidcomponentone@gmail.com>
+We never checked for errors on device_add_disk() as this function
+returned void. Now that this is fixed, use the shiny new error
+handling. The function xlvbd_alloc_gendisk() typically does the
+unwinding on error on allocating the disk and creating the tag,
+but since all that error handling was stuffed inside
+xlvbd_alloc_gendisk() we must repeat the tag free'ing as well.
 
-The coccinelle check report:
-"./arch/um/drivers/virt-pci.c:192:20-26:
-ERROR: application of sizeof to pointer"
-Using the "sizeof(buf->data)" to fix it.
+We set the info->rq to NULL to ensure blkif_free() doesn't crash
+on blk_mq_stop_hw_queues() on device_add_disk() error as the queue
+will be long gone by then.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: David Yang <davidcomponentone@gmail.com>
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- arch/um/drivers/virt-pci.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ drivers/block/xen-blkfront.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
-index c08066633023..148fa7a15ee0 100644
---- a/arch/um/drivers/virt-pci.c
-+++ b/arch/um/drivers/virt-pci.c
-@@ -180,16 +180,14 @@ static unsigned long um_pci_cfgspace_read(void *priv, unsigned int offset,
- 	};
- 	/* buf->data is maximum size - we may only use parts of it */
- 	struct um_pci_message_buffer *buf;
--	u8 *data;
- 	unsigned long ret = ~0ULL;
+diff --git a/drivers/block/xen-blkfront.c b/drivers/block/xen-blkfront.c
+index df0deb927760..8e3983e456f3 100644
+--- a/drivers/block/xen-blkfront.c
++++ b/drivers/block/xen-blkfront.c
+@@ -2386,7 +2386,13 @@ static void blkfront_connect(struct blkfront_info *info)
+ 	for_each_rinfo(info, rinfo, i)
+ 		kick_pending_request_queues(rinfo);
  
- 	if (!dev)
- 		return ~0ULL;
+-	device_add_disk(&info->xbdev->dev, info->gd, NULL);
++	err = device_add_disk(&info->xbdev->dev, info->gd, NULL);
++	if (err) {
++		blk_cleanup_disk(info->gd);
++		blk_mq_free_tag_set(&info->tag_set);
++		info->rq = NULL;
++		goto fail;
++	}
  
- 	buf = get_cpu_var(um_pci_msg_bufs);
--	data = buf->data;
- 
--	memset(data, 0xff, sizeof(data));
-+	memset(buf->data, 0xff, sizeof(buf->data));
- 
- 	switch (size) {
- 	case 1:
-@@ -204,22 +202,22 @@ static unsigned long um_pci_cfgspace_read(void *priv, unsigned int offset,
- 		goto out;
- 	}
- 
--	if (um_pci_send_cmd(dev, &hdr, sizeof(hdr), NULL, 0, data, 8))
-+	if (um_pci_send_cmd(dev, &hdr, sizeof(hdr), NULL, 0, buf->data, 8))
- 		goto out;
- 
- 	switch (size) {
- 	case 1:
--		ret = data[0];
-+		ret = buf->data[0];
- 		break;
- 	case 2:
--		ret = le16_to_cpup((void *)data);
-+		ret = le16_to_cpup((void *)buf->data);
- 		break;
- 	case 4:
--		ret = le32_to_cpup((void *)data);
-+		ret = le32_to_cpup((void *)buf->data);
- 		break;
- #ifdef CONFIG_64BIT
- 	case 8:
--		ret = le64_to_cpup((void *)data);
-+		ret = le64_to_cpup((void *)buf->data);
- 		break;
- #endif
- 	default:
+ 	info->is_ready = 1;
+ 	return;
 -- 
 2.30.2
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
