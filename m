@@ -1,77 +1,52 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH] media: ivtv: fix build for UML
-Date: Sun, 10 Oct 2021 12:38:36 -0700
-Message-Id: <20211010193836.32300-1-rdunlap@infradead.org>
+Return-Path: <mcgrof@infradead.org>
+From: Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH 9/9] mtd: add add_disk() error handling
+Date: Fri, 15 Oct 2021 16:30:28 -0700
+Message-Id: <20211015233028.2167651-10-mcgrof@kernel.org>
+In-Reply-To: <20211015233028.2167651-1-mcgrof@kernel.org>
+References: <20211015233028.2167651-1-mcgrof@kernel.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>, Johannes Berg <johannes@sipsolutions.net>, Andy Walls <awalls@md.metrocast.net>, Mauro Carvalho Chehab <mchehab@kernel.org>, linux-media@vger.kernel.org, linux-um@lists.infradead.org, Richard Weinberger <richard@nod.at>
+Content-Transfer-Encoding: 8bit
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+To: axboe@kernel.dk, jejb@linux.ibm.com, martin.petersen@oracle.com, agk@redhat.com, snitzer@redhat.com, colyli@suse.de, kent.overstreet@gmail.com, boris.ostrovsky@oracle.com, jgross@suse.com, sstabellini@kernel.org, roger.pau@citrix.com, geert@linux-m68k.org, ulf.hansson@linaro.org, tj@kernel.org, hare@suse.de, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, krisman@collabora.com, chris.obbard@collabora.com, thehajime@gmail.com, zhuyifei1999@gmail.com, haris.iqbal@ionos.com, jinpu.wang@ionos.com, miquel.raynal@bootlin.com, vigneshr@ti.com, linux-mtd@lists.infradead.org
+Cc: linux-scsi@vger.kernel.org, dm-devel@redhat.com, linux-bcache@vger.kernel.org, xen-devel@lists.xenproject.org, linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-UHJldmVudCB0aGUgdXNlIG9mIHBhZ2UgdGFibGUgbWFjcm9zIGFuZCB0eXBlcyBmcm9tIDIgY29u
-ZmxpY3RpbmcKcGxhY2VzLiBUaGlzIGZpeGVzIG11bHRpcGxlIGJ1aWxkIGVycm9ycyBhbmQgd2Fy
-bmluZ3MsIGUuZy46CgouLi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9wZ3RhYmxlXzY0X3R5cGVzLmg6
-MjE6MzQ6IGVycm9yOiBjb25mbGljdGluZyB0eXBlcyBmb3Ig4oCYcHRlX3TigJkKIHR5cGVkZWYg
-c3RydWN0IHsgcHRldmFsX3QgcHRlOyB9IHB0ZV90OwogICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgXn5+fn4KSW4gZmlsZSBpbmNsdWRlZCBmcm9tIC4uL2luY2x1ZGUvbGludXgvbW1f
-dHlwZXNfdGFzay5oOjE2OjAsCiAgICAgICAgICAgICAgICAgZnJvbSAuLi9pbmNsdWRlL2xpbnV4
-L21tX3R5cGVzLmg6NSwKICAgICAgICAgICAgICAgICBmcm9tIC4uL2luY2x1ZGUvbGludXgvYnVp
-bGRpZC5oOjUsCiAgICAgICAgICAgICAgICAgZnJvbSAuLi9pbmNsdWRlL2xpbnV4L21vZHVsZS5o
-OjE0LAogICAgICAgICAgICAgICAgIGZyb20gLi4vZHJpdmVycy9tZWRpYS9wY2kvaXZ0di9pdnR2
-LWRyaXZlci5oOjQwLAogICAgICAgICAgICAgICAgIGZyb20gLi4vZHJpdmVycy9tZWRpYS9wY2kv
-aXZ0di9pdnR2ZmIuYzoyOToKLi4vYXJjaC91bS9pbmNsdWRlL2FzbS9wYWdlLmg6NTc6Mzk6IG5v
-dGU6IHByZXZpb3VzIGRlY2xhcmF0aW9uIG9mIOKAmHB0ZV904oCZIHdhcyBoZXJlCiB0eXBlZGVm
-IHN0cnVjdCB7IHVuc2lnbmVkIGxvbmcgcHRlOyB9IHB0ZV90OwoKLi4vYXJjaC94ODYvaW5jbHVk
-ZS9hc20vcGd0YWJsZV90eXBlcy5oOjI4NDo0MzogZXJyb3I6IGV4cGVjdGVkIOKAmCnigJkgYmVm
-b3JlIOKAmHByb3TigJkKIHN0YXRpYyBpbmxpbmUgcGdwcm90X3QgcGdwcm90X254KHBncHJvdF90
-IHByb3QpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBeCi4uL2lu
-Y2x1ZGUvbGludXgvcGd0YWJsZS5oOjkxNDoyNjogbm90ZTogaW4gZGVmaW5pdGlvbiBvZiBtYWNy
-byDigJhwZ3Byb3RfbnjigJkKICNkZWZpbmUgcGdwcm90X254KHByb3QpIChwcm90KQogICAgICAg
-ICAgICAgICAgICAgICAgICAgIF5+fn4KSW4gZmlsZSBpbmNsdWRlZCBmcm9tIC4uL2FyY2gveDg2
-L2luY2x1ZGUvYXNtL21lbXR5cGUuaDo2OjAsCiAgICAgICAgICAgICAgICAgZnJvbSAuLi9kcml2
-ZXJzL21lZGlhL3BjaS9pdnR2L2l2dHZmYi5jOjQwOgouLi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9w
-Z3RhYmxlX3R5cGVzLmg6Mjg4OjA6IHdhcm5pbmc6ICJwZ3Byb3RfbngiIHJlZGVmaW5lZAogI2Rl
-ZmluZSBwZ3Byb3RfbnggcGdwcm90X254CgouLi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9wYWdlX3R5
-cGVzLmg6MTE6MDogd2FybmluZzogIlBBR0VfU0laRSIgcmVkZWZpbmVkCiAjZGVmaW5lIFBBR0Vf
-U0laRSAgKF9BQygxLFVMKSA8PCBQQUdFX1NISUZUKQogCkluIGZpbGUgaW5jbHVkZWQgZnJvbSAu
-Li9pbmNsdWRlL2xpbnV4L21tX3R5cGVzX3Rhc2suaDoxNjowLAogICAgICAgICAgICAgICAgIGZy
-b20gLi4vaW5jbHVkZS9saW51eC9tbV90eXBlcy5oOjUsCiAgICAgICAgICAgICAgICAgZnJvbSAu
-Li9pbmNsdWRlL2xpbnV4L2J1aWxkaWQuaDo1LAogICAgICAgICAgICAgICAgIGZyb20gLi4vaW5j
-bHVkZS9saW51eC9tb2R1bGUuaDoxNCwKICAgICAgICAgICAgICAgICBmcm9tIC4uL2RyaXZlcnMv
-bWVkaWEvcGNpL2l2dHYvaXZ0di1kcml2ZXIuaDo0MCwKICAgICAgICAgICAgICAgICBmcm9tIC4u
-L2RyaXZlcnMvbWVkaWEvcGNpL2l2dHYvaXZ0dmZiLmM6Mjk6Ci4uL2FyY2gvdW0vaW5jbHVkZS9h
-c20vcGFnZS5oOjE0OjA6IG5vdGU6IHRoaXMgaXMgdGhlIGxvY2F0aW9uIG9mIHRoZSBwcmV2aW91
-cyBkZWZpbml0aW9uCiAjZGVmaW5lIFBBR0VfU0laRSAoX0FDKDEsIFVMKSA8PCBQQUdFX1NISUZU
-KQoKRml4ZXM6IDY4ZjVkM2YzYjY1NCAoInVtOiBhZGQgUENJIG92ZXIgdmlydGlvIGVtdWxhdGlv
-biBkcml2ZXIiKQpTaWduZWQtb2ZmLWJ5OiBSYW5keSBEdW5sYXAgPHJkdW5sYXBAaW5mcmFkZWFk
-Lm9yZz4KQ2M6IEpvaGFubmVzIEJlcmcgPGpvaGFubmVzQHNpcHNvbHV0aW9ucy5uZXQ+CkNjOiBB
-bmR5IFdhbGxzIDxhd2FsbHNAbWQubWV0cm9jYXN0Lm5ldD4KQ2M6IE1hdXJvIENhcnZhbGhvIENo
-ZWhhYiA8bWNoZWhhYkBrZXJuZWwub3JnPgpDYzogbGludXgtbWVkaWFAdmdlci5rZXJuZWwub3Jn
-CkNjOiBsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCkNjOiBSaWNoYXJkIFdlaW5iZXJnZXIg
-PHJpY2hhcmRAbm9kLmF0PgotLS0KIGRyaXZlcnMvbWVkaWEvcGNpL2l2dHYvaXZ0dmZiLmMgfCAg
-ICA0ICsrLS0KIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0p
-CgotLS0gbGludXgtbmV4dC0yMDIxMTAwNy5vcmlnL2RyaXZlcnMvbWVkaWEvcGNpL2l2dHYvaXZ0
-dmZiLmMKKysrIGxpbnV4LW5leHQtMjAyMTEwMDcvZHJpdmVycy9tZWRpYS9wY2kvaXZ0di9pdnR2
-ZmIuYwpAQCAtMzYsNyArMzYsNyBAQAogI2luY2x1ZGUgPGxpbnV4L2ZiLmg+CiAjaW5jbHVkZSA8
-bGludXgvaXZ0dmZiLmg+CiAKLSNpZmRlZiBDT05GSUdfWDg2XzY0CisjaWYgZGVmaW5lZChDT05G
-SUdfWDg2XzY0KSAmJiAhZGVmaW5lZChDT05GSUdfVU1MKQogI2luY2x1ZGUgPGFzbS9tZW10eXBl
-Lmg+CiAjZW5kaWYKIApAQCAtMTE1Nyw3ICsxMTU3LDcgQEAgc3RhdGljIGludCBpdnR2ZmJfaW5p
-dF9jYXJkKHN0cnVjdCBpdnR2CiB7CiAJaW50IHJjOwogCi0jaWZkZWYgQ09ORklHX1g4Nl82NAor
-I2lmIGRlZmluZWQoQ09ORklHX1g4Nl82NCkgJiYgIWRlZmluZWQoQ09ORklHX1VNTCkKIAlpZiAo
-cGF0X2VuYWJsZWQoKSkgewogCQlpZiAoaXZ0dmZiX2ZvcmNlX3BhdCkgewogCQkJcHJfaW5mbygi
-UEFUIGlzIGVuYWJsZWQuIFdyaXRlLWNvbWJpbmVkIGZyYW1lYnVmZmVyIGNhY2hpbmcgd2lsbCBi
-ZSBkaXNhYmxlZC5cbiIpOwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5v
-cmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
+We never checked for errors on add_disk() as this function
+returned void. Now that this is fixed, use the shiny new
+error handling.
+
+Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+---
+ drivers/mtd/mtd_blkdevs.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+index b8ae1ec14e17..4eaba6f4ec68 100644
+--- a/drivers/mtd/mtd_blkdevs.c
++++ b/drivers/mtd/mtd_blkdevs.c
+@@ -384,7 +384,9 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+ 	if (new->readonly)
+ 		set_disk_ro(gd, 1);
+ 
+-	device_add_disk(&new->mtd->dev, gd, NULL);
++	ret = device_add_disk(&new->mtd->dev, gd, NULL);
++	if (ret)
++		goto out_cleanup_disk;
+ 
+ 	if (new->disk_attributes) {
+ 		ret = sysfs_create_group(&disk_to_dev(gd)->kobj,
+@@ -393,6 +395,8 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+ 	}
+ 	return 0;
+ 
++out_cleanup_disk:
++	blk_cleanup_disk(new->disk);
+ out_free_tag_set:
+ 	blk_mq_free_tag_set(new->tag_set);
+ out_kfree_tag_set:
+-- 
+2.30.2
+
 
