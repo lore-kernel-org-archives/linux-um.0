@@ -1,73 +1,72 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mgHvG-009b6H-F8
- for linux-um@lists.infradead.org; Fri, 29 Oct 2021 02:47:15 +0000
-From: Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH net-next 2/3] net: um: use eth_hw_addr_set()
-Date: Thu, 28 Oct 2021 19:47:06 -0700
-Message-Id: <20211029024707.316066-3-kuba@kernel.org>
-In-Reply-To: <20211029024707.316066-1-kuba@kernel.org>
-References: <20211029024707.316066-1-kuba@kernel.org>
+Return-Path: <mcgrof@infradead.org>
+From: Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH 7/9] um/drivers/ubd_kern: add error handling support for add_disk()
+Date: Fri, 15 Oct 2021 16:30:26 -0700
+Message-Id: <20211015233028.2167651-8-mcgrof@kernel.org>
+In-Reply-To: <20211015233028.2167651-1-mcgrof@kernel.org>
+References: <20211015233028.2167651-1-mcgrof@kernel.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: davem@davemloft.net
-Cc: netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, linux-um@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+To: axboe@kernel.dk, jejb@linux.ibm.com, martin.petersen@oracle.com, agk@redhat.com, snitzer@redhat.com, colyli@suse.de, kent.overstreet@gmail.com, boris.ostrovsky@oracle.com, jgross@suse.com, sstabellini@kernel.org, roger.pau@citrix.com, geert@linux-m68k.org, ulf.hansson@linaro.org, tj@kernel.org, hare@suse.de, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, krisman@collabora.com, chris.obbard@collabora.com, thehajime@gmail.com, zhuyifei1999@gmail.com, haris.iqbal@ionos.com, jinpu.wang@ionos.com, miquel.raynal@bootlin.com, vigneshr@ti.com, linux-mtd@lists.infradead.org
+Cc: linux-scsi@vger.kernel.org, dm-devel@redhat.com, linux-bcache@vger.kernel.org, xen-devel@lists.xenproject.org, linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-Commit 406f42fa0d3c ("net-next: When a bond have a massive amount
-of VLANs...") introduced a rbtree for faster Ethernet address look
-up. To maintain netdev->dev_addr in this tree we need to make all
-the writes to it go through appropriate helpers.
+We never checked for errors on add_disk() as this function
+returned void. Now that this is fixed, use the shiny new
+error handling.
 
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+ubd_disk_register() never returned an error, so just fix
+that now and let the caller handle the error condition.
+
+Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
-CC: jdike@addtoit.com
-CC: richard@nod.at
-CC: anton.ivanov@cambridgegreys.com
-CC: johannes.berg@intel.com
-CC: linux-um@lists.infradead.org
----
- arch/um/drivers/net_kern.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/um/drivers/ubd_kern.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
-index 2fc0b038ff8a..59331384c2d3 100644
---- a/arch/um/drivers/net_kern.c
-+++ b/arch/um/drivers/net_kern.c
-@@ -276,7 +276,7 @@ static const struct ethtool_ops uml_net_ethtool_ops = {
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index fefd343412c7..69d2d0049a61 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -855,8 +855,8 @@ static const struct attribute_group *ubd_attr_groups[] = {
+ 	NULL,
+ };
  
- void uml_net_setup_etheraddr(struct net_device *dev, char *str)
+-static void ubd_disk_register(int major, u64 size, int unit,
+-			      struct gendisk *disk)
++static int ubd_disk_register(int major, u64 size, int unit,
++			     struct gendisk *disk)
  {
--	unsigned char *addr = dev->dev_addr;
-+	u8 addr[ETH_ALEN];
- 	char *end;
- 	int i;
+ 	disk->major = major;
+ 	disk->first_minor = unit << UBD_SHIFT;
+@@ -873,7 +873,7 @@ static void ubd_disk_register(int major, u64 size, int unit,
  
-@@ -316,6 +316,7 @@ void uml_net_setup_etheraddr(struct net_device *dev, char *str)
- 		       addr[0] | 0x02, addr[1], addr[2], addr[3], addr[4],
- 		       addr[5]);
- 	}
-+	eth_hw_addr_set(dev, addr);
- 	return;
+ 	disk->private_data = &ubd_devs[unit];
+ 	disk->queue = ubd_devs[unit].queue;
+-	device_add_disk(&ubd_devs[unit].pdev.dev, disk, ubd_attr_groups);
++	return device_add_disk(&ubd_devs[unit].pdev.dev, disk, ubd_attr_groups);
+ }
  
- random:
+ #define ROUND_BLOCK(n) ((n + (SECTOR_SIZE - 1)) & (-SECTOR_SIZE))
+@@ -920,10 +920,15 @@ static int ubd_add(int n, char **error_out)
+ 	blk_queue_write_cache(ubd_dev->queue, true, false);
+ 	blk_queue_max_segments(ubd_dev->queue, MAX_SG);
+ 	blk_queue_segment_boundary(ubd_dev->queue, PAGE_SIZE - 1);
+-	ubd_disk_register(UBD_MAJOR, ubd_dev->size, n, disk);
++	err = ubd_disk_register(UBD_MAJOR, ubd_dev->size, n, disk);
++	if (err)
++		goto out_cleanup_disk;
++
+ 	ubd_gendisk[n] = disk;
+ 	return 0;
+ 
++out_cleanup_disk:
++	blk_cleanup_disk(disk);
+ out_cleanup_tags:
+ 	blk_mq_free_tag_set(&ubd_dev->tag_set);
+ out:
 -- 
-2.31.1
+2.30.2
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
