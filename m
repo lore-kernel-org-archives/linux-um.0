@@ -1,57 +1,64 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH net-next] net: intel: igc_ptp: fix build for UML
-Date: Wed, 13 Oct 2021 22:05:16 -0700
-Message-Id: <20211014050516.6846-1-rdunlap@infradead.org>
+Return-Path: <mcgrof@infradead.org>
+From: Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH 6/9] m68k/emu/nfblock: add error handling support for add_disk()
+Date: Fri, 15 Oct 2021 16:30:25 -0700
+Message-Id: <20211015233028.2167651-7-mcgrof@kernel.org>
+In-Reply-To: <20211015233028.2167651-1-mcgrof@kernel.org>
+References: <20211015233028.2167651-1-mcgrof@kernel.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: netdev@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>, linux-um@lists.infradead.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Jesse Brandeburg <jesse.brandeburg@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, intel-wired-lan@lists.osuosl.org
+Content-Transfer-Encoding: 8bit
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+To: axboe@kernel.dk, jejb@linux.ibm.com, martin.petersen@oracle.com, agk@redhat.com, snitzer@redhat.com, colyli@suse.de, kent.overstreet@gmail.com, boris.ostrovsky@oracle.com, jgross@suse.com, sstabellini@kernel.org, roger.pau@citrix.com, geert@linux-m68k.org, ulf.hansson@linaro.org, tj@kernel.org, hare@suse.de, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, krisman@collabora.com, chris.obbard@collabora.com, thehajime@gmail.com, zhuyifei1999@gmail.com, haris.iqbal@ionos.com, jinpu.wang@ionos.com, miquel.raynal@bootlin.com, vigneshr@ti.com, linux-mtd@lists.infradead.org
+Cc: linux-scsi@vger.kernel.org, dm-devel@redhat.com, linux-bcache@vger.kernel.org, xen-devel@lists.xenproject.org, linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-T24gYSBVTUwgYnVpbGQsIHRoZSBpZ2NfcHRwIGRyaXZlciB1c2VzIENPTkZJR19YODZfVFNDIGZv
-ciB0aW1lc3RhbXAKY29udmVyc2lvbi4gVGhlIGZ1bmN0aW9uIHRoYXQgaXMgdXNlZCBpcyBub3Qg
-YXZhaWxhYmxlIG9uIFVNTCBidWlsZHMsCnNvIGhhdmUgdGhlIGZ1bmN0aW9uIHVzZSB0aGUgZGVm
-YXVsdCBzeXN0ZW1fY291bnRlcnZhbF90IHRpbWVzdGFtcAppbnN0ZWFkIGZvciBVTUwgYnVpbGRz
-LgoKUHJldmVudHMgdGhpcyBidWlsZCBlcnJvciBvbiBVTUw6CgouLi9kcml2ZXJzL25ldC9ldGhl
-cm5ldC9pbnRlbC9pZ2MvaWdjX3B0cC5jOiBJbiBmdW5jdGlvbiDigJhpZ2NfZGV2aWNlX3RzdGFt
-cF90b19zeXN0ZW3igJk6Ci4uL2RyaXZlcnMvbmV0L2V0aGVybmV0L2ludGVsL2lnYy9pZ2NfcHRw
-LmM6Nzc3Ojk6IGVycm9yOiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlvbiDigJhjb252
-ZXJ0X2FydF9uc190b190c2PigJkgWy1XZXJyb3I9aW1wbGljaXQtZnVuY3Rpb24tZGVjbGFyYXRp
-b25dCiAgcmV0dXJuIGNvbnZlcnRfYXJ0X25zX3RvX3RzYyh0c3RhbXApOwouLi9kcml2ZXJzL25l
-dC9ldGhlcm5ldC9pbnRlbC9pZ2MvaWdjX3B0cC5jOjc3Nzo5OiBlcnJvcjogaW5jb21wYXRpYmxl
-IHR5cGVzIHdoZW4gcmV0dXJuaW5nIHR5cGUg4oCYaW504oCZIGJ1dCDigJhzdHJ1Y3Qgc3lzdGVt
-X2NvdW50ZXJ2YWxfdOKAmSB3YXMgZXhwZWN0ZWQKICByZXR1cm4gY29udmVydF9hcnRfbnNfdG9f
-dHNjKHRzdGFtcCk7CgpGaXhlczogNjhmNWQzZjNiNjU0ICgidW06IGFkZCBQQ0kgb3ZlciB2aXJ0
-aW8gZW11bGF0aW9uIGRyaXZlciIpClNpZ25lZC1vZmYtYnk6IFJhbmR5IER1bmxhcCA8cmR1bmxh
-cEBpbmZyYWRlYWQub3JnPgpDYzogbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpDYzogSmVm
-ZiBEaWtlIDxqZGlrZUBhZGR0b2l0LmNvbT4KQ2M6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFy
-ZEBub2QuYXQ+CkNjOiBBbnRvbiBJdmFub3YgPGFudG9uLml2YW5vdkBjYW1icmlkZ2VncmV5cy5j
-b20+CkNjOiAiRGF2aWQgUy4gTWlsbGVyIiA8ZGF2ZW1AZGF2ZW1sb2Z0Lm5ldD4KQ2M6IEpha3Vi
-IEtpY2luc2tpIDxrdWJhQGtlcm5lbC5vcmc+CkNjOiBKZXNzZSBCcmFuZGVidXJnIDxqZXNzZS5i
-cmFuZGVidXJnQGludGVsLmNvbT4KQ2M6IFRvbnkgTmd1eWVuIDxhbnRob255Lmwubmd1eWVuQGlu
-dGVsLmNvbT4KQ2M6IGludGVsLXdpcmVkLWxhbkBsaXN0cy5vc3Vvc2wub3JnCi0tLQogZHJpdmVy
-cy9uZXQvZXRoZXJuZXQvaW50ZWwvaWdjL2lnY19wdHAuYyB8ICAgIDIgKy0KIDEgZmlsZSBjaGFu
-Z2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQoKLS0tIGxpbnV4LW5leHQtMjAyMTEw
-MTMub3JpZy9kcml2ZXJzL25ldC9ldGhlcm5ldC9pbnRlbC9pZ2MvaWdjX3B0cC5jCisrKyBsaW51
-eC1uZXh0LTIwMjExMDEzL2RyaXZlcnMvbmV0L2V0aGVybmV0L2ludGVsL2lnYy9pZ2NfcHRwLmMK
-QEAgLTc3Myw3ICs3NzMsNyBAQCBzdGF0aWMgYm9vbCBpZ2NfaXNfY3Jvc3N0c3RhbXBfc3VwcG9y
-dGVkCiAKIHN0YXRpYyBzdHJ1Y3Qgc3lzdGVtX2NvdW50ZXJ2YWxfdCBpZ2NfZGV2aWNlX3RzdGFt
-cF90b19zeXN0ZW0odTY0IHRzdGFtcCkKIHsKLSNpZiBJU19FTkFCTEVEKENPTkZJR19YODZfVFND
-KQorI2lmIElTX0VOQUJMRUQoQ09ORklHX1g4Nl9UU0MpICYmICFkZWZpbmVkKENPTkZJR19VTUwp
-CiAJcmV0dXJuIGNvbnZlcnRfYXJ0X25zX3RvX3RzYyh0c3RhbXApOwogI2Vsc2UKIAlyZXR1cm4g
-KHN0cnVjdCBzeXN0ZW1fY291bnRlcnZhbF90KSB7IH07CgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1A
-bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2xpbnV4LXVtCg==
+We never checked for errors on add_disk() as this function
+returned void. Now that this is fixed, use the shiny new
+error handling.
+
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+---
+ arch/m68k/emu/nfblock.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/arch/m68k/emu/nfblock.c b/arch/m68k/emu/nfblock.c
+index 9a8394e96388..4de5a6087034 100644
+--- a/arch/m68k/emu/nfblock.c
++++ b/arch/m68k/emu/nfblock.c
+@@ -100,6 +100,7 @@ static int __init nfhd_init_one(int id, u32 blocks, u32 bsize)
+ {
+ 	struct nfhd_device *dev;
+ 	int dev_id = id - NFHD_DEV_OFFSET;
++	int err = -ENOMEM;
+ 
+ 	pr_info("nfhd%u: found device with %u blocks (%u bytes)\n", dev_id,
+ 		blocks, bsize);
+@@ -130,16 +131,20 @@ static int __init nfhd_init_one(int id, u32 blocks, u32 bsize)
+ 	sprintf(dev->disk->disk_name, "nfhd%u", dev_id);
+ 	set_capacity(dev->disk, (sector_t)blocks * (bsize / 512));
+ 	blk_queue_logical_block_size(dev->disk->queue, bsize);
+-	add_disk(dev->disk);
++	err = add_disk(dev->disk);
++	if (err)
++		goto out_cleanup_disk;
+ 
+ 	list_add_tail(&dev->list, &nfhd_list);
+ 
+ 	return 0;
+ 
++out_cleanup_disk:
++	blk_cleanup_disk(dev->disk);
+ free_dev:
+ 	kfree(dev);
+ out:
+-	return -ENOMEM;
++	return err;
+ }
+ 
+ static int __init nfhd_init(void)
+-- 
+2.30.2
+
 
