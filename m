@@ -1,20 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-qv1-xf32.google.com ([2607:f8b0:4864:20::f32])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mYN0m-00GHkg-6h
- for linux-um@lists.infradead.org; Thu, 07 Oct 2021 06:36:13 +0000
-Received: by mail-qv1-xf32.google.com with SMTP id jo30so3535296qvb.3
- for <linux-um@lists.infradead.org>; Wed, 06 Oct 2021 23:36:08 -0700 (PDT)
-Received: from crass-HP-ZBook-15-G2 ([37.218.244.251])
- by smtp.gmail.com with ESMTPSA id t17sm14973692qtq.56.2021.10.06.23.36.06
- for <linux-um@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 06 Oct 2021 23:36:06 -0700 (PDT)
-Date: Thu, 7 Oct 2021 01:36:01 -0500
-From: Glenn Washburn <development@efficientek.com>
-Subject: Using GDB to debug a user space process in UML
-Message-ID: <20211007013601.45fa8947@crass-HP-ZBook-15-G2>
+Received: from www.linuxtv.org ([130.149.80.248])
+ by desiato.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mcUtv-00AZeN-2i
+ for linux-um@lists.infradead.org; Mon, 18 Oct 2021 15:50:13 +0000
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Date: Mon, 18 Oct 2021 15:49:09 +0000
+Subject: [git:media_stage/master] media: ivtv: fix build for UML
 MIME-Version: 1.0
+Message-Id: <E1mcUti-007qwe-5o@www.linuxtv.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -23,63 +16,73 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Reply-To: development@efficientek.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: linux-media@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
+To: linuxtv-commits@linuxtv.org
+Cc: Richard Weinberger <richard@nod.at>, Andy Walls <awalls@md.metrocast.net>, linux-um@lists.infradead.org, Johannes Berg <johannes@sipsolutions.net>, Randy Dunlap <rdunlap@infradead.org>, Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
-I'm trying to debug a crash in busybox while it is the init process in
-a UML instance. I'm having trouble breaking on the entry point of the
-busybox binary. I'm pretty new to this space, so I'm proceeding from a
-lot of ignorance, please correct me where I'm wrong and help me clear
-up some things.
-
-Based on the tracing and debugging sections of the UML howto[1] and
-other potentially out-of-date mailinglist comments, I understand that
-the architecture of UML is that there is one kernel thread, a SIGIO
-thread, a UBD thread, and some other threads for MMU emulation. One
-thing that is unclear to me is where the user-space processes fir in to
-this. In some old mailinglist emails, I've seen things that lead me to
-belief that all user-space processes are in the kernel thread. I've
-also seen things suggesting that each user space process has its own
-thread, perhaps this was only with SKAS(3) mode. My guess is that they
-are all in the one kernel thread.
-
-When I break on start_thread, I can see its being called with an EIP
-that is the value of the entry point of the busybox binary. But when I
-set a break point (software or hardware), it never gets hit. My guess
-is that that address, which is virtual for the UML, must get translated
-to the real virtual address of the UML process/host kernel. If so, how
-do I do that translation?
-
-I've also tried to step into the busybox from the kernel by stepping
-through instructions after breaking on switch_threads. This doesn't
-seem to ever step through non-kernel space. Am I correct that the
-UML_LONGJMP is the part of the code that would jump into user space?
-
-Also, I may be confused about TT (thread tracing) vs SKAS (separate
-kernel address space) modes. My understanding is that the mainline has
-what's called SKAS0, which was called TT mode. And what was called SKAS
-mode, also called SKAS3, was never merged into mainline. Is this
-correct?
-
-I've seen the question of debugging user space in UML pop up on the old
-mailing list, but haven't really seen much in the way of an answer. Is
-there currently a way to do this? If the UML user space process's
-address space is remapped in the UML process, it seems like gdb could
-theoretically be able remap the debug symbols to the right place.
-
-Any help would be much appreciated,
-Glenn
-
-[1]
-https://www.kernel.org/doc/html/v5.14/virt/uml/user_mode_linux_howto_v2.html#tracing-uml
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+VGhpcyBpcyBhbiBhdXRvbWF0aWMgZ2VuZXJhdGVkIGVtYWlsIHRvIGxldCB5b3Uga25vdyB0aGF0
+IHRoZSBmb2xsb3dpbmcgcGF0Y2ggd2VyZSBxdWV1ZWQ6CgpTdWJqZWN0OiBtZWRpYTogaXZ0djog
+Zml4IGJ1aWxkIGZvciBVTUwKQXV0aG9yOiAgUmFuZHkgRHVubGFwIDxyZHVubGFwQGluZnJhZGVh
+ZC5vcmc+CkRhdGU6ICAgIFN1biBPY3QgMTAgMjA6Mzg6MzYgMjAyMSArMDEwMAoKUHJldmVudCB0
+aGUgdXNlIG9mIHBhZ2UgdGFibGUgbWFjcm9zIGFuZCB0eXBlcyBmcm9tIDIgY29uZmxpY3RpbmcK
+cGxhY2VzLiBUaGlzIGZpeGVzIG11bHRpcGxlIGJ1aWxkIGVycm9ycyBhbmQgd2FybmluZ3MsIGUu
+Zy46CgouLi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9wZ3RhYmxlXzY0X3R5cGVzLmg6MjE6MzQ6IGVy
+cm9yOiBjb25mbGljdGluZyB0eXBlcyBmb3Ig4oCYcHRlX3TigJkKIHR5cGVkZWYgc3RydWN0IHsg
+cHRldmFsX3QgcHRlOyB9IHB0ZV90OwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+Xn5+fn4KSW4gZmlsZSBpbmNsdWRlZCBmcm9tIC4uL2luY2x1ZGUvbGludXgvbW1fdHlwZXNfdGFz
+ay5oOjE2OjAsCiAgICAgICAgICAgICAgICAgZnJvbSAuLi9pbmNsdWRlL2xpbnV4L21tX3R5cGVz
+Lmg6NSwKICAgICAgICAgICAgICAgICBmcm9tIC4uL2luY2x1ZGUvbGludXgvYnVpbGRpZC5oOjUs
+CiAgICAgICAgICAgICAgICAgZnJvbSAuLi9pbmNsdWRlL2xpbnV4L21vZHVsZS5oOjE0LAogICAg
+ICAgICAgICAgICAgIGZyb20gLi4vZHJpdmVycy9tZWRpYS9wY2kvaXZ0di9pdnR2LWRyaXZlci5o
+OjQwLAogICAgICAgICAgICAgICAgIGZyb20gLi4vZHJpdmVycy9tZWRpYS9wY2kvaXZ0di9pdnR2
+ZmIuYzoyOToKLi4vYXJjaC91bS9pbmNsdWRlL2FzbS9wYWdlLmg6NTc6Mzk6IG5vdGU6IHByZXZp
+b3VzIGRlY2xhcmF0aW9uIG9mIOKAmHB0ZV904oCZIHdhcyBoZXJlCiB0eXBlZGVmIHN0cnVjdCB7
+IHVuc2lnbmVkIGxvbmcgcHRlOyB9IHB0ZV90OwoKLi4vYXJjaC94ODYvaW5jbHVkZS9hc20vcGd0
+YWJsZV90eXBlcy5oOjI4NDo0MzogZXJyb3I6IGV4cGVjdGVkIOKAmCnigJkgYmVmb3JlIOKAmHBy
+b3TigJkKIHN0YXRpYyBpbmxpbmUgcGdwcm90X3QgcGdwcm90X254KHBncHJvdF90IHByb3QpCiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBeCi4uL2luY2x1ZGUvbGlu
+dXgvcGd0YWJsZS5oOjkxNDoyNjogbm90ZTogaW4gZGVmaW5pdGlvbiBvZiBtYWNybyDigJhwZ3By
+b3RfbnjigJkKICNkZWZpbmUgcGdwcm90X254KHByb3QpIChwcm90KQogICAgICAgICAgICAgICAg
+ICAgICAgICAgIF5+fn4KSW4gZmlsZSBpbmNsdWRlZCBmcm9tIC4uL2FyY2gveDg2L2luY2x1ZGUv
+YXNtL21lbXR5cGUuaDo2OjAsCiAgICAgICAgICAgICAgICAgZnJvbSAuLi9kcml2ZXJzL21lZGlh
+L3BjaS9pdnR2L2l2dHZmYi5jOjQwOgouLi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9wZ3RhYmxlX3R5
+cGVzLmg6Mjg4OjA6IHdhcm5pbmc6ICJwZ3Byb3RfbngiIHJlZGVmaW5lZAogI2RlZmluZSBwZ3By
+b3RfbnggcGdwcm90X254CgouLi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9wYWdlX3R5cGVzLmg6MTE6
+MDogd2FybmluZzogIlBBR0VfU0laRSIgcmVkZWZpbmVkCiAjZGVmaW5lIFBBR0VfU0laRSAgKF9B
+QygxLFVMKSA8PCBQQUdFX1NISUZUKQoKSW4gZmlsZSBpbmNsdWRlZCBmcm9tIC4uL2luY2x1ZGUv
+bGludXgvbW1fdHlwZXNfdGFzay5oOjE2OjAsCiAgICAgICAgICAgICAgICAgZnJvbSAuLi9pbmNs
+dWRlL2xpbnV4L21tX3R5cGVzLmg6NSwKICAgICAgICAgICAgICAgICBmcm9tIC4uL2luY2x1ZGUv
+bGludXgvYnVpbGRpZC5oOjUsCiAgICAgICAgICAgICAgICAgZnJvbSAuLi9pbmNsdWRlL2xpbnV4
+L21vZHVsZS5oOjE0LAogICAgICAgICAgICAgICAgIGZyb20gLi4vZHJpdmVycy9tZWRpYS9wY2kv
+aXZ0di9pdnR2LWRyaXZlci5oOjQwLAogICAgICAgICAgICAgICAgIGZyb20gLi4vZHJpdmVycy9t
+ZWRpYS9wY2kvaXZ0di9pdnR2ZmIuYzoyOToKLi4vYXJjaC91bS9pbmNsdWRlL2FzbS9wYWdlLmg6
+MTQ6MDogbm90ZTogdGhpcyBpcyB0aGUgbG9jYXRpb24gb2YgdGhlIHByZXZpb3VzIGRlZmluaXRp
+b24KICNkZWZpbmUgUEFHRV9TSVpFIChfQUMoMSwgVUwpIDw8IFBBR0VfU0hJRlQpCgpGaXhlczog
+NjhmNWQzZjNiNjU0ICgidW06IGFkZCBQQ0kgb3ZlciB2aXJ0aW8gZW11bGF0aW9uIGRyaXZlciIp
+ClNpZ25lZC1vZmYtYnk6IFJhbmR5IER1bmxhcCA8cmR1bmxhcEBpbmZyYWRlYWQub3JnPgpDYzog
+Sm9oYW5uZXMgQmVyZyA8am9oYW5uZXNAc2lwc29sdXRpb25zLm5ldD4KQ2M6IEFuZHkgV2FsbHMg
+PGF3YWxsc0BtZC5tZXRyb2Nhc3QubmV0PgpDYzogbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9y
+ZwpDYzogUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNoYXJkQG5vZC5hdD4KU2lnbmVkLW9mZi1ieTog
+SGFucyBWZXJrdWlsIDxodmVya3VpbC1jaXNjb0B4czRhbGwubmw+ClNpZ25lZC1vZmYtYnk6IE1h
+dXJvIENhcnZhbGhvIENoZWhhYiA8bWNoZWhhYitodWF3ZWlAa2VybmVsLm9yZz4KCiBkcml2ZXJz
+L21lZGlhL3BjaS9pdnR2L2l2dHZmYi5jIHwgNCArKy0tCiAxIGZpbGUgY2hhbmdlZCwgMiBpbnNl
+cnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQoKLS0tCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tZWRp
+YS9wY2kvaXZ0di9pdnR2ZmIuYyBiL2RyaXZlcnMvbWVkaWEvcGNpL2l2dHYvaXZ0dmZiLmMKaW5k
+ZXggYzU4Y2E4YWE2ZDkwLi4yYzQzZWJmODM5NjYgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbWVkaWEv
+cGNpL2l2dHYvaXZ0dmZiLmMKKysrIGIvZHJpdmVycy9tZWRpYS9wY2kvaXZ0di9pdnR2ZmIuYwpA
+QCAtMzYsNyArMzYsNyBAQAogI2luY2x1ZGUgPGxpbnV4L2ZiLmg+CiAjaW5jbHVkZSA8bGludXgv
+aXZ0dmZiLmg+CiAKLSNpZmRlZiBDT05GSUdfWDg2XzY0CisjaWYgZGVmaW5lZChDT05GSUdfWDg2
+XzY0KSAmJiAhZGVmaW5lZChDT05GSUdfVU1MKQogI2luY2x1ZGUgPGFzbS9tZW10eXBlLmg+CiAj
+ZW5kaWYKIApAQCAtMTE1Nyw3ICsxMTU3LDcgQEAgc3RhdGljIGludCBpdnR2ZmJfaW5pdF9jYXJk
+KHN0cnVjdCBpdnR2ICppdHYpCiB7CiAJaW50IHJjOwogCi0jaWZkZWYgQ09ORklHX1g4Nl82NAor
+I2lmIGRlZmluZWQoQ09ORklHX1g4Nl82NCkgJiYgIWRlZmluZWQoQ09ORklHX1VNTCkKIAlpZiAo
+cGF0X2VuYWJsZWQoKSkgewogCQlpZiAoaXZ0dmZiX2ZvcmNlX3BhdCkgewogCQkJcHJfaW5mbygi
+UEFUIGlzIGVuYWJsZWQuIFdyaXRlLWNvbWJpbmVkIGZyYW1lYnVmZmVyIGNhY2hpbmcgd2lsbCBi
+ZSBkaXNhYmxlZC5cbiIpOwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5v
+cmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
 
