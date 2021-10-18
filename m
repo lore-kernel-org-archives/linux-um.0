@@ -1,9 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH v2] drm/r128: fix build for UML
-Date: Sun, 10 Oct 2021 10:29:55 -0700
-Message-Id: <20211010172955.30088-1-rdunlap@infradead.org>
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mcOuB-00EnbX-Sv
+ for linux-um@lists.infradead.org; Mon, 18 Oct 2021 09:26:05 +0000
+Received: by mail-ed1-f72.google.com with SMTP id
+ c25-20020a056402143900b003dc19782ea8so10294018edx.3
+ for <linux-um@lists.infradead.org>; Mon, 18 Oct 2021 02:24:15 -0700 (PDT)
+Date: Mon, 18 Oct 2021 11:24:10 +0200
+From: Stefano Garzarella <sgarzare@redhat.com>
+Subject: Re: [PATCH RFC] virtio: wrap config->reset calls
+Message-ID: <20211018092410.t5hilzz7kbto2mhy@steredhat>
+References: <20211013105226.20225-1-mst@redhat.com>
 MIME-Version: 1.0
+In-Reply-To: <20211013105226.20225-1-mst@redhat.com>
+Content-Disposition: inline
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -12,36 +22,52 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Jason Wang <jasowang@redhat.com>, Paolo Bonzini <pbonzini@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, Jens Axboe <axboe@kernel.dk>, Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg <johan.hedberg@gmail.com>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Matt Mackall <mpm@selenic.com>, Herbert Xu <herbert@gondor.apana.org.au>, Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Gonglei <arei.gonglei@huawei.com>, "David S. Miller" <davem@davemloft.net>, Sudeep Holla <sudeep.holla@arm.com>, Cristian Marussi <cristian.marussi@arm.com>, "Enrico Weigelt, metux IT consult" <info@metux.net>, Viresh Kumar <vireshk@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, David Airlie <airlied@linux.ie>, Gerd Hoffmann <kraxel@redhat.com>, Daniel Vetter <daniel@ffwll.ch>, Jie Deng <jie.deng@intel.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>, Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>, Jakub Kicinski <kuba@kernel.org>, Johannes Berg <johannes@sipsolutions.net>, Kalle Valo <kvalo@codeaurora.org>, Dan Williams <dan.j.williams@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, Ira Weiny <ira.weiny@intel.com>, Ohad Ben-Cohen <ohad@wizery.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, "James E.J. Bottomley" <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, David Hildenbrand <david@redhat.com>, Vivek Goyal <vgoyal@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>, Eric Van Hensbergen <ericvh@gmail.com>, Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, Anton Yakovlev <anton.yakovlev@opensynergy.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-um@lists.infradead.org, virtualization@lists.linux-foundation.org, linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org, linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-i2c@vger.kernel.org, iommu@lists.linux-foundation.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, nvdimm@lists.linux.dev, linux-remoteproc@vger.kernel.org, linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org, v9fs-developer@lists.sourceforge.net, kvm@vger.kernel.org, alsa-devel@alsa-project.org
 
-Rml4IGEgYnVpbGQgZXJyb3Igb24gQ09ORklHX1VNTCwgd2hpY2ggZG9lcyBub3Qgc3VwcG9ydCAo
-cHJvdmlkZSkKd2JpbnZkKCkuIFVNTCBjYW4gdXNlIHRoZSBnZW5lcmljIG1iKCkgaW5zdGVhZC4K
-Ci4uL2RyaXZlcnMvZ3B1L2RybS9yMTI4L2F0aV9wY2lnYXJ0LmM6IEluIGZ1bmN0aW9uIOKAmGRy
-bV9hdGlfcGNpZ2FydF9pbml04oCZOgouLi9kcml2ZXJzL2dwdS9kcm0vcjEyOC9hdGlfcGNpZ2Fy
-dC5jOjIxODoyOiBlcnJvcjogaW1wbGljaXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24g4oCYd2Jp
-bnZk4oCZIFstV2Vycm9yPWltcGxpY2l0LWZ1bmN0aW9uLWRlY2xhcmF0aW9uXQogIHdiaW52ZCgp
-OwogIF5+fn5+fgoKRml4ZXM6IDY4ZjVkM2YzYjY1NCAoInVtOiBhZGQgUENJIG92ZXIgdmlydGlv
-IGVtdWxhdGlvbiBkcml2ZXIiKQpTaWduZWQtb2ZmLWJ5OiBSYW5keSBEdW5sYXAgPHJkdW5sYXBA
-aW5mcmFkZWFkLm9yZz4KQ2M6IERhdmlkIEFpcmxpZSA8YWlybGllZEBsaW51eC5pZT4KQ2M6IERh
-bmllbCBWZXR0ZXIgPGRhbmllbEBmZndsbC5jaD4KQ2M6IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVz
-a3RvcC5vcmcKQ2M6IEplZmYgRGlrZSA8amRpa2VAYWRkdG9pdC5jb20+CkNjOiBSaWNoYXJkIFdl
-aW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0PgpDYzogQW50b24gSXZhbm92IDxhbnRvbi5pdmFub3ZA
-Y2FtYnJpZGdlZ3JleXMuY29tPgpDYzogbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwotLS0K
-djI6IHVwZGF0ZSBGaXhlczogdGFnICh0aGFua3MsIEpvaGFubmVzKQoKIGRyaXZlcnMvZ3B1L2Ry
-bS9yMTI4L2F0aV9wY2lnYXJ0LmMgfCAgICAyICstCiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRp
-b24oKyksIDEgZGVsZXRpb24oLSkKCi0tLSBsaW51eC1uZXh0LTIwMjExMDA3Lm9yaWcvZHJpdmVy
-cy9ncHUvZHJtL3IxMjgvYXRpX3BjaWdhcnQuYworKysgbGludXgtbmV4dC0yMDIxMTAwNy9kcml2
-ZXJzL2dwdS9kcm0vcjEyOC9hdGlfcGNpZ2FydC5jCkBAIC0yMTUsNyArMjE1LDcgQEAgaW50IGRy
-bV9hdGlfcGNpZ2FydF9pbml0KHN0cnVjdCBkcm1fZGV2aQogCX0KIAlyZXQgPSAwOwogCi0jaWYg
-ZGVmaW5lZChfX2kzODZfXykgfHwgZGVmaW5lZChfX3g4Nl82NF9fKQorI2lmIChkZWZpbmVkKF9f
-aTM4Nl9fKSB8fCBkZWZpbmVkKF9feDg2XzY0X18pKSAmJiAhZGVmaW5lZChDT05GSUdfVU1MKQog
-CXdiaW52ZCgpOwogI2Vsc2UKIAltYigpOwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmlu
-ZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
-aW51eC11bQo=
+On Wed, Oct 13, 2021 at 06:55:31AM -0400, Michael S. Tsirkin wrote:
+>This will enable cleanups down the road.
+>The idea is to disable cbs, then add "flush_queued_cbs" callback
+>as a parameter, this way drivers can flush any work
+>queued after callbacks have been disabled.
+>
+>Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+>---
+> arch/um/drivers/virt-pci.c                 | 2 +-
+> drivers/block/virtio_blk.c                 | 4 ++--
+> drivers/bluetooth/virtio_bt.c              | 2 +-
+> drivers/char/hw_random/virtio-rng.c        | 2 +-
+> drivers/char/virtio_console.c              | 4 ++--
+> drivers/crypto/virtio/virtio_crypto_core.c | 8 ++++----
+> drivers/firmware/arm_scmi/virtio.c         | 2 +-
+> drivers/gpio/gpio-virtio.c                 | 2 +-
+> drivers/gpu/drm/virtio/virtgpu_kms.c       | 2 +-
+> drivers/i2c/busses/i2c-virtio.c            | 2 +-
+> drivers/iommu/virtio-iommu.c               | 2 +-
+> drivers/net/caif/caif_virtio.c             | 2 +-
+> drivers/net/virtio_net.c                   | 4 ++--
+> drivers/net/wireless/mac80211_hwsim.c      | 2 +-
+> drivers/nvdimm/virtio_pmem.c               | 2 +-
+> drivers/rpmsg/virtio_rpmsg_bus.c           | 2 +-
+> drivers/scsi/virtio_scsi.c                 | 2 +-
+> drivers/virtio/virtio.c                    | 5 +++++
+> drivers/virtio/virtio_balloon.c            | 2 +-
+> drivers/virtio/virtio_input.c              | 2 +-
+> drivers/virtio/virtio_mem.c                | 2 +-
+> fs/fuse/virtio_fs.c                        | 4 ++--
+> include/linux/virtio.h                     | 1 +
+> net/9p/trans_virtio.c                      | 2 +-
+> net/vmw_vsock/virtio_transport.c           | 4 ++--
+
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
