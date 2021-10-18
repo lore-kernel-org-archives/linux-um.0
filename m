@@ -1,72 +1,50 @@
-Return-Path: <mcgrof@infradead.org>
-From: Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 7/9] um/drivers/ubd_kern: add error handling support for add_disk()
-Date: Fri, 15 Oct 2021 16:30:26 -0700
-Message-Id: <20211015233028.2167651-8-mcgrof@kernel.org>
-In-Reply-To: <20211015233028.2167651-1-mcgrof@kernel.org>
-References: <20211015233028.2167651-1-mcgrof@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail.kernel.org ([198.145.29.99])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mcRJI-00FX7Z-0C
+ for linux-um@lists.infradead.org; Mon, 18 Oct 2021 12:00:09 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-To: axboe@kernel.dk, jejb@linux.ibm.com, martin.petersen@oracle.com, agk@redhat.com, snitzer@redhat.com, colyli@suse.de, kent.overstreet@gmail.com, boris.ostrovsky@oracle.com, jgross@suse.com, sstabellini@kernel.org, roger.pau@citrix.com, geert@linux-m68k.org, ulf.hansson@linaro.org, tj@kernel.org, hare@suse.de, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, krisman@collabora.com, chris.obbard@collabora.com, thehajime@gmail.com, zhuyifei1999@gmail.com, haris.iqbal@ionos.com, jinpu.wang@ionos.com, miquel.raynal@bootlin.com, vigneshr@ti.com, linux-mtd@lists.infradead.org
-Cc: linux-scsi@vger.kernel.org, dm-devel@redhat.com, linux-bcache@vger.kernel.org, xen-devel@lists.xenproject.org, linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+Subject: Re: [PATCH net] hamradio: baycom_epp: fix build for UML
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163455840685.2577.7817040614905305666.git-patchwork-notify@kernel.org>
+Date: Mon, 18 Oct 2021 12:00:06 +0000
+References: <20211015021804.17005-1-rdunlap@infradead.org>
+In-Reply-To: <20211015021804.17005-1-rdunlap@infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: netdev@vger.kernel.org, linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, davem@davemloft.net, kuba@kernel.org, t.sailer@alumni.ethz.ch, linux-hams@vger.kernel.org
 
-We never checked for errors on add_disk() as this function
-returned void. Now that this is fixed, use the shiny new
-error handling.
-
-ubd_disk_register() never returned an error, so just fix
-that now and let the caller handle the error condition.
-
-Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- arch/um/drivers/ubd_kern.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
-
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index fefd343412c7..69d2d0049a61 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -855,8 +855,8 @@ static const struct attribute_group *ubd_attr_groups[] = {
- 	NULL,
- };
- 
--static void ubd_disk_register(int major, u64 size, int unit,
--			      struct gendisk *disk)
-+static int ubd_disk_register(int major, u64 size, int unit,
-+			     struct gendisk *disk)
- {
- 	disk->major = major;
- 	disk->first_minor = unit << UBD_SHIFT;
-@@ -873,7 +873,7 @@ static void ubd_disk_register(int major, u64 size, int unit,
- 
- 	disk->private_data = &ubd_devs[unit];
- 	disk->queue = ubd_devs[unit].queue;
--	device_add_disk(&ubd_devs[unit].pdev.dev, disk, ubd_attr_groups);
-+	return device_add_disk(&ubd_devs[unit].pdev.dev, disk, ubd_attr_groups);
- }
- 
- #define ROUND_BLOCK(n) ((n + (SECTOR_SIZE - 1)) & (-SECTOR_SIZE))
-@@ -920,10 +920,15 @@ static int ubd_add(int n, char **error_out)
- 	blk_queue_write_cache(ubd_dev->queue, true, false);
- 	blk_queue_max_segments(ubd_dev->queue, MAX_SG);
- 	blk_queue_segment_boundary(ubd_dev->queue, PAGE_SIZE - 1);
--	ubd_disk_register(UBD_MAJOR, ubd_dev->size, n, disk);
-+	err = ubd_disk_register(UBD_MAJOR, ubd_dev->size, n, disk);
-+	if (err)
-+		goto out_cleanup_disk;
-+
- 	ubd_gendisk[n] = disk;
- 	return 0;
- 
-+out_cleanup_disk:
-+	blk_cleanup_disk(disk);
- out_cleanup_tags:
- 	blk_mq_free_tag_set(&ubd_dev->tag_set);
- out:
--- 
-2.30.2
-
+SGVsbG86CgpUaGlzIHBhdGNoIHdhcyBhcHBsaWVkIHRvIG5ldGRldi9uZXQuZ2l0IChtYXN0ZXIp
+CmJ5IERhdmlkIFMuIE1pbGxlciA8ZGF2ZW1AZGF2ZW1sb2Z0Lm5ldD46CgpPbiBUaHUsIDE0IE9j
+dCAyMDIxIDE5OjE4OjA0IC0wNzAwIHlvdSB3cm90ZToKPiBPbiBpMzg2LCB0aGUgYmF5Y29tX2Vw
+cCBkcml2ZXIgd2FudHMgdG8gaW5zcGVjdCBYODYgQ1BVIGZlYXR1cmVzIChUU0MpCj4gYW5kIHRo
+ZW4gYWN0IG9uIHRoYXQgZGF0YSwgYnV0IHRoYXQgaW5mbyBpcyBub3QgYXZhaWxhYmxlIHdoZW4g
+cnVubmluZwo+IG9uIFVNTCwgc28gcHJldmVudCB0aGF0IHRlc3QgYW5kIGRvIHRoZSBkZWZhdWx0
+IGFjdGlvbi4KPiAKPiBQcmV2ZW50cyB0aGlzIGJ1aWxkIGVycm9yIG9uIFVNTCArIGkzODY6Cj4g
+Cj4gLi4vZHJpdmVycy9uZXQvaGFtcmFkaW8vYmF5Y29tX2VwcC5jOiBJbiBmdW5jdGlvbiDigJhl
+cHBfYmjigJk6Cj4gLi4vZHJpdmVycy9uZXQvaGFtcmFkaW8vYmF5Y29tX2VwcC5jOjYzMDo2OiBl
+cnJvcjogaW1wbGljaXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24g4oCYYm9vdF9jcHVfaGFz4oCZ
+OyBkaWQgeW91IG1lYW4g4oCYZ2V0X2NwdV9tYXNr4oCZPyBbLVdlcnJvcj1pbXBsaWNpdC1mdW5j
+dGlvbi1kZWNsYXJhdGlvbl0KPiAgIGlmIChib290X2NwdV9oYXMoWDg2X0ZFQVRVUkVfVFNDKSkg
+ICBcCj4gICAgICAgXgo+IC4uL2RyaXZlcnMvbmV0L2hhbXJhZGlvL2JheWNvbV9lcHAuYzo2NTg6
+Mjogbm90ZTogaW4gZXhwYW5zaW9uIG9mIG1hY3JvIOKAmEdFVFRJQ0vigJkKPiAgIEdFVFRJQ0so
+dGltZTEpOwo+IAo+IFsuLi5dCgpIZXJlIGlzIHRoZSBzdW1tYXJ5IHdpdGggbGlua3M6CiAgLSBb
+bmV0XSBoYW1yYWRpbzogYmF5Y29tX2VwcDogZml4IGJ1aWxkIGZvciBVTUwKICAgIGh0dHBzOi8v
+Z2l0Lmtlcm5lbC5vcmcvbmV0ZGV2L25ldC9jLzBhOWJiMTFhNWUyOQoKWW91IGFyZSBhd2Vzb21l
+LCB0aGFuayB5b3UhCi0tCkRlZXQtZG9vdC1kb3QsIEkgYW0gYSBib3QuCmh0dHBzOi8va29yZy5k
+b2NzLmtlcm5lbC5vcmcvcGF0Y2h3b3JrL3B3Ym90Lmh0bWwKCgoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4
+LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9saW51eC11bQo=
 
