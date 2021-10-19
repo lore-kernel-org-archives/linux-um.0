@@ -1,13 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from www.linuxtv.org ([130.149.80.248])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1meuAO-00FXZp-Uw
- for linux-um@lists.infradead.org; Mon, 25 Oct 2021 07:13:15 +0000
+ id 1mcjFJ-000ND1-UQ
+ for linux-um@lists.infradead.org; Tue, 19 Oct 2021 07:09:17 +0000
 From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Date: Tue, 19 Oct 2021 07:08:39 +0000
-Subject: [git:media_tree/master] media: ivtv: fix build for UML
+Subject: [git:media_stage/master] media: ivtv: fix build for UML
 MIME-Version: 1.0
-Message-Id: <E1meuAE-00GpYg-FY@www.linuxtv.org>
+Message-Id: <E1mcjFA-008jGp-1V@www.linuxtv.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,7 +22,7 @@ Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linuxtv-commits@linuxtv.org
-Cc: Richard Weinberger <richard@nod.at>, Hans Verkuil <hverkuil-cisco@xs4all.nl>, Randy Dunlap <rdunlap@infradead.org>, linux-um@lists.infradead.org, Andy Walls <awalls@md.metrocast.net>, Johannes Berg <johannes@sipsolutions.net>
+Cc: Richard Weinberger <richard@nod.at>, Johannes Berg <johannes@sipsolutions.net>, Andy Walls <awalls@md.metrocast.net>, linux-um@lists.infradead.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>, Randy Dunlap <rdunlap@infradead.org>
 
 VGhpcyBpcyBhbiBhdXRvbWF0aWMgZ2VuZXJhdGVkIGVtYWlsIHRvIGxldCB5b3Uga25vdyB0aGF0
 IHRoZSBmb2xsb3dpbmcgcGF0Y2ggd2VyZSBxdWV1ZWQ6CgpTdWJqZWN0OiBtZWRpYTogaXZ0djog
