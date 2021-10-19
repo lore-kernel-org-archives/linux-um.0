@@ -1,36 +1,31 @@
+Return-Path: <martin.petersen@oracle.com>
+Subject: Re: [PATCH 1/9] scsi/sd: add error handling support for add_disk()
+From: "Martin K. Petersen" <martin.petersen@oracle.com>
+Message-ID: <yq1pms1d8w4.fsf@ca-mkp.ca.oracle.com>
+References: <20211015233028.2167651-1-mcgrof@kernel.org>
+	<20211015233028.2167651-2-mcgrof@kernel.org>
+	<yq1bl3ofjo5.fsf@ca-mkp.ca.oracle.com>
+	<YW3ZuQv1qpIXkd5b@bombadil.infradead.org>
+Date: Mon, 18 Oct 2021 22:52:44 -0400
+In-Reply-To: <YW3ZuQv1qpIXkd5b@bombadil.infradead.org> (Luis Chamberlain's
+	message of "Mon, 18 Oct 2021 13:31:53 -0700")
+Content-Type: text/plain
 MIME-Version: 1.0
-Date: Mon, 4 Oct 2021 13:18:23 +0200
-References: <20211004111224.941450-1-geert@linux-m68k.org>
-In-Reply-To: <20211004111224.941450-1-geert@linux-m68k.org>
-Message-ID: <CAMuHMdXA-4Y0obSTmwkavauwpMrM8LXxnofeNXtGuC7N=bu5Uw@mail.gmail.com>
-Subject: Re: Build regressions/improvements in v5.15-rc4
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc: linux-um <linux-um@lists.infradead.org>
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: "Martin K. Petersen" <martin.petersen@oracle.com>, axboe@kernel.dk, jejb@linux.ibm.com, agk@redhat.com, snitzer@redhat.com, colyli@suse.de, kent.overstreet@gmail.com, boris.ostrovsky@oracle.com, jgross@suse.com, sstabellini@kernel.org, roger.pau@citrix.com, geert@linux-m68k.org, ulf.hansson@linaro.org, tj@kernel.org, hare@suse.de, jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, krisman@collabora.com, chris.obbard@collabora.com, thehajime@gmail.com, zhuyifei1999@gmail.com, haris.iqbal@ionos.com, jinpu.wang@ionos.com, miquel.raynal@bootlin.com, vigneshr@ti.com, linux-mtd@lists.infradead.org, linux-scsi@vger.kernel.org, dm-devel@redhat.com, linux-bcache@vger.kernel.org, xen-devel@lists.xenproject.org, linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
 List-ID: <linux-um.lists.infradead.org>
 
-On Mon, Oct 4, 2021 at 1:15 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> JFYI, when comparing v5.15-rc4[1] to v5.15-rc3[3], the summaries are:
->   - build errors: +1/-4
 
-  + /kisskb/src/drivers/video/fbdev/nvidia/nvidia.c: error: passing
-argument 1 of 'iounmap' discards 'volatile' qualifier from pointer
-target type [-Werror=discarded-qualifiers]:  => 1439:10, 1414:10
+Luis,
 
-um-x86_64/um-allyesconfig (fix available)
+> Thanks, would you like Jens to pick this up and the other scsi/sr patch
+> or are you taking it through your tree?
 
-> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/9e1ff307c779ce1f0f810c7ecce3d95bbae40896/ (90 out of 182 configs)
-> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/5816b3e6577eaa676ceb00a848f0fd65fe2adc29/ (90 out of 182 configs)
+Didn't think I had the relevant add_disk() patch in my baseline tree but
+it turns out I do. So I queued them up.
 
-Gr{oetje,eeting}s,
-
-                        Geert
+Thanks!
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Martin K. Petersen	Oracle Linux Engineering
 
