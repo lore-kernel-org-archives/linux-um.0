@@ -1,88 +1,35 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from www.linuxtv.org ([130.149.80.248])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mcjFJ-000ND1-UQ
- for linux-um@lists.infradead.org; Tue, 19 Oct 2021 07:09:17 +0000
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Date: Tue, 19 Oct 2021 07:08:39 +0000
-Subject: [git:media_stage/master] media: ivtv: fix build for UML
+Return-Path: <martin.petersen@oracle.com>
+From: "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: Re: [PATCH 0/9] block: reviewed add_disk() error handling set
+Date: Wed, 20 Oct 2021 23:42:44 -0400
+Message-Id: <163478764105.7011.9400354892813636458.b4-ty@oracle.com>
+In-Reply-To: <20211015233028.2167651-1-mcgrof@kernel.org>
+References: <20211015233028.2167651-1-mcgrof@kernel.org>
 MIME-Version: 1.0
-Message-Id: <E1mcjFA-008jGp-1V@www.linuxtv.org>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Reply-To: linux-media@vger.kernel.org
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linuxtv-commits@linuxtv.org
-Cc: Richard Weinberger <richard@nod.at>, Johannes Berg <johannes@sipsolutions.net>, Andy Walls <awalls@md.metrocast.net>, linux-um@lists.infradead.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>, Randy Dunlap <rdunlap@infradead.org>
+Content-Transfer-Encoding: 8bit
+To: zhuyifei1999@gmail.com, thehajime@gmail.com, hare@suse.de, jinpu.wang@ionos.com, jgross@suse.com, johannes.berg@intel.com, geert@linux-m68k.org, linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com, axboe@kernel.dk, Luis Chamberlain <mcgrof@kernel.org>, jdike@addtoit.com, kent.overstreet@gmail.com, richard@nod.at, colyli@suse.de, agk@redhat.com, haris.iqbal@ionos.com, krisman@collabora.com, roger.pau@citrix.com, anton.ivanov@cambridgegreys.com, sstabellini@kernel.org, ulf.hansson@linaro.org, vigneshr@ti.com, chris.obbard@collabora.com, jejb@linux.ibm.com, boris.ostrovsky@oracle.com, tj@kernel.org, snitzer@redhat.com
+Cc: "Martin K . Petersen" <martin.petersen@oracle.com>, linux-um@lists.infradead.org, linux-block@vger.kernel.org, xen-devel@lists.xenproject.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, dm-devel@redhat.com, linux-bcache@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-VGhpcyBpcyBhbiBhdXRvbWF0aWMgZ2VuZXJhdGVkIGVtYWlsIHRvIGxldCB5b3Uga25vdyB0aGF0
-IHRoZSBmb2xsb3dpbmcgcGF0Y2ggd2VyZSBxdWV1ZWQ6CgpTdWJqZWN0OiBtZWRpYTogaXZ0djog
-Zml4IGJ1aWxkIGZvciBVTUwKQXV0aG9yOiAgUmFuZHkgRHVubGFwIDxyZHVubGFwQGluZnJhZGVh
-ZC5vcmc+CkRhdGU6ICAgIFN1biBPY3QgMTAgMjA6Mzg6MzYgMjAyMSArMDEwMAoKUHJldmVudCB0
-aGUgdXNlIG9mIHBhZ2UgdGFibGUgbWFjcm9zIGFuZCB0eXBlcyBmcm9tIDIgY29uZmxpY3RpbmcK
-cGxhY2VzLiBUaGlzIGZpeGVzIG11bHRpcGxlIGJ1aWxkIGVycm9ycyBhbmQgd2FybmluZ3MsIGUu
-Zy46CgouLi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9wZ3RhYmxlXzY0X3R5cGVzLmg6MjE6MzQ6IGVy
-cm9yOiBjb25mbGljdGluZyB0eXBlcyBmb3Ig4oCYcHRlX3TigJkKIHR5cGVkZWYgc3RydWN0IHsg
-cHRldmFsX3QgcHRlOyB9IHB0ZV90OwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-Xn5+fn4KSW4gZmlsZSBpbmNsdWRlZCBmcm9tIC4uL2luY2x1ZGUvbGludXgvbW1fdHlwZXNfdGFz
-ay5oOjE2OjAsCiAgICAgICAgICAgICAgICAgZnJvbSAuLi9pbmNsdWRlL2xpbnV4L21tX3R5cGVz
-Lmg6NSwKICAgICAgICAgICAgICAgICBmcm9tIC4uL2luY2x1ZGUvbGludXgvYnVpbGRpZC5oOjUs
-CiAgICAgICAgICAgICAgICAgZnJvbSAuLi9pbmNsdWRlL2xpbnV4L21vZHVsZS5oOjE0LAogICAg
-ICAgICAgICAgICAgIGZyb20gLi4vZHJpdmVycy9tZWRpYS9wY2kvaXZ0di9pdnR2LWRyaXZlci5o
-OjQwLAogICAgICAgICAgICAgICAgIGZyb20gLi4vZHJpdmVycy9tZWRpYS9wY2kvaXZ0di9pdnR2
-ZmIuYzoyOToKLi4vYXJjaC91bS9pbmNsdWRlL2FzbS9wYWdlLmg6NTc6Mzk6IG5vdGU6IHByZXZp
-b3VzIGRlY2xhcmF0aW9uIG9mIOKAmHB0ZV904oCZIHdhcyBoZXJlCiB0eXBlZGVmIHN0cnVjdCB7
-IHVuc2lnbmVkIGxvbmcgcHRlOyB9IHB0ZV90OwoKLi4vYXJjaC94ODYvaW5jbHVkZS9hc20vcGd0
-YWJsZV90eXBlcy5oOjI4NDo0MzogZXJyb3I6IGV4cGVjdGVkIOKAmCnigJkgYmVmb3JlIOKAmHBy
-b3TigJkKIHN0YXRpYyBpbmxpbmUgcGdwcm90X3QgcGdwcm90X254KHBncHJvdF90IHByb3QpCiAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBeCi4uL2luY2x1ZGUvbGlu
-dXgvcGd0YWJsZS5oOjkxNDoyNjogbm90ZTogaW4gZGVmaW5pdGlvbiBvZiBtYWNybyDigJhwZ3By
-b3RfbnjigJkKICNkZWZpbmUgcGdwcm90X254KHByb3QpIChwcm90KQogICAgICAgICAgICAgICAg
-ICAgICAgICAgIF5+fn4KSW4gZmlsZSBpbmNsdWRlZCBmcm9tIC4uL2FyY2gveDg2L2luY2x1ZGUv
-YXNtL21lbXR5cGUuaDo2OjAsCiAgICAgICAgICAgICAgICAgZnJvbSAuLi9kcml2ZXJzL21lZGlh
-L3BjaS9pdnR2L2l2dHZmYi5jOjQwOgouLi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9wZ3RhYmxlX3R5
-cGVzLmg6Mjg4OjA6IHdhcm5pbmc6ICJwZ3Byb3RfbngiIHJlZGVmaW5lZAogI2RlZmluZSBwZ3By
-b3RfbnggcGdwcm90X254CgouLi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9wYWdlX3R5cGVzLmg6MTE6
-MDogd2FybmluZzogIlBBR0VfU0laRSIgcmVkZWZpbmVkCiAjZGVmaW5lIFBBR0VfU0laRSAgKF9B
-QygxLFVMKSA8PCBQQUdFX1NISUZUKQoKSW4gZmlsZSBpbmNsdWRlZCBmcm9tIC4uL2luY2x1ZGUv
-bGludXgvbW1fdHlwZXNfdGFzay5oOjE2OjAsCiAgICAgICAgICAgICAgICAgZnJvbSAuLi9pbmNs
-dWRlL2xpbnV4L21tX3R5cGVzLmg6NSwKICAgICAgICAgICAgICAgICBmcm9tIC4uL2luY2x1ZGUv
-bGludXgvYnVpbGRpZC5oOjUsCiAgICAgICAgICAgICAgICAgZnJvbSAuLi9pbmNsdWRlL2xpbnV4
-L21vZHVsZS5oOjE0LAogICAgICAgICAgICAgICAgIGZyb20gLi4vZHJpdmVycy9tZWRpYS9wY2kv
-aXZ0di9pdnR2LWRyaXZlci5oOjQwLAogICAgICAgICAgICAgICAgIGZyb20gLi4vZHJpdmVycy9t
-ZWRpYS9wY2kvaXZ0di9pdnR2ZmIuYzoyOToKLi4vYXJjaC91bS9pbmNsdWRlL2FzbS9wYWdlLmg6
-MTQ6MDogbm90ZTogdGhpcyBpcyB0aGUgbG9jYXRpb24gb2YgdGhlIHByZXZpb3VzIGRlZmluaXRp
-b24KICNkZWZpbmUgUEFHRV9TSVpFIChfQUMoMSwgVUwpIDw8IFBBR0VfU0hJRlQpCgpGaXhlczog
-NjhmNWQzZjNiNjU0ICgidW06IGFkZCBQQ0kgb3ZlciB2aXJ0aW8gZW11bGF0aW9uIGRyaXZlciIp
-ClNpZ25lZC1vZmYtYnk6IFJhbmR5IER1bmxhcCA8cmR1bmxhcEBpbmZyYWRlYWQub3JnPgpDYzog
-Sm9oYW5uZXMgQmVyZyA8am9oYW5uZXNAc2lwc29sdXRpb25zLm5ldD4KQ2M6IEFuZHkgV2FsbHMg
-PGF3YWxsc0BtZC5tZXRyb2Nhc3QubmV0PgpDYzogbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9y
-ZwpDYzogUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNoYXJkQG5vZC5hdD4KU2lnbmVkLW9mZi1ieTog
-SGFucyBWZXJrdWlsIDxodmVya3VpbC1jaXNjb0B4czRhbGwubmw+ClNpZ25lZC1vZmYtYnk6IE1h
-dXJvIENhcnZhbGhvIENoZWhhYiA8bWNoZWhhYitodWF3ZWlAa2VybmVsLm9yZz4KCiBkcml2ZXJz
-L21lZGlhL3BjaS9pdnR2L2l2dHZmYi5jIHwgNCArKy0tCiAxIGZpbGUgY2hhbmdlZCwgMiBpbnNl
-cnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQoKLS0tCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tZWRp
-YS9wY2kvaXZ0di9pdnR2ZmIuYyBiL2RyaXZlcnMvbWVkaWEvcGNpL2l2dHYvaXZ0dmZiLmMKaW5k
-ZXggYzU4Y2E4YWE2ZDkwLi4yYzQzZWJmODM5NjYgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbWVkaWEv
-cGNpL2l2dHYvaXZ0dmZiLmMKKysrIGIvZHJpdmVycy9tZWRpYS9wY2kvaXZ0di9pdnR2ZmIuYwpA
-QCAtMzYsNyArMzYsNyBAQAogI2luY2x1ZGUgPGxpbnV4L2ZiLmg+CiAjaW5jbHVkZSA8bGludXgv
-aXZ0dmZiLmg+CiAKLSNpZmRlZiBDT05GSUdfWDg2XzY0CisjaWYgZGVmaW5lZChDT05GSUdfWDg2
-XzY0KSAmJiAhZGVmaW5lZChDT05GSUdfVU1MKQogI2luY2x1ZGUgPGFzbS9tZW10eXBlLmg+CiAj
-ZW5kaWYKIApAQCAtMTE1Nyw3ICsxMTU3LDcgQEAgc3RhdGljIGludCBpdnR2ZmJfaW5pdF9jYXJk
-KHN0cnVjdCBpdnR2ICppdHYpCiB7CiAJaW50IHJjOwogCi0jaWZkZWYgQ09ORklHX1g4Nl82NAor
-I2lmIGRlZmluZWQoQ09ORklHX1g4Nl82NCkgJiYgIWRlZmluZWQoQ09ORklHX1VNTCkKIAlpZiAo
-cGF0X2VuYWJsZWQoKSkgewogCQlpZiAoaXZ0dmZiX2ZvcmNlX3BhdCkgewogCQkJcHJfaW5mbygi
-UEFUIGlzIGVuYWJsZWQuIFdyaXRlLWNvbWJpbmVkIGZyYW1lYnVmZmVyIGNhY2hpbmcgd2lsbCBi
-ZSBkaXNhYmxlZC5cbiIpOwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5v
-cmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
+On Fri, 15 Oct 2021 16:30:19 -0700, Luis Chamberlain wrote:
+
+> Jens,
+> 
+> I had last split up patches into 7 groups, but at this point now
+> most changes are merged except a few more drivers. Instead of creating
+> a new patch set for each of the 7 groups I'm creating 3 new groups of
+> patches now:
+> 
+> [...]
+
+Applied to 5.16/scsi-queue, thanks!
+
+[1/9] scsi/sd: add error handling support for add_disk()
+      https://git.kernel.org/mkp/scsi/c/2a7a891f4c40
+[2/9] scsi/sr: add error handling support for add_disk()
+      https://git.kernel.org/mkp/scsi/c/e9d658c2175b
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
 
