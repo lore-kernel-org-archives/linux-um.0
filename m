@@ -1,12 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mOPiW-00AhW3-Jj
- for linux-um@lists.infradead.org; Thu, 09 Sep 2021 19:28:14 +0000
-Date: Thu, 9 Sep 2021 21:27:57 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <547678000.58650.1631215677820.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] UML changes for v5.15
+ id 1mf5ok-00HSOo-CU
+ for linux-um@lists.infradead.org; Mon, 25 Oct 2021 19:39:35 +0000
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 5.14 038/169] hamradio: baycom_epp: fix build for UML
+Date: Mon, 25 Oct 2021 21:13:39 +0200
+Message-Id: <20211025191022.696563287@linuxfoundation.org>
+In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
+References: <20211025191017.756020307@linuxfoundation.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -16,60 +18,52 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: torvalds <torvalds@linux-foundation.org>
-Cc: linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
+To: linux-kernel@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>, linux-um@lists.infradead.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Thomas Sailer <t.sailer@alumni.ethz.ch>, linux-hams@vger.kernel.org, Sasha Levin <sashal@kernel.org>
 
-The following changes since commit 7c60610d476766e128cc4284bb6349732cbd6606:
-
-  Linux 5.14-rc6 (2021-08-15 13:40:53 -1000)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.15-rc1
-
-for you to fetch changes up to adf9ae0d159d3dc94f58d788fc4757c8749ac0df:
-
-  um: fix stub location calculation (2021-08-26 22:28:03 +0200)
-
-----------------------------------------------------------------
-This pull request contains the following changes for UML:
-
-- Support for VMAP_STACK
-- Support for splice_write in hostfs
-- Fixes for virt-pci
-- Fixes for virtio_uml
-- Various fixes
-
-----------------------------------------------------------------
-Johannes Berg (9):
-      um: make PCI emulation driver init/exit static
-      lib/logic_iomem: fix sparse warnings
-      um: virtio_uml: include linux/virtio-uml.h
-      um: virtio_uml: fix memory leak on init failures
-      hostfs: support splice_write
-      um: virt-pci: don't do DMA from stack
-      um: enable VMAP_STACK
-      um: virt-pci: fix uapi documentation
-      um: fix stub location calculation
-
- arch/um/Kconfig                     |   1 +
- arch/um/drivers/virt-pci.c          | 108 ++++++++++++++++++++++++++----------
- arch/um/drivers/virtio_uml.c        |   5 +-
- arch/um/kernel/skas/clone.c         |   3 +-
- arch/x86/um/shared/sysdep/stub_32.h |  12 ++++
- arch/x86/um/shared/sysdep/stub_64.h |  12 ++++
- arch/x86/um/stub_segv.c             |   3 +-
- fs/hostfs/hostfs_kern.c             |   1 +
- include/uapi/linux/virtio_pcidev.h  |   5 +-
- lib/logic_iomem.c                   |  16 +++---
- 10 files changed, 124 insertions(+), 42 deletions(-)
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+RnJvbTogUmFuZHkgRHVubGFwIDxyZHVubGFwQGluZnJhZGVhZC5vcmc+CgpbIFVwc3RyZWFtIGNv
+bW1pdCAwYTliYjExYTVlMjk4ZTcyYjY3NTI1NWE0YmIyODkzNTEzMDAwNTg0IF0KCk9uIGkzODYs
+IHRoZSBiYXljb21fZXBwIGRyaXZlciB3YW50cyB0byBpbnNwZWN0IFg4NiBDUFUgZmVhdHVyZXMg
+KFRTQykKYW5kIHRoZW4gYWN0IG9uIHRoYXQgZGF0YSwgYnV0IHRoYXQgaW5mbyBpcyBub3QgYXZh
+aWxhYmxlIHdoZW4gcnVubmluZwpvbiBVTUwsIHNvIHByZXZlbnQgdGhhdCB0ZXN0IGFuZCBkbyB0
+aGUgZGVmYXVsdCBhY3Rpb24uCgpQcmV2ZW50cyB0aGlzIGJ1aWxkIGVycm9yIG9uIFVNTCArIGkz
+ODY6CgouLi9kcml2ZXJzL25ldC9oYW1yYWRpby9iYXljb21fZXBwLmM6IEluIGZ1bmN0aW9uIOKA
+mGVwcF9iaOKAmToKLi4vZHJpdmVycy9uZXQvaGFtcmFkaW8vYmF5Y29tX2VwcC5jOjYzMDo2OiBl
+cnJvcjogaW1wbGljaXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24g4oCYYm9vdF9jcHVfaGFz4oCZ
+OyBkaWQgeW91IG1lYW4g4oCYZ2V0X2NwdV9tYXNr4oCZPyBbLVdlcnJvcj1pbXBsaWNpdC1mdW5j
+dGlvbi1kZWNsYXJhdGlvbl0KICBpZiAoYm9vdF9jcHVfaGFzKFg4Nl9GRUFUVVJFX1RTQykpICAg
+XAogICAgICBeCi4uL2RyaXZlcnMvbmV0L2hhbXJhZGlvL2JheWNvbV9lcHAuYzo2NTg6Mjogbm90
+ZTogaW4gZXhwYW5zaW9uIG9mIG1hY3JvIOKAmEdFVFRJQ0vigJkKICBHRVRUSUNLKHRpbWUxKTsK
+CkZpeGVzOiA2OGY1ZDNmM2I2NTQgKCJ1bTogYWRkIFBDSSBvdmVyIHZpcnRpbyBlbXVsYXRpb24g
+ZHJpdmVyIikKU2lnbmVkLW9mZi1ieTogUmFuZHkgRHVubGFwIDxyZHVubGFwQGluZnJhZGVhZC5v
+cmc+CkNjOiBsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCkNjOiBKZWZmIERpa2UgPGpkaWtl
+QGFkZHRvaXQuY29tPgpDYzogUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNoYXJkQG5vZC5hdD4KQ2M6
+IEFudG9uIEl2YW5vdiA8YW50b24uaXZhbm92QGNhbWJyaWRnZWdyZXlzLmNvbT4KQ2M6ICJEYXZp
+ZCBTLiBNaWxsZXIiIDxkYXZlbUBkYXZlbWxvZnQubmV0PgpDYzogSmFrdWIgS2ljaW5za2kgPGt1
+YmFAa2VybmVsLm9yZz4KQ2M6IFRob21hcyBTYWlsZXIgPHQuc2FpbGVyQGFsdW1uaS5ldGh6LmNo
+PgpDYzogbGludXgtaGFtc0B2Z2VyLmtlcm5lbC5vcmcKU2lnbmVkLW9mZi1ieTogRGF2aWQgUy4g
+TWlsbGVyIDxkYXZlbUBkYXZlbWxvZnQubmV0PgpTaWduZWQtb2ZmLWJ5OiBTYXNoYSBMZXZpbiA8
+c2FzaGFsQGtlcm5lbC5vcmc+Ci0tLQogZHJpdmVycy9uZXQvaGFtcmFkaW8vYmF5Y29tX2VwcC5j
+IHwgNiArKystLS0KIDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25z
+KC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvaGFtcmFkaW8vYmF5Y29tX2VwcC5jIGIvZHJp
+dmVycy9uZXQvaGFtcmFkaW8vYmF5Y29tX2VwcC5jCmluZGV4IDQ0MzVhMTE5NTE5NC4uOGVhOGQ1
+MGY4MWM0IDEwMDY0NAotLS0gYS9kcml2ZXJzL25ldC9oYW1yYWRpby9iYXljb21fZXBwLmMKKysr
+IGIvZHJpdmVycy9uZXQvaGFtcmFkaW8vYmF5Y29tX2VwcC5jCkBAIC02MjMsMTYgKzYyMywxNiBA
+QCBzdGF0aWMgaW50IHJlY2VpdmUoc3RydWN0IG5ldF9kZXZpY2UgKmRldiwgaW50IGNudCkKIAog
+LyogLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tICovCiAKLSNpZmRlZiBfX2kzODZfXworI2lmIGRlZmluZWQoX19pMzg2
+X18pICYmICFkZWZpbmVkKENPTkZJR19VTUwpCiAjaW5jbHVkZSA8YXNtL21zci5oPgogI2RlZmlu
+ZSBHRVRUSUNLKHgpCQkJCQkJXAogKHsJCQkJCQkJCVwKIAlpZiAoYm9vdF9jcHVfaGFzKFg4Nl9G
+RUFUVVJFX1RTQykpCQkJXAogCQl4ID0gKHVuc2lnbmVkIGludClyZHRzYygpOwkJCVwKIH0pCi0j
+ZWxzZSAvKiBfX2kzODZfXyAqLworI2Vsc2UgLyogX19pMzg2X18gICYmICFDT05GSUdfVU1MICov
+CiAjZGVmaW5lIEdFVFRJQ0soeCkKLSNlbmRpZiAvKiBfX2kzODZfXyAqLworI2VuZGlmIC8qIF9f
+aTM4Nl9fICAmJiAhQ09ORklHX1VNTCAqLwogCiBzdGF0aWMgdm9pZCBlcHBfYmgoc3RydWN0IHdv
+cmtfc3RydWN0ICp3b3JrKQogewotLSAKMi4zMy4wCgoKCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1A
+bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2xpbnV4LXVtCg==
 
