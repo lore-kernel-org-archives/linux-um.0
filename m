@@ -1,47 +1,82 @@
-Return-Path: <axboe@kernel.dk>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20211015233028.2167651-1-mcgrof@kernel.org>
-References: <20211015233028.2167651-1-mcgrof@kernel.org>
-Subject: Re: (subset) [PATCH 0/9] block: reviewed add_disk() error handling set
-Message-Id: <163482846658.50565.12530170761457767964.b4-ty@kernel.dk>
-Date: Thu, 21 Oct 2021 09:01:06 -0600
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mgLld-009z1z-SX
+ for linux-um@lists.infradead.org; Fri, 29 Oct 2021 06:53:35 +0000
+Subject: Re: [PATCH net-next 2/3] net: um: use eth_hw_addr_set()
+References: <20211029024707.316066-1-kuba@kernel.org>
+ <20211029024707.316066-3-kuba@kernel.org>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <359d5737-2ac9-12aa-cca8-1b0c52def83e@cambridgegreys.com>
+Date: Fri, 29 Oct 2021 07:37:08 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-To: thehajime@gmail.com, zhuyifei1999@gmail.com, haris.iqbal@ionos.com, johannes.berg@intel.com, roger.pau@citrix.com, miquel.raynal@bootlin.com, jdike@addtoit.com, anton.ivanov@cambridgegreys.com, geert@linux-m68k.org, krisman@collabora.com, vigneshr@ti.com, richard@nod.at, hare@suse.de, jinpu.wang@ionos.com, jgross@suse.com, sstabellini@kernel.org, ulf.hansson@linaro.org, agk@redhat.com, linux-mtd@lists.infradead.org, Luis Chamberlain <mcgrof@kernel.org>, tj@kernel.org, colyli@suse.de, jejb@linux.ibm.com, chris.obbard@collabora.com, snitzer@redhat.com, boris.ostrovsky@oracle.com, kent.overstreet@gmail.com, martin.petersen@oracle.com
-Cc: linux-block@vger.kernel.org, dm-devel@redhat.com, xen-devel@lists.xenproject.org, linux-um@lists.infradead.org, linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-scsi@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+In-Reply-To: <20211029024707.316066-3-kuba@kernel.org>
+Content-Language: en-US
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net
+Cc: netdev@vger.kernel.org, jdike@addtoit.com, richard@nod.at, johannes.berg@intel.com, linux-um@lists.infradead.org
 
-On Fri, 15 Oct 2021 16:30:19 -0700, Luis Chamberlain wrote:
-> Jens,
+On 29/10/2021 03:47, Jakub Kicinski wrote:
+> Commit 406f42fa0d3c ("net-next: When a bond have a massive amount
+> of VLANs...") introduced a rbtree for faster Ethernet address look
+> up. To maintain netdev->dev_addr in this tree we need to make all
+> the writes to it go through appropriate helpers.
 > 
-> I had last split up patches into 7 groups, but at this point now
-> most changes are merged except a few more drivers. Instead of creating
-> a new patch set for each of the 7 groups I'm creating 3 new groups of
-> patches now:
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> ---
+> CC: jdike@addtoit.com
+> CC: richard@nod.at
+> CC: anton.ivanov@cambridgegreys.com
+> CC: johannes.berg@intel.com
+> CC: linux-um@lists.infradead.org
+> ---
+>   arch/um/drivers/net_kern.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> [...]
+> diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
+> index 2fc0b038ff8a..59331384c2d3 100644
+> --- a/arch/um/drivers/net_kern.c
+> +++ b/arch/um/drivers/net_kern.c
+> @@ -276,7 +276,7 @@ static const struct ethtool_ops uml_net_ethtool_ops = {
+>   
+>   void uml_net_setup_etheraddr(struct net_device *dev, char *str)
+>   {
+> -	unsigned char *addr = dev->dev_addr;
+> +	u8 addr[ETH_ALEN];
+>   	char *end;
+>   	int i;
+>   
+> @@ -316,6 +316,7 @@ void uml_net_setup_etheraddr(struct net_device *dev, char *str)
+>   		       addr[0] | 0x02, addr[1], addr[2], addr[3], addr[4],
+>   		       addr[5]);
+>   	}
+> +	eth_hw_addr_set(dev, addr);
+>   	return;
+>   
+>   random:
+> 
 
-Applied, thanks!
+Acked-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-[3/9] dm: add add_disk() error handling
-      commit: e7089f65dd51afeda5eb760506b5950d95f9ec29
-[4/9] bcache: add error handling support for add_disk()
-      commit: 2961c3bbcaec0ed7fb7b9a465b3796f37f2294e5
-[5/9] xen-blkfront: add error handling support for add_disk()
-      commit: 293a7c528803321479593d42d0898bb5a9769db1
-[6/9] m68k/emu/nfblock: add error handling support for add_disk()
-      commit: 21fd880d3da7564bab68979417cab7408e4f9642
-[7/9] um/drivers/ubd_kern: add error handling support for add_disk()
-      commit: 66638f163a2b5c5b462ca38525129b14a20117eb
-[8/9] rnbd: add error handling support for add_disk()
-      commit: 2e9e31bea01997450397d64da43b6675e0adb9e3
-[9/9] mtd: add add_disk() error handling
-      commit: 83b863f4a3f0de4ece7802d9121fed0c3e64145f
-
-Best regards,
 -- 
-Jens Axboe
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
-
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
