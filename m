@@ -1,15 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mmh1L-00GlvZ-3q
- for linux-um@lists.infradead.org; Mon, 15 Nov 2021 18:48:00 +0000
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 5.15 431/917] net: tulip: winbond-840: fix build for UML
-Date: Mon, 15 Nov 2021 17:58:46 +0100
-Message-Id: <20211115165443.402790629@linuxfoundation.org>
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
+ id 1mixQk-00BCTi-KO
+ for linux-um@lists.infradead.org; Fri, 05 Nov 2021 11:30:48 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+Subject: RE: [PATCH v2] um: use swap() to make code cleaner
+Date: Fri, 5 Nov 2021 11:30:40 +0000
+Message-ID: <e392bf23c3ae4b93b1ffb23e40728873@AcuMS.aculab.com>
+References: <7f95e669-fba3-32e6-cdb9-41fb415b3b82@cambridgegreys.com>
+ <80d5d60030f9f4c0d299e139597f67c562f1d6b2.1636092427.git.yang.guang5@zte.com.cn>
+In-Reply-To: <80d5d60030f9f4c0d299e139597f67c562f1d6b2.1636092427.git.yang.guang5@zte.com.cn>
 MIME-Version: 1.0
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,47 +20,35 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>, linux-um@lists.infradead.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Jakub Kicinski <kuba@kernel.org>, Sasha Levin <sashal@kernel.org>
+To: 'Yang Guang' <davidcomponentone@gmail.com>, "anton.ivanov@cambridgegreys.com" <anton.ivanov@cambridgegreys.com>
+Cc: "jdike@addtoit.com" <jdike@addtoit.com>, "johannes.berg@intel.com" <johannes.berg@intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "richard@nod.at" <richard@nod.at>, "yang.guang5@zte.com.cn" <yang.guang5@zte.com.cn>, "zealci@zte.com.cn" <zealci@zte.com.cn>
 
-RnJvbTogUmFuZHkgRHVubGFwIDxyZHVubGFwQGluZnJhZGVhZC5vcmc+CgpbIFVwc3RyZWFtIGNv
-bW1pdCBhM2Q3MDg5MjVmY2NhMWEyZjcyMTliYzljZTkzZTYzNDFmODVjMWUwIF0KCk9uIGkzODYs
-IHdoZW4gYnVpbHRpbiAobm90IGEgbG9hZGFibGUgbW9kdWxlKSwgdGhlIHdpbmJvbmQtODQwIGRy
-aXZlcgppbnNwZWN0cyBib290X2NwdV9kYXRhIHRvIHNlZSB3aGF0IENQVSBmYW1pbHkgaXQgaXMg
-cnVubmluZyBvbiwgYW5kCnRoZW4gYWN0cyBvbiB0aGF0IGRhdGEuIFRoZSAiZmFtaWx5IiBzdHJ1
-Y3QgbWVtYmVyICh4ODYpIGRvZXMgbm90IGV4aXN0CndoZW4gcnVubmluZyBvbiBVTUwsIHNvIHBy
-ZXZlbnQgdGhhdCB0ZXN0IGFuZCBkbyB0aGUgZGVmYXVsdCBhY3Rpb24uCgpQcmV2ZW50cyB0aGlz
-IGJ1aWxkIGVycm9yIG9uIFVNTCArIGkzODY6CgouLi9kcml2ZXJzL25ldC9ldGhlcm5ldC9kZWMv
-dHVsaXAvd2luYm9uZC04NDAuYzogSW4gZnVuY3Rpb24g4oCYaW5pdF9yZWdpc3RlcnPigJk6Ci4u
-L2RyaXZlcnMvbmV0L2V0aGVybmV0L2RlYy90dWxpcC93aW5ib25kLTg0MC5jOjg4MjoxOTogZXJy
-b3I6IOKAmHN0cnVjdCBjcHVpbmZvX3Vt4oCZIGhhcyBubyBtZW1iZXIgbmFtZWQg4oCYeDg24oCZ
-CiAgaWYgKGJvb3RfY3B1X2RhdGEueDg2IDw9IDQpIHsKCkZpeGVzOiA2OGY1ZDNmM2I2NTQgKCJ1
-bTogYWRkIFBDSSBvdmVyIHZpcnRpbyBlbXVsYXRpb24gZHJpdmVyIikKU2lnbmVkLW9mZi1ieTog
-UmFuZHkgRHVubGFwIDxyZHVubGFwQGluZnJhZGVhZC5vcmc+CkNjOiBsaW51eC11bUBsaXN0cy5p
-bmZyYWRlYWQub3JnCkNjOiBKZWZmIERpa2UgPGpkaWtlQGFkZHRvaXQuY29tPgpDYzogUmljaGFy
-ZCBXZWluYmVyZ2VyIDxyaWNoYXJkQG5vZC5hdD4KQ2M6IEFudG9uIEl2YW5vdiA8YW50b24uaXZh
-bm92QGNhbWJyaWRnZWdyZXlzLmNvbT4KTGluazogaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvci8y
-MDIxMTAxNDA1MDYwNi43Mjg4LTEtcmR1bmxhcEBpbmZyYWRlYWQub3JnClNpZ25lZC1vZmYtYnk6
-IEpha3ViIEtpY2luc2tpIDxrdWJhQGtlcm5lbC5vcmc+ClNpZ25lZC1vZmYtYnk6IFNhc2hhIExl
-dmluIDxzYXNoYWxAa2VybmVsLm9yZz4KLS0tCiBkcml2ZXJzL25ldC9ldGhlcm5ldC9kZWMvdHVs
-aXAvd2luYm9uZC04NDAuYyB8IDIgKy0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwg
-MSBkZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2V0aGVybmV0L2RlYy90dWxp
-cC93aW5ib25kLTg0MC5jIGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvZGVjL3R1bGlwL3dpbmJvbmQt
-ODQwLmMKaW5kZXggODViOTkwOTljNmI5NC4uNWJhYmNmMDViYzJmMSAxMDA2NDQKLS0tIGEvZHJp
-dmVycy9uZXQvZXRoZXJuZXQvZGVjL3R1bGlwL3dpbmJvbmQtODQwLmMKKysrIGIvZHJpdmVycy9u
-ZXQvZXRoZXJuZXQvZGVjL3R1bGlwL3dpbmJvbmQtODQwLmMKQEAgLTg3Nyw3ICs4NzcsNyBAQCBz
-dGF0aWMgdm9pZCBpbml0X3JlZ2lzdGVycyhzdHJ1Y3QgbmV0X2RldmljZSAqZGV2KQogCQk4MDAw
-CTE2IGxvbmd3b3JkcwkJMDIwMCAyIGxvbmd3b3JkcwkyMDAwIDMyIGxvbmd3b3JkcwogCQlDMDAw
-CTMyICBsb25nd29yZHMJCTA0MDAgNCBsb25nd29yZHMgKi8KIAotI2lmIGRlZmluZWQgKF9faTM4
-Nl9fKSAmJiAhZGVmaW5lZChNT0RVTEUpCisjaWYgZGVmaW5lZCAoX19pMzg2X18pICYmICFkZWZp
-bmVkKE1PRFVMRSkgJiYgIWRlZmluZWQoQ09ORklHX1VNTCkKIAkvKiBXaGVuIG5vdCBhIG1vZHVs
-ZSB3ZSBjYW4gd29yayBhcm91bmQgYnJva2VuICc0ODYgUENJIGJvYXJkcy4gKi8KIAlpZiAoYm9v
-dF9jcHVfZGF0YS54ODYgPD0gNCkgewogCQlpIHw9IDB4NDgwMDsKLS0gCjIuMzMuMAoKCgoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFp
-bGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
+From: Yang Guang
+> Sent: 05 November 2021 06:19
+> 
+> Use the macro 'swap()' defined in 'include/linux/minmax.h' to avoid
+> opencoding it.
+
+Is there any real point to any of these patches??
+
+If I'm reading a 'random' piece of code I now have to assume
+that swap() is something that 'magically' exchanges two items.
+This requires more brain-power than parsing the three lines
+that do an actual swap.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
