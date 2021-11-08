@@ -1,60 +1,53 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mmgS7-00Gdek-CR
- for linux-um@lists.infradead.org; Mon, 15 Nov 2021 18:11:36 +0000
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 5.14 429/849] net: fealnx: fix build for UML
-Date: Mon, 15 Nov 2021 17:58:32 +0100
-Message-Id: <20211115165434.788360359@linuxfoundation.org>
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+Return-Path: <bp@alien8.de>
+Date: Mon, 8 Nov 2021 22:18:47 +0100
+From: Borislav Petkov <bp@alien8.de>
+Subject: Re: [PATCH v0 42/42] notifier: Return an error when callback is
+ already registered
+Message-ID: <YYmUN69Y7z9xITas@zn.tnic>
+References: <20211108101157.15189-1-bp@alien8.de>
+ <20211108101157.15189-43-bp@alien8.de>
+ <CAMuHMdWH+txiSP_d7Jc4f_bU8Lf9iWpT4E3o5o7BJr-YdA6-VA@mail.gmail.com>
+ <YYkyUEqcsOwQMb1S@zn.tnic>
+ <CAMuHMdXiBEQyEXJagSfpH44hxVA2t0sDH7B7YubLGHrb2MJLLA@mail.gmail.com>
+ <YYlJQYLiIrhjwOmT@zn.tnic>
+ <CAMuHMdXHikGrmUzuq0WG5JRHUUE=5zsaVCTF+e4TiHpM5tc5kA@mail.gmail.com>
+ <YYlOmd0AeA8DSluD@zn.tnic>
+ <20211108205926.GA1678880@rowland.harvard.edu>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>, linux-um@lists.infradead.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Jakub Kicinski <kuba@kernel.org>, Sasha Levin <sashal@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211108205926.GA1678880@rowland.harvard.edu>
+To: Alan Stern <stern@rowland.harvard.edu>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, LKML <linux-kernel@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Arnd Bergmann <arnd@arndb.de>, Ayush Sawal <ayush.sawal@chelsio.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Rohit Maheshwari <rohitm@chelsio.com>, Steven Rostedt <rostedt@goodmis.org>, Vinay Kumar Yadav <vinay.yadav@chelsio.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>, Intel Graphics Development <intel-gfx@lists.freedesktop.org>, intel-gvt-dev@lists.freedesktop.org, alpha <linux-alpha@vger.kernel.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-clk <linux-clk@vger.kernel.org>, Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, linux-edac@vger.kernel.org, Linux Fbdev development list <linux-fbdev@vger.kernel.org>, linux-hyperv@vger.kernel.org, linux-iio@vger.kernel.org, linux-leds <linux-leds@vger.kernel.org>, "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>, Parisc List <linux-parisc@vger.kernel.org>, Linux PM list <linux-pm@vger.kernel.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" <linux-remoteproc@vger.kernel.org>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, linux-s390 <linux-s390@vger.kernel.org>, scsi <linux-scsi@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, linux-staging@lists.linux.dev, linux-tegra <linux-tegra@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>, USB list <linux-usb@vger.kernel.org>, "open list:TENSILICA XTENSA PORT (xtensa)" <linux-xtensa@linux-xtensa.org>, netdev <netdev@vger.kernel.org>, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux <sparclinux@vger.kernel.org>, the arch/x86 maintainers <x86@kernel.org>, xen-devel@lists.xenproject.org
+List-ID: <linux-um.lists.infradead.org>
 
-RnJvbTogUmFuZHkgRHVubGFwIDxyZHVubGFwQGluZnJhZGVhZC5vcmc+CgpbIFVwc3RyZWFtIGNv
-bW1pdCBjZDI2MjFkMDdkNTE3NDczNjExYjE3MGM2OWJlYjY1MjRjNjc3NzQwIF0KCk9uIGkzODYs
-IHdoZW4gYnVpbHRpbiAobm90IGEgbG9hZGFibGUgbW9kdWxlKSwgdGhlIGZlYWxueCBkcml2ZXIK
-aW5zcGVjdHMgYm9vdF9jcHVfZGF0YSB0byBzZWUgd2hhdCBDUFUgZmFtaWx5IGl0IGlzIHJ1bm5p
-bmcgb24sIGFuZAp0aGVuIGFjdHMgb24gdGhhdCBkYXRhLiBUaGUgImZhbWlseSIgc3RydWN0IG1l
-bWJlciAoeDg2KSBkb2VzIG5vdCBleGlzdAp3aGVuIHJ1bm5pbmcgb24gVU1MLCBzbyBwcmV2ZW50
-IHRoYXQgdGVzdCBhbmQgZG8gdGhlIGRlZmF1bHQgYWN0aW9uLgoKUHJldmVudHMgdGhpcyBidWls
-ZCBlcnJvciBvbiBVTUwgKyBpMzg2OgoKLi4vZHJpdmVycy9uZXQvZXRoZXJuZXQvZmVhbG54LmM6
-IEluIGZ1bmN0aW9uIOKAmG5ldGRldl9vcGVu4oCZOgouLi9kcml2ZXJzL25ldC9ldGhlcm5ldC9m
-ZWFsbnguYzo4NjE6MTk6IGVycm9yOiDigJhzdHJ1Y3QgY3B1aW5mb191beKAmSBoYXMgbm8gbWVt
-YmVyIG5hbWVkIOKAmHg4NuKAmQoKRml4ZXM6IDY4ZjVkM2YzYjY1NCAoInVtOiBhZGQgUENJIG92
-ZXIgdmlydGlvIGVtdWxhdGlvbiBkcml2ZXIiKQpTaWduZWQtb2ZmLWJ5OiBSYW5keSBEdW5sYXAg
-PHJkdW5sYXBAaW5mcmFkZWFkLm9yZz4KQ2M6IGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcK
-Q2M6IEplZmYgRGlrZSA8amRpa2VAYWRkdG9pdC5jb20+CkNjOiBSaWNoYXJkIFdlaW5iZXJnZXIg
-PHJpY2hhcmRAbm9kLmF0PgpDYzogQW50b24gSXZhbm92IDxhbnRvbi5pdmFub3ZAY2FtYnJpZGdl
-Z3JleXMuY29tPgpMaW5rOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9yLzIwMjExMDE0MDUwNTAw
-LjU2MjAtMS1yZHVubGFwQGluZnJhZGVhZC5vcmcKU2lnbmVkLW9mZi1ieTogSmFrdWIgS2ljaW5z
-a2kgPGt1YmFAa2VybmVsLm9yZz4KU2lnbmVkLW9mZi1ieTogU2FzaGEgTGV2aW4gPHNhc2hhbEBr
-ZXJuZWwub3JnPgotLS0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L2ZlYWxueC5jIHwgMiArLQogMSBm
-aWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0IGEv
-ZHJpdmVycy9uZXQvZXRoZXJuZXQvZmVhbG54LmMgYi9kcml2ZXJzL25ldC9ldGhlcm5ldC9mZWFs
-bnguYwppbmRleCAwZjE0MWMxNGQ3MmRmLi5hNDE3ZjBjMDcyZTliIDEwMDY0NAotLS0gYS9kcml2
-ZXJzL25ldC9ldGhlcm5ldC9mZWFsbnguYworKysgYi9kcml2ZXJzL25ldC9ldGhlcm5ldC9mZWFs
-bnguYwpAQCAtODU3LDcgKzg1Nyw3IEBAIHN0YXRpYyBpbnQgbmV0ZGV2X29wZW4oc3RydWN0IG5l
-dF9kZXZpY2UgKmRldikKIAlucC0+YmNydmFsdWUgfD0gMHgwNDsJLyogYmlnLWVuZGlhbiAqLwog
-I2VuZGlmCiAKLSNpZiBkZWZpbmVkKF9faTM4Nl9fKSAmJiAhZGVmaW5lZChNT0RVTEUpCisjaWYg
-ZGVmaW5lZChfX2kzODZfXykgJiYgIWRlZmluZWQoTU9EVUxFKSAmJiAhZGVmaW5lZChDT05GSUdf
-VU1MKQogCWlmIChib290X2NwdV9kYXRhLng4NiA8PSA0KQogCQlucC0+Y3J2YWx1ZSA9IDB4YTAw
-OwogCWVsc2UKLS0gCjIuMzMuMAoKCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJh
-ZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
-eC11bQo=
+On Mon, Nov 08, 2021 at 03:59:26PM -0500, Alan Stern wrote:
+> Is there really any reason for returning an error code?  For example, is 
+> it anticipated that at some point in the future these registration calls 
+> might fail?
+> 
+> Currently, the only reason for failing...
+
+Right, I believe with not making it return void we're leaving the door
+open for some, *hypothetical* future return values if we decide we need
+to return them too, at some point.
+
+Yes, I can't think of another fact to state besides that the callback
+was already registered or return success but who knows what we wanna do
+in the future...
+
+And so if we change them all to void now, I think it'll be a lot more
+churn to switch back to returning a non-void value and having the
+callers who choose to handle that value, do so again.
+
+So, long story short, keeping the retval - albeit not very useful right
+now - is probably easier.
+
+I hope I'm making some sense here.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
