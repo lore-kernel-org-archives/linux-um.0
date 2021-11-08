@@ -1,16 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from mail.skyhub.de ([2a01:4f8:190:11c2::b:1457])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mk1ou-00G27W-Et
- for linux-um@lists.infradead.org; Mon, 08 Nov 2021 10:24:10 +0000
-Message-ID: <129beb0a860102ba7970ab7497a5a83fe2041e68.camel@sipsolutions.net>
-Subject: Re: [PATCH v0 25/42] arch/um: Check notifier registration return value
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Mon, 08 Nov 2021 11:23:59 +0100
-In-Reply-To: <20211108101157.15189-26-bp@alien8.de>
+ id 1mk1dd-00Fyvf-LE
+ for linux-um@lists.infradead.org; Mon, 08 Nov 2021 10:12:31 +0000
+From: Borislav Petkov <bp@alien8.de>
+Subject: [PATCH v0 25/42] arch/um: Check notifier registration return value
+Date: Mon,  8 Nov 2021 11:11:40 +0100
+Message-Id: <20211108101157.15189-26-bp@alien8.de>
+In-Reply-To: <20211108101157.15189-1-bp@alien8.de>
 References: <20211108101157.15189-1-bp@alien8.de>
- <20211108101157.15189-26-bp@alien8.de>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -20,34 +18,65 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Borislav Petkov <bp@alien8.de>, LKML <linux-kernel@vger.kernel.org>
+To: LKML <linux-kernel@vger.kernel.org>
 Cc: linux-um@lists.infradead.org
 
-T24gTW9uLCAyMDIxLTExLTA4IGF0IDExOjExICswMTAwLCBCb3Jpc2xhdiBQZXRrb3Ygd3JvdGU6
-Cj4gRnJvbTogQm9yaXNsYXYgUGV0a292IDxicEBzdXNlLmRlPgo+IAo+IEF2b2lkIGhvbWVncm93
-biBub3RpZmllciByZWdpc3RyYXRpb24gY2hlY2tzLgo+IAo+IE5vIGZ1bmN0aW9uYWwgY2hhbmdl
-cy4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBCb3Jpc2xhdiBQZXRrb3YgPGJwQHN1c2UuZGU+Cj4gQ2M6
-IGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKPiAtLS0KPiDCoGFyY2gvdW0vZHJpdmVycy9t
-Y29uc29sZV9rZXJuLmMgfCA2ICsrKystLQo+IMKgYXJjaC91bS9rZXJuZWwvdW1fYXJjaC5jICAg
-ICAgICB8IDUgKysrLS0KPiDCoDIgZmlsZXMgY2hhbmdlZCwgNyBpbnNlcnRpb25zKCspLCA0IGRl
-bGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9hcmNoL3VtL2RyaXZlcnMvbWNvbnNvbGVfa2Vy
-bi5jIGIvYXJjaC91bS9kcml2ZXJzL21jb25zb2xlX2tlcm4uYwo+IGluZGV4IDZlYWQxZTI0MDQ1
-Ny4uY2VlYTk0MGMwYWEwIDEwMDY0NAo+IC0tLSBhL2FyY2gvdW0vZHJpdmVycy9tY29uc29sZV9r
-ZXJuLmMKPiArKysgYi9hcmNoL3VtL2RyaXZlcnMvbWNvbnNvbGVfa2Vybi5jCj4gQEAgLTg1Niw4
-ICs4NTYsMTAgQEAgc3RhdGljIHN0cnVjdCBub3RpZmllcl9ibG9jayBwYW5pY19leGl0X25vdGlm
-aWVyID0gewo+IMKgCj4gCj4gwqBzdGF0aWMgaW50IGFkZF9ub3RpZmllcih2b2lkKQo+IMKgewo+
-IC0JYXRvbWljX25vdGlmaWVyX2NoYWluX3JlZ2lzdGVyKCZwYW5pY19ub3RpZmllcl9saXN0LAo+
-IC0JCQkmcGFuaWNfZXhpdF9ub3RpZmllcik7Cj4gKwlpZiAoYXRvbWljX25vdGlmaWVyX2NoYWlu
-X3JlZ2lzdGVyKCZwYW5pY19ub3RpZmllcl9saXN0LAo+ICsJCQkJCSAgICZwYW5pY19leGl0X25v
-dGlmaWVyKSkKPiArCQlwcl93YXJuKCJVTSBjb25zb2xlIHBhbmljIG5vdGlmaWVyIGFscmVhZHkg
-cmVnaXN0ZXJlZFxuIik7Cj4gKwo+IMKgCXJldHVybiAwOwoKTWF5YmUgaXQgc2hvdWxkIGp1c3Qg
-cmV0dXJuIGl0PyBJIGRvbid0IHNlZSBob3cgdGhpcyBpcyBldmVyIHBvc3NpYmxlLApzaW5jZSBp
-dCdzIGFuIGluaXRjYWxsLgoKam9oYW5uZXMKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMu
-aW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2xpbnV4LXVtCg==
+From: Borislav Petkov <bp@suse.de>
+
+Avoid homegrown notifier registration checks.
+
+No functional changes.
+
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: linux-um@lists.infradead.org
+---
+ arch/um/drivers/mconsole_kern.c | 6 ++++--
+ arch/um/kernel/um_arch.c        | 5 +++--
+ 2 files changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/arch/um/drivers/mconsole_kern.c b/arch/um/drivers/mconsole_kern.c
+index 6ead1e240457..ceea940c0aa0 100644
+--- a/arch/um/drivers/mconsole_kern.c
++++ b/arch/um/drivers/mconsole_kern.c
+@@ -856,8 +856,10 @@ static struct notifier_block panic_exit_notifier = {
+ 
+ static int add_notifier(void)
+ {
+-	atomic_notifier_chain_register(&panic_notifier_list,
+-			&panic_exit_notifier);
++	if (atomic_notifier_chain_register(&panic_notifier_list,
++					   &panic_exit_notifier))
++		pr_warn("UM console panic notifier already registered\n");
++
+ 	return 0;
+ }
+ 
+diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
+index 54447690de11..6c0e562ff0b7 100644
+--- a/arch/um/kernel/um_arch.c
++++ b/arch/um/kernel/um_arch.c
+@@ -255,8 +255,9 @@ static struct notifier_block panic_exit_notifier = {
+ 
+ void uml_finishsetup(void)
+ {
+-	atomic_notifier_chain_register(&panic_notifier_list,
+-				       &panic_exit_notifier);
++	if (atomic_notifier_chain_register(&panic_notifier_list,
++					   &panic_exit_notifier))
++		pr_warn("UM panic notifier already registered\n");
+ 
+ 	uml_postsetup();
+ 
+-- 
+2.29.2
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
