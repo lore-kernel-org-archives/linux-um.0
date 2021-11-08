@@ -1,93 +1,137 @@
-MIME-Version: 1.0
-Date: Mon, 8 Nov 2021 15:07:03 +0100
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+From: Borislav Petkov <bp@alien8.de>
+Subject: [PATCH v0 42/42] notifier: Return an error when callback is already
+ registered
+Date: Mon,  8 Nov 2021 11:11:57 +0100
+Message-Id: <20211108101157.15189-43-bp@alien8.de>
+In-Reply-To: <20211108101157.15189-1-bp@alien8.de>
 References: <20211108101157.15189-1-bp@alien8.de>
-	<20211108101157.15189-43-bp@alien8.de>
-In-Reply-To: <20211108101157.15189-43-bp@alien8.de>
-Message-ID: <CAMuHMdWH+txiSP_d7Jc4f_bU8Lf9iWpT4E3o5o7BJr-YdA6-VA@mail.gmail.com>
-Subject: Re: [PATCH v0 42/42] notifier: Return an error when callback is
- already registered
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-To: Borislav Petkov <bp@alien8.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Arnd Bergmann <arnd@arndb.de>, Ayush Sawal <ayush.sawal@chelsio.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Rohit Maheshwari <rohitm@chelsio.com>, Steven Rostedt <rostedt@goodmis.org>, Vinay Kumar Yadav <vinay.yadav@chelsio.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>, Intel Graphics Development <intel-gfx@lists.freedesktop.org>, intel-gvt-dev@lists.freedesktop.org, alpha <linux-alpha@vger.kernel.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-clk <linux-clk@vger.kernel.org>, Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, linux-edac@vger.kernel.org, Linux Fbdev development list <linux-fbdev@vger.kernel.org>, linux-hyperv@vger.kernel.org, linux-iio@vger.kernel.org, linux-leds <linux-leds@vger.kernel.org>, "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>, Parisc List <linux-parisc@vger.kernel.org>, Linux PM list <linux-pm@vger.kernel.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" <linux-remoteproc@vger.kernel.org>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, linux-s390 <linux-s390@vger.kernel.org>, scsi <linux-scsi@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, linux-staging@lists.linux.dev, linux-tegra <linux-tegra@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>, USB list <linux-usb@vger.kernel.org>, "open list:TENSILICA XTENSA PORT (xtensa)" <linux-xtensa@linux-xtensa.org>, netdev <netdev@vger.kernel.org>, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux <sparclinux@vger.kernel.org>, the arch/x86 maintainers <x86@kernel.org>, xen-devel@lists.xenproject.org
-List-ID: <linux-um.lists.infradead.org>
+MIME-Version: 1.0
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Arnd Bergmann <arnd@arndb.de>, Ayush Sawal <ayush.sawal@chelsio.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Rohit Maheshwari <rohitm@chelsio.com>, Steven Rostedt <rostedt@goodmis.org>, Vinay Kumar Yadav <vinay.yadav@chelsio.com>, alsa-devel@alsa-project.org, bcm-kernel-feedback-list@broadcom.com, intel-gfx@lists.freedesktop.org, intel-gvt-dev@lists.freedesktop.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org, linux-edac@vger.kernel.org, linux-fbdev@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-iio@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-remoteproc@vger.kernel.org, linux-renesas-soc@vger.kernel.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, linux-sh@vger.kernel.org, linux-staging@lists.linux.dev, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-usb@vger.kernel.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org, xen-devel@lists.xenproject.org
 
-Hi Borislav,
-
-On Mon, Nov 8, 2021 at 11:13 AM Borislav Petkov <bp@alien8.de> wrote:
-> From: Borislav Petkov <bp@suse.de>
->
-> The notifier registration routine doesn't return a proper error value
-> when a callback has already been registered, leading people to track
-> whether that registration has happened at the call site:
->
->   https://lore.kernel.org/amd-gfx/20210512013058.6827-1-mukul.joshi@amd.c=
-om/
->
-> Which is unnecessary.
->
-> Return -EEXIST to signal that case so that callers can act accordingly.
-> Enforce callers to check the return value, leading to loud screaming
-> during build:
->
->   arch/x86/kernel/cpu/mce/core.c: In function =E2=80=98mce_register_decod=
-e_chain=E2=80=99:
->   arch/x86/kernel/cpu/mce/core.c:167:2: error: ignoring return value of \
->    =E2=80=98blocking_notifier_chain_register=E2=80=99, declared with attr=
-ibute warn_unused_result [-Werror=3Dunused-result]
->     blocking_notifier_chain_register(&x86_mce_decoder_chain, nb);
->   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->
-> Drop the WARN too, while at it.
->
-> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-> Signed-off-by: Borislav Petkov <bp@suse.de>
-
-Thanks for your patch!
-
-> --- a/include/linux/notifier.h
-> +++ b/include/linux/notifier.h
-> @@ -141,13 +141,13 @@ extern void srcu_init_notifier_head(struct srcu_not=
-ifier_head *nh);
->
->  #ifdef __KERNEL__
->
-> -extern int atomic_notifier_chain_register(struct atomic_notifier_head *n=
-h,
-> +extern int __must_check atomic_notifier_chain_register(struct atomic_not=
-ifier_head *nh,
->                 struct notifier_block *nb);
-> -extern int blocking_notifier_chain_register(struct blocking_notifier_hea=
-d *nh,
-> +extern int __must_check blocking_notifier_chain_register(struct blocking=
-_notifier_head *nh,
->                 struct notifier_block *nb);
-> -extern int raw_notifier_chain_register(struct raw_notifier_head *nh,
-> +extern int __must_check raw_notifier_chain_register(struct raw_notifier_=
-head *nh,
->                 struct notifier_block *nb);
-> -extern int srcu_notifier_chain_register(struct srcu_notifier_head *nh,
-> +extern int __must_check srcu_notifier_chain_register(struct srcu_notifie=
-r_head *nh,
->                 struct notifier_block *nb);
-
-I think the addition of __must_check is overkill, leading to the
-addition of useless error checks and message printing.  Many callers
-call this where it cannot fail, and where nothing can be done in the
-very unlikely event that the call would ever start to fail.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+RnJvbTogQm9yaXNsYXYgUGV0a292IDxicEBzdXNlLmRlPgoKVGhlIG5vdGlmaWVyIHJlZ2lzdHJh
+dGlvbiByb3V0aW5lIGRvZXNuJ3QgcmV0dXJuIGEgcHJvcGVyIGVycm9yIHZhbHVlCndoZW4gYSBj
+YWxsYmFjayBoYXMgYWxyZWFkeSBiZWVuIHJlZ2lzdGVyZWQsIGxlYWRpbmcgcGVvcGxlIHRvIHRy
+YWNrCndoZXRoZXIgdGhhdCByZWdpc3RyYXRpb24gaGFzIGhhcHBlbmVkIGF0IHRoZSBjYWxsIHNp
+dGU6CgogIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FtZC1nZngvMjAyMTA1MTIwMTMwNTguNjgy
+Ny0xLW11a3VsLmpvc2hpQGFtZC5jb20vCgpXaGljaCBpcyB1bm5lY2Vzc2FyeS4KClJldHVybiAt
+RUVYSVNUIHRvIHNpZ25hbCB0aGF0IGNhc2Ugc28gdGhhdCBjYWxsZXJzIGNhbiBhY3QgYWNjb3Jk
+aW5nbHkuCkVuZm9yY2UgY2FsbGVycyB0byBjaGVjayB0aGUgcmV0dXJuIHZhbHVlLCBsZWFkaW5n
+IHRvIGxvdWQgc2NyZWFtaW5nCmR1cmluZyBidWlsZDoKCiAgYXJjaC94ODYva2VybmVsL2NwdS9t
+Y2UvY29yZS5jOiBJbiBmdW5jdGlvbiDigJhtY2VfcmVnaXN0ZXJfZGVjb2RlX2NoYWlu4oCZOgog
+IGFyY2gveDg2L2tlcm5lbC9jcHUvbWNlL2NvcmUuYzoxNjc6MjogZXJyb3I6IGlnbm9yaW5nIHJl
+dHVybiB2YWx1ZSBvZiBcCiAgIOKAmGJsb2NraW5nX25vdGlmaWVyX2NoYWluX3JlZ2lzdGVy4oCZ
+LCBkZWNsYXJlZCB3aXRoIGF0dHJpYnV0ZSB3YXJuX3VudXNlZF9yZXN1bHQgWy1XZXJyb3I9dW51
+c2VkLXJlc3VsdF0KICAgIGJsb2NraW5nX25vdGlmaWVyX2NoYWluX3JlZ2lzdGVyKCZ4ODZfbWNl
+X2RlY29kZXJfY2hhaW4sIG5iKTsKICBefn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn4KCkRyb3AgdGhlIFdBUk4gdG9vLCB3aGlsZSBhdCBp
+dC4KClN1Z2dlc3RlZC1ieTogVGhvbWFzIEdsZWl4bmVyIDx0Z2x4QGxpbnV0cm9uaXguZGU+ClNp
+Z25lZC1vZmYtYnk6IEJvcmlzbGF2IFBldGtvdiA8YnBAc3VzZS5kZT4KQ2M6IEFybmQgQmVyZ21h
+bm4gPGFybmRAYXJuZGIuZGU+CkNjOiBBeXVzaCBTYXdhbCA8YXl1c2guc2F3YWxAY2hlbHNpby5j
+b20+CkNjOiBHcmVnIEtyb2FoLUhhcnRtYW4gPGdyZWdraEBsaW51eGZvdW5kYXRpb24ub3JnPgpD
+YzogUm9oaXQgTWFoZXNod2FyaSA8cm9oaXRtQGNoZWxzaW8uY29tPgpDYzogU3RldmVuIFJvc3Rl
+ZHQgPHJvc3RlZHRAZ29vZG1pcy5vcmc+CkNjOiBWaW5heSBLdW1hciBZYWRhdiA8dmluYXkueWFk
+YXZAY2hlbHNpby5jb20+CkNjOiBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKQ2M6IGJjbS1r
+ZXJuZWwtZmVlZGJhY2stbGlzdEBicm9hZGNvbS5jb20KQ2M6IGludGVsLWdmeEBsaXN0cy5mcmVl
+ZGVza3RvcC5vcmcKQ2M6IGludGVsLWd2dC1kZXZAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCkNjOiBs
+aW51eC1hbHBoYUB2Z2VyLmtlcm5lbC5vcmcKQ2M6IGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5m
+cmFkZWFkLm9yZwpDYzogbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnCkNjOiBs
+aW51eC1jbGtAdmdlci5rZXJuZWwub3JnCkNjOiBsaW51eC1jcnlwdG9Admdlci5rZXJuZWwub3Jn
+CkNjOiBsaW51eC1lZGFjQHZnZXIua2VybmVsLm9yZwpDYzogbGludXgtZmJkZXZAdmdlci5rZXJu
+ZWwub3JnCkNjOiBsaW51eC1oeXBlcnZAdmdlci5rZXJuZWwub3JnCkNjOiBsaW51eC1paW9Admdl
+ci5rZXJuZWwub3JnCkNjOiBsaW51eC1sZWRzQHZnZXIua2VybmVsLm9yZwpDYzogbGludXgtbWlw
+c0B2Z2VyLmtlcm5lbC5vcmcKQ2M6IGxpbnV4LXBhcmlzY0B2Z2VyLmtlcm5lbC5vcmcKQ2M6IGxp
+bnV4LXBtQHZnZXIua2VybmVsLm9yZwpDYzogbGludXhwcGMtZGV2QGxpc3RzLm96bGFicy5vcmcK
+Q2M6IGxpbnV4LXJlbW90ZXByb2NAdmdlci5rZXJuZWwub3JnCkNjOiBsaW51eC1yZW5lc2FzLXNv
+Y0B2Z2VyLmtlcm5lbC5vcmcKQ2M6IGxpbnV4LXMzOTBAdmdlci5rZXJuZWwub3JnCkNjOiBsaW51
+eC1zY3NpQHZnZXIua2VybmVsLm9yZwpDYzogbGludXgtc2hAdmdlci5rZXJuZWwub3JnCkNjOiBs
+aW51eC1zdGFnaW5nQGxpc3RzLmxpbnV4LmRldgpDYzogbGludXgtdGVncmFAdmdlci5rZXJuZWwu
+b3JnCkNjOiBsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCkNjOiBsaW51eC11c2JAdmdlci5r
+ZXJuZWwub3JnCkNjOiBsaW51eC14dGVuc2FAbGludXgteHRlbnNhLm9yZwpDYzogbmV0ZGV2QHZn
+ZXIua2VybmVsLm9yZwpDYzogb3BlbmlwbWktZGV2ZWxvcGVyQGxpc3RzLnNvdXJjZWZvcmdlLm5l
+dApDYzogcmN1QHZnZXIua2VybmVsLm9yZwpDYzogc3BhcmNsaW51eEB2Z2VyLmtlcm5lbC5vcmcK
+Q2M6IHg4NkBrZXJuZWwub3JnCkNjOiB4ZW4tZGV2ZWxAbGlzdHMueGVucHJvamVjdC5vcmcKLS0t
+CiBpbmNsdWRlL2xpbnV4L25vdGlmaWVyLmggfCAgOCArKysrLS0tLQoga2VybmVsL25vdGlmaWVy
+LmMgICAgICAgIHwgMzYgKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tCiAyIGZp
+bGVzIGNoYW5nZWQsIDIzIGluc2VydGlvbnMoKyksIDIxIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdp
+dCBhL2luY2x1ZGUvbGludXgvbm90aWZpZXIuaCBiL2luY2x1ZGUvbGludXgvbm90aWZpZXIuaApp
+bmRleCA4NzA2OWI4NDU5YWYuLjQ1Y2M1YThkMGZkOCAxMDA2NDQKLS0tIGEvaW5jbHVkZS9saW51
+eC9ub3RpZmllci5oCisrKyBiL2luY2x1ZGUvbGludXgvbm90aWZpZXIuaApAQCAtMTQxLDEzICsx
+NDEsMTMgQEAgZXh0ZXJuIHZvaWQgc3JjdV9pbml0X25vdGlmaWVyX2hlYWQoc3RydWN0IHNyY3Vf
+bm90aWZpZXJfaGVhZCAqbmgpOwogCiAjaWZkZWYgX19LRVJORUxfXwogCi1leHRlcm4gaW50IGF0
+b21pY19ub3RpZmllcl9jaGFpbl9yZWdpc3RlcihzdHJ1Y3QgYXRvbWljX25vdGlmaWVyX2hlYWQg
+Km5oLAorZXh0ZXJuIGludCBfX211c3RfY2hlY2sgYXRvbWljX25vdGlmaWVyX2NoYWluX3JlZ2lz
+dGVyKHN0cnVjdCBhdG9taWNfbm90aWZpZXJfaGVhZCAqbmgsCiAJCXN0cnVjdCBub3RpZmllcl9i
+bG9jayAqbmIpOwotZXh0ZXJuIGludCBibG9ja2luZ19ub3RpZmllcl9jaGFpbl9yZWdpc3Rlcihz
+dHJ1Y3QgYmxvY2tpbmdfbm90aWZpZXJfaGVhZCAqbmgsCitleHRlcm4gaW50IF9fbXVzdF9jaGVj
+ayBibG9ja2luZ19ub3RpZmllcl9jaGFpbl9yZWdpc3RlcihzdHJ1Y3QgYmxvY2tpbmdfbm90aWZp
+ZXJfaGVhZCAqbmgsCiAJCXN0cnVjdCBub3RpZmllcl9ibG9jayAqbmIpOwotZXh0ZXJuIGludCBy
+YXdfbm90aWZpZXJfY2hhaW5fcmVnaXN0ZXIoc3RydWN0IHJhd19ub3RpZmllcl9oZWFkICpuaCwK
+K2V4dGVybiBpbnQgX19tdXN0X2NoZWNrIHJhd19ub3RpZmllcl9jaGFpbl9yZWdpc3RlcihzdHJ1
+Y3QgcmF3X25vdGlmaWVyX2hlYWQgKm5oLAogCQlzdHJ1Y3Qgbm90aWZpZXJfYmxvY2sgKm5iKTsK
+LWV4dGVybiBpbnQgc3JjdV9ub3RpZmllcl9jaGFpbl9yZWdpc3RlcihzdHJ1Y3Qgc3JjdV9ub3Rp
+Zmllcl9oZWFkICpuaCwKK2V4dGVybiBpbnQgX19tdXN0X2NoZWNrIHNyY3Vfbm90aWZpZXJfY2hh
+aW5fcmVnaXN0ZXIoc3RydWN0IHNyY3Vfbm90aWZpZXJfaGVhZCAqbmgsCiAJCXN0cnVjdCBub3Rp
+Zmllcl9ibG9jayAqbmIpOwogCiBleHRlcm4gaW50IGF0b21pY19ub3RpZmllcl9jaGFpbl91bnJl
+Z2lzdGVyKHN0cnVjdCBhdG9taWNfbm90aWZpZXJfaGVhZCAqbmgsCmRpZmYgLS1naXQgYS9rZXJu
+ZWwvbm90aWZpZXIuYyBiL2tlcm5lbC9ub3RpZmllci5jCmluZGV4IGI4MjUxZGMwYmMwZi4uNDUx
+ZWYzZjczYWQyIDEwMDY0NAotLS0gYS9rZXJuZWwvbm90aWZpZXIuYworKysgYi9rZXJuZWwvbm90
+aWZpZXIuYwpAQCAtMjAsMTMgKzIwLDExIEBAIEJMT0NLSU5HX05PVElGSUVSX0hFQUQocmVib290
+X25vdGlmaWVyX2xpc3QpOwogICovCiAKIHN0YXRpYyBpbnQgbm90aWZpZXJfY2hhaW5fcmVnaXN0
+ZXIoc3RydWN0IG5vdGlmaWVyX2Jsb2NrICoqbmwsCi0JCXN0cnVjdCBub3RpZmllcl9ibG9jayAq
+bikKKwkJCQkgICBzdHJ1Y3Qgbm90aWZpZXJfYmxvY2sgKm4pCiB7CiAJd2hpbGUgKCgqbmwpICE9
+IE5VTEwpIHsKLQkJaWYgKHVubGlrZWx5KCgqbmwpID09IG4pKSB7Ci0JCQlXQVJOKDEsICJkb3Vi
+bGUgcmVnaXN0ZXIgZGV0ZWN0ZWQiKTsKLQkJCXJldHVybiAwOwotCQl9CisJCWlmICh1bmxpa2Vs
+eSgoKm5sKSA9PSBuKSkKKwkJCXJldHVybiAtRUVYSVNUOwogCQlpZiAobi0+cHJpb3JpdHkgPiAo
+Km5sKS0+cHJpb3JpdHkpCiAJCQlicmVhazsKIAkJbmwgPSAmKCgqbmwpLT5uZXh0KTsKQEAgLTEz
+NCwxMCArMTMyLDExIEBAIHN0YXRpYyBpbnQgbm90aWZpZXJfY2FsbF9jaGFpbl9yb2J1c3Qoc3Ry
+dWN0IG5vdGlmaWVyX2Jsb2NrICoqbmwsCiAgKgogICoJQWRkcyBhIG5vdGlmaWVyIHRvIGFuIGF0
+b21pYyBub3RpZmllciBjaGFpbi4KICAqCi0gKglDdXJyZW50bHkgYWx3YXlzIHJldHVybnMgemVy
+by4KKyAqCVJldHVybnMgMCBvbiBzdWNjZXNzLCAlLUVFWElTVCBvbiBlcnJvci4KICAqLwotaW50
+IGF0b21pY19ub3RpZmllcl9jaGFpbl9yZWdpc3RlcihzdHJ1Y3QgYXRvbWljX25vdGlmaWVyX2hl
+YWQgKm5oLAotCQlzdHJ1Y3Qgbm90aWZpZXJfYmxvY2sgKm4pCitpbnQgX19tdXN0X2NoZWNrCith
+dG9taWNfbm90aWZpZXJfY2hhaW5fcmVnaXN0ZXIoc3RydWN0IGF0b21pY19ub3RpZmllcl9oZWFk
+ICpuaCwKKwkJCSAgICAgICBzdHJ1Y3Qgbm90aWZpZXJfYmxvY2sgKm4pCiB7CiAJdW5zaWduZWQg
+bG9uZyBmbGFnczsKIAlpbnQgcmV0OwpAQCAtMjE2LDEwICsyMTUsMTEgQEAgTk9LUFJPQkVfU1lN
+Qk9MKGF0b21pY19ub3RpZmllcl9jYWxsX2NoYWluKTsKICAqCUFkZHMgYSBub3RpZmllciB0byBh
+IGJsb2NraW5nIG5vdGlmaWVyIGNoYWluLgogICoJTXVzdCBiZSBjYWxsZWQgaW4gcHJvY2VzcyBj
+b250ZXh0LgogICoKLSAqCUN1cnJlbnRseSBhbHdheXMgcmV0dXJucyB6ZXJvLgorICoJUmV0dXJu
+cyAwIG9uIHN1Y2Nlc3MsICUtRUVYSVNUIG9uIGVycm9yLgogICovCi1pbnQgYmxvY2tpbmdfbm90
+aWZpZXJfY2hhaW5fcmVnaXN0ZXIoc3RydWN0IGJsb2NraW5nX25vdGlmaWVyX2hlYWQgKm5oLAot
+CQlzdHJ1Y3Qgbm90aWZpZXJfYmxvY2sgKm4pCitpbnQgX19tdXN0X2NoZWNrCitibG9ja2luZ19u
+b3RpZmllcl9jaGFpbl9yZWdpc3RlcihzdHJ1Y3QgYmxvY2tpbmdfbm90aWZpZXJfaGVhZCAqbmgs
+CisJCQkJIHN0cnVjdCBub3RpZmllcl9ibG9jayAqbikKIHsKIAlpbnQgcmV0OwogCkBAIC0zMzUs
+MTAgKzMzNSwxMSBAQCBFWFBPUlRfU1lNQk9MX0dQTChibG9ja2luZ19ub3RpZmllcl9jYWxsX2No
+YWluKTsKICAqCUFkZHMgYSBub3RpZmllciB0byBhIHJhdyBub3RpZmllciBjaGFpbi4KICAqCUFs
+bCBsb2NraW5nIG11c3QgYmUgcHJvdmlkZWQgYnkgdGhlIGNhbGxlci4KICAqCi0gKglDdXJyZW50
+bHkgYWx3YXlzIHJldHVybnMgemVyby4KKyAqCVJldHVybnMgMCBvbiBzdWNjZXNzLCAlLUVFWElT
+VCBvbiBlcnJvci4KICAqLwotaW50IHJhd19ub3RpZmllcl9jaGFpbl9yZWdpc3RlcihzdHJ1Y3Qg
+cmF3X25vdGlmaWVyX2hlYWQgKm5oLAotCQlzdHJ1Y3Qgbm90aWZpZXJfYmxvY2sgKm4pCitpbnQg
+X19tdXN0X2NoZWNrCityYXdfbm90aWZpZXJfY2hhaW5fcmVnaXN0ZXIoc3RydWN0IHJhd19ub3Rp
+Zmllcl9oZWFkICpuaCwKKwkJCSAgICBzdHJ1Y3Qgbm90aWZpZXJfYmxvY2sgKm4pCiB7CiAJcmV0
+dXJuIG5vdGlmaWVyX2NoYWluX3JlZ2lzdGVyKCZuaC0+aGVhZCwgbik7CiB9CkBAIC00MDYsMTAg
+KzQwNywxMSBAQCBFWFBPUlRfU1lNQk9MX0dQTChyYXdfbm90aWZpZXJfY2FsbF9jaGFpbik7CiAg
+KglBZGRzIGEgbm90aWZpZXIgdG8gYW4gU1JDVSBub3RpZmllciBjaGFpbi4KICAqCU11c3QgYmUg
+Y2FsbGVkIGluIHByb2Nlc3MgY29udGV4dC4KICAqCi0gKglDdXJyZW50bHkgYWx3YXlzIHJldHVy
+bnMgemVyby4KKyAqCVJldHVybnMgMCBvbiBzdWNjZXNzLCAlLUVFWElTVCBvbiBlcnJvci4KICAq
+LwotaW50IHNyY3Vfbm90aWZpZXJfY2hhaW5fcmVnaXN0ZXIoc3RydWN0IHNyY3Vfbm90aWZpZXJf
+aGVhZCAqbmgsCi0JCXN0cnVjdCBub3RpZmllcl9ibG9jayAqbikKK2ludCBfX211c3RfY2hlY2sK
+K3NyY3Vfbm90aWZpZXJfY2hhaW5fcmVnaXN0ZXIoc3RydWN0IHNyY3Vfbm90aWZpZXJfaGVhZCAq
+bmgsCisJCQkgICAgIHN0cnVjdCBub3RpZmllcl9ibG9jayAqbikKIHsKIAlpbnQgcmV0OwogCi0t
+IAoyLjI5LjIKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRw
+Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
 
