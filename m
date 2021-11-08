@@ -1,14 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mmgS9-00Gdg1-OE
- for linux-um@lists.infradead.org; Mon, 15 Nov 2021 18:11:39 +0000
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 5.14 430/849] net: tulip: winbond-840: fix build for UML
-Date: Mon, 15 Nov 2021 17:58:33 +0100
-Message-Id: <20211115165434.820240550@linuxfoundation.org>
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
+ id 1mk2KA-00GByU-6e
+ for linux-um@lists.infradead.org; Mon, 08 Nov 2021 10:56:27 +0000
+Message-ID: <ce3a494b078ffca5df28475298ba6c491267da98.camel@sipsolutions.net>
+Subject: Re: [PATCH v0 25/42] arch/um: Check notifier registration return value
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Mon, 08 Nov 2021 11:56:21 +0100
+In-Reply-To: <YYkAiFhxVsLaPTqr@zn.tnic>
+References: <20211108101157.15189-1-bp@alien8.de>
+ <20211108101157.15189-26-bp@alien8.de>
+ <129beb0a860102ba7970ab7497a5a83fe2041e68.camel@sipsolutions.net>
+ <YYkAiFhxVsLaPTqr@zn.tnic>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -18,47 +22,32 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>, linux-um@lists.infradead.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Jakub Kicinski <kuba@kernel.org>, Sasha Levin <sashal@kernel.org>
+To: Borislav Petkov <bp@alien8.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, linux-um@lists.infradead.org
 
-RnJvbTogUmFuZHkgRHVubGFwIDxyZHVubGFwQGluZnJhZGVhZC5vcmc+CgpbIFVwc3RyZWFtIGNv
-bW1pdCBhM2Q3MDg5MjVmY2NhMWEyZjcyMTliYzljZTkzZTYzNDFmODVjMWUwIF0KCk9uIGkzODYs
-IHdoZW4gYnVpbHRpbiAobm90IGEgbG9hZGFibGUgbW9kdWxlKSwgdGhlIHdpbmJvbmQtODQwIGRy
-aXZlcgppbnNwZWN0cyBib290X2NwdV9kYXRhIHRvIHNlZSB3aGF0IENQVSBmYW1pbHkgaXQgaXMg
-cnVubmluZyBvbiwgYW5kCnRoZW4gYWN0cyBvbiB0aGF0IGRhdGEuIFRoZSAiZmFtaWx5IiBzdHJ1
-Y3QgbWVtYmVyICh4ODYpIGRvZXMgbm90IGV4aXN0CndoZW4gcnVubmluZyBvbiBVTUwsIHNvIHBy
-ZXZlbnQgdGhhdCB0ZXN0IGFuZCBkbyB0aGUgZGVmYXVsdCBhY3Rpb24uCgpQcmV2ZW50cyB0aGlz
-IGJ1aWxkIGVycm9yIG9uIFVNTCArIGkzODY6CgouLi9kcml2ZXJzL25ldC9ldGhlcm5ldC9kZWMv
-dHVsaXAvd2luYm9uZC04NDAuYzogSW4gZnVuY3Rpb24g4oCYaW5pdF9yZWdpc3RlcnPigJk6Ci4u
-L2RyaXZlcnMvbmV0L2V0aGVybmV0L2RlYy90dWxpcC93aW5ib25kLTg0MC5jOjg4MjoxOTogZXJy
-b3I6IOKAmHN0cnVjdCBjcHVpbmZvX3Vt4oCZIGhhcyBubyBtZW1iZXIgbmFtZWQg4oCYeDg24oCZ
-CiAgaWYgKGJvb3RfY3B1X2RhdGEueDg2IDw9IDQpIHsKCkZpeGVzOiA2OGY1ZDNmM2I2NTQgKCJ1
-bTogYWRkIFBDSSBvdmVyIHZpcnRpbyBlbXVsYXRpb24gZHJpdmVyIikKU2lnbmVkLW9mZi1ieTog
-UmFuZHkgRHVubGFwIDxyZHVubGFwQGluZnJhZGVhZC5vcmc+CkNjOiBsaW51eC11bUBsaXN0cy5p
-bmZyYWRlYWQub3JnCkNjOiBKZWZmIERpa2UgPGpkaWtlQGFkZHRvaXQuY29tPgpDYzogUmljaGFy
-ZCBXZWluYmVyZ2VyIDxyaWNoYXJkQG5vZC5hdD4KQ2M6IEFudG9uIEl2YW5vdiA8YW50b24uaXZh
-bm92QGNhbWJyaWRnZWdyZXlzLmNvbT4KTGluazogaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvci8y
-MDIxMTAxNDA1MDYwNi43Mjg4LTEtcmR1bmxhcEBpbmZyYWRlYWQub3JnClNpZ25lZC1vZmYtYnk6
-IEpha3ViIEtpY2luc2tpIDxrdWJhQGtlcm5lbC5vcmc+ClNpZ25lZC1vZmYtYnk6IFNhc2hhIExl
-dmluIDxzYXNoYWxAa2VybmVsLm9yZz4KLS0tCiBkcml2ZXJzL25ldC9ldGhlcm5ldC9kZWMvdHVs
-aXAvd2luYm9uZC04NDAuYyB8IDIgKy0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwg
-MSBkZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2V0aGVybmV0L2RlYy90dWxp
-cC93aW5ib25kLTg0MC5jIGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvZGVjL3R1bGlwL3dpbmJvbmQt
-ODQwLmMKaW5kZXggMTg3NmYxNWRkODI3OS4uMWJkNzZkZDk3NTM3OSAxMDA2NDQKLS0tIGEvZHJp
-dmVycy9uZXQvZXRoZXJuZXQvZGVjL3R1bGlwL3dpbmJvbmQtODQwLmMKKysrIGIvZHJpdmVycy9u
-ZXQvZXRoZXJuZXQvZGVjL3R1bGlwL3dpbmJvbmQtODQwLmMKQEAgLTg3Nyw3ICs4NzcsNyBAQCBz
-dGF0aWMgdm9pZCBpbml0X3JlZ2lzdGVycyhzdHJ1Y3QgbmV0X2RldmljZSAqZGV2KQogCQk4MDAw
-CTE2IGxvbmd3b3JkcwkJMDIwMCAyIGxvbmd3b3JkcwkyMDAwIDMyIGxvbmd3b3JkcwogCQlDMDAw
-CTMyICBsb25nd29yZHMJCTA0MDAgNCBsb25nd29yZHMgKi8KIAotI2lmIGRlZmluZWQgKF9faTM4
-Nl9fKSAmJiAhZGVmaW5lZChNT0RVTEUpCisjaWYgZGVmaW5lZCAoX19pMzg2X18pICYmICFkZWZp
-bmVkKE1PRFVMRSkgJiYgIWRlZmluZWQoQ09ORklHX1VNTCkKIAkvKiBXaGVuIG5vdCBhIG1vZHVs
-ZSB3ZSBjYW4gd29yayBhcm91bmQgYnJva2VuICc0ODYgUENJIGJvYXJkcy4gKi8KIAlpZiAoYm9v
-dF9jcHVfZGF0YS54ODYgPD0gNCkgewogCQlpIHw9IDB4NDgwMDsKLS0gCjIuMzMuMAoKCgoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFp
-bGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
+On Mon, 2021-11-08 at 11:48 +0100, Borislav Petkov wrote:
+> On Mon, Nov 08, 2021 at 11:23:59AM +0100, Johannes Berg wrote:
+> > Maybe it should just return it? I don't see how this is ever possible,
+> > since it's an initcall.
+> 
+> If it would return it, you'd see the warning only when booting with
+> "initcall_debug", I believe.
+
+Oh, I thought we'd fail :)
+
+> I can do that if it is preferred...
+> 
+No strong opinion either way.
+
+johannes
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
