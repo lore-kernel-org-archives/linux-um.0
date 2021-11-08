@@ -1,15 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Mon, 8 Nov 2021 15:24:39 +0100
-From: Borislav Petkov <bp@alien8.de>
+Received: from netrider.rowland.org ([192.131.102.5])
+ by bombadil.infradead.org with smtp (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mk5SR-00Gbqq-6Q
+ for linux-um@lists.infradead.org; Mon, 08 Nov 2021 14:17:12 +0000
+Date: Mon, 8 Nov 2021 09:17:03 -0500
+From: Alan Stern <stern@rowland.harvard.edu>
 Subject: Re: [PATCH v0 00/42] notifiers: Return an error when callback is
  already registered
-Message-ID: <YYkzJ3+faVga2Tl3@zn.tnic>
+Message-ID: <20211108141703.GB1666297@rowland.harvard.edu>
 References: <20211108101157.15189-1-bp@alien8.de>
  <20211108101924.15759-1-bp@alien8.de>
- <20211108141703.GB1666297@rowland.harvard.edu>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20211108141703.GB1666297@rowland.harvard.edu>
+In-Reply-To: <20211108101924.15759-1-bp@alien8.de>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,31 +25,57 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Alan Stern <stern@rowland.harvard.edu>
+To: Borislav Petkov <bp@alien8.de>
 Cc: LKML <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, Ayush Sawal <ayush.sawal@chelsio.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Rohit Maheshwari <rohitm@chelsio.com>, Steven Rostedt <rostedt@goodmis.org>, Vinay Kumar Yadav <vinay.yadav@chelsio.com>, alsa-devel@alsa-project.org, bcm-kernel-feedback-list@broadcom.com, intel-gfx@lists.freedesktop.org, intel-gvt-dev@lists.freedesktop.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org, linux-edac@vger.kernel.org, linux-fbdev@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-iio@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-remoteproc@vger.kernel.org, linux-renesas-soc@vger.kernel.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, linux-sh@vger.kernel.org, linux-staging@lists.linux.dev, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-usb@vger.kernel.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org, xen-devel@lists.xenproject.org
 
-On Mon, Nov 08, 2021 at 09:17:03AM -0500, Alan Stern wrote:
-> What reason is there for moving the check into the callers?  It seems 
-> like pointless churn.  Why not add the error return code, change the 
-> WARN to pr_warn, and leave the callers as they are?  Wouldn't that end 
-> up having exactly the same effect?
+On Mon, Nov 08, 2021 at 11:19:24AM +0100, Borislav Petkov wrote:
+> From: Borislav Petkov <bp@suse.de>
 > 
-> For that matter, what sort of remedial action can a caller take if the 
-> return code is -EEXIST?  Is there any point in forcing callers to check 
-> the return code if they can't do anything about it?
+> Hi all,
+> 
+> this is a huge patchset for something which is really trivial - it
+> changes the notifier registration routines to return an error value
+> if a notifier callback is already present on the respective list of
+> callbacks. For more details scroll to the last patch.
+> 
+> Everything before it is converting the callers to check the return value
+> of the registration routines and issue a warning, instead of the WARN()
+> notifier_chain_register() does now.
 
-See my reply to Geert from just now:
+What reason is there for moving the check into the callers?  It seems 
+like pointless churn.  Why not add the error return code, change the 
+WARN to pr_warn, and leave the callers as they are?  Wouldn't that end 
+up having exactly the same effect?
 
-https://lore.kernel.org/r/YYkyUEqcsOwQMb1S@zn.tnic
+For that matter, what sort of remedial action can a caller take if the 
+return code is -EEXIST?  Is there any point in forcing callers to check 
+the return code if they can't do anything about it?
 
-I guess I can add another indirection to notifier_chain_register() and
-avoid touching all the call sites.
+> Before the last patch has been applied, though, that checking is a
+> NOP which would make the application of those patches trivial - every
+> maintainer can pick a patch at her/his discretion - only the last one
+> enables the build warnings and that one will be queued only after the
+> preceding patches have all been merged so that there are no build
+> warnings.
 
--- 
-Regards/Gruss,
-    Boris.
+Why should there be _any_ build warnings?  The real problem occurs when 
+a notifier callback is added twice, not when a caller fails to check the 
+return code.  Double-registration is not the sort of thing that can be 
+detected at build time.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Alan Stern
+
+> Due to the sheer volume of the patches, I have addressed the respective
+> patch and the last one, which enables the warning, with addressees for
+> each maintained area so as not to spam people unnecessarily.
+> 
+> If people prefer I carry some through tip, instead, I'll gladly do so -
+> your call.
+> 
+> And, if you think the warning messages need to be more precise, feel
+> free to adjust them before committing.
+> 
+> Thanks!
 
 _______________________________________________
 linux-um mailing list
