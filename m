@@ -1,12 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1miuJO-00ApDo-3G
- for linux-um@lists.infradead.org; Fri, 05 Nov 2021 08:10:59 +0000
-From: Sjoerd Simons <sjoerd@collabora.com>
-Subject: [PATCH] hostfs: Fix writeback of dirty pages
-Date: Fri,  5 Nov 2021 09:10:51 +0100
-Message-Id: <20211105081052.2353801-1-sjoerd@collabora.com>
+ id 1mmh1F-00GltH-KZ
+ for linux-um@lists.infradead.org; Mon, 15 Nov 2021 18:47:55 +0000
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 5.15 429/917] net: fealnx: fix build for UML
+Date: Mon, 15 Nov 2021 17:58:44 +0100
+Message-Id: <20211115165443.338738029@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -16,51 +18,43 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>, linux-um@lists.infradead.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Jakub Kicinski <kuba@kernel.org>, Sasha Levin <sashal@kernel.org>
 
-Hostfs was not setting up the backing device information, which means it
-uses the noop bdi. The noop bdi does not have the writeback capability
-enabled, which in turns means  dirty pages never got written back to
-storage.
-
-In other words programs using mmap to write to files on  hostfs never
-actually got their data written out...
-
-Fix this by simply setting up the bdi with default settings as all the
-required code for writeback is already in place.
-
-Signed-off-by: Sjoerd Simons <sjoerd@collabora.com>
-
----
-
- fs/hostfs/hostfs_kern.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-index d5c9d886cd9f..ef481c3d9019 100644
---- a/fs/hostfs/hostfs_kern.c
-+++ b/fs/hostfs/hostfs_kern.c
-@@ -924,6 +924,9 @@ static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
- 	sb->s_op = &hostfs_sbops;
- 	sb->s_d_op = &simple_dentry_operations;
- 	sb->s_maxbytes = MAX_LFS_FILESIZE;
-+	err = super_setup_bdi(sb);
-+	if (err)
-+		goto out;
- 
- 	/* NULL is printed as '(null)' by printf(): avoid that. */
- 	if (req_root == NULL)
--- 
-2.33.1
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+RnJvbTogUmFuZHkgRHVubGFwIDxyZHVubGFwQGluZnJhZGVhZC5vcmc+CgpbIFVwc3RyZWFtIGNv
+bW1pdCBjZDI2MjFkMDdkNTE3NDczNjExYjE3MGM2OWJlYjY1MjRjNjc3NzQwIF0KCk9uIGkzODYs
+IHdoZW4gYnVpbHRpbiAobm90IGEgbG9hZGFibGUgbW9kdWxlKSwgdGhlIGZlYWxueCBkcml2ZXIK
+aW5zcGVjdHMgYm9vdF9jcHVfZGF0YSB0byBzZWUgd2hhdCBDUFUgZmFtaWx5IGl0IGlzIHJ1bm5p
+bmcgb24sIGFuZAp0aGVuIGFjdHMgb24gdGhhdCBkYXRhLiBUaGUgImZhbWlseSIgc3RydWN0IG1l
+bWJlciAoeDg2KSBkb2VzIG5vdCBleGlzdAp3aGVuIHJ1bm5pbmcgb24gVU1MLCBzbyBwcmV2ZW50
+IHRoYXQgdGVzdCBhbmQgZG8gdGhlIGRlZmF1bHQgYWN0aW9uLgoKUHJldmVudHMgdGhpcyBidWls
+ZCBlcnJvciBvbiBVTUwgKyBpMzg2OgoKLi4vZHJpdmVycy9uZXQvZXRoZXJuZXQvZmVhbG54LmM6
+IEluIGZ1bmN0aW9uIOKAmG5ldGRldl9vcGVu4oCZOgouLi9kcml2ZXJzL25ldC9ldGhlcm5ldC9m
+ZWFsbnguYzo4NjE6MTk6IGVycm9yOiDigJhzdHJ1Y3QgY3B1aW5mb191beKAmSBoYXMgbm8gbWVt
+YmVyIG5hbWVkIOKAmHg4NuKAmQoKRml4ZXM6IDY4ZjVkM2YzYjY1NCAoInVtOiBhZGQgUENJIG92
+ZXIgdmlydGlvIGVtdWxhdGlvbiBkcml2ZXIiKQpTaWduZWQtb2ZmLWJ5OiBSYW5keSBEdW5sYXAg
+PHJkdW5sYXBAaW5mcmFkZWFkLm9yZz4KQ2M6IGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcK
+Q2M6IEplZmYgRGlrZSA8amRpa2VAYWRkdG9pdC5jb20+CkNjOiBSaWNoYXJkIFdlaW5iZXJnZXIg
+PHJpY2hhcmRAbm9kLmF0PgpDYzogQW50b24gSXZhbm92IDxhbnRvbi5pdmFub3ZAY2FtYnJpZGdl
+Z3JleXMuY29tPgpMaW5rOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9yLzIwMjExMDE0MDUwNTAw
+LjU2MjAtMS1yZHVubGFwQGluZnJhZGVhZC5vcmcKU2lnbmVkLW9mZi1ieTogSmFrdWIgS2ljaW5z
+a2kgPGt1YmFAa2VybmVsLm9yZz4KU2lnbmVkLW9mZi1ieTogU2FzaGEgTGV2aW4gPHNhc2hhbEBr
+ZXJuZWwub3JnPgotLS0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L2ZlYWxueC5jIHwgMiArLQogMSBm
+aWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0IGEv
+ZHJpdmVycy9uZXQvZXRoZXJuZXQvZmVhbG54LmMgYi9kcml2ZXJzL25ldC9ldGhlcm5ldC9mZWFs
+bnguYwppbmRleCAyNWM5MWIzYzVmZDMwLi44MTkyNjZkNDYzYjA3IDEwMDY0NAotLS0gYS9kcml2
+ZXJzL25ldC9ldGhlcm5ldC9mZWFsbnguYworKysgYi9kcml2ZXJzL25ldC9ldGhlcm5ldC9mZWFs
+bnguYwpAQCAtODU3LDcgKzg1Nyw3IEBAIHN0YXRpYyBpbnQgbmV0ZGV2X29wZW4oc3RydWN0IG5l
+dF9kZXZpY2UgKmRldikKIAlucC0+YmNydmFsdWUgfD0gMHgwNDsJLyogYmlnLWVuZGlhbiAqLwog
+I2VuZGlmCiAKLSNpZiBkZWZpbmVkKF9faTM4Nl9fKSAmJiAhZGVmaW5lZChNT0RVTEUpCisjaWYg
+ZGVmaW5lZChfX2kzODZfXykgJiYgIWRlZmluZWQoTU9EVUxFKSAmJiAhZGVmaW5lZChDT05GSUdf
+VU1MKQogCWlmIChib290X2NwdV9kYXRhLng4NiA8PSA0KQogCQlucC0+Y3J2YWx1ZSA9IDB4YTAw
+OwogCWVsc2UKLS0gCjIuMzMuMAoKCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJh
+ZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
+eC11bQo=
 
