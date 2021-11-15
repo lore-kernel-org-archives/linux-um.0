@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x52b.google.com ([2607:f8b0:4864:20::52b])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1miW2x-007ztz-E1
- for linux-um@lists.infradead.org; Thu, 04 Nov 2021 06:16:24 +0000
-Received: by mail-pg1-x52b.google.com with SMTP id b4so4529479pgh.10
- for <linux-um@lists.infradead.org>; Wed, 03 Nov 2021 23:16:21 -0700 (PDT)
-From: davidcomponentone@gmail.com
-Subject: [PATCH] um: use swap() to make code cleaner
-Date: Thu,  4 Nov 2021 14:16:08 +0800
-Message-Id: <20211104061609.1496503-1-yang.guang5@zte.com.cn>
+ id 1mmh22-00Gm37-HK
+ for linux-um@lists.infradead.org; Mon, 15 Nov 2021 18:48:43 +0000
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 5.15 445/917] media: ivtv: fix build for UML
+Date: Mon, 15 Nov 2021 17:59:00 +0100
+Message-Id: <20211115165443.866072932@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -18,54 +18,72 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: jdike@addtoit.com
-Cc: davidcomponentone@gmail.com, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes.berg@intel.com, yang.guang5@zte.com.cn, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>
+To: linux-kernel@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>, Johannes Berg <johannes@sipsolutions.net>, Andy Walls <awalls@md.metrocast.net>, linux-um@lists.infradead.org, Richard Weinberger <richard@nod.at>, Hans Verkuil <hverkuil-cisco@xs4all.nl>, Mauro Carvalho Chehab <mchehab+huawei@kernel.org>, Sasha Levin <sashal@kernel.org>
 
-From: Yang Guang <yang.guang5@zte.com.cn>
-
-Use the macro 'swap()' defined in 'include/linux/minmax.h' to avoid
-opencoding it.
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
----
- arch/um/os-Linux/sigio.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/arch/um/os-Linux/sigio.c b/arch/um/os-Linux/sigio.c
-index 9e71794839e8..1eb15f3cfdc8 100644
---- a/arch/um/os-Linux/sigio.c
-+++ b/arch/um/os-Linux/sigio.c
-@@ -50,7 +50,7 @@ static struct pollfds all_sigio_fds;
- 
- static int write_sigio_thread(void *unused)
- {
--	struct pollfds *fds, tmp;
-+	struct pollfds *fds;
- 	struct pollfd *p;
- 	int i, n, respond_fd;
- 	char c;
-@@ -77,9 +77,7 @@ static int write_sigio_thread(void *unused)
- 					       "write_sigio_thread : "
- 					       "read on socket failed, "
- 					       "err = %d\n", errno);
--				tmp = current_poll;
--				current_poll = next_poll;
--				next_poll = tmp;
-+				swap(current_poll, next_poll);
- 				respond_fd = sigio_private[1];
- 			}
- 			else {
--- 
-2.30.2
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+RnJvbTogUmFuZHkgRHVubGFwIDxyZHVubGFwQGluZnJhZGVhZC5vcmc+CgpbIFVwc3RyZWFtIGNv
+bW1pdCA2Y2I2N2JlYTk0NWJkZjBhZDQwZTYzM2NkMmQ5ZmJlYjA4NTU2NzViIF0KClByZXZlbnQg
+dGhlIHVzZSBvZiBwYWdlIHRhYmxlIG1hY3JvcyBhbmQgdHlwZXMgZnJvbSAyIGNvbmZsaWN0aW5n
+CnBsYWNlcy4gVGhpcyBmaXhlcyBtdWx0aXBsZSBidWlsZCBlcnJvcnMgYW5kIHdhcm5pbmdzLCBl
+LmcuOgoKLi4vYXJjaC94ODYvaW5jbHVkZS9hc20vcGd0YWJsZV82NF90eXBlcy5oOjIxOjM0OiBl
+cnJvcjogY29uZmxpY3RpbmcgdHlwZXMgZm9yIOKAmHB0ZV904oCZCiB0eXBlZGVmIHN0cnVjdCB7
+IHB0ZXZhbF90IHB0ZTsgfSBwdGVfdDsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IF5+fn5+CkluIGZpbGUgaW5jbHVkZWQgZnJvbSAuLi9pbmNsdWRlL2xpbnV4L21tX3R5cGVzX3Rh
+c2suaDoxNjowLAogICAgICAgICAgICAgICAgIGZyb20gLi4vaW5jbHVkZS9saW51eC9tbV90eXBl
+cy5oOjUsCiAgICAgICAgICAgICAgICAgZnJvbSAuLi9pbmNsdWRlL2xpbnV4L2J1aWxkaWQuaDo1
+LAogICAgICAgICAgICAgICAgIGZyb20gLi4vaW5jbHVkZS9saW51eC9tb2R1bGUuaDoxNCwKICAg
+ICAgICAgICAgICAgICBmcm9tIC4uL2RyaXZlcnMvbWVkaWEvcGNpL2l2dHYvaXZ0di1kcml2ZXIu
+aDo0MCwKICAgICAgICAgICAgICAgICBmcm9tIC4uL2RyaXZlcnMvbWVkaWEvcGNpL2l2dHYvaXZ0
+dmZiLmM6Mjk6Ci4uL2FyY2gvdW0vaW5jbHVkZS9hc20vcGFnZS5oOjU3OjM5OiBub3RlOiBwcmV2
+aW91cyBkZWNsYXJhdGlvbiBvZiDigJhwdGVfdOKAmSB3YXMgaGVyZQogdHlwZWRlZiBzdHJ1Y3Qg
+eyB1bnNpZ25lZCBsb25nIHB0ZTsgfSBwdGVfdDsKCi4uL2FyY2gveDg2L2luY2x1ZGUvYXNtL3Bn
+dGFibGVfdHlwZXMuaDoyODQ6NDM6IGVycm9yOiBleHBlY3RlZCDigJgp4oCZIGJlZm9yZSDigJhw
+cm904oCZCiBzdGF0aWMgaW5saW5lIHBncHJvdF90IHBncHJvdF9ueChwZ3Byb3RfdCBwcm90KQog
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXgouLi9pbmNsdWRlL2xp
+bnV4L3BndGFibGUuaDo5MTQ6MjY6IG5vdGU6IGluIGRlZmluaXRpb24gb2YgbWFjcm8g4oCYcGdw
+cm90X2544oCZCiAjZGVmaW5lIHBncHJvdF9ueChwcm90KSAocHJvdCkKICAgICAgICAgICAgICAg
+ICAgICAgICAgICBefn5+CkluIGZpbGUgaW5jbHVkZWQgZnJvbSAuLi9hcmNoL3g4Ni9pbmNsdWRl
+L2FzbS9tZW10eXBlLmg6NjowLAogICAgICAgICAgICAgICAgIGZyb20gLi4vZHJpdmVycy9tZWRp
+YS9wY2kvaXZ0di9pdnR2ZmIuYzo0MDoKLi4vYXJjaC94ODYvaW5jbHVkZS9hc20vcGd0YWJsZV90
+eXBlcy5oOjI4ODowOiB3YXJuaW5nOiAicGdwcm90X254IiByZWRlZmluZWQKICNkZWZpbmUgcGdw
+cm90X254IHBncHJvdF9ueAoKLi4vYXJjaC94ODYvaW5jbHVkZS9hc20vcGFnZV90eXBlcy5oOjEx
+OjA6IHdhcm5pbmc6ICJQQUdFX1NJWkUiIHJlZGVmaW5lZAogI2RlZmluZSBQQUdFX1NJWkUgIChf
+QUMoMSxVTCkgPDwgUEFHRV9TSElGVCkKCkluIGZpbGUgaW5jbHVkZWQgZnJvbSAuLi9pbmNsdWRl
+L2xpbnV4L21tX3R5cGVzX3Rhc2suaDoxNjowLAogICAgICAgICAgICAgICAgIGZyb20gLi4vaW5j
+bHVkZS9saW51eC9tbV90eXBlcy5oOjUsCiAgICAgICAgICAgICAgICAgZnJvbSAuLi9pbmNsdWRl
+L2xpbnV4L2J1aWxkaWQuaDo1LAogICAgICAgICAgICAgICAgIGZyb20gLi4vaW5jbHVkZS9saW51
+eC9tb2R1bGUuaDoxNCwKICAgICAgICAgICAgICAgICBmcm9tIC4uL2RyaXZlcnMvbWVkaWEvcGNp
+L2l2dHYvaXZ0di1kcml2ZXIuaDo0MCwKICAgICAgICAgICAgICAgICBmcm9tIC4uL2RyaXZlcnMv
+bWVkaWEvcGNpL2l2dHYvaXZ0dmZiLmM6Mjk6Ci4uL2FyY2gvdW0vaW5jbHVkZS9hc20vcGFnZS5o
+OjE0OjA6IG5vdGU6IHRoaXMgaXMgdGhlIGxvY2F0aW9uIG9mIHRoZSBwcmV2aW91cyBkZWZpbml0
+aW9uCiAjZGVmaW5lIFBBR0VfU0laRSAoX0FDKDEsIFVMKSA8PCBQQUdFX1NISUZUKQoKRml4ZXM6
+IDY4ZjVkM2YzYjY1NCAoInVtOiBhZGQgUENJIG92ZXIgdmlydGlvIGVtdWxhdGlvbiBkcml2ZXIi
+KQpTaWduZWQtb2ZmLWJ5OiBSYW5keSBEdW5sYXAgPHJkdW5sYXBAaW5mcmFkZWFkLm9yZz4KQ2M6
+IEpvaGFubmVzIEJlcmcgPGpvaGFubmVzQHNpcHNvbHV0aW9ucy5uZXQ+CkNjOiBBbmR5IFdhbGxz
+IDxhd2FsbHNAbWQubWV0cm9jYXN0Lm5ldD4KQ2M6IGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5v
+cmcKQ2M6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+ClNpZ25lZC1vZmYtYnk6
+IEhhbnMgVmVya3VpbCA8aHZlcmt1aWwtY2lzY29AeHM0YWxsLm5sPgpTaWduZWQtb2ZmLWJ5OiBN
+YXVybyBDYXJ2YWxobyBDaGVoYWIgPG1jaGVoYWIraHVhd2VpQGtlcm5lbC5vcmc+ClNpZ25lZC1v
+ZmYtYnk6IFNhc2hhIExldmluIDxzYXNoYWxAa2VybmVsLm9yZz4KLS0tCiBkcml2ZXJzL21lZGlh
+L3BjaS9pdnR2L2l2dHZmYi5jIHwgNCArKy0tCiAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25z
+KCspLCAyIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWVkaWEvcGNpL2l2dHYv
+aXZ0dmZiLmMgYi9kcml2ZXJzL21lZGlhL3BjaS9pdnR2L2l2dHZmYi5jCmluZGV4IGUyZDU2ZGNh
+NWJlNDAuLjVhZDAzYjJhNTBiZGIgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbWVkaWEvcGNpL2l2dHYv
+aXZ0dmZiLmMKKysrIGIvZHJpdmVycy9tZWRpYS9wY2kvaXZ0di9pdnR2ZmIuYwpAQCAtMzYsNyAr
+MzYsNyBAQAogI2luY2x1ZGUgPGxpbnV4L2ZiLmg+CiAjaW5jbHVkZSA8bGludXgvaXZ0dmZiLmg+
+CiAKLSNpZmRlZiBDT05GSUdfWDg2XzY0CisjaWYgZGVmaW5lZChDT05GSUdfWDg2XzY0KSAmJiAh
+ZGVmaW5lZChDT05GSUdfVU1MKQogI2luY2x1ZGUgPGFzbS9tZW10eXBlLmg+CiAjZW5kaWYKIApA
+QCAtMTE1Nyw3ICsxMTU3LDcgQEAgc3RhdGljIGludCBpdnR2ZmJfaW5pdF9jYXJkKHN0cnVjdCBp
+dnR2ICppdHYpCiB7CiAJaW50IHJjOwogCi0jaWZkZWYgQ09ORklHX1g4Nl82NAorI2lmIGRlZmlu
+ZWQoQ09ORklHX1g4Nl82NCkgJiYgIWRlZmluZWQoQ09ORklHX1VNTCkKIAlpZiAocGF0X2VuYWJs
+ZWQoKSkgewogCQlpZiAoaXZ0dmZiX2ZvcmNlX3BhdCkgewogCQkJcHJfaW5mbygiUEFUIGlzIGVu
+YWJsZWQuIFdyaXRlLWNvbWJpbmVkIGZyYW1lYnVmZmVyIGNhY2hpbmcgd2lsbCBiZSBkaXNhYmxl
+ZC5cbiIpOwotLSAKMi4zMy4wCgoKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFk
+ZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
+LXVtCg==
 
