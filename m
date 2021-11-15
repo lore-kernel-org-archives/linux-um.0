@@ -1,15 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Thu, 18 Nov 2021 17:00:58 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [tip:x86/core 1/1] arch/x86/um/../lib/csum-partial_64.c:98:12:
- error: implicit declaration of function 'load_unaligned_zeropad'
-Message-ID: <YZZ4upqWGMOY+r56@hirez.programming.kicks-ass.net>
-References: <202111180219.YkyoBMpf-lkp@intel.com>
- <CANn89iJfh+x-s4GtWJcyRFpMmSvvyq-r1TGV4sDLXy3F50zD6w@mail.gmail.com>
- <CANn89iJj4zeNUiXCmG=rSejbHAwPhBEPKUv1tPL9ig=e4vg7pQ@mail.gmail.com>
+Received: from mail.kernel.org ([198.145.29.99])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mmh1I-00Gltx-HI
+ for linux-um@lists.infradead.org; Mon, 15 Nov 2021 18:47:57 +0000
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 5.15 430/917] net: intel: igc_ptp: fix build for UML
+Date: Mon, 15 Nov 2021 17:58:45 +0100
+Message-Id: <20211115165443.371123535@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CANn89iJj4zeNUiXCmG=rSejbHAwPhBEPKUv1tPL9ig=e4vg7pQ@mail.gmail.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,88 +18,52 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Eric Dumazet <edumazet@google.com>
-Cc: kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org, linux-kernel@vger.kernel.org, x86@kernel.org, Alexander Duyck <alexanderduyck@fb.com>, linux-um@lists.infradead.org
+To: linux-kernel@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>, linux-um@lists.infradead.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Jesse Brandeburg <jesse.brandeburg@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, intel-wired-lan@lists.osuosl.org, Jakub Kicinski <kuba@kernel.org>, Sasha Levin <sashal@kernel.org>
 
-
-On Wed, Nov 17, 2021 at 11:40:35AM -0800, Eric Dumazet wrote:
-> On Wed, Nov 17, 2021 at 10:55 AM Eric Dumazet <edumazet@google.com> wrote:
-> >
-> > On Wed, Nov 17, 2021 at 10:46 AM kernel test robot <lkp@intel.com> wrote:
-> > >
-> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/core
-> > > head:   d31c3c683ee668ba5d87c0730610442fd672525f
-> > > commit: d31c3c683ee668ba5d87c0730610442fd672525f [1/1] x86/csum: Rewrite/optimize csum_partial()
-> > > config: um-x86_64_defconfig (attached as .config)
-> > > compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> > > reproduce (this is a W=1 build):
-> > >         # https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=d31c3c683ee668ba5d87c0730610442fd672525f
-> > >         git remote add tip https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
-> > >         git fetch --no-tags tip x86/core
-> > >         git checkout d31c3c683ee668ba5d87c0730610442fd672525f
-> > >         # save the attached .config to linux build tree
-> > >         make W=1 ARCH=um SUBARCH=x86_64
-> > >
-> > > If you fix the issue, kindly add following tag as appropriate
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > >
-> > > All errors (new ones prefixed by >>):
-> > >
-> > >    arch/x86/um/../lib/csum-partial_64.c: In function 'csum_partial':
-> > > >> arch/x86/um/../lib/csum-partial_64.c:98:12: error: implicit declaration of function 'load_unaligned_zeropad' [-Werror=implicit-function-declaration]
-> > >       98 |   trail = (load_unaligned_zeropad(buff) << shift) >> shift;
-> > >          |            ^~~~~~~~~~~~~~~~~~~~~~
-> > >    cc1: some warnings being treated as errors
-> > >
-> > >
-> >
-> > Hmmm... it seems we need to guard this with CONFIG_DCACHE_WORD_ACCESS ?
-> 
-> Perhaps something like the following ?
-
-Dear um folks, is this indeed the best solution? It's a bit sad to have
-to add this to x86_64, but if that's the way it is...
-
-> 
-> diff --git a/arch/x86/lib/csum-partial_64.c b/arch/x86/lib/csum-partial_64.c
-> index 5ec35626945b6db2f7f41c6d46d5e422810eac46..d419b9345d6dba2e924887671bc6f11c3e17ebd7
-> 100644
-> --- a/arch/x86/lib/csum-partial_64.c
-> +++ b/arch/x86/lib/csum-partial_64.c
-> @@ -91,12 +91,23 @@ __wsum csum_partial(const void *buff, int len, __wsum sum)
->                         : "memory");
->                 buff += 8;
->         }
-> -       if (len & 7) {
-> -               unsigned int shift = (8 - (len & 7)) * 8;
-> +       len &= 7;
-> +       if (len) {
->                 unsigned long trail;
-> +#ifndef CONFIG_DCACHE_WORD_ACCESS
-> +               union {
-> +                       unsigned long   ulval;
-> +                       u8              bytes[sizeof(long)];
-> +               } v;
-> 
-> -               trail = (load_unaligned_zeropad(buff) << shift) >> shift;
-> +               v.ulval = 0;
-> +               memcpy(v.bytes, buff, len);
-> +               trail = v.ulval;
-> +#else
-> +               unsigned int shift = (sizeof(long) - len) * BITS_PER_BYTE;
-> 
-> +               trail = (load_unaligned_zeropad(buff) << shift) >> shift;
-> +#endif
->                 asm("addq %[trail],%[res]\n\t"
->                     "adcq $0,%[res]"
->                         : [res] "+r" (temp64)
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+RnJvbTogUmFuZHkgRHVubGFwIDxyZHVubGFwQGluZnJhZGVhZC5vcmc+CgpbIFVwc3RyZWFtIGNv
+bW1pdCA1MjM5OTRiYTNhZDFiN2I1NWFiZTRhNzJlMTU2ODk3YjVlMmRiODI1IF0KCk9uIGEgVU1M
+IGJ1aWxkLCB0aGUgaWdjX3B0cCBkcml2ZXIgdXNlcyBDT05GSUdfWDg2X1RTQyBmb3IgdGltZXN0
+YW1wCmNvbnZlcnNpb24uIFRoZSBmdW5jdGlvbiB0aGF0IGlzIHVzZWQgaXMgbm90IGF2YWlsYWJs
+ZSBvbiBVTUwgYnVpbGRzLApzbyBoYXZlIHRoZSBmdW5jdGlvbiB1c2UgdGhlIGRlZmF1bHQgc3lz
+dGVtX2NvdW50ZXJ2YWxfdCB0aW1lc3RhbXAKaW5zdGVhZCBmb3IgVU1MIGJ1aWxkcy4KClByZXZl
+bnRzIHRoaXMgYnVpbGQgZXJyb3Igb24gVU1MOgoKLi4vZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50
+ZWwvaWdjL2lnY19wdHAuYzogSW4gZnVuY3Rpb24g4oCYaWdjX2RldmljZV90c3RhbXBfdG9fc3lz
+dGVt4oCZOgouLi9kcml2ZXJzL25ldC9ldGhlcm5ldC9pbnRlbC9pZ2MvaWdjX3B0cC5jOjc3Nzo5
+OiBlcnJvcjogaW1wbGljaXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24g4oCYY29udmVydF9hcnRf
+bnNfdG9fdHNj4oCZIFstV2Vycm9yPWltcGxpY2l0LWZ1bmN0aW9uLWRlY2xhcmF0aW9uXQogIHJl
+dHVybiBjb252ZXJ0X2FydF9uc190b190c2ModHN0YW1wKTsKLi4vZHJpdmVycy9uZXQvZXRoZXJu
+ZXQvaW50ZWwvaWdjL2lnY19wdHAuYzo3Nzc6OTogZXJyb3I6IGluY29tcGF0aWJsZSB0eXBlcyB3
+aGVuIHJldHVybmluZyB0eXBlIOKAmGludOKAmSBidXQg4oCYc3RydWN0IHN5c3RlbV9jb3VudGVy
+dmFsX3TigJkgd2FzIGV4cGVjdGVkCiAgcmV0dXJuIGNvbnZlcnRfYXJ0X25zX3RvX3RzYyh0c3Rh
+bXApOwoKRml4ZXM6IDY4ZjVkM2YzYjY1NCAoInVtOiBhZGQgUENJIG92ZXIgdmlydGlvIGVtdWxh
+dGlvbiBkcml2ZXIiKQpTaWduZWQtb2ZmLWJ5OiBSYW5keSBEdW5sYXAgPHJkdW5sYXBAaW5mcmFk
+ZWFkLm9yZz4KQ2M6IGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKQ2M6IEplZmYgRGlrZSA8
+amRpa2VAYWRkdG9pdC5jb20+CkNjOiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0
+PgpDYzogQW50b24gSXZhbm92IDxhbnRvbi5pdmFub3ZAY2FtYnJpZGdlZ3JleXMuY29tPgpDYzog
+SmVzc2UgQnJhbmRlYnVyZyA8amVzc2UuYnJhbmRlYnVyZ0BpbnRlbC5jb20+CkNjOiBUb255IE5n
+dXllbiA8YW50aG9ueS5sLm5ndXllbkBpbnRlbC5jb20+CkNjOiBpbnRlbC13aXJlZC1sYW5AbGlz
+dHMub3N1b3NsLm9yZwpMaW5rOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9yLzIwMjExMDE0MDUw
+NTE2LjY4NDYtMS1yZHVubGFwQGluZnJhZGVhZC5vcmcKU2lnbmVkLW9mZi1ieTogSmFrdWIgS2lj
+aW5za2kgPGt1YmFAa2VybmVsLm9yZz4KU2lnbmVkLW9mZi1ieTogU2FzaGEgTGV2aW4gPHNhc2hh
+bEBrZXJuZWwub3JnPgotLS0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L2ludGVsL2lnYy9pZ2NfcHRw
+LmMgfCAyICstCiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkK
+CmRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9ldGhlcm5ldC9pbnRlbC9pZ2MvaWdjX3B0cC5jIGIv
+ZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwvaWdjL2lnY19wdHAuYwppbmRleCAwZjAyMTkwOWI0
+MzBhLi4zMDU2OGUzNTQ0Y2RhIDEwMDY0NAotLS0gYS9kcml2ZXJzL25ldC9ldGhlcm5ldC9pbnRl
+bC9pZ2MvaWdjX3B0cC5jCisrKyBiL2RyaXZlcnMvbmV0L2V0aGVybmV0L2ludGVsL2lnYy9pZ2Nf
+cHRwLmMKQEAgLTc3Myw3ICs3NzMsNyBAQCBzdGF0aWMgYm9vbCBpZ2NfaXNfY3Jvc3N0c3RhbXBf
+c3VwcG9ydGVkKHN0cnVjdCBpZ2NfYWRhcHRlciAqYWRhcHRlcikKIAogc3RhdGljIHN0cnVjdCBz
+eXN0ZW1fY291bnRlcnZhbF90IGlnY19kZXZpY2VfdHN0YW1wX3RvX3N5c3RlbSh1NjQgdHN0YW1w
+KQogewotI2lmIElTX0VOQUJMRUQoQ09ORklHX1g4Nl9UU0MpCisjaWYgSVNfRU5BQkxFRChDT05G
+SUdfWDg2X1RTQykgJiYgIWRlZmluZWQoQ09ORklHX1VNTCkKIAlyZXR1cm4gY29udmVydF9hcnRf
+bnNfdG9fdHNjKHRzdGFtcCk7CiAjZWxzZQogCXJldHVybiAoc3RydWN0IHN5c3RlbV9jb3VudGVy
+dmFsX3QpIHsgfTsKLS0gCjIuMzMuMAoKCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmlu
+ZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
+aW51eC11bQo=
 
