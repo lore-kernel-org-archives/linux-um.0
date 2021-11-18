@@ -1,21 +1,21 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-wr1-x42c.google.com ([2a00:1450:4864:20::42c])
+Received: from mail-wm1-x334.google.com ([2a00:1450:4864:20::334])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mnkoL-008QCV-OI
- for linux-um@lists.infradead.org; Thu, 18 Nov 2021 17:02:59 +0000
-Received: by mail-wr1-x42c.google.com with SMTP id r8so12864405wra.7
- for <linux-um@lists.infradead.org>; Thu, 18 Nov 2021 09:02:57 -0800 (PST)
+ id 1mnkje-008Pnp-TI
+ for linux-um@lists.infradead.org; Thu, 18 Nov 2021 16:58:08 +0000
+Received: by mail-wm1-x334.google.com with SMTP id
+ n33-20020a05600c502100b0032fb900951eso8189423wmr.4
+ for <linux-um@lists.infradead.org>; Thu, 18 Nov 2021 08:58:03 -0800 (PST)
 MIME-Version: 1.0
 References: <202111180219.YkyoBMpf-lkp@intel.com>
  <CANn89iJfh+x-s4GtWJcyRFpMmSvvyq-r1TGV4sDLXy3F50zD6w@mail.gmail.com>
  <CANn89iJj4zeNUiXCmG=rSejbHAwPhBEPKUv1tPL9ig=e4vg7pQ@mail.gmail.com>
  <YZZ4upqWGMOY+r56@hirez.programming.kicks-ass.net>
  <21f86e2bc817b6ec0c7a9194a4fefb1d55e3040b.camel@sipsolutions.net>
- <CANn89i+K6=Kc0weayD_phAPn9YT=2UUje+1BZfg=kUiLp7ELqQ@mail.gmail.com>
-In-Reply-To: <CANn89i+K6=Kc0weayD_phAPn9YT=2UUje+1BZfg=kUiLp7ELqQ@mail.gmail.com>
+In-Reply-To: <21f86e2bc817b6ec0c7a9194a4fefb1d55e3040b.camel@sipsolutions.net>
 From: Eric Dumazet <edumazet@google.com>
-Date: Thu, 18 Nov 2021 09:02:43 -0800
-Message-ID: <CANn89i+hQTn26hK-4CA=cAwCxEMzogqD30PYdqz4NP8kjmH2gg@mail.gmail.com>
+Date: Thu, 18 Nov 2021 08:57:49 -0800
+Message-ID: <CANn89i+K6=Kc0weayD_phAPn9YT=2UUje+1BZfg=kUiLp7ELqQ@mail.gmail.com>
 Subject: Re: [tip:x86/core 1/1] arch/x86/um/../lib/csum-partial_64.c:98:12:
  error: implicit declaration of function 'load_unaligned_zeropad'
 List-Id: <linux-um.lists.infradead.org>
@@ -33,62 +33,55 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: Johannes Berg <johannes@sipsolutions.net>
 Cc: Peter Zijlstra <peterz@infradead.org>, kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org, linux-kernel@vger.kernel.org, x86@kernel.org, Alexander Duyck <alexanderduyck@fb.com>, linux-um@lists.infradead.org
 
-On Thu, Nov 18, 2021 at 8:57 AM Eric Dumazet <edumazet@google.com> wrote:
-
+On Thu, Nov 18, 2021 at 8:27 AM Johannes Berg <johannes@sipsolutions.net> wrote:
 >
-> Unless fixups can be handled, the signature of the function needs to
-> be different.
+> On Thu, 2021-11-18 at 17:00 +0100, Peter Zijlstra wrote:
+> > On Wed, Nov 17, 2021 at 11:40:35AM -0800, Eric Dumazet wrote:
+> > > On Wed, Nov 17, 2021 at 10:55 AM Eric Dumazet <edumazet@google.com> wrote:
+> > > >
+> > > > On Wed, Nov 17, 2021 at 10:46 AM kernel test robot <lkp@intel.com> wrote:
+> > > > >
+> > > > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/core
+> > > > > head:   d31c3c683ee668ba5d87c0730610442fd672525f
+> > > > > commit: d31c3c683ee668ba5d87c0730610442fd672525f [1/1] x86/csum: Rewrite/optimize csum_partial()
+> > > > > config: um-x86_64_defconfig (attached as .config)
+> > > > > compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> > > > > reproduce (this is a W=1 build):
+> > > > >         # https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=d31c3c683ee668ba5d87c0730610442fd672525f
+> > > > >         git remote add tip https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
+> > > > >         git fetch --no-tags tip x86/core
+> > > > >         git checkout d31c3c683ee668ba5d87c0730610442fd672525f
+> > > > >         # save the attached .config to linux build tree
+> > > > >         make W=1 ARCH=um SUBARCH=x86_64
+> > > > >
+> > > > > If you fix the issue, kindly add following tag as appropriate
+> > > > > Reported-by: kernel test robot <lkp@intel.com>
+> > > > >
+> > > > > All errors (new ones prefixed by >>):
+> > > > >
+> > > > >    arch/x86/um/../lib/csum-partial_64.c: In function 'csum_partial':
+> > > > > > > arch/x86/um/../lib/csum-partial_64.c:98:12: error: implicit declaration of function 'load_unaligned_zeropad' [-Werror=implicit-function-declaration]
+> > > > >       98 |   trail = (load_unaligned_zeropad(buff) << shift) >> shift;
+> > > > >          |            ^~~~~~~~~~~~~~~~~~~~~~
+> > > > >    cc1: some warnings being treated as errors
+> > > > >
+> > > > >
+> > > >
+> > > > Hmmm... it seems we need to guard this with CONFIG_DCACHE_WORD_ACCESS ?
+> > >
+> > > Perhaps something like the following ?
+> >
+> > Dear um folks, is this indeed the best solution? It's a bit sad to have
+> > to add this to x86_64, but if that's the way it is...
+> >
 >
-> In UM, we would need to provide a number of bytes that can be read.
+> I guess we can add load_unaligned_zeropad() or even just somehow add the
+> include with it (asm/word-at-a-time.h) from x86?
 
-We can make this a bit less ugly  of course.
+Unless fixups can be handled, the signature of the function needs to
+be different.
 
-diff --git a/arch/x86/lib/csum-partial_64.c b/arch/x86/lib/csum-partial_64.c
-index 5ec35626945b6db2f7f41c6d46d5e422810eac46..7a3c4e7e05c4b21566e1ee3813a071509a9d54ff
-100644
---- a/arch/x86/lib/csum-partial_64.c
-+++ b/arch/x86/lib/csum-partial_64.c
-@@ -21,6 +21,25 @@ static inline unsigned short from32to16(unsigned a)
-        return b;
- }
-
-+
-+static inline unsigned long load_partial_long(const void *buff, int len)
-+{
-+#ifndef CONFIG_DCACHE_WORD_ACCESS
-+               union {
-+                       unsigned long   ulval;
-+                       u8              bytes[sizeof(long)];
-+               } v;
-+
-+               v.ulval = 0;
-+               memcpy(v.bytes, buff, len);
-+               return v.ulval;
-+#else
-+               unsigned int shift = (sizeof(long) - len) * BITS_PER_BYTE;
-+
-+               return (load_unaligned_zeropad(buff) << shift) >> shift;
-+#endif
-+}
-+
- /*
-  * Do a checksum on an arbitrary memory area.
-  * Returns a 32bit checksum.
-@@ -91,11 +110,9 @@ __wsum csum_partial(const void *buff, int len, __wsum sum)
-                        : "memory");
-                buff += 8;
-        }
--       if (len & 7) {
--               unsigned int shift = (8 - (len & 7)) * 8;
--               unsigned long trail;
--
--               trail = (load_unaligned_zeropad(buff) << shift) >> shift;
-+       len &= 7;
-+       if (len) {
-+               unsigned long trail = load_partial_long(buff, len);
-
-                asm("addq %[trail],%[res]\n\t"
-                    "adcq $0,%[res]"
+In UM, we would need to provide a number of bytes that can be read.
 
 _______________________________________________
 linux-um mailing list
