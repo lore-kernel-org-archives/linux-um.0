@@ -1,18 +1,23 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-io1-xd34.google.com ([2607:f8b0:4864:20::d34])
+Received: from mail-wr1-x42c.google.com ([2a00:1450:4864:20::42c])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mq42w-006Gbw-M7
- for linux-um@lists.infradead.org; Thu, 25 Nov 2021 01:59:36 +0000
-Received: by mail-io1-xd34.google.com with SMTP id f9so5588241ioo.11
- for <linux-um@lists.infradead.org>; Wed, 24 Nov 2021 17:59:34 -0800 (PST)
-Message-ID: <619eee05.1c69fb81.4b686.4bbc@mx.google.com>
-From: Noah Goldstein <goldstein.w.n@gmail.com>
+ id 1mnkoL-008QCV-OI
+ for linux-um@lists.infradead.org; Thu, 18 Nov 2021 17:02:59 +0000
+Received: by mail-wr1-x42c.google.com with SMTP id r8so12864405wra.7
+ for <linux-um@lists.infradead.org>; Thu, 18 Nov 2021 09:02:57 -0800 (PST)
+MIME-Version: 1.0
+References: <202111180219.YkyoBMpf-lkp@intel.com>
+ <CANn89iJfh+x-s4GtWJcyRFpMmSvvyq-r1TGV4sDLXy3F50zD6w@mail.gmail.com>
+ <CANn89iJj4zeNUiXCmG=rSejbHAwPhBEPKUv1tPL9ig=e4vg7pQ@mail.gmail.com>
+ <YZZ4upqWGMOY+r56@hirez.programming.kicks-ass.net>
+ <21f86e2bc817b6ec0c7a9194a4fefb1d55e3040b.camel@sipsolutions.net>
+ <CANn89i+K6=Kc0weayD_phAPn9YT=2UUje+1BZfg=kUiLp7ELqQ@mail.gmail.com>
+In-Reply-To: <CANn89i+K6=Kc0weayD_phAPn9YT=2UUje+1BZfg=kUiLp7ELqQ@mail.gmail.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Thu, 18 Nov 2021 09:02:43 -0800
+Message-ID: <CANn89i+hQTn26hK-4CA=cAwCxEMzogqD30PYdqz4NP8kjmH2gg@mail.gmail.com>
 Subject: Re: [tip:x86/core 1/1] arch/x86/um/../lib/csum-partial_64.c:98:12:
  error: implicit declaration of function 'load_unaligned_zeropad'
-Date: Wed, 24 Nov 2021 19:58:57 -0600
-In-Reply-To: <CANn89i+K6=Kc0weayD_phAPn9YT=2UUje+1BZfg=kUiLp7ELqQ@mail.gmail.com>
-References: <CANn89i+hQTn26hK-4CA=cAwCxEMzogqD30PYdqz4NP8kjmH2gg@mail.gmail.com>
-MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -25,10 +30,8 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: edumazet@google.com, Johannes Berg <johannes@sipsolutions.net>
-Cc: alexanderduyck@fb.com, kbuild-all@lists.01.org, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, lkp@intel.com, peterz@infradead.org, x86@kernel.org, goldstein.w.n@gmail.com
-
-From: Eric Dumazet <edumazet@google.com>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Peter Zijlstra <peterz@infradead.org>, kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org, linux-kernel@vger.kernel.org, x86@kernel.org, Alexander Duyck <alexanderduyck@fb.com>, linux-um@lists.infradead.org
 
 On Thu, Nov 18, 2021 at 8:57 AM Eric Dumazet <edumazet@google.com> wrote:
 
@@ -86,20 +89,6 @@ index 5ec35626945b6db2f7f41c6d46d5e422810eac46..7a3c4e7e05c4b21566e1ee3813a07150
 
                 asm("addq %[trail],%[res]\n\t"
                     "adcq $0,%[res]"
-
-Hi, I'm not sure if this is intentional or not, but I noticed that the output
-of 'csum_partial' is different after this patch. I figured that the checksum
-algorithm is fixed so just wanted mention it incase its a bug. If not sorry
-for the spam.
-
-Example on x86_64:
-
-Buff: [ 87, b3, 92, b7, 8b, 53, 96, db, cd, 0f, 7e, 7e ]
-len : 11
-sum : 0
-
-csum_partial new : 2480936615
-csum_partial HEAD: 2472089390
 
 _______________________________________________
 linux-um mailing list
