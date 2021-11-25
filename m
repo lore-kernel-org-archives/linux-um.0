@@ -1,22 +1,29 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151])
+Received: from mail-pl1-x636.google.com ([2607:f8b0:4864:20::636])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mqerz-00BI74-3h
- for linux-um@lists.infradead.org; Fri, 26 Nov 2021 17:18:44 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-Subject: RE: [tip:x86/core 1/1] arch/x86/um/../lib/csum-partial_64.c:98:12:
- error: implicit declaration of function 'load_unaligned_zeropad'
-Date: Fri, 26 Nov 2021 17:18:34 +0000
-Message-ID: <4dbf7f8d095b46a8a45e285d0ec8f8b0@AcuMS.aculab.com>
+ id 1mq8Zm-006Xmr-8P
+ for linux-um@lists.infradead.org; Thu, 25 Nov 2021 06:49:47 +0000
+Received: by mail-pl1-x636.google.com with SMTP id p18so3782645plf.13
+ for <linux-um@lists.infradead.org>; Wed, 24 Nov 2021 22:49:45 -0800 (PST)
+MIME-Version: 1.0
 References: <CANn89i+hQTn26hK-4CA=cAwCxEMzogqD30PYdqz4NP8kjmH2gg@mail.gmail.com>
  <CANn89i+K6=Kc0weayD_phAPn9YT=2UUje+1BZfg=kUiLp7ELqQ@mail.gmail.com>
  <619eee05.1c69fb81.4b686.4bbc@mx.google.com>
  <CANn89iJdQ1VTLYUKu1hYNm4wF__ZzrwNYr28v_vGM0MCybJpxg@mail.gmail.com>
  <CAFUsyf+5zp+p_0TPFLr-fMNry0M_CnNAFDG30PKDuy2jA5MhNw@mail.gmail.com>
  <CANn89iLtZmSyBYtvJ0nxdrM3CKyf3D9y9AWBC4GVbPCxtjOROw@mail.gmail.com>
-In-Reply-To: <CANn89iLtZmSyBYtvJ0nxdrM3CKyf3D9y9AWBC4GVbPCxtjOROw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Language: en-US
+ <CANn89i+edPKsp63R16kx4_kQ884ks=is8pg=W0wDbNV46UZ3vw@mail.gmail.com>
+ <CANn89iJqZm9Mcfu+4-aZ_pZok1j4RsHK8YoFBVqjVYpGbt_P8Q@mail.gmail.com>
+ <CAFUsyfL3RF-UC-HBUcbRn0e5S3URo9gpz5V85buF8C7xVb6K7w@mail.gmail.com>
+ <CAFUsyfLz89DrkvTwDTDqNCHVbBzk1QgEKu0+PuwBoF=Y6me7cQ@mail.gmail.com>
+ <CANn89iLYHkyaLawrZJYuRETx63c0QWQ0kLGysPbGpWj2+C5Jfw@mail.gmail.com>
+ <CANn89iJsFZrm5qzAUJDgYczQiBFa6pmvPDrA_yqkGFhfm-6AnQ@mail.gmail.com>
+In-Reply-To: <CANn89iJsFZrm5qzAUJDgYczQiBFa6pmvPDrA_yqkGFhfm-6AnQ@mail.gmail.com>
+From: Noah Goldstein <goldstein.w.n@gmail.com>
+Date: Thu, 25 Nov 2021 00:49:34 -0600
+Message-ID: <CAFUsyfLACUMcOZmNF3S_xAaTXTPXAMg+kJ8tV6tKk+xw0XLOtg@mail.gmail.com>
+Subject: Re: [tip:x86/core 1/1] arch/x86/um/../lib/csum-partial_64.c:98:12:
+ error: implicit declaration of function 'load_unaligned_zeropad'
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -29,64 +36,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: 'Eric Dumazet' <edumazet@google.com>, Noah Goldstein <goldstein.w.n@gmail.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>, "alexanderduyck@fb.com" <alexanderduyck@fb.com>, "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>, open list <linux-kernel@vger.kernel.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "lkp@intel.com" <lkp@intel.com>, "peterz@infradead.org" <peterz@infradead.org>, X86 ML <x86@kernel.org>
+To: Eric Dumazet <edumazet@google.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>, alexanderduyck@fb.com, kbuild-all@lists.01.org, open list <linux-kernel@vger.kernel.org>, linux-um@lists.infradead.org, lkp@intel.com, peterz@infradead.org, X86 ML <x86@kernel.org>
 
-From: Eric Dumazet
-> Sent: 25 November 2021 04:01
-...
-> > The outputs seem to match if `buff` is aligned to 64-bit. Still see
-> > difference with `csum_fold(csum_partial())` if `buff` is not 64-bit aligned.
-> >
-> > The comment at the top says it's "best" to have `buff` 64-bit aligned but
-> > the code logic seems meant to support the misaligned case so not
-> > sure if it's an issue.
-> >
-> 
-> It is an issue in general, not in standard cases because network
-> headers are aligned.
-> 
-> I think it came when I folded csum_partial() and do_csum(), I forgot
-> to ror() the seed.
-> 
-> I suspect the following would help:
-> 
-> diff --git a/arch/x86/lib/csum-partial_64.c b/arch/x86/lib/csum-partial_64.c
-> index 1eb8f2d11f7c785be624eba315fe9ca7989fd56d..ee7b0e7a6055bcbef42d22f7e1d8f52ddbd6be6d
-> 100644
-> --- a/arch/x86/lib/csum-partial_64.c
-> +++ b/arch/x86/lib/csum-partial_64.c
-> @@ -41,6 +41,7 @@ __wsum csum_partial(const void *buff, int len, __wsum sum)
->         if (unlikely(odd)) {
->                 if (unlikely(len == 0))
->                         return sum;
-> +               temp64 = ror32((__force u64)sum, 8);
->                 temp64 += (*(unsigned char *)buff << 8);
->                 len--;
->                 buff++;
+On Thu, Nov 25, 2021 at 12:46 AM Eric Dumazet <edumazet@google.com> wrote:
+>
+> On Wed, Nov 24, 2021 at 10:32 PM Eric Dumazet <edumazet@google.com> wrote:
+>
+> > -       }
+> > +       if (unlikely(odd))
+> > +               result = ror32(result, 8);
+> >         return (__force __wsum)result;
+>
+> Oh well, gcc at least removes the conditional and generates a ror and a cmov
 
-You can save an instruction (as if this path matters) by:
-			temp64 = sum + *(unsigned char *)buff;
-			temp64 <<= 8;
-Although that probably falls foul of 64bit shifts being slow.
-So maybe just:
-			sum += *(unsigned char *)buff;
-			temp64 = bswap32(sum);
-AFAICT (from a pdf) bswap32() and ror(x, 8) are likely to be
-the same speed but may use different execution units.
+Seems like a missed optimization for `unlikely` where dependency breaking
+is pretty common.
 
-Intel seem so have managed to slow down ror(x, %cl) to 3 clocks
-in sandy bridge - and still not fixed it.
-Although the compiler might be making a pigs-breakfast of the
-register allocation when you tried setting 'odd = 8'.
+Although still saves a uop because of `imm8` operand.
 
-Weeks can be spent fiddling with this code :-(
+>
+>         mov    %edx,%eax
+>         ror    $0x8,%eax
+>         test   %r8,%r8
+>         cmove  %edx,%eax
+>         ret
+>
+> clang keeps the cond jmp
+>          test   $0x1,%dil
+>          je     93
+>          rol    $0x18,%eax
+> 93:    ret
 
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
 _______________________________________________
 linux-um mailing list
 linux-um@lists.infradead.org
