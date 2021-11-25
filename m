@@ -1,10 +1,10 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-wr1-x436.google.com ([2a00:1450:4864:20::436])
+Received: from mail-wr1-x432.google.com ([2a00:1450:4864:20::432])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mq8WK-006XOn-CG
- for linux-um@lists.infradead.org; Thu, 25 Nov 2021 06:46:13 +0000
-Received: by mail-wr1-x436.google.com with SMTP id u18so9283005wrg.5
- for <linux-um@lists.infradead.org>; Wed, 24 Nov 2021 22:46:00 -0800 (PST)
+ id 1mq8JA-006VqI-Ce
+ for linux-um@lists.infradead.org; Thu, 25 Nov 2021 06:32:37 +0000
+Received: by mail-wr1-x432.google.com with SMTP id o13so9169875wrs.12
+ for <linux-um@lists.infradead.org>; Wed, 24 Nov 2021 22:32:36 -0800 (PST)
 MIME-Version: 1.0
 References: <CANn89i+hQTn26hK-4CA=cAwCxEMzogqD30PYdqz4NP8kjmH2gg@mail.gmail.com>
  <CANn89i+K6=Kc0weayD_phAPn9YT=2UUje+1BZfg=kUiLp7ELqQ@mail.gmail.com>
@@ -16,11 +16,10 @@ References: <CANn89i+hQTn26hK-4CA=cAwCxEMzogqD30PYdqz4NP8kjmH2gg@mail.gmail.com>
  <CANn89iJqZm9Mcfu+4-aZ_pZok1j4RsHK8YoFBVqjVYpGbt_P8Q@mail.gmail.com>
  <CAFUsyfL3RF-UC-HBUcbRn0e5S3URo9gpz5V85buF8C7xVb6K7w@mail.gmail.com>
  <CAFUsyfLz89DrkvTwDTDqNCHVbBzk1QgEKu0+PuwBoF=Y6me7cQ@mail.gmail.com>
- <CANn89iLYHkyaLawrZJYuRETx63c0QWQ0kLGysPbGpWj2+C5Jfw@mail.gmail.com>
-In-Reply-To: <CANn89iLYHkyaLawrZJYuRETx63c0QWQ0kLGysPbGpWj2+C5Jfw@mail.gmail.com>
+In-Reply-To: <CAFUsyfLz89DrkvTwDTDqNCHVbBzk1QgEKu0+PuwBoF=Y6me7cQ@mail.gmail.com>
 From: Eric Dumazet <edumazet@google.com>
-Date: Wed, 24 Nov 2021 22:45:47 -0800
-Message-ID: <CANn89iJsFZrm5qzAUJDgYczQiBFa6pmvPDrA_yqkGFhfm-6AnQ@mail.gmail.com>
+Date: Wed, 24 Nov 2021 22:32:21 -0800
+Message-ID: <CANn89iLYHkyaLawrZJYuRETx63c0QWQ0kLGysPbGpWj2+C5Jfw@mail.gmail.com>
 Subject: Re: [tip:x86/core 1/1] arch/x86/um/../lib/csum-partial_64.c:98:12:
  error: implicit declaration of function 'load_unaligned_zeropad'
 List-Id: <linux-um.lists.infradead.org>
@@ -38,26 +37,63 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: Noah Goldstein <goldstein.w.n@gmail.com>
 Cc: Johannes Berg <johannes@sipsolutions.net>, alexanderduyck@fb.com, kbuild-all@lists.01.org, open list <linux-kernel@vger.kernel.org>, linux-um@lists.infradead.org, lkp@intel.com, peterz@infradead.org, X86 ML <x86@kernel.org>
 
-On Wed, Nov 24, 2021 at 10:32 PM Eric Dumazet <edumazet@google.com> wrote:
+On Wed, Nov 24, 2021 at 9:09 PM Noah Goldstein <goldstein.w.n@gmail.com> wrote:
+>
+>
+>
+> Although I see slightly worse performance with aligned `buff`  in
+> the branch-free approach. Imagine if non-aligned `buff` is that
+> uncommon might be better to speculate past the work of `ror`.
 
-> -       }
-> +       if (unlikely(odd))
-> +               result = ror32(result, 8);
->         return (__force __wsum)result;
+Yes, no clear win here removing the conditional (same cost really),
+although using a ror32() is removing the from32to16() helper and get
+rid of one folding.
 
-Oh well, gcc at least removes the conditional and generates a ror and a cmov
+I will formally submit this change, thanks !
 
-        mov    %edx,%eax
-        ror    $0x8,%eax
-        test   %r8,%r8
-        cmove  %edx,%eax
-        ret
+diff --git a/arch/x86/lib/csum-partial_64.c b/arch/x86/lib/csum-partial_64.c
+index 1eb8f2d11f7c785be624eba315fe9ca7989fd56d..cf4bd3ef66e56c681b3435d43011ece78438376d
+100644
+--- a/arch/x86/lib/csum-partial_64.c
++++ b/arch/x86/lib/csum-partial_64.c
+@@ -11,16 +11,6 @@
+ #include <asm/checksum.h>
+ #include <asm/word-at-a-time.h>
 
-clang keeps the cond jmp
-         test   $0x1,%dil
-         je     93
-         rol    $0x18,%eax
-93:    ret
+-static inline unsigned short from32to16(unsigned a)
+-{
+-       unsigned short b = a >> 16;
+-       asm("addw %w2,%w0\n\t"
+-           "adcw $0,%w0\n"
+-           : "=r" (b)
+-           : "0" (b), "r" (a));
+-       return b;
+-}
+-
+ /*
+  * Do a checksum on an arbitrary memory area.
+  * Returns a 32bit checksum.
+@@ -41,6 +31,7 @@ __wsum csum_partial(const void *buff, int len, __wsum sum)
+        if (unlikely(odd)) {
+                if (unlikely(len == 0))
+                        return sum;
++               temp64 = ror32((__force u32)sum, 8);
+                temp64 += (*(unsigned char *)buff << 8);
+                len--;
+                buff++;
+@@ -129,10 +120,8 @@ __wsum csum_partial(const void *buff, int len, __wsum sum)
+ #endif
+        }
+        result = add32_with_carry(temp64 >> 32, temp64 & 0xffffffff);
+-       if (unlikely(odd)) {
+-               result = from32to16(result);
+-               result = ((result >> 8) & 0xff) | ((result & 0xff) << 8);
+-       }
++       if (unlikely(odd))
++               result = ror32(result, 8);
+        return (__force __wsum)result;
+ }
+ EXPORT_SYMBOL(csum_partial);
 
 _______________________________________________
 linux-um mailing list
