@@ -1,20 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-wr1-x436.google.com ([2a00:1450:4864:20::436])
+Received: from mail-io1-xd34.google.com ([2607:f8b0:4864:20::d34])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mq4wK-006ITo-FY
- for linux-um@lists.infradead.org; Thu, 25 Nov 2021 02:56:49 +0000
-Received: by mail-wr1-x436.google.com with SMTP id i5so8274287wrb.2
- for <linux-um@lists.infradead.org>; Wed, 24 Nov 2021 18:56:44 -0800 (PST)
-MIME-Version: 1.0
-References: <CANn89i+hQTn26hK-4CA=cAwCxEMzogqD30PYdqz4NP8kjmH2gg@mail.gmail.com>
- <CANn89i+K6=Kc0weayD_phAPn9YT=2UUje+1BZfg=kUiLp7ELqQ@mail.gmail.com>
- <619eee05.1c69fb81.4b686.4bbc@mx.google.com>
-In-Reply-To: <619eee05.1c69fb81.4b686.4bbc@mx.google.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Wed, 24 Nov 2021 18:56:31 -0800
-Message-ID: <CANn89iJdQ1VTLYUKu1hYNm4wF__ZzrwNYr28v_vGM0MCybJpxg@mail.gmail.com>
+ id 1mq42w-006Gbw-M7
+ for linux-um@lists.infradead.org; Thu, 25 Nov 2021 01:59:36 +0000
+Received: by mail-io1-xd34.google.com with SMTP id f9so5588241ioo.11
+ for <linux-um@lists.infradead.org>; Wed, 24 Nov 2021 17:59:34 -0800 (PST)
+Message-ID: <619eee05.1c69fb81.4b686.4bbc@mx.google.com>
+From: Noah Goldstein <goldstein.w.n@gmail.com>
 Subject: Re: [tip:x86/core 1/1] arch/x86/um/../lib/csum-partial_64.c:98:12:
  error: implicit declaration of function 'load_unaligned_zeropad'
+Date: Wed, 24 Nov 2021 19:58:57 -0600
+In-Reply-To: <CANn89i+K6=Kc0weayD_phAPn9YT=2UUje+1BZfg=kUiLp7ELqQ@mail.gmail.com>
+References: <CANn89i+hQTn26hK-4CA=cAwCxEMzogqD30PYdqz4NP8kjmH2gg@mail.gmail.com>
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -27,48 +25,81 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Noah Goldstein <goldstein.w.n@gmail.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>, alexanderduyck@fb.com, kbuild-all@lists.01.org, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, lkp@intel.com, peterz@infradead.org, x86@kernel.org
+To: edumazet@google.com, Johannes Berg <johannes@sipsolutions.net>
+Cc: alexanderduyck@fb.com, kbuild-all@lists.01.org, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, lkp@intel.com, peterz@infradead.org, x86@kernel.org, goldstein.w.n@gmail.com
 
-On Wed, Nov 24, 2021 at 5:59 PM Noah Goldstein <goldstein.w.n@gmail.com> wrote:
+From: Eric Dumazet <edumazet@google.com>
+
+On Thu, Nov 18, 2021 at 8:57 AM Eric Dumazet <edumazet@google.com> wrote:
+
 >
-
+> Unless fixups can be handled, the signature of the function needs to
+> be different.
 >
-> Hi, I'm not sure if this is intentional or not, but I noticed that the output
-> of 'csum_partial' is different after this patch. I figured that the checksum
-> algorithm is fixed so just wanted mention it incase its a bug. If not sorry
-> for the spam.
->
-> Example on x86_64:
->
-> Buff: [ 87, b3, 92, b7, 8b, 53, 96, db, cd, 0f, 7e, 7e ]
-> len : 11
-> sum : 0
->
-> csum_partial new : 2480936615
-> csum_partial HEAD: 2472089390
+> In UM, we would need to provide a number of bytes that can be read.
 
-No worries.
+We can make this a bit less ugly  of course.
 
-skb->csum is 32bit, but really what matters is the 16bit folded value.
+diff --git a/arch/x86/lib/csum-partial_64.c b/arch/x86/lib/csum-partial_64.c
+index 5ec35626945b6db2f7f41c6d46d5e422810eac46..7a3c4e7e05c4b21566e1ee3813a071509a9d54ff
+100644
+--- a/arch/x86/lib/csum-partial_64.c
++++ b/arch/x86/lib/csum-partial_64.c
+@@ -21,6 +21,25 @@ static inline unsigned short from32to16(unsigned a)
+        return b;
+ }
 
-So make sure to apply csum_fold() before comparing the results.
++
++static inline unsigned long load_partial_long(const void *buff, int len)
++{
++#ifndef CONFIG_DCACHE_WORD_ACCESS
++               union {
++                       unsigned long   ulval;
++                       u8              bytes[sizeof(long)];
++               } v;
++
++               v.ulval = 0;
++               memcpy(v.bytes, buff, len);
++               return v.ulval;
++#else
++               unsigned int shift = (sizeof(long) - len) * BITS_PER_BYTE;
++
++               return (load_unaligned_zeropad(buff) << shift) >> shift;
++#endif
++}
++
+ /*
+  * Do a checksum on an arbitrary memory area.
+  * Returns a 32bit checksum.
+@@ -91,11 +110,9 @@ __wsum csum_partial(const void *buff, int len, __wsum sum)
+                        : "memory");
+                buff += 8;
+        }
+-       if (len & 7) {
+-               unsigned int shift = (8 - (len & 7)) * 8;
+-               unsigned long trail;
+-
+-               trail = (load_unaligned_zeropad(buff) << shift) >> shift;
++       len &= 7;
++       if (len) {
++               unsigned long trail = load_partial_long(buff, len);
 
-A minimal C and generic version of csum_fold() would be something like
+                asm("addq %[trail],%[res]\n\t"
+                    "adcq $0,%[res]"
 
-static unsigned short csum_fold(u32 csum)
-{
-  u32 sum = csum;
-  sum = (sum & 0xffff) + (sum >> 16);
-  sum = (sum & 0xffff) + (sum >> 16);
-  return ~sum;
-}
+Hi, I'm not sure if this is intentional or not, but I noticed that the output
+of 'csum_partial' is different after this patch. I figured that the checksum
+algorithm is fixed so just wanted mention it incase its a bug. If not sorry
+for the spam.
 
-I bet that csum_fold(2480936615) == csum_fold(2472089390)
+Example on x86_64:
 
-It would be nice if we had a csum test suite, hint, hint ;)
+Buff: [ 87, b3, 92, b7, 8b, 53, 96, db, cd, 0f, 7e, 7e ]
+len : 11
+sum : 0
 
-Thanks !
+csum_partial new : 2480936615
+csum_partial HEAD: 2472089390
 
 _______________________________________________
 linux-um mailing list
