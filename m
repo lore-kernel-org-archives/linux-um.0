@@ -1,351 +1,151 @@
-Return-Path: <arnd@kernel.org>
-From: Arnd Bergmann <arnd@kernel.org>
-Subject: [PATCH 2/2] futex: remove futex_cmpxchg detection
-Date: Tue, 26 Oct 2021 12:03:48 +0200
-Message-Id: <20211026100432.1730393-2-arnd@kernel.org>
-In-Reply-To: <20211026100432.1730393-1-arnd@kernel.org>
-References: <20211026100432.1730393-1-arnd@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mrOwo-00GTDi-Tg
+ for linux-um@lists.infradead.org; Sun, 28 Nov 2021 18:30:50 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+Subject: RE: [tip:x86/core 1/1] arch/x86/um/../lib/csum-partial_64.c:98:12:
+ error: implicit declaration of function 'load_unaligned_zeropad'
+Date: Sun, 28 Nov 2021 18:30:40 +0000
+Message-ID: <670c2043e9104d6c8d516cc54edef38e@AcuMS.aculab.com>
+References: <CANn89i+hQTn26hK-4CA=cAwCxEMzogqD30PYdqz4NP8kjmH2gg@mail.gmail.com>
+ <CANn89i+K6=Kc0weayD_phAPn9YT=2UUje+1BZfg=kUiLp7ELqQ@mail.gmail.com>
+ <619eee05.1c69fb81.4b686.4bbc@mx.google.com>
+ <CANn89iJdQ1VTLYUKu1hYNm4wF__ZzrwNYr28v_vGM0MCybJpxg@mail.gmail.com>
+ <CAFUsyf+5zp+p_0TPFLr-fMNry0M_CnNAFDG30PKDuy2jA5MhNw@mail.gmail.com>
+ <CANn89iLtZmSyBYtvJ0nxdrM3CKyf3D9y9AWBC4GVbPCxtjOROw@mail.gmail.com>
+ <4dbf7f8d095b46a8a45e285d0ec8f8b0@AcuMS.aculab.com>
+ <CANn89iJubuJxjVp4fx78-bjKBN3e9JsdAwZxj4XO6g2_7ZPqJQ@mail.gmail.com>
+ <8a6fe34e0f2f4739af39a5935a74b823@AcuMS.aculab.com>
+ <CAFUsyfJmpFFzuMhHrH+oBVzcHggW0QZM9dvXtPQW88kAw_2_BQ@mail.gmail.com>
+In-Reply-To: <CAFUsyfJmpFFzuMhHrH+oBVzcHggW0QZM9dvXtPQW88kAw_2_BQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@de.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Darren Hart <dvhart@infradead.org>, Davidlohr Bueso <dave@stgolabs.net>, =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>, Andrew Morton <akpm@linux-foundation.org>, Mike Rapoport <rppt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Anshuman Khandual <anshuman.khandual@arm.com>, linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
-List-ID: <linux-um.lists.infradead.org>
+Content-Language: en-US
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: 'Noah Goldstein' <goldstein.w.n@gmail.com>
+Cc: Eric Dumazet <edumazet@google.com>, Johannes Berg <johannes@sipsolutions.net>, "alexanderduyck@fb.com" <alexanderduyck@fb.com>, "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>, open list <linux-kernel@vger.kernel.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "lkp@intel.com" <lkp@intel.com>, "peterz@infradead.org" <peterz@infradead.org>, X86 ML <x86@kernel.org>
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Noah Goldstein
+> Sent: 26 November 2021 23:04
+> 
+> On Fri, Nov 26, 2021 at 4:41 PM David Laight <David.Laight@aculab.com> wrote:
+> >
+> > From: Eric Dumazet
+> > > Sent: 26 November 2021 18:10
+> > ...
+> > > > AFAICT (from a pdf) bswap32() and ror(x, 8) are likely to be
+> > > > the same speed but may use different execution units.
+> >
+> > The 64bit shifts/rotates are also only one clock.
+> > It is the bswap64 that can be two.
+> >
+> > > > Intel seem so have managed to slow down ror(x, %cl) to 3 clocks
+> > > > in sandy bridge - and still not fixed it.
+> > > > Although the compiler might be making a pigs-breakfast of the
+> > > > register allocation when you tried setting 'odd = 8'.
+> > > >
+> > > > Weeks can be spent fiddling with this code :-(
+> > >
+> > > Yes, and in the end, it won't be able to compete with  a
+> > > specialized/inlined ipv6_csum_partial()
+> >
+> > I bet most of the gain comes from knowing there is a non-zero
+> > whole number of 32bit words.
+> > The pesky edge conditions cost.
+> >
+> > And even then you need to get it right!
+> > The one for summing the 5-word IPv4 header is actually horrid
+> > on Intel cpu prior to Haswell because 'adc' has a latency of 2.
+> > On Sandy bridge the carry output is valid on the next clock,
+> > so adding to alternate registers doubles throughput.
+> > (That could easily be done in the current function and will
+> > make a big different on those cpu.)
+> >
+> > But basically the current generic code has the loop unrolled
+> > further than is necessary for modern (non-atom) cpu.
+> > That just adds more code outside the loop.
+> >
+> > I did managed to get 12 bytes/clock using adco/adox with only
+> > 32 bytes each iteration.
+> > That will require aligned buffers.
+> >
+> > Alignment won't matter for 'adc' loops because there are two
+> > 'memory read' units - but there is the elephant:
+> >
+> > Sandy bridge Cache bank conflicts
+> > Each consecutive 128 bytes, or two cache lines, in the data cache is divided
+> > into 8 banks of 16 bytes each. It is not possible to do two memory reads in
+> > the same clock cycle if the two memory addresses have the same bank number,
+> > i.e. if bit 4 - 6 in the two addresses are the same.
+> >         ; Example 9.5. Sandy bridge cache bank conflict
+> >         mov eax, [rsi] ; Use bank 0, assuming rsi is divisible by 40H
+> >         mov ebx, [rsi+100H] ; Use bank 0. Cache bank conflict
+> >         mov ecx, [rsi+110H] ; Use bank 1. No cache bank conflict
+> >
+> > That isn't a problem on Haswell, but it is probably worth ordering
+> > the 'adc' in the loop to reduce the number of conflicts.
+> > I didn't try to look for that though.
+> > I only remember testing aligned buffers on Sandy/Ivy bridge.
+> > Adding to alternate registers helped no end.
+> 
+> Cant that just be solved by having the two independent adcx/adox chains work
+> from region that are 16+ bytes apart? For 40 byte ipv6 header it will be simple.
 
-Now that all architectures have a working futex implementation
-in any configuration, remove the runtime detection code.
+Not relevant, adcx/adox are only supported haswell/broadwell onwards
+which don't have the 'cache bank conflict' issue.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/arc/Kconfig              |  1 -
- arch/arm/Kconfig              |  1 -
- arch/arm64/Kconfig            |  1 -
- arch/csky/Kconfig             |  1 -
- arch/m68k/Kconfig             |  1 -
- arch/riscv/Kconfig            |  1 -
- arch/s390/Kconfig             |  1 -
- arch/sh/Kconfig               |  1 -
- arch/um/Kconfig               |  1 -
- arch/um/kernel/skas/uaccess.c |  1 -
- arch/xtensa/Kconfig           |  1 -
- init/Kconfig                  |  8 --------
- kernel/futex/core.c           | 35 -----------------------------------
- kernel/futex/futex.h          |  6 ------
- kernel/futex/syscalls.c       | 22 ----------------------
- 15 files changed, 82 deletions(-)
+In any case using adx[oc] for only 40 bytes isn't worth the effort.
 
-diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
-index 248389278e8f..f9413041686f 100644
---- a/arch/arc/Kconfig
-+++ b/arch/arc/Kconfig
-@@ -31,7 +31,6 @@ config ARC
- 	select HAVE_ARCH_TRANSPARENT_HUGEPAGE if ARC_MMU_V4
- 	select HAVE_DEBUG_STACKOVERFLOW
- 	select HAVE_DEBUG_KMEMLEAK
--	select HAVE_FUTEX_CMPXCHG if FUTEX
- 	select HAVE_IOREMAP_PROT
- 	select HAVE_KERNEL_GZIP
- 	select HAVE_KERNEL_LZMA
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index bb5d2c45477b..6448d311635d 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -93,7 +93,6 @@ config ARM
- 	select HAVE_FTRACE_MCOUNT_RECORD if !XIP_KERNEL
- 	select HAVE_FUNCTION_GRAPH_TRACER if !THUMB2_KERNEL && !CC_IS_CLANG
- 	select HAVE_FUNCTION_TRACER if !XIP_KERNEL && !(THUMB2_KERNEL && CC_IS_CLANG)
--	select HAVE_FUTEX_CMPXCHG if FUTEX
- 	select HAVE_GCC_PLUGINS
- 	select HAVE_HW_BREAKPOINT if PERF_EVENTS && (CPU_V6 || CPU_V6K || CPU_V7)
- 	select HAVE_IRQ_TIME_ACCOUNTING
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 0efc501f77aa..6c3c2ff5cef8 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -193,7 +193,6 @@ config ARM64
- 	select HAVE_PERF_USER_STACK_DUMP
- 	select HAVE_REGS_AND_STACK_ACCESS_API
- 	select HAVE_FUNCTION_ARG_ACCESS_API
--	select HAVE_FUTEX_CMPXCHG if FUTEX
- 	select MMU_GATHER_RCU_TABLE_FREE
- 	select HAVE_RSEQ
- 	select HAVE_STACKPROTECTOR
-diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
-index 823d3d5a9e11..efd7c5feac8b 100644
---- a/arch/csky/Kconfig
-+++ b/arch/csky/Kconfig
-@@ -53,7 +53,6 @@ config CSKY
- 	select HAVE_FUNCTION_TRACER
- 	select HAVE_FUNCTION_GRAPH_TRACER
- 	select HAVE_FUNCTION_ERROR_INJECTION
--	select HAVE_FUTEX_CMPXCHG if FUTEX && SMP
- 	select HAVE_FTRACE_MCOUNT_RECORD
- 	select HAVE_KERNEL_GZIP
- 	select HAVE_KERNEL_LZO
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 0b50da08a9c5..15a793c5b2dc 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -20,7 +20,6 @@ config M68K
- 	select HAVE_ASM_MODVERSIONS
- 	select HAVE_DEBUG_BUGVERBOSE
- 	select HAVE_EFFICIENT_UNALIGNED_ACCESS if !CPU_HAS_NO_UNALIGNED
--	select HAVE_FUTEX_CMPXCHG if MMU && FUTEX
- 	select HAVE_MOD_ARCH_SPECIFIC
- 	select HAVE_UID16
- 	select MMU_GATHER_NO_RANGE if MMU
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 77a088d0a7e9..037fea9fac14 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -84,7 +84,6 @@ config RISCV
- 	select HAVE_DMA_CONTIGUOUS if MMU
- 	select HAVE_EBPF_JIT if MMU
- 	select HAVE_FUNCTION_ERROR_INJECTION
--	select HAVE_FUTEX_CMPXCHG if FUTEX
- 	select HAVE_GCC_PLUGINS
- 	select HAVE_GENERIC_VDSO if MMU && 64BIT
- 	select HAVE_IRQ_TIME_ACCOUNTING
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index f615c3f65f5a..1c9ecf619e04 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -164,7 +164,6 @@ config S390
- 	select HAVE_FUNCTION_ERROR_INJECTION
- 	select HAVE_FUNCTION_GRAPH_TRACER
- 	select HAVE_FUNCTION_TRACER
--	select HAVE_FUTEX_CMPXCHG if FUTEX
- 	select HAVE_GCC_PLUGINS
- 	select HAVE_GENERIC_VDSO
- 	select HAVE_IOREMAP_PROT if PCI
-diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-index 6904f4bdbf00..93195d3368c0 100644
---- a/arch/sh/Kconfig
-+++ b/arch/sh/Kconfig
-@@ -34,7 +34,6 @@ config SUPERH
- 	select HAVE_FAST_GUP if MMU
- 	select HAVE_FUNCTION_GRAPH_TRACER
- 	select HAVE_FUNCTION_TRACER
--	select HAVE_FUTEX_CMPXCHG if FUTEX
- 	select HAVE_FTRACE_MCOUNT_RECORD
- 	select HAVE_HW_BREAKPOINT
- 	select HAVE_IOREMAP_PROT if MMU && !X2TLB
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index c18b45f75d41..c906250d4970 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -14,7 +14,6 @@ config UML
- 	select HAVE_ARCH_SECCOMP_FILTER
- 	select HAVE_ASM_MODVERSIONS
- 	select HAVE_UID16
--	select HAVE_FUTEX_CMPXCHG if FUTEX
- 	select HAVE_DEBUG_KMEMLEAK
- 	select HAVE_DEBUG_BUGVERBOSE
- 	select NO_DMA if !UML_DMA_EMULATION
-diff --git a/arch/um/kernel/skas/uaccess.c b/arch/um/kernel/skas/uaccess.c
-index a509be911026..9e37a7c05990 100644
---- a/arch/um/kernel/skas/uaccess.c
-+++ b/arch/um/kernel/skas/uaccess.c
-@@ -348,7 +348,6 @@ EXPORT_SYMBOL(arch_futex_atomic_op_inuser);
-  * 0 - On success
-  * -EFAULT - User access resulted in a page fault
-  * -EAGAIN - Atomic operation was unable to complete due to contention
-- * -ENOSYS - Function not implemented (only if !HAVE_FUTEX_CMPXCHG)
-  */
- 
- int futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
-diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
-index 0e56bad058fa..8ac599aa6d99 100644
---- a/arch/xtensa/Kconfig
-+++ b/arch/xtensa/Kconfig
-@@ -31,7 +31,6 @@ config XTENSA
- 	select HAVE_DMA_CONTIGUOUS
- 	select HAVE_EXIT_THREAD
- 	select HAVE_FUNCTION_TRACER
--	select HAVE_FUTEX_CMPXCHG if !MMU && FUTEX
- 	select HAVE_HW_BREAKPOINT if PERF_EVENTS
- 	select HAVE_IRQ_TIME_ACCOUNTING
- 	select HAVE_PCI
-diff --git a/init/Kconfig b/init/Kconfig
-index c0f55ea5a71f..538688598f2f 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1597,14 +1597,6 @@ config FUTEX_PI
- 	depends on FUTEX && RT_MUTEXES
- 	default y
- 
--config HAVE_FUTEX_CMPXCHG
--	bool
--	depends on FUTEX
--	help
--	  Architectures should select this if futex_atomic_cmpxchg_inatomic()
--	  is implemented and always working. This removes a couple of runtime
--	  checks.
--
- config EPOLL
- 	bool "Enable eventpoll support" if EXPERT
- 	default y
-diff --git a/kernel/futex/core.c b/kernel/futex/core.c
-index 25d8a88b32e5..926c2bb752bc 100644
---- a/kernel/futex/core.c
-+++ b/kernel/futex/core.c
-@@ -41,11 +41,6 @@
- #include "futex.h"
- #include "../locking/rtmutex_common.h"
- 
--#ifndef CONFIG_HAVE_FUTEX_CMPXCHG
--int  __read_mostly futex_cmpxchg_enabled;
--#endif
--
--
- /*
-  * The base of the bucket array and its size are always used together
-  * (after initialization only in futex_hash()), so ensure that they
-@@ -776,9 +771,6 @@ static void exit_robust_list(struct task_struct *curr)
- 	unsigned long futex_offset;
- 	int rc;
- 
--	if (!futex_cmpxchg_enabled)
--		return;
--
- 	/*
- 	 * Fetch the list head (which was registered earlier, via
- 	 * sys_set_robust_list()):
-@@ -874,9 +866,6 @@ static void compat_exit_robust_list(struct task_struct *curr)
- 	compat_long_t futex_offset;
- 	int rc;
- 
--	if (!futex_cmpxchg_enabled)
--		return;
--
- 	/*
- 	 * Fetch the list head (which was registered earlier, via
- 	 * sys_set_robust_list()):
-@@ -950,8 +939,6 @@ static void exit_pi_state_list(struct task_struct *curr)
- 	struct futex_hash_bucket *hb;
- 	union futex_key key = FUTEX_KEY_INIT;
- 
--	if (!futex_cmpxchg_enabled)
--		return;
- 	/*
- 	 * We are a ZOMBIE and nobody can enqueue itself on
- 	 * pi_state_list anymore, but we have to be careful
-@@ -1125,26 +1112,6 @@ void futex_exit_release(struct task_struct *tsk)
- 	futex_cleanup_end(tsk, FUTEX_STATE_DEAD);
- }
- 
--static void __init futex_detect_cmpxchg(void)
--{
--#ifndef CONFIG_HAVE_FUTEX_CMPXCHG
--	u32 curval;
--
--	/*
--	 * This will fail and we want it. Some arch implementations do
--	 * runtime detection of the futex_atomic_cmpxchg_inatomic()
--	 * functionality. We want to know that before we call in any
--	 * of the complex code paths. Also we want to prevent
--	 * registration of robust lists in that case. NULL is
--	 * guaranteed to fault and we get -EFAULT on functional
--	 * implementation, the non-functional ones will return
--	 * -ENOSYS.
--	 */
--	if (futex_cmpxchg_value_locked(&curval, NULL, 0, 0) == -EFAULT)
--		futex_cmpxchg_enabled = 1;
--#endif
--}
--
- static int __init futex_init(void)
- {
- 	unsigned int futex_shift;
-@@ -1163,8 +1130,6 @@ static int __init futex_init(void)
- 					       futex_hashsize, futex_hashsize);
- 	futex_hashsize = 1UL << futex_shift;
- 
--	futex_detect_cmpxchg();
--
- 	for (i = 0; i < futex_hashsize; i++) {
- 		atomic_set(&futex_queues[i].waiters, 0);
- 		plist_head_init(&futex_queues[i].chain);
-diff --git a/kernel/futex/futex.h b/kernel/futex/futex.h
-index 040ae4277cb0..c264cbeab71c 100644
---- a/kernel/futex/futex.h
-+++ b/kernel/futex/futex.h
-@@ -27,12 +27,6 @@
- #define FLAGS_CLOCKRT		0x02
- #define FLAGS_HAS_TIMEOUT	0x04
- 
--#ifdef CONFIG_HAVE_FUTEX_CMPXCHG
--#define futex_cmpxchg_enabled 1
--#else
--extern int  __read_mostly futex_cmpxchg_enabled;
--#endif
--
- #ifdef CONFIG_FAIL_FUTEX
- extern bool should_fail_futex(bool fshared);
- #else
-diff --git a/kernel/futex/syscalls.c b/kernel/futex/syscalls.c
-index 6f91a07a6a83..086a22d1adb7 100644
---- a/kernel/futex/syscalls.c
-+++ b/kernel/futex/syscalls.c
-@@ -29,8 +29,6 @@
- SYSCALL_DEFINE2(set_robust_list, struct robust_list_head __user *, head,
- 		size_t, len)
- {
--	if (!futex_cmpxchg_enabled)
--		return -ENOSYS;
- 	/*
- 	 * The kernel knows only one size for now:
- 	 */
-@@ -56,9 +54,6 @@ SYSCALL_DEFINE3(get_robust_list, int, pid,
- 	unsigned long ret;
- 	struct task_struct *p;
- 
--	if (!futex_cmpxchg_enabled)
--		return -ENOSYS;
--
- 	rcu_read_lock();
- 
- 	ret = -ESRCH;
-@@ -103,17 +98,6 @@ long do_futex(u32 __user *uaddr, int op, u32 val, ktime_t *timeout,
- 			return -ENOSYS;
- 	}
- 
--	switch (cmd) {
--	case FUTEX_LOCK_PI:
--	case FUTEX_LOCK_PI2:
--	case FUTEX_UNLOCK_PI:
--	case FUTEX_TRYLOCK_PI:
--	case FUTEX_WAIT_REQUEUE_PI:
--	case FUTEX_CMP_REQUEUE_PI:
--		if (!futex_cmpxchg_enabled)
--			return -ENOSYS;
--	}
--
- 	switch (cmd) {
- 	case FUTEX_WAIT:
- 		val3 = FUTEX_BITSET_MATCH_ANY;
-@@ -323,9 +307,6 @@ COMPAT_SYSCALL_DEFINE2(set_robust_list,
- 		struct compat_robust_list_head __user *, head,
- 		compat_size_t, len)
- {
--	if (!futex_cmpxchg_enabled)
--		return -ENOSYS;
--
- 	if (unlikely(len != sizeof(*head)))
- 		return -EINVAL;
- 
-@@ -342,9 +323,6 @@ COMPAT_SYSCALL_DEFINE3(get_robust_list, int, pid,
- 	unsigned long ret;
- 	struct task_struct *p;
- 
--	if (!futex_cmpxchg_enabled)
--		return -ENOSYS;
--
- 	rcu_read_lock();
- 
- 	ret = -ESRCH;
--- 
-2.29.2
+The other issue with adcx/adoc is that some cpu that support them
+have very slow decode times - so unless you' got them in a loop
+it will be horrid.
+Trying to 'loop carry' both the 'carry' and 'overflow' flags is also
+fraught. The 'loop' instruction would do it - but that is horribly
+slow on Intel cpu (I think it is ok an AMD ones).
+You can use jcxz at the top of the loop and an unconditional jump at the bottom.
+There might be an obscure method of doing a 64bit->32bit move into %recx
+and then a jrcxz at the loop bottom!
 
+For Ivy/Sandy bridge it is noted:
+There is hardly any penalty for misaligned memory access with operand sizes
+of 64 bits or less, except for the effect of using multiple cache banks.
+
+That might mean that you can do a misaligned read every clock.
+With the only issues arising for that that is trying to do 2 reads/clock.
+Given the checksum code needs to do 'adc', the carry flag constrains
+you to 1 read/clock - so there may actually be no real penalty for
+a misaligned buffer at all.
+
+No one (except me) has actually noticed that the adc chain takes two
+clocks per adc on sandy bridge, so if the misaligned memory reads
+take two clocks it makes no difference.
+
+(info from pdf's from www.agner.org/optimize)
+
+I've not got the test systems and program I used back in May 2020
+to hand any more.
+
+I certainly found that efficiently handling the 'odd 7 bytes'
+was actually more difficult than it might seem.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
