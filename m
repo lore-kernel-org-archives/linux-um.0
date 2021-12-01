@@ -1,52 +1,56 @@
-Return-Path: <johannes@sipsolutions.net>
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH] drm/ttm: fix compilation on ARCH=um
-Date: Mon, 20 Dec 2021 11:15:22 +0100
-Message-Id: <20211220111519.a4c8c6eff702.Ie4cf4e68698f6a9f546b83379bc52c266504424f@changeid>
-In-Reply-To: <CAMuHMdXTRYjtfyWTVN86pn4STO2EPR1B5+KHj=wAqguXt=hpHg@mail.gmail.com>
-References: <CAMuHMdXTRYjtfyWTVN86pn4STO2EPR1B5+KHj=wAqguXt=hpHg@mail.gmail.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from szxga08-in.huawei.com ([45.249.212.255])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1msMC1-007yWx-V5
+ for linux-um@lists.infradead.org; Wed, 01 Dec 2021 09:46:27 +0000
+From: Yang Yingliang <yangyingliang@huawei.com>
+Subject: [PATCH -next] um: virt-pci: fix wrong use of sizeof in
+ um_pci_cfgspace_read()
+Date: Wed, 1 Dec 2021 17:52:59 +0800
+Message-ID: <20211201095259.1766779-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: dri-devel@lists.freedesktop.org
-Cc: linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, Geert Uytterhoeven <geert@linux-m68k.org>, Johannes Berg <johannes.berg@intel.com>
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
+Cc: jdike@addtoit.com, richard@nod.at, johannes.berg@intel.com
 
-From: Johannes Berg <johannes.berg@intel.com>
+It should be size of the buf->data array, not data pointer.
 
-Even if it's probably not really useful, it can get selected
-by e.g. randconfig builds, and then failing to compile is an
-annoyance. Unfortunately, it's hard to fix in Kconfig, since
-DRM_TTM is selected by many things that don't really depend
-on any specific architecture, and just depend on PCI (which
-is indeed now available in ARCH=um via simulation/emulation).
-
-Fix this in the code instead by just ifdef'ing the relevant
-two lines that depend on "real X86".
-
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: 4a22c4cebd61 ("um: virt-pci: don't do DMA from stack")
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- drivers/gpu/drm/ttm/ttm_module.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/um/drivers/virt-pci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/ttm/ttm_module.c b/drivers/gpu/drm/ttm/ttm_module.c
-index 0037eefe3239..a3ad7c9736ec 100644
---- a/drivers/gpu/drm/ttm/ttm_module.c
-+++ b/drivers/gpu/drm/ttm/ttm_module.c
-@@ -68,9 +68,11 @@ pgprot_t ttm_prot_from_caching(enum ttm_caching caching, pgprot_t tmp)
- #if defined(__i386__) || defined(__x86_64__)
- 	if (caching == ttm_write_combined)
- 		tmp = pgprot_writecombine(tmp);
-+#ifndef CONFIG_UML
- 	else if (boot_cpu_data.x86 > 3)
- 		tmp = pgprot_noncached(tmp);
--#endif
-+#endif /* CONFIG_UML */
-+#endif /* __i386__ || __x86_64__ */
- #if defined(__ia64__) || defined(__arm__) || defined(__aarch64__) || \
- 	defined(__powerpc__) || defined(__mips__)
- 	if (caching == ttm_write_combined)
+diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
+index c08066633023..705275c5176c 100644
+--- a/arch/um/drivers/virt-pci.c
++++ b/arch/um/drivers/virt-pci.c
+@@ -189,7 +189,7 @@ static unsigned long um_pci_cfgspace_read(void *priv, unsigned int offset,
+ 	buf = get_cpu_var(um_pci_msg_bufs);
+ 	data = buf->data;
+ 
+-	memset(data, 0xff, sizeof(data));
++	memset(data, 0xff, sizeof(buf->data));
+ 
+ 	switch (size) {
+ 	case 1:
 -- 
-2.33.1
+2.25.1
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
