@@ -1,10 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 2/2] um: remove set_fs
-Date: Wed, 15 Dec 2021 17:56:12 +0100
-Message-Id: <20211215165612.554426-3-hch@lst.de>
-In-Reply-To: <20211215165612.554426-1-hch@lst.de>
-References: <20211215165612.554426-1-hch@lst.de>
+Received: from smtp1.axis.com ([195.60.68.17])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1muybV-00D6tO-FM
+ for linux-um@lists.infradead.org; Wed, 08 Dec 2021 15:11:35 +0000
+From: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Subject: [PATCH 1/2] um: Extract load file helper from initrd.c
+Date: Wed, 8 Dec 2021 16:11:22 +0100
+Message-ID: <20211208151123.29313-2-vincent.whitchurch@axis.com>
+In-Reply-To: <20211208151123.29313-1-vincent.whitchurch@axis.com>
+References: <20211208151123.29313-1-vincent.whitchurch@axis.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -18,180 +22,190 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: x86@kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
+Cc: kernel@axis.com, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, devicetree@vger.kernel.org, Vincent Whitchurch <vincent.whitchurch@axis.com>
 
-Remove address space overrides using set_fs() for User Mode Linux.
-Note that just like the existing kernel access case of the uaccess
-routines the new nofault kernel handlers do not actually have any
-exception handling.  This is probably broken, but not change to the
-status quo.
+The file loading support in initrd.c can be re-used for
+loading devicetrees.  Move it out of initrd.c.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
 ---
- arch/um/Kconfig                   |  1 -
- arch/um/include/asm/thread_info.h |  4 ----
- arch/um/include/asm/uaccess.h     | 21 +++++++++++++++++++--
- arch/um/kernel/skas/uaccess.c     | 25 -------------------------
- arch/x86/um/asm/segment.h         |  8 --------
- 5 files changed, 19 insertions(+), 40 deletions(-)
+ arch/um/kernel/Makefile    |  1 +
+ arch/um/kernel/initrd.c    | 48 ++++--------------------------
+ arch/um/kernel/load_file.c | 61 ++++++++++++++++++++++++++++++++++++++
+ arch/um/kernel/um_arch.h   |  8 +++++
+ 4 files changed, 75 insertions(+), 43 deletions(-)
+ create mode 100644 arch/um/kernel/load_file.c
+ create mode 100644 arch/um/kernel/um_arch.h
 
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index c18b45f75d41f..aafdbb6e8059e 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -21,7 +21,6 @@ config UML
- 	select GENERIC_IRQ_SHOW
- 	select GENERIC_CPU_DEVICES
- 	select HAVE_GCC_PLUGINS
--	select SET_FS
- 	select TRACE_IRQFLAGS_SUPPORT
- 	select TTY # Needed for line.c
- 	select HAVE_ARCH_VMAP_STACK
-diff --git a/arch/um/include/asm/thread_info.h b/arch/um/include/asm/thread_info.h
-index 3b1cb8b3b1864..1395cbd7e340d 100644
---- a/arch/um/include/asm/thread_info.h
-+++ b/arch/um/include/asm/thread_info.h
-@@ -22,9 +22,6 @@ struct thread_info {
- 	__u32			cpu;		/* current CPU */
- 	int			preempt_count;  /* 0 => preemptable,
- 						   <0 => BUG */
--	mm_segment_t		addr_limit;	/* thread address space:
--					 	   0-0xBFFFFFFF for user
--						   0-0xFFFFFFFF for kernel */
- 	struct thread_info	*real_thread;    /* Points to non-IRQ stack */
- 	unsigned long aux_fp_regs[FP_SIZE];	/* auxiliary fp_regs to save/restore
- 						   them out-of-band */
-@@ -36,7 +33,6 @@ struct thread_info {
- 	.flags =		0,		\
- 	.cpu =		0,			\
- 	.preempt_count = INIT_PREEMPT_COUNT,	\
--	.addr_limit =	KERNEL_DS,		\
- 	.real_thread = NULL,			\
- }
+diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
+index 1d18e4e46989..92692bfef7ae 100644
+--- a/arch/um/kernel/Makefile
++++ b/arch/um/kernel/Makefile
+@@ -18,6 +18,7 @@ obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
+ 	physmem.o process.o ptrace.o reboot.o sigio.o \
+ 	signal.o syscall.o sysrq.o time.o tlb.o trap.o \
+ 	um_arch.o umid.o maccess.o kmsg_dump.o capflags.o skas/
++obj-y += load_file.o
  
-diff --git a/arch/um/include/asm/uaccess.h b/arch/um/include/asm/uaccess.h
-index 191ef36dd5439..17d18cfd82a51 100644
---- a/arch/um/include/asm/uaccess.h
-+++ b/arch/um/include/asm/uaccess.h
-@@ -8,6 +8,7 @@
- #define __UM_UACCESS_H
+ obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
+ obj-$(CONFIG_GPROF)	+= gprof_syms.o
+diff --git a/arch/um/kernel/initrd.c b/arch/um/kernel/initrd.c
+index c1981ffb7179..47b8cb1a1156 100644
+--- a/arch/um/kernel/initrd.c
++++ b/arch/um/kernel/initrd.c
+@@ -10,37 +10,21 @@
+ #include <init.h>
+ #include <os.h>
  
- #include <asm/elf.h>
-+#include <asm/unaligned.h>
++#include "um_arch.h"
++
+ /* Changed by uml_initrd_setup, which is a setup */
+ static char *initrd __initdata = NULL;
+-static int load_initrd(char *filename, void *buf, int size);
  
- #define __under_task_size(addr, size) \
- 	(((unsigned long) (addr) < TASK_SIZE) && \
-@@ -39,8 +40,24 @@ static inline int __access_ok(unsigned long addr, unsigned long size)
+ int __init read_initrd(void)
  {
- 	return __addr_range_nowrap(addr, size) &&
- 		(__under_task_size(addr, size) ||
--		__access_ok_vsyscall(addr, size) ||
--		uaccess_kernel());
-+		 __access_ok_vsyscall(addr, size));
- }
++	unsigned long long size;
+ 	void *area;
+-	long long size;
+-	int err;
+-
+-	if (initrd == NULL)
+-		return 0;
  
-+/* no pagefaults for kernel addresses in um */
-+#define HAVE_GET_KERNEL_NOFAULT 1
-+
-+#define __get_kernel_nofault(dst, src, type, err_label)			\
-+do {									\
-+	*((type *)dst) = get_unaligned((type *)(src));			\
-+	if (0) /* make sure the label looks used to the compiler */	\
-+		goto err_label;						\
-+} while (0)
-+
-+#define __put_kernel_nofault(dst, src, type, err_label)			\
-+do {									\
-+	put_unaligned(*((type *)src), (type *)(dst));			\
-+	if (0) /* make sure the label looks used to the compiler */	\
-+		goto err_label;						\
-+} while (0)
-+
- #endif
-diff --git a/arch/um/kernel/skas/uaccess.c b/arch/um/kernel/skas/uaccess.c
-index a509be9110260..23775d01a2a61 100644
---- a/arch/um/kernel/skas/uaccess.c
-+++ b/arch/um/kernel/skas/uaccess.c
-@@ -146,11 +146,6 @@ static int copy_chunk_from_user(unsigned long from, int len, void *arg)
+-	err = os_file_size(initrd, &size);
+-	if (err)
++	if (!initrd)
+ 		return 0;
  
- unsigned long raw_copy_from_user(void *to, const void __user *from, unsigned long n)
- {
--	if (uaccess_kernel()) {
--		memcpy(to, (__force void*)from, n);
+-	/*
+-	 * This is necessary because alloc_bootmem craps out if you
+-	 * ask for no memory.
+-	 */
+-	if (size == 0) {
+-		printk(KERN_ERR "\"%s\" is a zero-size initrd\n", initrd);
 -		return 0;
 -	}
 -
- 	return buffer_op((unsigned long) from, n, 0, copy_chunk_from_user, &to);
- }
- EXPORT_SYMBOL(raw_copy_from_user);
-@@ -166,11 +161,6 @@ static int copy_chunk_to_user(unsigned long to, int len, void *arg)
+-	area = memblock_alloc(size, SMP_CACHE_BYTES);
++	area = uml_load_file(initrd, &size);
+ 	if (!area)
+-		panic("%s: Failed to allocate %llu bytes\n", __func__, size);
+-
+-	if (load_initrd(initrd, area, size) == -1)
+ 		return 0;
  
- unsigned long raw_copy_to_user(void __user *to, const void *from, unsigned long n)
- {
--	if (uaccess_kernel()) {
--		memcpy((__force void *) to, from, n);
--		return 0;
+ 	initrd_start = (unsigned long) area;
+@@ -59,25 +43,3 @@ __uml_setup("initrd=", uml_initrd_setup,
+ "    This is used to boot UML from an initrd image.  The argument is the\n"
+ "    name of the file containing the image.\n\n"
+ );
+-
+-static int load_initrd(char *filename, void *buf, int size)
+-{
+-	int fd, n;
+-
+-	fd = os_open_file(filename, of_read(OPENFLAGS()), 0);
+-	if (fd < 0) {
+-		printk(KERN_ERR "Opening '%s' failed - err = %d\n", filename,
+-		       -fd);
+-		return -1;
+-	}
+-	n = os_read_file(fd, buf, size);
+-	if (n != size) {
+-		printk(KERN_ERR "Read of %d bytes from '%s' failed, "
+-		       "err = %d\n", size,
+-		       filename, -n);
+-		return -1;
 -	}
 -
- 	return buffer_op((unsigned long) to, n, 1, copy_chunk_to_user, &from);
- }
- EXPORT_SYMBOL(raw_copy_to_user);
-@@ -196,12 +186,6 @@ long strncpy_from_user(char *dst, const char __user *src, long count)
- 
- 	if (!access_ok(src, 1))
- 		return -EFAULT;
--
--	if (uaccess_kernel()) {
--		strncpy(dst, (__force void *) src, count);
--		return strnlen(dst, count);
--	}
--
- 	n = buffer_op((unsigned long) src, count, 0, strncpy_chunk_from_user,
- 		      &ptr);
- 	if (n != 0)
-@@ -218,11 +202,6 @@ static int clear_chunk(unsigned long addr, int len, void *unused)
- 
- unsigned long __clear_user(void __user *mem, unsigned long len)
- {
--	if (uaccess_kernel()) {
--		memset((__force void*)mem, 0, len);
--		return 0;
--	}
--
- 	return buffer_op((unsigned long) mem, len, 1, clear_chunk, NULL);
- }
- EXPORT_SYMBOL(__clear_user);
-@@ -245,10 +224,6 @@ long strnlen_user(const char __user *str, long len)
- 
- 	if (!access_ok(str, 1))
- 		return -EFAULT;
--
--	if (uaccess_kernel())
--		return strnlen((__force char*)str, len) + 1;
--
- 	n = buffer_op((unsigned long) str, len, 0, strnlen_chunk, &count);
- 	if (n == 0)
- 		return count + 1;
-diff --git a/arch/x86/um/asm/segment.h b/arch/x86/um/asm/segment.h
-index 453db377150d6..2ef507bc69890 100644
---- a/arch/x86/um/asm/segment.h
-+++ b/arch/x86/um/asm/segment.h
-@@ -8,12 +8,4 @@ extern int host_gdt_entry_tls_min;
- #define GDT_ENTRY_TLS_MIN host_gdt_entry_tls_min
- #define GDT_ENTRY_TLS_MAX (GDT_ENTRY_TLS_MIN + GDT_ENTRY_TLS_ENTRIES - 1)
- 
--typedef struct {
--	unsigned long seg;
--} mm_segment_t;
--
--#define MAKE_MM_SEG(s)	((mm_segment_t) { (s) })
--#define KERNEL_DS	MAKE_MM_SEG(~0UL)
--#define USER_DS		MAKE_MM_SEG(TASK_SIZE)
--
- #endif
+-	os_close_file(fd);
+-	return 0;
+-}
+diff --git a/arch/um/kernel/load_file.c b/arch/um/kernel/load_file.c
+new file mode 100644
+index 000000000000..5cecd0e291fb
+--- /dev/null
++++ b/arch/um/kernel/load_file.c
+@@ -0,0 +1,61 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
++ */
++#include <linux/memblock.h>
++#include <os.h>
++
++#include "um_arch.h"
++
++static int __init __uml_load_file(const char *filename, void *buf, int size)
++{
++	int fd, n;
++
++	fd = os_open_file(filename, of_read(OPENFLAGS()), 0);
++	if (fd < 0) {
++		printk(KERN_ERR "Opening '%s' failed - err = %d\n", filename,
++		       -fd);
++		return -1;
++	}
++	n = os_read_file(fd, buf, size);
++	if (n != size) {
++		printk(KERN_ERR "Read of %d bytes from '%s' failed, "
++		       "err = %d\n", size,
++		       filename, -n);
++		return -1;
++	}
++
++	os_close_file(fd);
++	return 0;
++}
++
++void *uml_load_file(const char *filename, unsigned long long *size)
++{
++	void *area;
++	int err;
++
++	*size = 0;
++
++	if (!filename)
++		return NULL;
++
++	err = os_file_size(filename, size);
++	if (err)
++		return NULL;
++
++	if (*size == 0) {
++		printk(KERN_ERR "\"%s\" is empty\n", filename);
++		return NULL;
++	}
++
++	area = memblock_alloc(*size, SMP_CACHE_BYTES);
++	if (!area)
++		panic("%s: Failed to allocate %llu bytes\n", __func__, *size);
++
++	if (__uml_load_file(filename, area, *size)) {
++		memblock_free(area, *size);
++		return NULL;
++	}
++
++	return area;
++}
+diff --git a/arch/um/kernel/um_arch.h b/arch/um/kernel/um_arch.h
+new file mode 100644
+index 000000000000..b195df3a09a0
+--- /dev/null
++++ b/arch/um/kernel/um_arch.h
+@@ -0,0 +1,8 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++
++#ifndef __UML_ARCH_H__
++#define __UML_ARCH_H__
++
++extern void * __init uml_load_file(const char *filename, unsigned long long *size);
++
++#endif
 -- 
-2.30.2
+2.33.1
 
 
 _______________________________________________
