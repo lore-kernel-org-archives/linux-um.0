@@ -1,14 +1,10 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from smtp2.axis.com ([195.60.68.18])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1muybT-00D6ta-Hj
- for linux-um@lists.infradead.org; Wed, 08 Dec 2021 15:11:33 +0000
-From: Vincent Whitchurch <vincent.whitchurch@axis.com>
-Subject: [PATCH 2/2] um: Add devicetree support
-Date: Wed, 8 Dec 2021 16:11:23 +0100
-Message-ID: <20211208151123.29313-3-vincent.whitchurch@axis.com>
-In-Reply-To: <20211208151123.29313-1-vincent.whitchurch@axis.com>
-References: <20211208151123.29313-1-vincent.whitchurch@axis.com>
+From: Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 1/2] x86/mtrr: remove the mtrr_bp_init stub
+Date: Wed, 15 Dec 2021 17:56:11 +0100
+Message-Id: <20211215165612.554426-2-hch@lst.de>
+In-Reply-To: <20211215165612.554426-1-hch@lst.de>
+References: <20211215165612.554426-1-hch@lst.de>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,131 +18,82 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
-Cc: kernel@axis.com, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, devicetree@vger.kernel.org, Vincent Whitchurch <vincent.whitchurch@axis.com>
+To: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: x86@kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
 
-Add a dtb=<filename> option to boot UML with a devicetree blob.  This
-can be used for testing driver code using UML.
+Add an IS_ENABLED check in setup_arch and call pat_disable directly
+if MTRRs are not supported.  This allows to remove the <asm/memtype.h>
+include in <asm/mtrr.h>, which pull in lowlevel x86 headers that should
+not be included for UML builds and will cause build warnings with a
+futher patch.
 
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/um/Kconfig          |  1 +
- arch/um/kernel/Makefile  |  1 +
- arch/um/kernel/dtb.c     | 41 ++++++++++++++++++++++++++++++++++++++++
- arch/um/kernel/um_arch.c |  3 +++
- arch/um/kernel/um_arch.h |  6 ++++++
- 5 files changed, 52 insertions(+)
- create mode 100644 arch/um/kernel/dtb.c
+ arch/x86/include/asm/mtrr.h | 8 +-------
+ arch/x86/kernel/setup.c     | 7 ++++++-
+ 2 files changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index c18b45f75d41..1cf7ef3a2b81 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -18,6 +18,7 @@ config UML
- 	select HAVE_DEBUG_KMEMLEAK
- 	select HAVE_DEBUG_BUGVERBOSE
- 	select NO_DMA if !UML_DMA_EMULATION
-+	select OF_EARLY_FLATTREE
- 	select GENERIC_IRQ_SHOW
- 	select GENERIC_CPU_DEVICES
- 	select HAVE_GCC_PLUGINS
-diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
-index 92692bfef7ae..ebd0cca3ff26 100644
---- a/arch/um/kernel/Makefile
-+++ b/arch/um/kernel/Makefile
-@@ -22,6 +22,7 @@ obj-y += load_file.o
+diff --git a/arch/x86/include/asm/mtrr.h b/arch/x86/include/asm/mtrr.h
+index 829df26fd7a3e..76d726074c163 100644
+--- a/arch/x86/include/asm/mtrr.h
++++ b/arch/x86/include/asm/mtrr.h
+@@ -24,8 +24,8 @@
+ #define _ASM_X86_MTRR_H
  
- obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
- obj-$(CONFIG_GPROF)	+= gprof_syms.o
-+obj-$(CONFIG_OF) += dtb.o
- obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
- obj-$(CONFIG_STACKTRACE) += stacktrace.o
- obj-$(CONFIG_GENERIC_PCI_IOMAP) += ioport.o
-diff --git a/arch/um/kernel/dtb.c b/arch/um/kernel/dtb.c
-new file mode 100644
-index 000000000000..ca69d72025f3
---- /dev/null
-+++ b/arch/um/kernel/dtb.c
-@@ -0,0 +1,41 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include <linux/init.h>
-+#include <linux/of_fdt.h>
-+#include <linux/printk.h>
-+#include <linux/memblock.h>
-+#include <init.h>
-+
-+#include "um_arch.h"
-+
-+static char *dtb __initdata;
-+
-+void uml_dtb_init(void)
-+{
-+	long long size;
-+	void *area;
-+
-+	area = uml_load_file(dtb, &size);
-+	if (!area)
-+		return;
-+
-+	if (!early_init_dt_scan(area)) {
-+		pr_err("invalid DTB %s\n", dtb);
-+		memblock_free(area, size);
-+		return;
-+	}
-+
-+	unflatten_device_tree();
-+	early_init_fdt_scan_reserved_mem();
-+}
-+
-+static int __init uml_dtb_setup(char *line, int *add)
-+{
-+	dtb = line;
-+	return 0;
-+}
-+
-+__uml_setup("dtb=", uml_dtb_setup,
-+"dtb=<file>\n"
-+"    Boot the kernel with the devicetree blob from the specified file.\n"
-+);
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index 54447690de11..abceeabe29b9 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -29,6 +29,8 @@
- #include <mem_user.h>
- #include <os.h>
+ #include <uapi/asm/mtrr.h>
+-#include <asm/memtype.h>
  
-+#include "um_arch.h"
++void mtrr_bp_init(void);
+ 
+ /*
+  * The following functions are for use by other drivers that cannot use
+@@ -43,7 +43,6 @@ extern int mtrr_del(int reg, unsigned long base, unsigned long size);
+ extern int mtrr_del_page(int reg, unsigned long base, unsigned long size);
+ extern void mtrr_centaur_report_mcr(int mcr, u32 lo, u32 hi);
+ extern void mtrr_ap_init(void);
+-extern void mtrr_bp_init(void);
+ extern void set_mtrr_aps_delayed_init(void);
+ extern void mtrr_aps_init(void);
+ extern void mtrr_bp_restore(void);
+@@ -84,11 +83,6 @@ static inline int mtrr_trim_uncached_memory(unsigned long end_pfn)
+ static inline void mtrr_centaur_report_mcr(int mcr, u32 lo, u32 hi)
+ {
+ }
+-static inline void mtrr_bp_init(void)
+-{
+-	pat_disable("PAT support disabled because CONFIG_MTRR is disabled in the kernel.");
+-}
+-
+ #define mtrr_ap_init() do {} while (0)
+ #define set_mtrr_aps_delayed_init() do {} while (0)
+ #define mtrr_aps_init() do {} while (0)
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index 6a190c7f4d71b..2f5129bd49dc4 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -40,6 +40,7 @@
+ #include <asm/kasan.h>
+ #include <asm/kaslr.h>
+ #include <asm/mce.h>
++#include <asm/memtype.h>
+ #include <asm/mtrr.h>
+ #include <asm/realmode.h>
+ #include <asm/olpc_ofw.h>
+@@ -979,7 +980,11 @@ void __init setup_arch(char **cmdline_p)
+ 	max_pfn = e820__end_of_ram_pfn();
+ 
+ 	/* update e820 for memory not covered by WB MTRRs */
+-	mtrr_bp_init();
++	if (IS_ENABLED(CONFIG_MTRR))
++		mtrr_bp_init();
++	else
++		pat_disable("PAT support disabled because CONFIG_MTRR is disabled in the kernel.");
 +
- #define DEFAULT_COMMAND_LINE_ROOT "root=98:0"
- #define DEFAULT_COMMAND_LINE_CONSOLE "console=tty"
+ 	if (mtrr_trim_uncached_memory(max_pfn))
+ 		max_pfn = e820__end_of_ram_pfn();
  
-@@ -407,6 +409,7 @@ void __init setup_arch(char **cmdline_p)
- 	stack_protections((unsigned long) &init_thread_info);
- 	setup_physmem(uml_physmem, uml_reserved, physmem_size, highmem);
- 	mem_total_pages(physmem_size, iomem_size, highmem);
-+	uml_dtb_init();
- 	read_initrd();
- 
- 	paging_init();
-diff --git a/arch/um/kernel/um_arch.h b/arch/um/kernel/um_arch.h
-index b195df3a09a0..1e07fb7ee35e 100644
---- a/arch/um/kernel/um_arch.h
-+++ b/arch/um/kernel/um_arch.h
-@@ -5,4 +5,10 @@
- 
- extern void * __init uml_load_file(const char *filename, unsigned long long *size);
- 
-+#ifdef CONFIG_OF
-+extern void __init uml_dtb_init(void);
-+#else
-+static inline void uml_dtb_init(void) { }
-+#endif
-+
- #endif
 -- 
-2.33.1
+2.30.2
 
 
 _______________________________________________
