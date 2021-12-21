@@ -1,17 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from verein.lst.de ([213.95.11.211])
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mzwou-009d9G-NH
- for linux-um@lists.infradead.org; Wed, 22 Dec 2021 08:17:57 +0000
-Date: Wed, 22 Dec 2021 09:17:53 +0100
-From: hch <hch@lst.de>
-Subject: Re: remove set_fs for UML
-Message-ID: <20211222081753.GB22041@lst.de>
+ id 1mzmJm-008WSc-BY
+ for linux-um@lists.infradead.org; Tue, 21 Dec 2021 21:05:07 +0000
+Date: Tue, 21 Dec 2021 22:05:03 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <1202521211.191037.1640120703350.JavaMail.zimbra@nod.at>
+In-Reply-To: <20211215165612.554426-1-hch@lst.de>
 References: <20211215165612.554426-1-hch@lst.de>
- <1202521211.191037.1640120703350.JavaMail.zimbra@nod.at>
+Subject: Re: remove set_fs for UML
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1202521211.191037.1640120703350.JavaMail.zimbra@nod.at>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,38 +18,33 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard@nod.at>
-Cc: hch <hch@lst.de>, anton ivanov <anton.ivanov@cambridgegreys.com>, x86 <x86@kernel.org>, linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
+To: hch <hch@lst.de>
+Cc: anton ivanov <anton.ivanov@cambridgegreys.com>, x86 <x86@kernel.org>, linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
 
-On Tue, Dec 21, 2021 at 10:05:03PM +0100, Richard Weinberger wrote:
-> So far UML seems to work with these changes applied. :-)
-> I have applied both patches to my UML tree for now, I assume x86 maintainers are fine with
-> patch 1/2?
-
-Looks like patch 1 needs this fixup for some configurations, where
-pci.h doesn't get pulled into kvm by other means.
-
-But we probably want an ACK from the x86 maintainers to be sure anyway..
-
-diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
-index 0c76c45fdb686..fad546df0bbac 100644
---- a/arch/x86/kvm/mmu/spte.c
-+++ b/arch/x86/kvm/mmu/spte.c
-@@ -16,6 +16,7 @@
- #include "spte.h"
- 
- #include <asm/e820/api.h>
-+#include <asm/memtype.h>
- #include <asm/vmx.h>
- 
- static bool __read_mostly enable_mmio_caching = true;
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+Q2hyaXN0b3BoLAoKLS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogImhjaCIg
+PGhjaEBsc3QuZGU+Cj4gQW46ICJyaWNoYXJkIiA8cmljaGFyZEBub2QuYXQ+LCAiYW50b24gaXZh
+bm92IiA8YW50b24uaXZhbm92QGNhbWJyaWRnZWdyZXlzLmNvbT4KPiBDQzogIng4NiIgPHg4NkBr
+ZXJuZWwub3JnPiwgImxpbnV4LXVtIiA8bGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZz4sICJs
+aW51eC1rZXJuZWwiIDxsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnPgo+IEdlc2VuZGV0OiBN
+aXR0d29jaCwgMTUuIERlemVtYmVyIDIwMjEgMTc6NTY6MTAKPiBCZXRyZWZmOiByZW1vdmUgc2V0
+X2ZzIGZvciBVTUwKCj4gSGkgUmljaGFyZCBhbmQgQW50b24sCj4gCj4gdGhpcyBzZXJpZXMgcmVt
+b3ZlcyBhZGRyZXNzIHNwYWNlIG92ZXJyaWRlcyB1c2luZyBzZXRfZnMgZm9yIFVNTC4KPiAKPiBE
+aWZmc3RhdDoKPiB1bS9LY29uZmlnICAgICAgICAgICAgICAgICAgIHwgICAgMSAtCj4gdW0vaW5j
+bHVkZS9hc20vdGhyZWFkX2luZm8uaCB8ICAgIDQgLS0tLQo+IHVtL2luY2x1ZGUvYXNtL3VhY2Nl
+c3MuaCAgICAgfCAgIDIxICsrKysrKysrKysrKysrKysrKystLQo+IHVtL2tlcm5lbC9za2FzL3Vh
+Y2Nlc3MuYyAgICAgfCAgIDI1IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiB4ODYvaW5jbHVk
+ZS9hc20vbXRyci5oICAgICAgIHwgICAgOCArLS0tLS0tLQo+IHg4Ni9rZXJuZWwvc2V0dXAuYyAg
+ICAgICAgICAgfCAgICA3ICsrKysrKy0KPiB4ODYvdW0vYXNtL3NlZ21lbnQuaCAgICAgICAgIHwg
+ICAgOCAtLS0tLS0tLQo+ICA3IGZpbGVzIGNoYW5nZWQsIDI2IGluc2VydGlvbnMoKyksIDQ4IGRl
+bGV0aW9ucygtKQoKU28gZmFyIFVNTCBzZWVtcyB0byB3b3JrIHdpdGggdGhlc2UgY2hhbmdlcyBh
+cHBsaWVkLiA6LSkKSSBoYXZlIGFwcGxpZWQgYm90aCBwYXRjaGVzIHRvIG15IFVNTCB0cmVlIGZv
+ciBub3csIEkgYXNzdW1lIHg4NiBtYWludGFpbmVycyBhcmUgZmluZSB3aXRoCnBhdGNoIDEvMj8K
+ClRoYW5rcy4KLy9yaWNoYXJkCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFk
+Lm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVt
+Cg==
 
