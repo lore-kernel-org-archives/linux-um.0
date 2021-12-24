@@ -1,8 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: remove set_fs for UML
-Date: Wed, 15 Dec 2021 17:56:10 +0100
-Message-Id: <20211215165612.554426-1-hch@lst.de>
+Received: from mail-sgaapc01on2090.outbound.protection.outlook.com
+ ([40.107.215.90] helo=APC01-SG2-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1n0adO-00DhIS-Ut
+ for linux-um@lists.infradead.org; Fri, 24 Dec 2021 02:48:46 +0000
+From: Guo Zhengkui <guozhengkui@vivo.com>
+Subject: [PATCH] um: remove a duplicate include
+Date: Fri, 24 Dec 2021 10:46:35 +0800
+Message-Id: <20211224024635.7497-1-guozhengkui@vivo.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -16,22 +21,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: x86@kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "maintainer:X86 ARCHITECTURE 32-BIT AND 64-BIT" <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, "open list:USER-MODE LINUX UML" <linux-um@lists.infradead.org>, "open list:X86 ARCHITECTURE 32-BIT AND 64-BIT" <linux-kernel@vger.kernel.org>
+Cc: kernel@vivo.com, Guo Zhengkui <guozhengkui@vivo.com>
 
-Hi Richard and Anton,
+Remove a duplicate "#include <registers.h>" in line 15.
 
-this series removes address space overrides using set_fs for UML.
+Signed-off-by: Guo Zhengkui <guozhengkui@vivo.com>
+---
+ arch/x86/um/syscalls_64.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Diffstat:
- um/Kconfig                   |    1 -
- um/include/asm/thread_info.h |    4 ----
- um/include/asm/uaccess.h     |   21 +++++++++++++++++++--
- um/kernel/skas/uaccess.c     |   25 -------------------------
- x86/include/asm/mtrr.h       |    8 +-------
- x86/kernel/setup.c           |    7 ++++++-
- x86/um/asm/segment.h         |    8 --------
- 7 files changed, 26 insertions(+), 48 deletions(-)
+diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
+index fe5323f0c42d..27b29ae6c471 100644
+--- a/arch/x86/um/syscalls_64.c
++++ b/arch/x86/um/syscalls_64.c
+@@ -12,7 +12,6 @@
+ #include <asm/prctl.h> /* XXX This should get the constants from libc */
+ #include <registers.h>
+ #include <os.h>
+-#include <registers.h>
+ 
+ long arch_prctl(struct task_struct *task, int option,
+ 		unsigned long __user *arg2)
+-- 
+2.20.1
+
 
 _______________________________________________
 linux-um mailing list
