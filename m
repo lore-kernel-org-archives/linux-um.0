@@ -1,13 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57])
+Received: from zeniv-ca.linux.org.uk ([2607:5300:60:148a::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n0aXQ-00Dh9d-OW
- for linux-um@lists.infradead.org; Fri, 24 Dec 2021 02:42:34 +0000
-From: Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH -next] um: Remove duplicated include in syscalls_64.c
-Date: Fri, 24 Dec 2021 10:42:23 +0800
-Message-Id: <20211224024223.9356-1-yang.lee@linux.alibaba.com>
+ id 1n2S1S-002Jlf-AI
+ for linux-um@lists.infradead.org; Wed, 29 Dec 2021 06:01:15 +0000
+Date: Wed, 29 Dec 2021 06:00:56 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [tip:x86/core 1/1] arch/x86/um/../lib/csum-partial_64.c:98:12:
+ error: implicit declaration of function 'load_unaligned_zeropad'
+Message-ID: <Ycv5mF+gfGxlmmQL@zeniv-ca.linux.org.uk>
+References: <202111180219.YkyoBMpf-lkp@intel.com>
+ <CANn89iJfh+x-s4GtWJcyRFpMmSvvyq-r1TGV4sDLXy3F50zD6w@mail.gmail.com>
+ <CANn89iJj4zeNUiXCmG=rSejbHAwPhBEPKUv1tPL9ig=e4vg7pQ@mail.gmail.com>
+ <YZZ4upqWGMOY+r56@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <YZZ4upqWGMOY+r56@hirez.programming.kicks-ass.net>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,34 +27,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: jdike@addtoit.com, viro@zeniv.linux.org.uk
-Cc: richard@nod.at, anton.ivanov@cambridgegreys.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>, Abaci Robot <abaci@linux.alibaba.com>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Eric Dumazet <edumazet@google.com>, kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org, linux-kernel@vger.kernel.org, x86@kernel.org, Alexander Duyck <alexanderduyck@fb.com>, linux-um@lists.infradead.org
 
-Fix following includecheck warning:
-./arch/x86/um/syscalls_64.c: registers.h is included more than once.
+On Thu, Nov 18, 2021 at 05:00:58PM +0100, Peter Zijlstra wrote:
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Fixes: dbba7f704aa0 ("um: stop polluting the namespace with registers.h contents")
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- arch/x86/um/syscalls_64.c | 1 -
- 1 file changed, 1 deletion(-)
+> Dear um folks, is this indeed the best solution? It's a bit sad to have
+> to add this to x86_64, but if that's the way it is...
 
-diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
-index fe5323f0c42d..27b29ae6c471 100644
---- a/arch/x86/um/syscalls_64.c
-+++ b/arch/x86/um/syscalls_64.c
-@@ -12,7 +12,6 @@
- #include <asm/prctl.h> /* XXX This should get the constants from libc */
- #include <registers.h>
- #include <os.h>
--#include <registers.h>
+Something like this, perhaps? (absolutely untested)
+
+diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
+index e5a7b552bb384..a58b67ec8119d 100644
+--- a/arch/um/include/asm/Kbuild
++++ b/arch/um/include/asm/Kbuild
+@@ -23,7 +23,6 @@ generic-y += softirq_stack.h
+ generic-y += switch_to.h
+ generic-y += topology.h
+ generic-y += trace_clock.h
+-generic-y += word-at-a-time.h
+ generic-y += kprobes.h
+ generic-y += mm_hooks.h
+ generic-y += vga.h
+diff --git a/arch/x86/um/Kconfig b/arch/x86/um/Kconfig
+index 95d26a69088b1..a812cc35092c6 100644
+--- a/arch/x86/um/Kconfig
++++ b/arch/x86/um/Kconfig
+@@ -9,6 +9,7 @@ endmenu
+ config UML_X86
+ 	def_bool y
+ 	select GENERIC_FIND_FIRST_BIT
++	select DCACHE_WORD_ACCESS
  
- long arch_prctl(struct task_struct *task, int option,
- 		unsigned long __user *arg2)
--- 
-2.20.1.7.g153144c
-
+ config 64BIT
+ 	bool "64-bit kernel" if "$(SUBARCH)" = "x86"
 
 _______________________________________________
 linux-um mailing list
