@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from xavier.telenet-ops.be ([2a02:1800:120:4::f00:14])
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nBuCa-002X0R-70
- for linux-um@lists.infradead.org; Mon, 24 Jan 2022 07:55:50 +0000
-Date: Mon, 24 Jan 2022 08:55:40 +0100 (CET)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Build regressions/improvements in v5.17-rc1
-In-Reply-To: <20220123125737.2658758-1-geert@linux-m68k.org>
-Message-ID: <alpine.DEB.2.22.394.2201240851560.2674757@ramsan.of.borg>
-References: <20220123125737.2658758-1-geert@linux-m68k.org>
+ id 1n3mOU-007PKh-54
+ for linux-um@lists.infradead.org; Sat, 01 Jan 2022 21:58:33 +0000
+From: Richard Weinberger <richard@nod.at>
+Subject: [PATCH 3/4] um: chan: Restore blocking mode upon exit
+Date: Sat,  1 Jan 2022 22:58:09 +0100
+Message-Id: <20220101215810.13260-4-richard@nod.at>
+In-Reply-To: <20220101215810.13260-1-richard@nod.at>
+References: <20220101215810.13260-1-richard@nod.at>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -18,88 +18,58 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>, kvm@vger.kernel.org, linux-mips@vger.kernel.org, "Tobin C. Harding" <me@tobin.cc>, alsa-devel@alsa-project.org, amd-gfx@lists.freedesktop.org, netdev@vger.kernel.org
+To: linux-um@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, johannes.berg@intel.com, anton.ivanov@cambridgegreys.com, Richard Weinberger <richard@nod.at>
 
-On Sun, 23 Jan 2022, Geert Uytterhoeven wrote:
-> Below is the list of build error/warning regressions/improvements in
-> v5.17-rc1[1] compared to v5.16[2].
->
-> Summarized:
->  - build errors: +17/-2
->  - build warnings: +23/-25
->
-> Note that there may be false regressions, as some logs are incomplete.
-> Still, they're build errors/warnings.
->
-> Happy fixing! ;-)
->
-> Thanks to the linux-next team for providing the build service.
->
-> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/e783362eb54cd99b2cac8b3a9aeac942e6f6ac07/ (all 99 configs)
-> [2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/df0cc57e057f18e44dac8e6c18aba47ab53202f9/ (98 out of 99 configs)
->
->
-> *** ERRORS ***
->
-> 17 error regressions:
->  + /kisskb/src/arch/powerpc/kernel/stacktrace.c: error: implicit declaration of function 'nmi_cpu_backtrace' [-Werror=implicit-function-declaration]:  => 171:2
->  + /kisskb/src/arch/powerpc/kernel/stacktrace.c: error: implicit declaration of function 'nmi_trigger_cpumask_backtrace' [-Werror=implicit-function-declaration]:  => 226:2
+Make sure that O_NONBLOCK is cleared upon exit if UML sets it.
+Otherwise stdin/out behaves strange after UML terminates.
 
-powerpc-gcc5/skiroot_defconfig
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ arch/um/drivers/chan.h      | 1 +
+ arch/um/drivers/chan_kern.c | 3 +++
+ 2 files changed, 4 insertions(+)
 
->  + /kisskb/src/arch/sparc/mm/srmmu.c: error: cast between incompatible function types from 'void (*)(long unsigned int)' to 'void (*)(long unsigned int,  long unsigned int,  long unsigned int,  long unsigned int,  long unsigned int)' [-Werror=cast-function-type]:  => 1756:13, 1639:13
->  + /kisskb/src/arch/sparc/mm/srmmu.c: error: cast between incompatible function types from 'void (*)(struct mm_struct *)' to 'void (*)(long unsigned int,  long unsigned int,  long unsigned int,  long unsigned int,  long unsigned int)' [-Werror=cast-function-type]:  => 1674:29, 1662:29
->  + /kisskb/src/arch/sparc/mm/srmmu.c: error: cast between incompatible function types from 'void (*)(struct mm_struct *, long unsigned int)' to 'void (*)(long unsigned int,  long unsigned int,  long unsigned int,  long unsigned int,  long unsigned int)' [-Werror=cast-function-type]:  => 1767:21
->  + /kisskb/src/arch/sparc/mm/srmmu.c: error: cast between incompatible function types from 'void (*)(struct vm_area_struct *, long unsigned int)' to 'void (*)(long unsigned int,  long unsigned int,  long unsigned int,  long unsigned int,  long unsigned int)' [-Werror=cast-function-type]:  => 1741:29, 1726:29
->  + /kisskb/src/arch/sparc/mm/srmmu.c: error: cast between incompatible function types from 'void (*)(struct vm_area_struct *, long unsigned int,  long unsigned int)' to 'void (*)(long unsigned int,  long unsigned int,  long unsigned int,  long unsigned int,  long unsigned int)' [-Werror=cast-function-type]:  => 1694:29, 1711:29
+diff --git a/arch/um/drivers/chan.h b/arch/um/drivers/chan.h
+index c37cc4f26f91..6b8c462f146e 100644
+--- a/arch/um/drivers/chan.h
++++ b/arch/um/drivers/chan.h
+@@ -22,6 +22,7 @@ struct chan {
+ 	unsigned int output:1;
+ 	unsigned int opened:1;
+ 	unsigned int enabled:1;
++	unsigned int fd_blocking:1;
+ 	int fd;
+ 	const struct chan_ops *ops;
+ 	void *data;
+diff --git a/arch/um/drivers/chan_kern.c b/arch/um/drivers/chan_kern.c
+index 86be115b5890..6d512589fa50 100644
+--- a/arch/um/drivers/chan_kern.c
++++ b/arch/um/drivers/chan_kern.c
+@@ -102,6 +102,7 @@ static int open_one_chan(struct chan *chan)
+ 	}
+ 
+ 	chan->fd = fd;
++	chan->fd_blocking = ret;
+ 
+ 	chan->opened = 1;
+ 	return 0;
+@@ -223,6 +224,8 @@ static void close_one_chan(struct chan *chan, int delay_free_irq)
+ 	if (chan->ops->close != NULL)
+ 		(*chan->ops->close)(chan->fd, chan->data);
+ 
++	os_set_fd_block(chan->fd, chan->fd_blocking);
++
+ 	chan->opened = 0;
+ 	chan->fd = -1;
+ }
+-- 
+2.26.2
 
-sparc64-gcc11/sparc-allmodconfig
-
->  + /kisskb/src/arch/um/include/asm/processor-generic.h: error: called object is not a function or function pointer:  => 103:18
->  + /kisskb/src/drivers/vfio/pci/vfio_pci_rdwr.c: error: assignment makes pointer from integer without a cast [-Werror=int-conversion]:  => 324:9, 317:9
->  + /kisskb/src/drivers/vfio/pci/vfio_pci_rdwr.c: error: implicit declaration of function 'ioport_map' [-Werror=implicit-function-declaration]:  => 317:11
->  + /kisskb/src/drivers/vfio/pci/vfio_pci_rdwr.c: error: implicit declaration of function 'ioport_unmap' [-Werror=implicit-function-declaration]:  => 338:15
-
-um-x86_64/um-allyesconfig
-
->  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_topology.c: error: control reaches end of non-void function [-Werror=return-type]:  => 1560:1
-
-um-x86_64/um-all{mod,yes}config
-
->  + /kisskb/src/drivers/net/ethernet/freescale/fec_mpc52xx.c: error: passing argument 2 of 'mpc52xx_fec_set_paddr' discards 'const' qualifier from pointer target type [-Werror=discarded-qualifiers]:  => 659:29
-
-powerpc-gcc5/ppc32_allmodconfig
-
->  + /kisskb/src/drivers/pinctrl/pinctrl-thunderbay.c: error: assignment discards 'const' qualifier from pointer target type [-Werror=discarded-qualifiers]:  => 815:8, 815:29
-
-arm64-gcc5.4/arm64-allmodconfig
-arm64-gcc8/arm64-allmodconfig
-
->  + /kisskb/src/lib/test_printf.c: error: "PTR" redefined [-Werror]:  => 247:0, 247
->  + /kisskb/src/sound/pci/ca0106/ca0106.h: error: "PTR" redefined [-Werror]:  => 62, 62:0
-
-mips-gcc8/mips-allmodconfig
-mipsel/mips-allmodconfig
-
->  + error: arch/powerpc/kvm/book3s_64_entry.o: relocation truncated to fit: R_PPC64_REL14 (stub) against symbol `machine_check_common' defined in .text section in arch/powerpc/kernel/head_64.o:  => (.text+0x3e4)
-
-powerpc-gcc5/powerpc-allyesconfig
-
-Gr{oetje,eeting}s,
-
- 						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
- 							    -- Linus Torvalds
 
 _______________________________________________
 linux-um mailing list
