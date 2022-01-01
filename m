@@ -1,15 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from albert.telenet-ops.be ([2a02:1800:110:4::f00:1a])
+Received: from zeniv-ca.linux.org.uk ([2607:5300:60:148a::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n1nU8-00GXmh-Gl
- for linux-um@lists.infradead.org; Mon, 27 Dec 2021 10:44:10 +0000
-Date: Mon, 27 Dec 2021 11:44:01 +0100 (CET)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Build regressions/improvements in v5.16-rc7
-In-Reply-To: <20211227083126.1153239-1-geert@linux-m68k.org>
-Message-ID: <alpine.DEB.2.22.394.2112271142250.1704790@ramsan.of.borg>
-References: <20211227083126.1153239-1-geert@linux-m68k.org>
+ id 1n3S0w-006bJK-PA
+ for linux-um@lists.infradead.org; Sat, 01 Jan 2022 00:12:52 +0000
+Date: Sat, 1 Jan 2022 00:12:24 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: remove set_fs for UML
+Message-ID: <Yc+caOi47BbzlPw6@zeniv-ca.linux.org.uk>
+References: <20211215165612.554426-1-hch@lst.de>
+ <1202521211.191037.1640120703350.JavaMail.zimbra@nod.at>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1202521211.191037.1640120703350.JavaMail.zimbra@nod.at>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,35 +20,57 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: linux-crypto@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org
+To: Richard Weinberger <richard@nod.at>
+Cc: hch <hch@lst.de>, anton ivanov <anton.ivanov@cambridgegreys.com>, x86 <x86@kernel.org>, linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
 
-On Mon, 27 Dec 2021, Geert Uytterhoeven wrote:
-> JFYI, when comparing v5.16-rc7[1] to v5.16-rc6[3], the summaries are:
->  - build errors: +2/-1
+On Tue, Dec 21, 2021 at 10:05:03PM +0100, Richard Weinberger wrote:
+> Christoph,
+> =
 
-   + /kisskb/src/crypto/blake2b_generic.c: error: the frame size of 2288 bytes is larger than 2048 bytes [-Werror=frame-larger-than=]:  => 109:1
+> ----- Urspr=FCngliche Mail -----
+> > Von: "hch" <hch@lst.de>
+> > An: "richard" <richard@nod.at>, "anton ivanov" <anton.ivanov@cambridgeg=
+reys.com>
+> > CC: "x86" <x86@kernel.org>, "linux-um" <linux-um@lists.infradead.org>, =
+"linux-kernel" <linux-kernel@vger.kernel.org>
+> > Gesendet: Mittwoch, 15. Dezember 2021 17:56:10
+> > Betreff: remove set_fs for UML
+> =
 
-sparc64-gcc11/sparc-allmodconfig
+> > Hi Richard and Anton,
+> > =
 
-   + /kisskb/src/drivers/video/fbdev/nvidia/nvidia.c: error: passing argument 1 of 'iounmap' discards 'volatile' qualifier from pointer target type [-Werror=discarded-qualifiers]:  => 1439:10, 1414:10
+> > this series removes address space overrides using set_fs for UML.
+> > =
 
-um-x86_64/um-all{mod,yes}config
+> > Diffstat:
+> > um/Kconfig                   |    1 -
+> > um/include/asm/thread_info.h |    4 ----
+> > um/include/asm/uaccess.h     |   21 +++++++++++++++++++--
+> > um/kernel/skas/uaccess.c     |   25 -------------------------
+> > x86/include/asm/mtrr.h       |    8 +-------
+> > x86/kernel/setup.c           |    7 ++++++-
+> > x86/um/asm/segment.h         |    8 --------
+> >  7 files changed, 26 insertions(+), 48 deletions(-)
+> =
 
-Gr{oetje,eeting}s,
+> So far UML seems to work with these changes applied. :-)
+> I have applied both patches to my UML tree for now, I assume x86 maintain=
+ers are fine with
+> patch 1/2?
 
- 						Geert
+Hmmm...  AFAICS, the right thing to do would be to have __get_kernel_nofault
+and __put_kernel_nofault in arch/x86/um/asm/something.  The question is how
+to avoid duplicating the x86 implementation of those (along with the asm-go=
+to
+fun, etc.)...
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
- 							    -- Linus Torvalds
+But Christoph is right, it's not a new problem.  As far as I'm concerned,
+that series looks fine.
 
 _______________________________________________
 linux-um mailing list
