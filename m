@@ -1,14 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n3mOU-007PKi-3i
- for linux-um@lists.infradead.org; Sat, 01 Jan 2022 21:58:31 +0000
-From: Richard Weinberger <richard@nod.at>
-Subject: [PATCH 4/4] um: irq: Restore O_ASYNC upon exit
-Date: Sat,  1 Jan 2022 22:58:10 +0100
-Message-Id: <20220101215810.13260-5-richard@nod.at>
-In-Reply-To: <20220101215810.13260-1-richard@nod.at>
-References: <20220101215810.13260-1-richard@nod.at>
+ id 1n4PRl-009Npy-8U
+ for linux-um@lists.infradead.org; Mon, 03 Jan 2022 15:40:30 +0000
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [PATCH] lib/logic_iomem: correct fallback config references
+Date: Mon,  3 Jan 2022 16:40:15 +0100
+Message-Id: <20220103164015.6bfbac3b1010.I44342c6303ec35d688631ce9cfb6cfa9b4537006@changeid>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -23,42 +22,64 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, johannes.berg@intel.com, anton.ivanov@cambridgegreys.com, Richard Weinberger <richard@nod.at>
+Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>, Arnd Bergmann <arnd@kernel.org>, Johannes Berg <johannes.berg@intel.com>
 
-Just like with O_NONBLOCK, make sure UML clears O_ASYNC
-upon exit when it set it.
+From: Johannes Berg <johannes.berg@intel.com>
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Due to some renaming, we ended up with the "indirect iomem"
+naming in Kconfig, following INDIRECT_PIO. However, clearly
+I missed following through on that in the ifdefs, but so far
+INDIRECT_IOMEM_FALLBACK isn't used by any architecture.
+
+Reported-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Fixes: ca2e334232b6 ("lib: add iomem emulation (logic_iomem)")
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- arch/um/kernel/irq.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ lib/logic_iomem.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-index a8873d9bc28b..e020bdccfa23 100644
---- a/arch/um/kernel/irq.c
-+++ b/arch/um/kernel/irq.c
-@@ -342,6 +342,7 @@ static void free_irq_by_irq_and_dev(unsigned int irq, void *dev)
- 				continue;
- 
- 			os_del_epoll_fd(entry->fd);
-+			os_clear_fd_async(entry->fd);
- 			reg->events = 0;
- 			update_or_free_irq_entry(entry);
- 			goto out;
-@@ -396,8 +397,10 @@ int deactivate_all_fds(void)
- 	os_set_ioignore();
- 
- 	/* we can no longer call kfree() here so just deactivate */
--	list_for_each_entry(entry, &active_fds, list)
-+	list_for_each_entry(entry, &active_fds, list) {
- 		os_del_epoll_fd(entry->fd);
-+		os_clear_fd_async(entry->fd);
-+	}
- 	os_close_epoll_fd();
- 	return 0;
+diff --git a/lib/logic_iomem.c b/lib/logic_iomem.c
+index 9bdfde0c0f86..8cafe4a9e874 100644
+--- a/lib/logic_iomem.c
++++ b/lib/logic_iomem.c
+@@ -68,7 +68,7 @@ int logic_iomem_add_region(struct resource *resource,
  }
+ EXPORT_SYMBOL(logic_iomem_add_region);
+ 
+-#ifndef CONFIG_LOGIC_IOMEM_FALLBACK
++#ifndef CONFIG_INDIRECT_IOMEM_FALLBACK
+ static void __iomem *real_ioremap(phys_addr_t offset, size_t size)
+ {
+ 	WARN(1, "invalid ioremap(0x%llx, 0x%zx)\n",
+@@ -81,7 +81,7 @@ static void real_iounmap(void __iomem *addr)
+ 	WARN(1, "invalid iounmap for addr 0x%llx\n",
+ 	     (unsigned long long __force)addr);
+ }
+-#endif /* CONFIG_LOGIC_IOMEM_FALLBACK */
++#endif /* CONFIG_INDIRECT_IOMEM_FALLBACK */
+ 
+ void __iomem *ioremap(phys_addr_t offset, size_t size)
+ {
+@@ -168,7 +168,7 @@ void iounmap(void __iomem *addr)
+ }
+ EXPORT_SYMBOL(iounmap);
+ 
+-#ifndef CONFIG_LOGIC_IOMEM_FALLBACK
++#ifndef CONFIG_INDIRECT_IOMEM_FALLBACK
+ #define MAKE_FALLBACK(op, sz) 						\
+ static u##sz real_raw_read ## op(const volatile void __iomem *addr)	\
+ {									\
+@@ -212,7 +212,7 @@ static void real_memcpy_toio(volatile void __iomem *addr, const void *buffer,
+ 	WARN(1, "Invalid memcpy_toio at address 0x%llx\n",
+ 	     (unsigned long long __force)addr);
+ }
+-#endif /* CONFIG_LOGIC_IOMEM_FALLBACK */
++#endif /* CONFIG_INDIRECT_IOMEM_FALLBACK */
+ 
+ #define MAKE_OP(op, sz) 						\
+ u##sz __raw_read ## op(const volatile void __iomem *addr)		\
 -- 
-2.26.2
+2.33.1
 
 
 _______________________________________________
