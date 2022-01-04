@@ -1,16 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ams.source.kernel.org ([145.40.68.75])
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nC6uF-005KNe-4L
- for linux-um@lists.infradead.org; Mon, 24 Jan 2022 21:29:44 +0000
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 5.16 0688/1039] um: registers: Rename function names to avoid
- conflicts and build problems
-Date: Mon, 24 Jan 2022 19:41:17 +0100
-Message-Id: <20220124184148.478052926@linuxfoundation.org>
-In-Reply-To: <20220124184125.121143506@linuxfoundation.org>
-References: <20220124184125.121143506@linuxfoundation.org>
+ id 1n4kZI-00Bfa5-4E
+ for linux-um@lists.infradead.org; Tue, 04 Jan 2022 14:13:41 +0000
+Subject: Re: [PATCH] um: virtio_uml: allow probing from devicetree
+References: <20211221090447.1567-1-vincent.whitchurch@axis.com>
+ <5f104044649ec60ba93648e68c3df2183e032072.camel@sipsolutions.net>
+ <20211222103417.GB25135@axis.com>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <a862c00c-0db4-e2b7-4ee7-958f3bdd856e@cambridgegreys.com>
+Date: Tue, 4 Jan 2022 14:13:25 +0000
 MIME-Version: 1.0
+In-Reply-To: <20211222103417.GB25135@axis.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -19,113 +22,66 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Sasha Levin <sashal@kernel.org>
+To: Vincent Whitchurch <vincent.whitchurch@axis.com>, Johannes Berg <johannes@sipsolutions.net>
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>, kernel <kernel@axis.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 077b7320942b64b0da182aefd83c374462a65535 ]
 
-The function names init_registers() and restore_registers() are used
-in several net/ethernet/ and gpu/drm/ drivers for other purposes (not
-calls to UML functions), so rename them.
+On 22/12/2021 10:34, Vincent Whitchurch wrote:
+> On Tue, Dec 21, 2021 at 09:48:26PM +0100, Johannes Berg wrote:
+>> On Tue, 2021-12-21 at 10:04 +0100, Vincent Whitchurch wrote:
+>>> Allow the virtio_uml device to be probed from the devicetree so that
+>>> sub-devices can be specified using the standard virtio bindings, for
+>>> example:
+>>>
+>>>    virtio@1 {
+>>>      compatible = "virtio,uml";
+>>>      socket-path = "i2c.sock";
+>>>      virtio-device-id = <0x22>;
+>>>
+>>
+>> Given this, maybe it should modify
+>> Documentation/devicetree/bindings/virtio/virtio-device.yaml? Or actually
+>> add a new Documentation/devicetree/bindings/virtio/uml.yaml I guess?
+>>
+>> +Rob, because I'm not really into any of this.
+>>
+>> Also, I'm not even sure we should/need to document the DT bits that are
+>> basically only used for testing in the first place?
 
-This fixes multiple build errors.
+If we start adding the UML devices themselves to the DT, we might as well add all of them.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: linux-um@lists.infradead.org
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/um/include/shared/registers.h | 4 ++--
- arch/um/os-Linux/registers.c       | 4 ++--
- arch/um/os-Linux/start_up.c        | 2 +-
- arch/x86/um/syscalls_64.c          | 3 ++-
- 4 files changed, 7 insertions(+), 6 deletions(-)
+In the doc patch have described the DT support as mostly for development at this point.
 
-diff --git a/arch/um/include/shared/registers.h b/arch/um/include/shared/registers.h
-index 0c50fa6e8a55b..fbb709a222839 100644
---- a/arch/um/include/shared/registers.h
-+++ b/arch/um/include/shared/registers.h
-@@ -16,8 +16,8 @@ extern int restore_fp_registers(int pid, unsigned long *fp_regs);
- extern int save_fpx_registers(int pid, unsigned long *fp_regs);
- extern int restore_fpx_registers(int pid, unsigned long *fp_regs);
- extern int save_registers(int pid, struct uml_pt_regs *regs);
--extern int restore_registers(int pid, struct uml_pt_regs *regs);
--extern int init_registers(int pid);
-+extern int restore_pid_registers(int pid, struct uml_pt_regs *regs);
-+extern int init_pid_registers(int pid);
- extern void get_safe_registers(unsigned long *regs, unsigned long *fp_regs);
- extern unsigned long get_thread_reg(int reg, jmp_buf *buf);
- extern int get_fp_registers(int pid, unsigned long *regs);
-diff --git a/arch/um/os-Linux/registers.c b/arch/um/os-Linux/registers.c
-index 2d9270508e156..b123955be7acc 100644
---- a/arch/um/os-Linux/registers.c
-+++ b/arch/um/os-Linux/registers.c
-@@ -21,7 +21,7 @@ int save_registers(int pid, struct uml_pt_regs *regs)
- 	return 0;
- }
- 
--int restore_registers(int pid, struct uml_pt_regs *regs)
-+int restore_pid_registers(int pid, struct uml_pt_regs *regs)
- {
- 	int err;
- 
-@@ -36,7 +36,7 @@ int restore_registers(int pid, struct uml_pt_regs *regs)
- static unsigned long exec_regs[MAX_REG_NR];
- static unsigned long exec_fp_regs[FP_SIZE];
- 
--int init_registers(int pid)
-+int init_pid_registers(int pid)
- {
- 	int err;
- 
-diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
-index 8a72c99994eb1..e3ee4db58b40d 100644
---- a/arch/um/os-Linux/start_up.c
-+++ b/arch/um/os-Linux/start_up.c
-@@ -368,7 +368,7 @@ void __init os_early_checks(void)
- 	check_tmpexec();
- 
- 	pid = start_ptraced_child();
--	if (init_registers(pid))
-+	if (init_pid_registers(pid))
- 		fatal("Failed to initialize default registers");
- 	stop_ptraced_child(pid, 1, 1);
- }
-diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
-index 58f51667e2e4b..8249685b40960 100644
---- a/arch/x86/um/syscalls_64.c
-+++ b/arch/x86/um/syscalls_64.c
-@@ -11,6 +11,7 @@
- #include <linux/uaccess.h>
- #include <asm/prctl.h> /* XXX This should get the constants from libc */
- #include <os.h>
-+#include <registers.h>
- 
- long arch_prctl(struct task_struct *task, int option,
- 		unsigned long __user *arg2)
-@@ -35,7 +36,7 @@ long arch_prctl(struct task_struct *task, int option,
- 	switch (option) {
- 	case ARCH_SET_FS:
- 	case ARCH_SET_GS:
--		ret = restore_registers(pid, &current->thread.regs.regs);
-+		ret = restore_pid_registers(pid, &current->thread.regs.regs);
- 		if (ret)
- 			return ret;
- 		break;
+It can be a good alternative to the endless command line (especially for complex devices like f.e. l2tpv3).
+
+
+> 
+> I wasn't sure either, but Rob was OK with not documenting some other
+> bindings which are only used for testing[0], so I assumed that that
+> applied here too:
+> 
+>   [0] https://lore.kernel.org/all/5baa1ae6.1c69fb81.847f2.3ab1@mx.google.com/
+> 
+> Also, DT bindings are supposed to be generic and based on what the
+> hardware has, but here we have no hardware and something very Linux and
+> UML-specific.
+> 
+>> Code looks good to me.
+> 
+> Thanks!
+> 
+
+Brgds,
+
 -- 
-2.34.1
-
-
-
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
 _______________________________________________
 linux-um mailing list
