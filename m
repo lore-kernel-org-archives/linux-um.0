@@ -1,12 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Mon, 3 Jan 2022 23:43:39 -0800
-From: Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH 2/2] IB/rdmavt: modify rdmavt/qp.c for UML
-Message-ID: <YdP6qx0G7ICcBu3f@infradead.org>
-References: <20220102070623.24009-1-rdunlap@infradead.org>
+Message-ID: <50fa4eca-ce74-431f-8497-273d2c5956f2@infradead.org>
+Date: Mon, 3 Jan 2022 17:00:53 -0800
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220102070623.24009-1-rdunlap@infradead.org>
+Subject: Re: [PATCH 2/2] IB/rdmavt: modify rdmavt/qp.c for UML
+Content-Language: en-US
+References: <20220102070623.24009-1-rdunlap@infradead.org>
+ <20220103230445.GA2592848@nvidia.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20220103230445.GA2592848@nvidia.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -15,22 +16,63 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-kernel@vger.kernel.org, Jason Gunthorpe <jgg@nvidia.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-rdma@vger.kernel.org, linux-um@lists.infradead.org
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-rdma@vger.kernel.org, linux-um@lists.infradead.org
 
-Yikes, this rdmavt code is completely fucked up and a very good example
-why people should not use __user casts or random internal helpers.
-
-The right fix is to remove this crap entirely, and if the rdmavt
-maintainer think that they absolutely need a non-temporal memcpy they
-need to work to add a core API for it.
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+CgpPbiAxLzMvMjIgMTU6MDQsIEphc29uIEd1bnRob3JwZSB3cm90ZToKPiBPbiBTYXQsIEphbiAw
+MSwgMjAyMiBhdCAxMTowNjoyM1BNIC0wODAwLCBSYW5keSBEdW5sYXAgd3JvdGU6Cj4+IFdoZW4g
+YnVpbGRpbmcgcmRtYXZ0IGZvciBBUkNIPXVtLCBxcC5jIGhhcyBhIGJ1aWxkIGVycm9yIG9uIGEg
+cmVmZXJlbmNlCj4+IHRvIHRoZSB4ODYtc3BlY2lmaWMgY3B1aW5mbyBmaWVsZCAneDg2X2NhY2hl
+X3NpemUnLiBUaGlzIHZhbHVlIGlzIHRoZW4KPj4gdXNlZCB0byBkZXRlcm1pbmUgd2hldGhlciB0
+byB1c2UgY2FjaGVsZXNzX21lbWNweSgpIG9yIG5vdC4KPj4gUHJvdmlkZSBhIGZha2UgdmFsdWUg
+dG8gTExDIGZvciBDT05GSUdfVU1MLiBUaGVuIHByb3ZpZGUgYSBzZXBhcmF0ZQo+PiB2ZXJpc29u
+IG9mIGNhY2hlbGVzc19tZW1jcHkoKSBmb3IgQ09ORklHX1VNTCB0aGF0IGlzIGp1c3QgYSBwbGFp
+bgo+PiBtZW1jcHkoKSwgbGlrZSB0aGUgY2FsbGluZyBjb2RlIHVzZXMuCj4+Cj4+IFByZXZlbnRz
+IHRoZXNlIGJ1aWxkIGVycm9yczoKPj4KPj4gLi4vZHJpdmVycy9pbmZpbmliYW5kL3N3L3JkbWF2
+dC9xcC5jOiBJbiBmdW5jdGlvbiDigJhydnRfd3NzX2xsY19zaXpl4oCZOgo+PiAuLi9kcml2ZXJz
+L2luZmluaWJhbmQvc3cvcmRtYXZ0L3FwLmM6ODg6MjM6IGVycm9yOiDigJhzdHJ1Y3QgY3B1aW5m
+b191beKAmSBoYXMgbm8gbWVtYmVyIG5hbWVkIOKAmHg4Nl9jYWNoZV9zaXpl4oCZOyBkaWQgeW91
+IG1lYW4g4oCYeDg2X2NhcGFiaWxpdHnigJk/Cj4+ICAgcmV0dXJuIGJvb3RfY3B1X2RhdGEueDg2
+X2NhY2hlX3NpemU7Cj4+Cj4+IC4uL2RyaXZlcnMvaW5maW5pYmFuZC9zdy9yZG1hdnQvcXAuYzog
+SW4gZnVuY3Rpb24g4oCYY2FjaGVsZXNzX21lbWNweeKAmToKPj4gLi4vZHJpdmVycy9pbmZpbmli
+YW5kL3N3L3JkbWF2dC9xcC5jOjEwMDoyOiBlcnJvcjogaW1wbGljaXQgZGVjbGFyYXRpb24gb2Yg
+ZnVuY3Rpb24g4oCYX19jb3B5X3VzZXJfbm9jYWNoZeKAmTsgZGlkIHlvdSBtZWFuIOKAmGNvcHlf
+dXNlcl9wYWdl4oCZPyBbLVdlcnJvcj1pbXBsaWNpdC1mdW5jdGlvbi1kZWNsYXJhdGlvbl0KPj4g
+ICBfX2NvcHlfdXNlcl9ub2NhY2hlKGRzdCwgKHZvaWQgX191c2VyICopc3JjLCBuLCAwKTsKPj4K
+Pj4gRml4ZXM6IDY4ZjVkM2YzYjY1NCAoInVtOiBhZGQgUENJIG92ZXIgdmlydGlvIGVtdWxhdGlv
+biBkcml2ZXIiKQo+PiBTaWduZWQtb2ZmLWJ5OiBSYW5keSBEdW5sYXAgPHJkdW5sYXBAaW5mcmFk
+ZWFkLm9yZz4KPj4gIGRyaXZlcnMvaW5maW5pYmFuZC9zdy9yZG1hdnQvcXAuYyB8ICAgMTIgKysr
+KysrKysrKysrCj4+ICAxIGZpbGUgY2hhbmdlZCwgMTIgaW5zZXJ0aW9ucygrKQo+Pgo+PiArKysg
+bGludXgtbmV4dC0yMDIxMTIyNC9kcml2ZXJzL2luZmluaWJhbmQvc3cvcmRtYXZ0L3FwLmMKPj4g
+QEAgLTg0LDEwICs4NCwxNSBAQCBFWFBPUlRfU1lNQk9MKGliX3J2dF9zdGF0ZV9vcHMpOwo+PiAg
+LyogcGxhdGZvcm0gc3BlY2lmaWM6IHJldHVybiB0aGUgbGFzdCBsZXZlbCBjYWNoZSAobGxjKSBz
+aXplLCBpbiBLaUIgKi8KPj4gIHN0YXRpYyBpbnQgcnZ0X3dzc19sbGNfc2l6ZSh2b2lkKQo+PiAg
+ewo+PiArI2lmICFkZWZpbmVkKENPTkZJR19VTUwpCj4+ICAJLyogYXNzdW1lIHRoYXQgdGhlIGJv
+b3QgQ1BVIHZhbHVlIGlzIHVuaXZlcnNhbCBmb3IgYWxsIENQVXMgKi8KPj4gIAlyZXR1cm4gYm9v
+dF9jcHVfZGF0YS54ODZfY2FjaGVfc2l6ZTsKPj4gKyNlbHNlIC8qIENPTkZJR19VTUwgKi8KPj4g
+KwlyZXR1cm4gMTAyNDsJLyogZmFrZSAxIE1CIExMQyBzaXplICovCj4+ICsjZW5kaWYKPj4gIH0K
+Pj4gIAo+PiArI2lmICFkZWZpbmVkKENPTkZJR19VTUwpCj4+ICAvKiBwbGF0Zm9ybSBzcGVjaWZp
+YzogY2FjaGVsZXNzIGNvcHkgKi8KPj4gIHN0YXRpYyB2b2lkIGNhY2hlbGVzc19tZW1jcHkodm9p
+ZCAqZHN0LCB2b2lkICpzcmMsIHNpemVfdCBuKQo+PiAgewo+PiBAQCAtOTksNiArMTA0LDEzIEBA
+IHN0YXRpYyB2b2lkIGNhY2hlbGVzc19tZW1jcHkodm9pZCAqZHN0LAo+PiAgCSAqLwo+PiAgCV9f
+Y29weV91c2VyX25vY2FjaGUoZHN0LCAodm9pZCBfX3VzZXIgKilzcmMsIG4sIDApOwo+PiAgfQo+
+PiArI2Vsc2UKPj4gKy8qIGZvciBDT05GSUdfVU1MLCB0aGlzIGlzIGp1c3QgYSBwbGFpbiBtZW1j
+cHkoKSAqLwo+PiArc3RhdGljIHZvaWQgY2FjaGVsZXNzX21lbWNweSh2b2lkICpkc3QsIHZvaWQg
+KnNyYywgc2l6ZV90IG4pCj4+ICt7Cj4+ICsJbWVtY3B5KGRzdCwgc3JjLCBuKTsKPj4gK30KPj4g
+KyNlbmRpZgo+IAo+IG1lbWNweSBpcyBub3QgdGhlIHNhbWUgdGhpbmcgYXMgX19jb3B5X3VzZXIg
+LSB0aGUgaGludCBpcyBpbiB0aGUKPiBfX3VzZXIgY2FzdC4uCj4gCj4gSXQgc2hvdWxkIGJ5IGNv
+cHlfZnJvbV91c2VyKCksIEkgdGhpbmssIGFuZCB0aGlzIGlzIGFsbCBqdXN0IHNvbWVob3cKPiBi
+cm9rZW4gdG8gbm90IGNoZWNrIHRoZSByZXR1cm4gY29kZS4KClRoYW5rcy4KCj4gV2h5IGFyZSB5
+b3UgdHJ5aW5nIHRvIG1ha2UgYSBIVyBkcml2ZXIgY29tcGlsZSBvbiBVTUw/IElzIHRoZXJlIGFu
+eQo+IHdheSB0byBldmVuIHVzZSBhIGRyaXZlciBsaWtlIHRoaXMgaW4gYSBVTUwgZW52aXJvbm1l
+bnQ/CgpJJ20ganVzdCB0cnlpbmcgdG8gY2xlYW4gdXAgbG90cyBvZiBVTUwgYnVpbGQgZXJyb3Jz
+LgpJJ20gcXVpdGUgaGFwcHkganVzdCBtYWtpbmcgdGhlIGRyaXZlciBkZXBlbmQgb24gIVVNTC4K
+ClVNTCBtYWludGFpbmVycywgd2hhdCBkbyB5b3UgdGhpbms/CgpUaGFua3MgYWdhaW4uCgotLSAK
+flJhbmR5CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwps
+aW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8v
+bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
 
