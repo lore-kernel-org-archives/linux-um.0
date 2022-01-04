@@ -1,35 +1,64 @@
-Return-Path: <johannes@sipsolutions.net>
-Message-ID: <0523cc8788bfe47ffba185d0436a7c77c85c6e4c.camel@sipsolutions.net>
-Subject: Re: Build regressions/improvements in v5.16-rc7
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1n4fgE-00ArAI-23
+ for linux-um@lists.infradead.org; Tue, 04 Jan 2022 09:00:31 +0000
+Message-ID: <5fdb10e93535d83d208682e2eb5514fa1d5b6240.camel@sipsolutions.net>
+Subject: Re: [PATCH 2/4] um: os_set_fd_block: Return old blocking mode
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Tue, 04 Jan 2022 10:04:03 +0100
-In-Reply-To: <alpine.DEB.2.22.394.2112271142250.1704790@ramsan.of.borg>
-References: <20211227083126.1153239-1-geert@linux-m68k.org>
-	 <alpine.DEB.2.22.394.2112271142250.1704790@ramsan.of.borg>
-Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 04 Jan 2022 10:00:25 +0100
+In-Reply-To: <20220101215810.13260-3-richard@nod.at>
+References: <20220101215810.13260-1-richard@nod.at>
+ <20220101215810.13260-3-richard@nod.at>
 MIME-Version: 1.0
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Geert Uytterhoeven <geert@linux-m68k.org>, linux-kernel@vger.kernel.org
-Cc: linux-crypto@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org
-List-ID: <linux-um.lists.infradead.org>
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, anton.ivanov@cambridgegreys.com
 
-On Mon, 2021-12-27 at 11:44 +0100, Geert Uytterhoeven wrote:
+On Sat, 2022-01-01 at 22:58 +0100, Richard Weinberger wrote:
+> This will be needed when we restore the old mode upon exit.
+> The function now returns < 0 in case of an error, 1 if O_NONBLOCK
+> was set, 0 otherwise.
 > 
-> sparc64-gcc11/sparc-allmodconfig
-> 
->    + /kisskb/src/drivers/video/fbdev/nvidia/nvidia.c: error: passing argument 1 of 'iounmap' discards 'volatile' qualifier from pointer target type [-Werror=discarded-qualifiers]:  => 1439:10, 1414:10
-> 
+> +++ b/arch/um/drivers/chan_user.c
+> @@ -257,7 +257,7 @@ static int winch_tramp(int fd, struct tty_port *port, int *fd_out,
+>  	}
+>  
+>  	err = os_set_fd_block(*fd_out, 0);
+> -	if (err) {
+> +	if (err < 0) {
+>  		printk(UM_KERN_ERR "winch_tramp: failed to set thread_fd "
+>  		       "non-blocking.\n");
+>  		goto out_close;
 
-This should be fixed by
+This does 'return err' afterwards, which then changes the logic from 0
+to 1, which seems wrong - especially given that it gets passed further
+elsewhere as a pid, which seems very questionable in the first place,
+but at least 1 would be valid pid unlike 0?
 
-commit 5f174ec3c1d62013f86db6597249174d8cb227b2
-Author: Al Viro <viro@zeniv.linux.org.uk>
-Date:   Mon Sep 20 21:32:49 2021 +0000
+IOW, I think you need
 
-    logic_io instance of iounmap() needs volatile on argument
+-	return err;
++	return 0;
 
-
-when it lands.
+a couple of lines later.
 
 johannes
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
