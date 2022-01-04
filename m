@@ -1,19 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n4fPl-00AmlS-Go
- for linux-um@lists.infradead.org; Tue, 04 Jan 2022 08:43:31 +0000
-Message-ID: <21fc9b66d15300b19e74b7992baa152173a19162.camel@sipsolutions.net>
+ id 1n4f47-00Aidx-1f
+ for linux-um@lists.infradead.org; Tue, 04 Jan 2022 08:21:08 +0000
 Subject: Re: [PATCH 2/2] IB/rdmavt: modify rdmavt/qp.c for UML
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Tue, 04 Jan 2022 09:43:17 +0100
-In-Reply-To: <6c083f0d-4fea-6339-71ca-6e8fb524e1c0@cambridgegreys.com>
 References: <20220102070623.24009-1-rdunlap@infradead.org>
  <20220103230445.GA2592848@nvidia.com>
  <50fa4eca-ce74-431f-8497-273d2c5956f2@infradead.org>
- <6c083f0d-4fea-6339-71ca-6e8fb524e1c0@cambridgegreys.com>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <6c083f0d-4fea-6339-71ca-6e8fb524e1c0@cambridgegreys.com>
+Date: Tue, 4 Jan 2022 08:03:58 +0000
 MIME-Version: 1.0
+In-Reply-To: <50fa4eca-ce74-431f-8497-273d2c5956f2@infradead.org>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,44 +22,69 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Anton Ivanov <anton.ivanov@cambridgegreys.com>, Randy Dunlap <rdunlap@infradead.org>, Jason Gunthorpe <jgg@nvidia.com>
-Cc: linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, linux-rdma@vger.kernel.org, linux-um@lists.infradead.org
+To: Randy Dunlap <rdunlap@infradead.org>, Jason Gunthorpe <jgg@nvidia.com>
+Cc: linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Johannes Berg <johannes@sipsolutions.net>, linux-rdma@vger.kernel.org, linux-um@lists.infradead.org
 
-On Tue, 2022-01-04 at 08:03 +0000, Anton Ivanov wrote:
-> > 
-> > > Why are you trying to make a HW driver compile on UML? Is there any
-> > > way to even use a driver like this in a UML environment?
-> > 
-> > I'm just trying to clean up lots of UML build errors.
-> > I'm quite happy just making the driver depend on !UML.
-> > 
-> > UML maintainers, what do you think?
-> > 
-> > Thanks again.
-> > 
-> 
-> I would suggest that we just !UML this driver.
-> 
-Agree, unless some of the maintainers of this driver actually wants to
-build simulation for it for testing or something, it's almost certainly
-completely useless.
-
-After all, the reason I enabled PCI on UML was to be able to test - in
-simulation - PCI driver code in UML... Most certainly nobody wants to do
-that here, so it's pointless to let the driver be compiled.
-
-OTOH, as Christoph points out, that seems like a band-aid for some
-really strange code, but it's probably the easiest way to get the build
-issue fixed in the short term.
-
-johannes
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+CgpPbiAwNC8wMS8yMDIyIDAxOjAwLCBSYW5keSBEdW5sYXAgd3JvdGU6Cj4gCj4gCj4gT24gMS8z
+LzIyIDE1OjA0LCBKYXNvbiBHdW50aG9ycGUgd3JvdGU6Cj4+IE9uIFNhdCwgSmFuIDAxLCAyMDIy
+IGF0IDExOjA2OjIzUE0gLTA4MDAsIFJhbmR5IER1bmxhcCB3cm90ZToKPj4+IFdoZW4gYnVpbGRp
+bmcgcmRtYXZ0IGZvciBBUkNIPXVtLCBxcC5jIGhhcyBhIGJ1aWxkIGVycm9yIG9uIGEgcmVmZXJl
+bmNlCj4+PiB0byB0aGUgeDg2LXNwZWNpZmljIGNwdWluZm8gZmllbGQgJ3g4Nl9jYWNoZV9zaXpl
+Jy4gVGhpcyB2YWx1ZSBpcyB0aGVuCj4+PiB1c2VkIHRvIGRldGVybWluZSB3aGV0aGVyIHRvIHVz
+ZSBjYWNoZWxlc3NfbWVtY3B5KCkgb3Igbm90Lgo+Pj4gUHJvdmlkZSBhIGZha2UgdmFsdWUgdG8g
+TExDIGZvciBDT05GSUdfVU1MLiBUaGVuIHByb3ZpZGUgYSBzZXBhcmF0ZQo+Pj4gdmVyaXNvbiBv
+ZiBjYWNoZWxlc3NfbWVtY3B5KCkgZm9yIENPTkZJR19VTUwgdGhhdCBpcyBqdXN0IGEgcGxhaW4K
+Pj4+IG1lbWNweSgpLCBsaWtlIHRoZSBjYWxsaW5nIGNvZGUgdXNlcy4KPj4+Cj4+PiBQcmV2ZW50
+cyB0aGVzZSBidWlsZCBlcnJvcnM6Cj4+Pgo+Pj4gLi4vZHJpdmVycy9pbmZpbmliYW5kL3N3L3Jk
+bWF2dC9xcC5jOiBJbiBmdW5jdGlvbiDigJhydnRfd3NzX2xsY19zaXpl4oCZOgo+Pj4gLi4vZHJp
+dmVycy9pbmZpbmliYW5kL3N3L3JkbWF2dC9xcC5jOjg4OjIzOiBlcnJvcjog4oCYc3RydWN0IGNw
+dWluZm9fdW3igJkgaGFzIG5vIG1lbWJlciBuYW1lZCDigJh4ODZfY2FjaGVfc2l6ZeKAmTsgZGlk
+IHlvdSBtZWFuIOKAmHg4Nl9jYXBhYmlsaXR54oCZPwo+Pj4gICAgcmV0dXJuIGJvb3RfY3B1X2Rh
+dGEueDg2X2NhY2hlX3NpemU7Cj4+Pgo+Pj4gLi4vZHJpdmVycy9pbmZpbmliYW5kL3N3L3JkbWF2
+dC9xcC5jOiBJbiBmdW5jdGlvbiDigJhjYWNoZWxlc3NfbWVtY3B54oCZOgo+Pj4gLi4vZHJpdmVy
+cy9pbmZpbmliYW5kL3N3L3JkbWF2dC9xcC5jOjEwMDoyOiBlcnJvcjogaW1wbGljaXQgZGVjbGFy
+YXRpb24gb2YgZnVuY3Rpb24g4oCYX19jb3B5X3VzZXJfbm9jYWNoZeKAmTsgZGlkIHlvdSBtZWFu
+IOKAmGNvcHlfdXNlcl9wYWdl4oCZPyBbLVdlcnJvcj1pbXBsaWNpdC1mdW5jdGlvbi1kZWNsYXJh
+dGlvbl0KPj4+ICAgIF9fY29weV91c2VyX25vY2FjaGUoZHN0LCAodm9pZCBfX3VzZXIgKilzcmMs
+IG4sIDApOwo+Pj4KPj4+IEZpeGVzOiA2OGY1ZDNmM2I2NTQgKCJ1bTogYWRkIFBDSSBvdmVyIHZp
+cnRpbyBlbXVsYXRpb24gZHJpdmVyIikKPj4+IFNpZ25lZC1vZmYtYnk6IFJhbmR5IER1bmxhcCA8
+cmR1bmxhcEBpbmZyYWRlYWQub3JnPgo+Pj4gICBkcml2ZXJzL2luZmluaWJhbmQvc3cvcmRtYXZ0
+L3FwLmMgfCAgIDEyICsrKysrKysrKysrKwo+Pj4gICAxIGZpbGUgY2hhbmdlZCwgMTIgaW5zZXJ0
+aW9ucygrKQo+Pj4KPj4+ICsrKyBsaW51eC1uZXh0LTIwMjExMjI0L2RyaXZlcnMvaW5maW5pYmFu
+ZC9zdy9yZG1hdnQvcXAuYwo+Pj4gQEAgLTg0LDEwICs4NCwxNSBAQCBFWFBPUlRfU1lNQk9MKGli
+X3J2dF9zdGF0ZV9vcHMpOwo+Pj4gICAvKiBwbGF0Zm9ybSBzcGVjaWZpYzogcmV0dXJuIHRoZSBs
+YXN0IGxldmVsIGNhY2hlIChsbGMpIHNpemUsIGluIEtpQiAqLwo+Pj4gICBzdGF0aWMgaW50IHJ2
+dF93c3NfbGxjX3NpemUodm9pZCkKPj4+ICAgewo+Pj4gKyNpZiAhZGVmaW5lZChDT05GSUdfVU1M
+KQo+Pj4gICAJLyogYXNzdW1lIHRoYXQgdGhlIGJvb3QgQ1BVIHZhbHVlIGlzIHVuaXZlcnNhbCBm
+b3IgYWxsIENQVXMgKi8KPj4+ICAgCXJldHVybiBib290X2NwdV9kYXRhLng4Nl9jYWNoZV9zaXpl
+Owo+Pj4gKyNlbHNlIC8qIENPTkZJR19VTUwgKi8KPj4+ICsJcmV0dXJuIDEwMjQ7CS8qIGZha2Ug
+MSBNQiBMTEMgc2l6ZSAqLwo+Pj4gKyNlbmRpZgo+Pj4gICB9Cj4+PiAgIAo+Pj4gKyNpZiAhZGVm
+aW5lZChDT05GSUdfVU1MKQo+Pj4gICAvKiBwbGF0Zm9ybSBzcGVjaWZpYzogY2FjaGVsZXNzIGNv
+cHkgKi8KPj4+ICAgc3RhdGljIHZvaWQgY2FjaGVsZXNzX21lbWNweSh2b2lkICpkc3QsIHZvaWQg
+KnNyYywgc2l6ZV90IG4pCj4+PiAgIHsKPj4+IEBAIC05OSw2ICsxMDQsMTMgQEAgc3RhdGljIHZv
+aWQgY2FjaGVsZXNzX21lbWNweSh2b2lkICpkc3QsCj4+PiAgIAkgKi8KPj4+ICAgCV9fY29weV91
+c2VyX25vY2FjaGUoZHN0LCAodm9pZCBfX3VzZXIgKilzcmMsIG4sIDApOwo+Pj4gICB9Cj4+PiAr
+I2Vsc2UKPj4+ICsvKiBmb3IgQ09ORklHX1VNTCwgdGhpcyBpcyBqdXN0IGEgcGxhaW4gbWVtY3B5
+KCkgKi8KPj4+ICtzdGF0aWMgdm9pZCBjYWNoZWxlc3NfbWVtY3B5KHZvaWQgKmRzdCwgdm9pZCAq
+c3JjLCBzaXplX3QgbikKPj4+ICt7Cj4+PiArCW1lbWNweShkc3QsIHNyYywgbik7Cj4+PiArfQo+
+Pj4gKyNlbmRpZgo+Pgo+PiBtZW1jcHkgaXMgbm90IHRoZSBzYW1lIHRoaW5nIGFzIF9fY29weV91
+c2VyIC0gdGhlIGhpbnQgaXMgaW4gdGhlCj4+IF9fdXNlciBjYXN0Li4KPj4KPj4gSXQgc2hvdWxk
+IGJ5IGNvcHlfZnJvbV91c2VyKCksIEkgdGhpbmssIGFuZCB0aGlzIGlzIGFsbCBqdXN0IHNvbWVo
+b3cKPj4gYnJva2VuIHRvIG5vdCBjaGVjayB0aGUgcmV0dXJuIGNvZGUuCj4gCj4gVGhhbmtzLgo+
+IAo+PiBXaHkgYXJlIHlvdSB0cnlpbmcgdG8gbWFrZSBhIEhXIGRyaXZlciBjb21waWxlIG9uIFVN
+TD8gSXMgdGhlcmUgYW55Cj4+IHdheSB0byBldmVuIHVzZSBhIGRyaXZlciBsaWtlIHRoaXMgaW4g
+YSBVTUwgZW52aXJvbm1lbnQ/Cj4gCj4gSSdtIGp1c3QgdHJ5aW5nIHRvIGNsZWFuIHVwIGxvdHMg
+b2YgVU1MIGJ1aWxkIGVycm9ycy4KPiBJJ20gcXVpdGUgaGFwcHkganVzdCBtYWtpbmcgdGhlIGRy
+aXZlciBkZXBlbmQgb24gIVVNTC4KPiAKPiBVTUwgbWFpbnRhaW5lcnMsIHdoYXQgZG8geW91IHRo
+aW5rPwo+IAo+IFRoYW5rcyBhZ2Fpbi4KPiAKCkkgd291bGQgc3VnZ2VzdCB0aGF0IHdlIGp1c3Qg
+IVVNTCB0aGlzIGRyaXZlci4KCi0tIApBbnRvbiBSLiBJdmFub3YKQ2FtYnJpZGdlZ3JleXMgTGlt
+aXRlZC4gUmVnaXN0ZXJlZCBpbiBFbmdsYW5kLiBDb21wYW55IE51bWJlciAxMDI3MzY2MQpodHRw
+czovL3d3dy5jYW1icmlkZ2VncmV5cy5jb20vCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMu
+aW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2xpbnV4LXVtCg==
 
