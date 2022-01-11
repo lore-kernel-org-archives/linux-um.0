@@ -1,14 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from sin.source.kernel.org ([145.40.73.55])
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n7RGx-000VSR-PA
- for linux-um@lists.infradead.org; Wed, 12 Jan 2022 00:13:53 +0000
-Subject: Re: [GIT PULL] UML updates for 5.17
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <10132756.248426.1641887569979.JavaMail.zimbra@nod.at>
-References: <10132756.248426.1641887569979.JavaMail.zimbra@nod.at>
-Message-Id: <164194642620.21161.4424766424927690878.pr-tracker-bot@kernel.org>
-Date: Wed, 12 Jan 2022 00:13:46 +0000
+ id 1n7Bxc-00FCEe-2d
+ for linux-um@lists.infradead.org; Tue, 11 Jan 2022 07:52:53 +0000
+Date: Tue, 11 Jan 2022 08:52:49 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <10132756.248426.1641887569979.JavaMail.zimbra@nod.at>
+Subject: [GIT PULL] UML updates for 5.17
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -17,26 +16,139 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard@nod.at>
-Cc: torvalds <torvalds@linux-foundation.org>, linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
+To: torvalds <torvalds@linux-foundation.org>
+Cc: linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
 
-The pull request you sent on Tue, 11 Jan 2022 08:52:49 +0100 (CET):
+Linus,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.17-rc1
+The following changes since commit 1c3e979bf3e225e5b4b810b24712b16254d608b6:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f69212114220edf8372867088b97b47760b6839d
+  Merge branch 'for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/hid/hid (2021-12-21 09:30:32 -0800)
 
-Thank you!
+are available in the Git repository at:
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.17-rc1
+
+for you to fetch changes up to db0dd9cee82270e032123169ceff659eced5115d:
+
+  um: virtio_uml: Allow probing from devicetree (2021-12-22 20:40:05 +0100)
+
+----------------------------------------------------------------
+This pull request contains the following changes for UML:
+
+- set_fs removal
+- Devicetree support
+- Many cleanups from Al
+- Various virtio and build related fixes
+
+----------------------------------------------------------------
+Al Viro (15):
+      uml: trim unused junk from arch/x86/um/sys_call_table_*.c
+      um: move amd64 variant of mmap(2) to arch/x86/um/syscalls_64.c
+      logic_io instance of iounmap() needs volatile on argument
+      um: stop polluting the namespace with registers.h contents
+      uml/i386: missing include in barrier.h
+      um: kill unused cpu()
+      um: remove a dangling extern of syscall_trace()
+      um: unexport handle_page_fault()
+      um, x86: bury crypto_tfm_ctx_offset
+      um: common-offsets.h debriding...
+      um: header debriding - activate_ipi()
+      um: header debriding - mem_user.h
+      um: header debriding - net_*.h
+      um: header debriding - os.h
+      um: header debriding - sigio.h
+
+Changcheng Deng (1):
+      um: Replace if (cond) BUG() with BUG_ON()
+
+Christoph Hellwig (1):
+      um: remove set_fs
+
+Johannes Berg (8):
+      um: fix ndelay/udelay defines
+      um: rename set_signals() to um_set_signals()
+      uml: x86: add FORCE to user_constants.h
+      um: gitignore: Add kernel/capflags.c
+      um: virt-pci: Fix 32-bit compile
+      lib/logic_iomem: Fix 32-bit build
+      lib/logic_iomem: Fix operation on 32-bit
+      um: virtio_uml: Fix time-travel external time propagation
+
+Randy Dunlap (1):
+      um: registers: Rename function names to avoid conflicts and build problems
+
+Sjoerd Simons (1):
+      hostfs: Fix writeback of dirty pages
+
+Vincent Whitchurch (3):
+      um: Extract load file helper from initrd.c
+      um: Add devicetree support
+      um: virtio_uml: Allow probing from devicetree
+
+Yang Guang (1):
+      um: Use swap() to make code cleaner
+
+ arch/um/.gitignore                      |  1 +
+ arch/um/Kconfig                         |  2 +-
+ arch/um/drivers/virt-pci.c              |  8 ++---
+ arch/um/drivers/virtio_uml.c            | 54 +++++++++++++++++++++++++++--
+ arch/um/include/asm/delay.h             |  4 +--
+ arch/um/include/asm/irqflags.h          |  4 +--
+ arch/um/include/asm/processor-generic.h |  2 +-
+ arch/um/include/asm/thread_info.h       |  4 ---
+ arch/um/include/asm/uaccess.h           | 21 ++++++++++--
+ arch/um/include/shared/common-offsets.h | 15 --------
+ arch/um/include/shared/irq_user.h       |  1 -
+ arch/um/include/shared/kern_util.h      |  2 --
+ arch/um/include/shared/longjmp.h        |  2 +-
+ arch/um/include/shared/mem_user.h       |  5 ---
+ arch/um/include/shared/net_kern.h       |  2 --
+ arch/um/include/shared/net_user.h       |  1 -
+ arch/um/include/shared/os.h             | 17 ++-------
+ arch/um/include/shared/registers.h      |  6 ++--
+ arch/um/include/shared/sigio.h          |  1 -
+ arch/um/kernel/Makefile                 |  4 ++-
+ arch/um/kernel/dtb.c                    | 41 ++++++++++++++++++++++
+ arch/um/kernel/exec.c                   |  1 +
+ arch/um/kernel/initrd.c                 | 48 +++-----------------------
+ arch/um/kernel/ksyms.c                  |  2 +-
+ arch/um/kernel/load_file.c              | 61 +++++++++++++++++++++++++++++++++
+ arch/um/kernel/mem.c                    |  3 +-
+ arch/um/kernel/process.c                |  6 +---
+ arch/um/kernel/skas/uaccess.c           | 25 --------------
+ arch/um/kernel/syscall.c                | 28 ---------------
+ arch/um/kernel/trap.c                   |  1 -
+ arch/um/kernel/um_arch.c                |  3 ++
+ arch/um/kernel/um_arch.h                | 14 ++++++++
+ arch/um/os-Linux/registers.c            |  4 +--
+ arch/um/os-Linux/sigio.c                | 13 ++++---
+ arch/um/os-Linux/signal.c               |  8 ++---
+ arch/um/os-Linux/start_up.c             |  2 +-
+ arch/x86/kernel/asm-offsets.c           |  3 --
+ arch/x86/um/Makefile                    |  2 +-
+ arch/x86/um/asm/barrier.h               |  1 +
+ arch/x86/um/asm/segment.h               |  8 -----
+ arch/x86/um/os-Linux/registers.c        |  1 +
+ arch/x86/um/ptrace_32.c                 |  1 +
+ arch/x86/um/ptrace_64.c                 |  1 +
+ arch/x86/um/shared/sysdep/syscalls_64.h |  3 --
+ arch/x86/um/signal.c                    |  1 +
+ arch/x86/um/sys_call_table_32.c         |  4 ---
+ arch/x86/um/sys_call_table_64.c         | 17 ---------
+ arch/x86/um/syscalls_64.c               | 14 +++++++-
+ fs/hostfs/hostfs_kern.c                 |  3 ++
+ include/asm-generic/logic_io.h          |  2 +-
+ lib/logic_iomem.c                       | 23 +++++++------
+ 51 files changed, 265 insertions(+), 235 deletions(-)
+ create mode 100644 arch/um/kernel/dtb.c
+ create mode 100644 arch/um/kernel/load_file.c
+ delete mode 100644 arch/um/kernel/syscall.c
+ create mode 100644 arch/um/kernel/um_arch.h
 
 _______________________________________________
 linux-um mailing list
