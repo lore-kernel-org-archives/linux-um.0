@@ -1,16 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ams.source.kernel.org ([145.40.68.75])
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n9es8-00HK3b-Of
- for linux-um@lists.infradead.org; Tue, 18 Jan 2022 03:09:26 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.4 19/29] um: registers: Rename function names to
- avoid conflicts and build problems
-Date: Mon, 17 Jan 2022 22:08:12 -0500
-Message-Id: <20220118030822.1955469-19-sashal@kernel.org>
-In-Reply-To: <20220118030822.1955469-1-sashal@kernel.org>
-References: <20220118030822.1955469-1-sashal@kernel.org>
+ id 1n7aTo-001wah-W0
+ for linux-um@lists.infradead.org; Wed, 12 Jan 2022 10:03:48 +0000
+Subject: Re: [PATCH] um: fix and optimize xor select template for CONFIG64 and
+ timetravel mode
+References: <20220111200507.1445489-1-benjamin.beichler@uni-rostock.de>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <1b6de9af-905c-1416-1fd3-f22748befa60@cambridgegreys.com>
+Date: Wed, 12 Jan 2022 10:03:28 +0000
 MIME-Version: 1.0
+In-Reply-To: <20220111200507.1445489-1-benjamin.beichler@uni-rostock.de>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -19,111 +21,62 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Sasha Levin <sashal@kernel.org>, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, viro@zeniv.linux.org.uk
+To: Benjamin Beichler <benjamin.beichler@uni-rostock.de>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
+Cc: johannes.berg@intel.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 077b7320942b64b0da182aefd83c374462a65535 ]
 
-The function names init_registers() and restore_registers() are used
-in several net/ethernet/ and gpu/drm/ drivers for other purposes (not
-calls to UML functions), so rename them.
-
-This fixes multiple build errors.
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: linux-um@lists.infradead.org
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/um/include/shared/registers.h | 4 ++--
- arch/um/os-Linux/registers.c       | 4 ++--
- arch/um/os-Linux/start_up.c        | 2 +-
- arch/x86/um/syscalls_64.c          | 3 ++-
- 4 files changed, 7 insertions(+), 6 deletions(-)
-
-diff --git a/arch/um/include/shared/registers.h b/arch/um/include/shared/registers.h
-index f5b76355ad71a..089f979e112e3 100644
---- a/arch/um/include/shared/registers.h
-+++ b/arch/um/include/shared/registers.h
-@@ -14,8 +14,8 @@ extern int restore_fp_registers(int pid, unsigned long *fp_regs);
- extern int save_fpx_registers(int pid, unsigned long *fp_regs);
- extern int restore_fpx_registers(int pid, unsigned long *fp_regs);
- extern int save_registers(int pid, struct uml_pt_regs *regs);
--extern int restore_registers(int pid, struct uml_pt_regs *regs);
--extern int init_registers(int pid);
-+extern int restore_pid_registers(int pid, struct uml_pt_regs *regs);
-+extern int init_pid_registers(int pid);
- extern void get_safe_registers(unsigned long *regs, unsigned long *fp_regs);
- extern unsigned long get_thread_reg(int reg, jmp_buf *buf);
- extern int get_fp_registers(int pid, unsigned long *regs);
-diff --git a/arch/um/os-Linux/registers.c b/arch/um/os-Linux/registers.c
-index 2ff8d4fe83c4f..34a5963bd7efd 100644
---- a/arch/um/os-Linux/registers.c
-+++ b/arch/um/os-Linux/registers.c
-@@ -21,7 +21,7 @@ int save_registers(int pid, struct uml_pt_regs *regs)
- 	return 0;
- }
- 
--int restore_registers(int pid, struct uml_pt_regs *regs)
-+int restore_pid_registers(int pid, struct uml_pt_regs *regs)
- {
- 	int err;
- 
-@@ -36,7 +36,7 @@ int restore_registers(int pid, struct uml_pt_regs *regs)
- static unsigned long exec_regs[MAX_REG_NR];
- static unsigned long exec_fp_regs[FP_SIZE];
- 
--int init_registers(int pid)
-+int init_pid_registers(int pid)
- {
- 	int err;
- 
-diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
-index 22a358ef1b0cd..dc06933ba63d9 100644
---- a/arch/um/os-Linux/start_up.c
-+++ b/arch/um/os-Linux/start_up.c
-@@ -334,7 +334,7 @@ void __init os_early_checks(void)
- 	check_tmpexec();
- 
- 	pid = start_ptraced_child();
--	if (init_registers(pid))
-+	if (init_pid_registers(pid))
- 		fatal("Failed to initialize default registers");
- 	stop_ptraced_child(pid, 1, 1);
- }
-diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
-index e6552275320bc..40ecacb2c54b3 100644
---- a/arch/x86/um/syscalls_64.c
-+++ b/arch/x86/um/syscalls_64.c
-@@ -9,6 +9,7 @@
- #include <linux/uaccess.h>
- #include <asm/prctl.h> /* XXX This should get the constants from libc */
- #include <os.h>
-+#include <registers.h>
- 
- long arch_prctl(struct task_struct *task, int code, unsigned long __user *addr)
- {
-@@ -32,7 +33,7 @@ long arch_prctl(struct task_struct *task, int code, unsigned long __user *addr)
- 	switch (code) {
- 	case ARCH_SET_FS:
- 	case ARCH_SET_GS:
--		ret = restore_registers(pid, &current->thread.regs.regs);
-+		ret = restore_pid_registers(pid, &current->thread.regs.regs);
- 		if (ret)
- 			return ret;
- 		break;
+On 11/01/2022 20:05, Benjamin Beichler wrote:
+> Due to dropped inclusion of asm-generic/xor.h, xor_block_8regs symbol is
+> missing with CONFIG64 and break compilation, as the asm/xor_64.h also did
+> not include it. The patch recreate the logic from arch/x86, which check
+> whether AVX is available and add fallbacks for 32bit and 64bit config of
+> um.
+> 
+> A very minor additional "fix" is, the return of the macro parameter
+> instead of NULL, as this is the original intent of the macro, but
+> this does not change the actual behavior.
+> 
+> Fixes: c0ecca6604b8 ("um: enable the use of optimized xor routines in UML")
+> Signed-off-by: Benjamin Beichler <benjamin.beichler@uni-rostock.de>
+> ---
+>   arch/um/include/asm/xor.h | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/um/include/asm/xor.h b/arch/um/include/asm/xor.h
+> index f512704a9ec7..22b39de73c24 100644
+> --- a/arch/um/include/asm/xor.h
+> +++ b/arch/um/include/asm/xor.h
+> @@ -4,8 +4,10 @@
+>   
+>   #ifdef CONFIG_64BIT
+>   #undef CONFIG_X86_32
+> +#define TT_CPU_INF_XOR_DEFAULT (AVX_SELECT(&xor_block_sse_pf64))
+>   #else
+>   #define CONFIG_X86_32 1
+> +#define TT_CPU_INF_XOR_DEFAULT (AVX_SELECT(&xor_block_8regs))
+>   #endif
+>   
+>   #include <asm/cpufeature.h>
+> @@ -16,7 +18,7 @@
+>   #undef XOR_SELECT_TEMPLATE
+>   /* pick an arbitrary one - measuring isn't possible with inf-cpu */
+>   #define XOR_SELECT_TEMPLATE(x)	\
+> -	(time_travel_mode == TT_MODE_INFCPU ? &xor_block_8regs : NULL)
+> +	(time_travel_mode == TT_MODE_INFCPU ? TT_CPU_INF_XOR_DEFAULT : x))
+>   #endif
+>   
+>   #endif
+> 
+Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 -- 
-2.34.1
-
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
 _______________________________________________
 linux-um mailing list
