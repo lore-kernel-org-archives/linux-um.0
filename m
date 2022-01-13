@@ -1,14 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+Received: from smtp1.axis.com ([195.60.68.17])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n4oGF-00CSBL-W5
- for linux-um@lists.infradead.org; Tue, 04 Jan 2022 18:10:17 +0000
-Message-ID: <be290dc3-db9c-2940-91bb-c91bf42fd8f6@collabora.com>
-Date: Tue, 4 Jan 2022 15:10:06 -0300
+ id 1n81jU-006Mt1-M1
+ for linux-um@lists.infradead.org; Thu, 13 Jan 2022 15:09:46 +0000
+Date: Thu, 13 Jan 2022 16:09:38 +0100
+From: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Subject: Re: [PATCH] um: Document dtb command line option
+Message-ID: <20220113150938.GA12384@axis.com>
+References: <1118129237.194759.1640202076897.JavaMail.zimbra@nod.at>
+ <20220104104457.282828-1-anton.ivanov@cambridgegreys.com>
 MIME-Version: 1.0
-From: Walter Lozano <walter.lozano@collabora.com>
-Subject: Occasional hung with UM after enable VMAP_STACK
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <20220104104457.282828-1-anton.ivanov@cambridgegreys.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -17,41 +20,24 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: johannes@sipsolutions.net, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: Sjoerd Simons <sjoerd.simons@collabora.com>, ritesh sarraf <ritesh.sarraf@collabora.com>
+To: "anton.ivanov@cambridgegreys.com" <anton.ivanov@cambridgegreys.com>
+Cc: "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, kernel <kernel@axis.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "jdike@addtoit.com" <jdike@addtoit.com>, "johannes@sipsolutions.net" <johannes@sipsolutions.net>, "richard@nod.at" <richard@nod.at>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
 
-Hi all,
+On Tue, Jan 04, 2022 at 11:44:57AM +0100, anton.ivanov@cambridgegreys.com wrote:
+> From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> 
+> Add documentation for the dtb command line option and the
+> ability to load/parse device trees.
+> 
+> Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-I noticed that after "um: enable VMAP_STACK" [1] I experienced some 
-occasional hung in my Gitlab CI jobs that use user-mode-linux to build 
-distro images. The configuration use for the building is the one 
-available from Debian, see [2] and [3]. Unfortunately I don't have much 
-information, when the issue arises the job seems to hang and it is 
-cancelled by Gitlab due to a job timeout.
+LGTM, thanks.
 
-So far I did some bisect to get the commit which introduces the issue 
-and a quick check with latest Linux stable branch master to confirm the 
-issue is still present. I know this is not a proper bug report but I 
-thought it will be better to at least raise a comment.
-
-Thanks in advance,
-
-Walter
-
-[1] http://lists.infradead.org/pipermail/linux-um/2021-August/001657.html
-
-[2] https://packages.debian.org/bookworm/user-mode-linux
-
-[3] https://salsa.debian.org/uml-team/user-mode-linux
-
--- 
-Walter Lozano
-Collabora Ltd.
-
+Reviewed-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
 
 _______________________________________________
 linux-um mailing list
