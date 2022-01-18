@@ -1,13 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab7.miniserver.com ([37.128.132.42]
- helo=www.kot-begemot.co.uk)
+Received: from dfw.source.kernel.org ([139.178.84.217])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nAq6V-00ERxH-GG
- for linux-um@lists.infradead.org; Fri, 21 Jan 2022 09:21:09 +0000
-From: anton.ivanov@cambridgegreys.com
-Subject: [PATCH] um: Migrate vector drivers to NAPI
-Date: Fri, 21 Jan 2022 08:55:57 +0000
-Message-Id: <20220121085557.1250299-1-anton.ivanov@cambridgegreys.com>
+ id 1n9eVu-00H6MT-HH
+ for linux-um@lists.infradead.org; Tue, 18 Jan 2022 02:46:28 +0000
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 52/73] um: registers: Rename function names to
+ avoid conflicts and build problems
+Date: Mon, 17 Jan 2022 21:44:11 -0500
+Message-Id: <20220118024432.1952028-52-sashal@kernel.org>
+In-Reply-To: <20220118024432.1952028-1-sashal@kernel.org>
+References: <20220118024432.1952028-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -21,280 +23,106 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: richard@nod.at, johannes@sipsolutions.net, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Sasha Levin <sashal@kernel.org>, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, viro@zeniv.linux.org.uk
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-Migrate UML vector drivers from a bespoke scheduling mechanism
-to NAPI.
+[ Upstream commit 077b7320942b64b0da182aefd83c374462a65535 ]
 
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+The function names init_registers() and restore_registers() are used
+in several net/ethernet/ and gpu/drm/ drivers for other purposes (not
+calls to UML functions), so rename them.
+
+This fixes multiple build errors.
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: linux-um@lists.infradead.org
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/drivers/vector_kern.c | 99 ++++++++++++++++-------------------
- arch/um/drivers/vector_kern.h |  3 +-
- 2 files changed, 48 insertions(+), 54 deletions(-)
+ arch/um/include/shared/registers.h | 4 ++--
+ arch/um/os-Linux/registers.c       | 4 ++--
+ arch/um/os-Linux/start_up.c        | 2 +-
+ arch/x86/um/syscalls_64.c          | 3 ++-
+ 4 files changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-index 4fc1a5d70dcf..1bad55cb116b 100644
---- a/arch/um/drivers/vector_kern.c
-+++ b/arch/um/drivers/vector_kern.c
-@@ -67,6 +67,7 @@ static LIST_HEAD(vector_devices);
- static int driver_registered;
- 
- static void vector_eth_configure(int n, struct arglist *def);
-+static int vector_mmsg_rx(struct vector_private *vp);
- 
- /* Argument accessors to set variables (and/or set default values)
-  * mtu, buffer sizing, default headroom, etc
-@@ -458,7 +459,6 @@ static int vector_send(struct vector_queue *qi)
- 					vp->estats.tx_queue_running_average =
- 						(vp->estats.tx_queue_running_average + result) >> 1;
- 				}
--				netif_trans_update(qi->dev);
- 				netif_wake_queue(qi->dev);
- 				/* if TX is busy, break out of the send loop,
- 				 *  poll write IRQ will reschedule xmit for us
-@@ -470,8 +470,6 @@ static int vector_send(struct vector_queue *qi)
- 			}
- 		}
- 		spin_unlock(&qi->head_lock);
--	} else {
--		tasklet_schedule(&vp->tx_poll);
- 	}
- 	return queue_depth;
- }
-@@ -608,7 +606,7 @@ static struct vector_queue *create_queue(
- 
- /*
-  * We do not use the RX queue as a proper wraparound queue for now
-- * This is not necessary because the consumption via netif_rx()
-+ * This is not necessary because the consumption via napi_gro_receive()
-  * happens in-line. While we can try using the return code of
-  * netif_rx() for flow control there are no drivers doing this today.
-  * For this RX specific use we ignore the tail/head locks and
-@@ -896,7 +894,7 @@ static int vector_legacy_rx(struct vector_private *vp)
- 			skb->protocol = eth_type_trans(skb, skb->dev);
- 			vp->dev->stats.rx_bytes += skb->len;
- 			vp->dev->stats.rx_packets++;
--			netif_rx(skb);
-+			napi_gro_receive(&vp->napi, skb);
- 		} else {
- 			dev_kfree_skb_irq(skb);
- 		}
-@@ -1021,7 +1019,7 @@ static int vector_mmsg_rx(struct vector_private *vp)
- 			 */
- 			vp->dev->stats.rx_bytes += skb->len;
- 			vp->dev->stats.rx_packets++;
--			netif_rx(skb);
-+			napi_gro_receive(&vp->napi, skb);
- 		} else {
- 			/* Overlay header too short to do anything - discard.
- 			 * We can actually keep this skb and reuse it,
-@@ -1044,23 +1042,6 @@ static int vector_mmsg_rx(struct vector_private *vp)
- 	return packet_count;
- }
- 
--static void vector_rx(struct vector_private *vp)
--{
--	int err;
--	int iter = 0;
--
--	if ((vp->options & VECTOR_RX) > 0)
--		while (((err = vector_mmsg_rx(vp)) > 0) && (iter < MAX_ITERATIONS))
--			iter++;
--	else
--		while (((err = vector_legacy_rx(vp)) > 0) && (iter < MAX_ITERATIONS))
--			iter++;
--	if ((err != 0) && net_ratelimit())
--		netdev_err(vp->dev, "vector_rx: error(%d)\n", err);
--	if (iter == MAX_ITERATIONS)
--		netdev_err(vp->dev, "vector_rx: device stuck, remote end may have closed the connection\n");
--}
--
- static int vector_net_start_xmit(struct sk_buff *skb, struct net_device *dev)
- {
- 	struct vector_private *vp = netdev_priv(dev);
-@@ -1085,25 +1066,15 @@ static int vector_net_start_xmit(struct sk_buff *skb, struct net_device *dev)
- 	netdev_sent_queue(vp->dev, skb->len);
- 	queue_depth = vector_enqueue(vp->tx_queue, skb);
- 
--	/* if the device queue is full, stop the upper layers and
--	 * flush it.
--	 */
--
--	if (queue_depth >= vp->tx_queue->max_depth - 1) {
--		vp->estats.tx_kicks++;
--		netif_stop_queue(dev);
--		vector_send(vp->tx_queue);
--		return NETDEV_TX_OK;
--	}
--	if (netdev_xmit_more()) {
-+	if (queue_depth < vp->tx_queue->max_depth && netdev_xmit_more()) {
- 		mod_timer(&vp->tl, vp->coalesce);
- 		return NETDEV_TX_OK;
-+	} else {
-+		queue_depth = vector_send(vp->tx_queue);
-+		if (queue_depth > 0)
-+			napi_schedule(&vp->napi);
- 	}
--	if (skb->len < TX_SMALL_PACKET) {
--		vp->estats.tx_kicks++;
--		vector_send(vp->tx_queue);
--	} else
--		tasklet_schedule(&vp->tx_poll);
-+
- 	return NETDEV_TX_OK;
- }
- 
-@@ -1114,7 +1085,7 @@ static irqreturn_t vector_rx_interrupt(int irq, void *dev_id)
- 
- 	if (!netif_running(dev))
- 		return IRQ_NONE;
--	vector_rx(vp);
-+	napi_schedule(&vp->napi);
- 	return IRQ_HANDLED;
- 
- }
-@@ -1133,8 +1104,7 @@ static irqreturn_t vector_tx_interrupt(int irq, void *dev_id)
- 	 * tweaking the IRQ mask less costly
- 	 */
- 
--	if (vp->in_write_poll)
--		tasklet_schedule(&vp->tx_poll);
-+	napi_schedule(&vp->napi);
- 	return IRQ_HANDLED;
- 
- }
-@@ -1161,7 +1131,7 @@ static int vector_net_close(struct net_device *dev)
- 		um_free_irq(vp->tx_irq, dev);
- 		vp->tx_irq = 0;
- 	}
--	tasklet_kill(&vp->tx_poll);
-+	netif_napi_del(&vp->napi);
- 	if (vp->fds->rx_fd > 0) {
- 		if (vp->bpf)
- 			uml_vector_detach_bpf(vp->fds->rx_fd, vp->bpf);
-@@ -1193,15 +1163,32 @@ static int vector_net_close(struct net_device *dev)
+diff --git a/arch/um/include/shared/registers.h b/arch/um/include/shared/registers.h
+index 0c50fa6e8a55b..fbb709a222839 100644
+--- a/arch/um/include/shared/registers.h
++++ b/arch/um/include/shared/registers.h
+@@ -16,8 +16,8 @@ extern int restore_fp_registers(int pid, unsigned long *fp_regs);
+ extern int save_fpx_registers(int pid, unsigned long *fp_regs);
+ extern int restore_fpx_registers(int pid, unsigned long *fp_regs);
+ extern int save_registers(int pid, struct uml_pt_regs *regs);
+-extern int restore_registers(int pid, struct uml_pt_regs *regs);
+-extern int init_registers(int pid);
++extern int restore_pid_registers(int pid, struct uml_pt_regs *regs);
++extern int init_pid_registers(int pid);
+ extern void get_safe_registers(unsigned long *regs, unsigned long *fp_regs);
+ extern unsigned long get_thread_reg(int reg, jmp_buf *buf);
+ extern int get_fp_registers(int pid, unsigned long *regs);
+diff --git a/arch/um/os-Linux/registers.c b/arch/um/os-Linux/registers.c
+index 2d9270508e156..b123955be7acc 100644
+--- a/arch/um/os-Linux/registers.c
++++ b/arch/um/os-Linux/registers.c
+@@ -21,7 +21,7 @@ int save_registers(int pid, struct uml_pt_regs *regs)
  	return 0;
  }
  
--/* TX tasklet */
--
--static void vector_tx_poll(struct tasklet_struct *t)
-+static int vector_poll(struct napi_struct *napi, int budget)
+-int restore_registers(int pid, struct uml_pt_regs *regs)
++int restore_pid_registers(int pid, struct uml_pt_regs *regs)
  {
--	struct vector_private *vp = from_tasklet(vp, t, tx_poll);
-+	struct vector_private *vp = container_of(napi, struct vector_private, napi);
-+	int work_done = 0;
-+	int err;
-+	bool tx_enqueued = false;
+ 	int err;
  
--	vp->estats.tx_kicks++;
--	vector_send(vp->tx_queue);
-+	if ((vp->options & VECTOR_TX) != 0)
-+		tx_enqueued = (vector_send(vp->tx_queue) > 0);
-+	if ((vp->options & VECTOR_RX) > 0)
-+		err = vector_mmsg_rx(vp);
-+	else {
-+		err = vector_legacy_rx(vp);
-+		if (err > 0)
-+			err = 1;
-+	}
-+	if (err > 0)
-+		work_done += err;
-+
-+	if (tx_enqueued || err > 0)
-+		napi_schedule(napi);
-+	if (work_done < budget)
-+		napi_complete_done(napi, work_done);
-+	return work_done;
+@@ -36,7 +36,7 @@ int restore_registers(int pid, struct uml_pt_regs *regs)
+ static unsigned long exec_regs[MAX_REG_NR];
+ static unsigned long exec_fp_regs[FP_SIZE];
+ 
+-int init_registers(int pid)
++int init_pid_registers(int pid)
+ {
+ 	int err;
+ 
+diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
+index f79dc338279e6..b28373a2b8d2d 100644
+--- a/arch/um/os-Linux/start_up.c
++++ b/arch/um/os-Linux/start_up.c
+@@ -336,7 +336,7 @@ void __init os_early_checks(void)
+ 	check_tmpexec();
+ 
+ 	pid = start_ptraced_child();
+-	if (init_registers(pid))
++	if (init_pid_registers(pid))
+ 		fatal("Failed to initialize default registers");
+ 	stop_ptraced_child(pid, 1, 1);
  }
-+
- static void vector_reset_tx(struct work_struct *work)
- {
- 	struct vector_private *vp =
-@@ -1264,6 +1251,10 @@ static int vector_net_open(struct net_device *dev)
- 		if (vp->header_txbuffer == NULL)
- 			goto out_close;
- 	}
-+	/* NAPI */
-+
-+	netif_napi_add(vp->dev, &vp->napi, vector_poll, 64);
-+	napi_enable(&vp->napi);
+diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
+index 58f51667e2e4b..8249685b40960 100644
+--- a/arch/x86/um/syscalls_64.c
++++ b/arch/x86/um/syscalls_64.c
+@@ -11,6 +11,7 @@
+ #include <linux/uaccess.h>
+ #include <asm/prctl.h> /* XXX This should get the constants from libc */
+ #include <os.h>
++#include <registers.h>
  
- 	/* READ IRQ */
- 	err = um_request_irq(
-@@ -1312,9 +1303,11 @@ static int vector_net_open(struct net_device *dev)
- 	 * SIGIOs never arrive, and the net never works.
- 	 */
- 
--	vector_rx(vp);
- 
- 	vector_reset_stats(vp);
-+
-+	napi_schedule(&vp->napi);
-+
- 	vdevice = find_device(vp->unit);
- 	vdevice->opened = 1;
- 
-@@ -1543,15 +1536,16 @@ static const struct net_device_ops vector_netdev_ops = {
- #endif
- };
- 
--
- static void vector_timer_expire(struct timer_list *t)
- {
- 	struct vector_private *vp = from_timer(vp, t, tl);
- 
- 	vp->estats.tx_kicks++;
--	vector_send(vp->tx_queue);
-+	napi_schedule(&vp->napi);
- }
- 
-+
-+
- static void vector_eth_configure(
- 		int n,
- 		struct arglist *def
-@@ -1634,7 +1628,6 @@ static void vector_eth_configure(
- 	});
- 
- 	dev->features = dev->hw_features = (NETIF_F_SG | NETIF_F_FRAGLIST);
--	tasklet_setup(&vp->tx_poll, vector_tx_poll);
- 	INIT_WORK(&vp->reset_tx, vector_reset_tx);
- 
- 	timer_setup(&vp->tl, vector_timer_expire, 0);
-diff --git a/arch/um/drivers/vector_kern.h b/arch/um/drivers/vector_kern.h
-index 8fff93a75a92..2a1fa8e0f3e1 100644
---- a/arch/um/drivers/vector_kern.h
-+++ b/arch/um/drivers/vector_kern.h
-@@ -14,6 +14,7 @@
- #include <linux/ctype.h>
- #include <linux/workqueue.h>
- #include <linux/interrupt.h>
-+
- #include "vector_user.h"
- 
- /* Queue structure specially adapted for multiple enqueue/dequeue
-@@ -72,6 +73,7 @@ struct vector_private {
- 	struct list_head list;
- 	spinlock_t lock;
- 	struct net_device *dev;
-+	struct napi_struct		napi	____cacheline_aligned;
- 
- 	int unit;
- 
-@@ -115,7 +117,6 @@ struct vector_private {
- 
- 	spinlock_t stats_lock;
- 
--	struct tasklet_struct tx_poll;
- 	bool rexmit_scheduled;
- 	bool opened;
- 	bool in_write_poll;
+ long arch_prctl(struct task_struct *task, int option,
+ 		unsigned long __user *arg2)
+@@ -35,7 +36,7 @@ long arch_prctl(struct task_struct *task, int option,
+ 	switch (option) {
+ 	case ARCH_SET_FS:
+ 	case ARCH_SET_GS:
+-		ret = restore_registers(pid, &current->thread.regs.regs);
++		ret = restore_pid_registers(pid, &current->thread.regs.regs);
+ 		if (ret)
+ 			return ret;
+ 		break;
 -- 
-2.30.2
+2.34.1
 
 
 _______________________________________________
