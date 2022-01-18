@@ -1,15 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from dfw.source.kernel.org ([139.178.84.217])
+Received: from ams.source.kernel.org ([145.40.68.75])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n9eVu-00H6MT-HH
- for linux-um@lists.infradead.org; Tue, 18 Jan 2022 02:46:28 +0000
+ id 1n9eFC-00GxCL-GC
+ for linux-um@lists.infradead.org; Tue, 18 Jan 2022 02:29:12 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 52/73] um: registers: Rename function names to
+Subject: [PATCH AUTOSEL 5.16 171/217] um: registers: Rename function names to
  avoid conflicts and build problems
-Date: Mon, 17 Jan 2022 21:44:11 -0500
-Message-Id: <20220118024432.1952028-52-sashal@kernel.org>
-In-Reply-To: <20220118024432.1952028-1-sashal@kernel.org>
-References: <20220118024432.1952028-1-sashal@kernel.org>
+Date: Mon, 17 Jan 2022 21:18:54 -0500
+Message-Id: <20220118021940.1942199-171-sashal@kernel.org>
+In-Reply-To: <20220118021940.1942199-1-sashal@kernel.org>
+References: <20220118021940.1942199-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -88,10 +88,10 @@ index 2d9270508e156..b123955be7acc 100644
  	int err;
  
 diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
-index f79dc338279e6..b28373a2b8d2d 100644
+index 8a72c99994eb1..e3ee4db58b40d 100644
 --- a/arch/um/os-Linux/start_up.c
 +++ b/arch/um/os-Linux/start_up.c
-@@ -336,7 +336,7 @@ void __init os_early_checks(void)
+@@ -368,7 +368,7 @@ void __init os_early_checks(void)
  	check_tmpexec();
  
  	pid = start_ptraced_child();
