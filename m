@@ -1,15 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from dfw.source.kernel.org ([139.178.84.217])
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nC4Y9-004goI-9H
- for linux-um@lists.infradead.org; Mon, 24 Jan 2022 18:58:47 +0000
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 4.9 093/157] um: registers: Rename function names to avoid
- conflicts and build problems
-Date: Mon, 24 Jan 2022 19:43:03 +0100
-Message-Id: <20220124183935.730425818@linuxfoundation.org>
-In-Reply-To: <20220124183932.787526760@linuxfoundation.org>
-References: <20220124183932.787526760@linuxfoundation.org>
+ id 1n9eaD-00H8gR-Ed
+ for linux-um@lists.infradead.org; Tue, 18 Jan 2022 02:50:56 +0000
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 41/56] um: registers: Rename function names to
+ avoid conflicts and build problems
+Date: Mon, 17 Jan 2022 21:48:53 -0500
+Message-Id: <20220118024908.1953673-41-sashal@kernel.org>
+In-Reply-To: <20220118024908.1953673-1-sashal@kernel.org>
+References: <20220118024908.1953673-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -23,8 +23,8 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Sasha Levin <sashal@kernel.org>, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, viro@zeniv.linux.org.uk
 
 From: Randy Dunlap <rdunlap@infradead.org>
 
@@ -88,10 +88,10 @@ index 2ff8d4fe83c4f..34a5963bd7efd 100644
  	int err;
  
 diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
-index 22a358ef1b0cd..dc06933ba63d9 100644
+index 82bf5f8442ba4..2c75f2d638681 100644
 --- a/arch/um/os-Linux/start_up.c
 +++ b/arch/um/os-Linux/start_up.c
-@@ -334,7 +334,7 @@ void __init os_early_checks(void)
+@@ -336,7 +336,7 @@ void __init os_early_checks(void)
  	check_tmpexec();
  
  	pid = start_ptraced_child();
@@ -101,19 +101,19 @@ index 22a358ef1b0cd..dc06933ba63d9 100644
  	stop_ptraced_child(pid, 1, 1);
  }
 diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
-index e6552275320bc..40ecacb2c54b3 100644
+index 58f51667e2e4b..8249685b40960 100644
 --- a/arch/x86/um/syscalls_64.c
 +++ b/arch/x86/um/syscalls_64.c
-@@ -9,6 +9,7 @@
+@@ -11,6 +11,7 @@
  #include <linux/uaccess.h>
  #include <asm/prctl.h> /* XXX This should get the constants from libc */
  #include <os.h>
 +#include <registers.h>
  
- long arch_prctl(struct task_struct *task, int code, unsigned long __user *addr)
- {
-@@ -32,7 +33,7 @@ long arch_prctl(struct task_struct *task, int code, unsigned long __user *addr)
- 	switch (code) {
+ long arch_prctl(struct task_struct *task, int option,
+ 		unsigned long __user *arg2)
+@@ -35,7 +36,7 @@ long arch_prctl(struct task_struct *task, int option,
+ 	switch (option) {
  	case ARCH_SET_FS:
  	case ARCH_SET_GS:
 -		ret = restore_registers(pid, &current->thread.regs.regs);
@@ -123,8 +123,6 @@ index e6552275320bc..40ecacb2c54b3 100644
  		break;
 -- 
 2.34.1
-
-
 
 
 _______________________________________________
