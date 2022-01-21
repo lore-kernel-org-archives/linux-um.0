@@ -2,17 +2,16 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab7.miniserver.com ([37.128.132.42]
  helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nAqqG-00EbpF-Tx
- for linux-um@lists.infradead.org; Fri, 21 Jan 2022 10:08:26 +0000
+ id 1nAqet-00EZHs-53
+ for linux-um@lists.infradead.org; Fri, 21 Jan 2022 09:56:40 +0000
 Subject: Re: [PATCH] um: Migrate vector drivers to NAPI
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 References: <20220121085557.1250299-1-anton.ivanov@cambridgegreys.com>
  <1d4806fe15c70bdfa5fa5d50d63ef1208f6e40a8.camel@sipsolutions.net>
- <f81dd671-9e29-f458-eb34-d205f0496238@cambridgegreys.com>
-Message-ID: <0db95b1f-12cb-0035-a192-07dd77dcd107@cambridgegreys.com>
-Date: Fri, 21 Jan 2022 10:08:14 +0000
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <f81dd671-9e29-f458-eb34-d205f0496238@cambridgegreys.com>
+Date: Fri, 21 Jan 2022 09:56:27 +0000
 MIME-Version: 1.0
-In-Reply-To: <f81dd671-9e29-f458-eb34-d205f0496238@cambridgegreys.com>
+In-Reply-To: <1d4806fe15c70bdfa5fa5d50d63ef1208f6e40a8.camel@sipsolutions.net>
 Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,68 +21,117 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
 Cc: richard@nod.at
 
-CgpPbiAyMS8wMS8yMDIyIDA5OjU2LCBBbnRvbiBJdmFub3Ygd3JvdGU6Cj4gCj4gCj4gT24gMjEv
-MDEvMjAyMiAwOToyOSwgSm9oYW5uZXMgQmVyZyB3cm90ZToKPj4gT24gRnJpLCAyMDIyLTAxLTIx
-IGF0IDA4OjU1ICswMDAwLCBhbnRvbi5pdmFub3ZAY2FtYnJpZGdlZ3JleXMuY29tCj4+IHdyb3Rl
-Ogo+Pj4gRnJvbTogQW50b24gSXZhbm92IDxhbnRvbi5pdmFub3ZAY2FtYnJpZGdlZ3JleXMuY29t
-Pgo+Pj4KPj4+IE1pZ3JhdGUgVU1MIHZlY3RvciBkcml2ZXJzIGZyb20gYSBiZXNwb2tlIHNjaGVk
-dWxpbmcgbWVjaGFuaXNtCj4+PiB0byBOQVBJLgo+Pgo+PiBOaWNlIDopCj4+Cj4+PiAtc3RhdGlj
-IHZvaWQgdmVjdG9yX3J4KHN0cnVjdCB2ZWN0b3JfcHJpdmF0ZSAqdnApCj4+PiAtewo+Pj4gLcKg
-wqDCoCBpbnQgZXJyOwo+Pj4gLcKgwqDCoCBpbnQgaXRlciA9IDA7Cj4+PiAtCj4+PiAtwqDCoMKg
-IGlmICgodnAtPm9wdGlvbnMgJiBWRUNUT1JfUlgpID4gMCkKPj4+IC3CoMKgwqDCoMKgwqDCoCB3
-aGlsZSAoKChlcnIgPSB2ZWN0b3JfbW1zZ19yeCh2cCkpID4gMCkgJiYgKGl0ZXIgPCBNQVhfSVRF
-UkFUSU9OUykpCj4+Cj4+IFlvdSBjYW4gcmVtb3ZlIHRoZSBNQVhfSVRFUkFUSU9OUyBkZWZpbmUg
-bm93Lgo+IAo+IFRoYW5rcywgbWlzc2VkIHRoYXQuCj4gCj4+Cj4+Cj4+PiArc3RhdGljIGludCB2
-ZWN0b3JfcG9sbChzdHJ1Y3QgbmFwaV9zdHJ1Y3QgKm5hcGksIGludCBidWRnZXQpCj4+PiDCoCB7
-Cj4+PiAtwqDCoMKgIHN0cnVjdCB2ZWN0b3JfcHJpdmF0ZSAqdnAgPSBmcm9tX3Rhc2tsZXQodnAs
-IHQsIHR4X3BvbGwpOwo+Pj4gK8KgwqDCoCBzdHJ1Y3QgdmVjdG9yX3ByaXZhdGUgKnZwID0gY29u
-dGFpbmVyX29mKG5hcGksIHN0cnVjdCB2ZWN0b3JfcHJpdmF0ZSwgbmFwaSk7Cj4+PiArwqDCoMKg
-IGludCB3b3JrX2RvbmUgPSAwOwo+Pj4gK8KgwqDCoCBpbnQgZXJyOwo+Pj4gK8KgwqDCoCBib29s
-IHR4X2VucXVldWVkID0gZmFsc2U7Cj4+PiAtwqDCoMKgIHZwLT5lc3RhdHMudHhfa2lja3MrKzsK
-Pj4+IC3CoMKgwqAgdmVjdG9yX3NlbmQodnAtPnR4X3F1ZXVlKTsKPj4+ICvCoMKgwqAgaWYgKCh2
-cC0+b3B0aW9ucyAmIFZFQ1RPUl9UWCkgIT0gMCkKPj4+ICvCoMKgwqDCoMKgwqDCoCB0eF9lbnF1
-ZXVlZCA9ICh2ZWN0b3Jfc2VuZCh2cC0+dHhfcXVldWUpID4gMCk7Cj4+PiArwqDCoMKgIGlmICgo
-dnAtPm9wdGlvbnMgJiBWRUNUT1JfUlgpID4gMCkKPj4+ICvCoMKgwqDCoMKgwqDCoCBlcnIgPSB2
-ZWN0b3JfbW1zZ19yeCh2cCk7Cj4+PiArwqDCoMKgIGVsc2Ugewo+Pj4gK8KgwqDCoMKgwqDCoMKg
-IGVyciA9IHZlY3Rvcl9sZWdhY3lfcngodnApOwo+Pgo+PiBJdCBmZWVscyBsaWtlIHlvdSBzaG91
-bGQgaG9ub3VyIHRoZSBOQVBJIGFuZCBwYXNzIHRoZSBidWRnZXQgZG93biwgdXNpbmcKPj4gaXQg
-dG8gbGltaXQgdGhlIG51bWJlciBvZiBwYWNrZXRzIHByb2Nlc3NlZCBmb3IgVFgvUlgsIHNvbWV0
-aGluZyBsaWtlCj4+Cj4+IHR4X2VucXVldWVkID0gdmVjdG9yX3NlbmQoLi4uLCBidWRnZXQpOwo+
-PiBidWRnZXQgLT0gdHhfZW5xdWV1ZWQ7Cj4gCj4gR29vZCBpZGVhIDopCj4gCj4+Cj4+IGlmIChi
-dWRnZXQgPiAwKQo+PiDCoMKgwqDCoGVyciA9IHZlY3Rvcl9tbXNnX3J4KHZwLCBidWRnZXQpOwo+
-Pgo+PiBldGMuCj4+Cj4+PiBAQCAtMTI2NCw2ICsxMjUxLDEwIEBAIHN0YXRpYyBpbnQgdmVjdG9y
-X25ldF9vcGVuKHN0cnVjdCBuZXRfZGV2aWNlICpkZXYpCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAg
-aWYgKHZwLT5oZWFkZXJfdHhidWZmZXIgPT0gTlVMTCkKPj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIGdvdG8gb3V0X2Nsb3NlOwo+Pj4gwqDCoMKgwqDCoCB9Cj4+PiArwqDCoMKgIC8qIE5B
-UEkgKi8KPj4+ICsKPj4KPj4gVGhhdCBjb21tZW50IGZlZWxzIGEgYml0IHBvaW50bGVzcywgYnV0
-IHdoYXRldmVyIDopCj4gCj4gVGhhbmtzLCBJIHVzZWQgdGhhdCB0byBtYWtlIG15IGxpZmUgZWFz
-aWVyIGVkaXRpbmcgaXQuIEZvcmdvdCB0byByZW1vdmUgaXQuCj4gCj4+Cj4+PiArwqDCoMKgIG5l
-dGlmX25hcGlfYWRkKHZwLT5kZXYsICZ2cC0+bmFwaSwgdmVjdG9yX3BvbGwsIDY0KTsKPj4+ICvC
-oMKgwqAgbmFwaV9lbmFibGUoJnZwLT5uYXBpKTsKPj4KPj4gSSB0aGluayB0aGlzIHNob3VsZCBv
-bmx5IGJlIGRvbmUgb25jZSB3aGVuIHlvdSBjcmVhdGUgdGhlIG5ldGRldj8KPiAKPiBJIG5lZWQg
-dG8gaGF2ZSBhIGxvb2sgYXJvdW5kIHRoZSBrZXJuZWwgYW5kIHRoaW5rIG9uIHRoaXMgb25lLiBI
-aXN0b3JpY2FsbHksIFVNTCBkb2VzIGEgZmV3IHRoaW5ncyBpbiBvcGVuKCkgd2hpY2ggYXJlIGNs
-b3NlciB0byBkZXZpY2UgaW5zdGFudGlhdGlvbiBmb3IgcmVhbCBoYXJkd2FyZS4KClRoZXJlIGFy
-ZSBxdWl0ZSBhIGZldyAgZHJpdmVycyB3aGljaCBkbyBpdCBpbiBvcGVuIGFuZCBkaXNhYmxlIGl0
-IGluIGNsb3NlLgoKRXhhbXBsZTogQXRoZXJvcyBBUjcxeHgKClNvIHRoaXMgbG9va3MgT0sgaW4g
-dGVybXMgb2Ygd2hlcmUgaXQgaXMgYW5kIGhvdyB2ZWN0b3Jfa2VybiBpcyB1c2luZyBpdC4KCj4g
-Cj4+Cj4+Cj4+PiBAQCAtMTMxMiw5ICsxMzAzLDExIEBAIHN0YXRpYyBpbnQgdmVjdG9yX25ldF9v
-cGVuKHN0cnVjdCBuZXRfZGV2aWNlICpkZXYpCj4+PiDCoMKgwqDCoMKgwqAgKiBTSUdJT3MgbmV2
-ZXIgYXJyaXZlLCBhbmQgdGhlIG5ldCBuZXZlciB3b3Jrcy4KPj4+IMKgwqDCoMKgwqDCoCAqLwo+
-Pj4gLcKgwqDCoCB2ZWN0b3JfcngodnApOwo+Pj4gwqDCoMKgwqDCoCB2ZWN0b3JfcmVzZXRfc3Rh
-dHModnApOwo+Pj4gKwo+Pj4gK8KgwqDCoCBuYXBpX3NjaGVkdWxlKCZ2cC0+bmFwaSk7Cj4+Pgo+
-Pgo+PiBUaGUgY29tbWVudCBzaG91bGQgcHJvYmFibHkgbW92ZSB3aXRoIHRoaXM/Cj4gCj4gWWVz
-LiBXZWxsIHNwb3R0ZWQuCj4gCj4+Cj4+IGpvaGFubmVzCj4+Cj4gCgotLSAKQW50b24gUi4gSXZh
-bm92CkNhbWJyaWRnZWdyZXlzIExpbWl0ZWQuIFJlZ2lzdGVyZWQgaW4gRW5nbGFuZC4gQ29tcGFu
-eSBOdW1iZXIgMTAyNzM2NjEKaHR0cHM6Ly93d3cuY2FtYnJpZGdlZ3JleXMuY29tLwoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGlu
-ZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVh
-ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
+
+
+On 21/01/2022 09:29, Johannes Berg wrote:
+> On Fri, 2022-01-21 at 08:55 +0000, anton.ivanov@cambridgegreys.com
+> wrote:
+>> From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+>>
+>> Migrate UML vector drivers from a bespoke scheduling mechanism
+>> to NAPI.
+> 
+> Nice :)
+> 
+>> -static void vector_rx(struct vector_private *vp)
+>> -{
+>> -	int err;
+>> -	int iter = 0;
+>> -
+>> -	if ((vp->options & VECTOR_RX) > 0)
+>> -		while (((err = vector_mmsg_rx(vp)) > 0) && (iter < MAX_ITERATIONS))
+> 
+> You can remove the MAX_ITERATIONS define now.
+
+Thanks, missed that.
+
+> 
+> 
+>> +static int vector_poll(struct napi_struct *napi, int budget)
+>>   {
+>> -	struct vector_private *vp = from_tasklet(vp, t, tx_poll);
+>> +	struct vector_private *vp = container_of(napi, struct vector_private, napi);
+>> +	int work_done = 0;
+>> +	int err;
+>> +	bool tx_enqueued = false;
+>>   
+>> -	vp->estats.tx_kicks++;
+>> -	vector_send(vp->tx_queue);
+>> +	if ((vp->options & VECTOR_TX) != 0)
+>> +		tx_enqueued = (vector_send(vp->tx_queue) > 0);
+>> +	if ((vp->options & VECTOR_RX) > 0)
+>> +		err = vector_mmsg_rx(vp);
+>> +	else {
+>> +		err = vector_legacy_rx(vp);
+> 
+> It feels like you should honour the NAPI and pass the budget down, using
+> it to limit the number of packets processed for TX/RX, something like
+> 
+> tx_enqueued = vector_send(..., budget);
+> budget -= tx_enqueued;
+
+Good idea :)
+
+> 
+> if (budget > 0)
+> 	err = vector_mmsg_rx(vp, budget);
+> 
+> etc.
+> 
+>> @@ -1264,6 +1251,10 @@ static int vector_net_open(struct net_device *dev)
+>>   		if (vp->header_txbuffer == NULL)
+>>   			goto out_close;
+>>   	}
+>> +	/* NAPI */
+>> +
+> 
+> That comment feels a bit pointless, but whatever :)
+
+Thanks, I used that to make my life easier editing it. Forgot to remove it.
+
+> 
+>> +	netif_napi_add(vp->dev, &vp->napi, vector_poll, 64);
+>> +	napi_enable(&vp->napi);
+> 
+> I think this should only be done once when you create the netdev?
+
+I need to have a look around the kernel and think on this one. Historically, UML does a few things in open() which are closer to device instantiation for real hardware.
+
+> 
+> 
+>> @@ -1312,9 +1303,11 @@ static int vector_net_open(struct net_device *dev)
+>>   	 * SIGIOs never arrive, and the net never works.
+>>   	 */
+>>   
+>> -	vector_rx(vp);
+>>   
+>>   	vector_reset_stats(vp);
+>> +
+>> +	napi_schedule(&vp->napi);
+>>
+> 
+> The comment should probably move with this?
+
+Yes. Well spotted.
+
+> 
+> johannes
+> 
+
+-- 
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
