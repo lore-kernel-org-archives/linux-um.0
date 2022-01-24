@@ -1,14 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n3mOU-007PKh-54
- for linux-um@lists.infradead.org; Sat, 01 Jan 2022 21:58:33 +0000
-From: Richard Weinberger <richard@nod.at>
-Subject: [PATCH 3/4] um: chan: Restore blocking mode upon exit
-Date: Sat,  1 Jan 2022 22:58:09 +0100
-Message-Id: <20220101215810.13260-4-richard@nod.at>
-In-Reply-To: <20220101215810.13260-1-richard@nod.at>
-References: <20220101215810.13260-1-richard@nod.at>
+ id 1nC4RJ-004dfI-3B
+ for linux-um@lists.infradead.org; Mon, 24 Jan 2022 18:51:43 +0000
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 4.4 073/114] um: registers: Rename function names to avoid
+ conflicts and build problems
+Date: Mon, 24 Jan 2022 19:42:48 +0100
+Message-Id: <20220124183929.351144409@linuxfoundation.org>
+In-Reply-To: <20220124183927.095545464@linuxfoundation.org>
+References: <20220124183927.095545464@linuxfoundation.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,53 +23,108 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, johannes.berg@intel.com, anton.ivanov@cambridgegreys.com, Richard Weinberger <richard@nod.at>
+To: linux-kernel@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Sasha Levin <sashal@kernel.org>
 
-Make sure that O_NONBLOCK is cleared upon exit if UML sets it.
-Otherwise stdin/out behaves strange after UML terminates.
+From: Randy Dunlap <rdunlap@infradead.org>
 
+[ Upstream commit 077b7320942b64b0da182aefd83c374462a65535 ]
+
+The function names init_registers() and restore_registers() are used
+in several net/ethernet/ and gpu/drm/ drivers for other purposes (not
+calls to UML functions), so rename them.
+
+This fixes multiple build errors.
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: linux-um@lists.infradead.org
 Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/drivers/chan.h      | 1 +
- arch/um/drivers/chan_kern.c | 3 +++
- 2 files changed, 4 insertions(+)
+ arch/um/include/shared/registers.h | 4 ++--
+ arch/um/os-Linux/registers.c       | 4 ++--
+ arch/um/os-Linux/start_up.c        | 2 +-
+ arch/x86/um/syscalls_64.c          | 3 ++-
+ 4 files changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/arch/um/drivers/chan.h b/arch/um/drivers/chan.h
-index c37cc4f26f91..6b8c462f146e 100644
---- a/arch/um/drivers/chan.h
-+++ b/arch/um/drivers/chan.h
-@@ -22,6 +22,7 @@ struct chan {
- 	unsigned int output:1;
- 	unsigned int opened:1;
- 	unsigned int enabled:1;
-+	unsigned int fd_blocking:1;
- 	int fd;
- 	const struct chan_ops *ops;
- 	void *data;
-diff --git a/arch/um/drivers/chan_kern.c b/arch/um/drivers/chan_kern.c
-index 86be115b5890..6d512589fa50 100644
---- a/arch/um/drivers/chan_kern.c
-+++ b/arch/um/drivers/chan_kern.c
-@@ -102,6 +102,7 @@ static int open_one_chan(struct chan *chan)
- 	}
- 
- 	chan->fd = fd;
-+	chan->fd_blocking = ret;
- 
- 	chan->opened = 1;
+diff --git a/arch/um/include/shared/registers.h b/arch/um/include/shared/registers.h
+index f5b76355ad71a..089f979e112e3 100644
+--- a/arch/um/include/shared/registers.h
++++ b/arch/um/include/shared/registers.h
+@@ -14,8 +14,8 @@ extern int restore_fp_registers(int pid, unsigned long *fp_regs);
+ extern int save_fpx_registers(int pid, unsigned long *fp_regs);
+ extern int restore_fpx_registers(int pid, unsigned long *fp_regs);
+ extern int save_registers(int pid, struct uml_pt_regs *regs);
+-extern int restore_registers(int pid, struct uml_pt_regs *regs);
+-extern int init_registers(int pid);
++extern int restore_pid_registers(int pid, struct uml_pt_regs *regs);
++extern int init_pid_registers(int pid);
+ extern void get_safe_registers(unsigned long *regs, unsigned long *fp_regs);
+ extern unsigned long get_thread_reg(int reg, jmp_buf *buf);
+ extern int get_fp_registers(int pid, unsigned long *regs);
+diff --git a/arch/um/os-Linux/registers.c b/arch/um/os-Linux/registers.c
+index 2ff8d4fe83c4f..34a5963bd7efd 100644
+--- a/arch/um/os-Linux/registers.c
++++ b/arch/um/os-Linux/registers.c
+@@ -21,7 +21,7 @@ int save_registers(int pid, struct uml_pt_regs *regs)
  	return 0;
-@@ -223,6 +224,8 @@ static void close_one_chan(struct chan *chan, int delay_free_irq)
- 	if (chan->ops->close != NULL)
- 		(*chan->ops->close)(chan->fd, chan->data);
- 
-+	os_set_fd_block(chan->fd, chan->fd_blocking);
-+
- 	chan->opened = 0;
- 	chan->fd = -1;
  }
+ 
+-int restore_registers(int pid, struct uml_pt_regs *regs)
++int restore_pid_registers(int pid, struct uml_pt_regs *regs)
+ {
+ 	int err;
+ 
+@@ -36,7 +36,7 @@ int restore_registers(int pid, struct uml_pt_regs *regs)
+ static unsigned long exec_regs[MAX_REG_NR];
+ static unsigned long exec_fp_regs[FP_SIZE];
+ 
+-int init_registers(int pid)
++int init_pid_registers(int pid)
+ {
+ 	int err;
+ 
+diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
+index 22a358ef1b0cd..dc06933ba63d9 100644
+--- a/arch/um/os-Linux/start_up.c
++++ b/arch/um/os-Linux/start_up.c
+@@ -334,7 +334,7 @@ void __init os_early_checks(void)
+ 	check_tmpexec();
+ 
+ 	pid = start_ptraced_child();
+-	if (init_registers(pid))
++	if (init_pid_registers(pid))
+ 		fatal("Failed to initialize default registers");
+ 	stop_ptraced_child(pid, 1, 1);
+ }
+diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
+index e6552275320bc..40ecacb2c54b3 100644
+--- a/arch/x86/um/syscalls_64.c
++++ b/arch/x86/um/syscalls_64.c
+@@ -9,6 +9,7 @@
+ #include <linux/uaccess.h>
+ #include <asm/prctl.h> /* XXX This should get the constants from libc */
+ #include <os.h>
++#include <registers.h>
+ 
+ long arch_prctl(struct task_struct *task, int code, unsigned long __user *addr)
+ {
+@@ -32,7 +33,7 @@ long arch_prctl(struct task_struct *task, int code, unsigned long __user *addr)
+ 	switch (code) {
+ 	case ARCH_SET_FS:
+ 	case ARCH_SET_GS:
+-		ret = restore_registers(pid, &current->thread.regs.regs);
++		ret = restore_pid_registers(pid, &current->thread.regs.regs);
+ 		if (ret)
+ 			return ret;
+ 		break;
 -- 
-2.26.2
+2.34.1
+
+
 
 
 _______________________________________________
