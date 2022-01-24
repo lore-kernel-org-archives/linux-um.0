@@ -1,15 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n9eaD-00H8gR-Ed
- for linux-um@lists.infradead.org; Tue, 18 Jan 2022 02:50:56 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.14 41/56] um: registers: Rename function names to
- avoid conflicts and build problems
-Date: Mon, 17 Jan 2022 21:48:53 -0500
-Message-Id: <20220118024908.1953673-41-sashal@kernel.org>
-In-Reply-To: <20220118024908.1953673-1-sashal@kernel.org>
-References: <20220118024908.1953673-1-sashal@kernel.org>
+ id 1nC68d-005Bp8-CN
+ for linux-um@lists.infradead.org; Mon, 24 Jan 2022 20:40:32 +0000
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 5.15 582/846] um: registers: Rename function names to avoid
+ conflicts and build problems
+Date: Mon, 24 Jan 2022 19:41:39 +0100
+Message-Id: <20220124184121.128025849@linuxfoundation.org>
+In-Reply-To: <20220124184100.867127425@linuxfoundation.org>
+References: <20220124184100.867127425@linuxfoundation.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -23,8 +23,8 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Sasha Levin <sashal@kernel.org>, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, viro@zeniv.linux.org.uk
+To: linux-kernel@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Sasha Levin <sashal@kernel.org>
 
 From: Randy Dunlap <rdunlap@infradead.org>
 
@@ -51,7 +51,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  4 files changed, 7 insertions(+), 6 deletions(-)
 
 diff --git a/arch/um/include/shared/registers.h b/arch/um/include/shared/registers.h
-index a74449b5b0e31..12ad7c435e97f 100644
+index 0c50fa6e8a55b..fbb709a222839 100644
 --- a/arch/um/include/shared/registers.h
 +++ b/arch/um/include/shared/registers.h
 @@ -16,8 +16,8 @@ extern int restore_fp_registers(int pid, unsigned long *fp_regs);
@@ -66,7 +66,7 @@ index a74449b5b0e31..12ad7c435e97f 100644
  extern unsigned long get_thread_reg(int reg, jmp_buf *buf);
  extern int get_fp_registers(int pid, unsigned long *regs);
 diff --git a/arch/um/os-Linux/registers.c b/arch/um/os-Linux/registers.c
-index 2ff8d4fe83c4f..34a5963bd7efd 100644
+index 2d9270508e156..b123955be7acc 100644
 --- a/arch/um/os-Linux/registers.c
 +++ b/arch/um/os-Linux/registers.c
 @@ -21,7 +21,7 @@ int save_registers(int pid, struct uml_pt_regs *regs)
@@ -88,10 +88,10 @@ index 2ff8d4fe83c4f..34a5963bd7efd 100644
  	int err;
  
 diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
-index 82bf5f8442ba4..2c75f2d638681 100644
+index 8a72c99994eb1..e3ee4db58b40d 100644
 --- a/arch/um/os-Linux/start_up.c
 +++ b/arch/um/os-Linux/start_up.c
-@@ -336,7 +336,7 @@ void __init os_early_checks(void)
+@@ -368,7 +368,7 @@ void __init os_early_checks(void)
  	check_tmpexec();
  
  	pid = start_ptraced_child();
@@ -123,6 +123,8 @@ index 58f51667e2e4b..8249685b40960 100644
  		break;
 -- 
 2.34.1
+
+
 
 
 _______________________________________________
