@@ -1,13 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n4PRl-009Npy-8U
- for linux-um@lists.infradead.org; Mon, 03 Jan 2022 15:40:30 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH] lib/logic_iomem: correct fallback config references
-Date: Mon,  3 Jan 2022 16:40:15 +0100
-Message-Id: <20220103164015.6bfbac3b1010.I44342c6303ec35d688631ce9cfb6cfa9b4537006@changeid>
+ id 1nC4ss-004qxw-D1
+ for linux-um@lists.infradead.org; Mon, 24 Jan 2022 19:20:14 +0000
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 4.19 158/239] um: registers: Rename function names to avoid
+ conflicts and build problems
+Date: Mon, 24 Jan 2022 19:43:16 +0100
+Message-Id: <20220124183948.120592624@linuxfoundation.org>
+In-Reply-To: <20220124183943.102762895@linuxfoundation.org>
+References: <20220124183943.102762895@linuxfoundation.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -21,65 +23,108 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>, Arnd Bergmann <arnd@kernel.org>, Johannes Berg <johannes.berg@intel.com>
+To: linux-kernel@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Sasha Levin <sashal@kernel.org>
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-Due to some renaming, we ended up with the "indirect iomem"
-naming in Kconfig, following INDIRECT_PIO. However, clearly
-I missed following through on that in the ifdefs, but so far
-INDIRECT_IOMEM_FALLBACK isn't used by any architecture.
+[ Upstream commit 077b7320942b64b0da182aefd83c374462a65535 ]
 
-Reported-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Fixes: ca2e334232b6 ("lib: add iomem emulation (logic_iomem)")
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+The function names init_registers() and restore_registers() are used
+in several net/ethernet/ and gpu/drm/ drivers for other purposes (not
+calls to UML functions), so rename them.
+
+This fixes multiple build errors.
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: linux-um@lists.infradead.org
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/logic_iomem.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/um/include/shared/registers.h | 4 ++--
+ arch/um/os-Linux/registers.c       | 4 ++--
+ arch/um/os-Linux/start_up.c        | 2 +-
+ arch/x86/um/syscalls_64.c          | 3 ++-
+ 4 files changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/lib/logic_iomem.c b/lib/logic_iomem.c
-index 9bdfde0c0f86..8cafe4a9e874 100644
---- a/lib/logic_iomem.c
-+++ b/lib/logic_iomem.c
-@@ -68,7 +68,7 @@ int logic_iomem_add_region(struct resource *resource,
+diff --git a/arch/um/include/shared/registers.h b/arch/um/include/shared/registers.h
+index a74449b5b0e31..12ad7c435e97f 100644
+--- a/arch/um/include/shared/registers.h
++++ b/arch/um/include/shared/registers.h
+@@ -16,8 +16,8 @@ extern int restore_fp_registers(int pid, unsigned long *fp_regs);
+ extern int save_fpx_registers(int pid, unsigned long *fp_regs);
+ extern int restore_fpx_registers(int pid, unsigned long *fp_regs);
+ extern int save_registers(int pid, struct uml_pt_regs *regs);
+-extern int restore_registers(int pid, struct uml_pt_regs *regs);
+-extern int init_registers(int pid);
++extern int restore_pid_registers(int pid, struct uml_pt_regs *regs);
++extern int init_pid_registers(int pid);
+ extern void get_safe_registers(unsigned long *regs, unsigned long *fp_regs);
+ extern unsigned long get_thread_reg(int reg, jmp_buf *buf);
+ extern int get_fp_registers(int pid, unsigned long *regs);
+diff --git a/arch/um/os-Linux/registers.c b/arch/um/os-Linux/registers.c
+index 2ff8d4fe83c4f..34a5963bd7efd 100644
+--- a/arch/um/os-Linux/registers.c
++++ b/arch/um/os-Linux/registers.c
+@@ -21,7 +21,7 @@ int save_registers(int pid, struct uml_pt_regs *regs)
+ 	return 0;
  }
- EXPORT_SYMBOL(logic_iomem_add_region);
  
--#ifndef CONFIG_LOGIC_IOMEM_FALLBACK
-+#ifndef CONFIG_INDIRECT_IOMEM_FALLBACK
- static void __iomem *real_ioremap(phys_addr_t offset, size_t size)
+-int restore_registers(int pid, struct uml_pt_regs *regs)
++int restore_pid_registers(int pid, struct uml_pt_regs *regs)
  {
- 	WARN(1, "invalid ioremap(0x%llx, 0x%zx)\n",
-@@ -81,7 +81,7 @@ static void real_iounmap(void __iomem *addr)
- 	WARN(1, "invalid iounmap for addr 0x%llx\n",
- 	     (unsigned long long __force)addr);
- }
--#endif /* CONFIG_LOGIC_IOMEM_FALLBACK */
-+#endif /* CONFIG_INDIRECT_IOMEM_FALLBACK */
+ 	int err;
  
- void __iomem *ioremap(phys_addr_t offset, size_t size)
+@@ -36,7 +36,7 @@ int restore_registers(int pid, struct uml_pt_regs *regs)
+ static unsigned long exec_regs[MAX_REG_NR];
+ static unsigned long exec_fp_regs[FP_SIZE];
+ 
+-int init_registers(int pid)
++int init_pid_registers(int pid)
  {
-@@ -168,7 +168,7 @@ void iounmap(void __iomem *addr)
- }
- EXPORT_SYMBOL(iounmap);
+ 	int err;
  
--#ifndef CONFIG_LOGIC_IOMEM_FALLBACK
-+#ifndef CONFIG_INDIRECT_IOMEM_FALLBACK
- #define MAKE_FALLBACK(op, sz) 						\
- static u##sz real_raw_read ## op(const volatile void __iomem *addr)	\
- {									\
-@@ -212,7 +212,7 @@ static void real_memcpy_toio(volatile void __iomem *addr, const void *buffer,
- 	WARN(1, "Invalid memcpy_toio at address 0x%llx\n",
- 	     (unsigned long long __force)addr);
- }
--#endif /* CONFIG_LOGIC_IOMEM_FALLBACK */
-+#endif /* CONFIG_INDIRECT_IOMEM_FALLBACK */
+diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
+index 82bf5f8442ba4..2c75f2d638681 100644
+--- a/arch/um/os-Linux/start_up.c
++++ b/arch/um/os-Linux/start_up.c
+@@ -336,7 +336,7 @@ void __init os_early_checks(void)
+ 	check_tmpexec();
  
- #define MAKE_OP(op, sz) 						\
- u##sz __raw_read ## op(const volatile void __iomem *addr)		\
+ 	pid = start_ptraced_child();
+-	if (init_registers(pid))
++	if (init_pid_registers(pid))
+ 		fatal("Failed to initialize default registers");
+ 	stop_ptraced_child(pid, 1, 1);
+ }
+diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
+index 58f51667e2e4b..8249685b40960 100644
+--- a/arch/x86/um/syscalls_64.c
++++ b/arch/x86/um/syscalls_64.c
+@@ -11,6 +11,7 @@
+ #include <linux/uaccess.h>
+ #include <asm/prctl.h> /* XXX This should get the constants from libc */
+ #include <os.h>
++#include <registers.h>
+ 
+ long arch_prctl(struct task_struct *task, int option,
+ 		unsigned long __user *arg2)
+@@ -35,7 +36,7 @@ long arch_prctl(struct task_struct *task, int option,
+ 	switch (option) {
+ 	case ARCH_SET_FS:
+ 	case ARCH_SET_GS:
+-		ret = restore_registers(pid, &current->thread.regs.regs);
++		ret = restore_pid_registers(pid, &current->thread.regs.regs);
+ 		if (ret)
+ 			return ret;
+ 		break;
 -- 
-2.33.1
+2.34.1
+
+
 
 
 _______________________________________________
