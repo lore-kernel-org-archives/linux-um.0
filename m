@@ -1,15 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+Received: from dfw.source.kernel.org ([139.178.84.217])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nC57D-004wAd-8Z
- for linux-um@lists.infradead.org; Mon, 24 Jan 2022 19:35:01 +0000
+ id 1nC4hJ-004lZZ-Dd
+ for linux-um@lists.infradead.org; Mon, 24 Jan 2022 19:08:15 +0000
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 5.4 202/320] um: registers: Rename function names to avoid
+Subject: [PATCH 4.14 116/186] um: registers: Rename function names to avoid
  conflicts and build problems
-Date: Mon, 24 Jan 2022 19:43:06 +0100
-Message-Id: <20220124184000.509506732@linuxfoundation.org>
-In-Reply-To: <20220124183953.750177707@linuxfoundation.org>
-References: <20220124183953.750177707@linuxfoundation.org>
+Date: Mon, 24 Jan 2022 19:43:11 +0100
+Message-Id: <20220124183940.841533562@linuxfoundation.org>
+In-Reply-To: <20220124183937.101330125@linuxfoundation.org>
+References: <20220124183937.101330125@linuxfoundation.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -51,7 +51,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  4 files changed, 7 insertions(+), 6 deletions(-)
 
 diff --git a/arch/um/include/shared/registers.h b/arch/um/include/shared/registers.h
-index 0c50fa6e8a55b..fbb709a222839 100644
+index a74449b5b0e31..12ad7c435e97f 100644
 --- a/arch/um/include/shared/registers.h
 +++ b/arch/um/include/shared/registers.h
 @@ -16,8 +16,8 @@ extern int restore_fp_registers(int pid, unsigned long *fp_regs);
@@ -66,7 +66,7 @@ index 0c50fa6e8a55b..fbb709a222839 100644
  extern unsigned long get_thread_reg(int reg, jmp_buf *buf);
  extern int get_fp_registers(int pid, unsigned long *regs);
 diff --git a/arch/um/os-Linux/registers.c b/arch/um/os-Linux/registers.c
-index 2d9270508e156..b123955be7acc 100644
+index 2ff8d4fe83c4f..34a5963bd7efd 100644
 --- a/arch/um/os-Linux/registers.c
 +++ b/arch/um/os-Linux/registers.c
 @@ -21,7 +21,7 @@ int save_registers(int pid, struct uml_pt_regs *regs)
@@ -88,7 +88,7 @@ index 2d9270508e156..b123955be7acc 100644
  	int err;
  
 diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
-index f79dc338279e6..b28373a2b8d2d 100644
+index 82bf5f8442ba4..2c75f2d638681 100644
 --- a/arch/um/os-Linux/start_up.c
 +++ b/arch/um/os-Linux/start_up.c
 @@ -336,7 +336,7 @@ void __init os_early_checks(void)
