@@ -1,15 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+Received: from ams.source.kernel.org ([145.40.68.75])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nC5VZ-004zxW-1e
- for linux-um@lists.infradead.org; Mon, 24 Jan 2022 20:00:10 +0000
+ id 1nC6uF-005KNe-4L
+ for linux-um@lists.infradead.org; Mon, 24 Jan 2022 21:29:44 +0000
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 5.10 379/563] um: registers: Rename function names to avoid
+Subject: [PATCH 5.16 0688/1039] um: registers: Rename function names to avoid
  conflicts and build problems
-Date: Mon, 24 Jan 2022 19:42:24 +0100
-Message-Id: <20220124184037.530599766@linuxfoundation.org>
-In-Reply-To: <20220124184024.407936072@linuxfoundation.org>
-References: <20220124184024.407936072@linuxfoundation.org>
+Date: Mon, 24 Jan 2022 19:41:17 +0100
+Message-Id: <20220124184148.478052926@linuxfoundation.org>
+In-Reply-To: <20220124184125.121143506@linuxfoundation.org>
+References: <20220124184125.121143506@linuxfoundation.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -88,10 +88,10 @@ index 2d9270508e156..b123955be7acc 100644
  	int err;
  
 diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
-index f79dc338279e6..b28373a2b8d2d 100644
+index 8a72c99994eb1..e3ee4db58b40d 100644
 --- a/arch/um/os-Linux/start_up.c
 +++ b/arch/um/os-Linux/start_up.c
-@@ -336,7 +336,7 @@ void __init os_early_checks(void)
+@@ -368,7 +368,7 @@ void __init os_early_checks(void)
  	check_tmpexec();
  
  	pid = start_ptraced_child();
