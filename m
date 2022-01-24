@@ -1,27 +1,108 @@
-Return-Path: <kuba@kernel.org>
-Date: Mon, 24 Jan 2022 09:04:33 -0800
-From: Jakub Kicinski <kuba@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from xavier.telenet-ops.be ([2a02:1800:120:4::f00:14])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nBuCa-002X0R-70
+ for linux-um@lists.infradead.org; Mon, 24 Jan 2022 07:55:50 +0000
+Date: Mon, 24 Jan 2022 08:55:40 +0100 (CET)
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: Build regressions/improvements in v5.17-rc1
-Message-ID: <20220124090433.1951e2ea@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <alpine.DEB.2.22.394.2201240851560.2674757@ramsan.of.borg>
+In-Reply-To: <20220123125737.2658758-1-geert@linux-m68k.org>
+Message-ID: <alpine.DEB.2.22.394.2201240851560.2674757@ramsan.of.borg>
 References: <20220123125737.2658758-1-geert@linux-m68k.org>
-	<alpine.DEB.2.22.394.2201240851560.2674757@ramsan.of.borg>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Content-Transfer-Encoding: 7bit
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>, kvm@vger.kernel.org, linux-mips@vger.kernel.org, "Tobin C. Harding" <me@tobin.cc>, alsa-devel@alsa-project.org, amd-gfx@lists.freedesktop.org, netdev@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-kernel@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>, kvm@vger.kernel.org, linux-mips@vger.kernel.org, "Tobin C. Harding" <me@tobin.cc>, alsa-devel@alsa-project.org, amd-gfx@lists.freedesktop.org, netdev@vger.kernel.org
 
-On Mon, 24 Jan 2022 08:55:40 +0100 (CET) Geert Uytterhoeven wrote:
-> >  + /kisskb/src/drivers/net/ethernet/freescale/fec_mpc52xx.c: error: passing argument 2 of 'mpc52xx_fec_set_paddr' discards 'const' qualifier from pointer target type [-Werror=discarded-qualifiers]:  => 659:29  
-> 
-> powerpc-gcc5/ppc32_allmodconfig
-> 
-> >  + /kisskb/src/drivers/pinctrl/pinctrl-thunderbay.c: error: assignment discards 'const' qualifier from pointer target type [-Werror=discarded-qualifiers]:  => 815:8, 815:29  
-> 
-> arm64-gcc5.4/arm64-allmodconfig
-> arm64-gcc8/arm64-allmodconfig
+On Sun, 23 Jan 2022, Geert Uytterhoeven wrote:
+> Below is the list of build error/warning regressions/improvements in
+> v5.17-rc1[1] compared to v5.16[2].
+>
+> Summarized:
+>  - build errors: +17/-2
+>  - build warnings: +23/-25
+>
+> Note that there may be false regressions, as some logs are incomplete.
+> Still, they're build errors/warnings.
+>
+> Happy fixing! ;-)
+>
+> Thanks to the linux-next team for providing the build service.
+>
+> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/e783362eb54cd99b2cac8b3a9aeac942e6f6ac07/ (all 99 configs)
+> [2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/df0cc57e057f18e44dac8e6c18aba47ab53202f9/ (98 out of 99 configs)
+>
+>
+> *** ERRORS ***
+>
+> 17 error regressions:
+>  + /kisskb/src/arch/powerpc/kernel/stacktrace.c: error: implicit declaration of function 'nmi_cpu_backtrace' [-Werror=implicit-function-declaration]:  => 171:2
+>  + /kisskb/src/arch/powerpc/kernel/stacktrace.c: error: implicit declaration of function 'nmi_trigger_cpumask_backtrace' [-Werror=implicit-function-declaration]:  => 226:2
 
-Let me take care of these in net.
+powerpc-gcc5/skiroot_defconfig
+
+>  + /kisskb/src/arch/sparc/mm/srmmu.c: error: cast between incompatible function types from 'void (*)(long unsigned int)' to 'void (*)(long unsigned int,  long unsigned int,  long unsigned int,  long unsigned int,  long unsigned int)' [-Werror=cast-function-type]:  => 1756:13, 1639:13
+>  + /kisskb/src/arch/sparc/mm/srmmu.c: error: cast between incompatible function types from 'void (*)(struct mm_struct *)' to 'void (*)(long unsigned int,  long unsigned int,  long unsigned int,  long unsigned int,  long unsigned int)' [-Werror=cast-function-type]:  => 1674:29, 1662:29
+>  + /kisskb/src/arch/sparc/mm/srmmu.c: error: cast between incompatible function types from 'void (*)(struct mm_struct *, long unsigned int)' to 'void (*)(long unsigned int,  long unsigned int,  long unsigned int,  long unsigned int,  long unsigned int)' [-Werror=cast-function-type]:  => 1767:21
+>  + /kisskb/src/arch/sparc/mm/srmmu.c: error: cast between incompatible function types from 'void (*)(struct vm_area_struct *, long unsigned int)' to 'void (*)(long unsigned int,  long unsigned int,  long unsigned int,  long unsigned int,  long unsigned int)' [-Werror=cast-function-type]:  => 1741:29, 1726:29
+>  + /kisskb/src/arch/sparc/mm/srmmu.c: error: cast between incompatible function types from 'void (*)(struct vm_area_struct *, long unsigned int,  long unsigned int)' to 'void (*)(long unsigned int,  long unsigned int,  long unsigned int,  long unsigned int,  long unsigned int)' [-Werror=cast-function-type]:  => 1694:29, 1711:29
+
+sparc64-gcc11/sparc-allmodconfig
+
+>  + /kisskb/src/arch/um/include/asm/processor-generic.h: error: called object is not a function or function pointer:  => 103:18
+>  + /kisskb/src/drivers/vfio/pci/vfio_pci_rdwr.c: error: assignment makes pointer from integer without a cast [-Werror=int-conversion]:  => 324:9, 317:9
+>  + /kisskb/src/drivers/vfio/pci/vfio_pci_rdwr.c: error: implicit declaration of function 'ioport_map' [-Werror=implicit-function-declaration]:  => 317:11
+>  + /kisskb/src/drivers/vfio/pci/vfio_pci_rdwr.c: error: implicit declaration of function 'ioport_unmap' [-Werror=implicit-function-declaration]:  => 338:15
+
+um-x86_64/um-allyesconfig
+
+>  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_topology.c: error: control reaches end of non-void function [-Werror=return-type]:  => 1560:1
+
+um-x86_64/um-all{mod,yes}config
+
+>  + /kisskb/src/drivers/net/ethernet/freescale/fec_mpc52xx.c: error: passing argument 2 of 'mpc52xx_fec_set_paddr' discards 'const' qualifier from pointer target type [-Werror=discarded-qualifiers]:  => 659:29
+
+powerpc-gcc5/ppc32_allmodconfig
+
+>  + /kisskb/src/drivers/pinctrl/pinctrl-thunderbay.c: error: assignment discards 'const' qualifier from pointer target type [-Werror=discarded-qualifiers]:  => 815:8, 815:29
+
+arm64-gcc5.4/arm64-allmodconfig
+arm64-gcc8/arm64-allmodconfig
+
+>  + /kisskb/src/lib/test_printf.c: error: "PTR" redefined [-Werror]:  => 247:0, 247
+>  + /kisskb/src/sound/pci/ca0106/ca0106.h: error: "PTR" redefined [-Werror]:  => 62, 62:0
+
+mips-gcc8/mips-allmodconfig
+mipsel/mips-allmodconfig
+
+>  + error: arch/powerpc/kvm/book3s_64_entry.o: relocation truncated to fit: R_PPC64_REL14 (stub) against symbol `machine_check_common' defined in .text section in arch/powerpc/kernel/head_64.o:  => (.text+0x3e4)
+
+powerpc-gcc5/powerpc-allyesconfig
+
+Gr{oetje,eeting}s,
+
+ 						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+ 							    -- Linus Torvalds
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
