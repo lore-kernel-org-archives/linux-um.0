@@ -1,13 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mx1.uni-rostock.de ([139.30.22.71])
+Received: from dfw.source.kernel.org ([139.178.84.217])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n7NOe-00HUnG-LC
- for linux-um@lists.infradead.org; Tue, 11 Jan 2022 20:05:34 +0000
-From: Benjamin Beichler <benjamin.beichler@uni-rostock.de>
-Subject: [PATCH] um: fix and optimize xor select template for CONFIG64 and
- timetravel mode
-Date: Tue, 11 Jan 2022 20:05:06 +0000
-Message-ID: <20220111200507.1445489-1-benjamin.beichler@uni-rostock.de>
+ id 1nC4Y9-004goI-9H
+ for linux-um@lists.infradead.org; Mon, 24 Jan 2022 18:58:47 +0000
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 4.9 093/157] um: registers: Rename function names to avoid
+ conflicts and build problems
+Date: Mon, 24 Jan 2022 19:43:03 +0100
+Message-Id: <20220124183935.730425818@linuxfoundation.org>
+In-Reply-To: <20220124183932.787526760@linuxfoundation.org>
+References: <20220124183932.787526760@linuxfoundation.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -21,51 +23,109 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: johannes.berg@intel.com, Benjamin Beichler <benjamin.beichler@uni-rostock.de>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Sasha Levin <sashal@kernel.org>
 
-Due to dropped inclusion of asm-generic/xor.h, xor_block_8regs symbol is
-missing with CONFIG64 and break compilation, as the asm/xor_64.h also did
-not include it. The patch recreate the logic from arch/x86, which check
-whether AVX is available and add fallbacks for 32bit and 64bit config of
-um.
+From: Randy Dunlap <rdunlap@infradead.org>
 
-A very minor additional "fix" is, the return of the macro parameter
-instead of NULL, as this is the original intent of the macro, but
-this does not change the actual behavior.
+[ Upstream commit 077b7320942b64b0da182aefd83c374462a65535 ]
 
-Fixes: c0ecca6604b8 ("um: enable the use of optimized xor routines in UML")
-Signed-off-by: Benjamin Beichler <benjamin.beichler@uni-rostock.de>
+The function names init_registers() and restore_registers() are used
+in several net/ethernet/ and gpu/drm/ drivers for other purposes (not
+calls to UML functions), so rename them.
+
+This fixes multiple build errors.
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: linux-um@lists.infradead.org
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/include/asm/xor.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/um/include/shared/registers.h | 4 ++--
+ arch/um/os-Linux/registers.c       | 4 ++--
+ arch/um/os-Linux/start_up.c        | 2 +-
+ arch/x86/um/syscalls_64.c          | 3 ++-
+ 4 files changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/arch/um/include/asm/xor.h b/arch/um/include/asm/xor.h
-index f512704a9ec7..22b39de73c24 100644
---- a/arch/um/include/asm/xor.h
-+++ b/arch/um/include/asm/xor.h
-@@ -4,8 +4,10 @@
+diff --git a/arch/um/include/shared/registers.h b/arch/um/include/shared/registers.h
+index a74449b5b0e31..12ad7c435e97f 100644
+--- a/arch/um/include/shared/registers.h
++++ b/arch/um/include/shared/registers.h
+@@ -16,8 +16,8 @@ extern int restore_fp_registers(int pid, unsigned long *fp_regs);
+ extern int save_fpx_registers(int pid, unsigned long *fp_regs);
+ extern int restore_fpx_registers(int pid, unsigned long *fp_regs);
+ extern int save_registers(int pid, struct uml_pt_regs *regs);
+-extern int restore_registers(int pid, struct uml_pt_regs *regs);
+-extern int init_registers(int pid);
++extern int restore_pid_registers(int pid, struct uml_pt_regs *regs);
++extern int init_pid_registers(int pid);
+ extern void get_safe_registers(unsigned long *regs, unsigned long *fp_regs);
+ extern unsigned long get_thread_reg(int reg, jmp_buf *buf);
+ extern int get_fp_registers(int pid, unsigned long *regs);
+diff --git a/arch/um/os-Linux/registers.c b/arch/um/os-Linux/registers.c
+index 2ff8d4fe83c4f..34a5963bd7efd 100644
+--- a/arch/um/os-Linux/registers.c
++++ b/arch/um/os-Linux/registers.c
+@@ -21,7 +21,7 @@ int save_registers(int pid, struct uml_pt_regs *regs)
+ 	return 0;
+ }
  
- #ifdef CONFIG_64BIT
- #undef CONFIG_X86_32
-+#define TT_CPU_INF_XOR_DEFAULT (AVX_SELECT(&xor_block_sse_pf64))
- #else
- #define CONFIG_X86_32 1
-+#define TT_CPU_INF_XOR_DEFAULT (AVX_SELECT(&xor_block_8regs))
- #endif
+-int restore_registers(int pid, struct uml_pt_regs *regs)
++int restore_pid_registers(int pid, struct uml_pt_regs *regs)
+ {
+ 	int err;
  
- #include <asm/cpufeature.h>
-@@ -16,7 +18,7 @@
- #undef XOR_SELECT_TEMPLATE
- /* pick an arbitrary one - measuring isn't possible with inf-cpu */
- #define XOR_SELECT_TEMPLATE(x)	\
--	(time_travel_mode == TT_MODE_INFCPU ? &xor_block_8regs : NULL)
-+	(time_travel_mode == TT_MODE_INFCPU ? TT_CPU_INF_XOR_DEFAULT : x))
- #endif
+@@ -36,7 +36,7 @@ int restore_registers(int pid, struct uml_pt_regs *regs)
+ static unsigned long exec_regs[MAX_REG_NR];
+ static unsigned long exec_fp_regs[FP_SIZE];
  
- #endif
+-int init_registers(int pid)
++int init_pid_registers(int pid)
+ {
+ 	int err;
+ 
+diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
+index 22a358ef1b0cd..dc06933ba63d9 100644
+--- a/arch/um/os-Linux/start_up.c
++++ b/arch/um/os-Linux/start_up.c
+@@ -334,7 +334,7 @@ void __init os_early_checks(void)
+ 	check_tmpexec();
+ 
+ 	pid = start_ptraced_child();
+-	if (init_registers(pid))
++	if (init_pid_registers(pid))
+ 		fatal("Failed to initialize default registers");
+ 	stop_ptraced_child(pid, 1, 1);
+ }
+diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
+index e6552275320bc..40ecacb2c54b3 100644
+--- a/arch/x86/um/syscalls_64.c
++++ b/arch/x86/um/syscalls_64.c
+@@ -9,6 +9,7 @@
+ #include <linux/uaccess.h>
+ #include <asm/prctl.h> /* XXX This should get the constants from libc */
+ #include <os.h>
++#include <registers.h>
+ 
+ long arch_prctl(struct task_struct *task, int code, unsigned long __user *addr)
+ {
+@@ -32,7 +33,7 @@ long arch_prctl(struct task_struct *task, int code, unsigned long __user *addr)
+ 	switch (code) {
+ 	case ARCH_SET_FS:
+ 	case ARCH_SET_GS:
+-		ret = restore_registers(pid, &current->thread.regs.regs);
++		ret = restore_pid_registers(pid, &current->thread.regs.regs);
+ 		if (ret)
+ 			return ret;
+ 		break;
 -- 
-2.25.1
+2.34.1
+
+
+
 
 _______________________________________________
 linux-um mailing list
