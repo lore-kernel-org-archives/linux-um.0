@@ -1,161 +1,165 @@
-Return-Path: <lakshmi.sowjanya.d@intel.com>
-From: "D, Lakshmi Sowjanya" <lakshmi.sowjanya.d@intel.com>
-Subject: RE: Build regressions/improvements in v5.17-rc1
-Date: Tue, 25 Jan 2022 12:56:50 +0000
-Message-ID: <DM6PR11MB3660804C821D7CA7329B6CAFC45F9@DM6PR11MB3660.namprd11.prod.outlook.com>
+Return-Path: <rdunlap@infradead.org>
+Message-ID: <0ddcd3d8-6fca-dc6a-d9d8-f8df8715be95@infradead.org>
+Date: Mon, 24 Jan 2022 17:29:17 -0800
+MIME-Version: 1.0
+Subject: Re: Build regressions/improvements in v5.17-rc1
+Content-Language: en-US
 References: <20220123125737.2658758-1-geert@linux-m68k.org>
  <alpine.DEB.2.22.394.2201240851560.2674757@ramsan.of.borg>
-In-Reply-To: <alpine.DEB.2.22.394.2201240851560.2674757@ramsan.of.borg>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-To: Geert Uytterhoeven <geert@linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>, "Tobin C. Harding" <me@tobin.cc>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+ <CADnq5_MUq0fX7wMLJyUUxxa+2xoRinonL-TzD8tUhXALRfY8-A@mail.gmail.com>
+ <CAMuHMdWUWqHYbbavtMT-XAD_sarDPC5xnc3c0pX1ZAh3Wuzuzg@mail.gmail.com>
+ <aca104cf-5f5f-b696-754a-35e62dbe64c3@infradead.org>
+ <500a3aa0-f51e-92ac-82d6-7ffc7f603e2c@amd.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <500a3aa0-f51e-92ac-82d6-7ffc7f603e2c@amd.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+To: Felix Kuehling <felix.kuehling@amd.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Alex Deucher <alexdeucher@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, KVM list <kvm@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, amd-gfx list <amd-gfx@lists.freedesktop.org>, "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>, Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>, sparclinux <sparclinux@vger.kernel.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, "Tobin C. Harding" <me@tobin.cc>
 List-ID: <linux-um.lists.infradead.org>
 
 
 
-> -----Original Message-----
-> From: Geert Uytterhoeven <geert@linux-m68k.org>
-> Sent: Monday, January 24, 2022 1:26 PM
-> To: linux-kernel@vger.kernel.org
-> Cc: linuxppc-dev@lists.ozlabs.org; sparclinux@vger.kernel.org; linux-
-> um@lists.infradead.org; D, Lakshmi Sowjanya
-> <lakshmi.sowjanya.d@intel.com>; kvm@vger.kernel.org; linux-
-> mips@vger.kernel.org; Tobin C. Harding <me@tobin.cc>; alsa-devel@alsa-
-> project.org; amd-gfx@lists.freedesktop.org; netdev@vger.kernel.org
-> Subject: Re: Build regressions/improvements in v5.17-rc1
->=20
-> On Sun, 23 Jan 2022, Geert Uytterhoeven wrote:
-> > Below is the list of build error/warning regressions/improvements in
-> > v5.17-rc1[1] compared to v5.16[2].
-> >
-> > Summarized:
-> >  - build errors: +17/-2
-> >  - build warnings: +23/-25
-> >
-> > Note that there may be false regressions, as some logs are incomplete.
-> > Still, they're build errors/warnings.
-> >
-> > Happy fixing! ;-)
-> >
-> > Thanks to the linux-next team for providing the build service.
-> >
-> > [1]
-> > http://kisskb.ellerman.id.au/kisskb/branch/linus/head/e783362eb54cd99b
-> > 2cac8b3a9aeac942e6f6ac07/ (all 99 configs) [2]
-> > http://kisskb.ellerman.id.au/kisskb/branch/linus/head/df0cc57e057f18e4
-> > 4dac8e6c18aba47ab53202f9/ (98 out of 99 configs)
-> >
-> >
-> > *** ERRORS ***
-> >
-> > 17 error regressions:
-> >  + /kisskb/src/arch/powerpc/kernel/stacktrace.c: error: implicit
-> > declaration of function 'nmi_cpu_backtrace'
-> > [-Werror=3Dimplicit-function-declaration]:  =3D> 171:2  +
-> > /kisskb/src/arch/powerpc/kernel/stacktrace.c: error: implicit
-> > declaration of function 'nmi_trigger_cpumask_backtrace'
-> > [-Werror=3Dimplicit-function-declaration]:  =3D> 226:2
->=20
-> powerpc-gcc5/skiroot_defconfig
->=20
-> >  + /kisskb/src/arch/sparc/mm/srmmu.c: error: cast between incompatible
-> > function types from 'void (*)(long unsigned int)' to 'void (*)(long
-> > unsigned int,  long unsigned int,  long unsigned int,  long unsigned
-> > int,  long unsigned int)' [-Werror=3Dcast-function-type]:  =3D> 1756:13=
-,
-> > 1639:13  + /kisskb/src/arch/sparc/mm/srmmu.c: error: cast between
-> > incompatible function types from 'void (*)(struct mm_struct *)' to
-> > 'void (*)(long unsigned int,  long unsigned int,  long unsigned int,
-> > long unsigned int,  long unsigned int)' [-Werror=3Dcast-function-type]:
-> > =3D> 1674:29, 1662:29  + /kisskb/src/arch/sparc/mm/srmmu.c: error: cast
-> > between incompatible function types from 'void (*)(struct mm_struct *,
-> > long unsigned int)' to 'void (*)(long unsigned int,  long unsigned
-> > int,  long unsigned int,  long unsigned int,  long unsigned int)'
-> > [-Werror=3Dcast-function-type]:  =3D> 1767:21  +
-> > /kisskb/src/arch/sparc/mm/srmmu.c: error: cast between incompatible
-> > function types from 'void (*)(struct vm_area_struct *, long unsigned
-> > int)' to 'void (*)(long unsigned int,  long unsigned int,  long
-> > unsigned int,  long unsigned int,  long unsigned int)'
-> > [-Werror=3Dcast-function-type]:  =3D> 1741:29, 1726:29  +
-> > /kisskb/src/arch/sparc/mm/srmmu.c: error: cast between incompatible
-> > function types from 'void (*)(struct vm_area_struct *, long unsigned
-> > int,  long unsigned int)' to 'void (*)(long unsigned int,  long
-> > unsigned int,  long unsigned int,  long unsigned int,  long unsigned
-> > int)' [-Werror=3Dcast-function-type]:  =3D> 1694:29, 1711:29
->=20
-> sparc64-gcc11/sparc-allmodconfig
->=20
-> >  + /kisskb/src/arch/um/include/asm/processor-generic.h: error: called
-> > object is not a function or function pointer:  =3D> 103:18  +
-> > /kisskb/src/drivers/vfio/pci/vfio_pci_rdwr.c: error: assignment makes
-> > pointer from integer without a cast [-Werror=3Dint-conversion]:  =3D>
-> > 324:9, 317:9  + /kisskb/src/drivers/vfio/pci/vfio_pci_rdwr.c: error:
-> > implicit declaration of function 'ioport_map'
-> > [-Werror=3Dimplicit-function-declaration]:  =3D> 317:11  +
-> > /kisskb/src/drivers/vfio/pci/vfio_pci_rdwr.c: error: implicit
-> > declaration of function 'ioport_unmap'
-> > [-Werror=3Dimplicit-function-declaration]:  =3D> 338:15
->=20
-> um-x86_64/um-allyesconfig
->=20
-> >  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_topology.c:
-> > error: control reaches end of non-void function [-Werror=3Dreturn-type]=
-:
-> > =3D> 1560:1
->=20
-> um-x86_64/um-all{mod,yes}config
->=20
-> >  + /kisskb/src/drivers/net/ethernet/freescale/fec_mpc52xx.c: error:
-> > passing argument 2 of 'mpc52xx_fec_set_paddr' discards 'const'
-> > qualifier from pointer target type [-Werror=3Ddiscarded-qualifiers]:  =
-=3D>
-> > 659:29
->=20
-> powerpc-gcc5/ppc32_allmodconfig
->=20
-> >  + /kisskb/src/drivers/pinctrl/pinctrl-thunderbay.c: error: assignment
-> > discards 'const' qualifier from pointer target type
-> > [-Werror=3Ddiscarded-qualifiers]:  =3D> 815:8, 815:29
->=20
-> arm64-gcc5.4/arm64-allmodconfig
-> arm64-gcc8/arm64-allmodconfig
->=20
+On 1/24/22 17:23, Felix Kuehling wrote:
+> 
+> Am 2022-01-24 um 14:11 schrieb Randy Dunlap:
+>> On 1/24/22 10:55, Geert Uytterhoeven wrote:
+>>> Hi Alex,
+>>>
+>>> On Mon, Jan 24, 2022 at 7:52 PM Alex Deucher <alexdeucher@gmail.com> wrote:
+>>>> On Mon, Jan 24, 2022 at 5:25 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>>>>> On Sun, 23 Jan 2022, Geert Uytterhoeven wrote:
+>>>>>>   + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_topology.c: error: control reaches end of non-void function [-Werror=return-type]:  => 1560:1
+>>>> I don't really see what's going on here:
+>>>>
+>>>> #ifdef CONFIG_X86_64
+>>>> return cpu_data(first_cpu_of_numa_node).apicid;
+>>>> #else
+>>>> return first_cpu_of_numa_node;
+>>>> #endif
+>>> Ah, the actual failure causing this was not included:
+>>>
+>>> In file included from /kisskb/src/arch/x86/um/asm/processor.h:41:0,
+>>>                   from /kisskb/src/include/linux/mutex.h:19,
+>>>                   from /kisskb/src/include/linux/kernfs.h:11,
+>>>                   from /kisskb/src/include/linux/sysfs.h:16,
+>>>                   from /kisskb/src/include/linux/kobject.h:20,
+>>>                   from /kisskb/src/include/linux/pci.h:35,
+>>>                   from
+>>> /kisskb/src/drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_topology.c:25:
+>>> /kisskb/src/drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_topology.c: In
+>>> function 'kfd_cpumask_to_apic_id':
+>>> /kisskb/src/arch/um/include/asm/processor-generic.h:103:18: error:
+>>> called object is not a function or function pointer
+>>>   #define cpu_data (&boot_cpu_data)
+>>>                    ^
+>>> /kisskb/src/drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_topology.c:1556:9:
+>>> note: in expansion of macro 'cpu_data'
+>>>    return cpu_data(first_cpu_of_numa_node).apicid;
+>>>           ^
+>>> /kisskb/src/drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_topology.c:1560:1:
+>>> error: control reaches end of non-void function [-Werror=return-type]
+>>>   }
+>>>   ^
+>> ah yes, UML.
+>> I have a bunch of UML fixes that I have been hesitant to post.
+>>
+>> This is one of them.
+>> What do people think about this?
+> 
+> Does it make sense to configure a UML kernel with a real device driver in the first place? Or should we just prevent enabling amdgpu for UML with a Kconfig dependency?
+> 
 
-These errors are fixed with the patch set by Rafa=B3 Mi=B3ecki:=20
-https://lore.kernel.org/all/CACRpkdYbR-hpLTcvN1_LuxEH_mgHLqDmopDqo1ddui9o8Z=
-vSPQ@mail.gmail.com/t/
+Hi,
 
-Regards,
-Lakshmi Sowjanya
+Your option IMO. I have seen both opinions given.
+I also meant to reply that someone could just add
+	depends on !UML
+for this device, like you are suggesting.
 
-> >  + /kisskb/src/lib/test_printf.c: error: "PTR" redefined [-Werror]:
-> > =3D> 247:0, 247  + /kisskb/src/sound/pci/ca0106/ca0106.h: error: "PTR"
-> > redefined [-Werror]:  =3D> 62, 62:0
->=20
-> mips-gcc8/mips-allmodconfig
-> mipsel/mips-allmodconfig
->=20
-> >  + error: arch/powerpc/kvm/book3s_64_entry.o: relocation truncated to
-> > fit: R_PPC64_REL14 (stub) against symbol `machine_check_common'
-> > defined in .text section in arch/powerpc/kernel/head_64.o:  =3D>
-> > (.text+0x3e4)
->=20
-> powerpc-gcc5/powerpc-allyesconfig
->=20
-> Gr{oetje,eeting}s,
->=20
->  						Geert
->=20
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-
-> m68k.org
->=20
-> In personal conversations with technical people, I call myself a hacker. =
-But when
-> I'm talking to journalists I just say "programmer" or something like that=
-.
->  							    -- Linus Torvalds
+I'm fine with it either way.
+
+thanks.
+
+> 
+>>
+>> thanks.
+>>
+>> ---
+>> From: Randy Dunlap <rdunlap@infradead.org>
+>>
+>>
+>> ../drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_topology.c:1556:9: note: in expansion of macro ‘cpu_data’
+>>    return cpu_data(first_cpu_of_numa_node).apicid;
+>>           ^~~~~~~~
+>> ../drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_topology.c:1560:1: error: control reaches end of non-void function [-Werror=return-type]
+>>
+>> ../drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_crat.c: In function ‘kfd_fill_iolink_info_for_cpu’:
+>> ../arch/um/include/asm/processor-generic.h:103:19: error: called object is not a function or function pointer
+>>   #define cpu_data (&boot_cpu_data)
+>>                    ~^~~~~~~~~~~~~~~
+>> ../drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_crat.c:1688:27: note: in expansion of macro ‘cpu_data’
+>>    struct cpuinfo_x86 *c = &cpu_data(0);
+>>                             ^~~~~~~~
+>> ../drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_crat.c:1691:7: error: dereferencing pointer to incomplete type ‘struct cpuinfo_x86’
+>>    if (c->x86_vendor == X86_VENDOR_AMD)
+>>         ^~
+>> ../drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_crat.c:1691:23: error: ‘X86_VENDOR_AMD’ undeclared (first use in this function); did you mean ‘X86_VENDOR_ANY’?
+>>    if (c->x86_vendor == X86_VENDOR_AMD)
+>>                         ^~~~~~~~~~~~~~
+>>                         X86_VENDOR_ANY
+>>
+>> ../drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_crat.c: In function ‘kfd_create_vcrat_image_cpu’:
+>> ../drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_crat.c:1742:11: warning: unused variable ‘entries’ [-Wunused-variable]
+>>    uint32_t entries = 0;
+>>
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> ---
+>>   drivers/gpu/drm/amd/amdkfd/kfd_crat.c     |    6 +++---
+>>   drivers/gpu/drm/amd/amdkfd/kfd_topology.c |    2 +-
+>>   2 files changed, 4 insertions(+), 4 deletions(-)
+>>
+>> --- linux-next-20220107.orig/drivers/gpu/drm/amd/amdkfd/kfd_topology.c
+>> +++ linux-next-20220107/drivers/gpu/drm/amd/amdkfd/kfd_topology.c
+>> @@ -1552,7 +1552,7 @@ static int kfd_cpumask_to_apic_id(const
+>>       first_cpu_of_numa_node = cpumask_first(cpumask);
+>>       if (first_cpu_of_numa_node >= nr_cpu_ids)
+>>           return -1;
+>> -#ifdef CONFIG_X86_64
+>> +#if defined(CONFIG_X86_64) && !defined(CONFIG_UML)
+>>       return cpu_data(first_cpu_of_numa_node).apicid;
+>>   #else
+>>       return first_cpu_of_numa_node;
+>> --- linux-next-20220107.orig/drivers/gpu/drm/amd/amdkfd/kfd_crat.c
+>> +++ linux-next-20220107/drivers/gpu/drm/amd/amdkfd/kfd_crat.c
+>> @@ -1679,7 +1679,7 @@ static int kfd_fill_mem_info_for_cpu(int
+>>       return 0;
+>>   }
+>>   -#ifdef CONFIG_X86_64
+>> +#if defined(CONFIG_X86_64) && !defined(CONFIG_UML)
+>>   static int kfd_fill_iolink_info_for_cpu(int numa_node_id, int *avail_size,
+>>                   uint32_t *num_entries,
+>>                   struct crat_subtype_iolink *sub_type_hdr)
+>> @@ -1738,7 +1738,7 @@ static int kfd_create_vcrat_image_cpu(vo
+>>       struct crat_subtype_generic *sub_type_hdr;
+>>       int avail_size = *size;
+>>       int numa_node_id;
+>> -#ifdef CONFIG_X86_64
+>> +#if defined(CONFIG_X86_64) && !defined(CONFIG_UML)
+>>       uint32_t entries = 0;
+>>   #endif
+>>       int ret = 0;
+>> @@ -1803,7 +1803,7 @@ static int kfd_create_vcrat_image_cpu(vo
+>>               sub_type_hdr->length);
+>>             /* Fill in Subtype: IO Link */
+>> -#ifdef CONFIG_X86_64
+>> +#if defined(CONFIG_X86_64) && !defined(CONFIG_UML)
+>>           ret = kfd_fill_iolink_info_for_cpu(numa_node_id, &avail_size,
+>>                   &entries,
+>>                   (struct crat_subtype_iolink *)sub_type_hdr);
+>>
+>>
+
+-- 
+~Randy
 
