@@ -1,9 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH 1/2] IB/qib: don't use qib_wc_x86_64 for UML
-Date: Sat,  1 Jan 2022 23:06:09 -0800
-Message-Id: <20220102070609.22783-1-rdunlap@infradead.org>
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nEY0E-009cem-2Q
+ for linux-um@lists.infradead.org; Mon, 31 Jan 2022 14:49:59 +0000
+Subject: Re: [PATCH] uml: net: vector: fix const issue
+References: <20220131153527.3a3b22daa521.I68e88e5d49d37c0005e4fd5ef6a3c43be5876b91@changeid>
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Message-ID: <1e2f80d8-3e8d-c367-4ee7-24f1d3874aaf@kot-begemot.co.uk>
+Date: Mon, 31 Jan 2022 14:49:42 +0000
 MIME-Version: 1.0
+In-Reply-To: <20220131153527.3a3b22daa521.I68e88e5d49d37c0005e4fd5ef6a3c43be5876b91@changeid>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -12,42 +20,61 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, Jason Gunthorpe <jgg@nvidia.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-rdma@vger.kernel.org, linux-um@lists.infradead.org, Randy Dunlap <rdunlap@infradead.org>
+To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
 
-V2hlbiBidWlsZGluZyBxaWJfd2NfeDg2XzY0LmMgb24gQVJDSD11bSwgcmVmZXJlbmNlcyB0byBz
-b21lIGNwdWluZm8KZmllbGRzIGNhdXNlIGJ1aWxkIGVycm9ycyBzaW5jZSBjcHVpbmZvIGRvZXMg
-bm90IGNvbnRhaW4geDg2LXNwZWNpZmljCmZpZWxkcy4KClRoaXMgc291cmNlIGZpbGUgaXMgeDg2
-XzY0LXNwZWNpZmljLCBzbyBkb24ndCBpbmNsdWRlIGl0IGluIHRoZQp0YXJnZXQgb2JqZWN0IGZp
-bGUgd2hlbiBDT05GSUdfVU1MIGlzIHNldC9lbmFibGVkLgoKUHJldmVudHMgdGhlc2UgYnVpbGQg
-ZXJyb3JzOgoKLi4vZHJpdmVycy9pbmZpbmliYW5kL2h3L3FpYi9xaWJfd2NfeDg2XzY0LmM6IElu
-IGZ1bmN0aW9uIOKAmHFpYl91bm9yZGVyZWRfd2PigJk6Ci4uL2RyaXZlcnMvaW5maW5pYmFuZC9o
-dy9xaWIvcWliX3djX3g4Nl82NC5jOjE0OToyMjogZXJyb3I6IOKAmHN0cnVjdCBjcHVpbmZvX3Vt
-4oCZIGhhcyBubyBtZW1iZXIgbmFtZWQg4oCYeDg2X3ZlbmRvcuKAmQogIHJldHVybiBib290X2Nw
-dV9kYXRhLng4Nl92ZW5kb3IgIT0gWDg2X1ZFTkRPUl9BTUQ7CiAgICAgICAgICAgICAgICAgICAg
-ICBeCi4uL2RyaXZlcnMvaW5maW5pYmFuZC9ody9xaWIvcWliX3djX3g4Nl82NC5jOjE0OTozNzog
-ZXJyb3I6IOKAmFg4Nl9WRU5ET1JfQU1E4oCZIHVuZGVjbGFyZWQgKGZpcnN0IHVzZSBpbiB0aGlz
-IGZ1bmN0aW9uKTsgZGlkIHlvdSBtZWFuIOKAmFg4Nl9WRU5ET1JfQU5Z4oCZPwogIHJldHVybiBi
-b290X2NwdV9kYXRhLng4Nl92ZW5kb3IgIT0gWDg2X1ZFTkRPUl9BTUQ7CiAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICBefn5+fn5+fn5+fn5+fgouLi9kcml2ZXJzL2luZmluaWJh
-bmQvaHcvcWliL3FpYl93Y194ODZfNjQuYzoxNTA6MTogZXJyb3I6IGNvbnRyb2wgcmVhY2hlcyBl
-bmQgb2Ygbm9uLXZvaWQgZnVuY3Rpb24gWy1XZXJyb3I9cmV0dXJuLXR5cGVdCgpGaXhlczogNjhm
-NWQzZjNiNjU0ICgidW06IGFkZCBQQ0kgb3ZlciB2aXJ0aW8gZW11bGF0aW9uIGRyaXZlciIpClNp
-Z25lZC1vZmYtYnk6IFJhbmR5IER1bmxhcCA8cmR1bmxhcEBpbmZyYWRlYWQub3JnPgotLS0KIGRy
-aXZlcnMvaW5maW5pYmFuZC9ody9xaWIvTWFrZWZpbGUgfCAgICAyICsrCiAxIGZpbGUgY2hhbmdl
-ZCwgMiBpbnNlcnRpb25zKCspCgotLS0gbGludXgtbmV4dC0yMDIxMTIyNC5vcmlnL2RyaXZlcnMv
-aW5maW5pYmFuZC9ody9xaWIvTWFrZWZpbGUKKysrIGxpbnV4LW5leHQtMjAyMTEyMjQvZHJpdmVy
-cy9pbmZpbmliYW5kL2h3L3FpYi9NYWtlZmlsZQpAQCAtMTIsNiArMTIsOCBAQCBpYl9xaWIteSA6
-PSBxaWJfZGlhZy5vIHFpYl9kcml2ZXIubyBxaWJfCiAjIDYxMjAgaGFzIG5vIGZhbGxiYWNrIGlm
-IG5vIE1TSSBpbnRlcnJ1cHRzLCBvdGhlcnMgY2FuIGRvIElOVHgKIGliX3FpYi0kKENPTkZJR19Q
-Q0lfTVNJKSArPSBxaWJfaWJhNjEyMC5vCiAKK2lmZXEgKCQoQ09ORklHX1VNTCksKQogaWJfcWli
-LSQoQ09ORklHX1g4Nl82NCkgKz0gcWliX3djX3g4Nl82NC5vCitlbmRpZgogaWJfcWliLSQoQ09O
-RklHX1BQQzY0KSArPSBxaWJfd2NfcHBjNjQubwogaWJfcWliLSQoQ09ORklHX0RFQlVHX0ZTKSAr
-PSBxaWJfZGVidWdmcy5vCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9y
-ZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
+
+On 31/01/2022 14:35, Johannes Berg wrote:
+> From: Johannes Berg <johannes.berg@intel.com>
+>
+> Since the constification of MAC addresses, the argument
+> to uml_vector_default_bpf() must be const.
+>
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+> ---
+>   arch/um/drivers/vector_user.c | 2 +-
+>   arch/um/drivers/vector_user.h | 2 +-
+>   2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
+> index e4ffeb9a1fa4..c650e428432b 100644
+> --- a/arch/um/drivers/vector_user.c
+> +++ b/arch/um/drivers/vector_user.c
+> @@ -771,7 +771,7 @@ int uml_vector_detach_bpf(int fd, void *bpf)
+>   		printk(KERN_ERR BPF_DETACH_FAIL, prog->len, prog->filter, fd, -errno);
+>   	return err;
+>   }
+> -void *uml_vector_default_bpf(void *mac)
+> +void *uml_vector_default_bpf(const void *mac)
+>   {
+>   	struct sock_filter *bpf;
+>   	uint32_t *mac1 = (uint32_t *)(mac + 2);
+> diff --git a/arch/um/drivers/vector_user.h b/arch/um/drivers/vector_user.h
+> index d29d5fdd98fa..3a73d17a0161 100644
+> --- a/arch/um/drivers/vector_user.h
+> +++ b/arch/um/drivers/vector_user.h
+> @@ -97,7 +97,7 @@ extern int uml_vector_recvmmsg(
+>   	unsigned int vlen,
+>   	unsigned int flags
+>   );
+> -extern void *uml_vector_default_bpf(void *mac);
+> +extern void *uml_vector_default_bpf(const void *mac);
+>   extern void *uml_vector_user_bpf(char *filename);
+>   extern int uml_vector_attach_bpf(int fd, void *bpf);
+>   extern int uml_vector_detach_bpf(int fd, void *bpf);
+
+Acked-By: anton ivanov <anton.ivanov@cambridgegreys.com>
+-- 
+Anton R. Ivanov
+https://www.kot-begemot.co.uk/
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
