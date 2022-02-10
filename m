@@ -1,55 +1,81 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Thu, 17 Feb 2022 09:29:14 -0800
-From: Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH] um: Cleanup syscall_handler_t definition/cast, fix
- warning
-Message-ID: <202202170928.F02D6F41@keescook>
-References: <20220210034353.1065703-1-davidgow@google.com>
-MIME-Version: 1.0
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-yb1-xb49.google.com ([2607:f8b0:4864:20::b49])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nI0NN-002SoB-6n
+ for linux-um@lists.infradead.org; Thu, 10 Feb 2022 03:44:10 +0000
+Received: by mail-yb1-xb49.google.com with SMTP id
+ a32-20020a25ae20000000b0061db8f89e46so9330587ybj.14
+ for <linux-um@lists.infradead.org>; Wed, 09 Feb 2022 19:44:06 -0800 (PST)
+Date: Thu, 10 Feb 2022 11:43:53 +0800
+Message-Id: <20220210034353.1065703-1-davidgow@google.com>
+Mime-Version: 1.0
+Subject: [PATCH] um: Cleanup syscall_handler_t definition/cast, fix warning
+From: David Gow <davidgow@google.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220210034353.1065703-1-davidgow@google.com>
-To: David Gow <davidgow@google.com>
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Al Viro <viro@zeniv.linux.org.uk>, x86@kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+Content-Transfer-Encoding: base64
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Al Viro <viro@zeniv.linux.org.uk>
+Cc: David Gow <davidgow@google.com>, x86@kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
 
-On Thu, Feb 10, 2022 at 11:43:53AM +0800, David Gow wrote:
-> The syscall_handler_t type for x86_64 was defined as 'long (*)(void)',
-> but always cast to 'long (*)(long, long, long, long, long, long)' before
-> use. This now triggers a warning (see below).
-> 
-> Define syscall_handler_t as the latter instead, and remove the cast.
-> This simplifies the code, and fixes the warning.
-> 
-> Warning:
-> In file included from ../arch/um/include/asm/processor-generic.h:13
->                  from ../arch/x86/um/asm/processor.h:41
->                  from ../include/linux/rcupdate.h:30
->                  from ../include/linux/rculist.h:11
->                  from ../include/linux/pid.h:5
->                  from ../include/linux/sched.h:14
->                  from ../include/linux/ptrace.h:6
->                  from ../arch/um/kernel/skas/syscall.c:7:
-> ../arch/um/kernel/skas/syscall.c: In function ‘handle_syscall’:
-> ../arch/x86/um/shared/sysdep/syscalls_64.h:18:11: warning: cast between incompatible function types from ‘long int (*)(void)’ to ‘long int (*)(long int,  long int,  long int,  long int,  long int,  long int)’ [
-> -Wcast-function-type]
->    18 |         (((long (*)(long, long, long, long, long, long)) \
->       |           ^
-> ../arch/x86/um/asm/ptrace.h:36:62: note: in definition of macro ‘PT_REGS_SET_SYSCALL_RETURN’
->    36 | #define PT_REGS_SET_SYSCALL_RETURN(r, res) (PT_REGS_AX(r) = (res))
->       |                                                              ^~~
-> ../arch/um/kernel/skas/syscall.c:46:33: note: in expansion of macro ‘EXECUTE_SYSCALL’
->    46 |                                 EXECUTE_SYSCALL(syscall, regs));
->       |                                 ^~~~~~~~~~~~~~~
-> 
-> Signed-off-by: David Gow <davidgow@google.com>
-
-Thanks for this! I was just about to go figure this out too. :)
-
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Tested-by: Kees Cook <keescook@chromium.org>
-
--- 
-Kees Cook
+VGhlIHN5c2NhbGxfaGFuZGxlcl90IHR5cGUgZm9yIHg4Nl82NCB3YXMgZGVmaW5lZCBhcyAnbG9u
+ZyAoKikodm9pZCknLApidXQgYWx3YXlzIGNhc3QgdG8gJ2xvbmcgKCopKGxvbmcsIGxvbmcsIGxv
+bmcsIGxvbmcsIGxvbmcsIGxvbmcpJyBiZWZvcmUKdXNlLiBUaGlzIG5vdyB0cmlnZ2VycyBhIHdh
+cm5pbmcgKHNlZSBiZWxvdykuCgpEZWZpbmUgc3lzY2FsbF9oYW5kbGVyX3QgYXMgdGhlIGxhdHRl
+ciBpbnN0ZWFkLCBhbmQgcmVtb3ZlIHRoZSBjYXN0LgpUaGlzIHNpbXBsaWZpZXMgdGhlIGNvZGUs
+IGFuZCBmaXhlcyB0aGUgd2FybmluZy4KCldhcm5pbmc6CkluIGZpbGUgaW5jbHVkZWQgZnJvbSAu
+Li9hcmNoL3VtL2luY2x1ZGUvYXNtL3Byb2Nlc3Nvci1nZW5lcmljLmg6MTMKICAgICAgICAgICAg
+ICAgICBmcm9tIC4uL2FyY2gveDg2L3VtL2FzbS9wcm9jZXNzb3IuaDo0MQogICAgICAgICAgICAg
+ICAgIGZyb20gLi4vaW5jbHVkZS9saW51eC9yY3VwZGF0ZS5oOjMwCiAgICAgICAgICAgICAgICAg
+ZnJvbSAuLi9pbmNsdWRlL2xpbnV4L3JjdWxpc3QuaDoxMQogICAgICAgICAgICAgICAgIGZyb20g
+Li4vaW5jbHVkZS9saW51eC9waWQuaDo1CiAgICAgICAgICAgICAgICAgZnJvbSAuLi9pbmNsdWRl
+L2xpbnV4L3NjaGVkLmg6MTQKICAgICAgICAgICAgICAgICBmcm9tIC4uL2luY2x1ZGUvbGludXgv
+cHRyYWNlLmg6NgogICAgICAgICAgICAgICAgIGZyb20gLi4vYXJjaC91bS9rZXJuZWwvc2thcy9z
+eXNjYWxsLmM6NzoKLi4vYXJjaC91bS9rZXJuZWwvc2thcy9zeXNjYWxsLmM6IEluIGZ1bmN0aW9u
+IOKAmGhhbmRsZV9zeXNjYWxs4oCZOgouLi9hcmNoL3g4Ni91bS9zaGFyZWQvc3lzZGVwL3N5c2Nh
+bGxzXzY0Lmg6MTg6MTE6IHdhcm5pbmc6IGNhc3QgYmV0d2VlbiBpbmNvbXBhdGlibGUgZnVuY3Rp
+b24gdHlwZXMgZnJvbSDigJhsb25nIGludCAoKikodm9pZCnigJkgdG8g4oCYbG9uZyBpbnQgKCop
+KGxvbmcgaW50LCAgbG9uZyBpbnQsICBsb25nIGludCwgIGxvbmcgaW50LCAgbG9uZyBpbnQsICBs
+b25nIGludCnigJkgWwotV2Nhc3QtZnVuY3Rpb24tdHlwZV0KICAgMTggfCAgICAgICAgICgoKGxv
+bmcgKCopKGxvbmcsIGxvbmcsIGxvbmcsIGxvbmcsIGxvbmcsIGxvbmcpKSBcCiAgICAgIHwgICAg
+ICAgICAgIF4KLi4vYXJjaC94ODYvdW0vYXNtL3B0cmFjZS5oOjM2OjYyOiBub3RlOiBpbiBkZWZp
+bml0aW9uIG9mIG1hY3JvIOKAmFBUX1JFR1NfU0VUX1NZU0NBTExfUkVUVVJO4oCZCiAgIDM2IHwg
+I2RlZmluZSBQVF9SRUdTX1NFVF9TWVNDQUxMX1JFVFVSTihyLCByZXMpIChQVF9SRUdTX0FYKHIp
+ID0gKHJlcykpCiAgICAgIHwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIF5+fgouLi9hcmNoL3VtL2tlcm5lbC9za2FzL3N5c2NhbGwu
+Yzo0NjozMzogbm90ZTogaW4gZXhwYW5zaW9uIG9mIG1hY3JvIOKAmEVYRUNVVEVfU1lTQ0FMTOKA
+mQogICA0NiB8ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgRVhFQ1VURV9TWVNDQUxM
+KHN5c2NhbGwsIHJlZ3MpKTsKICAgICAgfCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IF5+fn5+fn5+fn5+fn5+fgoKU2lnbmVkLW9mZi1ieTogRGF2aWQgR293IDxkYXZpZGdvd0Bnb29n
+bGUuY29tPgotLS0KCkkgY291bGRuJ3QgZmluZCBhIHJlYXNvbiBmb3IgdGhlIHR3byBjb25mbGlj
+dGluZyBmdW5jdGlvbiB0eXBlcyBoZXJlLApidXQgaXQncyBwb3NzaWJsZSBJJ20gbWlzc2luZyBv
+bmUuIEF0IHRoZSB2ZXJ5IGxlYXN0LCB0aGlzIGNoYW5nZSBkaWRuJ3QKc2VlbSB0byBicmVhayBh
+bnl0aGluZyBvbiBteSBzeXN0ZW0uCgoKIGFyY2gveDg2L3VtL3NoYXJlZC9zeXNkZXAvc3lzY2Fs
+bHNfNjQuaCB8IDUgKystLS0KIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDMgZGVs
+ZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvYXJjaC94ODYvdW0vc2hhcmVkL3N5c2RlcC9zeXNjYWxs
+c182NC5oIGIvYXJjaC94ODYvdW0vc2hhcmVkL3N5c2RlcC9zeXNjYWxsc182NC5oCmluZGV4IDQ4
+ZDZjZDEyZjhhNS4uYjZiOTk3MjI1ODQxIDEwMDY0NAotLS0gYS9hcmNoL3g4Ni91bS9zaGFyZWQv
+c3lzZGVwL3N5c2NhbGxzXzY0LmgKKysrIGIvYXJjaC94ODYvdW0vc2hhcmVkL3N5c2RlcC9zeXNj
+YWxsc182NC5oCkBAIC0xMCwxMyArMTAsMTIgQEAKICNpbmNsdWRlIDxsaW51eC9tc2cuaD4KICNp
+bmNsdWRlIDxsaW51eC9zaG0uaD4KIAotdHlwZWRlZiBsb25nIHN5c2NhbGxfaGFuZGxlcl90KHZv
+aWQpOwordHlwZWRlZiBsb25nIHN5c2NhbGxfaGFuZGxlcl90KGxvbmcsIGxvbmcsIGxvbmcsIGxv
+bmcsIGxvbmcsIGxvbmcpOwogCiBleHRlcm4gc3lzY2FsbF9oYW5kbGVyX3QgKnN5c19jYWxsX3Rh
+YmxlW107CiAKICNkZWZpbmUgRVhFQ1VURV9TWVNDQUxMKHN5c2NhbGwsIHJlZ3MpIFwKLQkoKChs
+b25nICgqKShsb25nLCBsb25nLCBsb25nLCBsb25nLCBsb25nLCBsb25nKSkgXAotCSAgKCpzeXNf
+Y2FsbF90YWJsZVtzeXNjYWxsXSkpKFVQVF9TWVNDQUxMX0FSRzEoJnJlZ3MtPnJlZ3MpLCBcCisJ
+KCgoKnN5c19jYWxsX3RhYmxlW3N5c2NhbGxdKSkoVVBUX1NZU0NBTExfQVJHMSgmcmVncy0+cmVn
+cyksIFwKIAkJIAkJICAgICAgVVBUX1NZU0NBTExfQVJHMigmcmVncy0+cmVncyksIFwKIAkJCQkg
+ICAgICBVUFRfU1lTQ0FMTF9BUkczKCZyZWdzLT5yZWdzKSwgXAogCQkJCSAgICAgIFVQVF9TWVND
+QUxMX0FSRzQoJnJlZ3MtPnJlZ3MpLCBcCi0tIAoyLjM1LjAuMjYzLmdiODI0MjI2NDJmLWdvb2cK
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11
+bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
+aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
 
