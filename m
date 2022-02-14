@@ -1,80 +1,34 @@
-Return-Path: <arnd@kernel.org>
-From: Arnd Bergmann <arnd@kernel.org>
-Subject: [PATCH v2 06/18] x86: use more conventional access_ok() definition
-Date: Wed, 16 Feb 2022 14:13:20 +0100
-Message-Id: <20220216131332.1489939-7-arnd@kernel.org>
-In-Reply-To: <20220216131332.1489939-1-arnd@kernel.org>
-References: <20220216131332.1489939-1-arnd@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Date: Mon, 14 Feb 2022 08:58:58 -0800
+From: Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH 01/14] uaccess: fix integer overflow on access_ok()
+Message-ID: <YgqKUscD4Xx62bVt@infradead.org>
+References: <20220214163452.1568807-1-arnd@kernel.org>
+ <20220214163452.1568807-2-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: Linus Torvalds <torvalds@linux-foundation.org>, Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-api@vger.kernel.org, arnd@arndb.de, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk
-Cc: linux@armlinux.org.uk, will@kernel.org, guoren@kernel.org, bcain@codeaurora.org, geert@linux-m68k.org, monstr@monstr.eu, tsbogend@alpha.franken.de, nickhu@andestech.com, green.hu@gmail.com, dinguyen@kernel.org, shorne@gmail.com, deller@gmx.de, mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com, hca@linux.ibm.com, dalias@libc.org, davem@davemloft.net, richard@nod.at, x86@kernel.org, jcmvbkbc@gmail.com, ebiederm@xmission.com, akpm@linux-foundation.org, ardb@kernel.org, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
-List-ID: <linux-um.lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <20220214163452.1568807-2-arnd@kernel.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-api@vger.kernel.org, arnd@arndb.de, linux-kernel@vger.kernel.org, mark.rutland@arm.com, dalias@libc.org, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, peterz@infradead.org, jcmvbkbc@gmail.com, guoren@kernel.org, sparclinux@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-riscv@lists.infradead.org, will@kernel.org, ardb@kernel.org, linux-s390@vger.kernel.org, bcain@codeaurora.org, deller@gmx.de, x86@kernel.org, linux@armlinux.org.uk, linux-csky@vger.kernel.org, mingo@redhat.com, geert@linux-m68k.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, hca@linux.ibm.com, linux-alpha@vger.kernel.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, green.hu@gmail.com, shorne@gmail.com, linux-arm-kernel@lists.infradead.org, monstr@monstr.eu, tsbogend@alpha.franken.de, linux-parisc@vger.kernel.org, nickhu@andestech.com, linux-mips@vger.kernel.org, stable@vger.kernel.org, dinguyen@kernel.org, David Laight <David.Laight@aculab.com>, ebiederm@xmission.com, richard@nod.at, akpm@linux-foundation.org, linuxppc-dev@lists.ozlabs.org, davem@davemloft.net
 
-From: Arnd Bergmann <arnd@arndb.de>
+Looks good,
 
-The way that access_ok() is defined on x86 is slightly different from
-most other architectures, and a bit more complex.
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-The generic version tends to result in the best output on all
-architectures, as it results in single comparison against a constant
-limit for calls with a known size.
-
-There are a few callers of __range_not_ok(), all of which use TASK_SIZE
-as the limit rather than TASK_SIZE_MAX, but I could not see any reason
-for picking this. Changing these to call __access_ok() instead uses the
-default limit, but keeps the behavior otherwise.
-
-x86 is the only architecture with a WARN_ON_IN_IRQ() checking
-access_ok(), but it's probably best to leave that in place.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/x86/include/asm/uaccess.h | 25 +++----------------------
- 1 file changed, 3 insertions(+), 22 deletions(-)
-
-diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
-index 79c4869ccdd6..a59ba2578e64 100644
---- a/arch/x86/include/asm/uaccess.h
-+++ b/arch/x86/include/asm/uaccess.h
-@@ -16,33 +16,14 @@
-  * Test whether a block of memory is a valid user space address.
-  * Returns 0 if the range is valid, nonzero otherwise.
-  */
--static inline bool __chk_range_not_ok(unsigned long addr, unsigned long size)
-+static inline bool __access_ok(void __user *ptr, unsigned long size)
- {
- 	unsigned long limit = TASK_SIZE_MAX;
-+	unsigned long addr = ptr;
- 
--	/*
--	 * If we have used "sizeof()" for the size,
--	 * we know it won't overflow the limit (but
--	 * it might overflow the 'addr', so it's
--	 * important to subtract the size from the
--	 * limit, not add it to the address).
--	 */
--	if (__builtin_constant_p(size))
--		return unlikely(addr > limit - size);
--
--	/* Arbitrary sizes? Be careful about overflow */
--	addr += size;
--	if (unlikely(addr < size))
--		return true;
--	return unlikely(addr > limit);
-+	return (size <= limit) && (addr <= (limit - size));
- }
- 
--#define __access_ok(addr, size)						\
--({									\
--	__chk_user_ptr(addr);						\
--	!__chk_range_not_ok((unsigned long __force)(addr), size);	\
--})
--
- #ifdef CONFIG_DEBUG_ATOMIC_SLEEP
- static inline bool pagefault_disabled(void);
- # define WARN_ON_IN_IRQ()	\
--- 
-2.29.2
-
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
