@@ -1,89 +1,37 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-lj1-x231.google.com ([2a00:1450:4864:20::231])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nJhtq-00Gps0-Mq
- for linux-um@lists.infradead.org; Mon, 14 Feb 2022 20:24:44 +0000
-Received: by mail-lj1-x231.google.com with SMTP id o9so19024052ljq.4
- for <linux-um@lists.infradead.org>; Mon, 14 Feb 2022 12:24:42 -0800 (PST)
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com.
- [209.85.208.179])
- by smtp.gmail.com with ESMTPSA id c12sm560384lfr.234.2022.02.14.12.24.40
- for <linux-um@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 14 Feb 2022 12:24:40 -0800 (PST)
-Received: by mail-lj1-f179.google.com with SMTP id b38so8118571ljr.12
- for <linux-um@lists.infradead.org>; Mon, 14 Feb 2022 12:24:40 -0800 (PST)
-MIME-Version: 1.0
+Return-Path: <viro@ftp.linux.org.uk>
+Date: Mon, 14 Feb 2022 20:17:07 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH 04/14] x86: use more conventional access_ok() definition
+Message-ID: <Ygq4wy9fikDYmuHU@zeniv-ca.linux.org.uk>
 References: <20220214163452.1568807-1-arnd@kernel.org>
  <20220214163452.1568807-5-arnd@kernel.org>
  <YgqLFYqIqkIsNC92@infradead.org>
  <CAK8P3a1F3JaYaJPy9bSCG1+YV6EN05PE0DbwpD_GT1qRwFSJ-w@mail.gmail.com>
  <CAHk-=whq6_Nh3cB3FieP481VcRyCu69X3=wO1yLHGmcZEj69SA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <CAHk-=whq6_Nh3cB3FieP481VcRyCu69X3=wO1yLHGmcZEj69SA@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Mon, 14 Feb 2022 12:24:13 -0800
-Message-ID: <CAHk-=wgYu67OwP4LhcrPdDVxv2mOsx-Xsc2DKoVW6GZwKFtOYQ@mail.gmail.com>
-Subject: Re: [PATCH 04/14] x86: use more conventional access_ok() definition
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Christoph Hellwig <hch@infradead.org>, Christoph Hellwig <hch@lst.de>, linux-arch <linux-arch@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>, Linux API <linux-api@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Mark Rutland <mark.rutland@arm.com>, Rich Felker <dalias@libc.org>, linux-ia64@vger.kernel.org, Linux-sh list <linux-sh@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, Max Filippov <jcmvbkbc@gmail.com>, Guo Ren <guoren@kernel.org>, sparclinux <sparclinux@vger.kernel.org>, "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>, linux-riscv <linux-riscv@lists.infradead.org>, Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, linux-s390 <linux-s390@vger.kernel.org>, Brian Cain <bcain@codeaurora.org>, Helge Deller <deller@gmx.de>, the arch/x86 maintainers <x86@kernel.org>, Russell King - ARM Linux <linux@armlinux.org.uk>, linux-csky@vger.kernel.org, Ingo Molnar <mingo@redhat.com>, Geert Uytterhoeven <geert@linux-m68k.org>, "open list:SYNOPSYS ARC ARCHITECTURE" <linux-snps-arc@lists.infradead.org>, "open list:TENSILICA XTENSA PORT (xtensa)" <linux-xtensa@linux-xtensa.org>, Heiko Carstens <hca@linux.ibm.com>, alpha <linux-alpha@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Openrisc <openrisc@lists.librecores.org>, Greentime Hu <green.hu@gmail.com>, Stafford Horne <shorne@gmail.com>, Linux ARM <linux-arm-kernel@lists.infradead.org>, Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Parisc List <linux-parisc@vger.kernel.org>, Nick Hu <nickhu@andestech.com>, "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>, Dinh Nguyen <dinguyen@kernel.org>, "Eric W . Biederman" <ebiederm@xmission.com>, Richard Weinberger <richard@nod.at>, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, David Miller <davem@davemloft.net>, Al Viro <viro@zeniv.linux.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Arnd Bergmann <arnd@kernel.org>, Christoph Hellwig <hch@infradead.org>, Christoph Hellwig <hch@lst.de>, linux-arch <linux-arch@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>, Linux API <linux-api@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Mark Rutland <mark.rutland@arm.com>, Rich Felker <dalias@libc.org>, linux-ia64@vger.kernel.org, Linux-sh list <linux-sh@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, Max Filippov <jcmvbkbc@gmail.com>, Guo Ren <guoren@kernel.org>, sparclinux <sparclinux@vger.kernel.org>, "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>, linux-riscv <linux-riscv@lists.infradead.org>, Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, linux-s390 <linux-s390@vger.kernel.org>, Brian Cain <bcain@codeaurora.org>, Helge Deller <deller@gmx.de>, the arch/x86 maintainers <x86@kernel.org>, Russell King - ARM Linux <linux@armlinux.org.uk>, linux-csky@vger.kernel.org, Ingo Molnar <mingo@redhat.com>, Geert Uytterhoeven <geert@linux-m68k.org>, "open list:SYNOPSYS ARC ARCHITECTURE" <linux-snps-arc@lists.infradead.org>, "open list:TENSILICA XTENSA PORT (xtensa)" <linux-xtensa@linux-xtensa.org>, Heiko Carstens <hca@linux.ibm.com>, alpha <linux-alpha@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Openrisc <openrisc@lists.librecores.org>, Greentime Hu <green.hu@gmail.com>, Stafford Horne <shorne@gmail.com>, Linux ARM <linux-arm-kernel@lists.infradead.org>, Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Parisc List <linux-parisc@vger.kernel.org>, Nick Hu <nickhu@andestech.com>, "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>, Dinh Nguyen <dinguyen@kernel.org>, "Eric W . Biederman" <ebiederm@xmission.com>, Richard Weinberger <richard@nod.at>, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, David Miller <davem@davemloft.net>
+List-ID: <linux-um.lists.infradead.org>
 
-On Mon, Feb 14, 2022 at 12:01 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
+On Mon, Feb 14, 2022 at 12:01:05PM -0800, Linus Torvalds wrote:
+> On Mon, Feb 14, 2022 at 11:46 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> >
+> > As Al pointed out, they turned out to be necessary on sparc64, but the only
+> > definitions are on sparc64 and x86, so it's possible that they serve a similar
+> > purpose here, in which case changing the limit from TASK_SIZE to
+> > TASK_SIZE_MAX is probably wrong as well.
+> 
 > x86-64 has always(*) used TASK_SIZE_MAX for access_ok(), and the
 > get_user() assembler implementation does the same.
+> 
+> I think any __range_not_ok() users that use TASK_SIZE are entirely
+> historical, and should be just fixed.
 
-Side note: we could just check the sign bit instead, and avoid big
-constants that way.
-
-Right now we actually have this complexity in the x86-64 user access code:
-
-  #ifdef CONFIG_X86_5LEVEL
-  #define LOAD_TASK_SIZE_MINUS_N(n) \
-        ALTERNATIVE __stringify(mov $((1 << 47) - 4096 - (n)),%rdx), \
-                    __stringify(mov $((1 << 56) - 4096 - (n)),%rdx),
-X86_FEATURE_LA57
-  #else
-  #define LOAD_TASK_SIZE_MINUS_N(n) \
-          mov $(TASK_SIZE_MAX - (n)),%_ASM_DX
-  #endif
-
-just because the code tries to get that TASK_SIZE_MAX boundary just right.
-
-And getting that boundary just right is important on 32-bit x86, but
-it's *much* less important on x86-64.
-
-There's still a (weak) reason to do it even for 64-bit code: page
-faults outside the valid user space range don't actually cause a #PF
-fault - they cause #GP - and then we have the #GP handler warn about
-"this address hasn't been checked".
-
-Which is nice and useful for doing syzbot kind of randomization loads
-(ie user accesses that didn't go through access_ok() will stand out
-nicely), but maybe it's not worth this. syzbot would be fine with only
-the "sign bit set" case warning for the same thing.
-
-So on x86-64, we could just check the sign of the address instead, and
-simplify and shrink those get/put_user() code sequences (but
-array_index_mask_nospec() currently uses the carry flag computation
-too, so we'd have to change that part as well, maybe not worth it).
-
-                  Linus
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+IIRC, that was mostly userland stack trace collection in perf.
+I'll try to dig in archives and see what shows up - it's been
+a while ago...
 
