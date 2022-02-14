@@ -1,16 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mga05.intel.com ([192.55.52.43])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nJV2Y-00DUlV-Nz
- for linux-um@lists.infradead.org; Mon, 14 Feb 2022 06:40:52 +0000
-Date: Mon, 14 Feb 2022 14:40:39 +0800
-From: kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH 23/30] um/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Message-ID: <202202141426.Q2fKI6yq-lkp@intel.com>
-References: <1644805853-21338-24-git-send-email-anshuman.khandual@arm.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1644805853-21338-24-git-send-email-anshuman.khandual@arm.com>
+Received: from foss.arm.com ([217.140.110.172])
+ by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nJR9y-00D0q9-6y
+ for linux-um@lists.infradead.org; Mon, 14 Feb 2022 02:32:15 +0000
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH 23/30] um/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+Date: Mon, 14 Feb 2022 08:00:46 +0530
+Message-Id: <1644805853-21338-24-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <1644805853-21338-1-git-send-email-anshuman.khandual@arm.com>
+References: <1644805853-21338-1-git-send-email-anshuman.khandual@arm.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -19,66 +17,114 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
-Cc: kbuild-all@lists.01.org, linux-kernel@vger.kernel.org, Anshuman Khandual <anshuman.khandual@arm.com>, Christoph Hellwig <hch@infradead.org>, Andrew Morton <akpm@linux-foundation.org>, linux-arch@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org
+To: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org, Anshuman Khandual <anshuman.khandual@arm.com>, Christoph Hellwig <hch@infradead.org>, Andrew Morton <akpm@linux-foundation.org>, linux-arch@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org
 
-Hi Anshuman,
+This defines and exports a platform specific custom vm_get_page_prot() via
+subscribing ARCH_HAS_VM_GET_PAGE_PROT. Subsequently all __SXXX and __PXXX
+macros can be dropped which are no longer needed.
 
-Thank you for the patch! Yet something to improve:
-
-[auto build test ERROR on hnaz-mm/master]
-
-url:    https://github.com/0day-ci/linux/commits/Anshuman-Khandual/mm-mmap-Drop-protection_map-and-platform-s-__SXXX-__PXXX-requirements/20220214-103534
-base:   https://github.com/hnaz/linux-mm master
-config: um-i386_defconfig (https://download.01.org/0day-ci/archive/20220214/202202141426.Q2fKI6yq-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/0day-ci/linux/commit/f96d6fa064e3f24686f111d1b4c06b865ca103ec
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Anshuman-Khandual/mm-mmap-Drop-protection_map-and-platform-s-__SXXX-__PXXX-requirements/20220214-103534
-        git checkout f96d6fa064e3f24686f111d1b4c06b865ca103ec
-        # save the config file to linux build tree
-        mkdir build_dir
-        make W=1 O=build_dir ARCH=um SUBARCH=i386 SHELL=/bin/bash
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
-   arch/x86/um/mem_32.c: In function 'gate_vma_init':
->> arch/x86/um/mem_32.c:20:26: error: '__P101' undeclared (first use in this function)
-      20 |  gate_vma.vm_page_prot = __P101;
-         |                          ^~~~~~
-   arch/x86/um/mem_32.c:20:26: note: each undeclared identifier is reported only once for each function it appears in
-
-
-vim +/__P101 +20 arch/x86/um/mem_32.c
-
-548f0a4e02f6fa arch/um/sys-i386/mem.c Richard Weinberger 2011-07-25  10  
-548f0a4e02f6fa arch/um/sys-i386/mem.c Richard Weinberger 2011-07-25  11  static int __init gate_vma_init(void)
-548f0a4e02f6fa arch/um/sys-i386/mem.c Richard Weinberger 2011-07-25  12  {
-548f0a4e02f6fa arch/um/sys-i386/mem.c Richard Weinberger 2011-07-25  13  	if (!FIXADDR_USER_START)
-548f0a4e02f6fa arch/um/sys-i386/mem.c Richard Weinberger 2011-07-25  14  		return 0;
-548f0a4e02f6fa arch/um/sys-i386/mem.c Richard Weinberger 2011-07-25  15  
-2c4541e24c55e2 arch/x86/um/mem_32.c   Kirill A. Shutemov 2018-07-26  16  	vma_init(&gate_vma, NULL);
-548f0a4e02f6fa arch/um/sys-i386/mem.c Richard Weinberger 2011-07-25  17  	gate_vma.vm_start = FIXADDR_USER_START;
-548f0a4e02f6fa arch/um/sys-i386/mem.c Richard Weinberger 2011-07-25  18  	gate_vma.vm_end = FIXADDR_USER_END;
-548f0a4e02f6fa arch/um/sys-i386/mem.c Richard Weinberger 2011-07-25  19  	gate_vma.vm_flags = VM_READ | VM_MAYREAD | VM_EXEC | VM_MAYEXEC;
-548f0a4e02f6fa arch/um/sys-i386/mem.c Richard Weinberger 2011-07-25 @20  	gate_vma.vm_page_prot = __P101;
-548f0a4e02f6fa arch/um/sys-i386/mem.c Richard Weinberger 2011-07-25  21  
-548f0a4e02f6fa arch/um/sys-i386/mem.c Richard Weinberger 2011-07-25  22  	return 0;
-548f0a4e02f6fa arch/um/sys-i386/mem.c Richard Weinberger 2011-07-25  23  }
-548f0a4e02f6fa arch/um/sys-i386/mem.c Richard Weinberger 2011-07-25  24  __initcall(gate_vma_init);
-548f0a4e02f6fa arch/um/sys-i386/mem.c Richard Weinberger 2011-07-25  25  
-
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: linux-um@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ arch/um/Kconfig               |  1 +
+ arch/um/include/asm/pgtable.h | 17 -----------------
+ arch/um/kernel/mem.c          | 35 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 36 insertions(+), 17 deletions(-)
+
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index 4d398b80aea8..5836296868a8 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -9,6 +9,7 @@ config UML
+ 	select ARCH_HAS_KCOV
+ 	select ARCH_HAS_STRNCPY_FROM_USER
+ 	select ARCH_HAS_STRNLEN_USER
++	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_NO_PREEMPT
+ 	select HAVE_ARCH_AUDITSYSCALL
+ 	select HAVE_ARCH_SECCOMP_FILTER
+diff --git a/arch/um/include/asm/pgtable.h b/arch/um/include/asm/pgtable.h
+index b9e20bbe2f75..d982622c0708 100644
+--- a/arch/um/include/asm/pgtable.h
++++ b/arch/um/include/asm/pgtable.h
+@@ -68,23 +68,6 @@ extern unsigned long end_iomem;
+  * Also, write permissions imply read permissions. This is the closest we can
+  * get..
+  */
+-#define __P000	PAGE_NONE
+-#define __P001	PAGE_READONLY
+-#define __P010	PAGE_COPY
+-#define __P011	PAGE_COPY
+-#define __P100	PAGE_READONLY
+-#define __P101	PAGE_READONLY
+-#define __P110	PAGE_COPY
+-#define __P111	PAGE_COPY
+-
+-#define __S000	PAGE_NONE
+-#define __S001	PAGE_READONLY
+-#define __S010	PAGE_SHARED
+-#define __S011	PAGE_SHARED
+-#define __S100	PAGE_READONLY
+-#define __S101	PAGE_READONLY
+-#define __S110	PAGE_SHARED
+-#define __S111	PAGE_SHARED
+ 
+ /*
+  * ZERO_PAGE is a global shared page that is always zero: used
+diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
+index 15295c3237a0..37c6c7b9dadc 100644
+--- a/arch/um/kernel/mem.c
++++ b/arch/um/kernel/mem.c
+@@ -197,3 +197,38 @@ void *uml_kmalloc(int size, int flags)
+ {
+ 	return kmalloc(size, flags);
+ }
++
++pgprot_t vm_get_page_prot(unsigned long vm_flags)
++{
++	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
++	case VM_NONE:
++		return PAGE_NONE;
++	case VM_READ:
++		return PAGE_READONLY;
++	case VM_WRITE:
++	case VM_WRITE | VM_READ:
++		return PAGE_COPY;
++	case VM_EXEC:
++	case VM_EXEC | VM_READ:
++		return PAGE_READONLY;
++	case VM_EXEC | VM_WRITE:
++	case VM_EXEC | VM_WRITE | VM_READ:
++		return PAGE_COPY;
++	case VM_SHARED:
++		return PAGE_NONE;
++	case VM_SHARED | VM_READ:
++		return PAGE_READONLY;
++	case VM_SHARED | VM_WRITE:
++	case VM_SHARED | VM_WRITE | VM_READ:
++		return PAGE_SHARED;
++	case VM_SHARED | VM_EXEC:
++	case VM_SHARED | VM_EXEC | VM_READ:
++		return PAGE_READONLY;
++	case VM_SHARED | VM_EXEC | VM_WRITE:
++	case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
++		return PAGE_SHARED;
++	default:
++		BUILD_BUG();
++	}
++}
++EXPORT_SYMBOL(vm_get_page_prot);
+-- 
+2.25.1
+
 
 _______________________________________________
 linux-um mailing list
