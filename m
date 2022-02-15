@@ -1,257 +1,79 @@
-Return-Path: <arnd@kernel.org>
-From: Arnd Bergmann <arnd@kernel.org>
-Subject: [PATCH 11/14] sparc64: remove CONFIG_SET_FS support
-Date: Mon, 14 Feb 2022 17:34:49 +0100
-Message-Id: <20220214163452.1568807-12-arnd@kernel.org>
-In-Reply-To: <20220214163452.1568807-1-arnd@kernel.org>
+Return-Path: <viro@ftp.linux.org.uk>
+Date: Tue, 15 Feb 2022 02:47:05 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH 04/14] x86: use more conventional access_ok() definition
+Message-ID: <YgsUKcXGR7r4nINj@zeniv-ca.linux.org.uk>
 References: <20220214163452.1568807-1-arnd@kernel.org>
+ <20220214163452.1568807-5-arnd@kernel.org>
+ <YgqLFYqIqkIsNC92@infradead.org>
+ <CAK8P3a1F3JaYaJPy9bSCG1+YV6EN05PE0DbwpD_GT1qRwFSJ-w@mail.gmail.com>
+ <CAHk-=whq6_Nh3cB3FieP481VcRyCu69X3=wO1yLHGmcZEj69SA@mail.gmail.com>
+ <Ygq4wy9fikDYmuHU@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: Linus Torvalds <torvalds@linux-foundation.org>, Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-api@vger.kernel.org, arnd@arndb.de, linux-kernel@vger.kernel.org
-Cc: linux@armlinux.org.uk, will@kernel.org, guoren@kernel.org, bcain@codeaurora.org, geert@linux-m68k.org, monstr@monstr.eu, tsbogend@alpha.franken.de, nickhu@andestech.com, green.hu@gmail.com, dinguyen@kernel.org, shorne@gmail.com, deller@gmx.de, mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com, hca@linux.ibm.com, dalias@libc.org, davem@davemloft.net, richard@nod.at, x86@kernel.org, jcmvbkbc@gmail.com, ebiederm@xmission.com, akpm@linux-foundation.org, ardb@kernel.org, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Ygq4wy9fikDYmuHU@zeniv-ca.linux.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Arnd Bergmann <arnd@kernel.org>, Christoph Hellwig <hch@infradead.org>, Christoph Hellwig <hch@lst.de>, linux-arch <linux-arch@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>, Linux API <linux-api@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Mark Rutland <mark.rutland@arm.com>, Rich Felker <dalias@libc.org>, linux-ia64@vger.kernel.org, Linux-sh list <linux-sh@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, Max Filippov <jcmvbkbc@gmail.com>, Guo Ren <guoren@kernel.org>, sparclinux <sparclinux@vger.kernel.org>, "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>, linux-riscv <linux-riscv@lists.infradead.org>, Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, linux-s390 <linux-s390@vger.kernel.org>, Brian Cain <bcain@codeaurora.org>, Helge Deller <deller@gmx.de>, the arch/x86 maintainers <x86@kernel.org>, Russell King - ARM Linux <linux@armlinux.org.uk>, linux-csky@vger.kernel.org, Ingo Molnar <mingo@redhat.com>, Geert Uytterhoeven <geert@linux-m68k.org>, "open list:SYNOPSYS ARC ARCHITECTURE" <linux-snps-arc@lists.infradead.org>, "open list:TENSILICA XTENSA PORT (xtensa)" <linux-xtensa@linux-xtensa.org>, Heiko Carstens <hca@linux.ibm.com>, alpha <linux-alpha@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Openrisc <openrisc@lists.librecores.org>, Greentime Hu <green.hu@gmail.com>, Stafford Horne <shorne@gmail.com>, Linux ARM <linux-arm-kernel@lists.infradead.org>, Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Parisc List <linux-parisc@vger.kernel.org>, Nick Hu <nickhu@andestech.com>, "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>, Dinh Nguyen <dinguyen@kernel.org>, "Eric W . Biederman" <ebiederm@xmission.com>, Richard Weinberger <richard@nod.at>, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, David Miller <davem@davemloft.net>
 List-ID: <linux-um.lists.infradead.org>
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Mon, Feb 14, 2022 at 08:17:07PM +0000, Al Viro wrote:
+> On Mon, Feb 14, 2022 at 12:01:05PM -0800, Linus Torvalds wrote:
+> > On Mon, Feb 14, 2022 at 11:46 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> > >
+> > > As Al pointed out, they turned out to be necessary on sparc64, but the only
+> > > definitions are on sparc64 and x86, so it's possible that they serve a similar
+> > > purpose here, in which case changing the limit from TASK_SIZE to
+> > > TASK_SIZE_MAX is probably wrong as well.
+> > 
+> > x86-64 has always(*) used TASK_SIZE_MAX for access_ok(), and the
+> > get_user() assembler implementation does the same.
+> > 
+> > I think any __range_not_ok() users that use TASK_SIZE are entirely
+> > historical, and should be just fixed.
+> 
+> IIRC, that was mostly userland stack trace collection in perf.
+> I'll try to dig in archives and see what shows up - it's been
+> a while ago...
 
-sparc64 uses address space identifiers to differentiate between kernel
-and user space, using ASI_P for kernel threads but ASI_AIUS for normal
-user space, with the option of changing between them.
+After some digging:
 
-As nothing really changes the ASI any more, just hardcode ASI_AIUS
-everywhere. Kernel threads are not allowed to access __user pointers
-anyway.
+	access_ok() needs only to make sure that MMU won't go anywhere near
+the kernel page tables; address limit for 32bit threads is none of its
+concern, so TASK_SIZE_MAX is right for it.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/sparc/Kconfig                      |  1 -
- arch/sparc/include/asm/processor_64.h   |  4 ----
- arch/sparc/include/asm/switch_to_64.h   |  4 +---
- arch/sparc/include/asm/thread_info_64.h |  4 +---
- arch/sparc/include/asm/uaccess_64.h     | 24 ------------------------
- arch/sparc/kernel/process_64.c          | 12 ------------
- arch/sparc/kernel/traps_64.c            |  2 --
- arch/sparc/lib/NGmemcpy.S               |  3 +--
- arch/sparc/mm/init_64.c                 |  3 ---
- 9 files changed, 3 insertions(+), 54 deletions(-)
+	valid_user_frame() in arch/x86/events/core.c: used while walking
+the userland call chain.  The reason it's not access_ok() is only that
+perf_callchain_user() might've been called from interrupt that came while
+we'd been under KERNEL_DS.
+	That had been back in 2015 and it had been obsoleted since 2017, commit
+88b0193d9418 (perf/callchain: Force USER_DS when invoking perf_callchain_user()).
+We had been guaranteed USER_DS ever since.
+	IOW, it could've reverted to use of access_ok() at any point after that.
+TASK_SIZE vs TASK_SIZE_MAX is pretty much an accident there - might've been
+TASK_SIZE_MAX from the very beginning.
 
-diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
-index 875388835a58..5f08e4d16ad8 100644
---- a/arch/sparc/Kconfig
-+++ b/arch/sparc/Kconfig
-@@ -99,7 +99,6 @@ config SPARC64
- 	select HAVE_SETUP_PER_CPU_AREA
- 	select NEED_PER_CPU_EMBED_FIRST_CHUNK
- 	select NEED_PER_CPU_PAGE_FIRST_CHUNK
--	select SET_FS
- 
- config ARCH_PROC_KCORE_TEXT
- 	def_bool y
-diff --git a/arch/sparc/include/asm/processor_64.h b/arch/sparc/include/asm/processor_64.h
-index ae851e8fce4c..89850dff6b03 100644
---- a/arch/sparc/include/asm/processor_64.h
-+++ b/arch/sparc/include/asm/processor_64.h
-@@ -47,10 +47,6 @@
- 
- #ifndef __ASSEMBLY__
- 
--typedef struct {
--	unsigned char seg;
--} mm_segment_t;
--
- /* The Sparc processor specific thread struct. */
- /* XXX This should die, everything can go into thread_info now. */
- struct thread_struct {
-diff --git a/arch/sparc/include/asm/switch_to_64.h b/arch/sparc/include/asm/switch_to_64.h
-index b1d4e2e3210f..14f3c49bfdbc 100644
---- a/arch/sparc/include/asm/switch_to_64.h
-+++ b/arch/sparc/include/asm/switch_to_64.h
-@@ -20,10 +20,8 @@ do {						\
- 	 */
- #define switch_to(prev, next, last)					\
- do {	save_and_clear_fpu();						\
--	/* If you are tempted to conditionalize the following */	\
--	/* so that ASI is only written if it changes, think again. */	\
- 	__asm__ __volatile__("wr %%g0, %0, %%asi"			\
--	: : "r" (task_thread_info(next)->current_ds));\
-+	: : "r" (ASI_AIUS));						\
- 	trap_block[current_thread_info()->cpu].thread =			\
- 		task_thread_info(next);					\
- 	__asm__ __volatile__(						\
-diff --git a/arch/sparc/include/asm/thread_info_64.h b/arch/sparc/include/asm/thread_info_64.h
-index 8047a9caab2f..1a44372e2bc0 100644
---- a/arch/sparc/include/asm/thread_info_64.h
-+++ b/arch/sparc/include/asm/thread_info_64.h
-@@ -46,7 +46,7 @@ struct thread_info {
- 	struct pt_regs		*kregs;
- 	int			preempt_count;	/* 0 => preemptable, <0 => BUG */
- 	__u8			new_child;
--	__u8			current_ds;
-+	__u8			__pad;
- 	__u16			cpu;
- 
- 	unsigned long		*utraps;
-@@ -81,7 +81,6 @@ struct thread_info {
- #define TI_KREGS	0x00000028
- #define TI_PRE_COUNT	0x00000030
- #define TI_NEW_CHILD	0x00000034
--#define TI_CURRENT_DS	0x00000035
- #define TI_CPU		0x00000036
- #define TI_UTRAPS	0x00000038
- #define TI_REG_WINDOW	0x00000040
-@@ -116,7 +115,6 @@ struct thread_info {
- #define INIT_THREAD_INFO(tsk)				\
- {							\
- 	.task		=	&tsk,			\
--	.current_ds	=	ASI_P,			\
- 	.preempt_count	=	INIT_PREEMPT_COUNT,	\
- 	.kregs		=	(struct pt_regs *)(init_stack+THREAD_SIZE)-1 \
- }
-diff --git a/arch/sparc/include/asm/uaccess_64.h b/arch/sparc/include/asm/uaccess_64.h
-index 000bac67cf31..617a462d1f56 100644
---- a/arch/sparc/include/asm/uaccess_64.h
-+++ b/arch/sparc/include/asm/uaccess_64.h
-@@ -13,24 +13,6 @@
- 
- #include <asm/processor.h>
- 
--/*
-- * Sparc64 is segmented, though more like the M68K than the I386.
-- * We use the secondary ASI to address user memory, which references a
-- * completely different VM map, thus there is zero chance of the user
-- * doing something queer and tricking us into poking kernel memory.
-- *
-- * What is left here is basically what is needed for the other parts of
-- * the kernel that expect to be able to manipulate, erum, "segments".
-- * Or perhaps more properly, permissions.
-- *
-- * "For historical reasons, these macros are grossly misnamed." -Linus
-- */
--
--#define KERNEL_DS   ((mm_segment_t) { ASI_P })
--#define USER_DS     ((mm_segment_t) { ASI_AIUS })	/* har har har */
--
--#define get_fs() ((mm_segment_t){(current_thread_info()->current_ds)})
--
- static inline int __access_ok(const void __user *addr, unsigned long size)
- {
- 	return 1;
-@@ -38,12 +20,6 @@ static inline int __access_ok(const void __user *addr, unsigned long size)
- #define __access_ok __access_ok
- #include <asm-generic/access_ok.h>
- 
--#define set_fs(val)								\
--do {										\
--	current_thread_info()->current_ds = (val).seg;				\
--	__asm__ __volatile__ ("wr %%g0, %0, %%asi" : : "r" ((val).seg));	\
--} while(0)
--
- /*
-  * Test whether a block of memory is a valid user space address.
-  * Returns 0 if the range is valid, nonzero otherwise.
-diff --git a/arch/sparc/kernel/process_64.c b/arch/sparc/kernel/process_64.c
-index f5b2cac8669f..9a2ceb080ac9 100644
---- a/arch/sparc/kernel/process_64.c
-+++ b/arch/sparc/kernel/process_64.c
-@@ -106,18 +106,13 @@ static void show_regwindow32(struct pt_regs *regs)
- {
- 	struct reg_window32 __user *rw;
- 	struct reg_window32 r_w;
--	mm_segment_t old_fs;
- 	
- 	__asm__ __volatile__ ("flushw");
- 	rw = compat_ptr((unsigned int)regs->u_regs[14]);
--	old_fs = get_fs();
--	set_fs (USER_DS);
- 	if (copy_from_user (&r_w, rw, sizeof(r_w))) {
--		set_fs (old_fs);
- 		return;
- 	}
- 
--	set_fs (old_fs);			
- 	printk("l0: %08x l1: %08x l2: %08x l3: %08x "
- 	       "l4: %08x l5: %08x l6: %08x l7: %08x\n",
- 	       r_w.locals[0], r_w.locals[1], r_w.locals[2], r_w.locals[3],
-@@ -136,7 +131,6 @@ static void show_regwindow(struct pt_regs *regs)
- 	struct reg_window __user *rw;
- 	struct reg_window *rwk;
- 	struct reg_window r_w;
--	mm_segment_t old_fs;
- 
- 	if ((regs->tstate & TSTATE_PRIV) || !(test_thread_flag(TIF_32BIT))) {
- 		__asm__ __volatile__ ("flushw");
-@@ -145,14 +139,10 @@ static void show_regwindow(struct pt_regs *regs)
- 		rwk = (struct reg_window *)
- 			(regs->u_regs[14] + STACK_BIAS);
- 		if (!(regs->tstate & TSTATE_PRIV)) {
--			old_fs = get_fs();
--			set_fs (USER_DS);
- 			if (copy_from_user (&r_w, rw, sizeof(r_w))) {
--				set_fs (old_fs);
- 				return;
- 			}
- 			rwk = &r_w;
--			set_fs (old_fs);			
- 		}
- 	} else {
- 		show_regwindow32(regs);
-@@ -598,7 +588,6 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
- 		memset(child_trap_frame, 0, child_stack_sz);
- 		__thread_flag_byte_ptr(t)[TI_FLAG_BYTE_CWP] = 
- 			(current_pt_regs()->tstate + 1) & TSTATE_CWP;
--		t->current_ds = ASI_P;
- 		t->kregs->u_regs[UREG_G1] = sp; /* function */
- 		t->kregs->u_regs[UREG_G2] = arg;
- 		return 0;
-@@ -613,7 +602,6 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
- 	t->kregs->u_regs[UREG_FP] = sp;
- 	__thread_flag_byte_ptr(t)[TI_FLAG_BYTE_CWP] = 
- 		(regs->tstate + 1) & TSTATE_CWP;
--	t->current_ds = ASI_AIUS;
- 	if (sp != regs->u_regs[UREG_FP]) {
- 		unsigned long csp;
- 
-diff --git a/arch/sparc/kernel/traps_64.c b/arch/sparc/kernel/traps_64.c
-index 21077821f427..5b4de4a89dec 100644
---- a/arch/sparc/kernel/traps_64.c
-+++ b/arch/sparc/kernel/traps_64.c
-@@ -2857,8 +2857,6 @@ void __init trap_init(void)
- 		     TI_PRE_COUNT != offsetof(struct thread_info,
- 					      preempt_count) ||
- 		     TI_NEW_CHILD != offsetof(struct thread_info, new_child) ||
--		     TI_CURRENT_DS != offsetof(struct thread_info,
--						current_ds) ||
- 		     TI_KUNA_REGS != offsetof(struct thread_info,
- 					      kern_una_regs) ||
- 		     TI_KUNA_INSN != offsetof(struct thread_info,
-diff --git a/arch/sparc/lib/NGmemcpy.S b/arch/sparc/lib/NGmemcpy.S
-index 8e4d22a6ba0b..ee51c1230689 100644
---- a/arch/sparc/lib/NGmemcpy.S
-+++ b/arch/sparc/lib/NGmemcpy.S
-@@ -10,8 +10,7 @@
- #include <asm/thread_info.h>
- #define GLOBAL_SPARE	%g7
- #define RESTORE_ASI(TMP)	\
--	ldub	[%g6 + TI_CURRENT_DS], TMP;  \
--	wr	TMP, 0x0, %asi;
-+	wr	%g0, ASI_AIUS, %asi
- #else
- #define GLOBAL_SPARE	%g5
- #define RESTORE_ASI(TMP)	\
-diff --git a/arch/sparc/mm/init_64.c b/arch/sparc/mm/init_64.c
-index 1b23639e2fcd..ee08c279d67c 100644
---- a/arch/sparc/mm/init_64.c
-+++ b/arch/sparc/mm/init_64.c
-@@ -709,9 +709,6 @@ static void __init inherit_prom_mappings(void)
- 
- void prom_world(int enter)
- {
--	if (!enter)
--		set_fs(get_fs());
--
- 	__asm__ __volatile__("flushw");
- }
- 
--- 
-2.29.2
+	copy_stack_frame() in arch/x86/kernel/stacktrace.c: similar story,
+except the commit that made sure callers will have USER_DS - cac9b9a4b083
+(stacktrace: Force USER_DS for stack_trace_save_user()) in this case.
+Also could've been using access_ok() just fine.  Amusingly, access_ok()
+used to be there, until it had been replaced with explicit check on
+Jul 22 2019 - 4 days after that had been made useless by fix in the caller...
 
+	copy_from_user_nmi().  That one is a bit more interesting.
+We have a call chain from perf_output_sample_ustack() (covered by
+force_uaccess_begin() these days, not that it mattered for x86 now),
+there's something odd in dumpstack.c:copy_code() (with explicit check
+for TASK_SIZE_MAX in the caller) and there's a couple of callers in
+Intel PMU code.
+	AFAICS, there's no reason whatsoever to use TASK_SIZE
+in that one - the point is to prevent copyin from the kernel
+memory, and in that respect TASK_SIZE_MAX isn't any worse.
+The check in copy_code() probably should go.
+
+	So all of those guys should be simply switched to access_ok().
+Might be worth making that a preliminary patch - it's independent
+from everything else and there's no point folding it into any of the
+patches in the series.
 
