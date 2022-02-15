@@ -1,114 +1,49 @@
-Return-Path: <anshuman.khandual@arm.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V3 16/30] alpha/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Date: Mon, 28 Feb 2022 16:17:39 +0530
-Message-Id: <1646045273-9343-17-git-send-email-anshuman.khandual@arm.com>
-In-Reply-To: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
-References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
-To: linux-mm@kvack.org, akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, geert@linux-m68k.org, Anshuman Khandual <anshuman.khandual@arm.com>, Christoph Hellwig <hch@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org, linux-riscv@lists.infradead.org, linux-alpha@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-parisc@vger.kernel.org, openrisc@lists.librecores.org, linux-um@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org, Richard Henderson <rth@twiddle.net>
+Return-Path: <gregkh@linuxfoundation.org>
+Date: Tue, 15 Feb 2022 11:25:44 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 03/14] nds32: fix access_ok() checks in get/put_user
+Message-ID: <Ygt/qMduFQIjWqfU@kroah.com>
+References: <20220214163452.1568807-1-arnd@kernel.org>
+ <20220214163452.1568807-4-arnd@kernel.org>
+ <YgqK1ihlJvRFHJ9h@infradead.org>
+ <CAK8P3a1XkWNQcFEhJQ0+qWzih1YRQDS_N8xiosN7FHn3yoTJpQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a1XkWNQcFEhJQ0+qWzih1YRQDS_N8xiosN7FHn3yoTJpQ@mail.gmail.com>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Christoph Hellwig <hch@infradead.org>, Linus Torvalds <torvalds@linux-foundation.org>, Christoph Hellwig <hch@lst.de>, linux-arch <linux-arch@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>, Linux API <linux-api@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Mark Rutland <mark.rutland@arm.com>, Rich Felker <dalias@libc.org>, linux-ia64@vger.kernel.org, Linux-sh list <linux-sh@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, Max Filippov <jcmvbkbc@gmail.com>, Guo Ren <guoren@kernel.org>, sparclinux <sparclinux@vger.kernel.org>, "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>, linux-riscv <linux-riscv@lists.infradead.org>, Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, linux-s390 <linux-s390@vger.kernel.org>, Brian Cain <bcain@codeaurora.org>, Helge Deller <deller@gmx.de>, the arch/x86 maintainers <x86@kernel.org>, Russell King - ARM Linux <linux@armlinux.org.uk>, linux-csky@vger.kernel.org, Ingo Molnar <mingo@redhat.com>, Geert Uytterhoeven <geert@linux-m68k.org>, "open list:SYNOPSYS ARC ARCHITECTURE" <linux-snps-arc@lists.infradead.org>, "open list:TENSILICA XTENSA PORT (xtensa)" <linux-xtensa@linux-xtensa.org>, Heiko Carstens <hca@linux.ibm.com>, alpha <linux-alpha@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Openrisc <openrisc@lists.librecores.org>, Greentime Hu <green.hu@gmail.com>, Stafford Horne <shorne@gmail.com>, Linux ARM <linux-arm-kernel@lists.infradead.org>, Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Parisc List <linux-parisc@vger.kernel.org>, Nick Hu <nickhu@andestech.com>, "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>, "# 3.4.x" <stable@vger.kernel.org>, Dinh Nguyen <dinguyen@kernel.org>, "Eric W . Biederman" <ebiederm@xmission.com>, Richard Weinberger <richard@nod.at>, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, David Miller <davem@davemloft.net>
 List-ID: <linux-um.lists.infradead.org>
 
-This defines and exports a platform specific custom vm_get_page_prot() via
-subscribing ARCH_HAS_VM_GET_PAGE_PROT. Subsequently all __SXXX and __PXXX
-macros can be dropped which are no longer needed.
+On Tue, Feb 15, 2022 at 10:18:15AM +0100, Arnd Bergmann wrote:
+> On Mon, Feb 14, 2022 at 6:01 PM Christoph Hellwig <hch@infradead.org> wrote:
+> >
+> > On Mon, Feb 14, 2022 at 05:34:41PM +0100, Arnd Bergmann wrote:
+> > > From: Arnd Bergmann <arnd@arndb.de>
+> > >
+> > > The get_user()/put_user() functions are meant to check for
+> > > access_ok(), while the __get_user()/__put_user() functions
+> > > don't.
+> > >
+> > > This broke in 4.19 for nds32, when it gained an extraneous
+> > > check in __get_user(), but lost the check it needs in
+> > > __put_user().
+> >
+> > Can we follow the lead of MIPS (which this was originally copied
+> > from I think) and kill the pointless __get/put_user_check wrapper
+> > that just obsfucate the code?
+> 
+> I had another look, but I think that would be a bigger change than
+> I want to have in a fix for stable backports, as nds32 also uses
+> the _check versions in __{get,put}_user_error.
 
-Cc: Richard Henderson <rth@twiddle.net>
-Cc: linux-alpha@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- arch/alpha/Kconfig               |  1 +
- arch/alpha/include/asm/pgtable.h | 17 ---------------
- arch/alpha/mm/init.c             | 37 ++++++++++++++++++++++++++++++++
- 3 files changed, 38 insertions(+), 17 deletions(-)
+Don't worry about stable backports first, get it correct and merged and
+then worry about them if you really have to.
 
-diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
-index 4e87783c90ad..73e82fe5c770 100644
---- a/arch/alpha/Kconfig
-+++ b/arch/alpha/Kconfig
-@@ -2,6 +2,7 @@
- config ALPHA
- 	bool
- 	default y
-+	select ARCH_HAS_VM_GET_PAGE_PROT
- 	select ARCH_32BIT_USTAT_F_TINODE
- 	select ARCH_MIGHT_HAVE_PC_PARPORT
- 	select ARCH_MIGHT_HAVE_PC_SERIO
-diff --git a/arch/alpha/include/asm/pgtable.h b/arch/alpha/include/asm/pgtable.h
-index 02f0429f1068..9fb5e9d10bb6 100644
---- a/arch/alpha/include/asm/pgtable.h
-+++ b/arch/alpha/include/asm/pgtable.h
-@@ -116,23 +116,6 @@ struct vm_area_struct;
-  * arch/alpha/mm/fault.c)
-  */
- 	/* xwr */
--#define __P000	_PAGE_P(_PAGE_FOE | _PAGE_FOW | _PAGE_FOR)
--#define __P001	_PAGE_P(_PAGE_FOE | _PAGE_FOW)
--#define __P010	_PAGE_P(_PAGE_FOE)
--#define __P011	_PAGE_P(_PAGE_FOE)
--#define __P100	_PAGE_P(_PAGE_FOW | _PAGE_FOR)
--#define __P101	_PAGE_P(_PAGE_FOW)
--#define __P110	_PAGE_P(0)
--#define __P111	_PAGE_P(0)
--
--#define __S000	_PAGE_S(_PAGE_FOE | _PAGE_FOW | _PAGE_FOR)
--#define __S001	_PAGE_S(_PAGE_FOE | _PAGE_FOW)
--#define __S010	_PAGE_S(_PAGE_FOE)
--#define __S011	_PAGE_S(_PAGE_FOE)
--#define __S100	_PAGE_S(_PAGE_FOW | _PAGE_FOR)
--#define __S101	_PAGE_S(_PAGE_FOW)
--#define __S110	_PAGE_S(0)
--#define __S111	_PAGE_S(0)
- 
- /*
-  * pgprot_noncached() is only for infiniband pci support, and a real
-diff --git a/arch/alpha/mm/init.c b/arch/alpha/mm/init.c
-index f6114d03357c..2e78008b2553 100644
---- a/arch/alpha/mm/init.c
-+++ b/arch/alpha/mm/init.c
-@@ -280,3 +280,40 @@ mem_init(void)
- 	high_memory = (void *) __va(max_low_pfn * PAGE_SIZE);
- 	memblock_free_all();
- }
-+
-+pgprot_t vm_get_page_prot(unsigned long vm_flags)
-+{
-+	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
-+	case VM_NONE:
-+		return _PAGE_P(_PAGE_FOE | _PAGE_FOW | _PAGE_FOR);
-+	case VM_READ:
-+		return _PAGE_P(_PAGE_FOE | _PAGE_FOW);
-+	case VM_WRITE:
-+	case VM_WRITE | VM_READ:
-+		return _PAGE_P(_PAGE_FOE);
-+	case VM_EXEC:
-+		return _PAGE_P(_PAGE_FOW | _PAGE_FOR);
-+	case VM_EXEC | VM_READ:
-+		return _PAGE_P(_PAGE_FOW);
-+	case VM_EXEC | VM_WRITE:
-+	case VM_EXEC | VM_WRITE | VM_READ:
-+		return _PAGE_P(0);
-+	case VM_SHARED:
-+		return _PAGE_S(_PAGE_FOE | _PAGE_FOW | _PAGE_FOR);
-+	case VM_SHARED | VM_READ:
-+		return _PAGE_S(_PAGE_FOE | _PAGE_FOW);
-+	case VM_SHARED | VM_WRITE:
-+	case VM_SHARED | VM_WRITE | VM_READ:
-+		return _PAGE_S(_PAGE_FOE);
-+	case VM_SHARED | VM_EXEC:
-+		return _PAGE_S(_PAGE_FOW | _PAGE_FOR);
-+	case VM_SHARED | VM_EXEC | VM_READ:
-+		return _PAGE_S(_PAGE_FOW);
-+	case VM_SHARED | VM_EXEC | VM_WRITE:
-+	case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
-+		return _PAGE_S(0);
-+	default:
-+		BUILD_BUG();
-+	}
-+}
-+EXPORT_SYMBOL(vm_get_page_prot);
--- 
-2.25.1
+If someone cares about nds32 for stable kernels, they can do the
+backport work :)
 
+thanks,
+
+greg k-h
 
