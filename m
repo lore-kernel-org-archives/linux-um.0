@@ -1,120 +1,133 @@
-Return-Path: <anshuman.khandual@arm.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V3 21/30] parisc/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Date: Mon, 28 Feb 2022 16:17:44 +0530
-Message-Id: <1646045273-9343-22-git-send-email-anshuman.khandual@arm.com>
-In-Reply-To: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
-References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
-To: linux-mm@kvack.org, akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, geert@linux-m68k.org, Anshuman Khandual <anshuman.khandual@arm.com>, Christoph Hellwig <hch@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org, linux-riscv@lists.infradead.org, linux-alpha@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-parisc@vger.kernel.org, openrisc@lists.librecores.org, linux-um@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Return-Path: <arnd@kernel.org>
+From: Arnd Bergmann <arnd@kernel.org>
+Subject: [PATCH v2 04/18] sparc64: add __{get,put}_kernel_nocheck()
+Date: Wed, 16 Feb 2022 14:13:18 +0100
+Message-Id: <20220216131332.1489939-5-arnd@kernel.org>
+In-Reply-To: <20220216131332.1489939-1-arnd@kernel.org>
+References: <20220216131332.1489939-1-arnd@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To: Linus Torvalds <torvalds@linux-foundation.org>, Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-api@vger.kernel.org, arnd@arndb.de, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk
+Cc: linux@armlinux.org.uk, will@kernel.org, guoren@kernel.org, bcain@codeaurora.org, geert@linux-m68k.org, monstr@monstr.eu, tsbogend@alpha.franken.de, nickhu@andestech.com, green.hu@gmail.com, dinguyen@kernel.org, shorne@gmail.com, deller@gmx.de, mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com, hca@linux.ibm.com, dalias@libc.org, davem@davemloft.net, richard@nod.at, x86@kernel.org, jcmvbkbc@gmail.com, ebiederm@xmission.com, akpm@linux-foundation.org, ardb@kernel.org, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
 List-ID: <linux-um.lists.infradead.org>
 
-This defines and exports a platform specific custom vm_get_page_prot() via
-subscribing ARCH_HAS_VM_GET_PAGE_PROT. Subsequently all __SXXX and __PXXX
-macros can be dropped which are no longer needed.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-Cc: linux-parisc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+sparc64 is one of the architectures that uses separate address
+spaces for kernel and user addresses, so __get_kernel_nofault()
+can not just call into the normal __get_user() without the
+access_ok() check.
+
+Instead duplicate __get_user() and __put_user() into their
+in-kernel versions, with minor changes for the calling conventions
+and leaving out the address space modifier on the assembler
+instruction.
+
+This could surely be written more elegantly, but duplicating it
+gets the job done.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/parisc/Kconfig               |  1 +
- arch/parisc/include/asm/pgtable.h | 20 ----------------
- arch/parisc/mm/init.c             | 40 +++++++++++++++++++++++++++++++
- 3 files changed, 41 insertions(+), 20 deletions(-)
+ arch/sparc/include/asm/uaccess_64.h | 78 +++++++++++++++++++++++++++++
+ 1 file changed, 78 insertions(+)
 
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index 43c1c880def6..de512f120b50 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -10,6 +10,7 @@ config PARISC
- 	select ARCH_HAS_ELF_RANDOMIZE
- 	select ARCH_HAS_STRICT_KERNEL_RWX
- 	select ARCH_HAS_UBSAN_SANITIZE_ALL
-+	select ARCH_HAS_VM_GET_PAGE_PROT
- 	select ARCH_NO_SG_CHAIN
- 	select ARCH_SUPPORTS_HUGETLBFS if PA20
- 	select ARCH_SUPPORTS_MEMORY_FAILURE
-diff --git a/arch/parisc/include/asm/pgtable.h b/arch/parisc/include/asm/pgtable.h
-index 3e7cf882639f..80d99b2b5913 100644
---- a/arch/parisc/include/asm/pgtable.h
-+++ b/arch/parisc/include/asm/pgtable.h
-@@ -269,26 +269,6 @@ extern void __update_cache(pte_t pte);
-  * pages.
-  */
+diff --git a/arch/sparc/include/asm/uaccess_64.h b/arch/sparc/include/asm/uaccess_64.h
+index 30eb4c6414d1..b283798315b1 100644
+--- a/arch/sparc/include/asm/uaccess_64.h
++++ b/arch/sparc/include/asm/uaccess_64.h
+@@ -100,6 +100,42 @@ void __retl_efault(void);
+ struct __large_struct { unsigned long buf[100]; };
+ #define __m(x) ((struct __large_struct *)(x))
  
--	 /*xwr*/
--#define __P000  PAGE_NONE
--#define __P001  PAGE_READONLY
--#define __P010  __P000 /* copy on write */
--#define __P011  __P001 /* copy on write */
--#define __P100  PAGE_EXECREAD
--#define __P101  PAGE_EXECREAD
--#define __P110  __P100 /* copy on write */
--#define __P111  __P101 /* copy on write */
--
--#define __S000  PAGE_NONE
--#define __S001  PAGE_READONLY
--#define __S010  PAGE_WRITEONLY
--#define __S011  PAGE_SHARED
--#define __S100  PAGE_EXECREAD
--#define __S101  PAGE_EXECREAD
--#define __S110  PAGE_RWX
--#define __S111  PAGE_RWX
--
--
- extern pgd_t swapper_pg_dir[]; /* declared in init_task.c */
- 
- /* initial page tables for 0-8MB for kernel */
-diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
-index 1dc2e88e7b04..f9e841f874a8 100644
---- a/arch/parisc/mm/init.c
-+++ b/arch/parisc/mm/init.c
-@@ -865,3 +865,43 @@ void flush_tlb_all(void)
- 	spin_unlock(&sid_lock);
- }
- #endif
++#define __put_kernel_nofault(dst, src, type, label)			\
++do {									\
++	type *addr = (type __force *)(dst);				\
++	type data = *(type *)src;					\
++	register int __pu_ret;						\
++	switch (sizeof(type)) {						\
++	case 1: __put_kernel_asm(data, b, addr, __pu_ret); break;	\
++	case 2: __put_kernel_asm(data, h, addr, __pu_ret); break;	\
++	case 4: __put_kernel_asm(data, w, addr, __pu_ret); break;	\
++	case 8: __put_kernel_asm(data, x, addr, __pu_ret); break;	\
++	default: __pu_ret = __put_user_bad(); break;			\
++	}								\
++	if (__pu_ret)							\
++		goto label;						\
++} while (0)
 +
-+pgprot_t vm_get_page_prot(unsigned long vm_flags)
-+{
-+	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
-+	case VM_NONE:
-+		return PAGE_NONE;
-+	case VM_READ:
-+		return PAGE_READONLY;
-+	/* copy on write */
-+	case VM_WRITE:
-+		return PAGE_NONE;
-+	/* copy on write */
-+	case VM_WRITE | VM_READ:
-+		return PAGE_READONLY;
-+	case VM_EXEC:
-+	case VM_EXEC | VM_READ:
-+	/* copy on write */
-+	case VM_EXEC | VM_WRITE:
-+	/* copy on write */
-+	case VM_EXEC | VM_WRITE | VM_READ:
-+		return PAGE_EXECREAD;
-+	case VM_SHARED:
-+		return PAGE_NONE;
-+	case VM_SHARED | VM_READ:
-+		return PAGE_READONLY;
-+	case VM_SHARED | VM_WRITE:
-+		return PAGE_WRITEONLY;
-+	case VM_SHARED | VM_WRITE | VM_READ:
-+		return PAGE_SHARED;
-+	case VM_SHARED | VM_EXEC:
-+	case VM_SHARED | VM_EXEC | VM_READ:
-+		return PAGE_EXECREAD;
-+	case VM_SHARED | VM_EXEC | VM_WRITE:
-+	case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
-+		return PAGE_RWX;
-+	default:
-+		BUILD_BUG();
-+	}
-+}
-+EXPORT_SYMBOL(vm_get_page_prot);
++#define __put_kernel_asm(x, size, addr, ret)				\
++__asm__ __volatile__(							\
++		"/* Put kernel asm, inline. */\n"			\
++	"1:\t"	"st"#size " %1, [%2]\n\t"				\
++		"clr	%0\n"						\
++	"2:\n\n\t"							\
++		".section .fixup,#alloc,#execinstr\n\t"			\
++		".align	4\n"						\
++	"3:\n\t"							\
++		"sethi	%%hi(2b), %0\n\t"				\
++		"jmpl	%0 + %%lo(2b), %%g0\n\t"			\
++		" mov	%3, %0\n\n\t"					\
++		".previous\n\t"						\
++		".section __ex_table,\"a\"\n\t"				\
++		".align	4\n\t"						\
++		".word	1b, 3b\n\t"					\
++		".previous\n\n\t"					\
++	       : "=r" (ret) : "r" (x), "r" (__m(addr)),			\
++		 "i" (-EFAULT))
++
+ #define __put_user_nocheck(data, addr, size) ({			\
+ 	register int __pu_ret;					\
+ 	switch (size) {						\
+@@ -134,6 +170,48 @@ __asm__ __volatile__(							\
+ 
+ int __put_user_bad(void);
+ 
++#define __get_kernel_nofault(dst, src, type, label)			     \
++do {									     \
++	type *addr = (type __force *)(src);		     		     \
++	register int __gu_ret;						     \
++	register unsigned long __gu_val;				     \
++	switch (sizeof(type)) {						     \
++		case 1: __get_kernel_asm(__gu_val, ub, addr, __gu_ret); break; \
++		case 2: __get_kernel_asm(__gu_val, uh, addr, __gu_ret); break; \
++		case 4: __get_kernel_asm(__gu_val, uw, addr, __gu_ret); break; \
++		case 8: __get_kernel_asm(__gu_val, x, addr, __gu_ret); break;  \
++		default:						     \
++			__gu_val = 0;					     \
++			__gu_ret = __get_user_bad();			     \
++			break;						     \
++	} 								     \
++	if (__gu_ret)							     \
++		goto label;						     \
++	*(type *)dst = (__force type) __gu_val;				     \
++} while (0)
++#define __get_kernel_asm(x, size, addr, ret)				\
++__asm__ __volatile__(							\
++		"/* Get kernel asm, inline. */\n"			\
++	"1:\t"	"ld"#size " [%2], %1\n\t"				\
++		"clr	%0\n"						\
++	"2:\n\n\t"							\
++		".section .fixup,#alloc,#execinstr\n\t"			\
++		".align	4\n"						\
++	"3:\n\t"							\
++		"sethi	%%hi(2b), %0\n\t"				\
++		"clr	%1\n\t"						\
++		"jmpl	%0 + %%lo(2b), %%g0\n\t"			\
++		" mov	%3, %0\n\n\t"					\
++		".previous\n\t"						\
++		".section __ex_table,\"a\"\n\t"				\
++		".align	4\n\t"						\
++		".word	1b, 3b\n\n\t"					\
++		".previous\n\t"						\
++	       : "=r" (ret), "=r" (x) : "r" (__m(addr)),		\
++		 "i" (-EFAULT))
++
++#define HAVE_GET_KERNEL_NOFAULT
++
+ #define __get_user_nocheck(data, addr, size, type) ({			     \
+ 	register int __gu_ret;						     \
+ 	register unsigned long __gu_val;				     \
 -- 
-2.25.1
+2.29.2
 
 
