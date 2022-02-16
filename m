@@ -1,113 +1,97 @@
-Return-Path: <anshuman.khandual@arm.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V3 14/30] s390/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Date: Mon, 28 Feb 2022 16:17:37 +0530
-Message-Id: <1646045273-9343-15-git-send-email-anshuman.khandual@arm.com>
-In-Reply-To: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
-References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
-To: linux-mm@kvack.org, akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, geert@linux-m68k.org, Anshuman Khandual <anshuman.khandual@arm.com>, Christoph Hellwig <hch@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org, linux-riscv@lists.infradead.org, linux-alpha@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-parisc@vger.kernel.org, openrisc@lists.librecores.org, linux-um@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>
+Return-Path: <arnd@kernel.org>
+From: Arnd Bergmann <arnd@kernel.org>
+Subject: [PATCH v2 11/18] arm64: simplify access_ok()
+Date: Wed, 16 Feb 2022 14:13:25 +0100
+Message-Id: <20220216131332.1489939-12-arnd@kernel.org>
+In-Reply-To: <20220216131332.1489939-1-arnd@kernel.org>
+References: <20220216131332.1489939-1-arnd@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To: Linus Torvalds <torvalds@linux-foundation.org>, Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-api@vger.kernel.org, arnd@arndb.de, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk
+Cc: linux@armlinux.org.uk, will@kernel.org, guoren@kernel.org, bcain@codeaurora.org, geert@linux-m68k.org, monstr@monstr.eu, tsbogend@alpha.franken.de, nickhu@andestech.com, green.hu@gmail.com, dinguyen@kernel.org, shorne@gmail.com, deller@gmx.de, mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com, hca@linux.ibm.com, dalias@libc.org, davem@davemloft.net, richard@nod.at, x86@kernel.org, jcmvbkbc@gmail.com, ebiederm@xmission.com, akpm@linux-foundation.org, ardb@kernel.org, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, Robin Murphy <robin.murphy@arm.com>
 List-ID: <linux-um.lists.infradead.org>
 
-This defines and exports a platform specific custom vm_get_page_prot() via
-subscribing ARCH_HAS_VM_GET_PAGE_PROT. Subsequently all __SXXX and __PXXX
-macros can be dropped which are no longer needed.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: linux-s390@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Acked-by: Sven Schnelle <svens@linux.ibm.com>
-Acked-by: Alexander Gordeev <agordeev@linux.ibm.com>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+arm64 has an inline asm implementation of access_ok() that is derived from
+the 32-bit arm version and optimized for the case that both the limit and
+the size are variable. With set_fs() gone, the limit is always constant,
+and the size usually is as well, so just using the default implementation
+reduces the check into a comparison against a constant that can be
+scheduled by the compiler.
+
+On a defconfig build, this saves over 28KB of .text.
+
+Acked-by: Robin Murphy <robin.murphy@arm.com>
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/s390/Kconfig               |  1 +
- arch/s390/include/asm/pgtable.h | 17 -----------------
- arch/s390/mm/mmap.c             | 33 +++++++++++++++++++++++++++++++++
- 3 files changed, 34 insertions(+), 17 deletions(-)
+ arch/arm64/include/asm/uaccess.h | 34 ++++++++++----------------------
+ 1 file changed, 10 insertions(+), 24 deletions(-)
 
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index be9f39fd06df..cb1b487e8201 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -78,6 +78,7 @@ config S390
- 	select ARCH_HAS_SYSCALL_WRAPPER
- 	select ARCH_HAS_UBSAN_SANITIZE_ALL
- 	select ARCH_HAS_VDSO_DATA
-+	select ARCH_HAS_VM_GET_PAGE_PROT
- 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
- 	select ARCH_INLINE_READ_LOCK
- 	select ARCH_INLINE_READ_LOCK_BH
-diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
-index 008a6c856fa4..3893ef64b439 100644
---- a/arch/s390/include/asm/pgtable.h
-+++ b/arch/s390/include/asm/pgtable.h
-@@ -422,23 +422,6 @@ static inline int is_module_addr(void *addr)
-  * implies read permission.
-  */
-          /*xwr*/
--#define __P000	PAGE_NONE
--#define __P001	PAGE_RO
--#define __P010	PAGE_RO
--#define __P011	PAGE_RO
--#define __P100	PAGE_RX
--#define __P101	PAGE_RX
--#define __P110	PAGE_RX
--#define __P111	PAGE_RX
--
--#define __S000	PAGE_NONE
--#define __S001	PAGE_RO
--#define __S010	PAGE_RW
--#define __S011	PAGE_RW
--#define __S100	PAGE_RX
--#define __S101	PAGE_RX
--#define __S110	PAGE_RWX
--#define __S111	PAGE_RWX
+diff --git a/arch/arm64/include/asm/uaccess.h b/arch/arm64/include/asm/uaccess.h
+index 2e20879fe3cf..199c553b740a 100644
+--- a/arch/arm64/include/asm/uaccess.h
++++ b/arch/arm64/include/asm/uaccess.h
+@@ -26,6 +26,14 @@
+ #include <asm/memory.h>
+ #include <asm/extable.h>
  
- /*
-  * Segment entry (large page) protection definitions.
-diff --git a/arch/s390/mm/mmap.c b/arch/s390/mm/mmap.c
-index e54f928503c5..e99c198aa5de 100644
---- a/arch/s390/mm/mmap.c
-+++ b/arch/s390/mm/mmap.c
-@@ -188,3 +188,36 @@ void arch_pick_mmap_layout(struct mm_struct *mm, struct rlimit *rlim_stack)
- 		mm->get_unmapped_area = arch_get_unmapped_area_topdown;
- 	}
- }
-+
-+pgprot_t vm_get_page_prot(unsigned long vm_flags)
++static inline int __access_ok(const void __user *ptr, unsigned long size)
 +{
-+	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
-+	case VM_NONE:
-+		return PAGE_NONE;
-+	case VM_READ:
-+	case VM_WRITE:
-+	case VM_WRITE | VM_READ:
-+		return PAGE_RO;
-+	case VM_EXEC:
-+	case VM_EXEC | VM_READ:
-+	case VM_EXEC | VM_WRITE:
-+	case VM_EXEC | VM_WRITE | VM_READ:
-+		return PAGE_RX;
-+	case VM_SHARED:
-+		return PAGE_NONE;
-+	case VM_SHARED | VM_READ:
-+		return PAGE_RO;
-+	case VM_SHARED | VM_WRITE:
-+	case VM_SHARED | VM_WRITE | VM_READ:
-+		return PAGE_RW;
-+	case VM_SHARED | VM_EXEC:
-+	case VM_SHARED | VM_EXEC | VM_READ:
-+		return PAGE_RX;
-+	case VM_SHARED | VM_EXEC | VM_WRITE:
-+	case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
-+		return PAGE_RWX;
-+	default:
-+		BUILD_BUG();
-+	}
++	unsigned long limit = TASK_SIZE_MAX;
++	unsigned long addr = (unsigned long)ptr;
++
++	return (size <= limit) && (addr <= (limit - size));
 +}
-+EXPORT_SYMBOL(vm_get_page_prot);
++
+ /*
+  * Test whether a block of memory is a valid user space address.
+  * Returns 1 if the range is valid, 0 otherwise.
+@@ -33,10 +41,8 @@
+  * This is equivalent to the following test:
+  * (u65)addr + (u65)size <= (u65)TASK_SIZE_MAX
+  */
+-static inline unsigned long __range_ok(const void __user *addr, unsigned long size)
++static inline int access_ok(const void __user *addr, unsigned long size)
+ {
+-	unsigned long ret, limit = TASK_SIZE_MAX - 1;
+-
+ 	/*
+ 	 * Asynchronous I/O running in a kernel thread does not have the
+ 	 * TIF_TAGGED_ADDR flag of the process owning the mm, so always untag
+@@ -46,29 +52,9 @@ static inline unsigned long __range_ok(const void __user *addr, unsigned long si
+ 	    (current->flags & PF_KTHREAD || test_thread_flag(TIF_TAGGED_ADDR)))
+ 		addr = untagged_addr(addr);
+ 
+-	__chk_user_ptr(addr);
+-	asm volatile(
+-	// A + B <= C + 1 for all A,B,C, in four easy steps:
+-	// 1: X = A + B; X' = X % 2^64
+-	"	adds	%0, %3, %2\n"
+-	// 2: Set C = 0 if X > 2^64, to guarantee X' > C in step 4
+-	"	csel	%1, xzr, %1, hi\n"
+-	// 3: Set X' = ~0 if X >= 2^64. For X == 2^64, this decrements X'
+-	//    to compensate for the carry flag being set in step 4. For
+-	//    X > 2^64, X' merely has to remain nonzero, which it does.
+-	"	csinv	%0, %0, xzr, cc\n"
+-	// 4: For X < 2^64, this gives us X' - C - 1 <= 0, where the -1
+-	//    comes from the carry in being clear. Otherwise, we are
+-	//    testing X' - C == 0, subject to the previous adjustments.
+-	"	sbcs	xzr, %0, %1\n"
+-	"	cset	%0, ls\n"
+-	: "=&r" (ret), "+r" (limit) : "Ir" (size), "0" (addr) : "cc");
+-
+-	return ret;
++	return likely(__access_ok(addr, size));
+ }
+ 
+-#define access_ok(addr, size)	__range_ok(addr, size)
+-
+ /*
+  * User access enabling/disabling.
+  */
 -- 
-2.25.1
+2.29.2
 
 
