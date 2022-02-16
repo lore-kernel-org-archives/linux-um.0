@@ -1,69 +1,37 @@
-Return-Path: <anshuman.khandual@arm.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V3 12/30] mm/mmap: Drop arch_filter_pgprot()
-Date: Mon, 28 Feb 2022 16:17:35 +0530
-Message-Id: <1646045273-9343-13-git-send-email-anshuman.khandual@arm.com>
-In-Reply-To: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
-References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
-To: linux-mm@kvack.org, akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, geert@linux-m68k.org, Anshuman Khandual <anshuman.khandual@arm.com>, Christoph Hellwig <hch@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org, linux-riscv@lists.infradead.org, linux-alpha@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-parisc@vger.kernel.org, openrisc@lists.librecores.org, linux-um@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org
+Return-Path: <arnd@kernel.org>
+MIME-Version: 1.0
+References: <20220216131332.1489939-1-arnd@kernel.org> <20220216131332.1489939-16-arnd@kernel.org>
+ <Yg1D08+olCSGmnYU@ravnborg.org> <Yg1FRZcrhlh5C//V@ravnborg.org>
+In-Reply-To: <Yg1FRZcrhlh5C//V@ravnborg.org>
+From: Arnd Bergmann <arnd@kernel.org>
+Date: Wed, 16 Feb 2022 23:01:16 +0100
+Message-ID: <CAK8P3a1kV=0G9WYkdjYCiBu=fuT1fbPGHVD9cgHX3ht6J3MFEw@mail.gmail.com>
+Subject: Re: [PATCH v2 15/18] sparc64: remove CONFIG_SET_FS support
+Content-Type: text/plain; charset="UTF-8"
+To: Sam Ravnborg <sam@ravnborg.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Christoph Hellwig <hch@lst.de>, linux-arch <linux-arch@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>, Linux API <linux-api@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, Russell King - ARM Linux <linux@armlinux.org.uk>, Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>, Brian Cain <bcain@codeaurora.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Nick Hu <nickhu@andestech.com>, Greentime Hu <green.hu@gmail.com>, Dinh Nguyen <dinguyen@kernel.org>, Stafford Horne <shorne@gmail.com>, Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>, Heiko Carstens <hca@linux.ibm.com>, Rich Felker <dalias@libc.org>, David Miller <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, the arch/x86 maintainers <x86@kernel.org>, Max Filippov <jcmvbkbc@gmail.com>, "Eric W . Biederman" <ebiederm@xmission.com>, Andrew Morton <akpm@linux-foundation.org>, Ard Biesheuvel <ardb@kernel.org>, alpha <linux-alpha@vger.kernel.org>, "open list:SYNOPSYS ARC ARCHITECTURE" <linux-snps-arc@lists.infradead.org>, linux-csky@vger.kernel.org, "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>, linux-ia64@vger.kernel.org, linux-m68k <linux-m68k@lists.linux-m68k.org>, "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>, Openrisc <openrisc@lists.librecores.org>, Parisc List <linux-parisc@vger.kernel.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-riscv <linux-riscv@lists.infradead.org>, linux-s390 <linux-s390@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>, "open list:TENSILICA XTENSA PORT (xtensa)" <linux-xtensa@linux-xtensa.org>
 List-ID: <linux-um.lists.infradead.org>
 
-There are no platforms left which subscribe ARCH_HAS_FILTER_PGPROT. Hence
-just drop arch_filter_pgprot() and also the config ARCH_HAS_FILTER_PGPROT.
+On Wed, Feb 16, 2022 at 7:41 PM Sam Ravnborg <sam@ravnborg.org> wrote:
+> On Wed, Feb 16, 2022 at 07:34:59PM +0100, Sam Ravnborg wrote:
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- mm/Kconfig |  3 ---
- mm/mmap.c  | 10 +---------
- 2 files changed, 1 insertion(+), 12 deletions(-)
+> >
+> > I think you somehow missed the Kconfig change, and also the related
+> > sparc32 change which continue to have set_fs() after this patch.
 
-diff --git a/mm/Kconfig b/mm/Kconfig
-index fa436478a94c..212fb6e1ddaa 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -744,9 +744,6 @@ config IDLE_PAGE_TRACKING
- config ARCH_HAS_CACHE_LINE_SIZE
- 	bool
- 
--config ARCH_HAS_FILTER_PGPROT
--	bool
--
- config ARCH_HAS_VM_GET_PAGE_PROT
- 	bool
- 
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 78eeac277a80..c8fd8f06bf7c 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -102,14 +102,6 @@ static void unmap_region(struct mm_struct *mm,
-  *								w: (no) no
-  *								x: (yes) yes
-  */
--
--#ifndef CONFIG_ARCH_HAS_FILTER_PGPROT
--static inline pgprot_t arch_filter_pgprot(pgprot_t prot)
--{
--	return prot;
--}
--#endif
--
- static inline pgprot_t __vm_get_page_prot(unsigned long vm_flags)
- {
- 	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
-@@ -155,7 +147,7 @@ pgprot_t vm_get_page_prot(unsigned long vm_flags)
- 	pgprot_t ret = __pgprot(pgprot_val(__vm_get_page_prot(vm_flags)) |
- 			pgprot_val(arch_vm_get_page_prot(vm_flags)));
- 
--	return arch_filter_pgprot(ret);
-+	return ret;
- }
- EXPORT_SYMBOL(vm_get_page_prot);
- #endif	/* CONFIG_ARCH_HAS_VM_GET_PAGE_PROT */
--- 
-2.25.1
+Right, thanks for pointing out the issue.
 
+> I now notice the sparc32 bits are in the last patch.
+> To avoid breaking bisect-ability on sparc64 I think you need to merge
+> the sparc32 changes with this patch, unless the sparc64 changes can
+> coexist with CONFIG_SET_FS continue to be set.
+
+I originally had them in the reverse order and broke bisectability during my
+rebase. The end result is still fine, but now I need to move the 'select
+SET_FS' from CONFIG_SPARC to CONFIG_SPARC32 in this patch
+and then remove it again from there in the last step.
+
+I've done that in my local copy now.
+
+         Arnd
 
