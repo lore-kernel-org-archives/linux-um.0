@@ -1,171 +1,31 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Mon, 14 Feb 2022 20:16:50 +0000 (GMT)
-From: "Maciej W. Rozycki" <macro@orcam.me.uk>
-Subject: [PATCH v2] parport_pc: Also enable driver for PCI systems
-Message-ID: <alpine.DEB.2.21.2202141955550.34636@angie.orcam.me.uk>
+Return-Path: <arnd@kernel.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linux-kernel@vger.kernel.org
+References: <20220214163452.1568807-1-arnd@kernel.org> <20220214163452.1568807-12-arnd@kernel.org>
+ <Ygr4Q2/KxfF86ETa@zeniv-ca.linux.org.uk>
+In-Reply-To: <Ygr4Q2/KxfF86ETa@zeniv-ca.linux.org.uk>
+From: Arnd Bergmann <arnd@kernel.org>
+Date: Wed, 16 Feb 2022 14:07:00 +0100
+Message-ID: <CAK8P3a30supB-MNzhoELOerOemxwTfDFFqZrzmNDQA=WW+VLbw@mail.gmail.com>
+Subject: Re: [PATCH 11/14] sparc64: remove CONFIG_SET_FS support
+Content-Type: text/plain; charset="UTF-8"
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Christoph Hellwig <hch@lst.de>, linux-arch <linux-arch@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>, Linux API <linux-api@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Russell King - ARM Linux <linux@armlinux.org.uk>, Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>, Brian Cain <bcain@codeaurora.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Nick Hu <nickhu@andestech.com>, Greentime Hu <green.hu@gmail.com>, Dinh Nguyen <dinguyen@kernel.org>, Stafford Horne <shorne@gmail.com>, Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>, Heiko Carstens <hca@linux.ibm.com>, Rich Felker <dalias@libc.org>, David Miller <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, the arch/x86 maintainers <x86@kernel.org>, Max Filippov <jcmvbkbc@gmail.com>, "Eric W . Biederman" <ebiederm@xmission.com>, Andrew Morton <akpm@linux-foundation.org>, Ard Biesheuvel <ardb@kernel.org>, alpha <linux-alpha@vger.kernel.org>, "open list:SYNOPSYS ARC ARCHITECTURE" <linux-snps-arc@lists.infradead.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-csky@vger.kernel.org, "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>, linux-ia64@vger.kernel.org, linux-m68k <linux-m68k@lists.linux-m68k.org>, "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>, Openrisc <openrisc@lists.librecores.org>, Parisc List <linux-parisc@vger.kernel.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-riscv <linux-riscv@lists.infradead.org>, linux-s390 <linux-s390@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>, "open list:TENSILICA XTENSA PORT (xtensa)" <linux-xtensa@linux-xtensa.org>
+List-ID: <linux-um.lists.infradead.org>
 
-Nowadays PC-style parallel ports come in the form of PCI and PCIe option 
-cards and there are some combined parallel/serial option cards as well 
-that we handle in the parport subsystem.  There is nothing in particular 
-that would prevent them from being used in any system equipped with PCI 
-or PCIe connectivity, except that we do not permit the PARPORT_PC config 
-option to be selected for platforms for which ARCH_MIGHT_HAVE_PC_PARPORT 
-has not been set for.
+On Tue, Feb 15, 2022 at 1:48 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> On Mon, Feb 14, 2022 at 05:34:49PM +0100, Arnd Bergmann wrote:
+>
+> > -/*
+> > - * Sparc64 is segmented, though more like the M68K than the I386.
+> > - * We use the secondary ASI to address user memory, which references a
+> > - * completely different VM map, thus there is zero chance of the user
+> > - * doing something queer and tricking us into poking kernel memory.
+>
+> Actually, this part of comment probably ought to stay - it is relevant
+> for understanding what's going on (e.g. why is access_ok() always true, etc.)
 
-The only PCI platforms that actually can't make use of PC-style parallel 
-port hardware are those newer PCIe systems that have no support for I/O 
-cycles in the host bridge, required by such parallel ports.  Notably, 
-this includes the s390 arch, which has port I/O accessors that cause 
-compilation warnings (promoted to errors with `-Werror'), and there are 
-other cases such as the POWER9 PHB4 device, though this one has variable 
-port I/O accessors that depend on the particular system.  Also it is not 
-clear whether the serial port side of devices enabled by PARPORT_SERIAL 
-uses port I/O or MMIO.  Finally Super I/O solutions are always either 
-ISA or platform devices.
+Ok, I've put it back now.
 
-Make the PARPORT_PC option selectable also for PCI systems then, except 
-for the s390 arch, however limit the availability of PARPORT_PC_SUPERIO 
-to platforms that enable ARCH_MIGHT_HAVE_PC_PARPORT.  Update platforms 
-accordingly for the required <asm/parport.h> header.
-
-Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
----
-Hi,
-
- I have verified this lightly by booting a kernel with PARPORT_PC and 
-PARPORT_SERIAL enabled on a RISC-V HiFive Unmatched system.  While I do 
-have a PCIe parallel port option available that I could use with my RISC-V 
-machine (based on the OxSemi OXPCIe952 chip) it is currently plugged in 
-the wrong system, and both machines are in my remote lab I have currently 
-no visit scheduled to in the near future.  For the record the device 
-reports as:
-
-PCI parallel port detected: 1415:c118, I/O at 0x1000(0x1008), IRQ 18
-parport1: PC-style at 0x1000 (0x1008), irq 18, using FIFO [PCSPP,TRISTATE,COMPAT,EPP,ECP]
-
-in the other system.  I'll see if I can verify it with the Unmatched at 
-the next opportunity, though it seems like an overkill to me given that a 
-PC-style parallel port is a generic PCIe device.  The OXPCIe952 implements 
-a multifunction device, so it doesn't rely on PARPORT_SERIAL.
-
- NB platforms to be updated for <asm/parport.h> generation were chosen by 
-the presence of the HAVE_PCI or FORCE_PCI option from ones that do not 
-already have or generate that header, except for s390, now excluded.  Let 
-me know if I got anything wrong here.
-
-  Maciej
-
-Changes from v1:
-
-- Exclude s390 systems, update the change description accordingly.
----
- arch/arm64/include/asm/Kbuild  |    1 +
- arch/csky/include/asm/Kbuild   |    1 +
- arch/riscv/include/asm/Kbuild  |    1 +
- arch/um/include/asm/Kbuild     |    1 +
- arch/xtensa/include/asm/Kbuild |    1 +
- drivers/parport/Kconfig        |    4 ++--
- 6 files changed, 7 insertions(+), 2 deletions(-)
-
-linux-parport-pc-pci.diff
-Index: linux-macro/arch/arm64/include/asm/Kbuild
-===================================================================
---- linux-macro.orig/arch/arm64/include/asm/Kbuild
-+++ linux-macro/arch/arm64/include/asm/Kbuild
-@@ -3,6 +3,7 @@ generic-y += early_ioremap.h
- generic-y += mcs_spinlock.h
- generic-y += qrwlock.h
- generic-y += qspinlock.h
-+generic-y += parport.h
- generic-y += user.h
- 
- generated-y += cpucaps.h
-Index: linux-macro/arch/csky/include/asm/Kbuild
-===================================================================
---- linux-macro.orig/arch/csky/include/asm/Kbuild
-+++ linux-macro/arch/csky/include/asm/Kbuild
-@@ -4,5 +4,6 @@ generic-y += extable.h
- generic-y += gpio.h
- generic-y += kvm_para.h
- generic-y += qrwlock.h
-+generic-y += parport.h
- generic-y += user.h
- generic-y += vmlinux.lds.h
-Index: linux-macro/arch/riscv/include/asm/Kbuild
-===================================================================
---- linux-macro.orig/arch/riscv/include/asm/Kbuild
-+++ linux-macro/arch/riscv/include/asm/Kbuild
-@@ -2,5 +2,6 @@
- generic-y += early_ioremap.h
- generic-y += flat.h
- generic-y += kvm_para.h
-+generic-y += parport.h
- generic-y += user.h
- generic-y += vmlinux.lds.h
-Index: linux-macro/arch/um/include/asm/Kbuild
-===================================================================
---- linux-macro.orig/arch/um/include/asm/Kbuild
-+++ linux-macro/arch/um/include/asm/Kbuild
-@@ -17,6 +17,7 @@ generic-y += mcs_spinlock.h
- generic-y += mmiowb.h
- generic-y += module.lds.h
- generic-y += param.h
-+generic-y += parport.h
- generic-y += percpu.h
- generic-y += preempt.h
- generic-y += softirq_stack.h
-Index: linux-macro/arch/xtensa/include/asm/Kbuild
-===================================================================
---- linux-macro.orig/arch/xtensa/include/asm/Kbuild
-+++ linux-macro/arch/xtensa/include/asm/Kbuild
-@@ -4,6 +4,7 @@ generic-y += extable.h
- generic-y += kvm_para.h
- generic-y += mcs_spinlock.h
- generic-y += param.h
-+generic-y += parport.h
- generic-y += qrwlock.h
- generic-y += qspinlock.h
- generic-y += user.h
-Index: linux-macro/drivers/parport/Kconfig
-===================================================================
---- linux-macro.orig/drivers/parport/Kconfig
-+++ linux-macro/drivers/parport/Kconfig
-@@ -42,7 +42,7 @@ if PARPORT
- 
- config PARPORT_PC
- 	tristate "PC-style hardware"
--	depends on ARCH_MIGHT_HAVE_PC_PARPORT
-+	depends on ARCH_MIGHT_HAVE_PC_PARPORT || (PCI && !S390)
- 	help
- 	  You should say Y here if you have a PC-style parallel port. All
- 	  IBM PC compatible computers and some Alphas have PC-style
-@@ -77,7 +77,7 @@ config PARPORT_PC_FIFO
- 
- config PARPORT_PC_SUPERIO
- 	bool "SuperIO chipset support"
--	depends on PARPORT_PC && !PARISC
-+	depends on ARCH_MIGHT_HAVE_PC_PARPORT && PARPORT_PC && !PARISC
- 	help
- 	  Saying Y here enables some probes for Super-IO chipsets in order to
- 	  find out things like base addresses, IRQ lines and DMA channels.  It
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+       Arnd
 
