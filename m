@@ -1,37 +1,53 @@
-Return-Path: <arnd@kernel.org>
-MIME-Version: 1.0
-References: <20220216131332.1489939-1-arnd@kernel.org> <20220216131332.1489939-16-arnd@kernel.org>
- <Yg1D08+olCSGmnYU@ravnborg.org> <Yg1FRZcrhlh5C//V@ravnborg.org>
-In-Reply-To: <Yg1FRZcrhlh5C//V@ravnborg.org>
-From: Arnd Bergmann <arnd@kernel.org>
-Date: Wed, 16 Feb 2022 23:01:16 +0100
-Message-ID: <CAK8P3a1kV=0G9WYkdjYCiBu=fuT1fbPGHVD9cgHX3ht6J3MFEw@mail.gmail.com>
+Return-Path: <sam@ravnborg.org>
+Date: Wed, 16 Feb 2022 19:41:09 +0100
+From: Sam Ravnborg <sam@ravnborg.org>
 Subject: Re: [PATCH v2 15/18] sparc64: remove CONFIG_SET_FS support
-Content-Type: text/plain; charset="UTF-8"
-To: Sam Ravnborg <sam@ravnborg.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Christoph Hellwig <hch@lst.de>, linux-arch <linux-arch@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>, Linux API <linux-api@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, Russell King - ARM Linux <linux@armlinux.org.uk>, Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>, Brian Cain <bcain@codeaurora.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Nick Hu <nickhu@andestech.com>, Greentime Hu <green.hu@gmail.com>, Dinh Nguyen <dinguyen@kernel.org>, Stafford Horne <shorne@gmail.com>, Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>, Heiko Carstens <hca@linux.ibm.com>, Rich Felker <dalias@libc.org>, David Miller <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, the arch/x86 maintainers <x86@kernel.org>, Max Filippov <jcmvbkbc@gmail.com>, "Eric W . Biederman" <ebiederm@xmission.com>, Andrew Morton <akpm@linux-foundation.org>, Ard Biesheuvel <ardb@kernel.org>, alpha <linux-alpha@vger.kernel.org>, "open list:SYNOPSYS ARC ARCHITECTURE" <linux-snps-arc@lists.infradead.org>, linux-csky@vger.kernel.org, "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>, linux-ia64@vger.kernel.org, linux-m68k <linux-m68k@lists.linux-m68k.org>, "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>, Openrisc <openrisc@lists.librecores.org>, Parisc List <linux-parisc@vger.kernel.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-riscv <linux-riscv@lists.infradead.org>, linux-s390 <linux-s390@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>, "open list:TENSILICA XTENSA PORT (xtensa)" <linux-xtensa@linux-xtensa.org>
+Message-ID: <Yg1FRZcrhlh5C//V@ravnborg.org>
+References: <20220216131332.1489939-1-arnd@kernel.org>
+ <20220216131332.1489939-16-arnd@kernel.org>
+ <Yg1D08+olCSGmnYU@ravnborg.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Yg1D08+olCSGmnYU@ravnborg.org>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-api@vger.kernel.org, arnd@arndb.de, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk, linux@armlinux.org.uk, will@kernel.org, guoren@kernel.org, bcain@codeaurora.org, geert@linux-m68k.org, monstr@monstr.eu, tsbogend@alpha.franken.de, nickhu@andestech.com, green.hu@gmail.com, dinguyen@kernel.org, shorne@gmail.com, deller@gmx.de, mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com, hca@linux.ibm.com, dalias@libc.org, davem@davemloft.net, richard@nod.at, x86@kernel.org, jcmvbkbc@gmail.com, ebiederm@xmission.com, akpm@linux-foundation.org, ardb@kernel.org, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
 List-ID: <linux-um.lists.infradead.org>
 
-On Wed, Feb 16, 2022 at 7:41 PM Sam Ravnborg <sam@ravnborg.org> wrote:
-> On Wed, Feb 16, 2022 at 07:34:59PM +0100, Sam Ravnborg wrote:
+Hi Arnd,
 
-> >
-> > I think you somehow missed the Kconfig change, and also the related
-> > sparc32 change which continue to have set_fs() after this patch.
+On Wed, Feb 16, 2022 at 07:34:59PM +0100, Sam Ravnborg wrote:
+> Hi Arnd.
+> 
+> On Wed, Feb 16, 2022 at 02:13:29PM +0100, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> > 
+> > sparc64 uses address space identifiers to differentiate between kernel
+> > and user space, using ASI_P for kernel threads but ASI_AIUS for normal
+> > user space, with the option of changing between them.
+> > 
+> > As nothing really changes the ASI any more, just hardcode ASI_AIUS
+> > everywhere. Kernel threads are not allowed to access __user pointers
+> > anyway.
+> > 
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > ---
+> >  arch/sparc/include/asm/processor_64.h   |  4 ----
+> >  arch/sparc/include/asm/switch_to_64.h   |  4 +---
+> >  arch/sparc/include/asm/thread_info_64.h |  4 +---
+> >  arch/sparc/include/asm/uaccess_64.h     | 20 +-------------------
+> >  arch/sparc/kernel/process_64.c          | 12 ------------
+> >  arch/sparc/kernel/traps_64.c            |  2 --
+> >  arch/sparc/lib/NGmemcpy.S               |  3 +--
+> >  arch/sparc/mm/init_64.c                 |  7 ++++---
+> >  8 files changed, 8 insertions(+), 48 deletions(-)
+> 
+> I think you somehow missed the Kconfig change, and also the related
+> sparc32 change which continue to have set_fs() after this patch.
+I now notice the sparc32 bits are in the last patch.
+To avoid breaking bisect-ability on sparc64 I think you need to merge
+the sparc32 changes with this patch, unless the sparc64 changes can
+coexist with CONFIG_SET_FS continue to be set.
 
-Right, thanks for pointing out the issue.
-
-> I now notice the sparc32 bits are in the last patch.
-> To avoid breaking bisect-ability on sparc64 I think you need to merge
-> the sparc32 changes with this patch, unless the sparc64 changes can
-> coexist with CONFIG_SET_FS continue to be set.
-
-I originally had them in the reverse order and broke bisectability during my
-rebase. The end result is still fine, but now I need to move the 'select
-SET_FS' from CONFIG_SPARC to CONFIG_SPARC32 in this patch
-and then remove it again from there in the last step.
-
-I've done that in my local copy now.
-
-         Arnd
+	Sam
 
