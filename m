@@ -1,127 +1,101 @@
-Return-Path: <anshuman.khandual@arm.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V3 01/30] mm/debug_vm_pgtable: Drop protection_map[] usage
-Date: Mon, 28 Feb 2022 16:17:24 +0530
-Message-Id: <1646045273-9343-2-git-send-email-anshuman.khandual@arm.com>
-In-Reply-To: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
-References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
-To: linux-mm@kvack.org, akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, geert@linux-m68k.org, Anshuman Khandual <anshuman.khandual@arm.com>, Christoph Hellwig <hch@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org, linux-riscv@lists.infradead.org, linux-alpha@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-parisc@vger.kernel.org, openrisc@lists.librecores.org, linux-um@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nKOSM-0082Ov-EO
+ for linux-um@lists.infradead.org; Wed, 16 Feb 2022 17:51:12 +0000
+Subject: Re: [PATCH] um: Fix WRITE_ZEROES in the UBD Driver
+References: <20220125171405.163362-1-frederic.danis@collabora.com>
+ <243f77b8-0c16-2069-5ac4-f3eb734db59a@cambridgegreys.com>
+ <b2fbfe71-ae02-d7b3-0ee6-930808d17dd5@collabora.com>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <1da438be-93a0-a04c-40f8-cf0d5aea423f@cambridgegreys.com>
+Date: Wed, 16 Feb 2022 17:31:51 +0000
+MIME-Version: 1.0
+In-Reply-To: <b2fbfe71-ae02-d7b3-0ee6-930808d17dd5@collabora.com>
+Content-Language: en-US
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: =?UTF-8?Q?Fr=c3=a9d=c3=a9ric_Danis?= <frederic.danis@collabora.com>, linux-um@lists.infradead.org
+Cc: richard@nod.at
 
-Although protection_map[] contains the platform defined page protection map
-for a given vm_flags combination, vm_get_page_prot() is the right interface
-to use. This will also reduce dependency on protection_map[] which is going
-to be dropped off completely later on.
-
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- mm/debug_vm_pgtable.c | 31 +++++++++++++++++++------------
- 1 file changed, 19 insertions(+), 12 deletions(-)
-
-diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
-index db2abd9e415b..30fd11a2ed32 100644
---- a/mm/debug_vm_pgtable.c
-+++ b/mm/debug_vm_pgtable.c
-@@ -93,7 +93,7 @@ struct pgtable_debug_args {
- 
- static void __init pte_basic_tests(struct pgtable_debug_args *args, int idx)
- {
--	pgprot_t prot = protection_map[idx];
-+	pgprot_t prot = vm_get_page_prot(idx);
- 	pte_t pte = pfn_pte(args->fixed_pte_pfn, prot);
- 	unsigned long val = idx, *ptr = &val;
- 
-@@ -101,7 +101,7 @@ static void __init pte_basic_tests(struct pgtable_debug_args *args, int idx)
- 
- 	/*
- 	 * This test needs to be executed after the given page table entry
--	 * is created with pfn_pte() to make sure that protection_map[idx]
-+	 * is created with pfn_pte() to make sure that vm_get_page_prot(idx)
- 	 * does not have the dirty bit enabled from the beginning. This is
- 	 * important for platforms like arm64 where (!PTE_RDONLY) indicate
- 	 * dirty bit being set.
-@@ -190,7 +190,7 @@ static void __init pte_savedwrite_tests(struct pgtable_debug_args *args)
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
- static void __init pmd_basic_tests(struct pgtable_debug_args *args, int idx)
- {
--	pgprot_t prot = protection_map[idx];
-+	pgprot_t prot = vm_get_page_prot(idx);
- 	unsigned long val = idx, *ptr = &val;
- 	pmd_t pmd;
- 
-@@ -202,7 +202,7 @@ static void __init pmd_basic_tests(struct pgtable_debug_args *args, int idx)
- 
- 	/*
- 	 * This test needs to be executed after the given page table entry
--	 * is created with pfn_pmd() to make sure that protection_map[idx]
-+	 * is created with pfn_pmd() to make sure that vm_get_page_prot(idx)
- 	 * does not have the dirty bit enabled from the beginning. This is
- 	 * important for platforms like arm64 where (!PTE_RDONLY) indicate
- 	 * dirty bit being set.
-@@ -325,7 +325,7 @@ static void __init pmd_savedwrite_tests(struct pgtable_debug_args *args)
- #ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
- static void __init pud_basic_tests(struct pgtable_debug_args *args, int idx)
- {
--	pgprot_t prot = protection_map[idx];
-+	pgprot_t prot = vm_get_page_prot(idx);
- 	unsigned long val = idx, *ptr = &val;
- 	pud_t pud;
- 
-@@ -337,7 +337,7 @@ static void __init pud_basic_tests(struct pgtable_debug_args *args, int idx)
- 
- 	/*
- 	 * This test needs to be executed after the given page table entry
--	 * is created with pfn_pud() to make sure that protection_map[idx]
-+	 * is created with pfn_pud() to make sure that vm_get_page_prot(idx)
- 	 * does not have the dirty bit enabled from the beginning. This is
- 	 * important for platforms like arm64 where (!PTE_RDONLY) indicate
- 	 * dirty bit being set.
-@@ -1106,14 +1106,14 @@ static int __init init_args(struct pgtable_debug_args *args)
- 	/*
- 	 * Initialize the debugging data.
- 	 *
--	 * protection_map[0] (or even protection_map[8]) will help create
--	 * page table entries with PROT_NONE permission as required for
--	 * pxx_protnone_tests().
-+	 * vm_get_page_prot(VM_NONE) or vm_get_page_prot(VM_SHARED|VM_NONE)
-+	 * will help create page table entries with PROT_NONE permission as
-+	 * required for pxx_protnone_tests().
- 	 */
- 	memset(args, 0, sizeof(*args));
- 	args->vaddr              = get_random_vaddr();
- 	args->page_prot          = vm_get_page_prot(VMFLAGS);
--	args->page_prot_none     = protection_map[0];
-+	args->page_prot_none     = vm_get_page_prot(VM_NONE);
- 	args->is_contiguous_page = false;
- 	args->pud_pfn            = ULONG_MAX;
- 	args->pmd_pfn            = ULONG_MAX;
-@@ -1248,12 +1248,19 @@ static int __init debug_vm_pgtable(void)
- 		return ret;
- 
- 	/*
--	 * Iterate over the protection_map[] to make sure that all
-+	 * Iterate over each possible vm_flags to make sure that all
- 	 * the basic page table transformation validations just hold
- 	 * true irrespective of the starting protection value for a
- 	 * given page table entry.
-+	 *
-+	 * Protection based vm_flags combinatins are always linear
-+	 * and increasing i.e starting from VM_NONE and going upto
-+	 * (VM_SHARED | READ | WRITE | EXEC).
- 	 */
--	for (idx = 0; idx < ARRAY_SIZE(protection_map); idx++) {
-+#define VM_FLAGS_START	(VM_NONE)
-+#define VM_FLAGS_END	(VM_SHARED | VM_EXEC | VM_WRITE | VM_READ)
-+
-+	for (idx = VM_FLAGS_START; idx <= VM_FLAGS_END; idx++) {
- 		pte_basic_tests(&args, idx);
- 		pmd_basic_tests(&args, idx);
- 		pud_basic_tests(&args, idx);
--- 
-2.25.1
-
+CgpPbiAxNi8wMi8yMDIyIDEwOjAwLCBGcsOpZMOpcmljIERhbmlzIHdyb3RlOgo+IEhpLAo+IAo+
+IE9uIDI2LzAxLzIwMjIgMTA6NDcsIEFudG9uIEl2YW5vdiB3cm90ZToKPj4KPj4KPj4gT24gMjUv
+MDEvMjAyMiAxNzoxNCwgRnLDqWTDqXJpYyBEYW5pcyB3cm90ZToKPj4+IENhbGwgdG8gZmFsbG9j
+YXRlIHdpdGggRkFMTE9DX0ZMX1BVTkNIX0hPTEUgb24gYSBkZXZpY2UgYmFja2VkIGJ5IGEgCj4+
+PiBzcGFyc2UKPj4+IGZpbGUgY2FuIGVuZCB1cCBieSBtaXNzaW5nIGRhdGEsIHplcm9lcyBkYXRh
+IHJhbmdlLCBpZiB0aGUgdW5kZXJseWluZyAKPj4+IGZpbGUKPj4+IGlzIHVzZWQgd2l0aCBhIHRv
+b2wgbGlrZSBibWFwdG9vbCB3aGljaCB3aWxsIHJlZmVyZW5jZWQgb25seSB1c2VkIAo+Pj4gc3Bh
+Y2VzLgo+Pj4KPj4+IFNpZ25lZC1vZmYtYnk6IEZyw6lkw6lyaWMgRGFuaXMgPGZyZWRlcmljLmRh
+bmlzQGNvbGxhYm9yYS5jb20+Cj4+PiAtLS0KPj4+IMKgIGFyY2gvdW0vZHJpdmVycy91YmRfa2Vy
+bi5jwqAgfCA4ICsrKysrKystCj4+PiDCoCBhcmNoL3VtL2luY2x1ZGUvc2hhcmVkL29zLmggfCAx
+ICsKPj4+IMKgIGFyY2gvdW0vb3MtTGludXgvZmlsZS5jwqDCoMKgwqAgfCA5ICsrKysrKysrKwo+
+Pj4gwqAgMyBmaWxlcyBjaGFuZ2VkLCAxNyBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCj4+
+Pgo+Pj4gZGlmZiAtLWdpdCBhL2FyY2gvdW0vZHJpdmVycy91YmRfa2Vybi5jIGIvYXJjaC91bS9k
+cml2ZXJzL3ViZF9rZXJuLmMKPj4+IGluZGV4IDY5ZDJkMDA0OWE2MS4uYjAzMjY5ZmFlZjcxIDEw
+MDY0NAo+Pj4gLS0tIGEvYXJjaC91bS9kcml2ZXJzL3ViZF9rZXJuLmMKPj4+ICsrKyBiL2FyY2gv
+dW0vZHJpdmVycy91YmRfa2Vybi5jCj4+PiBAQCAtMTUyNiwxMyArMTUyNiwxOSBAQCBzdGF0aWMg
+dm9pZCBkb19pbyhzdHJ1Y3QgaW9fdGhyZWFkX3JlcSAqcmVxLCAKPj4+IHN0cnVjdCBpb19kZXNj
+ICpkZXNjKQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfQo+Pj4gwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgYnJlYWs7Cj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAgY2FzZSBSRVFfT1Bf
+RElTQ0FSRDoKPj4+IC3CoMKgwqDCoMKgwqDCoCBjYXNlIFJFUV9PUF9XUklURV9aRVJPRVM6Cj4+
+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBuID0gb3NfZmFsbG9jX3B1bmNoKHJlcS0+ZmRz
+W2JpdF0sIG9mZiwgbGVuKTsKPj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlmIChuKSB7
+Cj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJlcS0+ZXJyb3IgPSBtYXBf
+ZXJyb3IoLW4pOwo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm47
+Cj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB9Cj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCBicmVhazsKPj4+ICvCoMKgwqDCoMKgwqDCoCBjYXNlIFJFUV9PUF9XUklURV9aRVJP
+RVM6Cj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBuID0gb3NfZmFsbG9jX3plcm9lcyhyZXEt
+PmZkc1tiaXRdLCBvZmYsIGxlbik7Cj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAobikg
+ewo+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXEtPmVycm9yID0gbWFwX2Vy
+cm9yKC1uKTsKPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuOwo+Pj4g
+K8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfQo+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYnJl
+YWs7Cj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAgZGVmYXVsdDoKPj4+IMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgIFdBUk5fT05fT05DRSgxKTsKPj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IHJlcS0+ZXJyb3IgPSBCTEtfU1RTX05PVFNVUFA7Cj4+PiBkaWZmIC0tZ2l0IGEvYXJjaC91bS9p
+bmNsdWRlL3NoYXJlZC9vcy5oIGIvYXJjaC91bS9pbmNsdWRlL3NoYXJlZC9vcy5oCj4+PiBpbmRl
+eCAwMDIxNDA1OWQ5ZWMuLmZhZmRlMWQ1NDE2ZSAxMDA2NDQKPj4+IC0tLSBhL2FyY2gvdW0vaW5j
+bHVkZS9zaGFyZWQvb3MuaAo+Pj4gKysrIGIvYXJjaC91bS9pbmNsdWRlL3NoYXJlZC9vcy5oCj4+
+PiBAQCAtMTY4LDYgKzE2OCw3IEBAIGV4dGVybiB1bnNpZ25lZCBvc19tYWpvcih1bnNpZ25lZCBs
+b25nIGxvbmcgZGV2KTsKPj4+IMKgIGV4dGVybiB1bnNpZ25lZCBvc19taW5vcih1bnNpZ25lZCBs
+b25nIGxvbmcgZGV2KTsKPj4+IMKgIGV4dGVybiB1bnNpZ25lZCBsb25nIGxvbmcgb3NfbWFrZWRl
+dih1bnNpZ25lZCBtYWpvciwgdW5zaWduZWQgbWlub3IpOwo+Pj4gwqAgZXh0ZXJuIGludCBvc19m
+YWxsb2NfcHVuY2goaW50IGZkLCB1bnNpZ25lZCBsb25nIGxvbmcgb2Zmc2V0LCBpbnQgCj4+PiBj
+b3VudCk7Cj4+PiArZXh0ZXJuIGludCBvc19mYWxsb2NfemVyb2VzKGludCBmZCwgdW5zaWduZWQg
+bG9uZyBsb25nIG9mZnNldCwgaW50IAo+Pj4gY291bnQpOwo+Pj4gwqAgZXh0ZXJuIGludCBvc19l
+dmVudGZkKHVuc2lnbmVkIGludCBpbml0dmFsLCBpbnQgZmxhZ3MpOwo+Pj4gwqAgZXh0ZXJuIGlu
+dCBvc19zZW5kbXNnX2ZkcyhpbnQgZmQsIGNvbnN0IHZvaWQgKmJ1ZiwgdW5zaWduZWQgaW50IGxl
+biwKPj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjb25zdCBpbnQgKmZkcywgdW5z
+aWduZWQgaW50IGZkc19udW0pOwo+Pj4gZGlmZiAtLWdpdCBhL2FyY2gvdW0vb3MtTGludXgvZmls
+ZS5jIGIvYXJjaC91bS9vcy1MaW51eC9maWxlLmMKPj4+IGluZGV4IGU0NDIxZGJjNGMzNi4uZmM0
+NDUwZGI1OWJkIDEwMDY0NAo+Pj4gLS0tIGEvYXJjaC91bS9vcy1MaW51eC9maWxlLmMKPj4+ICsr
+KyBiL2FyY2gvdW0vb3MtTGludXgvZmlsZS5jCj4+PiBAQCAtNjI1LDYgKzYyNSwxNSBAQCBpbnQg
+b3NfZmFsbG9jX3B1bmNoKGludCBmZCwgdW5zaWduZWQgbG9uZyBsb25nIAo+Pj4gb2Zmc2V0LCBp
+bnQgbGVuKQo+Pj4gwqDCoMKgwqDCoCByZXR1cm4gbjsKPj4+IMKgIH0KPj4+IMKgICtpbnQgb3Nf
+ZmFsbG9jX3plcm9lcyhpbnQgZmQsIHVuc2lnbmVkIGxvbmcgbG9uZyBvZmZzZXQsIGludCBsZW4p
+Cj4+PiArewo+Pj4gK8KgwqDCoCBpbnQgbiA9IGZhbGxvY2F0ZShmZCwgRkFMTE9DX0ZMX1pFUk9f
+UkFOR0V8RkFMTE9DX0ZMX0tFRVBfU0laRSwgCj4+PiBvZmZzZXQsIGxlbik7Cj4+PiArCj4+PiAr
+wqDCoMKgIGlmIChuIDwgMCkKPj4+ICvCoMKgwqDCoMKgwqDCoCByZXR1cm4gLWVycm5vOwo+Pj4g
+K8KgwqDCoCByZXR1cm4gbjsKPj4+ICt9Cj4+PiArCj4+PiDCoCBpbnQgb3NfZXZlbnRmZCh1bnNp
+Z25lZCBpbnQgaW5pdHZhbCwgaW50IGZsYWdzKQo+Pj4gwqAgewo+Pj4gwqDCoMKgwqDCoCBpbnQg
+ZmQgPSBldmVudGZkKGluaXR2YWwsIGZsYWdzKTsKPj4+Cj4+Cj4+IEFja2VkLWJ5OiBBbnRvbiBJ
+dmFub3YgPGFudG9uLml2YW5vdkBjYW1icmlkZ2VncmV5cy5jb20+Cj4+Cj4gV2hhdCBzaG91bGQg
+YmUgbmV4dCBzdGVwIHRvIGdldCB0aGlzIG1lcmdlZD8KCkkgcmV2aWV3ZWQgaXQgYW5kIGFja2Vk
+IGl0LgoKUmljaGFyZCBkZWNpZGVzIHdoaWNoIG9uIHRoZSBhY3R1YWwgbWVyZ2UuCgpBLgoKPiAK
+PiBSZWdhcmRzLAo+IAo+IEZyZWQKPiAKCi0tIApBbnRvbiBSLiBJdmFub3YKQ2FtYnJpZGdlZ3Jl
+eXMgTGltaXRlZC4gUmVnaXN0ZXJlZCBpbiBFbmdsYW5kLiBDb21wYW55IE51bWJlciAxMDI3MzY2
+MQpodHRwczovL3d3dy5jYW1icmlkZ2VncmV5cy5jb20vCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1A
+bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2xpbnV4LXVtCg==
 
