@@ -1,88 +1,126 @@
 Return-Path: <arnd@kernel.org>
 From: Arnd Bergmann <arnd@kernel.org>
-Subject: [PATCH 06/14] mips: use simpler access_ok()
-Date: Mon, 14 Feb 2022 17:34:44 +0100
-Message-Id: <20220214163452.1568807-7-arnd@kernel.org>
-In-Reply-To: <20220214163452.1568807-1-arnd@kernel.org>
-References: <20220214163452.1568807-1-arnd@kernel.org>
+Subject: [PATCH v2 01/18] uaccess: fix integer overflow on access_ok()
+Date: Wed, 16 Feb 2022 14:13:15 +0100
+Message-Id: <20220216131332.1489939-2-arnd@kernel.org>
+In-Reply-To: <20220216131332.1489939-1-arnd@kernel.org>
+References: <20220216131332.1489939-1-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-To: Linus Torvalds <torvalds@linux-foundation.org>, Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-api@vger.kernel.org, arnd@arndb.de, linux-kernel@vger.kernel.org
-Cc: linux@armlinux.org.uk, will@kernel.org, guoren@kernel.org, bcain@codeaurora.org, geert@linux-m68k.org, monstr@monstr.eu, tsbogend@alpha.franken.de, nickhu@andestech.com, green.hu@gmail.com, dinguyen@kernel.org, shorne@gmail.com, deller@gmx.de, mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com, hca@linux.ibm.com, dalias@libc.org, davem@davemloft.net, richard@nod.at, x86@kernel.org, jcmvbkbc@gmail.com, ebiederm@xmission.com, akpm@linux-foundation.org, ardb@kernel.org, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
+To: Linus Torvalds <torvalds@linux-foundation.org>, Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-api@vger.kernel.org, arnd@arndb.de, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk
+Cc: linux@armlinux.org.uk, will@kernel.org, guoren@kernel.org, bcain@codeaurora.org, geert@linux-m68k.org, monstr@monstr.eu, tsbogend@alpha.franken.de, nickhu@andestech.com, green.hu@gmail.com, dinguyen@kernel.org, shorne@gmail.com, deller@gmx.de, mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com, hca@linux.ibm.com, dalias@libc.org, davem@davemloft.net, richard@nod.at, x86@kernel.org, jcmvbkbc@gmail.com, ebiederm@xmission.com, akpm@linux-foundation.org, ardb@kernel.org, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, stable@vger.kernel.org, David Laight <David.Laight@aculab.com>
 List-ID: <linux-um.lists.infradead.org>
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Before unifying the mips version of __access_ok() with the generic
-code, this converts it to the same algorithm. This is a change in
-behavior on mips64, as now address in the user segment, the lower
-2^62 bytes, is taken to be valid, relying on a page fault for
-addresses that are within that segment but not valid on that CPU.
+Three architectures check the end of a user access against the
+address limit without taking a possible overflow into account.
+Passing a negative length or another overflow in here returns
+success when it should not.
 
-The new version should be the most effecient way to do this, but
-it gets rid of the special handling for size=0 that most other
-architectures ignore as well.
+Use the most common correct implementation here, which optimizes
+for a constant 'size' argument, and turns the common case into a
+single comparison.
 
+Cc: stable@vger.kernel.org
+Fixes: da551281947c ("csky: User access")
+Fixes: f663b60f5215 ("microblaze: Fix uaccess_ok macro")
+Fixes: 7567746e1c0d ("Hexagon: Add user access functions")
+Reported-by: David Laight <David.Laight@aculab.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/mips/include/asm/uaccess.h | 22 ++++------------------
- 1 file changed, 4 insertions(+), 18 deletions(-)
+ arch/csky/include/asm/uaccess.h       |  7 +++----
+ arch/hexagon/include/asm/uaccess.h    | 18 +++++++++---------
+ arch/microblaze/include/asm/uaccess.h | 19 ++++---------------
+ 3 files changed, 16 insertions(+), 28 deletions(-)
 
-diff --git a/arch/mips/include/asm/uaccess.h b/arch/mips/include/asm/uaccess.h
-index db9a8e002b62..d7c89dc3426c 100644
---- a/arch/mips/include/asm/uaccess.h
-+++ b/arch/mips/include/asm/uaccess.h
-@@ -19,6 +19,7 @@
- #ifdef CONFIG_32BIT
+diff --git a/arch/csky/include/asm/uaccess.h b/arch/csky/include/asm/uaccess.h
+index c40f06ee8d3e..ac5a54f57d40 100644
+--- a/arch/csky/include/asm/uaccess.h
++++ b/arch/csky/include/asm/uaccess.h
+@@ -3,14 +3,13 @@
+ #ifndef __ASM_CSKY_UACCESS_H
+ #define __ASM_CSKY_UACCESS_H
  
- #define __UA_LIMIT 0x80000000UL
-+#define TASK_SIZE_MAX	__UA_LIMIT
+-#define user_addr_max() \
+-	(uaccess_kernel() ? KERNEL_DS.seg : get_fs().seg)
++#define user_addr_max() (current_thread_info()->addr_limit.seg)
  
- #define __UA_ADDR	".word"
- #define __UA_LA		"la"
-@@ -33,6 +34,7 @@
- extern u64 __ua_limit;
- 
- #define __UA_LIMIT	__ua_limit
-+#define TASK_SIZE_MAX	XKSSEG
- 
- #define __UA_ADDR	".dword"
- #define __UA_LA		"dla"
-@@ -42,22 +44,6 @@ extern u64 __ua_limit;
- 
- #endif /* CONFIG_64BIT */
- 
--/*
-- * Is a address valid? This does a straightforward calculation rather
-- * than tests.
-- *
-- * Address valid if:
-- *  - "addr" doesn't have any high-bits set
-- *  - AND "size" doesn't have any high-bits set
-- *  - AND "addr+size" doesn't have any high-bits set
-- *  - OR we are in kernel mode.
-- *
-- * __ua_size() is a trick to avoid runtime checking of positive constant
-- * sizes; for those we already know at compile time that the size is ok.
-- */
--#define __ua_size(size)							\
--	((__builtin_constant_p(size) && (signed long) (size) > 0) ? 0 : (size))
--
- /*
-  * access_ok: - Checks if a user space pointer is valid
-  * @addr: User space pointer to start of block to check
-@@ -79,9 +65,9 @@ extern u64 __ua_limit;
- static inline int __access_ok(const void __user *p, unsigned long size)
+ static inline int __access_ok(unsigned long addr, unsigned long size)
  {
- 	unsigned long addr = (unsigned long)p;
--	unsigned long end = addr + size - !!size;
-+	unsigned long limit = TASK_SIZE_MAX;
+-	unsigned long limit = current_thread_info()->addr_limit.seg;
++	unsigned long limit = user_addr_max();
  
--	return (__UA_LIMIT & (addr | end | __ua_size(size))) == 0;
+-	return ((addr < limit) && ((addr + size) < limit));
 +	return (size <= limit) && (addr <= (limit - size));
  }
+ #define __access_ok __access_ok
  
- #define access_ok(addr, size)					\
+diff --git a/arch/hexagon/include/asm/uaccess.h b/arch/hexagon/include/asm/uaccess.h
+index ef5bfef8d490..719ba3f3c45c 100644
+--- a/arch/hexagon/include/asm/uaccess.h
++++ b/arch/hexagon/include/asm/uaccess.h
+@@ -25,17 +25,17 @@
+  * Returns true (nonzero) if the memory block *may* be valid, false (zero)
+  * if it is definitely invalid.
+  *
+- * User address space in Hexagon, like x86, goes to 0xbfffffff, so the
+- * simple MSB-based tests used by MIPS won't work.  Some further
+- * optimization is probably possible here, but for now, keep it
+- * reasonably simple and not *too* slow.  After all, we've got the
+- * MMU for backup.
+  */
++#define uaccess_kernel() (get_fs().seg == KERNEL_DS.seg)
++#define user_addr_max() (uaccess_kernel() ? ~0UL : TASK_SIZE)
+ 
+-#define __access_ok(addr, size) \
+-	((get_fs().seg == KERNEL_DS.seg) || \
+-	(((unsigned long)addr < get_fs().seg) && \
+-	  (unsigned long)size < (get_fs().seg - (unsigned long)addr)))
++static inline int __access_ok(unsigned long addr, unsigned long size)
++{
++	unsigned long limit = TASK_SIZE;
++
++	return (size <= limit) && (addr <= (limit - size));
++}
++#define __access_ok __access_ok
+ 
+ /*
+  * When a kernel-mode page fault is taken, the faulting instruction
+diff --git a/arch/microblaze/include/asm/uaccess.h b/arch/microblaze/include/asm/uaccess.h
+index d2a8ef9f8978..5b6e0e7788f4 100644
+--- a/arch/microblaze/include/asm/uaccess.h
++++ b/arch/microblaze/include/asm/uaccess.h
+@@ -39,24 +39,13 @@
+ 
+ # define uaccess_kernel()	(get_fs().seg == KERNEL_DS.seg)
+ 
+-static inline int access_ok(const void __user *addr, unsigned long size)
++static inline int __access_ok(unsigned long addr, unsigned long size)
+ {
+-	if (!size)
+-		goto ok;
++	unsigned long limit = user_addr_max();
+ 
+-	if ((get_fs().seg < ((unsigned long)addr)) ||
+-			(get_fs().seg < ((unsigned long)addr + size - 1))) {
+-		pr_devel("ACCESS fail at 0x%08x (size 0x%x), seg 0x%08x\n",
+-			(__force u32)addr, (u32)size,
+-			(u32)get_fs().seg);
+-		return 0;
+-	}
+-ok:
+-	pr_devel("ACCESS OK at 0x%08x (size 0x%x), seg 0x%08x\n",
+-			(__force u32)addr, (u32)size,
+-			(u32)get_fs().seg);
+-	return 1;
++	return (size <= limit) && (addr <= (limit - size));
+ }
++#define access_ok(addr, size) __access_ok((unsigned long)addr, size)
+ 
+ # define __FIXUP_SECTION	".section .fixup,\"ax\"\n"
+ # define __EX_TABLE_SECTION	".section __ex_table,\"a\"\n"
 -- 
 2.29.2
 
