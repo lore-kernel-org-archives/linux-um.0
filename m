@@ -1,15 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nN9E3-00HEsp-Ok
- for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:11:51 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v6 19/26] virtio_pci: support the arg sizes of find_vqs()
-Date: Thu, 24 Feb 2022 16:10:55 +0800
-Message-Id: <20220224081102.80224-20-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
-References: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
+Date: Wed, 16 Feb 2022 13:46:09 -0600
+From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: Re: [PATCH][next] treewide: Replace zero-length arrays with
+ flexible-array members
+Message-ID: <20220216194609.GA903947@embeddedor>
+References: <20220215174743.GA878920@embeddedor>
+ <202202151016.C0471D6E@keescook>
+ <20220215192110.GA883653@embeddedor> <Ygv8wY75hNqS7zO6@unreal>
+ <20220215193221.GA884407@embeddedor>
+ <CAJZ5v0jpAnQk+Hub6ue6t712RW+W0YBjb_gAcZZbUeuYMGv7mg@mail.gmail.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0jpAnQk+Hub6ue6t712RW+W0YBjb_gAcZZbUeuYMGv7mg@mail.gmail.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,172 +24,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Leon Romanovsky <leon@kernel.org>, Kees Cook <keescook@chromium.org>, GR-QLogic-Storage-Upstream@marvell.com, linux-alpha@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-ia64@vger.kernel.org, linux-s390@vger.kernel.org, Linux-sh list <linux-sh@vger.kernel.org>, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, intel-gfx <intel-gfx@lists.freedesktop.org>, dri-devel <dri-devel@lists.freedesktop.org>, nouveau <nouveau@lists.freedesktop.org>, coresight@lists.linaro.org, Linux ARM <linux-arm-kernel@lists.infradead.org>, bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>, netdev <netdev@vger.kernel.org>, Linux OMAP Mailing List <linux-omap@vger.kernel.org>, "open list:TARGET SUBSYSTEM" <linux-scsi@vger.kernel.org>, target-devel@vger.kernel.org, mpi3mr-linuxdrv.pdl@broadcom.com, linux-staging@lists.linux.dev, linux-rpi-kernel@lists.infradead.org, sparmaintainer@unisys.com, linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, Ext4 Developers List <linux-ext4@vger.kernel.org>, ACPI Devel Maling List <linux-acpi@vger.kernel.org>, "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>, linux-arch <linux-arch@vger.kernel.org>, Linux Memory Management List <linux-mm@kvack.org>, greybus-dev@lists.linaro.org, linux-i3c@lists.infradead.org, linux-rdma@vger.kernel.org, "open list:BLUETOOTH DRIVERS" <linux-bluetooth@vger.kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, linux-perf-users@vger.kernel.org, linux-hardening@vger.kernel.org
 
-Virtio PCI supports new parameter sizes of find_vqs().
+On Wed, Feb 16, 2022 at 08:05:47PM +0100, Rafael J. Wysocki wrote:
+> On Tue, Feb 15, 2022 at 8:24 PM Gustavo A. R. Silva
+> <gustavoars@kernel.org> wrote:
+> 
+> Can you also send the ACPI patch separately, please?
+> 
+> We would like to route it through the upstream ACPICA code base.
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- drivers/virtio/virtio_pci_common.c | 18 ++++++++++--------
- drivers/virtio/virtio_pci_common.h |  1 +
- drivers/virtio/virtio_pci_legacy.c |  6 +++++-
- drivers/virtio/virtio_pci_modern.c | 10 +++++++---
- 4 files changed, 23 insertions(+), 12 deletions(-)
+Yeah; no problem.
 
-diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
-index 8e8fa7e5ad80..1faf65325060 100644
---- a/drivers/virtio/virtio_pci_common.c
-+++ b/drivers/virtio/virtio_pci_common.c
-@@ -208,6 +208,7 @@ static int vp_request_msix_vectors(struct virtio_device *vdev, int nvectors,
- static struct virtqueue *vp_setup_vq(struct virtio_device *vdev, unsigned index,
- 				     void (*callback)(struct virtqueue *vq),
- 				     const char *name,
-+				     u32 size,
- 				     bool ctx,
- 				     u16 msix_vec)
- {
-@@ -221,7 +222,7 @@ static struct virtqueue *vp_setup_vq(struct virtio_device *vdev, unsigned index,
- 		return ERR_PTR(-ENOMEM);
- 
- 	vq = vp_dev->setup_vq(vp_dev, info, index, callback, name, ctx,
--			      msix_vec);
-+			      size, msix_vec);
- 	if (IS_ERR(vq))
- 		goto out_info;
- 
-@@ -314,7 +315,7 @@ void vp_del_vqs(struct virtio_device *vdev)
- 
- static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned nvqs,
- 		struct virtqueue *vqs[], vq_callback_t *callbacks[],
--		const char * const names[], bool per_vq_vectors,
-+		const char * const names[], u32 sizes[], bool per_vq_vectors,
- 		const bool *ctx,
- 		struct irq_affinity *desc)
- {
-@@ -357,8 +358,8 @@ static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned nvqs,
- 		else
- 			msix_vec = VP_MSIX_VQ_VECTOR;
- 		vqs[i] = vp_setup_vq(vdev, queue_idx++, callbacks[i], names[i],
--				     ctx ? ctx[i] : false,
--				     msix_vec);
-+				     sizes ? sizes[i] : 0,
-+				     ctx ? ctx[i] : false, msix_vec);
- 		if (IS_ERR(vqs[i])) {
- 			err = PTR_ERR(vqs[i]);
- 			goto error_find;
-@@ -388,7 +389,7 @@ static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned nvqs,
- 
- static int vp_find_vqs_intx(struct virtio_device *vdev, unsigned nvqs,
- 		struct virtqueue *vqs[], vq_callback_t *callbacks[],
--		const char * const names[], const bool *ctx)
-+		const char * const names[], u32 sizes[], const bool *ctx)
- {
- 	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
- 	int i, err, queue_idx = 0;
-@@ -410,6 +411,7 @@ static int vp_find_vqs_intx(struct virtio_device *vdev, unsigned nvqs,
- 			continue;
- 		}
- 		vqs[i] = vp_setup_vq(vdev, queue_idx++, callbacks[i], names[i],
-+				     sizes ? sizes[i] : 0,
- 				     ctx ? ctx[i] : false,
- 				     VIRTIO_MSI_NO_VECTOR);
- 		if (IS_ERR(vqs[i])) {
-@@ -433,15 +435,15 @@ int vp_find_vqs(struct virtio_device *vdev, unsigned nvqs,
- 	int err;
- 
- 	/* Try MSI-X with one vector per queue. */
--	err = vp_find_vqs_msix(vdev, nvqs, vqs, callbacks, names, true, ctx, desc);
-+	err = vp_find_vqs_msix(vdev, nvqs, vqs, callbacks, names, sizes, true, ctx, desc);
- 	if (!err)
- 		return 0;
- 	/* Fallback: MSI-X with one vector for config, one shared for queues. */
--	err = vp_find_vqs_msix(vdev, nvqs, vqs, callbacks, names, false, ctx, desc);
-+	err = vp_find_vqs_msix(vdev, nvqs, vqs, callbacks, names, sizes, false, ctx, desc);
- 	if (!err)
- 		return 0;
- 	/* Finally fall back to regular interrupts. */
--	return vp_find_vqs_intx(vdev, nvqs, vqs, callbacks, names, ctx);
-+	return vp_find_vqs_intx(vdev, nvqs, vqs, callbacks, names, sizes, ctx);
- }
- 
- const char *vp_bus_name(struct virtio_device *vdev)
-diff --git a/drivers/virtio/virtio_pci_common.h b/drivers/virtio/virtio_pci_common.h
-index 9dbf1d555dff..a15ac5570ddd 100644
---- a/drivers/virtio/virtio_pci_common.h
-+++ b/drivers/virtio/virtio_pci_common.h
-@@ -82,6 +82,7 @@ struct virtio_pci_device {
- 				      void (*callback)(struct virtqueue *vq),
- 				      const char *name,
- 				      bool ctx,
-+				      u32 size,
- 				      u16 msix_vec);
- 	void (*del_vq)(struct virtio_pci_vq_info *info);
- 
-diff --git a/drivers/virtio/virtio_pci_legacy.c b/drivers/virtio/virtio_pci_legacy.c
-index b68934fe6b5d..efa98d2debe0 100644
---- a/drivers/virtio/virtio_pci_legacy.c
-+++ b/drivers/virtio/virtio_pci_legacy.c
-@@ -113,6 +113,7 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 				  void (*callback)(struct virtqueue *vq),
- 				  const char *name,
- 				  bool ctx,
-+				  u32 size,
- 				  u16 msix_vec)
- {
- 	struct virtqueue *vq;
-@@ -125,10 +126,13 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 	if (!num || vp_legacy_get_queue_enable(&vp_dev->ldev, index))
- 		return ERR_PTR(-ENOENT);
- 
-+	if (!size || size > num)
-+		size = num;
-+
- 	info->msix_vector = msix_vec;
- 
- 	/* create the vring */
--	vq = vring_create_virtqueue(index, num,
-+	vq = vring_create_virtqueue(index, size,
- 				    VIRTIO_PCI_VRING_ALIGN, &vp_dev->vdev,
- 				    true, false, ctx,
- 				    vp_notify, callback, name);
-diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
-index 342795175c29..0e17e0df6a8a 100644
---- a/drivers/virtio/virtio_pci_modern.c
-+++ b/drivers/virtio/virtio_pci_modern.c
-@@ -289,6 +289,7 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 				  void (*callback)(struct virtqueue *vq),
- 				  const char *name,
- 				  bool ctx,
-+				  u32 size,
- 				  u16 msix_vec)
- {
- 
-@@ -305,15 +306,18 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 	if (!num || vp_modern_get_queue_enable(mdev, index))
- 		return ERR_PTR(-ENOENT);
- 
--	if (num & (num - 1)) {
--		dev_warn(&vp_dev->pci_dev->dev, "bad queue size %u", num);
-+	if (!size || size > num)
-+		size = num;
-+
-+	if (size & (size - 1)) {
-+		dev_warn(&vp_dev->pci_dev->dev, "bad queue size %u", size);
- 		return ERR_PTR(-EINVAL);
- 	}
- 
- 	info->msix_vector = msix_vec;
- 
- 	/* create the vring */
--	vq = vring_create_virtqueue(index, num,
-+	vq = vring_create_virtqueue(index, size,
- 				    SMP_CACHE_BYTES, &vp_dev->vdev,
- 				    true, true, ctx,
- 				    vp_notify, callback, name);
--- 
-2.31.0
-
+Thanks
+--
+Gustavo
 
 _______________________________________________
 linux-um mailing list
