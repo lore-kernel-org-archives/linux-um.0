@@ -1,174 +1,55 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nN9Db-00HEMY-W7
- for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:11:25 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v6 04/26] virtio_ring: split: extract the logic of creating
- vring
-Date: Thu, 24 Feb 2022 16:10:40 +0800
-Message-Id: <20220224081102.80224-5-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
-References: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Thu, 17 Feb 2022 09:29:14 -0800
+From: Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH] um: Cleanup syscall_handler_t definition/cast, fix
+ warning
+Message-ID: <202202170928.F02D6F41@keescook>
+References: <20220210034353.1065703-1-davidgow@google.com>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220210034353.1065703-1-davidgow@google.com>
+To: David Gow <davidgow@google.com>
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Al Viro <viro@zeniv.linux.org.uk>, x86@kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-Separate the logic of split to create vring queue.
+On Thu, Feb 10, 2022 at 11:43:53AM +0800, David Gow wrote:
+> The syscall_handler_t type for x86_64 was defined as 'long (*)(void)',
+> but always cast to 'long (*)(long, long, long, long, long, long)' before
+> use. This now triggers a warning (see below).
+> 
+> Define syscall_handler_t as the latter instead, and remove the cast.
+> This simplifies the code, and fixes the warning.
+> 
+> Warning:
+> In file included from ../arch/um/include/asm/processor-generic.h:13
+>                  from ../arch/x86/um/asm/processor.h:41
+>                  from ../include/linux/rcupdate.h:30
+>                  from ../include/linux/rculist.h:11
+>                  from ../include/linux/pid.h:5
+>                  from ../include/linux/sched.h:14
+>                  from ../include/linux/ptrace.h:6
+>                  from ../arch/um/kernel/skas/syscall.c:7:
+> ../arch/um/kernel/skas/syscall.c: In function ‘handle_syscall’:
+> ../arch/x86/um/shared/sysdep/syscalls_64.h:18:11: warning: cast between incompatible function types from ‘long int (*)(void)’ to ‘long int (*)(long int,  long int,  long int,  long int,  long int,  long int)’ [
+> -Wcast-function-type]
+>    18 |         (((long (*)(long, long, long, long, long, long)) \
+>       |           ^
+> ../arch/x86/um/asm/ptrace.h:36:62: note: in definition of macro ‘PT_REGS_SET_SYSCALL_RETURN’
+>    36 | #define PT_REGS_SET_SYSCALL_RETURN(r, res) (PT_REGS_AX(r) = (res))
+>       |                                                              ^~~
+> ../arch/um/kernel/skas/syscall.c:46:33: note: in expansion of macro ‘EXECUTE_SYSCALL’
+>    46 |                                 EXECUTE_SYSCALL(syscall, regs));
+>       |                                 ^~~~~~~~~~~~~~~
+> 
+> Signed-off-by: David Gow <davidgow@google.com>
 
-For the convenience of passing parameters, add a structure
-vring_split.
+Thanks for this! I was just about to go figure this out too. :)
 
-This feature is required for subsequent virtuqueue reset vring.
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Tested-by: Kees Cook <keescook@chromium.org>
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- drivers/virtio/virtio_ring.c | 74 +++++++++++++++++++++++++-----------
- 1 file changed, 51 insertions(+), 23 deletions(-)
-
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index b87130c8f312..d32793615451 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -85,6 +85,13 @@ struct vring_desc_extra {
- 	u16 next;			/* The next desc state in a list. */
- };
- 
-+struct vring_split {
-+	void *queue;
-+	dma_addr_t dma_addr;
-+	size_t queue_size_in_bytes;
-+	struct vring vring;
-+};
-+
- struct vring_virtqueue {
- 	struct virtqueue vq;
- 
-@@ -915,28 +922,21 @@ static void *virtqueue_detach_unused_buf_split(struct virtqueue *_vq)
- 	return NULL;
- }
- 
--static struct virtqueue *vring_create_virtqueue_split(
--	unsigned int index,
--	unsigned int num,
--	unsigned int vring_align,
--	struct virtio_device *vdev,
--	bool weak_barriers,
--	bool may_reduce_num,
--	bool context,
--	bool (*notify)(struct virtqueue *),
--	void (*callback)(struct virtqueue *),
--	const char *name)
-+static int vring_create_vring_split(struct vring_split *vring,
-+				    struct virtio_device *vdev,
-+				    unsigned int vring_align,
-+				    bool weak_barriers,
-+				    bool may_reduce_num,
-+				    u32 num)
- {
--	struct virtqueue *vq;
- 	void *queue = NULL;
- 	dma_addr_t dma_addr;
- 	size_t queue_size_in_bytes;
--	struct vring vring;
- 
- 	/* We assume num is a power of 2. */
- 	if (num & (num - 1)) {
- 		dev_warn(&vdev->dev, "Bad virtqueue length %u\n", num);
--		return NULL;
-+		return -EINVAL;
- 	}
- 
- 	/* TODO: allocate each queue chunk individually */
-@@ -947,11 +947,11 @@ static struct virtqueue *vring_create_virtqueue_split(
- 		if (queue)
- 			break;
- 		if (!may_reduce_num)
--			return NULL;
-+			return -ENOMEM;
- 	}
- 
- 	if (!num)
--		return NULL;
-+		return -ENOMEM;
- 
- 	if (!queue) {
- 		/* Try to get a single page. You are my only hope! */
-@@ -959,21 +959,49 @@ static struct virtqueue *vring_create_virtqueue_split(
- 					  &dma_addr, GFP_KERNEL|__GFP_ZERO);
- 	}
- 	if (!queue)
--		return NULL;
-+		return -ENOMEM;
- 
- 	queue_size_in_bytes = vring_size(num, vring_align);
--	vring_init(&vring, num, queue, vring_align);
-+	vring_init(&vring->vring, num, queue, vring_align);
-+
-+	vring->dma_addr = dma_addr;
-+	vring->queue = queue;
-+	vring->queue_size_in_bytes = queue_size_in_bytes;
-+
-+	return 0;
-+}
-+
-+static struct virtqueue *vring_create_virtqueue_split(
-+	unsigned int index,
-+	unsigned int num,
-+	unsigned int vring_align,
-+	struct virtio_device *vdev,
-+	bool weak_barriers,
-+	bool may_reduce_num,
-+	bool context,
-+	bool (*notify)(struct virtqueue *),
-+	void (*callback)(struct virtqueue *),
-+	const char *name)
-+{
-+	struct vring_split vring;
-+	struct virtqueue *vq;
-+	int err;
-+
-+	err = vring_create_vring_split(&vring, vdev, vring_align, weak_barriers,
-+				       may_reduce_num, num);
-+	if (err)
-+		return NULL;
- 
--	vq = __vring_new_virtqueue(index, vring, vdev, weak_barriers, context,
-+	vq = __vring_new_virtqueue(index, vring.vring, vdev, weak_barriers, context,
- 				   notify, callback, name);
- 	if (!vq) {
--		vring_free_queue(vdev, queue_size_in_bytes, queue,
--				 dma_addr);
-+		vring_free_queue(vdev, vring.queue_size_in_bytes, vring.queue,
-+				 vring.dma_addr);
- 		return NULL;
- 	}
- 
--	to_vvq(vq)->split.queue_dma_addr = dma_addr;
--	to_vvq(vq)->split.queue_size_in_bytes = queue_size_in_bytes;
-+	to_vvq(vq)->split.queue_dma_addr = vring.dma_addr;
-+	to_vvq(vq)->split.queue_size_in_bytes = vring.queue_size_in_bytes;
- 	to_vvq(vq)->we_own_ring = true;
- 
- 	return vq;
 -- 
-2.31.0
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+Kees Cook
 
