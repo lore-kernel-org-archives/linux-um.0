@@ -1,18 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-wr1-x432.google.com ([2a00:1450:4864:20::432])
+Received: from mail-oi1-x232.google.com ([2607:f8b0:4864:20::232])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nLKfT-00GPMN-Mf
- for linux-um@lists.infradead.org; Sat, 19 Feb 2022 08:00:37 +0000
-Received: by mail-wr1-x432.google.com with SMTP id f3so18016949wrh.7
- for <linux-um@lists.infradead.org>; Sat, 19 Feb 2022 00:00:35 -0800 (PST)
+ id 1nL6JY-00FJec-3l
+ for linux-um@lists.infradead.org; Fri, 18 Feb 2022 16:41:01 +0000
+Received: by mail-oi1-x232.google.com with SMTP id x193so3718299oix.0
+ for <linux-um@lists.infradead.org>; Fri, 18 Feb 2022 08:40:59 -0800 (PST)
 MIME-Version: 1.0
 References: <20220218075727.2737623-1-davidgow@google.com>
  <20220218075727.2737623-2-davidgow@google.com>
  <ef8eee23-ba8c-e76a-d32d-68658841708d@amd.com>
 In-Reply-To: <ef8eee23-ba8c-e76a-d32d-68658841708d@amd.com>
-From: David Gow <davidgow@google.com>
-Date: Sat, 19 Feb 2022 16:00:22 +0800
-Message-ID: <CABVgOSnFjDnjbPh_E+GSzp-8WoRVPFa36=5GUpPtC-ba-fGkaw@mail.gmail.com>
+From: Alex Deucher <alexdeucher@gmail.com>
+Date: Fri, 18 Feb 2022 11:40:47 -0500
+Message-ID: <CADnq5_Nxjq6+8k1bjs3LJfTzXgX1YRd0-=Fd55224V3_nOshAg@mail.gmail.com>
 Subject: Re: [PATCH 1/4] drm/amdgpu: Fix compilation under UML
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,212 +22,105 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4111311805787589706=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: Felix Kuehling <felix.kuehling@amd.com>
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Shuah Khan <skhan@linuxfoundation.org>, Brendan Higgins <brendanhiggins@google.com>, Randy Dunlap <rdunlap@infradead.org>, linux-um <linux-um@lists.infradead.org>, amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, KUnit Development <kunit-dev@googlegroups.com>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-rdma@vger.kernel.org, x86@kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc: David Gow <davidgow@google.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Shuah Khan <skhan@linuxfoundation.org>, Brendan Higgins <brendanhiggins@google.com>, Randy Dunlap <rdunlap@infradead.org>, linux-rdma <linux-rdma@vger.kernel.org>, X86 ML <x86@kernel.org>, linux-um@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, amd-gfx list <amd-gfx@lists.freedesktop.org>, linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com
 
---===============4111311805787589706==
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000ddf33205d85a64fb"
-
---000000000000ddf33205d85a64fb
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Sat, Feb 19, 2022 at 12:39 AM Felix Kuehling <felix.kuehling@amd.com> wr=
-ote:
->
->
-> Am 2022-02-18 um 02:57 schrieb David Gow:
-> > From: Randy Dunlap <rdunlap@infradead.org>
-> >
-> > cpuinfo_x86 and its associated macros are not available under ARCH=3Dum=
-,
-> > even though CONFIG_X86_64 is defined.
-> >
-> > This patch (and discussion) were originally posted here:
-> > https://lkml.org/lkml/2022/1/24/1547
-> >
-> > This produces the following build errors:
-> > ../drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_topology.c:1556:9: note: in=
- expansion of macro =E2=80=98cpu_data=E2=80=99
-> >    return cpu_data(first_cpu_of_numa_node).apicid;
-> >           ^~~~~~~~
-> > ../drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_topology.c:1560:1: error: c=
-ontrol reaches end of non-void function [-Werror=3Dreturn-type]
-> >
-> > ../drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_crat.c: In function =E2=80=
-=98kfd_fill_iolink_info_for_cpu=E2=80=99:
-> > ../arch/um/include/asm/processor-generic.h:103:19: error: called object=
- is not a function or function pointer
-> >   #define cpu_data (&boot_cpu_data)
-> >                    ~^~~~~~~~~~~~~~~
-> > ../drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_crat.c:1688:27: note: in ex=
-pansion of macro =E2=80=98cpu_data=E2=80=99
-> >    struct cpuinfo_x86 *c =3D &cpu_data(0);
-> >                             ^~~~~~~~
-> > ../drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_crat.c:1691:7: error: deref=
-erencing pointer to incomplete type =E2=80=98struct cpuinfo_x86=E2=80=99
-> >    if (c->x86_vendor =3D=3D X86_VENDOR_AMD)
-> >         ^~
-> > ../drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_crat.c:1691:23: error: =E2=
-=80=98X86_VENDOR_AMD=E2=80=99 undeclared (first use in this function); did =
-you mean =E2=80=98X86_VENDOR_ANY=E2=80=99?
-> >    if (c->x86_vendor =3D=3D X86_VENDOR_AMD)
-> >                         ^~~~~~~~~~~~~~
-> >                         X86_VENDOR_ANY
-> >
-> > ../drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_crat.c: In function =E2=80=
-=98kfd_create_vcrat_image_cpu=E2=80=99:
-> > ../drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_crat.c:1742:11: warning: un=
-used variable =E2=80=98entries=E2=80=99 [-Wunused-variable]
-> >    uint32_t entries =3D 0;
-> >
-> > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> > Signed-off-by: David Gow <davidgow@google.com>
-> > ---
-> >   drivers/gpu/drm/amd/amdkfd/kfd_crat.c     | 6 +++---
-> >   drivers/gpu/drm/amd/amdkfd/kfd_topology.c | 2 +-
-> >   2 files changed, 4 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_crat.c b/drivers/gpu/drm/am=
-d/amdkfd/kfd_crat.c
-> > index 9624bbe8b501..b1e2d117be3d 100644
-> > --- a/drivers/gpu/drm/amd/amdkfd/kfd_crat.c
-> > +++ b/drivers/gpu/drm/amd/amdkfd/kfd_crat.c
-> > @@ -1682,7 +1682,7 @@ static int kfd_fill_mem_info_for_cpu(int numa_nod=
-e_id, int *avail_size,
-> >       return 0;
-> >   }
-> >
-> > -#ifdef CONFIG_X86_64
-> > +#if defined(CONFIG_X86_64) && !defined(CONFIG_UML)
->
-> I don't think it makes sense to compile a hardware device driver in a
-> UML config. Instead of scattering UML #ifdefs through our code, I would
-> recommend adding this to Kconfig:
->
-
-There are cases where I think it could make sense to have a hardware
-driver under UML, though I agree they're pretty rare.
-
-In particular, there's the virtio PCI support in UML, which one could
-potentially hook up a GPU to. The case I care more about is the
-ability to run KUnit tests under UML: if amdgpu wanted to have KUnit
-tests, it could still run them in qemu (or on real hardware), but UML
-is faster and more convenient, if the code being tested can compile
-under it.
-
-So I have a slight preference personally for fixing this, to unblock those =
-uses.
-
-That being said, it's definitely not worth placing a significant
-burden on you maintaining these things if no-one uses them. And since
-there doesn't appear to be any such use at the moment[1], I've no
-strong objection to just disabling this for now (it can always be
-re-enabled and fixed if it becomes useful later).
-
-Cheers,
--- David
-
-[1] The proposed DRM KUnit tests don't require any actual hardware
-drivers, as I understand it:
-https://lore.kernel.org/all/20220117232259.180459-5-michal.winiarski@intel.=
-com/T/
-
---000000000000ddf33205d85a64fb
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-G7p3AiuB2sgfq6cOpbO5MEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
-dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
-AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
-c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
-LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
-LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
-Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQBsL34EJkCtu9Nu
-2+R6l1Qzno5Gl+N2Cm6/YLujukDGYa1JW27txXiilR9dGP7yl60HYyG2Exd5i6fiLDlaNEw0SqzE
-dw9ZSIak3Qvm2UybR8zcnB0deCUiwahqh7ZncEPlhnPpB08ETEUtwBEqCEnndNEkIN67yz4kniCZ
-jZstNF/BUnI3864fATiXSbnNqBwlJS3YkoaCTpbI9qNTrf5VIvnbryT69xJ6f25yfmxrXNJJe5OG
-ncB34Cwnb7xQyk+uRLZ465yUBkbjk9pC/yamL0O7SOGYUclrQl2c5zzGuVBD84YcQGDOK6gSPj6w
-QuBfOooZPOyZZZ8AMih7J980MYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
-R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
-MDIwAhABQeVybOOpR4bOOXZYL5T3MA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCAD
-bDG4S/ht/giejbOZGd/p6/lp8S/M/DHA3U+Ot88qtDAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMjAyMTkwODAwMzRaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
-BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
-CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAKANLJk4i7jUMAjnEhFHl
-o2f9h+XHj1vfL7KVXEc1ciAAUdpZxezlv2cCZEdq9krX+jtap9bTVtJzyLMbVr5SixD3Ob5tVk0f
-E8+a8irhK9+YVAQchpYBa8+RJdqH0J1HeFb80T5P1jN73CevRgcoGDjd1izkE9NKJ0l6lvoHv8LF
-0p0HA2IHK6nYYs3xdRkVCL7Nu8cFQxkDf7TjmBiqrIH2GxVwU84dpMTrkzBqT7ZswXYZ/LrcUcNp
-Jr3U0AY9S11MadPemWc97d53FMqEtCy2rLB/pEIcKioSUIKRbbtLM/QKotZO07I6xLDzGnXHDP2T
-kczRI/2I9zlFWB7rVg==
---000000000000ddf33205d85a64fb--
-
-
---===============4111311805787589706==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
-
---===============4111311805787589706==--
-
+T24gRnJpLCBGZWIgMTgsIDIwMjIgYXQgMTE6MzkgQU0gRmVsaXggS3VlaGxpbmcgPGZlbGl4Lmt1
+ZWhsaW5nQGFtZC5jb20+IHdyb3RlOgo+Cj4KPiBBbSAyMDIyLTAyLTE4IHVtIDAyOjU3IHNjaHJp
+ZWIgRGF2aWQgR293Ogo+ID4gRnJvbTogUmFuZHkgRHVubGFwIDxyZHVubGFwQGluZnJhZGVhZC5v
+cmc+Cj4gPgo+ID4gY3B1aW5mb194ODYgYW5kIGl0cyBhc3NvY2lhdGVkIG1hY3JvcyBhcmUgbm90
+IGF2YWlsYWJsZSB1bmRlciBBUkNIPXVtLAo+ID4gZXZlbiB0aG91Z2ggQ09ORklHX1g4Nl82NCBp
+cyBkZWZpbmVkLgo+ID4KPiA+IFRoaXMgcGF0Y2ggKGFuZCBkaXNjdXNzaW9uKSB3ZXJlIG9yaWdp
+bmFsbHkgcG9zdGVkIGhlcmU6Cj4gPiBodHRwczovL2xrbWwub3JnL2xrbWwvMjAyMi8xLzI0LzE1
+NDcKPiA+Cj4gPiBUaGlzIHByb2R1Y2VzIHRoZSBmb2xsb3dpbmcgYnVpbGQgZXJyb3JzOgo+ID4g
+Li4vZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvLi4vYW1ka2ZkL2tmZF90b3BvbG9neS5jOjE1
+NTY6OTogbm90ZTogaW4gZXhwYW5zaW9uIG9mIG1hY3JvIOKAmGNwdV9kYXRh4oCZCj4gPiAgICBy
+ZXR1cm4gY3B1X2RhdGEoZmlyc3RfY3B1X29mX251bWFfbm9kZSkuYXBpY2lkOwo+ID4gICAgICAg
+ICAgIF5+fn5+fn5+Cj4gPiAuLi9kcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS8uLi9hbWRrZmQv
+a2ZkX3RvcG9sb2d5LmM6MTU2MDoxOiBlcnJvcjogY29udHJvbCByZWFjaGVzIGVuZCBvZiBub24t
+dm9pZCBmdW5jdGlvbiBbLVdlcnJvcj1yZXR1cm4tdHlwZV0KPiA+Cj4gPiAuLi9kcml2ZXJzL2dw
+dS9kcm0vYW1kL2FtZGdwdS8uLi9hbWRrZmQva2ZkX2NyYXQuYzogSW4gZnVuY3Rpb24g4oCYa2Zk
+X2ZpbGxfaW9saW5rX2luZm9fZm9yX2NwdeKAmToKPiA+IC4uL2FyY2gvdW0vaW5jbHVkZS9hc20v
+cHJvY2Vzc29yLWdlbmVyaWMuaDoxMDM6MTk6IGVycm9yOiBjYWxsZWQgb2JqZWN0IGlzIG5vdCBh
+IGZ1bmN0aW9uIG9yIGZ1bmN0aW9uIHBvaW50ZXIKPiA+ICAgI2RlZmluZSBjcHVfZGF0YSAoJmJv
+b3RfY3B1X2RhdGEpCj4gPiAgICAgICAgICAgICAgICAgICAgfl5+fn5+fn5+fn5+fn5+fgo+ID4g
+Li4vZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvLi4vYW1ka2ZkL2tmZF9jcmF0LmM6MTY4ODoy
+Nzogbm90ZTogaW4gZXhwYW5zaW9uIG9mIG1hY3JvIOKAmGNwdV9kYXRh4oCZCj4gPiAgICBzdHJ1
+Y3QgY3B1aW5mb194ODYgKmMgPSAmY3B1X2RhdGEoMCk7Cj4gPiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgXn5+fn5+fn4KPiA+IC4uL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1Ly4uL2Ft
+ZGtmZC9rZmRfY3JhdC5jOjE2OTE6NzogZXJyb3I6IGRlcmVmZXJlbmNpbmcgcG9pbnRlciB0byBp
+bmNvbXBsZXRlIHR5cGUg4oCYc3RydWN0IGNwdWluZm9feDg24oCZCj4gPiAgICBpZiAoYy0+eDg2
+X3ZlbmRvciA9PSBYODZfVkVORE9SX0FNRCkKPiA+ICAgICAgICAgXn4KPiA+IC4uL2RyaXZlcnMv
+Z3B1L2RybS9hbWQvYW1kZ3B1Ly4uL2FtZGtmZC9rZmRfY3JhdC5jOjE2OTE6MjM6IGVycm9yOiDi
+gJhYODZfVkVORE9SX0FNROKAmSB1bmRlY2xhcmVkIChmaXJzdCB1c2UgaW4gdGhpcyBmdW5jdGlv
+bik7IGRpZCB5b3UgbWVhbiDigJhYODZfVkVORE9SX0FOWeKAmT8KPiA+ICAgIGlmIChjLT54ODZf
+dmVuZG9yID09IFg4Nl9WRU5ET1JfQU1EKQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgXn5+
+fn5+fn5+fn5+fn4KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgIFg4Nl9WRU5ET1JfQU5ZCj4g
+Pgo+ID4gLi4vZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvLi4vYW1ka2ZkL2tmZF9jcmF0LmM6
+IEluIGZ1bmN0aW9uIOKAmGtmZF9jcmVhdGVfdmNyYXRfaW1hZ2VfY3B14oCZOgo+ID4gLi4vZHJp
+dmVycy9ncHUvZHJtL2FtZC9hbWRncHUvLi4vYW1ka2ZkL2tmZF9jcmF0LmM6MTc0MjoxMTogd2Fy
+bmluZzogdW51c2VkIHZhcmlhYmxlIOKAmGVudHJpZXPigJkgWy1XdW51c2VkLXZhcmlhYmxlXQo+
+ID4gICAgdWludDMyX3QgZW50cmllcyA9IDA7Cj4gPgo+ID4gU2lnbmVkLW9mZi1ieTogUmFuZHkg
+RHVubGFwIDxyZHVubGFwQGluZnJhZGVhZC5vcmc+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBEYXZpZCBH
+b3cgPGRhdmlkZ293QGdvb2dsZS5jb20+Cj4gPiAtLS0KPiA+ICAgZHJpdmVycy9ncHUvZHJtL2Ft
+ZC9hbWRrZmQva2ZkX2NyYXQuYyAgICAgfCA2ICsrKy0tLQo+ID4gICBkcml2ZXJzL2dwdS9kcm0v
+YW1kL2FtZGtmZC9rZmRfdG9wb2xvZ3kuYyB8IDIgKy0KPiA+ICAgMiBmaWxlcyBjaGFuZ2VkLCA0
+IGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pCj4gPgo+ID4gZGlmZiAtLWdpdCBhL2RyaXZl
+cnMvZ3B1L2RybS9hbWQvYW1ka2ZkL2tmZF9jcmF0LmMgYi9kcml2ZXJzL2dwdS9kcm0vYW1kL2Ft
+ZGtmZC9rZmRfY3JhdC5jCj4gPiBpbmRleCA5NjI0YmJlOGI1MDEuLmIxZTJkMTE3YmUzZCAxMDA2
+NDQKPiA+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1ka2ZkL2tmZF9jcmF0LmMKPiA+ICsr
+KyBiL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1ka2ZkL2tmZF9jcmF0LmMKPiA+IEBAIC0xNjgyLDcg
+KzE2ODIsNyBAQCBzdGF0aWMgaW50IGtmZF9maWxsX21lbV9pbmZvX2Zvcl9jcHUoaW50IG51bWFf
+bm9kZV9pZCwgaW50ICphdmFpbF9zaXplLAo+ID4gICAgICAgcmV0dXJuIDA7Cj4gPiAgIH0KPiA+
+Cj4gPiAtI2lmZGVmIENPTkZJR19YODZfNjQKPiA+ICsjaWYgZGVmaW5lZChDT05GSUdfWDg2XzY0
+KSAmJiAhZGVmaW5lZChDT05GSUdfVU1MKQo+Cj4gSSBkb24ndCB0aGluayBpdCBtYWtlcyBzZW5z
+ZSB0byBjb21waWxlIGEgaGFyZHdhcmUgZGV2aWNlIGRyaXZlciBpbiBhCj4gVU1MIGNvbmZpZy4g
+SW5zdGVhZCBvZiBzY2F0dGVyaW5nIFVNTCAjaWZkZWZzIHRocm91Z2ggb3VyIGNvZGUsIEkgd291
+bGQKPiByZWNvbW1lbmQgYWRkaW5nIHRoaXMgdG8gS2NvbmZpZzoKPgo+IC0tLSBhL2RyaXZlcnMv
+Z3B1L2RybS9LY29uZmlnCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL0tjb25maWcKPiBAQCAtMjU0
+LDcgKzI1NCw3IEBAIHNvdXJjZSAiZHJpdmVycy9ncHUvZHJtL3JhZGVvbi9LY29uZmlnIgo+Cj4g
+ICBjb25maWcgRFJNX0FNREdQVQo+ICAgICAgICAgIHRyaXN0YXRlICJBTUQgR1BVIgo+IC0gICAg
+ICAgZGVwZW5kcyBvbiBEUk0gJiYgUENJICYmIE1NVQo+ICsgICAgICAgZGVwZW5kcyBvbiBEUk0g
+JiYgUENJICYmIE1NVSAmJiAhVU1MCj4gICAgICAgICAgc2VsZWN0IEZXX0xPQURFUgo+ICAgICAg
+ICAgIHNlbGVjdCBEUk1fS01TX0hFTFBFUgo+ICAgICAgICAgIHNlbGVjdCBEUk1fU0NIRUQKPgo+
+IFRoYXQgd291bGQgYWRkcmVzcyBwYXRjaCAyIG9mIHRoaXMgc2VyaWVzIGFzIHdlbGwuCgpJIGFn
+cmVlLiAgT3RoZXJ3aXNlLCB3ZSBhcmUgYWx3YXlzIGdvaW5nIHRvIGJlIGNoYXNpbmcgdGhlc2Ug
+aXNzdWVzLgoKQWxleAoKPgo+IFJlZ2FyZHMsCj4gICAgRmVsaXgKPgo+Cj4gPiAgIHN0YXRpYyBp
+bnQga2ZkX2ZpbGxfaW9saW5rX2luZm9fZm9yX2NwdShpbnQgbnVtYV9ub2RlX2lkLCBpbnQgKmF2
+YWlsX3NpemUsCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB1aW50MzJfdCAqbnVt
+X2VudHJpZXMsCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJ1Y3QgY3JhdF9z
+dWJ0eXBlX2lvbGluayAqc3ViX3R5cGVfaGRyKQo+ID4gQEAgLTE3NDEsNyArMTc0MSw3IEBAIHN0
+YXRpYyBpbnQga2ZkX2NyZWF0ZV92Y3JhdF9pbWFnZV9jcHUodm9pZCAqcGNyYXRfaW1hZ2UsIHNp
+emVfdCAqc2l6ZSkKPiA+ICAgICAgIHN0cnVjdCBjcmF0X3N1YnR5cGVfZ2VuZXJpYyAqc3ViX3R5
+cGVfaGRyOwo+ID4gICAgICAgaW50IGF2YWlsX3NpemUgPSAqc2l6ZTsKPiA+ICAgICAgIGludCBu
+dW1hX25vZGVfaWQ7Cj4gPiAtI2lmZGVmIENPTkZJR19YODZfNjQKPiA+ICsjaWYgZGVmaW5lZChD
+T05GSUdfWDg2XzY0KSAmJiAhZGVmaW5lZChDT05GSUdfVU1MKQo+ID4gICAgICAgdWludDMyX3Qg
+ZW50cmllcyA9IDA7Cj4gPiAgICNlbmRpZgo+ID4gICAgICAgaW50IHJldCA9IDA7Cj4gPiBAQCAt
+MTgwNiw3ICsxODA2LDcgQEAgc3RhdGljIGludCBrZmRfY3JlYXRlX3ZjcmF0X2ltYWdlX2NwdSh2
+b2lkICpwY3JhdF9pbWFnZSwgc2l6ZV90ICpzaXplKQo+ID4gICAgICAgICAgICAgICAgICAgICAg
+IHN1Yl90eXBlX2hkci0+bGVuZ3RoKTsKPiA+Cj4gPiAgICAgICAgICAgICAgIC8qIEZpbGwgaW4g
+U3VidHlwZTogSU8gTGluayAqLwo+ID4gLSNpZmRlZiBDT05GSUdfWDg2XzY0Cj4gPiArI2lmIGRl
+ZmluZWQoQ09ORklHX1g4Nl82NCkgJiYgIWRlZmluZWQoQ09ORklHX1VNTCkKPiA+ICAgICAgICAg
+ICAgICAgcmV0ID0ga2ZkX2ZpbGxfaW9saW5rX2luZm9fZm9yX2NwdShudW1hX25vZGVfaWQsICZh
+dmFpbF9zaXplLAo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgJmVudHJpZXMsCj4g
+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoc3RydWN0IGNyYXRfc3VidHlwZV9pb2xp
+bmsgKilzdWJfdHlwZV9oZHIpOwo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9hbWQv
+YW1ka2ZkL2tmZF90b3BvbG9neS5jIGIvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRrZmQva2ZkX3Rv
+cG9sb2d5LmMKPiA+IGluZGV4IDk0OGZiYjM5MzM2ZS4uYjM4ZmM1MzBmZmUyIDEwMDY0NAo+ID4g
+LS0tIGEvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRrZmQva2ZkX3RvcG9sb2d5LmMKPiA+ICsrKyBi
+L2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1ka2ZkL2tmZF90b3BvbG9neS5jCj4gPiBAQCAtMTU1Miw3
+ICsxNTUyLDcgQEAgc3RhdGljIGludCBrZmRfY3B1bWFza190b19hcGljX2lkKGNvbnN0IHN0cnVj
+dCBjcHVtYXNrICpjcHVtYXNrKQo+ID4gICAgICAgZmlyc3RfY3B1X29mX251bWFfbm9kZSA9IGNw
+dW1hc2tfZmlyc3QoY3B1bWFzayk7Cj4gPiAgICAgICBpZiAoZmlyc3RfY3B1X29mX251bWFfbm9k
+ZSA+PSBucl9jcHVfaWRzKQo+ID4gICAgICAgICAgICAgICByZXR1cm4gLTE7Cj4gPiAtI2lmZGVm
+IENPTkZJR19YODZfNjQKPiA+ICsjaWYgZGVmaW5lZChDT05GSUdfWDg2XzY0KSAmJiAhZGVmaW5l
+ZChDT05GSUdfVU1MKQo+ID4gICAgICAgcmV0dXJuIGNwdV9kYXRhKGZpcnN0X2NwdV9vZl9udW1h
+X25vZGUpLmFwaWNpZDsKPiA+ICAgI2Vsc2UKPiA+ICAgICAgIHJldHVybiBmaXJzdF9jcHVfb2Zf
+bnVtYV9ub2RlOwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0
+cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
 
