@@ -1,65 +1,18 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pf1-x449.google.com ([2607:f8b0:4864:20::449])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nKy9Y-00DFO1-G9
- for linux-um@lists.infradead.org; Fri, 18 Feb 2022 07:58:10 +0000
-Received: by mail-pf1-x449.google.com with SMTP id
- d16-20020a056a0010d000b004e0204c9753so1287189pfu.7
- for <linux-um@lists.infradead.org>; Thu, 17 Feb 2022 23:58:07 -0800 (PST)
-Date: Fri, 18 Feb 2022 15:57:26 +0800
-In-Reply-To: <20220218075727.2737623-1-davidgow@google.com>
-Message-Id: <20220218075727.2737623-4-davidgow@google.com>
-Mime-Version: 1.0
-References: <20220218075727.2737623-1-davidgow@google.com>
-Subject: [PATCH 3/4] IB/qib: Compile under User-Mode Linux
-From: David Gow <davidgow@google.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Shuah Khan <skhan@linuxfoundation.org>, Brendan Higgins <brendanhiggins@google.com>, Randy Dunlap <rdunlap@infradead.org>
-Cc: David Gow <davidgow@google.com>, linux-um@lists.infradead.org, amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org, x86@kernel.org, felix.kuehling@amd.com, linux-kernel@vger.kernel.org
+Return-Path: <hch@lst.de>
+Date: Fri, 18 Feb 2022 07:36:17 +0100
+From: Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v2 16/18] sh: remove CONFIG_SET_FS support
+Message-ID: <20220218063617.GK22576@lst.de>
+References: <20220216131332.1489939-1-arnd@kernel.org> <20220216131332.1489939-17-arnd@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220216131332.1489939-17-arnd@kernel.org>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-api@vger.kernel.org, arnd@arndb.de, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk, linux@armlinux.org.uk, will@kernel.org, guoren@kernel.org, bcain@codeaurora.org, geert@linux-m68k.org, monstr@monstr.eu, tsbogend@alpha.franken.de, nickhu@andestech.com, green.hu@gmail.com, dinguyen@kernel.org, shorne@gmail.com, deller@gmx.de, mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com, hca@linux.ibm.com, dalias@libc.org, davem@davemloft.net, richard@nod.at, x86@kernel.org, jcmvbkbc@gmail.com, ebiederm@xmission.com, akpm@linux-foundation.org, ardb@kernel.org, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
+List-ID: <linux-um.lists.infradead.org>
 
-The User-Mode-Linux architecture (with the x86_64 subarch) defines
-CONFIG_X86_64, but doesn't expose the cpuinfo_x86 struct (instead
-there's a cpuinfo_um struct).
+Looks good:
 
-In order to allow UML to build with allyesconfig, only check cpuinfo_x86
-on non-UML architectures.
-
-Signed-off-by: David Gow <davidgow@google.com>
----
- drivers/infiniband/hw/qib/qib_wc_x86_64.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/infiniband/hw/qib/qib_wc_x86_64.c b/drivers/infiniband/hw/qib/qib_wc_x86_64.c
-index edd0ddbd4481..76fef1321c26 100644
---- a/drivers/infiniband/hw/qib/qib_wc_x86_64.c
-+++ b/drivers/infiniband/hw/qib/qib_wc_x86_64.c
-@@ -146,5 +146,9 @@ void qib_disable_wc(struct qib_devdata *dd)
-  */
- int qib_unordered_wc(void)
- {
-+#ifndef CONFIG_UML
- 	return boot_cpu_data.x86_vendor != X86_VENDOR_AMD;
-+#else
-+	return 0;
-+#endif
- }
--- 
-2.35.1.265.g69c8d7142f-goog
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 
