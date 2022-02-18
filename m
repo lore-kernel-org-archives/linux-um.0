@@ -1,131 +1,65 @@
-Return-Path: <anshuman.khandual@arm.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V3 25/30] nios2/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Date: Mon, 28 Feb 2022 16:17:48 +0530
-Message-Id: <1646045273-9343-26-git-send-email-anshuman.khandual@arm.com>
-In-Reply-To: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
-References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
-To: linux-mm@kvack.org, akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, geert@linux-m68k.org, Anshuman Khandual <anshuman.khandual@arm.com>, Christoph Hellwig <hch@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org, linux-riscv@lists.infradead.org, linux-alpha@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-parisc@vger.kernel.org, openrisc@lists.librecores.org, linux-um@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pf1-x449.google.com ([2607:f8b0:4864:20::449])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nKy9Y-00DFO1-G9
+ for linux-um@lists.infradead.org; Fri, 18 Feb 2022 07:58:10 +0000
+Received: by mail-pf1-x449.google.com with SMTP id
+ d16-20020a056a0010d000b004e0204c9753so1287189pfu.7
+ for <linux-um@lists.infradead.org>; Thu, 17 Feb 2022 23:58:07 -0800 (PST)
+Date: Fri, 18 Feb 2022 15:57:26 +0800
+In-Reply-To: <20220218075727.2737623-1-davidgow@google.com>
+Message-Id: <20220218075727.2737623-4-davidgow@google.com>
+Mime-Version: 1.0
+References: <20220218075727.2737623-1-davidgow@google.com>
+Subject: [PATCH 3/4] IB/qib: Compile under User-Mode Linux
+From: David Gow <davidgow@google.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Shuah Khan <skhan@linuxfoundation.org>, Brendan Higgins <brendanhiggins@google.com>, Randy Dunlap <rdunlap@infradead.org>
+Cc: David Gow <davidgow@google.com>, linux-um@lists.infradead.org, amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org, x86@kernel.org, felix.kuehling@amd.com, linux-kernel@vger.kernel.org
 
-This defines and exports a platform specific custom vm_get_page_prot() via
-subscribing ARCH_HAS_VM_GET_PAGE_PROT. Subsequently all __SXXX and __PXXX
-macros can be dropped which are no longer needed.
+The User-Mode-Linux architecture (with the x86_64 subarch) defines
+CONFIG_X86_64, but doesn't expose the cpuinfo_x86 struct (instead
+there's a cpuinfo_um struct).
 
-Cc: Dinh Nguyen <dinguyen@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Acked-by: Dinh Nguyen <dinguyen@kernel.org>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+In order to allow UML to build with allyesconfig, only check cpuinfo_x86
+on non-UML architectures.
+
+Signed-off-by: David Gow <davidgow@google.com>
 ---
- arch/nios2/Kconfig               |  1 +
- arch/nios2/include/asm/pgtable.h | 24 ----------------
- arch/nios2/mm/init.c             | 47 ++++++++++++++++++++++++++++++++
- 3 files changed, 48 insertions(+), 24 deletions(-)
+ drivers/infiniband/hw/qib/qib_wc_x86_64.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/nios2/Kconfig b/arch/nios2/Kconfig
-index 33fd06f5fa41..85a58a357a3b 100644
---- a/arch/nios2/Kconfig
-+++ b/arch/nios2/Kconfig
-@@ -6,6 +6,7 @@ config NIOS2
- 	select ARCH_HAS_SYNC_DMA_FOR_CPU
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
- 	select ARCH_HAS_DMA_SET_UNCACHED
-+	select ARCH_HAS_VM_GET_PAGE_PROT
- 	select ARCH_NO_SWAP
- 	select COMMON_CLK
- 	select TIMER_OF
-diff --git a/arch/nios2/include/asm/pgtable.h b/arch/nios2/include/asm/pgtable.h
-index 4a995fa628ee..ba3f9822c0b3 100644
---- a/arch/nios2/include/asm/pgtable.h
-+++ b/arch/nios2/include/asm/pgtable.h
-@@ -34,30 +34,6 @@ struct mm_struct;
- 				((x) ? _PAGE_EXEC : 0) |		\
- 				((r) ? _PAGE_READ : 0) |		\
- 				((w) ? _PAGE_WRITE : 0))
--/*
-- * These are the macros that generic kernel code needs
-- * (to populate protection_map[])
-- */
--
--/* Remove W bit on private pages for COW support */
--#define __P000	MKP(0, 0, 0)
--#define __P001	MKP(0, 0, 1)
--#define __P010	MKP(0, 0, 0)	/* COW */
--#define __P011	MKP(0, 0, 1)	/* COW */
--#define __P100	MKP(1, 0, 0)
--#define __P101	MKP(1, 0, 1)
--#define __P110	MKP(1, 0, 0)	/* COW */
--#define __P111	MKP(1, 0, 1)	/* COW */
--
--/* Shared pages can have exact HW mapping */
--#define __S000	MKP(0, 0, 0)
--#define __S001	MKP(0, 0, 1)
--#define __S010	MKP(0, 1, 0)
--#define __S011	MKP(0, 1, 1)
--#define __S100	MKP(1, 0, 0)
--#define __S101	MKP(1, 0, 1)
--#define __S110	MKP(1, 1, 0)
--#define __S111	MKP(1, 1, 1)
- 
- /* Used all over the kernel */
- #define PAGE_KERNEL __pgprot(_PAGE_PRESENT | _PAGE_CACHED | _PAGE_READ | \
-diff --git a/arch/nios2/mm/init.c b/arch/nios2/mm/init.c
-index 613fcaa5988a..e867f5d85580 100644
---- a/arch/nios2/mm/init.c
-+++ b/arch/nios2/mm/init.c
-@@ -124,3 +124,50 @@ const char *arch_vma_name(struct vm_area_struct *vma)
+diff --git a/drivers/infiniband/hw/qib/qib_wc_x86_64.c b/drivers/infiniband/hw/qib/qib_wc_x86_64.c
+index edd0ddbd4481..76fef1321c26 100644
+--- a/drivers/infiniband/hw/qib/qib_wc_x86_64.c
++++ b/drivers/infiniband/hw/qib/qib_wc_x86_64.c
+@@ -146,5 +146,9 @@ void qib_disable_wc(struct qib_devdata *dd)
+  */
+ int qib_unordered_wc(void)
  {
- 	return (vma->vm_start == KUSER_BASE) ? "[kuser]" : NULL;
++#ifndef CONFIG_UML
+ 	return boot_cpu_data.x86_vendor != X86_VENDOR_AMD;
++#else
++	return 0;
++#endif
  }
-+
-+pgprot_t vm_get_page_prot(unsigned long vm_flags)
-+{
-+	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
-+	/* Remove W bit on private pages for COW support */
-+	case VM_NONE:
-+		return MKP(0, 0, 0);
-+	case VM_READ:
-+		return MKP(0, 0, 1);
-+	/* COW */
-+	case VM_WRITE:
-+		return MKP(0, 0, 0);
-+	/* COW */
-+	case VM_WRITE | VM_READ:
-+		return MKP(0, 0, 1);
-+	case VM_EXEC:
-+		return MKP(1, 0, 0);
-+	case VM_EXEC | VM_READ:
-+		return MKP(1, 0, 1);
-+	/* COW */
-+	case VM_EXEC | VM_WRITE:
-+		return MKP(1, 0, 0);
-+	/* COW */
-+	case VM_EXEC | VM_WRITE | VM_READ:
-+		return MKP(1, 0, 1);
-+	/* Shared pages can have exact HW mapping */
-+	case VM_SHARED:
-+		return MKP(0, 0, 0);
-+	case VM_SHARED | VM_READ:
-+		return MKP(0, 0, 1);
-+	case VM_SHARED | VM_WRITE:
-+		return MKP(0, 1, 0);
-+	case VM_SHARED | VM_WRITE | VM_READ:
-+		return MKP(0, 1, 1);
-+	case VM_SHARED | VM_EXEC:
-+		return MKP(1, 0, 0);
-+	case VM_SHARED | VM_EXEC | VM_READ:
-+		return MKP(1, 0, 1);
-+	case VM_SHARED | VM_EXEC | VM_WRITE:
-+		return MKP(1, 1, 0);
-+	case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
-+		return MKP(1, 1, 1);
-+	default:
-+		BUILD_BUG();
-+	}
-+}
-+EXPORT_SYMBOL(vm_get_page_prot);
 -- 
-2.25.1
+2.35.1.265.g69c8d7142f-goog
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
