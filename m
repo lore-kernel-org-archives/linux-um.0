@@ -1,165 +1,176 @@
-Return-Path: <anshuman.khandual@arm.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V3 04/30] powerpc/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Date: Mon, 28 Feb 2022 16:17:27 +0530
-Message-Id: <1646045273-9343-5-git-send-email-anshuman.khandual@arm.com>
-In-Reply-To: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
-References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
-To: linux-mm@kvack.org, akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, geert@linux-m68k.org, Anshuman Khandual <anshuman.khandual@arm.com>, Christoph Hellwig <hch@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org, linux-riscv@lists.infradead.org, linux-alpha@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-parisc@vger.kernel.org, openrisc@lists.librecores.org, linux-um@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>, Paul Mackerras <paulus@samba.org>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from conssluserg-03.nifty.com ([210.131.2.82])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nKssm-00ChoB-Ox
+ for linux-um@lists.infradead.org; Fri, 18 Feb 2022 02:20:30 +0000
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com
+ [209.85.214.181]) (authenticated)
+ by conssluserg-03.nifty.com with ESMTP id 21I2KC9Q024486
+ for <linux-um@lists.infradead.org>; Fri, 18 Feb 2022 11:20:12 +0900
+Received: by mail-pl1-f181.google.com with SMTP id j4so6026202plj.8
+ for <linux-um@lists.infradead.org>; Thu, 17 Feb 2022 18:20:12 -0800 (PST)
+MIME-Version: 1.0
+References: <20220217002843.2312603-1-keescook@chromium.org>
+ <CAK7LNASMobjuAen+_O4eFOgkOoUwf5ANk6_TjL4SdtT47Jge-w@mail.gmail.com>
+ <Yg6I0YZAh5yWYpT2@dev-arch.archlinux-ax161>
+In-Reply-To: <Yg6I0YZAh5yWYpT2@dev-arch.archlinux-ax161>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Fri, 18 Feb 2022 11:19:32 +0900
+Message-ID: <CAK7LNARbP_xxc21N4VO95RQNn5MzGW2HpKxS_vxNWy4mqP+GxA@mail.gmail.com>
+Subject: Re: [PATCH] um: Allow builds with Clang
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Nick Desaulniers <ndesaulniers@google.com>, David Gow <davidgow@google.com>, linux-um@lists.infradead.org, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, kunit-dev@googlegroups.com, llvm@lists.linux.dev, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>, linux-hardening@vger.kernel.org
 
-This defines and exports a platform specific custom vm_get_page_prot() via
-subscribing ARCH_HAS_VM_GET_PAGE_PROT. Subsequently all __SXXX and __PXXX
-macros can be dropped which are no longer needed. While here, this also
-localizes arch_vm_get_page_prot() as powerpc_vm_get_page_prot() and moves
-it near vm_get_page_prot().
+On Fri, Feb 18, 2022 at 2:41 AM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> On Thu, Feb 17, 2022 at 01:54:58PM +0900, Masahiro Yamada wrote:
+> > On Thu, Feb 17, 2022 at 9:28 AM Kees Cook <keescook@chromium.org> wrote:
+> > >
+> > > Add x86-64 target for Clang+um and update user-offsets.c to use
+> > > Clang-friendly assembler, similar to the fix from commit cf0c3e68aa81
+> > > ("kbuild: fix asm-offset generation to work with clang").
+> > >
+> > > This lets me run KUnit tests with Clang:
+> > >
+> > > $ ./tools/testing/kunit/kunit.py config --make_options LLVM=1
+> > > ...
+> > > $ ./tools/testing/kunit/kunit.py run --make_options LLVM=1
+> > > ...
+> > >
+> > > Cc: Jeff Dike <jdike@addtoit.com>
+> > > Cc: Richard Weinberger <richard@nod.at>
+> > > Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> > > Cc: Masahiro Yamada <masahiroy@kernel.org>
+> > > Cc: Nick Desaulniers <ndesaulniers@google.com>
+> > > Cc: Nathan Chancellor <nathan@kernel.org>
+> > > Cc: David Gow <davidgow@google.com>
+> > > Cc: linux-um@lists.infradead.org
+> > > Cc: linux-kbuild@vger.kernel.org
+> > > Cc: linux-kselftest@vger.kernel.org
+> > > Cc: kunit-dev@googlegroups.com
+> > > Cc: llvm@lists.linux.dev
+> > > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > > ---
+> > >  arch/x86/um/user-offsets.c | 4 ++--
+> > >  scripts/Makefile.clang     | 1 +
+> > >  2 files changed, 3 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/arch/x86/um/user-offsets.c b/arch/x86/um/user-offsets.c
+> > > index bae61554abcc..d9071827b515 100644
+> > > --- a/arch/x86/um/user-offsets.c
+> > > +++ b/arch/x86/um/user-offsets.c
+> > > @@ -10,10 +10,10 @@
+> > >  #include <asm/types.h>
+> > >
+> > >  #define DEFINE(sym, val) \
+> > > -       asm volatile("\n->" #sym " %0 " #val : : "i" (val))
+> > > +       asm volatile("\n.ascii \"->" #sym " %0 " #val "\"": : "i" (val))
+> > >
+> > >  #define DEFINE_LONGS(sym, val) \
+> > > -       asm volatile("\n->" #sym " %0 " #val : : "i" (val/sizeof(unsigned long)))
+> > > +       asm volatile("\n.ascii \"->" #sym " %0 " #val "\"": : "i" (val/sizeof(unsigned long)))
+> > >
+> > >  void foo(void)
+> > >  {
+> > > diff --git a/scripts/Makefile.clang b/scripts/Makefile.clang
+> > > index 51fc23e2e9e5..857b23de51c6 100644
+> > > --- a/scripts/Makefile.clang
+> > > +++ b/scripts/Makefile.clang
+> > > @@ -10,6 +10,7 @@ CLANG_TARGET_FLAGS_powerpc    := powerpc64le-linux-gnu
+> > >  CLANG_TARGET_FLAGS_riscv       := riscv64-linux-gnu
+> > >  CLANG_TARGET_FLAGS_s390                := s390x-linux-gnu
+> > >  CLANG_TARGET_FLAGS_x86         := x86_64-linux-gnu
+> > > +CLANG_TARGET_FLAGS_um          := x86_64-linux-gnu
+> >
+> >
+> > Does this work for the i386 host?
+> >
+> > UML supports i386 and x86_64 as the host architecture as of now,
+> > but this always compiles UML for x86_64?
+>
+> I think the current code will work because arch/x86/Makefile.um includes
+> -m32 for CONFIG_X86_32, which will implicitly change x86_64-linux-gnu
+> into a 32-bit target triple:
 
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- arch/powerpc/Kconfig               |  1 +
- arch/powerpc/include/asm/mman.h    | 12 ------
- arch/powerpc/include/asm/pgtable.h | 19 ----------
- arch/powerpc/mm/mmap.c             | 59 ++++++++++++++++++++++++++++++
- 4 files changed, 60 insertions(+), 31 deletions(-)
+Ah, you are right!
 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index b779603978e1..ddb4a3687c05 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -135,6 +135,7 @@ config PPC
- 	select ARCH_HAS_TICK_BROADCAST		if GENERIC_CLOCKEVENTS_BROADCAST
- 	select ARCH_HAS_UACCESS_FLUSHCACHE
- 	select ARCH_HAS_UBSAN_SANITIZE_ALL
-+	select ARCH_HAS_VM_GET_PAGE_PROT
- 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
- 	select ARCH_KEEP_MEMBLOCK
- 	select ARCH_MIGHT_HAVE_PC_PARPORT
-diff --git a/arch/powerpc/include/asm/mman.h b/arch/powerpc/include/asm/mman.h
-index 7cb6d18f5cd6..1b024e64c8ec 100644
---- a/arch/powerpc/include/asm/mman.h
-+++ b/arch/powerpc/include/asm/mman.h
-@@ -24,18 +24,6 @@ static inline unsigned long arch_calc_vm_prot_bits(unsigned long prot,
- }
- #define arch_calc_vm_prot_bits(prot, pkey) arch_calc_vm_prot_bits(prot, pkey)
- 
--static inline pgprot_t arch_vm_get_page_prot(unsigned long vm_flags)
--{
--#ifdef CONFIG_PPC_MEM_KEYS
--	return (vm_flags & VM_SAO) ?
--		__pgprot(_PAGE_SAO | vmflag_to_pte_pkey_bits(vm_flags)) :
--		__pgprot(0 | vmflag_to_pte_pkey_bits(vm_flags));
--#else
--	return (vm_flags & VM_SAO) ? __pgprot(_PAGE_SAO) : __pgprot(0);
--#endif
--}
--#define arch_vm_get_page_prot(vm_flags) arch_vm_get_page_prot(vm_flags)
--
- static inline bool arch_validate_prot(unsigned long prot, unsigned long addr)
- {
- 	if (prot & ~(PROT_READ | PROT_WRITE | PROT_EXEC | PROT_SEM | PROT_SAO))
-diff --git a/arch/powerpc/include/asm/pgtable.h b/arch/powerpc/include/asm/pgtable.h
-index d564d0ecd4cd..3cbb6de20f9d 100644
---- a/arch/powerpc/include/asm/pgtable.h
-+++ b/arch/powerpc/include/asm/pgtable.h
-@@ -20,25 +20,6 @@ struct mm_struct;
- #include <asm/nohash/pgtable.h>
- #endif /* !CONFIG_PPC_BOOK3S */
- 
--/* Note due to the way vm flags are laid out, the bits are XWR */
--#define __P000	PAGE_NONE
--#define __P001	PAGE_READONLY
--#define __P010	PAGE_COPY
--#define __P011	PAGE_COPY
--#define __P100	PAGE_READONLY_X
--#define __P101	PAGE_READONLY_X
--#define __P110	PAGE_COPY_X
--#define __P111	PAGE_COPY_X
--
--#define __S000	PAGE_NONE
--#define __S001	PAGE_READONLY
--#define __S010	PAGE_SHARED
--#define __S011	PAGE_SHARED
--#define __S100	PAGE_READONLY_X
--#define __S101	PAGE_READONLY_X
--#define __S110	PAGE_SHARED_X
--#define __S111	PAGE_SHARED_X
--
- #ifndef __ASSEMBLY__
- 
- #ifndef MAX_PTRS_PER_PGD
-diff --git a/arch/powerpc/mm/mmap.c b/arch/powerpc/mm/mmap.c
-index c475cf810aa8..ee275937fe19 100644
---- a/arch/powerpc/mm/mmap.c
-+++ b/arch/powerpc/mm/mmap.c
-@@ -254,3 +254,62 @@ void arch_pick_mmap_layout(struct mm_struct *mm, struct rlimit *rlim_stack)
- 		mm->get_unmapped_area = arch_get_unmapped_area_topdown;
- 	}
- }
-+
-+static inline pgprot_t __vm_get_page_prot(unsigned long vm_flags)
-+{
-+	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
-+	case VM_NONE:
-+		return PAGE_NONE;
-+	case VM_READ:
-+		return PAGE_READONLY;
-+	case VM_WRITE:
-+	case VM_WRITE | VM_READ:
-+		return PAGE_COPY;
-+	case VM_EXEC:
-+	case VM_EXEC | VM_READ:
-+		return PAGE_READONLY_X;
-+	case VM_EXEC | VM_WRITE:
-+	case VM_EXEC | VM_WRITE | VM_READ:
-+		return PAGE_COPY_X;
-+	case VM_SHARED:
-+		return PAGE_NONE;
-+	case VM_SHARED | VM_READ:
-+		return PAGE_READONLY;
-+	case VM_SHARED | VM_WRITE:
-+	case VM_SHARED | VM_WRITE | VM_READ:
-+		return PAGE_SHARED;
-+	case VM_SHARED | VM_EXEC:
-+	case VM_SHARED | VM_EXEC | VM_READ:
-+		return PAGE_READONLY_X;
-+	case VM_SHARED | VM_EXEC | VM_WRITE:
-+	case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
-+		return PAGE_SHARED_X;
-+	default:
-+		BUILD_BUG();
-+	}
-+}
-+
-+#ifdef CONFIG_PPC64
-+static pgprot_t powerpc_vm_get_page_prot(unsigned long vm_flags)
-+{
-+#ifdef CONFIG_PPC_MEM_KEYS
-+	return (vm_flags & VM_SAO) ?
-+		__pgprot(_PAGE_SAO | vmflag_to_pte_pkey_bits(vm_flags)) :
-+		__pgprot(0 | vmflag_to_pte_pkey_bits(vm_flags));
-+#else
-+	return (vm_flags & VM_SAO) ? __pgprot(_PAGE_SAO) : __pgprot(0);
-+#endif
-+}
-+#else
-+static pgprot_t powerpc_vm_get_page_prot(unsigned long vm_flags)
-+{
-+	return __pgprot(0);
-+}
-+#endif /* CONFIG_PPC64 */
-+
-+pgprot_t vm_get_page_prot(unsigned long vm_flags)
-+{
-+	return __pgprot(pgprot_val(__vm_get_page_prot(vm_flags)) |
-+	       pgprot_val(powerpc_vm_get_page_prot(vm_flags)));
-+}
-+EXPORT_SYMBOL(vm_get_page_prot);
--- 
-2.25.1
 
+>
+> $ echo | clang --target=x86_64-linux-gnu -x c -c -o test.o -
+>
+> $ file test.o
+> test.o: ELF 64-bit LSB relocatable, x86-64, version 1 (SYSV), not stripped
+>
+> $ echo | clang --target=x86_64-linux-gnu -m32 -x c -c -o test.o -
+>
+> $ file test.o
+> test.o: ELF 32-bit LSB relocatable, Intel 80386, version 1 (SYSV), not stripped
+>
+> In fact, we rely on this for ARCH=i386 LLVM=1 right now, as it uses
+> x86_64-linux-gnu for the target flag.
+>
+> While UML only supports x86, maybe it is worth using SUBARCH instead of
+> hardcoding the triple? No strong opinion around that though.
+>
+> diff --git a/scripts/Makefile.clang b/scripts/Makefile.clang
+> index 51fc23e2e9e5..87285b76adb2 100644
+> --- a/scripts/Makefile.clang
+> +++ b/scripts/Makefile.clang
+> @@ -10,6 +10,7 @@ CLANG_TARGET_FLAGS_powerpc    := powerpc64le-linux-gnu
+>  CLANG_TARGET_FLAGS_riscv       := riscv64-linux-gnu
+>  CLANG_TARGET_FLAGS_s390                := s390x-linux-gnu
+>  CLANG_TARGET_FLAGS_x86         := x86_64-linux-gnu
+> +CLANG_TARGET_FLAGS_um          := $(CLANG_TARGET_FLAGS_$(SUBARCH))
+
+
+LGTM.
+
+I also thought of not passing --target at all for ARCH=um, but
+we decided to override --target all the time (for reproducibility?).
+Anyway, Nathan's way is clean, and looks OK to me.
+
+
+
+
+
+
+
+>  CLANG_TARGET_FLAGS             := $(CLANG_TARGET_FLAGS_$(SRCARCH))
+>
+>  ifeq ($(CROSS_COMPILE),)
+>
+> > >  CLANG_TARGET_FLAGS             := $(CLANG_TARGET_FLAGS_$(SRCARCH))
+> > >
+> > >  ifeq ($(CROSS_COMPILE),)
+> > > --
+> > > 2.30.2
+> > >
+> >
+> >
+> > --
+> > Best Regards
+> > Masahiro Yamada
+
+
+
+--
+Best Regards
+Masahiro Yamada
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
