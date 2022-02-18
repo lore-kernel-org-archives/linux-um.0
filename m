@@ -1,70 +1,38 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nCPOb-008u1o-VZ
- for linux-um@lists.infradead.org; Tue, 25 Jan 2022 17:14:19 +0000
-From: =?UTF-8?q?Fr=C3=A9d=C3=A9ric=20Danis?= <frederic.danis@collabora.com>
-Subject: [PATCH] um: Fix WRITE_ZEROES in the UBD Driver
-Date: Tue, 25 Jan 2022 18:14:05 +0100
-Message-Id: <20220125171405.163362-1-frederic.danis@collabora.com>
+Return-Path: <arnd@kernel.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
+References: <20220216131332.1489939-1-arnd@kernel.org> <20220216131332.1489939-15-arnd@kernel.org>
+ <20220218063549.GJ22576@lst.de>
+In-Reply-To: <20220218063549.GJ22576@lst.de>
+From: Arnd Bergmann <arnd@kernel.org>
+Date: Fri, 18 Feb 2022 08:15:42 +0100
+Message-ID: <CAK8P3a31_zG7npZbPHGixOYL0p28dGzs3f9ku_RB4p1tiEY0Tw@mail.gmail.com>
+Subject: Re: [PATCH v2 14/18] lib/test_lockup: fix kernel pointer check for
+ separate address spaces
+Content-Type: text/plain; charset="UTF-8"
+To: Christoph Hellwig <hch@lst.de>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-arch <linux-arch@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>, Linux API <linux-api@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, Russell King - ARM Linux <linux@armlinux.org.uk>, Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>, Brian Cain <bcain@codeaurora.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Nick Hu <nickhu@andestech.com>, Greentime Hu <green.hu@gmail.com>, Dinh Nguyen <dinguyen@kernel.org>, Stafford Horne <shorne@gmail.com>, Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>, Heiko Carstens <hca@linux.ibm.com>, Rich Felker <dalias@libc.org>, David Miller <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, the arch/x86 maintainers <x86@kernel.org>, Max Filippov <jcmvbkbc@gmail.com>, "Eric W . Biederman" <ebiederm@xmission.com>, Andrew Morton <akpm@linux-foundation.org>, Ard Biesheuvel <ardb@kernel.org>, alpha <linux-alpha@vger.kernel.org>, "open list:SYNOPSYS ARC ARCHITECTURE" <linux-snps-arc@lists.infradead.org>, linux-csky@vger.kernel.org, "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>, linux-ia64@vger.kernel.org, linux-m68k <linux-m68k@lists.linux-m68k.org>, "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>, Openrisc <openrisc@lists.librecores.org>, Parisc List <linux-parisc@vger.kernel.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-riscv <linux-riscv@lists.infradead.org>, linux-s390 <linux-s390@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>, "open list:TENSILICA XTENSA PORT (xtensa)" <linux-xtensa@linux-xtensa.org>
+List-ID: <linux-um.lists.infradead.org>
 
-Q2FsbCB0byBmYWxsb2NhdGUgd2l0aCBGQUxMT0NfRkxfUFVOQ0hfSE9MRSBvbiBhIGRldmljZSBi
-YWNrZWQgYnkgYSBzcGFyc2UKZmlsZSBjYW4gZW5kIHVwIGJ5IG1pc3NpbmcgZGF0YSwgemVyb2Vz
-IGRhdGEgcmFuZ2UsIGlmIHRoZSB1bmRlcmx5aW5nIGZpbGUKaXMgdXNlZCB3aXRoIGEgdG9vbCBs
-aWtlIGJtYXB0b29sIHdoaWNoIHdpbGwgcmVmZXJlbmNlZCBvbmx5IHVzZWQgc3BhY2VzLgoKU2ln
-bmVkLW9mZi1ieTogRnLDqWTDqXJpYyBEYW5pcyA8ZnJlZGVyaWMuZGFuaXNAY29sbGFib3JhLmNv
-bT4KLS0tCiBhcmNoL3VtL2RyaXZlcnMvdWJkX2tlcm4uYyAgfCA4ICsrKysrKystCiBhcmNoL3Vt
-L2luY2x1ZGUvc2hhcmVkL29zLmggfCAxICsKIGFyY2gvdW0vb3MtTGludXgvZmlsZS5jICAgICB8
-IDkgKysrKysrKysrCiAzIGZpbGVzIGNoYW5nZWQsIDE3IGluc2VydGlvbnMoKyksIDEgZGVsZXRp
-b24oLSkKCmRpZmYgLS1naXQgYS9hcmNoL3VtL2RyaXZlcnMvdWJkX2tlcm4uYyBiL2FyY2gvdW0v
-ZHJpdmVycy91YmRfa2Vybi5jCmluZGV4IDY5ZDJkMDA0OWE2MS4uYjAzMjY5ZmFlZjcxIDEwMDY0
-NAotLS0gYS9hcmNoL3VtL2RyaXZlcnMvdWJkX2tlcm4uYworKysgYi9hcmNoL3VtL2RyaXZlcnMv
-dWJkX2tlcm4uYwpAQCAtMTUyNiwxMyArMTUyNiwxOSBAQCBzdGF0aWMgdm9pZCBkb19pbyhzdHJ1
-Y3QgaW9fdGhyZWFkX3JlcSAqcmVxLCBzdHJ1Y3QgaW9fZGVzYyAqZGVzYykKIAkJCX0KIAkJCWJy
-ZWFrOwogCQljYXNlIFJFUV9PUF9ESVNDQVJEOgotCQljYXNlIFJFUV9PUF9XUklURV9aRVJPRVM6
-CiAJCQluID0gb3NfZmFsbG9jX3B1bmNoKHJlcS0+ZmRzW2JpdF0sIG9mZiwgbGVuKTsKIAkJCWlm
-IChuKSB7CiAJCQkJcmVxLT5lcnJvciA9IG1hcF9lcnJvcigtbik7CiAJCQkJcmV0dXJuOwogCQkJ
-fQogCQkJYnJlYWs7CisJCWNhc2UgUkVRX09QX1dSSVRFX1pFUk9FUzoKKwkJCW4gPSBvc19mYWxs
-b2NfemVyb2VzKHJlcS0+ZmRzW2JpdF0sIG9mZiwgbGVuKTsKKwkJCWlmIChuKSB7CisJCQkJcmVx
-LT5lcnJvciA9IG1hcF9lcnJvcigtbik7CisJCQkJcmV0dXJuOworCQkJfQorCQkJYnJlYWs7CiAJ
-CWRlZmF1bHQ6CiAJCQlXQVJOX09OX09OQ0UoMSk7CiAJCQlyZXEtPmVycm9yID0gQkxLX1NUU19O
-T1RTVVBQOwpkaWZmIC0tZ2l0IGEvYXJjaC91bS9pbmNsdWRlL3NoYXJlZC9vcy5oIGIvYXJjaC91
-bS9pbmNsdWRlL3NoYXJlZC9vcy5oCmluZGV4IDAwMjE0MDU5ZDllYy4uZmFmZGUxZDU0MTZlIDEw
-MDY0NAotLS0gYS9hcmNoL3VtL2luY2x1ZGUvc2hhcmVkL29zLmgKKysrIGIvYXJjaC91bS9pbmNs
-dWRlL3NoYXJlZC9vcy5oCkBAIC0xNjgsNiArMTY4LDcgQEAgZXh0ZXJuIHVuc2lnbmVkIG9zX21h
-am9yKHVuc2lnbmVkIGxvbmcgbG9uZyBkZXYpOwogZXh0ZXJuIHVuc2lnbmVkIG9zX21pbm9yKHVu
-c2lnbmVkIGxvbmcgbG9uZyBkZXYpOwogZXh0ZXJuIHVuc2lnbmVkIGxvbmcgbG9uZyBvc19tYWtl
-ZGV2KHVuc2lnbmVkIG1ham9yLCB1bnNpZ25lZCBtaW5vcik7CiBleHRlcm4gaW50IG9zX2ZhbGxv
-Y19wdW5jaChpbnQgZmQsIHVuc2lnbmVkIGxvbmcgbG9uZyBvZmZzZXQsIGludCBjb3VudCk7Citl
-eHRlcm4gaW50IG9zX2ZhbGxvY196ZXJvZXMoaW50IGZkLCB1bnNpZ25lZCBsb25nIGxvbmcgb2Zm
-c2V0LCBpbnQgY291bnQpOwogZXh0ZXJuIGludCBvc19ldmVudGZkKHVuc2lnbmVkIGludCBpbml0
-dmFsLCBpbnQgZmxhZ3MpOwogZXh0ZXJuIGludCBvc19zZW5kbXNnX2ZkcyhpbnQgZmQsIGNvbnN0
-IHZvaWQgKmJ1ZiwgdW5zaWduZWQgaW50IGxlbiwKIAkJCSAgY29uc3QgaW50ICpmZHMsIHVuc2ln
-bmVkIGludCBmZHNfbnVtKTsKZGlmZiAtLWdpdCBhL2FyY2gvdW0vb3MtTGludXgvZmlsZS5jIGIv
-YXJjaC91bS9vcy1MaW51eC9maWxlLmMKaW5kZXggZTQ0MjFkYmM0YzM2Li5mYzQ0NTBkYjU5YmQg
-MTAwNjQ0Ci0tLSBhL2FyY2gvdW0vb3MtTGludXgvZmlsZS5jCisrKyBiL2FyY2gvdW0vb3MtTGlu
-dXgvZmlsZS5jCkBAIC02MjUsNiArNjI1LDE1IEBAIGludCBvc19mYWxsb2NfcHVuY2goaW50IGZk
-LCB1bnNpZ25lZCBsb25nIGxvbmcgb2Zmc2V0LCBpbnQgbGVuKQogCXJldHVybiBuOwogfQogCitp
-bnQgb3NfZmFsbG9jX3plcm9lcyhpbnQgZmQsIHVuc2lnbmVkIGxvbmcgbG9uZyBvZmZzZXQsIGlu
-dCBsZW4pCit7CisJaW50IG4gPSBmYWxsb2NhdGUoZmQsIEZBTExPQ19GTF9aRVJPX1JBTkdFfEZB
-TExPQ19GTF9LRUVQX1NJWkUsIG9mZnNldCwgbGVuKTsKKworCWlmIChuIDwgMCkKKwkJcmV0dXJu
-IC1lcnJubzsKKwlyZXR1cm4gbjsKK30KKwogaW50IG9zX2V2ZW50ZmQodW5zaWduZWQgaW50IGlu
-aXR2YWwsIGludCBmbGFncykKIHsKIAlpbnQgZmQgPSBldmVudGZkKGluaXR2YWwsIGZsYWdzKTsK
-LS0gCjIuMjUuMQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0
-dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
+On Fri, Feb 18, 2022 at 7:35 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Wed, Feb 16, 2022 at 02:13:28PM +0100, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > test_kernel_ptr() uses access_ok() to figure out if a given address
+> > points to user space instead of kernel space. However on architectures
+> > that set CONFIG_ALTERNATE_USER_ADDRESS_SPACE, a pointer can be valid
+> > for both, and the check always fails because access_ok() returns true.
+> >
+> > Make the check for user space pointers conditional on the type of
+> > address space layout.
+>
+> What is this code even trying to do?  It looks extremly broken.
+
+As I understand it, this is only meant for debugging, and the module contains
+intentionally broken lock usage to test whether the watchdog and lockup
+detection in the kernel is able to find them.
+
+I did not try that hard to understand how it works though.
+
+      Arnd
 
