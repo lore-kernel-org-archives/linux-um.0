@@ -1,19 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab7.miniserver.com ([37.128.132.42]
- helo=www.kot-begemot.co.uk)
+Received: from mail-pf1-x42c.google.com ([2607:f8b0:4864:20::42c])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nM6Dl-0054sD-T3
- for linux-um@lists.infradead.org; Mon, 21 Feb 2022 10:47:12 +0000
+ id 1nKymY-00DLYS-Oa
+ for linux-um@lists.infradead.org; Fri, 18 Feb 2022 08:38:28 +0000
+Received: by mail-pf1-x42c.google.com with SMTP id z16so1806617pfh.3
+ for <linux-um@lists.infradead.org>; Fri, 18 Feb 2022 00:38:25 -0800 (PST)
+Message-ID: <ea276eed0eab8f6452b4d7098f8bef5c0001b34e.camel@debian.org>
 Subject: Re: Bug#1005900: linux.uml: uml_mconsole client becomes blocked on
  read after issuing commands stop and go
+From: Ritesh Raj Sarraf <rrs@debian.org>
+Date: Fri, 18 Feb 2022 14:08:23 +0530
+In-Reply-To: <CALv6pCZ1r_j=2K4vPReVjkegUeaOJS_wYyte+pWfnMxwrhWiMw@mail.gmail.com>
 References: <CALv6pCZ1r_j=2K4vPReVjkegUeaOJS_wYyte+pWfnMxwrhWiMw@mail.gmail.com>
- <ea276eed0eab8f6452b4d7098f8bef5c0001b34e.camel@debian.org>
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Message-ID: <51d0bc41-d981-ad9a-f71f-20bb9b2bd3b2@kot-begemot.co.uk>
-Date: Mon, 21 Feb 2022 10:46:56 +0000
 MIME-Version: 1.0
-In-Reply-To: <ea276eed0eab8f6452b4d7098f8bef5c0001b34e.camel@debian.org>
-Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,102 +21,190 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Reply-To: rrs@debian.org
+Content-Type: multipart/mixed; boundary="===============4378809991343514500=="
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: rrs@debian.org, Mihai Hanor <quake2iasi@gmail.com>, 1005900@bugs.debian.org, linux-um@lists.infradead.org
+To: Mihai Hanor <quake2iasi@gmail.com>, 1005900@bugs.debian.org, linux-um@lists.infradead.org
 
-SGkgUml0ZXNoLCBoaSBNaWhhaSwKCkFwb2xvZ2llcyBmb3IgdGhlIGRlbGF5IGluIHRoZSBhbnN3
-ZXIsIEkgd2FzIHRyYXZlbGluZyBsYXN0IHdlZWsuCgoxLiBZb3VyIHBhdGNoIHdpbGwgbm90IGFj
-aGlldmUgdGhlIGRlc2lyZWQgYWltLiBUaGUgSVJRUyBpbiBVTUwgbm93YWRheXMgYXJlIHBlciBm
-ZCBhbmQgbG9vcGluZyBpbnNpZGUgdGhlIElSUSBoYW5kbGVyIGZvciBtY29uc29sZSB3aWxsIG5v
-dCBzdG9wIFVNTCBhcyBpdCB1c2VkIHRvIHdoZW4gaXQgd2FzIHVzaW5nIHRoZSBvbGQgcG9sbCgp
-IGJhc2VkIElSUSBzdWJzeXN0ZW0uIEl0IHdpbGwgc3RpbGwgaGFuZGxlIG90aGVyIElSUXMuIFRo
-YXQgaXMgYSBidWcsIHdlIG5lZWQgdG8gc2VlIHdoYXQgY2FuIGJlIGRvbmUgaGVyZS4KCjIuIE90
-aGVyd2lzZSwganVzdCBhIC0gb24gdGhlIGRlYWN0aXZhdGVfZmQoKSB3b3VsZCBkbyB0aGUgdHJp
-Y2suIFRoZXJlIGlzIGEgcmVlbnRyYW5jeSBjaGVjayBvbiB0aGUgSVJRIGhhbmRsZXIgYW5kIHdo
-aWxlIHlvdSBhcmUgbG9vcGluZyBpbnNpZGUgaXQsIHRoZSBzYW1lIElSUSB3aWxsIG5vdCBiZSB0
-cmlnZ2VyZWQgYWdhaW4uIE5vIG5lZWQgdG8gZGVhY3RpdmF0ZV9mZCgpLiBIb3dldmVyLCBhcyBw
-ZXIgIjEiLCB0aGlzIGlzIGluc3VmZmljaWVudCAtIGFsbCBvdGhlciBJUlFTIHdpbGwgc3RpbGwg
-YmUgaGFuZGxlZC4KCkJyZ2RzLAoKQS4KCk9uIDE4LzAyLzIwMjIgMDg6MzgsIFJpdGVzaCBSYWog
-U2FycmFmIHdyb3RlOgo+IEhlbGxvIE1paGFpLAo+IAo+IEluIHRoaXMgY2FzZSwgaXQgaXMgZ29v
-ZCB0byBoYXZlIHRoZSBVc2VyIE1vZGUgTGludXggdXBzdHJlYW0gaW4gdGhlCj4gbG9vcC4KPiAK
-PiBUaGFua3MsCj4gUml0ZXNoCj4gCj4gLS0tIGxpbnV4LXNvdXJjZS01LjE2L2FyY2gvdW0vZHJp
-dmVycy9tY29uc29sZV9rZXJuLmMJMjAyMi0wMi0wNSAyMDoyMjowNi4wMDAwMDAwMDAgKzAyMDAK
-PiArKysgbGludXgtc291cmNlLTUuMTYuZml4L2FyY2gvdW0vZHJpdmVycy9tY29uc29sZV9rZXJu
-LmMJMjAyMi0wMi0xNiAyMzozNTozOS41NjI2NjgwODYgKzAyMDAKPiBAQCAtMjI0LDYgKzIyNCw3
-IEBACj4gICAKPiAgIHZvaWQgbWNvbnNvbGVfc3RvcChzdHJ1Y3QgbWNfcmVxdWVzdCAqcmVxKQo+
-ICAgewo+ICsJaW50IGVycjsKPiAgIAlkZWFjdGl2YXRlX2ZkKHJlcS0+b3JpZ2luYXRpbmdfZmQs
-IE1DT05TT0xFX0lSUSk7Cj4gICAJb3Nfc2V0X2ZkX2Jsb2NrKHJlcS0+b3JpZ2luYXRpbmdfZmQs
-IDEpOwo+ICAgCW1jb25zb2xlX3JlcGx5KHJlcSwgInN0b3BwZWQiLCAwLCAwKTsKPiBAQCAtMjQ3
-LDYgKzI0OCwxMSBAQAo+ICAgCX0KPiAgIAlvc19zZXRfZmRfYmxvY2socmVxLT5vcmlnaW5hdGlu
-Z19mZCwgMCk7Cj4gICAJbWNvbnNvbGVfcmVwbHkocmVxLCAiIiwgMCwgMCk7Cj4gKwllcnI9YWN0
-aXZhdGVfZmQoTUNPTlNPTEVfSVJRLCByZXEtPm9yaWdpbmF0aW5nX2ZkLCBJUlFfUkVBRCwKPiAr
-CQkodm9pZCopKHJlcS0+b3JpZ2luYXRpbmdfZmQpLCBOVUxMKTsKPiArCWlmIChlcnIpCj4gKwkg
-IG1jb25zb2xlX3JlcGx5KHJlcSwgIkZhaWxlZCB0byByZWFjdGl2YXRlIE1DT05TT0xFX0lSUSwg
-XAo+ICsJCQl0aGlzIHdpbGwgYmxvY2sgdGhlIHJlYWQgZm9yIHVtbF9tY29uc29sZSIsIDEsIDAp
-Owo+ICAgfQo+ICAgCj4gICBzdGF0aWMgREVGSU5FX1NQSU5MT0NLKG1jX2RldmljZXNfbG9jayk7
-Cj4gLS0tIGxpbnV4LXNvdXJjZS01LjE2L2FyY2gvdW0va2VybmVsL2lycS5jCTIwMjItMDItMDUg
-MjA6MjI6MDYuMDAwMDAwMDAwICswMjAwCj4gKysrIGxpbnV4LXNvdXJjZS01LjE2LmZpeC9hcmNo
-L3VtL2tlcm5lbC9pcnEuYwkyMDIyLTAyLTE2IDIzOjM5OjE1LjY1MDI3OTM2NyArMDIwMAo+IEBA
-IC0yNDksNyArMjQ5LDcgQEAKPiAgIAkJZnJlZV9pcnFfZW50cnkoZW50cnksIGZhbHNlKTsKPiAg
-IH0KPiAgIAo+IC1zdGF0aWMgaW50IGFjdGl2YXRlX2ZkKGludCBpcnEsIGludCBmZCwgZW51bSB1
-bV9pcnFfdHlwZSB0eXBlLCB2b2lkICpkZXZfaWQsCj4gK2ludCBhY3RpdmF0ZV9mZChpbnQgaXJx
-LCBpbnQgZmQsIGVudW0gdW1faXJxX3R5cGUgdHlwZSwgdm9pZCAqZGV2X2lkLAo+ICAgCQkgICAg
-ICAgdm9pZCAoKnRpbWV0cmF2ZWxfaGFuZGxlcikoaW50LCBpbnQsIHZvaWQgKiwKPiAgIAkJCQkJ
-CSAgc3RydWN0IHRpbWVfdHJhdmVsX2V2ZW50ICopKQo+ICAgewo+IEBAIC0zMDQsNiArMzA0LDcg
-QEAKPiAgIG91dDoKPiAgIAlyZXR1cm4gZXJyOwo+ICAgfQo+ICtFWFBPUlRfU1lNQk9MKGFjdGl2
-YXRlX2ZkKTsKPiAgIAo+ICAgLyoKPiAgICAqIFJlbW92ZSB0aGUgZW50cnkgb3IgZW50cmllcyBm
-b3IgYSBzcGVjaWZpYyBGRCwgaWYgeW91Cj4gLS0tIGxpbnV4LXNvdXJjZS01LjE2L2FyY2gvdW0v
-aW5jbHVkZS9zaGFyZWQvaXJxX3VzZXIuaAkyMDIyLTAyLTA1IDIwOjIyOjA2LjAwMDAwMDAwMCAr
-MDIwMAo+ICsrKyBsaW51eC1zb3VyY2UtNS4xNi5maXgvYXJjaC91bS9pbmNsdWRlL3NoYXJlZC9p
-cnFfdXNlci5oCTIwMjItMDItMTYgMjM6Mzk6MDkuNjQyMjkyMzEyICswMjAwCj4gQEAgLTE5LDYg
-KzE5LDcgQEAKPiAgIHZvaWQgc2lnaW9fcnVuX3RpbWV0cmF2ZWxfaGFuZGxlcnModm9pZCk7Cj4g
-ICBleHRlcm4gdm9pZCBmcmVlX2lycV9ieV9mZChpbnQgZmQpOwo+ICAgZXh0ZXJuIHZvaWQgZGVh
-Y3RpdmF0ZV9mZChpbnQgZmQsIGludCBpcnFudW0pOwo+ICtleHRlcm4gaW50IGFjdGl2YXRlX2Zk
-KGludCBpcnEsIGludCBmZCwgZW51bSB1bV9pcnFfdHlwZSB0eXBlLCB2b2lkICpkZXZfaWQsIHZv
-aWQgKCp0aW1ldHJhdmVsX2hhbmRsZXIpKGludCwgaW50LCB2b2lkICosIHN0cnVjdCB0aW1lX3Ry
-YXZlbF9ldmVudCAqKSk7Cj4gICBleHRlcm4gaW50IGRlYWN0aXZhdGVfYWxsX2Zkcyh2b2lkKTsK
-PiAgIGV4dGVybiBpbnQgYWN0aXZhdGVfaXBpKGludCBmZCwgaW50IHBpZCk7Cj4gCj4gT24gVGh1
-LCAyMDIyLTAyLTE3IGF0IDAxOjA2ICswMjAwLCBNaWhhaSBIYW5vciB3cm90ZToKPj4gUGFja2Fn
-ZTogdXNlci1tb2RlLWxpbnV4Cj4+IFZlcnNpb246IDUuMTZ1bTEKPj4gU2V2ZXJpdHk6IG5vcm1h
-bAo+PiBGaWxlOiAvdXNyL2Jpbi9saW51eC51bWwKPj4gWC1EZWJidWdzLUNjOiBxdWFrZTJpYXNp
-QGdtYWlsLmNvbQo+Pgo+PiBEZWFyIE1haW50YWluZXIsCj4+Cj4+ICogV2hhdCBpcyB0aGUgcHJv
-YmxlbToKPj4gSXNzdWluZyB0aGUgY29tbWFuZHMgc3RvcCBmb2xsb3dlZCBieSBnbywgYXQgdGhl
-IGlucHV0IG9mIHRoZQo+PiB1bWxfbWNvbnNvbGUKPj4gY2xpZW50LCByZXN1bHRzIGluIHRoZSBj
-bGllbnQgYmVjb21pbmcgYmxvY2tlZCBvbiByZWFkIHNvY2tldC4gVGhpcwo+PiBpcyBiZWNhdXNl
-Cj4+IG9mIGxvZ2ljIGluIGFyY2gvdW0vZHJpdmVycy9tY29uc29sZV9rZXJuLmMsIHdoZXJlIG1j
-b25zb2xlX3N0b3AoKQo+PiBkb2Vzbid0Cj4+IHJlYWN0aXZhdGUgdGhlIE1DT05TT0xFX0lSUSBi
-ZWZvcmUgdGhlIGZ1bmN0aW9uIGhhcyBleGl0ZWQuCj4+Cj4+IEkndmUgbWFuYWdlZCB0byBmaW5k
-IGEgZml4IHdoaWNoIHNlZW1zIHRvIGJlIHdvcmtpbmcsIGJ1dCBJIGRvbid0Cj4+IGtub3cgaWYg
-aXQncwo+PiBhIHByb3BlciBmaXguIFBsZWFzZSBzZWUgdGhlIGF0dGFjaGVkIGZpbGUuCj4+Cj4+
-Cj4+IC0tIFN5c3RlbSBJbmZvcm1hdGlvbjoKPj4gRGViaWFuIFJlbGVhc2U6IGJvb2t3b3JtL3Np
-ZAo+PiAgwqAgQVBUIHByZWZlcnMgdGVzdGluZwo+PiAgwqAgQVBUIHBvbGljeTogKDkwMCwgJ3Rl
-c3RpbmcnKSwgKDUwMCwgJ3Vuc3RhYmxlLWRlYnVnJyksICg1MDAsCj4+ICd0ZXN0aW5nLWRlYnVn
-JyksICgxLCAndW5zdGFibGUnKQo+PiBBcmNoaXRlY3R1cmU6IGFtZDY0ICh4ODZfNjQpCj4+IEZv
-cmVpZ24gQXJjaGl0ZWN0dXJlczogaTM4Ngo+Pgo+PiBLZXJuZWw6IExpbnV4IDUuMTYuMC0xLWFt
-ZDY0IChTTVAgdy80IENQVSB0aHJlYWRzOyBQUkVFTVBUKQo+PiBLZXJuZWwgdGFpbnQgZmxhZ3M6
-IFRBSU5UX1dBUk4KPj4gTG9jYWxlOiBMQU5HPWVuX1VTLlVURi04LCBMQ19DVFlQRT1lbl9VUy5V
-VEYtOCAoY2hhcm1hcD1VVEYtOCksCj4+IExBTkdVQUdFPWVuX1VTOmVuCj4+IFNoZWxsOiAvYmlu
-L3NoIGxpbmtlZCB0byAvYmluL2Rhc2gKPj4gSW5pdDogc3lzdGVtZCAodmlhIC9ydW4vc3lzdGVt
-ZC9zeXN0ZW0pCj4+IExTTTogQXBwQXJtb3I6IGVuYWJsZWQKPj4KPj4gVmVyc2lvbnMgb2YgcGFj
-a2FnZXMgdXNlci1tb2RlLWxpbnV4IGRlcGVuZHMgb246Cj4+IGlpIMKgbGliYzYgwqAyLjMzLTUK
-Pj4KPj4gVmVyc2lvbnMgb2YgcGFja2FnZXMgdXNlci1tb2RlLWxpbnV4IHJlY29tbWVuZHM6Cj4+
-IGlpIMKgdW1sLXV0aWxpdGllcyDCoDIwMDcwODE1LjQtMQo+Pgo+PiBWZXJzaW9ucyBvZiBwYWNr
-YWdlcyB1c2VyLW1vZGUtbGludXggc3VnZ2VzdHM6Cj4+IGlpIMKgbWF0ZS10ZXJtaW5hbCBbeC10
-ZXJtaW5hbC1lbXVsYXRvcl0gwqAxLjI2LjAtMQo+PiBpaSDCoHB0ZXJtIFt4LXRlcm1pbmFsLWVt
-dWxhdG9yXSDCoCDCoCDCoCDCoCDCoDAuNzYtMgo+PiBwbiDCoHJvb3RzdHJhcCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoDxub25lPgo+PiBwbiDCoHNsaXJwIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgPG5vbmU+Cj4+IHBuIMKg
-dXNlci1tb2RlLWxpbnV4LWRvYyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoDxub25lPgo+PiBw
-biDCoHZkZTIgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-PG5vbmU+Cj4+Cj4+IC0tIG5vIGRlYmNvbmYgaW5mb3JtYXRpb24KPiAKPiAKPiBfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IGxpbnV4LXVtIG1haWxpbmcg
-bGlzdAo+IGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKPiBodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCj4gCgotLSAKQW50b24gUi4gSXZhbm92
-Cmh0dHBzOi8vd3d3LmtvdC1iZWdlbW90LmNvLnVrLwoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxp
-c3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9saW51eC11bQo=
+
+--===============4378809991343514500==
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="=-Djviw3JvnWk+GoLZLkPx"
+
+
+--=-Djviw3JvnWk+GoLZLkPx
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hello Mihai,
+
+In this case, it is good to have the User Mode Linux upstream in the
+loop.
+
+Thanks,
+Ritesh
+
+--- linux-source-5.16/arch/um/drivers/mconsole_kern.c	2022-02-05 20:22:06.0=
+00000000 +0200
++++ linux-source-5.16.fix/arch/um/drivers/mconsole_kern.c	2022-02-16 23:35:=
+39.562668086 +0200
+@@ -224,6 +224,7 @@
+=20
+ void mconsole_stop(struct mc_request *req)
+ {
++	int err;
+ 	deactivate_fd(req->originating_fd, MCONSOLE_IRQ);
+ 	os_set_fd_block(req->originating_fd, 1);
+ 	mconsole_reply(req, "stopped", 0, 0);
+@@ -247,6 +248,11 @@
+ 	}
+ 	os_set_fd_block(req->originating_fd, 0);
+ 	mconsole_reply(req, "", 0, 0);
++	err=3Dactivate_fd(MCONSOLE_IRQ, req->originating_fd, IRQ_READ,
++		(void*)(req->originating_fd), NULL);
++	if (err)
++	  mconsole_reply(req, "Failed to reactivate MCONSOLE_IRQ, \
++			this will block the read for uml_mconsole", 1, 0);
+ }
+=20
+ static DEFINE_SPINLOCK(mc_devices_lock);
+--- linux-source-5.16/arch/um/kernel/irq.c	2022-02-05 20:22:06.000000000 +0=
+200
++++ linux-source-5.16.fix/arch/um/kernel/irq.c	2022-02-16 23:39:15.65027936=
+7 +0200
+@@ -249,7 +249,7 @@
+ 		free_irq_entry(entry, false);
+ }
+=20
+-static int activate_fd(int irq, int fd, enum um_irq_type type, void *dev_i=
+d,
++int activate_fd(int irq, int fd, enum um_irq_type type, void *dev_id,
+ 		       void (*timetravel_handler)(int, int, void *,
+ 						  struct time_travel_event *))
+ {
+@@ -304,6 +304,7 @@
+ out:
+ 	return err;
+ }
++EXPORT_SYMBOL(activate_fd);
+=20
+ /*
+  * Remove the entry or entries for a specific FD, if you
+--- linux-source-5.16/arch/um/include/shared/irq_user.h	2022-02-05 20:22:06=
+.000000000 +0200
++++ linux-source-5.16.fix/arch/um/include/shared/irq_user.h	2022-02-16 23:3=
+9:09.642292312 +0200
+@@ -19,6 +19,7 @@
+ void sigio_run_timetravel_handlers(void);
+ extern void free_irq_by_fd(int fd);
+ extern void deactivate_fd(int fd, int irqnum);
++extern int activate_fd(int irq, int fd, enum um_irq_type type, void *dev_i=
+d, void (*timetravel_handler)(int, int, void *, struct time_travel_event *)=
+);
+ extern int deactivate_all_fds(void);
+ extern int activate_ipi(int fd, int pid);
+
+On Thu, 2022-02-17 at 01:06 +0200, Mihai Hanor wrote:
+> Package: user-mode-linux
+> Version: 5.16um1
+> Severity: normal
+> File: /usr/bin/linux.uml
+> X-Debbugs-Cc: quake2iasi@gmail.com
+>=20
+> Dear Maintainer,
+>=20
+> * What is the problem:
+> Issuing the commands stop followed by go, at the input of the
+> uml_mconsole
+> client, results in the client becoming blocked on read socket. This
+> is because
+> of logic in arch/um/drivers/mconsole_kern.c, where mconsole_stop()
+> doesn't
+> reactivate the MCONSOLE_IRQ before the function has exited.
+>=20
+> I've managed to find a fix which seems to be working, but I don't
+> know if it's
+> a proper fix. Please see the attached file.
+>=20
+>=20
+> -- System Information:
+> Debian Release: bookworm/sid
+> =C2=A0 APT prefers testing
+> =C2=A0 APT policy: (900, 'testing'), (500, 'unstable-debug'), (500,
+> 'testing-debug'), (1, 'unstable')
+> Architecture: amd64 (x86_64)
+> Foreign Architectures: i386
+>=20
+> Kernel: Linux 5.16.0-1-amd64 (SMP w/4 CPU threads; PREEMPT)
+> Kernel taint flags: TAINT_WARN
+> Locale: LANG=3Den_US.UTF-8, LC_CTYPE=3Den_US.UTF-8 (charmap=3DUTF-8),
+> LANGUAGE=3Den_US:en
+> Shell: /bin/sh linked to /bin/dash
+> Init: systemd (via /run/systemd/system)
+> LSM: AppArmor: enabled
+>=20
+> Versions of packages user-mode-linux depends on:
+> ii =C2=A0libc6 =C2=A02.33-5
+>=20
+> Versions of packages user-mode-linux recommends:
+> ii =C2=A0uml-utilities =C2=A020070815.4-1
+>=20
+> Versions of packages user-mode-linux suggests:
+> ii =C2=A0mate-terminal [x-terminal-emulator] =C2=A01.26.0-1
+> ii =C2=A0pterm [x-terminal-emulator] =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00.=
+76-2
+> pn =C2=A0rootstrap =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0<none>
+> pn =C2=A0slirp =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0<none>
+> pn =C2=A0user-mode-linux-doc =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0<none>
+> pn =C2=A0vde2 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 <none>
+>=20
+> -- no debconf information
+
+--=20
+Ritesh Raj Sarraf | http://people.debian.org/~rrs
+Debian - The Universal Operating System
+
+--=-Djviw3JvnWk+GoLZLkPx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEQCVDstmIVAB/Yn02pjpYo/LhdWkFAmIPWv8ACgkQpjpYo/Lh
+dWkO3RAAgzv24IixRFVAv5spm0SxkaMBMgCX1bXkEVzr9m8USGGrLVSXo/Uvtvl/
+r/CFlmAgFZBsoLNSMK1izGsTK0kyIeTR2OSFkOwN9ZjuZrAuEAMPuklUQRldegq0
+SmwmS6J8d80B8F+aNAF6gj6fySeDga4Tdg+0BZr6J+Hu3rFwG/wQBQyLn72LB94N
+7TXeSpZ0huJN1qh8nTTpA0u8DwKJBK1e/0NEyBTGZbelReoF5Ouh30IQtBLKlQds
+0SiivcrAuFppyD0NWBMF6GY1OF0hFC6d7HhqTvmaWrufRWUAafg0Vv7l2WXKBKSE
+N2ZsycSaArIxtrGcAKjl/+G/zWVJLInotjuGXDsTdUNsNfTCK8Yzs0jtfWJlGOcs
+YRkIzWHPs5kmjBUgFViFKJ6UDrrq0eH833LsjsCX6iwScP8sR6RP8WyCDCanVwjj
+eFEQ0sJ0z/mxX/Cz2qKZS2FciZJFviNUgHxhyVyIwLuV/dHfKHdca/GzMmbsEW1A
+VnT5sAChnHffrlo5hgB70vM21A8Kaj1VQLuV8p9ek5DNiaj0vhoUSHyYGs7t1CjN
+qR48IUJzDag0nOdm46TlVrqoH3kRjCLecejqTNON+Vi/rEBp/QQ7S1xaEGT7WADh
+XPNV95mgI4vy17ZQZrbv2rpI8fx7B28oZccjMa1Yj+uihIjDe5A=
+=b6W7
+-----END PGP SIGNATURE-----
+
+--=-Djviw3JvnWk+GoLZLkPx--
+
+
+--===============4378809991343514500==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
+
+--===============4378809991343514500==--
+
 
