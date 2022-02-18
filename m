@@ -1,19 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-qv1-xf33.google.com ([2607:f8b0:4864:20::f33])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nL4li-00Evcs-JP
- for linux-um@lists.infradead.org; Fri, 18 Feb 2022 15:02:00 +0000
-Received: by mail-qv1-xf33.google.com with SMTP id c14so15190477qvl.12
- for <linux-um@lists.infradead.org>; Fri, 18 Feb 2022 07:01:56 -0800 (PST)
-Date: Fri, 18 Feb 2022 11:01:51 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
+ id 1nL2LZ-00ED6s-R4
+ for linux-um@lists.infradead.org; Fri, 18 Feb 2022 12:26:51 +0000
+Message-ID: <ac4c5f8c890e5bdd7ad7ecc04a51e72fa3ac1703.camel@sipsolutions.net>
 Subject: Re: [PATCH 4/4] kunit: tool: Disable broken options for --alltests
-Message-ID: <20220218150151.GD1037534@ziepe.ca>
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Fri, 18 Feb 2022 13:26:30 +0100
+In-Reply-To: <20220218075727.2737623-5-davidgow@google.com>
 References: <20220218075727.2737623-1-davidgow@google.com>
  <20220218075727.2737623-5-davidgow@google.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220218075727.2737623-5-davidgow@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,33 +20,64 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: David Gow <davidgow@google.com>
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Shuah Khan <skhan@linuxfoundation.org>, Brendan Higgins <brendanhiggins@google.com>, Randy Dunlap <rdunlap@infradead.org>, linux-um@lists.infradead.org, amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org, x86@kernel.org, felix.kuehling@amd.com, linux-kernel@vger.kernel.org
+To: David Gow <davidgow@google.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Shuah Khan <skhan@linuxfoundation.org>, Brendan Higgins <brendanhiggins@google.com>, Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-um@lists.infradead.org, amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org, x86@kernel.org, felix.kuehling@amd.com, linux-kernel@vger.kernel.org
 
-On Fri, Feb 18, 2022 at 03:57:27PM +0800, David Gow wrote:
-> There are a number of Kconfig options which break compilation under UML with
-> allyesconfig.  As kunit_tool's --alltests option is based on allyesconfig and
-> UML, we need to update the list of broken options to make --alltests build
-> again.
-> 
-> Note that, while this does build again, it still segfaults on startup,
-> so more work remains to be done.
-> 
-> They are:
-> - CONFIG_VFIO_PCI: Needs ioport_map/ioport_unmap.
-> - CONFIG_INFINIBAND_RDMAVT: Needs cpuinfo_x86 and __copy_user_nocache
-
-It doesn't make sense to patch qib and then turn this option off, it
-is required to build qib.
-
-Jason
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gRnJpLCAyMDIyLTAyLTE4IGF0IDE1OjU3ICswODAwLCBEYXZpZCBHb3cgd3JvdGU6Cj4gCj4g
+Tm90ZSB0aGF0LCB3aGlsZSB0aGlzIGRvZXMgYnVpbGQgYWdhaW4sIGl0IHN0aWxsIHNlZ2ZhdWx0
+cyBvbiBzdGFydHVwLAo+IHNvIG1vcmUgd29yayByZW1haW5zIHRvIGJlIGRvbmUuCgpUaGF0J3Mg
+cHJvYmFibHkganVzdCBhIGxvdCBtb3JlIHN0dWZmIGdldHRpbmcgaW5jbHVkZWQgc29tZWhvdz8K
+Cj4gVGhleSBhcmU6Cj4gLSBDT05GSUdfVkZJT19QQ0k6IE5lZWRzIGlvcG9ydF9tYXAvaW9wb3J0
+X3VubWFwLgo+IC0gQ09ORklHX0lORklOSUJBTkRfUkRNQVZUOiBOZWVkcyBjcHVpbmZvX3g4NiBh
+bmQgX19jb3B5X3VzZXJfbm9jYWNoZQo+IC0gQ09ORklHX0JOWFQ6IEZhaWxpbmcgdW5kZXIgVU1M
+IHdpdGggLVdlcnJvcgo+IEVSUk9SOnJvb3Q6Li4vZHJpdmVycy9uZXQvZXRoZXJuZXQvYnJvYWRj
+b20vYm54dC9ibnh0X3B0cC5jOiBJbiBmdW5jdGlvbiDigJhibnh0X3B0cF9lbmFibGXigJk6Cj4g
+Li4vZHJpdmVycy9uZXQvZXRoZXJuZXQvYnJvYWRjb20vYm54dC9ibnh0X3B0cC5jOjQwMDo0Mzog
+ZXJyb3I6IGFycmF5IHN1YnNjcmlwdCAyNTUgaXMgYWJvdmUgYXJyYXkgYm91bmRzIG9mIOKAmHN0
+cnVjdCBwcHNfcGluWzRd4oCZIFstV2Vycm9yPWFycmF5LWJvdW5kc10KPiAgIDQwMCB8ICAgICAg
+ICAgICAgICAgICAgICAgICAgIHB0cC0+cHBzX2luZm8ucGluc1twaW5faWRdLmV2ZW50ID0gQk5Y
+VF9QUFNfRVZFTlRfRVhURVJOQUw7Cj4gICAgICAgfCAgICAgICAgICAgICAgICAgICAgICAgICB+
+fn5+fn5+fn5+fn5+fn5+fn5efn5+fn5+fgo+IC0gQ09ORklHX1BBVEFfQ1M1NTM1OiBOZWVkcyBN
+U1IgYWNjZXNzIChfX3RyYWNlcG9pbnRfe3JlYWQsd3JpdGV9X21zcikKPiAtIENPTkZJR19WRFBB
+OiBFbmFibGVzIENPTkZJR19ETUFfT1BTLCB3aGljaCBpcyB1bmltcGxlbWVudGVkLiAoJ2RtYV9v
+cHMnIGlzIG5vdCBkZWZpbmVkKQo+IAo+IFRoZXNlIGFyZSBhbGwgaXNzdWVzIHdoaWNoIHNob3Vs
+ZCBiZSBpbnZlc3RpZ2F0ZWQgcHJvcGVybHkgYW5kIHRoZQo+IGNvcnJlc3BvbmRpbmcgb3B0aW9u
+cyBlaXRoZXIgZml4ZWQgb3IgZGlzYWJsZWQgdW5kZXIgVU1MLiBIYXZpbmcgdGhpcwo+IGxpc3Qg
+b2YgYnJva2VuIG9wdGlvbnMgc2hvdWxkIGFjdCBhcyBhIGdvb2QgdG8tZG8gbGlzdCBoZXJlLCBh
+bmQgd2lsbAo+IGFsbG93IHRoZXNlIGlzc3VlcyB0byBiZSB3b3JrZWQgb24gaW5kZXBlbmRlbnRs
+eSwgYW5kIG90aGVyIHRlc3RzIHRvCj4gd29yayBpbiB0aGUgbWVhbnRpbWUuCj4gCgpJJ20gbm90
+IHJlYWxseSBzdXJlIGl0IG1ha2VzIHNlbnNlIHRvIGV2ZW4gZG8gYW55dGhpbmcgb3RoZXIgdGhh
+bgpkaXNhYmxpbmcgdGhlc2UuCgpJdCBsb29rcyBsaWtlIGFsbCBvZiB0aGVtIGFyZSBqdXN0IGV4
+cG9zZWQgYnkgbm93IGJlaW5nIGFibGUgdG8gYnVpbGQKUENJIGRyaXZlcnMgb24gVU1MLiBTdXJl
+bHkgdGhlIHBlb3BsZSB3cml0aW5nIHRoZSBkcml2ZXIgZGlkbid0IGV4cGVjdAp0aGVpciBkcml2
+ZXJzIHRvIHJ1biBvdmVyIHNpbXVsYXRlZCBQQ0kgKHdoaWNoIGlzIHdoYXQgdGhlIFVNTCBQQ0kK
+c3VwcG9ydCBpcyBhbGwgYWJvdXQpLgoKTm93IGZyb20gYSBQQ0kgZHJpdmVyIHBvaW50IG9mIHZp
+ZXcgeW91IGNhbid0IHJlYWxseSB0ZWxsIHRoZSBkaWZmZXJlbmNlCihhbmQgYW55d2F5IHRoZSBk
+cml2ZXIgd29uJ3QgYmUgcHJvYmVkKSwgYnV0IHRoZSBpc3N1ZXMgKGF0IGxlYXN0IHRoZQpidWls
+ZCB0aW1lIG9uZXMpIGNvbWUgZnJvbSBoYXZpbmcKCiAgICBVTUwgJiYgUENJICYmIFg4Nl82NAoK
+b3IKCiAgICBVTUwgJiYgUENJICYmIFg4Nl8zMgoKYmVjYXVzZSBkcml2ZXJzIHR5cGljYWxseSBk
+ZXBlbmQgb24gWDg2XzY0IG9yIFg4Nl8zMiwgcmF0aGVyIHRoYW4gb24KIlg4NiAmJiBYODZfNjQi
+IG9yICJYODYgJiYgWDg2XzMyIi4gSW4gYSBzZW5zZSB0aHVzLCB0aGUgaXNzdWUgaXMgdGhvc2UK
+ZHJpdmVycyBkb24ndCBrbm93IHRoYXQgIiFYODYgJiYgKFg4Nl8zMiB8fCBYODZfNjQpIiBjYW4g
+aGFwcGVuICh3aXRoClVNTCkuCgoKTm93IHlvdSBjb3VsZCBzYXkgdGhhdCdzIHRoZSBkcml2ZXIg
+YnVnLCBvciB5b3UgY291bGQgc2F5IHRoYXQgdGhleQpzaG91bGQganVzdCBhZGQgImRlcGVuZHMg
+b24gIVVNTCIgKHRob3VnaCB0aGF0J3MgYmFzaWNhbGx5IGVxdWl2YWxlbnQgdG8KYWRkaW5nICJk
+ZXBlbmRzIG9uIFg4NiIgYW5kIHRoZSBsYXR0ZXIgbWF5IGJlIHByZWZlcmFibGUgaW4gc29tZSBj
+YXNlcykuCgpPciBhY3R1YWxseSBpbiB0aGUgdGhyZWUgcGF0Y2hlcyB5b3UgaGF2ZSAoMS0zKSBp
+dCdzIGluIHRoZSBjb2RlLCBidXQKc2FtZSB0aGluZywgeW91IGNhbiBlaXRoZXIgYWRkICYmICFV
+TUwgKGxpa2UgeW91IGRpZCkgb3IgYWRkICYmIFg4Ni4KCgpBcmd1YWJseSwgaG93ZXZlciwgYnVp
+bGRpbmcgUENJIGRyaXZlcnMgYnkgZGVmYXVsdCBpcyBzb21ld2hhdApxdWVzdGlvbmFibGUgaW4g
+dGhlIGZpcnN0IHBsYWNlPwoKU28gbWF5YmUgeW91IHNob3VsZCBqdXN0IGFkZAoKICAgICMgQ09O
+RklHX1VNTF9QQ0lfT1ZFUl9WSVJUSU8gaXMgbm90IHNldAoKdG8gdGhlIGJyb2tlbl9vbl91bWwu
+Y29uZmlnIHNpbmNlIGl0IGV4cG9zZXMgYWxsIHRoZXNlIGlzc3VlcywgYW5kCnJlYWxseSBpcyBu
+b3QgdmVyeSB1c2VmdWwgc2luY2UgeW91J3JlIG5vdCBnb2luZyB0byBhY3R1YWxseSBydW4gd2l0
+aAphbnkgc2ltdWxhdGVkIFBDSSBkZXZpY2VzIGFueXdheSwgc28gZHJpdmVycyB3aWxsIG5vdCBi
+ZSBwcm9iZWQuCgpqb2hhbm5lcwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVh
+ZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11
+bQo=
 
