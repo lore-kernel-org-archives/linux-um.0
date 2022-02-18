@@ -1,110 +1,49 @@
-Return-Path: <anshuman.khandual@arm.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V3 19/30] csky/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Date: Mon, 28 Feb 2022 16:17:42 +0530
-Message-Id: <1646045273-9343-20-git-send-email-anshuman.khandual@arm.com>
-In-Reply-To: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
-References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
-To: linux-mm@kvack.org, akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, geert@linux-m68k.org, Anshuman Khandual <anshuman.khandual@arm.com>, Christoph Hellwig <hch@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org, linux-riscv@lists.infradead.org, linux-alpha@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-parisc@vger.kernel.org, openrisc@lists.librecores.org, linux-um@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org
+Return-Path: <david.laight@aculab.com>
+From: David Laight <David.Laight@ACULAB.COM>
+Subject: RE: [PATCH v2 05/18] x86: remove __range_not_ok()
+Date: Fri, 18 Feb 2022 15:45:56 +0000
+Message-ID: <905678e9e05d40b9a4e13e7b1a34cb68@AcuMS.aculab.com>
+References: <20220216131332.1489939-1-arnd@kernel.org>
+ <20220216131332.1489939-6-arnd@kernel.org> <20220218062851.GC22576@lst.de>
+In-Reply-To: <20220218062851.GC22576@lst.de>
+MIME-Version: 1.0
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+To: 'Christoph Hellwig' <hch@lst.de>, Arnd Bergmann <arnd@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>, "arnd@arndb.de" <arnd@arndb.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>, "linux@armlinux.org.uk" <linux@armlinux.org.uk>, "will@kernel.org" <will@kernel.org>, "guoren@kernel.org" <guoren@kernel.org>, "bcain@codeaurora.org" <bcain@codeaurora.org>, "geert@linux-m68k.org" <geert@linux-m68k.org>, "monstr@monstr.eu" <monstr@monstr.eu>, "tsbogend@alpha.franken.de" <tsbogend@alpha.franken.de>, "nickhu@andestech.com" <nickhu@andestech.com>, "green.hu@gmail.com" <green.hu@gmail.com>, "dinguyen@kernel.org" <dinguyen@kernel.org>, "shorne@gmail.com" <shorne@gmail.com>, "deller@gmx.de" <deller@gmx.de>, "mpe@ellerman.id.au" <mpe@ellerman.id.au>, "peterz@infradead.org" <peterz@infradead.org>, "mingo@redhat.com" <mingo@redhat.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "hca@linux.ibm.com" <hca@linux.ibm.com>, "dalias@libc.org" <dalias@libc.org>, "davem@davemloft.net" <davem@davemloft.net>, "richard@nod.at" <richard@nod.at>, "x86@kernel.org" <x86@kernel.org>, "jcmvbkbc@gmail.com" <jcmvbkbc@gmail.com>, "ebiederm@xmission.com" <ebiederm@xmission.com>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "ardb@kernel.org" <ardb@kernel.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>, "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>, "openrisc@lists.librecores.org" <openrisc@lists.librecores.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, Christoph Hellwig <hch@infradead.org>
 List-ID: <linux-um.lists.infradead.org>
 
-This defines and exports a platform specific custom vm_get_page_prot() via
-subscribing ARCH_HAS_VM_GET_PAGE_PROT. Subsequently all __SXXX and __PXXX
-macros can be dropped which are no longer needed.
+From: Christoph Hellwig
+> Sent: 18 February 2022 06:29
+...
+>=20
+> > diff --git a/arch/x86/kernel/stacktrace.c b/arch/x86/kernel/stacktrace.=
+c
+> > index 15b058eefc4e..ee117fcf46ed 100644
+> > --- a/arch/x86/kernel/stacktrace.c
+> > +++ b/arch/x86/kernel/stacktrace.c
+> > @@ -90,7 +90,7 @@ copy_stack_frame(const struct stack_frame_user __user=
+ *fp,
+> >  {
+> >  =09int ret;
+> >
+> > -=09if (__range_not_ok(fp, sizeof(*frame), TASK_SIZE))
+> > +=09if (!__access_ok(fp, sizeof(*frame)))
+> >  =09=09return 0;
+>=20
+> Just switch the __get_user calls below to get_user instead.
 
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-csky@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- arch/csky/Kconfig               |  1 +
- arch/csky/include/asm/pgtable.h | 18 ------------------
- arch/csky/mm/init.c             | 32 ++++++++++++++++++++++++++++++++
- 3 files changed, 33 insertions(+), 18 deletions(-)
+Is this worth doing at all?
+How much userspace code is actually compiled with stack frames?
 
-diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
-index 132f43f12dd8..209dac5686dd 100644
---- a/arch/csky/Kconfig
-+++ b/arch/csky/Kconfig
-@@ -6,6 +6,7 @@ config CSKY
- 	select ARCH_HAS_GCOV_PROFILE_ALL
- 	select ARCH_HAS_SYNC_DMA_FOR_CPU
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
-+	select ARCH_HAS_VM_GET_PAGE_PROT
- 	select ARCH_USE_BUILTIN_BSWAP
- 	select ARCH_USE_QUEUED_RWLOCKS
- 	select ARCH_WANT_FRAME_POINTERS if !CPU_CK610 && $(cc-option,-mbacktrace)
-diff --git a/arch/csky/include/asm/pgtable.h b/arch/csky/include/asm/pgtable.h
-index 151607ed5158..2c6b1cfb1cce 100644
---- a/arch/csky/include/asm/pgtable.h
-+++ b/arch/csky/include/asm/pgtable.h
-@@ -76,24 +76,6 @@
- #define MAX_SWAPFILES_CHECK() \
- 		BUILD_BUG_ON(MAX_SWAPFILES_SHIFT != 5)
- 
--#define __P000	PAGE_NONE
--#define __P001	PAGE_READ
--#define __P010	PAGE_READ
--#define __P011	PAGE_READ
--#define __P100	PAGE_READ
--#define __P101	PAGE_READ
--#define __P110	PAGE_READ
--#define __P111	PAGE_READ
+Won't work well for a 32bit process on a 64bit kernel either.
+
+=09David
+
 -
--#define __S000	PAGE_NONE
--#define __S001	PAGE_READ
--#define __S010	PAGE_WRITE
--#define __S011	PAGE_WRITE
--#define __S100	PAGE_READ
--#define __S101	PAGE_READ
--#define __S110	PAGE_WRITE
--#define __S111	PAGE_WRITE
--
- extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
- #define ZERO_PAGE(vaddr)	(virt_to_page(empty_zero_page))
- 
-diff --git a/arch/csky/mm/init.c b/arch/csky/mm/init.c
-index bf2004aa811a..f9babbed17d4 100644
---- a/arch/csky/mm/init.c
-+++ b/arch/csky/mm/init.c
-@@ -197,3 +197,35 @@ void __init fixaddr_init(void)
- 	vaddr = __fix_to_virt(__end_of_fixed_addresses - 1) & PMD_MASK;
- 	fixrange_init(vaddr, vaddr + PMD_SIZE, swapper_pg_dir);
- }
-+
-+pgprot_t vm_get_page_prot(unsigned long vm_flags)
-+{
-+	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
-+	case VM_NONE:
-+		return PAGE_NONE;
-+	case VM_READ:
-+	case VM_WRITE:
-+	case VM_WRITE | VM_READ:
-+	case VM_EXEC:
-+	case VM_EXEC | VM_READ:
-+	case VM_EXEC | VM_WRITE:
-+	case VM_EXEC | VM_WRITE | VM_READ:
-+		return PAGE_READ;
-+	case VM_SHARED:
-+		return PAGE_NONE;
-+	case VM_SHARED | VM_READ:
-+		return PAGE_READ;
-+	case VM_SHARED | VM_WRITE:
-+	case VM_SHARED | VM_WRITE | VM_READ:
-+		return PAGE_WRITE;
-+	case VM_SHARED | VM_EXEC:
-+	case VM_SHARED | VM_EXEC | VM_READ:
-+		return PAGE_READ;
-+	case VM_SHARED | VM_EXEC | VM_WRITE:
-+	case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
-+		return PAGE_WRITE;
-+	default:
-+		BUILD_BUG();
-+	}
-+}
-+EXPORT_SYMBOL(vm_get_page_prot);
--- 
-2.25.1
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
+PT, UK
+Registration No: 1397386 (Wales)
 
 
