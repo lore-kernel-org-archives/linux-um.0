@@ -1,19 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from mail-wm1-x32d.google.com ([2a00:1450:4864:20::32d])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nLRtl-00HDnh-QV
- for linux-um@lists.infradead.org; Sat, 19 Feb 2022 15:43:51 +0000
-Message-ID: <d14b6a0c72788e78bab2bd1f0bc2c49891ded5d7.camel@sipsolutions.net>
-Subject: Re: [PATCH 4/4] kunit: tool: Disable broken options for --alltests
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Sat, 19 Feb 2022 16:43:19 +0100
-In-Reply-To: <CABVgOSnBq0QE+Cq+SDeV-LxOQYbGZ6Bqbjix6h-UpNj0GMicPA@mail.gmail.com>
+ id 1nLKfE-00GPHS-4s
+ for linux-um@lists.infradead.org; Sat, 19 Feb 2022 08:00:23 +0000
+Received: by mail-wm1-x32d.google.com with SMTP id k41so6568040wms.0
+ for <linux-um@lists.infradead.org>; Sat, 19 Feb 2022 00:00:16 -0800 (PST)
+MIME-Version: 1.0
 References: <20220218075727.2737623-1-davidgow@google.com>
  <20220218075727.2737623-5-davidgow@google.com>
  <ac4c5f8c890e5bdd7ad7ecc04a51e72fa3ac1703.camel@sipsolutions.net>
- <CABVgOSnBq0QE+Cq+SDeV-LxOQYbGZ6Bqbjix6h-UpNj0GMicPA@mail.gmail.com>
-MIME-Version: 1.0
+In-Reply-To: <ac4c5f8c890e5bdd7ad7ecc04a51e72fa3ac1703.camel@sipsolutions.net>
+From: David Gow <davidgow@google.com>
+Date: Sat, 19 Feb 2022 16:00:04 +0800
+Message-ID: <CABVgOSnBq0QE+Cq+SDeV-LxOQYbGZ6Bqbjix6h-UpNj0GMicPA@mail.gmail.com>
+Subject: Re: [PATCH 4/4] kunit: tool: Disable broken options for --alltests
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,73 +22,231 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============7279850557574095526=="
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: David Gow <davidgow@google.com>
+To: Johannes Berg <johannes@sipsolutions.net>
 Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Shuah Khan <skhan@linuxfoundation.org>, Brendan Higgins <brendanhiggins@google.com>, Randy Dunlap <rdunlap@infradead.org>, linux-um <linux-um@lists.infradead.org>, amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, KUnit Development <kunit-dev@googlegroups.com>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-rdma@vger.kernel.org, x86@kernel.org, felix.kuehling@amd.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 
-T24gU2F0LCAyMDIyLTAyLTE5IGF0IDE2OjAwICswODAwLCBEYXZpZCBHb3cgd3JvdGU6Cj4gT24g
-RnJpLCBGZWIgMTgsIDIwMjIgYXQgODoyNiBQTSBKb2hhbm5lcyBCZXJnIDxqb2hhbm5lc0BzaXBz
-b2x1dGlvbnMubmV0PiB3cm90ZToKPiA+IAo+ID4gT24gRnJpLCAyMDIyLTAyLTE4IGF0IDE1OjU3
-ICswODAwLCBEYXZpZCBHb3cgd3JvdGU6Cj4gPiA+IAo+ID4gPiBOb3RlIHRoYXQsIHdoaWxlIHRo
-aXMgZG9lcyBidWlsZCBhZ2FpbiwgaXQgc3RpbGwgc2VnZmF1bHRzIG9uIHN0YXJ0dXAsCj4gPiA+
-IHNvIG1vcmUgd29yayByZW1haW5zIHRvIGJlIGRvbmUuCj4gPiAKPiA+IFRoYXQncyBwcm9iYWJs
-eSBqdXN0IGEgbG90IG1vcmUgc3R1ZmYgZ2V0dGluZyBpbmNsdWRlZCBzb21laG93Pwo+ID4gCj4g
-Cj4gWWVhaDogaXQgdXNlZCB0byB3b3JrIChhIGNvdXBsZSBvZiB5ZWFycyBhZ28pLCBidXQgc29t
-ZXRoaW5nIGhhcwo+IGJyb2tlbiBpdCBpbiB0aGUgbWVhbnRpbWUuIEl0J3MganVzdCBhIHNoYW1l
-IHRoYXQgYmlzZWN0aW5nIHRoaW5ncwo+IHdpdGggYWxseWVzY29uZmlnIHRha2VzIHNvIGxvbmcu
-Li4KCkhlaCwgcmlnaHQuCgpCdXQgSSBndWVzcyB5b3UgY291bGQgIktjb25maWcgYmlzZWN0IiBm
-aXJzdCwgaS5lLiBzZWUgd2hhdCBvcHRpb24KYnJlYWtzIGl0PyBJdCBtaWdodCBub3QgZXZlbiBo
-ZWxwIHRvIGJpc2VjdCwgaWYgaXQncyBqdXN0IHNvbWUgb3B0aW9uCmdldHRpbmcgZW5hYmxlZCBv
-dmVyIHRpbWUuIE9yIHBlcmhhcHMgdGhlIGtlcm5lbCBpcyBqdXN0IHRvbyBiaWcgZm9yIHRoZQph
-ZGRyZXNzIHNwYWNlIGxheW91dCBpZiB5b3UgaGF2ZSBhbGx5ZXNjb25maWc/IFRob3VnaCB0aGF0
-IHNob3VsZG4ndCBiZQphbiBpc3N1ZSwgSSB0aGluay4KCj4gSSBkaWRuJ3QgcmVhbGlzZSBYODYg
-d2Fzbid0IGRlZmluZWQgaW4gVU1MOsKgCgpYODYgaXMgdGhlIGFyY2hpdGVjdHVyZSwgWDg2X3sz
-Miw2NH0gaXMga2luZCBvZiBhIHNlbGVjdGlvbiBmb3IgaG93IHlvdQp3YW50IHRoaW5ncyB0byBi
-ZSBidWlsdCwgYW5kIGl0J3MgdGh1cyByZXF1aXJlZCBmb3IgVU1MIG9uIHg4NiwgYmVjYXVzZQpV
-TUwgaW1wb3J0cyBzdHVmZiBmcm9tIFg4Ni4KCj4gdGhhdCdzIGRlZmluaXRlbHkgYSBiaXQKPiBj
-bGVhbmVyIHRoYW4gIVVNTCBpbiBhIG51bWJlciBvZiB0aGVzZSBjYXNlcy4KCkl0IGxvb2tzIGxp
-a2Ugc29tZSAobW9zdD8pIG9mIHRoZW0gZG9uJ3QgcmVhbGx5IHdvcmsgdGhhdCB3YXkgdGhvdWdo
-CnNpbmNlIHRoZXkncmUgbm90IHJlYWxseSBwbGF0Zm9ybSBzcGVjaWZpYywgdGhleSBqdXN0IGtu
-b3cgb25seSBhYm91dCBhCmhhbmRmdWwgb2YgcGxhdGZvcm1zIHRoYXQgdGhleSdyZSBjb21wYXRp
-YmxlIHdpdGguCgo+IE5vdCBhbGwgb2YgdGhvc2UgaXNzdWVzIGFyZSBmdW5kYW1lbnRhbGx5IHNv
-bHZlZCBieSAiZGVwZW5kcyBvbiBYODYiLAo+IHRob3VnaDogdGhlcmUgYXJlIGEgZmV3IHdoaWNo
-IG1pZ2h0IGJlIG90aGVyIG1pc3NpbmcgdGhpbmdzIGluIFVNTAo+IChtYXliZSB0aGUgJ2RtYV9v
-cHMnIGlzc3Vlcz8pLCBhbmQvb3IgbWlnaHQgYmUgdGhlIHJlc3VsdCBvZiAtV2Vycm9yCj4gYmVp
-bmcgZW5hYmxlZC4KClJpZ2h0LgoKPiBXZSBkbyB3YW50IHRoZSBhYmlsaXR5IHRvIGJ1aWxkIFBD
-SSBkcml2ZXJzIHVuZGVyIFVNTCwgYXMgaXQgbWFrZXMKPiBydW5uaW5nIEtVbml0IHRlc3RzIGZv
-ciBQQ0kgZHJpdmVycyBtdWNoIHNpbXBsZXIgYW5kIG1vcmUgcGxlYXNhbnQuCgpPSywgZmFpciBw
-b2ludC4gSSdtIHRoaW5raW5nIGFib3V0IHRoaXMgYXJlYSBpbiBnZW5lcmFsIGFsc28gcmlnaHQg
-bm93CmZvciBpd2x3aWZpLCBhbmQgb2J2aW91c2x5IHdlJ3JlIHByb2JhYmx5IHRoZSBvbmx5IHVz
-ZXIgb2YgdGhlIHZpcnR1YWwKUENJIGNvZGUgdGhhdCBsZXRzIHVzIGNvbm5lY3QgdGhlIGRyaXZl
-ciB0byBhIHNpbXVsYXRlZCBkZXZpY2Ugb24gVU1MCihidXQgdGhlIGRyaXZlciBkb2Vzbid0IHJl
-YWxseSBrbm93KSA6LSkKCj4gQW5kIGluZGVlZCwgaXQgZG9lcyB3b3JrIGZvciBLVW5pdCBpbiBn
-ZW5lcmFsLCBpdCdzIGp1c3QgdGhhdCBzb21lCj4gZHJpdmVycyBkbyBoYXZlIHRoZSBpc3N1ZXMg
-bWVudGlvbmVkIGFib3ZlLCBzbyBhbGx5ZXNjb25maWcgcGlja3MgdXAKPiBldmVyeSBicm9rZW4g
-ZHJpdmVyLgoKUmlnaHQuCgo+IFdlIGRvbid0IGFjdHVhbGx5IGJ1aWxkIHRoZSBQQ0kgZHJpdmVy
-cyBieSBkZWZhdWx0LCBvbmx5IGlmIHRoZQo+ICItLWFsbHRlc3RzIiBvcHRpb24gaXMgcGFzc2Vk
-LCB3aGljaCBkb2VzIGluY2x1ZGUgdGhlbSwgYXMgd2UgZG8gaGF2ZQo+IHRlc3RzIHdoaWNoIGRl
-cGVuZCBvbiBQQ0kgd2UnZCBsaWtlIHRvIHJ1biAobGlrZSB0aGUgdGh1bmRlcmJvbHQKPiB0ZXN0
-KS4KCk1ha2VzIHNlbnNlLgo+IAo+IEkgZGlkIHRyeSB0aGlzIGFzIHdlbGwsIGFuZCBpdCBqdXN0
-IGdvdCB1cyBhIGRpZmZlcmVudCBzZXQgb2YgaXNzdWVzCj4gKHRoZXJlIGFyZSBhIGJ1bmNoIG9m
-IGRyaXZlcnMgd2hpY2ggZGVwZW5kIG9uIElPTUVNIGJ1dCBkb24ndCBzdGF0ZSBpdAo+IC0tIEkn
-bGwgdHJ5IHRvIHNlbmQgZml4ZXMgZm9yIHRob3NlIG91dCBuZXh0IHdlZWspLsKgCj4gCgpGdW4u
-Cgo+IFVsdGltYXRlbHksIHRoZSAnYnJva2VuX29uX3VtbC5jb25maWcnIGZpbGUgaXMganVzdCB0
-aGVyZSB0byBwYXJlIGJhY2sKPiBhbGx5ZXNjb25maWcgYSBiaXQgZm9yIEtVbml0J3MgcHVycG9z
-ZXMsIGJ1dCB3ZSBzdGlsbCBkZWZpbml0ZWx5IHdhbnQKPiBhcyBtYW55IG9wdGlvbnMgKGFuZCBo
-ZW5jZSB0ZXN0cykgZW5hYmxlZCBhcyBwb3NzaWJsZSBsb25nLXRlcm0uIFNvIEkKPiB0aGluayBh
-Y3R1YWwgZml4ZXMgdG8gZWl0aGVyIHRoZSBjb2RlIG9yIEtjb25maWcgZG8gbWFrZSBzZW5zZS4K
-Ck1ha2VzIHNlbnNlLgoKPiBJcyAnbWFrZSBBUkNIPXVtIGFsbHllc2NvbmZpZycgc29tZXRoaW5n
-IHdlIGFjdHVhbGx5IHdhbnQgdG8gYmUgYWJsZQo+IHRvIGJ1aWxkPyBJZiBzbywgbm8gYW1vdW50
-IG9mIGFkZGluZyB0aGluZ3MgdG8gS1VuaXQncwo+IGJyb2tlbl9vbl91bWwuY29uZmlnIHdpbGwg
-c29sdmUgdGhlIHVuZGVybHlpbmcgaXNzdWVzLCBhbmQgd2UnbGwgbmVlZAo+IHRvIGF0IGxlYXN0
-IHVwZGF0ZSB0aGUgS2NvbmZpZyBlbnRyaWVzLgo+IAoKVGhhdCdzIGEgZ29vZCBwb2ludCwgYXMg
-bG9uZyBhcyBwZW9wbGUgYXJlIGRvaW5nIGFsbHllcy9yYW5kY29uZmlnCmJ1aWxkcyBvbiBVTUws
-IHdlIHByb2JhYmx5IG5lZWQgdG8gaGF2ZSB0aGVzZSBmaXhlcyBhbnl3YXkgcmF0aGVyIHRoYW4K
-ZGlzYWJsaW5nIHNvbWV0aGluZyBmb3IgS1VuaXQgc3BlY2lmaWNhbGx5LgoKam9oYW5uZXMKCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1h
-aWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
+--===============7279850557574095526==
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="000000000000bed3af05d85a6320"
+
+--000000000000bed3af05d85a6320
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Feb 18, 2022 at 8:26 PM Johannes Berg <johannes@sipsolutions.net> w=
+rote:
+>
+> On Fri, 2022-02-18 at 15:57 +0800, David Gow wrote:
+> >
+> > Note that, while this does build again, it still segfaults on startup,
+> > so more work remains to be done.
+>
+> That's probably just a lot more stuff getting included somehow?
+>
+
+Yeah: it used to work (a couple of years ago), but something has
+broken it in the meantime. It's just a shame that bisecting things
+with allyesconfig takes so long...
+
+> > They are:
+> > - CONFIG_VFIO_PCI: Needs ioport_map/ioport_unmap.
+> > - CONFIG_INFINIBAND_RDMAVT: Needs cpuinfo_x86 and __copy_user_nocache
+> > - CONFIG_BNXT: Failing under UML with -Werror
+> > ERROR:root:../drivers/net/ethernet/broadcom/bnxt/bnxt_ptp.c: In functio=
+n =E2=80=98bnxt_ptp_enable=E2=80=99:
+> > ../drivers/net/ethernet/broadcom/bnxt/bnxt_ptp.c:400:43: error: array s=
+ubscript 255 is above array bounds of =E2=80=98struct pps_pin[4]=E2=80=99 [=
+-Werror=3Darray-bounds]
+> >   400 |                         ptp->pps_info.pins[pin_id].event =3D BN=
+XT_PPS_EVENT_EXTERNAL;
+> >       |                         ~~~~~~~~~~~~~~~~~~^~~~~~~~
+> > - CONFIG_PATA_CS5535: Needs MSR access (__tracepoint_{read,write}_msr)
+> > - CONFIG_VDPA: Enables CONFIG_DMA_OPS, which is unimplemented. ('dma_op=
+s' is not defined)
+> >
+> > These are all issues which should be investigated properly and the
+> > corresponding options either fixed or disabled under UML. Having this
+> > list of broken options should act as a good to-do list here, and will
+> > allow these issues to be worked on independently, and other tests to
+> > work in the meantime.
+> >
+>
+> I'm not really sure it makes sense to even do anything other than
+> disabling these.
+>
+> It looks like all of them are just exposed by now being able to build
+> PCI drivers on UML. Surely the people writing the driver didn't expect
+> their drivers to run over simulated PCI (which is what the UML PCI
+> support is all about).
+>
+> Now from a PCI driver point of view you can't really tell the difference
+> (and anyway the driver won't be probed), but the issues (at least the
+> build time ones) come from having
+>
+>     UML && PCI && X86_64
+>
+> or
+>
+>     UML && PCI && X86_32
+>
+> because drivers typically depend on X86_64 or X86_32, rather than on
+> "X86 && X86_64" or "X86 && X86_32". In a sense thus, the issue is those
+> drivers don't know that "!X86 && (X86_32 || X86_64)" can happen (with
+> UML).
+>
+>
+> Now you could say that's the driver bug, or you could say that they
+> should just add "depends on !UML" (though that's basically equivalent to
+> adding "depends on X86" and the latter may be preferable in some cases).
+>
+> Or actually in the three patches you have (1-3) it's in the code, but
+> same thing, you can either add && !UML (like you did) or add && X86.
+>
+
+I didn't realise X86 wasn't defined in UML: that's definitely a bit
+cleaner than !UML in a number of these cases.
+
+Not all of those issues are fundamentally solved by "depends on X86",
+though: there are a few which might be other missing things in UML
+(maybe the 'dma_ops' issues?), and/or might be the result of -Werror
+being enabled.
+
+>
+> Arguably, however, building PCI drivers by default is somewhat
+> questionable in the first place?
+
+We do want the ability to build PCI drivers under UML, as it makes
+running KUnit tests for PCI drivers much simpler and more pleasant.
+And indeed, it does work for KUnit in general, it's just that some
+drivers do have the issues mentioned above, so allyesconfig picks up
+every broken driver.
+
+We don't actually build the PCI drivers by default, only if the
+"--alltests" option is passed, which does include them, as we do have
+tests which depend on PCI we'd like to run (like the thunderbolt
+test).
+
+>
+> So maybe you should just add
+>
+>     # CONFIG_UML_PCI_OVER_VIRTIO is not set
+>
+> to the broken_on_uml.config since it exposes all these issues, and
+> really is not very useful since you're not going to actually run with
+> any simulated PCI devices anyway, so drivers will not be probed.
+
+I did try this as well, and it just got us a different set of issues
+(there are a bunch of drivers which depend on IOMEM but don't state it
+-- I'll try to send fixes for those out next week). And we'd lose
+things like the thunderbolt test if PCI
+
+Ultimately, the 'broken_on_uml.config' file is just there to pare back
+allyesconfig a bit for KUnit's purposes, but we still definitely want
+as many options (and hence tests) enabled as possible long-term. So I
+think actual fixes to either the code or Kconfig do make sense.
+
+Is 'make ARCH=3Dum allyesconfig' something we actually want to be able
+to build? If so, no amount of adding things to KUnit's
+broken_on_uml.config will solve the underlying issues, and we'll need
+to at least update the Kconfig entries.
+
+Cheers,
+-- David
+
+--000000000000bed3af05d85a6320
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+G7p3AiuB2sgfq6cOpbO5MEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
+AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
+c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
+LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
+LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
+Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQBsL34EJkCtu9Nu
+2+R6l1Qzno5Gl+N2Cm6/YLujukDGYa1JW27txXiilR9dGP7yl60HYyG2Exd5i6fiLDlaNEw0SqzE
+dw9ZSIak3Qvm2UybR8zcnB0deCUiwahqh7ZncEPlhnPpB08ETEUtwBEqCEnndNEkIN67yz4kniCZ
+jZstNF/BUnI3864fATiXSbnNqBwlJS3YkoaCTpbI9qNTrf5VIvnbryT69xJ6f25yfmxrXNJJe5OG
+ncB34Cwnb7xQyk+uRLZ465yUBkbjk9pC/yamL0O7SOGYUclrQl2c5zzGuVBD84YcQGDOK6gSPj6w
+QuBfOooZPOyZZZ8AMih7J980MYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
+R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
+MDIwAhABQeVybOOpR4bOOXZYL5T3MA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCC1
+hK5mkWbXD3kQGhQArPS3EpKnqjuOZpFfFWnAx7DK6DAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMjAyMTkwODAwMTVaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
+BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
+CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAjnpewcuZUJVS6VIu0yi4
+03UYYnjQhPEECv0bhdeu4hsYPRtRxIiCLf3pHo16X6hgQixHb8uSkg5VJDcLfSKM6CCkOQLj8Zt8
+tZ1qXXWuD2yF+nWgcW0zHG9zpfGy2g5v0H3e4z3XswHVBQdgFcsY/N2v/m+7FlSlIKp4eKHVUyWQ
+QDocj2QwLwrPTzvToOVgfvnPDNf3CuMwA80C7v9WEX/syUDQMaQSWCyfuxTiaUHfBdvRCGgZt+M7
+XGmNI+IWcxeYhj5xZo4LWkK8APgeCTs5d+MhF0JpZK1QqJnb9rWSjyf7hOJdwPpedIOyrjQDfmbx
+pB+HTOm+2IxT/N2jYA==
+--000000000000bed3af05d85a6320--
+
+
+--===============7279850557574095526==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
+
+--===============7279850557574095526==--
+
 
