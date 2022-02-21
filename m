@@ -1,89 +1,123 @@
-Return-Path: <arnd@kernel.org>
-From: Arnd Bergmann <arnd@kernel.org>
-Subject: [PATCH v2 09/18] mips: use simpler access_ok()
-Date: Wed, 16 Feb 2022 14:13:23 +0100
-Message-Id: <20220216131332.1489939-10-arnd@kernel.org>
-In-Reply-To: <20220216131332.1489939-1-arnd@kernel.org>
-References: <20220216131332.1489939-1-arnd@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nM6Dl-0054sD-T3
+ for linux-um@lists.infradead.org; Mon, 21 Feb 2022 10:47:12 +0000
+Subject: Re: Bug#1005900: linux.uml: uml_mconsole client becomes blocked on
+ read after issuing commands stop and go
+References: <CALv6pCZ1r_j=2K4vPReVjkegUeaOJS_wYyte+pWfnMxwrhWiMw@mail.gmail.com>
+ <ea276eed0eab8f6452b4d7098f8bef5c0001b34e.camel@debian.org>
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Message-ID: <51d0bc41-d981-ad9a-f71f-20bb9b2bd3b2@kot-begemot.co.uk>
+Date: Mon, 21 Feb 2022 10:46:56 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: Linus Torvalds <torvalds@linux-foundation.org>, Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-api@vger.kernel.org, arnd@arndb.de, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk
-Cc: linux@armlinux.org.uk, will@kernel.org, guoren@kernel.org, bcain@codeaurora.org, geert@linux-m68k.org, monstr@monstr.eu, tsbogend@alpha.franken.de, nickhu@andestech.com, green.hu@gmail.com, dinguyen@kernel.org, shorne@gmail.com, deller@gmx.de, mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com, hca@linux.ibm.com, dalias@libc.org, davem@davemloft.net, richard@nod.at, x86@kernel.org, jcmvbkbc@gmail.com, ebiederm@xmission.com, akpm@linux-foundation.org, ardb@kernel.org, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
-List-ID: <linux-um.lists.infradead.org>
+In-Reply-To: <ea276eed0eab8f6452b4d7098f8bef5c0001b34e.camel@debian.org>
+Content-Language: en-US
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: rrs@debian.org, Mihai Hanor <quake2iasi@gmail.com>, 1005900@bugs.debian.org, linux-um@lists.infradead.org
 
-From: Arnd Bergmann <arnd@arndb.de>
-
-Before unifying the mips version of __access_ok() with the generic
-code, this converts it to the same algorithm. This is a change in
-behavior on mips64, as now address in the user segment, the lower
-2^62 bytes, is taken to be valid, relying on a page fault for
-addresses that are within that segment but not valid on that CPU.
-
-The new version should be the most effecient way to do this, but
-it gets rid of the special handling for size=0 that most other
-architectures ignore as well.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/mips/include/asm/uaccess.h | 22 ++++------------------
- 1 file changed, 4 insertions(+), 18 deletions(-)
-
-diff --git a/arch/mips/include/asm/uaccess.h b/arch/mips/include/asm/uaccess.h
-index db9a8e002b62..d7c89dc3426c 100644
---- a/arch/mips/include/asm/uaccess.h
-+++ b/arch/mips/include/asm/uaccess.h
-@@ -19,6 +19,7 @@
- #ifdef CONFIG_32BIT
- 
- #define __UA_LIMIT 0x80000000UL
-+#define TASK_SIZE_MAX	__UA_LIMIT
- 
- #define __UA_ADDR	".word"
- #define __UA_LA		"la"
-@@ -33,6 +34,7 @@
- extern u64 __ua_limit;
- 
- #define __UA_LIMIT	__ua_limit
-+#define TASK_SIZE_MAX	XKSSEG
- 
- #define __UA_ADDR	".dword"
- #define __UA_LA		"dla"
-@@ -42,22 +44,6 @@ extern u64 __ua_limit;
- 
- #endif /* CONFIG_64BIT */
- 
--/*
-- * Is a address valid? This does a straightforward calculation rather
-- * than tests.
-- *
-- * Address valid if:
-- *  - "addr" doesn't have any high-bits set
-- *  - AND "size" doesn't have any high-bits set
-- *  - AND "addr+size" doesn't have any high-bits set
-- *  - OR we are in kernel mode.
-- *
-- * __ua_size() is a trick to avoid runtime checking of positive constant
-- * sizes; for those we already know at compile time that the size is ok.
-- */
--#define __ua_size(size)							\
--	((__builtin_constant_p(size) && (signed long) (size) > 0) ? 0 : (size))
--
- /*
-  * access_ok: - Checks if a user space pointer is valid
-  * @addr: User space pointer to start of block to check
-@@ -79,9 +65,9 @@ extern u64 __ua_limit;
- static inline int __access_ok(const void __user *p, unsigned long size)
- {
- 	unsigned long addr = (unsigned long)p;
--	unsigned long end = addr + size - !!size;
-+	unsigned long limit = TASK_SIZE_MAX;
- 
--	return (__UA_LIMIT & (addr | end | __ua_size(size))) == 0;
-+	return (size <= limit) && (addr <= (limit - size));
- }
- 
- #define access_ok(addr, size)					\
--- 
-2.29.2
-
+SGkgUml0ZXNoLCBoaSBNaWhhaSwKCkFwb2xvZ2llcyBmb3IgdGhlIGRlbGF5IGluIHRoZSBhbnN3
+ZXIsIEkgd2FzIHRyYXZlbGluZyBsYXN0IHdlZWsuCgoxLiBZb3VyIHBhdGNoIHdpbGwgbm90IGFj
+aGlldmUgdGhlIGRlc2lyZWQgYWltLiBUaGUgSVJRUyBpbiBVTUwgbm93YWRheXMgYXJlIHBlciBm
+ZCBhbmQgbG9vcGluZyBpbnNpZGUgdGhlIElSUSBoYW5kbGVyIGZvciBtY29uc29sZSB3aWxsIG5v
+dCBzdG9wIFVNTCBhcyBpdCB1c2VkIHRvIHdoZW4gaXQgd2FzIHVzaW5nIHRoZSBvbGQgcG9sbCgp
+IGJhc2VkIElSUSBzdWJzeXN0ZW0uIEl0IHdpbGwgc3RpbGwgaGFuZGxlIG90aGVyIElSUXMuIFRo
+YXQgaXMgYSBidWcsIHdlIG5lZWQgdG8gc2VlIHdoYXQgY2FuIGJlIGRvbmUgaGVyZS4KCjIuIE90
+aGVyd2lzZSwganVzdCBhIC0gb24gdGhlIGRlYWN0aXZhdGVfZmQoKSB3b3VsZCBkbyB0aGUgdHJp
+Y2suIFRoZXJlIGlzIGEgcmVlbnRyYW5jeSBjaGVjayBvbiB0aGUgSVJRIGhhbmRsZXIgYW5kIHdo
+aWxlIHlvdSBhcmUgbG9vcGluZyBpbnNpZGUgaXQsIHRoZSBzYW1lIElSUSB3aWxsIG5vdCBiZSB0
+cmlnZ2VyZWQgYWdhaW4uIE5vIG5lZWQgdG8gZGVhY3RpdmF0ZV9mZCgpLiBIb3dldmVyLCBhcyBw
+ZXIgIjEiLCB0aGlzIGlzIGluc3VmZmljaWVudCAtIGFsbCBvdGhlciBJUlFTIHdpbGwgc3RpbGwg
+YmUgaGFuZGxlZC4KCkJyZ2RzLAoKQS4KCk9uIDE4LzAyLzIwMjIgMDg6MzgsIFJpdGVzaCBSYWog
+U2FycmFmIHdyb3RlOgo+IEhlbGxvIE1paGFpLAo+IAo+IEluIHRoaXMgY2FzZSwgaXQgaXMgZ29v
+ZCB0byBoYXZlIHRoZSBVc2VyIE1vZGUgTGludXggdXBzdHJlYW0gaW4gdGhlCj4gbG9vcC4KPiAK
+PiBUaGFua3MsCj4gUml0ZXNoCj4gCj4gLS0tIGxpbnV4LXNvdXJjZS01LjE2L2FyY2gvdW0vZHJp
+dmVycy9tY29uc29sZV9rZXJuLmMJMjAyMi0wMi0wNSAyMDoyMjowNi4wMDAwMDAwMDAgKzAyMDAK
+PiArKysgbGludXgtc291cmNlLTUuMTYuZml4L2FyY2gvdW0vZHJpdmVycy9tY29uc29sZV9rZXJu
+LmMJMjAyMi0wMi0xNiAyMzozNTozOS41NjI2NjgwODYgKzAyMDAKPiBAQCAtMjI0LDYgKzIyNCw3
+IEBACj4gICAKPiAgIHZvaWQgbWNvbnNvbGVfc3RvcChzdHJ1Y3QgbWNfcmVxdWVzdCAqcmVxKQo+
+ICAgewo+ICsJaW50IGVycjsKPiAgIAlkZWFjdGl2YXRlX2ZkKHJlcS0+b3JpZ2luYXRpbmdfZmQs
+IE1DT05TT0xFX0lSUSk7Cj4gICAJb3Nfc2V0X2ZkX2Jsb2NrKHJlcS0+b3JpZ2luYXRpbmdfZmQs
+IDEpOwo+ICAgCW1jb25zb2xlX3JlcGx5KHJlcSwgInN0b3BwZWQiLCAwLCAwKTsKPiBAQCAtMjQ3
+LDYgKzI0OCwxMSBAQAo+ICAgCX0KPiAgIAlvc19zZXRfZmRfYmxvY2socmVxLT5vcmlnaW5hdGlu
+Z19mZCwgMCk7Cj4gICAJbWNvbnNvbGVfcmVwbHkocmVxLCAiIiwgMCwgMCk7Cj4gKwllcnI9YWN0
+aXZhdGVfZmQoTUNPTlNPTEVfSVJRLCByZXEtPm9yaWdpbmF0aW5nX2ZkLCBJUlFfUkVBRCwKPiAr
+CQkodm9pZCopKHJlcS0+b3JpZ2luYXRpbmdfZmQpLCBOVUxMKTsKPiArCWlmIChlcnIpCj4gKwkg
+IG1jb25zb2xlX3JlcGx5KHJlcSwgIkZhaWxlZCB0byByZWFjdGl2YXRlIE1DT05TT0xFX0lSUSwg
+XAo+ICsJCQl0aGlzIHdpbGwgYmxvY2sgdGhlIHJlYWQgZm9yIHVtbF9tY29uc29sZSIsIDEsIDAp
+Owo+ICAgfQo+ICAgCj4gICBzdGF0aWMgREVGSU5FX1NQSU5MT0NLKG1jX2RldmljZXNfbG9jayk7
+Cj4gLS0tIGxpbnV4LXNvdXJjZS01LjE2L2FyY2gvdW0va2VybmVsL2lycS5jCTIwMjItMDItMDUg
+MjA6MjI6MDYuMDAwMDAwMDAwICswMjAwCj4gKysrIGxpbnV4LXNvdXJjZS01LjE2LmZpeC9hcmNo
+L3VtL2tlcm5lbC9pcnEuYwkyMDIyLTAyLTE2IDIzOjM5OjE1LjY1MDI3OTM2NyArMDIwMAo+IEBA
+IC0yNDksNyArMjQ5LDcgQEAKPiAgIAkJZnJlZV9pcnFfZW50cnkoZW50cnksIGZhbHNlKTsKPiAg
+IH0KPiAgIAo+IC1zdGF0aWMgaW50IGFjdGl2YXRlX2ZkKGludCBpcnEsIGludCBmZCwgZW51bSB1
+bV9pcnFfdHlwZSB0eXBlLCB2b2lkICpkZXZfaWQsCj4gK2ludCBhY3RpdmF0ZV9mZChpbnQgaXJx
+LCBpbnQgZmQsIGVudW0gdW1faXJxX3R5cGUgdHlwZSwgdm9pZCAqZGV2X2lkLAo+ICAgCQkgICAg
+ICAgdm9pZCAoKnRpbWV0cmF2ZWxfaGFuZGxlcikoaW50LCBpbnQsIHZvaWQgKiwKPiAgIAkJCQkJ
+CSAgc3RydWN0IHRpbWVfdHJhdmVsX2V2ZW50ICopKQo+ICAgewo+IEBAIC0zMDQsNiArMzA0LDcg
+QEAKPiAgIG91dDoKPiAgIAlyZXR1cm4gZXJyOwo+ICAgfQo+ICtFWFBPUlRfU1lNQk9MKGFjdGl2
+YXRlX2ZkKTsKPiAgIAo+ICAgLyoKPiAgICAqIFJlbW92ZSB0aGUgZW50cnkgb3IgZW50cmllcyBm
+b3IgYSBzcGVjaWZpYyBGRCwgaWYgeW91Cj4gLS0tIGxpbnV4LXNvdXJjZS01LjE2L2FyY2gvdW0v
+aW5jbHVkZS9zaGFyZWQvaXJxX3VzZXIuaAkyMDIyLTAyLTA1IDIwOjIyOjA2LjAwMDAwMDAwMCAr
+MDIwMAo+ICsrKyBsaW51eC1zb3VyY2UtNS4xNi5maXgvYXJjaC91bS9pbmNsdWRlL3NoYXJlZC9p
+cnFfdXNlci5oCTIwMjItMDItMTYgMjM6Mzk6MDkuNjQyMjkyMzEyICswMjAwCj4gQEAgLTE5LDYg
+KzE5LDcgQEAKPiAgIHZvaWQgc2lnaW9fcnVuX3RpbWV0cmF2ZWxfaGFuZGxlcnModm9pZCk7Cj4g
+ICBleHRlcm4gdm9pZCBmcmVlX2lycV9ieV9mZChpbnQgZmQpOwo+ICAgZXh0ZXJuIHZvaWQgZGVh
+Y3RpdmF0ZV9mZChpbnQgZmQsIGludCBpcnFudW0pOwo+ICtleHRlcm4gaW50IGFjdGl2YXRlX2Zk
+KGludCBpcnEsIGludCBmZCwgZW51bSB1bV9pcnFfdHlwZSB0eXBlLCB2b2lkICpkZXZfaWQsIHZv
+aWQgKCp0aW1ldHJhdmVsX2hhbmRsZXIpKGludCwgaW50LCB2b2lkICosIHN0cnVjdCB0aW1lX3Ry
+YXZlbF9ldmVudCAqKSk7Cj4gICBleHRlcm4gaW50IGRlYWN0aXZhdGVfYWxsX2Zkcyh2b2lkKTsK
+PiAgIGV4dGVybiBpbnQgYWN0aXZhdGVfaXBpKGludCBmZCwgaW50IHBpZCk7Cj4gCj4gT24gVGh1
+LCAyMDIyLTAyLTE3IGF0IDAxOjA2ICswMjAwLCBNaWhhaSBIYW5vciB3cm90ZToKPj4gUGFja2Fn
+ZTogdXNlci1tb2RlLWxpbnV4Cj4+IFZlcnNpb246IDUuMTZ1bTEKPj4gU2V2ZXJpdHk6IG5vcm1h
+bAo+PiBGaWxlOiAvdXNyL2Jpbi9saW51eC51bWwKPj4gWC1EZWJidWdzLUNjOiBxdWFrZTJpYXNp
+QGdtYWlsLmNvbQo+Pgo+PiBEZWFyIE1haW50YWluZXIsCj4+Cj4+ICogV2hhdCBpcyB0aGUgcHJv
+YmxlbToKPj4gSXNzdWluZyB0aGUgY29tbWFuZHMgc3RvcCBmb2xsb3dlZCBieSBnbywgYXQgdGhl
+IGlucHV0IG9mIHRoZQo+PiB1bWxfbWNvbnNvbGUKPj4gY2xpZW50LCByZXN1bHRzIGluIHRoZSBj
+bGllbnQgYmVjb21pbmcgYmxvY2tlZCBvbiByZWFkIHNvY2tldC4gVGhpcwo+PiBpcyBiZWNhdXNl
+Cj4+IG9mIGxvZ2ljIGluIGFyY2gvdW0vZHJpdmVycy9tY29uc29sZV9rZXJuLmMsIHdoZXJlIG1j
+b25zb2xlX3N0b3AoKQo+PiBkb2Vzbid0Cj4+IHJlYWN0aXZhdGUgdGhlIE1DT05TT0xFX0lSUSBi
+ZWZvcmUgdGhlIGZ1bmN0aW9uIGhhcyBleGl0ZWQuCj4+Cj4+IEkndmUgbWFuYWdlZCB0byBmaW5k
+IGEgZml4IHdoaWNoIHNlZW1zIHRvIGJlIHdvcmtpbmcsIGJ1dCBJIGRvbid0Cj4+IGtub3cgaWYg
+aXQncwo+PiBhIHByb3BlciBmaXguIFBsZWFzZSBzZWUgdGhlIGF0dGFjaGVkIGZpbGUuCj4+Cj4+
+Cj4+IC0tIFN5c3RlbSBJbmZvcm1hdGlvbjoKPj4gRGViaWFuIFJlbGVhc2U6IGJvb2t3b3JtL3Np
+ZAo+PiAgwqAgQVBUIHByZWZlcnMgdGVzdGluZwo+PiAgwqAgQVBUIHBvbGljeTogKDkwMCwgJ3Rl
+c3RpbmcnKSwgKDUwMCwgJ3Vuc3RhYmxlLWRlYnVnJyksICg1MDAsCj4+ICd0ZXN0aW5nLWRlYnVn
+JyksICgxLCAndW5zdGFibGUnKQo+PiBBcmNoaXRlY3R1cmU6IGFtZDY0ICh4ODZfNjQpCj4+IEZv
+cmVpZ24gQXJjaGl0ZWN0dXJlczogaTM4Ngo+Pgo+PiBLZXJuZWw6IExpbnV4IDUuMTYuMC0xLWFt
+ZDY0IChTTVAgdy80IENQVSB0aHJlYWRzOyBQUkVFTVBUKQo+PiBLZXJuZWwgdGFpbnQgZmxhZ3M6
+IFRBSU5UX1dBUk4KPj4gTG9jYWxlOiBMQU5HPWVuX1VTLlVURi04LCBMQ19DVFlQRT1lbl9VUy5V
+VEYtOCAoY2hhcm1hcD1VVEYtOCksCj4+IExBTkdVQUdFPWVuX1VTOmVuCj4+IFNoZWxsOiAvYmlu
+L3NoIGxpbmtlZCB0byAvYmluL2Rhc2gKPj4gSW5pdDogc3lzdGVtZCAodmlhIC9ydW4vc3lzdGVt
+ZC9zeXN0ZW0pCj4+IExTTTogQXBwQXJtb3I6IGVuYWJsZWQKPj4KPj4gVmVyc2lvbnMgb2YgcGFj
+a2FnZXMgdXNlci1tb2RlLWxpbnV4IGRlcGVuZHMgb246Cj4+IGlpIMKgbGliYzYgwqAyLjMzLTUK
+Pj4KPj4gVmVyc2lvbnMgb2YgcGFja2FnZXMgdXNlci1tb2RlLWxpbnV4IHJlY29tbWVuZHM6Cj4+
+IGlpIMKgdW1sLXV0aWxpdGllcyDCoDIwMDcwODE1LjQtMQo+Pgo+PiBWZXJzaW9ucyBvZiBwYWNr
+YWdlcyB1c2VyLW1vZGUtbGludXggc3VnZ2VzdHM6Cj4+IGlpIMKgbWF0ZS10ZXJtaW5hbCBbeC10
+ZXJtaW5hbC1lbXVsYXRvcl0gwqAxLjI2LjAtMQo+PiBpaSDCoHB0ZXJtIFt4LXRlcm1pbmFsLWVt
+dWxhdG9yXSDCoCDCoCDCoCDCoCDCoDAuNzYtMgo+PiBwbiDCoHJvb3RzdHJhcCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoDxub25lPgo+PiBwbiDCoHNsaXJwIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgPG5vbmU+Cj4+IHBuIMKg
+dXNlci1tb2RlLWxpbnV4LWRvYyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoDxub25lPgo+PiBw
+biDCoHZkZTIgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+PG5vbmU+Cj4+Cj4+IC0tIG5vIGRlYmNvbmYgaW5mb3JtYXRpb24KPiAKPiAKPiBfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IGxpbnV4LXVtIG1haWxpbmcg
+bGlzdAo+IGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKPiBodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCj4gCgotLSAKQW50b24gUi4gSXZhbm92
+Cmh0dHBzOi8vd3d3LmtvdC1iZWdlbW90LmNvLnVrLwoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxp
+c3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9saW51eC11bQo=
 
