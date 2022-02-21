@@ -1,16 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nN9Ds-00HEax-50
- for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:11:38 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v6 13/26] virtio: queue_reset: struct virtio_config_ops add
- callbacks for queue_reset
-Date: Thu, 24 Feb 2022 16:10:49 +0800
-Message-Id: <20220224081102.80224-14-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
-References: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
-MIME-Version: 1.0
+Received: from foss.arm.com ([217.140.110.172])
+ by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nM2Mf-003kyl-Gh
+ for linux-um@lists.infradead.org; Mon, 21 Feb 2022 06:40:08 +0000
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH V2 23/30] um/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+Date: Mon, 21 Feb 2022 12:08:32 +0530
+Message-Id: <1645425519-9034-24-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <1645425519-9034-1-git-send-email-anshuman.khandual@arm.com>
+References: <1645425519-9034-1-git-send-email-anshuman.khandual@arm.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -19,59 +17,127 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
+To: linux-mm@kvack.org, akpm@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, Anshuman Khandual <anshuman.khandual@arm.com>, Christoph Hellwig <hch@infradead.org>, linux-arch@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org
 
-Performing reset on a queue is divided into four steps:
+This defines and exports a platform specific custom vm_get_page_prot() via
+subscribing ARCH_HAS_VM_GET_PAGE_PROT. Subsequently all __SXXX and __PXXX
+macros can be dropped which are no longer needed.
 
- 1. reset_vq()                     - notify the device to reset the queue
- 2. virtqueue_detach_unused_buf()  - recycle the buffer submitted
- 3. virtqueue_reset_vring()        - reset the vring (may re-alloc)
- 4. enable_reset_vq()              - mmap vring to device, and enable the queue
-
-So add two callbacks reset_vq, enable_reset_vq to struct
-virtio_config_ops.
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: linux-um@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- include/linux/virtio_config.h | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ arch/um/Kconfig               |  1 +
+ arch/um/include/asm/pgtable.h | 17 -----------------
+ arch/um/kernel/mem.c          | 35 +++++++++++++++++++++++++++++++++++
+ arch/x86/um/mem_32.c          |  2 +-
+ 4 files changed, 37 insertions(+), 18 deletions(-)
 
-diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
-index 4d107ad31149..d51906b1389f 100644
---- a/include/linux/virtio_config.h
-+++ b/include/linux/virtio_config.h
-@@ -74,6 +74,15 @@ struct virtio_shm_region {
-  * @set_vq_affinity: set the affinity for a virtqueue (optional).
-  * @get_vq_affinity: get the affinity for a virtqueue (optional).
-  * @get_shm_region: get a shared memory region based on the index.
-+ * @reset_vq: reset a queue individually (optional).
-+ *	vq: the virtqueue
-+ *	Returns 0 on success or error status
-+ *	Caller should guarantee that the vring is not accessed by any functions
-+ *	of virtqueue.
-+ * @enable_reset_vq: enable a reset queue
-+ *	vq: the virtqueue
-+ *	Returns 0 on success or error status
-+ *	If reset_vq is set, then enable_reset_vq must also be set.
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index 4d398b80aea8..5836296868a8 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -9,6 +9,7 @@ config UML
+ 	select ARCH_HAS_KCOV
+ 	select ARCH_HAS_STRNCPY_FROM_USER
+ 	select ARCH_HAS_STRNLEN_USER
++	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_NO_PREEMPT
+ 	select HAVE_ARCH_AUDITSYSCALL
+ 	select HAVE_ARCH_SECCOMP_FILTER
+diff --git a/arch/um/include/asm/pgtable.h b/arch/um/include/asm/pgtable.h
+index b9e20bbe2f75..d982622c0708 100644
+--- a/arch/um/include/asm/pgtable.h
++++ b/arch/um/include/asm/pgtable.h
+@@ -68,23 +68,6 @@ extern unsigned long end_iomem;
+  * Also, write permissions imply read permissions. This is the closest we can
+  * get..
   */
- typedef void vq_callback_t(struct virtqueue *);
- struct virtio_config_ops {
-@@ -100,6 +109,8 @@ struct virtio_config_ops {
- 			int index);
- 	bool (*get_shm_region)(struct virtio_device *vdev,
- 			       struct virtio_shm_region *region, u8 id);
-+	int (*reset_vq)(struct virtqueue *vq);
-+	int (*enable_reset_vq)(struct virtqueue *vq);
- };
+-#define __P000	PAGE_NONE
+-#define __P001	PAGE_READONLY
+-#define __P010	PAGE_COPY
+-#define __P011	PAGE_COPY
+-#define __P100	PAGE_READONLY
+-#define __P101	PAGE_READONLY
+-#define __P110	PAGE_COPY
+-#define __P111	PAGE_COPY
+-
+-#define __S000	PAGE_NONE
+-#define __S001	PAGE_READONLY
+-#define __S010	PAGE_SHARED
+-#define __S011	PAGE_SHARED
+-#define __S100	PAGE_READONLY
+-#define __S101	PAGE_READONLY
+-#define __S110	PAGE_SHARED
+-#define __S111	PAGE_SHARED
  
- /* If driver didn't advertise the feature, it will never appear. */
+ /*
+  * ZERO_PAGE is a global shared page that is always zero: used
+diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
+index 15295c3237a0..37c6c7b9dadc 100644
+--- a/arch/um/kernel/mem.c
++++ b/arch/um/kernel/mem.c
+@@ -197,3 +197,38 @@ void *uml_kmalloc(int size, int flags)
+ {
+ 	return kmalloc(size, flags);
+ }
++
++pgprot_t vm_get_page_prot(unsigned long vm_flags)
++{
++	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
++	case VM_NONE:
++		return PAGE_NONE;
++	case VM_READ:
++		return PAGE_READONLY;
++	case VM_WRITE:
++	case VM_WRITE | VM_READ:
++		return PAGE_COPY;
++	case VM_EXEC:
++	case VM_EXEC | VM_READ:
++		return PAGE_READONLY;
++	case VM_EXEC | VM_WRITE:
++	case VM_EXEC | VM_WRITE | VM_READ:
++		return PAGE_COPY;
++	case VM_SHARED:
++		return PAGE_NONE;
++	case VM_SHARED | VM_READ:
++		return PAGE_READONLY;
++	case VM_SHARED | VM_WRITE:
++	case VM_SHARED | VM_WRITE | VM_READ:
++		return PAGE_SHARED;
++	case VM_SHARED | VM_EXEC:
++	case VM_SHARED | VM_EXEC | VM_READ:
++		return PAGE_READONLY;
++	case VM_SHARED | VM_EXEC | VM_WRITE:
++	case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
++		return PAGE_SHARED;
++	default:
++		BUILD_BUG();
++	}
++}
++EXPORT_SYMBOL(vm_get_page_prot);
+diff --git a/arch/x86/um/mem_32.c b/arch/x86/um/mem_32.c
+index 19c5dbd46770..cafd01f730da 100644
+--- a/arch/x86/um/mem_32.c
++++ b/arch/x86/um/mem_32.c
+@@ -17,7 +17,7 @@ static int __init gate_vma_init(void)
+ 	gate_vma.vm_start = FIXADDR_USER_START;
+ 	gate_vma.vm_end = FIXADDR_USER_END;
+ 	gate_vma.vm_flags = VM_READ | VM_MAYREAD | VM_EXEC | VM_MAYEXEC;
+-	gate_vma.vm_page_prot = __P101;
++	gate_vma.vm_page_prot = PAGE_READONLY;
+ 
+ 	return 0;
+ }
 -- 
-2.31.0
+2.25.1
 
 
 _______________________________________________
