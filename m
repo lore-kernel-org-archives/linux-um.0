@@ -1,15 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nMU0k-009Vll-8j
- for linux-um@lists.infradead.org; Tue, 22 Feb 2022 12:11:19 +0000
-Message-ID: <c70a79c3996ef58320e8265c8e1dc89a8b0b2e6d.camel@sipsolutions.net>
-Subject: Re: [PATCH] um: Fix uml_mconsole stop/go
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Tue, 22 Feb 2022 13:11:09 +0100
-In-Reply-To: <20220222105756.1354219-1-anton.ivanov@cambridgegreys.com>
-References: <20220222105756.1354219-1-anton.ivanov@cambridgegreys.com>
+ id 1nMSsC-009Fjl-SZ
+ for linux-um@lists.infradead.org; Tue, 22 Feb 2022 10:58:26 +0000
+From: anton.ivanov@cambridgegreys.com
+Subject: [PATCH] um: Fix uml_mconsole stop/go
+Date: Tue, 22 Feb 2022 10:57:56 +0000
+Message-Id: <20220222105756.1354219-1-anton.ivanov@cambridgegreys.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -23,25 +21,44 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: anton.ivanov@cambridgegreys.com, linux-um@lists.infradead.org
-Cc: rrs@debian.org, 1005900@bugs.debian.org, quake2iasi@gmail.com, richard@nod.at
+To: linux-um@lists.infradead.org
+Cc: rrs@debian.org, 1005900@bugs.debian.org, quake2iasi@gmail.com, johannes@sipsolutions.net, richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-On Tue, 2022-02-22 at 10:57 +0000, anton.ivanov@cambridgegreys.com
-wrote:
-> From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-> 
-> Moving to an EPOLL based IRQ controller broke uml_mconsole stop/go
-> commands. This fixes it and restores stop/go functionality.
-> 
-> Fixes: ff6a17989c08b0bb0fd490cc500b084581b3a9b9 Epoll based IRQ controller
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-The right format would be
+Moving to an EPOLL based IRQ controller broke uml_mconsole stop/go
+commands. This fixes it and restores stop/go functionality.
 
-Fixes: ff6a17989c08 ("Epoll based IRQ controller")
+Fixes: ff6a17989c08b0bb0fd490cc500b084581b3a9b9 Epoll based IRQ controller
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+---
+ arch/um/drivers/mconsole_kern.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Don't think I can comment on the patch itself, sorry.
+diff --git a/arch/um/drivers/mconsole_kern.c b/arch/um/drivers/mconsole_kern.c
+index 6ead1e240457..8ca67a692683 100644
+--- a/arch/um/drivers/mconsole_kern.c
++++ b/arch/um/drivers/mconsole_kern.c
+@@ -224,7 +224,7 @@ void mconsole_go(struct mc_request *req)
+ 
+ void mconsole_stop(struct mc_request *req)
+ {
+-	deactivate_fd(req->originating_fd, MCONSOLE_IRQ);
++	block_signals();
+ 	os_set_fd_block(req->originating_fd, 1);
+ 	mconsole_reply(req, "stopped", 0, 0);
+ 	for (;;) {
+@@ -247,6 +247,7 @@ void mconsole_stop(struct mc_request *req)
+ 	}
+ 	os_set_fd_block(req->originating_fd, 0);
+ 	mconsole_reply(req, "", 0, 0);
++	unblock_signals();
+ }
+ 
+ static DEFINE_SPINLOCK(mc_devices_lock);
+-- 
+2.30.2
 
-johannes
 
 _______________________________________________
 linux-um mailing list
