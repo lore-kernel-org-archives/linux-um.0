@@ -1,14 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42])
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nN9Dk-00HEUt-Ns
- for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:11:30 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v6 08/26] virtio_ring: extract the logic of freeing vring
-Date: Thu, 24 Feb 2022 16:10:44 +0800
-Message-Id: <20220224081102.80224-9-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
-References: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
+ id 1nMUWl-009aYv-SN
+ for linux-um@lists.infradead.org; Tue, 22 Feb 2022 12:44:26 +0000
+From: anton.ivanov@cambridgegreys.com
+Subject: [PATCH v2] um: Fix uml_mconsole stop/go
+Date: Tue, 22 Feb 2022 12:44:10 +0000
+Message-Id: <20220222124410.1383646-1-anton.ivanov@cambridgegreys.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,93 +21,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
+To: linux-um@lists.infradead.org
+Cc: rrs@debian.org, 1005900@bugs.debian.org, quake2iasi@gmail.com, johannes@sipsolutions.net, richard@nod.at, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Introduce vring_free() to free the vring of vq.
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Prevent double free by setting vq->reset.
+Moving to an EPOLL based IRQ controller broke uml_mconsole stop/go
+commands. This fixes it and restores stop/go functionality.
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Fixes: ff6a17989c08 ("Epoll based IRQ controller")
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 ---
- drivers/virtio/virtio_ring.c | 25 ++++++++++++++++++++-----
- include/linux/virtio.h       |  8 ++++++++
- 2 files changed, 28 insertions(+), 5 deletions(-)
+ arch/um/drivers/mconsole_kern.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 039015823c53..0b5360052ac2 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -2442,14 +2442,10 @@ struct virtqueue *vring_new_virtqueue(unsigned int index,
- }
- EXPORT_SYMBOL_GPL(vring_new_virtqueue);
+diff --git a/arch/um/drivers/mconsole_kern.c b/arch/um/drivers/mconsole_kern.c
+index 6ead1e240457..8ca67a692683 100644
+--- a/arch/um/drivers/mconsole_kern.c
++++ b/arch/um/drivers/mconsole_kern.c
+@@ -224,7 +224,7 @@ void mconsole_go(struct mc_request *req)
  
--void vring_del_virtqueue(struct virtqueue *_vq)
-+static void __vring_free(struct virtqueue *_vq)
+ void mconsole_stop(struct mc_request *req)
  {
- 	struct vring_virtqueue *vq = to_vvq(_vq);
- 
--	spin_lock(&vq->vq.vdev->vqs_list_lock);
--	list_del(&_vq->list);
--	spin_unlock(&vq->vq.vdev->vqs_list_lock);
--
- 	if (vq->we_own_ring) {
- 		if (vq->packed_ring) {
- 			vring_free_queue(vq->vq.vdev,
-@@ -2480,6 +2476,25 @@ void vring_del_virtqueue(struct virtqueue *_vq)
- 		kfree(vq->split.desc_state);
- 		kfree(vq->split.desc_extra);
+-	deactivate_fd(req->originating_fd, MCONSOLE_IRQ);
++	block_signals();
+ 	os_set_fd_block(req->originating_fd, 1);
+ 	mconsole_reply(req, "stopped", 0, 0);
+ 	for (;;) {
+@@ -247,6 +247,7 @@ void mconsole_stop(struct mc_request *req)
  	}
-+}
-+
-+static void vring_free(struct virtqueue *vq)
-+{
-+	__vring_free(vq);
-+	vq->reset = VIRTIO_VQ_RESET_STEP_VRING_RELEASE;
-+}
-+
-+void vring_del_virtqueue(struct virtqueue *_vq)
-+{
-+	struct vring_virtqueue *vq = to_vvq(_vq);
-+
-+	spin_lock(&vq->vq.vdev->vqs_list_lock);
-+	list_del(&_vq->list);
-+	spin_unlock(&vq->vq.vdev->vqs_list_lock);
-+
-+	if (_vq->reset != VIRTIO_VQ_RESET_STEP_VRING_RELEASE)
-+		__vring_free(_vq);
-+
- 	kfree(vq);
+ 	os_set_fd_block(req->originating_fd, 0);
+ 	mconsole_reply(req, "", 0, 0);
++	unblock_signals();
  }
- EXPORT_SYMBOL_GPL(vring_del_virtqueue);
-diff --git a/include/linux/virtio.h b/include/linux/virtio.h
-index d59adc4be068..e3714e6db330 100644
---- a/include/linux/virtio.h
-+++ b/include/linux/virtio.h
-@@ -10,6 +10,13 @@
- #include <linux/mod_devicetable.h>
- #include <linux/gfp.h>
  
-+enum virtio_vq_reset_step {
-+	VIRTIO_VQ_RESET_STEP_NONE,
-+	VIRTIO_VQ_RESET_STEP_DEVICE,
-+	VIRTIO_VQ_RESET_STEP_VRING_RELEASE,
-+	VIRTIO_VQ_RESET_STEP_VRING_ATTACH,
-+};
-+
- /**
-  * virtqueue - a queue to register buffers for sending or receiving.
-  * @list: the chain of virtqueues for this device
-@@ -33,6 +40,7 @@ struct virtqueue {
- 	unsigned int num_free;
- 	unsigned int num_max;
- 	void *priv;
-+	enum virtio_vq_reset_step reset;
- };
- 
- int virtqueue_add_outbuf(struct virtqueue *vq,
+ static DEFINE_SPINLOCK(mc_devices_lock);
 -- 
-2.31.0
+2.30.2
 
 
 _______________________________________________
