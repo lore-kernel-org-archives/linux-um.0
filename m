@@ -1,134 +1,200 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Kees Cook <keescook@chromium.org>
-Subject: [PATCH v3 1/7] overflow: Provide constant expression struct_size
-Date: Sun, 27 Feb 2022 10:45:11 -0800
-Message-Id: <20220227184517.504931-2-keescook@chromium.org>
-In-Reply-To: <20220227184517.504931-1-keescook@chromium.org>
-References: <20220227184517.504931-1-keescook@chromium.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nN9EG-00HF66-60
+ for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:12:02 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v6 24/26] virtio_net: support rx/tx queue reset
+Date: Thu, 24 Feb 2022 16:11:00 +0800
+Message-Id: <20220224081102.80224-25-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
+References: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: Kees Cook <keescook@chromium.org>
-Cc: "Gustavo A . R . Silva" <gustavoars@kernel.org>, Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, Rasmus Villemoes <linux@rasmusvillemoes.dk>, Vitor Massaru Iha <vitor@massaru.org>, Daniel Latypov <dlatypov@google.com>, David Gow <davidgow@google.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Masahiro Yamada <masahiroy@kernel.org>, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, linux-kbuild@vger.kernel.org, kunit-dev@googlegroups.com, llvm@lists.linux.dev, x86@kernel.org, linux-hardening@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
 
-There have been cases where struct_size() (or flex_array_size()) needs
-to be calculated for an initializer, which requires it be a constant
-expression. This is possible when the "count" argument is a constant
-expression, so provide this ability for the helpers.
+This patch implements the reset function of the rx, tx queues.
 
-Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Tested-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Link: https://lore.kernel.org/lkml/20220210010407.GA701603@embeddedor
+Based on this function, it is possible to modify the ring num of the
+queue. And quickly recycle the buffer in the queue.
+
+In the process of the queue disable, in theory, as long as virtio
+supports queue reset, there will be no exceptions.
+
+However, in the process of the queue enable, there may be exceptions due to
+memory allocation.  In this case, vq is not available, but we still have
+to execute napi_enable(). Because napi_disable is similar to a lock,
+napi_enable must be called after calling napi_disable.
+
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
-v1: https://lore.kernel.org/linux-hardening/20220210004326.776574-1-keescook@chromium.org
-v2:
- - fix broken self-test due to CE optimization
----
- include/linux/overflow.h | 10 +++++++---
- lib/test_overflow.c      | 26 +++++++++++++++++---------
- 2 files changed, 24 insertions(+), 12 deletions(-)
+ drivers/net/virtio_net.c | 107 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 107 insertions(+)
 
-diff --git a/include/linux/overflow.h b/include/linux/overflow.h
-index 59d7228104d0..f1221d11f8e5 100644
---- a/include/linux/overflow.h
-+++ b/include/linux/overflow.h
-@@ -4,6 +4,7 @@
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 409a8e180918..ffff323dcef0 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -251,6 +251,11 @@ struct padded_vnet_hdr {
+ 	char padding[4];
+ };
  
- #include <linux/compiler.h>
- #include <linux/limits.h>
-+#include <linux/const.h>
- 
- /*
-  * We need to compute the minimum and maximum values representable in a given
-@@ -221,8 +222,9 @@ static inline size_t __must_check size_sub(size_t minuend, size_t subtrahend)
-  * Return: number of bytes needed or SIZE_MAX on overflow.
-  */
- #define flex_array_size(p, member, count)				\
--	size_mul(count,							\
--		 sizeof(*(p)->member) + __must_be_array((p)->member))
-+	__builtin_choose_expr(__is_constexpr(count),			\
-+		(count) * sizeof(*(p)->member) + __must_be_array((p)->member),	\
-+		size_mul(count, sizeof(*(p)->member) + __must_be_array((p)->member)))
- 
- /**
-  * struct_size() - Calculate size of structure with trailing flexible array.
-@@ -237,6 +239,8 @@ static inline size_t __must_check size_sub(size_t minuend, size_t subtrahend)
-  * Return: number of bytes needed or SIZE_MAX on overflow.
-  */
- #define struct_size(p, member, count)					\
--	size_add(sizeof(*(p)), flex_array_size(p, member, count))
-+	__builtin_choose_expr(__is_constexpr(count),			\
-+		sizeof(*(p)) + flex_array_size(p, member, count),	\
-+		size_add(sizeof(*(p)), flex_array_size(p, member, count)))
- 
- #endif /* __LINUX_OVERFLOW_H */
-diff --git a/lib/test_overflow.c b/lib/test_overflow.c
-index 712fb2351c27..f6530fce799d 100644
---- a/lib/test_overflow.c
-+++ b/lib/test_overflow.c
-@@ -602,10 +602,18 @@ struct __test_flex_array {
- 
- static int __init test_overflow_size_helpers(void)
- {
-+	/* Make sure struct_size() can be used in a constant expression. */
-+	u8 ce_array[struct_size((struct __test_flex_array *)0, data, 55)];
- 	struct __test_flex_array *obj;
- 	int count = 0;
- 	int err = 0;
- 	int var;
-+	volatile int unconst = 0;
++static void virtnet_sq_free_unused_bufs(struct virtnet_info *vi,
++					struct send_queue *sq);
++static void virtnet_rq_free_unused_bufs(struct virtnet_info *vi,
++					struct receive_queue *rq);
 +
-+	/* Verify constant expression against runtime version. */
-+	var = 55;
-+	OPTIMIZER_HIDE_VAR(var);
-+	err |= sizeof(ce_array) != struct_size(obj, data, var);
+ static bool is_xdp_frame(void *ptr)
+ {
+ 	return (unsigned long)ptr & VIRTIO_XDP_FLAG;
+@@ -1369,6 +1374,9 @@ static void virtnet_napi_enable(struct virtqueue *vq, struct napi_struct *napi)
+ {
+ 	napi_enable(napi);
  
- #define check_one_size_helper(expected, func, args...)	({	\
- 	bool __failure = false;					\
-@@ -663,28 +671,28 @@ static int __init test_overflow_size_helpers(void)
- 				     flex_array_size, obj, data, var++);
- 	err |= check_one_size_helper(5 * sizeof(*obj->data),
- 				     flex_array_size, obj, data, var++);
--	err |= check_one_size_helper(0, flex_array_size, obj, data, 0);
-+	err |= check_one_size_helper(0, flex_array_size, obj, data, 0 + unconst);
- 	err |= check_one_size_helper(sizeof(*obj->data),
--				     flex_array_size, obj, data, 1);
-+				     flex_array_size, obj, data, 1 + unconst);
- 	err |= check_one_size_helper(7 * sizeof(*obj->data),
--				     flex_array_size, obj, data, 7);
-+				     flex_array_size, obj, data, 7 + unconst);
- 	err |= check_one_size_helper(SIZE_MAX,
--				     flex_array_size, obj, data, -1);
-+				     flex_array_size, obj, data, -1 + unconst);
- 	err |= check_one_size_helper(SIZE_MAX,
--				     flex_array_size, obj, data, SIZE_MAX - 4);
-+				     flex_array_size, obj, data, SIZE_MAX - 4 + unconst);
++	if (vq->reset)
++		return;
++
+ 	/* If all buffers were filled by other side before we napi_enabled, we
+ 	 * won't get another interrupt, so process any outstanding packets now.
+ 	 * Call local_bh_enable after to trigger softIRQ processing.
+@@ -1413,6 +1421,10 @@ static void refill_work(struct work_struct *work)
+ 		struct receive_queue *rq = &vi->rq[i];
  
- 	var = 4;
- 	err |= check_one_size_helper(sizeof(*obj) + (4 * sizeof(*obj->data)),
- 				     struct_size, obj, data, var++);
- 	err |= check_one_size_helper(sizeof(*obj) + (5 * sizeof(*obj->data)),
- 				     struct_size, obj, data, var++);
--	err |= check_one_size_helper(sizeof(*obj), struct_size, obj, data, 0);
-+	err |= check_one_size_helper(sizeof(*obj), struct_size, obj, data, 0 + unconst);
- 	err |= check_one_size_helper(sizeof(*obj) + sizeof(*obj->data),
--				     struct_size, obj, data, 1);
-+				     struct_size, obj, data, 1 + unconst);
- 	err |= check_one_size_helper(SIZE_MAX,
--				     struct_size, obj, data, -3);
-+				     struct_size, obj, data, -3 + unconst);
- 	err |= check_one_size_helper(SIZE_MAX,
--				     struct_size, obj, data, SIZE_MAX - 3);
-+				     struct_size, obj, data, SIZE_MAX - 3 + unconst);
+ 		napi_disable(&rq->napi);
++		if (rq->vq->reset) {
++			virtnet_napi_enable(rq->vq, &rq->napi);
++			continue;
++		}
+ 		still_empty = !try_fill_recv(vi, rq, GFP_KERNEL);
+ 		virtnet_napi_enable(rq->vq, &rq->napi);
  
- 	pr_info("%d overflow size helper tests finished\n", count);
+@@ -1523,6 +1535,9 @@ static void virtnet_poll_cleantx(struct receive_queue *rq)
+ 	if (!sq->napi.weight || is_xdp_raw_buffer_queue(vi, index))
+ 		return;
  
++	if (sq->vq->reset)
++		return;
++
+ 	if (__netif_tx_trylock(txq)) {
+ 		do {
+ 			virtqueue_disable_cb(sq->vq);
+@@ -1769,6 +1784,98 @@ static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	return NETDEV_TX_OK;
+ }
+ 
++static int virtnet_rx_vq_reset(struct virtnet_info *vi,
++			       struct receive_queue *rq, u32 ring_num)
++{
++	int err;
++
++	/* stop napi */
++	napi_disable(&rq->napi);
++
++	/* reset the queue */
++	err = virtio_reset_vq(rq->vq);
++	if (err)
++		goto err;
++
++	/* free bufs */
++	virtnet_rq_free_unused_bufs(vi, rq);
++
++	/* reset vring. */
++	err = virtqueue_reset_vring(rq->vq, ring_num);
++	if (err)
++		goto err;
++
++	/* enable reset queue */
++	err = virtio_enable_resetq(rq->vq);
++	if (err)
++		goto err;
++
++	/* fill recv */
++	if (!try_fill_recv(vi, rq, GFP_KERNEL))
++		schedule_delayed_work(&vi->refill, 0);
++
++	/* enable napi */
++	virtnet_napi_enable(rq->vq, &rq->napi);
++	return 0;
++
++err:
++	netdev_err(vi->dev,
++		   "reset rx reset vq fail: rx queue index: %ld err: %d\n",
++		   rq - vi->rq, err);
++	virtnet_napi_enable(rq->vq, &rq->napi);
++	return err;
++}
++
++static int virtnet_tx_vq_reset(struct virtnet_info *vi,
++			       struct send_queue *sq, u32 ring_num)
++{
++	struct netdev_queue *txq;
++	int err, qindex;
++
++	qindex = sq - vi->sq;
++
++	txq = netdev_get_tx_queue(vi->dev, qindex);
++	__netif_tx_lock_bh(txq);
++
++	/* stop tx queue and napi */
++	netif_stop_subqueue(vi->dev, qindex);
++	virtnet_napi_tx_disable(&sq->napi);
++
++	__netif_tx_unlock_bh(txq);
++
++	/* reset the queue */
++	err = virtio_reset_vq(sq->vq);
++	if (err) {
++		netif_start_subqueue(vi->dev, qindex);
++		goto err;
++	}
++
++	/* free bufs */
++	virtnet_sq_free_unused_bufs(vi, sq);
++
++	/* reset vring. */
++	err = virtqueue_reset_vring(sq->vq, ring_num);
++	if (err)
++		goto err;
++
++	/* enable reset queue */
++	err = virtio_enable_resetq(sq->vq);
++	if (err)
++		goto err;
++
++	/* start tx queue and napi */
++	netif_start_subqueue(vi->dev, qindex);
++	virtnet_napi_tx_enable(vi, sq->vq, &sq->napi);
++	return 0;
++
++err:
++	netdev_err(vi->dev,
++		   "reset tx reset vq fail: tx queue index: %ld err: %d\n",
++		   sq - vi->sq, err);
++	virtnet_napi_tx_enable(vi, sq->vq, &sq->napi);
++	return err;
++}
++
+ /*
+  * Send command via the control virtqueue and check status.  Commands
+  * supported by the hypervisor, as indicated by feature bits, should
 -- 
-2.32.0
+2.31.0
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
