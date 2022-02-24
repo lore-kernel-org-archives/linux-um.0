@@ -1,152 +1,70 @@
-Return-Path: <anshuman.khandual@arm.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V3 26/30] hexagon/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Date: Mon, 28 Feb 2022 16:17:49 +0530
-Message-Id: <1646045273-9343-27-git-send-email-anshuman.khandual@arm.com>
-In-Reply-To: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
-References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
-To: linux-mm@kvack.org, akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, geert@linux-m68k.org, Anshuman Khandual <anshuman.khandual@arm.com>, Christoph Hellwig <hch@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org, linux-riscv@lists.infradead.org, linux-alpha@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-parisc@vger.kernel.org, openrisc@lists.librecores.org, linux-um@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org, Brian Cain <bcain@codeaurora.org>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nN96L-00HDLd-QY
+ for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:03:51 +0000
+Subject: Re: [PATCH] Input: samsung-keypad - Properly state IOMEM dependency
+References: <20220224035819.1593730-1-davidgow@google.com>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <19c9bf24-c3e1-36a3-376e-7091cc3b3f62@cambridgegreys.com>
+Date: Thu, 24 Feb 2022 08:03:40 +0000
+MIME-Version: 1.0
+In-Reply-To: <20220224035819.1593730-1-davidgow@google.com>
+Content-Language: en-US
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: David Gow <davidgow@google.com>, Joonyoung Shim <jy0922.shim@samsung.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
 
-This defines and exports a platform specific custom vm_get_page_prot() via
-subscribing ARCH_HAS_VM_GET_PAGE_PROT. Subsequently all __SXXX and __PXXX
-macros can be dropped which are no longer needed.
 
-Cc: Brian Cain <bcain@codeaurora.org>
-Cc: linux-hexagon@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- arch/hexagon/Kconfig               |  1 +
- arch/hexagon/include/asm/pgtable.h | 24 -----------
- arch/hexagon/mm/init.c             | 67 ++++++++++++++++++++++++++++++
- 3 files changed, 68 insertions(+), 24 deletions(-)
 
-diff --git a/arch/hexagon/Kconfig b/arch/hexagon/Kconfig
-index 15dd8f38b698..cdc5df32a1e3 100644
---- a/arch/hexagon/Kconfig
-+++ b/arch/hexagon/Kconfig
-@@ -6,6 +6,7 @@ config HEXAGON
- 	def_bool y
- 	select ARCH_32BIT_OFF_T
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
-+	select ARCH_HAS_VM_GET_PAGE_PROT
- 	select ARCH_NO_PREEMPT
- 	select DMA_GLOBAL_POOL
- 	# Other pending projects/to-do items.
-diff --git a/arch/hexagon/include/asm/pgtable.h b/arch/hexagon/include/asm/pgtable.h
-index 18cd6ea9ab23..5eceddfe013d 100644
---- a/arch/hexagon/include/asm/pgtable.h
-+++ b/arch/hexagon/include/asm/pgtable.h
-@@ -127,31 +127,7 @@ extern unsigned long _dflt_cache_att;
- #define CACHEDEF	(CACHE_DEFAULT << 6)
- 
- /* Private (copy-on-write) page protections. */
--#define __P000 __pgprot(_PAGE_PRESENT | _PAGE_USER | CACHEDEF)
--#define __P001 __pgprot(_PAGE_PRESENT | _PAGE_USER | _PAGE_READ | CACHEDEF)
--#define __P010 __P000	/* Write-only copy-on-write */
--#define __P011 __P001	/* Read/Write copy-on-write */
--#define __P100 __pgprot(_PAGE_PRESENT | _PAGE_USER | \
--			_PAGE_EXECUTE | CACHEDEF)
--#define __P101 __pgprot(_PAGE_PRESENT | _PAGE_USER | _PAGE_EXECUTE | \
--			_PAGE_READ | CACHEDEF)
--#define __P110 __P100	/* Write/execute copy-on-write */
--#define __P111 __P101	/* Read/Write/Execute, copy-on-write */
--
- /* Shared page protections. */
--#define __S000 __P000
--#define __S001 __P001
--#define __S010 __pgprot(_PAGE_PRESENT | _PAGE_USER | \
--			_PAGE_WRITE | CACHEDEF)
--#define __S011 __pgprot(_PAGE_PRESENT | _PAGE_USER | _PAGE_READ | \
--			_PAGE_WRITE | CACHEDEF)
--#define __S100 __pgprot(_PAGE_PRESENT | _PAGE_USER | \
--			_PAGE_EXECUTE | CACHEDEF)
--#define __S101 __P101
--#define __S110 __pgprot(_PAGE_PRESENT | _PAGE_USER | \
--			_PAGE_EXECUTE | _PAGE_WRITE | CACHEDEF)
--#define __S111 __pgprot(_PAGE_PRESENT | _PAGE_USER | _PAGE_READ | \
--			_PAGE_EXECUTE | _PAGE_WRITE | CACHEDEF)
- 
- extern pgd_t swapper_pg_dir[PTRS_PER_PGD];  /* located in head.S */
- 
-diff --git a/arch/hexagon/mm/init.c b/arch/hexagon/mm/init.c
-index f01e91e10d95..b53595fc4103 100644
---- a/arch/hexagon/mm/init.c
-+++ b/arch/hexagon/mm/init.c
-@@ -236,3 +236,70 @@ void __init setup_arch_memory(void)
- 	 *  which is called by start_kernel() later on in the process
- 	 */
- }
-+
-+pgprot_t vm_get_page_prot(unsigned long vm_flags)
-+{
-+	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
-+	case VM_NONE:
-+		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+				CACHEDEF);
-+	case VM_READ:
-+		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+				_PAGE_READ | CACHEDEF);
-+	/* Write-only copy-on-write */
-+	case VM_WRITE:
-+		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+				CACHEDEF);
-+	/* Read/Write copy-on-write */
-+	case VM_WRITE | VM_READ:
-+		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+				_PAGE_READ | CACHEDEF);
-+	case VM_EXEC:
-+		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+				_PAGE_EXECUTE | CACHEDEF);
-+	case VM_EXEC | VM_READ:
-+		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+				_PAGE_EXECUTE | _PAGE_READ |
-+				CACHEDEF);
-+	/* Write/execute copy-on-write */
-+	case VM_EXEC | VM_WRITE:
-+		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+				_PAGE_EXECUTE | CACHEDEF);
-+	/* Read/Write/Execute, copy-on-write */
-+	case VM_EXEC | VM_WRITE | VM_READ:
-+		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+				_PAGE_EXECUTE | _PAGE_READ |
-+				CACHEDEF);
-+	case VM_SHARED:
-+		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+				CACHEDEF);
-+	case VM_SHARED | VM_READ:
-+		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+				_PAGE_READ | CACHEDEF);
-+	case VM_SHARED | VM_WRITE:
-+		return  __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+				_PAGE_WRITE | CACHEDEF);
-+	case VM_SHARED | VM_WRITE | VM_READ:
-+		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+				_PAGE_READ | _PAGE_WRITE |
-+				CACHEDEF);
-+	case VM_SHARED | VM_EXEC:
-+		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+				_PAGE_EXECUTE | CACHEDEF);
-+	case VM_SHARED | VM_EXEC | VM_READ:
-+		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+				_PAGE_EXECUTE | _PAGE_READ |
-+				CACHEDEF);
-+	case VM_SHARED | VM_EXEC | VM_WRITE:
-+		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+				_PAGE_EXECUTE | _PAGE_WRITE |
-+				CACHEDEF);
-+	case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
-+		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+				_PAGE_READ | _PAGE_EXECUTE |
-+				_PAGE_WRITE | CACHEDEF);
-+	default:
-+		BUILD_BUG();
-+	}
-+}
-+EXPORT_SYMBOL(vm_get_page_prot);
+On 24/02/2022 03:58, David Gow wrote:
+> Make the samsung-keypad driver explicitly depend on CONFIG_IOMEM, as it
+> calls devm_ioremap(). This prevents compile errors in some configs (e.g,
+> allyesconfig/randconfig under UML):
+> 
+> /usr/bin/ld: drivers/input/keyboard/samsung-keypad.o: in function `samsung_keypad_probe':
+> samsung-keypad.c:(.text+0xc60): undefined reference to `devm_ioremap'
+> 
+> Signed-off-by: David Gow <davidgow@google.com>
+> ---
+>   drivers/input/keyboard/Kconfig | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/input/keyboard/Kconfig b/drivers/input/keyboard/Kconfig
+> index 0c607da9ee10..5c98d5f996e4 100644
+> --- a/drivers/input/keyboard/Kconfig
+> +++ b/drivers/input/keyboard/Kconfig
+> @@ -556,7 +556,7 @@ config KEYBOARD_PMIC8XXX
+>   
+>   config KEYBOARD_SAMSUNG
+>   	tristate "Samsung keypad support"
+> -	depends on HAVE_CLK
+> +	depends on IOMEM && HAVE_CLK
+>   	select INPUT_MATRIXKMAP
+>   	help
+>   	  Say Y here if you want to use the keypad on your Samsung mobile
+> 
+Acked-By: anton ivanov <anton.ivanov@cambridgegreys.com>
+
 -- 
-2.25.1
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
