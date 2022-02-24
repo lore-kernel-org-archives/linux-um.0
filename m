@@ -1,16 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ams.source.kernel.org ([145.40.68.75])
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nKUnT-008bEA-0p
- for linux-um@lists.infradead.org; Thu, 17 Feb 2022 00:37:24 +0000
-Date: Wed, 16 Feb 2022 17:37:13 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-Subject: Re: [PATCH] um: Allow builds with Clang
-Message-ID: <Yg2YubZxvYvx7/nm@dev-arch.archlinux-ax161>
-References: <20220217002843.2312603-1-keescook@chromium.org>
+ id 1nN9Du-00HEdn-6J
+ for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:11:40 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v6 14/26] virtio: add helper for queue reset
+Date: Thu, 24 Feb 2022 16:10:50 +0800
+Message-Id: <20220224081102.80224-15-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
+References: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220217002843.2312603-1-keescook@chromium.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -23,86 +22,73 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Kees Cook <keescook@chromium.org>
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Masahiro Yamada <masahiroy@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, David Gow <davidgow@google.com>, linux-um@lists.infradead.org, linux-kbuild@vger.kernel.org, linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, llvm@lists.linux.dev, linux-kernel@vger.kernel.org, x86@kernel.org, linux-hardening@vger.kernel.org
+To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
 
-On Wed, Feb 16, 2022 at 04:28:43PM -0800, Kees Cook wrote:
-> Add x86-64 target for Clang+um and update user-offsets.c to use
-> Clang-friendly assembler, similar to the fix from commit cf0c3e68aa81
+Add helper for virtio queue reset.
 
-Clang-friendly assembly?
+* virtio_reset_vq(): reset a queue individually
+* virtio_enable_resetq(): enable a reset queue
 
-> ("kbuild: fix asm-offset generation to work with clang").
-> 
-> This lets me run KUnit tests with Clang:
-> 
-> $ ./tools/testing/kunit/kunit.py config --make_options LLVM=1
-> ...
-> $ ./tools/testing/kunit/kunit.py run --make_options LLVM=1
-> ...
-> 
-> Cc: Jeff Dike <jdike@addtoit.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-> Cc: Masahiro Yamada <masahiroy@kernel.org>
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: Nathan Chancellor <nathan@kernel.org>
-> Cc: David Gow <davidgow@google.com>
-> Cc: linux-um@lists.infradead.org
-> Cc: linux-kbuild@vger.kernel.org
-> Cc: linux-kselftest@vger.kernel.org
-> Cc: kunit-dev@googlegroups.com
-> Cc: llvm@lists.linux.dev
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+---
+ include/linux/virtio_config.h | 40 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
 
-I am not super familiar with UML but this seems reasonable.
+diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
+index d51906b1389f..0b81fbe17c85 100644
+--- a/include/linux/virtio_config.h
++++ b/include/linux/virtio_config.h
+@@ -230,6 +230,46 @@ int virtio_find_vqs_ctx(struct virtio_device *vdev, unsigned nvqs,
+ 				      desc);
+ }
+ 
++/**
++ * virtio_reset_vq - reset a queue individually
++ * @vq: the virtqueue
++ *
++ * returns 0 on success or error status
++ *
++ * The api process of reset under normal circumstances:
++ *	1. virtio_reset_vq()              - notify the device to reset the queue
++ *	2. virtqueue_detach_unused_buf()  - recycle the buffer submitted
++ *	3. virtqueue_reset_vring()        - reset the vring (may re-alloc)
++ *	4. virtio_enable_resetq()         - mmap vring to device, and enable the queue
++ *
++ * Caller should guarantee that the vring is not accessed by any functions
++ * of virtqueue.
++ */
++static inline
++int virtio_reset_vq(struct virtqueue *vq)
++{
++	if (!vq->vdev->config->reset_vq)
++		return -ENOENT;
++
++	return vq->vdev->config->reset_vq(vq);
++}
++
++/**
++ * virtio_enable_resetq - enable a reset queue
++ * @vq: the virtqueue
++ *
++ * returns 0 on success or error status
++ *
++ */
++static inline
++int virtio_enable_resetq(struct virtqueue *vq)
++{
++	if (!vq->vdev->config->enable_reset_vq)
++		return -ENOENT;
++
++	return vq->vdev->config->enable_reset_vq(vq);
++}
++
+ /**
+  * virtio_device_ready - enable vq use in probe function
+  * @vdev: the device
+-- 
+2.31.0
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-
-One small nit below if you have to send a v2, not sure it is worth it
-otherwise.
-
-> ---
->  arch/x86/um/user-offsets.c | 4 ++--
->  scripts/Makefile.clang     | 1 +
->  2 files changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/um/user-offsets.c b/arch/x86/um/user-offsets.c
-> index bae61554abcc..d9071827b515 100644
-> --- a/arch/x86/um/user-offsets.c
-> +++ b/arch/x86/um/user-offsets.c
-> @@ -10,10 +10,10 @@
->  #include <asm/types.h>
->  
->  #define DEFINE(sym, val) \
-> -	asm volatile("\n->" #sym " %0 " #val : : "i" (val))
-> +	asm volatile("\n.ascii \"->" #sym " %0 " #val "\"": : "i" (val))
->  
->  #define DEFINE_LONGS(sym, val) \
-> -	asm volatile("\n->" #sym " %0 " #val : : "i" (val/sizeof(unsigned long)))
-> +	asm volatile("\n.ascii \"->" #sym " %0 " #val "\"": : "i" (val/sizeof(unsigned long)))
->  
->  void foo(void)
->  {
-> diff --git a/scripts/Makefile.clang b/scripts/Makefile.clang
-> index 51fc23e2e9e5..857b23de51c6 100644
-> --- a/scripts/Makefile.clang
-> +++ b/scripts/Makefile.clang
-> @@ -10,6 +10,7 @@ CLANG_TARGET_FLAGS_powerpc	:= powerpc64le-linux-gnu
->  CLANG_TARGET_FLAGS_riscv	:= riscv64-linux-gnu
->  CLANG_TARGET_FLAGS_s390		:= s390x-linux-gnu
->  CLANG_TARGET_FLAGS_x86		:= x86_64-linux-gnu
-> +CLANG_TARGET_FLAGS_um		:= x86_64-linux-gnu
-
-It might be nice to keep this in alphabetical order.
-
->  CLANG_TARGET_FLAGS		:= $(CLANG_TARGET_FLAGS_$(SRCARCH))
->  
->  ifeq ($(CROSS_COMPILE),)
-> -- 
-> 2.30.2
-> 
-> 
 
 _______________________________________________
 linux-um mailing list
