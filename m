@@ -1,12 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42])
+Received: from out199-4.us.a.mail.aliyun.com ([47.90.199.4])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nN9Db-00HEM9-1U
- for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:11:21 +0000
+ id 1nN9Dk-00HEUH-Lp
+ for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:11:32 +0000
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v6 03/26] virtio: add helper virtqueue_get_vring_max_size()
-Date: Thu, 24 Feb 2022 16:10:39 +0800
-Message-Id: <20220224081102.80224-4-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v6 09/26] virtio_ring: split: implement
+ virtqueue_reset_vring_split()
+Date: Thu, 24 Feb 2022 16:10:45 +0800
+Message-Id: <20220224081102.80224-10-xuanzhuo@linux.alibaba.com>
 In-Reply-To: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
 References: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
@@ -25,107 +26,140 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
 Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
 
-Record the maximum queue num supported by the device.
+virtio ring supports reset.
 
-virtio-net can display the maximum (supported by hardware) ring size in
-ethtool -g eth0.
+Queue reset is divided into several stages.
 
-When the subsequent patch implements vring reset, it can judge whether
-the ring size passed by the driver is legal based on this.
+1. notify device queue reset
+2. vring release
+3. attach new vring
+4. notify device queue re-enable
+
+After the first step is completed, the vring reset operation can be
+performed. If the newly set vring num does not change, then just reset
+the vq related value.
+
+Otherwise, the vring will be released and the vring will be reallocated.
+And the vring will be attached to the vq. If this process fails, the
+function will exit, and the state of the vq will be the vring release
+state. You can call this function again to reallocate the vring.
+
+In addition, vring_align, may_reduce_num are necessary for reallocating
+vring, so they are retained when creating vq.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- drivers/virtio/virtio_mmio.c       |  2 ++
- drivers/virtio/virtio_pci_legacy.c |  2 ++
- drivers/virtio/virtio_pci_modern.c |  2 ++
- drivers/virtio/virtio_ring.c       | 14 ++++++++++++++
- include/linux/virtio.h             |  2 ++
- 5 files changed, 22 insertions(+)
+ drivers/virtio/virtio_ring.c | 69 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 69 insertions(+)
 
-diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
-index 56128b9c46eb..a41abc8051b9 100644
---- a/drivers/virtio/virtio_mmio.c
-+++ b/drivers/virtio/virtio_mmio.c
-@@ -390,6 +390,8 @@ static struct virtqueue *vm_setup_vq(struct virtio_device *vdev, unsigned index,
- 		goto error_new_virtqueue;
- 	}
- 
-+	vq->num_max = num;
-+
- 	/* Activate the queue */
- 	writel(virtqueue_get_vring_size(vq), vm_dev->base + VIRTIO_MMIO_QUEUE_NUM);
- 	if (vm_dev->version == 1) {
-diff --git a/drivers/virtio/virtio_pci_legacy.c b/drivers/virtio/virtio_pci_legacy.c
-index 34141b9abe27..b68934fe6b5d 100644
---- a/drivers/virtio/virtio_pci_legacy.c
-+++ b/drivers/virtio/virtio_pci_legacy.c
-@@ -135,6 +135,8 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 	if (!vq)
- 		return ERR_PTR(-ENOMEM);
- 
-+	vq->num_max = num;
-+
- 	q_pfn = virtqueue_get_desc_addr(vq) >> VIRTIO_PCI_QUEUE_ADDR_SHIFT;
- 	if (q_pfn >> 32) {
- 		dev_err(&vp_dev->pci_dev->dev,
-diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
-index 5455bc041fb6..86d301f272b8 100644
---- a/drivers/virtio/virtio_pci_modern.c
-+++ b/drivers/virtio/virtio_pci_modern.c
-@@ -218,6 +218,8 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 	if (!vq)
- 		return ERR_PTR(-ENOMEM);
- 
-+	vq->num_max = num;
-+
- 	/* activate the queue */
- 	vp_modern_set_queue_size(mdev, index, virtqueue_get_vring_size(vq));
- 	vp_modern_queue_address(mdev, index, virtqueue_get_desc_addr(vq),
 diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 962f1477b1fa..b87130c8f312 100644
+index 0b5360052ac2..a2e771263ea7 100644
 --- a/drivers/virtio/virtio_ring.c
 +++ b/drivers/virtio/virtio_ring.c
-@@ -2371,6 +2371,20 @@ void vring_transport_features(struct virtio_device *vdev)
- }
- EXPORT_SYMBOL_GPL(vring_transport_features);
- 
-+/**
-+ * virtqueue_get_vring_max_size - return the max size of the virtqueue's vring
-+ * @_vq: the struct virtqueue containing the vring of interest.
-+ *
-+ * Returns the max size of the vring.
-+ *
-+ * Unlike other operations, this need not be serialized.
-+ */
-+unsigned int virtqueue_get_vring_max_size(struct virtqueue *_vq)
-+{
-+	return _vq->num_max;
-+}
-+EXPORT_SYMBOL_GPL(virtqueue_get_vring_max_size);
+@@ -158,6 +158,12 @@ struct vring_virtqueue {
+ 			/* DMA address and size information */
+ 			dma_addr_t queue_dma_addr;
+ 			size_t queue_size_in_bytes;
 +
- /**
-  * virtqueue_get_vring_size - return the size of the virtqueue's vring
-  * @_vq: the struct virtqueue containing the vring of interest.
-diff --git a/include/linux/virtio.h b/include/linux/virtio.h
-index 72292a62cd90..d59adc4be068 100644
---- a/include/linux/virtio.h
-+++ b/include/linux/virtio.h
-@@ -31,6 +31,7 @@ struct virtqueue {
- 	struct virtio_device *vdev;
- 	unsigned int index;
- 	unsigned int num_free;
-+	unsigned int num_max;
- 	void *priv;
++			/* The parameters for creating vrings are reserved for
++			 * creating new vrings when enabling reset queue.
++			 */
++			u32 vring_align;
++			bool may_reduce_num;
+ 		} split;
+ 
+ 		/* Available for packed ring */
+@@ -217,6 +223,12 @@ struct vring_virtqueue {
+ #endif
  };
  
-@@ -80,6 +81,7 @@ bool virtqueue_enable_cb_delayed(struct virtqueue *vq);
++static void vring_free(struct virtqueue *vq);
++static void __vring_virtqueue_init_split(struct vring_virtqueue *vq,
++					 struct virtio_device *vdev);
++static int __vring_virtqueue_attach_split(struct vring_virtqueue *vq,
++					  struct virtio_device *vdev,
++					  struct vring vring);
  
- void *virtqueue_detach_unused_buf(struct virtqueue *vq);
+ /*
+  * Helpers.
+@@ -1012,6 +1024,8 @@ static struct virtqueue *vring_create_virtqueue_split(
+ 		return NULL;
+ 	}
  
-+unsigned int virtqueue_get_vring_max_size(struct virtqueue *vq);
- unsigned int virtqueue_get_vring_size(struct virtqueue *vq);
++	to_vvq(vq)->split.vring_align = vring_align;
++	to_vvq(vq)->split.may_reduce_num = may_reduce_num;
+ 	to_vvq(vq)->split.queue_dma_addr = vring.dma_addr;
+ 	to_vvq(vq)->split.queue_size_in_bytes = vring.queue_size_in_bytes;
+ 	to_vvq(vq)->we_own_ring = true;
+@@ -1019,6 +1033,59 @@ static struct virtqueue *vring_create_virtqueue_split(
+ 	return vq;
+ }
  
- bool virtqueue_is_broken(struct virtqueue *vq);
++static int virtqueue_reset_vring_split(struct virtqueue *_vq, u32 num)
++{
++	struct vring_virtqueue *vq = to_vvq(_vq);
++	struct virtio_device *vdev = _vq->vdev;
++	struct vring_split vring;
++	int err;
++
++	if (num > _vq->num_max)
++		return -E2BIG;
++
++	switch (vq->vq.reset) {
++	case VIRTIO_VQ_RESET_STEP_NONE:
++		return -ENOENT;
++
++	case VIRTIO_VQ_RESET_STEP_VRING_ATTACH:
++	case VIRTIO_VQ_RESET_STEP_DEVICE:
++		if (vq->split.vring.num == num || !num)
++			break;
++
++		vring_free(_vq);
++
++		fallthrough;
++
++	case VIRTIO_VQ_RESET_STEP_VRING_RELEASE:
++		if (!num)
++			num = vq->split.vring.num;
++
++		err = vring_create_vring_split(&vring, vdev,
++					       vq->split.vring_align,
++					       vq->weak_barriers,
++					       vq->split.may_reduce_num, num);
++		if (err)
++			return -ENOMEM;
++
++		err = __vring_virtqueue_attach_split(vq, vdev, vring.vring);
++		if (err) {
++			vring_free_queue(vdev, vring.queue_size_in_bytes,
++					 vring.queue,
++					 vring.dma_addr);
++			return -ENOMEM;
++		}
++
++		vq->split.queue_dma_addr = vring.dma_addr;
++		vq->split.queue_size_in_bytes = vring.queue_size_in_bytes;
++	}
++
++	__vring_virtqueue_init_split(vq, vdev);
++	vq->we_own_ring = true;
++	vq->vq.reset = VIRTIO_VQ_RESET_STEP_VRING_ATTACH;
++
++	return 0;
++}
++
+ 
+ /*
+  * Packed ring specific functions - *_packed().
+@@ -2317,6 +2384,8 @@ static int __vring_virtqueue_attach_split(struct vring_virtqueue *vq,
+ static void __vring_virtqueue_init_split(struct vring_virtqueue *vq,
+ 					 struct virtio_device *vdev)
+ {
++	vq->vq.reset = VIRTIO_VQ_RESET_STEP_NONE;
++
+ 	vq->packed_ring = false;
+ 	vq->we_own_ring = false;
+ 	vq->broken = false;
 -- 
 2.31.0
 
