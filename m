@@ -1,244 +1,64 @@
-Return-Path: <anshuman.khandual@arm.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V3 10/30] x86/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Date: Mon, 28 Feb 2022 16:17:33 +0530
-Message-Id: <1646045273-9343-11-git-send-email-anshuman.khandual@arm.com>
-In-Reply-To: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
-References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
-To: linux-mm@kvack.org, akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, geert@linux-m68k.org, Anshuman Khandual <anshuman.khandual@arm.com>, Christoph Hellwig <hch@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org, linux-riscv@lists.infradead.org, linux-alpha@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-parisc@vger.kernel.org, openrisc@lists.librecores.org, linux-um@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nN9EA-00HF16-SU
+ for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:11:56 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v6 22/26] virtio_net: get ringparam by
+ virtqueue_get_vring_max_size()
+Date: Thu, 24 Feb 2022 16:10:58 +0800
+Message-Id: <20220224081102.80224-23-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
+References: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
+MIME-Version: 1.0
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
 
-From: Christoph Hellwig <hch@infradead.org>
+Use virtqueue_get_vring_max_size() in virtnet_get_ringparam() to set
+tx,rx_max_pending.
 
-This defines and exports a platform specific custom vm_get_page_prot() via
-subscribing ARCH_HAS_VM_GET_PAGE_PROT. Subsequently all __SXXX and __PXXX
-macros can be dropped which are no longer needed. This also unsubscribes
-from ARCH_HAS_FILTER_PGPROT, after dropping off arch_filter_pgprot() and
-arch_vm_get_page_prot().
-
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Christoph Hellwig <hch@infradead.org>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- arch/x86/Kconfig                     |  2 +-
- arch/x86/include/asm/pgtable.h       |  5 --
- arch/x86/include/asm/pgtable_types.h | 19 --------
- arch/x86/include/uapi/asm/mman.h     | 14 ------
- arch/x86/mm/Makefile                 |  2 +-
- arch/x86/mm/mem_encrypt_amd.c        |  6 ---
- arch/x86/mm/pgprot.c                 | 71 ++++++++++++++++++++++++++++
- 7 files changed, 73 insertions(+), 46 deletions(-)
- create mode 100644 arch/x86/mm/pgprot.c
+ drivers/net/virtio_net.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index b1ce75d0ab0c..b2ea06c87708 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -75,7 +75,6 @@ config X86
- 	select ARCH_HAS_EARLY_DEBUG		if KGDB
- 	select ARCH_HAS_ELF_RANDOMIZE
- 	select ARCH_HAS_FAST_MULTIPLIER
--	select ARCH_HAS_FILTER_PGPROT
- 	select ARCH_HAS_FORTIFY_SOURCE
- 	select ARCH_HAS_GCOV_PROFILE_ALL
- 	select ARCH_HAS_KCOV			if X86_64
-@@ -94,6 +93,7 @@ config X86
- 	select ARCH_HAS_SYNC_CORE_BEFORE_USERMODE
- 	select ARCH_HAS_SYSCALL_WRAPPER
- 	select ARCH_HAS_UBSAN_SANITIZE_ALL
-+	select ARCH_HAS_VM_GET_PAGE_PROT
- 	select ARCH_HAS_DEBUG_WX
- 	select ARCH_HAS_ZONE_DMA_SET if EXPERT
- 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
-diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
-index 8a9432fb3802..985e1b823691 100644
---- a/arch/x86/include/asm/pgtable.h
-+++ b/arch/x86/include/asm/pgtable.h
-@@ -648,11 +648,6 @@ static inline pgprot_t pgprot_modify(pgprot_t oldprot, pgprot_t newprot)
- 
- #define canon_pgprot(p) __pgprot(massage_pgprot(p))
- 
--static inline pgprot_t arch_filter_pgprot(pgprot_t prot)
--{
--	return canon_pgprot(prot);
--}
--
- static inline int is_new_memtype_allowed(u64 paddr, unsigned long size,
- 					 enum page_cache_mode pcm,
- 					 enum page_cache_mode new_pcm)
-diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
-index 40497a9020c6..1a9dd933088e 100644
---- a/arch/x86/include/asm/pgtable_types.h
-+++ b/arch/x86/include/asm/pgtable_types.h
-@@ -228,25 +228,6 @@ enum page_cache_mode {
- 
- #endif	/* __ASSEMBLY__ */
- 
--/*         xwr */
--#define __P000	PAGE_NONE
--#define __P001	PAGE_READONLY
--#define __P010	PAGE_COPY
--#define __P011	PAGE_COPY
--#define __P100	PAGE_READONLY_EXEC
--#define __P101	PAGE_READONLY_EXEC
--#define __P110	PAGE_COPY_EXEC
--#define __P111	PAGE_COPY_EXEC
--
--#define __S000	PAGE_NONE
--#define __S001	PAGE_READONLY
--#define __S010	PAGE_SHARED
--#define __S011	PAGE_SHARED
--#define __S100	PAGE_READONLY_EXEC
--#define __S101	PAGE_READONLY_EXEC
--#define __S110	PAGE_SHARED_EXEC
--#define __S111	PAGE_SHARED_EXEC
--
- /*
-  * early identity mapping  pte attrib macros.
-  */
-diff --git a/arch/x86/include/uapi/asm/mman.h b/arch/x86/include/uapi/asm/mman.h
-index d4a8d0424bfb..775dbd3aff73 100644
---- a/arch/x86/include/uapi/asm/mman.h
-+++ b/arch/x86/include/uapi/asm/mman.h
-@@ -5,20 +5,6 @@
- #define MAP_32BIT	0x40		/* only give out 32bit addresses */
- 
- #ifdef CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
--/*
-- * Take the 4 protection key bits out of the vma->vm_flags
-- * value and turn them in to the bits that we can put in
-- * to a pte.
-- *
-- * Only override these if Protection Keys are available
-- * (which is only on 64-bit).
-- */
--#define arch_vm_get_page_prot(vm_flags)	__pgprot(	\
--		((vm_flags) & VM_PKEY_BIT0 ? _PAGE_PKEY_BIT0 : 0) |	\
--		((vm_flags) & VM_PKEY_BIT1 ? _PAGE_PKEY_BIT1 : 0) |	\
--		((vm_flags) & VM_PKEY_BIT2 ? _PAGE_PKEY_BIT2 : 0) |	\
--		((vm_flags) & VM_PKEY_BIT3 ? _PAGE_PKEY_BIT3 : 0))
--
- #define arch_calc_vm_prot_bits(prot, key) (		\
- 		((key) & 0x1 ? VM_PKEY_BIT0 : 0) |      \
- 		((key) & 0x2 ? VM_PKEY_BIT1 : 0) |      \
-diff --git a/arch/x86/mm/Makefile b/arch/x86/mm/Makefile
-index fe3d3061fc11..fb6b41a48ae5 100644
---- a/arch/x86/mm/Makefile
-+++ b/arch/x86/mm/Makefile
-@@ -20,7 +20,7 @@ CFLAGS_REMOVE_mem_encrypt_identity.o	= -pg
- endif
- 
- obj-y				:=  init.o init_$(BITS).o fault.o ioremap.o extable.o mmap.o \
--				    pgtable.o physaddr.o setup_nx.o tlb.o cpu_entry_area.o maccess.o
-+				    pgtable.o physaddr.o setup_nx.o tlb.o cpu_entry_area.o maccess.o pgprot.o
- 
- obj-y				+= pat/
- 
-diff --git a/arch/x86/mm/mem_encrypt_amd.c b/arch/x86/mm/mem_encrypt_amd.c
-index 2b2d018ea345..95f94eaac9a0 100644
---- a/arch/x86/mm/mem_encrypt_amd.c
-+++ b/arch/x86/mm/mem_encrypt_amd.c
-@@ -179,8 +179,6 @@ void __init sme_map_bootdata(char *real_mode_data)
- 
- void __init sme_early_init(void)
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index a801ea40908f..59b1ea82f5f0 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -2177,10 +2177,10 @@ static void virtnet_get_ringparam(struct net_device *dev,
  {
--	unsigned int i;
--
- 	if (!sme_me_mask)
- 		return;
+ 	struct virtnet_info *vi = netdev_priv(dev);
  
-@@ -188,10 +186,6 @@ void __init sme_early_init(void)
- 
- 	__supported_pte_mask = __sme_set(__supported_pte_mask);
- 
--	/* Update the protection map with memory encryption mask */
--	for (i = 0; i < ARRAY_SIZE(protection_map); i++)
--		protection_map[i] = pgprot_encrypted(protection_map[i]);
--
- 	if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
- 		swiotlb_force = SWIOTLB_FORCE;
+-	ring->rx_max_pending = virtqueue_get_vring_size(vi->rq[0].vq);
+-	ring->tx_max_pending = virtqueue_get_vring_size(vi->sq[0].vq);
+-	ring->rx_pending = ring->rx_max_pending;
+-	ring->tx_pending = ring->tx_max_pending;
++	ring->rx_max_pending = virtqueue_get_vring_max_size(vi->rq[0].vq);
++	ring->tx_max_pending = virtqueue_get_vring_max_size(vi->sq[0].vq);
++	ring->rx_pending = virtqueue_get_vring_size(vi->rq[0].vq);
++	ring->tx_pending = virtqueue_get_vring_size(vi->sq[0].vq);
  }
-diff --git a/arch/x86/mm/pgprot.c b/arch/x86/mm/pgprot.c
-new file mode 100644
-index 000000000000..5f2f029ce4fa
---- /dev/null
-+++ b/arch/x86/mm/pgprot.c
-@@ -0,0 +1,71 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/export.h>
-+#include <linux/mm.h>
-+#include <asm/pgtable.h>
-+
-+static inline pgprot_t __vm_get_page_prot(unsigned long vm_flags)
-+{
-+	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
-+	case VM_NONE:
-+		return PAGE_NONE;
-+	case VM_READ:
-+		return PAGE_READONLY;
-+	case VM_WRITE:
-+		return PAGE_COPY;
-+	case VM_WRITE | VM_READ:
-+		return PAGE_COPY;
-+	case VM_EXEC:
-+	case VM_EXEC | VM_READ:
-+		return PAGE_READONLY_EXEC;
-+	case VM_EXEC | VM_WRITE:
-+	case VM_EXEC | VM_WRITE | VM_READ:
-+		return PAGE_COPY_EXEC;
-+	case VM_SHARED:
-+		return PAGE_NONE;
-+	case VM_SHARED | VM_READ:
-+		return PAGE_READONLY;
-+	case VM_SHARED | VM_WRITE:
-+	case VM_SHARED | VM_WRITE | VM_READ:
-+		return PAGE_SHARED;
-+	case VM_SHARED | VM_EXEC:
-+	case VM_SHARED | VM_EXEC | VM_READ:
-+		return PAGE_READONLY_EXEC;
-+	case VM_SHARED | VM_EXEC | VM_WRITE:
-+	case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
-+		return PAGE_SHARED_EXEC;
-+	default:
-+		BUILD_BUG();
-+		return PAGE_NONE;
-+	}
-+}
-+
-+
-+pgprot_t vm_get_page_prot(unsigned long vm_flags)
-+{
-+	unsigned long val = pgprot_val(__vm_get_page_prot(vm_flags));
-+
-+#ifdef CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
-+	/*
-+	 * Take the 4 protection key bits out of the vma->vm_flags value and
-+	 * turn them in to the bits that we can put in to a pte.
-+	 *
-+	 * Only override these if Protection Keys are available (which is only
-+	 * on 64-bit).
-+	 */
-+	if (vm_flags & VM_PKEY_BIT0)
-+		val |= _PAGE_PKEY_BIT0;
-+	if (vm_flags & VM_PKEY_BIT1)
-+		val |= _PAGE_PKEY_BIT1;
-+	if (vm_flags & VM_PKEY_BIT2)
-+		val |= _PAGE_PKEY_BIT2;
-+	if (vm_flags & VM_PKEY_BIT3)
-+		val |= _PAGE_PKEY_BIT3;
-+#endif
-+
-+	val = __sme_set(val);
-+	if (val & _PAGE_PRESENT)
-+		val &= __supported_pte_mask;
-+	return __pgprot(val);
-+}
-+EXPORT_SYMBOL(vm_get_page_prot);
+ 
+ 
 -- 
-2.25.1
+2.31.0
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
