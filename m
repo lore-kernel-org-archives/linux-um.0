@@ -1,117 +1,67 @@
-Return-Path: <anshuman.khandual@arm.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V3 20/30] xtensa/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Date: Mon, 28 Feb 2022 16:17:43 +0530
-Message-Id: <1646045273-9343-21-git-send-email-anshuman.khandual@arm.com>
-In-Reply-To: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
-References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
-To: linux-mm@kvack.org, akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, geert@linux-m68k.org, Anshuman Khandual <anshuman.khandual@arm.com>, Christoph Hellwig <hch@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org, linux-riscv@lists.infradead.org, linux-alpha@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-parisc@vger.kernel.org, openrisc@lists.librecores.org, linux-um@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org, Chris Zankel <chris@zankel.net>, Guo Ren <guoren@kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nN9Db-00HELp-E3
+ for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:11:23 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v6 02/26] virtio: queue_reset: add VIRTIO_F_RING_RESET
+Date: Thu, 24 Feb 2022 16:10:38 +0800
+Message-Id: <20220224081102.80224-3-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
+References: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
+MIME-Version: 1.0
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
 
-This defines and exports a platform specific custom vm_get_page_prot() via
-subscribing ARCH_HAS_VM_GET_PAGE_PROT. Subsequently all __SXXX and __PXXX
-macros can be dropped which are no longer needed.
+Added VIRTIO_F_RING_RESET, it came from here
+https://github.com/oasis-tcs/virtio-spec/issues/124
 
-Cc: Chris Zankel <chris@zankel.net>
-Cc: Guo Ren <guoren@kernel.org>
-Cc: linux-xtensa@linux-xtensa.org
-Cc: linux-csky@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- arch/xtensa/Kconfig               |  1 +
- arch/xtensa/include/asm/pgtable.h | 19 -----------------
- arch/xtensa/mm/init.c             | 35 +++++++++++++++++++++++++++++++
- 3 files changed, 36 insertions(+), 19 deletions(-)
+ include/uapi/linux/virtio_config.h | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
-index 8ac599aa6d99..1608f7517546 100644
---- a/arch/xtensa/Kconfig
-+++ b/arch/xtensa/Kconfig
-@@ -9,6 +9,7 @@ config XTENSA
- 	select ARCH_HAS_DMA_SET_UNCACHED if MMU
- 	select ARCH_HAS_STRNCPY_FROM_USER if !KASAN
- 	select ARCH_HAS_STRNLEN_USER
-+	select ARCH_HAS_VM_GET_PAGE_PROT
- 	select ARCH_USE_MEMTEST
- 	select ARCH_USE_QUEUED_RWLOCKS
- 	select ARCH_USE_QUEUED_SPINLOCKS
-diff --git a/arch/xtensa/include/asm/pgtable.h b/arch/xtensa/include/asm/pgtable.h
-index bd5aeb795567..509f765281d8 100644
---- a/arch/xtensa/include/asm/pgtable.h
-+++ b/arch/xtensa/include/asm/pgtable.h
-@@ -198,26 +198,7 @@
-  * the MMU can't do page protection for execute, and considers that the same as
-  * read.  Also, write permissions may imply read permissions.
-  * What follows is the closest we can get by reasonable means..
-- * See linux/mm/mmap.c for protection_map[] array that uses these definitions.
+diff --git a/include/uapi/linux/virtio_config.h b/include/uapi/linux/virtio_config.h
+index b5eda06f0d57..0862be802ff8 100644
+--- a/include/uapi/linux/virtio_config.h
++++ b/include/uapi/linux/virtio_config.h
+@@ -52,7 +52,7 @@
+  * rest are per-device feature bits.
   */
--#define __P000	PAGE_NONE		/* private --- */
--#define __P001	PAGE_READONLY		/* private --r */
--#define __P010	PAGE_COPY		/* private -w- */
--#define __P011	PAGE_COPY		/* private -wr */
--#define __P100	PAGE_READONLY_EXEC	/* private x-- */
--#define __P101	PAGE_READONLY_EXEC	/* private x-r */
--#define __P110	PAGE_COPY_EXEC		/* private xw- */
--#define __P111	PAGE_COPY_EXEC		/* private xwr */
--
--#define __S000	PAGE_NONE		/* shared  --- */
--#define __S001	PAGE_READONLY		/* shared  --r */
--#define __S010	PAGE_SHARED		/* shared  -w- */
--#define __S011	PAGE_SHARED		/* shared  -wr */
--#define __S100	PAGE_READONLY_EXEC	/* shared  x-- */
--#define __S101	PAGE_READONLY_EXEC	/* shared  x-r */
--#define __S110	PAGE_SHARED_EXEC	/* shared  xw- */
--#define __S111	PAGE_SHARED_EXEC	/* shared  xwr */
--
- #ifndef __ASSEMBLY__
+ #define VIRTIO_TRANSPORT_F_START	28
+-#define VIRTIO_TRANSPORT_F_END		38
++#define VIRTIO_TRANSPORT_F_END		41
  
- #define pte_ERROR(e) \
-diff --git a/arch/xtensa/mm/init.c b/arch/xtensa/mm/init.c
-index 6a32b2cf2718..5f090749e9e0 100644
---- a/arch/xtensa/mm/init.c
-+++ b/arch/xtensa/mm/init.c
-@@ -216,3 +216,38 @@ static int __init parse_memmap_opt(char *str)
- 	return 0;
- }
- early_param("memmap", parse_memmap_opt);
+ #ifndef VIRTIO_CONFIG_NO_LEGACY
+ /* Do we get callbacks when the ring is completely used, even if we've
+@@ -92,4 +92,9 @@
+  * Does the device support Single Root I/O Virtualization?
+  */
+ #define VIRTIO_F_SR_IOV			37
 +
-+pgprot_t vm_get_page_prot(unsigned long vm_flags)
-+{
-+	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
-+	case VM_NONE:
-+		return PAGE_NONE;
-+	case VM_READ:
-+		return PAGE_READONLY;
-+	case VM_WRITE:
-+	case VM_WRITE | VM_READ:
-+		return PAGE_COPY;
-+	case VM_EXEC:
-+	case VM_EXEC | VM_READ:
-+		return PAGE_READONLY_EXEC;
-+	case VM_EXEC | VM_WRITE:
-+	case VM_EXEC | VM_WRITE | VM_READ:
-+		return PAGE_COPY_EXEC;
-+	case VM_SHARED:
-+		return PAGE_NONE;
-+	case VM_SHARED | VM_READ:
-+		return PAGE_READONLY;
-+	case VM_SHARED | VM_WRITE:
-+	case VM_SHARED | VM_WRITE | VM_READ:
-+		return PAGE_SHARED;
-+	case VM_SHARED | VM_EXEC:
-+	case VM_SHARED | VM_EXEC | VM_READ:
-+		return PAGE_READONLY_EXEC;
-+	case VM_SHARED | VM_EXEC | VM_WRITE:
-+	case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
-+		return PAGE_SHARED_EXEC;
-+	default:
-+		BUILD_BUG();
-+	}
-+}
-+EXPORT_SYMBOL(vm_get_page_prot);
++/*
++ * This feature indicates that the driver can reset a queue individually.
++ */
++#define VIRTIO_F_RING_RESET		40
+ #endif /* _UAPI_LINUX_VIRTIO_CONFIG_H */
 -- 
-2.25.1
+2.31.0
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
