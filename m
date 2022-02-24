@@ -1,13 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132])
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nN9EG-00HF8M-Qz
- for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:12:02 +0000
+ id 1nN9E9-00HEyk-35
+ for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:11:57 +0000
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v6 25/26] virtio_net: set the default max ring size by
- find_vqs()
-Date: Thu, 24 Feb 2022 16:11:01 +0800
-Message-Id: <20220224081102.80224-26-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v6 21/26] virtio: add helper virtio_find_vqs_ctx_size()
+Date: Thu, 24 Feb 2022 16:10:57 +0800
+Message-Id: <20220224081102.80224-22-xuanzhuo@linux.alibaba.com>
 In-Reply-To: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
 References: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
@@ -26,122 +25,37 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
 Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
 
-Use virtio_find_vqs_ctx_size() to specify the maximum ring size of tx,
-rx at the same time.
-
-                         | rx/tx ring size
--------------------------------------------
-speed == UNKNOWN or < 10G| 1024
-speed < 40G              | 4096
-speed >= 40G             | 8192
-
-Call virtnet_update_settings() once before calling init_vqs() to update
-speed.
+Introduce helper virtio_find_vqs_ctx_size() to call find_vqs and specify
+the maximum size of each vq ring.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- drivers/net/virtio_net.c | 42 ++++++++++++++++++++++++++++++++++++----
- 1 file changed, 38 insertions(+), 4 deletions(-)
+ include/linux/virtio_config.h | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index ffff323dcef0..f1bdc6ce21c3 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -2977,6 +2977,29 @@ static unsigned int mergeable_min_buf_len(struct virtnet_info *vi, struct virtqu
- 		   (unsigned int)GOOD_PACKET_LEN);
+diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
+index 5157524d8036..921d8610db0c 100644
+--- a/include/linux/virtio_config.h
++++ b/include/linux/virtio_config.h
+@@ -233,6 +233,18 @@ int virtio_find_vqs_ctx(struct virtio_device *vdev, unsigned nvqs,
+ 				      desc, NULL);
  }
  
-+static void virtnet_config_sizes(struct virtnet_info *vi, u32 *sizes)
++static inline
++int virtio_find_vqs_ctx_size(struct virtio_device *vdev, u32 nvqs,
++				 struct virtqueue *vqs[],
++				 vq_callback_t *callbacks[],
++				 const char * const names[],
++				 const bool *ctx, struct irq_affinity *desc,
++				 u32 sizes[])
 +{
-+	u32 i, rx_size, tx_size;
-+
-+	if (vi->speed == SPEED_UNKNOWN || vi->speed < SPEED_10000) {
-+		rx_size = 1024;
-+		tx_size = 1024;
-+
-+	} else if (vi->speed < SPEED_40000) {
-+		rx_size = 1024 * 4;
-+		tx_size = 1024 * 4;
-+
-+	} else {
-+		rx_size = 1024 * 8;
-+		tx_size = 1024 * 8;
-+	}
-+
-+	for (i = 0; i < vi->max_queue_pairs; i++) {
-+		sizes[rxq2vq(i)] = rx_size;
-+		sizes[txq2vq(i)] = tx_size;
-+	}
++	return vdev->config->find_vqs(vdev, nvqs, vqs, callbacks, names, ctx,
++				      desc, sizes);
 +}
 +
- static int virtnet_find_vqs(struct virtnet_info *vi)
- {
- 	vq_callback_t **callbacks;
-@@ -2984,6 +3007,7 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
- 	int ret = -ENOMEM;
- 	int i, total_vqs;
- 	const char **names;
-+	u32 *sizes;
- 	bool *ctx;
- 
- 	/* We expect 1 RX virtqueue followed by 1 TX virtqueue, followed by
-@@ -3011,10 +3035,15 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
- 		ctx = NULL;
- 	}
- 
-+	sizes = kmalloc_array(total_vqs, sizeof(*sizes), GFP_KERNEL);
-+	if (!sizes)
-+		goto err_sizes;
-+
- 	/* Parameters for control virtqueue, if any */
- 	if (vi->has_cvq) {
- 		callbacks[total_vqs - 1] = NULL;
- 		names[total_vqs - 1] = "control";
-+		sizes[total_vqs - 1] = 0;
- 	}
- 
- 	/* Allocate/initialize parameters for send/receive virtqueues */
-@@ -3029,8 +3058,10 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
- 			ctx[rxq2vq(i)] = true;
- 	}
- 
--	ret = virtio_find_vqs_ctx(vi->vdev, total_vqs, vqs, callbacks,
--				  names, ctx, NULL);
-+	virtnet_config_sizes(vi, sizes);
-+
-+	ret = virtio_find_vqs_ctx_size(vi->vdev, total_vqs, vqs, callbacks,
-+				       names, ctx, NULL, sizes);
- 	if (ret)
- 		goto err_find;
- 
-@@ -3050,6 +3081,8 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
- 
- 
- err_find:
-+	kfree(sizes);
-+err_sizes:
- 	kfree(ctx);
- err_ctx:
- 	kfree(names);
-@@ -3368,6 +3401,9 @@ static int virtnet_probe(struct virtio_device *vdev)
- 		vi->curr_queue_pairs = num_online_cpus();
- 	vi->max_queue_pairs = max_queue_pairs;
- 
-+	virtnet_init_settings(dev);
-+	virtnet_update_settings(vi);
-+
- 	/* Allocate/initialize the rx/tx queues, and invoke find_vqs */
- 	err = init_vqs(vi);
- 	if (err)
-@@ -3380,8 +3416,6 @@ static int virtnet_probe(struct virtio_device *vdev)
- 	netif_set_real_num_tx_queues(dev, vi->curr_queue_pairs);
- 	netif_set_real_num_rx_queues(dev, vi->curr_queue_pairs);
- 
--	virtnet_init_settings(dev);
--
- 	if (virtio_has_feature(vdev, VIRTIO_NET_F_STANDBY)) {
- 		vi->failover = net_failover_create(vi->dev);
- 		if (IS_ERR(vi->failover)) {
+ /**
+  * virtio_reset_vq - reset a queue individually
+  * @vq: the virtqueue
 -- 
 2.31.0
 
