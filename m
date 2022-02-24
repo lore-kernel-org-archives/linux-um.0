@@ -1,13 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44])
+Received: from out199-9.us.a.mail.aliyun.com ([47.90.199.9])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nN9EA-00HF16-SU
- for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:11:56 +0000
+ id 1nN9E2-00HEp6-SB
+ for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:11:49 +0000
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v6 22/26] virtio_net: get ringparam by
- virtqueue_get_vring_max_size()
-Date: Thu, 24 Feb 2022 16:10:58 +0800
-Message-Id: <20220224081102.80224-23-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v6 17/26] virtio_pci: queue_reset: support VIRTIO_F_RING_RESET
+Date: Thu, 24 Feb 2022 16:10:53 +0800
+Message-Id: <20220224081102.80224-18-xuanzhuo@linux.alibaba.com>
 In-Reply-To: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
 References: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
@@ -26,33 +25,158 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
 Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
 
-Use virtqueue_get_vring_max_size() in virtnet_get_ringparam() to set
-tx,rx_max_pending.
+This patch implements virtio pci support for QUEUE RESET.
+
+Performing reset on a queue is divided into these steps:
+
+ 1. virtio_reset_vq()              - notify the device to reset the queue
+ 2. virtqueue_detach_unused_buf()  - recycle the buffer submitted
+ 3. virtqueue_reset_vring()        - reset the vring (may re-alloc)
+ 4. virtio_enable_resetq()         - mmap vring to device, and enable the queue
+
+This patch implements virtio_reset_vq(), virtio_enable_resetq() in the
+pci scenario.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- drivers/net/virtio_net.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/virtio/virtio_pci_common.c |  8 +--
+ drivers/virtio/virtio_pci_modern.c | 83 ++++++++++++++++++++++++++++++
+ 2 files changed, 88 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index a801ea40908f..59b1ea82f5f0 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -2177,10 +2177,10 @@ static void virtnet_get_ringparam(struct net_device *dev,
- {
- 	struct virtnet_info *vi = netdev_priv(dev);
+diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
+index fdbde1db5ec5..863d3a8a0956 100644
+--- a/drivers/virtio/virtio_pci_common.c
++++ b/drivers/virtio/virtio_pci_common.c
+@@ -248,9 +248,11 @@ static void vp_del_vq(struct virtqueue *vq)
+ 	struct virtio_pci_vq_info *info = vp_dev->vqs[vq->index];
+ 	unsigned long flags;
  
--	ring->rx_max_pending = virtqueue_get_vring_size(vi->rq[0].vq);
--	ring->tx_max_pending = virtqueue_get_vring_size(vi->sq[0].vq);
--	ring->rx_pending = ring->rx_max_pending;
--	ring->tx_pending = ring->tx_max_pending;
-+	ring->rx_max_pending = virtqueue_get_vring_max_size(vi->rq[0].vq);
-+	ring->tx_max_pending = virtqueue_get_vring_max_size(vi->sq[0].vq);
-+	ring->rx_pending = virtqueue_get_vring_size(vi->rq[0].vq);
-+	ring->tx_pending = virtqueue_get_vring_size(vi->sq[0].vq);
+-	spin_lock_irqsave(&vp_dev->lock, flags);
+-	list_del(&info->node);
+-	spin_unlock_irqrestore(&vp_dev->lock, flags);
++	if (!vq->reset) {
++		spin_lock_irqsave(&vp_dev->lock, flags);
++		list_del(&info->node);
++		spin_unlock_irqrestore(&vp_dev->lock, flags);
++	}
+ 
+ 	vp_dev->del_vq(info);
+ 	kfree(info);
+diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
+index 49a4493732cf..3c67d3607802 100644
+--- a/drivers/virtio/virtio_pci_modern.c
++++ b/drivers/virtio/virtio_pci_modern.c
+@@ -34,6 +34,9 @@ static void vp_transport_features(struct virtio_device *vdev, u64 features)
+ 	if ((features & BIT_ULL(VIRTIO_F_SR_IOV)) &&
+ 			pci_find_ext_capability(pci_dev, PCI_EXT_CAP_ID_SRIOV))
+ 		__virtio_set_bit(vdev, VIRTIO_F_SR_IOV);
++
++	if (features & BIT_ULL(VIRTIO_F_RING_RESET))
++		__virtio_set_bit(vdev, VIRTIO_F_RING_RESET);
  }
  
+ /* virtio config->finalize_features() implementation */
+@@ -199,6 +202,82 @@ static int vp_active_vq(struct virtqueue *vq, u16 msix_vec)
+ 	return 0;
+ }
  
++static int vp_modern_reset_vq(struct virtqueue *vq)
++{
++	struct virtio_pci_device *vp_dev = to_vp_device(vq->vdev);
++	struct virtio_pci_modern_device *mdev = &vp_dev->mdev;
++	struct virtio_pci_vq_info *info;
++	unsigned long flags;
++	unsigned int irq;
++
++	if (!virtio_has_feature(vq->vdev, VIRTIO_F_RING_RESET))
++		return -ENOENT;
++
++	vp_modern_set_queue_reset(mdev, vq->index);
++
++	info = vp_dev->vqs[vq->index];
++
++	/* delete vq from irq handler */
++	spin_lock_irqsave(&vp_dev->lock, flags);
++	list_del(&info->node);
++	spin_unlock_irqrestore(&vp_dev->lock, flags);
++
++	INIT_LIST_HEAD(&info->node);
++
++	vq->reset = VIRTIO_VQ_RESET_STEP_DEVICE;
++
++	/* sync irq callback. */
++	if (vp_dev->intx_enabled) {
++		irq = vp_dev->pci_dev->irq;
++
++	} else {
++		if (info->msix_vector == VIRTIO_MSI_NO_VECTOR)
++			return 0;
++
++		irq = pci_irq_vector(vp_dev->pci_dev, info->msix_vector);
++	}
++
++	synchronize_irq(irq);
++
++	return 0;
++}
++
++static int vp_modern_enable_reset_vq(struct virtqueue *vq)
++{
++	struct virtio_pci_device *vp_dev = to_vp_device(vq->vdev);
++	struct virtio_pci_modern_device *mdev = &vp_dev->mdev;
++	struct virtio_pci_vq_info *info;
++	unsigned long flags, index;
++	int err;
++
++	if (vq->reset != VIRTIO_VQ_RESET_STEP_VRING_ATTACH)
++		return -EBUSY;
++
++	index = vq->index;
++	info = vp_dev->vqs[index];
++
++	/* check queue reset status */
++	if (vp_modern_get_queue_reset(mdev, index) != 1)
++		return -EBUSY;
++
++	err = vp_active_vq(vq, info->msix_vector);
++	if (err)
++		return err;
++
++	if (vq->callback) {
++		spin_lock_irqsave(&vp_dev->lock, flags);
++		list_add(&info->node, &vp_dev->virtqueues);
++		spin_unlock_irqrestore(&vp_dev->lock, flags);
++	} else {
++		INIT_LIST_HEAD(&info->node);
++	}
++
++	vp_modern_set_queue_enable(&vp_dev->mdev, index, true);
++	vq->reset = VIRTIO_VQ_RESET_STEP_NONE;
++
++	return 0;
++}
++
+ static u16 vp_config_vector(struct virtio_pci_device *vp_dev, u16 vector)
+ {
+ 	return vp_modern_config_vector(&vp_dev->mdev, vector);
+@@ -407,6 +486,8 @@ static const struct virtio_config_ops virtio_pci_config_nodev_ops = {
+ 	.set_vq_affinity = vp_set_vq_affinity,
+ 	.get_vq_affinity = vp_get_vq_affinity,
+ 	.get_shm_region  = vp_get_shm_region,
++	.reset_vq	 = vp_modern_reset_vq,
++	.enable_reset_vq = vp_modern_enable_reset_vq,
+ };
+ 
+ static const struct virtio_config_ops virtio_pci_config_ops = {
+@@ -425,6 +506,8 @@ static const struct virtio_config_ops virtio_pci_config_ops = {
+ 	.set_vq_affinity = vp_set_vq_affinity,
+ 	.get_vq_affinity = vp_get_vq_affinity,
+ 	.get_shm_region  = vp_get_shm_region,
++	.reset_vq	 = vp_modern_reset_vq,
++	.enable_reset_vq = vp_modern_enable_reset_vq,
+ };
+ 
+ /* the PCI probing function */
 -- 
 2.31.0
 
