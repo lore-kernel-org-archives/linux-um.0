@@ -1,318 +1,174 @@
-Return-Path: <arnd@kernel.org>
-From: Arnd Bergmann <arnd@kernel.org>
-Subject: [PATCH v2 17/18] ia64: remove CONFIG_SET_FS support
-Date: Wed, 16 Feb 2022 14:13:31 +0100
-Message-Id: <20220216131332.1489939-18-arnd@kernel.org>
-In-Reply-To: <20220216131332.1489939-1-arnd@kernel.org>
-References: <20220216131332.1489939-1-arnd@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nN9Db-00HEMY-W7
+ for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:11:25 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v6 04/26] virtio_ring: split: extract the logic of creating
+ vring
+Date: Thu, 24 Feb 2022 16:10:40 +0800
+Message-Id: <20220224081102.80224-5-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
+References: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: Linus Torvalds <torvalds@linux-foundation.org>, Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-api@vger.kernel.org, arnd@arndb.de, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk
-Cc: linux@armlinux.org.uk, will@kernel.org, guoren@kernel.org, bcain@codeaurora.org, geert@linux-m68k.org, monstr@monstr.eu, tsbogend@alpha.franken.de, nickhu@andestech.com, green.hu@gmail.com, dinguyen@kernel.org, shorne@gmail.com, deller@gmx.de, mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com, hca@linux.ibm.com, dalias@libc.org, davem@davemloft.net, richard@nod.at, x86@kernel.org, jcmvbkbc@gmail.com, ebiederm@xmission.com, akpm@linux-foundation.org, ardb@kernel.org, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Separate the logic of split to create vring queue.
 
-ia64 only uses set_fs() in one file to handle unaligned access for
-both user space and kernel instructions. Rewrite this to explicitly
-pass around a flag about which one it is and drop the feature from
-the architecture.
+For the convenience of passing parameters, add a structure
+vring_split.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+This feature is required for subsequent virtuqueue reset vring.
+
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- arch/ia64/Kconfig                   |  1 -
- arch/ia64/include/asm/processor.h   |  4 --
- arch/ia64/include/asm/thread_info.h |  2 -
- arch/ia64/include/asm/uaccess.h     | 21 +++-------
- arch/ia64/kernel/unaligned.c        | 60 +++++++++++++++++++----------
- 5 files changed, 45 insertions(+), 43 deletions(-)
+ drivers/virtio/virtio_ring.c | 74 +++++++++++++++++++++++++-----------
+ 1 file changed, 51 insertions(+), 23 deletions(-)
 
-diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
-index a7e01573abd8..6b6a35b3d959 100644
---- a/arch/ia64/Kconfig
-+++ b/arch/ia64/Kconfig
-@@ -61,7 +61,6 @@ config IA64
- 	select NEED_SG_DMA_LENGTH
- 	select NUMA if !FLATMEM
- 	select PCI_MSI_ARCH_FALLBACKS if PCI_MSI
--	select SET_FS
- 	select ZONE_DMA32
- 	default y
- 	help
-diff --git a/arch/ia64/include/asm/processor.h b/arch/ia64/include/asm/processor.h
-index 45365c2ef598..7cbce290f4e5 100644
---- a/arch/ia64/include/asm/processor.h
-+++ b/arch/ia64/include/asm/processor.h
-@@ -243,10 +243,6 @@ DECLARE_PER_CPU(struct cpuinfo_ia64, ia64_cpu_info);
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index b87130c8f312..d32793615451 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -85,6 +85,13 @@ struct vring_desc_extra {
+ 	u16 next;			/* The next desc state in a list. */
+ };
  
- extern void print_cpu_info (struct cpuinfo_ia64 *);
++struct vring_split {
++	void *queue;
++	dma_addr_t dma_addr;
++	size_t queue_size_in_bytes;
++	struct vring vring;
++};
++
+ struct vring_virtqueue {
+ 	struct virtqueue vq;
  
--typedef struct {
--	unsigned long seg;
--} mm_segment_t;
--
- #define SET_UNALIGN_CTL(task,value)								\
- ({												\
- 	(task)->thread.flags = (((task)->thread.flags & ~IA64_THREAD_UAC_MASK)			\
-diff --git a/arch/ia64/include/asm/thread_info.h b/arch/ia64/include/asm/thread_info.h
-index 51d20cb37706..ef83493e6778 100644
---- a/arch/ia64/include/asm/thread_info.h
-+++ b/arch/ia64/include/asm/thread_info.h
-@@ -27,7 +27,6 @@ struct thread_info {
- 	__u32 cpu;			/* current CPU */
- 	__u32 last_cpu;			/* Last CPU thread ran on */
- 	__u32 status;			/* Thread synchronous flags */
--	mm_segment_t addr_limit;	/* user-level address space limit */
- 	int preempt_count;		/* 0=premptable, <0=BUG; will also serve as bh-counter */
- #ifdef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
- 	__u64 utime;
-@@ -48,7 +47,6 @@ struct thread_info {
- 	.task		= &tsk,			\
- 	.flags		= 0,			\
- 	.cpu		= 0,			\
--	.addr_limit	= KERNEL_DS,		\
- 	.preempt_count	= INIT_PREEMPT_COUNT,	\
+@@ -915,28 +922,21 @@ static void *virtqueue_detach_unused_buf_split(struct virtqueue *_vq)
+ 	return NULL;
  }
  
-diff --git a/arch/ia64/include/asm/uaccess.h b/arch/ia64/include/asm/uaccess.h
-index e242a3cc1330..60adadeb3e9e 100644
---- a/arch/ia64/include/asm/uaccess.h
-+++ b/arch/ia64/include/asm/uaccess.h
-@@ -42,26 +42,17 @@
- #include <asm/extable.h>
- 
- /*
-- * For historical reasons, the following macros are grossly misnamed:
-- */
--#define KERNEL_DS	((mm_segment_t) { ~0UL })		/* cf. access_ok() */
--#define USER_DS		((mm_segment_t) { TASK_SIZE-1 })	/* cf. access_ok() */
--
--#define get_fs()  (current_thread_info()->addr_limit)
--#define set_fs(x) (current_thread_info()->addr_limit = (x))
--
--/*
-- * When accessing user memory, we need to make sure the entire area really is in
-- * user-level space.  In order to do this efficiently, we make sure that the page at
-- * address TASK_SIZE is never valid.  We also need to make sure that the address doesn't
-+ * When accessing user memory, we need to make sure the entire area really is
-+ * in user-level space.  We also need to make sure that the address doesn't
-  * point inside the virtually mapped linear page table.
-  */
- static inline int __access_ok(const void __user *p, unsigned long size)
+-static struct virtqueue *vring_create_virtqueue_split(
+-	unsigned int index,
+-	unsigned int num,
+-	unsigned int vring_align,
+-	struct virtio_device *vdev,
+-	bool weak_barriers,
+-	bool may_reduce_num,
+-	bool context,
+-	bool (*notify)(struct virtqueue *),
+-	void (*callback)(struct virtqueue *),
+-	const char *name)
++static int vring_create_vring_split(struct vring_split *vring,
++				    struct virtio_device *vdev,
++				    unsigned int vring_align,
++				    bool weak_barriers,
++				    bool may_reduce_num,
++				    u32 num)
  {
-+	unsigned long limit = TASK_SIZE;
- 	unsigned long addr = (unsigned long)p;
--	unsigned long seg = get_fs().seg;
--	return likely(addr <= seg) &&
--	 (seg == KERNEL_DS.seg || likely(REGION_OFFSET(addr) < RGN_MAP_LIMIT));
-+
-+	return likely((size <= limit) && (addr <= (limit - size)) &&
-+		 likely(REGION_OFFSET(addr) < RGN_MAP_LIMIT));
- }
- #define __access_ok __access_ok
- #include <asm-generic/access_ok.h>
-diff --git a/arch/ia64/kernel/unaligned.c b/arch/ia64/kernel/unaligned.c
-index 6c1a8951dfbb..0acb5a0cd7ab 100644
---- a/arch/ia64/kernel/unaligned.c
-+++ b/arch/ia64/kernel/unaligned.c
-@@ -749,9 +749,25 @@ emulate_load_updates (update_t type, load_store_t ld, struct pt_regs *regs, unsi
- 	}
- }
+-	struct virtqueue *vq;
+ 	void *queue = NULL;
+ 	dma_addr_t dma_addr;
+ 	size_t queue_size_in_bytes;
+-	struct vring vring;
  
-+static int emulate_store(unsigned long ifa, void *val, int len, bool kernel_mode)
-+{
-+	if (kernel_mode)
-+		return copy_to_kernel_nofault((void *)ifa, val, len);
+ 	/* We assume num is a power of 2. */
+ 	if (num & (num - 1)) {
+ 		dev_warn(&vdev->dev, "Bad virtqueue length %u\n", num);
+-		return NULL;
++		return -EINVAL;
+ 	}
+ 
+ 	/* TODO: allocate each queue chunk individually */
+@@ -947,11 +947,11 @@ static struct virtqueue *vring_create_virtqueue_split(
+ 		if (queue)
+ 			break;
+ 		if (!may_reduce_num)
+-			return NULL;
++			return -ENOMEM;
+ 	}
+ 
+ 	if (!num)
+-		return NULL;
++		return -ENOMEM;
+ 
+ 	if (!queue) {
+ 		/* Try to get a single page. You are my only hope! */
+@@ -959,21 +959,49 @@ static struct virtqueue *vring_create_virtqueue_split(
+ 					  &dma_addr, GFP_KERNEL|__GFP_ZERO);
+ 	}
+ 	if (!queue)
+-		return NULL;
++		return -ENOMEM;
+ 
+ 	queue_size_in_bytes = vring_size(num, vring_align);
+-	vring_init(&vring, num, queue, vring_align);
++	vring_init(&vring->vring, num, queue, vring_align);
 +
-+	return copy_to_user((void __user *)ifa, val, len);
++	vring->dma_addr = dma_addr;
++	vring->queue = queue;
++	vring->queue_size_in_bytes = queue_size_in_bytes;
++
++	return 0;
 +}
 +
-+static int emulate_load(void *val, unsigned long ifa, int len, bool kernel_mode)
++static struct virtqueue *vring_create_virtqueue_split(
++	unsigned int index,
++	unsigned int num,
++	unsigned int vring_align,
++	struct virtio_device *vdev,
++	bool weak_barriers,
++	bool may_reduce_num,
++	bool context,
++	bool (*notify)(struct virtqueue *),
++	void (*callback)(struct virtqueue *),
++	const char *name)
 +{
-+	if (kernel_mode)
-+	       return copy_from_kernel_nofault(val, (void *)ifa, len);
++	struct vring_split vring;
++	struct virtqueue *vq;
++	int err;
 +
-+	return copy_from_user(val, (void __user *)ifa, len);
-+}
++	err = vring_create_vring_split(&vring, vdev, vring_align, weak_barriers,
++				       may_reduce_num, num);
++	if (err)
++		return NULL;
  
- static int
--emulate_load_int (unsigned long ifa, load_store_t ld, struct pt_regs *regs)
-+emulate_load_int (unsigned long ifa, load_store_t ld, struct pt_regs *regs,
-+		  bool kernel_mode)
- {
- 	unsigned int len = 1 << ld.x6_sz;
- 	unsigned long val = 0;
-@@ -774,7 +790,7 @@ emulate_load_int (unsigned long ifa, load_store_t ld, struct pt_regs *regs)
- 		return -1;
- 	}
- 	/* this assumes little-endian byte-order: */
--	if (copy_from_user(&val, (void __user *) ifa, len))
-+	if (emulate_load(&val, ifa, len, kernel_mode))
- 		return -1;
- 	setreg(ld.r1, val, 0, regs);
- 
-@@ -872,7 +888,8 @@ emulate_load_int (unsigned long ifa, load_store_t ld, struct pt_regs *regs)
- }
- 
- static int
--emulate_store_int (unsigned long ifa, load_store_t ld, struct pt_regs *regs)
-+emulate_store_int (unsigned long ifa, load_store_t ld, struct pt_regs *regs,
-+		   bool kernel_mode)
- {
- 	unsigned long r2;
- 	unsigned int len = 1 << ld.x6_sz;
-@@ -901,7 +918,7 @@ emulate_store_int (unsigned long ifa, load_store_t ld, struct pt_regs *regs)
+-	vq = __vring_new_virtqueue(index, vring, vdev, weak_barriers, context,
++	vq = __vring_new_virtqueue(index, vring.vring, vdev, weak_barriers, context,
+ 				   notify, callback, name);
+ 	if (!vq) {
+-		vring_free_queue(vdev, queue_size_in_bytes, queue,
+-				 dma_addr);
++		vring_free_queue(vdev, vring.queue_size_in_bytes, vring.queue,
++				 vring.dma_addr);
+ 		return NULL;
  	}
  
- 	/* this assumes little-endian byte-order: */
--	if (copy_to_user((void __user *) ifa, &r2, len))
-+	if (emulate_store(ifa, &r2, len, kernel_mode))
- 		return -1;
+-	to_vvq(vq)->split.queue_dma_addr = dma_addr;
+-	to_vvq(vq)->split.queue_size_in_bytes = queue_size_in_bytes;
++	to_vvq(vq)->split.queue_dma_addr = vring.dma_addr;
++	to_vvq(vq)->split.queue_size_in_bytes = vring.queue_size_in_bytes;
+ 	to_vvq(vq)->we_own_ring = true;
  
- 	/*
-@@ -1021,7 +1038,7 @@ float2mem_double (struct ia64_fpreg *init, struct ia64_fpreg *final)
- }
- 
- static int
--emulate_load_floatpair (unsigned long ifa, load_store_t ld, struct pt_regs *regs)
-+emulate_load_floatpair (unsigned long ifa, load_store_t ld, struct pt_regs *regs, bool kernel_mode)
- {
- 	struct ia64_fpreg fpr_init[2];
- 	struct ia64_fpreg fpr_final[2];
-@@ -1050,8 +1067,8 @@ emulate_load_floatpair (unsigned long ifa, load_store_t ld, struct pt_regs *regs
- 		 * This assumes little-endian byte-order.  Note that there is no "ldfpe"
- 		 * instruction:
- 		 */
--		if (copy_from_user(&fpr_init[0], (void __user *) ifa, len)
--		    || copy_from_user(&fpr_init[1], (void __user *) (ifa + len), len))
-+		if (emulate_load(&fpr_init[0], ifa, len, kernel_mode)
-+		    || emulate_load(&fpr_init[1], (ifa + len), len, kernel_mode))
- 			return -1;
- 
- 		DPRINT("ld.r1=%d ld.imm=%d x6_sz=%d\n", ld.r1, ld.imm, ld.x6_sz);
-@@ -1126,7 +1143,8 @@ emulate_load_floatpair (unsigned long ifa, load_store_t ld, struct pt_regs *regs
- 
- 
- static int
--emulate_load_float (unsigned long ifa, load_store_t ld, struct pt_regs *regs)
-+emulate_load_float (unsigned long ifa, load_store_t ld, struct pt_regs *regs,
-+	            bool kernel_mode)
- {
- 	struct ia64_fpreg fpr_init;
- 	struct ia64_fpreg fpr_final;
-@@ -1152,7 +1170,7 @@ emulate_load_float (unsigned long ifa, load_store_t ld, struct pt_regs *regs)
- 	 * See comments in ldX for descriptions on how the various loads are handled.
- 	 */
- 	if (ld.x6_op != 0x2) {
--		if (copy_from_user(&fpr_init, (void __user *) ifa, len))
-+		if (emulate_load(&fpr_init, ifa, len, kernel_mode))
- 			return -1;
- 
- 		DPRINT("ld.r1=%d x6_sz=%d\n", ld.r1, ld.x6_sz);
-@@ -1202,7 +1220,8 @@ emulate_load_float (unsigned long ifa, load_store_t ld, struct pt_regs *regs)
- 
- 
- static int
--emulate_store_float (unsigned long ifa, load_store_t ld, struct pt_regs *regs)
-+emulate_store_float (unsigned long ifa, load_store_t ld, struct pt_regs *regs,
-+		     bool kernel_mode)
- {
- 	struct ia64_fpreg fpr_init;
- 	struct ia64_fpreg fpr_final;
-@@ -1244,7 +1263,7 @@ emulate_store_float (unsigned long ifa, load_store_t ld, struct pt_regs *regs)
- 	DDUMP("fpr_init =", &fpr_init, len);
- 	DDUMP("fpr_final =", &fpr_final, len);
- 
--	if (copy_to_user((void __user *) ifa, &fpr_final, len))
-+	if (emulate_store(ifa, &fpr_final, len, kernel_mode))
- 		return -1;
- 
- 	/*
-@@ -1295,7 +1314,6 @@ void
- ia64_handle_unaligned (unsigned long ifa, struct pt_regs *regs)
- {
- 	struct ia64_psr *ipsr = ia64_psr(regs);
--	mm_segment_t old_fs = get_fs();
- 	unsigned long bundle[2];
- 	unsigned long opcode;
- 	const struct exception_table_entry *eh = NULL;
-@@ -1304,6 +1322,7 @@ ia64_handle_unaligned (unsigned long ifa, struct pt_regs *regs)
- 		load_store_t insn;
- 	} u;
- 	int ret = -1;
-+	bool kernel_mode = false;
- 
- 	if (ia64_psr(regs)->be) {
- 		/* we don't support big-endian accesses */
-@@ -1367,13 +1386,13 @@ ia64_handle_unaligned (unsigned long ifa, struct pt_regs *regs)
- 			if (unaligned_dump_stack)
- 				dump_stack();
- 		}
--		set_fs(KERNEL_DS);
-+		kernel_mode = true;
- 	}
- 
- 	DPRINT("iip=%lx ifa=%lx isr=%lx (ei=%d, sp=%d)\n",
- 	       regs->cr_iip, ifa, regs->cr_ipsr, ipsr->ri, ipsr->it);
- 
--	if (__copy_from_user(bundle, (void __user *) regs->cr_iip, 16))
-+	if (emulate_load(bundle, regs->cr_iip, 16, kernel_mode))
- 		goto failure;
- 
- 	/*
-@@ -1467,7 +1486,7 @@ ia64_handle_unaligned (unsigned long ifa, struct pt_regs *regs)
- 	      case LDCCLR_IMM_OP:
- 	      case LDCNC_IMM_OP:
- 	      case LDCCLRACQ_IMM_OP:
--		ret = emulate_load_int(ifa, u.insn, regs);
-+		ret = emulate_load_int(ifa, u.insn, regs, kernel_mode);
- 		break;
- 
- 	      case ST_OP:
-@@ -1478,7 +1497,7 @@ ia64_handle_unaligned (unsigned long ifa, struct pt_regs *regs)
- 		fallthrough;
- 	      case ST_IMM_OP:
- 	      case STREL_IMM_OP:
--		ret = emulate_store_int(ifa, u.insn, regs);
-+		ret = emulate_store_int(ifa, u.insn, regs, kernel_mode);
- 		break;
- 
- 	      case LDF_OP:
-@@ -1486,21 +1505,21 @@ ia64_handle_unaligned (unsigned long ifa, struct pt_regs *regs)
- 	      case LDFCCLR_OP:
- 	      case LDFCNC_OP:
- 		if (u.insn.x)
--			ret = emulate_load_floatpair(ifa, u.insn, regs);
-+			ret = emulate_load_floatpair(ifa, u.insn, regs, kernel_mode);
- 		else
--			ret = emulate_load_float(ifa, u.insn, regs);
-+			ret = emulate_load_float(ifa, u.insn, regs, kernel_mode);
- 		break;
- 
- 	      case LDF_IMM_OP:
- 	      case LDFA_IMM_OP:
- 	      case LDFCCLR_IMM_OP:
- 	      case LDFCNC_IMM_OP:
--		ret = emulate_load_float(ifa, u.insn, regs);
-+		ret = emulate_load_float(ifa, u.insn, regs, kernel_mode);
- 		break;
- 
- 	      case STF_OP:
- 	      case STF_IMM_OP:
--		ret = emulate_store_float(ifa, u.insn, regs);
-+		ret = emulate_store_float(ifa, u.insn, regs, kernel_mode);
- 		break;
- 
- 	      default:
-@@ -1521,7 +1540,6 @@ ia64_handle_unaligned (unsigned long ifa, struct pt_regs *regs)
- 
- 	DPRINT("ipsr->ri=%d iip=%lx\n", ipsr->ri, regs->cr_iip);
-   done:
--	set_fs(old_fs);		/* restore original address limit */
- 	return;
- 
-   failure:
+ 	return vq;
 -- 
-2.29.2
+2.31.0
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
