@@ -1,13 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54])
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nN9Dx-00HEjY-NX
- for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:11:43 +0000
+ id 1nN9EC-00HF41-VL
+ for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:11:58 +0000
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v6 16/26] virtio_pci: queue_reset: extract the logic of active
- vq for modern pci
-Date: Thu, 24 Feb 2022 16:10:52 +0800
-Message-Id: <20220224081102.80224-17-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v6 23/26] virtio_net: split free_unused_bufs()
+Date: Thu, 24 Feb 2022 16:10:59 +0800
+Message-Id: <20220224081102.80224-24-xuanzhuo@linux.alibaba.com>
 In-Reply-To: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
 References: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
@@ -26,86 +25,89 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
 Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
 
-Introduce vp_active_vq() to configure vring to backend after vq attach
-vring. And configure vq vector if necessary.
+This patch separates two functions for freeing sq buf and rq buf from
+free_unused_bufs().
+
+When supporting the enable/disable tx/rq queue in the future, it is
+necessary to support separate recovery of a sq buf or a rq buf.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- drivers/virtio/virtio_pci_modern.c | 46 ++++++++++++++++++------------
- 1 file changed, 28 insertions(+), 18 deletions(-)
+ drivers/net/virtio_net.c | 53 +++++++++++++++++++++++-----------------
+ 1 file changed, 31 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
-index 86d301f272b8..49a4493732cf 100644
---- a/drivers/virtio/virtio_pci_modern.c
-+++ b/drivers/virtio/virtio_pci_modern.c
-@@ -176,6 +176,29 @@ static void vp_reset(struct virtio_device *vdev)
- 	vp_disable_cbs(vdev);
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 59b1ea82f5f0..409a8e180918 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -2804,36 +2804,45 @@ static void free_receive_page_frags(struct virtnet_info *vi)
+ 			put_page(vi->rq[i].alloc_frag.page);
  }
  
-+static int vp_active_vq(struct virtqueue *vq, u16 msix_vec)
+-static void free_unused_bufs(struct virtnet_info *vi)
++static void virtnet_sq_free_unused_bufs(struct virtnet_info *vi,
++					struct send_queue *sq)
+ {
+ 	void *buf;
+-	int i;
+ 
+-	for (i = 0; i < vi->max_queue_pairs; i++) {
+-		struct virtqueue *vq = vi->sq[i].vq;
+-		while ((buf = virtqueue_detach_unused_buf(vq)) != NULL) {
+-			if (!is_xdp_frame(buf))
+-				dev_kfree_skb(buf);
+-			else
+-				xdp_return_frame(ptr_to_xdp(buf));
+-		}
++	while ((buf = virtqueue_detach_unused_buf(sq->vq)) != NULL) {
++		if (!is_xdp_frame(buf))
++			dev_kfree_skb(buf);
++		else
++			xdp_return_frame(ptr_to_xdp(buf));
+ 	}
++}
+ 
+-	for (i = 0; i < vi->max_queue_pairs; i++) {
+-		struct virtqueue *vq = vi->rq[i].vq;
+-
+-		while ((buf = virtqueue_detach_unused_buf(vq)) != NULL) {
+-			if (vi->mergeable_rx_bufs) {
+-				put_page(virt_to_head_page(buf));
+-			} else if (vi->big_packets) {
+-				give_pages(&vi->rq[i], buf);
+-			} else {
+-				put_page(virt_to_head_page(buf));
+-			}
+-		}
++static void virtnet_rq_free_unused_bufs(struct virtnet_info *vi,
++					struct receive_queue *rq)
 +{
-+	struct virtio_pci_device *vp_dev = to_vp_device(vq->vdev);
-+	struct virtio_pci_modern_device *mdev = &vp_dev->mdev;
-+	unsigned long index;
++	void *buf;
 +
-+	index = vq->index;
++	while ((buf = virtqueue_detach_unused_buf(rq->vq)) != NULL) {
++		if (vi->mergeable_rx_bufs)
++			put_page(virt_to_head_page(buf));
++		else if (vi->big_packets)
++			give_pages(rq, buf);
++		else
++			put_page(virt_to_head_page(buf));
+ 	}
+ }
+ 
++static void free_unused_bufs(struct virtnet_info *vi)
++{
++	int i;
 +
-+	/* activate the queue */
-+	vp_modern_set_queue_size(mdev, index, virtqueue_get_vring_size(vq));
-+	vp_modern_queue_address(mdev, index, virtqueue_get_desc_addr(vq),
-+				virtqueue_get_avail_addr(vq),
-+				virtqueue_get_used_addr(vq));
++	for (i = 0; i < vi->max_queue_pairs; i++)
++		virtnet_sq_free_unused_bufs(vi, vi->sq + i);
 +
-+	if (msix_vec != VIRTIO_MSI_NO_VECTOR) {
-+		msix_vec = vp_modern_queue_vector(mdev, index, msix_vec);
-+		if (msix_vec == VIRTIO_MSI_NO_VECTOR)
-+			return -EBUSY;
-+	}
-+
-+	return 0;
++	for (i = 0; i < vi->max_queue_pairs; i++)
++		virtnet_rq_free_unused_bufs(vi, vi->rq + i);
 +}
 +
- static u16 vp_config_vector(struct virtio_pci_device *vp_dev, u16 vector)
+ static void virtnet_del_vqs(struct virtnet_info *vi)
  {
- 	return vp_modern_config_vector(&vp_dev->mdev, vector);
-@@ -220,32 +243,19 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 
- 	vq->num_max = num;
- 
--	/* activate the queue */
--	vp_modern_set_queue_size(mdev, index, virtqueue_get_vring_size(vq));
--	vp_modern_queue_address(mdev, index, virtqueue_get_desc_addr(vq),
--				virtqueue_get_avail_addr(vq),
--				virtqueue_get_used_addr(vq));
-+	err = vp_active_vq(vq, msix_vec);
-+	if (err)
-+		goto err;
- 
- 	vq->priv = (void __force *)vp_modern_map_vq_notify(mdev, index, NULL);
- 	if (!vq->priv) {
- 		err = -ENOMEM;
--		goto err_map_notify;
--	}
--
--	if (msix_vec != VIRTIO_MSI_NO_VECTOR) {
--		msix_vec = vp_modern_queue_vector(mdev, index, msix_vec);
--		if (msix_vec == VIRTIO_MSI_NO_VECTOR) {
--			err = -EBUSY;
--			goto err_assign_vector;
--		}
-+		goto err;
- 	}
- 
- 	return vq;
- 
--err_assign_vector:
--	if (!mdev->notify_base)
--		pci_iounmap(mdev->pci_dev, (void __iomem __force *)vq->priv);
--err_map_notify:
-+err:
- 	vring_del_virtqueue(vq);
- 	return ERR_PTR(err);
- }
+ 	struct virtio_device *vdev = vi->vdev;
 -- 
 2.31.0
 
