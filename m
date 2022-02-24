@@ -1,85 +1,60 @@
-Return-Path: <arnd@kernel.org>
-From: Arnd Bergmann <arnd@kernel.org>
-Subject: [PATCH v2 03/18] nds32: fix access_ok() checks in get/put_user
-Date: Wed, 16 Feb 2022 14:13:17 +0100
-Message-Id: <20220216131332.1489939-4-arnd@kernel.org>
-In-Reply-To: <20220216131332.1489939-1-arnd@kernel.org>
-References: <20220216131332.1489939-1-arnd@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nN9Dp-00HEYz-Ny
+ for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:11:35 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v6 12/26] virtio_ring: update the document of the
+ virtqueue_detach_unused_buf for queue reset
+Date: Thu, 24 Feb 2022 16:10:48 +0800
+Message-Id: <20220224081102.80224-13-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
+References: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: Linus Torvalds <torvalds@linux-foundation.org>, Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-api@vger.kernel.org, arnd@arndb.de, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk
-Cc: linux@armlinux.org.uk, will@kernel.org, guoren@kernel.org, bcain@codeaurora.org, geert@linux-m68k.org, monstr@monstr.eu, tsbogend@alpha.franken.de, nickhu@andestech.com, green.hu@gmail.com, dinguyen@kernel.org, shorne@gmail.com, deller@gmx.de, mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com, hca@linux.ibm.com, dalias@libc.org, davem@davemloft.net, richard@nod.at, x86@kernel.org, jcmvbkbc@gmail.com, ebiederm@xmission.com, akpm@linux-foundation.org, ardb@kernel.org, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, stable@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Added documentation for virtqueue_detach_unused_buf, allowing it to be
+called on queue reset.
 
-The get_user()/put_user() functions are meant to check for
-access_ok(), while the __get_user()/__put_user() functions
-don't.
-
-This broke in 4.19 for nds32, when it gained an extraneous
-check in __get_user(), but lost the check it needs in
-__put_user().
-
-Fixes: 487913ab18c2 ("nds32: Extract the checking and getting pointer to a macro")
-Cc: stable@vger.kernel.org @ v4.19+
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- arch/nds32/include/asm/uaccess.h | 22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
+ drivers/virtio/virtio_ring.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/nds32/include/asm/uaccess.h b/arch/nds32/include/asm/uaccess.h
-index d4cbf069dc22..37a40981deb3 100644
---- a/arch/nds32/include/asm/uaccess.h
-+++ b/arch/nds32/include/asm/uaccess.h
-@@ -70,9 +70,7 @@ static inline void set_fs(mm_segment_t fs)
-  * versions are void (ie, don't return a value as such).
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index ab03aa732f75..7067a4f97ef3 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -2357,8 +2357,8 @@ EXPORT_SYMBOL_GPL(virtqueue_enable_cb_delayed);
+  * @_vq: the struct virtqueue we're talking about.
+  *
+  * Returns NULL or the "data" token handed to virtqueue_add_*().
+- * This is not valid on an active queue; it is useful only for device
+- * shutdown.
++ * This is not valid on an active queue; it is useful for device
++ * shutdown or the reset queue.
   */
- 
--#define get_user	__get_user					\
--
--#define __get_user(x, ptr)						\
-+#define get_user(x, ptr)						\
- ({									\
- 	long __gu_err = 0;						\
- 	__get_user_check((x), (ptr), __gu_err);				\
-@@ -85,6 +83,14 @@ static inline void set_fs(mm_segment_t fs)
- 	(void)0;							\
- })
- 
-+#define __get_user(x, ptr)						\
-+({									\
-+	long __gu_err = 0;						\
-+	const __typeof__(*(ptr)) __user *__p = (ptr);			\
-+	__get_user_err((x), __p, (__gu_err));				\
-+	__gu_err;							\
-+})
-+
- #define __get_user_check(x, ptr, err)					\
- ({									\
- 	const __typeof__(*(ptr)) __user *__p = (ptr);			\
-@@ -165,12 +171,18 @@ do {									\
- 		: "r"(addr), "i"(-EFAULT)				\
- 		: "cc")
- 
--#define put_user	__put_user					\
-+#define put_user(x, ptr)						\
-+({									\
-+	long __pu_err = 0;						\
-+	__put_user_check((x), (ptr), __pu_err);				\
-+	__pu_err;							\
-+})
- 
- #define __put_user(x, ptr)						\
- ({									\
- 	long __pu_err = 0;						\
--	__put_user_err((x), (ptr), __pu_err);				\
-+	__typeof__(*(ptr)) __user *__p = (ptr);				\
-+	__put_user_err((x), __p, __pu_err);				\
- 	__pu_err;							\
- })
- 
+ void *virtqueue_detach_unused_buf(struct virtqueue *_vq)
+ {
 -- 
-2.29.2
+2.31.0
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
