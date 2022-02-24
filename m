@@ -1,13 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44])
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nN9Dp-00HEYz-Ny
- for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:11:35 +0000
+ id 1nN9Dk-00HEUu-ON
+ for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:11:32 +0000
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v6 12/26] virtio_ring: update the document of the
- virtqueue_detach_unused_buf for queue reset
-Date: Thu, 24 Feb 2022 16:10:48 +0800
-Message-Id: <20220224081102.80224-13-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v6 10/26] virtio_ring: packed: implement
+ virtqueue_reset_vring_packed()
+Date: Thu, 24 Feb 2022 16:10:46 +0800
+Message-Id: <20220224081102.80224-11-xuanzhuo@linux.alibaba.com>
 In-Reply-To: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
 References: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
@@ -26,29 +26,93 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
 Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
 
-Added documentation for virtqueue_detach_unused_buf, allowing it to be
-called on queue reset.
+virtio ring supports reset.
+
+Queue reset is divided into several stages.
+
+1. notify device queue reset
+2. vring release
+3. attach new vring
+4. notify device queue re-enable
+
+After the first step is completed, the vring reset operation can be
+performed. If the newly set vring num does not change, then just reset
+the vq related value.
+
+Otherwise, the vring will be released and the vring will be reallocated.
+And the vring will be attached to the vq. If this process fails, the
+function will exit, and the state of the vq will be the vring release
+state. You can call this function again to reallocate the vring.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- drivers/virtio/virtio_ring.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/virtio/virtio_ring.c | 46 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
 
 diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index ab03aa732f75..7067a4f97ef3 100644
+index a2e771263ea7..3ee2d0e17515 100644
 --- a/drivers/virtio/virtio_ring.c
 +++ b/drivers/virtio/virtio_ring.c
-@@ -2357,8 +2357,8 @@ EXPORT_SYMBOL_GPL(virtqueue_enable_cb_delayed);
-  * @_vq: the struct virtqueue we're talking about.
-  *
-  * Returns NULL or the "data" token handed to virtqueue_add_*().
-- * This is not valid on an active queue; it is useful only for device
-- * shutdown.
-+ * This is not valid on an active queue; it is useful for device
-+ * shutdown or the reset queue.
-  */
- void *virtqueue_detach_unused_buf(struct virtqueue *_vq)
+@@ -1886,6 +1886,8 @@ static int vring_virtqueue_attach_packed(struct vring_virtqueue *vq,
+ static void vring_virtqueue_init_packed(struct vring_virtqueue *vq,
+ 					struct virtio_device *vdev)
  {
++	vq->vq.reset = VIRTIO_VQ_RESET_STEP_NONE;
++
+ 	vq->we_own_ring = true;
+ 	vq->broken = false;
+ 	vq->last_used_idx = 0;
+@@ -1969,6 +1971,50 @@ static struct virtqueue *vring_create_virtqueue_packed(
+ 	return NULL;
+ }
+ 
++static int virtqueue_reset_vring_packed(struct virtqueue *_vq, u32 num)
++{
++	struct vring_virtqueue *vq = to_vvq(_vq);
++	struct virtio_device *vdev = _vq->vdev;
++	struct vring_packed vring;
++	int err;
++
++	if (num > _vq->num_max)
++		return -E2BIG;
++
++	switch (vq->vq.reset) {
++	case VIRTIO_VQ_RESET_STEP_NONE:
++		return -ENOENT;
++
++	case VIRTIO_VQ_RESET_STEP_VRING_ATTACH:
++	case VIRTIO_VQ_RESET_STEP_DEVICE:
++		if (vq->packed.vring.num == num || !num)
++			break;
++
++		vring_free(_vq);
++
++		fallthrough;
++
++	case VIRTIO_VQ_RESET_STEP_VRING_RELEASE:
++		if (!num)
++			num = vq->packed.vring.num;
++
++		err = vring_create_vring_packed(&vring, vdev, num);
++		if (err)
++			return -ENOMEM;
++
++		err = vring_virtqueue_attach_packed(vq, &vring, vdev);
++		if (err) {
++			vring_free_vring_packed(&vring, vdev);
++			return -ENOMEM;
++		}
++	}
++
++	vring_virtqueue_init_packed(vq, vdev);
++	vq->vq.reset = VIRTIO_VQ_RESET_STEP_VRING_ATTACH;
++
++	return 0;
++}
++
+ 
+ /*
+  * Generic functions and exported symbols.
 -- 
 2.31.0
 
