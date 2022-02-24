@@ -1,13 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131])
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nN9Db-00HELM-5F
- for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:11:21 +0000
+ id 1nN9Dq-00HEYy-2K
+ for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:11:35 +0000
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v6 01/26] virtio_pci: struct virtio_pci_common_cfg add
- queue_notify_data
-Date: Thu, 24 Feb 2022 16:10:37 +0800
-Message-Id: <20220224081102.80224-2-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v6 11/26] virtio_ring: introduce virtqueue_reset_vring()
+Date: Thu, 24 Feb 2022 16:10:47 +0800
+Message-Id: <20220224081102.80224-12-xuanzhuo@linux.alibaba.com>
 In-Reply-To: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
 References: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
@@ -26,37 +25,74 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
 Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
 
-Add queue_notify_data in struct virtio_pci_common_cfg, which comes from
-here https://github.com/oasis-tcs/virtio-spec/issues/89
+Introduce virtqueue_reset_vring() to implement the reset of vring during
+the reset process.
 
-For not breaks uABI, add a new struct virtio_pci_common_cfg_notify.
-
-Since I want to add queue_reset after queue_notify_data, I submitted
-this patch first.
+If num is equal to 0 or equal to the original ring num, the original vring
+will be used directly. The vring will not be reallocated. Otherwise, the
+original vring will be released, and the vring will be re-allocated
+based on num.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- include/uapi/linux/virtio_pci.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/virtio/virtio_ring.c | 30 ++++++++++++++++++++++++++++++
+ include/linux/virtio.h       |  2 ++
+ 2 files changed, 32 insertions(+)
 
-diff --git a/include/uapi/linux/virtio_pci.h b/include/uapi/linux/virtio_pci.h
-index 3a86f36d7e3d..22bec9bd0dfc 100644
---- a/include/uapi/linux/virtio_pci.h
-+++ b/include/uapi/linux/virtio_pci.h
-@@ -166,6 +166,13 @@ struct virtio_pci_common_cfg {
- 	__le32 queue_used_hi;		/* read-write */
- };
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 3ee2d0e17515..ab03aa732f75 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -2534,6 +2534,36 @@ struct virtqueue *vring_create_virtqueue(
+ }
+ EXPORT_SYMBOL_GPL(vring_create_virtqueue);
  
-+struct virtio_pci_common_cfg_notify {
-+	struct virtio_pci_common_cfg cfg;
++/**
++ * virtqueue_reset_vring - reset the vring of vq
++ * @vq: the struct virtqueue we're talking about.
++ * @num: new ring num
++ *
++ * If num is equal to 0 or equal to the original ring num, the original vring
++ * will be used directly. The vring will not be reallocated. Otherwise, the
++ * original vring will be released, and the vring will be re-allocated based on
++ * num.
++ *
++ * This function must be called after virtio_reset_vq(). For more information on
++ * vq reset see the description of virtio_reset_vq().
++ *
++ *
++ * Caller must ensure we don't call this with other virtqueue operations
++ * at the same time (except where noted).
++ *
++ * Returns zero or a negative error.
++ */
++int virtqueue_reset_vring(struct virtqueue *vq, u32 num)
++{
++	struct virtio_device *vdev = vq->vdev;
 +
-+	__le16 queue_notify_data;	/* read-write */
-+	__le16 padding;
-+};
++	if (virtio_has_feature(vdev, VIRTIO_F_RING_PACKED))
++		return virtqueue_reset_vring_packed(vq, num);
 +
- /* Fields in VIRTIO_PCI_CAP_PCI_CFG: */
- struct virtio_pci_cfg_cap {
- 	struct virtio_pci_cap cap;
++	return virtqueue_reset_vring_split(vq, num);
++}
++EXPORT_SYMBOL_GPL(virtqueue_reset_vring);
++
+ /* Only available for split ring */
+ struct virtqueue *vring_new_virtqueue(unsigned int index,
+ 				      unsigned int num,
+diff --git a/include/linux/virtio.h b/include/linux/virtio.h
+index e3714e6db330..7bf29f9e7491 100644
+--- a/include/linux/virtio.h
++++ b/include/linux/virtio.h
+@@ -99,6 +99,8 @@ dma_addr_t virtqueue_get_desc_addr(struct virtqueue *vq);
+ dma_addr_t virtqueue_get_avail_addr(struct virtqueue *vq);
+ dma_addr_t virtqueue_get_used_addr(struct virtqueue *vq);
+ 
++int virtqueue_reset_vring(struct virtqueue *vq, u32 num);
++
+ /**
+  * virtio_device - representation of a device using virtio
+  * @index: unique position on the virtio bus
 -- 
 2.31.0
 
