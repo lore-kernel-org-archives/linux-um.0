@@ -1,170 +1,140 @@
-Return-Path: <anshuman.khandual@arm.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V3 09/30] arm/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Date: Mon, 28 Feb 2022 16:17:32 +0530
-Message-Id: <1646045273-9343-10-git-send-email-anshuman.khandual@arm.com>
-In-Reply-To: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
-References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
-To: linux-mm@kvack.org, akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, geert@linux-m68k.org, Anshuman Khandual <anshuman.khandual@arm.com>, Christoph Hellwig <hch@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org, linux-riscv@lists.infradead.org, linux-alpha@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-parisc@vger.kernel.org, openrisc@lists.librecores.org, linux-um@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org, Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nN9Db-00HELG-8r
+ for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:11:23 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v6 00/26] virtio pci support VIRTIO_F_RING_RESET
+Date: Thu, 24 Feb 2022 16:10:36 +0800
+Message-Id: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
+MIME-Version: 1.0
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
 
-This defines and exports a platform specific custom vm_get_page_prot() via
-subscribing ARCH_HAS_VM_GET_PAGE_PROT. Subsequently all __SXXX and __PXXX
-macros can be dropped which are no longer needed.
+The virtio spec already supports the virtio queue reset function. This patch set
+is to add this function to the kernel. The relevant virtio spec information is
+here:
 
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- arch/arm/Kconfig                   |  1 +
- arch/arm/include/asm/pgtable.h     | 20 +-------------
- arch/arm/lib/uaccess_with_memcpy.c |  2 +-
- arch/arm/mm/mmu.c                  | 44 ++++++++++++++++++++++++++----
- 4 files changed, 41 insertions(+), 26 deletions(-)
+    https://github.com/oasis-tcs/virtio-spec/issues/124
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 4c97cb40eebb..87b2e89ef3d6 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -23,6 +23,7 @@ config ARM
- 	select ARCH_HAS_SYNC_DMA_FOR_CPU if SWIOTLB || !MMU
- 	select ARCH_HAS_TEARDOWN_DMA_OPS if MMU
- 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
-+	select ARCH_HAS_VM_GET_PAGE_PROT
- 	select ARCH_HAVE_CUSTOM_GPIO_H
- 	select ARCH_HAVE_NMI_SAFE_CMPXCHG if CPU_V7 || CPU_V7M || CPU_V6K
- 	select ARCH_HAS_GCOV_PROFILE_ALL
-diff --git a/arch/arm/include/asm/pgtable.h b/arch/arm/include/asm/pgtable.h
-index cd1f84bb40ae..64711716cd84 100644
---- a/arch/arm/include/asm/pgtable.h
-+++ b/arch/arm/include/asm/pgtable.h
-@@ -70,7 +70,7 @@ extern void __pgd_error(const char *file, int line, pgd_t);
- #endif
- 
- /*
-- * The pgprot_* and protection_map entries will be fixed up in runtime
-+ * The pgprot_* entries will be fixed up in runtime in vm_get_page_prot()
-  * to include the cachable and bufferable bits based on memory policy,
-  * as well as any architecture dependent bits like global/ASID and SMP
-  * shared mapping bits.
-@@ -137,24 +137,6 @@ extern pgprot_t phys_mem_access_prot(struct file *file, unsigned long pfn,
-  *  2) If we could do execute protection, then read is implied
-  *  3) write implies read permissions
-  */
--#define __P000  __PAGE_NONE
--#define __P001  __PAGE_READONLY
--#define __P010  __PAGE_COPY
--#define __P011  __PAGE_COPY
--#define __P100  __PAGE_READONLY_EXEC
--#define __P101  __PAGE_READONLY_EXEC
--#define __P110  __PAGE_COPY_EXEC
--#define __P111  __PAGE_COPY_EXEC
--
--#define __S000  __PAGE_NONE
--#define __S001  __PAGE_READONLY
--#define __S010  __PAGE_SHARED
--#define __S011  __PAGE_SHARED
--#define __S100  __PAGE_READONLY_EXEC
--#define __S101  __PAGE_READONLY_EXEC
--#define __S110  __PAGE_SHARED_EXEC
--#define __S111  __PAGE_SHARED_EXEC
--
- #ifndef __ASSEMBLY__
- /*
-  * ZERO_PAGE is a global shared page that is always zero: used
-diff --git a/arch/arm/lib/uaccess_with_memcpy.c b/arch/arm/lib/uaccess_with_memcpy.c
-index 106f83a5ea6d..12d8d9794a28 100644
---- a/arch/arm/lib/uaccess_with_memcpy.c
-+++ b/arch/arm/lib/uaccess_with_memcpy.c
-@@ -247,7 +247,7 @@ static int __init test_size_treshold(void)
- 	if (!dst_page)
- 		goto no_dst;
- 	kernel_ptr = page_address(src_page);
--	user_ptr = vmap(&dst_page, 1, VM_IOREMAP, __pgprot(__P010));
-+	user_ptr = vmap(&dst_page, 1, VM_IOREMAP, __pgprot(__PAGE_COPY));
- 	if (!user_ptr)
- 		goto no_vmap;
- 
-diff --git a/arch/arm/mm/mmu.c b/arch/arm/mm/mmu.c
-index 274e4f73fd33..9cdf45da57de 100644
---- a/arch/arm/mm/mmu.c
-+++ b/arch/arm/mm/mmu.c
-@@ -403,6 +403,8 @@ void __set_fixmap(enum fixed_addresses idx, phys_addr_t phys, pgprot_t prot)
- 	local_flush_tlb_kernel_range(vaddr, vaddr + PAGE_SIZE);
- }
- 
-+static pteval_t user_pgprot;
-+
- /*
-  * Adjust the PMD section entries according to the CPU in use.
-  */
-@@ -410,7 +412,7 @@ static void __init build_mem_type_table(void)
- {
- 	struct cachepolicy *cp;
- 	unsigned int cr = get_cr();
--	pteval_t user_pgprot, kern_pgprot, vecs_pgprot;
-+	pteval_t kern_pgprot, vecs_pgprot;
- 	int cpu_arch = cpu_architecture();
- 	int i;
- 
-@@ -627,11 +629,6 @@ static void __init build_mem_type_table(void)
- 	user_pgprot |= PTE_EXT_PXN;
- #endif
- 
--	for (i = 0; i < 16; i++) {
--		pteval_t v = pgprot_val(protection_map[i]);
--		protection_map[i] = __pgprot(v | user_pgprot);
--	}
--
- 	mem_types[MT_LOW_VECTORS].prot_pte |= vecs_pgprot;
- 	mem_types[MT_HIGH_VECTORS].prot_pte |= vecs_pgprot;
- 
-@@ -670,6 +667,41 @@ static void __init build_mem_type_table(void)
- 	}
- }
- 
-+pgprot_t vm_get_page_prot(unsigned long vm_flags)
-+{
-+	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
-+	case VM_NONE:
-+		return __pgprot(pgprot_val(__PAGE_NONE) | user_pgprot);
-+	case VM_READ:
-+		return __pgprot(pgprot_val(__PAGE_READONLY) | user_pgprot);
-+	case VM_WRITE:
-+	case VM_WRITE | VM_READ:
-+		return __pgprot(pgprot_val(__PAGE_COPY) | user_pgprot);
-+	case VM_EXEC:
-+	case VM_EXEC | VM_READ:
-+		return __pgprot(pgprot_val(__PAGE_READONLY_EXEC) | user_pgprot);
-+	case VM_EXEC | VM_WRITE:
-+	case VM_EXEC | VM_WRITE | VM_READ:
-+		return __pgprot(pgprot_val(__PAGE_COPY_EXEC) | user_pgprot);
-+	case VM_SHARED:
-+		return __pgprot(pgprot_val(__PAGE_NONE) | user_pgprot);
-+	case VM_SHARED | VM_READ:
-+		return __pgprot(pgprot_val(__PAGE_READONLY) | user_pgprot);
-+	case VM_SHARED | VM_WRITE:
-+	case VM_SHARED | VM_WRITE | VM_READ:
-+		return __pgprot(pgprot_val(__PAGE_SHARED) | user_pgprot);
-+	case VM_SHARED | VM_EXEC:
-+	case VM_SHARED | VM_EXEC | VM_READ:
-+		return __pgprot(pgprot_val(__PAGE_READONLY_EXEC) | user_pgprot);
-+	case VM_SHARED | VM_EXEC | VM_WRITE:
-+	case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
-+		return __pgprot(pgprot_val(__PAGE_SHARED_EXEC) | user_pgprot);
-+	default:
-+		BUILD_BUG();
-+	}
-+}
-+EXPORT_SYMBOL(vm_get_page_prot);
-+
- #ifdef CONFIG_ARM_DMA_MEM_BUFFERABLE
- pgprot_t phys_mem_access_prot(struct file *file, unsigned long pfn,
- 			      unsigned long size, pgprot_t vma_prot)
--- 
-2.25.1
+Also regarding MMIO support for queue reset, I plan to support it after this
+patch is passed.
 
+Performing reset on a queue is divided into four steps:
+     1. virtio_reset_vq()              - notify the device to reset the queue
+     2. virtqueue_detach_unused_buf()  - recycle the buffer submitted
+     3. virtqueue_reset_vring()        - reset the vring (may re-alloc)
+     4. virtio_enable_resetq()         - mmap vring to device, and enable the queue
+
+The first part 1-17 of this patch set implements virtio pci's support and API
+for queue reset. The latter part is to make virtio-net support set_ringparam. Do
+these things for this feature:
+
+      1. virtio-net support rx,tx reset
+      2. find_vqs() support to special the max size of each vq
+      3. virtio-net support set_ringparam
+
+#1 -#3 :       prepare
+#4 -#12:       virtio ring support reset vring of the vq
+#13-#14:       add helper
+#15-#17:       virtio pci support reset queue and re-enable
+#18-#21:       find_vqs() support sizes to special the max size of each vq
+#23-#24:       virtio-net support rx, tx reset
+#22, #25, #26: virtio-net support set ringparam
+
+Please review. Thanks.
+
+v6:
+  1. virtio_pci: use synchronize_irq(irq) to sync the irq callbacks
+  2. Introduce virtqueue_reset_vring() to implement the reset of vring during
+     the reset process. May use the old vring if num of the vq not change.
+  3. find_vqs() support sizes to special the max size of each vq
+
+v5:
+  1. add virtio-net support set_ringparam
+
+v4:
+  1. just the code of virtio, without virtio-net
+  2. Performing reset on a queue is divided into these steps:
+    1. reset_vq: reset one vq
+    2. recycle the buffer from vq by virtqueue_detach_unused_buf()
+    3. release the ring of the vq by vring_release_virtqueue()
+    4. enable_reset_vq: re-enable the reset queue
+  3. Simplify the parameters of enable_reset_vq()
+  4. add container structures for virtio_pci_common_cfg
+
+v3:
+  1. keep vq, irq unreleased
+
+Xuan Zhuo (26):
+  virtio_pci: struct virtio_pci_common_cfg add queue_notify_data
+  virtio: queue_reset: add VIRTIO_F_RING_RESET
+  virtio: add helper virtqueue_get_vring_max_size()
+  virtio_ring: split: extract the logic of creating vring
+  virtio_ring: split: extract the logic of init vq and attach vring
+  virtio_ring: packed: extrace the logic of creating vring
+  virtio_ring: packed: extract the logic of init vq and attach vring
+  virtio_ring: extract the logic of freeing vring
+  virtio_ring: split: implement virtqueue_reset_vring_split()
+  virtio_ring: packed: implement virtqueue_reset_vring_packed()
+  virtio_ring: introduce virtqueue_reset_vring()
+  virtio_ring: update the document of the virtqueue_detach_unused_buf
+    for queue reset
+  virtio: queue_reset: struct virtio_config_ops add callbacks for
+    queue_reset
+  virtio: add helper for queue reset
+  virtio_pci: queue_reset: update struct virtio_pci_common_cfg and
+    option functions
+  virtio_pci: queue_reset: extract the logic of active vq for modern pci
+  virtio_pci: queue_reset: support VIRTIO_F_RING_RESET
+  virtio: find_vqs() add arg sizes
+  virtio_pci: support the arg sizes of find_vqs()
+  virtio_mmio: support the arg sizes of find_vqs()
+  virtio: add helper virtio_find_vqs_ctx_size()
+  virtio_net: get ringparam by virtqueue_get_vring_max_size()
+  virtio_net: split free_unused_bufs()
+  virtio_net: support rx/tx queue reset
+  virtio_net: set the default max ring size by find_vqs()
+  virtio_net: support set_ringparam
+
+ arch/um/drivers/virtio_uml.c             |   2 +-
+ drivers/net/virtio_net.c                 | 257 ++++++++--
+ drivers/platform/mellanox/mlxbf-tmfifo.c |   3 +-
+ drivers/remoteproc/remoteproc_virtio.c   |   2 +-
+ drivers/s390/virtio/virtio_ccw.c         |   2 +-
+ drivers/virtio/virtio_mmio.c             |  12 +-
+ drivers/virtio/virtio_pci_common.c       |  28 +-
+ drivers/virtio/virtio_pci_common.h       |   3 +-
+ drivers/virtio/virtio_pci_legacy.c       |   8 +-
+ drivers/virtio/virtio_pci_modern.c       | 146 +++++-
+ drivers/virtio/virtio_pci_modern_dev.c   |  36 ++
+ drivers/virtio/virtio_ring.c             | 584 +++++++++++++++++------
+ drivers/virtio/virtio_vdpa.c             |   2 +-
+ include/linux/virtio.h                   |  12 +
+ include/linux/virtio_config.h            |  74 ++-
+ include/linux/virtio_pci_modern.h        |   2 +
+ include/uapi/linux/virtio_config.h       |   7 +-
+ include/uapi/linux/virtio_pci.h          |  14 +
+ 18 files changed, 979 insertions(+), 215 deletions(-)
+
+--
+2.31.0
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
