@@ -1,15 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nNOr5-002orW-QI
- for linux-um@lists.infradead.org; Fri, 25 Feb 2022 00:53:09 +0000
+ id 1nN95y-00HDIe-LC
+ for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:03:28 +0000
+Subject: Re: [PATCH] clk: lan966x: Depend on CONFIG_IOMEM
+References: <20220224035902.1594253-1-davidgow@google.com>
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Message-ID: <e2a5b8f1-2117-c1be-9223-91904de885d5@kot-begemot.co.uk>
+Date: Thu, 24 Feb 2022 08:03:15 +0000
 MIME-Version: 1.0
 In-Reply-To: <20220224035902.1594253-1-davidgow@google.com>
-References: <20220224035902.1594253-1-davidgow@google.com>
-Subject: Re: [PATCH] clk: lan966x: Depend on CONFIG_IOMEM
-From: Stephen Boyd <sboyd@kernel.org>
-Date: Thu, 24 Feb 2022 16:53:02 -0800
-Message-Id: <20220225005304.140FFC340E9@smtp.kernel.org>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,14 +20,16 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: David Gow <davidgow@google.com>, Michael Turquette <mturquette@baylibre.com>
-Cc: David Gow <davidgow@google.com>, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
+To: David Gow <davidgow@google.com>, Stephen Boyd <sboyd@kernel.org>, Michael Turquette <mturquette@baylibre.com>
+Cc: linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
 
-Quoting David Gow (2022-02-23 19:59:02)
+
+
+On 24/02/2022 03:59, David Gow wrote:
 > The lan966x clk driver depends on IOMEM functions, in particular
 > devm_platform_ioremap_resource(), but doesn't state a formal dependency
 > on it in Kconfig.
@@ -42,25 +46,28 @@ Quoting David Gow (2022-02-23 19:59:02)
 > 
 > Signed-off-by: David Gow <davidgow@google.com>
 > ---
->  drivers/clk/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
+>   drivers/clk/Kconfig | 1 +
+>   1 file changed, 1 insertion(+)
 > 
 > diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
 > index 3cdf33470a75..7b5db8a9eb4f 100644
 > --- a/drivers/clk/Kconfig
 > +++ b/drivers/clk/Kconfig
 > @@ -231,6 +231,7 @@ config COMMON_CLK_GEMINI
->  
->  config COMMON_CLK_LAN966X
->         bool "Generic Clock Controller driver for LAN966X SoC"
-> +       depends on IOMEM
+>   
+>   config COMMON_CLK_LAN966X
+>   	bool "Generic Clock Controller driver for LAN966X SoC"
+> +	depends on IOMEM
+>   	help
+>   	  This driver provides support for Generic Clock Controller(GCK) on
+>   	  LAN966X SoC. GCK generates and supplies clock to various peripherals
+> 
 
-What is CONFIG_IOMEM? This is superseded by
-https://lore.kernel.org/r/20220219141536.460812-1-horatiu.vultur@microchip.com
+Acked-By: anton ivanov <anton.ivanov@cambridgegreys.com>
 
->         help
->           This driver provides support for Generic Clock Controller(GCK) on
->           LAN966X SoC. GCK generates and supplies clock to various peripherals
+-- 
+Anton R. Ivanov
+https://www.kot-begemot.co.uk/
 
 _______________________________________________
 linux-um mailing list
