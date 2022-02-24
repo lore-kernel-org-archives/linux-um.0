@@ -1,148 +1,132 @@
-Return-Path: <arnd@kernel.org>
-From: Arnd Bergmann <arnd@kernel.org>
-Subject: [PATCH v2 02/18] uaccess: fix nios2 and microblaze get_user_8()
-Date: Wed, 16 Feb 2022 14:13:16 +0100
-Message-Id: <20220216131332.1489939-3-arnd@kernel.org>
-In-Reply-To: <20220216131332.1489939-1-arnd@kernel.org>
-References: <20220216131332.1489939-1-arnd@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nN9Dw-00HEi9-Re
+ for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:11:42 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v6 15/26] virtio_pci: queue_reset: update struct
+ virtio_pci_common_cfg and option functions
+Date: Thu, 24 Feb 2022 16:10:51 +0800
+Message-Id: <20220224081102.80224-16-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
+References: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: Linus Torvalds <torvalds@linux-foundation.org>, Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-api@vger.kernel.org, arnd@arndb.de, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk
-Cc: linux@armlinux.org.uk, will@kernel.org, guoren@kernel.org, bcain@codeaurora.org, geert@linux-m68k.org, monstr@monstr.eu, tsbogend@alpha.franken.de, nickhu@andestech.com, green.hu@gmail.com, dinguyen@kernel.org, shorne@gmail.com, deller@gmx.de, mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com, hca@linux.ibm.com, dalias@libc.org, davem@davemloft.net, richard@nod.at, x86@kernel.org, jcmvbkbc@gmail.com, ebiederm@xmission.com, akpm@linux-foundation.org, ardb@kernel.org, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Add queue_reset in virtio_pci_common_cfg, and add related operation
+functions.
 
-These two architectures implement 8-byte get_user() through
-a memcpy() into a four-byte variable, which won't fit.
+For not breaks uABI, add a new struct virtio_pci_common_cfg_reset.
 
-Use a temporary 64-bit variable instead here, and use a double
-cast the way that risc-v and openrisc do to avoid compile-time
-warnings.
-
-Fixes: 6a090e97972d ("arch/microblaze: support get_user() of size 8 bytes")
-Fixes: 5ccc6af5e88e ("nios2: Memory management")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- arch/microblaze/include/asm/uaccess.h | 18 +++++++++---------
- arch/nios2/include/asm/uaccess.h      | 26 ++++++++++++++++----------
- 2 files changed, 25 insertions(+), 19 deletions(-)
+ drivers/virtio/virtio_pci_modern_dev.c | 36 ++++++++++++++++++++++++++
+ include/linux/virtio_pci_modern.h      |  2 ++
+ include/uapi/linux/virtio_pci.h        |  7 +++++
+ 3 files changed, 45 insertions(+)
 
-diff --git a/arch/microblaze/include/asm/uaccess.h b/arch/microblaze/include/asm/uaccess.h
-index 5b6e0e7788f4..3fe96979d2c6 100644
---- a/arch/microblaze/include/asm/uaccess.h
-+++ b/arch/microblaze/include/asm/uaccess.h
-@@ -130,27 +130,27 @@ extern long __user_bad(void);
+diff --git a/drivers/virtio/virtio_pci_modern_dev.c b/drivers/virtio/virtio_pci_modern_dev.c
+index e8b3ff2b9fbc..8c74b00bc511 100644
+--- a/drivers/virtio/virtio_pci_modern_dev.c
++++ b/drivers/virtio/virtio_pci_modern_dev.c
+@@ -3,6 +3,7 @@
+ #include <linux/virtio_pci_modern.h>
+ #include <linux/module.h>
+ #include <linux/pci.h>
++#include <linux/delay.h>
  
- #define __get_user(x, ptr)						\
- ({									\
--	unsigned long __gu_val = 0;					\
- 	long __gu_err;							\
- 	switch (sizeof(*(ptr))) {					\
- 	case 1:								\
--		__get_user_asm("lbu", (ptr), __gu_val, __gu_err);	\
-+		__get_user_asm("lbu", (ptr), x, __gu_err);		\
- 		break;							\
- 	case 2:								\
--		__get_user_asm("lhu", (ptr), __gu_val, __gu_err);	\
-+		__get_user_asm("lhu", (ptr), x, __gu_err);		\
- 		break;							\
- 	case 4:								\
--		__get_user_asm("lw", (ptr), __gu_val, __gu_err);	\
-+		__get_user_asm("lw", (ptr), x, __gu_err);		\
- 		break;							\
--	case 8:								\
--		__gu_err = __copy_from_user(&__gu_val, ptr, 8);		\
--		if (__gu_err)						\
--			__gu_err = -EFAULT;				\
-+	case 8: {							\
-+		__u64 __x = 0;						\
-+		__gu_err = raw_copy_from_user(&__x, ptr, 8) ?		\
-+							-EFAULT : 0;	\
-+		(x) = (typeof(x))(typeof((x) - (x)))__x;		\
- 		break;							\
-+	}								\
- 	default:							\
- 		/* __gu_val = 0; __gu_err = -EINVAL;*/ __gu_err = __user_bad();\
- 	}								\
--	x = (__force __typeof__(*(ptr))) __gu_val;			\
- 	__gu_err;							\
- })
- 
-diff --git a/arch/nios2/include/asm/uaccess.h b/arch/nios2/include/asm/uaccess.h
-index ba9340e96fd4..ca9285a915ef 100644
---- a/arch/nios2/include/asm/uaccess.h
-+++ b/arch/nios2/include/asm/uaccess.h
-@@ -88,6 +88,7 @@ extern __must_check long strnlen_user(const char __user *s, long n);
- /* Optimized macros */
- #define __get_user_asm(val, insn, addr, err)				\
- {									\
-+	unsigned long __gu_val;						\
- 	__asm__ __volatile__(						\
- 	"       movi    %0, %3\n"					\
- 	"1:   " insn " %1, 0(%2)\n"					\
-@@ -96,14 +97,20 @@ extern __must_check long strnlen_user(const char __user *s, long n);
- 	"       .section __ex_table,\"a\"\n"				\
- 	"       .word 1b, 2b\n"						\
- 	"       .previous"						\
--	: "=&r" (err), "=r" (val)					\
-+	: "=&r" (err), "=r" (__gu_val)					\
- 	: "r" (addr), "i" (-EFAULT));					\
-+	val = (__force __typeof__(*(addr)))__gu_val;			\
+ /*
+  * vp_modern_map_capability - map a part of virtio pci capability
+@@ -463,6 +464,41 @@ void vp_modern_set_status(struct virtio_pci_modern_device *mdev,
  }
+ EXPORT_SYMBOL_GPL(vp_modern_set_status);
  
--#define __get_user_unknown(val, size, ptr, err) do {			\
-+extern void __get_user_unknown(void);
++/*
++ * vp_modern_get_queue_reset - get the queue reset status
++ * @mdev: the modern virtio-pci device
++ * @index: queue index
++ */
++int vp_modern_get_queue_reset(struct virtio_pci_modern_device *mdev, u16 index)
++{
++	struct virtio_pci_common_cfg_reset __iomem *cfg;
 +
-+#define __get_user_8(val, ptr, err) do {				\
-+	u64 __val = 0;							\
- 	err = 0;							\
--	if (__copy_from_user(&(val), ptr, size)) {			\
-+	if (raw_copy_from_user(&(__val), ptr, sizeof(val))) {		\
- 		err = -EFAULT;						\
-+	} else {							\
-+		val = (typeof(val))(typeof((val) - (val)))__val;	\
- 	}								\
- 	} while (0)
++	cfg = (struct virtio_pci_common_cfg_reset __iomem *)mdev->common;
++
++	vp_iowrite16(index, &cfg->cfg.queue_select);
++	return vp_ioread16(&cfg->queue_reset);
++}
++EXPORT_SYMBOL_GPL(vp_modern_get_queue_reset);
++
++/*
++ * vp_modern_set_queue_reset - reset the queue
++ * @mdev: the modern virtio-pci device
++ * @index: queue index
++ */
++void vp_modern_set_queue_reset(struct virtio_pci_modern_device *mdev, u16 index)
++{
++	struct virtio_pci_common_cfg_reset __iomem *cfg;
++
++	cfg = (struct virtio_pci_common_cfg_reset __iomem *)mdev->common;
++
++	vp_iowrite16(index, &cfg->cfg.queue_select);
++	vp_iowrite16(1, &cfg->queue_reset);
++
++	while (vp_ioread16(&cfg->queue_reset) != 1)
++		msleep(1);
++}
++EXPORT_SYMBOL_GPL(vp_modern_set_queue_reset);
++
+ /*
+  * vp_modern_queue_vector - set the MSIX vector for a specific virtqueue
+  * @mdev: the modern virtio-pci device
+diff --git a/include/linux/virtio_pci_modern.h b/include/linux/virtio_pci_modern.h
+index eb2bd9b4077d..cc4154dd7b28 100644
+--- a/include/linux/virtio_pci_modern.h
++++ b/include/linux/virtio_pci_modern.h
+@@ -106,4 +106,6 @@ void __iomem * vp_modern_map_vq_notify(struct virtio_pci_modern_device *mdev,
+ 				       u16 index, resource_size_t *pa);
+ int vp_modern_probe(struct virtio_pci_modern_device *mdev);
+ void vp_modern_remove(struct virtio_pci_modern_device *mdev);
++int vp_modern_get_queue_reset(struct virtio_pci_modern_device *mdev, u16 index);
++void vp_modern_set_queue_reset(struct virtio_pci_modern_device *mdev, u16 index);
+ #endif
+diff --git a/include/uapi/linux/virtio_pci.h b/include/uapi/linux/virtio_pci.h
+index 22bec9bd0dfc..d9462efd6ce8 100644
+--- a/include/uapi/linux/virtio_pci.h
++++ b/include/uapi/linux/virtio_pci.h
+@@ -173,6 +173,13 @@ struct virtio_pci_common_cfg_notify {
+ 	__le16 padding;
+ };
  
-@@ -119,8 +126,11 @@ do {									\
- 	case 4:								\
- 		__get_user_asm(val, "ldw", ptr, err);			\
- 		break;							\
-+	case 8:								\
-+		__get_user_8(val, ptr, err);				\
-+		break;							\
- 	default:							\
--		__get_user_unknown(val, size, ptr, err);		\
-+		__get_user_unknown();					\
- 		break;							\
- 	}								\
- } while (0)
-@@ -129,9 +139,7 @@ do {									\
- 	({								\
- 	long __gu_err = -EFAULT;					\
- 	const __typeof__(*(ptr)) __user *__gu_ptr = (ptr);		\
--	unsigned long __gu_val = 0;					\
--	__get_user_common(__gu_val, sizeof(*(ptr)), __gu_ptr, __gu_err);\
--	(x) = (__force __typeof__(x))__gu_val;				\
-+	__get_user_common(x, sizeof(*(ptr)), __gu_ptr, __gu_err);	\
- 	__gu_err;							\
- 	})
- 
-@@ -139,11 +147,9 @@ do {									\
- ({									\
- 	long __gu_err = -EFAULT;					\
- 	const __typeof__(*(ptr)) __user *__gu_ptr = (ptr);		\
--	unsigned long __gu_val = 0;					\
- 	if (access_ok( __gu_ptr, sizeof(*__gu_ptr)))	\
--		__get_user_common(__gu_val, sizeof(*__gu_ptr),		\
-+		__get_user_common(x, sizeof(*__gu_ptr),			\
- 			__gu_ptr, __gu_err);				\
--	(x) = (__force __typeof__(x))__gu_val;				\
- 	__gu_err;							\
- })
- 
++struct virtio_pci_common_cfg_reset {
++	struct virtio_pci_common_cfg cfg;
++
++	__le16 queue_notify_data;	/* read-write */
++	__le16 queue_reset;		/* read-write */
++};
++
+ /* Fields in VIRTIO_PCI_CAP_PCI_CFG: */
+ struct virtio_pci_cfg_cap {
+ 	struct virtio_pci_cap cap;
 -- 
-2.29.2
+2.31.0
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
