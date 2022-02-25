@@ -1,17 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+Received: from mail-wm1-x335.google.com ([2a00:1450:4864:20::335])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nKH6s-006RQj-E2
- for linux-um@lists.infradead.org; Wed, 16 Feb 2022 10:00:32 +0000
-Message-ID: <b2fbfe71-ae02-d7b3-0ee6-930808d17dd5@collabora.com>
-Date: Wed, 16 Feb 2022 11:00:23 +0100
+ id 1nNPgh-002u0y-Ga
+ for linux-um@lists.infradead.org; Fri, 25 Feb 2022 01:46:29 +0000
+Received: by mail-wm1-x335.google.com with SMTP id
+ az26-20020a05600c601a00b0037c078db59cso815366wmb.4
+ for <linux-um@lists.infradead.org>; Thu, 24 Feb 2022 17:46:20 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: [PATCH] um: Fix WRITE_ZEROES in the UBD Driver
-Content-Language: en-US
-References: <20220125171405.163362-1-frederic.danis@collabora.com>
- <243f77b8-0c16-2069-5ac4-f3eb734db59a@cambridgegreys.com>
-From: =?UTF-8?Q?Fr=c3=a9d=c3=a9ric_Danis?= <frederic.danis@collabora.com>
-In-Reply-To: <243f77b8-0c16-2069-5ac4-f3eb734db59a@cambridgegreys.com>
+References: <20220224040136.1595119-1-davidgow@google.com>
+ <c877cf8b-7dd0-9766-e4cb-123dba5075a3@cambridgegreys.com>
+In-Reply-To: <c877cf8b-7dd0-9766-e4cb-123dba5075a3@cambridgegreys.com>
+From: Julius Werner <jwerner@chromium.org>
+Date: Thu, 24 Feb 2022 17:46:07 -0800
+Message-ID: <CAODwPW8EyNr87ZMervpo0avoKpi+OvzOELrTgWV1S-1R1DSuwA@mail.gmail.com>
+Subject: Re: [PATCH] firmware: google: Properly state IOMEM dependency
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,76 +22,71 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
+To: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: David Gow <davidgow@google.com>, Julius Werner <jwerner@chromium.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Ben Hutchings <ben@decadent.org.uk>, LKML <linux-kernel@vger.kernel.org>, linux-um@lists.infradead.org
 
-SGksCgpPbiAyNi8wMS8yMDIyIDEwOjQ3LCBBbnRvbiBJdmFub3Ygd3JvdGU6Cj4KPgo+IE9uIDI1
-LzAxLzIwMjIgMTc6MTQsIEZyw6lkw6lyaWMgRGFuaXMgd3JvdGU6Cj4+IENhbGwgdG8gZmFsbG9j
-YXRlIHdpdGggRkFMTE9DX0ZMX1BVTkNIX0hPTEUgb24gYSBkZXZpY2UgYmFja2VkIGJ5IGEgCj4+
-IHNwYXJzZQo+PiBmaWxlIGNhbiBlbmQgdXAgYnkgbWlzc2luZyBkYXRhLCB6ZXJvZXMgZGF0YSBy
-YW5nZSwgaWYgdGhlIHVuZGVybHlpbmcgCj4+IGZpbGUKPj4gaXMgdXNlZCB3aXRoIGEgdG9vbCBs
-aWtlIGJtYXB0b29sIHdoaWNoIHdpbGwgcmVmZXJlbmNlZCBvbmx5IHVzZWQgCj4+IHNwYWNlcy4K
-Pj4KPj4gU2lnbmVkLW9mZi1ieTogRnLDqWTDqXJpYyBEYW5pcyA8ZnJlZGVyaWMuZGFuaXNAY29s
-bGFib3JhLmNvbT4KPj4gLS0tCj4+IMKgIGFyY2gvdW0vZHJpdmVycy91YmRfa2Vybi5jwqAgfCA4
-ICsrKysrKystCj4+IMKgIGFyY2gvdW0vaW5jbHVkZS9zaGFyZWQvb3MuaCB8IDEgKwo+PiDCoCBh
-cmNoL3VtL29zLUxpbnV4L2ZpbGUuY8KgwqDCoMKgIHwgOSArKysrKysrKysKPj4gwqAgMyBmaWxl
-cyBjaGFuZ2VkLCAxNyBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCj4+Cj4+IGRpZmYgLS1n
-aXQgYS9hcmNoL3VtL2RyaXZlcnMvdWJkX2tlcm4uYyBiL2FyY2gvdW0vZHJpdmVycy91YmRfa2Vy
-bi5jCj4+IGluZGV4IDY5ZDJkMDA0OWE2MS4uYjAzMjY5ZmFlZjcxIDEwMDY0NAo+PiAtLS0gYS9h
-cmNoL3VtL2RyaXZlcnMvdWJkX2tlcm4uYwo+PiArKysgYi9hcmNoL3VtL2RyaXZlcnMvdWJkX2tl
-cm4uYwo+PiBAQCAtMTUyNiwxMyArMTUyNiwxOSBAQCBzdGF0aWMgdm9pZCBkb19pbyhzdHJ1Y3Qg
-aW9fdGhyZWFkX3JlcSAqcmVxLCAKPj4gc3RydWN0IGlvX2Rlc2MgKmRlc2MpCj4+IMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIH0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYnJlYWs7
-Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBjYXNlIFJFUV9PUF9ESVNDQVJEOgo+PiAtwqDCoMKgwqDC
-oMKgwqAgY2FzZSBSRVFfT1BfV1JJVEVfWkVST0VTOgo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCBuID0gb3NfZmFsbG9jX3B1bmNoKHJlcS0+ZmRzW2JpdF0sIG9mZiwgbGVuKTsKPj4gwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKG4pIHsKPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCByZXEtPmVycm9yID0gbWFwX2Vycm9yKC1uKTsKPj4gwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm47Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgIH0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYnJlYWs7Cj4+ICvCoMKgwqDCoMKg
-wqDCoCBjYXNlIFJFUV9PUF9XUklURV9aRVJPRVM6Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IG4gPSBvc19mYWxsb2NfemVyb2VzKHJlcS0+ZmRzW2JpdF0sIG9mZiwgbGVuKTsKPj4gK8KgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgaWYgKG4pIHsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCByZXEtPmVycm9yID0gbWFwX2Vycm9yKC1uKTsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoCByZXR1cm47Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIH0KPj4gK8KgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgYnJlYWs7Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBkZWZhdWx0Ogo+
-PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBXQVJOX09OX09OQ0UoMSk7Cj4+IMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIHJlcS0+ZXJyb3IgPSBCTEtfU1RTX05PVFNVUFA7Cj4+IGRpZmYg
-LS1naXQgYS9hcmNoL3VtL2luY2x1ZGUvc2hhcmVkL29zLmggYi9hcmNoL3VtL2luY2x1ZGUvc2hh
-cmVkL29zLmgKPj4gaW5kZXggMDAyMTQwNTlkOWVjLi5mYWZkZTFkNTQxNmUgMTAwNjQ0Cj4+IC0t
-LSBhL2FyY2gvdW0vaW5jbHVkZS9zaGFyZWQvb3MuaAo+PiArKysgYi9hcmNoL3VtL2luY2x1ZGUv
-c2hhcmVkL29zLmgKPj4gQEAgLTE2OCw2ICsxNjgsNyBAQCBleHRlcm4gdW5zaWduZWQgb3NfbWFq
-b3IodW5zaWduZWQgbG9uZyBsb25nIGRldik7Cj4+IMKgIGV4dGVybiB1bnNpZ25lZCBvc19taW5v
-cih1bnNpZ25lZCBsb25nIGxvbmcgZGV2KTsKPj4gwqAgZXh0ZXJuIHVuc2lnbmVkIGxvbmcgbG9u
-ZyBvc19tYWtlZGV2KHVuc2lnbmVkIG1ham9yLCB1bnNpZ25lZCBtaW5vcik7Cj4+IMKgIGV4dGVy
-biBpbnQgb3NfZmFsbG9jX3B1bmNoKGludCBmZCwgdW5zaWduZWQgbG9uZyBsb25nIG9mZnNldCwg
-aW50IAo+PiBjb3VudCk7Cj4+ICtleHRlcm4gaW50IG9zX2ZhbGxvY196ZXJvZXMoaW50IGZkLCB1
-bnNpZ25lZCBsb25nIGxvbmcgb2Zmc2V0LCBpbnQgCj4+IGNvdW50KTsKPj4gwqAgZXh0ZXJuIGlu
-dCBvc19ldmVudGZkKHVuc2lnbmVkIGludCBpbml0dmFsLCBpbnQgZmxhZ3MpOwo+PiDCoCBleHRl
-cm4gaW50IG9zX3NlbmRtc2dfZmRzKGludCBmZCwgY29uc3Qgdm9pZCAqYnVmLCB1bnNpZ25lZCBp
-bnQgbGVuLAo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY29uc3QgaW50ICpmZHMs
-IHVuc2lnbmVkIGludCBmZHNfbnVtKTsKPj4gZGlmZiAtLWdpdCBhL2FyY2gvdW0vb3MtTGludXgv
-ZmlsZS5jIGIvYXJjaC91bS9vcy1MaW51eC9maWxlLmMKPj4gaW5kZXggZTQ0MjFkYmM0YzM2Li5m
-YzQ0NTBkYjU5YmQgMTAwNjQ0Cj4+IC0tLSBhL2FyY2gvdW0vb3MtTGludXgvZmlsZS5jCj4+ICsr
-KyBiL2FyY2gvdW0vb3MtTGludXgvZmlsZS5jCj4+IEBAIC02MjUsNiArNjI1LDE1IEBAIGludCBv
-c19mYWxsb2NfcHVuY2goaW50IGZkLCB1bnNpZ25lZCBsb25nIGxvbmcgCj4+IG9mZnNldCwgaW50
-IGxlbikKPj4gwqDCoMKgwqDCoCByZXR1cm4gbjsKPj4gwqAgfQo+PiDCoCAraW50IG9zX2ZhbGxv
-Y196ZXJvZXMoaW50IGZkLCB1bnNpZ25lZCBsb25nIGxvbmcgb2Zmc2V0LCBpbnQgbGVuKQo+PiAr
-ewo+PiArwqDCoMKgIGludCBuID0gZmFsbG9jYXRlKGZkLCBGQUxMT0NfRkxfWkVST19SQU5HRXxG
-QUxMT0NfRkxfS0VFUF9TSVpFLCAKPj4gb2Zmc2V0LCBsZW4pOwo+PiArCj4+ICvCoMKgwqAgaWYg
-KG4gPCAwKQo+PiArwqDCoMKgwqDCoMKgwqAgcmV0dXJuIC1lcnJubzsKPj4gK8KgwqDCoCByZXR1
-cm4gbjsKPj4gK30KPj4gKwo+PiDCoCBpbnQgb3NfZXZlbnRmZCh1bnNpZ25lZCBpbnQgaW5pdHZh
-bCwgaW50IGZsYWdzKQo+PiDCoCB7Cj4+IMKgwqDCoMKgwqAgaW50IGZkID0gZXZlbnRmZChpbml0
-dmFsLCBmbGFncyk7Cj4+Cj4KPiBBY2tlZC1ieTogQW50b24gSXZhbm92IDxhbnRvbi5pdmFub3ZA
-Y2FtYnJpZGdlZ3JleXMuY29tPgo+CldoYXQgc2hvdWxkIGJlIG5leHQgc3RlcCB0byBnZXQgdGhp
-cyBtZXJnZWQ/CgpSZWdhcmRzLAoKRnJlZAoKLS0gCkZyw6lkw6lyaWMgRGFuaXMKU2VuaW9yIFNv
-ZnR3YXJlIEVuZ2luZWVyCgpDb2xsYWJvcmEgTHRkLgpQbGF0aW51bSBCdWlsZGluZywgU3QgSm9o
-bidzIElubm92YXRpb24gUGFyaywgQ2FtYnJpZGdlIENCNCAwRFMsIFVuaXRlZCBLaW5nZG9tClJl
-Z2lzdGVyZWQgaW4gRW5nbGFuZCAmIFdhbGVzLCBuby4gNTUxMzcxOAoKCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdAps
-aW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vbGludXgtdW0K
+Acked-By: Julius Werner <jwerner@chromium.org>
+
+On Thu, Feb 24, 2022 at 12:02 AM Anton Ivanov
+<anton.ivanov@cambridgegreys.com> wrote:
+>
+>
+>
+> On 24/02/2022 04:01, David Gow wrote:
+> > The Google Coreboot implementation requires IOMEM functions
+> > (memmremap, memunmap, devm_memremap), but does not specify this is its
+> > Kconfig. This results in build errors when IOMEM is not enabled, such as
+> > on some UML configurations:
+> >
+> > /usr/bin/ld: drivers/firmware/google/coreboot_table.o: in function `coreboot_table_probe':
+> > coreboot_table.c:(.text+0x311): undefined reference to `memremap'
+> > /usr/bin/ld: coreboot_table.c:(.text+0x34e): undefined reference to `memunmap'
+> > /usr/bin/ld: drivers/firmware/google/memconsole-coreboot.o: in function `memconsole_probe':
+> > memconsole-coreboot.c:(.text+0x12d): undefined reference to `memremap'
+> > /usr/bin/ld: memconsole-coreboot.c:(.text+0x17e): undefined reference to `devm_memremap'
+> > /usr/bin/ld: memconsole-coreboot.c:(.text+0x191): undefined reference to `memunmap'
+> > /usr/bin/ld: drivers/firmware/google/vpd.o: in function `vpd_section_destroy.isra.0':
+> > vpd.c:(.text+0x300): undefined reference to `memunmap'
+> > /usr/bin/ld: drivers/firmware/google/vpd.o: in function `vpd_section_init':
+> > vpd.c:(.text+0x382): undefined reference to `memremap'
+> > /usr/bin/ld: vpd.c:(.text+0x459): undefined reference to `memunmap'
+> > /usr/bin/ld: drivers/firmware/google/vpd.o: in function `vpd_probe':
+> > vpd.c:(.text+0x59d): undefined reference to `memremap'
+> > /usr/bin/ld: vpd.c:(.text+0x5d3): undefined reference to `memunmap'
+> > collect2: error: ld returned 1 exit status
+> >
+> > Signed-off-by: David Gow <davidgow@google.com>
+> > ---
+> >   drivers/firmware/google/Kconfig | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/firmware/google/Kconfig b/drivers/firmware/google/Kconfig
+> > index 931544c9f63d..7ac866a985c6 100644
+> > --- a/drivers/firmware/google/Kconfig
+> > +++ b/drivers/firmware/google/Kconfig
+> > @@ -21,7 +21,7 @@ config GOOGLE_SMI
+> >
+> >   config GOOGLE_COREBOOT_TABLE
+> >       tristate "Coreboot Table Access"
+> > -     depends on ACPI || OF
+> > +     depends on IOMEM && (ACPI || OF)
+> >       help
+> >         This option enables the coreboot_table module, which provides other
+> >         firmware modules access to the coreboot table. The coreboot table
+> >
+> Acked-By: anton ivanov <anton.ivanov@cambridgegreys.com>
+>
+> --
+> Anton R. Ivanov
+> Cambridgegreys Limited. Registered in England. Company Number 10273661
+> https://www.cambridgegreys.com/
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
