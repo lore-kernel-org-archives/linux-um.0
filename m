@@ -1,171 +1,153 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out199-4.us.a.mail.aliyun.com ([47.90.199.4])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nN9Dk-00HEUH-Lp
- for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:11:32 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v6 09/26] virtio_ring: split: implement
- virtqueue_reset_vring_split()
-Date: Thu, 24 Feb 2022 16:10:45 +0800
-Message-Id: <20220224081102.80224-10-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
-References: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
+Return-Path: <dinguyen@kernel.org>
+Message-ID: <f6c34635-533f-8b63-b27b-15835b93e6d4@kernel.org>
+Date: Thu, 24 Feb 2022 22:28:32 -0600
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+Subject: Re: [PATCH v2 02/18] uaccess: fix nios2 and microblaze get_user_8()
+Content-Language: en-US
+References: <20220216131332.1489939-1-arnd@kernel.org>
+ <20220216131332.1489939-3-arnd@kernel.org>
+From: Dinh Nguyen <dinguyen@kernel.org>
+In-Reply-To: <20220216131332.1489939-3-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
-
-virtio ring supports reset.
-
-Queue reset is divided into several stages.
-
-1. notify device queue reset
-2. vring release
-3. attach new vring
-4. notify device queue re-enable
-
-After the first step is completed, the vring reset operation can be
-performed. If the newly set vring num does not change, then just reset
-the vq related value.
-
-Otherwise, the vring will be released and the vring will be reallocated.
-And the vring will be attached to the vq. If this process fails, the
-function will exit, and the state of the vq will be the vring release
-state. You can call this function again to reallocate the vring.
-
-In addition, vring_align, may_reduce_num are necessary for reallocating
-vring, so they are retained when creating vq.
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- drivers/virtio/virtio_ring.c | 69 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 69 insertions(+)
-
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 0b5360052ac2..a2e771263ea7 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -158,6 +158,12 @@ struct vring_virtqueue {
- 			/* DMA address and size information */
- 			dma_addr_t queue_dma_addr;
- 			size_t queue_size_in_bytes;
-+
-+			/* The parameters for creating vrings are reserved for
-+			 * creating new vrings when enabling reset queue.
-+			 */
-+			u32 vring_align;
-+			bool may_reduce_num;
- 		} split;
- 
- 		/* Available for packed ring */
-@@ -217,6 +223,12 @@ struct vring_virtqueue {
- #endif
- };
- 
-+static void vring_free(struct virtqueue *vq);
-+static void __vring_virtqueue_init_split(struct vring_virtqueue *vq,
-+					 struct virtio_device *vdev);
-+static int __vring_virtqueue_attach_split(struct vring_virtqueue *vq,
-+					  struct virtio_device *vdev,
-+					  struct vring vring);
- 
- /*
-  * Helpers.
-@@ -1012,6 +1024,8 @@ static struct virtqueue *vring_create_virtqueue_split(
- 		return NULL;
- 	}
- 
-+	to_vvq(vq)->split.vring_align = vring_align;
-+	to_vvq(vq)->split.may_reduce_num = may_reduce_num;
- 	to_vvq(vq)->split.queue_dma_addr = vring.dma_addr;
- 	to_vvq(vq)->split.queue_size_in_bytes = vring.queue_size_in_bytes;
- 	to_vvq(vq)->we_own_ring = true;
-@@ -1019,6 +1033,59 @@ static struct virtqueue *vring_create_virtqueue_split(
- 	return vq;
- }
- 
-+static int virtqueue_reset_vring_split(struct virtqueue *_vq, u32 num)
-+{
-+	struct vring_virtqueue *vq = to_vvq(_vq);
-+	struct virtio_device *vdev = _vq->vdev;
-+	struct vring_split vring;
-+	int err;
-+
-+	if (num > _vq->num_max)
-+		return -E2BIG;
-+
-+	switch (vq->vq.reset) {
-+	case VIRTIO_VQ_RESET_STEP_NONE:
-+		return -ENOENT;
-+
-+	case VIRTIO_VQ_RESET_STEP_VRING_ATTACH:
-+	case VIRTIO_VQ_RESET_STEP_DEVICE:
-+		if (vq->split.vring.num == num || !num)
-+			break;
-+
-+		vring_free(_vq);
-+
-+		fallthrough;
-+
-+	case VIRTIO_VQ_RESET_STEP_VRING_RELEASE:
-+		if (!num)
-+			num = vq->split.vring.num;
-+
-+		err = vring_create_vring_split(&vring, vdev,
-+					       vq->split.vring_align,
-+					       vq->weak_barriers,
-+					       vq->split.may_reduce_num, num);
-+		if (err)
-+			return -ENOMEM;
-+
-+		err = __vring_virtqueue_attach_split(vq, vdev, vring.vring);
-+		if (err) {
-+			vring_free_queue(vdev, vring.queue_size_in_bytes,
-+					 vring.queue,
-+					 vring.dma_addr);
-+			return -ENOMEM;
-+		}
-+
-+		vq->split.queue_dma_addr = vring.dma_addr;
-+		vq->split.queue_size_in_bytes = vring.queue_size_in_bytes;
-+	}
-+
-+	__vring_virtqueue_init_split(vq, vdev);
-+	vq->we_own_ring = true;
-+	vq->vq.reset = VIRTIO_VQ_RESET_STEP_VRING_ATTACH;
-+
-+	return 0;
-+}
-+
- 
- /*
-  * Packed ring specific functions - *_packed().
-@@ -2317,6 +2384,8 @@ static int __vring_virtqueue_attach_split(struct vring_virtqueue *vq,
- static void __vring_virtqueue_init_split(struct vring_virtqueue *vq,
- 					 struct virtio_device *vdev)
- {
-+	vq->vq.reset = VIRTIO_VQ_RESET_STEP_NONE;
-+
- 	vq->packed_ring = false;
- 	vq->we_own_ring = false;
- 	vq->broken = false;
--- 
-2.31.0
+To: Arnd Bergmann <arnd@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-api@vger.kernel.org, arnd@arndb.de, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk
+Cc: linux@armlinux.org.uk, will@kernel.org, guoren@kernel.org, bcain@codeaurora.org, geert@linux-m68k.org, monstr@monstr.eu, tsbogend@alpha.franken.de, nickhu@andestech.com, green.hu@gmail.com, shorne@gmail.com, deller@gmx.de, mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com, hca@linux.ibm.com, dalias@libc.org, davem@davemloft.net, richard@nod.at, x86@kernel.org, jcmvbkbc@gmail.com, ebiederm@xmission.com, akpm@linux-foundation.org, ardb@kernel.org, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
+List-ID: <linux-um.lists.infradead.org>
 
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+
+On 2/16/22 07:13, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> These two architectures implement 8-byte get_user() through
+> a memcpy() into a four-byte variable, which won't fit.
+> 
+> Use a temporary 64-bit variable instead here, and use a double
+> cast the way that risc-v and openrisc do to avoid compile-time
+> warnings.
+> 
+> Fixes: 6a090e97972d ("arch/microblaze: support get_user() of size 8 bytes")
+> Fixes: 5ccc6af5e88e ("nios2: Memory management")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>   arch/microblaze/include/asm/uaccess.h | 18 +++++++++---------
+>   arch/nios2/include/asm/uaccess.h      | 26 ++++++++++++++++----------
+>   2 files changed, 25 insertions(+), 19 deletions(-)
+> 
+> diff --git a/arch/microblaze/include/asm/uaccess.h b/arch/microblaze/include/asm/uaccess.h
+> index 5b6e0e7788f4..3fe96979d2c6 100644
+> --- a/arch/microblaze/include/asm/uaccess.h
+> +++ b/arch/microblaze/include/asm/uaccess.h
+> @@ -130,27 +130,27 @@ extern long __user_bad(void);
+>   
+>   #define __get_user(x, ptr)						\
+>   ({									\
+> -	unsigned long __gu_val = 0;					\
+>   	long __gu_err;							\
+>   	switch (sizeof(*(ptr))) {					\
+>   	case 1:								\
+> -		__get_user_asm("lbu", (ptr), __gu_val, __gu_err);	\
+> +		__get_user_asm("lbu", (ptr), x, __gu_err);		\
+>   		break;							\
+>   	case 2:								\
+> -		__get_user_asm("lhu", (ptr), __gu_val, __gu_err);	\
+> +		__get_user_asm("lhu", (ptr), x, __gu_err);		\
+>   		break;							\
+>   	case 4:								\
+> -		__get_user_asm("lw", (ptr), __gu_val, __gu_err);	\
+> +		__get_user_asm("lw", (ptr), x, __gu_err);		\
+>   		break;							\
+> -	case 8:								\
+> -		__gu_err = __copy_from_user(&__gu_val, ptr, 8);		\
+> -		if (__gu_err)						\
+> -			__gu_err = -EFAULT;				\
+> +	case 8: {							\
+> +		__u64 __x = 0;						\
+> +		__gu_err = raw_copy_from_user(&__x, ptr, 8) ?		\
+> +							-EFAULT : 0;	\
+> +		(x) = (typeof(x))(typeof((x) - (x)))__x;		\
+>   		break;							\
+> +	}								\
+>   	default:							\
+>   		/* __gu_val = 0; __gu_err = -EINVAL;*/ __gu_err = __user_bad();\
+>   	}								\
+> -	x = (__force __typeof__(*(ptr))) __gu_val;			\
+>   	__gu_err;							\
+>   })
+>   
+> diff --git a/arch/nios2/include/asm/uaccess.h b/arch/nios2/include/asm/uaccess.h
+> index ba9340e96fd4..ca9285a915ef 100644
+> --- a/arch/nios2/include/asm/uaccess.h
+> +++ b/arch/nios2/include/asm/uaccess.h
+> @@ -88,6 +88,7 @@ extern __must_check long strnlen_user(const char __user *s, long n);
+>   /* Optimized macros */
+>   #define __get_user_asm(val, insn, addr, err)				\
+>   {									\
+> +	unsigned long __gu_val;						\
+>   	__asm__ __volatile__(						\
+>   	"       movi    %0, %3\n"					\
+>   	"1:   " insn " %1, 0(%2)\n"					\
+> @@ -96,14 +97,20 @@ extern __must_check long strnlen_user(const char __user *s, long n);
+>   	"       .section __ex_table,\"a\"\n"				\
+>   	"       .word 1b, 2b\n"						\
+>   	"       .previous"						\
+> -	: "=&r" (err), "=r" (val)					\
+> +	: "=&r" (err), "=r" (__gu_val)					\
+>   	: "r" (addr), "i" (-EFAULT));					\
+> +	val = (__force __typeof__(*(addr)))__gu_val;			\
+>   }
+>   
+> -#define __get_user_unknown(val, size, ptr, err) do {			\
+> +extern void __get_user_unknown(void);
+> +
+> +#define __get_user_8(val, ptr, err) do {				\
+> +	u64 __val = 0;							\
+>   	err = 0;							\
+> -	if (__copy_from_user(&(val), ptr, size)) {			\
+> +	if (raw_copy_from_user(&(__val), ptr, sizeof(val))) {		\
+>   		err = -EFAULT;						\
+> +	} else {							\
+> +		val = (typeof(val))(typeof((val) - (val)))__val;	\
+>   	}								\
+>   	} while (0)
+>   
+> @@ -119,8 +126,11 @@ do {									\
+>   	case 4:								\
+>   		__get_user_asm(val, "ldw", ptr, err);			\
+>   		break;							\
+> +	case 8:								\
+> +		__get_user_8(val, ptr, err);				\
+> +		break;							\
+>   	default:							\
+> -		__get_user_unknown(val, size, ptr, err);		\
+> +		__get_user_unknown();					\
+>   		break;							\
+>   	}								\
+>   } while (0)
+> @@ -129,9 +139,7 @@ do {									\
+>   	({								\
+>   	long __gu_err = -EFAULT;					\
+>   	const __typeof__(*(ptr)) __user *__gu_ptr = (ptr);		\
+> -	unsigned long __gu_val = 0;					\
+> -	__get_user_common(__gu_val, sizeof(*(ptr)), __gu_ptr, __gu_err);\
+> -	(x) = (__force __typeof__(x))__gu_val;				\
+> +	__get_user_common(x, sizeof(*(ptr)), __gu_ptr, __gu_err);	\
+>   	__gu_err;							\
+>   	})
+>   
+> @@ -139,11 +147,9 @@ do {									\
+>   ({									\
+>   	long __gu_err = -EFAULT;					\
+>   	const __typeof__(*(ptr)) __user *__gu_ptr = (ptr);		\
+> -	unsigned long __gu_val = 0;					\
+>   	if (access_ok( __gu_ptr, sizeof(*__gu_ptr)))	\
+> -		__get_user_common(__gu_val, sizeof(*__gu_ptr),		\
+> +		__get_user_common(x, sizeof(*__gu_ptr),			\
+>   			__gu_ptr, __gu_err);				\
+> -	(x) = (__force __typeof__(x))__gu_val;				\
+>   	__gu_err;							\
+>   })
+>   
+
+Acked-by: Dinh Nguyen <dinguyen@kernel.org>
 
