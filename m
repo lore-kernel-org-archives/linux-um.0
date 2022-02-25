@@ -1,116 +1,65 @@
-Return-Path: <anshuman.khandual@arm.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V3 17/30] sh/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Date: Mon, 28 Feb 2022 16:17:40 +0530
-Message-Id: <1646045273-9343-18-git-send-email-anshuman.khandual@arm.com>
-In-Reply-To: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
-References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
-To: linux-mm@kvack.org, akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, geert@linux-m68k.org, Anshuman Khandual <anshuman.khandual@arm.com>, Christoph Hellwig <hch@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org, linux-riscv@lists.infradead.org, linux-alpha@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-parisc@vger.kernel.org, openrisc@lists.librecores.org, linux-um@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>
+Return-Path: <dinguyen@kernel.org>
+Message-ID: <d12e6bcc-089d-568b-62cf-036c68c08ca0@kernel.org>
+Date: Thu, 24 Feb 2022 22:31:04 -0600
+MIME-Version: 1.0
+Subject: Re: [PATCH v2 13/18] uaccess: generalize access_ok()
+Content-Language: en-US
+References: <20220216131332.1489939-1-arnd@kernel.org>
+ <20220216131332.1489939-14-arnd@kernel.org>
+From: Dinh Nguyen <dinguyen@kernel.org>
+In-Reply-To: <20220216131332.1489939-14-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+To: Arnd Bergmann <arnd@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-api@vger.kernel.org, arnd@arndb.de, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk
+Cc: linux@armlinux.org.uk, will@kernel.org, guoren@kernel.org, bcain@codeaurora.org, geert@linux-m68k.org, monstr@monstr.eu, tsbogend@alpha.franken.de, nickhu@andestech.com, green.hu@gmail.com, shorne@gmail.com, deller@gmx.de, mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com, hca@linux.ibm.com, dalias@libc.org, davem@davemloft.net, richard@nod.at, x86@kernel.org, jcmvbkbc@gmail.com, ebiederm@xmission.com, akpm@linux-foundation.org, ardb@kernel.org, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
 List-ID: <linux-um.lists.infradead.org>
 
-This defines and exports a platform specific custom vm_get_page_prot() via
-subscribing ARCH_HAS_VM_GET_PAGE_PROT. Subsequently all __SXXX and __PXXX
-macros can be dropped which are no longer needed.
 
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Rich Felker <dalias@libc.org>
-Cc: linux-sh@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- arch/sh/Kconfig               |  1 +
- arch/sh/include/asm/pgtable.h | 17 ----------------
- arch/sh/mm/mmap.c             | 38 +++++++++++++++++++++++++++++++++++
- 3 files changed, 39 insertions(+), 17 deletions(-)
 
-diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-index 2474a04ceac4..f3fcd1c5e002 100644
---- a/arch/sh/Kconfig
-+++ b/arch/sh/Kconfig
-@@ -11,6 +11,7 @@ config SUPERH
- 	select ARCH_HAS_GCOV_PROFILE_ALL
- 	select ARCH_HAS_PTE_SPECIAL
- 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
-+	select ARCH_HAS_VM_GET_PAGE_PROT
- 	select ARCH_HIBERNATION_POSSIBLE if MMU
- 	select ARCH_MIGHT_HAVE_PC_PARPORT
- 	select ARCH_WANT_IPC_PARSE_VERSION
-diff --git a/arch/sh/include/asm/pgtable.h b/arch/sh/include/asm/pgtable.h
-index d7ddb1ec86a0..6fb9ec54cf9b 100644
---- a/arch/sh/include/asm/pgtable.h
-+++ b/arch/sh/include/asm/pgtable.h
-@@ -89,23 +89,6 @@ static inline unsigned long phys_addr_mask(void)
-  * completely separate permission bits for user and kernel space.
-  */
- 	 /*xwr*/
--#define __P000	PAGE_NONE
--#define __P001	PAGE_READONLY
--#define __P010	PAGE_COPY
--#define __P011	PAGE_COPY
--#define __P100	PAGE_EXECREAD
--#define __P101	PAGE_EXECREAD
--#define __P110	PAGE_COPY
--#define __P111	PAGE_COPY
--
--#define __S000	PAGE_NONE
--#define __S001	PAGE_READONLY
--#define __S010	PAGE_WRITEONLY
--#define __S011	PAGE_SHARED
--#define __S100	PAGE_EXECREAD
--#define __S101	PAGE_EXECREAD
--#define __S110	PAGE_RWX
--#define __S111	PAGE_RWX
- 
- typedef pte_t *pte_addr_t;
- 
-diff --git a/arch/sh/mm/mmap.c b/arch/sh/mm/mmap.c
-index 6a1a1297baae..cad14af6c8e6 100644
---- a/arch/sh/mm/mmap.c
-+++ b/arch/sh/mm/mmap.c
-@@ -162,3 +162,41 @@ int valid_mmap_phys_addr_range(unsigned long pfn, size_t size)
- {
- 	return 1;
- }
-+
-+#ifdef CONFIG_MMU
-+pgprot_t vm_get_page_prot(unsigned long vm_flags)
-+{
-+	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
-+	case VM_NONE:
-+		return PAGE_NONE;
-+	case VM_READ:
-+		return PAGE_READONLY;
-+	case VM_WRITE:
-+	case VM_WRITE | VM_READ:
-+		return PAGE_COPY;
-+	case VM_EXEC:
-+	case VM_EXEC | VM_READ:
-+		return PAGE_EXECREAD;
-+	case VM_EXEC | VM_WRITE:
-+	case VM_EXEC | VM_WRITE | VM_READ:
-+		return PAGE_COPY;
-+	case VM_SHARED:
-+		return PAGE_NONE;
-+	case VM_SHARED | VM_READ:
-+		return PAGE_READONLY;
-+	case VM_SHARED | VM_WRITE:
-+		return PAGE_WRITEONLY;
-+	case VM_SHARED | VM_WRITE | VM_READ:
-+		return PAGE_SHARED;
-+	case VM_SHARED | VM_EXEC:
-+	case VM_SHARED | VM_EXEC | VM_READ:
-+		return PAGE_EXECREAD;
-+	case VM_SHARED | VM_EXEC | VM_WRITE:
-+	case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
-+		return PAGE_RWX;
-+	default:
-+		BUILD_BUG();
-+	}
-+}
-+EXPORT_SYMBOL(vm_get_page_prot);
-+#endif
--- 
-2.25.1
+On 2/16/22 07:13, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> There are many different ways that access_ok() is defined across
+> architectures, but in the end, they all just compare against the
+> user_addr_max() value or they accept anything.
+> 
+> Provide one definition that works for most architectures, checking
+> against TASK_SIZE_MAX for user processes or skipping the check inside
+> of uaccess_kernel() sections.
+> 
+> For architectures without CONFIG_SET_FS(), this should be the fastest
+> check, as it comes down to a single comparison of a pointer against a
+> compile-time constant, while the architecture specific versions tend to
+> do something more complex for historic reasons or get something wrong.
+> 
+> Type checking for __user annotations is handled inconsistently across
+> architectures, but this is easily simplified as well by using an inline
+> function that takes a 'const void __user *' argument. A handful of
+> callers need an extra __user annotation for this.
+> 
+> Some architectures had trick to use 33-bit or 65-bit arithmetic on the
+> addresses to calculate the overflow, however this simpler version uses
+> fewer registers, which means it can produce better object code in the
+> end despite needing a second (statically predicted) branch.
+> 
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Acked-by: Mark Rutland <mark.rutland@arm.com> [arm64, asm-generic]
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>   arch/Kconfig                          |  7 ++++
+>   arch/alpha/include/asm/uaccess.h      | 34 +++------------
+>   arch/arc/include/asm/uaccess.h        | 29 -------------
+>   arch/arm/include/asm/uaccess.h        | 20 +--------
+>   arch/arm64/include/asm/uaccess.h      | 11 ++---
+>   arch/csky/include/asm/uaccess.h       |  8 ----
+>   arch/hexagon/include/asm/uaccess.h    | 25 ------------
+>   arch/ia64/include/asm/uaccess.h       |  5 +--
+>   arch/m68k/Kconfig.cpu                 |  1 +
+>   arch/m68k/include/asm/uaccess.h       | 19 +--------
+>   arch/microblaze/include/asm/uaccess.h |  8 +---
+>   arch/mips/include/asm/uaccess.h       | 29 +------------
+>   arch/nds32/include/asm/uaccess.h      |  7 +---
+>   arch/nios2/include/asm/uaccess.h      | 11 +----
 
+Acked-by: Dinh Nguyen <dinguyen@kernel.org>
 
