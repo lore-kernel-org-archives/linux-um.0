@@ -1,81 +1,134 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-yb1-xb49.google.com ([2607:f8b0:4864:20::b49])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nI0NN-002SoB-6n
- for linux-um@lists.infradead.org; Thu, 10 Feb 2022 03:44:10 +0000
-Received: by mail-yb1-xb49.google.com with SMTP id
- a32-20020a25ae20000000b0061db8f89e46so9330587ybj.14
- for <linux-um@lists.infradead.org>; Wed, 09 Feb 2022 19:44:06 -0800 (PST)
-Date: Thu, 10 Feb 2022 11:43:53 +0800
-Message-Id: <20220210034353.1065703-1-davidgow@google.com>
-Mime-Version: 1.0
-Subject: [PATCH] um: Cleanup syscall_handler_t definition/cast, fix warning
-From: David Gow <davidgow@google.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Al Viro <viro@zeniv.linux.org.uk>
-Cc: David Gow <davidgow@google.com>, x86@kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Kees Cook <keescook@chromium.org>
+Subject: [PATCH v3 1/7] overflow: Provide constant expression struct_size
+Date: Sun, 27 Feb 2022 10:45:11 -0800
+Message-Id: <20220227184517.504931-2-keescook@chromium.org>
+In-Reply-To: <20220227184517.504931-1-keescook@chromium.org>
+References: <20220227184517.504931-1-keescook@chromium.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To: Kees Cook <keescook@chromium.org>
+Cc: "Gustavo A . R . Silva" <gustavoars@kernel.org>, Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, Rasmus Villemoes <linux@rasmusvillemoes.dk>, Vitor Massaru Iha <vitor@massaru.org>, Daniel Latypov <dlatypov@google.com>, David Gow <davidgow@google.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Masahiro Yamada <masahiroy@kernel.org>, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, linux-kbuild@vger.kernel.org, kunit-dev@googlegroups.com, llvm@lists.linux.dev, x86@kernel.org, linux-hardening@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-VGhlIHN5c2NhbGxfaGFuZGxlcl90IHR5cGUgZm9yIHg4Nl82NCB3YXMgZGVmaW5lZCBhcyAnbG9u
-ZyAoKikodm9pZCknLApidXQgYWx3YXlzIGNhc3QgdG8gJ2xvbmcgKCopKGxvbmcsIGxvbmcsIGxv
-bmcsIGxvbmcsIGxvbmcsIGxvbmcpJyBiZWZvcmUKdXNlLiBUaGlzIG5vdyB0cmlnZ2VycyBhIHdh
-cm5pbmcgKHNlZSBiZWxvdykuCgpEZWZpbmUgc3lzY2FsbF9oYW5kbGVyX3QgYXMgdGhlIGxhdHRl
-ciBpbnN0ZWFkLCBhbmQgcmVtb3ZlIHRoZSBjYXN0LgpUaGlzIHNpbXBsaWZpZXMgdGhlIGNvZGUs
-IGFuZCBmaXhlcyB0aGUgd2FybmluZy4KCldhcm5pbmc6CkluIGZpbGUgaW5jbHVkZWQgZnJvbSAu
-Li9hcmNoL3VtL2luY2x1ZGUvYXNtL3Byb2Nlc3Nvci1nZW5lcmljLmg6MTMKICAgICAgICAgICAg
-ICAgICBmcm9tIC4uL2FyY2gveDg2L3VtL2FzbS9wcm9jZXNzb3IuaDo0MQogICAgICAgICAgICAg
-ICAgIGZyb20gLi4vaW5jbHVkZS9saW51eC9yY3VwZGF0ZS5oOjMwCiAgICAgICAgICAgICAgICAg
-ZnJvbSAuLi9pbmNsdWRlL2xpbnV4L3JjdWxpc3QuaDoxMQogICAgICAgICAgICAgICAgIGZyb20g
-Li4vaW5jbHVkZS9saW51eC9waWQuaDo1CiAgICAgICAgICAgICAgICAgZnJvbSAuLi9pbmNsdWRl
-L2xpbnV4L3NjaGVkLmg6MTQKICAgICAgICAgICAgICAgICBmcm9tIC4uL2luY2x1ZGUvbGludXgv
-cHRyYWNlLmg6NgogICAgICAgICAgICAgICAgIGZyb20gLi4vYXJjaC91bS9rZXJuZWwvc2thcy9z
-eXNjYWxsLmM6NzoKLi4vYXJjaC91bS9rZXJuZWwvc2thcy9zeXNjYWxsLmM6IEluIGZ1bmN0aW9u
-IOKAmGhhbmRsZV9zeXNjYWxs4oCZOgouLi9hcmNoL3g4Ni91bS9zaGFyZWQvc3lzZGVwL3N5c2Nh
-bGxzXzY0Lmg6MTg6MTE6IHdhcm5pbmc6IGNhc3QgYmV0d2VlbiBpbmNvbXBhdGlibGUgZnVuY3Rp
-b24gdHlwZXMgZnJvbSDigJhsb25nIGludCAoKikodm9pZCnigJkgdG8g4oCYbG9uZyBpbnQgKCop
-KGxvbmcgaW50LCAgbG9uZyBpbnQsICBsb25nIGludCwgIGxvbmcgaW50LCAgbG9uZyBpbnQsICBs
-b25nIGludCnigJkgWwotV2Nhc3QtZnVuY3Rpb24tdHlwZV0KICAgMTggfCAgICAgICAgICgoKGxv
-bmcgKCopKGxvbmcsIGxvbmcsIGxvbmcsIGxvbmcsIGxvbmcsIGxvbmcpKSBcCiAgICAgIHwgICAg
-ICAgICAgIF4KLi4vYXJjaC94ODYvdW0vYXNtL3B0cmFjZS5oOjM2OjYyOiBub3RlOiBpbiBkZWZp
-bml0aW9uIG9mIG1hY3JvIOKAmFBUX1JFR1NfU0VUX1NZU0NBTExfUkVUVVJO4oCZCiAgIDM2IHwg
-I2RlZmluZSBQVF9SRUdTX1NFVF9TWVNDQUxMX1JFVFVSTihyLCByZXMpIChQVF9SRUdTX0FYKHIp
-ID0gKHJlcykpCiAgICAgIHwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIF5+fgouLi9hcmNoL3VtL2tlcm5lbC9za2FzL3N5c2NhbGwu
-Yzo0NjozMzogbm90ZTogaW4gZXhwYW5zaW9uIG9mIG1hY3JvIOKAmEVYRUNVVEVfU1lTQ0FMTOKA
-mQogICA0NiB8ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgRVhFQ1VURV9TWVNDQUxM
-KHN5c2NhbGwsIHJlZ3MpKTsKICAgICAgfCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IF5+fn5+fn5+fn5+fn5+fgoKU2lnbmVkLW9mZi1ieTogRGF2aWQgR293IDxkYXZpZGdvd0Bnb29n
-bGUuY29tPgotLS0KCkkgY291bGRuJ3QgZmluZCBhIHJlYXNvbiBmb3IgdGhlIHR3byBjb25mbGlj
-dGluZyBmdW5jdGlvbiB0eXBlcyBoZXJlLApidXQgaXQncyBwb3NzaWJsZSBJJ20gbWlzc2luZyBv
-bmUuIEF0IHRoZSB2ZXJ5IGxlYXN0LCB0aGlzIGNoYW5nZSBkaWRuJ3QKc2VlbSB0byBicmVhayBh
-bnl0aGluZyBvbiBteSBzeXN0ZW0uCgoKIGFyY2gveDg2L3VtL3NoYXJlZC9zeXNkZXAvc3lzY2Fs
-bHNfNjQuaCB8IDUgKystLS0KIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDMgZGVs
-ZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvYXJjaC94ODYvdW0vc2hhcmVkL3N5c2RlcC9zeXNjYWxs
-c182NC5oIGIvYXJjaC94ODYvdW0vc2hhcmVkL3N5c2RlcC9zeXNjYWxsc182NC5oCmluZGV4IDQ4
-ZDZjZDEyZjhhNS4uYjZiOTk3MjI1ODQxIDEwMDY0NAotLS0gYS9hcmNoL3g4Ni91bS9zaGFyZWQv
-c3lzZGVwL3N5c2NhbGxzXzY0LmgKKysrIGIvYXJjaC94ODYvdW0vc2hhcmVkL3N5c2RlcC9zeXNj
-YWxsc182NC5oCkBAIC0xMCwxMyArMTAsMTIgQEAKICNpbmNsdWRlIDxsaW51eC9tc2cuaD4KICNp
-bmNsdWRlIDxsaW51eC9zaG0uaD4KIAotdHlwZWRlZiBsb25nIHN5c2NhbGxfaGFuZGxlcl90KHZv
-aWQpOwordHlwZWRlZiBsb25nIHN5c2NhbGxfaGFuZGxlcl90KGxvbmcsIGxvbmcsIGxvbmcsIGxv
-bmcsIGxvbmcsIGxvbmcpOwogCiBleHRlcm4gc3lzY2FsbF9oYW5kbGVyX3QgKnN5c19jYWxsX3Rh
-YmxlW107CiAKICNkZWZpbmUgRVhFQ1VURV9TWVNDQUxMKHN5c2NhbGwsIHJlZ3MpIFwKLQkoKChs
-b25nICgqKShsb25nLCBsb25nLCBsb25nLCBsb25nLCBsb25nLCBsb25nKSkgXAotCSAgKCpzeXNf
-Y2FsbF90YWJsZVtzeXNjYWxsXSkpKFVQVF9TWVNDQUxMX0FSRzEoJnJlZ3MtPnJlZ3MpLCBcCisJ
-KCgoKnN5c19jYWxsX3RhYmxlW3N5c2NhbGxdKSkoVVBUX1NZU0NBTExfQVJHMSgmcmVncy0+cmVn
-cyksIFwKIAkJIAkJICAgICAgVVBUX1NZU0NBTExfQVJHMigmcmVncy0+cmVncyksIFwKIAkJCQkg
-ICAgICBVUFRfU1lTQ0FMTF9BUkczKCZyZWdzLT5yZWdzKSwgXAogCQkJCSAgICAgIFVQVF9TWVND
-QUxMX0FSRzQoJnJlZ3MtPnJlZ3MpLCBcCi0tIAoyLjM1LjAuMjYzLmdiODI0MjI2NDJmLWdvb2cK
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11
-bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
+There have been cases where struct_size() (or flex_array_size()) needs
+to be calculated for an initializer, which requires it be a constant
+expression. This is possible when the "count" argument is a constant
+expression, so provide this ability for the helpers.
+
+Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Tested-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Link: https://lore.kernel.org/lkml/20220210010407.GA701603@embeddedor
+---
+v1: https://lore.kernel.org/linux-hardening/20220210004326.776574-1-keescook@chromium.org
+v2:
+ - fix broken self-test due to CE optimization
+---
+ include/linux/overflow.h | 10 +++++++---
+ lib/test_overflow.c      | 26 +++++++++++++++++---------
+ 2 files changed, 24 insertions(+), 12 deletions(-)
+
+diff --git a/include/linux/overflow.h b/include/linux/overflow.h
+index 59d7228104d0..f1221d11f8e5 100644
+--- a/include/linux/overflow.h
++++ b/include/linux/overflow.h
+@@ -4,6 +4,7 @@
+ 
+ #include <linux/compiler.h>
+ #include <linux/limits.h>
++#include <linux/const.h>
+ 
+ /*
+  * We need to compute the minimum and maximum values representable in a given
+@@ -221,8 +222,9 @@ static inline size_t __must_check size_sub(size_t minuend, size_t subtrahend)
+  * Return: number of bytes needed or SIZE_MAX on overflow.
+  */
+ #define flex_array_size(p, member, count)				\
+-	size_mul(count,							\
+-		 sizeof(*(p)->member) + __must_be_array((p)->member))
++	__builtin_choose_expr(__is_constexpr(count),			\
++		(count) * sizeof(*(p)->member) + __must_be_array((p)->member),	\
++		size_mul(count, sizeof(*(p)->member) + __must_be_array((p)->member)))
+ 
+ /**
+  * struct_size() - Calculate size of structure with trailing flexible array.
+@@ -237,6 +239,8 @@ static inline size_t __must_check size_sub(size_t minuend, size_t subtrahend)
+  * Return: number of bytes needed or SIZE_MAX on overflow.
+  */
+ #define struct_size(p, member, count)					\
+-	size_add(sizeof(*(p)), flex_array_size(p, member, count))
++	__builtin_choose_expr(__is_constexpr(count),			\
++		sizeof(*(p)) + flex_array_size(p, member, count),	\
++		size_add(sizeof(*(p)), flex_array_size(p, member, count)))
+ 
+ #endif /* __LINUX_OVERFLOW_H */
+diff --git a/lib/test_overflow.c b/lib/test_overflow.c
+index 712fb2351c27..f6530fce799d 100644
+--- a/lib/test_overflow.c
++++ b/lib/test_overflow.c
+@@ -602,10 +602,18 @@ struct __test_flex_array {
+ 
+ static int __init test_overflow_size_helpers(void)
+ {
++	/* Make sure struct_size() can be used in a constant expression. */
++	u8 ce_array[struct_size((struct __test_flex_array *)0, data, 55)];
+ 	struct __test_flex_array *obj;
+ 	int count = 0;
+ 	int err = 0;
+ 	int var;
++	volatile int unconst = 0;
++
++	/* Verify constant expression against runtime version. */
++	var = 55;
++	OPTIMIZER_HIDE_VAR(var);
++	err |= sizeof(ce_array) != struct_size(obj, data, var);
+ 
+ #define check_one_size_helper(expected, func, args...)	({	\
+ 	bool __failure = false;					\
+@@ -663,28 +671,28 @@ static int __init test_overflow_size_helpers(void)
+ 				     flex_array_size, obj, data, var++);
+ 	err |= check_one_size_helper(5 * sizeof(*obj->data),
+ 				     flex_array_size, obj, data, var++);
+-	err |= check_one_size_helper(0, flex_array_size, obj, data, 0);
++	err |= check_one_size_helper(0, flex_array_size, obj, data, 0 + unconst);
+ 	err |= check_one_size_helper(sizeof(*obj->data),
+-				     flex_array_size, obj, data, 1);
++				     flex_array_size, obj, data, 1 + unconst);
+ 	err |= check_one_size_helper(7 * sizeof(*obj->data),
+-				     flex_array_size, obj, data, 7);
++				     flex_array_size, obj, data, 7 + unconst);
+ 	err |= check_one_size_helper(SIZE_MAX,
+-				     flex_array_size, obj, data, -1);
++				     flex_array_size, obj, data, -1 + unconst);
+ 	err |= check_one_size_helper(SIZE_MAX,
+-				     flex_array_size, obj, data, SIZE_MAX - 4);
++				     flex_array_size, obj, data, SIZE_MAX - 4 + unconst);
+ 
+ 	var = 4;
+ 	err |= check_one_size_helper(sizeof(*obj) + (4 * sizeof(*obj->data)),
+ 				     struct_size, obj, data, var++);
+ 	err |= check_one_size_helper(sizeof(*obj) + (5 * sizeof(*obj->data)),
+ 				     struct_size, obj, data, var++);
+-	err |= check_one_size_helper(sizeof(*obj), struct_size, obj, data, 0);
++	err |= check_one_size_helper(sizeof(*obj), struct_size, obj, data, 0 + unconst);
+ 	err |= check_one_size_helper(sizeof(*obj) + sizeof(*obj->data),
+-				     struct_size, obj, data, 1);
++				     struct_size, obj, data, 1 + unconst);
+ 	err |= check_one_size_helper(SIZE_MAX,
+-				     struct_size, obj, data, -3);
++				     struct_size, obj, data, -3 + unconst);
+ 	err |= check_one_size_helper(SIZE_MAX,
+-				     struct_size, obj, data, SIZE_MAX - 3);
++				     struct_size, obj, data, SIZE_MAX - 3 + unconst);
+ 
+ 	pr_info("%d overflow size helper tests finished\n", count);
+ 
+-- 
+2.32.0
+
 
