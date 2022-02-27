@@ -1,119 +1,270 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nN9EC-00HF41-VL
- for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:11:58 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v6 23/26] virtio_net: split free_unused_bufs()
-Date: Thu, 24 Feb 2022 16:10:59 +0800
-Message-Id: <20220224081102.80224-24-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
-References: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Sun, 27 Feb 2022 15:14:06 -0800
+From: Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH v3 7/7] UAPI: Introduce KUnit userspace compatibility
+Message-ID: <202202271513.3756A55EF7@keescook>
+References: <20220227184517.504931-1-keescook@chromium.org>
+ <20220227184517.504931-8-keescook@chromium.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220227184517.504931-8-keescook@chromium.org>
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>, Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, Rasmus Villemoes <linux@rasmusvillemoes.dk>, Vitor Massaru Iha <vitor@massaru.org>, Daniel Latypov <dlatypov@google.com>, David Gow <davidgow@google.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Masahiro Yamada <masahiroy@kernel.org>, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, linux-kbuild@vger.kernel.org, kunit-dev@googlegroups.com, llvm@lists.linux.dev, x86@kernel.org, linux-hardening@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-This patch separates two functions for freeing sq buf and rq buf from
-free_unused_bufs().
+On Sun, Feb 27, 2022 at 10:45:17AM -0800, Kees Cook wrote:
+> The original lib/test_stackinit.c, which exclusively tests toolchain
+> features, was designed to also be built without the full Linux kernel
+> sources so that compiler developers and distro maintainers had an easy
+> way to check for toolchain behaviors. When it was ported to KUnit, this
+> mode was removed to simplify the code.
+> 
+> Add a small header that provides a minimally operational KUnit API that
+> can allow unit tests that don't depend on kernel-specific behaviors
+> to build and run strictly from userspace without kernel sources. Add
+> userspace-build support back to the renamed lib/stackinit_kunit.c test.
+> 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-When supporting the enable/disable tx/rq queue in the future, it is
-necessary to support separate recovery of a sq buf or a rq buf.
+This fails the hdrtest checks, so I'll need to rework it...
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- drivers/net/virtio_net.c | 53 +++++++++++++++++++++++-----------------
- 1 file changed, 31 insertions(+), 22 deletions(-)
+-Kees
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 59b1ea82f5f0..409a8e180918 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -2804,36 +2804,45 @@ static void free_receive_page_frags(struct virtnet_info *vi)
- 			put_page(vi->rq[i].alloc_frag.page);
- }
- 
--static void free_unused_bufs(struct virtnet_info *vi)
-+static void virtnet_sq_free_unused_bufs(struct virtnet_info *vi,
-+					struct send_queue *sq)
- {
- 	void *buf;
--	int i;
- 
--	for (i = 0; i < vi->max_queue_pairs; i++) {
--		struct virtqueue *vq = vi->sq[i].vq;
--		while ((buf = virtqueue_detach_unused_buf(vq)) != NULL) {
--			if (!is_xdp_frame(buf))
--				dev_kfree_skb(buf);
--			else
--				xdp_return_frame(ptr_to_xdp(buf));
--		}
-+	while ((buf = virtqueue_detach_unused_buf(sq->vq)) != NULL) {
-+		if (!is_xdp_frame(buf))
-+			dev_kfree_skb(buf);
-+		else
-+			xdp_return_frame(ptr_to_xdp(buf));
- 	}
-+}
- 
--	for (i = 0; i < vi->max_queue_pairs; i++) {
--		struct virtqueue *vq = vi->rq[i].vq;
--
--		while ((buf = virtqueue_detach_unused_buf(vq)) != NULL) {
--			if (vi->mergeable_rx_bufs) {
--				put_page(virt_to_head_page(buf));
--			} else if (vi->big_packets) {
--				give_pages(&vi->rq[i], buf);
--			} else {
--				put_page(virt_to_head_page(buf));
--			}
--		}
-+static void virtnet_rq_free_unused_bufs(struct virtnet_info *vi,
-+					struct receive_queue *rq)
-+{
-+	void *buf;
-+
-+	while ((buf = virtqueue_detach_unused_buf(rq->vq)) != NULL) {
-+		if (vi->mergeable_rx_bufs)
-+			put_page(virt_to_head_page(buf));
-+		else if (vi->big_packets)
-+			give_pages(rq, buf);
-+		else
-+			put_page(virt_to_head_page(buf));
- 	}
- }
- 
-+static void free_unused_bufs(struct virtnet_info *vi)
-+{
-+	int i;
-+
-+	for (i = 0; i < vi->max_queue_pairs; i++)
-+		virtnet_sq_free_unused_bufs(vi, vi->sq + i);
-+
-+	for (i = 0; i < vi->max_queue_pairs; i++)
-+		virtnet_rq_free_unused_bufs(vi, vi->rq + i);
-+}
-+
- static void virtnet_del_vqs(struct virtnet_info *vi)
- {
- 	struct virtio_device *vdev = vi->vdev;
+> ---
+> v1: https://lore.kernel.org/lkml/20220224055145.1853657-1-keescook@chromium.org
+> v2:
+>  - split from stackinit_kunit.c refactoring patch
+>  - add missing returns (Daniel)
+>  - report expression mismatch in assert msg (Daniel)
+>  - emulate kunit_test_suites() (Daniel)
+>  - emit valid KTAP (David)
+> ---
+>  include/uapi/misc/kunit.h | 181 ++++++++++++++++++++++++++++++++++++++
+>  lib/stackinit_kunit.c     |  11 +++
+>  2 files changed, 192 insertions(+)
+>  create mode 100644 include/uapi/misc/kunit.h
+> 
+> diff --git a/include/uapi/misc/kunit.h b/include/uapi/misc/kunit.h
+> new file mode 100644
+> index 000000000000..afdffda583ae
+> --- /dev/null
+> +++ b/include/uapi/misc/kunit.h
+> @@ -0,0 +1,181 @@
+> +#ifndef __UAPI_MISC_KUNIT_H__
+> +#define __UAPI_MISC_KUNIT_H__
+> +/*
+> + * This is a light-weight userspace drop-in replacement for the in-kernel
+> + * KUnit API. It seeks to implement a minimal subset of features so that
+> + * a concisely written KUnit test can be made to run entirely in userspace
+> + * when it doesn't actually depend on any real kernel internals.
+> + *
+> + * Additionally contains many refactored kernel-isms to support building
+> + * and running in userspace without full kernel source.
+> + */
+> +
+> +#define _GNU_SOURCE
+> +#include <stdio.h>
+> +#include <stdint.h>
+> +#include <stdlib.h>
+> +#include <string.h>
+> +#include <stdbool.h>
+> +#include <errno.h>
+> +#include <sys/types.h>
+> +
+> +#define __user			/**/
+> +#define noinline		__attribute__((__noinline__))
+> +#define __aligned(x)		__attribute__((__aligned__(x)))
+> +#ifdef __clang__
+> +# define __compiletime_error(message) /**/
+> +#else
+> +# define __compiletime_error(message) __attribute__((__error__(message)))
+> +#endif
+> +#define __compiletime_assert(condition, msg, prefix, suffix)		\
+> +	do {								\
+> +		extern void prefix ## suffix(void) __compiletime_error(msg); \
+> +		if (!(condition))					\
+> +			prefix ## suffix();				\
+> +	} while (0)
+> +#define _compiletime_assert(condition, msg, prefix, suffix) \
+> +	__compiletime_assert(condition, msg, prefix, suffix)
+> +#define compiletime_assert(condition, msg) \
+> +	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+> +#define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+> +#define BUILD_BUG_ON(condition) \
+> +	BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+> +
+> +#define ARRAY_SIZE(a)		(sizeof (a) / sizeof ((a)[0]))
+> +
+> +#define MODULE_LICENSE(str)	/* str */
+> +
+> +typedef uint8_t			u8;
+> +typedef uint16_t		u16;
+> +typedef uint32_t		u32;
+> +typedef uint64_t		u64;
+> +
+> +#define TEST_PASS	0
+> +#define TEST_SKIP	1
+> +#define TEST_FAIL	2
+> +struct kunit {
+> +	int status;
+> +	char *msg;
+> +};
+> +struct kunit_case {
+> +        void (*run_case)(struct kunit *test);
+> +        const char *name;
+> +};
+> +struct kunit_suite {
+> +	const char *name;
+> +	const struct kunit_case *test_cases;
+> +};
+> +#define KUNIT_CASE(test_name) { .run_case = test_name, .name = #test_name }
+> +
+> +#define KUNIT_ASSERT_TRUE_MSG(test, expr, fmt, ...)			\
+> +do {									\
+> +	if (!(expr)) {							\
+> +		if (test->status != TEST_SKIP)				\
+> +			test->status = TEST_FAIL;			\
+> +		if (test->msg)						\
+> +			free(test->msg);				\
+> +		asprintf(&test->msg, fmt, ##__VA_ARGS__);		\
+> +		return;							\
+> +	}								\
+> +} while (0)
+> +
+> +#define KUNIT_ASSERT_EQ_MSG(test, left, right, fmt, ...)		\
+> +	KUNIT_ASSERT_TRUE_MSG(test, (left) == (right),			\
+> +			      #left " != " #right ": " fmt,		\
+> +			      ##__VA_ARGS__)
+> +
+> +#define kunit_skip(test, fmt, ...)					\
+> +do {									\
+> +	test->status = TEST_SKIP;					\
+> +	if (test->msg)							\
+> +		free(test->msg);					\
+> +	asprintf(&test->msg, fmt, ##__VA_ARGS__);			\
+> +	return;								\
+> +} while (0)
+> +
+> +static int do_kunit_test_suite(struct kunit_suite *suite)
+> +{
+> +	const struct kunit_case *test_case;
+> +	int pass = 0, fail = 0, skip = 0;
+> +	int rc = 0;
+> +	size_t i = 0;
+> +
+> +	printf("  TAP version 14\n");
+> +	for (test_case = suite->test_cases; test_case->run_case; test_case++)
+> +		i++;
+> +	printf("  1..%zu\n", i);
+> +	i = 0;
+> +	for (test_case = suite->test_cases; test_case->run_case; test_case++) {
+> +		struct kunit test = { };
+> +
+> +		i++;
+> +		test_case->run_case(&test);
+> +		switch (test.status) {
+> +		default:
+> +		case TEST_FAIL:
+> +			fprintf(stderr, "  not ok %zu - %s%s%s",
+> +				i, test_case->name,
+> +				test.msg ? " # ERROR " : "",
+> +				test.msg ?: "\n");
+> +			rc = 1;
+> +			fail++;
+> +			break;
+> +		case TEST_SKIP:
+> +			fprintf(stdout, "  ok %zu - %s # SKIP%s%s",
+> +				i, test_case->name,
+> +				test.msg ? " " : "",
+> +				test.msg ?: "\n");
+> +			skip++;
+> +			break;
+> +		case TEST_PASS:
+> +			fprintf(stdout, "  ok %zu - %s\n",
+> +				i, test_case->name);
+> +			pass++;
+> +			break;
+> +		}
+> +		if (test.msg)
+> +			free(test.msg);
+> +	}
+> +	printf("# %s: pass:%d fail:%d skip:%d total:%zu\n",
+> +		suite->name, pass, fail, skip, i);
+> +	return rc;
+> +}
+> +
+> +static int run_suites(char *name, struct kunit_suite *suites[], size_t count)
+> +{
+> +	int pass = 0, fail = 0, skip = 0;
+> +	int one, ret = 0;
+> +	size_t i;
+> +
+> +	printf("TAP version 14\n");
+> +	printf("1..%zu\n", count);
+> +	for (i = 0; i < count; ++i) {
+> +		one = do_kunit_test_suite(suites[i]);
+> +		switch (one) {
+> +		case TEST_SKIP:
+> +			skip++;
+> +			break;
+> +		case TEST_PASS:
+> +			pass++;
+> +			break;
+> +		default:
+> +			fail++;
+> +			break;
+> +		}
+> +		printf("%sok %zu - %s\n",
+> +			one == TEST_FAIL ? "not " : "",
+> +			i + 1, suites[i]->name);
+> +		ret |= one;
+> +	}
+> +	printf("# %s: pass:%d fail:%d skip:%d total:%zu\n",
+> +		name, pass, fail, skip, count);
+> +	return ret;
+> +}
+> +
+> +#define kunit_test_suites(suite...)				\
+> +int main(int argc, char *argv[]) {				\
+> +	static struct kunit_suite *suites[] = { suite };	\
+> +	return run_suites(argv[0], suites, ARRAY_SIZE(suites));	\
+> +}
+> +
+> +#endif /* __UAPI_MISC_KUNIT_H__ */
+> diff --git a/lib/stackinit_kunit.c b/lib/stackinit_kunit.c
+> index 35c69aa425b2..6d468630c90a 100644
+> --- a/lib/stackinit_kunit.c
+> +++ b/lib/stackinit_kunit.c
+> @@ -8,7 +8,13 @@
+>   *		--make_option LLVM=1 \
+>   *		--kconfig_add CONFIG_INIT_STACK_ALL_ZERO=y
+>   *
+> + * External build example:
+> + *	clang -O2 -Wall -ftrivial-auto-var-init=pattern \
+> + *		-o stackinit_kunit stackinit_kunit.c
+> + *	./stackinit_kunit
+> + *
+>   */
+> +#ifdef __KERNEL__
+>  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+>  
+>  #include <kunit/test.h>
+> @@ -17,6 +23,11 @@
+>  #include <linux/module.h>
+>  #include <linux/string.h>
+>  
+> +#else
+> +/* Userspace KUnit stub header. */
+> +#include <misc/kunit.h>
+> +#endif
+> +
+>  /* Exfiltration buffer. */
+>  #define MAX_VAR_SIZE	128
+>  static u8 check_buf[MAX_VAR_SIZE];
+> -- 
+> 2.32.0
+> 
+
 -- 
-2.31.0
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+Kees Cook
 
