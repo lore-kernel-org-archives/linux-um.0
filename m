@@ -1,200 +1,517 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nN9EG-00HF66-60
- for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:12:02 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v6 24/26] virtio_net: support rx/tx queue reset
-Date: Thu, 24 Feb 2022 16:11:00 +0800
-Message-Id: <20220224081102.80224-25-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
-References: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Kees Cook <keescook@chromium.org>
+Subject: [PATCH v3 6/7] lib: stackinit: Convert to KUnit
+Date: Sun, 27 Feb 2022 10:45:16 -0800
+Message-Id: <20220227184517.504931-7-keescook@chromium.org>
+In-Reply-To: <20220227184517.504931-1-keescook@chromium.org>
+References: <20220227184517.504931-1-keescook@chromium.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+To: Kees Cook <keescook@chromium.org>
+Cc: David Gow <davidgow@google.com>, Daniel Latypov <dlatypov@google.com>, Arnd Bergmann <arnd@arndb.de>, "Gustavo A. R. Silva" <gustavoars@kernel.org>, Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, Rasmus Villemoes <linux@rasmusvillemoes.dk>, Vitor Massaru Iha <vitor@massaru.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Masahiro Yamada <masahiroy@kernel.org>, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, linux-kbuild@vger.kernel.org, kunit-dev@googlegroups.com, llvm@lists.linux.dev, x86@kernel.org, linux-hardening@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-This patch implements the reset function of the rx, tx queues.
+Convert stackinit unit tests to KUnit, for better integration
+into the kernel self test framework. Includes a rename of
+test_stackinit.c to stackinit_kunit.c, and CONFIG_TEST_STACKINIT to
+CONFIG_STACKINIT_KUNIT_TEST.
 
-Based on this function, it is possible to modify the ring num of the
-queue. And quickly recycle the buffer in the queue.
+Adjust expected test results based on which stack initialization method
+was chosen:
 
-In the process of the queue disable, in theory, as long as virtio
-supports queue reset, there will be no exceptions.
+ $ CMD="./tools/testing/kunit/kunit.py run stackinit --raw_output \
+        --arch=x86_64 --kconfig_add"
 
-However, in the process of the queue enable, there may be exceptions due to
-memory allocation.  In this case, vq is not available, but we still have
-to execute napi_enable(). Because napi_disable is similar to a lock,
-napi_enable must be called after calling napi_disable.
+ $ $CMD | grep stackinit:
+ # stackinit: pass:36 fail:0 skip:29 total:65
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+ $ $CMD CONFIG_GCC_PLUGIN_STRUCTLEAK_USER=y | grep stackinit:
+ # stackinit: pass:37 fail:0 skip:28 total:65
+
+ $ $CMD CONFIG_GCC_PLUGIN_STRUCTLEAK_BYREF=y | grep stackinit:
+ # stackinit: pass:55 fail:0 skip:10 total:65
+
+ $ $CMD CONFIG_GCC_PLUGIN_STRUCTLEAK_BYREF_ALL=y | grep stackinit:
+ # stackinit: pass:62 fail:0 skip:3 total:65
+
+ $ $CMD CONFIG_INIT_STACK_ALL_PATTERN=y --make_option LLVM=1 | grep stackinit:
+ # stackinit: pass:60 fail:0 skip:5 total:65
+
+ $ $CMD CONFIG_INIT_STACK_ALL_ZERO=y --make_option LLVM=1 | grep stackinit:
+ # stackinit: pass:60 fail:0 skip:5 total:65
+
+Temporarily remove the userspace-build mode, which will be restored in a
+later patch.
+
+Expand the size of the pre-case switch variable so it doesn't get
+accidentally cleared.
+
+Cc: David Gow <davidgow@google.com>
+Cc: Daniel Latypov <dlatypov@google.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/net/virtio_net.c | 107 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 107 insertions(+)
+v1: https://lore.kernel.org/lkml/20220224055145.1853657-1-keescook@chromium.org
+v2:
+ - split "userspace KUnit stub" into separate header and patch (Daniel)
+ - Improve commit log and comments (David)
+ - Provide mapping of expected XFAIL tests to CONFIGs (David)
+---
+ lib/Kconfig.debug                           |  22 +-
+ lib/Makefile                                |   4 +-
+ lib/{test_stackinit.c => stackinit_kunit.c} | 269 ++++++++------------
+ 3 files changed, 121 insertions(+), 174 deletions(-)
+ rename lib/{test_stackinit.c => stackinit_kunit.c} (66%)
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 409a8e180918..ffff323dcef0 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -251,6 +251,11 @@ struct padded_vnet_hdr {
- 	char padding[4];
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 14d90d03bc8d..a5556ab05240 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -2511,6 +2511,17 @@ config OVERFLOW_KUNIT_TEST
+ 
+ 	  If unsure, say N.
+ 
++config STACKINIT_KUNIT_TEST
++	tristate "Test level of stack variable initialization" if !KUNIT_ALL_TESTS
++	depends on KUNIT
++	default KUNIT_ALL_TESTS
++	help
++	  Test if the kernel is zero-initializing stack variables and
++	  padding. Coverage is controlled by compiler flags,
++	  CONFIG_INIT_STACK_ALL_PATTERN, CONFIG_INIT_STACK_ALL_ZERO,
++	  CONFIG_GCC_PLUGIN_STRUCTLEAK, CONFIG_GCC_PLUGIN_STRUCTLEAK_BYREF,
++	  or CONFIG_GCC_PLUGIN_STRUCTLEAK_BYREF_ALL.
++
+ config TEST_UDELAY
+ 	tristate "udelay test driver"
+ 	help
+@@ -2602,17 +2613,6 @@ config TEST_OBJAGG
+ 	  Enable this option to test object aggregation manager on boot
+ 	  (or module load).
+ 
+-
+-config TEST_STACKINIT
+-	tristate "Test level of stack variable initialization"
+-	help
+-	  Test if the kernel is zero-initializing stack variables and
+-	  padding. Coverage is controlled by compiler flags,
+-	  CONFIG_GCC_PLUGIN_STRUCTLEAK, CONFIG_GCC_PLUGIN_STRUCTLEAK_BYREF,
+-	  or CONFIG_GCC_PLUGIN_STRUCTLEAK_BYREF_ALL.
+-
+-	  If unsure, say N.
+-
+ config TEST_MEMINIT
+ 	tristate "Test heap/page initialization"
+ 	help
+diff --git a/lib/Makefile b/lib/Makefile
+index fdfcbfaff32f..353bc09ce38d 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -93,8 +93,6 @@ obj-$(CONFIG_TEST_KMOD) += test_kmod.o
+ obj-$(CONFIG_TEST_DEBUG_VIRTUAL) += test_debug_virtual.o
+ obj-$(CONFIG_TEST_MEMCAT_P) += test_memcat_p.o
+ obj-$(CONFIG_TEST_OBJAGG) += test_objagg.o
+-CFLAGS_test_stackinit.o += $(call cc-disable-warning, switch-unreachable)
+-obj-$(CONFIG_TEST_STACKINIT) += test_stackinit.o
+ obj-$(CONFIG_TEST_BLACKHOLE_DEV) += test_blackhole_dev.o
+ obj-$(CONFIG_TEST_MEMINIT) += test_meminit.o
+ obj-$(CONFIG_TEST_LOCKUP) += test_lockup.o
+@@ -363,6 +361,8 @@ obj-$(CONFIG_CMDLINE_KUNIT_TEST) += cmdline_kunit.o
+ obj-$(CONFIG_SLUB_KUNIT_TEST) += slub_kunit.o
+ obj-$(CONFIG_MEMCPY_KUNIT_TEST) += memcpy_kunit.o
+ obj-$(CONFIG_OVERFLOW_KUNIT_TEST) += overflow_kunit.o
++CFLAGS_stackinit_kunit.o += $(call cc-disable-warning, switch-unreachable)
++obj-$(CONFIG_STACKINIT_KUNIT_TEST) += stackinit_kunit.o
+ 
+ obj-$(CONFIG_GENERIC_LIB_DEVMEM_IS_ALLOWED) += devmem_is_allowed.o
+ 
+diff --git a/lib/test_stackinit.c b/lib/stackinit_kunit.c
+similarity index 66%
+rename from lib/test_stackinit.c
+rename to lib/stackinit_kunit.c
+index a3c74e6a21ff..35c69aa425b2 100644
+--- a/lib/test_stackinit.c
++++ b/lib/stackinit_kunit.c
+@@ -2,76 +2,21 @@
+ /*
+  * Test cases for compiler-based stack variable zeroing via
+  * -ftrivial-auto-var-init={zero,pattern} or CONFIG_GCC_PLUGIN_STRUCTLEAK*.
++ * For example, see:
++ * https://www.kernel.org/doc/html/latest/dev-tools/kunit/kunit-tool.html#configuring-building-and-running-tests
++ *	./tools/testing/kunit/kunit.py run stackinit [--raw_output] \
++ *		--make_option LLVM=1 \
++ *		--kconfig_add CONFIG_INIT_STACK_ALL_ZERO=y
+  *
+- * External build example:
+- *	clang -O2 -Wall -ftrivial-auto-var-init=pattern \
+- *		-o test_stackinit test_stackinit.c
+  */
+-#ifdef __KERNEL__
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+ 
++#include <kunit/test.h>
+ #include <linux/init.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/string.h>
+ 
+-#else
+-
+-/* Userspace headers. */
+-#include <stdio.h>
+-#include <stdint.h>
+-#include <string.h>
+-#include <stdbool.h>
+-#include <errno.h>
+-#include <sys/types.h>
+-
+-/* Linux kernel-ism stubs for stand-alone userspace build. */
+-#define KBUILD_MODNAME		"stackinit"
+-#define pr_fmt(fmt)		KBUILD_MODNAME ": " fmt
+-#define pr_err(fmt, ...)	fprintf(stderr, pr_fmt(fmt), ##__VA_ARGS__)
+-#define pr_warn(fmt, ...)	fprintf(stderr, pr_fmt(fmt), ##__VA_ARGS__)
+-#define pr_info(fmt, ...)	fprintf(stdout, pr_fmt(fmt), ##__VA_ARGS__)
+-#define __init			/**/
+-#define __exit			/**/
+-#define __user			/**/
+-#define noinline		__attribute__((__noinline__))
+-#define __aligned(x)		__attribute__((__aligned__(x)))
+-#ifdef __clang__
+-# define __compiletime_error(message) /**/
+-#else
+-# define __compiletime_error(message) __attribute__((__error__(message)))
+-#endif
+-#define __compiletime_assert(condition, msg, prefix, suffix)		\
+-	do {								\
+-		extern void prefix ## suffix(void) __compiletime_error(msg); \
+-		if (!(condition))					\
+-			prefix ## suffix();				\
+-	} while (0)
+-#define _compiletime_assert(condition, msg, prefix, suffix) \
+-	__compiletime_assert(condition, msg, prefix, suffix)
+-#define compiletime_assert(condition, msg) \
+-	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+-#define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+-#define BUILD_BUG_ON(condition) \
+-	BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+-typedef uint8_t			u8;
+-typedef uint16_t		u16;
+-typedef uint32_t		u32;
+-typedef uint64_t		u64;
+-
+-#define module_init(func)	static int (*do_init)(void) = func
+-#define module_exit(func)	static void (*do_exit)(void) = func
+-#define MODULE_LICENSE(str)	int main(void) {		\
+-					int rc;			\
+-					/* License: str */	\
+-					rc = do_init();		\
+-					if (rc == 0)		\
+-						do_exit();	\
+-					return rc;		\
+-				}
+-
+-#endif /* __KERNEL__ */
+-
+ /* Exfiltration buffer. */
+ #define MAX_VAR_SIZE	128
+ static u8 check_buf[MAX_VAR_SIZE];
+@@ -201,7 +146,7 @@ static bool range_contains(char *haystack_start, size_t haystack_size,
+  */
+ #define DEFINE_TEST_DRIVER(name, var_type, which, xfail)	\
+ /* Returns 0 on success, 1 on failure. */			\
+-static noinline __init int test_ ## name (void)			\
++static noinline void test_ ## name (struct kunit *test)		\
+ {								\
+ 	var_type zero INIT_CLONE_ ## which;			\
+ 	int ignored;						\
+@@ -220,10 +165,8 @@ static noinline __init int test_ ## name (void)			\
+ 	/* Verify all bytes overwritten with 0xFF. */		\
+ 	for (sum = 0, i = 0; i < target_size; i++)		\
+ 		sum += (check_buf[i] != 0xFF);			\
+-	if (sum) {						\
+-		pr_err(#name ": leaf fill was not 0xFF!?\n");	\
+-		return 1;					\
+-	}							\
++	KUNIT_ASSERT_EQ_MSG(test, sum, 0,			\
++			    "leaf fill was not 0xFF!?\n");	\
+ 	/* Clear entire check buffer for later bit tests. */	\
+ 	memset(check_buf, 0x00, sizeof(check_buf));		\
+ 	/* Extract stack-defined variable contents. */		\
+@@ -231,32 +174,29 @@ static noinline __init int test_ ## name (void)			\
+ 				FETCH_ARG_ ## which(zero));	\
+ 								\
+ 	/* Validate that compiler lined up fill and target. */	\
+-	if (!range_contains(fill_start, fill_size,		\
+-			    target_start, target_size)) {	\
+-		pr_err(#name ": stack fill missed target!?\n");	\
+-		pr_err(#name ": fill %zu wide\n", fill_size);	\
+-		pr_err(#name ": target offset by %d\n",	\
+-			(int)((ssize_t)(uintptr_t)fill_start -	\
+-			(ssize_t)(uintptr_t)target_start));	\
+-		return 1;					\
+-	}							\
++	KUNIT_ASSERT_TRUE_MSG(test,				\
++		range_contains(fill_start, fill_size,		\
++			    target_start, target_size),		\
++		"stack fill missed target!? "			\
++		"(fill %zu wide, target offset by %d)\n",	\
++		fill_size,					\
++		(int)((ssize_t)(uintptr_t)fill_start -		\
++		      (ssize_t)(uintptr_t)target_start));	\
+ 								\
+ 	/* Look for any bytes still 0xFF in check region. */	\
+ 	for (sum = 0, i = 0; i < target_size; i++)		\
+ 		sum += (check_buf[i] == 0xFF);			\
+ 								\
+-	if (sum == 0) {						\
+-		pr_info(#name " ok\n");				\
+-		return 0;					\
+-	} else {						\
+-		pr_warn(#name " %sFAIL (uninit bytes: %d)\n",	\
+-			(xfail) ? "X" : "", sum);		\
+-		return (xfail) ? 0 : 1;				\
+-	}							\
++	if (sum != 0 && xfail)					\
++		kunit_skip(test,				\
++			   "XFAIL uninit bytes: %d\n",		\
++			   sum);				\
++	KUNIT_ASSERT_EQ_MSG(test, sum, 0,			\
++		"uninit bytes: %d\n", sum);			\
+ }
+ #define DEFINE_TEST(name, var_type, which, init_level, xfail)	\
+ /* no-op to force compiler into ignoring "uninitialized" vars */\
+-static noinline __init DO_NOTHING_TYPE_ ## which(var_type)	\
++static noinline DO_NOTHING_TYPE_ ## which(var_type)		\
+ do_nothing_ ## name(var_type *ptr)				\
+ {								\
+ 	/* Will always be true, but compiler doesn't know. */	\
+@@ -265,9 +205,8 @@ do_nothing_ ## name(var_type *ptr)				\
+ 	else							\
+ 		return DO_NOTHING_RETURN_ ## which(ptr + 1);	\
+ }								\
+-static noinline __init int leaf_ ## name(unsigned long sp,	\
+-					 bool fill,		\
+-					 var_type *arg)		\
++static noinline int leaf_ ## name(unsigned long sp, bool fill,	\
++				  var_type *arg)		\
+ {								\
+ 	char buf[VAR_BUFFER];					\
+ 	var_type var						\
+@@ -341,6 +280,27 @@ struct test_user {
+ 	unsigned long four;
  };
  
-+static void virtnet_sq_free_unused_bufs(struct virtnet_info *vi,
-+					struct send_queue *sq);
-+static void virtnet_rq_free_unused_bufs(struct virtnet_info *vi,
-+					struct receive_queue *rq);
++#define ALWAYS_PASS	WANT_SUCCESS
++#define ALWAYS_FAIL	XFAIL
 +
- static bool is_xdp_frame(void *ptr)
- {
- 	return (unsigned long)ptr & VIRTIO_XDP_FLAG;
-@@ -1369,6 +1374,9 @@ static void virtnet_napi_enable(struct virtqueue *vq, struct napi_struct *napi)
- {
- 	napi_enable(napi);
- 
-+	if (vq->reset)
-+		return;
++#ifdef CONFIG_INIT_STACK_NONE
++# define USER_PASS	XFAIL
++# define BYREF_PASS	XFAIL
++# define STRONG_PASS	XFAIL
++#elif defined(CONFIG_GCC_PLUGIN_STRUCTLEAK_USER)
++# define USER_PASS	WANT_SUCCESS
++# define BYREF_PASS	XFAIL
++# define STRONG_PASS	XFAIL
++#elif defined(CONFIG_GCC_PLUGIN_STRUCTLEAK_BYREF)
++# define USER_PASS	WANT_SUCCESS
++# define BYREF_PASS	WANT_SUCCESS
++# define STRONG_PASS	XFAIL
++#else
++# define USER_PASS	WANT_SUCCESS
++# define BYREF_PASS	WANT_SUCCESS
++# define STRONG_PASS	WANT_SUCCESS
++#endif
 +
- 	/* If all buffers were filled by other side before we napi_enabled, we
- 	 * won't get another interrupt, so process any outstanding packets now.
- 	 * Call local_bh_enable after to trigger softIRQ processing.
-@@ -1413,6 +1421,10 @@ static void refill_work(struct work_struct *work)
- 		struct receive_queue *rq = &vi->rq[i];
+ #define DEFINE_SCALAR_TEST(name, init, xfail)			\
+ 		DEFINE_TEST(name ## _ ## init, name, SCALAR,	\
+ 			    init, xfail)
+@@ -364,27 +324,26 @@ struct test_user {
+ 		DEFINE_STRUCT_TEST(trailing_hole, init, xfail);	\
+ 		DEFINE_STRUCT_TEST(packed, init, xfail)
  
- 		napi_disable(&rq->napi);
-+		if (rq->vq->reset) {
-+			virtnet_napi_enable(rq->vq, &rq->napi);
-+			continue;
-+		}
- 		still_empty = !try_fill_recv(vi, rq, GFP_KERNEL);
- 		virtnet_napi_enable(rq->vq, &rq->napi);
+-#define DEFINE_STRUCT_INITIALIZER_TESTS(base)			\
++#define DEFINE_STRUCT_INITIALIZER_TESTS(base, xfail)		\
+ 		DEFINE_STRUCT_TESTS(base ## _ ## partial,	\
+-				    WANT_SUCCESS);		\
+-		DEFINE_STRUCT_TESTS(base ## _ ## all,		\
+-				    WANT_SUCCESS)
++				    xfail);			\
++		DEFINE_STRUCT_TESTS(base ## _ ## all, xfail)
  
-@@ -1523,6 +1535,9 @@ static void virtnet_poll_cleantx(struct receive_queue *rq)
- 	if (!sq->napi.weight || is_xdp_raw_buffer_queue(vi, index))
- 		return;
+ /* These should be fully initialized all the time! */
+-DEFINE_SCALAR_TESTS(zero, WANT_SUCCESS);
+-DEFINE_STRUCT_TESTS(zero, WANT_SUCCESS);
++DEFINE_SCALAR_TESTS(zero, ALWAYS_PASS);
++DEFINE_STRUCT_TESTS(zero, ALWAYS_PASS);
+ /* Struct initializers: padding may be left uninitialized. */
+-DEFINE_STRUCT_INITIALIZER_TESTS(static);
+-DEFINE_STRUCT_INITIALIZER_TESTS(dynamic);
+-DEFINE_STRUCT_INITIALIZER_TESTS(runtime);
+-DEFINE_STRUCT_INITIALIZER_TESTS(assigned_static);
+-DEFINE_STRUCT_INITIALIZER_TESTS(assigned_dynamic);
+-DEFINE_STRUCT_TESTS(assigned_copy, XFAIL);
++DEFINE_STRUCT_INITIALIZER_TESTS(static, STRONG_PASS);
++DEFINE_STRUCT_INITIALIZER_TESTS(dynamic, STRONG_PASS);
++DEFINE_STRUCT_INITIALIZER_TESTS(runtime, STRONG_PASS);
++DEFINE_STRUCT_INITIALIZER_TESTS(assigned_static, STRONG_PASS);
++DEFINE_STRUCT_INITIALIZER_TESTS(assigned_dynamic, STRONG_PASS);
++DEFINE_STRUCT_TESTS(assigned_copy, ALWAYS_FAIL);
+ /* No initialization without compiler instrumentation. */
+-DEFINE_SCALAR_TESTS(none, WANT_SUCCESS);
+-DEFINE_STRUCT_TESTS(none, WANT_SUCCESS);
++DEFINE_SCALAR_TESTS(none, STRONG_PASS);
++DEFINE_STRUCT_TESTS(none, BYREF_PASS);
+ /* Initialization of members with __user attribute. */
+-DEFINE_TEST(user, struct test_user, STRUCT, none, WANT_SUCCESS);
++DEFINE_TEST(user, struct test_user, STRUCT, none, USER_PASS);
  
-+	if (sq->vq->reset)
-+		return;
-+
- 	if (__netif_tx_trylock(txq)) {
- 		do {
- 			virtqueue_disable_cb(sq->vq);
-@@ -1769,6 +1784,98 @@ static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
- 	return NETDEV_TX_OK;
+ /*
+  * Check two uses through a variable declaration outside either path,
+@@ -398,7 +357,7 @@ static int noinline __leaf_switch_none(int path, bool fill)
+ 		 * This is intentionally unreachable. To silence the
+ 		 * warning, build with -Wno-switch-unreachable
+ 		 */
+-		uint64_t var;
++		uint64_t var[10];
+ 
+ 	case 1:
+ 		target_start = &var;
+@@ -423,19 +382,19 @@ static int noinline __leaf_switch_none(int path, bool fill)
+ 		memcpy(check_buf, target_start, target_size);
+ 		break;
+ 	default:
+-		var = 5;
+-		return var & forced_mask;
++		var[1] = 5;
++		return var[1] & forced_mask;
+ 	}
+ 	return 0;
  }
  
-+static int virtnet_rx_vq_reset(struct virtnet_info *vi,
-+			       struct receive_queue *rq, u32 ring_num)
-+{
-+	int err;
+-static noinline __init int leaf_switch_1_none(unsigned long sp, bool fill,
++static noinline int leaf_switch_1_none(unsigned long sp, bool fill,
+ 					      uint64_t *arg)
+ {
+ 	return __leaf_switch_none(1, fill);
+ }
+ 
+-static noinline __init int leaf_switch_2_none(unsigned long sp, bool fill,
++static noinline int leaf_switch_2_none(unsigned long sp, bool fill,
+ 					      uint64_t *arg)
+ {
+ 	return __leaf_switch_none(2, fill);
+@@ -447,68 +406,56 @@ static noinline __init int leaf_switch_2_none(unsigned long sp, bool fill,
+  * non-code areas (i.e. in a switch statement before the first "case").
+  * https://bugs.llvm.org/show_bug.cgi?id=44916
+  */
+-DEFINE_TEST_DRIVER(switch_1_none, uint64_t, SCALAR, XFAIL);
+-DEFINE_TEST_DRIVER(switch_2_none, uint64_t, SCALAR, XFAIL);
+-
+-static int __init test_stackinit_init(void)
+-{
+-	unsigned int failures = 0;
+-
+-#define test_scalars(init)	do {				\
+-		failures += test_u8_ ## init ();		\
+-		failures += test_u16_ ## init ();		\
+-		failures += test_u32_ ## init ();		\
+-		failures += test_u64_ ## init ();		\
+-		failures += test_char_array_ ## init ();	\
+-	} while (0)
+-
+-#define test_structs(init)	do {				\
+-		failures += test_small_hole_ ## init ();	\
+-		failures += test_big_hole_ ## init ();		\
+-		failures += test_trailing_hole_ ## init ();	\
+-		failures += test_packed_ ## init ();		\
+-	} while (0)
+-
++DEFINE_TEST_DRIVER(switch_1_none, uint64_t, SCALAR, ALWAYS_FAIL);
++DEFINE_TEST_DRIVER(switch_2_none, uint64_t, SCALAR, ALWAYS_FAIL);
 +
-+	/* stop napi */
-+	napi_disable(&rq->napi);
++#define KUNIT_test_scalars(init)			\
++		KUNIT_CASE(test_u8_ ## init),		\
++		KUNIT_CASE(test_u16_ ## init),		\
++		KUNIT_CASE(test_u32_ ## init),		\
++		KUNIT_CASE(test_u64_ ## init),		\
++		KUNIT_CASE(test_char_array_ ## init)
 +
-+	/* reset the queue */
-+	err = virtio_reset_vq(rq->vq);
-+	if (err)
-+		goto err;
++#define KUNIT_test_structs(init)			\
++		KUNIT_CASE(test_small_hole_ ## init),	\
++		KUNIT_CASE(test_big_hole_ ## init),	\
++		KUNIT_CASE(test_trailing_hole_ ## init),\
++		KUNIT_CASE(test_packed_ ## init)	\
 +
-+	/* free bufs */
-+	virtnet_rq_free_unused_bufs(vi, rq);
-+
-+	/* reset vring. */
-+	err = virtqueue_reset_vring(rq->vq, ring_num);
-+	if (err)
-+		goto err;
-+
-+	/* enable reset queue */
-+	err = virtio_enable_resetq(rq->vq);
-+	if (err)
-+		goto err;
-+
-+	/* fill recv */
-+	if (!try_fill_recv(vi, rq, GFP_KERNEL))
-+		schedule_delayed_work(&vi->refill, 0);
-+
-+	/* enable napi */
-+	virtnet_napi_enable(rq->vq, &rq->napi);
-+	return 0;
-+
-+err:
-+	netdev_err(vi->dev,
-+		   "reset rx reset vq fail: rx queue index: %ld err: %d\n",
-+		   rq - vi->rq, err);
-+	virtnet_napi_enable(rq->vq, &rq->napi);
-+	return err;
-+}
-+
-+static int virtnet_tx_vq_reset(struct virtnet_info *vi,
-+			       struct send_queue *sq, u32 ring_num)
-+{
-+	struct netdev_queue *txq;
-+	int err, qindex;
-+
-+	qindex = sq - vi->sq;
-+
-+	txq = netdev_get_tx_queue(vi->dev, qindex);
-+	__netif_tx_lock_bh(txq);
-+
-+	/* stop tx queue and napi */
-+	netif_stop_subqueue(vi->dev, qindex);
-+	virtnet_napi_tx_disable(&sq->napi);
-+
-+	__netif_tx_unlock_bh(txq);
-+
-+	/* reset the queue */
-+	err = virtio_reset_vq(sq->vq);
-+	if (err) {
-+		netif_start_subqueue(vi->dev, qindex);
-+		goto err;
-+	}
-+
-+	/* free bufs */
-+	virtnet_sq_free_unused_bufs(vi, sq);
-+
-+	/* reset vring. */
-+	err = virtqueue_reset_vring(sq->vq, ring_num);
-+	if (err)
-+		goto err;
-+
-+	/* enable reset queue */
-+	err = virtio_enable_resetq(sq->vq);
-+	if (err)
-+		goto err;
-+
-+	/* start tx queue and napi */
-+	netif_start_subqueue(vi->dev, qindex);
-+	virtnet_napi_tx_enable(vi, sq->vq, &sq->napi);
-+	return 0;
-+
-+err:
-+	netdev_err(vi->dev,
-+		   "reset tx reset vq fail: tx queue index: %ld err: %d\n",
-+		   sq - vi->sq, err);
-+	virtnet_napi_tx_enable(vi, sq->vq, &sq->napi);
-+	return err;
-+}
-+
- /*
-  * Send command via the control virtqueue and check status.  Commands
-  * supported by the hypervisor, as indicated by feature bits, should
++static struct kunit_case stackinit_test_cases[] = {
+ 	/* These are explicitly initialized and should always pass. */
+-	test_scalars(zero);
+-	test_structs(zero);
++	KUNIT_test_scalars(zero),
++	KUNIT_test_structs(zero),
+ 	/* Padding here appears to be accidentally always initialized? */
+-	test_structs(dynamic_partial);
+-	test_structs(assigned_dynamic_partial);
++	KUNIT_test_structs(dynamic_partial),
++	KUNIT_test_structs(assigned_dynamic_partial),
+ 	/* Padding initialization depends on compiler behaviors. */
+-	test_structs(static_partial);
+-	test_structs(static_all);
+-	test_structs(dynamic_all);
+-	test_structs(runtime_partial);
+-	test_structs(runtime_all);
+-	test_structs(assigned_static_partial);
+-	test_structs(assigned_static_all);
+-	test_structs(assigned_dynamic_all);
++	KUNIT_test_structs(static_partial),
++	KUNIT_test_structs(static_all),
++	KUNIT_test_structs(dynamic_all),
++	KUNIT_test_structs(runtime_partial),
++	KUNIT_test_structs(runtime_all),
++	KUNIT_test_structs(assigned_static_partial),
++	KUNIT_test_structs(assigned_static_all),
++	KUNIT_test_structs(assigned_dynamic_all),
+ 	/* Everything fails this since it effectively performs a memcpy(). */
+-	test_structs(assigned_copy);
+-
++	KUNIT_test_structs(assigned_copy),
+ 	/* STRUCTLEAK_BYREF_ALL should cover everything from here down. */
+-	test_scalars(none);
+-	failures += test_switch_1_none();
+-	failures += test_switch_2_none();
+-
++	KUNIT_test_scalars(none),
++	KUNIT_CASE(test_switch_1_none),
++	KUNIT_CASE(test_switch_2_none),
+ 	/* STRUCTLEAK_BYREF should cover from here down. */
+-	test_structs(none);
+-
++	KUNIT_test_structs(none),
+ 	/* STRUCTLEAK will only cover this. */
+-	failures += test_user();
+-
+-	if (failures == 0)
+-		pr_info("all tests passed!\n");
+-	else
+-		pr_err("failures: %u\n", failures);
++	KUNIT_CASE(test_user),
++	{}
++};
+ 
+-	return failures ? -EINVAL : 0;
+-}
+-module_init(test_stackinit_init);
++static struct kunit_suite stackinit_test_suite = {
++	.name = "stackinit",
++	.test_cases = stackinit_test_cases,
++};
+ 
+-static void __exit test_stackinit_exit(void)
+-{ }
+-module_exit(test_stackinit_exit);
++kunit_test_suites(&stackinit_test_suite);
+ 
+ MODULE_LICENSE("GPL");
 -- 
-2.31.0
+2.32.0
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
