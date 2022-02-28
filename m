@@ -1,77 +1,58 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nN9E9-00HEyj-2D
- for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:11:55 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v6 20/26] virtio_mmio: support the arg sizes of find_vqs()
-Date: Thu, 24 Feb 2022 16:10:56 +0800
-Message-Id: <20220224081102.80224-21-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
-References: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
-MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
+Return-Path: <anshuman.khandual@arm.com>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH V3 02/30] mm/mmap: Clarify protection_map[] indices
+Date: Mon, 28 Feb 2022 16:17:25 +0530
+Message-Id: <1646045273-9343-3-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
+References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
+To: linux-mm@kvack.org, akpm@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, geert@linux-m68k.org, Anshuman Khandual <anshuman.khandual@arm.com>, Christoph Hellwig <hch@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org, linux-riscv@lists.infradead.org, linux-alpha@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-parisc@vger.kernel.org, openrisc@lists.librecores.org, linux-um@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-Virtio MMIO support the new parameter sizes of find_vqs().
+protection_map[] maps vm_flags access combinations into page protection
+value as defined by the platform via __PXXX and __SXXX macros. The array
+indices in protection_map[], represents vm_flags access combinations but
+it's not very intuitive to derive. This makes it clear and explicit.
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- drivers/virtio/virtio_mmio.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ mm/mmap.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
-index 55d575f6ef2d..4d7cd8881282 100644
---- a/drivers/virtio/virtio_mmio.c
-+++ b/drivers/virtio/virtio_mmio.c
-@@ -347,7 +347,7 @@ static void vm_del_vqs(struct virtio_device *vdev)
+diff --git a/mm/mmap.c b/mm/mmap.c
+index d445c1b9d606..34000a7d7efa 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -102,8 +102,22 @@ static void unmap_region(struct mm_struct *mm,
+  *								x: (yes) yes
+  */
+ pgprot_t protection_map[16] __ro_after_init = {
+-	__P000, __P001, __P010, __P011, __P100, __P101, __P110, __P111,
+-	__S000, __S001, __S010, __S011, __S100, __S101, __S110, __S111
++	[VM_NONE]					= __P000,
++	[VM_READ]					= __P001,
++	[VM_WRITE]					= __P010,
++	[VM_WRITE | VM_READ]				= __P011,
++	[VM_EXEC]					= __P100,
++	[VM_EXEC | VM_READ]				= __P101,
++	[VM_EXEC | VM_WRITE]				= __P110,
++	[VM_EXEC | VM_WRITE | VM_READ]			= __P111,
++	[VM_SHARED]					= __S000,
++	[VM_SHARED | VM_READ]				= __S001,
++	[VM_SHARED | VM_WRITE]				= __S010,
++	[VM_SHARED | VM_WRITE | VM_READ]		= __S011,
++	[VM_SHARED | VM_EXEC]				= __S100,
++	[VM_SHARED | VM_EXEC | VM_READ]			= __S101,
++	[VM_SHARED | VM_EXEC | VM_WRITE]		= __S110,
++	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= __S111
+ };
  
- static struct virtqueue *vm_setup_vq(struct virtio_device *vdev, unsigned index,
- 				  void (*callback)(struct virtqueue *vq),
--				  const char *name, bool ctx)
-+				  const char *name, u32 size, bool ctx)
- {
- 	struct virtio_mmio_device *vm_dev = to_virtio_mmio_device(vdev);
- 	struct virtio_mmio_vq_info *info;
-@@ -382,8 +382,11 @@ static struct virtqueue *vm_setup_vq(struct virtio_device *vdev, unsigned index,
- 		goto error_new_virtqueue;
- 	}
- 
-+	if (!size || size > num)
-+		size = num;
-+
- 	/* Create the vring */
--	vq = vring_create_virtqueue(index, num, VIRTIO_MMIO_VRING_ALIGN, vdev,
-+	vq = vring_create_virtqueue(index, size, VIRTIO_MMIO_VRING_ALIGN, vdev,
- 				 true, true, ctx, vm_notify, callback, name);
- 	if (!vq) {
- 		err = -ENOMEM;
-@@ -483,6 +486,7 @@ static int vm_find_vqs(struct virtio_device *vdev, unsigned nvqs,
- 		}
- 
- 		vqs[i] = vm_setup_vq(vdev, queue_idx++, callbacks[i], names[i],
-+				     sizes ? sizes[i] : 0,
- 				     ctx ? ctx[i] : false);
- 		if (IS_ERR(vqs[i])) {
- 			vm_del_vqs(vdev);
+ #ifndef CONFIG_ARCH_HAS_FILTER_PGPROT
 -- 
-2.31.0
+2.25.1
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
