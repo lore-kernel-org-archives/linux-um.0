@@ -1,127 +1,70 @@
-Return-Path: <arnd@kernel.org>
-From: Arnd Bergmann <arnd@kernel.org>
-Subject: [PATCH v2 01/18] uaccess: fix integer overflow on access_ok()
-Date: Wed, 16 Feb 2022 14:13:15 +0100
-Message-Id: <20220216131332.1489939-2-arnd@kernel.org>
-In-Reply-To: <20220216131332.1489939-1-arnd@kernel.org>
-References: <20220216131332.1489939-1-arnd@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: Linus Torvalds <torvalds@linux-foundation.org>, Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-api@vger.kernel.org, arnd@arndb.de, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk
-Cc: linux@armlinux.org.uk, will@kernel.org, guoren@kernel.org, bcain@codeaurora.org, geert@linux-m68k.org, monstr@monstr.eu, tsbogend@alpha.franken.de, nickhu@andestech.com, green.hu@gmail.com, dinguyen@kernel.org, shorne@gmail.com, deller@gmx.de, mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com, hca@linux.ibm.com, dalias@libc.org, davem@davemloft.net, richard@nod.at, x86@kernel.org, jcmvbkbc@gmail.com, ebiederm@xmission.com, akpm@linux-foundation.org, ardb@kernel.org, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, stable@vger.kernel.org, David Laight <David.Laight@aculab.com>
+Return-Path: <anshuman.khandual@arm.com>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH V3 13/30] mm/mmap: Drop arch_vm_get_page_pgprot()
+Date: Mon, 28 Feb 2022 16:17:36 +0530
+Message-Id: <1646045273-9343-14-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
+References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
+To: linux-mm@kvack.org, akpm@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, geert@linux-m68k.org, Anshuman Khandual <anshuman.khandual@arm.com>, Christoph Hellwig <hch@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org, linux-riscv@lists.infradead.org, linux-alpha@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-parisc@vger.kernel.org, openrisc@lists.librecores.org, linux-um@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org
 List-ID: <linux-um.lists.infradead.org>
 
-From: Arnd Bergmann <arnd@arndb.de>
+There are no platforms left which use arch_vm_get_page_prot(). Just drop
+arch_vm_get_page_prot() construct and simplify remaining code.
 
-Three architectures check the end of a user access against the
-address limit without taking a possible overflow into account.
-Passing a negative length or another overflow in here returns
-success when it should not.
-
-Use the most common correct implementation here, which optimizes
-for a constant 'size' argument, and turns the common case into a
-single comparison.
-
-Cc: stable@vger.kernel.org
-Fixes: da551281947c ("csky: User access")
-Fixes: f663b60f5215 ("microblaze: Fix uaccess_ok macro")
-Fixes: 7567746e1c0d ("Hexagon: Add user access functions")
-Reported-by: David Laight <David.Laight@aculab.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- arch/csky/include/asm/uaccess.h       |  7 +++----
- arch/hexagon/include/asm/uaccess.h    | 18 +++++++++---------
- arch/microblaze/include/asm/uaccess.h | 19 ++++---------------
- 3 files changed, 16 insertions(+), 28 deletions(-)
+ include/linux/mman.h |  4 ----
+ mm/mmap.c            | 10 +---------
+ 2 files changed, 1 insertion(+), 13 deletions(-)
 
-diff --git a/arch/csky/include/asm/uaccess.h b/arch/csky/include/asm/uaccess.h
-index c40f06ee8d3e..ac5a54f57d40 100644
---- a/arch/csky/include/asm/uaccess.h
-+++ b/arch/csky/include/asm/uaccess.h
-@@ -3,14 +3,13 @@
- #ifndef __ASM_CSKY_UACCESS_H
- #define __ASM_CSKY_UACCESS_H
+diff --git a/include/linux/mman.h b/include/linux/mman.h
+index b66e91b8176c..58b3abd457a3 100644
+--- a/include/linux/mman.h
++++ b/include/linux/mman.h
+@@ -93,10 +93,6 @@ static inline void vm_unacct_memory(long pages)
+ #define arch_calc_vm_flag_bits(flags) 0
+ #endif
  
--#define user_addr_max() \
--	(uaccess_kernel() ? KERNEL_DS.seg : get_fs().seg)
-+#define user_addr_max() (current_thread_info()->addr_limit.seg)
- 
- static inline int __access_ok(unsigned long addr, unsigned long size)
- {
--	unsigned long limit = current_thread_info()->addr_limit.seg;
-+	unsigned long limit = user_addr_max();
- 
--	return ((addr < limit) && ((addr + size) < limit));
-+	return (size <= limit) && (addr <= (limit - size));
- }
- #define __access_ok __access_ok
- 
-diff --git a/arch/hexagon/include/asm/uaccess.h b/arch/hexagon/include/asm/uaccess.h
-index ef5bfef8d490..719ba3f3c45c 100644
---- a/arch/hexagon/include/asm/uaccess.h
-+++ b/arch/hexagon/include/asm/uaccess.h
-@@ -25,17 +25,17 @@
-  * Returns true (nonzero) if the memory block *may* be valid, false (zero)
-  * if it is definitely invalid.
-  *
-- * User address space in Hexagon, like x86, goes to 0xbfffffff, so the
-- * simple MSB-based tests used by MIPS won't work.  Some further
-- * optimization is probably possible here, but for now, keep it
-- * reasonably simple and not *too* slow.  After all, we've got the
-- * MMU for backup.
-  */
-+#define uaccess_kernel() (get_fs().seg == KERNEL_DS.seg)
-+#define user_addr_max() (uaccess_kernel() ? ~0UL : TASK_SIZE)
- 
--#define __access_ok(addr, size) \
--	((get_fs().seg == KERNEL_DS.seg) || \
--	(((unsigned long)addr < get_fs().seg) && \
--	  (unsigned long)size < (get_fs().seg - (unsigned long)addr)))
-+static inline int __access_ok(unsigned long addr, unsigned long size)
-+{
-+	unsigned long limit = TASK_SIZE;
-+
-+	return (size <= limit) && (addr <= (limit - size));
-+}
-+#define __access_ok __access_ok
- 
+-#ifndef arch_vm_get_page_prot
+-#define arch_vm_get_page_prot(vm_flags) __pgprot(0)
+-#endif
+-
+ #ifndef arch_validate_prot
  /*
-  * When a kernel-mode page fault is taken, the faulting instruction
-diff --git a/arch/microblaze/include/asm/uaccess.h b/arch/microblaze/include/asm/uaccess.h
-index d2a8ef9f8978..5b6e0e7788f4 100644
---- a/arch/microblaze/include/asm/uaccess.h
-+++ b/arch/microblaze/include/asm/uaccess.h
-@@ -39,24 +39,13 @@
- 
- # define uaccess_kernel()	(get_fs().seg == KERNEL_DS.seg)
- 
--static inline int access_ok(const void __user *addr, unsigned long size)
-+static inline int __access_ok(unsigned long addr, unsigned long size)
+  * This is called from mprotect().  PROT_GROWSDOWN and PROT_GROWSUP have
+diff --git a/mm/mmap.c b/mm/mmap.c
+index c8fd8f06bf7c..c13dd9c37866 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -102,7 +102,7 @@ static void unmap_region(struct mm_struct *mm,
+  *								w: (no) no
+  *								x: (yes) yes
+  */
+-static inline pgprot_t __vm_get_page_prot(unsigned long vm_flags)
++pgprot_t vm_get_page_prot(unsigned long vm_flags)
  {
--	if (!size)
--		goto ok;
-+	unsigned long limit = user_addr_max();
- 
--	if ((get_fs().seg < ((unsigned long)addr)) ||
--			(get_fs().seg < ((unsigned long)addr + size - 1))) {
--		pr_devel("ACCESS fail at 0x%08x (size 0x%x), seg 0x%08x\n",
--			(__force u32)addr, (u32)size,
--			(u32)get_fs().seg);
--		return 0;
--	}
--ok:
--	pr_devel("ACCESS OK at 0x%08x (size 0x%x), seg 0x%08x\n",
--			(__force u32)addr, (u32)size,
--			(u32)get_fs().seg);
--	return 1;
-+	return (size <= limit) && (addr <= (limit - size));
+ 	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
+ 	case VM_NONE:
+@@ -141,14 +141,6 @@ static inline pgprot_t __vm_get_page_prot(unsigned long vm_flags)
+ 		BUILD_BUG();
+ 	}
  }
-+#define access_ok(addr, size) __access_ok((unsigned long)addr, size)
+-
+-pgprot_t vm_get_page_prot(unsigned long vm_flags)
+-{
+-	pgprot_t ret = __pgprot(pgprot_val(__vm_get_page_prot(vm_flags)) |
+-			pgprot_val(arch_vm_get_page_prot(vm_flags)));
+-
+-	return ret;
+-}
+ EXPORT_SYMBOL(vm_get_page_prot);
+ #endif	/* CONFIG_ARCH_HAS_VM_GET_PAGE_PROT */
  
- # define __FIXUP_SECTION	".section .fixup,\"ax\"\n"
- # define __EX_TABLE_SECTION	".section __ex_table,\"a\"\n"
 -- 
-2.29.2
+2.25.1
 
 
