@@ -1,96 +1,113 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Kees Cook <keescook@chromium.org>
-Subject: [PATCH v2] um: Allow builds with Clang
-Date: Wed, 23 Feb 2022 21:58:31 -0800
-Message-Id: <20220224055831.1854786-1-keescook@chromium.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Kees Cook <keescook@chromium.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Masahiro Yamada <masahiroy@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, Nathan Chancellor <nathan@kernel.org>, David Gow <davidgow@google.com>, linux-um@lists.infradead.org, linux-kbuild@vger.kernel.org, linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, llvm@lists.linux.dev, linux-kernel@vger.kernel.org, x86@kernel.org, linux-hardening@vger.kernel.org
+Return-Path: <anshuman.khandual@arm.com>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH V3 27/30] nds32/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+Date: Mon, 28 Feb 2022 16:17:50 +0530
+Message-Id: <1646045273-9343-28-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
+References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
+To: linux-mm@kvack.org, akpm@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, geert@linux-m68k.org, Anshuman Khandual <anshuman.khandual@arm.com>, Christoph Hellwig <hch@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org, linux-riscv@lists.infradead.org, linux-alpha@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-parisc@vger.kernel.org, openrisc@lists.librecores.org, linux-um@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org, Nick Hu <nickhu@andestech.com>
 List-ID: <linux-um.lists.infradead.org>
 
-Add x86-64 target for Clang+um and update user-offsets.c to use
-Clang-friendly assembly, similar to the fix from commit cf0c3e68aa81
-("kbuild: fix asm-offset generation to work with clang").
+This defines and exports a platform specific custom vm_get_page_prot() via
+subscribing ARCH_HAS_VM_GET_PAGE_PROT. Subsequently all __SXXX and __PXXX
+macros can be dropped which are no longer needed.
 
-This lets me run KUnit tests with Clang:
-
-$ ./tools/testing/kunit/kunit.py config --make_options LLVM=1
-...
-$ ./tools/testing/kunit/kunit.py run --make_options LLVM=1
-...
-
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: David Gow <davidgow@google.com>
-Cc: linux-um@lists.infradead.org
-Cc: linux-kbuild@vger.kernel.org
-Cc: linux-kselftest@vger.kernel.org
-Cc: kunit-dev@googlegroups.com
-Cc: llvm@lists.linux.dev
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Link: https://lore.kernel.org/lkml/Yg2YubZxvYvx7%2Fnm@dev-arch.archlinux-ax161/
-Tested-by: David Gow <davidgow@google.com>
-Link: https://lore.kernel.org/lkml/CABVgOSk=oFxsbSbQE-v65VwR2+mXeGXDDjzq8t7FShwjJ3+kUg@mail.gmail.com/
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Cc: Nick Hu <nickhu@andestech.com>
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
-v1: https://lore.kernel.org/lkml/20220217002843.2312603-1-keescook@chromium.org/
-v2:
- - tweak commit log phrasing and alphabetize targets (nathan)
- - fix a missing implicit fallthrough under 32-bit builds
- - add review tags
----
- arch/um/os-Linux/execvp.c  | 1 +
- arch/x86/um/user-offsets.c | 4 ++--
- scripts/Makefile.clang     | 1 +
- 3 files changed, 4 insertions(+), 2 deletions(-)
+ arch/nds32/Kconfig               |  1 +
+ arch/nds32/include/asm/pgtable.h | 17 ---------------
+ arch/nds32/mm/mmap.c             | 37 ++++++++++++++++++++++++++++++++
+ 3 files changed, 38 insertions(+), 17 deletions(-)
 
-diff --git a/arch/um/os-Linux/execvp.c b/arch/um/os-Linux/execvp.c
-index 84a0777c2a45..c09a5fd5e225 100644
---- a/arch/um/os-Linux/execvp.c
-+++ b/arch/um/os-Linux/execvp.c
-@@ -93,6 +93,7 @@ int execvp_noalloc(char *buf, const char *file, char *const argv[])
- 					   up finding no executable we can use, we want to diagnose
- 					   that we did find one but were denied access.  */
- 					got_eacces = 1;
-+					break;
- 				case ENOENT:
- 				case ESTALE:
- 				case ENOTDIR:
-diff --git a/arch/x86/um/user-offsets.c b/arch/x86/um/user-offsets.c
-index bae61554abcc..d9071827b515 100644
---- a/arch/x86/um/user-offsets.c
-+++ b/arch/x86/um/user-offsets.c
-@@ -10,10 +10,10 @@
- #include <asm/types.h>
+diff --git a/arch/nds32/Kconfig b/arch/nds32/Kconfig
+index 4d1421b18734..576e05479925 100644
+--- a/arch/nds32/Kconfig
++++ b/arch/nds32/Kconfig
+@@ -10,6 +10,7 @@ config NDS32
+ 	select ARCH_HAS_DMA_PREP_COHERENT
+ 	select ARCH_HAS_SYNC_DMA_FOR_CPU
+ 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
++	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_WANT_FRAME_POINTERS if FTRACE
+ 	select CLKSRC_MMIO
+ 	select CLONE_BACKWARDS
+diff --git a/arch/nds32/include/asm/pgtable.h b/arch/nds32/include/asm/pgtable.h
+index 419f984eef70..79f64ed734cb 100644
+--- a/arch/nds32/include/asm/pgtable.h
++++ b/arch/nds32/include/asm/pgtable.h
+@@ -152,23 +152,6 @@ extern void __pgd_error(const char *file, int line, unsigned long val);
+ #endif /* __ASSEMBLY__ */
  
- #define DEFINE(sym, val) \
--	asm volatile("\n->" #sym " %0 " #val : : "i" (val))
-+	asm volatile("\n.ascii \"->" #sym " %0 " #val "\"": : "i" (val))
+ /*         xwr */
+-#define __P000  (PAGE_NONE | _PAGE_CACHE_SHRD)
+-#define __P001  (PAGE_READ | _PAGE_CACHE_SHRD)
+-#define __P010  (PAGE_COPY | _PAGE_CACHE_SHRD)
+-#define __P011  (PAGE_COPY | _PAGE_CACHE_SHRD)
+-#define __P100  (PAGE_EXEC | _PAGE_CACHE_SHRD)
+-#define __P101  (PAGE_READ | _PAGE_E | _PAGE_CACHE_SHRD)
+-#define __P110  (PAGE_COPY | _PAGE_E | _PAGE_CACHE_SHRD)
+-#define __P111  (PAGE_COPY | _PAGE_E | _PAGE_CACHE_SHRD)
+-
+-#define __S000  (PAGE_NONE | _PAGE_CACHE_SHRD)
+-#define __S001  (PAGE_READ | _PAGE_CACHE_SHRD)
+-#define __S010  (PAGE_RDWR | _PAGE_CACHE_SHRD)
+-#define __S011  (PAGE_RDWR | _PAGE_CACHE_SHRD)
+-#define __S100  (PAGE_EXEC | _PAGE_CACHE_SHRD)
+-#define __S101  (PAGE_READ | _PAGE_E | _PAGE_CACHE_SHRD)
+-#define __S110  (PAGE_RDWR | _PAGE_E | _PAGE_CACHE_SHRD)
+-#define __S111  (PAGE_RDWR | _PAGE_E | _PAGE_CACHE_SHRD)
  
- #define DEFINE_LONGS(sym, val) \
--	asm volatile("\n->" #sym " %0 " #val : : "i" (val/sizeof(unsigned long)))
-+	asm volatile("\n.ascii \"->" #sym " %0 " #val "\"": : "i" (val/sizeof(unsigned long)))
- 
- void foo(void)
- {
-diff --git a/scripts/Makefile.clang b/scripts/Makefile.clang
-index 51fc23e2e9e5..6e49344c6db2 100644
---- a/scripts/Makefile.clang
-+++ b/scripts/Makefile.clang
-@@ -9,6 +9,7 @@ CLANG_TARGET_FLAGS_mips		:= mipsel-linux-gnu
- CLANG_TARGET_FLAGS_powerpc	:= powerpc64le-linux-gnu
- CLANG_TARGET_FLAGS_riscv	:= riscv64-linux-gnu
- CLANG_TARGET_FLAGS_s390		:= s390x-linux-gnu
-+CLANG_TARGET_FLAGS_um		:= x86_64-linux-gnu
- CLANG_TARGET_FLAGS_x86		:= x86_64-linux-gnu
- CLANG_TARGET_FLAGS		:= $(CLANG_TARGET_FLAGS_$(SRCARCH))
- 
+ #ifndef __ASSEMBLY__
+ /*
+diff --git a/arch/nds32/mm/mmap.c b/arch/nds32/mm/mmap.c
+index 1bdf5e7d1b43..0399b928948d 100644
+--- a/arch/nds32/mm/mmap.c
++++ b/arch/nds32/mm/mmap.c
+@@ -71,3 +71,40 @@ arch_get_unmapped_area(struct file *filp, unsigned long addr,
+ 	info.align_offset = pgoff << PAGE_SHIFT;
+ 	return vm_unmapped_area(&info);
+ }
++
++pgprot_t vm_get_page_prot(unsigned long vm_flags)
++{
++	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
++	case VM_NONE:
++		return (PAGE_NONE | _PAGE_CACHE_SHRD);
++	case VM_READ:
++		return (PAGE_READ | _PAGE_CACHE_SHRD);
++	case VM_WRITE:
++	case VM_WRITE | VM_READ:
++		return (PAGE_COPY | _PAGE_CACHE_SHRD);
++	case VM_EXEC:
++		return (PAGE_EXEC | _PAGE_CACHE_SHRD);
++	case VM_EXEC | VM_READ:
++		return (PAGE_READ | _PAGE_E | _PAGE_CACHE_SHRD);
++	case VM_EXEC | VM_WRITE:
++	case VM_EXEC | VM_WRITE | VM_READ:
++		return (PAGE_COPY | _PAGE_E | _PAGE_CACHE_SHRD);
++	case VM_SHARED:
++		return (PAGE_NONE | _PAGE_CACHE_SHRD);
++	case VM_SHARED | VM_READ:
++		return (PAGE_READ | _PAGE_CACHE_SHRD);
++	case VM_SHARED | VM_WRITE:
++	case VM_SHARED | VM_WRITE | VM_READ:
++		return (PAGE_RDWR | _PAGE_CACHE_SHRD);
++	case VM_SHARED | VM_EXEC:
++		return (PAGE_EXEC | _PAGE_CACHE_SHRD);
++	case VM_SHARED | VM_EXEC | VM_READ:
++		return (PAGE_READ | _PAGE_E | _PAGE_CACHE_SHRD);
++	case VM_SHARED | VM_EXEC | VM_WRITE:
++	case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
++		return (PAGE_RDWR | _PAGE_E | _PAGE_CACHE_SHRD);
++	default:
++		BUILD_BUG();
++	}
++}
++EXPORT_SYMBOL(vm_get_page_prot);
 -- 
-2.30.2
+2.25.1
 
 
