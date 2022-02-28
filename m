@@ -1,233 +1,249 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nN9E3-00HErA-4t
- for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:11:51 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v6 18/26] virtio: find_vqs() add arg sizes
-Date: Thu, 24 Feb 2022 16:10:54 +0800
-Message-Id: <20220224081102.80224-19-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
-References: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
-MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
+Return-Path: <anshuman.khandual@arm.com>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH V3 05/30] arm64/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+Date: Mon, 28 Feb 2022 16:17:28 +0530
+Message-Id: <1646045273-9343-6-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
+References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
+To: linux-mm@kvack.org, akpm@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, geert@linux-m68k.org, Anshuman Khandual <anshuman.khandual@arm.com>, Christoph Hellwig <hch@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org, linux-riscv@lists.infradead.org, linux-alpha@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-parisc@vger.kernel.org, openrisc@lists.librecores.org, linux-um@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-find_vqs() adds a new parameter sizes to specify the size of each vq
-vring.
+This defines and exports a platform specific custom vm_get_page_prot() via
+subscribing ARCH_HAS_VM_GET_PAGE_PROT. Subsequently all __SXXX and __PXXX
+macros can be dropped which are no longer needed. This also localizes both
+arch_filter_pgprot and arch_vm_get_page_prot() helpers, unsubscribing from
+ARCH_HAS_FILTER_PGPROT as well. Moved both these localized functions near
+vm_get_page_prot().
 
-0 means use the maximum size supported by the backend.
-
-In the split scenario, the meaning of size is the largest size, because
-it may be limited by memory, the virtio core will try a smaller size.
-And the size is power of 2.
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- arch/um/drivers/virtio_uml.c             |  2 +-
- drivers/platform/mellanox/mlxbf-tmfifo.c |  3 ++-
- drivers/remoteproc/remoteproc_virtio.c   |  2 +-
- drivers/s390/virtio/virtio_ccw.c         |  2 +-
- drivers/virtio/virtio_mmio.c             |  2 +-
- drivers/virtio/virtio_pci_common.c       |  2 +-
- drivers/virtio/virtio_pci_common.h       |  2 +-
- drivers/virtio/virtio_pci_modern.c       |  5 +++--
- drivers/virtio/virtio_vdpa.c             |  2 +-
- include/linux/virtio_config.h            | 11 +++++++----
- 10 files changed, 19 insertions(+), 14 deletions(-)
+ arch/arm64/Kconfig                    |  2 +-
+ arch/arm64/include/asm/memory.h       |  3 +-
+ arch/arm64/include/asm/mman.h         | 24 ---------
+ arch/arm64/include/asm/pgtable-prot.h | 18 -------
+ arch/arm64/include/asm/pgtable.h      | 11 ----
+ arch/arm64/mm/mmap.c                  | 78 +++++++++++++++++++++++++++
+ 6 files changed, 80 insertions(+), 56 deletions(-)
 
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index ba562d68dc04..055b91ccbe8a 100644
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -998,7 +998,7 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
- static int vu_find_vqs(struct virtio_device *vdev, unsigned nvqs,
- 		       struct virtqueue *vqs[], vq_callback_t *callbacks[],
- 		       const char * const names[], const bool *ctx,
--		       struct irq_affinity *desc)
-+		       struct irq_affinity *desc, u32 sizes[])
- {
- 	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
- 	int i, queue_idx = 0, rc;
-diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
-index 38800e86ed8a..aea7aa218b22 100644
---- a/drivers/platform/mellanox/mlxbf-tmfifo.c
-+++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
-@@ -929,7 +929,8 @@ static int mlxbf_tmfifo_virtio_find_vqs(struct virtio_device *vdev,
- 					vq_callback_t *callbacks[],
- 					const char * const names[],
- 					const bool *ctx,
--					struct irq_affinity *desc)
-+					struct irq_affinity *desc,
-+					u32 sizes[])
- {
- 	struct mlxbf_tmfifo_vdev *tm_vdev = mlxbf_vdev_to_tmfifo(vdev);
- 	struct mlxbf_tmfifo_vring *vring;
-diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remoteproc/remoteproc_virtio.c
-index 70ab496d0431..3a167bec5b09 100644
---- a/drivers/remoteproc/remoteproc_virtio.c
-+++ b/drivers/remoteproc/remoteproc_virtio.c
-@@ -157,7 +157,7 @@ static int rproc_virtio_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
- 				 vq_callback_t *callbacks[],
- 				 const char * const names[],
- 				 const bool * ctx,
--				 struct irq_affinity *desc)
-+				 struct irq_affinity *desc, u32 sizes[])
- {
- 	int i, ret, queue_idx = 0;
- 
-diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
-index d35e7a3f7067..b74e08c71534 100644
---- a/drivers/s390/virtio/virtio_ccw.c
-+++ b/drivers/s390/virtio/virtio_ccw.c
-@@ -632,7 +632,7 @@ static int virtio_ccw_find_vqs(struct virtio_device *vdev, unsigned nvqs,
- 			       vq_callback_t *callbacks[],
- 			       const char * const names[],
- 			       const bool *ctx,
--			       struct irq_affinity *desc)
-+			       struct irq_affinity *desc, u32 sizes[])
- {
- 	struct virtio_ccw_device *vcdev = to_vc_device(vdev);
- 	unsigned long *indicatorp = NULL;
-diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
-index a41abc8051b9..55d575f6ef2d 100644
---- a/drivers/virtio/virtio_mmio.c
-+++ b/drivers/virtio/virtio_mmio.c
-@@ -462,7 +462,7 @@ static int vm_find_vqs(struct virtio_device *vdev, unsigned nvqs,
- 		       vq_callback_t *callbacks[],
- 		       const char * const names[],
- 		       const bool *ctx,
--		       struct irq_affinity *desc)
-+		       struct irq_affinity *desc, u32 sizes[])
- {
- 	struct virtio_mmio_device *vm_dev = to_virtio_mmio_device(vdev);
- 	int irq = platform_get_irq(vm_dev->pdev, 0);
-diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
-index 863d3a8a0956..8e8fa7e5ad80 100644
---- a/drivers/virtio/virtio_pci_common.c
-+++ b/drivers/virtio/virtio_pci_common.c
-@@ -428,7 +428,7 @@ static int vp_find_vqs_intx(struct virtio_device *vdev, unsigned nvqs,
- int vp_find_vqs(struct virtio_device *vdev, unsigned nvqs,
- 		struct virtqueue *vqs[], vq_callback_t *callbacks[],
- 		const char * const names[], const bool *ctx,
--		struct irq_affinity *desc)
-+		struct irq_affinity *desc, u32 sizes[])
- {
- 	int err;
- 
-diff --git a/drivers/virtio/virtio_pci_common.h b/drivers/virtio/virtio_pci_common.h
-index 23f6c5c678d5..9dbf1d555dff 100644
---- a/drivers/virtio/virtio_pci_common.h
-+++ b/drivers/virtio/virtio_pci_common.h
-@@ -114,7 +114,7 @@ void vp_del_vqs(struct virtio_device *vdev);
- int vp_find_vqs(struct virtio_device *vdev, unsigned nvqs,
- 		struct virtqueue *vqs[], vq_callback_t *callbacks[],
- 		const char * const names[], const bool *ctx,
--		struct irq_affinity *desc);
-+		struct irq_affinity *desc, u32 sizes[]);
- const char *vp_bus_name(struct virtio_device *vdev);
- 
- /* Setup the affinity for a virtqueue:
-diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
-index 3c67d3607802..342795175c29 100644
---- a/drivers/virtio/virtio_pci_modern.c
-+++ b/drivers/virtio/virtio_pci_modern.c
-@@ -343,11 +343,12 @@ static int vp_modern_find_vqs(struct virtio_device *vdev, unsigned nvqs,
- 			      struct virtqueue *vqs[],
- 			      vq_callback_t *callbacks[],
- 			      const char * const names[], const bool *ctx,
--			      struct irq_affinity *desc)
-+			      struct irq_affinity *desc, u32 sizes[])
- {
- 	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
- 	struct virtqueue *vq;
--	int rc = vp_find_vqs(vdev, nvqs, vqs, callbacks, names, ctx, desc);
-+	int rc = vp_find_vqs(vdev, nvqs, vqs, callbacks, names, ctx, desc,
-+			     sizes);
- 
- 	if (rc)
- 		return rc;
-diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
-index 7767a7f0119b..ee08d01ee8b1 100644
---- a/drivers/virtio/virtio_vdpa.c
-+++ b/drivers/virtio/virtio_vdpa.c
-@@ -268,7 +268,7 @@ static int virtio_vdpa_find_vqs(struct virtio_device *vdev, unsigned nvqs,
- 				vq_callback_t *callbacks[],
- 				const char * const names[],
- 				const bool *ctx,
--				struct irq_affinity *desc)
-+				struct irq_affinity *desc, u32 sizes[])
- {
- 	struct virtio_vdpa_device *vd_dev = to_virtio_vdpa_device(vdev);
- 	struct vdpa_device *vdpa = vd_get_vdpa(vdev);
-diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
-index 0b81fbe17c85..5157524d8036 100644
---- a/include/linux/virtio_config.h
-+++ b/include/linux/virtio_config.h
-@@ -57,6 +57,7 @@ struct virtio_shm_region {
-  *		include a NULL entry for vqs that do not need a callback
-  *	names: array of virtqueue names (mainly for debugging)
-  *		include a NULL entry for vqs unused by driver
-+ *	sizes: array of virtqueue sizes
-  *	Returns 0 on success or error status
-  * @del_vqs: free virtqueues found by find_vqs().
-  * @get_features: get the array of feature bits for this device.
-@@ -98,7 +99,8 @@ struct virtio_config_ops {
- 	int (*find_vqs)(struct virtio_device *, unsigned nvqs,
- 			struct virtqueue *vqs[], vq_callback_t *callbacks[],
- 			const char * const names[], const bool *ctx,
--			struct irq_affinity *desc);
-+			struct irq_affinity *desc,
-+			u32 sizes[]);
- 	void (*del_vqs)(struct virtio_device *);
- 	u64 (*get_features)(struct virtio_device *vdev);
- 	int (*finalize_features)(struct virtio_device *vdev);
-@@ -205,7 +207,7 @@ struct virtqueue *virtio_find_single_vq(struct virtio_device *vdev,
- 	const char *names[] = { n };
- 	struct virtqueue *vq;
- 	int err = vdev->config->find_vqs(vdev, 1, &vq, callbacks, names, NULL,
--					 NULL);
-+					 NULL, NULL);
- 	if (err < 0)
- 		return ERR_PTR(err);
- 	return vq;
-@@ -217,7 +219,8 @@ int virtio_find_vqs(struct virtio_device *vdev, unsigned nvqs,
- 			const char * const names[],
- 			struct irq_affinity *desc)
- {
--	return vdev->config->find_vqs(vdev, nvqs, vqs, callbacks, names, NULL, desc);
-+	return vdev->config->find_vqs(vdev, nvqs, vqs, callbacks, names, NULL,
-+				      desc, NULL);
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 2e5d2eac6fc6..7153d5fff603 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -23,7 +23,6 @@ config ARM64
+ 	select ARCH_HAS_DMA_PREP_COHERENT
+ 	select ARCH_HAS_ACPI_TABLE_UPGRADE if ACPI
+ 	select ARCH_HAS_FAST_MULTIPLIER
+-	select ARCH_HAS_FILTER_PGPROT
+ 	select ARCH_HAS_FORTIFY_SOURCE
+ 	select ARCH_HAS_GCOV_PROFILE_ALL
+ 	select ARCH_HAS_GIGANTIC_PAGE
+@@ -44,6 +43,7 @@ config ARM64
+ 	select ARCH_HAS_SYSCALL_WRAPPER
+ 	select ARCH_HAS_TEARDOWN_DMA_OPS if IOMMU_SUPPORT
+ 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
++	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_HAS_ZONE_DMA_SET if EXPERT
+ 	select ARCH_HAVE_ELF_PROT
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+index 0af70d9abede..64a613a0349b 100644
+--- a/arch/arm64/include/asm/memory.h
++++ b/arch/arm64/include/asm/memory.h
+@@ -126,8 +126,7 @@
+  * Memory types available.
+  *
+  * IMPORTANT: MT_NORMAL must be index 0 since vm_get_page_prot() may 'or' in
+- *	      the MT_NORMAL_TAGGED memory type for PROT_MTE mappings. Note
+- *	      that protection_map[] only contains MT_NORMAL attributes.
++ *	      the MT_NORMAL_TAGGED memory type for PROT_MTE mappings.
+  */
+ #define MT_NORMAL		0
+ #define MT_NORMAL_TAGGED	1
+diff --git a/arch/arm64/include/asm/mman.h b/arch/arm64/include/asm/mman.h
+index e3e28f7daf62..5966ee4a6154 100644
+--- a/arch/arm64/include/asm/mman.h
++++ b/arch/arm64/include/asm/mman.h
+@@ -35,30 +35,6 @@ static inline unsigned long arch_calc_vm_flag_bits(unsigned long flags)
  }
+ #define arch_calc_vm_flag_bits(flags) arch_calc_vm_flag_bits(flags)
  
- static inline
-@@ -227,7 +230,7 @@ int virtio_find_vqs_ctx(struct virtio_device *vdev, unsigned nvqs,
- 			struct irq_affinity *desc)
+-static inline pgprot_t arch_vm_get_page_prot(unsigned long vm_flags)
+-{
+-	pteval_t prot = 0;
+-
+-	if (vm_flags & VM_ARM64_BTI)
+-		prot |= PTE_GP;
+-
+-	/*
+-	 * There are two conditions required for returning a Normal Tagged
+-	 * memory type: (1) the user requested it via PROT_MTE passed to
+-	 * mmap() or mprotect() and (2) the corresponding vma supports MTE. We
+-	 * register (1) as VM_MTE in the vma->vm_flags and (2) as
+-	 * VM_MTE_ALLOWED. Note that the latter can only be set during the
+-	 * mmap() call since mprotect() does not accept MAP_* flags.
+-	 * Checking for VM_MTE only is sufficient since arch_validate_flags()
+-	 * does not permit (VM_MTE & !VM_MTE_ALLOWED).
+-	 */
+-	if (vm_flags & VM_MTE)
+-		prot |= PTE_ATTRINDX(MT_NORMAL_TAGGED);
+-
+-	return __pgprot(prot);
+-}
+-#define arch_vm_get_page_prot(vm_flags) arch_vm_get_page_prot(vm_flags)
+-
+ static inline bool arch_validate_prot(unsigned long prot,
+ 	unsigned long addr __always_unused)
  {
- 	return vdev->config->find_vqs(vdev, nvqs, vqs, callbacks, names, ctx,
--				      desc);
-+				      desc, NULL);
- }
+diff --git a/arch/arm64/include/asm/pgtable-prot.h b/arch/arm64/include/asm/pgtable-prot.h
+index 7032f04c8ac6..d8ee0aa7886d 100644
+--- a/arch/arm64/include/asm/pgtable-prot.h
++++ b/arch/arm64/include/asm/pgtable-prot.h
+@@ -88,24 +88,6 @@ extern bool arm64_use_ng_mappings;
+ #define PAGE_READONLY_EXEC	__pgprot(_PAGE_DEFAULT | PTE_USER | PTE_RDONLY | PTE_NG | PTE_PXN)
+ #define PAGE_EXECONLY		__pgprot(_PAGE_DEFAULT | PTE_RDONLY | PTE_NG | PTE_PXN)
  
- /**
+-#define __P000  PAGE_NONE
+-#define __P001  PAGE_READONLY
+-#define __P010  PAGE_READONLY
+-#define __P011  PAGE_READONLY
+-#define __P100  PAGE_EXECONLY
+-#define __P101  PAGE_READONLY_EXEC
+-#define __P110  PAGE_READONLY_EXEC
+-#define __P111  PAGE_READONLY_EXEC
+-
+-#define __S000  PAGE_NONE
+-#define __S001  PAGE_READONLY
+-#define __S010  PAGE_SHARED
+-#define __S011  PAGE_SHARED
+-#define __S100  PAGE_EXECONLY
+-#define __S101  PAGE_READONLY_EXEC
+-#define __S110  PAGE_SHARED_EXEC
+-#define __S111  PAGE_SHARED_EXEC
+-
+ #endif /* __ASSEMBLY__ */
+ 
+ #endif /* __ASM_PGTABLE_PROT_H */
+diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+index c4ba047a82d2..94e147e5456c 100644
+--- a/arch/arm64/include/asm/pgtable.h
++++ b/arch/arm64/include/asm/pgtable.h
+@@ -1017,17 +1017,6 @@ static inline bool arch_wants_old_prefaulted_pte(void)
+ }
+ #define arch_wants_old_prefaulted_pte	arch_wants_old_prefaulted_pte
+ 
+-static inline pgprot_t arch_filter_pgprot(pgprot_t prot)
+-{
+-	if (cpus_have_const_cap(ARM64_HAS_EPAN))
+-		return prot;
+-
+-	if (pgprot_val(prot) != pgprot_val(PAGE_EXECONLY))
+-		return prot;
+-
+-	return PAGE_READONLY_EXEC;
+-}
+-
+ static inline bool pud_sect_supported(void)
+ {
+ 	return PAGE_SIZE == SZ_4K;
+diff --git a/arch/arm64/mm/mmap.c b/arch/arm64/mm/mmap.c
+index a38f54cd638c..bd0233d376a2 100644
+--- a/arch/arm64/mm/mmap.c
++++ b/arch/arm64/mm/mmap.c
+@@ -10,6 +10,7 @@
+ #include <linux/types.h>
+ 
+ #include <asm/page.h>
++#include <asm/mman.h>
+ 
+ /*
+  * You really shouldn't be using read() or write() on /dev/mem.  This might go
+@@ -38,3 +39,80 @@ int valid_mmap_phys_addr_range(unsigned long pfn, size_t size)
+ {
+ 	return !(((pfn << PAGE_SHIFT) + size) & ~PHYS_MASK);
+ }
++
++static inline pgprot_t __vm_get_page_prot(unsigned long vm_flags)
++{
++	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
++	case VM_NONE:
++		return PAGE_NONE;
++	case VM_READ:
++	case VM_WRITE:
++	case VM_WRITE | VM_READ:
++		return PAGE_READONLY;
++	case VM_EXEC:
++		return PAGE_EXECONLY;
++	case VM_EXEC | VM_READ:
++	case VM_EXEC | VM_WRITE:
++	case VM_EXEC | VM_WRITE | VM_READ:
++		return PAGE_READONLY_EXEC;
++	case VM_SHARED:
++		return PAGE_NONE;
++	case VM_SHARED | VM_READ:
++		return PAGE_READONLY;
++	case VM_SHARED | VM_WRITE:
++	case VM_SHARED | VM_WRITE | VM_READ:
++		return PAGE_SHARED;
++	case VM_SHARED | VM_EXEC:
++		return PAGE_EXECONLY;
++	case VM_SHARED | VM_EXEC | VM_READ:
++		return PAGE_READONLY_EXEC;
++	case VM_SHARED | VM_EXEC | VM_WRITE:
++	case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
++		return PAGE_SHARED_EXEC;
++	default:
++		BUILD_BUG();
++	}
++}
++
++static pgprot_t arm64_arch_filter_pgprot(pgprot_t prot)
++{
++	if (cpus_have_const_cap(ARM64_HAS_EPAN))
++		return prot;
++
++	if (pgprot_val(prot) != pgprot_val(PAGE_EXECONLY))
++		return prot;
++
++	return PAGE_READONLY_EXEC;
++}
++
++static pgprot_t arm64_arch_vm_get_page_prot(unsigned long vm_flags)
++{
++	pteval_t prot = 0;
++
++	if (vm_flags & VM_ARM64_BTI)
++		prot |= PTE_GP;
++
++	/*
++	 * There are two conditions required for returning a Normal Tagged
++	 * memory type: (1) the user requested it via PROT_MTE passed to
++	 * mmap() or mprotect() and (2) the corresponding vma supports MTE. We
++	 * register (1) as VM_MTE in the vma->vm_flags and (2) as
++	 * VM_MTE_ALLOWED. Note that the latter can only be set during the
++	 * mmap() call since mprotect() does not accept MAP_* flags.
++	 * Checking for VM_MTE only is sufficient since arch_validate_flags()
++	 * does not permit (VM_MTE & !VM_MTE_ALLOWED).
++	 */
++	if (vm_flags & VM_MTE)
++		prot |= PTE_ATTRINDX(MT_NORMAL_TAGGED);
++
++	return __pgprot(prot);
++}
++
++pgprot_t vm_get_page_prot(unsigned long vm_flags)
++{
++	pgprot_t ret = __pgprot(pgprot_val(__vm_get_page_prot(vm_flags)) |
++			pgprot_val(arm64_arch_vm_get_page_prot(vm_flags)));
++
++	return arm64_arch_filter_pgprot(ret);
++}
++EXPORT_SYMBOL(vm_get_page_prot);
 -- 
-2.31.0
+2.25.1
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
