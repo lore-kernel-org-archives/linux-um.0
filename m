@@ -1,110 +1,69 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nN9EJ-00HFBg-Pz
- for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:12:05 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v6 26/26] virtio_net: support set_ringparam
-Date: Thu, 24 Feb 2022 16:11:02 +0800
-Message-Id: <20220224081102.80224-27-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
-References: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
-MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
+Return-Path: <anshuman.khandual@arm.com>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH V3 12/30] mm/mmap: Drop arch_filter_pgprot()
+Date: Mon, 28 Feb 2022 16:17:35 +0530
+Message-Id: <1646045273-9343-13-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
+References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
+To: linux-mm@kvack.org, akpm@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, geert@linux-m68k.org, Anshuman Khandual <anshuman.khandual@arm.com>, Christoph Hellwig <hch@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org, linux-riscv@lists.infradead.org, linux-alpha@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-parisc@vger.kernel.org, openrisc@lists.librecores.org, linux-um@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-Support set_ringparam based on virtio queue reset.
+There are no platforms left which subscribe ARCH_HAS_FILTER_PGPROT. Hence
+just drop arch_filter_pgprot() and also the config ARCH_HAS_FILTER_PGPROT.
 
-The rx,tx_pending required to be passed must be power of 2.
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- drivers/net/virtio_net.c | 47 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
+ mm/Kconfig |  3 ---
+ mm/mmap.c  | 10 +---------
+ 2 files changed, 1 insertion(+), 12 deletions(-)
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index f1bdc6ce21c3..1fa2d632a994 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -2290,6 +2290,52 @@ static void virtnet_get_ringparam(struct net_device *dev,
- 	ring->tx_pending = virtqueue_get_vring_size(vi->sq[0].vq);
+diff --git a/mm/Kconfig b/mm/Kconfig
+index fa436478a94c..212fb6e1ddaa 100644
+--- a/mm/Kconfig
++++ b/mm/Kconfig
+@@ -744,9 +744,6 @@ config IDLE_PAGE_TRACKING
+ config ARCH_HAS_CACHE_LINE_SIZE
+ 	bool
+ 
+-config ARCH_HAS_FILTER_PGPROT
+-	bool
+-
+ config ARCH_HAS_VM_GET_PAGE_PROT
+ 	bool
+ 
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 78eeac277a80..c8fd8f06bf7c 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -102,14 +102,6 @@ static void unmap_region(struct mm_struct *mm,
+  *								w: (no) no
+  *								x: (yes) yes
+  */
+-
+-#ifndef CONFIG_ARCH_HAS_FILTER_PGPROT
+-static inline pgprot_t arch_filter_pgprot(pgprot_t prot)
+-{
+-	return prot;
+-}
+-#endif
+-
+ static inline pgprot_t __vm_get_page_prot(unsigned long vm_flags)
+ {
+ 	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
+@@ -155,7 +147,7 @@ pgprot_t vm_get_page_prot(unsigned long vm_flags)
+ 	pgprot_t ret = __pgprot(pgprot_val(__vm_get_page_prot(vm_flags)) |
+ 			pgprot_val(arch_vm_get_page_prot(vm_flags)));
+ 
+-	return arch_filter_pgprot(ret);
++	return ret;
  }
- 
-+static int virtnet_set_ringparam(struct net_device *dev,
-+				 struct ethtool_ringparam *ring,
-+				 struct kernel_ethtool_ringparam *kernel_ring,
-+				 struct netlink_ext_ack *extack)
-+{
-+	struct virtnet_info *vi = netdev_priv(dev);
-+	u32 rx_pending, tx_pending;
-+	struct receive_queue *rq;
-+	struct send_queue *sq;
-+	int i, err;
-+
-+	if (ring->rx_mini_pending || ring->rx_jumbo_pending)
-+		return -EINVAL;
-+
-+	rx_pending = virtqueue_get_vring_size(vi->rq[0].vq);
-+	tx_pending = virtqueue_get_vring_size(vi->sq[0].vq);
-+
-+	if (ring->rx_pending == rx_pending &&
-+	    ring->tx_pending == tx_pending)
-+		return 0;
-+
-+	if (ring->rx_pending > virtqueue_get_vring_max_size(vi->rq[0].vq))
-+		return -EINVAL;
-+
-+	if (ring->tx_pending > virtqueue_get_vring_max_size(vi->sq[0].vq))
-+		return -EINVAL;
-+
-+	for (i = 0; i < vi->max_queue_pairs; i++) {
-+		rq = vi->rq + i;
-+		sq = vi->sq + i;
-+
-+		if (ring->tx_pending != tx_pending) {
-+			err = virtnet_tx_vq_reset(vi, sq, ring->tx_pending);
-+			if (err)
-+				return err;
-+		}
-+
-+		if (ring->rx_pending != rx_pending) {
-+			err = virtnet_rx_vq_reset(vi, rq, ring->rx_pending);
-+			if (err)
-+				return err;
-+		}
-+	}
-+
-+	return 0;
-+}
- 
- static void virtnet_get_drvinfo(struct net_device *dev,
- 				struct ethtool_drvinfo *info)
-@@ -2523,6 +2569,7 @@ static const struct ethtool_ops virtnet_ethtool_ops = {
- 	.get_drvinfo = virtnet_get_drvinfo,
- 	.get_link = ethtool_op_get_link,
- 	.get_ringparam = virtnet_get_ringparam,
-+	.set_ringparam = virtnet_set_ringparam,
- 	.get_strings = virtnet_get_strings,
- 	.get_sset_count = virtnet_get_sset_count,
- 	.get_ethtool_stats = virtnet_get_ethtool_stats,
+ EXPORT_SYMBOL(vm_get_page_prot);
+ #endif	/* CONFIG_ARCH_HAS_VM_GET_PAGE_PROT */
 -- 
-2.31.0
+2.25.1
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
