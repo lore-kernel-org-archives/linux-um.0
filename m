@@ -1,77 +1,62 @@
 Return-Path: <anshuman.khandual@arm.com>
 From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V3 29/30] mm/mmap: Drop generic vm_get_page_prot()
-Date: Mon, 28 Feb 2022 16:17:52 +0530
-Message-Id: <1646045273-9343-30-git-send-email-anshuman.khandual@arm.com>
+Subject: [PATCH V3 03/30] mm/mmap: Add new config ARCH_HAS_VM_GET_PAGE_PROT
+Date: Mon, 28 Feb 2022 16:17:26 +0530
+Message-Id: <1646045273-9343-4-git-send-email-anshuman.khandual@arm.com>
 In-Reply-To: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
 References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
 To: linux-mm@kvack.org, akpm@linux-foundation.org
 Cc: linux-kernel@vger.kernel.org, geert@linux-m68k.org, Anshuman Khandual <anshuman.khandual@arm.com>, Christoph Hellwig <hch@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org, linux-riscv@lists.infradead.org, linux-alpha@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-parisc@vger.kernel.org, openrisc@lists.librecores.org, linux-um@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org
 List-ID: <linux-um.lists.infradead.org>
 
-All available platforms export their own vm_get_page_prot() implementation
-via ARCH_HAS_VM_GET_PAGE_PROT. Hence a generic implementation is no longer
-needed.
+Add a new config ARCH_HAS_VM_GET_PAGE_PROT, which when subscribed enables a
+given platform to define its own vm_get_page_prot(). This framework will
+help remove protection_map[] dependency going forward.
 
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: linux-mm@kvack.org
 Cc: linux-kernel@vger.kernel.org
+Suggested-by: Christoph Hellwig <hch@infradead.org>
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- mm/mmap.c | 40 ----------------------------------------
- 1 file changed, 40 deletions(-)
+ mm/Kconfig | 3 +++
+ mm/mmap.c  | 2 ++
+ 2 files changed, 5 insertions(+)
 
+diff --git a/mm/Kconfig b/mm/Kconfig
+index 257ed9c86de3..fa436478a94c 100644
+--- a/mm/Kconfig
++++ b/mm/Kconfig
+@@ -747,6 +747,9 @@ config ARCH_HAS_CACHE_LINE_SIZE
+ config ARCH_HAS_FILTER_PGPROT
+ 	bool
+ 
++config ARCH_HAS_VM_GET_PAGE_PROT
++	bool
++
+ config ARCH_HAS_PTE_DEVMAP
+ 	bool
+ 
 diff --git a/mm/mmap.c b/mm/mmap.c
-index c13dd9c37866..ff343f76a825 100644
+index 34000a7d7efa..f2310f6e7466 100644
 --- a/mm/mmap.c
 +++ b/mm/mmap.c
-@@ -102,46 +102,6 @@ static void unmap_region(struct mm_struct *mm,
-  *								w: (no) no
-  *								x: (yes) yes
-  */
--pgprot_t vm_get_page_prot(unsigned long vm_flags)
--{
--	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
--	case VM_NONE:
--		return __P000;
--	case VM_READ:
--		return __P001;
--	case VM_WRITE:
--		return __P010;
--	case VM_READ | VM_WRITE:
--		return __P011;
--	case VM_EXEC:
--		return __P100;
--	case VM_EXEC | VM_READ:
--		return __P101;
--	case VM_EXEC | VM_WRITE:
--		return __P110;
--	case VM_EXEC | VM_READ | VM_WRITE:
--		return __P111;
--	case VM_SHARED:
--		return __S000;
--	case VM_SHARED | VM_READ:
--		return __S001;
--	case VM_SHARED | VM_WRITE:
--		return __S010;
--	case VM_SHARED | VM_READ | VM_WRITE:
--		return __S011;
--	case VM_SHARED | VM_EXEC:
--		return __S100;
--	case VM_SHARED | VM_EXEC | VM_READ:
--		return __S101;
--	case VM_SHARED | VM_EXEC | VM_WRITE:
--		return __S110;
--	case VM_SHARED | VM_EXEC | VM_READ | VM_WRITE:
--		return __S111;
--	default:
--		BUILD_BUG();
--	}
--}
--EXPORT_SYMBOL(vm_get_page_prot);
- #endif	/* CONFIG_ARCH_HAS_VM_GET_PAGE_PROT */
+@@ -81,6 +81,7 @@ static void unmap_region(struct mm_struct *mm,
+ 		struct vm_area_struct *vma, struct vm_area_struct *prev,
+ 		unsigned long start, unsigned long end);
+ 
++#ifndef CONFIG_ARCH_HAS_VM_GET_PAGE_PROT
+ /* description of effects of mapping type and prot in current implementation.
+  * this is due to the limited x86 page protection hardware.  The expected
+  * behavior is in parens:
+@@ -136,6 +137,7 @@ pgprot_t vm_get_page_prot(unsigned long vm_flags)
+ 	return arch_filter_pgprot(ret);
+ }
+ EXPORT_SYMBOL(vm_get_page_prot);
++#endif	/* CONFIG_ARCH_HAS_VM_GET_PAGE_PROT */
  
  static pgprot_t vm_pgprot_modify(pgprot_t oldprot, unsigned long vm_flags)
+ {
 -- 
 2.25.1
 
