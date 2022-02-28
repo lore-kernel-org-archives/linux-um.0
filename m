@@ -1,71 +1,152 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x54a.google.com ([2607:f8b0:4864:20::54a])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nN9F2-00HFb8-9P
- for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:12:49 +0000
-Received: by mail-pg1-x54a.google.com with SMTP id
- t7-20020a634447000000b0036579648983so795148pgk.3
- for <linux-um@lists.infradead.org>; Thu, 24 Feb 2022 00:12:46 -0800 (PST)
-Date: Thu, 24 Feb 2022 16:12:33 +0800
-Message-Id: <20220224081233.1765788-1-davidgow@google.com>
-Mime-Version: 1.0
-Subject: [PATCH] um: Remove unused timeval_to_ns() function
-From: David Gow <davidgow@google.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Nick Desaulniers <ndesaulniers@google.com>, Kees Cook <keescook@chromium.org>
-Cc: linux-um@lists.infradead.org, llvm@lists.linux.dev, linux-kernel@vger.kernel.org, David Gow <davidgow@google.com>
+Return-Path: <anshuman.khandual@arm.com>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH V3 26/30] hexagon/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+Date: Mon, 28 Feb 2022 16:17:49 +0530
+Message-Id: <1646045273-9343-27-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
+References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
+To: linux-mm@kvack.org, akpm@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, geert@linux-m68k.org, Anshuman Khandual <anshuman.khandual@arm.com>, Christoph Hellwig <hch@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org, linux-riscv@lists.infradead.org, linux-alpha@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-parisc@vger.kernel.org, openrisc@lists.librecores.org, linux-um@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org, Brian Cain <bcain@codeaurora.org>
+List-ID: <linux-um.lists.infradead.org>
 
-The timeval_to_ns() function doesn't appear to be used anywhere, as far
-as I (or git grep) can tell, and clang throws up a warning about it:
+This defines and exports a platform specific custom vm_get_page_prot() via
+subscribing ARCH_HAS_VM_GET_PAGE_PROT. Subsequently all __SXXX and __PXXX
+macros can be dropped which are no longer needed.
 
-../arch/um/os-Linux/time.c:21:25: warning: unused function 'timeval_to_ns' [-Wunused-function]
-static inline long long timeval_to_ns(const struct timeval *tv)
-                        ^
-1 warning generated.
-
-Signed-off-by: David Gow <davidgow@google.com>
+Cc: Brian Cain <bcain@codeaurora.org>
+Cc: linux-hexagon@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
+ arch/hexagon/Kconfig               |  1 +
+ arch/hexagon/include/asm/pgtable.h | 24 -----------
+ arch/hexagon/mm/init.c             | 67 ++++++++++++++++++++++++++++++
+ 3 files changed, 68 insertions(+), 24 deletions(-)
 
-Warning can be reproduced under clang 13.0.1-+rc1 after applying:
-um: Allow builds with Clang -- https://lkml.org/lkml/2022/2/24/40
-
- arch/um/os-Linux/time.c | 6 ------
- 1 file changed, 6 deletions(-)
-
-diff --git a/arch/um/os-Linux/time.c b/arch/um/os-Linux/time.c
-index 6c5041c5560b..4d5591d96d8c 100644
---- a/arch/um/os-Linux/time.c
-+++ b/arch/um/os-Linux/time.c
-@@ -18,12 +18,6 @@
+diff --git a/arch/hexagon/Kconfig b/arch/hexagon/Kconfig
+index 15dd8f38b698..cdc5df32a1e3 100644
+--- a/arch/hexagon/Kconfig
++++ b/arch/hexagon/Kconfig
+@@ -6,6 +6,7 @@ config HEXAGON
+ 	def_bool y
+ 	select ARCH_32BIT_OFF_T
+ 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
++	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_NO_PREEMPT
+ 	select DMA_GLOBAL_POOL
+ 	# Other pending projects/to-do items.
+diff --git a/arch/hexagon/include/asm/pgtable.h b/arch/hexagon/include/asm/pgtable.h
+index 18cd6ea9ab23..5eceddfe013d 100644
+--- a/arch/hexagon/include/asm/pgtable.h
++++ b/arch/hexagon/include/asm/pgtable.h
+@@ -127,31 +127,7 @@ extern unsigned long _dflt_cache_att;
+ #define CACHEDEF	(CACHE_DEFAULT << 6)
  
- static timer_t event_high_res_timer = 0;
- 
--static inline long long timeval_to_ns(const struct timeval *tv)
--{
--	return ((long long) tv->tv_sec * UM_NSEC_PER_SEC) +
--		tv->tv_usec * UM_NSEC_PER_USEC;
--}
+ /* Private (copy-on-write) page protections. */
+-#define __P000 __pgprot(_PAGE_PRESENT | _PAGE_USER | CACHEDEF)
+-#define __P001 __pgprot(_PAGE_PRESENT | _PAGE_USER | _PAGE_READ | CACHEDEF)
+-#define __P010 __P000	/* Write-only copy-on-write */
+-#define __P011 __P001	/* Read/Write copy-on-write */
+-#define __P100 __pgprot(_PAGE_PRESENT | _PAGE_USER | \
+-			_PAGE_EXECUTE | CACHEDEF)
+-#define __P101 __pgprot(_PAGE_PRESENT | _PAGE_USER | _PAGE_EXECUTE | \
+-			_PAGE_READ | CACHEDEF)
+-#define __P110 __P100	/* Write/execute copy-on-write */
+-#define __P111 __P101	/* Read/Write/Execute, copy-on-write */
 -
- static inline long long timespec_to_ns(const struct timespec *ts)
- {
- 	return ((long long) ts->tv_sec * UM_NSEC_PER_SEC) + ts->tv_nsec;
+ /* Shared page protections. */
+-#define __S000 __P000
+-#define __S001 __P001
+-#define __S010 __pgprot(_PAGE_PRESENT | _PAGE_USER | \
+-			_PAGE_WRITE | CACHEDEF)
+-#define __S011 __pgprot(_PAGE_PRESENT | _PAGE_USER | _PAGE_READ | \
+-			_PAGE_WRITE | CACHEDEF)
+-#define __S100 __pgprot(_PAGE_PRESENT | _PAGE_USER | \
+-			_PAGE_EXECUTE | CACHEDEF)
+-#define __S101 __P101
+-#define __S110 __pgprot(_PAGE_PRESENT | _PAGE_USER | \
+-			_PAGE_EXECUTE | _PAGE_WRITE | CACHEDEF)
+-#define __S111 __pgprot(_PAGE_PRESENT | _PAGE_USER | _PAGE_READ | \
+-			_PAGE_EXECUTE | _PAGE_WRITE | CACHEDEF)
+ 
+ extern pgd_t swapper_pg_dir[PTRS_PER_PGD];  /* located in head.S */
+ 
+diff --git a/arch/hexagon/mm/init.c b/arch/hexagon/mm/init.c
+index f01e91e10d95..b53595fc4103 100644
+--- a/arch/hexagon/mm/init.c
++++ b/arch/hexagon/mm/init.c
+@@ -236,3 +236,70 @@ void __init setup_arch_memory(void)
+ 	 *  which is called by start_kernel() later on in the process
+ 	 */
+ }
++
++pgprot_t vm_get_page_prot(unsigned long vm_flags)
++{
++	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
++	case VM_NONE:
++		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
++				CACHEDEF);
++	case VM_READ:
++		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
++				_PAGE_READ | CACHEDEF);
++	/* Write-only copy-on-write */
++	case VM_WRITE:
++		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
++				CACHEDEF);
++	/* Read/Write copy-on-write */
++	case VM_WRITE | VM_READ:
++		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
++				_PAGE_READ | CACHEDEF);
++	case VM_EXEC:
++		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
++				_PAGE_EXECUTE | CACHEDEF);
++	case VM_EXEC | VM_READ:
++		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
++				_PAGE_EXECUTE | _PAGE_READ |
++				CACHEDEF);
++	/* Write/execute copy-on-write */
++	case VM_EXEC | VM_WRITE:
++		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
++				_PAGE_EXECUTE | CACHEDEF);
++	/* Read/Write/Execute, copy-on-write */
++	case VM_EXEC | VM_WRITE | VM_READ:
++		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
++				_PAGE_EXECUTE | _PAGE_READ |
++				CACHEDEF);
++	case VM_SHARED:
++		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
++				CACHEDEF);
++	case VM_SHARED | VM_READ:
++		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
++				_PAGE_READ | CACHEDEF);
++	case VM_SHARED | VM_WRITE:
++		return  __pgprot(_PAGE_PRESENT | _PAGE_USER |
++				_PAGE_WRITE | CACHEDEF);
++	case VM_SHARED | VM_WRITE | VM_READ:
++		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
++				_PAGE_READ | _PAGE_WRITE |
++				CACHEDEF);
++	case VM_SHARED | VM_EXEC:
++		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
++				_PAGE_EXECUTE | CACHEDEF);
++	case VM_SHARED | VM_EXEC | VM_READ:
++		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
++				_PAGE_EXECUTE | _PAGE_READ |
++				CACHEDEF);
++	case VM_SHARED | VM_EXEC | VM_WRITE:
++		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
++				_PAGE_EXECUTE | _PAGE_WRITE |
++				CACHEDEF);
++	case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
++		return __pgprot(_PAGE_PRESENT | _PAGE_USER |
++				_PAGE_READ | _PAGE_EXECUTE |
++				_PAGE_WRITE | CACHEDEF);
++	default:
++		BUILD_BUG();
++	}
++}
++EXPORT_SYMBOL(vm_get_page_prot);
 -- 
-2.35.1.473.g83b2b277ed-goog
+2.25.1
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
