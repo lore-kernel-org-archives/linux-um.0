@@ -1,132 +1,363 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nN9Dw-00HEi9-Re
- for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:11:42 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v6 15/26] virtio_pci: queue_reset: update struct
- virtio_pci_common_cfg and option functions
-Date: Thu, 24 Feb 2022 16:10:51 +0800
-Message-Id: <20220224081102.80224-16-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
-References: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
-MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
+Return-Path: <anshuman.khandual@arm.com>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH V3 08/30] m68k/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+Date: Mon, 28 Feb 2022 16:17:31 +0530
+Message-Id: <1646045273-9343-9-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
+References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
+To: linux-mm@kvack.org, akpm@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, geert@linux-m68k.org, Anshuman Khandual <anshuman.khandual@arm.com>, Christoph Hellwig <hch@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org, linux-riscv@lists.infradead.org, linux-alpha@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-parisc@vger.kernel.org, openrisc@lists.librecores.org, linux-um@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org, Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+List-ID: <linux-um.lists.infradead.org>
 
-Add queue_reset in virtio_pci_common_cfg, and add related operation
-functions.
+This defines and exports a platform specific custom vm_get_page_prot() via
+subscribing ARCH_HAS_VM_GET_PAGE_PROT. Subsequently all __SXXX and __PXXX
+macros can be dropped which are no longer needed.
 
-For not breaks uABI, add a new struct virtio_pci_common_cfg_reset.
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- drivers/virtio/virtio_pci_modern_dev.c | 36 ++++++++++++++++++++++++++
- include/linux/virtio_pci_modern.h      |  2 ++
- include/uapi/linux/virtio_pci.h        |  7 +++++
- 3 files changed, 45 insertions(+)
+ arch/m68k/Kconfig                        |  1 +
+ arch/m68k/include/asm/mcf_pgtable.h      | 59 ------------------------
+ arch/m68k/include/asm/motorola_pgtable.h | 29 ------------
+ arch/m68k/include/asm/sun3_pgtable.h     | 22 ---------
+ arch/m68k/mm/mcfmmu.c                    | 59 ++++++++++++++++++++++++
+ arch/m68k/mm/motorola.c                  | 43 +++++++++++++++--
+ arch/m68k/mm/sun3mmu.c                   | 39 ++++++++++++++++
+ 7 files changed, 139 insertions(+), 113 deletions(-)
 
-diff --git a/drivers/virtio/virtio_pci_modern_dev.c b/drivers/virtio/virtio_pci_modern_dev.c
-index e8b3ff2b9fbc..8c74b00bc511 100644
---- a/drivers/virtio/virtio_pci_modern_dev.c
-+++ b/drivers/virtio/virtio_pci_modern_dev.c
-@@ -3,6 +3,7 @@
- #include <linux/virtio_pci_modern.h>
- #include <linux/module.h>
- #include <linux/pci.h>
-+#include <linux/delay.h>
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 936e1803c7c7..114e65164692 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -11,6 +11,7 @@ config M68K
+ 	select ARCH_NO_PREEMPT if !COLDFIRE
+ 	select ARCH_USE_MEMTEST if MMU_MOTOROLA
+ 	select ARCH_WANT_IPC_PARSE_VERSION
++	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select BINFMT_FLAT_ARGVP_ENVP_ON_STACK
+ 	select DMA_DIRECT_REMAP if HAS_DMA && MMU && !COLDFIRE
+ 	select GENERIC_ATOMIC64
+diff --git a/arch/m68k/include/asm/mcf_pgtable.h b/arch/m68k/include/asm/mcf_pgtable.h
+index 6f2b87d7a50d..dc5c8ab6aa57 100644
+--- a/arch/m68k/include/asm/mcf_pgtable.h
++++ b/arch/m68k/include/asm/mcf_pgtable.h
+@@ -86,65 +86,6 @@
+ 				 | CF_PAGE_READABLE \
+ 				 | CF_PAGE_DIRTY)
+ 
+-/*
+- * Page protections for initialising protection_map. See mm/mmap.c
+- * for use. In general, the bit positions are xwr, and P-items are
+- * private, the S-items are shared.
+- */
+-#define __P000		PAGE_NONE
+-#define __P001		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_READABLE)
+-#define __P010		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_WRITABLE)
+-#define __P011		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_READABLE \
+-				 | CF_PAGE_WRITABLE)
+-#define __P100		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_EXEC)
+-#define __P101		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_READABLE \
+-				 | CF_PAGE_EXEC)
+-#define __P110		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_WRITABLE \
+-				 | CF_PAGE_EXEC)
+-#define __P111		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_READABLE \
+-				 | CF_PAGE_WRITABLE \
+-				 | CF_PAGE_EXEC)
+-
+-#define __S000		PAGE_NONE
+-#define __S001		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_READABLE)
+-#define __S010		PAGE_SHARED
+-#define __S011		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_SHARED \
+-				 | CF_PAGE_READABLE)
+-#define __S100		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_EXEC)
+-#define __S101		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_READABLE \
+-				 | CF_PAGE_EXEC)
+-#define __S110		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_SHARED \
+-				 | CF_PAGE_EXEC)
+-#define __S111		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_SHARED \
+-				 | CF_PAGE_READABLE \
+-				 | CF_PAGE_EXEC)
+-
+ #define PTE_MASK	PAGE_MASK
+ #define CF_PAGE_CHG_MASK (PTE_MASK | CF_PAGE_ACCESSED | CF_PAGE_DIRTY)
+ 
+diff --git a/arch/m68k/include/asm/motorola_pgtable.h b/arch/m68k/include/asm/motorola_pgtable.h
+index 022c3abc280d..dcbb856f567e 100644
+--- a/arch/m68k/include/asm/motorola_pgtable.h
++++ b/arch/m68k/include/asm/motorola_pgtable.h
+@@ -76,35 +76,6 @@ extern unsigned long mm_cachebits;
+ #define PAGE_READONLY	__pgprot(_PAGE_PRESENT | _PAGE_RONLY | _PAGE_ACCESSED | mm_cachebits)
+ #define PAGE_KERNEL	__pgprot(_PAGE_PRESENT | _PAGE_DIRTY | _PAGE_ACCESSED | mm_cachebits)
+ 
+-/* Alternate definitions that are compile time constants, for
+-   initializing protection_map.  The cachebits are fixed later.  */
+-#define PAGE_NONE_C	__pgprot(_PAGE_PROTNONE | _PAGE_ACCESSED)
+-#define PAGE_SHARED_C	__pgprot(_PAGE_PRESENT | _PAGE_ACCESSED)
+-#define PAGE_COPY_C	__pgprot(_PAGE_PRESENT | _PAGE_RONLY | _PAGE_ACCESSED)
+-#define PAGE_READONLY_C	__pgprot(_PAGE_PRESENT | _PAGE_RONLY | _PAGE_ACCESSED)
+-
+-/*
+- * The m68k can't do page protection for execute, and considers that the same are read.
+- * Also, write permissions imply read permissions. This is the closest we can get..
+- */
+-#define __P000	PAGE_NONE_C
+-#define __P001	PAGE_READONLY_C
+-#define __P010	PAGE_COPY_C
+-#define __P011	PAGE_COPY_C
+-#define __P100	PAGE_READONLY_C
+-#define __P101	PAGE_READONLY_C
+-#define __P110	PAGE_COPY_C
+-#define __P111	PAGE_COPY_C
+-
+-#define __S000	PAGE_NONE_C
+-#define __S001	PAGE_READONLY_C
+-#define __S010	PAGE_SHARED_C
+-#define __S011	PAGE_SHARED_C
+-#define __S100	PAGE_READONLY_C
+-#define __S101	PAGE_READONLY_C
+-#define __S110	PAGE_SHARED_C
+-#define __S111	PAGE_SHARED_C
+-
+ #define pmd_pgtable(pmd) ((pgtable_t)pmd_page_vaddr(pmd))
  
  /*
-  * vp_modern_map_capability - map a part of virtio pci capability
-@@ -463,6 +464,41 @@ void vp_modern_set_status(struct virtio_pci_modern_device *mdev,
+diff --git a/arch/m68k/include/asm/sun3_pgtable.h b/arch/m68k/include/asm/sun3_pgtable.h
+index 5b24283a0a42..086fabdd8d4c 100644
+--- a/arch/m68k/include/asm/sun3_pgtable.h
++++ b/arch/m68k/include/asm/sun3_pgtable.h
+@@ -66,28 +66,6 @@
+ 				 | SUN3_PAGE_SYSTEM \
+ 				 | SUN3_PAGE_NOCACHE)
+ 
+-/*
+- * Page protections for initialising protection_map. The sun3 has only two
+- * protection settings, valid (implying read and execute) and writeable. These
+- * are as close as we can get...
+- */
+-#define __P000	PAGE_NONE
+-#define __P001	PAGE_READONLY
+-#define __P010	PAGE_COPY
+-#define __P011	PAGE_COPY
+-#define __P100	PAGE_READONLY
+-#define __P101	PAGE_READONLY
+-#define __P110	PAGE_COPY
+-#define __P111	PAGE_COPY
+-
+-#define __S000	PAGE_NONE
+-#define __S001	PAGE_READONLY
+-#define __S010	PAGE_SHARED
+-#define __S011	PAGE_SHARED
+-#define __S100	PAGE_READONLY
+-#define __S101	PAGE_READONLY
+-#define __S110	PAGE_SHARED
+-#define __S111	PAGE_SHARED
+ 
+ /* Use these fake page-protections on PMDs. */
+ #define SUN3_PMD_VALID	(0x00000001)
+diff --git a/arch/m68k/mm/mcfmmu.c b/arch/m68k/mm/mcfmmu.c
+index 6f1f25125294..795ead15d1d8 100644
+--- a/arch/m68k/mm/mcfmmu.c
++++ b/arch/m68k/mm/mcfmmu.c
+@@ -234,3 +234,62 @@ void steal_context(void)
+ 	destroy_context(mm);
  }
- EXPORT_SYMBOL_GPL(vp_modern_set_status);
  
 +/*
-+ * vp_modern_get_queue_reset - get the queue reset status
-+ * @mdev: the modern virtio-pci device
-+ * @index: queue index
++ * In general, the bit positions are xwr, and P-items are private,
++ * the S-items are shared.
 + */
-+int vp_modern_get_queue_reset(struct virtio_pci_modern_device *mdev, u16 index)
++pgprot_t vm_get_page_prot(unsigned long vm_flags)
 +{
-+	struct virtio_pci_common_cfg_reset __iomem *cfg;
-+
-+	cfg = (struct virtio_pci_common_cfg_reset __iomem *)mdev->common;
-+
-+	vp_iowrite16(index, &cfg->cfg.queue_select);
-+	return vp_ioread16(&cfg->queue_reset);
++	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
++	case VM_NONE:
++		return PAGE_NONE;
++	case VM_READ:
++		return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
++				CF_PAGE_READABLE);
++	case VM_WRITE:
++		return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
++				CF_PAGE_WRITABLE);
++	case VM_WRITE | VM_READ:
++		return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
++				CF_PAGE_READABLE | CF_PAGE_WRITABLE);
++	case VM_EXEC:
++		return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
++				CF_PAGE_EXEC);
++	case VM_EXEC | VM_READ:
++		return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
++				CF_PAGE_READABLE | CF_PAGE_EXEC);
++	case VM_EXEC | VM_WRITE:
++		return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
++				CF_PAGE_WRITABLE | CF_PAGE_EXEC);
++	case VM_EXEC | VM_WRITE | VM_READ:
++		return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
++				CF_PAGE_READABLE | CF_PAGE_WRITABLE |
++				CF_PAGE_EXEC);
++	case VM_SHARED:
++		return PAGE_NONE;
++	case VM_SHARED | VM_READ:
++		return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
++				CF_PAGE_READABLE);
++	case VM_SHARED | VM_WRITE:
++		return PAGE_SHARED;
++	case VM_SHARED | VM_WRITE | VM_READ:
++		return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
++				CF_PAGE_READABLE | CF_PAGE_SHARED);
++	case VM_SHARED | VM_EXEC:
++		return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
++				CF_PAGE_EXEC);
++	case VM_SHARED | VM_EXEC | VM_READ:
++		return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
++				CF_PAGE_READABLE | CF_PAGE_EXEC);
++	case VM_SHARED | VM_EXEC | VM_WRITE:
++		return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
++				CF_PAGE_SHARED | CF_PAGE_EXEC);
++	case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
++		return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
++				CF_PAGE_READABLE | CF_PAGE_SHARED |
++				CF_PAGE_EXEC);
++	default:
++		BUILD_BUG();
++	}
 +}
-+EXPORT_SYMBOL_GPL(vp_modern_get_queue_reset);
-+
-+/*
-+ * vp_modern_set_queue_reset - reset the queue
-+ * @mdev: the modern virtio-pci device
-+ * @index: queue index
-+ */
-+void vp_modern_set_queue_reset(struct virtio_pci_modern_device *mdev, u16 index)
-+{
-+	struct virtio_pci_common_cfg_reset __iomem *cfg;
-+
-+	cfg = (struct virtio_pci_common_cfg_reset __iomem *)mdev->common;
-+
-+	vp_iowrite16(index, &cfg->cfg.queue_select);
-+	vp_iowrite16(1, &cfg->queue_reset);
-+
-+	while (vp_ioread16(&cfg->queue_reset) != 1)
-+		msleep(1);
-+}
-+EXPORT_SYMBOL_GPL(vp_modern_set_queue_reset);
-+
- /*
-  * vp_modern_queue_vector - set the MSIX vector for a specific virtqueue
-  * @mdev: the modern virtio-pci device
-diff --git a/include/linux/virtio_pci_modern.h b/include/linux/virtio_pci_modern.h
-index eb2bd9b4077d..cc4154dd7b28 100644
---- a/include/linux/virtio_pci_modern.h
-+++ b/include/linux/virtio_pci_modern.h
-@@ -106,4 +106,6 @@ void __iomem * vp_modern_map_vq_notify(struct virtio_pci_modern_device *mdev,
- 				       u16 index, resource_size_t *pa);
- int vp_modern_probe(struct virtio_pci_modern_device *mdev);
- void vp_modern_remove(struct virtio_pci_modern_device *mdev);
-+int vp_modern_get_queue_reset(struct virtio_pci_modern_device *mdev, u16 index);
-+void vp_modern_set_queue_reset(struct virtio_pci_modern_device *mdev, u16 index);
++EXPORT_SYMBOL(vm_get_page_prot);
+diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
+index ecbe948f4c1a..c6d43319fe1e 100644
+--- a/arch/m68k/mm/motorola.c
++++ b/arch/m68k/mm/motorola.c
+@@ -400,12 +400,9 @@ void __init paging_init(void)
+ 
+ 	/* Fix the cache mode in the page descriptors for the 680[46]0.  */
+ 	if (CPU_IS_040_OR_060) {
+-		int i;
+ #ifndef mm_cachebits
+ 		mm_cachebits = _PAGE_CACHE040;
  #endif
-diff --git a/include/uapi/linux/virtio_pci.h b/include/uapi/linux/virtio_pci.h
-index 22bec9bd0dfc..d9462efd6ce8 100644
---- a/include/uapi/linux/virtio_pci.h
-+++ b/include/uapi/linux/virtio_pci.h
-@@ -173,6 +173,13 @@ struct virtio_pci_common_cfg_notify {
- 	__le16 padding;
- };
+-		for (i = 0; i < 16; i++)
+-			pgprot_val(protection_map[i]) |= _PAGE_CACHE040;
+ 	}
  
-+struct virtio_pci_common_cfg_reset {
-+	struct virtio_pci_common_cfg cfg;
+ 	min_addr = m68k_memory[0].addr;
+@@ -483,3 +480,43 @@ void __init paging_init(void)
+ 	max_zone_pfn[ZONE_DMA] = memblock_end_of_DRAM();
+ 	free_area_init(max_zone_pfn);
+ }
 +
-+	__le16 queue_notify_data;	/* read-write */
-+	__le16 queue_reset;		/* read-write */
-+};
++/*
++ * The m68k can't do page protection for execute, and considers that
++ * the same are read. Also, write permissions imply read permissions.
++ * This is the closest we can get..
++ */
++pgprot_t vm_get_page_prot(unsigned long vm_flags)
++{
++	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
++	case VM_NONE:
++		return PAGE_NONE;
++	case VM_READ:
++		return PAGE_READONLY;
++	case VM_WRITE:
++	case VM_WRITE | VM_READ:
++		return PAGE_COPY;
++	case VM_EXEC:
++	case VM_EXEC | VM_READ:
++		return PAGE_READONLY;
++	case VM_EXEC | VM_WRITE:
++	case VM_EXEC | VM_WRITE | VM_READ:
++		return PAGE_COPY;
++	case VM_SHARED:
++		return PAGE_NONE;
++	case VM_SHARED | VM_READ:
++		return PAGE_READONLY;
++	case VM_SHARED | VM_WRITE:
++	case VM_SHARED | VM_WRITE | VM_READ:
++		return PAGE_SHARED;
++	case VM_SHARED | VM_EXEC:
++	case VM_SHARED | VM_EXEC | VM_READ:
++		return PAGE_READONLY;
++	case VM_SHARED | VM_EXEC | VM_WRITE:
++	case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
++		return PAGE_SHARED;
++	default:
++		BUILD_BUG();
++	}
++}
++EXPORT_SYMBOL(vm_get_page_prot);
+diff --git a/arch/m68k/mm/sun3mmu.c b/arch/m68k/mm/sun3mmu.c
+index dad494224497..2072630099f3 100644
+--- a/arch/m68k/mm/sun3mmu.c
++++ b/arch/m68k/mm/sun3mmu.c
+@@ -95,3 +95,42 @@ void __init paging_init(void)
+ 
+ 
+ }
 +
- /* Fields in VIRTIO_PCI_CAP_PCI_CFG: */
- struct virtio_pci_cfg_cap {
- 	struct virtio_pci_cap cap;
++/*
++ * The sun3 has only two protection settings, valid (implying read and execute)
++ * and writeable. These are as close as we can get...
++ */
++pgprot_t vm_get_page_prot(unsigned long vm_flags)
++{
++	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
++	case VM_NONE:
++		return PAGE_NONE;
++	case VM_READ:
++		return PAGE_READONLY;
++	case VM_WRITE:
++	case VM_WRITE | VM_READ:
++		return PAGE_COPY;
++	case VM_EXEC:
++	case VM_EXEC | VM_READ:
++		return PAGE_READONLY;
++	case VM_EXEC | VM_WRITE:
++	case VM_EXEC | VM_WRITE | VM_READ:
++		return PAGE_COPY;
++	case VM_SHARED:
++		return PAGE_NONE;
++	case VM_SHARED | VM_READ:
++		return PAGE_READONLY;
++	case VM_SHARED | VM_WRITE:
++	case VM_SHARED | VM_WRITE | VM_READ:
++		return PAGE_SHARED;
++	case VM_SHARED | VM_EXEC:
++	case VM_SHARED | VM_EXEC | VM_READ:
++		return PAGE_READONLY;
++	case VM_SHARED | VM_EXEC | VM_WRITE:
++	case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
++		return PAGE_SHARED;
++	default:
++		BUILD_BUG();
++	}
++}
++EXPORT_SYMBOL(vm_get_page_prot);
 -- 
-2.31.0
+2.25.1
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
