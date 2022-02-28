@@ -1,124 +1,117 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nN9Dk-00HEUu-ON
- for linux-um@lists.infradead.org; Thu, 24 Feb 2022 08:11:32 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v6 10/26] virtio_ring: packed: implement
- virtqueue_reset_vring_packed()
-Date: Thu, 24 Feb 2022 16:10:46 +0800
-Message-Id: <20220224081102.80224-11-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
-References: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
-MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
+Return-Path: <anshuman.khandual@arm.com>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH V3 20/30] xtensa/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+Date: Mon, 28 Feb 2022 16:17:43 +0530
+Message-Id: <1646045273-9343-21-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
+References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
+To: linux-mm@kvack.org, akpm@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, geert@linux-m68k.org, Anshuman Khandual <anshuman.khandual@arm.com>, Christoph Hellwig <hch@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org, linux-riscv@lists.infradead.org, linux-alpha@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-parisc@vger.kernel.org, openrisc@lists.librecores.org, linux-um@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org, Chris Zankel <chris@zankel.net>, Guo Ren <guoren@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-virtio ring supports reset.
+This defines and exports a platform specific custom vm_get_page_prot() via
+subscribing ARCH_HAS_VM_GET_PAGE_PROT. Subsequently all __SXXX and __PXXX
+macros can be dropped which are no longer needed.
 
-Queue reset is divided into several stages.
-
-1. notify device queue reset
-2. vring release
-3. attach new vring
-4. notify device queue re-enable
-
-After the first step is completed, the vring reset operation can be
-performed. If the newly set vring num does not change, then just reset
-the vq related value.
-
-Otherwise, the vring will be released and the vring will be reallocated.
-And the vring will be attached to the vq. If this process fails, the
-function will exit, and the state of the vq will be the vring release
-state. You can call this function again to reallocate the vring.
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: Chris Zankel <chris@zankel.net>
+Cc: Guo Ren <guoren@kernel.org>
+Cc: linux-xtensa@linux-xtensa.org
+Cc: linux-csky@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- drivers/virtio/virtio_ring.c | 46 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
+ arch/xtensa/Kconfig               |  1 +
+ arch/xtensa/include/asm/pgtable.h | 19 -----------------
+ arch/xtensa/mm/init.c             | 35 +++++++++++++++++++++++++++++++
+ 3 files changed, 36 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index a2e771263ea7..3ee2d0e17515 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -1886,6 +1886,8 @@ static int vring_virtqueue_attach_packed(struct vring_virtqueue *vq,
- static void vring_virtqueue_init_packed(struct vring_virtqueue *vq,
- 					struct virtio_device *vdev)
- {
-+	vq->vq.reset = VIRTIO_VQ_RESET_STEP_NONE;
-+
- 	vq->we_own_ring = true;
- 	vq->broken = false;
- 	vq->last_used_idx = 0;
-@@ -1969,6 +1971,50 @@ static struct virtqueue *vring_create_virtqueue_packed(
- 	return NULL;
+diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
+index 8ac599aa6d99..1608f7517546 100644
+--- a/arch/xtensa/Kconfig
++++ b/arch/xtensa/Kconfig
+@@ -9,6 +9,7 @@ config XTENSA
+ 	select ARCH_HAS_DMA_SET_UNCACHED if MMU
+ 	select ARCH_HAS_STRNCPY_FROM_USER if !KASAN
+ 	select ARCH_HAS_STRNLEN_USER
++	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_USE_MEMTEST
+ 	select ARCH_USE_QUEUED_RWLOCKS
+ 	select ARCH_USE_QUEUED_SPINLOCKS
+diff --git a/arch/xtensa/include/asm/pgtable.h b/arch/xtensa/include/asm/pgtable.h
+index bd5aeb795567..509f765281d8 100644
+--- a/arch/xtensa/include/asm/pgtable.h
++++ b/arch/xtensa/include/asm/pgtable.h
+@@ -198,26 +198,7 @@
+  * the MMU can't do page protection for execute, and considers that the same as
+  * read.  Also, write permissions may imply read permissions.
+  * What follows is the closest we can get by reasonable means..
+- * See linux/mm/mmap.c for protection_map[] array that uses these definitions.
+  */
+-#define __P000	PAGE_NONE		/* private --- */
+-#define __P001	PAGE_READONLY		/* private --r */
+-#define __P010	PAGE_COPY		/* private -w- */
+-#define __P011	PAGE_COPY		/* private -wr */
+-#define __P100	PAGE_READONLY_EXEC	/* private x-- */
+-#define __P101	PAGE_READONLY_EXEC	/* private x-r */
+-#define __P110	PAGE_COPY_EXEC		/* private xw- */
+-#define __P111	PAGE_COPY_EXEC		/* private xwr */
+-
+-#define __S000	PAGE_NONE		/* shared  --- */
+-#define __S001	PAGE_READONLY		/* shared  --r */
+-#define __S010	PAGE_SHARED		/* shared  -w- */
+-#define __S011	PAGE_SHARED		/* shared  -wr */
+-#define __S100	PAGE_READONLY_EXEC	/* shared  x-- */
+-#define __S101	PAGE_READONLY_EXEC	/* shared  x-r */
+-#define __S110	PAGE_SHARED_EXEC	/* shared  xw- */
+-#define __S111	PAGE_SHARED_EXEC	/* shared  xwr */
+-
+ #ifndef __ASSEMBLY__
+ 
+ #define pte_ERROR(e) \
+diff --git a/arch/xtensa/mm/init.c b/arch/xtensa/mm/init.c
+index 6a32b2cf2718..5f090749e9e0 100644
+--- a/arch/xtensa/mm/init.c
++++ b/arch/xtensa/mm/init.c
+@@ -216,3 +216,38 @@ static int __init parse_memmap_opt(char *str)
+ 	return 0;
  }
- 
-+static int virtqueue_reset_vring_packed(struct virtqueue *_vq, u32 num)
+ early_param("memmap", parse_memmap_opt);
++
++pgprot_t vm_get_page_prot(unsigned long vm_flags)
 +{
-+	struct vring_virtqueue *vq = to_vvq(_vq);
-+	struct virtio_device *vdev = _vq->vdev;
-+	struct vring_packed vring;
-+	int err;
-+
-+	if (num > _vq->num_max)
-+		return -E2BIG;
-+
-+	switch (vq->vq.reset) {
-+	case VIRTIO_VQ_RESET_STEP_NONE:
-+		return -ENOENT;
-+
-+	case VIRTIO_VQ_RESET_STEP_VRING_ATTACH:
-+	case VIRTIO_VQ_RESET_STEP_DEVICE:
-+		if (vq->packed.vring.num == num || !num)
-+			break;
-+
-+		vring_free(_vq);
-+
-+		fallthrough;
-+
-+	case VIRTIO_VQ_RESET_STEP_VRING_RELEASE:
-+		if (!num)
-+			num = vq->packed.vring.num;
-+
-+		err = vring_create_vring_packed(&vring, vdev, num);
-+		if (err)
-+			return -ENOMEM;
-+
-+		err = vring_virtqueue_attach_packed(vq, &vring, vdev);
-+		if (err) {
-+			vring_free_vring_packed(&vring, vdev);
-+			return -ENOMEM;
-+		}
++	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
++	case VM_NONE:
++		return PAGE_NONE;
++	case VM_READ:
++		return PAGE_READONLY;
++	case VM_WRITE:
++	case VM_WRITE | VM_READ:
++		return PAGE_COPY;
++	case VM_EXEC:
++	case VM_EXEC | VM_READ:
++		return PAGE_READONLY_EXEC;
++	case VM_EXEC | VM_WRITE:
++	case VM_EXEC | VM_WRITE | VM_READ:
++		return PAGE_COPY_EXEC;
++	case VM_SHARED:
++		return PAGE_NONE;
++	case VM_SHARED | VM_READ:
++		return PAGE_READONLY;
++	case VM_SHARED | VM_WRITE:
++	case VM_SHARED | VM_WRITE | VM_READ:
++		return PAGE_SHARED;
++	case VM_SHARED | VM_EXEC:
++	case VM_SHARED | VM_EXEC | VM_READ:
++		return PAGE_READONLY_EXEC;
++	case VM_SHARED | VM_EXEC | VM_WRITE:
++	case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
++		return PAGE_SHARED_EXEC;
++	default:
++		BUILD_BUG();
 +	}
-+
-+	vring_virtqueue_init_packed(vq, vdev);
-+	vq->vq.reset = VIRTIO_VQ_RESET_STEP_VRING_ATTACH;
-+
-+	return 0;
 +}
-+
- 
- /*
-  * Generic functions and exported symbols.
++EXPORT_SYMBOL(vm_get_page_prot);
 -- 
-2.31.0
+2.25.1
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
