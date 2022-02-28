@@ -1,218 +1,243 @@
 Return-Path: <anshuman.khandual@arm.com>
 From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V3 00/30] mm/mmap: Drop protection_map[] and platform's __SXXX/__PXXX requirements
-Date: Mon, 28 Feb 2022 16:17:23 +0530
-Message-Id: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
+Subject: [PATCH V3 10/30] x86/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+Date: Mon, 28 Feb 2022 16:17:33 +0530
+Message-Id: <1646045273-9343-11-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
+References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
 To: linux-mm@kvack.org, akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, geert@linux-m68k.org, Anshuman Khandual <anshuman.khandual@arm.com>, Christoph Hellwig <hch@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org, linux-riscv@lists.infradead.org, linux-alpha@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-parisc@vger.kernel.org, openrisc@lists.librecores.org, linux-um@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, geert@linux-m68k.org, Anshuman Khandual <anshuman.khandual@arm.com>, Christoph Hellwig <hch@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org, linux-riscv@lists.infradead.org, linux-alpha@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-parisc@vger.kernel.org, openrisc@lists.librecores.org, linux-um@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>
 List-ID: <linux-um.lists.infradead.org>
 
-protection_map[] is an array based construct that translates given vm_flags
-combination. This array contains page protection map, which is populated by
-the platform via [__S000 .. __S111] and [__P000 .. __P111] exported macros.
-Primary usage for protection_map[] is for vm_get_page_prot(), which is used
-to determine page protection value for a given vm_flags. vm_get_page_prot()
-implementation, could again call platform overrides arch_vm_get_page_prot()
-and arch_filter_pgprot(). Some platforms override protection_map[] that was
-originally built with __SXXX/__PXXX with different runtime values.
+From: Christoph Hellwig <hch@infradead.org>
 
-Currently there are multiple layers of abstraction i.e __SXXX/__PXXX macros
-, protection_map[], arch_vm_get_page_prot() and arch_filter_pgprot() built
-between the platform and generic MM, finally defining vm_get_page_prot().
+This defines and exports a platform specific custom vm_get_page_prot() via
+subscribing ARCH_HAS_VM_GET_PAGE_PROT. Subsequently all __SXXX and __PXXX
+macros can be dropped which are no longer needed. This also unsubscribes
+from ARCH_HAS_FILTER_PGPROT, after dropping off arch_filter_pgprot() and
+arch_vm_get_page_prot().
 
-Hence this series proposes to drop all these abstraction levels and instead
-just move the responsibility of defining vm_get_page_prot() to the platform
-itself making it clean and simple.
-
-This first introduces ARCH_HAS_VM_GET_PAGE_PROT which enables the platforms
-to define custom vm_get_page_prot(). This starts converting platforms that
-either change protection_map[] or define the overrides arch_filter_pgprot()
-or arch_vm_get_page_prot() which enables for those constructs to be dropped
-off completely. This series then converts remaining platforms which enables
-for __SXXX/__PXXX constructs to be dropped off completely. Finally it drops
-the generic vm_get_page_prot() and then ARCH_HAS_VM_GET_PAGE_PROT as every
-platform now defines their own vm_get_page_prot().
-
-The series has been inspired from an earlier discuss with Christoph Hellwig
-
-https://lore.kernel.org/all/1632712920-8171-1-git-send-email-anshuman.khandual@arm.com/
-
-This series applies on 5.17-rc6 after the following patch.
-
-https://lore.kernel.org/all/1643004823-16441-1-git-send-email-anshuman.khandual@arm.com/
-
-This series has been cross built for multiple platforms.
-
-- Anshuman
-
-Cc: Christoph Hellwig <hch@infradead.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: sparclinux@vger.kernel.org
-Cc: linux-mips@vger.kernel.org
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: linux-s390@vger.kernel.org
-Cc: linux-riscv@lists.infradead.org
-Cc: linux-alpha@vger.kernel.org
-Cc: linux-sh@vger.kernel.org
-Cc: linux-snps-arc@lists.infradead.org
-Cc: linux-csky@vger.kernel.org
-Cc: linux-xtensa@linux-xtensa.org
-Cc: linux-parisc@vger.kernel.org
-Cc: openrisc@lists.librecores.org
-Cc: linux-um@lists.infradead.org
-Cc: linux-hexagon@vger.kernel.org
-Cc: linux-ia64@vger.kernel.org
-Cc: linux-mm@kvack.org
-Cc: linux-arch@vger.kernel.org
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
 Cc: linux-kernel@vger.kernel.org
-
-Changes in V3:
-
-- Dropped variable 'i' from sme_early_init() on x86 platform
-- Moved CONFIG_COLDFIRE vm_get_page_prot() inside arch/m68k/mm/mcfmmu.c
-- Moved CONFIG_SUN3 vm_get_page_prot() inside arch/m68k/mm/sun3mmu.c
-- Dropped cachebits for vm_get_page_prot() inside arch/m68k/mm/motorola.c
-- Dropped PAGE_XXX_C definitions from arch/m68k/include/asm/motorola_pgtable.h
-- Used PAGE_XXX instead for vm_get_page_prot() inside arch/m68k/mm/motorola.c
-- Dropped all references to protection_map[] in the tree
-- Replaced s/extensa/xtensa/ on the patch title
-- Moved left over comments from pgtable.h into init.c on nios2 platform
-
-Changes in V2:
-
-https://lore.kernel.org/all/1645425519-9034-1-git-send-email-anshuman.khandual@arm.com/
-
-- Dropped the entire comment block in [PATCH 30/30] per Geert
-- Replaced __P010 (although commented) with __PAGE_COPY on arm platform
-- Replaced __P101 with PAGE_READONLY on um platform
-
-Changes in V1:
-
-https://lore.kernel.org/all/1644805853-21338-1-git-send-email-anshuman.khandual@arm.com/
-
-- Add white spaces around the | operators 
-- Moved powerpc_vm_get_page_prot() near vm_get_page_prot() on powerpc
-- Moved arm64_vm_get_page_prot() near vm_get_page_prot() on arm64
-- Moved sparc_vm_get_page_prot() near vm_get_page_prot() on sparc
-- Compacted vm_get_page_prot() switch cases on all platforms
--  _PAGE_CACHE040 inclusion is dependent on CPU_IS_040_OR_060
-- VM_SHARED case should return PAGE_NONE (not PAGE_COPY) on SH platform
-- Reorganized VM_SHARED, VM_EXEC, VM_WRITE, VM_READ
-- Dropped the last patch [RFC V1 31/31] which added macros for vm_flags combinations
-  https://lore.kernel.org/all/1643029028-12710-32-git-send-email-anshuman.khandual@arm.com/
-
-Changes in RFC:
-
-https://lore.kernel.org/all/1643029028-12710-1-git-send-email-anshuman.khandual@arm.com/
-
-Anshuman Khandual (29):
-  mm/debug_vm_pgtable: Drop protection_map[] usage
-  mm/mmap: Clarify protection_map[] indices
-  mm/mmap: Add new config ARCH_HAS_VM_GET_PAGE_PROT
-  powerpc/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-  arm64/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-  sparc/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-  mips/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-  m68k/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-  arm/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-  mm/mmap: Drop protection_map[]
-  mm/mmap: Drop arch_filter_pgprot()
-  mm/mmap: Drop arch_vm_get_page_pgprot()
-  s390/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-  riscv/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-  alpha/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-  sh/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-  arc/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-  csky/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-  xtensa/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-  parisc/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-  openrisc/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-  um/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-  microblaze/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-  nios2/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-  hexagon/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-  nds32/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-  ia64/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-  mm/mmap: Drop generic vm_get_page_prot()
-  mm/mmap: Drop ARCH_HAS_VM_GET_PAGE_PROT
-
-Christoph Hellwig (1):
-  x86/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-
- arch/alpha/include/asm/pgtable.h          | 17 -----
- arch/alpha/mm/init.c                      | 37 +++++++++++
- arch/arc/include/asm/pgtable-bits-arcv2.h | 17 -----
- arch/arc/mm/mmap.c                        | 41 ++++++++++++
- arch/arm/include/asm/pgtable.h            | 20 +-----
- arch/arm/lib/uaccess_with_memcpy.c        |  2 +-
- arch/arm/mm/mmu.c                         | 44 +++++++++++--
- arch/arm64/Kconfig                        |  1 -
- arch/arm64/include/asm/memory.h           |  3 +-
- arch/arm64/include/asm/mman.h             | 24 -------
- arch/arm64/include/asm/pgtable-prot.h     | 18 ------
- arch/arm64/include/asm/pgtable.h          | 11 ----
- arch/arm64/mm/mmap.c                      | 78 +++++++++++++++++++++++
- arch/csky/include/asm/pgtable.h           | 18 ------
- arch/csky/mm/init.c                       | 32 ++++++++++
- arch/hexagon/include/asm/pgtable.h        | 24 -------
- arch/hexagon/mm/init.c                    | 67 +++++++++++++++++++
- arch/ia64/include/asm/pgtable.h           | 17 -----
- arch/ia64/mm/init.c                       | 41 +++++++++++-
- arch/m68k/include/asm/mcf_pgtable.h       | 59 -----------------
- arch/m68k/include/asm/motorola_pgtable.h  | 29 ---------
- arch/m68k/include/asm/sun3_pgtable.h      | 22 -------
- arch/m68k/mm/mcfmmu.c                     | 59 +++++++++++++++++
- arch/m68k/mm/motorola.c                   | 43 ++++++++++++-
- arch/m68k/mm/sun3mmu.c                    | 39 ++++++++++++
- arch/microblaze/include/asm/pgtable.h     | 17 -----
- arch/microblaze/mm/init.c                 | 41 ++++++++++++
- arch/mips/include/asm/pgtable.h           | 22 -------
- arch/mips/mm/cache.c                      | 60 +++++++++--------
- arch/nds32/include/asm/pgtable.h          | 17 -----
- arch/nds32/mm/mmap.c                      | 37 +++++++++++
- arch/nios2/include/asm/pgtable.h          | 24 -------
- arch/nios2/mm/init.c                      | 47 ++++++++++++++
- arch/openrisc/include/asm/pgtable.h       | 18 ------
- arch/openrisc/mm/init.c                   | 41 ++++++++++++
- arch/parisc/include/asm/pgtable.h         | 20 ------
- arch/parisc/mm/init.c                     | 40 ++++++++++++
- arch/powerpc/include/asm/mman.h           | 12 ----
- arch/powerpc/include/asm/pgtable.h        | 19 ------
- arch/powerpc/mm/mmap.c                    | 59 +++++++++++++++++
- arch/riscv/include/asm/pgtable.h          | 16 -----
- arch/riscv/mm/init.c                      | 42 ++++++++++++
- arch/s390/include/asm/pgtable.h           | 17 -----
- arch/s390/mm/mmap.c                       | 33 ++++++++++
- arch/sh/include/asm/pgtable.h             | 17 -----
- arch/sh/mm/mmap.c                         | 38 +++++++++++
- arch/sparc/include/asm/mman.h             |  6 --
- arch/sparc/include/asm/pgtable_32.h       | 19 ------
- arch/sparc/include/asm/pgtable_64.h       | 19 ------
- arch/sparc/mm/init_32.c                   | 35 ++++++++++
- arch/sparc/mm/init_64.c                   | 70 ++++++++++++++------
- arch/um/include/asm/pgtable.h             | 17 -----
- arch/um/kernel/mem.c                      | 35 ++++++++++
- arch/x86/Kconfig                          |  1 -
- arch/x86/include/asm/pgtable.h            |  5 --
- arch/x86/include/asm/pgtable_types.h      | 19 ------
- arch/x86/include/uapi/asm/mman.h          | 14 ----
- arch/x86/mm/Makefile                      |  2 +-
- arch/x86/mm/mem_encrypt_amd.c             |  6 --
- arch/x86/mm/pgprot.c                      | 71 +++++++++++++++++++++
- arch/x86/um/mem_32.c                      |  2 +-
- arch/xtensa/include/asm/pgtable.h         | 19 ------
- arch/xtensa/mm/init.c                     | 35 ++++++++++
- drivers/gpu/drm/drm_vm.c                  |  4 +-
- include/linux/mm.h                        |  6 --
- include/linux/mman.h                      |  4 --
- mm/Kconfig                                |  3 -
- mm/debug_vm_pgtable.c                     | 31 +++++----
- mm/mmap.c                                 | 44 +------------
- 69 files changed, 1138 insertions(+), 729 deletions(-)
+Signed-off-by: Christoph Hellwig <hch@infradead.org>
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+ arch/x86/Kconfig                     |  2 +-
+ arch/x86/include/asm/pgtable.h       |  5 --
+ arch/x86/include/asm/pgtable_types.h | 19 --------
+ arch/x86/include/uapi/asm/mman.h     | 14 ------
+ arch/x86/mm/Makefile                 |  2 +-
+ arch/x86/mm/mem_encrypt_amd.c        |  6 ---
+ arch/x86/mm/pgprot.c                 | 71 ++++++++++++++++++++++++++++
+ 7 files changed, 73 insertions(+), 46 deletions(-)
  create mode 100644 arch/x86/mm/pgprot.c
 
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index b1ce75d0ab0c..b2ea06c87708 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -75,7 +75,6 @@ config X86
+ 	select ARCH_HAS_EARLY_DEBUG		if KGDB
+ 	select ARCH_HAS_ELF_RANDOMIZE
+ 	select ARCH_HAS_FAST_MULTIPLIER
+-	select ARCH_HAS_FILTER_PGPROT
+ 	select ARCH_HAS_FORTIFY_SOURCE
+ 	select ARCH_HAS_GCOV_PROFILE_ALL
+ 	select ARCH_HAS_KCOV			if X86_64
+@@ -94,6 +93,7 @@ config X86
+ 	select ARCH_HAS_SYNC_CORE_BEFORE_USERMODE
+ 	select ARCH_HAS_SYSCALL_WRAPPER
+ 	select ARCH_HAS_UBSAN_SANITIZE_ALL
++	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_HAS_DEBUG_WX
+ 	select ARCH_HAS_ZONE_DMA_SET if EXPERT
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+index 8a9432fb3802..985e1b823691 100644
+--- a/arch/x86/include/asm/pgtable.h
++++ b/arch/x86/include/asm/pgtable.h
+@@ -648,11 +648,6 @@ static inline pgprot_t pgprot_modify(pgprot_t oldprot, pgprot_t newprot)
+ 
+ #define canon_pgprot(p) __pgprot(massage_pgprot(p))
+ 
+-static inline pgprot_t arch_filter_pgprot(pgprot_t prot)
+-{
+-	return canon_pgprot(prot);
+-}
+-
+ static inline int is_new_memtype_allowed(u64 paddr, unsigned long size,
+ 					 enum page_cache_mode pcm,
+ 					 enum page_cache_mode new_pcm)
+diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
+index 40497a9020c6..1a9dd933088e 100644
+--- a/arch/x86/include/asm/pgtable_types.h
++++ b/arch/x86/include/asm/pgtable_types.h
+@@ -228,25 +228,6 @@ enum page_cache_mode {
+ 
+ #endif	/* __ASSEMBLY__ */
+ 
+-/*         xwr */
+-#define __P000	PAGE_NONE
+-#define __P001	PAGE_READONLY
+-#define __P010	PAGE_COPY
+-#define __P011	PAGE_COPY
+-#define __P100	PAGE_READONLY_EXEC
+-#define __P101	PAGE_READONLY_EXEC
+-#define __P110	PAGE_COPY_EXEC
+-#define __P111	PAGE_COPY_EXEC
+-
+-#define __S000	PAGE_NONE
+-#define __S001	PAGE_READONLY
+-#define __S010	PAGE_SHARED
+-#define __S011	PAGE_SHARED
+-#define __S100	PAGE_READONLY_EXEC
+-#define __S101	PAGE_READONLY_EXEC
+-#define __S110	PAGE_SHARED_EXEC
+-#define __S111	PAGE_SHARED_EXEC
+-
+ /*
+  * early identity mapping  pte attrib macros.
+  */
+diff --git a/arch/x86/include/uapi/asm/mman.h b/arch/x86/include/uapi/asm/mman.h
+index d4a8d0424bfb..775dbd3aff73 100644
+--- a/arch/x86/include/uapi/asm/mman.h
++++ b/arch/x86/include/uapi/asm/mman.h
+@@ -5,20 +5,6 @@
+ #define MAP_32BIT	0x40		/* only give out 32bit addresses */
+ 
+ #ifdef CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
+-/*
+- * Take the 4 protection key bits out of the vma->vm_flags
+- * value and turn them in to the bits that we can put in
+- * to a pte.
+- *
+- * Only override these if Protection Keys are available
+- * (which is only on 64-bit).
+- */
+-#define arch_vm_get_page_prot(vm_flags)	__pgprot(	\
+-		((vm_flags) & VM_PKEY_BIT0 ? _PAGE_PKEY_BIT0 : 0) |	\
+-		((vm_flags) & VM_PKEY_BIT1 ? _PAGE_PKEY_BIT1 : 0) |	\
+-		((vm_flags) & VM_PKEY_BIT2 ? _PAGE_PKEY_BIT2 : 0) |	\
+-		((vm_flags) & VM_PKEY_BIT3 ? _PAGE_PKEY_BIT3 : 0))
+-
+ #define arch_calc_vm_prot_bits(prot, key) (		\
+ 		((key) & 0x1 ? VM_PKEY_BIT0 : 0) |      \
+ 		((key) & 0x2 ? VM_PKEY_BIT1 : 0) |      \
+diff --git a/arch/x86/mm/Makefile b/arch/x86/mm/Makefile
+index fe3d3061fc11..fb6b41a48ae5 100644
+--- a/arch/x86/mm/Makefile
++++ b/arch/x86/mm/Makefile
+@@ -20,7 +20,7 @@ CFLAGS_REMOVE_mem_encrypt_identity.o	= -pg
+ endif
+ 
+ obj-y				:=  init.o init_$(BITS).o fault.o ioremap.o extable.o mmap.o \
+-				    pgtable.o physaddr.o setup_nx.o tlb.o cpu_entry_area.o maccess.o
++				    pgtable.o physaddr.o setup_nx.o tlb.o cpu_entry_area.o maccess.o pgprot.o
+ 
+ obj-y				+= pat/
+ 
+diff --git a/arch/x86/mm/mem_encrypt_amd.c b/arch/x86/mm/mem_encrypt_amd.c
+index 2b2d018ea345..95f94eaac9a0 100644
+--- a/arch/x86/mm/mem_encrypt_amd.c
++++ b/arch/x86/mm/mem_encrypt_amd.c
+@@ -179,8 +179,6 @@ void __init sme_map_bootdata(char *real_mode_data)
+ 
+ void __init sme_early_init(void)
+ {
+-	unsigned int i;
+-
+ 	if (!sme_me_mask)
+ 		return;
+ 
+@@ -188,10 +186,6 @@ void __init sme_early_init(void)
+ 
+ 	__supported_pte_mask = __sme_set(__supported_pte_mask);
+ 
+-	/* Update the protection map with memory encryption mask */
+-	for (i = 0; i < ARRAY_SIZE(protection_map); i++)
+-		protection_map[i] = pgprot_encrypted(protection_map[i]);
+-
+ 	if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
+ 		swiotlb_force = SWIOTLB_FORCE;
+ }
+diff --git a/arch/x86/mm/pgprot.c b/arch/x86/mm/pgprot.c
+new file mode 100644
+index 000000000000..5f2f029ce4fa
+--- /dev/null
++++ b/arch/x86/mm/pgprot.c
+@@ -0,0 +1,71 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/export.h>
++#include <linux/mm.h>
++#include <asm/pgtable.h>
++
++static inline pgprot_t __vm_get_page_prot(unsigned long vm_flags)
++{
++	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
++	case VM_NONE:
++		return PAGE_NONE;
++	case VM_READ:
++		return PAGE_READONLY;
++	case VM_WRITE:
++		return PAGE_COPY;
++	case VM_WRITE | VM_READ:
++		return PAGE_COPY;
++	case VM_EXEC:
++	case VM_EXEC | VM_READ:
++		return PAGE_READONLY_EXEC;
++	case VM_EXEC | VM_WRITE:
++	case VM_EXEC | VM_WRITE | VM_READ:
++		return PAGE_COPY_EXEC;
++	case VM_SHARED:
++		return PAGE_NONE;
++	case VM_SHARED | VM_READ:
++		return PAGE_READONLY;
++	case VM_SHARED | VM_WRITE:
++	case VM_SHARED | VM_WRITE | VM_READ:
++		return PAGE_SHARED;
++	case VM_SHARED | VM_EXEC:
++	case VM_SHARED | VM_EXEC | VM_READ:
++		return PAGE_READONLY_EXEC;
++	case VM_SHARED | VM_EXEC | VM_WRITE:
++	case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
++		return PAGE_SHARED_EXEC;
++	default:
++		BUILD_BUG();
++		return PAGE_NONE;
++	}
++}
++
++
++pgprot_t vm_get_page_prot(unsigned long vm_flags)
++{
++	unsigned long val = pgprot_val(__vm_get_page_prot(vm_flags));
++
++#ifdef CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
++	/*
++	 * Take the 4 protection key bits out of the vma->vm_flags value and
++	 * turn them in to the bits that we can put in to a pte.
++	 *
++	 * Only override these if Protection Keys are available (which is only
++	 * on 64-bit).
++	 */
++	if (vm_flags & VM_PKEY_BIT0)
++		val |= _PAGE_PKEY_BIT0;
++	if (vm_flags & VM_PKEY_BIT1)
++		val |= _PAGE_PKEY_BIT1;
++	if (vm_flags & VM_PKEY_BIT2)
++		val |= _PAGE_PKEY_BIT2;
++	if (vm_flags & VM_PKEY_BIT3)
++		val |= _PAGE_PKEY_BIT3;
++#endif
++
++	val = __sme_set(val);
++	if (val & _PAGE_PRESENT)
++		val &= __supported_pte_mask;
++	return __pgprot(val);
++}
++EXPORT_SYMBOL(vm_get_page_prot);
 -- 
 2.25.1
 
