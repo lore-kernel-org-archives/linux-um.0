@@ -1,18 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-wm1-x334.google.com ([2a00:1450:4864:20::334])
+Received: from mail-pf1-x42a.google.com ([2607:f8b0:4864:20::42a])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nPgo5-005l8j-TU
- for linux-um@lists.infradead.org; Thu, 03 Mar 2022 08:27:32 +0000
-Received: by mail-wm1-x334.google.com with SMTP id
- p184-20020a1c29c1000000b0037f76d8b484so2736465wmp.5
- for <linux-um@lists.infradead.org>; Thu, 03 Mar 2022 00:27:26 -0800 (PST)
+ id 1nP8c6-000LJh-R3
+ for linux-um@lists.infradead.org; Tue, 01 Mar 2022 19:56:52 +0000
+Received: by mail-pf1-x42a.google.com with SMTP id g21so8951230pfj.11
+ for <linux-um@lists.infradead.org>; Tue, 01 Mar 2022 11:56:47 -0800 (PST)
 MIME-Version: 1.0
 References: <20220227184517.504931-1-keescook@chromium.org>
  <20220227184517.504931-8-keescook@chromium.org>
 In-Reply-To: <20220227184517.504931-8-keescook@chromium.org>
-From: David Gow <davidgow@google.com>
-Date: Thu, 3 Mar 2022 16:27:13 +0800
-Message-ID: <CABVgOSn6Oe8Ke=fnuVwgLh2r8HKjBW8pCe44Z35Qo1bVfz9A-A@mail.gmail.com>
+From: Brendan Higgins <brendanhiggins@google.com>
+Date: Tue, 1 Mar 2022 14:56:35 -0500
+Message-ID: <CAFd5g46usCBp_a_eTpgY=-mD5bLZTzyBt+aO-FTDBNkAAc9=UA@mail.gmail.com>
 Subject: Re: [PATCH v3 7/7] UAPI: Introduce KUnit userspace compatibility
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,20 +21,17 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1987962437496202797=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: Kees Cook <keescook@chromium.org>
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>, Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, Rasmus Villemoes <linux@rasmusvillemoes.dk>, Vitor Massaru Iha <vitor@massaru.org>, Daniel Latypov <dlatypov@google.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Masahiro Yamada <masahiroy@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>, linux-kbuild@vger.kernel.org, KUnit Development <kunit-dev@googlegroups.com>, llvm@lists.linux.dev, x86@kernel.org, linux-hardening@vger.kernel.org
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>, Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, Rasmus Villemoes <linux@rasmusvillemoes.dk>, Vitor Massaru Iha <vitor@massaru.org>, Daniel Latypov <dlatypov@google.com>, David Gow <davidgow@google.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Masahiro Yamada <masahiroy@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, KUnit Development <kunit-dev@googlegroups.com>, llvm@lists.linux.dev, x86@kernel.org, linux-hardening@vger.kernel.org, shuah <shuah@kernel.org>
 
---===============1987962437496202797==
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000f5922605d94c2a1e"
++Bart Van Assche - I don't know if you are still working on those
+configfs tests, but I wonder if this would be interesting to you.
 
---000000000000f5922605d94c2a1e
-Content-Type: text/plain; charset="UTF-8"
-
-On Mon, Feb 28, 2022 at 2:45 AM Kees Cook <keescook@chromium.org> wrote:
+On Sun, Feb 27, 2022 at 1:45 PM Kees Cook <keescook@chromium.org> wrote:
 >
 > The original lib/test_stackinit.c, which exclusively tests toolchain
 > features, was designed to also be built without the full Linux kernel
@@ -47,8 +43,41 @@ On Mon, Feb 28, 2022 at 2:45 AM Kees Cook <keescook@chromium.org> wrote:
 > can allow unit tests that don't depend on kernel-specific behaviors
 > to build and run strictly from userspace without kernel sources. Add
 > userspace-build support back to the renamed lib/stackinit_kunit.c test.
->
+
+Very cool. I was hoping to achieve a true UAPI KUnit via LKL, but
+that's clearly a long way out. Besides you have a point with being
+able to distribute just a couple of files.
+
+My initial thought is that a UAPI for KUnit would mostly be useful for
+testing parts of the kernel that have very few dependencies. However,
+I remembered that Bart (cc'ed) was working on some KUnit tests that
+would probably be better as userspace tests. I think there might be
+some potential for a KUnit UAPI in decoupling the test library from
+the test environment.
+
+I have been thinking off and on for a little while about enabling some
+kind of KUnit kselftest fusion tests, where you could manage an
+environment in kselftest and use KUnit for testing in kernel
+structures. I think this is kind of going from the opposite direction,
+but is probably an easier place to start.
+
+I will refrain myself from getting into too many wild ideas, but I
+like where this is going. I think it is reasonable to just start off
+with a duplicate implementation of KUnit as you have done here: we can
+see if this has any legs, and if so, we can do something more
+complicated later.
+
 > Signed-off-by: Kees Cook <keescook@chromium.org>
+
+I have some thoughts for some things that can be improved, but after
+thinking about it; I think they are all things that make sense once we
+see if there are other potential users. I think as an initial version,
+this looks pretty good.
+
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+
+(leaving the rest of the email unclipped for Bart's benefit)
+
 > ---
 > v1: https://lore.kernel.org/lkml/20220224055145.1853657-1-keescook@chromium.org
 > v2:
@@ -58,16 +87,6 @@ On Mon, Feb 28, 2022 at 2:45 AM Kees Cook <keescook@chromium.org> wrote:
 >  - emulate kunit_test_suites() (Daniel)
 >  - emit valid KTAP (David)
 > ---
-
-This looks pretty good on-the-whole to me, modulo one bug (test suites
-being marked as SKIPPED instead of FAILED) below. And checkpatch being
-grumpy.
-
-I do like the idea of putting this in uapi/ -- it solves the problem
-of distributing it quite elegantly, IMO.
-
--- David
-
 >  include/uapi/misc/kunit.h | 181 ++++++++++++++++++++++++++++++++++++++
 >  lib/stackinit_kunit.c     |  11 +++
 >  2 files changed, 192 insertions(+)
@@ -142,14 +161,6 @@ of distributing it quite elegantly, IMO.
 > +        void (*run_case)(struct kunit *test);
 > +        const char *name;
 > +};
-
-Nit: tabs/spaces.
-
-There are a few other checkpatch warnings, mostly it just complaining
-about the use of 'return' in macros, which I think is probably still
-better than trying to hack something out of setjmp/longjmp at this
-point.
-
 > +struct kunit_suite {
 > +       const char *name;
 > +       const struct kunit_case *test_cases;
@@ -207,17 +218,6 @@ point.
 > +                               test.msg ? " # ERROR " : "",
 > +                               test.msg ?: "\n");
 > +                       rc = 1;
-
-What is this function trying to return? If 'rc' is supposed to be a
-result status, this should be TEST_FAIL (2)?
-
-As-is, when a test case fails, the whole suite is being marked as SKIPPED.
-
-The other thing worth noting is that -- if this is fixed -- there's no
-way a whole suite can be marked SKIPPED. KUnit will mark a suite as
-skipped if all of its subtests are skipped. (This is a much more niche
-case, though.)
-
 > +                       fail++;
 > +                       break;
 > +               case TEST_SKIP:
@@ -274,9 +274,6 @@ case, though.)
 > +
 > +#define kunit_test_suites(suite...)                            \
 > +int main(int argc, char *argv[]) {                             \
-
-Nit: checkpatch really wants the '{' on the next line.
-
 > +       static struct kunit_suite *suites[] = { suite };        \
 > +       return run_suites(argv[0], suites, ARRAY_SIZE(suites)); \
 > +}
@@ -315,98 +312,13 @@ Nit: checkpatch really wants the '{' on the next line.
 > --
 > 2.32.0
 >
-
---000000000000f5922605d94c2a1e
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-G7p3AiuB2sgfq6cOpbO5MEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
-dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
-AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
-c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
-LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
-LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
-Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQBsL34EJkCtu9Nu
-2+R6l1Qzno5Gl+N2Cm6/YLujukDGYa1JW27txXiilR9dGP7yl60HYyG2Exd5i6fiLDlaNEw0SqzE
-dw9ZSIak3Qvm2UybR8zcnB0deCUiwahqh7ZncEPlhnPpB08ETEUtwBEqCEnndNEkIN67yz4kniCZ
-jZstNF/BUnI3864fATiXSbnNqBwlJS3YkoaCTpbI9qNTrf5VIvnbryT69xJ6f25yfmxrXNJJe5OG
-ncB34Cwnb7xQyk+uRLZ465yUBkbjk9pC/yamL0O7SOGYUclrQl2c5zzGuVBD84YcQGDOK6gSPj6w
-QuBfOooZPOyZZZ8AMih7J980MYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
-R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
-MDIwAhABQeVybOOpR4bOOXZYL5T3MA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCAX
-yQJVv0ndeUJqk1EoyZMJ4g/z7lYiSUs3MTpbBdsdKzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMjAzMDMwODI3MjVaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
-BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
-CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAR5p/jPnpODA46aDn/kj1
-48NrhXCZBrrGLQfr2GCmO5QoKe4/Fc21IUtRn4jgtAhlLpIrYV6wK89jfVLWuDt/0J8E45jihCKl
-xB7BlwFwN3K9ZtqqpOWs5ZiI29Lf3xql3Oc4DHxKobkC1gxjbOLQ4TNWX9sngGkp2UrPq9c/YQl3
-NrogjidgTmtJkrII/ULXpY+hgoPOUiX4OK8HJ3kA5mKdr9PerKAFjknoFhOJtNlvZkFQSenv+dwz
-bgtZMcSSp+YRULH6GFdAet6Qw3lM4aJC368ZXO2CV2ihPOt4kYgPZQrJmqK5shw0ftNnIhLV0e3g
-UxOPJaxoovCmSvoRNw==
---000000000000f5922605d94c2a1e--
-
-
---===============1987962437496202797==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> --
+> You received this message because you are subscribed to the Google Groups "KUnit Development" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/20220227184517.504931-8-keescook%40chromium.org.
 
 _______________________________________________
 linux-um mailing list
 linux-um@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-um
-
---===============1987962437496202797==--
-
 
