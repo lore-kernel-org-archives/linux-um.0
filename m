@@ -1,14 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57])
+Received: from mail-qv1-xf36.google.com ([2607:f8b0:4864:20::f36])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nRZ45-004NEP-1M
- for linux-um@lists.infradead.org; Tue, 08 Mar 2022 12:35:47 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v7 08/26] virtio_ring: extract the logic of freeing vring
-Date: Tue,  8 Mar 2022 20:35:00 +0800
-Message-Id: <20220308123518.33800-9-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220308123518.33800-1-xuanzhuo@linux.alibaba.com>
-References: <20220308123518.33800-1-xuanzhuo@linux.alibaba.com>
+ id 1nPgIF-005dV8-KR
+ for linux-um@lists.infradead.org; Thu, 03 Mar 2022 07:54:37 +0000
+Received: by mail-qv1-xf36.google.com with SMTP id f11so3509702qvz.4
+ for <linux-um@lists.infradead.org>; Wed, 02 Mar 2022 23:54:35 -0800 (PST)
+From: Glenn Washburn <development@efficientek.com>
+Subject: [PATCH 2/4] um: port_user: Allow setting path to port-helper using
+ UML_PORT_HELPER envvar
+Date: Thu,  3 Mar 2022 01:53:31 -0600
+Message-Id: <6ae7e7114a5c61ae3f87d42a3e1be2e4328be9b4.1646292328.git.development@efficientek.com>
+In-Reply-To: <cover.1646292328.git.development@efficientek.com>
+References: <cover.1646292328.git.development@efficientek.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,93 +25,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
+To: linux-um <linux-um@lists.infradead.org>
+Cc: Glenn Washburn <development@efficientek.com>
 
-Introduce vring_free() to free the vring of vq.
+This is useful when the uml-utilities user-space package has not been
+installed by the administrator and an unprivileged user wants to be able to
+telnet into a UML instance. The user can install the port-helper binary to
+a writable path and set UML_PORT_HELPER. Fallback to using hardcoded path to
+port-helper if environment variable is not set.
 
-Prevent double free by setting vq->reset.
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Signed-off-by: Glenn Washburn <development@efficientek.com>
 ---
- drivers/virtio/virtio_ring.c | 25 ++++++++++++++++++++-----
- include/linux/virtio.h       |  8 ++++++++
- 2 files changed, 28 insertions(+), 5 deletions(-)
+ arch/um/drivers/port_user.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index b5a9bf4f45b3..e0422c04c903 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -2442,14 +2442,10 @@ struct virtqueue *vring_new_virtqueue(unsigned int index,
- }
- EXPORT_SYMBOL_GPL(vring_new_virtqueue);
- 
--void vring_del_virtqueue(struct virtqueue *_vq)
-+static void __vring_free(struct virtqueue *_vq)
+diff --git a/arch/um/drivers/port_user.c b/arch/um/drivers/port_user.c
+index 0625aa42041d..3e32351dadad 100644
+--- a/arch/um/drivers/port_user.c
++++ b/arch/um/drivers/port_user.c
+@@ -167,10 +167,14 @@ static void port_pre_exec(void *arg)
+ int port_connection(int fd, int *socket, int *pid_out)
  {
- 	struct vring_virtqueue *vq = to_vvq(_vq);
+ 	int new, err;
++	char *env;
+ 	char *argv[] = { "in.telnetd", "-L",
+ 			 OS_LIB_PATH "/uml/port-helper", NULL };
+ 	struct port_pre_exec_data data;
  
--	spin_lock(&vq->vq.vdev->vqs_list_lock);
--	list_del(&_vq->list);
--	spin_unlock(&vq->vq.vdev->vqs_list_lock);
--
- 	if (vq->we_own_ring) {
- 		if (vq->packed_ring) {
- 			vring_free_queue(vq->vq.vdev,
-@@ -2480,6 +2476,25 @@ void vring_del_virtqueue(struct virtqueue *_vq)
- 		kfree(vq->split.desc_state);
- 		kfree(vq->split.desc_extra);
- 	}
-+}
++	if ((env = getenv("UML_PORT_HELPER")))
++		argv[2] = env;
 +
-+static void vring_free(struct virtqueue *vq)
-+{
-+	__vring_free(vq);
-+	vq->reset = VIRTIO_VQ_RESET_STEP_VRING_RELEASE;
-+}
-+
-+void vring_del_virtqueue(struct virtqueue *_vq)
-+{
-+	struct vring_virtqueue *vq = to_vvq(_vq);
-+
-+	spin_lock(&vq->vq.vdev->vqs_list_lock);
-+	list_del(&_vq->list);
-+	spin_unlock(&vq->vq.vdev->vqs_list_lock);
-+
-+	if (_vq->reset != VIRTIO_VQ_RESET_STEP_VRING_RELEASE)
-+		__vring_free(_vq);
-+
- 	kfree(vq);
- }
- EXPORT_SYMBOL_GPL(vring_del_virtqueue);
-diff --git a/include/linux/virtio.h b/include/linux/virtio.h
-index d59adc4be068..e3714e6db330 100644
---- a/include/linux/virtio.h
-+++ b/include/linux/virtio.h
-@@ -10,6 +10,13 @@
- #include <linux/mod_devicetable.h>
- #include <linux/gfp.h>
- 
-+enum virtio_vq_reset_step {
-+	VIRTIO_VQ_RESET_STEP_NONE,
-+	VIRTIO_VQ_RESET_STEP_DEVICE,
-+	VIRTIO_VQ_RESET_STEP_VRING_RELEASE,
-+	VIRTIO_VQ_RESET_STEP_VRING_ATTACH,
-+};
-+
- /**
-  * virtqueue - a queue to register buffers for sending or receiving.
-  * @list: the chain of virtqueues for this device
-@@ -33,6 +40,7 @@ struct virtqueue {
- 	unsigned int num_free;
- 	unsigned int num_max;
- 	void *priv;
-+	enum virtio_vq_reset_step reset;
- };
- 
- int virtqueue_add_outbuf(struct virtqueue *vq,
+ 	new = accept(fd, NULL, 0);
+ 	if (new < 0)
+ 		return -errno;
 -- 
-2.31.0
+2.30.2
 
 
 _______________________________________________
