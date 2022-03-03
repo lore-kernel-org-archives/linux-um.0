@@ -1,12 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+Received: from mail-qt1-x82f.google.com ([2607:f8b0:4864:20::82f])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nWiTN-00BkjT-3M
- for linux-um@lists.infradead.org; Tue, 22 Mar 2022 17:39:10 +0000
-From: Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH] um: Fix filtering '-mno-global-merge'
-Date: Tue, 22 Mar 2022 10:35:47 -0700
-Message-Id: <20220322173547.677760-1-nathan@kernel.org>
+ id 1nPgI6-005dSA-0i
+ for linux-um@lists.infradead.org; Thu, 03 Mar 2022 07:54:27 +0000
+Received: by mail-qt1-x82f.google.com with SMTP id 11so3902389qtt.9
+ for <linux-um@lists.infradead.org>; Wed, 02 Mar 2022 23:54:24 -0800 (PST)
+From: Glenn Washburn <development@efficientek.com>
+Subject: [PATCH 0/4] Improvements to port on various error conditions
+Date: Thu,  3 Mar 2022 01:53:29 -0600
+Message-Id: <cover.1646292328.git.development@efficientek.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -20,58 +22,58 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>
-Cc: Nick Desaulniers <ndesaulniers@google.com>, David Gow <davidgow@google.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, llvm@lists.linux.dev, Nathan Chancellor <nathan@kernel.org>
+To: linux-um <linux-um@lists.infradead.org>
+Cc: Glenn Washburn <development@efficientek.com>
 
-When booting a clang compiled UML kernel, the kernel panics when trying
-to run init:
+This patch series was inspired by the various issues I ran into while trying
+login to a UML instance via telnet when using the ssl=port:XXXX option. The
+issue was that I started the UML instance with option "ssl1=port:12345" and
+when I tried to connect from the host using telnet, the telnet client connects
+and immediately the connection is closed. In the UML instance, the only message
+I was getting was a kernel log message "port_accept : port_connection returned 2".
+I had to dig in the kernel source to figure out what the "2" meant, which gave
+a clue as to what was going on.
 
-  wait_stub_done : failed to wait for SIGTRAP, pid = 651294, n = 651294, errno = 0, status = 0xb7f
-  Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+The issue was that I didn't have in.telnetd installed and the "2" was the error
+code from exec, which is ENOENT, or "No such file or directory". Patch #4
+provides a more user friendly error on exec failure, which should prevent
+users from needing to dig in the source to figure out what's going wrong.
 
-After the commit in Fixes, many flags from KBUILD_CFLAGS do not appear
-in USER_CFLAGS, likely due to USER_CFLAGS initially being a recursive
-variable ("VAR =") then being switched to a simple ("VAR :=") variable.
-For example, diffing arch/x86/um/.ptrace_user.o.cmd shows flags such as
-'-Os' and '-fno-delete-null-pointer-checks' getting dropped, which both
-impact code generation.
+The first patch allows exec to search for in.telnetd instead of having its
+path hard coded, which may be different on different systems. It also allows
+for the UML instance to be telneted into when the user is unprivileged and
+the host does not have in.telnetd installed. The user can install in.telnetd
+in to any path they can write to and set PATH accordingly. This is my actual
+use case.
 
-Rework the filtering to use filter-out instead of patsubst, which allows
-all the patterns that USER_CFLAGS cares about to be excluded in one
-command and ensures all flags from KBUILD_CFLAGS are transferred over to
-USER_CFLAGS properly, which resolves the boot issue noted above.
+The second patch allows the user to specify the location of the port-helper
+binary via the environment variable UML_PORT_HELPER. The use cause is the
+same as above. If the envvar is not set, fallback to the hardcoded path to
+port-helper.
 
-Fixes: 6580c5c18fb3 ("um: clang: Strip out -mno-global-merge from USER_CFLAGS")
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- arch/um/Makefile | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index 320b09cd513c..d202f501e9e1 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -70,15 +70,11 @@ KBUILD_CFLAGS += $(CFLAGS) $(CFLAGS-y) -D__arch_um__ \
- 
- KBUILD_AFLAGS += $(ARCH_INCLUDE)
- 
--USER_CFLAGS = $(patsubst $(KERNEL_DEFINES),,$(patsubst -I%,,$(KBUILD_CFLAGS))) \
-+USER_CFLAGS = $(filter-out $(KERNEL_DEFINES) -I% -mno-global-merge,$(KBUILD_CFLAGS)) \
- 		$(ARCH_INCLUDE) $(MODE_INCLUDE) $(filter -I%,$(CFLAGS)) \
- 		-D_FILE_OFFSET_BITS=64 -idirafter $(srctree)/include \
- 		-idirafter $(objtree)/include -D__KERNEL__ -D__UM_HOST__
- 
--ifdef CONFIG_CC_IS_CLANG
--USER_CFLAGS := $(patsubst -mno-global-merge,,$(USER_CFLAGS))
--endif
--
- #This will adjust *FLAGS accordingly to the platform.
- include $(srctree)/$(ARCH_DIR)/Makefile-os-$(OS)
- 
+The third patch checks if the port-helper path actually exists and is executable.
+This allows the UML instance to check and fail early if port-helper can't be
+run and to send and error message to the user via the kernel log letting the
+user know the issue and potentially how to fix it (eg. set the UML_PORT_HELPER
+envvar).
 
-base-commit: 82017457957a550d7d00dde419435dd74a890887
+Glenn
+
+Glenn Washburn (4):
+  um: port_user: Search for in.telnetd in PATH
+  um: port_user: Allow setting path to port-helper using UML_PORT_HELPER
+    envvar
+  um: port_user: Improve error handling when port-helper is not found
+  um: run_helper: Write error message to kernel log on exec failure on
+    host
+
+ arch/um/drivers/port_user.c | 18 +++++++++++++++++-
+ arch/um/os-Linux/helper.c   |  5 +++++
+ 2 files changed, 22 insertions(+), 1 deletion(-)
+
 -- 
-2.35.1
+2.30.2
 
 
 _______________________________________________
