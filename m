@@ -1,21 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nRs5U-007ncx-Av
- for linux-um@lists.infradead.org; Wed, 09 Mar 2022 08:54:29 +0000
-Received: by mail-pg1-f198.google.com with SMTP id
- 196-20020a6307cd000000b0038027886594so963634pgh.4
- for <linux-um@lists.infradead.org>; Wed, 09 Mar 2022 00:54:26 -0800 (PST)
-Message-ID: <8b9d337d-71c2-07b4-8e65-6f83cf09bf7a@redhat.com>
-Date: Wed, 9 Mar 2022 16:54:10 +0800
-MIME-Version: 1.0
-Subject: Re: [PATCH v7 17/26] virtio_pci: queue_reset: support
- VIRTIO_F_RING_RESET
+ id 1nRZ4K-004NZD-LK
+ for linux-um@lists.infradead.org; Tue, 08 Mar 2022 12:36:03 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v7 17/26] virtio_pci: queue_reset: support VIRTIO_F_RING_RESET
+Date: Tue,  8 Mar 2022 20:35:09 +0800
+Message-Id: <20220308123518.33800-18-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220308123518.33800-1-xuanzhuo@linux.alibaba.com>
 References: <20220308123518.33800-1-xuanzhuo@linux.alibaba.com>
- <20220308123518.33800-18-xuanzhuo@linux.alibaba.com>
-From: Jason Wang <jasowang@redhat.com>
-In-Reply-To: <20220308123518.33800-18-xuanzhuo@linux.alibaba.com>
-Content-Language: en-US
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,111 +18,171 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
+To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
 
-CuWcqCAyMDIyLzMvOCDkuIvljYg4OjM1LCBYdWFuIFpodW8g5YaZ6YGTOgo+IFRoaXMgcGF0Y2gg
-aW1wbGVtZW50cyB2aXJ0aW8gcGNpIHN1cHBvcnQgZm9yIFFVRVVFIFJFU0VULgo+Cj4gUGVyZm9y
-bWluZyByZXNldCBvbiBhIHF1ZXVlIGlzIGRpdmlkZWQgaW50byB0aGVzZSBzdGVwczoKPgo+ICAg
-MS4gdmlydGlvX3Jlc2V0X3ZxKCkgICAgICAgICAgICAgIC0gbm90aWZ5IHRoZSBkZXZpY2UgdG8g
-cmVzZXQgdGhlIHF1ZXVlCj4gICAyLiB2aXJ0cXVldWVfZGV0YWNoX3VudXNlZF9idWYoKSAgLSBy
-ZWN5Y2xlIHRoZSBidWZmZXIgc3VibWl0dGVkCj4gICAzLiB2aXJ0cXVldWVfcmVzZXRfdnJpbmco
-KSAgICAgICAgLSByZXNldCB0aGUgdnJpbmcgKG1heSByZS1hbGxvYykKPiAgIDQuIHZpcnRpb19l
-bmFibGVfcmVzZXRxKCkgICAgICAgICAtIG1tYXAgdnJpbmcgdG8gZGV2aWNlLCBhbmQgZW5hYmxl
-IHRoZSBxdWV1ZQo+Cj4gVGhpcyBwYXRjaCBpbXBsZW1lbnRzIHZpcnRpb19yZXNldF92cSgpLCB2
-aXJ0aW9fZW5hYmxlX3Jlc2V0cSgpIGluIHRoZQo+IHBjaSBzY2VuYXJpby4KPgo+IFNpZ25lZC1v
-ZmYtYnk6IFh1YW4gWmh1byA8eHVhbnpodW9AbGludXguYWxpYmFiYS5jb20+Cj4gLS0tCj4gICBk
-cml2ZXJzL3ZpcnRpby92aXJ0aW9fcGNpX2NvbW1vbi5jIHwgIDggKy0tCj4gICBkcml2ZXJzL3Zp
-cnRpby92aXJ0aW9fcGNpX21vZGVybi5jIHwgODMgKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrCj4gICAyIGZpbGVzIGNoYW5nZWQsIDg4IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0p
-Cj4KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy92aXJ0aW8vdmlydGlvX3BjaV9jb21tb24uYyBiL2Ry
-aXZlcnMvdmlydGlvL3ZpcnRpb19wY2lfY29tbW9uLmMKPiBpbmRleCBmZGJkZTFkYjVlYzUuLjg2
-M2QzYThhMDk1NiAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL3ZpcnRpby92aXJ0aW9fcGNpX2NvbW1v
-bi5jCj4gKysrIGIvZHJpdmVycy92aXJ0aW8vdmlydGlvX3BjaV9jb21tb24uYwo+IEBAIC0yNDgs
-OSArMjQ4LDExIEBAIHN0YXRpYyB2b2lkIHZwX2RlbF92cShzdHJ1Y3QgdmlydHF1ZXVlICp2cSkK
-PiAgIAlzdHJ1Y3QgdmlydGlvX3BjaV92cV9pbmZvICppbmZvID0gdnBfZGV2LT52cXNbdnEtPmlu
-ZGV4XTsKPiAgIAl1bnNpZ25lZCBsb25nIGZsYWdzOwo+ICAgCj4gLQlzcGluX2xvY2tfaXJxc2F2
-ZSgmdnBfZGV2LT5sb2NrLCBmbGFncyk7Cj4gLQlsaXN0X2RlbCgmaW5mby0+bm9kZSk7Cj4gLQlz
-cGluX3VubG9ja19pcnFyZXN0b3JlKCZ2cF9kZXYtPmxvY2ssIGZsYWdzKTsKPiArCWlmICghdnEt
-PnJlc2V0KSB7Cj4gKwkJc3Bpbl9sb2NrX2lycXNhdmUoJnZwX2Rldi0+bG9jaywgZmxhZ3MpOwo+
-ICsJCWxpc3RfZGVsKCZpbmZvLT5ub2RlKTsKPiArCQlzcGluX3VubG9ja19pcnFyZXN0b3JlKCZ2
-cF9kZXYtPmxvY2ssIGZsYWdzKTsKPiArCX0KPiAgIAo+ICAgCXZwX2Rldi0+ZGVsX3ZxKGluZm8p
-Owo+ICAgCWtmcmVlKGluZm8pOwo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3ZpcnRpby92aXJ0aW9f
-cGNpX21vZGVybi5jIGIvZHJpdmVycy92aXJ0aW8vdmlydGlvX3BjaV9tb2Rlcm4uYwo+IGluZGV4
-IDQ5YTQ0OTM3MzJjZi4uM2M2N2QzNjA3ODAyIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvdmlydGlv
-L3ZpcnRpb19wY2lfbW9kZXJuLmMKPiArKysgYi9kcml2ZXJzL3ZpcnRpby92aXJ0aW9fcGNpX21v
-ZGVybi5jCj4gQEAgLTM0LDYgKzM0LDkgQEAgc3RhdGljIHZvaWQgdnBfdHJhbnNwb3J0X2ZlYXR1
-cmVzKHN0cnVjdCB2aXJ0aW9fZGV2aWNlICp2ZGV2LCB1NjQgZmVhdHVyZXMpCj4gICAJaWYgKChm
-ZWF0dXJlcyAmIEJJVF9VTEwoVklSVElPX0ZfU1JfSU9WKSkgJiYKPiAgIAkJCXBjaV9maW5kX2V4
-dF9jYXBhYmlsaXR5KHBjaV9kZXYsIFBDSV9FWFRfQ0FQX0lEX1NSSU9WKSkKPiAgIAkJX192aXJ0
-aW9fc2V0X2JpdCh2ZGV2LCBWSVJUSU9fRl9TUl9JT1YpOwo+ICsKPiArCWlmIChmZWF0dXJlcyAm
-IEJJVF9VTEwoVklSVElPX0ZfUklOR19SRVNFVCkpCj4gKwkJX192aXJ0aW9fc2V0X2JpdCh2ZGV2
-LCBWSVJUSU9fRl9SSU5HX1JFU0VUKTsKPiAgIH0KPiAgIAo+ICAgLyogdmlydGlvIGNvbmZpZy0+
-ZmluYWxpemVfZmVhdHVyZXMoKSBpbXBsZW1lbnRhdGlvbiAqLwo+IEBAIC0xOTksNiArMjAyLDgy
-IEBAIHN0YXRpYyBpbnQgdnBfYWN0aXZlX3ZxKHN0cnVjdCB2aXJ0cXVldWUgKnZxLCB1MTYgbXNp
-eF92ZWMpCj4gICAJcmV0dXJuIDA7Cj4gICB9Cj4gICAKPiArc3RhdGljIGludCB2cF9tb2Rlcm5f
-cmVzZXRfdnEoc3RydWN0IHZpcnRxdWV1ZSAqdnEpCj4gK3sKPiArCXN0cnVjdCB2aXJ0aW9fcGNp
-X2RldmljZSAqdnBfZGV2ID0gdG9fdnBfZGV2aWNlKHZxLT52ZGV2KTsKPiArCXN0cnVjdCB2aXJ0
-aW9fcGNpX21vZGVybl9kZXZpY2UgKm1kZXYgPSAmdnBfZGV2LT5tZGV2Owo+ICsJc3RydWN0IHZp
-cnRpb19wY2lfdnFfaW5mbyAqaW5mbzsKPiArCXVuc2lnbmVkIGxvbmcgZmxhZ3M7Cj4gKwl1bnNp
-Z25lZCBpbnQgaXJxOwo+ICsKPiArCWlmICghdmlydGlvX2hhc19mZWF0dXJlKHZxLT52ZGV2LCBW
-SVJUSU9fRl9SSU5HX1JFU0VUKSkKPiArCQlyZXR1cm4gLUVOT0VOVDsKPiArCj4gKwl2cF9tb2Rl
-cm5fc2V0X3F1ZXVlX3Jlc2V0KG1kZXYsIHZxLT5pbmRleCk7Cj4gKwo+ICsJaW5mbyA9IHZwX2Rl
-di0+dnFzW3ZxLT5pbmRleF07Cj4gKwo+ICsJLyogZGVsZXRlIHZxIGZyb20gaXJxIGhhbmRsZXIg
-Ki8KPiArCXNwaW5fbG9ja19pcnFzYXZlKCZ2cF9kZXYtPmxvY2ssIGZsYWdzKTsKPiArCWxpc3Rf
-ZGVsKCZpbmZvLT5ub2RlKTsKPiArCXNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJnZwX2Rldi0+bG9j
-aywgZmxhZ3MpOwo+ICsKPiArCUlOSVRfTElTVF9IRUFEKCZpbmZvLT5ub2RlKTsKPiArCj4gKwl2
-cS0+cmVzZXQgPSBWSVJUSU9fVlFfUkVTRVRfU1RFUF9ERVZJQ0U7Cj4gKwo+ICsJLyogc3luYyBp
-cnEgY2FsbGJhY2suICovCj4gKwlpZiAodnBfZGV2LT5pbnR4X2VuYWJsZWQpIHsKPiArCQlpcnEg
-PSB2cF9kZXYtPnBjaV9kZXYtPmlycTsKPiArCj4gKwl9IGVsc2Ugewo+ICsJCWlmIChpbmZvLT5t
-c2l4X3ZlY3RvciA9PSBWSVJUSU9fTVNJX05PX1ZFQ1RPUikKPiArCQkJcmV0dXJuIDA7Cj4gKwo+
-ICsJCWlycSA9IHBjaV9pcnFfdmVjdG9yKHZwX2Rldi0+cGNpX2RldiwgaW5mby0+bXNpeF92ZWN0
-b3IpOwo+ICsJfQo+ICsKPiArCXN5bmNocm9uaXplX2lycShpcnEpOwoKClN5bmNocm9uaXplX2ly
-cSgpIGlzIG5vdCBzdWZmaWNpZW50IGhlcmUgc2luY2UgaXQgYnJlYWtzIHRoZSBlZmZvcnQgb2Yg
-CnRoZSBpbnRlcnJ1cHQgaGFyZGVuaW5nIHdoaWNoIGlzIGRvbmUgYnkgY29tbWl0czoKCjA4MGNk
-N2MzYWM4NyB2aXJ0aW8tcGNpOiBoYXJkZW4gSU5UWCBpbnRlcnJ1cHRzCjllMzUyNzZhNTM0NCB2
-aXJ0aW9fcGNpOiBoYXJkZW4gTVNJLVggaW50ZXJydXB0cwoKVW5mb3J0dW5hdGVsecKgIDA4MGNk
-N2MzYWM4NyBpbnRyb2R1Y2VzIGFuIGlzc3VlIHRoYXQgZGlzYWJsZV9pcnEoKSB3ZXJlIAp1c2Vk
-IGZvciB0aGUgYWZmaW5pdHkgbWFuYWdlZCBpcnEgYnV0IHdlJ3JlIGRpc2N1c3NpbmcgYSBmaXgu
-CgoKPiArCj4gKwlyZXR1cm4gMDsKPiArfQo+ICsKPiArc3RhdGljIGludCB2cF9tb2Rlcm5fZW5h
-YmxlX3Jlc2V0X3ZxKHN0cnVjdCB2aXJ0cXVldWUgKnZxKQo+ICt7Cj4gKwlzdHJ1Y3QgdmlydGlv
-X3BjaV9kZXZpY2UgKnZwX2RldiA9IHRvX3ZwX2RldmljZSh2cS0+dmRldik7Cj4gKwlzdHJ1Y3Qg
-dmlydGlvX3BjaV9tb2Rlcm5fZGV2aWNlICptZGV2ID0gJnZwX2Rldi0+bWRldjsKPiArCXN0cnVj
-dCB2aXJ0aW9fcGNpX3ZxX2luZm8gKmluZm87Cj4gKwl1bnNpZ25lZCBsb25nIGZsYWdzLCBpbmRl
-eDsKPiArCWludCBlcnI7Cj4gKwo+ICsJaWYgKHZxLT5yZXNldCAhPSBWSVJUSU9fVlFfUkVTRVRf
-U1RFUF9WUklOR19BVFRBQ0gpCj4gKwkJcmV0dXJuIC1FQlVTWTsKPiArCj4gKwlpbmRleCA9IHZx
-LT5pbmRleDsKPiArCWluZm8gPSB2cF9kZXYtPnZxc1tpbmRleF07Cj4gKwo+ICsJLyogY2hlY2sg
-cXVldWUgcmVzZXQgc3RhdHVzICovCj4gKwlpZiAodnBfbW9kZXJuX2dldF9xdWV1ZV9yZXNldCht
-ZGV2LCBpbmRleCkgIT0gMSkKPiArCQlyZXR1cm4gLUVCVVNZOwo+ICsKPiArCWVyciA9IHZwX2Fj
-dGl2ZV92cSh2cSwgaW5mby0+bXNpeF92ZWN0b3IpOwo+ICsJaWYgKGVycikKPiArCQlyZXR1cm4g
-ZXJyOwo+ICsKPiArCWlmICh2cS0+Y2FsbGJhY2spIHsKPiArCQlzcGluX2xvY2tfaXJxc2F2ZSgm
-dnBfZGV2LT5sb2NrLCBmbGFncyk7Cj4gKwkJbGlzdF9hZGQoJmluZm8tPm5vZGUsICZ2cF9kZXYt
-PnZpcnRxdWV1ZXMpOwo+ICsJCXNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJnZwX2Rldi0+bG9jaywg
-ZmxhZ3MpOwo+ICsJfSBlbHNlIHsKPiArCQlJTklUX0xJU1RfSEVBRCgmaW5mby0+bm9kZSk7Cj4g
-Kwl9Cj4gKwo+ICsJdnBfbW9kZXJuX3NldF9xdWV1ZV9lbmFibGUoJnZwX2Rldi0+bWRldiwgaW5k
-ZXgsIHRydWUpOwoKCkFueSByZWFzb24gd2UgbmVlZCB0byBjaGVjayBxdWV1ZV9lbmFibGUoKSBo
-ZXJlPwoKVGhhbmtzCgoKPiArCXZxLT5yZXNldCA9IFZJUlRJT19WUV9SRVNFVF9TVEVQX05PTkU7
-Cj4gKwo+ICsJcmV0dXJuIDA7Cj4gK30KPiArCj4gICBzdGF0aWMgdTE2IHZwX2NvbmZpZ192ZWN0
-b3Ioc3RydWN0IHZpcnRpb19wY2lfZGV2aWNlICp2cF9kZXYsIHUxNiB2ZWN0b3IpCj4gICB7Cj4g
-ICAJcmV0dXJuIHZwX21vZGVybl9jb25maWdfdmVjdG9yKCZ2cF9kZXYtPm1kZXYsIHZlY3Rvcik7
-Cj4gQEAgLTQwNyw2ICs0ODYsOCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHZpcnRpb19jb25maWdf
-b3BzIHZpcnRpb19wY2lfY29uZmlnX25vZGV2X29wcyA9IHsKPiAgIAkuc2V0X3ZxX2FmZmluaXR5
-ID0gdnBfc2V0X3ZxX2FmZmluaXR5LAo+ICAgCS5nZXRfdnFfYWZmaW5pdHkgPSB2cF9nZXRfdnFf
-YWZmaW5pdHksCj4gICAJLmdldF9zaG1fcmVnaW9uICA9IHZwX2dldF9zaG1fcmVnaW9uLAo+ICsJ
-LnJlc2V0X3ZxCSA9IHZwX21vZGVybl9yZXNldF92cSwKPiArCS5lbmFibGVfcmVzZXRfdnEgPSB2
-cF9tb2Rlcm5fZW5hYmxlX3Jlc2V0X3ZxLAo+ICAgfTsKPiAgIAo+ICAgc3RhdGljIGNvbnN0IHN0
-cnVjdCB2aXJ0aW9fY29uZmlnX29wcyB2aXJ0aW9fcGNpX2NvbmZpZ19vcHMgPSB7Cj4gQEAgLTQy
-NSw2ICs1MDYsOCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHZpcnRpb19jb25maWdfb3BzIHZpcnRp
-b19wY2lfY29uZmlnX29wcyA9IHsKPiAgIAkuc2V0X3ZxX2FmZmluaXR5ID0gdnBfc2V0X3ZxX2Fm
-ZmluaXR5LAo+ICAgCS5nZXRfdnFfYWZmaW5pdHkgPSB2cF9nZXRfdnFfYWZmaW5pdHksCj4gICAJ
-LmdldF9zaG1fcmVnaW9uICA9IHZwX2dldF9zaG1fcmVnaW9uLAo+ICsJLnJlc2V0X3ZxCSA9IHZw
-X21vZGVybl9yZXNldF92cSwKPiArCS5lbmFibGVfcmVzZXRfdnEgPSB2cF9tb2Rlcm5fZW5hYmxl
-X3Jlc2V0X3ZxLAo+ICAgfTsKPiAgIAo+ICAgLyogdGhlIFBDSSBwcm9iaW5nIGZ1bmN0aW9uICov
-CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgt
-dW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
+This patch implements virtio pci support for QUEUE RESET.
+
+Performing reset on a queue is divided into these steps:
+
+ 1. virtio_reset_vq()              - notify the device to reset the queue
+ 2. virtqueue_detach_unused_buf()  - recycle the buffer submitted
+ 3. virtqueue_reset_vring()        - reset the vring (may re-alloc)
+ 4. virtio_enable_resetq()         - mmap vring to device, and enable the queue
+
+This patch implements virtio_reset_vq(), virtio_enable_resetq() in the
+pci scenario.
+
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+---
+ drivers/virtio/virtio_pci_common.c |  8 +--
+ drivers/virtio/virtio_pci_modern.c | 83 ++++++++++++++++++++++++++++++
+ 2 files changed, 88 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
+index fdbde1db5ec5..863d3a8a0956 100644
+--- a/drivers/virtio/virtio_pci_common.c
++++ b/drivers/virtio/virtio_pci_common.c
+@@ -248,9 +248,11 @@ static void vp_del_vq(struct virtqueue *vq)
+ 	struct virtio_pci_vq_info *info = vp_dev->vqs[vq->index];
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(&vp_dev->lock, flags);
+-	list_del(&info->node);
+-	spin_unlock_irqrestore(&vp_dev->lock, flags);
++	if (!vq->reset) {
++		spin_lock_irqsave(&vp_dev->lock, flags);
++		list_del(&info->node);
++		spin_unlock_irqrestore(&vp_dev->lock, flags);
++	}
+ 
+ 	vp_dev->del_vq(info);
+ 	kfree(info);
+diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
+index 49a4493732cf..3c67d3607802 100644
+--- a/drivers/virtio/virtio_pci_modern.c
++++ b/drivers/virtio/virtio_pci_modern.c
+@@ -34,6 +34,9 @@ static void vp_transport_features(struct virtio_device *vdev, u64 features)
+ 	if ((features & BIT_ULL(VIRTIO_F_SR_IOV)) &&
+ 			pci_find_ext_capability(pci_dev, PCI_EXT_CAP_ID_SRIOV))
+ 		__virtio_set_bit(vdev, VIRTIO_F_SR_IOV);
++
++	if (features & BIT_ULL(VIRTIO_F_RING_RESET))
++		__virtio_set_bit(vdev, VIRTIO_F_RING_RESET);
+ }
+ 
+ /* virtio config->finalize_features() implementation */
+@@ -199,6 +202,82 @@ static int vp_active_vq(struct virtqueue *vq, u16 msix_vec)
+ 	return 0;
+ }
+ 
++static int vp_modern_reset_vq(struct virtqueue *vq)
++{
++	struct virtio_pci_device *vp_dev = to_vp_device(vq->vdev);
++	struct virtio_pci_modern_device *mdev = &vp_dev->mdev;
++	struct virtio_pci_vq_info *info;
++	unsigned long flags;
++	unsigned int irq;
++
++	if (!virtio_has_feature(vq->vdev, VIRTIO_F_RING_RESET))
++		return -ENOENT;
++
++	vp_modern_set_queue_reset(mdev, vq->index);
++
++	info = vp_dev->vqs[vq->index];
++
++	/* delete vq from irq handler */
++	spin_lock_irqsave(&vp_dev->lock, flags);
++	list_del(&info->node);
++	spin_unlock_irqrestore(&vp_dev->lock, flags);
++
++	INIT_LIST_HEAD(&info->node);
++
++	vq->reset = VIRTIO_VQ_RESET_STEP_DEVICE;
++
++	/* sync irq callback. */
++	if (vp_dev->intx_enabled) {
++		irq = vp_dev->pci_dev->irq;
++
++	} else {
++		if (info->msix_vector == VIRTIO_MSI_NO_VECTOR)
++			return 0;
++
++		irq = pci_irq_vector(vp_dev->pci_dev, info->msix_vector);
++	}
++
++	synchronize_irq(irq);
++
++	return 0;
++}
++
++static int vp_modern_enable_reset_vq(struct virtqueue *vq)
++{
++	struct virtio_pci_device *vp_dev = to_vp_device(vq->vdev);
++	struct virtio_pci_modern_device *mdev = &vp_dev->mdev;
++	struct virtio_pci_vq_info *info;
++	unsigned long flags, index;
++	int err;
++
++	if (vq->reset != VIRTIO_VQ_RESET_STEP_VRING_ATTACH)
++		return -EBUSY;
++
++	index = vq->index;
++	info = vp_dev->vqs[index];
++
++	/* check queue reset status */
++	if (vp_modern_get_queue_reset(mdev, index) != 1)
++		return -EBUSY;
++
++	err = vp_active_vq(vq, info->msix_vector);
++	if (err)
++		return err;
++
++	if (vq->callback) {
++		spin_lock_irqsave(&vp_dev->lock, flags);
++		list_add(&info->node, &vp_dev->virtqueues);
++		spin_unlock_irqrestore(&vp_dev->lock, flags);
++	} else {
++		INIT_LIST_HEAD(&info->node);
++	}
++
++	vp_modern_set_queue_enable(&vp_dev->mdev, index, true);
++	vq->reset = VIRTIO_VQ_RESET_STEP_NONE;
++
++	return 0;
++}
++
+ static u16 vp_config_vector(struct virtio_pci_device *vp_dev, u16 vector)
+ {
+ 	return vp_modern_config_vector(&vp_dev->mdev, vector);
+@@ -407,6 +486,8 @@ static const struct virtio_config_ops virtio_pci_config_nodev_ops = {
+ 	.set_vq_affinity = vp_set_vq_affinity,
+ 	.get_vq_affinity = vp_get_vq_affinity,
+ 	.get_shm_region  = vp_get_shm_region,
++	.reset_vq	 = vp_modern_reset_vq,
++	.enable_reset_vq = vp_modern_enable_reset_vq,
+ };
+ 
+ static const struct virtio_config_ops virtio_pci_config_ops = {
+@@ -425,6 +506,8 @@ static const struct virtio_config_ops virtio_pci_config_ops = {
+ 	.set_vq_affinity = vp_set_vq_affinity,
+ 	.get_vq_affinity = vp_get_vq_affinity,
+ 	.get_shm_region  = vp_get_shm_region,
++	.reset_vq	 = vp_modern_reset_vq,
++	.enable_reset_vq = vp_modern_enable_reset_vq,
+ };
+ 
+ /* the PCI probing function */
+-- 
+2.31.0
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
