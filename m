@@ -1,12 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out199-12.us.a.mail.aliyun.com ([47.90.199.12])
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nRZ4H-004NS7-L0
- for linux-um@lists.infradead.org; Tue, 08 Mar 2022 12:36:00 +0000
+ id 1nRZ4I-004NU6-5d
+ for linux-um@lists.infradead.org; Tue, 08 Mar 2022 12:36:01 +0000
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v7 14/26] virtio: add helper for queue reset
-Date: Tue,  8 Mar 2022 20:35:06 +0800
-Message-Id: <20220308123518.33800-15-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v7 15/26] virtio_pci: queue_reset: update struct
+ virtio_pci_common_cfg and option functions
+Date: Tue,  8 Mar 2022 20:35:07 +0800
+Message-Id: <20220308123518.33800-16-xuanzhuo@linux.alibaba.com>
 In-Reply-To: <20220308123518.33800-1-xuanzhuo@linux.alibaba.com>
 References: <20220308123518.33800-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
@@ -25,67 +26,101 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
 Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
 
-Add helper for virtio queue reset.
+Add queue_reset in virtio_pci_common_cfg, and add related operation
+functions.
 
-* virtio_reset_vq(): reset a queue individually
-* virtio_enable_resetq(): enable a reset queue
+For not breaks uABI, add a new struct virtio_pci_common_cfg_reset.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- include/linux/virtio_config.h | 40 +++++++++++++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
+ drivers/virtio/virtio_pci_modern_dev.c | 36 ++++++++++++++++++++++++++
+ include/linux/virtio_pci_modern.h      |  2 ++
+ include/uapi/linux/virtio_pci.h        |  7 +++++
+ 3 files changed, 45 insertions(+)
 
-diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
-index d51906b1389f..0b81fbe17c85 100644
---- a/include/linux/virtio_config.h
-+++ b/include/linux/virtio_config.h
-@@ -230,6 +230,46 @@ int virtio_find_vqs_ctx(struct virtio_device *vdev, unsigned nvqs,
- 				      desc);
- }
+diff --git a/drivers/virtio/virtio_pci_modern_dev.c b/drivers/virtio/virtio_pci_modern_dev.c
+index e8b3ff2b9fbc..8c74b00bc511 100644
+--- a/drivers/virtio/virtio_pci_modern_dev.c
++++ b/drivers/virtio/virtio_pci_modern_dev.c
+@@ -3,6 +3,7 @@
+ #include <linux/virtio_pci_modern.h>
+ #include <linux/module.h>
+ #include <linux/pci.h>
++#include <linux/delay.h>
  
-+/**
-+ * virtio_reset_vq - reset a queue individually
-+ * @vq: the virtqueue
-+ *
-+ * returns 0 on success or error status
-+ *
-+ * The api process of reset under normal circumstances:
-+ *	1. virtio_reset_vq()              - notify the device to reset the queue
-+ *	2. virtqueue_detach_unused_buf()  - recycle the buffer submitted
-+ *	3. virtqueue_reset_vring()        - reset the vring (may re-alloc)
-+ *	4. virtio_enable_resetq()         - mmap vring to device, and enable the queue
-+ *
-+ * Caller should guarantee that the vring is not accessed by any functions
-+ * of virtqueue.
+ /*
+  * vp_modern_map_capability - map a part of virtio pci capability
+@@ -463,6 +464,41 @@ void vp_modern_set_status(struct virtio_pci_modern_device *mdev,
+ }
+ EXPORT_SYMBOL_GPL(vp_modern_set_status);
+ 
++/*
++ * vp_modern_get_queue_reset - get the queue reset status
++ * @mdev: the modern virtio-pci device
++ * @index: queue index
 + */
-+static inline
-+int virtio_reset_vq(struct virtqueue *vq)
++int vp_modern_get_queue_reset(struct virtio_pci_modern_device *mdev, u16 index)
 +{
-+	if (!vq->vdev->config->reset_vq)
-+		return -ENOENT;
++	struct virtio_pci_common_cfg_reset __iomem *cfg;
 +
-+	return vq->vdev->config->reset_vq(vq);
++	cfg = (struct virtio_pci_common_cfg_reset __iomem *)mdev->common;
++
++	vp_iowrite16(index, &cfg->cfg.queue_select);
++	return vp_ioread16(&cfg->queue_reset);
 +}
++EXPORT_SYMBOL_GPL(vp_modern_get_queue_reset);
 +
-+/**
-+ * virtio_enable_resetq - enable a reset queue
-+ * @vq: the virtqueue
-+ *
-+ * returns 0 on success or error status
-+ *
++/*
++ * vp_modern_set_queue_reset - reset the queue
++ * @mdev: the modern virtio-pci device
++ * @index: queue index
 + */
-+static inline
-+int virtio_enable_resetq(struct virtqueue *vq)
++void vp_modern_set_queue_reset(struct virtio_pci_modern_device *mdev, u16 index)
 +{
-+	if (!vq->vdev->config->enable_reset_vq)
-+		return -ENOENT;
++	struct virtio_pci_common_cfg_reset __iomem *cfg;
 +
-+	return vq->vdev->config->enable_reset_vq(vq);
++	cfg = (struct virtio_pci_common_cfg_reset __iomem *)mdev->common;
++
++	vp_iowrite16(index, &cfg->cfg.queue_select);
++	vp_iowrite16(1, &cfg->queue_reset);
++
++	while (vp_ioread16(&cfg->queue_reset) != 1)
++		msleep(1);
 +}
++EXPORT_SYMBOL_GPL(vp_modern_set_queue_reset);
 +
- /**
-  * virtio_device_ready - enable vq use in probe function
-  * @vdev: the device
+ /*
+  * vp_modern_queue_vector - set the MSIX vector for a specific virtqueue
+  * @mdev: the modern virtio-pci device
+diff --git a/include/linux/virtio_pci_modern.h b/include/linux/virtio_pci_modern.h
+index eb2bd9b4077d..cc4154dd7b28 100644
+--- a/include/linux/virtio_pci_modern.h
++++ b/include/linux/virtio_pci_modern.h
+@@ -106,4 +106,6 @@ void __iomem * vp_modern_map_vq_notify(struct virtio_pci_modern_device *mdev,
+ 				       u16 index, resource_size_t *pa);
+ int vp_modern_probe(struct virtio_pci_modern_device *mdev);
+ void vp_modern_remove(struct virtio_pci_modern_device *mdev);
++int vp_modern_get_queue_reset(struct virtio_pci_modern_device *mdev, u16 index);
++void vp_modern_set_queue_reset(struct virtio_pci_modern_device *mdev, u16 index);
+ #endif
+diff --git a/include/uapi/linux/virtio_pci.h b/include/uapi/linux/virtio_pci.h
+index 22bec9bd0dfc..d9462efd6ce8 100644
+--- a/include/uapi/linux/virtio_pci.h
++++ b/include/uapi/linux/virtio_pci.h
+@@ -173,6 +173,13 @@ struct virtio_pci_common_cfg_notify {
+ 	__le16 padding;
+ };
+ 
++struct virtio_pci_common_cfg_reset {
++	struct virtio_pci_common_cfg cfg;
++
++	__le16 queue_notify_data;	/* read-write */
++	__le16 queue_reset;		/* read-write */
++};
++
+ /* Fields in VIRTIO_PCI_CAP_PCI_CFG: */
+ struct virtio_pci_cfg_cap {
+ 	struct virtio_pci_cap cap;
 -- 
 2.31.0
 
