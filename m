@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nZi0t-0007LD-BQ
- for linux-um@lists.infradead.org; Wed, 30 Mar 2022 23:46:08 +0000
-From: Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH 1/2] kbuild: Remove '-mno-global-merge'
-Date: Wed, 30 Mar 2022 16:45:27 -0700
-Message-Id: <20220330234528.1426991-2-nathan@kernel.org>
-In-Reply-To: <20220330234528.1426991-1-nathan@kernel.org>
-References: <20220330234528.1426991-1-nathan@kernel.org>
+ id 1nRZ4R-004Ngt-OG
+ for linux-um@lists.infradead.org; Tue, 08 Mar 2022 12:36:09 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v7 20/26] virtio_mmio: support the arg sizes of find_vqs()
+Date: Tue,  8 Mar 2022 20:35:12 +0800
+Message-Id: <20220308123518.33800-21-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220308123518.33800-1-xuanzhuo@linux.alibaba.com>
+References: <20220308123518.33800-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,49 +22,52 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Masahiro Yamada <masahiroy@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Kees Cook <keescook@chromium.org>
-Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, llvm@lists.linux.dev, patches@lists.linux.dev, Nathan Chancellor <nathan@kernel.org>
+To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
 
-This flag is specific to clang, where it is only used by the 32-bit and
-64-bit ARM backends. In certain situations, the presence of this flag
-will cause a warning, as shown by commit 6580c5c18fb3 ("um: clang: Strip
-out -mno-global-merge from USER_CFLAGS").
+Virtio MMIO support the new parameter sizes of find_vqs().
 
-Since commit 61163efae020 ("kbuild: LLVMLinux: Add Kbuild support for
-building kernel with Clang") that added this flag back in 2014, there
-have been quite a few changes to the GlobalMerge pass in LLVM. Building
-several different ARCH=arm and ARCH=arm64 configurations with LLVM 11
-(minimum) and 15 (current main version) with this flag removed (i.e.,
-with the default of '-mglobal-merge') reveals no modpost warnings, so it
-is likely that the issue noted in the comment is no longer relevant due
-to changes in LLVM or modpost, meaning this flag can be removed.
-
-If any new warnings show up that are a result of the removal of this
-flag, it can be added back under arch/arm{,64}/Makefile to avoid
-warnings on other architectures.
-
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- Makefile | 4 ----
- 1 file changed, 4 deletions(-)
+ drivers/virtio/virtio_mmio.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index daeb5c88b50b..f2723d9bfca4 100644
---- a/Makefile
-+++ b/Makefile
-@@ -784,10 +784,6 @@ ifdef CONFIG_CC_IS_CLANG
- KBUILD_CPPFLAGS += -Qunused-arguments
- # The kernel builds with '-std=gnu89' so use of GNU extensions is acceptable.
- KBUILD_CFLAGS += -Wno-gnu
--# CLANG uses a _MergedGlobals as optimization, but this breaks modpost, as the
--# source of a reference will be _MergedGlobals and not on of the whitelisted names.
--# See modpost pattern 2
--KBUILD_CFLAGS += -mno-global-merge
- else
+diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
+index 55d575f6ef2d..4d7cd8881282 100644
+--- a/drivers/virtio/virtio_mmio.c
++++ b/drivers/virtio/virtio_mmio.c
+@@ -347,7 +347,7 @@ static void vm_del_vqs(struct virtio_device *vdev)
  
- # gcc inanely warns about local variables called 'main'
+ static struct virtqueue *vm_setup_vq(struct virtio_device *vdev, unsigned index,
+ 				  void (*callback)(struct virtqueue *vq),
+-				  const char *name, bool ctx)
++				  const char *name, u32 size, bool ctx)
+ {
+ 	struct virtio_mmio_device *vm_dev = to_virtio_mmio_device(vdev);
+ 	struct virtio_mmio_vq_info *info;
+@@ -382,8 +382,11 @@ static struct virtqueue *vm_setup_vq(struct virtio_device *vdev, unsigned index,
+ 		goto error_new_virtqueue;
+ 	}
+ 
++	if (!size || size > num)
++		size = num;
++
+ 	/* Create the vring */
+-	vq = vring_create_virtqueue(index, num, VIRTIO_MMIO_VRING_ALIGN, vdev,
++	vq = vring_create_virtqueue(index, size, VIRTIO_MMIO_VRING_ALIGN, vdev,
+ 				 true, true, ctx, vm_notify, callback, name);
+ 	if (!vq) {
+ 		err = -ENOMEM;
+@@ -483,6 +486,7 @@ static int vm_find_vqs(struct virtio_device *vdev, unsigned nvqs,
+ 		}
+ 
+ 		vqs[i] = vm_setup_vq(vdev, queue_idx++, callbacks[i], names[i],
++				     sizes ? sizes[i] : 0,
+ 				     ctx ? ctx[i] : false);
+ 		if (IS_ERR(vqs[i])) {
+ 			vm_del_vqs(vdev);
 -- 
-2.35.1
+2.31.0
 
 
 _______________________________________________
