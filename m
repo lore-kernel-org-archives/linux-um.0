@@ -1,12 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133])
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nRZ47-004NJ0-OI
- for linux-um@lists.infradead.org; Tue, 08 Mar 2022 12:35:49 +0000
+ id 1nRZ4I-004NW1-NW
+ for linux-um@lists.infradead.org; Tue, 08 Mar 2022 12:36:01 +0000
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v7 11/26] virtio_ring: introduce virtqueue_reset_vring()
-Date: Tue,  8 Mar 2022 20:35:03 +0800
-Message-Id: <20220308123518.33800-12-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v7 16/26] virtio_pci: queue_reset: extract the logic of active
+ vq for modern pci
+Date: Tue,  8 Mar 2022 20:35:08 +0800
+Message-Id: <20220308123518.33800-17-xuanzhuo@linux.alibaba.com>
 In-Reply-To: <20220308123518.33800-1-xuanzhuo@linux.alibaba.com>
 References: <20220308123518.33800-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
@@ -25,74 +26,86 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
 Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
 
-Introduce virtqueue_reset_vring() to implement the reset of vring during
-the reset process.
-
-If num is equal to 0 or equal to the original ring num, the original vring
-will be used directly. The vring will not be reallocated. Otherwise, the
-original vring will be released, and the vring will be re-allocated
-based on num.
+Introduce vp_active_vq() to configure vring to backend after vq attach
+vring. And configure vq vector if necessary.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- drivers/virtio/virtio_ring.c | 30 ++++++++++++++++++++++++++++++
- include/linux/virtio.h       |  2 ++
- 2 files changed, 32 insertions(+)
+ drivers/virtio/virtio_pci_modern.c | 46 ++++++++++++++++++------------
+ 1 file changed, 28 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 5afcbabcfb1e..bbff9ba53f80 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -2534,6 +2534,36 @@ struct virtqueue *vring_create_virtqueue(
+diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
+index 86d301f272b8..49a4493732cf 100644
+--- a/drivers/virtio/virtio_pci_modern.c
++++ b/drivers/virtio/virtio_pci_modern.c
+@@ -176,6 +176,29 @@ static void vp_reset(struct virtio_device *vdev)
+ 	vp_disable_cbs(vdev);
  }
- EXPORT_SYMBOL_GPL(vring_create_virtqueue);
  
-+/**
-+ * virtqueue_reset_vring - reset the vring of vq
-+ * @vq: the struct virtqueue we're talking about.
-+ * @num: new ring num
-+ *
-+ * If num is equal to 0 or equal to the original ring num, the original vring
-+ * will be used directly. The vring will not be reallocated. Otherwise, the
-+ * original vring will be released, and the vring will be re-allocated based on
-+ * num.
-+ *
-+ * This function must be called after virtio_reset_vq(). For more information on
-+ * vq reset see the description of virtio_reset_vq().
-+ *
-+ *
-+ * Caller must ensure we don't call this with other virtqueue operations
-+ * at the same time (except where noted).
-+ *
-+ * Returns zero or a negative error.
-+ */
-+int virtqueue_reset_vring(struct virtqueue *vq, u32 num)
++static int vp_active_vq(struct virtqueue *vq, u16 msix_vec)
 +{
-+	struct virtio_device *vdev = vq->vdev;
++	struct virtio_pci_device *vp_dev = to_vp_device(vq->vdev);
++	struct virtio_pci_modern_device *mdev = &vp_dev->mdev;
++	unsigned long index;
 +
-+	if (virtio_has_feature(vdev, VIRTIO_F_RING_PACKED))
-+		return virtqueue_reset_vring_packed(vq, num);
++	index = vq->index;
 +
-+	return virtqueue_reset_vring_split(vq, num);
++	/* activate the queue */
++	vp_modern_set_queue_size(mdev, index, virtqueue_get_vring_size(vq));
++	vp_modern_queue_address(mdev, index, virtqueue_get_desc_addr(vq),
++				virtqueue_get_avail_addr(vq),
++				virtqueue_get_used_addr(vq));
++
++	if (msix_vec != VIRTIO_MSI_NO_VECTOR) {
++		msix_vec = vp_modern_queue_vector(mdev, index, msix_vec);
++		if (msix_vec == VIRTIO_MSI_NO_VECTOR)
++			return -EBUSY;
++	}
++
++	return 0;
 +}
-+EXPORT_SYMBOL_GPL(virtqueue_reset_vring);
 +
- /* Only available for split ring */
- struct virtqueue *vring_new_virtqueue(unsigned int index,
- 				      unsigned int num,
-diff --git a/include/linux/virtio.h b/include/linux/virtio.h
-index e3714e6db330..7bf29f9e7491 100644
---- a/include/linux/virtio.h
-+++ b/include/linux/virtio.h
-@@ -99,6 +99,8 @@ dma_addr_t virtqueue_get_desc_addr(struct virtqueue *vq);
- dma_addr_t virtqueue_get_avail_addr(struct virtqueue *vq);
- dma_addr_t virtqueue_get_used_addr(struct virtqueue *vq);
+ static u16 vp_config_vector(struct virtio_pci_device *vp_dev, u16 vector)
+ {
+ 	return vp_modern_config_vector(&vp_dev->mdev, vector);
+@@ -220,32 +243,19 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
  
-+int virtqueue_reset_vring(struct virtqueue *vq, u32 num);
-+
- /**
-  * virtio_device - representation of a device using virtio
-  * @index: unique position on the virtio bus
+ 	vq->num_max = num;
+ 
+-	/* activate the queue */
+-	vp_modern_set_queue_size(mdev, index, virtqueue_get_vring_size(vq));
+-	vp_modern_queue_address(mdev, index, virtqueue_get_desc_addr(vq),
+-				virtqueue_get_avail_addr(vq),
+-				virtqueue_get_used_addr(vq));
++	err = vp_active_vq(vq, msix_vec);
++	if (err)
++		goto err;
+ 
+ 	vq->priv = (void __force *)vp_modern_map_vq_notify(mdev, index, NULL);
+ 	if (!vq->priv) {
+ 		err = -ENOMEM;
+-		goto err_map_notify;
+-	}
+-
+-	if (msix_vec != VIRTIO_MSI_NO_VECTOR) {
+-		msix_vec = vp_modern_queue_vector(mdev, index, msix_vec);
+-		if (msix_vec == VIRTIO_MSI_NO_VECTOR) {
+-			err = -EBUSY;
+-			goto err_assign_vector;
+-		}
++		goto err;
+ 	}
+ 
+ 	return vq;
+ 
+-err_assign_vector:
+-	if (!mdev->notify_base)
+-		pci_iounmap(mdev->pci_dev, (void __iomem __force *)vq->priv);
+-err_map_notify:
++err:
+ 	vring_del_virtqueue(vq);
+ 	return ERR_PTR(err);
+ }
 -- 
 2.31.0
 
