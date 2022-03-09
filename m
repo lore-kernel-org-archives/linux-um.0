@@ -1,15 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from smtp2.axis.com ([195.60.68.18])
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nSi4o-00HKrP-Uo
- for linux-um@lists.infradead.org; Fri, 11 Mar 2022 16:25:18 +0000
-From: Vincent Whitchurch <vincent.whitchurch@axis.com>
-Subject: [RFC v1 05/10] roadtest: add build files
-Date: Fri, 11 Mar 2022 17:24:40 +0100
-Message-ID: <20220311162445.346685-6-vincent.whitchurch@axis.com>
-In-Reply-To: <20220311162445.346685-1-vincent.whitchurch@axis.com>
-References: <20220311162445.346685-1-vincent.whitchurch@axis.com>
-MIME-Version: 1.0
+ id 1nRsWA-007tpH-Rl
+ for linux-um@lists.infradead.org; Wed, 09 Mar 2022 09:22:04 +0000
+Message-ID: <1646817687.2614713-4-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH v7 05/26] virtio_ring: split: extract the logic of init vq
+ and attach vring
+Date: Wed, 9 Mar 2022 17:21:27 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+References: <20220308123518.33800-1-xuanzhuo@linux.alibaba.com>
+ <20220308123518.33800-6-xuanzhuo@linux.alibaba.com>
+ <85dde6ed-cdf1-61e4-6f05-d3e2477b9e35@redhat.com>
+In-Reply-To: <85dde6ed-cdf1-61e4-6f05-d3e2477b9e35@redhat.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,208 +20,118 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: kernel@axis.com, Vincent Whitchurch <vincent.whitchurch@axis.com>, devicetree@vger.kernel.org, linux-um@lists.infradead.org, shuah@kernel.org, brendanhiggins@google.com, linux-kselftest@vger.kernel.org, jic23@kernel.org, linux-iio@vger.kernel.org, lgirdwood@gmail.com, broonie@kernel.org, a.zummo@towertech.it, alexandre.belloni@bootlin.com, linux-rtc@vger.kernel.org, corbet@lwn.net, linux-doc@vger.kernel.org
+To: Jason Wang <jasowang@redhat.com>
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
 
-Add a Makefile and other miscellaneous build-related files for the
-roadtest framework.
-
-To make it easier to run the tests on systems which do not have the
-required libraries or Python version, a Dockerfile is included and the
-Makefile has built-in support for running the tests in a Docker
-container.
-
-Targets for code formatting and static checking of the Python code are
-included.
-
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
----
- tools/testing/roadtest/.gitignore       |  2 +
- tools/testing/roadtest/Dockerfile       | 25 ++++++++
- tools/testing/roadtest/Makefile         | 84 +++++++++++++++++++++++++
- tools/testing/roadtest/pyproject.toml   | 10 +++
- tools/testing/roadtest/requirements.txt |  4 ++
- tools/testing/roadtest/src/.gitignore   |  1 +
- 6 files changed, 126 insertions(+)
- create mode 100644 tools/testing/roadtest/.gitignore
- create mode 100644 tools/testing/roadtest/Dockerfile
- create mode 100644 tools/testing/roadtest/Makefile
- create mode 100644 tools/testing/roadtest/pyproject.toml
- create mode 100644 tools/testing/roadtest/requirements.txt
- create mode 100644 tools/testing/roadtest/src/.gitignore
-
-diff --git a/tools/testing/roadtest/.gitignore b/tools/testing/roadtest/.gitignore
-new file mode 100644
-index 000000000000..0cbd00343694
---- /dev/null
-+++ b/tools/testing/roadtest/.gitignore
-@@ -0,0 +1,2 @@
-+__pycache__
-+.py[cod]
-diff --git a/tools/testing/roadtest/Dockerfile b/tools/testing/roadtest/Dockerfile
-new file mode 100644
-index 000000000000..f2982179c327
---- /dev/null
-+++ b/tools/testing/roadtest/Dockerfile
-@@ -0,0 +1,25 @@
-+FROM debian:bullseye
-+
-+# Kernel build
-+RUN apt-get update && apt-get -y install \
-+    bc \
-+    build-essential \
-+    flex \
-+    bison \
-+    rsync \
-+    kmod
-+
-+# Running roadtests
-+RUN apt-get update && apt-get -y install \
-+     python3.9 \
-+     libpython3.9-dev \
-+     python3 \
-+     device-tree-compiler
-+
-+# Development and debugging
-+RUN apt-get update && apt-get -y install \
-+     uml-utilities \
-+     telnetd \
-+     python3-pip
-+COPY requirements.txt /tmp/
-+RUN pip install --requirement /tmp/requirements.txt
-diff --git a/tools/testing/roadtest/Makefile b/tools/testing/roadtest/Makefile
-new file mode 100644
-index 000000000000..525b26581142
---- /dev/null
-+++ b/tools/testing/roadtest/Makefile
-@@ -0,0 +1,84 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+# Copyright Axis Communications AB
-+
-+.PHONY: all build-kernel test clean check fmt docker-run
-+
-+all:
-+
-+KSOURCE := ${PWD}
-+ROADTEST_DIR = ${CURDIR}
-+ROADTEST_BUILD_DIR := ${KSOURCE}/.roadtest
-+KHEADERS := ${ROADTEST_BUILD_DIR}/usr
-+KMODULES := ${ROADTEST_BUILD_DIR}/modules
-+
-+ifeq (${KSOURCE},${ROADTEST_DIR})
-+# Make make from the standard roadtest directory work without having to set
-+# additional variables.
-+KSOURCE=$(ROADTEST_DIR:/tools/testing/roadtest=)
-+endif
-+
-+CFLAGS += -g -D_GNU_SOURCE=1 -Wall -Werror -std=gnu99 \
-+			-I${KSOURCE}/tools/include/ \
-+			-I${KHEADERS}/include/ \
-+			-I${ROADTEST_DIR}/src/libvhost-user/ \
-+			$(shell python3-config --embed --includes) -O2
-+
-+${ROADTEST_BUILD_DIR}/roadtest-backend: ${ROADTEST_BUILD_DIR}/backend.o ${ROADTEST_BUILD_DIR}/libvhost-user.o
-+	$(CC) -o $@ $^ $(shell python3-config --embed --libs)
-+	# For the benefit of clangd
-+	echo ${CFLAGS} | tr " " "\n" > ${ROADTEST_DIR}/src/compile_flags.txt
-+
-+${ROADTEST_BUILD_DIR}/backend.o: src/backend.c
-+	$(CC) -c -o $@ $(CFLAGS) $<
-+
-+${ROADTEST_BUILD_DIR}/libvhost-user.o: src/libvhost-user/libvhost-user.c
-+	$(CC) -c -o $@ $(CFLAGS) $<
-+
-+clean:
-+	rm -rf ${ROADTEST_BUILD_DIR} .docker_built
-+
-+ifeq ($(DOCKER),1)
-+.docker_built: Dockerfile requirements.txt
-+	docker build --network=host -t roadtest ${ROADTEST_DIR}
-+	touch $@
-+
-+# --network=host allows UML's con=port:... to work seamlessly
-+docker-run: .docker_built
-+	mkdir -p ${ROADTEST_BUILD_DIR}/umltmp
-+	docker run --network=host ${DOCKEROPTS} --user $(shell id -u ${USER}):$(shell id -g ${USER}) --interactive --tty --rm -v ${KSOURCE}:${KSOURCE} -w ${KSOURCE} --env TMPDIR=${ROADTEST_BUILD_DIR}/umltmp roadtest sh -c '${MAKE} -C ${ROADTEST_DIR} -${MAKEFLAGS} ${MAKECMDGOALS} DOCKER=0'
-+
-+all test build-kernel check fmt: docker-run
-+	@:
-+else
-+all: test
-+
-+ifneq ($(KBUILD),0)
-+# Calling make on the kernel is slow even if there is nothing to be rebuilt.
-+# Allow the user to avoid it with KBUILD=0
-+${ROADTEST_BUILD_DIR}/backend.o: build-kernel
-+${ROADTEST_BUILD_DIR}/libvhost-user.o: build-kernel
-+test: build-kernel
-+endif
-+
-+build-kernel:
-+	mkdir -p ${ROADTEST_BUILD_DIR}
-+	find ${ROADTEST_DIR}/roadtest/tests/ -type f -name config | xargs cat > ${ROADTEST_BUILD_DIR}/.config
-+	${MAKE} -C ${KSOURCE} ARCH=um O=${ROADTEST_BUILD_DIR} olddefconfig
-+	${MAKE} -C ${KSOURCE} ARCH=um O=${ROADTEST_BUILD_DIR}
-+	${MAKE} -C ${KSOURCE} ARCH=um O=${ROADTEST_BUILD_DIR} INSTALL_HDR_PATH=${KHEADERS} headers_install
-+	${MAKE} -C ${KSOURCE} ARCH=um O=${ROADTEST_BUILD_DIR} INSTALL_MOD_PATH=${KMODULES} modules_install
-+
-+test: ${ROADTEST_BUILD_DIR}/roadtest-backend
-+	python3 -m roadtest.cmd.main --ksrc-dir ${KSOURCE} --build-dir ${ROADTEST_BUILD_DIR} --work-dir ${ROADTEST_BUILD_DIR}/roadtest-work/ ${OPTS}
-+
-+check:
-+	mypy --no-error-summary roadtest
-+	pyflakes roadtest
-+	black --check roadtest
-+	isort --profile black --check roadtest
-+
-+fmt:
-+	black roadtest
-+	isort --profile black roadtest
-+
-+endif
-diff --git a/tools/testing/roadtest/pyproject.toml b/tools/testing/roadtest/pyproject.toml
-new file mode 100644
-index 000000000000..6b8b05eb3cad
---- /dev/null
-+++ b/tools/testing/roadtest/pyproject.toml
-@@ -0,0 +1,10 @@
-+[tool.isort]
-+profile = "black"
-+
-+[tool.mypy]
-+disallow_untyped_defs = true
-+check_untyped_defs = true
-+no_implicit_optional = true
-+warn_return_any = true
-+warn_unused_ignores = true
-+show_error_codes = true
-diff --git a/tools/testing/roadtest/requirements.txt b/tools/testing/roadtest/requirements.txt
-new file mode 100644
-index 000000000000..e1ac403d826e
---- /dev/null
-+++ b/tools/testing/roadtest/requirements.txt
-@@ -0,0 +1,4 @@
-+black==22.1.0
-+isort==5.10.1
-+mypy==0.931
-+pyflakes==2.4.0
-diff --git a/tools/testing/roadtest/src/.gitignore b/tools/testing/roadtest/src/.gitignore
-new file mode 100644
-index 000000000000..895dab3fe4be
---- /dev/null
-+++ b/tools/testing/roadtest/src/.gitignore
-@@ -0,0 +1 @@
-+compile_flags.txt
--- 
-2.34.1
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gV2VkLCA5IE1hciAyMDIyIDE1OjM2OjU5ICswODAwLCBKYXNvbiBXYW5nIDxqYXNvd2FuZ0By
+ZWRoYXQuY29tPiB3cm90ZToKPgo+IOWcqCAyMDIyLzMvOCDkuIvljYg4OjM0LCBYdWFuIFpodW8g
+5YaZ6YGTOgo+ID4gU3BsaXQgdGhlIGxvZ2ljIG9mIHNwbGl0IGFzc2lnbm1lbnQgdnEgaW50byB0
+aHJlZSBwYXJ0cy4KPiA+Cj4gPiAxLiBUaGUgYXNzaWdubWVudCBwYXNzZWQgZnJvbSB0aGUgZnVu
+Y3Rpb24gcGFyYW1ldGVyCj4gPiAyLiBUaGUgcGFydCB0aGF0IGF0dGFjaGVzIHZyaW5nIHRvIHZx
+LiAtLSBfX3ZyaW5nX3ZpcnRxdWV1ZV9hdHRhY2hfc3BsaXQoKQo+ID4gMy4gVGhlIHBhcnQgdGhh
+dCBpbml0aWFsaXplcyB2cSB0byBhIGZpeGVkIHZhbHVlIC0tCj4gPiAgICAgX192cmluZ192aXJ0
+cXVldWVfaW5pdF9zcGxpdCgpCj4gPgo+ID4gVGhpcyBmZWF0dXJlIGlzIHJlcXVpcmVkIGZvciBz
+dWJzZXF1ZW50IHZpcnR1cXVldWUgcmVzZXQgdnJpbmcKPiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBY
+dWFuIFpodW8gPHh1YW56aHVvQGxpbnV4LmFsaWJhYmEuY29tPgo+ID4gLS0tCj4gPiAgIGRyaXZl
+cnMvdmlydGlvL3ZpcnRpb19yaW5nLmMgfCAxMTEgKysrKysrKysrKysrKysrKysrKysrLS0tLS0t
+LS0tLS0tLS0KPiA+ICAgMSBmaWxlIGNoYW5nZWQsIDY3IGluc2VydGlvbnMoKyksIDQ0IGRlbGV0
+aW9ucygtKQo+ID4KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3ZpcnRpby92aXJ0aW9fcmluZy5j
+IGIvZHJpdmVycy92aXJ0aW8vdmlydGlvX3JpbmcuYwo+ID4gaW5kZXggZDMyNzkzNjE1NDUxLi5k
+YzYzMTNiNzkzMDUgMTAwNjQ0Cj4gPiAtLS0gYS9kcml2ZXJzL3ZpcnRpby92aXJ0aW9fcmluZy5j
+Cj4gPiArKysgYi9kcml2ZXJzL3ZpcnRpby92aXJ0aW9fcmluZy5jCj4gPiBAQCAtMjE5NiwzNCAr
+MjE5Niw0MCBAQCBpcnFyZXR1cm5fdCB2cmluZ19pbnRlcnJ1cHQoaW50IGlycSwgdm9pZCAqX3Zx
+KQo+ID4gICB9Cj4gPiAgIEVYUE9SVF9TWU1CT0xfR1BMKHZyaW5nX2ludGVycnVwdCk7Cj4gPgo+
+ID4gLS8qIE9ubHkgYXZhaWxhYmxlIGZvciBzcGxpdCByaW5nICovCj4gPiAtc3RydWN0IHZpcnRx
+dWV1ZSAqX192cmluZ19uZXdfdmlydHF1ZXVlKHVuc2lnbmVkIGludCBpbmRleCwKPiA+IC0JCQkJ
+CXN0cnVjdCB2cmluZyB2cmluZywKPiA+IC0JCQkJCXN0cnVjdCB2aXJ0aW9fZGV2aWNlICp2ZGV2
+LAo+ID4gLQkJCQkJYm9vbCB3ZWFrX2JhcnJpZXJzLAo+ID4gLQkJCQkJYm9vbCBjb250ZXh0LAo+
+ID4gLQkJCQkJYm9vbCAoKm5vdGlmeSkoc3RydWN0IHZpcnRxdWV1ZSAqKSwKPiA+IC0JCQkJCXZv
+aWQgKCpjYWxsYmFjaykoc3RydWN0IHZpcnRxdWV1ZSAqKSwKPiA+IC0JCQkJCWNvbnN0IGNoYXIg
+Km5hbWUpCj4gPiArc3RhdGljIGludCBfX3ZyaW5nX3ZpcnRxdWV1ZV9hdHRhY2hfc3BsaXQoc3Ry
+dWN0IHZyaW5nX3ZpcnRxdWV1ZSAqdnEsCj4gPiArCQkJCQkgIHN0cnVjdCB2aXJ0aW9fZGV2aWNl
+ICp2ZGV2LAo+ID4gKwkJCQkJICBzdHJ1Y3QgdnJpbmcgdnJpbmcpCj4gPiAgIHsKPiA+IC0Jc3Ry
+dWN0IHZyaW5nX3ZpcnRxdWV1ZSAqdnE7Cj4gPiArCXZxLT52cS5udW1fZnJlZSA9IHZyaW5nLm51
+bTsKPiA+Cj4gPiAtCWlmICh2aXJ0aW9faGFzX2ZlYXR1cmUodmRldiwgVklSVElPX0ZfUklOR19Q
+QUNLRUQpKQo+ID4gLQkJcmV0dXJuIE5VTEw7Cj4gPiArCXZxLT5zcGxpdC52cmluZyA9IHZyaW5n
+Owo+ID4gKwl2cS0+c3BsaXQucXVldWVfZG1hX2FkZHIgPSAwOwo+ID4gKwl2cS0+c3BsaXQucXVl
+dWVfc2l6ZV9pbl9ieXRlcyA9IDA7Cj4gPgo+ID4gLQl2cSA9IGttYWxsb2Moc2l6ZW9mKCp2cSks
+IEdGUF9LRVJORUwpOwo+ID4gLQlpZiAoIXZxKQo+ID4gLQkJcmV0dXJuIE5VTEw7Cj4gPiArCXZx
+LT5zcGxpdC5kZXNjX3N0YXRlID0ga21hbGxvY19hcnJheSh2cmluZy5udW0sCj4gPiArCQkJCQkg
+ICAgIHNpemVvZihzdHJ1Y3QgdnJpbmdfZGVzY19zdGF0ZV9zcGxpdCksIEdGUF9LRVJORUwpOwo+
+ID4gKwlpZiAoIXZxLT5zcGxpdC5kZXNjX3N0YXRlKQo+ID4gKwkJZ290byBlcnJfc3RhdGU7Cj4g
+Pgo+ID4gKwl2cS0+c3BsaXQuZGVzY19leHRyYSA9IHZyaW5nX2FsbG9jX2Rlc2NfZXh0cmEodnEs
+IHZyaW5nLm51bSk7Cj4gPiArCWlmICghdnEtPnNwbGl0LmRlc2NfZXh0cmEpCj4gPiArCQlnb3Rv
+IGVycl9leHRyYTsKPgo+Cj4gU28gdGhpcyBjb250YWlucyBzdHVmZnMgbW9yZSB0aGFuIGp1c3Qg
+YXR0YWNoLiBJIHdvbmRlciBpZiBpdCdzIGJldHRlcgo+IHRvIHNwbGl0IHRoZSBhbGxvY2F0aW9u
+IG91dCB0byBhbiBkZWRpY2F0ZWQgaGVscGVyICh3ZSBoYXZlIGRlZGljYXRlZAo+IGhlbHBlciB0
+byBhbGxvY2F0ZSB2cmluZykuCgpJIHdpbGwgdHJ5IGluIG5leHQgdmVyc2lvbi4KClRoYW5rcy4K
+Cj4KPiBUaGFua3MKPgo+Cj4gPiArCj4gPiArCW1lbXNldCh2cS0+c3BsaXQuZGVzY19zdGF0ZSwg
+MCwgdnJpbmcubnVtICoKPiA+ICsJICAgICAgIHNpemVvZihzdHJ1Y3QgdnJpbmdfZGVzY19zdGF0
+ZV9zcGxpdCkpOwo+ID4gKwlyZXR1cm4gMDsKPiA+ICsKPiA+ICtlcnJfZXh0cmE6Cj4gPiArCWtm
+cmVlKHZxLT5zcGxpdC5kZXNjX3N0YXRlKTsKPiA+ICtlcnJfc3RhdGU6Cj4gPiArCXJldHVybiAt
+RU5PTUVNOwo+ID4gK30KPiA+ICsKPiA+ICtzdGF0aWMgdm9pZCBfX3ZyaW5nX3ZpcnRxdWV1ZV9p
+bml0X3NwbGl0KHN0cnVjdCB2cmluZ192aXJ0cXVldWUgKnZxLAo+ID4gKwkJCQkJIHN0cnVjdCB2
+aXJ0aW9fZGV2aWNlICp2ZGV2KQo+ID4gK3sKPiA+ICAgCXZxLT5wYWNrZWRfcmluZyA9IGZhbHNl
+Owo+ID4gLQl2cS0+dnEuY2FsbGJhY2sgPSBjYWxsYmFjazsKPiA+IC0JdnEtPnZxLnZkZXYgPSB2
+ZGV2Owo+ID4gLQl2cS0+dnEubmFtZSA9IG5hbWU7Cj4gPiAtCXZxLT52cS5udW1fZnJlZSA9IHZy
+aW5nLm51bTsKPiA+IC0JdnEtPnZxLmluZGV4ID0gaW5kZXg7Cj4gPiAgIAl2cS0+d2Vfb3duX3Jp
+bmcgPSBmYWxzZTsKPiA+IC0JdnEtPm5vdGlmeSA9IG5vdGlmeTsKPiA+IC0JdnEtPndlYWtfYmFy
+cmllcnMgPSB3ZWFrX2JhcnJpZXJzOwo+ID4gICAJdnEtPmJyb2tlbiA9IGZhbHNlOwo+ID4gICAJ
+dnEtPmxhc3RfdXNlZF9pZHggPSAwOwo+ID4gICAJdnEtPmV2ZW50X3RyaWdnZXJlZCA9IGZhbHNl
+Owo+ID4gQEAgLTIyMzQsNTAgKzIyNDAsNjcgQEAgc3RydWN0IHZpcnRxdWV1ZSAqX192cmluZ19u
+ZXdfdmlydHF1ZXVlKHVuc2lnbmVkIGludCBpbmRleCwKPiA+ICAgCXZxLT5sYXN0X2FkZF90aW1l
+X3ZhbGlkID0gZmFsc2U7Cj4gPiAgICNlbmRpZgo+ID4KPiA+IC0JdnEtPmluZGlyZWN0ID0gdmly
+dGlvX2hhc19mZWF0dXJlKHZkZXYsIFZJUlRJT19SSU5HX0ZfSU5ESVJFQ1RfREVTQykgJiYKPiA+
+IC0JCSFjb250ZXh0Owo+ID4gICAJdnEtPmV2ZW50ID0gdmlydGlvX2hhc19mZWF0dXJlKHZkZXYs
+IFZJUlRJT19SSU5HX0ZfRVZFTlRfSURYKTsKPiA+Cj4gPiAgIAlpZiAodmlydGlvX2hhc19mZWF0
+dXJlKHZkZXYsIFZJUlRJT19GX09SREVSX1BMQVRGT1JNKSkKPiA+ICAgCQl2cS0+d2Vha19iYXJy
+aWVycyA9IGZhbHNlOwo+ID4KPiA+IC0JdnEtPnNwbGl0LnF1ZXVlX2RtYV9hZGRyID0gMDsKPiA+
+IC0JdnEtPnNwbGl0LnF1ZXVlX3NpemVfaW5fYnl0ZXMgPSAwOwo+ID4gLQo+ID4gLQl2cS0+c3Bs
+aXQudnJpbmcgPSB2cmluZzsKPiA+ICAgCXZxLT5zcGxpdC5hdmFpbF9mbGFnc19zaGFkb3cgPSAw
+Owo+ID4gICAJdnEtPnNwbGl0LmF2YWlsX2lkeF9zaGFkb3cgPSAwOwo+ID4KPiA+ICAgCS8qIE5v
+IGNhbGxiYWNrPyAgVGVsbCBvdGhlciBzaWRlIG5vdCB0byBib3RoZXIgdXMuICovCj4gPiAtCWlm
+ICghY2FsbGJhY2spIHsKPiA+ICsJaWYgKCF2cS0+dnEuY2FsbGJhY2spIHsKPiA+ICAgCQl2cS0+
+c3BsaXQuYXZhaWxfZmxhZ3Nfc2hhZG93IHw9IFZSSU5HX0FWQUlMX0ZfTk9fSU5URVJSVVBUOwo+
+ID4gICAJCWlmICghdnEtPmV2ZW50KQo+ID4gICAJCQl2cS0+c3BsaXQudnJpbmcuYXZhaWwtPmZs
+YWdzID0gY3B1X3RvX3ZpcnRpbzE2KHZkZXYsCj4gPiAgIAkJCQkJdnEtPnNwbGl0LmF2YWlsX2Zs
+YWdzX3NoYWRvdyk7Cj4gPiAgIAl9Cj4gPgo+ID4gLQl2cS0+c3BsaXQuZGVzY19zdGF0ZSA9IGtt
+YWxsb2NfYXJyYXkodnJpbmcubnVtLAo+ID4gLQkJCXNpemVvZihzdHJ1Y3QgdnJpbmdfZGVzY19z
+dGF0ZV9zcGxpdCksIEdGUF9LRVJORUwpOwo+ID4gLQlpZiAoIXZxLT5zcGxpdC5kZXNjX3N0YXRl
+KQo+ID4gLQkJZ290byBlcnJfc3RhdGU7Cj4gPiAtCj4gPiAtCXZxLT5zcGxpdC5kZXNjX2V4dHJh
+ID0gdnJpbmdfYWxsb2NfZGVzY19leHRyYSh2cSwgdnJpbmcubnVtKTsKPiA+IC0JaWYgKCF2cS0+
+c3BsaXQuZGVzY19leHRyYSkKPiA+IC0JCWdvdG8gZXJyX2V4dHJhOwo+ID4gLQo+ID4gICAJLyog
+UHV0IGV2ZXJ5dGhpbmcgaW4gZnJlZSBsaXN0cy4gKi8KPiA+ICAgCXZxLT5mcmVlX2hlYWQgPSAw
+Owo+ID4gLQltZW1zZXQodnEtPnNwbGl0LmRlc2Nfc3RhdGUsIDAsIHZyaW5nLm51bSAqCj4gPiAt
+CQkJc2l6ZW9mKHN0cnVjdCB2cmluZ19kZXNjX3N0YXRlX3NwbGl0KSk7Cj4gPiArfQo+ID4gKwo+
+ID4gKy8qIE9ubHkgYXZhaWxhYmxlIGZvciBzcGxpdCByaW5nICovCj4gPiArc3RydWN0IHZpcnRx
+dWV1ZSAqX192cmluZ19uZXdfdmlydHF1ZXVlKHVuc2lnbmVkIGludCBpbmRleCwKPiA+ICsJCQkJ
+CXN0cnVjdCB2cmluZyB2cmluZywKPiA+ICsJCQkJCXN0cnVjdCB2aXJ0aW9fZGV2aWNlICp2ZGV2
+LAo+ID4gKwkJCQkJYm9vbCB3ZWFrX2JhcnJpZXJzLAo+ID4gKwkJCQkJYm9vbCBjb250ZXh0LAo+
+ID4gKwkJCQkJYm9vbCAoKm5vdGlmeSkoc3RydWN0IHZpcnRxdWV1ZSAqKSwKPiA+ICsJCQkJCXZv
+aWQgKCpjYWxsYmFjaykoc3RydWN0IHZpcnRxdWV1ZSAqKSwKPiA+ICsJCQkJCWNvbnN0IGNoYXIg
+Km5hbWUpCj4gPiArewo+ID4gKwlzdHJ1Y3QgdnJpbmdfdmlydHF1ZXVlICp2cTsKPiA+ICsJaW50
+IGVycjsKPiA+ICsKPiA+ICsJaWYgKHZpcnRpb19oYXNfZmVhdHVyZSh2ZGV2LCBWSVJUSU9fRl9S
+SU5HX1BBQ0tFRCkpCj4gPiArCQlyZXR1cm4gTlVMTDsKPiA+ICsKPiA+ICsJdnEgPSBrbWFsbG9j
+KHNpemVvZigqdnEpLCBHRlBfS0VSTkVMKTsKPiA+ICsJaWYgKCF2cSkKPiA+ICsJCXJldHVybiBO
+VUxMOwo+ID4gKwo+ID4gKwl2cS0+dnEuY2FsbGJhY2sgPSBjYWxsYmFjazsKPiA+ICsJdnEtPnZx
+LnZkZXYgPSB2ZGV2Owo+ID4gKwl2cS0+dnEubmFtZSA9IG5hbWU7Cj4gPiArCXZxLT52cS5pbmRl
+eCA9IGluZGV4Owo+ID4gKwl2cS0+bm90aWZ5ID0gbm90aWZ5Owo+ID4gKwl2cS0+d2Vha19iYXJy
+aWVycyA9IHdlYWtfYmFycmllcnM7Cj4gPiArCXZxLT5pbmRpcmVjdCA9IHZpcnRpb19oYXNfZmVh
+dHVyZSh2ZGV2LCBWSVJUSU9fUklOR19GX0lORElSRUNUX0RFU0MpICYmCj4gPiArCQkhY29udGV4
+dDsKPiA+ICsKPiA+ICsJZXJyID0gX192cmluZ192aXJ0cXVldWVfYXR0YWNoX3NwbGl0KHZxLCB2
+ZGV2LCB2cmluZyk7Cj4gPiArCWlmIChlcnIpCj4gPiArCQlnb3RvIGVycjsKPiA+ICsKPiA+ICsJ
+X192cmluZ192aXJ0cXVldWVfaW5pdF9zcGxpdCh2cSwgdmRldik7Cj4gPgo+ID4gICAJc3Bpbl9s
+b2NrKCZ2ZGV2LT52cXNfbGlzdF9sb2NrKTsKPiA+ICAgCWxpc3RfYWRkX3RhaWwoJnZxLT52cS5s
+aXN0LCAmdmRldi0+dnFzKTsKPiA+ICAgCXNwaW5fdW5sb2NrKCZ2ZGV2LT52cXNfbGlzdF9sb2Nr
+KTsKPiA+IC0JcmV0dXJuICZ2cS0+dnE7Cj4gPgo+ID4gLWVycl9leHRyYToKPiA+IC0Ja2ZyZWUo
+dnEtPnNwbGl0LmRlc2Nfc3RhdGUpOwo+ID4gLWVycl9zdGF0ZToKPiA+ICsJcmV0dXJuICZ2cS0+
+dnE7Cj4gPiArZXJyOgo+ID4gICAJa2ZyZWUodnEpOwo+ID4gICAJcmV0dXJuIE5VTEw7Cj4gPiAg
+IH0KPgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGlu
+dXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
 
