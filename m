@@ -1,81 +1,244 @@
-Return-Path: <christophe.leroy@csgroup.eu>
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: Re: [PATCH V3 09/30] arm/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Date: Tue, 1 Mar 2022 08:16:40 +0000
-Message-ID: <dc3c95a4-de06-9889-ce1e-f660fc9fbb95@csgroup.eu>
-References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
- <1646045273-9343-10-git-send-email-anshuman.khandual@arm.com>
- <Yhyqjo/4bozJB6j5@shell.armlinux.org.uk>
- <542fa048-131e-240b-cc3a-fd4fff7ce4ba@arm.com>
- <Yh1pYAOiskEQes3p@shell.armlinux.org.uk>
-In-Reply-To: <Yh1pYAOiskEQes3p@shell.armlinux.org.uk>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <4A56E783369F704ABC810F1AD4794DD3@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pj1-x1033.google.com ([2607:f8b0:4864:20::1033])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nS0tq-00A2lf-Hw
+ for linux-um@lists.infradead.org; Wed, 09 Mar 2022 18:19:04 +0000
+Received: by mail-pj1-x1033.google.com with SMTP id
+ c16-20020a17090aa61000b001befad2bfaaso3060520pjq.1
+ for <linux-um@lists.infradead.org>; Wed, 09 Mar 2022 10:19:01 -0800 (PST)
+Date: Wed, 9 Mar 2022 11:18:55 -0700
+From: Mathieu Poirier <mathieu.poirier@linaro.org>
+Subject: Re: [PATCH v7 18/26] virtio: find_vqs() add arg sizes
+Message-ID: <20220309181855.GA1983245@p14s>
+References: <20220308123518.33800-1-xuanzhuo@linux.alibaba.com>
+ <20220308123518.33800-19-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>, Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>, Christoph Hellwig <hch@infradead.org>, "geert@linux-m68k.org" <geert@linux-m68k.org>, "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, Arnd Bergmann <arnd@arndb.de>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, "openrisc@lists.librecores.org" <openrisc@lists.librecores.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-List-ID: <linux-um.lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <20220308123518.33800-19-xuanzhuo@linux.alibaba.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
 
-DQoNCkxlIDAxLzAzLzIwMjIgw6AgMDE6MzEsIFJ1c3NlbGwgS2luZyAoT3JhY2xlKSBhIMOpY3Jp
-dMKgOg0KPiBPbiBUdWUsIE1hciAwMSwgMjAyMiBhdCAwNTozMDo0MUFNICswNTMwLCBBbnNodW1h
-biBLaGFuZHVhbCB3cm90ZToNCj4+IE9uIDIvMjgvMjIgNDoyNyBQTSwgUnVzc2VsbCBLaW5nIChP
-cmFjbGUpIHdyb3RlOg0KPj4+IE9uIE1vbiwgRmViIDI4LCAyMDIyIGF0IDA0OjE3OjMyUE0gKzA1
-MzAsIEFuc2h1bWFuIEtoYW5kdWFsIHdyb3RlOg0KPj4+PiBUaGlzIGRlZmluZXMgYW5kIGV4cG9y
-dHMgYSBwbGF0Zm9ybSBzcGVjaWZpYyBjdXN0b20gdm1fZ2V0X3BhZ2VfcHJvdCgpIHZpYQ0KPj4+
-PiBzdWJzY3JpYmluZyBBUkNIX0hBU19WTV9HRVRfUEFHRV9QUk9ULiBTdWJzZXF1ZW50bHkgYWxs
-IF9fU1hYWCBhbmQgX19QWFhYDQo+Pj4+IG1hY3JvcyBjYW4gYmUgZHJvcHBlZCB3aGljaCBhcmUg
-bm8gbG9uZ2VyIG5lZWRlZC4NCj4+Pg0KPj4+IFdoYXQgSSB3b3VsZCByZWFsbHkgbGlrZSB0byBr
-bm93IGlzIHdoeSBoYXZpbmcgdG8gcnVuIF9jb2RlXyB0byB3b3JrIG91dA0KPj4+IHdoYXQgdGhl
-IHBhZ2UgcHJvdGVjdGlvbnMgbmVlZCB0byBiZSBpcyBiZXR0ZXIgdGhhbiBsb29raW5nIGl0IHVw
-IGluIGENCj4+PiB0YWJsZS4NCj4+Pg0KPj4+IE5vdCBvbmx5IGlzIHRoaXMgbW9yZSBleHBlbnNp
-dmUgaW4gdGVybXMgb2YgQ1BVIGN5Y2xlcywgaXQgYWxzbyBicmluZ3MNCj4+PiBhZGRpdGlvbmFs
-IGNvZGUgc2l6ZSB3aXRoIGl0Lg0KPj4+DQo+Pj4gSSdtIHN0cnVnZ2xpbmcgdG8gc2VlIHdoYXQg
-dGhlIGJlbmVmaXQgaXMuDQo+Pg0KPj4gQ3VycmVudGx5IHZtX2dldF9wYWdlX3Byb3QoKSBpcyBh
-bHNvIGJlaW5nIF9ydW5fIHRvIGZldGNoIHJlcXVpcmVkIHBhZ2UNCj4+IHByb3RlY3Rpb24gdmFs
-dWVzLiBBbHRob3VnaCB0aGF0IGlzIGJlaW5nIHJ1biBpbiB0aGUgY29yZSBNTSBhbmQgZnJvbSBh
-DQo+PiBwbGF0Zm9ybSBwZXJzcGVjdGl2ZSBfX1NYWFgsIF9fUFhYWCBhcmUganVzdCBiZWluZyBl
-eHBvcnRlZCBmb3IgYSB0YWJsZS4NCj4+IExvb2tpbmcgaXQgdXAgaW4gYSB0YWJsZSAoYW5kIGFw
-cGx5aW5nIG1vcmUgY29uc3RydWN0cyB0aGVyZSBhZnRlcikgaXMNCj4+IG5vdCBtdWNoIGRpZmZl
-cmVudCB0aGFuIGEgY2xlYW4gc3dpdGNoIGNhc2Ugc3RhdGVtZW50IGluIHRlcm1zIG9mIENQVQ0K
-Pj4gdXNhZ2UuIFNvIHRoaXMgaXMgbm90IG1vcmUgZXhwZW5zaXZlIGluIHRlcm1zIG9mIENQVSBj
-eWNsZXMuDQo+IA0KPiBJIGRpc2FncmVlLg0KDQpTbyBkbyBJLg0KDQo+IA0KPiBIb3dldmVyLCBs
-ZXQncyBiYXNlIHRoaXMgZGlzYWdyZWVtZW50IG9uIHNvbWUgZXZpZGVuY2UuIEhlcmUgaXMgdGhl
-DQo+IHByZXNlbnQgMzItYml0IEFSTSBpbXBsZW1lbnRhdGlvbjoNCj4gDQo+IDAwMDAwMDQ4IDx2
-bV9nZXRfcGFnZV9wcm90PjoNCj4gICAgICAgIDQ4OiAgICAgICBlMjAwMDAwZiAgICAgICAgYW5k
-ICAgICByMCwgcjAsICMxNQ0KPiAgICAgICAgNGM6ICAgICAgIGUzMDAzMDAwICAgICAgICBtb3Z3
-ICAgIHIzLCAjMA0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgNGM6IFJfQVJNX01PVldfQUJT
-X05DICAgLkxBTkNIT1IxDQo+ICAgICAgICA1MDogICAgICAgZTM0MDMwMDAgICAgICAgIG1vdnQg
-ICAgcjMsICMwDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICA1MDogUl9BUk1fTU9WVF9BQlMg
-ICAgICAuTEFOQ0hPUjENCj4gICAgICAgIDU0OiAgICAgICBlNzkzMDEwMCAgICAgICAgbGRyICAg
-ICByMCwgW3IzLCByMCwgbHNsICMyXQ0KPiAgICAgICAgNTg6ICAgICAgIGUxMmZmZjFlICAgICAg
-ICBieCAgICAgIGxyDQo+IA0KPiBUaGF0IGlzIGZpdmUgaW5zdHJ1Y3Rpb25zIGxvbmcuDQoNCk9u
-IHBwYzMyIEkgZ2V0Og0KDQowMDAwMDA5NCA8dm1fZ2V0X3BhZ2VfcHJvdD46DQogICAgICAgOTQ6
-CTNkIDIwIDAwIDAwIAlsaXMgICAgIHI5LDANCgkJCTk2OiBSX1BQQ19BRERSMTZfSEEJLmRhdGEu
-LnJvX2FmdGVyX2luaXQNCiAgICAgICA5ODoJNTQgODQgMTYgYmEgCXJsd2lubSAgcjQscjQsMiwy
-NiwyOQ0KICAgICAgIDljOgkzOSAyOSAwMCAwMCAJYWRkaSAgICByOSxyOSwwDQoJCQk5ZTogUl9Q
-UENfQUREUjE2X0xPCS5kYXRhLi5yb19hZnRlcl9pbml0DQogICAgICAgYTA6CTdkIDI5IDIwIDJl
-IAlsd3p4ICAgIHI5LHI5LHI0DQogICAgICAgYTQ6CTkxIDIzIDAwIDAwIAlzdHcgICAgIHI5LDAo
-cjMpDQogICAgICAgYTg6CTRlIDgwIDAwIDIwIAlibHINCg0KDQo+IA0KPiBQbGVhc2Ugc2hvdyB0
-aGF0IHlvdXIgbmV3IGltcGxlbWVudGF0aW9uIGlzIG5vdCBtb3JlIGV4cGVuc2l2ZSBvbg0KPiAz
-Mi1iaXQgQVJNLiBQbGVhc2UgZG8gc28gYnkgYnVpbGRpbmcgYSAzMi1iaXQga2VybmVsLCBhbmQg
-cHJvdmlkaW5nDQo+IHRoZSBkaXNhc3NlbWJseS4NCg0KV2l0aCB5b3VyIHNlcmllcyBJIGdldDoN
-Cg0KMDAwMDAwMDAgPHZtX2dldF9wYWdlX3Byb3Q+Og0KICAgIDA6CTNkIDIwIDAwIDAwIAlsaXMg
-ICAgIHI5LDANCgkJCTI6IFJfUFBDX0FERFIxNl9IQQkucm9kYXRhDQogICAgNDoJMzkgMjkgMDAg
-MDAgCWFkZGkgICAgcjkscjksMA0KCQkJNjogUl9QUENfQUREUjE2X0xPCS5yb2RhdGENCiAgICA4
-Ogk1NCA4NCAxNiBiYSAJcmx3aW5tICByNCxyNCwyLDI2LDI5DQogICAgYzoJN2QgNDkgMjAgMmUg
-CWx3enggICAgcjEwLHI5LHI0DQogICAxMDoJN2QgNGEgNGEgMTQgCWFkZCAgICAgcjEwLHIxMCxy
-OQ0KICAgMTQ6CTdkIDQ5IDAzIGE2IAltdGN0ciAgIHIxMA0KICAgMTg6CTRlIDgwIDA0IDIwIAli
-Y3RyDQogICAxYzoJMzkgMjAgMDMgMTUgCWxpICAgICAgcjksNzg5DQogICAyMDoJOTEgMjMgMDAg
-MDAgCXN0dyAgICAgcjksMChyMykNCiAgIDI0Ogk0ZSA4MCAwMCAyMCAJYmxyDQogICAyODoJMzkg
-MjAgMDEgMTUgCWxpICAgICAgcjksMjc3DQogICAyYzoJOTEgMjMgMDAgMDAgCXN0dyAgICAgcjks
-MChyMykNCiAgIDMwOgk0ZSA4MCAwMCAyMCAJYmxyDQogICAzNDoJMzkgMjAgMDcgMTUgCWxpICAg
-ICAgcjksMTgxMw0KICAgMzg6CTkxIDIzIDAwIDAwIAlzdHcgICAgIHI5LDAocjMpDQogICAzYzoJ
-NGUgODAgMDAgMjAgCWJscg0KICAgNDA6CTM5IDIwIDA1IDE1IAlsaSAgICAgIHI5LDEzMDENCiAg
-IDQ0Ogk5MSAyMyAwMCAwMCAJc3R3ICAgICByOSwwKHIzKQ0KICAgNDg6CTRlIDgwIDAwIDIwIAli
-bHINCiAgIDRjOgkzOSAyMCAwMSAxMSAJbGkgICAgICByOSwyNzMNCiAgIDUwOgk0YiBmZiBmZiBk
-MCAJYiAgICAgICAyMCA8dm1fZ2V0X3BhZ2VfcHJvdCsweDIwPg0KDQoNClRoYXQgaXMgZGVmaW5p
-dGVseSBtb3JlIGV4cGVuc2l2ZSwgaXQgaW1wbGVtZW50cyBhIHRhYmxlIG9mIGJyYW5jaGVzLg0K
-DQoNCkNocmlzdG9waGU=
+On Tue, Mar 08, 2022 at 08:35:10PM +0800, Xuan Zhuo wrote:
+> find_vqs() adds a new parameter sizes to specify the size of each vq
+> vring.
+> 
+> 0 means use the maximum size supported by the backend.
+> 
+> In the split scenario, the meaning of size is the largest size, because
+> it may be limited by memory, the virtio core will try a smaller size.
+> And the size is power of 2.
+> 
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> ---
+>  arch/um/drivers/virtio_uml.c             |  2 +-
+>  drivers/platform/mellanox/mlxbf-tmfifo.c |  3 ++-
+>  drivers/remoteproc/remoteproc_virtio.c   |  2 +-
+
+For the remoteproc changes:
+
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+
+>  drivers/s390/virtio/virtio_ccw.c         |  2 +-
+>  drivers/virtio/virtio_mmio.c             |  2 +-
+>  drivers/virtio/virtio_pci_common.c       |  2 +-
+>  drivers/virtio/virtio_pci_common.h       |  2 +-
+>  drivers/virtio/virtio_pci_modern.c       |  5 +++--
+>  drivers/virtio/virtio_vdpa.c             |  2 +-
+>  include/linux/virtio_config.h            | 11 +++++++----
+>  10 files changed, 19 insertions(+), 14 deletions(-)
+> 
+> diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
+> index ba562d68dc04..055b91ccbe8a 100644
+> --- a/arch/um/drivers/virtio_uml.c
+> +++ b/arch/um/drivers/virtio_uml.c
+> @@ -998,7 +998,7 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
+>  static int vu_find_vqs(struct virtio_device *vdev, unsigned nvqs,
+>  		       struct virtqueue *vqs[], vq_callback_t *callbacks[],
+>  		       const char * const names[], const bool *ctx,
+> -		       struct irq_affinity *desc)
+> +		       struct irq_affinity *desc, u32 sizes[])
+>  {
+>  	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
+>  	int i, queue_idx = 0, rc;
+> diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
+> index 38800e86ed8a..aea7aa218b22 100644
+> --- a/drivers/platform/mellanox/mlxbf-tmfifo.c
+> +++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
+> @@ -929,7 +929,8 @@ static int mlxbf_tmfifo_virtio_find_vqs(struct virtio_device *vdev,
+>  					vq_callback_t *callbacks[],
+>  					const char * const names[],
+>  					const bool *ctx,
+> -					struct irq_affinity *desc)
+> +					struct irq_affinity *desc,
+> +					u32 sizes[])
+>  {
+>  	struct mlxbf_tmfifo_vdev *tm_vdev = mlxbf_vdev_to_tmfifo(vdev);
+>  	struct mlxbf_tmfifo_vring *vring;
+> diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remoteproc/remoteproc_virtio.c
+> index 70ab496d0431..3a167bec5b09 100644
+> --- a/drivers/remoteproc/remoteproc_virtio.c
+> +++ b/drivers/remoteproc/remoteproc_virtio.c
+> @@ -157,7 +157,7 @@ static int rproc_virtio_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
+>  				 vq_callback_t *callbacks[],
+>  				 const char * const names[],
+>  				 const bool * ctx,
+> -				 struct irq_affinity *desc)
+> +				 struct irq_affinity *desc, u32 sizes[])
+>  {
+>  	int i, ret, queue_idx = 0;
+>  
+> diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
+> index d35e7a3f7067..b74e08c71534 100644
+> --- a/drivers/s390/virtio/virtio_ccw.c
+> +++ b/drivers/s390/virtio/virtio_ccw.c
+> @@ -632,7 +632,7 @@ static int virtio_ccw_find_vqs(struct virtio_device *vdev, unsigned nvqs,
+>  			       vq_callback_t *callbacks[],
+>  			       const char * const names[],
+>  			       const bool *ctx,
+> -			       struct irq_affinity *desc)
+> +			       struct irq_affinity *desc, u32 sizes[])
+>  {
+>  	struct virtio_ccw_device *vcdev = to_vc_device(vdev);
+>  	unsigned long *indicatorp = NULL;
+> diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
+> index a41abc8051b9..55d575f6ef2d 100644
+> --- a/drivers/virtio/virtio_mmio.c
+> +++ b/drivers/virtio/virtio_mmio.c
+> @@ -462,7 +462,7 @@ static int vm_find_vqs(struct virtio_device *vdev, unsigned nvqs,
+>  		       vq_callback_t *callbacks[],
+>  		       const char * const names[],
+>  		       const bool *ctx,
+> -		       struct irq_affinity *desc)
+> +		       struct irq_affinity *desc, u32 sizes[])
+>  {
+>  	struct virtio_mmio_device *vm_dev = to_virtio_mmio_device(vdev);
+>  	int irq = platform_get_irq(vm_dev->pdev, 0);
+> diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
+> index 863d3a8a0956..8e8fa7e5ad80 100644
+> --- a/drivers/virtio/virtio_pci_common.c
+> +++ b/drivers/virtio/virtio_pci_common.c
+> @@ -428,7 +428,7 @@ static int vp_find_vqs_intx(struct virtio_device *vdev, unsigned nvqs,
+>  int vp_find_vqs(struct virtio_device *vdev, unsigned nvqs,
+>  		struct virtqueue *vqs[], vq_callback_t *callbacks[],
+>  		const char * const names[], const bool *ctx,
+> -		struct irq_affinity *desc)
+> +		struct irq_affinity *desc, u32 sizes[])
+>  {
+>  	int err;
+>  
+> diff --git a/drivers/virtio/virtio_pci_common.h b/drivers/virtio/virtio_pci_common.h
+> index 23f6c5c678d5..9dbf1d555dff 100644
+> --- a/drivers/virtio/virtio_pci_common.h
+> +++ b/drivers/virtio/virtio_pci_common.h
+> @@ -114,7 +114,7 @@ void vp_del_vqs(struct virtio_device *vdev);
+>  int vp_find_vqs(struct virtio_device *vdev, unsigned nvqs,
+>  		struct virtqueue *vqs[], vq_callback_t *callbacks[],
+>  		const char * const names[], const bool *ctx,
+> -		struct irq_affinity *desc);
+> +		struct irq_affinity *desc, u32 sizes[]);
+>  const char *vp_bus_name(struct virtio_device *vdev);
+>  
+>  /* Setup the affinity for a virtqueue:
+> diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
+> index 3c67d3607802..342795175c29 100644
+> --- a/drivers/virtio/virtio_pci_modern.c
+> +++ b/drivers/virtio/virtio_pci_modern.c
+> @@ -343,11 +343,12 @@ static int vp_modern_find_vqs(struct virtio_device *vdev, unsigned nvqs,
+>  			      struct virtqueue *vqs[],
+>  			      vq_callback_t *callbacks[],
+>  			      const char * const names[], const bool *ctx,
+> -			      struct irq_affinity *desc)
+> +			      struct irq_affinity *desc, u32 sizes[])
+>  {
+>  	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+>  	struct virtqueue *vq;
+> -	int rc = vp_find_vqs(vdev, nvqs, vqs, callbacks, names, ctx, desc);
+> +	int rc = vp_find_vqs(vdev, nvqs, vqs, callbacks, names, ctx, desc,
+> +			     sizes);
+>  
+>  	if (rc)
+>  		return rc;
+> diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
+> index 7767a7f0119b..ee08d01ee8b1 100644
+> --- a/drivers/virtio/virtio_vdpa.c
+> +++ b/drivers/virtio/virtio_vdpa.c
+> @@ -268,7 +268,7 @@ static int virtio_vdpa_find_vqs(struct virtio_device *vdev, unsigned nvqs,
+>  				vq_callback_t *callbacks[],
+>  				const char * const names[],
+>  				const bool *ctx,
+> -				struct irq_affinity *desc)
+> +				struct irq_affinity *desc, u32 sizes[])
+>  {
+>  	struct virtio_vdpa_device *vd_dev = to_virtio_vdpa_device(vdev);
+>  	struct vdpa_device *vdpa = vd_get_vdpa(vdev);
+> diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
+> index 0b81fbe17c85..5157524d8036 100644
+> --- a/include/linux/virtio_config.h
+> +++ b/include/linux/virtio_config.h
+> @@ -57,6 +57,7 @@ struct virtio_shm_region {
+>   *		include a NULL entry for vqs that do not need a callback
+>   *	names: array of virtqueue names (mainly for debugging)
+>   *		include a NULL entry for vqs unused by driver
+> + *	sizes: array of virtqueue sizes
+>   *	Returns 0 on success or error status
+>   * @del_vqs: free virtqueues found by find_vqs().
+>   * @get_features: get the array of feature bits for this device.
+> @@ -98,7 +99,8 @@ struct virtio_config_ops {
+>  	int (*find_vqs)(struct virtio_device *, unsigned nvqs,
+>  			struct virtqueue *vqs[], vq_callback_t *callbacks[],
+>  			const char * const names[], const bool *ctx,
+> -			struct irq_affinity *desc);
+> +			struct irq_affinity *desc,
+> +			u32 sizes[]);
+>  	void (*del_vqs)(struct virtio_device *);
+>  	u64 (*get_features)(struct virtio_device *vdev);
+>  	int (*finalize_features)(struct virtio_device *vdev);
+> @@ -205,7 +207,7 @@ struct virtqueue *virtio_find_single_vq(struct virtio_device *vdev,
+>  	const char *names[] = { n };
+>  	struct virtqueue *vq;
+>  	int err = vdev->config->find_vqs(vdev, 1, &vq, callbacks, names, NULL,
+> -					 NULL);
+> +					 NULL, NULL);
+>  	if (err < 0)
+>  		return ERR_PTR(err);
+>  	return vq;
+> @@ -217,7 +219,8 @@ int virtio_find_vqs(struct virtio_device *vdev, unsigned nvqs,
+>  			const char * const names[],
+>  			struct irq_affinity *desc)
+>  {
+> -	return vdev->config->find_vqs(vdev, nvqs, vqs, callbacks, names, NULL, desc);
+> +	return vdev->config->find_vqs(vdev, nvqs, vqs, callbacks, names, NULL,
+> +				      desc, NULL);
+>  }
+>  
+>  static inline
+> @@ -227,7 +230,7 @@ int virtio_find_vqs_ctx(struct virtio_device *vdev, unsigned nvqs,
+>  			struct irq_affinity *desc)
+>  {
+>  	return vdev->config->find_vqs(vdev, nvqs, vqs, callbacks, names, ctx,
+> -				      desc);
+> +				      desc, NULL);
+>  }
+>  
+>  /**
+> -- 
+> 2.31.0
+> 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
