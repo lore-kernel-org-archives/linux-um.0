@@ -1,21 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nRLg6-001oJV-0R
- for linux-um@lists.infradead.org; Mon, 07 Mar 2022 22:18:08 +0000
-Received: by mail-ed1-f72.google.com with SMTP id
- l24-20020a056402231800b00410f19a3103so9431004eda.5
- for <linux-um@lists.infradead.org>; Mon, 07 Mar 2022 14:18:01 -0800 (PST)
-Date: Mon, 7 Mar 2022 17:17:51 -0500
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Subject: Re: [PATCH v6 06/26] virtio_ring: packed: extrace the logic of
- creating vring
-Message-ID: <20220307171629-mutt-send-email-mst@kernel.org>
-References: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
- <20220224081102.80224-7-xuanzhuo@linux.alibaba.com>
-MIME-Version: 1.0
-In-Reply-To: <20220224081102.80224-7-xuanzhuo@linux.alibaba.com>
-Content-Disposition: inline
+ id 1nRt6p-0082Gi-L8
+ for linux-um@lists.infradead.org; Wed, 09 Mar 2022 09:59:57 +0000
+Message-ID: <1646819926.6046128-13-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH v7 21/26] virtio: add helper virtio_find_vqs_ctx_size()
+Date: Wed, 9 Mar 2022 17:58:46 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+References: <20220308123518.33800-1-xuanzhuo@linux.alibaba.com>
+ <20220308123518.33800-22-xuanzhuo@linux.alibaba.com>
+ <f1fb522d-74ce-a642-7768-deaad76aeddc@redhat.com>
+In-Reply-To: <f1fb522d-74ce-a642-7768-deaad76aeddc@redhat.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,223 +19,40 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
+To: Jason Wang <jasowang@redhat.com>
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
 
-On Thu, Feb 24, 2022 at 04:10:42PM +0800, Xuan Zhuo wrote:
-> Separate the logic of packed to create vring queue.
-> 
-> For the convenience of passing parameters, add a structure
-> vring_packed.
-> 
-> This feature is required for subsequent virtuqueue reset vring.
-> 
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-
-Subject has a typo.
-Besides:
-
-> ---
->  drivers/virtio/virtio_ring.c | 121 ++++++++++++++++++++++++++---------
->  1 file changed, 92 insertions(+), 29 deletions(-)
-> 
-> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-> index dc6313b79305..41864c5e665f 100644
-> --- a/drivers/virtio/virtio_ring.c
-> +++ b/drivers/virtio/virtio_ring.c
-> @@ -92,6 +92,18 @@ struct vring_split {
->  	struct vring vring;
->  };
->  
-> +struct vring_packed {
-> +	u32 num;
-> +	struct vring_packed_desc *ring;
-> +	struct vring_packed_desc_event *driver;
-> +	struct vring_packed_desc_event *device;
-> +	dma_addr_t ring_dma_addr;
-> +	dma_addr_t driver_event_dma_addr;
-> +	dma_addr_t device_event_dma_addr;
-> +	size_t ring_size_in_bytes;
-> +	size_t event_size_in_bytes;
-> +};
-> +
->  struct vring_virtqueue {
->  	struct virtqueue vq;
->  
-> @@ -1683,45 +1695,101 @@ static struct vring_desc_extra *vring_alloc_desc_extra(struct vring_virtqueue *v
->  	return desc_extra;
->  }
->  
-> -static struct virtqueue *vring_create_virtqueue_packed(
-> -	unsigned int index,
-> -	unsigned int num,
-> -	unsigned int vring_align,
-> -	struct virtio_device *vdev,
-> -	bool weak_barriers,
-> -	bool may_reduce_num,
-> -	bool context,
-> -	bool (*notify)(struct virtqueue *),
-> -	void (*callback)(struct virtqueue *),
-> -	const char *name)
-> +static void vring_free_vring_packed(struct vring_packed *vring,
-> +				    struct virtio_device *vdev)
-> +{
-> +	dma_addr_t ring_dma_addr, driver_event_dma_addr, device_event_dma_addr;
-> +	struct vring_packed_desc_event *driver, *device;
-> +	size_t ring_size_in_bytes, event_size_in_bytes;
-> +	struct vring_packed_desc *ring;
-> +
-> +	ring                  = vring->ring;
-> +	driver                = vring->driver;
-> +	device                = vring->device;
-> +	ring_dma_addr         = vring->ring_size_in_bytes;
-> +	event_size_in_bytes   = vring->event_size_in_bytes;
-> +	ring_dma_addr         = vring->ring_dma_addr;
-> +	driver_event_dma_addr = vring->driver_event_dma_addr;
-> +	device_event_dma_addr = vring->device_event_dma_addr;
-> +
-> +	if (device)
-> +		vring_free_queue(vdev, event_size_in_bytes, device, device_event_dma_addr);
-> +
-> +	if (driver)
-> +		vring_free_queue(vdev, event_size_in_bytes, driver, driver_event_dma_addr);
-> +
-> +	if (ring)
-> +		vring_free_queue(vdev, ring_size_in_bytes, ring, ring_dma_addr);
-
-ring_size_in_bytes is uninitialized here.
-
-Which begs the question how was this tested patchset generally and
-this patch in particular.
-Please add note on tested configurations and tests run to the patchset.
-
-> +}
-> +
-> +static int vring_create_vring_packed(struct vring_packed *vring,
-> +				    struct virtio_device *vdev,
-> +				    u32 num)
->  {
-> -	struct vring_virtqueue *vq;
->  	struct vring_packed_desc *ring;
->  	struct vring_packed_desc_event *driver, *device;
->  	dma_addr_t ring_dma_addr, driver_event_dma_addr, device_event_dma_addr;
->  	size_t ring_size_in_bytes, event_size_in_bytes;
->  
-> +	memset(vring, 0, sizeof(*vring));
-> +
->  	ring_size_in_bytes = num * sizeof(struct vring_packed_desc);
->  
->  	ring = vring_alloc_queue(vdev, ring_size_in_bytes,
->  				 &ring_dma_addr,
->  				 GFP_KERNEL|__GFP_NOWARN|__GFP_ZERO);
->  	if (!ring)
-> -		goto err_ring;
-> +		goto err;
-> +
-> +	vring->num = num;
-> +	vring->ring = ring;
-> +	vring->ring_size_in_bytes = ring_size_in_bytes;
-> +	vring->ring_dma_addr = ring_dma_addr;
->  
->  	event_size_in_bytes = sizeof(struct vring_packed_desc_event);
-> +	vring->event_size_in_bytes = event_size_in_bytes;
->  
->  	driver = vring_alloc_queue(vdev, event_size_in_bytes,
->  				   &driver_event_dma_addr,
->  				   GFP_KERNEL|__GFP_NOWARN|__GFP_ZERO);
->  	if (!driver)
-> -		goto err_driver;
-> +		goto err;
-> +
-> +	vring->driver = driver;
-> +	vring->driver_event_dma_addr = driver_event_dma_addr;
->  
->  	device = vring_alloc_queue(vdev, event_size_in_bytes,
->  				   &device_event_dma_addr,
->  				   GFP_KERNEL|__GFP_NOWARN|__GFP_ZERO);
->  	if (!device)
-> -		goto err_device;
-> +		goto err;
-> +
-> +	vring->device = device;
-> +	vring->device_event_dma_addr = device_event_dma_addr;
-> +	return 0;
-> +
-> +err:
-> +	vring_free_vring_packed(vring, vdev);
-> +	return -ENOMEM;
-> +}
-> +
-> +static struct virtqueue *vring_create_virtqueue_packed(
-> +	unsigned int index,
-> +	unsigned int num,
-> +	unsigned int vring_align,
-> +	struct virtio_device *vdev,
-> +	bool weak_barriers,
-> +	bool may_reduce_num,
-> +	bool context,
-> +	bool (*notify)(struct virtqueue *),
-> +	void (*callback)(struct virtqueue *),
-> +	const char *name)
-> +{
-> +	struct vring_virtqueue *vq;
-> +	struct vring_packed vring;
-> +
-> +	if (vring_create_vring_packed(&vring, vdev, num))
-> +		goto err_vq;
->  
->  	vq = kmalloc(sizeof(*vq), GFP_KERNEL);
->  	if (!vq)
-> @@ -1753,17 +1821,17 @@ static struct virtqueue *vring_create_virtqueue_packed(
->  	if (virtio_has_feature(vdev, VIRTIO_F_ORDER_PLATFORM))
->  		vq->weak_barriers = false;
->  
-> -	vq->packed.ring_dma_addr = ring_dma_addr;
-> -	vq->packed.driver_event_dma_addr = driver_event_dma_addr;
-> -	vq->packed.device_event_dma_addr = device_event_dma_addr;
-> +	vq->packed.ring_dma_addr = vring.ring_dma_addr;
-> +	vq->packed.driver_event_dma_addr = vring.driver_event_dma_addr;
-> +	vq->packed.device_event_dma_addr = vring.device_event_dma_addr;
->  
-> -	vq->packed.ring_size_in_bytes = ring_size_in_bytes;
-> -	vq->packed.event_size_in_bytes = event_size_in_bytes;
-> +	vq->packed.ring_size_in_bytes = vring.ring_size_in_bytes;
-> +	vq->packed.event_size_in_bytes = vring.event_size_in_bytes;
->  
->  	vq->packed.vring.num = num;
-> -	vq->packed.vring.desc = ring;
-> -	vq->packed.vring.driver = driver;
-> -	vq->packed.vring.device = device;
-> +	vq->packed.vring.desc = vring.ring;
-> +	vq->packed.vring.driver = vring.driver;
-> +	vq->packed.vring.device = vring.device;
->  
->  	vq->packed.next_avail_idx = 0;
->  	vq->packed.avail_wrap_counter = 1;
-> @@ -1804,12 +1872,7 @@ static struct virtqueue *vring_create_virtqueue_packed(
->  err_desc_state:
->  	kfree(vq);
->  err_vq:
-> -	vring_free_queue(vdev, event_size_in_bytes, device, device_event_dma_addr);
-> -err_device:
-> -	vring_free_queue(vdev, event_size_in_bytes, driver, driver_event_dma_addr);
-> -err_driver:
-> -	vring_free_queue(vdev, ring_size_in_bytes, ring, ring_dma_addr);
-> -err_ring:
-> +	vring_free_vring_packed(&vring, vdev);
->  	return NULL;
->  }
->  
-> -- 
-> 2.31.0
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gV2VkLCA5IE1hciAyMDIyIDE3OjA0OjEyICswODAwLCBKYXNvbiBXYW5nIDxqYXNvd2FuZ0By
+ZWRoYXQuY29tPiB3cm90ZToKPgo+IOWcqCAyMDIyLzMvOCDkuIvljYg4OjM1LCBYdWFuIFpodW8g
+5YaZ6YGTOgo+ID4gSW50cm9kdWNlIGhlbHBlciB2aXJ0aW9fZmluZF92cXNfY3R4X3NpemUoKSB0
+byBjYWxsIGZpbmRfdnFzIGFuZCBzcGVjaWZ5Cj4gPiB0aGUgbWF4aW11bSBzaXplIG9mIGVhY2gg
+dnEgcmluZy4KPiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBYdWFuIFpodW8gPHh1YW56aHVvQGxpbnV4
+LmFsaWJhYmEuY29tPgo+ID4gLS0tCj4gPiAgIGluY2x1ZGUvbGludXgvdmlydGlvX2NvbmZpZy5o
+IHwgMTIgKysrKysrKysrKysrCj4gPiAgIDEgZmlsZSBjaGFuZ2VkLCAxMiBpbnNlcnRpb25zKCsp
+Cj4gPgo+ID4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvdmlydGlvX2NvbmZpZy5oIGIvaW5j
+bHVkZS9saW51eC92aXJ0aW9fY29uZmlnLmgKPiA+IGluZGV4IDUxNTc1MjRkODAzNi4uOTIxZDg2
+MTBkYjBjIDEwMDY0NAo+ID4gLS0tIGEvaW5jbHVkZS9saW51eC92aXJ0aW9fY29uZmlnLmgKPiA+
+ICsrKyBiL2luY2x1ZGUvbGludXgvdmlydGlvX2NvbmZpZy5oCj4gPiBAQCAtMjMzLDYgKzIzMywx
+OCBAQCBpbnQgdmlydGlvX2ZpbmRfdnFzX2N0eChzdHJ1Y3QgdmlydGlvX2RldmljZSAqdmRldiwg
+dW5zaWduZWQgbnZxcywKPiA+ICAgCQkJCSAgICAgIGRlc2MsIE5VTEwpOwo+ID4gICB9Cj4gPgo+
+ID4gK3N0YXRpYyBpbmxpbmUKPiA+ICtpbnQgdmlydGlvX2ZpbmRfdnFzX2N0eF9zaXplKHN0cnVj
+dCB2aXJ0aW9fZGV2aWNlICp2ZGV2LCB1MzIgbnZxcywKPiA+ICsJCQkJIHN0cnVjdCB2aXJ0cXVl
+dWUgKnZxc1tdLAo+ID4gKwkJCQkgdnFfY2FsbGJhY2tfdCAqY2FsbGJhY2tzW10sCj4gPiArCQkJ
+CSBjb25zdCBjaGFyICogY29uc3QgbmFtZXNbXSwKPiA+ICsJCQkJIGNvbnN0IGJvb2wgKmN0eCwg
+c3RydWN0IGlycV9hZmZpbml0eSAqZGVzYywKPiA+ICsJCQkJIHUzMiBzaXplc1tdKQo+ID4gK3sK
+PiA+ICsJcmV0dXJuIHZkZXYtPmNvbmZpZy0+ZmluZF92cXModmRldiwgbnZxcywgdnFzLCBjYWxs
+YmFja3MsIG5hbWVzLCBjdHgsCj4gPiArCQkJCSAgICAgIGRlc2MsIHNpemVzKTsKPiA+ICt9Cj4K
+Pgo+IERvIHdlIG5lZWQgdG8gY29udmVydCBhbGwgdGhlIG9wZW4gY29kZWQgZGlyZWN0IGNhbGwg
+dG8gZmluZF92cXMoKSBvdGhlcgo+IHRoYW4gbmV0PwoKCkRvIHlvdSBtZWFuIGNhbGxpbmcgZmlu
+ZF92cXMgd2l0aG91dCBhIGhlbHBlcj8gVGhlIGtlcm5lbCBkb2Vzbid0IGRvIHRoYXQKYW55bW9y
+ZS4KClRoYW5rcy4KCgo+Cj4gVGhhbmtzCj4KPgo+ID4gKwo+ID4gICAvKioKPiA+ICAgICogdmly
+dGlvX3Jlc2V0X3ZxIC0gcmVzZXQgYSBxdWV1ZSBpbmRpdmlkdWFsbHkKPiA+ICAgICogQHZxOiB0
+aGUgdmlydHF1ZXVlCj4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3Jn
+Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
 
