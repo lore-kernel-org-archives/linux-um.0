@@ -1,17 +1,21 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-qv1-xf2f.google.com ([2607:f8b0:4864:20::f2f])
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nRoyg-007MRg-8x
- for linux-um@lists.infradead.org; Wed, 09 Mar 2022 05:35:15 +0000
-Received: by mail-qv1-xf2f.google.com with SMTP id jq9so1256918qvb.0
- for <linux-um@lists.infradead.org>; Tue, 08 Mar 2022 21:35:12 -0800 (PST)
-From: Glenn Washburn <development@efficientek.com>
-Subject: [PATCH 0/4] um: Assorted console related fixes
-Date: Tue,  8 Mar 2022 23:29:21 -0600
-Message-Id: <1f5276f9b2950d34eec89004d2a2322a06145d2b.1646802841.development@efficientek.com>
-In-Reply-To: <20220101215810.13260-1-richard@nod.at>
-References: <20220101215810.13260-1-richard@nod.at>
+ id 1nRoFm-007JEo-AS
+ for linux-um@lists.infradead.org; Wed, 09 Mar 2022 04:48:51 +0000
+Received: by mail-pj1-f70.google.com with SMTP id
+ ds4-20020a17090b08c400b001bc1dee733eso2380399pjb.0
+ for <linux-um@lists.infradead.org>; Tue, 08 Mar 2022 20:48:46 -0800 (PST)
+Message-ID: <373494ae-825b-d573-012c-4e7d453934da@redhat.com>
+Date: Wed, 9 Mar 2022 12:48:33 +0800
 MIME-Version: 1.0
+Subject: Re: [PATCH v7 01/26] virtio_pci: struct virtio_pci_common_cfg add
+ queue_notify_data
+References: <20220308123518.33800-1-xuanzhuo@linux.alibaba.com>
+ <20220308123518.33800-2-xuanzhuo@linux.alibaba.com>
+From: Jason Wang <jasowang@redhat.com>
+In-Reply-To: <20220308123518.33800-2-xuanzhuo@linux.alibaba.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,37 +24,34 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard@nod.at>, linux-um <linux-um@lists.infradead.org>
-Cc: Johannes Berg <johannes@sipsolutions.net>, Glenn Washburn <development@efficientek.com>
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
 
-On Sat, 2022-01-01 at 22:58 +0100, Richard Weinberger wrote:
-> When UML terminates (gracefully or panic) it does not always
-> cleanup on the host side.
-> Especially when fd:0,fd:1 is used as console it can leave a misconfigured
-> stdin/out on the host side.
-> Also stale processes such as port-helper can left behind.
-
-> This series fixes the console exit code to make sure UML
-> undoes everything it changed on the host side.
-
-I gave this a run hoping it would fix the issues I'm seeing with the console
-getting messed up when UML exits via halt in the guest. Echo is turned off
-and looks like carriage return doesn't work either. I'm using "reset" to get
-the terminal back to its previous state. Unfortunately this patch series did
-not fix this issue.
-
-I'm not saying that these aren't valid fixes. But it does appear that these
-changes don't make sure that "everything" changed on the host side is undone.
-
-Glenn
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+CuWcqCAyMDIyLzMvOCDkuIvljYg4OjM0LCBYdWFuIFpodW8g5YaZ6YGTOgo+IEFkZCBxdWV1ZV9u
+b3RpZnlfZGF0YSBpbiBzdHJ1Y3QgdmlydGlvX3BjaV9jb21tb25fY2ZnLCB3aGljaCBjb21lcyBm
+cm9tCj4gaGVyZSBodHRwczovL2dpdGh1Yi5jb20vb2FzaXMtdGNzL3ZpcnRpby1zcGVjL2lzc3Vl
+cy84OQo+Cj4gRm9yIG5vdCBicmVha3MgdUFCSSwgYWRkIGEgbmV3IHN0cnVjdCB2aXJ0aW9fcGNp
+X2NvbW1vbl9jZmdfbm90aWZ5Lgo+Cj4gU2luY2UgSSB3YW50IHRvIGFkZCBxdWV1ZV9yZXNldCBh
+ZnRlciBxdWV1ZV9ub3RpZnlfZGF0YSwgSSBzdWJtaXR0ZWQKPiB0aGlzIHBhdGNoIGZpcnN0Lgo+
+Cj4gU2lnbmVkLW9mZi1ieTogWHVhbiBaaHVvIDx4dWFuemh1b0BsaW51eC5hbGliYWJhLmNvbT4K
+CgpBY2tlZC1ieTogSmFzb24gV2FuZyA8amFzb3dhbmdAcmVkaGF0LmNvbT4KCgo+IC0tLQo+ICAg
+aW5jbHVkZS91YXBpL2xpbnV4L3ZpcnRpb19wY2kuaCB8IDcgKysrKysrKwo+ICAgMSBmaWxlIGNo
+YW5nZWQsIDcgaW5zZXJ0aW9ucygrKQo+Cj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvdWFwaS9saW51
+eC92aXJ0aW9fcGNpLmggYi9pbmNsdWRlL3VhcGkvbGludXgvdmlydGlvX3BjaS5oCj4gaW5kZXgg
+M2E4NmYzNmQ3ZTNkLi4yMmJlYzliZDBkZmMgMTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS91YXBpL2xp
+bnV4L3ZpcnRpb19wY2kuaAo+ICsrKyBiL2luY2x1ZGUvdWFwaS9saW51eC92aXJ0aW9fcGNpLmgK
+PiBAQCAtMTY2LDYgKzE2NiwxMyBAQCBzdHJ1Y3QgdmlydGlvX3BjaV9jb21tb25fY2ZnIHsKPiAg
+IAlfX2xlMzIgcXVldWVfdXNlZF9oaTsJCS8qIHJlYWQtd3JpdGUgKi8KPiAgIH07Cj4gICAKPiAr
+c3RydWN0IHZpcnRpb19wY2lfY29tbW9uX2NmZ19ub3RpZnkgewo+ICsJc3RydWN0IHZpcnRpb19w
+Y2lfY29tbW9uX2NmZyBjZmc7Cj4gKwo+ICsJX19sZTE2IHF1ZXVlX25vdGlmeV9kYXRhOwkvKiBy
+ZWFkLXdyaXRlICovCj4gKwlfX2xlMTYgcGFkZGluZzsKPiArfTsKPiArCj4gICAvKiBGaWVsZHMg
+aW4gVklSVElPX1BDSV9DQVBfUENJX0NGRzogKi8KPiAgIHN0cnVjdCB2aXJ0aW9fcGNpX2NmZ19j
+YXAgewo+ICAgCXN0cnVjdCB2aXJ0aW9fcGNpX2NhcCBjYXA7CgoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4
+LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9saW51eC11bQo=
 
