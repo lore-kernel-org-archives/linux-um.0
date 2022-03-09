@@ -1,14 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nXMLl-00GRZm-G6
- for linux-um@lists.infradead.org; Thu, 24 Mar 2022 12:13:58 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH 1/2] um: xterm: make default terminal emulator configurable
-Date: Thu, 24 Mar 2022 13:13:43 +0100
-Message-Id: <20220324131344.b7608507865f.I4f78dca5973127790f8dc5757ff5f021078b2c62@changeid>
+ id 1nRsHN-007qnf-FC
+ for linux-um@lists.infradead.org; Wed, 09 Mar 2022 09:06:46 +0000
+Received: by mail-pf1-f198.google.com with SMTP id
+ n135-20020a628f8d000000b004e16d5bdcdbso1184619pfd.20
+ for <linux-um@lists.infradead.org>; Wed, 09 Mar 2022 01:06:43 -0800 (PST)
+Message-ID: <9049128d-543e-be7b-a0a1-08e9bf94c282@redhat.com>
+Date: Wed, 9 Mar 2022 17:06:22 +0800
 MIME-Version: 1.0
+Subject: Re: [PATCH v7 23/26] virtio_net: split free_unused_bufs()
+References: <20220308123518.33800-1-xuanzhuo@linux.alibaba.com>
+ <20220308123518.33800-24-xuanzhuo@linux.alibaba.com>
+From: Jason Wang <jasowang@redhat.com>
+In-Reply-To: <20220308123518.33800-24-xuanzhuo@linux.alibaba.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -17,86 +23,61 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Ritesh Raj Sarraf <rrs@debian.org>, Johannes Berg <johannes.berg@intel.com>
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
-
-Make the default terminal emulator configurable so e.g.
-Debian can set it to x-terminal-emulator instead of the
-current default of xterm.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- arch/um/drivers/Kconfig  | 7 +++++++
- arch/um/drivers/Makefile | 2 ++
- arch/um/drivers/xterm.c  | 7 ++++---
- 3 files changed, 13 insertions(+), 3 deletions(-)
-
-diff --git a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
-index f145842c40b9..521ae0d46076 100644
---- a/arch/um/drivers/Kconfig
-+++ b/arch/um/drivers/Kconfig
-@@ -64,6 +64,13 @@ config XTERM_CHAN
- 	  its own xterm.
- 	  It is safe to say 'Y' here.
- 
-+config XTERM_CHAN_DEFAULT_EMULATOR
-+	string "xterm channel default terminal emulator"
-+	depends on XTERM_CHAN
-+	default "xterm"
-+	help
-+	  This option allows changing the default terminal emulator.
-+
- config NOCONFIG_CHAN
- 	bool
- 	default !(XTERM_CHAN && TTY_CHAN && PTY_CHAN && PORT_CHAN && NULL_CHAN)
-diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
-index 803666e85414..e1dc4292bd22 100644
---- a/arch/um/drivers/Makefile
-+++ b/arch/um/drivers/Makefile
-@@ -70,4 +70,6 @@ obj-$(CONFIG_UML_PCI_OVER_VIRTIO) += virt-pci.o
- USER_OBJS := fd.o null.o pty.o tty.o xterm.o slip_common.o pcap_user.o vde_user.o vector_user.o
- CFLAGS_null.o = -DDEV_NULL=$(DEV_NULL_PATH)
- 
-+CFLAGS_xterm.o += '-DCONFIG_XTERM_CHAN_DEFAULT_EMULATOR="$(CONFIG_XTERM_CHAN_DEFAULT_EMULATOR)"'
-+
- include arch/um/scripts/Makefile.rules
-diff --git a/arch/um/drivers/xterm.c b/arch/um/drivers/xterm.c
-index 87ca4a47cd66..6918de5e2956 100644
---- a/arch/um/drivers/xterm.c
-+++ b/arch/um/drivers/xterm.c
-@@ -42,7 +42,7 @@ static void *xterm_init(char *str, int device, const struct chan_opts *opts)
- }
- 
- /* Only changed by xterm_setup, which is a setup */
--static char *terminal_emulator = "xterm";
-+static char *terminal_emulator = CONFIG_XTERM_CHAN_DEFAULT_EMULATOR;
- static char *title_switch = "-T";
- static char *exec_switch = "-e";
- 
-@@ -79,8 +79,9 @@ __uml_setup("xterm=", xterm_setup,
- "    respectively.  The title switch must have the form '<switch> title',\n"
- "    not '<switch>=title'.  Similarly, the exec switch must have the form\n"
- "    '<switch> command arg1 arg2 ...'.\n"
--"    The default values are 'xterm=xterm,-T,-e'.  Values for gnome-terminal\n"
--"    are 'xterm=gnome-terminal,-t,-x'.\n\n"
-+"    The default values are 'xterm=" CONFIG_XTERM_CHAN_DEFAULT_EMULATOR
-+     ",-T,-e'.\n"
-+"    Values for gnome-terminal are 'xterm=gnome-terminal,-t,-x'.\n\n"
- );
- 
- static int xterm_open(int input, int output, int primary, void *d,
--- 
-2.35.1
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+CuWcqCAyMDIyLzMvOCDkuIvljYg4OjM1LCBYdWFuIFpodW8g5YaZ6YGTOgo+IFRoaXMgcGF0Y2gg
+c2VwYXJhdGVzIHR3byBmdW5jdGlvbnMgZm9yIGZyZWVpbmcgc3EgYnVmIGFuZCBycSBidWYgZnJv
+bQo+IGZyZWVfdW51c2VkX2J1ZnMoKS4KPgo+IFdoZW4gc3VwcG9ydGluZyB0aGUgZW5hYmxlL2Rp
+c2FibGUgdHgvcnEgcXVldWUgaW4gdGhlIGZ1dHVyZSwgaXQgaXMKPiBuZWNlc3NhcnkgdG8gc3Vw
+cG9ydCBzZXBhcmF0ZSByZWNvdmVyeSBvZiBhIHNxIGJ1ZiBvciBhIHJxIGJ1Zi4KPgo+IFNpZ25l
+ZC1vZmYtYnk6IFh1YW4gWmh1byA8eHVhbnpodW9AbGludXguYWxpYmFiYS5jb20+CgoKQWNrZWQt
+Ynk6IEphc29uIFdhbmcgPGphc293YW5nQHJlZGhhdC5jb20+CgoKPiAtLS0KPiAgIGRyaXZlcnMv
+bmV0L3ZpcnRpb19uZXQuYyB8IDUzICsrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0t
+LS0tLS0KPiAgIDEgZmlsZSBjaGFuZ2VkLCAzMSBpbnNlcnRpb25zKCspLCAyMiBkZWxldGlvbnMo
+LSkKPgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC92aXJ0aW9fbmV0LmMgYi9kcml2ZXJzL25l
+dC92aXJ0aW9fbmV0LmMKPiBpbmRleCA1OWIxZWE4MmY1ZjAuLjQwOWE4ZTE4MDkxOCAxMDA2NDQK
+PiAtLS0gYS9kcml2ZXJzL25ldC92aXJ0aW9fbmV0LmMKPiArKysgYi9kcml2ZXJzL25ldC92aXJ0
+aW9fbmV0LmMKPiBAQCAtMjgwNCwzNiArMjgwNCw0NSBAQCBzdGF0aWMgdm9pZCBmcmVlX3JlY2Vp
+dmVfcGFnZV9mcmFncyhzdHJ1Y3QgdmlydG5ldF9pbmZvICp2aSkKPiAgIAkJCXB1dF9wYWdlKHZp
+LT5ycVtpXS5hbGxvY19mcmFnLnBhZ2UpOwo+ICAgfQo+ICAgCj4gLXN0YXRpYyB2b2lkIGZyZWVf
+dW51c2VkX2J1ZnMoc3RydWN0IHZpcnRuZXRfaW5mbyAqdmkpCj4gK3N0YXRpYyB2b2lkIHZpcnRu
+ZXRfc3FfZnJlZV91bnVzZWRfYnVmcyhzdHJ1Y3QgdmlydG5ldF9pbmZvICp2aSwKPiArCQkJCQlz
+dHJ1Y3Qgc2VuZF9xdWV1ZSAqc3EpCj4gICB7Cj4gICAJdm9pZCAqYnVmOwo+IC0JaW50IGk7Cj4g
+ICAKPiAtCWZvciAoaSA9IDA7IGkgPCB2aS0+bWF4X3F1ZXVlX3BhaXJzOyBpKyspIHsKPiAtCQlz
+dHJ1Y3QgdmlydHF1ZXVlICp2cSA9IHZpLT5zcVtpXS52cTsKPiAtCQl3aGlsZSAoKGJ1ZiA9IHZp
+cnRxdWV1ZV9kZXRhY2hfdW51c2VkX2J1Zih2cSkpICE9IE5VTEwpIHsKPiAtCQkJaWYgKCFpc194
+ZHBfZnJhbWUoYnVmKSkKPiAtCQkJCWRldl9rZnJlZV9za2IoYnVmKTsKPiAtCQkJZWxzZQo+IC0J
+CQkJeGRwX3JldHVybl9mcmFtZShwdHJfdG9feGRwKGJ1ZikpOwo+IC0JCX0KPiArCXdoaWxlICgo
+YnVmID0gdmlydHF1ZXVlX2RldGFjaF91bnVzZWRfYnVmKHNxLT52cSkpICE9IE5VTEwpIHsKPiAr
+CQlpZiAoIWlzX3hkcF9mcmFtZShidWYpKQo+ICsJCQlkZXZfa2ZyZWVfc2tiKGJ1Zik7Cj4gKwkJ
+ZWxzZQo+ICsJCQl4ZHBfcmV0dXJuX2ZyYW1lKHB0cl90b194ZHAoYnVmKSk7Cj4gICAJfQo+ICt9
+Cj4gICAKPiAtCWZvciAoaSA9IDA7IGkgPCB2aS0+bWF4X3F1ZXVlX3BhaXJzOyBpKyspIHsKPiAt
+CQlzdHJ1Y3QgdmlydHF1ZXVlICp2cSA9IHZpLT5ycVtpXS52cTsKPiAtCj4gLQkJd2hpbGUgKChi
+dWYgPSB2aXJ0cXVldWVfZGV0YWNoX3VudXNlZF9idWYodnEpKSAhPSBOVUxMKSB7Cj4gLQkJCWlm
+ICh2aS0+bWVyZ2VhYmxlX3J4X2J1ZnMpIHsKPiAtCQkJCXB1dF9wYWdlKHZpcnRfdG9faGVhZF9w
+YWdlKGJ1ZikpOwo+IC0JCQl9IGVsc2UgaWYgKHZpLT5iaWdfcGFja2V0cykgewo+IC0JCQkJZ2l2
+ZV9wYWdlcygmdmktPnJxW2ldLCBidWYpOwo+IC0JCQl9IGVsc2Ugewo+IC0JCQkJcHV0X3BhZ2Uo
+dmlydF90b19oZWFkX3BhZ2UoYnVmKSk7Cj4gLQkJCX0KPiAtCQl9Cj4gK3N0YXRpYyB2b2lkIHZp
+cnRuZXRfcnFfZnJlZV91bnVzZWRfYnVmcyhzdHJ1Y3QgdmlydG5ldF9pbmZvICp2aSwKPiArCQkJ
+CQlzdHJ1Y3QgcmVjZWl2ZV9xdWV1ZSAqcnEpCj4gK3sKPiArCXZvaWQgKmJ1ZjsKPiArCj4gKwl3
+aGlsZSAoKGJ1ZiA9IHZpcnRxdWV1ZV9kZXRhY2hfdW51c2VkX2J1ZihycS0+dnEpKSAhPSBOVUxM
+KSB7Cj4gKwkJaWYgKHZpLT5tZXJnZWFibGVfcnhfYnVmcykKPiArCQkJcHV0X3BhZ2UodmlydF90
+b19oZWFkX3BhZ2UoYnVmKSk7Cj4gKwkJZWxzZSBpZiAodmktPmJpZ19wYWNrZXRzKQo+ICsJCQln
+aXZlX3BhZ2VzKHJxLCBidWYpOwo+ICsJCWVsc2UKPiArCQkJcHV0X3BhZ2UodmlydF90b19oZWFk
+X3BhZ2UoYnVmKSk7Cj4gICAJfQo+ICAgfQo+ICAgCj4gK3N0YXRpYyB2b2lkIGZyZWVfdW51c2Vk
+X2J1ZnMoc3RydWN0IHZpcnRuZXRfaW5mbyAqdmkpCj4gK3sKPiArCWludCBpOwo+ICsKPiArCWZv
+ciAoaSA9IDA7IGkgPCB2aS0+bWF4X3F1ZXVlX3BhaXJzOyBpKyspCj4gKwkJdmlydG5ldF9zcV9m
+cmVlX3VudXNlZF9idWZzKHZpLCB2aS0+c3EgKyBpKTsKPiArCj4gKwlmb3IgKGkgPSAwOyBpIDwg
+dmktPm1heF9xdWV1ZV9wYWlyczsgaSsrKQo+ICsJCXZpcnRuZXRfcnFfZnJlZV91bnVzZWRfYnVm
+cyh2aSwgdmktPnJxICsgaSk7Cj4gK30KPiArCj4gICBzdGF0aWMgdm9pZCB2aXJ0bmV0X2RlbF92
+cXMoc3RydWN0IHZpcnRuZXRfaW5mbyAqdmkpCj4gICB7Cj4gICAJc3RydWN0IHZpcnRpb19kZXZp
+Y2UgKnZkZXYgPSB2aS0+dmRldjsKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFk
+ZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
+LXVtCg==
 
