@@ -1,16 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from dfw.source.kernel.org ([139.178.84.217])
+Received: from smtp2.axis.com ([195.60.68.18])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nSjfK-00009e-Hr
- for linux-um@lists.infradead.org; Fri, 11 Mar 2022 18:07:04 +0000
-Date: Fri, 11 Mar 2022 18:06:54 +0000
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC v1 09/10] regulator: tps62864: add roadtest
-Message-ID: <YiuPvkQroV/WdFpx@sirena.org.uk>
+ id 1nSi4l-00HKpc-26
+ for linux-um@lists.infradead.org; Fri, 11 Mar 2022 16:25:13 +0000
+From: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Subject: [RFC v1 09/10] regulator: tps62864: add roadtest
+Date: Fri, 11 Mar 2022 17:24:44 +0100
+Message-ID: <20220311162445.346685-10-vincent.whitchurch@axis.com>
+In-Reply-To: <20220311162445.346685-1-vincent.whitchurch@axis.com>
 References: <20220311162445.346685-1-vincent.whitchurch@axis.com>
- <20220311162445.346685-10-vincent.whitchurch@axis.com>
 MIME-Version: 1.0
-In-Reply-To: <20220311162445.346685-10-vincent.whitchurch@axis.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -19,142 +18,252 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2841672343048883425=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Vincent Whitchurch <vincent.whitchurch@axis.com>
-Cc: linux-kernel@vger.kernel.org, kernel@axis.com, devicetree@vger.kernel.org, linux-um@lists.infradead.org, shuah@kernel.org, brendanhiggins@google.com, linux-kselftest@vger.kernel.org, jic23@kernel.org, linux-iio@vger.kernel.org, lgirdwood@gmail.com, a.zummo@towertech.it, alexandre.belloni@bootlin.com, linux-rtc@vger.kernel.org, corbet@lwn.net, linux-doc@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: kernel@axis.com, Vincent Whitchurch <vincent.whitchurch@axis.com>, devicetree@vger.kernel.org, linux-um@lists.infradead.org, shuah@kernel.org, brendanhiggins@google.com, linux-kselftest@vger.kernel.org, jic23@kernel.org, linux-iio@vger.kernel.org, lgirdwood@gmail.com, broonie@kernel.org, a.zummo@towertech.it, alexandre.belloni@bootlin.com, linux-rtc@vger.kernel.org, corbet@lwn.net, linux-doc@vger.kernel.org
 
+Add a roadtest for the recently-added tps62864 regulator driver.  It
+tests voltage setting, mode setting, as well as devicetree mode
+translation.  It uses the recently-added devicetree support in
+regulator-virtual-consumer.
 
---===============2841672343048883425==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="MolxjZU9V35M/+dw"
-Content-Disposition: inline
+All the variants supported by the driver have identical register
+interfaces so only one test/model is added.
 
+It requires the following patches which are, as of writing, not in
+mainline:
 
---MolxjZU9V35M/+dw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+ - regulator: Add support for TPS6286x
+   https://lore.kernel.org/lkml/20220204155241.576342-3-vincent.whitchurch@axis.com/
 
-On Fri, Mar 11, 2022 at 05:24:44PM +0100, Vincent Whitchurch wrote:
+ - regulator: virtual: add devicetree support
+   https://lore.kernel.org/lkml/20220301111831.3742383-4-vincent.whitchurch@axis.com/
 
-This looks like it could be useful, modulo the general concerns with
-mocking stuff.  I've not looked at the broader framework stuff in any
-meanigful way.
+Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+---
+ .../roadtest/tests/regulator/__init__.py      |   0
+ .../roadtest/roadtest/tests/regulator/config  |   4 +
+ .../roadtest/tests/regulator/test_tps62864.py | 187 ++++++++++++++++++
+ 3 files changed, 191 insertions(+)
+ create mode 100644 tools/testing/roadtest/roadtest/tests/regulator/__init__.py
+ create mode 100644 tools/testing/roadtest/roadtest/tests/regulator/config
+ create mode 100644 tools/testing/roadtest/roadtest/tests/regulator/test_tps62864.py
 
-> +    @classmethod
-> +    def setUpClass(cls) -> None:
-> +        insmod("tps6286x-regulator")
+diff --git a/tools/testing/roadtest/roadtest/tests/regulator/__init__.py b/tools/testing/roadtest/roadtest/tests/regulator/__init__.py
+new file mode 100644
+index 000000000000..e69de29bb2d1
+diff --git a/tools/testing/roadtest/roadtest/tests/regulator/config b/tools/testing/roadtest/roadtest/tests/regulator/config
+new file mode 100644
+index 000000000000..b2b503947e70
+--- /dev/null
++++ b/tools/testing/roadtest/roadtest/tests/regulator/config
+@@ -0,0 +1,4 @@
++CONFIG_REGULATOR=y
++CONFIG_REGULATOR_DEBUG=y
++CONFIG_REGULATOR_VIRTUAL_CONSUMER=y
++CONFIG_REGULATOR_TPS6286X=m
+diff --git a/tools/testing/roadtest/roadtest/tests/regulator/test_tps62864.py b/tools/testing/roadtest/roadtest/tests/regulator/test_tps62864.py
+new file mode 100644
+index 000000000000..f7db4293d840
+--- /dev/null
++++ b/tools/testing/roadtest/roadtest/tests/regulator/test_tps62864.py
+@@ -0,0 +1,187 @@
++# SPDX-License-Identifier: GPL-2.0-only
++# Copyright Axis Communications AB
++
++from typing import Any, Final
++
++from roadtest.backend.i2c import SimpleSMBusModel
++from roadtest.core.devicetree import DtFragment, DtVar
++from roadtest.core.hardware import Hardware
++from roadtest.core.modules import insmod, rmmod
++from roadtest.core.suite import UMLTestCase
++from roadtest.core.sysfs import (
++    I2CDriver,
++    PlatformDriver,
++    read_str,
++    write_int,
++    write_str,
++)
++
++REG_VOUT1: Final = 0x01
++REG_VOUT2: Final = 0x02
++REG_CONTROL: Final = 0x03
++REG_STATUS: Final = 0x05
++
++
++class TPS62864(SimpleSMBusModel):
++    def __init__(self, **kwargs: Any) -> None:
++        super().__init__(
++            # From datasheet section 8.6 Register map
++            # XXX does not match reality -- recheck
++            regs={
++                REG_VOUT1: 0x64,
++                REG_VOUT2: 0x64,
++                REG_CONTROL: 0x00,
++                REG_STATUS: 0x00,
++            },
++            regbytes=1,
++            **kwargs,
++        )
++
++
++class TestTPS62864(UMLTestCase):
++    dts = DtFragment(
++        src="""
++#include <dt-bindings/regulator/ti,tps62864.h>
++
++&i2c {
++    regulator@$normal$ {
++        compatible = "ti,tps62864";
++        reg = <0x$normal$>;
++
++        regulators {
++            tps62864_normal: SW {
++                regulator-name = "+0.85V";
++                regulator-min-microvolt = <400000>;
++                regulator-max-microvolt = <1675000>;
++                regulator-allowed-modes = <TPS62864_MODE_NORMAL TPS62864_MODE_FPWM>;
++            };
++        };
++    };
++
++    regulator@$fpwm$ {
++        compatible = "ti,tps62864";
++        reg = <0x$fpwm$>;
++
++        regulators {
++            tps62864_fpwm: SW {
++                regulator-name = "+0.85V";
++                regulator-min-microvolt = <400000>;
++                regulator-max-microvolt = <1675000>;
++                regulator-initial-mode = <TPS62864_MODE_FPWM>;
++            };
++        };
++    };
++};
++
++/ {
++    tps62864_normal_consumer {
++        compatible = "regulator-virtual-consumer";
++        default-supply = <&tps62864_normal>;
++    };
++
++    tps62864_fpwm_consumer {
++        compatible = "regulator-virtual-consumer";
++        default-supply = <&tps62864_fpwm>;
++    };
++};
++        """,
++        variables={
++            "normal": DtVar.I2C_ADDR,
++            "fpwm": DtVar.I2C_ADDR,
++        },
++    )
++
++    @classmethod
++    def setUpClass(cls) -> None:
++        insmod("tps6286x-regulator")
++
++    @classmethod
++    def tearDownClass(cls) -> None:
++        rmmod("tps6286x-regulator")
++
++    def setUp(self) -> None:
++        self.driver = I2CDriver("tps6286x")
++        self.hw = Hardware("i2c")
++        self.hw.load_model(TPS62864)
++
++    def tearDown(self) -> None:
++        self.hw.close()
++
++    def test_voltage(self) -> None:
++        with (
++            self.driver.bind(self.dts["normal"]),
++            PlatformDriver("reg-virt-consumer").bind(
++                "tps62864_normal_consumer"
++            ) as consumerdev,
++        ):
++            maxfile = consumerdev.path / "max_microvolts"
++            minfile = consumerdev.path / "min_microvolts"
++
++            write_int(maxfile, 1675000)
++            write_int(minfile, 800000)
++
++            mock = self.hw.update_mock()
++            mock.assert_reg_write_once(self, REG_CONTROL, 1 << 5)
++            mock.assert_reg_write_once(self, REG_VOUT1, 0x50)
++            mock.reset_mock()
++
++            mV = 1000
++            data = [
++                (400 * mV, 0x00),
++                (900 * mV, 0x64),
++                (1675 * mV, 0xFF),
++            ]
++
++            for voltage, val in data:
++                write_int(minfile, voltage)
++                mock = self.hw.update_mock()
++                mock.assert_reg_write_once(self, REG_VOUT1, val)
++                mock.reset_mock()
++
++            write_int(minfile, 0)
++            mock = self.hw.update_mock()
++            mock.assert_reg_write_once(self, REG_CONTROL, 0)
++            mock.reset_mock()
++
++    def test_modes(self) -> None:
++        with (
++            self.driver.bind(self.dts["normal"]),
++            PlatformDriver("reg-virt-consumer").bind(
++                "tps62864_normal_consumer"
++            ) as consumerdev,
++        ):
++            modefile = consumerdev.path / "mode"
++            write_str(modefile, "fast")
++
++            mock = self.hw.update_mock()
++            mock.assert_reg_write_once(self, REG_CONTROL, 1 << 4)
++            mock.reset_mock()
++
++            write_str(modefile, "normal")
++            mock = self.hw.update_mock()
++            mock.assert_reg_write_once(self, REG_CONTROL, 0)
++            mock.reset_mock()
++
++    def test_dt_force_pwm(self) -> None:
++        with (
++            self.driver.bind(self.dts["fpwm"]),
++            PlatformDriver("reg-virt-consumer").bind(
++                "tps62864_fpwm_consumer"
++            ) as consumerdev,
++        ):
++            mock = self.hw.update_mock()
++            mock.assert_reg_write_once(self, REG_CONTROL, 1 << 4)
++            mock.reset_mock()
++
++            modefile = consumerdev.path / "mode"
++            self.assertEquals(read_str(modefile), "fast")
++
++            maxfile = consumerdev.path / "max_microvolts"
++            minfile = consumerdev.path / "min_microvolts"
++
++            write_int(maxfile, 1675000)
++            write_int(minfile, 800000)
++
++            mock = self.hw.update_mock()
++            mock.assert_reg_write_once(self, REG_CONTROL, 1 << 5 | 1 << 4)
++            mock.reset_mock()
+-- 
+2.34.1
 
-Shouldn't this get figured out when the device gets created in DT (if it
-doesn't I guess the tests found a bug...)?
-
-> +    def setUp(self) -> None:
-> +        self.driver = I2CDriver("tps6286x")
-> +        self.hw = Hardware("i2c")
-> +        self.hw.load_model(TPS62864)
-
-This feels like there could be some syntactic sugar to say "create this
-I2C device" in one call?  In general a lot of the frameworkish stuff
-feels verbose.
-
-> +    def test_voltage(self) -> None:
-> +        with (
-> +            self.driver.bind(self.dts["normal"]),
-> +            PlatformDriver("reg-virt-consumer").bind(
-> +                "tps62864_normal_consumer"
-> +            ) as consumerdev,
-> +        ):
-> +            maxfile = consumerdev.path / "max_microvolts"
-> +            minfile = consumerdev.path / "min_microvolts"
-> +
-> +            write_int(maxfile, 1675000)
-> +            write_int(minfile, 800000)
-> +
-> +            mock = self.hw.update_mock()
-> +            mock.assert_reg_write_once(self, REG_CONTROL, 1 << 5)
-> +            mock.assert_reg_write_once(self, REG_VOUT1, 0x50)
-> +            mock.reset_mock()
-
-Some comments about the assertations here would seem to be in order.
-It's not altogether clear what this is testing - it looks to be
-verifying that the regulator is enabled with the voltage set to 800mV
-mapping to 0x50 in VOUT1 but I'm not sure that the idle reader would
-pick that up.
-
-> +            mV = 1000
-> +            data = [
-> +                (400 * mV, 0x00),
-> +                (900 * mV, 0x64),
-> +                (1675 * mV, 0xFF),
-> +            ]
-> +
-> +            for voltage, val in data:
-> +                write_int(minfile, voltage)
-> +                mock = self.hw.update_mock()
-> +                mock.assert_reg_write_once(self, REG_VOUT1, val)
-> +                mock.reset_mock()
-
-For covering regulators in general (especially those like this that use
-the generic helpers) I'd be inclined to go through every single voltage
-that can be set which isn't so interesting for this driver with it's
-linear voltage control but more interesting for something that's not
-continuous.  I'd also put a cross check in that the voltage and enable
-state that's reported via the read interface in sysfs is the one that we
-think we've just set, that'd validate that the framework's model of
-what's going on matches both what the driver did to the "hardware" and
-what the running kernel thinks is going on so we're joined up top to
-bottom (for the regulator framework the read values come from the
-driver so it is actually covering the driver).
-
-This all feels like it could readily be factored out into a generic
-helper, much as the actual drivers are especially when they're more data
-driven.  Ideally with the ability to override the default I/O operations
-for things with sequences that need to be followed instead of just a
-bitfield to update.  Callbacks to validate enable state, voltage, mode
-and so on in the hardware.  If we did that then rather than open coding
-every single test for every single device we could approach things at
-the framework level and give people working on a given device a pile of
-off the shelf tests which are more likely to catch things that an
-individual driver author might've missed, it also avoids the test
-coverage being more laborious than writing the actual driver.
-
-This does raise the questions I mentioned about how useful the testing
-really is of course, even more so when someone works out how to generate
-the data tables for the test and the driver from the same source, but
-that's just generally an issue for mocked tests at the conceptual level
-and clearly it's an approach that's fairly widely used and people get
-value from.
-
---MolxjZU9V35M/+dw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmIrj70ACgkQJNaLcl1U
-h9D1Rgf9Ftqa1fE0HqpChhmXg9bevuB0hQF8ey0T0Ypw/UorQPenedWbtt0/waZY
-K8rGaxJFPJbpC26PeXga6PnVPe7rm+uJtKQe7kICGvkvdCzVfqEH6uNxUfMwPki3
-zD2nhS1EvX7bB4NUDP8a3BgrFu8KWh6Npx2yj1cUKUoKFAPBhktCFs/wP5xfhvDV
-16sVYMN3QInL8IERk5F+lJSZHHOqfyt0lu7hgW70d+GoAlix/NwXL67ezPMykft/
-iyATJkFPB6KoBG2IChUzCFOzMN8KVfjXMCcl5JxOgSpER4jqMeDIbjTsv4uilzFf
-LUaSWbjwsd5iJoc7O2UJ+5I6S6vUDA==
-=X5TK
------END PGP SIGNATURE-----
-
---MolxjZU9V35M/+dw--
-
-
---===============2841672343048883425==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 linux-um mailing list
 linux-um@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-um
-
---===============2841672343048883425==--
-
 
