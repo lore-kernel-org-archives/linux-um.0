@@ -1,17 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from smtp2.axis.com ([195.60.68.18])
+Received: from mail-ej1-x62e.google.com ([2a00:1450:4864:20::62e])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nUsgY-00GiOu-Rm
- for linux-um@lists.infradead.org; Thu, 17 Mar 2022 16:09:13 +0000
-Date: Thu, 17 Mar 2022 17:09:08 +0100
-From: Vincent Whitchurch <vincent.whitchurch@axis.com>
-Subject: Re: [RFC v1 00/10] roadtest: a driver testing framework
-Message-ID: <20220317160908.GA20347@axis.com>
-References: <20220311162445.346685-1-vincent.whitchurch@axis.com>
- <CAFd5g45zwSNr-_PSbtGn1MiQgombSBTCjXOG-cvcQW8xQQUo+Q@mail.gmail.com>
+ id 1nTt7r-0071Ua-JD
+ for linux-um@lists.infradead.org; Mon, 14 Mar 2022 22:25:18 +0000
+Received: by mail-ej1-x62e.google.com with SMTP id gb39so36898078ejc.1
+ for <linux-um@lists.infradead.org>; Mon, 14 Mar 2022 15:25:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAFd5g45zwSNr-_PSbtGn1MiQgombSBTCjXOG-cvcQW8xQQUo+Q@mail.gmail.com>
+References: <20220311162445.346685-1-vincent.whitchurch@axis.com>
+In-Reply-To: <20220311162445.346685-1-vincent.whitchurch@axis.com>
+From: Brendan Higgins <brendanhiggins@google.com>
+Date: Mon, 14 Mar 2022 18:24:59 -0400
+Message-ID: <CAFd5g45zwSNr-_PSbtGn1MiQgombSBTCjXOG-cvcQW8xQQUo+Q@mail.gmail.com>
+Subject: Re: [RFC v1 00/10] roadtest: a driver testing framework
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,157 +24,338 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Brendan Higgins <brendanhiggins@google.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>, Kees Cook <keescook@chromium.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, kernel <kernel@axis.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "shuah@kernel.org" <shuah@kernel.org>, "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, "jic23@kernel.org" <jic23@kernel.org>, "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "a.zummo@towertech.it" <a.zummo@towertech.it>, "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>, "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>, "corbet@lwn.net" <corbet@lwn.net>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+To: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>, Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org, kernel@axis.com, devicetree@vger.kernel.org, linux-um@lists.infradead.org, shuah@kernel.org, linux-kselftest@vger.kernel.org, jic23@kernel.org, linux-iio@vger.kernel.org, lgirdwood@gmail.com, broonie@kernel.org, a.zummo@towertech.it, alexandre.belloni@bootlin.com, linux-rtc@vger.kernel.org, corbet@lwn.net, linux-doc@vger.kernel.org
 
-On Mon, Mar 14, 2022 at 11:24:59PM +0100, Brendan Higgins wrote:
-> +Kees Cook - I imagine you have already seen this, but I figured you
-> would be interested because of your recent work on the KUnit UAPI and
-> the mocking discussions.
-> +Dmitry Vyukov - This made me think of the syzkaller/KUnit experiments
-> we did a couple of years back - this would probably work a bit better.
-> 
-> On Fri, Mar 11, 2022 at 11:24 AM Vincent Whitchurch
-> <vincent.whitchurch@axis.com> wrote:
-> >
-> > This patchset proposes roadtest, a device-driver testing framework.  Drivers
-> > are tested under User Mode Linux (UML) and interact with mocked/modelled
-> > hardware.  The tests and hardware models are written in Python, the former
-> > using Python's built-in unittest framework.
-> 
-> Wow! This sounds awesome! I was hoping to get some kind of hardware
-> modeling with KUnit eventually. I did some experiments, but this looks
-> way more mature.
++Kees Cook - I imagine you have already seen this, but I figured you
+would be interested because of your recent work on the KUnit UAPI and
+the mocking discussions.
++Dmitry Vyukov - This made me think of the syzkaller/KUnit experiments
+we did a couple of years back - this would probably work a bit better.
 
-Thank you for the comments!
+On Fri, Mar 11, 2022 at 11:24 AM Vincent Whitchurch
+<vincent.whitchurch@axis.com> wrote:
+>
+> This patchset proposes roadtest, a device-driver testing framework.  Drivers
+> are tested under User Mode Linux (UML) and interact with mocked/modelled
+> hardware.  The tests and hardware models are written in Python, the former
+> using Python's built-in unittest framework.
 
-> > Drivers are tested via their userspace interfaces.  The hardware models allow
-> > tests to inject values into registers and assert that drivers control the
-> > hardware in the right way and react as expected to stimuli.
-> 
-> I already took a look at the documentation patch - I'll comment there
-> more in detail, but I like the hardware modelling and device tree
-> code; it seems very usable.
-> 
-> > Roadtest is meant to be used for relatively simple drivers, such as the ones
-> > part of the IIO, regulator and RTC subsystems.
-> 
-> Obviously for an initial version going after simple stuff makes sense,
-> but I would hope there is applicability to any driver stack
-> eventually.
+Wow! This sounds awesome! I was hoping to get some kind of hardware
+modeling with KUnit eventually. I did some experiments, but this looks
+way more mature.
 
-Yes, there is no inherent restriction to only simple hardware, but these
-kinds of subsystem are the ones where it's easier to apply the framework
-since there's simply less stuff to model/mock in the hardware.
+> Drivers are tested via their userspace interfaces.  The hardware models allow
+> tests to inject values into registers and assert that drivers control the
+> hardware in the right way and react as expected to stimuli.
 
-Supporting different busses also requires some work in the framework and
-potentially some new drivers.  For I2C we use virtio-i2c but there's no
-ready-made virtio-spi for example.  For MMIO (PCI / platform drivers), I
-did some basic experiments with UML's virtio-mmio in the early stages of
-writing this framework.
+I already took a look at the documentation patch - I'll comment there
+more in detail, but I like the hardware modelling and device tree
+code; it seems very usable.
 
-> > = How does this relate to kselftests?
-> >
-> > Tests in kselftests also test kernel code using the userspace interfaces, but
-> > that's about what's common between the frameworks.  kselftests has other goals
-> > and does not provide any kind of mechanism for hardware mocking.
-> 
-> I had a question that after thinking about it; I think I know the
-> answer, so I am going to ask the question anyway and attempt to answer
-> it myself:
-> 
-> I agree in regard to mocking, but why not use kselftest for driving
-> tests that check drivers from userspace? I believe there are other
-> kselftest tests implemented in Python, why can't you just run your
-> tests inside of kselftest?
-> 
-> Now, I believe the answer to this question is that you need to control
-> spinning up your own kernel to run inside your test harness because
-> you need to control the environment that the kernel runs in - is this
-> correct?
+> Roadtest is meant to be used for relatively simple drivers, such as the ones
+> part of the IIO, regulator and RTC subsystems.
 
-Yes, that is correct.  For example, the devicetree stuff requires that
-the kernel be booted with the devicetree.  For the other tests also it's
-simpler to have a controlled environment without being affected by other
-stuff going on on the host.  And generally it's of course easier if the
-kernel which is inevitably going to crash and burn due to buggy drivers
-isn't the one powering your workstation.
+Obviously for an initial version going after simple stuff makes sense,
+but I would hope there is applicability to any driver stack
+eventually.
 
-Also, there is no currently way to use virtio drivers such as virtio-i2c
-and virtio-gpio (which roadtest uses) with the virtio device side
-implemented in userspace on the same system, so that would have also
-required a fair bit of work to get running.
+> Questions and answers:
+>
+> = Why do we need this?
+>
+> There are a large amount of these kind of drivers in the kernel.  Most of the
+> hardware is not available in current CI systems so most drivers can only, at
+> best, be build-tested there.  Even basic soundness such as a driver
+> successfully probing and binding to the devices it tries to be support cannot
+> be tested.  Drivers cannot be easily regression-tested to ensure that bugs
+> fixed once do not get reintroduced.
+>
+> Many drivers support multiple related hardware variants, and far from all patch
+> submitters have access to all the variants which the driver that they are
+> patching supports, so there is no way for them to easily verify that they
+> haven't broken something basic on a variant which they do not own.
+>
+> Furthermore, hardware can be used in many different configurations with drivers
+> supporting many different devicetree properties, so even just having access to
+> all the variants would be insufficient.
+>
+> On top of that, some of the chips measure environmental conditions such as
+> temperature, so testing extreme cases may not be simple even if one has access
+> to the hardware.
+>
+> All this makes development, modification, maintenance, and reviewing of these
+> drivers harder than it necessarily needs to be.  Roadtest hopes to make some of
+> these things slightly easier by providing a framework to create hardware
+> models/mocks and to write testcases which exercise drivers using these models.
 
-(On a side note, I've wondered why kselftest doesn't provide a standard
-way to run all the tests under kvm or something similar with all the
-correct configs.  For example, the kernels I work with are on embedded
-systems and I rarely recompile my host kernel, and I assume that there
-are plenty of others in the same situation.)
+Very much agree. I used to do driver development and these
+difficulties are what prompted me to do KUnit.
 
-> > = How does this relate to kunit?
-> >
-> > Kunit is for unit testing of functions in kernel code, and is not meant for
-> > testing kernel code via userspace interfaces.  It could in theory be used to
-> > test some of the simple drivers too, but that would require (1) a large amount
-> > of mocking code in various kernel frameworks, and, more importantly, (2)
-> > refactoring of the drivers to be tested.
-> 
-> I mostly agree, but I think there is something that is missing here:
-> so roadtest seems to depend on having a user interface to test a
-> driver - for a simple smoke test on a simple driver without a big
-> driver stack on top, that makes sense, but what about testing error
-> paths or a platform driver buried beneath a deep driver stack? I think
-> there is potential for a powerful combination using KUnit to test the
-> low level kernel API and using roadtest to mock the hardware
-> environment and provide configuration.
+> = Do you have some specific examples of the kind of code this could be used to
+>   test?
+>
+> Here is an example of a patch which can easily be regression-tested using
+> roadtest (in fact, this series includes such a regression test) but is much
+> harder to do so automatically with real hardware since it requires specific
+> environmental conditions:
+>
+>  iio: light: opt3001: Fixed timeout error when 0 lux
+>  https://lore.kernel.org/lkml/20210920125351.6569-1-valek@2n.cz/
+>
+> Here is another example.  This driver has code which correctly parses a
+> documented devicetree property (amstaos,proximity-diodes) but which then fails
+> to actually communicate this setting to the hardware in any way.  Such code can
+> be easily tested with roadtest since the framework integrates devicetree
+> support and provides functions to assert that drivers writes expected registers
+> with expected values:
+>
+>  drivers/iio/light/tsl2772.c tsl2772_read_prox_diodes()
+>
+> (Both the above examples happen to be from the same subsystem but that should
+> in no way be taken to imply that such issues are unique to that subsystem or
+> that that subsystem has more of them.)
+>
+> = How does this relate to kselftests?
+>
+> Tests in kselftests also test kernel code using the userspace interfaces, but
+> that's about what's common between the frameworks.  kselftests has other goals
+> and does not provide any kind of mechanism for hardware mocking.
 
-Yes, that could be useful.  I have previously written some kunit tests
-for some experimental memory management code which required different
-devicetree reserved-memory nodes and arm64 (no hardware mocking) to run,
-and I ran them by having a shell script which ran QEMU several times
-with appropriate -append kunit.filter_glob=foo and -dtb options and
-post-processing the logs with kunit.py.
+I had a question that after thinking about it; I think I know the
+answer, so I am going to ask the question anyway and attempt to answer
+it myself:
 
-> I am imagining that we could have an in-kernel KUnit/roadtest API that
-> we can use to have an in-kernel test request changes to the
-> environment for creating error cases and the like that can be
-> validated by KUnit test cases.
-> 
-> Going even further, I wonder if we could run kselftests inside of
-> roadtest since roadtest allows us to change the environment on the
-> fly.
+I agree in regard to mocking, but why not use kselftest for driving
+tests that check drivers from userspace? I believe there are other
+kselftest tests implemented in Python, why can't you just run your
+tests inside of kselftest?
 
-Sounds interesting, but I would likely need to see concrete examples to
-understand what kind of environment we'd want to change from within the
-kernel.
+Now, I believe the answer to this question is that you need to control
+spinning up your own kernel to run inside your test harness because
+you need to control the environment that the kernel runs in - is this
+correct?
 
-> > This can be contrasted with roadtest which works with mostly unmodified drivers
-> > and which mocks the hardware at the lowest level without having to change
-> > kernel frameworks.
-> 
-> I think that is both potentially an advantage and a disadvantage.
-> 
-> The advantage is that your test is very general; roadtests would
-> likely be portable across kernel versions.
-> 
-> The disadvantage is that you don't get as much code introspection: I
-> imagine roadtest is not as good as testing error paths for example.
-> 
-> I also think that having to change code to make it more testable is
-> often an advantage as much as a disadvantage.
+> = How does this relate to kunit?
+>
+> Kunit is for unit testing of functions in kernel code, and is not meant for
+> testing kernel code via userspace interfaces.  It could in theory be used to
+> test some of the simple drivers too, but that would require (1) a large amount
+> of mocking code in various kernel frameworks, and, more importantly, (2)
+> refactoring of the drivers to be tested.
 
-Yes, that's true, but I highlighted the unmodified drivers bit because
-(1) the process of refactoring drivers which don't have tests to make
-them testable in itself carries it with a risk of breaking stuff, and
-(2) and there are simply so many existing drivers that it's very
-unlikely that most of them get refactored, but it should be relatively
-easy to, for example, add a regression test for a specific bug fix with
-roadtest.
+I mostly agree, but I think there is something that is missing here:
+so roadtest seems to depend on having a user interface to test a
+driver - for a simple smoke test on a simple driver without a big
+driver stack on top, that makes sense, but what about testing error
+paths or a platform driver buried beneath a deep driver stack? I think
+there is potential for a powerful combination using KUnit to test the
+low level kernel API and using roadtest to mock the hardware
+environment and provide configuration.
 
-> 
-> Still, I think that is a good set of tradeoffs for roadtest to make
-> when set against KUnit and kselftest since roadtest seems to fit in
-> where kselftest and KUnit are weak.
+I am imagining that we could have an in-kernel KUnit/roadtest API that
+we can use to have an in-kernel test request changes to the
+environment for creating error cases and the like that can be
+validated by KUnit test cases.
+
+Going even further, I wonder if we could run kselftests inside of
+roadtest since roadtest allows us to change the environment on the
+fly.
+
+> This can be contrasted with roadtest which works with mostly unmodified drivers
+> and which mocks the hardware at the lowest level without having to change
+> kernel frameworks.
+
+I think that is both potentially an advantage and a disadvantage.
+
+The advantage is that your test is very general; roadtests would
+likely be portable across kernel versions.
+
+The disadvantage is that you don't get as much code introspection: I
+imagine roadtest is not as good as testing error paths for example.
+
+I also think that having to change code to make it more testable is
+often an advantage as much as a disadvantage.
+
+Still, I think that is a good set of tradeoffs for roadtest to make
+when set against KUnit and kselftest since roadtest seems to fit in
+where kselftest and KUnit are weak.
+
+> = How do I use it?
+>
+> See Documentation/dev-tools/roadtest.rst added by the documentation patch for
+> more information about running and writing tests using this framework.
+>
+> = What's included in the patchset?
+>
+> The current framework allows developing tests for hardware which uses the I2C
+> bus.  Hardware models can also control GPIOs and use them to trigger
+> interrupts.
+>
+> This series includes tests for some IIO, regulator and RTC drivers.  The
+> regulator and RTC tests depend on a few driver patches which are either in
+> review or in linux-next.  These are noted in the commit messages.
+>
+> The entire patch set, including the required dependencies, is also available in
+> a git tree:
+>
+>  https://github.com/vwax/linux/commits/roadtest/rfc-v1
+>
+> Cc: linux-kernel@vger.kernel.org
+> Cc: devicetree@vger.kernel.org
+> Cc: linux-um@lists.infradead.org
+>
+> Cc: shuah@kernel.org
+> Cc: brendanhiggins@google.com
+> Cc: linux-kselftest@vger.kernel.org
+>
+> Cc: jic23@kernel.org
+> Cc: linux-iio@vger.kernel.org
+>
+> Cc: lgirdwood@gmail.com
+> Cc: broonie@kernel.org
+>
+> Cc: a.zummo@towertech.it
+> Cc: alexandre.belloni@bootlin.com
+> Cc: linux-rtc@vger.kernel.org
+>
+> Cc: corbet@lwn.net
+> Cc: linux-doc@vger.kernel.org
+>
+> Vincent Whitchurch (10):
+>   roadtest: import libvhost-user from QEMU
+>   roadtest: add C backend
+>   roadtest: add framework
+>   roadtest: add base config
+>   roadtest: add build files
+>   roadtest: add documentation
+>   iio: light: opt3001: add roadtest
+>   iio: light: vcnl4000: add roadtest
+>   regulator: tps62864: add roadtest
+>   rtc: pcf8563: add roadtest
+>
+>  Documentation/dev-tools/index.rst             |    1 +
+>  Documentation/dev-tools/roadtest.rst          |  669 ++++
+>  tools/testing/roadtest/.gitignore             |    2 +
+>  tools/testing/roadtest/Dockerfile             |   25 +
+>  tools/testing/roadtest/Makefile               |   84 +
+>  tools/testing/roadtest/init.sh                |   19 +
+>  tools/testing/roadtest/pyproject.toml         |   10 +
+>  tools/testing/roadtest/requirements.txt       |    4 +
+>  tools/testing/roadtest/roadtest/__init__.py   |    2 +
+>  .../roadtest/roadtest/backend/__init__.py     |    0
+>  .../roadtest/roadtest/backend/backend.py      |   32 +
+>  .../testing/roadtest/roadtest/backend/gpio.py |  111 +
+>  .../testing/roadtest/roadtest/backend/i2c.py  |  123 +
+>  .../testing/roadtest/roadtest/backend/main.py |   13 +
+>  .../testing/roadtest/roadtest/backend/mock.py |   20 +
+>  .../roadtest/roadtest/backend/test_gpio.py    |   98 +
+>  .../roadtest/roadtest/backend/test_i2c.py     |   84 +
+>  .../testing/roadtest/roadtest/cmd/__init__.py |    0
+>  tools/testing/roadtest/roadtest/cmd/main.py   |  146 +
+>  tools/testing/roadtest/roadtest/cmd/remote.py |   48 +
+>  .../roadtest/roadtest/core/__init__.py        |    0
+>  .../testing/roadtest/roadtest/core/control.py |   52 +
+>  .../roadtest/roadtest/core/devicetree.py      |  155 +
+>  .../roadtest/roadtest/core/hardware.py        |   94 +
+>  tools/testing/roadtest/roadtest/core/log.py   |   42 +
+>  .../testing/roadtest/roadtest/core/modules.py |   38 +
+>  .../testing/roadtest/roadtest/core/opslog.py  |   35 +
+>  tools/testing/roadtest/roadtest/core/proxy.py |   48 +
+>  tools/testing/roadtest/roadtest/core/suite.py |  286 ++
+>  tools/testing/roadtest/roadtest/core/sysfs.py |   77 +
+>  .../roadtest/roadtest/core/test_control.py    |   35 +
+>  .../roadtest/roadtest/core/test_devicetree.py |   31 +
+>  .../roadtest/roadtest/core/test_hardware.py   |   41 +
+>  .../roadtest/roadtest/core/test_log.py        |   54 +
+>  .../roadtest/roadtest/core/test_opslog.py     |   27 +
+>  .../roadtest/roadtest/tests/__init__.py       |    0
+>  .../roadtest/roadtest/tests/base/config       |   84 +
+>  .../roadtest/roadtest/tests/iio/__init__.py   |    0
+>  .../roadtest/roadtest/tests/iio/config        |    1 +
+>  .../roadtest/roadtest/tests/iio/iio.py        |  112 +
+>  .../roadtest/tests/iio/light/__init__.py      |    0
+>  .../roadtest/roadtest/tests/iio/light/config  |    2 +
+>  .../roadtest/tests/iio/light/test_opt3001.py  |   95 +
+>  .../roadtest/tests/iio/light/test_vcnl4000.py |  132 +
+>  .../roadtest/tests/iio/light/test_vcnl4010.py |  282 ++
+>  .../roadtest/tests/iio/light/test_vcnl4040.py |  104 +
+>  .../roadtest/tests/iio/light/test_vcnl4200.py |   96 +
+>  .../roadtest/tests/regulator/__init__.py      |    0
+>  .../roadtest/roadtest/tests/regulator/config  |    4 +
+>  .../roadtest/tests/regulator/test_tps62864.py |  187 ++
+>  .../roadtest/roadtest/tests/rtc/__init__.py   |    0
+>  .../roadtest/roadtest/tests/rtc/config        |    1 +
+>  .../roadtest/roadtest/tests/rtc/rtc.py        |   73 +
+>  .../roadtest/tests/rtc/test_pcf8563.py        |  348 ++
+>  tools/testing/roadtest/src/.gitignore         |    1 +
+>  tools/testing/roadtest/src/backend.c          |  884 +++++
+>  .../src/libvhost-user/include/atomic.h        |  310 ++
+>  .../src/libvhost-user/libvhost-user.c         | 2885 +++++++++++++++++
+>  .../src/libvhost-user/libvhost-user.h         |  691 ++++
+>  59 files changed, 8798 insertions(+)
+>  create mode 100644 Documentation/dev-tools/roadtest.rst
+>  create mode 100644 tools/testing/roadtest/.gitignore
+>  create mode 100644 tools/testing/roadtest/Dockerfile
+>  create mode 100644 tools/testing/roadtest/Makefile
+>  create mode 100755 tools/testing/roadtest/init.sh
+>  create mode 100644 tools/testing/roadtest/pyproject.toml
+>  create mode 100644 tools/testing/roadtest/requirements.txt
+>  create mode 100644 tools/testing/roadtest/roadtest/__init__.py
+>  create mode 100644 tools/testing/roadtest/roadtest/backend/__init__.py
+>  create mode 100644 tools/testing/roadtest/roadtest/backend/backend.py
+>  create mode 100644 tools/testing/roadtest/roadtest/backend/gpio.py
+>  create mode 100644 tools/testing/roadtest/roadtest/backend/i2c.py
+>  create mode 100644 tools/testing/roadtest/roadtest/backend/main.py
+>  create mode 100644 tools/testing/roadtest/roadtest/backend/mock.py
+>  create mode 100644 tools/testing/roadtest/roadtest/backend/test_gpio.py
+>  create mode 100644 tools/testing/roadtest/roadtest/backend/test_i2c.py
+>  create mode 100644 tools/testing/roadtest/roadtest/cmd/__init__.py
+>  create mode 100644 tools/testing/roadtest/roadtest/cmd/main.py
+>  create mode 100644 tools/testing/roadtest/roadtest/cmd/remote.py
+>  create mode 100644 tools/testing/roadtest/roadtest/core/__init__.py
+>  create mode 100644 tools/testing/roadtest/roadtest/core/control.py
+>  create mode 100644 tools/testing/roadtest/roadtest/core/devicetree.py
+>  create mode 100644 tools/testing/roadtest/roadtest/core/hardware.py
+>  create mode 100644 tools/testing/roadtest/roadtest/core/log.py
+>  create mode 100644 tools/testing/roadtest/roadtest/core/modules.py
+>  create mode 100644 tools/testing/roadtest/roadtest/core/opslog.py
+>  create mode 100644 tools/testing/roadtest/roadtest/core/proxy.py
+>  create mode 100644 tools/testing/roadtest/roadtest/core/suite.py
+>  create mode 100644 tools/testing/roadtest/roadtest/core/sysfs.py
+>  create mode 100644 tools/testing/roadtest/roadtest/core/test_control.py
+>  create mode 100644 tools/testing/roadtest/roadtest/core/test_devicetree.py
+>  create mode 100644 tools/testing/roadtest/roadtest/core/test_hardware.py
+>  create mode 100644 tools/testing/roadtest/roadtest/core/test_log.py
+>  create mode 100644 tools/testing/roadtest/roadtest/core/test_opslog.py
+>  create mode 100644 tools/testing/roadtest/roadtest/tests/__init__.py
+>  create mode 100644 tools/testing/roadtest/roadtest/tests/base/config
+>  create mode 100644 tools/testing/roadtest/roadtest/tests/iio/__init__.py
+>  create mode 100644 tools/testing/roadtest/roadtest/tests/iio/config
+>  create mode 100644 tools/testing/roadtest/roadtest/tests/iio/iio.py
+>  create mode 100644 tools/testing/roadtest/roadtest/tests/iio/light/__init__.py
+>  create mode 100644 tools/testing/roadtest/roadtest/tests/iio/light/config
+>  create mode 100644 tools/testing/roadtest/roadtest/tests/iio/light/test_opt3001.py
+>  create mode 100644 tools/testing/roadtest/roadtest/tests/iio/light/test_vcnl4000.py
+>  create mode 100644 tools/testing/roadtest/roadtest/tests/iio/light/test_vcnl4010.py
+>  create mode 100644 tools/testing/roadtest/roadtest/tests/iio/light/test_vcnl4040.py
+>  create mode 100644 tools/testing/roadtest/roadtest/tests/iio/light/test_vcnl4200.py
+>  create mode 100644 tools/testing/roadtest/roadtest/tests/regulator/__init__.py
+>  create mode 100644 tools/testing/roadtest/roadtest/tests/regulator/config
+>  create mode 100644 tools/testing/roadtest/roadtest/tests/regulator/test_tps62864.py
+>  create mode 100644 tools/testing/roadtest/roadtest/tests/rtc/__init__.py
+>  create mode 100644 tools/testing/roadtest/roadtest/tests/rtc/config
+>  create mode 100644 tools/testing/roadtest/roadtest/tests/rtc/rtc.py
+>  create mode 100644 tools/testing/roadtest/roadtest/tests/rtc/test_pcf8563.py
+>  create mode 100644 tools/testing/roadtest/src/.gitignore
+>  create mode 100644 tools/testing/roadtest/src/backend.c
+>  create mode 100644 tools/testing/roadtest/src/libvhost-user/include/atomic.h
+>  create mode 100644 tools/testing/roadtest/src/libvhost-user/libvhost-user.c
+>  create mode 100644 tools/testing/roadtest/src/libvhost-user/libvhost-user.h
+>
+> --
+> 2.34.1
+>
 
 _______________________________________________
 linux-um mailing list
