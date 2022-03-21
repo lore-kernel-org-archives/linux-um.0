@@ -1,71 +1,56 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x549.google.com ([2607:f8b0:4864:20::549])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nPhQE-005pt7-0F
- for linux-um@lists.infradead.org; Thu, 03 Mar 2022 09:06:55 +0000
-Received: by mail-pg1-x549.google.com with SMTP id
- bj8-20020a056a02018800b0035ec8c16f0bso2486516pgb.11
- for <linux-um@lists.infradead.org>; Thu, 03 Mar 2022 01:06:52 -0800 (PST)
-Date: Thu,  3 Mar 2022 17:06:42 +0800
-Message-Id: <20220303090643.241747-1-davidgow@google.com>
-Mime-Version: 1.0
-Subject: [PATCH] um: clang: Strip out -mno-global-merge from USER_CFLAGS
-From: David Gow <davidgow@google.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Kees Cook <keescook@chromium.org>
-Cc: David Gow <davidgow@google.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Masahiro Yamada <masahiroy@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, Nathan Chancellor <nathan@kernel.org>, linux-um@lists.infradead.org, linux-kbuild@vger.kernel.org, linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, llvm@lists.linux.dev, linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+MIME-Version: 1.0
+Date: Mon, 21 Mar 2022 15:48:30 +0100
+References: <CAHk-=wj4fFjx2pgbGNBM4wJs3=eReZ05EQyprzgT2Jv8qJ2vJg@mail.gmail.com>
+	<20220321101654.3570822-1-geert@linux-m68k.org>
+In-Reply-To: <20220321101654.3570822-1-geert@linux-m68k.org>
+Message-ID: <CAMuHMdWsrW0WFB+B6wGg2k4wo1qk1xi2s2sbaw44=uVvVpopHw@mail.gmail.com>
+Subject: Re: Build regressions/improvements in v5.17
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc: sparclinux <sparclinux@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, KVM list <kvm@vger.kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-The things built with USER_CFLAGS don't seem to recognise it as a
-compiler option, and print a warning:
-clang: warning: argument unused during compilation: '-mno-global-merge' [-Wunused-command-line-argument]
+On Mon, Mar 21, 2022 at 3:00 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> JFYI, when comparing v5.17[1] to v5.17-rc8[3], the summaries are:
+>   - build errors: +5/-0
 
-Fixes: 744814d2fa ("um: Allow builds with Clang")
-Signed-off-by: David Gow <davidgow@google.com>
----
+  + /kisskb/src/crypto/blake2b_generic.c: error: the frame size of
+2288 bytes is larger than 2048 bytes [-Werror=frame-larger-than=]:  =>
+109:1
 
-This warning shows up after merging:
-https://lore.kernel.org/lkml/20220227184517.504931-6-keescook@chromium.org/
+sparc64-gcc11/sparc-allmodconfig
 
-I'm not 100% sure why this is necessary, but it does seem to work. All
-the attempts to get rid of -mno-global-merge entirely have been met with
-skepticism, but I'm guessing that it's not a problem for just the UML
-"user" files, as they shouldn't(?) interact too much with modules.
+  + /kisskb/src/drivers/vfio/pci/vfio_pci_rdwr.c: error: assignment
+makes pointer from integer without a cast [-Werror=int-conversion]:
+=> 324:9, 317:9
+  + /kisskb/src/drivers/vfio/pci/vfio_pci_rdwr.c: error: implicit
+declaration of function 'ioport_map'
+[-Werror=implicit-function-declaration]:  => 317:11
+  + /kisskb/src/drivers/vfio/pci/vfio_pci_rdwr.c: error: implicit
+declaration of function 'ioport_unmap'
+[-Werror=implicit-function-declaration]:  => 338:15
 
- arch/um/Makefile | 4 ++++
- 1 file changed, 4 insertions(+)
+um-x86_64/um-all{mod,yes}config
 
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index f2fe63bfd819..320b09cd513c 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -75,6 +75,10 @@ USER_CFLAGS = $(patsubst $(KERNEL_DEFINES),,$(patsubst -I%,,$(KBUILD_CFLAGS))) \
- 		-D_FILE_OFFSET_BITS=64 -idirafter $(srctree)/include \
- 		-idirafter $(objtree)/include -D__KERNEL__ -D__UM_HOST__
- 
-+ifdef CONFIG_CC_IS_CLANG
-+USER_CFLAGS := $(patsubst -mno-global-merge,,$(USER_CFLAGS))
-+endif
-+
- #This will adjust *FLAGS accordingly to the platform.
- include $(srctree)/$(ARCH_DIR)/Makefile-os-$(OS)
- 
--- 
-2.35.1.616.g0bdcbb4464-goog
+  + error: arch/powerpc/kvm/book3s_64_entry.o: relocation truncated to
+fit: R_PPC64_REL14 (stub) against symbol `machine_check_common'
+defined in .text section in arch/powerpc/kernel/head_64.o:  =>
+(.text+0x3e4)
 
+powerpc-gcc5/powerpc-allyesconfig
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/f443e374ae131c168a065ea1748feac6b2e76613/ (96 out of 98 configs)
+> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/09688c0166e76ce2fb85e86b9d99be8b0084cdf9/ (96 out of 98 configs)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
