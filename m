@@ -1,15 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43])
+Received: from wp530.webpack.hosteurope.de ([2a01:488:42:1000:50ed:8234::])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nRZ4a-004Nqf-O2
- for linux-um@lists.infradead.org; Tue, 08 Mar 2022 12:36:18 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v7 24/26] virtio_net: support rx/tx queue reset
-Date: Tue,  8 Mar 2022 20:35:16 +0800
-Message-Id: <20220308123518.33800-25-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220308123518.33800-1-xuanzhuo@linux.alibaba.com>
-References: <20220308123518.33800-1-xuanzhuo@linux.alibaba.com>
+ id 1nXMlW-00GbGq-MA
+ for linux-um@lists.infradead.org; Thu, 24 Mar 2022 12:40:37 +0000
+Message-ID: <f4f17203-df77-bf51-d761-3db63075d5a6@leemhuis.info>
+Date: Thu, 24 Mar 2022 13:40:23 +0100
 MIME-Version: 1.0
+Content-Language: en-US
+References: <20210508032239.2177-1-thunder.leizhen@huawei.com>
+ <Yjt31seiNv18HYrf@dev-arch.thelio-3990X>
+From: Thorsten Leemhuis <regressions@leemhuis.info>
+Subject: Re: [PATCH 1/1] um: fix error return code in winch_tramp()
+In-Reply-To: <Yjt31seiNv18HYrf@dev-arch.thelio-3990X>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,176 +24,232 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
+To: Nathan Chancellor <nathan@kernel.org>, Zhen Lei <thunder.leizhen@huawei.com>
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Andrew Morton <akpm@linux-foundation.org>, Eduard-Gabriel Munteanu <maxdamage@aladin.ro>, linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, regressions@lists.linux.dev
 
-This patch implements the reset function of the rx, tx queues.
+[TLDR: I'm adding the regression report below to regzbot, the Linux
+kernel regression tracking bot; all text you find below is compiled from
+a few templates paragraphs you might have encountered already already
+from similar mails.]
 
-Based on this function, it is possible to modify the ring num of the
-queue. And quickly recycle the buffer in the queue.
+Hi, this is your Linux kernel regression tracker. Top-posting for once,
+to make this easily accessible to everyone.
 
-In the process of the queue disable, in theory, as long as virtio
-supports queue reset, there will be no exceptions.
+Thanks for the report.
 
-However, in the process of the queue enable, there may be exceptions due to
-memory allocation.  In this case, vq is not available, but we still have
-to execute napi_enable(). Because napi_disable is similar to a lock,
-napi_enable must be called after calling napi_disable.
+To be sure below issue doesn't fall through the cracks unnoticed, I'm
+adding it to regzbot, my Linux kernel regression tracking bot:
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- drivers/net/virtio_net.c | 107 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 107 insertions(+)
+#regzbot ^introduced ccf1236ecac4
+#regzbot title uml: UML fails to exit cleanly when it is called from
+within in a shell script
+#regzbot ignore-activity
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 409a8e180918..ffff323dcef0 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -251,6 +251,11 @@ struct padded_vnet_hdr {
- 	char padding[4];
- };
- 
-+static void virtnet_sq_free_unused_bufs(struct virtnet_info *vi,
-+					struct send_queue *sq);
-+static void virtnet_rq_free_unused_bufs(struct virtnet_info *vi,
-+					struct receive_queue *rq);
-+
- static bool is_xdp_frame(void *ptr)
- {
- 	return (unsigned long)ptr & VIRTIO_XDP_FLAG;
-@@ -1369,6 +1374,9 @@ static void virtnet_napi_enable(struct virtqueue *vq, struct napi_struct *napi)
- {
- 	napi_enable(napi);
- 
-+	if (vq->reset)
-+		return;
-+
- 	/* If all buffers were filled by other side before we napi_enabled, we
- 	 * won't get another interrupt, so process any outstanding packets now.
- 	 * Call local_bh_enable after to trigger softIRQ processing.
-@@ -1413,6 +1421,10 @@ static void refill_work(struct work_struct *work)
- 		struct receive_queue *rq = &vi->rq[i];
- 
- 		napi_disable(&rq->napi);
-+		if (rq->vq->reset) {
-+			virtnet_napi_enable(rq->vq, &rq->napi);
-+			continue;
-+		}
- 		still_empty = !try_fill_recv(vi, rq, GFP_KERNEL);
- 		virtnet_napi_enable(rq->vq, &rq->napi);
- 
-@@ -1523,6 +1535,9 @@ static void virtnet_poll_cleantx(struct receive_queue *rq)
- 	if (!sq->napi.weight || is_xdp_raw_buffer_queue(vi, index))
- 		return;
- 
-+	if (sq->vq->reset)
-+		return;
-+
- 	if (__netif_tx_trylock(txq)) {
- 		do {
- 			virtqueue_disable_cb(sq->vq);
-@@ -1769,6 +1784,98 @@ static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
- 	return NETDEV_TX_OK;
- }
- 
-+static int virtnet_rx_vq_reset(struct virtnet_info *vi,
-+			       struct receive_queue *rq, u32 ring_num)
-+{
-+	int err;
-+
-+	/* stop napi */
-+	napi_disable(&rq->napi);
-+
-+	/* reset the queue */
-+	err = virtio_reset_vq(rq->vq);
-+	if (err)
-+		goto err;
-+
-+	/* free bufs */
-+	virtnet_rq_free_unused_bufs(vi, rq);
-+
-+	/* reset vring. */
-+	err = virtqueue_reset_vring(rq->vq, ring_num);
-+	if (err)
-+		goto err;
-+
-+	/* enable reset queue */
-+	err = virtio_enable_resetq(rq->vq);
-+	if (err)
-+		goto err;
-+
-+	/* fill recv */
-+	if (!try_fill_recv(vi, rq, GFP_KERNEL))
-+		schedule_delayed_work(&vi->refill, 0);
-+
-+	/* enable napi */
-+	virtnet_napi_enable(rq->vq, &rq->napi);
-+	return 0;
-+
-+err:
-+	netdev_err(vi->dev,
-+		   "reset rx reset vq fail: rx queue index: %ld err: %d\n",
-+		   rq - vi->rq, err);
-+	virtnet_napi_enable(rq->vq, &rq->napi);
-+	return err;
-+}
-+
-+static int virtnet_tx_vq_reset(struct virtnet_info *vi,
-+			       struct send_queue *sq, u32 ring_num)
-+{
-+	struct netdev_queue *txq;
-+	int err, qindex;
-+
-+	qindex = sq - vi->sq;
-+
-+	txq = netdev_get_tx_queue(vi->dev, qindex);
-+	__netif_tx_lock_bh(txq);
-+
-+	/* stop tx queue and napi */
-+	netif_stop_subqueue(vi->dev, qindex);
-+	virtnet_napi_tx_disable(&sq->napi);
-+
-+	__netif_tx_unlock_bh(txq);
-+
-+	/* reset the queue */
-+	err = virtio_reset_vq(sq->vq);
-+	if (err) {
-+		netif_start_subqueue(vi->dev, qindex);
-+		goto err;
-+	}
-+
-+	/* free bufs */
-+	virtnet_sq_free_unused_bufs(vi, sq);
-+
-+	/* reset vring. */
-+	err = virtqueue_reset_vring(sq->vq, ring_num);
-+	if (err)
-+		goto err;
-+
-+	/* enable reset queue */
-+	err = virtio_enable_resetq(sq->vq);
-+	if (err)
-+		goto err;
-+
-+	/* start tx queue and napi */
-+	netif_start_subqueue(vi->dev, qindex);
-+	virtnet_napi_tx_enable(vi, sq->vq, &sq->napi);
-+	return 0;
-+
-+err:
-+	netdev_err(vi->dev,
-+		   "reset tx reset vq fail: tx queue index: %ld err: %d\n",
-+		   sq - vi->sq, err);
-+	virtnet_napi_tx_enable(vi, sq->vq, &sq->napi);
-+	return err;
-+}
-+
- /*
-  * Send command via the control virtqueue and check status.  Commands
-  * supported by the hypervisor, as indicated by feature bits, should
+If it turns out this isn't a regression, free free to remove it from the
+tracking by sending a reply to this thread containing a paragraph like
+"#regzbot invalid: reason why this is invalid" (without the quotes).
+
+Reminder for developers: when fixing the issue, please add a 'Link:'
+tags pointing to the report (the mail) using lore.kernel.org/r/, as
+explained in 'Documentation/process/submitting-patches.rst' and
+'Documentation/process/5.Posting.rst'. Regzbot needs them to
+automatically connect reports with fixes, but they are useful in
+general, too.
+
+I'm sending this to everyone that got the initial report, to make
+everyone aware of the tracking. I also hope that messages like this
+motivate people to directly get at least the regression mailing list and
+ideally even regzbot involved when dealing with regressions, as messages
+like this wouldn't be needed then. And don't worry, if I need to send
+other mails regarding this regression only relevant for regzbot I'll
+send them to the regressions lists only (with a tag in the subject so
+people can filter them away). With a bit of luck no such messages will
+be needed anyway.
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+
+P.S.: As the Linux kernel's regression tracker I'm getting a lot of
+reports on my table. I can only look briefly into most of them and lack
+knowledge about most of the areas they concern. I thus unfortunately
+will sometimes get things wrong or miss something important. I hope
+that's not the case here; if you think it is, don't hesitate to tell me
+in a public reply, it's in everyone's interest to set the public record
+straight.
+
+
+On 23.03.22 20:41, Nathan Chancellor wrote:
+> Hello,
+> 
+> On Sat, May 08, 2021 at 11:22:39AM +0800, Zhen Lei wrote:
+>> Fix to return a negative error code from the error handling case instead
+>> of 0, as done elsewhere in this function.
+>>
+>> Fixes: 89df6bfc0405 ("uml: DEBUG_SHIRQ fixes")
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>> ---
+>>  arch/um/drivers/chan_user.c | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/um/drivers/chan_user.c b/arch/um/drivers/chan_user.c
+>> index d8845d4aac6a..6040817c036f 100644
+>> --- a/arch/um/drivers/chan_user.c
+>> +++ b/arch/um/drivers/chan_user.c
+>> @@ -256,7 +256,8 @@ static int winch_tramp(int fd, struct tty_port *port, int *fd_out,
+>>  		goto out_close;
+>>  	}
+>>  
+>> -	if (os_set_fd_block(*fd_out, 0)) {
+>> +	err = os_set_fd_block(*fd_out, 0);
+>> +	if (err) {
+>>  		printk(UM_KERN_ERR "winch_tramp: failed to set thread_fd "
+>>  		       "non-blocking.\n");
+>>  		goto out_close;
+>> -- 
+>> 2.25.1
+>>
+>>
+>>
+> 
+> Sorry for the necro bump but this patch as commit ccf1236ecac4 ("um: fix
+> error return code in winch_tramp()") prevents UML from exiting cleanly
+> when it is called from within in a shell script. It is still
+> reproducible at next-20220323. I did see a patch from Richard that
+> touches this area but that patch does not make a difference:
+> 
+> https://lore.kernel.org/r/20220101215810.13260-3-richard@nod.at/
+> 
+> My bisect log:
+> 
+> # bad: [7d2a07b769330c34b4deabeed939325c77a7ec2f] Linux 5.14
+> # good: [62fb9874f5da54fdb243003b386128037319b219] Linux 5.13
+> git bisect start 'v5.14' 'v5.13'
+> # good: [406254918b232db198ed60f5bf1f8b84d96bca00] Merge tag 'perf-tools-for-v5.14-2021-07-01' of git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux
+> git bisect good 406254918b232db198ed60f5bf1f8b84d96bca00
+> # good: [4ea90317956718e0648e1f87e56530db809a5a04] Merge tag 'for-linus-5.14-rc1-tag' of git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip
+> git bisect good 4ea90317956718e0648e1f87e56530db809a5a04
+> # bad: [65ca89c2b12cca0d473f3dd54267568ad3af55cc] ASoC: intel: atom: Fix breakage for PCM buffer address setup
+> git bisect bad 65ca89c2b12cca0d473f3dd54267568ad3af55cc
+> # bad: [6e207b882159ed3e35a4cd4ff0fc155cce5e3cbc] Merge tag 'arm-soc-5.14' of git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc
+> git bisect bad 6e207b882159ed3e35a4cd4ff0fc155cce5e3cbc
+> # good: [f55966571d5eb2876a11e48e798b4592fa1ffbb7] Merge tag 'drm-next-2021-07-08-1' of git://anongit.freedesktop.org/drm/drm
+> git bisect good f55966571d5eb2876a11e48e798b4592fa1ffbb7
+> # bad: [1459718d7d79013a4814275c466e0b32da6a26bc] Merge tag 'powerpc-5.14-2' of git://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux
+> git bisect bad 1459718d7d79013a4814275c466e0b32da6a26bc
+> # good: [227c4d507c71acb7bece298a98d83e5b44433f62] Merge tag 'f2fs-for-5.14-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs
+> git bisect good 227c4d507c71acb7bece298a98d83e5b44433f62
+> # good: [96890bc2eaa1f6bfc1b194e0f0815a10824352a4] Merge tag 'nfs-for-5.14-1' of git://git.linux-nfs.org/projects/trondmy/linux-nfs
+> git bisect good 96890bc2eaa1f6bfc1b194e0f0815a10824352a4
+> # good: [e49d68ce7cc5a865ce14c1e57938438ab01c3ce3] Merge tag 'ext4_for_linus_stable' of git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4
+> git bisect good e49d68ce7cc5a865ce14c1e57938438ab01c3ce3
+> # bad: [ccf1236ecac476d9d2704866d9a476c86e387971] um: fix error return code in winch_tramp()
+> git bisect bad ccf1236ecac476d9d2704866d9a476c86e387971
+> # good: [68f5d3f3b6543266b29e047cfaf9842333019b4c] um: add PCI over virtio emulation driver
+> git bisect good 68f5d3f3b6543266b29e047cfaf9842333019b4c
+> # good: [c0ecca6604b80e438b032578634c6e133c7028f6] um: enable the use of optimized xor routines in UML
+> git bisect good c0ecca6604b80e438b032578634c6e133c7028f6
+> # good: [80f849bf541ef9b633a9c08ac208f9c9afd14eb9] um: implement flush_cache_vmap/flush_cache_vunmap
+> git bisect good 80f849bf541ef9b633a9c08ac208f9c9afd14eb9
+> # good: [b77e81fbe5f5fb4ad9a61ec80f6d1e30b6da093a] um: fix error return code in slip_open()
+> git bisect good b77e81fbe5f5fb4ad9a61ec80f6d1e30b6da093a
+> # first bad commit: [ccf1236ecac476d9d2704866d9a476c86e387971] um: fix error return code in winch_tramp()
+> 
+> $ make -skj"$(nproc)" ARCH=um mrproper defconfig all
+> 
+> $ ./linux ubd0=...
+> ...
+> Run /sbin/init as init process
+> EXT4-fs (ubda): re-mounted. Quota mode: none.
+> Starting syslogd: OK
+> Starting klogd: OK
+> Running sysctl: OK
+> Initializing random number generator: OK
+> Saving random seed: OK
+> Starting network: OK
+> Linux version 5.17.0-next-20220323 (nathan@dev-arch.thelio-3990X) (gcc (GCC) 11.2.0, GNU ld (GNU Binutils) 2.38) #1 Wed Mar 23 12:05:22 MST 2022
+> Stopping network: OK
+> Saving random seed: OK
+> Stopping klogd: OK
+> Stopping syslogd: OK
+> EXT4-fs (ubda): re-mounted. Quota mode: none.
+> The system is going down NOW!
+> Sent SIGTERM to all processes
+> Sent SIGKILL to all processes
+> Requesting system poweroff
+> reboot: System halted
+> 
+> $ echo $?
+> 0
+> 
+> $ cat test.sh
+> #!/usr/bin/env bash
+> 
+> ./linux ubd0=...
+> 
+> $ ./test.sh
+> ...
+> Run /sbin/init as init process
+> EXT4-fs (ubda): re-mounted. Quota mode: none.
+> Starting syslogd: OK
+> Starting klogd: OK
+> Running sysctl: OK
+> Initializing random number generator: OK
+> Saving random seed: OK
+> Starting network: OK
+> Linux version 5.17.0-next-20220323 (nathan@dev-arch.thelio-3990X) (gcc (GCC) 11.2.0, GNU ld (GNU Binutils) 2.38) #1 Wed Mar 23 12:10:31 MST 2022
+> Stopping network: OK
+> Saving random seed: OK
+> Stopping klogd: OK
+> Stopping syslogd: OK
+> EXT4-fs (ubda): re-mounted. Quota mode: none.
+> The system is going down NOW!
+> Sent SIGTERM to all processes
+> Sent SIGKILL to all processes
+> Requesting system poweroff
+> reboot: System halted
+> ./test.sh: line 5: 970978 Killed                  ./linux ubd0=...
+> 
+> $ echo $?
+> 137
+> 
+> The rootfs is a simple Buildroot image, which just prints the version
+> string then runs "poweroff". It is available at:
+> 
+> https://github.com/nathanchance/boot-utils/raw/bd4b962ee12e00f666eef12e3413a79d334a0685/images/x86_64/rootfs.ext4.zst
+> 
+> in case it helps. I am happy to provide more information or test patches
+> as necessary.
+> 
+> Cheers,
+> Nathan
+> 
+> 
 -- 
-2.31.0
+Additional information about regzbot:
 
+If you want to know more about regzbot, check out its web-interface, the
+getting start guide, and the references documentation:
+
+https://linux-regtracking.leemhuis.info/regzbot/
+https://gitlab.com/knurd42/regzbot/-/blob/main/docs/getting_started.md
+https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
+
+The last two documents will explain how you can interact with regzbot
+yourself if your want to.
+
+Hint for reporters: when reporting a regression it's in your interest to
+CC the regression list and tell regzbot about the issue, as that ensures
+the regression makes it onto the radar of the Linux kernel's regression
+tracker -- that's in your interest, as it ensures your report won't fall
+through the cracks unnoticed.
+
+Hint for developers: you normally don't need to care about regzbot once
+it's involved. Fix the issue as you normally would, just remember to
+include 'Link:' tag in the patch descriptions pointing to all reports
+about the issue. This has been expected from developers even before
+regzbot showed up for reasons explained in
+'Documentation/process/submitting-patches.rst' and
+'Documentation/process/5.Posting.rst'.
 
 _______________________________________________
 linux-um mailing list
