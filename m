@@ -2,13 +2,13 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab7.miniserver.com ([37.128.132.42]
  helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nXMvv-00GePx-L2
- for linux-um@lists.infradead.org; Thu, 24 Mar 2022 12:51:21 +0000
+ id 1nXMvp-00GeNr-NG
+ for linux-um@lists.infradead.org; Thu, 24 Mar 2022 12:51:15 +0000
 Subject: Re: [PATCH 1/2] um: xterm: make default terminal emulator configurable
 References: <20220324131344.b7608507865f.I4f78dca5973127790f8dc5757ff5f021078b2c62@changeid>
 From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Message-ID: <c0f1fa2b-b023-6426-cacc-912dd7095cc5@kot-begemot.co.uk>
-Date: Thu, 24 Mar 2022 12:16:12 +0000
+Message-ID: <8a0a4347-0f35-63b7-e169-a3a6fa61bbe2@kot-begemot.co.uk>
+Date: Thu, 24 Mar 2022 12:18:16 +0000
 MIME-Version: 1.0
 In-Reply-To: <20220324131344.b7608507865f.I4f78dca5973127790f8dc5757ff5f021078b2c62@changeid>
 Content-Language: en-US
@@ -98,7 +98,8 @@ On 24/03/2022 12:13, Johannes Berg wrote:
 >   
 >   static int xterm_open(int input, int output, int primary, void *d,
 > 
-Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+
+I was going to fw this to Debian as they patch this and integrate with Debian alternatives. I see Ritesh is already in the loop. Cool.
 
 -- 
 Anton R. Ivanov
