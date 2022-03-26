@@ -1,15 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44])
+Received: from sin.source.kernel.org ([145.40.73.55])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nRZ4e-004Nvb-Rm
- for linux-um@lists.infradead.org; Tue, 08 Mar 2022 12:36:22 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v7 26/26] virtio_net: support set_ringparam
-Date: Tue,  8 Mar 2022 20:35:18 +0800
-Message-Id: <20220308123518.33800-27-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220308123518.33800-1-xuanzhuo@linux.alibaba.com>
-References: <20220308123518.33800-1-xuanzhuo@linux.alibaba.com>
+ id 1nYCaF-004ooP-88
+ for linux-um@lists.infradead.org; Sat, 26 Mar 2022 20:00:24 +0000
+Date: Sat, 26 Mar 2022 13:00:08 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+Subject: Re: [PATCH] um: Fix filtering '-mno-global-merge'
+Message-ID: <Yj9wyNwZWkilNbJM@dev-arch.thelio-3990X>
+References: <20220322173547.677760-1-nathan@kernel.org>
+ <CAK7LNAT8TcDy=iKaWZ7_+MbT84vOVEBzHxJY8Bx54Ju5fur8-w@mail.gmail.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CAK7LNAT8TcDy=iKaWZ7_+MbT84vOVEBzHxJY8Bx54Ju5fur8-w@mail.gmail.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,86 +24,57 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Nick Desaulniers <ndesaulniers@google.com>, David Gow <davidgow@google.com>, linux-um@lists.infradead.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
 
-Support set_ringparam based on virtio queue reset.
+On Sat, Mar 26, 2022 at 12:29:55PM +0900, Masahiro Yamada wrote:
+> On Wed, Mar 23, 2022 at 2:39 AM Nathan Chancellor <nathan@kernel.org> wrote:
+> >
+> > When booting a clang compiled UML kernel, the kernel panics when trying
+> > to run init:
+> >
+> >   wait_stub_done : failed to wait for SIGTRAP, pid = 651294, n = 651294, errno = 0, status = 0xb7f
+> >   Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+> >
+> > After the commit in Fixes, many flags from KBUILD_CFLAGS do not appear
+> > in USER_CFLAGS, likely due to USER_CFLAGS initially being a recursive
+> > variable ("VAR =") then being switched to a simple ("VAR :=") variable.
+> > For example, diffing arch/x86/um/.ptrace_user.o.cmd shows flags such as
+> > '-Os' and '-fno-delete-null-pointer-checks' getting dropped, which both
+> > impact code generation.
+> >
+> > Rework the filtering to use filter-out instead of patsubst, which allows
+> > all the patterns that USER_CFLAGS cares about to be excluded in one
+> > command and ensures all flags from KBUILD_CFLAGS are transferred over to
+> > USER_CFLAGS properly, which resolves the boot issue noted above.
+> >
+> > Fixes: 6580c5c18fb3 ("um: clang: Strip out -mno-global-merge from USER_CFLAGS")
+> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> 
+> 
+> 
+> Can we remove -mno-global-merge entirely?
+> 
+> 
+> 61163efae02040f66a95 was a very old commit,
+> without enough explanation.
+> 
+> Shall we remove  -mno-global-merge, and do compile-tests.
+> If we are hit by problems for arm/arm64, we can re-add it.
 
-The rx,tx_pending required to be passed must be power of 2.
+Yes, I think that was the conversation that we had on the commit that
+this fixes:
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- drivers/net/virtio_net.c | 47 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
+https://lore.kernel.org/r/YiD7R2wRxoWxtVq7@dev-arch.thelio-3990X/
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index f1bdc6ce21c3..1fa2d632a994 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -2290,6 +2290,52 @@ static void virtnet_get_ringparam(struct net_device *dev,
- 	ring->tx_pending = virtqueue_get_vring_size(vi->sq[0].vq);
- }
- 
-+static int virtnet_set_ringparam(struct net_device *dev,
-+				 struct ethtool_ringparam *ring,
-+				 struct kernel_ethtool_ringparam *kernel_ring,
-+				 struct netlink_ext_ack *extack)
-+{
-+	struct virtnet_info *vi = netdev_priv(dev);
-+	u32 rx_pending, tx_pending;
-+	struct receive_queue *rq;
-+	struct send_queue *sq;
-+	int i, err;
-+
-+	if (ring->rx_mini_pending || ring->rx_jumbo_pending)
-+		return -EINVAL;
-+
-+	rx_pending = virtqueue_get_vring_size(vi->rq[0].vq);
-+	tx_pending = virtqueue_get_vring_size(vi->sq[0].vq);
-+
-+	if (ring->rx_pending == rx_pending &&
-+	    ring->tx_pending == tx_pending)
-+		return 0;
-+
-+	if (ring->rx_pending > virtqueue_get_vring_max_size(vi->rq[0].vq))
-+		return -EINVAL;
-+
-+	if (ring->tx_pending > virtqueue_get_vring_max_size(vi->sq[0].vq))
-+		return -EINVAL;
-+
-+	for (i = 0; i < vi->max_queue_pairs; i++) {
-+		rq = vi->rq + i;
-+		sq = vi->sq + i;
-+
-+		if (ring->tx_pending != tx_pending) {
-+			err = virtnet_tx_vq_reset(vi, sq, ring->tx_pending);
-+			if (err)
-+				return err;
-+		}
-+
-+		if (ring->rx_pending != rx_pending) {
-+			err = virtnet_rx_vq_reset(vi, rq, ring->rx_pending);
-+			if (err)
-+				return err;
-+		}
-+	}
-+
-+	return 0;
-+}
- 
- static void virtnet_get_drvinfo(struct net_device *dev,
- 				struct ethtool_drvinfo *info)
-@@ -2523,6 +2569,7 @@ static const struct ethtool_ops virtnet_ethtool_ops = {
- 	.get_drvinfo = virtnet_get_drvinfo,
- 	.get_link = ethtool_op_get_link,
- 	.get_ringparam = virtnet_get_ringparam,
-+	.set_ringparam = virtnet_set_ringparam,
- 	.get_strings = virtnet_get_strings,
- 	.get_sset_count = virtnet_get_sset_count,
- 	.get_ethtool_stats = virtnet_get_ethtool_stats,
--- 
-2.31.0
+I can test that on my Raspberry Pi 3 and 4 on Monday, although I would
+like for this patch to be picked up in the meantime so that it is
+possible to test UML on -next with clang. We can remove
+-mno-global-merge in a follow up change, if you do not have any
+objections?
 
+Cheers,
+Nathano
 
 _______________________________________________
 linux-um mailing list
