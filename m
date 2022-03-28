@@ -1,16 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nRZ3o-004N4J-BO
- for linux-um@lists.infradead.org; Tue, 08 Mar 2022 12:35:30 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v7 01/26] virtio_pci: struct virtio_pci_common_cfg add
- queue_notify_data
-Date: Tue,  8 Mar 2022 20:34:53 +0800
-Message-Id: <20220308123518.33800-2-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220308123518.33800-1-xuanzhuo@linux.alibaba.com>
-References: <20220308123518.33800-1-xuanzhuo@linux.alibaba.com>
+Message-ID: <808b18df-bc24-9eeb-005e-7e38c451ced1@infradead.org>
+Date: Mon, 28 Mar 2022 07:59:59 -0700
 MIME-Version: 1.0
+Subject: Re: [PATCH] um: use asm-generic/dma-mapping.h
+Content-Language: en-US
+References: <20220328094625.662ac14072bc.I1a0d087aeafbbf363b49f149371d67677a33544f@changeid>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20220328094625.662ac14072bc.I1a0d087aeafbbf363b49f149371d67677a33544f@changeid>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -23,43 +19,55 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
+To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
 
-Add queue_notify_data in struct virtio_pci_common_cfg, which comes from
-here https://github.com/oasis-tcs/virtio-spec/issues/89
 
-For not breaks uABI, add a new struct virtio_pci_common_cfg_notify.
 
-Since I want to add queue_reset after queue_notify_data, I submitted
-this patch first.
+On 3/28/22 00:46, Johannes Berg wrote:
+> From: Johannes Berg <johannes.berg@intel.com>
+> 
+> If DMA (PCI over virtio) is enabled, then some drivers may
+> enable CONFIG_DMA_OPS as well, and then we pull in the x86
+> definition of get_arch_dma_ops(), which uses the dma_ops
+> symbol, which isn't defined.
+> 
+> Since we don't have real DMA ops nor any kind of IOMMU fix
+> this in the simplest possible way: pull in the asm-generic
+> file instead of inheriting the x86 one. It's not clear why
+> those drivers that do (e.g. VDPA) "select DMA_OPS", and if
+> they'd even work with this, but chances are nobody will be
+> wanting to do that anyway, so fixing the build failure is
+> good enough.
+> 
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Fixes: 68f5d3f3b654 ("um: add PCI over virtio emulation driver")
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- include/uapi/linux/virtio_pci.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+Tested-by: Randy Dunlap <rdunlap@infradead.org>
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-diff --git a/include/uapi/linux/virtio_pci.h b/include/uapi/linux/virtio_pci.h
-index 3a86f36d7e3d..22bec9bd0dfc 100644
---- a/include/uapi/linux/virtio_pci.h
-+++ b/include/uapi/linux/virtio_pci.h
-@@ -166,6 +166,13 @@ struct virtio_pci_common_cfg {
- 	__le32 queue_used_hi;		/* read-write */
- };
- 
-+struct virtio_pci_common_cfg_notify {
-+	struct virtio_pci_common_cfg cfg;
-+
-+	__le16 queue_notify_data;	/* read-write */
-+	__le16 padding;
-+};
-+
- /* Fields in VIRTIO_PCI_CAP_PCI_CFG: */
- struct virtio_pci_cfg_cap {
- 	struct virtio_pci_cap cap;
+thanks.
+
+> ---
+>  arch/um/include/asm/Kbuild | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
+> index e5a7b552bb38..a8c763c296b4 100644
+> --- a/arch/um/include/asm/Kbuild
+> +++ b/arch/um/include/asm/Kbuild
+> @@ -4,6 +4,7 @@ generic-y += bug.h
+>  generic-y += compat.h
+>  generic-y += current.h
+>  generic-y += device.h
+> +generic-y += dma-mapping.h
+>  generic-y += emergency-restart.h
+>  generic-y += exec.h
+>  generic-y += extable.h
+
 -- 
-2.31.0
-
+~Randy
 
 _______________________________________________
 linux-um mailing list
