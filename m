@@ -2,14 +2,14 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
  helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nXMLk-00GRZn-KH
- for linux-um@lists.infradead.org; Thu, 24 Mar 2022 12:13:58 +0000
+ id 1nZXVu-00FkEq-SJ
+ for linux-um@lists.infradead.org; Wed, 30 Mar 2022 12:33:33 +0000
+Message-ID: <c1ff43de7d64831d8f40e8e11177f005b9940050.camel@sipsolutions.net>
+Subject: Re: UML time-travel warning from __run_timers
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH 2/2] um: daemon: make default socket configurable
-Date: Thu, 24 Mar 2022 13:13:44 +0100
-Message-Id: <20220324131344.3cd44e85efab.I8bb1282abea3119025f79507f01c0d951bb1bede@changeid>
-In-Reply-To: <20220324131344.b7608507865f.I4f78dca5973127790f8dc5757ff5f021078b2c62@changeid>
-References: <20220324131344.b7608507865f.I4f78dca5973127790f8dc5757ff5f021078b2c62@changeid>
+Date: Wed, 30 Mar 2022 14:33:23 +0200
+In-Reply-To: <20220330110156.GA9250@axis.com>
+References: <20220330110156.GA9250@axis.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -23,57 +23,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Ritesh Raj Sarraf <rrs@debian.org>, Johannes Berg <johannes.berg@intel.com>
+To: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+On Wed, 2022-03-30 at 13:01 +0200, Vincent Whitchurch wrote:
+> Hello Johannes,
+> 
+> As requested in the roadtest thread[0], here is some information about
+> reproducing the warnings I'm seeing from the timekeeping code with time
+> travel in UML, after about 10-20 wall time seconds of idling.
+> 
+> [0] https://lore.kernel.org/lkml/5b39d572e619c812109af7a1b8028bfb8353efda.camel@sipsolutions.net/
+> 
+> The warning is the WARN_ON_ONCE(!levels && !base->next_expiry_recalc) in
+> __run_timers().  The log and the config generated with savedefconfig are
+> below.  The full .config is attached.
+> 
+> The kernel version is v5.17, but the splats are seen on older kernels
+> and on latest mainline also.
+> 
 
-Even if daemon network is deprecated, some configurations may
-still use it (e.g. Debian), and not want to default to the
-/tmp/uml.ctl socket location. Allow configuring the default
-socket location.
+So interestingly, I cannot reproduce it with my config (it's already
+March 2023), but I can with yours ...
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- arch/um/drivers/Kconfig       | 8 ++++++++
- arch/um/drivers/daemon_kern.c | 2 +-
- 2 files changed, 9 insertions(+), 1 deletion(-)
-
-diff --git a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
-index 521ae0d46076..914da774bd39 100644
---- a/arch/um/drivers/Kconfig
-+++ b/arch/um/drivers/Kconfig
-@@ -238,6 +238,14 @@ config UML_NET_DAEMON
- 
- 	  If unsure, say N.
- 
-+config UML_NET_DAEMON_DEFAULT_SOCK
-+	string "Default socket for daemon transport"
-+	default "/tmp/uml.ctl"
-+	depends on UML_NET_DAEMON
-+	help
-+	  This option allows setting the default socket for the daemon
-+	  transport, normally it defaults to /tmp/uml.ctl.
-+
- config UML_NET_VECTOR
- 	bool "Vector I/O high performance network devices"
- 	depends on UML_NET
-diff --git a/arch/um/drivers/daemon_kern.c b/arch/um/drivers/daemon_kern.c
-index fd2402669c49..afde1e82c056 100644
---- a/arch/um/drivers/daemon_kern.c
-+++ b/arch/um/drivers/daemon_kern.c
-@@ -65,7 +65,7 @@ static int daemon_setup(char *str, char **mac_out, void *data)
- 
- 	*init = ((struct daemon_init)
- 		{ .sock_type 		= "unix",
--		  .ctl_sock 		= "/tmp/uml.ctl" });
-+		  .ctl_sock 		= CONFIG_UML_NET_DAEMON_DEFAULT_SOCK });
- 
- 	remain = split_if_spec(str, mac_out, &init->sock_type, &init->ctl_sock,
- 			       NULL);
--- 
-2.35.1
-
+johannes
 
 _______________________________________________
 linux-um mailing list
