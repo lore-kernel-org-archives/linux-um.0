@@ -1,15 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from smtp2.axis.com ([195.60.68.18])
+Received: from mail-io1-xd2c.google.com ([2607:f8b0:4864:20::d2c])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nSi4o-00HKlM-K2
- for linux-um@lists.infradead.org; Fri, 11 Mar 2022 16:25:18 +0000
-From: Vincent Whitchurch <vincent.whitchurch@axis.com>
-Subject: [RFC v1 10/10] rtc: pcf8563: add roadtest
-Date: Fri, 11 Mar 2022 17:24:45 +0100
-Message-ID: <20220311162445.346685-11-vincent.whitchurch@axis.com>
-In-Reply-To: <20220311162445.346685-1-vincent.whitchurch@axis.com>
-References: <20220311162445.346685-1-vincent.whitchurch@axis.com>
+ id 1nZzvJ-003IsS-Di
+ for linux-um@lists.infradead.org; Thu, 31 Mar 2022 18:53:35 +0000
+Received: by mail-io1-xd2c.google.com with SMTP id x4so577539iop.7
+ for <linux-um@lists.infradead.org>; Thu, 31 Mar 2022 11:53:32 -0700 (PDT)
 MIME-Version: 1.0
+References: <20220330234528.1426991-1-nathan@kernel.org>
+ <20220330234528.1426991-2-nathan@kernel.org>
+ <CA+icZUXrVgGyaujA1iQEw5P3nJHVwMtbFxpE2gKktaxW0Xg-wg@mail.gmail.com>
+ <YkXKnRwvbMdvOtlJ@thelio-3990X>
+In-Reply-To: <YkXKnRwvbMdvOtlJ@thelio-3990X>
+From: Sedat Dilek <sedat.dilek@gmail.com>
+Date: Thu, 31 Mar 2022 20:52:55 +0200
+Message-ID: <CA+icZUV-pHn0mWCnHr2x9SrcbaQos=M=Eg7p2KOaca829DmN_w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] kbuild: Remove '-mno-global-merge'
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,489 +23,87 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Reply-To: sedat.dilek@gmail.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: kernel@axis.com, Vincent Whitchurch <vincent.whitchurch@axis.com>, devicetree@vger.kernel.org, linux-um@lists.infradead.org, shuah@kernel.org, brendanhiggins@google.com, linux-kselftest@vger.kernel.org, jic23@kernel.org, linux-iio@vger.kernel.org, lgirdwood@gmail.com, broonie@kernel.org, a.zummo@towertech.it, alexandre.belloni@bootlin.com, linux-rtc@vger.kernel.org, corbet@lwn.net, linux-doc@vger.kernel.org
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: Masahiro Yamada <masahiroy@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Kees Cook <keescook@chromium.org>, linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, llvm@lists.linux.dev, patches@lists.linux.dev
 
-Add a roadtest for the PCF8563 RTC driver, testing many of the features
-including alarm and invalid time handling.  Since it's the first
-roadtest for RTC, some helper code for handling the ABI is included.
+On Thu, Mar 31, 2022 at 5:37 PM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> On Thu, Mar 31, 2022 at 09:11:12AM +0200, Sedat Dilek wrote:
+> > On Thu, Mar 31, 2022 at 5:27 AM Nathan Chancellor <nathan@kernel.org> wrote:
+> > >
+> > > This flag is specific to clang, where it is only used by the 32-bit and
+> > > 64-bit ARM backends. In certain situations, the presence of this flag
+> > > will cause a warning, as shown by commit 6580c5c18fb3 ("um: clang: Strip
+> > > out -mno-global-merge from USER_CFLAGS").
+> > >
+> > > Since commit 61163efae020 ("kbuild: LLVMLinux: Add Kbuild support for
+> > > building kernel with Clang") that added this flag back in 2014, there
+> > > have been quite a few changes to the GlobalMerge pass in LLVM. Building
+> > > several different ARCH=arm and ARCH=arm64 configurations with LLVM 11
+> > > (minimum) and 15 (current main version) with this flag removed (i.e.,
+> > > with the default of '-mglobal-merge') reveals no modpost warnings, so it
+> > > is likely that the issue noted in the comment is no longer relevant due
+> > > to changes in LLVM or modpost, meaning this flag can be removed.
+> > >
+> > > If any new warnings show up that are a result of the removal of this
+> > > flag, it can be added back under arch/arm{,64}/Makefile to avoid
+> > > warnings on other architectures.
+> > >
+> > > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> > > ---
+> > >  Makefile | 4 ----
+> > >  1 file changed, 4 deletions(-)
+> > >
+> > > diff --git a/Makefile b/Makefile
+> > > index daeb5c88b50b..f2723d9bfca4 100644
+> > > --- a/Makefile
+> > > +++ b/Makefile
+> > > @@ -784,10 +784,6 @@ ifdef CONFIG_CC_IS_CLANG
+> > >  KBUILD_CPPFLAGS += -Qunused-arguments
+> > >  # The kernel builds with '-std=gnu89' so use of GNU extensions is acceptable.
+> > >  KBUILD_CFLAGS += -Wno-gnu
+> > > -# CLANG uses a _MergedGlobals as optimization, but this breaks modpost, as the
+> > > -# source of a reference will be _MergedGlobals and not on of the whitelisted names.
+> > > -# See modpost pattern 2
+> > > -KBUILD_CFLAGS += -mno-global-merge
+> > >  else
+> > >
+> > >  # gcc inanely warns about local variables called 'main'
+> > > --
+> > > 2.35.1
+> > >
+> >
+> > I have tested this several times and was able to boot into bar metal -
+> > no problems with building and/or booting my kernel-modules.
+> >
+> > Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+> > Reviewed-by: Sedat Dilek <sedat.dilek@gmail.com>
+>
+> I would be very concerned if you did see any impact, given this flag is
+> ARM specific :) thanks as always for verifying!
+>
+> > Just as a side-note:
+> > As with Linux v5.18-rc1 and -std=gnu11 we change the above comment ...?
+> >
+> > # The kernel builds with '-std=gnu89' so use of GNU extensions is acceptable.
+> > KBUILD_CFLAGS += -Wno-gnu
+>
+> It was updated as part of the shift to '-std=gnu11':
+>
+> https://git.kernel.org/linus/e8c07082a810fbb9db303a2b66b66b8d7e588b53
+>
+> The UML tree is based on 5.17-rc6, which does not have that change.
+> There should not be a merge conflict though.
+>
 
-The following fixes were posted for problems identified during
-development of these tests:
+Ah OK, a different base for UML.
 
- - rtc: fix use-after-free on device removal
-   https://lore.kernel.org/lkml/20211210160951.7718-1-vincent.whitchurch@axis.com/
-
- - rtc: pcf8563: clear RTC_FEATURE_ALARM if no irq
-   https://lore.kernel.org/lkml/20220301131220.4011810-1-vincent.whitchurch@axis.com/
-
- - rtc: pcf8523: fix alarm interrupt disabling
-   https://lore.kernel.org/lkml/20211103152253.22844-1-vincent.whitchurch@axis.com/
-   (not the same hardware/driver, but this was the original target for
-    test development)
-
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
----
- .../roadtest/roadtest/tests/rtc/__init__.py   |   0
- .../roadtest/roadtest/tests/rtc/config        |   1 +
- .../roadtest/roadtest/tests/rtc/rtc.py        |  73 ++++
- .../roadtest/tests/rtc/test_pcf8563.py        | 348 ++++++++++++++++++
- 4 files changed, 422 insertions(+)
- create mode 100644 tools/testing/roadtest/roadtest/tests/rtc/__init__.py
- create mode 100644 tools/testing/roadtest/roadtest/tests/rtc/config
- create mode 100644 tools/testing/roadtest/roadtest/tests/rtc/rtc.py
- create mode 100644 tools/testing/roadtest/roadtest/tests/rtc/test_pcf8563.py
-
-diff --git a/tools/testing/roadtest/roadtest/tests/rtc/__init__.py b/tools/testing/roadtest/roadtest/tests/rtc/__init__.py
-new file mode 100644
-index 000000000000..e69de29bb2d1
-diff --git a/tools/testing/roadtest/roadtest/tests/rtc/config b/tools/testing/roadtest/roadtest/tests/rtc/config
-new file mode 100644
-index 000000000000..f3654f9d7c19
---- /dev/null
-+++ b/tools/testing/roadtest/roadtest/tests/rtc/config
-@@ -0,0 +1 @@
-+CONFIG_RTC_DRV_PCF8563=m
-diff --git a/tools/testing/roadtest/roadtest/tests/rtc/rtc.py b/tools/testing/roadtest/roadtest/tests/rtc/rtc.py
-new file mode 100644
-index 000000000000..1a2855bfc195
---- /dev/null
-+++ b/tools/testing/roadtest/roadtest/tests/rtc/rtc.py
-@@ -0,0 +1,73 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+# Copyright Axis Communications AB
-+
-+import contextlib
-+import fcntl
-+import struct
-+import typing
-+from pathlib import Path
-+from typing import Any, cast
-+
-+RTC_RD_TIME = 0x80247009
-+RTC_SET_TIME = 0x4024700A
-+RTC_WKALM_SET = 0x4028700F
-+RTC_VL_READ = 0x80047013
-+
-+RTC_IRQF = 0x80
-+RTC_AF = 0x20
-+
-+RTC_VL_DATA_INVALID = 1 << 0
-+
-+
-+class RTCTime(typing.NamedTuple):
-+    tm_sec: int
-+    tm_min: int
-+    tm_hour: int
-+    tm_mday: int
-+    tm_mon: int
-+    tm_year: int
-+    tm_wday: int
-+    tm_yday: int
-+    tm_isdst: int
-+
-+
-+class RTC(contextlib.AbstractContextManager):
-+    def __init__(self, devpath: Path) -> None:
-+        rtc = next(devpath.glob("rtc/rtc*")).name
-+        self.filename = f"/dev/{rtc}"
-+
-+    def __enter__(self) -> "RTC":
-+        self.file = open(self.filename, "rb")
-+        return self
-+
-+    def __exit__(self, *_: Any) -> None:
-+        self.file.close()
-+
-+    def read_time(self) -> RTCTime:
-+        s = struct.Struct("9i")
-+        buf = bytearray(s.size)
-+        fcntl.ioctl(self.file.fileno(), RTC_RD_TIME, buf)
-+        return RTCTime._make(s.unpack(buf))
-+
-+    def set_time(self, tm: RTCTime) -> int:
-+        s = struct.Struct("9i")
-+        buf = bytearray(s.size)
-+        s.pack_into(buf, 0, *tm)
-+        return fcntl.ioctl(self.file.fileno(), RTC_SET_TIME, buf)
-+
-+    def set_wake_alarm(self, enabled: bool, time: RTCTime) -> int:
-+        s = struct.Struct("2B9i")
-+        buf = bytearray(s.size)
-+        s.pack_into(buf, 0, enabled, False, *time)
-+        return fcntl.ioctl(self.file.fileno(), RTC_WKALM_SET, buf)
-+
-+    def read(self) -> int:
-+        s = struct.Struct("L")
-+        buf = self.file.read(s.size)
-+        return cast(int, s.unpack(buf)[0])
-+
-+    def read_vl(self) -> int:
-+        s = struct.Struct("I")
-+        buf = bytearray(s.size)
-+        fcntl.ioctl(self.file.fileno(), RTC_VL_READ, buf)
-+        return cast(int, s.unpack(buf)[0])
-diff --git a/tools/testing/roadtest/roadtest/tests/rtc/test_pcf8563.py b/tools/testing/roadtest/roadtest/tests/rtc/test_pcf8563.py
-new file mode 100644
-index 000000000000..a9f4c6d92762
---- /dev/null
-+++ b/tools/testing/roadtest/roadtest/tests/rtc/test_pcf8563.py
-@@ -0,0 +1,348 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+# Copyright Axis Communications AB
-+
-+import errno
-+import logging
-+from typing import Any, Final, Optional
-+
-+from roadtest.backend.i2c import I2CModel
-+from roadtest.core.devicetree import DtFragment, DtVar
-+from roadtest.core.hardware import Hardware
-+from roadtest.core.modules import insmod
-+from roadtest.core.suite import UMLTestCase
-+from roadtest.core.sysfs import I2CDriver
-+
-+from . import rtc
-+
-+logger = logging.getLogger(__name__)
-+
-+REG_CONTROL_STATUS_1: Final = 0x00
-+REG_CONTROL_STATUS_2: Final = 0x01
-+REG_VL_SECONDS: Final = 0x02
-+REG_VL_MINUTES: Final = 0x03
-+REG_VL_HOURS: Final = 0x04
-+REG_VL_DAYS: Final = 0x05
-+REG_VL_WEEKDAYS: Final = 0x06
-+REG_VL_CENTURY_MONTHS: Final = 0x07
-+REG_VL_YEARS: Final = 0x08
-+REG_VL_MINUTE_ALARM: Final = 0x09
-+REG_VL_HOUR_ALARM: Final = 0x0A
-+REG_VL_DAY_ALARM: Final = 0x0B
-+REG_VL_WEEKDAY_ALARM: Final = 0x0C
-+REG_CLKOUT_CONTROL: Final = 0x0D
-+REG_TIMER_CONTROL: Final = 0x0E
-+REG_TIMER: Final = 0x0F
-+
-+REG_CONTROL_STATUS_2_AIE: Final = 1 << 1
-+REG_CONTROL_STATUS_2_AF: Final = 1 << 3
-+
-+REG_VL_CENTURY_MONTHS_C: Final = 1 << 7
-+
-+REG_VL_ALARM_AE: Final = 1 << 7
-+
-+
-+class PCF8563(I2CModel):
-+    def __init__(self, int: Optional[int] = None, **kwargs: Any) -> None:
-+        super().__init__(**kwargs)
-+        self.int = int
-+        self._set_int(False)
-+
-+        self.reg_addr = 0
-+        # Reset values from Table 27 in datasheet, with X and - bits set to 0
-+        self.regs = {
-+            REG_CONTROL_STATUS_1: 0b_0000_1000,
-+            REG_CONTROL_STATUS_2: 0b_0000_0000,
-+            REG_VL_SECONDS: 0b_1000_0000,
-+            REG_VL_MINUTES: 0b_0000_0000,
-+            REG_VL_HOURS: 0b_0000_0000,
-+            REG_VL_DAYS: 0b_0000_0000,
-+            REG_VL_WEEKDAYS: 0b_0000_0000,
-+            REG_VL_CENTURY_MONTHS: 0b_0000_0000,
-+            REG_VL_YEARS: 0b_0000_0000,
-+            REG_VL_MINUTE_ALARM: 0b_1000_0000,
-+            REG_VL_HOUR_ALARM: 0b_1000_0000,
-+            REG_VL_DAY_ALARM: 0b_1000_0000,
-+            REG_VL_WEEKDAY_ALARM: 0b_1000_0000,
-+            REG_CLKOUT_CONTROL: 0b_1000_0000,
-+            REG_TIMER_CONTROL: 0b_0000_0011,
-+            REG_TIMER: 0b_0000_0000,
-+        }
-+
-+    def _set_int(self, active: int) -> None:
-+        # Active-low
-+        self.backend.gpio.set(self.int, not active)
-+
-+    def _check_alarm(self, addr: int) -> None:
-+        alarmregs = [
-+            REG_VL_MINUTE_ALARM,
-+            REG_VL_HOUR_ALARM,
-+            REG_VL_DAY_ALARM,
-+            REG_VL_WEEKDAY_ALARM,
-+        ]
-+        timeregs = [
-+            REG_VL_MINUTES,
-+            REG_VL_HOURS,
-+            REG_VL_DAYS,
-+            REG_VL_WEEKDAYS,
-+        ]
-+
-+        if addr not in alarmregs + timeregs:
-+            return
-+
-+        af = all(
-+            self.regs[a] == self.regs[b]
-+            for a, b in zip(alarmregs, timeregs)
-+            if not self.regs[a] & REG_VL_ALARM_AE
-+        )
-+        self.reg_write(REG_CONTROL_STATUS_2, self.regs[REG_CONTROL_STATUS_2] | af << 3)
-+
-+    def _update_irq(self) -> None:
-+        aie = self.regs[REG_CONTROL_STATUS_2] & REG_CONTROL_STATUS_2_AIE
-+        af = self.regs[REG_CONTROL_STATUS_2] & REG_CONTROL_STATUS_2_AF
-+
-+        logger.debug(f"{aie=} {af=}")
-+        self._set_int(aie and af)
-+
-+    def reg_read(self, addr: int) -> int:
-+        val = self.regs[addr]
-+        return val
-+
-+    def reg_write(self, addr: int, val: int) -> None:
-+        assert addr in self.regs
-+        self.regs[addr] = val
-+        logger.debug(f"{addr=:x} {val=:x}")
-+        self._check_alarm(addr)
-+        self._update_irq()
-+
-+    def read(self, len: int) -> bytes:
-+        data = bytearray(len)
-+
-+        for i in range(len):
-+            data[i] = self.reg_read(self.reg_addr)
-+            self.reg_addr = self.reg_addr + 1
-+
-+        return bytes(data)
-+
-+    def write(self, data: bytes) -> None:
-+        self.reg_addr = data[0]
-+
-+        for i, byte in enumerate(data[1:]):
-+            addr = self.reg_addr + i
-+            self.backend.mock.reg_write(addr, byte)
-+            self.reg_write(addr, byte)
-+
-+
-+class TestPCF8563(UMLTestCase):
-+    dts = DtFragment(
-+        src="""
-+#include <dt-bindings/interrupt-controller/irq.h>
-+
-+&i2c {
-+    rtc@$addr$ {
-+        compatible = "nxp,pcf8563";
-+        reg = <0x$addr$>;
-+    };
-+
-+    rtc@$irqaddr$ {
-+        compatible = "nxp,pcf8563";
-+        reg = <0x$irqaddr$>;
-+        interrupt-parent = <&gpio>;
-+        interrupts = <$gpio$ IRQ_TYPE_LEVEL_LOW>;
-+    };
-+};
-+        """,
-+        variables={
-+            "addr": DtVar.I2C_ADDR,
-+            "irqaddr": DtVar.I2C_ADDR,
-+            "gpio": DtVar.GPIO_PIN,
-+        },
-+    )
-+
-+    @classmethod
-+    def setUpClass(cls) -> None:
-+        insmod("rtc-pcf8563")
-+
-+    @classmethod
-+    def tearDownClass(cls) -> None:
-+        # Can't rmmod since alarmtimer holds permanent reference
-+        pass
-+
-+    def setUp(self) -> None:
-+        self.driver = I2CDriver("rtc-pcf8563")
-+        self.hw = Hardware("i2c")
-+        self.hw.load_model(PCF8563, int=self.dts["gpio"])
-+
-+    def tearDown(self) -> None:
-+        self.hw.close()
-+
-+    def test_read_time_invalid(self) -> None:
-+        addr = self.dts["addr"]
-+        with self.driver.bind(addr) as dev, rtc.RTC(dev.path) as rtcdev:
-+            self.assertEqual(rtcdev.read_vl(), rtc.RTC_VL_DATA_INVALID)
-+
-+            with self.assertRaises(OSError) as cm:
-+                rtcdev.read_time()
-+            self.assertEqual(cm.exception.errno, errno.EINVAL)
-+
-+    def test_no_alarm_support(self) -> None:
-+        addr = self.dts["addr"]
-+        with self.driver.bind(addr) as dev, rtc.RTC(dev.path) as rtcdev:
-+            # Make sure the times are valid so we don't get -EINVAL due to
-+            # that.
-+            tm = rtc.RTCTime(
-+                tm_sec=10,
-+                tm_min=1,
-+                tm_hour=1,
-+                tm_mday=1,
-+                tm_mon=0,
-+                tm_year=121,
-+                tm_wday=0,
-+                tm_yday=0,
-+                tm_isdst=0,
-+            )
-+            rtcdev.set_time(tm)
-+
-+            alarmtm = tm._replace(tm_sec=0, tm_min=2)
-+            with self.assertRaises(OSError) as cm:
-+                rtcdev.set_wake_alarm(True, alarmtm)
-+            self.assertEqual(cm.exception.errno, errno.EINVAL)
-+
-+    def test_alarm(self) -> None:
-+        addr = self.dts["irqaddr"]
-+        with self.driver.bind(addr) as dev, rtc.RTC(dev.path) as rtcdev:
-+            tm = rtc.RTCTime(
-+                tm_sec=10,
-+                tm_min=1,
-+                tm_hour=1,
-+                tm_mday=1,
-+                tm_mon=0,
-+                tm_year=121,
-+                tm_wday=5,
-+                tm_yday=0,
-+                tm_isdst=0,
-+            )
-+            rtcdev.set_time(tm)
-+
-+            alarmtm = tm._replace(tm_sec=0, tm_min=2)
-+            rtcdev.set_wake_alarm(True, alarmtm)
-+
-+            mock = self.hw.update_mock()
-+            mock.assert_last_reg_write(self, REG_VL_MINUTE_ALARM, 0x02)
-+            mock.assert_last_reg_write(self, REG_VL_HOUR_ALARM, 0x01)
-+            mock.assert_last_reg_write(self, REG_VL_DAY_ALARM, 0x01)
-+            mock.assert_last_reg_write(self, REG_VL_WEEKDAY_ALARM, 5)
-+            mock.assert_last_reg_write(
-+                self, REG_CONTROL_STATUS_2, REG_CONTROL_STATUS_2_AIE
-+            )
-+            mock.reset_mock()
-+
-+            self.hw.reg_write(REG_VL_MINUTES, 0x02)
-+            self.hw.kick()
-+
-+            # This waits for the interrupt
-+            self.assertEqual(rtcdev.read() & 0xFF, rtc.RTC_IRQF | rtc.RTC_AF)
-+
-+            alarmtm = tm._replace(tm_sec=0, tm_min=3)
-+            rtcdev.set_wake_alarm(False, alarmtm)
-+
-+            mock = self.hw.update_mock()
-+            mock.assert_last_reg_write(self, REG_CONTROL_STATUS_2, 0)
-+
-+    def test_read_time_valid(self) -> None:
-+        self.hw.reg_write(REG_VL_SECONDS, 0x37)
-+        self.hw.reg_write(REG_VL_MINUTES, 0x10)
-+        self.hw.reg_write(REG_VL_HOURS, 0x11)
-+        self.hw.reg_write(REG_VL_DAYS, 0x25)
-+        self.hw.reg_write(REG_VL_WEEKDAYS, 0x00)
-+        self.hw.reg_write(REG_VL_CENTURY_MONTHS, REG_VL_CENTURY_MONTHS_C | 0x12)
-+        self.hw.reg_write(REG_VL_YEARS, 0x21)
-+
-+        addr = self.dts["addr"]
-+        with self.driver.bind(addr) as dev, rtc.RTC(dev.path) as rtcdev:
-+            tm = rtcdev.read_time()
-+            self.assertEqual(
-+                tm,
-+                rtc.RTCTime(
-+                    tm_sec=37,
-+                    tm_min=10,
-+                    tm_hour=11,
-+                    tm_mday=25,
-+                    tm_mon=11,
-+                    tm_year=121,
-+                    tm_wday=0,
-+                    tm_yday=0,
-+                    tm_isdst=0,
-+                ),
-+            )
-+
-+    def test_set_time_after_invalid(self) -> None:
-+        addr = self.dts["addr"]
-+        with self.driver.bind(addr) as dev, rtc.RTC(dev.path) as rtcdev:
-+            self.assertEqual(rtcdev.read_vl(), rtc.RTC_VL_DATA_INVALID)
-+
-+            tm = rtc.RTCTime(
-+                tm_sec=37,
-+                tm_min=10,
-+                tm_hour=11,
-+                tm_mday=25,
-+                tm_mon=11,
-+                tm_year=121,
-+                tm_wday=0,
-+                tm_yday=0,
-+                tm_isdst=0,
-+            )
-+
-+            rtcdev.set_time(tm)
-+            tm2 = rtcdev.read_time()
-+            self.assertEqual(tm, tm2)
-+
-+            mock = self.hw.update_mock()
-+            mock.assert_reg_write_once(self, REG_VL_SECONDS, 0x37)
-+            mock.assert_reg_write_once(self, REG_VL_MINUTES, 0x10)
-+            mock.assert_reg_write_once(self, REG_VL_HOURS, 0x11)
-+            mock.assert_reg_write_once(self, REG_VL_DAYS, 0x25)
-+            mock.assert_reg_write_once(self, REG_VL_WEEKDAYS, 0x00)
-+            # The driver uses the wrong polarity of the Century bit
-+            # if the time was invalid.  This probably doesn't matter(?).
-+            mock.assert_reg_write_once(self, REG_VL_CENTURY_MONTHS, 0 << 7 | 0x12)
-+            mock.assert_reg_write_once(self, REG_VL_YEARS, 0x21)
-+
-+            self.assertEqual(rtcdev.read_vl(), 0)
-+
-+    def test_set_time_after_valid(self) -> None:
-+        self.hw.reg_write(REG_VL_SECONDS, 0x37)
-+        self.hw.reg_write(REG_VL_MINUTES, 0x10)
-+        self.hw.reg_write(REG_VL_HOURS, 0x11)
-+        self.hw.reg_write(REG_VL_DAYS, 0x25)
-+        self.hw.reg_write(REG_VL_WEEKDAYS, 0x00)
-+        self.hw.reg_write(REG_VL_CENTURY_MONTHS, REG_VL_CENTURY_MONTHS_C | 0x12)
-+        self.hw.reg_write(REG_VL_YEARS, 0x21)
-+
-+        addr = self.dts["addr"]
-+        with self.driver.bind(addr) as dev, rtc.RTC(dev.path) as rtcdev:
-+            tm = rtc.RTCTime(
-+                tm_sec=37,
-+                tm_min=10,
-+                tm_hour=11,
-+                tm_mday=25,
-+                tm_mon=11,
-+                tm_year=121,
-+                tm_wday=0,
-+                tm_yday=0,
-+                tm_isdst=0,
-+            )
-+
-+            rtcdev.set_time(tm)
-+            tm2 = rtcdev.read_time()
-+            self.assertEqual(tm, tm2)
-+
-+            mock = self.hw.update_mock()
-+            mock.assert_reg_write_once(self, REG_VL_SECONDS, 0x37)
-+            mock.assert_reg_write_once(self, REG_VL_MINUTES, 0x10)
-+            mock.assert_reg_write_once(self, REG_VL_HOURS, 0x11)
-+            mock.assert_reg_write_once(self, REG_VL_DAYS, 0x25)
-+            mock.assert_reg_write_once(self, REG_VL_WEEKDAYS, 0x00)
-+            mock.assert_reg_write_once(
-+                self, REG_VL_CENTURY_MONTHS, REG_VL_CENTURY_MONTHS_C | 0x12
-+            )
-+            mock.assert_reg_write_once(self, REG_VL_YEARS, 0x21)
--- 
-2.34.1
-
+- Sedat -
 
 _______________________________________________
 linux-um mailing list
