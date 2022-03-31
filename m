@@ -1,14 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from dfw.source.kernel.org ([139.178.84.217])
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1na482-003wks-BF
- for linux-um@lists.infradead.org; Thu, 31 Mar 2022 23:22:59 +0000
-Subject: Re: [GIT PULL] UML updates for 5.18
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <738009331.204323.1648760650240.JavaMail.zimbra@nod.at>
-References: <738009331.204323.1648760650240.JavaMail.zimbra@nod.at>
-Message-Id: <164876897647.28012.10192085287132293994.pr-tracker-bot@kernel.org>
-Date: Thu, 31 Mar 2022 23:22:56 +0000
+ id 1na1xr-003fn0-3A
+ for linux-um@lists.infradead.org; Thu, 31 Mar 2022 21:04:21 +0000
+Date: Thu, 31 Mar 2022 23:04:10 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <738009331.204323.1648760650240.JavaMail.zimbra@nod.at>
+Subject: [GIT PULL] UML updates for 5.18
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -17,29 +16,70 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard@nod.at>
-Cc: torvalds <torvalds@linux-foundation.org>, linux-kernel <linux-kernel@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>
+To: torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>
 
-The pull request you sent on Thu, 31 Mar 2022 23:04:10 +0200 (CEST):
-
-> git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.18-rc1
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e8b767f5e04097aaedcd6e06e2270f9fe5282696
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+TGludXMsCgpUaGUgZm9sbG93aW5nIGNoYW5nZXMgc2luY2UgY29tbWl0IDdlNTc3MTRjZDBhZDJk
+NWJiOTBlNTBiNTA5NmEwZTY3MWRlYzFlZjM6CgogIExpbnV4IDUuMTctcmM2ICgyMDIyLTAyLTI3
+IDE0OjM2OjMzIC0wODAwKQoKYXJlIGF2YWlsYWJsZSBpbiB0aGUgR2l0IHJlcG9zaXRvcnkgYXQ6
+CgogIGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9ydy91bWwu
+Z2l0IHRhZ3MvZm9yLWxpbnVzLTUuMTgtcmMxCgpmb3IgeW91IHRvIGZldGNoIGNoYW5nZXMgdXAg
+dG8gODIwMTc0NTc5NTdhNTUwZDdkMDBkZGU0MTk0MzVkZDc0YTg5MDg4NzoKCiAgdW06IHJ1bl9o
+ZWxwZXI6IFdyaXRlIGVycm9yIG1lc3NhZ2UgdG8ga2VybmVsIGxvZyBvbiBleGVjIGZhaWx1cmUg
+b24gaG9zdCAoMjAyMi0wMy0xMSAxMDo1NjoxNyArMDEwMCkKCi0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGhpcyBwdWxsIHJl
+cXVlc3QgY29udGFpbnMgdGhlIGZvbGxvd2luZyBjaGFuZ2VzIGZvciBVTUw6CgotIERldmljZXRy
+ZWUgc3VwcG9ydCAoZm9yIHRlc3RpbmcpCi0gVmFyaW91cyBjbGVhbnVwcyBhbmQgZml4ZXM6IFVC
+RCwgcG9ydF91c2VyLCB1bWxfbWNvbnNvbGUKLSBNYWludGFpbmVyIHVwZGF0ZQoKLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpB
+bnRvbiBJdmFub3YgKDMpOgogICAgICB1bTogRG9jdW1lbnQgZHRiIGNvbW1hbmQgbGluZSBvcHRp
+b24KICAgICAgdW06IE1pZ3JhdGUgdmVjdG9yIGRyaXZlcnMgdG8gTkFQSQogICAgICB1bTogRml4
+IHVtbF9tY29uc29sZSBzdG9wL2dvCgpCZW5qYW1pbiBCZWljaGxlciAoMSk6CiAgICAgIHVtOiBm
+aXggYW5kIG9wdGltaXplIHhvciBzZWxlY3QgdGVtcGxhdGUgZm9yIENPTkZJRzY0IGFuZCB0aW1l
+dHJhdmVsIG1vZGUKCkRhdmlkIEdvdyAoMyk6CiAgICAgIHVtOiBDbGVhbnVwIHN5c2NhbGxfaGFu
+ZGxlcl90IGRlZmluaXRpb24vY2FzdCwgZml4IHdhcm5pbmcKICAgICAgdW06IFJlbW92ZSB1bnVz
+ZWQgdGltZXZhbF90b19ucygpIGZ1bmN0aW9uCiAgICAgIHVtOiBjbGFuZzogU3RyaXAgb3V0IC1t
+bm8tZ2xvYmFsLW1lcmdlIGZyb20gVVNFUl9DRkxBR1MKCkZyw6lkw6lyaWMgRGFuaXMgKDEpOgog
+ICAgICB1bTogRml4IFdSSVRFX1pFUk9FUyBpbiB0aGUgVUJEIERyaXZlcgoKR2xlbm4gV2FzaGJ1
+cm4gKDQpOgogICAgICB1bTogcG9ydF91c2VyOiBTZWFyY2ggZm9yIGluLnRlbG5ldGQgaW4gUEFU
+SAogICAgICB1bTogcG9ydF91c2VyOiBBbGxvdyBzZXR0aW5nIHBhdGggdG8gcG9ydC1oZWxwZXIg
+dXNpbmcgVU1MX1BPUlRfSEVMUEVSIGVudnZhcgogICAgICB1bTogcG9ydF91c2VyOiBJbXByb3Zl
+IGVycm9yIGhhbmRsaW5nIHdoZW4gcG9ydC1oZWxwZXIgaXMgbm90IGZvdW5kCiAgICAgIHVtOiBy
+dW5faGVscGVyOiBXcml0ZSBlcnJvciBtZXNzYWdlIHRvIGtlcm5lbCBsb2cgb24gZXhlYyBmYWls
+dXJlIG9uIGhvc3QKCkpvaGFubmVzIEJlcmcgKDIpOgogICAgICBsaWIvbG9naWNfaW9tZW06IGNv
+cnJlY3QgZmFsbGJhY2sgY29uZmlnIHJlZmVyZW5jZXMKICAgICAgdW1sOiBuZXQ6IHZlY3Rvcjog
+Zml4IGNvbnN0IGlzc3VlCgpSaWNoYXJkIFdlaW5iZXJnZXIgKDEpOgogICAgICBNQUlOVEFJTkVS
+UzogVXBkYXRlIFVzZXJNb2RlTGludXggZW50cnkKClZpbmNlbnQgV2hpdGNodXJjaCAoMik6CiAg
+ICAgIHVtOiBGaXggb3JkZXIgb2YgZHRiIHVuZmxhdHRlbi9lYXJseSBpbml0CiAgICAgIGRvY3M6
+IFVNTDogTWVudGlvbiB0ZWxuZXRkIGZvciBwb3J0IGNoYW5uZWwKCllhbmcgTGkgKDEpOgogICAg
+ICB1bTogUmVtb3ZlIGR1cGxpY2F0ZWQgaW5jbHVkZSBpbiBzeXNjYWxsc182NC5jCgogLi4uL3Zp
+cnQvdW1sL3VzZXJfbW9kZV9saW51eF9ob3d0b192Mi5yc3QgICAgICAgICAgfCAgMjYgKysrKy0K
+IE1BSU5UQUlORVJTICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA1
+ICstCiBhcmNoL3VtL01ha2VmaWxlICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8
+ICAgNCArCiBhcmNoL3VtL2RyaXZlcnMvbWNvbnNvbGVfa2Vybi5jICAgICAgICAgICAgICAgICAg
+ICB8ICAgMyArLQogYXJjaC91bS9kcml2ZXJzL3BvcnRfdXNlci5jICAgICAgICAgICAgICAgICAg
+ICAgICAgfCAgMTggKysrLQogYXJjaC91bS9kcml2ZXJzL3ViZF9rZXJuLmMgICAgICAgICAgICAg
+ICAgICAgICAgICAgfCAgIDggKy0KIGFyY2gvdW0vZHJpdmVycy92ZWN0b3Jfa2Vybi5jICAgICAg
+ICAgICAgICAgICAgICAgIHwgMTA1ICsrKysrKysrKystLS0tLS0tLS0tLQogYXJjaC91bS9kcml2
+ZXJzL3ZlY3Rvcl9rZXJuLmggICAgICAgICAgICAgICAgICAgICAgfCAgIDMgKy0KIGFyY2gvdW0v
+ZHJpdmVycy92ZWN0b3JfdXNlci5jICAgICAgICAgICAgICAgICAgICAgIHwgICAyICstCiBhcmNo
+L3VtL2RyaXZlcnMvdmVjdG9yX3VzZXIuaCAgICAgICAgICAgICAgICAgICAgICB8ICAgMiArLQog
+YXJjaC91bS9pbmNsdWRlL2FzbS94b3IuaCAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDQg
+Ky0KIGFyY2gvdW0vaW5jbHVkZS9zaGFyZWQvb3MuaCAgICAgICAgICAgICAgICAgICAgICAgIHwg
+ICAxICsKIGFyY2gvdW0va2VybmVsL2R0Yi5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IHwgICAyICstCiBhcmNoL3VtL29zLUxpbnV4L2ZpbGUuYyAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICB8ICAgOSArKwogYXJjaC91bS9vcy1MaW51eC9oZWxwZXIuYyAgICAgICAgICAgICAgICAg
+ICAgICAgICAgfCAgIDUgKwogYXJjaC91bS9vcy1MaW51eC90aW1lLmMgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgfCAgIDYgLS0KIGFyY2gveDg2L3VtL3NoYXJlZC9zeXNkZXAvc3lzY2FsbHNf
+NjQuaCAgICAgICAgICAgIHwgICA1ICstCiBhcmNoL3g4Ni91bS9zeXNjYWxsc182NC5jICAgICAg
+ICAgICAgICAgICAgICAgICAgICB8ICAgMSAtCiBsaWIvbG9naWNfaW9tZW0uYyAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICB8ICAgOCArLQogMTkgZmlsZXMgY2hhbmdlZCwgMTM2IGlu
+c2VydGlvbnMoKyksIDgxIGRlbGV0aW9ucygtKQoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3Rz
+LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9saW51eC11bQo=
 
