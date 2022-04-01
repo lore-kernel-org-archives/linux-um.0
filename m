@@ -1,60 +1,103 @@
-Return-Path: <SRS0=cL3S=UW=zx2c4.com=Jason@kernel.org>
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH v3 08/10] um: use fallback for random_get_entropy() instead of zero
-Date: Tue, 12 Apr 2022 19:27:52 +0200
-Message-Id: <20220412172754.149498-9-Jason@zx2c4.com>
-In-Reply-To: <20220412172754.149498-1-Jason@zx2c4.com>
-References: <20220412172754.149498-1-Jason@zx2c4.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from conssluserg-02.nifty.com ([210.131.2.81])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1naH42-005jcb-VP
+ for linux-um@lists.infradead.org; Fri, 01 Apr 2022 13:11:47 +0000
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com
+ [209.85.216.47]) (authenticated)
+ by conssluserg-02.nifty.com with ESMTP id 231DB4Bd020677
+ for <linux-um@lists.infradead.org>; Fri, 1 Apr 2022 22:11:05 +0900
+Received: by mail-pj1-f47.google.com with SMTP id jx9so2368761pjb.5
+ for <linux-um@lists.infradead.org>; Fri, 01 Apr 2022 06:11:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, tglx@linutronix.de, arnd@arndb.de
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Theodore Ts'o <tytso@mit.edu>, Dominik Brodowski <linux@dominikbrodowski.net>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, "David S . Miller" <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, John Stultz <john.stultz@linaro.org>, Stephen Boyd <sboyd@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org, linux-xtensa@linux-xtensa.org
-List-ID: <linux-um.lists.infradead.org>
+References: <20220322173547.677760-1-nathan@kernel.org>
+ <CAK7LNAT8TcDy=iKaWZ7_+MbT84vOVEBzHxJY8Bx54Ju5fur8-w@mail.gmail.com>
+ <Yj9wyNwZWkilNbJM@dev-arch.thelio-3990X>
+In-Reply-To: <Yj9wyNwZWkilNbJM@dev-arch.thelio-3990X>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Fri, 1 Apr 2022 22:10:17 +0900
+Message-ID: <CAK7LNASKg87aZTTF7heXnh1sWFm9Stxsu5unRw_rSbKB=jCr9g@mail.gmail.com>
+Subject: Re: [PATCH] um: Fix filtering '-mno-global-merge'
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Nick Desaulniers <ndesaulniers@google.com>, David Gow <davidgow@google.com>, linux-um@lists.infradead.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
 
-In the event that random_get_entropy() can't access a cycle counter or
-similar, falling back to returning 0 is really not the best we can do.
-Instead, at least calling random_get_entropy_fallback() would be
-preferable, because that always needs to return _something_, even
-falling back to jiffies eventually. It's not as though
-random_get_entropy_fallback() is super high precision or guaranteed to
-be entropic, but basically anything that's not zero all the time is
-better than returning zero all the time.
+On Sun, Mar 27, 2022 at 5:00 AM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> On Sat, Mar 26, 2022 at 12:29:55PM +0900, Masahiro Yamada wrote:
+> > On Wed, Mar 23, 2022 at 2:39 AM Nathan Chancellor <nathan@kernel.org> wrote:
+> > >
+> > > When booting a clang compiled UML kernel, the kernel panics when trying
+> > > to run init:
+> > >
+> > >   wait_stub_done : failed to wait for SIGTRAP, pid = 651294, n = 651294, errno = 0, status = 0xb7f
+> > >   Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+> > >
+> > > After the commit in Fixes, many flags from KBUILD_CFLAGS do not appear
+> > > in USER_CFLAGS, likely due to USER_CFLAGS initially being a recursive
+> > > variable ("VAR =") then being switched to a simple ("VAR :=") variable.
+> > > For example, diffing arch/x86/um/.ptrace_user.o.cmd shows flags such as
+> > > '-Os' and '-fno-delete-null-pointer-checks' getting dropped, which both
+> > > impact code generation.
+> > >
+> > > Rework the filtering to use filter-out instead of patsubst, which allows
+> > > all the patterns that USER_CFLAGS cares about to be excluded in one
+> > > command and ensures all flags from KBUILD_CFLAGS are transferred over to
+> > > USER_CFLAGS properly, which resolves the boot issue noted above.
+> > >
+> > > Fixes: 6580c5c18fb3 ("um: clang: Strip out -mno-global-merge from USER_CFLAGS")
+> > > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> >
+> >
+> >
+> > Can we remove -mno-global-merge entirely?
+> >
+> >
+> > 61163efae02040f66a95 was a very old commit,
+> > without enough explanation.
+> >
+> > Shall we remove  -mno-global-merge, and do compile-tests.
+> > If we are hit by problems for arm/arm64, we can re-add it.
+>
+> Yes, I think that was the conversation that we had on the commit that
+> this fixes:
+>
+> https://lore.kernel.org/r/YiD7R2wRxoWxtVq7@dev-arch.thelio-3990X/
+>
+> I can test that on my Raspberry Pi 3 and 4 on Monday, although I would
+> like for this patch to be picked up in the meantime so that it is
+> possible to test UML on -next with clang. We can remove
+> -mno-global-merge in a follow up change, if you do not have any
+> objections?
+>
+> Cheers,
+> Nathano
 
-This is accomplished by just including the asm-generic code like on
-other architectures, which means we can get rid of the empty stub
-function here.
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
----
- arch/um/include/asm/timex.h | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+This patch is unneeded now
+because I picked up the alternative:
 
-diff --git a/arch/um/include/asm/timex.h b/arch/um/include/asm/timex.h
-index e392a9a5bc9b..9f27176adb26 100644
---- a/arch/um/include/asm/timex.h
-+++ b/arch/um/include/asm/timex.h
-@@ -2,13 +2,8 @@
- #ifndef __UM_TIMEX_H
- #define __UM_TIMEX_H
- 
--typedef unsigned long cycles_t;
--
--static inline cycles_t get_cycles (void)
--{
--	return 0;
--}
--
- #define CLOCK_TICK_RATE (HZ)
- 
-+#include <asm-generic/timex.h>
-+
- #endif
+https://lore.kernel.org/all/CAK7LNAS6C6Uj9cCQ0o=bYF1F-EVD=VgdR8YYx-1PJc9toX_HZA@mail.gmail.com/
+
+
+
 -- 
-2.35.1
+Best Regards
+Masahiro Yamada
 
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
