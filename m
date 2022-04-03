@@ -1,19 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nbGjA-00DVpf-K7
- for linux-um@lists.infradead.org; Mon, 04 Apr 2022 07:02:18 +0000
-Message-ID: <ff314e8556aba7e231ab80c46b30701142e82a43.camel@sipsolutions.net>
+ id 1nb9Yp-00CWXO-OQ
+ for linux-um@lists.infradead.org; Sun, 03 Apr 2022 23:23:09 +0000
+From: Thomas Gleixner <tglx@linutronix.de>
 Subject: Re: UML time-travel warning from __run_timers
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Mon, 04 Apr 2022 09:02:09 +0200
-In-Reply-To: <87pmlykksj.ffs@tglx>
+In-Reply-To: <43785c9c6ee74a995963144946c67893ebbf8852.camel@sipsolutions.net>
 References: <20220330110156.GA9250@axis.com>
  <84f9d627092660c38400b607198c3b83f795be7f.camel@sipsolutions.net>
  <877d86m978.ffs@tglx>
  <32423b7c0e3a490093ceaca750e8669ac67902c6.camel@sipsolutions.net>
- <87pmlykksj.ffs@tglx>
+ <43785c9c6ee74a995963144946c67893ebbf8852.camel@sipsolutions.net>
+Date: Mon, 04 Apr 2022 01:23:01 +0200
+Message-ID: <87h779lpka.ffs@tglx>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -27,70 +26,51 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Thomas Gleixner <tglx@linutronix.de>, Vincent Whitchurch <vincent.whitchurch@axis.com>
+To: Johannes Berg <johannes@sipsolutions.net>, Vincent Whitchurch <vincent.whitchurch@axis.com>
 Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Anna-Maria Gleixner <anna-maria@linutronix.de>, Frederic Weisbecker <frederic@kernel.org>
 
-On Sun, 2022-04-03 at 21:51 +0200, Thomas Gleixner wrote:
-> 
-> > There was no timer. If there's ever a timer on this base (BASE_DEF) then
-> > this doesn't happen.
-> 
-> You said:
-> 
-> > > > init_timer_cpu(0) base 0 clk=0xffff8ad0, next_expiry=0x13fff8acf
-> > > > init_timer_cpu(0) base 1 clk=0xffff8ad0, next_expiry=0x13fff8acf
-> 
-> which confused me. It's actually initialized to:
-> 
->       base->clk + NEXT_TIMER_MAX_DELTA
-> 
-> but that's fine and it is overwritten by every timer which is inserted
-> to expire before that. So that's not an issue as the prandom timer is
-> firing and rearmed.
+Johannes,
 
-No, as I said before, there's never any timer with base 1 (BASE_DEF) in
-the config we have. The prandom timer is not TIMER_DEFERRABLE (it
-probably could be, but it's not now). There's no deferrable timer at
-all. Once there is at least one, the warning goes away.
+On Sun, Apr 03 2022 at 19:19, Johannes Berg wrote:
+> Actually, in a sense, this *is* the case of (just) recalculating
+> next_expiry, no? We just never set next_expiry_recalc since there was
+> never any timer on this?
 
-> That would not happen if next_expiry would stay at 0x13fff8acf. The
-> first one in your trace expires at 5339070200, i.e.  0x13e3bbef8, which
-> is way before that.
+why are you insisting on fishing in the dark? 
 
-But it's not a deferrable timer, so it's on another timer wheel (base),
-so it doesn't affect the "base 1" part above.
+> So actually this also makes the warning go away:
+>
+> --- a/kernel/time/timer.c
+> +++ b/kernel/time/timer.c
+> @@ -1729,6 +1733,7 @@ static inline void __run_timers(struct timer_base *base)
+>  		WARN_ON_ONCE(!levels && !base->next_expiry_recalc);
+>  		base->clk++;
+>  		base->next_expiry = __next_timer_interrupt(base);
+> +		base->next_expiry_recalc = !levels;
 
-> Can you please apply the debug patch below and run with the same
-> parameters as before?
-> 
-> Thanks,
-> 
->         tglx
-> ---
-> Hint: I tried to figure out how to use that time travel muck, but did
->       not get to the point where I bothered to try myself. Might be
->       either my incompetence or lack of documentation. Clearly the bug
->       report lacks any hint how to reproduce that problem.
+You are papering over the problem. That makes the warnign go away, but
+does not explain anyhting about the root cause. Can you please provide
+the information which was asked for?
 
-Well, the original bug report did have all the information, I gave the
-link to it before:
+>  		while (levels--)
+>  			expire_timers(base, heads + levels);
+> @@ -2005,6 +2010,7 @@ static void __init init_timer_cpu(int cpu)
+>  		raw_spin_lock_init(&base->lock);
+>  		base->clk = jiffies;
+>  		base->next_expiry = base->clk + NEXT_TIMER_MAX_DELTA;
+> +		base->next_expiry_recalc = true;
 
-https://lore.kernel.org/r/20220330110156.GA9250@axis.com
+This is complete nonsense because at the point where the CPU base is
+initialized next_expiry _IS_ correct at the outer max. Why would it be
+required to be recalculated? The only reason why it needs to be
+recalculated is when a timer is canceled before expiry, but there is
+_NO_ timer which can be canceled at this point.
 
-With that kernel config and command line, you can reproduce it easily.
-All you need to know is to use "make ARCH=um" with that .config file :)
+So what are you trying to solve here?
 
+Thanks,
 
-> +	trace_printk("RUN: now=%lu clk=%lu next_expiry=%lu
-> recalc=%d\n",
-> +		     jiffies, base->clk, base->next_expiry,
-> +		     base->next_expiry_recalc);
-
-IMHO all of this extra debug is a waste of time since you're not
-differentiating the two bases anywhere. You'll just get confused (as
-above) since timers do happen on BASE_STD, just not on BASE_DEF.
-
-johannes
+        tglx
 
 _______________________________________________
 linux-um mailing list
