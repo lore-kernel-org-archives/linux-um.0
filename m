@@ -1,17 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nb6G1-00CHan-FU
- for linux-um@lists.infradead.org; Sun, 03 Apr 2022 19:51:31 +0000
-From: Thomas Gleixner <tglx@linutronix.de>
+ id 1nb3sm-00Bzvy-4S
+ for linux-um@lists.infradead.org; Sun, 03 Apr 2022 17:19:21 +0000
+Message-ID: <43785c9c6ee74a995963144946c67893ebbf8852.camel@sipsolutions.net>
 Subject: Re: UML time-travel warning from __run_timers
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Sun, 03 Apr 2022 19:19:17 +0200
 In-Reply-To: <32423b7c0e3a490093ceaca750e8669ac67902c6.camel@sipsolutions.net>
 References: <20220330110156.GA9250@axis.com>
  <84f9d627092660c38400b607198c3b83f795be7f.camel@sipsolutions.net>
  <877d86m978.ffs@tglx>
  <32423b7c0e3a490093ceaca750e8669ac67902c6.camel@sipsolutions.net>
-Date: Sun, 03 Apr 2022 21:51:24 +0200
-Message-ID: <87pmlykksj.ffs@tglx>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -25,176 +26,66 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>, Vincent Whitchurch <vincent.whitchurch@axis.com>
+To: Thomas Gleixner <tglx@linutronix.de>, Vincent Whitchurch <vincent.whitchurch@axis.com>
 Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Anna-Maria Gleixner <anna-maria@linutronix.de>, Frederic Weisbecker <frederic@kernel.org>
 
-On Sun, Apr 03 2022 at 19:13, Johannes Berg wrote:
+On Sun, 2022-04-03 at 19:13 +0200, Johannes Berg wrote:
 > On Sun, 2022-04-03 at 18:18 +0200, Thomas Gleixner wrote:
->> On Sat, Apr 02 2022 at 16:09, Johannes Berg wrote:
+> > On Sat, Apr 02 2022 at 16:09, Johannes Berg wrote:
+> > > At init, we get
+> > > 
+> > > init_timer_cpu(0) base 0 clk=0xffff8ad0, next_expiry=0x13fff8acf
+> > > init_timer_cpu(0) base 1 clk=0xffff8ad0, next_expiry=0x13fff8acf
+> > > 
+> > > which makes sense, jiffies is set up to wrap very quickly after boot.
+> > > 
+> > > The warning triggers when we have jiffies=0x13fff9600, so it's just
+> > > after the "next_expiry", so in this code:
+> > 
+> > which does not make sense.
+> 
+> If you say so, I have no idea :)
+> 
+> > If next_expiry is 0x13fff8acf and jiffies
+> > advanced to 0x13fff9600 when the warning triggered, then either it
+> > missed to expire the timer at 0x13fff8acf or it failed to recalculate
+> > next_expiry.
+> 
 > There was no timer. If there's ever a timer on this base (BASE_DEF) then
 > this doesn't happen.
+> 
+> So it has to be the latter, but I'm trying to understand in the code
+> where it would*ever* recalculate next_expiry if it in fact never
+> expires?
+> 
 
-You said:
+Actually, in a sense, this *is* the case of (just) recalculating
+next_expiry, no? We just never set next_expiry_recalc since there was
+never any timer on this?
 
->> > init_timer_cpu(0) base 0 clk=0xffff8ad0, next_expiry=0x13fff8acf
->> > init_timer_cpu(0) base 1 clk=0xffff8ad0, next_expiry=0x13fff8acf
+So actually this also makes the warning go away:
 
-which confused me. It's actually initialized to:
-
-      base->clk + NEXT_TIMER_MAX_DELTA
-
-but that's fine and it is overwritten by every timer which is inserted
-to expire before that. So that's not an issue as the prandom timer is
-firing and rearmed.
-
-That would not happen if next_expiry would stay at 0x13fff8acf. The
-first one in your trace expires at 5339070200, i.e.  0x13e3bbef8, which
-is way before that.
-
-So that 0x13fff8acf thing is really a red herring.
-
-> Sure, but since we simulate ~50 days of uptime, that's a massive number
-> of events and lots of them are not there:
-
-Thanks for providing that. This does not give much of an hint. jiffies,
-base clock and clock monotonic advance as expected. The prandom timer
-seems to be the only timer which is armed here, but of course the trace
-does not go far enough back to be sure. OTOH, there is no timer canceled
-just before that which might trigger this. I suspect that's a base
-forward call missing and I have a nagging feeling where, but I'm not
-sure.
-
-Can you please apply the debug patch below and run with the same
-parameters as before?
-
-Thanks,
-
-        tglx
----
-Hint: I tried to figure out how to use that time travel muck, but did
-      not get to the point where I bothered to try myself. Might be
-      either my incompetence or lack of documentation. Clearly the bug
-      report lacks any hint how to reproduce that problem.
----
-
---- a/include/trace/events/timer.h
-+++ b/include/trace/events/timer.h
-@@ -52,15 +52,19 @@ DEFINE_EVENT(timer_class, timer_init,
- TRACE_EVENT(timer_start,
- 
- 	TP_PROTO(struct timer_list *timer,
--		unsigned long expires,
--		unsigned int flags),
-+		 unsigned long expires,
-+		 unsigned long bucket_expiry,
-+		 unsigned long next_expiry,
-+		 unsigned int flags),
- 
--	TP_ARGS(timer, expires, flags),
-+	TP_ARGS(timer, expires, bucket_expiry, next_expiry, flags),
- 
- 	TP_STRUCT__entry(
- 		__field( void *,	timer		)
- 		__field( void *,	function	)
- 		__field( unsigned long,	expires		)
-+		__field( unsigned long,	bucket_expiry	)
-+		__field( unsigned long,	next_expiry	)
- 		__field( unsigned long,	now		)
- 		__field( unsigned int,	flags		)
- 	),
-@@ -69,13 +73,16 @@ TRACE_EVENT(timer_start,
- 		__entry->timer		= timer;
- 		__entry->function	= timer->function;
- 		__entry->expires	= expires;
-+		__entry->bucket_expiry	= bucket_expiry;
-+		__entry->next_expiry	= next_expiry;
- 		__entry->now		= jiffies;
- 		__entry->flags		= flags;
- 	),
- 
--	TP_printk("timer=%p function=%ps expires=%lu [timeout=%ld] cpu=%u idx=%u flags=%s",
-+	TP_printk("timer=%p function=%ps expires=%lu [timeout=%ld] bucket_expiry=%lu next_expiry=%lu cpu=%u idx=%u flags=%s",
- 		  __entry->timer, __entry->function, __entry->expires,
- 		  (long)__entry->expires - __entry->now,
-+		  __entry->bucket_expiry, __entry->next_expiry,
- 		  __entry->flags & TIMER_CPUMASK,
- 		  __entry->flags >> TIMER_ARRAYSHIFT,
- 		  decode_timer_flags(__entry->flags & TIMER_TRACE_FLAGMASK))
 --- a/kernel/time/timer.c
 +++ b/kernel/time/timer.c
-@@ -583,8 +583,6 @@ static void enqueue_timer(struct timer_b
- 	__set_bit(idx, base->pending_map);
- 	timer_set_idx(timer, idx);
- 
--	trace_timer_start(timer, timer->expires, timer->flags);
--
- 	/*
- 	 * Check whether this is the new first expiring timer. The
- 	 * effective expiry time of the timer is required here
-@@ -600,6 +598,7 @@ static void enqueue_timer(struct timer_b
- 		base->next_expiry_recalc = false;
- 		trigger_dyntick_cpu(base, timer);
- 	}
-+	trace_timer_start(timer, timer->expires, bucket_expiry, base->next_expiry, timer->flags);
- }
- 
- static void internal_add_timer(struct timer_base *base, struct timer_list *timer)
-@@ -893,6 +892,9 @@ static inline void forward_timer_base(st
- {
- 	unsigned long jnow = READ_ONCE(jiffies);
- 
-+	trace_printk("FWD: now=%lu clk=%lu next_expiry=%lu recalc=%d\n",
-+		     jnow, base->clk, base->next_expiry,
-+		     base->next_expiry_recalc);
- 	/*
- 	 * No need to forward if we are close enough below jiffies.
- 	 * Also while executing timers, base->clk is 1 offset ahead
-@@ -1710,6 +1712,7 @@ void timer_clear_idle(void)
- static inline void __run_timers(struct timer_base *base)
- {
- 	struct hlist_head heads[LVL_DEPTH];
-+	bool confused = false;
- 	int levels;
- 
- 	if (time_before(jiffies, base->next_expiry))
-@@ -1718,6 +1721,10 @@ static inline void __run_timers(struct t
- 	timer_base_lock_expiry(base);
- 	raw_spin_lock_irq(&base->lock);
- 
-+	trace_printk("RUN: now=%lu clk=%lu next_expiry=%lu recalc=%d\n",
-+		     jiffies, base->clk, base->next_expiry,
-+		     base->next_expiry_recalc);
-+
- 	while (time_after_eq(jiffies, base->clk) &&
- 	       time_after_eq(jiffies, base->next_expiry)) {
- 		levels = collect_expired_timers(base, heads);
-@@ -1726,7 +1733,12 @@ static inline void __run_timers(struct t
- 		 * timer at this clk is that all matching timers have been
- 		 * dequeued.
- 		 */
--		WARN_ON_ONCE(!levels && !base->next_expiry_recalc);
-+		if (!levels && !base->next_expiry_recalc) {
-+			trace_printk("WTH: now=%lu clk=%lu next_expiry=%lu recalc=%d\n",
-+				     jiffies, base->clk, base->next_expiry,
-+				     base->next_expiry_recalc);
-+			confused = true;
-+		}
+@@ -1729,6 +1733,7 @@ static inline void __run_timers(struct timer_base *base)
+ 		WARN_ON_ONCE(!levels && !base->next_expiry_recalc);
  		base->clk++;
  		base->next_expiry = __next_timer_interrupt(base);
++		base->next_expiry_recalc = !levels;
  
-@@ -1735,6 +1747,9 @@ static inline void __run_timers(struct t
+ 		while (levels--)
+ 			expire_timers(base, heads + levels);
+@@ -2005,6 +2010,7 @@ static void __init init_timer_cpu(int cpu)
+ 		raw_spin_lock_init(&base->lock);
+ 		base->clk = jiffies;
+ 		base->next_expiry = base->clk + NEXT_TIMER_MAX_DELTA;
++		base->next_expiry_recalc = true;
+ 		timer_base_init_expiry_lock(base);
  	}
- 	raw_spin_unlock_irq(&base->lock);
- 	timer_base_unlock_expiry(base);
-+
-+	if (confused)
-+		panic("Confused");
  }
- 
- /*
 
 
-
+johannes
 
 _______________________________________________
 linux-um mailing list
