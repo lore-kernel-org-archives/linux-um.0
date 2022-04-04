@@ -1,15 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42])
+Received: from mail-yb1-xb2d.google.com ([2607:f8b0:4864:20::b2d])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nbwbN-003ef5-Mu
- for linux-um@lists.infradead.org; Wed, 06 Apr 2022 03:45:03 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v9 32/32] virtio_net: support set_ringparam
-Date: Wed,  6 Apr 2022 11:43:46 +0800
-Message-Id: <20220406034346.74409-33-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
-References: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
+ id 1nbUSF-00GU8e-Ad
+ for linux-um@lists.infradead.org; Mon, 04 Apr 2022 21:41:44 +0000
+Received: by mail-yb1-xb2d.google.com with SMTP id y38so20028792ybi.8
+ for <linux-um@lists.infradead.org>; Mon, 04 Apr 2022 14:41:41 -0700 (PDT)
 MIME-Version: 1.0
+References: <20220101215810.13260-1-richard@nod.at>
+ <1f5276f9b2950d34eec89004d2a2322a06145d2b.1646802841.development@efficientek.com>
+ <367534223.127621.1646814902625.JavaMail.zimbra@nod.at>
+ <20220310122156.6de90000@crass-HP-ZBook-15-G2>
+In-Reply-To: <20220310122156.6de90000@crass-HP-ZBook-15-G2>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Mon, 4 Apr 2022 23:41:29 +0200
+Message-ID: <CAFLxGvyxugU=kQLpWbpaaggskmw5NXkp3hkpppwyqLQLec8Xbg@mail.gmail.com>
+Subject: Re: [PATCH 0/4] um: Assorted console related fixes
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,94 +23,68 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
+To: development@efficientek.com
+Cc: Richard Weinberger <richard@nod.at>, linux-um <linux-um@lists.infradead.org>, Johannes Berg <johannes@sipsolutions.net>
 
-Support set_ringparam based on virtio queue reset.
-
-Users can use ethtool -G eth0 <ring_num> to modify the ring size of
-virtio-net.
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- drivers/net/virtio_net.c | 47 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
-
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index ba6859f305f7..37e4e27f1e4e 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -2264,6 +2264,52 @@ static void virtnet_get_ringparam(struct net_device *dev,
- 	ring->tx_pending = virtqueue_get_vring_size(vi->sq[0].vq);
- }
- 
-+static int virtnet_set_ringparam(struct net_device *dev,
-+				 struct ethtool_ringparam *ring,
-+				 struct kernel_ethtool_ringparam *kernel_ring,
-+				 struct netlink_ext_ack *extack)
-+{
-+	struct virtnet_info *vi = netdev_priv(dev);
-+	u32 rx_pending, tx_pending;
-+	struct receive_queue *rq;
-+	struct send_queue *sq;
-+	int i, err;
-+
-+	if (ring->rx_mini_pending || ring->rx_jumbo_pending)
-+		return -EINVAL;
-+
-+	rx_pending = virtqueue_get_vring_size(vi->rq[0].vq);
-+	tx_pending = virtqueue_get_vring_size(vi->sq[0].vq);
-+
-+	if (ring->rx_pending == rx_pending &&
-+	    ring->tx_pending == tx_pending)
-+		return 0;
-+
-+	if (ring->rx_pending > virtqueue_get_vring_max_size(vi->rq[0].vq))
-+		return -EINVAL;
-+
-+	if (ring->tx_pending > virtqueue_get_vring_max_size(vi->sq[0].vq))
-+		return -EINVAL;
-+
-+	for (i = 0; i < vi->max_queue_pairs; i++) {
-+		rq = vi->rq + i;
-+		sq = vi->sq + i;
-+
-+		if (ring->tx_pending != tx_pending) {
-+			err = virtnet_tx_resize(vi, sq, ring->tx_pending);
-+			if (err)
-+				return err;
-+		}
-+
-+		if (ring->rx_pending != rx_pending) {
-+			err = virtnet_rx_resize(vi, rq, ring->rx_pending);
-+			if (err)
-+				return err;
-+		}
-+	}
-+
-+	return 0;
-+}
- 
- static void virtnet_get_drvinfo(struct net_device *dev,
- 				struct ethtool_drvinfo *info)
-@@ -2497,6 +2543,7 @@ static const struct ethtool_ops virtnet_ethtool_ops = {
- 	.get_drvinfo = virtnet_get_drvinfo,
- 	.get_link = ethtool_op_get_link,
- 	.get_ringparam = virtnet_get_ringparam,
-+	.set_ringparam = virtnet_set_ringparam,
- 	.get_strings = virtnet_get_strings,
- 	.get_sset_count = virtnet_get_sset_count,
- 	.get_ethtool_stats = virtnet_get_ethtool_stats,
--- 
-2.31.0
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+R2xlbm4sCgpPbiBUaHUsIE1hciAxMCwgMjAyMiBhdCA3OjIyIFBNIEdsZW5uIFdhc2hidXJuCjxk
+ZXZlbG9wbWVudEBlZmZpY2llbnRlay5jb20+IHdyb3RlOgo+Cj4gT24gV2VkLCA5IE1hciAyMDIy
+IDA5OjM1OjAyICswMTAwIChDRVQpCj4gUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNoYXJkQG5vZC5h
+dD4gd3JvdGU6Cj4KPiA+IC0tLS0tIFVyc3Byw7xuZ2xpY2hlIE1haWwgLS0tLS0KPiA+ID4+IFRo
+aXMgc2VyaWVzIGZpeGVzIHRoZSBjb25zb2xlIGV4aXQgY29kZSB0byBtYWtlIHN1cmUgVU1MCj4g
+PiA+PiB1bmRvZXMgZXZlcnl0aGluZyBpdCBjaGFuZ2VkIG9uIHRoZSBob3N0IHNpZGUuCj4gPiA+
+Cj4gPiA+IEkgZ2F2ZSB0aGlzIGEgcnVuIGhvcGluZyBpdCB3b3VsZCBmaXggdGhlIGlzc3VlcyBJ
+J20gc2VlaW5nIHdpdGggdGhlIGNvbnNvbGUKPiA+ID4gZ2V0dGluZyBtZXNzZWQgdXAgd2hlbiBV
+TUwgZXhpdHMgdmlhIGhhbHQgaW4gdGhlIGd1ZXN0LiBFY2hvIGlzIHR1cm5lZCBvZmYKPiA+ID4g
+YW5kIGxvb2tzIGxpa2UgY2FycmlhZ2UgcmV0dXJuIGRvZXNuJ3Qgd29yayBlaXRoZXIuIEknbSB1
+c2luZyAicmVzZXQiIHRvIGdldAo+ID4gPiB0aGUgdGVybWluYWwgYmFjayB0byBpdHMgcHJldmlv
+dXMgc3RhdGUuIFVuZm9ydHVuYXRlbHkgdGhpcyBwYXRjaCBzZXJpZXMgZGlkCj4gPiA+IG5vdCBm
+aXggdGhpcyBpc3N1ZS4KPiA+ID4KPiA+ID4gSSdtIG5vdCBzYXlpbmcgdGhhdCB0aGVzZSBhcmVu
+J3QgdmFsaWQgZml4ZXMuIEJ1dCBpdCBkb2VzIGFwcGVhciB0aGF0IHRoZXNlCj4gPiA+IGNoYW5n
+ZXMgZG9uJ3QgbWFrZSBzdXJlIHRoYXQgImV2ZXJ5dGhpbmciIGNoYW5nZWQgb24gdGhlIGhvc3Qg
+c2lkZSBpcyB1bmRvbmUuCj4gPgo+ID4gU28gd2hlbiB5b3UgY29tcGFyZSAic3R0eSAtYSIgYmVm
+b3JlIGFuZCBhZnRlciB0aGUgZGFtYW5nZSB5b3Ugc3RpbGwgc2VlIGRpZmZlcmVuY2VzPwo+ID4g
+UGxlYXNlIGFsc28gY29tcGFyZSB0aGUgZmxhZ3Mgb2YgL3Byb2MvJCQvZmRpbmZvL3swLDEsMn0K
+Pgo+IEhlcmUncyBhIGRpZmYgb2YgdGhlIGJlZm9yZSBhbmQgYWZ0ZXI6Cj4gLS0gL3RtcC91bWwt
+Y29uc29sZS5iZWZvcmUub3V0IDIwMjItMDMtMTAgMTg6MTI6NTQuMDQ5MTcxNjUwICswMDAwCj4g
+KysrIC90bXAvdW1sLWNvbnNvbGUuYWZ0ZXIub3V0ICAyMDIyLTAzLTEwIDE4OjEzOjIwLjcxMTYz
+MDI4MSArMDAwMAo+IEBAIC0zLDIwICszLDIwIEBACj4gIGVvbDIgPSA8dW5kZWY+OyBzd3RjaCA9
+IDx1bmRlZj47IHN0YXJ0ID0gXlE7IHN0b3AgPSBeUzsgc3VzcCA9IF5aOyBycHJudCA9IF5SOwo+
+ICB3ZXJhc2UgPSBeVzsgbG5leHQgPSBeVjsgZGlzY2FyZCA9IF5POyBtaW4gPSAxOyB0aW1lID0g
+MDsKPiAgLXBhcmVuYiAtcGFyb2RkIC1jbXNwYXIgY3M4IGh1cGNsIC1jc3RvcGIgY3JlYWQgLWNs
+b2NhbCAtY3J0c2N0cwo+IC0taWduYnJrIGJya2ludCBpZ25wYXIgLXBhcm1yayAtaW5wY2sgLWlz
+dHJpcCAtaW5sY3IgLWlnbmNyIGljcm5sIGl4b24gLWl4b2ZmCj4gKy1pZ25icmsgLWJya2ludCBp
+Z25wYXIgLXBhcm1yayAtaW5wY2sgLWlzdHJpcCAtaW5sY3IgLWlnbmNyIC1pY3JubCAtaXhvbiAt
+aXhvZmYKPiAgLWl1Y2xjIC1peGFueSBpbWF4YmVsIC1pdXRmOAo+IC1vcG9zdCAtb2xjdWMgLW9j
+cm5sIG9ubGNyIC1vbm9jciAtb25scmV0IC1vZmlsbCAtb2ZkZWwgbmwwIGNyMCB0YWIwIGJzMCB2
+dDAgZmYwCj4gLWlzaWcgaWNhbm9uIC1pZXh0ZW4gZWNobyBlY2hvZSBlY2hvayAtZWNob25sIC1u
+b2Zsc2ggLXhjYXNlIC10b3N0b3AgLWVjaG9wcnQKPiArLW9wb3N0IC1vbGN1YyAtb2Nybmwgb25s
+Y3IgLW9ub2NyIC1vbmxyZXQgLW9maWxsIC1vZmRlbCBubDAgY3IwIHRhYjAgYnMwIHZ0MCBmZjAK
+PiArLWlzaWcgLWljYW5vbiAtaWV4dGVuIC1lY2hvIGVjaG9lIGVjaG9rIC1lY2hvbmwgLW5vZmxz
+aCAteGNhc2UgLXRvc3RvcCAtZWNob3BydAo+ICBlY2hvY3RsIGVjaG9rZSAtZmx1c2hvIC1leHRw
+cm9jCj4gIC9wcm9jLzMzODMzMjMvZmRpbmZvLzA6MTpwb3M6ICAwCj4gLS9wcm9jLzMzODMzMjMv
+ZmRpbmZvLzA6MjpmbGFnczogICAgICAgIDAxMjAwMDIKPiArL3Byb2MvMzM4MzMyMy9mZGluZm8v
+MDoyOmZsYWdzOiAgICAgICAgMDEyNDAwMgo+ICAvcHJvYy8zMzgzMzIzL2ZkaW5mby8wOjM6bW50
+X2lkOiAgICAgICA2MTA0Cj4gIC9wcm9jLzMzODMzMjMvZmRpbmZvLzA6NDppbm86ICAyNAo+ICAv
+cHJvYy8zMzgzMzIzL2ZkaW5mby8xOjE6cG9zOiAgMAo+IC0vcHJvYy8zMzgzMzIzL2ZkaW5mby8x
+OjI6ZmxhZ3M6ICAgICAgICAwMTIwMDAyCj4gKy9wcm9jLzMzODMzMjMvZmRpbmZvLzE6MjpmbGFn
+czogICAgICAgIDAxMjQwMDIKPiAgL3Byb2MvMzM4MzMyMy9mZGluZm8vMTozOm1udF9pZDogICAg
+ICAgNjEwNAo+ICAvcHJvYy8zMzgzMzIzL2ZkaW5mby8xOjQ6aW5vOiAgMjQKPiAgL3Byb2MvMzM4
+MzMyMy9mZGluZm8vMjoxOnBvczogIDAKPiAtL3Byb2MvMzM4MzMyMy9mZGluZm8vMjoyOmZsYWdz
+OiAgICAgICAgMDEyMDAwMgo+ICsvcHJvYy8zMzgzMzIzL2ZkaW5mby8yOjI6ZmxhZ3M6ICAgICAg
+ICAwMTI0MDAyCj4gIC9wcm9jLzMzODMzMjMvZmRpbmZvLzI6MzptbnRfaWQ6ICAgICAgIDYxMDQK
+PiAgL3Byb2MvMzM4MzMyMy9mZGluZm8vMjo0OmlubzogIDI0Cj4KPiBJdCBsb29rcyBsaWtlIHRo
+ZXNlIHdlcmUgbm90IHJlc2V0OiBicmtpbiBpY3JubCBpeG9uIG9wb3N0IGlzaWcgaWNhbm9uIGVj
+aG8KPgo+IE9yaWdpbmFsbHkgSSB3YXMgYXBwbHlpbmcgdGhpcyBwYXRjaCBzZXJpZXMgdG8gNS4x
+Ni4xMiBhbmQgc2VlaW5nIHRoaXMgaXNzdWUuCj4gQnV0IEkgdGhpcyBvdXRwdXQgaXMgZnJvbSBh
+cHBseWluZyB0aGUgcGF0Y2ggc2VyaWVzIHRvIDUuMTctcmM3LCBpZiB0aGF0IG1hdHRlcnMuIFRo
+YW5rcyBmb3IgbG9va2luZyB0IHRoaXMuCgpIbW0uIExvb2tzIGxpa2UgdGhlIGNsZWFudXAgZnVu
+Y3Rpb24gaXMgbmV2ZXIgY2FsbGVkLgpDYW4geW91IHZlcmlmeSB3aGV0aGVyIHVtbF9jb25zb2xl
+X2V4aXQoKSBydW5zIGF0IGV4aXQgdGltZT8KCi0tIApUaGFua3MsCi8vcmljaGFyZAoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGlu
+ZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVh
+ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
 
