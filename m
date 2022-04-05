@@ -1,144 +1,57 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out02.mta.xmission.com ([166.70.13.232])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nkYUR-00Cq5O-2S
- for linux-um@lists.infradead.org; Fri, 29 Apr 2022 21:49:29 +0000
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-Date: Fri, 29 Apr 2022 16:48:35 -0500
-Message-Id: <20220429214837.386518-10-ebiederm@xmission.com>
-In-Reply-To: <87k0b7v9yk.fsf_-_@email.froward.int.ebiederm.org>
-References: <87k0b7v9yk.fsf_-_@email.froward.int.ebiederm.org>
+Return-Path: <kvalo@kernel.org>
+From: Kalle Valo <kvalo@kernel.org>
+Subject: Re: Build regressions/improvements in v5.18-rc1
+In-Reply-To: <CAMuHMdV_-3TOHYehUsHeqwHjQtzN1Ot886K7vwPr4P-4u8eehw@mail.gmail.com>
+	(Geert Uytterhoeven's message of "Tue, 5 Apr 2022 08:46:06 +0200")
+References: <CAHk-=wg6FWL1xjVyHx7DdjD2dHZETA5_=FqqW17Z19X-WTfWSg@mail.gmail.com>
+	<20220404074734.1092959-1-geert@linux-m68k.org>
+	<alpine.DEB.2.22.394.2204041006230.1941618@ramsan.of.borg>
+	<874k38u20c.fsf@tynnyri.adurom.net>
+	<CAMuHMdV_-3TOHYehUsHeqwHjQtzN1Ot886K7vwPr4P-4u8eehw@mail.gmail.com>
+Date: Tue, 05 Apr 2022 09:52:33 +0300
+Message-ID: <87czhwrphq.fsf@kernel.org>
 MIME-Version: 1.0
-Subject: [PATCH v2 10/12] ptrace: Only return signr from ptrace_stop if it was
- provided
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>
+Content-Type: text/plain
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Parisc List <linux-parisc@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>, DRI Development <dri-devel@lists.freedesktop.org>, Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>, Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>, linux-rdma <linux-rdma@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>, Linux Media Mailing List <linux-media@vger.kernel.org>, netdev <netdev@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, scsi <linux-scsi@vger.kernel.org>, "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>, USB list <linux-usb@vger.kernel.org>, linux-xfs@vger.kernel.org, ALSA Development Mailing List <alsa-devel@alsa-project.org>, linux-s390 <linux-s390@vger.kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-In ptrace_stop a ptrace_unlink or SIGKILL can occur either after
-siglock is dropped or after tasklist_lock is dropped.  At either point
-the result can be that ptrace will continue and not stop at schedule.
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
 
-This means that there are cases where the current logic fails to handle
-the fact that ptrace_stop did not actually stop, and can potentially
-cause ptrace_report_syscall to attempt to deliver a signal.
+> On Mon, Apr 4, 2022 at 8:39 PM Kalle Valo <kvalo@kernel.org> wrote:
+>> Geert Uytterhoeven <geert@linux-m68k.org> writes:
+>> >> /kisskb/src/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c:
+>> >> error: case label does not reduce to an integer constant: => 3798:2,
+>> >> 3809:2
+>> >
+>> > arm64-gcc5.4/arm64-allmodconfig
+>> > powerpc-gcc5/powerpc-allmodconfig
+>> > powerpc-gcc5/ppc64_book3e_allmodconfig
+>>
+>> After v5.17 there were two commits to brcmfmac/sdio.c:
+>>
+>> $ git log --oneline v5.17.. drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+>> ed26edf7bfd9 brcmfmac: Add BCM43454/6 support
+>> 6d766d8cb505 brcmfmac: pcie: Declare missing firmware files in pcie.c
+>>
+>> I can't see how either of them could cause this warning. Could something
+>> else cause this or am I missing something?
+>
+> Doh, I should not have reduced the CC list in the xfs subthread...
+>
+> The builds above are all gcc-5 builds, so they are affected by the same
+> issue as XFS: unsigned constants that don't fit in int are lacking a
+> "U" suffix.
+>
+> I assume Arnd's patch for
+> drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+> fixes this?
+> https://lore.kernel.org/all/CAK8P3a0wRiS03imdXk2WbGONkSSczEGdE-ue5ubF6UyyDE9dQg@mail.gmail.com
 
-Instead of attempting to detect in ptrace_stop when it fails to
-stop update ptrace_resume and ptrace_detach to set a flag to indicate
-that the signal to continue with has be set.   Use that
-new flag to decided how to set return signal.
+Great, thanks. I assume Arnd will submit it officially at some point.
 
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
----
- include/linux/sched/jobctl.h |  2 ++
- kernel/ptrace.c              |  5 +++++
- kernel/signal.c              | 12 ++++++------
- 3 files changed, 13 insertions(+), 6 deletions(-)
-
-diff --git a/include/linux/sched/jobctl.h b/include/linux/sched/jobctl.h
-index d556c3425963..2ff1bcd63cf4 100644
---- a/include/linux/sched/jobctl.h
-+++ b/include/linux/sched/jobctl.h
-@@ -20,6 +20,7 @@ struct task_struct;
- #define JOBCTL_LISTENING_BIT	22	/* ptracer is listening for events */
- #define JOBCTL_TRAP_FREEZE_BIT	23	/* trap for cgroup freezer */
- #define JOBCTL_PTRACE_FROZEN_BIT	24	/* frozen for ptrace */
-+#define JOBCTL_PTRACE_SIGNR_BIT	25	/* ptrace signal number */
- 
- #define JOBCTL_STOP_DEQUEUED	(1UL << JOBCTL_STOP_DEQUEUED_BIT)
- #define JOBCTL_STOP_PENDING	(1UL << JOBCTL_STOP_PENDING_BIT)
-@@ -30,6 +31,7 @@ struct task_struct;
- #define JOBCTL_LISTENING	(1UL << JOBCTL_LISTENING_BIT)
- #define JOBCTL_TRAP_FREEZE	(1UL << JOBCTL_TRAP_FREEZE_BIT)
- #define JOBCTL_PTRACE_FROZEN	(1UL << JOBCTL_PTRACE_FROZEN_BIT)
-+#define JOBCTL_PTRACE_SIGNR	(1UL << JOBCTL_PTRACE_SIGNR_BIT)
- 
- #define JOBCTL_TRAP_MASK	(JOBCTL_TRAP_STOP | JOBCTL_TRAP_NOTIFY)
- #define JOBCTL_PENDING_MASK	(JOBCTL_STOP_PENDING | JOBCTL_TRAP_MASK)
-diff --git a/kernel/ptrace.c b/kernel/ptrace.c
-index c1c99e8be147..d80222251f60 100644
---- a/kernel/ptrace.c
-+++ b/kernel/ptrace.c
-@@ -596,7 +596,11 @@ static int ptrace_detach(struct task_struct *child, unsigned int data)
- 	 * tasklist_lock avoids the race with wait_task_stopped(), see
- 	 * the comment in ptrace_resume().
- 	 */
-+	spin_lock(&child->sighand->siglock);
- 	child->exit_code = data;
-+	child->jobctl |= JOBCTL_PTRACE_SIGNR;
-+	spin_unlock(&child->sighand->siglock);
-+
- 	__ptrace_detach(current, child);
- 	write_unlock_irq(&tasklist_lock);
- 
-@@ -883,6 +887,7 @@ static int ptrace_resume(struct task_struct *child, long request,
- 	 */
- 	spin_lock_irq(&child->sighand->siglock);
- 	child->exit_code = data;
-+	child->jobctl |= JOBCTL_PTRACE_SIGNR;
- 	wake_up_state(child, __TASK_TRACED);
- 	spin_unlock_irq(&child->sighand->siglock);
- 
-diff --git a/kernel/signal.c b/kernel/signal.c
-index 5cf268982a7e..7cb27a27290a 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -2193,7 +2193,6 @@ static int ptrace_stop(int exit_code, int why, int clear_code,
- 	__acquires(&current->sighand->siglock)
- {
- 	bool gstop_done = false;
--	bool read_code = true;
- 
- 	if (arch_ptrace_stop_needed()) {
- 		/*
-@@ -2299,9 +2298,6 @@ static int ptrace_stop(int exit_code, int why, int clear_code,
- 
- 		/* tasklist protects us from ptrace_freeze_traced() */
- 		__set_current_state(TASK_RUNNING);
--		read_code = false;
--		if (clear_code)
--			exit_code = 0;
- 		read_unlock(&tasklist_lock);
- 	}
- 
-@@ -2311,14 +2307,18 @@ static int ptrace_stop(int exit_code, int why, int clear_code,
- 	 * any signal-sending on another CPU that wants to examine it.
- 	 */
- 	spin_lock_irq(&current->sighand->siglock);
--	if (read_code)
-+	/* Did userspace perhaps provide a signal to resume with? */
-+	if (current->jobctl & JOBCTL_PTRACE_SIGNR)
- 		exit_code = current->exit_code;
-+	else if (clear_code)
-+		exit_code = 0;
-+
- 	current->last_siginfo = NULL;
- 	current->ptrace_message = 0;
- 	current->exit_code = 0;
- 
- 	/* LISTENING can be set only during STOP traps, clear it */
--	current->jobctl &= ~(JOBCTL_LISTENING | JOBCTL_PTRACE_FROZEN);
-+	current->jobctl &= ~(JOBCTL_LISTENING | JOBCTL_PTRACE_FROZEN | JOBCTL_PTRACE_SIGNR);
- 
- 	/*
- 	 * Queued signals ignored us while we were stopped for tracing.
 -- 
-2.35.3
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
