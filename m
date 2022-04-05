@@ -1,86 +1,60 @@
-Return-Path: <linux-pm-owner@vger.kernel.org>
-From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Subject: [PATCH 26/30] Drivers: hv: Do not force all panic notifiers to execute before kdump
-Date: Wed, 27 Apr 2022 19:49:20 -0300
-Message-Id: <20220427224924.592546-27-gpiccoli@igalia.com>
-In-Reply-To: <20220427224924.592546-1-gpiccoli@igalia.com>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from smtp2.axis.com ([195.60.68.18])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nbjdP-001E5e-2P
+ for linux-um@lists.infradead.org; Tue, 05 Apr 2022 13:54:16 +0000
+Date: Tue, 5 Apr 2022 15:54:12 +0200
+From: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Subject: Re: [RFC v1 01/10] roadtest: import libvhost-user from QEMU
+Message-ID: <20220405135412.GB28574@axis.com>
+References: <20220311162445.346685-1-vincent.whitchurch@axis.com>
+ <20220311162445.346685-2-vincent.whitchurch@axis.com>
+ <7f405d8d09a83954aa3411eff8b71ee687c7ec33.camel@sipsolutions.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, gpiccoli@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, Andrea Parri <parri.andrea@gmail.com>, Dexuan Cui <decui@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, "K. Y. Srinivasan" <kys@microsoft.com>, Stephen Brennan <stephen.s.brennan@oracle.com>, Stephen Hemminger <sthemmin@microsoft.com>, Tianyu Lan <Tianyu.Lan@microsoft.com>, Wei Liu <wei.liu@kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <7f405d8d09a83954aa3411eff8b71ee687c7ec33.camel@sipsolutions.net>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, kernel <kernel@axis.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "shuah@kernel.org" <shuah@kernel.org>, "brendanhiggins@google.com" <brendanhiggins@google.com>, "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, "jic23@kernel.org" <jic23@kernel.org>, "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "a.zummo@towertech.it" <a.zummo@towertech.it>, "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>, "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>, "corbet@lwn.net" <corbet@lwn.net>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
 
-Since commit a11589563e96 ("x86/Hyper-V: Report crash register
-data or kmsg before running crash kernel") Hyper-V forcibly sets
-the kernel parameter "crash_kexec_post_notifiers"; with that, it
-did enforce the execution of *all* panic notifiers before kdump.
-The main reason behind that is that Hyper-V has an hypervisor
-notification mechanism that has the ability of warning the
-hypervisor when the guest panics.
+On Thu, Mar 24, 2022 at 02:00:10PM +0100, Johannes Berg wrote:
+> On Fri, 2022-03-11 at 17:24 +0100, Vincent Whitchurch wrote:
+> > Import the libvhost-user from QEMU for use in the implementation of the
+> > virtio devices in the roadtest backend.
+> 
+> So hm, I wonder if this is the sensible thing to do?
+> 
+> Not that I mind importing qemu code, but:
+> 
+>  1) the implementation is rather complex in some places, and has support
+>     for a LOT of virtio/vhost-user features that are really not needed
+>     in these cases, for performance etc. It's also close to 4k LOC.
 
-Happens that after the panic notifiers refactor, we now have 3 lists
-and a level mechanism that defines the ordering of the notifiers
-execution with regards to kdump. And for Hyper-V, the specific
-notifier to inform the hypervisor about a panic lies in the first
-list, which *by default* is set to execute before kdump. Hence,
-this patch removes the hardcoded setting, effectively reverting
-the aforementioned commit.
+Is this really a problem given that the code is imported as-is?  The
+intention is not to have to make a lot of local modifications to it in
+the kernel tree.  The code is stable and presumably well-tested
+upstream, and upstream maintains it as a separate library (in the QEMU
+source tree though) to encourage reuse.
 
-One of the problems with the forced approach was greatly exposed by
-commit d57d6fe5bf34 ("drivers: hv: log when enabling crash_kexec_post_notifiers")
-which ended-up confusing the user that didn't expect the notifiers
-to execute before kdump, since it's a user setting and wasn't
-enabled by such user. With the patch hereby proposed, that kind
-of issue doesn't happen anymore, the panic notifiers level is
-well-documented and users can expect a predictable behavior.
+>  2) the implementation doesn't support time-travel mode which might come
+>     in handy
 
-Fixes: a11589563e96 ("x86/Hyper-V: Report crash register data or kmsg before running crash kernel")
-Fixes: d57d6fe5bf34 ("drivers: hv: log when enabling crash_kexec_post_notifiers"
-Cc: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-Cc: Dexuan Cui <decui@microsoft.com>
-Cc: Haiyang Zhang <haiyangz@microsoft.com>
-Cc: "K. Y. Srinivasan" <kys@microsoft.com>
-Cc: Michael Kelley <mikelley@microsoft.com>
-Cc: Stephen Brennan <stephen.s.brennan@oracle.com>
-Cc: Stephen Hemminger <sthemmin@microsoft.com>
-Cc: Tianyu Lan <Tianyu.Lan@microsoft.com>
-Cc: Wei Liu <wei.liu@kernel.org>
-Tested-by: Fabio A M Martins <fabiomirmar@gmail.com>
-Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
----
+True, but I don't see the external time-travel controller stuff being
+too useful for the kinds of tests this framework is targeting.
 
-Special thanks to Michael Kelley for the good information about the Hyper-V
-panic path in email threads some months ago, and to Fabio for the testing
-performed.
-
- drivers/hv/hv_common.c | 12 ------------
- 1 file changed, 12 deletions(-)
-
-diff --git a/drivers/hv/hv_common.c b/drivers/hv/hv_common.c
-index ae68298c0dca..af59793de523 100644
---- a/drivers/hv/hv_common.c
-+++ b/drivers/hv/hv_common.c
-@@ -73,18 +73,6 @@ int __init hv_common_init(void)
- {
- 	int i;
- 
--	/*
--	 * Hyper-V expects to get crash register data or kmsg when
--	 * crash enlightment is available and system crashes. Set
--	 * crash_kexec_post_notifiers to be true to make sure that
--	 * calling crash enlightment interface before running kdump
--	 * kernel.
--	 */
--	if (ms_hyperv.misc_features & HV_FEATURE_GUEST_CRASH_MSR_AVAILABLE) {
--		crash_kexec_post_notifiers = true;
--		pr_info("Hyper-V: enabling crash_kexec_post_notifiers\n");
--	}
--
- 	/*
- 	 * Allocate the per-CPU state for the hypercall input arg.
- 	 * If this allocation fails, we will not be able to setup
--- 
-2.36.0
-
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
