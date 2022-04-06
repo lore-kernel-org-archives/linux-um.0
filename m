@@ -1,20 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1neADZ-00BviR-T4
- for linux-um@lists.infradead.org; Tue, 12 Apr 2022 06:41:39 +0000
-Received: by mail-pl1-f198.google.com with SMTP id
- h9-20020a170902f54900b001582df39ce2so3071832plf.19
- for <linux-um@lists.infradead.org>; Mon, 11 Apr 2022 23:41:35 -0700 (PDT)
-Message-ID: <92622553-e02d-47bd-06f9-0ce24c22650c@redhat.com>
-Date: Tue, 12 Apr 2022 14:41:18 +0800
-MIME-Version: 1.0
-Subject: Re: [PATCH v9 18/32] virtio_ring: introduce virtqueue_resize()
+ id 1nbwat-003e9x-QI
+ for linux-um@lists.infradead.org; Wed, 06 Apr 2022 03:44:33 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v9 18/32] virtio_ring: introduce virtqueue_resize()
+Date: Wed,  6 Apr 2022 11:43:32 +0800
+Message-Id: <20220406034346.74409-19-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
 References: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
- <20220406034346.74409-19-xuanzhuo@linux.alibaba.com>
-From: Jason Wang <jasowang@redhat.com>
-In-Reply-To: <20220406034346.74409-19-xuanzhuo@linux.alibaba.com>
-Content-Language: en-US
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -23,89 +18,133 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, virtualization@lists.linux-foundation.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
+To: virtualization@lists.linux-foundation.org
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
 
-CuWcqCAyMDIyLzQvNiDkuIrljYgxMTo0MywgWHVhbiBaaHVvIOWGmemBkzoKPiBJbnRyb2R1Y2Ug
-dmlydHF1ZXVlX3Jlc2l6ZSgpIHRvIGltcGxlbWVudCB0aGUgcmVzaXplIG9mIHZyaW5nLgo+IEJh
-c2VkIG9uIHRoZXNlLCB0aGUgZHJpdmVyIGNhbiBkeW5hbWljYWxseSBhZGp1c3QgdGhlIHNpemUg
-b2YgdGhlIHZyaW5nLgo+IEZvciBleGFtcGxlOiBldGh0b29sIC1HLgo+Cj4gdmlydHF1ZXVlX3Jl
-c2l6ZSgpIGltcGxlbWVudHMgcmVzaXplIGJhc2VkIG9uIHRoZSB2cSByZXNldCBmdW5jdGlvbi4g
-SW4KPiBjYXNlIG9mIGZhaWx1cmUgdG8gYWxsb2NhdGUgYSBuZXcgdnJpbmcsIGl0IHdpbGwgZ2l2
-ZSB1cCByZXNpemUgYW5kIHVzZQo+IHRoZSBvcmlnaW5hbCB2cmluZy4KPgo+IER1cmluZyB0aGlz
-IHByb2Nlc3MsIGlmIHRoZSByZS1lbmFibGUgcmVzZXQgdnEgZmFpbHMsIHRoZSB2cSBjYW4gbm8K
-PiBsb25nZXIgYmUgdXNlZC4gQWx0aG91Z2ggdGhlIHByb2JhYmlsaXR5IG9mIHRoaXMgc2l0dWF0
-aW9uIGlzIG5vdCBoaWdoLgo+Cj4gVGhlIHBhcmFtZXRlciByZWN5Y2xlIGlzIHVzZWQgdG8gcmVj
-eWNsZSB0aGUgYnVmZmVyIHRoYXQgaXMgbm8gbG9uZ2VyCj4gdXNlZC4KPgo+IFNpZ25lZC1vZmYt
-Ynk6IFh1YW4gWmh1byA8eHVhbnpodW9AbGludXguYWxpYmFiYS5jb20+Cj4gLS0tCj4gICBkcml2
-ZXJzL3ZpcnRpby92aXJ0aW9fcmluZy5jIHwgNjkgKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrCj4gICBpbmNsdWRlL2xpbnV4L3ZpcnRpby5oICAgICAgIHwgIDMgKysKPiAgIDIg
-ZmlsZXMgY2hhbmdlZCwgNzIgaW5zZXJ0aW9ucygrKQo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
-dmlydGlvL3ZpcnRpb19yaW5nLmMgYi9kcml2ZXJzL3ZpcnRpby92aXJ0aW9fcmluZy5jCj4gaW5k
-ZXggMDZmNjZiMTVjODZjLi42MjUwZTE5ZmM1YmYgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy92aXJ0
-aW8vdmlydGlvX3JpbmcuYwo+ICsrKyBiL2RyaXZlcnMvdmlydGlvL3ZpcnRpb19yaW5nLmMKPiBA
-QCAtMjU1NCw2ICsyNTU0LDc1IEBAIHN0cnVjdCB2aXJ0cXVldWUgKnZyaW5nX2NyZWF0ZV92aXJ0
-cXVldWUoCj4gICB9Cj4gICBFWFBPUlRfU1lNQk9MX0dQTCh2cmluZ19jcmVhdGVfdmlydHF1ZXVl
-KTsKPiAgIAo+ICsvKioKPiArICogdmlydHF1ZXVlX3Jlc2l6ZSAtIHJlc2l6ZSB0aGUgdnJpbmcg
-b2YgdnEKPiArICogQF92cTogdGhlIHN0cnVjdCB2aXJ0cXVldWUgd2UncmUgdGFsa2luZyBhYm91
-dC4KPiArICogQG51bTogbmV3IHJpbmcgbnVtCj4gKyAqIEByZWN5Y2xlOiBjYWxsYmFjayBmb3Ig
-cmVjeWNsZSB0aGUgdXNlbGVzcyBidWZmZXIKPiArICoKPiArICogV2hlbiBpdCBpcyByZWFsbHkg
-bmVjZXNzYXJ5IHRvIGNyZWF0ZSBhIG5ldyB2cmluZywgaXQgd2lsbCBzZXQgdGhlIGN1cnJlbnQg
-dnEKPiArICogaW50byB0aGUgcmVzZXQgc3RhdGUuIFRoZW4gY2FsbCB0aGUgcGFzc2VkIGNhbGxi
-YWNrIHRvIHJlY3ljbGUgdGhlIGJ1ZmZlcgo+ICsgKiB0aGF0IGlzIG5vIGxvbmdlciB1c2VkLiBP
-bmx5IGFmdGVyIHRoZSBuZXcgdnJpbmcgaXMgc3VjY2Vzc2Z1bGx5IGNyZWF0ZWQsIHRoZQo+ICsg
-KiBvbGQgdnJpbmcgd2lsbCBiZSByZWxlYXNlZC4KPiArICoKPiArICogQ2FsbGVyIG11c3QgZW5z
-dXJlIHdlIGRvbid0IGNhbGwgdGhpcyB3aXRoIG90aGVyIHZpcnRxdWV1ZSBvcGVyYXRpb25zCj4g
-KyAqIGF0IHRoZSBzYW1lIHRpbWUgKGV4Y2VwdCB3aGVyZSBub3RlZCkuCj4gKyAqCj4gKyAqIFJl
-dHVybnMgemVybyBvciBhIG5lZ2F0aXZlIGVycm9yLgoKClNob3VsZCB3ZSBkb2N1bWVudCB0aGF0
-IHRoZSB2aXJ0cXVldWUgaXMga2VwdCB1bmNoYW5nZWQgKHN0aWxsIAphdmFpbGFibGUpIG9uIChz
-cGVjaWZpYykgZmFpbHVyZT8KCgo+ICsgKi8KPiAraW50IHZpcnRxdWV1ZV9yZXNpemUoc3RydWN0
-IHZpcnRxdWV1ZSAqX3ZxLCB1MzIgbnVtLAo+ICsJCSAgICAgdm9pZCAoKnJlY3ljbGUpKHN0cnVj
-dCB2aXJ0cXVldWUgKnZxLCB2b2lkICpidWYpKQo+ICt7Cj4gKwlzdHJ1Y3QgdnJpbmdfdmlydHF1
-ZXVlICp2cSA9IHRvX3Z2cShfdnEpOwo+ICsJc3RydWN0IHZpcnRpb19kZXZpY2UgKnZkZXYgPSB2
-cS0+dnEudmRldjsKPiArCWJvb2wgcGFja2VkOwo+ICsJdm9pZCAqYnVmOwo+ICsJaW50IGVycjsK
-PiArCj4gKwlpZiAoIXZxLT53ZV9vd25fcmluZykKPiArCQlyZXR1cm4gLUVJTlZBTDsKPiArCj4g
-KwlpZiAobnVtID4gdnEtPnZxLm51bV9tYXgpCj4gKwkJcmV0dXJuIC1FMkJJRzsKPiArCj4gKwlp
-ZiAoIW51bSkKPiArCQlyZXR1cm4gLUVJTlZBTDsKPiArCj4gKwlwYWNrZWQgPSB2aXJ0aW9faGFz
-X2ZlYXR1cmUodmRldiwgVklSVElPX0ZfUklOR19QQUNLRUQpID8gdHJ1ZSA6IGZhbHNlOwo+ICsK
-PiArCWlmICgocGFja2VkID8gdnEtPnBhY2tlZC52cmluZy5udW0gOiB2cS0+c3BsaXQudnJpbmcu
-bnVtKSA9PSBudW0pCj4gKwkJcmV0dXJuIDA7Cj4gKwo+ICsJaWYgKCF2ZGV2LT5jb25maWctPnJl
-c2V0X3ZxKQo+ICsJCXJldHVybiAtRU5PRU5UOwo+ICsKPiArCWlmICghdmRldi0+Y29uZmlnLT5l
-bmFibGVfcmVzZXRfdnEpCj4gKwkJcmV0dXJuIC1FTk9FTlQ7Cj4gKwo+ICsJZXJyID0gdmRldi0+
-Y29uZmlnLT5yZXNldF92cShfdnEpOwo+ICsJaWYgKGVycikKPiArCQlyZXR1cm4gZXJyOwo+ICsK
-PiArCXdoaWxlICgoYnVmID0gdmlydHF1ZXVlX2RldGFjaF91bnVzZWRfYnVmKF92cSkpICE9IE5V
-TEwpCj4gKwkJcmVjeWNsZShfdnEsIGJ1Zik7Cj4gKwo+ICsJaWYgKHBhY2tlZCkgewo+ICsJCWVy
-ciA9IHZpcnRxdWV1ZV9yZXNpemVfcGFja2VkKF92cSwgbnVtKTsKPiArCQlpZiAoZXJyKQo+ICsJ
-CQl2aXJ0cXVldWVfcmVpbml0X3BhY2tlZCh2cSk7CgoKQ2FsbGluZyByZWluaXQgaGVyZSBzZWVt
-cyBhIGxpdHRsZSBiaXQgb2RkLCBpdCBsb29rcyBtb3JlIGxpa2UgYSByZXNldCAKb2YgdGhlIHZp
-cnRxdWV1ZS4gQ29uc2lkZXIgd2UgbWF5IHJlLXVzZSB2aXJ0cXVldWUgcmVzZXQgZm9yIG1vcmUg
-CnB1cnBvc2UsIEkgd29uZGVyIGlmIHdlIG5lZWQgYSBoZWxwZXIgbGlrZToKCnZpcnRxdWV1ZV9y
-ZXNpemUoKSB7CiDCoMKgwqAgdmRldi0+Y29uZmlnLT5yZXNldF92cShfdnEpOwogwqDCoMKgIGlm
-IChwYWNrZWQpCiDCoMKgwqAgwqDCoMKgIHZpcnRxdWV1ZV9yZWluaXRfcGFja2VkKF92cSkKIMKg
-wqDCoCBlbHNlCiDCoMKgwqDCoMKgwqDCoCB2aXJ0cXVldWVfcmVpbml0X3NwbGl0KF92cSkKfQoK
-VGhhbmtzCgoKPiArCX0gZWxzZSB7Cj4gKwkJZXJyID0gdmlydHF1ZXVlX3Jlc2l6ZV9zcGxpdChf
-dnEsIG51bSk7Cj4gKwkJaWYgKGVycikKPiArCQkJdmlydHF1ZXVlX3JlaW5pdF9zcGxpdCh2cSk7
-Cj4gKwl9Cj4gKwo+ICsJaWYgKHZkZXYtPmNvbmZpZy0+ZW5hYmxlX3Jlc2V0X3ZxKF92cSkpCj4g
-KwkJcmV0dXJuIC1FQlVTWTsKPiArCj4gKwlyZXR1cm4gZXJyOwo+ICt9Cj4gK0VYUE9SVF9TWU1C
-T0xfR1BMKHZpcnRxdWV1ZV9yZXNpemUpOwo+ICsKPiAgIC8qIE9ubHkgYXZhaWxhYmxlIGZvciBz
-cGxpdCByaW5nICovCj4gICBzdHJ1Y3QgdmlydHF1ZXVlICp2cmluZ19uZXdfdmlydHF1ZXVlKHVu
-c2lnbmVkIGludCBpbmRleCwKPiAgIAkJCQkgICAgICB1bnNpZ25lZCBpbnQgbnVtLAo+IGRpZmYg
-LS1naXQgYS9pbmNsdWRlL2xpbnV4L3ZpcnRpby5oIGIvaW5jbHVkZS9saW51eC92aXJ0aW8uaAo+
-IGluZGV4IGQ1OWFkYzRiZTA2OC4uYzg2ZmYwMmUwY2EwIDEwMDY0NAo+IC0tLSBhL2luY2x1ZGUv
-bGludXgvdmlydGlvLmgKPiArKysgYi9pbmNsdWRlL2xpbnV4L3ZpcnRpby5oCj4gQEAgLTkxLDYg
-KzkxLDkgQEAgZG1hX2FkZHJfdCB2aXJ0cXVldWVfZ2V0X2Rlc2NfYWRkcihzdHJ1Y3QgdmlydHF1
-ZXVlICp2cSk7Cj4gICBkbWFfYWRkcl90IHZpcnRxdWV1ZV9nZXRfYXZhaWxfYWRkcihzdHJ1Y3Qg
-dmlydHF1ZXVlICp2cSk7Cj4gICBkbWFfYWRkcl90IHZpcnRxdWV1ZV9nZXRfdXNlZF9hZGRyKHN0
-cnVjdCB2aXJ0cXVldWUgKnZxKTsKPiAgIAo+ICtpbnQgdmlydHF1ZXVlX3Jlc2l6ZShzdHJ1Y3Qg
-dmlydHF1ZXVlICp2cSwgdTMyIG51bSwKPiArCQkgICAgIHZvaWQgKCpyZWN5Y2xlKShzdHJ1Y3Qg
-dmlydHF1ZXVlICp2cSwgdm9pZCAqYnVmKSk7Cj4gKwo+ICAgLyoqCj4gICAgKiB2aXJ0aW9fZGV2
-aWNlIC0gcmVwcmVzZW50YXRpb24gb2YgYSBkZXZpY2UgdXNpbmcgdmlydGlvCj4gICAgKiBAaW5k
-ZXg6IHVuaXF1ZSBwb3NpdGlvbiBvbiB0aGUgdmlydGlvIGJ1cwoKCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51
-eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vbGludXgtdW0K
+Introduce virtqueue_resize() to implement the resize of vring.
+Based on these, the driver can dynamically adjust the size of the vring.
+For example: ethtool -G.
+
+virtqueue_resize() implements resize based on the vq reset function. In
+case of failure to allocate a new vring, it will give up resize and use
+the original vring.
+
+During this process, if the re-enable reset vq fails, the vq can no
+longer be used. Although the probability of this situation is not high.
+
+The parameter recycle is used to recycle the buffer that is no longer
+used.
+
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+---
+ drivers/virtio/virtio_ring.c | 69 ++++++++++++++++++++++++++++++++++++
+ include/linux/virtio.h       |  3 ++
+ 2 files changed, 72 insertions(+)
+
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 06f66b15c86c..6250e19fc5bf 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -2554,6 +2554,75 @@ struct virtqueue *vring_create_virtqueue(
+ }
+ EXPORT_SYMBOL_GPL(vring_create_virtqueue);
+ 
++/**
++ * virtqueue_resize - resize the vring of vq
++ * @_vq: the struct virtqueue we're talking about.
++ * @num: new ring num
++ * @recycle: callback for recycle the useless buffer
++ *
++ * When it is really necessary to create a new vring, it will set the current vq
++ * into the reset state. Then call the passed callback to recycle the buffer
++ * that is no longer used. Only after the new vring is successfully created, the
++ * old vring will be released.
++ *
++ * Caller must ensure we don't call this with other virtqueue operations
++ * at the same time (except where noted).
++ *
++ * Returns zero or a negative error.
++ */
++int virtqueue_resize(struct virtqueue *_vq, u32 num,
++		     void (*recycle)(struct virtqueue *vq, void *buf))
++{
++	struct vring_virtqueue *vq = to_vvq(_vq);
++	struct virtio_device *vdev = vq->vq.vdev;
++	bool packed;
++	void *buf;
++	int err;
++
++	if (!vq->we_own_ring)
++		return -EINVAL;
++
++	if (num > vq->vq.num_max)
++		return -E2BIG;
++
++	if (!num)
++		return -EINVAL;
++
++	packed = virtio_has_feature(vdev, VIRTIO_F_RING_PACKED) ? true : false;
++
++	if ((packed ? vq->packed.vring.num : vq->split.vring.num) == num)
++		return 0;
++
++	if (!vdev->config->reset_vq)
++		return -ENOENT;
++
++	if (!vdev->config->enable_reset_vq)
++		return -ENOENT;
++
++	err = vdev->config->reset_vq(_vq);
++	if (err)
++		return err;
++
++	while ((buf = virtqueue_detach_unused_buf(_vq)) != NULL)
++		recycle(_vq, buf);
++
++	if (packed) {
++		err = virtqueue_resize_packed(_vq, num);
++		if (err)
++			virtqueue_reinit_packed(vq);
++	} else {
++		err = virtqueue_resize_split(_vq, num);
++		if (err)
++			virtqueue_reinit_split(vq);
++	}
++
++	if (vdev->config->enable_reset_vq(_vq))
++		return -EBUSY;
++
++	return err;
++}
++EXPORT_SYMBOL_GPL(virtqueue_resize);
++
+ /* Only available for split ring */
+ struct virtqueue *vring_new_virtqueue(unsigned int index,
+ 				      unsigned int num,
+diff --git a/include/linux/virtio.h b/include/linux/virtio.h
+index d59adc4be068..c86ff02e0ca0 100644
+--- a/include/linux/virtio.h
++++ b/include/linux/virtio.h
+@@ -91,6 +91,9 @@ dma_addr_t virtqueue_get_desc_addr(struct virtqueue *vq);
+ dma_addr_t virtqueue_get_avail_addr(struct virtqueue *vq);
+ dma_addr_t virtqueue_get_used_addr(struct virtqueue *vq);
+ 
++int virtqueue_resize(struct virtqueue *vq, u32 num,
++		     void (*recycle)(struct virtqueue *vq, void *buf));
++
+ /**
+  * virtio_device - representation of a device using virtio
+  * @index: unique position on the virtio bus
+-- 
+2.31.0
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
