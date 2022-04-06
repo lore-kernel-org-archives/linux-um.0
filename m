@@ -1,15 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out01.mta.xmission.com ([166.70.13.231])
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nkYUK-00Cq0S-Lz
- for linux-um@lists.infradead.org; Fri, 29 Apr 2022 21:49:22 +0000
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-Date: Fri, 29 Apr 2022 16:48:33 -0500
-Message-Id: <20220429214837.386518-8-ebiederm@xmission.com>
-In-Reply-To: <87k0b7v9yk.fsf_-_@email.froward.int.ebiederm.org>
-References: <87k0b7v9yk.fsf_-_@email.froward.int.ebiederm.org>
+ id 1nbwak-003e00-Oy
+ for linux-um@lists.infradead.org; Wed, 06 Apr 2022 03:44:24 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v9 14/32] virtio_ring: packed: extract the logic of attach
+ vring
+Date: Wed,  6 Apr 2022 11:43:28 +0800
+Message-Id: <20220406034346.74409-15-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
+References: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-Subject: [PATCH v2 08/12] ptrace: Remove arch_ptrace_attach
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,168 +23,91 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>
+To: virtualization@lists.linux-foundation.org
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
 
-The last remaining implementation of arch_ptrace_attach is ia64's
-ptrace_attach_sync_user_rbs which was added at the end of 2007 in
-commit aa91a2e90044 ("[IA64] Synchronize RBS on PTRACE_ATTACH").
+Separate the logic of attach vring, the subsequent patch will call it
+separately.
 
-Reading the comments and examining the code ptrace_attach_sync_user_rbs
-has the sole purpose of saving registers to the stack when ptrace_attach
-changes TASK_STOPPED to TASK_TRACED.  In all other cases arch_ptrace_stop
-takes care of the register saving.
-
-In commit d79fdd6d96f4 ("ptrace: Clean transitions between TASK_STOPPED and TRACED")
-modified ptrace_attach to wake up the thread and enter ptrace_stop normally even
-when the thread starts out stopped.
-
-This makes ptrace_attach_sync_user_rbs completely unnecessary.  So just
-remove it.
-
-Cc: linux-ia64@vger.kernel.org
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- arch/ia64/include/asm/ptrace.h |  4 ---
- arch/ia64/kernel/ptrace.c      | 57 ----------------------------------
- kernel/ptrace.c                | 18 -----------
- 3 files changed, 79 deletions(-)
+ drivers/virtio/virtio_ring.c | 47 +++++++++++++++++++++++++-----------
+ 1 file changed, 33 insertions(+), 14 deletions(-)
 
-diff --git a/arch/ia64/include/asm/ptrace.h b/arch/ia64/include/asm/ptrace.h
-index a10a498eede1..402874489890 100644
---- a/arch/ia64/include/asm/ptrace.h
-+++ b/arch/ia64/include/asm/ptrace.h
-@@ -139,10 +139,6 @@ static inline long regs_return_value(struct pt_regs *regs)
-   #define arch_ptrace_stop_needed() \
- 	(!test_thread_flag(TIF_RESTORE_RSE))
- 
--  extern void ptrace_attach_sync_user_rbs (struct task_struct *);
--  #define arch_ptrace_attach(child) \
--	ptrace_attach_sync_user_rbs(child)
--
-   #define arch_has_single_step()  (1)
-   #define arch_has_block_step()   (1)
- 
-diff --git a/arch/ia64/kernel/ptrace.c b/arch/ia64/kernel/ptrace.c
-index a19acd9f5e1f..a45f529046c3 100644
---- a/arch/ia64/kernel/ptrace.c
-+++ b/arch/ia64/kernel/ptrace.c
-@@ -617,63 +617,6 @@ void ia64_sync_krbs(void)
- 	unw_init_running(do_sync_rbs, ia64_sync_kernel_rbs);
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 5b5976c5742e..80d446fa8d16 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -1904,6 +1904,35 @@ static int vring_alloc_state_extra_packed(u32 num,
+ 	return -ENOMEM;
  }
  
--/*
-- * After PTRACE_ATTACH, a thread's register backing store area in user
-- * space is assumed to contain correct data whenever the thread is
-- * stopped.  arch_ptrace_stop takes care of this on tracing stops.
-- * But if the child was already stopped for job control when we attach
-- * to it, then it might not ever get into ptrace_stop by the time we
-- * want to examine the user memory containing the RBS.
-- */
--void
--ptrace_attach_sync_user_rbs (struct task_struct *child)
--{
--	int stopped = 0;
--	struct unw_frame_info info;
--
--	/*
--	 * If the child is in TASK_STOPPED, we need to change that to
--	 * TASK_TRACED momentarily while we operate on it.  This ensures
--	 * that the child won't be woken up and return to user mode while
--	 * we are doing the sync.  (It can only be woken up for SIGKILL.)
--	 */
--
--	read_lock(&tasklist_lock);
--	if (child->sighand) {
--		spin_lock_irq(&child->sighand->siglock);
--		if (READ_ONCE(child->__state) == TASK_STOPPED &&
--		    !test_and_set_tsk_thread_flag(child, TIF_RESTORE_RSE)) {
--			set_notify_resume(child);
--
--			WRITE_ONCE(child->__state, TASK_TRACED);
--			stopped = 1;
--		}
--		spin_unlock_irq(&child->sighand->siglock);
--	}
--	read_unlock(&tasklist_lock);
--
--	if (!stopped)
--		return;
--
--	unw_init_from_blocked_task(&info, child);
--	do_sync_rbs(&info, ia64_sync_user_rbs);
--
--	/*
--	 * Now move the child back into TASK_STOPPED if it should be in a
--	 * job control stop, so that SIGCONT can be used to wake it up.
--	 */
--	read_lock(&tasklist_lock);
--	if (child->sighand) {
--		spin_lock_irq(&child->sighand->siglock);
--		if (READ_ONCE(child->__state) == TASK_TRACED &&
--		    (child->signal->flags & SIGNAL_STOP_STOPPED)) {
--			WRITE_ONCE(child->__state, TASK_STOPPED);
--		}
--		spin_unlock_irq(&child->sighand->siglock);
--	}
--	read_unlock(&tasklist_lock);
--}
--
- /*
-  * Write f32-f127 back to task->thread.fph if it has been modified.
-  */
-diff --git a/kernel/ptrace.c b/kernel/ptrace.c
-index 644eb7439d01..22041531adf6 100644
---- a/kernel/ptrace.c
-+++ b/kernel/ptrace.c
-@@ -1280,10 +1280,6 @@ int ptrace_request(struct task_struct *child, long request,
- 	return ret;
- }
++static void vring_virtqueue_attach_packed(struct vring_virtqueue *vq,
++					  u32 num,
++					  struct vring_packed_desc *ring,
++					  struct vring_packed_desc_event *driver,
++					  struct vring_packed_desc_event *device,
++					  dma_addr_t ring_dma_addr,
++					  dma_addr_t driver_event_dma_addr,
++					  dma_addr_t device_event_dma_addr,
++					  size_t ring_size_in_bytes,
++					  size_t event_size_in_bytes,
++					  struct vring_desc_state_packed *state,
++					  struct vring_desc_extra *extra)
++{
++	vq->packed.ring_dma_addr = ring_dma_addr;
++	vq->packed.driver_event_dma_addr = driver_event_dma_addr;
++	vq->packed.device_event_dma_addr = device_event_dma_addr;
++
++	vq->packed.ring_size_in_bytes = ring_size_in_bytes;
++	vq->packed.event_size_in_bytes = event_size_in_bytes;
++
++	vq->packed.vring.num = num;
++	vq->packed.vring.desc = ring;
++	vq->packed.vring.driver = driver;
++	vq->packed.vring.device = device;
++
++	vq->packed.desc_state = state;
++	vq->packed.desc_extra = extra;
++}
++
+ static struct virtqueue *vring_create_virtqueue_packed(
+ 	unsigned int index,
+ 	unsigned int num,
+@@ -1962,18 +1991,6 @@ static struct virtqueue *vring_create_virtqueue_packed(
+ 	if (virtio_has_feature(vdev, VIRTIO_F_ORDER_PLATFORM))
+ 		vq->weak_barriers = false;
  
--#ifndef arch_ptrace_attach
--#define arch_ptrace_attach(child)	do { } while (0)
--#endif
+-	vq->packed.ring_dma_addr = ring_dma_addr;
+-	vq->packed.driver_event_dma_addr = driver_event_dma_addr;
+-	vq->packed.device_event_dma_addr = device_event_dma_addr;
 -
- SYSCALL_DEFINE4(ptrace, long, request, long, pid, unsigned long, addr,
- 		unsigned long, data)
- {
-@@ -1292,8 +1288,6 @@ SYSCALL_DEFINE4(ptrace, long, request, long, pid, unsigned long, addr,
+-	vq->packed.ring_size_in_bytes = ring_size_in_bytes;
+-	vq->packed.event_size_in_bytes = event_size_in_bytes;
+-
+-	vq->packed.vring.num = num;
+-	vq->packed.vring.desc = ring;
+-	vq->packed.vring.driver = driver;
+-	vq->packed.vring.device = device;
+-
+ 	vq->packed.next_avail_idx = 0;
+ 	vq->packed.avail_wrap_counter = 1;
+ 	vq->packed.used_wrap_counter = 1;
+@@ -1984,8 +2001,10 @@ static struct virtqueue *vring_create_virtqueue_packed(
+ 	if (err)
+ 		goto err_state_extra;
  
- 	if (request == PTRACE_TRACEME) {
- 		ret = ptrace_traceme();
--		if (!ret)
--			arch_ptrace_attach(current);
- 		goto out;
- 	}
+-	vq->packed.desc_state = state;
+-	vq->packed.desc_extra = extra;
++	vring_virtqueue_attach_packed(vq, num, ring, driver, device,
++				      ring_dma_addr, driver_event_dma_addr,
++				      device_event_dma_addr, ring_size_in_bytes,
++				      event_size_in_bytes, state, extra);
  
-@@ -1305,12 +1299,6 @@ SYSCALL_DEFINE4(ptrace, long, request, long, pid, unsigned long, addr,
- 
- 	if (request == PTRACE_ATTACH || request == PTRACE_SEIZE) {
- 		ret = ptrace_attach(child, request, addr, data);
--		/*
--		 * Some architectures need to do book-keeping after
--		 * a ptrace attach.
--		 */
--		if (!ret)
--			arch_ptrace_attach(child);
- 		goto out_put_task_struct;
- 	}
- 
-@@ -1450,12 +1438,6 @@ COMPAT_SYSCALL_DEFINE4(ptrace, compat_long_t, request, compat_long_t, pid,
- 
- 	if (request == PTRACE_ATTACH || request == PTRACE_SEIZE) {
- 		ret = ptrace_attach(child, request, addr, data);
--		/*
--		 * Some architectures need to do book-keeping after
--		 * a ptrace attach.
--		 */
--		if (!ret)
--			arch_ptrace_attach(child);
- 		goto out_put_task_struct;
- 	}
- 
+ 	/* Put everything in free lists. */
+ 	vq->free_head = 0;
 -- 
-2.35.3
+2.31.0
 
 
 _______________________________________________
