@@ -1,21 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1neAn8-00C9tR-Bs
- for linux-um@lists.infradead.org; Tue, 12 Apr 2022 07:18:24 +0000
-Received: by mail-pl1-f197.google.com with SMTP id
- s18-20020a170902ea1200b001570031e832so6001055plg.6
- for <linux-um@lists.infradead.org>; Tue, 12 Apr 2022 00:18:19 -0700 (PDT)
-Message-ID: <bd6bec0d-00db-93ae-4d86-daa10f5d8e88@redhat.com>
-Date: Tue, 12 Apr 2022 15:18:04 +0800
-MIME-Version: 1.0
-Subject: Re: [PATCH v9 28/32] virtio_net: set the default max ring size by
+ id 1nbwbE-003eW4-O2
+ for linux-um@lists.infradead.org; Wed, 06 Apr 2022 03:44:54 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v9 28/32] virtio_net: set the default max ring size by
  find_vqs()
+Date: Wed,  6 Apr 2022 11:43:42 +0800
+Message-Id: <20220406034346.74409-29-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
 References: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
- <20220406034346.74409-29-xuanzhuo@linux.alibaba.com>
-From: Jason Wang <jasowang@redhat.com>
-In-Reply-To: <20220406034346.74409-29-xuanzhuo@linux.alibaba.com>
-Content-Language: en-US
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,79 +19,135 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, virtualization@lists.linux-foundation.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
+To: virtualization@lists.linux-foundation.org
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
 
-CuWcqCAyMDIyLzQvNiDkuIrljYgxMTo0MywgWHVhbiBaaHVvIOWGmemBkzoKPiBVc2UgdmlydGlv
-X2ZpbmRfdnFzX2N0eF9zaXplKCkgdG8gc3BlY2lmeSB0aGUgbWF4aW11bSByaW5nIHNpemUgb2Yg
-dHgsCj4gcnggYXQgdGhlIHNhbWUgdGltZS4KPgo+ICAgICAgICAgICAgICAgICAgICAgICAgICAg
-fCByeC90eCByaW5nIHNpemUKPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tCj4gc3BlZWQgPT0gVU5LTk9XTiBvciA8IDEwR3wgMTAyNAo+IHNwZWVkIDwgNDBHICAg
-ICAgICAgICAgICB8IDQwOTYKPiBzcGVlZCA+PSA0MEcgICAgICAgICAgICAgfCA4MTkyCj4KPiBD
-YWxsIHZpcnRuZXRfdXBkYXRlX3NldHRpbmdzKCkgb25jZSBiZWZvcmUgY2FsbGluZyBpbml0X3Zx
-cygpIHRvIHVwZGF0ZQo+IHNwZWVkLgo+Cj4gU2lnbmVkLW9mZi1ieTogWHVhbiBaaHVvIDx4dWFu
-emh1b0BsaW51eC5hbGliYWJhLmNvbT4KPiAtLS0KCgpBY2tlZC1ieTogSmFzb24gV2FuZyA8amFz
-b3dhbmdAcmVkaGF0LmNvbT4KCgo+ICAgZHJpdmVycy9uZXQvdmlydGlvX25ldC5jIHwgNDIgKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLQo+ICAgMSBmaWxlIGNoYW5nZWQs
-IDM4IGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pCj4KPiBkaWZmIC0tZ2l0IGEvZHJpdmVy
-cy9uZXQvdmlydGlvX25ldC5jIGIvZHJpdmVycy9uZXQvdmlydGlvX25ldC5jCj4gaW5kZXggYTgw
-MWVhNDA5MDhmLi5kYWQ0OTdhNDdiM2EgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9uZXQvdmlydGlv
-X25ldC5jCj4gKysrIGIvZHJpdmVycy9uZXQvdmlydGlvX25ldC5jCj4gQEAgLTI4NjEsNiArMjg2
-MSwyOSBAQCBzdGF0aWMgdW5zaWduZWQgaW50IG1lcmdlYWJsZV9taW5fYnVmX2xlbihzdHJ1Y3Qg
-dmlydG5ldF9pbmZvICp2aSwgc3RydWN0IHZpcnRxdQo+ICAgCQkgICAodW5zaWduZWQgaW50KUdP
-T0RfUEFDS0VUX0xFTik7Cj4gICB9Cj4gICAKPiArc3RhdGljIHZvaWQgdmlydG5ldF9jb25maWdf
-c2l6ZXMoc3RydWN0IHZpcnRuZXRfaW5mbyAqdmksIHUzMiAqc2l6ZXMpCj4gK3sKPiArCXUzMiBp
-LCByeF9zaXplLCB0eF9zaXplOwo+ICsKPiArCWlmICh2aS0+c3BlZWQgPT0gU1BFRURfVU5LTk9X
-TiB8fCB2aS0+c3BlZWQgPCBTUEVFRF8xMDAwMCkgewo+ICsJCXJ4X3NpemUgPSAxMDI0Owo+ICsJ
-CXR4X3NpemUgPSAxMDI0Owo+ICsKPiArCX0gZWxzZSBpZiAodmktPnNwZWVkIDwgU1BFRURfNDAw
-MDApIHsKPiArCQlyeF9zaXplID0gMTAyNCAqIDQ7Cj4gKwkJdHhfc2l6ZSA9IDEwMjQgKiA0Owo+
-ICsKPiArCX0gZWxzZSB7Cj4gKwkJcnhfc2l6ZSA9IDEwMjQgKiA4Owo+ICsJCXR4X3NpemUgPSAx
-MDI0ICogODsKPiArCX0KPiArCj4gKwlmb3IgKGkgPSAwOyBpIDwgdmktPm1heF9xdWV1ZV9wYWly
-czsgaSsrKSB7Cj4gKwkJc2l6ZXNbcnhxMnZxKGkpXSA9IHJ4X3NpemU7Cj4gKwkJc2l6ZXNbdHhx
-MnZxKGkpXSA9IHR4X3NpemU7Cj4gKwl9Cj4gK30KPiArCj4gICBzdGF0aWMgaW50IHZpcnRuZXRf
-ZmluZF92cXMoc3RydWN0IHZpcnRuZXRfaW5mbyAqdmkpCj4gICB7Cj4gICAJdnFfY2FsbGJhY2tf
-dCAqKmNhbGxiYWNrczsKPiBAQCAtMjg2OCw2ICsyODkxLDcgQEAgc3RhdGljIGludCB2aXJ0bmV0
-X2ZpbmRfdnFzKHN0cnVjdCB2aXJ0bmV0X2luZm8gKnZpKQo+ICAgCWludCByZXQgPSAtRU5PTUVN
-Owo+ICAgCWludCBpLCB0b3RhbF92cXM7Cj4gICAJY29uc3QgY2hhciAqKm5hbWVzOwo+ICsJdTMy
-ICpzaXplczsKPiAgIAlib29sICpjdHg7Cj4gICAKPiAgIAkvKiBXZSBleHBlY3QgMSBSWCB2aXJ0
-cXVldWUgZm9sbG93ZWQgYnkgMSBUWCB2aXJ0cXVldWUsIGZvbGxvd2VkIGJ5Cj4gQEAgLTI4OTUs
-MTAgKzI5MTksMTUgQEAgc3RhdGljIGludCB2aXJ0bmV0X2ZpbmRfdnFzKHN0cnVjdCB2aXJ0bmV0
-X2luZm8gKnZpKQo+ICAgCQljdHggPSBOVUxMOwo+ICAgCX0KPiAgIAo+ICsJc2l6ZXMgPSBrbWFs
-bG9jX2FycmF5KHRvdGFsX3Zxcywgc2l6ZW9mKCpzaXplcyksIEdGUF9LRVJORUwpOwo+ICsJaWYg
-KCFzaXplcykKPiArCQlnb3RvIGVycl9zaXplczsKPiArCj4gICAJLyogUGFyYW1ldGVycyBmb3Ig
-Y29udHJvbCB2aXJ0cXVldWUsIGlmIGFueSAqLwo+ICAgCWlmICh2aS0+aGFzX2N2cSkgewo+ICAg
-CQljYWxsYmFja3NbdG90YWxfdnFzIC0gMV0gPSBOVUxMOwo+ICAgCQluYW1lc1t0b3RhbF92cXMg
-LSAxXSA9ICJjb250cm9sIjsKPiArCQlzaXplc1t0b3RhbF92cXMgLSAxXSA9IDY0Owo+ICAgCX0K
-PiAgIAo+ICAgCS8qIEFsbG9jYXRlL2luaXRpYWxpemUgcGFyYW1ldGVycyBmb3Igc2VuZC9yZWNl
-aXZlIHZpcnRxdWV1ZXMgKi8KPiBAQCAtMjkxMyw4ICsyOTQyLDEwIEBAIHN0YXRpYyBpbnQgdmly
-dG5ldF9maW5kX3ZxcyhzdHJ1Y3QgdmlydG5ldF9pbmZvICp2aSkKPiAgIAkJCWN0eFtyeHEydnEo
-aSldID0gdHJ1ZTsKPiAgIAl9Cj4gICAKPiAtCXJldCA9IHZpcnRpb19maW5kX3Zxc19jdHgodmkt
-PnZkZXYsIHRvdGFsX3ZxcywgdnFzLCBjYWxsYmFja3MsCj4gLQkJCQkgIG5hbWVzLCBjdHgsIE5V
-TEwpOwo+ICsJdmlydG5ldF9jb25maWdfc2l6ZXModmksIHNpemVzKTsKPiArCj4gKwlyZXQgPSB2
-aXJ0aW9fZmluZF92cXNfY3R4X3NpemUodmktPnZkZXYsIHRvdGFsX3ZxcywgdnFzLCBjYWxsYmFj
-a3MsCj4gKwkJCQkgICAgICAgbmFtZXMsIHNpemVzLCBjdHgsIE5VTEwpOwo+ICAgCWlmIChyZXQp
-Cj4gICAJCWdvdG8gZXJyX2ZpbmQ7Cj4gICAKPiBAQCAtMjkzNCw2ICsyOTY1LDggQEAgc3RhdGlj
-IGludCB2aXJ0bmV0X2ZpbmRfdnFzKHN0cnVjdCB2aXJ0bmV0X2luZm8gKnZpKQo+ICAgCj4gICAK
-PiAgIGVycl9maW5kOgo+ICsJa2ZyZWUoc2l6ZXMpOwo+ICtlcnJfc2l6ZXM6Cj4gICAJa2ZyZWUo
-Y3R4KTsKPiAgIGVycl9jdHg6Cj4gICAJa2ZyZWUobmFtZXMpOwo+IEBAIC0zMjUyLDYgKzMyODUs
-OSBAQCBzdGF0aWMgaW50IHZpcnRuZXRfcHJvYmUoc3RydWN0IHZpcnRpb19kZXZpY2UgKnZkZXYp
-Cj4gICAJCXZpLT5jdXJyX3F1ZXVlX3BhaXJzID0gbnVtX29ubGluZV9jcHVzKCk7Cj4gICAJdmkt
-Pm1heF9xdWV1ZV9wYWlycyA9IG1heF9xdWV1ZV9wYWlyczsKPiAgIAo+ICsJdmlydG5ldF9pbml0
-X3NldHRpbmdzKGRldik7Cj4gKwl2aXJ0bmV0X3VwZGF0ZV9zZXR0aW5ncyh2aSk7Cj4gKwo+ICAg
-CS8qIEFsbG9jYXRlL2luaXRpYWxpemUgdGhlIHJ4L3R4IHF1ZXVlcywgYW5kIGludm9rZSBmaW5k
-X3ZxcyAqLwo+ICAgCWVyciA9IGluaXRfdnFzKHZpKTsKPiAgIAlpZiAoZXJyKQo+IEBAIC0zMjY0
-LDggKzMzMDAsNiBAQCBzdGF0aWMgaW50IHZpcnRuZXRfcHJvYmUoc3RydWN0IHZpcnRpb19kZXZp
-Y2UgKnZkZXYpCj4gICAJbmV0aWZfc2V0X3JlYWxfbnVtX3R4X3F1ZXVlcyhkZXYsIHZpLT5jdXJy
-X3F1ZXVlX3BhaXJzKTsKPiAgIAluZXRpZl9zZXRfcmVhbF9udW1fcnhfcXVldWVzKGRldiwgdmkt
-PmN1cnJfcXVldWVfcGFpcnMpOwo+ICAgCj4gLQl2aXJ0bmV0X2luaXRfc2V0dGluZ3MoZGV2KTsK
-PiAtCj4gICAJaWYgKHZpcnRpb19oYXNfZmVhdHVyZSh2ZGV2LCBWSVJUSU9fTkVUX0ZfU1RBTkRC
-WSkpIHsKPiAgIAkJdmktPmZhaWxvdmVyID0gbmV0X2ZhaWxvdmVyX2NyZWF0ZSh2aS0+ZGV2KTsK
-PiAgIAkJaWYgKElTX0VSUih2aS0+ZmFpbG92ZXIpKSB7CgoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVt
-QGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9saW51eC11bQo=
+Use virtio_find_vqs_ctx_size() to specify the maximum ring size of tx,
+rx at the same time.
+
+                         | rx/tx ring size
+-------------------------------------------
+speed == UNKNOWN or < 10G| 1024
+speed < 40G              | 4096
+speed >= 40G             | 8192
+
+Call virtnet_update_settings() once before calling init_vqs() to update
+speed.
+
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+---
+ drivers/net/virtio_net.c | 42 ++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 38 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index a801ea40908f..dad497a47b3a 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -2861,6 +2861,29 @@ static unsigned int mergeable_min_buf_len(struct virtnet_info *vi, struct virtqu
+ 		   (unsigned int)GOOD_PACKET_LEN);
+ }
+ 
++static void virtnet_config_sizes(struct virtnet_info *vi, u32 *sizes)
++{
++	u32 i, rx_size, tx_size;
++
++	if (vi->speed == SPEED_UNKNOWN || vi->speed < SPEED_10000) {
++		rx_size = 1024;
++		tx_size = 1024;
++
++	} else if (vi->speed < SPEED_40000) {
++		rx_size = 1024 * 4;
++		tx_size = 1024 * 4;
++
++	} else {
++		rx_size = 1024 * 8;
++		tx_size = 1024 * 8;
++	}
++
++	for (i = 0; i < vi->max_queue_pairs; i++) {
++		sizes[rxq2vq(i)] = rx_size;
++		sizes[txq2vq(i)] = tx_size;
++	}
++}
++
+ static int virtnet_find_vqs(struct virtnet_info *vi)
+ {
+ 	vq_callback_t **callbacks;
+@@ -2868,6 +2891,7 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
+ 	int ret = -ENOMEM;
+ 	int i, total_vqs;
+ 	const char **names;
++	u32 *sizes;
+ 	bool *ctx;
+ 
+ 	/* We expect 1 RX virtqueue followed by 1 TX virtqueue, followed by
+@@ -2895,10 +2919,15 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
+ 		ctx = NULL;
+ 	}
+ 
++	sizes = kmalloc_array(total_vqs, sizeof(*sizes), GFP_KERNEL);
++	if (!sizes)
++		goto err_sizes;
++
+ 	/* Parameters for control virtqueue, if any */
+ 	if (vi->has_cvq) {
+ 		callbacks[total_vqs - 1] = NULL;
+ 		names[total_vqs - 1] = "control";
++		sizes[total_vqs - 1] = 64;
+ 	}
+ 
+ 	/* Allocate/initialize parameters for send/receive virtqueues */
+@@ -2913,8 +2942,10 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
+ 			ctx[rxq2vq(i)] = true;
+ 	}
+ 
+-	ret = virtio_find_vqs_ctx(vi->vdev, total_vqs, vqs, callbacks,
+-				  names, ctx, NULL);
++	virtnet_config_sizes(vi, sizes);
++
++	ret = virtio_find_vqs_ctx_size(vi->vdev, total_vqs, vqs, callbacks,
++				       names, sizes, ctx, NULL);
+ 	if (ret)
+ 		goto err_find;
+ 
+@@ -2934,6 +2965,8 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
+ 
+ 
+ err_find:
++	kfree(sizes);
++err_sizes:
+ 	kfree(ctx);
+ err_ctx:
+ 	kfree(names);
+@@ -3252,6 +3285,9 @@ static int virtnet_probe(struct virtio_device *vdev)
+ 		vi->curr_queue_pairs = num_online_cpus();
+ 	vi->max_queue_pairs = max_queue_pairs;
+ 
++	virtnet_init_settings(dev);
++	virtnet_update_settings(vi);
++
+ 	/* Allocate/initialize the rx/tx queues, and invoke find_vqs */
+ 	err = init_vqs(vi);
+ 	if (err)
+@@ -3264,8 +3300,6 @@ static int virtnet_probe(struct virtio_device *vdev)
+ 	netif_set_real_num_tx_queues(dev, vi->curr_queue_pairs);
+ 	netif_set_real_num_rx_queues(dev, vi->curr_queue_pairs);
+ 
+-	virtnet_init_settings(dev);
+-
+ 	if (virtio_has_feature(vdev, VIRTIO_NET_F_STANDBY)) {
+ 		vi->failover = net_failover_create(vi->dev);
+ 		if (IS_ERR(vi->failover)) {
+-- 
+2.31.0
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
