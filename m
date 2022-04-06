@@ -1,20 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ne7QV-00BS0q-7C
- for linux-um@lists.infradead.org; Tue, 12 Apr 2022 03:42:48 +0000
-Received: by mail-pg1-f198.google.com with SMTP id
- u3-20020a632343000000b0039cac94652aso9348125pgm.11
- for <linux-um@lists.infradead.org>; Mon, 11 Apr 2022 20:42:43 -0700 (PDT)
-Message-ID: <f91435e4-6559-c0c9-2b37-92084c88dee2@redhat.com>
-Date: Tue, 12 Apr 2022 11:42:25 +0800
-MIME-Version: 1.0
-Subject: Re: [PATCH v9 09/32] virtio_ring: split: extract the logic of vq init
+ id 1nbwac-003dsC-Mz
+ for linux-um@lists.infradead.org; Wed, 06 Apr 2022 03:44:16 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v9 09/32] virtio_ring: split: extract the logic of vq init
+Date: Wed,  6 Apr 2022 11:43:23 +0800
+Message-Id: <20220406034346.74409-10-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
 References: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
- <20220406034346.74409-10-xuanzhuo@linux.alibaba.com>
-From: Jason Wang <jasowang@redhat.com>
-In-Reply-To: <20220406034346.74409-10-xuanzhuo@linux.alibaba.com>
-Content-Language: en-US
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -23,85 +18,132 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, virtualization@lists.linux-foundation.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
+To: virtualization@lists.linux-foundation.org
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
 
-CuWcqCAyMDIyLzQvNiDkuIrljYgxMTo0MywgWHVhbiBaaHVvIOWGmemBkzoKPiBTZXBhcmF0ZSB0
-aGUgbG9naWMgb2YgaW5pdGlhbGl6aW5nIHZxLCBhbmQgc3Vic2VxdWVudCBwYXRjaGVzIHdpbGwg
-Y2FsbAo+IGl0IHNlcGFyYXRlbHkuCj4KPiBUaGUgZmVhdHVyZSBvZiB0aGlzIHBhcnQgaXMgdGhh
-dCBpdCBkb2VzIG5vdCBkZXBlbmQgb24gdGhlIGluZm9ybWF0aW9uCj4gcGFzc2VkIGJ5IHRoZSB1
-cHBlciBsYXllciBhbmQgY2FuIGJlIGNhbGxlZCByZXBlYXRlZGx5Lgo+Cj4gU2lnbmVkLW9mZi1i
-eTogWHVhbiBaaHVvIDx4dWFuemh1b0BsaW51eC5hbGliYWJhLmNvbT4KPiAtLS0KPiAgIGRyaXZl
-cnMvdmlydGlvL3ZpcnRpb19yaW5nLmMgfCA2OCArKysrKysrKysrKysrKysrKysrKy0tLS0tLS0t
-LS0tLS0tLS0KPiAgIDEgZmlsZSBjaGFuZ2VkLCAzOCBpbnNlcnRpb25zKCspLCAzMCBkZWxldGlv
-bnMoLSkKPgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3ZpcnRpby92aXJ0aW9fcmluZy5jIGIvZHJp
-dmVycy92aXJ0aW8vdmlydGlvX3JpbmcuYwo+IGluZGV4IDA4M2YyOTkyYmEwZC4uODc0Zjg3ODA4
-N2EzIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvdmlydGlvL3ZpcnRpb19yaW5nLmMKPiArKysgYi9k
-cml2ZXJzL3ZpcnRpby92aXJ0aW9fcmluZy5jCj4gQEAgLTkxNiw2ICs5MTYsNDMgQEAgc3RhdGlj
-IHZvaWQgKnZpcnRxdWV1ZV9kZXRhY2hfdW51c2VkX2J1Zl9zcGxpdChzdHJ1Y3QgdmlydHF1ZXVl
-ICpfdnEpCj4gICAJcmV0dXJuIE5VTEw7Cj4gICB9Cj4gICAKPiArc3RhdGljIHZvaWQgdnJpbmdf
-dmlydHF1ZXVlX2luaXRfc3BsaXQoc3RydWN0IHZyaW5nX3ZpcnRxdWV1ZSAqdnEsCj4gKwkJCQkg
-ICAgICAgc3RydWN0IHZpcnRpb19kZXZpY2UgKnZkZXYsCj4gKwkJCQkgICAgICAgYm9vbCBvd25f
-cmluZykKPiArewo+ICsJdnEtPnBhY2tlZF9yaW5nID0gZmFsc2U7Cj4gKwl2cS0+dnEubnVtX2Zy
-ZWUgPSB2cS0+c3BsaXQudnJpbmcubnVtOwo+ICsJdnEtPndlX293bl9yaW5nID0gb3duX3Jpbmc7
-Cj4gKwl2cS0+YnJva2VuID0gZmFsc2U7Cj4gKwl2cS0+bGFzdF91c2VkX2lkeCA9IDA7Cj4gKwl2
-cS0+ZXZlbnRfdHJpZ2dlcmVkID0gZmFsc2U7Cj4gKwl2cS0+bnVtX2FkZGVkID0gMDsKPiArCXZx
-LT51c2VfZG1hX2FwaSA9IHZyaW5nX3VzZV9kbWFfYXBpKHZkZXYpOwo+ICsjaWZkZWYgREVCVUcK
-PiArCXZxLT5pbl91c2UgPSBmYWxzZTsKPiArCXZxLT5sYXN0X2FkZF90aW1lX3ZhbGlkID0gZmFs
-c2U7Cj4gKyNlbmRpZgo+ICsKPiArCXZxLT5ldmVudCA9IHZpcnRpb19oYXNfZmVhdHVyZSh2ZGV2
-LCBWSVJUSU9fUklOR19GX0VWRU5UX0lEWCk7Cj4gKwo+ICsJaWYgKHZpcnRpb19oYXNfZmVhdHVy
-ZSh2ZGV2LCBWSVJUSU9fRl9PUkRFUl9QTEFURk9STSkpCj4gKwkJdnEtPndlYWtfYmFycmllcnMg
-PSBmYWxzZTsKPiArCj4gKwl2cS0+c3BsaXQuYXZhaWxfZmxhZ3Nfc2hhZG93ID0gMDsKPiArCXZx
-LT5zcGxpdC5hdmFpbF9pZHhfc2hhZG93ID0gMDsKPiArCj4gKwkvKiBObyBjYWxsYmFjaz8gIFRl
-bGwgb3RoZXIgc2lkZSBub3QgdG8gYm90aGVyIHVzLiAqLwo+ICsJaWYgKCF2cS0+dnEuY2FsbGJh
-Y2spIHsKPiArCQl2cS0+c3BsaXQuYXZhaWxfZmxhZ3Nfc2hhZG93IHw9IFZSSU5HX0FWQUlMX0Zf
-Tk9fSU5URVJSVVBUOwo+ICsJCWlmICghdnEtPmV2ZW50KQo+ICsJCQl2cS0+c3BsaXQudnJpbmcu
-YXZhaWwtPmZsYWdzID0gY3B1X3RvX3ZpcnRpbzE2KHZkZXYsCj4gKwkJCQkJdnEtPnNwbGl0LmF2
-YWlsX2ZsYWdzX3NoYWRvdyk7Cj4gKwl9Cj4gKwo+ICsJLyogUHV0IGV2ZXJ5dGhpbmcgaW4gZnJl
-ZSBsaXN0cy4gKi8KPiArCXZxLT5mcmVlX2hlYWQgPSAwOwoKCkl0J3Mgbm90IGNsZWFyIHdoYXQg
-a2luZCBvZiBpbml0aWFsaXphdGlvbiB0aGF0IHdlIHdhbnQgdG8gZG8gaGVyZS4gRS5nIAppdCBt
-aXhlcyBzcGxpdCBzcGVjaWZpYyBzZXR1cHMgd2l0aCBzb21lIGdlbmVyYWwgc2V0dXBzIHdoaWNo
-IGlzIGtpbmQgb2YgCmR1cGxpY2F0aW9uIG9mIHZyaW5nX3ZpcnRxdWV1ZV9pbml0X3BhY2tlZCgp
-LgoKSSB3b25kZXIgaWYgaXQncyBiZXR0ZXIgdG8gb25seSBkbyBzcGxpdCBzcGVjaWZpYyBzZXR1
-cHMgaGVyZSBhbmQgaGF2ZSBhIApjb21tb24gaGVscGVyIHRvIGRvIHRoZSBzZXR1cCB0aGF0IGlz
-IGlycmVsZXZhbnQgdG8gcmluZyBsYXlvdXQuCgpUaGFua3MKCgo+ICt9Cj4gKwo+ICAgc3RhdGlj
-IHZvaWQgdnJpbmdfdmlydHF1ZXVlX2F0dGFjaF9zcGxpdChzdHJ1Y3QgdnJpbmdfdmlydHF1ZXVl
-ICp2cSwKPiAgIAkJCQkJIHN0cnVjdCB2cmluZyB2cmluZywKPiAgIAkJCQkJIHN0cnVjdCB2cmlu
-Z19kZXNjX3N0YXRlX3NwbGl0ICpkZXNjX3N0YXRlLAo+IEBAIC0yMjQ5LDQyICsyMjg2LDE1IEBA
-IHN0cnVjdCB2aXJ0cXVldWUgKl9fdnJpbmdfbmV3X3ZpcnRxdWV1ZSh1bnNpZ25lZCBpbnQgaW5k
-ZXgsCj4gICAJaWYgKCF2cSkKPiAgIAkJcmV0dXJuIE5VTEw7Cj4gICAKPiAtCXZxLT5wYWNrZWRf
-cmluZyA9IGZhbHNlOwo+ICAgCXZxLT52cS5jYWxsYmFjayA9IGNhbGxiYWNrOwo+ICAgCXZxLT52
-cS52ZGV2ID0gdmRldjsKPiAgIAl2cS0+dnEubmFtZSA9IG5hbWU7Cj4gLQl2cS0+dnEubnVtX2Zy
-ZWUgPSB2cmluZy5udW07Cj4gICAJdnEtPnZxLmluZGV4ID0gaW5kZXg7Cj4gLQl2cS0+d2Vfb3du
-X3JpbmcgPSBmYWxzZTsKPiAgIAl2cS0+bm90aWZ5ID0gbm90aWZ5Owo+ICAgCXZxLT53ZWFrX2Jh
-cnJpZXJzID0gd2Vha19iYXJyaWVyczsKPiAtCXZxLT5icm9rZW4gPSBmYWxzZTsKPiAtCXZxLT5s
-YXN0X3VzZWRfaWR4ID0gMDsKPiAtCXZxLT5ldmVudF90cmlnZ2VyZWQgPSBmYWxzZTsKPiAtCXZx
-LT5udW1fYWRkZWQgPSAwOwo+IC0JdnEtPnVzZV9kbWFfYXBpID0gdnJpbmdfdXNlX2RtYV9hcGko
-dmRldik7Cj4gLSNpZmRlZiBERUJVRwo+IC0JdnEtPmluX3VzZSA9IGZhbHNlOwo+IC0JdnEtPmxh
-c3RfYWRkX3RpbWVfdmFsaWQgPSBmYWxzZTsKPiAtI2VuZGlmCj4gICAKPiAgIAl2cS0+aW5kaXJl
-Y3QgPSB2aXJ0aW9faGFzX2ZlYXR1cmUodmRldiwgVklSVElPX1JJTkdfRl9JTkRJUkVDVF9ERVND
-KSAmJgo+ICAgCQkhY29udGV4dDsKPiAtCXZxLT5ldmVudCA9IHZpcnRpb19oYXNfZmVhdHVyZSh2
-ZGV2LCBWSVJUSU9fUklOR19GX0VWRU5UX0lEWCk7Cj4gLQo+IC0JaWYgKHZpcnRpb19oYXNfZmVh
-dHVyZSh2ZGV2LCBWSVJUSU9fRl9PUkRFUl9QTEFURk9STSkpCj4gLQkJdnEtPndlYWtfYmFycmll
-cnMgPSBmYWxzZTsKPiAtCj4gLQl2cS0+c3BsaXQuYXZhaWxfZmxhZ3Nfc2hhZG93ID0gMDsKPiAt
-CXZxLT5zcGxpdC5hdmFpbF9pZHhfc2hhZG93ID0gMDsKPiAtCj4gLQkvKiBObyBjYWxsYmFjaz8g
-IFRlbGwgb3RoZXIgc2lkZSBub3QgdG8gYm90aGVyIHVzLiAqLwo+IC0JaWYgKCFjYWxsYmFjaykg
-ewo+IC0JCXZxLT5zcGxpdC5hdmFpbF9mbGFnc19zaGFkb3cgfD0gVlJJTkdfQVZBSUxfRl9OT19J
-TlRFUlJVUFQ7Cj4gLQkJaWYgKCF2cS0+ZXZlbnQpCj4gLQkJCXZxLT5zcGxpdC52cmluZy5hdmFp
-bC0+ZmxhZ3MgPSBjcHVfdG9fdmlydGlvMTYodmRldiwKPiAtCQkJCQl2cS0+c3BsaXQuYXZhaWxf
-ZmxhZ3Nfc2hhZG93KTsKPiAtCX0KPiAgIAo+ICAgCWVyciA9IHZyaW5nX2FsbG9jX3N0YXRlX2V4
-dHJhX3NwbGl0KHZyaW5nLm51bSwgJnN0YXRlLCAmZXh0cmEpOwo+ICAgCWlmIChlcnIpIHsKPiBA
-QCAtMjI5Myw5ICsyMzAzLDcgQEAgc3RydWN0IHZpcnRxdWV1ZSAqX192cmluZ19uZXdfdmlydHF1
-ZXVlKHVuc2lnbmVkIGludCBpbmRleCwKPiAgIAl9Cj4gICAKPiAgIAl2cmluZ192aXJ0cXVldWVf
-YXR0YWNoX3NwbGl0KHZxLCB2cmluZywgc3RhdGUsIGV4dHJhKTsKPiAtCj4gLQkvKiBQdXQgZXZl
-cnl0aGluZyBpbiBmcmVlIGxpc3RzLiAqLwo+IC0JdnEtPmZyZWVfaGVhZCA9IDA7Cj4gKwl2cmlu
-Z192aXJ0cXVldWVfaW5pdF9zcGxpdCh2cSwgdmRldiwgZmFsc2UpOwo+ICAgCj4gICAJc3Bpbl9s
-b2NrKCZ2ZGV2LT52cXNfbGlzdF9sb2NrKTsKPiAgIAlsaXN0X2FkZF90YWlsKCZ2cS0+dnEubGlz
-dCwgJnZkZXYtPnZxcyk7CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5v
-cmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
+Separate the logic of initializing vq, and subsequent patches will call
+it separately.
+
+The feature of this part is that it does not depend on the information
+passed by the upper layer and can be called repeatedly.
+
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+---
+ drivers/virtio/virtio_ring.c | 68 ++++++++++++++++++++----------------
+ 1 file changed, 38 insertions(+), 30 deletions(-)
+
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 083f2992ba0d..874f878087a3 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -916,6 +916,43 @@ static void *virtqueue_detach_unused_buf_split(struct virtqueue *_vq)
+ 	return NULL;
+ }
+ 
++static void vring_virtqueue_init_split(struct vring_virtqueue *vq,
++				       struct virtio_device *vdev,
++				       bool own_ring)
++{
++	vq->packed_ring = false;
++	vq->vq.num_free = vq->split.vring.num;
++	vq->we_own_ring = own_ring;
++	vq->broken = false;
++	vq->last_used_idx = 0;
++	vq->event_triggered = false;
++	vq->num_added = 0;
++	vq->use_dma_api = vring_use_dma_api(vdev);
++#ifdef DEBUG
++	vq->in_use = false;
++	vq->last_add_time_valid = false;
++#endif
++
++	vq->event = virtio_has_feature(vdev, VIRTIO_RING_F_EVENT_IDX);
++
++	if (virtio_has_feature(vdev, VIRTIO_F_ORDER_PLATFORM))
++		vq->weak_barriers = false;
++
++	vq->split.avail_flags_shadow = 0;
++	vq->split.avail_idx_shadow = 0;
++
++	/* No callback?  Tell other side not to bother us. */
++	if (!vq->vq.callback) {
++		vq->split.avail_flags_shadow |= VRING_AVAIL_F_NO_INTERRUPT;
++		if (!vq->event)
++			vq->split.vring.avail->flags = cpu_to_virtio16(vdev,
++					vq->split.avail_flags_shadow);
++	}
++
++	/* Put everything in free lists. */
++	vq->free_head = 0;
++}
++
+ static void vring_virtqueue_attach_split(struct vring_virtqueue *vq,
+ 					 struct vring vring,
+ 					 struct vring_desc_state_split *desc_state,
+@@ -2249,42 +2286,15 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
+ 	if (!vq)
+ 		return NULL;
+ 
+-	vq->packed_ring = false;
+ 	vq->vq.callback = callback;
+ 	vq->vq.vdev = vdev;
+ 	vq->vq.name = name;
+-	vq->vq.num_free = vring.num;
+ 	vq->vq.index = index;
+-	vq->we_own_ring = false;
+ 	vq->notify = notify;
+ 	vq->weak_barriers = weak_barriers;
+-	vq->broken = false;
+-	vq->last_used_idx = 0;
+-	vq->event_triggered = false;
+-	vq->num_added = 0;
+-	vq->use_dma_api = vring_use_dma_api(vdev);
+-#ifdef DEBUG
+-	vq->in_use = false;
+-	vq->last_add_time_valid = false;
+-#endif
+ 
+ 	vq->indirect = virtio_has_feature(vdev, VIRTIO_RING_F_INDIRECT_DESC) &&
+ 		!context;
+-	vq->event = virtio_has_feature(vdev, VIRTIO_RING_F_EVENT_IDX);
+-
+-	if (virtio_has_feature(vdev, VIRTIO_F_ORDER_PLATFORM))
+-		vq->weak_barriers = false;
+-
+-	vq->split.avail_flags_shadow = 0;
+-	vq->split.avail_idx_shadow = 0;
+-
+-	/* No callback?  Tell other side not to bother us. */
+-	if (!callback) {
+-		vq->split.avail_flags_shadow |= VRING_AVAIL_F_NO_INTERRUPT;
+-		if (!vq->event)
+-			vq->split.vring.avail->flags = cpu_to_virtio16(vdev,
+-					vq->split.avail_flags_shadow);
+-	}
+ 
+ 	err = vring_alloc_state_extra_split(vring.num, &state, &extra);
+ 	if (err) {
+@@ -2293,9 +2303,7 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
+ 	}
+ 
+ 	vring_virtqueue_attach_split(vq, vring, state, extra);
+-
+-	/* Put everything in free lists. */
+-	vq->free_head = 0;
++	vring_virtqueue_init_split(vq, vdev, false);
+ 
+ 	spin_lock(&vdev->vqs_list_lock);
+ 	list_add_tail(&vq->vq.list, &vdev->vqs);
+-- 
+2.31.0
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
