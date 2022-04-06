@@ -1,13 +1,11 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Subject: Re: [Ocfs2-devel] [PATCH 21/27] block: move {bdev,
+From: Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 21/27] block: move {bdev,
  queue_limit}_discard_alignment out of line
-From: "Martin K. Petersen" <martin.petersen@oracle.com>
-Message-ID: <yq1k0c1h8w3.fsf@ca-mkp.ca.oracle.com>
+Date: Wed,  6 Apr 2022 08:05:10 +0200
+Message-Id: <20220406060516.409838-22-hch@lst.de>
+In-Reply-To: <20220406060516.409838-1-hch@lst.de>
 References: <20220406060516.409838-1-hch@lst.de>
- <20220406060516.409838-22-hch@lst.de>
-Date: Wed, 06 Apr 2022 23:27:40 -0400
-In-Reply-To: <20220406060516.409838-22-hch@lst.de> (Christoph Hellwig via
- Ocfs2-devel's message of "Wed, 6 Apr 2022 08:05:10 +0200")
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -21,23 +19,116 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Christoph Hellwig via Ocfs2-devel <ocfs2-devel@oss.oracle.com>
-Cc: Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>, jfs-discussion@lists.sourceforge.net, linux-nvme@lists.infradead.org, virtualization@lists.linux-foundation.org, linux-mm@kvack.org, dm-devel@redhat.com, target-devel@vger.kernel.org, linux-mtd@lists.infradead.org, drbd-dev@lists.linbit.com, linux-s390@vger.kernel.org, linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org, cluster-devel@redhat.com, xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org, linux-um@lists.infradead.org, nbd@other.debian.org, linux-block@vger.kernel.org, linux-bcache@vger.kernel.org, ceph-devel@vger.kernel.org, linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, ntfs3@lists.linux.dev, linux-btrfs@vger.kernel.org
+To: Jens Axboe <axboe@kernel.dk>
+Cc: dm-devel@redhat.com, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-um@lists.infradead.org, linux-block@vger.kernel.org, drbd-dev@lists.linbit.com, nbd@other.debian.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev, ocfs2-devel@oss.oracle.com, linux-mm@kvack.org
 
+No need to inline these fairly larger helpers.  Also fix the return value
+to be unsigned, just like the field in struct queue_limits.
 
-Christoph,
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ block/blk-settings.c   | 35 +++++++++++++++++++++++++++++++++++
+ include/linux/blkdev.h | 34 +---------------------------------
+ 2 files changed, 36 insertions(+), 33 deletions(-)
 
-> No need to inline these fairly larger helpers.  Also fix the return
-> value to be unsigned, just like the field in struct queue_limits.
-
-I believe the original reason for the signed int here was to be able to
-express -1 for sysfs. I am not sure why I didn't just use the misaligned
-flag.
-
-Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
-
+diff --git a/block/blk-settings.c b/block/blk-settings.c
+index 94410a13c0dee..fd83d674afd0a 100644
+--- a/block/blk-settings.c
++++ b/block/blk-settings.c
+@@ -478,6 +478,30 @@ static int queue_limit_alignment_offset(struct queue_limits *lim,
+ 	return (granularity + lim->alignment_offset - alignment) % granularity;
+ }
+ 
++static unsigned int queue_limit_discard_alignment(struct queue_limits *lim,
++		sector_t sector)
++{
++	unsigned int alignment, granularity, offset;
++
++	if (!lim->max_discard_sectors)
++		return 0;
++
++	/* Why are these in bytes, not sectors? */
++	alignment = lim->discard_alignment >> SECTOR_SHIFT;
++	granularity = lim->discard_granularity >> SECTOR_SHIFT;
++	if (!granularity)
++		return 0;
++
++	/* Offset of the partition start in 'granularity' sectors */
++	offset = sector_div(sector, granularity);
++
++	/* And why do we do this modulus *again* in blkdev_issue_discard()? */
++	offset = (granularity + alignment - offset) % granularity;
++
++	/* Turn it back into bytes, gaah */
++	return offset << SECTOR_SHIFT;
++}
++
+ static unsigned int blk_round_down_sectors(unsigned int sectors, unsigned int lbs)
+ {
+ 	sectors = round_down(sectors, lbs >> SECTOR_SHIFT);
+@@ -924,3 +948,14 @@ int bdev_alignment_offset(struct block_device *bdev)
+ 	return q->limits.alignment_offset;
+ }
+ EXPORT_SYMBOL_GPL(bdev_alignment_offset);
++
++unsigned int bdev_discard_alignment(struct block_device *bdev)
++{
++	struct request_queue *q = bdev_get_queue(bdev);
++
++	if (bdev_is_partition(bdev))
++		return queue_limit_discard_alignment(&q->limits,
++				bdev->bd_start_sect);
++	return q->limits.discard_alignment;
++}
++EXPORT_SYMBOL_GPL(bdev_discard_alignment);
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 5a9b7aeda010b..34b1cfd067421 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -1252,39 +1252,7 @@ bdev_zone_write_granularity(struct block_device *bdev)
+ }
+ 
+ int bdev_alignment_offset(struct block_device *bdev);
+-
+-static inline int queue_limit_discard_alignment(struct queue_limits *lim, sector_t sector)
+-{
+-	unsigned int alignment, granularity, offset;
+-
+-	if (!lim->max_discard_sectors)
+-		return 0;
+-
+-	/* Why are these in bytes, not sectors? */
+-	alignment = lim->discard_alignment >> SECTOR_SHIFT;
+-	granularity = lim->discard_granularity >> SECTOR_SHIFT;
+-	if (!granularity)
+-		return 0;
+-
+-	/* Offset of the partition start in 'granularity' sectors */
+-	offset = sector_div(sector, granularity);
+-
+-	/* And why do we do this modulus *again* in blkdev_issue_discard()? */
+-	offset = (granularity + alignment - offset) % granularity;
+-
+-	/* Turn it back into bytes, gaah */
+-	return offset << SECTOR_SHIFT;
+-}
+-
+-static inline int bdev_discard_alignment(struct block_device *bdev)
+-{
+-	struct request_queue *q = bdev_get_queue(bdev);
+-
+-	if (bdev_is_partition(bdev))
+-		return queue_limit_discard_alignment(&q->limits,
+-				bdev->bd_start_sect);
+-	return q->limits.discard_alignment;
+-}
++unsigned int bdev_discard_alignment(struct block_device *bdev);
+ 
+ static inline unsigned int bdev_write_zeroes_sectors(struct block_device *bdev)
+ {
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+2.30.2
+
 
 _______________________________________________
 linux-um mailing list
