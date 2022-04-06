@@ -1,12 +1,10 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Subject: Re: [Ocfs2-devel] [PATCH 19/27] block: remove queue_discard_alignment
-From: "Martin K. Petersen" <martin.petersen@oracle.com>
-Message-ID: <yq1zgkxh93c.fsf@ca-mkp.ca.oracle.com>
+From: Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 19/27] block: remove queue_discard_alignment
+Date: Wed,  6 Apr 2022 08:05:08 +0200
+Message-Id: <20220406060516.409838-20-hch@lst.de>
+In-Reply-To: <20220406060516.409838-1-hch@lst.de>
 References: <20220406060516.409838-1-hch@lst.de>
- <20220406060516.409838-20-hch@lst.de>
-Date: Wed, 06 Apr 2022 23:21:43 -0400
-In-Reply-To: <20220406060516.409838-20-hch@lst.de> (Christoph Hellwig via
- Ocfs2-devel's message of "Wed, 6 Apr 2022 08:05:08 +0200")
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -20,20 +18,54 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Christoph Hellwig via Ocfs2-devel <ocfs2-devel@oss.oracle.com>
-Cc: Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>, jfs-discussion@lists.sourceforge.net, linux-nvme@lists.infradead.org, virtualization@lists.linux-foundation.org, linux-mm@kvack.org, dm-devel@redhat.com, target-devel@vger.kernel.org, linux-mtd@lists.infradead.org, drbd-dev@lists.linbit.com, linux-s390@vger.kernel.org, linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org, cluster-devel@redhat.com, xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org, linux-um@lists.infradead.org, nbd@other.debian.org, linux-block@vger.kernel.org, linux-bcache@vger.kernel.org, ceph-devel@vger.kernel.org, linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, ntfs3@lists.linux.dev, linux-btrfs@vger.kernel.org
+To: Jens Axboe <axboe@kernel.dk>
+Cc: dm-devel@redhat.com, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-um@lists.infradead.org, linux-block@vger.kernel.org, drbd-dev@lists.linbit.com, nbd@other.debian.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev, ocfs2-devel@oss.oracle.com, linux-mm@kvack.org
 
+Just use bdev_alignment_offset in disk_discard_alignment_show instead.
+That helpers is the same except for an always false branch that doesn't
+matter in this slow path.
 
-Christoph,
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ block/genhd.c          | 2 +-
+ include/linux/blkdev.h | 8 --------
+ 2 files changed, 1 insertion(+), 9 deletions(-)
 
-> Just use bdev_alignment_offset in disk_discard_alignment_show instead.
-> That helpers is the same except for an always false branch that
-> doesn't matter in this slow path.
-
-Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
-
+diff --git a/block/genhd.c b/block/genhd.c
+index 712031ce19070..36532b9318419 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -1019,7 +1019,7 @@ static ssize_t disk_discard_alignment_show(struct device *dev,
+ {
+ 	struct gendisk *disk = dev_to_disk(dev);
+ 
+-	return sprintf(buf, "%d\n", queue_discard_alignment(disk->queue));
++	return sprintf(buf, "%d\n", bdev_alignment_offset(disk->part0));
+ }
+ 
+ static ssize_t diskseq_show(struct device *dev,
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 0a1795ac26275..5a9b7aeda010b 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -1253,14 +1253,6 @@ bdev_zone_write_granularity(struct block_device *bdev)
+ 
+ int bdev_alignment_offset(struct block_device *bdev);
+ 
+-static inline int queue_discard_alignment(const struct request_queue *q)
+-{
+-	if (q->limits.discard_misaligned)
+-		return -1;
+-
+-	return q->limits.discard_alignment;
+-}
+-
+ static inline int queue_limit_discard_alignment(struct queue_limits *lim, sector_t sector)
+ {
+ 	unsigned int alignment, granularity, offset;
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+2.30.2
+
 
 _______________________________________________
 linux-um mailing list
