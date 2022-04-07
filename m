@@ -1,15 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nbwaQ-003dhy-E8
- for linux-um@lists.infradead.org; Wed, 06 Apr 2022 03:44:03 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v9 04/32] virtio_ring: remove the arg vq of
- vring_alloc_desc_extra()
-Date: Wed,  6 Apr 2022 11:43:18 +0800
-Message-Id: <20220406034346.74409-5-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
-References: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [dm-devel] [PATCH 14/27] block: add a
+ bdev_max_zone_append_sectors helper
+From: "Martin K. Petersen" <martin.petersen@oracle.com>
+Message-ID: <yq1a6cxk2io.fsf@ca-mkp.ca.oracle.com>
+References: <20220406060516.409838-1-hch@lst.de>
+ <20220406060516.409838-15-hch@lst.de>
+Date: Wed, 06 Apr 2022 23:15:21 -0400
+In-Reply-To: <20220406060516.409838-15-hch@lst.de> (Christoph Hellwig's
+ message of "Wed, 6 Apr 2022 08:05:03 +0200")
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -23,55 +21,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
+To: Christoph Hellwig <hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>, jfs-discussion@lists.sourceforge.net, linux-nvme@lists.infradead.org, virtualization@lists.linux-foundation.org, linux-mm@kvack.org, dm-devel@redhat.com, target-devel@vger.kernel.org, linux-mtd@lists.infradead.org, drbd-dev@lists.linbit.com, linux-s390@vger.kernel.org, linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org, cluster-devel@redhat.com, xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org, linux-um@lists.infradead.org, nbd@other.debian.org, linux-block@vger.kernel.org, linux-bcache@vger.kernel.org, ceph-devel@vger.kernel.org, linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org, ocfs2-devel@oss.oracle.com, linux-fsdevel@vger.kernel.org, ntfs3@lists.linux.dev, linux-btrfs@vger.kernel.org
 
-The parameter vq of vring_alloc_desc_extra() is useless. This patch
-removes this parameter.
 
-Subsequent patches will call this function to avoid passing useless
-arguments.
+Christoph,
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- drivers/virtio/virtio_ring.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+> Add a helper to check the max supported sectors for zone append based
+> on the block_device instead of having to poke into the block layer
+> internal request_queue.
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index f1807f6b06a5..cb6010750a94 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -1636,8 +1636,7 @@ static void *virtqueue_detach_unused_buf_packed(struct virtqueue *_vq)
- 	return NULL;
- }
- 
--static struct vring_desc_extra *vring_alloc_desc_extra(struct vring_virtqueue *vq,
--						       unsigned int num)
-+static struct vring_desc_extra *vring_alloc_desc_extra(unsigned int num)
- {
- 	struct vring_desc_extra *desc_extra;
- 	unsigned int i;
-@@ -1755,7 +1754,7 @@ static struct virtqueue *vring_create_virtqueue_packed(
- 	/* Put everything in free lists. */
- 	vq->free_head = 0;
- 
--	vq->packed.desc_extra = vring_alloc_desc_extra(vq, num);
-+	vq->packed.desc_extra = vring_alloc_desc_extra(num);
- 	if (!vq->packed.desc_extra)
- 		goto err_desc_extra;
- 
-@@ -2233,7 +2232,7 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
- 	if (!vq->split.desc_state)
- 		goto err_state;
- 
--	vq->split.desc_extra = vring_alloc_desc_extra(vq, vring.num);
-+	vq->split.desc_extra = vring_alloc_desc_extra(vring.num);
- 	if (!vq->split.desc_extra)
- 		goto err_extra;
- 
+Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
+
 -- 
-2.31.0
-
+Martin K. Petersen	Oracle Linux Engineering
 
 _______________________________________________
 linux-um mailing list
