@@ -1,16 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out03.mta.xmission.com ([166.70.13.233])
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1njU3N-00GX6q-5K
- for linux-um@lists.infradead.org; Tue, 26 Apr 2022 22:53:06 +0000
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-Date: Tue, 26 Apr 2022 17:52:09 -0500
-Message-Id: <20220426225211.308418-7-ebiederm@xmission.com>
-In-Reply-To: <878rrrh32q.fsf_-_@email.froward.int.ebiederm.org>
-References: <878rrrh32q.fsf_-_@email.froward.int.ebiederm.org>
+ id 1ncGhz-008VNu-Hr
+ for linux-um@lists.infradead.org; Thu, 07 Apr 2022 01:13:13 +0000
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 05/27] um: port_user: Improve error handling when
+ port-helper is not found
+Date: Wed,  6 Apr 2022 21:12:35 -0400
+Message-Id: <20220407011257.114287-5-sashal@kernel.org>
+In-Reply-To: <20220407011257.114287-1-sashal@kernel.org>
+References: <20220407011257.114287-1-sashal@kernel.org>
 MIME-Version: 1.0
-Subject: [PATCH 7/9] ptrace: Simplify the wait_task_inactive call in
- ptrace_check_attach
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -23,50 +23,58 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, inux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, "Eric W. Biederman" <ebiederm@xmission.com>
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Glenn Washburn <development@efficientek.com>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, linux-um@lists.infradead.org
 
-Asking wait_task_inactive to verify that tsk->__state == __TASK_TRACED
-was needed to detect the when ptrace_stop would decide not to stop
-after calling "set_special_state(TASK_TRACED)".  With the recent
-cleanups ptrace_stop will always stop after calling set_special_state.
+From: Glenn Washburn <development@efficientek.com>
 
-Take advatnage of this by no longer asking wait_task_inactive to
-verify the state.  If a bug is hit and wait_task_inactive does not
-succeed warn and return -ESRCH.
+[ Upstream commit 3cb5a7f167c620a8b0e38b0446df2e024d2243dc ]
 
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+Check if port-helper exists and is executable. If not, write an error
+message to the kernel log with information to help the user diagnose the
+issue and exit with an error. If UML_PORT_HELPER was not set, write a
+message suggesting that the user set it. This makes it easier to understand
+why telneting to the UML instance is failing and what can be done to fix it.
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/ptrace.c | 14 +++-----------
- 1 file changed, 3 insertions(+), 11 deletions(-)
+ arch/um/drivers/port_user.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/kernel/ptrace.c b/kernel/ptrace.c
-index 16d1a84a2cae..0634da7ac685 100644
---- a/kernel/ptrace.c
-+++ b/kernel/ptrace.c
-@@ -265,17 +265,9 @@ static int ptrace_check_attach(struct task_struct *child, bool ignore_state)
- 	}
- 	read_unlock(&tasklist_lock);
+diff --git a/arch/um/drivers/port_user.c b/arch/um/drivers/port_user.c
+index 5b5b64cb1071..133ca7bf2d91 100644
+--- a/arch/um/drivers/port_user.c
++++ b/arch/um/drivers/port_user.c
+@@ -5,6 +5,7 @@
  
--	if (!ret && !ignore_state) {
--		if (!wait_task_inactive(child, __TASK_TRACED)) {
--			/*
--			 * This can only happen if may_ptrace_stop() fails and
--			 * ptrace_stop() changes ->state back to TASK_RUNNING,
--			 * so we should not worry about leaking __TASK_TRACED.
--			 */
--			WARN_ON(READ_ONCE(child->__state) == __TASK_TRACED);
--			ret = -ESRCH;
--		}
--	}
-+	if (!ret && !ignore_state &&
-+	    WARN_ON_ONCE(!wait_task_inactive(child, 0)))
-+		ret = -ESRCH;
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <string.h>
+ #include <errno.h>
+ #include <termios.h>
+ #include <unistd.h>
+@@ -175,6 +176,17 @@ int port_connection(int fd, int *socket, int *pid_out)
+ 	if (new < 0)
+ 		return -errno;
  
- 	return ret;
- }
++	err = os_access(argv[2], X_OK);
++	if (err < 0) {
++		printk(UM_KERN_ERR "port_connection : error accessing port-helper "
++		       "executable at %s: %s\n", argv[2], strerror(-err));
++		if (env == NULL)
++			printk(UM_KERN_ERR "Set UML_PORT_HELPER environment "
++				"variable to path to uml-utilities port-helper "
++				"binary\n");
++		goto out_close;
++	}
++
+ 	err = os_pipe(socket, 0, 0);
+ 	if (err < 0)
+ 		goto out_close;
 -- 
-2.35.3
+2.35.1
 
 
 _______________________________________________
