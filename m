@@ -1,15 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131])
+Received: from dfw.source.kernel.org ([139.178.84.217])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nbwbE-003eW4-O2
- for linux-um@lists.infradead.org; Wed, 06 Apr 2022 03:44:54 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v9 28/32] virtio_net: set the default max ring size by
- find_vqs()
-Date: Wed,  6 Apr 2022 11:43:42 +0800
-Message-Id: <20220406034346.74409-29-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
-References: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
+ id 1ncGgn-008UZr-Hb
+ for linux-um@lists.infradead.org; Thu, 07 Apr 2022 01:11:59 +0000
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.16 08/30] um: port_user: Improve error handling when
+ port-helper is not found
+Date: Wed,  6 Apr 2022 21:11:18 -0400
+Message-Id: <20220407011140.113856-8-sashal@kernel.org>
+In-Reply-To: <20220407011140.113856-1-sashal@kernel.org>
+References: <20220407011140.113856-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -23,127 +23,58 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Glenn Washburn <development@efficientek.com>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, linux-um@lists.infradead.org
 
-Use virtio_find_vqs_ctx_size() to specify the maximum ring size of tx,
-rx at the same time.
+From: Glenn Washburn <development@efficientek.com>
 
-                         | rx/tx ring size
--------------------------------------------
-speed == UNKNOWN or < 10G| 1024
-speed < 40G              | 4096
-speed >= 40G             | 8192
+[ Upstream commit 3cb5a7f167c620a8b0e38b0446df2e024d2243dc ]
 
-Call virtnet_update_settings() once before calling init_vqs() to update
-speed.
+Check if port-helper exists and is executable. If not, write an error
+message to the kernel log with information to help the user diagnose the
+issue and exit with an error. If UML_PORT_HELPER was not set, write a
+message suggesting that the user set it. This makes it easier to understand
+why telneting to the UML instance is failing and what can be done to fix it.
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/virtio_net.c | 42 ++++++++++++++++++++++++++++++++++++----
- 1 file changed, 38 insertions(+), 4 deletions(-)
+ arch/um/drivers/port_user.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index a801ea40908f..dad497a47b3a 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -2861,6 +2861,29 @@ static unsigned int mergeable_min_buf_len(struct virtnet_info *vi, struct virtqu
- 		   (unsigned int)GOOD_PACKET_LEN);
- }
+diff --git a/arch/um/drivers/port_user.c b/arch/um/drivers/port_user.c
+index 5b5b64cb1071..133ca7bf2d91 100644
+--- a/arch/um/drivers/port_user.c
++++ b/arch/um/drivers/port_user.c
+@@ -5,6 +5,7 @@
  
-+static void virtnet_config_sizes(struct virtnet_info *vi, u32 *sizes)
-+{
-+	u32 i, rx_size, tx_size;
-+
-+	if (vi->speed == SPEED_UNKNOWN || vi->speed < SPEED_10000) {
-+		rx_size = 1024;
-+		tx_size = 1024;
-+
-+	} else if (vi->speed < SPEED_40000) {
-+		rx_size = 1024 * 4;
-+		tx_size = 1024 * 4;
-+
-+	} else {
-+		rx_size = 1024 * 8;
-+		tx_size = 1024 * 8;
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <string.h>
+ #include <errno.h>
+ #include <termios.h>
+ #include <unistd.h>
+@@ -175,6 +176,17 @@ int port_connection(int fd, int *socket, int *pid_out)
+ 	if (new < 0)
+ 		return -errno;
+ 
++	err = os_access(argv[2], X_OK);
++	if (err < 0) {
++		printk(UM_KERN_ERR "port_connection : error accessing port-helper "
++		       "executable at %s: %s\n", argv[2], strerror(-err));
++		if (env == NULL)
++			printk(UM_KERN_ERR "Set UML_PORT_HELPER environment "
++				"variable to path to uml-utilities port-helper "
++				"binary\n");
++		goto out_close;
 +	}
 +
-+	for (i = 0; i < vi->max_queue_pairs; i++) {
-+		sizes[rxq2vq(i)] = rx_size;
-+		sizes[txq2vq(i)] = tx_size;
-+	}
-+}
-+
- static int virtnet_find_vqs(struct virtnet_info *vi)
- {
- 	vq_callback_t **callbacks;
-@@ -2868,6 +2891,7 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
- 	int ret = -ENOMEM;
- 	int i, total_vqs;
- 	const char **names;
-+	u32 *sizes;
- 	bool *ctx;
- 
- 	/* We expect 1 RX virtqueue followed by 1 TX virtqueue, followed by
-@@ -2895,10 +2919,15 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
- 		ctx = NULL;
- 	}
- 
-+	sizes = kmalloc_array(total_vqs, sizeof(*sizes), GFP_KERNEL);
-+	if (!sizes)
-+		goto err_sizes;
-+
- 	/* Parameters for control virtqueue, if any */
- 	if (vi->has_cvq) {
- 		callbacks[total_vqs - 1] = NULL;
- 		names[total_vqs - 1] = "control";
-+		sizes[total_vqs - 1] = 64;
- 	}
- 
- 	/* Allocate/initialize parameters for send/receive virtqueues */
-@@ -2913,8 +2942,10 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
- 			ctx[rxq2vq(i)] = true;
- 	}
- 
--	ret = virtio_find_vqs_ctx(vi->vdev, total_vqs, vqs, callbacks,
--				  names, ctx, NULL);
-+	virtnet_config_sizes(vi, sizes);
-+
-+	ret = virtio_find_vqs_ctx_size(vi->vdev, total_vqs, vqs, callbacks,
-+				       names, sizes, ctx, NULL);
- 	if (ret)
- 		goto err_find;
- 
-@@ -2934,6 +2965,8 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
- 
- 
- err_find:
-+	kfree(sizes);
-+err_sizes:
- 	kfree(ctx);
- err_ctx:
- 	kfree(names);
-@@ -3252,6 +3285,9 @@ static int virtnet_probe(struct virtio_device *vdev)
- 		vi->curr_queue_pairs = num_online_cpus();
- 	vi->max_queue_pairs = max_queue_pairs;
- 
-+	virtnet_init_settings(dev);
-+	virtnet_update_settings(vi);
-+
- 	/* Allocate/initialize the rx/tx queues, and invoke find_vqs */
- 	err = init_vqs(vi);
- 	if (err)
-@@ -3264,8 +3300,6 @@ static int virtnet_probe(struct virtio_device *vdev)
- 	netif_set_real_num_tx_queues(dev, vi->curr_queue_pairs);
- 	netif_set_real_num_rx_queues(dev, vi->curr_queue_pairs);
- 
--	virtnet_init_settings(dev);
--
- 	if (virtio_has_feature(vdev, VIRTIO_NET_F_STANDBY)) {
- 		vi->failover = net_failover_create(vi->dev);
- 		if (IS_ERR(vi->failover)) {
+ 	err = os_pipe(socket, 0, 0);
+ 	if (err < 0)
+ 		goto out_close;
 -- 
-2.31.0
+2.35.1
 
 
 _______________________________________________
