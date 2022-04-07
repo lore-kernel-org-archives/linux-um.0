@@ -1,8 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: use block_device based APIs in block layer consumers v2
-Date: Sat,  9 Apr 2022 06:50:16 +0200
-Message-Id: <20220409045043.23593-1-hch@lst.de>
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1ncGmU-008Xpo-Al
+ for linux-um@lists.infradead.org; Thu, 07 Apr 2022 01:17:57 +0000
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 2/7] um: Cleanup syscall_handler_t definition/cast,
+ fix warning
+Date: Wed,  6 Apr 2022 21:17:35 -0400
+Message-Id: <20220407011740.115717-2-sashal@kernel.org>
+In-Reply-To: <20220407011740.115717-1-sashal@kernel.org>
+References: <20220407011740.115717-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -12,125 +19,63 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jens Axboe <axboe@kernel.dk>
-Cc: dm-devel@redhat.com, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-um@lists.infradead.org, linux-block@vger.kernel.org, drbd-dev@lists.linbit.com, nbd@other.debian.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev, ocfs2-devel@oss.oracle.com, linux-mm@kvack.org
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: David Gow <davidgow@google.com>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, viro@zeniv.linux.org.uk, linux-um@lists.infradead.org
 
-Hi Jens,
-
-this series cleanups up the block layer API so that APIs consumed
-by file systems are (almost) only struct block_devic based, so that
-file systems don't have to poke into block layer internals like the
-request_queue.
-
-I also found a bunch of existing bugs related to partition offsets
-and discard so these are fixed while going along.
-
-
-Changes since v1:
- - fix a bisection hazard
- - minor spelling fixes
- - reorder hunks between two patches to make the changes more obvious
- - reorder a patch to be earlier in the series to ease backporting
-
-
-Diffstat:
- arch/um/drivers/ubd_kern.c           |    2 
- block/blk-core.c                     |    4 -
- block/blk-lib.c                      |  124 ++++++++++++++++++++---------------
- block/blk-mq-debugfs.c               |    2 
- block/blk-settings.c                 |   74 ++++++++++++++++++++
- block/blk.h                          |   14 ---
- block/fops.c                         |    2 
- block/genhd.c                        |    4 -
- block/ioctl.c                        |   48 ++++++++++---
- block/partitions/core.c              |   12 ---
- drivers/block/drbd/drbd_main.c       |   51 ++++++--------
- drivers/block/drbd/drbd_nl.c         |   94 +++++++++++---------------
- drivers/block/drbd/drbd_receiver.c   |   13 +--
- drivers/block/loop.c                 |   15 +---
- drivers/block/nbd.c                  |    5 -
- drivers/block/null_blk/main.c        |    1 
- drivers/block/rbd.c                  |    1 
- drivers/block/rnbd/rnbd-clt.c        |    6 -
- drivers/block/rnbd/rnbd-srv-dev.h    |    8 --
- drivers/block/rnbd/rnbd-srv.c        |    5 -
- drivers/block/virtio_blk.c           |    2 
- drivers/block/xen-blkback/blkback.c  |   15 ++--
- drivers/block/xen-blkback/xenbus.c   |    9 --
- drivers/block/xen-blkfront.c         |    7 -
- drivers/block/zram/zram_drv.c        |    1 
- drivers/md/bcache/alloc.c            |    2 
- drivers/md/bcache/request.c          |    4 -
- drivers/md/bcache/super.c            |    3 
- drivers/md/bcache/sysfs.c            |    2 
- drivers/md/dm-cache-target.c         |    9 --
- drivers/md/dm-clone-target.c         |    9 --
- drivers/md/dm-io.c                   |    2 
- drivers/md/dm-log-writes.c           |    3 
- drivers/md/dm-raid.c                 |    9 --
- drivers/md/dm-table.c                |   25 +------
- drivers/md/dm-thin.c                 |   15 ----
- drivers/md/dm.c                      |    3 
- drivers/md/md-linear.c               |   11 ---
- drivers/md/md.c                      |    5 -
- drivers/md/raid0.c                   |    7 -
- drivers/md/raid1.c                   |   18 -----
- drivers/md/raid10.c                  |   20 -----
- drivers/md/raid5-cache.c             |    8 +-
- drivers/md/raid5.c                   |   14 +--
- drivers/mmc/core/queue.c             |    3 
- drivers/mtd/mtd_blkdevs.c            |    1 
- drivers/nvme/host/core.c             |    6 -
- drivers/nvme/target/io-cmd-bdev.c    |    2 
- drivers/nvme/target/zns.c            |    3 
- drivers/s390/block/dasd_fba.c        |    1 
- drivers/scsi/sd.c                    |    2 
- drivers/target/target_core_device.c  |   20 ++---
- drivers/target/target_core_file.c    |   10 +-
- drivers/target/target_core_iblock.c  |   17 +---
- fs/btrfs/disk-io.c                   |    3 
- fs/btrfs/extent-tree.c               |    8 +-
- fs/btrfs/ioctl.c                     |   12 +--
- fs/btrfs/volumes.c                   |    4 -
- fs/btrfs/zoned.c                     |    3 
- fs/direct-io.c                       |   32 +--------
- fs/exfat/file.c                      |    5 -
- fs/exfat/super.c                     |   10 --
- fs/ext4/ioctl.c                      |   10 --
- fs/ext4/mballoc.c                    |   10 +-
- fs/ext4/super.c                      |   10 --
- fs/f2fs/f2fs.h                       |    3 
- fs/f2fs/file.c                       |   19 ++---
- fs/f2fs/segment.c                    |    8 --
- fs/fat/file.c                        |    5 -
- fs/fat/inode.c                       |   10 --
- fs/gfs2/rgrp.c                       |    7 -
- fs/iomap/direct-io.c                 |    3 
- fs/jbd2/journal.c                    |    9 --
- fs/jfs/ioctl.c                       |    5 -
- fs/jfs/super.c                       |    8 --
- fs/nilfs2/ioctl.c                    |    6 -
- fs/nilfs2/sufile.c                   |    4 -
- fs/nilfs2/the_nilfs.c                |    4 -
- fs/ntfs3/file.c                      |    6 -
- fs/ntfs3/super.c                     |   10 +-
- fs/ocfs2/ioctl.c                     |    5 -
- fs/super.c                           |    2 
- fs/xfs/xfs_discard.c                 |    8 +-
- fs/xfs/xfs_log_cil.c                 |    2 
- fs/xfs/xfs_super.c                   |   12 +--
- fs/zonefs/super.c                    |    3 
- include/linux/blkdev.h               |  112 +++++++++++--------------------
- include/target/target_core_backend.h |    4 -
- mm/swapfile.c                        |   31 ++------
- 89 files changed, 493 insertions(+), 653 deletions(-)
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+RnJvbTogRGF2aWQgR293IDxkYXZpZGdvd0Bnb29nbGUuY29tPgoKWyBVcHN0cmVhbSBjb21taXQg
+ZjRmMDNmMjk5YTU2Y2U0ZDczYzU0MzFlMDMyN2IzYjZjYjU1ZWJiOSBdCgpUaGUgc3lzY2FsbF9o
+YW5kbGVyX3QgdHlwZSBmb3IgeDg2XzY0IHdhcyBkZWZpbmVkIGFzICdsb25nICgqKSh2b2lkKScs
+CmJ1dCBhbHdheXMgY2FzdCB0byAnbG9uZyAoKikobG9uZywgbG9uZywgbG9uZywgbG9uZywgbG9u
+ZywgbG9uZyknIGJlZm9yZQp1c2UuIFRoaXMgbm93IHRyaWdnZXJzIGEgd2FybmluZyAoc2VlIGJl
+bG93KS4KCkRlZmluZSBzeXNjYWxsX2hhbmRsZXJfdCBhcyB0aGUgbGF0dGVyIGluc3RlYWQsIGFu
+ZCByZW1vdmUgdGhlIGNhc3QuClRoaXMgc2ltcGxpZmllcyB0aGUgY29kZSwgYW5kIGZpeGVzIHRo
+ZSB3YXJuaW5nLgoKV2FybmluZzoKSW4gZmlsZSBpbmNsdWRlZCBmcm9tIC4uL2FyY2gvdW0vaW5j
+bHVkZS9hc20vcHJvY2Vzc29yLWdlbmVyaWMuaDoxMwogICAgICAgICAgICAgICAgIGZyb20gLi4v
+YXJjaC94ODYvdW0vYXNtL3Byb2Nlc3Nvci5oOjQxCiAgICAgICAgICAgICAgICAgZnJvbSAuLi9p
+bmNsdWRlL2xpbnV4L3JjdXBkYXRlLmg6MzAKICAgICAgICAgICAgICAgICBmcm9tIC4uL2luY2x1
+ZGUvbGludXgvcmN1bGlzdC5oOjExCiAgICAgICAgICAgICAgICAgZnJvbSAuLi9pbmNsdWRlL2xp
+bnV4L3BpZC5oOjUKICAgICAgICAgICAgICAgICBmcm9tIC4uL2luY2x1ZGUvbGludXgvc2NoZWQu
+aDoxNAogICAgICAgICAgICAgICAgIGZyb20gLi4vaW5jbHVkZS9saW51eC9wdHJhY2UuaDo2CiAg
+ICAgICAgICAgICAgICAgZnJvbSAuLi9hcmNoL3VtL2tlcm5lbC9za2FzL3N5c2NhbGwuYzo3Ogou
+Li9hcmNoL3VtL2tlcm5lbC9za2FzL3N5c2NhbGwuYzogSW4gZnVuY3Rpb24g4oCYaGFuZGxlX3N5
+c2NhbGzigJk6Ci4uL2FyY2gveDg2L3VtL3NoYXJlZC9zeXNkZXAvc3lzY2FsbHNfNjQuaDoxODox
+MTogd2FybmluZzogY2FzdCBiZXR3ZWVuIGluY29tcGF0aWJsZSBmdW5jdGlvbiB0eXBlcyBmcm9t
+IOKAmGxvbmcgaW50ICgqKSh2b2lkKeKAmSB0byDigJhsb25nIGludCAoKikobG9uZyBpbnQsICBs
+b25nIGludCwgIGxvbmcgaW50LCAgbG9uZyBpbnQsICBsb25nIGludCwgIGxvbmcgaW50KeKAmSBb
+Ci1XY2FzdC1mdW5jdGlvbi10eXBlXQogICAxOCB8ICAgICAgICAgKCgobG9uZyAoKikobG9uZywg
+bG9uZywgbG9uZywgbG9uZywgbG9uZywgbG9uZykpIFwKICAgICAgfCAgICAgICAgICAgXgouLi9h
+cmNoL3g4Ni91bS9hc20vcHRyYWNlLmg6MzY6NjI6IG5vdGU6IGluIGRlZmluaXRpb24gb2YgbWFj
+cm8g4oCYUFRfUkVHU19TRVRfU1lTQ0FMTF9SRVRVUk7igJkKICAgMzYgfCAjZGVmaW5lIFBUX1JF
+R1NfU0VUX1NZU0NBTExfUkVUVVJOKHIsIHJlcykgKFBUX1JFR1NfQVgocikgPSAocmVzKSkKICAg
+ICAgfCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgXn5+Ci4uL2FyY2gvdW0va2VybmVsL3NrYXMvc3lzY2FsbC5jOjQ2OjMzOiBub3Rl
+OiBpbiBleHBhbnNpb24gb2YgbWFjcm8g4oCYRVhFQ1VURV9TWVNDQUxM4oCZCiAgIDQ2IHwgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBFWEVDVVRFX1NZU0NBTEwoc3lzY2FsbCwgcmVn
+cykpOwogICAgICB8ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXn5+fn5+fn5+fn5+
+fn5+CgpTaWduZWQtb2ZmLWJ5OiBEYXZpZCBHb3cgPGRhdmlkZ293QGdvb2dsZS5jb20+ClNpZ25l
+ZC1vZmYtYnk6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+ClNpZ25lZC1vZmYt
+Ynk6IFNhc2hhIExldmluIDxzYXNoYWxAa2VybmVsLm9yZz4KLS0tCiBhcmNoL3g4Ni91bS9zaGFy
+ZWQvc3lzZGVwL3N5c2NhbGxzXzY0LmggfCA1ICsrLS0tCiAxIGZpbGUgY2hhbmdlZCwgMiBpbnNl
+cnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2FyY2gveDg2L3VtL3NoYXJl
+ZC9zeXNkZXAvc3lzY2FsbHNfNjQuaCBiL2FyY2gveDg2L3VtL3NoYXJlZC9zeXNkZXAvc3lzY2Fs
+bHNfNjQuaAppbmRleCA4YTdkNWUxZGE5OGUuLjFlNjg3NWI0ZmZkOCAxMDA2NDQKLS0tIGEvYXJj
+aC94ODYvdW0vc2hhcmVkL3N5c2RlcC9zeXNjYWxsc182NC5oCisrKyBiL2FyY2gveDg2L3VtL3No
+YXJlZC9zeXNkZXAvc3lzY2FsbHNfNjQuaApAQCAtMTAsMTMgKzEwLDEyIEBACiAjaW5jbHVkZSA8
+bGludXgvbXNnLmg+CiAjaW5jbHVkZSA8bGludXgvc2htLmg+CiAKLXR5cGVkZWYgbG9uZyBzeXNj
+YWxsX2hhbmRsZXJfdCh2b2lkKTsKK3R5cGVkZWYgbG9uZyBzeXNjYWxsX2hhbmRsZXJfdChsb25n
+LCBsb25nLCBsb25nLCBsb25nLCBsb25nLCBsb25nKTsKIAogZXh0ZXJuIHN5c2NhbGxfaGFuZGxl
+cl90ICpzeXNfY2FsbF90YWJsZVtdOwogCiAjZGVmaW5lIEVYRUNVVEVfU1lTQ0FMTChzeXNjYWxs
+LCByZWdzKSBcCi0JKCgobG9uZyAoKikobG9uZywgbG9uZywgbG9uZywgbG9uZywgbG9uZywgbG9u
+ZykpIFwKLQkgICgqc3lzX2NhbGxfdGFibGVbc3lzY2FsbF0pKShVUFRfU1lTQ0FMTF9BUkcxKCZy
+ZWdzLT5yZWdzKSwgXAorCSgoKCpzeXNfY2FsbF90YWJsZVtzeXNjYWxsXSkpKFVQVF9TWVNDQUxM
+X0FSRzEoJnJlZ3MtPnJlZ3MpLCBcCiAJCSAJCSAgICAgIFVQVF9TWVNDQUxMX0FSRzIoJnJlZ3Mt
+PnJlZ3MpLCBcCiAJCQkJICAgICAgVVBUX1NZU0NBTExfQVJHMygmcmVncy0+cmVncyksIFwKIAkJ
+CQkgICAgICBVUFRfU1lTQ0FMTF9BUkc0KCZyZWdzLT5yZWdzKSwgXAotLSAKMi4zNS4xCgoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFp
+bGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
 
