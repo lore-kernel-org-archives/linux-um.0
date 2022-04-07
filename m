@@ -2,10 +2,10 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Subject: Re: [dm-devel] [PATCH 01/27] target: remove an incorrect unmap
  zeroes data deduction
 From: "Martin K. Petersen" <martin.petersen@oracle.com>
-Message-ID: <yq1r169k2xu.fsf@ca-mkp.ca.oracle.com>
+Message-ID: <yq1wng1k2zn.fsf@ca-mkp.ca.oracle.com>
 References: <20220406060516.409838-1-hch@lst.de>
  <20220406060516.409838-2-hch@lst.de>
-Date: Wed, 06 Apr 2022 23:06:16 -0400
+Date: Wed, 06 Apr 2022 23:05:13 -0400
 In-Reply-To: <20220406060516.409838-2-hch@lst.de> (Christoph Hellwig's message
  of "Wed, 6 Apr 2022 08:04:50 +0200")
 MIME-Version: 1.0
@@ -33,8 +33,11 @@ Christoph,
 >
 > Note that this does not affect the file backed path which uses
 > fallocate to punch holes.
+>
+> Fixes: 2237498f0b5c ("target/iblock: Convert WRITE_SAME to blkdev_issue_zeroout")
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
+
 
 -- 
 Martin K. Petersen	Oracle Linux Engineering
