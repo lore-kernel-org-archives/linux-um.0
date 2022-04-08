@@ -1,83 +1,135 @@
-Return-Path: <tglx@linutronix.de>
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH RFC v1 00/10] archs/random: fallback to using
- sched_clock() if no cycle counter
-In-Reply-To: <20220408182145.142506-1-Jason@zx2c4.com>
-References: <20220408182145.142506-1-Jason@zx2c4.com>
-Date: Sun, 10 Apr 2022 01:29:32 +0200
-Message-ID: <87wnfxhm3n.ffs@tglx>
+Return-Path: <SRS0=C8GT=US=zx2c4.com=Jason@kernel.org>
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: [PATCH RFC v1 00/10] archs/random: fallback to using sched_clock() if no cycle counter
+Date: Fri,  8 Apr 2022 20:21:35 +0200
+Message-Id: <20220408182145.142506-1-Jason@zx2c4.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-To: "Jason A. Donenfeld" <Jason@zx2c4.com>, linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, arnd@arndb.de
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Theodore Ts'o <tytso@mit.edu>, Dominik Brodowski <linux@dominikbrodowski.net>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, "David S . Miller" <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin  <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov" <jcmvbkbc@gmail.com>, John Stultz <john.stultz@linaro.org>, Stephen Boyd <sboyd@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org, linux-xtensa@linux-xtensa.org
+Content-Transfer-Encoding: 8bit
+To: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, arnd@arndb.de
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Theodore Ts'o <tytso@mit.edu>, Dominik Brodowski <linux@dominikbrodowski.net>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, "David S . Miller" <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, John Stultz <john.stultz@linaro.org>, Stephen Boyd <sboyd@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org, linux-xtensa@linux-xtensa.org
 List-ID: <linux-um.lists.infradead.org>
 
-Jason,
+Hi folks,
 
-On Fri, Apr 08 2022 at 20:21, Jason A. Donenfeld wrote:
-> Sometimes the next best thing is architecture-defined. For example,
-> really old MIPS has the CP0 random register, which isn't a cycle
-> counter, but is at least something. However, some platforms don't even
-> have an architecture-defined fallback. In that case, what are we left
-> with?
->
-> By my first guess, we have ktime_get_boottime_ns(), jiffies, and
-> sched_clock(). It seems like sched_clock() has already done a lot of
-> work in being always available with some incrementing value, falling
-> back to jiffies as necessary. So this series goes with that as a
-> fallback, for when the architecture doesn't define random_get_entropy in
-> its own way and when there's no working cycle counter.
+The RNG uses a function called random_get_entropy() basically anytime
+that it needs to timestamp an event. For example, an interrupt comes in,
+and we mix a random_get_entropy() into the entropy pool somehow.
+Somebody mashes their keyboard or moves their mouse around? We mix a
+random_get_entropy() into the entropy pool. It's one of the main
+varieties of input.
 
-sched_clock() is a halfways sane option, but yes as Arnd pointed out:
+Unfortunately, it's always 0 on a few platforms. The RNG has accumulated
+various hacks to deal with this, but in general it's not great. Surely
+we can do better than 0. In fact, *anything* that's not the same exact
+value all the time would be better than 0. Even a counter that
+increments once per hour would be better than 0! I think you get the
+idea.
 
-> Another option would be falling back to different things on different
-> platforms. For example, Arnd mentioned to me that on m68k,
-> ktime_get_ns() might be better than sched_clock(), because it doesn't
-> use CONFIG_GENERIC_SCHED_CLOCK and therefore is only as good as
-> jiffies.
+On most platforms, random_get_entropy() is aliased to get_cycles(),
+which makes sense for platforms where get_cycles() is defined. RDTSC,
+for example, has all the characteristics we care about for this
+function: it's fast to acquire (i.e. acceptable in an irq handler),
+pretty high precision, available, forms a 2-monotone distribution, etc.
+But for platforms without that, what is the next best thing?
 
-ktime_get_ns() or the slightly faster variant ktime_get_mono_fast_ns()
-are usable. In the worst case they are jiffies driven too, but systems
-with jiffies clocksource are pretty much museum pieces.
+Sometimes the next best thing is architecture-defined. For example,
+really old MIPS has the CP0 random register, which isn't a cycle
+counter, but is at least something. However, some platforms don't even
+have an architecture-defined fallback. In that case, what are we left
+with?
 
-It's slightly slower than get_cycles() and a get_cyles() based
-sched_clock(), but you get the most granular clock of the platform
-automatically, which has it's charm too :)
+By my first guess, we have ktime_get_boottime_ns(), jiffies, and
+sched_clock(). It seems like sched_clock() has already done a lot of
+work in being always available with some incrementing value, falling
+back to jiffies as necessary. So this series goes with that as a
+fallback, for when the architecture doesn't define random_get_entropy in
+its own way and when there's no working cycle counter.
 
-The bad news is that depending on the clocksource frequency the lower
-bits might never change. Always true for clocksource jiffies.
-sched_clock() has the same issue.
+Another option would be falling back to different things on different
+platforms. For example, Arnd mentioned to me that on m68k,
+ktime_get_ns() might be better than sched_clock(), because it doesn't
+use CONFIG_GENERIC_SCHED_CLOCK and therefore is only as good as jiffies.
+Maybe there are other considerations there as well.
 
-But the below uncompiled hack gives you access to the 'best' clocksource
-of a machine, i.e. the one which the platform decided to be the one
-which is giving the best resolution. The minimal bitwidth of that is
-AFAICT 20 bits. In the jiffies case this will at least advance every
-tick.
+This is a bit involved with plumbing asm/ headers, which is why this is
+an RFC. There are a few ways of skinning that cat. The patchset also
+tries to fill in the various cases where an arch only sometimes has a
+cycle counter and sometimes doesn't. When possible, it tries to make the
+decisions at compile time, but sometimes runtime decisions are
+necessary.
 
-The price, e.g. on x86 would be that RDTSC would be invoked via an
-indirect function call. Not the end of the world...
+Please let me know if you think this is sane. And if you have a
+different candidate than sched_clock(), I'd be interested to learn about
+that. In particular, I'd value input here from Thomas or somebody else
+who has looked at timekeeping across less common platforms.
+
+Finally, note that this series isn't about "jitter entropy" or other
+ways of initializing the RNG. That's a different topic for a different
+thread. Please don't let this discussion veer off into that. Here, I'm
+just trying to find a good fallback counter/timer for platforms without
+get_cycles(), a question with limited scope.
 
 Thanks,
+Jason
 
-        tglx
----
---- a/kernel/time/timekeeping.c
-+++ b/kernel/time/timekeeping.c
-@@ -646,6 +646,11 @@ static void halt_fast_timekeeper(const s
- 	update_fast_timekeeper(&tkr_dummy, &tk_fast_raw);
- }
- 
-+u32 ktime_read_raw_clock(void)
-+{
-+	return tk_clock_read(&tk_core.timekeeper.tkr_mono);
-+}
-+
- static RAW_NOTIFIER_HEAD(pvclock_gtod_chain);
- 
- static void update_pvclock_gtod(struct timekeeper *tk, bool was_set)
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Theodore Ts'o <tytso@mit.edu>
+Cc: Dominik Brodowski <linux@dominikbrodowski.net>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Albert Ou <aou@eecs.berkeley.edu>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: H. Peter Anvin <hpa@zytor.com>
+Cc: Chris Zankel <chris@zankel.net>
+Cc: Max Filippov <jcmvbkbc@gmail.com>
+Cc: John Stultz <john.stultz@linaro.org>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-mips@vger.kernel.org
+Cc: linux-riscv@lists.infradead.org
+Cc: sparclinux@vger.kernel.org
+Cc: linux-um@lists.infradead.org
+Cc: x86@kernel.org
+Cc: linux-xtensa@linux-xtensa.org
 
+Jason A. Donenfeld (10):
+  random: use sched_clock() for random_get_entropy() if no get_cycles()
+  m68k: use sched_clock() for random_get_entropy() instead of zero
+  riscv: use sched_clock() for random_get_entropy() instead of zero
+  mips: use sched_clock() for random_get_entropy() instead of zero
+  arm: use sched_clock() for random_get_entropy() instead of zero
+  x86: use sched_clock() for random_get_entropy() instead of zero
+  arm64: use sched_clock() for random_get_entropy() instead of zero
+  um: use sched_clock() for random_get_entropy() instead of zero
+  sparc: use sched_clock() for random_get_entropy() instead of zero
+  xtensa: use sched_clock() for random_get_entropy() instead of zero
 
+ arch/arm/include/asm/timex.h      | 11 +++++++++++
+ arch/arm64/include/asm/timex.h    |  9 +++++++++
+ arch/m68k/include/asm/timex.h     |  4 +++-
+ arch/mips/include/asm/timex.h     |  3 ++-
+ arch/riscv/include/asm/timex.h    |  3 ++-
+ arch/sparc/include/asm/timex_32.h |  4 +---
+ arch/um/include/asm/timex.h       |  9 ++-------
+ arch/x86/include/asm/tsc.h        | 11 +++++++++++
+ arch/xtensa/include/asm/timex.h   |  6 ++----
+ include/linux/timex.h             |  6 ++++++
+ 10 files changed, 49 insertions(+), 17 deletions(-)
 
-
+-- 
+2.35.1
 
 
