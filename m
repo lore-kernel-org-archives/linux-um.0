@@ -1,10 +1,11 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Subject: [PATCH 10/30] alpha: Clean-up the panic notifier code
-Date: Wed, 27 Apr 2022 19:49:04 -0300
-Message-Id: <20220427224924.592546-11-gpiccoli@igalia.com>
-In-Reply-To: <20220427224924.592546-1-gpiccoli@igalia.com>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
+From: Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 18/27] block: move bdev_alignment_offset and
+ queue_limit_alignment_offset out of line
+Date: Sat,  9 Apr 2022 06:50:34 +0200
+Message-Id: <20220409045043.23593-19-hch@lst.de>
+In-Reply-To: <20220409045043.23593-1-hch@lst.de>
+References: <20220409045043.23593-1-hch@lst.de>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -18,95 +19,90 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, gpiccoli@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Richard Henderson <rth@twiddle.net>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: dm-devel@redhat.com, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-um@lists.infradead.org, linux-block@vger.kernel.org, drbd-dev@lists.linbit.com, nbd@other.debian.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev, ocfs2-devel@oss.oracle.com, linux-mm@kvack.org, "Martin K . Petersen" <martin.petersen@oracle.com>
 
-The alpha panic notifier has some code issues, not following
-the conventions of other notifiers. Also, it might halt the
-machine but still it is set to run as early as possible, which
-doesn't seem to be a good idea.
+No need to inline these fairly larger helpers.
 
-This patch cleans the code, and set the notifier to run as the
-latest, following the same approach other architectures are doing.
-Also, we remove the unnecessary include of a header already
-included indirectly.
-
-Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-Cc: Matt Turner <mattst88@gmail.com>
-Cc: Richard Henderson <rth@twiddle.net>
-Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
 ---
- arch/alpha/kernel/setup.c | 36 +++++++++++++++---------------------
- 1 file changed, 15 insertions(+), 21 deletions(-)
+ block/blk-settings.c   | 23 +++++++++++++++++++++++
+ include/linux/blkdev.h | 21 +--------------------
+ 2 files changed, 24 insertions(+), 20 deletions(-)
 
-diff --git a/arch/alpha/kernel/setup.c b/arch/alpha/kernel/setup.c
-index b4fbbba30aa2..d88bdf852753 100644
---- a/arch/alpha/kernel/setup.c
-+++ b/arch/alpha/kernel/setup.c
-@@ -41,19 +41,11 @@
- #include <linux/sysrq.h>
- #include <linux/reboot.h>
- #endif
--#include <linux/notifier.h>
- #include <asm/setup.h>
- #include <asm/io.h>
- #include <linux/log2.h>
- #include <linux/export.h>
+diff --git a/block/blk-settings.c b/block/blk-settings.c
+index b83df3d2eebca..94410a13c0dee 100644
+--- a/block/blk-settings.c
++++ b/block/blk-settings.c
+@@ -468,6 +468,16 @@ void blk_queue_io_opt(struct request_queue *q, unsigned int opt)
+ }
+ EXPORT_SYMBOL(blk_queue_io_opt);
  
--static int alpha_panic_event(struct notifier_block *, unsigned long, void *);
--static struct notifier_block alpha_panic_block = {
--	alpha_panic_event,
--        NULL,
--        INT_MAX /* try to do it first */
--};
--
- #include <linux/uaccess.h>
- #include <asm/hwrpb.h>
- #include <asm/dma.h>
-@@ -435,6 +427,21 @@ static const struct sysrq_key_op srm_sysrq_reboot_op = {
- };
- #endif
- 
-+static int alpha_panic_event(struct notifier_block *this,
-+			     unsigned long event, void *ptr)
++static int queue_limit_alignment_offset(struct queue_limits *lim,
++		sector_t sector)
 +{
-+	/* If we are using SRM and serial console, just hard halt here. */
-+	if (alpha_using_srm && srmcons_output)
-+		__halt();
++	unsigned int granularity = max(lim->physical_block_size, lim->io_min);
++	unsigned int alignment = sector_div(sector, granularity >> SECTOR_SHIFT)
++		<< SECTOR_SHIFT;
 +
-+	return NOTIFY_DONE;
++	return (granularity + lim->alignment_offset - alignment) % granularity;
 +}
 +
-+static struct notifier_block alpha_panic_block = {
-+	.notifier_call = alpha_panic_event,
-+	.priority = INT_MIN, /* may not return, do it last */
-+};
-+
- void __init
- setup_arch(char **cmdline_p)
+ static unsigned int blk_round_down_sectors(unsigned int sectors, unsigned int lbs)
  {
-@@ -1427,19 +1434,6 @@ const struct seq_operations cpuinfo_op = {
- 	.show	= show_cpuinfo,
- };
+ 	sectors = round_down(sectors, lbs >> SECTOR_SHIFT);
+@@ -901,3 +911,16 @@ void blk_queue_set_zoned(struct gendisk *disk, enum blk_zoned_model model)
+ 	}
+ }
+ EXPORT_SYMBOL_GPL(blk_queue_set_zoned);
++
++int bdev_alignment_offset(struct block_device *bdev)
++{
++	struct request_queue *q = bdev_get_queue(bdev);
++
++	if (q->limits.misaligned)
++		return -1;
++	if (bdev_is_partition(bdev))
++		return queue_limit_alignment_offset(&q->limits,
++				bdev->bd_start_sect);
++	return q->limits.alignment_offset;
++}
++EXPORT_SYMBOL_GPL(bdev_alignment_offset);
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index d5346e72e3645..0a1795ac26275 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -1251,26 +1251,7 @@ bdev_zone_write_granularity(struct block_device *bdev)
+ 	return queue_zone_write_granularity(bdev_get_queue(bdev));
+ }
  
--
--static int
--alpha_panic_event(struct notifier_block *this, unsigned long event, void *ptr)
+-static inline int queue_limit_alignment_offset(struct queue_limits *lim, sector_t sector)
 -{
--#if 1
--	/* FIXME FIXME FIXME */
--	/* If we are using SRM and serial console, just hard halt here. */
--	if (alpha_using_srm && srmcons_output)
--		__halt();
--#endif
--        return NOTIFY_DONE;
+-	unsigned int granularity = max(lim->physical_block_size, lim->io_min);
+-	unsigned int alignment = sector_div(sector, granularity >> SECTOR_SHIFT)
+-		<< SECTOR_SHIFT;
+-
+-	return (granularity + lim->alignment_offset - alignment) % granularity;
 -}
 -
- static __init int add_pcspkr(void)
+-static inline int bdev_alignment_offset(struct block_device *bdev)
+-{
+-	struct request_queue *q = bdev_get_queue(bdev);
+-
+-	if (q->limits.misaligned)
+-		return -1;
+-	if (bdev_is_partition(bdev))
+-		return queue_limit_alignment_offset(&q->limits,
+-				bdev->bd_start_sect);
+-	return q->limits.alignment_offset;
+-}
++int bdev_alignment_offset(struct block_device *bdev);
+ 
+ static inline int queue_discard_alignment(const struct request_queue *q)
  {
- 	struct platform_device *pd;
 -- 
-2.36.0
+2.30.2
 
 
 _______________________________________________
