@@ -1,8 +1,8 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 14/27] block: add a bdev_stable_writes helper
-Date: Sat,  9 Apr 2022 06:50:30 +0200
-Message-Id: <20220409045043.23593-15-hch@lst.de>
+Subject: [PATCH 12/27] block: add a bdev_write_cache helper
+Date: Sat,  9 Apr 2022 06:50:28 +0200
+Message-Id: <20220409045043.23593-13-hch@lst.de>
 In-Reply-To: <20220409045043.23593-1-hch@lst.de>
 References: <20220409045043.23593-1-hch@lst.de>
 MIME-Version: 1.0
@@ -19,78 +19,104 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: Jens Axboe <axboe@kernel.dk>
-Cc: dm-devel@redhat.com, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-um@lists.infradead.org, linux-block@vger.kernel.org, drbd-dev@lists.linbit.com, nbd@other.debian.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev, ocfs2-devel@oss.oracle.com, linux-mm@kvack.org, "Martin K . Petersen" <martin.petersen@oracle.com>
+Cc: dm-devel@redhat.com, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-um@lists.infradead.org, linux-block@vger.kernel.org, drbd-dev@lists.linbit.com, nbd@other.debian.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev, ocfs2-devel@oss.oracle.com, linux-mm@kvack.org, "Martin K . Petersen" <martin.petersen@oracle.com>, David Sterba <dsterba@suse.com>
 
-Add a helper to check the stable writes flag based on the block_device
+Add a helper to check the write cache flag based on the block_device
 instead of having to poke into the block layer internal request_queue.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
+Acked-by: David Sterba <dsterba@suse.com> [btrfs]
 ---
- drivers/md/dm-table.c  | 4 +---
- fs/super.c             | 2 +-
- include/linux/blkdev.h | 6 ++++++
- mm/swapfile.c          | 2 +-
- 4 files changed, 9 insertions(+), 5 deletions(-)
+ drivers/block/rnbd/rnbd-srv.c       | 2 +-
+ drivers/block/xen-blkback/xenbus.c  | 2 +-
+ drivers/target/target_core_iblock.c | 8 ++------
+ fs/btrfs/disk-io.c                  | 3 +--
+ include/linux/blkdev.h              | 5 +++++
+ 5 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
-index 5e38d0dd009d5..d46839faa0ca5 100644
---- a/drivers/md/dm-table.c
-+++ b/drivers/md/dm-table.c
-@@ -1950,9 +1950,7 @@ static int device_requires_stable_pages(struct dm_target *ti,
- 					struct dm_dev *dev, sector_t start,
- 					sector_t len, void *data)
+diff --git a/drivers/block/rnbd/rnbd-srv.c b/drivers/block/rnbd/rnbd-srv.c
+index f04df6294650b..f8cc3c5fecb4b 100644
+--- a/drivers/block/rnbd/rnbd-srv.c
++++ b/drivers/block/rnbd/rnbd-srv.c
+@@ -558,7 +558,7 @@ static void rnbd_srv_fill_msg_open_rsp(struct rnbd_msg_open_rsp *rsp,
+ 	rsp->secure_discard =
+ 		cpu_to_le16(rnbd_dev_get_secure_discard(rnbd_dev));
+ 	rsp->cache_policy = 0;
+-	if (test_bit(QUEUE_FLAG_WC, &q->queue_flags))
++	if (bdev_write_cache(rnbd_dev->bdev))
+ 		rsp->cache_policy |= RNBD_WRITEBACK;
+ 	if (blk_queue_fua(q))
+ 		rsp->cache_policy |= RNBD_FUA;
+diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
+index f09040435e2e5..8b691fe50475f 100644
+--- a/drivers/block/xen-blkback/xenbus.c
++++ b/drivers/block/xen-blkback/xenbus.c
+@@ -517,7 +517,7 @@ static int xen_vbd_create(struct xen_blkif *blkif, blkif_vdev_t handle,
+ 		vbd->type |= VDISK_REMOVABLE;
+ 
+ 	q = bdev_get_queue(bdev);
+-	if (q && test_bit(QUEUE_FLAG_WC, &q->queue_flags))
++	if (bdev_write_cache(bdev))
+ 		vbd->flush_support = true;
+ 
+ 	if (q && blk_queue_secure_erase(q))
+diff --git a/drivers/target/target_core_iblock.c b/drivers/target/target_core_iblock.c
+index b41ee5c3b5b82..03013e85ffc03 100644
+--- a/drivers/target/target_core_iblock.c
++++ b/drivers/target/target_core_iblock.c
+@@ -737,7 +737,7 @@ iblock_execute_rw(struct se_cmd *cmd, struct scatterlist *sgl, u32 sgl_nents,
+ 		if (test_bit(QUEUE_FLAG_FUA, &q->queue_flags)) {
+ 			if (cmd->se_cmd_flags & SCF_FUA)
+ 				opf |= REQ_FUA;
+-			else if (!test_bit(QUEUE_FLAG_WC, &q->queue_flags))
++			else if (!bdev_write_cache(ib_dev->ibd_bd))
+ 				opf |= REQ_FUA;
+ 		}
+ 	} else {
+@@ -886,11 +886,7 @@ iblock_parse_cdb(struct se_cmd *cmd)
+ 
+ static bool iblock_get_write_cache(struct se_device *dev)
  {
--	struct request_queue *q = bdev_get_queue(dev->bdev);
+-	struct iblock_dev *ib_dev = IBLOCK_DEV(dev);
+-	struct block_device *bd = ib_dev->ibd_bd;
+-	struct request_queue *q = bdev_get_queue(bd);
 -
--	return blk_queue_stable_writes(q);
-+	return bdev_stable_writes(dev->bdev);
+-	return test_bit(QUEUE_FLAG_WC, &q->queue_flags);
++	return bdev_write_cache(IBLOCK_DEV(dev)->ibd_bd);
  }
  
- int dm_table_set_restrictions(struct dm_table *t, struct request_queue *q,
-diff --git a/fs/super.c b/fs/super.c
-index f1d4a193602d6..60f57c7bc0a69 100644
---- a/fs/super.c
-+++ b/fs/super.c
-@@ -1204,7 +1204,7 @@ static int set_bdev_super(struct super_block *s, void *data)
- 	s->s_dev = s->s_bdev->bd_dev;
- 	s->s_bdi = bdi_get(s->s_bdev->bd_disk->bdi);
+ static const struct target_backend_ops iblock_ops = {
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index b30309f187cf0..d80adee32128d 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -4247,8 +4247,7 @@ static void write_dev_flush(struct btrfs_device *device)
+ 	 * of simplicity, since this is a debug tool and not meant for use in
+ 	 * non-debug builds.
+ 	 */
+-	struct request_queue *q = bdev_get_queue(device->bdev);
+-	if (!test_bit(QUEUE_FLAG_WC, &q->queue_flags))
++	if (bdev_write_cache(device->bdev))
+ 		return;
+ #endif
  
--	if (blk_queue_stable_writes(s->s_bdev->bd_disk->queue))
-+	if (bdev_stable_writes(s->s_bdev))
- 		s->s_iflags |= SB_I_STABLE_WRITES;
- 	return 0;
- }
 diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 075b16d4560e7..a433798c3343e 100644
+index 3a9578e14a6b0..807a49aa5a27a 100644
 --- a/include/linux/blkdev.h
 +++ b/include/linux/blkdev.h
-@@ -1330,6 +1330,12 @@ static inline bool bdev_nonrot(struct block_device *bdev)
+@@ -1331,6 +1331,11 @@ static inline bool bdev_nonrot(struct block_device *bdev)
  	return blk_queue_nonrot(bdev_get_queue(bdev));
  }
  
-+static inline bool bdev_stable_writes(struct block_device *bdev)
++static inline bool bdev_write_cache(struct block_device *bdev)
 +{
-+	return test_bit(QUEUE_FLAG_STABLE_WRITES,
-+			&bdev_get_queue(bdev)->queue_flags);
++	return test_bit(QUEUE_FLAG_WC, &bdev_get_queue(bdev)->queue_flags);
 +}
 +
- static inline bool bdev_write_cache(struct block_device *bdev)
+ static inline enum blk_zoned_model bdev_zoned_model(struct block_device *bdev)
  {
- 	return test_bit(QUEUE_FLAG_WC, &bdev_get_queue(bdev)->queue_flags);
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index d5ab7ec4d92ca..4069f17a82c8e 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -3065,7 +3065,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
- 		goto bad_swap_unlock_inode;
- 	}
- 
--	if (p->bdev && blk_queue_stable_writes(p->bdev->bd_disk->queue))
-+	if (p->bdev && bdev_stable_writes(p->bdev))
- 		p->flags |= SWP_STABLE_WRITES;
- 
- 	if (p->bdev && p->bdev->bd_disk->fops->rw_page)
+ 	struct request_queue *q = bdev_get_queue(bdev);
 -- 
 2.30.2
 
