@@ -1,13 +1,11 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nhs1U-000Jvg-UV
- for linux-um@lists.infradead.org; Fri, 22 Apr 2022 12:04:30 +0000
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH] um: x86: print RIP with symbol
-Date: Fri, 22 Apr 2022 14:04:17 +0200
-Message-Id: <20220422140417.357c5911db58.I741c6239fb1423fe4ce6eb00f5dcce360c01a700@changeid>
+From: Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 16/27] block: use bdev_alignment_offset in
+ part_alignment_offset_show
+Date: Sat,  9 Apr 2022 06:50:32 +0200
+Message-Id: <20220409045043.23593-17-hch@lst.de>
+In-Reply-To: <20220409045043.23593-1-hch@lst.de>
+References: <20220409045043.23593-1-hch@lst.de>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -21,34 +19,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: dm-devel@redhat.com, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-um@lists.infradead.org, linux-block@vger.kernel.org, drbd-dev@lists.linbit.com, nbd@other.debian.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev, ocfs2-devel@oss.oracle.com, linux-mm@kvack.org, "Martin K . Petersen" <martin.petersen@oracle.com>
 
-From: Johannes Berg <johannes.berg@intel.com>
+Replace the open coded offset calculation with the proper helper.
+This is an ABI change in that the -1 for a misaligned partition is
+properly propagated, which can be considered a bug fix and matches
+what is done on the whole device.
 
-This is not only nicer to read by default, but also lets
-decode_stacktrace.sh work on it, rather than removing it.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
 ---
- arch/x86/um/sysrq_64.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ block/partitions/core.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/arch/x86/um/sysrq_64.c b/arch/x86/um/sysrq_64.c
-index 903ad91b624f..3120b4a782e5 100644
---- a/arch/x86/um/sysrq_64.c
-+++ b/arch/x86/um/sysrq_64.c
-@@ -19,7 +19,7 @@ void show_regs(struct pt_regs *regs)
- 	print_modules();
- 	printk(KERN_INFO "Pid: %d, comm: %.20s %s %s\n", task_pid_nr(current),
- 		current->comm, print_tainted(), init_utsname()->release);
--	printk(KERN_INFO "RIP: %04lx:[<%016lx>]\n", PT_REGS_CS(regs) & 0xffff,
-+	printk(KERN_INFO "RIP: %04x:%pS\n", PT_REGS_CS(regs) & 0xffff,
- 	       PT_REGS_IP(regs));
- 	printk(KERN_INFO "RSP: %016lx  EFLAGS: %08lx\n", PT_REGS_SP(regs),
- 	       PT_REGS_EFLAGS(regs));
+diff --git a/block/partitions/core.c b/block/partitions/core.c
+index 2ef8dfa1e5c85..240b3fff521e4 100644
+--- a/block/partitions/core.c
++++ b/block/partitions/core.c
+@@ -200,11 +200,7 @@ static ssize_t part_ro_show(struct device *dev,
+ static ssize_t part_alignment_offset_show(struct device *dev,
+ 					  struct device_attribute *attr, char *buf)
+ {
+-	struct block_device *bdev = dev_to_bdev(dev);
+-
+-	return sprintf(buf, "%u\n",
+-		queue_limit_alignment_offset(&bdev_get_queue(bdev)->limits,
+-				bdev->bd_start_sect));
++	return sprintf(buf, "%u\n", bdev_alignment_offset(dev_to_bdev(dev)));
+ }
+ 
+ static ssize_t part_discard_alignment_show(struct device *dev,
 -- 
-2.35.1
+2.30.2
 
 
 _______________________________________________
