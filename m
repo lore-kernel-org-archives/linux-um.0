@@ -1,19 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ndy9X-009xyg-Uy
- for linux-um@lists.infradead.org; Mon, 11 Apr 2022 17:48:41 +0000
-Date: Mon, 11 Apr 2022 10:48:36 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-Subject: Re: [PATCH 1/1] um: fix error return code in winch_tramp()
-Message-ID: <YlRp9KR1mp3/4Txo@thelio-3990X>
+ id 1ndTx3-004ZmF-Ub
+ for linux-um@lists.infradead.org; Sun, 10 Apr 2022 09:33:47 +0000
+Date: Sun, 10 Apr 2022 11:33:33 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <1087614384.239493.1649583213699.JavaMail.zimbra@nod.at>
+In-Reply-To: <1b03d888-cea3-3e6f-087f-daeb5642a975@leemhuis.info>
 References: <20210508032239.2177-1-thunder.leizhen@huawei.com>
  <Yjt31seiNv18HYrf@dev-arch.thelio-3990X>
  <1b03d888-cea3-3e6f-087f-daeb5642a975@leemhuis.info>
- <1087614384.239493.1649583213699.JavaMail.zimbra@nod.at>
+Subject: Re: [PATCH 1/1] um: fix error return code in winch_tramp()
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1087614384.239493.1649583213699.JavaMail.zimbra@nod.at>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,73 +20,37 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard@nod.at>
-Cc: Thorsten Leemhuis <regressions@leemhuis.info>, Zhen Lei <thunder.leizhen@huawei.com>, Jeff Dike <jdike@addtoit.com>, anton ivanov <anton.ivanov@cambridgegreys.com>, Andrew Morton <akpm@linux-foundation.org>, Eduard-Gabriel Munteanu <maxdamage@aladin.ro>, linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, regressions@lists.linux.dev
+To: Thorsten Leemhuis <regressions@leemhuis.info>
+Cc: Zhen Lei <thunder.leizhen@huawei.com>, Jeff Dike <jdike@addtoit.com>, anton ivanov <anton.ivanov@cambridgegreys.com>, Andrew Morton <akpm@linux-foundation.org>, Eduard-Gabriel Munteanu <maxdamage@aladin.ro>, linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, regressions@lists.linux.dev, Nathan Chancellor <nathan@kernel.org>
 
-Hi Richard,
-
-On Sun, Apr 10, 2022 at 11:33:33AM +0200, Richard Weinberger wrote:
-> ----- Urspr=FCngliche Mail -----
-> > Von: "Thorsten Leemhuis" <regressions@leemhuis.info>
-> > Hi, this is your Linux kernel regression tracker. Top-posting for once,
-> > to make this easily accessible to everyone.
-> > =
-
-> > Zhen Lei, Richard, what's up here? Below regression report is more than
-> > two weeks old now and afaics didn't even get a single reply.
-> =
-
-> Sorry, but UML is leisure pursuit, so I can only work on it when my
-> schedule permits it.
-
-No worries, it is easy enough to work around for our use case.
-
-> > Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
-> > =
-
-> > P.S.: As the Linux kernel's regression tracker I'm getting a lot of
-> > reports on my table. I can only look briefly into most of them and lack
-> > knowledge about most of the areas they concern. I thus unfortunately
-> > will sometimes get things wrong or miss something important. I hope
-> > that's not the case here; if you think it is, don't hesitate to tell me
-> > in a public reply, it's in everyone's interest to set the public record
-> > straight.
-> > =
-
-> > =
-
-> > =
-
-> > On 23.03.22 20:41, Nathan Chancellor wrote:
-> =
-
-> [...]
-> =
-
-> >> in case it helps. I am happy to provide more information or test patch=
-es
-> >> as necessary.
-> =
-
-> Nathan, can you provide me the error code from os_set_fd_block()?
-> My best guess is that setting the fd is optional here and UML does
-> not expect failure here.
-
-I attempted to print out the error code but it seems like there is no
-output in the console after "reboot: System halted". If I add an
-unconditional print right before the call to os_set_fd_block(), I see it
-during start up but I do not see it during shutdown. Is there some way
-to see that console output during shutdown?
-
-Cheers,
-Nathan
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIlRob3JzdGVuIExlZW1odWlz
+IiA8cmVncmVzc2lvbnNAbGVlbWh1aXMuaW5mbz4KPiBIaSwgdGhpcyBpcyB5b3VyIExpbnV4IGtl
+cm5lbCByZWdyZXNzaW9uIHRyYWNrZXIuIFRvcC1wb3N0aW5nIGZvciBvbmNlLAo+IHRvIG1ha2Ug
+dGhpcyBlYXNpbHkgYWNjZXNzaWJsZSB0byBldmVyeW9uZS4KPiAKPiBaaGVuIExlaSwgUmljaGFy
+ZCwgd2hhdCdzIHVwIGhlcmU/IEJlbG93IHJlZ3Jlc3Npb24gcmVwb3J0IGlzIG1vcmUgdGhhbgo+
+IHR3byB3ZWVrcyBvbGQgbm93IGFuZCBhZmFpY3MgZGlkbid0IGV2ZW4gZ2V0IGEgc2luZ2xlIHJl
+cGx5LgoKU29ycnksIGJ1dCBVTUwgaXMgbGVpc3VyZSBwdXJzdWl0LCBzbyBJIGNhbiBvbmx5IHdv
+cmsgb24gaXQgd2hlbiBteQpzY2hlZHVsZSBwZXJtaXRzIGl0LgogCj4gQ2lhbywgVGhvcnN0ZW4g
+KHdlYXJpbmcgaGlzICd0aGUgTGludXgga2VybmVsJ3MgcmVncmVzc2lvbiB0cmFja2VyJyBoYXQp
+Cj4gCj4gUC5TLjogQXMgdGhlIExpbnV4IGtlcm5lbCdzIHJlZ3Jlc3Npb24gdHJhY2tlciBJJ20g
+Z2V0dGluZyBhIGxvdCBvZgo+IHJlcG9ydHMgb24gbXkgdGFibGUuIEkgY2FuIG9ubHkgbG9vayBi
+cmllZmx5IGludG8gbW9zdCBvZiB0aGVtIGFuZCBsYWNrCj4ga25vd2xlZGdlIGFib3V0IG1vc3Qg
+b2YgdGhlIGFyZWFzIHRoZXkgY29uY2Vybi4gSSB0aHVzIHVuZm9ydHVuYXRlbHkKPiB3aWxsIHNv
+bWV0aW1lcyBnZXQgdGhpbmdzIHdyb25nIG9yIG1pc3Mgc29tZXRoaW5nIGltcG9ydGFudC4gSSBo
+b3BlCj4gdGhhdCdzIG5vdCB0aGUgY2FzZSBoZXJlOyBpZiB5b3UgdGhpbmsgaXQgaXMsIGRvbid0
+IGhlc2l0YXRlIHRvIHRlbGwgbWUKPiBpbiBhIHB1YmxpYyByZXBseSwgaXQncyBpbiBldmVyeW9u
+ZSdzIGludGVyZXN0IHRvIHNldCB0aGUgcHVibGljIHJlY29yZAo+IHN0cmFpZ2h0Lgo+IAo+IAo+
+IAo+IE9uIDIzLjAzLjIyIDIwOjQxLCBOYXRoYW4gQ2hhbmNlbGxvciB3cm90ZToKClsuLi5dCgo+
+PiBpbiBjYXNlIGl0IGhlbHBzLiBJIGFtIGhhcHB5IHRvIHByb3ZpZGUgbW9yZSBpbmZvcm1hdGlv
+biBvciB0ZXN0IHBhdGNoZXMKPj4gYXMgbmVjZXNzYXJ5LgoKTmF0aGFuLCBjYW4geW91IHByb3Zp
+ZGUgbWUgdGhlIGVycm9yIGNvZGUgZnJvbSBvc19zZXRfZmRfYmxvY2soKT8KTXkgYmVzdCBndWVz
+cyBpcyB0aGF0IHNldHRpbmcgdGhlIGZkIGlzIG9wdGlvbmFsIGhlcmUgYW5kIFVNTCBkb2VzCm5v
+dCBleHBlY3QgZmFpbHVyZSBoZXJlLgoKVGhhbmtzLAovL3JpY2hhcmQKCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdAps
+aW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vbGludXgtdW0K
 
