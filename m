@@ -1,10 +1,10 @@
-Return-Path: <SRS0=VN1/=UX=zx2c4.com=Jason@kernel.org>
+Return-Path: <SRS0=O4Mn=UU=zx2c4.com=Jason@kernel.org>
 From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH v4 02/11] m68k: use fallback for random_get_entropy() instead of zero
-Date: Wed, 13 Apr 2022 13:54:02 +0200
-Message-Id: <20220413115411.21489-3-Jason@zx2c4.com>
-In-Reply-To: <20220413115411.21489-1-Jason@zx2c4.com>
-References: <20220413115411.21489-1-Jason@zx2c4.com>
+Subject: [PATCH v2 08/11] x86: use ktime_read_raw_clock() for random_get_entropy() instead of zero
+Date: Sun, 10 Apr 2022 23:49:48 +0200
+Message-Id: <20220410214951.55294-9-Jason@zx2c4.com>
+In-Reply-To: <20220410214951.55294-1-Jason@zx2c4.com>
+References: <20220410214951.55294-1-Jason@zx2c4.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 To: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, tglx@linutronix.de, arnd@arndb.de
@@ -13,33 +13,43 @@ List-ID: <linux-um.lists.infradead.org>
 
 In the event that random_get_entropy() can't access a cycle counter or
 similar, falling back to returning 0 is really not the best we can do.
-Instead, at least calling random_get_entropy_fallback() would be
-preferable, because that always needs to return _something_, even
-falling back to jiffies eventually. It's not as though
-random_get_entropy_fallback() is super high precision or guaranteed to
-be entropic, but basically anything that's not zero all the time is
-better than returning zero all the time.
+Instead, at least calling ktime_read_raw_clock() would be preferable,
+because that always needs to return _something_, even falling back to
+jiffies eventually. It's not as though ktime_read_raw_clock() is super
+high precision or guaranteed to be entropic, but basically anything
+that's not zero all the time is better than returning zero all the time.
+
+If CONFIG_X86_TSC=n, then it's possible that we're running on a 486 with
+no RDTSC, so we only need the fallback code for that case.
 
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: x86@kernel.org
 Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 ---
- arch/m68k/include/asm/timex.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/include/asm/tsc.h | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/arch/m68k/include/asm/timex.h b/arch/m68k/include/asm/timex.h
-index 6a21d9358280..f4a7a340f4ca 100644
---- a/arch/m68k/include/asm/timex.h
-+++ b/arch/m68k/include/asm/timex.h
-@@ -35,7 +35,7 @@ static inline unsigned long random_get_entropy(void)
- {
- 	if (mach_random_get_entropy)
- 		return mach_random_get_entropy();
--	return 0;
-+	return random_get_entropy_fallback();
+diff --git a/arch/x86/include/asm/tsc.h b/arch/x86/include/asm/tsc.h
+index 01a300a9700b..dad3027bf6a2 100644
+--- a/arch/x86/include/asm/tsc.h
++++ b/arch/x86/include/asm/tsc.h
+@@ -28,6 +28,16 @@ static inline cycles_t get_cycles(void)
+ 	return rdtsc();
  }
- #define random_get_entropy	random_get_entropy
+ 
++static inline unsigned long random_get_entropy(void)
++{
++#ifndef CONFIG_X86_TSC
++	if (!boot_cpu_has(X86_FEATURE_TSC))
++		return ktime_read_raw_clock();
++#endif
++	return rdtsc();
++}
++#define random_get_entropy random_get_entropy
++
+ extern struct system_counterval_t convert_art_to_tsc(u64 art);
+ extern struct system_counterval_t convert_art_ns_to_tsc(u64 art_ns);
  
 -- 
 2.35.1
