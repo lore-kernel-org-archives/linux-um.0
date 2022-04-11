@@ -1,60 +1,95 @@
-Return-Path: <SRS0=VN1/=UX=zx2c4.com=Jason@kernel.org>
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH v4 08/11] um: use fallback for random_get_entropy() instead of zero
-Date: Wed, 13 Apr 2022 13:54:08 +0200
-Message-Id: <20220413115411.21489-9-Jason@zx2c4.com>
-In-Reply-To: <20220413115411.21489-1-Jason@zx2c4.com>
-References: <20220413115411.21489-1-Jason@zx2c4.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Date: Mon, 11 Apr 2022 19:24:21 +0200
+From: David Sterba <dsterba@suse.cz>
+Subject: Re: [PATCH 24/27] block: remove QUEUE_FLAG_DISCARD
+Message-ID: <20220411172421.GU15609@twin.jikos.cz>
+References: <20220409045043.23593-1-hch@lst.de>
+ <20220409045043.23593-25-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, tglx@linutronix.de, arnd@arndb.de
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Theodore Ts'o <tytso@mit.edu>, Dominik Brodowski <linux@dominikbrodowski.net>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, "David S . Miller" <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, John Stultz <john.stultz@linaro.org>, Stephen Boyd <sboyd@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org, linux-xtensa@linux-xtensa.org
-List-ID: <linux-um.lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <20220409045043.23593-25-hch@lst.de>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Reply-To: dsterba@suse.cz
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Christoph Hellwig <hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>, dm-devel@redhat.com, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-um@lists.infradead.org, linux-block@vger.kernel.org, drbd-dev@lists.linbit.com, nbd@other.debian.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev, ocfs2-devel@oss.oracle.com, linux-mm@kvack.org, "Martin K . Petersen" <martin.petersen@oracle.com>, Christoph =?iso-8859-1?Q?B=F6hmwalder?= <christoph.boehmwalder@linbit.com>, Coly Li <colyli@suse.de>
 
-In the event that random_get_entropy() can't access a cycle counter or
-similar, falling back to returning 0 is really not the best we can do.
-Instead, at least calling random_get_entropy_fallback() would be
-preferable, because that always needs to return _something_, even
-falling back to jiffies eventually. It's not as though
-random_get_entropy_fallback() is super high precision or guaranteed to
-be entropic, but basically anything that's not zero all the time is
-better than returning zero all the time.
+On Sat, Apr 09, 2022 at 06:50:40AM +0200, Christoph Hellwig wrote:
+> Just use a non-zero max_discard_sectors as an indicator for discard
+> support, similar to what is done for write zeroes.
+> =
 
-This is accomplished by just including the asm-generic code like on
-other architectures, which means we can get rid of the empty stub
-function here.
+> The only places where needs special attention is the RAID5 driver,
+> which must clear discard support for security reasons by default,
+> even if the default stacking rules would allow for it.
+> =
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
----
- arch/um/include/asm/timex.h | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
+> Acked-by: Christoph B=F6hmwalder <christoph.boehmwalder@linbit.com> [btrf=
+s]
+> Acked-by: Coly Li <colyli@suse.de> [bcache]
+> ---
+>  arch/um/drivers/ubd_kern.c          |  2 --
+>  block/blk-core.c                    |  2 +-
+>  block/blk-lib.c                     |  2 +-
+>  block/blk-mq-debugfs.c              |  1 -
+>  block/ioctl.c                       |  3 +--
+>  drivers/block/drbd/drbd_main.c      |  2 +-
+>  drivers/block/drbd/drbd_nl.c        | 19 ++-----------------
+>  drivers/block/drbd/drbd_receiver.c  |  3 +--
+>  drivers/block/loop.c                | 11 +++--------
+>  drivers/block/nbd.c                 |  5 +----
+>  drivers/block/null_blk/main.c       |  1 -
+>  drivers/block/rbd.c                 |  1 -
+>  drivers/block/rnbd/rnbd-clt.c       |  2 --
+>  drivers/block/rnbd/rnbd-srv-dev.h   |  3 ---
+>  drivers/block/virtio_blk.c          |  2 --
+>  drivers/block/xen-blkback/xenbus.c  |  2 +-
+>  drivers/block/xen-blkfront.c        |  2 --
+>  drivers/block/zram/zram_drv.c       |  1 -
+>  drivers/md/bcache/request.c         |  4 ++--
+>  drivers/md/bcache/super.c           |  3 +--
+>  drivers/md/bcache/sysfs.c           |  2 +-
+>  drivers/md/dm-cache-target.c        |  9 +--------
+>  drivers/md/dm-clone-target.c        |  9 +--------
+>  drivers/md/dm-log-writes.c          |  3 +--
+>  drivers/md/dm-raid.c                |  9 ++-------
+>  drivers/md/dm-table.c               |  9 ++-------
+>  drivers/md/dm-thin.c                | 11 +----------
+>  drivers/md/dm.c                     |  3 +--
+>  drivers/md/md-linear.c              | 11 +----------
+>  drivers/md/raid0.c                  |  7 -------
+>  drivers/md/raid1.c                  | 16 +---------------
+>  drivers/md/raid10.c                 | 18 ++----------------
+>  drivers/md/raid5-cache.c            |  2 +-
+>  drivers/md/raid5.c                  | 12 ++++--------
+>  drivers/mmc/core/queue.c            |  1 -
+>  drivers/mtd/mtd_blkdevs.c           |  1 -
+>  drivers/nvme/host/core.c            |  6 ++----
+>  drivers/s390/block/dasd_fba.c       |  1 -
+>  drivers/scsi/sd.c                   |  2 --
+>  drivers/target/target_core_device.c |  2 +-
 
-diff --git a/arch/um/include/asm/timex.h b/arch/um/include/asm/timex.h
-index e392a9a5bc9b..9f27176adb26 100644
---- a/arch/um/include/asm/timex.h
-+++ b/arch/um/include/asm/timex.h
-@@ -2,13 +2,8 @@
- #ifndef __UM_TIMEX_H
- #define __UM_TIMEX_H
- 
--typedef unsigned long cycles_t;
--
--static inline cycles_t get_cycles (void)
--{
--	return 0;
--}
--
- #define CLOCK_TICK_RATE (HZ)
- 
-+#include <asm-generic/timex.h>
-+
- #endif
--- 
-2.35.1
+For
 
+>  fs/btrfs/extent-tree.c              |  4 ++--
+>  fs/btrfs/ioctl.c                    |  2 +-
+
+Acked-by: David Sterba <dsterba@suse.com>
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
