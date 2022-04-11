@@ -1,58 +1,44 @@
-Return-Path: <SRS0=C8GT=US=zx2c4.com=Jason@kernel.org>
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH RFC v1 08/10] um: use sched_clock() for random_get_entropy() instead of zero
-Date: Fri,  8 Apr 2022 20:21:43 +0200
-Message-Id: <20220408182145.142506-9-Jason@zx2c4.com>
-In-Reply-To: <20220408182145.142506-1-Jason@zx2c4.com>
-References: <20220408182145.142506-1-Jason@zx2c4.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from lithops.sigma-star.at ([195.201.40.130])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1ndz2f-00AEJI-RN
+ for linux-um@lists.infradead.org; Mon, 11 Apr 2022 18:45:39 +0000
+Date: Mon, 11 Apr 2022 20:45:24 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <1287561645.244713.1649702724736.JavaMail.zimbra@nod.at>
+In-Reply-To: <YlRp9KR1mp3/4Txo@thelio-3990X>
+References: <20210508032239.2177-1-thunder.leizhen@huawei.com>
+ <Yjt31seiNv18HYrf@dev-arch.thelio-3990X>
+ <1b03d888-cea3-3e6f-087f-daeb5642a975@leemhuis.info>
+ <1087614384.239493.1649583213699.JavaMail.zimbra@nod.at>
+ <YlRp9KR1mp3/4Txo@thelio-3990X>
+Subject: Re: [PATCH 1/1] um: fix error return code in winch_tramp()
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, arnd@arndb.de
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Theodore Ts'o <tytso@mit.edu>, Dominik Brodowski <linux@dominikbrodowski.net>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, "David S . Miller" <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, John Stultz <john.stultz@linaro.org>, Stephen Boyd <sboyd@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org, linux-xtensa@linux-xtensa.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: Thorsten Leemhuis <regressions@leemhuis.info>, Zhen Lei <thunder.leizhen@huawei.com>, Jeff Dike <jdike@addtoit.com>, anton ivanov <anton.ivanov@cambridgegreys.com>, Andrew Morton <akpm@linux-foundation.org>, Eduard-Gabriel Munteanu <maxdamage@aladin.ro>, linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, regressions <regressions@lists.linux.dev>
 
-In the event that random_get_entropy() can't access a cycle counter or
-similar, falling back to returning 0 is really not the best we can do.
-Instead, at least calling sched_clock() would be preferable, because
-that always needs to return _something_, even falling back to jiffies
-eventually. It's not as though sched_clock() is super high precision or
-guaranteed to be entropic, but basically anything that's not zero all
-the time is better than returning zero all the time.
-
-This is accomplished by just including the asm-generic code like on
-other architectures, which means we can get rid of the empty stub
-function here.
-
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
----
- arch/um/include/asm/timex.h | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
-
-diff --git a/arch/um/include/asm/timex.h b/arch/um/include/asm/timex.h
-index e392a9a5bc9b..9f27176adb26 100644
---- a/arch/um/include/asm/timex.h
-+++ b/arch/um/include/asm/timex.h
-@@ -2,13 +2,8 @@
- #ifndef __UM_TIMEX_H
- #define __UM_TIMEX_H
- 
--typedef unsigned long cycles_t;
--
--static inline cycles_t get_cycles (void)
--{
--	return 0;
--}
--
- #define CLOCK_TICK_RATE (HZ)
- 
-+#include <asm-generic/timex.h>
-+
- #endif
--- 
-2.35.1
-
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIk5hdGhhbiBDaGFuY2VsbG9y
+IiA8bmF0aGFuQGtlcm5lbC5vcmc+Cj4gSSBhdHRlbXB0ZWQgdG8gcHJpbnQgb3V0IHRoZSBlcnJv
+ciBjb2RlIGJ1dCBpdCBzZWVtcyBsaWtlIHRoZXJlIGlzIG5vCj4gb3V0cHV0IGluIHRoZSBjb25z
+b2xlIGFmdGVyICJyZWJvb3Q6IFN5c3RlbSBoYWx0ZWQiLiBJZiBJIGFkZCBhbgo+IHVuY29uZGl0
+aW9uYWwgcHJpbnQgcmlnaHQgYmVmb3JlIHRoZSBjYWxsIHRvIG9zX3NldF9mZF9ibG9jaygpLCBJ
+IHNlZSBpdAo+IGR1cmluZyBzdGFydCB1cCBidXQgSSBkbyBub3Qgc2VlIGl0IGR1cmluZyBzaHV0
+ZG93bi4gSXMgdGhlcmUgc29tZSB3YXkKPiB0byBzZWUgdGhhdCBjb25zb2xlIG91dHB1dCBkdXJp
+bmcgc2h1dGRvd24/CgpJIHRoaW5rIGluIHRoaXMgY2FzZSB0aGUgZWFzaWVzdCB3YXkgaXMgYXR0
+YWNoaW5nIGdkYiB3aXRoIGEgYnJlYWtwb2ludC4KClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5n
+IGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
 
