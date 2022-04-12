@@ -1,8 +1,8 @@
-Return-Path: <SRS0=VN1/=UX=zx2c4.com=Jason@kernel.org>
+Return-Path: <SRS0=cL3S=UW=zx2c4.com=Jason@kernel.org>
 From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH v4 00/11] archs/random: fallback to best raw ktime when no cycle counter
-Date: Wed, 13 Apr 2022 13:54:00 +0200
-Message-Id: <20220413115411.21489-1-Jason@zx2c4.com>
+Subject: [PATCH v3 00/10] archs/random: fallback to best raw ktime when no cycle counter
+Date: Tue, 12 Apr 2022 19:27:44 +0200
+Message-Id: <20220412172754.149498-1-Jason@zx2c4.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 To: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, tglx@linutronix.de, arnd@arndb.de
@@ -56,13 +56,12 @@ get_cycles(), a question with limited scope.
 
 If this (or a future revision) looks good to you all and receives the
 requisite acks, my plan was to take these through the random.git tree
-for 5.19, so that I can then build on top of it.
+for 5.19, so that I can then build on top of it. Alternatively, maybe
+Thomas wants to take it through his timekeeping tree? Or something else.
+If anybody has strong preferences, please pipe up.
 
 Thanks,
 Jason
-
-Changes v3->v4:
-- Use EXPORT_SYMBOL_GPL instead of EXPORT_SYMBOL.
 
 Changes v2->v3:
 - Name the fallback function random_get_entropy_fallback(), so that it
@@ -111,7 +110,7 @@ Cc: linux-um@lists.infradead.org
 Cc: x86@kernel.org
 Cc: linux-xtensa@linux-xtensa.org
 
-Jason A. Donenfeld (11):
+Jason A. Donenfeld (10):
   timekeeping: add raw clock fallback for random_get_entropy()
   m68k: use fallback for random_get_entropy() instead of zero
   riscv: use fallback for random_get_entropy() instead of zero
@@ -122,21 +121,19 @@ Jason A. Donenfeld (11):
   um: use fallback for random_get_entropy() instead of zero
   sparc: use fallback for random_get_entropy() instead of zero
   xtensa: use fallback for random_get_entropy() instead of zero
-  random: insist on random_get_entropy() existing in order to simplify
 
  arch/arm/include/asm/timex.h      |  1 +
  arch/m68k/include/asm/timex.h     |  2 +-
  arch/mips/include/asm/timex.h     |  2 +-
- arch/nios2/include/asm/timex.h    |  2 +
+ arch/nios2/include/asm/timex.h    |  2 ++
  arch/riscv/include/asm/timex.h    |  2 +-
- arch/sparc/include/asm/timex_32.h |  4 +-
- arch/um/include/asm/timex.h       |  9 +---
- arch/x86/include/asm/tsc.h        | 10 ++++
- arch/xtensa/include/asm/timex.h   |  6 +--
- drivers/char/random.c             | 87 ++++++++++---------------------
- include/linux/timex.h             |  8 +++
- kernel/time/timekeeping.c         | 10 ++++
- 12 files changed, 67 insertions(+), 76 deletions(-)
+ arch/sparc/include/asm/timex_32.h |  4 +---
+ arch/um/include/asm/timex.h       |  9 ++-------
+ arch/x86/include/asm/tsc.h        | 10 ++++++++++
+ arch/xtensa/include/asm/timex.h   |  6 ++----
+ include/linux/timex.h             |  8 ++++++++
+ kernel/time/timekeeping.c         | 10 ++++++++++
+ 11 files changed, 39 insertions(+), 17 deletions(-)
 
 -- 
 2.35.1
