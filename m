@@ -1,11 +1,21 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 19/27] block: remove queue_discard_alignment
-Date: Wed,  6 Apr 2022 08:05:08 +0200
-Message-Id: <20220406060516.409838-20-hch@lst.de>
-In-Reply-To: <20220406060516.409838-1-hch@lst.de>
-References: <20220406060516.409838-1-hch@lst.de>
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1neAn8-00C9tR-Bs
+ for linux-um@lists.infradead.org; Tue, 12 Apr 2022 07:18:24 +0000
+Received: by mail-pl1-f197.google.com with SMTP id
+ s18-20020a170902ea1200b001570031e832so6001055plg.6
+ for <linux-um@lists.infradead.org>; Tue, 12 Apr 2022 00:18:19 -0700 (PDT)
+Message-ID: <bd6bec0d-00db-93ae-4d86-daa10f5d8e88@redhat.com>
+Date: Tue, 12 Apr 2022 15:18:04 +0800
 MIME-Version: 1.0
+Subject: Re: [PATCH v9 28/32] virtio_net: set the default max ring size by
+ find_vqs()
+References: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
+ <20220406034346.74409-29-xuanzhuo@linux.alibaba.com>
+From: Jason Wang <jasowang@redhat.com>
+In-Reply-To: <20220406034346.74409-29-xuanzhuo@linux.alibaba.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -14,61 +24,79 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jens Axboe <axboe@kernel.dk>
-Cc: dm-devel@redhat.com, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-um@lists.infradead.org, linux-block@vger.kernel.org, drbd-dev@lists.linbit.com, nbd@other.debian.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev, ocfs2-devel@oss.oracle.com, linux-mm@kvack.org
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, virtualization@lists.linux-foundation.org
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
 
-Just use bdev_alignment_offset in disk_discard_alignment_show instead.
-That helpers is the same except for an always false branch that doesn't
-matter in this slow path.
-
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- block/genhd.c          | 2 +-
- include/linux/blkdev.h | 8 --------
- 2 files changed, 1 insertion(+), 9 deletions(-)
-
-diff --git a/block/genhd.c b/block/genhd.c
-index 712031ce19070..36532b9318419 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -1019,7 +1019,7 @@ static ssize_t disk_discard_alignment_show(struct device *dev,
- {
- 	struct gendisk *disk = dev_to_disk(dev);
- 
--	return sprintf(buf, "%d\n", queue_discard_alignment(disk->queue));
-+	return sprintf(buf, "%d\n", bdev_alignment_offset(disk->part0));
- }
- 
- static ssize_t diskseq_show(struct device *dev,
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 0a1795ac26275..5a9b7aeda010b 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -1253,14 +1253,6 @@ bdev_zone_write_granularity(struct block_device *bdev)
- 
- int bdev_alignment_offset(struct block_device *bdev);
- 
--static inline int queue_discard_alignment(const struct request_queue *q)
--{
--	if (q->limits.discard_misaligned)
--		return -1;
--
--	return q->limits.discard_alignment;
--}
--
- static inline int queue_limit_discard_alignment(struct queue_limits *lim, sector_t sector)
- {
- 	unsigned int alignment, granularity, offset;
--- 
-2.30.2
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+CuWcqCAyMDIyLzQvNiDkuIrljYgxMTo0MywgWHVhbiBaaHVvIOWGmemBkzoKPiBVc2UgdmlydGlv
+X2ZpbmRfdnFzX2N0eF9zaXplKCkgdG8gc3BlY2lmeSB0aGUgbWF4aW11bSByaW5nIHNpemUgb2Yg
+dHgsCj4gcnggYXQgdGhlIHNhbWUgdGltZS4KPgo+ICAgICAgICAgICAgICAgICAgICAgICAgICAg
+fCByeC90eCByaW5nIHNpemUKPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tCj4gc3BlZWQgPT0gVU5LTk9XTiBvciA8IDEwR3wgMTAyNAo+IHNwZWVkIDwgNDBHICAg
+ICAgICAgICAgICB8IDQwOTYKPiBzcGVlZCA+PSA0MEcgICAgICAgICAgICAgfCA4MTkyCj4KPiBD
+YWxsIHZpcnRuZXRfdXBkYXRlX3NldHRpbmdzKCkgb25jZSBiZWZvcmUgY2FsbGluZyBpbml0X3Zx
+cygpIHRvIHVwZGF0ZQo+IHNwZWVkLgo+Cj4gU2lnbmVkLW9mZi1ieTogWHVhbiBaaHVvIDx4dWFu
+emh1b0BsaW51eC5hbGliYWJhLmNvbT4KPiAtLS0KCgpBY2tlZC1ieTogSmFzb24gV2FuZyA8amFz
+b3dhbmdAcmVkaGF0LmNvbT4KCgo+ICAgZHJpdmVycy9uZXQvdmlydGlvX25ldC5jIHwgNDIgKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLQo+ICAgMSBmaWxlIGNoYW5nZWQs
+IDM4IGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pCj4KPiBkaWZmIC0tZ2l0IGEvZHJpdmVy
+cy9uZXQvdmlydGlvX25ldC5jIGIvZHJpdmVycy9uZXQvdmlydGlvX25ldC5jCj4gaW5kZXggYTgw
+MWVhNDA5MDhmLi5kYWQ0OTdhNDdiM2EgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9uZXQvdmlydGlv
+X25ldC5jCj4gKysrIGIvZHJpdmVycy9uZXQvdmlydGlvX25ldC5jCj4gQEAgLTI4NjEsNiArMjg2
+MSwyOSBAQCBzdGF0aWMgdW5zaWduZWQgaW50IG1lcmdlYWJsZV9taW5fYnVmX2xlbihzdHJ1Y3Qg
+dmlydG5ldF9pbmZvICp2aSwgc3RydWN0IHZpcnRxdQo+ICAgCQkgICAodW5zaWduZWQgaW50KUdP
+T0RfUEFDS0VUX0xFTik7Cj4gICB9Cj4gICAKPiArc3RhdGljIHZvaWQgdmlydG5ldF9jb25maWdf
+c2l6ZXMoc3RydWN0IHZpcnRuZXRfaW5mbyAqdmksIHUzMiAqc2l6ZXMpCj4gK3sKPiArCXUzMiBp
+LCByeF9zaXplLCB0eF9zaXplOwo+ICsKPiArCWlmICh2aS0+c3BlZWQgPT0gU1BFRURfVU5LTk9X
+TiB8fCB2aS0+c3BlZWQgPCBTUEVFRF8xMDAwMCkgewo+ICsJCXJ4X3NpemUgPSAxMDI0Owo+ICsJ
+CXR4X3NpemUgPSAxMDI0Owo+ICsKPiArCX0gZWxzZSBpZiAodmktPnNwZWVkIDwgU1BFRURfNDAw
+MDApIHsKPiArCQlyeF9zaXplID0gMTAyNCAqIDQ7Cj4gKwkJdHhfc2l6ZSA9IDEwMjQgKiA0Owo+
+ICsKPiArCX0gZWxzZSB7Cj4gKwkJcnhfc2l6ZSA9IDEwMjQgKiA4Owo+ICsJCXR4X3NpemUgPSAx
+MDI0ICogODsKPiArCX0KPiArCj4gKwlmb3IgKGkgPSAwOyBpIDwgdmktPm1heF9xdWV1ZV9wYWly
+czsgaSsrKSB7Cj4gKwkJc2l6ZXNbcnhxMnZxKGkpXSA9IHJ4X3NpemU7Cj4gKwkJc2l6ZXNbdHhx
+MnZxKGkpXSA9IHR4X3NpemU7Cj4gKwl9Cj4gK30KPiArCj4gICBzdGF0aWMgaW50IHZpcnRuZXRf
+ZmluZF92cXMoc3RydWN0IHZpcnRuZXRfaW5mbyAqdmkpCj4gICB7Cj4gICAJdnFfY2FsbGJhY2tf
+dCAqKmNhbGxiYWNrczsKPiBAQCAtMjg2OCw2ICsyODkxLDcgQEAgc3RhdGljIGludCB2aXJ0bmV0
+X2ZpbmRfdnFzKHN0cnVjdCB2aXJ0bmV0X2luZm8gKnZpKQo+ICAgCWludCByZXQgPSAtRU5PTUVN
+Owo+ICAgCWludCBpLCB0b3RhbF92cXM7Cj4gICAJY29uc3QgY2hhciAqKm5hbWVzOwo+ICsJdTMy
+ICpzaXplczsKPiAgIAlib29sICpjdHg7Cj4gICAKPiAgIAkvKiBXZSBleHBlY3QgMSBSWCB2aXJ0
+cXVldWUgZm9sbG93ZWQgYnkgMSBUWCB2aXJ0cXVldWUsIGZvbGxvd2VkIGJ5Cj4gQEAgLTI4OTUs
+MTAgKzI5MTksMTUgQEAgc3RhdGljIGludCB2aXJ0bmV0X2ZpbmRfdnFzKHN0cnVjdCB2aXJ0bmV0
+X2luZm8gKnZpKQo+ICAgCQljdHggPSBOVUxMOwo+ICAgCX0KPiAgIAo+ICsJc2l6ZXMgPSBrbWFs
+bG9jX2FycmF5KHRvdGFsX3Zxcywgc2l6ZW9mKCpzaXplcyksIEdGUF9LRVJORUwpOwo+ICsJaWYg
+KCFzaXplcykKPiArCQlnb3RvIGVycl9zaXplczsKPiArCj4gICAJLyogUGFyYW1ldGVycyBmb3Ig
+Y29udHJvbCB2aXJ0cXVldWUsIGlmIGFueSAqLwo+ICAgCWlmICh2aS0+aGFzX2N2cSkgewo+ICAg
+CQljYWxsYmFja3NbdG90YWxfdnFzIC0gMV0gPSBOVUxMOwo+ICAgCQluYW1lc1t0b3RhbF92cXMg
+LSAxXSA9ICJjb250cm9sIjsKPiArCQlzaXplc1t0b3RhbF92cXMgLSAxXSA9IDY0Owo+ICAgCX0K
+PiAgIAo+ICAgCS8qIEFsbG9jYXRlL2luaXRpYWxpemUgcGFyYW1ldGVycyBmb3Igc2VuZC9yZWNl
+aXZlIHZpcnRxdWV1ZXMgKi8KPiBAQCAtMjkxMyw4ICsyOTQyLDEwIEBAIHN0YXRpYyBpbnQgdmly
+dG5ldF9maW5kX3ZxcyhzdHJ1Y3QgdmlydG5ldF9pbmZvICp2aSkKPiAgIAkJCWN0eFtyeHEydnEo
+aSldID0gdHJ1ZTsKPiAgIAl9Cj4gICAKPiAtCXJldCA9IHZpcnRpb19maW5kX3Zxc19jdHgodmkt
+PnZkZXYsIHRvdGFsX3ZxcywgdnFzLCBjYWxsYmFja3MsCj4gLQkJCQkgIG5hbWVzLCBjdHgsIE5V
+TEwpOwo+ICsJdmlydG5ldF9jb25maWdfc2l6ZXModmksIHNpemVzKTsKPiArCj4gKwlyZXQgPSB2
+aXJ0aW9fZmluZF92cXNfY3R4X3NpemUodmktPnZkZXYsIHRvdGFsX3ZxcywgdnFzLCBjYWxsYmFj
+a3MsCj4gKwkJCQkgICAgICAgbmFtZXMsIHNpemVzLCBjdHgsIE5VTEwpOwo+ICAgCWlmIChyZXQp
+Cj4gICAJCWdvdG8gZXJyX2ZpbmQ7Cj4gICAKPiBAQCAtMjkzNCw2ICsyOTY1LDggQEAgc3RhdGlj
+IGludCB2aXJ0bmV0X2ZpbmRfdnFzKHN0cnVjdCB2aXJ0bmV0X2luZm8gKnZpKQo+ICAgCj4gICAK
+PiAgIGVycl9maW5kOgo+ICsJa2ZyZWUoc2l6ZXMpOwo+ICtlcnJfc2l6ZXM6Cj4gICAJa2ZyZWUo
+Y3R4KTsKPiAgIGVycl9jdHg6Cj4gICAJa2ZyZWUobmFtZXMpOwo+IEBAIC0zMjUyLDYgKzMyODUs
+OSBAQCBzdGF0aWMgaW50IHZpcnRuZXRfcHJvYmUoc3RydWN0IHZpcnRpb19kZXZpY2UgKnZkZXYp
+Cj4gICAJCXZpLT5jdXJyX3F1ZXVlX3BhaXJzID0gbnVtX29ubGluZV9jcHVzKCk7Cj4gICAJdmkt
+Pm1heF9xdWV1ZV9wYWlycyA9IG1heF9xdWV1ZV9wYWlyczsKPiAgIAo+ICsJdmlydG5ldF9pbml0
+X3NldHRpbmdzKGRldik7Cj4gKwl2aXJ0bmV0X3VwZGF0ZV9zZXR0aW5ncyh2aSk7Cj4gKwo+ICAg
+CS8qIEFsbG9jYXRlL2luaXRpYWxpemUgdGhlIHJ4L3R4IHF1ZXVlcywgYW5kIGludm9rZSBmaW5k
+X3ZxcyAqLwo+ICAgCWVyciA9IGluaXRfdnFzKHZpKTsKPiAgIAlpZiAoZXJyKQo+IEBAIC0zMjY0
+LDggKzMzMDAsNiBAQCBzdGF0aWMgaW50IHZpcnRuZXRfcHJvYmUoc3RydWN0IHZpcnRpb19kZXZp
+Y2UgKnZkZXYpCj4gICAJbmV0aWZfc2V0X3JlYWxfbnVtX3R4X3F1ZXVlcyhkZXYsIHZpLT5jdXJy
+X3F1ZXVlX3BhaXJzKTsKPiAgIAluZXRpZl9zZXRfcmVhbF9udW1fcnhfcXVldWVzKGRldiwgdmkt
+PmN1cnJfcXVldWVfcGFpcnMpOwo+ICAgCj4gLQl2aXJ0bmV0X2luaXRfc2V0dGluZ3MoZGV2KTsK
+PiAtCj4gICAJaWYgKHZpcnRpb19oYXNfZmVhdHVyZSh2ZGV2LCBWSVJUSU9fTkVUX0ZfU1RBTkRC
+WSkpIHsKPiAgIAkJdmktPmZhaWxvdmVyID0gbmV0X2ZhaWxvdmVyX2NyZWF0ZSh2aS0+ZGV2KTsK
+PiAgIAkJaWYgKElTX0VSUih2aS0+ZmFpbG92ZXIpKSB7CgoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVt
+QGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9saW51eC11bQo=
 
