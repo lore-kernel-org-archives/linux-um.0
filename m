@@ -1,11 +1,21 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 12/27] block: add a bdev_write_cache helper
-Date: Sat,  9 Apr 2022 06:50:28 +0200
-Message-Id: <20220409045043.23593-13-hch@lst.de>
-In-Reply-To: <20220409045043.23593-1-hch@lst.de>
-References: <20220409045043.23593-1-hch@lst.de>
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1ne6bO-00BLCq-Rv
+ for linux-um@lists.infradead.org; Tue, 12 Apr 2022 02:50:00 +0000
+Received: by mail-pg1-f200.google.com with SMTP id
+ b18-20020a63d812000000b0037e1aa59c0bso9805292pgh.12
+ for <linux-um@lists.infradead.org>; Mon, 11 Apr 2022 19:49:56 -0700 (PDT)
+Message-ID: <f57f8da3-38a6-91a5-05bb-9435a21880d7@redhat.com>
+Date: Tue, 12 Apr 2022 10:49:44 +0800
 MIME-Version: 1.0
+Subject: Re: [PATCH v9 03/32] virtio_ring: update the document of the
+ virtqueue_detach_unused_buf for queue reset
+References: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
+ <20220406034346.74409-4-xuanzhuo@linux.alibaba.com>
+From: Jason Wang <jasowang@redhat.com>
+In-Reply-To: <20220406034346.74409-4-xuanzhuo@linux.alibaba.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -14,115 +24,32 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jens Axboe <axboe@kernel.dk>
-Cc: dm-devel@redhat.com, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-um@lists.infradead.org, linux-block@vger.kernel.org, drbd-dev@lists.linbit.com, nbd@other.debian.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev, ocfs2-devel@oss.oracle.com, linux-mm@kvack.org, "Martin K . Petersen" <martin.petersen@oracle.com>, David Sterba <dsterba@suse.com>
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, virtualization@lists.linux-foundation.org
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
 
-Add a helper to check the write cache flag based on the block_device
-instead of having to poke into the block layer internal request_queue.
-
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
-Acked-by: David Sterba <dsterba@suse.com> [btrfs]
----
- drivers/block/rnbd/rnbd-srv.c       | 2 +-
- drivers/block/xen-blkback/xenbus.c  | 2 +-
- drivers/target/target_core_iblock.c | 8 ++------
- fs/btrfs/disk-io.c                  | 3 +--
- include/linux/blkdev.h              | 5 +++++
- 5 files changed, 10 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/block/rnbd/rnbd-srv.c b/drivers/block/rnbd/rnbd-srv.c
-index f04df6294650b..f8cc3c5fecb4b 100644
---- a/drivers/block/rnbd/rnbd-srv.c
-+++ b/drivers/block/rnbd/rnbd-srv.c
-@@ -558,7 +558,7 @@ static void rnbd_srv_fill_msg_open_rsp(struct rnbd_msg_open_rsp *rsp,
- 	rsp->secure_discard =
- 		cpu_to_le16(rnbd_dev_get_secure_discard(rnbd_dev));
- 	rsp->cache_policy = 0;
--	if (test_bit(QUEUE_FLAG_WC, &q->queue_flags))
-+	if (bdev_write_cache(rnbd_dev->bdev))
- 		rsp->cache_policy |= RNBD_WRITEBACK;
- 	if (blk_queue_fua(q))
- 		rsp->cache_policy |= RNBD_FUA;
-diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
-index f09040435e2e5..8b691fe50475f 100644
---- a/drivers/block/xen-blkback/xenbus.c
-+++ b/drivers/block/xen-blkback/xenbus.c
-@@ -517,7 +517,7 @@ static int xen_vbd_create(struct xen_blkif *blkif, blkif_vdev_t handle,
- 		vbd->type |= VDISK_REMOVABLE;
- 
- 	q = bdev_get_queue(bdev);
--	if (q && test_bit(QUEUE_FLAG_WC, &q->queue_flags))
-+	if (bdev_write_cache(bdev))
- 		vbd->flush_support = true;
- 
- 	if (q && blk_queue_secure_erase(q))
-diff --git a/drivers/target/target_core_iblock.c b/drivers/target/target_core_iblock.c
-index b41ee5c3b5b82..03013e85ffc03 100644
---- a/drivers/target/target_core_iblock.c
-+++ b/drivers/target/target_core_iblock.c
-@@ -737,7 +737,7 @@ iblock_execute_rw(struct se_cmd *cmd, struct scatterlist *sgl, u32 sgl_nents,
- 		if (test_bit(QUEUE_FLAG_FUA, &q->queue_flags)) {
- 			if (cmd->se_cmd_flags & SCF_FUA)
- 				opf |= REQ_FUA;
--			else if (!test_bit(QUEUE_FLAG_WC, &q->queue_flags))
-+			else if (!bdev_write_cache(ib_dev->ibd_bd))
- 				opf |= REQ_FUA;
- 		}
- 	} else {
-@@ -886,11 +886,7 @@ iblock_parse_cdb(struct se_cmd *cmd)
- 
- static bool iblock_get_write_cache(struct se_device *dev)
- {
--	struct iblock_dev *ib_dev = IBLOCK_DEV(dev);
--	struct block_device *bd = ib_dev->ibd_bd;
--	struct request_queue *q = bdev_get_queue(bd);
--
--	return test_bit(QUEUE_FLAG_WC, &q->queue_flags);
-+	return bdev_write_cache(IBLOCK_DEV(dev)->ibd_bd);
- }
- 
- static const struct target_backend_ops iblock_ops = {
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index b30309f187cf0..d80adee32128d 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -4247,8 +4247,7 @@ static void write_dev_flush(struct btrfs_device *device)
- 	 * of simplicity, since this is a debug tool and not meant for use in
- 	 * non-debug builds.
- 	 */
--	struct request_queue *q = bdev_get_queue(device->bdev);
--	if (!test_bit(QUEUE_FLAG_WC, &q->queue_flags))
-+	if (bdev_write_cache(device->bdev))
- 		return;
- #endif
- 
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 3a9578e14a6b0..807a49aa5a27a 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -1331,6 +1331,11 @@ static inline bool bdev_nonrot(struct block_device *bdev)
- 	return blk_queue_nonrot(bdev_get_queue(bdev));
- }
- 
-+static inline bool bdev_write_cache(struct block_device *bdev)
-+{
-+	return test_bit(QUEUE_FLAG_WC, &bdev_get_queue(bdev)->queue_flags);
-+}
-+
- static inline enum blk_zoned_model bdev_zoned_model(struct block_device *bdev)
- {
- 	struct request_queue *q = bdev_get_queue(bdev);
--- 
-2.30.2
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+CuWcqCAyMDIyLzQvNiDkuIrljYgxMTo0MywgWHVhbiBaaHVvIOWGmemBkzoKPiBBZGRlZCBkb2N1
+bWVudGF0aW9uIGZvciB2aXJ0cXVldWVfZGV0YWNoX3VudXNlZF9idWYsIGFsbG93aW5nIGl0IHRv
+IGJlCj4gY2FsbGVkIG9uIHF1ZXVlIHJlc2V0Lgo+Cj4gU2lnbmVkLW9mZi1ieTogWHVhbiBaaHVv
+IDx4dWFuemh1b0BsaW51eC5hbGliYWJhLmNvbT4KCgpBY2tlZC1ieTogSmFzb24gV2FuZyA8amFz
+b3dhbmdAcmVkaGF0LmNvbT4KCgo+IC0tLQo+ICAgZHJpdmVycy92aXJ0aW8vdmlydGlvX3Jpbmcu
+YyB8IDQgKystLQo+ICAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlv
+bnMoLSkKPgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3ZpcnRpby92aXJ0aW9fcmluZy5jIGIvZHJp
+dmVycy92aXJ0aW8vdmlydGlvX3JpbmcuYwo+IGluZGV4IGI4NzEzMGM4ZjMxMi4uZjE4MDdmNmIw
+NmE1IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvdmlydGlvL3ZpcnRpb19yaW5nLmMKPiArKysgYi9k
+cml2ZXJzL3ZpcnRpby92aXJ0aW9fcmluZy5jCj4gQEAgLTIxMjcsOCArMjEyNyw4IEBAIEVYUE9S
+VF9TWU1CT0xfR1BMKHZpcnRxdWV1ZV9lbmFibGVfY2JfZGVsYXllZCk7Cj4gICAgKiBAX3ZxOiB0
+aGUgc3RydWN0IHZpcnRxdWV1ZSB3ZSdyZSB0YWxraW5nIGFib3V0Lgo+ICAgICoKPiAgICAqIFJl
+dHVybnMgTlVMTCBvciB0aGUgImRhdGEiIHRva2VuIGhhbmRlZCB0byB2aXJ0cXVldWVfYWRkXyoo
+KS4KPiAtICogVGhpcyBpcyBub3QgdmFsaWQgb24gYW4gYWN0aXZlIHF1ZXVlOyBpdCBpcyB1c2Vm
+dWwgb25seSBmb3IgZGV2aWNlCj4gLSAqIHNodXRkb3duLgo+ICsgKiBUaGlzIGlzIG5vdCB2YWxp
+ZCBvbiBhbiBhY3RpdmUgcXVldWU7IGl0IGlzIHVzZWZ1bCBmb3IgZGV2aWNlCj4gKyAqIHNodXRk
+b3duIG9yIHRoZSByZXNldCBxdWV1ZS4KPiAgICAqLwo+ICAgdm9pZCAqdmlydHF1ZXVlX2RldGFj
+aF91bnVzZWRfYnVmKHN0cnVjdCB2aXJ0cXVldWUgKl92cSkKPiAgIHsKCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QK
+bGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
 
