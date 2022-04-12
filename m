@@ -1,84 +1,42 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from dfw.source.kernel.org ([139.178.84.217])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ncGgn-008UZr-Hb
- for linux-um@lists.infradead.org; Thu, 07 Apr 2022 01:11:59 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.16 08/30] um: port_user: Improve error handling when
- port-helper is not found
-Date: Wed,  6 Apr 2022 21:11:18 -0400
-Message-Id: <20220407011140.113856-8-sashal@kernel.org>
-In-Reply-To: <20220407011140.113856-1-sashal@kernel.org>
-References: <20220407011140.113856-1-sashal@kernel.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Glenn Washburn <development@efficientek.com>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, linux-um@lists.infradead.org
+Date: Tue, 12 Apr 2022 21:26:36 +0200
+References: <20220412172754.149498-1-Jason@zx2c4.com>
+	<20220412172754.149498-3-Jason@zx2c4.com>
+In-Reply-To: <20220412172754.149498-3-Jason@zx2c4.com>
+Message-ID: <CAMuHMdXexfkgfrLcUis3DSWJ=SSC-CargHbMvopsjoWrvNacFg@mail.gmail.com>
+Subject: Re: [PATCH v3 02/10] m68k: use fallback for random_get_entropy()
+ instead of zero
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+To: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Arnd Bergmann <arnd@arndb.de>, "Jason A. Donenfeld" <Jason@zx2c4.com>, Theodore Ts'o <tytso@mit.edu>, Dominik Brodowski <linux@dominikbrodowski.net>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, "David S . Miller" <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, John Stultz <john.stultz@linaro.org>, Stephen Boyd <sboyd@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>, linux-riscv <linux-riscv@lists.infradead.org>, sparclinux <sparclinux@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>, the arch/x86 maintainers <x86@kernel.org>, "open list:TENSILICA XTENSA PORT (xtensa)" <linux-xtensa@linux-xtensa.org>
+List-ID: <linux-um.lists.infradead.org>
 
-From: Glenn Washburn <development@efficientek.com>
+On Tue, Apr 12, 2022 at 7:29 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+> In the event that random_get_entropy() can't access a cycle counter or
+> similar, falling back to returning 0 is really not the best we can do.
+> Instead, at least calling random_get_entropy_fallback() would be
+> preferable, because that always needs to return _something_, even
+> falling back to jiffies eventually. It's not as though
+> random_get_entropy_fallback() is super high precision or guaranteed to
+> be entropic, but basically anything that's not zero all the time is
+> better than returning zero all the time.
+>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 
-[ Upstream commit 3cb5a7f167c620a8b0e38b0446df2e024d2243dc ]
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Check if port-helper exists and is executable. If not, write an error
-message to the kernel log with information to help the user diagnose the
-issue and exit with an error. If UML_PORT_HELPER was not set, write a
-message suggesting that the user set it. This makes it easier to understand
-why telneting to the UML instance is failing and what can be done to fix it.
+Gr{oetje,eeting}s,
 
-Signed-off-by: Glenn Washburn <development@efficientek.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/um/drivers/port_user.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+                        Geert
 
-diff --git a/arch/um/drivers/port_user.c b/arch/um/drivers/port_user.c
-index 5b5b64cb1071..133ca7bf2d91 100644
---- a/arch/um/drivers/port_user.c
-+++ b/arch/um/drivers/port_user.c
-@@ -5,6 +5,7 @@
- 
- #include <stdio.h>
- #include <stdlib.h>
-+#include <string.h>
- #include <errno.h>
- #include <termios.h>
- #include <unistd.h>
-@@ -175,6 +176,17 @@ int port_connection(int fd, int *socket, int *pid_out)
- 	if (new < 0)
- 		return -errno;
- 
-+	err = os_access(argv[2], X_OK);
-+	if (err < 0) {
-+		printk(UM_KERN_ERR "port_connection : error accessing port-helper "
-+		       "executable at %s: %s\n", argv[2], strerror(-err));
-+		if (env == NULL)
-+			printk(UM_KERN_ERR "Set UML_PORT_HELPER environment "
-+				"variable to path to uml-utilities port-helper "
-+				"binary\n");
-+		goto out_close;
-+	}
-+
- 	err = os_pipe(socket, 0, 0);
- 	if (err < 0)
- 		goto out_close;
--- 
-2.35.1
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
