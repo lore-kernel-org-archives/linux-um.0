@@ -1,32 +1,98 @@
-Return-Path: <tglx@linutronix.de>
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v3 01/10] timekeeping: add raw clock fallback for
- random_get_entropy()
-In-Reply-To: <20220412172754.149498-2-Jason@zx2c4.com>
+Return-Path: <SRS0=cL3S=UW=zx2c4.com=Jason@kernel.org>
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: [PATCH v3 01/10] timekeeping: add raw clock fallback for random_get_entropy()
+Date: Tue, 12 Apr 2022 19:27:45 +0200
+Message-Id: <20220412172754.149498-2-Jason@zx2c4.com>
+In-Reply-To: <20220412172754.149498-1-Jason@zx2c4.com>
 References: <20220412172754.149498-1-Jason@zx2c4.com>
- <20220412172754.149498-2-Jason@zx2c4.com>
-Date: Tue, 12 Apr 2022 22:57:52 +0200
-Message-ID: <87bkx6f29b.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain
-To: "Jason A. Donenfeld" <Jason@zx2c4.com>, linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, arnd@arndb.de
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Theodore Ts'o <tytso@mit.edu>, Dominik Brodowski <linux@dominikbrodowski.net>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, "David S . Miller" <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin  <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov" <jcmvbkbc@gmail.com>, John Stultz <john.stultz@linaro.org>, Stephen Boyd <sboyd@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org, linux-xtensa@linux-xtensa.org
+Content-Transfer-Encoding: 8bit
+To: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, tglx@linutronix.de, arnd@arndb.de
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Theodore Ts'o <tytso@mit.edu>, Dominik Brodowski <linux@dominikbrodowski.net>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, "David S . Miller" <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, John Stultz <john.stultz@linaro.org>, Stephen Boyd <sboyd@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org, linux-xtensa@linux-xtensa.org
 List-ID: <linux-um.lists.infradead.org>
 
-On Tue, Apr 12 2022 at 19:27, Jason A. Donenfeld wrote:
-> +/**
-> + * random_get_entropy_fallback - Returns the raw clock source value,
-> + * used by random.c for platforms with no valid random_get_entropy().
-> + */
-> +unsigned long random_get_entropy_fallback(void)
-> +{
-> +	return tk_clock_read(&tk_core.timekeeper.tkr_mono);
-> +}
-> +EXPORT_SYMBOL(random_get_entropy_fallback);
+The addition of random_get_entropy_fallback() provides access to
+whichever time source has the highest frequency, which is useful for
+gathering entropy on platforms without available cycle counters. It's
+not necessarily as good as being able to quickly access a cycle counter
+that the CPU has, but it's still something, even when it falls back to
+being jiffies-based.
 
-EXPORT_SYMBOL_GPL() please.
+In the event that a given arch does not define get_cycles(), falling
+back to the get_cycles() default implementation that returns 0 is really
+not the best we can do. Instead, at least calling
+random_get_entropy_fallback() would be preferable, because that always
+needs to return _something_, even falling back to jiffies eventually.
+It's not as though random_get_entropy_fallback() is super high precision
+or guaranteed to be entropic, but basically anything that's not zero all
+the time is better than returning zero all the time.
 
-Thanks,
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+---
+ include/linux/timex.h     |  8 ++++++++
+ kernel/time/timekeeping.c | 10 ++++++++++
+ 2 files changed, 18 insertions(+)
 
-        tglx
+diff --git a/include/linux/timex.h b/include/linux/timex.h
+index 5745c90c8800..fbbe34226044 100644
+--- a/include/linux/timex.h
++++ b/include/linux/timex.h
+@@ -62,6 +62,8 @@
+ #include <linux/types.h>
+ #include <linux/param.h>
+ 
++extern unsigned long random_get_entropy_fallback(void);
++
+ #include <asm/timex.h>
+ 
+ #ifndef random_get_entropy
+@@ -74,8 +76,14 @@
+  *
+  * By default we use get_cycles() for this purpose, but individual
+  * architectures may override this in their asm/timex.h header file.
++ * If a given arch does not have get_cycles(), then we fallback to
++ * using random_get_entropy_fallback().
+  */
++#ifdef get_cycles
+ #define random_get_entropy()	((unsigned long)get_cycles())
++#else
++#define random_get_entropy()	random_get_entropy_fallback()
++#endif
+ #endif
+ 
+ /*
+diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
+index dcdcb85121e4..7372d60c7c65 100644
+--- a/kernel/time/timekeeping.c
++++ b/kernel/time/timekeeping.c
+@@ -17,6 +17,7 @@
+ #include <linux/clocksource.h>
+ #include <linux/jiffies.h>
+ #include <linux/time.h>
++#include <linux/timex.h>
+ #include <linux/tick.h>
+ #include <linux/stop_machine.h>
+ #include <linux/pvclock_gtod.h>
+@@ -2380,6 +2381,15 @@ static int timekeeping_validate_timex(const struct __kernel_timex *txc)
+ 	return 0;
+ }
+ 
++/**
++ * random_get_entropy_fallback - Returns the raw clock source value,
++ * used by random.c for platforms with no valid random_get_entropy().
++ */
++unsigned long random_get_entropy_fallback(void)
++{
++	return tk_clock_read(&tk_core.timekeeper.tkr_mono);
++}
++EXPORT_SYMBOL(random_get_entropy_fallback);
+ 
+ /**
+  * do_adjtimex() - Accessor function to NTP __do_adjtimex function
+-- 
+2.35.1
+
 
