@@ -1,11 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 19/27] block: remove queue_discard_alignment
-Date: Fri, 15 Apr 2022 06:52:50 +0200
-Message-Id: <20220415045258.199825-20-hch@lst.de>
-In-Reply-To: <20220415045258.199825-1-hch@lst.de>
-References: <20220415045258.199825-1-hch@lst.de>
-MIME-Version: 1.0
+Received: from out199-3.us.a.mail.aliyun.com ([47.90.199.3])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1neWsf-00HIJp-6T
+ for linux-um@lists.infradead.org; Wed, 13 Apr 2022 06:53:34 +0000
+Message-ID: <1649832776.947242-8-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH v9 06/32] virtio_ring: split: extract the logic of alloc
+ queue
+Date: Wed, 13 Apr 2022 14:52:56 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+References: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
+ <20220406034346.74409-7-xuanzhuo@linux.alibaba.com>
+ <b435b86d-26af-2e39-8859-6746830769d5@redhat.com>
+In-Reply-To: <b435b86d-26af-2e39-8859-6746830769d5@redhat.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -14,62 +20,74 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jens Axboe <axboe@kernel.dk>
-Cc: dm-devel@redhat.com, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-um@lists.infradead.org, linux-block@vger.kernel.org, drbd-dev@lists.linbit.com, nbd@other.debian.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev, ocfs2-devel@oss.oracle.com, linux-mm@kvack.org, "Martin K . Petersen" <martin.petersen@oracle.com>
+To: Jason Wang <jasowang@redhat.com>
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, virtualization@lists.linux-foundation.org
 
-Just use bdev_alignment_offset in disk_discard_alignment_show instead.
-That helpers is the same except for an always false branch that doesn't
-matter in this slow path.
-
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
----
- block/genhd.c          | 2 +-
- include/linux/blkdev.h | 8 --------
- 2 files changed, 1 insertion(+), 9 deletions(-)
-
-diff --git a/block/genhd.c b/block/genhd.c
-index 712031ce19070..36532b9318419 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -1019,7 +1019,7 @@ static ssize_t disk_discard_alignment_show(struct device *dev,
- {
- 	struct gendisk *disk = dev_to_disk(dev);
- 
--	return sprintf(buf, "%d\n", queue_discard_alignment(disk->queue));
-+	return sprintf(buf, "%d\n", bdev_alignment_offset(disk->part0));
- }
- 
- static ssize_t diskseq_show(struct device *dev,
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 0a1795ac26275..5a9b7aeda010b 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -1253,14 +1253,6 @@ bdev_zone_write_granularity(struct block_device *bdev)
- 
- int bdev_alignment_offset(struct block_device *bdev);
- 
--static inline int queue_discard_alignment(const struct request_queue *q)
--{
--	if (q->limits.discard_misaligned)
--		return -1;
--
--	return q->limits.discard_alignment;
--}
--
- static inline int queue_limit_discard_alignment(struct queue_limits *lim, sector_t sector)
- {
- 	unsigned int alignment, granularity, offset;
--- 
-2.30.2
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gVHVlLCAxMiBBcHIgMjAyMiAxMToyMjozMyArMDgwMCwgSmFzb24gV2FuZyA8amFzb3dhbmdA
+cmVkaGF0LmNvbT4gd3JvdGU6Cj4KPiDlnKggMjAyMi80LzYg5LiK5Y2IMTE6NDMsIFh1YW4gWmh1
+byDlhpnpgZM6Cj4gPiBTZXBhcmF0ZSB0aGUgbG9naWMgb2Ygc3BsaXQgdG8gY3JlYXRlIHZyaW5n
+IHF1ZXVlLgo+ID4KPiA+IFRoaXMgZmVhdHVyZSBpcyByZXF1aXJlZCBmb3Igc3Vic2VxdWVudCB2
+aXJ0dXF1ZXVlIHJlc2V0IHZyaW5nLgo+ID4KPiA+IFNpZ25lZC1vZmYtYnk6IFh1YW4gWmh1byA8
+eHVhbnpodW9AbGludXguYWxpYmFiYS5jb20+Cj4gPiAtLS0KPiA+ICAgZHJpdmVycy92aXJ0aW8v
+dmlydGlvX3JpbmcuYyB8IDUzICsrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLQo+
+ID4gICAxIGZpbGUgY2hhbmdlZCwgMzYgaW5zZXJ0aW9ucygrKSwgMTcgZGVsZXRpb25zKC0pCj4g
+Pgo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvdmlydGlvL3ZpcnRpb19yaW5nLmMgYi9kcml2ZXJz
+L3ZpcnRpby92aXJ0aW9fcmluZy5jCj4gPiBpbmRleCAzM2ZkZGZiOTA3YTYuLjcyZDVhZTA2M2Zh
+MCAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvdmlydGlvL3ZpcnRpb19yaW5nLmMKPiA+ICsrKyBi
+L2RyaXZlcnMvdmlydGlvL3ZpcnRpb19yaW5nLmMKPiA+IEBAIC05MTUsMjMgKzkxNSwxNSBAQCBz
+dGF0aWMgdm9pZCAqdmlydHF1ZXVlX2RldGFjaF91bnVzZWRfYnVmX3NwbGl0KHN0cnVjdCB2aXJ0
+cXVldWUgKl92cSkKPiA+ICAgCXJldHVybiBOVUxMOwo+ID4gICB9Cj4gPgo+ID4gLXN0YXRpYyBz
+dHJ1Y3QgdmlydHF1ZXVlICp2cmluZ19jcmVhdGVfdmlydHF1ZXVlX3NwbGl0KAo+ID4gLQl1bnNp
+Z25lZCBpbnQgaW5kZXgsCj4gPiAtCXVuc2lnbmVkIGludCBudW0sCj4gPiAtCXVuc2lnbmVkIGlu
+dCB2cmluZ19hbGlnbiwKPiA+IC0Jc3RydWN0IHZpcnRpb19kZXZpY2UgKnZkZXYsCj4gPiAtCWJv
+b2wgd2Vha19iYXJyaWVycywKPiA+IC0JYm9vbCBtYXlfcmVkdWNlX251bSwKPiA+IC0JYm9vbCBj
+b250ZXh0LAo+ID4gLQlib29sICgqbm90aWZ5KShzdHJ1Y3QgdmlydHF1ZXVlICopLAo+ID4gLQl2
+b2lkICgqY2FsbGJhY2spKHN0cnVjdCB2aXJ0cXVldWUgKiksCj4gPiAtCWNvbnN0IGNoYXIgKm5h
+bWUpCj4gPiArc3RhdGljIHZvaWQgKnZyaW5nX2FsbG9jX3F1ZXVlX3NwbGl0KHN0cnVjdCB2aXJ0
+aW9fZGV2aWNlICp2ZGV2LAo+ID4gKwkJCQkgICAgIGRtYV9hZGRyX3QgKmRtYV9hZGRyLAo+ID4g
+KwkJCQkgICAgIHUzMiAqbiwKPiA+ICsJCQkJICAgICB1bnNpZ25lZCBpbnQgdnJpbmdfYWxpZ24s
+Cj4gPiArCQkJCSAgICAgYm9vbCB3ZWFrX2JhcnJpZXJzLAo+Cj4KPiBUaGlzIGlzIG5vdCB1c2Vk
+IGluIHRoaXMgZnVuY3Rpb24uCgpUaGUgbmV4dCB2ZXJzaW9uIHdpbGwgZml4IGl0LgoKVGhhbmtz
+LgoKCj4KPiBUaGFua3MKPgo+Cj4gPiArCQkJCSAgICAgYm9vbCBtYXlfcmVkdWNlX251bSkKPiA+
+ICAgewo+ID4gLQlzdHJ1Y3QgdmlydHF1ZXVlICp2cTsKPiA+ICAgCXZvaWQgKnF1ZXVlID0gTlVM
+TDsKPiA+IC0JZG1hX2FkZHJfdCBkbWFfYWRkcjsKPiA+IC0Jc2l6ZV90IHF1ZXVlX3NpemVfaW5f
+Ynl0ZXM7Cj4gPiAtCXN0cnVjdCB2cmluZyB2cmluZzsKPiA+ICsJdTMyIG51bSA9ICpuOwo+ID4K
+PiA+ICAgCS8qIFdlIGFzc3VtZSBudW0gaXMgYSBwb3dlciBvZiAyLiAqLwo+ID4gICAJaWYgKG51
+bSAmIChudW0gLSAxKSkgewo+ID4gQEAgLTk0Miw3ICs5MzQsNyBAQCBzdGF0aWMgc3RydWN0IHZp
+cnRxdWV1ZSAqdnJpbmdfY3JlYXRlX3ZpcnRxdWV1ZV9zcGxpdCgKPiA+ICAgCS8qIFRPRE86IGFs
+bG9jYXRlIGVhY2ggcXVldWUgY2h1bmsgaW5kaXZpZHVhbGx5ICovCj4gPiAgIAlmb3IgKDsgbnVt
+ICYmIHZyaW5nX3NpemUobnVtLCB2cmluZ19hbGlnbikgPiBQQUdFX1NJWkU7IG51bSAvPSAyKSB7
+Cj4gPiAgIAkJcXVldWUgPSB2cmluZ19hbGxvY19xdWV1ZSh2ZGV2LCB2cmluZ19zaXplKG51bSwg
+dnJpbmdfYWxpZ24pLAo+ID4gLQkJCQkJICAmZG1hX2FkZHIsCj4gPiArCQkJCQkgIGRtYV9hZGRy
+LAo+ID4gICAJCQkJCSAgR0ZQX0tFUk5FTHxfX0dGUF9OT1dBUk58X19HRlBfWkVSTyk7Cj4gPiAg
+IAkJaWYgKHF1ZXVlKQo+ID4gICAJCQlicmVhazsKPiA+IEBAIC05NTYsMTEgKzk0OCwzOCBAQCBz
+dGF0aWMgc3RydWN0IHZpcnRxdWV1ZSAqdnJpbmdfY3JlYXRlX3ZpcnRxdWV1ZV9zcGxpdCgKPiA+
+ICAgCWlmICghcXVldWUpIHsKPiA+ICAgCQkvKiBUcnkgdG8gZ2V0IGEgc2luZ2xlIHBhZ2UuIFlv
+dSBhcmUgbXkgb25seSBob3BlISAqLwo+ID4gICAJCXF1ZXVlID0gdnJpbmdfYWxsb2NfcXVldWUo
+dmRldiwgdnJpbmdfc2l6ZShudW0sIHZyaW5nX2FsaWduKSwKPiA+IC0JCQkJCSAgJmRtYV9hZGRy
+LCBHRlBfS0VSTkVMfF9fR0ZQX1pFUk8pOwo+ID4gKwkJCQkJICBkbWFfYWRkciwgR0ZQX0tFUk5F
+THxfX0dGUF9aRVJPKTsKPiA+ICAgCX0KPiA+ICAgCWlmICghcXVldWUpCj4gPiAgIAkJcmV0dXJu
+IE5VTEw7Cj4gPgo+ID4gKwkqbiA9IG51bTsKPiA+ICsJcmV0dXJuIHF1ZXVlOwo+ID4gK30KPiA+
+ICsKPiA+ICtzdGF0aWMgc3RydWN0IHZpcnRxdWV1ZSAqdnJpbmdfY3JlYXRlX3ZpcnRxdWV1ZV9z
+cGxpdCgKPiA+ICsJdW5zaWduZWQgaW50IGluZGV4LAo+ID4gKwl1bnNpZ25lZCBpbnQgbnVtLAo+
+ID4gKwl1bnNpZ25lZCBpbnQgdnJpbmdfYWxpZ24sCj4gPiArCXN0cnVjdCB2aXJ0aW9fZGV2aWNl
+ICp2ZGV2LAo+ID4gKwlib29sIHdlYWtfYmFycmllcnMsCj4gPiArCWJvb2wgbWF5X3JlZHVjZV9u
+dW0sCj4gPiArCWJvb2wgY29udGV4dCwKPiA+ICsJYm9vbCAoKm5vdGlmeSkoc3RydWN0IHZpcnRx
+dWV1ZSAqKSwKPiA+ICsJdm9pZCAoKmNhbGxiYWNrKShzdHJ1Y3QgdmlydHF1ZXVlICopLAo+ID4g
+Kwljb25zdCBjaGFyICpuYW1lKQo+ID4gK3sKPiA+ICsJc2l6ZV90IHF1ZXVlX3NpemVfaW5fYnl0
+ZXM7Cj4gPiArCXN0cnVjdCB2aXJ0cXVldWUgKnZxOwo+ID4gKwlkbWFfYWRkcl90IGRtYV9hZGRy
+Owo+ID4gKwlzdHJ1Y3QgdnJpbmcgdnJpbmc7Cj4gPiArCXZvaWQgKnF1ZXVlOwo+ID4gKwo+ID4g
+KwlxdWV1ZSA9IHZyaW5nX2FsbG9jX3F1ZXVlX3NwbGl0KHZkZXYsICZkbWFfYWRkciwgJm51bSwg
+dnJpbmdfYWxpZ24sCj4gPiArCQkJCQl3ZWFrX2JhcnJpZXJzLCBtYXlfcmVkdWNlX251bSk7Cj4g
+PiArCWlmICghcXVldWUpCj4gPiArCQlyZXR1cm4gTlVMTDsKPiA+ICsKPiA+ICAgCXF1ZXVlX3Np
+emVfaW5fYnl0ZXMgPSB2cmluZ19zaXplKG51bSwgdnJpbmdfYWxpZ24pOwo+ID4gICAJdnJpbmdf
+aW5pdCgmdnJpbmcsIG51bSwgcXVldWUsIHZyaW5nX2FsaWduKTsKPiA+Cj4KCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlz
+dApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
+L21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
 
