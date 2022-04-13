@@ -1,10 +1,10 @@
-Return-Path: <SRS0=O4Mn=UU=zx2c4.com=Jason@kernel.org>
+Return-Path: <SRS0=VN1/=UX=zx2c4.com=Jason@kernel.org>
 From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH v2 10/11] sparc: use ktime_read_raw_clock() for random_get_entropy() instead of zero
-Date: Sun, 10 Apr 2022 23:49:50 +0200
-Message-Id: <20220410214951.55294-11-Jason@zx2c4.com>
-In-Reply-To: <20220410214951.55294-1-Jason@zx2c4.com>
-References: <20220410214951.55294-1-Jason@zx2c4.com>
+Subject: [PATCH v4 06/11] nios2: use fallback for random_get_entropy() instead of zero
+Date: Wed, 13 Apr 2022 13:54:06 +0200
+Message-Id: <20220413115411.21489-7-Jason@zx2c4.com>
+In-Reply-To: <20220413115411.21489-1-Jason@zx2c4.com>
+References: <20220413115411.21489-1-Jason@zx2c4.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 To: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, tglx@linutronix.de, arnd@arndb.de
@@ -13,37 +13,31 @@ List-ID: <linux-um.lists.infradead.org>
 
 In the event that random_get_entropy() can't access a cycle counter or
 similar, falling back to returning 0 is really not the best we can do.
-Instead, at least calling ktime_read_raw_clock() would be preferable,
-because that always needs to return _something_, even falling back to
-jiffies eventually. It's not as though ktime_read_raw_clock() is super
-high precision or guaranteed to be entropic, but basically anything
-that's not zero all the time is better than returning zero all the time.
-
-This is accomplished by just including the asm-generic code like on
-other architectures, which means we can get rid of the empty stub
-function here.
+Instead, at least calling random_get_entropy_fallback() would be
+preferable, because that always needs to return _something_, even
+falling back to jiffies eventually. It's not as though
+random_get_entropy_fallback() is super high precision or guaranteed to
+be entropic, but basically anything that's not zero all the time is
+better than returning zero all the time.
 
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: David S. Miller <davem@davemloft.net>
+Cc: Dinh Nguyen <dinguyen@kernel.org>
 Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 ---
- arch/sparc/include/asm/timex_32.h | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ arch/nios2/include/asm/timex.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/sparc/include/asm/timex_32.h b/arch/sparc/include/asm/timex_32.h
-index 542915b46209..f86326a6f89e 100644
---- a/arch/sparc/include/asm/timex_32.h
-+++ b/arch/sparc/include/asm/timex_32.h
-@@ -9,8 +9,6 @@
+diff --git a/arch/nios2/include/asm/timex.h b/arch/nios2/include/asm/timex.h
+index a769f871b28d..d9a3f426cdda 100644
+--- a/arch/nios2/include/asm/timex.h
++++ b/arch/nios2/include/asm/timex.h
+@@ -9,4 +9,6 @@ typedef unsigned long cycles_t;
  
- #define CLOCK_TICK_RATE	1193180 /* Underlying HZ */
+ extern cycles_t get_cycles(void);
  
--/* XXX Maybe do something better at some point... -DaveM */
--typedef unsigned long cycles_t;
--#define get_cycles()	(0)
-+#include <asm-generic/timex.h>
- 
++#define random_get_entropy() (((unsigned long)get_cycles()) ?: random_get_entropy_fallback())
++
  #endif
 -- 
 2.35.1
