@@ -1,98 +1,52 @@
-Return-Path: <linux-pm-owner@vger.kernel.org>
-From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Subject: [PATCH 23/30] printk: kmsg_dump: Introduce helper to inform number of dumpers
-Date: Wed, 27 Apr 2022 19:49:17 -0300
-Message-Id: <20220427224924.592546-24-gpiccoli@igalia.com>
-In-Reply-To: <20220427224924.592546-1-gpiccoli@igalia.com>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
+Return-Path: <SRS0=VN1/=UX=zx2c4.com=Jason@kernel.org>
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: [PATCH v4 09/11] sparc: use fallback for random_get_entropy() instead of zero
+Date: Wed, 13 Apr 2022 13:54:09 +0200
+Message-Id: <20220413115411.21489-10-Jason@zx2c4.com>
+In-Reply-To: <20220413115411.21489-1-Jason@zx2c4.com>
+References: <20220413115411.21489-1-Jason@zx2c4.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-To: akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, gpiccoli@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org
+To: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, tglx@linutronix.de, arnd@arndb.de
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Theodore Ts'o <tytso@mit.edu>, Dominik Brodowski <linux@dominikbrodowski.net>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, "David S . Miller" <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, John Stultz <john.stultz@linaro.org>, Stephen Boyd <sboyd@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org, linux-xtensa@linux-xtensa.org
 List-ID: <linux-um.lists.infradead.org>
 
-Currently we don't have a way to check if there are dumpers set,
-except counting the list members maybe. This patch introduces a very
-simple helper to provide this information, by just keeping track of
-registered/unregistered kmsg dumpers. It's going to be used on the
-panic path in the subsequent patch.
+In the event that random_get_entropy() can't access a cycle counter or
+similar, falling back to returning 0 is really not the best we can do.
+Instead, at least calling random_get_entropy_fallback() would be
+preferable, because that always needs to return _something_, even
+falling back to jiffies eventually. It's not as though
+random_get_entropy_fallback() is super high precision or guaranteed to
+be entropic, but basically anything that's not zero all the time is
+better than returning zero all the time.
 
-Notice that the spinlock guarding kmsg_dumpers list also guards
-increment/decrement of the dumper's counter, but there's no need
-for that when reading the counter in the panic path, since that is
-an atomic path and there's no other (planned) user.
+This is accomplished by just including the asm-generic code like on
+other architectures, which means we can get rid of the empty stub
+function here.
 
-Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: David S. Miller <davem@davemloft.net>
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 ---
- include/linux/kmsg_dump.h |  7 +++++++
- kernel/printk/printk.c    | 14 ++++++++++++++
- 2 files changed, 21 insertions(+)
+ arch/sparc/include/asm/timex_32.h | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/include/linux/kmsg_dump.h b/include/linux/kmsg_dump.h
-index 906521c2329c..abea1974bff8 100644
---- a/include/linux/kmsg_dump.h
-+++ b/include/linux/kmsg_dump.h
-@@ -65,6 +65,8 @@ bool kmsg_dump_get_buffer(struct kmsg_dump_iter *iter, bool syslog,
+diff --git a/arch/sparc/include/asm/timex_32.h b/arch/sparc/include/asm/timex_32.h
+index 542915b46209..f86326a6f89e 100644
+--- a/arch/sparc/include/asm/timex_32.h
++++ b/arch/sparc/include/asm/timex_32.h
+@@ -9,8 +9,6 @@
  
- void kmsg_dump_rewind(struct kmsg_dump_iter *iter);
+ #define CLOCK_TICK_RATE	1193180 /* Underlying HZ */
  
-+bool kmsg_has_dumpers(void);
-+
- int kmsg_dump_register(struct kmsg_dumper *dumper);
+-/* XXX Maybe do something better at some point... -DaveM */
+-typedef unsigned long cycles_t;
+-#define get_cycles()	(0)
++#include <asm-generic/timex.h>
  
- int kmsg_dump_unregister(struct kmsg_dumper *dumper);
-@@ -91,6 +93,11 @@ static inline void kmsg_dump_rewind(struct kmsg_dump_iter *iter)
- {
- }
- 
-+static inline bool kmsg_has_dumpers(void)
-+{
-+	return false;
-+}
-+
- static inline int kmsg_dump_register(struct kmsg_dumper *dumper)
- {
- 	return -EINVAL;
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index da03c15ecc89..e3a1c429fbbc 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -3399,6 +3399,18 @@ EXPORT_SYMBOL(printk_timed_ratelimit);
- 
- static DEFINE_SPINLOCK(dump_list_lock);
- static LIST_HEAD(dump_list);
-+static int num_dumpers;
-+
-+/**
-+ * kmsg_has_dumpers - inform if there is any kmsg dumper registered.
-+ *
-+ * Returns true if there's at least one registered dumper, or false
-+ * if otherwise.
-+ */
-+bool kmsg_has_dumpers(void)
-+{
-+	return num_dumpers ? true : false;
-+}
- 
- /**
-  * kmsg_dump_register - register a kernel log dumper.
-@@ -3423,6 +3435,7 @@ int kmsg_dump_register(struct kmsg_dumper *dumper)
- 		dumper->registered = 1;
- 		list_add_tail_rcu(&dumper->list, &dump_list);
- 		err = 0;
-+		num_dumpers++;
- 	}
- 	spin_unlock_irqrestore(&dump_list_lock, flags);
- 
-@@ -3447,6 +3460,7 @@ int kmsg_dump_unregister(struct kmsg_dumper *dumper)
- 		dumper->registered = 0;
- 		list_del_rcu(&dumper->list);
- 		err = 0;
-+		num_dumpers--;
- 	}
- 	spin_unlock_irqrestore(&dump_list_lock, flags);
- 	synchronize_rcu();
+ #endif
 -- 
-2.36.0
+2.35.1
 
 
