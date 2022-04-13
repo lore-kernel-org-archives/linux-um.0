@@ -1,16 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from dfw.source.kernel.org ([139.178.84.217])
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ncGfe-008Twe-Ng
- for linux-um@lists.infradead.org; Thu, 07 Apr 2022 01:10:48 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.17 08/31] um: port_user: Improve error handling when
- port-helper is not found
-Date: Wed,  6 Apr 2022 21:10:06 -0400
-Message-Id: <20220407011029.113321-8-sashal@kernel.org>
-In-Reply-To: <20220407011029.113321-1-sashal@kernel.org>
-References: <20220407011029.113321-1-sashal@kernel.org>
-MIME-Version: 1.0
+ id 1neWrx-00HICm-32
+ for linux-um@lists.infradead.org; Wed, 13 Apr 2022 06:52:50 +0000
+Message-ID: <1649832486.146921-7-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH v9 07/32] virtio_ring: split: extract the logic of alloc
+ state and extra
+Date: Wed, 13 Apr 2022 14:48:06 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+References: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
+ <20220406034346.74409-8-xuanzhuo@linux.alibaba.com>
+ <927ee895-84ae-fb69-c9ed-9c1836ff1d03@redhat.com>
+In-Reply-To: <927ee895-84ae-fb69-c9ed-9c1836ff1d03@redhat.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -19,66 +20,81 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Glenn Washburn <development@efficientek.com>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, linux-um@lists.infradead.org
+To: Jason Wang <jasowang@redhat.com>
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, virtualization@lists.linux-foundation.org
 
-From: Glenn Washburn <development@efficientek.com>
-
-[ Upstream commit 3cb5a7f167c620a8b0e38b0446df2e024d2243dc ]
-
-Check if port-helper exists and is executable. If not, write an error
-message to the kernel log with information to help the user diagnose the
-issue and exit with an error. If UML_PORT_HELPER was not set, write a
-message suggesting that the user set it. This makes it easier to understand
-why telneting to the UML instance is failing and what can be done to fix it.
-
-Signed-off-by: Glenn Washburn <development@efficientek.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/um/drivers/port_user.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/arch/um/drivers/port_user.c b/arch/um/drivers/port_user.c
-index 5b5b64cb1071..133ca7bf2d91 100644
---- a/arch/um/drivers/port_user.c
-+++ b/arch/um/drivers/port_user.c
-@@ -5,6 +5,7 @@
- 
- #include <stdio.h>
- #include <stdlib.h>
-+#include <string.h>
- #include <errno.h>
- #include <termios.h>
- #include <unistd.h>
-@@ -175,6 +176,17 @@ int port_connection(int fd, int *socket, int *pid_out)
- 	if (new < 0)
- 		return -errno;
- 
-+	err = os_access(argv[2], X_OK);
-+	if (err < 0) {
-+		printk(UM_KERN_ERR "port_connection : error accessing port-helper "
-+		       "executable at %s: %s\n", argv[2], strerror(-err));
-+		if (env == NULL)
-+			printk(UM_KERN_ERR "Set UML_PORT_HELPER environment "
-+				"variable to path to uml-utilities port-helper "
-+				"binary\n");
-+		goto out_close;
-+	}
-+
- 	err = os_pipe(socket, 0, 0);
- 	if (err < 0)
- 		goto out_close;
--- 
-2.35.1
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gVHVlLCAxMiBBcHIgMjAyMiAxMToyNjo0OSArMDgwMCwgSmFzb24gV2FuZyA8amFzb3dhbmdA
+cmVkaGF0LmNvbT4gd3JvdGU6Cj4KPiDlnKggMjAyMi80LzYg5LiK5Y2IMTE6NDMsIFh1YW4gWmh1
+byDlhpnpgZM6Cj4gPiBTZXBhcmF0ZSB0aGUgbG9naWMgb2YgY3JlYXRpbmcgZGVzY19zdGF0ZSwg
+ZGVzY19leHRyYSwgYW5kIHN1YnNlcXVlbnQKPiA+IHBhdGNoZXMgd2lsbCBjYWxsIGl0IGluZGVw
+ZW5kZW50bHkuCj4gPgo+ID4gU2lnbmVkLW9mZi1ieTogWHVhbiBaaHVvIDx4dWFuemh1b0BsaW51
+eC5hbGliYWJhLmNvbT4KPiA+IC0tLQo+ID4gICBkcml2ZXJzL3ZpcnRpby92aXJ0aW9fcmluZy5j
+IHwgNTMgKysrKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tCj4gPiAgIDEgZmlsZSBj
+aGFuZ2VkLCAzOCBpbnNlcnRpb25zKCspLCAxNSBkZWxldGlvbnMoLSkKPiA+Cj4gPiBkaWZmIC0t
+Z2l0IGEvZHJpdmVycy92aXJ0aW8vdmlydGlvX3JpbmcuYyBiL2RyaXZlcnMvdmlydGlvL3ZpcnRp
+b19yaW5nLmMKPiA+IGluZGV4IDcyZDVhZTA2M2ZhMC4uNmRlNjc0MzljYjU3IDEwMDY0NAo+ID4g
+LS0tIGEvZHJpdmVycy92aXJ0aW8vdmlydGlvX3JpbmcuYwo+ID4gKysrIGIvZHJpdmVycy92aXJ0
+aW8vdmlydGlvX3JpbmcuYwo+ID4gQEAgLTE5OCw2ICsxOTgsNyBAQCBzdHJ1Y3QgdnJpbmdfdmly
+dHF1ZXVlIHsKPiA+ICAgI2VuZGlmCj4gPiAgIH07Cj4gPgo+ID4gK3N0YXRpYyBzdHJ1Y3QgdnJp
+bmdfZGVzY19leHRyYSAqdnJpbmdfYWxsb2NfZGVzY19leHRyYSh1bnNpZ25lZCBpbnQgbnVtKTsK
+PiA+Cj4gPiAgIC8qCj4gPiAgICAqIEhlbHBlcnMuCj4gPiBAQCAtOTE1LDYgKzkxNiwzMyBAQCBz
+dGF0aWMgdm9pZCAqdmlydHF1ZXVlX2RldGFjaF91bnVzZWRfYnVmX3NwbGl0KHN0cnVjdCB2aXJ0
+cXVldWUgKl92cSkKPiA+ICAgCXJldHVybiBOVUxMOwo+ID4gICB9Cj4gPgo+ID4gK3N0YXRpYyBp
+bnQgdnJpbmdfYWxsb2Nfc3RhdGVfZXh0cmFfc3BsaXQodTMyIG51bSwKPiA+ICsJCQkJCSBzdHJ1
+Y3QgdnJpbmdfZGVzY19zdGF0ZV9zcGxpdCAqKmRlc2Nfc3RhdGUsCj4gPiArCQkJCQkgc3RydWN0
+IHZyaW5nX2Rlc2NfZXh0cmEgKipkZXNjX2V4dHJhKQo+ID4gK3sKPiA+ICsJc3RydWN0IHZyaW5n
+X2Rlc2Nfc3RhdGVfc3BsaXQgKnN0YXRlOwo+ID4gKwlzdHJ1Y3QgdnJpbmdfZGVzY19leHRyYSAq
+ZXh0cmE7Cj4gPiArCj4gPiArCXN0YXRlID0ga21hbGxvY19hcnJheShudW0sIHNpemVvZihzdHJ1
+Y3QgdnJpbmdfZGVzY19zdGF0ZV9zcGxpdCksIEdGUF9LRVJORUwpOwo+ID4gKwlpZiAoIXN0YXRl
+KQo+ID4gKwkJZ290byBlcnJfc3RhdGU7Cj4gPiArCj4gPiArCWV4dHJhID0gdnJpbmdfYWxsb2Nf
+ZGVzY19leHRyYShudW0pOwo+ID4gKwlpZiAoIWV4dHJhKQo+ID4gKwkJZ290byBlcnJfZXh0cmE7
+Cj4gPiArCj4gPiArCW1lbXNldChzdGF0ZSwgMCwgbnVtICogc2l6ZW9mKHN0cnVjdCB2cmluZ19k
+ZXNjX3N0YXRlX3NwbGl0KSk7Cj4gPiArCj4gPiArCSpkZXNjX3N0YXRlID0gc3RhdGU7Cj4gPiAr
+CSpkZXNjX2V4dHJhID0gZXh0cmE7Cj4gPiArCXJldHVybiAwOwo+ID4gKwo+ID4gK2Vycl9leHRy
+YToKPiA+ICsJa2ZyZWUoc3RhdGUpOwo+ID4gK2Vycl9zdGF0ZToKPiA+ICsJcmV0dXJuIC1FTk9N
+RU07Cj4gPiArfQo+ID4gKwo+ID4gICBzdGF0aWMgdm9pZCAqdnJpbmdfYWxsb2NfcXVldWVfc3Bs
+aXQoc3RydWN0IHZpcnRpb19kZXZpY2UgKnZkZXYsCj4gPiAgIAkJCQkgICAgIGRtYV9hZGRyX3Qg
+KmRtYV9hZGRyLAo+ID4gICAJCQkJICAgICB1MzIgKm4sCj4gPiBAQCAtMjE5Niw3ICsyMjI0LDEw
+IEBAIHN0cnVjdCB2aXJ0cXVldWUgKl9fdnJpbmdfbmV3X3ZpcnRxdWV1ZSh1bnNpZ25lZCBpbnQg
+aW5kZXgsCj4gPiAgIAkJCQkJdm9pZCAoKmNhbGxiYWNrKShzdHJ1Y3QgdmlydHF1ZXVlICopLAo+
+ID4gICAJCQkJCWNvbnN0IGNoYXIgKm5hbWUpCj4gPiAgIHsKPiA+ICsJc3RydWN0IHZyaW5nX2Rl
+c2Nfc3RhdGVfc3BsaXQgKnN0YXRlOwo+ID4gKwlzdHJ1Y3QgdnJpbmdfZGVzY19leHRyYSAqZXh0
+cmE7Cj4gPiAgIAlzdHJ1Y3QgdnJpbmdfdmlydHF1ZXVlICp2cTsKPiA+ICsJaW50IGVycjsKPiA+
+Cj4gPiAgIAlpZiAodmlydGlvX2hhc19mZWF0dXJlKHZkZXYsIFZJUlRJT19GX1JJTkdfUEFDS0VE
+KSkKPiA+ICAgCQlyZXR1cm4gTlVMTDsKPiA+IEBAIC0yMjQ2LDMwICsyMjc3LDIyIEBAIHN0cnVj
+dCB2aXJ0cXVldWUgKl9fdnJpbmdfbmV3X3ZpcnRxdWV1ZSh1bnNpZ25lZCBpbnQgaW5kZXgsCj4g
+PiAgIAkJCQkJdnEtPnNwbGl0LmF2YWlsX2ZsYWdzX3NoYWRvdyk7Cj4gPiAgIAl9Cj4gPgo+ID4g
+LQl2cS0+c3BsaXQuZGVzY19zdGF0ZSA9IGttYWxsb2NfYXJyYXkodnJpbmcubnVtLAo+ID4gLQkJ
+CXNpemVvZihzdHJ1Y3QgdnJpbmdfZGVzY19zdGF0ZV9zcGxpdCksIEdGUF9LRVJORUwpOwo+ID4g
+LQlpZiAoIXZxLT5zcGxpdC5kZXNjX3N0YXRlKQo+ID4gLQkJZ290byBlcnJfc3RhdGU7Cj4gPiAr
+CWVyciA9IHZyaW5nX2FsbG9jX3N0YXRlX2V4dHJhX3NwbGl0KHZyaW5nLm51bSwgJnN0YXRlLCAm
+ZXh0cmEpOwo+Cj4KPiBOaXQ6IHdlIGNhbiBwYXNzIGUuZyAmdnEtPnNwbGl0LmRlc2Nfc3RhdGUg
+aGVyZSB0byBhdm9pZCBleHRyYSB0ZW1wCj4gdmFyaWFibGUgYW5kIGFzc2lnbm1lbnQuCgpUaGUg
+cmVhc29uIGZvciBub3QgZG9pbmcgdGhpcyBpcyB0aGF0IHdoZW4gd2UgaW1wbGVtZW50IHJlc2l6
+ZSBsYXRlciwgd2hlbiB3ZQpjYWxsIHZyaW5nX2FsbG9jX3N0YXRlX2V4dHJhX3NwbGl0KCksIHdl
+IHdhbnQgdG8ga2VlcCB0aGUgb2xkIGRlc2Nfc3RhdGUsIGFuZApkZXNjX2V4dHJhIGJlY2F1c2Ug
+d2Ugd2FudCB0byByZWxlYXNlIHRoZW0uCgpBcyBkaXNjdXNzZWQgaW4gcGF0Y2ggMTEsIDEyLCBz
+dHJ1Y3QgdnJpbmdfdmlydHF1ZXVlX3NwbGl0IHdpbGwgb3B0aW1pemUgdGhpcwpsb2dpYy4KClRo
+YW5rcy4KCj4KPiBPdGhlciBsb29rcyBnb29kLgo+Cj4gVGhhbmtzCj4KPgo+ID4gKwlpZiAoZXJy
+KSB7Cj4gPiArCQlrZnJlZSh2cSk7Cj4gPiArCQlyZXR1cm4gTlVMTDsKPiA+ICsJfQo+ID4KPiA+
+IC0JdnEtPnNwbGl0LmRlc2NfZXh0cmEgPSB2cmluZ19hbGxvY19kZXNjX2V4dHJhKHZyaW5nLm51
+bSk7Cj4gPiAtCWlmICghdnEtPnNwbGl0LmRlc2NfZXh0cmEpCj4gPiAtCQlnb3RvIGVycl9leHRy
+YTsKPiA+ICsJdnEtPnNwbGl0LmRlc2Nfc3RhdGUgPSBzdGF0ZTsKPiA+ICsJdnEtPnNwbGl0LmRl
+c2NfZXh0cmEgPSBleHRyYTsKPiA+Cj4gPiAgIAkvKiBQdXQgZXZlcnl0aGluZyBpbiBmcmVlIGxp
+c3RzLiAqLwo+ID4gICAJdnEtPmZyZWVfaGVhZCA9IDA7Cj4gPiAtCW1lbXNldCh2cS0+c3BsaXQu
+ZGVzY19zdGF0ZSwgMCwgdnJpbmcubnVtICoKPiA+IC0JCQlzaXplb2Yoc3RydWN0IHZyaW5nX2Rl
+c2Nfc3RhdGVfc3BsaXQpKTsKPiA+Cj4gPiAgIAlzcGluX2xvY2soJnZkZXYtPnZxc19saXN0X2xv
+Y2spOwo+ID4gICAJbGlzdF9hZGRfdGFpbCgmdnEtPnZxLmxpc3QsICZ2ZGV2LT52cXMpOwo+ID4g
+ICAJc3Bpbl91bmxvY2soJnZkZXYtPnZxc19saXN0X2xvY2spOwo+ID4gICAJcmV0dXJuICZ2cS0+
+dnE7Cj4gPiAtCj4gPiAtZXJyX2V4dHJhOgo+ID4gLQlrZnJlZSh2cS0+c3BsaXQuZGVzY19zdGF0
+ZSk7Cj4gPiAtZXJyX3N0YXRlOgo+ID4gLQlrZnJlZSh2cSk7Cj4gPiAtCXJldHVybiBOVUxMOwo+
+ID4gICB9Cj4gPiAgIEVYUE9SVF9TWU1CT0xfR1BMKF9fdnJpbmdfbmV3X3ZpcnRxdWV1ZSk7Cj4g
+Pgo+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51
+eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlz
+dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
 
