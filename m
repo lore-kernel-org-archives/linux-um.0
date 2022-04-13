@@ -1,12 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 21/27] block: move {bdev,
- queue_limit}_discard_alignment out of line
-Date: Sat,  9 Apr 2022 06:50:37 +0200
-Message-Id: <20220409045043.23593-22-hch@lst.de>
-In-Reply-To: <20220409045043.23593-1-hch@lst.de>
-References: <20220409045043.23593-1-hch@lst.de>
-MIME-Version: 1.0
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nec1L-000ylJ-Ja
+ for linux-um@lists.infradead.org; Wed, 13 Apr 2022 12:22:59 +0000
+Message-ID: <1649852469.9980721-2-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH v9 18/32] virtio_ring: introduce virtqueue_resize()
+Date: Wed, 13 Apr 2022 20:21:09 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+References: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
+ <20220406034346.74409-19-xuanzhuo@linux.alibaba.com>
+ <92622553-e02d-47bd-06f9-0ce24c22650c@redhat.com>
+In-Reply-To: <92622553-e02d-47bd-06f9-0ce24c22650c@redhat.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -15,124 +19,98 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jens Axboe <axboe@kernel.dk>
-Cc: dm-devel@redhat.com, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-um@lists.infradead.org, linux-block@vger.kernel.org, drbd-dev@lists.linbit.com, nbd@other.debian.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev, ocfs2-devel@oss.oracle.com, linux-mm@kvack.org, "Martin K . Petersen" <martin.petersen@oracle.com>
+To: Jason Wang <jasowang@redhat.com>
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, virtualization@lists.linux-foundation.org
 
-No need to inline these fairly larger helpers.  Also fix the return value
-to be unsigned, just like the field in struct queue_limits.
-
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
----
- block/blk-settings.c   | 35 +++++++++++++++++++++++++++++++++++
- include/linux/blkdev.h | 34 +---------------------------------
- 2 files changed, 36 insertions(+), 33 deletions(-)
-
-diff --git a/block/blk-settings.c b/block/blk-settings.c
-index 94410a13c0dee..fd83d674afd0a 100644
---- a/block/blk-settings.c
-+++ b/block/blk-settings.c
-@@ -478,6 +478,30 @@ static int queue_limit_alignment_offset(struct queue_limits *lim,
- 	return (granularity + lim->alignment_offset - alignment) % granularity;
- }
- 
-+static unsigned int queue_limit_discard_alignment(struct queue_limits *lim,
-+		sector_t sector)
-+{
-+	unsigned int alignment, granularity, offset;
-+
-+	if (!lim->max_discard_sectors)
-+		return 0;
-+
-+	/* Why are these in bytes, not sectors? */
-+	alignment = lim->discard_alignment >> SECTOR_SHIFT;
-+	granularity = lim->discard_granularity >> SECTOR_SHIFT;
-+	if (!granularity)
-+		return 0;
-+
-+	/* Offset of the partition start in 'granularity' sectors */
-+	offset = sector_div(sector, granularity);
-+
-+	/* And why do we do this modulus *again* in blkdev_issue_discard()? */
-+	offset = (granularity + alignment - offset) % granularity;
-+
-+	/* Turn it back into bytes, gaah */
-+	return offset << SECTOR_SHIFT;
-+}
-+
- static unsigned int blk_round_down_sectors(unsigned int sectors, unsigned int lbs)
- {
- 	sectors = round_down(sectors, lbs >> SECTOR_SHIFT);
-@@ -924,3 +948,14 @@ int bdev_alignment_offset(struct block_device *bdev)
- 	return q->limits.alignment_offset;
- }
- EXPORT_SYMBOL_GPL(bdev_alignment_offset);
-+
-+unsigned int bdev_discard_alignment(struct block_device *bdev)
-+{
-+	struct request_queue *q = bdev_get_queue(bdev);
-+
-+	if (bdev_is_partition(bdev))
-+		return queue_limit_discard_alignment(&q->limits,
-+				bdev->bd_start_sect);
-+	return q->limits.discard_alignment;
-+}
-+EXPORT_SYMBOL_GPL(bdev_discard_alignment);
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 5a9b7aeda010b..34b1cfd067421 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -1252,39 +1252,7 @@ bdev_zone_write_granularity(struct block_device *bdev)
- }
- 
- int bdev_alignment_offset(struct block_device *bdev);
--
--static inline int queue_limit_discard_alignment(struct queue_limits *lim, sector_t sector)
--{
--	unsigned int alignment, granularity, offset;
--
--	if (!lim->max_discard_sectors)
--		return 0;
--
--	/* Why are these in bytes, not sectors? */
--	alignment = lim->discard_alignment >> SECTOR_SHIFT;
--	granularity = lim->discard_granularity >> SECTOR_SHIFT;
--	if (!granularity)
--		return 0;
--
--	/* Offset of the partition start in 'granularity' sectors */
--	offset = sector_div(sector, granularity);
--
--	/* And why do we do this modulus *again* in blkdev_issue_discard()? */
--	offset = (granularity + alignment - offset) % granularity;
--
--	/* Turn it back into bytes, gaah */
--	return offset << SECTOR_SHIFT;
--}
--
--static inline int bdev_discard_alignment(struct block_device *bdev)
--{
--	struct request_queue *q = bdev_get_queue(bdev);
--
--	if (bdev_is_partition(bdev))
--		return queue_limit_discard_alignment(&q->limits,
--				bdev->bd_start_sect);
--	return q->limits.discard_alignment;
--}
-+unsigned int bdev_discard_alignment(struct block_device *bdev);
- 
- static inline unsigned int bdev_write_zeroes_sectors(struct block_device *bdev)
- {
--- 
-2.30.2
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gVHVlLCAxMiBBcHIgMjAyMiAxNDo0MToxOCArMDgwMCwgSmFzb24gV2FuZyA8amFzb3dhbmdA
+cmVkaGF0LmNvbT4gd3JvdGU6Cj4KPiDlnKggMjAyMi80LzYg5LiK5Y2IMTE6NDMsIFh1YW4gWmh1
+byDlhpnpgZM6Cj4gPiBJbnRyb2R1Y2UgdmlydHF1ZXVlX3Jlc2l6ZSgpIHRvIGltcGxlbWVudCB0
+aGUgcmVzaXplIG9mIHZyaW5nLgo+ID4gQmFzZWQgb24gdGhlc2UsIHRoZSBkcml2ZXIgY2FuIGR5
+bmFtaWNhbGx5IGFkanVzdCB0aGUgc2l6ZSBvZiB0aGUgdnJpbmcuCj4gPiBGb3IgZXhhbXBsZTog
+ZXRodG9vbCAtRy4KPiA+Cj4gPiB2aXJ0cXVldWVfcmVzaXplKCkgaW1wbGVtZW50cyByZXNpemUg
+YmFzZWQgb24gdGhlIHZxIHJlc2V0IGZ1bmN0aW9uLiBJbgo+ID4gY2FzZSBvZiBmYWlsdXJlIHRv
+IGFsbG9jYXRlIGEgbmV3IHZyaW5nLCBpdCB3aWxsIGdpdmUgdXAgcmVzaXplIGFuZCB1c2UKPiA+
+IHRoZSBvcmlnaW5hbCB2cmluZy4KPiA+Cj4gPiBEdXJpbmcgdGhpcyBwcm9jZXNzLCBpZiB0aGUg
+cmUtZW5hYmxlIHJlc2V0IHZxIGZhaWxzLCB0aGUgdnEgY2FuIG5vCj4gPiBsb25nZXIgYmUgdXNl
+ZC4gQWx0aG91Z2ggdGhlIHByb2JhYmlsaXR5IG9mIHRoaXMgc2l0dWF0aW9uIGlzIG5vdCBoaWdo
+Lgo+ID4KPiA+IFRoZSBwYXJhbWV0ZXIgcmVjeWNsZSBpcyB1c2VkIHRvIHJlY3ljbGUgdGhlIGJ1
+ZmZlciB0aGF0IGlzIG5vIGxvbmdlcgo+ID4gdXNlZC4KPiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBY
+dWFuIFpodW8gPHh1YW56aHVvQGxpbnV4LmFsaWJhYmEuY29tPgo+ID4gLS0tCj4gPiAgIGRyaXZl
+cnMvdmlydGlvL3ZpcnRpb19yaW5nLmMgfCA2OSArKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysKPiA+ICAgaW5jbHVkZS9saW51eC92aXJ0aW8uaCAgICAgICB8ICAzICsrCj4gPiAg
+IDIgZmlsZXMgY2hhbmdlZCwgNzIgaW5zZXJ0aW9ucygrKQo+ID4KPiA+IGRpZmYgLS1naXQgYS9k
+cml2ZXJzL3ZpcnRpby92aXJ0aW9fcmluZy5jIGIvZHJpdmVycy92aXJ0aW8vdmlydGlvX3Jpbmcu
+Ywo+ID4gaW5kZXggMDZmNjZiMTVjODZjLi42MjUwZTE5ZmM1YmYgMTAwNjQ0Cj4gPiAtLS0gYS9k
+cml2ZXJzL3ZpcnRpby92aXJ0aW9fcmluZy5jCj4gPiArKysgYi9kcml2ZXJzL3ZpcnRpby92aXJ0
+aW9fcmluZy5jCj4gPiBAQCAtMjU1NCw2ICsyNTU0LDc1IEBAIHN0cnVjdCB2aXJ0cXVldWUgKnZy
+aW5nX2NyZWF0ZV92aXJ0cXVldWUoCj4gPiAgIH0KPiA+ICAgRVhQT1JUX1NZTUJPTF9HUEwodnJp
+bmdfY3JlYXRlX3ZpcnRxdWV1ZSk7Cj4gPgo+ID4gKy8qKgo+ID4gKyAqIHZpcnRxdWV1ZV9yZXNp
+emUgLSByZXNpemUgdGhlIHZyaW5nIG9mIHZxCj4gPiArICogQF92cTogdGhlIHN0cnVjdCB2aXJ0
+cXVldWUgd2UncmUgdGFsa2luZyBhYm91dC4KPiA+ICsgKiBAbnVtOiBuZXcgcmluZyBudW0KPiA+
+ICsgKiBAcmVjeWNsZTogY2FsbGJhY2sgZm9yIHJlY3ljbGUgdGhlIHVzZWxlc3MgYnVmZmVyCj4g
+PiArICoKPiA+ICsgKiBXaGVuIGl0IGlzIHJlYWxseSBuZWNlc3NhcnkgdG8gY3JlYXRlIGEgbmV3
+IHZyaW5nLCBpdCB3aWxsIHNldCB0aGUgY3VycmVudCB2cQo+ID4gKyAqIGludG8gdGhlIHJlc2V0
+IHN0YXRlLiBUaGVuIGNhbGwgdGhlIHBhc3NlZCBjYWxsYmFjayB0byByZWN5Y2xlIHRoZSBidWZm
+ZXIKPiA+ICsgKiB0aGF0IGlzIG5vIGxvbmdlciB1c2VkLiBPbmx5IGFmdGVyIHRoZSBuZXcgdnJp
+bmcgaXMgc3VjY2Vzc2Z1bGx5IGNyZWF0ZWQsIHRoZQo+ID4gKyAqIG9sZCB2cmluZyB3aWxsIGJl
+IHJlbGVhc2VkLgo+ID4gKyAqCj4gPiArICogQ2FsbGVyIG11c3QgZW5zdXJlIHdlIGRvbid0IGNh
+bGwgdGhpcyB3aXRoIG90aGVyIHZpcnRxdWV1ZSBvcGVyYXRpb25zCj4gPiArICogYXQgdGhlIHNh
+bWUgdGltZSAoZXhjZXB0IHdoZXJlIG5vdGVkKS4KPiA+ICsgKgo+ID4gKyAqIFJldHVybnMgemVy
+byBvciBhIG5lZ2F0aXZlIGVycm9yLgo+Cj4KPiBTaG91bGQgd2UgZG9jdW1lbnQgdGhhdCB0aGUg
+dmlydHF1ZXVlIGlzIGtlcHQgdW5jaGFuZ2VkIChzdGlsbAo+IGF2YWlsYWJsZSkgb24gKHNwZWNp
+ZmljKSBmYWlsdXJlPwo+Cj4KPiA+ICsgKi8KPiA+ICtpbnQgdmlydHF1ZXVlX3Jlc2l6ZShzdHJ1
+Y3QgdmlydHF1ZXVlICpfdnEsIHUzMiBudW0sCj4gPiArCQkgICAgIHZvaWQgKCpyZWN5Y2xlKShz
+dHJ1Y3QgdmlydHF1ZXVlICp2cSwgdm9pZCAqYnVmKSkKPiA+ICt7Cj4gPiArCXN0cnVjdCB2cmlu
+Z192aXJ0cXVldWUgKnZxID0gdG9fdnZxKF92cSk7Cj4gPiArCXN0cnVjdCB2aXJ0aW9fZGV2aWNl
+ICp2ZGV2ID0gdnEtPnZxLnZkZXY7Cj4gPiArCWJvb2wgcGFja2VkOwo+ID4gKwl2b2lkICpidWY7
+Cj4gPiArCWludCBlcnI7Cj4gPiArCj4gPiArCWlmICghdnEtPndlX293bl9yaW5nKQo+ID4gKwkJ
+cmV0dXJuIC1FSU5WQUw7Cj4gPiArCj4gPiArCWlmIChudW0gPiB2cS0+dnEubnVtX21heCkKPiA+
+ICsJCXJldHVybiAtRTJCSUc7Cj4gPiArCj4gPiArCWlmICghbnVtKQo+ID4gKwkJcmV0dXJuIC1F
+SU5WQUw7Cj4gPiArCj4gPiArCXBhY2tlZCA9IHZpcnRpb19oYXNfZmVhdHVyZSh2ZGV2LCBWSVJU
+SU9fRl9SSU5HX1BBQ0tFRCkgPyB0cnVlIDogZmFsc2U7Cj4gPiArCj4gPiArCWlmICgocGFja2Vk
+ID8gdnEtPnBhY2tlZC52cmluZy5udW0gOiB2cS0+c3BsaXQudnJpbmcubnVtKSA9PSBudW0pCj4g
+PiArCQlyZXR1cm4gMDsKPiA+ICsKPiA+ICsJaWYgKCF2ZGV2LT5jb25maWctPnJlc2V0X3ZxKQo+
+ID4gKwkJcmV0dXJuIC1FTk9FTlQ7Cj4gPiArCj4gPiArCWlmICghdmRldi0+Y29uZmlnLT5lbmFi
+bGVfcmVzZXRfdnEpCj4gPiArCQlyZXR1cm4gLUVOT0VOVDsKPiA+ICsKPiA+ICsJZXJyID0gdmRl
+di0+Y29uZmlnLT5yZXNldF92cShfdnEpOwo+ID4gKwlpZiAoZXJyKQo+ID4gKwkJcmV0dXJuIGVy
+cjsKPiA+ICsKPiA+ICsJd2hpbGUgKChidWYgPSB2aXJ0cXVldWVfZGV0YWNoX3VudXNlZF9idWYo
+X3ZxKSkgIT0gTlVMTCkKPiA+ICsJCXJlY3ljbGUoX3ZxLCBidWYpOwo+ID4gKwo+ID4gKwlpZiAo
+cGFja2VkKSB7Cj4gPiArCQllcnIgPSB2aXJ0cXVldWVfcmVzaXplX3BhY2tlZChfdnEsIG51bSk7
+Cj4gPiArCQlpZiAoZXJyKQo+ID4gKwkJCXZpcnRxdWV1ZV9yZWluaXRfcGFja2VkKHZxKTsKPgo+
+Cj4gQ2FsbGluZyByZWluaXQgaGVyZSBzZWVtcyBhIGxpdHRsZSBiaXQgb2RkLCBpdCBsb29rcyBt
+b3JlIGxpa2UgYSByZXNldAoKCkkgYWxzbyBmZWVsIHRoYXQgdGhpcyBpcyBhIGJpdCBvZGQsIEkg
+d2lsbCBwdXQgdmlydHF1ZXVlX3JlaW5pdF8qIGludG8KdmlydHF1ZXVlX3Jlc2l6ZV8qLgoKVGhh
+bmtzLgoKPiBvZiB0aGUgdmlydHF1ZXVlLiBDb25zaWRlciB3ZSBtYXkgcmUtdXNlIHZpcnRxdWV1
+ZSByZXNldCBmb3IgbW9yZQo+IHB1cnBvc2UsIEkgd29uZGVyIGlmIHdlIG5lZWQgYSBoZWxwZXIg
+bGlrZToKPgo+IHZpcnRxdWV1ZV9yZXNpemUoKSB7Cj4gIMKgwqDCoCB2ZGV2LT5jb25maWctPnJl
+c2V0X3ZxKF92cSk7Cj4gIMKgwqDCoCBpZiAocGFja2VkKQo+ICDCoMKgwqAgwqDCoMKgIHZpcnRx
+dWV1ZV9yZWluaXRfcGFja2VkKF92cSkKPiAgwqDCoMKgIGVsc2UKPiAgwqDCoMKgwqDCoMKgwqAg
+dmlydHF1ZXVlX3JlaW5pdF9zcGxpdChfdnEpCj4gfQo+Cj4gVGhhbmtzCj4KPgo+ID4gKwl9IGVs
+c2Ugewo+ID4gKwkJZXJyID0gdmlydHF1ZXVlX3Jlc2l6ZV9zcGxpdChfdnEsIG51bSk7Cj4gPiAr
+CQlpZiAoZXJyKQo+ID4gKwkJCXZpcnRxdWV1ZV9yZWluaXRfc3BsaXQodnEpOwo+ID4gKwl9Cj4g
+PiArCj4gPiArCWlmICh2ZGV2LT5jb25maWctPmVuYWJsZV9yZXNldF92cShfdnEpKQo+ID4gKwkJ
+cmV0dXJuIC1FQlVTWTsKPiA+ICsKPiA+ICsJcmV0dXJuIGVycjsKPiA+ICt9Cj4gPiArRVhQT1JU
+X1NZTUJPTF9HUEwodmlydHF1ZXVlX3Jlc2l6ZSk7Cj4gPiArCj4gPiAgIC8qIE9ubHkgYXZhaWxh
+YmxlIGZvciBzcGxpdCByaW5nICovCj4gPiAgIHN0cnVjdCB2aXJ0cXVldWUgKnZyaW5nX25ld192
+aXJ0cXVldWUodW5zaWduZWQgaW50IGluZGV4LAo+ID4gICAJCQkJICAgICAgdW5zaWduZWQgaW50
+IG51bSwKPiA+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L3ZpcnRpby5oIGIvaW5jbHVkZS9s
+aW51eC92aXJ0aW8uaAo+ID4gaW5kZXggZDU5YWRjNGJlMDY4Li5jODZmZjAyZTBjYTAgMTAwNjQ0
+Cj4gPiAtLS0gYS9pbmNsdWRlL2xpbnV4L3ZpcnRpby5oCj4gPiArKysgYi9pbmNsdWRlL2xpbnV4
+L3ZpcnRpby5oCj4gPiBAQCAtOTEsNiArOTEsOSBAQCBkbWFfYWRkcl90IHZpcnRxdWV1ZV9nZXRf
+ZGVzY19hZGRyKHN0cnVjdCB2aXJ0cXVldWUgKnZxKTsKPiA+ICAgZG1hX2FkZHJfdCB2aXJ0cXVl
+dWVfZ2V0X2F2YWlsX2FkZHIoc3RydWN0IHZpcnRxdWV1ZSAqdnEpOwo+ID4gICBkbWFfYWRkcl90
+IHZpcnRxdWV1ZV9nZXRfdXNlZF9hZGRyKHN0cnVjdCB2aXJ0cXVldWUgKnZxKTsKPiA+Cj4gPiAr
+aW50IHZpcnRxdWV1ZV9yZXNpemUoc3RydWN0IHZpcnRxdWV1ZSAqdnEsIHUzMiBudW0sCj4gPiAr
+CQkgICAgIHZvaWQgKCpyZWN5Y2xlKShzdHJ1Y3QgdmlydHF1ZXVlICp2cSwgdm9pZCAqYnVmKSk7
+Cj4gPiArCj4gPiAgIC8qKgo+ID4gICAgKiB2aXJ0aW9fZGV2aWNlIC0gcmVwcmVzZW50YXRpb24g
+b2YgYSBkZXZpY2UgdXNpbmcgdmlydGlvCj4gPiAgICAqIEBpbmRleDogdW5pcXVlIHBvc2l0aW9u
+IG9uIHRoZSB2aXJ0aW8gYnVzCj4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRl
+YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
+dW0K
 
