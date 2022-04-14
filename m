@@ -1,276 +1,139 @@
-Return-Path: <linux-pm-owner@vger.kernel.org>
-From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Subject: [PATCH 22/30] panic: Introduce the panic post-reboot notifier list
-Date: Wed, 27 Apr 2022 19:49:16 -0300
-Message-Id: <20220427224924.592546-23-gpiccoli@igalia.com>
-In-Reply-To: <20220427224924.592546-1-gpiccoli@igalia.com>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nevcz-004qaX-TI
+ for linux-um@lists.infradead.org; Thu, 14 Apr 2022 09:19:04 +0000
+Received: by mail-lf1-f71.google.com with SMTP id
+ w25-20020a05651234d900b0044023ac3f64so2101609lfr.0
+ for <linux-um@lists.infradead.org>; Thu, 14 Apr 2022 02:18:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, gpiccoli@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>, Heiko Carstens <hca@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>
-List-ID: <linux-um.lists.infradead.org>
+References: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
+ <20220406034346.74409-13-xuanzhuo@linux.alibaba.com>
+ <4da7b8dc-74ca-fc1b-fbdb-21f9943e8d45@redhat.com>
+ <1649820210.3432868-4-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <1649820210.3432868-4-xuanzhuo@linux.alibaba.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Thu, 14 Apr 2022 17:18:45 +0800
+Message-ID: <CACGkMEv2qHLLqtc1uwObZFdRhaCNRMyTQ5qnvF02Yj8cKgV-8g@mail.gmail.com>
+Subject: Re: [PATCH v9 12/32] virtio_ring: packed: extract the logic of alloc
+ queue
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev <netdev@vger.kernel.org>, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm <kvm@vger.kernel.org>, "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>, virtualization <virtualization@lists.linux-foundation.org>
 
-Currently we have 3 notifier lists in the panic path, which will
-be wired in a way to allow the notifier callbacks to run in
-different moments at panic time, in a subsequent patch.
-
-But there is also an odd set of architecture calls hardcoded in
-the end of panic path, after the restart machinery. They're
-responsible for late time tunings / events, like enabling a stop
-button (Sparc) or effectively stopping the machine (s390).
-
-This patch introduces yet another notifier list to offer the
-architectures a way to add callbacks in such late moment on
-panic path without the need of ifdefs / hardcoded approaches.
-
-Cc: Alexander Gordeev <agordeev@linux.ibm.com>
-Cc: Christian Borntraeger <borntraeger@linux.ibm.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Sven Schnelle <svens@linux.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
----
- arch/s390/kernel/setup.c       | 19 ++++++++++++++++++-
- arch/sparc/kernel/setup_32.c   | 27 +++++++++++++++++++++++----
- arch/sparc/kernel/setup_64.c   | 29 ++++++++++++++++++++++++-----
- include/linux/panic_notifier.h |  1 +
- kernel/panic.c                 | 19 +++++++------------
- 5 files changed, 73 insertions(+), 22 deletions(-)
-
-diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
-index d860ac300919..d816b2045f1e 100644
---- a/arch/s390/kernel/setup.c
-+++ b/arch/s390/kernel/setup.c
-@@ -39,7 +39,6 @@
- #include <linux/kernel_stat.h>
- #include <linux/dma-map-ops.h>
- #include <linux/device.h>
--#include <linux/notifier.h>
- #include <linux/pfn.h>
- #include <linux/ctype.h>
- #include <linux/reboot.h>
-@@ -51,6 +50,7 @@
- #include <linux/start_kernel.h>
- #include <linux/hugetlb.h>
- #include <linux/kmemleak.h>
-+#include <linux/panic_notifier.h>
- 
- #include <asm/boot_data.h>
- #include <asm/ipl.h>
-@@ -943,6 +943,20 @@ static void __init log_component_list(void)
- 	}
- }
- 
-+/*
-+ * The following notifier executes as one of the latest things in the panic
-+ * path, only if the restart routines weren't executed (or didn't succeed).
-+ */
-+static int panic_event(struct notifier_block *n, unsigned long ev, void *unused)
-+{
-+	disabled_wait();
-+	return NOTIFY_DONE;
-+}
-+
-+static struct notifier_block post_reboot_panic_block = {
-+	.notifier_call = panic_event,
-+};
-+
- /*
-  * Setup function called from init/main.c just after the banner
-  * was printed.
-@@ -1058,4 +1072,7 @@ void __init setup_arch(char **cmdline_p)
- 
- 	/* Add system specific data to the random pool */
- 	setup_randomness();
-+
-+	atomic_notifier_chain_register(&panic_post_reboot_list,
-+				       &post_reboot_panic_block);
- }
-diff --git a/arch/sparc/kernel/setup_32.c b/arch/sparc/kernel/setup_32.c
-index c8e0dd99f370..4e2428972f76 100644
---- a/arch/sparc/kernel/setup_32.c
-+++ b/arch/sparc/kernel/setup_32.c
-@@ -34,6 +34,7 @@
- #include <linux/kdebug.h>
- #include <linux/export.h>
- #include <linux/start_kernel.h>
-+#include <linux/panic_notifier.h>
- #include <uapi/linux/mount.h>
- 
- #include <asm/io.h>
-@@ -51,6 +52,7 @@
- 
- #include "kernel.h"
- 
-+int stop_a_enabled = 1;
- struct screen_info screen_info = {
- 	0, 0,			/* orig-x, orig-y */
- 	0,			/* unused */
-@@ -293,6 +295,24 @@ void __init sparc32_start_kernel(struct linux_romvec *rp)
- 	start_kernel();
- }
- 
-+/*
-+ * The following notifier executes as one of the latest things in the panic
-+ * path, only if the restart routines weren't executed (or didn't succeed).
-+ */
-+static int panic_event(struct notifier_block *n, unsigned long ev, void *unused)
-+{
-+	/* Make sure the user can actually press Stop-A (L1-A) */
-+	stop_a_enabled = 1;
-+	pr_emerg("Press Stop-A (L1-A) from sun keyboard or send break\n"
-+		"twice on console to return to the boot prom\n");
-+
-+	return NOTIFY_DONE;
-+}
-+
-+static struct notifier_block post_reboot_panic_block = {
-+	.notifier_call = panic_event,
-+};
-+
- void __init setup_arch(char **cmdline_p)
- {
- 	int i;
-@@ -368,9 +388,10 @@ void __init setup_arch(char **cmdline_p)
- 	paging_init();
- 
- 	smp_setup_cpu_possible_map();
--}
- 
--extern int stop_a_enabled;
-+	atomic_notifier_chain_register(&panic_post_reboot_list,
-+				       &post_reboot_panic_block);
-+}
- 
- void sun_do_break(void)
- {
-@@ -384,8 +405,6 @@ void sun_do_break(void)
- }
- EXPORT_SYMBOL(sun_do_break);
- 
--int stop_a_enabled = 1;
--
- static int __init topology_init(void)
- {
- 	int i, ncpus, err;
-diff --git a/arch/sparc/kernel/setup_64.c b/arch/sparc/kernel/setup_64.c
-index 48abee4eee29..9066c25ecc07 100644
---- a/arch/sparc/kernel/setup_64.c
-+++ b/arch/sparc/kernel/setup_64.c
-@@ -33,6 +33,7 @@
- #include <linux/module.h>
- #include <linux/start_kernel.h>
- #include <linux/memblock.h>
-+#include <linux/panic_notifier.h>
- #include <uapi/linux/mount.h>
- 
- #include <asm/io.h>
-@@ -62,6 +63,8 @@
- #include "entry.h"
- #include "kernel.h"
- 
-+int stop_a_enabled = 1;
-+
- /* Used to synchronize accesses to NatSemi SUPER I/O chip configure
-  * operations in asm/ns87303.h
-  */
-@@ -632,6 +635,24 @@ void __init alloc_irqstack_bootmem(void)
- 	}
- }
- 
-+/*
-+ * The following notifier executes as one of the latest things in the panic
-+ * path, only if the restart routines weren't executed (or didn't succeed).
-+ */
-+static int panic_event(struct notifier_block *n, unsigned long ev, void *unused)
-+{
-+	/* Make sure the user can actually press Stop-A (L1-A) */
-+	stop_a_enabled = 1;
-+	pr_emerg("Press Stop-A (L1-A) from sun keyboard or send break\n"
-+		"twice on console to return to the boot prom\n");
-+
-+	return NOTIFY_DONE;
-+}
-+
-+static struct notifier_block post_reboot_panic_block = {
-+	.notifier_call = panic_event,
-+};
-+
- void __init setup_arch(char **cmdline_p)
- {
- 	/* Initialize PROM console and command line. */
-@@ -691,9 +712,10 @@ void __init setup_arch(char **cmdline_p)
- 	 * allocate the IRQ stacks.
- 	 */
- 	alloc_irqstack_bootmem();
--}
- 
--extern int stop_a_enabled;
-+	atomic_notifier_chain_register(&panic_post_reboot_list,
-+				       &post_reboot_panic_block);
-+}
- 
- void sun_do_break(void)
- {
-@@ -706,6 +728,3 @@ void sun_do_break(void)
- 	prom_cmdline();
- }
- EXPORT_SYMBOL(sun_do_break);
--
--int stop_a_enabled = 1;
--EXPORT_SYMBOL(stop_a_enabled);
-diff --git a/include/linux/panic_notifier.h b/include/linux/panic_notifier.h
-index 7912aacbc0e5..bcf6a5ea9d7f 100644
---- a/include/linux/panic_notifier.h
-+++ b/include/linux/panic_notifier.h
-@@ -8,6 +8,7 @@
- extern struct atomic_notifier_head panic_hypervisor_list;
- extern struct atomic_notifier_head panic_info_list;
- extern struct atomic_notifier_head panic_pre_reboot_list;
-+extern struct atomic_notifier_head panic_post_reboot_list;
- 
- extern bool crash_kexec_post_notifiers;
- 
-diff --git a/kernel/panic.c b/kernel/panic.c
-index a9d43b98b05b..bf792102b43e 100644
---- a/kernel/panic.c
-+++ b/kernel/panic.c
-@@ -78,6 +78,9 @@ EXPORT_SYMBOL(panic_info_list);
- ATOMIC_NOTIFIER_HEAD(panic_pre_reboot_list);
- EXPORT_SYMBOL(panic_pre_reboot_list);
- 
-+ATOMIC_NOTIFIER_HEAD(panic_post_reboot_list);
-+EXPORT_SYMBOL(panic_post_reboot_list);
-+
- static long no_blink(int state)
- {
- 	return 0;
-@@ -359,18 +362,10 @@ void panic(const char *fmt, ...)
- 			reboot_mode = panic_reboot_mode;
- 		emergency_restart();
- 	}
--#ifdef __sparc__
--	{
--		extern int stop_a_enabled;
--		/* Make sure the user can actually press Stop-A (L1-A) */
--		stop_a_enabled = 1;
--		pr_emerg("Press Stop-A (L1-A) from sun keyboard or send break\n"
--			 "twice on console to return to the boot prom\n");
--	}
--#endif
--#if defined(CONFIG_S390)
--	disabled_wait();
--#endif
-+
-+	atomic_notifier_call_chain(&panic_post_reboot_list,
-+				   PANIC_NOTIFIER, buf);
-+
- 	pr_emerg("---[ end Kernel panic - not syncing: %s ]---\n", buf);
- 
- 	/* Do not scroll important messages printed above */
--- 
-2.36.0
-
+T24gV2VkLCBBcHIgMTMsIDIwMjIgYXQgMTE6MjYgQU0gWHVhbiBaaHVvIDx4dWFuemh1b0BsaW51
+eC5hbGliYWJhLmNvbT4gd3JvdGU6Cj4KPiBPbiBUdWUsIDEyIEFwciAyMDIyIDE0OjI4OjI0ICsw
+ODAwLCBKYXNvbiBXYW5nIDxqYXNvd2FuZ0ByZWRoYXQuY29tPiB3cm90ZToKPiA+Cj4gPiDlnKgg
+MjAyMi80LzYg5LiK5Y2IMTE6NDMsIFh1YW4gWmh1byDlhpnpgZM6Cj4gPiA+IFNlcGFyYXRlIHRo
+ZSBsb2dpYyBvZiBwYWNrZWQgdG8gY3JlYXRlIHZyaW5nIHF1ZXVlLgo+ID4gPgo+ID4gPiBGb3Ig
+dGhlIGNvbnZlbmllbmNlIG9mIHBhc3NpbmcgcGFyYW1ldGVycywgYWRkIGEgc3RydWN0dXJlCj4g
+PiA+IHZyaW5nX3BhY2tlZC4KPiA+ID4KPiA+ID4gVGhpcyBmZWF0dXJlIGlzIHJlcXVpcmVkIGZv
+ciBzdWJzZXF1ZW50IHZpcnR1cXVldWUgcmVzZXQgdnJpbmcuCj4gPiA+Cj4gPiA+IFNpZ25lZC1v
+ZmYtYnk6IFh1YW4gWmh1byA8eHVhbnpodW9AbGludXguYWxpYmFiYS5jb20+Cj4gPiA+IC0tLQo+
+ID4gPiAgIGRyaXZlcnMvdmlydGlvL3ZpcnRpb19yaW5nLmMgfCA3MCArKysrKysrKysrKysrKysr
+KysrKysrKysrKysrLS0tLS0tLS0KPiA+ID4gICAxIGZpbGUgY2hhbmdlZCwgNTYgaW5zZXJ0aW9u
+cygrKSwgMTQgZGVsZXRpb25zKC0pCj4gPiA+Cj4gPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3Zp
+cnRpby92aXJ0aW9fcmluZy5jIGIvZHJpdmVycy92aXJ0aW8vdmlydGlvX3JpbmcuYwo+ID4gPiBp
+bmRleCAzMzg2NDEzNGE3NDQuLmVhNDUxYWUyYWFlZiAxMDA2NDQKPiA+ID4gLS0tIGEvZHJpdmVy
+cy92aXJ0aW8vdmlydGlvX3JpbmcuYwo+ID4gPiArKysgYi9kcml2ZXJzL3ZpcnRpby92aXJ0aW9f
+cmluZy5jCj4gPiA+IEBAIC0xODE3LDE5ICsxODE3LDE3IEBAIHN0YXRpYyBzdHJ1Y3QgdnJpbmdf
+ZGVzY19leHRyYSAqdnJpbmdfYWxsb2NfZGVzY19leHRyYSh1bnNpZ25lZCBpbnQgbnVtKQo+ID4g
+PiAgICAgcmV0dXJuIGRlc2NfZXh0cmE7Cj4gPiA+ICAgfQo+ID4gPgo+ID4gPiAtc3RhdGljIHN0
+cnVjdCB2aXJ0cXVldWUgKnZyaW5nX2NyZWF0ZV92aXJ0cXVldWVfcGFja2VkKAo+ID4gPiAtICAg
+dW5zaWduZWQgaW50IGluZGV4LAo+ID4gPiAtICAgdW5zaWduZWQgaW50IG51bSwKPiA+ID4gLSAg
+IHVuc2lnbmVkIGludCB2cmluZ19hbGlnbiwKPiA+ID4gLSAgIHN0cnVjdCB2aXJ0aW9fZGV2aWNl
+ICp2ZGV2LAo+ID4gPiAtICAgYm9vbCB3ZWFrX2JhcnJpZXJzLAo+ID4gPiAtICAgYm9vbCBtYXlf
+cmVkdWNlX251bSwKPiA+ID4gLSAgIGJvb2wgY29udGV4dCwKPiA+ID4gLSAgIGJvb2wgKCpub3Rp
+ZnkpKHN0cnVjdCB2aXJ0cXVldWUgKiksCj4gPiA+IC0gICB2b2lkICgqY2FsbGJhY2spKHN0cnVj
+dCB2aXJ0cXVldWUgKiksCj4gPiA+IC0gICBjb25zdCBjaGFyICpuYW1lKQo+ID4gPiArc3RhdGlj
+IGludCB2cmluZ19hbGxvY19xdWV1ZV9wYWNrZWQoc3RydWN0IHZpcnRpb19kZXZpY2UgKnZkZXYs
+Cj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdTMyIG51bSwKPiA+ID4gKyAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJ1Y3QgdnJpbmdfcGFja2VkX2Rlc2MgKipf
+cmluZywKPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJ1Y3QgdnJpbmdf
+cGFja2VkX2Rlc2NfZXZlbnQgKipfZHJpdmVyLAo+ID4gPiArICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIHN0cnVjdCB2cmluZ19wYWNrZWRfZGVzY19ldmVudCAqKl9kZXZpY2UsCj4gPiA+
+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZG1hX2FkZHJfdCAqX3JpbmdfZG1hX2Fk
+ZHIsCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZG1hX2FkZHJfdCAqX2Ry
+aXZlcl9ldmVudF9kbWFfYWRkciwKPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICBkbWFfYWRkcl90ICpfZGV2aWNlX2V2ZW50X2RtYV9hZGRyLAo+ID4gPiArICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIHNpemVfdCAqX3Jpbmdfc2l6ZV9pbl9ieXRlcywKPiA+ID4gKyAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaXplX3QgKl9ldmVudF9zaXplX2luX2J5dGVz
+KQo+ID4gPiAgIHsKPiA+ID4gLSAgIHN0cnVjdCB2cmluZ192aXJ0cXVldWUgKnZxOwo+ID4gPiAg
+ICAgc3RydWN0IHZyaW5nX3BhY2tlZF9kZXNjICpyaW5nOwo+ID4gPiAgICAgc3RydWN0IHZyaW5n
+X3BhY2tlZF9kZXNjX2V2ZW50ICpkcml2ZXIsICpkZXZpY2U7Cj4gPiA+ICAgICBkbWFfYWRkcl90
+IHJpbmdfZG1hX2FkZHIsIGRyaXZlcl9ldmVudF9kbWFfYWRkciwgZGV2aWNlX2V2ZW50X2RtYV9h
+ZGRyOwo+ID4gPiBAQCAtMTg1Nyw2ICsxODU1LDUyIEBAIHN0YXRpYyBzdHJ1Y3QgdmlydHF1ZXVl
+ICp2cmluZ19jcmVhdGVfdmlydHF1ZXVlX3BhY2tlZCgKPiA+ID4gICAgIGlmICghZGV2aWNlKQo+
+ID4gPiAgICAgICAgICAgICBnb3RvIGVycl9kZXZpY2U7Cj4gPiA+Cj4gPiA+ICsgICAqX3Jpbmcg
+ICAgICAgICAgICAgICAgICAgPSByaW5nOwo+ID4gPiArICAgKl9kcml2ZXIgICAgICAgICAgICAg
+ICAgID0gZHJpdmVyOwo+ID4gPiArICAgKl9kZXZpY2UgICAgICAgICAgICAgICAgID0gZGV2aWNl
+Owo+ID4gPiArICAgKl9yaW5nX2RtYV9hZGRyICAgICAgICAgID0gcmluZ19kbWFfYWRkcjsKPiA+
+ID4gKyAgICpfZHJpdmVyX2V2ZW50X2RtYV9hZGRyICA9IGRyaXZlcl9ldmVudF9kbWFfYWRkcjsK
+PiA+ID4gKyAgICpfZGV2aWNlX2V2ZW50X2RtYV9hZGRyICA9IGRldmljZV9ldmVudF9kbWFfYWRk
+cjsKPiA+ID4gKyAgICpfcmluZ19zaXplX2luX2J5dGVzICAgICA9IHJpbmdfc2l6ZV9pbl9ieXRl
+czsKPiA+ID4gKyAgICpfZXZlbnRfc2l6ZV9pbl9ieXRlcyAgICA9IGV2ZW50X3NpemVfaW5fYnl0
+ZXM7Cj4gPgo+ID4KPiA+IEkgd29uZGVyIGlmIHdlIGNhbiBzaW1wbHkgZmFjdG9yIG91dCBzcGxp
+dCBhbmQgcGFja2VkIGZyb20gc3RydWN0Cj4gPiB2cmluZ192aXJ0cXVldWU6Cj4gPgo+ID4gc3Ry
+dWN0IHZyaW5nX3ZpcnRxdWV1ZSB7Cj4gPiAgICAgIHVuaW9uIHsKPiA+ICAgICAgICAgIHN0cnVj
+dCB7fSBzcGxpdDsKPiA+ICAgICAgICAgIHN0cnVjdCB7fSBwYWNrZWQ7Cj4gPiAgICAgIH07Cj4g
+PiB9Owo+ID4KPiA+IHRvCj4gPgo+ID4gc3RydWN0IHZyaW5nX3ZpcnRxdWV1ZV9zcGxpdCB7fTsK
+PiA+IHN0cnVjdCB2cmluZ192aXJ0cXVldWVfcGFja2VkIHt9Owo+ID4KPiA+IFRoZW4gd2UgY2Fu
+IGRvIHRoaW5ncyBsaWtlOgo+ID4KPiA+IHZyaW5nX2NyZWF0ZV92aXJ0cXVldWVfcGFja2VkKHN0
+cnVjdCB2aXJ0aW9fZGV2aWNlICp2ZGV2LCB1MzIgbnVtLAo+ID4gc3RydWN0IHZyaW5nX3ZpcnRx
+dWV1ZV9wYWNrZWQgKnBhY2tlZCk7Cj4gPgo+ID4gYW5kCj4gPgo+ID4gdnJpbmdfdnJpdHF1ZXVl
+X2F0dGFjaF9wYWNrZWQoc3RydWN0IHZyaW5nX3ZpcnRxdWV1ZSAqdnEsIHN0cnVjdAo+ID4gdnJp
+bmdfdmlydHF1ZXVlX3BhY2tlZCBwYWNrZWQpOwo+Cj4gVGhpcyBpZGVhIGlzIHZlcnkgc2ltaWxh
+ciB0byBteSBwcmV2aW91cyBpZGVhLCBqdXN0IHdpdGhvdXQgaW50cm9kdWNpbmcgYSBuZXcKPiBz
+dHJ1Y3R1cmUuCgpZZXMsIGl0J3MgYmV0dGVyIHRvIG5vdCBpbnRyb2R1Y2UgbmV3IHN0cnVjdHVy
+ZXMgaWYgaXQncyBwb3NzaWJsZS4KCj4KPiBJJ2QgYmUgbW9yZSB0aGFuIGhhcHB5IHRvIHJldmlz
+ZSB0aGlzLgoKR29vZCB0byBrbm93IHRoaXMuCgpUaGFua3MKCj4KPiBUaGFua3MuCj4KPgo+ID4K
+PiA+IFRoYW5rcwo+ID4KPiA+Cj4gPiA+ICsKPiA+ID4gKyAgIHJldHVybiAwOwo+ID4gPiArCj4g
+PiA+ICtlcnJfZGV2aWNlOgo+ID4gPiArICAgdnJpbmdfZnJlZV9xdWV1ZSh2ZGV2LCBldmVudF9z
+aXplX2luX2J5dGVzLCBkcml2ZXIsIGRyaXZlcl9ldmVudF9kbWFfYWRkcik7Cj4gPiA+ICsKPiA+
+ID4gK2Vycl9kcml2ZXI6Cj4gPiA+ICsgICB2cmluZ19mcmVlX3F1ZXVlKHZkZXYsIHJpbmdfc2l6
+ZV9pbl9ieXRlcywgcmluZywgcmluZ19kbWFfYWRkcik7Cj4gPiA+ICsKPiA+ID4gK2Vycl9yaW5n
+Ogo+ID4gPiArICAgcmV0dXJuIC1FTk9NRU07Cj4gPiA+ICt9Cj4gPiA+ICsKPiA+ID4gK3N0YXRp
+YyBzdHJ1Y3QgdmlydHF1ZXVlICp2cmluZ19jcmVhdGVfdmlydHF1ZXVlX3BhY2tlZCgKPiA+ID4g
+KyAgIHVuc2lnbmVkIGludCBpbmRleCwKPiA+ID4gKyAgIHVuc2lnbmVkIGludCBudW0sCj4gPiA+
+ICsgICB1bnNpZ25lZCBpbnQgdnJpbmdfYWxpZ24sCj4gPiA+ICsgICBzdHJ1Y3QgdmlydGlvX2Rl
+dmljZSAqdmRldiwKPiA+ID4gKyAgIGJvb2wgd2Vha19iYXJyaWVycywKPiA+ID4gKyAgIGJvb2wg
+bWF5X3JlZHVjZV9udW0sCj4gPiA+ICsgICBib29sIGNvbnRleHQsCj4gPiA+ICsgICBib29sICgq
+bm90aWZ5KShzdHJ1Y3QgdmlydHF1ZXVlICopLAo+ID4gPiArICAgdm9pZCAoKmNhbGxiYWNrKShz
+dHJ1Y3QgdmlydHF1ZXVlICopLAo+ID4gPiArICAgY29uc3QgY2hhciAqbmFtZSkKPiA+ID4gK3sK
+PiA+ID4gKyAgIGRtYV9hZGRyX3QgcmluZ19kbWFfYWRkciwgZHJpdmVyX2V2ZW50X2RtYV9hZGRy
+LCBkZXZpY2VfZXZlbnRfZG1hX2FkZHI7Cj4gPiA+ICsgICBzdHJ1Y3QgdnJpbmdfcGFja2VkX2Rl
+c2NfZXZlbnQgKmRyaXZlciwgKmRldmljZTsKPiA+ID4gKyAgIHNpemVfdCByaW5nX3NpemVfaW5f
+Ynl0ZXMsIGV2ZW50X3NpemVfaW5fYnl0ZXM7Cj4gPiA+ICsgICBzdHJ1Y3QgdnJpbmdfcGFja2Vk
+X2Rlc2MgKnJpbmc7Cj4gPiA+ICsgICBzdHJ1Y3QgdnJpbmdfdmlydHF1ZXVlICp2cTsKPiA+ID4g
+Kwo+ID4gPiArICAgaWYgKHZyaW5nX2FsbG9jX3F1ZXVlX3BhY2tlZCh2ZGV2LCBudW0sICZyaW5n
+LCAmZHJpdmVyLCAmZGV2aWNlLAo+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAmcmluZ19kbWFfYWRkciwgJmRyaXZlcl9ldmVudF9kbWFfYWRkciwKPiA+ID4gKyAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgJmRldmljZV9ldmVudF9kbWFfYWRkciwKPiA+ID4gKyAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgJnJpbmdfc2l6ZV9pbl9ieXRlcywKPiA+ID4g
+KyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgJmV2ZW50X3NpemVfaW5fYnl0ZXMpKQo+
+ID4gPiArICAgICAgICAgICBnb3RvIGVycl9yaW5nOwo+ID4gPiArCj4gPiA+ICAgICB2cSA9IGtt
+YWxsb2Moc2l6ZW9mKCp2cSksIEdGUF9LRVJORUwpOwo+ID4gPiAgICAgaWYgKCF2cSkKPiA+ID4g
+ICAgICAgICAgICAgZ290byBlcnJfdnE7Cj4gPiA+IEBAIC0xOTM5LDkgKzE5ODMsNyBAQCBzdGF0
+aWMgc3RydWN0IHZpcnRxdWV1ZSAqdnJpbmdfY3JlYXRlX3ZpcnRxdWV1ZV9wYWNrZWQoCj4gPiA+
+ICAgICBrZnJlZSh2cSk7Cj4gPiA+ICAgZXJyX3ZxOgo+ID4gPiAgICAgdnJpbmdfZnJlZV9xdWV1
+ZSh2ZGV2LCBldmVudF9zaXplX2luX2J5dGVzLCBkZXZpY2UsIGRldmljZV9ldmVudF9kbWFfYWRk
+cik7Cj4gPiA+IC1lcnJfZGV2aWNlOgo+ID4gPiAgICAgdnJpbmdfZnJlZV9xdWV1ZSh2ZGV2LCBl
+dmVudF9zaXplX2luX2J5dGVzLCBkcml2ZXIsIGRyaXZlcl9ldmVudF9kbWFfYWRkcik7Cj4gPiA+
+IC1lcnJfZHJpdmVyOgo+ID4gPiAgICAgdnJpbmdfZnJlZV9xdWV1ZSh2ZGV2LCByaW5nX3NpemVf
+aW5fYnl0ZXMsIHJpbmcsIHJpbmdfZG1hX2FkZHIpOwo+ID4gPiAgIGVycl9yaW5nOgo+ID4gPiAg
+ICAgcmV0dXJuIE5VTEw7Cj4gPgo+CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJh
+ZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
+eC11bQo=
 
