@@ -1,29 +1,68 @@
-Return-Path: <SRS0=AuuY=UY=zx2c4.com=Jason@kernel.org>
+Return-Path: <linux+geert=linux-m68k.org@armlinux.org.uk>
+Date: Thu, 14 Apr 2022 11:12:27 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Subject: Re: [PATCH v4 01/11] timekeeping: add raw clock fallback for
+ random_get_entropy()
+Message-ID: <Ylfzi1lNWTH1wjLA@shell.armlinux.org.uk>
+References: <20220413115411.21489-1-Jason@zx2c4.com>
+ <20220413115411.21489-2-Jason@zx2c4.com>
 MIME-Version: 1.0
-References: <20220413115411.21489-1-Jason@zx2c4.com> <20220413115411.21489-2-Jason@zx2c4.com>
- <Ylfzi1lNWTH1wjLA@shell.armlinux.org.uk>
-In-Reply-To: <Ylfzi1lNWTH1wjLA@shell.armlinux.org.uk>
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date: Thu, 14 Apr 2022 13:56:56 +0200
-Message-ID: <CAHmME9q8R+uHNF_VBkJezfWn78kyw0RgGf-36JJKs6t3h3wQnA@mail.gmail.com>
-Subject: Re: [PATCH v4 01/11] timekeeping: add raw clock fallback for random_get_entropy()
-Content-Type: text/plain; charset="UTF-8"
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Arnd Bergmann <arnd@arndb.de>, Theodore Ts'o <tytso@mit.edu>, Dominik Brodowski <linux@dominikbrodowski.net>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, "David S . Miller" <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, John Stultz <john.stultz@linaro.org>, Stephen Boyd <sboyd@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>, linux-riscv <linux-riscv@lists.infradead.org>, sparclinux <sparclinux@vger.kernel.org>, linux-um@lists.infradead.org, X86 ML <x86@kernel.org>, linux-xtensa@linux-xtensa.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220413115411.21489-2-Jason@zx2c4.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+To: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, tglx@linutronix.de, arnd@arndb.de, Theodore Ts'o <tytso@mit.edu>, Dominik Brodowski <linux@dominikbrodowski.net>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, "David S . Miller" <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, John Stultz <john.stultz@linaro.org>, Stephen Boyd <sboyd@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org, linux-xtensa@linux-xtensa.org
 List-ID: <linux-um.lists.infradead.org>
 
-Hi Russell,
+On Wed, Apr 13, 2022 at 01:54:01PM +0200, Jason A. Donenfeld wrote:
+> The addition of random_get_entropy_fallback() provides access to
+> whichever time source has the highest frequency, which is useful for
+> gathering entropy on platforms without available cycle counters. It's
+> not necessarily as good as being able to quickly access a cycle counter
+> that the CPU has, but it's still something, even when it falls back to
+> being jiffies-based.
+> 
+> In the event that a given arch does not define get_cycles(), falling
+> back to the get_cycles() default implementation that returns 0 is really
+> not the best we can do. Instead, at least calling
+> random_get_entropy_fallback() would be preferable, because that always
+> needs to return _something_, even falling back to jiffies eventually.
+> It's not as though random_get_entropy_fallback() is super high precision
+> or guaranteed to be entropic, but basically anything that's not zero all
+> the time is better than returning zero all the time.
+> 
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Theodore Ts'o <tytso@mit.edu>
+> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+> ---
+>  include/linux/timex.h     |  8 ++++++++
+>  kernel/time/timekeeping.c | 10 ++++++++++
+>  2 files changed, 18 insertions(+)
+> 
+> diff --git a/include/linux/timex.h b/include/linux/timex.h
+> index 5745c90c8800..fbbe34226044 100644
+> --- a/include/linux/timex.h
+> +++ b/include/linux/timex.h
+> @@ -62,6 +62,8 @@
+>  #include <linux/types.h>
+>  #include <linux/param.h>
+>  
+> +extern unsigned long random_get_entropy_fallback(void);
 
-On Thu, Apr 14, 2022 at 12:12 PM Russell King (Oracle)
-<linux@armlinux.org.uk> wrote:
-> I'm surprised this didn't trigger checkpatch to warn. From
-> coding-style:
->
-> 6.1) Function prototypes
-> Do not use the ``extern`` keyword with function declarations as this makes
-> lines longer and isn't strictly necessary.
+Hi
 
-Okay, will do for v+1.
+I'm surprised this didn't trigger checkpatch to warn. From
+coding-style:
 
-Jason
+6.1) Function prototypes
+Do not use the ``extern`` keyword with function declarations as this makes
+lines longer and isn't strictly necessary.
+
+Thanks!
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
 
