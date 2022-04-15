@@ -1,11 +1,10 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Subject: [PATCH 09/30] coresight: cpu-debug: Replace mutex with mutex_trylock
- on panic notifier
-Date: Wed, 27 Apr 2022 19:49:03 -0300
-Message-Id: <20220427224924.592546-10-gpiccoli@igalia.com>
-In-Reply-To: <20220427224924.592546-1-gpiccoli@igalia.com>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
+From: Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 19/27] block: remove queue_discard_alignment
+Date: Fri, 15 Apr 2022 06:52:50 +0200
+Message-Id: <20220415045258.199825-20-hch@lst.de>
+In-Reply-To: <20220415045258.199825-1-hch@lst.de>
+References: <20220415045258.199825-1-hch@lst.de>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -19,58 +18,54 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, gpiccoli@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, Leo Yan <leo.yan@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Mike Leach <mike.leach@linaro.org>, Suzuki K Poulose <suzuki.poulose@arm.com>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: dm-devel@redhat.com, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-um@lists.infradead.org, linux-block@vger.kernel.org, drbd-dev@lists.linbit.com, nbd@other.debian.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev, ocfs2-devel@oss.oracle.com, linux-mm@kvack.org, "Martin K . Petersen" <martin.petersen@oracle.com>
 
-The panic notifier infrastructure executes registered callbacks when
-a panic event happens - such callbacks are executed in atomic context,
-with interrupts and preemption disabled in the running CPU and all other
-CPUs disabled. That said, mutexes in such context are not a good idea.
+Just use bdev_alignment_offset in disk_discard_alignment_show instead.
+That helpers is the same except for an always false branch that doesn't
+matter in this slow path.
 
-This patch replaces a regular mutex with a mutex_trylock safer approach;
-given the nature of the mutex used in the driver, it should be pretty
-uncommon being unable to acquire such mutex in the panic path, hence
-no functional change should be observed (and if it is, that would be
-likely a deadlock with the regular mutex).
-
-Fixes: 2227b7c74634 ("coresight: add support for CPU debug module")
-Cc: Leo Yan <leo.yan@linaro.org>
-Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: Mike Leach <mike.leach@linaro.org>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
 ---
- drivers/hwtracing/coresight/coresight-cpu-debug.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ block/genhd.c          | 2 +-
+ include/linux/blkdev.h | 8 --------
+ 2 files changed, 1 insertion(+), 9 deletions(-)
 
-diff --git a/drivers/hwtracing/coresight/coresight-cpu-debug.c b/drivers/hwtracing/coresight/coresight-cpu-debug.c
-index 8845ec4b4402..1874df7c6a73 100644
---- a/drivers/hwtracing/coresight/coresight-cpu-debug.c
-+++ b/drivers/hwtracing/coresight/coresight-cpu-debug.c
-@@ -380,9 +380,10 @@ static int debug_notifier_call(struct notifier_block *self,
- 	int cpu;
- 	struct debug_drvdata *drvdata;
+diff --git a/block/genhd.c b/block/genhd.c
+index 712031ce19070..36532b9318419 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -1019,7 +1019,7 @@ static ssize_t disk_discard_alignment_show(struct device *dev,
+ {
+ 	struct gendisk *disk = dev_to_disk(dev);
  
--	mutex_lock(&debug_lock);
-+	/* Bail out if we can't acquire the mutex or the functionality is off */
-+	if (!mutex_trylock(&debug_lock))
-+		return NOTIFY_DONE;
- 
--	/* Bail out if the functionality is disabled */
- 	if (!debug_enable)
- 		goto skip_dump;
- 
-@@ -401,7 +402,7 @@ static int debug_notifier_call(struct notifier_block *self,
- 
- skip_dump:
- 	mutex_unlock(&debug_lock);
--	return 0;
-+	return NOTIFY_DONE;
+-	return sprintf(buf, "%d\n", queue_discard_alignment(disk->queue));
++	return sprintf(buf, "%d\n", bdev_alignment_offset(disk->part0));
  }
  
- static struct notifier_block debug_notifier = {
+ static ssize_t diskseq_show(struct device *dev,
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 0a1795ac26275..5a9b7aeda010b 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -1253,14 +1253,6 @@ bdev_zone_write_granularity(struct block_device *bdev)
+ 
+ int bdev_alignment_offset(struct block_device *bdev);
+ 
+-static inline int queue_discard_alignment(const struct request_queue *q)
+-{
+-	if (q->limits.discard_misaligned)
+-		return -1;
+-
+-	return q->limits.discard_alignment;
+-}
+-
+ static inline int queue_limit_discard_alignment(struct queue_limits *lim, sector_t sector)
+ {
+ 	unsigned int alignment, granularity, offset;
 -- 
-2.36.0
+2.30.2
 
 
 _______________________________________________
