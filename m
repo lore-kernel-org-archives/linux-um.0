@@ -1,15 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ncGhv-008VLF-JM
- for linux-um@lists.infradead.org; Thu, 07 Apr 2022 01:13:09 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.15 04/27] um: Cleanup syscall_handler_t
- definition/cast, fix warning
-Date: Wed,  6 Apr 2022 21:12:34 -0400
-Message-Id: <20220407011257.114287-4-sashal@kernel.org>
-In-Reply-To: <20220407011257.114287-1-sashal@kernel.org>
-References: <20220407011257.114287-1-sashal@kernel.org>
+From: Chaitanya Kulkarni <chaitanyak@nvidia.com>
+Subject: Re: [PATCH 13/27] block: add a bdev_fua helper
+Date: Fri, 15 Apr 2022 05:42:07 +0000
+Message-ID: <77dedfc7-d5af-4d87-0383-613b80139850@nvidia.com>
+References: <20220415045258.199825-1-hch@lst.de>
+ <20220415045258.199825-14-hch@lst.de>
+In-Reply-To: <20220415045258.199825-14-hch@lst.de>
+Content-Language: en-US
+Content-ID: <DF997BF112FF594981505DC1D908FBEE@namprd12.prod.outlook.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -19,63 +17,28 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: David Gow <davidgow@google.com>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, viro@zeniv.linux.org.uk, linux-um@lists.infradead.org
+To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc: "dm-devel@redhat.com" <dm-devel@redhat.com>, "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>, "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>, "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>, "nbd@other.debian.org" <nbd@other.debian.org>, "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>, "virtualization@lists.linux-foundation.org" <virtualization@lists.linux-foundation.org>, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>, "linux-bcache@vger.kernel.org" <linux-bcache@vger.kernel.org>, "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>, "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>, "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>, "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>, "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>, "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>, "linux-f2fs-devel@lists.sourceforge.net" <linux-f2fs-devel@lists.sourceforge.net>, "cluster-devel@redhat.com" <cluster-devel@redhat.com>, "jfs-discussion@lists.sourceforge.net" <jfs-discussion@lists.sourceforge.net>, "linux-nilfs@vger.kernel.org" <linux-nilfs@vger.kernel.org>, "ntfs3@lists.linux.dev" <ntfs3@lists.linux.dev>, "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>, "linux-mm@kvack.org" <linux-mm@kvack.org>, "Martin K . Petersen" <martin.petersen@oracle.com>
 
-RnJvbTogRGF2aWQgR293IDxkYXZpZGdvd0Bnb29nbGUuY29tPgoKWyBVcHN0cmVhbSBjb21taXQg
-ZjRmMDNmMjk5YTU2Y2U0ZDczYzU0MzFlMDMyN2IzYjZjYjU1ZWJiOSBdCgpUaGUgc3lzY2FsbF9o
-YW5kbGVyX3QgdHlwZSBmb3IgeDg2XzY0IHdhcyBkZWZpbmVkIGFzICdsb25nICgqKSh2b2lkKScs
-CmJ1dCBhbHdheXMgY2FzdCB0byAnbG9uZyAoKikobG9uZywgbG9uZywgbG9uZywgbG9uZywgbG9u
-ZywgbG9uZyknIGJlZm9yZQp1c2UuIFRoaXMgbm93IHRyaWdnZXJzIGEgd2FybmluZyAoc2VlIGJl
-bG93KS4KCkRlZmluZSBzeXNjYWxsX2hhbmRsZXJfdCBhcyB0aGUgbGF0dGVyIGluc3RlYWQsIGFu
-ZCByZW1vdmUgdGhlIGNhc3QuClRoaXMgc2ltcGxpZmllcyB0aGUgY29kZSwgYW5kIGZpeGVzIHRo
-ZSB3YXJuaW5nLgoKV2FybmluZzoKSW4gZmlsZSBpbmNsdWRlZCBmcm9tIC4uL2FyY2gvdW0vaW5j
-bHVkZS9hc20vcHJvY2Vzc29yLWdlbmVyaWMuaDoxMwogICAgICAgICAgICAgICAgIGZyb20gLi4v
-YXJjaC94ODYvdW0vYXNtL3Byb2Nlc3Nvci5oOjQxCiAgICAgICAgICAgICAgICAgZnJvbSAuLi9p
-bmNsdWRlL2xpbnV4L3JjdXBkYXRlLmg6MzAKICAgICAgICAgICAgICAgICBmcm9tIC4uL2luY2x1
-ZGUvbGludXgvcmN1bGlzdC5oOjExCiAgICAgICAgICAgICAgICAgZnJvbSAuLi9pbmNsdWRlL2xp
-bnV4L3BpZC5oOjUKICAgICAgICAgICAgICAgICBmcm9tIC4uL2luY2x1ZGUvbGludXgvc2NoZWQu
-aDoxNAogICAgICAgICAgICAgICAgIGZyb20gLi4vaW5jbHVkZS9saW51eC9wdHJhY2UuaDo2CiAg
-ICAgICAgICAgICAgICAgZnJvbSAuLi9hcmNoL3VtL2tlcm5lbC9za2FzL3N5c2NhbGwuYzo3Ogou
-Li9hcmNoL3VtL2tlcm5lbC9za2FzL3N5c2NhbGwuYzogSW4gZnVuY3Rpb24g4oCYaGFuZGxlX3N5
-c2NhbGzigJk6Ci4uL2FyY2gveDg2L3VtL3NoYXJlZC9zeXNkZXAvc3lzY2FsbHNfNjQuaDoxODox
-MTogd2FybmluZzogY2FzdCBiZXR3ZWVuIGluY29tcGF0aWJsZSBmdW5jdGlvbiB0eXBlcyBmcm9t
-IOKAmGxvbmcgaW50ICgqKSh2b2lkKeKAmSB0byDigJhsb25nIGludCAoKikobG9uZyBpbnQsICBs
-b25nIGludCwgIGxvbmcgaW50LCAgbG9uZyBpbnQsICBsb25nIGludCwgIGxvbmcgaW50KeKAmSBb
-Ci1XY2FzdC1mdW5jdGlvbi10eXBlXQogICAxOCB8ICAgICAgICAgKCgobG9uZyAoKikobG9uZywg
-bG9uZywgbG9uZywgbG9uZywgbG9uZywgbG9uZykpIFwKICAgICAgfCAgICAgICAgICAgXgouLi9h
-cmNoL3g4Ni91bS9hc20vcHRyYWNlLmg6MzY6NjI6IG5vdGU6IGluIGRlZmluaXRpb24gb2YgbWFj
-cm8g4oCYUFRfUkVHU19TRVRfU1lTQ0FMTF9SRVRVUk7igJkKICAgMzYgfCAjZGVmaW5lIFBUX1JF
-R1NfU0VUX1NZU0NBTExfUkVUVVJOKHIsIHJlcykgKFBUX1JFR1NfQVgocikgPSAocmVzKSkKICAg
-ICAgfCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgXn5+Ci4uL2FyY2gvdW0va2VybmVsL3NrYXMvc3lzY2FsbC5jOjQ2OjMzOiBub3Rl
-OiBpbiBleHBhbnNpb24gb2YgbWFjcm8g4oCYRVhFQ1VURV9TWVNDQUxM4oCZCiAgIDQ2IHwgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBFWEVDVVRFX1NZU0NBTEwoc3lzY2FsbCwgcmVn
-cykpOwogICAgICB8ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXn5+fn5+fn5+fn5+
-fn5+CgpTaWduZWQtb2ZmLWJ5OiBEYXZpZCBHb3cgPGRhdmlkZ293QGdvb2dsZS5jb20+ClNpZ25l
-ZC1vZmYtYnk6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+ClNpZ25lZC1vZmYt
-Ynk6IFNhc2hhIExldmluIDxzYXNoYWxAa2VybmVsLm9yZz4KLS0tCiBhcmNoL3g4Ni91bS9zaGFy
-ZWQvc3lzZGVwL3N5c2NhbGxzXzY0LmggfCA1ICsrLS0tCiAxIGZpbGUgY2hhbmdlZCwgMiBpbnNl
-cnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2FyY2gveDg2L3VtL3NoYXJl
-ZC9zeXNkZXAvc3lzY2FsbHNfNjQuaCBiL2FyY2gveDg2L3VtL3NoYXJlZC9zeXNkZXAvc3lzY2Fs
-bHNfNjQuaAppbmRleCA4YTdkNWUxZGE5OGUuLjFlNjg3NWI0ZmZkOCAxMDA2NDQKLS0tIGEvYXJj
-aC94ODYvdW0vc2hhcmVkL3N5c2RlcC9zeXNjYWxsc182NC5oCisrKyBiL2FyY2gveDg2L3VtL3No
-YXJlZC9zeXNkZXAvc3lzY2FsbHNfNjQuaApAQCAtMTAsMTMgKzEwLDEyIEBACiAjaW5jbHVkZSA8
-bGludXgvbXNnLmg+CiAjaW5jbHVkZSA8bGludXgvc2htLmg+CiAKLXR5cGVkZWYgbG9uZyBzeXNj
-YWxsX2hhbmRsZXJfdCh2b2lkKTsKK3R5cGVkZWYgbG9uZyBzeXNjYWxsX2hhbmRsZXJfdChsb25n
-LCBsb25nLCBsb25nLCBsb25nLCBsb25nLCBsb25nKTsKIAogZXh0ZXJuIHN5c2NhbGxfaGFuZGxl
-cl90ICpzeXNfY2FsbF90YWJsZVtdOwogCiAjZGVmaW5lIEVYRUNVVEVfU1lTQ0FMTChzeXNjYWxs
-LCByZWdzKSBcCi0JKCgobG9uZyAoKikobG9uZywgbG9uZywgbG9uZywgbG9uZywgbG9uZywgbG9u
-ZykpIFwKLQkgICgqc3lzX2NhbGxfdGFibGVbc3lzY2FsbF0pKShVUFRfU1lTQ0FMTF9BUkcxKCZy
-ZWdzLT5yZWdzKSwgXAorCSgoKCpzeXNfY2FsbF90YWJsZVtzeXNjYWxsXSkpKFVQVF9TWVNDQUxM
-X0FSRzEoJnJlZ3MtPnJlZ3MpLCBcCiAJCSAJCSAgICAgIFVQVF9TWVNDQUxMX0FSRzIoJnJlZ3Mt
-PnJlZ3MpLCBcCiAJCQkJICAgICAgVVBUX1NZU0NBTExfQVJHMygmcmVncy0+cmVncyksIFwKIAkJ
-CQkgICAgICBVUFRfU1lTQ0FMTF9BUkc0KCZyZWdzLT5yZWdzKSwgXAotLSAKMi4zNS4xCgoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFp
-bGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
+On 4/14/22 21:52, Christoph Hellwig wrote:
+> Add a helper to check the FUA flag based on the block_device instead of
+> having to poke into the block layer internal request_queue.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
+
+Looks good.
+
+Reviewed-by: Chaitanya Kulkarni <kch@nvidia.com>
+
+-ck
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
