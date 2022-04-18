@@ -1,18 +1,25 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-lf1-x129.google.com ([2a00:1450:4864:20::129])
+Received: from esa3.hgst.iphmx.com ([216.71.153.141])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ngfqB-001UCf-Ap
- for linux-um@lists.infradead.org; Tue, 19 Apr 2022 04:51:53 +0000
-Received: by mail-lf1-x129.google.com with SMTP id u7so27335606lfs.8
- for <linux-um@lists.infradead.org>; Mon, 18 Apr 2022 21:51:48 -0700 (PDT)
+ id 1ngMLT-00Fv9Q-Ny
+ for linux-um@lists.infradead.org; Mon, 18 Apr 2022 08:02:53 +0000
+Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
+ by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4KhfYg1LZgz1SVpB
+ for <linux-um@lists.infradead.org>; Mon, 18 Apr 2022 01:02:47 -0700 (PDT)
+Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
+ by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new,
+ port 10026)
+ with ESMTP id KzGws0-BrDWh for <linux-um@lists.infradead.org>;
+ Mon, 18 Apr 2022 01:02:46 -0700 (PDT)
+Message-ID: <1cef25df-b00d-4590-5598-555c5d97d1c1@opensource.wdc.com>
+Date: Mon, 18 Apr 2022 17:02:41 +0900
 MIME-Version: 1.0
+Subject: Re: [dm-devel] [PATCH 10/11] rnbd-srv: use bdev_discard_alignment
+Content-Language: en-US
 References: <20220418045314.360785-1-hch@lst.de>
  <20220418045314.360785-11-hch@lst.de>
+From: Damien Le Moal <damien.lemoal@opensource.wdc.com>
 In-Reply-To: <20220418045314.360785-11-hch@lst.de>
-From: Jinpu Wang <jinpu.wang@ionos.com>
-Date: Tue, 19 Apr 2022 06:51:12 +0200
-Message-ID: <CAMGffEnxwHE_QgN2OS93BHe6U+XdYc_R5OmSROmF5F-HXK_E4A@mail.gmail.com>
-Subject: Re: [PATCH 10/11] rnbd-srv: use bdev_discard_alignment
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -25,37 +32,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>, Johannes Berg <johannes@sipsolutions.net>, Josef Bacik <josef@toxicpanda.com>, "Md. Haris Iqbal" <haris.iqbal@ionos.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, =?UTF-8?Q?Roger_Pau_Monn=C3=A9?= <roger.pau@citrix.com>, Mike Snitzer <snitzer@kernel.org>, Song Liu <song@kernel.org>, Stefan Haberland <sth@linux.ibm.com>, Jan Hoeppner <hoeppner@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, linux-um@lists.infradead.org, linux-block@vger.kernel.org, nbd@other.debian.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-raid@vger.kernel.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, dm-devel@redhat.com
+To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc: Jan Hoeppner <hoeppner@linux.ibm.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, linux-nvme@lists.infradead.org, virtualization@lists.linux-foundation.org, Song Liu <song@kernel.org>, dm-devel@redhat.com, "Md. Haris Iqbal" <haris.iqbal@ionos.com>, Jack Wang <jinpu.wang@ionos.com>, linux-s390@vger.kernel.org, Richard Weinberger <richard@nod.at>, xen-devel@lists.xenproject.org, linux-um@lists.infradead.org, Mike Snitzer <snitzer@kernel.org>, Josef Bacik <josef@toxicpanda.com>, nbd@other.debian.org, linux-block@vger.kernel.org, Stefan Haberland <sth@linux.ibm.com>, linux-raid@vger.kernel.org, "Martin K. Petersen" <martin.petersen@oracle.com>, Johannes Berg <johannes@sipsolutions.net>, =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>
 
-On Mon, Apr 18, 2022 at 6:53 AM Christoph Hellwig <hch@lst.de> wrote:
->
+On 4/18/22 13:53, Christoph Hellwig wrote:
 > Use bdev_discard_alignment to calculate the correct discard alignment
 > offset even for partitions instead of just looking at the queue limit.
->
+> 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
-Thx!
-Acked-by: Jack Wang <jinpu.wang@ionos.com>
 > ---
 >  drivers/block/rnbd/rnbd-srv-dev.h | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
->
+> 
 > diff --git a/drivers/block/rnbd/rnbd-srv-dev.h b/drivers/block/rnbd/rnbd-srv-dev.h
 > index d080a0de59225..4309e52524691 100644
 > --- a/drivers/block/rnbd/rnbd-srv-dev.h
 > +++ b/drivers/block/rnbd/rnbd-srv-dev.h
 > @@ -59,7 +59,7 @@ static inline int rnbd_dev_get_discard_granularity(const struct rnbd_dev *dev)
->
+>  
 >  static inline int rnbd_dev_get_discard_alignment(const struct rnbd_dev *dev)
 >  {
-> -       return bdev_get_queue(dev->bdev)->limits.discard_alignment;
-> +       return bdev_discard_alignment(dev->bdev);
+> -	return bdev_get_queue(dev->bdev)->limits.discard_alignment;
+> +	return bdev_discard_alignment(dev->bdev);
 >  }
->
+>  
 >  #endif /* RNBD_SRV_DEV_H */
-> --
-> 2.30.2
->
+
+Reviewed-by: Damien Le Moal <damien.lemoal@opensource.wdc.com>
+
+-- 
+Damien Le Moal
+Western Digital Research
 
 _______________________________________________
 linux-um mailing list
