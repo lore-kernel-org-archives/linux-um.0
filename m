@@ -1,193 +1,55 @@
-Return-Path: <SRS0=N99Z=VB=zx2c4.com=Jason@kernel.org>
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH v6 00/17] archs/random: fallback to best raw ktime when no cycle counter
-Date: Sat, 23 Apr 2022 23:26:06 +0200
-Message-Id: <20220423212623.1957011-1-Jason@zx2c4.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+From: Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 07/11] dasd: don't set the discard_alignment queue limit
+Date: Mon, 18 Apr 2022 06:53:10 +0200
+Message-Id: <20220418045314.360785-8-hch@lst.de>
+In-Reply-To: <20220418045314.360785-1-hch@lst.de>
+References: <20220418045314.360785-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, tglx@linutronix.de, arnd@arndb.de
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Theodore Ts'o <tytso@mit.edu>, Dominik Brodowski <linux@dominikbrodowski.net>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, "David S . Miller" <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Stephen Boyd <sboyd@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Helge Deller <deller@gmx.de>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org, linux-xtensa@linux-xtensa.org, openrisc@lists.librecores.org, linux-ia64@vger.kernel.org, linux-s390@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Jens Axboe <axboe@kernel.dk>
+Cc: Richard Weinberger <richard@nod.at>, Johannes Berg <johannes@sipsolutions.net>, Josef Bacik <josef@toxicpanda.com>, "Md. Haris Iqbal" <haris.iqbal@ionos.com>, Jack Wang <jinpu.wang@ionos.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>, Mike Snitzer <snitzer@kernel.org>, Song Liu <song@kernel.org>, Stefan Haberland <sth@linux.ibm.com>, Jan Hoeppner <hoeppner@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, linux-um@lists.infradead.org, linux-block@vger.kernel.org, nbd@other.debian.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-raid@vger.kernel.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, dm-devel@redhat.com
 
-[Preface for v6: if you're an arch maintainer, a simple Acked-by would
- be appreciated if this looks okay.]
+The discard_alignment queue limit is named a bit misleading means the
+offset into the block device at which the discard granularity starts.
+Setting it to PAGE_SIZE while the discard granularity is the block size
+that is smaller or the same as PAGE_SIZE as done by dasd is mostly
+harmless but also useless.
 
-Hi folks,
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ drivers/s390/block/dasd_fba.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-The RNG uses a function called random_get_entropy() basically anytime
-that it needs to timestamp an event. For example, an interrupt comes in,
-and we mix a random_get_entropy() into the entropy pool somehow.
-Somebody mashes their keyboard or moves their mouse around? We mix a
-random_get_entropy() into the entropy pool. It's one of the main
-varieties of input.
-
-Unfortunately, it's always 0 on a few platforms. The RNG has accumulated
-various hacks to deal with this, but in general it's not great. Surely
-we can do better than 0. In fact, *anything* that's not the same exact
-value all the time would be better than 0. Even a counter that
-increments once per hour would be better than 0! I think you get the
-idea.
-
-On most platforms, random_get_entropy() is aliased to get_cycles(),
-which makes sense for platforms where get_cycles() is defined. RDTSC,
-for example, has all the characteristics we care about for this
-function: it's fast to acquire (i.e. acceptable in an irq handler),
-pretty high precision, available, forms a 2-monotone distribution, etc.
-But for platforms without that, what is the next best thing?
-
-Sometimes the next best thing is architecture-defined. For example,
-really old MIPS has the C0 random register, which isn't quite a cycle
-counter, but is at least something. However, some platforms don't even
-have an architecture-defined fallback.
-
-Fortunately, the timekeeping subsystem has already solved this problem
-of trying to determine what the least bad clock is on constrained
-systems, falling back to jiffies in the worst case. By exporting the raw
-clock, we can get a decent fallback function for when there's no cycle
-counter or architecture-specific function.
-
-This series makes the RNG more useful on: m68k, RISC-V, MIPS, ARM32,
-NIOS II, SPARC32, Xtensa, OpenRISC, and Usermode Linux. Previously these
-platforms would, in certain circumstances, but out of luck with regards to
-having any type of event timestamping source in the RNG.
-
-Finally, note that this series isn't about "jitter entropy" or other
-ways of initializing the RNG. That's a different topic for a different
-thread. Please don't let this discussion veer off into that. Here, I'm
-just trying to find a good fallback counter/timer for platforms without
-get_cycles(), a question with limited scope.
-
-If this (or a future revision) looks good to you all and receives the
-requisite acks, my plan was to take these through the random.git tree
-for 5.19, so that I can then build on top of it.
-
-Thanks,
-Jason
-
-Changes v5->v6:
-- Use cpu_feature_enabled() instead of boot_cpu_has() on x86.
-- OpenRISC support.
-- Define missing `#define get_cycles get_cycles` on various platforms.
-
-Changes v4->v5:
-- Do not prototype symbol with 'extern', according to style guide.
-- On MIPS, combine random_get_entropy_fallback() with the c0 random
-  register in a way that matches the format of the c0 random value, so
-  that we get the best of a high precision cycle counter and of larger
-  period timer, joined together. As a result, Thomas Bogendoerfer's
-  ack on v4 of patch 4 has been dropped, since this is a substantial
-  change.
-
-Changes v3->v4:
-- Use EXPORT_SYMBOL_GPL instead of EXPORT_SYMBOL.
-
-Changes v2->v3:
-- Name the fallback function random_get_entropy_fallback(), so that it
-  can be changed out as needed.
-- Include header with prototype in timekeeping.c to avoid compiler
-  warning.
-- Export fallback function symbol.
-
-Changes v1->v2:
-- Use ktime_read_raw_clock() instead of sched_clock(), per Thomas'
-  suggestion.
-- Drop arm64 change.
-- Cleanup header inclusion ordering problem.
-
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Theodore Ts'o <tytso@mit.edu>
-Cc: Dominik Brodowski <linux@dominikbrodowski.net>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Albert Ou <aou@eecs.berkeley.edu>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: H. Peter Anvin <hpa@zytor.com>
-Cc: Chris Zankel <chris@zankel.net>
-Cc: Max Filippov <jcmvbkbc@gmail.com>
-Cc: Stephen Boyd <sboyd@kernel.org>
-Cc: Dinh Nguyen <dinguyen@kernel.org>
-Cc: Jonas Bonn <jonas@southpole.se>
-Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
-Cc: Stafford Horne <shorne@gmail.com>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Alexander Gordeev <agordeev@linux.ibm.com>
-Cc: Christian Borntraeger <borntraeger@linux.ibm.com>
-Cc: Sven Schnelle <svens@linux.ibm.com>
-Cc: Helge Deller <deller@gmx.de>
-Cc: Richard Henderson <rth@twiddle.net>
-Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-Cc: Matt Turner <mattst88@gmail.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: linux-mips@vger.kernel.org
-Cc: linux-riscv@lists.infradead.org
-Cc: sparclinux@vger.kernel.org
-Cc: linux-um@lists.infradead.org
-Cc: x86@kernel.org
-Cc: linux-xtensa@linux-xtensa.org
-Cc: openrisc@lists.librecores.org
-Cc: linux-ia64@vger.kernel.org
-Cc: linux-s390@vger.kernel.org
-Cc: linux-parisc@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
-
-Jason A. Donenfeld (17):
-  ia64: define get_cycles macro for arch-override
-  s390: define get_cycles macro for arch-override
-  parisc: define get_cycles macro for arch-override
-  alpha: define get_cycles macro for arch-override
-  powerpc: define get_cycles macro for arch-override
-  timekeeping: add raw clock fallback for random_get_entropy()
-  m68k: use fallback for random_get_entropy() instead of zero
-  riscv: use fallback for random_get_entropy() instead of zero
-  mips: use fallback for random_get_entropy() instead of just c0 random
-  arm: use fallback for random_get_entropy() instead of zero
-  openrisc: use fallback for random_get_entropy() instead of zero
-  nios2: use fallback for random_get_entropy() instead of zero
-  x86: use fallback for random_get_entropy() instead of zero
-  um: use fallback for random_get_entropy() instead of zero
-  sparc: use fallback for random_get_entropy() instead of zero
-  xtensa: use fallback for random_get_entropy() instead of zero
-  random: insist on random_get_entropy() existing in order to simplify
-
- arch/alpha/include/asm/timex.h    |  1 +
- arch/arm/include/asm/timex.h      |  1 +
- arch/ia64/include/asm/timex.h     |  1 +
- arch/m68k/include/asm/timex.h     |  2 +-
- arch/mips/include/asm/timex.h     | 17 +++---
- arch/nios2/include/asm/timex.h    |  3 ++
- arch/openrisc/include/asm/timex.h |  3 ++
- arch/parisc/include/asm/timex.h   |  3 +-
- arch/powerpc/include/asm/timex.h  |  1 +
- arch/riscv/include/asm/timex.h    |  2 +-
- arch/s390/include/asm/timex.h     |  1 +
- arch/sparc/include/asm/timex_32.h |  4 +-
- arch/um/include/asm/timex.h       |  9 +---
- arch/x86/include/asm/timex.h      | 10 ++++
- arch/x86/include/asm/tsc.h        |  4 +-
- arch/xtensa/include/asm/timex.h   |  6 +--
- drivers/char/random.c             | 89 ++++++++++---------------------
- include/linux/timex.h             |  8 +++
- kernel/time/timekeeping.c         | 10 ++++
- 19 files changed, 87 insertions(+), 88 deletions(-)
-
+diff --git a/drivers/s390/block/dasd_fba.c b/drivers/s390/block/dasd_fba.c
+index 8bd5665db9198..60be7f7bf2d16 100644
+--- a/drivers/s390/block/dasd_fba.c
++++ b/drivers/s390/block/dasd_fba.c
+@@ -782,7 +782,6 @@ static void dasd_fba_setup_blk_queue(struct dasd_block *block)
+ 	blk_queue_segment_boundary(q, PAGE_SIZE - 1);
+ 
+ 	q->limits.discard_granularity = logical_block_size;
+-	q->limits.discard_alignment = PAGE_SIZE;
+ 
+ 	/* Calculate max_discard_sectors and make it PAGE aligned */
+ 	max_bytes = USHRT_MAX * logical_block_size;
 -- 
-2.35.1
+2.30.2
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
