@@ -1,11 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 11/27] block: add a bdev_write_cache helper
-Date: Wed,  6 Apr 2022 08:05:00 +0200
-Message-Id: <20220406060516.409838-12-hch@lst.de>
-In-Reply-To: <20220406060516.409838-1-hch@lst.de>
-References: <20220406060516.409838-1-hch@lst.de>
-MIME-Version: 1.0
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1ngN9q-00G8BN-2N
+ for linux-um@lists.infradead.org; Mon, 18 Apr 2022 08:54:56 +0000
+Message-ID: <1650271705.1503067-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH v9 31/32] virtio_net: support rx/tx queue resize
+Date: Mon, 18 Apr 2022 16:48:25 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+References: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
+ <20220406034346.74409-32-xuanzhuo@linux.alibaba.com>
+ <122008a6-1e79-14d3-1478-59f96464afc9@redhat.com>
+ <1650252077.7934203-1-xuanzhuo@linux.alibaba.com>
+ <CACGkMEtZOJ2PCsJidDcFKL57Q6oLHk4TH7xtewrLCTFhrbXSAA@mail.gmail.com>
+In-Reply-To: <CACGkMEtZOJ2PCsJidDcFKL57Q6oLHk4TH7xtewrLCTFhrbXSAA@mail.gmail.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -14,113 +21,119 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jens Axboe <axboe@kernel.dk>
-Cc: dm-devel@redhat.com, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-um@lists.infradead.org, linux-block@vger.kernel.org, drbd-dev@lists.linbit.com, nbd@other.debian.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev, ocfs2-devel@oss.oracle.com, linux-mm@kvack.org
+To: Jason Wang <jasowang@redhat.com>
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev <netdev@vger.kernel.org>, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm <kvm@vger.kernel.org>, "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>, virtualization <virtualization@lists.linux-foundation.org>
 
-Add a helper to check the write cache flag based on the block_device
-instead of having to poke into the block layer internal request_queue.
-
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/block/rnbd/rnbd-srv.c       | 2 +-
- drivers/block/xen-blkback/xenbus.c  | 2 +-
- drivers/target/target_core_iblock.c | 8 ++------
- fs/btrfs/disk-io.c                  | 3 +--
- include/linux/blkdev.h              | 5 +++++
- 5 files changed, 10 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/block/rnbd/rnbd-srv.c b/drivers/block/rnbd/rnbd-srv.c
-index f04df6294650b..f8cc3c5fecb4b 100644
---- a/drivers/block/rnbd/rnbd-srv.c
-+++ b/drivers/block/rnbd/rnbd-srv.c
-@@ -558,7 +558,7 @@ static void rnbd_srv_fill_msg_open_rsp(struct rnbd_msg_open_rsp *rsp,
- 	rsp->secure_discard =
- 		cpu_to_le16(rnbd_dev_get_secure_discard(rnbd_dev));
- 	rsp->cache_policy = 0;
--	if (test_bit(QUEUE_FLAG_WC, &q->queue_flags))
-+	if (bdev_write_cache(rnbd_dev->bdev))
- 		rsp->cache_policy |= RNBD_WRITEBACK;
- 	if (blk_queue_fua(q))
- 		rsp->cache_policy |= RNBD_FUA;
-diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
-index f09040435e2e5..8b691fe50475f 100644
---- a/drivers/block/xen-blkback/xenbus.c
-+++ b/drivers/block/xen-blkback/xenbus.c
-@@ -517,7 +517,7 @@ static int xen_vbd_create(struct xen_blkif *blkif, blkif_vdev_t handle,
- 		vbd->type |= VDISK_REMOVABLE;
- 
- 	q = bdev_get_queue(bdev);
--	if (q && test_bit(QUEUE_FLAG_WC, &q->queue_flags))
-+	if (bdev_write_cache(bdev))
- 		vbd->flush_support = true;
- 
- 	if (q && blk_queue_secure_erase(q))
-diff --git a/drivers/target/target_core_iblock.c b/drivers/target/target_core_iblock.c
-index b41ee5c3b5b82..03013e85ffc03 100644
---- a/drivers/target/target_core_iblock.c
-+++ b/drivers/target/target_core_iblock.c
-@@ -737,7 +737,7 @@ iblock_execute_rw(struct se_cmd *cmd, struct scatterlist *sgl, u32 sgl_nents,
- 		if (test_bit(QUEUE_FLAG_FUA, &q->queue_flags)) {
- 			if (cmd->se_cmd_flags & SCF_FUA)
- 				opf |= REQ_FUA;
--			else if (!test_bit(QUEUE_FLAG_WC, &q->queue_flags))
-+			else if (!bdev_write_cache(ib_dev->ibd_bd))
- 				opf |= REQ_FUA;
- 		}
- 	} else {
-@@ -886,11 +886,7 @@ iblock_parse_cdb(struct se_cmd *cmd)
- 
- static bool iblock_get_write_cache(struct se_device *dev)
- {
--	struct iblock_dev *ib_dev = IBLOCK_DEV(dev);
--	struct block_device *bd = ib_dev->ibd_bd;
--	struct request_queue *q = bdev_get_queue(bd);
--
--	return test_bit(QUEUE_FLAG_WC, &q->queue_flags);
-+	return bdev_write_cache(IBLOCK_DEV(dev)->ibd_bd);
- }
- 
- static const struct target_backend_ops iblock_ops = {
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index b30309f187cf0..d80adee32128d 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -4247,8 +4247,7 @@ static void write_dev_flush(struct btrfs_device *device)
- 	 * of simplicity, since this is a debug tool and not meant for use in
- 	 * non-debug builds.
- 	 */
--	struct request_queue *q = bdev_get_queue(device->bdev);
--	if (!test_bit(QUEUE_FLAG_WC, &q->queue_flags))
-+	if (bdev_write_cache(device->bdev))
- 		return;
- #endif
- 
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 3a9578e14a6b0..807a49aa5a27a 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -1331,6 +1331,11 @@ static inline bool bdev_nonrot(struct block_device *bdev)
- 	return blk_queue_nonrot(bdev_get_queue(bdev));
- }
- 
-+static inline bool bdev_write_cache(struct block_device *bdev)
-+{
-+	return test_bit(QUEUE_FLAG_WC, &bdev_get_queue(bdev)->queue_flags);
-+}
-+
- static inline enum blk_zoned_model bdev_zoned_model(struct block_device *bdev)
- {
- 	struct request_queue *q = bdev_get_queue(bdev);
--- 
-2.30.2
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gTW9uLCAxOCBBcHIgMjAyMiAxNTo0OToyOSArMDgwMCwgSmFzb24gV2FuZyA8amFzb3dhbmdA
+cmVkaGF0LmNvbT4gd3JvdGU6Cj4gT24gTW9uLCBBcHIgMTgsIDIwMjIgYXQgMTE6MjQgQU0gWHVh
+biBaaHVvIDx4dWFuemh1b0BsaW51eC5hbGliYWJhLmNvbT4gd3JvdGU6Cj4gPgo+ID4gT24gV2Vk
+LCAxMyBBcHIgMjAyMiAxNjowMDoxOCArMDgwMCwgSmFzb24gV2FuZyA8amFzb3dhbmdAcmVkaGF0
+LmNvbT4gd3JvdGU6Cj4gPiA+Cj4gPiA+IOWcqCAyMDIyLzQvNiDkuIrljYgxMTo0MywgWHVhbiBa
+aHVvIOWGmemBkzoKPiA+ID4gPiBUaGlzIHBhdGNoIGltcGxlbWVudHMgdGhlIHJlc2l6ZSBmdW5j
+dGlvbiBvZiB0aGUgcngsIHR4IHF1ZXVlcy4KPiA+ID4gPiBCYXNlZCBvbiB0aGlzIGZ1bmN0aW9u
+LCBpdCBpcyBwb3NzaWJsZSB0byBtb2RpZnkgdGhlIHJpbmcgbnVtIG9mIHRoZQo+ID4gPiA+IHF1
+ZXVlLgo+ID4gPiA+Cj4gPiA+ID4gVGhlcmUgbWF5IGJlIGFuIGV4Y2VwdGlvbiBkdXJpbmcgdGhl
+IHJlc2l6ZSBwcm9jZXNzLCB0aGUgcmVzaXplIG1heQo+ID4gPiA+IGZhaWwsIG9yIHRoZSB2cSBj
+YW4gbm8gbG9uZ2VyIGJlIHVzZWQuIEVpdGhlciB3YXksIHdlIG11c3QgZXhlY3V0ZQo+ID4gPiA+
+IG5hcGlfZW5hYmxlKCkuIEJlY2F1c2UgbmFwaV9kaXNhYmxlIGlzIHNpbWlsYXIgdG8gYSBsb2Nr
+LCBuYXBpX2VuYWJsZQo+ID4gPiA+IG11c3QgYmUgY2FsbGVkIGFmdGVyIGNhbGxpbmcgbmFwaV9k
+aXNhYmxlLgo+ID4gPiA+Cj4gPiA+ID4gU2lnbmVkLW9mZi1ieTogWHVhbiBaaHVvIDx4dWFuemh1
+b0BsaW51eC5hbGliYWJhLmNvbT4KPiA+ID4gPiAtLS0KPiA+ID4gPiAgIGRyaXZlcnMvbmV0L3Zp
+cnRpb19uZXQuYyB8IDgxICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysK
+PiA+ID4gPiAgIDEgZmlsZSBjaGFuZ2VkLCA4MSBpbnNlcnRpb25zKCspCj4gPiA+ID4KPiA+ID4g
+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvdmlydGlvX25ldC5jIGIvZHJpdmVycy9uZXQvdmly
+dGlvX25ldC5jCj4gPiA+ID4gaW5kZXggYjhiZjAwNTI1MTc3Li5iYTY4NTlmMzA1ZjcgMTAwNjQ0
+Cj4gPiA+ID4gLS0tIGEvZHJpdmVycy9uZXQvdmlydGlvX25ldC5jCj4gPiA+ID4gKysrIGIvZHJp
+dmVycy9uZXQvdmlydGlvX25ldC5jCj4gPiA+ID4gQEAgLTI1MSw2ICsyNTEsOSBAQCBzdHJ1Y3Qg
+cGFkZGVkX3ZuZXRfaGRyIHsKPiA+ID4gPiAgICAgY2hhciBwYWRkaW5nWzRdOwo+ID4gPiA+ICAg
+fTsKPiA+ID4gPgo+ID4gPiA+ICtzdGF0aWMgdm9pZCB2aXJ0bmV0X3NxX2ZyZWVfdW51c2VkX2J1
+ZihzdHJ1Y3QgdmlydHF1ZXVlICp2cSwgdm9pZCAqYnVmKTsKPiA+ID4gPiArc3RhdGljIHZvaWQg
+dmlydG5ldF9ycV9mcmVlX3VudXNlZF9idWYoc3RydWN0IHZpcnRxdWV1ZSAqdnEsIHZvaWQgKmJ1
+Zik7Cj4gPiA+ID4gKwo+ID4gPiA+ICAgc3RhdGljIGJvb2wgaXNfeGRwX2ZyYW1lKHZvaWQgKnB0
+cikKPiA+ID4gPiAgIHsKPiA+ID4gPiAgICAgcmV0dXJuICh1bnNpZ25lZCBsb25nKXB0ciAmIFZJ
+UlRJT19YRFBfRkxBRzsKPiA+ID4gPiBAQCAtMTM2OSw2ICsxMzcyLDE1IEBAIHN0YXRpYyB2b2lk
+IHZpcnRuZXRfbmFwaV9lbmFibGUoc3RydWN0IHZpcnRxdWV1ZSAqdnEsIHN0cnVjdCBuYXBpX3N0
+cnVjdCAqbmFwaSkKPiA+ID4gPiAgIHsKPiA+ID4gPiAgICAgbmFwaV9lbmFibGUobmFwaSk7Cj4g
+PiA+ID4KPiA+ID4gPiArICAgLyogQ2hlY2sgaWYgdnEgaXMgaW4gcmVzZXQgc3RhdGUuIFRoZSBu
+b3JtYWwgcmVzZXQvcmVzaXplIHByb2Nlc3Mgd2lsbAo+ID4gPiA+ICsgICAgKiBiZSBwcm90ZWN0
+ZWQgYnkgbmFwaS4gSG93ZXZlciwgdGhlIHByb3RlY3Rpb24gb2YgbmFwaSBpcyBvbmx5IGVuYWJs
+ZWQKPiA+ID4gPiArICAgICogZHVyaW5nIHRoZSBvcGVyYXRpb24sIGFuZCB0aGUgcHJvdGVjdGlv
+biBvZiBuYXBpIHdpbGwgZW5kIGFmdGVyIHRoZQo+ID4gPiA+ICsgICAgKiBvcGVyYXRpb24gaXMg
+Y29tcGxldGVkLiBJZiByZS1lbmFibGUgZmFpbHMgZHVyaW5nIHRoZSBwcm9jZXNzLCB2cQo+ID4g
+PiA+ICsgICAgKiB3aWxsIHJlbWFpbiB1bmF2YWlsYWJsZSB3aXRoIHJlc2V0IHN0YXRlLgo+ID4g
+PiA+ICsgICAgKi8KPiA+ID4gPiArICAgaWYgKHZxLT5yZXNldCkKPiA+ID4gPiArICAgICAgICAg
+ICByZXR1cm47Cj4gPiA+Cj4gPiA+Cj4gPiA+IEkgZG9uJ3QgZ2V0IHdoZW4gY291bGQgd2UgaGl0
+IHRoaXMgY29uZGl0aW9uLgo+ID4gPgo+ID4gPgo+ID4gPiA+ICsKPiA+ID4gPiAgICAgLyogSWYg
+YWxsIGJ1ZmZlcnMgd2VyZSBmaWxsZWQgYnkgb3RoZXIgc2lkZSBiZWZvcmUgd2UgbmFwaV9lbmFi
+bGVkLCB3ZQo+ID4gPiA+ICAgICAgKiB3b24ndCBnZXQgYW5vdGhlciBpbnRlcnJ1cHQsIHNvIHBy
+b2Nlc3MgYW55IG91dHN0YW5kaW5nIHBhY2tldHMgbm93Lgo+ID4gPiA+ICAgICAgKiBDYWxsIGxv
+Y2FsX2JoX2VuYWJsZSBhZnRlciB0byB0cmlnZ2VyIHNvZnRJUlEgcHJvY2Vzc2luZy4KPiA+ID4g
+PiBAQCAtMTQxMyw2ICsxNDI1LDE1IEBAIHN0YXRpYyB2b2lkIHJlZmlsbF93b3JrKHN0cnVjdCB3
+b3JrX3N0cnVjdCAqd29yaykKPiA+ID4gPiAgICAgICAgICAgICBzdHJ1Y3QgcmVjZWl2ZV9xdWV1
+ZSAqcnEgPSAmdmktPnJxW2ldOwo+ID4gPiA+Cj4gPiA+ID4gICAgICAgICAgICAgbmFwaV9kaXNh
+YmxlKCZycS0+bmFwaSk7Cj4gPiA+ID4gKwo+ID4gPiA+ICsgICAgICAgICAgIC8qIENoZWNrIGlm
+IHZxIGlzIGluIHJlc2V0IHN0YXRlLiBTZWUgbW9yZSBpbgo+ID4gPiA+ICsgICAgICAgICAgICAq
+IHZpcnRuZXRfbmFwaV9lbmFibGUoKQo+ID4gPiA+ICsgICAgICAgICAgICAqLwo+ID4gPiA+ICsg
+ICAgICAgICAgIGlmIChycS0+dnEtPnJlc2V0KSB7Cj4gPiA+ID4gKyAgICAgICAgICAgICAgICAg
+ICB2aXJ0bmV0X25hcGlfZW5hYmxlKHJxLT52cSwgJnJxLT5uYXBpKTsKPiA+ID4gPiArICAgICAg
+ICAgICAgICAgICAgIGNvbnRpbnVlOwo+ID4gPiA+ICsgICAgICAgICAgIH0KPiA+ID4KPiA+ID4K
+PiA+ID4gQ2FuIHdlIGRvIHNvbWV0aGluZyBzaW1pbGFyIGluIHZpcnRuZXRfY2xvc2UoKSBieSBj
+YW5jZWxpbmcgdGhlIHdvcms/Cj4gPiA+Cj4gPiA+Cj4gPiA+ID4gKwo+ID4gPiA+ICAgICAgICAg
+ICAgIHN0aWxsX2VtcHR5ID0gIXRyeV9maWxsX3JlY3YodmksIHJxLCBHRlBfS0VSTkVMKTsKPiA+
+ID4gPiAgICAgICAgICAgICB2aXJ0bmV0X25hcGlfZW5hYmxlKHJxLT52cSwgJnJxLT5uYXBpKTsK
+PiA+ID4gPgo+ID4gPiA+IEBAIC0xNTIzLDYgKzE1NDQsMTAgQEAgc3RhdGljIHZvaWQgdmlydG5l
+dF9wb2xsX2NsZWFudHgoc3RydWN0IHJlY2VpdmVfcXVldWUgKnJxKQo+ID4gPiA+ICAgICBpZiAo
+IXNxLT5uYXBpLndlaWdodCB8fCBpc194ZHBfcmF3X2J1ZmZlcl9xdWV1ZSh2aSwgaW5kZXgpKQo+
+ID4gPiA+ICAgICAgICAgICAgIHJldHVybjsKPiA+ID4gPgo+ID4gPiA+ICsgICAvKiBDaGVjayBp
+ZiB2cSBpcyBpbiByZXNldCBzdGF0ZS4gU2VlIG1vcmUgaW4gdmlydG5ldF9uYXBpX2VuYWJsZSgp
+ICovCj4gPiA+ID4gKyAgIGlmIChzcS0+dnEtPnJlc2V0KQo+ID4gPiA+ICsgICAgICAgICAgIHJl
+dHVybjsKPiA+ID4KPiA+ID4KPiA+ID4gV2UndmUgZGlzYWJsZWQgVFggbmFwaSwgYW55IGNoYW5j
+ZSB3ZSBjYW4gc3RpbGwgaGl0IHRoaXM/Cj4gPgo+ID4KPiA+IHN0YXRpYyBpbnQgdmlydG5ldF9w
+b2xsKHN0cnVjdCBuYXBpX3N0cnVjdCAqbmFwaSwgaW50IGJ1ZGdldCkKPiA+IHsKPiA+ICAgICAg
+ICAgc3RydWN0IHJlY2VpdmVfcXVldWUgKnJxID0KPiA+ICAgICAgICAgICAgICAgICBjb250YWlu
+ZXJfb2YobmFwaSwgc3RydWN0IHJlY2VpdmVfcXVldWUsIG5hcGkpOwo+ID4gICAgICAgICBzdHJ1
+Y3QgdmlydG5ldF9pbmZvICp2aSA9IHJxLT52cS0+dmRldi0+cHJpdjsKPiA+ICAgICAgICAgc3Ry
+dWN0IHNlbmRfcXVldWUgKnNxOwo+ID4gICAgICAgICB1bnNpZ25lZCBpbnQgcmVjZWl2ZWQ7Cj4g
+PiAgICAgICAgIHVuc2lnbmVkIGludCB4ZHBfeG1pdCA9IDA7Cj4gPgo+ID4gICAgICAgICB2aXJ0
+bmV0X3BvbGxfY2xlYW50eChycSk7Cj4gPiAuLi4KPiA+IH0KPiA+Cj4gPiBUaGlzIGlzIGNhbGxl
+ZCBieSByeCBwb2xsLiBBbHRob3VnaCBpdCBpcyB0aGUgbG9naWMgb2YgdHgsIGl0IGlzIG5vdCBk
+cml2ZW4gYnkKPiA+IHR4IG5hcGksIGJ1dCBpcyBjYWxsZWQgaW4gcnggcG9sbC4KPgo+IE9rLCBi
+dXQgd2UgbmVlZCBndWFyYW50ZWUgdGhlIG1lbW9yeSBvcmRlcmluZyBpbiB0aGlzIGNhc2UuIERp
+c2FibGUgUlgKPiBuYXBpIGNvdWxkIGJlIGEgc29sdXRpb24gZm9yIHRoaXMuCgpZZXMsIEkgaGF2
+ZSByZWFsaXplZCB0aGlzIHRvby4gSSBoYXZlIHR3byBzb2x1dGlvbnMsIGRpc2FibGUgcnggbmFw
+aSBvciB0aGUKZm9sbG93aW5nLgoKVGhhbmtzLgoKCmRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC92
+aXJ0aW9fbmV0LmMgYi9kcml2ZXJzL25ldC92aXJ0aW9fbmV0LmMKaW5kZXggOWJmMWI2NTMwYjM4
+Li43NzY0ZDFkY2I4MzEgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbmV0L3ZpcnRpb19uZXQuYworKysg
+Yi9kcml2ZXJzL25ldC92aXJ0aW9fbmV0LmMKQEAgLTEzNSw2ICsxMzUsNyBAQCBzdHJ1Y3Qgc2Vu
+ZF9xdWV1ZSB7CiAJc3RydWN0IHZpcnRuZXRfc3Ffc3RhdHMgc3RhdHM7CgogCXN0cnVjdCBuYXBp
+X3N0cnVjdCBuYXBpOworCWJvb2wgcmVzZXQ7CiB9OwoKIC8qIEludGVybmFsIHJlcHJlc2VudGF0
+aW9uIG9mIGEgcmVjZWl2ZSB2aXJ0cXVldWUgKi8KQEAgLTE1ODMsNiArMTU4NywxMSBAQCBzdGF0
+aWMgdm9pZCB2aXJ0bmV0X3BvbGxfY2xlYW50eChzdHJ1Y3QgcmVjZWl2ZV9xdWV1ZSAqcnEpCiAJ
+CXJldHVybjsKCiAJaWYgKF9fbmV0aWZfdHhfdHJ5bG9jayh0eHEpKSB7CisJCWlmIChzcS0+cmVz
+ZXQpIHsKKwkJCV9fbmV0aWZfdHhfdW5sb2NrKHR4cSk7CisJCQlyZXR1cm47CisJCX0KKwogCQlk
+byB7CiAJCQl2aXJ0cXVldWVfZGlzYWJsZV9jYihzcS0+dnEpOwogCQkJZnJlZV9vbGRfeG1pdF9z
+a2JzKHNxLCB0cnVlKTsKQEAgLTE4MjgsNiArMTgzNyw1NiBAQCBzdGF0aWMgbmV0ZGV2X3R4X3Qg
+c3RhcnRfeG1pdChzdHJ1Y3Qgc2tfYnVmZiAqc2tiLCBzdHJ1Y3QgbmV0X2RldmljZSAqZGV2KQog
+CXJldHVybiBORVRERVZfVFhfT0s7CiB9Cgorc3RhdGljIGludCB2aXJ0bmV0X3R4X3Jlc2l6ZShz
+dHJ1Y3QgdmlydG5ldF9pbmZvICp2aSwKKwkJCSAgICAgc3RydWN0IHNlbmRfcXVldWUgKnNxLCB1
+MzIgcmluZ19udW0pCit7CisJc3RydWN0IG5ldGRldl9xdWV1ZSAqdHhxOworCWludCBlcnIsIHFp
+bmRleDsKKworCXFpbmRleCA9IHNxIC0gdmktPnNxOworCisJdmlydG5ldF9uYXBpX3R4X2Rpc2Fi
+bGUoJnNxLT5uYXBpKTsKKworCXR4cSA9IG5ldGRldl9nZXRfdHhfcXVldWUodmktPmRldiwgcWlu
+ZGV4KTsKKworCV9fbmV0aWZfdHhfbG9ja19iaCh0eHEpOworCW5ldGlmX3N0b3Bfc3VicXVldWUo
+dmktPmRldiwgcWluZGV4KTsKKwlzcS0+cmVzZXQgPSB0cnVlOworCV9fbmV0aWZfdHhfdW5sb2Nr
+X2JoKHR4cSk7CisKKwllcnIgPSB2aXJ0cXVldWVfcmVzaXplKHNxLT52cSwgcmluZ19udW0sIHZp
+cnRuZXRfc3FfZnJlZV91bnVzZWRfYnVmKTsKKwlpZiAoZXJyKQorCQluZXRkZXZfZXJyKHZpLT5k
+ZXYsICJyZXNpemUgdHggZmFpbDogdHggcXVldWUgaW5kZXg6ICVkIGVycjogJWRcbiIsIHFpbmRl
+eCwgZXJyKTsKKworCV9fbmV0aWZfdHhfbG9ja19iaCh0eHEpOworCXNxLT5yZXNldCA9IGZhbHNl
+OworCW5ldGlmX3N0YXJ0X3N1YnF1ZXVlKHZpLT5kZXYsIHFpbmRleCk7CisJX19uZXRpZl90eF91
+bmxvY2tfYmgodHhxKTsKKworCXZpcnRuZXRfbmFwaV90eF9lbmFibGUodmksIHNxLT52cSwgJnNx
+LT5uYXBpKTsKKwlyZXR1cm4gZXJyOworfQorCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3Rz
+LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9saW51eC11bQo=
 
