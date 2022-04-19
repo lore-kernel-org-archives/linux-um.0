@@ -1,8 +1,8 @@
 Return-Path: <SRS0=oEXL=U5=zx2c4.com=Jason@kernel.org>
 From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH v5 02/11] m68k: use fallback for random_get_entropy() instead of zero
-Date: Tue, 19 Apr 2022 13:16:41 +0200
-Message-Id: <20220419111650.1582274-3-Jason@zx2c4.com>
+Subject: [PATCH v5 06/11] nios2: use fallback for random_get_entropy() instead of zero
+Date: Tue, 19 Apr 2022 13:16:45 +0200
+Message-Id: <20220419111650.1582274-7-Jason@zx2c4.com>
 In-Reply-To: <20220419111650.1582274-1-Jason@zx2c4.com>
 References: <20220419111650.1582274-1-Jason@zx2c4.com>
 MIME-Version: 1.0
@@ -22,25 +22,23 @@ better than returning zero all the time.
 
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Dinh Nguyen <dinguyen@kernel.org>
 Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 ---
- arch/m68k/include/asm/timex.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/nios2/include/asm/timex.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/m68k/include/asm/timex.h b/arch/m68k/include/asm/timex.h
-index 6a21d9358280..f4a7a340f4ca 100644
---- a/arch/m68k/include/asm/timex.h
-+++ b/arch/m68k/include/asm/timex.h
-@@ -35,7 +35,7 @@ static inline unsigned long random_get_entropy(void)
- {
- 	if (mach_random_get_entropy)
- 		return mach_random_get_entropy();
--	return 0;
-+	return random_get_entropy_fallback();
- }
- #define random_get_entropy	random_get_entropy
+diff --git a/arch/nios2/include/asm/timex.h b/arch/nios2/include/asm/timex.h
+index a769f871b28d..d9a3f426cdda 100644
+--- a/arch/nios2/include/asm/timex.h
++++ b/arch/nios2/include/asm/timex.h
+@@ -9,4 +9,6 @@ typedef unsigned long cycles_t;
  
+ extern cycles_t get_cycles(void);
+ 
++#define random_get_entropy() (((unsigned long)get_cycles()) ?: random_get_entropy_fallback())
++
+ #endif
 -- 
 2.35.1
 
