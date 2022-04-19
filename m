@@ -1,74 +1,45 @@
 Return-Path: <SRS0=oEXL=U5=zx2c4.com=Jason@kernel.org>
 From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH v5 04/11] mips: use fallback for random_get_entropy() instead of just c0 random
-Date: Tue, 19 Apr 2022 13:16:43 +0200
-Message-Id: <20220419111650.1582274-5-Jason@zx2c4.com>
+Subject: [PATCH v5 02/11] m68k: use fallback for random_get_entropy() instead of zero
+Date: Tue, 19 Apr 2022 13:16:41 +0200
+Message-Id: <20220419111650.1582274-3-Jason@zx2c4.com>
 In-Reply-To: <20220419111650.1582274-1-Jason@zx2c4.com>
 References: <20220419111650.1582274-1-Jason@zx2c4.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 To: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, tglx@linutronix.de, arnd@arndb.de
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Theodore Ts'o <tytso@mit.edu>, Dominik Brodowski <linux@dominikbrodowski.net>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, "David S . Miller" <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Stephen Boyd <sboyd@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org, linux-xtensa@linux-xtensa.org, "Maciej W . Rozycki" <macro@orcam.me.uk>
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Theodore Ts'o <tytso@mit.edu>, Dominik Brodowski <linux@dominikbrodowski.net>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, "David S . Miller" <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Stephen Boyd <sboyd@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org, linux-xtensa@linux-xtensa.org
 List-ID: <linux-um.lists.infradead.org>
 
-For situations in which we don't have a c0 counter register available,
-we've been falling back to reading the c0 "random" register, which is
-usually bounded by the amount of TLB entries and changes every other
-cycle or so. This means it wraps extremely often. We can do better by
-combining this fast-changing counter with a potentially slower-changing
-counter from random_get_entropy_fallback() in the more significant bits.
-This commit combines the two, taking into account that the changing bits
-are in a different bit position depending on the CPU model. In addition,
-we previously were falling back to 0 for ancient CPUs that Linux does
-not support anyway; remove that dead path entirely.
+In the event that random_get_entropy() can't access a cycle counter or
+similar, falling back to returning 0 is really not the best we can do.
+Instead, at least calling random_get_entropy_fallback() would be
+preferable, because that always needs to return _something_, even
+falling back to jiffies eventually. It's not as though
+random_get_entropy_fallback() is super high precision or guaranteed to
+be entropic, but basically anything that's not zero all the time is
+better than returning zero all the time.
 
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Maciej W. Rozycki <macro@orcam.me.uk>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 ---
-ThomasB - I dropped your Ack from v4, because this is pretty different
-from v4 now.
+ arch/m68k/include/asm/timex.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Maciej - you mentioned you had a test rig. Think you could provide a
-"Tested-by" if this approach works?
-
- arch/mips/include/asm/timex.h | 16 +++++++---------
- 1 file changed, 7 insertions(+), 9 deletions(-)
-
-diff --git a/arch/mips/include/asm/timex.h b/arch/mips/include/asm/timex.h
-index b05bb70a2e46..e3f5460a923b 100644
---- a/arch/mips/include/asm/timex.h
-+++ b/arch/mips/include/asm/timex.h
-@@ -80,21 +80,19 @@ static inline cycles_t get_cycles(void)
- /*
-  * Like get_cycles - but where c0_count is not available we desperately
-  * use c0_random in an attempt to get at least a little bit of entropy.
-- *
-- * R6000 and R6000A neither have a count register nor a random register.
-- * That leaves no entropy source in the CPU itself.
-  */
- static inline unsigned long random_get_entropy(void)
+diff --git a/arch/m68k/include/asm/timex.h b/arch/m68k/include/asm/timex.h
+index 6a21d9358280..f4a7a340f4ca 100644
+--- a/arch/m68k/include/asm/timex.h
++++ b/arch/m68k/include/asm/timex.h
+@@ -35,7 +35,7 @@ static inline unsigned long random_get_entropy(void)
  {
--	unsigned int prid = read_c0_prid();
--	unsigned int imp = prid & PRID_IMP_MASK;
-+	unsigned int c0_random;
- 
--	if (can_use_mips_counter(prid))
-+	if (can_use_mips_counter(read_c0_prid()))
- 		return read_c0_count();
--	else if (likely(imp != PRID_IMP_R6000 && imp != PRID_IMP_R6000A))
--		return read_c0_random();
-+
-+	if (cpu_has_3kex)
-+		c0_random = (read_c0_random() >> 8) & 0x3f;
- 	else
--		return 0;	/* no usable register */
-+		c0_random = read_c0_random() & 0x3f;
-+	return (random_get_entropy_fallback() << 6) | (0x3f - c0_random);
+ 	if (mach_random_get_entropy)
+ 		return mach_random_get_entropy();
+-	return 0;
++	return random_get_entropy_fallback();
  }
- #define random_get_entropy random_get_entropy
+ #define random_get_entropy	random_get_entropy
  
 -- 
 2.35.1
