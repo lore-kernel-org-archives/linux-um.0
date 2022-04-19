@@ -1,143 +1,66 @@
-Return-Path: <SRS0=O4Mn=UU=zx2c4.com=Jason@kernel.org>
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH v2 00/11] archs/random: fallback to using ktime_read_raw_clock() if no cycle counter
-Date: Sun, 10 Apr 2022 23:49:40 +0200
-Message-Id: <20220410214951.55294-1-Jason@zx2c4.com>
+Return-Path: <linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org>
+Message-ID: <530b0d48-96fc-e157-38f5-a87d85c7d2c6@oracle.com>
+Date: Tue, 19 Apr 2022 20:02:18 +0800
+Subject: Re: [PATCH 08/27] btrfs: use bdev_max_active_zones instead of open
+ coding it
+References: <20220415045258.199825-1-hch@lst.de>
+ <20220415045258.199825-9-hch@lst.de>
+From: Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <20220415045258.199825-9-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, tglx@linutronix.de, arnd@arndb.de
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Theodore Ts'o <tytso@mit.edu>, Dominik Brodowski <linux@dominikbrodowski.net>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, "David S . Miller" <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, John Stultz <john.stultz@linaro.org>, Stephen Boyd <sboyd@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org, linux-xtensa@linux-xtensa.org
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
+Errors-To: linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc: dm-devel@redhat.com, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-um@lists.infradead.org, linux-block@vger.kernel.org, drbd-dev@lists.linbit.com, nbd@other.debian.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev, ocfs2-devel@oss.oracle.com, linux-mm@kvack.org, Johannes Thumshirn <johannes.thumshirn@wdc.com>, David Sterba <dsterba@suse.com>
 List-ID: <linux-um.lists.infradead.org>
 
-Hi folks,
+On 4/15/22 12:52, Christoph Hellwig wrote:
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> Acked-by: David Sterba <dsterba@suse.com>
 
-The RNG uses a function called random_get_entropy() basically anytime
-that it needs to timestamp an event. For example, an interrupt comes in,
-and we mix a random_get_entropy() into the entropy pool somehow.
-Somebody mashes their keyboard or moves their mouse around? We mix a
-random_get_entropy() into the entropy pool. It's one of the main
-varieties of input.
+LGTM.
 
-Unfortunately, it's always 0 on a few platforms. The RNG has accumulated
-various hacks to deal with this, but in general it's not great. Surely
-we can do better than 0. In fact, *anything* that's not the same exact
-value all the time would be better than 0. Even a counter that
-increments once per hour would be better than 0! I think you get the
-idea.
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
 
-On most platforms, random_get_entropy() is aliased to get_cycles(),
-which makes sense for platforms where get_cycles() is defined. RDTSC,
-for example, has all the characteristics we care about for this
-function: it's fast to acquire (i.e. acceptable in an irq handler),
-pretty high precision, available, forms a 2-monotone distribution, etc.
-But for platforms without that, what is the next best thing?
 
-Sometimes the next best thing is architecture-defined. For example,
-really old MIPS has the CP0 random register, which isn't a cycle
-counter, but is at least something. However, some platforms don't even
-have an architecture-defined fallback.
+> ---
+>   fs/btrfs/zoned.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+> index 1b1b310c3c510..f72cad7391a11 100644
+> --- a/fs/btrfs/zoned.c
+> +++ b/fs/btrfs/zoned.c
+> @@ -350,7 +350,6 @@ int btrfs_get_dev_zone_info(struct btrfs_device *device, bool populate_cache)
+>   	struct btrfs_fs_info *fs_info = device->fs_info;
+>   	struct btrfs_zoned_device_info *zone_info = NULL;
+>   	struct block_device *bdev = device->bdev;
+> -	struct request_queue *queue = bdev_get_queue(bdev);
+>   	unsigned int max_active_zones;
+>   	unsigned int nactive;
+>   	sector_t nr_sectors;
+> @@ -410,7 +409,7 @@ int btrfs_get_dev_zone_info(struct btrfs_device *device, bool populate_cache)
+>   	if (!IS_ALIGNED(nr_sectors, zone_sectors))
+>   		zone_info->nr_zones++;
+>   
+> -	max_active_zones = queue_max_active_zones(queue);
+> +	max_active_zones = bdev_max_active_zones(bdev);
+>   	if (max_active_zones && max_active_zones < BTRFS_MIN_ACTIVE_ZONES) {
+>   		btrfs_err_in_rcu(fs_info,
+>   "zoned: %s: max active zones %u is too small, need at least %u active zones",
 
-Fortunately, the timekeeping subsystem has already solved this problem
-of trying to determine what the least bad clock is on constrained
-systems, falling back to jiffies in the worst case. By exporting the raw
-clock, we can get a decent fallback function for when there's no cycle
-counter or architecture-specific function.
 
-This series makes the RNG more useful on: m68k, RISC-V, MIPS, ARM32,
-NIOS II, SPARC32, Xtensa, and Usermode Linux. Previously these platforms
-would, in certain circumstances, but out of luck with regards to having
-any type of event timestamping source in the RNG.
-
-Finally, note that this series isn't about "jitter entropy" or other
-ways of initializing the RNG. That's a different topic for a different
-thread. Please don't let this discussion veer off into that. Here, I'm
-just trying to find a good fallback counter/timer for platforms without
-get_cycles(), a question with limited scope.
-
-If this (or a future revision) looks good to you all and receives the
-requisite acks, my plan was to take these through the random.git tree
-for 5.19, so that I can then build on top of it.
-
-Thanks,
-Jason
-
-Changes v1->v2:
-- Use ktime_read_raw_clock() instead of sched_clock(), per Thomas'
-  suggestion.
-- Drop arm64 change.
-- Cleanup header inclusion ordering problem.
-
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Theodore Ts'o <tytso@mit.edu>
-Cc: Dominik Brodowski <linux@dominikbrodowski.net>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Albert Ou <aou@eecs.berkeley.edu>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: H. Peter Anvin <hpa@zytor.com>
-Cc: Chris Zankel <chris@zankel.net>
-Cc: Max Filippov <jcmvbkbc@gmail.com>
-Cc: John Stultz <john.stultz@linaro.org>
-Cc: Stephen Boyd <sboyd@kernel.org>
-Cc: Dinh Nguyen <dinguyen@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: linux-mips@vger.kernel.org
-Cc: linux-riscv@lists.infradead.org
-Cc: sparclinux@vger.kernel.org
-Cc: linux-um@lists.infradead.org
-Cc: x86@kernel.org
-Cc: linux-xtensa@linux-xtensa.org
-
-Jason A. Donenfeld (11):
-  timekeeping: add accessor for raw clock
-  timekeeping: use ktime_read_raw_clock() for random_get_entropy() if no
-    get_cycles()
-  m68k: use ktime_read_raw_clock() for random_get_entropy() instead of
-    zero
-  riscv: use ktime_read_raw_clock() for random_get_entropy() instead of
-    zero
-  mips: use ktime_read_raw_clock() for random_get_entropy() instead of
-    zero
-  arm: use ktime_read_raw_clock() for random_get_entropy() instead of
-    zero
-  nios2: use ktime_read_raw_clock() for random_get_entropy() instead of
-    zero
-  x86: use ktime_read_raw_clock() for random_get_entropy() instead of
-    zero
-  um: use ktime_read_raw_clock() for random_get_entropy() instead of
-    zero
-  sparc: use ktime_read_raw_clock() for random_get_entropy() instead of
-    zero
-  xtensa: use ktime_read_raw_clock() for random_get_entropy() instead of
-    zero
-
- arch/arm/include/asm/timex.h      |  1 +
- arch/m68k/include/asm/timex.h     |  2 +-
- arch/mips/include/asm/timex.h     |  2 +-
- arch/nios2/include/asm/timex.h    |  2 ++
- arch/riscv/include/asm/timex.h    |  2 +-
- arch/sparc/include/asm/timex_32.h |  4 +---
- arch/um/include/asm/timex.h       |  9 ++-------
- arch/x86/include/asm/tsc.h        | 10 ++++++++++
- arch/xtensa/include/asm/timex.h   |  6 ++----
- include/linux/timex.h             |  8 ++++++++
- kernel/time/timekeeping.c         |  8 ++++++++
- 11 files changed, 37 insertions(+), 17 deletions(-)
-
--- 
-2.35.1
-
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
