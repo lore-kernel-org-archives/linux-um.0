@@ -1,85 +1,54 @@
-Return-Path: <tsbogend@alpha.franken.de>
-Date: Thu, 21 Apr 2022 23:05:25 +0200
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Return-Path: <SRS0=Nzl0=U7=zx2c4.com=Jason@kernel.org>
+MIME-Version: 1.0
+References: <20220419111650.1582274-1-Jason@zx2c4.com> <20220419111650.1582274-5-Jason@zx2c4.com>
+ <alpine.DEB.2.21.2204212018540.9383@angie.orcam.me.uk>
+In-Reply-To: <alpine.DEB.2.21.2204212018540.9383@angie.orcam.me.uk>
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date: Thu, 21 Apr 2022 22:01:03 +0200
+Message-ID: <CAHmME9o5D93M3P_xcewOBfPisbC2d-x3HYvJPFGUoC6oG_RkgA@mail.gmail.com>
 Subject: Re: [PATCH v5 04/11] mips: use fallback for random_get_entropy()
  instead of just c0 random
-Message-ID: <20220421210525.GA16228@alpha.franken.de>
-References: <20220419111650.1582274-1-Jason@zx2c4.com>
- <20220419111650.1582274-5-Jason@zx2c4.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220419111650.1582274-5-Jason@zx2c4.com>
-To: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, tglx@linutronix.de, arnd@arndb.de, Theodore Ts'o <tytso@mit.edu>, Dominik Brodowski <linux@dominikbrodowski.net>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, "David S . Miller" <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Stephen Boyd <sboyd@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org, linux-xtensa@linux-xtensa.org, "Maciej W . Rozycki" <macro@orcam.me.uk>
+Content-Type: text/plain; charset="UTF-8"
+To: "Maciej W. Rozycki" <macro@orcam.me.uk>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Arnd Bergmann <arnd@arndb.de>, Theodore Ts'o <tytso@mit.edu>, Dominik Brodowski <linux@dominikbrodowski.net>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, "David S . Miller" <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Stephen Boyd <sboyd@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>, linux-riscv <linux-riscv@lists.infradead.org>, sparclinux <sparclinux@vger.kernel.org>, linux-um@lists.infradead.org, X86 ML <x86@kernel.org>, linux-xtensa@linux-xtensa.org
 List-ID: <linux-um.lists.infradead.org>
 
-On Tue, Apr 19, 2022 at 01:16:43PM +0200, Jason A. Donenfeld wrote:
-> For situations in which we don't have a c0 counter register available,
-> we've been falling back to reading the c0 "random" register, which is
-> usually bounded by the amount of TLB entries and changes every other
-> cycle or so. This means it wraps extremely often. We can do better by
-> combining this fast-changing counter with a potentially slower-changing
-> counter from random_get_entropy_fallback() in the more significant bits.
-> This commit combines the two, taking into account that the changing bits
-> are in a different bit position depending on the CPU model. In addition,
-> we previously were falling back to 0 for ancient CPUs that Linux does
-> not support anyway; remove that dead path entirely.
-> 
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: Maciej W. Rozycki <macro@orcam.me.uk>
-> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-> ---
-> ThomasB - I dropped your Ack from v4, because this is pretty different
-> from v4 now.
-> 
-> Maciej - you mentioned you had a test rig. Think you could provide a
-> "Tested-by" if this approach works?
-> 
->  arch/mips/include/asm/timex.h | 16 +++++++---------
->  1 file changed, 7 insertions(+), 9 deletions(-)
-> 
-> diff --git a/arch/mips/include/asm/timex.h b/arch/mips/include/asm/timex.h
-> index b05bb70a2e46..e3f5460a923b 100644
-> --- a/arch/mips/include/asm/timex.h
-> +++ b/arch/mips/include/asm/timex.h
-> @@ -80,21 +80,19 @@ static inline cycles_t get_cycles(void)
->  /*
->   * Like get_cycles - but where c0_count is not available we desperately
->   * use c0_random in an attempt to get at least a little bit of entropy.
-> - *
-> - * R6000 and R6000A neither have a count register nor a random register.
-> - * That leaves no entropy source in the CPU itself.
->   */
->  static inline unsigned long random_get_entropy(void)
->  {
-> -	unsigned int prid = read_c0_prid();
-> -	unsigned int imp = prid & PRID_IMP_MASK;
-> +	unsigned int c0_random;
->  
-> -	if (can_use_mips_counter(prid))
-> +	if (can_use_mips_counter(read_c0_prid()))
->  		return read_c0_count();
-> -	else if (likely(imp != PRID_IMP_R6000 && imp != PRID_IMP_R6000A))
-> -		return read_c0_random();
-> +
-> +	if (cpu_has_3kex)
-> +		c0_random = (read_c0_random() >> 8) & 0x3f;
->  	else
-> -		return 0;	/* no usable register */
-> +		c0_random = read_c0_random() & 0x3f;
-> +	return (random_get_entropy_fallback() << 6) | (0x3f - c0_random);
->  }
->  #define random_get_entropy random_get_entropy
->  
-> -- 
-> 2.35.1
+Hi Maciej,
 
-Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+On Thu, Apr 21, 2022 at 9:25 PM Maciej W. Rozycki <macro@orcam.me.uk> wrote:
+>
+> On Tue, 19 Apr 2022, Jason A. Donenfeld wrote:
+>
+> > For situations in which we don't have a c0 counter register available,
+> > we've been falling back to reading the c0 "random" register, which is
+> > usually bounded by the amount of TLB entries and changes every other
+> > cycle or so. This means it wraps extremely often. We can do better by
+> > combining this fast-changing counter with a potentially slower-changing
+> > counter from random_get_entropy_fallback() in the more significant bits.
+> > This commit combines the two, taking into account that the changing bits
+> > are in a different bit position depending on the CPU model. In addition,
+> > we previously were falling back to 0 for ancient CPUs that Linux does
+> > not support anyway; remove that dead path entirely.
+>
+> Tested-by: Maciej W. Rozycki <macro@orcam.me.uk>
+>
+>  I've pushed the algorithm through testing with a number of suitable
+> systems:
+>
+> - an R2000A and an R3000A with no timer of any kind, only jiffies,
+>
+> - an R3400 with a chipset timer only,
+>
+> - an R4400SC with a usable buggy CP0 counter and a chipset timer,
+>
+> - a 5Kc with a good CP0 counter only,
+>
+> with no obvious issues spotted.  Thank you for working on this!
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Thanks for all the testing!
+
+ThomasB - I think maybe you can re-"Acked-by" this now if you're on
+board with the strategy here?
+
+Jason
 
