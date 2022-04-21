@@ -1,132 +1,85 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nRZ4I-004NU6-5d
- for linux-um@lists.infradead.org; Tue, 08 Mar 2022 12:36:01 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v7 15/26] virtio_pci: queue_reset: update struct
- virtio_pci_common_cfg and option functions
-Date: Tue,  8 Mar 2022 20:35:07 +0800
-Message-Id: <20220308123518.33800-16-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220308123518.33800-1-xuanzhuo@linux.alibaba.com>
-References: <20220308123518.33800-1-xuanzhuo@linux.alibaba.com>
+Return-Path: <tsbogend@alpha.franken.de>
+Date: Thu, 21 Apr 2022 23:05:25 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: Re: [PATCH v5 04/11] mips: use fallback for random_get_entropy()
+ instead of just c0 random
+Message-ID: <20220421210525.GA16228@alpha.franken.de>
+References: <20220419111650.1582274-1-Jason@zx2c4.com>
+ <20220419111650.1582274-5-Jason@zx2c4.com>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220419111650.1582274-5-Jason@zx2c4.com>
+To: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, tglx@linutronix.de, arnd@arndb.de, Theodore Ts'o <tytso@mit.edu>, Dominik Brodowski <linux@dominikbrodowski.net>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, "David S . Miller" <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Stephen Boyd <sboyd@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org, linux-xtensa@linux-xtensa.org, "Maciej W . Rozycki" <macro@orcam.me.uk>
+List-ID: <linux-um.lists.infradead.org>
 
-Add queue_reset in virtio_pci_common_cfg, and add related operation
-functions.
+On Tue, Apr 19, 2022 at 01:16:43PM +0200, Jason A. Donenfeld wrote:
+> For situations in which we don't have a c0 counter register available,
+> we've been falling back to reading the c0 "random" register, which is
+> usually bounded by the amount of TLB entries and changes every other
+> cycle or so. This means it wraps extremely often. We can do better by
+> combining this fast-changing counter with a potentially slower-changing
+> counter from random_get_entropy_fallback() in the more significant bits.
+> This commit combines the two, taking into account that the changing bits
+> are in a different bit position depending on the CPU model. In addition,
+> we previously were falling back to 0 for ancient CPUs that Linux does
+> not support anyway; remove that dead path entirely.
+> 
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Maciej W. Rozycki <macro@orcam.me.uk>
+> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+> ---
+> ThomasB - I dropped your Ack from v4, because this is pretty different
+> from v4 now.
+> 
+> Maciej - you mentioned you had a test rig. Think you could provide a
+> "Tested-by" if this approach works?
+> 
+>  arch/mips/include/asm/timex.h | 16 +++++++---------
+>  1 file changed, 7 insertions(+), 9 deletions(-)
+> 
+> diff --git a/arch/mips/include/asm/timex.h b/arch/mips/include/asm/timex.h
+> index b05bb70a2e46..e3f5460a923b 100644
+> --- a/arch/mips/include/asm/timex.h
+> +++ b/arch/mips/include/asm/timex.h
+> @@ -80,21 +80,19 @@ static inline cycles_t get_cycles(void)
+>  /*
+>   * Like get_cycles - but where c0_count is not available we desperately
+>   * use c0_random in an attempt to get at least a little bit of entropy.
+> - *
+> - * R6000 and R6000A neither have a count register nor a random register.
+> - * That leaves no entropy source in the CPU itself.
+>   */
+>  static inline unsigned long random_get_entropy(void)
+>  {
+> -	unsigned int prid = read_c0_prid();
+> -	unsigned int imp = prid & PRID_IMP_MASK;
+> +	unsigned int c0_random;
+>  
+> -	if (can_use_mips_counter(prid))
+> +	if (can_use_mips_counter(read_c0_prid()))
+>  		return read_c0_count();
+> -	else if (likely(imp != PRID_IMP_R6000 && imp != PRID_IMP_R6000A))
+> -		return read_c0_random();
+> +
+> +	if (cpu_has_3kex)
+> +		c0_random = (read_c0_random() >> 8) & 0x3f;
+>  	else
+> -		return 0;	/* no usable register */
+> +		c0_random = read_c0_random() & 0x3f;
+> +	return (random_get_entropy_fallback() << 6) | (0x3f - c0_random);
+>  }
+>  #define random_get_entropy random_get_entropy
+>  
+> -- 
+> 2.35.1
 
-For not breaks uABI, add a new struct virtio_pci_common_cfg_reset.
+Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- drivers/virtio/virtio_pci_modern_dev.c | 36 ++++++++++++++++++++++++++
- include/linux/virtio_pci_modern.h      |  2 ++
- include/uapi/linux/virtio_pci.h        |  7 +++++
- 3 files changed, 45 insertions(+)
-
-diff --git a/drivers/virtio/virtio_pci_modern_dev.c b/drivers/virtio/virtio_pci_modern_dev.c
-index e8b3ff2b9fbc..8c74b00bc511 100644
---- a/drivers/virtio/virtio_pci_modern_dev.c
-+++ b/drivers/virtio/virtio_pci_modern_dev.c
-@@ -3,6 +3,7 @@
- #include <linux/virtio_pci_modern.h>
- #include <linux/module.h>
- #include <linux/pci.h>
-+#include <linux/delay.h>
- 
- /*
-  * vp_modern_map_capability - map a part of virtio pci capability
-@@ -463,6 +464,41 @@ void vp_modern_set_status(struct virtio_pci_modern_device *mdev,
- }
- EXPORT_SYMBOL_GPL(vp_modern_set_status);
- 
-+/*
-+ * vp_modern_get_queue_reset - get the queue reset status
-+ * @mdev: the modern virtio-pci device
-+ * @index: queue index
-+ */
-+int vp_modern_get_queue_reset(struct virtio_pci_modern_device *mdev, u16 index)
-+{
-+	struct virtio_pci_common_cfg_reset __iomem *cfg;
-+
-+	cfg = (struct virtio_pci_common_cfg_reset __iomem *)mdev->common;
-+
-+	vp_iowrite16(index, &cfg->cfg.queue_select);
-+	return vp_ioread16(&cfg->queue_reset);
-+}
-+EXPORT_SYMBOL_GPL(vp_modern_get_queue_reset);
-+
-+/*
-+ * vp_modern_set_queue_reset - reset the queue
-+ * @mdev: the modern virtio-pci device
-+ * @index: queue index
-+ */
-+void vp_modern_set_queue_reset(struct virtio_pci_modern_device *mdev, u16 index)
-+{
-+	struct virtio_pci_common_cfg_reset __iomem *cfg;
-+
-+	cfg = (struct virtio_pci_common_cfg_reset __iomem *)mdev->common;
-+
-+	vp_iowrite16(index, &cfg->cfg.queue_select);
-+	vp_iowrite16(1, &cfg->queue_reset);
-+
-+	while (vp_ioread16(&cfg->queue_reset) != 1)
-+		msleep(1);
-+}
-+EXPORT_SYMBOL_GPL(vp_modern_set_queue_reset);
-+
- /*
-  * vp_modern_queue_vector - set the MSIX vector for a specific virtqueue
-  * @mdev: the modern virtio-pci device
-diff --git a/include/linux/virtio_pci_modern.h b/include/linux/virtio_pci_modern.h
-index eb2bd9b4077d..cc4154dd7b28 100644
---- a/include/linux/virtio_pci_modern.h
-+++ b/include/linux/virtio_pci_modern.h
-@@ -106,4 +106,6 @@ void __iomem * vp_modern_map_vq_notify(struct virtio_pci_modern_device *mdev,
- 				       u16 index, resource_size_t *pa);
- int vp_modern_probe(struct virtio_pci_modern_device *mdev);
- void vp_modern_remove(struct virtio_pci_modern_device *mdev);
-+int vp_modern_get_queue_reset(struct virtio_pci_modern_device *mdev, u16 index);
-+void vp_modern_set_queue_reset(struct virtio_pci_modern_device *mdev, u16 index);
- #endif
-diff --git a/include/uapi/linux/virtio_pci.h b/include/uapi/linux/virtio_pci.h
-index 22bec9bd0dfc..d9462efd6ce8 100644
---- a/include/uapi/linux/virtio_pci.h
-+++ b/include/uapi/linux/virtio_pci.h
-@@ -173,6 +173,13 @@ struct virtio_pci_common_cfg_notify {
- 	__le16 padding;
- };
- 
-+struct virtio_pci_common_cfg_reset {
-+	struct virtio_pci_common_cfg cfg;
-+
-+	__le16 queue_notify_data;	/* read-write */
-+	__le16 queue_reset;		/* read-write */
-+};
-+
- /* Fields in VIRTIO_PCI_CAP_PCI_CFG: */
- struct virtio_pci_cfg_cap {
- 	struct virtio_pci_cap cap;
 -- 
-2.31.0
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
 
