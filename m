@@ -1,11 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Subject: [PATCH 02/30] ARM: kexec: Disable IRQs/FIQs also on crash CPUs
- shutdown path
-Date: Wed, 27 Apr 2022 19:48:56 -0300
-Message-Id: <20220427224924.592546-3-gpiccoli@igalia.com>
-In-Reply-To: <20220427224924.592546-1-gpiccoli@igalia.com>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nhs37-000KIO-On
+ for linux-um@lists.infradead.org; Fri, 22 Apr 2022 12:06:10 +0000
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [PATCH v2] um: x86: print RIP with symbol
+Date: Fri, 22 Apr 2022 14:06:02 +0200
+Message-Id: <20220422140602.26dfa3ae90d2.I741c6239fb1423fe4ce6eb00f5dcce360c01a700@changeid>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -19,50 +21,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, gpiccoli@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, Marc Zyngier <maz@kernel.org>, Russell King <linux@armlinux.org.uk>
+To: linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
 
-Currently the regular CPU shutdown path for ARM disables IRQs/FIQs
-in the secondary CPUs - smp_send_stop() calls ipi_cpu_stop(), which
-is responsible for that. This makes sense, since we're turning off
-such CPUs, putting them in an endless busy-wait loop.
+From: Johannes Berg <johannes.berg@intel.com>
 
-Problem is that there is an alternative path for disabling CPUs,
-in the form of function crash_smp_send_stop(), used for kexec/panic
-paths. This functions relies in a SMP call that also triggers a
-busy-wait loop [at machine_crash_nonpanic_core()], but *without*
-disabling interrupts. This might lead to odd scenarios, like early
-interrupts in the boot of kexec'd kernel or even interrupts in
-other CPUs while the main one still works in the panic path and
-assumes all secondary CPUs are (really!) off.
+This is not only nicer to read by default, but also lets
+decode_stacktrace.sh work on it, rather than removing it.
 
-This patch mimics the ipi_cpu_stop() interrupt disable mechanism
-in the crash CPU shutdown path, hence disabling IRQs/FIQs in all
-secondary CPUs in the kexec/panic path as well.
-
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Russell King <linux@armlinux.org.uk>
-Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- arch/arm/kernel/machine_kexec.c | 3 +++
- 1 file changed, 3 insertions(+)
+v2: put back %lx I accidentally dropped looking at x86
+---
+ arch/x86/um/sysrq_64.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/kernel/machine_kexec.c b/arch/arm/kernel/machine_kexec.c
-index f567032a09c0..ef788ee00519 100644
---- a/arch/arm/kernel/machine_kexec.c
-+++ b/arch/arm/kernel/machine_kexec.c
-@@ -86,6 +86,9 @@ void machine_crash_nonpanic_core(void *unused)
- 	set_cpu_online(smp_processor_id(), false);
- 	atomic_dec(&waiting_for_crash_ipi);
- 
-+	local_fiq_disable();
-+	local_irq_disable();
-+
- 	while (1) {
- 		cpu_relax();
- 		wfe();
+diff --git a/arch/x86/um/sysrq_64.c b/arch/x86/um/sysrq_64.c
+index 903ad91b624f..ac4ffe4a4396 100644
+--- a/arch/x86/um/sysrq_64.c
++++ b/arch/x86/um/sysrq_64.c
+@@ -19,7 +19,7 @@ void show_regs(struct pt_regs *regs)
+ 	print_modules();
+ 	printk(KERN_INFO "Pid: %d, comm: %.20s %s %s\n", task_pid_nr(current),
+ 		current->comm, print_tainted(), init_utsname()->release);
+-	printk(KERN_INFO "RIP: %04lx:[<%016lx>]\n", PT_REGS_CS(regs) & 0xffff,
++	printk(KERN_INFO "RIP: %04lx:%pS\n", PT_REGS_CS(regs) & 0xffff,
+ 	       PT_REGS_IP(regs));
+ 	printk(KERN_INFO "RSP: %016lx  EFLAGS: %08lx\n", PT_REGS_SP(regs),
+ 	       PT_REGS_EFLAGS(regs));
 -- 
-2.36.0
+2.35.1
 
 
 _______________________________________________
