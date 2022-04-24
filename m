@@ -1,90 +1,42 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Subject: [PATCH 06/30] soc: bcm: brcmstb: Document panic notifier action and
- remove useless header
-Date: Wed, 27 Apr 2022 19:49:00 -0300
-Message-Id: <20220427224924.592546-7-gpiccoli@igalia.com>
-In-Reply-To: <20220427224924.592546-1-gpiccoli@igalia.com>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
+Return-Path: <macro@orcam.me.uk>
+Date: Sun, 24 Apr 2022 11:51:38 +0100 (BST)
+From: "Maciej W. Rozycki" <macro@orcam.me.uk>
+Subject: Re: [PATCH v4 04/11] mips: use fallback for random_get_entropy()
+ instead of zero
+In-Reply-To: <YmUHBKPC0bAbs4Vj@zx2c4.com>
+Message-ID: <alpine.DEB.2.21.2204241140290.9383@angie.orcam.me.uk>
+References: <20220413115411.21489-1-Jason@zx2c4.com> <20220413115411.21489-5-Jason@zx2c4.com> <20220413122546.GA11860@alpha.franken.de> <alpine.DEB.2.21.2204131331450.9383@angie.orcam.me.uk> <CAHmME9pQ4xdeTUDxAdrOu=S9NRTonYzJVk50fa0Zfz4knZt5WA@mail.gmail.com>
+ <alpine.DEB.2.21.2204140014580.9383@angie.orcam.me.uk> <YlfoeGRM6w2O+eXA@zx2c4.com> <alpine.DEB.2.21.2204142349180.9383@angie.orcam.me.uk> <20220418071005.GA4075@alpha.franken.de> <alpine.DEB.2.21.2204220029590.9383@angie.orcam.me.uk>
+ <YmUHBKPC0bAbs4Vj@zx2c4.com>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, gpiccoli@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, Brian Norris <computersforpeace@gmail.com>, Doug Berger <opendmb@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>, Justin Chen <justinpopo6@gmail.com>, Lee Jones <lee.jones@linaro.org>, Markus Mayer <mmayer@broadcom.com>
+Content-Type: text/plain; charset=US-ASCII
+To: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, LKML <linux-kernel@vger.kernel.org>, Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Arnd Bergmann <arnd@arndb.de>, Theodore Ts'o <tytso@mit.edu>, Dominik Brodowski <linux@dominikbrodowski.net>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, "David S . Miller" <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, John Stultz <john.stultz@linaro.org>, Stephen Boyd <sboyd@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>, linux-riscv <linux-riscv@lists.infradead.org>, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, X86 ML <x86@kernel.org>, linux-xtensa@linux-xtensa.org
+List-ID: <linux-um.lists.infradead.org>
 
-The panic notifier of this driver is very simple code-wise, just a memory
-write to a special position with some numeric code. But this is not clear
-from the semantic point-of-view, and there is no public documentation
-about that either.
+On Sun, 24 Apr 2022, Jason A. Donenfeld wrote:
 
-After discussing this in the mailing-lists [0] and having Florian explained
-it very well, this patch just document that in the code for the future
-generations asking the same questions. Also, it removes a useless header.
+> > unconditionally.  I think this discovery asks for code optimisation, which 
+> > I'll try to cook up sometime.
+> 
+> At some point too, by the way, we might also consider putting that into
+> a .c file rather than a static inline in the .h, since that function is
+> starting to get sort of big.
 
-[0] https://lore.kernel.org/lkml/781cafb0-8d06-8b56-907a-5175c2da196a@gmail.com
+ This code is supposed to produce one to a couple of machine instructions 
+for the majority of configurations.  This is because the conditionals used 
+are usually compile-time constants.  Therefore I think it will be good to 
+continue having it as `static inline' functions.  Cf. the analysis in 
+commit 06947aaaf9bf ("MIPS: Implement random_get_entropy with CP0 
+Random").
 
-Fixes: 0b741b8234c8 ("soc: bcm: brcmstb: Add support for S2/S3/S5 suspend states (ARM)")
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: Doug Berger <opendmb@gmail.com>
-Cc: Florian Fainelli <f.fainelli@gmail.com>
-Cc: Justin Chen <justinpopo6@gmail.com>
-Cc: Lee Jones <lee.jones@linaro.org>
-Cc: Markus Mayer <mmayer@broadcom.com>
-Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
----
- drivers/soc/bcm/brcmstb/pm/pm-arm.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ If this code does expand to a longer sequence for some platforms, then 
+either they need to be verified whether they can be optimised (just as I 
+note here for the DEC systems) or we can consider making these functions 
+`extern inline' instead, with out-of-line code available from a .a file in 
+case the compiler decides the code is too large for inlining to be worth 
+doing after all.  Though I don't expect the latter case to be required 
+really.
 
-diff --git a/drivers/soc/bcm/brcmstb/pm/pm-arm.c b/drivers/soc/bcm/brcmstb/pm/pm-arm.c
-index 3cbb165d6e30..870686ae042b 100644
---- a/drivers/soc/bcm/brcmstb/pm/pm-arm.c
-+++ b/drivers/soc/bcm/brcmstb/pm/pm-arm.c
-@@ -25,7 +25,6 @@
- #include <linux/kernel.h>
- #include <linux/memblock.h>
- #include <linux/module.h>
--#include <linux/notifier.h>
- #include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/panic_notifier.h>
-@@ -664,7 +663,20 @@ static void __iomem *brcmstb_ioremap_match(const struct of_device_id *matches,
- 
- 	return of_io_request_and_map(dn, index, dn->full_name);
- }
--
-+/*
-+ * The AON is a small domain in the SoC that can retain its state across
-+ * various system wide sleep states and specific reset conditions; the
-+ * AON DATA RAM is a small RAM of a few words (< 1KB) which can store
-+ * persistent information across such events.
-+ *
-+ * The purpose of the below panic notifier is to help with notifying
-+ * the bootloader that a panic occurred and so that it should try its
-+ * best to preserve the DRAM contents holding that buffer for recovery
-+ * by the kernel as opposed to wiping out DRAM clean again.
-+ *
-+ * Reference: comment from Florian Fainelli, at
-+ * https://lore.kernel.org/lkml/781cafb0-8d06-8b56-907a-5175c2da196a@gmail.com
-+ */
- static int brcmstb_pm_panic_notify(struct notifier_block *nb,
- 		unsigned long action, void *data)
- {
--- 
-2.36.0
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+  Maciej
 
