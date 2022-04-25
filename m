@@ -1,15 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nbwaT-003dkp-Ro
- for linux-um@lists.infradead.org; Wed, 06 Apr 2022 03:44:07 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v9 06/32] virtio_ring: split: extract the logic of alloc queue
-Date: Wed,  6 Apr 2022 11:43:20 +0800
-Message-Id: <20220406034346.74409-7-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
-References: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
+References: <20220418045314.360785-1-hch@lst.de>
+ <20220418045314.360785-7-hch@lst.de>
+In-Reply-To: <20220418045314.360785-7-hch@lst.de>
+From: Song Liu <song@kernel.org>
+Date: Mon, 25 Apr 2022 14:08:18 -0700
+Message-ID: <CAPhsuW7fpiAqAf+U491dTH4mWORZQCxfyT6zWQwN=4r5WJ429Q@mail.gmail.com>
+Subject: Re: [PATCH 06/11] raid5: don't set the discard_alignment queue limit
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,105 +19,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
+To: Christoph Hellwig <hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>, Johannes Berg <johannes@sipsolutions.net>, Josef Bacik <josef@toxicpanda.com>, "Md. Haris Iqbal" <haris.iqbal@ionos.com>, Jack Wang <jinpu.wang@ionos.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, =?UTF-8?Q?Roger_Pau_Monn=C3=A9?= <roger.pau@citrix.com>, Mike Snitzer <snitzer@kernel.org>, Stefan Haberland <sth@linux.ibm.com>, Jan Hoeppner <hoeppner@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, linux-um@lists.infradead.org, linux-block@vger.kernel.org, nbd@other.debian.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-raid <linux-raid@vger.kernel.org>, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, dm-devel@redhat.com
 
-Separate the logic of split to create vring queue.
+On Sun, Apr 17, 2022 at 9:53 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> The discard_alignment queue limit is named a bit misleading means the
+> offset into the block device at which the discard granularity starts.
+> Setting it to the discard granularity as done by raid5 is mostly
+> harmless but also useless.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-This feature is required for subsequent virtuqueue reset vring.
+Acked-by: Song Liu <song@kernel.org>
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- drivers/virtio/virtio_ring.c | 53 ++++++++++++++++++++++++------------
- 1 file changed, 36 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 33fddfb907a6..72d5ae063fa0 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -915,23 +915,15 @@ static void *virtqueue_detach_unused_buf_split(struct virtqueue *_vq)
- 	return NULL;
- }
- 
--static struct virtqueue *vring_create_virtqueue_split(
--	unsigned int index,
--	unsigned int num,
--	unsigned int vring_align,
--	struct virtio_device *vdev,
--	bool weak_barriers,
--	bool may_reduce_num,
--	bool context,
--	bool (*notify)(struct virtqueue *),
--	void (*callback)(struct virtqueue *),
--	const char *name)
-+static void *vring_alloc_queue_split(struct virtio_device *vdev,
-+				     dma_addr_t *dma_addr,
-+				     u32 *n,
-+				     unsigned int vring_align,
-+				     bool weak_barriers,
-+				     bool may_reduce_num)
- {
--	struct virtqueue *vq;
- 	void *queue = NULL;
--	dma_addr_t dma_addr;
--	size_t queue_size_in_bytes;
--	struct vring vring;
-+	u32 num = *n;
- 
- 	/* We assume num is a power of 2. */
- 	if (num & (num - 1)) {
-@@ -942,7 +934,7 @@ static struct virtqueue *vring_create_virtqueue_split(
- 	/* TODO: allocate each queue chunk individually */
- 	for (; num && vring_size(num, vring_align) > PAGE_SIZE; num /= 2) {
- 		queue = vring_alloc_queue(vdev, vring_size(num, vring_align),
--					  &dma_addr,
-+					  dma_addr,
- 					  GFP_KERNEL|__GFP_NOWARN|__GFP_ZERO);
- 		if (queue)
- 			break;
-@@ -956,11 +948,38 @@ static struct virtqueue *vring_create_virtqueue_split(
- 	if (!queue) {
- 		/* Try to get a single page. You are my only hope! */
- 		queue = vring_alloc_queue(vdev, vring_size(num, vring_align),
--					  &dma_addr, GFP_KERNEL|__GFP_ZERO);
-+					  dma_addr, GFP_KERNEL|__GFP_ZERO);
- 	}
- 	if (!queue)
- 		return NULL;
- 
-+	*n = num;
-+	return queue;
-+}
-+
-+static struct virtqueue *vring_create_virtqueue_split(
-+	unsigned int index,
-+	unsigned int num,
-+	unsigned int vring_align,
-+	struct virtio_device *vdev,
-+	bool weak_barriers,
-+	bool may_reduce_num,
-+	bool context,
-+	bool (*notify)(struct virtqueue *),
-+	void (*callback)(struct virtqueue *),
-+	const char *name)
-+{
-+	size_t queue_size_in_bytes;
-+	struct virtqueue *vq;
-+	dma_addr_t dma_addr;
-+	struct vring vring;
-+	void *queue;
-+
-+	queue = vring_alloc_queue_split(vdev, &dma_addr, &num, vring_align,
-+					weak_barriers, may_reduce_num);
-+	if (!queue)
-+		return NULL;
-+
- 	queue_size_in_bytes = vring_size(num, vring_align);
- 	vring_init(&vring, num, queue, vring_align);
- 
--- 
-2.31.0
-
+> ---
+>  drivers/md/raid5.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
+> index 59f91e392a2ae..39b0afdf40d0a 100644
+> --- a/drivers/md/raid5.c
+> +++ b/drivers/md/raid5.c
+> @@ -7749,7 +7749,6 @@ static int raid5_run(struct mddev *mddev)
+>                  */
+>                 stripe = stripe * PAGE_SIZE;
+>                 stripe = roundup_pow_of_two(stripe);
+> -               mddev->queue->limits.discard_alignment = stripe;
+>                 mddev->queue->limits.discard_granularity = stripe;
+>
+>                 blk_queue_max_write_zeroes_sectors(mddev->queue, 0);
+> --
+> 2.30.2
+>
 
 _______________________________________________
 linux-um mailing list
