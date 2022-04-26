@@ -1,12 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Subject: [PATCH 14/30] panic: Properly identify the panic event to the
- notifiers' callbacks
-Date: Wed, 27 Apr 2022 19:49:08 -0300
-Message-Id: <20220427224924.592546-15-gpiccoli@igalia.com>
-In-Reply-To: <20220427224924.592546-1-gpiccoli@igalia.com>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
-MIME-Version: 1.0
+Received: from out199-10.us.a.mail.aliyun.com ([47.90.199.10])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1njI5p-00Dl6Z-Mx
+ for linux-um@lists.infradead.org; Tue, 26 Apr 2022 10:06:52 +0000
+Message-ID: <1650967148.2873914-3-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH v9 00/32] virtio pci support VIRTIO_F_RING_RESET (refactor
+ vring)
+Date: Tue, 26 Apr 2022 17:59:08 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+References: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
+ <20220426055423-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20220426055423-mutt-send-email-mst@kernel.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -15,57 +19,152 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, gpiccoli@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: virtualization@lists.linux-foundation.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
 
-The notifiers infrastructure provides a way to pass an "id" to the
-callbacks to determine what kind of event happened, i.e., what is
-the reason behind they getting called.
+On Tue, 26 Apr 2022 05:55:41 -0400, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> On Wed, Apr 06, 2022 at 11:43:14AM +0800, Xuan Zhuo wrote:
+> > The virtio spec already supports the virtio queue reset function. This patch set
+> > is to add this function to the kernel. The relevant virtio spec information is
+> > here:
+> >
+> >     https://github.com/oasis-tcs/virtio-spec/issues/124
+> >
+> > Also regarding MMIO support for queue reset, I plan to support it after this
+> > patch is passed.
+>
+> Regarding the spec, there's now an issue proposing
+> some changes to the interface. What do you think about that
+> proposal? Could you respond on that thread on the virtio TC mailing list?
 
-The panic notifier currently pass 0, but this is soon to be
-used in a multi-targeted notifier, so let's pass a meaningful
-"id" over there.
+I have read that thread. And also asked some questions.  I will follow that
+thread.
 
-Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
----
- include/linux/panic_notifier.h | 5 +++++
- kernel/panic.c                 | 2 +-
- 2 files changed, 6 insertions(+), 1 deletion(-)
+Grateful.
 
-diff --git a/include/linux/panic_notifier.h b/include/linux/panic_notifier.h
-index 41e32483d7a7..07dced83a783 100644
---- a/include/linux/panic_notifier.h
-+++ b/include/linux/panic_notifier.h
-@@ -9,4 +9,9 @@ extern struct atomic_notifier_head panic_notifier_list;
- 
- extern bool crash_kexec_post_notifiers;
- 
-+enum panic_notifier_val {
-+	PANIC_UNUSED,
-+	PANIC_NOTIFIER = 0xDEAD,
-+};
-+
- #endif	/* _LINUX_PANIC_NOTIFIERS_H */
-diff --git a/kernel/panic.c b/kernel/panic.c
-index eb4dfb932c85..523bc9ccd0e9 100644
---- a/kernel/panic.c
-+++ b/kernel/panic.c
-@@ -287,7 +287,7 @@ void panic(const char *fmt, ...)
- 	 * Run any panic handlers, including those that might need to
- 	 * add information to the kmsg dump output.
- 	 */
--	atomic_notifier_call_chain(&panic_notifier_list, 0, buf);
-+	atomic_notifier_call_chain(&panic_notifier_list, PANIC_NOTIFIER, buf);
- 
- 	panic_print_sys_info(false);
- 
--- 
-2.36.0
-
+>
+>
+> > This patch set implements the refactoring of vring. Finally, the
+> > virtuque_resize() interface is provided based on the reset function of the
+> > transport layer.
+> >
+> > Test environment:
+> >     Host: 4.19.91
+> >     Qemu: QEMU emulator version 6.2.50 (with vq reset support)
+> >     Test Cmd:  ethtool -G eth1 rx $1 tx $2; ethtool -g eth1
+> >
+> >     The default is split mode, modify Qemu virtio-net to add PACKED feature to test
+> >     packed mode.
+> >
+> > Qemu code:
+> >     https://github.com/fengidri/qemu/compare/89f3bfa3265554d1d591ee4d7f1197b6e3397e84...master
+> >
+> > In order to simplify the review of this patch set, the function of reusing
+> > the old buffers after resize will be introduced in subsequent patch sets.
+> >
+> > Please review. Thanks.
+> >
+> > v9:
+> >   1. Provide a virtqueue_resize() interface directly
+> >   2. A patch set including vring resize, virtio pci reset, virtio-net resize
+> >   3. No more separate structs
+> >
+> > v8:
+> >   1. Provide a virtqueue_reset() interface directly
+> >   2. Split the two patch sets, this is the first part
+> >   3. Add independent allocation helper for allocating state, extra
+> >
+> > v7:
+> >   1. fix #6 subject typo
+> >   2. fix #6 ring_size_in_bytes is uninitialized
+> >   3. check by: make W=12
+> >
+> > v6:
+> >   1. virtio_pci: use synchronize_irq(irq) to sync the irq callbacks
+> >   2. Introduce virtqueue_reset_vring() to implement the reset of vring during
+> >      the reset process. May use the old vring if num of the vq not change.
+> >   3. find_vqs() support sizes to special the max size of each vq
+> >
+> > v5:
+> >   1. add virtio-net support set_ringparam
+> >
+> > v4:
+> >   1. just the code of virtio, without virtio-net
+> >   2. Performing reset on a queue is divided into these steps:
+> >     1. reset_vq: reset one vq
+> >     2. recycle the buffer from vq by virtqueue_detach_unused_buf()
+> >     3. release the ring of the vq by vring_release_virtqueue()
+> >     4. enable_reset_vq: re-enable the reset queue
+> >   3. Simplify the parameters of enable_reset_vq()
+> >   4. add container structures for virtio_pci_common_cfg
+> >
+> > v3:
+> >   1. keep vq, irq unreleased
+> >
+> > Xuan Zhuo (32):
+> >   virtio: add helper virtqueue_get_vring_max_size()
+> >   virtio: struct virtio_config_ops add callbacks for queue_reset
+> >   virtio_ring: update the document of the virtqueue_detach_unused_buf
+> >     for queue reset
+> >   virtio_ring: remove the arg vq of vring_alloc_desc_extra()
+> >   virtio_ring: extract the logic of freeing vring
+> >   virtio_ring: split: extract the logic of alloc queue
+> >   virtio_ring: split: extract the logic of alloc state and extra
+> >   virtio_ring: split: extract the logic of attach vring
+> >   virtio_ring: split: extract the logic of vq init
+> >   virtio_ring: split: introduce virtqueue_reinit_split()
+> >   virtio_ring: split: introduce virtqueue_resize_split()
+> >   virtio_ring: packed: extract the logic of alloc queue
+> >   virtio_ring: packed: extract the logic of alloc state and extra
+> >   virtio_ring: packed: extract the logic of attach vring
+> >   virtio_ring: packed: extract the logic of vq init
+> >   virtio_ring: packed: introduce virtqueue_reinit_packed()
+> >   virtio_ring: packed: introduce virtqueue_resize_packed()
+> >   virtio_ring: introduce virtqueue_resize()
+> >   virtio_pci: struct virtio_pci_common_cfg add queue_notify_data
+> >   virtio: queue_reset: add VIRTIO_F_RING_RESET
+> >   virtio_pci: queue_reset: update struct virtio_pci_common_cfg and
+> >     option functions
+> >   virtio_pci: queue_reset: extract the logic of active vq for modern pci
+> >   virtio_pci: queue_reset: support VIRTIO_F_RING_RESET
+> >   virtio: find_vqs() add arg sizes
+> >   virtio_pci: support the arg sizes of find_vqs()
+> >   virtio_mmio: support the arg sizes of find_vqs()
+> >   virtio: add helper virtio_find_vqs_ctx_size()
+> >   virtio_net: set the default max ring size by find_vqs()
+> >   virtio_net: get ringparam by virtqueue_get_vring_max_size()
+> >   virtio_net: split free_unused_bufs()
+> >   virtio_net: support rx/tx queue resize
+> >   virtio_net: support set_ringparam
+> >
+> >  arch/um/drivers/virtio_uml.c             |   3 +-
+> >  drivers/net/virtio_net.c                 | 219 +++++++-
+> >  drivers/platform/mellanox/mlxbf-tmfifo.c |   3 +
+> >  drivers/remoteproc/remoteproc_virtio.c   |   3 +
+> >  drivers/s390/virtio/virtio_ccw.c         |   4 +
+> >  drivers/virtio/virtio_mmio.c             |  11 +-
+> >  drivers/virtio/virtio_pci_common.c       |  28 +-
+> >  drivers/virtio/virtio_pci_common.h       |   3 +-
+> >  drivers/virtio/virtio_pci_legacy.c       |   8 +-
+> >  drivers/virtio/virtio_pci_modern.c       | 149 +++++-
+> >  drivers/virtio/virtio_pci_modern_dev.c   |  36 ++
+> >  drivers/virtio/virtio_ring.c             | 626 ++++++++++++++++++-----
+> >  drivers/virtio/virtio_vdpa.c             |   3 +
+> >  include/linux/virtio.h                   |   6 +
+> >  include/linux/virtio_config.h            |  38 +-
+> >  include/linux/virtio_pci_modern.h        |   2 +
+> >  include/uapi/linux/virtio_config.h       |   7 +-
+> >  include/uapi/linux/virtio_pci.h          |  14 +
+> >  18 files changed, 964 insertions(+), 199 deletions(-)
+> >
+> > --
+> > 2.31.0
+>
 
 _______________________________________________
 linux-um mailing list
