@@ -1,18 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
+Received: from out03.mta.xmission.com ([166.70.13.233])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1njiNO-001jjn-26
- for linux-um@lists.infradead.org; Wed, 27 Apr 2022 14:10:43 +0000
-Date: Wed, 27 Apr 2022 16:10:25 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-Subject: Re: [PATCH 6/9] signal: Always call do_notify_parent_cldstop with
- siglock held
-Message-ID: <20220427141018.GA17421@redhat.com>
+ id 1njU3K-00GX3N-D5
+ for linux-um@lists.infradead.org; Tue, 26 Apr 2022 22:53:04 +0000
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+Date: Tue, 26 Apr 2022 17:52:08 -0500
+Message-Id: <20220426225211.308418-6-ebiederm@xmission.com>
+In-Reply-To: <878rrrh32q.fsf_-_@email.froward.int.ebiederm.org>
 References: <878rrrh32q.fsf_-_@email.froward.int.ebiederm.org>
- <20220426225211.308418-6-ebiederm@xmission.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220426225211.308418-6-ebiederm@xmission.com>
+Subject: [PATCH 6/9] signal: Always call do_notify_parent_cldstop with siglock
+ held
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -25,30 +23,297 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "Eric W. Biederman" <ebiederm@xmission.com>
-Cc: linux-kernel@vger.kernel.org, rjw@rjwysocki.net, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, inux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>
+To: linux-kernel@vger.kernel.org
+Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, inux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, "Eric W. Biederman" <ebiederm@xmission.com>
 
-On 04/26, Eric W. Biederman wrote:
->
-> @@ -2164,7 +2166,9 @@ static void do_notify_parent_cldstop(struct task_struct *tsk,
->   	}
->
->  	sighand = parent->sighand;
-> -	spin_lock_irqsave(&sighand->siglock, flags);
-> +	lock = tsk->sighand != sighand;
-> +	if (lock)
-> +		spin_lock_nested(&sighand->siglock, SINGLE_DEPTH_NESTING);
+Now that siglock keeps tsk->parent and tsk->real_parent constant
+require that do_notify_parent_cldstop is called with tsk->siglock held
+instead of the tasklist_lock.
 
-But why is it safe?
+As all of the callers of do_notify_parent_cldstop had to drop the
+siglock and take tasklist_lock this simplifies all of it's callers.
 
-Suppose we have two tasks, they both trace each other, both call
-ptrace_stop() at the same time. Of course this is ugly, they both
-will block.
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+---
+ kernel/signal.c | 156 +++++++++++++++++-------------------------------
+ 1 file changed, 55 insertions(+), 101 deletions(-)
 
-But with this patch in this case we have the trivial ABBA deadlock,
-no?
-
-Oleg.
+diff --git a/kernel/signal.c b/kernel/signal.c
+index 72d96614effc..584d67deb3cb 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -2121,11 +2121,13 @@ static void do_notify_parent_cldstop(struct task_struct *tsk,
+ 				     bool for_ptracer, int why)
+ {
+ 	struct kernel_siginfo info;
+-	unsigned long flags;
+ 	struct task_struct *parent;
+ 	struct sighand_struct *sighand;
++	bool lock;
+ 	u64 utime, stime;
+ 
++	assert_spin_locked(&tsk->sighand->siglock);
++
+ 	if (for_ptracer) {
+ 		parent = tsk->parent;
+ 	} else {
+@@ -2164,7 +2166,9 @@ static void do_notify_parent_cldstop(struct task_struct *tsk,
+  	}
+ 
+ 	sighand = parent->sighand;
+-	spin_lock_irqsave(&sighand->siglock, flags);
++	lock = tsk->sighand != sighand;
++	if (lock)
++		spin_lock_nested(&sighand->siglock, SINGLE_DEPTH_NESTING);
+ 	if (sighand->action[SIGCHLD-1].sa.sa_handler != SIG_IGN &&
+ 	    !(sighand->action[SIGCHLD-1].sa.sa_flags & SA_NOCLDSTOP))
+ 		send_signal_locked(SIGCHLD, &info, parent, PIDTYPE_TGID);
+@@ -2172,7 +2176,8 @@ static void do_notify_parent_cldstop(struct task_struct *tsk,
+ 	 * Even if SIGCHLD is not generated, we must wake up wait4 calls.
+ 	 */
+ 	__wake_up_parent(tsk, parent);
+-	spin_unlock_irqrestore(&sighand->siglock, flags);
++	if (lock)
++		spin_unlock(&sighand->siglock);
+ }
+ 
+ /*
+@@ -2193,7 +2198,6 @@ static int ptrace_stop(int exit_code, int why, int clear_code,
+ 	__acquires(&current->sighand->siglock)
+ {
+ 	bool gstop_done = false;
+-	bool read_code = true;
+ 
+ 	if (arch_ptrace_stop_needed()) {
+ 		/*
+@@ -2209,6 +2213,34 @@ static int ptrace_stop(int exit_code, int why, int clear_code,
+ 		spin_lock_irq(&current->sighand->siglock);
+ 	}
+ 
++	/* Don't stop if current is not ptraced */
++	if (unlikely(!current->ptrace))
++		return (clear_code) ? 0 : exit_code;
++
++	/*
++	 * If @why is CLD_STOPPED, we're trapping to participate in a group
++	 * stop.  Do the bookkeeping.  Note that if SIGCONT was delievered
++	 * across siglock relocks since INTERRUPT was scheduled, PENDING
++	 * could be clear now.  We act as if SIGCONT is received after
++	 * TASK_TRACED is entered - ignore it.
++	 */
++	if (why == CLD_STOPPED && (current->jobctl & JOBCTL_STOP_PENDING))
++		gstop_done = task_participate_group_stop(current);
++
++	/*
++	 * Notify parents of the stop.
++	 *
++	 * While ptraced, there are two parents - the ptracer and
++	 * the real_parent of the group_leader.  The ptracer should
++	 * know about every stop while the real parent is only
++	 * interested in the completion of group stop.  The states
++	 * for the two don't interact with each other.  Notify
++	 * separately unless they're gonna be duplicates.
++	 */
++	do_notify_parent_cldstop(current, true, why);
++	if (gstop_done && ptrace_reparented(current))
++		do_notify_parent_cldstop(current, false, why);
++
+ 	/*
+ 	 * schedule() will not sleep if there is a pending signal that
+ 	 * can awaken the task.
+@@ -2239,15 +2271,6 @@ static int ptrace_stop(int exit_code, int why, int clear_code,
+ 	current->last_siginfo = info;
+ 	current->exit_code = exit_code;
+ 
+-	/*
+-	 * If @why is CLD_STOPPED, we're trapping to participate in a group
+-	 * stop.  Do the bookkeeping.  Note that if SIGCONT was delievered
+-	 * across siglock relocks since INTERRUPT was scheduled, PENDING
+-	 * could be clear now.  We act as if SIGCONT is received after
+-	 * TASK_TRACED is entered - ignore it.
+-	 */
+-	if (why == CLD_STOPPED && (current->jobctl & JOBCTL_STOP_PENDING))
+-		gstop_done = task_participate_group_stop(current);
+ 
+ 	/* any trap clears pending STOP trap, STOP trap clears NOTIFY */
+ 	task_clear_jobctl_pending(current, JOBCTL_TRAP_STOP);
+@@ -2257,56 +2280,19 @@ static int ptrace_stop(int exit_code, int why, int clear_code,
+ 	/* entering a trap, clear TRAPPING */
+ 	task_clear_jobctl_trapping(current);
+ 
++	/*
++	 * Don't want to allow preemption here, because
++	 * sys_ptrace() needs this task to be inactive.
++	 *
++	 * XXX: implement spin_unlock_no_resched().
++	 */
++	preempt_disable();
+ 	spin_unlock_irq(&current->sighand->siglock);
+-	read_lock(&tasklist_lock);
+-	if (likely(current->ptrace)) {
+-		/*
+-		 * Notify parents of the stop.
+-		 *
+-		 * While ptraced, there are two parents - the ptracer and
+-		 * the real_parent of the group_leader.  The ptracer should
+-		 * know about every stop while the real parent is only
+-		 * interested in the completion of group stop.  The states
+-		 * for the two don't interact with each other.  Notify
+-		 * separately unless they're gonna be duplicates.
+-		 */
+-		do_notify_parent_cldstop(current, true, why);
+-		if (gstop_done && ptrace_reparented(current))
+-			do_notify_parent_cldstop(current, false, why);
+ 
+-		/*
+-		 * Don't want to allow preemption here, because
+-		 * sys_ptrace() needs this task to be inactive.
+-		 *
+-		 * XXX: implement read_unlock_no_resched().
+-		 */
+-		preempt_disable();
+-		read_unlock(&tasklist_lock);
+-		cgroup_enter_frozen();
+-		preempt_enable_no_resched();
+-		freezable_schedule();
+-		cgroup_leave_frozen(true);
+-	} else {
+-		/*
+-		 * By the time we got the lock, our tracer went away.
+-		 * Don't drop the lock yet, another tracer may come.
+-		 *
+-		 * If @gstop_done, the ptracer went away between group stop
+-		 * completion and here.  During detach, it would have set
+-		 * JOBCTL_STOP_PENDING on us and we'll re-enter
+-		 * TASK_STOPPED in do_signal_stop() on return, so notifying
+-		 * the real parent of the group stop completion is enough.
+-		 */
+-		if (gstop_done)
+-			do_notify_parent_cldstop(current, false, why);
+-
+-		/* tasklist protects us from ptrace_freeze_traced() */
+-		__set_current_state(TASK_RUNNING);
+-		read_code = false;
+-		if (clear_code)
+-			exit_code = 0;
+-		read_unlock(&tasklist_lock);
+-	}
++	cgroup_enter_frozen();
++	preempt_enable_no_resched();
++	freezable_schedule();
++	cgroup_leave_frozen(true);
+ 
+ 	/*
+ 	 * We are back.  Now reacquire the siglock before touching
+@@ -2314,8 +2300,7 @@ static int ptrace_stop(int exit_code, int why, int clear_code,
+ 	 * any signal-sending on another CPU that wants to examine it.
+ 	 */
+ 	spin_lock_irq(&current->sighand->siglock);
+-	if (read_code)
+-		exit_code = current->exit_code;
++	exit_code = current->exit_code;
+ 	current->last_siginfo = NULL;
+ 	current->ptrace_message = 0;
+ 	current->exit_code = 0;
+@@ -2444,34 +2429,17 @@ static bool do_signal_stop(int signr)
+ 	}
+ 
+ 	if (likely(!current->ptrace)) {
+-		int notify = 0;
+-
+ 		/*
+ 		 * If there are no other threads in the group, or if there
+ 		 * is a group stop in progress and we are the last to stop,
+-		 * report to the parent.
++		 * report to the real_parent.
+ 		 */
+ 		if (task_participate_group_stop(current))
+-			notify = CLD_STOPPED;
++			do_notify_parent_cldstop(current, false, CLD_STOPPED);
+ 
+ 		set_special_state(TASK_STOPPED);
+ 		spin_unlock_irq(&current->sighand->siglock);
+ 
+-		/*
+-		 * Notify the parent of the group stop completion.  Because
+-		 * we're not holding either the siglock or tasklist_lock
+-		 * here, ptracer may attach inbetween; however, this is for
+-		 * group stop and should always be delivered to the real
+-		 * parent of the group leader.  The new ptracer will get
+-		 * its notification when this task transitions into
+-		 * TASK_TRACED.
+-		 */
+-		if (notify) {
+-			read_lock(&tasklist_lock);
+-			do_notify_parent_cldstop(current, false, notify);
+-			read_unlock(&tasklist_lock);
+-		}
+-
+ 		/* Now we don't run again until woken by SIGCONT or SIGKILL */
+ 		cgroup_enter_frozen();
+ 		freezable_schedule();
+@@ -2665,8 +2633,6 @@ bool get_signal(struct ksignal *ksig)
+ 
+ 		signal->flags &= ~SIGNAL_CLD_MASK;
+ 
+-		spin_unlock_irq(&sighand->siglock);
+-
+ 		/*
+ 		 * Notify the parent that we're continuing.  This event is
+ 		 * always per-process and doesn't make whole lot of sense
+@@ -2675,15 +2641,10 @@ bool get_signal(struct ksignal *ksig)
+ 		 * the ptracer of the group leader too unless it's gonna be
+ 		 * a duplicate.
+ 		 */
+-		read_lock(&tasklist_lock);
+ 		do_notify_parent_cldstop(current, false, why);
+-
+ 		if (ptrace_reparented(current->group_leader))
+ 			do_notify_parent_cldstop(current->group_leader,
+ 						true, why);
+-		read_unlock(&tasklist_lock);
+-
+-		goto relock;
+ 	}
+ 
+ 	for (;;) {
+@@ -2940,7 +2901,6 @@ static void retarget_shared_pending(struct task_struct *tsk, sigset_t *which)
+ 
+ void exit_signals(struct task_struct *tsk)
+ {
+-	int group_stop = 0;
+ 	sigset_t unblocked;
+ 
+ 	/*
+@@ -2971,21 +2931,15 @@ void exit_signals(struct task_struct *tsk)
+ 	signotset(&unblocked);
+ 	retarget_shared_pending(tsk, &unblocked);
+ 
+-	if (unlikely(tsk->jobctl & JOBCTL_STOP_PENDING) &&
+-	    task_participate_group_stop(tsk))
+-		group_stop = CLD_STOPPED;
+-out:
+-	spin_unlock_irq(&tsk->sighand->siglock);
+-
+ 	/*
+ 	 * If group stop has completed, deliver the notification.  This
+ 	 * should always go to the real parent of the group leader.
+ 	 */
+-	if (unlikely(group_stop)) {
+-		read_lock(&tasklist_lock);
+-		do_notify_parent_cldstop(tsk, false, group_stop);
+-		read_unlock(&tasklist_lock);
+-	}
++	if (unlikely(tsk->jobctl & JOBCTL_STOP_PENDING) &&
++	    task_participate_group_stop(tsk))
++		do_notify_parent_cldstop(tsk, false, CLD_STOPPED);
++out:
++	spin_unlock_irq(&tsk->sighand->siglock);
+ }
+ 
+ /*
+-- 
+2.35.3
 
 
 _______________________________________________
