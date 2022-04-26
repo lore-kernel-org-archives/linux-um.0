@@ -1,19 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-ej1-x62b.google.com ([2a00:1450:4864:20::62b])
+Received: from out02.mta.xmission.com ([166.70.13.232])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1njUgc-00GgU0-Fe
- for linux-um@lists.infradead.org; Tue, 26 Apr 2022 23:33:39 +0000
-Received: by mail-ej1-x62b.google.com with SMTP id j6so57668ejc.13
- for <linux-um@lists.infradead.org>; Tue, 26 Apr 2022 16:33:36 -0700 (PDT)
-MIME-Version: 1.0
+ id 1njU3D-00GWuH-IS
+ for linux-um@lists.infradead.org; Tue, 26 Apr 2022 22:52:57 +0000
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+Date: Tue, 26 Apr 2022 17:52:06 -0500
+Message-Id: <20220426225211.308418-4-ebiederm@xmission.com>
+In-Reply-To: <878rrrh32q.fsf_-_@email.froward.int.ebiederm.org>
 References: <878rrrh32q.fsf_-_@email.froward.int.ebiederm.org>
- <20220426225211.308418-4-ebiederm@xmission.com>
-In-Reply-To: <20220426225211.308418-4-ebiederm@xmission.com>
-From: Max Filippov <jcmvbkbc@gmail.com>
-Date: Tue, 26 Apr 2022 16:33:24 -0700
-Message-ID: <CAMo8BfJdDJ2tWPp0vNZ0SF2HkRGsytoVhnsnRMDcbSmGByH8zA@mail.gmail.com>
-Subject: Re: [PATCH 4/9] ptrace/xtensa: Replace PT_SINGLESTEP with
- TIF_SINGLESTEP
+MIME-Version: 1.0
+Subject: [PATCH 4/9] ptrace/xtensa: Replace PT_SINGLESTEP with TIF_SINGLESTEP
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -26,32 +22,86 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "Eric W. Biederman" <ebiederm@xmission.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, Ingo Molnar <mingo@kernel.org>, Vincent Guittot <vincent.guittot@linaro.org>, dietmar.eggemann@arm.com, Steven Rostedt <rostedt@goodmis.org>, mgorman@suse.de, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Will Deacon <will@kernel.org>, Tejun Heo <tj@kernel.org>, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, inux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>
+To: linux-kernel@vger.kernel.org
+Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, inux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, "Eric W. Biederman" <ebiederm@xmission.com>
 
-On Tue, Apr 26, 2022 at 3:52 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> xtensa is the last user of the PT_SINGLESTEP flag.  Changing tsk->ptrace in
-> user_enable_single_step and user_disable_single_step without locking could
-> potentiallly cause problems.
->
-> So use a thread info flag instead of a flag in tsk->ptrace.  Use TIF_SINGLESTEP
-> that xtensa already had defined but unused.
->
-> Remove the definitions of PT_SINGLESTEP and PT_BLOCKSTEP as they have no more users.
->
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> ---
->  arch/xtensa/kernel/ptrace.c | 4 ++--
->  arch/xtensa/kernel/signal.c | 4 ++--
->  include/linux/ptrace.h      | 6 ------
->  3 files changed, 4 insertions(+), 10 deletions(-)
+xtensa is the last user of the PT_SINGLESTEP flag.  Changing tsk->ptrace in
+user_enable_single_step and user_disable_single_step without locking could
+potentiallly cause problems.
 
-Acked-by: Max Filippov <jcmvbkbc@gmail.com>
+So use a thread info flag instead of a flag in tsk->ptrace.  Use TIF_SINGLESTEP
+that xtensa already had defined but unused.
 
+Remove the definitions of PT_SINGLESTEP and PT_BLOCKSTEP as they have no more users.
+
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+---
+ arch/xtensa/kernel/ptrace.c | 4 ++--
+ arch/xtensa/kernel/signal.c | 4 ++--
+ include/linux/ptrace.h      | 6 ------
+ 3 files changed, 4 insertions(+), 10 deletions(-)
+
+diff --git a/arch/xtensa/kernel/ptrace.c b/arch/xtensa/kernel/ptrace.c
+index 323c678a691f..b952e67cc0cc 100644
+--- a/arch/xtensa/kernel/ptrace.c
++++ b/arch/xtensa/kernel/ptrace.c
+@@ -225,12 +225,12 @@ const struct user_regset_view *task_user_regset_view(struct task_struct *task)
+ 
+ void user_enable_single_step(struct task_struct *child)
+ {
+-	child->ptrace |= PT_SINGLESTEP;
++	set_tsk_thread_flag(child, TIF_SINGLESTEP);
+ }
+ 
+ void user_disable_single_step(struct task_struct *child)
+ {
+-	child->ptrace &= ~PT_SINGLESTEP;
++	clear_tsk_thread_flag(child, TIF_SINGLESTEP);
+ }
+ 
+ /*
+diff --git a/arch/xtensa/kernel/signal.c b/arch/xtensa/kernel/signal.c
+index 6f68649e86ba..ac50ec46c8f1 100644
+--- a/arch/xtensa/kernel/signal.c
++++ b/arch/xtensa/kernel/signal.c
+@@ -473,7 +473,7 @@ static void do_signal(struct pt_regs *regs)
+ 		/* Set up the stack frame */
+ 		ret = setup_frame(&ksig, sigmask_to_save(), regs);
+ 		signal_setup_done(ret, &ksig, 0);
+-		if (current->ptrace & PT_SINGLESTEP)
++		if (test_thread_flag(TIF_SINGLESTEP))
+ 			task_pt_regs(current)->icountlevel = 1;
+ 
+ 		return;
+@@ -499,7 +499,7 @@ static void do_signal(struct pt_regs *regs)
+ 	/* If there's no signal to deliver, we just restore the saved mask.  */
+ 	restore_saved_sigmask();
+ 
+-	if (current->ptrace & PT_SINGLESTEP)
++	if (test_thread_flag(TIF_SINGLESTEP))
+ 		task_pt_regs(current)->icountlevel = 1;
+ 	return;
+ }
+diff --git a/include/linux/ptrace.h b/include/linux/ptrace.h
+index 4c06f9f8ef3f..c952c5ba8fab 100644
+--- a/include/linux/ptrace.h
++++ b/include/linux/ptrace.h
+@@ -46,12 +46,6 @@ extern int ptrace_access_vm(struct task_struct *tsk, unsigned long addr,
+ #define PT_EXITKILL		(PTRACE_O_EXITKILL << PT_OPT_FLAG_SHIFT)
+ #define PT_SUSPEND_SECCOMP	(PTRACE_O_SUSPEND_SECCOMP << PT_OPT_FLAG_SHIFT)
+ 
+-/* single stepping state bits (used on ARM and PA-RISC) */
+-#define PT_SINGLESTEP_BIT	31
+-#define PT_SINGLESTEP		(1<<PT_SINGLESTEP_BIT)
+-#define PT_BLOCKSTEP_BIT	30
+-#define PT_BLOCKSTEP		(1<<PT_BLOCKSTEP_BIT)
+-
+ extern long arch_ptrace(struct task_struct *child, long request,
+ 			unsigned long addr, unsigned long data);
+ extern int ptrace_readdata(struct task_struct *tsk, unsigned long src, char __user *dst, int len);
 -- 
-Thanks.
--- Max
+2.35.3
+
 
 _______________________________________________
 linux-um mailing list
