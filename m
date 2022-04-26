@@ -1,15 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131])
+Received: from out03.mta.xmission.com ([166.70.13.233])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nbwb8-003ePA-Oo
- for linux-um@lists.infradead.org; Wed, 06 Apr 2022 03:44:48 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v9 25/32] virtio_pci: support the arg sizes of find_vqs()
-Date: Wed,  6 Apr 2022 11:43:39 +0800
-Message-Id: <20220406034346.74409-26-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
-References: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
+ id 1njU3F-00GWro-1R
+ for linux-um@lists.infradead.org; Tue, 26 Apr 2022 22:52:58 +0000
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+Date: Tue, 26 Apr 2022 17:52:04 -0500
+Message-Id: <20220426225211.308418-2-ebiederm@xmission.com>
+In-Reply-To: <878rrrh32q.fsf_-_@email.froward.int.ebiederm.org>
+References: <878rrrh32q.fsf_-_@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
+Subject: [PATCH 2/9] signal: Replace __group_send_sig_info with
+ send_signal_locked
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,171 +23,106 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, inux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, "Eric W. Biederman" <ebiederm@xmission.com>
 
-Virtio PCI supports new parameter sizes of find_vqs().
+The function send_signal_locked does more than __group_send_sig_info so
+replace it.
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 ---
- drivers/virtio/virtio_pci_common.c | 18 ++++++++++--------
- drivers/virtio/virtio_pci_common.h |  1 +
- drivers/virtio/virtio_pci_legacy.c |  6 +++++-
- drivers/virtio/virtio_pci_modern.c | 10 +++++++---
- 4 files changed, 23 insertions(+), 12 deletions(-)
+ drivers/tty/tty_jobctrl.c      | 4 ++--
+ include/linux/signal.h         | 1 -
+ kernel/signal.c                | 8 +-------
+ kernel/time/posix-cpu-timers.c | 6 +++---
+ 4 files changed, 6 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
-index 826ea2e35d54..23976c61583f 100644
---- a/drivers/virtio/virtio_pci_common.c
-+++ b/drivers/virtio/virtio_pci_common.c
-@@ -208,6 +208,7 @@ static int vp_request_msix_vectors(struct virtio_device *vdev, int nvectors,
- static struct virtqueue *vp_setup_vq(struct virtio_device *vdev, unsigned index,
- 				     void (*callback)(struct virtqueue *vq),
- 				     const char *name,
-+				     u32 size,
- 				     bool ctx,
- 				     u16 msix_vec)
+diff --git a/drivers/tty/tty_jobctrl.c b/drivers/tty/tty_jobctrl.c
+index 80b86a7992b5..0d04287da098 100644
+--- a/drivers/tty/tty_jobctrl.c
++++ b/drivers/tty/tty_jobctrl.c
+@@ -215,8 +215,8 @@ int tty_signal_session_leader(struct tty_struct *tty, int exit_session)
+ 				spin_unlock_irq(&p->sighand->siglock);
+ 				continue;
+ 			}
+-			__group_send_sig_info(SIGHUP, SEND_SIG_PRIV, p);
+-			__group_send_sig_info(SIGCONT, SEND_SIG_PRIV, p);
++			send_signal_locked(SIGHUP, SEND_SIG_PRIV, p, PIDTYPE_TGID);
++			send_signal_locked(SIGCONT, SEND_SIG_PRIV, p, PIDTYPE_TGID);
+ 			put_pid(p->signal->tty_old_pgrp);  /* A noop */
+ 			spin_lock(&tty->ctrl.lock);
+ 			tty_pgrp = get_pid(tty->ctrl.pgrp);
+diff --git a/include/linux/signal.h b/include/linux/signal.h
+index 55605bdf5ce9..3b98e7a28538 100644
+--- a/include/linux/signal.h
++++ b/include/linux/signal.h
+@@ -282,7 +282,6 @@ extern int do_send_sig_info(int sig, struct kernel_siginfo *info,
+ 				struct task_struct *p, enum pid_type type);
+ extern int group_send_sig_info(int sig, struct kernel_siginfo *info,
+ 			       struct task_struct *p, enum pid_type type);
+-extern int __group_send_sig_info(int, struct kernel_siginfo *, struct task_struct *);
+ extern int send_signal_locked(int sig, struct kernel_siginfo *info,
+ 			      struct task_struct *p, enum pid_type type);
+ extern int sigprocmask(int, sigset_t *, sigset_t *);
+diff --git a/kernel/signal.c b/kernel/signal.c
+index b0403197b0ad..72d96614effc 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -1281,12 +1281,6 @@ static int __init setup_print_fatal_signals(char *str)
+ 
+ __setup("print-fatal-signals=", setup_print_fatal_signals);
+ 
+-int
+-__group_send_sig_info(int sig, struct kernel_siginfo *info, struct task_struct *p)
+-{
+-	return send_signal_locked(sig, info, p, PIDTYPE_TGID);
+-}
+-
+ int do_send_sig_info(int sig, struct kernel_siginfo *info, struct task_struct *p,
+ 			enum pid_type type)
  {
-@@ -220,7 +221,7 @@ static struct virtqueue *vp_setup_vq(struct virtio_device *vdev, unsigned index,
- 	if (!info)
- 		return ERR_PTR(-ENOMEM);
- 
--	vq = vp_dev->setup_vq(vp_dev, info, index, callback, name, ctx,
-+	vq = vp_dev->setup_vq(vp_dev, info, index, callback, name, size, ctx,
- 			      msix_vec);
- 	if (IS_ERR(vq))
- 		goto out_info;
-@@ -314,7 +315,7 @@ void vp_del_vqs(struct virtio_device *vdev)
- 
- static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned nvqs,
- 		struct virtqueue *vqs[], vq_callback_t *callbacks[],
--		const char * const names[], bool per_vq_vectors,
-+		const char * const names[], u32 sizes[], bool per_vq_vectors,
- 		const bool *ctx,
- 		struct irq_affinity *desc)
+@@ -2173,7 +2167,7 @@ static void do_notify_parent_cldstop(struct task_struct *tsk,
+ 	spin_lock_irqsave(&sighand->siglock, flags);
+ 	if (sighand->action[SIGCHLD-1].sa.sa_handler != SIG_IGN &&
+ 	    !(sighand->action[SIGCHLD-1].sa.sa_flags & SA_NOCLDSTOP))
+-		__group_send_sig_info(SIGCHLD, &info, parent);
++		send_signal_locked(SIGCHLD, &info, parent, PIDTYPE_TGID);
+ 	/*
+ 	 * Even if SIGCHLD is not generated, we must wake up wait4 calls.
+ 	 */
+diff --git a/kernel/time/posix-cpu-timers.c b/kernel/time/posix-cpu-timers.c
+index 0a97193984db..cb925e8ef9a8 100644
+--- a/kernel/time/posix-cpu-timers.c
++++ b/kernel/time/posix-cpu-timers.c
+@@ -870,7 +870,7 @@ static inline void check_dl_overrun(struct task_struct *tsk)
  {
-@@ -357,8 +358,8 @@ static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned nvqs,
- 		else
- 			msix_vec = VP_MSIX_VQ_VECTOR;
- 		vqs[i] = vp_setup_vq(vdev, queue_idx++, callbacks[i], names[i],
--				     ctx ? ctx[i] : false,
--				     msix_vec);
-+				     sizes ? sizes[i] : 0,
-+				     ctx ? ctx[i] : false, msix_vec);
- 		if (IS_ERR(vqs[i])) {
- 			err = PTR_ERR(vqs[i]);
- 			goto error_find;
-@@ -388,7 +389,7 @@ static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned nvqs,
- 
- static int vp_find_vqs_intx(struct virtio_device *vdev, unsigned nvqs,
- 		struct virtqueue *vqs[], vq_callback_t *callbacks[],
--		const char * const names[], const bool *ctx)
-+		const char * const names[], u32 sizes[], const bool *ctx)
- {
- 	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
- 	int i, err, queue_idx = 0;
-@@ -410,6 +411,7 @@ static int vp_find_vqs_intx(struct virtio_device *vdev, unsigned nvqs,
- 			continue;
- 		}
- 		vqs[i] = vp_setup_vq(vdev, queue_idx++, callbacks[i], names[i],
-+				     sizes ? sizes[i] : 0,
- 				     ctx ? ctx[i] : false,
- 				     VIRTIO_MSI_NO_VECTOR);
- 		if (IS_ERR(vqs[i])) {
-@@ -433,15 +435,15 @@ int vp_find_vqs(struct virtio_device *vdev, unsigned nvqs,
- 	int err;
- 
- 	/* Try MSI-X with one vector per queue. */
--	err = vp_find_vqs_msix(vdev, nvqs, vqs, callbacks, names, true, ctx, desc);
-+	err = vp_find_vqs_msix(vdev, nvqs, vqs, callbacks, names, sizes, true, ctx, desc);
- 	if (!err)
- 		return 0;
- 	/* Fallback: MSI-X with one vector for config, one shared for queues. */
--	err = vp_find_vqs_msix(vdev, nvqs, vqs, callbacks, names, false, ctx, desc);
-+	err = vp_find_vqs_msix(vdev, nvqs, vqs, callbacks, names, sizes, false, ctx, desc);
- 	if (!err)
- 		return 0;
- 	/* Finally fall back to regular interrupts. */
--	return vp_find_vqs_intx(vdev, nvqs, vqs, callbacks, names, ctx);
-+	return vp_find_vqs_intx(vdev, nvqs, vqs, callbacks, names, sizes, ctx);
+ 	if (tsk->dl.dl_overrun) {
+ 		tsk->dl.dl_overrun = 0;
+-		__group_send_sig_info(SIGXCPU, SEND_SIG_PRIV, tsk);
++		send_signal_locked(SIGXCPU, SEND_SIG_PRIV, tsk, PIDTYPE_TGID);
+ 	}
  }
  
- const char *vp_bus_name(struct virtio_device *vdev)
-diff --git a/drivers/virtio/virtio_pci_common.h b/drivers/virtio/virtio_pci_common.h
-index 859eed559e10..fbf5a6d4b164 100644
---- a/drivers/virtio/virtio_pci_common.h
-+++ b/drivers/virtio/virtio_pci_common.h
-@@ -81,6 +81,7 @@ struct virtio_pci_device {
- 				      unsigned idx,
- 				      void (*callback)(struct virtqueue *vq),
- 				      const char *name,
-+				      u32 size,
- 				      bool ctx,
- 				      u16 msix_vec);
- 	void (*del_vq)(struct virtio_pci_vq_info *info);
-diff --git a/drivers/virtio/virtio_pci_legacy.c b/drivers/virtio/virtio_pci_legacy.c
-index b68934fe6b5d..2c4ade5fb420 100644
---- a/drivers/virtio/virtio_pci_legacy.c
-+++ b/drivers/virtio/virtio_pci_legacy.c
-@@ -112,6 +112,7 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 				  unsigned index,
- 				  void (*callback)(struct virtqueue *vq),
- 				  const char *name,
-+				  u32 size,
- 				  bool ctx,
- 				  u16 msix_vec)
- {
-@@ -125,10 +126,13 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 	if (!num || vp_legacy_get_queue_enable(&vp_dev->ldev, index))
- 		return ERR_PTR(-ENOENT);
+@@ -884,7 +884,7 @@ static bool check_rlimit(u64 time, u64 limit, int signo, bool rt, bool hard)
+ 			rt ? "RT" : "CPU", hard ? "hard" : "soft",
+ 			current->comm, task_pid_nr(current));
+ 	}
+-	__group_send_sig_info(signo, SEND_SIG_PRIV, current);
++	send_signal_locked(signo, SEND_SIG_PRIV, current, PIDTYPE_TGID);
+ 	return true;
+ }
  
-+	if (!size || size > num)
-+		size = num;
-+
- 	info->msix_vector = msix_vec;
- 
- 	/* create the vring */
--	vq = vring_create_virtqueue(index, num,
-+	vq = vring_create_virtqueue(index, size,
- 				    VIRTIO_PCI_VRING_ALIGN, &vp_dev->vdev,
- 				    true, false, ctx,
- 				    vp_notify, callback, name);
-diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
-index 3b35e5056165..a17c47d4435a 100644
---- a/drivers/virtio/virtio_pci_modern.c
-+++ b/drivers/virtio/virtio_pci_modern.c
-@@ -289,6 +289,7 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 				  unsigned index,
- 				  void (*callback)(struct virtqueue *vq),
- 				  const char *name,
-+				  u32 size,
- 				  bool ctx,
- 				  u16 msix_vec)
- {
-@@ -306,15 +307,18 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 	if (!num || vp_modern_get_queue_enable(mdev, index))
- 		return ERR_PTR(-ENOENT);
- 
--	if (num & (num - 1)) {
--		dev_warn(&vp_dev->pci_dev->dev, "bad queue size %u", num);
-+	if (!size || size > num)
-+		size = num;
-+
-+	if (size & (size - 1)) {
-+		dev_warn(&vp_dev->pci_dev->dev, "bad queue size %u", size);
- 		return ERR_PTR(-EINVAL);
+@@ -958,7 +958,7 @@ static void check_cpu_itimer(struct task_struct *tsk, struct cpu_itimer *it,
+ 		trace_itimer_expire(signo == SIGPROF ?
+ 				    ITIMER_PROF : ITIMER_VIRTUAL,
+ 				    task_tgid(tsk), cur_time);
+-		__group_send_sig_info(signo, SEND_SIG_PRIV, tsk);
++		send_signal_locked(signo, SEND_SIG_PRIV, tsk, PIDTYPE_TGID);
  	}
  
- 	info->msix_vector = msix_vec;
- 
- 	/* create the vring */
--	vq = vring_create_virtqueue(index, num,
-+	vq = vring_create_virtqueue(index, size,
- 				    SMP_CACHE_BYTES, &vp_dev->vdev,
- 				    true, true, ctx,
- 				    vp_notify, callback, name);
+ 	if (it->expires && it->expires < *expires)
 -- 
-2.31.0
+2.35.3
 
 
 _______________________________________________
