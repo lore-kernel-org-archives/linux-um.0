@@ -1,10 +1,11 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 27/27] direct-io: remove random prefetches
-Date: Fri, 15 Apr 2022 06:52:58 +0200
-Message-Id: <20220415045258.199825-28-hch@lst.de>
-In-Reply-To: <20220415045258.199825-1-hch@lst.de>
-References: <20220415045258.199825-1-hch@lst.de>
+From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Subject: [PATCH 03/30] notifier: Add panic notifiers info and purge trailing
+ whitespaces
+Date: Wed, 27 Apr 2022 19:48:57 -0300
+Message-Id: <20220427224924.592546-4-gpiccoli@igalia.com>
+In-Reply-To: <20220427224924.592546-1-gpiccoli@igalia.com>
+References: <20220427224924.592546-1-gpiccoli@igalia.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -18,71 +19,54 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jens Axboe <axboe@kernel.dk>
-Cc: dm-devel@redhat.com, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-um@lists.infradead.org, linux-block@vger.kernel.org, drbd-dev@lists.linbit.com, nbd@other.debian.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev, ocfs2-devel@oss.oracle.com, linux-mm@kvack.org
+To: akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, gpiccoli@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, Arjan van de Ven <arjan@linux.intel.com>, Cong Wang <xiyou.wangcong@gmail.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Valentin Schneider <valentin.schneider@arm.com>, Xiaoming Ni <nixiaoming@huawei.com>
 
-Randomly poking into block device internals for manual prefetches isn't
-exactly a very maintainable thing to do.  And none of the performance
-criticil direct I/O implementations still use this library function
-anyway, so just drop it.
+Although many notifiers are mentioned in the comments, the panic
+notifiers infrastructure is not. Also, the file contains some
+trailing whitespaces. This commit fix both issues.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Cc: Arjan van de Ven <arjan@linux.intel.com>
+Cc: Cong Wang <xiyou.wangcong@gmail.com>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Valentin Schneider <valentin.schneider@arm.com>
+Cc: Xiaoming Ni <nixiaoming@huawei.com>
+Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
 ---
- fs/direct-io.c | 32 ++++----------------------------
- 1 file changed, 4 insertions(+), 28 deletions(-)
+ include/linux/notifier.h | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/fs/direct-io.c b/fs/direct-io.c
-index aef06e607b405..840752006f601 100644
---- a/fs/direct-io.c
-+++ b/fs/direct-io.c
-@@ -1115,11 +1115,10 @@ static inline int drop_refcount(struct dio *dio)
-  * individual fields and will generate much worse code. This is important
-  * for the whole file.
-  */
--static inline ssize_t
--do_blockdev_direct_IO(struct kiocb *iocb, struct inode *inode,
--		      struct block_device *bdev, struct iov_iter *iter,
--		      get_block_t get_block, dio_iodone_t end_io,
--		      dio_submit_t submit_io, int flags)
-+ssize_t __blockdev_direct_IO(struct kiocb *iocb, struct inode *inode,
-+		struct block_device *bdev, struct iov_iter *iter,
-+		get_block_t get_block, dio_iodone_t end_io,
-+		dio_submit_t submit_io, int flags)
- {
- 	unsigned i_blkbits = READ_ONCE(inode->i_blkbits);
- 	unsigned blkbits = i_blkbits;
-@@ -1334,29 +1333,6 @@ do_blockdev_direct_IO(struct kiocb *iocb, struct inode *inode,
- 	kmem_cache_free(dio_cache, dio);
- 	return retval;
- }
--
--ssize_t __blockdev_direct_IO(struct kiocb *iocb, struct inode *inode,
--			     struct block_device *bdev, struct iov_iter *iter,
--			     get_block_t get_block,
--			     dio_iodone_t end_io, dio_submit_t submit_io,
--			     int flags)
--{
--	/*
--	 * The block device state is needed in the end to finally
--	 * submit everything.  Since it's likely to be cache cold
--	 * prefetch it here as first thing to hide some of the
--	 * latency.
--	 *
--	 * Attempt to prefetch the pieces we likely need later.
--	 */
--	prefetch(&bdev->bd_disk->part_tbl);
--	prefetch(bdev->bd_disk->queue);
--	prefetch((char *)bdev->bd_disk->queue + SMP_CACHE_BYTES);
--
--	return do_blockdev_direct_IO(iocb, inode, bdev, iter, get_block,
--				     end_io, submit_io, flags);
--}
--
- EXPORT_SYMBOL(__blockdev_direct_IO);
+diff --git a/include/linux/notifier.h b/include/linux/notifier.h
+index 87069b8459af..0589896fc7bd 100644
+--- a/include/linux/notifier.h
++++ b/include/linux/notifier.h
+@@ -201,12 +201,12 @@ static inline int notifier_to_errno(int ret)
  
- static __init int dio_init(void)
+ /*
+  *	Declared notifiers so far. I can imagine quite a few more chains
+- *	over time (eg laptop power reset chains, reboot chain (to clean 
++ *	over time (eg laptop power reset chains, reboot chain (to clean
+  *	device units up), device [un]mount chain, module load/unload chain,
+- *	low memory chain, screenblank chain (for plug in modular screenblankers) 
++ *	low memory chain, screenblank chain (for plug in modular screenblankers)
+  *	VC switch chains (for loadable kernel svgalib VC switch helpers) etc...
+  */
+- 
++
+ /* CPU notfiers are defined in include/linux/cpu.h. */
+ 
+ /* netdevice notifiers are defined in include/linux/netdevice.h */
+@@ -217,6 +217,8 @@ static inline int notifier_to_errno(int ret)
+ 
+ /* Virtual Terminal events are defined in include/linux/vt.h. */
+ 
++/* Panic notifiers are defined in include/linux/panic_notifier.h. */
++
+ #define NETLINK_URELEASE	0x0001	/* Unicast netlink socket released */
+ 
+ /* Console keyboard events.
 -- 
-2.30.2
+2.36.0
 
 
 _______________________________________________
