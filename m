@@ -1,46 +1,276 @@
-Return-Path: <SRS0=O4Mn=UU=zx2c4.com=Jason@kernel.org>
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH v2 03/11] m68k: use ktime_read_raw_clock() for random_get_entropy() instead of zero
-Date: Sun, 10 Apr 2022 23:49:43 +0200
-Message-Id: <20220410214951.55294-4-Jason@zx2c4.com>
-In-Reply-To: <20220410214951.55294-1-Jason@zx2c4.com>
-References: <20220410214951.55294-1-Jason@zx2c4.com>
+Return-Path: <linux-pm-owner@vger.kernel.org>
+From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Subject: [PATCH 22/30] panic: Introduce the panic post-reboot notifier list
+Date: Wed, 27 Apr 2022 19:49:16 -0300
+Message-Id: <20220427224924.592546-23-gpiccoli@igalia.com>
+In-Reply-To: <20220427224924.592546-1-gpiccoli@igalia.com>
+References: <20220427224924.592546-1-gpiccoli@igalia.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-To: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, tglx@linutronix.de, arnd@arndb.de
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Theodore Ts'o <tytso@mit.edu>, Dominik Brodowski <linux@dominikbrodowski.net>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, "David S . Miller" <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, John Stultz <john.stultz@linaro.org>, Stephen Boyd <sboyd@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org, linux-xtensa@linux-xtensa.org
+To: akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, gpiccoli@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>, Heiko Carstens <hca@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>
 List-ID: <linux-um.lists.infradead.org>
 
-In the event that random_get_entropy() can't access a cycle counter or
-similar, falling back to returning 0 is really not the best we can do.
-Instead, at least calling ktime_read_raw_clock() would be preferable,
-because that always needs to return _something_, even falling back to
-jiffies eventually. It's not as though ktime_read_raw_clock() is super
-high precision or guaranteed to be entropic, but basically anything
-that's not zero all the time is better than returning zero all the time.
+Currently we have 3 notifier lists in the panic path, which will
+be wired in a way to allow the notifier callbacks to run in
+different moments at panic time, in a subsequent patch.
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+But there is also an odd set of architecture calls hardcoded in
+the end of panic path, after the restart machinery. They're
+responsible for late time tunings / events, like enabling a stop
+button (Sparc) or effectively stopping the machine (s390).
+
+This patch introduces yet another notifier list to offer the
+architectures a way to add callbacks in such late moment on
+panic path without the need of ifdefs / hardcoded approaches.
+
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>
+Cc: Christian Borntraeger <borntraeger@linux.ibm.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Sven Schnelle <svens@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
 ---
- arch/m68k/include/asm/timex.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/s390/kernel/setup.c       | 19 ++++++++++++++++++-
+ arch/sparc/kernel/setup_32.c   | 27 +++++++++++++++++++++++----
+ arch/sparc/kernel/setup_64.c   | 29 ++++++++++++++++++++++++-----
+ include/linux/panic_notifier.h |  1 +
+ kernel/panic.c                 | 19 +++++++------------
+ 5 files changed, 73 insertions(+), 22 deletions(-)
 
-diff --git a/arch/m68k/include/asm/timex.h b/arch/m68k/include/asm/timex.h
-index 6a21d9358280..5351b10e1b18 100644
---- a/arch/m68k/include/asm/timex.h
-+++ b/arch/m68k/include/asm/timex.h
-@@ -35,7 +35,7 @@ static inline unsigned long random_get_entropy(void)
- {
- 	if (mach_random_get_entropy)
- 		return mach_random_get_entropy();
--	return 0;
-+	return ktime_read_raw_clock();
- }
- #define random_get_entropy	random_get_entropy
+diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
+index d860ac300919..d816b2045f1e 100644
+--- a/arch/s390/kernel/setup.c
++++ b/arch/s390/kernel/setup.c
+@@ -39,7 +39,6 @@
+ #include <linux/kernel_stat.h>
+ #include <linux/dma-map-ops.h>
+ #include <linux/device.h>
+-#include <linux/notifier.h>
+ #include <linux/pfn.h>
+ #include <linux/ctype.h>
+ #include <linux/reboot.h>
+@@ -51,6 +50,7 @@
+ #include <linux/start_kernel.h>
+ #include <linux/hugetlb.h>
+ #include <linux/kmemleak.h>
++#include <linux/panic_notifier.h>
  
+ #include <asm/boot_data.h>
+ #include <asm/ipl.h>
+@@ -943,6 +943,20 @@ static void __init log_component_list(void)
+ 	}
+ }
+ 
++/*
++ * The following notifier executes as one of the latest things in the panic
++ * path, only if the restart routines weren't executed (or didn't succeed).
++ */
++static int panic_event(struct notifier_block *n, unsigned long ev, void *unused)
++{
++	disabled_wait();
++	return NOTIFY_DONE;
++}
++
++static struct notifier_block post_reboot_panic_block = {
++	.notifier_call = panic_event,
++};
++
+ /*
+  * Setup function called from init/main.c just after the banner
+  * was printed.
+@@ -1058,4 +1072,7 @@ void __init setup_arch(char **cmdline_p)
+ 
+ 	/* Add system specific data to the random pool */
+ 	setup_randomness();
++
++	atomic_notifier_chain_register(&panic_post_reboot_list,
++				       &post_reboot_panic_block);
+ }
+diff --git a/arch/sparc/kernel/setup_32.c b/arch/sparc/kernel/setup_32.c
+index c8e0dd99f370..4e2428972f76 100644
+--- a/arch/sparc/kernel/setup_32.c
++++ b/arch/sparc/kernel/setup_32.c
+@@ -34,6 +34,7 @@
+ #include <linux/kdebug.h>
+ #include <linux/export.h>
+ #include <linux/start_kernel.h>
++#include <linux/panic_notifier.h>
+ #include <uapi/linux/mount.h>
+ 
+ #include <asm/io.h>
+@@ -51,6 +52,7 @@
+ 
+ #include "kernel.h"
+ 
++int stop_a_enabled = 1;
+ struct screen_info screen_info = {
+ 	0, 0,			/* orig-x, orig-y */
+ 	0,			/* unused */
+@@ -293,6 +295,24 @@ void __init sparc32_start_kernel(struct linux_romvec *rp)
+ 	start_kernel();
+ }
+ 
++/*
++ * The following notifier executes as one of the latest things in the panic
++ * path, only if the restart routines weren't executed (or didn't succeed).
++ */
++static int panic_event(struct notifier_block *n, unsigned long ev, void *unused)
++{
++	/* Make sure the user can actually press Stop-A (L1-A) */
++	stop_a_enabled = 1;
++	pr_emerg("Press Stop-A (L1-A) from sun keyboard or send break\n"
++		"twice on console to return to the boot prom\n");
++
++	return NOTIFY_DONE;
++}
++
++static struct notifier_block post_reboot_panic_block = {
++	.notifier_call = panic_event,
++};
++
+ void __init setup_arch(char **cmdline_p)
+ {
+ 	int i;
+@@ -368,9 +388,10 @@ void __init setup_arch(char **cmdline_p)
+ 	paging_init();
+ 
+ 	smp_setup_cpu_possible_map();
+-}
+ 
+-extern int stop_a_enabled;
++	atomic_notifier_chain_register(&panic_post_reboot_list,
++				       &post_reboot_panic_block);
++}
+ 
+ void sun_do_break(void)
+ {
+@@ -384,8 +405,6 @@ void sun_do_break(void)
+ }
+ EXPORT_SYMBOL(sun_do_break);
+ 
+-int stop_a_enabled = 1;
+-
+ static int __init topology_init(void)
+ {
+ 	int i, ncpus, err;
+diff --git a/arch/sparc/kernel/setup_64.c b/arch/sparc/kernel/setup_64.c
+index 48abee4eee29..9066c25ecc07 100644
+--- a/arch/sparc/kernel/setup_64.c
++++ b/arch/sparc/kernel/setup_64.c
+@@ -33,6 +33,7 @@
+ #include <linux/module.h>
+ #include <linux/start_kernel.h>
+ #include <linux/memblock.h>
++#include <linux/panic_notifier.h>
+ #include <uapi/linux/mount.h>
+ 
+ #include <asm/io.h>
+@@ -62,6 +63,8 @@
+ #include "entry.h"
+ #include "kernel.h"
+ 
++int stop_a_enabled = 1;
++
+ /* Used to synchronize accesses to NatSemi SUPER I/O chip configure
+  * operations in asm/ns87303.h
+  */
+@@ -632,6 +635,24 @@ void __init alloc_irqstack_bootmem(void)
+ 	}
+ }
+ 
++/*
++ * The following notifier executes as one of the latest things in the panic
++ * path, only if the restart routines weren't executed (or didn't succeed).
++ */
++static int panic_event(struct notifier_block *n, unsigned long ev, void *unused)
++{
++	/* Make sure the user can actually press Stop-A (L1-A) */
++	stop_a_enabled = 1;
++	pr_emerg("Press Stop-A (L1-A) from sun keyboard or send break\n"
++		"twice on console to return to the boot prom\n");
++
++	return NOTIFY_DONE;
++}
++
++static struct notifier_block post_reboot_panic_block = {
++	.notifier_call = panic_event,
++};
++
+ void __init setup_arch(char **cmdline_p)
+ {
+ 	/* Initialize PROM console and command line. */
+@@ -691,9 +712,10 @@ void __init setup_arch(char **cmdline_p)
+ 	 * allocate the IRQ stacks.
+ 	 */
+ 	alloc_irqstack_bootmem();
+-}
+ 
+-extern int stop_a_enabled;
++	atomic_notifier_chain_register(&panic_post_reboot_list,
++				       &post_reboot_panic_block);
++}
+ 
+ void sun_do_break(void)
+ {
+@@ -706,6 +728,3 @@ void sun_do_break(void)
+ 	prom_cmdline();
+ }
+ EXPORT_SYMBOL(sun_do_break);
+-
+-int stop_a_enabled = 1;
+-EXPORT_SYMBOL(stop_a_enabled);
+diff --git a/include/linux/panic_notifier.h b/include/linux/panic_notifier.h
+index 7912aacbc0e5..bcf6a5ea9d7f 100644
+--- a/include/linux/panic_notifier.h
++++ b/include/linux/panic_notifier.h
+@@ -8,6 +8,7 @@
+ extern struct atomic_notifier_head panic_hypervisor_list;
+ extern struct atomic_notifier_head panic_info_list;
+ extern struct atomic_notifier_head panic_pre_reboot_list;
++extern struct atomic_notifier_head panic_post_reboot_list;
+ 
+ extern bool crash_kexec_post_notifiers;
+ 
+diff --git a/kernel/panic.c b/kernel/panic.c
+index a9d43b98b05b..bf792102b43e 100644
+--- a/kernel/panic.c
++++ b/kernel/panic.c
+@@ -78,6 +78,9 @@ EXPORT_SYMBOL(panic_info_list);
+ ATOMIC_NOTIFIER_HEAD(panic_pre_reboot_list);
+ EXPORT_SYMBOL(panic_pre_reboot_list);
+ 
++ATOMIC_NOTIFIER_HEAD(panic_post_reboot_list);
++EXPORT_SYMBOL(panic_post_reboot_list);
++
+ static long no_blink(int state)
+ {
+ 	return 0;
+@@ -359,18 +362,10 @@ void panic(const char *fmt, ...)
+ 			reboot_mode = panic_reboot_mode;
+ 		emergency_restart();
+ 	}
+-#ifdef __sparc__
+-	{
+-		extern int stop_a_enabled;
+-		/* Make sure the user can actually press Stop-A (L1-A) */
+-		stop_a_enabled = 1;
+-		pr_emerg("Press Stop-A (L1-A) from sun keyboard or send break\n"
+-			 "twice on console to return to the boot prom\n");
+-	}
+-#endif
+-#if defined(CONFIG_S390)
+-	disabled_wait();
+-#endif
++
++	atomic_notifier_call_chain(&panic_post_reboot_list,
++				   PANIC_NOTIFIER, buf);
++
+ 	pr_emerg("---[ end Kernel panic - not syncing: %s ]---\n", buf);
+ 
+ 	/* Do not scroll important messages printed above */
 -- 
-2.35.1
+2.36.0
 
 
