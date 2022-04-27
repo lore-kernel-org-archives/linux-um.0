@@ -1,16 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out01.mta.xmission.com ([166.70.13.231])
+Received: from out02.mta.xmission.com ([166.70.13.232])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1njieB-001mO8-LN
- for linux-um@lists.infradead.org; Wed, 27 Apr 2022 14:28:05 +0000
+ id 1njhvw-001dEd-0I
+ for linux-um@lists.infradead.org; Wed, 27 Apr 2022 13:42:21 +0000
 From: "Eric W. Biederman" <ebiederm@xmission.com>
 References: <878rrrh32q.fsf_-_@email.froward.int.ebiederm.org>
  <20220426225211.308418-7-ebiederm@xmission.com>
- <87a6c6bq36.fsf@email.froward.int.ebiederm.org>
-Date: Wed, 27 Apr 2022 09:27:50 -0500
-In-Reply-To: <87a6c6bq36.fsf@email.froward.int.ebiederm.org> (Eric
- W. Biederman's message of "Wed, 27 Apr 2022 08:42:05 -0500")
-Message-ID: <87o80m8uu1.fsf@email.froward.int.ebiederm.org>
+Date: Wed, 27 Apr 2022 08:42:05 -0500
+In-Reply-To: <20220426225211.308418-7-ebiederm@xmission.com> (Eric
+ W. Biederman's message of "Tue, 26 Apr 2022 17:52:09 -0500")
+Message-ID: <87a6c6bq36.fsf@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
 Subject: Re: [PATCH 7/9] ptrace: Simplify the wait_task_inactive call in
  ptrace_check_attach
@@ -31,64 +30,56 @@ Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincen
 
 "Eric W. Biederman" <ebiederm@xmission.com> writes:
 
-> "Eric W. Biederman" <ebiederm@xmission.com> writes:
+> Asking wait_task_inactive to verify that tsk->__state == __TASK_TRACED
+> was needed to detect the when ptrace_stop would decide not to stop
+> after calling "set_special_state(TASK_TRACED)".  With the recent
+> cleanups ptrace_stop will always stop after calling set_special_state.
 >
->> Asking wait_task_inactive to verify that tsk->__state == __TASK_TRACED
->> was needed to detect the when ptrace_stop would decide not to stop
->> after calling "set_special_state(TASK_TRACED)".  With the recent
->> cleanups ptrace_stop will always stop after calling set_special_state.
->>
->> Take advatnage of this by no longer asking wait_task_inactive to
->> verify the state.  If a bug is hit and wait_task_inactive does not
->> succeed warn and return -ESRCH.
->
-> As Oleg noticed upthread there are more reasons than simply
-> !current->ptrace for wait_task_inactive to fail.  In particular a fatal
-> signal can be received any time before JOBCTL_DELAY_SIGKILL.
->
-> So this change is not safe.  I will respin this one.
+> Take advatnage of this by no longer asking wait_task_inactive to
+> verify the state.  If a bug is hit and wait_task_inactive does not
+> succeed warn and return -ESRCH.
 
-Bah.  I definitely need to update the description so there is going to
-be a v2.
+As Oleg noticed upthread there are more reasons than simply
+!current->ptrace for wait_task_inactive to fail.  In particular a fatal
+signal can be received any time before JOBCTL_DELAY_SIGKILL.
 
-I confused myself.  This change is safe because ptrace_freeze_traced
-fails if there is a pending fatal signal, and arranges that no new fatal
-signals will wake up the task.
+So this change is not safe.  I will respin this one.
 
 Eric
 
->> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
->> ---
->>  kernel/ptrace.c | 14 +++-----------
->>  1 file changed, 3 insertions(+), 11 deletions(-)
->>
->> diff --git a/kernel/ptrace.c b/kernel/ptrace.c
->> index 16d1a84a2cae..0634da7ac685 100644
->> --- a/kernel/ptrace.c
->> +++ b/kernel/ptrace.c
->> @@ -265,17 +265,9 @@ static int ptrace_check_attach(struct task_struct *child, bool ignore_state)
->>  	}
->>  	read_unlock(&tasklist_lock);
->>  
->> -	if (!ret && !ignore_state) {
->> -		if (!wait_task_inactive(child, __TASK_TRACED)) {
->> -			/*
->> -			 * This can only happen if may_ptrace_stop() fails and
->> -			 * ptrace_stop() changes ->state back to TASK_RUNNING,
->> -			 * so we should not worry about leaking __TASK_TRACED.
->> -			 */
->> -			WARN_ON(READ_ONCE(child->__state) == __TASK_TRACED);
->> -			ret = -ESRCH;
->> -		}
->> -	}
->> +	if (!ret && !ignore_state &&
->> +	    WARN_ON_ONCE(!wait_task_inactive(child, 0)))
->> +		ret = -ESRCH;
->>  
->>  	return ret;
->>  }
+
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> ---
+>  kernel/ptrace.c | 14 +++-----------
+>  1 file changed, 3 insertions(+), 11 deletions(-)
 >
-> Eric
+> diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+> index 16d1a84a2cae..0634da7ac685 100644
+> --- a/kernel/ptrace.c
+> +++ b/kernel/ptrace.c
+> @@ -265,17 +265,9 @@ static int ptrace_check_attach(struct task_struct *child, bool ignore_state)
+>  	}
+>  	read_unlock(&tasklist_lock);
+>  
+> -	if (!ret && !ignore_state) {
+> -		if (!wait_task_inactive(child, __TASK_TRACED)) {
+> -			/*
+> -			 * This can only happen if may_ptrace_stop() fails and
+> -			 * ptrace_stop() changes ->state back to TASK_RUNNING,
+> -			 * so we should not worry about leaking __TASK_TRACED.
+> -			 */
+> -			WARN_ON(READ_ONCE(child->__state) == __TASK_TRACED);
+> -			ret = -ESRCH;
+> -		}
+> -	}
+> +	if (!ret && !ignore_state &&
+> +	    WARN_ON_ONCE(!wait_task_inactive(child, 0)))
+> +		ret = -ESRCH;
+>  
+>  	return ret;
+>  }
+
+Eric
 
 _______________________________________________
 linux-um mailing list
