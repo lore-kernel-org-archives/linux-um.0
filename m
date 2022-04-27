@@ -1,11 +1,10 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 21/27] block: move {bdev,
- queue_limit}_discard_alignment out of line
-Date: Wed,  6 Apr 2022 08:05:10 +0200
-Message-Id: <20220406060516.409838-22-hch@lst.de>
-In-Reply-To: <20220406060516.409838-1-hch@lst.de>
-References: <20220406060516.409838-1-hch@lst.de>
+From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Subject: [PATCH 10/30] alpha: Clean-up the panic notifier code
+Date: Wed, 27 Apr 2022 19:49:04 -0300
+Message-Id: <20220427224924.592546-11-gpiccoli@igalia.com>
+In-Reply-To: <20220427224924.592546-1-gpiccoli@igalia.com>
+References: <20220427224924.592546-1-gpiccoli@igalia.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -19,115 +18,95 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jens Axboe <axboe@kernel.dk>
-Cc: dm-devel@redhat.com, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-um@lists.infradead.org, linux-block@vger.kernel.org, drbd-dev@lists.linbit.com, nbd@other.debian.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev, ocfs2-devel@oss.oracle.com, linux-mm@kvack.org
+To: akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, gpiccoli@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Richard Henderson <rth@twiddle.net>
 
-No need to inline these fairly larger helpers.  Also fix the return value
-to be unsigned, just like the field in struct queue_limits.
+The alpha panic notifier has some code issues, not following
+the conventions of other notifiers. Also, it might halt the
+machine but still it is set to run as early as possible, which
+doesn't seem to be a good idea.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+This patch cleans the code, and set the notifier to run as the
+latest, following the same approach other architectures are doing.
+Also, we remove the unnecessary include of a header already
+included indirectly.
+
+Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+Cc: Matt Turner <mattst88@gmail.com>
+Cc: Richard Henderson <rth@twiddle.net>
+Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
 ---
- block/blk-settings.c   | 35 +++++++++++++++++++++++++++++++++++
- include/linux/blkdev.h | 34 +---------------------------------
- 2 files changed, 36 insertions(+), 33 deletions(-)
+ arch/alpha/kernel/setup.c | 36 +++++++++++++++---------------------
+ 1 file changed, 15 insertions(+), 21 deletions(-)
 
-diff --git a/block/blk-settings.c b/block/blk-settings.c
-index 94410a13c0dee..fd83d674afd0a 100644
---- a/block/blk-settings.c
-+++ b/block/blk-settings.c
-@@ -478,6 +478,30 @@ static int queue_limit_alignment_offset(struct queue_limits *lim,
- 	return (granularity + lim->alignment_offset - alignment) % granularity;
- }
+diff --git a/arch/alpha/kernel/setup.c b/arch/alpha/kernel/setup.c
+index b4fbbba30aa2..d88bdf852753 100644
+--- a/arch/alpha/kernel/setup.c
++++ b/arch/alpha/kernel/setup.c
+@@ -41,19 +41,11 @@
+ #include <linux/sysrq.h>
+ #include <linux/reboot.h>
+ #endif
+-#include <linux/notifier.h>
+ #include <asm/setup.h>
+ #include <asm/io.h>
+ #include <linux/log2.h>
+ #include <linux/export.h>
  
-+static unsigned int queue_limit_discard_alignment(struct queue_limits *lim,
-+		sector_t sector)
+-static int alpha_panic_event(struct notifier_block *, unsigned long, void *);
+-static struct notifier_block alpha_panic_block = {
+-	alpha_panic_event,
+-        NULL,
+-        INT_MAX /* try to do it first */
+-};
+-
+ #include <linux/uaccess.h>
+ #include <asm/hwrpb.h>
+ #include <asm/dma.h>
+@@ -435,6 +427,21 @@ static const struct sysrq_key_op srm_sysrq_reboot_op = {
+ };
+ #endif
+ 
++static int alpha_panic_event(struct notifier_block *this,
++			     unsigned long event, void *ptr)
 +{
-+	unsigned int alignment, granularity, offset;
++	/* If we are using SRM and serial console, just hard halt here. */
++	if (alpha_using_srm && srmcons_output)
++		__halt();
 +
-+	if (!lim->max_discard_sectors)
-+		return 0;
-+
-+	/* Why are these in bytes, not sectors? */
-+	alignment = lim->discard_alignment >> SECTOR_SHIFT;
-+	granularity = lim->discard_granularity >> SECTOR_SHIFT;
-+	if (!granularity)
-+		return 0;
-+
-+	/* Offset of the partition start in 'granularity' sectors */
-+	offset = sector_div(sector, granularity);
-+
-+	/* And why do we do this modulus *again* in blkdev_issue_discard()? */
-+	offset = (granularity + alignment - offset) % granularity;
-+
-+	/* Turn it back into bytes, gaah */
-+	return offset << SECTOR_SHIFT;
++	return NOTIFY_DONE;
 +}
 +
- static unsigned int blk_round_down_sectors(unsigned int sectors, unsigned int lbs)
++static struct notifier_block alpha_panic_block = {
++	.notifier_call = alpha_panic_event,
++	.priority = INT_MIN, /* may not return, do it last */
++};
++
+ void __init
+ setup_arch(char **cmdline_p)
  {
- 	sectors = round_down(sectors, lbs >> SECTOR_SHIFT);
-@@ -924,3 +948,14 @@ int bdev_alignment_offset(struct block_device *bdev)
- 	return q->limits.alignment_offset;
- }
- EXPORT_SYMBOL_GPL(bdev_alignment_offset);
-+
-+unsigned int bdev_discard_alignment(struct block_device *bdev)
-+{
-+	struct request_queue *q = bdev_get_queue(bdev);
-+
-+	if (bdev_is_partition(bdev))
-+		return queue_limit_discard_alignment(&q->limits,
-+				bdev->bd_start_sect);
-+	return q->limits.discard_alignment;
-+}
-+EXPORT_SYMBOL_GPL(bdev_discard_alignment);
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 5a9b7aeda010b..34b1cfd067421 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -1252,39 +1252,7 @@ bdev_zone_write_granularity(struct block_device *bdev)
- }
+@@ -1427,19 +1434,6 @@ const struct seq_operations cpuinfo_op = {
+ 	.show	= show_cpuinfo,
+ };
  
- int bdev_alignment_offset(struct block_device *bdev);
 -
--static inline int queue_limit_discard_alignment(struct queue_limits *lim, sector_t sector)
+-static int
+-alpha_panic_event(struct notifier_block *this, unsigned long event, void *ptr)
 -{
--	unsigned int alignment, granularity, offset;
--
--	if (!lim->max_discard_sectors)
--		return 0;
--
--	/* Why are these in bytes, not sectors? */
--	alignment = lim->discard_alignment >> SECTOR_SHIFT;
--	granularity = lim->discard_granularity >> SECTOR_SHIFT;
--	if (!granularity)
--		return 0;
--
--	/* Offset of the partition start in 'granularity' sectors */
--	offset = sector_div(sector, granularity);
--
--	/* And why do we do this modulus *again* in blkdev_issue_discard()? */
--	offset = (granularity + alignment - offset) % granularity;
--
--	/* Turn it back into bytes, gaah */
--	return offset << SECTOR_SHIFT;
+-#if 1
+-	/* FIXME FIXME FIXME */
+-	/* If we are using SRM and serial console, just hard halt here. */
+-	if (alpha_using_srm && srmcons_output)
+-		__halt();
+-#endif
+-        return NOTIFY_DONE;
 -}
 -
--static inline int bdev_discard_alignment(struct block_device *bdev)
--{
--	struct request_queue *q = bdev_get_queue(bdev);
--
--	if (bdev_is_partition(bdev))
--		return queue_limit_discard_alignment(&q->limits,
--				bdev->bd_start_sect);
--	return q->limits.discard_alignment;
--}
-+unsigned int bdev_discard_alignment(struct block_device *bdev);
- 
- static inline unsigned int bdev_write_zeroes_sectors(struct block_device *bdev)
+ static __init int add_pcspkr(void)
  {
+ 	struct platform_device *pd;
 -- 
-2.30.2
+2.36.0
 
 
 _______________________________________________
