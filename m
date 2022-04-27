@@ -1,75 +1,41 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1njlLs-002cgg-72
- for linux-um@lists.infradead.org; Wed, 27 Apr 2022 17:21:21 +0000
-Date: Wed, 27 Apr 2022 19:21:10 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-Subject: Re: [PATCH 9/9] ptrace: Don't change __state
-Message-ID: <20220427172109.GK17421@redhat.com>
+Return-Path: <linux-pm-owner@vger.kernel.org>
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+In-Reply-To: <20220427160901.GI17421@redhat.com> (Oleg Nesterov's message of
+        "Wed, 27 Apr 2022 18:09:03 +0200")
 References: <878rrrh32q.fsf_-_@email.froward.int.ebiederm.org>
- <20220426225211.308418-9-ebiederm@xmission.com>
- <20220427160901.GI17421@redhat.com>
- <87o80m7afv.fsf@email.froward.int.ebiederm.org>
- <20220427171829.GJ17421@redhat.com>
+        <20220426225211.308418-9-ebiederm@xmission.com>
+        <20220427160901.GI17421@redhat.com>
+Date: Wed, 27 Apr 2022 11:33:40 -0500
+Message-ID: <87o80m7afv.fsf@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220427171829.GJ17421@redhat.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "Eric W. Biederman" <ebiederm@xmission.com>
+Content-Type: text/plain
+Subject: Re: [PATCH 9/9] ptrace: Don't change __state
+To: Oleg Nesterov <oleg@redhat.com>
 Cc: linux-kernel@vger.kernel.org, rjw@rjwysocki.net, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, inux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>
+List-ID: <linux-um.lists.infradead.org>
 
-On 04/27, Oleg Nesterov wrote:
+Oleg Nesterov <oleg@redhat.com> writes:
+
+> On 04/26, Eric W. Biederman wrote:
+>>
+>> @@ -253,7 +252,7 @@ static int ptrace_check_attach(struct task_struct *child, bool ignore_state)
+>>  	 */
+>>  	if (lock_task_sighand(child, &flags)) {
+>>  		if (child->ptrace && child->parent == current) {
+>> -			WARN_ON(READ_ONCE(child->__state) == __TASK_TRACED);
+>> +			WARN_ON(child->jobctl & JOBCTL_DELAY_WAKEKILL);
 >
-> On 04/27, Eric W. Biederman wrote:
-> >
-> > Oleg Nesterov <oleg@redhat.com> writes:
-> >
-> > > On 04/26, Eric W. Biederman wrote:
-> > >>
-> > >> @@ -253,7 +252,7 @@ static int ptrace_check_attach(struct task_struct *child, bool ignore_state)
-> > >>  	 */
-> > >>  	if (lock_task_sighand(child, &flags)) {
-> > >>  		if (child->ptrace && child->parent == current) {
-> > >> -			WARN_ON(READ_ONCE(child->__state) == __TASK_TRACED);
-> > >> +			WARN_ON(child->jobctl & JOBCTL_DELAY_WAKEKILL);
-> > >
-> > > This WARN_ON() doesn't look right.
-> > >
-> > > It is possible that this child was traced by another task and PTRACE_DETACH'ed,
-> > > but it didn't clear DELAY_WAKEKILL.
-> >
-> > That would be a bug.  That would mean that PTRACE_DETACHED process can
-> > not be SIGKILL'd.
+> This WARN_ON() doesn't look right.
 >
-> Why? The tracee will take siglock, clear JOBCTL_DELAY_WAKEKILL and notice
-> SIGKILL after that.
+> It is possible that this child was traced by another task and PTRACE_DETACH'ed,
+> but it didn't clear DELAY_WAKEKILL.
 
-Not to mention that the tracee is TASK_RUNNING after PTRACE_DETACH wakes it
-up, so the pending JOBCTL_DELAY_WAKEKILL simply has no effect.
+That would be a bug.  That would mean that PTRACE_DETACHED process can
+not be SIGKILL'd.
 
-Oleg.
+> If the new debugger attaches and calls ptrace() before the child takes siglock
+> ptrace_freeze_traced() will fail, but we can hit this WARN_ON().
 
-> > > If the new debugger attaches and calls ptrace() before the child takes siglock
-> > > ptrace_freeze_traced() will fail, but we can hit this WARN_ON().
-> > 
-> > Eric
-> > 
+Eric
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
