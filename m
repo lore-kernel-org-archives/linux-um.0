@@ -1,16 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out02.mta.xmission.com ([166.70.13.232])
+Received: from out01.mta.xmission.com ([166.70.13.231])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1njqFg-003nCR-JI
- for linux-um@lists.infradead.org; Wed, 27 Apr 2022 22:35:18 +0000
+ id 1njlVa-002gNn-4d
+ for linux-um@lists.infradead.org; Wed, 27 Apr 2022 17:31:23 +0000
 From: "Eric W. Biederman" <ebiederm@xmission.com>
 References: <878rrrh32q.fsf_-_@email.froward.int.ebiederm.org>
  <20220426225211.308418-9-ebiederm@xmission.com>
- <20220427154158.GG17421@redhat.com>
-Date: Wed, 27 Apr 2022 17:35:05 -0500
-In-Reply-To: <20220427154158.GG17421@redhat.com> (Oleg Nesterov's message of
- "Wed, 27 Apr 2022 17:41:59 +0200")
-Message-ID: <87mtg62m06.fsf@email.froward.int.ebiederm.org>
+ <20220427160901.GI17421@redhat.com>
+ <87o80m7afv.fsf@email.froward.int.ebiederm.org>
+ <20220427171829.GJ17421@redhat.com>
+ <20220427172109.GK17421@redhat.com>
+Date: Wed, 27 Apr 2022 12:31:09 -0500
+In-Reply-To: <20220427172109.GK17421@redhat.com> (Oleg Nesterov's message of
+ "Wed, 27 Apr 2022 19:21:10 +0200")
+Message-ID: <87wnfa5t7m.fsf@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
 Subject: Re: [PATCH 9/9] ptrace: Don't change __state
 List-Id: <linux-um.lists.infradead.org>
@@ -30,81 +33,47 @@ Cc: linux-kernel@vger.kernel.org, rjw@rjwysocki.net, mingo@kernel.org, vincent.g
 
 Oleg Nesterov <oleg@redhat.com> writes:
 
-2> On 04/26, Eric W. Biederman wrote:
+> On 04/27, Oleg Nesterov wrote:
 >>
->>  static void ptrace_unfreeze_traced(struct task_struct *task)
->>  {
->> -	if (READ_ONCE(task->__state) != __TASK_TRACED)
->> +	if (!(READ_ONCE(task->jobctl) & JOBCTL_DELAY_WAKEKILL))
->>  		return;
+>> On 04/27, Eric W. Biederman wrote:
+>> >
+>> > Oleg Nesterov <oleg@redhat.com> writes:
+>> >
+>> > > On 04/26, Eric W. Biederman wrote:
+>> > >>
+>> > >> @@ -253,7 +252,7 @@ static int ptrace_check_attach(struct task_struct *child, bool ignore_state)
+>> > >>  	 */
+>> > >>  	if (lock_task_sighand(child, &flags)) {
+>> > >>  		if (child->ptrace && child->parent == current) {
+>> > >> -			WARN_ON(READ_ONCE(child->__state) == __TASK_TRACED);
+>> > >> +			WARN_ON(child->jobctl & JOBCTL_DELAY_WAKEKILL);
+>> > >
+>> > > This WARN_ON() doesn't look right.
+>> > >
+>> > > It is possible that this child was traced by another task and PTRACE_DETACH'ed,
+>> > > but it didn't clear DELAY_WAKEKILL.
+>> >
+>> > That would be a bug.  That would mean that PTRACE_DETACHED process can
+>> > not be SIGKILL'd.
 >>
->>  	WARN_ON(!task->ptrace || task->parent != current);
->> @@ -213,11 +213,10 @@ static void ptrace_unfreeze_traced(struct task_struct *task)
->>  	 * Recheck state under the lock to close this race.
->>  	 */
->>  	spin_lock_irq(&task->sighand->siglock);
+>> Why? The tracee will take siglock, clear JOBCTL_DELAY_WAKEKILL and notice
+>> SIGKILL after that.
 >
-> Now that we do not check __state = __TASK_TRACED, we need lock_task_sighand().
-> The tracee can be already woken up by ptrace_resume(), but it is possible that
-> it didn't clear DELAY_WAKEKILL yet.
+> Not to mention that the tracee is TASK_RUNNING after PTRACE_DETACH wakes it
+> up, so the pending JOBCTL_DELAY_WAKEKILL simply has no effect.
 
-Yes.  The subtle differences in when __TASK_TRACED and
-JOBCTL_DELAY_WAKEKILL are cleared are causing me some minor issues.
+Oh.  You are talking about the window when between clearing the
+traced state and when tracee resumes executing and clears
+JOBCTL_DELAY_WAKEKILL.
 
-This "WARN_ON(!task->ptrace || task->parent != current);" also now
-needs to be inside siglock, because the __TASK_TRACED is insufficient.
+I thought you were thinking about JOBCTL_DELAY_WAKEKILL being leaked.
 
+That requires both ptrace_attach and ptrace_check_attach for the new
+tracer to happen before the tracee is scheduled to run.
 
-> Now, before we take ->siglock, the tracee can exit and another thread can do
-> wait() and reap this task.
->
-> Also, I think the comment above should be updated. I agree, it makes sense to
-> re-check JOBCTL_DELAY_WAKEKILL under siglock just for clarity, but we no longer
-> need to do this to close the race; jobctl &= ~JOBCTL_DELAY_WAKEKILL and
-> wake_up_state() are safe even if JOBCTL_DELAY_WAKEKILL was already
-> cleared.
-
-I think you are right about it being safe, but I am having a hard time
-convincing myself that is true.  I want to be very careful sending
-__TASK_TRACED wake_ups as ptrace_stop fundamentally can't handle
-spurious wake_ups.
-
-So I think adding task_is_traced to the test to verify the task
-is still frozen.
-
-static void ptrace_unfreeze_traced(struct task_struct *task)
-{
-	unsigned long flags;
-
-	/*
-	 * Verify the task is still frozen before unfreezing it,
-	 * ptrace_resume could have unfrozen us.
-	 */
-	if (lock_task_sighand(task, &flags)) {
-		if ((task->jobctl & JOBCTL_DELAY_WAKEKILL) &&
-		    task_is_traced(task)) {
-			task->jobctl &= ~JOBCTL_DELAY_WAKEKILL;
-			if (__fatal_signal_pending(task))
-				wake_up_state(task, __TASK_TRACED);
-		}
-		unlock_task_sighand(task, &flags);
-	}
-}
-
->> @@ -2307,6 +2307,7 @@ static int ptrace_stop(int exit_code, int why, int clear_code,
->>
->>  	/* LISTENING can be set only during STOP traps, clear it */
->>  	current->jobctl &= ~JOBCTL_LISTENING;
->> +	current->jobctl &= ~JOBCTL_DELAY_WAKEKILL;
->
-> minor, but
->
-> 	current->jobctl &= ~(JOBCTL_LISTENING | JOBCTL_DELAY_WAKEKILL);
->
-> looks better.
-
-Yes.
-
+I agree.  I think the WARN_ON could reasonably be moved a bit later,
+but I don't know that the WARN_ON is important. I simply kept it because
+it seemed to make sense.
 
 Eric
 
