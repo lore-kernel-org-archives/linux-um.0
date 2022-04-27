@@ -1,81 +1,86 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ncGky-008X8o-E6
- for linux-um@lists.infradead.org; Thu, 07 Apr 2022 01:16:18 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 02/11] um: Cleanup syscall_handler_t
- definition/cast, fix warning
-Date: Wed,  6 Apr 2022 21:15:59 -0400
-Message-Id: <20220407011609.115258-2-sashal@kernel.org>
-In-Reply-To: <20220407011609.115258-1-sashal@kernel.org>
-References: <20220407011609.115258-1-sashal@kernel.org>
+Return-Path: <linux-pm-owner@vger.kernel.org>
+From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Subject: [PATCH 26/30] Drivers: hv: Do not force all panic notifiers to execute before kdump
+Date: Wed, 27 Apr 2022 19:49:20 -0300
+Message-Id: <20220427224924.592546-27-gpiccoli@igalia.com>
+In-Reply-To: <20220427224924.592546-1-gpiccoli@igalia.com>
+References: <20220427224924.592546-1-gpiccoli@igalia.com>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: David Gow <davidgow@google.com>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, viro@zeniv.linux.org.uk, linux-um@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+To: akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, gpiccoli@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, Andrea Parri <parri.andrea@gmail.com>, Dexuan Cui <decui@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, "K. Y. Srinivasan" <kys@microsoft.com>, Stephen Brennan <stephen.s.brennan@oracle.com>, Stephen Hemminger <sthemmin@microsoft.com>, Tianyu Lan <Tianyu.Lan@microsoft.com>, Wei Liu <wei.liu@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-RnJvbTogRGF2aWQgR293IDxkYXZpZGdvd0Bnb29nbGUuY29tPgoKWyBVcHN0cmVhbSBjb21taXQg
-ZjRmMDNmMjk5YTU2Y2U0ZDczYzU0MzFlMDMyN2IzYjZjYjU1ZWJiOSBdCgpUaGUgc3lzY2FsbF9o
-YW5kbGVyX3QgdHlwZSBmb3IgeDg2XzY0IHdhcyBkZWZpbmVkIGFzICdsb25nICgqKSh2b2lkKScs
-CmJ1dCBhbHdheXMgY2FzdCB0byAnbG9uZyAoKikobG9uZywgbG9uZywgbG9uZywgbG9uZywgbG9u
-ZywgbG9uZyknIGJlZm9yZQp1c2UuIFRoaXMgbm93IHRyaWdnZXJzIGEgd2FybmluZyAoc2VlIGJl
-bG93KS4KCkRlZmluZSBzeXNjYWxsX2hhbmRsZXJfdCBhcyB0aGUgbGF0dGVyIGluc3RlYWQsIGFu
-ZCByZW1vdmUgdGhlIGNhc3QuClRoaXMgc2ltcGxpZmllcyB0aGUgY29kZSwgYW5kIGZpeGVzIHRo
-ZSB3YXJuaW5nLgoKV2FybmluZzoKSW4gZmlsZSBpbmNsdWRlZCBmcm9tIC4uL2FyY2gvdW0vaW5j
-bHVkZS9hc20vcHJvY2Vzc29yLWdlbmVyaWMuaDoxMwogICAgICAgICAgICAgICAgIGZyb20gLi4v
-YXJjaC94ODYvdW0vYXNtL3Byb2Nlc3Nvci5oOjQxCiAgICAgICAgICAgICAgICAgZnJvbSAuLi9p
-bmNsdWRlL2xpbnV4L3JjdXBkYXRlLmg6MzAKICAgICAgICAgICAgICAgICBmcm9tIC4uL2luY2x1
-ZGUvbGludXgvcmN1bGlzdC5oOjExCiAgICAgICAgICAgICAgICAgZnJvbSAuLi9pbmNsdWRlL2xp
-bnV4L3BpZC5oOjUKICAgICAgICAgICAgICAgICBmcm9tIC4uL2luY2x1ZGUvbGludXgvc2NoZWQu
-aDoxNAogICAgICAgICAgICAgICAgIGZyb20gLi4vaW5jbHVkZS9saW51eC9wdHJhY2UuaDo2CiAg
-ICAgICAgICAgICAgICAgZnJvbSAuLi9hcmNoL3VtL2tlcm5lbC9za2FzL3N5c2NhbGwuYzo3Ogou
-Li9hcmNoL3VtL2tlcm5lbC9za2FzL3N5c2NhbGwuYzogSW4gZnVuY3Rpb24g4oCYaGFuZGxlX3N5
-c2NhbGzigJk6Ci4uL2FyY2gveDg2L3VtL3NoYXJlZC9zeXNkZXAvc3lzY2FsbHNfNjQuaDoxODox
-MTogd2FybmluZzogY2FzdCBiZXR3ZWVuIGluY29tcGF0aWJsZSBmdW5jdGlvbiB0eXBlcyBmcm9t
-IOKAmGxvbmcgaW50ICgqKSh2b2lkKeKAmSB0byDigJhsb25nIGludCAoKikobG9uZyBpbnQsICBs
-b25nIGludCwgIGxvbmcgaW50LCAgbG9uZyBpbnQsICBsb25nIGludCwgIGxvbmcgaW50KeKAmSBb
-Ci1XY2FzdC1mdW5jdGlvbi10eXBlXQogICAxOCB8ICAgICAgICAgKCgobG9uZyAoKikobG9uZywg
-bG9uZywgbG9uZywgbG9uZywgbG9uZywgbG9uZykpIFwKICAgICAgfCAgICAgICAgICAgXgouLi9h
-cmNoL3g4Ni91bS9hc20vcHRyYWNlLmg6MzY6NjI6IG5vdGU6IGluIGRlZmluaXRpb24gb2YgbWFj
-cm8g4oCYUFRfUkVHU19TRVRfU1lTQ0FMTF9SRVRVUk7igJkKICAgMzYgfCAjZGVmaW5lIFBUX1JF
-R1NfU0VUX1NZU0NBTExfUkVUVVJOKHIsIHJlcykgKFBUX1JFR1NfQVgocikgPSAocmVzKSkKICAg
-ICAgfCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgXn5+Ci4uL2FyY2gvdW0va2VybmVsL3NrYXMvc3lzY2FsbC5jOjQ2OjMzOiBub3Rl
-OiBpbiBleHBhbnNpb24gb2YgbWFjcm8g4oCYRVhFQ1VURV9TWVNDQUxM4oCZCiAgIDQ2IHwgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBFWEVDVVRFX1NZU0NBTEwoc3lzY2FsbCwgcmVn
-cykpOwogICAgICB8ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXn5+fn5+fn5+fn5+
-fn5+CgpTaWduZWQtb2ZmLWJ5OiBEYXZpZCBHb3cgPGRhdmlkZ293QGdvb2dsZS5jb20+ClNpZ25l
-ZC1vZmYtYnk6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+ClNpZ25lZC1vZmYt
-Ynk6IFNhc2hhIExldmluIDxzYXNoYWxAa2VybmVsLm9yZz4KLS0tCiBhcmNoL3g4Ni91bS9zaGFy
-ZWQvc3lzZGVwL3N5c2NhbGxzXzY0LmggfCA1ICsrLS0tCiAxIGZpbGUgY2hhbmdlZCwgMiBpbnNl
-cnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2FyY2gveDg2L3VtL3NoYXJl
-ZC9zeXNkZXAvc3lzY2FsbHNfNjQuaCBiL2FyY2gveDg2L3VtL3NoYXJlZC9zeXNkZXAvc3lzY2Fs
-bHNfNjQuaAppbmRleCA4YTdkNWUxZGE5OGUuLjFlNjg3NWI0ZmZkOCAxMDA2NDQKLS0tIGEvYXJj
-aC94ODYvdW0vc2hhcmVkL3N5c2RlcC9zeXNjYWxsc182NC5oCisrKyBiL2FyY2gveDg2L3VtL3No
-YXJlZC9zeXNkZXAvc3lzY2FsbHNfNjQuaApAQCAtMTAsMTMgKzEwLDEyIEBACiAjaW5jbHVkZSA8
-bGludXgvbXNnLmg+CiAjaW5jbHVkZSA8bGludXgvc2htLmg+CiAKLXR5cGVkZWYgbG9uZyBzeXNj
-YWxsX2hhbmRsZXJfdCh2b2lkKTsKK3R5cGVkZWYgbG9uZyBzeXNjYWxsX2hhbmRsZXJfdChsb25n
-LCBsb25nLCBsb25nLCBsb25nLCBsb25nLCBsb25nKTsKIAogZXh0ZXJuIHN5c2NhbGxfaGFuZGxl
-cl90ICpzeXNfY2FsbF90YWJsZVtdOwogCiAjZGVmaW5lIEVYRUNVVEVfU1lTQ0FMTChzeXNjYWxs
-LCByZWdzKSBcCi0JKCgobG9uZyAoKikobG9uZywgbG9uZywgbG9uZywgbG9uZywgbG9uZywgbG9u
-ZykpIFwKLQkgICgqc3lzX2NhbGxfdGFibGVbc3lzY2FsbF0pKShVUFRfU1lTQ0FMTF9BUkcxKCZy
-ZWdzLT5yZWdzKSwgXAorCSgoKCpzeXNfY2FsbF90YWJsZVtzeXNjYWxsXSkpKFVQVF9TWVNDQUxM
-X0FSRzEoJnJlZ3MtPnJlZ3MpLCBcCiAJCSAJCSAgICAgIFVQVF9TWVNDQUxMX0FSRzIoJnJlZ3Mt
-PnJlZ3MpLCBcCiAJCQkJICAgICAgVVBUX1NZU0NBTExfQVJHMygmcmVncy0+cmVncyksIFwKIAkJ
-CQkgICAgICBVUFRfU1lTQ0FMTF9BUkc0KCZyZWdzLT5yZWdzKSwgXAotLSAKMi4zNS4xCgoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFp
-bGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
+Since commit a11589563e96 ("x86/Hyper-V: Report crash register
+data or kmsg before running crash kernel") Hyper-V forcibly sets
+the kernel parameter "crash_kexec_post_notifiers"; with that, it
+did enforce the execution of *all* panic notifiers before kdump.
+The main reason behind that is that Hyper-V has an hypervisor
+notification mechanism that has the ability of warning the
+hypervisor when the guest panics.
+
+Happens that after the panic notifiers refactor, we now have 3 lists
+and a level mechanism that defines the ordering of the notifiers
+execution with regards to kdump. And for Hyper-V, the specific
+notifier to inform the hypervisor about a panic lies in the first
+list, which *by default* is set to execute before kdump. Hence,
+this patch removes the hardcoded setting, effectively reverting
+the aforementioned commit.
+
+One of the problems with the forced approach was greatly exposed by
+commit d57d6fe5bf34 ("drivers: hv: log when enabling crash_kexec_post_notifiers")
+which ended-up confusing the user that didn't expect the notifiers
+to execute before kdump, since it's a user setting and wasn't
+enabled by such user. With the patch hereby proposed, that kind
+of issue doesn't happen anymore, the panic notifiers level is
+well-documented and users can expect a predictable behavior.
+
+Fixes: a11589563e96 ("x86/Hyper-V: Report crash register data or kmsg before running crash kernel")
+Fixes: d57d6fe5bf34 ("drivers: hv: log when enabling crash_kexec_post_notifiers"
+Cc: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+Cc: Dexuan Cui <decui@microsoft.com>
+Cc: Haiyang Zhang <haiyangz@microsoft.com>
+Cc: "K. Y. Srinivasan" <kys@microsoft.com>
+Cc: Michael Kelley <mikelley@microsoft.com>
+Cc: Stephen Brennan <stephen.s.brennan@oracle.com>
+Cc: Stephen Hemminger <sthemmin@microsoft.com>
+Cc: Tianyu Lan <Tianyu.Lan@microsoft.com>
+Cc: Wei Liu <wei.liu@kernel.org>
+Tested-by: Fabio A M Martins <fabiomirmar@gmail.com>
+Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
+---
+
+Special thanks to Michael Kelley for the good information about the Hyper-V
+panic path in email threads some months ago, and to Fabio for the testing
+performed.
+
+ drivers/hv/hv_common.c | 12 ------------
+ 1 file changed, 12 deletions(-)
+
+diff --git a/drivers/hv/hv_common.c b/drivers/hv/hv_common.c
+index ae68298c0dca..af59793de523 100644
+--- a/drivers/hv/hv_common.c
++++ b/drivers/hv/hv_common.c
+@@ -73,18 +73,6 @@ int __init hv_common_init(void)
+ {
+ 	int i;
+ 
+-	/*
+-	 * Hyper-V expects to get crash register data or kmsg when
+-	 * crash enlightment is available and system crashes. Set
+-	 * crash_kexec_post_notifiers to be true to make sure that
+-	 * calling crash enlightment interface before running kdump
+-	 * kernel.
+-	 */
+-	if (ms_hyperv.misc_features & HV_FEATURE_GUEST_CRASH_MSR_AVAILABLE) {
+-		crash_kexec_post_notifiers = true;
+-		pr_info("Hyper-V: enabling crash_kexec_post_notifiers\n");
+-	}
+-
+ 	/*
+ 	 * Allocate the per-CPU state for the hypercall input arg.
+ 	 * If this allocation fails, we will not be able to setup
+-- 
+2.36.0
+
 
