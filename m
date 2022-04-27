@@ -1,16 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ams.source.kernel.org ([145.40.68.75])
+Received: from out03.mta.xmission.com ([166.70.13.233])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ncGjB-008W6D-PQ
- for linux-um@lists.infradead.org; Thu, 07 Apr 2022 01:14:27 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.10 04/25] um: Cleanup syscall_handler_t
- definition/cast, fix warning
-Date: Wed,  6 Apr 2022 21:13:52 -0400
-Message-Id: <20220407011413.114662-4-sashal@kernel.org>
-In-Reply-To: <20220407011413.114662-1-sashal@kernel.org>
-References: <20220407011413.114662-1-sashal@kernel.org>
+ id 1nji3w-001fLU-BH
+ for linux-um@lists.infradead.org; Wed, 27 Apr 2022 13:50:38 +0000
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+References: <878rrrh32q.fsf_-_@email.froward.int.ebiederm.org>
+ <20220426225211.308418-3-ebiederm@xmission.com>
+ <f6d31801de631dfe6e1a2da25370cddf2aca32ad.camel@sipsolutions.net>
+Date: Wed, 27 Apr 2022 08:50:25 -0500
+In-Reply-To: <f6d31801de631dfe6e1a2da25370cddf2aca32ad.camel@sipsolutions.net>
+ (Johannes Berg's message of "Wed, 27 Apr 2022 09:10:47 +0200")
+Message-ID: <87tuaeab4u.fsf@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH 3/9] ptrace/um: Replace PT_DTRACE with TIF_SINGLESTEP
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -19,63 +21,45 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: David Gow <davidgow@google.com>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, viro@zeniv.linux.org.uk, linux-um@lists.infradead.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-kernel@vger.kernel.org, rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, inux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>
 
-RnJvbTogRGF2aWQgR293IDxkYXZpZGdvd0Bnb29nbGUuY29tPgoKWyBVcHN0cmVhbSBjb21taXQg
-ZjRmMDNmMjk5YTU2Y2U0ZDczYzU0MzFlMDMyN2IzYjZjYjU1ZWJiOSBdCgpUaGUgc3lzY2FsbF9o
-YW5kbGVyX3QgdHlwZSBmb3IgeDg2XzY0IHdhcyBkZWZpbmVkIGFzICdsb25nICgqKSh2b2lkKScs
-CmJ1dCBhbHdheXMgY2FzdCB0byAnbG9uZyAoKikobG9uZywgbG9uZywgbG9uZywgbG9uZywgbG9u
-ZywgbG9uZyknIGJlZm9yZQp1c2UuIFRoaXMgbm93IHRyaWdnZXJzIGEgd2FybmluZyAoc2VlIGJl
-bG93KS4KCkRlZmluZSBzeXNjYWxsX2hhbmRsZXJfdCBhcyB0aGUgbGF0dGVyIGluc3RlYWQsIGFu
-ZCByZW1vdmUgdGhlIGNhc3QuClRoaXMgc2ltcGxpZmllcyB0aGUgY29kZSwgYW5kIGZpeGVzIHRo
-ZSB3YXJuaW5nLgoKV2FybmluZzoKSW4gZmlsZSBpbmNsdWRlZCBmcm9tIC4uL2FyY2gvdW0vaW5j
-bHVkZS9hc20vcHJvY2Vzc29yLWdlbmVyaWMuaDoxMwogICAgICAgICAgICAgICAgIGZyb20gLi4v
-YXJjaC94ODYvdW0vYXNtL3Byb2Nlc3Nvci5oOjQxCiAgICAgICAgICAgICAgICAgZnJvbSAuLi9p
-bmNsdWRlL2xpbnV4L3JjdXBkYXRlLmg6MzAKICAgICAgICAgICAgICAgICBmcm9tIC4uL2luY2x1
-ZGUvbGludXgvcmN1bGlzdC5oOjExCiAgICAgICAgICAgICAgICAgZnJvbSAuLi9pbmNsdWRlL2xp
-bnV4L3BpZC5oOjUKICAgICAgICAgICAgICAgICBmcm9tIC4uL2luY2x1ZGUvbGludXgvc2NoZWQu
-aDoxNAogICAgICAgICAgICAgICAgIGZyb20gLi4vaW5jbHVkZS9saW51eC9wdHJhY2UuaDo2CiAg
-ICAgICAgICAgICAgICAgZnJvbSAuLi9hcmNoL3VtL2tlcm5lbC9za2FzL3N5c2NhbGwuYzo3Ogou
-Li9hcmNoL3VtL2tlcm5lbC9za2FzL3N5c2NhbGwuYzogSW4gZnVuY3Rpb24g4oCYaGFuZGxlX3N5
-c2NhbGzigJk6Ci4uL2FyY2gveDg2L3VtL3NoYXJlZC9zeXNkZXAvc3lzY2FsbHNfNjQuaDoxODox
-MTogd2FybmluZzogY2FzdCBiZXR3ZWVuIGluY29tcGF0aWJsZSBmdW5jdGlvbiB0eXBlcyBmcm9t
-IOKAmGxvbmcgaW50ICgqKSh2b2lkKeKAmSB0byDigJhsb25nIGludCAoKikobG9uZyBpbnQsICBs
-b25nIGludCwgIGxvbmcgaW50LCAgbG9uZyBpbnQsICBsb25nIGludCwgIGxvbmcgaW50KeKAmSBb
-Ci1XY2FzdC1mdW5jdGlvbi10eXBlXQogICAxOCB8ICAgICAgICAgKCgobG9uZyAoKikobG9uZywg
-bG9uZywgbG9uZywgbG9uZywgbG9uZywgbG9uZykpIFwKICAgICAgfCAgICAgICAgICAgXgouLi9h
-cmNoL3g4Ni91bS9hc20vcHRyYWNlLmg6MzY6NjI6IG5vdGU6IGluIGRlZmluaXRpb24gb2YgbWFj
-cm8g4oCYUFRfUkVHU19TRVRfU1lTQ0FMTF9SRVRVUk7igJkKICAgMzYgfCAjZGVmaW5lIFBUX1JF
-R1NfU0VUX1NZU0NBTExfUkVUVVJOKHIsIHJlcykgKFBUX1JFR1NfQVgocikgPSAocmVzKSkKICAg
-ICAgfCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgXn5+Ci4uL2FyY2gvdW0va2VybmVsL3NrYXMvc3lzY2FsbC5jOjQ2OjMzOiBub3Rl
-OiBpbiBleHBhbnNpb24gb2YgbWFjcm8g4oCYRVhFQ1VURV9TWVNDQUxM4oCZCiAgIDQ2IHwgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBFWEVDVVRFX1NZU0NBTEwoc3lzY2FsbCwgcmVn
-cykpOwogICAgICB8ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXn5+fn5+fn5+fn5+
-fn5+CgpTaWduZWQtb2ZmLWJ5OiBEYXZpZCBHb3cgPGRhdmlkZ293QGdvb2dsZS5jb20+ClNpZ25l
-ZC1vZmYtYnk6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+ClNpZ25lZC1vZmYt
-Ynk6IFNhc2hhIExldmluIDxzYXNoYWxAa2VybmVsLm9yZz4KLS0tCiBhcmNoL3g4Ni91bS9zaGFy
-ZWQvc3lzZGVwL3N5c2NhbGxzXzY0LmggfCA1ICsrLS0tCiAxIGZpbGUgY2hhbmdlZCwgMiBpbnNl
-cnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2FyY2gveDg2L3VtL3NoYXJl
-ZC9zeXNkZXAvc3lzY2FsbHNfNjQuaCBiL2FyY2gveDg2L3VtL3NoYXJlZC9zeXNkZXAvc3lzY2Fs
-bHNfNjQuaAppbmRleCA4YTdkNWUxZGE5OGUuLjFlNjg3NWI0ZmZkOCAxMDA2NDQKLS0tIGEvYXJj
-aC94ODYvdW0vc2hhcmVkL3N5c2RlcC9zeXNjYWxsc182NC5oCisrKyBiL2FyY2gveDg2L3VtL3No
-YXJlZC9zeXNkZXAvc3lzY2FsbHNfNjQuaApAQCAtMTAsMTMgKzEwLDEyIEBACiAjaW5jbHVkZSA8
-bGludXgvbXNnLmg+CiAjaW5jbHVkZSA8bGludXgvc2htLmg+CiAKLXR5cGVkZWYgbG9uZyBzeXNj
-YWxsX2hhbmRsZXJfdCh2b2lkKTsKK3R5cGVkZWYgbG9uZyBzeXNjYWxsX2hhbmRsZXJfdChsb25n
-LCBsb25nLCBsb25nLCBsb25nLCBsb25nLCBsb25nKTsKIAogZXh0ZXJuIHN5c2NhbGxfaGFuZGxl
-cl90ICpzeXNfY2FsbF90YWJsZVtdOwogCiAjZGVmaW5lIEVYRUNVVEVfU1lTQ0FMTChzeXNjYWxs
-LCByZWdzKSBcCi0JKCgobG9uZyAoKikobG9uZywgbG9uZywgbG9uZywgbG9uZywgbG9uZywgbG9u
-ZykpIFwKLQkgICgqc3lzX2NhbGxfdGFibGVbc3lzY2FsbF0pKShVUFRfU1lTQ0FMTF9BUkcxKCZy
-ZWdzLT5yZWdzKSwgXAorCSgoKCpzeXNfY2FsbF90YWJsZVtzeXNjYWxsXSkpKFVQVF9TWVNDQUxM
-X0FSRzEoJnJlZ3MtPnJlZ3MpLCBcCiAJCSAJCSAgICAgIFVQVF9TWVNDQUxMX0FSRzIoJnJlZ3Mt
-PnJlZ3MpLCBcCiAJCQkJICAgICAgVVBUX1NZU0NBTExfQVJHMygmcmVncy0+cmVncyksIFwKIAkJ
-CQkgICAgICBVUFRfU1lTQ0FMTF9BUkc0KCZyZWdzLT5yZWdzKSwgXAotLSAKMi4zNS4xCgoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFp
-bGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
+Johannes Berg <johannes@sipsolutions.net> writes:
+
+> On Tue, 2022-04-26 at 17:52 -0500, Eric W. Biederman wrote:
+>> User mode linux is the last user of the PT_DTRACE flag.  Using the flag to indicate
+>> single stepping is a little confusing and worse changing tsk->ptrace without locking
+>> could potentionally cause problems.
+>> 
+>> So use a thread info flag with a better name instead of flag in tsk->ptrace.
+>> 
+>> Remove the definition PT_DTRACE as uml is the last user.
+>
+>
+> Looks fine to me.
+>
+> Acked-by: Johannes Berg <johannes@sipsolutions.net>
+
+Thanks.
+
+> Looking at pending patches, I don't see any conflicts from this. I'm
+> guessing anyway you'll want/need to take these through some tree all
+> together.
+
+Taking them all through a single tree looks like it will be easiest.
+So I am planning on taking them through my signal tree.
+
+Now that I think of it, the lack of locking also means I want to
+Cc stable.
+
+Eric
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
