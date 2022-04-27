@@ -1,15 +1,11 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nbwab-003drC-Uz
- for linux-um@lists.infradead.org; Wed, 06 Apr 2022 03:44:15 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v9 10/32] virtio_ring: split: introduce
- virtqueue_reinit_split()
-Date: Wed,  6 Apr 2022 11:43:24 +0800
-Message-Id: <20220406034346.74409-11-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
-References: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
+From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Subject: [PATCH 05/30] misc/pvpanic: Convert regular spinlock into trylock on
+ panic path
+Date: Wed, 27 Apr 2022 19:48:59 -0300
+Message-Id: <20220427224924.592546-6-gpiccoli@igalia.com>
+In-Reply-To: <20220427224924.592546-1-gpiccoli@igalia.com>
+References: <20220427224924.592546-1-gpiccoli@igalia.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -23,52 +19,67 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org
+To: akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, gpiccoli@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, Christophe JAILLET <christophe.jaillet@wanadoo.fr>, Mihai Carabas <mihai.carabas@oracle.com>, Shile Zhang <shile.zhang@linux.alibaba.com>, Wang ShaoBo <bobo.shaobowang@huawei.com>, zhenwei pi <pizhenwei@bytedance.com>
 
-Introduce a function to initialize vq without allocating new ring,
-desc_state, desc_extra.
+The pvpanic driver relies on panic notifiers to execute a callback
+on panic event. Such function is executed in atomic context - the
+panic function disables local IRQs, preemption and all other CPUs
+that aren't running the panic code.
 
-Subsequent patches will call this function after reset vq to
-reinitialize vq.
+With that said, it's dangerous to use regular spinlocks in such path,
+as introduced by commit b3c0f8774668 ("misc/pvpanic: probe multiple instances").
+This patch fixes that by replacing regular spinlocks with the trylock
+safer approach.
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+It also fixes an old comment (about a long gone framebuffer code) and
+the notifier priority - we should execute hypervisor notifiers early,
+deferring this way the panic action to the hypervisor, as expected by
+the users that are setting up pvpanic.
+
+Fixes: b3c0f8774668 ("misc/pvpanic: probe multiple instances")
+Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: Mihai Carabas <mihai.carabas@oracle.com>
+Cc: Shile Zhang <shile.zhang@linux.alibaba.com>
+Cc: Wang ShaoBo <bobo.shaobowang@huawei.com>
+Cc: zhenwei pi <pizhenwei@bytedance.com>
+Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
 ---
- drivers/virtio/virtio_ring.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ drivers/misc/pvpanic/pvpanic.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 874f878087a3..3dc6ace2ba7a 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -953,6 +953,25 @@ static void vring_virtqueue_init_split(struct vring_virtqueue *vq,
- 	vq->free_head = 0;
+diff --git a/drivers/misc/pvpanic/pvpanic.c b/drivers/misc/pvpanic/pvpanic.c
+index 4b8f1c7d726d..049a12006348 100644
+--- a/drivers/misc/pvpanic/pvpanic.c
++++ b/drivers/misc/pvpanic/pvpanic.c
+@@ -34,7 +34,9 @@ pvpanic_send_event(unsigned int event)
+ {
+ 	struct pvpanic_instance *pi_cur;
+ 
+-	spin_lock(&pvpanic_lock);
++	if (!spin_trylock(&pvpanic_lock))
++		return;
++
+ 	list_for_each_entry(pi_cur, &pvpanic_list, list) {
+ 		if (event & pi_cur->capability & pi_cur->events)
+ 			iowrite8(event, pi_cur->base);
+@@ -55,9 +57,13 @@ pvpanic_panic_notify(struct notifier_block *nb, unsigned long code, void *unused
+ 	return NOTIFY_DONE;
  }
  
-+static void virtqueue_reinit_split(struct vring_virtqueue *vq)
-+{
-+	struct virtio_device *vdev = vq->vq.vdev;
-+	int size, i;
-+
-+	memset(vq->split.vring.desc, 0, vq->split.queue_size_in_bytes);
-+
-+	size = sizeof(struct vring_desc_state_split) * vq->split.vring.num;
-+	memset(vq->split.desc_state, 0, size);
-+
-+	size = sizeof(struct vring_desc_extra) * vq->split.vring.num;
-+	memset(vq->split.desc_extra, 0, size);
-+
-+	for (i = 0; i < vq->split.vring.num - 1; i++)
-+		vq->split.desc_extra[i].next = i + 1;
-+
-+	vring_virtqueue_init_split(vq, vdev, true);
-+}
-+
- static void vring_virtqueue_attach_split(struct vring_virtqueue *vq,
- 					 struct vring vring,
- 					 struct vring_desc_state_split *desc_state,
++/*
++ * Call our notifier very early on panic, deferring the
++ * action taken to the hypervisor.
++ */
+ static struct notifier_block pvpanic_panic_nb = {
+ 	.notifier_call = pvpanic_panic_notify,
+-	.priority = 1, /* let this called before broken drm_fb_helper() */
++	.priority = INT_MAX,
+ };
+ 
+ static void pvpanic_remove(void *param)
 -- 
-2.31.0
+2.36.0
 
 
 _______________________________________________
