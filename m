@@ -1,18 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
+Received: from out01.mta.xmission.com ([166.70.13.231])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1njj6D-001t4y-PP
- for linux-um@lists.infradead.org; Wed, 27 Apr 2022 14:57:03 +0000
-Date: Wed, 27 Apr 2022 16:56:47 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-Subject: Re: [PATCH 6/9] signal: Always call do_notify_parent_cldstop with
- siglock held
-Message-ID: <20220427145646.GC17421@redhat.com>
+ id 1njiws-001rV2-UV
+ for linux-um@lists.infradead.org; Wed, 27 Apr 2022 14:47:24 +0000
+From: "Eric W. Biederman" <ebiederm@xmission.com>
 References: <878rrrh32q.fsf_-_@email.froward.int.ebiederm.org>
  <20220426225211.308418-6-ebiederm@xmission.com>
+ <20220427141018.GA17421@redhat.com>
+ <874k2ea9q4.fsf@email.froward.int.ebiederm.org>
+Date: Wed, 27 Apr 2022 09:47:10 -0500
+In-Reply-To: <874k2ea9q4.fsf@email.froward.int.ebiederm.org> (Eric
+ W. Biederman's message of "Wed, 27 Apr 2022 09:20:51 -0500")
+Message-ID: <87zgk67fdd.fsf@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220426225211.308418-6-ebiederm@xmission.com>
+Subject: Re: [PATCH 6/9] signal: Always call do_notify_parent_cldstop with
+ siglock held
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -25,55 +27,81 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "Eric W. Biederman" <ebiederm@xmission.com>
+To: Oleg Nesterov <oleg@redhat.com>
 Cc: linux-kernel@vger.kernel.org, rjw@rjwysocki.net, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, inux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>
 
-On 04/26, Eric W. Biederman wrote:
+"Eric W. Biederman" <ebiederm@xmission.com> writes:
+
+> Oleg Nesterov <oleg@redhat.com> writes:
 >
-> @@ -2209,6 +2213,34 @@ static int ptrace_stop(int exit_code, int why, int clear_code,
->  		spin_lock_irq(&current->sighand->siglock);
->  	}
->  
-> +	/* Don't stop if current is not ptraced */
-> +	if (unlikely(!current->ptrace))
-> +		return (clear_code) ? 0 : exit_code;
-> +
-> +	/*
-> +	 * If @why is CLD_STOPPED, we're trapping to participate in a group
-> +	 * stop.  Do the bookkeeping.  Note that if SIGCONT was delievered
-> +	 * across siglock relocks since INTERRUPT was scheduled, PENDING
-> +	 * could be clear now.  We act as if SIGCONT is received after
-> +	 * TASK_TRACED is entered - ignore it.
-> +	 */
-> +	if (why == CLD_STOPPED && (current->jobctl & JOBCTL_STOP_PENDING))
-> +		gstop_done = task_participate_group_stop(current);
-> +
-> +	/*
-> +	 * Notify parents of the stop.
-> +	 *
-> +	 * While ptraced, there are two parents - the ptracer and
-> +	 * the real_parent of the group_leader.  The ptracer should
-> +	 * know about every stop while the real parent is only
-> +	 * interested in the completion of group stop.  The states
-> +	 * for the two don't interact with each other.  Notify
-> +	 * separately unless they're gonna be duplicates.
-> +	 */
-> +	do_notify_parent_cldstop(current, true, why);
-> +	if (gstop_done && ptrace_reparented(current))
-> +		do_notify_parent_cldstop(current, false, why);
+>> On 04/26, Eric W. Biederman wrote:
+>>>
+>>> @@ -2164,7 +2166,9 @@ static void do_notify_parent_cldstop(struct task_struct *tsk,
+>>>   	}
+>>>
+>>>  	sighand = parent->sighand;
+>>> -	spin_lock_irqsave(&sighand->siglock, flags);
+>>> +	lock = tsk->sighand != sighand;
+>>> +	if (lock)
+>>> +		spin_lock_nested(&sighand->siglock, SINGLE_DEPTH_NESTING);
+>>
+>> But why is it safe?
+>>
+>> Suppose we have two tasks, they both trace each other, both call
+>> ptrace_stop() at the same time. Of course this is ugly, they both
+>> will block.
+>>
+>> But with this patch in this case we have the trivial ABBA deadlock,
+>> no?
+>
+> I was thinking in terms of the process tree (which is fine).
+>
+> The ptrace parental relationship definitely has the potential to be a
+> graph with cycles.  Which as you point out is not fine.
+>
+>
+> The result is very nice and I don't want to give it up.  I suspect
+> something ptrace cycles are always a problem and can simply be
+> forbidden.  That is going to take some analsysis and some additional
+> code in ptrace_attach.
+>
+> I will go look at that.
 
-This doesn't look right too. The parent should be notified only after
-we set __state = TASK_TRACED and ->exit code.
 
-Suppose that debugger sleeps in do_wait(). do_notify_parent_cldstop()
-wakes it up, debugger calls wait_task_stopped() and then it will sleep
-again, task_stopped_code() returns 0.
+Hmm.  If we have the following process tree.
 
-This can be probably fixed if you remove the lockless (fast path)
-task_stopped_code() check in wait_task_stopped(), but this is not
-nice performance-wise...
+    A
+     \
+      B
+       \
+        C
 
-Oleg.
+Process A, B, and C are all in the same process group.
+Process A and B are setup to receive SIGCHILD when
+their process stops.
+
+Process C traces process A.
+
+When a sigstop is delivered to the group we can have:
+
+Process B takes siglock(B) siglock(A) to notify the real_parent
+Process C takes siglock(C) siglock(B) to notify the real_parent
+Process A takes siglock(A) siglock(C) to notify the tracer
+
+If they all take their local lock at the same time there is
+a deadlock.
+
+I don't think the restriction that you can never ptrace anyone
+up the process tree is going to fly.  So it looks like I am back to the
+drawing board for this one.
+
+Eric
+
+
+
+
+    
+
 
 
 _______________________________________________
