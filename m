@@ -1,16 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ncGkJ-008Wof-70
- for linux-um@lists.infradead.org; Thu, 07 Apr 2022 01:15:37 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 04/17] um: port_user: Improve error handling when
- port-helper is not found
-Date: Wed,  6 Apr 2022 21:15:08 -0400
-Message-Id: <20220407011521.115014-4-sashal@kernel.org>
-In-Reply-To: <20220407011521.115014-1-sashal@kernel.org>
-References: <20220407011521.115014-1-sashal@kernel.org>
+Date: Thu, 28 Apr 2022 12:27:11 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH 1/9] signal: Rename send_signal send_signal_locked
+Message-ID: <Ympr/+PX4XgT/UKU@hirez.programming.kicks-ass.net>
+References: <878rrrh32q.fsf_-_@email.froward.int.ebiederm.org>
+ <20220426225211.308418-1-ebiederm@xmission.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20220426225211.308418-1-ebiederm@xmission.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -23,59 +20,55 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Glenn Washburn <development@efficientek.com>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, linux-um@lists.infradead.org
+To: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: linux-kernel@vger.kernel.org, rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, inux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>
 
-From: Glenn Washburn <development@efficientek.com>
+On Tue, Apr 26, 2022 at 05:52:03PM -0500, Eric W. Biederman wrote:
+> Rename send_signal send_signal_locked and make to make
+> it usable outside of signal.c.
+> 
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> ---
+>  include/linux/signal.h |  2 ++
+>  kernel/signal.c        | 24 ++++++++++++------------
+>  2 files changed, 14 insertions(+), 12 deletions(-)
+> 
+> diff --git a/include/linux/signal.h b/include/linux/signal.h
+> index a6db6f2ae113..55605bdf5ce9 100644
+> --- a/include/linux/signal.h
+> +++ b/include/linux/signal.h
+> @@ -283,6 +283,8 @@ extern int do_send_sig_info(int sig, struct kernel_siginfo *info,
+>  extern int group_send_sig_info(int sig, struct kernel_siginfo *info,
+>  			       struct task_struct *p, enum pid_type type);
+>  extern int __group_send_sig_info(int, struct kernel_siginfo *, struct task_struct *);
+> +extern int send_signal_locked(int sig, struct kernel_siginfo *info,
+> +			      struct task_struct *p, enum pid_type type);
+>  extern int sigprocmask(int, sigset_t *, sigset_t *);
+>  extern void set_current_blocked(sigset_t *);
+>  extern void __set_current_blocked(const sigset_t *);
+> diff --git a/kernel/signal.c b/kernel/signal.c
+> index 30cd1ca43bcd..b0403197b0ad 100644
+> --- a/kernel/signal.c
+> +++ b/kernel/signal.c
+> @@ -1071,8 +1071,8 @@ static inline bool legacy_queue(struct sigpending *signals, int sig)
+>  	return (sig < SIGRTMIN) && sigismember(&signals->signal, sig);
+>  }
+>  
+> -static int __send_signal(int sig, struct kernel_siginfo *info, struct task_struct *t,
+> -			enum pid_type type, bool force)
+> +static int __send_signal_locked(int sig, struct kernel_siginfo *info,
+> +				struct task_struct *t, enum pid_type type, bool force)
+>  {
+>  	struct sigpending *pending;
+>  	struct sigqueue *q;
 
-[ Upstream commit 3cb5a7f167c620a8b0e38b0446df2e024d2243dc ]
+While there, could you please replace that assert_spin_locked() with
+lockdep_assert_held(&t->sighand->siglock) ?
 
-Check if port-helper exists and is executable. If not, write an error
-message to the kernel log with information to help the user diagnose the
-issue and exit with an error. If UML_PORT_HELPER was not set, write a
-message suggesting that the user set it. This makes it easier to understand
-why telneting to the UML instance is failing and what can be done to fix it.
-
-Signed-off-by: Glenn Washburn <development@efficientek.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/um/drivers/port_user.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/arch/um/drivers/port_user.c b/arch/um/drivers/port_user.c
-index 5b5b64cb1071..133ca7bf2d91 100644
---- a/arch/um/drivers/port_user.c
-+++ b/arch/um/drivers/port_user.c
-@@ -5,6 +5,7 @@
- 
- #include <stdio.h>
- #include <stdlib.h>
-+#include <string.h>
- #include <errno.h>
- #include <termios.h>
- #include <unistd.h>
-@@ -175,6 +176,17 @@ int port_connection(int fd, int *socket, int *pid_out)
- 	if (new < 0)
- 		return -errno;
- 
-+	err = os_access(argv[2], X_OK);
-+	if (err < 0) {
-+		printk(UM_KERN_ERR "port_connection : error accessing port-helper "
-+		       "executable at %s: %s\n", argv[2], strerror(-err));
-+		if (env == NULL)
-+			printk(UM_KERN_ERR "Set UML_PORT_HELPER environment "
-+				"variable to path to uml-utilities port-helper "
-+				"binary\n");
-+		goto out_close;
-+	}
-+
- 	err = os_pipe(socket, 0, 0);
- 	if (err < 0)
- 		goto out_close;
--- 
-2.35.1
-
+The distinction being that assert_spin_locked() checks if the lock is
+held *by*anyone* whereas lockdep_assert_held() asserts the current
+context holds the lock.  Also, the check goes away if you build without
+lockdep.
 
 _______________________________________________
 linux-um mailing list
