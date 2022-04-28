@@ -1,12 +1,24 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Subject: [PATCH 18/30] notifier: Show function names on notifier routines if
- DEBUG_NOTIFIERS is set
-Date: Wed, 27 Apr 2022 19:49:12 -0300
-Message-Id: <20220427224924.592546-19-gpiccoli@igalia.com>
-In-Reply-To: <20220427224924.592546-1-gpiccoli@igalia.com>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nk6rU-007ssB-0W
+ for linux-um@lists.infradead.org; Thu, 28 Apr 2022 16:19:25 +0000
+Date: Thu, 28 Apr 2022 18:19:13 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+Subject: Re: [PATCH 7/9] ptrace: Simplify the wait_task_inactive call in
+ ptrace_check_attach
+Message-ID: <20220428161912.GD15485@redhat.com>
+References: <878rrrh32q.fsf_-_@email.froward.int.ebiederm.org>
+ <20220426225211.308418-7-ebiederm@xmission.com>
+ <20220427151455.GE17421@redhat.com>
+ <Ympvf1Pam1ckX+EA@hirez.programming.kicks-ass.net>
+ <20220428111911.GA3804@redhat.com>
+ <YmqckaB+xB6azP1d@hirez.programming.kicks-ass.net>
+ <20220428145750.GA15485@redhat.com>
+ <Ymq8UafDbJEjSoB0@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <Ymq8UafDbJEjSoB0@hirez.programming.kicks-ass.net>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -19,136 +31,48 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, gpiccoli@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, Arjan van de Ven <arjan@linux.intel.com>, Cong Wang <xiyou.wangcong@gmail.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Valentin Schneider <valentin.schneider@arm.com>, Xiaoming Ni <nixiaoming@huawei.com>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>, linux-kernel@vger.kernel.org, rjw@rjwysocki.net, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, inux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>
 
-Currently we have a debug infrastructure in the notifiers file, but
-it's very simple/limited. This patch extends it by:
+On 04/28, Peter Zijlstra wrote:
+>
+> On Thu, Apr 28, 2022 at 04:57:50PM +0200, Oleg Nesterov wrote:
+>
+> > > Shouldn't we then switch wait_task_inactive() so have & matching instead
+> > > of the current ==.
+> >
+> > Sorry, I don't understand the context...
+>
+> This.. I've always found it strange to have wti use a different matching
+> scheme from ttwu.
 
-(a) Showing all registered/unregistered notifiers' callback names;
+Ah. This is what I understood (and I too thought about this), just I meant that
+this patch from Eric (assuming wait_task_inactive() still uses __TASK_TRACED) is
+fine without your change below.
 
-(b) Adding a dynamic debug tuning to allow showing called notifiers'
-function names. Notice that this should be guarded as a tunable since
-it can flood the kernel log buffer.
+Oleg.
 
-Cc: Arjan van de Ven <arjan@linux.intel.com>
-Cc: Cong Wang <xiyou.wangcong@gmail.com>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Cc: Xiaoming Ni <nixiaoming@huawei.com>
-Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
----
-
-We have some design decisions that worth discussing here:
-
-(a) First of call, using C99 helps a lot to write clear and concise code, but
-due to commit 4d94f910e79a ("Kbuild: use -Wdeclaration-after-statement") we
-have a warning if mixing variable declarations with code. For this patch though,
-doing that makes the code way clear, so decision was to add the debug code
-inside brackets whenever this warning pops up. We can change that, but that'll
-cause more ifdefs in the same function.
-
-(b) In the symbol lookup helper function, we modify the parameter passed but
-even more, we return it as well! This is unusual and seems unnecessary, but was
-the strategy taken to allow embedding such function in the pr_debug() call.
-
-Not doing that would likely requiring 3 symbol_name variables to avoid
-concurrency (registering notifier A while calling notifier B) - we rely in
-local variables as a serialization mechanism.
-
-We're open for suggestions in case this design is not appropriate;
-thanks in advance!
-
- kernel/notifier.c | 48 +++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 46 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/notifier.c b/kernel/notifier.c
-index ba005ebf4730..21032ebcde57 100644
---- a/kernel/notifier.c
-+++ b/kernel/notifier.c
-@@ -7,6 +7,22 @@
- #include <linux/vmalloc.h>
- #include <linux/reboot.h>
- 
-+#ifdef CONFIG_DEBUG_NOTIFIERS
-+#include <linux/kallsyms.h>
-+
-+/*
-+ *	Helper to get symbol names in case DEBUG_NOTIFIERS is set.
-+ *	Return the modified parameter is a strategy used to achieve
-+ *	the pr_debug() functionality - with this, function is only
-+ *	executed if the dynamic debug tuning is effectively set.
-+ */
-+static inline char *notifier_name(struct notifier_block *nb, char *sym_name)
-+{
-+	lookup_symbol_name((unsigned long)(nb->notifier_call), sym_name);
-+	return sym_name;
-+}
-+#endif
-+
- /*
-  *	Notifier list for kernel code which wants to be called
-  *	at shutdown. This is used to stop any idling DMA operations
-@@ -34,20 +50,41 @@ static int notifier_chain_register(struct notifier_block **nl,
- 	}
- 	n->next = *nl;
- 	rcu_assign_pointer(*nl, n);
-+
-+#ifdef CONFIG_DEBUG_NOTIFIERS
-+	{
-+		char sym_name[KSYM_NAME_LEN];
-+
-+		pr_info("notifiers: registered %s()\n",
-+			notifier_name(n, sym_name));
-+	}
-+#endif
- 	return 0;
- }
- 
- static int notifier_chain_unregister(struct notifier_block **nl,
- 		struct notifier_block *n)
- {
-+	int ret = -ENOENT;
-+
- 	while ((*nl) != NULL) {
- 		if ((*nl) == n) {
- 			rcu_assign_pointer(*nl, n->next);
--			return 0;
-+			ret = 0;
-+			break;
- 		}
- 		nl = &((*nl)->next);
- 	}
--	return -ENOENT;
-+
-+#ifdef CONFIG_DEBUG_NOTIFIERS
-+	if (!ret) {
-+		char sym_name[KSYM_NAME_LEN];
-+
-+		pr_info("notifiers: unregistered %s()\n",
-+			notifier_name(n, sym_name));
-+	}
-+#endif
-+	return ret;
- }
- 
- /**
-@@ -80,6 +117,13 @@ static int notifier_call_chain(struct notifier_block **nl,
- 			nb = next_nb;
- 			continue;
- 		}
-+
-+		{
-+			char sym_name[KSYM_NAME_LEN];
-+
-+			pr_debug("notifiers: calling %s()\n",
-+				 notifier_name(nb, sym_name));
-+		}
- #endif
- 		ret = nb->notifier_call(nb, val, v);
- 
--- 
-2.36.0
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index f259621f4c93..c039aef4c8fe 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -3304,7 +3304,7 @@ unsigned long wait_task_inactive(struct task_struct *p, unsigned int match_state
+>  		 * is actually now running somewhere else!
+>  		 */
+>  		while (task_running(rq, p)) {
+> -			if (match_state && unlikely(READ_ONCE(p->__state) != match_state))
+> +			if (match_state && unlikely(!(READ_ONCE(p->__state) & match_state)))
+>  				return 0;
+>  			cpu_relax();
+>  		}
+> @@ -3319,7 +3319,7 @@ unsigned long wait_task_inactive(struct task_struct *p, unsigned int match_state
+>  		running = task_running(rq, p);
+>  		queued = task_on_rq_queued(p);
+>  		ncsw = 0;
+> -		if (!match_state || READ_ONCE(p->__state) == match_state)
+> +		if (!match_state || (READ_ONCE(p->__state) & match_state))
+>  			ncsw = p->nvcsw | LONG_MIN; /* sets MSB */
+>  		task_rq_unlock(rq, p, &rf);
 
 
 _______________________________________________
