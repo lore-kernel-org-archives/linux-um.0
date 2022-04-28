@@ -1,12 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Subject: [PATCH 03/30] notifier: Add panic notifiers info and purge trailing
- whitespaces
-Date: Wed, 27 Apr 2022 19:48:57 -0300
-Message-Id: <20220427224924.592546-4-gpiccoli@igalia.com>
-In-Reply-To: <20220427224924.592546-1-gpiccoli@igalia.com>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
+Date: Fri, 29 Apr 2022 00:19:14 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH 6/9] signal: Always call do_notify_parent_cldstop with
+ siglock held
+Message-ID: <YmsS4pReIh6pVeWe@hirez.programming.kicks-ass.net>
+References: <878rrrh32q.fsf_-_@email.froward.int.ebiederm.org>
+ <20220426225211.308418-6-ebiederm@xmission.com>
+ <20220427141018.GA17421@redhat.com>
+ <874k2ea9q4.fsf@email.froward.int.ebiederm.org>
+ <87zgk67fdd.fsf@email.froward.int.ebiederm.org>
+ <YmrSijTc6HIv4sAG@hirez.programming.kicks-ass.net>
+ <8735hxxddw.fsf@email.froward.int.ebiederm.org>
+ <87ilqtvsqg.fsf@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <87ilqtvsqg.fsf@email.froward.int.ebiederm.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -19,55 +27,84 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, gpiccoli@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, Arjan van de Ven <arjan@linux.intel.com>, Cong Wang <xiyou.wangcong@gmail.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Valentin Schneider <valentin.schneider@arm.com>, Xiaoming Ni <nixiaoming@huawei.com>
+To: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org, rjw@rjwysocki.net, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, inux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>
 
-Although many notifiers are mentioned in the comments, the panic
-notifiers infrastructure is not. Also, the file contains some
-trailing whitespaces. This commit fix both issues.
+On Thu, Apr 28, 2022 at 03:49:11PM -0500, Eric W. Biederman wrote:
 
-Cc: Arjan van de Ven <arjan@linux.intel.com>
-Cc: Cong Wang <xiyou.wangcong@gmail.com>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Cc: Xiaoming Ni <nixiaoming@huawei.com>
-Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
----
- include/linux/notifier.h | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+> static void lock_parents_siglocks(bool lock_tracer)
+> 	__releases(&current->sighand->siglock)
+> 	__acquires(&current->sighand->siglock)
+> 	__acquires(&current->real_parent->sighand->siglock)
+> 	__acquires(&current->parent->sighand->siglock)
+> {
+> 	struct task_struct *me = current;
+> 	struct sighand_struct *m_sighand = me->sighand;
+> 
+> 	lockdep_assert_held(&m_sighand->siglock);
+> 
+> 	rcu_read_lock();
+> 	for (;;) {
+> 		struct task_struct *parent, *tracer;
+> 		struct sighand_struct *p_sighand, *t_sighand, *s1, *s2, *s3;
+> 
+> 		parent = me->real_parent;
+> 		tracer = lock_tracer? me->parent : parent;
+> 
+> 		p_sighand = rcu_dereference(parent->sighand);
+> 		t_sighand = rcu_dereference(tracer->sighand);
+> 
+> 		/* Sort the sighands so that s1 >= s2 >= s3 */
+> 		s1 = m_sighand;
+> 		s2 = p_sighand;
+> 		s3 = t_sighand;
+> 		if (s1 > s2)
+> 			swap(s1, s2);
+> 		if (s1 > s3)
+> 			swap(s1, s3);
+> 		if (s2 > s3)
+> 			swap(s2, s3);
+> 
+> 		if (s1 != m_sighand) {
+> 			spin_unlock(&m_sighand->siglock);
+> 			spin_lock(&s1->siglock);
+> 		}
+> 
+> 		if (s1 != s2)
+> 			spin_lock_nested(&s2->siglock, SIGLOCK_LOCK_SECOND);
+> 		if (s2 != s3)
+> 			spin_lock_nested(&s3->siglock, SIGLOCK_LOCK_THIRD);
+> 
 
-diff --git a/include/linux/notifier.h b/include/linux/notifier.h
-index 87069b8459af..0589896fc7bd 100644
---- a/include/linux/notifier.h
-+++ b/include/linux/notifier.h
-@@ -201,12 +201,12 @@ static inline int notifier_to_errno(int ret)
- 
- /*
-  *	Declared notifiers so far. I can imagine quite a few more chains
-- *	over time (eg laptop power reset chains, reboot chain (to clean 
-+ *	over time (eg laptop power reset chains, reboot chain (to clean
-  *	device units up), device [un]mount chain, module load/unload chain,
-- *	low memory chain, screenblank chain (for plug in modular screenblankers) 
-+ *	low memory chain, screenblank chain (for plug in modular screenblankers)
-  *	VC switch chains (for loadable kernel svgalib VC switch helpers) etc...
-  */
-- 
-+
- /* CPU notfiers are defined in include/linux/cpu.h. */
- 
- /* netdevice notifiers are defined in include/linux/netdevice.h */
-@@ -217,6 +217,8 @@ static inline int notifier_to_errno(int ret)
- 
- /* Virtual Terminal events are defined in include/linux/vt.h. */
- 
-+/* Panic notifiers are defined in include/linux/panic_notifier.h. */
-+
- #define NETLINK_URELEASE	0x0001	/* Unicast netlink socket released */
- 
- /* Console keyboard events.
--- 
-2.36.0
+Might as well just use 1 and 2 for subclass at this point, or use
+SIGLOCK_LOCK_FIRST below.
 
+> 		if (likely((me->real_parent == parent) &&
+> 			   (me->parent == tracer) &&
+> 			   (parent->sighand == p_sighand) &&
+> 			   (tracer->sighand == t_sighand))) {
+> 			break;
+> 		}
+> 		spin_unlock(&p_sighand->siglock);
+>                 if (t_sighand != p_sighand)
+> 			spin_unlock(&t_sighand->siglock);
+
+Indent fail above ^, also you likey need this:
+
+		/*
+		 * Since [pt]_sighand will likely change if we go
+		 * around, and m_sighand is the only one held, make sure
+		 * it is subclass-0, since the above 's1 != m_sighand'
+		 * clause very much relies on that.
+		 */
+		lock_set_subclass(&m_sighand->siglock, 0, _RET_IP_);
+
+> 		continue;
+> 	}
+> 	rcu_read_unlock();
+> }
+> 
+> Eric
 
 _______________________________________________
 linux-um mailing list
