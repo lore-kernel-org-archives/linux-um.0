@@ -1,9 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: use block_device based APIs in block layer consumers v3
-Date: Fri, 15 Apr 2022 06:52:31 +0200
-Message-Id: <20220415045258.199825-1-hch@lst.de>
+Received: from out01.mta.xmission.com ([166.70.13.231])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nkYUK-00Cq0S-Lz
+ for linux-um@lists.infradead.org; Fri, 29 Apr 2022 21:49:22 +0000
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+Date: Fri, 29 Apr 2022 16:48:33 -0500
+Message-Id: <20220429214837.386518-8-ebiederm@xmission.com>
+In-Reply-To: <87k0b7v9yk.fsf_-_@email.froward.int.ebiederm.org>
+References: <87k0b7v9yk.fsf_-_@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
+Subject: [PATCH v2 08/12] ptrace: Remove arch_ptrace_attach
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -16,123 +22,169 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jens Axboe <axboe@kernel.dk>
-Cc: dm-devel@redhat.com, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-um@lists.infradead.org, linux-block@vger.kernel.org, drbd-dev@lists.linbit.com, nbd@other.debian.org, ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev, ocfs2-devel@oss.oracle.com, linux-mm@kvack.org
+To: linux-kernel@vger.kernel.org
+Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>
 
-Hi Jens,
+The last remaining implementation of arch_ptrace_attach is ia64's
+ptrace_attach_sync_user_rbs which was added at the end of 2007 in
+commit aa91a2e90044 ("[IA64] Synchronize RBS on PTRACE_ATTACH").
 
-this series cleanups up the block layer API so that APIs consumed
-by file systems are (almost) only struct block_devic based, so that
-file systems don't have to poke into block layer internals like the
-request_queue.
+Reading the comments and examining the code ptrace_attach_sync_user_rbs
+has the sole purpose of saving registers to the stack when ptrace_attach
+changes TASK_STOPPED to TASK_TRACED.  In all other cases arch_ptrace_stop
+takes care of the register saving.
 
-I also found a bunch of existing bugs related to partition offsets
-and discard so these are fixed while going along.
+In commit d79fdd6d96f4 ("ptrace: Clean transitions between TASK_STOPPED and TRACED")
+modified ptrace_attach to wake up the thread and enter ptrace_stop normally even
+when the thread starts out stopped.
 
-Changes since v2:
- - fix an inverted check in btrfs
- - set max_discard_sectors to 0 in all places where the flag was
-   previously cleared
- - fix a few sligtly incorrect collected Acks
+This makes ptrace_attach_sync_user_rbs completely unnecessary.  So just
+remove it.
 
-Changes since v1:
- - fix a bisection hazard
- - minor spelling fixes
- - reorder hunks between two patches to make the changes more obvious
- - reorder a patch to be earlier in the series to ease backporting
+Cc: linux-ia64@vger.kernel.org
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+---
+ arch/ia64/include/asm/ptrace.h |  4 ---
+ arch/ia64/kernel/ptrace.c      | 57 ----------------------------------
+ kernel/ptrace.c                | 18 -----------
+ 3 files changed, 79 deletions(-)
 
+diff --git a/arch/ia64/include/asm/ptrace.h b/arch/ia64/include/asm/ptrace.h
+index a10a498eede1..402874489890 100644
+--- a/arch/ia64/include/asm/ptrace.h
++++ b/arch/ia64/include/asm/ptrace.h
+@@ -139,10 +139,6 @@ static inline long regs_return_value(struct pt_regs *regs)
+   #define arch_ptrace_stop_needed() \
+ 	(!test_thread_flag(TIF_RESTORE_RSE))
+ 
+-  extern void ptrace_attach_sync_user_rbs (struct task_struct *);
+-  #define arch_ptrace_attach(child) \
+-	ptrace_attach_sync_user_rbs(child)
+-
+   #define arch_has_single_step()  (1)
+   #define arch_has_block_step()   (1)
+ 
+diff --git a/arch/ia64/kernel/ptrace.c b/arch/ia64/kernel/ptrace.c
+index a19acd9f5e1f..a45f529046c3 100644
+--- a/arch/ia64/kernel/ptrace.c
++++ b/arch/ia64/kernel/ptrace.c
+@@ -617,63 +617,6 @@ void ia64_sync_krbs(void)
+ 	unw_init_running(do_sync_rbs, ia64_sync_kernel_rbs);
+ }
+ 
+-/*
+- * After PTRACE_ATTACH, a thread's register backing store area in user
+- * space is assumed to contain correct data whenever the thread is
+- * stopped.  arch_ptrace_stop takes care of this on tracing stops.
+- * But if the child was already stopped for job control when we attach
+- * to it, then it might not ever get into ptrace_stop by the time we
+- * want to examine the user memory containing the RBS.
+- */
+-void
+-ptrace_attach_sync_user_rbs (struct task_struct *child)
+-{
+-	int stopped = 0;
+-	struct unw_frame_info info;
+-
+-	/*
+-	 * If the child is in TASK_STOPPED, we need to change that to
+-	 * TASK_TRACED momentarily while we operate on it.  This ensures
+-	 * that the child won't be woken up and return to user mode while
+-	 * we are doing the sync.  (It can only be woken up for SIGKILL.)
+-	 */
+-
+-	read_lock(&tasklist_lock);
+-	if (child->sighand) {
+-		spin_lock_irq(&child->sighand->siglock);
+-		if (READ_ONCE(child->__state) == TASK_STOPPED &&
+-		    !test_and_set_tsk_thread_flag(child, TIF_RESTORE_RSE)) {
+-			set_notify_resume(child);
+-
+-			WRITE_ONCE(child->__state, TASK_TRACED);
+-			stopped = 1;
+-		}
+-		spin_unlock_irq(&child->sighand->siglock);
+-	}
+-	read_unlock(&tasklist_lock);
+-
+-	if (!stopped)
+-		return;
+-
+-	unw_init_from_blocked_task(&info, child);
+-	do_sync_rbs(&info, ia64_sync_user_rbs);
+-
+-	/*
+-	 * Now move the child back into TASK_STOPPED if it should be in a
+-	 * job control stop, so that SIGCONT can be used to wake it up.
+-	 */
+-	read_lock(&tasklist_lock);
+-	if (child->sighand) {
+-		spin_lock_irq(&child->sighand->siglock);
+-		if (READ_ONCE(child->__state) == TASK_TRACED &&
+-		    (child->signal->flags & SIGNAL_STOP_STOPPED)) {
+-			WRITE_ONCE(child->__state, TASK_STOPPED);
+-		}
+-		spin_unlock_irq(&child->sighand->siglock);
+-	}
+-	read_unlock(&tasklist_lock);
+-}
+-
+ /*
+  * Write f32-f127 back to task->thread.fph if it has been modified.
+  */
+diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+index 644eb7439d01..22041531adf6 100644
+--- a/kernel/ptrace.c
++++ b/kernel/ptrace.c
+@@ -1280,10 +1280,6 @@ int ptrace_request(struct task_struct *child, long request,
+ 	return ret;
+ }
+ 
+-#ifndef arch_ptrace_attach
+-#define arch_ptrace_attach(child)	do { } while (0)
+-#endif
+-
+ SYSCALL_DEFINE4(ptrace, long, request, long, pid, unsigned long, addr,
+ 		unsigned long, data)
+ {
+@@ -1292,8 +1288,6 @@ SYSCALL_DEFINE4(ptrace, long, request, long, pid, unsigned long, addr,
+ 
+ 	if (request == PTRACE_TRACEME) {
+ 		ret = ptrace_traceme();
+-		if (!ret)
+-			arch_ptrace_attach(current);
+ 		goto out;
+ 	}
+ 
+@@ -1305,12 +1299,6 @@ SYSCALL_DEFINE4(ptrace, long, request, long, pid, unsigned long, addr,
+ 
+ 	if (request == PTRACE_ATTACH || request == PTRACE_SEIZE) {
+ 		ret = ptrace_attach(child, request, addr, data);
+-		/*
+-		 * Some architectures need to do book-keeping after
+-		 * a ptrace attach.
+-		 */
+-		if (!ret)
+-			arch_ptrace_attach(child);
+ 		goto out_put_task_struct;
+ 	}
+ 
+@@ -1450,12 +1438,6 @@ COMPAT_SYSCALL_DEFINE4(ptrace, compat_long_t, request, compat_long_t, pid,
+ 
+ 	if (request == PTRACE_ATTACH || request == PTRACE_SEIZE) {
+ 		ret = ptrace_attach(child, request, addr, data);
+-		/*
+-		 * Some architectures need to do book-keeping after
+-		 * a ptrace attach.
+-		 */
+-		if (!ret)
+-			arch_ptrace_attach(child);
+ 		goto out_put_task_struct;
+ 	}
+ 
+-- 
+2.35.3
 
-Diffstat:
- arch/um/drivers/ubd_kern.c           |    2 
- block/blk-core.c                     |    4 -
- block/blk-lib.c                      |  124 ++++++++++++++++++++---------------
- block/blk-mq-debugfs.c               |    2 
- block/blk-settings.c                 |   74 ++++++++++++++++++++
- block/blk.h                          |   14 ---
- block/fops.c                         |    2 
- block/genhd.c                        |    4 -
- block/ioctl.c                        |   48 ++++++++++---
- block/partitions/core.c              |   12 ---
- drivers/block/drbd/drbd_main.c       |   51 ++++++--------
- drivers/block/drbd/drbd_nl.c         |   94 +++++++++++---------------
- drivers/block/drbd/drbd_receiver.c   |   13 +--
- drivers/block/loop.c                 |   15 +---
- drivers/block/nbd.c                  |    5 -
- drivers/block/null_blk/main.c        |    1 
- drivers/block/rbd.c                  |    1 
- drivers/block/rnbd/rnbd-clt.c        |    6 -
- drivers/block/rnbd/rnbd-srv-dev.h    |    8 --
- drivers/block/rnbd/rnbd-srv.c        |    5 -
- drivers/block/virtio_blk.c           |    2 
- drivers/block/xen-blkback/blkback.c  |   15 ++--
- drivers/block/xen-blkback/xenbus.c   |    9 --
- drivers/block/xen-blkfront.c         |    8 +-
- drivers/block/zram/zram_drv.c        |    1 
- drivers/md/bcache/alloc.c            |    2 
- drivers/md/bcache/request.c          |    4 -
- drivers/md/bcache/super.c            |    3 
- drivers/md/bcache/sysfs.c            |    2 
- drivers/md/dm-cache-target.c         |    9 --
- drivers/md/dm-clone-target.c         |    9 --
- drivers/md/dm-io.c                   |    2 
- drivers/md/dm-log-writes.c           |    3 
- drivers/md/dm-raid.c                 |    9 --
- drivers/md/dm-table.c                |   25 +------
- drivers/md/dm-thin.c                 |   15 ----
- drivers/md/dm.c                      |    3 
- drivers/md/md-linear.c               |   11 ---
- drivers/md/md.c                      |    5 -
- drivers/md/raid0.c                   |    7 -
- drivers/md/raid1.c                   |   18 -----
- drivers/md/raid10.c                  |   20 -----
- drivers/md/raid5-cache.c             |    8 +-
- drivers/md/raid5.c                   |   14 +--
- drivers/mmc/core/queue.c             |    3 
- drivers/mtd/mtd_blkdevs.c            |    1 
- drivers/nvme/host/core.c             |    4 -
- drivers/nvme/target/io-cmd-bdev.c    |    2 
- drivers/nvme/target/zns.c            |    3 
- drivers/s390/block/dasd_fba.c        |    1 
- drivers/scsi/sd.c                    |    2 
- drivers/target/target_core_device.c  |   20 ++---
- drivers/target/target_core_file.c    |   10 +-
- drivers/target/target_core_iblock.c  |   17 +---
- fs/btrfs/disk-io.c                   |    3 
- fs/btrfs/extent-tree.c               |    8 +-
- fs/btrfs/ioctl.c                     |   12 +--
- fs/btrfs/volumes.c                   |    4 -
- fs/btrfs/zoned.c                     |    3 
- fs/direct-io.c                       |   32 +--------
- fs/exfat/file.c                      |    5 -
- fs/exfat/super.c                     |   10 --
- fs/ext4/ioctl.c                      |   10 --
- fs/ext4/mballoc.c                    |   10 +-
- fs/ext4/super.c                      |   10 --
- fs/f2fs/f2fs.h                       |    3 
- fs/f2fs/file.c                       |   19 ++---
- fs/f2fs/segment.c                    |    8 --
- fs/fat/file.c                        |    5 -
- fs/fat/inode.c                       |   10 --
- fs/gfs2/rgrp.c                       |    7 -
- fs/iomap/direct-io.c                 |    3 
- fs/jbd2/journal.c                    |    9 --
- fs/jfs/ioctl.c                       |    5 -
- fs/jfs/super.c                       |    8 --
- fs/nilfs2/ioctl.c                    |    6 -
- fs/nilfs2/sufile.c                   |    4 -
- fs/nilfs2/the_nilfs.c                |    4 -
- fs/ntfs3/file.c                      |    6 -
- fs/ntfs3/super.c                     |   10 +-
- fs/ocfs2/ioctl.c                     |    5 -
- fs/super.c                           |    2 
- fs/xfs/xfs_discard.c                 |    8 +-
- fs/xfs/xfs_log_cil.c                 |    2 
- fs/xfs/xfs_super.c                   |   12 +--
- fs/zonefs/super.c                    |    3 
- include/linux/blkdev.h               |  112 +++++++++++--------------------
- include/target/target_core_backend.h |    4 -
- mm/swapfile.c                        |   31 ++------
- 89 files changed, 494 insertions(+), 651 deletions(-)
 
 _______________________________________________
 linux-um mailing list
