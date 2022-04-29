@@ -1,11 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 11/11] xen-blkback: use bdev_discard_alignment
-Date: Mon, 18 Apr 2022 06:53:14 +0200
-Message-Id: <20220418045314.360785-12-hch@lst.de>
-In-Reply-To: <20220418045314.360785-1-hch@lst.de>
-References: <20220418045314.360785-1-hch@lst.de>
+Received: from out02.mta.xmission.com ([166.70.13.232])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nkYTI-00CpTy-13
+ for linux-um@lists.infradead.org; Fri, 29 Apr 2022 21:48:17 +0000
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+References: <20220421150248.667412396@infradead.org>
+ <20220421150654.817117821@infradead.org>
+ <87czhap9dy.fsf@email.froward.int.ebiederm.org>
+ <878rrrh32q.fsf_-_@email.froward.int.ebiederm.org>
+Date: Fri, 29 Apr 2022 16:46:59 -0500
+In-Reply-To: <878rrrh32q.fsf_-_@email.froward.int.ebiederm.org> (Eric
+ W. Biederman's message of "Tue, 26 Apr 2022 17:50:21 -0500")
+Message-ID: <87k0b7v9yk.fsf_-_@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
+Subject: [PATCH 0/12] ptrace: cleaning up ptrace_stop
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,44 +26,67 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Richard Weinberger <richard@nod.at>, Johannes Berg <johannes@sipsolutions.net>, Josef Bacik <josef@toxicpanda.com>, "Md. Haris Iqbal" <haris.iqbal@ionos.com>, Jack Wang <jinpu.wang@ionos.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>, Mike Snitzer <snitzer@kernel.org>, Song Liu <song@kernel.org>, Stefan Haberland <sth@linux.ibm.com>, Jan Hoeppner <hoeppner@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, linux-um@lists.infradead.org, linux-block@vger.kernel.org, nbd@other.debian.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-raid@vger.kernel.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, dm-devel@redhat.com
+To: linux-kernel@vger.kernel.org
+Cc: rjw@rjwysocki.net, oleg@redhat.com, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Jann Horn <jannh@google.com>, Kees Cook <keescook@chromium.org>, linux-ia64@vger.kernel.org
 
-Use bdev_discard_alignment to calculate the correct discard alignment
-offset even for partitions instead of just looking at the queue limit.
 
-Also switch to use bdev_discard_granularity to get rid of the last direct
-queue reference in xen_blkbk_discard.
+The states TASK_STOPPED and TASK_TRACE are special in they can not
+handle spurious wake-ups.  This plus actively depending upon and
+changing the value of tsk->__state causes problems for PREEMPT_RT and
+Peter's freezer rewrite.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/block/xen-blkback/xenbus.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+There are a lot of details we have to get right to sort out the
+technical challenges and this is my parred back version of the changes
+that contains just those problems I see good solutions to that I believe
+are ready.
 
-diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
-index b21bffc9c50bc..04c90cb8955f6 100644
---- a/drivers/block/xen-blkback/xenbus.c
-+++ b/drivers/block/xen-blkback/xenbus.c
-@@ -583,14 +583,14 @@ static void xen_blkbk_discard(struct xenbus_transaction xbt, struct backend_info
- 	if (bdev_max_discard_sectors(bdev)) {
- 		err = xenbus_printf(xbt, dev->nodename,
- 			"discard-granularity", "%u",
--			q->limits.discard_granularity);
-+			bdev_discard_granularity(bdev));
- 		if (err) {
- 			dev_warn(&dev->dev, "writing discard-granularity (%d)", err);
- 			return;
- 		}
- 		err = xenbus_printf(xbt, dev->nodename,
- 			"discard-alignment", "%u",
--			q->limits.discard_alignment);
-+			bdev_discard_alignment(bdev));
- 		if (err) {
- 			dev_warn(&dev->dev, "writing discard-alignment (%d)", err);
- 			return;
--- 
-2.30.2
+In particular I don't have a solution that is ready for the challenges
+presented by wait_task_inactive.
 
+I hope we can review these changes and then have a firm foundation
+for the rest of the challenges.
+
+There are cleanups to the ptrace support for xtensa, um, and
+ia64.
+
+I have sucked in the first patch of Peter's freezer change as
+with minor modifications I believe it is ready to go.
+
+Eric W. Biederman (12):
+      signal: Rename send_signal send_signal_locked
+      signal: Replace __group_send_sig_info with send_signal_locked
+      ptrace/um: Replace PT_DTRACE with TIF_SINGLESTEP
+      ptrace/xtensa: Replace PT_SINGLESTEP with TIF_SINGLESTEP
+      signal: Use lockdep_assert_held instead of assert_spin_locked
+      ptrace: Reimplement PTRACE_KILL by always sending SIGKILL
+      ptrace: Don't change __state
+      ptrace: Remove arch_ptrace_attach
+      ptrace: Always take siglock in ptrace_resume
+      ptrace: Only return signr from ptrace_stop if it was provided
+      ptrace: Always call schedule in ptrace_stop
+      sched,signal,ptrace: Rework TASK_TRACED, TASK_STOPPED state
+
+ arch/ia64/include/asm/ptrace.h    |   4 --
+ arch/ia64/kernel/ptrace.c         |  57 ----------------
+ arch/um/include/asm/thread_info.h |   2 +
+ arch/um/kernel/exec.c             |   2 +-
+ arch/um/kernel/process.c          |   2 +-
+ arch/um/kernel/ptrace.c           |   8 +--
+ arch/um/kernel/signal.c           |   4 +-
+ arch/xtensa/kernel/ptrace.c       |   4 +-
+ arch/xtensa/kernel/signal.c       |   4 +-
+ drivers/tty/tty_jobctrl.c         |   4 +-
+ include/linux/ptrace.h            |   7 --
+ include/linux/sched.h             |  10 ++-
+ include/linux/sched/jobctl.h      |  10 +++
+ include/linux/sched/signal.h      |  23 ++++++-
+ include/linux/signal.h            |   3 +-
+ kernel/ptrace.c                   |  88 +++++++++----------------
+ kernel/signal.c                   | 135 +++++++++++++++++---------------------
+ kernel/time/posix-cpu-timers.c    |   6 +-
+ 18 files changed, 145 insertions(+), 228 deletions(-)
+
+Eric
 
 _______________________________________________
 linux-um mailing list
