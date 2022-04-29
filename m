@@ -1,135 +1,78 @@
-Return-Path: <SRS0=C8GT=US=zx2c4.com=Jason@kernel.org>
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH RFC v1 00/10] archs/random: fallback to using sched_clock() if no cycle counter
-Date: Fri,  8 Apr 2022 20:21:35 +0200
-Message-Id: <20220408182145.142506-1-Jason@zx2c4.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from out02.mta.xmission.com ([166.70.13.232])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nkYUO-00Cq2m-03
+ for linux-um@lists.infradead.org; Fri, 29 Apr 2022 21:49:25 +0000
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+Date: Fri, 29 Apr 2022 16:48:34 -0500
+Message-Id: <20220429214837.386518-9-ebiederm@xmission.com>
+In-Reply-To: <87k0b7v9yk.fsf_-_@email.froward.int.ebiederm.org>
+References: <87k0b7v9yk.fsf_-_@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, arnd@arndb.de
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Theodore Ts'o <tytso@mit.edu>, Dominik Brodowski <linux@dominikbrodowski.net>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, "David S . Miller" <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, John Stultz <john.stultz@linaro.org>, Stephen Boyd <sboyd@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org, linux-xtensa@linux-xtensa.org
-List-ID: <linux-um.lists.infradead.org>
+Subject: [PATCH v2 09/12] ptrace: Always take siglock in ptrace_resume
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-kernel@vger.kernel.org
+Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>
 
-Hi folks,
+Make code analysis simpler and future changes easier by
+always taking siglock in ptrace_resume.
 
-The RNG uses a function called random_get_entropy() basically anytime
-that it needs to timestamp an event. For example, an interrupt comes in,
-and we mix a random_get_entropy() into the entropy pool somehow.
-Somebody mashes their keyboard or moves their mouse around? We mix a
-random_get_entropy() into the entropy pool. It's one of the main
-varieties of input.
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+---
+ kernel/ptrace.c | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
 
-Unfortunately, it's always 0 on a few platforms. The RNG has accumulated
-various hacks to deal with this, but in general it's not great. Surely
-we can do better than 0. In fact, *anything* that's not the same exact
-value all the time would be better than 0. Even a counter that
-increments once per hour would be better than 0! I think you get the
-idea.
-
-On most platforms, random_get_entropy() is aliased to get_cycles(),
-which makes sense for platforms where get_cycles() is defined. RDTSC,
-for example, has all the characteristics we care about for this
-function: it's fast to acquire (i.e. acceptable in an irq handler),
-pretty high precision, available, forms a 2-monotone distribution, etc.
-But for platforms without that, what is the next best thing?
-
-Sometimes the next best thing is architecture-defined. For example,
-really old MIPS has the CP0 random register, which isn't a cycle
-counter, but is at least something. However, some platforms don't even
-have an architecture-defined fallback. In that case, what are we left
-with?
-
-By my first guess, we have ktime_get_boottime_ns(), jiffies, and
-sched_clock(). It seems like sched_clock() has already done a lot of
-work in being always available with some incrementing value, falling
-back to jiffies as necessary. So this series goes with that as a
-fallback, for when the architecture doesn't define random_get_entropy in
-its own way and when there's no working cycle counter.
-
-Another option would be falling back to different things on different
-platforms. For example, Arnd mentioned to me that on m68k,
-ktime_get_ns() might be better than sched_clock(), because it doesn't
-use CONFIG_GENERIC_SCHED_CLOCK and therefore is only as good as jiffies.
-Maybe there are other considerations there as well.
-
-This is a bit involved with plumbing asm/ headers, which is why this is
-an RFC. There are a few ways of skinning that cat. The patchset also
-tries to fill in the various cases where an arch only sometimes has a
-cycle counter and sometimes doesn't. When possible, it tries to make the
-decisions at compile time, but sometimes runtime decisions are
-necessary.
-
-Please let me know if you think this is sane. And if you have a
-different candidate than sched_clock(), I'd be interested to learn about
-that. In particular, I'd value input here from Thomas or somebody else
-who has looked at timekeeping across less common platforms.
-
-Finally, note that this series isn't about "jitter entropy" or other
-ways of initializing the RNG. That's a different topic for a different
-thread. Please don't let this discussion veer off into that. Here, I'm
-just trying to find a good fallback counter/timer for platforms without
-get_cycles(), a question with limited scope.
-
-Thanks,
-Jason
-
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Theodore Ts'o <tytso@mit.edu>
-Cc: Dominik Brodowski <linux@dominikbrodowski.net>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Albert Ou <aou@eecs.berkeley.edu>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: H. Peter Anvin <hpa@zytor.com>
-Cc: Chris Zankel <chris@zankel.net>
-Cc: Max Filippov <jcmvbkbc@gmail.com>
-Cc: John Stultz <john.stultz@linaro.org>
-Cc: Stephen Boyd <sboyd@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: linux-mips@vger.kernel.org
-Cc: linux-riscv@lists.infradead.org
-Cc: sparclinux@vger.kernel.org
-Cc: linux-um@lists.infradead.org
-Cc: x86@kernel.org
-Cc: linux-xtensa@linux-xtensa.org
-
-Jason A. Donenfeld (10):
-  random: use sched_clock() for random_get_entropy() if no get_cycles()
-  m68k: use sched_clock() for random_get_entropy() instead of zero
-  riscv: use sched_clock() for random_get_entropy() instead of zero
-  mips: use sched_clock() for random_get_entropy() instead of zero
-  arm: use sched_clock() for random_get_entropy() instead of zero
-  x86: use sched_clock() for random_get_entropy() instead of zero
-  arm64: use sched_clock() for random_get_entropy() instead of zero
-  um: use sched_clock() for random_get_entropy() instead of zero
-  sparc: use sched_clock() for random_get_entropy() instead of zero
-  xtensa: use sched_clock() for random_get_entropy() instead of zero
-
- arch/arm/include/asm/timex.h      | 11 +++++++++++
- arch/arm64/include/asm/timex.h    |  9 +++++++++
- arch/m68k/include/asm/timex.h     |  4 +++-
- arch/mips/include/asm/timex.h     |  3 ++-
- arch/riscv/include/asm/timex.h    |  3 ++-
- arch/sparc/include/asm/timex_32.h |  4 +---
- arch/um/include/asm/timex.h       |  9 ++-------
- arch/x86/include/asm/tsc.h        | 11 +++++++++++
- arch/xtensa/include/asm/timex.h   |  6 ++----
- include/linux/timex.h             |  6 ++++++
- 10 files changed, 49 insertions(+), 17 deletions(-)
-
+diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+index 22041531adf6..c1c99e8be147 100644
+--- a/kernel/ptrace.c
++++ b/kernel/ptrace.c
+@@ -845,8 +845,6 @@ static long ptrace_get_rseq_configuration(struct task_struct *task,
+ static int ptrace_resume(struct task_struct *child, long request,
+ 			 unsigned long data)
+ {
+-	bool need_siglock;
+-
+ 	if (!valid_signal(data))
+ 		return -EIO;
+ 
+@@ -882,18 +880,11 @@ static int ptrace_resume(struct task_struct *child, long request,
+ 	 * Note that we need siglock even if ->exit_code == data and/or this
+ 	 * status was not reported yet, the new status must not be cleared by
+ 	 * wait_task_stopped() after resume.
+-	 *
+-	 * If data == 0 we do not care if wait_task_stopped() reports the old
+-	 * status and clears the code too; this can't race with the tracee, it
+-	 * takes siglock after resume.
+ 	 */
+-	need_siglock = data && !thread_group_empty(current);
+-	if (need_siglock)
+-		spin_lock_irq(&child->sighand->siglock);
++	spin_lock_irq(&child->sighand->siglock);
+ 	child->exit_code = data;
+ 	wake_up_state(child, __TASK_TRACED);
+-	if (need_siglock)
+-		spin_unlock_irq(&child->sighand->siglock);
++	spin_unlock_irq(&child->sighand->siglock);
+ 
+ 	return 0;
+ }
 -- 
-2.35.1
+2.35.3
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
