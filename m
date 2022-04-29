@@ -1,45 +1,37 @@
-Return-Path: <SRS0=VN1/=UX=zx2c4.com=Jason@kernel.org>
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH v4 06/11] nios2: use fallback for random_get_entropy() instead of zero
-Date: Wed, 13 Apr 2022 13:54:06 +0200
-Message-Id: <20220413115411.21489-7-Jason@zx2c4.com>
-In-Reply-To: <20220413115411.21489-1-Jason@zx2c4.com>
-References: <20220413115411.21489-1-Jason@zx2c4.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Message-ID: <e169f964-2cd7-b9c5-7080-0505d52caa12@igalia.com>
+Date: Fri, 29 Apr 2022 11:50:24 -0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, tglx@linutronix.de, arnd@arndb.de
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Theodore Ts'o <tytso@mit.edu>, Dominik Brodowski <linux@dominikbrodowski.net>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, "David S . Miller" <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, John Stultz <john.stultz@linaro.org>, Stephen Boyd <sboyd@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org, linux-xtensa@linux-xtensa.org
-List-ID: <linux-um.lists.infradead.org>
+Subject: Re: [PATCH 20/30] panic: Add the panic informational notifier list
+Content-Language: en-US
+References: <20220427224924.592546-1-gpiccoli@igalia.com>
+ <20220427224924.592546-21-gpiccoli@igalia.com>
+ <7956ab00-66b6-bd89-dcc0-f10cf2741e4d@arm.com>
+From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+In-Reply-To: <7956ab00-66b6-bd89-dcc0-f10cf2741e4d@arm.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Suzuki K Poulose <suzuki.poulose@arm.com>, paulmck@kernel.org
+Cc: linux-kernel@vger.kernel.org, akpm@linux-foundation.org, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, kexec@lists.infradead.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Catalin Marinas <catalin.marinas@arm.com>, Florian Fainelli <f.fainelli@gmail.com>, Frederic Weisbecker <frederic@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Hari Bathini <hbathini@linux.ibm.com>, Joel Fernandes <joel@joelfernandes.org>, Jonathan Hunter <jonathanh@nvidia.com>, Josh Triplett <josh@joshtriplett.org>, Lai Jiangshan <jiangshanlai@gmail.com>, Leo Yan <leo.yan@linaro.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Mathieu Poirier <mathieu.poirier@linaro.org>, Michael Ellerman <mpe@ellerman.id.au>, Mike Leach <mike.leach@linaro.org>, Mikko Perttunen <mperttunen@nvidia.com>, Neeraj Upadhyay <quic_neeraju@quicinc.com>, Nicholas Piggin <npiggin@gmail.com>, Paul Mackerras <paulus@samba.org>, Thierry Reding <thierry.reding@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, pmladek@suse.com, bhe@redhat.com
 
-In the event that random_get_entropy() can't access a cycle counter or
-similar, falling back to returning 0 is really not the best we can do.
-Instead, at least calling random_get_entropy_fallback() would be
-preferable, because that always needs to return _something_, even
-falling back to jiffies eventually. It's not as though
-random_get_entropy_fallback() is super high precision or guaranteed to
-be entropic, but basically anything that's not zero all the time is
-better than returning zero all the time.
+Thanks Paul and Suzuki for the ACKs.
+Cheers,
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Dinh Nguyen <dinguyen@kernel.org>
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
----
- arch/nios2/include/asm/timex.h | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/arch/nios2/include/asm/timex.h b/arch/nios2/include/asm/timex.h
-index a769f871b28d..d9a3f426cdda 100644
---- a/arch/nios2/include/asm/timex.h
-+++ b/arch/nios2/include/asm/timex.h
-@@ -9,4 +9,6 @@ typedef unsigned long cycles_t;
- 
- extern cycles_t get_cycles(void);
- 
-+#define random_get_entropy() (((unsigned long)get_cycles()) ?: random_get_entropy_fallback())
-+
- #endif
--- 
-2.35.1
+Guilherme
 
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
